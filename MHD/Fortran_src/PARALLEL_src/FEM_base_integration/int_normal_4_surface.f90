@@ -1,0 +1,47 @@
+!
+!     module int_normal_4_surface
+!
+!      Written by H. Matsui on Aug., 2006
+!      Modified by H. Matsui on Jan., 2009
+!
+!      subroutine s_int_normal_4_all_surface
+!
+      module int_normal_4_surface
+!
+      use m_precision
+!
+      use m_machine_parameter
+      use m_fem_gauss_int_coefs
+!
+      implicit none
+!
+!-----------------------------------------------------------------------
+!
+      contains
+!
+!-----------------------------------------------------------------------
+!
+      subroutine s_int_normal_4_all_surface
+!
+      use m_geometry_parameter
+      use m_geometry_data
+      use m_surface_geometry_data
+      use m_jacobians_4_surface
+      use int_area_normal_4_surface
+!
+!
+      if (nnod_4_ele .eq. num_t_quad) then
+        call int_normal_all_surf(numsurf, isurf_smp_stack,              &
+     &     ntot_int_2d, max_int_point, xjq_surf, xsq_surf,              &
+     &     area_surf, a_area_surf, vnorm_surf)
+      else
+        call int_normal_all_surf(numsurf, isurf_smp_stack,              &
+     &     ntot_int_2d, max_int_point, xj_surf, xsf_surf,               &
+     &     area_surf, a_area_surf, vnorm_surf)
+      end if
+!
+      end subroutine s_int_normal_4_all_surface
+!
+! ----------------------------------------------------------------------
+!
+      end module int_normal_4_surface

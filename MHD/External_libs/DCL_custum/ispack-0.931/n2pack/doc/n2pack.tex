@@ -1,0 +1,717 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (C) 2000 Keiichi Ishioka				       %
+% 								       %
+% この著作権表示が記載してあるならば, どのような媒体にでも何も手を加え %
+% ずに複写して再配付することを許可します. これらのドキュメントとその使 % 
+% 用許諾を他の言語に翻訳する際は, 以下の条件に従って下さい.	       %
+% 								       %
+% 他の言語に翻訳する際に, 他の言語での口語表現への変更の範囲を越えて故 %
+% 意に意味を変更しないこと.					       %
+%								       %
+% 翻訳した使用許諾には, それが翻訳であること, また原文の使用許諾が翻訳 %
+% 全体に依然適用されることを明示すること.			       %
+%								       %
+% ハイパーテキストの場合, 同一サイト上で原文のコピーを保守すること. ま %
+% た, 翻訳したハイパーテキストのページからその原文へのリンクを提供する %
+% こと.								       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%履歴   96/10/27 石岡圭一 (version 0.0)
+%履歴 2000/02/17 石岡圭一 (version 0.1)
+%履歴 2000/09/25 石岡圭一 (version 0.11)
+%履歴 2000/10/27 石岡圭一 (version 0.12)
+%履歴 2005/07/27 石岡圭一 (version 0.2) 誤植の訂正(Thanks to 水田君)
+%
+\documentclass[a4j,fleqn]{jarticle}
+
+\newcommand{\Lap}{\nabla^2}
+\newcommand{\re}{\mbox{Re}}
+\newcommand{\im}{\mbox{Im}}
+
+\title{N2PACK使用の手引 (version 0.2)}
+\author{石岡 圭一  (2005/07/27)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは, 周期境界条件を持つ2次元流体方程式を解くための, スペクトル(2重
+フーリエ)変換を行なうサブルーチンパッケージであり, 2重フーリエ展開の係
+数から格子点値, およびその逆の変換を行なうサブルーチン, また, 数値モデ
+ルに用いるヤコビアンの計算を行うサブルーチンなどからなっている. 
+また, このパッケージはFTPACKの上位パッケージであり, これらのパッケージ
+を内部で引用している. 
+
+切断波数$K,L$のスペクトル逆変換は, 以下のように表せる:
+\begin{equation}
+g(x,y)=\sum^K_{k=-K}\sum^L_{l=-L}
+s_{kl}e^{ikx}e^{ily}.
+\end{equation}
+
+$g(x,y)$が実数であるとすると, $s_{kl}$
+は以下の関係を満たしている必要がある:
+\begin{equation}
+s_{(-k)(-l)}=s_{kl}^{*}
+\end{equation}
+ここに, $\{ \}^{*}$は複素共役を表す.
+
+また, スペクトル正変換は以下のように表せる:
+\begin{equation}
+s_{kl}=\frac1{(2\pi)^2}\int^{2\pi}_0\int^{2\pi}_0
+g(x,y)e^{-ikx}e^{-ily}dxdy.
+\end{equation}
+
+数値計算においては, 上記の積分はそれぞれ離散近似される. フーリエ正変
+換の部分は等間隔格子点上での値を用いた離散フーリエ正変換
+(FTPACKマニュアルを参照)によって近似される.
+ある条件のもとでは, この近似は完全な近似, すなわちもとの積分と同じ
+値を与える.
+
+本ライブラリは, 
+スペクトルデータ($s_{kl}$) 
+$\to$ 格子点上のグリッドデータ($g(x_i,y_j)$) 
+の逆変換を行うルーチン群,
+等間隔格子点上のグリッドデータ($g(x_i,y_j)$) 
+$\to$ スペクトルデータ($s_{kl}$) 
+の正変換を行うルーチン群, 
+そして, その他の補助ルーチンおよびヤコビアンの計算等の応用ルーチン群よ
+りなっている.
+
+ここに, $x_i$は$[0,2\pi]$を$I$-分割した格子点の$x$座標であり,
+$x_i=(2\pi/I)\cdot i$;  $i=0,1,\cdots,I-1$である.
+$y_j$は$[0,2\pi]$を$J$-分割した格子点の$y$座標であり,
+$y_j=(2\pi/J)\cdot j$;  $j=0,1,\cdots,J-1$である.
+
+以下のサブルーチンの説明において,
+\begin{center}
+\begin{tabular}{rl}
+{\tt KM}:& $x$方向の切断波数$K$\\
+{\tt LM}:& $y$方向の切断波数$L$\\
+{\tt IM}:& $x$方向の格子点数$I$\\
+{\tt JM}:& $y$方向の格子点数$J$
+\end{tabular}
+\end{center}
+なる対応関係がある. ここに, {\tt KM,LM,IM,JM}には以下のような制約があ
+る.
+
+\begin{itemize}
+\item FFTを使うために, {\tt IM}および{\tt JM}は2,3,5で素因数分解される
+正の整数でなければならない. さらに, {\tt IM}は偶数でなければならない
+(これは, 実FFTを使うためである).
+
+\item {\tt JM}および{\tt IM}はそれぞれ, 
+{\tt JM} $>$ {\tt 2*LM}および{\tt IM} $>$ {\tt 2*KM}を満していなければ
+ならない.
+
+\item ヤコビアンの計算({\tt N2AJBS})でaliasingを除くためには, 
+{\tt JM} $>$ {\tt 3*LM}および{\tt IM} $>$ {\tt 3*KM}としなければなら
+ない.
+\end{itemize}
+
+{\tt N2PACK}において, スペクトルデータ($s_{kl}$)は上に述べた制限をも
+とに, 独立な$(2K+1)(2L+1)$個の成分を以下のように配列
+{\tt S(-LM:LM,-KM:KM)}に格納して扱う.
+
+以下$k=\mbox{\tt K}>0$, $l=\mbox{\tt L}>0$として,
+\begin{center}
+\begin{tabular}{ll}
+{\tt S( L, K)}:& $s_{kl}$の実部\\
+{\tt S(-L,-K)}:& $s_{kl}$の虚部\\
+{\tt S(-L, K)}:& $s_{k(-l)}$の実部\\
+{\tt S( L,-K)}:& $s_{k(-l)}$の虚部\\
+{\tt S( L, 0)}:& $s_{0l}$の実部\\
+{\tt S(-L, 0)}:& $s_{0l}$の虚部\\
+{\tt S( 0, K)}:& $s_{k0}$の実部\\
+{\tt S( 0,-K)}:& $s_{k0}$の虚部\\
+{\tt S( 0, 0)}:& $s_{00}$(実数)
+\end{tabular}
+\end{center}
+と格納されている.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+{\tt N2INIT} & 初期化\\
+{\tt N2S2GA} & スペクトルデータからグリッドデータへの変換\\
+{\tt N2G2SA} & グリッドデータからスペクトルデータへの変換\\
+{\tt N2AJBS} & ヤコビアンの計算\\
+{\tt N2SWNL} & 浅水方程式の時間微分項の計算\\
+{\tt N2SWNN} & 浅水方程式の時間微分項の計算(非線形項のみ)\\
+{\tt N2SWCK} & 浅水方程式の保存量の計算\\
+{\tt N2SWBL} & 浅水方程式の簡単な初期値化
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンの説明}
+
+\subsection{N2INIT}
+
+\begin{enumerate}
+
+\item 機能 
+{\tt N2PACK}の初期化ルーチン. 
+{\tt N2PACK}の他のサブルーチンを使用する前に必ず一度呼ばねばならない.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+{\tt N2INIT(JM,IM,ITJ,TJ,ITI,TI)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt JM} & {\tt (I)} & 入力. $y$方向の格子点数\\
+{\tt IM} & {\tt (I)} & 入力. $x$方向の格子点数\\
+{\tt ITJ}  & {\tt (I(5))}    & 出力. N2PACKの他のルーチンで用いられる配列\\
+{\tt TJ}   & {\tt (D(JM*2))} & 出力. N2PACKの他のルーチンで用いられる配列\\
+{\tt ITI}  & {\tt (I(5))}    & 出力. N2PACKの他のルーチンで用いられる配列\\
+{\tt TI}   & {\tt (D(JM*2))} & 出力. N2PACKの他のルーチンで用いられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt N2PACK}を使用している間, 配列{\tt ITJ,TJ,ITI,TI}
+の内容を変更してはならない.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{N2S2GA}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータへの変換を行う.
+
+\item 定義
+
+スペクトル逆変換(概要を参照)によりスペクトルデータ($s_{kl}$)
+から格子点上のグリッドデータ($g(x_i,y_j)$)を求める.
+
+\item 呼び出し方法 
+
+{\tt N2S2GA(LM,KM,JM,IM,S,G,W,ITJ,TJ,ITI,TI)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt LM} & {\tt (I)} & 入力. $y$方向の切断波数\\
+{\tt KM} & {\tt (I)} & 入力. $x$方向の切断波数\\
+{\tt JM} & {\tt (I)} & 入力. $y$方向の格子点数\\
+{\tt IM} & {\tt (I)} & 入力. $x$方向の格子点数\\
+{\tt S} & {\tt (D((2*KM+1)*(2*LM+1)))} & 入力. $s_{kl}$が格納されている配列\\
+{\tt G} & {\tt (D(JM*IM))} & 出力. $g(x_i,y_j)$が格納される配列\\
+{\tt W} & {\tt (D(JM*IM))} & 作業領域\\
+{\tt ITJ} & {\tt (I(5))} & 入力. N2INITで与えられる配列\\
+{\tt TJ} & {\tt (D(JM*2))} & 入力. N2INITで与えられる配列\\
+{\tt ITI} & {\tt (I(5))} & 入力. N2INITで与えられる配列\\
+{\tt TI} & {\tt (D(IM*2))} & 入力. N2INITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt G(0:JM-1,0:IM-1)}と宣言されている場合, {\tt G(J,I)}には
+    $g(x_i,y_j)$が格納される({\tt I,J}の順番に注意).
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{N2G2SA}
+
+\begin{enumerate}
+
+\item 機能 
+
+グリッドデータからスペクトルデータへの変換を行う.
+
+\item 定義
+
+スペクトル正変換(概要を参照)により格子点上のグリッドデータ
+($g(x_i,y_j)$)からスペクトルデータ($s_{kl}$)を求める.
+
+\item 呼び出し方法 
+
+{\tt N2G2SA(LM,KM,JM,IM,G,S,W,ITJ,TJ,ITI,TI)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt LM} & {\tt (I)} & 入力. $y$方向の切断波数\\
+{\tt KM} & {\tt (I)} & 入力. $x$方向の切断波数\\
+{\tt JM} & {\tt (I)} & 入力. $y$方向の格子点数\\
+{\tt IM} & {\tt (I)} & 入力. $x$方向の格子点数\\
+{\tt G} & {\tt (D(JM*IM))} & 入力. $g(x_i,y_j)$が格納されている配列\\
+{\tt S} & {\tt (D((2*KM+1)*(2*LM+1)))} & 出力. $s_{kl}$が格納される配列\\
+{\tt W} & {\tt (D(JM*IM))} & 作業領域\\
+{\tt ITJ} & {\tt (I(5))} & 入力. N2INITで与えられる配列\\
+{\tt TJ} & {\tt (D(JM*2))} & 入力. N2INITで与えられる配列\\
+{\tt ITI} & {\tt (I(5))} & 入力. N2INITで与えられる配列\\
+{\tt TI} & {\tt (D(IM*2))} & 入力. N2INITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt N2G2SA}において, 入力{\tt G}は保存されない.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{N2AJBS}
+
+\begin{enumerate}
+
+\item 機能 
+
+ヤコビアンの計算を行う.
+
+\item 定義
+
+2次元非発散流体に対する渦度方程式は以下のように書ける.
+\[
+\frac{\partial\zeta}{\partial t}=
+-\left( \frac{\partial(u\zeta)}{\partial x}
+       +\frac{\partial(v\zeta)}{\partial y}\right)
+\equiv{\cal N}(\zeta).
+\]
+ここに, 粘性項等は省略した. $u,v$は$x,y$方向の流速で, $\zeta$から以下
+のように求められる.
+\[
+u=-\frac{\partial\psi}{\partial y},\quad
+v=\frac{\partial\psi}{\partial x}; \quad
+\psi=\left(\frac{\partial^2}{\partial x^2}
+           +\frac{\partial^2}{\partial y^2}\right)^{-1}\zeta.
+\]
+
+本サブルーチンは、上記の$\zeta$に対応する展開係数$\zeta_{kl}$
+を入力として,
+${\cal N}(\zeta)$の切断波数$K,L$までのスペクトル展開係数${\cal N}_{kl}$
+\begin{equation}
+{\cal N}_{kl}\equiv\frac1{(2\pi)^2}\int^{2\pi}_0\int^{2\pi}_0
+{\cal N}(\zeta)e^{-ikx}e^{-ily}dxdy.
+\end{equation}
+を求めるものである. 
+
+${\cal N}(\zeta)$の表式として, 上述のものをそのまま用いると, 必要なス
+ペクトル変換は,
+$\zeta,u,v$を求めるためのスペクトル逆変換(合計3回)および
+$u\zeta,v\zeta$に対するスペクトル正変換(合計2回)の合計5回である.
+しかし, 本サブルーチンは, ${\cal N}(\zeta)$の表式を以下のように変形す
+ることによって, 必要な変換回数を4回にしている.
+
+さて, 
+\[
+\zeta=\frac{\partial v}{\partial x}-\frac{\partial u}{\partial y}, \quad
+\frac{\partial u}{\partial x}+\frac{\partial v}{\partial y}=0,
+\]
+であることに注意すると,
+\begin{eqnarray*}
+{\cal N}(\zeta) & = & 
+-\frac{\partial}{\partial x}\left\{
+u\left(\frac{\partial v}{\partial x}-\frac{\partial u}{\partial y}\right)
+\right\}
+-\frac{\partial}{\partial y}\left\{
+v\left(\frac{\partial v}{\partial x}-\frac{\partial u}{\partial y}\right)
+\right\}\\
+& = & 
+-\frac{\partial}{\partial x}\left(
+\frac{\partial (uv)}{\partial x}-v\frac{\partial u}{\partial x}
+-\frac{\partial(u^2/2)}{\partial y}\right)
+-\frac{\partial}{\partial y}\left(
+\frac{\partial(v^2/2)}{\partial x}-\frac{\partial(uv)}{\partial y}
++u\frac{\partial v}{\partial y}\right)\\
+& = & 
+-\frac{\partial}{\partial x}\left(
+\frac{\partial (uv)}{\partial x}+v\frac{\partial v}{\partial y}
+-\frac{\partial(u^2/2)}{\partial y}\right)
+-\frac{\partial}{\partial y}\left(
+\frac{\partial(v^2/2)}{\partial x}-\frac{\partial(uv)}{\partial y}
+-u\frac{\partial u}{\partial x}\right)\\
+& = & 
+-\frac{\partial}{\partial x}\left(
+\frac{\partial (uv)}{\partial x}+\frac{\partial(v^2/2)}{\partial y}
+-\frac{\partial(u^2/2)}{\partial y}\right)
+-\frac{\partial}{\partial y}\left(
+\frac{\partial(v^2/2)}{\partial x}-\frac{\partial(uv)}{\partial y}
+-\frac{\partial(u^2/2)}{\partial x}\right)\\
+& = & 
+-\frac{\partial^2 (uv)}{\partial x^2}
+-\frac{\partial^2(v^2/2)}{\partial x\partial y}
++\frac{\partial^2(u^2/2)}{\partial x\partial y}
+-\frac{\partial^2(v^2/2)}{\partial x\partial y}
++\frac{\partial^2(uv)}{\partial y^2}
++\frac{\partial(u^2/2)}{\partial x\partial y}\\
+& = & 
+-\left( \frac{\partial^2}{\partial x^2}
+       -\frac{\partial^2}{\partial y^2}\right)(uv)
+-\frac{\partial^2}{\partial x\partial y}(v^2-u^2),
+\end{eqnarray*}
+と変形できるから, 
+${\cal N}_{kl}$を求めるために必要な変換回数は,
+$u,v$を求めるためのスペクトル逆変換(合計2回)および
+$uv, v^2-u^2$に対するスペクトル正変換(合計2回)の合計4回となる.
+
+\item 呼び出し方法 
+
+{\tt N2AJBS(LM,KM,JM,IM,Z,DZ,WS,WG,ITJ,TJ,ITI,TI)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt LM} & {\tt (I)} & 入力. $y$方向の切断波数\\
+{\tt KM} & {\tt (I)} & 入力. $x$方向の切断波数\\
+{\tt JM} & {\tt (I)} & 入力. $y$方向の格子点数\\
+{\tt IM} & {\tt (I)} & 入力. $x$方向の格子点数\\
+{\tt Z} & {\tt (D((2*KM+1)*(2*LM+1)))} & 入力. $\zeta_{kl}$が格納されて
+いる配列\\
+{\tt DZ} & {\tt (D((2*KM+1)*(2*LM+1)))} & 出力. 
+${\cal N}_{kl}$が格納される配列\\
+{\tt WS} & {\tt (D((2*KM+1)*(2*LM+1)))} & 作業領域\\
+{\tt WG} & {\tt (D(JM*IM*3))} & 作業領域\\
+{\tt ITJ} & {\tt (I(5))} & 入力. N2INITで与えられる配列\\
+{\tt TJ} & {\tt (D(JM*2))} & 入力. N2INITで与えられる配列\\
+{\tt ITI} & {\tt (I(5))} & 入力. N2INITで与えられる配列\\
+{\tt TI} & {\tt (D(IM*2))} & 入力. N2INITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) aliasingを除くために十分な{\tt JM}, {\tt IM}の大きさについては, 
+概要を参照.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{N2SWNL}
+
+\begin{enumerate}
+
+\item 機能 
+
+浅水方程式の時間微分項の計算を行う.
+
+\item 定義
+
+$f$平面上の浅水方程式系は, 無次元化すると以下のように表せる:
+\begin{equation}
+\dot{q}\equiv\frac{\partial q}{\partial t}
+=-\frac{\partial(uq)}{\partial x}
+-\frac{\partial(vq)}{\partial y}
+=-\frac{\partial(u\zeta)}{\partial x}
+ -\frac{\partial(v\zeta)}{\partial y}-fD,
+\end{equation}
+\begin{equation}
+\dot{D}\equiv\frac{\partial D}{\partial t}
+=\frac{\partial(vq)}{\partial x}
+-\frac{\partial(uq)}{\partial y}
+-\nabla^2(E+\Phi)
+=\frac{\partial(v\zeta)}{\partial x}
+-\frac{\partial(u\zeta)}{\partial y}+f\zeta
+-\nabla^2(E+\Phi),
+\end{equation}
+\begin{equation}
+\dot{\Phi}\equiv\frac{\partial \Phi}{\partial t}
+=-\frac{\partial(u\Phi)}{\partial x}
+-\frac{\partial(v\Phi)}{\partial y}.
+\end{equation}
+ここに, $q=\zeta+f$: 絶対渦度,$\Phi$: ジオポテンシャル
+であり, $\zeta$,$D$は渦度, 発散で,
+\begin{equation}
+\zeta\equiv
+\frac{\partial v}{\partial x}
+-\frac{\partial u}{\partial y},
+\end{equation}
+\begin{equation}
+D\equiv
+\frac{\partial u}{\partial x}
++\frac{\partial v}{\partial y},
+\end{equation}
+と定義される. また, $E=(u^2+v^2)/2$である.
+
+本サブルーチンは, 上記の$q,D,\Phi$のスペクトル展開係数
+$q_{kl},D_{kl},\Phi_{kl}$を入力として,
+$\dot{q},\dot{D},\dot{\Phi}$の切断波数$K,L$までまでのスペクトル展開係数
+$\dot{q}_{kl},\dot{D}_{kl},\dot{\Phi}_{kl}$
+を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt N2SWNL(LM,KM,JM,IM,AVT,DIV,PHI,DAVT,DDIV,DPHI,WS,WG,ITJ,TJ,ITI,TI)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt LM} & {\tt (I)} & 入力. $y$方向の切断波数\\
+{\tt KM} & {\tt (I)} & 入力. $x$方向の切断波数\\
+{\tt JM} & {\tt (I)} & 入力. $y$方向の格子点数\\
+{\tt IM} & {\tt (I)} & 入力. $x$方向の格子点数\\
+{\tt AVT} & {\tt (D((2*KM+1)*(2*LM+1)))} & 入力. $q_{kl}$が格納されて
+いる配列\\
+{\tt DIV} & {\tt (D((2*KM+1)*(2*LM+1)))} & 入力. $D_{kl}$が格納されて
+いる配列\\
+{\tt PHI} & {\tt (D((2*KM+1)*(2*LM+1)))} & 入力. $\Phi_{kl}$が格納されて
+いる配列\\
+{\tt DAVT} & {\tt (D((2*KM+1)*(2*LM+1)))} & 出力. 
+$\dot q_{kl}$が格納される配列\\
+{\tt DDIV} & {\tt (D((2*KM+1)*(2*LM+1)))} & 出力.
+$\dot D_{kl}$が格納される配列\\
+{\tt DPHI} & {\tt (D((2*KM+1)*(2*LM+1)))} & 出力.
+$\dot \Phi_{kl}$が格納される配列\\
+{\tt WS} & {\tt (D((2*KM+1)*(2*LM+1)*2))} & 作業領域\\
+{\tt WG} & {\tt (D(JM*IM*5))} & 作業領域\\
+{\tt ITJ} & {\tt (I(5))} & 入力. N2INITで与えられる配列\\
+{\tt TJ} & {\tt (D(JM*2))} & 入力. N2INITで与えられる配列\\
+{\tt ITI} & {\tt (I(5))} & 入力. N2INITで与えられる配列\\
+{\tt TI} & {\tt (D(IM*2))} & 入力. N2INITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) aliasingを除くために十分な{\tt JM}, {\tt IM}の大きさについては, 
+概要を参照.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{N2SWNN}
+
+\begin{enumerate}
+
+\item 機能 
+
+浅水方程式の時間微分項の計算を行う(非線形項のみ).
+
+\item 定義
+
+{\tt N2SWNL}の定義で掲げた平面上の浅水方程式系において, ジオポテンシャル
+$\Phi$を平均部分$\bar\Phi$(定数)とそれからのずれ$\Phi'(x,y,t)$に分けて
+$\Phi=\bar\Phi+\Phi'$と扱うことにすると, 
+\begin{equation}
+\dot{q}\equiv\frac{\partial q}{\partial t}
+=\left[-\frac{\partial(u\zeta)}{\partial x}
+ -\frac{\partial(v\zeta)}{\partial y}\right]-fD,
+\end{equation}
+\begin{equation}
+\dot{D}\equiv\frac{\partial D}{\partial t}
+=\left[\frac{\partial(v\zeta)}{\partial x}
+-\frac{\partial(u\zeta)}{\partial y}
+ -\nabla^2 E\right]
+ -\nabla^2\Phi'+f\zeta,
+\end{equation}
+\begin{equation}
+\dot{\Phi}\equiv\frac{\partial \Phi}{\partial t}
+=\left[-\frac{\partial(u\Phi')}{\partial x}
+-\frac{\partial(v\Phi')}{\partial y}\right]-\bar\Phi D.
+\end{equation}
+
+本サブルーチンは, 上記の$q,D,\Phi$のスペクトル展開係数
+$q_{kl},D_{kl},\Phi_{kl}$および$\bar\Phi,f$を入力として,
+$\dot{q},\dot{D},\dot{\Phi}$の非線形部分($\left[\ \right]$で囲まれ
+た部分)の切断波数$K,L$までまでのスペクトル展開係数(
+$[ \dot{q}_{kl}],[\dot{D}_{kl}],[\dot{\Phi}_{kl}]$と書くことにする)
+を求めるものである.
+これは{\tt N2SWNL}と異なり, 残りの線形項の影響部分(重力波に対応)を別の
+方法(線形重力波に対する厳密解を使うなど)で処理するためのものである.
+
+\item 呼び出し方法 
+
+{\tt N2SWNN(LM,KM,JM,IM,BARPHI,F,AVT,DIV,PHI,DAVT,DDIV,DPHI,WS,WG,ITJ,TJ,ITI,TI)}
+
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt LM} & {\tt (I)} & 入力. $y$方向の切断波数\\
+{\tt KM} & {\tt (I)} & 入力. $x$方向の切断波数\\
+{\tt JM} & {\tt (I)} & 入力. $y$方向の格子点数\\
+{\tt IM} & {\tt (I)} & 入力. $x$方向の格子点数\\
+{\tt BARPHI} & {\tt (D)} & 入力. 平均ジオポテンシャル$\bar\Phi$の値\\
+{\tt F} & {\tt (D)} & 入力. コリオリパラメター$f$の値\\
+{\tt AVT} & {\tt (D((2*KM+1)*(2*LM+1)))} & 入力. $q_{kl}$が格納されて
+いる配列\\
+{\tt DIV} & {\tt (D((2*KM+1)*(2*LM+1)))} & 入力. $D_{kl}$が格納されて
+いる配列\\
+{\tt PHI} & {\tt (D((2*KM+1)*(2*LM+1)))} & 入力. $\Phi_{kl}$が格納されて
+いる配列\\
+{\tt DAVT} & {\tt (D((2*KM+1)*(2*LM+1)))} & 出力. 
+$[\dot q_{kl}]$が格納される配列\\
+{\tt DDIV} & {\tt (D((2*KM+1)*(2*LM+1)))} & 出力.
+$[\dot D_{kl}]$が格納される配列\\
+{\tt DPHI} & {\tt (D((2*KM+1)*(2*LM+1)))} & 出力.
+$[\dot \Phi_{kl}]$が格納される配列\\
+{\tt WS} & {\tt (D((2*KM+1)*(2*LM+1)*2))} & 作業領域\\
+{\tt WG} & {\tt (D(JM*IM*5))} & 作業領域\\
+{\tt ITJ} & {\tt (I(5))} & 入力. N2INITで与えられる配列\\
+{\tt TJ} & {\tt (D(JM*2))} & 入力. N2INITで与えられる配列\\
+{\tt ITI} & {\tt (I(5))} & 入力. N2INITで与えられる配列\\
+{\tt TI} & {\tt (D(IM*2))} & 入力. N2INITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) aliasingを除くために十分な{\tt JM}, {\tt IM}の大きさについては, 
+概要を参照.
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{N2SWCK}
+
+\begin{enumerate}
+
+\item 機能
+
+浅水方程式の保存量を計算する.
+
+\item 定義
+
+{\tt N2SWNL}の項で導入した浅水方程式系には以下のような保存量がある:
+\begin{itemize}
+\item 全エネルギー(A.Ene.):
+\begin{equation}
+\mbox{A.Ene.}\equiv\left\langle\frac12\Phi(u^2+v^2+\Phi)\right\rangle,
+\end{equation}
+\item 全エンストロフィー(A.Ens.):
+\begin{equation}
+\mbox{A.Ens.}\equiv\left\langle\frac12\frac{q^2}{\Phi}\right\rangle.
+\end{equation}
+\end{itemize}
+ここに, $\langle\ \rangle$は全領域平均を表す記号で,
+\begin{equation}
+\langle A\rangle\equiv\frac1{4\pi^2}\int^{2\pi}_0\int^{2\pi}_0 A dy dx,
+\end{equation}
+である.
+
+本サブルーチンは, $q,D,\Phi$のスペクトル展開係数
+$q_{kl},D_{kl},\Phi_{kl}$を入力として, 
+上記の保存量 A.Ene., A.Ens.,
+を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt N2SWCK(LM,KM,JM,IM,AVT,DIV,PHI,AENE,AENS,WS,WG,ITJ,TJ,ITI,TI)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt LM} & {\tt (I)} & 入力. $y$方向の切断波数\\
+{\tt KM} & {\tt (I)} & 入力. $x$方向の切断波数\\
+{\tt JM} & {\tt (I)} & 入力. $y$方向の格子点数\\
+{\tt IM} & {\tt (I)} & 入力. $x$方向の格子点数\\
+{\tt BARPHI} & {\tt (D)} & 入力. 平均ジオポテンシャル$\bar\Phi$の値\\
+{\tt AVT} & {\tt (D((2*KM+1)*(2*LM+1)))} & 入力. $q_{kl}$が格納されて
+いる配列\\
+{\tt DIV} & {\tt (D((2*KM+1)*(2*LM+1)))} & 入力. $D_{kl}$が格納されて
+いる配列\\
+{\tt PHI} & {\tt (D((2*KM+1)*(2*LM+1)))} & 入力. $\Phi_{kl}$が格納されて
+いる配列\\
+{\tt AENE} & {\tt (D)}
+& 出力. A.Ene.の値\\
+{\tt AENS} & {\tt (D)} 
+& 出力. A.Ens.の値\\
+{\tt WS} & {\tt (D((2*KM+1)*(2*LM+1)*2))} & 作業領域\\
+{\tt WG} & {\tt (D(JM*IM*5))} & 作業領域\\
+{\tt ITJ} & {\tt (I(5))} & 入力. N2INITで与えられる配列\\
+{\tt TJ} & {\tt (D(JM*2))} & 入力. N2INITで与えられる配列\\
+{\tt ITI} & {\tt (I(5))} & 入力. N2INITで与えられる配列\\
+{\tt TI} & {\tt (D(IM*2))} & 入力. N2INITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+\begin{enumerate}
+\item aliasingを除くために十分な{\tt JM}, {\tt IM}の大きさについては, 
+      概要を参照.
+\item A.Ene., A.Ens. は非粘性の浅水方程式の保存量であるが,
+      離散化されている場合は, たとえaliasingが除かれていても厳密には
+      保存性が保証されないことに注意.
+\end{enumerate}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{N2SWBL}
+
+\begin{enumerate}
+
+\item 機能 
+
+浅水方程式の簡単な初期値化を行う.
+
+\item 定義
+
+{\tt N2SWNL}の項で定義した平面上の浅水方程式系には重力波が含まれている
+ので, ええ加減な初期値を与えてしまうと重力波成分が多すぎて望ましくない
+激しい時間変動が生じてしまう. 重力波は主に発散成分を伴っているため,
+初期値として渦度成分だけ与えればいいように思われるが, それでもすぐに
+発散成分が発生してしまうので今一つである. 本サブルーチンは, 渦度成分
+が与えられた場合に, それに「バランス」するようなジオポテンシャル場を
+与えて重力波の発生をできるだけ抑えた初期値を作成するものである.
+
+{\tt N2SWNL}の項で定義した平面上の浅水方程式系のうち, 発散場の時間変化
+を記述する方程式は,
+\begin{equation}
+\dot{D}\equiv\frac{\partial D}{\partial t}
+=\frac{\partial(vq)}{\partial x}
+-\frac{\partial(uq)}{\partial y}
+ -\nabla^2(E+\Phi).
+\end{equation}
+ここで, 発散成分の生成を抑えるために, $\dot D=0$とするには, 
+ジオポテンシャル場を
+\begin{equation}
+\nabla^2\Phi
+=\frac{\partial(vq)}{\partial x}
+-\frac{\partial(uq)}{\partial y}
+ -\nabla^2 E
+\end{equation}
+として定めればよい(右辺は渦度場を与えれば定まるので).
+ただし, この式ではポテンシャル場の平均値$\bar\Phi$は定まらないので,
+別途与えることになる.
+
+本サブルーチンは, $q$のスペクトル展開係数
+$q_{kl}$を入力として, 上記のバランス式を満すような$\Phi$の切断波数
+$K,L$までまでのスペクトル展開係数$\Phi_{kl}$を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt N2SWBL(LM,KM,JM,IM,BARPHI,AVT,PHI,WS,WG,ITJ,TJ,ITI,TI)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt LM} & {\tt (I)} & 入力. $y$方向の切断波数\\
+{\tt KM} & {\tt (I)} & 入力. $x$方向の切断波数\\
+{\tt JM} & {\tt (I)} & 入力. $y$方向の格子点数\\
+{\tt IM} & {\tt (I)} & 入力. $x$方向の格子点数\\
+{\tt BARPHI} & {\tt (D)} & 入力. $\bar\Phi$の値\\
+{\tt AVT} & {\tt (D((2*KM+1)*(2*LM+1)))} & 入力. $q_{kl}$が格納されて
+いる配列\\
+{\tt PHI} & {\tt (D((2*KM+1)*(2*LM+1)))} & 出力. $\Phi_{kl}$が格納される
+配列\\
+{\tt WS} & {\tt (D((2*KM+1)*(2*LM+1)*2))} & 作業領域\\
+{\tt WG} & {\tt (D(JM*IM*5))} & 作業領域\\
+{\tt ITJ} & {\tt (I(5))} & 入力. N2INITで与えられる配列\\
+{\tt TJ} & {\tt (D(JM*2))} & 入力. N2INITで与えられる配列\\
+{\tt ITI} & {\tt (I(5))} & 入力. N2INITで与えられる配列\\
+{\tt TI} & {\tt (D(IM*2))} & 入力. N2INITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+\end{document}

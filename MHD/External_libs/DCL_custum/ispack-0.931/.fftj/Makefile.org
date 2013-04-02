@@ -1,0 +1,73 @@
+FC = g77 -O3
+CC = gcc
+AS = as
+AR = ar vru
+RM = rm -f
+LIB = libfftj.a
+#-------------------------------------------------------------
+.SUFFIXES :
+.SUFFIXES : .o .f .c .s
+.f.o :
+	$(FC) -c $< -o $@
+.c.o :
+	$(CC) -c $< -o $@
+.s.o :
+	$(AS) $< -o $@
+
+DIRS = $(wildcard fft? fft?? fft??? fft???? rfft? rfft?? rfft??? rfft????)
+OBJSFORT = env/fjgtad.o env/fjcini.o env/fjcrun.o env/fjrini.o env/fjrrun.o \
+             $(foreach A, $(DIRS), $(addsuffix .o,\
+               $(basename $(wildcard $(A)/*-fort.f))))
+OBJS32 = env/fjgtad.o env/fjcini.o env/fjcrun-sse32.o \
+         env/fjrini.o env/fjrrun-sse32.o \
+            $(foreach A, $(DIRS), $(addsuffix .o,\
+               $(basename $(wildcard $(A)/*-sse32.s $(A)/*-sse32.f))))
+OBJS64 = env/fjgtad.o env/fjcini.o env/fjcrun-sse64.o \
+         env/fjrini.o env/fjrrun-sse64.o \
+            $(foreach A, $(DIRS), $(addsuffix .o,\
+               $(basename $(wildcard $(A)/*-sse64.s $(A)/*-sse64.f))))
+
+#-------------------------------------------------------------
+clean:	
+	@$(RM) $(OBJSFORT) $(OBJS32) $(OBJS64) \
+	check bench check-align bench-align check-sub.o bench-sub.o \
+	rcheck rbench rcheck-align rbench-align rcheck-sub.o rbench-sub.o 	
+
+veryclean: clean 
+	@$(RM) $(LIB) 
+
+fort: $(OBJSFORT)
+	$(RM) $(LIB) 
+	$(AR) $(LIB) $(OBJSFORT)
+
+sse32: $(OBJS32)
+	$(RM) $(LIB) 
+	$(AR) $(LIB) $(OBJS32)
+
+sse64: $(OBJS64)
+	$(RM) $(LIB) 
+	$(AR) $(LIB) $(OBJS64)
+
+check: check.f $(LIB) check-sub.o
+	$(FC) check.f check-sub.o -o check -L. -lfftj
+
+check-align: check-align.f $(LIB) check-sub.o
+	$(FC) check-align.f check-sub.o -o check-align -L. -lfftj
+
+bench: bench.f $(LIB) bench-sub.o
+	$(FC) bench.f bench-sub.o -o bench -L. -lfftj
+
+bench-align: bench-align.f $(LIB) bench-sub.o
+	$(FC) bench-align.f bench-sub.o -o bench-align -L. -lfftj
+
+rcheck: rcheck.f $(LIB) rcheck-sub.o
+	$(FC) rcheck.f rcheck-sub.o -o rcheck -L. -lfftj
+
+rcheck-align: rcheck-align.f $(LIB) rcheck-sub.o
+	$(FC) rcheck-align.f rcheck-sub.o -o rcheck-align -L. -lfftj
+
+rbench: rbench.f $(LIB) rbench-sub.o
+	$(FC) rbench.f rbench-sub.o -o rbench -L. -lfftj
+
+rbench-align: rbench-align.f $(LIB) rbench-sub.o
+	$(FC) rbench-align.f rbench-sub.o -o rbench-align -L. -lfftj

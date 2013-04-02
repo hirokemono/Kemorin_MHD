@@ -1,0 +1,101 @@
+#! /bin/csh
+#
+#
+
+HOMEDIR= $(HOME)
+LOCALDIR= $(HOMEDIR)/local
+
+MHDDIR =    $(HOMEDIR)/src_0323
+KEMO_C_GLUTDIR =  $(MHDDIR)/MHD/C_src/KEMO_GLUT
+
+CC=mpicc
+OPTFLAGS = -O3 -Wall -g
+
+#
+#   Library settings
+#
+KEMO_INC = -I. -I$(KEMO_C_GLUTDIR) -I$(LOCALDIR)/include 
+LIB_KEMO_C = -L$(LOCALDIR)/lib -lkemo_c $(PNG_LIB) $(ZLIB_LIB)
+
+ZLIB_LIB = -L$(LOCALDIR)/lib -lz
+#
+PNG_LIB = -L$(LOCALDIR)/lib -lpng -lm
+#
+COCOA_FLAG= -D__APPLE__ 
+OPTFLAGS_GL =  $(OPTFLAGS) $(COCOA_FLAG) $(KEMO_INC) $(OPENGL_INC)
+OPENGL_LIBS= -framework GLUT -framework OpenGL  -framework Cocoa
+# OPENGL_LIBS= -L$(LOCALDIR)/lib-lglut -L/usr/lib64 -lGLU -lGL -lX11
+
+#
+#  -------------------------------------------------------------------------
+#
+
+TARGET_KEMOVIEW_GTK = kemoviewer_GTK
+
+MOD_KEMOVIEW_GTK = \
+kemo_mesh_viewer_gtk.o \
+kemoview_fileselector_gtk.o \
+kemoview_gtk_window_input.o \
+kemoviewer_gtk.o \
+\
+kemoview_glut_routines.o \
+const_viewer_menu_glut.o \
+view_modifier_glut.o
+
+#
+#  -------------------------------------------------------------------------
+#
+
+.SUFFIXES: .o .c
+
+.c.o:
+	$(CC) -c $(OPTFLAGS_GL) $(KEMO_INC) $< `pkg-config --cflags gtk+-2.0`
+
+
+all: $(TARGET_KEMOVIEW_GTK)
+
+$(TARGET_KEMOVIEW_GTK): $(MOD_KEMOVIEW_GTK)
+	$(CC) $(OPTFLAGS_GL) -o $(TARGET_KEMOVIEW_GTK) $(MOD_KEMOVIEW_GTK) $(LIB_KEMO_C) `pkg-config --cflags --libs gtk+-2.0` $(OPENGL_LIBS)
+
+kemoviewer_gtk.o: kemoviewer_gtk.c kemo_mesh_viewer_gtk.o
+
+kemo_mesh_viewer_gtk.o: kemo_mesh_viewer_gtk.c kemoview_fileselector_gtk.o kemoview_gtk_window_input.o kemoview_glut_routines.o const_viewer_menu_glut.o view_modifier_glut.o
+
+kemoview_fileselector_gtk.o: kemoview_fileselector_gtk.c kemoview_glut_routines.o
+
+kemoview_gtk_window_input.o: kemoview_gtk_window_input.c kemoview_glut_routines.o
+
+view_modifier_glut.o: $(KEMO_C_GLUTDIR)/view_modifier_glut.c $(KEMO_C_GLUTDIR)/view_modifier_glut.h
+	$(CC) -c $(OPTFLAGS_GL) $(KEMO_INC) $<
+
+const_viewer_menu_glut.o: $(KEMO_C_GLUTDIR)/const_viewer_menu_glut.c $(KEMO_C_GLUTDIR)/const_viewer_menu_glut.h view_modifier_glut.o view_modifier_glut.o
+	$(CC) -c $(OPTFLAGS_GL) $(KEMO_INC) $<
+
+kemoview_glut_routines.o: $(KEMO_C_GLUTDIR)/kemoview_glut_routines.c $(KEMO_C_GLUTDIR)/kemoview_glut_routines.h view_modifier_glut.o view_modifier_glut.o
+	$(CC) -c $(OPTFLAGS_GL) $(KEMO_INC) $<
+
+
+includes:
+
+install:
+	if [ ! -d $(LOCALDIR) ]; then \
+		mkdir $(LOCALDIR); \
+	fi
+	if [ ! -d $(LOCALDIR)/lib ]; then \
+		mkdir $(LOCALDIR)/lib ; \
+	fi
+	if [ ! -d $(LOCALDIR)/bin ]; then \
+		mkdir $(LOCALDIR)/bin; \
+	fi
+	if [ ! -d $(LOCALDIR)/include ]; then \
+		mkdir $(LOCALDIR)/include; \
+	fi
+	cp $(TARGET_KEMOVIEW_GTK)  $(LOCALDIR)/bin
+
+clean:
+	rm -f *.o ;
+	rm -f *.mod ;
+	rm -f *.~ ;
+	rm -f *.par ;
+	rm -f *.diag
+	rm -f $(TARGET_KEMOVIEW_GTK)

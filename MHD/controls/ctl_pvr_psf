@@ -1,0 +1,101 @@
+!
+!
+!     example of control for Kemo's surface rendering
+!
+begin surface_rendering
+  psf_file_head    'psf'
+  psf_output_type  ucd
+!
+  begin output_field_define
+    num_result_comp   2
+      output_field    velocity         vector   end
+      output_field    magnetic_field   radial   end
+  end
+!
+  begin plot_area_ctl
+    array chosen_ele_grp_ctl 1
+      chosen_ele_grp_ctl   outer_core_ele   end
+    end array
+  end
+!
+  begin view_transform_ctl
+    begin modelview_matrix_ctl
+      matrix44_comp_ctl   1  1  1.0  end
+      matrix44_comp_ctl   2  1  0.0  end
+      matrix44_comp_ctl   3  1  0.0  end
+      matrix44_comp_ctl   4  1  0.0  end
+!
+      matrix44_comp_ctl   1  2  0.0  end
+      matrix44_comp_ctl   2  2  1.0  end
+      matrix44_comp_ctl   3  2  0.0  end
+      matrix44_comp_ctl   4  2  0.0  end
+
+      matrix44_comp_ctl   1  3  0.0  end
+      matrix44_comp_ctl   2  3  0.0  end
+      matrix44_comp_ctl   3  3  1.0  end
+      matrix44_comp_ctl   4  3  0.0  end
+!
+      matrix44_comp_ctl   1  4  0.0  end
+      matrix44_comp_ctl   2  4  0.0  end
+      matrix44_comp_ctl   3  4  0.0  end
+      matrix44_comp_ctl   4  4  1.0  end
+    end
+!
+!    Orthogonal view....( perspective_near_ctl = perspective_far_ctl)
+!
+    begin projection_matrix_ctl
+      perspective_angle_ctl     10.0
+      perspective_xy_ratio_ctl   1.0
+      perspective_near_ctl       0.5
+      perspective_far_ctl     1000.0
+    end
+!
+  end
+end
+!
+!
+!    psf_output_type:
+!           ucd, OpenDX
+!
+!    num_result_comp: number of fields
+!    output_field: (Original name: color_comp and color_subcomp)
+!         field and componenet name for output
+!           x, y, z, radial, elevation, azimuth, cylinder_r, norm
+!           vector, sym_tensor, asym_tensor
+!           spherical_vector, cylindrical_vector
+!    output_value: (Original name: specified_color)
+!
+!    section_method: (original: method)
+!           sphere, ellipsoid, hyperboloid, paraboloid, equation
+!           group
+!    center_position: position of center (for sphere)
+!        begin center_position
+!          center_ctl  x   0.0
+!          center_ctl  y   0.0
+!          center_ctl  z   0.0
+!        end
+!    radius:  radius of sphere
+!    axial_length: length of axis
+!          (for ellipsoid, hyperboloid, paraboloid)
+!        begin axial_length
+!          axis_ctl  x   1.0
+!          axis_ctl  y   0.5
+!          axis_ctl  z   0.0
+!        end
+!    coefficients:  coefficients for equation
+!        begin coefficients
+!          coefs_ctl  x2     1.0
+!          coefs_ctl  y2     0.5
+!          coefs_ctl  z2     0.0
+!          coefs_ctl  xy     1.0
+!          coefs_ctl  yz     0.5
+!          coefs_ctl  zx     0.0
+!          coefs_ctl  x      1.0
+!          coefs_ctl  y      0.5
+!          coefs_ctl  z      0.0
+!          coefs_ctl  const  1.0
+!        end
+!    group_type:  (Original: defined_style)
+!           node_group or surface_group
+!    group_name:  name of group to plot
+!

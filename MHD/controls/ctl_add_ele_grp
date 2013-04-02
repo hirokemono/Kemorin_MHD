@@ -1,0 +1,72 @@
+begin add_element_groups
+!
+  begin file_name_ctl
+    orginal_mesh_head_ctl    'shell_org/in'
+    new_mesh_head_ctl        'in'
+    grouping_mesh_head_ctl   'grouping_mesh'
+  end
+!
+  begin 2d_grouping_ctl
+!
+!      2nd_grp_direction_ctl: Grouping configration
+!           r_theta (sphere), cylindrical_r_z (s_z, cyrindrical)
+!           z_theta,          r_cylindrical_r (r_s)
+    2nd_grp_direction_ctl    sphere
+!
+!   grouping in radial direction (range is normalized by pi)
+!
+    array radial_range_ctl   16
+      radial_range_ctl   fluid_r1     0.5384615384615   0.6634615384615   end
+      radial_range_ctl   fluid_r2     0.6634615384615   0.7884615384615   end
+      radial_range_ctl   fluid_r3     0.7884615384615   0.9134615384615   end
+      radial_range_ctl   fluid_r4     0.9134615384615   1.038461538462    end
+      radial_range_ctl   fluid_r5     1.038461538462    1.163461538462    end
+      radial_range_ctl   fluid_r6     1.163461538462    1.288461538462    end
+      radial_range_ctl   fluid_r7     1.288461538462    1.413461538462    end
+      radial_range_ctl   fluid_r8     1.413461538462    1.538461538462    end
+      radial_range_ctl   solid_r1     0.0               0.3584615384615   end
+      radial_range_ctl   solid_r2     0.3584615384615   0.4134615384615   end
+      radial_range_ctl   solid_r3     0.4134615384615   0.4734615384615   end
+      radial_range_ctl   solid_r4     0.4734615384615   0.5384615384615   end
+      radial_range_ctl   ext_r1       1.538461538462    1.663461538462    end
+      radial_range_ctl   ext_r2       1.663461538462    1.788461538462    end
+      radial_range_ctl   ext_r3       1.788461538462    2.50000000000000  end
+      radial_range_ctl   ext_r4       2.50000000000000  4.00000000000000  end
+	end array
+!
+!   grouping in theta direction (range is normalized by pi)
+!
+    array theta_range_ctl   8
+      theta_range_ctl  t1  0.000e0    0.125e0   end
+      theta_range_ctl  t2  0.125e0    0.250e0   end
+      theta_range_ctl  t3  0.250e0    0.375e0   end
+      theta_range_ctl  t4  0.375e0    0.500e0   end
+      theta_range_ctl  t5  0.500e0    0.625e0   end
+      theta_range_ctl  t6  0.625e0    0.750e0   end
+      theta_range_ctl  t7  0.750e0    0.875e0   end
+      theta_range_ctl  t8  0.875e0    1.000e0   end
+    end array
+!
+!   grouping in cyrindrical r direction
+!
+    array s_range_ctl   8
+      s_range_ctl  s1  0.000e0    0.125e0   end
+      s_range_ctl  s2  0.125e0    0.250e0   end
+      s_range_ctl  s3  0.250e0    0.375e0   end
+      s_range_ctl  s4  0.375e0    0.500e0   end
+      s_range_ctl  s5  0.500e0    0.625e0   end
+      s_range_ctl  s6  0.625e0    0.750e0   end
+      s_range_ctl  s7  0.750e0    0.875e0   end
+      s_range_ctl  s8  0.875e0    1.000e0   end
+	end array
+!
+!   grouping in vertical z direction
+!
+    array z_range_ctl   4
+      z_range_ctl  fluid_z1  -2.000e0   -1.000e0   end
+      z_range_ctl  fluid_z2  -1.000e0    0.000e0   end
+      z_range_ctl  fluid_z3   0.000e0    1.000e0   end
+      z_range_ctl  fluid_z4   1.000e0    2.000e0   end
+	end array
+  end
+end

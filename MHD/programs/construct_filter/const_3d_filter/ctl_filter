@@ -1,0 +1,114 @@
+begin const_filter
+!
+  begin data_files_def
+    num_subdomain_ctl           64
+    num_smp_ctl                 1
+    mesh_file_head_ctl          'mesh_ref2_64/in'
+  end data_files_def
+!
+  begin filter_files_def
+    filter_file_header     'mesh/filter_node'
+    filter_elength_header   'filter_elen'
+    filter_moment_header    'filter_moms'
+    filter_coefs_header     'filter_coef'
+  end filter_files_def
+!
+  begin orginal_filter_files_ctl
+    org_filter_coefs_header 'org/filter_coef'
+  end orginal_filter_files_ctl
+!
+!!!!!  setting for filtering area
+!
+  begin filter_area_ctl
+    array filter_ele_grp_ctl    1
+      filter_ele_grp_ctl    outer_core   end
+    end array filter_ele_grp_ctl
+  end filter_area_ctl
+!
+! target_filter_type:  Type of filter
+!               commutative: commutation filter
+!               tophat: (tophat filter)
+!               linear: linear filter
+!               None:   skip construct filter
+! Momentum_type
+!               Normal: set jacobian
+!               No_cross:  eliminate cross term for moment(xy, yz, zx)
+!
+! num_int_points:      integeration points
+! num_minimum_nodes:   number of minimum nodes for filtering
+! ref_filter_type:     filiter function to be refered
+!                      (Gaussian, linear, tophat)
+! ref_filter_width:    filter width to be refered
+!
+! maximum_neighbour:   limit of extension level for filter area
+! minimum_components:     number of minimum number of moments
+!  ordering_list_ctl:  method of ordering
+!       connection    ordering by num. of connection
+!       distance
+!       distance_ratio
+!  minimum_det_ctl:   minimum determinant or matrix
+!    start_node_ctl:  start node ID for filtering (for TEST)
+!    end_node_ctl:    end node ID for filtering (for TEST)
+!
+  begin filter_control
+    target_filter_type         Commutative
+    momentum_type              Normal
+    num_int_points             3
+    maximum_neighbour          2
+    omitted_ratio          1.0e-5
+    minimum_components        11
+    ordering_list_ctl      distance_ratio
+    minimum_det_ctl        1.0e+4
+    maximum_rms_ctl        2.0e+0
+!
+    filter_correction_mode    OFF
+    fixed_points_mode         OFF
+    allow_negative_center     OFF
+    filter_error_info_level     1
+!
+    start_node_ctl          1
+    end_node_ctl           -1
+!
+    start_mat_freedom_ctl   11
+    end_mat_freedom_ctl     27
+!
+    array  ref_filter_ctl      2
+      ref_filter_ctl        gaussian      2.0e0
+      ref_filter_ctl        gaussian      4.0e0
+    end array ref_filter_ctl
+!
+!   refered: 
+!
+    array  moments_ctl    5
+      moments_ctl    0    refered   1.0e0               end
+      moments_ctl    1    refered   0.0e0               end
+      moments_ctl    2    refered   1.33333333333e0     end
+      moments_ctl    4    refered   0.0e0               end
+      moments_ctl    6    refered   0.0e0               end
+    end array moments_ctl
+!
+    solver_type             LU
+    begin solver_control
+      method_ctl            GPBiCG
+      precond_ctl           DIAG
+      itr_ctl               2000
+      eps_ctl               1.0e-13
+      sigma_ctl             1.0e0
+      sigma_diag_ctl        1.0e0
+    end solver_control
+  end filter_control
+!
+  begin element_size_ctl
+    mass_matrix_type_ctl    lump
+!
+    begin esize_solver_control
+      method_ctl            CG
+      precond_ctl           DIAG
+      itr_ctl               20000
+      eps_ctl               1.0e-13
+      sigma_ctl             1.0e0
+      sigma_diag_ctl        1.0e0
+    end esize_solver_control
+  end element_size_ctl
+!
+end const_filter

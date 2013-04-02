@@ -1,0 +1,256 @@
+!
+!      module set_idx_list_linear_mat
+!
+!      programmed by H.Matsui and H.Okuda on 2002
+!      Modified by H. Matsui on Oct., 2005
+!
+!      subroutine set_index_list_4_mat_etr_l
+!      subroutine set_index_list_4_mat_fl_l
+!      subroutine set_index_list_4_mat_cd_l
+!      subroutine set_index_list_4_mat_ins_l
+!
+      module set_idx_list_linear_mat
+!
+      use m_precision
+!
+      use m_geometry_constants
+      use m_geometry_parameter
+      use m_machine_parameter
+      use m_geometry_data
+      use m_sorted_node
+!
+      use set_off_diagonals
+!
+      implicit none
+!
+!-----------------------------------------------------------------------
+!
+      contains
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_index_list_4_mat_etr_l
+!
+      integer(kind = kint) :: nod1, nod2, mat_num, k2
+      integer(kind = kint) :: iproc, iele, inum, iconn
+      integer(kind = kint) :: inn, ist, ied, in
+!
+!
+      if (nnod_4_ele.ne.num_t_linear) then
+!
+!$omp parallel private(k2,iproc,inum,inn,ist,ied,                       &
+!$omp&                 in,iele,iconn,nod1,nod2,mat_num)
+        do k2 = 1, num_t_linear
+!
+!$omp do
+          do iproc = 1, np_smp
+            do inum = 1, inod_ele_max
+!
+              inn = inum + inod_ele_max*(iproc-1)
+              ist = nod_stack_smp(inn-1)+1
+              ied = nod_stack_smp(inn)
+!
+              do in = ist, ied
+                iele = iele_sort_smp(in)
+                iconn = iconn_sort_smp(in)
+                nod1 = ie(iele,iconn)
+                nod2 = ie(iele,k2)
+!
+                call set_off_diag_linear( nod1, nod2, mat_num )
+                idx_4_l_mat(in,k2) = mat_num
+!
+              end do
+            end do
+          end do
+!$omp end do nowait
+!
+        end do
+!$omp end parallel
+!
+      else
+!
+        idx_4_l_mat = idx_4_mat
+!
+      end if
+!
+      end subroutine set_index_list_4_mat_etr_l
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_index_list_4_mat_fl_l
+!
+      use m_geometry_data_MHD
+      use m_sorted_node_MHD
+!
+      integer(kind = kint) :: nod1, nod2, mat_num, k2
+      integer(kind = kint) :: iproc, iele, inum, iconn
+      integer(kind = kint) :: inn, ist, ied, in
+!
+!
+      if (nnod_4_ele.ne.num_t_linear) then
+!
+!$omp parallel private(k2,iproc,inum,inn,ist,ied,                       &
+!$omp&                 in,iele,iconn,nod1,nod2,mat_num)
+        do k2 = 1, num_t_linear
+!
+!$omp do
+          do iproc = 1, np_smp
+            do inum = 1, inod_ele_max
+              inn = inum + inod_ele_max*(iproc-1)
+              ist = nod_stack_smp(inn-1)+1
+              ied = nod_stack_smp(inn)
+!
+              do in = ist, ied
+                iele = iele_sort_smp(in)
+                iconn = iconn_sort_smp(in)
+                nod1 = ie(iele,iconn)
+                nod2 = ie(iele,k2)
+!
+                if (iele.ge.iele_fl_start                               &
+     &            .and. iele.le.iele_fl_end) then
+!
+                  call set_off_diag_linear_fl( nod1, nod2, mat_num )
+                  idx_4_fll_mat(in,k2) = mat_num
+!
+                else
+                  idx_4_fll_mat(in,k2) = 0
+                end if
+!
+              end do
+            end do
+          end do
+!$omp end do nowait
+!
+        end do
+!$omp end parallel
+!
+      else
+!
+        idx_4_fll_mat = idx_4_fl_mat
+!
+      end if
+!
+      end subroutine set_index_list_4_mat_fl_l
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_index_list_4_mat_cd_l
+!
+      use m_geometry_data_MHD
+      use m_sorted_node_MHD
+!
+      integer(kind = kint) :: nod1, nod2, mat_num, k2
+      integer(kind = kint) :: iproc, iele, inum, iconn
+      integer(kind = kint) :: inn, ist, ied, in
+!
+!
+      if (nnod_4_ele.ne.num_t_linear) then
+!
+!$omp parallel private(k2,iproc,inum,inn,ist,ied,                       &
+!$omp&                 in,iele,iconn,nod1,nod2,mat_num)
+        do k2 = 1, num_t_linear
+!
+!$omp do
+          do iproc = 1, np_smp
+            do inum = 1, inod_ele_max
+              inn = inum + inod_ele_max*(iproc-1)
+              ist = nod_stack_smp(inn-1)+1
+              ied = nod_stack_smp(inn)
+!
+              do in = ist, ied
+                iele = iele_sort_smp(in)
+                iconn = iconn_sort_smp(in)
+                nod1 = ie(iele,iconn)
+                nod2 = ie(iele,k2)
+!
+                if (iele.ge.iele_cd_start                               &
+     &            .and. iele.le.iele_cd_end) then
+!
+                  call set_off_diag_linear_cd( nod1, nod2, mat_num )
+                  idx_4_cdl_mat(in,k2) = mat_num
+!
+                  call set_off_diag_linear( nod1, nod2, mat_num ) 
+                  idx_4_cdl_mat_full(in,k2) = mat_num
+!
+                else
+                  idx_4_cdl_mat(in,k2) = 0
+                  idx_4_cdl_mat_full(in,k2) = 0
+                end if
+!
+              end do
+            end do
+          end do
+!$omp end do nowait
+!
+        end do
+!$omp end parallel
+!
+      else
+!
+        idx_4_cdl_mat      = idx_4_cd_mat
+        idx_4_cdl_mat_full = idx_4_cd_mat_full
+
+      end if
+!
+      end subroutine set_index_list_4_mat_cd_l
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_index_list_4_mat_ins_l
+!
+      use m_geometry_data_MHD
+      use m_sorted_node_MHD
+!
+      integer(kind = kint) :: nod1, nod2, mat_num, k2
+      integer(kind = kint) :: iproc, iele, inum, iconn
+      integer(kind = kint) :: inn, ist, ied, in
+!
+!
+      if (nnod_4_ele.ne.num_t_linear) then
+!
+!$omp parallel private(k2,iproc,inum,inn,ist,ied,                       &
+!$omp&                 in,iele,iconn,nod1,nod2,mat_num)
+        do k2 = 1, num_t_linear
+!
+!$omp do
+          do iproc = 1, np_smp
+            do inum = 1, inod_ele_max
+              inn = inum + inod_ele_max*(iproc-1)
+              ist = nod_stack_smp(inn-1)+1
+              ied = nod_stack_smp(inn)
+
+              do in = ist, ied
+                iele = iele_sort_smp(in)
+                iconn = iconn_sort_smp(in)
+                nod1 = ie(iele,iconn)
+                nod2 = ie(iele,k2)
+
+                if (iele.ge.iele_ins_start                              &
+     &            .and. iele.le.iele_ins_end) then
+
+                  call set_off_diag_linear_ins( nod1, nod2, mat_num )
+                  idx_4_insl_mat(in,k2) = mat_num
+
+                else
+                  idx_4_insl_mat(in,k2) = 0
+                end if
+
+              end do
+            end do
+          end do
+!$omp end do nowait
+
+        end do
+!$omp end parallel
+
+      else
+
+        idx_4_insl_mat = idx_4_ins_mat
+
+      end if
+
+      end subroutine set_index_list_4_mat_ins_l
+!
+!-----------------------------------------------------------------------
+!
+      end module set_idx_list_linear_mat

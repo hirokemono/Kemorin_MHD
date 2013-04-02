@@ -1,0 +1,1613 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (C) 2002-2003 Keiichi Ishioka	      		       %
+% 								       %
+% この著作権表示が記載してあるならば, どのような媒体にでも何も手を加え %
+% ずに複写して再配付することを許可します. これらのドキュメントとその使 % 
+% 用許諾を他の言語に翻訳する際は, 以下の条件に従って下さい.	       %
+% 								       %
+% 他の言語に翻訳する際に, 他の言語での口語表現への変更の範囲を越えて故 %
+% 意に意味を変更しないこと.					       %
+%								       %
+% 翻訳した使用許諾には, それが翻訳であること, また原文の使用許諾が翻訳 %
+% 全体に依然適用されることを明示すること.			       %
+%								       %
+% ハイパーテキストの場合, 同一サイト上で原文のコピーを保守すること. ま %
+% た, 翻訳したハイパーテキストのページからその原文へのリンクを提供する %
+% こと.								       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%履歴   1999/03/22 石岡圭一 (version 0.1)
+%履歴   2000/04/08 石岡圭一 (version 0.2)
+%履歴   2000/08/16 石岡圭一 (version 0.3)
+%履歴   2000/09/07 石岡圭一 (version 0.31)
+%履歴   2002/05/20 石岡圭一 (version 0.32)
+%履歴   2003/03/09 石岡圭一 (version 0.33)
+%       2005/07/27 石岡圭一 (version 0.34) 誤植の訂正(Thanks to 水田君)
+%
+\documentclass[a4j,fleqn]{jarticle}
+
+\title{SPPACK使用の手引 (version 0.34)}
+\author{石岡 圭一  (2005/07/27)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+\subsection{パッケージについて}
+
+これは, SNPACKを応用して様々な計算を行うルーチンをまとめたパッケージ
+である.
+
+球面調和関数変換の定義や配列中のスペクトルの並べ方などについては
+SNPACKのマニュアルを参照のこと.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+{\tt SPNJCB} & ヤコビアンの計算\\
+{\tt SPNINI} & 配列{\tt RN}の初期化\\
+{\tt SPMINI} & 配列{\tt IRM}の初期化\\
+{\tt SPCLAP} & ラプラシアンの演算\\
+{\tt SPCLAM} & 経度微分の演算\\
+{\tt SPSWNL} & 浅水方程式の非線形項の計算\\
+{\tt SPSWCK} & 浅水方程式の保存量の計算\\
+{\tt SPSWNV} & 浅水方程式の非線形項の計算(散逸項含む)\\
+{\tt SPSWLI} & 配列{\tt CL}の初期化\\
+{\tt SPSWLV} & 浅水方程式の線形項に基づく時間発展\\
+{\tt SPSWCV} & 浅水方程式の保存量の計算(省メモリ版)\\
+{\tt SPSWCX} & 浅水方程式の保存量の計算(全角運動量を3成分計算)\\
+{\tt SPSWNW} & {\tt SPSWNV}の若干高速化版\\
+{\tt SPSWNX} & {\tt SPSWNW}の若干高速化版\\
+{\tt SPSWHV} & 浅水方程式の非線形項の計算(高階粘性項含む)\\
+{\tt SPSWHW} & {\tt SPSWHV}の若干高速化版\\
+{\tt SPSWHX} & {\tt SPSWHW}の若干高速化版\\
+{\tt SPSWHI} & 配列{\tt CL}の初期化(高階粘性用)
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンの説明}
+
+\subsection{SPNJCB}
+
+\begin{enumerate}
+
+\item 機能
+
+ ヤコビアンの計算を行う.
+
+\item 定義
+
+スペクトル展開された変数$a(\lambda,\varphi), b(\lambda,\varphi)$
+\begin{equation}
+a(\lambda,\varphi)\equiv\sum_{n=0}^M\sum_{m=-n}^n 
+a^m_n P^m_n(\sin\varphi) e^{im\lambda}
+\end{equation}
+\begin{equation}
+b(\lambda,\varphi)\equiv\sum_{n=0}^M\sum_{m=-n}^n
+b^m_n P^m_n(\sin\varphi) e^{im\lambda}
+\end{equation}
+に対して, ヤコビアン$J(a,b)$は
+\begin{equation}
+J(a,b)\equiv
+ \frac{\partial a}{\partial\lambda}\frac{\partial b}{\partial\mu}
+-\frac{\partial b}{\partial\lambda}\frac{\partial a}{\partial\mu}
+\end{equation}
+と定義される. ここに, $\mu\equiv\sin\varphi$である.
+本サブルーチンは、上記の$a^m_n, b^m_n$を入力として,
+$J(a,b)$の切断波数$M$までのスペクトル展開係数$c^m_n$
+\begin{equation}
+c^m_n\equiv\frac1{4\pi}\int^{2\pi}_0\int^1_{-1}J(a,b)P^m_n(\mu)
+e^{-im\lambda}d\mu d\lambda
+\end{equation}
+を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt SPNJCB(MM,IM,ID,JM,JD,SA,SB,SC,IT,T,Y,IP2,P2,R2,IP3,P3,R3,IA,A,Q,WS,WW)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt IM}以上の適当な値(与え方は備考参照)\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt JM}以上の適当な値(与え方は備考参照)\\
+{\tt SA} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $a^m_n$が格納されている配列\\
+{\tt SB} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $b^m_n$が格納されている配列\\
+{\tt SC} & {\tt (D((MM+1)*(MM+1)))} 
+& 出力. $c^m_n$が格納される配列\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Y}   & {\tt (D(JM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IP2}  & {\tt (I(2*(MM+1)/2+MM+1)*2)} 
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt P2}  & {\tt (D(2*((MM+1)/2+MM+1)*JM))} 
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt R2}  & {\tt (D(2*((MM+1)/2*2+3)*(MM/2+1)))}
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt IP3}  & {\tt (I(3*(MM+1)/2+MM+1)*2)} 
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt P3}  & {\tt (D(3*((MM+1)/2+MM+1)*JM))} 
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt R3}  & {\tt (D(3*((MM+1)/2*2+3)*(MM/2+1)))} 
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt IA}  & {\tt (I((MM+1)*(MM+1)*4))} 
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt A}  & {\tt (D((MM+1)*(MM+1)*6))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Q}  & {\tt (D(3*((MM+1)/2+MM+1)*JM))} 
+             & 作業領域\\
+{\tt WS}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt WW}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt ID}$\ge${\tt IM}, {\tt JD}$\ge${\tt JM}でなければならない.
+   またベクトル計算機においてはバンク競合を避けるために, {\tt ID},{\tt JD}
+   はできれば奇数にとるのがよい.
+
+\item {\tt IT,T,Y,IA,A}は 
+      {\tt SNINIT(MM,IM,JM,IT,T,Y,IP,P,R,IA,A)} として初期化しておくこと.\\
+       また, {\tt IP2,P2,R2,IP3,P3,R3}は, その後に\\
+      {\tt SNKINI(MM,JM,2,IP,P,R,IP2,P2,R2)},
+      {\tt SNKINI(MM,JM,3,IP,P,R,IP3,P3,R3)}, \\
+      として初期化しておくこと.
+
+\item 作業領域{\tt WS,WW}の大きさは, ともに\\
+     {\tt 3*MAX(((MM+1)/2*2+3)*(MM/2+2)*2,JD*((MM+1)/2+MM+1)*2,JD*ID)}
+    以上の大きさであること. または, やや余裕をもって,
+     {\tt 3*MAX((MM+4)*(MM+3),JD*3*(MM+1),JD*ID)}
+    としておいてもよい. もし, 2次の非線形項からのエリアジングを除く条件
+     ( {\tt JD}$\ge${\tt JM}$\ge${\tt 3*MM/2D0}, 
+      {\tt IM}$\ge${\tt 3*MM+1} )が満されている場合には, 簡単に
+      {\tt (IM+2)*JD*3}ととっておけばよい.
+     (ただし, {\tt MM}$\ge 3$, {\tt IM+2}$\ge${\tt ID}は満されている
+    ものとする).
+
+ \end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{SPNINI}
+
+\begin{enumerate}
+
+\item 機能
+
+ 配列{\tt RN}を初期化する.
+
+\item 定義
+
+\item 呼び出し方法 
+
+{\tt SPNINI(MM,RN)}
+
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt RN}  & {\tt (D((MM+1)*(MM+1)*2))}
+             & 出力. {\tt SPCLAP}等で用いられる配列
+\end{tabular}
+
+\item 備考
+
+{\tt RN((MM+1)*(MM+1),2)}と宣言されている場合,
+{\tt RN(L,1)}には{\tt L}番目の格納位置のスペクトルに対する 
+$-n(n+1)$ の値が, {\tt RN(L,2)}には$-1/\{n(n+1)\}$ の値が
+格納される(こちらは, $n=0$に対応する部分には$1$が代入される).
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{SPMINI}
+
+\begin{enumerate}
+
+\item 機能
+
+ 配列{\tt IRM}を初期化する.
+
+\item 定義
+
+\item 呼び出し方法 
+
+{\tt SPMINI(MM,IRM)}
+
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IRM}  & {\tt (I((MM+1)*(MM+1)*2))}
+             & 出力. {\tt SPCLAM}等で用いられる配列
+\end{tabular}
+
+\item 備考
+
+{\tt IRM((MM+1)*(MM+1),2)}と宣言されている場合,
+{\tt L}番目の格納位置のスペクトルが実部なら
+{\tt IRM(L,1)}には対応する虚部の格納位置が,
+{\tt IRM(L,2)}には$m$が代入される.
+
+また,
+{\tt L}番目の格納位置のスペクトルが虚部なら
+{\tt IRM(L,1)}には対応する実部の格納位置が,
+{\tt IRM(L,2)}には$-m$が代入される.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SPCLAP}
+
+\begin{enumerate}
+
+\item 機能 
+スペクトルデータにラプラシアンを作用させる, またはその逆演算を行う.
+
+\item 定義
+
+球面調和関数展開
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{n=0}\sum^n_{m=-n}
+a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+に対して、水平Laplacian
+\begin{equation}
+\nabla^2\equiv
+\frac{\partial^2}{\cos^2\varphi\partial\lambda^2}
++\frac{\partial}{\cos\varphi\partial\varphi}\left(\cos\varphi\frac{\partial}{\partial\varphi}\right)
+\end{equation}
+を作用させると, 球面調和関数の性質から, 
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}-n(n+1)a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+となる. そこで,
+\begin{equation}
+b^m_n\equiv -n(n+1)a^m_n
+\end{equation}
+を導入すると, 
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}b^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+と表せる. 
+また, 逆に
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+であるとき, 
+\begin{equation}
+b^m_n\equiv -\frac1{n(n+1)}a^m_n
+\end{equation}
+を導入すると, 
+\begin{equation}
+g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}b^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+と表せる. 
+
+本サブルーチンは,
+$a^m_n$から$b^m_n\equiv -n(n+1)a^m_n$の計算, 
+またはその逆演算: $a^m_n$から$b^m_n\equiv -a^m_n/(n(n+1))$, を
+行うものである. 
+
+\item 呼び出し方法 
+    
+{\tt SPCLAP(MM,A,B,RN)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt A} & {\tt (D((MM+1)*(MM+1)))} & 入力. $a^m_n$が格納されている配列\\
+{\tt B} & {\tt (D((MM+1)*(MM+1)))} & 出力. $b^m_n$が格納される配列\\
+{\tt RN} & {\tt (D((MM+1)*(MM+1)))} & 入力.
+	{\tt SPNINI}で初期化された配列(備考参照)
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item
+スペクトルデータ$a^m_n$および$b^m_n$のスペクトルの並べ方については
+SNPACKのマニュアルを参照. 
+
+\item
+{\tt RN((MM+1)*(MM+1),2)}と宣言されている場合,
+{\tt SPCLAP(MM,A,B,RN(1,2))}として呼び出せば逆演算を行う.
+
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SPCLAM}
+
+\begin{enumerate}
+
+\item 機能 
+スペクトルデータに経度微分を作用させる.
+
+\item 定義
+
+球面調和関数展開
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{n=0}\sum^n_{m=-n}
+a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+に対して, 経度微分$\partial/\partial\lambda$
+を作用させると, 
+\begin{equation}
+\frac{\partial}{\partial\lambda} g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}im a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+となる. そこで,
+\begin{equation}
+b^m_n\equiv im a^m_n
+\end{equation}
+を導入すると, 
+\begin{equation}
+\frac{\partial}{\partial\lambda} g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}b^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+と表せる. 
+
+本サブルーチンは,
+$a^m_n$から$b^m_n\equiv im a^m_n$の計算を
+行うものである. 
+
+\item 呼び出し方法 
+    
+{\tt SPCLAM(MM,A,B,IRM)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt A} & {\tt (D((MM+1)*(MM+1)))} & 入力. $a^m_n$が格納されている配列\\
+{\tt B} & {\tt (D((MM+1)*(MM+1)))} & 出力. $b^m_n$が格納される配列\\
+{\tt IRM} & {\tt (I((MM+1)*(MM+1)*2))} & 入力.
+	{\tt SPMINI}で初期化された配列.
+\end{tabular}
+
+\item 備考
+
+スペクトルデータ$a^m_n$および$b^m_n$のスペクトルの並べ方については
+SNPACKのマニュアルを参照. 
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPSWNL}
+
+\begin{enumerate}
+
+\item 機能
+
+浅水方程式の非線形項を計算する.
+
+\item 定義
+
+球面上の浅水方程式系は, 長さを球半径$a$で, 時間を適当な時間スケール$T$で
+無次元化すると以下のように表せる:
+\begin{equation}
+\dot{q}\equiv\frac{\partial q}{\partial t}
+=-\frac{\partial(uq)}{\cos\varphi\partial\lambda}
+-\frac{\partial(vq\cos\varphi)}{\cos\varphi\partial\varphi},
+\end{equation}
+\begin{equation}
+\dot{D}\equiv\frac{\partial D}{\partial t}
+=\frac{\partial(vq)}{\cos\varphi\partial\lambda}
+-\frac{\partial(uq\cos\varphi)}{\cos\varphi\partial\varphi}
+-\nabla^2(E+\Phi),
+\end{equation}
+\begin{equation}
+\dot{\Phi}\equiv\frac{\partial \Phi}{\partial t}
+=-\frac{\partial(u\Phi)}{\cos\varphi\partial\lambda}
+-\frac{\partial(v\Phi\cos\varphi)}{\cos\varphi\partial\varphi}.
+\end{equation}
+ここに, $q=\zeta+2\Omega\sin\varphi$: 絶対渦度,$\Phi$: ジオポテンシャル
+であり, $\zeta$,$D$は渦度, 発散で,
+\begin{equation}
+\zeta\equiv
+\frac{\partial(v)}{\cos\varphi\partial\lambda}
+-\frac{\partial(u\cos\varphi)}{\cos\varphi\partial\varphi},
+\end{equation}
+\begin{equation}
+D\equiv
+\frac{\partial(u)}{\cos\varphi\partial\lambda}
++\frac{\partial(v\cos\varphi)}{\cos\varphi\partial\varphi},
+\end{equation}
+と定義される. また, $E=(u^2+v^2)/2$である.
+
+本サブルーチンは, 上記の$q,D,\Phi$のスペクトル展開係数
+$q^m_n,D^m_n,\Phi^m_n$を入力として, 
+$\dot{q},\dot{D},\dot{\Phi}$の切断波数$M$までのスペクトル展開係数
+$\dot{q}^m_n,\dot{D}^m_n,\dot{\Phi}^m_n$
+を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt SPSWNL(MM,IM,ID,JM,JD,OMEGA,AVT,DIV,PHI,DAVT,DDIV,DPHI,}\\
+\hspace*{10em}{\tt RN,IT,T,Y,IP4,P4,R4,IP5,P5,R5,IA,A,Q,WS,WW)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt IM}以上の適当な値(与え方は備考参照)\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt JM}以上の適当な値(与え方は備考参照)\\
+{\tt OMEGA} & {\tt (D)} 
+& 入力. $\Omega$の値\\
+{\tt AVT} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $q^m_n$が格納されている配列\\
+{\tt DIV} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $D^m_n$が格納されている配列\\
+{\tt PHI} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $\Phi^m_n$が格納されている配列\\
+{\tt DAVT} & {\tt (D((MM+1)*(MM+1)))} 
+& 出力. $\dot{q^m_n}$が格納される配列\\
+{\tt DDIV} & {\tt (D((MM+1)*(MM+1)))} 
+& 出力. $\dot{D^m_n}$が格納される配列\\
+{\tt DPHI} & {\tt (D((MM+1)*(MM+1)))} 
+& 出力. $\dot{\Phi}^m_n$が格納される配列\\
+{\tt RN} & {\tt (D((MM+1)*(MM+1)*2))} 
+& 入力. {\tt SPNINI}で初期化された配列\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Y}   & {\tt (D(JM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IP4}  & {\tt (I(4*(MM+1)/2+MM+1)*2)} 
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt P4}  & {\tt (D(4*((MM+1)/2+MM+1)*JM))} 
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt R4}  & {\tt (D(4*((MM+1)/2*2+3)*(MM/2+1)))}
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt IP5}  & {\tt (I(5*(MM+1)/2+MM+1)*2)} 
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt P5}  & {\tt (D(5*((MM+1)/2+MM+1)*JM))} 
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt R5}  & {\tt (D(5*((MM+1)/2*2+3)*(MM/2+1)))} 
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt IA}  & {\tt (I((MM+1)*(MM+1)*4))} 
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt A}  & {\tt (D((MM+1)*(MM+1)*6))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Q}  & {\tt (D((5*(MM+1)/2+MM+1)*JM))} 
+             & 作業領域\\
+{\tt WS}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt WW}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt ID}$\ge${\tt IM}, {\tt JD}$\ge${\tt JM}でなければならない.
+   またベクトル計算機においてはバンク競合を避けるために, {\tt ID},{\tt JD}
+   はできれば奇数にとるのがよい.
+
+\item {\tt IT,T,Y,IA,A}は 
+      {\tt SNINIT(MM,IM,JM,IT,T,Y,IP,P,R,IA,A)} として初期化しておくこと.\\
+       また, {\tt IP4,P4,R4,IP4,P4,R4}は, その後に\\
+      {\tt SNKINI(MM,JM,4,IP,P,R,IP4,P4,R4)},
+      {\tt SNKINI(MM,JM,5,IP,P,R,IP5,P5,R5)}, \\
+      として初期化しておくこと.
+
+\item 作業領域{\tt WS,WW}の大きさは, ともに\\
+     {\tt 5*MAX(((MM+1)/2*2+3)*(MM/2+2)*2,JD*((MM+1)/2+MM+1)*2,JD*ID)}
+    以上の大きさであること. または, やや余裕をもって,
+     {\tt 5*MAX((MM+4)*(MM+3),JD*3*(MM+1),JD*ID)}
+    としておいてもよい. もし, 2次の非線形項からのエリアジングを除く条件
+     ( {\tt JD}$\ge${\tt JM}$\ge${\tt 3*MM/2D0}, 
+      {\tt IM}$\ge${\tt 3*MM+1} )が満されている場合には, 簡単に
+      {\tt (IM+2)*JD*5}ととっておけばよい.
+     (ただし, {\tt MM}$\ge 3$, {\tt IM+2}$\ge${\tt ID}は満されている
+    ものとする).
+
+ \end{itemize}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPSWCK}
+
+\begin{enumerate}
+
+\item 機能
+
+浅水方程式の保存量を計算する.
+
+\item 定義
+
+{\tt SPSWNL}の項で導入した浅水方程式系には以下のような保存量がある:
+\begin{itemize}
+\item 全角運動量(A.Mom.):
+\begin{equation}
+\mbox{A.Mom.}\equiv\langle\Phi(u+\Omega\cos\varphi)\cos\varphi\rangle,
+\end{equation}
+\item 全エネルギー(A.Ene.):
+\begin{equation}
+\mbox{A.Ene.}\equiv\left\langle\frac12\Phi(u^2+v^2+\Phi)\right\rangle,
+\end{equation}
+\item 全エンストロフィー(A.Ens.):
+\begin{equation}
+\mbox{A.Ens.}\equiv\left\langle\frac12\frac{q^2}{\Phi}\right\rangle.
+\end{equation}
+\end{itemize}
+ここに, $\langle\ \rangle$は全球平均を表す記号で,
+\begin{equation}
+\langle A\rangle\equiv\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+A\cos\varphi d\varphi d\lambda,
+\end{equation}
+である.
+
+本サブルーチンは, $q,D,\Phi$のスペクトル展開係数
+$q^m_n,D^m_n,\Phi^m_n$を入力として, 
+上記の保存量 A.Mom., A.Ene., A.Ens., 
+を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt SPSWCK(MM,IM,ID,JM,JD,OMEGA,AVT,DIV,PHI,AMOM,AENE,AENS,}\\
+\hspace*{10em}{\tt RN,IT,T,Y,IP4,P4,R4,IA,A,Q,WS,WW)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt IM}以上の適当な値(与え方は備考参照)\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt JM}以上の適当な値(与え方は備考参照)\\
+{\tt OMEGA} & {\tt (D)} 
+& 入力. $\Omega$の値\\
+{\tt AVT} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $q^m_n$が格納されている配列\\
+{\tt DIV} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $D^m_n$が格納されている配列\\
+{\tt PHI} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $\Phi^m_n$が格納されている配列\\
+{\tt AMOM} & {\tt (D)} 
+& 出力. A.Mom.の値\\
+{\tt AENE} & {\tt (D)}
+& 出力. A.Ene.の値\\
+{\tt AENS} & {\tt (D)} 
+& 出力. A.Ens.の値\\
+{\tt RN} & {\tt (D((MM+1)*(MM+1)*2))} 
+& 入力. {\tt SPNINI}で初期化された配列\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Y}   & {\tt (D(JM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IP4}  & {\tt (I(4*(MM+1)/2+MM+1)*2)} 
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt P4}  & {\tt (D(4*((MM+1)/2+MM+1)*JM))} 
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt R4}  & {\tt (D(4*((MM+1)/2*2+3)*(MM/2+1)))}
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt IA}  & {\tt (I((MM+1)*(MM+1)*4))} 
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt A}  & {\tt (D((MM+1)*(MM+1)*6))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Q}  & {\tt (D((4*(MM+1)/2+MM+1)*JM))} 
+             & 作業領域\\
+{\tt WS}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt WW}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt ID}$\ge${\tt IM}, {\tt JD}$\ge${\tt JM}でなければならない.
+   またベクトル計算機においてはバンク競合を避けるために, {\tt ID},{\tt JD}
+   はできれば奇数にとるのがよい.
+
+\item {\tt IT,T,Y,IA,A}は 
+      {\tt SNINIT(MM,IM,JM,IT,T,Y,IP,P,R,IA,A)} として初期化しておくこと.\\
+       また, {\tt IP4,P4,R4,IP4,P4,R4}は, その後に\\
+      {\tt SNKINI(MM,JM,4,IP,P,R,IP4,P4,R4)} として初期化しておくこと.
+      
+
+\item 作業領域{\tt WS,WW}の大きさは, ともに\\
+     {\tt 4*MAX(((MM+1)/2*2+3)*(MM/2+2)*2,JD*((MM+1)/2+MM+1)*2,JD*ID)}
+    以上の大きさであること. または, やや余裕をもって,
+     {\tt 4*MAX((MM+4)*(MM+3),JD*3*(MM+1),JD*ID)}
+    としておいてもよい. もし, 2次の非線形項からのエリアジングを除く条件
+     ( {\tt JD}$\ge${\tt JM}$\ge${\tt 3*MM/2D0}, 
+      {\tt IM}$\ge${\tt 3*MM+1} )が満されている場合には, 簡単に
+      {\tt (IM+2)*JD*4}ととっておけばよい.
+     (ただし, {\tt MM}$\ge 3$, {\tt IM+2}$\ge${\tt ID}は満されている
+    ものとする).
+
+ \end{itemize}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPSWNV}
+
+\begin{enumerate}
+
+\item 機能
+
+浅水方程式の非線形項を計算する. 
+ただし, 全角運動量を保存する散逸項も同時に計算する.
+
+\item 定義
+
+エリアジングを除去可能な全角運動量を保存する散逸項を含む,
+以下の無次元化された球面上の浅水方程式系を考える:
+\begin{equation}
+\dot{q}\equiv\frac{\partial q}{\partial t}
+=-\frac{\partial A}{\cos\varphi\partial\lambda}
+-\frac{\partial(B\cos\varphi)}{\cos\varphi\partial\varphi}
++\frac{\nu}{\bar\Phi}\{2(\nabla^2+1)\zeta_{\Phi}-\nabla^2(\Phi\zeta)\},
+\end{equation}
+\begin{equation}
+\dot{D}\equiv\frac{\partial D}{\partial t}
+=\frac{\partial B}{\cos\varphi\partial\lambda}
+-\frac{\partial(A\cos\varphi)}{\cos\varphi\partial\varphi}
+-\nabla^2(E+\Phi+\frac{\nu}{\bar\Phi}\alpha\Phi D)
++\frac{\nu}{\bar\Phi}\{2(\nabla^2+1)D_{\Phi}\},
+\end{equation}
+\begin{equation}
+\dot{\Phi}\equiv\frac{\partial \Phi}{\partial t}
+=-\frac{\partial(u\Phi)}{\cos\varphi\partial\lambda}
+-\frac{\partial(v\Phi\cos\varphi)}{\cos\varphi\partial\varphi}.
+\end{equation}
+ここに, $q=\zeta+2\Omega\sin\varphi$: 絶対渦度,$\Phi$: ジオポテンシャル
+であり, $\zeta$,$D$は渦度, 発散で,
+\begin{equation}
+\zeta\equiv
+\frac{\partial(v)}{\cos\varphi\partial\lambda}
+-\frac{\partial(u\cos\varphi)}{\cos\varphi\partial\varphi},
+\end{equation}
+\begin{equation}
+D\equiv
+\frac{\partial(u)}{\cos\varphi\partial\lambda}
++\frac{\partial(v\cos\varphi)}{\cos\varphi\partial\varphi},
+\end{equation}
+と定義される. また, $E=(u^2+v^2)/2$である.
+さらに, $A,B,\zeta_{\Phi},D_{\Phi}$は,
+\begin{equation}
+A\equiv qu+\frac{\nu}{\bar\Phi}\left\{2v\nabla^2\Phi
++\frac{\partial\Phi}{\cos\varphi\partial\lambda}\zeta
++\alpha\frac{\partial\Phi}{\partial\varphi}D\right\}
+\end{equation}
+\begin{equation}
+B\equiv qv+\frac{\nu}{\bar\Phi}\left\{-2u\nabla^2\Phi
++\frac{\partial\Phi}{\partial\varphi}\zeta
+-\alpha\frac{\partial\Phi}{\cos\varphi\partial\lambda}D\right\}
+\end{equation}
+\begin{equation}
+\zeta_{\Phi}\equiv
+\frac{\partial(\Phi v)}{\cos\varphi\partial\lambda}
+-\frac{\partial(\Phi u\cos\varphi)}{\cos\varphi\partial\varphi},
+\end{equation}
+\begin{equation}
+D_{\Phi}\equiv
+\frac{\partial(\Phi u)}{\cos\varphi\partial\lambda}
++\frac{\partial(\Phi v\cos\varphi)}{\cos\varphi\partial\varphi},
+\end{equation}
+であり, $\bar\Phi$は平均水深, $\nu$は粘性係数, $\alpha$は体積粘性に
+関するパラメターで, 体積粘性率$0$は$\alpha=2/3$に対応する.
+
+さて, $\Phi=\bar\Phi+\Phi'$と$\Phi$を平均部分と擾乱部分に分離すると,
+上記の方程式系は以下のように書きかえられる:
+\begin{equation}
+\dot{q}=-\frac{\partial A}{\cos\varphi\partial\lambda}
+-\frac{\partial(B\cos\varphi)}{\cos\varphi\partial\varphi}
++\frac{\nu}{\bar\Phi}\{2(\nabla^2+1)\zeta_{\Phi'}-\nabla^2(\Phi'\zeta)\}
++\nu(\nabla^2+2)\zeta,
+\end{equation}
+\begin{eqnarray}
+\dot{D}=\frac{\partial B}{\cos\varphi\partial\lambda}
+-\frac{\partial(A\cos\varphi)}{\cos\varphi\partial\varphi}
+-\nabla^2(E+\frac{\nu}{\bar\Phi}\alpha\Phi' D)
++\frac{\nu}{\bar\Phi}\{2(\nabla^2+1)D_{\Phi'}\}\nonumber\\
+-\nabla^2\Phi'+\nu\left\{(2-\alpha)\nabla^2+2\right\}D,
+\end{eqnarray}
+\begin{equation}
+\dot{\Phi'}=-D_{\Phi'}-\bar\Phi D.
+\end{equation}
+本サブルーチンは, 上記の$q,D,\Phi$のスペクトル展開係数
+$q^m_n,D^m_n,\Phi^m_n$および$\bar\Phi,\nu,\alpha$を入力として,
+$\dot{q},\dot{D},\dot{\Phi}$の非線形部分:
+\begin{equation}
+\dot{q}_{非線形}=-\frac{\partial A}{\cos\varphi\partial\lambda}
+-\frac{\partial(B\cos\varphi)}{\cos\varphi\partial\varphi}
++\frac{\nu}{\bar\Phi}\{2(\nabla^2+1)\zeta_{\Phi'}-\nabla^2(\Phi'\zeta)\},
+\end{equation}
+\begin{eqnarray}
+\dot{D}_{非線形}=\frac{\partial B}{\cos\varphi\partial\lambda}
+-\frac{\partial(A\cos\varphi)}{\cos\varphi\partial\varphi}
+-\nabla^2(E+\frac{\nu}{\bar\Phi}\alpha\Phi' D)
++\frac{\nu}{\bar\Phi}\{2(\nabla^2+1)D_{\Phi'}\}
+\end{eqnarray}
+\begin{equation}
+\dot{\Phi'}_{非線形}=-D_{\Phi'},
+\end{equation}
+の切断波数$M$までのスペクトル展開係数を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt SPSWNV(MM,IM,ID,JM,JD,OMEGA,BARPHI,DNU,ALPHA,AVT,DIV,PHI,}\\
+\hspace*{10em}{\tt DAVT,DDIV,DPHI,RN,IRM,IT,T,Y,IP,P,R,IA,A,Q,WS,WW)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt IM}以上の適当な値(与え方は備考参照)\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt JM}以上の適当な値(与え方は備考参照)\\
+{\tt OMEGA} & {\tt (D)} 
+& 入力. $\Omega$の値\\
+{\tt BARPHI} & {\tt (D)} 
+& 入力. $\bar\Phi$の値\\
+{\tt DNU} & {\tt (D)} 
+& 入力. $\nu$の値\\
+{\tt ALPHA} & {\tt (D)} 
+& 入力. $\alpha$の値\\
+{\tt AVT} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $q^m_n$が格納されている配列\\
+{\tt DIV} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $D^m_n$が格納されている配列\\
+{\tt PHI} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $\Phi^m_n$が格納されている配列\\
+{\tt DAVT} & {\tt (D((MM+1)*(MM+1)))} 
+& 出力. $\dot{q^m_n}$が格納される配列\\
+{\tt DDIV} & {\tt (D((MM+1)*(MM+1)))} 
+& 出力. $\dot{D^m_n}$が格納される配列\\
+{\tt DPHI} & {\tt (D((MM+1)*(MM+1)))} 
+& 出力. $\dot{\Phi}^m_n$が格納される配列\\
+{\tt RN} & {\tt (D((MM+1)*(MM+1)*2))} 
+& 入力. {\tt SPNINI}で初期化された配列\\
+{\tt IRM} & {\tt (I((MM+1)*(MM+1)*2))} 
+& 入力. {\tt SPMINI}で初期化された配列\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Y}   & {\tt (D(JM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IP}  & {\tt (I((MM+1)/2+MM+1)*2)} 
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt P}  & {\tt (D(((MM+1)/2+MM+1)*JM))} 
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt R}  & {\tt (D(((MM+1)/2*2+3)*(MM/2+1)))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IA}  & {\tt (I((MM+1)*(MM+1)*4))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt A}  & {\tt (D((MM+1)*(MM+1)*6))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Q}  & {\tt (D(((MM+1)/2+MM+1)*JM))} 
+             & 作業領域\\
+{\tt WS}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt WW}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt ID}$\ge${\tt IM}, {\tt JD}$\ge${\tt JM}でなければならない.
+   またベクトル計算機においてはバンク競合を避けるために, {\tt ID},{\tt JD}
+   はできれば奇数にとるのがよい.
+
+\item {\tt IT,T,Y,IP,P,R,IA,A}は 
+      {\tt SNINIT(MM,IM,JM,IT,T,Y,IP,P,R,IA,A)} として初期化しておくこと.\\
+
+\item 作業領域{\tt WW}の大きさは, \\
+     {\tt MAX(((MM+1)/2*2+3)*(MM/2+2)*2,JD*((MM+1)/2+MM+1)*2,JD*ID)}
+    以上の大きさであること. または, やや余裕をもって,
+     {\tt MAX((MM+4)*(MM+3),JD*3*(MM+1),JD*ID)}
+    としておいてもよい. もし, 2次の非線形項からのエリアジングを除く条件
+     ( {\tt JD}$\ge${\tt JM}$\ge${\tt 3*MM/2D0}, 
+      {\tt IM}$\ge${\tt 3*MM+1} )が満されている場合には, 簡単に
+      {\tt (IM+2)*JD}ととっておけばよい.
+     (ただし, {\tt MM}$\ge 3$, {\tt IM+2}$\ge${\tt ID}は満されている
+    ものとする).
+
+\item 作業領域{\tt WS}の大きさは, {\tt WW}の大きさの8倍にとっておくこと.
+
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{SPSWLI}
+
+\begin{enumerate}
+
+\item 機能
+
+ {\tt SPSWLV}で用いられる配列{\tt CL}を初期化する.
+
+\item 定義
+
+\item 呼び出し方法 
+
+{\tt SPSWLI(MM,BARPHI,DNU,ALPHA,DT,CL)}
+
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt BARPHI} & {\tt (D)} 
+& 入力. $\bar\Phi$の値\\
+{\tt DNU} & {\tt (D)} 
+& 入力. $\nu$の値\\
+{\tt ALPHA} & {\tt (D)} 
+& 入力. $\alpha$の値\\
+{\tt DT} & {\tt (D)} 
+& 入力. $\Delta t$の値\\
+{\tt CL}  & {\tt (D((MM+1)*(MM+1)*5))}
+             & 出力. {\tt SPSWLV}で用いられる配列
+\end{tabular}
+
+\item 備考
+
+入力パラメターの意味については{\tt SPSWLV}の項を参照のこと.
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPSWLV}
+
+\begin{enumerate}
+
+\item 機能
+
+全角運動量を保存する散逸項を含んだ浅水方程式の線形項に基づく時間発展を
+解析的に実行する.
+
+\item 定義
+
+{\tt SPSWNV}の項で導入した全角運動量を保存する散逸項を含んだ浅水方程式
+の線形部分は,
+\begin{equation}
+\dot{q}=\nu(\nabla^2+2)\zeta,
+\end{equation}
+\begin{eqnarray}
+\dot{D}=-\nabla^2\Phi'+\nu\left\{(2-\alpha)\nabla^2+2\right\}D,
+\end{eqnarray}
+\begin{equation}
+\dot{\Phi'}=-\bar\Phi D,
+\end{equation}
+と表せる.
+本サブルーチンは, 上記の$q,D,\Phi$のスペクトル展開係数
+$q^m_n,D^m_n,\Phi^m_n$を入力として,
+上記の線形方程式を$\Delta t$だけ解析的時間積分させた
+$q^m_n,D^m_n,\Phi^m_n$を出力するものである.
+
+\item 呼び出し方法 
+
+{\tt SPSWLV(MM,AVT,DIV,PHI,CL)}
+
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt AVT} & {\tt (D((MM+1)*(MM+1)))} 
+& 入出力. $q^m_n$が格納されている配列\\
+{\tt DIV} & {\tt (D((MM+1)*(MM+1)))} 
+& 入出力. $D^m_n$が格納されている配列\\
+{\tt PHI} & {\tt (D((MM+1)*(MM+1)))} 
+& 入出力. $\Phi^m_n$が格納されている配列\\
+{\tt CL}  & {\tt (D((MM+1)*(MM+1)*5))}
+             & 入力. {\tt SPSWLI}で初期化された配列
+\end{tabular}
+
+\item 備考
+
+{\tt CL}は, $\bar\Phi,\nu,\alpha,\Delta t$の値を用いて
+{\tt SPSWLI}で初期化しておくこと.
+
+このサブルーチンは, {\tt SPSWNV}と組み合わせて{\tt TDRKNU}などによる
+時間積分を行う場合に便利である. その場合は{\tt SPSWLI}の初期化の際に
+用いる{\tt DT}を{\tt TDRKNU}の{\tt DT},{\tt NDV}に対して
+{\tt DT/(2*NDV)}と定めればよい.
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPSWCV}
+
+\begin{enumerate}
+
+\item 機能
+
+浅水方程式の保存量を計算する(省メモリ版).
+
+\item 定義
+
+本サブルーチンは{\tt SPSWCK}を若干省メモリにしただけのものなので,
+定義については{\tt SPSWCK}の項を参照のこと.
+
+\item 呼び出し方法 
+
+{\tt SPSWCV(MM,IM,ID,JM,JD,OMEGA,AVT,DIV,PHI,AMOM,AENE,AENS,}\\
+\hspace*{10em}{\tt RN,IT,T,Y,IP,P,R,IA,A,Q,WS,WW)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt IM}以上の適当な値(与え方は備考参照)\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt JM}以上の適当な値(与え方は備考参照)\\
+{\tt OMEGA} & {\tt (D)} 
+& 入力. $\Omega$の値\\
+{\tt AVT} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $q^m_n$が格納されている配列\\
+{\tt DIV} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $D^m_n$が格納されている配列\\
+{\tt PHI} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $\Phi^m_n$が格納されている配列\\
+{\tt AMOM} & {\tt (D)} 
+& 出力. A.Mom.の値\\
+{\tt AENE} & {\tt (D)}
+& 出力. A.Ene.の値\\
+{\tt AENS} & {\tt (D)} 
+& 出力. A.Ens.の値\\
+{\tt RN} & {\tt (D((MM+1)*(MM+1)*2))} 
+& 入力. {\tt SPNINI}で初期化された配列\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Y}   & {\tt (D(JM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IP}  & {\tt (I((MM+1)/2+MM+1)*2)} 
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt P}  & {\tt (D(((MM+1)/2+MM+1)*JM))} 
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt R}  & {\tt (D(((MM+1)/2*2+3)*(MM/2+1)))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IA}  & {\tt (I((MM+1)*(MM+1)*4))} 
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt A}  & {\tt (D((MM+1)*(MM+1)*6))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Q}  & {\tt (D((4*(MM+1)/2+MM+1)*JM))} 
+             & 作業領域\\
+{\tt WS}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt WW}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt ID}$\ge${\tt IM}, {\tt JD}$\ge${\tt JM}でなければならない.
+   またベクトル計算機においてはバンク競合を避けるために, {\tt ID},{\tt JD}
+   はできれば奇数にとるのがよい.
+
+\item {\tt IT,T,Y,IP,P,R,IA,A}は 
+      {\tt SNINIT(MM,IM,JM,IT,T,Y,IP,P,R,IA,A)} として初期化しておくこと.\\
+
+\item 作業領域{\tt WW}の大きさは,\\
+     {\tt MAX(((MM+1)/2*2+3)*(MM/2+2)*2,JD*((MM+1)/2+MM+1)*2,JD*ID)}
+    以上の大きさであること. または, やや余裕をもって,
+     {\tt MAX((MM+4)*(MM+3),JD*3*(MM+1),JD*ID)}
+    としておいてもよい. もし, 2次の非線形項からのエリアジングを除く条件
+     ( {\tt JD}$\ge${\tt JM}$\ge${\tt 3*MM/2D0}, 
+      {\tt IM}$\ge${\tt 3*MM+1} )が満されている場合には, 簡単に
+      {\tt (IM+2)*JD}ととっておけばよい.
+     (ただし, {\tt MM}$\ge 3$, {\tt IM+2}$\ge${\tt ID}は満されている
+    ものとする).
+    
+\item 作業領域{\tt WS}の大きさは, {\tt WW}の大きさの4倍にとっておくこと.    
+
+ \end{itemize}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPSWCX}
+
+\begin{enumerate}
+
+\item 機能
+
+浅水方程式の保存量を計算する(全角運動量を3成分計算)).
+
+\item 定義
+
+本サブルーチンは{\tt SPSWCV}と殆んど同じであるが
+全角運動量を3成分計算することだけが異なる.
+角運動量以外の定義については{\tt SPSWCK}の項を参照のこと.
+
+静止系から見た全角運動量は以下の3成分からなる.
+\begin{itemize}
+\item $z$軸まわりの全角運動量(A.Mom.1):
+\begin{equation}
+\mbox{A.Mom.1}\equiv\langle\Phi(u+\Omega\cos\varphi)\cos\varphi\rangle,
+\end{equation}
+\item $x$軸まわりの全角運動量(A.Mom.2):
+\begin{equation}
+\mbox{A.Mom.2}\equiv\langle\Phi(-(u+\Omega\cos\varphi)\sin\varphi\cos\lambda
++v\sin\lambda)\rangle,
+\end{equation}
+\item $y$軸まわりの全角運動量(A.Mom.3):
+\begin{equation}
+\mbox{A.Mom.3}\equiv\langle\Phi(-(u+\Omega\cos\varphi)\sin\varphi\sin\lambda
+-v\cos\lambda)\rangle,
+\end{equation}
+\end{itemize}
+ここで, 回転系($\Omega\neq 0$)においては$\mbox{A.Mom.1}$のみが保存量で
+あることに注意が必要である. ちなみに, $\mbox{A.Mom.2},\mbox{A.Mom.3}$
+は以下のような方程式に従って時間変化する.
+\begin{equation}
+\frac{d}{dt}(\mbox{A.Mom.2})
+=\Omega (\mbox{A.Mom.3})
++\Omega^2\langle\Phi\sin\varphi\cos\varphi\sin\lambda\rangle,
+\end{equation}
+\begin{equation}
+\frac{d}{dt}(\mbox{A.Mom.3})
+=-\Omega(\mbox{A.Mom.2})
+-\Omega^2\langle\Phi\sin\varphi\cos\varphi\cos\lambda\rangle.
+\end{equation}
+ここで, それぞれ右辺第1項は見かけの座標系が回転する効果で, 第2項は
+水深の不均一によって生じるトルクの効果であり, これは固体地球との運動量
+交換を表している.
+
+\item 呼び出し方法 
+
+{\tt SPSWCX(MM,IM,ID,JM,JD,OMEGA,AVT,DIV,PHI,AMOM1,AMOM2,AMOM3,AENE,AENS,}\\
+\hspace*{10em}{\tt RN,IT,T,Y,IP,P,R,IA,A,Q,WS,WW)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt IM}以上の適当な値(与え方は備考参照)\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt JM}以上の適当な値(与え方は備考参照)\\
+{\tt OMEGA} & {\tt (D)} 
+& 入力. $\Omega$の値\\
+{\tt AVT} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $q^m_n$が格納されている配列\\
+{\tt DIV} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $D^m_n$が格納されている配列\\
+{\tt PHI} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $\Phi^m_n$が格納されている配列\\
+{\tt AMOM1} & {\tt (D)} 
+& 出力. A.Mom.1 の値\\
+{\tt AMOM2} & {\tt (D)} 
+& 出力. A.Mom.2 の値\\
+{\tt AMOM3} & {\tt (D)} 
+& 出力. A.Mom.3 の値\\
+{\tt AENE} & {\tt (D)}
+& 出力. A.Ene.の値\\
+{\tt AENS} & {\tt (D)} 
+& 出力. A.Ens.の値\\
+{\tt RN} & {\tt (D((MM+1)*(MM+1)*2))} 
+& 入力. {\tt SPNINI}で初期化された配列\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Y}   & {\tt (D(JM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IP}  & {\tt (I((MM+1)/2+MM+1)*2)} 
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt P}  & {\tt (D(((MM+1)/2+MM+1)*JM))} 
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt R}  & {\tt (D(((MM+1)/2*2+3)*(MM/2+1)))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IA}  & {\tt (I((MM+1)*(MM+1)*4))} 
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt A}  & {\tt (D((MM+1)*(MM+1)*6))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Q}  & {\tt (D((4*(MM+1)/2+MM+1)*JM))} 
+             & 作業領域\\
+{\tt WS}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt WW}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt ID}$\ge${\tt IM}, {\tt JD}$\ge${\tt JM}でなければならない.
+   またベクトル計算機においてはバンク競合を避けるために, {\tt ID},{\tt JD}
+   はできれば奇数にとるのがよい.
+
+\item {\tt IT,T,Y,IP,P,R,IA,A}は 
+      {\tt SNINIT(MM,IM,JM,IT,T,Y,IP,P,R,IA,A)} として初期化しておくこと.\\
+
+\item 作業領域{\tt WW}の大きさは,\\
+     {\tt MAX(((MM+1)/2*2+3)*(MM/2+2)*2,JD*((MM+1)/2+MM+1)*2,JD*ID)}
+    以上の大きさであること. または, やや余裕をもって,
+     {\tt MAX((MM+4)*(MM+3),JD*3*(MM+1),JD*ID)}
+    としておいてもよい. もし, 2次の非線形項からのエリアジングを除く条件
+     ( {\tt JD}$\ge${\tt JM}$\ge${\tt 3*MM/2D0}, 
+      {\tt IM}$\ge${\tt 3*MM+1} )が満されている場合には, 簡単に
+      {\tt (IM+2)*JD}ととっておけばよい.
+     (ただし, {\tt MM}$\ge 3$, {\tt IM+2}$\ge${\tt ID}は満されている
+    ものとする).
+    
+\item 作業領域{\tt WS}の大きさは, {\tt WW}の大きさの4倍にとっておくこと.    
+
+ \end{itemize}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPSWNW}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt SPSWNV}の若干高速化版(ルジャンドル変換をまとめて
+漸化式演算の相対コストを減らしている)
+
+\item 定義
+
+{\tt SPSWNV}の項を参照.
+
+\item 呼び出し方法 
+
+{\tt SPSWNW(MM,IM,ID,JM,JD,OMEGA,BARPHI,DNU,ALPHA,AVT,DIV,PHI,}\\
+\hspace*{10em}{\tt DAVT,DDIV,DPHI,RN,IRM,IT,T,Y,IP,P,R,IA,A,Q,WS,WW)}
+  
+\item パラメーターの説明({\tt WW}, {\tt WS}以外は全く{\tt SPSWNV}
+の項に同じなので省略する).
+
+\begin{tabular}{lll}
+{\tt WS}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt WW}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item 作業領域{\tt WW}, {\tt WS}の大きさは, ともに\\
+     {\tt 8*MAX(((MM+1)/2*2+3)*(MM/2+2)*2,JD*((MM+1)/2+MM+1)*2,JD*ID)}
+    以上の大きさであること. または, やや余裕をもって,
+     {\tt 8*MAX((MM+4)*(MM+3),JD*3*(MM+1),JD*ID)}
+    としておいてもよい. もし, 2次の非線形項からのエリアジングを除く条件
+     ( {\tt JD}$\ge${\tt JM}$\ge${\tt 3*MM/2D0}, 
+      {\tt IM}$\ge${\tt 3*MM+1} )が満されている場合には, 簡単に
+      {\tt 8*(IM+2)*JD}ととっておけばよい.
+     (ただし, {\tt MM}$\ge 3$, {\tt IM+2}$\ge${\tt ID}は満されている
+    ものとする).
+
+\end{itemize}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPSWNX}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt SPSWNW}の若干高速化版($\alpha=0$の場合に限定して
+ルジャンドル変換を一つだけ減らしている)
+
+\item 定義
+
+{\tt SPSWNV}の項を参照.
+
+\item 呼び出し方法 
+
+{\tt SPSWNX(MM,IM,ID,JM,JD,OMEGA,BARPHI,DNU,AVT,DIV,PHI,}\\
+\hspace*{10em}{\tt DAVT,DDIV,DPHI,RN,IRM,IT,T,Y,IP,P,R,IA,A,Q,WS,WW)}
+
+\item パラメーターの説明({\tt WW}, {\tt WS}以外は全く{\tt SPSWNV}
+の項に同じなので省略する). なお, {\tt SPSWNV}と違い, 引数に
+{\tt ALPHA}が無いことに注意.
+
+\begin{tabular}{lll}
+{\tt WS}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt WW}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item 作業領域{\tt WW}, {\tt WS}の大きさは, ともに\\
+     {\tt 7*MAX(((MM+1)/2*2+3)*(MM/2+2)*2,JD*((MM+1)/2+MM+1)*2,JD*ID)}
+    以上の大きさであること. または, やや余裕をもって,
+     {\tt 7*MAX((MM+4)*(MM+3),JD*3*(MM+1),JD*ID)}
+    としておいてもよい. もし, 2次の非線形項からのエリアジングを除く条件
+     ( {\tt JD}$\ge${\tt JM}$\ge${\tt 3*MM/2D0}, 
+      {\tt IM}$\ge${\tt 3*MM+1} )が満されている場合には, 簡単に
+      {\tt 7*(IM+2)*JD}ととっておけばよい.
+     (ただし, {\tt MM}$\ge 3$, {\tt IM+2}$\ge${\tt ID}は満されている
+    ものとする).
+
+\end{itemize}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPSWHV}
+
+\begin{enumerate}
+
+\item 機能
+
+浅水方程式の非線形項を計算する. 
+ただし, 全角運動量を保存する高階粘性項も同時に計算する.
+
+\item 定義
+
+エリアジングを除去可能な全角運動量を保存する高階粘性項を含む,
+以下の無次元化された球面上の浅水方程式系を考える:
+\begin{equation}
+\dot{q}\equiv\frac{\partial q}{\partial t}
+=-\frac{\partial A}{\cos\varphi\partial\lambda}
+-\frac{\partial(B\cos\varphi)}{\cos\varphi\partial\varphi}
++\frac{\nu}{\bar\Phi}\{2(\nabla^2+1)\hat\zeta_{\Phi}-\nabla^2(\Phi\hat\zeta)\},
+\end{equation}
+\begin{equation}
+\dot{D}\equiv\frac{\partial D}{\partial t}
+=\frac{\partial B}{\cos\varphi\partial\lambda}
+-\frac{\partial(A\cos\varphi)}{\cos\varphi\partial\varphi}
+-\nabla^2(E+\Phi+\frac{\nu}{\bar\Phi}\alpha\Phi\hat D)
++\frac{\nu}{\bar\Phi}\{2(\nabla^2+1)\hat D_{\Phi}\},
+\end{equation}
+\begin{equation}
+\dot{\Phi}\equiv\frac{\partial \Phi}{\partial t}
+=-\frac{\partial(u\Phi)}{\cos\varphi\partial\lambda}
+-\frac{\partial(v\Phi\cos\varphi)}{\cos\varphi\partial\varphi}.
+\end{equation}
+ここに, $q=\zeta+2\Omega\sin\varphi$: 絶対渦度,$\Phi$: ジオポテンシャル
+であり, $\zeta$,$D$は渦度, 発散で,
+\begin{equation}
+\zeta\equiv
+\frac{\partial(v)}{\cos\varphi\partial\lambda}
+-\frac{\partial(u\cos\varphi)}{\cos\varphi\partial\varphi},
+\end{equation}
+\begin{equation}
+D\equiv
+\frac{\partial(u)}{\cos\varphi\partial\lambda}
++\frac{\partial(v\cos\varphi)}{\cos\varphi\partial\varphi},
+\end{equation}
+と定義される. また, $E=(u^2+v^2)/2$である.
+
+さらに, 高階粘性の階数(通常の粘性を基準としてラプラシアンの階数
+の高さをはかったもの)を$n$として(すなわち, 通常の粘性なら$n=0$),
+$D=\nabla^2\chi, \zeta=\nabla^2\psi$によって定まる$\chi,\psi$
+を使って$\hat\chi=(-\nabla^2-2)^n\chi, \hat\psi=(-\nabla^2-2)^n\psi$
+を定義し, 
+\begin{equation}
+\hat u\equiv\frac{\partial\hat\chi}{\cos\varphi\partial\lambda}
+-\frac{\partial\hat\psi}{\partial\varphi}
+\end{equation}
+\begin{equation}
+\hat v\equiv\frac{\partial\hat\chi}{\partial\varphi}
++\frac{\partial\hat\psi}{\cos\varphi\partial\lambda}
+\end{equation}
+と定めると, $\hat\zeta,\hat D, \hat\zeta_{\Phi},\hat D_{\Phi}, A,B$は,
+\begin{equation}
+\hat\zeta\equiv
+\frac{\partial(\hat v)}{\cos\varphi\partial\lambda}
+-\frac{\partial(\hat u\cos\varphi)}{\cos\varphi\partial\varphi}
+=(-\nabla^2-2)^n\zeta,
+\end{equation}
+\begin{equation}
+\hat D\equiv
+\frac{\partial(\hat u)}{\cos\varphi\partial\lambda}
++\frac{\partial(\hat v\cos\varphi)}{\cos\varphi\partial\varphi}
+=(-\nabla^2-2)^n D,
+\end{equation}
+\begin{equation}
+A\equiv qu+\frac{\nu}{\bar\Phi}\left\{2\hat v\nabla^2\Phi
++\frac{\partial\Phi}{\cos\varphi\partial\lambda}\hat\zeta
++\alpha\frac{\partial\Phi}{\partial\varphi}\hat D\right\}
+\end{equation}
+\begin{equation}
+B\equiv qv+\frac{\nu}{\bar\Phi}\left\{-2\hat u\nabla^2\Phi
++\frac{\partial\Phi}{\partial\varphi}\hat\zeta
+-\alpha\frac{\partial\Phi}{\cos\varphi\partial\lambda}\hat D\right\}
+\end{equation}
+\begin{equation}
+\hat\zeta_{\Phi}\equiv
+\frac{\partial(\Phi\hat v)}{\cos\varphi\partial\lambda}
+-\frac{\partial(\Phi\hat u\cos\varphi)}{\cos\varphi\partial\varphi},
+\end{equation}
+\begin{equation}
+\hat D_{\Phi}\equiv
+\frac{\partial(\Phi\hat u)}{\cos\varphi\partial\lambda}
++\frac{\partial(\Phi\hat v\cos\varphi)}{\cos\varphi\partial\varphi},
+\end{equation}
+であり, $\bar\Phi$は平均水深, $\nu$は粘性係数, $\alpha$は体積粘性に
+関するパラメターで, 体積粘性率$0$は$\alpha=2/3$に対応する.
+
+さて, $\Phi=\bar\Phi+\Phi'$と$\Phi$を平均部分と擾乱部分に分離すると,
+上記の方程式系は以下のように書きかえられる:
+\begin{equation}
+\dot{q}=-\frac{\partial A}{\cos\varphi\partial\lambda}
+-\frac{\partial(B\cos\varphi)}{\cos\varphi\partial\varphi}
++\frac{\nu}{\bar\Phi}\{2(\nabla^2+1)\hat\zeta_{\Phi'}
+-\nabla^2(\Phi'\hat\zeta)\}
++\nu(\nabla^2+2)\hat\zeta,
+\end{equation}
+\begin{eqnarray}
+\dot{D}=\frac{\partial B}{\cos\varphi\partial\lambda}
+-\frac{\partial(A\cos\varphi)}{\cos\varphi\partial\varphi}
+-\nabla^2(E+\frac{\nu}{\bar\Phi}\alpha\Phi'\hat D)
++\frac{\nu}{\bar\Phi}\{2(\nabla^2+1)\hat D_{\Phi'}\}\nonumber\\
+-\nabla^2\Phi'+\nu\left\{(2-\alpha)\nabla^2+2\right\}\hat D,
+\end{eqnarray}
+\begin{equation}
+\dot{\Phi'}=-D_{\Phi'}-\bar\Phi D.
+\end{equation}
+本サブルーチンは, 上記の$q,D,\Phi$のスペクトル展開係数
+$q^m_n,D^m_n,\Phi^m_n$および$\bar\Phi,\nu,\alpha$を入力として,
+$\dot{q},\dot{D},\dot{\Phi}$の非線形部分:
+\begin{equation}
+\dot{q}_{非線形}=-\frac{\partial A}{\cos\varphi\partial\lambda}
+-\frac{\partial(B\cos\varphi)}{\cos\varphi\partial\varphi}
++\frac{\nu}{\bar\Phi}\{2(\nabla^2+1)\hat\zeta_{\Phi'}
+-\nabla^2(\Phi'\hat\zeta)\},
+\end{equation}
+\begin{eqnarray}
+\dot{D}_{非線形}=\frac{\partial B}{\cos\varphi\partial\lambda}
+-\frac{\partial(A\cos\varphi)}{\cos\varphi\partial\varphi}
+-\nabla^2(E+\frac{\nu}{\bar\Phi}\alpha\Phi'\hat D)
++\frac{\nu}{\bar\Phi}\{2(\nabla^2+1)\hat D_{\Phi'}\}
+\end{eqnarray}
+\begin{equation}
+\dot{\Phi'}_{非線形}=-D_{\Phi'},
+\end{equation}
+の切断波数$M$までのスペクトル展開係数を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt SPSWHV(MM,IM,ID,JM,JD,OMEGA,BARPHI,DNU,ALPHA,LEV,AVT,DIV,PHI,}\\
+\hspace*{10em}{\tt DAVT,DDIV,DPHI,RN,IRM,IT,T,Y,IP,P,R,IA,A,Q,WS,WW)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt IM}以上の適当な値(与え方は備考参照)\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt JM}以上の適当な値(与え方は備考参照)\\
+{\tt OMEGA} & {\tt (D)} 
+& 入力. $\Omega$の値\\
+{\tt BARPHI} & {\tt (D)} 
+& 入力. $\bar\Phi$の値\\
+{\tt DNU} & {\tt (D)} 
+& 入力. $\nu$の値\\
+{\tt ALPHA} & {\tt (D)} 
+& 入力. $\alpha$の値\\
+{\tt LEV} & {\tt (I)}
+& 入力. $n$の値\\
+{\tt AVT} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $q^m_n$が格納されている配列\\
+{\tt DIV} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $D^m_n$が格納されている配列\\
+{\tt PHI} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $\Phi^m_n$が格納されている配列\\
+{\tt DAVT} & {\tt (D((MM+1)*(MM+1)))} 
+& 出力. $\dot{q^m_n}$が格納される配列\\
+{\tt DDIV} & {\tt (D((MM+1)*(MM+1)))} 
+& 出力. $\dot{D^m_n}$が格納される配列\\
+{\tt DPHI} & {\tt (D((MM+1)*(MM+1)))} 
+& 出力. $\dot{\Phi}^m_n$が格納される配列\\
+{\tt RN} & {\tt (D((MM+1)*(MM+1)*2))} 
+& 入力. {\tt SPNINI}で初期化された配列\\
+{\tt IRM} & {\tt (I((MM+1)*(MM+1)*2))} 
+& 入力. {\tt SPMINI}で初期化された配列\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Y}   & {\tt (D(JM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IP}  & {\tt (I((MM+1)/2+MM+1)*2)} 
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt P}  & {\tt (D(((MM+1)/2+MM+1)*JM))} 
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt R}  & {\tt (D(((MM+1)/2*2+3)*(MM/2+1)))} 
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IA}  & {\tt (I((MM+1)*(MM+1)*4))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt A}  & {\tt (D((MM+1)*(MM+1)*6))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Q}  & {\tt (D(((MM+1)/2+MM+1)*JM))} 
+             & 作業領域\\
+{\tt WS}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt WW}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt ID}$\ge${\tt IM}, {\tt JD}$\ge${\tt JM}でなければならない.
+   またベクトル計算機においてはバンク競合を避けるために, {\tt ID},{\tt JD}
+   はできれば奇数にとるのがよい.
+
+\item {\tt IT,T,Y,IP,P,R,IA,A}は 
+      {\tt SNINIT(MM,IM,JM,IT,T,Y,IP,P,R,IA,A)} として初期化しておくこと.\\
+
+\item 作業領域{\tt WW}の大きさは, \\
+     {\tt MAX(((MM+1)/2*2+3)*(MM/2+2)*2,JD*((MM+1)/2+MM+1)*2,JD*ID)}
+    以上の大きさであること. または, やや余裕をもって,
+     {\tt MAX((MM+4)*(MM+3),JD*3*(MM+1),JD*ID)}
+    としておいてもよい. もし, 2次の非線形項からのエリアジングを除く条件
+     ( {\tt JD}$\ge${\tt JM}$\ge${\tt 3*MM/2D0}, 
+      {\tt IM}$\ge${\tt 3*MM+1} )が満されている場合には, 簡単に
+      {\tt (IM+2)*JD}ととっておけばよい.
+     (ただし, {\tt MM}$\ge 3$, {\tt IM+2}$\ge${\tt ID}は満されている
+    ものとする).
+
+\item 作業領域{\tt WS}の大きさは, {\tt WW}の大きさの11倍にとっておくこと.
+
+\end{itemize}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPSWHW}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt SPSWHV}の若干高速化版(ルジャンドル変換をまとめて
+漸化式演算の相対コストを減らしている)
+
+\item 定義
+
+{\tt SPSWHV}の項を参照.
+
+\item 呼び出し方法 
+
+{\tt SPSWHW(MM,IM,ID,JM,JD,OMEGA,BARPHI,DNU,ALPHA,LEV,AVT,DIV,PHI,}\\
+\hspace*{10em}{\tt DAVT,DDIV,DPHI,RN,IRM,IT,T,Y,IP,P,R,IA,A,Q,WS,WW)}
+  
+\item パラメーターの説明({\tt WW}, {\tt WS}以外は全く{\tt SPSWHV}
+の項に同じなので省略する).
+
+\begin{tabular}{lll}
+{\tt WS}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt WW}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item 作業領域{\tt WW}, {\tt WS}の大きさは, ともに\\
+     {\tt 11*MAX(((MM+1)/2*2+3)*(MM/2+2)*2,JD*((MM+1)/2+MM+1)*2,JD*ID)}
+    以上の大きさであること. または, やや余裕をもって,
+     {\tt 11*MAX((MM+4)*(MM+3),JD*3*(MM+1),JD*ID)}
+    としておいてもよい. もし, 2次の非線形項からのエリアジングを除く条件
+     ( {\tt JD}$\ge${\tt JM}$\ge${\tt 3*MM/2D0}, 
+      {\tt IM}$\ge${\tt 3*MM+1} )が満されている場合には, 簡単に
+      {\tt 11*(IM+2)*JD}ととっておけばよい.
+     (ただし, {\tt MM}$\ge 3$, {\tt IM+2}$\ge${\tt ID}は満されている
+    ものとする).
+
+\end{itemize}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPSWHX}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt SPSWHW}の若干高速化版($\alpha=0$の場合に限定して
+ルジャンドル変換を一つだけ減らしている)
+
+\item 定義
+
+{\tt SPSWHV}の項を参照.
+
+\item 呼び出し方法 
+
+{\tt SPSWHX(MM,IM,ID,JM,JD,OMEGA,BARPHI,DNU,LEV,AVT,DIV,PHI,}\\
+\hspace*{10em}{\tt DAVT,DDIV,DPHI,RN,IRM,IT,T,Y,IP,P,R,IA,A,Q,WS,WW)}
+
+\item パラメーターの説明({\tt WW}, {\tt WS}以外は全く{\tt SPSWNV}
+の項に同じなので省略する). なお, {\tt SPSWHV}と違い, 引数に
+{\tt ALPHA}が無いことに注意.
+
+\begin{tabular}{lll}
+{\tt WS}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt WW}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item 作業領域{\tt WW}, {\tt WS}の大きさは, ともに\\
+     {\tt 10*MAX(((MM+1)/2*2+3)*(MM/2+2)*2,JD*((MM+1)/2+MM+1)*2,JD*ID)}
+    以上の大きさであること. または, やや余裕をもって,
+     {\tt 10*MAX((MM+4)*(MM+3),JD*3*(MM+1),JD*ID)}
+    としておいてもよい. もし, 2次の非線形項からのエリアジングを除く条件
+     ( {\tt JD}$\ge${\tt JM}$\ge${\tt 3*MM/2D0}, 
+      {\tt IM}$\ge${\tt 3*MM+1} )が満されている場合には, 簡単に
+      {\tt 10*(IM+2)*JD}ととっておけばよい.
+     (ただし, {\tt MM}$\ge 3$, {\tt IM+2}$\ge${\tt ID}は満されている
+    ものとする).
+
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{SPSWHI}
+
+\begin{enumerate}
+
+\item 機能
+
+ {\tt SPSWLV}で用いられる配列{\tt CL}を初期化する(高階粘性用).
+
+\item 定義
+
+{\tt SPSWHV}の項で導入した全角運動量を保存する高階粘性項を含んだ
+浅水方程式の線形部分を{\tt SPSWLV}を用いて計算するための{\tt CL}
+を初期化する.
+
+\item 呼び出し方法 
+
+{\tt SPSWHI(MM,BARPHI,DNU,ALPHA,LEV,DT,CL)}
+
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt BARPHI} & {\tt (D)} 
+& 入力. $\bar\Phi$の値\\
+{\tt DNU} & {\tt (D)} 
+& 入力. $\nu$の値\\
+{\tt ALPHA} & {\tt (D)} 
+& 入力. $\alpha$の値\\
+{\tt LEV} & {\tt (I)}
+& 入力. $n$の値({\tt SPSWHV}の項参照.\\
+{\tt DT} & {\tt (D)} 
+& 入力. $\Delta t$の値\\
+{\tt CL}  & {\tt (D((MM+1)*(MM+1)*5))}
+             & 出力. {\tt SPSWLV}で用いられる配列
+\end{tabular}
+
+\item 備考
+
+入力パラメターの意味については{\tt SPSWLV}の項を参照のこと.
+
+\end{enumerate}
+
+
+\end{document}

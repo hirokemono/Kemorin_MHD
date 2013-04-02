@@ -1,0 +1,206 @@
+!
+!      module m_iso_outputs
+!
+!      Written by H. Matsui on July, 2006
+!
+!      subroutine allocate_iso_outputs_num(num_iso, nprocs)
+!      subroutine allocate_iso_outputs_data(max_ncomp_iso_out)
+!      subroutine allocate_SR_array_iso(my_rank, max_ncomp_iso_out,     &
+!     &          nnod_iso_tot, npatch_tot_iso_smp)
+!
+!      subroutine deallocate_iso_outputs_num
+!      subroutine deallocate_iso_outputs_data
+!      subroutine deallocate_SR_array_iso(my_rank)
+!
+      module m_iso_outputs
+!
+      use m_precision
+      use m_geometry_constants
+!
+      implicit  none
+!
+!
+      integer(kind = kint) :: ntot_nod_output_iso = 0
+      integer(kind = kint), allocatable, target :: nnod_output_iso(:)
+      integer(kind = kint), allocatable, target                         &
+     &              :: istack_nod_output_iso(:)
+!
+      integer(kind = kint) :: nmax_nod_para_iso = 0
+      integer(kind = kint), allocatable :: nnod_para_iso(:)
+      integer(kind = kint), allocatable :: istack_nod_para_iso(:)
+!
+      integer(kind = kint), allocatable :: nnod_recv_iso(:)
+      integer(kind = kint), allocatable :: istack_nod_recv_iso(:)
+!
+      integer(kind = kint) :: ntot_ele_output_iso = 0
+      integer(kind = kint), allocatable, target :: nele_output_iso(:)
+      integer(kind = kint), allocatable, target                         &
+     &              :: istack_ele_output_iso(:)
+!
+      integer(kind = kint) :: nmax_ele_para_iso = 0
+      integer(kind = kint), allocatable :: nele_para_iso(:)
+      integer(kind = kint), allocatable :: istack_ele_para_iso(:)
+!
+      integer(kind = kint), allocatable :: nele_recv_iso(:)
+      integer(kind = kint), allocatable :: istack_ele_recv_iso(:)
+!
+      real(kind = kreal), allocatable, target :: xx_output_iso(:,:)
+      integer(kind = kint), allocatable, target :: inod_output_iso(:)
+      integer(kind = kint), allocatable :: ihash_output_iso(:)
+      integer(kind = kint), allocatable, target :: iele_output_iso(:)
+      integer(kind = kint), allocatable, target :: ie_output_iso(:,:)
+!
+      real(kind = kreal), allocatable, target :: dat_output_iso(:,:)
+!
+!
+      real(kind = kreal), allocatable :: send_iso(:)
+      real(kind = kreal), allocatable :: recv_iso(:)
+      integer(kind = kint), allocatable :: isend_iso(:)
+      integer(kind = kint), allocatable :: irecv_iso(:)
+!
+!  ---------------------------------------------------------------------
+!
+      contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine allocate_iso_outputs_num(num_iso, nprocs)
+!
+      integer(kind = kint), intent(in) :: num_iso, nprocs
+!
+      allocate( nnod_output_iso(num_iso) )
+      allocate( istack_nod_output_iso(0:num_iso) )
+      allocate( nnod_para_iso(num_iso*nprocs) )
+      allocate( istack_nod_para_iso(0:num_iso*nprocs) )
+      allocate( nnod_recv_iso(num_iso*nprocs) )
+      allocate( istack_nod_recv_iso(0:num_iso*nprocs) )
+!
+      allocate( nele_output_iso(num_iso) )
+      allocate( istack_ele_output_iso(0:num_iso) )
+      allocate( nele_para_iso(num_iso*nprocs) )
+      allocate( istack_ele_para_iso(0:num_iso*nprocs) )
+      allocate( nele_recv_iso(num_iso*nprocs) )
+      allocate( istack_ele_recv_iso(0:num_iso*nprocs) )
+!
+      nnod_output_iso = 0
+      nnod_para_iso = 0
+      nnod_recv_iso = 0
+      istack_nod_output_iso = 0
+      istack_nod_para_iso = 0
+      istack_nod_recv_iso = 0
+!
+      nele_output_iso = 0
+      nele_para_iso = 0
+      nele_recv_iso = 0
+      istack_ele_output_iso = 0
+      istack_ele_para_iso = 0
+      istack_ele_recv_iso = 0
+!
+      end subroutine allocate_iso_outputs_num
+!
+! ----------------------------------------------------------------------
+!
+      subroutine allocate_iso_outputs_data(max_ncomp_iso_out)
+!
+      integer(kind=kint ) , intent(in)   ::  max_ncomp_iso_out
+!
+      allocate( xx_output_iso(ntot_nod_output_iso,3) )
+      allocate( inod_output_iso(ntot_nod_output_iso) )
+      allocate( ihash_output_iso(ntot_nod_output_iso) )
+      allocate( iele_output_iso(ntot_ele_output_iso) )
+      allocate( ie_output_iso(ntot_ele_output_iso,num_triangle) )
+      allocate( dat_output_iso(ntot_nod_output_iso,max_ncomp_iso_out) )
+!
+      if(ntot_nod_output_iso .gt. 0) then
+        xx_output_iso = 0.0d0
+        dat_output_iso = 0.0d0
+        inod_output_iso =  0
+        ihash_output_iso = 0
+      end if
+      if(ntot_ele_output_iso .gt. 0) then
+        iele_output_iso = 0
+        ie_output_iso =   0
+      end if
+!
+      end subroutine allocate_iso_outputs_data
+!
+! ----------------------------------------------------------------------
+!
+      subroutine allocate_SR_array_iso(my_rank, max_ncomp_iso_out,      &
+     &          nnod_iso_tot, npatch_tot_iso_smp)
+!
+      integer(kind=kint ) , intent(in) ::  my_rank
+      integer(kind=kint ) , intent(in) ::  max_ncomp_iso_out
+      integer(kind = kint), intent(in) :: nnod_iso_tot
+      integer(kind = kint), intent(in) :: npatch_tot_iso_smp
+!
+      integer(kind = kint) :: nmax_comp, nmax_int
+!
+!
+      nmax_comp = max(max_ncomp_iso_out,num_triangle)
+      allocate (send_iso(nmax_comp*nnod_iso_tot))
+      if(nmax_comp*nnod_iso_tot .gt. 0) send_iso = 0.0d0
+!
+      nmax_int = max(num_triangle*npatch_tot_iso_smp, nnod_iso_tot)
+      allocate (isend_iso(num_triangle*npatch_tot_iso_smp))
+      if(nmax_int .gt. 0) isend_iso = 0
+!
+      if (my_rank.eq.0) then
+        allocate (recv_iso(nmax_comp*ntot_nod_output_iso))
+        if(nmax_comp*nnod_iso_tot .gt. 0)  recv_iso = 0.0d0
+!
+        nmax_int                                                        &
+     &    = max(num_triangle*ntot_ele_output_iso, ntot_nod_output_iso)
+        allocate (irecv_iso(num_triangle*ntot_ele_output_iso))
+        if(nmax_int .gt. 0) irecv_iso = 0
+      end if
+!
+      end subroutine allocate_SR_array_iso
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine deallocate_iso_outputs_num
+!
+      deallocate( nnod_output_iso)
+      deallocate( istack_nod_output_iso)
+      deallocate( nnod_para_iso)
+      deallocate( istack_nod_para_iso)
+!
+      deallocate( nele_output_iso)
+      deallocate( istack_ele_output_iso)
+      deallocate( nele_para_iso)
+      deallocate( istack_ele_para_iso)
+!
+      end subroutine deallocate_iso_outputs_num
+!
+! ----------------------------------------------------------------------
+!
+      subroutine deallocate_iso_outputs_data
+!
+      deallocate( xx_output_iso, inod_output_iso, ihash_output_iso )
+      deallocate( iele_output_iso, ie_output_iso )
+      deallocate( dat_output_iso )
+!
+      end subroutine deallocate_iso_outputs_data
+!
+! ----------------------------------------------------------------------
+!
+      subroutine deallocate_SR_array_iso(my_rank)
+!
+      integer(kind=kint ) , intent(in)   ::  my_rank
+!      number of domain
+!
+        deallocate (send_iso )
+        deallocate (isend_iso )
+!
+      if (my_rank.eq.0) then
+        deallocate (recv_iso)
+        deallocate (irecv_iso)
+      end if
+!
+      end subroutine deallocate_SR_array_iso
+!
+! ----------------------------------------------------------------------
+!
+      end module m_iso_outputs

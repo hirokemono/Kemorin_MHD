@@ -1,0 +1,101 @@
+begin spherical_transform
+!
+  begin platform_ctl
+    num_subdomain_ctl    4
+    num_smp_ctl          1
+    mesh_file_head_ctl     'in_single'
+    mesh_sph_grid_ctl      'in_rtp'
+    mesh_sph_lag_ctl       'in_rtm'
+    mesh_sph_lag_spec_ctl  'in_rlm'
+    mesh_sph_mode_ctl      'in_rj'
+!
+    org_mesh_sph_mode_ctl  'sph_orginal/in_rj'
+!
+    rst_file_head_ctl      'restart/rst'
+    udt_file_head_ctl      'field/out'
+!
+    mesh_file_fmt_ctl           'gzip'
+    sph_files_fmt_ctl           'gzip'
+    rst_files_fmt_ctl      'ascii'
+    udt_files_fmt_ctl      'ascii'
+  end
+!
+!
+  begin model
+    begin phys_values_ctl
+      array nod_value_ctl   8
+        nod_value_ctl  velocity            Viz_On   Monitor_On    end
+        nod_value_ctl  temperature         Viz_On   Monitor_On    end
+        nod_value_ctl  pressure            Viz_On   Monitor_Off   end
+        nod_value_ctl  vorticity           Viz_On   Monitor_Off   end
+        nod_value_ctl  vector_potential    Viz_Off  Monitor_Off   end
+        nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
+        nod_value_ctl  current_density     Viz_On   Monitor_Off   end
+        nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off   end
+!        nod_value_ctl  dummy_scalar        Viz_Off  Monitor_Off   end
+      end array
+    end
+!
+    buoyancy_ratio_ctl      10.0
+    thermal_buoyancy_ctl    6.5e7
+!
+    begin time_step_ctl
+      i_step_init_ctl          0
+      i_step_number_ctl     2000
+      i_step_rst_ctl           1
+      i_step_ucd_ctl         800
+!
+      i_step_psf_ctl        1
+      i_step_pvr_ctl        2000
+    end
+  end
+!
+  begin pickup_sph_ctl
+    picked_sph_head_ctl   'sph_spectr/picked_mode'
+    pick_degree_ctl     0
+    pick_order_ctl      0
+!
+!   if num_pick_layer_ctl = 0 or negative: 
+!           output all layer and volume average
+    rj_picked_data_head_ctl   'sph_spectr/rj_pick_ene_spec'
+    array pick_layer_ctl  1
+      pick_layer_ctl  62
+    end array
+  end
+!
+  begin sph_transform_ctl
+    sph_gauss_coefs_head_ctl    'sph_spectr/gauss_coef'
+    radial_CMB_group_name        ICB
+    radial_ICB_group_name        CMB
+
+!     spherical transfer mode  'radius_in' 'radius_out' 'long_loop'
+     sph_transform_mode_ctl   'radius_in'
+!
+    spectr_file_head_ctl        'sph_spectr/spectral'
+    spectr_files_fmt_ctl        'ascii'
+!
+    energy_spec_head_ctl          'sph_spectr/ene_spec'
+    vol_ene_spec_head_ctl         'sph_spectr/ene_spec_vol'
+    ave_ene_spec_head_ctl         'sph_spectr/t_ave_ene_spec'
+    tave_vol_ene_spec_head_ctl    'sph_spectr/t_ave_ene_spec_vol'
+!
+    zm_spectr_head_ctl     'sph_spectr/zm_spectr'
+    zm_ene_spec_head_ctl   'sph_spectr/zm_ene_spec'
+!
+    zonal_udt_head_ctl     'zm_field/zm_spectr'
+  end
+!
+!
+  begin visual_control
+    array surface_rendering  4
+      file  surface_rendering   ctl_psf_cmb
+      file  surface_rendering   ctl_psf_z0 
+      file  surface_rendering   ctl_psf_z0.3
+      file  surface_rendering   ctl_psf_z1.0
+    end array surface_rendering
+!
+    array isosurf_rendering  0
+!
+    array  volume_rendering  0
+  end
+end

@@ -1,0 +1,227 @@
+!FEM_MHD_length_scale.f90
+!      module FEM_MHD_length_scale
+!
+!      subroutine allocate_work_4_lscale
+!      subroutine deallocate_work_4_lscale
+!
+!      subroutine const_MHD_length_scales(ucd_step)
+!      subroutine find_field_address_4_lscale
+!
+      module FEM_MHD_length_scale
+!
+      use m_precision
+      use m_constants
+      use m_machine_parameter
+!
+      implicit none
+!
+      real(kind = kreal), allocatable :: d_mag(:,:)
+      private :: d_mag
+!
+      private :: cal_vect_length_scale_by_rot
+      private :: cal_length_scale_by_diffuse1
+!
+!-----------------------------------------------------------------------
+!
+      contains
+!
+!-----------------------------------------------------------------------
+!
+      subroutine allocate_work_4_lscale
+!
+      use m_geometry_parameter
+!
+!
+      allocate(d_mag(numnod,3))
+      d_mag = zero
+!
+      end subroutine allocate_work_4_lscale
+!
+!-----------------------------------------------------------------------
+!
+      subroutine deallocate_work_4_lscale
+!
+!
+      deallocate(d_mag)
+!
+      end subroutine deallocate_work_4_lscale
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine const_MHD_length_scales(ucd_step)
+!
+      use m_parallel_var_dof
+      use m_geometry_parameter
+      use m_phys_labels
+      use m_node_phys_address
+      use m_node_phys_data
+      use m_ucd_data
+      use m_ctl_params_4_prod_udt
+!
+      use ucd_IO_select
+!
+      integer(kind = kint), intent(in) :: ucd_step
+      integer(kind = kint) :: icou
+!
+!
+      num_field_ucd = 0
+      if(iphys%i_temp  .gt. 0)  num_field_ucd = num_field_ucd + 1
+      if(iphys%i_velo  .gt. 0)  num_field_ucd = num_field_ucd + 1
+      if(iphys%i_magne .gt. 0)  num_field_ucd = num_field_ucd + 1
+!
+      call allocate_ucd_phys_name
+!
+      num_comp_ucd(1:num_field_ucd) = ione
+      call cal_istack_ucd_component
+!
+      nnod_ucd =      numnod
+      call allocate_ucd_phys_data
+!
+      icou = 0
+      if(iphys%i_temp  .gt. 0) then
+        icou = icou + 1
+        phys_name_ucd(icou) = fhd_temp_scale
+        call cal_length_scale_by_diffuse1(iphys%i_temp,                 &
+     &      iphys%i_t_diffuse)
+        d_nod_ucd(1:numnod,icou) = d_mag(1:numnod,3)
+      end if
+!
+      if(iphys%i_velo  .gt. 0) then
+        icou = icou + 1
+        phys_name_ucd(icou) = fhd_velocity_scale
+        call cal_vect_length_scale_by_rot(iphys%i_velo, iphys%i_vort)
+        d_nod_ucd(1:numnod,icou) = d_mag(1:numnod,3)
+      end if
+!
+      if(iphys%i_magne .gt. 0) then
+        icou = icou + 1
+        phys_name_ucd(3) =    fhd_magnetic_scale
+        call cal_vect_length_scale_by_rot(iphys%i_magne,                &
+     &      iphys%i_current)
+        d_nod_ucd(1:numnod,icou) = d_mag(1:numnod,3)
+      end if
+!
+      ucd_header_name = result_udt_file_head
+      call sel_write_udt_file(my_rank, ucd_step)
+      call deallocate_ucd_data
+!
+      end subroutine const_MHD_length_scales
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine find_field_address_4_lscale
+!
+      use m_phys_labels
+      use m_node_phys_address
+      use m_node_phys_data
+!
+      integer(kind = kint) :: i_fld
+!
+!
+      iphys%i_velo =      0
+      iphys%i_vort =      0
+      iphys%i_magne =     0
+      iphys%i_current =   0
+      iphys%i_temp =      0
+      iphys%i_t_diffuse = 0
+      do i_fld = 1, num_nod_phys
+        if(phys_nod_name(i_fld) .eq. fhd_velo) then
+          iphys%i_velo = istack_nod_component(i_fld-1) + 1
+        else if(phys_nod_name(i_fld) .eq. fhd_vort) then
+          iphys%i_vort = istack_nod_component(i_fld-1) + 1
+        else if(phys_nod_name(i_fld) .eq. fhd_magne) then
+          iphys%i_magne = istack_nod_component(i_fld-1) + 1
+        else if(phys_nod_name(i_fld) .eq. fhd_current) then
+          iphys%i_current = istack_nod_component(i_fld-1) + 1
+        else if(phys_nod_name(i_fld) .eq. fhd_temp) then
+          iphys%i_temp = istack_nod_component(i_fld-1) + 1
+        else if(phys_nod_name(i_fld) .eq. fhd_thermal_diffusion) then
+          iphys%i_t_diffuse = istack_nod_component(i_fld-1) + 1
+        end if
+      end do
+!
+      end subroutine find_field_address_4_lscale
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine cal_vect_length_scale_by_rot(i_v, i_w)
+!
+      use m_geometry_parameter
+      use m_node_phys_data
+      use mag_of_field_smp
+      use cal_products_smp
+!
+      integer(kind = kint),  intent(in) :: i_v, i_w
+      integer(kind = kint) :: inod
+!
+!
+      call cal_vector_magnitude(np_smp, numnod, inod_smp_stack,   &
+     &    d_mag(1,1), d_nod(1,i_v))
+      call cal_vector_magnitude(np_smp, numnod, inod_smp_stack,   &
+     &    d_mag(1,2), d_nod(1,i_w))
+!
+!$omp parallel do
+      do inod = 1,  numnod
+       if(d_mag(inod,2) .eq. 0.0d0) then
+         d_mag(inod,2) = 0.0d0
+       else
+         d_mag(inod,2) = one / d_mag(inod,2)
+       end if
+     end do
+!$omp end parallel do
+!
+!$omp parallel
+     call cal_scalar_prod_no_coef_smp(np_smp, numnod,               &
+     &    inod_smp_stack, d_mag(1,1), d_mag(1,2), d_mag(1,3))
+!$omp end parallel
+!
+!$omp parallel do
+      do inod = 1,  numnod
+        d_mag(inod,3) = sqrt(d_mag(inod,3))
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_vect_length_scale_by_rot
+!
+!-----------------------------------------------------------------------
+!
+      subroutine cal_length_scale_by_diffuse1(i_t, i_d)
+!
+      use m_geometry_parameter
+      use m_node_phys_data
+      use cal_products_smp
+!
+      integer(kind = kint),  intent(in) :: i_t, i_d
+      integer(kind = kint) :: inod
+!
+!
+!$omp parallel do
+      do inod = 1,  numnod
+       if(d_nod(inod,i_d) .eq. 0.0d0) then
+         d_mag(inod,2) = 0.0d0
+       else
+         d_mag(inod,2) = one / d_nod(inod,i_d)
+       end if
+     end do
+!$omp end parallel do
+!
+!$omp parallel
+     call cal_scalar_prod_no_coef_smp(np_smp, numnod,               &
+     &    inod_smp_stack, d_nod(1,i_t), d_mag(1,2), d_mag(1,3))
+!$omp end parallel
+!
+!$omp parallel do
+      do inod = 1, numnod
+        d_mag(inod,3) = sqrt( abs(d_mag(inod,3)) )
+      end do
+!$omp end parallel do
+!
+     end subroutine cal_length_scale_by_diffuse1
+!
+!-----------------------------------------------------------------------
+!
+      end module FEM_MHD_length_scale
+

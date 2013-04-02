@@ -1,0 +1,1275 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (C) 1999-2003 Keiichi Ishioka	      		       %
+% 								       %
+% この著作権表示が記載してあるならば, どのような媒体にでも何も手を加え %
+% ずに複写して再配付することを許可します. これらのドキュメントとその使 % 
+% 用許諾を他の言語に翻訳する際は, 以下の条件に従って下さい.	       %
+% 								       %
+% 他の言語に翻訳する際に, 他の言語での口語表現への変更の範囲を越えて故 %
+% 意に意味を変更しないこと.					       %
+%								       %
+% 翻訳した使用許諾には, それが翻訳であること, また原文の使用許諾が翻訳 %
+% 全体に依然適用されることを明示すること.			       %
+%								       %
+% ハイパーテキストの場合, 同一サイト上で原文のコピーを保守すること. ま %
+% た, 翻訳したハイパーテキストのページからその原文へのリンクを提供する %
+% こと.								       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%履歴   2003/03/09 石岡圭一 (version 0.1)
+%
+\documentclass[a4j,fleqn]{jarticle}
+\usepackage{amsmath,amssymb}
+
+\title{DKPACK使用の手引 (version 0.1)}
+\author{石岡 圭一  (2003/03/09)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これはJacobi多項式を用いたスペクトル法で円盤領域の流体方程式の
+数値計算を行うためのサブルーチンパッケージである.
+Jacobi多項式に関する公式の導出や, 非粘性浅水方程式の場合の
+スペクトル法の定式化の詳細等については論文
+「石岡圭一(2003): 円盤領域の浅水方程式に対するスペクトル法 
+   --- I. 原理 ---, ながれ(投稿中)」を参照されたい.
+本マニュアルでは必要最小限の説明にとどめる.
+なお, 扱う方程式および境界条件によって展開の仕方が大きく異なるので,
+それぞれに対応してサブルーチンもいくつかの群に分別される.
+従って各サブルーチンの説明も個別の節に分かれている.
+現在のところ, 非粘性の浅水方程式に対応するものだけが準備されている.
+今後, 粘性ありの浅水方程式, 非粘性および粘性ありのバロトロピック
+方程式等についても対応していく予定である.
+
+また, このパッケージはFTPACKとBSPACKの上位パッケージであり, これらの
+パッケージを内部で引用している.
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+{\tt DKJACB} & Jacobi多項式に内積の重みの平方根を掛けたもの,
+               およびその微分の計算.\\
+{\tt DKGAUS} & Gauss分点および対応するGauss重みの計算.\\\hline
+{\tt DKAINI} & {\tt DKA???}の初期化.\\
+{\tt DKAIN0} & {\tt DKA???}の初期化(一部の配列のみ).\\
+{\tt DKAS2G} & 展開係数から格子点値への変換.\\
+{\tt DKAG2S} & 格子点値から展開係数への変換.\\
+{\tt DKAS2V} & 展開係数から格子点値への変換(勾配成分も同時に計算).\\
+{\tt DKATDV} & 浅水方程式の時間微分項の計算.\\
+{\tt DKACNS} & 浅水方程式の保存量の計算.\\
+{\tt DKABLC} & 傾度風バランスした水深場を求める.\\
+{\tt DKALNR} & 線形安定性解析のための行列の計算.\\
+{\tt DKAQ2U} & ポテンシャル渦度分布から対応するバランスした$\bar u,\bar h$場
+の展開係数を求める.\\
+{\tt DKAEGA} & 重力波成分を分離して解くための行列の準備.\\
+{\tt DKATDG} & 重力波成分のみについての時間発展を行う.\\
+{\tt DKATDL} & 重力波成分を除いた時間微分項の計算.
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンの説明(1. 共通サブルーチン)}
+
+これらのサブルーチンは, 通常, ユーザーが陽に呼出す必要はないが,
+基本的なサブルーチンなので, 参考のために説明を加えておく.
+
+%---------------------------------------------------------------------
+\subsection{DKJACB}
+\begin{enumerate}
+
+\item 機能
+
+Jacobi多項式に内積の重みの平方根を掛けたもの, およびその微分を
+計算する.
+
+\item 定義
+
+Jacobi多項式$P^{(\alpha,\beta)}_n(s)\ (n=0,1,\ldots)$を,
+「区間 $[0,1]$で内積の重み
+$w(s)=s^{\alpha}(1-s)^{\beta}$と定めたときの正規直交多項式
+でかつ最高次の係数が正なるもの」として定義する. 
+ここに, $\alpha,\beta>-1$である(これは内積の値が有界になる
+ために課されるべき条件である). また, $n$は多項式$P^{(\alpha,\beta)}_n(s)$
+の最高次の次数である.
+
+$P^{(\alpha,\beta)}_n(s)$は, 具体的に以下のRodriguesの公式によって
+表わすことができる.
+\[
+P^{(\alpha,\beta)}_n(s)
+=\frac{c_n}{w(s)}\frac{d^n}{ds^n}(w(s)s^n(1-s)^n).
+\]
+ここで, $c_n$は正規化のための定数である. このように定義された
+$P^{(\alpha,\beta)}_n(s)$が$n$次多項式であり, 次数の異なる
+もの同士が直交することは容易に証明できる.
+
+本サブルーチンは, $\alpha,\beta$が非負整数の場合について, 
+\[
+\sqrt{w(s)}P^{(\alpha,\beta)}_n(s)\quad (n=0,1,\dots,N)
+\]
+およびその微分
+\[
+\frac{d}{ds}\left\{\sqrt{w(s)}P^{(\alpha,\beta)}_n(s)\right\}
+\quad (n=0,1,\dots,N)
+\]
+を与えられた分点$s=s_j\ (j=1,2,\dots J)$について与えられた次数$N$まで
+求めるものである(ただし, $0<s_j<1$であること).
+
+\item 呼び出し方法
+
+{\tt DKJACB(JM,MM,K,L,X,P)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt JM} & {\tt (I)} & 入力. 分点数(上記の$J$)\\
+{\tt MM} & {\tt (I)} & 入力. Jacobi多項式の最高次数(上記の$N$)\\
+{\tt K} & {\tt (I)} & 入力. Jacobi多項式のパラメター(上記の$\alpha$)\\
+{\tt L} & {\tt (I)} & 入力. Jacobi多項式のパラメター(上記の$\beta$)\\
+{\tt X} & {\tt (D(JM))} & 出力. 分点の位置(上記の$s_j$)\\
+{\tt P} & {\tt (D(JM*2*(MM+1)))} & 出力. Jacobi多項式に内積の重みの平方根\\
+        &                        &   を掛けたもの, およびその微分(備考参照).
+\end{tabular}
+
+\item 備考
+
+{\tt P(JM,2,0:MM)}と宣言されている場合, {\tt P(J,1,N)}には
+\[
+\sqrt{w(s_j)}P^{(\alpha,\beta)}_n(s_j)
+\]
+が, {\tt P(J,2,N)}には
+\[
+\frac{d}{ds}\left\{\sqrt{w(s)}P^{(\alpha,\beta)}_n(s)\right\}\bigg|_{s=s_j}
+\]
+がそれぞれ格納される.
+
+\end{enumerate}
+
+
+%---------------------------------------------------------------------
+\subsection{DKGAUS}
+\begin{enumerate}
+
+\item 機能
+
+Gauss-Legendre積分公式に使われる
+Gauss分点および対応するGauss重みを計算する.
+
+\item 定義
+
+$f(s)$が$(2J-1)$次以下の多項式であるとき, 
+以下のGauss-Legendre積分公式が成立する.
+\[
+\int^1_0 f(s)ds=\sum^J_{j=1}w_j f(s_j).
+\]
+ここに, $s_j\ (j=1,2,\dots,J)$は$P^{(0,0)}_J(s)$の$J$個の零点
+($0<s_1<s_2<\dots<s_J<1$)
+であり, $w_j$は対応する$J$個の重みで,
+\[
+w_j=\frac{2\sqrt{4J^2-1}}{JP^{(0,0)}_{J-1}(s_j)\frac{d}{ds}P^{(0,0)}_J(s_j)}
+\]
+と計算されるものである.
+
+本サブルーチンは, 与えられた$J$からGauss分点$s_j\ (j=1,2,\dots,J)$および
+対応するGauss重み$w_j\ (j=1,2,\dots,J)$を計算する.
+
+\item 呼び出し方法
+
+{\tt DKGAUS(JM,X,W)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt JM} & {\tt (I)} & 入力. 分点数(上記の$J$)\\
+{\tt X} & {\tt (D(JM))} & 出力. Gauss分点(上記の$s_j$)\\
+{\tt W} & {\tt (D(JM))} & 出力. Gauss重み(上記の$w_j$)
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\section{サブルーチンの説明(2. 非粘性浅水方程式に対する
+サブルーチン群({\tt DKA???}))}
+
+回転円盤上での非粘性浅水方程式は, 適当な無次元化の後, 
+極座標で以下のように表せる.
+\begin{gather}
+\frac{\partial h}{\partial t}
+= -\frac{\partial(hu)}{r\partial\theta}
+   -\frac{\partial(rhv)}{r\partial r}
+\label{sw1h}\\
+\frac{\partial u}{\partial t}
+= -u\frac{\partial u}{r\partial\theta}
+   -v\frac{\partial u}{\partial r}
+   -\frac{uv}{r}
+   -\frac{\partial (h+h_b)}{r\partial\theta}
+   -fv
+\label{sw1u}\\
+\frac{\partial v}{\partial t}
+= -u\frac{\partial v}{r\partial\theta}
+   -v\frac{\partial v}{\partial r}
+   +\frac{u^2}{r}
+   -\frac{\partial (h+h_b)}{\partial r}
+   +fu
+\label{sw1v}   
+\end{gather}
+ここに, $h$は水深, $h_b$は水底地形の高さ(時刻に依存しない),
+$(u,v)$は$(\theta,r)$方向の流速,
+$t$は時刻, $f$はコリオリパラメター(系の回転角速度の$1/2$)である.
+本サブルーチン群({\tt DKA???}))
+の目的は, 方程式系(\ref{sw1h})--(\ref{sw1v})を
+単位円盤($0\le r\le 1, 0\le\theta\le 2\pi$)領域で数値計算する
+ことである.
+$r=1$での境界条件は, 剛体壁境界として, $v=0$を課すことにする.
+式(\ref{sw1h})--(\ref{sw1v})をそのまま扱ってもよいが, 
+独立変数として$r$のかわりに$s=r^2$を用いた方が
+便利であるので,以下のように変形しておく.
+\begin{gather}
+\frac{\partial h}{\partial t}
+= 
+-h\left(s^{-1/2}\frac{\partial u}{\partial\theta}
+   +2\frac{\partial( s^{1/2}v)}{\partial s}\right)
+   -s^{-1/2}u\frac{\partial h}{\partial\theta}
+   -2s^{1/2}v\frac{\partial h}{\partial s}
+   \label{sw2h}\\
+\frac{\partial u}{\partial t}
+= -v\left(f+2\frac{\partial(s^{1/2}u)}{\partial s}\right)
+   -s^{-1/2}u\frac{\partial u}{\partial\theta}
+   -s^{-1/2}\frac{\partial (h+h_b)}{\partial\theta}
+   \label{sw2u}\\
+\frac{\partial v}{\partial t}
+= 
+u\left(f+s^{-1/2}u-s^{-1/2}\frac{\partial v}{\partial\theta}\right)
+   -2v\frac{\partial(s^{1/2}v)}{\partial s}
+   +s^{-1/2}v^2
+   -2s^{1/2}\frac{\partial (h+h_b)}{\partial s}
+   \label{sw2v}
+\end{gather}
+
+方程式系(\ref{sw2h})--(\ref{sw2v})に対して
+Jacobi多項式を用いたスペクトル法を適用することを考える.
+原点で$C^{\infty}$であるための条件および境界条件を考慮して,
+$(h,v,u)$の場を以下のように展開することにする.
+\begin{gather}
+h(s,\theta) =\tilde h^0(s)+2\mbox{Re}\left\{\sum^M_{m=1}\tilde h^m(s)
+e^{im\theta}\right\}
+\label{hexpn}\\
+u(s,\theta) =\tilde u^0(s)+2\mbox{Re}\left\{\sum^M_{m=1}\tilde u^m(s)
+e^{im\theta}\right\}
+\label{uexpn}\\
+v(s,\theta) =\tilde v^0(s)+2\mbox{Re}\left\{\sum^M_{m=1}\tilde v^m(s)
+e^{im\theta}\right\}
+\label{vexpn}
+\end{gather}
+
+\begin{gather}
+\tilde h^0(s) = \sum^{N_0}_{n=0}\hat h^0_n P^{(0,0)}_n(s) 
+\label{th0expn}\\
+\tilde h^m(s) = \sum^{N_m}_{n=0}\hat h^m_n\phi^m_n(s)
+                \quad (m=1,2,\dots,M)
+\label{thmexpn}
+\end{gather}
+\begin{gather}
+\tilde v^0(s) = \sum^{N_0}_{n=1}\hat v^0_n 
+                   \frac1n s^{1/2}(1-s)\frac{d}{ds}P^{(0,0)}_n(s)
+\label{tv0expn}\\
+i\tilde v^m(s) = \sum^{N_m-1}_{n=-1}
+                  \hat v^m_n s^{-1/2}\phi^m_n(s) \quad (m=1,2,\dots,M)
+\label{tvmexpn}
+\end{gather}
+\begin{gather}
+\tilde u^0(s) = \sum^{N_0}_{n=0}\hat u^0_n 
+                   s^{1/2}P^{(0,0)}_n(s) 
+\label{tu0expn}\\
+\tilde u^m(s) = \sum^{N_m}_{n=0}
+                  \hat u^m_n s^{1/2}\phi^m_n(s)
+		  +i\tilde v^m(s) 
+		  \quad (m=1,2,\dots,M)
+\label{tumexpn}
+\end{gather}
+ここで, $M$は切断の次数で, $u,v$から作られる渦度・発
+散および$h$を$x,y$の多項式で表した場合の最高次数を
+表している. $N_m=[(M-m)/2]$とする.
+$[\ ]$はGaussの記号である.
+$P^{(0,0)}_n(s)$等はJacobiの多項式(付録1参照)であり, 
+$\phi^m_n(s)$は,
+\[
+\begin{split}
+\phi^m_n(s) &= s^{m/2}(1-s)P^{(m,2)}_n(s) \quad (n=0,1,\dots, N_m-1)\\
+\phi^m_{N_m}(s) &= \alpha_m
+\left(s^{m/2}-\sum^{N_m-1}_{n=0}\langle s^{m/2}\phi^m_n(s)\rangle
+\phi^m_n(s)
+\right) \\
+\phi^m_{-1}(s) &= s^{m/2}(1-s)P^{(m,2)}_{N_m}(s)
+\end{split}
+\]
+のように作られる関数とする. ただし,
+\[
+\langle A(s)\rangle=\int^1_0 A(s)ds
+\]
+の意味であり, $\alpha_m$は
+$
+\left\langle\left(\phi^m_{N_m}(s)\right)^2\right\rangle=1
+$
+を満すように定められるものである.
+
+本サブルーチン群({\tt DKA???}))は, 展開係数
+$\hat h^m_n,\hat u^m_n, \hat v^m_n$から$h,u,v$の場を求める変換ルーチン
+およびその逆変換を行うルーチン, その他の補助的ルーチンより構成される.
+
+なお, $h,u,v$の場は, 格子点$(s_j,\theta_i)\ (j=1,2,\dots,J;\
+i=0,1,\dots,I-1)$上で求められる. ここに, $s_j$は$J$個のGauss分点
+({\tt DKGAUS}の項参照)で, $\theta_i$は与えられる分割数$I$から
+$\theta_i=2\pi i/I$と定められるものである.
+
+%---------------------------------------------------------------------
+
+\subsection{DKAINI}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt DKA???}の初期化ルーチン. 他のルーチンで用いられる配列
+{\tt IT,T,P,A}の初期化を行う.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+{\tt DKAINI(MM,JM,IM,IT,T,P,A)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数(上記の$M$)\\
+{\tt JM} & {\tt (I)} & 入力. Gauss分点の数(上記の$J$)\\
+{\tt IM} & {\tt (I)} & 入力. $\theta$方向の分割数(上記の$I$)\\
+{\tt IT}  & {\tt (I(5))}    & 出力. {\tt DKA???}で用いられる配列\\
+{\tt T}   & {\tt (D(IM*2))} & 出力. {\tt DKA???}で用いられる配列\\
+{\tt P}  & {\tt (D(JM*2*((MM+8)*MM/4+1))} & 出力. {\tt DKA???}で用いられる配列\\
+{\tt A}  & {\tt (D(3*((MM+1)/2)*(MM/2)+7*MM/2)} & 出力. {\tt DKA???}で用いられる配列
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt MM}は2以上の整数, {\tt JM}および{\tt IM}はそれぞれ, 2以上の
+偶数でなければならない.
+
+\item {\tt P(JM,2,(MM+8)*MM/4+1)}と宣言されている場合, 
+   {\tt Y(J,1,1)}には$r_j=\sqrt{s_j}$が, 
+   {\tt Y(J,2,1)}には$w_j$がそれぞれ格納される.
+
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{DKAIN0}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt DKA???}の初期化ルーチン. ただし, {\tt DKAINI}と異なり
+{\tt P,A}のみの初期化を行う.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+{\tt DKAIN0(MM,JM,P,A)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数(上記の$M$)\\
+{\tt JM} & {\tt (I)} & 入力. Gauss分点の数(上記の$J$)\\
+{\tt P}  & {\tt (D(JM*2*((MM+8)*MM/4+1))} & 出力. {\tt DKA???}で用いられる配列\\
+{\tt A}  & {\tt (D(3*((MM+1)/2)*(MM/2)+7*MM/2)} & 出力. {\tt DKA???}で用いられる配列
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt DKALNR}を使う場合のように, 配列{\tt P,A}のみの初期化を
+行えば十分である場合には{\tt DKAINI}の代りにこのサブルーチンを
+用いればよい.
+
+\item {\tt MM}は2以上の整数, {\tt JM}はそれぞれ, 2以上の
+偶数でなければならない.
+
+\item {\tt P(JM,2,(MM+8)*MM/4+1)}と宣言されている場合, 
+   {\tt Y(J,1,1)}には$r_j=\sqrt{s_j}$が, 
+   {\tt Y(J,2,1)}には$w_j$がそれぞれ格納される.
+
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{DKAS2G}
+
+\begin{enumerate}
+
+\item 機能
+
+展開係数から格子点値への変換を行う.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+{\tt DKAS2G(MM,JM,IM,S,G,WORK,IT,T,P)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. Gauss分点の数\\
+{\tt IM} & {\tt (I)} & 入力. $\theta$方向の分割数\\
+{\tt S}   & {\tt (D((MM+1)*(MM+2)/2*3-1))} & 入力. $\hat h^m_n,\hat u^m_n,\hat
+v^m_n$が格納されている配列(並べ方は備考参照).\\
+{\tt G}   & {\tt (D(JM*IM*3))} & 出力. $h,u,v$の格子点値が格納される配列
+(並び方は備考参照).\\
+{\tt WORK}   & {\tt (D(JM*IM))} & 作業領域.\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt P}  & {\tt (D(JM*2*((MM+8)*MM/4+1))} & 入力. {\tt DKAINI}で初期化された配列
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt IM}$>${\tt 2*MM}であること.
+
+\item {\tt S}には展開係数$\hat h^m_n,\hat u^m_n,\hat v^m_n$が
+以下の順で格納されているとして扱う.
+
+波数0成分(実部のみ)
+\[
+\hat h^0_0, \hat h^0_1, \dots, \hat h^0_{N_0};\ 
+\hat u^0_0, \hat u^0_1, \dots, \hat u^0_{N_0};\
+\hat v^0_1, \hat v^0_2, \dots, \hat v^0_{N_0}
+\]
+波数1成分の実部
+\[
+\mbox{Re}(\hat h^1_0), \mbox{Re}(\hat h^1_1), \dots, 
+\mbox{Re}(\hat h^1_{N_1});\ 
+\mbox{Re}(\hat u^1_0), \mbox{Re}(\hat u^1_1), \dots, 
+\mbox{Re}(\hat u^1_{N_1});\ 
+\mbox{Re}(\hat v^1_{-1}), \mbox{Re}(\hat v^1_0), \dots, 
+\mbox{Re}(\hat v^1_{N_1-1})
+\]
+波数1成分の虚部
+\[
+\mbox{Im}(\hat h^1_0), \mbox{Im}(\hat h^1_1), \dots, 
+\mbox{Im}(\hat h^1_{N_1});\ 
+\mbox{Im}(\hat u^1_0), \mbox{Im}(\hat u^1_1), \dots, 
+\mbox{Im}(\hat u^1_{N_1});\ 
+\mbox{Im}(\hat v^1_{-1}), \mbox{Im}(\hat v^1_0), \dots, 
+\mbox{Im}(\hat v^1_{N_1-1})
+\]
+波数2成分の実部, 波数2成分の虚部,$\dots$,波数$M$成分の実部, 波数$M$成分の虚部.
+
+
+\item {\tt G(JM,0;IM-1,3)}と宣言されている場合, 
+   {\tt G(J,I,1)}には$h(s_j,\theta_i)$が,
+   {\tt G(J,I,2)}には$u(s_j,\theta_i)$が,
+   {\tt G(J,I,3)}には$v(s_j,\theta_i)$が, それぞれ格納される.
+
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{DKAG2S}
+
+\begin{enumerate}
+
+\item 機能
+
+格子点値から展開係数への変換を行う.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+{\tt DKAG2S(MM,JM,IM,S,G,WORK,IT,T,P,A)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. Gauss分点の数\\
+{\tt IM} & {\tt (I)} & 入力. $\theta$方向の分割数\\
+{\tt G}   & {\tt (D(JM*IM*3))} & 入力. $h,u,v$の格子点値が格納されている配列.\\
+{\tt S}   & {\tt (D((MM+1)*(MM+2)/2*3-1))} & 出力. $\hat h^m_n,\hat u^m_n,\hat
+v^m_n$が格納される配列.\\
+{\tt WORK}   & {\tt (D(JM*IM))} & 作業領域.\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt P}  & {\tt (D(JM*2*((MM+8)*MM/4+1))} & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt A}  & {\tt (D(3*((MM+1)/2)*(MM/2)+7*MM/2)} & 入力. {\tt DKAINI}で初期化された配列.
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt IM}$>${\tt 2*MM}であること.
+
+\item {\tt S}, {\tt G}への展開係数および格子点値の並び方については
+{\tt DKAS2G}の項を参照.
+
+\item 入力{\tt G}の中身は保存されないので注意(作業領域の一つとして
+用いられる).
+
+\item 格子点値から展開係数を決定するためにはGalerkin法を用いている.
+詳細については既出論文を参照.
+
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{DKAS2V}
+
+\begin{enumerate}
+
+\item 機能
+
+展開係数から格子点値への変換を行う(勾配成分も同時に計算).
+
+\item 定義
+
+\item 呼び出し方法 
+    
+{\tt DKAS2V(MM,JM,IM,S,G,WORK,IT,T,P)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. Gauss分点の数\\
+{\tt IM} & {\tt (I)} & 入力. $\theta$方向の分割数\\
+{\tt S}   & {\tt (D((MM+1)*(MM+2)/2*3-1))} & 入力. $\hat h^m_n,\hat u^m_n,\hat
+v^m_n$が格納されている配列(並べ方は備考参照).\\
+{\tt G}   & {\tt (D(JM*IM*9))} & 出力. $h,u,v$の格子点値と勾配が
+格納される配列(並び方は備考参照).\\
+{\tt WORK}   & {\tt (D(JM*IM))} & 作業領域.\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt P}  & {\tt (D(JM*2*((MM+8)*MM/4+1))} & 入力. {\tt DKAINI}で初期化された配列
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt IM}$>${\tt 2*MM}であること.
+
+\item {\tt S}, {\tt G}への展開係数の並べ方については{\tt DKAS2G}の項を参照.
+
+\item {\tt G(JM,0;IM-1,3,3)}と宣言されている場合,
+
+   {\tt G(J,I,1,1)}には$h$,
+   {\tt G(J,I,2,1)}には$\partial h/\partial\theta$,
+   {\tt G(J,I,3,1)}には$\partial h/\partial s$,
+   
+   {\tt G(J,I,1,2)}には$u$,
+   {\tt G(J,I,2,2)}には$\partial u/\partial\theta$,
+   {\tt G(J,I,3,2)}には$\partial (s^{1/2}u)/\partial s$,
+   
+   {\tt G(J,I,1,3)}には$v$,
+   {\tt G(J,I,2,3)}には$\partial v/\partial\theta$,
+   {\tt G(J,I,3,3)}には$\partial (s^{1/2}v)/\partial s$,
+
+   がそれぞれ格納される($s$-偏微分に関する出力がスカラー場$h$
+   とベクトル場$(u,v)$とで異なっていることに注意).
+   ただし, {\tt DKAS2G}と同様に, 添字{\tt J,I}は
+   格子点$s_j,\theta_i$での値を表す.
+
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{DKATDV}
+
+\begin{enumerate}
+
+\item 機能 
+
+浅水方程式の時間微分項の計算を行う.
+
+\item 定義
+
+浅水方程式(\ref{sw2h})--(\ref{sw2v})に対してGalerkin法を適用して
+展開係数の時間微分を定める. この場合のGalerkin法の詳細に
+ついては既出論文を参照.
+
+\item 呼び出し方法 
+    
+{\tt DKATDV(MM,JM,IM,F,HB,S,DS,G,IT,T,P,A)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. Gauss分点の数\\
+{\tt IM} & {\tt (I)} & 入力. $\theta$方向の分割数\\
+{\tt F}   & {\tt (D)} & 入力. コリオリパラメター$f$の値.\\
+{\tt HB}   & {\tt (D(JM*IM*2))} & 入力. $\partial h_b/\partial\theta,
+\partial h_b/\partial s$の格子点値が格納されている配列\\
+ & & (並べ方は備考参照).\\
+{\tt S}   & {\tt (D((MM+1)*(MM+2)/2*3-1))} & 入力. $\hat h^m_n,\hat u^m_n,\hat
+v^m_n$が格納されている配列(並べ方は備考参照).\\
+{\tt DS}   & {\tt (D((MM+1)*(MM+2)/2*3-1))} & 出力. 
+$d\hat h^m_n/dt,dt\hat u^m_n/dt,d\hat v^m_n/dt$
+が格納される配列\\
+ & & (並び方は備考参照).\\
+{\tt WORK}   & {\tt (D(JM*IM*10))} & 作業領域.\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt P}  & {\tt (D(JM*2*((MM+8)*MM/4+1))} & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt A}  & {\tt (D(3*((MM+1)/2)*(MM/2)+7*MM/2)} & 入力. {\tt DKAINI}で初期化された配列.
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item 2次の非線形項からの aliasing を除去するためには,
+ {\tt IM}$>${\tt 3*MM}, かつ{\tt JM}$\ge${\tt (MM+MM/2+2)/2}
+ を満すようにしておくこと.
+
+\item {\tt S}および{\tt DS}への
+$\hat h^m_n,\hat u^m_n,\hat v^m_n$および
+$d\hat h^m_n/dt,dt\hat u^m_n/dt,d\hat v^m_n/dt$
+の格納順については, {\tt DKAS2G}の項参照.
+
+\item {\tt HB(JM,0;IM-1,2)}と宣言する場合,
+   {\tt HB(J,I,1)}には$(\partial h_b/\partial\theta)(s_j,\theta_i)$を
+   {\tt HB(J,I,2)}には$(\partial h_b/\partial s)(s_j,\theta_i)$を
+   それぞれ格納しておくこと.
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{DKACNS}
+
+\begin{enumerate}
+
+\item 機能
+
+浅水方程式の保存量の計算を行う.
+
+\item 定義
+
+浅水方程式(\ref{sw2h})--(\ref{sw2v})には以下のような保存量がある:
+\begin{itemize}
+\item 全角運動量(A.Mom.):
+\begin{equation}
+\mbox{A.Mom.}\equiv
+\frac1{2\pi}\int^{2\pi}_0\!\!\int^1_0
+h(u+\frac{f}{2}s^{1/2})s^{1/2}dsd\theta
+\end{equation}
+\item 全エネルギー(A.Ene.):
+\begin{equation}
+\mbox{A.Ene.}\equiv
+\frac1{2\pi}\int^{2\pi}_0\!\!\int^1_0
+\frac12 h(u^2+v^2+h+2h_b)
+ds d\theta
+\end{equation}
+\end{itemize}
+である.
+本サブルーチンは, $h,u,v$のスペクトル展開係数
+$\hat h^m_n,\hat u^m_n,\hat v^m_n$を入力として, 
+上記の保存量 A.Mom. および A.Ene. を求めるものである
+(他にも無限個のカシミール不変量も保存量になるが, これについては
+扱わない. また, 平均水深:
+\[
+\frac1{2\pi}\int^{2\pi}_0\!\!\int^1_0
+hdsd\theta
+\]
+ももちろん保存量であるが, これは$\hat h^0_0$そのものである).
+
+なお, 本パッケージで用いているスペクトル法では, 平均水深以外の
+保存量は厳密には保存されないことに注意されたい.
+
+\item 呼び出し方法 
+    
+{\tt DKACNS(MM,JM,IM,F,HB,S,AMOM,AENE,WORK,IT,T,P)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. Gauss分点の数\\
+{\tt IM} & {\tt (I)} & 入力. $\theta$方向の分割数\\
+{\tt F}   & {\tt (D)} & 入力. コリオリパラメター$f$の値.\\
+{\tt HB}   & {\tt (D(JM*IM))} & 入力. $h_b$の格子点値が格納されている配列(並べ方は備考参照).\\
+{\tt S}   & {\tt (D((MM+1)*(MM+2)/2*3-1))} & 入力. $\hat h^m_n,\hat u^m_n,\hat
+v^m_n$が格納されている配列(並べ方は備考参照).\\
+{\tt AMOM} & {\tt (D)} 
+& 出力. A.Mom.の値\\
+{\tt AENE} & {\tt (D)}
+& 出力. A.Ene.の値\\
+{\tt WORK}   & {\tt (D(JM*IM*4))} & 作業領域.\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt P}  & {\tt (D(JM*2*((MM+8)*MM/4+1))} & 入力. {\tt DKAINI}で初期化された配列\\
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt S}への
+$\hat h^m_n,\hat u^m_n,\hat v^m_n$
+の格納順については, {\tt DKAS2G}の項参照.
+
+\item {\tt HB(JM,0;IM-1)}と宣言する場合,
+   {\tt HB(J,I)}には$h_b(s_j,\theta_i)$を格納しておくこと.
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{DKABLC}
+
+\begin{enumerate}
+
+\item 機能
+
+傾度風バランスした水深場を求める.
+
+\item 定義
+
+浅水方程式(\ref{sw2h})--(\ref{sw2v})において,
+$h_b\equiv 0$とした場合, $\theta$に依存しない定常解
+$h=\bar h(s), u=\bar u(s), v=0$の満すべき式は,
+\begin{equation}
+0
+= \bar u\left(f+s^{-1/2}\bar u\right)
+   -2s^{1/2}\frac{d\bar h}{ds}
+\label{balance}   
+\end{equation}
+となる. 本サブルーチンは, $\bar u(s)$を与え,
+式(\ref{balance})に対応するGalerkin法の式
+\begin{equation}
+\left\langle\left(\bar u\left(f+s^{-1/2}\bar u\right)
+   -2s^{1/2}\frac{d\bar h}{ds}\right)
+s^{1/2}(1-s)\frac{d}{ds}P^{(0,0)}_n(s)\right\rangle
+=0\quad (n=1,2,\dots,N_0)
+\label{balanceg}   
+\end{equation}
+を満す$\bar h(s)$に対応する展開係数
+$\hat h^0_1, \hat h^0_2,\dots, \hat h^0_{N_0}$を求めるものである
+(定数成分$\hat h^0_0$はこの式では決まらない).
+ちなみに, 式(\ref{balanceg})は, 以下のように書換えられ, 本サブルーチン
+でもこの式を利用している.
+\begin{equation}
+\hat h^0_n
+=
+\frac1{2n(n+1)}
+\left\langle\bar u\left(fs^{1/2}+\bar u\right)
+(1-s)\frac{d}{ds}P^{(0,0)}_n(s)\right\rangle
+\quad (n=1,2,\dots,N_0)
+\label{balanceg2}   
+\end{equation}
+
+\item 呼び出し方法 
+    
+{\tt DKABLC(MM,JM,F,U,SH,P)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. Gauss分点の数\\
+{\tt F}   & {\tt (D)} & 入力. コリオリパラメター$f$の値.\\
+{\tt U}   & {\tt (D(JM))} & 入力. $\bar u(s_j)$の分布を格納した配列\\
+{\tt SH}   & {\tt (D(MM/2))} & 出力. $\hat h^0_1, \hat h^0_2,\dots, \hat h^0_{N_0}$の値が格納される配列\\
+{\tt P}  & {\tt (D(JM*2*((MM+8)*MM/4+1))} & 入力. {\tt DKAINI}で初期化された配列\\
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{DKALNR}
+
+\begin{enumerate}
+
+\item 機能
+
+線形安定性解析のための行列の計算.
+
+\item 定義
+
+浅水方程式(\ref{sw2h})--(\ref{sw2v})において,
+$h_b\equiv 0$とした場合, $\theta$に依存しない定常解
+$h=\bar h(s), u=\bar u(s), v=0$が得られているとする.
+$h=\bar h(s)+h'(s,\theta,t),
+u=\bar u(s)+u'(s,\theta,t),
+v=0+v'(s,\theta,t)$とこの定常解に擾乱を加えた場合, この擾乱
+に対する線形化方程式は以下のようになる. 
+
+\begin{gather}
+\frac{\partial h'}{\partial t}
+= 
+-\bar h\left(s^{-1/2}\frac{\partial u'}{\partial\theta}
+   +2\frac{\partial( s^{1/2}v')}{\partial s}\right)
+   -s^{-1/2}\bar u\frac{\partial h'}{\partial\theta}
+   -2s^{1/2}v'\frac{d\bar h}{ds},
+   \\
+\frac{\partial u'}{\partial t}
+= -v'\left(f+2\frac{d(s^{1/2}\bar u)}{ds}\right)
+   -s^{-1/2}\bar u\frac{\partial u'}{\partial\theta}
+   -s^{-1/2}\frac{\partial h'}{\partial\theta},
+   \\
+\frac{\partial v'}{\partial t}
+=\bar u\left(2s^{-1/2}u'-s^{-1/2}\frac{\partial v'}{\partial\theta}\right)
++fu'-2s^{1/2}\frac{\partial h'}{\partial s}.
+\end{gather}
+
+$(h',u',v')=(\tilde h^m(s),\tilde u^m(s),\tilde v^m(s))
+e^{i(m\theta-\omega t)}$
+と波動解を仮定すれば,
+\begin{gather}
+-i\omega\tilde h^m
+= 
+-\bar h\left(s^{-1/2}im\tilde u^m
+   +2\frac{d(s^{1/2}\tilde v^m)}{d s}\right)
+   -s^{-1/2}\bar u im\tilde h^m
+   -2s^{1/2}\tilde v^m\frac{d\bar h}{ds},
+   \\
+-i\omega\tilde u^m
+= -\tilde v^m\left(f+2\frac{d(s^{1/2}\bar u)}{ds}\right)
+   -s^{-1/2}\bar uim\tilde u^m
+   -s^{-1/2}im\tilde h^m,
+   \\
+-i\omega\tilde v^m
+=\bar u\left(2s^{-1/2}\tilde u^m
+-s^{-1/2}im\tilde v^m\right)
++f\tilde u^m-2s^{1/2}\frac{d\tilde h^m}{ds},
+\end{gather}
+となる. 少し整理すると,
+\begin{gather}
+\omega\tilde h^m
+= 
+-\bar h\left(s^{-1/2}(-m)\tilde u^m
+   +2\frac{d(s^{1/2}(i\tilde v^m))}{d s}\right)
+   +s^{-1/2}\bar u m\tilde h^m
+   -2s^{1/2}(i\tilde v^m)\frac{d\bar h}{ds},
+   \label{lh}\\
+\omega\tilde u^m
+= -(i\tilde v^m)\left(f+2\frac{d(s^{1/2}\bar u)}{ds}\right)
+   +s^{-1/2}\bar um\tilde u^m
+   +s^{-1/2}m\tilde h^m,
+   \label{lu}\\
+\omega(i\tilde v^m)
+=ms^{-1/2}\bar u(i\tilde v^m)
+-(f+2s^{-1/2}\bar u)\tilde u^m
++2s^{1/2}\frac{d\tilde h^m}{ds}\label{lv},
+\end{gather}
+となる. 本サブルーチンは,
+$\bar u(s), \bar h(s)$を与え,
+$m\ge 0$の場合には
+展開式(\ref{thmexpn}), (\ref{tumexpn}), (\ref{tvmexpn})およびGalerkin法
+に基いて式(\ref{lh})--(\ref{lv})を
+\[
+\omega
+\left[
+\begin{array}{l}
+\hat h^m_0\\
+\vdots\\
+\hat h^m_{N_m}\\
+\hat u^m_0\\
+\vdots\\
+\hat u^m_{N_m}\\
+\hat v^m_{-1}\\
+\vdots\\
+\hat v^m_{N_m-1}
+\end{array}
+\right]
+={\boldsymbol B}_m
+\left[
+\begin{array}{l}
+\hat h^m_0\\
+\vdots\\
+\hat h^m_{N_m}\\
+\hat u^m_0\\
+\vdots\\
+\hat u^m_{N_m}\\
+\hat v^m_{-1}\\
+\vdots\\
+\hat v^m_{N_m-1}
+\end{array}
+\right]
+\]
+と表した場合の$(3N_m+3)\times(3N_m+3)$行列${\boldsymbol B}_m$を,
+$m=0$の場合には,
+展開式(\ref{th0expn}), (\ref{tu0expn})および$\tilde v^0$のかわりに
+$i\tilde v^0$を(\ref{tv0expn})の形に展開したものに基いて
+式(\ref{lh})--(\ref{lv})を
+\[
+\omega
+\left[
+\begin{array}{l}
+\hat h^0_1\\
+\vdots\\
+\hat h^0_{N_0}\\
+\hat u^0_0\\
+\vdots\\
+\hat u^0_{N_0}\\
+\hat v^0_1\\
+\vdots\\
+\hat u^0_{N_0}
+\end{array}
+\right]
+={\boldsymbol B}_0
+\left[
+\begin{array}{l}
+\hat h^0_1\\
+\vdots\\
+\hat h^0_{N_0}\\
+\hat u^0_0\\
+\vdots\\
+\hat u^0_{N_0}\\
+\hat v^0_1\\
+\vdots\\
+\hat u^0_{N_0}
+\end{array}
+\right]
+\]
+と表した場合の$(3N_0+1)\times(3N_0+1)$行列${\boldsymbol B}_0$を
+それぞれ求めるものである($m=0$の場合, 定数成分$\hat h^0_0$は
+固有値問題に関係しない).
+
+\item 呼び出し方法 
+    
+{\tt DKALNR(MM,JM,M,F,H,U,B,WORK,P,A)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. Gauss分点の数\\
+{\tt M}   & {\tt (I)} & 入力. 波数$m$の値.\\
+{\tt F}   & {\tt (D)} & 入力. コリオリパラメター$f$の値.\\
+{\tt H}   & {\tt (D(JM*2))} & 入力. $\bar h(s_j)$, $d\bar h(s)/ds|_{s=s_j}$
+                              の分布を格納した配列\\
+{\tt U}   & {\tt (D(JM*2))} & 入力. $\bar u(s_j)$,
+                         $d(s^{1/2}\bar u(s))/ds|_{s=s_j}$の分布を格納した配列\\
+{\tt B}   & {\tt (D(大きさは備考参照))} & 出力.
+${\boldsymbol B}_m$が格納される配列\\
+{\tt WORK}   & {\tt (D(JM*9))} & 作業領域.\\
+{\tt P}  & {\tt (D(JM*2*((MM+8)*MM/4+1))} & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt A}  & {\tt (D(3*((MM+1)/2)*(MM/2)+7*MM/2)} & 入力. {\tt DKAINI}で初期化された配列.
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+\item {\tt B}の大きさは, {\tt M}$=0$の場合は{\tt (MM/2*3+1)*(MM/2*3+1)},
+{\tt M}$\ge 1$の場合は{\tt ((MM-M)/2*3+3)*((MM-M)/2*3+3)}とすること.
+{\tt M}$=0$の場合は{\tt B(MM/2*3+1,MM/2*3+1)},
+{\tt M}$\ge 1$の場合は{\tt B((MM-M)/2*3+3,(MM-M)/2*3+3)}, とそれぞれ宣言
+しておけば, {\tt B(I,J)}には$({\boldsymbol B}_m)_{ij}$が格納される.
+
+\item {\tt H(JM,2)}と宣言されている場合, {\tt H(J,1)}には
+$\bar h(s_j)$を, {\tt H(J,2)}には$d\bar h(s)/ds|_{s=s_j}$を
+それぞれ格納しておくこと.
+
+\item {\tt U(JM,2)}と宣言されている場合, {\tt U(J,1)}には
+$\bar u(s_j)$を, {\tt U(J,2)}には$d(s^{1/2}\bar u(s))/ds|_{s=s_j}$を
+それぞれ格納しておくこと.
+
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{DKAQ2U}
+
+\begin{enumerate}
+
+\item 機能
+
+ポテンシャル渦度分布から対応するバランスした$\bar u,\bar h$場
+の展開係数を求める.
+
+\item 定義
+
+{\tt DKABLC}の項で述べたように, 
+浅水方程式(\ref{sw2h})--(\ref{sw2v})において,
+$h_b\equiv 0$とした場合, $\theta$に依存しない定常解
+$h=\bar h(s), u=\bar u(s), v=0$の満すべき式は,
+式(\ref{balance})となる. 
+また, 対応するポテンシャル渦度$\bar q(s)$は
+\begin{equation}
+\bar q(s)=\frac{f+2d(s^{1/2}\bar u(s))/ds}{\bar h(s)}
+\label{qdef}   
+\end{equation}
+と定義される. 本サブルーチンは, $\bar q(s)$を与え,
+式(\ref{balance})に対応するGalerkin法の式(\ref{balanceg2})
+および, 式(\ref{qdef})に対応する式
+\begin{equation}
+\left\langle\left(\bar q(s)\bar h(s)-(f+2d(s^{1/2}\bar u(s))/ds)
+\right)
+P^{(0,0)}_n(s)\right\rangle
+=0\quad (n=0,1,\dots,N_0)
+\label{qdefg}   
+\end{equation}
+を満す$\bar h(s)$および$\bar u(s)$に対応する展開係数
+$\hat h^0_0,\hat h^0_1,\dots,\hat h^0_{N_0}$
+および$\hat u^0_0,\hat u^0_1,\dots,\hat u^0_{N_0}$
+を求めるものである.
+ただし, 式(\ref{balanceg2})および(\ref{qdefg})では$\bar h(s)$を
+決めるための条件が足りないので, 境界での値$\bar h(1)$を陽に
+与えておくものとする.
+
+\item 呼び出し方法 
+    
+{\tt DKAQ2U(MM,JM,F,HBNDRY,Q,U,SU,SH,C,D,E,DD,ERR,P)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. Gauss分点の数\\
+{\tt F}   & {\tt (D)} & 入力. コリオリパラメター$f$の値.\\
+{\tt HBNDRY}   & {\tt (D)} & 入力. $\bar h(1)$の値.\\
+{\tt Q}   & {\tt (D(JM))} & 入力. $\bar q(s_j)$の分布を格納した配列\\
+{\tt U}   & {\tt (D(JM))} & 作業領域.\\
+{\tt SU}   & {\tt (D(MM/2+1))} & 出力. $\hat u^0_0, \hat u^0_1,\dots, \hat u^0_{N_0}$の値が格納される配列\\
+{\tt SH}   & {\tt (D(MM/2+1))} & 出力. $\hat h^0_0, \hat h^0_1,\dots, \hat h^0_{N_0}$の値が格納される配列\\
+{\tt C}   & {\tt (D((MM/2+1)*(MM/2+1)))} & 作業領域.\\
+{\tt D}   & {\tt (D((MM/2+1)*(MM/2+1)))} & 作業領域.\\
+{\tt E}   & {\tt (D(MM/2*(MM/2+1)))} & 作業領域.\\
+{\tt DD}   & {\tt (D((MM/2+2)*(MM/2+2)))} & 作業領域.\\
+{\tt ERR}   & {\tt (D(MM/2+2))} & 作業領域.\\
+{\tt P}  & {\tt (D(JM*2*((MM+8)*MM/4+1))} & 入力. {\tt DKAINI}で初期化された配列\\
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{DKAEGA}
+
+\begin{enumerate}
+
+\item 機能
+
+重力波成分を分離して解くための行列の準備.
+{\tt DKATDG}で用いられる配列
+{\tt WRM,VRM,VLM}の初期化を行う.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+{\tt DKAEGA(MM,JM,F,HBAR,WORK,P,A,WL,WV,WRM,VRM,VLM)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. Gauss分点の数\\
+{\tt F}   & {\tt (D)} & 入力. コリオリパラメター$f$の値.\\
+{\tt HBAR}   & {\tt (D)} & 入力. $H$の値({\tt DKATDG}の項を参照).\\
+{\tt WORK}   & {\tt (D(JM*13))} & 作業領域.\\
+{\tt P}  & {\tt (D(JM*2*((MM+8)*MM/4+1))} & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt A}  & {\tt (D(3*((MM+1)/2)*(MM/2)+7*MM/2)} & 入力. {\tt DKAINI}で初期化された配列.\\
+{\tt WL}   & {\tt (D((MM/2+1)*18))} & 作業領域.\\
+{\tt WV}   & {\tt (D((MM/2+1)*(MM/2+1)*27))} & 作業領域.\\
+{\tt WRM}   & {\tt (D(MM*(MM+4)/2))} & 出力. {\tt DKATDG}で用いられる配列.\\
+{\tt VRM}   & {\tt (D(6*(1+(MM+2)/2*((MM+5)/2*MM-3)/3)+MM/2*2))} & 出力. {\tt DKATDG}で用いられる配列.\\
+{\tt VLM}   & {\tt (D(6*(1+(MM+2)/2*((MM+5)/2*MM-3)/3)+MM/2*2))} & 出力. {\tt DKATDG}で用いられる配列.
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item 本サブルーチンは, 内部でLAPACK({\tt
+ftp://ftp.netlib.org/lapack/lapack.tar.gz})
+に含まれる固有値・固有ベクトル計算ルーチン{\tt DGEEV}を
+利用している.
+
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{DKATDG}
+
+\begin{enumerate}
+
+\item 機能
+
+重力波成分のみについての時間発展を行う.
+
+\item 定義
+
+浅水方程式(\ref{sw2h})--(\ref{sw2v})
+から平均水深$H$(定数)に対応する重力波成分のみに対する線形方程式:
+\begin{gather}
+\frac{\partial h}{\partial t}
+= 
+-H\left(s^{-1/2}\frac{\partial u}{\partial\theta}
+   +2\frac{\partial( s^{1/2}v)}{\partial s}\right)
+   \\
+\frac{\partial u}{\partial t}
+= -fv
+   -s^{-1/2}\frac{\partial h}{\partial\theta}
+   \\
+\frac{\partial v}{\partial t}
+= fu-2s^{1/2}\frac{\partial h}{\partial s}
+\end{gather}
+に対してGalerkin法を適用して
+展開係数を$\Delta t$だけ時間発展する.
+
+\item 呼び出し方法 
+    
+{\tt DKATDG(MM,S,DT,WS,WRM,VRM,VLM)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt S}   & {\tt (D((MM+1)*(MM+2)/2*3-1))} & 入力および出力. 入力: 現在時刻の\\
+  & & $\hat h^m_n,\hat u^m_n,\hat v^m_n$ が格納されている配列.\\
+  & & 出力: $\Delta t$後の$\hat h^m_n,\hat u^m_n,\hat v^m_n$が格納さる配列.\\
+{\tt DT}   & {\tt (D)} & 入力. 時間発展する時間刻み幅($\Delta t$).\\
+{\tt WS}   & {\tt (D((MM/2+1)*4))} & 作業領域.\\
+{\tt WRM}  & {\tt (D(MM*(MM+4)/2))} & 入力. {\tt DKAEGA}で初期化された配列.\\
+{\tt VRM}  & {\tt (D(6*(1+(MM+2)/2*((MM+5)/2*MM-3)/3)+MM/2*2))} & 入力. {\tt DKAEGA}で初期化された配列.\\
+{\tt VLM}  & {\tt (D(6*(1+(MM+2)/2*((MM+5)/2*MM-3)/3)+MM/2*2))} & 入力. {\tt DKAEGA}で初期化された配列.
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item このサブルーチンは, {\tt DKATDL}と組み合わせて{\tt TDRKNU}等から
+利用される.
+
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{DKATDL}
+
+\begin{enumerate}
+
+\item 機能 
+
+重力波成分を除いた時間微分項の計算.
+
+\item 定義
+
+浅水方程式(\ref{sw2h})--(\ref{sw2v})
+から平均水深$H$に対応する重力波成分を除いた方程式:
+\begin{gather}
+\frac{\partial h}{\partial t}
+= 
+-(h-H)\left(s^{-1/2}\frac{\partial u}{\partial\theta}
+   +2\frac{\partial( s^{1/2}v)}{\partial s}\right)
+   -s^{-1/2}u\frac{\partial h}{\partial\theta}
+   -2s^{1/2}v\frac{\partial h}{\partial s}
+   \\
+\frac{\partial u}{\partial t}
+= -v\left(2\frac{\partial(s^{1/2}u)}{\partial s}\right)
+   -s^{-1/2}u\frac{\partial u}{\partial\theta}
+   -s^{-1/2}\frac{\partial h_b}{\partial\theta}
+   \\
+\frac{\partial v}{\partial t}
+= 
+u\left(s^{-1/2}u-s^{-1/2}\frac{\partial v}{\partial\theta}\right)
+   -2v\frac{\partial(s^{1/2}v)}{\partial s}
+   +s^{-1/2}v^2
+   -2s^{1/2}\frac{\partial h_b}{\partial s}
+\end{gather}
+に対してGalerkin法を適用して
+展開係数の時間微分を定める. 
+
+\item 呼び出し方法 
+    
+{\tt DKATDL(MM,JM,IM,F,HB,S,DS,G,IT,T,P,A)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. Gauss分点の数\\
+{\tt IM} & {\tt (I)} & 入力. $\theta$方向の分割数\\
+{\tt F}   & {\tt (D)} & 入力. コリオリパラメター$f$の値.\\
+{\tt HB}   & {\tt (D(JM*IM*2))} & 入力. $\partial h_b/\partial\theta,
+\partial h_b/\partial s$の格子点値が格納されている配列\\
+ & & (並べ方は備考参照).\\
+{\tt S}   & {\tt (D((MM+1)*(MM+2)/2*3-1))} & 入力. $\hat h^m_n,\hat u^m_n,\hat
+v^m_n$が格納されている配列(並べ方は備考参照).\\
+{\tt DS}   & {\tt (D((MM+1)*(MM+2)/2*3-1))} & 出力. 
+$d\hat h^m_n/dt,dt\hat u^m_n/dt,d\hat v^m_n/dt$
+が格納される配列\\
+ & & (並び方は備考参照).\\
+{\tt WORK}   & {\tt (D(JM*IM*10))} & 作業領域.\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt P}  & {\tt (D(JM*2*((MM+8)*MM/4+1))} & 入力. {\tt DKAINI}で初期化された配列\\
+{\tt A}  & {\tt (D(3*((MM+1)/2)*(MM/2)+7*MM/2)} & 入力. {\tt DKAINI}で初期化された配列.
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item 2次の非線形項からの aliasing を除去するためには,
+ {\tt IM}$>${\tt 3*MM}, かつ{\tt JM}$\ge${\tt (MM+MM/2+2)/2}
+ を満すようにしておくこと.
+
+\item {\tt S}および{\tt DS}への
+$\hat h^m_n,\hat u^m_n,\hat v^m_n$および
+$d\hat h^m_n/dt,dt\hat u^m_n/dt,d\hat v^m_n/dt$
+の格納順については, {\tt DKAS2G}の項参照.
+
+\item {\tt HB(JM,0;IM-1,2)}と宣言する場合,
+   {\tt HB(J,I,1)}には$(\partial h_b/\partial\theta)(s_j,\theta_i)$を
+   {\tt HB(J,I,2)}には$(\partial h_b/\partial s)(s_j,\theta_i)$を
+   それぞれ格納しておくこと.
+\end{itemize}
+
+\end{enumerate}
+
+\end{document}

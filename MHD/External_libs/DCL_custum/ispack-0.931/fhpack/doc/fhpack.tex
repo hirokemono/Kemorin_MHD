@@ -1,0 +1,316 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (C) 1998 Keiichi Ishioka				       %
+% 								       %
+% この著作権表示が記載してあるならば, どのような媒体にでも何も手を加え %
+% ずに複写して再配付することを許可します. これらのドキュメントとその使 % 
+% 用許諾を他の言語に翻訳する際は, 以下の条件に従って下さい.	       %
+% 								       %
+% 他の言語に翻訳する際に, 他の言語での口語表現への変更の範囲を越えて故 %
+% 意に意味を変更しないこと.					       %
+%								       %
+% 翻訳した使用許諾には, それが翻訳であること, また原文の使用許諾が翻訳 %
+% 全体に依然適用されることを明示すること.			       %
+%								       %
+% ハイパーテキストの場合, 同一サイト上で原文のコピーを保守すること. ま %
+% た, 翻訳したハイパーテキストのページからその原文へのリンクを提供する %
+% こと.								       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%履歴   95/05/22 石岡圭一 (version 0.0)
+%
+\documentstyle[a4j]{jarticle}
+
+\title{FHPACK使用の手引 (version 0.0)}
+\author{石岡 圭一  (95/05/24)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは, 任意長のバイナリデータの読み書きに関するサブルーチンパッケージ
+である. ftpなどのファイル転送ソフトを念頭において, 使用する機種によら
+ずファイル操作の一元化を計ろうとするものである. したがってファイルその
+ものの互換性はないが, 適切な転送手段によってファイルの内容は保存され, 
+バイナリレベルでハンドリングできることになる. 
+
+\vspace{1em}
+このパッケージは次のような仕様にもとづいて設計されている. 
+\begin{enumerate}
+  \item 固定長ファイルの入出力を取り扱う.
+  \item ファイルへの書き込みはすき間のないべた書きで行なう.
+  \item 入力と出力は同時におこなわない.
+  \item 出力は順次的におこなう.
+  \item 入力はバイト位置を指定するランダムアクセスを許す.
+  \item 書き込のためオープンすると既存のファイルは消去される.
+  \item 出力において, 最後に書かれたバイナリデータの次に{\tt CHAR(32)}
+        (ASCIIコードで{\tt ' '}(空白))が1文字分(1バイト分)書かれ, 
+        レコードの残りの部分は{\tt CHAR(64)}(ASCIIコードで{\tt '@'})
+        で埋められる. この仕様によって入力時におけるバイナリデータの終
+        端位置の検出を可能にする.
+  \item 入出力等の操作において, ファイル終了条件又は誤り条件が検出され
+        た場合はその旨のメッセージを出力して強制終了する. 従って, バイ
+        ナリデータの終端位置を与えるサブルーチン{\tt FHUQNP}
+        を別に用意することによって, 終了判定をサポートする.
+\end{enumerate}
+
+\vspace{1em}
+以下のサブルーチン群を使用するにあたっては次の点に注意すること. 
+\begin{itemize}
+  \item 指定できる入出力装置番号は10から20である.
+  \item 指定できるレコード長は23476以下の4の倍数であること.
+  \item 書き込みを行った場合, 必ず{\tt FHUCLS}をによって終了処理をする
+        こと(内部でバッファリングしているため, {\tt FHUCLS}によらず終
+        了すると, 出力データの一部が書き込まれなくなる).
+\end{itemize}
+
+\section{サブルーチンのリスト}
+\begin{tabular}{lp{10cm}}
+  {\tt FHUOPN(IU,CF,CA,NB)} & ファイルをオープンする. \\
+  {\tt FHUCLS(IU)}          & ファイルをクローズする. \\
+  {\tt FHUPUT(IU,ND,CD)}    & データを書き出す. \\
+  {\tt FHUGET(IU,ND,CD)}    & データを読み込む. \\
+  {\tt FHUQIP(IU,IP)}       & 現在のバイト位置を返す. \\
+  {\tt FHUQNP(IU,NP)}       & バイナリデータの終端位置を返す. \\
+  {\tt FHUSKP(IU,IS)}       & ISバイトスキップする. \\
+  {\tt FHUJMP(IU,IP)}       & IPバイト目にジャンプする. \\
+  {\tt FHURWD(IU)}          & リワインドする. 
+\end{tabular}
+
+\section{サブルーチンの説明}
+
+\subsection{FHUOPN}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+    ファイルをオープンする. 
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHUOPN(IU,CF,CA,NB)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt CF}   & {\tt (C*(*))} & ファイル名. 処理系によって{\tt IU}
+                    に事前の接続を行っている場合には{\tt CF='*'}と
+                    指定すること. \\
+      {\tt CA}   & {\tt (C*1)} & 入出力モードの指定.
+                    読み込みのとき{\tt 'R'}, 
+                    書き込みのとき{\tt 'W'}を指定する. \\
+      {\tt NB}   & {\tt (I)} & レコード長.
+    \end{tabular}
+  \end{quote}
+  \item 備考 
+  \begin{enumerate}
+    \item $10\leq$ {\tt IU} $\leq 20$かつ, {\tt NB}は23476以下の4の倍数
+    であること.
+    \item 書き込のためオープンすると既存のファイルは消去される.
+  \end{enumerate}
+\end{enumerate}
+
+\subsection{FHUCLS}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+    ファイルをクローズする. 
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHUCLS(IU)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}    & {\tt (I)} & 入出力装置番号. 
+    \end{tabular}
+  \end{quote}
+  \item 備考 
+  \begin{enumerate}
+    \item 書き込みモードのとき, 書かれたデータの大きさおよびファイルの
+          大きさをメッセージ出力する.
+  \end{enumerate}
+\end{enumerate}
+
+\subsection{FHUPUT}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   データを書き出す.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHUPUT(IU,ND,CD)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & データのサイズ.\\
+      {\tt CD}   & {\tt (C*(ND))} & 書き込むデータ.
+    \end{tabular}
+  \end{quote}
+  \item 備考 
+  \begin{enumerate}
+    \item このサブルーチンは書き込みモードでのみ使用できる. 
+  \end{enumerate}
+\end{enumerate}
+
+\subsection{FHUGET}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   データを読み込む.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHUGET(IU,ND,CD)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & データのサイズ.\\
+      {\tt CD}   & {\tt (C*(ND))} & 読み込むデータ. 
+    \end{tabular}
+  \end{quote}
+  \item 備考 
+  \begin{enumerate}
+    \item このサブルーチンは読み込みモードでのみ使用できる. 
+  \end{enumerate}
+\end{enumerate}
+
+\subsection{FHUQIP}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   現在のバイト位置(それまで入出力したバイト数)を返す. 
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+   {\tt FHUQIP(IU,IP)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt IP}   & {\tt (I)} & 現在のファイル位置.
+    \end{tabular}
+  \end{quote}
+  \item 備考 
+  \begin{enumerate}
+    \item {\tt IP}はそれまで入出力したバイト数を表しているので, 次の
+          {\tt FHUGET}および{\tt FHUPUT}では{\tt IP+1}バイト目以降が読
+          み書きされることになる.
+  \end{enumerate}
+\end{enumerate}
+
+\subsection{FHUQNP}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   バイナリデータの終端位置を返す.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+   {\tt FHUQIP(IU,NP)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt NP}   & {\tt (I)} & バイナリデータの終端位置を返す.
+    \end{tabular}
+  \end{quote}
+  \item 備考 
+  \begin{enumerate}
+    \item このサブルーチンを使用する場合は, {\tt FHUOPN}の直後に呼出すこと.
+    \item ファイルの終了判定が必要な場合には, このサブルーチンで得られ
+          る{\tt NP}と{\tt FHUQIP}で得られる{\tt IP}との大小比較によっ
+          て行えばよい. すなわち, {\tt IP}$=${\tt NP}となった状態が, 
+          すべてのバイナリデータを読み込んだ状態である.
+    \item このサブルーチンは読み込みモードでのみ使用できる. 
+  \end{enumerate}
+\end{enumerate}
+
+\subsection{FHUSKP}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   {\tt IS}バイトスキップする(現在位置からさらに{\tt IS}バイト読み込ん
+   だ状態にする).
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+   {\tt FHUSKP(IU,IS)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt IS}   & {\tt (I)} & スキップするバイト数. {\tt IS} $>0$ のとき前向
+                               きに, {\tt IS} $<0$ のとき後向きにスキップする.
+    \end{tabular}
+  \end{quote}
+  \item 備考 
+  \begin{enumerate}
+    \item このサブルーチンを呼ぶ前のバイト位置を{\tt IP}とすると, 
+          次の{\tt FHUGET}では{\tt IP}$+${\tt IS}$+1$バイト目の
+          データから読み込まれる.
+    \item このサブルーチンは読み込みモードでのみ使用できる. 
+  \end{enumerate}
+\end{enumerate}
+
+\subsection{FHUJMP}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   {\tt IP}バイト目にジャンプする({\tt IP}バイト目まで読み込んだ状態にする).
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+   {\tt FHUJMP(IU,IP)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt IP}   & {\tt (I)} & ジャンプするバイト位置.
+     \end{tabular}
+  \end{quote}
+  \item 備考 
+  \begin{enumerate}
+    \item このサブルーチンで{\tt IP}バイト目にジャンプすると,
+          次の{\tt FHUGET}では{\tt IP}$+1$バイト目のデータから読み込まれる.
+    \item このサブルーチンは読み込みモードでのみ使用できる. 
+  \end{enumerate}
+\end{enumerate}
+
+\subsection{FHURWD}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+    リワインドする. 
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt CALL FHURWD(IU)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号.
+    \end{tabular}
+  \end{quote}
+  \item 備考 
+  \begin{enumerate}
+    \item {\tt FHUJMP}において{\tt IP}=0 と指定するのと同様の作用をす
+          るが, ファイルの先頭に戻る場合には, こちらを用いる方がよい.
+    \item このサブルーチンは読み込みモードでのみ使用できる. 
+  \end{enumerate}
+\end{enumerate}
+
+\end{document}

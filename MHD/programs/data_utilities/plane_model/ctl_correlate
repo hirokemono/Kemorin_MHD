@@ -1,0 +1,55 @@
+begin  plane_correlate_control
+  begin platform
+    correlated_mesh_header     'mesh/in'
+    refered_mesh_header        'mesh_target/in'
+    correlated_udt_header      'field/out'
+    refered_udt_header         'field_ref/out'
+  end
+!
+!    num_node_ctl: number of node (x, y, z)
+!    length_unit_ctl: unit length (one or pi)
+!    domain_size_ctl: size of domain (x, y, z)
+!    horizontal_grid_ctl: horizontal grid type
+!       (equi_distance, half_Chebyshev, or Chebyshev)
+!
+  begin plane_mesh_ctl
+    nnod_plane_ctl        24     24     24      end
+    ndomain_plane_ctl      1      1      1      end
+!    unit_len_plane_ctl    one    one    one     end
+!    plane_size_ctl      1.0e0  1.0e0  1.0e0   end
+!    horizontal_grid_ctl   Chebyshev
+!    num_of_sleeve_ctl    2
+  end plane_mesh_ctl
+!
+  begin reference_plane_mesh_ctl
+!    nnod_plane_ctl        24     24     24      end
+    ndomain_plane_ctl      1      1      1      end
+!    unit_len_plane_ctl    one    one    one     end
+!    plane_size_ctl      1.0e0  1.0e0  1.0e0   end
+!    horizontal_grid_ctl   Chebyshev
+!    num_of_sleeve_ctl    2
+  end
+!
+  begin model
+    begin phys_values_ctl
+      num_nod_phys_ctl   8
+        nod_value_ctl  velocity            Viz_On   Monitor_On    end
+        nod_value_ctl  temperature         Viz_On   Monitor_On    end
+        nod_value_ctl  pressure            Viz_On   Monitor_On    end
+        nod_value_ctl  vector_potential    Viz_On   Monitor_On    end
+        nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
+        nod_value_ctl  magnetic_potential  Viz_On   Monitor_On    end
+        nod_value_ctl  vorticity           Viz_On   Monitor_On    end
+        nod_value_ctl  current_density     Viz_On   Monitor_On    end
+      end
+    end
+!
+  begin control
+    begin time_step_ctl
+      i_step_init_ctl       0
+      i_step_number_ctl     2000
+      i_step_field_ctl      800
+    end
+  end
+!
+end

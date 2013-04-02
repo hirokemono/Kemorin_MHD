@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'Kemoview_Cocoa' target in the 'Kemoview_Cocoa' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif

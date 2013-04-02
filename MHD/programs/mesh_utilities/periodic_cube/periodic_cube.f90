@@ -1,0 +1,77 @@
+!
+      program periodic_cube
+!
+!
+      use m_precision
+!
+      use m_cubed_sph_mesh
+      use m_cubed_sph_surf_mesh
+      use m_cubed_sph_radius
+      use m_cubed_sph_grp_param
+      use m_numref_cubed_sph
+      use m_control_data_cubed_sph
+!
+      use count_coarse_parameters
+      use const_peri_cube_surface
+      use const_peri_cube_data
+!
+      use read_control_cubed_sph
+      use set_peri_cube_control
+!
+      use count_shell_configration
+      use check_coarsing_level
+      use count_coarse_shell_config
+      use const_cube_sphere_data
+!
+      implicit none
+!
+!
+!      write(*,*) 'Mesh generation is starting. Press return key'
+!      read(5,*)
+!
+      call read_control_4_shell
+!
+      call set_peri_cube_paramteres
+!
+!    count number of node & element
+!
+      write(*,*) 'count_rectangle_shell_size'
+      call count_rectangle_shell_size
+!
+      write(*,*) 'allocate_surface_geometries', numnod_sf20
+      call allocate_surface_geometries
+      call allocate_1d_position
+!
+!  count avaiable coarsing level
+!
+      write(*,*) 'check_rect_coarsing_level'
+      call check_rect_coarsing_level
+!
+      write(*,*) 'allocate_coarse_mesh_stack'
+      call allocate_coarse_mesh_stack(max_coarse_level)
+      call allocate_coarsing_stack(max_coarse_level)
+!
+      write(*,*) 'count_coarse_rect_shell'
+      call count_coarse_rect_shell
+!
+       write(*,*) 'allocate_surface_connect'
+      call allocate_surface_connect
+      call allocate_coarse_surf_connect
+!
+! set sphere cube data
+!
+       write(*,*) 'const_rect_sphere_surf_data'
+      call const_rect_sphere_surf_data
+!
+       write(*,*) 'const_coarse_rect_surf_data'
+      call const_coarse_rect_surf_data
+!
+!   construct whole grid
+!
+      call construct_rect_sphere_mesh
+!
+!   construct coarse grid
+!
+      call const_coarse_rect_tri_peri
+!
+      end program periodic_cube

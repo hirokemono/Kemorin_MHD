@@ -1,0 +1,128 @@
+begin refine_control
+!
+  begin file_name_ctl
+    orginal_mesh_head_ctl     'mesh_1/in'
+    refined_mesh_head_ctl     'mesh_2/in'
+!
+    cource_to_fine_table_ctl     'couse_2_fine'
+    fine_to_cource_table_ctl     'fine_2_course'
+!
+    refine_info_head_ctl         'refine_info'
+    old_refine_info_head_ctl     'refine_info'
+  end
+!
+  begin refine_parameter_ctl
+!
+!     interpolate_type_ctl: xyz or rtp or project_sphere
+!
+    interpolate_type_ctl       xyz
+!
+!  Note: indicate position to be refined
+!
+!     refine type: 
+!        quad_20                  generate quad element
+!        quad_27                  generate lagrange quad element
+!        double                   divide double
+!        double_x_plane           divide double along x-axis
+!        double_y_plane           divide double along y-axis
+!        double_z_plane           divide double along z-axis
+!        triple                   refine with triple
+!        triple_along_x_axis      divide triple along x-axis
+!        triple_along_y_axis      divide triple along x-axis
+!        triple_along_z_axis      divide triple along x-axis
+!        triple_on_x1_plane       refine on surface 1
+!        triple_on_x2_plane       refine on surface 2
+!        triple_on_y3_plane       refine on surface 3
+!        triple_on_y4_plane       refine on surface 4
+!        triple_on_z5_plane       refine on surface 5
+!        triple_on_z6_plane       refine on surface 6
+!
+!
+    array refine_data_ctl   14
+!      refine_data_ctl   quad20        quad_20               end
+!      refine_data_ctl   quad27        quad_27               end
+      refine_data_ctl   double        double                end
+      refine_data_ctl   double_x      double_x_plane        end
+      refine_data_ctl   double_y      double_y_plane        end
+      refine_data_ctl   double_z      double_z_plane        end
+      refine_data_ctl   tri_x         triple_along_x_axis   end
+      refine_data_ctl   tri_xs1       triple_on_x1_plane    end
+      refine_data_ctl   tri_xs2       triple_on_x2_plane    end
+      refine_data_ctl   tri_y         triple_along_y_axis   end
+      refine_data_ctl   tri_ys3       triple_on_y3_plane    end
+      refine_data_ctl   tri_ys4       triple_on_y4_plane    end
+      refine_data_ctl   tri_z         triple_along_z_axis   end
+      refine_data_ctl   tri_zs5       triple_on_z5_plane    end
+      refine_data_ctl   tri_zs6       triple_on_z6_plane    end
+      refine_data_ctl   tri_full      triple                end
+    end array
+!
+    array refine_code_ctl   40
+      refine_code_ctl   double        200     end
+      refine_code_ctl   double_x      211     end
+      refine_code_ctl   double_y      212     end
+      refine_code_ctl   double_z      213     end
+      refine_code_ctl   tri_x         400     end
+      refine_code_ctl   tri_xs1       401     end
+      refine_code_ctl   tri_xs2       402     end
+      refine_code_ctl   tri_y         410     end
+      refine_code_ctl   tri_ys3       411     end
+      refine_code_ctl   tri_ys4       412     end
+      refine_code_ctl   tri_z         420     end
+      refine_code_ctl   tri_zs5       421     end
+      refine_code_ctl   tri_zs6       422     end
+      refine_code_ctl   tri_full      300     end
+      refine_code_ctl   tri_s1        311     end
+      refine_code_ctl   tri_s2        312     end
+      refine_code_ctl   tri_s3        313     end
+      refine_code_ctl   tri_s4        314     end
+      refine_code_ctl   tri_s5        315     end
+      refine_code_ctl   tri_s6        316     end
+      refine_code_ctl   tri_e1        321     end
+      refine_code_ctl   tri_e2        322     end
+      refine_code_ctl   tri_e3        323     end
+      refine_code_ctl   tri_e4        324     end
+      refine_code_ctl   tri_e5        325     end
+      refine_code_ctl   tri_e6        326     end
+      refine_code_ctl   tri_e7        327     end
+      refine_code_ctl   tri_e8        328     end
+      refine_code_ctl   tri_e9        329     end
+      refine_code_ctl   tri_e10       330     end
+      refine_code_ctl   tri_e11       331     end
+      refine_code_ctl   tri_e12       332     end
+      refine_code_ctl   tri_n1        341     end
+      refine_code_ctl   tri_n2        342     end
+      refine_code_ctl   tri_n3        343     end
+      refine_code_ctl   tri_n4        344     end
+      refine_code_ctl   tri_n5        345     end
+      refine_code_ctl   tri_n6        346     end
+      refine_code_ctl   tri_n7        347     end
+      refine_code_ctl   tri_n8        348     end
+!
+      refine_code_ctl   tri_se1       451     end
+      refine_code_ctl   tri_se2       452     end
+      refine_code_ctl   tri_se3       453     end
+      refine_code_ctl   tri_se4       454     end
+      refine_code_ctl   tri_se5       455     end
+      refine_code_ctl   tri_se6       456     end
+      refine_code_ctl   tri_se7       457     end
+      refine_code_ctl   tri_se8       458     end
+      refine_code_ctl   tri_se9       459     end
+      refine_code_ctl   tri_se10      460     end
+      refine_code_ctl   tri_se11      461     end
+      refine_code_ctl   tri_se12      462     end
+!
+      refine_code_ctl   five_x        501     end
+      refine_code_ctl   five_y        502     end
+      refine_code_ctl   five_z        503     end
+      refine_code_ctl   five_s1       511     end
+      refine_code_ctl   five_s2       512     end
+      refine_code_ctl   five_s3       503     end
+      refine_code_ctl   five_s4       504     end
+      refine_code_ctl   five_s5       515     end
+      refine_code_ctl   five_s6       516     end
+!
+      refine_code_ctl   tri_full      300     end
+	end array
+  end
+end

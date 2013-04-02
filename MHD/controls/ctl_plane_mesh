@@ -1,0 +1,27 @@
+begin const_plane_mesh
+!
+  begin platform
+    mesh_file_head_ctl     'mesh/in'
+  end
+!
+  begin filter_files_ctl
+    filter_file_head_ctl   'mesh/filter_node_l'
+  end
+!
+  begin plane_mesh_ctl
+    nnod_plane_ctl        12     12     12      end
+    ndomain_plane_ctl      2      2      2      end
+    unit_len_plane_ctl    one    one    one     end
+    plane_size_ctl      1.0e0  1.0e0  1.0e0   end
+    horizontal_grid_ctl   Chebyshev
+    num_of_sleeve_ctl    2
+  end
+!
+  begin line_filter_ctl
+    num_z_filter_ctl       2
+    z_filter_head_ctl      'filter_info'
+    vert_filter_type_ctl   norm
+    omitting_value_ctl     1.0e-30
+  end
+!
+end

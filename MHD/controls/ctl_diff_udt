@@ -1,0 +1,44 @@
+begin difference_udts
+!
+!  make a difference of field
+!     original field file :  org_udt_file_head_ctl
+!     result field file : udt_file_head_ctl
+!
+  begin data_files_def
+    num_subdomain_ctl           2
+    num_smp_ctl                 4
+!
+    mesh_file_head_ctl          'mesh_fine/in'
+!
+    udt_file_head_ctl           'out_average'
+  end
+!
+  begin data_file_header_ctl
+    reference_udt_head_ctl     'field/out'
+    target_udt_header_ctl     'field_new/out'
+  end
+!
+  begin models
+    begin phys_values_ctl
+      array nod_value_ctl   8
+        nod_value_ctl  velocity            Viz_On   Monitor_On    end
+        nod_value_ctl  temperature         Viz_On   Monitor_On    end
+        nod_value_ctl  pressure            Viz_On   Monitor_Off   end
+        nod_value_ctl  vorticity           Viz_On   Monitor_Off   end
+        nod_value_ctl  vector_potential    Viz_Off  Monitor_Off   end
+        nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
+        nod_value_ctl  current_density     Viz_On   Monitor_Off   end
+        nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off   end
+!        nod_value_ctl  dummy_scalar        Viz_Off  Monitor_Off   end
+      end array
+    end
+!
+    begin time_step_ctl
+      i_step_init_ctl           0
+      i_step_number_ctl      2000
+      i_diff_steps_ctl          0
+      dt_ctl                1.0d0
+    end
+  end
+!
+end

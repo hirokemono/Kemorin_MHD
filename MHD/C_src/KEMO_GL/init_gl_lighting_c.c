@@ -1,0 +1,117 @@
+
+/* init_gl_lighting_c.c*/
+
+#include "init_gl_lighting_c.h"
+
+
+static const GLfloat white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
+static const GLfloat default_background[4] = { 0.9, 0.9, 0.9, 1.0 };
+
+static GLfloat  lightposition[4] = {1.5,0.5,2.0,0.0};
+
+/* GLfloat light0_pos[4]   =   { -35.0, 35.0, 50.0, 0.0 }; */
+/* white light*/
+/*static GLfloat light0_pos[4]   =   { -1.0, 1.0, 20.0, 0.0 };*/
+static GLfloat Whitelight_color[4] =   { 0.8, 0.8, 0.8, 1.0 };
+
+/* cold blue light */
+static GLfloat light1_pos[4]   =   { 1.0, -1.0, -20.0, 0.0 };
+/*static GLfloat light1_color[4] =   { 0.4, 0.4, 1.0, 1.0 };*/
+/* white head light */
+static GLfloat light2_pos[4]   =   { 0.0, 0.0, 0.0, 0.0 };
+static GLfloat light2_color[4] =   { 1.0, 1.0, 1.0, 1.0 };	
+
+/*static GLfloat lighta_ambient[4] = { 0.5, 0.5, 0.5, 1.0 };*/
+
+void set_bg_color_kemoview(struct mesh_menu_val *mesh_m){
+	int i;
+	
+	for(i=0;i<3;i++){
+		if(mesh_m->bg_color[i] < 0.5) mesh_m->text_color[i] = 1.0;
+		else mesh_m->text_color[i] = 0.0;
+	}
+	mesh_m->text_color[3] = ONE;
+	
+	glClearColor(mesh_m->bg_color[0], mesh_m->bg_color[1], 
+				 mesh_m->bg_color[2], mesh_m->bg_color[3]);
+	
+}
+void init_bg_color_kemoview(struct mesh_menu_val *mesh_m){
+	int i;
+	for(i=0;i<3;i++) mesh_m->bg_color[i] = default_background[i];
+    
+    set_bg_color_kemoview(mesh_m);
+    return;
+}
+
+void kemo_gl_initial_lighting_c(struct view_element *view_s){
+	int base;
+
+    /*
+    if (glslInit()) exit(1);
+	SetGouraudShaderSrc(view_s->GouraudGl2Program);
+	SetPhongShaderSrc(view_s->PhongGl2Program);
+    glUseProgram(view_s->PhongGl2Program);
+    */
+    
+	init_kemoview_perspective(view_s);
+	
+	glMatrixMode(GL_PROJECTION);
+	gluPerspective(view_s->aperture, view_s->aspect, 
+				   view_s->near, view_s->far);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	
+
+	glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);
+	
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
+	glLightfv(GL_LIGHT0, GL_POSITION, lightposition);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE,  white );
+	glLightfv(GL_LIGHT1, GL_POSITION, light1_pos );
+	glLightfv(GL_LIGHT2, GL_DIFFUSE,  light2_color );
+	glLightfv(GL_LIGHT2, GL_POSITION, light2_pos );
+	
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glDisable(GL_LIGHT1);
+	glDisable(GL_LIGHT2);
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
+	glEnable(GL_NORMALIZE);
+	
+	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_DEPTH_TEST);
+	
+	base= glGenLists(IONE);
+	
+	return;
+}
+
+void reset_light_from_white_sf_c(int surface_color){
+	
+	glEnable(GL_LIGHT0);
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
+	
+	return;
+}
+
+void reset_light_by_size_of_domain(GLdouble scale_factor){
+	GLfloat  lightposi[4];
+	
+	lightposi[0] = 1.5 / (GLfloat) scale_factor;
+	lightposi[1] =-0.5 / (GLfloat) scale_factor;
+	lightposi[2] = 2.0 / (GLfloat) scale_factor;
+	lightposi[3] = 0.0;
+	/*
+	glDisable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
+	glLightfv(GL_LIGHT0, GL_POSITION, lightposi);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
+	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_DEPTH_TEST);
+	*/
+	return;
+}

@@ -1,0 +1,112 @@
+!
+!      module m_type_AMG_mesh
+!
+!     Written by H. Matsui on Dec., 2008
+!
+!      subroutine allocate_MG_mesh_file_heads
+!      subroutine deallocate_MG_mesh_file_heads
+!
+      module m_type_AMG_mesh
+!
+      use m_precision
+!
+      use m_type_AMG_data
+      use t_mesh_data
+      use t_interpolate_table
+      use t_jacobians
+      use t_table_FEM_const
+      use t_next_node_ele_4_node
+      use t_finite_element_mat
+!
+      implicit  none
+!
+!
+      type(mesh_data), target :: MG_mesh(max_MG_level)
+      type(elemens_comms) ::    MG_ele_mesh(max_MG_level)
+      type(surface_geometry) :: MG_surf_mesh(max_MG_level)
+      type(edge_geometry) ::    MG_edge_mesh(max_MG_level)
+!   mesh data structure
+!
+      type(MG_itp_table) :: MG_itp(max_MG_level)
+!   interpolation table structure for interpolation
+!
+!
+      integer(kind = kint) :: iflag_MG_commute_by_ele = 0
+      type(interpolate_table) :: MG_c2f_ele_tbl(max_MG_level)
+!   interpolation table structure for elemnent averaging
+!
+      type(jacobians_type) :: MG_jacobians(max_MG_level)
+!   jacobians for mesh
+!
+      type(tables_4_FEM_assembles) ::    MG_FEM_tbl(max_MG_level)
+      type(arrays_finite_element_mat) :: MG_FEM_mat(max_MG_level)
+!   table for FEM assemble
+!
+!      work structure for matrix assemble
+!
+      type(next_nod_ele_table) :: MG_next_table(max_MG_level)
+!
+      integer(kind = kint), allocatable :: iflag_MG_elem_file(:)
+      integer(kind = kint), allocatable :: iflag_MG_surf_file(:)
+      integer(kind = kint), allocatable :: iflag_MG_edge_file(:)
+!
+      character(len = kchara), allocatable :: MG_mesh_file_head(:)
+      character(len = kchara), allocatable :: MG_elem_file_head(:)
+      character(len = kchara), allocatable :: MG_surf_file_head(:)
+      character(len = kchara), allocatable :: MG_edge_file_head(:)
+!
+      character(len = kchara), allocatable :: MG_f2c_tbl_head(:)
+      character(len = kchara), allocatable :: MG_c2f_tbl_head(:)
+      character(len = kchara), allocatable :: MG_f2c_eletbl_head(:)
+!
+!------------------------------------------------------------------
+!
+       contains
+!
+!------------------------------------------------------------------
+!
+      subroutine allocate_MG_mesh_file_heads
+!
+      use m_type_AMG_data
+!
+      allocate( iflag_MG_elem_file(num_MG_level) )
+      allocate( iflag_MG_surf_file(num_MG_level) )
+      allocate( iflag_MG_edge_file(num_MG_level) )
+!
+      allocate( MG_mesh_file_head(num_MG_level) )
+      allocate( MG_elem_file_head(num_MG_level) )
+      allocate( MG_surf_file_head(num_MG_level) )
+      allocate( MG_edge_file_head(num_MG_level) )
+!
+      allocate( MG_f2c_tbl_head(num_MG_level) )
+      allocate( MG_c2f_tbl_head(num_MG_level) )
+      allocate( MG_f2c_eletbl_head(num_MG_level) )
+!
+      iflag_MG_elem_file = 0
+      iflag_MG_surf_file = 0
+      iflag_MG_edge_file = 0
+!
+      end subroutine allocate_MG_mesh_file_heads
+!
+!------------------------------------------------------------------
+!
+      subroutine deallocate_MG_mesh_file_heads
+!
+      deallocate( iflag_MG_elem_file )
+      deallocate( iflag_MG_surf_file )
+      deallocate( iflag_MG_edge_file )
+!
+      deallocate( MG_mesh_file_head )
+      deallocate( MG_elem_file_head )
+      deallocate( MG_surf_file_head )
+      deallocate( MG_edge_file_head )
+!
+      deallocate( MG_f2c_tbl_head )
+      deallocate( MG_c2f_tbl_head )
+      deallocate( MG_f2c_eletbl_head )
+!
+      end subroutine deallocate_MG_mesh_file_heads
+!
+!------------------------------------------------------------------
+!
+      end module m_type_AMG_mesh

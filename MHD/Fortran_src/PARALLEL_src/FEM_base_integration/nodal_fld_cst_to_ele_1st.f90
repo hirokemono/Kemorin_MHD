@@ -1,0 +1,175 @@
+!nodal_fld_cst_to_ele_1st.f90
+!      module nodal_fld_cst_to_ele_1st
+!
+!      Written by H. Matsui on Nov., 2009
+!
+!      subroutine scalar_const_2_each_ele(k2, scalar, coef, scalar_e)
+!      subroutine vector_const_2_each_ele(k2, vector, coef, vector_e)
+!      subroutine tensor_const_2_each_ele(k2, tensor, coef, tensor_e)
+!
+!      subroutine scalar_cst_phys_2_each_ele(k2, i_fld, coef, scalar_e)
+!      subroutine vector_cst_phys_2_each_ele(k2, i_fld, coef, vector_e)
+!      subroutine tensor_cst_phys_2_each_ele(k2, i_fld, coef, tensor_e)
+!
+!      subroutine tensor_cst_phys_2_vec_each_ele(k2, i_flux, nd,        &
+!     &          coef, vector_e)
+!      subroutine as_tsr_cst_phys_2_vec_each_ele(k2, i_flux, nd,        &
+!     &          coef, vector_e)
+!
+      module nodal_fld_cst_to_ele_1st
+!
+      use m_precision
+!
+      use m_constants
+      use m_geometry_parameter
+      use m_machine_parameter
+      use m_geometry_data
+!
+      use nodal_cst_fld_each_element
+!
+      implicit none
+!
+!  ---------------------------------------------------------------------
+!
+      contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine scalar_const_2_each_ele(k2, scalar, coef, scalar_e)
+!
+      integer(kind = kint), intent(in) :: k2
+      real (kind=kreal), intent(in) :: coef
+      real (kind=kreal), intent(in) :: scalar(numnod)
+      real (kind=kreal), intent(inout) :: scalar_e(numele)
+!
+!
+      call const_scalar_2_each_ele(numnod, numele, nnod_4_ele, ie,      &
+     &    np_smp, iele_smp_stack, k2, ione, ione,                       &
+     &    scalar(1), coef, scalar_e)
+!
+      end subroutine scalar_const_2_each_ele
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine vector_const_2_each_ele(k2, vector, coef, vector_e)
+!
+      integer(kind = kint), intent(in) :: k2
+      real (kind=kreal), intent(in) :: coef
+      real (kind=kreal), intent(in) :: vector(numnod,3)
+      real (kind=kreal), intent(inout) :: vector_e(numele,3)
+!
+!
+      call const_vector_2_each_ele(numnod, numele, nnod_4_ele, ie,      &
+     &    np_smp, iele_smp_stack, k2, ione, ithree,                     &
+     &    vector, coef, vector_e)
+!
+      end subroutine vector_const_2_each_ele
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine tensor_const_2_each_ele(k2, tensor, coef, tensor_e)
+!
+      integer(kind = kint), intent(in) :: k2
+      real (kind=kreal), intent(in) :: coef
+      real (kind=kreal), intent(in) :: tensor(numnod,6)
+      real (kind=kreal), intent(inout) :: tensor_e(numele,6)
+!
+!
+      call const_tensor_2_each_ele(numnod, numele, nnod_4_ele, ie,      &
+     &    np_smp, iele_smp_stack, k2, ione, isix,                       &
+     &    tensor, coef, tensor_e)
+!
+      end subroutine tensor_const_2_each_ele
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine scalar_cst_phys_2_each_ele(k2, i_fld, coef, scalar_e)
+!
+      use m_node_phys_data
+!
+      integer(kind = kint), intent(in) :: k2, i_fld
+      real (kind=kreal), intent(in) :: coef
+      real (kind=kreal), intent(inout) :: scalar_e(numele)
+!
+!
+      call const_scalar_2_each_ele(numnod, numele, nnod_4_ele, ie,      &
+     &    np_smp, iele_smp_stack, k2, i_fld, num_tot_nod_phys,          &
+     &    d_nod, coef, scalar_e)
+!
+      end subroutine scalar_cst_phys_2_each_ele
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine vector_cst_phys_2_each_ele(k2, i_fld, coef, vector_e)
+!
+      use m_node_phys_data
+!
+      integer(kind = kint), intent(in) :: k2, i_fld
+      real (kind=kreal), intent(in) :: coef
+      real (kind=kreal), intent(inout) :: vector_e(numele,3)
+!
+!
+      call const_vector_2_each_ele(numnod, numele, nnod_4_ele, ie,      &
+     &    np_smp, iele_smp_stack, k2, i_fld, num_tot_nod_phys,          &
+     &    d_nod, coef, vector_e)
+!
+      end subroutine vector_cst_phys_2_each_ele
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine tensor_cst_phys_2_each_ele(k2, i_fld, coef, tensor_e)
+!
+      use m_node_phys_data
+!
+      integer(kind = kint), intent(in) :: k2, i_fld
+      real (kind=kreal), intent(in) :: coef
+      real (kind=kreal), intent(inout) :: tensor_e(numele,6)
+!
+!
+      call const_tensor_2_each_ele(numnod, numele, nnod_4_ele, ie,      &
+     &    np_smp, iele_smp_stack, k2, i_fld, num_tot_nod_phys,          &
+     &    d_nod, coef, tensor_e)
+!
+      end subroutine tensor_cst_phys_2_each_ele
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine tensor_cst_phys_2_vec_each_ele(k2, i_flux, nd,         &
+     &          coef, vector_e)
+!
+      use m_node_phys_data
+!
+      integer(kind = kint), intent(in) :: k2, i_flux, nd
+      real (kind=kreal), intent(in) :: coef
+      real (kind=kreal), intent(inout) :: vector_e(numele,3)
+!
+!
+      call const_tensor_2_vec_each_ele(numnod, numele, nnod_4_ele, ie,  &
+     &    np_smp, iele_smp_stack, k2, i_flux, nd, num_tot_nod_phys,     &
+     &    d_nod, coef, vector_e)
+!
+      end subroutine tensor_cst_phys_2_vec_each_ele
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine as_tsr_cst_phys_2_vec_each_ele(k2, i_flux, nd,         &
+     &          coef, vector_e)
+!
+      use m_node_phys_data
+!
+      integer(kind = kint), intent(in) :: k2, i_flux, nd
+      real (kind=kreal), intent(in) :: coef
+      real (kind=kreal), intent(inout) :: vector_e(numele,3)
+!
+!
+      call const_as_tsr_2_vec_each_ele(numnod, numele, nnod_4_ele, ie,  &
+     &    np_smp, iele_smp_stack, k2, i_flux, nd, num_tot_nod_phys,     &
+     &    d_nod, coef, vector_e)
+!
+      end subroutine as_tsr_cst_phys_2_vec_each_ele
+!
+!  ---------------------------------------------------------------------
+!
+      end module nodal_fld_cst_to_ele_1st

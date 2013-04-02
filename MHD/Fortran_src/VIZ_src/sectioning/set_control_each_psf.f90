@@ -1,0 +1,154 @@
+!set_control_each_psf.f90
+!      module set_control_each_psf
+!
+!      subroutine count_control_4_psf(i_psf, psf,                       &
+!     &          num_mat, mat_name, num_nod_phys, phys_nod_name)
+!      subroutine set_control_4_psf(i_psf, psf, num_mat, mat_name,      &
+!     &          num_surf, surf_name, num_nod_phys, phys_nod_name)
+!
+!        programmed by H.Matsui on May. 2006
+!
+      module set_control_each_psf
+!
+      use m_precision
+!
+      use m_machine_parameter
+      use m_parallel_var_dof
+      use m_control_data_4_psf
+      use m_control_params_4_psf
+!
+      use set_field_comp_for_viz
+!
+      implicit  none
+!
+!  ---------------------------------------------------------------------
+!
+      contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine count_control_4_psf(i_psf, psf,                        &
+     &          num_mat, mat_name, num_nod_phys, phys_nod_name)
+!
+      use m_field_file_format
+      use m_file_format_switch
+      use m_multi_ucd_data
+      use set_area_4_viz
+!
+      integer(kind = kint), intent(in) :: num_mat
+      character(len=kchara), intent(in) :: mat_name(num_mat)
+!
+      integer(kind = kint), intent(in) :: num_nod_phys
+      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+!
+      integer(kind = kint), intent(in) :: i_psf
+      type(psf_ctl), intent(in) :: psf
+!
+!
+      if(psf%i_psf_file_head .gt. 0) then
+        psf_header(i_psf) =  psf%psf_file_head_ctl
+      else
+        psf_header(i_psf) =  'psf'
+      end if
+!
+      call choose_ucd_file_format(psf%psf_output_type_ctl,              &
+     &    psf%i_psf_out_type, itype_psf_file(i_psf) )
+!
+      call check_field_4_viz(num_nod_phys, phys_nod_name,               &
+     &    psf%num_psf_output_ctl, psf%psf_out_field_ctl,                &
+     &    num_psf_output(i_psf) )
+      istack_psf_output(i_psf) = istack_psf_output(i_psf-1)             &
+     &                          + num_psf_output(i_psf)
+!
+      call count_area_4_viz(num_mat, mat_name,                          &
+     &    psf%num_psf_area_grp_ctl, psf%psf_area_ele_grp_ctl,           &
+     &    nele_grp_area_psf(i_psf) )
+      istack_grp_area_psf(i_psf) = istack_grp_area_psf(i_psf-1)         &
+     &                          + nele_grp_area_psf(i_psf)
+!
+      if ( nele_grp_area_psf(i_psf) .eq. 0)                             &
+     &  call parallel_abort(100, 'set correct element group')
+!
+      end subroutine count_control_4_psf
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_control_4_psf(i_psf, psf, num_mat, mat_name,       &
+     &          num_surf, surf_name, num_nod_phys, phys_nod_name)
+!
+      use set_cross_section_coefs
+      use set_area_4_viz
+!
+      integer(kind = kint), intent(in) :: num_mat
+      character(len=kchara), intent(in) :: mat_name(num_mat)
+!
+      integer(kind = kint), intent(in) :: num_surf
+      character(len=kchara), intent(in) :: surf_name(num_surf)
+!
+      integer(kind = kint), intent(in) :: num_nod_phys
+      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+!
+      integer(kind = kint), intent(in) :: i_psf
+      type(psf_ctl), intent(inout) :: psf
+!
+      integer(kind = kint) :: ist
+!
+!
+      if     (psf%section_method_ctl.eq. 'equation') then
+        id_section_method(i_psf) = 1
+        call set_coefs_4_psf(psf%num_const_psf_ctl,                     &
+     &      psf%coef_name_psf_ctl,  psf%const_psf_ctl,                  &
+     &      const_psf(1,i_psf) )
+        call deallocate_psf_coefs_ctl(psf)
+!
+      else if(psf%section_method_ctl.eq. 'sphere') then
+        id_section_method(i_psf) = 2
+        call set_coefs_4_sphere(psf, const_psf(1,i_psf))
+!
+      else if(psf%section_method_ctl.eq. 'ellipsoid') then
+        id_section_method(i_psf) = 3
+        call set_coefs_4_ellipsode(psf, const_psf(1,i_psf) )
+        call deallocate_psf_axis_ctl(psf)
+        call deallocate_psf_center_ctl(psf)
+!
+      else if(psf%section_method_ctl.eq. 'hyperboloid') then
+        id_section_method(i_psf) = 4
+        call set_coefs_4_hyperboloide(psf, const_psf(1,i_psf) )
+        call deallocate_psf_axis_ctl(psf)
+        call deallocate_psf_center_ctl(psf)
+!
+      else if(psf%section_method_ctl.eq. 'paraboloid') then
+        id_section_method(i_psf) = 5
+        call set_coefs_4_parabolic(psf, const_psf(1,i_psf) )
+        call deallocate_psf_axis_ctl(psf)
+        call deallocate_psf_center_ctl(psf)
+!
+      else if(psf%section_method_ctl.eq. 'group') then
+        id_section_method(i_psf) = 0
+        call set_surf_grp_id_4_viz(num_surf, surf_name,                 &
+     &      psf%psf_group_name_ctl, id_psf_group(i_psf) )
+!
+      end if
+!
+!
+      if ( num_psf_output(i_psf) .gt. 0 ) then
+        ist = istack_psf_output(i_psf-1) + 1
+        call set_components_4_viz(num_nod_phys, phys_nod_name,          &
+     &      psf%num_psf_output_ctl, psf%psf_out_field_ctl,              &
+     &      psf%psf_out_comp_ctl, num_psf_output(i_psf),                &
+     &      id_psf_output(ist), icomp_psf_output(ist),                  &
+     &      ncomp_psf_output(ist), ncomp_psf_org(ist),                  &
+     &      name_psf_output(ist) )
+      end if
+!
+      ist = istack_grp_area_psf(i_psf-1) + 1
+      call s_set_area_4_viz(num_mat, mat_name,                          &
+     &    psf%num_psf_area_grp_ctl, psf%psf_area_ele_grp_ctl,           &
+     &    nele_grp_area_psf(i_psf), id_ele_grp_area_psf(ist) )
+!
+!
+      end subroutine set_control_4_psf
+!
+!  ---------------------------------------------------------------------
+!
+      end module set_control_each_psf

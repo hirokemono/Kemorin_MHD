@@ -1,0 +1,113 @@
+!
+!      module analyzer_MHD
+!
+!      Written by H. Matsui and H. Okuda
+!      modified by H. Matsui on June, 2005 
+!
+!      subroutine initialization_MHD
+!      subroutine evolution_MHD
+!
+      module analyzer_MHD
+!
+      use m_precision
+      use m_parallel_var_dof
+      use m_work_time
+!
+      use FEM_analyzer_MHD
+      use sections_for_1st
+!
+      implicit none
+!
+! ----------------------------------------------------------------------
+!
+      contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine initialization_MHD
+!
+      use m_ctl_data_fem_MHD
+      use set_control_MHD
+!
+!
+      total_start = MPI_WTIME()
+!
+      write(*,*) 'Simulation start: PE. ', my_rank
+!
+      num_elapsed = 7
+      call allocate_elapsed_times
+!
+      elapse_labels(1) = 'Total time                 '
+      elapse_labels(2) = 'Initialization time        '
+      elapse_labels(3) = 'Time evolution loop time   '
+      elapse_labels(4) = 'Data IO time               '
+      elapse_labels(5) = 'Linear solver time         '
+      elapse_labels(6) = 'Communication for RHS      '
+      elapse_labels(7) = 'Communication time         '
+!
+!     --------------------- 
+!
+      call start_eleps_time(1)
+      call start_eleps_time(4)
+!
+      call read_control_4_fem_MHD
+      call set_control
+      call time_prog_barrier
+      call end_eleps_time(4)
+!
+      call FEM_initialize_MHD
+!
+      call start_eleps_time(2)
+      call init_visualize_surface(ierr)
+      call end_eleps_time(2)
+!
+      end subroutine initialization_MHD
+!
+! ----------------------------------------------------------------------
+!
+      subroutine evolution_MHD
+!
+      integer(kind=kint ) :: istep_psf, istep_iso
+      integer(kind=kint ) :: istep_pvr, istep_fline
+      integer(kind=kint ) :: visval
+      integer(kind=kint ) :: retval
+!
+!
+      retval = 1
+      call start_eleps_time(3)
+!
+      do
+!  Time evolution
+        call FEM_analyze_MHD(istep_psf, istep_iso,                      &
+     &          istep_pvr, istep_fline, visval, retval)
+!
+!     ---------------------
+!
+!  Visualization
+        if (visval.eq.0) then
+          call start_eleps_time(4)
+          call visualize_surface(istep_psf, istep_iso, ierr)
+          call end_eleps_time(4)
+        end if
+!
+        if (retval .eq. 0) exit
+      end do
+!
+      call end_eleps_time(3)
+!
+!  time evolution end
+!
+      call FEM_finalize_MHD
+!
+      call copy_COMM_TIME_to_eleps(7)
+      call end_eleps_time(1)
+!
+      call output_elapsed_times
+!
+      if (iflag_debug.eq.1) write(*,*) 'exit evolution'
+!
+      end subroutine evolution_MHD
+!
+! ----------------------------------------------------------------------
+!
+      end module analyzer_MHD

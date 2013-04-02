@@ -1,0 +1,192 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (C) 1999 Keiichi Ishioka				       %
+% 								       %
+% この著作権表示が記載してあるならば, どのような媒体にでも何も手を加え %
+% ずに複写して再配付することを許可します. これらのドキュメントとその使 % 
+% 用許諾を他の言語に翻訳する際は, 以下の条件に従って下さい.	       %
+% 								       %
+% 他の言語に翻訳する際に, 他の言語での口語表現への変更の範囲を越えて故 %
+% 意に意味を変更しないこと.					       %
+%								       %
+% 翻訳した使用許諾には, それが翻訳であること, また原文の使用許諾が翻訳 %
+% 全体に依然適用されることを明示すること.			       %
+%								       %
+% ハイパーテキストの場合, 同一サイト上で原文のコピーを保守すること. ま %
+% た, 翻訳したハイパーテキストのページからその原文へのリンクを提供する %
+% こと.								       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%履歴   1999/03/21 石岡圭一 (version 0.0)
+%       2005/07/27 石岡圭一 (version 0.1) 誤植の訂正(Thanks to 水田君)
+%
+\documentclass[a4j,fleqn]{jarticle}
+
+\title{SOPACK使用の手引 (version 0.1)}
+\author{石岡 圭一  (2005/07/27)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+\subsection{パッケージについて}
+
+これは, SNPACKを利用して, 2次元非発散流体の渦度方程式に現れる非線形項
+を効率良く計算することに特化したサブルーチンと, そのための初期化ルーチ
+ンのみから成っている. 球面調和関数変換の回数を極限まで減らしているので,
+SPPACK中のヤコビアン計算ルーチンなどを使うよりも2割程高速になっている.
+
+球面調和関数変換の定義や配列中のスペクトルの並べ方などについては
+SNPACKのマニュアルを参照のこと.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+{\tt SOINIT} & 初期化\\
+{\tt SONDNL} & 非線形項の計算
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンの説明}
+
+\subsection{SOINIT}
+
+\begin{enumerate}
+
+\item 機能 
+
+SOPACKの初期化ルーチン. 
+非線形項計算ルーチン{\tt SONDNL}で用いられる配列
+{\tt IB,B}の初期化を行う.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+{\tt SOINIT(MM,IB,B)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IB}  & {\tt (I((MM+1)*(MM+1)*3))} & 出力. {\tt SONDNL}で用いられる配列\\
+{\tt B}  & {\tt (D((MM+1)*(MM+1)*3))} & 出力. {\tt SONDNL}で用いられる配列
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SONDNL}
+
+\begin{enumerate}
+
+\item 機能
+
+ 2次元非発散流体の渦度方程式に現れる非線形項を効率良く計算する.
+
+\item 定義
+
+スペクトル展開された変数$\psi(\lambda,\varphi)$,
+\begin{equation}
+\psi(\lambda,\varphi)\equiv\sum_{n=0}^M\sum_{m=-n}^n 
+s^m_n P^m_n(\sin\varphi) e^{im\lambda}
+\end{equation}
+に対して,  2次元非発散流体の渦度方程式に現れる非線形項
+$F(\lambda,\varphi)$は,
+\begin{equation}
+F(\lambda,\varphi)\equiv
+ \frac{\partial\psi}{\partial\lambda}\frac{\partial\nabla^2\psi}{\partial\mu}
+-\frac{\partial\nabla^2\psi}{\partial\lambda}\frac{\partial\psi}{\partial\mu}
+\end{equation}
+と定義される. ここに, $\mu\equiv\sin\varphi$, および
+\begin{equation}
+\nabla^2\equiv
+\frac{\partial^2}{\cos^2\varphi\partial\lambda^2}
++\frac{\partial}{\cos\varphi\partial\varphi}
+\left(\cos\varphi\frac{\partial}{\partial\varphi}\right)
+\end{equation}
+である.
+本サブルーチンは、上記の$s^m_n$を入力として,
+$F$の切断波数$M$までのスペクトル展開係数$f^m_n$
+\begin{equation}
+f^m_n\equiv\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+F(\lambda,\varphi)P^m_n(\sin\varphi)e^{-im\lambda}\cos\varphi d\varphi d\lambda
+\end{equation}
+を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt SONDNL(MM,IM,ID,JM,JD,S,SOUT,IT,T,Y,IP2,P2,R2,IA,A,IB,B,Q,WS,WW)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt IM}以上の適当な値(与え方は備考参照)\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt JM}以上の適当な値(与え方は備考参照)\\
+{\tt S} & {\tt (D((MM+1)*(MM+1)))} 
+& 入力. $s^m_n$が格納されている配列\\
+{\tt SOUT} & {\tt (D((MM+1)*(MM+1)))} & 出力. $f^m_n$
+	が格納される配列\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IP2}  & {\tt (I(2*((MM+2)/2+MM+2)*2))}
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt P2}  & {\tt (D(2*((MM+2)/2+MM+2)*JM))}
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt R2}  & {\tt (D(2*((MM+2)/2*2+3)*((MM+1)/2+1)))}
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt IA}  & {\tt (I((MM+2)*(MM+2)*4))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt A}  & {\tt (D((MM+2)*(MM+2)*6))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IB}  & {\tt (I((MM+1)*(MM+1)*3))}
+             & 入力. {\tt SOINIT}で初期化された配列\\
+{\tt B}  & {\tt (D((MM+1)*(MM+1)*3))}
+             & 入力. {\tt SOINIT}で初期化された配列\\
+{\tt Q}  & {\tt (D(2*((MM+2)/2+MM+2)*JM))}
+             & 作業領域\\
+{\tt WS}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt WW}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt ID}$\ge${\tt IM}, {\tt JD}$\ge${\tt JM}でなければならない.
+   またベクトル計算機においてはバンク競合を避けるために, {\tt ID},{\tt JD}
+   はできれば奇数にとるのがよい.
+
+\item {\tt IT,T,IA,A}は 
+      {\tt SNINIT(MM+1,IM,JM,IT,T,Y,IP,P,R,IA,A)} として初期化しておくこと.
+       また, {\tt IP2,P2,R2}は, その後に
+      {\tt SNKINI(MM+1,JM,2,IP,P,R,IP2,P2,R2)} として初期化しておくこと.
+
+\item 作業領域{\tt WS,WW}の大きさは, ともに\\
+     {\tt 2*MAX(((MM+2)/2*2+3)*((MM+1)/2+2)*2,JD*((MM+2)/2+MM+2)*2,JD*ID)}
+    以上の大きさであること. または, やや余裕をもって,
+     {\tt 2*MAX((MM+5)*(MM+4),JD*3*(MM+2),JD*ID)}
+    としておいてもよい. もし, 2次の非線形項からのエリアジングを除く条件
+     ( {\tt JD}$\ge${\tt JM}$\ge${\tt 3*MM/2D0}, 
+      {\tt IM}$\ge${\tt 3*MM+1} )が満されている場合には, 簡単に
+      {\tt (IM+5)*JD*2}ととっておけばよい.
+     (ただし, {\tt MM}$\ge 3$, {\tt IM+5}$\ge${\tt ID}は満されている
+    ものとする).
+
+ \end{itemize}
+
+\end{enumerate}
+
+\end{document}

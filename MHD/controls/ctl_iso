@@ -1,0 +1,51 @@
+!
+!
+!     example of control for Kemo's surface rendering
+!
+begin isosurf_rendering
+  iso_file_head    'psf'
+  iso_output_type  ucd
+!
+  begin isosurf_define
+    isosurf_field        pressure
+    isosurf_component      scalar
+    isosurf_value            4000.0
+!
+    begin plot_area_ctl
+      array chosen_ele_grp_ctl   2
+        chosen_ele_grp_ctl   inner_core_ele   end
+        chosen_ele_grp_ctl   outer_core_ele   end
+      end array
+    end
+  end
+!
+  begin isosurf_result_define
+    result_type      constant
+    result_value     0.7
+!    array output_field   2
+!      output_field    velocity         vector   end
+!      output_field    magnetic_field   radial   end
+!    end array
+  end
+!
+end
+!
+!    iso_output_type:
+!           ucd, OpenDX
+!
+!    result_type:  (Original name: display_method)
+!                   specified_fields
+!                   constant
+!    num_result_comp: number of fields
+!    output_field: (Original name: color_comp and color_subcomp)
+!         field and componenet name for output
+!           x, y, z, radial, elevation, azimuth, cylinder_r
+!           norm, vector, tensor, spherical_vector, cylindrical_vector
+!    result_value: (Original name: specified_color)
+!
+!    
+!
+!    isosurf_data: field for isosurface
+!    isosurf_comp: component for isosurface
+!           x, y, z, radial, elevation, azimuth, cylinder_r, norm
+!    isosurf_value:  value for isosurface

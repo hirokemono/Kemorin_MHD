@@ -1,0 +1,43 @@
+begin visualizer
+!
+  begin data_files_def
+    num_subdomain_ctl           2
+    num_smp_ctl                 4
+!
+    mesh_file_head_ctl          'mesh/in'
+    field_file_head_ctl         'field/out'
+!
+    mesh_file_fmt_ctl           'ascii'
+    field_files_fmt_ctl         'ascii'
+  end data_files_def
+!
+  begin time_step_ctl
+    i_step_init_ctl       0
+    i_step_number_ctl     2000
+!
+    i_step_psf_ctl        400
+    i_step_iso_ctl        400
+    i_step_pvr_ctl        400
+    i_step_fline_ctl      400
+  end time_step_ctl
+!
+  begin visual_control
+    array surface_rendering  1
+      file   surface_rendering   'ctl_psf_eq'
+    end array surface_rendering
+!
+    array isosurf_rendering  2
+      file   isosurf_rendering   'ctl_iso_p_n1e4'
+      file   isosurf_rendering   'ctl_iso_p_p1e4'
+    end array isosurf_rendering
+!
+    array  volume_rendering  1
+      file  volume_rendering  'ctl_pvr_temp'
+    end array volume_rendering
+!
+    array  fieldline  1
+      file  fieldline  'ctl_fline_magne'
+    end array fieldline
+  end  visual_control
+!
+end  visualizer

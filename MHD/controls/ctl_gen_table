@@ -1,0 +1,60 @@
+begin construct_table
+  begin original_data_ctl
+    debug_flag_ctl            'OFF'
+!
+    num_subdomain_ctl           128
+    num_smp_ctl                 128
+!
+    mesh_file_head_ctl          'mesh/in'
+    mesh_file_fmt_ctl           'ascii'
+  end
+!
+  begin new_data_ctl
+    num_new_domain_ctl           2
+    new_mesh_head_ctl          'mesh_target/in'
+    new_mesh_file_fmt_ctl           'ascii'
+  end
+!
+!
+  begin interpolate_tbl_ctl
+    interpolate_list_header_ctl     'mesh_fine/fine_2_coase'
+    reverse_element_table_ctl       'ON'
+  end
+!
+  begin element_hash
+    hash_type_name    sphere
+    array radius_ctl   10
+      radius_ctl      0.2    end
+      radius_ctl      0.4    end
+      radius_ctl      0.6    end
+      radius_ctl      0.8    end
+      radius_ctl      1.0    end
+      radius_ctl      1.2    end
+      radius_ctl      1.4    end
+      radius_ctl      1.6    end
+      radius_ctl      1.8    end
+      radius_ctl      2.0    end
+    end array
+!
+    num_elevation_ctl     144
+    num_azimuth_ctl       288
+  end
+!
+! num_search_times: iteration for searching
+!  search_level_ctl:  size of sleeve of hash (integer),
+!                     error level for tetra search (real)
+!
+!
+  begin iteration_ctl
+    array search_level_ctl   5
+      search_level_ctl   0    1.0d-6
+      search_level_ctl   1    1.0d-6
+      search_level_ctl   1    1.0d-4
+      search_level_ctl   2    1.0d-2
+      search_level_ctl   2    2.0d-1
+    end array
+!
+    maxiter               10000
+    eps_4_refine          1e-11
+  end
+end

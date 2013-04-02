@@ -1,0 +1,371 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (C) 1998 Keiichi Ishioka				       %
+% 								       %
+% この著作権表示が記載してあるならば, どのような媒体にでも何も手を加え %
+% ずに複写して再配付することを許可します. これらのドキュメントとその使 % 
+% 用許諾を他の言語に翻訳する際は, 以下の条件に従って下さい.	       %
+% 								       %
+% 他の言語に翻訳する際に, 他の言語での口語表現への変更の範囲を越えて故 %
+% 意に意味を変更しないこと.					       %
+%								       %
+% 翻訳した使用許諾には, それが翻訳であること, また原文の使用許諾が翻訳 %
+% 全体に依然適用されることを明示すること.			       %
+%								       %
+% ハイパーテキストの場合, 同一サイト上で原文のコピーを保守すること. ま %
+% た, 翻訳したハイパーテキストのページからその原文へのリンクを提供する %
+% こと.								       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%履歴   95/05/25 石岡圭一 (version 0.0)
+%
+\documentstyle[a4j]{jarticle}
+
+\title{FEPACK使用の手引 (version 0.0)}
+\author{石岡 圭一  (95/05/25)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは, データの読み書きに関するサブルーチンパッケージであり, 
+{\tt FHPACK}および{\tt FLPACK}を組み合わせることによって, 
+使用する機種によらず互換性を保ったファイルを作成および操作することを可
+能にする.
+
+\vspace{1em}
+このパッケージは次のような仕様にもとづいて設計されている. 
+\begin{enumerate}
+  \item 文字の内部表現はASCII形式, 実数の内部表現はIEEE形式を用いる.
+\end{enumerate}
+
+\vspace{1em}
+以下のサブルーチン群を使用するにあたっては次の点に注意すること. 
+\begin{itemize}
+  \item {\tt FEPACK}のサブルーチンは入出力のみしか行わない. 従って, 
+        補助的な操作(ファイルのオープンなど)は{\tt FHPACK}のサブルーチ
+        ンによって行うこと.
+  \item 入出力装置番号などについての制限は{\tt FHPACK}に従うこと.
+\end{itemize}
+
+\section{サブルーチンのリスト}
+\begin{tabular}{lp{10cm}}
+  {\tt FEPUTC(IU,ND,CD)} & 文字列を書き込む.\\
+  {\tt FEGETC(IU,ND,CD)} & 文字列を読み込む.\\
+  {\tt FEPUTI(IU,ND,ID)} & 整数を書き込む.\\
+  {\tt FEGETI(IU,ND,ID)} & 整数を読み込む.\\
+  {\tt FEPUTR(IU,ND,RD)} & 実数(単精度)を書き込む.\\
+  {\tt FEGETR(IU,ND,RD)} & 実数(単精度)を読み込む.\\
+  {\tt FEPUTD(IU,ND,DD)} & 実数(倍精度)を書き込む.\\
+  {\tt FEGETD(IU,ND,DD)} & 実数(倍精度)を読み込む.\\
+  {\tt FEPUTS(IU,ND,DD)} & 実数(倍精度)を実数(単精度)に変換して書き込む.\\
+  {\tt FEGETS(IU,ND,DD)} & 実数(倍精度)を実数(単精度)から変換して読み込む.\\
+  {\tt FEPUTL(IU,ND,RD)} & 実数(単精度)を実数(倍精度)に変換して書き込む.\\
+  {\tt FEGETL(IU,ND,RD)} & 実数(単精度)を実数(倍精度)から変換して読み込む.\\
+  {\tt FESKP1(IU,ND)}    & 1バイトの変数をスキップする.\\
+  {\tt FESKP4(IU,ND)}    & 4バイトの変数をスキップする.\\
+  {\tt FESKP8(IU,ND)}    & 8バイトの変数をスキップする.
+\end{tabular}
+
+\section{サブルーチンの説明}
+
+\subsection{FEPUTC}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   文字列を書き込む.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHPUTC(IU,ND,CD)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & {\tt CD}の大きさ.\\
+      {\tt CD}   & {\tt (C*(ND))} & 書き込む文字列.
+    \end{tabular}
+  \end{quote}
+\end{enumerate}
+
+\subsection{FEGETC}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   文字列を読み込む.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHGETC(IU,ND,CD)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & {\tt CD}の大きさ.\\
+      {\tt CD}   & {\tt (C*(ND))} & 読み込む文字列.
+    \end{tabular}
+  \end{quote}
+\end{enumerate}
+
+\subsection{FEPUTI}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   整数を書き込む.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHPUTI(IU,ND,ID)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & {\tt ID}の大きさ.\\
+      {\tt ID}   & {\tt (I(ND))} & 書き込む整数型配列.
+    \end{tabular}
+  \end{quote}
+\end{enumerate}
+
+\subsection{FEGETI}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   整数を読み込む.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHGETI(IU,ND,ID)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & {\tt ID}の大きさ.\\
+      {\tt ID}   & {\tt (I(ND))} & 読み込む整数型配列.
+    \end{tabular}
+  \end{quote}
+\end{enumerate}
+
+\subsection{FEPUTR}
+\begin{enumerate}
+  \item 機能
+  \begin{quote}
+   実数(単精度)を書き込む.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHPUTR(IU,ND,RD)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & {\tt RD}の大きさ.\\
+      {\tt RD}   & {\tt (R(ND))} & 書き込む実数型配列.
+    \end{tabular}
+  \end{quote}
+\end{enumerate}
+
+\subsection{FEGETR}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   実数(単精度)を読み込む.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHGETR(IU,ND,RD)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & {\tt RD}の大きさ.\\
+      {\tt RD}   & {\tt (R(ND))} & 読み込む実数型配列.
+    \end{tabular}
+  \end{quote}
+\end{enumerate}
+
+\subsection{FEPUTD}
+\begin{enumerate}
+  \item 機能
+  \begin{quote}
+   実数(倍精度)を書き込む.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHPUTD(IU,ND,DD)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & {\tt DD}の大きさ.\\
+      {\tt DD}   & {\tt (D(ND))} & 書き込む倍精度型配列.
+    \end{tabular}
+  \end{quote}
+\end{enumerate}
+
+\subsection{FEGETD}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   実数(倍精度)を読み込む.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHGETD(IU,ND,DD)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & {\tt DD}の大きさ.\\
+      {\tt DD}   & {\tt (D(ND))} & 読み込む倍精度型配列.
+    \end{tabular}
+  \end{quote}
+\end{enumerate}
+
+\subsection{FEPUTS}
+\begin{enumerate}
+  \item 機能
+  \begin{quote}
+   実数(倍精度)を実数(単精度)に変換して書き込む.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHPUTS(IU,ND,DD)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & {\tt DD}の大きさ.\\
+      {\tt DD}   & {\tt (D(ND))} & 書き込む倍精度型配列.
+    \end{tabular}
+  \end{quote}
+\end{enumerate}
+
+\subsection{FEGETS}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   実数(倍精度)を実数(単精度)から変換して読み込む.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHGETS(IU,ND,DD)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & {\tt DD}の大きさ.\\
+      {\tt DD}   & {\tt (D(ND))} & 読み込む倍精度型配列.
+    \end{tabular}
+  \end{quote}
+\end{enumerate}
+
+\subsection{FEPUTL}
+\begin{enumerate}
+  \item 機能
+  \begin{quote}
+   実数(単精度)を実数(倍精度)に変換して書き込む.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHPUTL(IU,ND,RD)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & {\tt RD}の大きさ.\\
+      {\tt RD}   & {\tt (R(ND))} & 書き込む実数型配列.
+    \end{tabular}
+  \end{quote}
+\end{enumerate}
+
+\subsection{FEGETL}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   実数(単精度)を実数(倍精度)から変換して読み込む.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FHGETL(IU,ND,RD)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & {\tt RD}の大きさ.\\
+      {\tt RD}   & {\tt (R(ND))} & 読み込む実数型配列.
+    \end{tabular}
+  \end{quote}
+\end{enumerate}
+
+\subsection{FESKP1}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   1バイトの変数(文字)をスキップする.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+   {\tt FESKP1(IU,ND)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & スキップする変数の個数(大きさ).
+    \end{tabular}
+  \end{quote}
+\end{enumerate}
+
+\subsection{FESKP4}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   4バイトの変数(整数, 実数)をスキップする.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+   {\tt FESKP4(IU,ND)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & スキップする変数の個数(大きさ).
+    \end{tabular}
+  \end{quote}
+\end{enumerate}
+
+\subsection{FESKP8}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+   8バイトの変数(倍精度実数)をスキップする.
+  \end{quote}
+  \item 呼び出し方法 
+  \begin{quote}
+   {\tt FESKP8(IU,ND)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt IU}   & {\tt (I)} & 入出力装置番号. \\
+      {\tt ND}   & {\tt (I)} & スキップする変数の個数(大きさ).
+    \end{tabular}
+  \end{quote}
+\end{enumerate}
+
+\end{document}

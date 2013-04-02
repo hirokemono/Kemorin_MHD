@@ -1,0 +1,4 @@
+BiCGSTAB
+DIAG        precond
+2            NREST
+

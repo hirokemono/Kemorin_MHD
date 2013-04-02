@@ -1,0 +1,887 @@
+!C
+!C*** 
+!C*** module solver_VCG11_DJDS_SMP
+!C***
+!
+      module solver_VCG11_DJDS_SMP
+      contains
+!C
+!C***
+!C***  VCG11_DJDS_SMP
+!C***
+!C
+!C     VCG_DJDS_SMP solves the linear system Ax = b 
+!C     using the Conjugate Gradient iterative method with preconditioning.
+!C     Elements are ordered in descending Jagged Diagonal Storage
+!C     for Vector Processing and Cyclic Ordering for SMP Parallel Computation
+!C
+      subroutine VCG11_DJDS_SMP                                         &
+     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
+     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
+     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
+     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
+     &           EPS, ITR, IER,                                         &
+     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           STACK_IMPORT, NOD_IMPORT,                              &
+     &           STACK_EXPORT, NOD_EXPORT,                              &
+     &           SOLVER_COMM , NSET, PRECOND, PETOT)     
+
+      use solver_SR
+      implicit REAL*8(A-H,O-Z)
+      include  'mpif.h'
+      parameter (kint=4, kreal=8, kchara=64)
+
+      integer(kind=kint ) :: N, NL, NU, NPL, NPU, NVECT, ITR, IER
+      integer(kind=kint ) :: PEsmpTOT, npLX1, npUX1, PETOT
+      integer(kind=kint ) :: SOLVER_COMM, NSET
+      character (len=kchara)   :: PRECOND
+      real   (kind=kreal) :: EPS
+
+      real   (kind=kreal), dimension(:,:), allocatable :: W
+
+      integer(kind=kint), dimension(NP)     :: NtoO
+      integer(kind=kint), dimension(NP)     :: OtoN_L, NtoO_U, LtoU
+      integer(kind=kint), dimension(NP)     :: OtoN_U
+      integer(kind=kint), dimension(0:NVECT):: IVECT
+      integer(kind=kint), dimension(NVECT)  :: NLhyp, NUhyp 
+
+      integer(kind=kint), dimension(0:NL*NVECT*PEsmpTOT) :: INL
+      integer(kind=kint), dimension(0:NU*NVECT*PEsmpTOT) :: INU
+      integer(kind=kint), dimension(NPL)        :: IAL
+      integer(kind=kint), dimension(NPU)        :: IAU
+
+      integer(kind=kint), dimension(0:PEsmpTOT*NVECT) :: STACKmc
+      integer(kind=kint), dimension(0:PEsmpTOT      ) :: STACKmcG
+
+      real(kind=kreal), dimension(NP ) :: D
+      real(kind=kreal), dimension(NP ) :: B, X
+      real(kind=kreal), dimension(NPL) :: AL
+      real(kind=kreal), dimension(NPU) :: AU
+
+      real(kind=kreal), dimension(N) :: ALU_L, ALU_U
+
+      integer(kind=kint), parameter :: P = 3
+      integer(kind=kint), parameter :: Q = 2
+      integer(kind=kint), parameter :: R = 1
+      integer(kind=kint), parameter :: Z = 2 
+      integer(kind=kint), parameter :: ZP= 4 
+      integer(kind=kint), parameter :: ZQ= 8 
+
+      integer(kind=kint), parameter :: WK1= 5
+      integer(kind=kint), parameter :: WK2= 6
+      integer(kind=kint), parameter :: WK3= 7
+
+      integer(kind=kint ), pointer :: NEIBPE(:)
+      integer(kind=kint ), pointer :: STACK_IMPORT(:), NOD_IMPORT(:)
+      integer(kind=kint ), pointer :: STACK_EXPORT(:), NOD_EXPORT(:)
+
+      real(kind=kreal), dimension(:), allocatable :: WS, WR
+      integer(kind=kint ) :: iterPREmax
+
+!C
+!C +-------+
+!C | INIT. |
+!C +-------+
+!C===
+!      if (PETOT.eq.1) then
+!        iterPREmax= 1
+!       else
+        iterPREmax= 2
+!      endif
+
+      npLX1= NL * PEsmpTOT
+      npUX1= NU * PEsmpTOT
+
+      MAXIT= ITR
+      TOL  = EPS
+
+      COMMtime= 0.d0
+      COMPtime= 0.d0
+
+      allocate (W(NP,8))
+      allocate (WS(NP), WR(NP))
+
+!$omp parallel do
+!poption indep (W,X)
+!voption indep (W,X)
+      do i= 1, NP
+        W(i,1)= 0.d0
+        W(i,2)= 0.d0
+        W(i,3)= 0.d0
+        W(i,4)= 0.d0
+        W(i,5)= 0.d0
+        W(i,6)= 0.d0
+        W(i,7)= 0.d0
+        W(i,8)= 0.d0
+!        X(i  )= 0.d0
+      enddo
+!$omp end parallel do
+
+!C
+!C-- change B,X
+
+!$omp parallel do private(iS,iE,i,in)
+!poption indep (W,B,NtoO,STACKmcG) tlocal (iS,iE,i,in)
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,B,NtoO)
+        do i= iS, iE
+          in    = NtoO(i)
+          W(i,2)= B(in)
+          W(i,3)= X(in)
+        enddo
+      enddo
+!$omp end parallel do
+
+!$omp parallel do private(iS,iE,i)
+!poption indep (W,B,STACKmcG) tlocal (iS,iE,i)
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,B)
+        do i= iS, iE
+          B(i)= W(i,2)
+          X(i)= W(i,3)
+        enddo
+      enddo
+!$omp end parallel do
+
+!$omp parallel do private(i)
+        do i= 1, NP
+          W(i,3) = 0.0d0
+        enddo
+!$omp end parallel do
+!C===
+
+!C
+!C +-----------------------+
+!C | {r0}= {b} - [A]{xini} |
+!C +-----------------------+
+!C===
+
+!$omp parallel do private(iS,iE,i)
+!poption indep (W,B,D,X,STACKmcG) tlocal(iS,iE,i)
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,B,D,X)
+        do i= iS, iE
+          W(i,R)= B(i) - D(i)*X(i)
+        enddo
+      enddo
+!$omp end parallel do
+
+!$omp parallel do private(iS,iE,i,in1)
+!poption indep (W,X,OtoN_L,STACKmcG) tlocal (iS,iE,i,in1)
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,X,OtoN_L)
+        do i= iS, iE
+            in1     = OtoN_L(i)
+          W(in1,WK1)= X(i   )
+          W(in1,WK2)= W(i,R)
+        enddo
+      enddo
+!$omp end parallel do
+
+!poption noparallel
+      do iv= 1, NVECT
+!$omp parallel do private(iv0,j,iS,iE,i,k,kk) 
+!poption indep (W,AL,INL,IAL,STACKmc) 
+!poption tlocal(iv0,j,iS,iE,i,k,kk) 
+      do ip= 1, PEsmpTOT
+        iv0= STACKmc(PEsmpTOT*(iv-1)+ip- 1)
+!poption noparallel
+        do  j= 1, NLhyp(iv)
+          iS= INL(npLX1*(iv-1)+PEsmpTOT*(j-1)+ip-1)
+          iE= INL(npLX1*(iv-1)+PEsmpTOT*(j-1)+ip  )
+!voption indep (W,AL,IAL)
+          do i= iv0+1, iv0+iE-iS
+             k= i+iS - iv0
+            kk= IAL(k)
+            W(i,WK2)= W(i,WK2) - AL(k) * W(kk,WK1)
+          enddo
+        enddo
+      enddo
+!$omp end parallel do
+      enddo
+
+!$omp parallel do private(in1,in2)
+!poption indep (W,X,OtoN_U,LtoU) tlocal (in1,in2)
+!voption indep (W,X,OtoN_U,LtoU)
+        do i= 1, NP
+            in1     = OtoN_U(i)
+            in2     = LtoU  (i)
+          W(in1,WK1)= X(i     )
+          W(in2,WK3)= W(i,WK2)
+        enddo
+!$omp end parallel do
+
+!poption noparallel
+      do iv= 1, NVECT
+!$omp parallel do private(iv0,j,iS,iE,i,k,kk)
+!poption indep (W,AU,INU,IAU,STACKmc)
+!poption tlocal(iv0,j,iS,iE,i,k,kk)
+      do ip= 1, PEsmpTOT
+        iv0= STACKmc(PEsmpTOT*(iv-1)+ip- 1)
+!poption noparallel
+        do  j= 1, NUhyp(iv)
+          iS= INU(npUX1*(iv-1)+PEsmpTOT*(j-1)+ip-1)
+          iE= INU(npUX1*(iv-1)+PEsmpTOT*(j-1)+ip  )
+!voption indep (W,AU,IAU)
+          do i= iv0+1, iv0+iE-iS
+             k= i+iS - iv0
+            kk= IAU(k)
+            W(i,WK3)= W(i,WK3) - AU(k) * W(kk,WK1)
+          enddo
+        enddo
+      enddo
+!$omp end parallel do
+      enddo
+
+!$omp parallel do private(iS,iE,i,in1)
+!poption indep (W,NtoO_U,STACKmcG) tlocal (iS,iE,i,in1)
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,NtoO_U)
+        do i= iS, iE
+            in1   = NtoO_U(i)
+          W(in1,R)= W(i,WK3)
+        enddo
+      enddo
+!$omp end parallel do
+
+      BNRM20= 0.d0
+!$omp parallel do private(iS,iE,i)
+!$omp&            reduction(+:BNRM20)
+!poption indep (B,STACKmcG) tlocal (iS,iE,i)
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (B)
+        do i= iS, iE
+          BNRM20= BNRM20 + B(i)**2
+        enddo
+      enddo
+!$omp end parallel do
+
+      START_TIME= MPI_WTIME()
+      call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
+     &                    MPI_SUM, SOLVER_COMM, ierr)
+      END_TIME= MPI_WTIME()
+      COMMtime = COMMtime + END_TIME - START_TIME
+
+      if (BNRM2.eq.0.d0) BNRM2= 1.d0
+!C===
+      S1_TIME= MPI_WTIME()
+      do iter= 1, MAXIT
+!C
+!C************************************************* Conjugate Gradient Iteration
+
+!C
+!C +----------------+
+!C | {z}= [Minv]{r} |
+!C +----------------+
+!C===
+
+!$omp parallel do private(iS,iE,i,in1)
+!poption indep (W,OtoN_L,STACKmcG) tlocal (iS,iE,i,in1)
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,OtoN_L)
+      do i= iS, iE
+          in1    = OtoN_L(i)
+        W(in1,ZQ)= W(i,R)
+      enddo
+      enddo
+!$omp end parallel do
+
+!$omp parallel do
+!poption indep (W)
+!voption indep (W)
+      do i= 1, NP
+        W(i,Z)= 0.d0
+      enddo
+!$omp end parallel do
+
+      do iterPRE= 1, iterPREmax
+!$omp parallel do
+!poption indep (W)
+!voption indep (W)
+      do i= N+1, NP
+        W(i,ZQ)= 0.d0
+      enddo
+!$omp end parallel do
+
+!C
+!C== forward substitution
+
+!poption noparallel
+      do iv= 1, NVECT
+!$omp parallel do private(iv0,j,iS,iE,i,k,kk)
+!poption indep (W,AL,INL,IAL,STACKmc)
+!poption tlocal(iv0,j,iS,iE,i,k,kk)
+        do ip= 1, PEsmpTOT
+          iv0= STACKmc(PEsmpTOT*(iv-1)+ip- 1)
+!poption noparallel
+          do  j= 1, NLhyp(iv)
+            iS= INL(npLX1*(iv-1)+PEsmpTOT*(j-1)+ip-1)
+            iE= INL(npLX1*(iv-1)+PEsmpTOT*(j-1)+ip  )
+!voption indep (W,AL,IAL)
+            do i= iv0+1, iv0+iE-iS
+               k= i+iS - iv0
+              kk= IAL(k)
+              W(i,ZQ)= W(i,ZQ) - AL(k) * W(kk,ZQ)
+            enddo
+          enddo
+        enddo
+!$omp end parallel do
+
+!$omp parallel do private(iS,iE,i)
+!poption indep (W,ALU_L,STACKmc)
+!poption tlocal(iS,iE,i)
+        do ip= 1, PEsmpTOT
+          iS= STACKmc(PEsmpTOT*(iv-1)+ip-1) + 1
+          iE= STACKmc(PEsmpTOT*(iv-1)+ip  )
+!voption indep (W,ALU_L)
+          do i= iS, iE
+            W(i,ZQ) = ALU_L(i) * W(i,ZQ)
+          enddo
+        enddo
+!$omp end parallel do
+      enddo
+
+!$omp parallel do private(in1)
+!poption indep (W,LtoU) tlocal (in1)
+!voption indep (W,LtoU)
+      do i= 1, NP
+          in1     = LtoU(i)
+        W(in1,WK1)= W(i,ZQ)
+        W(in1,ZP )= 0.d0
+      enddo
+!$omp end parallel do
+
+!C
+!C== backward substitution
+
+      iv= NVECT
+!$omp parallel do private(iS,iE,i)
+!poption indep (W,ALU_U,STACKmc) tlocal (iS,iE,i)
+      do ip= 1, PEsmpTOT
+        iS= STACKmc(PEsmpTOT*(iv-1)+ip-1) + 1
+        iE= STACKmc(PEsmpTOT*(iv-1)+ip  )
+!voption indep (W,ALU_U)
+        do i= iS, iE
+          W(i,WK1)= W(i,WK1) - ALU_U(i) * W(i,ZP)
+        enddo
+      enddo
+!$omp end parallel do
+
+!poption noparallel      
+      do iv= NVECT-1, 1, -1
+!$omp parallel do private(iv0,iS,iE,i)
+!poption indep (W,AU,INU,IAU,STACKmc)
+!poption tlocal(iv0,iS,iE,i)
+        do ip= 1, PEsmpTOT
+          iv0= STACKmc(PEsmpTOT*(iv-1)+ip- 1)
+!poption noparallel
+          do  j= 1, NUhyp(iv)
+            iS= INU(npUX1*(iv-1)+PEsmpTOT*(j-1)+ip-1)
+            iE= INU(npUX1*(iv-1)+PEsmpTOT*(j-1)+ip  )
+!voption indep (W,AU,IAU)
+            do i= iv0+1, iv0+iE-iS
+               k= i+iS - iv0
+              kk= IAU(k)
+              W(i,ZP)= W(i,ZP) + AU(k) * W(kk,WK1)
+            enddo
+          enddo
+        enddo
+!$omp end parallel do
+
+!$omp parallel do private(iS,iE,i)
+!poption indep (W,ALU_U,STACKmc) tlocal (iS,iE,i)
+        do ip= 1, PEsmpTOT
+          iS= STACKmc(PEsmpTOT*(iv-1)+ip-1) + 1
+          iE= STACKmc(PEsmpTOT*(iv-1)+ip  )
+!voption indep (W,ALU_U)
+          do i= iS, iE
+            W(i,WK1)= W(i,WK1) - ALU_U(i) * W(i,ZP)
+          enddo
+        enddo
+!$omp end parallel do
+      enddo
+
+!$omp parallel do private(iS,iE,i,in1)
+!poption indep (W,NtoO_U,STACKmcG) tlocal (iS,iE,i,in1)
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,NtoO_U)
+        do i= iS, iE
+            in1    = NtoO_U(i)
+          W(in1,ZQ)= W(i,WK1)
+        enddo
+      enddo
+!$omp end parallel do
+
+!C
+!C-- INTERFACE data EXCHANGE
+      START_TIME= MPI_WTIME()
+      call SOLVER_SEND_RECV                                             &
+     &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
+     &     STACK_EXPORT, NOD_EXPORT, WS, WR, W(1,ZQ) , SOLVER_COMM,     &
+     &     my_rank)
+      END_TIME= MPI_WTIME()
+      COMMtime = COMMtime + END_TIME - START_TIME
+
+      call additiveSCHWARTZ
+ 
+      enddo
+!C===
+      
+!C
+!C +---------------+
+!C | {RHO}= {r}{z} |
+!C +---------------+
+!C===
+      RHO0= 0.d0
+
+!$omp parallel do private(iS,iE,i)
+!$omp&            reduction(+:RHO0)
+!poption indep (W,STACKmcG) tlocal (iS,iE,i)
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W)
+        do i= iS, iE
+          RHO0= RHO0 + W(i,R) * W(i,Z)
+        enddo
+      enddo
+!$omp end parallel do
+
+      START_TIME= MPI_WTIME()
+      call MPI_allREDUCE (RHO0, RHO, 1, MPI_DOUBLE_PRECISION,           &
+     &                    MPI_SUM, SOLVER_COMM, ierr)
+      END_TIME= MPI_WTIME()
+      COMMtime = COMMtime + END_TIME - START_TIME
+!C===
+
+!C
+!C +-----------------------------+
+!C | {p} = {z} if      ITER=1    |
+!C | BETA= RHO / RHO1  otherwise |
+!C | {p} = {z} + BETA*{p}        |
+!C +-----------------------------+
+!C===
+      if ( ITER.eq.1 ) then
+!$omp parallel do private(iS,iE,i)
+!poption indep (W,STACKmcG) tlocal (iS,iE,i)
+        do ip= 1, PEsmpTOT
+          iS= STACKmcG(ip-1) + 1
+          iE= STACKmcG(ip  )
+!voption indep (W)
+          do i= iS, iE
+            W(i,P)= W(i,Z)
+          enddo
+        enddo
+!$omp end parallel do
+       else
+         BETA= RHO / RHO1
+!$omp parallel do private(iS,iE,i)
+!poption indep (W,STACKmcG) tlocal (iS,iE,i)
+        do ip= 1, PEsmpTOT
+          iS= STACKmcG(ip-1) + 1
+          iE= STACKmcG(ip  )
+!voption indep (W)
+          do i= iS, iE
+            W(i,P)= W(i,Z) + BETA * W(i,P)
+          enddo
+        enddo
+!$omp end parallel do
+      endif
+!C===
+
+!C
+!C +-------------+
+!C | {q}= [A]{p} |
+!C +-------------+
+!C===        
+
+!C
+!C-- INTERFACE data EXCHANGE
+      START_TIME= MPI_WTIME()
+      call SOLVER_SEND_RECV                                             &
+     &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
+     &     STACK_EXPORT, NOD_EXPORT, WS, WR, W(1,P) , SOLVER_COMM,      &
+     &     my_rank)
+      END_TIME= MPI_WTIME()
+      COMMtime = COMMtime + END_TIME - START_TIME
+ 
+!$omp parallel do private(iS,iE,i) 
+!poption indep (W,D,STACKmcG) tlocal (iS,iE,i) 
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,D)
+        do i= iS, iE
+          W(i,Q)= D(i) * W(i,P)
+        enddo
+      enddo
+!$omp end parallel do
+
+!$omp parallel do private(iS,iE,i,in1) 
+!poption indep (W,OtoN_L,STACKmcG) tlocal (iS,iE,i,in1) 
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,OtoN_L)
+        do i= iS, iE
+            in1     = OtoN_L(i)
+          W(in1,WK1)= W(i,P)
+          W(in1,WK2)= W(i,Q)
+        enddo
+      enddo
+!$omp end parallel do
+
+!poption noparallel
+      do iv= 1, NVECT
+!$omp parallel do private(iv0,j,iS,iE,i,k,kk) 
+!poption indep (W,IAL,INL,STACKmc)
+!poption tlocal(iv0,j,iS,iE,i,k,kk) 
+      do ip= 1, PEsmpTOT
+        iv0= STACKmc(PEsmpTOT*(iv-1)+ip- 1)
+!poption noparallel
+        do  j= 1, NLhyp(iv)
+          iS= INL(npLX1*(iv-1)+PEsmpTOT*(j-1)+ip-1)
+          iE= INL(npLX1*(iv-1)+PEsmpTOT*(j-1)+ip  )
+!voption indep (W,IAL,AL)
+          do i= iv0+1, iv0+iE-iS
+             k = i+iS - iv0
+             kk= IAL(k)
+            W(i,WK2)= W(i,WK2) + AL(k) * W(kk,WK1)
+          enddo
+        enddo
+      enddo
+!$omp end parallel do
+      enddo
+
+!$omp parallel do private(in1,in2) 
+!poption indep (W,OtoN_U,LtoU) tlocal (in1,in2) 
+!voption indep (W,OtoN_U,LtoU)
+        do i= 1, NP
+            in1     = OtoN_U(i)
+            in2     = LtoU  (i)
+          W(in1,WK1)= W(i,P)
+          W(in2,WK3)= W(i,WK2)
+        enddo
+!$omp end parallel do
+
+!poption noparallel
+      do iv= 1, NVECT
+!$omp parallel do private(iv0,j,iS,iE,i,k,kk) 
+!poption indep (W,IAU,INU,STACKmc)
+!poption tlocal(iv0,j,iS,iE,i,k,kk) 
+      do ip= 1, PEsmpTOT
+        iv0= STACKmc(PEsmpTOT*(iv-1)+ip- 1)
+!poption noparallel
+        do  j= 1, NUhyp(iv)
+          iS= INU(npUX1*(iv-1)+PEsmpTOT*(j-1)+ip-1)
+          iE= INU(npUX1*(iv-1)+PEsmpTOT*(j-1)+ip  )
+!voption indep (W,IAU,AU)
+          do i= iv0+1, iv0+iE-iS
+              k= i+iS - iv0
+             kk= IAU(k)
+            W(i,WK3)= W(i,WK3) + AU(k) * W(kk,WK1)
+          enddo
+        enddo
+      enddo
+!$omp end parallel do
+      enddo
+
+!$omp parallel do private(iS,iE,i,in1) 
+!poption indep (W,NtoO_U,STACKmcG) tlocal (iS,iE,i,in1) 
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,NtoO_U)
+        do i= iS, iE
+            in1   = NtoO_U(i)
+          W(in1,Q)= W(i,WK3)
+        enddo
+      enddo
+!$omp end parallel do
+!C===
+
+!C
+!C +---------------------+
+!C | ALPHA= RHO / {p}{q} |
+!C +---------------------+
+!C===
+      C10= 0.d0
+
+!$omp parallel do private(iS,iE,i)
+!$omp&            reduction(+:C10)
+!poption indep (W,STACKmcG) tlocal (iS,iE,i)
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W)
+        do i= iS, iE
+          C10= C10 + W(i,P) * W(i,Q)
+        enddo
+      enddo
+!$omp end parallel do
+
+      START_TIME= MPI_WTIME()
+      call MPI_allREDUCE (C10, C1, 1, MPI_DOUBLE_PRECISION,             &
+     &                    MPI_SUM, SOLVER_COMM, ierr)
+      END_TIME= MPI_WTIME()
+      COMMtime = COMMtime + END_TIME - START_TIME
+      ALPHA= RHO / C1
+!C===
+
+!C
+!C +----------------------+
+!C | {x}= {x} + ALPHA*{p} |
+!C | {r}= {r} - ALPHA*{q} |
+!C +----------------------+
+!C===
+
+!$omp parallel do private(iS,iE,i) 
+!$omp&            shared (ALPHA)
+!poption indep (W,X,STACKmcG) tlocal (iS,iE,i)
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,X)
+        do i= iS, iE
+          X(i  )= X(i  ) + ALPHA * W(i,P)
+          W(i,R)= W(i,R) - ALPHA * W(i,Q)
+        enddo
+      enddo
+!$omp end parallel do
+
+      DNRM20= 0.d0
+!$omp parallel do private(iS,iE,i)
+!$omp&            reduction(+:DNRM20)
+!poption indep (W,STACKmcG) tlocal (iS,iE,i)
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W)
+        do i= iS, iE
+          DNRM20= DNRM20 + W(i,R)**2
+        enddo
+      enddo
+!$omp end parallel do
+
+      START_TIME= MPI_WTIME()
+      call MPI_allREDUCE (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,       &
+     &                    MPI_SUM, SOLVER_COMM, ierr)
+      END_TIME= MPI_WTIME()
+      COMMtime = COMMtime + END_TIME - START_TIME
+      RESID= dsqrt(DNRM2/BNRM2)
+
+        if (my_rank.eq.0)  write (12,'(i5, 1pe16.6)') ITER, RESID
+
+        if ( RESID.le.TOL   ) goto 30
+        if ( ITER .eq.MAXIT ) exit
+
+        RHO1 = RHO                                                             
+
+      enddo
+
+!C===
+   30 continue                               
+      E1_TIME= MPI_WTIME()
+      COMPtime= E1_TIME - S1_TIME
+
+!C
+!C== change B,X
+!C
+!C-- INTERFACE data EXCHANGE
+      START_TIME= MPI_WTIME()
+      call SOLVER_SEND_RECV                                             &
+     &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
+     &     STACK_EXPORT, NOD_EXPORT, WS, WR, X , SOLVER_COMM,my_rank)
+      END_TIME= MPI_WTIME()
+      COMMtime = COMMtime + END_TIME - START_TIME
+
+!C
+!C== change B,X
+
+!$omp parallel do private(iS,iE,i,in) 
+!poption indep (W,B,X,STACKmcG) tlocal (iS,iE,i,in)
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,B,X,NtoO)
+        do i= iS, iE
+          in= NtoO(i)
+          W(in,2)= B(i)
+          W(in,3)= X(i)
+        enddo
+      enddo
+!$omp end parallel do
+
+!$omp parallel do private(iS,iE,i) 
+!poption indep (W,B,X,STACKmcG) tlocal (iS,iE,i)
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,B,X)
+        do i= iS, iE
+          B(i)= W(i,2)
+          X(i)= W(i,3)
+        enddo
+      enddo
+!$omp end parallel do
+
+      deallocate (W, WS, WR)
+
+      R1= 100.d0 * ( 1.d0 - COMMtime/COMPtime )
+      if (my_rank.eq.0) then
+        write (12,'(/,a,i7      )') '### iteration  : ', ITER
+        write (12,'(a,1pe16.6  )') '### elapced    : ', COMPtime
+        write (12,'(  a,1pe16.6  )') '### comm.      : ', COMMtime
+        write (12,'(  a,1pe16.6,/)') '### work ratio : ', R1
+      endif
+
+      return
+
+      contains
+
+!C
+!C***
+!C*** additiveSCHWARTZ
+!C***
+!C
+      subroutine additiveSCHWARTZ
+
+!$omp parallel do
+!poption indep (W)
+!voption indep (W)
+      do i= 1, NP
+        W(i,Z)= W(i,Z) + W(i,ZQ)
+      enddo
+!$omp end parallel do
+
+      if (iterPRE.eq.iterPREmax) return
+
+!$omp parallel do private(iS,iE,i,Xm0,Xm1,Xm2) 
+!poption indep (W,D,STACKmcG) tlocal (iS,iE,i,Xm0,Xm1,Xm2) 
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,D)
+        do i= iS, iE
+          W(i,WK3)= W(i,R) - D(i) * W(i,Z)
+        enddo
+      enddo
+!$omp end parallel do
+
+!$omp parallel do private(iS,iE,i,in1) 
+!poption indep (W,OtoN_L,STACKmcG) tlocal(iS,iE,i,in1)
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,OtoN_L)
+        do i= iS, iE
+            in1     = OtoN_L(i)
+          W(in1,WK1)= W(i,Z)
+          W(in1,WK2)= W(i,WK3)
+        enddo
+      enddo
+!$omp end parallel do
+
+!poption noparallel
+      do iv= 1, NVECT
+!$omp parallel do private(iv0,j,iS,iE,i,k,kk) 
+!poption indep (W,AL,INL,IAL,STACKmc)
+!poption tlocal(iv0,j,iS,iE,i,k,kk) 
+      do ip= 1, PEsmpTOT
+        iv0= STACKmc(PEsmpTOT*(iv-1)+ip- 1)
+!poption noparallel
+        do  j= 1, NLhyp(iv)
+          iS= INL(npLX1*(iv-1)+PEsmpTOT*(j-1)+ip-1)
+          iE= INL(npLX1*(iv-1)+PEsmpTOT*(j-1)+ip  )
+!voption indep (W,AL,IAL)
+          do i= iv0+1, iv0+iE-iS
+             k= i+iS - iv0
+            kk= IAL(k)
+            W(i,WK2)= W(i,WK2) - AL(k) * W(kk,WK1)
+          enddo
+        enddo
+      enddo
+!$omp end parallel do
+      enddo
+
+!$omp parallel do private(in1,in2) 
+!poption indep (W,OtoN_U,LtoU) tlocal (in1,in2) 
+!voption indep (W,OtoN_U,LtoU)
+      do i= 1, NP
+          in1     = OtoN_U(i)
+          in2     = LtoU  (i)
+        W(in1,WK1)= W(i,Z  )
+        W(in2,WK3)= W(i,WK2)
+      enddo
+!$omp end parallel do
+
+!poption noparallel
+      do iv= 1, NVECT
+!$omp parallel do private(iv0,j,iS,iE,i,k,kk) 
+!poption indep (W,AU,INU,IAU,STACKmc)
+!poption tlocal(iv0,j,iS,iE,i,k,kk) 
+      do ip= 1, PEsmpTOT
+        iv0= STACKmc(PEsmpTOT*(iv-1)+ip- 1)
+!poption noparallel
+        do  j= 1, NUhyp(iv)
+          iS= INU(npUX1*(iv-1)+PEsmpTOT*(j-1)+ip-1)
+          iE= INU(npUX1*(iv-1)+PEsmpTOT*(j-1)+ip  )
+!voption indep (W,AU,IAU)
+          do i= iv0+1, iv0+iE-iS
+             k= i+iS - iv0
+            kk= IAU(k)
+            W(i,WK3)= W(i,WK3) - AU(k) * W(kk,WK1)
+          enddo
+        enddo
+      enddo
+!$omp end parallel do
+      enddo
+
+!$omp parallel do private(iS,iE,i,in1) 
+!poption indep (W,NtoO_U,STACKmcG) tlocal (iS,iE,i,in1) 
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,NtoO_U)
+        do i= iS, iE
+            in1     = NtoO_U(i)
+          W(in1,WK1)= W(i,WK3)
+        enddo
+      enddo
+!$omp end parallel do
+
+!$omp parallel do private(iS,iE,i,in1) 
+!poption indep (W,OtoN_L,STACKmcG) tlocal (iS,iE,i,in1) 
+      do ip= 1, PEsmpTOT
+        iS= STACKmcG(ip-1) + 1
+        iE= STACKmcG(ip  )
+!voption indep (W,OtoN_L)
+        do i= iS, iE
+            in1    = OtoN_L(i)
+          W(in1,ZQ)= W(i,WK1)
+        enddo
+      enddo
+!$omp end parallel do
+
+      end subroutine additiveSCHWARTZ
+      end subroutine VCG11_DJDS_SMP
+      end module     solver_VCG11_DJDS_SMP
+
+
+

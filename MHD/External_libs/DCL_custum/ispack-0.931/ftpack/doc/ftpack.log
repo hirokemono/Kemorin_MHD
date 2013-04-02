@@ -1,0 +1,39 @@
+This is pdfeTeX, Version 3.141592-1.21a-2.2 (Web2C 7.5.4) (format=pdflatex 2009.8.28)  26 MAY 2012 09:41
+entering extended mode
+\write18 enabled.
+**ftpack.tex
+(./ftpack.tex
+LaTeX2e <2003/12/01>
+Babel <v3.8d> and hyphenation patterns for american, french, german, ngerman, b
+ahasa, basque, bulgarian, catalan, croatian, czech, danish, dutch, esperanto, e
+stonian, finnish, greek, icelandic, irish, italian, latin, magyar, norsk, polis
+h, portuges, romanian, russian, serbian, slovak, slovene, spanish, swedish, tur
+kish, ukrainian, nohyphenation, welsh, loaded.
+
+! LaTeX Error: File `jarticle.cls' not found.
+
+Type X to quit or <RETURN> to proceed,
+or enter new name. (Default extension: cls)
+
+Enter file name: 
+! Emergency stop.
+<read *> 
+         
+l.23 ^^M
+        
+End of file on the terminal!
+
+ 
+Here is how much of TeX's memory you used:
+ 10 strings out of 94506
+ 179 string characters out of 1171869
+ 46238 words of memory out of 1500000
+ 3276 multiletter control sequences out of 10000+50000
+ 3640 words of font info for 14 fonts, out of 1200000 for 2000
+ 566 hyphenation exceptions out of 8191
+ 10i,0n,7p,86b,8s stack positions out of 5000i,500n,6000p,200000b,5000s
+PDF statistics:
+ 0 PDF objects out of 65536
+ 0 named destinations out of 20000
+ 1 words of extra memory for PDF output out of 65536
+No pages of output.

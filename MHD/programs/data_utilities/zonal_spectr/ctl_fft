@@ -1,0 +1,29 @@
+begin zonal_fft
+  begin data_files_def
+    num_subdomain_ctl    4
+    num_smp_ctl          1
+    mesh_file_head_ctl     'in_single'
+    mesh_sph_grid_ctl      'in_rtp'
+    spectr_file_head_ctl   'zonal_spec/spectral'
+!
+    field_file_head_ctl    'field/out'
+  end data_files_def
+!
+  begin time_step_ctl
+    i_step_init_ctl       0
+    i_step_number_ctl     2000
+    i_step_field_ctl       800
+  end time_step_ctl
+!
+  begin zonal_fft_ctl
+!
+!   vector_transfer_ctl... coordinate transfer mode
+!         spherical: to spherical coordinate
+!         cylindrical:  to cylindrical coordinate
+!
+    vector_transfer_ctl  cylindrical
+!
+    energy_spec_head_ctl   'zonal_spec/ene_spec'
+    ave_ene_spec_head_ctl  'zonal_spec/ave_t_ene_spec'
+  end zonal_fft_ctl
+end zonal_fft

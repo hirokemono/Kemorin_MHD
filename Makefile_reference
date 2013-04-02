@@ -1,0 +1,149 @@
+#
+#  Makefile for GeoFEM dynamo platform
+#    Written by H. Matsui
+#
+SHELL           = /bin/sh
+#
+#  directory of GeoFEM
+#
+HOMEDIR = /Users/matsui
+SRCDIR = $(HOMEDIR)/src_0323
+INSTDIR=   $(HOMEDIR)/local
+#
+MHDDIR = $(SRCDIR)/MHD
+MAKEDIR= $(SRCDIR)/work
+BUILDDIR= $(SRCDIR)/bin
+#
+#   Moon (cross compiler for the Earth Simulator)
+#
+MPICHDIR = /opt/local
+MPICHLIBDIR = $(MPICHDIR)/lib
+MPICHBINDIR = $(MPICHDIR)/bin
+MPICHINCDIR = $(MPICHDIR)/include/openmpi
+MPILIBS =  
+#
+#    compilers
+#
+F90 = gfortran-mp-4.4
+CC =  gcc-mp-4.4
+CXX = g++-mp-4.4
+
+MPIF90 = $(MPICHBINDIR)/openmpif90
+MPICC =  $(MPICHBINDIR)/openmpicc
+
+AR = ar
+RANLIB = ranlib
+
+#
+# FC_NAME_MANGLE definition for Fortran-C connection
+#     -DCONNECT_TO_C ... connect fortran source to C subroutines
+#    C routtine name mangle flag for Fortran connection
+#     -DFC_NAME_LOWER_USCORE, -DFC_NAME_UPPER, or -DFC_NAME_LOWER
+#
+#     -DPNG_OUTPUT ... connect libpng for images
+#     -DWITH_GLUT ...... generate binaries using OpenGL
+#     -DWITH_PGPLOT .... generate programs using PGPLOT
+#
+
+FC_NAME_MANGLE = -DCONNECT_TO_C -DFC_NAME_LOWER_USCORE
+
+#
+F90OPTFLAGS= -O3 -fopenmp -Wall
+OPTFLAGS = -O3 -Wall
+CXXFLAGS = -O2 -Wall
+#
+#   libpng and zlib settings
+#
+ZLIB_CFLAGS = -I/Users/matsui/local/include
+ZLIB_LIB =    -L/Users/matsui/local/lib -lz
+PNG_CFLAGS =  -I/Users/matsui/local/include
+PNG_LIBS =    -L/Users/matsui/local/lib -lpng 
+#
+#    FFTW3 settings
+#
+FFTW3_CFLAGS= 
+FFTW3_LIBS=   -L/usre/local/lib -Lfftw
+#
+#   GLUT settings (Requirement: OpenGL, GLUT, libpng)
+#
+COCOA_FLAG = -D__APPLE__
+OPENGL_INC = -I/usr/X11/include
+OPENGL_LIBS= -framework GLUT -framework OpenGL  -framework Cocoa
+#
+#   PGPLOT settings (Requirement: pgplot, libpng)
+#
+PGPLOT_LIBS= -L/usr/local/pgplot/lib -lpgplot -L/usr/X11/lib -lX11 -L/opt/local/lib -laquaterm -Wl,-framework -Wl,Foundation
+#
+#   GTK+ settings (Requirement: OpenGL, GLUT, libpng)
+GTK2_CFLAGS= `pkg-config --cflags gtk+-2.0`
+GTK2_LIBS=   `pkg-config --libs gtk+-2.0`
+#
+#   GLUI settings (Requirement: OpenGL, GLUT, libpng)
+#     It Turns on if C++ compiler is defined
+#
+#  --- Please do not chenge the following ---
+#
+# Choose following Directries for simulation
+#
+MAKE_MOD_DEP= $(BUILDDIR)/make_f90depends
+#
+
+all: mpif.h makemake
+	cd $(MAKEDIR); make
+
+
+
+makemake: mpif.h
+	echo "# Construct Makefile"; \
+	cd $(MHDDIR) ; \
+		make \
+		SRCDIR="$(SRCDIR)" \
+		INSTDIR="$(INSTDIR)" \
+		MAKEDIR="$(MAKEDIR)" \
+		BUILDDIR="$(BUILDDIR)" \
+		MHDDIR="$(MHDDIR)" \
+		MPICHDIR="$(MPICHDIR)" \
+		MPICHLIBDIR="$(MPICHLIBDIR)" \
+		MPILIBS="$(MPILIBS)" \
+		MPICHBINDIR="$(MPICHBINDIR)" \
+		MPICHINCDIR="$(MPICHINCDIR)" \
+		ZLIB_CFLAGS="$(ZLIB_CFLAGS)" \
+		ZLIB_LIB="$(ZLIB_LIB)"       \
+		PNG_CFLAGS="$(PNG_CFLAGS)"   \
+		PNG_LIBS="$(PNG_LIBS)"         \
+		FFTW3_CFLAGS="$(FFTW3_CFLAGS)" \
+		FFTW3_LIBS="$(FFTW3_LIBS)" \
+		OPENGL_INC="$(OPENGL_INC)" \
+		OPENGL_LIBS="$(OPENGL_LIBS)" \
+		PGPLOT_LIBS="$(PGPLOT_LIBS)" \
+		GTK2_CFLAGS="$(GTK2_CFLAGS)" \
+		GTK2_LIBS="$(GTK2_LIBS)" \
+		FC_NAME_MANGLE="$(FC_NAME_MANGLE)" \
+		COCOA_FLAG="$(COCOA_FLAG)" \
+		OPTFLAGS="$(OPTFLAGS)" \
+		F90OPTFLAGS="$(F90OPTFLAGS)" \
+		CXXFLAGS="$(CXXFLAGS)" \
+		F90LIB="$(F90LIB)" \
+		CC="$(CC)" \
+		CXX="$(CXX)" \
+		MPIF90="$(MPIF90)" \
+		MPICC="$(MPICC)"   \
+		AR="$(AR)" \
+		RANLIB="$(RANLIB)" \
+		makemake
+
+
+mpif.h: $(MPICHINCDIR)/mpif.h
+	sed -e 's/^C/!/' $(MPICHINCDIR)/mpif.h > mpif.h
+
+install:
+	cd $(MAKEDIR) ; \
+		make install
+
+clean:
+	for dir in $(MAKEDIR) $(MHDDIR) ; do \
+	echo "# cleaning $${dir} directory..."; \
+		( cd $${dir}; \
+		make clean )\
+	done; \
+	rm -f mpif.h *.o *.mod *~ *.par *.diag *.a *.f90

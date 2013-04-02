@@ -1,0 +1,113 @@
+************************************************************************
+* ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
+* Copyright (C) 1998--2011 Keiichi Ishioka <ishioka@gfd-dennou.org>
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+* 
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+* 02110-1301 USA.
+************************************************************************
+************************************************************************
+*     CALCULATE VORTICITY VECTOR                              2002/04/25
+************************************************************************
+      SUBROUTINE P3GMTO(NM,MM,LM,Z,O,ISW)
+
+      IMPLICIT REAL*8(A-H,O-Z)
+      INCLUDE 'mpif.h'      
+      DIMENSION Z(-NM:NM,-MM:MM,2,0:*)
+      DIMENSION O(-NM:NM,-MM:MM,0:*)
+
+      CALL MPI_COMM_RANK(MPI_COMM_WORLD,IP,IERR)
+      CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NP,IERR)
+
+      LP=LM/NP+1
+      LS=LP*IP
+      LE=MIN(LP*(IP+1)-1,LM)
+      IF(LE.GE.LS) THEN
+        LC=LE-LS+1
+      ELSE
+        LC=0
+        LS=0
+        LE=0
+      END IF
+
+      LT=2*LC-1+LS
+
+      IF(LC.EQ.0) THEN
+        RETURN
+      END IF
+
+      IF(ISW.EQ.1) THEN
+        DO L=MAX(LS,1),LE
+          DO M=-MM,MM
+            DO N=-NM,NM
+              O(N,M,L-LS)=-(M*Z(N,M,1,L-LS)+N*Z(N,M,2,L-LS))/L
+              O(N,M,LT-L)=-(M*Z(N,M,1,LT-L)+N*Z(N,M,2,LT-L))/(-L)
+            END DO
+          END DO
+        END DO
+        IF(LS.NE.0) THEN
+          RETURN
+        END IF
+*       L=0
+        CALL BSCOPY((2*NM+1)*(2*MM+1),Z(-NM,-MM,2,0),O(-NM,-MM,0))
+*       L=M=0        
+        CALL BSCOPY(2*NM+1,Z(-NM,0,1,0),O(-NM,0,0))
+*       L=M=N=0
+        O(0,0,0)=0
+      ELSE IF(ISW.EQ.2) THEN
+        DO L=MAX(LS,1),LE
+          DO M=-MM,MM
+            DO N=-NM,NM
+              O(N,M,L-LS)=Z(N,M,1,L-LS)
+              O(N,M,LT-L)=Z(N,M,1,LT-L)
+            END DO
+          END DO
+        END DO
+        IF(LS.NE.0) THEN
+          RETURN
+        END IF
+        L=0
+        DO M=-MM,-1
+          DO N=-NM,NM
+            O(N,M,0)=-(N*Z(N,M,1,0))/M
+          END DO
+        END DO
+        DO M=1,MM
+          DO N=-NM,NM
+            O(N,M,0)=-(N*Z(N,M,1,0))/M          
+          END DO
+        END DO
+*       L=M=0
+        CALL BSCOPY(2*NM+1,Z(-NM,0,2,0),O(-NM,0,0))
+*       L=M=N=0
+        O(0,0,0)=0      
+      ELSE IF(ISW.EQ.3) THEN
+        DO L=MAX(LS,1),LE
+          DO M=-MM,MM
+            DO N=-NM,NM
+              O(N,M,L-LS)=Z(N,M,2,L-LS)
+              O(N,M,LT-L)=Z(N,M,2,LT-L)
+            END DO
+          END DO
+        END DO
+        IF(LS.NE.0) THEN
+          RETURN
+        END IF
+*       L=0
+        CALL BSCOPY((2*NM+1)*(2*MM+1),Z(-NM,-MM,1,0),O(-NM,-MM,0))
+*       L=M=0
+        CALL BSSET0(2*NM+1,O(-NM,0,0))
+      END IF
+
+      END

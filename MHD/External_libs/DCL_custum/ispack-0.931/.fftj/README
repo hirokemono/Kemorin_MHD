@@ -1,0 +1,94 @@
+FTTJ:  An FFT library
+--------------------------------------------------------------------
+Author: Keiichi Ishioka <ishioka@gfd-dennou.org>
+--------------------------------------------------------------------
+License: see "COPYRIGHT" file.
+--------------------------------------------------------------------
+Description:
+
+ This is a library to compute 1D FFT of double precision complex/real
+ data of size N (currently, supported N = 2, 4, 8, 16, 32, 64, 128, 
+ 256, 512, 1024 for complex transform, and 2048 for real transform)
+ 
+ The library is developed to show high performance on Intel x86
+ (or compatible) CPUs which have SSE2 (after Pentium4).
+--------------------------------------------------------------------
+Install:
+
+  1) Change "FC" value in "Makefile" as you like.
+  
+  2) If your system is a 32bit Linux on a x86 CPU which have SSE2 then
+     do as follows.
+
+      % make sse32
+
+     Else if your system is a 64bit Linux on a x86 CPU which have SSE2 then
+     do as follows.
+  
+      % make sse64
+
+     Else, do as follows.
+  
+      % make fort
+      
+  3) If the process above is completed without any errors, you will get
+     a static library,
+  
+        libfftj.a
+	
+     in the current directory. You can copy it to another appropriate
+     directory as you like.
+--------------------------------------------------------------------     
+Check:
+
+   After the installation, I recommend that you should check the library
+ as follows.
+ (for complex transform) 
+ 
+     % make check
+     % ./check
+     
+ (for real transform)
+   
+     % make rcheck
+     % ./rcheck
+     
+  If there is no problem, you will get the following message, 
+  "Passed all checks", finally.
+--------------------------------------------------------------------  
+Benchmark:
+
+   If you are interested in the performance of the library, please
+ do the followings.
+ (for complex transform)
+ 
+     % make bench
+     % ./bench
+     
+ (for real transform)     
+
+     % make rbench
+     % ./rbench
+
+ This shows the benchmark of the library following to the
+ benchFFT (http://www.fftw.org/benchfft/) benchmark methodology.
+  
+   If your computer is too fast/slow, change the value of "NTR0" in
+ "bench-sub.f" and "rbench-sub.f" appropriately.
+ 
+--------------------------------------------------------------------  
+Usage:
+
+ Please read "USAGE" file.
+  
+--------------------------------------------------------------------  
+Note:
+
+   If you want to use the library made by "make sse32" or "make sse64",
+ double precision complex/real arrays must be 16-bite aligned 
+ (on Pentium4, 64-bite alignment is recommended for better performance). 
+ If your FORTRAN77/Fortran90 compiler does not support it, please 
+ refer to the sample programs, "check-align.f", "bench-align.f",
+ "rcheck-align.f", and "rbench-align.f" to see how to force the 
+ alignment (in these sample programs, 64-bite alignment is forced).
+ 

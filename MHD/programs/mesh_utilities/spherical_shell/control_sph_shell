@@ -1,0 +1,67 @@
+begin spherical_shell_ctl
+  begin data_files_def
+    num_subdomain_ctl    4
+    num_smp_ctl          1
+    sph_files_head_ctl     'in'
+!
+    coriolis_tri_int_name_ctl   'coriolis_int.dat'
+!
+    memory_conservation_ctl     'YES'
+  end data_files_def
+!
+  begin num_domain_ctl
+    array  num_domain_sph_grid   2
+      num_domain_sph_grid    radial       2   end
+      num_domain_sph_grid   meridional    2   end
+    end array num_domain_sph_grid
+!
+    array num_domain_lagendre   2
+      num_domain_lagendre   radial        2   end
+      num_domain_lagendre   zonal         2   end
+    end array num_domain_lagendre
+!
+    array num_domain_spectr     1
+      num_domain_spectr     modes         4   end
+    end array num_domain_spectr
+  end num_domain_ctl
+!
+  begin num_grid_sph
+    sph_grid_type_ctl       no_pole
+    truncation_level_ctl     4
+    ngrid_meridonal_ctl     12
+    ngrid_zonal_ctl         24
+!
+!   sph_grid_type_ctl:  grid type for mesh data
+!         no_pole:      Gaussian points only
+!         with_pole:    Add pole grids
+!         with_center:  Add center
+!   raidal_grid_type_ctl:   Definition for radial grid   
+!         explicit:        Set each radial grid explicitly
+!         Chebyshev:       Set Chebyshev collocation points
+!         equi_distance:   Set equi-diatance grid
+!
+    raidal_grid_type_ctl   explicit
+    array r_layer       4
+      r_layer    1  0.5384615384615
+      r_layer    2  0.5384615384615     ICB
+      r_layer    3  1.038461538462      Mid
+      r_layer    4  1.538461538462      CMB
+    end array r_layer
+!
+!     raidal_grid_type_ctl   Chebyshev
+!     num_fluid_grid_ctl     5
+!     fluid_core_size_ctl   1.0
+!     ICB_to_CMB_ratio_ctl  0.35
+!     Min_radius_ctl      0.0
+!     ICB_radius_ctl      0.5384615384615
+!     CMB_radius_ctl      1.5384615384615
+!     Max_radius_ctl      2.0
+!
+    array boundaries_ctl 3
+      boundaries_ctl   to_Center   1
+      boundaries_ctl   ICB         2
+      boundaries_ctl   CMB         4
+    end array boundaries_ctl
+!
+  end num_grid_sph
+end spherical_shell_ctl

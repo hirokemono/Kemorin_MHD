@@ -1,0 +1,214 @@
+!set_const_4_sections.f90
+!      module set_const_4_sections
+!
+!      Written by H. Matsui on June, 2006
+!
+!      subroutine set_const_4_crossections(numnod, inod_smp_stack, xx)
+!      subroutine set_const_4_isosurfaces(numnod, inod_smp_stack,       &
+!     &          xx, radius, a_r, s_cyl, as_cyl, num_phys, ntot_phys,   &
+!     &          istack_ncomp, d_nod)
+!
+      module set_const_4_sections
+!
+      use m_precision
+!
+      use m_constants
+      use m_machine_parameter
+!
+      implicit none
+!
+      private :: set_constant_4_psf, set_constant_4_iso
+!
+!  ---------------------------------------------------------------------
+!
+      contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_const_4_crossections(numnod, inod_smp_stack, xx)
+!
+      use m_control_params_4_psf
+!
+      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
+!
+      integer(kind = kint) :: i_psf
+!
+!
+      do i_psf = 1, num_psf
+        if (id_section_method(i_psf) .gt. 0) then
+          call set_constant_4_psf(i_psf, numnod, inod_smp_stack, xx)
+        end if
+      end do
+!
+      end subroutine set_const_4_crossections
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_const_4_isosurfaces(numnod, inod_smp_stack,        &
+     &          xx, radius, a_r, s_cyl, as_cyl, num_phys, ntot_phys,    &
+     &          istack_ncomp, d_nod)
+!
+      use m_control_params_4_iso
+!
+      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in)  :: xx(numnod,3)
+      real(kind = kreal), intent(in)  :: radius(numnod)
+      real(kind = kreal), intent(in)  :: a_r(numnod)
+      real(kind = kreal), intent(in)  :: s_cyl(numnod)
+      real(kind = kreal), intent(in)  :: as_cyl(numnod)
+!
+      integer(kind = kint), intent(in) :: num_phys, ntot_phys
+      integer(kind = kint), intent(in) :: istack_ncomp(0:num_phys)
+      real(kind = kreal), intent(in)  :: d_nod(numnod,ntot_phys)
+!
+      integer(kind = kint) :: i_iso
+!
+!
+      do i_iso = 1, num_iso
+        call set_constant_4_iso(i_iso, numnod, inod_smp_stack,          &
+     &      xx, radius, a_r, s_cyl, as_cyl, num_phys, ntot_phys,        &
+     &      istack_ncomp, d_nod)
+      end do
+!
+      end subroutine set_const_4_isosurfaces
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine set_constant_4_psf(i_psf, nnod, istack_nod_smp, xx)
+!
+      use m_control_params_4_psf
+      use m_geometry_list_4_psf
+!
+      integer(kind= kint), intent(in) :: i_psf
+!
+      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: istack_nod_smp(0:np_smp)
+      real(kind = kreal), intent(in) :: xx(nnod,3)
+!
+      integer(kind = kint) :: ip, inod, ist, ied
+!
+!
+!$omp parallel do private(ip,inod,ist,ied)
+      do ip = 1, np_smp
+        ist = istack_nod_smp(ip-1) + 1
+        ied = istack_nod_smp(ip)
+        do inod = ist, ied
+          c_ref_psf(inod,i_psf)                                         &
+     &          =  const_psf(1,i_psf) * (xx(inod,1)*xx(inod,1))         &
+     &           + const_psf(2,i_psf) * (xx(inod,2)*xx(inod,2))         &
+     &           + const_psf(3,i_psf) * (xx(inod,3)*xx(inod,3))         &
+     &           + const_psf(4,i_psf) * (xx(inod,1)*xx(inod,2))         &
+     &           + const_psf(5,i_psf) * (xx(inod,2)*xx(inod,3))         &
+     &           + const_psf(6,i_psf) * (xx(inod,3)*xx(inod,1))         &
+     &           + const_psf(7,i_psf) *  xx(inod,1)                     &
+     &           + const_psf(8,i_psf) *  xx(inod,2)                     &
+     &           + const_psf(9,i_psf) *  xx(inod,3)                     &
+     &           + const_psf(10,i_psf)
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine set_constant_4_psf
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_constant_4_iso(i_iso, nnod, istack_nod_smp,        &
+     &          xx, radius, a_r, s_radius, a_s, num_fld, ntot_comp,     &
+     &          istack_comp_nod, d_nod)
+!
+      use m_control_params_4_iso
+      use m_geometry_list_4_iso
+!
+      use mag_of_field_smp
+      use cvt_vector_2_spheric_smp
+      use cvt_vector_2_cylinder_smp
+      use subtract_const_smp
+!
+      use copy_field_smp
+!
+      integer(kind = kint), intent(in) :: i_iso
+!
+      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: istack_nod_smp(0:np_smp)
+      real(kind = kreal), intent(in) :: xx(nnod,3)
+      real(kind = kreal), intent(in) :: radius(nnod)
+      real(kind = kreal), intent(in) :: a_r(nnod)
+      real(kind = kreal), intent(in) :: s_radius(nnod)
+      real(kind = kreal), intent(in) :: a_s(nnod)
+!
+      integer(kind = kint), intent(in) :: num_fld, ntot_comp
+      integer(kind = kint), intent(in) :: istack_comp_nod(0:num_fld)
+      real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
+!
+      integer(kind = kint) :: ncomp_org, ist_field
+      integer(kind = kint) :: ifield, i_comp, ic
+!
+!
+      ifield = id_isosurf_data(i_iso)
+      i_comp = id_isosurf_comp(i_iso)
+!
+      ist_field  = istack_comp_nod(ifield-1) + 1
+      ncomp_org = istack_comp_nod(ifield) - istack_comp_nod(ifield-1)
+!
+!
+      if (ncomp_org .eq. 1) then
+        call copy_nod_scalar_smp(np_smp, nnod, istack_nod_smp,          &
+     &      d_nod(1,ist_field), c_ref_iso(1,i_iso))
+!
+      else if (ncomp_org .eq. 3) then
+        if (i_comp.eq.0) then
+!
+          call cal_vector_magnitude(np_smp, nnod, istack_nod_smp,       &
+     &        c_ref_iso(1,i_iso), d_nod(1,ist_field) )
+!
+        else if (i_comp.ge.1 .and. i_comp.le.3) then
+!
+          ic = ist_field+i_comp-1
+          call copy_nod_scalar_smp(np_smp, nnod, istack_nod_smp,        &
+     &        d_nod(1,ic), c_ref_iso(1,i_iso))
+!
+        else if (i_comp.eq.11) then
+          call cal_radial_comp_smp(np_smp, nnod, istack_nod_smp,        &
+     &        d_nod(1,ist_field), c_ref_iso(1,i_iso), xx, radius, a_r)
+        else if (i_comp.eq.12) then
+          call cal_theta_comp_smp(np_smp, nnod, istack_nod_smp,         &
+     &        d_nod(1,ist_field), c_ref_iso(1,i_iso),                   &
+     &        xx, radius, s_radius, a_r, a_s)
+        else if (i_comp.eq.13) then
+          call cal_phi_comp_smp(np_smp, nnod, istack_nod_smp,           &
+     &        d_nod(1,ist_field), c_ref_iso(1,i_iso),                   &
+     &        xx, s_radius, a_s)
+        else if (i_comp.eq.14) then
+          call cal_cylinder_r_comp_smp(np_smp, nnod, istack_nod_smp,    &
+     &        d_nod(1,ist_field), c_ref_iso(1,i_iso),                   &
+     &        xx, s_radius, a_s)
+!
+        end if
+!
+      else if (ncomp_org .eq. 6) then
+        if (i_comp.eq.0) then
+!
+          call cal_sym_tensor_magnitude(np_smp, nnod, istack_nod_smp,   &
+     &        c_ref_iso(1,i_iso), d_nod(1,ist_field) )
+!
+        else if (i_comp.ge.1 .and. i_comp.le.6) then
+!
+          ic = ist_field+i_comp-1
+          call copy_nod_scalar_smp(np_smp, nnod, istack_nod_smp,        &
+     &        d_nod(1,ic), c_ref_iso(1,i_iso))
+!
+        end if
+      end if
+!
+      call subtruct_const_4_scalar_smp_ow(np_smp, nnod, istack_nod_smp, &
+     &    c_ref_iso(1,i_iso), isosurf_value(i_iso))
+!
+      end subroutine set_constant_4_iso
+!
+!  ---------------------------------------------------------------------
+!
+      end module set_const_4_sections

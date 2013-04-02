@@ -1,0 +1,209 @@
+!
+!      module int_MHD_mass_matrices
+!
+!   Lumped mass matrix for each area
+!        programmed by H.Matsui and H.Okuda
+!                                    on July 2000 (ver 1.1)
+!     Modified by H. Matsui on Oct. 2005
+!     Modified by H. Matsui on Oct. 2006
+!
+!      subroutine int_mass_matrices
+!
+      module int_MHD_mass_matrices
+!
+      use m_precision
+!
+      use m_geometry_parameter
+      use m_finite_element_matrix
+!
+      use int_vol_mass_matrix
+      use check_finite_element_mat
+!
+      implicit none
+!
+      private :: int_mass_matrix_trilinear, int_mass_matrices_quad
+      private :: int_mass_matrix_fluid, int_mass_matrix_fl_quad
+      private :: int_mass_matrix_conduct, int_mass_matrix_cd_quad
+      private :: int_mass_matrix_insulate, int_mass_matrix_ins_quad
+!
+!-----------------------------------------------------------------------
+!
+      contains
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_mass_matrices
+!
+      use m_geometry_constants
+      use m_control_parameter
+!
+      integer(kind = kint) :: num_int
+!
+!
+      num_int = intg_point_t_evo
+!
+      if (nnod_4_ele.eq.num_t_quad .or. nnod_4_ele.eq.num_t_lag) then
+        call int_mass_matrices_quad(num_int)
+      else
+        call int_mass_matrix_trilinear(num_int)
+      end if
+!
+      end subroutine int_mass_matrices
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_mass_matrix_trilinear(n_int)
+!
+      use m_machine_parameter
+!
+      integer(kind = kint), intent(in) :: n_int
+!
+!
+      if (iflag_debug.eq.1)                                            &
+     &  write(*,*) 'int_lump_mass_matrix_linear'
+      call int_lump_mass_matrix_linear(n_int)
+!
+      if (iflag_debug.eq.1)                                            &
+     &  write(*,*) 'int_mass_matrix_fluid'
+      call int_mass_matrix_fluid(n_int)
+!
+      if (iflag_debug.eq.1)                                            &
+     &  write(*,*) 'int_mass_matrix_conduct'
+      call int_mass_matrix_conduct(n_int)
+!
+      if (iflag_debug.eq.1)                                            &
+     &  write(*,*) 'int_mass_matrix_insulate'
+      call int_mass_matrix_insulate(n_int)
+!
+      end subroutine int_mass_matrix_trilinear
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_mass_matrices_quad(n_int)
+!
+      use m_machine_parameter
+!
+      integer(kind = kint), intent(in) :: n_int
+!
+!
+      if (iflag_debug.eq.1)                                            &
+     &  write(*,*) 'int_lump_mass_matrix_quad'
+      call int_lump_mass_matrix_quad(n_int)
+!
+      if (iflag_debug.eq.1)                                            &
+     &  write(*,*) 'int_mass_matrix_fl_quad'
+      call int_mass_matrix_fl_quad(n_int)
+!
+      if (iflag_debug.eq.1)                                            &
+     &  write(*,*) 'int_mass_matrix_cd_quad'
+      call int_mass_matrix_cd_quad(n_int)
+!
+      if (iflag_debug.eq.1)                                            &
+     &  write(*,*) 'int_mass_matrix_ins_quad'
+      call int_mass_matrix_ins_quad(n_int)
+!
+      end subroutine int_mass_matrices_quad
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine int_mass_matrix_fluid(n_int)
+!
+      use cal_ff_smp_to_ffs
+      use m_geometry_data_MHD
+!
+      integer(kind = kint), intent(in) :: n_int
+!
+!
+       call int_mass_matrix_diag(iele_fl_smp_stack, n_int)
+       call cal_ff_smp_2_ml (ml_fl, ml_o_fl, ff_smp)
+!
+!      call check_mass_martix_fluid
+!
+      end subroutine int_mass_matrix_fluid
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_mass_matrix_conduct(n_int)
+!
+      use cal_ff_smp_to_ffs
+      use m_geometry_data_MHD
+!
+      integer(kind = kint), intent(in) :: n_int
+!
+!
+       call int_mass_matrix_diag(iele_cd_smp_stack, n_int)
+       call cal_ff_smp_2_ml (ml_cd, ml_o_cd, ff_smp)
+!
+!      call check_mass_martix_conduct
+!
+      end subroutine int_mass_matrix_conduct
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_mass_matrix_insulate(n_int)
+!
+      use cal_ff_smp_to_ffs
+      use m_geometry_data_MHD
+!
+      integer(kind = kint), intent(in) :: n_int
+!
+!
+       call int_mass_matrix_diag(iele_ins_smp_stack, n_int)
+       call cal_ff_smp_2_ml (ml_ins, ml_o_ins, ff_smp)
+!
+      end subroutine int_mass_matrix_insulate
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine int_mass_matrix_fl_quad(n_int)
+!
+      use cal_ff_smp_to_ffs
+      use m_geometry_data_MHD
+!
+      integer(kind = kint), intent(in) :: n_int
+!
+!
+       call int_mass_matrix_HRZ(iele_fl_smp_stack, n_int)
+       call cal_ff_smp_2_ml (ml_fl, ml_o_fl, ff_smp)
+!
+!      call check_mass_martix_fluid
+!
+      end subroutine int_mass_matrix_fl_quad
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_mass_matrix_cd_quad(n_int)
+!
+      use cal_ff_smp_to_ffs
+      use m_geometry_data_MHD
+!
+      integer(kind = kint), intent(in) :: n_int
+!
+!
+       call int_mass_matrix_HRZ(iele_cd_smp_stack, n_int)
+       call cal_ff_smp_2_ml (ml_cd, ml_o_cd, ff_smp)
+!
+!      call check_mass_martix_conduct
+!
+      end subroutine int_mass_matrix_cd_quad
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_mass_matrix_ins_quad(n_int)
+!
+      use cal_ff_smp_to_ffs
+      use m_geometry_data_MHD
+!
+      integer(kind = kint), intent(in) :: n_int
+!
+!
+       call int_mass_matrix_HRZ(iele_ins_smp_stack, n_int)
+       call cal_ff_smp_2_ml (ml_ins, ml_o_ins, ff_smp)
+!
+      end subroutine int_mass_matrix_ins_quad
+!
+!-----------------------------------------------------------------------
+!
+      end module int_MHD_mass_matrices

@@ -1,0 +1,74 @@
+begin partitioner_control
+!
+  begin org_data_files_def
+    org_mesh_head_ctl       'mesh_1/in'
+    org_mesh_file_fmt_ctl   'gzip'
+  end org_data_files_def
+!
+  begin data_files_def
+    num_subdomain_ctl           64
+!
+    mesh_file_head_ctl       'mesh/in'
+    elem_file_head_ctl       'mesh/element'
+    surf_file_head_ctl       'mesh/surface'
+    edge_file_head_ctl       'mesh/edge'
+!
+    memory_conservation_ctl     'NO'
+  end data_files_def
+!
+!    Example of order
+!      Conductive solid => conductive fluid
+!   =>  Neutral fluid   => insulator
+!
+  begin ordering_by_ele_grp
+    array ordering_ele_grp_ctl    3
+      ordering_ele_grp_ctl       inner_core
+      ordering_ele_grp_ctl       outer_core
+      ordering_ele_grp_ctl       external
+    end array ordering_ele_grp_ctl
+  end ordering_by_ele_grp
+!
+! partitiong_method: method of partitioning
+!      RCB_xyz, RCB_sph, ES_xyz, ES_sph, 
+!      MeTiS_input, MeTiS_RSB
+!      cubed_sph
+!      finer_mesh, decomp_data
+!
+  begin decompose_ctl
+    partitioning_method_ctl    RCB_xyz
+    sleeve_level_ctl           2
+    element_overlap_ctl        ON
+!
+    array RCB_dir_ctl   4
+      RCB_dir_ctl  radius   end
+      RCB_dir_ctl  theta    end
+      RCB_dir_ctl  phi      end
+      RCB_dir_ctl  phi      end
+    end array RCB_dir_ctl
+!
+    array dir_domain_ctl   3
+      dir_domain_ctl  radius  2
+      dir_domain_ctl  theta   2
+      dir_domain_ctl  phi     4
+    end array dir_domain_ctl
+!
+    array radial_layering_grp_ctl  2
+      radial_layering_grp_ctl       inner_core   end
+      radial_layering_grp_ctl       outer_core   end
+    end array radial_layering_grp_ctl
+!
+!    for cubed sphere
+    sphere_file_name_ctl   'surf_connectivity_20.dat'
+!    for metis input
+    metis_input_file_ctl   'metis.in'
+!    for metis resules
+    metis_domain_file_ctl  'metis.out'
+!    for grouping data file
+    domain_group_file_ctl  'group_fine.dat'
+!    for finer mesh data
+    finer_mesh_head_ctl    'mesh_fine/in'
+    interpolate_tbl_head   'mesh_fine/itp_table'
+!
+  end decompose_ctl
+!
+end partitioner_control

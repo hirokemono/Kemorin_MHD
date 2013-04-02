@@ -1,0 +1,18 @@
+begin cutshell_control
+!
+  begin file_name_ctl
+    orginal_mesh_head_ctl    'mesh/in'
+    cutted_mesh_head_ctl     'mesh/in_cut'
+  end file_name_ctl
+!
+  begin cutshell_parameter_ctl
+!
+!  cutshell_type_ctl
+!      hemisphere:          pickup northern hemisphere
+!      cut_shell:           cut shell for viewer
+!      spherical_shell:     Pickup outer core
+!      hemispherical_shell: Pickup outer core in the northern hemisphere
+!
+    cutshell_type_ctl         cut_shell
+  end cutshell_parameter_ctl
+end cutshell_control

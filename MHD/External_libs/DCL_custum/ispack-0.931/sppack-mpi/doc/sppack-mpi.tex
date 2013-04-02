@@ -1,0 +1,402 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (C) 2002 Keiichi Ishioka				       %
+% 								       %
+% この著作権表示が記載してあるならば, どのような媒体にでも何も手を加え %
+% ずに複写して再配付することを許可します. これらのドキュメントとその使 % 
+% 用許諾を他の言語に翻訳する際は, 以下の条件に従って下さい.	       %
+% 								       %
+% 他の言語に翻訳する際に, 他の言語での口語表現への変更の範囲を越えて故 %
+% 意に意味を変更しないこと.					       %
+%								       %
+% 翻訳した使用許諾には, それが翻訳であること, また原文の使用許諾が翻訳 %
+% 全体に依然適用されることを明示すること.			       %
+%								       %
+% ハイパーテキストの場合, 同一サイト上で原文のコピーを保守すること. ま %
+% た, 翻訳したハイパーテキストのページからその原文へのリンクを提供する %
+% こと.								       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%履歴   2002/05/20 石岡圭一 (version 0.0)
+%
+\documentstyle[a4j,fleqn]{jarticle}
+
+\title{SPPACK-MPI使用の手引 (version 0.0)}
+\author{石岡 圭一  (2002/05/20)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは, SPPACKをMPIで安直並列化したものである.
+従って, 基本的な定義等についてはSPPACK使用の手引を参照すること.
+
+本サブルーチンパッケージは内部でMPIのサブルーチンをCALLしているので,
+本サブルーチンパッケージに属するサブルーチンをCALLする場合は
+{\tt MPI\_INIT}と{\tt MPI\_FINALIZE}で囲まれた枠組の中である必要がある.
+また, もちろんヘッダファイル(mpif.h)の読み込みもされている必要
+がある. これらMPIの一般的な使用法に関しては当該システムにおける
+MPIのマニュアルを参照のこと.
+ 
+また, 具体的にどのような並列化を行っているかについては
+SNPACK-MPI使用の手引を参照のこと.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+{\tt SPMJCB} & ヤコビアンの計算\\
+{\tt SPMWNL} & 浅水方程式の非線形項の計算\\
+{\tt SPMWCK} & 浅水方程式の保存量の計算\\
+{\tt SPMWNV} & 浅水方程式の非線形項の計算(散逸項含む)\\
+{\tt SPMWCV} & 浅水方程式の保存量の計算(省メモリ版)\\
+{\tt SPMWCX} & 浅水方程式の保存量の計算(全角運動量を3成分計算)\\
+{\tt SPMWNW} & {\tt SPMWNV}の若干高速化版\\
+{\tt SPMWNX} & {\tt SPMWNW}の若干高速化版\\
+{\tt SPMWHV} & 浅水方程式の非線形項の計算(高階粘性項含む)\\
+{\tt SPMWHW} & {\tt SPMWHV}の若干高速化版\\
+{\tt SPMWHX} & {\tt SPMWHW}の若干高速化版\\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンの説明}
+
+\subsection{SPMJCB}
+
+\begin{enumerate}
+
+\item 機能
+
+ {\tt SPNJCB}を並列化したもの
+
+\item 呼び出し方法
+
+{\tt SPMJCB(MM,IM,ID,JC,JD,SA,SB,SC,IT,T,Y,IP2,P2,R2,IP3,P3,R3,IA,A,Q,WS,WW,W)}
+  
+\item パラメーターの説明({\tt SPNJCB}と異なるもののみ)
+
+\begin{tabular}{lll}
+{\tt JC} & {\tt (I)} & 入力. そのプロセスで保持する南北格子点数
+                        ({\tt SNMINI}で与えられたもの)\\
+{\tt W}  & {\tt (D((MM+1)*(MM+1))} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt JD}$\ge${\tt JC}でなければならない.
+   またベクトル計算機においてはバンク競合を避けるために, {\tt JD}
+   はできれば奇数にとるのがよい. (以降の他のルーチンにおいても同様).
+
+\item {\tt JC,IT,T,Y,IA,A}は 
+      {\tt SNMINI(MM,IM,JM,JC,IT,T,Y,IP,P,R,IA,A)} として初期化しておくこと.\\
+       また, {\tt IP2,P2,R2,IP3,P3,R3}は, その後に\\
+      {\tt SNKINI(MM,JC,2,IP,P,R,IP2,P2,R2)},
+      {\tt SNKINI(MM,JC,3,IP,P,R,IP3,P3,R3)}, \\
+      として初期化しておくこと.
+
+ \end{itemize}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPMWNL}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt SPSWNL}を並列化したもの
+
+\item 呼び出し方法
+
+{\tt SPMWNL(MM,IM,ID,JC,JD,OMEGA,AVT,DIV,PHI,DAVT,DDIV,DPHI,}\\
+\hspace*{10em}{\tt RN,IT,T,Y,IP4,P4,R4,IP5,P5,R5,IA,A,Q,WS,WW,W)}
+  
+\item パラメーターの説明({\tt SPSWNL}と異なるもののみ)
+
+\begin{tabular}{lll}
+{\tt JC} & {\tt (I)} & 入力. そのプロセスで保持する南北格子点数
+                        ({\tt SNMINI}で与えられたもの)\\
+{\tt W}  & {\tt (D((MM+1)*(MM+1)*3)} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt JC,IT,T,Y,IA,A}は 
+      {\tt SNMINI(MM,IM,JM,JC,IT,T,Y,IP,P,R,IA,A)} として初期化しておくこと.\\
+       また, {\tt IP4,P4,R4,IP4,P4,R4}は, その後に\\
+      {\tt SNKINI(MM,JC,4,IP,P,R,IP4,P4,R4)},
+      {\tt SNKINI(MM,JC,5,IP,P,R,IP5,P5,R5)}, \\
+      として初期化しておくこと.
+
+ \end{itemize}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPMWCK}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt SPSWCK}を並列化したもの
+
+\item 呼び出し方法 
+
+{\tt SPMWCK(MM,IM,ID,JM,JD,OMEGA,AVT,DIV,PHI,AMOM,AENE,AENS,}\\
+\hspace*{10em}{\tt RN,IT,T,Y,IP4,P4,R4,IA,A,Q,WS,WW)}
+  
+\item パラメーターの説明({\tt SPSWCK}と異なるもののみ)
+
+\begin{tabular}{lll}
+{\tt JC} & {\tt (I)} & 入力. そのプロセスで保持する南北格子点数
+                        ({\tt SNMINI}で与えられたもの)\\
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt JC,IT,T,Y,IA,A}は 
+      {\tt SNMINI(MM,IM,JM,JC,IT,T,Y,IP,P,R,IA,A)} として初期化しておくこと.\\
+       また, {\tt IP4,P4,R4,IP4,P4,R4}は, その後に\\
+      {\tt SNKINI(MM,JC,4,IP,P,R,IP4,P4,R4)} として初期化しておくこと.
+      
+ \end{itemize}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPMWNV}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt SPSWNV}を並列化したもの
+
+\item 呼び出し方法 
+
+{\tt SPMWNV(MM,IM,ID,JC,JD,OMEGA,BARPHI,DNU,ALPHA,AVT,DIV,PHI,}\\
+\hspace*{10em}{\tt DAVT,DDIV,DPHI,RN,IRM,IT,T,Y,IP,P,R,IA,A,Q,WS,WW,W)}
+  
+\item パラメーターの説明({\tt SPSWNV}と異なるもののみ)
+
+\begin{tabular}{lll}
+{\tt JC} & {\tt (I)} & 入力. そのプロセスで保持する南北格子点数
+                        ({\tt SNMINI}で与えられたもの)\\
+{\tt W}  & {\tt (D((MM+1)*(MM+1)*3)} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt JC,IT,T,Y,IP,P,R,IA,A}は 
+      {\tt SNMINI(MM,IM,JM,JC,IT,T,Y,IP,P,R,IA,A)} として初期化しておくこと.\\
+
+\end{itemize}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPMWCV}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt SPSWCV}を並列化したもの
+
+\item 呼び出し方法
+
+{\tt SPMWCV(MM,IM,ID,JC,JD,OMEGA,AVT,DIV,PHI,AMOM,AENE,AENS,}\\
+\hspace*{10em}{\tt RN,IT,T,Y,IP,P,R,IA,A,Q,WS,WW)}
+  
+\item パラメーターの説明({\tt SPSWCV}と異なるもののみ)
+
+\begin{tabular}{lll}
+{\tt JC} & {\tt (I)} & 入力. そのプロセスで保持する南北格子点数
+                        ({\tt SNMINI}で与えられたもの)\\
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt JC,IT,T,Y,IP,P,R,IA,A}は 
+      {\tt SNMINI(MM,IM,JM,JC,IT,T,Y,IP,P,R,IA,A)} として初期化しておくこと.\\
+
+ \end{itemize}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPMWCX}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt SPSWCX}を並列化したもの
+
+\item 呼び出し方法 
+
+{\tt SPMWCX(MM,IM,ID,JC,JD,OMEGA,AVT,DIV,PHI,AMOM1,AMOM2,AMOM3,AENE,AENS,}\\
+\hspace*{10em}{\tt RN,IT,T,Y,IP,P,R,IA,A,Q,WS,WW)}
+  
+\item パラメーターの説明({\tt SPSWCX}と異なるもののみ)
+
+\begin{tabular}{lll}
+{\tt JC} & {\tt (I)} & 入力. そのプロセスで保持する南北格子点数
+                        ({\tt SNMINI}で与えられたもの)\\
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt JC,IT,T,Y,IP,P,R,IA,A}は 
+      {\tt SNMINI(MM,IM,JC,IT,T,Y,IP,P,R,IA,A)} として初期化しておくこと.\\
+
+ \end{itemize}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPMWNW}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt SPSWNW}を並列化したもの
+
+\item 呼び出し方法 
+
+{\tt SPMWNW(MM,IM,ID,JC,JD,OMEGA,BARPHI,DNU,ALPHA,AVT,DIV,PHI,}\\
+\hspace*{10em}{\tt DAVT,DDIV,DPHI,RN,IRM,IT,T,Y,IP,P,R,IA,A,Q,WS,WW,W)}
+
+\item パラメーターの説明({\tt WW}, {\tt WS}以外は全く{\tt SPMWNV}
+の項に同じなので省略する. {\tt WW}, {\tt WS}の大きさの決め方は
+{\tt SPSWNW}の備考参照のこと).
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPMWNX}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt SPSWNX}を並列化したもの.
+
+\item 呼び出し方法 
+
+{\tt SPMWNX(MM,IM,ID,JC,JD,OMEGA,BARPHI,DNU,AVT,DIV,PHI,}\\
+\hspace*{10em}{\tt DAVT,DDIV,DPHI,RN,IRM,IT,T,Y,IP,P,R,IA,A,Q,WS,WW,W)}
+
+\item パラメーターの説明({\tt WW}, {\tt WS}以外は全く{\tt SPMWNV}
+の項に同じなので省略する. {\tt WW}, {\tt WS}の大きさの決め方は
+{\tt SPSWNX}の備考参照のこと). なお, {\tt SPMWNV}と違い, 引数に
+{\tt ALPHA}が無いことに注意.
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPMWHV}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt SPSWHV}を並列化したもの
+
+\item 呼び出し方法 
+
+{\tt SPMWHV(MM,IM,ID,JC,JD,OMEGA,BARPHI,DNU,ALPHA,LEV,AVT,DIV,PHI,}\\
+\hspace*{10em}{\tt DAVT,DDIV,DPHI,RN,IRM,IT,T,Y,IP,P,R,IA,A,Q,WS,WW,W)}
+  
+\item パラメーターの説明({\tt SPSWHV}と異なるもののみ)
+
+\begin{tabular}{lll}
+{\tt JC} & {\tt (I)} & 入力. そのプロセスで保持する南北格子点数
+                        ({\tt SNMINI}で与えられたもの)\\
+{\tt W}  & {\tt (D((MM+1)*(MM+1)*3)} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt JC,IT,T,Y,IP,P,R,IA,A}は 
+      {\tt SNMINI(MM,IM,JM,JC,IT,T,Y,IP,P,R,IA,A)} として初期化しておくこと.\\
+
+\end{itemize}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPMWHW}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt SPMWHW}を並列化したもの
+
+\item 呼び出し方法 
+
+{\tt SPMWHW(MM,IM,ID,JC,JD,OMEGA,BARPHI,DNU,ALPHA,LEV,AVT,DIV,PHI,}\\
+\hspace*{10em}{\tt DAVT,DDIV,DPHI,RN,IRM,IT,T,Y,IP,P,R,IA,A,Q,WS,WW,W)}
+  
+\item パラメーターの説明({\tt WW}, {\tt WS}以外は全く{\tt SPMWHV}
+の項に同じなので省略する. {\tt WW}, {\tt WS}の大きさの決め方は
+{\tt SPSWHW}の備考参照のこと).
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{SPMWHX}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt SPSWHX}を並列化したもの
+
+\item 呼び出し方法 
+
+{\tt SPMWHX(MM,IM,ID,JC,JD,OMEGA,BARPHI,DNU,LEV,AVT,DIV,PHI,}\\
+\hspace*{10em}{\tt DAVT,DDIV,DPHI,RN,IRM,IT,T,Y,IP,P,R,IA,A,Q,WS,WW,W)}
+
+\item パラメーターの説明({\tt WW}, {\tt WS}以外は全く{\tt SPMWNV}
+の項に同じなので省略する. {\tt WW}, {\tt WS}の大きさの決め方は
+{\tt SPSWHX}の備考参照のこと). なお, {\tt SPMWHV}と違い, 引数に
+{\tt ALPHA}が無いことに注意.
+
+\end{enumerate}
+
+
+\end{document}

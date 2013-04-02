@@ -1,0 +1,186 @@
+!set_control_add_2d_egrp.f90
+!      module set_control_add_2d_egrp
+!
+      module set_control_add_2d_egrp
+!
+!      Written by Kemorin on Mar., 2008
+!
+      use m_precision
+!
+      implicit    none
+!
+!
+!      subroutine s_set_control_add_2d_egrp
+!
+! -----------------------------------------------------------------------
+!
+      contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine s_set_control_add_2d_egrp
+!
+      use m_control_data_add_ele_grp
+      use m_add_ele_grp_parameter
+!
+      real(kind = kreal) :: pi
+      real(kind = kreal), parameter :: one = 1.0d0, four = 4.0d0
+!
+!
+      if (i_org_mesh_ctl .gt. 0) then
+        original_mesh_head = orginal_mesh_head_ctl
+      else
+        write(*,*) 'set original mesh header'
+        stop
+      end if
+!
+      if (i_new_mesh_ctl .gt. 0) then
+        modified_mesh_head = modified_mesh_head_ctl
+      else
+        write(*,*) 'set refined mesh header'
+        stop
+      end if
+!
+      if (i_layered_mesh_head .gt. 0) then
+        layerd_mesh_head = layered_mesh_head_ctl
+      end if
+!
+      if (i_2nd_grp_direction .gt. 0) then
+        if    (   sph_grp_direction_ctl .eq. 'sphere'                   &
+     &       .or. sph_grp_direction_ctl .eq. 'Sphere'                   &
+     &       .or. sph_grp_direction_ctl .eq. 'SPHERE'                   &
+     &       .or. sph_grp_direction_ctl .eq. 'r_theta'                  &
+     &       .or. sph_grp_direction_ctl .eq. 'R_Theta'                  &
+     &       .or. sph_grp_direction_ctl .eq. 'R_THETA'                  &
+     &       .or. sph_grp_direction_ctl .eq. 'Theta'                    &
+     &       .or. sph_grp_direction_ctl .eq. 'theta'                    &
+     &       .or. sph_grp_direction_ctl .eq. 'Theta'                    &
+     &       .or. sph_grp_direction_ctl .eq. 'THETA'                    &
+     &       .or. sph_grp_direction_ctl .eq. 'elevation'                &
+     &       .or. sph_grp_direction_ctl .eq. 'Elevation'                &
+     &       .or. sph_grp_direction_ctl .eq. 'ELEVATION') then
+          iflag_grping_direction = 0
+        else if(  sph_grp_direction_ctl .eq. 'cylindrical_r_z'          &
+     &       .or. sph_grp_direction_ctl .eq. 'Cylindrical_R_Z'          &
+     &       .or. sph_grp_direction_ctl .eq. 'CYLINDRICAL_R_Z'          &
+     &       .or. sph_grp_direction_ctl .eq. 's_z'                      &
+     &       .or. sph_grp_direction_ctl .eq. 'S_Z'                      &
+     &       .or. sph_grp_direction_ctl .eq. 'cyrindrical'              &
+     &       .or. sph_grp_direction_ctl .eq. 'Cyrindrical'              &
+     &       .or. sph_grp_direction_ctl .eq. 'CYRINDRICAL'              &
+     &       .or. sph_grp_direction_ctl .eq. 's'                        &
+     &       .or. sph_grp_direction_ctl .eq. 'S') then
+          iflag_grping_direction = 2
+        else if(  sph_grp_direction_ctl .eq. 'z_theta'                  &
+     &       .or. sph_grp_direction_ctl .eq. 'Z_Theta'                  &
+     &       .or. sph_grp_direction_ctl .eq. 'Z_THETA') then
+          iflag_grping_direction = 3
+        else if(  sph_grp_direction_ctl .eq. 'r_cylindrical_r'          &
+     &       .or. sph_grp_direction_ctl .eq. 'R_Cylindrical_R'          &
+     &       .or. sph_grp_direction_ctl .eq. 'R_CYLINDRICAL_R'          &
+     &       .or. sph_grp_direction_ctl .eq. 'r_s'                      &
+     &       .or. sph_grp_direction_ctl .eq. 'r_s') then
+          iflag_grping_direction = 1
+        else
+          write(*,*) 'set correct grouping mode'
+          stop
+        end if
+      else
+        write(*,*) 'set correct grouping mode'
+        stop
+      end if
+      write(*,*) 'iflag_grping_direction', iflag_grping_direction
+!
+      if (i_num_r_ele_grping .gt. 0) then
+        num_r_ele_grp = num_r_ele_grouping_ctl
+        call allocate_add_r_ele_grping
+!
+        r_ele_grp_name(1:num_r_ele_grp)                                 &
+     &        = r_ele_grping_name_ctl(1:num_r_ele_grp)
+        minmax_r_ele_grping(1:num_r_ele_grp,1)                          &
+     &        = min_r_ele_grping_ctl(1:num_r_ele_grp)
+        minmax_r_ele_grping(1:num_r_ele_grp,2)                          &
+     &        = max_r_ele_grping_ctl(1:num_r_ele_grp)
+        deallocate( r_ele_grping_name_ctl )
+        deallocate( min_r_ele_grping_ctl  )
+        deallocate( max_r_ele_grping_ctl  )
+      end if
+!
+!
+        write(*,*) 'num_s_ele_grouping_ctl', num_s_ele_grouping_ctl
+      if (i_num_s_ele_grping .gt. 0) then
+        num_s_ele_grp = num_s_ele_grouping_ctl
+        call allocate_add_s_ele_grping
+!
+        s_ele_grp_name(1:num_s_ele_grp)                                 &
+     &        = s_ele_grping_name_ctl(1:num_s_ele_grp)
+        minmax_s_ele_grping(1:num_s_ele_grp,1)                          &
+     &        = min_s_ele_grping_ctl(1:num_s_ele_grp)
+        minmax_s_ele_grping(1:num_s_ele_grp,2)                          &
+     &        = max_s_ele_grping_ctl(1:num_s_ele_grp)
+        deallocate( s_ele_grping_name_ctl )
+        deallocate( min_s_ele_grping_ctl  )
+        deallocate( max_s_ele_grping_ctl  )
+      end if
+!
+!
+        write(*,*) 'num_t_ele_grouping_ctl', num_t_ele_grouping_ctl
+      if (i_num_t_ele_grping .gt. 0) then
+        num_t_ele_grp = num_t_ele_grouping_ctl
+        call allocate_add_t_ele_grping
+!
+        t_ele_grp_name(1:num_t_ele_grp)                                 &
+     &        = t_ele_grping_name_ctl(1:num_t_ele_grp)
+        minmax_t_ele_grping(1:num_t_ele_grp,1)                          &
+     &        = min_t_ele_grping_ctl(1:num_t_ele_grp)
+        minmax_t_ele_grping(1:num_t_ele_grp,2)                          &
+     &        = max_t_ele_grping_ctl(1:num_t_ele_grp)
+        deallocate( t_ele_grping_name_ctl )
+        deallocate( min_t_ele_grping_ctl  )
+        deallocate( max_t_ele_grping_ctl  )
+      end if
+!
+!
+        write(*,*) 'num_z_ele_grouping_ctl', num_z_ele_grouping_ctl
+      if (i_num_z_ele_grping .gt. 0) then
+        num_z_ele_grp = num_z_ele_grouping_ctl
+        call allocate_add_z_ele_grping
+!
+        write(*,*) 'z_ele_grp_name'
+        z_ele_grp_name(1:num_z_ele_grp)                                 &
+     &        = z_ele_grping_name_ctl(1:num_z_ele_grp)
+        write(*,*) 'minmax_z_ele_grping'
+        minmax_z_ele_grping(1:num_z_ele_grp,1)                          &
+     &        = min_z_ele_grping_ctl(1:num_z_ele_grp)
+        write(*,*) 'minmax_z_ele_grping'
+        minmax_z_ele_grping(1:num_z_ele_grp,2)                          &
+     &        = max_z_ele_grping_ctl(1:num_z_ele_grp)
+        write(*,*) 'z_ele_grping_name_ctl'
+        deallocate( z_ele_grping_name_ctl )
+        deallocate( min_z_ele_grping_ctl  )
+        deallocate( max_z_ele_grping_ctl  )
+      end if
+!
+!
+      if (iflag_grping_direction .eq. 0                                 &
+     &    .or. iflag_grping_direction .eq. 3) then
+!
+        if (i_num_t_ele_grping .gt. 0) then
+          pi = four * atan(one)
+          minmax_t_ele_grping(1:num_t_ele_grp,1)                        &
+     &        = minmax_t_ele_grping(1:num_t_ele_grp,1) * pi
+          minmax_t_ele_grping(1:num_t_ele_grp,2)                        &
+     &        = minmax_t_ele_grping(1:num_t_ele_grp,2) * pi
+        end if
+      end if
+!
+      write(*,*) 'num_r_ele_grp', num_r_ele_grp
+      write(*,*) 'num_t_ele_grp', num_t_ele_grp
+      write(*,*) 'num_s_ele_grp', num_s_ele_grp
+      write(*,*) 'num_z_ele_grp', num_z_ele_grp
+!
+      end subroutine s_set_control_add_2d_egrp
+!
+! -----------------------------------------------------------------------
+!
+      end module set_control_add_2d_egrp

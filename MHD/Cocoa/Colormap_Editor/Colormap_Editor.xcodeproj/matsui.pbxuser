@@ -1,0 +1,201 @@
+// !$*UTF8*$!
+{
+	183EC814140499AA00A681BB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 18AFAF3C1404431C00D0076A /* rainbow_color_code_c.c */;
+		name = "rainbow_color_code_c.c: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 625;
+		vrLoc = 0;
+	};
+	183EC815140499AA00A681BB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 18AFAE10140430B100D0076A /* m_color_table_c.h */;
+		name = "m_color_table_c.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 368;
+		vrLoc = 0;
+	};
+	1878DEFB1405A8CD0081E876 /* Colormap_EditorAppDelegate.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {642, 260}}";
+			sepNavSelRange = "{369, 15}";
+			sepNavVisRange = "{59, 331}";
+		};
+	};
+	1878DEFC1405A8CD0081E876 /* Colormap_EditorAppDelegate.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {642, 598}}";
+			sepNavSelRange = "{1119, 0}";
+			sepNavVisRange = "{784, 345}";
+			sepNavWindowFrame = "{{84, 282}, {790, 828}}";
+		};
+	};
+	1878DF301405AD5C0081E876 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 29B97316FDCFA39411CA2CEA /* main.m */;
+		name = "main.m: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 296;
+		vrLoc = 0;
+	};
+	1878DF331405AD5C0081E876 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1878DEFB1405A8CD0081E876 /* Colormap_EditorAppDelegate.h */;
+		name = "Colormap_EditorAppDelegate.h: 17";
+		rLen = 15;
+		rLoc = 369;
+		rType = 0;
+		vrLen = 331;
+		vrLoc = 59;
+	};
+	1878DF541405AEF80081E876 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1878DEFC1405A8CD0081E876 /* Colormap_EditorAppDelegate.m */;
+		name = "Colormap_EditorAppDelegate.m: 41";
+		rLen = 0;
+		rLoc = 1119;
+		rType = 0;
+		vrLen = 345;
+		vrLoc = 784;
+	};
+	18AFADEE14042FCF00D0076A /* Colormap_Editor */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = Colormap_Editor;
+		savedGlobals = {
+		};
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+		variableFormatDictionary = {
+		};
+	};
+	18AFADFF14042FDC00D0076A /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	18AFAE0014042FDC00D0076A /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	18AFAE10140430B100D0076A /* m_color_table_c.h */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.h;
+		name = m_color_table_c.h;
+		path = /Users/matsui/src_0323/mhd_0701/C_src/CORE_C/m_color_table_c.h;
+		sourceTree = "<absolute>";
+	};
+	18AFAF3C1404431C00D0076A /* rainbow_color_code_c.c */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.c;
+		name = rainbow_color_code_c.c;
+		path = /Users/matsui/src_0323/mhd_0701/C_src/KEMO_GL/rainbow_color_code_c.c;
+		sourceTree = "<absolute>";
+	};
+	18C4C527140623A50019B915 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1878DEFC1405A8CD0081E876 /* Colormap_EditorAppDelegate.m */;
+		name = "Colormap_EditorAppDelegate.m: 41";
+		rLen = 0;
+		rLoc = 1119;
+		rType = 0;
+		vrLen = 345;
+		vrLoc = 784;
+	};
+	29B97313FDCFA39411CA2CEA /* Project object */ = {
+		activeBuildConfigurationName = Release;
+		activeExecutable = 18AFADEE14042FCF00D0076A /* Colormap_Editor */;
+		activeTarget = 8D1107260486CEB800E47090 /* Colormap_Editor */;
+		addToTargets = (
+			8D1107260486CEB800E47090 /* Colormap_Editor */,
+		);
+		codeSenseManager = 18AFAE0014042FDC00D0076A /* Code sense */;
+		executables = (
+			18AFADEE14042FCF00D0076A /* Colormap_Editor */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					274,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 335946493;
+			PBXWorkspaceStateSaveDate = 335946493;
+		};
+		perUserProjectItems = {
+			183EC814140499AA00A681BB /* PBXTextBookmark */ = 183EC814140499AA00A681BB /* PBXTextBookmark */;
+			183EC815140499AA00A681BB /* PBXTextBookmark */ = 183EC815140499AA00A681BB /* PBXTextBookmark */;
+			1878DF301405AD5C0081E876 /* PBXTextBookmark */ = 1878DF301405AD5C0081E876 /* PBXTextBookmark */;
+			1878DF331405AD5C0081E876 /* PBXTextBookmark */ = 1878DF331405AD5C0081E876 /* PBXTextBookmark */;
+			1878DF541405AEF80081E876 /* PBXTextBookmark */ = 1878DF541405AEF80081E876 /* PBXTextBookmark */;
+			18C4C527140623A50019B915 /* PBXTextBookmark */ = 18C4C527140623A50019B915 /* PBXTextBookmark */;
+		};
+		sourceControlManager = 18AFADFF14042FDC00D0076A /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	29B97316FDCFA39411CA2CEA /* main.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {642, 195}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 296}";
+		};
+	};
+	8D1107260486CEB800E47090 /* Colormap_Editor */ = {
+		activeExec = 0;
+		executables = (
+			18AFADEE14042FCF00D0076A /* Colormap_Editor */,
+		);
+	};
+}

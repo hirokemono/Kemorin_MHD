@@ -1,0 +1,7 @@
+begin mesh_test
+  begin mesh_file_ctl
+    num_subdomain_ctl           2
+    num_smp_ctl                 1
+    mesh_file_head_ctl       'mesh/in'
+  end
+end

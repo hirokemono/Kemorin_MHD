@@ -1,0 +1,21 @@
+begin solver_test_ctl
+  matrix_file_header    "4pe_33/matIN"
+  solution_file_header    "solution"
+  num_smp_ctl           1
+  solver_type           blockNN
+!
+  begin solver_control
+    method_ctl            GPBiCG
+    precond_ctl           DIAG
+    itr_ctl               100000
+    eps_ctl               1.0e-20
+    sigma_ctl             1.0e0
+    sigma_diag_ctl        1.0e0
+  end
+!
+  begin DJDS_solver_ctl
+    order_method     MC_DJDS
+    min_color_ctl    2
+    mc_color_ctl     0
+  end
+end

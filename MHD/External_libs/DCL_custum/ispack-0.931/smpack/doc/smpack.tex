@@ -1,0 +1,791 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (C) 1998 Keiichi Ishioka				       %
+% 								       %
+% この著作権表示が記載してあるならば, どのような媒体にでも何も手を加え %
+% ずに複写して再配付することを許可します. これらのドキュメントとその使 % 
+% 用許諾を他の言語に翻訳する際は, 以下の条件に従って下さい.	       %
+% 								       %
+% 他の言語に翻訳する際に, 他の言語での口語表現への変更の範囲を越えて故 %
+% 意に意味を変更しないこと.					       %
+%								       %
+% 翻訳した使用許諾には, それが翻訳であること, また原文の使用許諾が翻訳 %
+% 全体に依然適用されることを明示すること.			       %
+%								       %
+% ハイパーテキストの場合, 同一サイト上で原文のコピーを保守すること. ま %
+% た, 翻訳したハイパーテキストのページからその原文へのリンクを提供する %
+% こと.								       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%履歴   98/02/17 石岡圭一 (version 1.0)
+%履歴 2005/07/27 石岡圭一 (version 1.1) 誤植の訂正(Thanks to 水田君)
+%
+\documentclass[a4j]{jarticle}
+
+\newcommand{\Lap}{\nabla^2}
+\newcommand{\re}{\mbox{Re}}
+\newcommand{\im}{\mbox{Im}}
+
+\title{SMPACK使用の手引 (version 1.1)}
+\author{石岡 圭一  (2005/07/27)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは, スペクトル(球面調和関数)変換を行なうサブルーチンパッケージであ
+り, 球面調和関数展開の係数から格子点値, およびその逆の変換を行なうサブ
+ルーチン, また, 数値モデルに用いるヤコビアンの計算を行うサブルーチン
+などからなっている. 
+SMPACKは, STPACKとは異なり, GCMなどの多層モデルにおける複数のスペクト
+ル変換を効率よく並行して行うことを念頭において設計されている.
+また, このパッケージはFTPACKとBSPACKの上位パッケージであり, これらの
+パッケージを内部で引用している. 
+また, STPACKおよびSMPACKの以前のバージョンとは異なり, このバージョンの
+SMPACKでは各サブルーチンのすべての入力は保存されるように設計されている.
+
+切断波数$M$(三角切断)のスペクトル逆変換は, 以下のように表せる:
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{n=0}\sum^n_{m=-n}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+ここに, $\lambda$: 経度, $\varphi$: 緯度である.
+
+また, $P^m_n(\mu)$は2に正規化されたルジャンドル陪関数で, 以下のように
+定義される:
+\begin{equation}
+P^m_n(\mu)\equiv\sqrt{(2n+1)\frac{(n-m)!}{(n+m)!}}\frac1{2^nn!}(1-\mu^2)^{m/2}
+\frac{d^{n+m}}{d\mu^{n+m}}(\mu^2-1)^n,
+\end{equation}
+\begin{equation}
+\int^1_{-1}\{P^m_n(\mu)\}^2d\mu=2.
+\end{equation}
+
+$g(\lambda,\varphi)$が実数であるとすると, $s^m_n$は以下の関係を満たし
+ている必要がある:
+\begin{equation}
+s^{-m}_n=\{s^m_n\}^{*}
+\end{equation}
+ここに, $\{ \}^{*}$は複素共役を表す.
+従って, $s^m_n$は$m\ge 0$の範囲だけを求めれば
+良い. さらに, 上の制約から, $s^0_n$は実数である.
+
+また, スペクトル逆変換は以下のように表せる:
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)P^m_n(\sin\varphi)e^{-im\lambda}\cos\varphi d\varphi
+d\lambda .
+\end{equation}
+
+数値計算においては, 上記の積分はそれぞれ離散近似される. フーリエ正変
+換の部分は経度方向の等間隔格子点上での値を用いた離散フーリエ正変換
+(FTPACKマニュアルを参照)によって近似し,
+ルジャンドル正変換の部分は, ガウス-ルジャンドル積分公式により:
+\begin{equation}
+s^m_n=\frac12\sum^J_{j=1}w_jG^m(\varphi_j)P^m_n(\sin\varphi_j)
+\end{equation}
+として近似する. ここに, $\varphi_j$はガウス緯度と呼ば
+れる分点で, ルジャンドル多項式$P_J(\sin\varphi)$ (ルジャンドル陪関数の
+定義式中で$m=0$とし, 正規化係数($\sqrt{\quad}$の部分)を無くしたもの)
+の$J$個の零点を大きい方から順に並べたものであり, $w_j$は各分点に対応す
+るガウシアンウェイトと呼ばれる重みで,
+\begin{equation}
+w_j\equiv\frac{2(1-\mu_j^2)}{\{JP_{J-1}(\mu_j)\}^2}
+\end{equation}
+で与えられる. ここに, $\mu_j\equiv\sin\varphi_j$である.
+ある条件のもとでは, この積分公式は完全な近似, すなわちもとの積分と同じ
+値を与える.
+
+本ライブラリは, 
+スペクトルデータ($s^m_n$) 
+$\to$ 格子点上のグリッドデータ($g(\lambda_i,\varphi_j)$) 
+の逆変換を行うルーチン群,
+等間隔格子点上のグリッドデータ($g(\lambda_i,\varphi_j)$) 
+$\to$ スペクトルデータ($s^m_n$) 
+の正変換を行うルーチン群, 
+そして, その他の補助ルーチン群よりなっている.
+ここに, 格子点の経度$\lambda_i$は全周を等間隔に$I$-分割した経度で,
+緯度$\varphi_j$は上述の$J$個のガウス緯度である.
+
+また, {\tt SMPACK}は多層用のルーチンであるので, $K$を層の数とすると, 
+逆変換は各高度レベル$z_k$に対応する$s^m_n(z_k)$から
+グリッドデータ$g(\lambda_i,\varphi_j,z_k)$への変換, 
+正変換は$g(\lambda_i,\varphi_j,z_k)$から$s^m_n(z_k)$への変換となる.
+
+以下のサブルーチンの説明において,
+
+\begin{center}
+\begin{tabular}{ll}
+{\tt MM}:& 切断波数$M$\\
+{\tt IM}:& 東西格子点数$I$\\
+{\tt JM}:& ガウス緯度の個数$J$\\
+{\tt KM}:& 並行して行う変換の個数(または層の数)$K$\\
+{\tt N}:& 全波数$n$\\
+{\tt M}:& 帯状波数$m$\\
+{\tt I}:& 東西格子点の番号$i$\\
+{\tt J}:& ガウス緯度の番号$j$\\
+{\tt K}:& 層の番号$k$
+\end{tabular}
+\end{center}
+
+なる対応関係がある.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+{\tt SMINIT} & 初期化\\
+{\tt SMNM2L} & スペクトルデータの格納位置の計算\\
+{\tt SML2NM} & {\tt SMNM2L}の逆演算\\
+{\tt SMCLAP} & スペクトルデータにラプラシアンを作用(またはその逆演算)\\
+{\tt SMTS2G} & スペクトルデータからグリッドデータへの変換\\
+{\tt SMTG2S} & グリッドデータからスペクトルデータへの変換\\
+{\tt SMTS2V} & スペクトルデータからベクトルデータへの変換(勾配+回転)\\
+{\tt SMTV2S} & ベクトルデータからスペクトルデータへの変換(発散+回転)\\
+{\tt SMTS1V} & スペクトルデータからベクトルデータへの変換(勾配)\\
+{\tt SMTV1S} & ベクトルデータからスペクトルデータへの変換(発散)
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンの説明}
+
+\subsection{SMINIT}
+
+\begin{enumerate}
+
+\item 機能 
+{\tt SMPACK}の初期化ルーチン. 
+{\tt SMPACK}の他のサブルーチンを使用する前に必ず一度呼ばねばならない.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+{\tt SMINIT(MM,IM,JM,KM,X,Y,W,IT,T,IP,P,QSG,QGS,QSV,QVS,QSU,QUS,R,ML,NL,RF,RB)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt KM} & {\tt (I)} & 入力. 並行して行う変換の個数(または層の数)\\
+{\tt X}  & {\tt (D(IM))} & 出力. 東西格子点の座標値($\lambda_i$)
+						(単位はラジアン)\\
+{\tt Y}  & {\tt (D(JM))} & 出力. 南北格子点の座標値($\varphi_j$)
+						(単位はラジアン)\\
+{\tt W}  & {\tt (D(JM))} & 出力. ガウシアンウエイト($w_j/2$)\\
+{\tt IT}  & {\tt (I(5))}    & 出力. {\tt SMT???}で用いられる配列\\
+{\tt T}   & {\tt (D(IM*2))} & 出力. {\tt SMT???}で用いられる配列\\
+{\tt IP}  & {\tt (I(KM*(2*MM+1)))} & 出力. {\tt SMT???}で用いられる配列\\
+{\tt P}  & {\tt (D(KM*(MM+1)*(MM+3)*JM/2))} & 出力. {\tt SMT???}で用いられる配列\\
+{\tt QSG}  & {\tt (D(JM/2))} & 出力. {\tt SMTS2G}が用いる配列\\
+{\tt QGS}  & {\tt (D(JM/2))} & 出力. {\tt SMTG2S}が用いる配列\\
+{\tt QSV}  & {\tt (D(JM/2))} & 出力. {\tt SMTS?V}が用いる配列\\
+{\tt QVS}  & {\tt (D(JM/2))} & 出力. {\tt SMTV?S}が用いる配列\\
+{\tt QSU}  & {\tt (D(JM/2))} & 出力. {\tt SMTS?V}が用いる配列\\
+{\tt QUS}  & {\tt (D(JM/2))} & 出力. {\tt SMTV?S}が用いる配列\\
+{\tt R}  & {\tt (D(KM*MM*(MM-1)*2))} & 
+			出力. {\tt SMTV?S}, {\tt SMTS?V}が用いる配列\\
+{\tt ML}  & {\tt (I((MM+1)*(MM+1)))} & 
+			出力. 東西波数$m$のテーブルが格納される. \\
+	  &		& {\tt SMTV?S}, {\tt SMTS?V}で用いられる.\\
+{\tt NL}  & {\tt (I((MM+1)*(MM+1)))} & 
+			出力. 全波数$n$のテーブルが格納される. \\
+{\tt RF}  & {\tt (D((MM+1)*(MM+1)))} & 出力. {\tt SMCLAP}が用いる配列\\
+{\tt RB}  & {\tt (D((MM+1)*(MM+1)))} & 出力. {\tt SMCLAP}が用いる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt MM}, {\tt KM} $ \ge 1$ かつ {\tt JM}および{\tt IM}はそれぞれ, 
+{\tt JM} $>$ {\tt MM}および{\tt IM} $>$ {\tt 2*MM}を満す偶数でなけ
+ればならない.
+
+(b) 配列{\tt ML}, {\tt NL}の意味については, {\tt SML2NM}の備考を参照.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SMNM2L}
+
+\begin{enumerate}
+
+\item 機能 
+全波数と帯状波数からスペクトルデータの格納位置を計算する.
+
+\item 定義
+
+{\tt SMPACK}において, スペクトルデータ($s^m_n$)は概要に述べた制限をも
+とに, 独立な$(M+1)^2$個の成分を長さ$(M+1)^2$の配列に格納して扱う.
+
+格納順は, ベクトル化の効率を向上させるために, 以下のような特殊な順序に
+なっている:
+\begin{center}
+\begin{tabular}{cccccc}
+$\im(s^M_M)$ & $\im(s^{M-1}_M)$ & $\cdots$ & $\im(s^1_M)$ & $\re(s^0_0)$ \\
+$\im(s^{M-1}_{M-1})$ & $\cdots$ & $\im(s^1_{M-1})$ & $\re(s^0_1)$ & 
+	$\re(s^1_1)$\\
+$\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ \\
+$\im(s^1_1)$ & $\re(s^0_{M-1})$ & $\cdots$ & $\re(s^{M-2}_{M-1})$ & 
+	$\re(s^{M-1}_{M-1})$ \\
+$\re(s^0_M)$ & $\re(s^1_M)$ & $\cdots$ & $\re(s^{M-1}_M)$ & $\re(s^M_M)$ 
+\end{tabular}
+\end{center}
+ここに, Re( )は実数部を, Im( )は虚数部を表す.
+配列には, この図の左上から右下への順番に格納されている.
+
+このサブルーチンは切断波数$M$, $s^m_n$の全波数$n$, および帯状波数$m$か
+ら$\re(s^m_n)$と$\im(s^m_n)$の配列中の格納位置を求めるものである.
+
+
+\item 呼び出し方法 
+    
+{\tt SMNM2L(MM,N,M,L)}
+  
+\item パラメーターの説明 
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt N} & {\tt (I)} & 入力. 全波数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数\\
+{\tt L} & {\tt (I)} & 出力. スペクトルデータの格納位置(備考参照)
+\end{tabular}
+
+\item 備考
+
+{\tt M} $>$ 0 なら $m=$ {\tt M}, $n=$ {\tt N}として$\re(s^m_n)$の格納
+位置を, {\tt M} $<$ 0 なら $m=$ {\tt -M}, $n=$ {\tt N}として
+$\im(s^m_n)$の格納位置を返す.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SML2NM}
+
+\begin{enumerate}
+
+\item 機能 
+{\tt SMNM2L}の逆演算, すなわち, スペクトルデータの格納位置から全波数と
+帯状波数を求める.
+
+\item 定義
+
+{\tt SMNM2L}の項を参照
+
+\item 呼び出し方法 
+    
+{\tt SML2NM(MM,L,N,M)}
+  
+\item パラメーターの説明 
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt L} & {\tt (I)} & 入力. スペクトルデータの格納位置\\
+{\tt N} & {\tt (I)} & 出力. 全波数\\
+{\tt M} & {\tt (I)} & 出力. 帯状波数
+\end{tabular}
+
+\item 備考
+
+(a) {\tt M} の正負についての意味づけは{\tt SMNM2L}と同じである.
+
+(b) このルーチンを用いるよりも, {\tt SMINIT}で求められている{\tt ML}と
+  {\tt NL}を用いて{\tt M=ML(L)},{\tt N=NL(L)}とする方が便利であろう.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SMCLAP}
+
+\begin{enumerate}
+
+\item 機能 
+スペクトルデータにラプラシアンを作用させる, またはその逆演算を行う.
+
+\item 定義
+
+球面調和関数展開
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{n=0}\sum^n_{m=-n}
+a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+に対して、水平Laplacian
+\begin{equation}
+\nabla^2\equiv
+\frac{\partial^2}{\cos^2\varphi\partial\lambda^2}
++\frac{\partial}{\cos\varphi\partial\varphi}\left(\cos\varphi\frac{\partial}{\partial\varphi}\right)
+\end{equation}
+を作用させると, 球面調和関数の性質から, 
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}-n(n+1)a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+となる. そこで,
+\begin{equation}
+b^m_n\equiv -n(n+1)a^m_n
+\end{equation}
+を導入すると, 
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}b^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+と表せる. 
+また, 逆に
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+であるとき, 
+\begin{equation}
+b^m_n\equiv -\frac1{n(n+1)}a^m_n
+\end{equation}
+を導入すると, 
+\begin{equation}
+g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}b^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+と表せる. 
+
+本サブルーチンは,
+$a^m_n$から$b^m_n\equiv -n(n+1)a^m_n$の計算, 
+またはその逆演算: $a^m_n$から$b^m_n\equiv -a^m_n/(n(n+1))$, を
+行うものである. 
+
+\item 呼び出し方法 
+    
+{\tt SMCLAP(MM,KM,A,B,RF)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt KM} & {\tt (I)} & 入力. 並行して行う変換の個数(または層の数)\\
+{\tt A} & {\tt (D((MM+1)*(MM+1),KM))} & 入力. $a^m_n(z_k)$が格納されている配列\\
+{\tt B} & {\tt (D((MM+1)*(MM+1),KM))} & 出力. $b^m_n(z_k)$が格納される配列\\
+{\tt RF} & {\tt (D((MM+1)*(MM+1)))} & 入力. 
+	{\tt SMINIT}で得られている配列(備考参照)
+\end{tabular}
+
+\item 備考
+
+(a) スペクトルデータ$a^m_n$および$b^m_n$のスペクトルの並べ方については
+{\tt SMNM2L}の項を参照. ただし, 多層であるので, {\tt A(L,K)}は
+第{\tt K}層の{\tt L}番目のスペクトルというように格納されることに注意.
+
+(b) {\tt RF}の代わりに{\tt SMINIT}で得られている{\tt RB}を与えると逆演
+算を行う.
+
+(c) このルーチンは配列{\tt A}に単純に{\tt RF}(または{\tt RB})を掛けて
+    {\tt B}を求めているだけなので, もしラプラシアンの演算(またはその逆
+    演算)の際にスケールファクター(地球半径など)も同時に作用させたい場
+    合は, 前もって{\tt RF}(または{\tt RB})にそれらのスケールファクター
+    を掛けておけばよい.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SMTS2G}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータへの変換を行う.
+
+\item 定義
+
+スペクトル逆変換(概要を参照)によりスペクトルデータ($s^m_n(z_k)$)
+から格子点上のグリッドデータ($g(\lambda_i,\varphi_j,z_k)$)を求める.
+
+\item 呼び出し方法 
+
+{\tt SMTS2G(MM,IM,ID,JM,JD,KM,S,G,WORK,IT,T,IP,P,QSG)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt G}の第1次元目の寸法\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt G}の第2次元目の寸法\\
+{\tt KM} & {\tt (I)} & 入力. 並行して行う変換の個数(または層の数)\\
+{\tt S} & {\tt (D((MM+1)*(MM+1),KM))} & 入力. $s^m_n(z_k)$が格納されている配列\\
+{\tt G} & {\tt (D(ID,JD,KM))} & 出力. $g(\lambda_i,\varphi_j,z_k)$
+	が格納される配列\\
+{\tt WORK} & {\tt (D(ID*JD*KM))} & 作業領域 \\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SMINIT}で得られている配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt IP}  & {\tt (I(KM*(2*MM+1)))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt P}  & {\tt (D(KM*(MM+1)*(MM+3)*JM/2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt QSG}  & {\tt (D(JM/2))} & 入力. {\tt SMINIT}で得られている配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt ID}$\ge${\tt IM}, {\tt JD}$\ge${\tt JM}でなければならない.
+   またベクトル計算機においてはバンク競合を避けるために, {\tt ID},{\tt JD}
+   はできれば奇数にとるのがよい.
+
+(b) {\tt G(ID,JD,KM)}と宣言されている場合, {\tt G(I,J,K)}には
+    $g(\lambda_i,\varphi_j,z_k)$が格納される.
+
+(c) 変換の際にスケールファクター(地球半径など)も同時に作用させたい場
+    合は, 前もって{\tt QSG}にそれらのスケールファクターを掛けておけばよい.
+
+(d) {\tt ID>IM}の場合は, {\tt G(I,J,K)(I>IM)}
+    には{\tt G(IM,J,K)}と同じ値が代入される. また, 
+    {\tt JD>JM}の場合は, {\tt G(I,J,K)(J>JM)}
+    には{\tt G(I,JM,K)}と同じ値が代入される.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SMTG2S}
+
+\begin{enumerate}
+
+\item 機能 
+
+グリッドデータからスペクトルデータへの変換を行う.
+
+\item 定義
+
+スペクトル正変換(概要を参照)により格子点上のグリッドデータ
+($g(\lambda_i,\varphi_j,z_k)$)からスペクトルデータ($s^m_n(z_k)$)を求める.
+
+\item 呼び出し方法 
+
+{\tt SMTG2S(MM,IM,ID,JM,JD,KM,G,S,WORK,IT,T,IP,P,QGS)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt G}の第1次元目の寸法\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt G}の第2次元目の寸法\\
+{\tt KM} & {\tt (I)} & 入力. 並行して行う変換の個数(または層の数)\\
+{\tt G} & {\tt (D(ID,JD,KM))} & 入力. $g(\lambda_i,\varphi_j,z_k)$
+	が格納されている配列\\
+{\tt S} & {\tt (D((MM+1)*(MM+1),KM))} & 出力. $s^m_n(z_k)$が格納される配列\\
+{\tt WORK} & {\tt (D(ID*JD*KM*2))} & 作業領域 \\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SMINIT}で得られている配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt IP}  & {\tt (I(KM*(2*MM+1)))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt P}  & {\tt (D(KM*(MM+1)*(MM+3)*JM/2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt QGS}  & {\tt (D(JM/2))} & 入力. {\tt SMINIT}で得られている配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt ID}, {\tt JD}の設定などについては{\tt SMTS2G}の備考を参照.
+
+(b) 変換の際にスケールファクター(地球半径など)も同時に作用させたい場
+    合は, 前もって{\tt QGS}にそれらのスケールファクターを掛けておけばよい.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SMTS2V}
+
+\begin{enumerate}
+
+\item 機能 
+
+2つのスペクトルデータからグリッドデータの勾配+回転に対応するベクトルデー
+タへの変換を行う.
+
+\item 定義
+
+2つのスペクトルデータ$a^m_n$, $b^m_n$からスペクトル逆変換により求め
+られる実空間のデータ$A(\lambda,\varphi)$, $B(\lambda,\varphi)$
+に対して, 勾配+回転ベクトルを
+\begin{equation}
+(u,v)\equiv
+\left(\frac1{\cos\varphi}\frac{\partial A}{\partial\lambda}-\frac{\partial B}{\partial\varphi},\quad
+ \frac{\partial A}{\partial\varphi}+\frac1{\cos\varphi}\frac{\partial B}{\partial\lambda}\right)
+\end{equation}
+と定義するものとする. 本サブルーチンは, 
+2つのスペクトルデータ$a^m_n(z_k)$, $b^m_n(z_k)$
+から格子点上のベクトルデータ
+($u(\lambda_i,\varphi_j,z_k),v(\lambda_i,\varphi_j,z_k)$)を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt SMTS2V(MM,IM,ID,JM,JD,KM,A,B,U,V,WORK,IT,T,IP,P,QSV,R,ML)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt U}, {\tt V}の第1次元目の寸法\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt U}, {\tt V}の第2次元目の寸法\\
+{\tt KM} & {\tt (I)} & 入力. 並行して行う変換の個数(または層の数)\\
+{\tt A} & {\tt (D((MM+1)*(MM+1),KM))} & 入力. $a^m_n(z_k)$が格納されている配列\\
+{\tt B} & {\tt (D((MM+1)*(MM+1),KM))} & 入力. $b^m_n(z_k)$が格納されている配列\\
+{\tt U} & {\tt (D(ID,JD,KM))} & 出力. $u(\lambda_i,\varphi_j,z_k)$
+	が格納される配列\\
+{\tt V} & {\tt (D(ID,JD,KM))} & 出力. $v(\lambda_i,\varphi_j,z_k)$
+	が格納される配列\\
+{\tt WORK} & {\tt (D(ID*JD*KM*2))} & 作業領域 \\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SMINIT}で得られている配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt IP}  & {\tt (I(KM*(2*MM+1)))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt P}  & {\tt (D(KM*(MM+1)*(MM+3)*JM/2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt QSV}  & {\tt (D(JM/2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt R}  & {\tt (D(KM*MM*(MM-1)*2))} & 
+			入力. {\tt SMINIT}で得られている配列\\
+{\tt ML}  & {\tt (I((MM+1)*(MM+1)))} & 
+			入力. {\tt SMINIT}で得られている配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt U(ID,JD,KM)}, {\tt V(ID,JD,KM)}と宣言されている場合, 
+    {\tt U(I,J,K)}, {\tt V(I,J,K)}には
+    $u(\lambda_i,\varphi_j,z_k),v(\lambda_i,\varphi_j,z_k)$が格納される.
+
+(b) {\tt QSV}の代わりに, {\tt SMINIT}で得られている{\tt QSU}を用いると,
+    ({\tt U}, {\tt V})に$(u\cos\phi,v\cos\phi)$が返される.
+
+(c) 変換の際にスケールファクター(地球半径など)も同時に作用させたい場
+    合は, 前もって{\tt QSV}(または{\tt QSU})にそれらのスケールファクター
+    を掛けておけばよい.
+
+(d) {\tt ID>IM}の場合の{\tt U(I,J,K) (I>IM)}などの値については
+    {\tt SMTS2G}の場合と同様である.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SMTV2S}
+
+\begin{enumerate}
+
+\item 機能 
+
+ベクトルデータの発散および回転に対応する2つのスペクトルデータへの変換
+を行う.
+
+\item 定義
+
+ベクトルデータ$(u(\lambda,\varphi),v(\lambda,\varphi))$に対して, 発散$A$
+および回転$B$を
+\begin{equation}
+A\equiv
+\frac{\partial u}{\cos\varphi\partial\lambda}
+ +\frac{\partial (v\cos\varphi)}{\cos\varphi\partial\varphi}
+\end{equation}
+\begin{equation}
+B\equiv
+\frac{\partial v}{\cos\varphi\partial\lambda}
+ -\frac{\partial (u\cos\varphi)}{\cos\varphi\partial\varphi}
+\end{equation}
+と定義するものとする. 本サブルーチンは, 
+格子点上のベクトルデータ
+$(u(\lambda_i,\varphi_j,z_k),v(\lambda_i,\varphi_j,z_k))$
+からこの発散$A$, 回転$B$に対応する
+スペクトルデータ$a^m_n(z_k)$, $b^m_n(z_k)$を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt SMTV2S(MM,IM,ID,JM,JD,KM,U,V,A,B,WORK,IT,T,IP,P,QVS,R,ML)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt U}, {\tt V}の第1次元目の寸法\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt U}, {\tt V}の第2次元目の寸法\\
+{\tt KM} & {\tt (I)} & 入力. 並行して行う変換の個数(または層の数)\\
+{\tt U} & {\tt (D(ID,JD,KM))} & 入力. $u(\lambda_i,\varphi_j,z_k)$
+	が格納されている配列\\
+{\tt V} & {\tt (D(ID,JD,KM))} & 入力. $v(\lambda_i,\varphi_j,z_k)$
+	が格納されている配列\\
+{\tt A} & {\tt (D((MM+1)*(MM+1),KM))} & 出力. $a^m_n(z_k)$が格納される配列\\
+{\tt B} & {\tt (D((MM+1)*(MM+1),KM))} & 出力. $b^m_n(z_k)$が格納される配列\\
+{\tt WORK} & {\tt (D(ID*JD*KM*3))} & 作業領域 \\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SMINIT}で得られている配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt IP}  & {\tt (I(KM*(2*MM+1)))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt P}  & {\tt (D(KM*(MM+1)*(MM+3)*JM/2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt QVS}  & {\tt (D(JM/2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt R}  & {\tt (D(KM*MM*(MM-1)*2))} & 
+			入力. {\tt SMINIT}で得られている配列\\
+{\tt ML}  & {\tt (I((MM+1)*(MM+1)))} & 
+			入力. {\tt SMINIT}で得られている配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt QVS}の代わりに, {\tt SMINIT}で得られている{\tt QUS}を用いると,
+    入力({\tt U}, {\tt V})として$(u,v)$の代わりに
+    $(u\cos\phi,v\cos\phi)$を用いることができる.
+
+(b) 変換の際にスケールファクター(地球半径など)も同時に作用させたい場
+    合は, 前もって{\tt QVS}(または{\tt QUS})にそれらのスケールファクター
+    を掛けておけばよい.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SMTS1V}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータの勾配に対応するベクトルデー
+タへの変換を行う.
+
+\item 定義
+
+スペクトルデータ$a^m_n$からスペクトル逆変換により求め
+られる実空間のデータ$A(\lambda,\varphi)$
+に対して, 勾配ベクトルを
+\begin{equation}
+(u,v)\equiv
+\left(\frac1{\cos\varphi}\frac{\partial A}{\partial\lambda},
+ \frac{\partial A}{\partial\varphi}\right)
+\end{equation}
+と定義するものとする. 本サブルーチンは, 
+スペクトルデータ$a^m_n(z_k)$
+から格子点上のベクトルデータ
+($u(\lambda_i,\varphi_j,z_k),v(\lambda_i,\varphi_j,z_k)$)を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt SMTS1V(MM,IM,ID,JM,JD,KM,A,U,V,WORK,IT,T,IP,P,QSV,R,ML)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt U}, {\tt V}の第1次元目の寸法\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt U}, {\tt V}の第2次元目の寸法\\
+{\tt KM} & {\tt (I)} & 入力. 並行して行う変換の個数(または層の数)\\
+{\tt A} & {\tt (D((MM+1)*(MM+1),KM))} & 入力. $a^m_n(z_k)$が格納されている配列\\
+{\tt U} & {\tt (D(ID,JD,KM))} & 出力. $u(\lambda_i,\varphi_j,z_k)$
+	が格納される配列\\
+{\tt V} & {\tt (D(ID,JD,KM))} & 出力. $v(\lambda_i,\varphi_j,z_k)$
+	が格納される配列\\
+{\tt WORK} & {\tt (D(ID*JD*KM*2))} & 作業領域 \\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SMINIT}で得られている配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt IP}  & {\tt (I(KM*(2*MM+1)))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt P}  & {\tt (D(KM*(MM+1)*(MM+3)*JM/2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt QSV}  & {\tt (D(JM/2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt R}  & {\tt (D(KM*MM*(MM-1)*2))} & 
+			入力. {\tt SMINIT}で得られている配列\\
+{\tt ML}  & {\tt (I((MM+1)*(MM+1)))} & 
+			入力. {\tt SMINIT}で得られている配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt QSV}の代わりに, {\tt SMINIT}で得られている{\tt QSU}を用いると,
+    ({\tt U}, {\tt V})に$(u\cos\phi,v\cos\phi)$が返される.
+
+(b) 変換の際にスケールファクター(地球半径など)も同時に作用させたい場
+    合は, 前もって{\tt QSV}(または{\tt QSU})にそれらのスケールファクター
+    を掛けておけばよい.
+
+(c) このルーチンは{\tt SMTS2V}で{\tt B}の全要素に0を与えたのと同じ効果
+    を持つ.
+
+(d) {\tt ID>IM}の場合の{\tt U(I,J,K) (I>IM)}などの値については
+    {\tt SMTS2G}の場合と同様である.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SMTV1S}
+
+\begin{enumerate}
+
+\item 機能 
+
+ベクトルデータの発散に対応するスペクトルデータへの変換を行う.
+
+\item 定義
+
+ベクトルデータ$(u(\lambda,\varphi),v(\lambda,\varphi))$に対して, 発散$A$を
+\begin{equation}
+A\equiv
+\frac{\partial u}{\cos\varphi\partial\lambda}
+ +\frac{\partial (v\cos\varphi)}{\cos\varphi\partial\varphi}
+\end{equation}
+と定義するものとする. 本サブルーチンは, 
+格子点上のベクトルデータ$(u(\lambda_i,\varphi_j),v(\lambda_i,\varphi_j))$
+からこの発散$A$に対応するスペクトルデータ$a^m_n$を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt SMTV1S(MM,IM,ID,JM,JD,KM,U,V,A,WORK,IT,T,IP,P,QVS,R,ML)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt U}, {\tt V}の第1次元目の寸法\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt U}, {\tt V}の第2次元目の寸法\\
+{\tt KM} & {\tt (I)} & 入力. 並行して行う変換の個数(または層の数)\\
+{\tt U} & {\tt (D(ID,JD,KM))} & 入力. $u(\lambda_i,\varphi_j,z_k)$
+	が格納されている配列\\
+{\tt V} & {\tt (D(ID,JD,KM))} & 入力. $v(\lambda_i,\varphi_j,z_k)$
+	が格納されている配列\\
+{\tt A} & {\tt (D((MM+1)*(MM+1),KM))} & 出力. $a^m_n(z_k)$が格納される配列\\
+{\tt WORK} & {\tt (D(ID*JD*KM*3))} & 作業領域 \\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SMINIT}で得られている配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt IP}  & {\tt (I(KM*(2*MM+1)))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt P}  & {\tt (D(KM*(MM+1)*(MM+3)*JM/2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt QVS}  & {\tt (D(JM/2))} & 入力. {\tt SMINIT}で得られている配列\\
+{\tt R}  & {\tt (D(KM*MM*(MM-1)*2))} & 
+			入力. {\tt SMINIT}で得られている配列\\
+{\tt ML}  & {\tt (I((MM+1)*(MM+1)))} & 
+			入力. {\tt SMINIT}で得られている配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt QVS}の代わりに, {\tt SMINIT}で得られている{\tt QUS}を用いると,
+    入力({\tt U}, {\tt V})として$(u,v)$の代わりに
+    $(u\cos\phi,v\cos\phi)$を用いることができる.
+
+(b) 変換の際にスケールファクター(地球半径など)も同時に作用させたい場
+    合は, 前もって{\tt QVS}(または{\tt QUS})にそれらのスケールファクター
+    を掛けておけばよい.
+
+(c) このルーチンは{\tt SMTV2S}で{\tt B}の方を求める操作を省略したもの
+    である.
+
+\end{enumerate}
+
+
+\end{document}

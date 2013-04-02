@@ -1,0 +1,39 @@
+begin assemble_control
+!
+  begin data_files_def
+    num_subdomain_ctl           2
+
+    sph_files_head_ctl          'sph_lm31t48r96c_2/in'
+    rst_file_head_ctl           'rst_2/rst'
+!
+    sph_files_fmt_ctl           'gzip'
+    rst_files_fmt_ctl           'gzip'
+  end data_files_def
+!
+  begin new_data_files_def
+    num_new_domain_ctl           4
+!
+    new_sph_mode_head_ctl      'sph_lm31t48r96c_4/in'
+!
+    new_rst_head_ctl           'rst_4/rst'
+!
+    new_sph_files_fmt_ctl      'ascii'
+    new_rst_files_fmt_ctl      'ascii'
+!
+    delete_original_data_flag       'YES'
+  end new_data_files_def
+!
+  begin control
+!!!!!  information for time integration
+    begin time_step_ctl
+      i_step_init_ctl       0
+      i_step_number_ctl     2000
+      i_step_rst_ctl        800
+    end time_step_ctl
+  end control
+!
+  begin newrst_magne_ctl
+    magnetic_field_ratio_ctl     1.0d0
+  end newrst_magne_ctl
+!
+end assemble_control

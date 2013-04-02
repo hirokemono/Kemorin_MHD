@@ -1,0 +1,121 @@
+!
+!     module int_div_sgs_mf_simi
+!
+!     numerical integration for finite elememt equations of momentum
+!
+!        Written by H.Matsui   on July 2005
+!        modified by H. Matsui on Oct., 2005
+!
+!      subroutine int_div_sgs_mf_simi_pg(i_flux, i_vect)
+!      subroutine int_div_sgs_mf_simi_upw(i_flux, i_vect)
+!      subroutine int_div_sgs_mf_simi_upm(i_flux, i_vect)
+!
+      module int_div_sgs_mf_simi
+!
+      use m_precision
+!
+      implicit none
+!
+      private :: int_div_sgs_mf_simi_upwind
+!
+!-----------------------------------------------------------------------
+!
+      contains
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_div_sgs_mf_simi_pg(i_flux, i_vect)
+!
+       use m_control_parameter
+       use m_geometry_parameter
+       use m_machine_parameter
+       use m_geometry_data_MHD
+       use m_finite_element_matrix
+       use m_int_vol_data
+!
+       use sgs_terms_2_each_ele
+       use fem_skv_vector_diff_1st
+       use cal_skv_to_ff_smp_1st
+!
+       integer(kind = kint), intent(in) :: i_flux, i_vect
+!
+       integer(kind=kint) :: k2
+!
+!
+      call reset_sk6(n_vector)
+!
+! -------- loop for shape function for the phsical values
+!
+      do k2=1, nnod_4_ele
+        call SGS_m_flux_2_each_element(k2, i_vect, i_flux, tensor_e)
+        call fem_skv_div_tensor(iele_fl_smp_stack,                      &
+     &      intg_point_t_evo, k2, tensor_e, sk6)
+      end do
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+!
+      end subroutine int_div_sgs_mf_simi_pg
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine int_div_sgs_mf_simi_upw(i_flux, i_vect)
+!
+      use m_element_phys_address
+!
+      integer(kind = kint), intent(in) :: i_flux, i_vect
+!
+      call int_div_sgs_mf_simi_upwind(i_flux, i_vect, iphys_ele%i_velo)
+!
+      end subroutine int_div_sgs_mf_simi_upw
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_div_sgs_mf_simi_upm(i_flux, i_vect)
+!
+      use m_element_phys_address
+!
+      integer(kind = kint), intent(in) :: i_flux, i_vect
+!
+      call int_div_sgs_mf_simi_upwind(i_flux, i_vect,                   &
+     &    iphys_ele%i_magne)
+!
+      end subroutine int_div_sgs_mf_simi_upm
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_div_sgs_mf_simi_upwind(i_flux, i_vect, ie_upw)
+!
+      use m_control_parameter
+      use m_geometry_parameter
+      use m_machine_parameter
+      use m_geometry_data_MHD
+      use m_element_phys_address
+      use m_element_phys_data
+      use m_finite_element_matrix
+      use m_int_vol_data
+!
+      use sgs_terms_2_each_ele
+      use cal_skv_to_ff_smp_1st
+      use fem_skv_vect_diff_upw_1st
+!
+       integer(kind = kint), intent(in) :: i_flux, i_vect, ie_upw
+!
+       integer(kind=kint) :: k2
+!
+!
+      call reset_sk6(n_vector)
+!
+! -------- loop for shape function for the phsical values
+!
+      do k2=1, nnod_4_ele
+        call SGS_m_flux_2_each_element(k2, i_vect, i_flux, tensor_e)
+        call fem_skv_div_tsr_upw(iele_fl_smp_stack, intg_point_t_evo,   &
+     &      k2, d_ele(1,ie_upw), tensor_e, sk6)
+      end do
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+!
+      end subroutine int_div_sgs_mf_simi_upwind
+!
+!-----------------------------------------------------------------------
+!
+      end module int_div_sgs_mf_simi

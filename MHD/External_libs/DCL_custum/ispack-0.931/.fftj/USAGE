@@ -1,0 +1,145 @@
+HOW TO USE
+
+   You can compute 1D FFT of double precision complex/real data of size N
+ (currently, supported N = 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024 for
+ complex transform, and 2048 for real transform)
+ by calling a set of subroutines from your FORTRAN77 program as follows.
+ 
+-------------------------------------------------------		   
+(complex transform) 
+
+ !-----------------------------------------------------------
+      INTEGER N,IO,IBF,IP(2)
+      COMPLEX*16 ZIN(0:N-1),ZOUT(0:N-1),ZWORK(N),ZT(N*2)
+      
+      ! Here, you should set IO and IBF according to your purpose.
+
+      CALL FJCINI(N,IO,IBF,IP,ZT)
+      CALL FJCRUN(ZIN,ZOUT,ZWORK,ZT,IP)      
+ !-----------------------------------------------------------
+
+   Here, FJCINI is an initialization subroutine, which should 
+  be called only once to initialize IP and ZT as long as the 
+  transformation type (N, IO, IBF) does not change.
+  
+  In FJCINI, 
+      
+      N  (input):  array size
+      IO (input):  specifies array usage (see FJCRUN)
+                   IO = 1: in-place
+                   IO = 2: out-of-place
+      IBF (input): specifies transform type
+                   IBF =1: backward transform
+                   IBF =2:  forward transform
+      IP (output): pointer to a lower level subroutine
+      ZT (output): a table of sinusoidal functions
+      
+   In FJCRUN,
+   
+      N  (input):  array size
+      ZIN (input/output): 
+                 input and output data when IO=1
+                 input data (conserved) when IO=2
+      ZOUT (workspace/output):
+                 workspace when IO=1      
+                 output data when IO=2
+      ZWORK (workspace): workspace
+      ZT (input): a table of sinusoidal functions
+                  initialized by FJCINI
+      IP (output): pointer to a lower level subroutine		  
+                   initialized by FJCINI
+		   
+-------------------------------------------------------
+(real transform) 
+
+ !-----------------------------------------------------------
+      INTEGER N,IO,IBF,IP(2)
+      REAL*8 XIN(0:N-1),XOUT(0:N-1),XWORK(N),XT(N*3)
+      
+      ! Here, you should set IO and IBF according to your purpose.
+
+      CALL FJRINI(N,IO,IBF,IP,XT)
+      CALL FJRRUN(XIN,XOUT,XWORK,XT,IP)      
+ !-----------------------------------------------------------
+
+   Here, FJRINI is an initialization subroutine, which should 
+  be called only once to initialize IP and XT as long as the 
+  transformation type (N, IO, IBF) does not change.
+  
+  In FJRINI, 
+      
+      N  (input):  array size
+      IO (input):  specifies array usage (see FJRRUN)
+                   IO = 1: in-place
+                   IO = 2: out-of-place
+      IBF (input): specifies transform type
+                   IBF =1: backward transform
+                   IBF =2:  forward transform
+      IP (output): pointer to a lower level subroutine
+      XT (output): a table of sinusoidal functions
+      
+   In FJRRUN,
+   
+      N  (input):  array size
+      XIN (input/output): 
+                 input and output data when IO=1
+                 input data (conserved) when IO=2
+      XOUT (workspace/output):
+                 workspace when IO=1      
+                 output data when IO=2
+      XWORK (workspace): workspace
+      XT (input): a table of sinusoidal functions
+                  initialized by FJRINI
+      IP (output): pointer to a lower level subroutine		  
+                   initialized by FJRINI
+		   
+================================================================
+DEFINITION
+
+-------------------------------------------------------
+(complex transform)
+
+ x_k (k=0,1,...,N-1):  input complex array of size N
+ y_j (j=0,1,...,N-1): output complex array of size N
+
+ - backward transform (IBF=1) computes
+      
+    y_j = \sum_{k=0}^{N-1} x_k \exp(2\pi i jk/N)  (j=0,1,...,N-1).
+    
+ - forward transform (IBF=2) computes
+
+    y_j = \sum_{k=0}^{N-1} x_k \exp(-2\pi i jk/N)  (j=0,1,...,N-1).
+    
+ in FJCRUN,
+ 
+   x_k should be stored in ZIN(k) (k=0,1,...,N-1)
+   
+   y_j will be stored in ZIN(j) (j=0,1,...,N-1) when IO=1
+   y_j will be stored in ZOUT(j) (j=0,1,...,N-1) when IO=2
+   
+-------------------------------------------------------
+(real transform)
+
+ x_k (k=0,1,...,N-1):  input real array of size N
+ y_j (j=0,1,...,N-1): output real array of size N
+
+ - backward transform (IBF=1) computes
+      
+    y_j = x_0 + x_1 (-1)^j 
+         + 2\sum_{k=1}^{N/2-1}(x_{2k}\cos(2\pi jk/N) - x_{2k+1}\sin(2\pi jk/N))
+                                                                (j=0,1,...,N-1).
+    
+ - forward transform (IBF=2) computes
+
+    y_0 = \sum_{k=0}^{N-1} x_k
+    y_1 = \sum_{k=0}^{N-1} x_k (-1)^k
+    y_{2j} = \sum_{k=0}^{N-1} x_k \cos(2\pi jk/N)  (j=1,2,...,N/2-1).
+    y_{2j+1} = - \sum_{k=0}^{N-1} x_k \sin(2\pi jk/N)  (j=1,2,...,N/2-1).    
+    
+ in FJRRUN,
+ 
+   x_k should be stored in XIN(k) (k=0,1,...,N-1)
+   
+   y_j will be stored in XIN(j) (j=0,1,...,N-1) when IO=1
+   y_j will be stored in XOUT(j) (j=0,1,...,N-1) when IO=2
+   

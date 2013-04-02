@@ -1,0 +1,140 @@
+begin   make_shell
+  begin cubed_sphere_def
+!     divide_mode:
+!           cube...equaly divided on cube
+!           sphere...equaly divided sphere
+    divide_mode        sphere
+    element_type        quad
+    numele_4_90deg         8
+    numele_4_vertical      8
+    nend_adjust_ctl        3
+!
+    array r_layer       17
+      r_layer    1  0.2884615384615
+      r_layer    2  0.3584615384615
+      r_layer    3  0.4134615384615     bc_adjust
+      r_layer    4  0.4734615384615
+      r_layer    5  0.5384615384615     ICB
+      r_layer    6  0.6634615384615
+      r_layer    7  0.7884615384615
+      r_layer    8  0.9134615384615
+      r_layer    9  1.038461538462       Mid
+      r_layer   10  1.163461538462
+      r_layer   11  1.288461538462
+      r_layer   12  1.413461538462
+      r_layer   13  1.538461538462       CMB
+      r_layer   14  1.663461538462
+      r_layer   15  1.788461538462
+      r_layer   16  2.50000000000000
+      r_layer   17  4.00000000000000     inf
+    end array
+!
+    array edge_latitude_ctl       3
+      edge_latitude_ctl    5     45.0e0     ICB
+      edge_latitude_ctl    13    67.0e0     ICB
+      edge_latitude_ctl    17    45.0e0     ICB
+    end array edge_latitude_ctl
+!
+  begin cubed_sphere_def
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+!   Grouping settings
+!
+!   Define for element layers:   element layer ID = node layer ID
+!       (element ID is set by the inside nodes layer ID)
+!   Define for center cube:      layer ID = 0
+!   Define for nodes between rods (only for quad)
+!                            :   layer ID = - element layer ID
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+  begin boundaries_ctl
+    nlayer_ICB         5      (idx_icb+nend_adjust)
+    nlayer_CMB        13      (idx_cmb+nend_adjust)
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!   default node groups:
+!      Press    at north pole on CMB
+!      Center   at zero point
+!      ICB      at nlayer_ICB
+!      CMB      at nlayer_CMB
+!      Infinity at outside of domain
+!
+!   quadrature nodes between layer (N+1) and (N) are defined by (-N)
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+    begin  node_group_ctl
+      array nod_grp_name_ctl    1
+        nod_grp_name_ctl     infinity_1    2
+      end array
+      array nod_layer_id_ctl  2
+        nod_layer_id_ctl    16
+        nod_layer_id_ctl   -16
+      end array
+    end
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!   default element groups:
+!      inner_core  between 0 and nlayer_ICB-1
+!      outer_core  between nlayer_ICB and nlayer_CMB-1
+!      external    from    nlayer_CMB to outmost layer
+!
+!   quadrature nodes between layer (N+1) and (N) are defined by (-N)
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+    begin element_group_ctl
+      array ele_grp_name_ctl    3
+        ele_grp_name_ctl     inner_core     5
+        ele_grp_name_ctl     outer_core    13
+        ele_grp_name_ctl     external      17
+      end array
+!
+      array ele_layer_id_ctl  17
+        ele_layer_id_ctl    0
+        ele_layer_id_ctl    1
+        ele_layer_id_ctl    2
+        ele_layer_id_ctl    3
+        ele_layer_id_ctl    4
+        ele_layer_id_ctl    5
+        ele_layer_id_ctl    6
+        ele_layer_id_ctl    7
+        ele_layer_id_ctl    8
+        ele_layer_id_ctl    9
+        ele_layer_id_ctl   10
+        ele_layer_id_ctl   11
+        ele_layer_id_ctl   12
+        ele_layer_id_ctl   13
+        ele_layer_id_ctl   14
+        ele_layer_id_ctl   15
+        ele_layer_id_ctl   16
+      end array
+    end
+!
+    begin surface_group_ctl
+      array surf_grp_name_ctl    3
+        surf_grp_name_ctl     ICB_surf       1
+        surf_grp_name_ctl     CMB_surf       2
+        surf_grp_name_ctl     infinity_surf  3
+      end array
+!
+      array surf_layer_id_ctl  3
+        surf_layer_id_ctl    IN     5
+        surf_layer_id_ctl    OUT    12
+        surf_layer_id_ctl    OUT    16
+      end array
+    end
+!
+  end
+!
+  begin  coarse_shell_ctl
+    array sp_r_coarse_ratio     3
+      sp_r_coarse_ratio    2   2
+      sp_r_coarse_ratio    2   1
+      sp_r_coarse_ratio    1   2
+	end array
+  end
+!
+end

@@ -1,0 +1,25 @@
+begin para_refine_tbl_control
+!
+  begin parallel_fine_mesh_ctl
+    debug_flag_ctl            'ON'
+    num_subdomain_ctl           4
+    mesh_file_head_ctl        'mesh_ref2_4/in'
+  end
+!
+  begin parallel_course_mesh_ctl
+    num_course_subdomain_ctl       2
+    course_mesh_file_head_ctl     'mesh_ref1_2/in'
+    fine_to_course_head_ctl       'mesh_ref1_2/ref1_to_ref2'
+    course_to_fine_head_ctl       'mesh_ref1_2/ref2_to_ref1'
+!
+    fine_to_course_ele_head_ctl   'mesh_ref1_2/ref2_to_ref1_e'
+  end
+!
+  begin single_itp_table_tl
+    cource_to_fine_table_ctl     'course_2_fine'
+    fine_to_cource_table_ctl     'fine_2_course'
+!
+    refine_info_head_ctl         'refine_info'
+  end
+!
+end

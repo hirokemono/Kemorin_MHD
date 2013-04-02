@@ -1,0 +1,220 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (C) 2011 Keiichi Ishioka				       %
+% 								       %
+% この著作権表示が記載してあるならば, どのような媒体にでも何も手を加え %
+% ずに複写して再配付することを許可します. これらのドキュメントとその使 % 
+% 用許諾を他の言語に翻訳する際は, 以下の条件に従って下さい.	       %
+% 								       %
+% 他の言語に翻訳する際に, 他の言語での口語表現への変更の範囲を越えて故 %
+% 意に意味を変更しないこと.					       %
+%								       %
+% 翻訳した使用許諾には, それが翻訳であること, また原文の使用許諾が翻訳 %
+% 全体に依然適用されることを明示すること.			       %
+%								       %
+% ハイパーテキストの場合, 同一サイト上で原文のコピーを保守すること. ま %
+% た, 翻訳したハイパーテキストのページからその原文へのリンクを提供する %
+% こと.								       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%履歴 2011/03/12 石岡圭一 (version 0.1) (WSの大きさの誤りを修正)
+%履歴 2010/09/20 石岡圭一 (version 0.0)
+%
+\documentclass[a4j,fleqn]{jarticle}
+
+\usepackage{amsmath,amssymb}
+
+\title{SJPACK-CUDA 使用の手引 (version 0.1)}
+\author{石岡 圭一  (2011/03/12)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは, スペクトル(球面調和関数)変換を行なうサブルーチンパッケージ
+SJPACKの基本的な変換をGPGPUで実行できるようにするためにCUDA化した
+ものである. 従って, 基本的な変換の定義等については
+SJPACK使用の手引を参照すること.
+
+本サブルーチンパッケージは内部でCUDAのライブラリを利用しているので,
+本サブルーチンパッケージに属するサブルーチンをCALLするプログラムを
+コンパイルする際にはCUDAのライブラリをリンクすること.
+
+\subsection{CUDA化について}
+
+本パッケージは, FORTRAN77レベルでSJPACKと
+ほぼ互換の機能を提供することによってCUDAの知識が無くともGPGPUを利用
+できることを目指したものである. そのため, GPU-CPU間のデータ転送の
+コストが大きく, そのためGPGPUの性能をフルに利用できているとは言い難い.
+また, とりあえずルジャンドル陪関数変換の部分のみをCUDA化しただけで,
+FFTについてはまだCPU上でFFTJを利用していることもGPGPUの性能をフルに
+生かせていない原因の一つである(FFTJを利用している部分については
+OpenMPによる並列化はしてあるので, SMPな環境ではFFTの部分のコストは
+圧縮できるが). これらの問題を解消してGPGPU上で完結
+したモデルコードの作成については今後の課題である.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+{\tt SJVOPN} & 初期化\\
+{\tt SJVS2G} & スペクトルデータからグリッドデータへの変換\\
+{\tt SJVG2S} & グリッドデータからスペクトルデータへの変換\\
+{\tt SJVCLS} & 終了処理
+\end{tabular}
+
+%---------------------------------------------------------------------
+
+\subsection{SJVOPN}
+
+\begin{enumerate}
+
+\item 機能
+
+初期化ルーチン. {\tt SJVS2G}, {\tt SJVG2S}で使われる領域
+(GPGPU上のデバイスメモリ)および配列の初期化を行う.
+複数回の{\tt SJVS2G}, {\tt SJVG2S}に先だって一度だけ呼出せばよい.
+
+\item 呼び出し方法
+
+{\tt SJVOPN(MM,NM,JM,IM,P,R,IP)}
+
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. $m$の切断波数$M$\\
+{\tt NM} & {\tt (I)} & 入力. $n$の切断波数$N$の使いうる最大値\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt P}  & {\tt (D(JM/2*(MM+4)))} 
+      & 入力. {\tt SJINIT}で初期化された配列\\
+{\tt R}  & {\tt (D((MM+1)*(2*NM-MM-1)+1)} 
+      & 入力. {\tt SJINIT}で初期化された配列\\
+{\tt IP}  & {\tt (I(8))}    & 出力. {\tt SJVS2G}, {\tt SJVG2S}で用いられる配列
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item 変換のサイズ({\tt MM}, {\tt NM}, {\tt JM}, および{\tt IM})を
+変える場合, {\tt SJINIT}で{\tt P}および{\tt R}の内容を更新すること
+になるが, その際には{\tt SJVOPN}も呼び直す必要がある.
+
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJVS2G}
+
+\begin{enumerate}
+
+\item 機能
+
+SJTS2GをCUDA化したもの.
+
+\item 定義
+
+GPGPUを利用してスペクトル逆変換を行う(概要に書いたように, GPGPUを
+利用するのは現状ではルジャンドル陪関数変換の部分のみ).
+
+\item 呼び出し方法 
+
+{\tt SJVS2G(MM,NM,NN,IM,JM,S,G,IT,T,P,R,WS,WG,W,IPOW,IP)}
+  
+\item パラメーターの説明({\tt SJTS2G}と異なるもののみ)
+
+\begin{tabular}{lll}
+{\tt WS} & {\tt (D((2*NN+1-MM)*MM+NN+1))} & 作業領域\\
+{\tt WG}  & {\tt (D(IM*JM))} & 作業領域\\
+{\tt W}  & {\tt (D(IM*JM))} & 作業領域\\
+{\tt IP}  & {\tt (I(8))} & 入力. {\tt SJVOPN}で初期化された配列
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+\item {\tt SJTS2G}と異なり, 作業領域{\tt Q}が不要であることに注意.
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJVG2S}
+
+\begin{enumerate}
+
+\item 機能
+
+SJTG2SをCUDA化したもの.
+
+\item 定義
+
+GPGPUを利用してスペクトル正変換を行う(概要に書いたように, GPGPUを
+利用するのは現状ではルジャンドル陪関数変換の部分のみ).
+
+\item 呼び出し方法 
+
+{\tt SJVG2S(MM,NM,NN,IM,JM,S,G,IT,T,P,R,WS,WG,W,IPOW,IP)}
+  
+\item パラメーターの説明({\tt SJTG2S}と異なるもののみ)
+
+\begin{tabular}{lll}
+{\tt WS} & {\tt (D((2*NN+1-MM)*MM+NN+1))} & 作業領域\\
+{\tt WG}  & {\tt (D(IM*JM))} & 作業領域\\	
+{\tt W}  & {\tt (D(IM*JM))} & 作業領域\\
+{\tt IP}  & {\tt (I(8))} & 入力. {\tt SJVOPN}で初期化された配列
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+\item {\tt SJTG2S}と異なり, 現在のところ, {\tt JM}の値は
+256, 512, 1024 のみしかサポートしていない(それぞれ, 
+T170, T341, T682 の通常の設定に対応).
+\item {\tt SJTG2S}と異なり, 作業領域{\tt Q}が不要であることに注意.
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJVCLS}
+
+\begin{enumerate}
+
+\item 機能
+
+終了処理ルーチン. {\tt SJVS2G}, {\tt SJVG2S}で使われた領域
+(GPGPU上のデバイスメモリ)の開放を行う.
+複数回の{\tt SJVS2G}, {\tt SJVG2S}の呼出しの後に一度だけ呼出せばよい.
+
+\item 呼び出し方法
+
+{\tt SJVCLS(IP)}
+
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt IP}  & {\tt (I(8))} & 入力. {\tt SJVOPN}で初期化された配列
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item 変換のサイズ変える場合など, {\tt SJVOPN}を呼び直すような
+場合には, それに先だって{\tt SJVCLS}で領域の開放を行うこと.
+
+\end{itemize}
+
+\end{enumerate}
+
+\end{document}

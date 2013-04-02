@@ -1,0 +1,61 @@
+# suffix rules
+
+.SUFFIXES :
+.SUFFIXES : .o .mpif .f .s .F .c .cu
+
+.F.o :
+	$(CPP) -C -traditional $(CPPFLAGS) $< | sed '/^#/d' > $*.f
+	$(FC) $(FFLAGS) -c $*.f
+	
+.mpif.o :
+	$(MPIFC) $(MPIFFLAGS) -c $*.f
+
+.f.o :
+	$(FC) $(FFLAGS) -c $<
+	
+.s.o :
+	$(AS) $< -o $@
+	
+.c.o :
+	$(CC) $(CFLAGS) -c $< 
+	
+.F.f :
+	$(CPP) -C -traditional $(CPPFLAGS) $< | sed '/^#/d' > $*.f
+
+.cu.o :
+	$(NVCC) $(NVCFLAGS) -c $< 
+	
+# macro definitions
+
+DIRS = bspack ftpack tdpack n2pack stpack smpack snpack sopack sppack \
+       appack flpack fepack fhpack c2pack p2pack p3pack dkpack \
+       p3pack-mpi snpack-mpi sppack-mpi sopack-mpi pzpack u2pack ujpack \
+       sjpack
+       
+LIBNAME		= libisp
+DESTDIR		= .
+STATICLIB	= $(DESTDIR)/$(LIBNAME).a
+SHELL		= /bin/sh
+MAKE		= make
+FC		= g77
+FFLAGS		= -O3
+MPIFC		= mpif77
+MPIFFLAGS	= -O3
+CC		= gcc
+CFLAGS		= -O3
+DCLFRT		= dclfrt
+AR		= ar
+ARFLAGS		= vru
+RM		= rm -f
+CP		= cp
+CPP		= cpp
+CPPFLAGS	= -DDIRECT -DIEEE -DASCII -DLEN -DET
+AS		= as
+MV		= mv -f
+RANLIB		= ranlib
+CAT		= cat
+SSE		= sse32
+NVCC		= nvcc
+NVCFLAGS	= -arch=sm_20 -O3
+
+export

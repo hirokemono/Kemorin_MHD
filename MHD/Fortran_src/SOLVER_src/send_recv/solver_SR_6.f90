@@ -1,0 +1,119 @@
+!C*** 
+!C*** module solver_SR_6
+!C***
+!
+!    MPI SEND and RECEIVE routine for overlapped partitioning
+!     coded by K.Nakajima (RIST) on jul. 1999 (ver 1.0)
+!     modified by H. Matsui (U. of Chicago) on july 2007 (ver 1.1)
+!
+!      subroutine  SOLVER_SEND_RECV_6                                   &
+!     &                ( N, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,&
+!     &                                        STACK_EXPORT, NOD_EXPORT,&
+!     &                  X, SOLVER_COMM,my_rank)
+!
+      module solver_SR_6
+!
+      use m_precision
+      use m_constants
+!
+      implicit none
+!
+      integer(kind = kint), parameter, private :: i18 = 18
+!
+! ----------------------------------------------------------------------
+!
+      contains
+!
+! ----------------------------------------------------------------------
+!C
+      subroutine  SOLVER_SEND_RECV_6                                    &
+     &                ( N, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT, &
+     &                                        STACK_EXPORT, NOD_EXPORT, &
+     &                  X, SOLVER_COMM,my_rank)
+
+      use calypso_mpi
+!
+      use m_solver_SR
+!
+! ......................................................................
+
+      integer(kind=kint )                , intent(in)   ::  N
+!<       number of nodes
+      integer(kind=kint )                , intent(in)   ::  NEIBPETOT
+!<       total neighboring pe count
+      integer(kind=kint ), dimension(NEIBPETOT) :: NEIBPE
+!<       neighboring pe id                        (i-th pe)
+      integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_IMPORT
+!<       imported node count for each neighbor pe (i-th pe)
+      integer(kind=kint ), dimension(STACK_IMPORT(NEIBPETOT))           &
+     &        :: NOD_IMPORT
+!<       imported node                            (i-th dof)
+      integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_EXPORT
+!<       exported node count for each neighbor pe (i-th pe)
+      integer(kind=kint ), dimension(STACK_EXPORT(NEIBPETOT))           &
+     &        :: NOD_EXPORT
+!<       exported node                            (i-th dof)
+      real   (kind=kreal), dimension(6*N), intent(inout):: X
+!<       communicated result vector
+      integer                            , intent(in)   ::SOLVER_COMM
+!<       communicator for mpi
+      integer                            , intent(in)   :: my_rank
+!<       Process ID
+!
+      integer (kind = kint) :: neib, istart, inum, ierr, k, ii
+!
+!
+      call resize_work_4_SR(isix, NEIBPETOT,                            &
+     &    STACK_EXPORT(NEIBPETOT), STACK_IMPORT(NEIBPETOT) )
+!C
+!C-- SEND
+      
+      do neib= 1, NEIBPETOT
+        istart= STACK_EXPORT(neib-1)
+        inum  = STACK_EXPORT(neib  ) - istart
+        
+        do k= istart+1, istart+inum
+               ii   = 6*NOD_EXPORT(k)
+           WS(6*k-5)= X(ii-5)
+           WS(6*k-4)= X(ii-4)
+           WS(6*k-3)= X(ii-3)
+           WS(6*k-2)= X(ii-2)
+           WS(6*k-1)= X(ii-1)
+           WS(6*k  )= X(ii  )
+        enddo
+        call MPI_ISEND (WS(6*istart+1), 6*inum,MPI_DOUBLE_PRECISION,    &
+     &                  NEIBPE(neib), 0, SOLVER_COMM, req1(neib), ierr)
+      enddo
+
+!C
+!C-- RECEIVE
+      do neib= 1, NEIBPETOT
+        istart= STACK_IMPORT(neib-1)
+        inum  = STACK_IMPORT(neib  ) - istart
+        call MPI_IRECV (WR(6*istart+1), 6*inum, MPI_DOUBLE_PRECISION,   &
+     &                  NEIBPE(neib), 0, SOLVER_COMM, req2(neib), ierr)
+      enddo
+
+      call MPI_WAITALL (NEIBPETOT, req2(1), sta2(1,1), ierr)
+   
+      do neib= 1, NEIBPETOT
+        istart= STACK_IMPORT(neib-1)
+        inum  = STACK_IMPORT(neib  ) - istart
+      do k= istart+1, istart+inum
+          ii   = 6*NOD_IMPORT(k)
+        X(ii-5)= WR(6*k-5)
+        X(ii-4)= WR(6*k-4)
+        X(ii-3)= WR(6*k-3)
+        X(ii-2)= WR(6*k-2)
+        X(ii-1)= WR(6*k-1)
+        X(ii  )= WR(6*k  )
+      enddo
+      enddo
+
+      call MPI_WAITALL (NEIBPETOT, req1(1), sta1(1,1), ierr)
+
+      end subroutine SOLVER_SEND_RECV_6
+!
+! ----------------------------------------------------------------------
+!
+      end module     solver_SR_6

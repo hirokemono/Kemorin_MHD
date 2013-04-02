@@ -1,0 +1,68 @@
+!
+!      module int_mass_matrix_gen_filter
+!
+!      Written by H. Matsui on an., 2006
+!
+!      subroutine int_mass_matrix_4_filter
+!
+      module int_mass_matrix_gen_filter
+!
+      use m_ctl_params_4_gen_filter
+!
+      use m_precision
+      use m_geometry_constants
+      use m_geometry_parameter
+!
+      implicit none
+!
+      private :: int_grped_mass_matrix_filter
+!
+!-----------------------------------------------------------------------
+!
+      contains
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_mass_matrix_4_filter
+!
+      use m_machine_parameter
+      use int_vol_mass_matrix
+      use check_finite_element_mat
+!
+!
+!      if (id_filter_area_grp(1) .eq. -1) then
+         call int_lumped_mass_matrix(num_int_points)
+!      else
+!        call int_grped_mass_matrix_filter
+!      end if
+!
+!      call check_mass_martix
+!
+      end subroutine int_mass_matrix_4_filter
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine int_grped_mass_matrix_filter
+!
+      use m_finite_element_matrix
+      use m_element_list_4_filter
+      use int_grouped_mass_matrix
+      use cal_ff_smp_to_ffs
+!
+!
+      if (nnod_4_ele.eq.num_t_quad .or. nnod_4_ele.eq.num_t_lag) then
+        call int_grp_mass_matrix_HRZ_full(iele_filter_smp_stack,        &
+     &    nele_4_filter, iele_4_filter, num_int_points)
+      else
+        call int_grp_mass_matrix_diag(iele_filter_smp_stack,            &
+     &     nele_4_filter, iele_4_filter, num_int_points)
+      end if
+!
+      call cal_ff_smp_2_ml(ml, ml_o, ff_smp)
+!
+      end subroutine int_grped_mass_matrix_filter
+!
+!-----------------------------------------------------------------------
+!
+      end module int_mass_matrix_gen_filter

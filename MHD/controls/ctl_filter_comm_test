@@ -1,0 +1,7 @@
+begin filter_comm_test
+!
+  begin filter_filtes_ctl
+    filter_file_header      'filter/filter_node'
+  end
+!
+end

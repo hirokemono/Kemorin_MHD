@@ -1,0 +1,191 @@
+!set_control_platform_data.f90
+!      module set_control_platform_data
+!
+!        programmed by H.Matsui on Nov., 2009
+!
+!      subroutine turn_off_debug_flag_by_ctl(my_rank)
+!      subroutine set_control_smp_def
+!      subroutine set_control_mesh_def
+!      subroutine set_control_sph_mesh
+!      subroutine set_control_data_file_def
+!
+      module set_control_platform_data
+!
+      use m_precision
+!
+      use m_constants
+      use m_ctl_data_4_platforms
+!
+      implicit  none
+!
+! ----------------------------------------------------------------------
+!
+      contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine turn_off_debug_flag_by_ctl(my_rank)
+!
+      use m_machine_parameter
+!
+      integer(kind = kint), intent(in) :: my_rank
+!
+!
+      if(i_debug_flag_ctl .gt. 0) then
+        if     (debug_flag_ctl .eq. 'OFF'                               &
+     &     .or. debug_flag_ctl .eq. 'Off'                               &
+     &     .or. debug_flag_ctl .eq. 'off'                               &
+     &     .or. debug_flag_ctl .eq. '0') then
+          i_debug =     izero
+        else if(debug_flag_ctl .eq. 'ON'                                &
+     &     .or. debug_flag_ctl .eq. 'On'                                &
+     &     .or. debug_flag_ctl .eq. 'on'                                &
+     &     .or. debug_flag_ctl .eq. '1') then
+          i_debug =     ione
+        end if
+      end if
+!
+      if(my_rank .eq. 0) then
+        iflag_debug = i_debug
+      else
+        iflag_debug = izero
+      end if
+!
+      end subroutine turn_off_debug_flag_by_ctl
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_control_smp_def
+!
+      use m_machine_parameter
+!
+      integer, external :: omp_get_max_threads
+!
+!
+      if (i_num_smp .gt. 0) then
+        np_smp = num_smp_ctl
+      else
+        np_smp = ione
+      end if
+!
+#ifdef _OPENMP
+      if (np_smp .lt. omp_get_max_threads()) then
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &               'Number of SMP threads is chenged to', np_smp
+        call omp_set_num_threads(np_smp)
+      end if
+#endif
+!
+      end subroutine set_control_smp_def
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_control_mesh_def
+!
+      use m_read_mesh_data
+      use m_file_format_switch
+!
+!
+      if(i_mesh_extension .gt. 0) then
+        if    (mesh_extension_flags_ctl .eq. 'off'                      &
+     &    .or. mesh_extension_flags_ctl .eq. 'Off'                      &
+     &    .or. mesh_extension_flags_ctl .eq. 'OFF'                      &
+     &    .or. mesh_extension_flags_ctl .eq. '0') then
+          iflag_mesh_file_ext = 0
+        end if
+      end if
+!
+      if (i_mesh_header .gt. 0) then
+        mesh_file_head = mesh_file_head_ctl
+      else
+        mesh_file_head = def_mesh_file_head
+      end if
+!
+!   set data format
+!
+      call choose_file_format(mesh_file_fmt_ctl, i_mesh_file_fmt,       &
+     &          iflag_mesh_file_fmt)
+!
+      end subroutine set_control_mesh_def
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_control_sph_mesh
+!
+      use m_read_mesh_data
+      use m_node_id_spherical_IO
+      use m_field_data_IO
+      use m_file_format_switch
+!
+!
+      if(i_sph_mode_header .gt. 0) then
+        sph_rj_head = sph_mode_head_ctl
+      end if
+!
+      if(i_sph_rlm_header .gt. 0) then
+        sph_rlm_head = sph_lag_spec_head_ctl
+      end if
+!
+      if(i_sph_lag_header .gt. 0) then
+        sph_rtm_head = sph_lag_head_ctl
+      end if
+!
+      if(i_sph_grid_header .gt. 0) then
+        sph_rtp_head = sph_grid_head_ctl
+      end if
+!
+!   set data format
+!
+      call choose_file_format(sph_file_fmt_ctl, i_sph_files_fmt,        &
+     &    iflag_sph_file_fmt)
+      call choose_file_format(spectr_files_fmt_ctl, i_spect_files_fmt,  &
+     &    iflag_sph_spectr_fmt)
+!
+!   set file header at once
+!
+      if(i_sph_files_header .gt. 0) then
+        sph_head =       sph_files_head_ctl
+        mesh_file_head = sph_files_head_ctl
+        iflag_sph_file_ext =  1
+        iflag_mesh_file_ext = 1
+        iflag_mesh_file_fmt = iflag_sph_file_fmt
+      end if
+!
+      iflag_sph_spec_head = i_spectr_header
+      if(iflag_sph_spec_head .gt. 0) then
+        spectr_file_head = spectr_file_head_ctl
+      end if
+!
+      end subroutine set_control_sph_mesh
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_control_data_file_def
+!
+      use m_field_data_IO
+      use m_ucd_data
+      use m_field_file_format
+      use m_file_format_switch
+!
+!
+      if (i_rst_header .gt. 0) then
+        phys_file_head = rst_file_head_ctl
+      end if
+!
+      itype_ucd_data_file = i_udt_header
+      if (i_udt_header .gt. 0) then
+        ucd_header_name = udt_file_head_ctl
+      end if
+!
+!   set data format
+!
+      call choose_file_format(rst_files_fmt_ctl, i_rst_files_fmt,       &
+     &    iflag_field_data_fmt)
+      call choose_para_ucd_file_format(udt_file_fmt_ctl,                &
+     &    i_udt_files_fmt, itype_ucd_data_file)
+!
+      end subroutine set_control_data_file_def
+!
+! -----------------------------------------------------------------------
+!
+      end module set_control_platform_data

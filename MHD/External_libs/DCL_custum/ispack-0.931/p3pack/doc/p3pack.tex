@@ -1,0 +1,765 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (C) 2002 Keiichi Ishioka				       %
+% 								       %
+% この著作権表示が記載してあるならば, どのような媒体にでも何も手を加え %
+% ずに複写して再配付することを許可します. これらのドキュメントとその使 % 
+% 用許諾を他の言語に翻訳する際は, 以下の条件に従って下さい.	       %
+% 								       %
+% 他の言語に翻訳する際に, 他の言語での口語表現への変更の範囲を越えて故 %
+% 意に意味を変更しないこと.					       %
+%								       %
+% 翻訳した使用許諾には, それが翻訳であること, また原文の使用許諾が翻訳 %
+% 全体に依然適用されることを明示すること.			       %
+%								       %
+% ハイパーテキストの場合, 同一サイト上で原文のコピーを保守すること. ま %
+% た, 翻訳したハイパーテキストのページからその原文へのリンクを提供する %
+% こと.								       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%履歴 2002/03/15 石岡圭一 (version 0.0)
+%履歴 2002/03/31 石岡圭一 (version 0.1)
+%
+\documentclass[a4j,fleqn]{jarticle}
+
+\usepackage{amsmath,amssymb}
+\newcommand{\Lap}{\nabla^2}
+\newcommand{\re}{\mbox{Re}}
+\newcommand{\im}{\mbox{Im}}
+
+\title{P3PACK使用の手引 (version 0.1)}
+\author{石岡 圭一  (2002/03/31)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは, 周期境界条件を持つ3次元流体方程式を解くための, スペクトル(3次元
+フーリエ)変換を行なうサブルーチンパッケージであり, 3次元フーリエ展開の係
+数から格子点値, およびその逆の変換を行なうサブルーチン, また, 
+3次元非圧縮Euler流体方程式を解くためのサブルーチンなどからなっている. 
+また, このパッケージはFTPACKの上位パッケージであり, これらのパッケージ
+を内部で引用している.
+
+切断波数$L,M,N$のスペクトル逆変換は, 以下のように表せる:
+\begin{equation}
+g(x,y,z)=\sum^L_{l=-L}\sum^M_{m=-M}\sum^N_{m=-N}
+s_{lmn}e^{ilx}e^{imy}e^{inz}.
+\end{equation}
+
+$g(x,y,z)$が実数であるとすると, $s_{lmn}$
+は以下の関係を満たしている必要がある:
+\begin{equation}
+s_{(-l)(-m)(-n)}=s_{lmn}^{*}
+\end{equation}
+ここに, $\{ \}^{*}$は複素共役を表す.
+
+また, スペクトル正変換は以下のように表せる:
+\begin{equation}
+s_{lmn}=\frac1{(2\pi)^3}\int^{2\pi}_0\int^{2\pi}_0\int^{2\pi}_0
+g(x,y,z)e^{-ilx}e^{-imy}e^{-inz}dxdydz.
+\end{equation}
+
+数値計算においては, 上記の積分はそれぞれ離散近似される. フーリエ正変
+換の部分は等間隔格子点上での値を用いた離散フーリエ正変換
+(FTPACKマニュアルを参照)によって近似される.
+ある条件のもとでは, この近似は完全な近似, すなわちもとの積分と同じ
+値を与える.
+
+本ライブラリは, 
+スペクトルデータ($s_{lmn}$)
+$\to$ 格子点上のグリッドデータ($g(x_i,y_j,z_k)$) 
+の逆変換を行うルーチン,
+等間隔格子点上のグリッドデータ($g(x_i,y_j,z_k)$)
+$\to$ スペクトルデータ($s_{lmn}$) 
+の正変換を行うルーチン, 
+そして, その他の補助ルーチンおよび3次元非圧縮Euler流体方程式のための応用
+ルーチン群よりなっている.
+
+ここに, $x_i$は$[0,2\pi]$を$I$-分割した格子点の$x$座標であり,
+$x_i=(2\pi/I)\cdot i$;  $i=0,1,\cdots,I-1$である.
+$y_j$は$[0,2\pi]$を$J$-分割した格子点の$y$座標であり,
+$y_j=(2\pi/J)\cdot j$;  $j=0,1,\cdots,J-1$である.
+$z_k$は$[0,2\pi]$を$K$-分割した格子点の$z$座標であり,
+$z_k=(2\pi/K)\cdot k$;  $k=0,1,\cdots,K-1$である.
+
+以下のサブルーチンの説明において,
+\begin{center}
+\begin{tabular}{rl}
+{\tt LM}:& $x$方向の切断波数$L$\\
+{\tt MM}:& $y$方向の切断波数$M$\\
+{\tt NM}:& $z$方向の切断波数$N$\\
+{\tt IM}:& $x$方向の格子点数$I$\\
+{\tt JM}:& $y$方向の格子点数$J$\\
+{\tt KM}:& $z$方向の格子点数$K$
+\end{tabular}
+\end{center}
+なる対応関係がある. ここに, {\tt KM,LM,MM,IM,JM,KM}には以下のような制約があ
+る. また, {\tt LMNM} $=$ {\tt (2*NM+1)*(2*MM+1)*(2*LM+1)}
+と略記することにする.
+
+\begin{itemize}
+\item FFTを使うために, {\tt IM}, {\tt JM}および{\tt KM}は
+2,3,5で素因数分解される
+正の整数でなければならない. さらに, {\tt IM}は偶数でなければならない
+(これは, 実FFTを使うためである).
+
+\item {\tt IM}, {\tt JM}および{\tt KM}はそれぞれ, 
+{\tt IM} $>$ {\tt 2*LM}, {\tt JM} $>$ {\tt 2*MM}
+および{\tt KM} $>$ {\tt 2*NM}を満していなければ
+ならない.
+
+\item 3次元非圧縮Euler流体方程式のためのルーチン({\tt P3ELNL})で
+aliasingを除くためには, 
+{\tt IM} $>$ {\tt 3*LM}, {\tt JM} $>$ {\tt 3*MM}
+および{\tt KM} $>$ {\tt 3*NM}としなければならない.
+\end{itemize}
+
+{\tt P3PACK}において, スペクトルデータ($s_{lmn}$)は上に述べた制限をも
+とに, 独立な$(2L+1)(2M+1)(2N+1)$個の成分を以下のように配列
+{\tt S(-NM:NM,-MM:MM,-LM:LM)}に格納して扱う.
+
+以下$l=\mbox{\tt L}>0$, $m=\mbox{\tt M}>0$,
+$n=\mbox{\tt N}>0$として,
+\begin{center}
+\begin{tabular}{ll}
+{\tt S( N, M, L)}:& $s_{lmn}$の実部\\
+{\tt S(-N,-M,-L)}:& $s_{lmn}$の虚部\\
+{\tt S( N,-M, L)}:& $s_{l(-m)n}$の実部\\
+{\tt S(-N, M,-L)}:& $s_{l(-m)n}$の虚部\\
+{\tt S(-N, M, L)}:& $s_{lm(-n)}$の実部\\
+{\tt S( N,-M,-L)}:& $s_{lm(-n)}$の虚部\\
+{\tt S(-N,-M, L)}:& $s_{l(-m)(-n)}$の実部\\
+{\tt S( N, M,-L)}:& $s_{l(-m)(-n)}$の虚部\\
+{\tt S( 0, M, L)}:& $s_{lm0}$の実部\\
+{\tt S( 0,-M,-L)}:& $s_{lm0}$の虚部\\
+{\tt S( 0,-M, L)}:& $s_{l(-m)0}$の実部\\
+{\tt S( 0, M,-L)}:& $s_{l(-m)0}$の虚部\\
+{\tt S( N, 0, L)}:& $s_{l0n}$の実部\\
+{\tt S(-N, 0,-L)}:& $s_{l0n}$の虚部\\
+{\tt S(-N, 0, L)}:& $s_{l0(-n)}$の実部\\
+{\tt S( N, 0,-L)}:& $s_{l0(-n)}$の虚部\\
+{\tt S( N, M, 0)}:& $s_{0mn}$の実部\\
+{\tt S(-N,-M, 0)}:& $s_{0mn}$の虚部\\
+{\tt S(-N, M, 0)}:& $s_{0m(-n)}$の実部\\
+{\tt S( N,-M, 0)}:& $s_{0m(-n)}$の虚部\\
+{\tt S( 0, 0, L)}:& $s_{l00}$の実部\\
+{\tt S( 0, 0,-L)}:& $s_{l00}$の虚部\\
+{\tt S( 0, M, 0)}:& $s_{0m0}$の実部\\
+{\tt S( 0,-M, 0)}:& $s_{0m0}$の虚部\\
+{\tt S( N, 0, 0)}:& $s_{00n}$の実部\\
+{\tt S(-N, 0, 0)}:& $s_{00n}$の虚部\\
+{\tt S( 0, 0, 0)}:& $s_{000}$(実数)
+\end{tabular}
+\end{center}
+と格納されている.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+{\tt P3INIT} & 初期化\\
+{\tt P3S2GA} & スペクトルデータからグリッドデータへの変換\\
+{\tt P3G2SA} & グリッドデータからスペクトルデータへの変換\\
+{\tt P3ELNL} & 3次元非圧縮Euler流体の渦度方程式に従った時間変化率の計算\\
+{\tt P3CNSV} & 3次元非圧縮Euler流体の保存量の計算\\
+{\tt P3ESPT} & 3次元非圧縮Euler流体のエネルギースペクトルを計算する\\
+{\tt P3GETO} & 渦度ベクトルの展開係数を求める\\
+{\tt P3GETU} & 流速ベクトルの展開係数を求める
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンの説明}
+
+\subsection{P3INIT}
+
+\begin{enumerate}
+
+\item 機能 
+{\tt P3PACK}の初期化ルーチン. 
+{\tt P3PACK}の他のサブルーチンを使用する前に必ず一度呼ばねばならない.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+{\tt P3INIT(KM,JM,IM,ITK,TK,ITJ,TJ,ITI,TI)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt KM} & {\tt (I)} & 入力. $z$方向の格子点数\\
+{\tt JM} & {\tt (I)} & 入力. $y$方向の格子点数\\
+{\tt IM} & {\tt (I)} & 入力. $x$方向の格子点数\\
+{\tt ITK}  & {\tt (I(5))}    & 出力. P3PACKの他のルーチンで用いられる配列\\
+{\tt TK}   & {\tt (D(KM*2))} & 出力. P3PACKの他のルーチンで用いられる配列\\
+{\tt ITJ}  & {\tt (I(5))}    & 出力. P3PACKの他のルーチンで用いられる配列\\
+{\tt TJ}   & {\tt (D(JM*2))} & 出力. P3PACKの他のルーチンで用いられる配列\\
+{\tt ITI}  & {\tt (I(5))}    & 出力. P3PACKの他のルーチンで用いられる配列\\
+{\tt TI}   & {\tt (D(IM*2))} & 出力. P3PACKの他のルーチンで用いられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt P3PACK}を使用している間, 配列{\tt ITK,TK,ITJ,TJ,ITI,TI}
+の内容を変更してはならない.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{P3S2GA}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータへの変換を行う.
+
+\item 定義
+
+スペクトル逆変換(概要を参照)によりスペクトルデータ($s_{lmn}$)
+から格子点上のグリッドデータ($g(x_i,y_j,z_k)$)を求める.
+
+\item 呼び出し方法 
+
+{\tt P3S2GA(NM,MM,LM,KM,JM,IM,S,G,W,ITK,TK,ITJ,TJ,ITI,TI)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt NM} & {\tt (I)} & 入力. $z$方向の切断波数\\
+{\tt MM} & {\tt (I)} & 入力. $y$方向の切断波数\\
+{\tt LM} & {\tt (I)} & 入力. $x$方向の切断波数\\
+{\tt KM} & {\tt (I)} & 入力. $z$方向の格子点数\\
+{\tt JM} & {\tt (I)} & 入力. $y$方向の格子点数\\
+{\tt IM} & {\tt (I)} & 入力. $x$方向の格子点数\\
+{\tt S} & {\tt (D(LMNM))} & 
+                 入力. $s_{lmn}$が格納されている配列\\
+{\tt G} & {\tt (D(KM*JM*IM))} & 出力. $g(x_i,y_j,z_k)$が格納される配列\\
+{\tt W} & {\tt (D(KM*JM*IM))} & 作業領域\\
+{\tt ITK} & {\tt (I(5))} & 入力. P3INITで与えられる配列\\
+{\tt TK} & {\tt (D(KM*2))} & 入力. P3INITで与えられる配列\\
+{\tt ITJ} & {\tt (I(5))} & 入力. P3INITで与えられる配列\\
+{\tt TJ} & {\tt (D(JM*2))} & 入力. P3INITで与えられる配列\\
+{\tt ITI} & {\tt (I(5))} & 入力. P3INITで与えられる配列\\
+{\tt TI} & {\tt (D(IM*2))} & 入力. P3INITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt G(0:KM-1,0:JM-1,0:IM-1)}と宣言されている場合, {\tt G(K,J,I)}には
+    $g(x_i,y_j,z_k)$が格納される({\tt I,J,K}の順番に注意).
+    
+(b) 概要にも書いてあるように,
+{\tt LMNM} $=$ {\tt (2*NM+1)*(2*MM+1)*(2*LM+1)}と略記している.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{P3G2SA}
+
+\begin{enumerate}
+
+\item 機能 
+
+グリッドデータからスペクトルデータへの変換を行う.
+
+\item 定義
+
+スペクトル正変換(概要を参照)により格子点上のグリッドデータ
+($g(x_i,y_j,z_k)$)からスペクトルデータ($s_{lmn}$)を求める.
+
+\item 呼び出し方法 
+
+{\tt P3G2SA(NM,MM,LM,KM,JM,IM,G,S,W,ITK,TK,ITJ,TJ,ITI,TI)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt NM} & {\tt (I)} & 入力. $z$方向の切断波数\\
+{\tt MM} & {\tt (I)} & 入力. $y$方向の切断波数\\
+{\tt LM} & {\tt (I)} & 入力. $x$方向の切断波数\\
+{\tt KM} & {\tt (I)} & 入力. $z$方向の格子点数\\
+{\tt JM} & {\tt (I)} & 入力. $y$方向の格子点数\\
+{\tt IM} & {\tt (I)} & 入力. $x$方向の格子点数\\
+{\tt G} & {\tt (D(KM*JM*IM))} & 入力. $g(x_i,y_j,z_k)$が格納されている配列\\
+{\tt S} & {\tt (D(LMNM))} & 
+                 出力. $s_{lmn}$が格納される配列\\
+{\tt W} & {\tt (D(KM*JM*IM))} & 作業領域\\
+{\tt ITK} & {\tt (I(5))} & 入力. P3INITで与えられる配列\\
+{\tt TK} & {\tt (D(KM*2))} & 入力. P3INITで与えられる配列\\
+{\tt ITJ} & {\tt (I(5))} & 入力. P3INITで与えられる配列\\
+{\tt TJ} & {\tt (D(JM*2))} & 入力. P3INITで与えられる配列\\
+{\tt ITI} & {\tt (I(5))} & 入力. P3INITで与えられる配列\\
+{\tt TI} & {\tt (D(IM*2))} & 入力. P3INITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt P3G2SA}において, 入力{\tt G}は保存されない.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{P3ELNL}
+
+\begin{enumerate}
+
+\item 機能 
+
+3次元非圧縮Euler流体の渦度方程式に従った時間変化率を計算する.
+
+\item 定義
+
+3次元非圧縮Euler流体に対する渦度方程式は以下のように書ける.
+\[
+\frac{\partial\boldsymbol{\omega}}{\partial t}=
+\boldsymbol{\nabla}\times(\boldsymbol{u}\times\boldsymbol{\omega})
+\]
+ここに, $\boldsymbol{\omega}$および$\boldsymbol{u}$はそれぞれ
+渦度と流速のベクトルであり, 両者には
+\[
+\boldsymbol{\omega}=\boldsymbol{\nabla}\times\boldsymbol{u}
+\]
+なる関係がある. 両辺の回転をとって, 流れ場の非圧縮性
+\[
+\boldsymbol{\nabla}\cdot\boldsymbol{u}=0
+\]
+を考慮すると, 
+\[
+\boldsymbol{\nabla}\times\boldsymbol{\omega}
+=\boldsymbol{\nabla}\times(\boldsymbol{\nabla}\times\boldsymbol{u})
+=\boldsymbol{\nabla}(\boldsymbol{\nabla}\cdot\boldsymbol{u})
+ -\triangle\boldsymbol{u}
+=-\triangle\boldsymbol{u}
+\]
+が得られるので, 与えられた周期境界条件のもとで$\boldsymbol{\omega}$から
+$\boldsymbol{u}$を求めることができる.
+すなわち,
+$\boldsymbol{\omega}$および$\boldsymbol{u}$の波数空間での展開係数を
+$\hat{\boldsymbol{\omega}}_{lmn}$
+$\hat{\boldsymbol{u}}_{lmn}$
+と表すことにすれば, 
+\[
+(il,im,in)\times\hat{\boldsymbol{\omega}}_{lmn}
+=(l^2+m^2+n^2)\hat{\boldsymbol{u}}_{lmn}
+\]
+となるので, $l=m=n=0$以外の成分については
+$\hat{\boldsymbol{\omega}}_{lmn}$
+から
+$\hat{\boldsymbol{u}}_{lmn}$
+を求めることができる. $l=m=n=0$の平均流成分についてはこの式からは
+決まらないが, この成分についてはガリレイ変換の意味しかないので,
+$\hat{\boldsymbol{u}}_{000}=0$として扱うものとする.
+
+また, $\boldsymbol{\omega}$自体にも
+\[
+\boldsymbol{\nabla}\cdot\boldsymbol{\omega}=0
+\]
+なる性質があるので, $\boldsymbol{\omega}=(\omega_1,\omega_2,\omega_3)$
+の3成分は独立ではなく, その展開係数
+$((\hat{\omega}_1)_{lmn},(\hat{\omega}_2)_{lmn},(\hat{\omega}_3)_{lmn})$
+は
+\[
+l(\hat{\omega}_1)_{lmn}+m(\hat{\omega}_2)_{lmn}+n(\hat{\omega}_3)_{lmn}=0
+\]
+なる式を満していなければならない. そこで, 2つの変数
+$(\hat{\zeta}_1)_{lmn},(\hat{\zeta}_2)_{lmn}$を導入し,
+\begin{quote}
+\begin{description}
+\item[if] $l\neq 0$
+\[
+(\hat{\zeta}_1)_{lmn}=(\hat{\omega}_2)_{lmn},\quad
+(\hat{\zeta}_2)_{lmn}=(\hat{\omega}_3)_{lmn}
+\]
+\item[else if] $m\neq 0$
+\[
+(\hat{\zeta}_1)_{lmn}=(\hat{\omega}_3)_{lmn},\quad
+(\hat{\zeta}_2)_{lmn}=(\hat{\omega}_1)_{lmn}
+\]
+\item[else] 
+\[
+(\hat{\zeta}_1)_{lmn}=(\hat{\omega}_1)_{lmn},\quad
+(\hat{\zeta}_2)_{lmn}=(\hat{\omega}_2)_{lmn}
+\]
+\item[end if]
+
+\end{description}
+\end{quote}
+のように定義しておけば, 
+$((\hat{\omega}_1)_{lmn},(\hat{\omega}_2)_{lmn},(\hat{\omega}_3)_{lmn})$
+の各成分は$(\hat{\zeta}_1)_{lmn},(\hat{\zeta}_2)_{lmn}$から求められる.
+
+本サブルーチンは, 上記の$(\hat{\zeta}_1)_{lmn},(\hat{\zeta}_2)_{lmn}$
+を入力として,
+3次元非圧縮Euler流体に対する渦度方程式の右辺の
+切断波数$L,M,N$までのスペクトル展開係数
+\[
+\dot{\hat{\boldsymbol{\omega}}}_{lmn}
+=
+\frac1{(2\pi)^3}\int^{2\pi}_0\int^{2\pi}_0\int^{2\pi}_0
+\boldsymbol{\nabla}\times(\boldsymbol{u}\times\boldsymbol{\omega})
+    e^{-ilx}e^{-imy}e^{-inz}dxdydz.
+\]
+に対応して求まる
+$(\hat{\zeta}_1)_{lmn},(\hat{\zeta}_2)_{lmn}$の時間変化率
+$(\dot{\hat{\zeta}}_1)_{lmn},(\dot{\hat{\zeta}}_2)_{lmn}$
+を求めるものである.
+
+なお, 本サブルーチンでは, 
+\begin{eqnarray*}
+(\boldsymbol{u}\times\boldsymbol{\omega})_1
+&=&u_2\omega_3-u_3\omega_2 \\
+&=&u_2(\partial_1 u_2-\partial_2 u_1)-u_3(\partial_3 u_1-\partial_1 u_3) \\
+&=&\partial_1\frac12(u_2^2+u_3^2)-u_2\partial_2 u_1 -u_3\partial_3 u_1 \\
+&=&\partial_1\frac12(u_2^2+u_3^2)-\partial_2(u_1u_2)-\partial_3(u_3u_1)
+   +u_1(\partial_2(u_2)+\partial_3(u_3))\\
+&=&\partial_1\frac12(u_2^2+u_3^2)-\partial_2(u_1u_2)-\partial_3(u_3u_1)
+   -u_1\partial_1(u_1)\\
+&=&\partial_1\frac12(u_2^2+u_3^2-u_1^2)-\partial_2(u_1u_2)-\partial_3(u_3u_1)
+\end{eqnarray*}
+のように変形できることを用いて,
+\begin{eqnarray*}
+(\boldsymbol{\nabla}\times(\boldsymbol{u}\times\boldsymbol{\omega}))_1
+&=&\partial_2(\boldsymbol{u}\times\boldsymbol{\omega})_3
+  -\partial_3(\boldsymbol{u}\times\boldsymbol{\omega})_2\\
+&=&\partial_2
+\left(\partial_3\frac12(u_1^2+u_2^2-u_3^2)
+       -\partial_1(u_3u_1)-\partial_2(u_2u_3)\right)\\
+& & -\partial_3
+\left(\partial_2\frac12(u_3^2+u_1^2-u_2^2)
+       -\partial_3(u_2u_3)-\partial_1(u_1u_2)\right)\\
+&=&\partial_2\partial_3(u_2^2-u_3^2)
+   +(\partial_3^2-\partial_2^2)(u_2u_3)
+   +\partial_1\left(\partial_3(u_1u_2)-\partial_2(u_3u_1)\right)
+\end{eqnarray*}
+のようにして計算することにより, 必要なスペクトル変換の回数を8回
+(逆変換3回, 正変換5回)に減らしている.
+
+\item 呼び出し方法 
+
+{\tt P3ELNL(NM,MM,LM,KM,JM,IM,Z,DZ,WS,W,ITK,TK,ITJ,TJ,ITI,TI)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt NM} & {\tt (I)} & 入力. $z$方向の切断波数\\
+{\tt MM} & {\tt (I)} & 入力. $y$方向の切断波数\\
+{\tt LM} & {\tt (I)} & 入力. $x$方向の切断波数\\
+{\tt KM} & {\tt (I)} & 入力. $z$方向の格子点数\\
+{\tt JM} & {\tt (I)} & 入力. $y$方向の格子点数\\
+{\tt IM} & {\tt (I)} & 入力. $x$方向の格子点数\\
+{\tt Z} & {\tt (D(LMNM*2))} & 
+ 入力. $(\hat{\zeta}_1)_{lmn}$および$(\hat{\zeta}_2)_{lmn}$
+  が格納されている配列\\
+{\tt DZ} & {\tt (D(LMNM*2))} & 
+ 出力. $(\dot{\hat{\zeta}}_1)_{lmn}$および$(\dot{\hat{\zeta}}_1)_{lmn}$
+ が格納される配列\\
+{\tt WS} & {\tt (D(LMNM))} & 作業領域\\
+{\tt W} & {\tt (D(KM*JM*IM*4))} & 作業領域\\
+{\tt ITK} & {\tt (I(5))} & 入力. P3INITで与えられる配列\\
+{\tt TK} & {\tt (D(KM*2))} & 入力. P3INITで与えられる配列\\
+{\tt ITJ} & {\tt (I(5))} & 入力. P3INITで与えられる配列\\
+{\tt TJ} & {\tt (D(JM*2))} & 入力. P3INITで与えられる配列\\
+{\tt ITI} & {\tt (I(5))} & 入力. P3INITで与えられる配列\\
+{\tt TI} & {\tt (D(IM*2))} & 入力. P3INITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt Z(-NM:NM,-MM:MM,-LM:LM,2)}と宣言されている場合,
+    {\tt Z(N,M,L,1)}の方には$(\hat{\zeta}_1)_{lmn}$が,
+    {\tt Z(N,M,L,2)}の方には$(\hat{\zeta}_2)_{lmn}$が
+    格納されているものとして扱う.
+    
+    また, 
+    {\tt DZ(-NM:NM,-MM:MM,-LM:LM,2)}と宣言されている場合,
+    {\tt DZ(N,M,L,1)}の方には$(\dot{\hat{\zeta}}_1)_{lmn}$を,
+    {\tt DZ(N,M,L,2)}の方には$(\dot{\hat{\zeta}}_2)_{lmn}$を
+    格納する.
+        
+    スペクトルデータの格納法については概要を参照.
+
+(b) aliasingを除くために十分な{\tt KM}, {\tt JM}および{\tt IM}
+の大きさについては, 概要を参照.
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{P3CNSV}
+
+\begin{enumerate}
+
+\item 機能
+
+3次元非圧縮Euler流体の保存量を計算する.
+
+\item 定義
+
+{\tt P3ELNL}の項で導入した3次元非圧縮Euler流体の渦度方程式には
+以下のような保存量がある:
+\begin{itemize}
+\item エネルギー($E$):
+\begin{equation}
+E\equiv\left\langle\frac12|\boldsymbol{u}|^2\right\rangle,
+\end{equation}
+\item ヘリシティー($H$):
+\begin{equation}
+H\equiv\left\langle\boldsymbol{u}\cdot\boldsymbol{\omega}
+\right\rangle.
+\end{equation}
+\end{itemize}
+ここに, $\langle\ \rangle$は全領域平均を表す記号で,
+\begin{equation}
+\langle A\rangle\equiv\frac1{(2\pi)^3}\int^{2\pi}_0\int^{2\pi}_0\int^{2\pi}_0
+A dxdydz,
+\end{equation}
+である.
+
+本サブルーチンは,
+{\tt P3ELNL}の項で導入した
+$(\hat{\zeta}_1)_{lmn}$および$(\hat{\zeta}_2)_{lmn}$
+を入力として, 上記の保存量$E$および$H$を求めるものである.
+
+\item 呼び出し方法
+
+{\tt P3CNSV(NM,MM,LM,Z,E,H)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt NM} & {\tt (I)} & 入力. $z$方向の切断波数\\
+{\tt MM} & {\tt (I)} & 入力. $y$方向の切断波数\\
+{\tt LM} & {\tt (I)} & 入力. $x$方向の切断波数\\
+{\tt Z} & {\tt (D(LMNM*2))} &
+ 入力. $(\hat{\zeta}_1)_{lmn}$および$(\hat{\zeta}_2)_{lmn}$
+  が格納されている配列\\
+{\tt E} & {\tt (D)} & 出力. $E$の値\\
+{\tt H} & {\tt (D)} & 出力. $H$の値
+\end{tabular}
+
+\item 備考
+
+(a) {\tt Z}への$(\hat{\zeta}_1)_{lmn}$および$(\hat{\zeta}_2)_{lmn}$
+の格納方法については{\tt P3ELNL}の項を参照.
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{P3ESPT}
+
+\begin{enumerate}
+
+\item 機能
+
+3次元非圧縮Euler流体のエネルギースペクトルを計算する.
+
+\item 定義
+
+本サブルーチンは,
+{\tt P3CNSV}の項で導入したエネルギーの$[k-\frac12,k+\frac12)$なる
+波数成分からの寄与(エネルギースペクトル)$E_k(k)$を
+$k=1,2,\ldots,k_{\max}$の範囲で求めるものである. ここに, 
+$k=\sqrt{l^2+m^2+n^2}$としている.
+
+\item 呼び出し方法
+
+{\tt P3ESPT(NM,MM,LM,KMAX,Z,ES)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt NM} & {\tt (I)} & 入力. $z$方向の切断波数\\
+{\tt MM} & {\tt (I)} & 入力. $y$方向の切断波数\\
+{\tt LM} & {\tt (I)} & 入力. $x$方向の切断波数\\
+{\tt KMAX} & {\tt (I)} & 入力. エネルギースペクトルを求める波数の範囲(上記の
+$k_{\max}$)\\
+{\tt Z} & {\tt (D(LMNM*2))} &
+ 入力. $(\hat{\zeta}_1)_{lmn}$および$(\hat{\zeta}_2)_{lmn}$
+  が格納されている配列\\
+{\tt ES} & {\tt (D(KMAX))} & 出力. エネルギースペクトル(上記の$E_k(k)$
+が格納される配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt KMAX} $> \sqrt{\tt LM**2+MM**2+NM**2}-\frac12$ としておけば,
+配列{\tt ES}の値の総和は{\tt P3CNSV}で求められる{\tt E}の値に等しい.
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{P3GETO}
+
+\begin{enumerate}
+
+\item 機能
+
+渦度ベクトルの展開係数を求める.
+
+\item 定義
+
+{\tt P3ELNL}の項で導入した
+$(\hat{\zeta}_1)_{lmn}$および$(\hat{\zeta}_2)_{lmn}$
+から, 渦度ベクトル$\boldsymbol{\omega}=(\omega_1,\omega_2,\omega_3)$
+の展開係数
+$((\hat{\omega}_1)_{lmn},(\hat{\omega}_2)_{lmn},(\hat{\omega}_3)_{lmn})$
+は以下のように求められる.
+\begin{quote}
+\begin{description}
+\item[if] $l\neq 0$
+\begin{eqnarray*}
+(\hat{\omega}_1)_{lmn}&=&-(1/l)(m(\hat{\zeta}_1)_{lmn}+n(\hat{\zeta}_2)_{lmn}),\\
+(\hat{\omega}_2)_{lmn}&=&(\hat{\zeta}_1)_{lmn},\\
+(\hat{\omega}_3)_{lmn}&=&(\hat{\zeta}_2)_{lmn}
+\end{eqnarray*}
+\item[else if] $m\neq 0$
+\begin{eqnarray*}
+(\hat{\omega}_1)_{lmn}&=&(\hat{\zeta}_2)_{lmn},\\
+(\hat{\omega}_2)_{lmn}&=&-(n/m)(\hat{\zeta}_1)_{lmn}),\\
+(\hat{\omega}_3)_{lmn}&=&(\hat{\zeta}_1)_{lmn}
+\end{eqnarray*}
+\item[else]
+\begin{eqnarray*}
+(\hat{\omega}_1)_{lmn}&=&(\hat{\zeta}_1)_{lmn},\\
+(\hat{\omega}_2)_{lmn}&=&(\hat{\zeta}_2)_{lmn},\\
+(\hat{\omega}_3)_{lmn}&=&0
+\end{eqnarray*}
+
+\item[end if]
+
+\end{description}
+\end{quote}
+
+本サブルーチンは,
+$(\hat{\zeta}_1)_{lmn}$および$(\hat{\zeta}_2)_{lmn}$
+を入力として, $(\hat{\omega}_{\alpha})_{lmn}$ 
+(ただし$\alpha$は $1,2,3$のいずれか)
+を求めるものである.
+
+\item 呼び出し方法
+
+{\tt P3GETO(NM,MM,LM,Z,O,ISW)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt NM} & {\tt (I)} & 入力. $z$方向の切断波数\\
+{\tt MM} & {\tt (I)} & 入力. $y$方向の切断波数\\
+{\tt LM} & {\tt (I)} & 入力. $x$方向の切断波数\\
+{\tt Z} & {\tt (D(LMNM*2))} &
+ 入力. $(\hat{\zeta}_1)_{lmn}$および$(\hat{\zeta}_2)_{lmn}$
+  が格納されている配列\\
+{\tt O} & {\tt (D(LMNM))} &
+ 出力. $(\hat{\omega}_{\alpha})_{lmn}$
+  が格納る配列\\
+{\tt ISW} & {\tt (I)} & 入力. $(\hat{\omega}_{\alpha})_{lmn}$の添字$\alpha$
+($1,2,3$のいずれか)を指定する.
+\end{tabular}
+
+\item 備考
+
+(a) {\tt Z}への$(\hat{\zeta}_1)_{lmn}$および$(\hat{\zeta}_2)_{lmn}$
+の格納方法については{\tt P3ELNL}の項を参照.
+また, {\tt O}へのスペクトルデータの格納法については概要を参照.
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{P3GETU}
+
+\begin{enumerate}
+
+\item 機能
+
+流速ベクトルの展開係数を求める.
+
+\item 定義
+
+{\tt P3ELNL}の項で導入した
+$(\hat{\zeta}_1)_{lmn}$および$(\hat{\zeta}_2)_{lmn}$
+から, 流速ベクトル$\boldsymbol{u}=(u_1,u_2,u_3)$
+の展開係数
+$((\hat{u}_1)_{lmn},(\hat{u}_2)_{lmn},(\hat{u}_3)_{lmn})$
+は{\tt P3GETO}の項で示した式を参照すれば
+以下のように求められる.
+\begin{quote}
+\begin{description}
+\item[if] $l\neq 0$
+\begin{eqnarray*}
+(l^2+m^2+n^2)(\hat{u}_1)_{lmn}&=&
+im(\hat{\omega}_3)_{lmn}-in(\hat{\omega}_2)_{lmn}\\
+&=& -in(\hat{\zeta}_1)_{lmn}+im(\hat{\zeta}_2)_{lmn},\\
+(l^2+m^2+n^2)(\hat{u}_2)_{lmn}&=&
+in(\hat{\omega}_1)_{lmn}-il(\hat{\omega}_3)_{lmn}\\
+&=&-(i/l)(mn(\hat{\zeta}_1)_{lmn}
+                         +(l^2+n^2)(\hat{\zeta}_2)_{lmn}),\\
+(l^2+m^2+n^2)(\hat{u}_3)_{lmn}&=&
+il(\hat{\omega}_2)_{lmn}-im(\hat{\omega}_1)_{lmn}\\
+&=&(i/l)((l^2+m^2)(\hat{\zeta}_1)_{lmn}
+                         +mn(\hat{\zeta}_2)_{lmn})
+\end{eqnarray*}
+\item[else if] $m\neq 0$
+\begin{eqnarray*}
+(m^2+n^2)(\hat{u}_1)_{lmn}&=&(i/m)(m^2+n^2)(\hat{\zeta}_1)_{lmn},\\
+(m^2+n^2)(\hat{u}_2)_{lmn}&=&in(\hat{\zeta}_2)_{lmn},\\
+(m^2+n^2)(\hat{u}_3)_{lmn}&=&-im(\hat{\zeta}_2)_{lmn}
+\end{eqnarray*}
+\item[else] 
+\begin{eqnarray*}
+(n^2)(\hat{u}_1)_{lmn}&=&-in(\hat{\zeta}_2)_{lmn},\\
+(n^2)(\hat{u}_2)_{lmn}&=&in(\hat{\zeta}_1)_{lmn},\\
+(n^2)(\hat{u}_3)_{lmn}&=&0
+\end{eqnarray*}
+
+\item[end if]
+
+\end{description}
+\end{quote}
+
+本サブルーチンは,
+$(\hat{\zeta}_1)_{lmn}$および$(\hat{\zeta}_2)_{lmn}$
+を入力として, $(\hat{u}_{\alpha})_{lmn}$ (ただし$\alpha$は $1,2,3$のいずれか)
+を求めるものである.
+
+\item 呼び出し方法
+
+{\tt P3GETU(NM,MM,LM,Z,U,ISW)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt NM} & {\tt (I)} & 入力. $z$方向の切断波数\\
+{\tt MM} & {\tt (I)} & 入力. $y$方向の切断波数\\
+{\tt LM} & {\tt (I)} & 入力. $x$方向の切断波数\\
+{\tt Z} & {\tt (D(LMNM*2))} &
+ 入力. $(\hat{\zeta}_1)_{lmn}$および$(\hat{\zeta}_2)_{lmn}$
+  が格納されている配列\\
+{\tt U} & {\tt (D(LMNM))} &
+ 出力. $(\hat{u}_{\alpha})_{lmn}$
+  が格納される配列\\
+{\tt ISW} & {\tt (I)} & 入力. $(\hat{u}_{\alpha})_{lmn}$の添字$\alpha$
+($1,2,3$のいずれか)を指定する.
+\end{tabular}
+
+\item 備考
+
+(a) {\tt Z}への$(\hat{\zeta}_1)_{lmn}$および$(\hat{\zeta}_2)_{lmn}$
+の格納方法については{\tt P3ELNL}の項を参照.
+また, {\tt U}へのスペクトルデータの格納法については概要を参照.
+
+\end{enumerate}
+
+\end{document}

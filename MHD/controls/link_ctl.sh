@@ -1,0 +1,46 @@
+# [Kemo-MacBook-Pro:~/src_0323/MHD/controls] matsui% ls ../programs/*/*/*/ctl*
+ln -s ../programs/data_utilities/sph_spectr/sph_spectr/ctl_sph_transform
+ln -s ../programs/data_utilities/sph_spectr/zonal_spectr/ctl_fft
+ln -s ../programs/mesh_utilities/cubed_sphere/add_element_grp/ctl_add_ele_grp
+ln -s ../programs/mesh_utilities/cubed_sphere/cubed_sph_mesh/ctl_shell
+ln -s ../programs/mesh_utilities/cubed_sphere/cut_shell/ctl_cutshell
+ln -s ../programs/mesh_utilities/cubed_sphere/elipsoid/ctl_elipsoid
+ln -s ../programs/mesh_utilities/plane_model/correlation/ctl_correlate
+ln -s ../programs/mesh_utilities/plane_model/cubmesh/ctl_plane_mesh
+ln -s ../programs/mesh_utilities/plane_model/spectr/ctl_fft
+# [Kemo-MacBook-Pro:~/src_0323/MHD/controls] matsui% ls ../programs/*/*/ctl*
+ln -s ../programs/TESTS/comm_test/ctl_filter_comm_test
+ln -s ../programs/TESTS/comm_test/ctl_mesh
+ln -s ../programs/TESTS/mesh_test/ctl_mesh
+ln -s ../programs/TESTS/sph_grid_test/ctl_shell
+ln -s ../programs/TESTS/stracture_mesh_test/ctl_mesh
+ln -s ../programs/TESTS/test_MG/ctl_MG_test
+ln -s ../programs/TESTS/test_solver/ctl_solver_test
+ln -s ../programs/construct_filter/const_3d_filter/ctl_filter
+ln -s ../programs/construct_filter/const_3d_filter/ctl_new_domain_filter
+ln -s ../programs/construct_filter/const_3d_filter/ctl_sort_filter
+ln -s ../programs/construct_filter/const_z_filter/ctl_z_filter
+ln -s ../programs/data_utilities/PSF_utils/ctl_draw_pg
+ln -s ../programs/data_utilities/PSF_utils/ctl_draw_pg_grouped
+ln -s ../programs/data_utilities/PSF_utils/ctl_draw_pg_zplane
+ln -s ../programs/data_utilities/UDT_utils/ctl_ave_udt
+ln -s ../programs/data_utilities/UDT_utils/ctl_correlate_udt
+ln -s ../programs/data_utilities/UDT_utils/ctl_diff_udt
+ln -s ../programs/data_utilities/UDT_utils/ctl_prod_udt
+ln -s ../programs/data_utilities/UDT_utils/ctl_product_two_udt
+ln -s ../programs/data_utilities/marge/ctl_marge
+ln -s ../programs/mesh_utilities/partitioner/ctl_part
+ln -s ../programs/mesh_utilities/refiner/ctl_para_refine_table
+ln -s ../programs/mesh_utilities/refiner/ctl_refine
+ln -s ../programs/mesh_utilities/spherical_shell/ctl_shell
+# [Kemo-MacBook-Pro:~/src_0323/MHD/controls] matsui% ls ../programs/*/ctl* | more
+ln -s ../programs/FEM_MHD/ctl
+ln -s ../programs/SPH_MHD/ctl_sph_mhd
+ln -s ../programs/VIZ_only/ctl_fline
+ln -s ../programs/VIZ_only/ctl_iso
+ln -s ../programs/VIZ_only/ctl_psf
+ln -s ../programs/VIZ_only/ctl_pvr
+ln -s ../programs/VIZ_only/ctl_pvr_psf
+ln -s ../programs/VIZ_only/ctl_viz
+ln -s ../programs/interpolate/ctl_gen_table
+ln -s ../programs/interpolate/ctl_interpolate

@@ -1,0 +1,290 @@
+
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+# AC_PREREQ(2.61)
+AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
+
+dnl Include Fortran related definitions
+builtin(include,MHD/confdb/aclocal_fc.m4)
+
+dnl Include OpenMP related definitions
+builtin(include,MHD/confdb/ax_pthread.m4)
+builtin(include,MHD/confdb/ax_openmp.m4)
+
+dnl Include MPI related definitions
+# builtin(include,MHD/confdb/ax_check_libmpi.m4)
+builtin(include,MHD/confdb/ax_mpi.m4)
+
+dnl Include OpenGL Check related definitions
+builtin(include,MHD/confdb/ax_have_opengl.m4)
+#
+dnl Include zlib Check related definitions
+builtin(include,MHD/confdb/ax_check_zlib.m4)
+dnl Include pgplot Check related definitions
+builtin(include,MHD/confdb/ax_check_pgplot.m4)
+#
+dnl Include Aquaterm Check
+builtin(include,MHD/confdb/ax_check_aquaterm.m4)
+#
+dnl Include pkg-config Check
+builtin(include,MHD/confdb/pkg.m4)
+
+
+AC_CONFIG_SRCDIR([MHD/programs/SPH_MHD/main_sph_MHD.f90])
+# AC_CONFIG_HEADER([config.h])
+
+AC_ARG_ENABLE(cocoa,
+	[  --enable-cocoa          Use Cocoa framework],[USE_Cocoa='yes'],[USE_Cocoa='no'])
+AC_ARG_ENABLE(fftw3,
+	[  --enable-fftw3          Use fftw3 library],[USE_fftw3='yes'],[USE_fftw3='no'])
+AC_ARG_ENABLE(libpng,
+	[  --enable-libpng         Use libpng library],[USE_libpng='yes'],[USE_libpng='no'])
+AC_ARG_ENABLE(gl,
+	[  --enable-gl             Use OpenGL for viewer],[USE_gl='yes'],[USE_gl='no'])
+AC_ARG_ENABLE(glui,
+	[  --enable-glui           Use glui GUI framework],[USE_glui='yes'],[USE_glui='no'])
+AC_ARG_ENABLE(gtk,
+	[  --enable-gtk            Use gtk+ GUI framework],[USE_gtk='yes'],[USE_gtk='no'])
+
+AC_MSG_RESULT(enable_cocoa... "${USE_Cocoa}")
+AC_MSG_RESULT(enable_OpenGL.. "${USE_gl}")
+AC_MSG_RESULT(enable_glui...  "${USE_glui}")
+
+AC_MSG_RESULT(enable_fftw3... "${USE_fftw3}")
+AC_MSG_RESULT(enable_libpng..."${USE_libpng}")
+AC_MSG_RESULT(enable_gtk...   "${USE_gtk}")
+
+AC_MSG_RESULT(with_zlib...     "${with_zlib}")
+AC_MSG_RESULT(with_aquaterm... "${with_aquaterm}")
+AC_MSG_RESULT(with_pgplot...   "${with_pgplot}")
+
+# Checks for programs.
+AC_PROG_CC
+AC_PROG_FC
+
+if test -z ${AR}
+then
+	ar_bin="ar"
+else
+	ar_bin="${AR}"
+fi
+AC_SUBST(ar_bin)
+
+# AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+AC_PROG_RANLIB
+
+
+# Check MPI
+
+AC_LANG_SAVE
+AC_LANG(C)
+AX_MPI
+AC_SUBST(MPICC)
+AC_LANG_RESTORE
+
+AC_LANG_SAVE
+AC_LANG(Fortran)
+AX_MPI
+AC_SUBST(MPIFC)
+AC_LANG_RESTORE
+
+# AX_CHECK_LIBMPI
+AC_SUBST(MPIDIR)
+AC_SUBST(MPILIBS)
+AC_SUBST(MPIINCDIR)
+
+# AC_MSG_RESULT(MPIDIR..."${MPIDIR}")
+# AC_MSG_RESULT(MPIINCDIR..."${MPIINCDIR}")
+# AC_MSG_RESULT(MPILIBS..."${MPILIBS}")
+
+AC_LANG_SAVE
+AC_LANG(C)
+# Checks for OpenMP for C compiler
+AX_OPENMP
+AC_SUBST(OPENMP_CFLAGS)
+AC_LANG_RESTORE
+
+AC_LANG_SAVE
+AC_LANG(Fortran)
+# Checks for OpenMP for Fortran Compiler
+AX_OPENMP
+AC_SUBST(OPENMP_FCFLAGS)
+AC_LANG_RESTORE
+
+
+# libtool check
+PKG_PROG_PKG_CONFIG
+
+#
+#  Check subroutien name for Fortran-C connection
+# 
+enable_connect_to_c="no"
+if test ${USE_fftw3} = "yes"
+then
+  enable_connect_to_c="yes"
+fi
+if test ${USE_libpng} = "yes"
+then
+  enable_connect_to_c="yes"
+fi
+if test ${with_zlib} != "no"
+then
+  enable_connect_to_c="yes"
+fi
+AC_MSG_RESULT(enable_connect_to_c..."${enable_connect_to_c}")
+
+
+if test ${enable_connect_to_c} = "yes"
+then
+	PAC_PROG_FC_NAME_MANGLE
+	DFC_NAME_MANGLE="-D${FC_NAME_MANGLE}"
+	AC_SUBST(DFC_NAME_MANGLE)
+	AC_MSG_RESULT(DFC_NAME_MANGLE..."${DFC_NAME_MANGLE}")
+
+# Checks for header files.
+	AC_HEADER_STDC
+	AC_CHECK_HEADERS([stdlib.h string.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+	AC_HEADER_STDBOOL
+	AC_C_CONST
+
+# Checks for library functions.
+	AC_FUNC_MALLOC
+	AC_CHECK_FUNCS([floor memset sqrt strrchr strtol])
+
+# Check FFTW3
+	if test ${USE_fftw3} = "yes"
+	then
+		PKG_CHECK_MODULES([FFTW3], fftw3, have_fftw3=yes, AC_MSG_ERROR(Cannot find FFTW 3.x))
+		echo "have_fftw3=$have_fftw3"
+	fi
+	if test ${have_fftw3} = "yes"
+	then
+		PKGFLAGS_FFTW3="fftw3"
+	fi
+	AC_SUBST(PKGFLAGS_FFTW3)
+	AC_SUBST(FFTW3_CFLAGS)
+	AC_SUBST(FFTW3_LIBS)
+
+# Check zlib
+	AX_CHECK_ZLIB
+	ZLIB_CFLAGS="${CPPFLAGS}"
+	ZLIB_LIB="${LDFLAGS} ${LIBS}"
+	AC_SUBST(ZLIB_CFLAGS)
+	AC_SUBST(ZLIB_LIB)
+
+# Check libpng
+	if test ${USE_libpng} = "yes"
+	then
+	PKG_CHECK_MODULES([PNG], libpng, have_libpng=yes, AC_MSG_ERROR(Cannot find libpng))
+	echo "have_libpng=$have_libpng"
+	fi
+	if test ${have_libpng} = "yes"
+	then
+		PKGFLAGS_PNG="png"
+	else
+		PKGFLAGS_PNG=""
+		PNG_CFLAGS=""
+		PNG_LIBS=""
+	fi
+	AC_SUBST(PKGFLAGS_PNG)
+	AC_SUBST(PNG_CFLAGS)
+	AC_SUBST(PNG_LIBS)
+fi
+
+# Checks for Xwindow
+	AC_PATH_X
+	AC_PATH_XTRA
+	X_LIBS="${X_LIBS} -lX11"
+	AC_SUBST(X_LIBS)
+	AC_SUBST(X_CFLAGS)
+
+# Checks for Cocoa framework
+if test ${USE_Cocoa} = "yes"
+then
+	X_LIBS="-L/usr/X11/lib -lX11"
+	AC_SUBST(X_LIBS)
+	
+	USE_gl = "yes"
+	GL_LIBS="-framework GLUT -framework OpenGL  -framework Cocoa"
+	GL_INC="-I/usr/X11/include"
+	COCOA_FLAG="-D__APPLE__"
+# Check Aquaterm
+	LIBS=""
+	AX_CHECK_AQUATERM
+	AC_SUBST(HAVE_LIBAQUATERM)
+	AQUATERM_LIBS="-L${AQUATERM_HOME}/lib ${LIBS} -Wl,-framework -Wl,Foundation"
+	AC_MSG_RESULT(AQUATERM_LIBS: ${AQUATERM_LIBS})
+else
+	COCOA_FLAG=""
+# Checks for OpenGL
+	if test ${USE_gl} = "yes"
+	then
+		AX_HAVE_OPENGL
+		AC_SUBST(GL_CFLAGS)
+		AC_MSG_RESULT(GL_CFLAGS... "${GL_CFLAGS}")
+		AC_MSG_RESULT(CPPFLAGS... "${CPPFLAGS}")
+		GL_INC="${GL_CFLAGS} -I/usr/X11/include"
+	fi
+	AQUATERM_LIBS=""
+fi
+AC_SUBST(COCOA_FLAG)
+AC_SUBST(GL_LIBS)
+AC_SUBST(GL_INC)
+AC_SUBST(AQUATERM_LIBS)
+
+if test ${USE_gl} = "yes"
+then
+# Check GLUI
+	if test ${USE_glui} = "yes"
+	then
+		AC_PROG_CXX
+	else
+		CXX=""
+	fi
+	
+# Check GTK+2
+	if test ${USE_gtk} = "yes"
+	then
+		PKG_CHECK_MODULES([GTK2], gtk+-2.0, have_gtk=yes, AC_MSG_ERROR(Cannot find GTK+ 2.0))
+		echo "have_gtk=$have_gtk"
+	fi
+	
+	if test ${have_gtk} = "yes"
+	then
+		PKGFLAGS_GTK="gtk+-2.0"
+	else
+		PKGFLAGS_GTK=""
+	fi
+else
+	CXX=""
+	PKGFLAGS_GTK=""
+	GTK2_CFLAGS=""
+	GTK2_LIBS=""
+fi
+
+AC_SUBST(CXX)
+AC_SUBST(CXXFLAGS)
+
+AC_SUBST(PKGFLAGS_GTK)
+AC_SUBST(GTK2_CFLAGS)
+AC_SUBST(GTK2_LIBS)
+
+# Check pgplot for Fortran compiler
+LIBS="${PNG_LIBS} ${X_LIBS} ${AQUATERM_LIBS}"
+LDFLAGS=""
+AX_CHECK_PGPLOT
+AC_SUBST(HAVE_LIBPGPLOT)
+AC_MSG_RESULT(LIBS... "${LIBS}")
+if test -n "${LIBS}"
+	then
+	PGPLOT_LIBS="${LDFLAGS} ${LIBS}"
+fi
+AC_SUBST(PGPLOT_LIBS)
+
+
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT

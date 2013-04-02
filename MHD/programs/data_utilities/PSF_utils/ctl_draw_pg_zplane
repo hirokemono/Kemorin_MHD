@@ -1,0 +1,60 @@
+begin drawing_pgplot_ctl
+!
+!  component for plot
+!     contour_type_ctl: Line_and_Fill, Line, Filled
+!     color_mode_ctl:  rainbow, (yellow_green), grayscale
+  begin pgplot_param_ctl
+    num_panels_ctl     2
+    contour_type_ctl    Line
+    color_mode_ctl      Rainbow
+  end
+!
+  begin surf_plotting_ctl
+    psf_data_fmt_ctl    ucd
+    num_psf_data_ctl  2
+      psf_file_name  'aho1' 'dat/sf_bz_z980n'    1   end
+      psf_file_name  'aho2' 'dat/sf_wz_z980n'    1   end
+!
+!  component for plot
+!     scalar, magnitude, 'each component' for contour
+!     vector for vector map for parallel componenet
+!
+    array plot_field_ctl   2
+      plot_field_ctl  data   scalar  '\frmagnetic field'  end
+      plot_field_ctl  data   scalar  '\frvorticity'       end
+	end array
+!
+!  range for contour
+!     min, max, nline = 0, 0 ... use minimum and max in data
+    array contour_range_ctl    2
+      contour_range_ctl   1   20  -5.0e0   5.0e0    end
+      contour_range_ctl   2   10  -5.0e3   5.0e3    end
+	end array
+!
+!  normalize for vector
+!     xvec, yvec, vec_int ... reference size of vector
+    array vector_scale_ctl    0
+!      vector_scale_ctl    2    5   10.0e0    end
+!    end array
+  end
+!
+  begin time_step_ctl
+    i_step_init_ctl       660
+    i_step_number_ctl     662
+    i_step_psf_ctl        2
+!
+    dt_ctl              5.0e-5
+    time_init_ctl       0.0e-8
+  end
+!
+  begin z_plane_ctl
+    outer_radius_ctl    1.53846154
+    ro_ri_ratio_ctl     0.35
+    plane_size_ctl      1.0  1.0
+  end
+!
+  begin sphere_map_ctl
+    radial_ID_ctl            4
+  end
+!
+end

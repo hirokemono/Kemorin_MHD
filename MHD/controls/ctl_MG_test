@@ -1,0 +1,70 @@
+begin solver_test_ctl
+!
+  begin platform_ctl
+    num_subdomain_ctl        4
+    num_smp_ctl              1
+    mesh_file_head_ctl       'mesh/in'
+  end
+!
+  begin MG_grids_ctl
+    num_MG_level           2
+      begin MG_files_ctl
+        num_corse_domain     4
+        coarse_mesh_head     'mesh_coarse_1/in'
+        fine_2_coarse_head   'mesh_to_coarse1/table'
+        coarse_2_fine_head   'coarse1_to_mesh/table'
+      end
+!
+      begin MG_files_ctl
+        num_corse_domain     4
+        coarse_mesh_head     'mesh_coarse_2/in'
+        fine_2_coarse_head   'coarse1_to_coarse2/table'
+        coarse_2_fine_head   'coarse2_to_course1/table'
+      end
+  end
+end
+!
+!
+    matrix_file_header    "4pe_33/matIN"
+  solution_file_header    "solution"
+  num_smp_ctl           1
+  solver_type           blockNN
+!
+  begin solver_control
+    method_ctl            GPBiCG
+    precond_ctl           DIAG
+    itr_ctl               100000
+    eps_ctl               1.0e-20
+    sigma_ctl             1.0e0
+    sigma_diag_ctl        1.0e0
+!
+    begin multigrid_ctl
+      num_MG_level_ctl    3
+        begin MG_files_ctl
+          MG_num_domain_ctl       4
+          MG_mesh_head           'mesh/in.1'
+          MG_fine_2_coarse_head  'mesh/fine2coarse.1'
+          MG_coarse_2_fine_head  'mesh/course2fine.1'
+        end
+        begin MG_files_ctl
+          MG_num_domain_ctl       4
+          MG_mesh_head           'mesh/in.2'
+          MG_fine_2_coarse_head  'mesh/fine2coarse.2'
+          MG_coarse_2_fine_head  'mesh/course2fine.2'
+        end
+        begin MG_files_ctl
+          MG_num_domain_ctl       1
+          MG_mesh_head           'mesh/in.3'
+          MG_fine_2_coarse_head  'mesh/fine2coarse.3'
+          MG_coarse_2_fine_head  'mesh/course2fine.3'
+        end
+    end
+!
+  end
+!
+  begin DJDS_solver_ctl
+    order_method     MC_DJDS
+    min_color_ctl    2
+    mc_color_ctl     0
+  end
+end

@@ -1,0 +1,1573 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (C) 2009 Keiichi Ishioka				       %
+% 								       %
+% この著作権表示が記載してあるならば, どのような媒体にでも何も手を加え %
+% ずに複写して再配付することを許可します. これらのドキュメントとその使 % 
+% 用許諾を他の言語に翻訳する際は, 以下の条件に従って下さい.	       %
+% 								       %
+% 他の言語に翻訳する際に, 他の言語での口語表現への変更の範囲を越えて故 %
+% 意に意味を変更しないこと.					       %
+%								       %
+% 翻訳した使用許諾には, それが翻訳であること, また原文の使用許諾が翻訳 %
+% 全体に依然適用されることを明示すること.			       %
+%								       %
+% ハイパーテキストの場合, 同一サイト上で原文のコピーを保守すること. ま %
+% た, 翻訳したハイパーテキストのページからその原文へのリンクを提供する %
+% こと.								       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%履歴  2009/08/20 石岡圭一 (version 0.0)
+%      2009/12/28 石岡圭一 (version 0.1)
+%       誤植の修正(SJMS2G, SJMG2S, SJMSOG, SJMGOS の呼出し方法の中の 
+%                             Q と R の順番)
+%      2010/01/28 石岡圭一 (version 0.2)
+%       軸対称モデルに対応できるように, LJINIT等に加えた仕様変更の反映
+%       三角切断を前提としたプログラムにおける切断波数を MT と書くこと
+%       にして, MM と区別できるようにした.
+%       sjajcb を追加
+%       sjabnl を追加
+%       ljtszp を追加
+%
+\documentclass[a4j]{jarticle}
+
+\newcommand{\Lap}{\nabla^2}
+\newcommand{\re}{\mbox{Re}}
+\newcommand{\im}{\mbox{Im}}
+
+\title{(SJ/LJ)PACK使用の手引 (version 0.2)}
+\author{石岡 圭一  (2010/01/28)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは, スペクトル(球面調和関数)変換を行なうサブルーチンパッケージであ
+り, 球面調和関数展開の係数から格子点値, およびその逆の変換を行なうサブ
+ルーチン, また, その他の補助ルーチンなどからなっている. 
+また, このパッケージは FFTJ と BSPACK, LJPACK の上位パッケージであり, 
+これらのパッケージを内部で引用している.
+なお, 下位パッケージであるLJPACK(ルジャンドル変換パッケージ)はこのパッ
+ケージに内蔵されている. 通常, LJPACKのサブルーチンを陽に使用する必要は
+無いが, ルジャンドル変換だけを行いたいような場合にはそれだけでも独立し
+て使用できるようになっている.
+
+SJPACK は, SSE2命令を持つ Intel の(またはその互換の) CPU上での高速化を
+意図して設計されて
+いる. ただし, ベクトル化については特に意識していないため, ベクトル化を
+究極に追求した SNPACKに比べて, 特に切断波数が小さい場合にはベクトル計算
+機上での効率は劣っているかもしれない(作者は最近ベクトル計算機に全く
+触っていないので未確認だが).
+なお, SNPACKとは配列中のデータの並べ方や正規化の仕方が異っているので, 
+乗り換える場合は注意すること(詳細は SJNM2L の項を参照).
+
+球面調和関数の東西波数を$m$, 全波数を$n$とし, 切断波数をそれぞれ
+$M$, $N$とする(ただし, $N\ge M$ とする. $N=M$としたときが三角切断
+である). このとき, この切断波数におけるスペクトル逆変換は, 以下の
+ように表せる.
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^N_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+または, ルジャンドル逆変換:
+\begin{equation}
+G^m(\varphi)\equiv\sum^N_{n=|m|}s^m_nP^m_n(\sin\varphi)
+\end{equation}
+を導入すると、
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}G^m(\varphi)e^{im\lambda}
+\end{equation}
+と, ルジャンドル逆変換とフーリエ逆変換の積として表される.
+ここに, $\lambda$: 経度, $\varphi$: 緯度である.
+
+また, $P^m_n(\mu)$は2に正規化されたルジャンドル陪関数で, 以下のように
+定義される:
+\begin{equation}
+P^m_n(\mu)\equiv\sqrt{(2n+1)\frac{(n-|m|)!}{(n+|m|)!}}
+\frac1{2^nn!}(1-\mu^2)^{|m|/2}
+\frac{d^{n+|m|}}{d\mu^{n+|m|}}(\mu^2-1)^n,
+\end{equation}
+\begin{equation}
+\int^1_{-1}\{P^m_n(\mu)\}^2d\mu=2.
+\end{equation}
+
+$g(\lambda,\varphi)$が実数であるとすると, $s^m_n$および
+$G^m(\varphi)$は以下の関係を満たしている必要がある.
+\begin{equation}
+G^{-m}(\varphi)=\{G^m(\varphi)\}^{*}
+\end{equation}
+\begin{equation}
+s^{-m}_n=\{s^m_n\}^{*}
+\end{equation}
+ここに, $\{ \}^{*}$は複素共役を表す.
+従って, $G^m(\sin\varphi)$および$s^m_n$は$m\ge 0$の範囲だけを求めれば
+良い. さらに, 上の制約から, $G^0(\sin\varphi)$および$s^0_n$は実数である.
+
+また, スペクトル正変換は以下のように表せる.
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)P^m_n(\sin\varphi)e^{-im\lambda}\cos\varphi d\varphi
+d\lambda .
+\end{equation}
+逆変換の場合と同様に, フーリエ正変換を,
+\begin{equation}
+G^m(\varphi)\equiv\frac1{2\pi}\int^{2\pi}_0
+g(\lambda,\varphi)e^{-im\lambda}d\lambda
+\end{equation}
+と導入すると, 
+\begin{equation}
+s^m_n=\frac12\int^{\pi/2}_{-\pi/2}G^m(\varphi)P^m_n(\sin\varphi)\cos\varphi
+d\varphi
+\end{equation}
+と, フーリエ正変換とルジャンドル正変換の合成として表される.
+
+数値計算においては, 上記の積分はそれぞれ離散近似される. フーリエ正変
+換の部分は経度方向の等間隔格子点上での値を用いた離散フーリエ正変換
+によって近似し,
+ルジャンドル正変換の部分は, ガウス-ルジャンドル積分公式により,
+\begin{equation}
+s^m_n=\frac12\sum^J_{j=1}w_jG^m(\varphi_j)P^m_n(\sin\varphi_j)
+\end{equation}
+として近似する. ここに, $\varphi_j$はガウス緯度と呼ば
+れる分点で, ルジャンドル多項式$P_J(\sin\varphi)$ (ルジャンドル陪関数の
+定義式中で$m=0$とし, 正規化係数($\sqrt{\quad}$の部分)を無くしたもの)
+の$J$個の零点(を小さい方から順に並べた
+もの)であり, $w_j$は各分点に対応するガウシアンウェイトと呼ばれる重みで,
+\begin{equation}
+w_j\equiv\frac{2(1-\mu_j^2)}{\{JP_{J-1}(\mu_j)\}^2}
+\end{equation}
+で与えられる. ここに, $\mu_j\equiv\sin\varphi_j$である.
+ある条件のもとでは, この積分公式は完全な近似, すなわちもとの積分と同じ
+値を与える.
+
+本ライブラリは, 
+スペクトルデータ($s^m_n$) 
+$\to$ 格子点上のグリッドデータ($g(\lambda_i,\varphi_j)$) 
+の逆変換を行うルーチン群,
+等間隔格子点上のグリッドデータ($g(\lambda_i,\varphi_j)$) 
+$\to$ スペクトルデータ($s^m_n$) 
+の正変換を行うルーチン群,
+そして, その他の補助ルーチン群よりなっている.
+
+ここに, 格子点の経度$\lambda_i$は全周を等間隔に$I$-分割した経度で,
+$\lambda_i=2\pi i/I\quad (i=0,1,\ldots,I-1)$で(ここでの $i$は虚数
+単位ではないので注意),
+緯度$\varphi_j$は上述の$J$個のガウス緯度である.
+これらの格子点の座標値を与えるサブルーチンも別途用意してある.
+以下のサブルーチンの説明において,
+\begin{center}
+\begin{tabular}{ll}
+{\tt MM}:& $m$の切断波数$M$\\
+{\tt NN}:& $n$の切断波数$N$\\
+{\tt NM}:& 使いうる$N$の最大値\\
+{\tt MT}:& 三角切断を前提としたプログラムにおける切断波数\\
+{\tt JM}:& ガウス緯度の個数$J$\\
+{\tt IM}:& 東西格子点数$I$\\
+{\tt N}:& 全波数$n$\\
+{\tt M}:& 帯状波数$m$\\
+{\tt J}:& ガウス緯度の番号$j$\\
+{\tt I}:& 東西格子点の番号$i$
+\end{tabular}
+\end{center}
+なる対応関係がある.
+なお, 呼び出し方法の説明などは主にSJPACKのルーチンについて述べられてい
+る. それぞれのSJPACKの下位ルーチンであるLJPACKのルーチンについても同じ
+項で説明されているが, それぞれ, 引数の与えかた等が微妙に異なるので, 備
+考を参照されたい.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+{\tt SJINIT/LJINIT} & 初期化\\
+{\tt SJNM2L} & スペクトルデータの格納位置の計算\\
+{\tt SJL2NM} & {\tt SJNM2L}の逆演算\\
+{\tt SJTS2G/LJTSZG/LJTSWG} & スペクトルデータからグリッドデータへの変換\\
+{\tt SJTG2S/LJTGZS/LJTGWS} & グリッドデータからスペクトルデータへの変換\\
+{\tt SJMS2G/LJMSZG/LJMSWG} & スペクトルデータからグリッドデータへの変換
+(2変数同時)\\
+{\tt SJMG2S/LJMGZS/LJMGWS} & グリッドデータからスペクトルデータへの変換
+(2変数同時)\\
+{\tt LJTSZP} & スペクトルデータから両極の値への変換\\
+{\tt SJTSOG} & {\tt SJTS2G} の OpenMP並列化版\\
+{\tt SJTGOS} & {\tt SJTG2S} の OpenMP並列化版\\
+{\tt SJMSOG} & {\tt SJMS2G} の OpenMP並列化版\\
+{\tt SJMGOS} & {\tt SJMG2S} の OpenMP並列化版\\
+{\tt SJINIC/LJINIC} & {\tt SJCS2Y}, {\tt SJCY2S} 等で用いられる配列の初期化\\
+{\tt SJCS2Y/LJCSZY/LJCSWY} & 緯度微分を作用させた逆変換に対応する
+スペクトルデータの変換\\
+{\tt SJCY2S/LJCYZS/LJCYWS} & 緯度微分を作用させた正変換に対応する
+スペクトルデータの変換\\
+{\tt SJCS2X} & 経度微分に対応するスペクトルデータの変換\\
+{\tt SJINID} & {\tt SJCLAP} で用いられる配列の初期化\\
+{\tt SJCLAP} & スペクトルデータにラプラシアンを作用, またはその逆演算\\
+{\tt SJCRUP} & 三角切断($N=M$)のスペクトルデータから$N>M$のスペクトルデータ
+への詰め替え\\
+{\tt SJCRDN} & {\tt SJCRUP}の逆の操作 \\
+{\tt SJCN2J} & SNPACK のスペクトルデータから 
+ {\tt SJPACK} のスペクトルデータへの変換\\
+{\tt SJCJ2N} & SJPACK のスペクトルデータから 
+  SNPACK のスペクトルデータへの変換\\
+{\tt SJAJCB} & ヤコビアンの計算\\
+{\tt SJINIE} & {\tt SJABNL}で用いられる配列の初期化\\
+{\tt SJABNL} & 2次元非発散流体の渦度方程式の非線形項の計算
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンの説明}
+
+\subsection{SJINIT/LJINIT}
+
+\begin{enumerate}
+
+\item 機能
+{\tt (SJ/LJ)PACK}の初期化ルーチン.
+{\tt (SJ/LJ)PACK}の他のサブルーチンで使われる配列{\tt P, R, IT, T}
+の値を初期化する.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+{\tt SJINIT(MM,NM,JM,IM,P,R,IT,T)}\\
+{\tt LJINIT(MM,NM,JM,P,R)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. $m$の切断波数$M$\\
+{\tt NM} & {\tt (I)} & 入力. $n$の切断波数$N$の使いうる最大値\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt P}  & {\tt (D(JM/2*(MM+4)))} 
+      & 出力. SJ(LJ)PACKの他のルーチンで用いられる配列\\
+{\tt R}  & {\tt (D((MM+1)*(2*NM-MM-1)+1)} 
+      & 出力. SJ(LJ)PACKの他のルーチンで用いられる配列\\
+{\tt IT}  & {\tt (I(4))}    & 出力. SJPACKの他のルーチンで用いられる配列\\
+{\tt T}   & {\tt (D(IM*6))} & 出力. SJPACKの他のルーチンで用いられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt MM} は0以上の整数であること(軸対称モデルのように東西波数0成分しか
+     扱わない場合は, LJINIT において{\tt MM=0} と設定して良い.
+     また, 通常の三角切断の場合で, かつ緯度方向の微分演算(SJCS2Y等を参照)
+     を行う場合, 三角切断の切断波数を {\tt MT} とすると,
+     {\tt MM=MT},  {\tt NM=MT+1} と定めれば良い.
+     
+{\tt JM}は 2以上の偶数であること. さらに, ISPACKのインストール時に
+SSE2を有効にした場合は, 4の倍数にしなければならない.
+{\tt IM} は {\tt IM > 2*MM}を満し, かつ 2048以下の 2の羃乗でなければ
+ならない(FFTJを使うための制約).
+
+(b) {\tt SJPACK}を使用している間, 配列{\tt P,R,IT,T}
+({\tt LJPACK}については, 配列{\tt P,R})の内容を変更してはならない.
+
+(c) ISPACKのインストール時にSSE2を有効にした場合は, {\tt T}の
+先頭アドレスは16バイト境界に合っていなければならない.
+
+(d) {\tt P(JM/2,MM+4)}と宣言されている場合, 
+   {\tt P(J,1)}:  $\sin(\varphi_{J/2+j})$,
+   {\tt P(J,2)}:  $\frac12 w_{J/2+j}$, 
+   {\tt P(J,3)}:  $\cos(\varphi_{J/2+j})$,
+   {\tt P(J,4)}:  $1/\cos(\varphi_{J/2+j})$,
+が格納される.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJNM2L}
+
+\begin{enumerate}
+
+\item 機能 
+
+全波数と帯状波数からスペクトルデータの格納位置を計算する.
+
+\item 定義
+
+SJPACKにおいて, スペクトルデータ($s^m_n$)
+は概要に述べた制限をもとに, 独立な$(2N+1-M)M+N+1$個
+の成分をその長さの配列に格納して扱う.
+
+格納順は, 切断波数に依存してしまうが, 計算に便利なように
+以下のような順序になっている.
+\begin{eqnarray*}
+&& s^0_0, s^0_1, \ldots, s^0_N,\\
+&& \mbox{Re}(s^1_1), \mbox{Im}(s^1_1),
+\mbox{Re}(s^1_2), \mbox{Im}(s^1_2), \ldots, 
+\mbox{Re}(s^1_N), \mbox{Im}(s^1_N),\\
+&&\ldots,\\
+&& \mbox{Re}(s^M_M), \mbox{Im}(s^M_M), \ldots,
+\ldots \mbox{Re}(s^M_N), \mbox{Im}(s^M_N)\\
+\end{eqnarray*}
+このサブルーチンは, $s^m_n$の全波数$n$, および帯状波数$m$か
+ら$s^m_n$の配列中の格納位置を求めるものである.
+
+\item 呼び出し方法 
+    
+{\tt SJNM2L(NN,N,M,L)}
+  
+\item パラメーターの説明 
+
+\begin{tabular}{lll}
+{\tt NN} & {\tt (I)} & 入力. $n$の切断波数$N$\\
+{\tt N} & {\tt (I)} & 入力. 全波数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数(備考参照)\\
+{\tt L} & {\tt (I)} & 出力. スペクトルデータの格納位置
+\end{tabular}
+
+\item 備考
+
+{\tt M} $>$ 0 なら $m=$ {\tt M}, $n=$ {\tt N}として$\mbox{Re}(s^m_n)$の格納
+位置を, {\tt M} $<$ 0 なら $m=$ {\tt -M}, $n=$ {\tt N}として
+$\mbox{Im}(s^m_n)$の格納位置を返す.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJL2NM}
+
+\begin{enumerate}
+
+\item 機能 
+{\tt SJNM2L}の逆演算, すなわち, スペクトルデータの格納位置から全波数と
+帯状波数を求める.
+
+\item 定義
+
+{\tt SJNM2L}の項を参照
+
+\item 呼び出し方法 
+    
+{\tt SJL2NM(NN,L,N,M)}
+  
+\item パラメーターの説明 
+
+\begin{tabular}{lll}
+{\tt NN} & {\tt (I)} & 入力. $n$の切断波数$N$\\
+{\tt L} & {\tt (I)} & 入力. スペクトルデータの格納位置\\
+{\tt N} & {\tt (I)} & 出力. 全波数\\
+{\tt M} & {\tt (I)} & 出力. 帯状波数
+\end{tabular}
+
+\item 備考
+
+ {\tt M} の正負についての意味づけは{\tt SJNM2L}と同じである.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJTS2G/LJTSZG/LJTSWG}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータへの変換を行う.
+
+\item 定義
+
+スペクトル逆変換(概要を参照)によりスペクトルデータ($s^m_n$)
+から格子点上のグリッドデータ($g(\lambda_i,\varphi_j)$)を求める.
+
+\item 呼び出し方法 
+
+{\tt SJTS2G(MM,NM,NN,IM,JM,S,G,IT,T,P,Q,R,WS,WG,W,IPOW)}\\
+{\tt LJTSZG(NM,NN,JM,S,G,P,Q,R,WS,IPOW)}\\
+{\tt LJTSWG(NM,NN,JM,M,S,G,P,Q,R,WS,IPOW)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. $m$の切断波数\\
+{\tt NM} & {\tt (I)} & 入力. $n$の切断波数の最大値\\
+{\tt NN} & {\tt (I)} & 入力. $n$の切断波数
+({\tt MM}$\le${\tt NN}$\le${\tt NM}であること)\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数\\
+{\tt S} & {\tt (D((2*NN+1-MM)*MM+NN+1))} & 入力. $s^m_n$が格納されている配列\\
+{\tt G} & {\tt (D(JM*IM))} & 出力. $g(\lambda_i,\varphi_j)$が格納される配列\\
+{\tt P} & {\tt (D(JM/2*(MM+4)))} & 入力. SJ(LJ)INITで与えられる配列\\
+{\tt Q} & {\tt (D(JM/2*7))} & 作業領域\\
+{\tt R} & {\tt (D((MM+1)*(2*NM-MM-1)+1)} & 入力. SJ(LJ)INITで与えられる配列\\
+{\tt IT} & {\tt (I(4))} & 入力. SJINITで与えられる配列\\
+{\tt T} & {\tt (D(IM*6))} & 入力. SJINITで与えられる配列\\
+{\tt WS} & {\tt (D(2*(NN+1)))} & 作業領域\\
+{\tt WG} & {\tt (D((IM+2)*JM))} & 作業領域\\
+{\tt W} & {\tt (D((JM+1)*IM))} & 作業領域\\
+{\tt IPOW} & {\tt (I)} & 入力. 逆変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+(a) {\tt G(0:IM-1,JM)}と宣言されている場合, {\tt G(I,J)}には
+    $g(\lambda_i,\varphi_j)$が格納される.
+
+(b) {\tt LJTSZG}は帯状成分$m=0$についてルジャンドル逆変換の部分のみを行う.
+    この場合,
+    {\tt S(0:NN)}, {\tt G(JM)}と宣言してあれば, {\tt S(N)}, {\tt G(J)}
+    にはそれぞれ$s^0_n$, $G^0(\varphi_j)$(概要を参照)が対応する. 
+
+(c) {\tt LJTSWG}はある波成分$m>0$についてルジャンドル逆変換の部分のみを行う.
+    この場合,
+    {\tt S(2,M:NN)}, {\tt G(2,JM)}と宣言してあれば, 
+    {\tt S(1,N)}, {\tt S(2,N)}, {\tt G(1,J)}, {\tt G(2,J)}にはそれぞれ
+    $\re(s^m_n)$, $\im(s^m_n)$, $\re(G^m(\varphi_j))$, $\im(G^m(\varphi_j))$
+    (概要を参照)が対応する.
+    
+(d) ISPACKのインストール時にSSE2を有効にした場合は, {\tt G, Q, T, WG, W}
+の先頭アドレスは16バイト境界に合っていなければならない.
+
+(e) {\tt LJTSZG}においては, 作業領域{\tt Q}の大きさは
+    {\tt JM/2*5}でよい.
+
+(f) 作業領域{\tt WS}の大きさは, {\tt LJTSZG}においては, {\tt NN+1},
+    {\tt LJTSWG}では {\tt 2*(NN-M+1)}でよい.
+
+(g) {\tt IPOW}$=l$とすると, $g(\lambda_i,\varphi_j)$の
+    かわりに $(\cos\varphi_j)^{-l}g(\lambda_i,\varphi_j)$ が出力
+    される.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJTG2S/LJTGZS/LJTGWS}
+
+\begin{enumerate}
+
+\item 機能 
+
+グリッドデータからスペクトルデータへの変換を行う.
+
+\item 定義
+
+スペクトル正変換(概要を参照)により格子点上の
+グリッドデータ($g(\lambda_i,\varphi_j)$)
+からスペクトルデータ($s^m_n$)を求める.
+
+\item 呼び出し方法 
+
+{\tt SJTG2S(MM,NM,NN,IM,JM,S,G,IT,T,P,Q,R,WS,WG,W,IPOW)}\\
+{\tt LJTGZS(NM,NN,JM,S,G,P,Q,R,WS,IPOW)}\\
+{\tt LJTGWS(NM,NN,JM,M,S,G,P,Q,R,WS,IPOW)}
+  
+\item パラメーターの説明(殆んど SJTS2G の項と同じであるので,
+異なる部分のみについて記述する).
+
+\begin{tabular}{lll}
+{\tt S} & {\tt (D((2*NN+1-MM)*MM+NN+1))} & 出力 $s^m_n$が格納される配列\\
+{\tt G} & {\tt (D(JM*IM))} & 入力. $g(\lambda_i,\varphi_j)$が
+ 格納されている配列\\
+{\tt IPOW} & {\tt (I)} & 入力. 正変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+(a) {\tt G(0:IM-1,JM)}と宣言されている場合, {\tt G(I,J)}には
+    $g(\lambda_i,\varphi_j)$を格納すること.
+
+(b) {\tt LJTGZS}は帯状成分$m=0$についてルジャンドル正変換の部分のみを行う.
+    この場合,
+    {\tt S(0:NN)},{\tt G(JM)}と宣言してあれば, {\tt S(N)}, {\tt G(J)}
+    にはそれぞれ$s^0_n$, $G^0(\varphi_j)$(概要を参照)が対応する.
+
+(c) {\tt LJTGWS}はある波成分$m>0$についてルジャンドル正変換の部分のみを行う.
+    この場合,
+    {\tt S(2,M:NN)}, {\tt G(2,JM)}と宣言してあれば, 
+    {\tt S(1,N)}, {\tt S(2,N)}, {\tt G(1,J)}, {\tt G(2,J)}にはそれぞれ
+    $\re(s^m_n)$, $\im(s^m_n)$, $\re(G^m(\varphi_j))$, $\im(G^m(\varphi_j))$
+    (概要を参照)が対応する.
+    
+(d) {\tt IPOW}$=l$とすると, $g(\lambda_i,\varphi_j)$の
+    かわりに $(\cos\varphi_j)^{-l}g(\lambda_i,\varphi_j)$ が入力
+    になる. 
+   
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LJTSZP}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータから両極の値への変換を行う.
+
+\item 定義
+
+スペクトル逆変換(概要を参照)により波数0成分のスペクトルデータ
+($s^0_n$)から北極, 南極上のグリッドデータ $g_{\mbox{np}}$,
+$g_{\mbox{sp}}$ を求める.
+
+\item 呼び出し方法 
+
+{\tt LJTSZP(NN,S,GNP,GSP)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt NN} & {\tt (I)} & 入力. $n$の切断波数\\
+{\tt S} & {\tt (D(NN+1))} & 入力. $s^0_n$が格納されている配列\\
+{\tt GNP} & {\tt (D)} & 出力. $g_{\mbox{np}}$が格納される変数\\
+{\tt GSP} & {\tt (D)} & 出力. $g_{\mbox{sp}}$が格納される変数
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJMS2G/LJMSZG/LJMSWG}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータへの変換を行う(2変数同時)
+
+\item 定義
+
+スペクトル逆変換(概要を参照)により, 2つのスペクトルデータ
+$(s^m_n)_1$, $(s^m_n)_2$, からそれぞれに対応する
+格子点上のグリッドデータ$(g(\lambda_i,\varphi_j))_1$,
+$(g(\lambda_i,\varphi_j))_2$を同時に求める. SJTS2G を
+2回呼ぶよりも若干少ない時間(切断波数や処理系に依存するが,
+だいたい 1〜2割減程度)で計算できる.
+
+\item 呼び出し方法
+
+{\tt SJMS2G(MM,NM,NN,IM,JM,S1,S2,G1,G2,IT,T,P,Q,R,WS1,WS2,WG,W1,W2,IPOW)}\\
+{\tt LJMSZG(NM,NN,JM,S1,S2,G1,G2,P,Q,R,WS1,WS2,IPOW)}\\
+{\tt LJMSWG(NM,NN,JM,M,S1,S2,G1,G2,P,Q,R,WS1,WS2,IPOW)}
+  
+\item パラメーターの説明(殆んど SJTS2G の項と同じであるので,
+異なる部分のみについて記述する).
+
+\begin{tabular}{lll}
+{\tt S1} & {\tt (D((2*NN+1-MM)*MM+NN+1))} & 入力. $(s^m_n)_1$が格納されている配列\\
+{\tt S2} & {\tt (D((2*NN+1-MM)*MM+NN+1))} & 入力. $(s^m_n)_2$が格納されている配列\\
+{\tt G1} & {\tt (D(JM*IM))} & 出力. $(g(\lambda_i,\varphi_j))_1$が格納される配列\\
+{\tt G2} & {\tt (D(JM*IM))} & 出力. $(g(\lambda_i,\varphi_j))_2$が格納される配列\\
+{\tt Q} & {\tt (D(JM/2*11))} & 作業領域\\
+{\tt WS1} & {\tt (D(2*(NN+1)))} & 作業領域\\
+{\tt WS2} & {\tt (D(2*(NN+1)))} & 作業領域\\
+{\tt W1} & {\tt (D((JM+1)*IM))} & 作業領域\\
+{\tt W2} & {\tt (D((JM+1)*IM))} & 作業領域
+\end{tabular}
+
+\item 備考
+
+(a) ISPACKのインストール時にSSE2を有効にした場合は, 
+{\tt G1, G2, Q, T, WG, W1, W2}
+の先頭アドレスは16バイト境界に合っていなければならない.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJMG2S/LJMGZS/LJMGWS}
+
+\begin{enumerate}
+
+\item 機能 
+
+グリッドデータからスペクトルデータへの変換を行う(2変数同時)
+
+\item 定義
+
+スペクトル正変換(概要を参照)により, 2つのグリッドデータ$(g(\lambda_i,\varphi_j))_1$,
+$(g(\lambda_i,\varphi_j))_2$からそれぞれに対応する
+スペクトルデータ$(s^m_n)_1$, $(s^m_n)_2$ を同時に求める. SJTG2S を
+2回呼ぶよりも若干少ない時間(切断波数や処理系に依存するが,
+だいたい 1〜2割減程度)で計算できる.
+
+\item 呼び出し方法
+
+{\tt SJMG2S(MM,NM,NN,IM,JM,S1,S2,G1,G2,IT,T,P,Q,R,WS1,WS2,WG,W1,W2,IPOW)}\\
+{\tt LJMGZS(NM,NN,JM,S1,S2,G1,G2,P,Q,R,WS1,WS2,IPOW)}\\
+{\tt LJMGWS(NM,NN,JM,M,S1,S2,G1,G2,P,Q,R,WS1,WS2,IPOW)}
+  
+\item パラメーターの説明(殆んど SJMS2G の項と同じであるので,
+異なる部分のみについて記述する).
+
+\begin{tabular}{lll}
+{\tt S1} & {\tt (D((2*NN+1-MM)*MM+NN+1))} & 出力. $(s^m_n)_1$が格納される配列\\
+{\tt S2} & {\tt (D((2*NN+1-MM)*MM+NN+1))} & 出力. $(s^m_n)_2$が格納される配列\\
+{\tt G1} & {\tt (D(JM*IM))} & 入力. $(g(\lambda_i,\varphi_j))_1$が格納されている配列\\
+{\tt G2} & {\tt (D(JM*IM))} & 入力. $(g(\lambda_i,\varphi_j))_2$が格納されている配列
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJTSOG}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータへの変換を行う(SNTS2Gの
+OpenMP並列化版)
+
+\item 定義
+
+SJTS2G を OpenMP で並列化したものなので, 定義は SJTS2Gの項を参照.
+
+\item 呼び出し方法 
+
+{\tt SJTSOG(MM,NM,NN,IM,JM,S,G,IT,T,P,Q,R,WS,WG,W,IPOW)}
+
+\item パラメーターの説明(殆んど SJTS2G の項と同じであるので,
+異なる部分のみについて記述する).
+
+\begin{tabular}{lll}
+{\tt Q} & {\tt (D(JM/2*7*NT))} & 作業領域(NTは使いうる最大スレッド数)\\
+{\tt WS} & {\tt (D(2*(NN+1)*NT))} & 作業領域(NTは使いうる最大スレッド数)\\
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJTGOS}
+
+\begin{enumerate}
+
+\item 機能 
+
+グリッドデータからスペクトルデータへの変換を行う(SNTG2Sの
+OpenMP並列化版)
+
+\item 定義
+
+SJTG2S を OpenMP で並列化したものなので, 定義は SJTG2Sの項を参照.
+
+\item 呼び出し方法 
+
+{\tt SJTGOS(MM,NM,NN,IM,JM,S,G,IT,T,P,Q,R,WS,WG,W,IPOW)}
+  
+\item パラメーターの説明(殆んど SJTG2S の項と同じであるので,
+異なる部分のみについて記述する).
+
+\begin{tabular}{lll}
+{\tt Q} & {\tt (D(JM/2*7*NT))} & 作業領域(NTは使いうる最大スレッド数)\\
+{\tt WS} & {\tt (D(2*(NN+1)*NT))} & 作業領域(NTは使いうる最大スレッド数)\\
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJMSOG}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータへの変換を行う(2変数同時)
+(SJMS2G の OpenMP並列化版)
+
+\item 定義
+
+SJMS2G を OpenMP で並列化したものなので, 定義は SJMS2Gの項を参照.
+
+\item 呼び出し方法
+
+{\tt SJMSOG(MM,NM,NN,IM,JM,S1,S2,G1,G2,IT,T,P,Q,R,WS1,WS2,WG,W1,W2,IPOW)}
+  
+\item パラメーターの説明(殆んど SJMS2G の項と同じであるので,
+異なる部分のみについて記述する).
+
+\begin{tabular}{lll}
+{\tt Q} & {\tt (D(JM/2*11*NT))} & 作業領域(NTは使いうる最大スレッド数)\\
+{\tt WS1} & {\tt (D(2*(NN+1)*NT))} & 作業領域(NTは使いうる最大スレッド数)\\
+{\tt WS2} & {\tt (D(2*(NN+1)*NT))} & 作業領域(NTは使いうる最大スレッド数)
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJMGOS}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータへの変換を行う(2変数同時)
+(SJMG2S の OpenMP並列化版)
+
+\item 定義
+
+SJMG2S を OpenMP で並列化したものなので, 定義は SJMG2Sの項を参照.
+
+\item 呼び出し方法
+
+{\tt SJMGOS(MM,NM,NN,IM,JM,S1,S2,G1,G2,IT,T,P,Q,R,WS1,WS2,WG,W1,W2,IPOW)}
+  
+\item パラメーターの説明(殆んど SJMG2S の項と同じであるので,
+異なる部分のみについて記述する).
+
+\begin{tabular}{lll}
+{\tt Q} & {\tt (D(JM/2*11*NT))} & 作業領域(NTは使いうる最大スレッド数)\\
+{\tt WS1} & {\tt (D(2*(NN+1)*NT))} & 作業領域(NTは使いうる最大スレッド数)\\
+{\tt WS2} & {\tt (D(2*(NN+1)*NT))} & 作業領域(NTは使いうる最大スレッド数)
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJINIC/LJINIC}
+
+\begin{enumerate}
+
+\item 機能 
+
+SJCS2Y, SJCY2S 等で用いられる配列の{\tt C}の初期化.
+
+\item 定義
+
+SJCS2Y, SJCY2Sの項を参照.
+
+\item 呼び出し方法 
+
+{\tt SJINIC(MT,C)}\\
+{\tt LJINIC(MT,C)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MT} & {\tt (I)} & 入力. 三角切断の切断波数\\
+{\tt C} & {\tt (D(MT+1)*(MT+1))} & 出力. SJCS2Y, SJCY2S 等で用いられる配列
+\end{tabular}
+
+\item 備考
+
+(a) 軸対称モデル等において帯状成分の変換(LJCSZY, LJCYZS)だけが必要な場合は,
+    {\tt LJINIC}を用いれば良い.  この場合, 配列{\tt C}の大きさは
+    {\tt (2*MT+1)}で良い. なお, 軸対称モデルの場合, {\tt MT}は
+    単に $n$ 方向の切断波数の意味になる.
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJCS2Y/LJCSZY/LJCSWY}
+
+\begin{enumerate}
+
+\item 機能 
+
+緯度微分を作用させた逆変換に対応するスペクトルデータの変換を行う.
+
+\item 定義
+
+スペクトル逆変換(ただし, ここでは $N=M$の三角切断とする)が
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^M_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+と定義されているとき, $g$に$\cos\varphi\frac{\partial}{\partial\varphi}$
+を作用させた結果は
+\begin{equation}
+\cos\varphi\frac{\partial}{\partial\varphi}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{M+1}_{n=|m|}
+(s_y)^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+のように$n$方向の切断波数$N=M+1$のスペクトル逆変換で表せる. この
+サブルーチンは, $s^m_n$から$(s_y)^m_n$を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt SJCS2Y(MT,S,SY,C)}\\
+{\tt LJCSZY(MT,S,SY,C)}\\
+{\tt LJCSWY(MT,M,S,SY,C)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MT} & {\tt (I)} & 入力. 三角切断の切断波数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数\\
+{\tt S} & {\tt (D((MT+1)*(MT+1))} & 入力. $s^m_n$が格納されている配列\\
+{\tt SY} & {\tt (D((MT+4)*MT+2))} & 出力. $(s_y)^m_n$が格納される配列\\
+{\tt C} & {\tt (D(MT+1)*(MT+1))} & 入力. SJINICで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt SJCS2Y(MT,S,SY,C)} と 
+    {\tt SJTS2G(MT,NM,MT+1,IM,JM,SY,G,IT,T,P,Q,R,WS,WG,W,1)}
+    とを連続して CALL すれば, {\tt G}に緯度微分が返されることになる.
+
+(b) {\tt LJCSZY}は帯状成分$m=0$についての処理を行う.
+    この場合,
+    {\tt S(0:MT)}, {\tt SY(0:MT+1)}と宣言してあれば, {\tt S(N)}, {\tt SY(N)}
+    にはそれぞれ$s^0_n$, $(s_y)^0_n$が対応する.
+
+(c) {\tt LJCSWY}はある波成分$m>0$についての処理を行う.
+    この場合,
+    {\tt S(2,M:MT)}, {\tt SY(2,M:MT+1)}と宣言してあれば, 
+    {\tt S(1,N)}, {\tt S(2,N)}, {\tt SY(1,N)}, {\tt SY(2,N)}にはそれぞれ
+    $\re(s^m_n)$, $\im(s^m_n)$, $\re((s_y)^m_n)$, $\im((s_y)^m_n)$, 
+    が対応する.
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJCY2S/LJCYZS/LJCYWS}
+
+\begin{enumerate}
+
+\item 機能 
+
+緯度微分を作用させた正変換に対応するスペクトルデータの変換を行う.
+
+\item 定義
+
+以下のような変形されたスペクトル正変換
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)
+\left(-\cos\varphi\frac{\partial}{\partial\varphi}P^m_n(\sin\varphi)\right)
+e^{-im\lambda}\cos\varphi d\varphi
+d\lambda .
+\quad 
+\end{equation}
+(ただし, $m$, $n$ は切断波数 $M$ の三角切断の範囲とする)
+を計算したい場合(これは, ベクトル場の発散の計算などで現れる), 
+$g$の通常のスペクトル正変換
+\begin{equation}
+(s_y)^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)
+P^m_n(\sin\varphi)
+e^{-im\lambda}\cos\varphi d\varphi
+d\lambda .
+\quad (ただし, n の切断波数 N=M+1)
+\end{equation}
+の結果から$s^m_n$を求めることができる. 
+このサブルーチンは, $(s_y)^m_n$から$s^m_n$を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt SJCY2S(MT,SY,S,C)}\\
+{\tt LJCYZS(MT,SY,S,C)}\\
+{\tt LJCYWS(MT,M,SY,S,C)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MT} & {\tt (I)} & 入力. 三角切断の切断波数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数\\
+{\tt SY} & {\tt (D((MT+4)*MT+2))} & 入力. $(s_y)^m_n$が格納されている配列\\
+{\tt S} & {\tt (D((MT+1)*(MT+1))} & 出力. $s^m_n$が格納される配列\\
+{\tt C} & {\tt (D(MT+1)*(MT+1))} & 入力. SJINICで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt SJTG2S(MT,NM,MT+1,IM,JM,SY,G,IT,T,P,Q,R,WS,WG,W,1)} と
+    {\tt SJCY2S(MT,SY,S,C)} とを連続して CALL すれば,
+    ベクトル場の緯度方向成分の発散の正変換に相当する計算
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+\frac{\partial}{\cos\varphi\partial\varphi}
+\left(\cos\varphi g(\lambda,\varphi)\right)
+P^m_n(\sin\varphi)
+e^{-im\lambda}\cos\varphi d\varphi
+d\lambda .
+\end{equation}
+が行われ, {\tt S}に$s^m_n$が返されることになる
+(部分積分していることと, {\tt IPOW=1} としていることに注意).
+
+(b) {\tt LJCYZS}は帯状成分$m=0$についての処理を行う.
+    この場合,
+    {\tt S(0:MT)}, {\tt SY(0:MT+1)}と宣言してあれば, {\tt S(N)}, {\tt SY(N)}
+    にはそれぞれ$s^0_n$, $(s_y)^0_n$が対応する.
+
+(c) {\tt LJCYWS}はある波成分$m>0$についての処理を行う.
+    この場合,
+    {\tt S(2,M:MT)}, {\tt SY(2,M:MT+1)}と宣言してあれば, 
+    {\tt S(1,N)}, {\tt S(2,N)}, {\tt SY(1,N)}, {\tt SY(2,N)}にはそれぞれ
+    $\re(s^m_n)$, $\im(s^m_n)$, $\re((s_y)^m_n)$, $\im((s_y)^m_n)$, 
+    が対応する.
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJCS2X}
+
+\begin{enumerate}
+
+\item 機能 
+
+経度微分に対応するスペクトルデータの変換を行う.
+
+\item 定義
+
+スペクトル逆変換(ただし, ここでは $N=M$の三角切断とする)が
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^M_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+と定義されているとき, $g$に$\frac{\partial}{\partial\lambda}$
+を作用させた結果は
+\begin{equation}
+\frac{\partial}{\partial\lambda}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{M}_{n=|m|}
+(s_x)^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+のように表せる. ここに, $(s_x)^m_n=ims^m_n$ である.
+このサブルーチンは, $s^m_n$から$(s_x)^m_n=ims^m_n$を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt SJCS2X(MT,S,SX)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MT} & {\tt (I)} & 入力. 三角切断の切断波数\\
+{\tt S} & {\tt (D((MT+1)*(MT+1))} & 入力. $s^m_n$が格納されている配列\\
+{\tt SX} & {\tt (D((MT+1)*(MT+1))} & 出力. $(s_x)^m_n$が格納される配列
+\end{tabular}
+
+\item 備考
+
+(a) スペクトルデータ $(s_x)^m_n$ の並び順は $s^m_n$ と同じである.
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJINID}
+
+\begin{enumerate}
+
+\item 機能 
+
+SJCLAP で用いられる配列の{\tt D}の初期化.
+
+\item 定義
+
+SJCLAP の項を参照.
+
+\item 呼び出し方法 
+
+{\tt SJINID(MT,D)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MT} & {\tt (I)} & 入力. 三角切断の切断波数\\
+{\tt D} & {\tt (D(MT+1)*(MT+1)*2)} & 出力. SJCLAP で用いられる配列
+\end{tabular}
+
+\item 備考
+
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJCLAP}
+
+\begin{enumerate}
+
+\item 機能 
+スペクトルデータにラプラシアンを作用させる, またはその逆演算を行う.
+
+\item 定義
+
+球面調和関数展開(ただし, ここでは $N=M$の三角切断とする)
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{n=0}\sum^n_{m=-n}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+に対して、水平Laplacian
+\begin{equation}
+\nabla^2\equiv
+\frac{\partial^2}{\cos^2\varphi\partial\lambda^2}
++\frac{\partial}{\cos\varphi\partial\varphi}\left(\cos\varphi\frac{\partial}{\partial\varphi}\right)
+\end{equation}
+を作用させると, 球面調和関数の性質から, 
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}-n(n+1)a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+となる. そこで,
+\begin{equation}
+(s_l)^m_n\equiv -n(n+1)s^m_n
+\end{equation}
+を導入すると, 
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}(s_l)^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+と表せる. 
+また, 逆に
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}s^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+であるとき, 
+\begin{equation}
+(s_l)^m_n\equiv -\frac1{n(n+1)}s^m_n
+\end{equation}
+を導入すると, 
+\begin{equation}
+g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}(s_l)^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+と表せる. 
+
+本サブルーチンは,
+$s^m_n$から$(s_l)^m_n = -n(n+1)s^m_n$の計算, 
+またはその逆演算: $s^m_n$から$(s_l)^m_n = -s^m_n/(n(n+1))$, を
+行うものである. 
+
+\item 呼び出し方法 
+    
+{\tt SJCLAP(MT,S,SL,D,IFLAG)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MT} & {\tt (I)} & 入力. 三角切断の切断波数\\
+{\tt S} & {\tt (D((MT+1)*(MT+1)))} & 入力. $s^m_n$が格納されている配列\\
+{\tt SL} & {\tt (D((MT+1)*(MT+1)))} & 出力. $(s_l)^m_n$が格納される配列\\
+{\tt D} & {\tt (D((MT+1)*(MT+1)*2))} & 入力.
+	{\tt SJINID}で初期化された配列\\
+{\tt IFLAG} & {\tt (I)} & 入力. {\tt IFLAG=1}のときラプラシアンの演算を,
+{\tt IFLAG=2}のとき逆演算を行う.
+\end{tabular}
+
+\item 備考
+
+(a) {\tt IFLAG=2}の場合, $n=0$となる $(s_l)^0_0$ については
+$s^0_0$がそのまま代入される.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJCRUP}
+
+\begin{enumerate}
+
+\item 機能
+
+三角切断($N=M$)のスペクトルデータを
+$N>M$のスペクトルデータに詰め替える.
+
+\item 定義
+
+{\tt SJCS2Y}の出力結果と{\tt SJCS2X}の出力結果を合成したいことは
+しばしば生じるが, 両者は$n$方向の切断波数$N$が異なるスペクトルデータ
+であるため, そのまま足すことができない . 本サブルーチンは, そのような
+用途に応えるために,
+三角切断($N=M$)のスペクトルデータ($s^m_n$)から,
+$N>M$のスペクトルデータ($(s_r)^m_n$)への詰め替えを行うものである.
+なお, $(s_r)^m_n$の$n>M$の部分には$0$が代入される.
+
+\item 呼び出し方法 
+    
+{\tt SJCRUP(MT,NN,S,SR)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MT} & {\tt (I)} & 入力. 三角切断の切断波数\\
+{\tt NN} & {\tt (I)} & 入力. $n$の切断波数\\
+{\tt S} & {\tt (D((MT+1)*(MT+1)))} & 入力. $s^m_n$が格納されている配列\\
+{\tt SR} & {\tt (D((2*NN+1-MT)*MT+NN+1))} & 出力. $(s_r)^m_n$が格納される配列
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJCRDN}
+
+\begin{enumerate}
+
+\item 機能
+
+{\tt SJCRUP}の逆の操作, すなわち, $N>M$のスペクトルデータから
+三角切断($N=M$)のスペクトルデータへの詰め替えを行う.
+
+
+\item 定義
+
+本サブルーチンは, 
+$N>M$のスペクトルデータ($(s_r)^m_n$)から
+三角切断($N=M$)のスペクトルデータ($s^m_n$)
+への詰め替えを行うものである.
+なお, $(s_r)^m_n$の$n>M$の部分の情報は捨てられる.
+
+\item 呼び出し方法 
+    
+{\tt SJCRUP(MT,NN,S,SR)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MT} & {\tt (I)} & 入力. 三角切断の切断波数\\
+{\tt NN} & {\tt (I)} & 入力. $n$の切断波数\\
+{\tt SR} & {\tt (D((2*NN+1-MT)*MT+NN+1))} & 入力 $(s_r)^m_n$が格納されている配列
+\\
+{\tt S} & {\tt (D((MT+1)*(MT+1)))} & 出力. $s^m_n$が格納される配列
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJCN2J}
+
+\begin{enumerate}
+
+\item 機能 
+
+SNPACK のスペクトルデータから SJPACK のスペクトルデータへの変換を行う.
+
+\item 定義
+
+SNPACK と SJPACK ではスペクトルデータの正規化の仕方や格納順が違う.
+このサブルーチンは, SNPACKとの互換性のために,
+SNPACK のスペクトルデータから SJPACK のスペクトルデータへの変換を行う
+ものである.
+
+\item 呼び出し方法 
+
+{\tt SJCN2J(MT,SN,S)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MT} & {\tt (I)} & 入力. 三角切断の切断波数\\
+{\tt SN} & {\tt (D((MT+1)*(MT+1))} & 入力. SNPACK のスペクトルデータが
+格納されている配列\\
+{\tt S} & {\tt (D((MT+1)*(MT+1))} & 出力. 
+SJPACK のスペクトルデータが格納される配列
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJCJ2N}
+
+\begin{enumerate}
+
+\item 機能 
+
+SJPACK のスペクトルデータから SNPACK のスペクトルデータへの変換を行う.
+
+\item 定義
+
+SNPACK と SJPACK ではスペクトルデータの正規化の仕方や格納順が違う.
+このサブルーチンは, SNPACKとの互換性のために,
+SJPACK のスペクトルデータから SNPACK のスペクトルデータへの変換を行う
+ものである.
+
+\item 呼び出し方法 
+
+{\tt SJCJ2N(MT,S,SN)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MT} & {\tt (I)} & 入力. 三角切断の切断波数\\
+{\tt S} & {\tt (D((MT+1)*(MT+1))} & 入力. SJPACK のスペクトルデータが
+格納されている配列\\
+{\tt SN} & {\tt (D((MT+1)*(MT+1))} & 出力.
+SNPACK のスペクトルデータが格納される配列
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJAJCB}
+
+\begin{enumerate}
+
+\item 機能
+
+ ヤコビアンの計算を行う.
+
+\item 定義
+
+スペクトル展開された変数$a(\lambda,\varphi), b(\lambda,\varphi)$
+\begin{equation}
+a(\lambda,\varphi)\equiv\sum_{n=0}^M\sum_{m=-n}^n 
+a^m_n P^m_n(\sin\varphi) e^{im\lambda}
+\end{equation}
+\begin{equation}
+b(\lambda,\varphi)\equiv\sum_{n=0}^M\sum_{m=-n}^n
+b^m_n P^m_n(\sin\varphi) e^{im\lambda}
+\end{equation}
+に対して, ヤコビアン$J(a,b)$は
+\begin{equation}
+J(a,b)\equiv
+ \frac{\partial a}{\partial\lambda}\frac{\partial b}{\partial\mu}
+-\frac{\partial b}{\partial\lambda}\frac{\partial a}{\partial\mu}
+\end{equation}
+と定義される. ここに, $\mu\equiv\sin\varphi$である.
+本サブルーチンは、上記の$a^m_n, b^m_n$を入力として,
+$J(a,b)$の切断波数$M$までのスペクトル展開係数$c^m_n$
+\begin{equation}
+c^m_n\equiv\frac1{4\pi}\int^{2\pi}_0\int^1_{-1}J(a,b)P^m_n(\mu)
+e^{-im\lambda}d\mu d\lambda
+\end{equation}
+を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt SJAJCB(MT,NM,IM,JM,SA,SB,SC,IT,T,P,Q,R,C,SW1,SW2,G1,G2,G3,WS1,WS2,WG,W1,W2)}
+
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MT} & {\tt (I)} & 入力. 三角切断の切断波数\\
+{\tt NM} & {\tt (I)} & 入力. $n$の切断波数の最大値. 
+                        {\tt NM}$\ge${\tt MT+1}であること\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt SA} & {\tt (D((MT+1)*(MT+1)))} 
+& 入力. $a^m_n$が格納されている配列\\
+{\tt SB} & {\tt (D((MT+1)*(MT+1)))} 
+& 入力. $b^m_n$が格納されている配列\\
+{\tt SC} & {\tt (D((MT+1)*(MT+1)))} 
+& 出力. $c^m_n$が格納される配列\\
+{\tt IT} & {\tt (I(4))} & 入力. SJINITで与えられる配列\\
+{\tt T} & {\tt (D(IM*6))} & 入力. SJINITで与えられる配列\\
+{\tt P} & {\tt (D(JM/2*(MT+4)))} & 入力. SJINITで与えられる配列\\
+{\tt Q} & {\tt (D(JM/2*11))} & 作業領域\\
+{\tt R} & {\tt (D((MT+1)*(2*NM-MT-1)+1)} & 入力. SJINITで与えられる配列\\
+{\tt C} & {\tt (D(MT+1)*(MT+1))} & 入力. SJINICで与えられる配列\\
+{\tt G1} & {\tt (D(JM*IM))} & 作業領域\\
+{\tt G2} & {\tt (D(JM*IM))} & 作業領域\\
+{\tt G3} & {\tt (D(JM*IM))} & 作業領域\\
+{\tt SW1} & {\tt (D((MT+4)*MT+2))} & 作業領域\\
+{\tt SW2} & {\tt (D((MT+4)*MT+2))} & 作業領域\\
+{\tt WS1} & {\tt (D(2*(MT+2)))} & 作業領域\\
+{\tt WS2} & {\tt (D(2*(MT+2)))} & 作業領域\\
+{\tt WG} & {\tt (D((IM+2)*JM))} & 作業領域\\
+{\tt W1} & {\tt (D((JM+1)*IM))} & 作業領域\\
+{\tt W2} & {\tt (D((JM+1)*IM))} & 作業領域
+\end{tabular}
+
+\item 備考
+
+  \begin{itemize}
+  \item {\tt IT}, {\tt T}, {\tt P}, および{\tt R}は
+  {\tt SJINIT(MT,NM,JM,IM,P,R,IT,T)} (ただし, {\tt NM}$\ge${\tt MT+1})
+  によって初期化されている必要がある.
+  \item {\tt C}は{\tt SJINIC(MT,C)}によって初期化されている必要がある.
+  \item エリアジング誤差が出ないようにするためには,
+  {\tt IM}$\ge${\tt 3*MT+1}かつ{\tt JM}$\ge${\tt 3*MT/2.0}が満されている必要
+  がある.
+  \item 内部で SJMS2G, SJMG2S を利用しているので, 作業領域{\tt Q}
+  の大きさに注意すること.
+  \end{itemize}  
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJINIE}
+
+\begin{enumerate}
+
+\item 機能 
+
+SJABNL で用いられる配列の{\tt E}の初期化.
+
+\item 定義
+
+SJABNL の項を参照.
+
+\item 呼び出し方法 
+
+{\tt SJINIE(MT,E)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MT} & {\tt (I)} & 入力. 三角切断の切断波数\\
+{\tt E} & {\tt (D((5*MT*(MT+1)+4)/2))} & 出力. SJABNL で用いられる配列
+\end{tabular}
+
+\item 備考
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SJABNL}
+
+\begin{enumerate}
+
+\item 機能
+
+2次元非発散流体の渦度方程式に現れる非線形項を効率良く計算する.
+
+\item 定義
+
+スペクトル展開された変数$\psi(\lambda,\varphi)$,
+\begin{equation}
+\psi(\lambda,\varphi)\equiv\sum_{n=0}^M\sum_{m=-n}^n 
+s^m_n P^m_n(\sin\varphi) e^{im\lambda}
+\end{equation}
+に対して,  2次元非発散流体の渦度方程式に現れる非線形項
+$F(\lambda,\varphi)$は,
+\begin{equation}
+F(\lambda,\varphi)\equiv
+ \frac{\partial\psi}{\partial\lambda}\frac{\partial\nabla^2\psi}{\partial\mu}
+-\frac{\partial\nabla^2\psi}{\partial\lambda}\frac{\partial\psi}{\partial\mu}
+\end{equation}
+と定義される. ここに, $\mu\equiv\sin\varphi$, および
+\begin{equation}
+\nabla^2\equiv
+\frac{\partial^2}{\cos^2\varphi\partial\lambda^2}
++\frac{\partial}{\cos\varphi\partial\varphi}
+\left(\cos\varphi\frac{\partial}{\partial\varphi}\right)
+\end{equation}
+である.
+本サブルーチンは、上記の$s^m_n$を入力として,
+$F$の切断波数$M$までのスペクトル展開係数$f^m_n$
+\begin{equation}
+f^m_n\equiv\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+F(\lambda,\varphi)P^m_n(\sin\varphi)e^{-im\lambda}\cos\varphi d\varphi d\lambda
+\end{equation}
+を求めるものである. 以下の手法によって, SJAJCB を使う場合に比べて
+内部で呼ばれている球面調和関数変換の回数を5回から4回に抑えているので,
+相対的に約8割の計算時間で効率的に計算できる.
+
+手法:
+$u,v,\zeta$を
+\[
+u=-\sqrt{1-\mu^2}\frac{\partial\psi}{\partial\mu},
+\ v=\frac{1}{\sqrt{1-\mu^2}}\frac{\partial\psi}{\partial\lambda},
+\ \zeta=-\frac{\partial}{\partial\mu}\left(\sqrt{1-\mu^2}u\right)
++\frac{1}{\sqrt{1-\mu^2}}\frac{\partial v}{\partial\lambda}
+=\nabla^2\psi,
+\]
+と導入すると,
+\[
+\frac{\partial u}{\sqrt{1-\mu^2}\partial\lambda}+
+\frac{\partial}{\partial\mu}(\sqrt{1-\mu^2}v)
+=0
+\]
+であることに注意して,
+\begin{eqnarray*}
+F(\lambda,\varphi)
+&=&
+\frac{\partial}{\partial\mu}
+\left(\frac{\partial\psi}{\partial\lambda}\zeta\right)
+-\frac{\partial}{\partial\lambda}
+\left(\frac{\partial\psi}{\partial\mu}\zeta\right)\\
+&=&
+\frac{\partial}{\partial\mu}
+\left(\sqrt{1-\mu^2}v\zeta\right)
++\frac{\partial}{\partial\lambda}
+\left(\frac{u}{\sqrt{1-\mu^2}}\zeta\right)\\
+&=&
+\frac{\partial}{\partial\mu}
+\left(-\sqrt{1-\mu^2}v\frac{\partial}{\partial\mu}(\sqrt{1-\mu^2}u)
++v\frac{\partial v}{\partial\lambda}\right)
++\frac{\partial}{\partial\lambda}
+\left(-\frac{u}{\sqrt{1-\mu^2}}\frac{\partial}{\partial\mu}
+(\sqrt{1-\mu^2}u)+\frac{u}{1-\mu^2}
+\frac{\partial v}{\partial\lambda}
+\right)\\
+&=&
+\frac{\partial}{\partial\mu}
+\left(
+-\frac{\partial}{\partial\mu}(\sqrt{1-\mu^2}v \sqrt{1-\mu^2}u)
++\sqrt{1-\mu^2}u\frac{\partial}{\partial\mu}(\sqrt{1-\mu^2}v)
++v\frac{\partial v}{\partial\lambda}\right)\\
+& & +\frac{\partial}{\partial\lambda}
+\left(-\frac{u}{\sqrt{1-\mu^2}}\frac{\partial}{\partial\mu}
+(\sqrt{1-\mu^2}u)
++\frac{1}{1-\mu^2}\frac{\partial}{\partial\lambda}(uv)
+-\frac{1}{1-\mu^2}v\frac{\partial u}{\partial\lambda}
+\right)\\
+&=&
+\frac{\partial}{\partial\mu}
+\left(
+-\frac{\partial}{\partial\mu}((1-\mu^2)uv)
+-\sqrt{1-\mu^2}u\frac{\partial u}{\sqrt{1-\mu^2}\partial\lambda}
++v\frac{\partial v}{\partial\lambda}\right)\\
+& & +\frac{\partial}{\partial\lambda}
+\left(-\frac{u}{\sqrt{1-\mu^2}}\frac{\partial}{\partial\mu}
+(\sqrt{1-\mu^2}u)
++\frac{1}{1-\mu^2}\frac{\partial}{\partial\lambda}(uv)
++\frac{1}{\sqrt{1-\mu^2}}v
+\frac{\partial}{\partial\mu}(\sqrt{1-\mu^2}v)
+\right)\\
+&=&
+-\frac{\partial}{\partial\mu}
+\left(
+(1-\mu^2)\frac{\partial}{\partial\mu}(uv)
+-2\mu uv+\frac{\partial}{\partial\lambda}(\frac{u^2}2)
+-\frac{\partial}{\partial\lambda}(\frac{v^2}2)
+\right)\\
+& &
++\frac{\partial}{\partial\lambda}
+\left(
+-\frac{\partial}{\partial\mu}(\frac{u^2}2)
++\frac{\mu}{1-\mu^2}u^2
++\frac1{1-\mu^2}\frac{\partial}{\partial\lambda}(uv)
++\frac{\partial}{\partial\mu}(\frac{v^2}2)
+-\frac{\mu}{1-\mu^2}v^2
+\right)\\
+&=&
+-\frac{\partial}{\partial\mu}
+\left((1-\mu^2)\frac{\partial}{\partial\mu}(uv)\right)
++\frac{1}{1-\mu^2}
+\frac{\partial^2}{\partial\lambda^2}(uv)
++2\frac{\partial}{\partial\mu}(\mu uv)
++\frac{\partial^2}{\partial\lambda\partial\mu}(v^2-u^2)
+-\frac{\mu}{1-\mu^2}\frac{\partial}{\partial\lambda}(v^2-u^2)\\
+&=&
+-\nabla^2(uv)
++\frac{2}{1-\mu^2}
+\frac{\partial^2}{\partial\lambda^2}(uv)
++2\frac{\partial}{\partial\mu}(\mu uv)
++\frac{\partial^2}{\partial\lambda\partial\mu}(v^2-u^2)
+-\frac{\mu}{1-\mu^2}\frac{\partial}{\partial\lambda}(v^2-u^2)
+\end{eqnarray*}
+と変形できる. さて,
+\[
+\langle A,B\rangle=
+\frac1{4\pi}\int^{2\pi}_0\int^1_{-1}ABd\mu d\lambda
+\]
+とすると,
+\begin{eqnarray*}
+f^m_n
+&=& \langle F,P^m_ne^{-im\lambda}\rangle\\
+&=& \left\langle 
+-\nabla^2(uv)
++\frac{2}{1-\mu^2}
+\frac{\partial^2}{\partial\lambda^2}(uv)
++2\frac{\partial}{\partial\mu}(\mu uv)
++\frac{\partial^2}{\partial\lambda\partial\mu}(v^2-u^2)
+-\frac{\mu}{1-\mu^2}\frac{\partial}{\partial\lambda}(v^2-u^2)
+,P^m_ne^{-im\lambda}\right\rangle\\
+&=& n(n+1)\left\langle uv,P^m_ne^{-im\lambda}\right\rangle
+-2m^2\left\langle\frac{uv}{1-\mu^2},P^m_ne^{-im\lambda}\right\rangle
+-2\left\langle \mu uv,\frac{dP^m_n}{d\mu}e^{-im\lambda}\right\rangle\\
+& &
+-im\left\langle (v^2-u^2),\frac{dP^m_n}{d\mu}e^{-im\lambda}\right\rangle
+-im\left\langle \frac{\mu}{1-\mu^2}(v^2-u^2), P^m_n e^{-im\lambda}\right\rangle\\
+&=& n(n+1)\left\langle \frac{uv}{1-\mu^2},(1-\mu^2)P^m_ne^{-im\lambda}\right\rangle
+-2m^2\left\langle\frac{uv}{1-\mu^2},P^m_ne^{-im\lambda}\right\rangle
+-2\left\langle\frac{uv}{1-\mu^2},
+\mu(1-\mu^2)\frac{dP^m_n}{d\mu}e^{-im\lambda}\right\rangle\\
+& &
+-im\left\langle\frac{v^2-u^2}{1-\mu^2},(1-\mu^2)\frac{dP^m_n}{d\mu}e^{-im\lambda}\right\rangle
+-im\left\langle \frac{v^2-u^2}{1-\mu^2}, \mu P^m_n e^{-im\lambda}\right\rangle
+\end{eqnarray*}
+と変形できる. これから, 
+\[
+\frac{uv}{1-\mu^2},\ \frac{v^2-u^2}{1-\mu^2}
+\]
+の2つの正変換を求めればそこから$f^m_n$が誘導できる. この計算過程に必要な変換
+は, $u,v$の逆変換と, 上記の正変換で, 合計4回で済むことになる.
+
+\item 呼び出し方法 
+
+{\tt SJABNL(MT,NM,IM,JM,S,SOUT,IT,T,P,Q,R,C,E,SW1,SW2,%
+G1,G2,WS1,WS2,WG,W1,W2)}
+
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MT} & {\tt (I)} & 入力. 三角切断の切断波数\\
+{\tt NM} & {\tt (I)} & 入力. $n$の切断波数の最大値. 
+                        {\tt NM}$\ge${\tt MT+2}であること\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt S} & {\tt (D((MT+1)*(MT+1)))} 
+& 入力. $s^m_n$が格納されている配列\\
+{\tt SOUT} & {\tt (D((MT+1)*(MT+1)))} 
+& 出力. $f^m_n$が格納される配列\\
+{\tt IT} & {\tt (I(4))} & 入力. SJINITで与えられる配列\\
+{\tt T} & {\tt (D(IM*6))} & 入力. SJINITで与えられる配列\\
+{\tt P} & {\tt (D(JM/2*(MT+4)))} & 入力. SJINITで与えられる配列\\
+{\tt Q} & {\tt (D(JM/2*11))} & 作業領域\\
+{\tt R} & {\tt (D((MT+1)*(2*NM-MT-1)+1)} & 入力. SJINITで与えられる配列\\
+{\tt C} & {\tt (D(MT+1)*(MT+1))} & 入力. SJINICで与えられる配列\\
+{\tt E} & {\tt (D((5*MT*(MT+1)+4)/2))} & 入力. SJINIEで与えられる配列\\
+{\tt G1} & {\tt (D(JM*IM))} & 作業領域\\
+{\tt G2} & {\tt (D(JM*IM))} & 作業領域\\
+{\tt SW1} & {\tt (D((MT+6)*MT+3))} & 作業領域\\
+{\tt SW2} & {\tt (D((MT+6)*MT+3))} & 作業領域\\
+{\tt WS1} & {\tt (D(2*(MT+3)))} & 作業領域\\
+{\tt WS2} & {\tt (D(2*(MT+3)))} & 作業領域\\
+{\tt WG} & {\tt (D((IM+2)*JM))} & 作業領域\\
+{\tt W1} & {\tt (D((JM+1)*IM))} & 作業領域\\
+{\tt W2} & {\tt (D((JM+1)*IM))} & 作業領域
+\end{tabular}
+
+\item 備考
+
+  \begin{itemize}
+  \item {\tt IT}, {\tt T}, {\tt P}, および{\tt R}は
+  {\tt SJINIT(MT,NM,JM,IM,P,R,IT,T)} (ただし, {\tt NM}$\ge${\tt MT+2})
+  によって初期化されている必要がある.
+  \item {\tt C}は{\tt SJINIC(MT,C)}によって初期化されている必要がある.
+  \item {\tt E}は{\tt SJINIE(MT,E)}によって初期化されている必要がある.  
+  \item エリアジング誤差が出ないようにするためには,
+  {\tt IM}$\ge${\tt 3*MT+1}かつ{\tt JM}$\ge${\tt 3*MT/2.0}が満されている必要
+  がある.
+  \item 内部で SJMS2G, SJMG2S を利用しているので, 作業領域{\tt Q}
+  の大きさに注意すること.
+  \item SJAJCB と{\tt NM}の値や作業領域{\tt SW1}, {\tt SW2}, {\tt WS1}, 
+  {\tt WS2}の大きさが異なっていることに注意すること.
+  \end{itemize}  
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\end{document}

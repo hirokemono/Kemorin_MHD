@@ -1,0 +1,453 @@
+Settings for Makefiles
+
+#
+# -------------------------------------------------------------------------------
+# Intel mac with gfortran-openmpi (MacBook Pro with homebrew)
+# -------------------------------------------------------------------------------
+#
+# setenv PKG_CONFIG_PATH /Users/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig:/usr/local/lib/pkgconfig
+#
+#./configure --prefix='/Users/matsui/local' CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' \
+#  --enable-cocoa --enable-fftw3 --enable-gl --enable-glui --enable-gtk \
+#  --enable-libpng  --with-zlib=/Users/matsui/local \
+#  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/usr/local 
+#
+#
+#  directories of CALYPSO
+#
+SRCDIR = /Users/matsui/src_0323
+INSTDIR= /usr/local
+#
+MHDDIR = $(SRCDIR)/MHD
+MAKEDIR= $(SRCDIR)/work
+BUILDDIR= $(SRCDIR)/bin
+#
+# MPI settings
+#
+MPICHDIR =    
+MPICHLIBDIR = $(MPICHDIR)/lib
+MPICHBINDIR = $(MPICHDIR)/bin
+MPICHINCDIR = 
+MPILIBS =      
+#
+#    compilers
+#
+F90 = gfortran
+CC =  gcc
+CXX = g++
+
+F90_LOCAL = $(F90)
+
+MPIF90 = mpif90
+MPICC =  mpicc
+
+AR = ar
+RANLIB = ranlib
+
+#
+# FC_NAME_MANGLE definition for Fortran-C connection
+#    C routtine name mangle flag for Fortran connection
+#     -DFC_NAME_LOWER_USCORE, -DFC_NAME_UPPER, or -DFC_NAME_LOWER
+# FC_NAME_MANGLE -DWITH_FLAG is defined to use cocoa Framework
+#
+
+FC_NAME_MANGLE = -DFC_NAME_LOWER_USCORE
+COCOA_FLAG = -D__APPLE__
+
+#
+#  optimization
+#
+F90OPTFLAGS= -O -Wall -g   -fopenmp
+OPTFLAGS =   -O -Wall -g    
+CXXFLAGS =   -g -O2  
+#
+#   libpng and zlib settings
+#
+ZLIB_INC =  -I/Users/matsui/local/include
+ZLIB_LIB =  -L/Users/matsui/local/lib -lz 
+PNG_INC =   -I/Users/matsui/local/include
+PNG_LIB =   -L/Users/matsui/local/lib -lpng 
+#
+#   GLUT settings (Requirement: OpenGL, GLUT, libpng)
+#
+OPENGL_INC = -I/usr/X11/include
+OPENGL_LIBS= -framework GLUT -framework OpenGL  -framework Cocoa
+#
+#   PGPLOT settings (Requirement: pgplot, libpng)
+#
+PGPLOT_LIBS=  -L/Users/matsui/local/pgplot/lib -lpgplot  -L/Users/matsui/local/lib -lpng   -L/Users/matsui/local/lib -lz   -L/usr/X11/lib -R/usr/X11/lib -lX11 -L/usr/local/lib -laquaterm  -Wl,-framework -Wl,Foundation
+#
+#   GTK+ settings (Requirement: OpenGL, GLUT, libpng)
+GTK2_CFLAGS= -D_REENTRANT -I/usr/local/homebrew/Cellar/gtk+/2.24.10/include/gtk-2.0 -I/usr/local/homebrew/Cellar/gtk+/2.24.10/lib/gtk-2.0/include -I/usr/local/homebrew/Cellar/atk/2.4.0/include/atk-1.0 -I/usr/local/homebrew/Cellar/gdk-pixbuf/2.26.1/include/gdk-pixbuf-2.0 -I/usr/local/homebrew/Cellar/pango/1.30.0/include/pango-1.0 -I/usr/local/homebrew/Cellar/glib/2.32.1/include/glib-2.0 -I/usr/local/homebrew/Cellar/glib/2.32.1/lib/glib-2.0/include -I/usr/local/homebrew/Cellar/gettext/0.18.1.1/include -I/usr/local/homebrew/Cellar/pixman/0.24.4/include/pixman-1 -I/usr/X11/include/cairo -I/usr/X11/include -I/usr/X11/include/freetype2 -I/usr/X11/include/libpng15  
+GTK2_LIBS= -L/usr/local/homebrew/Cellar/gtk+/2.24.10/lib -L/usr/local/homebrew/Cellar/atk/2.4.0/lib -L/usr/local/homebrew/Cellar/gdk-pixbuf/2.26.1/lib -L/usr/local/homebrew/Cellar/glib/2.32.1/lib -L/usr/local/homebrew/Cellar/pango/1.30.0/lib -L/usr/local/homebrew/Cellar/gettext/0.18.1.1/lib -L/usr/X11/lib -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lglib-2.0 -lintl  
+#
+# -------------------------------------------------------------------------------
+# Intel mac with gfortran-openmpi (Macport)
+# -------------------------------------------------------------------------------
+#
+# setenv PKG_CONFIG_PATH /Users/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig:/opt/local/lib/pkgconfig
+#
+#./configure --prefix='/Users/matsui/local' CC=gcc-mp-4.7 FC=gfortran-mp-4.7 CXX=g++-mp-4.7 \
+#  MPICC=openmpicc MPIFC=openmpif90 \
+#  CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' \
+#  --enable-cocoa --disable-fftw3 --enable-gl --enable-glui --disable-gtk \
+#  --enable-libpng --with-zlib=/Users/matsui/local \
+#  --with-pgplot=/usr/local/pgplot --with-aquaterm=/opt/local
+#
+#  directories of CALYPSO
+#
+SRCDIR = /Users/matsui/src_0323
+INSTDIR= /usr/local
+#
+MHDDIR = $(SRCDIR)/MHD
+MAKEDIR= $(SRCDIR)/work
+BUILDDIR= $(SRCDIR)/bin
+#
+# MPI settings
+#
+MPICHDIR =    
+MPICHLIBDIR = $(MPICHDIR)/lib
+MPICHBINDIR = $(MPICHDIR)/bin
+MPICHINCDIR = 
+MPILIBS =      
+#
+#    compilers
+#
+F90 = gfortran-mp-4.4
+CC =  gcc-mp-4.4
+CXX = g++-mp-4.4
+
+F90_LOCAL = $(F90)
+
+MPIF90 = mpif90
+MPICC =  openmpicc
+
+AR = ar
+RANLIB = ranlib
+
+#
+# FC_NAME_MANGLE definition for Fortran-C connection
+#    C routtine name mangle flag for Fortran connection
+#     -DFC_NAME_LOWER_USCORE, -DFC_NAME_UPPER, or -DFC_NAME_LOWER
+# FC_NAME_MANGLE -DWITH_FLAG is defined to use cocoa Framework
+#
+
+FC_NAME_MANGLE = -DFC_NAME_LOWER_USCORE
+COCOA_FLAG = -D__APPLE__
+
+#
+#  optimization
+#
+F90OPTFLAGS= -O -Wall -g   -fopenmp
+OPTFLAGS =   -O -Wall -g    -fopenmp
+CXXFLAGS =   -g -O2  -fopenmp
+#
+#   libpng and zlib settings
+#
+ZLIB_INC =  -I/Users/matsui/local/include
+ZLIB_LIB =  -L/Users/matsui/local/lib -lz 
+PNG_INC =   -I/Users/matsui/local/include
+PNG_LIB =   -L/Users/matsui/local/lib -lpng 
+#
+#   GLUT settings (Requirement: OpenGL, GLUT, libpng)
+#
+OPENGL_INC = -I/usr/X11/include
+OPENGL_LIBS= -framework GLUT -framework OpenGL  -framework Cocoa
+#
+#   PGPLOT settings (Requirement: pgplot, libpng)
+#
+PGPLOT_LIBS=  -L/usr/local/pgplot/lib -lpgplot  -L/Users/matsui/local/lib -lpng   -L/Users/matsui/local/lib -lz   -L/usr/X11/lib -lX11 -L/opt/local/lib -laquaterm  -Wl,-framework -Wl,Foundation
+#
+#   GTK+ settings (Requirement: OpenGL, GLUT, libpng)
+GTK2_CFLAGS= 
+GTK2_LIBS= 
+#
+# -------------------------------------------------------------------------------
+# Intel cluster with Myrinet (Sirens)
+# -------------------------------------------------------------------------------
+#
+# setenv PKG_CONFIG_PATH /home/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig:/usr/local/lib/pkgconfig
+#
+#./configure  --prefix='/home/matsui/local' CC=icc FC=ifort CXX=icc AR=ar \
+#  MPICC=mpicc MPIFC=mpif90 PKG_CONFIG=/usr/bin/pkg-config \
+#  PKG_CONFIG_PATH='/usr/lib/pkgconfig:/usr/local/lib/pkgconfig' \
+#  CFLAGS='-O3  -Wall -g'  FCFLAGS='-O3 -warn all -g' \
+#  --disable-cocoa --enable-fftw3 --enable-gl --enable-glui --enable-gtk \
+#  --enable-libpng  --with-zlib=/home/matsui/local \
+#  --with-pgplot=/home/matsui/local/pgplot --without-aquaterm \
+#  PNG_CFLAGS='-I/home/matsui/local/include' PNG_LIBS='-L/home/matsui/local/lib -lpng'
+#
+#./configure  --prefix='/home/matsui/local' CC=icc FC=ifort CXX=icc AR="xiar" \
+#  MPICC=mpicc MPIFC=mpif90 PKG_CONFIG=/usr/bin/pkg-config \
+#  CFLAGS='-ipo -O3 -no-prec-div -xHost -Wall -g' \
+#  FCFLAGS='-ipo -O3 -no-prec-div -xHost -warn all -g' \
+#  --disable-cocoa --enable-gl --enable-glui --enable-gtk \
+#  --enable-libpng  --with-zlib=/home/matsui/local \
+#  --with-pgplot=/home/matsui/local/pgplot --without-aquaterm \
+#  PNG_CFLAGS='-I/home/matsui/local/include' PNG_LIBS='-L/home/matsui/local/lib -lpng'
+#
+#
+#  directories of CALYPSO
+#
+SRCDIR = /home/matsui/src_0323
+INSTDIR= /usr/local
+#
+MHDDIR = $(SRCDIR)/MHD
+MAKEDIR= $(SRCDIR)/work
+BUILDDIR= $(SRCDIR)/bin
+#
+# MPI settings
+#
+MPICHDIR =    
+MPICHLIBDIR = $(MPICHDIR)/lib
+MPICHBINDIR = $(MPICHDIR)/bin
+MPICHINCDIR = 
+MPILIBS =      
+#
+#    compilers
+#
+F90 = ifort
+CC =  icc
+CXX = icc
+
+F90_LOCAL = $(F90)
+
+MPIF90 = mpif90
+MPICC =  mpicc
+
+AR = xiar
+RANLIB = ranlib
+
+#
+# FC_NAME_MANGLE definition for Fortran-C connection
+#    C routtine name mangle flag for Fortran connection
+#     -DFC_NAME_LOWER_USCORE, -DFC_NAME_UPPER, or -DFC_NAME_LOWER
+# FC_NAME_MANGLE -DWITH_FLAG is defined to use cocoa Framework
+#
+
+FC_NAME_MANGLE = -DFC_NAME_LOWER_USCORE
+COCOA_FLAG =     
+
+#
+#  optimization
+#
+F90OPTFLAGS= -ipo -O3 -no-prec-div -xHost -warn all -g   -fopenmp
+OPTFLAGS =   -ipo -O3 -no-prec-div -xHost -Wall -g    -fopenmp
+CXXFLAGS =   -g -O2  -fopenmp
+#
+#   libpng and zlib settings
+#
+ZLIB_INC =  -I/home/matsui/local/include
+ZLIB_LIB =  -L/home/matsui/local/lib -lz 
+PNG_INC =   -I/home/matsui/local/include -I/home/matsui/local/include
+PNG_LIB =   -L/home/matsui/local/lib -lpng  -L/home/matsui/local/lib -lz 
+#
+#   GLUT settings (Requirement: OpenGL, GLUT, libpng)
+#
+OPENGL_INC =  -I/usr/X11/include
+OPENGL_LIBS= -lglut -lGLU -lGL  -lSM -lICE  -lX11 -lX11 -lXext -lXmu -lXt -lXi 
+#
+#   PGPLOT settings (Requirement: pgplot, libpng)
+#
+PGPLOT_LIBS=  -L/home/matsui/local/pgplot/lib -lpgplot  -L/home/matsui/local/lib
+ -lpng  -L/home/matsui/local/lib -lz   -L/home/matsui/local/lib -lz   -lX11 
+#
+#   GTK+ settings (Requirement: OpenGL, GLUT, libpng)
+GTK2_CFLAGS= -I/usr/include/gtk-2.0 -I/usr/lib64/gtk-2.0/include -I/usr/include/
+atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I
+/usr/lib64/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/libpng12  
+GTK2_LIBS= -L/lib64 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -
+lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0 
+
+
+# -------------------------------------------------------------------------------
+# Intel XEON cluster in Texas (stampede)
+# -------------------------------------------------------------------------------
+#
+./configure  --prefix='/home1/02179/matsui/local' CC=icc FC=ifort CXX=icc AR=xiar \
+  MPICC=mpicc MPIFC=mpif90 PKG_CONFIG=/usr/bin/pkg-config \
+  CFLAGS='-O3  -Wall -g -xhost' FCFLAGS='-O3 -warn all -g -xhost' \
+  --enable-fftw3 --enable-gl --enable-glui \
+  --enable-libpng  --with-zlib=/usr/lib64 \
+  --without-pgplot --without-aquaterm
+#
+#
+#
+# -------------------------------------------------------------------------------
+# SR16000 (NIPR:sr1)
+# -------------------------------------------------------------------------------
+#
+# setenv PKG_CONFIG_PATH /home0/matsui/local/lib/pkgconfig
+#
+#./configure --prefix='/home0/matsui/local' CC=cc FC=mpif90_r AR="ar -X64" RANLIB="ranlib -X64"\
+#  CFLAGS="-q64 -O" LIBS="-lm" \
+#  FCFLAGS="-64 -Oss -noifswpl -omp -pardiag=2 -autoinline=2 -model=L1" \
+#   MPICC=mpcc_r MPIFC=mpif90_r \
+#  --disable-cocoa --disable-fftw3 --disable-gl --disable-glui --disable-gtk \
+#  --with-mpi=/usr/lpp/ppe.poe \
+#  --enable-libpng --with-zlib=/home0/matsui/local \
+#  --without-opengl  --without-pgplot
+#
+#  directories of CALYPSO
+#
+HOMEDIR = /home0/matsui
+SRCDIR = $(HOMEDIR)/src_0323
+#
+MHDDIR = $(SRCDIR)/MHD
+MAKEDIR= $(SRCDIR)/work
+BUILDDIR= $(SRCDIR)/bin
+INSTDIR=   $(HOMEDIR)/local
+#
+# MPI settings
+#
+MPICHDIR = /usr/lpp/ppe.poe
+MPICHLIBDIR = $(MPICHDIR)/lib
+MPILIBS =
+MPICHBINDIR = $(MPICHDIR)/bin
+MPICHINCDIR = $(MPICHDIR)/include/thread64
+#
+#    compilers
+#
+F90 = fortran
+CC =  cc
+CXX =
+
+MPIF90 = mpif90_r
+MPICC = 
+
+AR = ar -X64
+RANLIB = ranlib -X64
+
+#
+# FORTRAN_C_CONNECT definition for Fortran-C connection
+#     -DCONNECT_TO_C ... connect fortran source to C subroutines
+#     -DFC_NAME_LOWER_USCORE, -DFC_NAME_UPPER, or -DFC_NAME_LOWER
+#     -DPNG_OUTPUT ... connect libpng for images
+#     (-DWITH_GLUT ...... generate binaries using OpenGL)
+#     (-DWITH_PGPLOT .... generate programs using PGPLOT)
+#
+FORTRAN_C_CONNECT = -DCONNECT_TO_C -DFC_NAME_UPPER -DPNG_OUTPUT
+#
+#  optimization
+#
+F90OPTFLAGS= -64 -Oss -noifswpl -omp -pardiag=2 -autoinline=2 -model=L1
+OPTFLAGS = -q64 -O -I/home0/matsui/local/include
+CXXFLAGS =
+#
+#   libpng and zlib settings
+#
+PNG_INC =  -I$(HOMEDIR)/local/include
+PNG_LIBS = -L$(HOMEDIR)/local/lib -lpng -lz -lm
+#
+#   GLUT settings (Requirement: OpenGL, GLUT, libpng)
+#
+OPENGL_INC =
+OPENGL_LIBS=
+#
+#   PGPLOT settings (Requirement: pgplot, libpng)
+#
+PGPLOT_LIBS=
+#
+#   GLUI settings (Requirement: OpenGL, GLUT, libpng)
+#
+GLUI_INC=
+#
+# -------------------------------------------------------------------------------
+# SX-9 (ISAS)
+# -------------------------------------------------------------------------------
+#
+#./configure CC=sxmpicc FC=sxmpif90 AR=sxar RANLIB=true \
+#  CFLAGS="-h multi,vector" \
+#  FCFLAGS="-Popenmp -pi line=200 nest=3 incdir -R5 -ftrace -Wf,'-pvctl loopcnt=500000'" \
+#   MPICC=sxmpicc MPIFC=sxmpif90 \
+#  --disable-cocoa --disable-gl --disable-glui --disable-gtk --disable-libpng \
+#  --with-mpi=/SX/usr --with-zlib=/home/m/m361/local --without-opengl  --without-pgplot
+#
+#
+#  SX-9 in ISAS
+#
+MPICHDIR = /SX/usr
+MPICHLIBDIR = $(MPICHDIR)/lib
+MPILIBS = -lfmpi  -lmpi
+MPICHBINDIR = $(MPICHDIR)/bin
+MPICHINCDIR = $(MPICHDIR)/include
+#
+F90 = $(MPICHBINDIR)/sxmpif90
+CC =  $(MPICHBINDIR)/sxmpicc
+CXX =
+
+MPIF90 = $(MPICHBINDIR)/sxmpif90
+MPICC = $(MPICHBINDIR)/sxmpicc
+
+AR = $(MPICHBINDIR)/sxar
+RANLIB = true
+#
+F90OPTFLAGS= -Popenmp -pi line=200 nest=3 incdir -R5 -ftrace -Wf,''-pvctl loopcnt=500000 nomatmul''
+OPTFLAGS = -h multi,vector
+CXXFLAGS =
+#
+# -------------------------------------------------------------------------------
+# Intel Linux with gfortran
+# -------------------------------------------------------------------------------
+#
+# setenv PKG_CONFIG_PATH /Users/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig:/usr/local/lib/pkgconfig
+#
+#./configure --prefix='/home/hrmatsui/local' CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' \
+#  --enable-fftw3 --enable-gl --enable-glui --enable-gtk \
+#  --enable-libpng  --with-zlib=/Users/matsui/local \
+#  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/usr/local 
+#
+
+# -------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
+#
+     older settings
+#
+# -------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
+#
+#
+#   Moon (cross compiler for the Earth Simulator)
+#
+MPICHDIR = /ES/opt/mpies/inst
+MPICHLIBDIR = $(MPICHDIR)/lib
+MPILIBS = -lfmpi -lmpi
+MPICHBINDIR = $(MPICHDIR)/bin
+MPICHINCDIR = $(MPICHDIR)/include
+#
+F90 = esf90
+CC =  cc
+CXX = 
+
+MPIF90 = esf90
+MPICC = $(MPICHBINDIR)/esmpicc
+
+AR = esar
+RANLIB = true
+#
+F90OPTFLAGS= -Popenmp -pi line=200 nest=3 -R5 -Wf,'-pvctl loopcont=4000000' -ftrace
+OPTFLAGS = -h multi,vector
+CXXFLAGS =
+
+#
+#  Earth Simulator
+#
+MPICHDIR = /usr
+MPICHLIBDIR = $(MPICHDIR)/lib
+MPILIBS = -lfmpi -lmpi
+MPICHBINDIR = $(MPICHDIR)/bin
+MPICHINCDIR = $(MPICHDIR)/include
+#
+F90 = esf90
+CC =  cc
+CXX =
+
+MPIF90 = mpif90
+MPICC = $(MPICHBINDIR)/mpicc
+
+AR = ar
+RANLIB = true
+#
+F90OPTFLAGS= -Popenmp -pi line=200 nest=3 -R5 -Wf,'-pvctl loopcont=4000000' -ftrace
+OPTFLAGS = -h multi,vector
+CXXFLAGS =

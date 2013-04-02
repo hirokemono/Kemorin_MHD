@@ -1,0 +1,109 @@
+!const_sph_boundary_temp.f90
+!      module const_sph_boundary_temp
+!
+!      programmed by H.Matsui on Sep. 2009
+!
+!      subroutine const_sph_temp_bc(igrp, l, m)
+!
+      module const_sph_boundary_temp
+!
+      use m_precision
+      use m_constants
+!
+      implicit none
+!
+      private :: set_sph_temp_bc
+!
+!-----------------------------------------------------------------------
+!
+      contains
+!
+!-----------------------------------------------------------------------
+!
+      subroutine const_sph_temp_bc
+!
+      use m_parallel_var_dof
+      use m_node_group
+      use m_ctl_params_test_bc_temp
+      use m_boundary_field_IO
+      use boundary_field_file_IO
+!
+      integer(kind = kint) :: igrp
+!
+!
+      do igrp = 1, num_bc
+        if(bc_name(igrp) .eq. grp_name_nod_bc) then
+          igrp_nod_bc = igrp
+          exit
+        end if
+      end do
+!
+!
+      num_bc_group_IO = ione
+      call allocate_num_bc_values
+!
+      bc_group_type_IO(1) = flag_nod_grp
+      bc_data_group_IO(1) = bc_name(igrp_nod_bc)
+      bc_field_type_IO(1) = 'temperature'
+!
+      istack_bc_data_IO(0) = 0
+      istack_bc_data_IO(1) = bc_istack(igrp_nod_bc)                     &
+     &                      - bc_istack(igrp_nod_bc-1)
+      ntot_boundary_field_IO = istack_bc_data_IO(1)
+      call allocate_boundary_values
+!
+      call set_sph_temp_bc(igrp_nod_bc, l_sph_bc, m_sph_bc,             &
+     &    ntot_boundary_field_IO, id_local_bc_fld_IO(1),                &
+     &    boundary_field_IO(1))
+!
+      call write_boundary_values_file(my_rank)
+!
+      end subroutine const_sph_temp_bc
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_sph_temp_bc(igrp, l, m, n_data, inod_bc, bc_temp)
+!
+      use m_geometry_parameter
+      use m_geometry_data
+      use m_node_group
+!
+      use m_schmidt_polynomial
+      use m_spherical_harmonics
+!
+      use spherical_harmonics
+!
+      integer(kind = kint), intent(in) :: igrp, l, m
+      integer(kind = kint), intent(in) :: n_data
+      integer(kind = kint), intent(inout) :: inod_bc(n_data)
+      real(kind = kreal), intent(inout) :: bc_temp(n_data)
+!
+      integer(kind = kint) :: j, ist, inum, num, inod
+!
+      nth = l
+      j = l*(l+1) + m
+      call allocate_schmidt_polynomial
+      call allocate_spherical_harmonics(nth)
+!
+      ist = bc_istack(igrp-1)
+      num = bc_istack(igrp  ) - bc_istack(igrp-1)
+      do inum = 1, num
+        inod = bc_item(ist+inum)
+        dth = colatitude(inod)
+        dph = longitude(inod)
+!
+        call dschmidt
+        call spheric
+!
+        inod_bc(inum) = inod
+        bc_temp(inum) = s(j,0)
+      end do
+!
+      call deallocate_schmidt_polynomial
+      call deallocate_spherical_harmonics
+!
+      end subroutine set_sph_temp_bc
+!
+!-----------------------------------------------------------------------
+!
+      end module const_sph_boundary_temp

@@ -1,0 +1,59 @@
+!
+begin const_z_filter
+  filter_file_header    filter_node_l.0
+  num_smp_ctl           1
+!
+!    num_node_ctl: number of node (x, y, z)
+!    length_unit_ctl: unit length (one or pi)
+!    domain_size_ctl: size of domain (x, y, z)
+!    horizontal_grid_ctl: horizontal grid type
+!       (equi_distance, half_Chebyshev, or Chebyshev)
+!
+  begin domain_param_ctl
+    nnod_plane_ctl         24     24     24
+!    ndomain_plane_ctl      1      1      1
+    unit_len_plane_ctl    one    one    one
+    plane_size_ctl      1.0e0  1.0e0  1.0e0
+    horizontal_grid_ctl   Chebyshev
+!    num_of_sleeve_ctl    2
+  end domain_param_ctl
+!
+!    intg_point_ctl:  number of integration points
+!
+  begin filter_control
+    num_int_points             6
+    num_element_4_filter_ctl   6
+    array horiz_filter_ctl           1
+      horiz_filter_ctl      Gaussian      2.0e0
+    end array horiz_filter_ctl
+!
+    array  ref_filter_ctl      2
+      ref_filter_ctl        Gaussian      2.0e0
+    end array ref_filter_ctl
+!
+    array  moments_ctl    5
+      moments_ctl    0    refered   1.0e0                           end
+      moments_ctl    1    refered   0.0e0                           end
+      moments_ctl    2    refered   1.33333333333333333333333d0     end
+      moments_ctl    3    refered   0.0e0                           end
+      moments_ctl    4    refered   0.0e0                           end
+    end array moments_ctl
+!
+    solver_type             blockNN
+    begin solver_control
+      method_ctl            GPBiCG
+      precond_ctl           DIAG
+      itr_ctl               100000
+      eps_ctl               1.0e-20
+      sigma_ctl             1.0e0
+      sigma_diag_ctl        1.0e0
+    end solver_control
+!
+    begin DJDS_solver_ctl
+      order_method     MC_DJDS
+      min_color_ctl    2
+      mc_color_ctl     0
+    end DJDS_solver_ctl
+  end filter_control
+!
+end const_z_filter

@@ -1,0 +1,159 @@
+This is pTeX, Version 3.141592-p3.1.10 (sjis) (Web2C 7.5.4) (format=platex 2009.8.28)  26 MAY 2012 09:38
+**snpack.tex
+(./snpack.tex
+pLaTeX2e <2006/11/10>+0 (based on LaTeX2e <2003/12/01> patch level 0)
+(/Applications/pTeX.app/teTeX/share/texmf/ptex/platex/base/jarticle.cls
+Document Class: jarticle 2006/06/27 v1.6 Standard pLaTeX class
+\c@@paper=\count81
+(/Applications/pTeX.app/teTeX/share/texmf-dist/tex/latex/base/fleqn.clo
+File: fleqn.clo 1998/08/17 v1.1c Standard LaTeX option (flush left equations)
+\mathindent=\dimen118
+)
+(/Applications/pTeX.app/teTeX/share/texmf/ptex/platex/base/jsize10.clo
+File: jsize10.clo 2006/06/27 v1.6 Standard pLaTeX file (size option)
+)
+\c@part=\count82
+\c@section=\count83
+\c@subsection=\count84
+\c@subsubsection=\count85
+\c@paragraph=\count86
+\c@subparagraph=\count87
+\c@figure=\count88
+\c@table=\count89
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\symmincho=\mathgroup4
+LaTeX Font Info:    Overwriting symbol font `mincho' in version `bold'
+(Font)                  JY1/mc/m/n --> JY1/gt/m/n on input line 601.
+\toclineskip=\dimen119
+\@lnumwidth=\dimen120
+\bibindent=\dimen121
+\heisei=\count90
+)
+No file snpack.aux.
+\openout1 = `snpack.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 39.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 39.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 39.
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <14.4> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 41.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <14.4> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 41.
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <12> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 43.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <12> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 43.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 52.
+(/Applications/pTeX.app/teTeX/share/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 52.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 72.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 72.
+
+[1
+
+]
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <10> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 101.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <10> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 101.
+
+
+LaTeX Warning: Reference `sym' on page 2 undefined on input line 101.
+
+
+LaTeX Warning: Reference `rev' on page 2 undefined on input line 101.
+
+
+Overfull \hbox (16.1938pt too wide) detected at line 113
+$ \OML/cmm/m/it/10 g\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 ^^U; '\OT1/cmr/m/n/10 ) =
+ [] [] \OML/cmm/m/it/10 :$ []
+ []
+
+[2] [3] [4]
+Overfull \hbox (21.72516pt too wide) in paragraph at lines 377--392
+[][] 
+ []
+
+[5]
+Overfull \hbox (32.22507pt too wide) in paragraph at lines 423--458
+[][] 
+ []
+
+[6]
+Overfull \hbox (1.45137pt too wide) in paragraph at lines 478--487
+[]\OT1/cmtt/m/n/10 KM*MAX(((MM+1)/2*2+3)*(MM/2+2)*2,JD*((MM+1)/2+MM+1)*2,JD*IM)
+ \JY1/mc/m/n/10 à»è„ÇÃëÂÇ´Ç≥
+ []
+
+
+Overfull \hbox (66.9287pt too wide) in paragraph at lines 478--487
+\JY1/mc/m/n/10 Ç≈Ç†ÇÈÇ±Ç∆\OT1/cmr/m/n/10 . \JY1/mc/m/n/10 Ç‹ÇΩÇÕ\OT1/cmr/m/n/10
+ , \JY1/mc/m/n/10 Ç≥ÇÁÇ…íPèÉÇ…ÇÕ\OT1/cmr/m/n/10 , \JY1/mc/m/n/10 Ç‚Ç‚ó]óTÇÇ‡ 
+Ç¡ Çƒ\OT1/cmr/m/n/10 , \OT1/cmtt/m/n/10 KM*MAX((MM+4)*(MM+3),JD*3*(MM+1),JD*IM)
+
+ []
+
+
+Overfull \hbox (10.91624pt too wide) in paragraph at lines 489--494
+[]\OT1/cmr/m/n/10 ( \OT1/cmtt/m/n/10 JD$\OMS/cmsy/m/n/10 ^^U$\OT1/cmtt/m/n/10 J
+M$\OMS/cmsy/m/n/10 ^^U$\OT1/cmtt/m/n/10 MM+1\OT1/cmr/m/n/10 , \OT1/cmtt/m/n/10 
+IM$\OMS/cmsy/m/n/10 ^^U$\OT1/cmtt/m/n/10 2*MM+2 \OT1/cmr/m/n/10 (\OT1/cmtt/m/n/
+10 IM \JY1/mc/m/n/10 ÇÕãÙêîÇÊÇË\OT1/cmr/m/n/10 ) ) \JY1/mc/m/n/10 Ç™ñûÇ≥ÇÍÇƒÇ¢
+ÇÈèÍçá\OT1/cmr/m/n/10 . \OT1/cmtt/m/n/10 (IM+MM+1)*JD*KM
+ []
+
+[7]
+Overfull \hbox (32.22507pt too wide) in paragraph at lines 572--607
+[][] 
+ []
+
+[8]
+Overfull \hbox (13.8552pt too wide) detected at line 646
+$ \OML/cmm/m/it/10 s[] \OT1/cmr/m/n/10 = [] [][] [][] [] [] \OML/cmm/m/it/10 P[
+]\OT1/cmr/m/n/10 ([] \OML/cmm/m/it/10 '\OT1/cmr/m/n/10 )\OML/cmm/m/it/10 e[] []
+ 'd'd^^U:$ []
+ []
+
+[9] [10] [11] (./snpack.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 321 strings out of 94681
+ 3587 string characters out of 1174652
+ 59028 words of memory out of 1500000
+ 3675 multiletter control sequences out of 10000+50000
+ 13871 words of font info for 54 fonts, out of 1200000 for 2000
+ 566 hyphenation exceptions out of 8191
+ 23i,9n,24p,155b,566s stack positions out of 5000i,500n,6000p,200000b,5000s
+
+Output written on snpack.dvi (11 pages, 37448 bytes).

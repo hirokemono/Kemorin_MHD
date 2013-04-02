@@ -1,0 +1,89 @@
+#
+#
+#
+
+LIB_VIZ =       -lkemo_viz
+LIB_VIZ_FILE = libkemo_viz.a
+
+SUBDIRS = \
+sectioning       \
+fieldline        \
+volume_rendering
+
+#
+#  -------------------------------------------------------------------------
+#
+
+dir_list:
+	@echo 'VIZ_SRCDIR =    $$(F_SRCDIR)/VIZ_src'      >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@for dir in $(SUBDIRS) ; do \
+		( \
+		echo 'generate diectory list for ' $$dir ; \
+		cd $${dir};  \
+		make dir_list \
+		MAKEDIR='$(MAKEDIR)'     \
+		MAKENAME='$(MAKENAME)'   \
+		 ) \
+	done
+	@echo '#' >> $(MAKENAME)
+
+lib_name:
+	@echo  'LIB_VIZ =      $(LIB_VIZ)'      >> $(MAKENAME)
+	@echo  'LIB_VIZ_FILE = $(LIB_VIZ_FILE)' >> $(MAKENAME)
+	@echo   >> $(MAKENAME)
+
+lib_tasks: libtarget lib_archve
+	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
+
+libtarget:
+	@echo '' >> $(MAKENAME)
+	@echo  '$$(LIB_VIZ_FILE): $$(MOD_VIZ)' >> $(MAKENAME)
+
+lib_archve:
+	@for dir in $(SUBDIRS); do \
+		( cd $${dir};  \
+		make \
+		MAKENAME='$(MAKENAME)' \
+		lib_archve \
+		) \
+	done;
+
+mod_list:
+	@echo MOD_VIZ= \\ >> $(MAKENAME)
+	@echo '$$(MOD_PSF_COMMON)' \\ >> $(MAKENAME)
+	@echo '$$(MOD_PSF_RENDER)' \\ >> $(MAKENAME)
+	@echo '$$(MOD_FIELDLINE)'  \\ >> $(MAKENAME)
+	@echo '$$(MOD_PVR)'        \\ >> $(MAKENAME)
+	@echo '$$(MOD_PSF_IO)'        >> $(MAKENAME)
+	@echo >> $(MAKENAME)
+	
+	@for dir in $(SUBDIRS); do \
+		( cd $${dir};  \
+		make \
+		MAKENAME='$(MAKENAME)' \
+		mod_list \
+		) \
+	done
+
+
+module:
+	@for dir in $(SUBDIRS); do \
+		( cd $${dir};  \
+		make \
+		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
+		MAKENAME='$(MAKENAME)' \
+		module \
+		) \
+	done
+
+
+clean:
+	@for dir in $(SUBDIRS); do \
+		( cd $${dir};  \
+		make \
+		clean \
+		) \
+	done
+	
+	rm -f *.o *.mod *~ *.par *.diag *.a

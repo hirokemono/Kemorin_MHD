@@ -1,0 +1,318 @@
+#-----------------------------------------------------------------------
+#   Copyright 1999, 2000, 2001, 2002, 2003 by the Research Organization
+#   for Information Science & Technology (RIST)
+#-----------------------------------------------------------------------
+
+      GeoFEM
+      Linear Solver Subsystem
+#
+#     June, 2002.
+#     Ver.5.00
+#
+
+                 ***** Features of Ver.5.00 *****
+
+There are no apparent changes from previous version.
+Please see 'KNOWNbugs' file in this directory.
+
+0. Methods
+(1) Variety of Solvers and Preconditioning (*: new method)
+    1*1 scalar (/scalar )                 : CG, BiCGSTAB, GMRES, GPBiCG
+    3*3 block  (/block33)                 : CG, BiCGSTAB, GMRES, GPBiCG, BLCG(Block CG*)
+    n*n block  (/blockNN)                 : CG
+    3*3 block vector version (/JDSblock33): CG (JDS ordering)
+
+    Preconditioniners :
+      DIAG       : Diagonal scaling/Point Jacobi
+      ILU/IC     : Incomplete LU/Cholesky factorization without fill-in
+      SSOR       : Symmetric SOR
+      BLOCK      : Block LU scaling (only available in block type solvers)
+
+    Following preconditioners are only available in (BLCG/3*3 block)
+      BILU0/BIC0 : Full block LU/Cholesky factorization without fill-in 
+      BILU1/BIC1 : Full block LU/Cholesky factorization with 1-level fill-in 
+      BILU2/BIC2 : Full block LU/Cholesky factorization with 2-level fill-in 
+            
+(2) Scaling
+    In CG method, scaling is supported.
+    Just set PRESET=2.    
+
+(3) BLCG (Block CG) method with fill-in (new method supported in 3*3 block)
+    - Full block LU factorization for 3*3 Block
+    - 0,1,2-level fill-in can be considered : BILU0/BIC0, BILU1/BIC1, BILU2/BIC2
+      Preconditioner with larger fill-in provides fast and robust convergence but
+      requires large amount of memory : 
+      Double size memory required for 1-level increase of fill-in
+    - Additive Shwartz domain decomposition for robust preconditioning
+      ref. B.Smith, P.Bjorstad and B.Gropp "Domain Decomposition", Cambridge, 1996.
+    - Only BILU0/BIC0, BILU1/BIC1 and BILU2/BIC2 are available.
+      If DIAG, ILU/IC, SSOR or BLOCK are specified, they are considered as BILU0.
+
+(4) TIPS : Recommendation
+    - Poisson equations : (CG/1*1 scalar) + ILU/IC preconditioning
+                          (CG/1*1 scalar) + SSOR   preconditioning for THIN elements
+                           such as Navier-Stokes grids.                                         
+    - solid mechanics   : (CG/3*3 bloack) + SSOR   preconditioning
+    - ill-conditioned problems in solid mechanics : (BLCG/3*3 block) + BILU
+
+1. Calling sequence for GeoFEM Linear Solver Subsystem
+(1) 1*1 scalar solver
+      use  solver
+      integer ERROR
+
+      call init_solver (ERROR)
+      call solver
+
+(2) 3*3 BLOCK solver : NEW
+      use  solver33
+      integer ERROR
+
+      call init_solver33 (ERROR)
+      call solve33
+
+(3) NB*NB BLOCK solver : NEW
+      use  solverNN
+      integer ERROR
+
+      call init_solverNN (ERROR)
+      call solveNN
+
+(4) 3*3 BLOCK solver with JDS ordering: NEW
+    suitable for vector processors
+      use  solver33VJ
+      integer ERROR
+
+      call init_solver33VJ (ERROR)
+      call solve33VJ
+
+2. Arg.'s of the subroutine solver
+(1) 1*1 scalar solver
+      subroutine  solve (N, NP, NPL, NPU,                               &
+     &                   D, AL, INL, IAL, AU, INU, IAU, B, X, PRESET,   &
+     &                   NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,   &
+     &                                      STACK_EXPORT, NOD_EXPORT,   &
+     &                   my_rank,SOLVER_COMM, ERROR,                    &
+     &                   METHOD, PRECOND, INTARRAY, REALARRAY         )
+
+
+      integer(kind=kint )                  , intent(in)   ::  N      number of internal nodes (exclude external node)
+      integer(kind=kint )                  , intent(in)   ::  NP     number of nodes          (include external node)
+      integer(kind=kint )                  , intent(in)   ::  NPL    array length of IAL, AL
+      integer(kind=kint )                  , intent(in)   ::  NPU    array length of IAU, AU
+      real   (kind=kreal), dimension(NP)   , intent(inout)::  D      diagonal matrix value            (i-th dof)
+      real   (kind=kreal), dimension(NPL)  , intent(in)   ::  AL     upper triangular matrix value    (i-th term)
+      integer(kind=kint ), dimension(0:NP) , intent(in)   ::  INL    last  term count at each freedom  (i-th node)
+      integer(kind=kint ), dimension(NPL)  , intent(in)   ::  IAL    node number at each term         (i-th term)
+
+      real   (kind=kreal), dimension(NPU)  , intent(in)   ::  AU     lower triangular matrix value    (i-th term)
+      integer(kind=kint ), dimension(0:NP) ,intent(in)    ::  INU    last term count at each freedom  (i-th node)
+      integer(kind=kint ), dimension(NPU)  , intent(in)   ::  IAU    node number at each term         (i-th term)
+
+      real   (kind=kreal), dimension(NP)   , intent(in)   ::  B      right hand load vector
+      real   (kind=kreal), dimension(NP)   , intent(inout)::  X      solution vector
+      integer(kind=kint )                  , intent(in)   ::  PRESET preconditioning RESET flag (n:0, y:1)
+                                                              NOTICE!!: NEW   if PRESET=2 with SCALING
+
+      integer(kind=kint ), intent(in)   :: NEIBPETOT  total neighboring pe count
+      integer(kind=kint ), pointer      :: NEIBPE      (:) neighboring pe id        (i-th pe)
+      integer(kind=kint ), pointer      :: STACK_IMPORT(:) imported node count for each neighbor pe (i-th pe)
+      integer(kind=kint ), pointer      :: NOD_IMPORT  (:) imported degree of freedom               (i-th node)
+      integer(kind=kint ), pointer      :: STACK_EXPORT(:) exported node count for each neighbor pe (i-th pe)
+      integer(kind=kint ), pointer      :: NOD_EXPORT  (:) exported node                            (i-th node)
+      integer            , intent(in)   :: my_rank         process ID for mpi
+      integer            , intent(in)   :: SOLVER_COMM     communicator for mpi
+
+      integer(kind=kint ), intent(inout):: ERROR           error flag (0:normal termination, -1: iter. over)
+
+      character(len=kchara)  , intent(in) :: METHOD        solver method name
+                                           CG, BICGSTAB, GPBiCG, GMRES
+
+      character(len=kchara)  , intent(in) :: PRECOND       precondition method name
+                                           SSOR, ILU, IC, DIAG, NO                                           
+
+      integer(kind=kint ), dimension(:)    , intent(inout):: INTARRAY  interger array for solver parameters
+      real   (kind=kreal), dimension(:)    , intent(inout):: REALARRAY real     array for solver parameters
+
+      ITER   = INTARRAY (1)  : max iteration number for iterative solvers
+      NREST  = INTARRAY (2)  : Klyrov subspace dimension for GMRES
+
+      RESID     = REALARRAY (1) : convergence criteria
+      SIGMA_DIAG= REALARRAY (2) : diagonal scaling factor (usually =1.0, .ne.0.d0)
+      SIGMA     = REALARRAY (3) : non-diagonal scaling factor for MILU and MIC
+
+(2) 3*3 scalar solver
+      subroutine solve33 (N, NP, NPL, NPU,                               &
+     &                    D, AL, INL, IAL, AU, INU, IAU, B, X, PRESET,   &
+     &                    NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,   &
+     &                                       STACK_EXPORT, NOD_EXPORT,   &
+     &                    my_rank,SOLVER_COMM, ERROR,                    &
+     &                    METHOD, PRECOND, INTARRAY, REALARRAY         )
+
+      integer(kind=kint )                  , intent(in)   ::  N      number of internal nodes (exclude external node)
+      integer(kind=kint )                  , intent(in)   ::  NP     number of nodes          (include external node)
+      integer(kind=kint )                  , intent(in)   ::  NPL    array length of IAL, AL
+      integer(kind=kint )                  , intent(in)   ::  NPU    array length of IAU, AU
+      real   (kind=kreal), dimension(3,3,NP),intent(inout)::  D      diagonal matrix value            (i-th dof)
+      real   (kind=kreal), dimension(3,3,NPL),intent(in)  ::  AL     upper triangular matrix value    (i-th term)
+      integer(kind=kint ), dimension(0:NP) , intent(in)   ::  INL    last  term count at each freedom  (i-th node)
+      integer(kind=kint ), dimension(NPL)  , intent(in)   ::  IAL    node number at each term         (i-th term)
+
+      real   (kind=kreal), dimension(3,3,NPU),intent(in)  ::  AU     lower triangular matrix value    (i-th term)
+      integer(kind=kint ), dimension(0:NP) ,  intent(in)  ::  INU    last term count at each freedom  (i-th node)
+      integer(kind=kint ), dimension(NPU)  ,  intent(in)  ::  IAU    node number at each term         (i-th term)
+
+      real   (kind=kreal), dimension(3*NP) , intent(in)   ::  B      right hand load vector
+      real   (kind=kreal), dimension(3*NP) , intent(inout)::  X      solution vector
+      integer(kind=kint )                  , intent(in)   ::  PRESET preconditioning RESET flag (n:0, y:1)
+                                                              PRESET=2 with SCALING
+
+      integer(kind=kint ), intent(in)   ::  NEIBPETOT  total neighboring pe count
+      integer(kind=kint ), pointer      :: NEIBPE      (:) neighboring pe id        (i-th pe)
+      integer(kind=kint ), pointer      :: STACK_IMPORT(:) imported node count for each neighbor pe (i-th pe)
+      integer(kind=kint ), pointer      :: NOD_IMPORT  (:) imported degree of freedom               (i-th node)
+      integer(kind=kint ), pointer      :: STACK_EXPORT(:) exported node count for each neighbor pe (i-th pe)
+      integer(kind=kint ), pointer      :: NOD_EXPORT  (:) exported node                            (i-th node)
+      integer            , intent(in)   :: my_rank         process ID for mpi
+      integer            , intent(in)   :: SOLVER_COMM     communicator for mpi
+
+      integer(kind=kint ), intent(inout):: ERROR           error flag (0:normal termination, -1: iter. over)
+
+      character(len=kchara)  , intent(in) :: METHOD        solver method name
+                                           CG, BICGSTAB, GPBiCG, GMRES, Block CG
+
+      character(len=kchara)  , intent(in) :: PRECOND       precondition method name
+                                           SSOR, ILU, IC, DIAG, NO                                           
+                                           BLOCK (block LU scaling)
+                                           BILU0/BIC0, BILU1/BIC1, BILU2/BI for Block CG ONLY
+
+      integer(kind=kint ), dimension(:)    , intent(inout):: INTARRAY  interger array for solver parameters
+      real   (kind=kreal), dimension(:)    , intent(inout):: REALARRAY real     array for solver parameters
+
+      ITER   = INTARRAY (1)  : max iteration number for iterative solvers
+      NREST  = INTARRAY (2)  : Klyrov subspace dimension for GMRES
+
+      RESID     = REALARRAY (1) : convergence criteria
+      SIGMA_DIAG= REALARRAY (2) : diagonal scaling factor (usually =1.0, .ne.0.d0)
+      SIGMA     = REALARRAY (3) : non-diagonal scaling factor for MILU and MIC
+
+(3) NB*NB scalar solver
+      subroutine solveNN (N, NP, NB, NPL, NPU,                           &
+     &                    D, AL, INL, IAL, AU, INU, IAU, B, X, PRESET,   &
+     &                    NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,   &
+     &                                       STACK_EXPORT, NOD_EXPORT,   &
+     &                    my_rank,SOLVER_COMM, ERROR,                    &
+     &                    METHOD, PRECOND, INTARRAY, REALARRAY         )
+
+
+      integer(kind=kint )                  , intent(in)   ::  N      number of internal nodes (exclude external node)
+      integer(kind=kint )                  , intent(in)   ::  NP     number of nodes          (include external node)
+      integer(kind=kint )                  , intent(in)   ::  NB     block size
+      integer(kind=kint )                  , intent(in)   ::  NPL    array length of IAL, AL
+      integer(kind=kint )                  , intent(in)   ::  NPU    array length of IAU, AU
+      real   (kind=kreal), dimension(NB,NB,NP),intent(inout)::  D    diagonal matrix value            (i-th dof)
+      real   (kind=kreal), dimension(NB,NB,NPL),intent(in)  ::  AL   upper triangular matrix value    (i-th term)
+      integer(kind=kint ), dimension(0:NP) , intent(in)     ::  INL  last term count at each freedom  (i-th node)
+      integer(kind=kint ), dimension(NPL)  , intent(in)     ::  IAL  node number at each term         (i-th term)
+
+      real   (kind=kreal), dimension(NB,NB,NPU),intent(in)  ::  AU   lower triangular matrix value    (i-th term)
+      integer(kind=kint ), dimension(0:NP)   ,  intent(in)  ::  INU  last term count at each freedom  (i-th node)
+      integer(kind=kint ), dimension(NPU)  ,    intent(in)  ::  IAU  node number at each term         (i-th term)
+
+      real   (kind=kreal), dimension(NB*NP) ,   intent(in)   ::  B      right hand load vector
+      real   (kind=kreal), dimension(NB*NP) ,   intent(inout)::  X      solution vector
+      integer(kind=kint )                   ,   intent(in)   ::  PRESET preconditioning RESET flag (n:0, y:1)
+                                                                 PRESET=2 with SCALING
+
+      integer(kind=kint ), intent(in)   :: NEIBPETOT  total neighboring pe count
+      integer(kind=kint ), pointer      :: NEIBPE      (:) neighboring pe id                        (i-th pe)
+      integer(kind=kint ), pointer      :: STACK_IMPORT(:) imported node count for each neighbor pe (i-th pe)
+      integer(kind=kint ), pointer      :: NOD_IMPORT  (:) imported degree of freedom               (i-th node)
+      integer(kind=kint ), pointer      :: STACK_EXPORT(:) exported node count for each neighbor pe (i-th pe)
+      integer(kind=kint ), pointer      :: NOD_EXPORT  (:) exported node                            (i-th node)
+      integer            , intent(in)   :: my_rank         process ID for mpi
+      integer            , intent(in)   :: SOLVER_COMM     communicator for mpi
+
+      integer(kind=kint ), intent(inout):: ERROR           error flag (0:normal termination, -1: iter. over)
+
+      character(len=kchara)  , intent(in) :: METHOD        solver method name
+                                           CG
+
+      character(len=kchara)  , intent(in) :: PRECOND       precondition method name
+                                           ILU, IC, DIAG, NO                                           
+                                           BLOCK (block LU scaling)
+
+      integer(kind=kint ), dimension(:)    , intent(inout):: INTARRAY  interger array for solver parameters
+      real   (kind=kreal), dimension(:)    , intent(inout):: REALARRAY real     array for solver parameters
+
+      ITER   = INTARRAY (1)  : max iteration number for iterative solvers
+      NREST  = INTARRAY (2)  : Klyrov subspace dimension for GMRES
+
+      RESID     = REALARRAY (1) : convergence criteria
+      SIGMA_DIAG= REALARRAY (2) : diagonal scaling factor (usually =1.0, .ne.0.d0)
+      SIGMA     = REALARRAY (3) : non-diagonal scaling factor for MILU and MIC
+
+(4) 3*3 scalar solver with JDS ordering
+      subroutine  solve33VJ                                             &
+     &                  (N, NP, NU, D, AU, INU, IAU, B, X, PRESET,      &
+     &                   NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,   &
+     &                                      STACK_EXPORT, NOD_EXPORT,   &
+     &                   my_rank,SOLVER_COMM, ITERactual, ERROR,        &
+     &                   METHOD, PRECOND, INTARRAY, REALARRAY         )
+
+      integer(kind=kint )                  , intent(in)   ::  N      number of internal nodes (exclude external node)
+      integer(kind=kint )                  , intent(in)   ::  NP     number of nodes          (include external node)
+
+      integer(kind=kint )                 , intent(in)   ::  NU      array length of IAU, AU
+      real   (kind=kreal), dimension(9*NP), intent(inout) ::  D      diagonal matrix value
+      real   (kind=kreal), dimension(9*NP,NU),intent(inout):: AU     off-diagonal component of coefficient matrix
+      integer(kind=kint ), dimension(0:NP) ,intent(in)    ::  INU    connected node number for each node
+      integer(kind=kint ), dimension(NP,NU), intent(in)   ::  IAU    connected node       
+      real   (kind=kreal), dimension(3*NP) , intent(inout)::  B      right hand load vector
+      real   (kind=kreal), dimension(3*NP) , intent(inout)::  X      solution vector
+
+      integer(kind=kint )                  , intent(in)   ::  PRESET preconditioning RESET flag (n:0, y:1)
+                                                              PRESET=2 with SCALING
+
+      integer(kind=kint ), intent(in)   ::  NEIBPETOT  total neighboring pe count
+      integer(kind=kint ), pointer      :: NEIBPE      (:) neighboring pe id        (i-th pe)
+      integer(kind=kint ), pointer      :: STACK_IMPORT(:) imported node count for each neighbor pe (i-th pe)
+      integer(kind=kint ), pointer      :: NOD_IMPORT  (:) imported degree of freedom               (i-th node)
+      integer(kind=kint ), pointer      :: STACK_EXPORT(:) exported node count for each neighbor pe (i-th pe)
+      integer(kind=kint ), pointer      :: NOD_EXPORT  (:) exported node                            (i-th node)
+      integer            , intent(in)   :: my_rank         process ID for mpi
+      integer            , intent(in)   :: SOLVER_COMM     communicator for mpi
+
+      integer(kind=kint ), intent(inout):: ERROR           error flag (0:normal termination, -1: iter. over)
+
+      character(len=kchara)  , intent(in) :: METHOD        solver method name
+                                           CG
+
+      character(len=kchara)  , intent(in) :: PRECOND       precondition method name
+                                           DIAG, NO                                           
+                                           BLOCK (block LU scaling)
+
+      integer(kind=kint ), dimension(:)    , intent(inout):: INTARRAY  interger array for solver parameters
+      real   (kind=kreal), dimension(:)    , intent(inout):: REALARRAY real     array for solver parameters
+
+      ITER   = INTARRAY (1)  : max iteration number for iterative solvers
+      NREST  = INTARRAY (2)  : Klyrov subspace dimension for GMRES
+
+      RESID     = REALARRAY (1) : convergence criteria
+      SIGMA_DIAG= REALARRAY (2) : diagonal scaling factor (usually =1.0, .ne.0.d0)
+      SIGMA     = REALARRAY (3) : non-diagonal scaling factor for MILU and MIC
+
+3. ERROR message
+(1) 1*1 scalar solver
+    code= 100  fatal error : ZERO diagonal
+    code= 101  fatal error : inconsistent PRESET
+    code= 110  fatal error : inconsistent PRECONDITIONING for CG solver with FILL-IN
+  * code= 120  fatal error : ZERO norm. of RHS vector
+    code=-100  warning     : has not converged within specified iterations
+
+(2) BLOCK solver (*: new message)
+    code= 300  fatal error : ZERO diagonal
+    code= 301  fatal error : inconsistent PRESET
+    code= 310  fatal error : inconsistent PRECONDITIONING for Block CG solver
+  * code= 320  fatal error : ZERO norm. of RHS vector
+    code=-300  warning     : has not converged within specified iterations
+

@@ -1,0 +1,568 @@
+
+/*  m_surface_mesh_4_viewer_c.h */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "m_surface_mesh_4_viewer_c.h"
+
+
+void alloc_nummesh_viewer_s(struct viewer_mesh *mesh_s){
+	int i;
+	
+	mesh_s->subdomain_name_sf =  (char **)calloc((mesh_s->num_pe_sf),sizeof(char *));
+	for (i = 0; i < mesh_s->num_pe_sf; i++) {
+		mesh_s->subdomain_name_sf[i] = (char *)calloc(KCHARA_C, sizeof(char));
+	};
+	
+	mesh_s->inod_sf_stack =  (int *)calloc((mesh_s->num_pe_sf)+1,sizeof(int));
+	mesh_s->isurf_sf_stack = (int *)calloc((mesh_s->num_pe_sf)+1,sizeof(int));
+	mesh_s->iedge_sf_stack = (int *)calloc((mesh_s->num_pe_sf)+1,sizeof(int));
+	
+	for (i = 0; i < mesh_s->num_pe_sf; i++) {
+		sprintf(mesh_s->subdomain_name_sf[i], "Domain %d", i);
+	}
+	return;
+};
+
+void alloc_node_viewer_s(struct viewer_mesh *mesh_s){
+	int i;
+	/* allocate memory  xx_view[node #][direction]*/
+	mesh_s->xx_view = (double **)calloc(mesh_s->nodpetot_viewer,sizeof(double *));
+	for (i = 0; i < mesh_s->nodpetot_viewer; i++){
+		mesh_s->xx_view[i] = (double *)calloc(3,sizeof(double));
+	};
+	
+	return;
+};
+
+void alloc_sf_type_viewer_s(struct viewer_mesh *mesh_s){
+	mesh_s->surftyp_viewer =  (int *)calloc(mesh_s->surfpetot_viewer,sizeof(int));
+	return;
+};
+
+
+void alloc_surface_params_s(struct viewer_mesh *mesh_s){
+	
+	if( mesh_s->surftyp_viewer[0] == 223 ){
+		mesh_s->nnod_4_surf =   9;
+		mesh_s->nnod_4_edge =   3;
+		mesh_s->nedge_4_surf =  4;
+		mesh_s->nsurf_each_sf = 4;
+	}
+	else if( mesh_s->surftyp_viewer[0] == 222 ){
+		mesh_s->nnod_4_surf =   8;
+		mesh_s->nnod_4_edge =   3;
+		mesh_s->nedge_4_surf =  4;
+		mesh_s->nsurf_each_sf = 5;
+	}
+	else{
+		mesh_s->nnod_4_surf =   4;
+		mesh_s->nnod_4_edge =   2;
+		mesh_s->nedge_4_surf =  4;
+		mesh_s->nsurf_each_sf = 1;
+	}
+	
+	/* allocate memory  node_quad_2_linear_sf[4*(devided surface #) + local node ID]*/
+	mesh_s->node_quad_2_linear_sf = (int *)calloc((4*mesh_s->nsurf_each_sf),sizeof(int));
+	
+	if( mesh_s->surftyp_viewer[0] == 223 ){
+		mesh_s->node_quad_2_linear_sf[0] = 1;
+		mesh_s->node_quad_2_linear_sf[1] = 5;
+		mesh_s->node_quad_2_linear_sf[2] = 9;
+		mesh_s->node_quad_2_linear_sf[3] = 8;
+		
+		mesh_s->node_quad_2_linear_sf[4] = 5;
+		mesh_s->node_quad_2_linear_sf[5] = 2;
+		mesh_s->node_quad_2_linear_sf[6] = 6;
+		mesh_s->node_quad_2_linear_sf[7] = 9;
+		
+		mesh_s->node_quad_2_linear_sf[8] = 9;
+		mesh_s->node_quad_2_linear_sf[9] = 6;
+		mesh_s->node_quad_2_linear_sf[10] = 3;
+		mesh_s->node_quad_2_linear_sf[11] = 7;
+		
+		mesh_s->node_quad_2_linear_sf[12] = 8;
+		mesh_s->node_quad_2_linear_sf[13] = 9;
+		mesh_s->node_quad_2_linear_sf[14] = 7;
+		mesh_s->node_quad_2_linear_sf[15] = 4;
+		
+	}
+	else if( mesh_s->surftyp_viewer[0] == 222 ){
+		mesh_s->node_quad_2_linear_sf[0] = 5;
+		mesh_s->node_quad_2_linear_sf[1] = 6;
+		mesh_s->node_quad_2_linear_sf[2] = 7;
+		mesh_s->node_quad_2_linear_sf[3] = 8;
+		
+		mesh_s->node_quad_2_linear_sf[4] = 5;
+		mesh_s->node_quad_2_linear_sf[5] = 8;
+		mesh_s->node_quad_2_linear_sf[6] = 1;
+		mesh_s->node_quad_2_linear_sf[7] = 0;
+		
+		mesh_s->node_quad_2_linear_sf[8] = 2;
+		mesh_s->node_quad_2_linear_sf[9] = 6;
+		mesh_s->node_quad_2_linear_sf[10] = 5;
+		mesh_s->node_quad_2_linear_sf[11] = 0;
+		
+		mesh_s->node_quad_2_linear_sf[12] = 3;
+		mesh_s->node_quad_2_linear_sf[13] = 7;
+		mesh_s->node_quad_2_linear_sf[14] = 6;
+		mesh_s->node_quad_2_linear_sf[15] = 0;
+		
+		mesh_s->node_quad_2_linear_sf[16] = 4;
+		mesh_s->node_quad_2_linear_sf[17] = 8;
+		mesh_s->node_quad_2_linear_sf[18] = 7;
+		mesh_s->node_quad_2_linear_sf[19] = 0;
+		
+	}
+	else{
+		mesh_s->node_quad_2_linear_sf[0] = 1;
+		mesh_s->node_quad_2_linear_sf[1] = 2;
+		mesh_s->node_quad_2_linear_sf[2] = 3;
+		mesh_s->node_quad_2_linear_sf[3] = 4;
+	}
+	
+	return;
+};
+
+
+void alloc_surf_connect_viewer_s(struct viewer_mesh *mesh_s){
+	int i;
+	/* allocate memory  ie_sf_viewer[element #][node index]*/
+	mesh_s->ie_sf_viewer = (int **)calloc(mesh_s->surfpetot_viewer,sizeof(int *));
+	for (i = 0; i < mesh_s->surfpetot_viewer; i++){
+		mesh_s->ie_sf_viewer[i] = (int *)calloc(mesh_s->nnod_4_surf,sizeof(int));
+	};
+	return;
+};
+
+void alloc_edge_4_sf_viewer_s(struct viewer_mesh *mesh_s){
+	int i;
+	/* allocate memory  ie_edge_viewer[edge #][local node ID]*/
+	mesh_s->ie_edge_viewer = (int **)calloc(mesh_s->edgepetot_viewer,sizeof(int *));
+	for (i = 0; i < mesh_s->edgepetot_viewer; i++){
+		mesh_s->ie_edge_viewer[i] = (int *)calloc(mesh_s->nnod_4_edge,sizeof(int));
+	};
+	/* allocate memory  iedge_sf_viewer[element #][local edge ID]*/
+	mesh_s->iedge_sf_viewer = (int **)calloc(mesh_s->surfpetot_viewer,sizeof(int *));
+	for (i = 0; i < mesh_s->surfpetot_viewer; i++){
+		mesh_s->iedge_sf_viewer[i] = (int *)calloc(mesh_s->nedge_4_surf,sizeof(int));
+	};
+	
+	return;
+};
+
+void alloc_normal_surf_viewer_s(struct viewer_mesh *mesh_s){
+	int i, num;
+	num = mesh_s->nsurf_each_sf * mesh_s->surfpetot_viewer;
+	/* allocate memory  surf_norm_view[devided surface #][component] */
+	/* allocate memory  surf_center_view[devided surface #][component] */
+	mesh_s->surf_norm_view = (double **)calloc(num,sizeof(double *));
+	for (i = 0; i < num; i++){
+		mesh_s->surf_norm_view[i] = (double *)calloc(3,sizeof(double));
+	};
+	mesh_s->surf_center_view = (double **)calloc(num,sizeof(double *));
+	for (i = 0; i < num; i++){
+		mesh_s->surf_center_view[i] = (double *)calloc(3,sizeof(double));
+	};
+	mesh_s->surf_size_view = (double *)calloc(num,sizeof(double));
+	
+	mesh_s->z_ele_view = (double *)calloc(num,sizeof(double));
+	
+	return;
+};
+
+void alloc_domain_stack_viewer_s(struct viewer_mesh *mesh_s){
+	mesh_s->nod_stack_domain_sf = (int *)calloc(mesh_s->num_pe_sf+1,sizeof(int));
+	mesh_s->isurf_stack_domain_sf = (int *)calloc(mesh_s->num_pe_sf+1,sizeof(int));
+	mesh_s->edge_stack_domain_sf = (int *)calloc(mesh_s->num_pe_sf+1,sizeof(int));
+	
+	return;
+};
+
+void alloc_domain_surf_item_viewer_s(struct viewer_mesh *mesh_s){
+	mesh_s->isurf_domain_sf = (int *)calloc(mesh_s->nsurf_domain_sf,sizeof(int));
+	mesh_s->iele_domain_far = (int *)calloc(mesh_s->nsurf_domain_sf,sizeof(int));
+	mesh_s->z_domain_view = (double *)calloc(mesh_s->nsurf_domain_sf,sizeof(double));
+	return;
+};
+void alloc_domain_nod_item_viewer_s(struct viewer_mesh *mesh_s){
+	mesh_s->nod_item_domain_sf = (int *)calloc(mesh_s->nnod_domain_sf,sizeof(int));
+	return;
+};
+void alloc_domain_edge_item_viewer_s(struct viewer_mesh *mesh_s){
+	mesh_s->edge_item_domain_sf = (int *)calloc(mesh_s->nedge_domain_sf,sizeof(int));
+	return;
+};
+
+
+void alloc_nod_grp_stack_viewer_s(struct viewer_mesh *mesh_s){
+	int i, num;
+	num = mesh_s->num_pe_sf*mesh_s->ngrp_nod_sf+1;
+	mesh_s->nod_stack_sf = (int *)calloc(num,sizeof(int));
+	
+	mesh_s->nod_gp_name_sf = (char **)calloc(mesh_s->ngrp_nod_sf, sizeof(char *));
+	for (i = 0; i < mesh_s->ngrp_nod_sf; i++) {
+		mesh_s->nod_gp_name_sf[i] = (char *)calloc(KCHARA_C, sizeof(char));
+	};
+	return;
+};
+
+void alloc_ele_grp_stack_viewer_s(struct viewer_mesh *mesh_s){
+	int i, num;
+	num = mesh_s->num_pe_sf*mesh_s->ngrp_ele_sf+1;
+	mesh_s->ele_stack_sf =      (int *)calloc(num,sizeof(int));
+	mesh_s->ele_edge_stack_sf = (int *)calloc(num,sizeof(int));
+	mesh_s->ele_nod_stack_sf =  (int *)calloc(num,sizeof(int));
+	
+	mesh_s->ele_gp_name_sf = (char **)calloc(mesh_s->ngrp_ele_sf, sizeof(char *));
+	for (i = 0; i < mesh_s->ngrp_ele_sf; i++) {
+		mesh_s->ele_gp_name_sf[i] = (char *)calloc(KCHARA_C, sizeof(char));
+	};
+	return;
+};
+
+void alloc_surf_grp_stack_viewer_s(struct viewer_mesh *mesh_s){
+	int i, num;
+	num = mesh_s->num_pe_sf*mesh_s->ngrp_surf_sf+1;
+	mesh_s->surf_stack_sf =      (int *)calloc(num,sizeof(int));
+	mesh_s->surf_edge_stack_sf = (int *)calloc(num,sizeof(int));
+	mesh_s->surf_nod_stack_sf =  (int *)calloc(num,sizeof(int));
+	
+	mesh_s->surf_gp_name_sf = (char **)calloc(mesh_s->ngrp_surf_sf, sizeof(char *));
+	for (i = 0; i < mesh_s->ngrp_surf_sf; i++) {
+		mesh_s->surf_gp_name_sf[i] = (char *)calloc(KCHARA_C, sizeof(char));
+	};
+	return;
+};
+
+void alloc_nod_grp_item_viewer_s(struct viewer_mesh *mesh_s){
+	mesh_s->nod_item_sf = (int *)calloc(mesh_s->nnod_nod_sf,sizeof(int));
+	return;
+};
+
+
+void alloc_ele_grp_item_viewer_s(struct viewer_mesh *mesh_s){
+	mesh_s->ele_item_sf = (int *)calloc(mesh_s->nele_ele_sf,sizeof(int));
+	mesh_s->iele_grp_far = (int *)calloc(mesh_s->nele_ele_sf,sizeof(int));
+	mesh_s->z_ele_grp_view = (double *)calloc(mesh_s->nele_ele_sf,sizeof(double));
+	return;
+};
+void alloc_ele_grp_nod_item_viewer_s(struct viewer_mesh *mesh_s){
+	mesh_s->ele_nod_item_sf = (int *)calloc(mesh_s->nnod_ele_sf,sizeof(int));
+	return;
+};
+void alloc_ele_grp_edge_item_viewer_s(struct viewer_mesh *mesh_s){
+	mesh_s->ele_edge_item_sf = (int *)calloc(mesh_s->nedge_ele_sf,sizeof(int));
+	return;
+};
+
+
+void alloc_surf_grp_item_viewer_s(struct viewer_mesh *mesh_s){
+	mesh_s->surf_item_sf = (int *)calloc(mesh_s->nsurf_surf_sf,sizeof(int));
+	mesh_s->isurf_grp_far = (int *)calloc(mesh_s->nsurf_surf_sf,sizeof(int));
+	mesh_s->z_surf_grp_view = (double *)calloc(mesh_s->nsurf_surf_sf,sizeof(double));
+	return;
+};
+void alloc_surf_grp_nod_item_viewer_s(struct viewer_mesh *mesh_s){
+	mesh_s->surf_nod_item_sf = (int *)calloc(mesh_s->nnod_surf_sf,sizeof(int));
+	return;
+};
+void alloc_surf_grp_edge_item_viewer_s(struct viewer_mesh *mesh_s){
+	mesh_s->surf_edge_item_sf = (int *)calloc(mesh_s->nedge_surf_sf,sizeof(int));
+	return;
+};
+
+
+void alloc_domain_center_s(struct viewer_mesh *mesh_s){
+	int i;
+	
+	/* allocate memory  domain_center[domain #][direction]*/
+	/* allocate memory  domain_min[domain #][direction]*/
+	/* allocate memory  domain_max[domain #][direction]*/
+	mesh_s->domain_center = (double **)calloc(mesh_s->num_pe_sf,sizeof(double *));
+	for (i = 0; i < mesh_s->num_pe_sf; i++){
+		mesh_s->domain_center[i] = (double *)calloc(3,sizeof(double));
+	};
+	mesh_s->domain_min = (double **)calloc(mesh_s->num_pe_sf,sizeof(double *));
+	for (i = 0; i < mesh_s->num_pe_sf; i++){
+		mesh_s->domain_min[i] = (double *)calloc(3,sizeof(double));
+	};
+	mesh_s->domain_max = (double **)calloc(mesh_s->num_pe_sf,sizeof(double *));
+	for (i = 0; i < mesh_s->num_pe_sf; i++){
+		mesh_s->domain_max[i] = (double *)calloc(3,sizeof(double));
+	};
+
+	mesh_s->z_center_view = (double *)calloc(mesh_s->num_pe_sf,sizeof(double));
+	mesh_s->ip_domain_far = (int *)calloc(mesh_s->num_pe_sf,sizeof(int));
+	
+	return;
+};
+
+void alloc_mesh_draw_s(struct viewer_mesh *mesh_s){
+	int i, num;
+	/* allocate memory  xx_draw[node #][direction]*/
+	mesh_s->xx_draw = (double **)calloc(mesh_s->nodpetot_viewer,sizeof(double *));
+	for (i = 0; i < mesh_s->nodpetot_viewer; i++){
+		mesh_s->xx_draw[i] = (double *)calloc(3,sizeof(double));
+	};
+	
+
+
+	num = mesh_s->nsurf_domain_sf * mesh_s->nsurf_each_sf;
+	mesh_s->normal_domain =   (double **)calloc(num,sizeof(double *));
+	mesh_s->norm_nod_domain = (double **)calloc(num,sizeof(double *));
+	mesh_s->dist_nod_domain = (double **)calloc(num,sizeof(double *));
+	for (i = 0; i < num; i++){
+		mesh_s->normal_domain[i] =   (double *)calloc( 3,sizeof(double));
+		mesh_s->norm_nod_domain[i] = (double *)calloc(12,sizeof(double));
+		mesh_s->dist_nod_domain[i] = (double *)calloc( 4,sizeof(double));
+	};
+	
+	num = mesh_s->nele_ele_sf * mesh_s->nsurf_each_sf;
+	mesh_s->normal_ele_grp = (double **)calloc(num,sizeof(double *));
+	mesh_s->norm_nod_ele_grp = (double **)calloc(num,sizeof(double *));
+	mesh_s->dist_nod_ele_grp = (double **)calloc(num,sizeof(double *));
+	for (i = 0; i < num; i++){
+		mesh_s->normal_ele_grp[i] =   (double *)calloc( 3,sizeof(double));
+		mesh_s->norm_nod_ele_grp[i] = (double *)calloc(12,sizeof(double));
+		mesh_s->dist_nod_ele_grp[i] = (double *)calloc( 4,sizeof(double));
+	};
+	
+	num = mesh_s->nsurf_surf_sf * mesh_s->nsurf_each_sf;
+	mesh_s->normal_surf_grp =   (double **)calloc(num,sizeof(double *));
+	mesh_s->norm_nod_surf_grp = (double **)calloc(num,sizeof(double *));
+	mesh_s->dist_nod_surf_grp = (double **)calloc(num,sizeof(double *));
+	for (i = 0; i < num; i++){
+		mesh_s->normal_surf_grp[i] =   (double *)calloc( 3,sizeof(double));
+		mesh_s->norm_nod_surf_grp[i] = (double *)calloc(12,sizeof(double));
+		mesh_s->dist_nod_surf_grp[i] = (double *)calloc( 4,sizeof(double));
+	};
+	
+	return;
+};
+
+
+
+
+static void dealloc_nummesh_viewer_s(struct viewer_mesh *mesh_s){
+	int i;
+	
+	free(mesh_s->inod_sf_stack);
+	free(mesh_s->isurf_sf_stack);
+	free(mesh_s->iedge_sf_stack);
+	
+	for (i = 0; i < mesh_s->num_pe_sf; i++) free(mesh_s->subdomain_name_sf[i]);
+	free(mesh_s->subdomain_name_sf);
+	return;
+};
+
+static void dealloc_node_viewer_s(struct viewer_mesh *mesh_s){
+	int i;
+	for (i = 0; i < mesh_s->nodpetot_viewer; i++) free(mesh_s->xx_view[i]);
+	free(mesh_s->xx_view);
+	return;
+};
+
+static void dealloc_surf_connect_viewer_s(struct viewer_mesh *mesh_s){
+	int i;
+	
+	for (i = 0; i < mesh_s->surfpetot_viewer; i++) free(mesh_s->ie_sf_viewer[i]);
+	free(mesh_s->ie_sf_viewer);
+	
+	free(mesh_s->node_quad_2_linear_sf);
+	free(mesh_s->surftyp_viewer);
+	return;
+};
+
+
+static void dealloc_edge_4_sf_viewer_s(struct viewer_mesh *mesh_s){
+	int i;
+	for (i = 0; i < mesh_s->edgepetot_viewer; i++) free(mesh_s->ie_edge_viewer[i]);
+	free(mesh_s->ie_edge_viewer);
+	for (i = 0; i < mesh_s->surfpetot_viewer; i++) free(mesh_s->iedge_sf_viewer[i]);
+	free(mesh_s->iedge_sf_viewer);
+	
+	return;
+};
+
+static void dealloc_normal_surf_viewer_s(struct viewer_mesh *mesh_s){
+	int i, num;
+	num = mesh_s->nsurf_each_sf * mesh_s->surfpetot_viewer;
+	for (i = 0; i < num; i++) free(mesh_s->surf_norm_view[i]);
+	free(mesh_s->surf_norm_view);
+	for (i = 0; i < num; i++) free(mesh_s->surf_center_view[i]);
+	free(mesh_s->surf_center_view);
+	free(mesh_s->surf_size_view);
+	free(mesh_s->z_ele_view);
+	
+	return;
+};
+
+static void dealloc_domain_stack_viewer_s(struct viewer_mesh *mesh_s){
+	free(mesh_s->nod_stack_domain_sf);
+	free(mesh_s->isurf_stack_domain_sf);
+	free(mesh_s->edge_stack_domain_sf);
+	
+	return;
+};
+
+static void dealloc_domain_surf_item_viewer_s(struct viewer_mesh *mesh_s){
+	free(mesh_s->z_domain_view);
+	free(mesh_s->iele_domain_far);
+	free(mesh_s->isurf_domain_sf);
+	return;
+};
+static void dealloc_domain_nod_item_viewer_s(struct viewer_mesh *mesh_s){
+	free(mesh_s->nod_item_domain_sf);
+	return;
+};
+static void dealloc_domain_edge_item_viewer_s(struct viewer_mesh *mesh_s){
+	free(mesh_s->edge_item_domain_sf);
+	return;
+};
+
+
+static void dealloc_nod_grp_stack_viewer_s(struct viewer_mesh *mesh_s){
+	int i;
+	free(mesh_s->nod_stack_sf);
+	
+	for (i = 0; i < mesh_s->ngrp_nod_sf; i++) free(mesh_s->nod_gp_name_sf[i]);
+	free(mesh_s->nod_gp_name_sf);
+	return;
+};
+
+static void dealloc_ele_grp_stack_viewer_s(struct viewer_mesh *mesh_s){
+	int i;
+	free(mesh_s->ele_stack_sf);
+	free(mesh_s->ele_edge_stack_sf);
+	free(mesh_s->ele_nod_stack_sf);
+	
+	for (i = 0; i < mesh_s->ngrp_ele_sf; i++) free(mesh_s->ele_gp_name_sf[i]);
+	free(mesh_s->ele_gp_name_sf);
+	return;
+};
+
+static void dealloc_surf_grp_stack_viewer_s(struct viewer_mesh *mesh_s){
+	int i;
+	free(mesh_s->surf_stack_sf);
+	free(mesh_s->surf_edge_stack_sf);
+	free(mesh_s->surf_nod_stack_sf);
+	
+	for (i = 0; i < mesh_s->ngrp_surf_sf; i++) free(mesh_s->surf_gp_name_sf[i]);
+	free(mesh_s->surf_gp_name_sf);
+	return;
+};
+
+static void dealloc_nod_grp_item_viewer_s(struct viewer_mesh *mesh_s){
+	free(mesh_s->nod_item_sf);
+	return;
+};
+
+static void dealloc_ele_grp_item_viewer_s(struct viewer_mesh *mesh_s){
+	free(mesh_s->z_ele_grp_view);
+	free(mesh_s->iele_grp_far);
+	free(mesh_s->ele_item_sf);
+	return;
+};
+static void dealloc_ele_grp_nod_item_viewer_s(struct viewer_mesh *mesh_s){
+	free(mesh_s->ele_nod_item_sf);
+	return;
+};
+static void dealloc_ele_grp_edge_item_viewer_s(struct viewer_mesh *mesh_s){
+	free(mesh_s->ele_edge_item_sf);
+	return;
+};
+
+static void dealloc_surf_grp_item_viewer_s(struct viewer_mesh *mesh_s){
+	free(mesh_s->z_surf_grp_view);
+	free(mesh_s->isurf_grp_far);
+	free(mesh_s->surf_item_sf);
+	return;
+};
+static void dealloc_surf_grp_nod_item_viewer_s(struct viewer_mesh *mesh_s){
+	free(mesh_s->surf_nod_item_sf);
+	return;
+};
+static void dealloc_surf_grp_edge_item_viewer_s(struct viewer_mesh *mesh_s){
+	free(mesh_s->surf_edge_item_sf);
+	return;
+};
+
+
+static void dealloc_domain_center_s(struct viewer_mesh *mesh_s){
+	int i;
+	
+	free(mesh_s->ip_domain_far);
+	free(mesh_s->z_center_view);
+
+	for (i = 0; i < mesh_s->num_pe_sf; i++) free(mesh_s->domain_center[i]);
+	free(mesh_s->domain_center);
+	for (i = 0; i < mesh_s->num_pe_sf; i++) free(mesh_s->domain_min[i]);
+	free(mesh_s->domain_min);
+	for (i = 0; i < mesh_s->num_pe_sf; i++) free(mesh_s->domain_max[i]);
+	free(mesh_s->domain_max);
+	
+	return;
+};
+
+static void dealloc_mesh_draw_s(struct viewer_mesh *mesh_s){
+	int i, num;
+
+	num = mesh_s->nsurf_surf_sf * mesh_s->nsurf_each_sf;
+	for (i = 0; i < num; i++) free(mesh_s->normal_surf_grp[i]);
+	for (i = 0; i < num; i++) free(mesh_s->norm_nod_surf_grp[i]);
+	for (i = 0; i < num; i++) free(mesh_s->dist_nod_surf_grp[i]);
+	free(mesh_s->normal_surf_grp);
+	free(mesh_s->norm_nod_surf_grp);
+	free(mesh_s->dist_nod_surf_grp);
+
+	num = mesh_s->nele_ele_sf * mesh_s->nsurf_each_sf;
+	for (i = 0; i < num; i++) free(mesh_s->normal_ele_grp[i]);
+	for (i = 0; i < num; i++) free(mesh_s->norm_nod_ele_grp[i]);
+	for (i = 0; i < num; i++) free(mesh_s->dist_nod_ele_grp[i]);
+	free(mesh_s->normal_ele_grp);
+	free(mesh_s->norm_nod_ele_grp);
+	free(mesh_s->dist_nod_ele_grp);
+
+	num = mesh_s->nsurf_domain_sf * mesh_s->nsurf_each_sf;
+	for (i = 0; i < num; i++) free(mesh_s->normal_domain[i]);
+	for (i = 0; i < num; i++) free(mesh_s->norm_nod_domain[i]);
+	for (i = 0; i < num; i++) free(mesh_s->dist_nod_domain[i]);
+	free(mesh_s->normal_domain);
+	free(mesh_s->norm_nod_domain);
+	free(mesh_s->dist_nod_domain);
+	
+	/* deallocate memory  xx_draw[node #][direction]*/
+	for (i = 0; i < mesh_s->nodpetot_viewer; i++) free(mesh_s->xx_draw[i]);
+	free(mesh_s->xx_draw);
+	
+	return;
+};
+
+
+void dealloc_all_mesh_4_viewer_s(struct viewer_mesh *mesh_s){
+	dealloc_mesh_draw_s(mesh_s);
+	dealloc_domain_center_s(mesh_s);
+	dealloc_surf_grp_edge_item_viewer_s(mesh_s);
+	dealloc_surf_grp_nod_item_viewer_s(mesh_s);
+	dealloc_surf_grp_item_viewer_s(mesh_s);
+	dealloc_ele_grp_edge_item_viewer_s(mesh_s);
+	dealloc_ele_grp_nod_item_viewer_s(mesh_s);
+	dealloc_ele_grp_item_viewer_s(mesh_s);
+	dealloc_nod_grp_item_viewer_s(mesh_s);
+	dealloc_surf_grp_stack_viewer_s(mesh_s);
+	dealloc_ele_grp_stack_viewer_s(mesh_s);
+	dealloc_nod_grp_stack_viewer_s(mesh_s);
+	dealloc_domain_edge_item_viewer_s(mesh_s);
+	dealloc_domain_nod_item_viewer_s(mesh_s);
+	dealloc_domain_surf_item_viewer_s(mesh_s);
+	dealloc_domain_stack_viewer_s(mesh_s);
+	dealloc_normal_surf_viewer_s(mesh_s);
+	dealloc_edge_4_sf_viewer_s(mesh_s);
+	dealloc_surf_connect_viewer_s(mesh_s);
+	dealloc_node_viewer_s(mesh_s);
+	dealloc_nummesh_viewer_s(mesh_s);
+	
+	return;
+}

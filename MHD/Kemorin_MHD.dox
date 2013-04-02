@@ -1,0 +1,10 @@
+/**
+@image html  fieldline.pdf
+@image latex fieldline.pdf width=10cm
+@mainpage
+*/
+/**
+@dir MHD
+    Top directory for source files
+*/
+

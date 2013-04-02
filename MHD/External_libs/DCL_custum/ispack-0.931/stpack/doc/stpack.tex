@@ -1,0 +1,1014 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (C) 1998 Keiichi Ishioka				       %
+% 								       %
+% この著作権表示が記載してあるならば, どのような媒体にでも何も手を加え %
+% ずに複写して再配付することを許可します. これらのドキュメントとその使 % 
+% 用許諾を他の言語に翻訳する際は, 以下の条件に従って下さい.	       %
+% 								       %
+% 他の言語に翻訳する際に, 他の言語での口語表現への変更の範囲を越えて故 %
+% 意に意味を変更しないこと.					       %
+%								       %
+% 翻訳した使用許諾には, それが翻訳であること, また原文の使用許諾が翻訳 %
+% 全体に依然適用されることを明示すること.			       %
+%								       %
+% ハイパーテキストの場合, 同一サイト上で原文のコピーを保守すること. ま %
+% た, 翻訳したハイパーテキストのページからその原文へのリンクを提供する %
+% こと.								       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%履歴   95/10/09 石岡圭一 (version 0.1)
+%     2005/07/27 石岡圭一 (version 0.2) 誤植の訂正(Thanks to 水田君)
+%
+\documentclass[a4j]{jarticle}
+
+\newcommand{\Lap}{\nabla^2}
+\newcommand{\re}{\mbox{Re}}
+\newcommand{\im}{\mbox{Im}}
+
+\title{(ST/LT)PACK使用の手引 (version 0.2)}
+\author{石岡 圭一  (2005/07/27)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは, スペクトル(球面調和関数)変換を行なうサブルーチンパッケージであ
+り, 球面調和関数展開の係数から格子点値, およびその逆の変換を行なうサブ
+ルーチン, また, 数値モデルに用いるヤコビアンの計算を行うサブルーチン
+などからなっている. 
+また, このパッケージはFTPACKとLTPACKの上位パッケージであり, これらのパッ
+ケージを内部で引用している. 
+なお, 下位パッケージであるLTPACK(ルジャンドル変換パッケージ)はこのパッ
+ケージに内蔵されている. 通常, LTPACKのサブルーチンを陽に使用する必要は
+無いが, ルジャンドル変換だけを行いたいような場合にはそれだけでも独立し
+て使用できるようになっている.
+
+切断波数$M$(三角切断)のスペクトル逆変換は, 以下のように表せる:
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{n=0}\sum^n_{m=-n}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+または, ルジャンドル逆変換:
+\begin{equation}
+G^m(\varphi)\equiv\sum^M_{n=|m|}s^m_nP^m_n(\sin\varphi)
+\end{equation}
+を導入すると、
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}G^m(\varphi)e^{im\lambda}
+\end{equation}
+と, ルジャンドル逆変換とフーリエ逆変換の積として表される.
+ここに, $\lambda$: 経度, $\varphi$: 緯度である.
+
+また, $P^m_n(\mu)$は2に正規化されたルジャンドル陪関数で, 以下のように
+定義される:
+\begin{equation}
+P^m_n(\mu)\equiv\sqrt{(2n+1)\frac{(n-m)!}{(n+m)!}}\frac1{2^nn!}(1-\mu^2)^{m/2}
+\frac{d^{n+m}}{d\mu^{n+m}}(\mu^2-1)^n,
+\end{equation}
+\begin{equation}
+\int^1_{-1}\{P^m_n(\mu)\}^2d\mu=2.
+\end{equation}
+
+$g(\lambda,\varphi)$が実数であるとすると, $s^m_n$および
+$G^m(\varphi)$は以下の関係を満たしている必要がある:
+\begin{equation}
+G^{-m}(\varphi)=\{G^m(\varphi)\}^{*}
+\end{equation}
+\begin{equation}
+s^{-m}_n=\{s^m_n\}^{*}
+\end{equation}
+ここに, $\{ \}^{*}$は複素共役を表す.
+従って, $G^m(\sin\varphi)$および$s^m_n$は$m\ge 0$の範囲だけを求めれば
+良い. さらに, 上の制約から, $G^0(\sin\varphi)$および$s^0_n$は実数である.
+
+また, スペクトル逆変換は以下のように表せる:
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)P^m_n(\sin\varphi)e^{-im\lambda}\cos\varphi d\varphi
+d\lambda .
+\end{equation}
+逆変換の場合と同様に, フーリエ正変換を,
+\begin{equation}
+G^m(\varphi)\equiv\frac1{2\pi}\int^{2\pi}_0
+g(\lambda,\varphi)e^{-im\lambda}d\lambda
+\end{equation}
+と導入すると, 
+\begin{equation}
+s^m_n=\frac12\int^{\pi/2}_{-\pi/2}G^m(\varphi)P^m_n(\sin\varphi)\cos\varphi
+d\varphi
+\end{equation}
+と, フーリエ正変換とルジャンドル正変換の積として表される.
+
+数値計算においては, 上記の積分はそれぞれ離散近似される. フーリエ正変
+換の部分は経度方向の等間隔格子点上での値を用いた離散フーリエ正変換
+(FTPACKマニュアルを参照)によって近似し,
+ルジャンドル正変換の部分は, ガウス-ルジャンドル積分公式により:
+\begin{equation}
+s^m_n=\frac12\sum^J_{j=1}w_jG^m(\varphi_j)P^m_n(\sin\varphi_j)
+\end{equation}
+として近似する. ここに, $\varphi_j$はガウス緯度と呼ば
+れる分点で, ルジャンドル多項式$P_J(\sin\varphi)$ (ルジャンドル陪関数の
+定義式中で$m=0$とし, 正規化係数($\sqrt{\quad}$の部分)を無くしたもの)
+の$J$個の零点(を小さい方から順に並べた
+もの)であり, $w_j$は各分点に対応するガウシアンウェイトと呼ばれる重みで,
+\begin{equation}
+w_j\equiv\frac{2(1-\mu_j^2)}{\{JP_{J-1}(\mu_j)\}^2}
+\end{equation}
+で与えられる. ここに, $\mu_j\equiv\sin\varphi_j$である.
+ある条件のもとでは, この積分公式は完全な近似, すなわちもとの積分と同じ
+値を与える.
+
+本ライブラリは, 
+スペクトルデータ($s^m_n$) 
+$\to$ 格子点上のグリッドデータ($g(\lambda_i,\varphi_j)$) 
+の逆変換を行うルーチン群,
+等間隔格子点上のグリッドデータ($g(\lambda_i,\varphi_j)$) 
+$\to$ スペクトルデータ($s^m_n$) 
+の正変換を行うルーチン群, 
+そして, その他の補助ルーチンおよびヤコビアンの計算等の応用ルーチン群よ
+りなっている.
+
+ここに, 格子点の経度$\lambda_i$は全周を等間隔に$I$-分割した経度で,
+緯度$\varphi_j$は上述の$J$個のガウス緯度である.
+これらの格子点の座標値を与えるサブルーチンも別途用意してある.
+以下のサブルーチンの説明において,
+
+\begin{center}
+\begin{tabular}{ll}
+{\tt MM}:& 切断波数$M$\\
+{\tt JM}:& ガウス緯度の個数$J$\\
+{\tt IM}:& 東西格子点数$I$\\
+{\tt N}:& 全波数$n$\\
+{\tt M}:& 帯状波数$m$\\
+{\tt J}:& ガウス緯度の番号$j$\\
+{\tt I}:& 東西格子点の番号$i$
+\end{tabular}
+\end{center}
+
+なる対応関係がある.
+なお, 呼び出し方法の説明などは主にSTPACKのルーチンについて述べられてい
+る. それぞれのSTPACKの下位ルーチンであるLTPACKのルーチンについても同じ
+項で説明されているが, それぞれ, 引数の与えかた等が微妙に異なるので, 備
+考を参照されたい.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+{\tt STINIT/LTINIT} & 初期化\\
+{\tt STOGRD/LTOGRD} & 格子点の座標の計算\\
+{\tt STNM2L} & スペクトルデータの格納位置の計算\\
+{\tt STL2NM} & {\tt STNM2L}の逆演算\\
+{\tt STCLFA/LTCLFZ/LTCLFW} & スペクトルデータにラプラシアンを作用\\
+{\tt STCLBA/LTCLBZ/LTCLBW} & {\tt STCLFA}の逆演算\\
+{\tt STS2GA/LTS2GZ/LTS2GW} & スペクトルデータからグリッドデータへの変換\\
+{\tt STS2VA/LTS2VZ/LTS2VW} & スペクトルデータからベクトルデータへの変換(勾配)\\
+{\tt STSRVA/LTSRVZ/LTSRVW} & スペクトルデータからベクトルデータへの変換(回転)\\
+{\tt STG2SA/LTG2SZ/LTG2SW} & グリッドデータからスペクトルデータへの変換\\
+{\tt STV2SA/LTV2SZ/LTV2SW} & ベクトルデータからスペクトルデータへの変換(発散)\\
+{\tt STVRSA/LTVRSZ/LTVRSW} & ベクトルデータからスペクトルデータへの変換(回転)\\
+{\tt STAJBA} & ヤコビアンの計算\\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンの説明}
+
+\subsection{STINIT/LTINIT}
+
+\begin{enumerate}
+
+\item 機能 
+{\tt (ST/LT)PACK}の初期化ルーチン. 
+{\tt (ST/LT)PACK}の他のサブルーチンを使用する前に必ず一度呼ばねばならない.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+{\tt STINIT(MM,JM,IM,Q,R,IT,T)}\\
+{\tt LTINIT(MM,JM,Q,R)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt Q}  & {\tt (D(JM*(MM+1)))} 
+      & 出力. ST(LT)PACKの他のルーチンで用いられる配列\\
+{\tt R}  & {\tt (D((MM+1)*(MM+1)))} 
+      & 出力. ST(LT)PACKの他のルーチンで用いられる配列\\
+{\tt IT}  & {\tt (I(5))}    & 出力. STPACKの他のルーチンで用いられる配列\\
+{\tt T}   & {\tt (D(IM*2))} & 出力. STPACKの他のルーチンで用いられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt MM} $ \ge 1$ かつ {\tt JM}および{\tt IM}はそれぞれ, 
+{\tt JM} $>$ {\tt MM}および{\tt IM} $>$ {\tt 2*MM}を満す偶数でなけ
+ればならない.
+
+(b) ヤコビアンの計算({\tt STAJBA})でaliasingを除くためには, 
+{\tt JM} $>$ {\tt 3*MM/2}および{\tt IM} $>$ {\tt 3*MM}としなければなら
+ない.
+
+(c) {\tt STPACK}を使用している間, 配列{\tt Q,R,IT,T}
+({\tt LTPACK}については, 配列{\tt Q,R})の内容を変更してはならない.
+
+(d) (ST/LT)PACKは領域節約のために, ルジャンドル変換の度に毎回ルジャン
+ドル陪関数を内部で計算するような仕様になっている. {\tt Q, R}はそのため
+に使用される配列で, {\tt Q(JM/2,2,0:MM)}と宣言されている場合, 
+{\tt J}$= 1,2,\cdots,${\tt JM/2}, {\tt M} $\ge 1$について,
+
+\begin{center}
+\begin{tabular}{ll}
+{\tt Q(J,1,0)}:& $1/2\cdot w_{J/2+j}$\\
+{\tt Q(J,2,0)}:& $1/\cos\varphi_{J/2+j}$\\
+{\tt Q(J,1,M)}:& $m\cdot\sin\varphi_{J/2+j}$\\
+{\tt Q(J,2,M)}:& $P^m_m(\sin\varphi_{J/2+j})$\\
+\end{tabular}
+\end{center}
+
+がそれぞれ格納される. ここで, それぞれ半球分しか値が記憶されていないが,
+これは, ルジャンドル陪関数の対称性を利用しているためである(内部の変換
+の計算もこの対称性を利用して, 半分で済ますようになっている).
+また, {\tt R}には漸化式で用いられる係数が格納さ
+れる.
+
+本ライブラリでは, ルジャンドル陪関数そのものと, その微分を同時に必要と
+するために, 以下のような漸化式を用いている.
+\begin{equation}
+\renewcommand{\arraystretch}{1.5}
+\left\{
+\begin{array}{l}
+P^m_{n}(\mu)=\sqrt{(2n+1)/((n+m)(n-m)(2n-1))}
+         (n\mu P^m_{n-1}(\mu)-DP^m_{n-1}(\mu))\\
+DP^m_{n}(\mu)=\sqrt{(2n+1)(n+m)(n-m)/(2n-1)}P^m_{n-1}(\mu)-n\mu P^m_n(\mu)
+\end{array}\right.
+\end{equation}
+ここに, 
+\begin{equation}
+DP^m_n(\mu)\equiv(1-\mu^2)\frac{d}{d\mu}P^m_n(\mu)
+\end{equation}
+である.
+{\tt R(0:MM,0:MM)}と宣言されている場合, 
+{\tt N}$>${\tt M}$\ge 0$について,
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{ll}
+{\tt R(N,M)}:& $\sqrt{(2n+1)/((n+m)(n-m)(2n-1))}$\\
+{\tt R(M,N)}:& $\sqrt{(2n+1)(n+m)(n-m)/(2n-1)}$
+\end{tabular}
+\end{center}
+
+がそれぞれ格納される. また, {\tt R(N,N)}にはラプラシアンの演算等で用い
+られる$-n(n+1)$の値が格納されている.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{STOGRD/LTOGRD}
+
+\begin{enumerate}
+
+\item 機能 
+格子点の座標を与える(単位はラジアン).
+
+\item 定義
+
+\item 呼び出し方法 
+    
+{\tt STOGRD(JM,IM,Y,X,Q)}\\
+{\tt LTOGRD(JM,Y,Q)}
+  
+\item パラメーターの説明 
+
+\begin{tabular}{lll}
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt Y}  & {\tt (D(JM))} & 出力. 南北格子点の座標値($\varphi_j$)\\
+{\tt X}  & {\tt (D(IM))} & 出力. 東西格子点の座標値($\lambda_i$)\\
+{\tt Q}  & {\tt (D(JM*(MM+1)))} & 入力. ST(LT)INITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{STNM2L}
+
+\begin{enumerate}
+
+\item 機能 
+全波数と帯状波数からスペクトルデータの格納位置を計算する.
+
+\item 定義
+
+{\tt STPACK}において, スペクトルデータ($s^m_n$)は概要に述べた制限をも
+とに, 独立な$(M+1)^2$個の成分;
+$s^0_0,s^0_1,\cdots,s^0_M$, $\re(s^1_1),\re(s^1_2),\cdots,\re(s^1_M)$,
+$\im(s^1_1),\im(s^1_2),\cdots,\im(s^1_M)$, $\cdots,\re(s^M_M),\im(s^M_M)$
+をこの順序で長さ$(M+1)^2$の配列に格納して扱う.
+ここに, Re( )は実数部を, Im( )は虚数部を表す.
+このサブルーチンは切断波数$M$, $s^m_n$の全波数$n$, および帯状波数$m$か
+ら$\re(s^m_n)$と$\im(s^m_n)$の配列中の格納位置を求めるものである.
+
+\item 呼び出し方法 
+    
+{\tt STNM2L(MM,N,M,L)}
+  
+\item パラメーターの説明 
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt N} & {\tt (I)} & 入力. 全波数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数\\
+{\tt L} & {\tt (I)} & 出力. スペクトルデータの格納位置(備考参照)
+\end{tabular}
+
+\item 備考
+
+{\tt M} $>$ 0 なら $m=$ {\tt M}, $n=$ {\tt N}として$\re(s^m_n)$の格納
+位置を, {\tt M} $<$ 0 なら $m=$ {\tt -M}, $n=$ {\tt N}として
+$\im(s^m_n)$の格納位置を返す.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{STL2NM}
+
+\begin{enumerate}
+
+\item 機能 
+{\tt STNM2L}の逆演算, すなわち, スペクトルデータの格納位置から全波数と
+帯状波数を求める.
+
+\item 定義
+
+{\tt STNM2L}の項を参照
+
+\item 呼び出し方法 
+    
+{\tt STL2NM(MM,L,N,M)}
+  
+\item パラメーターの説明 
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt L} & {\tt (I)} & 入力. スペクトルデータの格納位置\\
+{\tt N} & {\tt (I)} & 出力. 全波数\\
+{\tt M} & {\tt (I)} & 出力. 帯状波数
+\end{tabular}
+
+\item 備考
+
+(a) {\tt M} の正負についての意味づけは{\tt STNM2L}と同じである.
+
+(b) {\tt STNM2L}よりも内部で若干複雑な演算をするので, 高速性が要求され
+    るような場面ではあまり使用すべきではない.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{STCLFA/LTCLFZ/LTCLFW}
+
+\begin{enumerate}
+
+\item 機能 
+スペクトルデータにラプラシアンを作用させる.
+
+\item 定義
+
+球面調和関数展開
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{n=0}\sum^n_{m=-n}
+a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+に対して、水平Laplacian
+\begin{equation}
+\nabla^2\equiv
+\frac{\partial^2}{\cos^2\varphi\partial\lambda^2}
++\frac{\partial}{\cos\varphi\partial\varphi}\left(\cos\varphi\frac{\partial}{\partial\varphi}\right)
+\end{equation}
+を作用させると, 球面調和関数の性質から, 
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}-n(n+1)a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+となる. そこで,
+\begin{equation}
+b^m_n\equiv -n(n+1)a^m_n
+\end{equation}
+を導入すると, 
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}b^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+と表せる. 
+また, 逆に
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+であるとき, 
+\begin{equation}
+b^m_n\equiv -\frac1{n(n+1)}a^m_n
+\end{equation}
+を導入すると, 
+\begin{equation}
+g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}b^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+と表せる. 
+
+本サブルーチンは,
+$a^m_n$から$b^m_n\equiv -n(n+1)a^m_n$を計算するものである.
+
+\item 呼び出し方法 
+    
+{\tt STCLFA(MM,A,B)}\\
+{\tt LTCLFZ(MM,A,B)}\\
+{\tt LTCLFW(MM,M,A,B)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数\\
+{\tt A} & {\tt (D((MM+1)*(MM+1)))} & 入力. $a^m_n$が格納されている配列\\
+{\tt B} & {\tt (D((MM+1)*(MM+1)))} & 出力. $b^m_n$が格納される配列
+\end{tabular}
+
+\item 備考
+
+(a) スペクトルデータ$a^m_n$および$b^m_n$の配列への格納方式については
+{\tt STNM2L}の項を参照.
+
+(b) {\tt LTCLFZ}は帯状成分$m=0$のみについて上記の演算を行う. この場合,
+    {\tt A(0:MM),B(0:MM)}と宣言してあれば, {\tt A(N),B(N)}にはそれぞ
+    れ$a^0_n,b^0_n$が対応する.
+
+(c) {\tt LTCLFW}はある波成分$m>0$のみについて上記の演算を行う. この場合,
+    {\tt A(M:MM,2),B(M:MM,2)}と宣言してあれば, 
+    {\tt A(N,1),A(N,2),B(N,1),B(N,2)}にはそれぞ
+    れ$\re(a^m_n),\im(a^m_n),\re(b^m_n),\im(b^m_n)$が対応する.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{STCLBA/LTCLBZ/LTCLBW}
+
+\begin{enumerate}
+
+\item 機能 
+
+{\tt STCLFA}の逆演算を行う.
+
+\item 定義
+
+{\tt STCLFA}の定義において, $a^m_n$から$b^m_n\equiv -a^m_n/\{n(n+1)\}$を
+計算するものである.
+
+\item 呼び出し方法 
+
+{\tt STCLBA(MM,A,B)}\\
+{\tt LTCLBZ(MM,A,B)}\\
+{\tt LTCLBW(MM,M,A,B)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数\\
+{\tt A} & {\tt (D((MM+1)*(MM+1)))} & 入力. $a^m_n$が格納されている配列\\
+{\tt B} & {\tt (D((MM+1)*(MM+1)))} & 出力. $b^m_n$が格納される配列
+
+\end{tabular}
+
+\item 備考
+
+(a) {\tt LTCLFZ, LTCLFW}はそれぞれ{\tt LTCLBZ, LTCLBW}の逆演算を行うも
+    ので, 引数の与え方などについては{\tt STCLFA}の項に準ずる.
+
+(b) $b^0_0$に対応する位置には$a^0_0$の値がそのまま代入される.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{STS2GA/LTS2GZ/LTS2GW}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータへの変換を行う.
+
+\item 定義
+
+スペクトル逆変換(概要を参照)によりスペクトルデータ($s^m_n$)
+から格子点上のグリッドデータ($g(\lambda_i,\varphi_j)$)を求める.
+
+\item 呼び出し方法 
+
+{\tt STS2GA(MM,JM,IM,S,G,P,Q,R,IT,T)}\\
+{\tt LTS2GZ(MM,JM,S,G,P,Q,R)}\\
+{\tt LTS2GW(MM,JM,M,S,G,P,Q,R)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数\\
+{\tt S} & {\tt (D((MM+1)*(MM+1)))} & 入力. $s^m_n$が格納されている配列\\
+{\tt G} & {\tt (D(JM*IM))} & 出力. $g(\lambda_i,\varphi_j)$が格納される配列\\
+{\tt P} & {\tt (D(JM*IM))} & 作業領域\\
+{\tt Q} & {\tt (D(JM*(MM+1)))} & 入力. ST(LT)INITで与えられる配列\\
+{\tt R} & {\tt (D((MM+1)*(MM+1)))} & 入力. ST(LT)INITで与えられる配列\\
+{\tt IT} & {\tt (I(5))} & 入力. STINITで与えられる配列\\
+{\tt T} & {\tt (D(IM*2))} & 入力. STINITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt G(JM,IM)}と宣言されている場合, {\tt G(J,I)}には
+    $g(\lambda_i,\varphi_j)$が格納される({\tt I,J}の順番に注意).
+
+(b) {\tt LTS2GZ}は帯状成分$m=0$についてルジャンドル逆変換の部分のみを行う.
+    この場合,
+    {\tt S(0:MM)},{\tt G(JM)}と宣言してあれば, {\tt S(N)},{\tt G(J)}
+    にはそれぞれ$s^0_n$, $G^0(\varphi_j)$(概要を参照)が対応する. 
+
+(c) {\tt LTS2GW}はある波成分$m>0$についてルジャンドル逆変換の部分のみを行う.
+    この場合,
+    {\tt S(M:MM,2)}, {\tt G(JM,2)}と宣言してあれば, 
+    {\tt S(N,1)}, {\tt S(N,2)},{\tt G(J,1)}, {\tt G(J,2)}にはそれぞれ
+    $\re(s^m_n)$, $\im(s^m_n)$, $\re(G^m(\varphi_j))$, $\im(G^m(\varphi_j))$
+    (概要を参照)が対応する. 
+
+(d) {\tt LTS2GZ}および{\tt LTS2GW}において, 作業領域{\tt P}の大きさは
+    {\tt JM}でよい.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{STS2VA/LTS2VZ/LTS2VW}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータの勾配に対応するベクトルデータへの変
+換を行う.
+
+\item 定義
+
+スペクトルデータ($s^m_n$)からスペクトル逆変換により求められる実空間の
+データ$g(\lambda,\varphi)$に対して, 勾配ベクトルを
+\begin{equation}
+(u,v)\equiv
+(\frac1{\cos\varphi}\frac{\partial g}{\partial\lambda},
+ \frac{\partial g}{\partial\varphi})
+\end{equation}
+と定義するものとする. 本サブルーチンは, 
+スペクトルデータ($s^m_n$)
+から格子点上のベクトルデータ
+($u(\lambda_i,\varphi_j),v(\lambda_i,\varphi_j)$)を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt STS2VA(MM,JM,IM,S,U,V,P,Q,R,IT,T)}\\
+{\tt LTS2VZ(MM,JM,S,V,P,Q,R)}\\
+{\tt LTS2VW(MM,JM,M,S,U,V,P,Q,R)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数\\
+{\tt S} & {\tt (D((MM+1)*(MM+1)))} & 入力. $s^m_n$が格納されている配列\\
+{\tt U} & {\tt (D(JM*IM))} & 出力. $U(\lambda_i,\varphi_j)$が格納される配列\\
+{\tt V} & {\tt (D(JM*IM))} & 出力. $V(\lambda_i,\varphi_j)$が格納される配列\\
+{\tt P} & {\tt (D(JM*IM))} & 作業領域\\
+{\tt Q} & {\tt (D(JM*(MM+1)))} & 入力. ST(LT)INITで与えられる配列\\
+{\tt R} & {\tt (D((MM+1)*(MM+1)))} & 入力. ST(LT)INITで与えられる配列\\
+{\tt IT} & {\tt (I(5))} & 入力. STINITで与えられる配列\\
+{\tt T} & {\tt (D(IM*2))} & 入力. STINITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt U(JM,IM)}, {\tt V(JM,IM)}と宣言されている場合, {\tt U(J,I)},
+    {\tt V(J,I)}には
+    $u(\lambda_i,\varphi_j),v(\lambda_i,\varphi_j)$が格納される
+    ({\tt I,J}の順番に注意).
+
+(b) {\tt LTS2VZ}は帯状成分$m=0$についてルジャンドル逆変換の部分のみを行う.
+    この場合,
+    {\tt S(0:MM)}, {\tt V(JM)}と宣言してあれば, {\tt S(N)}, {\tt V(J)}
+    にはそれぞれ
+    $s^0_n$, $V^0(\varphi_j)$が対応する. ここに, $V^0(\varphi)$は
+    $v(\lambda,\varphi)$の帯状成分である. なお, $u$の帯状成分は0である
+    のでこのサブルーチンでは扱わない.
+
+(c) {\tt LTS2VW}はある波成分$m>0$についてルジャンドル逆変換の部分のみを行う.
+    この場合,
+    {\tt S(M:MM,2)}, {\tt U(JM,2)}, {\tt V(JM,2)}と宣言してあれば, 
+    {\tt S(N,1)}, {\tt S(N,2)}, {\tt U(J,1)}, {\tt U(J,2)},
+    {\tt V(J,1)}, {\tt V(J,2)}にはそれぞれ
+    $\re(s^m_n)$, $\im(s^m_n)$, $\re(U^m(\varphi_j))$, $\im(U^m(\varphi_j))$,
+    $\re(V^m(\varphi_j))$, $\im(V^m(\varphi_j))$が対応する. 
+    ここに, $U^m(\varphi)$, $V^m(\varphi)$は
+    $u(\lambda,\varphi)$, $v(\lambda,\varphi)$の波数$m$成分である.
+
+(d) {\tt LTS2VZ}および{\tt LTS2VW}において, 作業領域{\tt P}の大きさは
+    {\tt JM}でよい.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{STSRVA/LTSRVZ/LTSRVW}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータの回転的勾配に対応するベクトルデータ
+への変換を行う.
+
+\item 定義
+
+スペクトルデータ($s^m_n$)からスペクトル逆変換により求められる実空間の
+データ$g(\lambda,\varphi)$に対して, 回転的勾配ベクトルを
+\begin{equation}
+(u,v)\equiv
+(-\frac{\partial g}{\partial\varphi},
+\frac1{\cos\varphi}\frac{\partial g}{\partial\lambda})
+\end{equation}
+と定義するものとする(これは, 流線関数と速度を結びつける関係式に対応し
+ている). 本サブルーチンは, 
+スペクトルデータ($s^m_n$)
+から格子点上のベクトルデータ
+($u(\lambda_i,\varphi_j),v(\lambda_i,\varphi_j)$)を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt STSRVA(MM,JM,IM,S,U,V,P,Q,R,IT,T)}\\
+{\tt LTSRVZ(MM,JM,S,U,P,Q,R)}\\
+{\tt LTSRVW(MM,JM,M,S,U,V,P,Q,R)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数\\
+{\tt S} & {\tt (D((MM+1)*(MM+1)))} & 入力. $s^m_n$が格納されている配列\\
+{\tt U} & {\tt (D(JM*IM))} & 出力. $U(\lambda_i,\varphi_j)$が格納される配列\\
+{\tt V} & {\tt (D(JM*IM))} & 出力. $V(\lambda_i,\varphi_j)$が格納される配列\\
+{\tt P} & {\tt (D(JM*IM))} & 作業領域\\
+{\tt Q} & {\tt (D(JM*(MM+1)))} & 入力. ST(LT)INITで与えられる配列\\
+{\tt R} & {\tt (D((MM+1)*(MM+1)))} & 入力. ST(LT)INITで与えられる配列\\
+{\tt IT} & {\tt (I(5))} & 入力. STINITで与えられる配列\\
+{\tt T} & {\tt (D(IM*2))} & 入力. STINITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt U(JM,IM)}, {\tt V(JM,IM)}と宣言されている場合, {\tt U(J,I)},
+    {\tt V(J,I)}には
+    $u(\lambda_i,\varphi_j),v(\lambda_i,\varphi_j)$が格納される
+    ({\tt I,J}の順番に注意).
+
+(b) {\tt LTSRVZ}は帯状成分$m=0$についてルジャンドル逆変換の部分のみを行う.
+    この場合,
+    {\tt S(0:MM)}, {\tt U(JM)}と宣言してあれば, {\tt S(N)}, {\tt U(J)}
+    にはそれぞれ
+    $s^0_n$, $U^0(\varphi_j)$が対応する. ここに, $U^0(\varphi)$は
+    $u(\lambda,\varphi)$の帯状成分である. なお, $v$の帯状成分は0である
+    のでこのサブルーチンでは扱わない.
+
+(c) {\tt LTSRVW}はある波成分$m>0$についてルジャンドル逆変換の部分のみを行う.
+    この場合,
+    {\tt S(M:MM,2)}, {\tt U(JM,2)}, {\tt V(JM,2)}と宣言してあれば, 
+    {\tt S(N,1)}, {\tt S(N,2)}, {\tt U(J,1)}, {\tt U(J,2)},
+    {\tt V(J,1)}, {\tt V(J,2)}にはそれぞれ
+    $\re(s^m_n)$, $\im(s^m_n)$, $\re(U^m(\varphi_j))$, $\im(U^m(\varphi_j))$,
+    $\re(V^m(\varphi_j))$, $\im(V^m(\varphi_j))$が対応する. 
+    ここに, $U^m(\varphi)$, $V^m(\varphi)$は
+    $u(\lambda,\varphi)$, $v(\lambda,\varphi)$の波数$m$成分である.
+
+(d) {\tt LTSRVZ}および{\tt LTS2VW}において, 作業領域{\tt P}の大きさは
+    {\tt JM}でよい.
+
+\end{enumerate}
+
+
+%---------------------------------------------------------------------
+
+\subsection{STG2SA/LTG2SZ/LTG2SW}
+
+\begin{enumerate}
+
+\item 機能 
+
+グリッドデータからスペクトルデータへの変換を行う.
+
+\item 定義
+
+スペクトル正変換(概要を参照)により格子点上のグリッドデータ
+($g(\lambda_i,\varphi_j)$)からスペクトルデータ($s^m_n$)を求める.
+
+\item 呼び出し方法 
+
+{\tt STG2SA(MM,JM,IM,G,S,P,Q,R,IT,T)}\\
+{\tt LTG2SZ(MM,JM,G,S,P,Q,R)}\\
+{\tt LTG2SW(MM,JM,M,G,S,P,Q,R)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数\\
+{\tt G} & {\tt (D(JM*IM))} & 入力. $g(\lambda_i,\varphi_j)$されている配列\\
+{\tt S} & {\tt (D((MM+1)*(MM+1)))} & 出力. $s^m_n$が格納が格納される配列\\
+{\tt P} & {\tt (D(JM*IM))} & 作業領域\\
+{\tt Q} & {\tt (D(JM*(MM+1)))} & 入力. ST(LT)INITで与えられる配列\\
+{\tt R} & {\tt (D((MM+1)*(MM+1)))} & 入力. ST(LT)INITで与えられる配列\\
+{\tt IT} & {\tt (I(5))} & 入力. STINITで与えられる配列\\
+{\tt T} & {\tt (D(IM*2))} & 入力. STINITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt G(JM,IM)}と宣言されている場合, {\tt G(J,I)}には
+    $g(\lambda_i,\varphi_j)$が格納されていること({\tt I,J}の順番に注意).
+
+(b) {\tt LTG2SZ}は帯状成分$m=0$についてルジャンドル正変換の部分のみを行う.
+    この場合,
+    {\tt S(0:MM)},{\tt G(JM)}と宣言してあれば, {\tt S(N)},{\tt G(J)}
+    にはそれぞれ$s^0_n$, $G^0(\varphi_j)$(概要を参照)が対応する. 
+
+(c) {\tt LTG2SW}はある波成分$m>0$についてルジャンドル正変換の部分のみを行う.
+    この場合,
+    {\tt S(M:MM,2)}, {\tt G(JM,2)}と宣言してあれば, 
+    {\tt S(N,1)}, {\tt S(N,2)},{\tt G(J,1)}, {\tt G(J,2)}にはそれぞれ
+    $\re(s^m_n)$, $\im(s^m_n)$, $\re(G^m(\varphi_j))$, $\im(G^m(\varphi_j))$
+    (概要を参照)が対応する. 
+
+(d) {\tt LTG2SZ}および{\tt LTG2SW}において, 作業領域{\tt P}の大きさは
+    {\tt JM}でよい.
+
+(e) {\tt STG2SA/LTG2SZ/LTG2SW}において, 入力{\tt G}は保存されない.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{STV2SA/LTV2SZ/LTV2SW}
+
+\begin{enumerate}
+
+\item 機能 
+
+格子点上のベクトルデータからその発散に対応する
+スペクトルデータへの変換を行う.
+
+\item 定義
+
+ベクトルデータ$(u(\lambda,\varphi),v(\lambda,\varphi))$に対して, 発散を
+\begin{equation}
+g\equiv
+\frac{\partial u}{\cos\varphi\partial\lambda}
+ +\frac{\partial (v\cos\varphi)}{\cos\varphi\partial\varphi}
+\end{equation}
+と定義するものとする. 本サブルーチンは, 
+格子点上のベクトルデータ$(u(\lambda_i,\varphi_j),v(\lambda_i,\varphi_j))$
+からこの発散$g$に対応する
+スペクトルデータ($s^m_n$)を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt STV2SA(MM,JM,IM,U,V,S,P,Q,R,IT,T)}\\
+{\tt LTV2SZ(MM,JM,V,S,P,Q,R)}\\
+{\tt LTV2SW(MM,JM,M,U,V,S,P,Q,R)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数\\
+{\tt U} & {\tt (D(JM*IM))} & 入力. $u(\lambda_i,\varphi_j)$が格納される配列\\
+{\tt V} & {\tt (D(JM*IM))} & 入力. $v(\lambda_i,\varphi_j)$が格納される配列\\
+{\tt S} & {\tt (D((MM+1)*(MM+1)))} & 出力. $s^m_n$が格納されている配列\\
+{\tt P} & {\tt (D(JM*IM))} & 作業領域\\
+{\tt Q} & {\tt (D(JM*(MM+1)))} & 入力. ST(LT)INITで与えられる配列\\
+{\tt R} & {\tt (D((MM+1)*(MM+1)))} & 入力. ST(LT)INITで与えられる配列\\
+{\tt IT} & {\tt (I(5))} & 入力. STINITで与えられる配列\\
+{\tt T} & {\tt (D(IM*2))} & 入力. STINITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt U(JM,IM)}, {\tt V(JM,IM)}と宣言されている場合, {\tt U(J,I)},
+    {\tt V(J,I)}には
+    $u(\lambda_i,\varphi_j),v(\lambda_i,\varphi_j)$が格納されていること
+    ({\tt I,J}の順番に注意).
+
+(b) {\tt LTV2SZ}は帯状成分$m=0$についてルジャンドル正変換の部分のみを行う.
+    この場合,
+    {\tt S(0:MM)}, {\tt V(JM)}と宣言してあれば, {\tt S(N)}, {\tt V(J)}
+    にはそれぞれ
+    $s^0_n$, $V^0(\varphi_j)$が対応する. ここに, $V^0(\varphi)$は
+    $v(\lambda,\varphi)$の帯状成分である. なお, $u$の帯状成分は
+    発散に寄与しないのでこのサブルーチンでは扱わない.
+
+(c) {\tt LTV2SW}はある波成分$m>0$についてルジャンドル正変換の部分のみを行う.
+    この場合,
+    {\tt S(M:MM,2)}, {\tt U(JM,2)}, {\tt V(JM,2)}と宣言してあれば, 
+    {\tt S(N,1)}, {\tt S(N,2)}, {\tt U(J,1)}, {\tt U(J,2)},
+    {\tt V(J,1)}, {\tt V(J,2)}にはそれぞれ
+    $\re(s^m_n)$, $\im(s^m_n)$, $\re(U^m(\varphi_j))$, $\im(U^m(\varphi_j))$,
+    $\re(V^m(\varphi_j))$, $\im(V^m(\varphi_j))$が対応する. 
+    ここに, $U^m(\varphi)$, $V^m(\varphi)$は
+    $u(\lambda,\varphi)$, $v(\lambda,\varphi)$の波数$m$成分である.
+
+(d) {\tt LTV2SZ}および{\tt LTV2SW}において, 作業領域{\tt P}の大きさは
+    {\tt JM}でよい.
+
+(e) {\tt STV2SA/LTV2SZ/LTV2SW}において, 入力{\tt U, V}は保存されない.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{STVRSA/LTVRSZ/LTVRSW}
+
+\begin{enumerate}
+
+\item 機能 
+
+格子点上のベクトルデータからその回転的発散に対応する
+スペクトルデータへの変換を行う.
+
+\item 定義
+
+ベクトルデータ$(u(\lambda,\varphi),v(\lambda,\varphi))$に対して, 
+回転的発散を
+\begin{equation}
+g\equiv
+\frac{\partial v}{\cos\varphi\partial\lambda}
+ -\frac{\partial (u\cos\varphi)}{\cos\varphi\partial\varphi}
+\end{equation}
+と定義するものとする(これは, 速度場と渦度を結びつける関係式に対応し
+ている). 本サブルーチンは, 
+格子点上のベクトルデータ$(u(\lambda_i,\varphi_j),v(\lambda_i,\varphi_j))$
+からこの回転的発散$g$に対応する
+スペクトルデータ($s^m_n$)を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt STVRSA(MM,JM,IM,U,V,S,P,Q,R,IT,T)}\\
+{\tt LTVRSZ(MM,JM,U,S,P,Q,R)}\\
+{\tt LTVRSW(MM,JM,M,U,V,S,P,Q,R)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数\\
+{\tt U} & {\tt (D(JM*IM))} & 入力. $u(\lambda_i,\varphi_j)$が格納される配列\\
+{\tt V} & {\tt (D(JM*IM))} & 入力. $u(\lambda_i,\varphi_j)$が格納される配列\\
+{\tt S} & {\tt (D((MM+1)*(MM+1)))} & 出力. $s^m_n$が格納されている配列\\
+{\tt P} & {\tt (D(JM*IM))} & 作業領域\\
+{\tt Q} & {\tt (D(JM*(MM+1)))} & 入力. ST(LT)INITで与えられる配列\\
+{\tt R} & {\tt (D((MM+1)*(MM+1)))} & 入力. ST(LT)INITで与えられる配列\\
+{\tt IT} & {\tt (I(5))} & 入力. STINITで与えられる配列\\
+{\tt T} & {\tt (D(IM*2))} & 入力. STINITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) {\tt U(JM,IM)}, {\tt V(JM,IM)}と宣言されている場合, {\tt U(J,I)},
+    {\tt V(J,I)}には
+    $u(\lambda_i,\varphi_j),v(\lambda_i,\varphi_j)$が格納されていること
+    ({\tt I,J}の順番に注意).
+
+(b) {\tt LTVRSZ}は帯状成分$m=0$についてルジャンドル正変換の部分のみを行う.
+    この場合,
+    {\tt S(0:MM)}, {\tt U(JM)}と宣言してあれば, {\tt S(N)}, {\tt U(J)}
+    にはそれぞれ
+    $s^0_n$, $U^0(\varphi_j)$が対応する. ここに, $U^0(\varphi)$は
+    $u(\lambda,\varphi)$の帯状成分である. なお, $v$の帯状成分は
+    回転的発散に寄与しないのでこのサブルーチンでは扱わない.
+
+(c) {\tt LTVRSW}はある波成分$m>0$についてルジャンドル正変換の部分のみを行う.
+    この場合,
+    {\tt S(M:MM,2)}, {\tt U(JM,2)}, {\tt V(JM,2)}と宣言してあれば, 
+    {\tt S(N,1)}, {\tt S(N,2)}, {\tt U(J,1)}, {\tt U(J,2)},
+    {\tt V(J,1)}, {\tt V(J,2)}にはそれぞれ
+    $\re(s^m_n)$, $\im(s^m_n)$, $\re(U^m(\varphi_j))$, $\im(U^m(\varphi_j))$,
+    $\re(V^m(\varphi_j))$, $\im(V^m(\varphi_j))$が対応する. 
+    ここに, $U^m(\varphi)$, $V^m(\varphi)$は
+    $u(\lambda,\varphi)$, $v(\lambda,\varphi)$の波数$m$成分である.
+
+(d) {\tt LTVRSZ}および{\tt LTVRSW}において, 作業領域{\tt P}の大きさは
+    {\tt JM}でよい.
+
+(e) {\tt STVRSA/LTVRSZ/LTVRSW}において, 入力{\tt U, V}は保存されない.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{STAJBA}
+
+\begin{enumerate}
+
+\item 機能 
+
+ヤコビアンの計算を行う.
+
+\item 定義
+
+スペクトル展開された変数$a(\lambda,\varphi), b(\lambda,\varphi)$
+\begin{equation}
+a(\lambda,\varphi)\equiv\sum_{n=0}^M\sum_{m=-n}^n 
+a^m_n P^m_n(\sin\varphi) e^{im\lambda}
+\end{equation}
+\begin{equation}
+b(\lambda,\varphi)\equiv\sum_{n=0}^M\sum_{m=-n}^n
+b^m_n P^m_n(\sin\varphi) e^{im\lambda}
+\end{equation}
+に対して, ヤコビアン$J(a,b)$は
+\begin{equation}
+J(a,b)\equiv
+ \frac{\partial a}{\partial\lambda}\frac{\partial b}{\partial\mu}
+-\frac{\partial b}{\partial\lambda}\frac{\partial a}{\partial\mu}
+\end{equation}
+と定義される. ここに, $\mu\equiv\sin\varphi$である.
+本サブルーチンは、上記の$a^m_n, b^m_n$を入力として,
+$J(a,b)$の切断波数$M$までのスペクトル展開係数$c^m_n$
+\begin{equation}
+c^m_n\equiv\frac1{4\pi}\int^{2\pi}_0\int^1_{-1}J(a,b)P^m_n(\mu)
+e^{-im\lambda}d\mu d\lambda
+\end{equation}
+を求めるものである.
+
+\item 呼び出し方法 
+
+{\tt STAJBA(MM,JM,IM,A,B,C,P,Q,R,IT,T)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数\\
+{\tt A} & {\tt (D((MM+1)*(MM+1)))} & 入力. $a^m_n$が格納されている配列\\
+{\tt B} & {\tt (D((MM+1)*(MM+1)))} & 入力. $b^m_n$が格納されている配列\\
+{\tt C} & {\tt (D((MM+1)*(MM+1)))} & 出力. $c^m_n$が格納される配列\\
+{\tt P} & {\tt (D(JM*IM*4))} & 作業領域\\
+{\tt Q} & {\tt (D(JM*(MM+1)))} & 入力. ST(LT)INITで与えられる配列\\
+{\tt R} & {\tt (D((MM+1)*(MM+1)))} & 入力. ST(LT)INITで与えられる配列\\
+{\tt IT} & {\tt (I(5))} & 入力. STINITで与えられる配列\\
+{\tt T} & {\tt (D(IM*2))} & 入力. STINITで与えられる配列
+\end{tabular}
+
+\item 備考
+
+(a) 作業領域$P$の大きさが他の変換ルーチンと異なることに注意.
+
+(b) aliasingを除くために十分な{\tt JM}, {\tt IM}の大きさについては, 
+{\tt STINIT}の項を参照.
+
+\end{enumerate}
+
+\end{document}

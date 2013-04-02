@@ -1,0 +1,42 @@
+!
+!
+!     example of control for Kemo's field line
+!
+begin field_line
+  fline_file_head    'psf'
+  fline_output_type   ucd
+!
+  array chosen_ele_grp_ctl 1
+    chosen_ele_grp_ctl   outer_core_ele   end
+  end array
+!
+!  starting_type:    position_list, surface_list,  or surface_group
+  line_direction_ctl        forward
+  max_line_stepping_ctl     1000
+  starting_type_ctl     position_list
+!
+  start_surf_grp_ctl      icb_surf
+  num_fieldline_ctl       10
+!
+!  selection_type_ctl:    amplitude, area_size
+  selection_type_ctl     amplitude
+!
+  array starting_point_ctl  10
+    starting_point_ctl  0.0  0.0  0.0
+  end array
+!
+  array starting_gl_surface_id  10
+    starting_gl_surface_id  12  3
+  end array
+!
+!   field type:
+!     scalar, vector, sym_tensor, asym_tensor
+!     spherical_vector,   spherical_sym_tensor
+!     cylindrical_vector, cylindrical_sym_tensor
+!     norm, 
+!
+  field_line_field_ctl      magnetic_field   end
+  coloring_field_ctl        magnetic_field   end
+  coloring_comp_ctl        radial   end
+!
+end

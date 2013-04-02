@@ -1,0 +1,364 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (C) 1998 Keiichi Ishioka				       %
+% 								       %
+% この著作権表示が記載してあるならば, どのような媒体にでも何も手を加え %
+% ずに複写して再配付することを許可します. これらのドキュメントとその使 % 
+% 用許諾を他の言語に翻訳する際は, 以下の条件に従って下さい.	       %
+% 								       %
+% 他の言語に翻訳する際に, 他の言語での口語表現への変更の範囲を越えて故 %
+% 意に意味を変更しないこと.					       %
+%								       %
+% 翻訳した使用許諾には, それが翻訳であること, また原文の使用許諾が翻訳 %
+% 全体に依然適用されることを明示すること.			       %
+%								       %
+% ハイパーテキストの場合, 同一サイト上で原文のコピーを保守すること. ま %
+% た, 翻訳したハイパーテキストのページからその原文へのリンクを提供する %
+% こと.								       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%履歴   95/10/27 石岡圭一 (version 0.0)
+%
+\documentstyle[a4j]{jarticle}
+
+\title{TDPACK使用の手引 (version 0.0)}
+\author{石岡 圭一  (95/10/27)}
+\date{}
+
+\newcommand{\y}{\mbox{\boldmath $y$}}
+\newcommand{\yi}{\mbox{\boldmath $y_0$}}
+\newcommand{\yd}{\mbox{\boldmath $y'$}}
+\newcommand{\f}{\mbox{\boldmath $f$}}
+\newcommand{\g}{\mbox{\boldmath $g$}}
+\newcommand{\bb}{\mbox{\boldmath $b$}}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは, 連立1階常微分方程式を数値的に解くサブルーチンパッケージであり,
+数値モデルなどに現れる時間積分を求めるために使用できる.
+
+連立1階常微分方程式は, 一般に
+\begin{equation}
+\yd\equiv\frac{d\y}{dx}=\f (x,\y)
+\end{equation}
+\begin{equation}
+\y\equiv (y_1,y_2,\cdots,y_n)
+\end{equation}
+と表わされる. 
+
+本ライブラリは, 
+関数系$\f$, 初期値$x_0, \yi$, および刻み幅$\Delta x$
+が与えられた場合に, $x=x_0+\Delta x$における$\y$の値を
+数値的に求めるものである.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+{\tt TDRK4U} & Runge-Kutta法(4次精度)による数値解の計算\\
+{\tt TDRK2U} & Runge-Kutta法(2次精度)による数値解の計算\\
+{\tt TDADMU} & Adams法による数値解の計算\\
+{\tt TDBSMU} & Bulirsch-Stoer法による数値解の計算\\
+{\tt TDRKNU} & Runge-Kutta法(4次精度)による数値解の計算(演算子分割処理
+を含む)\\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンの説明}
+
+\subsection{TDRK4U}
+
+\begin{enumerate}
+
+\item 機能 
+
+Runge-Kutta法(4次精度)による数値解の計算
+
+\item 定義
+
+概要を参照.
+
+\item 呼び出し方法 
+    
+{\tt TDRK4U(N,M,H,X,Y,W,SUB)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt N} & {\tt (I)} & 入力. 従属変数ベクトル\y の次元\\
+{\tt M} & {\tt (I)} & 入力. ステップ分割数(備考を参照)\\
+{\tt H} & {\tt (D)} & 入力. 積分区間の長さ($\Delta x$)\\
+{\tt X} & {\tt (D)} & 入力. 独立変数$x$の初期値$x_0$\\
+        &           & 出力. $x+\Delta x$\\
+{\tt Y} & {\tt (D(N))} & 入力. 従属変数ベクトル\y の初期値 \yi\\
+        &           & 出力. $x=x+\Delta x$における\y の値\\
+{\tt W} & {\tt (D(N*3))} & 作業領域\\
+{\tt SUB} & {\tt (EXTERNAL)} & 関数系$\f (x,\y )$を計算する副プログラム名(備考
+を参照)
+\end{tabular}
+
+\item 備考
+
+(a)副プログラム{\tt SUB}の用意のし方
+
+{\tt SUBROUTINE SUB(X,Y,DY)}
+
+\begin{tabular}{lll}
+{\tt X } & {\tt (D)} & 入力. 独立変数$x$の値\\
+{\tt Y } & {\tt (D(N))} & 入力. 従属変数ベクトル\y の値\\
+{\tt DY} & {\tt (D(N))} & 出力. \y の$x$-微分値 \yd
+\end{tabular}
+
+{\tt SUB}は本サブルーチンを呼びだす側のプログラムで{\tt EXTERNAL}
+宣言をしておくこと.
+
+(b) パラメーター{\tt M}は内部でRunge-Kutta法による積分が行われる回数を
+表わす. 従って, 数値積分の刻み幅は{\tt H/M}となる.
+
+(c) {\tt TDRK4U}一回あたりの, {\tt SUB}を呼び出す回数は, {\tt 4*M}で
+ある.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{TDRK2U}
+
+\begin{enumerate}
+
+\item 機能 
+
+Runge-Kutta法(2次精度)による数値解の計算
+
+\item 定義
+
+概要を参照.
+
+\item 呼び出し方法 
+    
+{\tt TDRK2U(N,M,H,X,Y,W,SUB)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt N} & {\tt (I)} & 入力. 従属変数ベクトル\y の次元\\
+{\tt M} & {\tt (I)} & 入力. ステップ分割数(備考を参照)\\
+{\tt H} & {\tt (D)} & 入力. 積分区間の長さ($\Delta x$)\\
+{\tt X} & {\tt (D)} & 入力. 独立変数$x$の初期値$x_0$\\
+        &           & 出力. $x+\Delta x$\\
+{\tt Y} & {\tt (D(N))} & 入力. 従属変数ベクトル\y の初期値 \yi\\
+        &           & 出力. $x=x+\Delta x$における\y の値\\
+{\tt W} & {\tt (D(N*2))} & 作業領域\\
+{\tt SUB} & {\tt (EXTERNAL)} & 関数系$\f (x,\y )$を計算する副プログラム名(備考
+を参照)
+\end{tabular}
+
+\item 備考
+
+(a)副プログラム{\tt SUB}の用意のし方, および{\tt M}の意味は{\tt TDRK4U}の
+項を参照.
+
+(b) {\tt TDRK2U}一回あたりの, {\tt SUB}を呼び出す回数は, {\tt 2*M}で
+ある.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{TDADMU}
+
+\begin{enumerate}
+
+\item 機能 
+
+Adams法による数値解の計算
+
+\item 定義
+
+概要を参照.
+
+\item 呼び出し方法 
+    
+{\tt TDADMU(N,M,H,X,Y,W,SUB)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt N} & {\tt (I)} & 入力. 従属変数ベクトル\y の次元\\
+{\tt M} & {\tt (I)} & 入力. ステップ分割数(備考を参照)\\
+{\tt H} & {\tt (D)} & 入力. 積分区間の長さ($\Delta x$)\\
+{\tt X} & {\tt (D)} & 入力. 独立変数$x$の初期値$x_0$\\
+        &           & 出力. $x+\Delta x$\\
+{\tt Y} & {\tt (D(N))} & 入力. 従属変数ベクトル\y の初期値 \yi\\
+        &           & 出力. $x=x+\Delta x$における\y の値\\
+{\tt W} & {\tt (D(N*6))} & 作業領域\\
+{\tt SUB} & {\tt (EXTERNAL)} & 関数系$\f (x,\y )$を計算する副プログラム名(備考
+を参照)
+\end{tabular}
+
+\item 備考
+
+(a) {\tt M}$\ge 3$であること.
+
+(b)副プログラム{\tt SUB}の用意のし方, および{\tt M}の意味は{\tt TDRK4U}の
+項を参照.
+
+(c) {\tt TDADMU}一回あたりの, {\tt SUB}を呼び出す回数は, 
+{\tt 6+2*M}である.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{TDBSMU}
+
+\begin{enumerate}
+
+\item 機能 
+
+Bulirsch-Stoer法による数値解の計算
+
+\item 定義
+
+概要を参照.
+
+\item 呼び出し方法 
+    
+{\tt TDBSMU(N,M,L,H,X,Y,W,SUB)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt N} & {\tt (I)} & 入力. 従属変数ベクトル\y の次元\\
+{\tt M} & {\tt (I)} & 入力. ステップ分割数(備考を参照)\\
+{\tt L} & {\tt (I)} & 入力. 公式の次数の指定(備考を参照)\\
+{\tt H} & {\tt (D)} & 入力. 積分区間の長さ($\Delta x$)\\
+{\tt X} & {\tt (D)} & 入力. 独立変数$x$の初期値$x_0$\\
+        &           & 出力. $x+\Delta x$\\
+{\tt Y} & {\tt (D(N))} & 入力. 従属変数ベクトル\y の初期値 \yi\\
+        &           & 出力. $x=x+\Delta x$における\y の値\\
+{\tt W} & {\tt (D(N*(L+3)))} & 作業領域\\
+{\tt SUB} & {\tt (EXTERNAL)} & 関数系$\f (x,\y )$を計算する副プログラム名(備考
+を参照)
+\end{tabular}
+
+\item 備考
+
+(a) {\tt L}は正の整数であり, {\tt 2*L}が公式の次数に対応する.
+被積分関数\f が滑らかな場合は{\tt L}を大きくとれば高精度の数値解が得ら
+れるが, あまり大きすぎると計算量が増えすぎるだけでなく, 丸め誤差の影響
+も大きくなる. 従って解くべき問題にもよるが, {\tt L=4}〜{\tt L=8}程度が
+適当である.
+
+(b)副プログラム{\tt SUB}の用意のし方は{\tt TDRK4U}の項を参照.
+
+(c) {\tt M}は内部でBulirsch-Stoer法による積分が行われる回数を表してい
+るが, 数値積分の刻み幅は{\tt (H/M)/2}〜{\tt (H/M)/(2*L)}まで変化してい
+る.
+
+(d) {\tt TDBSMU}一回あたりの, {\tt SUB}を呼び出す回数は, 
+{\tt M*(L*L+1)}である.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{TDRKNU}
+
+\begin{enumerate}
+
+\item 機能 
+
+Runge-Kutta法(4次精度)による数値解の計算(演算子分割処理を含む)
+
+\item 定義
+
+概要に述べたような一般の連立1階常微分方程式において, 右辺を従属変数$\y$
+に対する線形項と非線形項とに分離したもの:
+\begin{equation}
+\yd\equiv\frac{d\y}{dx}=\f (x,\y)+\g (x,\y)
+\end{equation}
+\begin{equation}
+\y\equiv (y_1,y_2,\cdots,y_n)
+\end{equation}
+を考える. ここに, $\f (x,\y)$は線形項, $\g (x,\y)$は非線形項である.
+
+上の常微分方程式において, 線形項だけを残した方程式:
+\begin{equation}
+\yd\equiv\frac{d\y}{dx}=\f (x,\y)=A(x)\y+\bb (x)
+\end{equation}
+は($A(x)$および$\bb (x)$が$x$で解析的に積分できれば)解析的に解くことが
+できる. 従って, 線形項による影響は解析的に評価し, 非線形項のみを数値的
+に積分することにより, 数値的に解くべき問題の性質が良くなる場合がある
+(流体運動の方程式における粘性項や, 浅水方程式における重力波の伝播など
+の影響を線形項の方に繰り込む場合など).
+
+本ライブラリは, 
+関数系$\f$による線形方程式の解, 関数系$\g$, 初期値$x_0, \yi$, および刻
+み幅$\Delta x$が与えられた場合に, $x=x_0+\Delta x$における$\y$の値を
+数値的に求めるものである.
+
+\item 呼び出し方法 
+    
+{\tt TDRKNU(N,M,H,X,Y,W,SUBL,SUBN)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt N} & {\tt (I)} & 入力. 従属変数ベクトル\y の次元\\
+{\tt M} & {\tt (I)} & 入力. ステップ分割数(備考を参照)\\
+{\tt H} & {\tt (D)} & 入力. 積分区間の長さ($\Delta x$)\\
+{\tt X} & {\tt (D)} & 入力. 独立変数$x$の初期値$x_0$\\
+        &           & 出力. $x+\Delta x$\\
+{\tt Y} & {\tt (D(N))} & 入力. 従属変数ベクトル\y の初期値 \yi\\
+        &           & 出力. $x=x+\Delta x$における\y の値\\
+{\tt W} & {\tt (D(N*3))} & 作業領域\\
+{\tt SUBL} & {\tt (EXTERNAL)} & 線形項\f (x,\y )による積分を計算する
+副プログラム名(備考を参照)\\
+{\tt SUBN} & {\tt (EXTERNAL)} & 関数系\g (x,\y )を計算する副プログラ
+ム名(備考を参照)
+\end{tabular}
+
+\item 備考
+
+(a)副プログラム {\tt SUBL}, {\tt SUBN}の用意のし方
+
+{\tt SUBROUTINE SUBL(X,DX,Y)}
+
+\begin{tabular}{lll}
+{\tt X } & {\tt (D)} & 入力. 独立変数$x$の値\\
+{\tt DX} & {\tt (D)} & 入力. 独立変数$x$の値の増分$\Delta x$\\
+{\tt Y} & {\tt (D(N))} & 入力. 従属変数ベクトル\y の値\\
+        &              & 出力. 線形項により積分した\y の$x=x+\Delta x$での値
+\end{tabular}
+
+{\tt SUBROUTINE SUBN(X,Y,DY)}
+
+\begin{tabular}{lll}
+{\tt X } & {\tt (D)} & 入力. 独立変数$x$の値\\
+{\tt Y } & {\tt (D(N))} & 入力. 従属変数ベクトル\y の値\\
+{\tt DY} & {\tt (D(N))} & 出力. 非線形項\g の値
+\end{tabular}
+
+{\tt SUBL, SUBN}は本サブルーチンを呼びだす側のプログラムで{\tt EXTERNAL}
+宣言をしておくこと.
+
+(b) パラメーター{\tt M}は内部でRunge-Kutta法による積分が行われる回数を
+表わす. 従って, 数値積分の刻み幅は{\tt H/M}となる.
+
+(c) {\tt TDRKNU}一回あたりの, {\tt SUBL}を呼び出す回数は, {\tt 5*M},
+    {\tt SUBN}を呼び出す回数は, {\tt 4*M}である.
+
+(d) {\tt TDRKNU}の内部における{\tt SUBL}の呼び出しでは, 常に{\tt DX = H/(2*M)}
+    である. 従って, {\tt SUBL}が{\tt X}に陽に依存しない場合などには, 計算
+    をある程度簡略化できる.
+
+\end{enumerate}
+
+\end{document}

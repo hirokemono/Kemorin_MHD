@@ -1,0 +1,21 @@
+begin element_grping_data_ctl
+!
+  begin grouping_plot_ctl
+    grouping_mesh_head_ctl    'ele_group_med'
+    evolution_data_name_ctl   'correlate_layer.dat'
+    udt_data_head_ctl         'correlation'
+!
+    time_average_data_ctl      'NO'
+!    take_sqre_ctl              'YES'
+!
+    start_element_grp_name_ctl   'fluid_r1_s1'
+    num_element_grp_ctl           480
+  end
+!
+  begin time_step_ctl
+    i_step_init_ctl         701
+    i_step_number_ctl       708
+    i_step_psf_ctl            2
+    dt_ctl                1.0d0
+  end
+end

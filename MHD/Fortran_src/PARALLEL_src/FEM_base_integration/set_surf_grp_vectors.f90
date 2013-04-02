@@ -1,0 +1,267 @@
+!
+!     module set_surf_grp_vectors
+!
+!     Writteg by H.Matsui on Aug., 2006
+!
+!      subroutine pick_normal_of_surf_group
+!      subroutine pick_surface_group_geometry
+!
+!      subroutine pick_vect_by_surf_grp_w_side(num_surf, num_surf_bc,   &
+!     &          num_surf_smp, isurf_grp_smp_stack, isurf_grp,          &
+!     &          numsurf, x_surf, x_sf_grp)
+!      subroutine pick_vect_by_surf_grp_w_side(num_surf, num_surf_bc,   &
+!     &          num_surf_smp, isurf_grp_smp_stack, isurf_grp,          &
+!     &          numsurf, x_surf, x_sf_grp)
+!
+!      subroutine pick_scalar_by_surf_grp(num_surf, num_surf_bc,        &
+!     &          num_surf_smp, isurf_grp_smp_stack, isurf_grp,          &
+!     &          numsurf, x_surf, x_sf_grp)
+!
+      module set_surf_grp_vectors
+!
+      use m_precision
+!
+      use m_machine_parameter
+!
+      implicit  none
+!
+      private :: pick_scalar_4_surf_grp, pick_vector_4_surf_grp
+      private :: pick_vector_4_surf_grp_side
+!
+!-----------------------------------------------------------------------
+!
+      contains
+!
+!-----------------------------------------------------------------------
+!
+      subroutine pick_normal_of_surf_group
+!
+      use m_geometry_parameter
+      use m_surface_geometry_data
+      use m_surface_group_connect
+      use m_surface_group
+      use m_surface_group_geometry
+!
+      use sum_normal_4_surf_group
+!
+!
+      call allocate_vector_4_surface
+!
+      call pick_vector_4_surf_grp_side(numsurf, vnorm_surf,             &
+     &    vnorm_sf_grp)
+      call pick_scalar_4_surf_grp(numsurf, area_surf, area_sf_grp)
+      call pick_scalar_4_surf_grp(numsurf, a_area_surf, a_area_sf_grp)
+!
+      end subroutine pick_normal_of_surf_group
+!
+!-----------------------------------------------------------------------
+!
+      subroutine pick_surface_group_geometry
+!
+      use m_geometry_constants
+      use m_geometry_parameter
+      use m_geometry_data
+      use m_surface_geometry_data
+      use m_surface_group
+      use m_surface_group_connect
+      use m_surface_group_geometry
+!
+      use coordinate_converter
+!
+!
+!    set center of surface
+!
+      call allocate_surf_grp_geomtetry
+!
+      call pick_vector_4_surf_grp(numsurf, x_surf, x_sf_grp)
+!
+      call position_2_sph(num_surf_bc, x_sf_grp, r_sf_grp,              &
+     &    theta_sf_grp, phi_sf_grp, ar_sf_grp, s_sf_grp, as_sf_grp)
+!
+       end subroutine pick_surface_group_geometry
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine pick_vector_4_surf_grp(numsurf, x_surf, x_sf_grp)
+!
+      use m_surface_group
+      use m_surface_group_connect
+!
+      integer(kind = kint), intent(in) :: numsurf
+      real(kind=kreal), intent(in) :: x_surf(numsurf,3)
+!
+      real(kind=kreal), intent(inout) :: x_sf_grp(num_surf_bc,3)
+!
+!
+      call pick_vector_by_surf_grp(num_surf, num_surf_bc,               &
+     &          num_surf_smp, isurf_grp_smp_stack, isurf_grp,           &
+     &          numsurf, x_surf, x_sf_grp)
+!
+      end subroutine pick_vector_4_surf_grp
+!
+!-----------------------------------------------------------------------
+!
+      subroutine pick_vector_4_surf_grp_side(numsurf, x_surf, x_sf_grp)
+!
+      use m_surface_group
+      use m_surface_group_connect
+!
+      integer(kind = kint), intent(in) :: numsurf
+      real(kind=kreal), intent(in) :: x_surf(numsurf,3)
+!
+      real(kind=kreal), intent(inout) :: x_sf_grp(num_surf_bc,3)
+!
+!
+      call pick_vect_by_surf_grp_w_side(num_surf, num_surf_bc,          &
+     &          num_surf_smp, isurf_grp_smp_stack, isurf_grp,           &
+     &          numsurf, x_surf, x_sf_grp)
+!
+      end subroutine pick_vector_4_surf_grp_side
+!
+!-----------------------------------------------------------------------
+!
+      subroutine pick_scalar_4_surf_grp(numsurf, x_surf, x_sf_grp)
+!
+      use m_surface_group
+      use m_surface_group_connect
+!
+      integer(kind = kint), intent(in) :: numsurf
+      real(kind=kreal), intent(in) :: x_surf(numsurf)
+!
+      real(kind=kreal), intent(inout) :: x_sf_grp(num_surf_bc)
+!
+!
+      call pick_scalar_by_surf_grp(num_surf, num_surf_bc,               &
+     &          num_surf_smp, isurf_grp_smp_stack, isurf_grp,           &
+     &          numsurf, x_surf, x_sf_grp)
+!
+      end subroutine pick_scalar_4_surf_grp
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine pick_vector_by_surf_grp(num_surf, num_surf_bc,         &
+     &          num_surf_smp, isurf_grp_smp_stack, isurf_grp,           &
+     &          numsurf, x_surf, x_sf_grp)
+!
+      integer(kind = kint), intent(in) :: num_surf, num_surf_bc
+      integer(kind = kint), intent(in) :: num_surf_smp
+      integer(kind = kint), intent(in)                                  &
+     &                 :: isurf_grp_smp_stack(0:num_surf_smp)
+      integer (kind = kint), intent(in) :: isurf_grp(num_surf_bc)
+!
+      integer(kind = kint), intent(in) :: numsurf
+      real(kind=kreal), intent(in) :: x_surf(numsurf,3)
+!
+      real(kind=kreal), intent(inout) :: x_sf_grp(num_surf_bc,3)
+!
+      integer (kind = kint) :: i_grp, ip, i, ist, ied, inum, isurf
+!
+!
+      do i_grp = 1, num_surf
+!
+!$omp parallel do private(i,ist,ied,inum,isurf)
+        do ip = 1, np_smp
+          i = (i_grp-1)*np_smp + ip
+          ist = isurf_grp_smp_stack(i-1) + 1
+          ied = isurf_grp_smp_stack(i)
+!
+!poption parallel
+          do inum = ist, ied
+            isurf = abs( isurf_grp(inum) )
+            x_sf_grp(inum,1) = x_surf(isurf,1)
+            x_sf_grp(inum,2) = x_surf(isurf,2)
+            x_sf_grp(inum,3) = x_surf(isurf,3)
+          end do
+        end do
+!poption parallel
+      end do
+!
+      end subroutine pick_vector_by_surf_grp
+!
+!-----------------------------------------------------------------------
+!
+      subroutine pick_vect_by_surf_grp_w_side(num_surf, num_surf_bc,    &
+     &          num_surf_smp, isurf_grp_smp_stack, isurf_grp,           &
+     &          numsurf, x_surf, x_sf_grp)
+!
+      integer(kind = kint), intent(in) :: num_surf, num_surf_bc
+      integer(kind = kint), intent(in) :: num_surf_smp
+      integer(kind = kint), intent(in)                                  &
+     &                 :: isurf_grp_smp_stack(0:num_surf_smp)
+      integer (kind = kint), intent(in) :: isurf_grp(num_surf_bc)
+!
+      integer(kind = kint), intent(in) :: numsurf
+      real(kind=kreal), intent(in) :: x_surf(numsurf,3)
+!
+      real(kind=kreal), intent(inout) :: x_sf_grp(num_surf_bc,3)
+!
+      integer (kind = kint) :: i_grp, ip, i, ist, ied, inum, isurf
+      real(kind = kreal) :: side
+!
+!
+      do i_grp = 1, num_surf
+!
+!$omp parallel do private(i,ist,ied,inum,isurf)
+        do ip = 1, np_smp
+          i = (i_grp-1)*np_smp + ip
+          ist = isurf_grp_smp_stack(i-1) + 1
+          ied = isurf_grp_smp_stack(i)
+!
+!poption parallel
+          do inum = ist, ied
+            isurf = abs( isurf_grp(inum) )
+            side =  dble(isurf_grp(inum) / isurf)
+            x_sf_grp(inum,1) = x_surf(isurf,1) * side
+            x_sf_grp(inum,2) = x_surf(isurf,2) * side
+            x_sf_grp(inum,3) = x_surf(isurf,3) * side
+          end do
+        end do
+!poption parallel
+      end do
+!
+      end subroutine pick_vect_by_surf_grp_w_side
+!
+!-----------------------------------------------------------------------
+!
+      subroutine pick_scalar_by_surf_grp(num_surf, num_surf_bc,         &
+     &          num_surf_smp, isurf_grp_smp_stack, isurf_grp,           &
+     &          numsurf, x_surf, x_sf_grp)
+!
+      integer(kind = kint), intent(in) :: num_surf, num_surf_bc
+      integer(kind = kint), intent(in) :: num_surf_smp
+      integer(kind = kint), intent(in)                                  &
+     &                 :: isurf_grp_smp_stack(0:num_surf_smp)
+      integer(kind = kint), intent(in) :: isurf_grp(num_surf_bc)
+!
+      integer(kind = kint), intent(in) :: numsurf
+      real(kind=kreal), intent(in) :: x_surf(numsurf)
+!
+      real(kind=kreal), intent(inout) :: x_sf_grp(num_surf_bc)
+!
+      integer (kind = kint) :: i_grp, ip, i, ist, ied, inum, isurf
+!
+!
+      do i_grp = 1, num_surf
+!
+!$omp parallel do private(i,ist,ied,inum,isurf)
+        do ip = 1, np_smp
+          i = (i_grp-1)*np_smp + ip
+          ist = isurf_grp_smp_stack(i-1) + 1
+          ied = isurf_grp_smp_stack(i)
+!
+!poption parallel
+          do inum = ist, ied
+            isurf = abs( isurf_grp(inum) )
+            x_sf_grp(inum) = x_surf(isurf)
+          end do
+        end do
+!poption parallel
+      end do
+!
+      end subroutine pick_scalar_by_surf_grp
+!
+!-----------------------------------------------------------------------
+!
+      end module set_surf_grp_vectors

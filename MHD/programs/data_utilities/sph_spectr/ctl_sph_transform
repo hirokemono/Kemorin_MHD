@@ -1,0 +1,106 @@
+begin spherical_transform
+!
+  begin data_files_def
+    num_subdomain_ctl    4
+    num_smp_ctl          1
+    sph_files_head_ctl          'sph_grid/in'
+!
+    rst_file_head_ctl      'restart/rst'
+!
+    mesh_file_fmt_ctl      'gzip'
+    sph_files_fmt_ctl      'gzip'
+    rst_files_fmt_ctl      'ascii'
+    spectr_files_fmt_ctl   'ascii'
+  end data_files_def
+!
+  begin org_data_files_def
+    org_sph_mode_head_ctl      'sph_org/in_rj'
+  end org_data_files_def
+!
+!
+  begin model
+    begin phys_values_ctl
+      array nod_value_ctl   8
+        nod_value_ctl  velocity            Viz_On   Monitor_On    end
+        nod_value_ctl  temperature         Viz_On   Monitor_On    end
+        nod_value_ctl  pressure            Viz_On   Monitor_Off   end
+        nod_value_ctl  vorticity           Viz_On   Monitor_Off   end
+        nod_value_ctl  vector_potential    Viz_Off  Monitor_Off   end
+        nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
+        nod_value_ctl  current_density     Viz_On   Monitor_Off   end
+        nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off   end
+!        nod_value_ctl  composition         Viz_Off  Monitor_Off   end
+      end array nod_value_ctl
+    end phys_values_ctl
+!
+    buoyancy_ratio_ctl      10.0
+    thermal_buoyancy_ctl    6.5e7
+!
+    begin time_step_ctl
+      i_step_init_ctl          0
+      i_step_number_ctl     2000
+      i_step_rst_ctl           1
+      i_step_field_ctl        800
+    end time_step_ctl
+  end model
+!
+  begin sph_transform_ctl
+    spectr_file_head_ctl        'sph_spectr/spectral'
+!
+    energy_spec_head_ctl          'sph_spectr/ene_spec'
+    vol_ene_spec_head_ctl         'sph_spectr/ene_spec_vol'
+    ave_ene_spec_head_ctl         'sph_spectr/t_ave_ene_spec'
+!
+    zm_spectr_head_ctl     'sph_spectr/zm_spectr'
+  end sph_transform_ctl
+!
+  begin sph_monitor_ctl
+    volume_average_head_ctl      'sph_ave_volume'
+    volume_rms_spectr_head_ctl   'sph_rms_volume'
+    layered_rms_spectr_head_ctl  'sph_rms_layer'
+!
+    picked_sph_head_ctl     'sph_spectr/picked_mode'
+!
+    gauss_coefs_head_ctl    'sph_spectr/gauss_coefs'
+    gauss_coefs_radius_ctl    2.91
+!
+!   if num_pick_layer_ctl = 0 or negative: 
+!           output all layer and volume average
+!
+!
+    array pick_layer_ctl  1
+      pick_layer_ctl  62
+    end array pick_layer_ctl
+!
+    array pick_sph_spectr_ctl  2
+      pick_sph_spectr_ctl   2  -2
+      pick_sph_spectr_ctl   2   2
+    end array pick_sph_spectr_ctl
+!
+    array pick_sph_degree_ctl  2
+      pick_sph_degree_ctl   2
+      pick_sph_degree_ctl   2
+    end array pick_sph_degree_ctl
+!
+    array pick_sph_order_ctl  2
+      pick_sph_order_ctl  -2
+      pick_sph_order_ctl   2
+    end array pick_sph_order_ctl
+!
+!
+    array pick_gauss_coefs_ctl  2
+      pick_gauss_coefs_ctl   2  -2
+      pick_gauss_coefs_ctl   2   2
+    end array pick_gauss_coefs_ctl
+!
+    array pick_gauss_coef_degree_ctl  2
+      pick_gauss_coef_degree_ctl   2
+      pick_gauss_coef_degree_ctl   2
+    end array pick_gauss_coef_degree_ctl
+!
+    array pick_gauss_coef_order_ctl  2
+      pick_gauss_coef_order_ctl   -2
+      pick_gauss_coef_order_ctl    2
+    end array pick_gauss_coef_order_ctl
+  end sph_monitor_ctl
+end spherical_transform

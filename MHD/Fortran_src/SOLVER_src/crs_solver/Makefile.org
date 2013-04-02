@@ -1,0 +1,47 @@
+#-----------------------------------------------------------------------
+#   Copyright 1999, 2000, 2001, 2002, 2003 by the Research Organization
+#   for Information Science & Technology (RIST)
+#-----------------------------------------------------------------------
+
+MPIDIR=/usr/local/share/mpi-1.1.1
+MPICHBINDIR = $(MPIDIR)/bin
+MPICHLIBDIR = $(MPIDIR)/lib/alpha/ch_p4
+MPICHINCDIR = $(MPIDIR)/include
+INSTDIR = /usr/local/share/geofem
+CC = $(MPICHBINDIR)/mpicc
+F90 =f90 -Am
+MPILIBS= -lfmpich -lmpich
+RANLIB = ranlib
+AR = ar
+F90OPTFLAGS= -fixed -O
+OPTFLAGS=-O2 -g
+
+# Please do not change the following lines if you are not confident !
+#--------------------
+
+SUBDIRS = JDSblock33 block33 blockNN scalar
+
+all:
+	@for dir in $(SUBDIRS); do \
+	  echo "# Compiling $${dir} directory..."; \
+	  (cd $${dir}; make MPICHBINDIR=$(MPICHBINDIR) \
+		MPICHLIBDIR=$(MPICHLIBDIR) \
+		MPICHINCDIR=$(MPICHINCDIR) \
+		INSTDIR=$(INSTDIR) \
+		MPILIBS="$(MPILIBS)" \
+		F90OPTFLAGS="$(F90OPTFLAGS)" \
+		OPTFLAGS="$(OPTFLAGS)" \
+		AR="$(AR)" \
+		CC="$(CC)" \
+		F90="$(F90)" all) \
+	done
+
+clean:
+	@for dir in $(SUBDIRS); do \
+	  (cd $${dir}; make clean) \
+	done
+
+install:
+	@for dir in $(SUBDIRS); do \
+	  (cd $${dir}; make INSTDIR=$(INSTDIR) RANLIB=$(RANLIB) install) \
+	done

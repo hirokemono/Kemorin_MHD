@@ -1,0 +1,117 @@
+!
+!      module set_control_4_vect_p
+!
+!        programmed by H.Matsui
+!        modified by H.Matsui on Aug., 2007
+!
+!     subroutine s_set_control_4_vect_p
+!
+      module set_control_4_vect_p
+!
+      use m_precision
+!
+      implicit  none
+!
+! -----------------------------------------------------------------------
+!
+      contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine s_set_control_4_vect_p
+!
+      use m_machine_parameter
+      use m_parallel_var_dof
+      use m_control_parameter
+      use m_ctl_data_node_boundary
+      use m_ctl_data_surf_boundary
+      use m_node_phys_address
+      use m_node_group
+      use m_bc_data_list
+      use m_surf_data_list
+      use set_surface_group_types
+!
+      character(len=kchara) :: tmpchara
+      integer (kind = kint) :: i
+!
+!
+      if ( iflag_t_evo_4_vect_p .eq. 0 ) then
+        num_bc_vp = 0
+        num_bc_vps = 0
+      else
+        num_bc_vp = num_bc_vp_ctl
+        num_bc_vps = num_bc_vps_ctl
+      end if
+!
+!   set boundary_conditons for magnetic field
+!
+!
+      if (iflag_debug.eq.1)  write(12,*) 'num_bc_vp ',num_bc_vp
+      if (num_bc_vp/=0) then
+!
+        call allocate_nod_bc_list_vecp
+!
+        bc_vp_name = bc_vp_name_ctl
+        bc_vp_magnitude = bc_vp_magnitude_ctl
+!
+        do i = 1, num_bc_vp
+          tmpchara = bc_vp_type_ctl(i)
+          if ( tmpchara .eq. 'fix_x' ) then
+            ibc_vp_type(i) = iflag_bc_fixed + 1
+          else if ( tmpchara .eq. 'fix_y' ) then
+            ibc_vp_type(i) = iflag_bc_fixed + 2
+          else if ( tmpchara .eq. 'fix_z' ) then
+            ibc_vp_type(i) = iflag_bc_fixed + 3
+          else if ( tmpchara .eq. 'file_x' ) then
+            ibc_vp_type(i) = iflag_bc_fixed - 1
+          else if ( tmpchara .eq. 'file_y' ) then
+            ibc_vp_type(i) = iflag_bc_fixed - 2
+          else if ( tmpchara .eq. 'file_z' ) then
+            ibc_vp_type(i) = iflag_bc_fixed - 3
+          else if ( tmpchara .eq. 'insulate_shell' ) then
+            ibc_vp_type(i) = iflag_insulator
+          else if ( tmpchara .eq. 'sgs_x' ) then
+            ibc_vp_type(i) = iflag_bc_sgs + 1
+          else if ( tmpchara .eq. 'sgs_y' ) then
+            ibc_vp_type(i) = iflag_bc_sgs + 2
+          else if ( tmpchara .eq. 'sgs_z' ) then
+            ibc_vp_type(i) = iflag_bc_sgs + 3
+          else if ( tmpchara .eq. 'SGS_commute_x' ) then
+            ibc_vp_type(i) = iflag_bc_sgs_commute + 1
+          else if ( tmpchara .eq. 'SGS_commute_y' ) then
+            ibc_vp_type(i) = iflag_bc_sgs_commute + 2
+          else if ( tmpchara .eq. 'SGS_commute_z' ) then
+            ibc_vp_type(i) = iflag_bc_sgs_commute + 3
+!          else if ( tmpchara .eq. 'sph' ) then
+!            ibc_vp_type(i) = 999
+          end if
+        end do
+!
+      end if
+!
+!
+      if (iflag_debug.eq.1)  write(12,*) 'num_bc_vps ',num_bc_vps
+      if (num_bc_vps/=0) then
+!
+        call allocate_vect_p_surf_ctl
+!
+        bc_vps_name     =  bc_vps_name_ctl
+        bc_vps_magnitude = bc_vps_magnitude_ctl
+!
+        if (iflag_debug.eq.1) then
+          write(12,*) 'bc_vps_name ',bc_vps_name
+          write(12,*) 'bc_vps_magnitude ',bc_vps_magnitude
+        end if
+!
+        do i = 1, num_bc_vps
+          call set_surf_group_types_vector(bc_vps_type_ctl(i),          &
+     &        ibc_vps_type(i))
+        end do
+!
+      end if
+!
+      end subroutine s_set_control_4_vect_p
+!
+! -----------------------------------------------------------------------
+!
+      end module set_control_4_vect_p

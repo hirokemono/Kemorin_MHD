@@ -1,0 +1,209 @@
+// !$*UTF8*$!
+{
+	184DB84E1277AEBC00B1229A /* Kemo_Moviemaker */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = Kemo_Moviemaker;
+		savedGlobals = {
+		};
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+		variableFormatDictionary = {
+		};
+	};
+	184DB8601277AED400B1229A /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	184DB8611277AED400B1229A /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	184DB8651277B00A00B1229A /* KemoMovieControll.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {698, 611}}";
+			sepNavSelRange = "{492, 45}";
+			sepNavVisRange = "{246, 396}";
+			sepNavWindowFrame = "{{15, 345}, {790, 828}}";
+		};
+	};
+	184DB8661277B00A00B1229A /* KemoMovieControll.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {832, 1664}}";
+			sepNavSelRange = "{1679, 58}";
+			sepNavVisRange = "{1428, 1586}";
+			sepNavWindowFrame = "{{363, 90}, {790, 828}}";
+		};
+	};
+	187782C3129349A9000C6B51 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 256AC3D90F4B6AC300CF3369 /* Kemo_MoviemakerAppDelegate.m */;
+		name = "Kemo_MoviemakerAppDelegate.m: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 435;
+		vrLoc = 0;
+	};
+	187782C4129349A9000C6B51 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 256AC3D80F4B6AC300CF3369 /* Kemo_MoviemakerAppDelegate.h */;
+		name = "Kemo_MoviemakerAppDelegate.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 377;
+		vrLoc = 0;
+	};
+	187782C5129349A9000C6B51 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 184DB8651277B00A00B1229A /* KemoMovieControll.h */;
+		name = "KemoMovieControll.h: 23";
+		rLen = 45;
+		rLoc = 492;
+		rType = 0;
+		vrLen = 396;
+		vrLoc = 246;
+	};
+	18E1E95B14F6BDD40027E7EB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 184DB8661277B00A00B1229A /* KemoMovieControll.m */;
+		name = "KemoMovieControll.m: 62";
+		rLen = 58;
+		rLoc = 1679;
+		rType = 0;
+		vrLen = 1586;
+		vrLoc = 1428;
+	};
+	18FAD25014160EF900A240B5 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 184DB8661277B00A00B1229A /* KemoMovieControll.m */;
+		name = "KemoMovieControll.m: 62";
+		rLen = 58;
+		rLoc = 1679;
+		rType = 0;
+		vrLen = 1586;
+		vrLoc = 1428;
+	};
+	256AC3D80F4B6AC300CF3369 /* Kemo_MoviemakerAppDelegate.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {698, 234}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 377}";
+		};
+	};
+	256AC3D90F4B6AC300CF3369 /* Kemo_MoviemakerAppDelegate.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {698, 260}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 435}";
+		};
+	};
+	29B97313FDCFA39411CA2CEA /* Project object */ = {
+		activeBuildConfigurationName = Release;
+		activeExecutable = 184DB84E1277AEBC00B1229A /* Kemo_Moviemaker */;
+		activeTarget = 8D1107260486CEB800E47090 /* Kemo_Moviemaker */;
+		addToTargets = (
+			8D1107260486CEB800E47090 /* Kemo_Moviemaker */,
+		);
+		breakpoints = (
+		);
+		codeSenseManager = 184DB8611277AED400B1229A /* Code sense */;
+		executables = (
+			184DB84E1277AEBC00B1229A /* Kemo_Moviemaker */,
+		);
+		perUserDictionary = {
+			"PBXConfiguration.PBXBreakpointsDataSource.v1:1CA1AED706398EBD00589147" = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXBreakpointsDataSource_BreakpointID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					20,
+					198,
+					20,
+					99,
+					99,
+					29,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXBreakpointsDataSource_ActionID,
+					PBXBreakpointsDataSource_TypeID,
+					PBXBreakpointsDataSource_BreakpointID,
+					PBXBreakpointsDataSource_UseID,
+					PBXBreakpointsDataSource_LocationID,
+					PBXBreakpointsDataSource_ConditionID,
+					PBXBreakpointsDataSource_IgnoreCountID,
+					PBXBreakpointsDataSource_ContinueID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					654,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 351714767;
+			PBXWorkspaceStateSaveDate = 351714767;
+		};
+		perUserProjectItems = {
+			187782C3129349A9000C6B51 /* PBXTextBookmark */ = 187782C3129349A9000C6B51 /* PBXTextBookmark */;
+			187782C4129349A9000C6B51 /* PBXTextBookmark */ = 187782C4129349A9000C6B51 /* PBXTextBookmark */;
+			187782C5129349A9000C6B51 /* PBXTextBookmark */ = 187782C5129349A9000C6B51 /* PBXTextBookmark */;
+			18E1E95B14F6BDD40027E7EB /* PBXTextBookmark */ = 18E1E95B14F6BDD40027E7EB /* PBXTextBookmark */;
+			18FAD25014160EF900A240B5 /* PBXTextBookmark */ = 18FAD25014160EF900A240B5 /* PBXTextBookmark */;
+		};
+		sourceControlManager = 184DB8601277AED400B1229A /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	8D1107260486CEB800E47090 /* Kemo_Moviemaker */ = {
+		activeExec = 0;
+		executables = (
+			184DB84E1277AEBC00B1229A /* Kemo_Moviemaker */,
+		);
+	};
+}

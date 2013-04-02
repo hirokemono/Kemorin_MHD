@@ -1,0 +1,91 @@
+begin correlate_udts
+!
+  begin data_files_def
+    num_subdomain_ctl           2
+    num_smp_ctl                 4
+!
+    mesh_file_head_ctl          'mesh_fine/in'
+    field_files_fmt_ctl         'gzip'
+  end data_files_def
+!
+!
+  begin data_file_header_ctl
+    reference_udt_head_ctl    'field/out'
+    target_udt_header_ctl     'field_new/out'
+  end data_file_header_ctl
+!
+  begin models
+!
+    begin phys_values_ctl
+      array nod_value_ctl   8
+        nod_value_ctl  velocity            Viz_On   Monitor_On    end
+        nod_value_ctl  temperature         Viz_On   Monitor_On    end
+        nod_value_ctl  pressure            Viz_On   Monitor_Off   end
+        nod_value_ctl  vorticity           Viz_On   Monitor_Off   end
+        nod_value_ctl  vector_potential    Viz_Off  Monitor_Off   end
+        nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
+        nod_value_ctl  current_density     Viz_On   Monitor_Off   end
+        nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off   end
+!        nod_value_ctl  composition         Viz_Off  Monitor_Off   end
+      end array nod_value_ctl
+    end phys_values_ctl
+!
+!  correlate_coordinate_ctl:  xyz or Cartesian
+!                             rtp or Spherical
+!                             spz or Cyrindrical
+!
+    correlate_coordinate_ctl       rtp
+!
+    correlate_field_name_ctl       velocity
+    correlate_component_name_ctl   x
+!
+    begin time_step_ctl
+      i_step_init_ctl           0
+      i_step_number_ctl      2000
+      i_diff_steps_ctl          0
+      dt_ctl                1.0d0
+    end time_step_ctl
+!
+    begin intg_point_num_ctl
+       integration_points_ctl   2
+    end intg_point_num_ctl
+!
+!  Define by number and starting group of element group list
+!
+    begin dynamic_model_layer_ctl
+      layering_data_ctl     ele_group_list
+      num_layering_grp_ctl          8
+      start_layering_grp_name_ctl  fluid_layer_1
+    end dynamic_model_layer_ctl
+!
+!  Define by explicit element group list
+!
+!      begin dynamic_model_layer_ctl
+!        layering_data_ctl     explicit
+!        array grp_stack_each_layer_ctl    4
+!          grp_stack_each_layer_ctl  2
+!          grp_stack_each_layer_ctl  4
+!          grp_stack_each_layer_ctl  6
+!          grp_stack_each_layer_ctl  8
+!        end array grp_stack_each_layer_ctl
+!
+!        array layer_grp_name_ctl    8
+!          layer_grp_name_ctl    fluid_layer_1   end
+!          layer_grp_name_ctl    fluid_layer_2   end
+!          layer_grp_name_ctl    fluid_layer_3   end
+!          layer_grp_name_ctl    fluid_layer_4   end
+!          layer_grp_name_ctl    fluid_layer_5   end
+!          layer_grp_name_ctl    fluid_layer_6   end
+!          layer_grp_name_ctl    fluid_layer_7   end
+!          layer_grp_name_ctl    fluid_layer_8   end
+!        end array layer_grp_name_ctl
+!      end dynamic_model_layer_ctl
+!
+!  Define by start and end element address
+!
+!      begin dynamic_model_layer_ctl
+!        layering_data_ctl     start_end
+!      end dynamic_model_layer_ctl
+  end models
+!
+end correlate_udts

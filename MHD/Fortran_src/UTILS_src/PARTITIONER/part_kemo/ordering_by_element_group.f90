@@ -1,0 +1,116 @@
+!ordering_by_element_group.f90
+!      module ordering_by_element_group
+!
+      module ordering_by_element_group
+!
+!      Written by H. Matsui on Oct., 2007
+!
+      use m_precision
+!
+      implicit none
+!
+      integer(kind = kint), allocatable, private :: imark_ele(:)
+      private :: s_ordering_by_element_group
+!
+!      subroutine set_local_element_table(n_domain)
+!
+!   --------------------------------------------------------------------
+!
+      contains
+!
+!   --------------------------------------------------------------------
+!
+      subroutine set_local_element_table(n_domain)
+!
+      use m_ctl_param_partitioner
+      use m_near_element_id_4_node
+      use m_internal_4_partitioner
+!
+      integer(kind = kint), intent(in) :: n_domain
+!
+!
+      if (nele_grp_ordering .gt. 0) then
+        call s_ordering_by_element_group(n_domain)
+      else
+        iele_4_subdomain(1:ntot_numele_sub)                             &
+     &        = iele_near_nod(1:ntot_numele_sub)
+      end if
+!
+      end subroutine set_local_element_table
+!
+!   --------------------------------------------------------------------
+!
+      subroutine s_ordering_by_element_group(n_domain)
+!
+      use m_ctl_param_partitioner
+      use m_geometry_parameter
+      use m_element_group
+      use m_near_element_id_4_node
+      use m_internal_4_partitioner
+!
+      integer(kind = kint), intent(in) :: n_domain
+!
+      integer(kind = kint) :: igrp, ip, ist, ied, inum, iele, icou
+      integer(kind = kint) :: jgrp, jst, jed, jnum
+!
+!
+!
+      allocate(imark_ele(numele))
+      imark_ele(1:numele) = 0
+!
+!
+      do igrp = 1, nele_grp_ordering
+        do jgrp = 1, num_mat
+          if (ele_grp_ordering(igrp) .eq. mat_name(jgrp)) then
+            igrp_ele_ordering(igrp) = jgrp
+          end if
+        end do
+      end do
+!
+!
+      do ip = 1, n_domain
+        imark_ele(1:numele) = 0
+!
+        ist = iele_stack_near_nod(ip-1) + 1
+        ied = iele_stack_near_nod(ip)
+        do inum = ist, ied
+          iele = iele_near_nod(inum)
+          imark_ele(iele) = inum
+        end do
+!
+        icou = iele_stack_near_nod(ip-1)
+        do igrp = 1, nele_grp_ordering
+          jgrp = igrp_ele_ordering(igrp)
+          if (jgrp .gt. 0) then
+            jst = mat_istack(jgrp-1) + 1
+            jed = mat_istack(jgrp)
+            do jnum = jst, jed
+              iele = mat_item(jnum)
+              if(imark_ele(iele) .gt. 0) then
+                icou = icou + 1
+                iele_4_subdomain(icou) = iele
+                inum = imark_ele(iele)
+                imark_ele(iele) =     0
+                iele_near_nod(inum) = 0
+              end if
+            end do
+          end if
+        end do
+!
+        do inum = ist, ied
+          if ( iele_near_nod(inum) .gt. 0) then
+            icou = icou + 1
+            iele_4_subdomain(icou) = iele_near_nod(inum)
+            iele_near_nod(inum) = 0
+          end if
+        end do
+!
+      end do
+!
+      deallocate(imark_ele)
+!
+      end subroutine s_ordering_by_element_group
+!
+!   --------------------------------------------------------------------
+!
+      end module ordering_by_element_group

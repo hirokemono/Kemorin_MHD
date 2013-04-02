@@ -1,0 +1,97 @@
+begin assemble_control
+!
+  begin data_files_def
+    num_subdomain_ctl           2
+    mesh_file_head_ctl          'mesh/in'
+    mesh_sph_mode_ctl           'sph_shell/in_rj'
+!
+    rst_file_head_ctl           'restart/rst'
+!
+    field_file_head_ctl         'field/out'
+!
+    mesh_file_fmt_ctl           'ascii'
+    rst_files_fmt_ctl           'ascii'
+    field_files_fmt_ctl         'gzip'
+  end data_files_def
+!
+  begin new_data_files_def
+    num_new_domain_ctl           2
+    new_mesh_head_ctl          'mesh_target/in'
+    new_sph_mode_head_ctl      'mesh_target/in'
+!
+    new_rst_head_ctl           'rst_new/rst'
+    new_udt_head_ctl           'field_new/out'
+    new_vtk_head_ctl           'outall'
+!
+    new_dx_head_ctl            'outall'
+    new_dx_data_head_ctl       'field_new/field'
+!
+    new_mesh_file_fmt_ctl           'ascii'
+    new_rst_files_fmt_ctl           'ascii'
+    new_field_files_fmt_ctl         'ascii'
+    new_sph_files_fmt_ctl           'ascii'
+!
+    delete_original_data_flag       'YES'
+  end new_data_files_def
+!
+  begin model
+!!!!!  physical values!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! available valuables 
+!   velocity, temperature, pressure, vorticity
+!   vector_potential, magnetic_field, current_density, magnetic_potential
+!   composition
+!
+!   kinetic_helicity, magnetic_helicity
+!   current_helicity, cross_helicity
+!
+!   magnetic_ene_generation
+!   buoyancy_ene_generation
+!   temp_generation
+!
+!   thermal_diffusion, viscous_diffusion
+!   diffuse_vector_p, magnetic_diffusion
+!   magnetic_tension, Lorentz_force, Coriolis_force
+!
+!   heat_flux, momentum_flux, magnetic_induction, vecp_induction
+!
+!   SGS_heat_flux, SGS_momentum_flux
+!   SGS_Lorentz
+!   SGS_induction, SGS_vecp_induction
+!
+!   SGS_Lorentz_ene  SGS_buo_e_gen
+!   SGS_temp_gen     SGS_m_ene_gen
+!
+!   v_r, v_theta, v_phi, w_r, w_theta, w_phi
+!   a_r, a_theta, a_phi, b_r, b_theta, b_phi, j_r, j_theta, j_phi
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    begin phys_values_ctl
+      array nod_value_ctl   8
+        nod_value_ctl  velocity            Viz_On   Monitor_On    end
+        nod_value_ctl  temperature         Viz_On   Monitor_On    end
+        nod_value_ctl  pressure            Viz_On   Monitor_Off   end
+        nod_value_ctl  vorticity           Viz_On   Monitor_Off   end
+        nod_value_ctl  vector_potential    Viz_Off  Monitor_Off   end
+        nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
+        nod_value_ctl  current_density     Viz_On   Monitor_Off   end
+        nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off   end
+!        nod_value_ctl  composition        Viz_Off  Monitor_Off   end
+      end array nod_value_ctl
+    end phys_values_ctl
+  end model
+!
+  begin control
+!!!!!  information for time integration
+    begin time_step_ctl
+      i_step_init_ctl       0
+      i_step_number_ctl     2000
+      i_step_rst_ctl        800
+      i_step_field_ctl      800
+    end time_step_ctl
+  end control
+!
+  begin newrst_magne_ctl
+    magnetic_field_ratio_ctl     1.0d0
+  end newrst_magne_ctl
+!
+end assemble_control

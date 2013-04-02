@@ -1,0 +1,787 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright (C) 1999-2005 Keiichi Ishioka	      		       %
+% 								       %
+% この著作権表示が記載してあるならば, どのような媒体にでも何も手を加え %
+% ずに複写して再配付することを許可します. これらのドキュメントとその使 % 
+% 用許諾を他の言語に翻訳する際は, 以下の条件に従って下さい.	       %
+% 								       %
+% 他の言語に翻訳する際に, 他の言語での口語表現への変更の範囲を越えて故 %
+% 意に意味を変更しないこと.					       %
+%								       %
+% 翻訳した使用許諾には, それが翻訳であること, また原文の使用許諾が翻訳 %
+% 全体に依然適用されることを明示すること.			       %
+%								       %
+% ハイパーテキストの場合, 同一サイト上で原文のコピーを保守すること. ま %
+% た, 翻訳したハイパーテキストのページからその原文へのリンクを提供する %
+% こと.								       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%履歴   1999/03/21 石岡圭一 (version 0.1)
+%       2003/03/09 石岡圭一 (version 0.11)
+%       2003/03/23 石岡圭一 (version 0.12)
+%       2005/07/01 石岡圭一 (version 0.2)
+%       2005/07/27 石岡圭一 (version 0.21) 誤植の訂正(Thanks to 水田君)
+%       2009/08/20 石岡圭一 (version 0.22) 配列 G の宣言のしかたの誤植
+%                               の修正(I 方向は 0からスタートすべき)
+%
+\documentclass[a4j,fleqn]{jarticle}
+
+\newcommand{\Lap}{\nabla^2}
+\newcommand{\re}{\mbox{Re}}
+\newcommand{\im}{\mbox{Im}}
+
+\title{SNPACK使用の手引 (version 0.22)}
+\author{石岡 圭一  (2009/08/20)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+\subsection{パッケージについて}
+
+これは, スペクトル(球面調和関数)変換を行なうサブルーチンパッケージであ
+り, 球面調和関数展開の係数から格子点値, およびその逆の変換を行なうサブ
+ルーチンなどからなっている. 
+
+SNPACK は STPACKとSMPACKのハイブリッド的な後継パッケージとなっている.
+特長は, 
+\begin{itemize}
+ \item STPACK並の省メモリ(切断波数の2乗オーダーまでの領域しか必要とし
+ ない. ちなみに SMPACKでは切断波数の3乗オーダーの領域が必要).
+ \item SMPACK並の高速性(SMPACKと同様に, 多層モデルのように複数の変換を
+ 同時に実行する際にベクトル長を長くとって高速化することが可能).
+ \item SMPACKと同様に入力が保存される.
+\end{itemize}
+ということである. 速度では以前のSMPACK
+に若干及ばないこともあるが(富士通 VX や NEC の SX4 等で計測したところ
+では SMPACK より SNPACK の方が最大で1割程遅い程度),
+その省メモリ性を活用すれば, 複数の変数を一つにまとめるなどして SMPACK
+を凌駕することも可能なはずである.
+
+また, このパッケージはFTPACKとBSPACKの上位パッケージであり, これらの
+パッケージを内部で引用している. 
+
+なお, SNPACK は SMPACKの後継パッケージではあるが, 配列中のデータの並べ
+方や正規化の仕方が異っているので, 乗り換える場合は注意すること.
+
+\subsection{球面調和関数変換について}
+
+切断波数$M$(三角切断)のスペクトル逆変換は, 以下のように表せる:
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{n=0}\sum^n_{m=-n}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\label{rev}
+\end{equation}
+ここに, $\lambda$: 経度, $\varphi$: 緯度である.
+
+また, $P^m_n(\mu)$は2に正規化されたルジャンドル陪関数で, 以下のように
+定義される:
+\begin{equation}
+P^m_n(\mu)\equiv\sqrt{(2n+1)\frac{(n-|m|)!}{(n+|m|)!}}
+\frac1{2^nn!}(1-\mu^2)^{|m|/2}
+\frac{d^{n+|m|}}{d\mu^{n+|m|}}(\mu^2-1)^n,
+\end{equation}
+\begin{equation}
+\int^1_{-1}\{P^m_n(\mu)\}^2d\mu=2.
+\end{equation}
+
+$g(\lambda,\varphi)$が実数であるとすると, $s^m_n$は以下の関係を満たし
+ている必要がある:
+\begin{equation}
+s^{-m}_n=\{s^m_n\}^{*}
+\label{sym}
+\end{equation}
+ここに, $\{ \}^{*}$は複素共役を表す.
+従って, $s^m_n$は$m\ge 0$の範囲だけを求めれば
+良い. さらに, 上の制約から, $s^0_n$は実数である.
+
+展開係数に対する上の制約(\ref{sym})により, 逆変換の式(\ref{rev})は以下
+のようにも表せる:
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{n=0}
+\left[
+a^0_nP^0_n(\sin\varphi)+
+\sum^n_{m=1}
+\left\{
+a^m_nP^m_n(\sin\varphi)\sqrt{2}\cos(m\lambda)
+-b^m_nP^m_n(\sin\varphi)\sqrt{2}\sin(m\lambda)
+\right\}
+\right].
+\end{equation}
+ここに,
+\begin{equation}
+a^0_n=\re(s^0_n),
+\quad a^m_n=\sqrt{2} \re(s^m_n), 
+\quad b^m_n=\sqrt{2} \im(s^m_n), 
+\quad (m=1,\cdots,n;\ n=0,\cdots,M),
+\end{equation}
+であり, 随所にファクター$\sqrt{2}$が掛かっているのは, 正規化のためであ
+る.
+
+また, スペクトル正変換は以下のように表せる:
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)P^m_n(\sin\varphi)e^{-im\lambda}\cos\varphi d\varphi
+d\lambda .
+\end{equation}
+
+数値計算においては, 上記の積分はそれぞれ離散近似される. フーリエ正変
+換の部分:
+\begin{equation}
+G^m(\varphi)=\frac1{2\pi}\int^{2\pi}_0
+g(\lambda,\varphi)e^{-im\lambda}d\lambda,
+\end{equation}
+は経度方向の等間隔格子点上での値を用いた離散フーリエ正変換
+(FTPACKマニュアルを参照)によって近似し,
+ルジャンドル正変換の部分:
+\begin{equation}
+s^m_n=\frac12\int^{\pi/2}_{-\pi/2}
+G^m(\varphi)P^m_n(\sin\varphi)\cos\varphi d\varphi,
+\end{equation}
+は, ガウス-ルジャンドル積分公式により:
+\begin{equation}
+s^m_n=\frac12\sum^J_{j=1}w_jG^m(\varphi_j)P^m_n(\sin\varphi_j)
+\end{equation}
+として近似する. ここに, $\varphi_j$はガウス緯度と呼ば
+れる分点で, ルジャンドル多項式$P_J(\sin\varphi)$ (ルジャンドル陪関数の
+定義式中で$m=0$とし, 正規化係数($\sqrt{\quad}$の部分)を無くしたもの)
+の$J$個の零点を{\bf 小さい方}から順に並べたものであり, $w_j$は各分点に対応す
+るガウシアンウェイトと呼ばれる重みで,
+\begin{equation}
+w_j\equiv\frac{2(1-\mu_j^2)}{\{JP_{J-1}(\mu_j)\}^2}
+\end{equation}
+で与えられる. ここに, $\mu_j\equiv\sin\varphi_j$である.
+ある条件のもとでは, この積分公式は完全な近似, すなわちもとの積分と同じ
+値を与える.
+
+本ライブラリは, 
+スペクトルデータ($s^m_n$\ ($a^m_n,b^m_n$で表示))
+$\to$ 格子点上のグリッドデータ($g(\lambda_i,\varphi_j)$) 
+の逆変換を行うルーチン群,
+等間隔格子点上のグリッドデータ($g(\lambda_i,\varphi_j)$) 
+$\to$ スペクトルデータ($s^m_n$\ ($a^m_n,b^m_n$で表示)) 
+の正変換を行うルーチン群, 
+そして, その他の補助ルーチン群よりなっている.
+ここに, 格子点の経度$\lambda_i$は全周を等間隔に$I$-分割した経度で,
+緯度$\varphi_j$は上述の$J$個のガウス緯度である.
+
+また, SNPACKは多層用のルーチンであるので, $K$を層の数とすると, 
+逆変換は各高度レベル$z_k$に対応する$s^m_n(z_k)$から
+グリッドデータ$g(\lambda_i,\varphi_j,z_k)$への変換, 
+正変換は$g(\lambda_i,\varphi_j,z_k)$から$s^m_n(z_k)$への変換となる.
+
+以下のサブルーチンの説明において,
+
+\begin{flushleft}
+\begin{tabular}{ll}
+{\tt MM}:& 切断波数$M$\\
+{\tt IM}:& 東西格子点数$I$\\
+{\tt JM}:& ガウス緯度の個数$J$\\
+{\tt KM}:& 並行して行う変換の個数(または層の数)$K$\\
+{\tt N}:& 全波数$n$\\
+{\tt M}:& 帯状波数$m$\\
+{\tt I}:& 東西格子点の番号$i$\\
+{\tt J}:& ガウス緯度の番号$j$\\
+{\tt K}:& 層の番号$k$
+\end{tabular}
+\end{flushleft}
+
+なる対応関係がある. なお, SMPACKからの乗り換えユーザは,
+SMPACKとSNPACKの以下の相異点に注意すること.
+\begin{itemize}
+\item スペクトルデータの並べ方の違い.
+\item スペクトルデータの正規化の違い.
+\item ガウス緯度の並べ方の違い.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+{\tt SNNM2L} & スペクトルデータの格納位置の計算\\
+{\tt SNL2NM} & {\tt SNNM2L}の逆演算\\
+{\tt SNINIT} & 初期化(一層用)\\
+{\tt SNKINI} & 初期化(多層化)\\
+{\tt SNTS2G} & スペクトルデータからグリッドデータへの変換\\
+{\tt SNTG2S} & グリッドデータからスペクトルデータへの変換\\
+{\tt SNTSOG} & スペクトルデータからグリッドデータへの変換(並列版)\\
+{\tt SNTGOS} & グリッドデータからスペクトルデータへの変換(並列版)
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンの説明}
+
+%---------------------------------------------------------------------
+
+\subsection{SNNM2L}
+
+\begin{enumerate}
+
+\item 機能 
+全波数と帯状波数からスペクトルデータの格納位置を計算する.
+
+\item 定義
+
+SNPACKにおいて, スペクトルデータ($a^m_n, b^m_n$)
+は概要に述べた制限をも
+とに, 独立な$(M+1)^2$個の成分を長さ$(M+1)^2$の配列に格納して扱う.
+
+格納順は, 切断波数に依存しない普遍的な並びになるように以下のような順序に
+なっている:
+\begin{center}
+\begin{tabular}{rcll}
+                  & $a^0_0$, &                      & $n=0$成分\\
+         $b^1_1$, & $a^0_1$, & $a^1_1$,             & $n=1$成分\\
+$b^2_2$, $b^1_2$, & $a^0_2$, & $a^1_2$, $a^2_2$,    & $n=2$成分\\
+ $\vdots$         &  $\vdots$ &   $\vdots$          &  \\     
+$b^n_n$, $\cdots$, $b^1_n$ & $a^0_n$ & $a^1_n$,$\cdots$,$a^n_n$ & $n=n$成分 \\
+ $\vdots$         &  $\vdots$ &   $\vdots$                      &  \\
+$b^M_M$, $\cdots\cdots$, $b^1_M$ & $a^0_M$ & 
+             $a^1_M$, $\cdots\cdots$,$a^M_M$ & $n=M$成分
+\end{tabular}
+\end{center}
+配列には, この図の左上から右下への順番に格納されている.
+
+このサブルーチンは, $a^m_n, b^m_n$の全波数$n$, および帯状波数$m$か
+ら$a^m_n, b^m_n$の配列中の格納位置を求めるものである.
+
+\item 呼び出し方法 
+    
+{\tt SNNM2L(N,M,L)}
+  
+\item パラメーターの説明 
+
+\begin{tabular}{lll}
+{\tt N} & {\tt (I)} & 入力. 全波数\\
+{\tt M} & {\tt (I)} & 入力. 帯状波数(備考参照)\\
+{\tt L} & {\tt (I)} & 出力. スペクトルデータの格納位置
+\end{tabular}
+
+\item 備考
+
+{\tt M} $>$ 0 なら $m=$ {\tt M}, $n=$ {\tt N}として$a^m_n$の格納
+位置を, {\tt M} $<$ 0 なら $m=$ {\tt -M}, $n=$ {\tt N}として
+$b^m_n$の格納位置を返す.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SNL2NM}
+
+\begin{enumerate}
+
+\item 機能 
+{\tt SNNM2L}の逆演算, すなわち, スペクトルデータの格納位置から全波数と
+帯状波数を求める.
+
+\item 定義
+
+{\tt SNNM2L}の項を参照
+
+\item 呼び出し方法 
+    
+{\tt SNL2NM(L,N,M)}
+  
+\item パラメーターの説明 
+
+\begin{tabular}{lll}
+{\tt L} & {\tt (I)} & 入力. スペクトルデータの格納位置\\
+{\tt N} & {\tt (I)} & 出力. 全波数\\
+{\tt M} & {\tt (I)} & 出力. 帯状波数
+\end{tabular}
+
+\item 備考
+
+ {\tt M} の正負についての意味づけは{\tt SNNM2L}と同じである.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SNINIT}
+
+\begin{enumerate}
+
+\item 機能 
+SNPACKの初期化ルーチン. 
+変換ルーチン{\tt SNT???}および多層用初期化ルーチンで用いられる配列
+{\tt IT,T,Y,IP,P,R,IA,A}の初期化を行う.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+{\tt SNINIT(MM,IM,JM,IT,T,Y,IP,P,R,IA,A)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt IT}  & {\tt (I(5))}    & 出力. {\tt SNT???}で用いられる配列\\
+{\tt T}   & {\tt (D(IM*2))} & 出力. {\tt SNT???}で用いられる配列\\
+{\tt Y}  & {\tt (D(JM*2))} & 出力. {\tt SNT???}で用いられる配列\\
+{\tt IP}  & {\tt (I(((MM+1)/2+MM+1)*2))} & 出力. {\tt SNT???}で用いられる配列\\
+{\tt P}  & {\tt (D(((MM+1)/2+MM+1)*JM))} & 出力. {\tt SNT???}で用いられる配列\\
+{\tt R}  & {\tt (D(((MM+1)/2*2+3)*(MM/2+1)))} 
+            & 出力. {\tt SNT???}で用いられる配列\\
+{\tt IA}  & {\tt (I((MM+1)*(MM+1)*4))} & 出力. {\tt SNT???}で用いられる配列\\
+{\tt A}  & {\tt (D((MM+1)*(MM+1)*6))} & 出力. {\tt SNT???}で用いられる配列
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt MM}は2以上の整数, {\tt JM}および{\tt IM}はそれぞれ, 2以上の
+偶数でなければならない.
+
+\item {\tt Y(JM/2,4)}と宣言されている場合, 
+   {\tt Y(J,1)}:  $\sin(\varphi_{J/2+j})$,
+   {\tt Y(J,2)}:  $\frac12 w_{J/2+j}$, 
+   {\tt Y(J,3)}:  $\cos(\varphi_{J/2+j})$,
+   {\tt Y(J,4)}:  $1/\cos(\varphi_{J/2+j})$,
+が格納される.
+
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SNKINI}
+
+\begin{enumerate}
+
+\item 機能 
+SNPACKの初期化ルーチン. 
+多層の場合({\tt KM}$>$1)に変換ルーチン{\tt SNT???}で用いられる配列
+{\tt IPK,PK,RK}の初期化を行う.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+{\tt SNKINI(MM,JM,KM,IP,P,R,IPK,PK,RK)}
+  
+\item パラメーターの説明 
+    
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt KM} & {\tt (I)} & 入力. 並行して行う変換の個数(または層の数)\\
+{\tt IP}  & {\tt (I(((MM+1)/2+MM+1)*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt P}  & {\tt (D(((MM+1)/2+MM+1)*JM))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt R}  & {\tt (D(((MM+1)/2*2+3)*(MM/2+1)))} 
+        & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IPK}  & {\tt (I(KM*((MM+1)/2+MM+1)*2))} 
+             & 出力. {\tt SNT???}で用いられる配列\\
+{\tt PK}  & {\tt (D(KM*((MM+1)/2+MM+1)*JM))} 
+             & 出力. {\tt SNT???}で用いられる配列\\
+{\tt RK}  & {\tt (D(KM*((MM+1)/2*2+3)*(MM/2+1)))} 
+        & 出力. {\tt SNT???}で用いられる配列
+\end{tabular}
+
+\item 備考
+
+ 後述の変換ルーチン{\tt SNT???}を一層({\tt KM}$=1$)でしか使わない場合
+には{\tt IP,P,R}を{\tt IPK,PK,RK}としてそのまま使えば良いので,
+このサブルーチンを呼び出す必要はない.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SNTS2G}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータへの変換を行う.
+
+\item 定義
+
+スペクトル逆変換(概要を参照)によりスペクトルデータ($a^m_n(z_k),
+b^m_n(z_k)$)
+から格子点上のグリッドデータ($g(\lambda_i,\varphi_j,z_k)$)を求める.
+
+\item 呼び出し方法 
+
+{\tt SNTS2G(MM,IM,ID,JM,JD,KM,S,G,IT,T,Y,IPK,PK,RK,IA,A,Q,WS,WW,IPOW,IFLAG)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt G}の第1次元目の寸法\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt G}の第2次元目の寸法\\
+{\tt KM} & {\tt (I)} & 入力. 並行して行う変換の個数(または層の数)\\
+{\tt S} & {\tt (D((MM+1)*(MM+1),KM))} 
+& 入力. $a^m_n(z_k),b^m_n(z_k)$が格納されている配列\\
+{\tt G} & {\tt (D(ID*JD*KM))} & 出力. $g(\lambda_i,\varphi_j,z_k)$
+	が格納される配列\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+
+{\tt IP}  & {\tt (I(((MM+1)/2+MM+1)*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt P}  & {\tt (D(((MM+1)/2+MM+1)*JM))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt R}  & {\tt (D((MM+1)/2*2+3)*(MM/2+1))}
+        & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IPK}  & {\tt (I(KM*((MM+1)/2+MM+1)*2))}
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt PK}  & {\tt (D(KM*((MM+1)/2+MM+1)*JM))}
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt RK}  & {\tt (D(KM*((MM+1)/2*2+3)*(MM/2+1)))}
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt IA}  & {\tt (I((MM+1)*(MM+1)*4))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt A}  & {\tt (D((MM+1)*(MM+1)*6))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Q}  & {\tt (D(KM*((MM+1)/2+MM+1)*JM))}
+             & 作業領域\\
+{\tt WS}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt WW}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt IPOW}  & {\tt (I)} & 入力. 作用させる$1/\cos\varphi$の次数(備考参照)\\
+{\tt IFLAG}  & {\tt (I)} & 入力. 変換の種類を決めるフラグ(備考参照)
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt ID}$\ge${\tt IM}, {\tt JD}$\ge${\tt JM}でなければならない.
+   またベクトル計算機においてはバンク競合を避けるために, {\tt ID},{\tt JD}
+   はできれば奇数にとるのがよい.
+
+\item {\tt G(0:ID-1,JD,KM)}と宣言されている場合, {\tt G(I,J,K)}には
+    $g(\lambda_i,\varphi_j,z_k)$が格納される.
+
+\item {\tt ID>IM}の場合は, {\tt G(I,J,K)(I>IM-1)}
+    には{\tt G(0,J,K)}と同じ値が代入される. また, 
+    {\tt JD>JM}の場合は, {\tt G(I,J,K)(J>JM)}
+    には{\tt G(I,JM,K)}と同じ値が代入される.
+
+\item {\tt MM}$\ge${\tt IM/2}の場合には, $m\le${\tt IM/2-1}までの成分
+     が使われる.
+
+\item 作業領域{\tt WS,WW}の大きさは, ともに\\
+     {\tt KM*MAX(((MM+1)/2*2+3)*(MM/2+2)*2,JD*((MM+1)/2+MM+1)*2,JD*IM)}
+    以上の大きさであること. または, さらに単純には, やや余裕をもって,
+     {\tt KM*MAX((MM+4)*(MM+3),JD*3*(MM+1),JD*IM)}
+    としておいてもよい. ただし, Fortran90などで動的に領域を確保するの
+    でない限り, {\tt PARAMETER}文中でこのような値を{\tt MM,JD,IM}から自動的に
+    設定できるようにするのは難しい({\tt MAX}のような関数が使えないため).
+    しかし, 実際的な場合を考えると, 以下のように簡単に設定できる場合が
+    多い筈である. ({\tt MM}$\ge 3$ としておく).
+
+   \begin{itemize}
+    \item 逆変換→正変換 で元のスペクトルデータへの復元が保証される条件\\
+       ( {\tt JD}$\ge${\tt JM}$\ge${\tt MM+1}, 
+        {\tt IM}$\ge${\tt 2*MM+2} ({\tt IM}は偶数より) )
+       が満されている場合.
+       {\tt (IM+MM+1)*JD*KM} なる大きさにとればよい.
+
+    \item 2次の非線形項からのエリアジングを除く条件
+       ( {\tt JD}$\ge${\tt JM}$\ge${\tt 3*MM/2D0}, 
+       {\tt IM}$\ge${\tt 3*MM+1} )が満されている場合.
+       {\tt (IM+2)*JD*KM} なる大きさにとればよい.
+
+  \end{itemize}
+
+\item {\tt IFLAG}は逆変換の種類を示し, {\tt IPOW}はその際に同時に
+    作用させる$1/\cos\varphi$の次数を示す. {\tt IPOW}$=l$と書いておけば,
+    {\tt IFLAG}の値によって,
+
+   \begin{itemize}
+    \item {\tt IFLAG}$=0$: 通常の逆変換.
+
+      \begin{equation}
+        g(\lambda,\varphi)=
+	\frac1{\cos^l\varphi}\sum^M_{n=0}\sum^n_{m=-n}
+        s^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+      \end{equation}
+
+    \item {\tt IFLAG}$=1$: 緯度微分を作用させた逆変換.
+
+      \begin{equation}
+        g(\lambda,\varphi)=\frac1{\cos^l\varphi}\sum^M_{n=0}\sum^n_{m=-n}
+        s^m_n\cos\varphi\frac{\partial}{\partial\varphi}P^m_n(\sin\varphi)
+        e^{im\lambda}.
+      \end{equation}
+
+    \item {\tt IFLAG}$=-1$: 経度微分を作用させた逆変換.
+
+      \begin{equation}
+        g(\lambda,\varphi)=\frac1{\cos^l\varphi}\sum^M_{n=0}\sum^n_{m=-n}
+        s^m_n P^m_n(\sin\varphi)\frac{\partial}{\partial\lambda}
+        e^{im\lambda}.
+      \end{equation}
+
+      \item {\tt IFLAG}$=2$: $\sin\varphi$を作用させた逆変換.
+
+      \begin{equation}
+        g(\lambda,\varphi)=\frac1{\cos^l\varphi}\sum^M_{n=0}\sum^n_{m=-n}
+        s^m_n\sin\varphi P^m_n(\sin\varphi)
+        e^{im\lambda}.
+      \end{equation}
+
+  \end{itemize}
+  
+      従って, 勾配を求めるためにこのルーチンを使う場合は,  
+  {\tt IFLAG}$=\pm 1$, {\tt IPOW}$=1$として呼出せばよい.
+
+\end{itemize}
+
+ 
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SNTG2S}
+
+\begin{enumerate}
+
+\item 機能 
+
+グリッドデータからスペクトルデータへの変換を行う.
+
+\item 定義
+
+スペクトル正変換(概要を参照)により格子点上のグリッドデータ
+($g(\lambda_i,\varphi_j,z_k)$)からスペクトルデータ
+($a^m_n(z_k),b^m_n(z_k)$)を求める.
+
+\item 呼び出し方法 
+
+{\tt SNTG2S(MM,IM,ID,JM,JD,KM,G,S,IT,T,Y,IPK,PK,RK,IA,A,Q,WS,WW,IPOW,IFLAG)}
+  
+\item パラメーターの説明
+
+\begin{tabular}{lll}
+{\tt MM} & {\tt (I)} & 入力. 切断波数\\
+{\tt IM} & {\tt (I)} & 入力. 東西格子点数\\
+{\tt ID} & {\tt (I)} & 入力. {\tt G}の第1次元目の寸法\\
+{\tt JM} & {\tt (I)} & 入力. 南北格子点数\\
+{\tt JD} & {\tt (I)} & 入力. {\tt G}の第2次元目の寸法\\
+{\tt KM} & {\tt (I)} & 入力. 並行して行う変換の個数(または層の数)\\
+{\tt G} & {\tt (D(ID*JD*KM))} & 入力. $g(\lambda_i,\varphi_j,z_k)$
+	が格納されている配列\\
+{\tt S} & {\tt (D((MM+1)*(MM+1),KM))} 
+& 出力.  $a^m_n(z_k),b^m_n(z_k)$が格納される配列\\
+{\tt IT}  & {\tt (I(5))}    & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt T}   & {\tt (D(IM*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+
+{\tt IP}  & {\tt (I(((MM+1)/2+MM+1)*2))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt P}  & {\tt (D(((MM+1)/2+MM+1)*JM))} & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt R}  & {\tt (D(((MM+1)/2*2+3)*(MM/2+1)))} 
+        & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt IPK}  & {\tt (I(KM*(MM+1)/2+MM+1)*2)}
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt PK}  & {\tt (D(KM*((MM+1)/2+MM+1)*JM))} 
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt RK}  & {\tt (D(KM*((MM+1)/2*2+3)*(MM/2+1)))} 
+             & 入力. {\tt SNKINI}で初期化された配列\\
+{\tt IA}  & {\tt (I((MM+1)*(MM+1)*4))} 
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt A}  & {\tt (D((MM+1)*(MM+1)*6))}
+             & 入力. {\tt SNINIT}で初期化された配列\\
+{\tt Q}  & {\tt (D((KM*(MM+1)/2+MM+1)*JM))} 
+             & 作業領域\\
+{\tt WS}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt WW}  & {\tt (D(大きさの決め方は備考参照)} & 作業領域\\
+{\tt IPOW}  & {\tt (I)} & 入力. 作用させる$1/\cos\varphi$の次数(備考参照)\\
+{\tt IFLAG}  & {\tt (I)} & 入力. 変換の種類を決めるフラグ(備考参照)
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+\item {\tt ID}, {\tt JD}の設定などについては{\tt SNTS2G}の備考を参照.
+
+\item {\tt G(0:ID-1,JD,KM)}と宣言されている場合, {\tt G(I,J,K)}には
+    $g(\lambda_i,\varphi_j,z_k)$が格納されていること.
+    {\tt ID>IM}の場合は, {\tt G(I,J,K)(I>IM-1)}には何が入っていてもよい.
+    また, {\tt JD>JM}の場合は, {\tt G(I,J,K)(J>JM)}には何が入っていて
+    もよい.
+
+\item {\tt MM}$\ge${\tt IM/2}の場合には, $m\ge${\tt IM/2}の部分には
+    零が代入される.
+
+\item 作業領域{\tt WS,WW}の大きさの定め方は{\tt SNTS2G}の備考を参照.
+
+\item {\tt IFLAG}は正変換の種類を示し, {\tt IPOW}はその際に同時に
+    作用させる$1/\cos\varphi$の次数を示す. {\tt IPOW}$=l$と書いておけば,
+    {\tt IFLAG}の値によって,    
+    
+   \begin{itemize}
+    \item {\tt IFLAG}$=0$: 通常の正変換.
+
+      \begin{equation}
+        s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+        \frac{g(\lambda,\varphi)}{\cos^l\varphi}
+	P^m_n(\sin\varphi)e^{-im\lambda}\cos\varphi d\varphi
+        d\lambda .
+      \end{equation}
+      
+  \item {\tt IFLAG}$=1$: 緯度微分を作用させた正変換.
+
+      \begin{equation}
+        s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+        \frac{\partial}{\cos\varphi\partial\varphi}\left(\cos^2\varphi
+        \ \frac{g(\lambda,\varphi)}{\cos^l\varphi}
+        \right)P^m_n(\sin\varphi)e^{-im\lambda}\cos\varphi d\varphi
+        d\lambda .
+      \end{equation}
+
+    \item {\tt IFLAG}$=-1$: 経度微分を作用させた正変換.
+
+      \begin{equation}
+        s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+        \frac{\partial}{\partial\lambda}\left(
+	\frac{g(\lambda,\varphi)}{\cos^l\varphi}
+        \right)P^m_n(\sin\varphi)e^{-im\lambda}\cos\varphi d\varphi
+        d\lambda .
+      \end{equation}
+
+    \item {\tt IFLAG}$=2$: $\sin\varphi$を作用させた正変換.
+
+      \begin{equation}
+        s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+        \sin\varphi\frac{g(\lambda,\varphi)}{\cos^l\varphi}
+        P^m_n(\sin\varphi)e^{-im\lambda}\cos\varphi d\varphi
+        d\lambda .
+      \end{equation}
+     
+  \end{itemize}
+
+    従って, ベクトル場の発散を求めるためにこのルーチンを使う場合は,
+    {\tt IFLAG}$=\pm 1$, {\tt IPOW}$=1$として呼出せば良い.
+
+  \end{itemize}
+  
+\end{enumerate}  
+%---------------------------------------------------------------------
+
+\subsection{SNTSOG}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータへの変換を行う(並列版 $=$
+{\tt SNTS2G}をOpenMP で安直に並列化したもの).
+
+\item 定義
+
+スペクトル逆変換(概要を参照)によりスペクトルデータ($a^m_n(z_k),
+b^m_n(z_k)$)
+から格子点上のグリッドデータ($g(\lambda_i,\varphi_j,z_k)$)を求める.
+
+\item 呼び出し方法 
+
+{\tt SNTSOG(MM,IM,ID,JM,KM,S,G,IT,T,Y,IPK,PK,RK,IA,A,Q,WS,WW,WV,IPOW,IFLAG)}
+  
+\item パラメーターの説明(SNTS2Gと異なるものだけ述べる)
+
+\begin{tabular}{lll}
+{\tt G} & {\tt (D(ID*JM*KM))} & 出力. $g(\lambda_i,\varphi_j,z_k)$
+	が格納されている配列\\
+{\tt WS}  & {\tt (D(KM*(IM+MM+1)*3*JM/2))} & 作業領域\\
+{\tt WW}  & {\tt (D(KM*(IM+MM+1)*3*JM/2))} & 作業領域\\
+{\tt WV}  & {\tt (D(大きさの決め方は備考参照))} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt IM} $\ge$ {\tt 2*MM+2} かつ {\tt JM}$\ge${\tt MM+1}
+    であること.
+
+\item {\tt ID}$\ge${\tt IM}でなければならない.
+   またベクトル計算機においてはバンク競合またはキャッシュミスを避ける
+   ために, {\tt ID}はできれば奇数にとるのがよい.
+
+\item {\tt G(0:ID-1,JM,KM)}と宣言されている場合, {\tt G(I,J,K)}には
+    $g(\lambda_i,\varphi_j,z_k)$が格納される.
+
+\item {\tt ID>IM}の場合は, {\tt G(I,J,K)(I>IM-1)}
+    には{\tt G(0,J,K)}と同じ値が代入される. 
+
+\item 作業領域{\tt WV}の大きさは, 
+     {\tt KM*(MM+4)*(MM+3)*NP}
+    以上の大きさであること. ここに, {\tt NP}は OpenMP で利用しうる
+    最大のスレッド数である.
+
+\end{itemize}
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SNTGOS}
+
+\begin{enumerate}
+
+\item 機能
+
+グリッドデータからスペクトルデータへの変換を行う(並列版 $=$
+{\tt SNTG2S}をOpenMP で安直に並列化したもの).
+
+\item 定義
+
+スペクトル正変換(概要を参照)により格子点上のグリッドデータ
+($g(\lambda_i,\varphi_j,z_k)$)からスペクトルデータ
+($a^m_n(z_k),b^m_n(z_k)$)を求める.
+
+\item 呼び出し方法 
+
+{\tt SNTGOS(MM,IM,ID,JM,KM,G,S,IT,T,Y,IPK,PK,RK,IA,A,Q,WS,WW,WV,IPOW,IFLAG)}
+  
+\item パラメーターの説明(SNTG2Sと異なるものだけ述べる)
+
+\begin{tabular}{lll}
+{\tt G} & {\tt (D(ID*JM*KM))} & 入力. $g(\lambda_i,\varphi_j,z_k)$
+	を格納される配列\\
+{\tt WS}  & {\tt (D(KM*(IM+MM+1)*3*JM/2))} & 作業領域\\
+{\tt WW}  & {\tt (D(KM*(IM+MM+1)*3*JM/2))} & 作業領域\\
+{\tt WV}  & {\tt (D(大きさの決め方は備考参照))} & 作業領域
+\end{tabular}
+
+\item 備考
+
+\begin{itemize}
+
+\item {\tt IM} $\ge$ {\tt 2*MM+2} かつ {\tt JM}$\ge${\tt MM+1}
+    であること.
+
+\item {\tt ID}$\ge${\tt IM}でなければならない.
+   またベクトル計算機においてはバンク競合またはキャッシュミスを避ける
+   ために, {\tt ID}はできれば奇数にとるのがよい.
+
+\item {\tt G(0:ID-1,JM,KM)}と宣言されている場合, {\tt G(I,J,K)}には
+    $g(\lambda_i,\varphi_j,z_k)$が格納されていること.
+    {\tt ID>IM}の場合は, {\tt G(I,J,K)(I>IM-1)}には何が入っていてもよい.
+
+\item 作業領域{\tt WV}の大きさは, 
+     {\tt KM*(MM+4)*(MM+3)*NP}
+    以上の大きさであること. ここに, {\tt NP}は OpenMP で利用しうる
+    最大のスレッド数である.
+
+\end{itemize}
+
+\end{enumerate}
+
+\end{document}

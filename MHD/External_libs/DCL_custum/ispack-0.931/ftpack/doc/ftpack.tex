@@ -1,0 +1,637 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% copyright (C) 1998 Keiichi Ishioka				       %
+% 								       %
+% この著作権表示が記載してあるならば, どのような媒体にでも何も手を加え %
+% ずに複写して再配付することを許可します. これらのドキュメントとその使 % 
+% 用許諾を他の言語に翻訳する際は, 以下の条件に従って下さい.	       %
+% 								       %
+% 他の言語に翻訳する際に, 他の言語での口語表現への変更の範囲を越えて故 %
+% 意に意味を変更しないこと.					       %
+%								       %
+% 翻訳した使用許諾には, それが翻訳であること, また原文の使用許諾が翻訳 %
+% 全体に依然適用されることを明示すること.			       %
+%								       %
+% ハイパーテキストの場合, 同一サイト上で原文のコピーを保守すること. ま %
+% た, 翻訳したハイパーテキストのページからその原文へのリンクを提供する %
+% こと.								       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%履歴   95/08/30 石岡圭一 (version 0.0)
+%履歴 2000/09/19 石岡圭一 (version 1.0)
+%
+\documentclass[a4j]{jarticle}
+
+\newcommand{\R}{\mbox{Re}}
+\newcommand{\I}{\mbox{Im}}
+\newcommand{\ttM}{{\tt M}}
+\newcommand{\ttN}{{\tt N}}
+
+\title{FTPACK使用の手引 (version 1.0)}
+\author{石岡 圭一  (2000/09/19)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは, 高速フーリエ変換を行なうサブルーチンパッケージである.
+データアクセスをできるだけ連続的にすることにより,
+ベクトル計算機上での高速化をはかっているが, 通常の計算機上で使用して
+も十分高速である(ただし, 通常の計算機のCPUおよびキャッシュの性質を
+十分考慮して最適化されたFFTルーチン, 例えばFFTW
+({\tt http://www.fftw.org/})にはさすがにかなわないので, そのような計算機
+でFFTを実行する必要があり, かつ実行時間の削減が重要である場合には, その
+ような最適化されたFFTルーチンの使用を薦める).
+なお, 変換の基底は2,3,4,5であるので, これらの素因数の積で表されるデータ
+長の変換に限られる.
+
+\vspace{1em}
+以下のサブルーチン群の中で初期化をおこなうサブルーチン
+(サブルーチン名が{\tt I}で終わる)は, そのサブルーチン群に属する
+変換ルーチンを用いる際, かならず最初に1回呼ばなければならない. 
+ただしそれ以後は, 異なるデータ数を指定するときに限って
+初期化ルーチンを呼べばよい. 
+なお, 初期化ルーチンが用いる作業領域は, 同じサブルーチン群に
+属する変換ルーチンを用いている間変更してはならない. 
+(この作業領域には, 因数と三角関数表が格納されている). 
+
+\vspace{1em}
+また, ベクトル化の効率を上げるために, 同じ項数の時系列データを複数個同
+時にフーリエ変換する仕様になっている. つまり, 2次元配列
+{\tt X(I,J),I=1,2,$\cdots$,M, J=1,2,$\cdots$,N}が与えられた場合, 
+各{\tt I}について, {\tt X(I,1),X(I,2),$\cdots$,X(I,N)}に対するフーリエ
+変換を行なう. すなわち, この場合{\tt N}項のフーリエ変換を{\tt M}
+回繰り返すことになる. 時系列データが1種類だけの場合は{\tt M=1}とすれ
+ばよい.
+
+\newpage  
+\section{サブルーチンのリスト}
+
+  離散型原始複素フーリエ変換
+
+  \vspace{1em}
+  \begin{tabular}{p{7cm}p{10cm}}
+    {\tt FTTZLI(N,IT,T)} & 初期化をおこなう.\\
+    {\tt FTTZLM(M,N,X,Y,IT,T)} & 変換をおこなう.
+  \end{tabular}
+
+  離散型複素フーリエ変換
+
+  \vspace{1em}
+  \begin{tabular}{p{7cm}p{10cm}}
+    {\tt FTTZUI(N,IT,T)} & 初期化をおこなう.\\
+    {\tt FTTZUF(M,N,X,Y,IT,T)} & 正変換をおこなう.\\
+    {\tt FTTZUB(M,N,X,Y,IT,T)} & 逆変換をおこなう.
+  \end{tabular}
+
+ \vspace{1em}
+  離散型実フーリエ変換
+
+  \vspace{1em}
+  \begin{tabular}{p{7cm}p{10cm}}
+    {\tt FTTRUI(N,IT,T)} & 初期化をおこなう.\\
+    {\tt FTTRUF(M,N,X,Y,IT,T)} & 正変換をおこなう.\\
+    {\tt FTTRUB(M,N,X,Y,IT,T)} & 逆変換をおこなう.
+  \end{tabular}
+  
+ \vspace{1em}
+  離散型cosine変換(台形公式)
+
+  \vspace{1em}
+  \begin{tabular}{p{7cm}p{10cm}}
+    {\tt FTTCTI(N,IT,T)} & 初期化をおこなう. \\
+    {\tt FTTCTF(M,N,X,Y,IT,T)} & 正変換をおこなう. \\
+    {\tt FTTCTB(M,N,X,Y,IT,T)} & 逆変換をおこなう.
+  \end{tabular}
+
+ \vspace{1em}
+  離散型sine変換(台形公式)
+
+  \vspace{1em}
+  \begin{tabular}{p{7cm}p{10cm}}
+    {\tt FTTSTI(N,IT,T)} & 初期化をおこなう. \\
+    {\tt FTTSTF(M,N,X,Y,IT,T)} & 正変換をおこなう. \\
+    {\tt FTTSTB(M,N,X,Y,IT,T)} & 逆変換をおこなう.
+  \end{tabular}
+
+ \vspace{1em}
+  離散型cosine変換(中点公式)
+
+  \vspace{1em}
+  \begin{tabular}{p{7cm}p{10cm}}
+    {\tt FTTCMI(N,IT,T)} & 初期化をおこなう. \\
+    {\tt FTTCMF(M,N,X,Y,IT,T)} & 正変換をおこなう. \\
+    {\tt FTTCMB(M,N,X,Y,IT,T)} & 逆変換をおこなう.
+  \end{tabular}
+
+ \vspace{1em}
+  離散型sine変換(中点公式)
+
+  \vspace{1em}
+  \begin{tabular}{p{7cm}p{10cm}}
+    {\tt FTTSMI(N,IT,T)} & 初期化をおこなう. \\
+    {\tt FTTSMF(M,N,X,Y,IT,T)} & 正変換をおこなう. \\
+    {\tt FTTSMB(M,N,X,Y,IT,T)} & 逆変換をおこなう.
+  \end{tabular}
+  
+\newpage  
+\section{サブルーチンの説明}
+
+\subsection{FTTZLI/FTTZLM}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+    1次元(項数$N$)の複素時系列データ$\{\alpha_k\}$が$M$個与えられたとき, 
+    離散型原始複素フーリエ変換をFFTにより行なう. ただし, 
+    $N$は$N=2^a3^b5^c(a,b,c: 0または自然数)$であること. 
+     {\tt FTTZLI}は初期化を行う;
+     {\tt FTTZLM}はフーリエ変換を行う.
+
+  \end{quote}
+  \item 定義
+    \begin{itemize}
+     \item 原始複素フーリエ変換
+      \begin{quote}
+       $\{\alpha_k\}$を入力し, 次の変換を行ない, $\{x_j\}$を求める. 
+       $$x_j=\sum^{N-1}_{k=0}\alpha_k\exp(2\pi i\frac{jk}N),
+       \quad j=0,1,\cdots,N-1$$
+      \end{quote}
+     \end{itemize}    
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FTTZLI(N,IT,T)}\\
+    {\tt FTTZLM(M,N,X,Y,IT,T)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt M }   & {\tt (I)} & 入力. 同時に変換する時系列の個数$M$\\
+      {\tt N }   & {\tt (I)} & 入力. 変換の項数$N$\\
+      {\tt X }   & {\tt (D)} & 入力. $\{\alpha_k\}$\\
+                 &           & 出力. $\{x_j\}$\\
+                 &           & 大きさ\ttM$\times$\ttN$\times$2の3次元配列\\
+      {\tt Y }   & {\tt (D)} & 作業領域. 大きさ\ttM$\times$\ttN$\times$2
+                               の1次元配列\\
+      {\tt IT}   & {\tt (I)} & 作業領域. 大きさ5の1次元配列\\
+      {\tt T }   & {\tt (D)} & 作業領域. 大きさ\ttN$\times$2の1次元配列
+    \end{tabular}
+  \end{quote}
+
+  \item データの格納方法
+
+  \begin{quote}
+
+  {\tt X(M,0:N-1,2)}と宣言されている場合, 各Iについて以下のよ
+   うにデータが格納される.
+
+    \begin{tabular}{|c|c|c|c|c|c|c|}\hline
+     \tt X(I,0,1) & \tt X(I,0,2) & \tt X(I,1,1) & \tt X(I,1,2) & 
+     $\cdots$ & \tt X(I,N-1,1) & \tt X(I,N-1,2) \\\hline\hline
+      \R($x_0$) & \I($x_0$) & \R($x_1$) & \I($x_1$) &
+     $\cdots$ & \R($x_{N-1}$) & \I($x_{N-1}$) \\\hline
+      \R($\alpha_0$) & \I($\alpha_0$) & \R($\alpha_1$) & \I($\alpha_1$) &
+     $\cdots$ & \R($\alpha_{N-1}$) & \I($\alpha_{N-1}$) \\\hline
+    \end{tabular}
+  \end{quote}
+
+\end{enumerate}
+
+\newpage  
+\subsection{FTTZUI/FTTZUF/FTTZUB}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+    1次元(項数$N$)の複素時系列データ$\{x_j\}$または$\{\alpha_k\}$が$M$
+    個与えられたとき, 
+    離散型複素フーリエ正変換, またはその逆変換をFFTにより行う. ただし, 
+    $N$は$N=2^a3^b5^c(a,b,c: 0または自然数)$であること. 
+     {\tt FTTZUI}は初期化を行う;
+     {\tt FTTZUF}はフーリエ正変換を行う;
+     {\tt FTTZUB}はフーリエ逆変換を行う.
+
+  \end{quote}
+  \item 定義
+    \begin{itemize}
+     \item フーリエ正変換
+      \begin{quote}
+       $\{x_j\}$を入力し、次の変換を行ない、$\{\alpha_k\}$を求める.
+       $$\alpha_k=\frac1N\sum^{N-1}_{j=0}x_j\exp(-2\pi i\frac{jk}N),
+       \quad k=0,1,\cdots,N-1$$
+      \end{quote}
+     \item フーリエ逆変換
+      \begin{quote}
+       $\{\alpha_k\}$を入力し, 次の変換を行ない, $\{x_j\}$を求める.
+       $$x_j=\sum^{N-1}_{k=0}\alpha_k\exp(2\pi i\frac{jk}N),
+       \quad j=0,1,\cdots,N-1$$
+      \end{quote}
+     \end{itemize}    
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FTTZUI(N,IT,T)}\\
+    {\tt FTTZUF(M,N,X,Y,IT,T)}\\
+    {\tt FTTZUB(M,N,X,Y,IT,T)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt M }   & {\tt (I)} & 入力. 同時に変換する時系列の個数$M$\\
+      {\tt N }   & {\tt (I)} & 入力. 変換の項数$N$\\
+      {\tt X }   & {\tt (D)} & 入力. $\{x_j\}$または$\{\alpha_k\}$\\
+                 &           & 出力. $\{\alpha_k\}$または$\{x_j\}$\\
+                 &           & 大きさ\ttM$\times$\ttN$\times$2の3次元配列\\
+      {\tt Y }   & {\tt (D)} & 作業領域. 大きさ\ttM$\times$\ttN$\times$2
+                               の1次元配列\\
+      {\tt IT}   & {\tt (I)} & 作業領域. 大きさ5の1次元配列\\
+      {\tt T }   & {\tt (D)} & 作業領域. 大きさ\ttN$\times$2の1次元配列
+    \end{tabular}
+  \end{quote}
+
+  \item データの格納方法
+
+  \begin{quote}
+
+  {\tt X(M,0:N-1,2)}と宣言されている場合, 各Iについて以下のよ
+   うにデータが格納される.
+
+    \begin{tabular}{|c|c|c|c|c|c|c|}\hline
+     \tt X(I,0,1) & \tt X(I,0,2) & \tt X(I,1,1) & \tt X(I,1,2) & 
+     $\cdots$ & \tt X(I,N-1,1) & \tt X(I,N-1,2) \\\hline\hline
+      \R($x_0$) & \I($x_0$) & \R($x_1$) & \I($x_1$) &
+     $\cdots$ & \R($x_{N-1}$) & \I($x_{N-1}$) \\\hline
+      \R($\alpha_0$) & \I($\alpha_0$) & \R($\alpha_1$) & \I($\alpha_1$) &
+     $\cdots$ & \R($\alpha_{N-1}$) & \I($\alpha_{N-1}$) \\\hline
+    \end{tabular}
+  \end{quote}
+
+\end{enumerate}
+
+\newpage  
+\subsection{FTTRUI/FTTRUF/FTTRUB}
+\begin{enumerate}
+  \item 機能 
+  \begin{quote}
+    1次元(項数$N$)の実時系列データ$\{x_j\}$が$M$個与えられたとき,
+    離散型実フーリエ正変換, またはその逆変換をFFTにより行う. ただし, 
+    $N$は偶数で, かつ$N/2=2^a3^b5^c(a,b,c: 0または自然数)$であること.
+     {\tt FTTRUI}は初期化を行う;
+     {\tt FTTRUF}はフーリエ正変換を行う;
+     {\tt FTTRUB}はフーリエ逆変換を行う.
+
+  \end{quote}
+  \item 定義
+    \begin{itemize}
+     \item フーリエ正変換
+      \begin{quote}
+       $\{x_j\}$を入力し, 次の変換を行ない, $\{a_k\},\{b_k\}$を求める. 
+       $$a_k= \frac1N\sum^{N-1}_{j=0}x_j\cos\frac{2\pi jk}N,
+       \quad k=0,1,\cdots,N/2$$
+       $$b_k=-\frac1N\sum^{N-1}_{j=0}x_j\sin\frac{2\pi jk}N,
+       \quad k=1,2,\cdots,N/2-1$$
+      \end{quote}
+     \item フーリエ逆変換
+      \begin{quote}
+       $\{a_k\},\{b_k\}$を入力し, 次の変換を行ない, $\{x_j\}$を求める. 
+       $$x_j=a_0+a_{N/2}(-1)^j+2\sum^{N/2-1}_{k=1}(a_k\cos\frac{2\pi jk}N
+                          -b_k\sin\frac{2\pi jk}N)
+       \quad j=0,1,\cdots,N-1$$
+      \end{quote}
+     \end{itemize}    
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FTTRUI(N,IT,T)}\\
+    {\tt FTTRUF(M,N,X,Y,IT,T)}\\
+    {\tt FTTRUB(M,N,X,Y,IT,T)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt M }&{\tt (I)}& 入力. 同時に変換する時系列の個数$M$\\
+      {\tt N }&{\tt (I)}& 入力. 変換の項数$N$\\
+      {\tt X }   & {\tt (D)} & 入力. $\{x_j\}$または$\{a_k\},\{b_k\}$\\
+                 &           & 出力. $\{a_k\},\{b_k\}$または$\{x_j\}$\\
+                 &           & 大きさ\ttM$\times$\ttN の2次元配列\\
+      {\tt Y }   & {\tt (D)} & 作業領域. 大きさ\ttM$\times$\ttN の1次元配列\\
+      {\tt IT}   & {\tt (I)} & 作業領域. 大きさ5の1次元配列\\
+      {\tt T }   & {\tt (D)} & 作業領域. 大きさ\ttN$\times$2の1次元配列
+    \end{tabular}
+  \end{quote}
+
+  \item データの格納方法
+  \begin{quote}
+
+  {\tt X(M,0:N-1)}と宣言されている場合, 各Iについて以下のよ
+   うにデータが格納される.
+
+    \begin{tabular}{|c|c|c|c|c|c|c|}\hline
+     \tt X(I,0) & \tt X(I,1) & \tt X(I,2) & \tt X(I,3) & 
+     $\cdots$ & \tt X(I,N-2) & \tt X(I,N-1) \\\hline\hline
+      $x_0$ & $x_1$ & $x_2$ & $x_3$ &
+     $\cdots$ & $x_{N-2}$ & $x_{N-1}$ \\\hline
+      $a_0$ & $a_{N/2}$ & $a_1$ & $b_1$ &
+     $\cdots$ & $a_{N/2-1}$ & $b_{N/2-1}$ \\\hline
+    \end{tabular}
+
+  \end{quote}
+
+\end{enumerate}
+
+\subsection{FTTCTI/FTTCTF/FTTCTB}
+
+\begin{enumerate}
+
+  \item 機能 
+  \begin{quote}
+    周期$2\pi$の偶関数$x(t)$の半周期を$N$等分した$N+1$個の標本
+    $\{x_j\}$,
+     $$x_j=x(\frac{\pi j}{N}), \quad j=0,1,\cdots,N $$
+    が$M$個与えられたとき, 台形公式による
+    離散型cosine変換, またはその逆変換をFFTにより行なう. ただし, 
+    $N$は偶数で, かつ$N/2=2^a3^b5^c(a,b,c: 0または自然数)$であること.
+  \end{quote}
+
+  \item 定義
+    \begin{itemize}
+     \item cosine正変換(台形公式)
+      \begin{quote}
+       $\{x_j\}$を入力し, 次の変換を行ない, $\{a_k\}$を求める.
+       $$a_k= \frac2N\left(\frac12 x_0+\frac12 x_N(-1)^k
+              +\sum^{N-1}_{j=1}x_j\cos\frac{\pi jk}N\right)
+       \quad (k=0,1,\cdots,N)$$
+      \end{quote}
+
+     \item cosine逆変換(台形公式)(正変換と定数倍異なるだけ)
+      \begin{quote}
+       $\{a_k\}$を入力し, 次の変換を行ない, $\{x_j\}$を求める.
+       $$x_j=\frac12 a_0+\frac12 a_N(-1)^j
+              +\sum^{N-1}_{k=1}a_k\cos\frac{\pi jk}N
+       \quad (j=0,1,\cdots,N)$$
+      \end{quote}
+     \end{itemize}    
+
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FTTCTI(N,IT,T)}\\
+    {\tt FTTCTF(M,N,X,Y,IT,T)}\\
+    {\tt FTTCTB(M,N,X,Y,IT,T)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt M }&{\tt (I)}& 入力. 同時に変換する時系列の個数\\
+      {\tt N }&{\tt (I)}& 入力. 変換の項数 - 1 ($N$)\\
+      {\tt X }   & {\tt (D)} & 入力. $\{x_j\}$または$\{a_k\}$\\
+                 &           & 出力. $\{a_k\}$または$\{x_j\}$\\
+                 &           & 大きさ\ttM$\times${\tt (N+1)}の2次元配列\\
+      {\tt Y }   & {\tt (D)} & 作業領域. 大きさ\ttM$\times$\ttN の1次元配列\\
+      {\tt IT}   & {\tt (I)} & 作業領域. 大きさ5の1次元配列\\
+      {\tt T }   & {\tt (D)} & 作業領域. 大きさ3\ttN の1次元配列
+    \end{tabular}
+  \end{quote}
+
+  \item データの格納方法
+  \begin{quote}
+  
+  {\tt X(M,0:N)}と宣言されている場合, 各Iについて以下のよ
+   うにデータが格納される.
+
+    \begin{tabular}{|c|c|c|c|c|}\hline
+     \tt X(I,0) & \tt X(I,1) & 
+     $\cdots$ & \tt X(I,N-1) & \tt X(I,N) \\\hline\hline
+      $x_0$ & $x_1$ & 
+     $\cdots$ & $x_{N-1}$ & $x_{N}$ \\\hline
+      $a_0$ & $a_1$ & 
+     $\cdots$ & $a_{N-1}$ & $a_{N}$ \\\hline
+    \end{tabular}
+  \end{quote}
+  
+  \item 備考
+ 
+   \begin{itemize}
+    \item 配列{\tt X}と{\tt Y}との大きさが異なることに注意.
+    \end{itemize}
+
+\end{enumerate}
+
+\subsection{FTTSTI/FTTSTF/FTTSTB}
+
+\begin{enumerate}
+
+  \item 機能 
+  \begin{quote}
+    周期$2\pi$の奇関数$x(t)$の半周期を$N$等分した$N-1$個の標本
+    $\{x_j\}$,
+     $$x_j=x(\frac{\pi j}{N}), \quad j=1,2,\cdots,N-1 $$
+    が$M$個与えられたとき, 台形公式による
+    離散型sine変換, またはその逆変換をFFTにより行なう. ただし, 
+    $N$は偶数で, かつ$N/2=2^a3^b5^c(a,b,c: 0または自然数)$であること.
+  \end{quote}
+
+  \item 定義
+    \begin{itemize}
+     \item sine変換(台形公式)
+      \begin{quote}
+       $\{x_j\}$を入力し, 次の変換を行ない, $\{b_k\}$を求める.
+       $$b_k= \frac2N\sum^{N-1}_{j=1}x_j\sin\frac{\pi jk}{N}
+       \quad (k=1,2,\cdots,N-1)$$
+      \end{quote}
+
+     \item sine逆変換(台形公式)(正変換と定数倍異なるだけ)
+      \begin{quote}
+       $\{b_k\}$を入力し, 次の変換を行ない, $\{x_j\}$を求める.
+       $$x_j=\sum^{N-1}_{k=1}b_k\sin\frac{\pi jk}{N}
+       \quad (j=1,2,\cdots,N-1)$$
+      \end{quote}
+     \end{itemize}    
+
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FTTSTI(N,IT,T)}\\
+    {\tt FTTSTF(M,N,X,Y,IT,T)}\\
+    {\tt FTTSTB(M,N,X,Y,IT,T)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt M }&{\tt (I)}& 入力. 同時に変換する時系列の個数\\
+      {\tt N }&{\tt (I)}& 入力. 変換の項数 ($N$)\\
+      {\tt X }   & {\tt (D)} & 入力. $\{x_j\}$または$\{b_k\}$\\
+                 &           & 出力. $\{b_k\}$または$\{x_j\}$\\
+                 &           & 大きさ\ttM$\times$\ttN の2次元配列\\
+      {\tt Y }   & {\tt (D)} & 作業領域. 大きさ\ttM$\times$\ttN の1次元配列\\
+      {\tt IT}   & {\tt (I)} & 作業領域. 大きさ5の1次元配列\\
+      {\tt T }   & {\tt (D)} & 作業領域. 大きさ5\ttN/2 の1次元配列
+    \end{tabular}
+  \end{quote}
+
+  \item データの格納方法
+  \begin{quote}
+  
+  {\tt X(M,N)}と宣言されている場合, 各Iについて以下のよ
+   うにデータが格納される.
+
+    \begin{tabular}{|c|c|c|c|c|}\hline
+     \tt X(I,1) & \tt X(I,2) & 
+     $\cdots$ & \tt X(I,N-1) & \tt X(I,N) \\\hline\hline
+      $x_1$ & $x_2$ &
+     $\cdots$ & $x_{N-1}$ & $x_N=0$ \\\hline
+      $b_1$ & $b_2$ & 
+     $\cdots$ & $b_{N-1}$ & $b_N=0$ \\\hline
+    \end{tabular}
+  \end{quote}
+  
+  \item 備考
+ 
+   \begin{itemize}
+    \item 配列{\tt X}の2次元目の大きさは, 変換データそのものを格納するより
+          のに必要な{\tt N-1}より 1つだけ大きく{\tt N}ととらなければならな
+	  いことに注意が必要である(この部分は作業領域として使われる).
+    \end{itemize}
+
+\end{enumerate}
+
+\subsection{FTTCMI/FTTCMF/FTTCMB}
+
+\begin{enumerate}
+
+  \item 機能 
+  \begin{quote}
+    周期$2\pi$の偶関数$x(t)$の半周期を$N$等分した$N$個の標本
+    $\{x_{j+1/2}\}$,
+     $$x_{j+1/2}=x(\frac{\pi(j+1/2)}N), \quad j=0,1,\cdots,N-1 $$
+    が$M$個与えられたとき, 中点公式による
+    離散型cosine変換, またはその逆変換をFFTにより行なう. ただし, 
+    $N$は偶数で, かつ$N/2=2^a3^b5^c(a,b,c: 0または自然数)$であること.
+  \end{quote}
+
+  \item 定義
+    \begin{itemize}
+     \item cosine正変換(中点公式)
+      \begin{quote}
+       $\{x_{j+1/2}\}$を入力し, 次の変換を行ない, $\{a_k\}$を求める.
+       $$a_k= \frac2N
+              \sum^{N-1}_{j=0}x_{j+1/2}\cos\frac{\pi(j+1/2)k}N
+       \quad (k=0,1,\cdots,N-1)$$
+      \end{quote}
+
+     \item cosine逆変換(中点公式)
+      \begin{quote}
+       $\{a_k\}$を入力し, 次の変換を行ない, $\{x_{j+1/2}\}$を求める.
+       $$x_{j+1/2}=\frac12 a_0
+              +\sum^{N-1}_{k=1}a_k\cos\frac{\pi(j+1/2)k}N
+       \quad (j=0,1,\cdots,N-1)$$
+      \end{quote}
+     \end{itemize}    
+
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FTTCMI(N,IT,T)}\\
+    {\tt FTTCMF(M,N,X,Y,IT,T)}\\
+    {\tt FTTCMB(M,N,X,Y,IT,T)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt M }&{\tt (I)}& 入力. 同時に変換する時系列の個数\\
+      {\tt N }&{\tt (I)}& 入力. 変換の項数 ($N$)\\
+      {\tt X }   & {\tt (D)} & 入力. $\{x_{j+1/2}\}$または$\{a_k\}$\\
+                 &           & 出力. $\{a_k\}$または$\{x_{j+1/2}\}$\\
+                 &           & 大きさ\ttM$\times$\ttN の2次元配列\\
+      {\tt Y }   & {\tt (D)} & 作業領域. 大きさ\ttM$\times$\ttN の1次元配列\\
+      {\tt IT}   & {\tt (I)} & 作業領域. 大きさ5の1次元配列\\
+      {\tt T }   & {\tt (D)} & 作業領域. 大きさ6\ttN の1次元配列
+    \end{tabular}
+  \end{quote}
+
+  \item データの格納方法
+  \begin{quote}
+  
+  {\tt X(M,0:N-1)}と宣言されている場合, 各Iについて以下のよ
+   うにデータが格納される.
+
+    \begin{tabular}{|c|c|c|c|c|}\hline
+     \tt X(I,0) & \tt X(I,1) & 
+     $\cdots$ & \tt X(I,N-2) & \tt X(I,N-1) \\\hline\hline
+      $x_{1/2}$ & $x_{3/2}$ & 
+     $\cdots$ & $x_{N-3/2}$ & $x_{N-1/2}$ \\\hline
+      $a_0$ & $a_1$ & 
+     $\cdots$ & $a_{N-2}$ & $a_{N-1}$ \\\hline
+    \end{tabular}
+  \end{quote}
+  
+\end{enumerate}
+
+\subsection{FTTSMI/FTTSMF/FTTSMB}
+
+\begin{enumerate}
+
+  \item 機能 
+  \begin{quote}
+    周期$2\pi$の奇関数$x(t)$の半周期を$N$等分した$N$個の標本
+    $\{x_{j+1/2}\}$,
+     $$x_{j+1/2}=x(\frac{\pi(j+1/2)}N), \quad j=0,1,\cdots,N-1 $$
+    が$M$個与えられたとき, 中点公式による
+    離散型sine変換, またはその逆変換をFFTにより行なう. ただし, 
+    $N$は偶数で, かつ$N/2=2^a3^b5^c(a,b,c: 0または自然数)$であること.
+  \end{quote}
+
+  \item 定義
+    \begin{itemize}
+     \item sine正変換(中点公式)
+      \begin{quote}
+       $\{x_{j+1/2}\}$を入力し, 次の変換を行ない, $\{b_k\}$を求める.
+       $$b_k= \frac2N
+              \sum^{N-1}_{j=0}x_{j+1/2}\sin\frac{\pi(j+1/2)k}N
+       \quad (k=1,2,\cdots,N)$$
+      \end{quote}
+
+     \item sine逆変換(中点公式)
+      \begin{quote}
+       $\{b_k\}$を入力し, 次の変換を行ない, $\{x_{j+1/2}\}$を求める.
+       $$x_{j+1/2}=\frac12 b_N(-1)^j
+              +\sum^{N-1}_{k=1}b_k\sin\frac{\pi(j+1/2)k}N
+       \quad (j=0,1,\cdots,N-1)$$
+      \end{quote}
+     \end{itemize}    
+
+  \item 呼び出し方法 
+  \begin{quote}
+    {\tt FTTSMI(N,IT,T)}\\
+    {\tt FTTSMF(M,N,X,Y,IT,T)}\\
+    {\tt FTTSMB(M,N,X,Y,IT,T)}
+  \end{quote}
+  \item パラメーターの説明 
+  \begin{quote}
+    \begin{tabular}{llp{10cm}}
+      {\tt M }&{\tt (I)}& 入力. 同時に変換する時系列の個数\\
+      {\tt N }&{\tt (I)}& 入力. 変換の項数 ($N$)\\
+      {\tt X }   & {\tt (D)} & 入力. $\{x_{j+1/2}\}$または$\{b_k\}$\\
+                 &           & 出力. $\{b_k\}$または$\{x_{j+1/2}\}$\\
+                 &           & 大きさ\ttM$\times$\ttN の2次元配列\\
+      {\tt Y }   & {\tt (D)} & 作業領域. 大きさ\ttM$\times$\ttN の1次元配列\\
+      {\tt IT}   & {\tt (I)} & 作業領域. 大きさ5の1次元配列\\
+      {\tt T }   & {\tt (D)} & 作業領域. 大きさ6\ttN の1次元配列
+    \end{tabular}
+  \end{quote}
+
+  \item データの格納方法
+  \begin{quote}
+  
+  {\tt X(M,N)}と宣言されている場合, 各Iについて以下のよ
+   うにデータが格納される.
+
+    \begin{tabular}{|c|c|c|c|c|}\hline
+     \tt X(I,1) & \tt X(I,2) & 
+     $\cdots$ & \tt X(I,N-1) & \tt X(I,N) \\\hline\hline
+      $x_{1/2}$ & $x_{3/2}$ & 
+     $\cdots$ & $x_{N-3/2}$ & $x_{N-1/2}$ \\\hline
+      $b_1$ & $b_2$ & 
+     $\cdots$ & $b_{N-1}$ & $b_N$ \\\hline
+    \end{tabular}
+  \end{quote}
+  
+\end{enumerate}
+
+
+\end{document}

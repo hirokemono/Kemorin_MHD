@@ -1,0 +1,26 @@
+begin change_filter_domain_ctl
+!
+  begin data_files_def
+    num_subdomain_ctl           64
+    num_smp_ctl                 1
+    mesh_file_head_ctl          'mesh_ref2_64/in'
+  end data_files_def
+!
+  begin new_data_files_def
+    num_new_domain_ctl          4
+    new_mesh_head_ctl           'mesh_ref2_4/in'
+  end new_data_files_def
+!
+  begin orginal_filter_files_ctl
+    org_filter_elength_header   'filter_org/filter_elen'
+    org_filter_coefs_header     'filter_org/filter_coef'
+    org_filter_moment_header    'filter_org/filter_moms'
+  end orginal_filter_files_ctl
+!
+  begin filter_files_def
+    filter_elength_header   'filter_elen'
+    filter_moment_header    'filter_moms'
+    filter_coefs_header     'filter_coef'
+  end filter_files_def
+!
+end change_filter_domain_ctl

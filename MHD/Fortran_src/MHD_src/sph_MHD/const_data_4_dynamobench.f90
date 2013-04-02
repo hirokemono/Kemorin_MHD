@@ -1,0 +1,55 @@
+!const_data_4_dynamobench.f90
+!      module const_data_4_dynamobench
+!
+!      Programmed by H. Matsui on June., 2012
+!
+!      subroutine s_const_data_4_dynamobench
+!
+      module const_data_4_dynamobench
+!
+      use m_precision
+      use m_constants
+      use m_machine_parameter
+!
+      implicit none
+!
+! ----------------------------------------------------------------------
+!
+      contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine s_const_data_4_dynamobench
+!
+      use m_control_params_sph_MHD
+      use m_parallel_var_dof
+      use cal_rms_fields_by_sph
+      use global_field_4_dynamobench
+      use local_field_4_dynamobench
+!
+!
+!
+      if(iflag_debug.gt.0)  write(*,*) 'mid_eq_transfer_dynamobench'
+      call mid_eq_transfer_dynamobench
+!
+      call cal_rms_sph_rms_outer_core
+      call copy_energy_4_dynamobench
+!
+      if(iflag_rotatable_ic .gt. 0) then
+        call pick_inner_core_rotation
+      end if
+!
+     if(iflag_center_b .gt. 0) then
+       call cal_rms_sph_rms_inner_core
+       call copy_icore_energy_4_dbench
+     end if
+!
+     if( (iflag_center_b*iflag_rotatable_ic) .gt. 0) then
+       call pick_mag_torque_inner_core
+     end if
+!
+      end subroutine s_const_data_4_dynamobench
+!
+! ----------------------------------------------------------------------
+!
+      end module const_data_4_dynamobench
