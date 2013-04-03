@@ -11,13 +11,13 @@
 !!      subroutine init_4_FFTPACK(Nsmp, Nstacksmp, Nfft)
 !!      subroutine verify_work_4_FFTPACK(Nsmp, Nstacksmp, Nfft)
 !! ------------------------------------------------------------------
-!!   wrapper subroutine for initierize FFT in ISPACK
+!!   wrapper subroutine for initierize FFT
 !! ------------------------------------------------------------------
 !!
 !!      subroutine RFFTMF_norm(Nsmp, Nstacksmp, M, Nfft, X)
 !! ------------------------------------------------------------------
 !!
-!!   wrapper subroutine for FFT in ISPACK
+!!   wrapper subroutine for FFT
 !!
 !!   a_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j}
 !!          *  \cos (\grac{2\pijk}{Nfft})
@@ -34,7 +34,7 @@
 !!      subroutine RFFTMB_norm(Nsmp, Nstacksmp, M, Nfft, X)
 !! ------------------------------------------------------------------
 !!
-!!   wrapper subroutine for inverse FFT in ISPACK
+!!   wrapper subroutine for inverse FFT
 !!
 !!   x_{k} = a_{0} + (-1)^{j} a_{Nfft/2} + sum_{k=1}^{Nfft/2-1}
 !!          (a_{k} \cos(2\pijk/Nfft) + b_{k} \sin(2\pijk/Nfft))
