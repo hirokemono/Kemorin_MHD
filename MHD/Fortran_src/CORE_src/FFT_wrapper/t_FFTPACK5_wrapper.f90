@@ -1,21 +1,21 @@
-!>@file   FFTPACK5_wrapper.f90
-!!@brief  module FFTPACK5_wrapper
+!>@file   t_FFTPACK5_wrapper.f90
+!!@brief  module t_FFTPACK5_wrapper
 !!
 !!@author H. Matsui
-!!@date Programmed in Oct., 2012
+!!@date Programmed on Apr., 2013
 !
 !>@brief  Fourier transform using FFTPACK5
 !!
 !!@verbatim
-!!  ---------------------------------------------------------------------
+!!  ------------------------------------------------------------------
 !!
-!!      subroutine init_4_FFTPACK(Nsmp, Nstacksmp, Nfft)
-!!      subroutine verify_work_4_FFTPACK(Nsmp, Nstacksmp, Nfft)
+!!      subroutine init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WK)
+!!      subroutine verify_wk_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WK)
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT
 !! ------------------------------------------------------------------
 !!
-!!      subroutine CALYPSO_RFFTMF(Nsmp, Nstacksmp, M, Nfft, X)
+!!      subroutine CALYPSO_RFFTMF_t(Nsmp, Nstacksmp, M, Nfft, X, WK)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTPACK5
@@ -32,7 +32,7 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine CALYPSO_RFFTMB(Nsmp, Nstacksmp, M, Nfft, X)
+!!      subroutine CALYPSO_RFFTMB_t(Nsmp, Nstacksmp, M, Nfft, X, WK)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTPACK5
@@ -61,35 +61,35 @@
 !!@n @param M           Number of components for Fourier transforms
 !!@n @param Nfft        Data length for eadh FFT
 !!@n @param X(M, Nfft)  Data for Fourier transform
+!!@n @param WK          Work structure for FFTPACK5
 !
-      module FFTPACK5_wrapper
+      module t_FFTPACK5_wrapper
 !
       use m_precision
       use m_constants
 !
       implicit none
 !
-!>      Data for multiple Fourier transform
-      real(kind = 8), allocatable :: X_FFTPACK5(:,:)
+!>      structure for working data for FFTPACK5
+      type working_FFTPACK
+!>        Data for multiple Fourier transform
+        real(kind = 8), allocatable :: X_FFTPACK5(:,:)
 !
 !>      Work area for FFTPACK
-      integer(kind = kint) :: lensav_FFTPACK
-!>      Work constatnts for FFTPACK
-      real(kind = 8), allocatable :: WSAVE_FFTPACK(:)
-!>      Work area for FFTPACK
-      real(kind = 8), allocatable :: WORK_FFTPACK(:,:)
-!>      flag for length of Fourier transform
-      integer(kind = kint) :: iflag_fft_len =  -1
-!>      flag for number of components for Fourier transform
-      integer(kind = kint) :: iflag_fft_comp = -1
-!
-      private :: X_FFTPACK5
-      private :: lensav_FFTPACK, WSAVE_FFTPACK, WORK_FFTPACK
-      private :: iflag_fft_len, iflag_fft_comp
+        integer(kind = kint) :: lensav_FFTPACK
+!>        Work constatnts for FFTPACK
+        real(kind = 8), allocatable :: WSAVE_FFTPACK(:)
+!>        Work area for FFTPACK
+        real(kind = 8), allocatable :: WORK_FFTPACK(:,:)
+!>        flag for length of Fourier transform
+        integer(kind = kint) :: iflag_fft_len =  -1
+!>        flag for number of components for Fourier transform
+        integer(kind = kint) :: iflag_fft_comp = -1
+      end type working_FFTPACK
 !
       private :: RFFTMI_norm
-      private :: allocate_work_4_FFTPACK, allocate_const_4_FFTPACK
-      private :: deallocate_work_4_FFTPACK, deallocate_const_4_FFTPACK
+      private :: alloc_work_4_FFTPACK_t, alloc_const_4_FFTPACK_t
+      private :: dealloc_work_4_FFTPACK_t, dealloc_const_FFTPACK_t
 !
 ! ------------------------------------------------------------------
 !
@@ -97,10 +97,12 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_4_FFTPACK(Nsmp, Nstacksmp, Nfft)
+      subroutine init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WK)
 !
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!
+      type(working_FFTPACK), intent(inout) :: WK
 !
       integer(kind = kint) :: M, ip
 !
@@ -110,19 +112,21 @@
         M = max(M, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
       end do
 !
-      call allocate_const_4_FFTPACK(Nfft)
-      call RFFTMI_norm(Nfft)
+      call alloc_const_4_FFTPACK_t(Nfft, WK)
+      call RFFTMI_norm(Nfft, WK)
 !
-      call allocate_work_4_FFTPACK(Nsmp, M, Nfft)
+      call alloc_work_4_FFTPACK_t(Nsmp, M, Nfft, WK)
 !
-      end subroutine init_4_FFTPACK
+      end subroutine init_WK_FFTPACK_t
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_work_4_FFTPACK(Nsmp, Nstacksmp, Nfft)
+      subroutine verify_wk_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WK)
 !
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!
+      type(working_FFTPACK), intent(inout) :: WK
 !
       integer(kind = kint) :: M, ip
 !
@@ -132,48 +136,51 @@
         M = max(M, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
       end do
 !
-      if( iflag_fft_len .ne. Nfft) then
+      if(WK%iflag_fft_len .ne. Nfft) then
 !
-        if( iflag_fft_len .lt. 0) then
-          call allocate_const_4_FFTPACK(Nfft)
-        else if( Nfft .gt. iflag_fft_comp ) then
-          call deallocate_const_4_FFTPACK
-          call allocate_const_4_FFTPACK(Nfft)
+        if(WK%iflag_fft_len .lt. 0) then
+          call alloc_const_4_FFTPACK_t(Nfft, WK)
+        else if( Nfft .gt. WK%iflag_fft_comp ) then
+          call dealloc_const_FFTPACK_t(WK)
+          call alloc_const_4_FFTPACK_t(Nfft, WK)
         end if
 !
-        call RFFTMI_norm(Nfft)
+        call RFFTMI_norm(Nfft, WK)
       end if
 !
-      if( iflag_fft_comp .lt. 0) then
-        call allocate_work_4_FFTPACK(Nsmp, M, Nfft)
-      else if( (M*Nfft) .gt. iflag_fft_comp ) then
-        call deallocate_work_4_FFTPACK
-        call allocate_work_4_FFTPACK(Nsmp, M, Nfft)
+      if(WK%iflag_fft_comp .lt. 0) then
+        call alloc_work_4_FFTPACK_t(Nsmp, M, Nfft, WK)
+      else if( (M*Nfft) .gt. WK%iflag_fft_comp ) then
+        call dealloc_work_4_FFTPACK_t(WK)
+        call alloc_work_4_FFTPACK_t(Nsmp, M, Nfft, WK)
       end if
 !
-      end subroutine verify_work_4_FFTPACK
+      end subroutine verify_wk_FFTPACK_t
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine RFFTMI_norm(Nfft)
+      subroutine RFFTMI_norm(Nfft, WK)
 !
       integer(kind = kint), intent(in) :: Nfft
+      type(working_FFTPACK), intent(inout) :: WK
+!
       integer(kind = kint) :: ierr
 !
 !
-      call RFFTMI (Nfft, WSAVE_FFTPACK, lensav_FFTPACK, ierr)
+      call RFFTMI (Nfft, WK%WSAVE_FFTPACK, WK%lensav_FFTPACK, ierr)
 !
       end subroutine RFFTMI_norm
 !
 ! ------------------------------------------------------------------
 !
-      subroutine CALYPSO_RFFTMF(Nsmp, Nstacksmp, M, Nfft, X)
+      subroutine CALYPSO_RFFTMF_t(Nsmp, Nstacksmp, M, Nfft, X, WK)
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
 !
       real(kind = kreal), intent(inout) :: X(M, Nfft)
+      type(working_FFTPACK), intent(inout) :: WK
 !
       integer(kind = kint) ::  i, j, ismp, ist, num, inum, nsize
       integer(kind = kint) :: inod_s, inod_c, ierr
@@ -191,43 +198,44 @@
           do inum = 1, num
             j = ist + inum
             inod_c = inum + (i-1) * num
-            X_FFTPACK5(inod_c,ismp) = X(j,i)
+            WK%X_FFTPACK5(inod_c,ismp) = X(j,i)
           end do
         end do
 !
-        call RFFTMF(num, ione, Nfft, num, X_FFTPACK5(1,ismp), nsize,    &
-     &      WSAVE_FFTPACK, lensav_FFTPACK, WORK_FFTPACK(1,ismp),        &
-     &      nsize, ierr)
+        call RFFTMF(num, ione, Nfft, num, WK%X_FFTPACK5(1:M*Nfft,ismp), &
+     &      nsize, WK%WSAVE_FFTPACK, WK%lensav_FFTPACK,                 &
+     &      WK%WORK_FFTPACK(1:M*Nfft,ismp), nsize, ierr)
 !
         do inum = 1, num
           j = ist + inum
           inod_s = inum + (Nfft-1) * num
-          X(j,1) = X_FFTPACK5(inum,ismp)
-          X(j,2) = X_FFTPACK5(inod_s,ismp)
+          X(j,1) = WK%X_FFTPACK5(inum,ismp)
+          X(j,2) = WK%X_FFTPACK5(inod_s,ismp)
         end do
         do i = 1, (Nfft+1)/2 - 1
           do inum = 1, num
             j = ist + inum
             inod_c = inum + (2*i-1) * num
             inod_s = inum + (2*i  ) * num
-            X(j,2*i+1) = X_FFTPACK5(inod_c,ismp)
-            X(j,2*i+2) = X_FFTPACK5(inod_s,ismp)
+            X(j,2*i+1) = WK%X_FFTPACK5(inod_c,ismp)
+            X(j,2*i+2) = WK%X_FFTPACK5(inod_s,ismp)
           end do
         end do
 !
       end do
 !$omp end parallel do
 !
-      end subroutine CALYPSO_RFFTMF
+      end subroutine CALYPSO_RFFTMF_t
 !
 ! ------------------------------------------------------------------
 !
-      subroutine CALYPSO_RFFTMB(Nsmp, Nstacksmp, M, Nfft, X)
+      subroutine CALYPSO_RFFTMB_t(Nsmp, Nstacksmp, M, Nfft, X, WK)
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
 !
       real(kind = kreal), intent(inout) :: X(M,Nfft)
+      type(working_FFTPACK), intent(inout) :: WK
 !
       integer(kind = kint) ::  i, j, ismp, ist, inum, num, nsize
       integer(kind = kint) :: inod_s, inod_c, ierr
@@ -244,16 +252,16 @@
         do inum = 1, num
           j = ist + inum
           inod_s = inum + (Nfft-1) * num
-          X_FFTPACK5(inum,ismp) =   X(j,1)
-          X_FFTPACK5(inod_s,ismp) = X(j,2)
+          WK%X_FFTPACK5(inum,ismp) =   X(j,1)
+          WK%X_FFTPACK5(inod_s,ismp) = X(j,2)
         end do
         do i = 1, (Nfft+1)/2 - 1
           do inum = 1, num
             j = ist + inum
             inod_c = inum + (2*i-1) * num
             inod_s = inum + (2*i  ) * num
-            X_FFTPACK5(inod_c,ismp) = X(j,2*i+1)
-            X_FFTPACK5(inod_s,ismp) = X(j,2*i+2)
+            WK%X_FFTPACK5(inod_c,ismp) = X(j,2*i+1)
+            WK%X_FFTPACK5(inod_s,ismp) = X(j,2*i+2)
           end do
         end do
         if(mod(Nfft,2) .eq. 0) then
@@ -262,70 +270,79 @@
           end do
         end if
 !
-        call RFFTMB (num, ione, Nfft, num, X_FFTPACK5(1,ismp), nsize,   &
-     &      WSAVE_FFTPACK, lensav_FFTPACK, WORK_FFTPACK(1,ismp),        &
-     &      nsize, ierr)
+        call RFFTMB(num, ione, Nfft, num, WK%X_FFTPACK5(1:M*Nfft,ismp), &
+     &      nsize, WK%WSAVE_FFTPACK, WK%lensav_FFTPACK,                 &
+     &      WK%WORK_FFTPACK(1:M*Nfft,ismp), nsize, ierr)
 !
         do i = 1, Nfft
           do inum = 1, num
             j = ist + inum
             inod_c = inum + (i-1) * num
-            X(j,i) = X_FFTPACK5(inod_c,ismp)
+            X(j,i) = WK%X_FFTPACK5(inod_c,ismp)
           end do
         end do
       end do
 !$omp end parallel do
 !
-      end subroutine CALYPSO_RFFTMB
+      end subroutine CALYPSO_RFFTMB_t
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine allocate_work_4_FFTPACK(Nsmp, M, Nfft)
+      subroutine alloc_work_4_FFTPACK_t(Nsmp, M, Nfft, WK)
 !
       integer(kind = kint), intent(in) :: Nsmp, M, Nfft
+      type(working_FFTPACK), intent(inout) :: WK
 !
 !
-      iflag_fft_comp = M*Nfft
-      allocate( X_FFTPACK5(iflag_fft_comp,Nsmp) )
-      allocate( WORK_FFTPACK(iflag_fft_comp,Nsmp) )
-      WORK_FFTPACK = 0.0d0
+      WK%iflag_fft_comp = M*Nfft
+      allocate( WK%X_FFTPACK5(WK%iflag_fft_comp,Nsmp) )
+      allocate( WK%WORK_FFTPACK(WK%iflag_fft_comp,Nsmp) )
+      WK%WORK_FFTPACK = 0.0d0
 !
-      end subroutine allocate_work_4_FFTPACK
+      end subroutine alloc_work_4_FFTPACK_t
 !
 ! ------------------------------------------------------------------
 !
-      subroutine allocate_const_4_FFTPACK(nfft)
+      subroutine alloc_const_4_FFTPACK_t(nfft, WK)
 !
       integer(kind = kint), intent(in) :: nfft
+      type(working_FFTPACK), intent(inout) :: WK
 !
-      iflag_fft_len = nfft
-      lensav_FFTPACK = Nfft                                             &
+!
+      WK%iflag_fft_len = nfft
+      WK%lensav_FFTPACK = Nfft                                          &
      &                + int ( log ( real(Nfft) ) / log(two) ) + ifour
-      allocate(WSAVE_FFTPACK(lensav_FFTPACK) )
-      WSAVE_FFTPACK = 0.0d0
+      allocate(WK%WSAVE_FFTPACK(WK%lensav_FFTPACK) )
+      WK%WSAVE_FFTPACK = 0.0d0
 !
-      end subroutine allocate_const_4_FFTPACK
-!
-! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
-      subroutine deallocate_work_4_FFTPACK
-!
-      deallocate(X_FFTPACK5, WORK_FFTPACK)
-      iflag_fft_comp = 0
-!
-      end subroutine deallocate_work_4_FFTPACK
+      end subroutine alloc_const_4_FFTPACK_t
 !
 ! ------------------------------------------------------------------
+! ------------------------------------------------------------------
 !
-      subroutine deallocate_const_4_FFTPACK
+      subroutine dealloc_work_4_FFTPACK_t(WK)
 !
-      deallocate( WSAVE_FFTPACK )
-      iflag_fft_len = 0
+      type(working_FFTPACK), intent(inout) :: WK
 !
-      end subroutine deallocate_const_4_FFTPACK
+!
+      deallocate(WK%X_FFTPACK5, WK%WORK_FFTPACK)
+      WK%iflag_fft_comp = 0
+!
+      end subroutine dealloc_work_4_FFTPACK_t
 !
 ! ------------------------------------------------------------------
 !
-      end module FFTPACK5_wrapper
+      subroutine dealloc_const_FFTPACK_t(WK)
+!
+      type(working_FFTPACK), intent(inout) :: WK
+!
+!
+      deallocate( WK%WSAVE_FFTPACK )
+      WK%iflag_fft_len = 0
+!
+      end subroutine dealloc_const_FFTPACK_t
+!
+! ------------------------------------------------------------------
+!
+      end module t_FFTPACK5_wrapper

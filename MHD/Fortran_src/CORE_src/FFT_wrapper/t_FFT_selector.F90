@@ -1,22 +1,22 @@
-!>@file   FFT_selector.f90
-!!@brief  module FFT_selector
+!>@file   t_FFT_selector.f90
+!!@brief  module t_FFT_selector
 !!
 !!@author H. Matsui
 !!@date Programmed in Oct., 2009
 !
-!      module FFT_selector
+!      module t_FFT_selector
 !
 !
-!>@brief  Selector of Fourier transform
+!>@brief  Selector of Fourier transform using structure
 !!
 !!@verbatim
-!!      subroutine initialize_FFT_select(Nsmp, Nstacksmp, Nfft)
-!!      subroutine verify_FFT_select(Nsmp, Nstacksmp, Nfft)
+!!      subroutine initialize_FFT_sel_t(Nsmp, Nstacksmp, Nfft, WKS)
+!!      subroutine verify_FFT_sel_t(Nsmp, Nstacksmp, Nfft, WKS)
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
-!!      subroutine forward_FFT_select(Nsmp, Nstacksmp, M, Nfft, X)
+!!      subroutine forward_FFT_sel_t(Nsmp, Nstacksmp, M, Nfft, X, WKS)
 !! ------------------------------------------------------------------
 !!
 !!   wrapper subroutine for FFT in ISPACK
@@ -30,7 +30,7 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine backward_FFT_select(Nsmp, Nstacksmp, M, Nfft, X)
+!!      subroutine backward_FFT_sel_t(Nsmp, Nstacksmp, M, Nfft, X, WKS)
 !! ------------------------------------------------------------------
 !!
 !!   wrapper subroutine for backward FFT
@@ -59,28 +59,26 @@
 !!@n @param M           Number of components for Fourier transforms
 !!@n @param Nfft        Data length for eadh FFT
 !!@n @param X(M, Nfft)  Data for Fourier transform
+!!@n @param WKS         Work structure for ISPACK
 !
-      module FFT_selector
+      module t_FFT_selector
 !
       use m_precision
       use m_machine_parameter
-      use FFTPACK5_wrapper
-      use ispack_FFT_wrapper
+      use t_FFTPACK5_wrapper
+      use t_ispack_FFT_wrapper
 !
-      use FFTW_wrapper
-!      use FFTW_kemo_wrapper
+      use t_FFTW_wrapper
+!      use t_FFTW_kemo_wrapper
 !
       implicit none
 !
-!>      integer flag to use ISPACK
-      integer(kind = kint), parameter :: iflag_ISPACK =    0
-!>      integer flag to use FFTPACK5
-      integer(kind = kint), parameter :: iflag_FFTPACK =   1
-!>      integer flag to use FFTW3
-      integer(kind = kint), parameter :: iflag_FFTW =      2
-!      integer(kind = kint), parameter :: iflag_FFTW = 3
-!
-      integer(kind = kint) :: iflag_FFT = iflag_ISPACK
+!>      structure for working data for FFT
+      type working_FFTs
+        type(working_ISPACK) ::  WK_ISPACK
+        type(working_FFTPACK) :: WK_FFTPACK
+        type(working_FFTW) ::    WK_FFTW
+      end type working_FFTs
 !
 ! ------------------------------------------------------------------
 !
@@ -88,106 +86,127 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine initialize_FFT_select(Nsmp, Nstacksmp, Nfft)
+      subroutine initialize_FFT_sel_t(Nsmp, Nstacksmp, Nfft, WKS)
+!
+      use FFT_selector
 !
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !
+      type(working_FFTs), intent(inout) :: WKS
+!
 !
       if(iflag_FFT .eq. iflag_ISPACK) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK'
-        call init_4_ispack(Nsmp, Nstacksmp, Nfft)
+        call init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK)
 #ifdef FFTW3
 !      else if(iflag_FFT .eq. iflag_FFTW) then
 !        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW by kemo_wrapper'
-!        call init_4_FFTW_kemo(Nsmp, Nstacksmp, Nfft)
+!        call init_FFTW_kemo_type(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
-        call init_4_FFTW(Nsmp, Nstacksmp, Nfft)
+        call init_FFTW_type(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTW)
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
-        call init_4_FFTPACK(Nsmp, Nstacksmp, Nfft)
+        call init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
       end if
 !
 !
-      end subroutine initialize_FFT_select
+      end subroutine initialize_FFT_sel_t
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_FFT_select(Nsmp, Nstacksmp, Nfft)
+      subroutine verify_FFT_sel_t(Nsmp, Nstacksmp, Nfft, WKS)
+!
+      use FFT_selector
 !
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !
+      type(working_FFTs), intent(inout) :: WKS
+!
 !
       if(iflag_FFT .eq. iflag_ISPACK) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK'
-        call verify_work_4_ispack(Nsmp, Nstacksmp, Nfft)
+        call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK)
 #ifdef FFTW3
 !      else if(iflag_FFT .eq. iflag_FFTW) then
 !        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW by kemo_wrapper'
-!        call verify_work_4_FFTW_kemo(Nsmp, Nstacksmp, Nfft)
+!        call verify_wk_FFTW_kemo_type(Nsmp, Nstacksmp, Nfft,           &
+!     &      WKS%WK_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
-        call verify_work_4_FFTW(Nsmp, Nstacksmp, Nfft)
+        call verify_wk_FFTW_type(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTW)
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
-        call verify_work_4_FFTPACK(Nsmp, Nstacksmp, Nfft)
+        call verify_wk_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
       end if
 !
-      end subroutine verify_FFT_select
+      end subroutine verify_FFT_sel_t
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine forward_FFT_select(Nsmp, Nstacksmp, M, Nfft, X)
+      subroutine forward_FFT_sel_t(Nsmp, Nstacksmp, M, Nfft, X, WKS)
+!
+      use FFT_selector
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
 !
       real(kind = kreal), intent(inout) :: X(M, Nfft)
+      type(working_FFTs), intent(inout) :: WKS
 !
 !
       if(iflag_FFT .eq. iflag_ISPACK) then
-        call FTTRUF_kemo(Nsmp, Nstacksmp, M, Nfft, X)
+        call FTTRUF_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WKS%WK_ISPACK)
 #ifdef FFTW3
 !      else if(iflag_FFT .eq. iflag_FFTW) then
-!        call FFTW_forward_kemo(Nsmp, Nstacksmp, M, Nfft, X)
+!        call FFTW_forward_kemo_t(Nsmp, Nstacksmp, M, Nfft, X,          &
+!     &      WKS%WK_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW) then
-        call FFTW_forward(Nsmp, Nstacksmp, M, Nfft, X)
+        call FFTW_forward_type(Nsmp, Nstacksmp, M, Nfft, X,             &
+     &      WKS%WK_FFTW)
 #endif
       else
-        call CALYPSO_RFFTMF(Nsmp, Nstacksmp, M, Nfft, X)
+        call CALYPSO_RFFTMF_t(Nsmp, Nstacksmp, M, Nfft, X,              &
+     &      WKS%WK_FFTPACK)
       end if
 !
-      end subroutine forward_FFT_select
+      end subroutine forward_FFT_sel_t
 !
 ! ------------------------------------------------------------------
 !
-      subroutine backward_FFT_select(Nsmp, Nstacksmp, M, Nfft, X)
+      subroutine backward_FFT_sel_t(Nsmp, Nstacksmp, M, Nfft, X, WKS)
+!
+      use FFT_selector
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
 !
       real(kind = kreal), intent(inout) :: X(M,Nfft)
+      type(working_FFTs), intent(inout) :: WKS
 !
 !
       if(iflag_FFT .eq. iflag_ISPACK) then
-        call FTTRUB_kemo(Nsmp, Nstacksmp, M, Nfft, X)
+        call FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WKS%WK_ISPACK)
 #ifdef FFTW3
 !      else if(iflag_FFT .eq. iflag_FFTW) then
-!        call FFTW_backward_kemo(Nsmp, Nstacksmp, M, Nfft, X)
+!        call FFTW_backward_kemo_t(Nsmp, Nstacksmp, M, Nfft, X,         &
+!     &      WKS%WK_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW) then
-        call FFTW_backward(Nsmp, Nstacksmp, M, Nfft, X)
+        call FFTW_backward_type(Nsmp, Nstacksmp, M, Nfft, X,            &
+     &      WKS%WK_FFTW)
 #endif
       else
-        call CALYPSO_RFFTMB(Nsmp, Nstacksmp, M, Nfft, X)
+        call CALYPSO_RFFTMB_t(Nsmp, Nstacksmp, M, Nfft, X,              &
+     &      WKS%WK_FFTPACK)
       end if
 !
-      end subroutine backward_FFT_select
+      end subroutine backward_FFT_sel_t
 !
 ! ------------------------------------------------------------------
 !
-      end module FFT_selector
+      end module t_FFT_selector

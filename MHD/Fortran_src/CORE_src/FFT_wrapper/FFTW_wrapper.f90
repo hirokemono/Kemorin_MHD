@@ -1,49 +1,62 @@
+!>@file   FFTW_wrapper.f90
+!!@brief  module FFTW_wrapper
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2012
 !
-!      module FFTW_wrapper
-!
-!
-!      subroutine init_4_FFTW(Nsmp, Nstacksmp, Nfft)
-!      subroutine verify_work_4_FFTW(Nsmp, Nstacksmp, Nfft)
-! ------------------------------------------------------------------
-!   wrapper subroutine for initierize FFT by FFTW
-! ------------------------------------------------------------------
-!
-!      subroutine FFTW_forward(Nsmp, Nstacksmp, M, Nfft, X)
-! ------------------------------------------------------------------
-!
-!   wrapper subroutine for FFT by FFTW
-!
-!   a_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\grac{2\pijk}{Nfft})
-!   b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\grac{2\pijk}{Nfft})
-!
-!   a_{0} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j}
-!    K = Nfft/2....
-!   a_{k} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\grac{2\pijk}{Nfft})
-!
-! ------------------------------------------------------------------
-!
-!      subroutine FFTW_backward(Nsmp, Nstacksmp, M, Nfft, X)
-! ------------------------------------------------------------------
-!
-!   wrapper subroutine for inverse FFT by FFTW
-!
-!   x_{k} = a_{0} + (-1)^{j} a_{Nfft/2} + sum_{k=1}^{Nfft/2-1}
-!          (a_{k} \cos(2\pijk/Nfft) + b_{k} \sin(2\pijk/Nfft))
-!
-! ------------------------------------------------------------------
-!
-!       i = 1:     a_{0}
-!       i = 2:     a_{Nfft/2}
-!       i = 3:     a_{1}
-!       i = 4:     b_{1}
-!       ...
-!       i = 2*k+1: a_{k}
-!       i = 2*k+2: b_{k}
-!       ...
-!       i = Nfft-1:   a_{Nfft/2-1}
-!       i = Nfft:     b_{Nfft/2-1}
-!
-! ------------------------------------------------------------------
+!>@brief  Fourier transform using FFTW Ver.3
+!!
+!!@verbatim
+!! ------------------------------------------------------------------
+!!      subroutine init_4_FFTW(Nsmp, Nstacksmp, Nfft)
+!!      subroutine verify_work_4_FFTW(Nsmp, Nstacksmp, Nfft)
+!!
+!!   wrapper subroutine for initierize FFT by FFTW
+!! ------------------------------------------------------------------
+!!
+!!      subroutine FFTW_forward(Nsmp, Nstacksmp, M, Nfft, X)
+!! ------------------------------------------------------------------
+!!
+!! wrapper subroutine for forward Fourier transform by FFTW3
+!!
+!!   a_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\grac{2\pijk}{Nfft})
+!!   b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\grac{2\pijk}{Nfft})
+!!
+!!   a_{0} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j}
+!!    K = Nfft/2....
+!!   a_{k} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\grac{2\pijk}{Nfft})
+!!
+!! ------------------------------------------------------------------
+!!
+!!      subroutine FFTW_backward(Nsmp, Nstacksmp, M, Nfft, X)
+!! ------------------------------------------------------------------
+!!
+!! wrapper subroutine for backward Fourier transform by FFTW3
+!!
+!!   x_{k} = a_{0} + (-1)^{j} a_{Nfft/2} + sum_{k=1}^{Nfft/2-1}
+!!          (a_{k} \cos(2\pijk/Nfft) + b_{k} \sin(2\pijk/Nfft))
+!!
+!! ------------------------------------------------------------------
+!!
+!!       i = 1:     a_{0}
+!!       i = 2:     a_{Nfft/2}
+!!       i = 3:     a_{1}
+!!       i = 4:     b_{1}
+!!       ...
+!!       i = 2*k+1: a_{k}
+!!       i = 2*k+2: b_{k}
+!!       ...
+!!       i = Nfft-1:   a_{Nfft/2-1}
+!!       i = Nfft:     b_{Nfft/2-1}
+!!
+!! ------------------------------------------------------------------
+!!@endverbatim
+!!
+!!@n @param Nsmp  Number of SMP processors
+!!@n @param Nstacksmp(0:Nsmp)   End number for each SMP process
+!!@n @param M           Number of components for Fourier transforms
+!!@n @param Nfft        Data length for eadh FFT
+!!@n @param X(M, Nfft)  Data for Fourier transform
 !
       module FFTW_wrapper
 !
@@ -52,21 +65,31 @@
 !
       implicit none
 !
+!>      plan ID for fftw
       integer, parameter :: fftw_plan =    8
+!>      data size of complex for FFTW3
       integer, parameter :: fftw_complex = 8
 !
-      integer ( kind = 4 ), parameter :: FFTW_ESTIMATE = 64
+!>      Unit imaginary number
+      complex(kind = fftw_complex), parameter :: iu = (0.0d0,1.0d0)
 !
-      integer ( kind = fftw_plan), allocatable :: plan_backward(:)
-      integer ( kind = fftw_plan), allocatable :: plan_forward(:)
+!>      estimation flag for FFTW
+      integer(kind = 4), parameter :: FFTW_ESTIMATE = 64
 !
+!>      plan ID for backward transform
+      integer(kind = fftw_plan), allocatable :: plan_backward(:)
+!>      plan ID for forward transform
+      integer(kind = fftw_plan), allocatable :: plan_forward(:)
+!
+!>      normalization parameter for FFTW
       real(kind = kreal) :: aNfft
+!>      real data for multiple Fourier transform
       real(kind = kreal), allocatable :: X_FFTW(:,:)
+!>      spectrum data for multiple Fourier transform
       complex(kind = fftw_complex), allocatable :: C_FFTW(:,:)
+!>      flag for number of components for Fourier transform
       integer(kind = kint) :: iflag_fft_len =  -1
 !
-!
-      complex(kind = fftw_complex), parameter :: iu = (0.0d0,1.0d0)
 !
       private :: fftw_plan, fftw_complex
       private :: iflag_fft_len
