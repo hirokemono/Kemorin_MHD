@@ -71,13 +71,13 @@
 !>      structure for working data for ISPACK
       type working_ISPACK
 !>        Data for multiple Fourier transform
-        real(kind = 8), allocatable :: X_ispack(:,:)
+        real(kind = 8), pointer :: X_ispack(:,:)
 !>        Work area for ISPACK
         integer(kind = 4) :: IT_ispack(5)
 !>        Work constants for ISPACK
-        real(kind = 8), allocatable :: T_ispack(:)
+        real(kind = 8), pointer :: T_ispack(:)
 !>        Work area for ISPACK
-        real(kind = 8), allocatable :: WORK_ispack(:,:)
+        real(kind = 8), pointer :: WORK_ispack(:,:)
 !>        flag for length of Fourier transform
         integer(kind = kint) :: iflag_fft_len = -1
 !>        flag for number of components for Fourier transform

@@ -67,8 +67,8 @@
       use FFTPACK5_wrapper
       use ispack_FFT_wrapper
 !
-      use FFTW_wrapper
-!      use FFTW_kemo_wrapper
+      use m_FFTW_wrapper
+!      use m_FFTW_kemo_wrapper
 !
       implicit none
 !

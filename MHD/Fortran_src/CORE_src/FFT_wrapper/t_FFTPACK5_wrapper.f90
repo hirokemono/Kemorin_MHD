@@ -73,14 +73,14 @@
 !>      structure for working data for FFTPACK5
       type working_FFTPACK
 !>        Data for multiple Fourier transform
-        real(kind = 8), allocatable :: X_FFTPACK5(:,:)
+        real(kind = 8), pointer :: X_FFTPACK5(:,:)
 !
 !>      Work area for FFTPACK
         integer(kind = kint) :: lensav_FFTPACK
 !>        Work constatnts for FFTPACK
-        real(kind = 8), allocatable :: WSAVE_FFTPACK(:)
+        real(kind = 8), pointer :: WSAVE_FFTPACK(:)
 !>        Work area for FFTPACK
-        real(kind = 8), allocatable :: WORK_FFTPACK(:,:)
+        real(kind = 8), pointer :: WORK_FFTPACK(:,:)
 !>        flag for length of Fourier transform
         integer(kind = kint) :: iflag_fft_len =  -1
 !>        flag for number of components for Fourier transform

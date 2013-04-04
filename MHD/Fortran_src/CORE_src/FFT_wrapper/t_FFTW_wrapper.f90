@@ -64,39 +64,26 @@
       use m_precision
       use m_constants
 !
+      use FFTW_wrapper
+!
       implicit none
-!
-!>      plan ID for fftw
-      integer, parameter :: fftw_plan =    8
-!>      data size of complex for FFTW3
-      integer, parameter :: fftw_complex = 8
-!
-!>      Unit imaginary number
-      complex(kind = fftw_complex), parameter :: iu = (0.0d0,1.0d0)
-!
-!>      estimation flag for FFTW
-      integer(kind = 4), parameter :: FFTW_ESTIMATE = 64
 !
 !>      structure for working data for FFTW
       type working_FFTW
 !>        plan ID for backward transform
-        integer(kind = fftw_plan), allocatable :: plan_backward(:)
+        integer(kind = fftw_plan), pointer :: plan_backward(:)
 !>        plan ID for forward transform
-        integer(kind = fftw_plan), allocatable :: plan_forward(:)
+        integer(kind = fftw_plan), pointer :: plan_forward(:)
 !
-!>        normalization parameter for FFTW
+!>      normalization parameter for FFTW (= 1 / Nfft)
         real(kind = kreal) :: aNfft
 !>        real data for multiple Fourier transform
-        real(kind = kreal), allocatable :: X_FFTW(:,:)
+        real(kind = kreal), pointer :: X_FFTW(:,:)
 !>        spectrum data for multiple Fourier transform
-        complex(kind = fftw_complex), allocatable :: C_FFTW(:,:)
+        complex(kind = fftw_complex), pointer :: C_FFTW(:,:)
 !>        flag for number of components for Fourier transform
         integer(kind = kint) :: iflag_fft_len =  -1
       end type working_FFTW
-!
-      private :: fftw_plan, fftw_complex
-      private :: iu
-      private :: FFTW_ESTIMATE
 !
       private :: alloc_work_4_FFTW_t, dealloc_work_4_FFTW_t
 !
@@ -122,15 +109,8 @@
       end do
 !
       call alloc_work_4_FFTW_t(Nsmp, Nfft, WK)
-!
-      do ip = 1, Nsmp
-        call dfftw_plan_dft_r2c_1d(WK%plan_forward(ip), Nfft,           &
-     &      WK%X_FFTW(1:Nfft,ip), WK%C_FFTW(1:Nfft/2+1,ip),             &
-     &      FFTW_ESTIMATE)
-        call dfftw_plan_dft_c2r_1d(WK%plan_backward(ip), Nfft,          &
-     &      WK%C_FFTW(1:Nfft/2+1,ip), WK%X_FFTW(1:Nfft,ip),             &
-     &      FFTW_ESTIMATE)
-      end do
+      call init_4_FFTW_smp(Nsmp, Nfft, WK%plan_forward,                 &
+     &      WK%plan_backward, WK%aNfft, WK%X_FFTW, WK%C_FFTW)
 !
       end subroutine init_FFTW_type
 !
@@ -157,22 +137,12 @@
       end do
 !
       if( WK%iflag_fft_len .ne. Nfft) then
-        do ip = 1, Nsmp
-          call dfftw_destroy_plan(WK%plan_forward(ip))
-          call dfftw_destroy_plan(WK%plan_backward(ip))
-        end do
+        call destroy_FFTW_smp(Nsmp, WK%plan_forward, WK%plan_backward)
         call dealloc_work_4_FFTW_t(WK)
 !
         call alloc_work_4_FFTW_t(Nsmp, Nfft, WK)
-!
-        do ip = 1, Nsmp
-          call dfftw_plan_dft_r2c_1d(WK%plan_forward(ip), Nfft,         &
-     &        WK%X_FFTW(1:Nfft,ip), WK%C_FFTW(1:Nfft/2+1,ip),           &
-     &        FFTW_ESTIMATE)
-          call dfftw_plan_dft_c2r_1d(WK%plan_backward(ip), Nfft,        &
-     &        WK%C_FFTW(1:Nfft/2+1,ip), WK%X_FFTW(1:Nfft,ip),           &
-     &        FFTW_ESTIMATE)
-        end do
+        call init_4_FFTW_smp(Nsmp, Nfft, WK%plan_forward,               &
+     &      WK%plan_backward, WK%aNfft, WK%X_FFTW, WK%C_FFTW)
       end if
 !
       end subroutine verify_wk_FFTW_type
@@ -188,36 +158,9 @@
       real(kind = kreal), intent(inout) :: X(M, Nfft)
       type(working_FFTW), intent(inout) :: WK
 !
-      integer(kind = kint) ::  i, j, ismp, ist, num, inum
 !
-!
-!   normalization
-!
-!$omp parallel do private(i,j,ist,num,inum)
-      do ismp = 1, Nsmp
-        ist = Nstacksmp(ismp-1)
-        num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-        do inum = 1, num
-          j = ist + inum
-!
-          do i = 1, Nfft
-            WK%X_FFTW(i,ismp) = X(j,i)
-          end do
-!
-          call dfftw_execute_dft_r2c(WK%plan_forward,                   &
-     &        WK%X_FFTW(1:Nfft,ismp), WK%C_FFTW(1:Nfft/2+1,ismp) )
-!
-          X(j,1) = WK%aNfft * real(WK%C_FFTW(1,ismp))
-          do i = 2, (Nfft+1)/2
-            X(j,2*i-1) = two * WK%aNfft * real(WK%C_FFTW(i,ismp))
-            X(j,2*i  ) = two * WK%aNfft * real(WK%C_FFTW(i,ismp)*iu)
-          end do
-          i = (Nfft+1)/2 + 1
-          X(j,2) = two * WK%aNfft * real(WK%C_FFTW(i,ismp))
-        end do
-!
-      end do
-!$omp end parallel do
+      call FFTW_forward_SMP(WK%plan_forward, Nsmp, Nstacksmp,           &
+     &          M, Nfft, WK%aNfft, X, WK%X_FFTW, WK%C_FFTW)
 !
       end subroutine FFTW_forward_type
 !
@@ -231,35 +174,9 @@
       real(kind = kreal), intent(inout) :: X(M,Nfft)
       type(working_FFTW), intent(inout) :: WK
 !
-      integer(kind = kint) ::  i, j, ismp, ist, inum, num
 !
-!
-!   normalization
-!
-!$omp parallel do private(i,j,ist,num,inum)
-      do ismp = 1, Nsmp
-        ist = Nstacksmp(ismp-1)
-        num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-        do inum = 1, num
-          j = ist + inum
-!
-          WK%C_FFTW(1,ismp) = cmplx(X(j,1), zero, kind(0d0))
-          do i = 2, (Nfft+1)/2
-            WK%C_FFTW(i,ismp) = half                                    &
-     &                     * cmplx(X(j,2*i-1), -X(j,2*i  ), kind(0d0))
-          end do
-          i = (Nfft+1)/2 + 1
-          WK%C_FFTW(i,ismp) = half * cmplx(X(j,2), zero, kind(0d0))
-!
-          call dfftw_execute_dft_c2r(WK%plan_backward,                  &
-     &        WK%C_FFTW(1:Nfft/2+1,ismp),  WK%X_FFTW(1:Nfft,ismp) )
-!
-          do i = 1, Nfft
-            X(j,i) = WK%X_FFTW(i,ismp)
-          end do
-        end do
-      end do
-!$omp end parallel do
+      call FFTW_backward_SMP(WK%plan_backward, Nsmp, Nstacksmp,         &
+     &    M, Nfft, X, WK%X_FFTW, WK%C_FFTW)
 !
       end subroutine FFTW_backward_type
 !
@@ -278,7 +195,6 @@
       WK%iflag_fft_len = Nfft
       allocate( WK%X_FFTW(Nfft,Nsmp) )
       allocate( WK%C_FFTW(Nfft/2+1,Nsmp) )
-      WK%aNfft = one / dble(Nfft)
       WK%X_FFTW = 0.0d0
       WK%C_FFTW = 0.0d0
 !
