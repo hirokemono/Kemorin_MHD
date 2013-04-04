@@ -1,5 +1,5 @@
-!> @file t_phys_address.f90
-!!      module t_phys_address
+!>@file   t_phys_address.f90
+!!        module t_phys_address
 !!
 !! @author H. Matsui
 !! @date ...
@@ -43,10 +43,10 @@
         integer (kind=kint) :: i_entropy =         izero
 !
 !>        start address for magnetic field
-!!         @f$ B_{i} = e_{ijk} \partial_{j} A_{k} @f$
+!!         @f$ B_{i} @f$
         integer (kind=kint) :: i_magne =           izero
 !>        start address for magnetic vector potential
-!!         @f$ A_{i} @f$
+!!         @f$ B_{i} = e_{ijk} \partial_{j} A_{k} @f$
         integer (kind=kint) :: i_vecp =            izero
 !>        start address for current density
 !!         @f$ J_{i} = e_{ijk} \partial_{j} B_{k} @f$
@@ -369,23 +369,25 @@
 !>        start address for SGS term by nonlinear gradient method
         integer (kind=kint) :: i_sgs_grad =        izero
 !>        start address for SGS term by nonlinear gradient method
-!>        using fileterd field
+!!        using fileterd field
         integer (kind=kint) :: i_sgs_grad_f =      izero
-!>        start address for SGS term by turbyulence diffusivity
+!>        start address for SGS term by turbulence diffusivity
         integer (kind=kint) :: i_sgs_diffuse =     izero
 !
-!>        start address for 
+!>        start address for temperature to obatin commutation error
         integer (kind=kint) :: i_sgs_temp =        izero
-!>        start address for 
+!>        start address for composition variation
+!!        to obatin commutation error
         integer (kind=kint) :: i_sgs_composit =    izero
 !
-!>        start address for 
+!>        start address for filtered velocity by wider filter
         integer (kind=kint) :: i_wide_fil_velo  =  izero
-!>        start address for 
+!>        start address for filtered temperature by wider filter
         integer (kind=kint) :: i_wide_fil_temp  =  izero
-!>        start address for 
+!>        start address for filtered magnetic field by wider filter
         integer (kind=kint) :: i_wide_fil_magne =  izero
-!>        start address for 
+!>        start address for filtered magnetic vector potential
+!!        by wider filter
         integer (kind=kint) :: i_wide_fil_vecp =   izero
 !
 !  divergence of momentum equations
@@ -394,7 +396,7 @@
         integer (kind=kint) :: i_div_inertia =    izero
 !>        start address for divergence of Lorentz force
         integer (kind=kint) :: i_div_Lorentz =    izero
-!>        start address for divergence of Coriolis term
+!>        start address for divergence of Coriolis force
         integer (kind=kint) :: i_div_Coriolis =   izero
 !>        start address for divergence of buoyancy
         integer (kind=kint) :: i_div_buoyancy =   izero
@@ -405,26 +407,26 @@
 !>        start address for divergence of viscousity
         integer (kind=kint) :: i_div_viscous =    izero
 !
-!  rotation of momentum equations
+!  curl of momentum equations
 !
-!>        start address for rotation of advection
+!>        start address for curl of advection
         integer (kind=kint) :: i_rot_inertia =  izero
-!>        start address for rotation of Lorentz force
+!>        start address for curl of Lorentz force
         integer (kind=kint) :: i_rot_Lorentz =  izero
-!>        start address for rotation of Coriolis term
+!>        start address for curl of Coriolis term
         integer (kind=kint) :: i_rot_Coriolis = izero
-!>        start address for rotation of buoyancy
+!>        start address for curl of buoyancy
         integer (kind=kint) :: i_rot_buoyancy = izero
-!>        start address for rotation of compositional buoyancy
+!>        start address for curl of compositional buoyancy
         integer (kind=kint) :: i_rot_comp_buo = izero
-!>        start address for rotation of filtered buoyancy
+!>        start address for curl of filtered buoyancy
         integer (kind=kint) :: i_rot_filter_buo = izero
 !
 !  arrays for current forces
 !
 !>        start address for total forces
         integer (kind=kint) :: i_forces =       izero
-!>        start address for rotatin of total forces
+!>        start address for curl of total forces
         integer (kind=kint) :: i_rot_forces =   izero
 !>        start address for divergence of total forces
         integer (kind=kint) :: i_div_forces =   izero

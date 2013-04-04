@@ -1,11 +1,29 @@
-!set_field_address.f90
-!------- module set_field_address ---------------------
+!>@file   set_field_address.f90
+!!        module set_field_address
+!!
+!! @author H. Matsui
+!! @date   Programmed on July, 2006
+!! @n      Modified  on Jan., 2012
+!!
 !
-!        programmed by H.Matsui on July, 2006
-!        modified by H.Matsui on Jan., 2012
+!> @brief Set start address for field data
+!!
+!!@verbatim
+!!      subroutine set_field_addresses(istart_adress, num_field,        &
+!!     &          field_name, num_component, iphys)
+!!      integer(kind = kint), intent(in) :: istart_adress
+!!      integer(kind = kint), intent(in) :: num_field
+!!      integer(kind = kint), intent(in) :: num_component(num_field)
+!!      character(len = kchara), intent(in) :: field_name(num_field)
+!!      type(phys_address), intent(inout) :: iphys
+!!@endverbatim
+!!
+!!@n @param istart_adress             start address for field data
+!!@n @param num_field                 number of field
+!!@n @param num_component(num_field)  number of components of field
+!!@n @param field_name(num_field)     list of field names
+!!@n @param iphys                     structure of field addresses
 !
-!      subroutine set_field_addresses(istart_adress, num_field,         &
-!     &          field_name, num_component, iphys)
 !
       module set_field_address
 !

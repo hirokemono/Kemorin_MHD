@@ -1,11 +1,17 @@
-!set_control_4_pickup_sph.f90
-!      module set_control_4_pickup_sph
+!>@file   set_control_4_pickup_sph.f90
+!!        module set_control_4_pickup_sph
+!!
+!! @author H. Matsui
+!! @date   Programmed in 2012
+!!
 !
-!        programmed by H.Matsui on Oct., 2007
-!
-!      subroutine set_ctl_params_pick_sph
-!      subroutine set_ctl_params_pick_gauss
-!
+!> @brief Set control parameter for monitoring spectrum
+!!
+!!@verbatim
+!!      subroutine set_ctl_params_pick_sph
+!!      subroutine set_ctl_params_pick_gauss
+!!@endverbatim
+!!
       module set_control_4_pickup_sph
 !
       use m_precision

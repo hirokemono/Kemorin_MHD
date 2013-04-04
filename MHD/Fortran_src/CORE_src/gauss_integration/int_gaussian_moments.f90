@@ -1,20 +1,28 @@
-!int_gaussian_moments
-!      module int_gaussian_moments
+!>@file   int_gaussian_moments.f90
+!!        module int_gaussian_moments
+!!
+!! @author H. Matsui
+!! @date   Programmed in 2006
+!!
 !
-!      Written by H. Matsui on Aug., 2006
+!> @brief Evaluate moments of Gaussian filter
+!!
+!!@verbatim
+!!      subroutine int_gaussian_moment_infty(n_level, f_mom, f_width)
+!!      subroutine int_gaussian_moment_w_range(n_level, f_mom, f_width, &
+!!     &          zst, zed)
+!!@endverbatim
+!!
 !
-!      subroutine int_gaussian_moment_infty(n_level, f_mom, f_width)
-!      subroutine int_gaussian_moment_w_range(n_level, f_mom, f_width,  &
-!     &          zst, zed)
-!
-!        n_level: upper limit of order of moments
-!        f_mom: moments of filter
-!        f_width:  filter width
-!        zst, zed:  start end end position for integration
+!!@n @param        n_level upper limit of order of moments
+!!@n @param        f_mom moments of filter
+!!@n @param        f_width  filter width
+!!@n @param        zst, zed  start end end position for integration
 !
       module int_gaussian_moments
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -31,8 +39,6 @@
       real(kind = kreal), intent(inout) :: f_mom(0:n_level)
 !
       integer(kind = kint) :: i
-      real(kind = kreal), parameter :: zero = 0.0d0, one = 1.0d0
-      real (kind = kreal), parameter :: three = 3.0d0
 !
 !
       f_mom(0) = one
@@ -54,7 +60,6 @@
       use m_constants
       use m_gauss_points
       use m_gauss_integration
-      use set_gauss_integration
       use set_filter_moments
 !
       integer(kind = kint), intent(in) :: n_level

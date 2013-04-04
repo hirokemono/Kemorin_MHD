@@ -71,7 +71,6 @@
       use m_constants
       use m_gauss_int_parameters
       use m_gauss_points
-      use set_gauss_integration
 !
       integer(kind = kint) :: n
 !

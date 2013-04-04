@@ -6,26 +6,28 @@
 !>
 !!    @brief module for Legendre polynomials
 !!
-!!@n    subroutine dladendre(nth, x, dplm, df)
-!!@n*************************************************************
-!!@n     lead legendre and adjoint Legendle Polynomial
-!!@n*
-!!@n*      dplm(m,l) : adjoint Legendre Polynomial P_l^m (x)
-!!@n*         x        :  input value x ( -1 =< x =<1 )
-!!@n*        df(m,l)  :   work area
-!!@n*
-!!@n*************************************************************
-!!@n*
-!!@n      subroutine schmidt_normalization(nth, dplm, dc, p, dp)
-!!@n*************************************************************
-!!@n*     lead Schmidt quasi-normalization
-!!@n*
-!!@n*      p(m,l)  : Schmidt Polynomial
-!!@n*      dp(m,l) : diffrence of Schmidt Polynomial dp/dtheta
-!!@n*      dplm(m,l)  : adjoint Legendre Polynomial P_l^m (x)
-!!@n*      dc(m,l)  :   work area
-!!@n*
-!!@n*************************************************************
+!!@verbatim
+!!    subroutine dladendre(nth, x, dplm, df)
+!!*************************************************************
+!!     lead legendre and adjoint Legendle Polynomial
+!!*
+!!*      dplm(m,l) : adjoint Legendre Polynomial P_l^m (x)
+!!*         x        :  input value x ( -1 =< x =<1 )
+!!*        df(m,l)  :   work area
+!!*
+!!*************************************************************
+!!*
+!!      subroutine schmidt_normalization(nth, dplm, dc, p, dp)
+!!*************************************************************
+!!*     lead Schmidt quasi-normalization
+!!*
+!!*      p(m,l)  : Schmidt Polynomial
+!!*      dp(m,l) : diffrence of Schmidt Polynomial dp/dtheta
+!!*      dplm(m,l)  : adjoint Legendre Polynomial P_l^m (x)
+!!*      dc(m,l)  :   work area
+!!*
+!!*************************************************************
+!!@endverbatim
 !!
 !!@n @param nth       Truncation level for the polynomial
 !!@n @param x         Input value  ( -1 =< x =<1 )

@@ -1,74 +1,82 @@
-!m_ctl_data_4_pickup_sph.f90
-!      module m_ctl_data_4_pickup_sph
+!>@file   m_ctl_data_4_pickup_sph.f90
+!!        module m_ctl_data_4_pickup_sph
+!!
+!! @author H. Matsui
+!! @date   Programmed in 2012
+!!
 !
-!        programmed by H.Matsui on Oct., 2007
-!
-!      subroutine deallocate_num_pick_layer_ctl
-!
-!      subroutine deallocate_pick_sph_ctl
-!      subroutine deallocate_pick_sph_l_ctl
-!      subroutine deallocate_pick_sph_m_ctl
-!
-!      subroutine deallocate_pick_gauss_ctl
-!      subroutine deallocate_pick_gauss_l_ctl
-!      subroutine deallocate_pick_gauss_m_ctl
-!
-!      subroutine read_pickup_sph_ctl
-!
-! -----------------------------------------------------------------
-!
-!     read controld informations for pickup spherical hermonics
-!
-!  begin sph_monitor_ctl
-!    volume_average_head_ctl      'sph_ave_volume'
-!    volume_rms_spectr_head_ctl   'sph_rms_volume'
-!    layered_rms_spectr_head_ctl  'sph_rms_layer'
-!
-!    picked_sph_head_ctl          'sph_spectr/picked_mode'
-!
-!    gauss_coefs_head_ctl        'sph_spectr/gauss_coefs'
-!    gauss_coefs_radius_ctl        2.91
+!> @brief Monitoring section IO for Control data
+!!
+!!@verbatim
+!!      subroutine deallocate_num_pick_layer_ctl
+!!
+!!      subroutine deallocate_pick_sph_ctl
+!!      subroutine deallocate_pick_sph_l_ctl
+!!      subroutine deallocate_pick_sph_m_ctl
+!!
+!!      subroutine deallocate_pick_gauss_ctl
+!!      subroutine deallocate_pick_gauss_l_ctl
+!!      subroutine deallocate_pick_gauss_m_ctl
+!!
+!!      subroutine read_pickup_sph_ctl
+!!
+!! -----------------------------------------------------------------
+!!
+!!      control block for pickup spherical hermonics
+!!
+!!  begin sph_monitor_ctl
+!!    volume_average_head_ctl      'sph_ave_volume'
+!!    volume_rms_spectr_head_ctl   'sph_rms_volume'
+!!    layered_rms_spectr_head_ctl  'sph_rms_layer'
+!!
+!!    picked_sph_head_ctl          'sph_spectr/picked_mode'
+!!
+!!    gauss_coefs_head_ctl        'sph_spectr/gauss_coefs'
+!!    gauss_coefs_radius_ctl        2.91
 !!
 !!   if num_pick_layer_ctl = 0 or negative:
 !!           output all layer and volume average
-!
-!    array pick_layer_ctl  1
-!      pick_layer_ctl  62
-!    end array
-!
-!    array pick_sph_spectr_ctl  2
-!      pick_sph_spectr_ctl   2  -2
-!      pick_sph_spectr_ctl   2   2
-!    end array pick_sph_spectr_ctl
-!
-!    array pick_sph_degree_ctl  2
-!      pick_sph_degree_ctl   2
-!      pick_sph_degree_ctl   2
-!    end array pick_sph_degree_ctl
-!
-!    array pick_sph_order_ctl  2
-!      pick_sph_order_ctl  -2
-!      pick_sph_order_ctl   2
-!    end array pick_sph_order_ctl
-!
-!
-!    array pick_gauss_coefs_ctl  2
-!      pick_gauss_coefs_ctl   2  -2
-!      pick_gauss_coefs_ctl   2   2
-!    end array pick_gauss_coefs_ctl
-!
-!    array pick_gauss_coef_degree_ctl  2
-!      pick_gauss_coef_degree_ctl   2
-!      pick_gauss_coef_degree_ctl   2
-!    end array pick_gauss_coef_degree_ctl
-!
-!    array pick_gauss_coef_order_ctl  2
-!      pick_gauss_coef_order_ctl   -2
-!      pick_gauss_coef_order_ctl    2
-!    end array pick_gauss_coef_order_ctl
-!  end sph_monitor_ctl
-!
-! -----------------------------------------------------------------
+!!
+!!    array pick_layer_ctl  1
+!!      pick_layer_ctl  62
+!!    end array
+!!
+!!    array pick_sph_spectr_ctl  2
+!!      pick_sph_spectr_ctl   2  -2
+!!      pick_sph_spectr_ctl   2   2
+!!    end array pick_sph_spectr_ctl
+!!
+!!    array pick_sph_degree_ctl  2
+!!      pick_sph_degree_ctl   2
+!!      pick_sph_degree_ctl   2
+!!    end array pick_sph_degree_ctl
+!!
+!!    array pick_sph_order_ctl  2
+!!      pick_sph_order_ctl  -2
+!!      pick_sph_order_ctl   2
+!!    end array pick_sph_order_ctl
+!!
+!!
+!!    array pick_gauss_coefs_ctl  2
+!!      pick_gauss_coefs_ctl   2  -2
+!!      pick_gauss_coefs_ctl   2   2
+!!    end array pick_gauss_coefs_ctl
+!!
+!!    array pick_gauss_coef_degree_ctl  2
+!!      pick_gauss_coef_degree_ctl   2
+!!      pick_gauss_coef_degree_ctl   2
+!!    end array pick_gauss_coef_degree_ctl
+!!
+!!    array pick_gauss_coef_order_ctl  2
+!!      pick_gauss_coef_order_ctl   -2
+!!      pick_gauss_coef_order_ctl    2
+!!    end array pick_gauss_coef_order_ctl
+!!
+!!    nphi_mid_eq_ctl         500
+!!  end sph_monitor_ctl
+!!
+!! -----------------------------------------------------------------
+!!@endverbatim
 !
       module m_ctl_data_4_pickup_sph
 !
@@ -109,6 +117,8 @@
       integer(kind = kint) :: num_pick_gauss_m_ctl = 0
       integer(kind = kint), allocatable :: idx_pick_gauss_m_ctl(:)
 !
+      integer(kind = kint) :: nphi_mid_eq_ctl
+!
 !    label for entry
 !
       character(len=kchara), parameter                                  &
@@ -147,6 +157,9 @@
       character(len=kchara), parameter                                  &
      &            :: hd_num_pick_gauss_m = 'pick_gauss_coef_order_ctl'
 !
+      character(len=kchara), parameter                                  &
+     &            :: hd_nphi_mid_eq = 'nphi_mid_eq_ctl'
+!
 !
       integer (kind=kint) :: i_voume_ave_head =         0
       integer (kind=kint) :: i_voume_rms_head =         0
@@ -165,6 +178,7 @@
       integer (kind=kint) :: i_num_pick_gauss_l =       0
       integer (kind=kint) :: i_num_pick_gauss_m =       0
 !
+      integer (kind=kint) :: i_nphi_mid_eq =            0
 !
       private :: hd_pick_sph, i_pick_sph, hd_num_pick_layer
       private :: hd_gauss_coefs_head, hd_gauss_coefs_r
@@ -173,7 +187,7 @@
       private :: hd_num_pick_l, hd_num_pick_m
       private :: hd_num_pick_gauss_l, hd_num_pick_gauss_m
       private :: hd_voume_ave_head, hd_voume_rms_head
-      private :: hd_layer_rms_head
+      private :: hd_layer_rms_head, hd_nphi_mid_eq
 !
       private :: allocate_pick_layer_ctl, allocate_pick_sph_ctl
       private :: allocate_pick_sph_l_ctl, allocate_pick_sph_m_ctl
@@ -383,6 +397,9 @@
 !
         call read_real_ctl_item(hd_gauss_coefs_r,                       &
      &          i_gauss_coefs_r, gauss_coefs_radius_ctl)
+!
+        call read_integer_ctl_item(hd_nphi_mid_eq,                      &
+     &          i_nphi_mid_eq, nphi_mid_eq_ctl)
 !
         call read_character_ctl_item(hd_gauss_coefs_head,               &
      &          i_gauss_coefs_head, gauss_coefs_head_ctl)

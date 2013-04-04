@@ -1,22 +1,28 @@
-!set_filter_moments.f90
-!      module set_filter_moments
+!>@file   set_filter_moments.f90
+!!        module set_filter_moments
+!!
+!! @author H. Matsui
+!! @date   Programmed in 2004
+!!
 !
-!      Written by H. Matsui in 2004
-!
-!     subroutine filter_moment_gaussian(n_order, n_point, r, g, x)
-!        moments for gaussian filter
-!
-!     subroutine filter_moment_linear(n_order, n_point, r, g, x)
-!        moments for linear filter
-!
-!     subroutine filter_moment_tophat(n_order, n_point, r, g, x)
-!        moments for tophat filter
-!
-!     g: moments at gauss points
-!     x: position of gauss points
-!     r: filter width
-!     n_order: number of order for moments
-!     n_points: number of gauss points
+!> @brief Constants for Gauss-Legendre integration
+!!
+!!@verbatim
+!!     subroutine filter_moment_gaussian(n_order, n_point, r, g, x)
+!!        moments for gaussian filter
+!!
+!!     subroutine filter_moment_linear(n_order, n_point, r, g, x)
+!!        moments for linear filter
+!!
+!!     subroutine filter_moment_tophat(n_order, n_point, r, g, x)
+!!        moments for tophat filter
+!!@endverbatim
+!!
+!!@n @param      g moments at gauss points
+!!@n @param      x position of gauss points
+!!@n @param      r filter width
+!!@n @param      n_order number of order for moments
+!!@n @param      n_points number of gauss points
 !
       module set_filter_moments
 !
