@@ -67,6 +67,8 @@
 !
       implicit none
 !
+!>      Maximum nuber of components for each SMP process
+      integer(kind = kint) :: Mmax_smp
 !>      plan ID for backward transform
       integer(kind = fftw_plan), allocatable :: plan_backward(:)
 !>      plan ID for forward transform
@@ -82,7 +84,7 @@
       integer(kind = kint) :: iflag_fft_len =  -1
 !
 !
-      private :: iflag_fft_len
+      private :: iflag_fft_len, Mmax_smp
       private :: plan_backward, plan_forward
       private :: X_FFTW, C_FFTW, aNfft
 !
@@ -100,12 +102,12 @@
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !
-      integer(kind = kint) :: M, ip
+      integer(kind = kint) :: ip
 !
 !
-      M = Nstacksmp(1)
+      Mmax_smp = Nstacksmp(1)
       do ip = 1, Nsmp
-        M = max(M, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
+        Mmax_smp = max(Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
       end do
 !
       call allocate_work_4_FFTW(Nsmp, Nfft)
@@ -121,7 +123,7 @@
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !
-      integer(kind = kint) :: M, ip
+      integer(kind = kint) :: ip
 !
 !
       if( iflag_fft_len .lt. 0) then
@@ -129,9 +131,9 @@
         return
       end if
 !
-      M = Nstacksmp(1)
+      Mmax_smp = Nstacksmp(1)
       do ip = 1, Nsmp
-        M = max(M, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
+        Mmax_smp = max(Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
       end do
 !
       if( iflag_fft_len .ne. Nfft) then

@@ -64,9 +64,8 @@
 !
       use m_precision
       use m_machine_parameter
-      use FFTPACK5_wrapper
-      use ispack_FFT_wrapper
-!
+      use m_FFTPACK5_wrapper
+      use m_ispack_FFT_wrapper
       use m_FFTW_wrapper
 !      use m_FFTW_kemo_wrapper
 !

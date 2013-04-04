@@ -70,6 +70,8 @@
 !
 !>      structure for working data for ISPACK
       type working_ISPACK
+!>        Maximum nuber of components for each SMP process
+        integer(kind = kint) :: Mmax_smp
 !>        Data for multiple Fourier transform
         real(kind = 8), pointer :: X_ispack(:,:)
 !>        Work area for ISPACK
@@ -85,7 +87,6 @@
       end type working_ISPACK
 !
 !
-      private :: FTTRUI_kemo_type
       private :: alloc_work_ispack_t, alloc_const_ispack_t
       private :: dealloc_work_ispack_t, dealloc_const_ispack_t
 !
@@ -98,23 +99,26 @@
 !
       subroutine init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WK)
 !
+      use ispack_FFT_wrapper
+!
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !
       type(working_ISPACK), intent(inout) :: WK
 !
-      integer(kind = kint) :: M, ip
+      integer(kind = kint) :: ip
 !
 !
-      M = Nstacksmp(1)
+      WK%Mmax_smp = Nstacksmp(1)
       do ip = 1, Nsmp
-        M = max(M, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
+        WK%Mmax_smp                                                     &
+     &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
       end do
 !
       call alloc_const_ispack_t(Nfft, WK)
-      call FTTRUI_kemo_type(Nfft, WK)
+      call FTTRUI_kemo( Nfft, WK%IT_ispack, WK%T_ispack )
 !
-      call alloc_work_ispack_t(Nsmp, M, Nfft, WK)
+      call alloc_work_ispack_t(Nsmp, Nfft, WK)
 !
       end subroutine init_wk_ispack_t
 !
@@ -122,17 +126,20 @@
 !
       subroutine verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WK)
 !
+      use ispack_FFT_wrapper
+!
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !
       type(working_ISPACK), intent(inout) :: WK
 !
-      integer(kind = kint) :: M, ip
+      integer(kind = kint) :: ip
 !
 !
-      M = Nstacksmp(1)
+      WK%Mmax_smp = Nstacksmp(1)
       do ip = 1, Nsmp
-        M = max(M, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
+        WK%Mmax_smp                                                     &
+     &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
       end do
 !
       if( WK%iflag_fft_len .ne. Nfft) then
@@ -144,15 +151,14 @@
           call alloc_const_ispack_t(Nfft, WK)
         end if
 !
-        call FTTRUI_kemo_type(Nfft, WK)
-!
+        call FTTRUI_kemo( Nfft, WK%IT_ispack, WK%T_ispack )
       end if
 !
       if( WK%iflag_fft_comp .lt. 0) then
-        call alloc_work_ispack_t(Nsmp, M, Nfft, WK)
-      else if( (M*Nfft) .gt. WK%iflag_fft_comp ) then
+        call alloc_work_ispack_t(Nsmp, Nfft, WK)
+      else if( (WK%Mmax_smp*Nfft) .gt. WK%iflag_fft_comp ) then
         call dealloc_work_ispack_t(WK)
-        call alloc_work_ispack_t(Nsmp, M, Nfft, WK)
+        call alloc_work_ispack_t(Nsmp, Nfft, WK)
       end if
 !
       end subroutine verify_wk_ispack_t
@@ -160,19 +166,9 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine FTTRUI_kemo_type(Nfft, WK)
-!
-      integer(kind = kint), intent(in) :: Nfft
-      type(working_ISPACK), intent(inout) :: WK
-!
-!
-      call FTTRUI( Nfft, WK%IT_ispack, WK%T_ispack )
-!
-      end subroutine FTTRUI_kemo_type
-!
-! ------------------------------------------------------------------
-!
       subroutine FTTRUF_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WK)
+!
+      use ispack_FFT_wrapper
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
@@ -180,50 +176,10 @@
       real(kind = kreal), intent(inout) :: X(M, Nfft)
       type(working_ISPACK), intent(inout) :: WK
 !
-      integer(kind = kint) :: i, j, ismp, ist, num
-      integer(kind = kint) :: inum, inod_s, inod_c
 !
-!
-! normalization
-!
-!$omp parallel do private(i,j,ist,num,inum,inod_s,inod_c)
-      do ismp = 1, Nsmp
-        ist = Nstacksmp(ismp-1)
-        num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-!
-        do i = 1, Nfft/2
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (2*i-2) * num
-            inod_s = inum + (2*i-1) * num
-            WK%X_ispack(inod_c,ismp) = X(j,2*i-1)
-            WK%X_ispack(inod_s,ismp) = X(j,2*i  )
-          end do
-        end do
-!
-        call FTTRUF(num, Nfft, WK%X_ispack(1:M*Nfft,ismp),              &
-     &      WK%WORK_ispack(1:M*Nfft,ismp), WK%IT_ispack,                &
-     &      WK%T_ispack(1:2*nfft) )
-!
-        do inum = 1, num
-          j = ist + inum
-          inod_c = inum
-          inod_s = inum + num
-          X(j,1) = WK%X_ispack(inod_c,ismp)
-          X(j,2) = WK%X_ispack(inod_s,ismp)
-        end do
-        do i = 2, Nfft/2
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (2*i-2) * num
-            inod_s = inum + (2*i-1) * num
-            X(j,2*i-1) =   two * WK%X_ispack(inod_c,ismp)
-            X(j,2*i  ) = - two * WK%X_ispack(inod_s,ismp)
-          end do
-        end do
-!
-      end do
-!$omp end parallel do
+      call FTTRUF_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,                 &
+     &    WK%X_ispack, WK%Mmax_smp, WK%IT_ispack, WK%T_ispack,          &
+     &    WK%WORK_ispack)
 !
       end subroutine FTTRUF_kemo_t
 !
@@ -231,68 +187,31 @@
 !
       subroutine FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WK)
 !
+      use ispack_FFT_wrapper
+!
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
 !
       real(kind = kreal), intent(inout) :: X(M,Nfft)
       type(working_ISPACK), intent(inout) :: WK
 !
-      integer(kind = kint) ::  i, j, ismp, ist, num
-      integer(kind = kint) :: inum, inod_s, inod_c
 !
-!
-! normalization
-!
-!$omp parallel do private(i,j,ist,num,inum,inod_s,inod_c)
-      do ismp = 1, Nsmp
-        ist = Nstacksmp(ismp-1)
-        num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-!
-        do inum = 1, num
-          j = ist + inum
-            inod_c = inum
-            inod_s = inum + num
-          WK%X_ispack(inod_c,ismp) = X(j,1)
-          WK%X_ispack(inod_s,ismp) = X(j,2)
-        end do
-        do i = 2, Nfft/2
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (2*i-2) * num
-            inod_s = inum + (2*i-1) * num
-            WK%X_ispack(inod_c,ismp) =  half * X(j,2*i-1)
-            WK%X_ispack(inod_s,ismp) = -half * X(j,2*i  )
-          end do
-        end do
-!
-        call FTTRUB(num, Nfft, WK%X_ispack(1:M*Nfft,ismp),              &
-     &      WK%WORK_ispack(1:M*Nfft,ismp), WK%IT_ispack,                &
-     &      WK%T_ispack(1:2*nfft) )
-!
-        do i = 1, Nfft/2
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (2*i-2) * num
-            inod_s = inum + (2*i-1) * num
-            X(j,2*i-1) = WK%X_ispack(inod_c,ismp)
-            X(j,2*i  ) = WK%X_ispack(inod_s,ismp)
-          end do
-        end do
-      end do
-!$omp end parallel do
+      call FTTRUB_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,                 &
+     &    WK%X_ispack, WK%Mmax_smp, WK%IT_ispack, WK%T_ispack,          &
+     &    WK%WORK_ispack)
 !
       end subroutine FTTRUB_kemo_t
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_work_ispack_t(Nsmp, M, Nfft, WK)
+      subroutine alloc_work_ispack_t(Nsmp, Nfft, WK)
 !
-      integer(kind = kint), intent(in) :: Nsmp, M, Nfft
+      integer(kind = kint), intent(in) :: Nsmp, Nfft
       type(working_ISPACK), intent(inout) :: WK
 !
 !
-      WK%iflag_fft_comp = M*Nfft
+      WK%iflag_fft_comp = WK%Mmax_smp*Nfft
       allocate( WK%X_ispack(WK%iflag_fft_comp,Nsmp) )
       allocate( WK%WORK_ispack(WK%iflag_fft_comp,Nsmp) )
       WK%WORK_ispack = 0.0d0

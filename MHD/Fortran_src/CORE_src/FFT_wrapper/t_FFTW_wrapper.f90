@@ -70,6 +70,8 @@
 !
 !>      structure for working data for FFTW
       type working_FFTW
+!>        Maximum nuber of components for each SMP process
+        integer(kind = kint) :: Mmax_smp
 !>        plan ID for backward transform
         integer(kind = fftw_plan), pointer :: plan_backward(:)
 !>        plan ID for forward transform
@@ -100,12 +102,13 @@
 !
       type(working_FFTW), intent(inout) :: WK
 !
-      integer(kind = kint) :: M, ip
+      integer(kind = kint) :: ip
 !
 !
-      M = Nstacksmp(1)
+      WK%Mmax_smp = Nstacksmp(1)
       do ip = 1, Nsmp
-        M = max(M, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
+        WK%Mmax_smp                                                     &
+     &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
       end do
 !
       call alloc_work_4_FFTW_t(Nsmp, Nfft, WK)
@@ -123,7 +126,7 @@
 !
       type(working_FFTW), intent(inout) :: WK
 !
-      integer(kind = kint) :: M, ip
+      integer(kind = kint) :: ip
 !
 !
       if(WK%iflag_fft_len .lt. 0) then
@@ -131,9 +134,10 @@
         return
       end if
 !
-      M = Nstacksmp(1)
+      WK%Mmax_smp = Nstacksmp(1)
       do ip = 1, Nsmp
-        M = max(M, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
+        WK%Mmax_smp                                                     &
+     &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
       end do
 !
       if( WK%iflag_fft_len .ne. Nfft) then

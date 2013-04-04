@@ -10,13 +10,13 @@
 !!@verbatim
 !!  ---------------------------------------------------------------------
 !!
-!!      subroutine init_4_ispack(Nsmp, Nstacksmp, Nfft)
-!!      subroutine verify_work_4_ispack(Nsmp, Nstacksmp, Nfft)
+!!      subroutine FTTRUI_kemo(Nfft, IT_ispack, T_ispack)
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
-!!      subroutine FTTRUF_kemo(Nsmp, Nstacksmp, M, Nfft, X)
+!!      subroutine FTTRUF_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,         &
+!!     &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by ISPACK
@@ -30,7 +30,8 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine FTTRUB_kemo(Nsmp, Nstacksmp, M, Nfft, X)
+!!      subroutine FTTRUB_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,         &
+!!     &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by ISPACK
@@ -59,6 +60,13 @@
 !!@n @param M           Number of components for Fourier transforms
 !!@n @param Nfft        Data length for eadh FFT
 !!@n @param X(M, Nfft)  Data for Fourier transform
+!!
+!!@n @param Mmax_smp    Maximum number of component for each SMP process
+!!@n @param X_ispack(Mmax_smp*Nfft,Nsmp) 
+!!                 Data for multiple Fourier transform
+!!@n @param IT_ispack(5)              Work integer for ISPACK
+!!@n @param T_ispack(itwo*Nfft)       Work constatnts for ISPACK
+!!@n @param WORK_ispack(Mmax_smp*Nfft,Nsmp)  Work area for ISPACK
 !
       module ispack_FFT_wrapper
 !
@@ -67,97 +75,18 @@
 !
       implicit none
 !
-!>      Data for multiple Fourier transform
-      real(kind = 8), allocatable :: X_ispack(:,:)
-!>      Work area for ISPACK
-      integer(kind = 4) :: IT_ispack(5)
-!>      Work constants for ISPACK
-      real(kind = 8), allocatable :: T_ispack(:)
-!>      Work area for ISPACK
-      real(kind = 8), allocatable :: WORK_ispack(:,:)
-!>      flag for length of Fourier transform
-      integer(kind = kint) :: iflag_fft_len = -1
-!>      flag for number of components for Fourier transform
-      integer(kind = kint) :: iflag_fft_comp = -1
-!
-      private :: X_ispack
-      private :: IT_ispack, T_ispack, WORK_ispack
-      private :: iflag_fft_len, iflag_fft_comp
-!
-      private :: FTTRUI_kemo
-      private :: allocate_work_4_ispack, allocate_const_4_ispack
-      private :: deallocate_work_4_ispack, deallocate_const_4_ispack
-!
-!
 ! ------------------------------------------------------------------
 !
       contains
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_4_ispack(Nsmp, Nstacksmp, Nfft)
-!
-      integer(kind = kint), intent(in) ::  Nfft
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!
-      integer(kind = kint) :: M, ip
-!
-!
-      M = Nstacksmp(1)
-      do ip = 1, Nsmp
-        M = max(M, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
-      end do
-!
-      call allocate_const_4_ispack(Nfft)
-      call FTTRUI_kemo(Nfft)
-!
-      call allocate_work_4_ispack(Nsmp, M, Nfft)
-!
-      end subroutine init_4_ispack
-!
-! ------------------------------------------------------------------
-!
-      subroutine verify_work_4_ispack(Nsmp, Nstacksmp, Nfft)
-!
-      integer(kind = kint), intent(in) ::  Nfft
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!
-      integer(kind = kint) :: M, ip
-!
-!
-      M = Nstacksmp(1)
-      do ip = 1, Nsmp
-        M = max(M, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
-      end do
-!
-      if( iflag_fft_len .ne. Nfft) then
-!
-        if( iflag_fft_len .lt. 0) then
-          call allocate_const_4_ispack(Nfft)
-        else if( Nfft .gt. iflag_fft_comp ) then
-          call deallocate_const_4_ispack
-          call allocate_const_4_ispack(Nfft)
-        end if
-!
-        call FTTRUI_kemo(Nfft)
-!
-      end if
-!
-      if( iflag_fft_comp .lt. 0) then
-        call allocate_work_4_ispack(Nsmp, M, Nfft)
-      else if( (M*Nfft) .gt. iflag_fft_comp ) then
-        call deallocate_work_4_ispack
-        call allocate_work_4_ispack(Nsmp, M, Nfft)
-      end if
-!
-      end subroutine verify_work_4_ispack
-!
-! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
-      subroutine FTTRUI_kemo(Nfft)
+      subroutine FTTRUI_kemo(Nfft, IT_ispack, T_ispack)
 !
       integer(kind = kint), intent(in) :: Nfft
+      integer(kind = 4), intent(inout) :: IT_ispack(5)
+      real(kind = 8), intent(inout) :: T_ispack(itwo*Nfft)
+!
 !
       call FTTRUI( Nfft, IT_ispack, T_ispack(1) )
 !
@@ -165,18 +94,21 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine FTTRUF_kemo(Nsmp, Nstacksmp, M, Nfft, X)
+      subroutine FTTRUF_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
+     &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack)
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: M, Nfft
+      integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
+      integer(kind = 4), intent(in) :: IT_ispack(5)
+      real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
 !
       real(kind = kreal), intent(inout) :: X(M, Nfft)
+      real(kind = kreal), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nfft)
+      real(kind = 8), intent(inout) :: WORK_ispack(Mmax_smp*Nfft,Nsmp)
 !
       integer(kind = kint) :: i, j, ismp, ist, num
       integer(kind = kint) :: inum, inod_s, inod_c
 !
-!
-! normalization
 !
 !$omp parallel do private(i,j,ist,num,inum,inod_s,inod_c)
       do ismp = 1, Nsmp
@@ -216,22 +148,25 @@
       end do
 !$omp end parallel do
 !
-      end subroutine FTTRUF_kemo
+      end subroutine FTTRUF_kemo_smp
 !
 ! ------------------------------------------------------------------
 !
-      subroutine FTTRUB_kemo(Nsmp, Nstacksmp, M, Nfft, X)
+      subroutine FTTRUB_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
+     &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack)
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: M, Nfft
+      integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
+      integer(kind = 4), intent(in) :: IT_ispack(5)
+      real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
 !
       real(kind = kreal), intent(inout) :: X(M,Nfft)
+      real(kind = kreal), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nfft)
+      real(kind = 8), intent(inout) :: WORK_ispack(Mmax_smp*Nfft,Nsmp)
 !
       integer(kind = kint) ::  i, j, ismp, ist, num
       integer(kind = kint) :: inum, inod_s, inod_c
 !
-!
-! normalization
 !
 !$omp parallel do private(i,j,ist,num,inum,inod_s,inod_c)
       do ismp = 1, Nsmp
@@ -270,53 +205,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine FTTRUB_kemo
-!
-! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
-      subroutine allocate_work_4_ispack(Nsmp, M, Nfft)
-!
-      integer(kind = kint), intent(in) :: Nsmp, M, Nfft
-!
-!
-      iflag_fft_comp = M*Nfft
-      allocate( X_ispack(iflag_fft_comp,Nsmp) )
-      allocate( WORK_ispack(iflag_fft_comp,Nsmp) )
-      WORK_ispack = 0.0d0
-!
-      end subroutine allocate_work_4_ispack
-!
-! ------------------------------------------------------------------
-!
-      subroutine allocate_const_4_ispack(nfft)
-!
-      integer(kind = kint), intent(in) :: nfft
-!
-      iflag_fft_len = nfft
-      allocate( T_ispack(2*nfft) )
-      T_ispack = 0.0d0
-!
-      end subroutine allocate_const_4_ispack
-!
-! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
-      subroutine deallocate_work_4_ispack
-!
-      deallocate(X_ispack, WORK_ispack )
-      iflag_fft_comp = 0
-!
-      end subroutine deallocate_work_4_ispack
-!
-! ------------------------------------------------------------------
-!
-      subroutine deallocate_const_4_ispack
-!
-      deallocate( T_ispack )
-      iflag_fft_len = 0
-!
-      end subroutine deallocate_const_4_ispack
+      end subroutine FTTRUB_kemo_smp
 !
 ! ------------------------------------------------------------------
 !

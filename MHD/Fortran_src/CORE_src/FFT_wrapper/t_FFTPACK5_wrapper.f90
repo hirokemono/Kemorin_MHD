@@ -72,11 +72,13 @@
 !
 !>      structure for working data for FFTPACK5
       type working_FFTPACK
+!>        Maximum nuber of components for each SMP process
+        integer(kind = kint) :: Mmax_smp
 !>        Data for multiple Fourier transform
         real(kind = 8), pointer :: X_FFTPACK5(:,:)
 !
 !>      Work area for FFTPACK
-        integer(kind = kint) :: lensav_FFTPACK
+        integer(kind = kint) :: lsave_FFTPACK
 !>        Work constatnts for FFTPACK
         real(kind = 8), pointer :: WSAVE_FFTPACK(:)
 !>        Work area for FFTPACK
@@ -87,7 +89,6 @@
         integer(kind = kint) :: iflag_fft_comp = -1
       end type working_FFTPACK
 !
-      private :: RFFTMI_norm
       private :: alloc_work_4_FFTPACK_t, alloc_const_4_FFTPACK_t
       private :: dealloc_work_4_FFTPACK_t, dealloc_const_FFTPACK_t
 !
@@ -99,23 +100,27 @@
 !
       subroutine init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WK)
 !
+      use FFTPACK5_wrapper
+!
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !
       type(working_FFTPACK), intent(inout) :: WK
 !
-      integer(kind = kint) :: M, ip
+      integer(kind = kint) :: ip
 !
 !
-      M = Nstacksmp(1)
+      WK%Mmax_smp = Nstacksmp(1)
       do ip = 1, Nsmp
-        M = max(M, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
+        WK%Mmax_smp                                                     &
+     &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
       end do
 !
       call alloc_const_4_FFTPACK_t(Nfft, WK)
-      call RFFTMI_norm(Nfft, WK)
+      call init_CALYPSO_FFTPACK(Nfft,                                   &
+     &    WK%lsave_FFTPACK, WK%WSAVE_FFTPACK)
 !
-      call alloc_work_4_FFTPACK_t(Nsmp, M, Nfft, WK)
+      call alloc_work_4_FFTPACK_t(Nsmp, Nfft, WK)
 !
       end subroutine init_WK_FFTPACK_t
 !
@@ -123,17 +128,20 @@
 !
       subroutine verify_wk_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WK)
 !
+      use FFTPACK5_wrapper
+!
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !
       type(working_FFTPACK), intent(inout) :: WK
 !
-      integer(kind = kint) :: M, ip
+      integer(kind = kint) :: ip
 !
 !
-      M = Nstacksmp(1)
+      WK%Mmax_smp = Nstacksmp(1)
       do ip = 1, Nsmp
-        M = max(M, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
+        WK%Mmax_smp                                                     &
+     &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
       end do
 !
       if(WK%iflag_fft_len .ne. Nfft) then
@@ -145,14 +153,15 @@
           call alloc_const_4_FFTPACK_t(Nfft, WK)
         end if
 !
-        call RFFTMI_norm(Nfft, WK)
+        call init_CALYPSO_FFTPACK(Nfft,                                 &
+     &    WK%lsave_FFTPACK, WK%WSAVE_FFTPACK)
       end if
 !
       if(WK%iflag_fft_comp .lt. 0) then
-        call alloc_work_4_FFTPACK_t(Nsmp, M, Nfft, WK)
-      else if( (M*Nfft) .gt. WK%iflag_fft_comp ) then
+        call alloc_work_4_FFTPACK_t(Nsmp, Nfft, WK)
+      else if( (WK%Mmax_smp*Nfft) .gt. WK%iflag_fft_comp ) then
         call dealloc_work_4_FFTPACK_t(WK)
-        call alloc_work_4_FFTPACK_t(Nsmp, M, Nfft, WK)
+        call alloc_work_4_FFTPACK_t(Nsmp, Nfft, WK)
       end if
 !
       end subroutine verify_wk_FFTPACK_t
@@ -160,21 +169,9 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine RFFTMI_norm(Nfft, WK)
-!
-      integer(kind = kint), intent(in) :: Nfft
-      type(working_FFTPACK), intent(inout) :: WK
-!
-      integer(kind = kint) :: ierr
-!
-!
-      call RFFTMI (Nfft, WK%WSAVE_FFTPACK, WK%lensav_FFTPACK, ierr)
-!
-      end subroutine RFFTMI_norm
-!
-! ------------------------------------------------------------------
-!
       subroutine CALYPSO_RFFTMF_t(Nsmp, Nstacksmp, M, Nfft, X, WK)
+!
+      use FFTPACK5_wrapper
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
@@ -182,48 +179,10 @@
       real(kind = kreal), intent(inout) :: X(M, Nfft)
       type(working_FFTPACK), intent(inout) :: WK
 !
-      integer(kind = kint) ::  i, j, ismp, ist, num, inum, nsize
-      integer(kind = kint) :: inod_s, inod_c, ierr
 !
-!
-!   normalization
-!
-!$omp parallel do private(i,j,ist,num,inum,nsize,inod_s,inod_c)
-      do ismp = 1, Nsmp
-        ist = Nstacksmp(ismp-1)
-        num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-        nsize = num*Nfft
-!
-        do i = 1, Nfft
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (i-1) * num
-            WK%X_FFTPACK5(inod_c,ismp) = X(j,i)
-          end do
-        end do
-!
-        call RFFTMF(num, ione, Nfft, num, WK%X_FFTPACK5(1:M*Nfft,ismp), &
-     &      nsize, WK%WSAVE_FFTPACK, WK%lensav_FFTPACK,                 &
-     &      WK%WORK_FFTPACK(1:M*Nfft,ismp), nsize, ierr)
-!
-        do inum = 1, num
-          j = ist + inum
-          inod_s = inum + (Nfft-1) * num
-          X(j,1) = WK%X_FFTPACK5(inum,ismp)
-          X(j,2) = WK%X_FFTPACK5(inod_s,ismp)
-        end do
-        do i = 1, (Nfft+1)/2 - 1
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (2*i-1) * num
-            inod_s = inum + (2*i  ) * num
-            X(j,2*i+1) = WK%X_FFTPACK5(inod_c,ismp)
-            X(j,2*i+2) = WK%X_FFTPACK5(inod_s,ismp)
-          end do
-        end do
-!
-      end do
-!$omp end parallel do
+      call CALYPSO_RFFTMF_SMP(Nsmp, Nstacksmp, M, Nfft, X,              &
+     &    WK%X_FFTPACK5, WK%Mmax_smp, WK%lsave_FFTPACK,                 &
+     &    WK%WSAVE_FFTPACK, WK%WORK_FFTPACK)
 !
       end subroutine CALYPSO_RFFTMF_t
 !
@@ -231,71 +190,31 @@
 !
       subroutine CALYPSO_RFFTMB_t(Nsmp, Nstacksmp, M, Nfft, X, WK)
 !
+      use FFTPACK5_wrapper
+!
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
 !
       real(kind = kreal), intent(inout) :: X(M,Nfft)
       type(working_FFTPACK), intent(inout) :: WK
 !
-      integer(kind = kint) ::  i, j, ismp, ist, inum, num, nsize
-      integer(kind = kint) :: inod_s, inod_c, ierr
 !
-!
-!   normalization
-!
-!$omp parallel do private(i,j,ist,num,inum,nsize,inod_s,inod_c)
-      do ismp = 1, Nsmp
-        ist = Nstacksmp(ismp-1)
-        num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-        nsize = num*Nfft
-!
-        do inum = 1, num
-          j = ist + inum
-          inod_s = inum + (Nfft-1) * num
-          WK%X_FFTPACK5(inum,ismp) =   X(j,1)
-          WK%X_FFTPACK5(inod_s,ismp) = X(j,2)
-        end do
-        do i = 1, (Nfft+1)/2 - 1
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (2*i-1) * num
-            inod_s = inum + (2*i  ) * num
-            WK%X_FFTPACK5(inod_c,ismp) = X(j,2*i+1)
-            WK%X_FFTPACK5(inod_s,ismp) = X(j,2*i+2)
-          end do
-        end do
-        if(mod(Nfft,2) .eq. 0) then
-          do inum = 1, num
-            j = ist + inum
-          end do
-        end if
-!
-        call RFFTMB(num, ione, Nfft, num, WK%X_FFTPACK5(1:M*Nfft,ismp), &
-     &      nsize, WK%WSAVE_FFTPACK, WK%lensav_FFTPACK,                 &
-     &      WK%WORK_FFTPACK(1:M*Nfft,ismp), nsize, ierr)
-!
-        do i = 1, Nfft
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (i-1) * num
-            X(j,i) = WK%X_FFTPACK5(inod_c,ismp)
-          end do
-        end do
-      end do
-!$omp end parallel do
+      call CALYPSO_RFFTMB_SMP(Nsmp, Nstacksmp, M, Nfft, X,              &
+     &    WK%X_FFTPACK5, WK%Mmax_smp, WK%lsave_FFTPACK,                 &
+     &    WK%WSAVE_FFTPACK, WK%WORK_FFTPACK)
 !
       end subroutine CALYPSO_RFFTMB_t
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_work_4_FFTPACK_t(Nsmp, M, Nfft, WK)
+      subroutine alloc_work_4_FFTPACK_t(Nsmp, Nfft, WK)
 !
-      integer(kind = kint), intent(in) :: Nsmp, M, Nfft
+      integer(kind = kint), intent(in) :: Nsmp, Nfft
       type(working_FFTPACK), intent(inout) :: WK
 !
 !
-      WK%iflag_fft_comp = M*Nfft
+      WK%iflag_fft_comp = WK%Mmax_smp*Nfft
       allocate( WK%X_FFTPACK5(WK%iflag_fft_comp,Nsmp) )
       allocate( WK%WORK_FFTPACK(WK%iflag_fft_comp,Nsmp) )
       WK%WORK_FFTPACK = 0.0d0
@@ -311,9 +230,9 @@
 !
 !
       WK%iflag_fft_len = nfft
-      WK%lensav_FFTPACK = Nfft                                          &
+      WK%lsave_FFTPACK = Nfft                                           &
      &                + int ( log ( real(Nfft) ) / log(two) ) + ifour
-      allocate(WK%WSAVE_FFTPACK(WK%lensav_FFTPACK) )
+      allocate(WK%WSAVE_FFTPACK(WK%lsave_FFTPACK) )
       WK%WSAVE_FFTPACK = 0.0d0
 !
       end subroutine alloc_const_4_FFTPACK_t
