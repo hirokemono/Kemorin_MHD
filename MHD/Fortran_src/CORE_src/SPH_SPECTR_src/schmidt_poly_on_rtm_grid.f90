@@ -1,12 +1,18 @@
+!>@file   schmidt_poly_on_rtm_grid.f90
+!!@brief  module schmidt_poly_on_rtm_grid
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2007
 !
-!      module schmidt_poly_on_rtm_grid
-!
-!      Written by H. Matsui on June, 2007
-!
-!      subroutine s_cal_schmidt_poly_rtm
-!
-!      subroutine copy_sph_normalization_2_rlm
-!      subroutine copy_sph_normalization_2_rj
+!>@brief  Copy Legendre polynomials for spherical transform
+!!
+!!
+!!@verbatim
+!!      subroutine s_cal_schmidt_poly_rtm
+!!
+!!      subroutine copy_sph_normalization_2_rlm
+!!      subroutine copy_sph_normalization_2_rj
+!!@endverbatim
 !
       module schmidt_poly_on_rtm_grid
 !
@@ -33,7 +39,6 @@
       use m_schmidt_polynomial
       use m_spherical_harmonics
 !
-      use set_gauss_integration
       use spherical_harmonics
 !
 !
@@ -78,7 +83,6 @@
       use m_spheric_parameter
       use m_schmidt_poly_on_rtm
       use m_gauss_points
-      use set_gauss_integration
 !
       integer(kind = kint) :: i
 !

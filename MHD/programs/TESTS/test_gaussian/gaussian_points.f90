@@ -4,9 +4,7 @@
       program gaussian_points
 !
       use m_precision
-!
       use m_gauss_points
-      use set_gauss_integration
 !
       implicit none
 !

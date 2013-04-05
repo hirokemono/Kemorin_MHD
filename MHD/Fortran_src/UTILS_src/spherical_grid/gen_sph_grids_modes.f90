@@ -173,7 +173,6 @@
       use t_geometry_data
       use m_gauss_points
       use m_group_data_sph_specr
-      use set_gauss_integration
       use set_local_index_table_sph
       use set_FEM_mesh_4_sph
       use m_sph_mesh_1d_connect

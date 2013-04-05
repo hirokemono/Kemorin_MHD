@@ -32,6 +32,8 @@
 !!*
 !!***********************************************************************
 !!@endverbatim
+!!
+!!@n @param rotate  rotation vector of system
 !
       module set_poloidal_rotation
 !
@@ -104,9 +106,9 @@
 !
 !
       do k = 1, nri
-        rot_e(k,0) = half * rotate * r(k)**2
-        drot_e(k,1) =       rotate * r(k)
-        d2rot_e(k,2) =      rotate
+        rot_e(k) = half * rotate * r(k)**2
+        drot_e(k) =       rotate * r(k)
+        d2rot_e(k) =      rotate
       end do
 !*
       end subroutine set_rotatio_spectr

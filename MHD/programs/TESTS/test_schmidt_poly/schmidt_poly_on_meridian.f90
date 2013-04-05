@@ -26,7 +26,6 @@
       use m_gauss_points
       use m_schmidt_polynomial
       use m_spherical_harmonics
-      use set_gauss_integration
       use spherical_harmonics
 !
       integer(kind = kint) :: i, j, m, l

@@ -100,7 +100,6 @@
       subroutine s_set_global_sph_position(inod)
 !
       use m_gauss_points
-      use set_gauss_integration
 !
       integer(kind = kint), intent(inout) :: inod
       integer(kind = kint) :: kr, kt, kp

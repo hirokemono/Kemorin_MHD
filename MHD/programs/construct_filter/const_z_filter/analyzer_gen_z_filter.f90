@@ -44,7 +44,6 @@
       use m_matrix_4_LU
       use const_delta_z_analytical
 
-      use set_gauss_integration
       use const_crs_connect_commute_z
       use DJDS_precond_solve33
       use DJDS_precond_solveNN

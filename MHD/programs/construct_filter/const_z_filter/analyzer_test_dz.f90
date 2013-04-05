@@ -34,7 +34,6 @@
       use m_int_edge_vart_width
 
       use input_control_gen_z_filter
-      use set_gauss_integration
       use const_crs_connect_commute_z
       use cal_jacobian_linear_1d
       use cal_delta_z_4_z_filter

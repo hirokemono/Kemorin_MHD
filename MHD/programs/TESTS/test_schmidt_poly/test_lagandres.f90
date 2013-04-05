@@ -8,7 +8,6 @@
       use m_schmidt_poly_on_rtm
       use m_gauss_points
       use m_schmidt_polynomial
-      use set_gauss_integration
       use schmidt_poly_on_rtm_grid
 !
       implicit none

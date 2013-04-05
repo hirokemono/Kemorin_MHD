@@ -23,7 +23,7 @@
       integer(kind=kint), parameter :: i_rst_dbench2 = -3
 !
 !>      Use initial field for pseudo vacuume dynamo benchmark
-      integer(kind=kint), parameter :: i_rst_qvc_bench = -31
+      integer(kind=kint), parameter :: i_rst_dbench_qcv = -31
 !
 !>      Start from solid body rotation around x-axis
       integer(kind=kint), parameter :: i_rst_rotate_x =  -11
