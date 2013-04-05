@@ -112,7 +112,7 @@
       subroutine nod_r_2nd_fdm_coefs_equi
 !
       use m_spheric_parameter
-      use m_fdm_matrix
+      use m_fdm_coefs
 !
       integer(kind = kint) :: kr
 !
@@ -136,7 +136,7 @@
 !
       subroutine nod_r_2nd_fdm_coefs_nonequi
 !
-      use m_fdm_matrix
+      use m_fdm_coefs
 !
       integer(kind = kint) :: kr
 !

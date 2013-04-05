@@ -127,7 +127,7 @@
 !
       subroutine nod_r_2nd_fdm_coefs_cheby
 !
-      use m_fdm_matrix
+      use m_fdm_coefs
       use set_radius_func_noequi
 !
       integer(kind = kint) :: kr, kst, ked

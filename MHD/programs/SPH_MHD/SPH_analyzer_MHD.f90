@@ -41,12 +41,10 @@
       use material_property
       use sph_transforms_4_MHD
       use set_radius_func
-      use cal_sph_fdm_coefs
       use cal_sph_bc_fdm_matrix
       use const_radial_mat_4_sph
       use cal_rms_fields_by_sph
       use const_coriolis_sph
-!      use cal_radial_jacobians
       use cvt_nod_data_to_sph_data
       use sph_mhd_rms_IO
       use cal_sol_sph_MHD_crank
@@ -87,8 +85,8 @@
       if (iflag_debug.gt.0) write(*,*) 's_cal_sph_bc_fdm_matrices'
       call s_cal_sph_bc_fdm_matrices
 !
-      if (iflag_debug.gt.0) write(*,*) 's_cal_fdm_coefs'
-      call s_cal_fdm_coefs
+      if (iflag_debug.gt.0) write(*,*) 'cal_fdm_coeffients'
+      call cal_fdm_coeffients
 !
       call time_prog_barrier
 !

@@ -40,7 +40,6 @@
       use material_property
       use sph_transforms_4_MHD
       use set_radius_func
-      use cal_sph_fdm_coefs
       use cal_sph_bc_fdm_matrix
       use const_radial_mat_4_sph
       use cal_rms_fields_by_sph
@@ -76,18 +75,15 @@
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
      &    high_temp, low_temp, angular)
-      call time_prog_barrier
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_fdm_matrices'
       call cal_fdm_matrices
-      call time_prog_barrier
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_sph_bc_fdm_matrices'
       call s_cal_sph_bc_fdm_matrices
-      call time_prog_barrier
 !
-      if (iflag_debug.gt.0) write(*,*) 's_cal_fdm_coefs'
-      call s_cal_fdm_coefs
+      if (iflag_debug.gt.0) write(*,*) 'cal_fdm_coeffients'
+      call cal_fdm_coeffients
       call time_prog_barrier
 !
 !* -----  set integrals for coriolis term -----------------

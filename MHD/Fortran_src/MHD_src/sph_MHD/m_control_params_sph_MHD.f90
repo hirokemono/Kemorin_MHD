@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in Oct., 2009
 !
-!>@brief  Flag and parameters for spherical transform dnyamo model
+!>@brief  Field and spectr data
 !!
 !!
 !!@verbatim

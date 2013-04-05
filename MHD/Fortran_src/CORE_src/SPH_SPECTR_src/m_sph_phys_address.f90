@@ -1,11 +1,15 @@
+!>@file   m_sph_phys_address.f90
+!!@brief  module m_sph_phys_address
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2007
 !
-!     module m_sph_phys_address
-!.......................................................................
-!
-!     Written by H. Matsui on Dec., 2007
-!
-!      subroutine set_sph_sprctr_data_address
-!      subroutine set_sph_nod_data_address
+!>@brief  start addresses for spetr fields
+!!
+!!@verbatim
+!!      subroutine set_sph_sprctr_data_address
+!!      subroutine set_sph_nod_data_address
+!!@endverbatim
 !
       module m_sph_phys_address
 !
@@ -16,16 +20,16 @@
 !
       implicit  none
 !
-!   address for spectr data (poloidal component for vector)
+!>   address for spectr data (poloidal component for vector)
       type(phys_address), save :: ipol
 !
-!   address for radial gradient for poloidal component
+!>   address for radial gradient for poloidal component
       type(phys_address), save :: idpdr
 !
-!   address for toroidal component
+!>   address for toroidal component
       type(phys_address), save :: itor
 !
-!   address for sph field
+!>   address for fields on spherical coordinate
       type(phys_address), save :: irtp
 !
       private :: set_sph_vect_spec_address, set_vect_sph_address

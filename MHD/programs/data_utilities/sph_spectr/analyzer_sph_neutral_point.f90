@@ -60,8 +60,6 @@
       use m_ctl_data_4_fields
       use m_phys_labels
       use set_radius_func
-!      use cal_sph_bc_fdm_matrix
-      use cal_sph_fdm_coefs
       use set_radius_4_sph_dynamo
       use set_radius_func_noequi
 !
@@ -133,8 +131,8 @@
 !      if (iflag_debug.gt.0) write(*,*) 's_cal_sph_bc_fdm_matrices'
 !      call s_cal_sph_bc_fdm_matrices
 !
-      if (iflag_debug.gt.0) write(*,*) 's_cal_fdm_coefs'
-      call s_cal_fdm_coefs
+      if (iflag_debug.gt.0) write(*,*) 'cal_fdm_coeffients'
+      call cal_fdm_coeffients
       call time_prog_barrier
 !
 ! ---------------------------------

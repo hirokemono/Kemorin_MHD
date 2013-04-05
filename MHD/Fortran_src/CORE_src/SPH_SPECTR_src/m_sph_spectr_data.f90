@@ -1,81 +1,125 @@
+!>@file   m_sph_spectr_data.f90
+!!@brief  module m_sph_spectr_data
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2007
 !
-!     module m_sph_spectr_data
-!
-!      Written by H. Matsui on Oct., 2007
-!
-!       subroutine allocate_phys_rtp_name
-!       subroutine allocate_phys_rj_name
-!
-!       subroutine allocate_phys_rtp_data
-!       subroutine allocate_phys_rj_data
-!
-!       subroutine allocate_rot_rj_data
-!       subroutine allocate_reft_rj_data
-!
-!       subroutine deallocate_phys_rtp_data
-!       subroutine deallocate_phys_rj_data
-!
-!       subroutine deallocate_rot_rj_data
-!       subroutine deallocate_reft_rj_data
-!
-!      subroutine check_rtp_phys_data(my_rank)
-!      subroutine check_rj_spectr_name
-!      subroutine check_rj_spectr_data(my_rank)
-!
+!>@brief  Flag and parameters for spherical transform dnyamo model
+!!
+!!
+!!@verbatim
+!!      subroutine allocate_phys_rtp_name
+!!      subroutine allocate_phys_rj_name
+!!
+!!      subroutine allocate_phys_rtp_data
+!!      subroutine allocate_phys_rj_data
+!!
+!!      subroutine allocate_rot_rj_data
+!!      subroutine allocate_reft_rj_data
+!!
+!!      subroutine deallocate_phys_rtp_data
+!!      subroutine deallocate_phys_rj_data
+!!
+!!      subroutine deallocate_rot_rj_data
+!!      subroutine deallocate_reft_rj_data
+!!
+!!      subroutine check_rtp_phys_data(my_rank)
+!!      subroutine check_rj_spectr_name
+!!      subroutine check_rj_spectr_data(my_rank)
+!!@endverbatim
+!!
+!!@n @param my_rank process ID
 !
       module m_sph_spectr_data
 !
       use m_precision
 !
       implicit  none
-! 
 !
+!>      Number of fields on spherical grid @f$ f(r,\theta,\phi) @f$
       integer (kind=kint) :: num_phys_rtp
+!>      Number of fields for spectrum data  @f$ f(r,j) @f$
       integer (kind=kint) :: num_phys_rj
-!    number of physical data
+!>      Total number of components for fields on spherical grid
+!!      @f$ f(r,\theta,\phi) @f$
       integer (kind=kint) :: ntot_phys_rtp
+!>      Total number of components for spectrum data
+!!      @f$ f(r,j) @f$
       integer (kind=kint) :: ntot_phys_rj
 !
+!>      Number of fields for visualization output
+!!       @f$ f(r,\theta,\phi) @f$
       integer (kind=kint) :: num_phys_rj_vis
+!>      Total number of components  for visualization output
+!!       @f$ f(r,\theta,\phi) @f$
       integer (kind=kint) :: ntot_comp_rj_vis
-!    number of physical data for output
 !
+!>      Integer flag for monitoring output
+!!       for field data @f$ f(r,\theta,\phi) @f$
       integer (kind=kint), allocatable:: iflag_monitor_rtp(:)
+!>      Integer flag for monitoring output
+!!       for spectr data @f$ f(r,j) @f$
       integer (kind=kint), allocatable:: iflag_monitor_rj(:)
 !
+!>      Number of components for each field @f$ f(r,\theta,\phi) @f$
       integer (kind=kint), allocatable :: num_phys_comp_rtp(:)
+!>      Number of components for each field @f$ f(r,j) @f$
       integer (kind=kint), allocatable :: num_phys_comp_rj(:)
 ! 
+!>      End address of d_rtp for each field @f$ f(r,\theta,\phi) @f$
       integer (kind=kint), allocatable :: istack_phys_comp_rtp(:)
+!>      End address of d_rj for each field @f$ f(r,j) @f$
       integer (kind=kint), allocatable :: istack_phys_comp_rj(:)
 ! 
+!>      Field name for @f$ f(r,\theta,\phi) @f$
       character (len=kchara), allocatable :: phys_name_rtp(:)
+!>      Field name for @f$ f(r,j) @f$
       character (len=kchara), allocatable :: phys_name_rj(:)
 ! 
+!>      Field data @f$ f(r,\theta,\phi) @f$
       real (kind=kreal), allocatable :: d_rj(:,:)
+!>      Spectr data @f$ f(r,j) @f$
       real (kind=kreal), allocatable :: d_rtp(:,:)
 !
-      integer (kind=kint) :: istart_scalar_rtp, num_scalar_rtp
-      integer (kind=kint) :: istart_vector_rtp, num_vector_rtp
-      integer (kind=kint) :: istart_grad_v_rtp, num_grad_v_rtp
-      integer (kind=kint) :: istart_tensor_rtp, num_tensor_rtp
+!>      Start field address of scalar fields @f$ f(r,\theta,\phi) @f$
+      integer (kind=kint) :: istart_scalar_rtp
+!>      Start field address of vector fields @f$ f(r,\theta,\phi) @f$
+      integer (kind=kint) :: istart_vector_rtp
+!>      Start field address of gradient @f$ f(r,\theta,\phi) @f$
+      integer (kind=kint) :: istart_grad_v_rtp
+!>      Start field address of tensor fields @f$ f(r,\theta,\phi) @f$
+      integer (kind=kint) :: istart_tensor_rtp
 !
-!     rotation spectr
+!>      Number of fields of scalar fields @f$ f(r,\theta,\phi) @f$
+      integer (kind=kint) :: num_scalar_rtp
+!>      Number of fields of vector fields @f$ f(r,\theta,\phi) @f$
+      integer (kind=kint) :: num_vector_rtp
+!>      Number of fields of gradient @f$ f(r,\theta,\phi) @f$
+      integer (kind=kint) :: num_grad_v_rtp
+!>      Number of fields of tensor fields @f$ f(r,\theta,\phi) @f$
+      integer (kind=kint) :: num_tensor_rtp
 !
-!        omega(k,0,1) ... Omaga_x
-!        omega(k,1,1) ... d Omaga_x / dr
-!        omega(k,2,1) ... d^2 Omaga_x / dr^2
-!        omega(k,0,2) ... Omaga_z
-!        omega(k,1,2) ... d Omaga_z / dr
-!        omega(k,2,2) ... d^2 Omaga_z / dr^2
-!        omega(k,0,3) ... Omaga_y
-!        omega(k,1,3) ... d Omaga_y / dr
-!        omega(k,2,3) ... d^2 Omaga_y / dr^2
+!>     rotation spectr in @f$ f(r,j) @f$
+!!@verbatim
+!!        omega(kr,0,1) ... Omaga_x
+!!        omega(kr,1,1) ... d Omaga_x / dr
+!!        omega(kr,2,1) ... d^2 Omaga_x / dr^2
+!!        omega(kr,0,2) ... Omaga_z
+!!        omega(kr,1,2) ... d Omaga_z / dr
+!!        omega(kr,2,2) ... d^2 Omaga_z / dr^2
+!!        omega(kr,0,3) ... Omaga_y
+!!        omega(kr,1,3) ... d Omaga_y / dr
+!!        omega(kr,2,3) ... d^2 Omaga_y / dr^2
+!!@endverbatim
       real(kind = kreal), allocatable :: omega_rj(:,:,:)
+!>     rotation spectr in @f$ f(r,l,m) @f$
       real(kind = kreal), allocatable :: omega_rlm(:,:,:)
 !
-!     reference temerature spectr
-!
+!>    reference temerature spectr @f$ f(r,j) @f$
+!!@verbatim
+!!        reftemp_rj(kr,0) ... T_0
+!!        reftemp_rj(kr,1) ... d T_0 / dr
+!!@endverbatim
       real (kind=kreal), allocatable :: reftemp_rj(:,:)
 !
 ! -------------------------------------------------------------------
