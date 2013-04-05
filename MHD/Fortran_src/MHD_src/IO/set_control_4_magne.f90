@@ -72,8 +72,8 @@
             ibc_b_type(i) = iflag_insulator
           else if ( tmpchara .eq. 'sph_to_center' ) then
             ibc_b_type(i) = iflag_sph_2_center
-          else if ( tmpchara .eq. 'pseudo_vacume' ) then
-            ibc_b_type(i) = iflag_pseudo_vacume
+          else if ( tmpchara .eq. 'pseudo_vacuum' ) then
+            ibc_b_type(i) = iflag_pseudo_vacuum
 !          else if ( tmpchara .eq. 'sph' ) then
 !            ibc_b_type(i) = 999
           else if ( tmpchara .eq. 'sgs_x' ) then
@@ -118,8 +118,8 @@
             ibc_bs_type(i) = iflag_insulator
           else if (bc_grad_b_type_ctl(i) .eq. 'sph_to_center' ) then
             ibc_bs_type(i) = iflag_sph_2_center
-          else if (bc_grad_b_type_ctl(i) .eq. 'pseudo_vacume' ) then
-            ibc_bs_type(i) = iflag_pseudo_vacume
+          else if (bc_grad_b_type_ctl(i) .eq. 'pseudo_vacuum' ) then
+            ibc_bs_type(i) = iflag_pseudo_vacuum
           end if
         end do
 !

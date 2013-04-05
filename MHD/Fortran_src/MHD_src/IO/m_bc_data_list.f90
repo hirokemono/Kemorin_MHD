@@ -63,7 +63,7 @@
       integer(kind = kint), parameter :: iflag_insulator =       100
       integer(kind = kint), parameter :: iflag_sph_2_center =    200
 !
-      integer(kind = kint), parameter :: iflag_pseudo_vacume =   400
+      integer(kind = kint), parameter :: iflag_pseudo_vacuum =   400
 !
       integer(kind = kint), parameter :: iflag_bc_special =      999
 !
