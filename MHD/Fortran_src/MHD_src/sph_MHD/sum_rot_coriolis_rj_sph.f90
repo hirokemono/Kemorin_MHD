@@ -1,63 +1,76 @@
-!sum_rot_coriolis_rj_sph.f90
+!>@file   sum_rot_coriolis_rj_sph.f90
+!!@brief  module sum_rot_coriolis_rj_sph
+!!
+!!@author H. Matsui
+!!@date Programmed in 1995
+!@n     Modified in Oct., 2009
 !
-!      module sum_rot_coriolis_rj_sph
+!>@brief  Evaluate curl of Coriolis term by Gaunt integrals
+!!
+!!@verbatim
+!!************************************************
+!!
+!!      subroutine s_sum_rot_coriolis_rj_sph(coef_cor)
+!!
+!!      subroutine sum_rot_coriolis_rj_10(coef_cor)
+!!      subroutine sum_rot_coriolis_rj_xy(coef_cor)
+!!
+!!
+!!************************************************
+!!
+!!  Rotation of the Coriolos term
+!!     (wss) = wss(jc,1,j3)*w*dyb/r**2
+!!            + wss(jc,2,j3)*dw*yb/r**2
+!!
+!!     (wts) = wts(j3)*w*yb/r**2
+!!
+!!     (wst) = wst(1,j3)*( dw*dyb/r**2 + w*d2yb/r**2 - 2*w*dyb/r**3 )
+!!            + wst(2,j3)*( d2w/r**2 - 2*dw/r**3 )*yb
+!!
+!!     (wtt) = wtt(jc,1,j3)*dw*yb/r**2
+!!            + wtt(jc,2,j3)*w*( dyb/r**2 - 2*yb/r**3 )
+!!
+!!   Divergence of the Coriolis term
+!!     (wsd) = wsd(jc,1,j3)*w*wsb/r**4
+!!            + wsd(jc,2,j3)*dw*dwsb/r**2
+!!     (wtd) = wtd(j3)*dw*dwtb/r**2
+!!
+!!  Radial componenet of the Coriolis term
+!!     (wsr) = wsr(jc,1,j3)*dw*dusb/r**2
+!!     (wtr) = wtr(j3)*dw*wtb/r**2
+!!
+!!************************************************
+!!
+!!************************************************
+!!
+!!     wss(jc,1,j3) = sw(jc,1,j3)
+!!     wss(jc,2,j3) = sw(jc,2,j3)
+!!     wts(jc,j3)   = sw(jc,3,j3)
+!!     wst(jc,1,j3) = tw(jc,1,j3)
+!!     wst(jc,2,j3) = tw(jc,2,j3)
+!!     wtt(jc,1,j3) = tw(jc,3,j3)
+!!     wtt(jc,2,j3) = tw(jc,4,j3)
+!!
+!!     wsd(jc,1,j3) = sd(jc,1,j3)
+!!     wsd(jc,2,j3) = sd(jc,2,j3)
+!!     wtd(jc,j3)   = td(jc,j3)
+!!
+!!     wsr(jc,j3) =   sr(jc,j3)
+!!     wtr(jc,j3) =   tr(jc,j3)
+!!
+!!************************************************
+!!@endverbatim
+!!
+!!@n @param coef_cor  Coefficient for the Coriolis term
 !
-!      subroutine s_sum_rot_coriolis_rj_sph(coef_cor)
 !
-!      subroutine sum_rot_coriolis_rj_10(coef_cor)
-!      subroutine sum_rot_coriolis_rj_xy(coef_cor)
-!
-!*
-!*************************************************
-!
-!  Rotation of the Coriolos term
-!*     (wss) = wss(jc,1,j3)*w*dyb/r**2
-!*            + wss(jc,2,j3)*dw*yb/r**2
-!*
-!*     (wts) = wts(j3)*w*yb/r**2
-!*
-!*     (wst) = wst(1,j3)*( dw*dyb/r**2 + w*d2yb/r**2 - 2*w*dyb/r**3 )
-!*            + wst(2,j3)*( d2w/r**2 - 2*dw/r**3 )*yb
-!*
-!*     (wtt) = wtt(jc,1,j3)*dw*yb/r**2
-!*            + wtt(jc,2,j3)*w*( dyb/r**2 - 2*yb/r**3 )
-!*
-!   Divergence of the Coriolis term
-!*     (wsd) = wsd(jc,1,j3)*w*wsb/r**4
-!*            + wsd(jc,2,j3)*dw*dwsb/r**2
-!*     (wtd) = wtd(j3)*dw*dwtb/r**2
-!
-!  Radial componenet of the Coriolis term
-!*     (wsr) = wsr(jc,1,j3)*dw*dusb/r**2
-!*     (wtr) = wtr(j3)*dw*wtb/r**2
-!
-!*************************************************
-!*
-!*************************************************
-!*
-!*     wss(jc,1,j3) = sw(jc,1,j3)
-!*     wss(jc,2,j3) = sw(jc,2,j3)
-!*     wts(jc,j3)   = sw(jc,3,j3)
-!*     wst(jc,1,j3) = tw(jc,1,j3)
-!*     wst(jc,2,j3) = tw(jc,2,j3)
-!*     wtt(jc,1,j3) = tw(jc,3,j3)
-!*     wtt(jc,2,j3) = tw(jc,4,j3)
-!
-!*     wsd(jc,1,j3) = sd(jc,1,j3)
-!*     wsd(jc,2,j3) = sd(jc,2,j3)
-!*     wtd(jc,j3)   = td(jc,j3)
-!*
-!*     wsr(jc,j3) =   sr(jc,j3)
-!*     wtr(jc,j3) =   tr(jc,j3)
-!*
-!*************************************************
-!*
       module sum_rot_coriolis_rj_sph
-!*
+!
       use m_precision
 !
       use m_machine_parameter
       use m_constants
+      use m_control_params_sph_MHD
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_sph_phys_address
@@ -67,11 +80,11 @@
 !
       private :: sum_rot_coriolis_rj_10, sum_rot_coriolis_rj_xy
 !
-!*   ------------------------------------------------------------------
-!*
+!   ------------------------------------------------------------------
+!
       contains
-!*
-!*   ------------------------------------------------------------------
+!
+!   ------------------------------------------------------------------
 !
       subroutine s_sum_rot_coriolis_rj_sph(coef_cor)
 !
@@ -82,7 +95,7 @@
      &        'sum_rot_coriolis_rj_10', omega_rj(1,2,1:3)
       call sum_rot_coriolis_rj_10(coef_cor)
 !
-      if( omega_rj(1,2,1).ne.zero .or. omega_rj(1,2,3).ne.zero) then
+      if(iflag_tilted_coriolis .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'sum_rot_coriolis_rj_xy'
         call sum_rot_coriolis_rj_xy(coef_cor)
       end if

@@ -122,7 +122,8 @@
       use cal_inner_core_rotation
 !
 !
-      if(iflag_rotatable_ic.gt.0 .and. idx_rj_degree_one(1).gt.0) then
+      if(iflag_icb_velocity .eq. iflag_rotatable_ic                     &
+     &  .and. idx_rj_degree_one(1) .gt. 0) then
         call set_inner_core_rotation
       end if
 !

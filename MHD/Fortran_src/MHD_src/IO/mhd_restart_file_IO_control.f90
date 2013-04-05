@@ -1,19 +1,24 @@
+!>@file   mhd_restart_file_IO_control.f90
+!!@brief  module mhd_restart_file_IO_control
+!!
+!!@author H. Matsui
+!!@date   programmed by H.Matsui and H.Okuda
+!!@n                           on July 2000 (ver 1.1)
+!!@n      modified by H. Matsui on Sep., 2006
+!!@n      modified by H. Matsui on Dec., 2007
 !
-!      module mhd_restart_file_IO_control
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        modified by H. Matsui on Sep., 2006
-!        modified by H. Matsui on Dec., 2007
-!
-!      subroutine init_MHD_restart_output
-!      subroutine init_restart_4_snapshot
-!
-!      subroutine output_MHD_restart_file_ctl
-!      subroutine elspased_MHD_restart_ctl
-!
-!      subroutine input_MHD_restart_file_ctl
-!      subroutine input_restart_4_snapshot
+!> @brief Call restart data IO routines
+!!
+!!@verbatim
+!!      subroutine init_MHD_restart_output
+!!      subroutine init_restart_4_snapshot
+!!
+!!      subroutine output_MHD_restart_file_ctl
+!!      subroutine elspased_MHD_restart_ctl
+!!
+!!      subroutine input_MHD_restart_file_ctl
+!!      subroutine input_restart_4_snapshot
+!!@endverbatim
 !
       module mhd_restart_file_IO_control
 !
@@ -139,6 +144,7 @@
       subroutine input_restart_files
 !
       use m_control_parameter
+      use m_t_int_parameter
       use m_file_format_switch
 !
       use field_IO_select

@@ -5,7 +5,7 @@
 !      subroutine set_inner_core_rotation
 !      subroutine set_icore_viscous_matrix
 !      subroutine cal_icore_viscous_drag_explicit
-!      subroutine cal_icure_coriolis_explicit
+!      subroutine cal_icore_coriolis_explicit
 !      subroutine int_icore_toroidal_lorentz
 !
       module cal_inner_core_rotation
@@ -64,7 +64,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_icure_coriolis_explicit
+      subroutine cal_icore_coriolis_explicit
 !
       integer(kind = kint) :: k
       integer(kind = kint) :: i11s, i10c, i11c
@@ -98,7 +98,7 @@
       d_rj(i11c,itor%i_coriolis) = d_rj(i11c,ipol%i_rot_Coriolis)
       d_rj(i10c,itor%i_coriolis) = d_rj(i10c,ipol%i_rot_Coriolis)
 !
-      end subroutine cal_icure_coriolis_explicit
+      end subroutine cal_icore_coriolis_explicit
 !
 ! ----------------------------------------------------------------------
 !

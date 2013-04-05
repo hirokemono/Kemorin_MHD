@@ -73,14 +73,14 @@
         if ( ibc_h_flux_type(i)  .eq. 0) then
           if     (bc_h_flux_name(i) .eq. 'ICB_surf'                     &
      &       .or. bc_h_flux_name(i) .eq. 'ICB') then 
-            iflag_hflux_icb =  1
+            iflag_icb_temp = iflag_fixed_flux
             if(idx_rj_degree_zero .gt. 0) then
               h_flux_ICB_bc(idx_rj_degree_zero)                         &
      &                       = - bc_h_flux_magnitude(i)
             end if
           else if(bc_h_flux_name(i) .eq. 'CMB_surf'                     &
      &       .or. bc_h_flux_name(i) .eq. 'CMB') then 
-            iflag_hflux_cmb =  1
+            iflag_cmb_temp =  iflag_fixed_flux
             if(idx_rj_degree_zero .gt. 0) then
               h_flux_CMB_bc(idx_rj_degree_zero)                         &
      &                       = bc_h_flux_magnitude(i)
@@ -90,20 +90,20 @@
       end do
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'iflag_hflux_icb', iflag_hflux_icb
-        write(*,*) 'iflag_hflux_cmb', iflag_hflux_cmb
+        write(*,*) 'iflag_icb_temp', iflag_icb_temp
+        write(*,*) 'iflag_cmb_temp', iflag_cmb_temp
         write(*,*)  h_flux_CMB_bc(1)
       end if
 !
       do i = 1, num_bc_e
         if ( ibc_e_type(i)  .eq. iflag_bc_fix_flux) then
           if(bc_e_name(i) .eq. 'ICB') then 
-            iflag_hflux_icb =  1
+            iflag_icb_temp =  iflag_fixed_flux
             if(idx_rj_degree_zero .gt. 0) then
               h_flux_ICB_bc(idx_rj_degree_zero) = - bc_e_magnitude(i)
             end if
           else if(bc_e_name(i) .eq. 'CMB') then 
-            iflag_hflux_cmb =  1
+            iflag_cmb_temp =  iflag_fixed_flux
             if(idx_rj_degree_zero .gt. 0) then
               h_flux_CMB_bc(idx_rj_degree_zero) =  bc_e_magnitude(i)
             end if
@@ -112,12 +112,12 @@
 !
         if ( ibc_e_type(i)  .eq. iflag_bc_fix_s) then
           if(bc_e_name(i) .eq. 'ICB') then 
-            iflag_hflux_icb =  0
+            iflag_icb_temp =  iflag_fixed_field
             if(idx_rj_degree_zero .gt. 0) then
               temp_ICB_bc(idx_rj_degree_zero) = bc_e_magnitude(i)
             end if
           else if(bc_e_name(i) .eq. 'CMB') then 
-            iflag_hflux_cmb =  0
+            iflag_cmb_temp =  iflag_fixed_field
             if(idx_rj_degree_zero .gt. 0) then
               temp_CMB_bc(idx_rj_degree_zero) = bc_e_magnitude(i)
             end if
@@ -137,11 +137,11 @@
       end if
 !
       if(iflag_debug .gt. 0 .and. idx_rj_degree_zero .gt. 0) then
-        write(*,*) 'iflag_hflux_icb', iflag_hflux_icb,                  &
+        write(*,*) 'iflag_icb_temp', iflag_icb_temp,                    &
      &             reftemp_rj(nlayer_ICB,0),                            &
      &             temp_ICB_bc(idx_rj_degree_zero),                     &
      &             h_flux_ICB_bc(idx_rj_degree_zero)
-        write(*,*) 'iflag_hflux_cmb', iflag_hflux_cmb,                  &
+        write(*,*) 'iflag_cmb_temp', iflag_cmb_temp,                    &
      &             reftemp_rj(nlayer_CMB,0),                            &
      &             temp_CMB_bc(idx_rj_degree_zero),                     &
      &             h_flux_CMB_bc(idx_rj_degree_zero)
@@ -160,32 +160,25 @@
       integer(kind = kint) :: i
 !
 !
-      iflag_ins_icb =      1
-      iflag_p_vacume_icb = 0
-      iflag_center_b =     0
-!
-      iflag_ins_cmb =      1
-      iflag_p_vacume_cmb = 0
+      iflag_icb_magne = iflag_sph_insulator
+      iflag_cmb_magne = iflag_sph_insulator
 !
       do i = 1, num_bc_b
         if(bc_b_name(i) .eq. 'ICB') then
           if(ibc_b_type(i) .eq. iflag_pseudo_vacume) then
-            iflag_ins_icb =       0
-            iflag_p_vacume_icb =  1
+            iflag_icb_magne =  iflag_pseudo_vacuum
           end if
         end if
 !
         if(bc_b_name(i) .eq. 'CMB') then
           if(ibc_b_type(i) .eq. iflag_pseudo_vacume) then
-            iflag_ins_cmb =       0
-            iflag_p_vacume_cmb =  1
+            iflag_cmb_magne =  iflag_pseudo_vacuum
           end if
         end if
 !
         if(bc_b_name(i) .eq. 'to_Center') then
           if      (ibc_b_type(i) .eq. iflag_sph_2_center) then
-            iflag_ins_icb =   0
-            iflag_center_b =  1
+            iflag_icb_magne =  iflag_sph_fill_center
           end if
         end if
       end do
@@ -194,22 +187,19 @@
       do i = 1, num_bc_bs
         if(bc_bs_name(i) .eq. 'ICB') then
           if(ibc_bs_type(i) .eq. iflag_pseudo_vacume) then
-            iflag_ins_icb =       0
-            iflag_p_vacume_icb =  1
+            iflag_icb_magne =  iflag_pseudo_vacuum
           end if
         end if
 !
         if(bc_bs_name(i) .eq. 'CMB') then
           if(ibc_bs_type(i) .eq. iflag_pseudo_vacume) then
-            iflag_ins_cmb =       0
-            iflag_p_vacume_cmb =  1
+            iflag_cmb_magne =  iflag_pseudo_vacuum
           end if
         end if
 !
         if(bc_bs_name(i) .eq. 'to_Center') then
           if      (ibc_bs_type(i) .eq. iflag_sph_2_center) then
-            iflag_ins_icb =   0
-            iflag_center_b =  1
+            iflag_icb_magne =  iflag_sph_fill_center
           end if
         end if
       end do
@@ -237,14 +227,14 @@
         if ( isurf_composit_type(i)  .eq. 0) then
           if     (surf_composit_name(i) .eq. 'ICB_surf'                 &
      &       .or. surf_composit_name(i) .eq. 'ICB') then
-            iflag_cflux_icb =  1
+            iflag_icb_composition =  iflag_fixed_flux
             if(idx_rj_degree_zero .gt. 0) then
               c_flux_ICB_bc(idx_rj_degree_zero)                         &
      &                       = - surf_composit_magnitude(i)
             end if
           else if(surf_composit_name(i) .eq. 'CMB_surf'                 &
      &       .or. surf_composit_name(i) .eq. 'CMB') then
-            iflag_cflux_cmb =  1
+            iflag_cmb_composition =  iflag_fixed_flux
             if(idx_rj_degree_zero .gt. 0) then
               c_flux_CMB_bc(idx_rj_degree_zero)                         &
      &                       = surf_composit_magnitude(i)
@@ -258,13 +248,13 @@
       do i = 1, num_bc_composit
         if ( ibc_composit_type(i)  .eq. iflag_bc_fix_flux) then
           if(bc_composit_name(i) .eq. 'ICB') then
-            iflag_cflux_icb =  1
+            iflag_icb_composition =  iflag_fixed_flux
             if(idx_rj_degree_zero .gt. 0) then
               c_flux_ICB_bc(idx_rj_degree_zero)                         &
      &                       = - bc_composit_magnitude(i)
             end if
           else if(bc_composit_name(i) .eq. 'CMB') then
-            iflag_cflux_cmb =  1
+            iflag_cmb_composition =  iflag_fixed_flux
             if(idx_rj_degree_zero .gt. 0) then
               c_flux_CMB_bc(idx_rj_degree_zero)                         &
      &                       = bc_composit_magnitude(i)
@@ -273,13 +263,13 @@
 !
         else if ( ibc_composit_type(i)  .eq. iflag_bc_fix_s) then
           if(bc_composit_name(i) .eq. 'ICB') then
-            iflag_cflux_icb =  0
+            iflag_icb_composition =  iflag_fixed_field
             if(idx_rj_degree_zero .gt. 0) then
               composition_ICB_bc(idx_rj_degree_zero)                    &
      &                       = bc_composit_magnitude(i)
             end if
           else if(bc_composit_name(i) .eq. 'CMB') then 
-            iflag_cflux_cmb =  0
+            iflag_cmb_composition =  iflag_fixed_field
             if(idx_rj_degree_zero .gt. 0) then
               composition_CMB_bc(idx_rj_degree_zero)                    &
      &                       = bc_composit_magnitude(i)

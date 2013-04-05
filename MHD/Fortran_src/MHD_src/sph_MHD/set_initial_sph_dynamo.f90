@@ -1,15 +1,17 @@
+!>@file   set_initial_sph_dynamo.f90
+!!@brief  module set_initial_sph_dynamo
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2008
 !
-!      module set_initial_sph_dynamo
+!> @brief Set initial data for spectrum dynamos
+!!
+!!@verbatim
+!!      subroutine sph_initial_data_control
+!!      subroutine set_noize_scalar_sph(is_fld)
+!!      subroutine reduce_initial_magne_sph
+!!@endverbatim
 !
-!      programmed by H.Matsui on Sep. 2009
-!
-!      subroutine sph_initial_data_control
-!
-!      subroutine set_initial_temp_sph(isig)
-!      subroutine set_initial_magne_sph(isig)
-!
-!      subroutine set_noize_scalar_sph(is_fld)
-!      subroutine reduce_initial_magne_sph
 !
       module set_initial_sph_dynamo
 !
@@ -21,7 +23,6 @@
       implicit none
 !
       private :: set_initial_temp_sph, set_initial_magne_sph
-      private :: set_initial_magne_dbench1, set_initial_magne_dbench2
       private :: set_initial_scalar_sph, set_initial_velo_sph
 !
 !-----------------------------------------------------------------------
@@ -40,6 +41,8 @@
       use set_sph_restart_IO
       use sph_mhd_rst_IO_control
       use set_sph_restart_IO
+      use initial_magne_dynamobench
+      use initial_magne_dbench_qvc
 !
       integer(kind = kint) :: isig
 !
@@ -63,9 +66,11 @@
         end if
 !
         if(iflag_restart .eq. i_rst_dbench1) then
-          if(ipol%i_magne .gt. 0) call set_initial_magne_dbench1
+          if(ipol%i_magne .gt. 0) call initial_b_dynamobench_1
         else if(iflag_restart .eq. i_rst_dbench2) then
-          if(ipol%i_magne .gt. 0) call set_initial_magne_dbench2
+          if(ipol%i_magne .gt. 0) call initial_b_dynamobench_2
+        else if(iflag_restart .eq. i_rst_dbench_qcv) then
+          if(ipol%i_magne .gt. 0) call initial_b_dynamobench_qcv
         end if
 !
 !   set small seed magnetic field
@@ -271,7 +276,7 @@
       end do
 !$omp end parallel do
 !
-      if (iflag_center_b .eq. 1) then
+      if (iflag_icb_magne .eq. iflag_sph_fill_center) then
 !
         if (js .gt. 0) then
           do k = nlayer_ICB, nlayer_CMB
@@ -330,146 +335,6 @@
       end if
 !
       end subroutine set_initial_magne_sph
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_initial_magne_dbench1
-!
-      use m_control_params_sph_MHD
-      use m_spheric_parameter
-      use m_sph_spectr_data
-!
-      real (kind = kreal) :: pi, rr
-      integer(kind = kint) :: is, it, k, j, js, jt
-      integer(kind = kint), parameter :: ls = 1, lt = 2
-!
-!
-      js = 0
-      jt = 0
-      do j = 1, nidx_rj(2)
-        if (   idx_gl_1d_rj_j(j,2).eq.ls                                &
-     &   .and. idx_gl_1d_rj_j(j,3).eq.0) then
-         js = j
-         exit
-        end if
-      end do
-      do j = 1, nidx_rj(2)
-        if (   idx_gl_1d_rj_j(j,2).eq.lt                                &
-     &   .and. idx_gl_1d_rj_j(j,3).eq.0) then
-         jt = j
-         exit
-        end if
-      end do
-!
-      pi = four * atan(one)
-!
-!$omp parallel do
-      do is = 1, nnod_rj
-        d_rj(is,ipol%i_magne  ) = zero
-        d_rj(is,ipol%i_magne+1) = zero
-        d_rj(is,ipol%i_magne+2) = zero
-        d_rj(is,ipol%i_current  ) = zero
-        d_rj(is,ipol%i_current+1) = zero
-        d_rj(is,ipol%i_current+2) = zero
-      end do
-!$omp end parallel do
-!
-      if (js .gt. 0) then
-        do k = 1, nlayer_CMB
-          is = js + (k-1)*nidx_rj(2)
-          rr = radius_1d_rj_r(k)
-          d_rj(is,ipol%i_magne) =  (five / two) * rr**2                 &
-     &                       * (four*r_CMB - three*rr) / (r_CMB+three)
-          d_rj(is,idpdr%i_magne) = (five / two) * rr                    &
-     &                       * (eight*r_CMB - dnine*rr) / (r_CMB+three)
-          d_rj(is,itor%i_current) =  five*six * rr / (three +r_CMB)
-        end do
-      end if
-!
-      if (jt .gt. 0) then
-        do k = 1, nlayer_CMB
-          it = jt + (k-1)*nidx_rj(2)
-          rr = radius_1d_rj_r(k)
-!
-          d_rj(it,itor%i_magne) = (ten / three) * rr * sin(pi*rr/r_CMB)
-          d_rj(it,ipol%i_current) =  d_rj(it,itor%i_magne)
-          d_rj(it,idpdr%i_current)                                      &
-     &              = (ten / three) * (sin(pi*rr/r_CMB)      &
-     &               + (pi/r_CMB) * rr * cos(pi*rr/r_CMB) )
-        end do
-      end if
-!
-      end subroutine set_initial_magne_dbench1
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_initial_magne_dbench2
-!
-      use m_control_params_sph_MHD
-      use m_spheric_parameter
-      use m_sph_spectr_data
-!
-      real (kind = kreal) :: pi, rr
-      integer(kind = kint) :: is, it, k, j, js, jt
-      integer(kind = kint), parameter :: ls = 1, lt = 2
-!
-!
-      js = 0
-      jt = 0
-      do j = 1, nidx_rj(2)
-        if (   idx_gl_1d_rj_j(j,2).eq.ls                                &
-     &   .and. idx_gl_1d_rj_j(j,3).eq.0) then
-         js = j
-         exit
-        end if
-      end do
-      do j = 1, nidx_rj(2)
-        if (   idx_gl_1d_rj_j(j,2).eq.lt                                &
-     &   .and. idx_gl_1d_rj_j(j,3).eq.0) then
-         jt = j
-         exit
-        end if
-      end do
-!
-      pi = four * atan(one)
-!
-!$omp parallel do
-      do is = 1, nnod_rj
-        d_rj(is,ipol%i_magne  ) = zero
-        d_rj(is,ipol%i_magne+1) = zero
-        d_rj(is,ipol%i_magne+2) = zero
-        d_rj(is,ipol%i_current  ) = zero
-        d_rj(is,ipol%i_current+1) = zero
-        d_rj(is,ipol%i_current+2) = zero
-      end do
-!$omp end parallel do
-!
-      if (js .gt. 0) then
-        do k = nlayer_ICB, nlayer_CMB
-          is = js + (k-1)*nidx_rj(2)
-          rr = radius_1d_rj_r(k)
-!
-          d_rj(is,ipol%i_magne) =  (five / eight) * (-three * rr**3     &
-     &                     + four * r_CMB * rr**2 - r_ICB**4 / rr)
-          d_rj(is,idpdr%i_magne) = (five / eight) * (-dnine * rr**2     &
-     &                       + eight * r_CMB * rr + r_ICB**4 / rr**2)
-          d_rj(is,itor%i_current) =  (five*three / two) * rr
-        end do
-      end if
-!
-     if (jt .gt. 0) then
-        do k = nlayer_ICB, nlayer_CMB
-          it = jt + (k-1)*nidx_rj(2)
-          rr = radius_1d_rj_r(k)
-          d_rj(it,itor%i_magne) = (ten/three) * rr * sin(pi*(rr-r_ICB))
-          d_rj(it,ipol%i_current) =  d_rj(it,itor%i_magne)
-          d_rj(it,idpdr%i_current)                                      &
-     &             = (ten / three) * (sin(pi*(rr-r_ICB))    &
-     &              + pi * rr * cos(pi*(rr-r_ICB)) )
-        end do
-      end if
-!
-      end subroutine set_initial_magne_dbench2
 !
 !-----------------------------------------------------------------------
 !

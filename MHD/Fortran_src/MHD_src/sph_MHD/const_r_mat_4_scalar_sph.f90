@@ -43,7 +43,7 @@
      &    kst, ked, coef_imp_t, coef_d_temp, temp_evo_mat)
 !$omp end parallel
 !
-      if (iflag_hflux_icb .eq. 1) then
+      if (iflag_icb_temp .eq. iflag_fixed_flux) then
         call set_fix_flux_icb_rmat_sph(nidx_rj(1), nidx_rj(2),          &
      &     coef_imp_t, coef_d_temp, temp_evo_mat)
       else
@@ -51,7 +51,7 @@
      &      temp_evo_mat)
       end if
 !
-      if (iflag_hflux_cmb .eq. 1) then
+      if (iflag_cmb_temp .eq. iflag_fixed_flux) then
         call set_fix_flux_cmb_rmat_sph(nidx_rj(1), nidx_rj(2),          &
      &     coef_imp_t, coef_d_temp, temp_evo_mat)
       else
@@ -87,7 +87,7 @@
      &    kst, ked, coef_imp_c, coef_d_light, composit_evo_mat)
 !$omp end parallel
 !
-      if (iflag_cflux_icb .eq. 1) then
+      if (iflag_icb_composition .eq. iflag_fixed_flux) then
         call set_fix_flux_icb_rmat_sph(nidx_rj(1), nidx_rj(2),          &
      &     coef_imp_c, coef_d_light, composit_evo_mat)
       else
@@ -95,7 +95,7 @@
      &      composit_evo_mat)
       end if
 !
-      if (iflag_cflux_cmb .eq. 1) then
+      if (iflag_cmb_composition .eq. iflag_fixed_flux) then
         call set_fix_flux_cmb_rmat_sph(nidx_rj(1), nidx_rj(2),          &
      &     coef_imp_c, coef_d_light, composit_evo_mat)
       else

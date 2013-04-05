@@ -25,7 +25,7 @@
       use m_parallel_var_dof
       use cal_rms_fields_by_sph
       use global_field_4_dynamobench
-      use local_field_4_dynamobench
+      use m_field_at_mid_equator
 !
 !
 !
@@ -35,18 +35,19 @@
       call cal_rms_sph_rms_outer_core
       call copy_energy_4_dynamobench
 !
-      if(iflag_rotatable_ic .gt. 0) then
+      if(iflag_icb_velocity .eq. iflag_rotatable_ic) then
         call pick_inner_core_rotation
       end if
 !
-     if(iflag_center_b .gt. 0) then
-       call cal_rms_sph_rms_inner_core
-       call copy_icore_energy_4_dbench
-     end if
+      if(iflag_icb_magne .eq. iflag_sph_fill_center) then
+        call cal_rms_sph_rms_inner_core
+        call copy_icore_energy_4_dbench
+      end if
 !
-     if( (iflag_center_b*iflag_rotatable_ic) .gt. 0) then
-       call pick_mag_torque_inner_core
-     end if
+      if(iflag_icb_magne .eq. iflag_sph_fill_center                     &
+     &   .and. iflag_icb_velocity .eq. iflag_rotatable_ic) then
+        call pick_mag_torque_inner_core
+      end if
 !
       end subroutine s_const_data_4_dynamobench
 !

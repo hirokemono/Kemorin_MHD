@@ -36,19 +36,16 @@
 !
       call allocate_vsp_bc_array( nidx_rj(2) )
 !
-      iflag_rigid_icb =    1
-      iflag_free_icb =     0
-      iflag_rotatable_ic = 0
 !
       do i = 1, num_bc_v
-        if(iflag_rigid_icb .eq. 0) exit
+        if(iflag_icb_velocity .ne. iflag_fixed_velo) exit
         if(bc_v_name(i) .eq. 'ICB') then 
           call set_sph_velo_ICB_flag(ibc_v_type(i), bc_v_magnitude(i))
         end if
       end do
 !
       do i = 1, num_bc_tq
-        if(iflag_rigid_icb .eq. 0) exit
+        if(iflag_icb_velocity .ne. iflag_fixed_velo) exit
         if    (bc_tq_name(i) .eq. 'ICB_surf'                            &
      &    .or. bc_tq_name(i) .eq. 'ICB') then 
           call set_sph_velo_ICB_flag(ibc_tq_type(i), bc_tq_magnitude(i))
@@ -57,17 +54,15 @@
 !
 !
 !
-      iflag_rigid_cmb =    1
-      iflag_free_cmb =     0
       do i = 1, num_bc_v
-        if(iflag_rigid_cmb .eq. 0) exit
+        if(iflag_cmb_velocity .ne. iflag_fixed_velo) exit
         if(bc_v_name(i) .eq. 'CMB') then 
           call set_sph_velo_CMB_flag(ibc_v_type(i), bc_v_magnitude(i))
         end if
       end do
 !
       do i = 1, num_bc_tq
-        if(iflag_rigid_cmb .eq. 0) exit
+        if(iflag_cmb_velocity .ne. iflag_fixed_velo) exit
         if(     bc_tq_name(i) .eq. 'CMB_surf'                           &
      &     .or. bc_tq_name(i) .eq. 'CMB') then 
           call set_sph_velo_CMB_flag(ibc_tq_type(i), bc_tq_magnitude(i))
@@ -86,27 +81,25 @@
 !
 !
       if      (ibc_type .eq. iflag_free_sph) then
-        iflag_free_icb =     1
-        iflag_rigid_icb =    0
+        iflag_icb_velocity = iflag_free_slip
         return
       else if (ibc_type .eq. iflag_non_slip_sph) then
-        iflag_rigid_icb =    1
+        iflag_icb_velocity = iflag_fixed_velo
       else if (ibc_type .eq. iflag_rotatable_icore) then
-        iflag_rigid_icb =    0
-        iflag_rotatable_ic = 1
+        iflag_icb_velocity = iflag_rotatable_ic
 !
       else if (ibc_type .eq. (iflag_bc_rot+1)) then
-        iflag_rigid_icb =    1
+        iflag_icb_velocity = iflag_fixed_velo
         if(idx_rj_degree_one( 1) .gt.0 ) then
           vt_ICB_bc( idx_rj_degree_one( 1) ) = r_ICB*r_ICB * bc_mag
         end if
       else if (ibc_type .eq. (iflag_bc_rot+2)) then
-        iflag_rigid_icb =    1
+        iflag_icb_velocity = iflag_fixed_velo
         if(idx_rj_degree_one(-1) .gt. 0) then
           vt_ICB_bc( idx_rj_degree_one(-1) ) = r_ICB*r_ICB * bc_mag
         end if
       else if (ibc_type .eq. (iflag_bc_rot+3)) then
-        iflag_rigid_icb =    1
+        iflag_icb_velocity = iflag_fixed_velo
         if(idx_rj_degree_one( 0) .gt. 0) then
           vt_ICB_bc( idx_rj_degree_one( 0) ) = r_ICB*r_ICB * bc_mag
         end if
@@ -123,24 +116,23 @@
 !
 !
       if      (ibc_type .eq. iflag_free_sph) then
-        iflag_free_cmb =     1
-        iflag_rigid_cmb =    0
+        iflag_cmb_velocity = iflag_free_slip
         return
       else if (ibc_type .eq. iflag_non_slip_sph) then
-        iflag_rigid_cmb =    1
+        iflag_cmb_velocity = iflag_fixed_velo
 !
       else if (ibc_type .eq. (iflag_bc_rot+1)) then
-        iflag_rigid_cmb =    1
+        iflag_cmb_velocity = iflag_fixed_velo
         if(idx_rj_degree_one( 1) .gt.0 ) then
           vt_CMB_bc( idx_rj_degree_one( 1) ) = r_CMB*r_CMB * bc_mag
         end if
       else if (ibc_type .eq. (iflag_bc_rot+2)) then
-        iflag_rigid_cmb =    1
+        iflag_cmb_velocity = iflag_fixed_velo
         if(idx_rj_degree_one(-1) .gt. 0) then
           vt_CMB_bc( idx_rj_degree_one(-1) ) = r_CMB*r_CMB * bc_mag
         end if
       else if (ibc_type .eq. (iflag_bc_rot+3)) then
-        iflag_rigid_cmb =    1
+        iflag_cmb_velocity = iflag_fixed_velo
         if(idx_rj_degree_one( 0) .gt. 0) then
           vt_CMB_bc( idx_rj_degree_one( 0) ) = r_CMB*r_CMB * bc_mag
         end if

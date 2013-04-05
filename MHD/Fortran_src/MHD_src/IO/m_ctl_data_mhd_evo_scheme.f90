@@ -1,79 +1,86 @@
-!m_ctl_data_mhd_evo_scheme.f90
-!      module m_ctl_data_mhd_evo_scheme
+!>@file   m_ctl_data_mhd_evo_scheme.f90
+!!@brief  module m_ctl_data_mhd_evo_scheme
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2004
 !
-!        programmed by H.Matsui on March. 2006
-!
-!      subroutine read_restart_ctl
-!      subroutine read_time_loop_ctl
-!
-!!!!!  control for initial and restart data  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!      0: No initial values
-!      1: Read restart data as initial values
-!
-!     -1: Initial values for dynamo benchmark Case 0
-!     -2: Initial values for dynamo benchmark Case 1
-!
-!    -11: rotate around x-axis
-!    -12: rotate around y-axis
-!    -13: rotate around z-axis
-!
-!     20: Initial values for kinematic dynamo
-!
-!  <-100: Initial value for convection in rotating shell
-!          int(num/100)... wave number in zonal direction
-!  >1000: Initial value for MHD dynamo in rotating shell
-!          int(num/100)... wave number of temperature in zonal direction
-!          int(num/1000)... index j for spherical harmonics 
-!                           by degree l and order m
-!                                j = l*(l+1) + m
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!    begin restart_file_ctl
-!       rst_ctl                -2
-!    end restart_file_ctl
-!
-!!!!!!   method for time evolution  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-!   iflag_supg_ctl:      0...no SUPG 1...SUPG
-!   num_multi_pass_ctl:  iteration counts for multi pass
-!   maxiter_ctl:         maximum iteration number for correction
-!   eps_4_velo_ctl:      ||div v||_{n} / ||div v||_{n-1}
-!   eps_4_magne_ctl:     ||div B||_{n} / ||div B||_{n-1}
-!   scheme_ctl:          Scheme for time evolution
-!                 explicit_Euler...explicit_Euler
-!                 2nd_Adams_Bashforth...2nd_Adams_Bashforth
-!                 Crank_Nicolson...Crank_Nicolson with 2nd_Adams_Bashforth
-!                 Crank_Nicolson_consist...Crank_Nicolson
-!                                         with consistent mass matrix
-!   eps_crank_ctl:        
-!   method_4_velo_ctl:    method for Crank Nicolson Scheme
-!   precond_4_crank_ctl:  preconditioning method for Crank Nicolson Scheme
-!
-!   spherical transfer mode:  'radius_in' 'radius_out' 'long_loop'
-!   FFT_library_ctl:  Selection of FFT librarry  ('ISPACK' or 'FFTPACK')
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-!    begin time_loop_ctl
-!      iflag_supg_ctl           0
-!      num_multi_pass_ctl       1
-!      maxiter_ctl              1
-!      eps_4_velo_ctl           5.0e-1
-!      eps_4_magne_ctl          5.0e-1
-!      scheme_ctl              Crank_Nicolson
-!      diffuse_correct_ctl     On
-!      coef_imp_v_ctl          5.0e-1
-!      coef_imp_t_ctl          5.0e-1
-!      coef_imp_b_ctl          5.0e-1
-!      coef_imp_c_ctl          5.0e-1
-!      eps_crank_ctl           1.0e-6
-!      method_4_velo_ctl      CG 
-!      precond_4_crank_ctl     SSOR   
-!      modify_coriolis_4_crank_ctl  0
-!      sph_transform_mode_ctl   'radius_in'
-!      FFT_library_ctl          'ISPACK'
-!    end time_loop_ctl
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!> @brief Set initial data for spectrum dynamos
+!!
+!!@verbatim
+!!      subroutine read_restart_ctl
+!!      subroutine read_time_loop_ctl
+!!
+!! !!!!  control for initial and restart data  !!!!!!!!!!!!!!!!!!!!!!!!!!
+!!   no_data:      No initial values
+!!   restart_file: Read restart data as initial values
+!!
+!!   dynamo_benchmark_0: Initial values for dynamo benchmark Case 0
+!!   dynamo_benchmark_1: Initial values for dynamo benchmark Case 1
+!!   dynamo_benchmark_2: Initial values for dynamo benchmark Case 1
+!!
+!!   pseudo_vacuum_benchmark: Initial values for pseudo vacuum benchmark
+!!
+!!   rotate_x: rotate around x-axis
+!!   rotate_y: rotate around y-axis
+!!   rotate_z: rotate around z-axis
+!!
+!!     20: Initial values for kinematic dynamo
+!!
+!!  <-100: Initial value for convection in rotating shell
+!!          int(num/100)... wave number in zonal direction
+!!  >1000: Initial value for MHD dynamo in rotating shell
+!!          int(num/100)... wave number of temperature in zonal direction
+!!          int(num/1000)... index j for spherical harmonics 
+!!                           by degree l and order m
+!!                                j = l*(l+1) + m
+!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!    begin restart_file_ctl
+!!       rst_ctl                -2
+!!    end restart_file_ctl
+!!
+!! !!!   method for time evolution  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!
+!!   iflag_supg_ctl:      0...no SUPG 1...SUPG
+!!   num_multi_pass_ctl:  iteration counts for multi pass
+!!   maxiter_ctl:         maximum iteration number for correction
+!!   eps_4_velo_ctl:      ||div v||_{n} / ||div v||_{n-1}
+!!   eps_4_magne_ctl:     ||div B||_{n} / ||div B||_{n-1}
+!!   scheme_ctl:          Scheme for time evolution
+!!                 explicit_Euler...explicit_Euler
+!!                 2nd_Adams_Bashforth...2nd_Adams_Bashforth
+!!                 Crank_Nicolson...Crank_Nicolson with 2nd_Adams_Bashforth
+!!                 Crank_Nicolson_consist...Crank_Nicolson
+!!                                         with consistent mass matrix
+!!   eps_crank_ctl:        
+!!   method_4_velo_ctl:    method for Crank Nicolson Scheme
+!!   precond_4_crank_ctl:  preconditioning method for Crank Nicolson Scheme
+!!
+!!   spherical transfer mode:  'radius_in' 'radius_out' 'long_loop'
+!!   FFT_library_ctl:  Selection of FFT librarry  ('ISPACK' or 'FFTPACK')
+!!
+!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!
+!!    begin time_loop_ctl
+!!      iflag_supg_ctl           0
+!!      num_multi_pass_ctl       1
+!!      maxiter_ctl              1
+!!      eps_4_velo_ctl           5.0e-1
+!!      eps_4_magne_ctl          5.0e-1
+!!      scheme_ctl              Crank_Nicolson
+!!      diffuse_correct_ctl     On
+!!      coef_imp_v_ctl          5.0e-1
+!!      coef_imp_t_ctl          5.0e-1
+!!      coef_imp_b_ctl          5.0e-1
+!!      coef_imp_c_ctl          5.0e-1
+!!      eps_crank_ctl           1.0e-6
+!!      method_4_velo_ctl      CG 
+!!      precond_4_crank_ctl     SSOR   
+!!      modify_coriolis_4_crank_ctl  0
+!!      sph_transform_mode_ctl   'radius_in'
+!!      FFT_library_ctl          'ISPACK'
+!!    end time_loop_ctl
+!!
+!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@endverbatim
 !
       module m_ctl_data_mhd_evo_scheme
 !

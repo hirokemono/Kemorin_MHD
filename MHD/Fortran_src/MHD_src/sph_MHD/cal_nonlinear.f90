@@ -34,13 +34,6 @@
       use m_work_time
 !
 !
-!*  ----  set coriolis term
-!*
-      call start_eleps_time(13)
-      if (iflag_debug.eq.1) write(*,*) 'sum_coriolis_rj_sph'
-      if(iflag_4_coriolis .gt. 0) call sum_coriolis_rj_sph
-      call end_eleps_time(13)
-!
 !   ----  lead nonlinear terms by phesdo spectrum
 !
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_puesdo_sph'
@@ -49,6 +42,13 @@
       if (iflag_4_ref_temp .eq. 100) then
         call add_reftemp_advect_sph_MHD
       end if
+!
+!*  ----  set coriolis term
+!*
+      call start_eleps_time(13)
+      if (iflag_debug.eq.1) write(*,*) 'sum_coriolis_rj_sph'
+      if(iflag_4_coriolis .gt. 0) call sum_coriolis_rj_sph
+      call end_eleps_time(13)
 !
 !$omp parallel
       if(      iflag_4_gravity  .gt. 0                                  &

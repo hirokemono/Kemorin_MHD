@@ -57,7 +57,7 @@
       call set_icb_wt_sph_evo_mat
       call set_icb_p_sph_poisson_mat
 !
-      if (iflag_free_icb .eq. 1) then
+      if(iflag_icb_velocity .eq. iflag_free_slip) then
         call set_free_slip_icb_vt_sph_mat
         call set_free_icb_vp_sph_poisson_mat
       else
@@ -67,14 +67,16 @@
 !
 !   Rotation for inner core
 !
-      if(iflag_rotatable_ic.gt.0) call set_icore_viscous_matrix
+      if(iflag_icb_velocity .eq. iflag_rotatable_ic) then
+        call set_icore_viscous_matrix
+      end if
 !
 !   Boundary condition for CMB
 !
       call set_cmb_wt_sph_evo_mat
       call set_cmb_p_sph_poisson_mat
 !
-      if (iflag_free_cmb .eq. 1) then
+      if(iflag_cmb_velocity .eq. iflag_free_slip) then
         call set_free_slip_cmb_vt_sph_mat
         call set_free_cmb_vp_sph_poisson_mat
       else
@@ -129,10 +131,10 @@
       integer(kind = kint) :: kst, ked, ip, jst, jed, j
 !
 !
-      if(iflag_center_b .eq. 1) then
+      if(iflag_icb_magne .eq. iflag_sph_fill_center) then
         kst = itwo
         call set_magne_center_rmat_sph
-      else if(iflag_p_vacume_icb .eq. 1) then
+      else if(iflag_icb_magne .eq. iflag_pseudo_vacuum) then
         kst = nlayer_ICB+1
         call set_qvacume_magne_icb_rmat_sph
       else
@@ -140,7 +142,7 @@
         call set_ins_magne_icb_rmat_sph
       end if
 !
-      if(iflag_p_vacume_cmb .eq. 1) then
+      if(iflag_cmb_magne .eq. iflag_pseudo_vacuum) then
         call set_qvacume_magne_cmb_rmat_sph
       else
         call set_ins_magne_cmb_rmat_sph

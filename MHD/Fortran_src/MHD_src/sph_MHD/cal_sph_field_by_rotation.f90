@@ -1,13 +1,17 @@
-!cal_sph_field_by_rotation.f90
-!      module cal_sph_field_by_rotation
+!>@file   cal_sph_field_by_rotation.f90
+!!@brief  module cal_sph_field_by_rotation
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2009
 !
-!        programmed by H.Matsui
-!      Modified by H. Matsui on Oct., 2009
-!
-!      subroutine cal_rot_of_forces_sph_2
-!      subroutine cal_div_of_forces_sph_2
-!      subroutine cal_rot_of_induction_sph
-!      subroutine cal_div_of_fluxes_sph
+!>@brief  Evaluate curl or divergence of forces
+!!
+!!@verbatim
+!!      subroutine cal_rot_of_forces_sph_2
+!!      subroutine cal_div_of_forces_sph_2
+!!      subroutine cal_rot_of_induction_sph
+!!      subroutine cal_div_of_fluxes_sph
+!!@endverbatim
 !
       module cal_sph_field_by_rotation
 !
@@ -44,7 +48,7 @@
         if (iflag_debug .gt. 0) write(*,*) 'take rotation of Lorentz'
         call const_sph_force_rot2(ipol%i_lorentz, ipol%i_rot_Lorentz)
 !
-        if(iflag_rotatable_ic.gt.0) then
+        if(iflag_icb_velocity .eq. iflag_rotatable_ic) then
           call int_icore_toroidal_lorentz
         end if
       end if

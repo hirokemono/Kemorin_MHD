@@ -1,9 +1,16 @@
+!>@file   set_control_sph_data_MHD.f90
+!!@brief  module set_control_sph_data_MHD
+!!
+!!@author H. Matsui
+!!@date Programmed on Sep., 2009
 !
-!      module set_control_sph_data_MHD
-!
-!        programmed by H.Matsui on Sep., 2006
-!
-!     subroutine s_set_control_sph_data_MHD
+!>@brief  Set control parameters for spherical hermonics dynamo from IO
+!!
+!!@verbatim
+!!     subroutine s_set_control_sph_data_MHD
+!!     subroutine set_ctl_params_dynamobench
+!!     subroutine check_SPH_MHD_dependencies
+!!@endverbatim
 !
       module set_control_sph_data_MHD
 !
@@ -29,12 +36,12 @@
       use m_int_4_sph_coriolis_IO
       use m_node_id_spherical_IO
       use m_control_params_sph_MHD
+      use m_physical_property
       use m_work_4_sph_trans
       use m_file_format_switch
 !
       use m_field_data_IO
 !
-!      use set_control_nodal_data
       use set_control_sph_data
       use set_phys_name_4_sph_trans
       use FFT_selector
@@ -117,11 +124,33 @@
           call choose_file_format(coriolis_file_fmt_ctl,                &
      &        i_coriolis_file_fmt, ifmt_cor_int_file)
         end if
+!
+        if(angular(1).ne.zero .or. angular(2).ne.zero) then
+          iflag_tilted_coriolis = 1
+        end if
+!
       end if
 !
 !
       end subroutine s_set_control_sph_data_MHD
 !
+! -----------------------------------------------------------------------
+!
+      subroutine set_ctl_params_dynamobench
+!
+      use m_ctl_data_4_pickup_sph
+      use m_field_at_mid_equator
+!
+!
+      if(i_nphi_mid_eq .gt. 0) then
+        mphi_mid_eq = nphi_mid_eq_ctl
+      else
+        mphi_mid_eq = -1
+      end if
+!
+      end subroutine set_ctl_params_dynamobench
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine check_SPH_MHD_dependencies

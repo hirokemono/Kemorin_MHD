@@ -67,15 +67,15 @@
 !
       call delete_zero_degree_comp(ipol%i_velo)
 !
-      if (iflag_free_icb .eq. 1) then
+      if     (iflag_icb_velocity .eq. iflag_free_slip) then
         call cal_sph_nod_icb_free_vpol2(ipol%i_velo)
-      else if(iflag_rotatable_ic .eq. 1) then
+      else if(iflag_icb_velocity .eq. iflag_rotatable_ic) then
         call cal_sph_nod_icb_rotate_velo2(ipol%i_velo)
       else
         call cal_sph_nod_icb_rigid_velo2(ipol%i_velo)
       end if
 !
-      if (iflag_free_cmb .eq. 1) then
+      if(iflag_cmb_velocity .eq. iflag_free_slip) then
         call cal_sph_nod_cmb_free_vpol2(ipol%i_velo)
       else
         call cal_sph_nod_cmb_rigid_velo2(ipol%i_velo)
@@ -188,13 +188,13 @@
 !
       call delete_zero_degree_comp(ipol%i_magne)
 !
-      if(iflag_ins_icb .eq. 1) then
+      if(iflag_icb_magne .eq. iflag_sph_insulator) then
         call cal_sph_nod_icb_ins_mag2(ipol%i_magne)
-      else if(iflag_p_vacume_icb .eq. 1) then
+      else if(iflag_icb_magne .eq. iflag_pseudo_vacuum) then
         call cal_sph_nod_icb_qvc_mag2(ipol%i_magne)
       end if
 !
-      if(iflag_p_vacume_cmb .eq. 1) then
+      if(iflag_cmb_magne .eq. iflag_pseudo_vacuum) then
         call cal_sph_nod_cmb_qvc_mag2(ipol%i_magne)
       else
         call cal_sph_nod_cmb_ins_mag2(ipol%i_magne)
@@ -219,13 +219,13 @@
       use set_scalar_boundary_sph
       use adjust_fixed_flux_sph
 !
-      if (iflag_hflux_icb .eq. 1) then
+      if (iflag_icb_temp .eq. iflag_fixed_flux) then
         call adjust_icb_fix_h_flux_sph
       else
         call set_icb_fix_temp_sph
       end if
 !
-      if (iflag_hflux_cmb .eq. 1) then
+      if (iflag_cmb_temp .eq. iflag_fixed_flux) then
         call adjust_cmb_fix_h_flux_sph
       else
         call set_cmb_fix_temp_sph
@@ -245,13 +245,13 @@
       use adjust_fixed_flux_sph
 !
 !
-      if (iflag_cflux_icb .eq. 1) then
+      if (iflag_icb_composition .eq. iflag_fixed_flux) then
         call adjust_icb_fix_c_flux_sph
       else
         call set_icb_fix_dscalar_sph
       end if
 !
-      if (iflag_cflux_cmb .eq. 1) then
+      if (iflag_cmb_composition .eq. iflag_fixed_flux) then
         call adjust_cmb_fix_c_flux_sph
       else
         call set_cmb_fix_dscalar_sph

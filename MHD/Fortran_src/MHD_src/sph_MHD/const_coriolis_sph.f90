@@ -1,11 +1,17 @@
+!>@file   const_coriolis_sph.f90
+!!@brief  module const_coriolis_sph
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2007
 !
-!      module const_coriolis_sph
+!>@brief  Evaluate Coriolis term
+!!
+!!
+!!@verbatim
+!!      subroutine init_sum_coriolis_sph
+!!      subroutine sum_coriolis_rj_sph
+!!@endverbatim
 !
-!      Written by H. Matsui on June, 2007
-!
-!      subroutine init_sum_coriolis_sph
-!
-!      subroutine sum_coriolis_rj_sph
 !
       module const_coriolis_sph
 !
@@ -70,14 +76,14 @@
       use sum_rot_coriolis_rj_sph
       use cal_inner_core_rotation
 !
-!*
+!
       if (iflag_debug.eq.1) write(*,*) 's_trans_sph_velo_4_coriolis'
       call s_trans_sph_velo_4_coriolis
 !
       call s_sum_rot_coriolis_rj_sph(coef_cor)
 !
-      if(iflag_rotatable_ic.gt.0) then
-        call cal_icure_coriolis_explicit
+      if(iflag_icb_velocity .eq. iflag_rotatable_ic) then
+        call cal_icore_coriolis_explicit
       end if
 !
       end subroutine sum_coriolis_rj_sph

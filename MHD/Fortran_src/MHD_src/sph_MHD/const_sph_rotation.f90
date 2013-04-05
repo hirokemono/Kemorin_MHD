@@ -63,15 +63,15 @@
       integer(kind = kint) :: kr_st, kr_ed
 !
 !
-      if (iflag_free_icb .eq. 1) then
+      if(iflag_icb_velocity .eq. iflag_free_slip) then
         call cal_sph_nod_icb_free_rot2(ipol%i_velo, ipol%i_vort)
-      else if(iflag_rotatable_ic .eq. 1) then
+      else if(iflag_icb_velocity .eq. iflag_rotatable_ic) then
         call cal_sph_nod_icb_rigid_rot2(ipol%i_velo, ipol%i_vort)
       else
         call cal_sph_nod_icb_rigid_rot2(ipol%i_velo, ipol%i_vort)
       end if
 !
-      if (iflag_free_cmb .eq. 1) then
+      if(iflag_cmb_velocity .eq. iflag_free_slip) then
         call cal_sph_nod_cmb_free_rot2(ipol%i_velo, ipol%i_vort)
       else
         call cal_sph_nod_cmb_rigid_rot2(ipol%i_velo, ipol%i_vort)
@@ -99,10 +99,10 @@
       integer(kind = kint) :: kr_st, kr_ed
 !
 !
-      if(iflag_center_b .eq. 1) then
+      if(iflag_icb_magne .eq. iflag_sph_fill_center) then
         kr_st = itwo
         call cal_sph_nod_center_rot2(ipol%i_magne, ipol%i_current)
-      else if(iflag_p_vacume_icb .eq. 1) then
+      else if(iflag_icb_magne .eq. iflag_pseudo_vacuum) then
         kr_st = nlayer_ICB+1
         call cal_sph_nod_icb_qvc_rot2(ipol%i_magne, ipol%i_current)
       else
@@ -114,7 +114,7 @@
       call cal_sph_nod_vect_rot2(itwo, kr_ed,                           &
      &    ipol%i_magne, ipol%i_current)
 !
-      if(iflag_p_vacume_cmb .eq. 1) then
+      if(iflag_cmb_magne .eq. iflag_pseudo_vacuum) then
         call cal_sph_nod_cmb_qvc_rot2(ipol%i_magne, ipol%i_current)
       else
         call cal_sph_nod_cmb_ins_rot2(ipol%i_magne, ipol%i_current)
@@ -139,10 +139,10 @@
       integer(kind = kint) :: kr_st, kr_ed
 !
 !
-      if(iflag_center_b .eq. 1) then
+      if(iflag_icb_magne .eq. iflag_sph_fill_center) then
         kr_st = itwo
         call cal_sph_nod_center_rot2(is_fld, is_rot)
-      else if(iflag_p_vacume_icb .eq. 1) then
+      else if(iflag_icb_magne .eq. iflag_pseudo_vacuum) then
         kr_st = nlayer_ICB+1
         call cal_sph_nod_icb_qvc_vp_rot2(is_fld, is_rot)
       else
@@ -153,7 +153,7 @@
       kr_ed = nlayer_CMB- 1
       call cal_sph_nod_vect_w_div_rot2(kr_st, kr_ed, is_fld, is_rot)
 !
-      if(iflag_p_vacume_cmb .eq. 1) then
+      if(iflag_cmb_magne .eq. iflag_pseudo_vacuum) then
         call cal_sph_nod_cmb_qvc_vp_rot2(is_fld, is_rot)
       else
         call cal_sph_nod_cmb_ins_vp_rot2(is_fld, is_rot)
@@ -201,13 +201,13 @@
       integer(kind = kint) :: kr_st, kr_ed
 !
 !
-      if (iflag_free_icb .eq. 1) then
+      if(iflag_icb_velocity .eq. iflag_free_slip) then
         call cal_sph_nod_icb_free_rot2(is_fld, is_rot)
       else
         call cal_sph_nod_icb_rigid_rot2(is_fld, is_rot)
       end if
 !
-      if (iflag_free_cmb .eq. 1) then
+      if(iflag_cmb_velocity .eq. iflag_free_slip) then
         call cal_sph_nod_cmb_free_rot2(is_fld, is_rot)
       else
         call cal_sph_nod_cmb_rigid_rot2(is_fld, is_rot)
@@ -240,7 +240,7 @@
       call cal_sph_nod_diffuse_by_rot2(kr_st, kr_ed, ipol%i_vort,       &
      &    ipol%i_v_diffuse)
 !
-      if (iflag_free_icb .eq. 1) then
+      if(iflag_icb_velocity .eq. iflag_free_slip) then
         call cal_sph_nod_cmb_rigid_diffuse2(ipol%i_velo,                &
      &      ipol%i_v_diffuse)
       else
@@ -250,7 +250,7 @@
 !
       call cal_dsdr_sph_icb_nobc_2(ipol%i_v_diffuse, idpdr%i_v_diffuse)
 !
-      if (iflag_free_cmb .eq. 1) then
+      if(iflag_cmb_velocity .eq. iflag_free_slip) then
         call cal_sph_nod_cmb_free_diffuse2(ipol%i_velo,                 &
      &      ipol%i_v_diffuse)
       else
@@ -280,12 +280,12 @@
       integer(kind = kint) :: kr_st, kr_ed
 !
 !
-      if(iflag_center_b .eq. 1) then
+      if(iflag_icb_magne .eq. iflag_sph_fill_center) then
         kr_st = itwo
         call cal_sph_nod_center_diffuse2(ipol%i_magne,                  &
      &      ipol%i_b_diffuse)
         call cal_dsdr_sph_center_2(ipol%i_b_diffuse)
-      else if(iflag_p_vacume_icb .eq. 1) then
+      else if(iflag_icb_magne .eq. iflag_pseudo_vacuum) then
         kr_st = nlayer_ICB+1
         call cal_sph_nod_icb_qvc_diffuse2(ipol%i_magne,                 &
      &      ipol%i_b_diffuse)
@@ -303,7 +303,7 @@
       call cal_sph_nod_diffuse_by_rot2(kr_st, kr_ed, ipol%i_current,    &
      &    ipol%i_b_diffuse)
 !
-      if(iflag_p_vacume_cmb .eq. 1) then
+      if(iflag_cmb_magne .eq. iflag_pseudo_vacuum) then
         call cal_sph_nod_cmb_qvc_diffuse2(ipol%i_magne,                 &
      &      ipol%i_b_diffuse)
       else

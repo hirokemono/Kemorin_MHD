@@ -1,15 +1,23 @@
-!m_control_params_sph_MHD.f90
-!      module m_control_params_sph_MHD
+!>@file   m_control_params_sph_MHD.f90
+!!@brief  module m_control_params_sph_MHD
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2009
 !
-!     Written by H. Matsui on Oct., 2009
-!
-!      subroutine allocate_vsp_bc_array(jmax)
-!      subroutine allocate_temp_bc_array(jmax)
-!      subroutine allocate_dscalar_bc_array(jmax)
-!
-!      subroutine deallocate_vsp_bc_array
-!      subroutine deallocate_temp_bc_array
-!      subroutine deallocate_dscalar_bc_array
+!>@brief  Flag and parameters for spherical transform dnyamo model
+!!
+!!
+!!@verbatim
+!!      subroutine allocate_vsp_bc_array(jmax)
+!!      subroutine allocate_temp_bc_array(jmax)
+!!      subroutine allocate_dscalar_bc_array(jmax)
+!!
+!!      subroutine deallocate_vsp_bc_array
+!!      subroutine deallocate_temp_bc_array
+!!      subroutine deallocate_dscalar_bc_array
+!!@endverbatim
+!!
+!!@n @param jmax  number of modes for spherical hermonics @f$L*(L+2)@f$
 !
       module m_control_params_sph_MHD
 !
@@ -18,50 +26,92 @@
       implicit none
 !
 !
-      integer(kind = kint) :: iflag_rigid_icb =    1
-      integer(kind = kint) :: iflag_free_icb =     0
-      integer(kind = kint) :: iflag_rotatable_ic = 0
+!>      integer flag for fixed velocity boundary at inner core
+      integer(kind = kint), parameter :: iflag_fixed_velo = 0
+!>      integer flag for free-slip boundary at inner core
+      integer(kind = kint), parameter :: iflag_free_slip =  1
+!>      integer flag for rotatable inner core
+      integer(kind = kint), parameter :: iflag_rotatable_ic = 10
 !
-      integer(kind = kint) :: iflag_rigid_cmb =  1
-      integer(kind = kint) :: iflag_free_cmb =   0
+!>      integer flag for fixed velocity boundary
+      integer(kind = kint), parameter :: iflag_fixed_field = 0
+!>      integer flag for free-slip boundary
+      integer(kind = kint), parameter :: iflag_fixed_flux =  1
 !
+!>      integer flag for insulated magnetic boundary
+      integer(kind = kint), parameter :: iflag_sph_insulator =   0
+!>      integer flag for insulated magnetic boundary
+      integer(kind = kint), parameter :: iflag_sph_fill_center = 1
+!>      integer flag for pseudo vacuum magnetic boundary
+      integer(kind = kint), parameter :: iflag_pseudo_vacuum =  11
+!
+!>      boundary condition flag for velocity at ICB
+      integer(kind = kint) :: iflag_icb_velocity = iflag_fixed_velo
+!>      boundary condition flag for velocity at CMB
+      integer(kind = kint) :: iflag_cmb_velocity = iflag_fixed_velo
+!
+!>      Fixed poloidal velocity spectrum for ICB
       real(kind= kreal), allocatable :: vp_ICB_bc(:)
+!>      Fixed toroidal velocity spectrum for ICB
       real(kind= kreal), allocatable :: vt_ICB_bc(:)
+!>      Fixed poloidal velocity spectrum for CMB
       real(kind= kreal), allocatable :: vp_CMB_bc(:)
+!>      Fixed toroidal velocity spectrum for CMB
       real(kind= kreal), allocatable :: vt_CMB_bc(:)
 !
-      integer(kind = kint) :: iflag_hflux_icb = 0
-      integer(kind = kint) :: iflag_hflux_cmb = 0
+!>      boundary condition flag for tempeture at ICB
+      integer(kind = kint) :: iflag_icb_temp = iflag_fixed_field
+!>      boundary condition flag for tempeture at CMB
+      integer(kind = kint) :: iflag_cmb_temp = iflag_fixed_field
 !
+!>      Fixed temperature spectrum for ICB
       real(kind= kreal), allocatable :: temp_ICB_bc(:)
+!>      Fixed temperature spectrum for CMB
       real(kind= kreal), allocatable :: temp_CMB_bc(:)
+!>      Fixed heat flux spectrum for ICB
       real(kind= kreal), allocatable :: h_flux_ICB_bc(:)
+!>      Fixed heat flux spectrum for CMB
       real(kind= kreal), allocatable :: h_flux_CMB_bc(:)
 !
+!>      boundary condition flag for composition variation at ICB
+      integer(kind = kint) :: iflag_icb_composition = iflag_fixed_field
+!>      boundary condition flag for composition variation at CMB
+      integer(kind = kint) :: iflag_cmb_composition = iflag_fixed_field
 !
-      integer(kind = kint) :: iflag_center_b = 0
-      integer(kind = kint) :: iflag_ins_icb =  1
-      integer(kind = kint) :: iflag_ins_cmb =  1
-      integer(kind = kint) :: iflag_p_vacume_icb =  0
-      integer(kind = kint) :: iflag_p_vacume_cmb =  0
-!
-!
-      integer(kind = kint) :: iflag_cflux_icb = 0
-      integer(kind = kint) :: iflag_cflux_cmb = 0
-!
+!>      Fixed composition spectrum for ICB
       real(kind= kreal), allocatable :: composition_ICB_bc(:)
+!>      Fixed composition spectrum for CMB
       real(kind= kreal), allocatable :: composition_CMB_bc(:)
+!>      Fixed composition flux spectrum for ICB
       real(kind= kreal), allocatable :: c_flux_ICB_bc(:)
+!>      Fixed composition flux spectrum for CMB
       real(kind= kreal), allocatable :: c_flux_CMB_bc(:)
 !
-      integer(kind = kint) :: iflag_sph_coriolis_file = 0
 !
+!>      boundary condition flag for magnetic field at ICB
+      integer(kind = kint) :: iflag_icb_magne = iflag_sph_insulator
+!>      boundary condition flag for magnetic field at CMB
+      integer(kind = kint) :: iflag_cmb_magne = iflag_sph_insulator
+!
+!
+      integer(kind = kint) :: iflag_sph_coriolis_file = 0
+      integer(kind = kint) :: iflag_tilted_coriolis =   0
+!
+!>      Start radial address of fluid shell for @f$ f(r,j) @f$
       integer(kind = kint) :: kr_rj_fluid_start =    1
+!>      End radial address of fluid shell for @f$ f(r,j) @f$
       integer(kind = kint) :: kr_rj_fluid_end =      1
+!>      Start radial address to solve heat equation for @f$ f(r,j) @f$
       integer(kind = kint) :: kr_rj_thermal_start =  1
+!>      End radial address to solve heat equation for @f$ f(r,j) @f$
       integer(kind = kint) :: kr_rj_thermal_end =    1
+!>      Start radial address to solve induction for @f$ f(r,j) @f$
       integer(kind = kint) :: kr_rj_conduct_start =  1
+!>      End radial address to solve induction for @f$ f(r,j) @f$
       integer(kind = kint) :: kr_rj_conduct_end =    1
+!
+!>      Number of grid points in zonal direction for dynamo benchmark
+      integer(kind = kint) :: mphi_mid_eq = -1
 !
 ! -----------------------------------------------------------------------
 !

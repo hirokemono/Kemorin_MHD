@@ -42,7 +42,7 @@
       call cal_sph_nod_vect_div2(kr_st, kr_ed,                          &
      &    ipol%i_h_flux, ipol%i_h_advect)
 !
-      if (iflag_hflux_icb .eq. 1) then
+      if (iflag_icb_temp .eq. iflag_fixed_flux) then
         call cal_div_sph_icb_fix_flux_2(nidx_rj(2), h_flux_ICB_bc,      &
      &      ipol%i_h_flux, ipol%i_h_advect)
       else
@@ -50,7 +50,7 @@
      &      ipol%i_h_flux, ipol%i_h_advect)
       end if
 !
-      if (iflag_hflux_cmb .eq. 1) then
+      if (iflag_cmb_temp .eq. iflag_fixed_flux) then
         call cal_div_sph_cmb_fix_flux_2(nidx_rj(2), h_flux_CMB_bc,      &
      &      ipol%i_h_flux, ipol%i_h_advect)
       else
@@ -75,7 +75,7 @@
       call cal_sph_nod_vect_div2(kr_st, kr_ed,                          &
      &    ipol%i_c_flux, ipol%i_c_advect)
 !
-      if (iflag_hflux_icb .eq. 1) then
+      if (iflag_icb_temp .eq. iflag_fixed_flux) then
         call cal_div_sph_icb_fix_flux_2(nidx_rj(2), c_flux_ICB_bc,      &
      &      ipol%i_c_flux, ipol%i_c_advect)
       else
@@ -83,7 +83,7 @@
      &      ipol%i_c_flux, ipol%i_c_advect)
       end if
 !
-      if (iflag_hflux_cmb .eq. 1) then
+      if (iflag_cmb_temp .eq. iflag_fixed_flux) then
         call cal_div_sph_cmb_fix_flux_2(nidx_rj(2), c_flux_CMB_bc,      &
      &      ipol%i_c_flux, ipol%i_c_advect)
       else

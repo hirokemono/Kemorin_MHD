@@ -275,6 +275,11 @@
      &       .or. restart_flag_ctl .eq. 'Dynamo_benchmark_2'            &
      &       .or. restart_flag_ctl .eq. 'DYNAMO_BENCHMARK_2') then
             iflag_restart = i_rst_dbench2
+          else if(restart_flag_ctl .eq. '-3'                            &
+     &       .or. restart_flag_ctl .eq. 'pseudo_vacuum_benchmark'       &
+     &       .or. restart_flag_ctl .eq. 'Pseudo_vacuum_benchmark'       &
+     &       .or. restart_flag_ctl .eq. 'PSEUDO_VACUUM_BENCHMARK') then
+            iflag_restart = i_rst_dbench_qcv
           else if(restart_flag_ctl .eq. '-11'                           &
      &       .or. restart_flag_ctl .eq. 'rotate_x'                      &
      &       .or. restart_flag_ctl .eq. 'Rotate_x'                      &
