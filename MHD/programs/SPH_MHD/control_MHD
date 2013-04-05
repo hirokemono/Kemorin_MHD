@@ -548,6 +548,8 @@ begin MHD_control
       pick_gauss_coef_order_ctl   -2
       pick_gauss_coef_order_ctl    2
     end array pick_gauss_coef_order_ctl
+!
+    nphi_mid_eq_ctl         500
   end sph_monitor_ctl
 !
 end MHD_control

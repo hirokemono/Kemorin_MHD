@@ -45,11 +45,10 @@
       use const_radial_mat_4_sph
       use cal_rms_fields_by_sph
       use const_coriolis_sph
-!      use cal_radial_jacobians
       use cvt_nod_data_to_sph_data
       use r_interpolate_sph_data
       use sph_mhd_rst_IO_control
-      use local_field_4_dynamobench
+      use m_field_at_mid_equator
       use mid_eq_transform_single
 !
 !
@@ -90,11 +89,6 @@
       if (iflag_debug.gt.0) write(*,*) 's_cal_fdm_coefs'
       call s_cal_fdm_coefs
       call time_prog_barrier
-!
-! ---------------------------------
-!
-!      if (iflag_debug.eq.1) write(*,*)' s_cal_radial_jacobians'
-!      call s_cal_radial_jacobians(nidx_rj(1), radius_1d_rj_r(1) )
 !
 !* -----  set integrals for coriolis term -----------------
 !*
@@ -165,6 +159,7 @@
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
       use set_reference_sph_mhd
+      use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
       use const_data_4_dynamobench
 !
@@ -193,6 +188,9 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph
+!*
+      if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
+      call s_lead_fields_4_sph_mhd
       call end_eleps_time(7)
 !
 !*  -----------  lead mid-equator field --------------

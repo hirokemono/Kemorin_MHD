@@ -1,12 +1,16 @@
-!analyzer_sph_dynamobench.f90
-!      module analyzer_sph_dynamobench
-!..................................................
+!>@file   analyzer_sph_dynamobench.f90
+!!        module analyzer_sph_dynamobench
+!!
+!! @author H. Matsui
+!! @date   Programmed in 2012
+!! @n      modified in 2013
 !
-!      Written by H. Matsui
-!      modified by H. Matsui on June, 2005 
-!
-!      subroutine initialization
-!      subroutine evolution
+!> @brief Initialzation and evolution loop for dynamo benchmark check
+!!
+!!@verbatim
+!!      subroutine initialization
+!!      subroutine evolution
+!!@endverbatim
 !
       module analyzer_sph_dynamobench
 !
@@ -34,8 +38,9 @@
 !
       subroutine initialization
 !
-      use set_control_sph_mhd
       use m_ctl_data_noviz_MHD
+      use set_control_sph_mhd
+      use set_control_sph_data_MHD
 !
 !
       total_start = MPI_WTIME()
@@ -76,8 +81,9 @@
       call read_control_4_snap_noviz
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
       call set_control_4_sph_mhd
+      call set_ctl_params_dynamobench
 !
-!    IO elapsed end 
+!    IO elapsed end
 !    precondition elaps start
 !
       call end_eleps_time(4)
@@ -97,12 +103,10 @@
 !
       subroutine evolution
 !
-!     ---------------------
-!
-      call start_eleps_time(3)
 !
 !*  -----------  set initial step data --------------
 !*
+      call start_eleps_time(3)
       i_step_MHD = i_step_init - 1
 !*
 !*  -------  time evelution loop start -----------
