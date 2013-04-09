@@ -144,7 +144,7 @@
         call cal_sph_nod_center_diffuse2(ipol%i_magne,                  &
      &      ipol%i_b_diffuse)
         call cal_dsdr_sph_center_2(ipol%i_b_diffuse)
-      else if(iflag_icb_magne .eq. iflag_pseudo_vacuum) then
+      else if(iflag_icb_magne .eq. iflag_radial_magne) then
         kr_st = nlayer_ICB+1
         call cal_sph_nod_icb_qvc_diffuse2(ipol%i_magne,                 &
      &      ipol%i_b_diffuse)
@@ -165,7 +165,7 @@
       call cal_sph_nod_vect_dr_2(kr_st, kr_ed,                          &
      &    d_rj(1,ipol%i_b_diffuse), d_rj(1,idpdr%i_b_diffuse) )
 !
-      if(iflag_cmb_magne .eq. iflag_pseudo_vacuum) then
+      if(iflag_cmb_magne .eq. iflag_radial_magne) then
         call cal_sph_nod_cmb_qvc_diffuse2(ipol%i_magne,                 &
      &      ipol%i_b_diffuse)
       else

@@ -1,14 +1,32 @@
+!>@file   spherical_SRs_N.f90
+!!@brief  module spherical_SRs_N
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!      module spherical_SRs_N
+!>@brief  Arbitrary components data communications 
+!!@n      for spherical hermonics transform
+!!
+!!@verbatim
+!!      subroutine init_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
+!!
+!!      subroutine send_recv_rtp_2_rtm_N(NB, X_rtp, X_rtm)
+!!      subroutine send_recv_rtm_2_rtp_N(NB, X_rtm, X_rtp)
+!!      subroutine send_recv_rj_2_rlm_N(NB, X_rj, X_rlm)
+!!      subroutine send_recv_rlm_2_rj_N(NB, X_rlm, X_rj)
+!!@endverbatim
+!!
+!!
+!!@n @param  NB    Number of components for communication
+!!@n @param  X_rtp(NB*nnod_rtp)  @f$ f(r,\theta,\phi) @f$
+!!@n               (Order, X_rtp(i_comp,inod))
+!!@n @param  X_rtm(NB*nnod_rtm)  @f$ f(r,\theta,m) @f$
+!!@n               (Order, X_rtm(i_comp,inod))
+!!@n @param  X_rlm(NB*nnod_rlm)  @f$ f(r,l,m) @f$
+!!@n               (Order, X_rlm(i_comp,inod))
+!!@n @param  X_rj(NB*nnod_rj)    @f$ f(r,j) @f$
+!!@n               (Order, X_rj(i_comp,inod))
 !
-!     Written by H. Matsui on Aug., 2007
-!
-!      subroutine init_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
-!
-!      subroutine send_recv_rtp_2_rtm_N(NB, X_rtp, X_rtm)
-!      subroutine send_recv_rtm_2_rtp_N(NB, X_rtm, X_rtp)
-!      subroutine send_recv_rj_2_rlm_N(NB, X_rj, X_rlm)
-!      subroutine send_recv_rlm_2_rj_N(NB, X_rlm, X_rj)
 !
       module spherical_SRs_N
 !

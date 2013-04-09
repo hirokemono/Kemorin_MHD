@@ -1,16 +1,37 @@
+!>@file   solver_SR_int.f90
+!!@brief  module solver_SR_int
+!!
+!!@author coded by K.Nakajima (RIST)
+!!@date coded by K.Nakajima (RIST) on jul. 1999 (ver 1.0)
+!!@n    modified by H. Matsui (U. of Chicago) on july 2007 (ver 1.1)
 !
-!C*** 
-!C*** module solver_SR_int
-!C***
-!
-!    MPI SEND and RECEIVE routine for overlapped partitioning
-!     coded by K.Nakajima (RIST) on jul. 1999 (ver 1.0)
-!     modified by H. Matsui (U. of Chicago) on july 2007 (ver 1.1)
-!
-!      subroutine  solver_send_recv_i                                   &
-!     &                ( N, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,&
-!     &                                        STACK_EXPORT, NOD_EXPORT,&
-!     &                  ix, SOLVER_COMM,my_rank)
+!>@brief  MPI SEND and RECEIVE routine for integer field
+!!        in overlapped partitioning
+!!
+!!@verbatim
+!!      subroutine  solver_send_recv_i                                  &
+!!     &                (N, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,&
+!!     &                                       STACK_EXPORT, NOD_EXPORT,&
+!!     &                 ix, SOLVER_COMM,my_rank)
+!!@endverbatim
+!!
+!!@n @param  N     Number of data points
+!!
+!!@n @param  NEIBPETOT    Number of processses to communicate
+!!@n @param  NEIBPE(NEIBPETOT)      Process ID to communicate
+!!@n @param  STACK_IMPORT(0:NEIBPETOT)
+!!                    End points of import buffer for each process
+!!@n @param  NOD_IMPORT(STACK_IMPORT(NEIBPETOT))
+!!                    local node ID to copy in import buffer
+!!@n @param  STACK_EXPORT(0:NEIBPETOT)
+!!                    End points of export buffer for each process
+!!@n @param  NOD_EXPORT(STACK_IMPORT(NEIBPETOT))
+!!                    local node ID to copy in export buffer
+!!
+!!@n @param  ix(N)     integer data with NB components
+!!
+!!@n @param  SOLVER_COMM      MPI communicator
+!!@n @param  my_rank          own process rank
 !
       module solver_SR_int
 !
@@ -30,31 +51,29 @@
      &                  ix, SOLVER_COMM,my_rank)
 !
       use calypso_mpi
-!
       use m_solver_SR
 !
-! ......................................................................
-
+!>       number of nodes
       integer(kind=kint )                , intent(in)   ::  N
-!<       number of nodes
+!>       total neighboring pe count
       integer(kind=kint )                , intent(in)   ::  NEIBPETOT
-!<       total neighboring pe count
+!>       neighboring pe id                        (i-th pe)
       integer(kind=kint ), dimension(NEIBPETOT) :: NEIBPE
-!<       neighboring pe id                        (i-th pe)
+!>       imported node count for each neighbor pe (i-th pe)
       integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_IMPORT
-!<       imported node count for each neighbor pe (i-th pe)
+!>       imported node                            (i-th dof)
       integer(kind=kint ), dimension(STACK_IMPORT(NEIBPETOT))           &
      &        :: NOD_IMPORT
-!<       imported node                            (i-th dof)
+!>       exported node count for each neighbor pe (i-th pe)
       integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_EXPORT
-!<       exported node count for each neighbor pe (i-th pe)
+!>       exported node                            (i-th dof)
       integer(kind=kint ), dimension(STACK_EXPORT(NEIBPETOT))           &
      &        :: NOD_EXPORT
-!<       exported node                            (i-th dof)
+!>       communicated result vector
       integer (kind=kint), dimension(N)  , intent(inout):: iX
-!<       communicated result vector
+!>       communicator for mpi
       integer                            , intent(in)   ::SOLVER_COMM
-!<       communicator for mpi
+!>       Own process
       integer                            , intent(in)   :: my_rank
 !C
 !

@@ -79,7 +79,7 @@
      &           id_org_domain, istack_nod_table_dest,                  &
      &           inod_dest_4_dest, ntot_table_org, numdir,              &
      &           x_inter_org(1), nnod_2nd, xvec_2nd(1),                 &
-     &           SOLVER_COMM, my_rank)
+     &           SOLVER_COMM)
 !
 !
       if (num_neib_2.gt.0) then

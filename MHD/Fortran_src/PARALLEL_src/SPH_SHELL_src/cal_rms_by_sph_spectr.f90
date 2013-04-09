@@ -5,6 +5,10 @@
 !
 !      subroutine cal_rms_each_scalar_sph_spec(icomp, icou)
 !      subroutine cal_rms_each_vector_sph_spec(icomp, icou)
+!        (1/4\pi) \int (\bf{u}_{l}^{m})^2 sin \theta d\theta d\phi
+!          = r^{-2} [ l(l+1) / (2l+1) 
+!           ( l(l+1)/r^2 (S_{l}^{m})^2 + (dS_{l}^{m}/dr)^2)
+!            + (T_{l}^{m})^2 ) ]
 !      subroutine set_sph_energies_by_rms(icou)
 !
 !      subroutine cal_ave_scalar_sph_spectr(icomp, icou)

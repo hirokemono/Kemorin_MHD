@@ -47,9 +47,7 @@
         i_n2 = i_n1 - nidx_rj(2)
 !
         d2s_dr2 =  coef_fdm_fix_dr_CMB_2(-1,3) * d_rj(i_n1,is_fld  )    &
-     &          + (coef_fdm_fix_dr_CMB_2( 0,3)                          &
-     &           -  two * ar_1d_rj(nlayer_CMB,1)                        &
-     &            *coef_fdm_fix_dr_CMB_2( 1,3)) * d_rj(inod,is_fld  )
+     &          +  coef_fdm_fix_dr_CMB_2( 0,3) * d_rj(inod,is_fld  )
         d1t_dr1 =  coef_fdm_fix_CMB_2(2,2) * d_rj(i_n2,is_fld+2)        &
      &           + coef_fdm_fix_CMB_2(1,2) * d_rj(i_n1,is_fld+2)
 !

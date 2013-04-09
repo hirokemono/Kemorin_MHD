@@ -43,7 +43,7 @@
 !>      integer flag for insulated magnetic boundary
       integer(kind = kint), parameter :: iflag_sph_fill_center = 1
 !>      integer flag for pseudo vacuum magnetic boundary
-      integer(kind = kint), parameter :: iflag_pseudo_vacuum =  11
+      integer(kind = kint), parameter :: iflag_radial_magne =   11
 !
 !>      boundary condition flag for velocity at ICB
       integer(kind = kint) :: iflag_icb_velocity = iflag_fixed_velo

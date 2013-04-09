@@ -76,7 +76,7 @@
      &           num_org_domain, iflag_self_itp_recv, ntot_table_dest,  &
      &           id_org_domain, istack_nod_table_dest,                  &
      &           inod_dest_4_dest, ntot_table_org, x_inter_org(1),      &
-     &           nnod_2nd, xvec_2nd(1), SOLVER_COMM, my_rank)
+     &           nnod_2nd, xvec_2nd(1), SOLVER_COMM)
 !
 !
       if (num_neib_2.gt.0) then
@@ -156,7 +156,7 @@
      &           num_org_domain, iflag_self_itp_recv, ntot_table_dest,  &
      &           id_org_domain, istack_nod_table_dest,                  &
      &           inod_dest_4_dest, ntot_table_org, x_inter_org(1),      &
-     &           nnod_2nd, xvec_2nd(1), SOLVER_COMM, my_rank)
+     &           nnod_2nd, xvec_2nd(1), SOLVER_COMM)
 !
 !
       if (num_neib_2.gt.0) then

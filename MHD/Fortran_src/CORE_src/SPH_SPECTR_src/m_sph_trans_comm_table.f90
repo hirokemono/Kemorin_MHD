@@ -1,41 +1,52 @@
+!>@file   m_sph_trans_comm_table.f90
+!!@brief  module m_sph_trans_comm_table
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007 
 !
-!      module m_sph_trans_comm_table
-!
-!     Written by H. Matsui on July, 2007
-!
-!      subroutine allocate_sph_comm_stack
-!      subroutine allocate_sph_comm_item(nnod_rtp, nnod_rtm,            &
-!     &          nnod_rlm, nnod_rj)
-!
-!      subroutine deallocate_sph_comm_item
-!
-!      subroutine allocate_sph_comm_stack_rtp
-!      subroutine allocate_sph_comm_stack_rtm
-!      subroutine allocate_sph_comm_stack_rlm
-!      subroutine allocate_sph_comm_stack_rj
-!
-!      subroutine allocate_sph_comm_item_rtp(nnod_rtp)
-!      subroutine allocate_sph_comm_item_rtm(nnod_rtm)
-!      subroutine allocate_sph_comm_item_rlm(nnod_rlm)
-!      subroutine allocate_sph_comm_item_rj(nnod_rj)
-!
-!      subroutine allocate_idx_gl_rtp_compare
-!      subroutine allocate_idx_gl_rtm_out
-!      subroutine allocate_idx_gl_rlm_out
-!      subroutine allocate_idx_gl_rj_compare
-!
-!      subroutine deallocate_sph_comm_item_rtp
-!      subroutine deallocate_sph_comm_item_rtm
-!      subroutine deallocate_sph_comm_item_rlm
-!      subroutine deallocate_sph_comm_item_rj
-!
-!      subroutine deallocate_idx_gl_rtp_compare
-!      subroutine deallocate_idx_gl_rtm_out
-!      subroutine deallocate_idx_gl_rlm_out
-!      subroutine deallocate_idx_gl_rj_compare
-!
-!      subroutine set_reverse_sph_comm_table(numnod, ntot_item,         &
-!     &          item_sr, irev_sr)
+!>@brief  Communication tables for spherical transform
+!!
+!!@verbatim
+!!      subroutine allocate_sph_comm_stack
+!!      subroutine allocate_sph_comm_item(nnod_rtp, nnod_rtm,           &
+!!     &          nnod_rlm, nnod_rj)
+!!
+!!      subroutine deallocate_sph_comm_item
+!!
+!!      subroutine allocate_sph_comm_stack_rtp
+!!      subroutine allocate_sph_comm_stack_rtm
+!!      subroutine allocate_sph_comm_stack_rlm
+!!      subroutine allocate_sph_comm_stack_rj
+!!
+!!      subroutine allocate_sph_comm_item_rtp(nnod_rtp)
+!!      subroutine allocate_sph_comm_item_rtm(nnod_rtm)
+!!      subroutine allocate_sph_comm_item_rlm(nnod_rlm)
+!!      subroutine allocate_sph_comm_item_rj(nnod_rj)
+!!
+!!      subroutine deallocate_sph_comm_item_rtp
+!!      subroutine deallocate_sph_comm_item_rtm
+!!      subroutine deallocate_sph_comm_item_rlm
+!!      subroutine deallocate_sph_comm_item_rj
+!!
+!!      subroutine set_reverse_sph_comm_table(numnod, ntot_item,        &
+!!     &          item_sr, irev_sr)
+!!@endverbatim
+!!
+!!@n @param nnod_rtp
+!!      number of data points for @f$ f(r,\theta,\phi) @f$
+!!@n @param nnod_rtm
+!!      number of data points for @f$ f(r,\theta,m) @f$
+!!@n @param nnod_rlm
+!!      number of data points for @f$ f(r,l,m) @f$
+!!@n @param nnod_rj 
+!!      number of data points for @f$ f(r,j) @f$
+!!
+!!@n @param numnod             Number of data points
+!!@n @param ntot_item          Number of data for communication
+!!@n @param item_sr(ntot_item) Communication table
+!!@n @param irev_sr(numnod)  
+!!                 Communication table id for local data pointa
+!!                (if data point does not need communication, 0 is set)
 !
       module m_sph_trans_comm_table
 !
@@ -43,44 +54,78 @@
 !
       implicit none
 !
+!>      number of domain to communicate from @f$ f(r,\theta,\phi) @f$ 
       integer(kind = kint) :: nneib_domain_rtp
+!>      total number of data points to communicate
+!!      from @f$ f(r,\theta,\phi) @f$ 
       integer(kind = kint) :: ntot_item_sr_rtp
+!>      integer flag for transfering data within same process
+!!      from @f$ f(r,\theta,\phi) @f$ 
       integer(kind = kint) :: iflag_self_rtp
+!>      process IDs to communicate from @f$ f(r,\theta,\phi) @f$ 
       integer(kind = kint), allocatable :: id_domain_rtp(:)
+!>      end point for communication to each process
+!!      from @f$ f(r,\theta,\phi) @f$ 
       integer(kind = kint), allocatable :: istack_sr_rtp(:)
+!>      local data id to communicate from @f$ f(r,\theta,\phi) @f$
       integer(kind = kint), allocatable :: item_sr_rtp(:)
+!>      communication table id for local point @f$ f(r,\theta,\phi) @f$
       integer(kind = kint), allocatable :: irev_sr_rtp(:)
 !
+!>      number of domain to communicate from @f$ f(r,\theta,m) @f$ 
       integer(kind = kint) :: nneib_domain_rtm
+!>      total number of data points to communicate
+!!      from @f$ f(r,\theta,m) @f$ 
       integer(kind = kint) :: ntot_item_sr_rtm
+!>      integer flag for transfering data within same process
+!!      from @f$ f(r,\theta,m) @f$ 
       integer(kind = kint) :: iflag_self_rtm
+!>      process IDs to communicate from @f$ f(r,\theta,m) @f$ 
       integer(kind = kint), allocatable :: id_domain_rtm(:)
+!>      end point for communication to each process
+!!      from @f$ f(r,\theta,m) @f$ 
       integer(kind = kint), allocatable :: istack_sr_rtm(:)
+!>      local data id to communicate from @f$ f(r,\theta,m) @f$
       integer(kind = kint), allocatable :: item_sr_rtm(:)
+!>      communication table id for local point @f$ f(r,\theta,m) @f$
       integer(kind = kint), allocatable :: irev_sr_rtm(:)
 !
 !
+!>      number of domain to communicate from @f$ f(r,l,m) @f$ 
       integer(kind = kint) :: nneib_domain_rlm
+!>      total number of data points to communicate
+!!      from @f$ f(r,l,m) @f$ 
       integer(kind = kint) :: ntot_item_sr_rlm
+!>      integer flag for transfering data within same process
+!!      from @f$ f(r,l,m) @f$ 
       integer(kind = kint) :: iflag_self_rlm
+!>      process IDs to communicate from @f$ f(r,l,m) @f$ 
       integer(kind = kint), allocatable :: id_domain_rlm(:)
+!>      end point for communication to each process
+!!      from @f$ f(r,l,m) @f$ 
       integer(kind = kint), allocatable :: istack_sr_rlm(:)
+!>      local data id to communicate from @f$ f(r,l,m) @f$
       integer(kind = kint), allocatable :: item_sr_rlm(:)
+!>      communication table id for local point @f$ f(r,l,m) @f$
       integer(kind = kint), allocatable :: irev_sr_rlm(:)
 !
+!>      number of domain to communicate from @f$ f(r,j) @f$ 
       integer(kind = kint) :: nneib_domain_rj
+!>      total number of data points to communicate
+!!      from @f$ f(r,j) @f$ 
       integer(kind = kint) :: ntot_item_sr_rj
+!>      integer flag for transfering data within same process
+!!      from @f$ f(r,j) @f$ 
       integer(kind = kint) :: iflag_self_rj
+!>      process IDs to communicate from @f$ f(r,j) @f$ 
       integer(kind = kint), allocatable :: id_domain_rj(:)
+!>      end point for communication to each process
+!!      from @f$ f(r,j) @f$ 
       integer(kind = kint), allocatable :: istack_sr_rj(:)
+!>      local data id to communicate from @f$ f(r,j) @f$
       integer(kind = kint), allocatable :: item_sr_rj(:)
+!>      communication table id for local point @f$ f(r,j) @f$
       integer(kind = kint), allocatable :: irev_sr_rj(:)
-!
-!
-      integer(kind = kint), allocatable :: idx_gl_rtp_compare(:,:)
-      integer(kind = kint), allocatable :: idx_gl_rtm_out(:,:)
-      integer(kind = kint), allocatable :: idx_gl_rlm_out(:,:)
-      integer(kind = kint), allocatable :: idx_gl_rj_compare(:,:)
 !
 ! -----------------------------------------------------------------------
 !
@@ -239,43 +284,6 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_idx_gl_rtp_compare
-!
-      allocate( idx_gl_rtp_compare(ntot_item_sr_rtp,3) )
-      idx_gl_rtp_compare = 0
-!
-      end subroutine allocate_idx_gl_rtp_compare
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_idx_gl_rtm_out
-!
-      allocate( idx_gl_rtm_out(ntot_item_sr_rtm,3) )
-      idx_gl_rtm_out = 0
-!
-      end subroutine allocate_idx_gl_rtm_out
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_idx_gl_rlm_out
-!
-      allocate( idx_gl_rlm_out(ntot_item_sr_rlm,2) )
-      idx_gl_rlm_out = 0
-!
-      end subroutine allocate_idx_gl_rlm_out
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_idx_gl_rj_compare
-!
-      allocate( idx_gl_rj_compare(nneib_domain_rj,2) )
-      idx_gl_rj_compare = 0
-!
-      end subroutine allocate_idx_gl_rj_compare
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
       subroutine deallocate_sph_comm_item_rtp
 !
       deallocate( item_sr_rtp, irev_sr_rtp )
@@ -313,39 +321,6 @@
       deallocate( istack_sr_rj )
 !
       end subroutine deallocate_sph_comm_item_rj
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_idx_gl_rtp_compare
-!
-      deallocate( idx_gl_rtp_compare )
-!
-      end subroutine deallocate_idx_gl_rtp_compare
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_idx_gl_rtm_out
-!
-      deallocate( idx_gl_rtm_out )
-!
-      end subroutine deallocate_idx_gl_rtm_out
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_idx_gl_rlm_out
-!
-      deallocate( idx_gl_rlm_out )
-!
-      end subroutine deallocate_idx_gl_rlm_out
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_idx_gl_rj_compare
-!
-      deallocate( idx_gl_rj_compare )
-!
-      end subroutine deallocate_idx_gl_rj_compare
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------!

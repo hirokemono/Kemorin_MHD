@@ -1,15 +1,37 @@
-!C*** 
-!C*** module solver_SR_6
-!C***
+!>@file   solver_SR_6.f90
+!!@brief  module solver_SR_6
+!!
+!!@author coded by K.Nakajima (RIST)
+!!@date coded by K.Nakajima (RIST) on jul. 1999 (ver 1.0)
+!!@n    modified by H. Matsui (U. of Chicago) on july 2007 (ver 1.1)
 !
-!    MPI SEND and RECEIVE routine for overlapped partitioning
-!     coded by K.Nakajima (RIST) on jul. 1999 (ver 1.0)
-!     modified by H. Matsui (U. of Chicago) on july 2007 (ver 1.1)
-!
-!      subroutine  SOLVER_SEND_RECV_6                                   &
-!     &                ( N, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,&
-!     &                                        STACK_EXPORT, NOD_EXPORT,&
-!     &                  X, SOLVER_COMM,my_rank)
+!>@brief  MPI SEND and RECEIVE routine for six components fields
+!!        in overlapped partitioning
+!!
+!!@verbatim
+!!      subroutine  SOLVER_SEND_RECV_6                                  &
+!!     &                (N, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,&
+!!     &                                       STACK_EXPORT, NOD_EXPORT,&
+!!     &                 X, SOLVER_COMM,my_rank)
+!!@endverbatim
+!!
+!!@n @param  N     Number of data points
+!!@n
+!!@n @param  NEIBPETOT    Number of processses to communicate
+!!@n @param  NEIBPE(NEIBPETOT)      Process ID to communicate
+!!@n @param  STACK_IMPORT(0:NEIBPETOT)
+!!                    End points of import buffer for each process
+!!@n @param  NOD_IMPORT(STACK_IMPORT(NEIBPETOT))
+!!                    local node ID to copy in import buffer
+!!@n @param  STACK_EXPORT(0:NEIBPETOT)
+!!                    End points of export buffer for each process
+!!@n @param  NOD_EXPORT(STACK_IMPORT(NEIBPETOT))
+!!                    local node ID to copy in export buffer
+!!
+!!@n @param  X(6*N)   field data with 6 components
+!!
+!!@n @param  SOLVER_COMM      MPI communicator
+!!@n @param  my_rank          own process rank
 !
       module solver_SR_6
 !
@@ -17,8 +39,6 @@
       use m_constants
 !
       implicit none
-!
-      integer(kind = kint), parameter, private :: i18 = 18
 !
 ! ----------------------------------------------------------------------
 !
@@ -30,35 +50,32 @@
      &                ( N, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT, &
      &                                        STACK_EXPORT, NOD_EXPORT, &
      &                  X, SOLVER_COMM,my_rank)
-
-      use calypso_mpi
 !
+      use calypso_mpi
       use m_solver_SR
 !
-! ......................................................................
-
+!>       number of nodes
       integer(kind=kint )                , intent(in)   ::  N
-!<       number of nodes
+!>       total neighboring pe count
       integer(kind=kint )                , intent(in)   ::  NEIBPETOT
-!<       total neighboring pe count
+!>       neighboring pe id                        (i-th pe)
       integer(kind=kint ), dimension(NEIBPETOT) :: NEIBPE
-!<       neighboring pe id                        (i-th pe)
+!>       imported node count for each neighbor pe (i-th pe)
       integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_IMPORT
-!<       imported node count for each neighbor pe (i-th pe)
+!>       imported node                            (i-th dof)
       integer(kind=kint ), dimension(STACK_IMPORT(NEIBPETOT))           &
      &        :: NOD_IMPORT
-!<       imported node                            (i-th dof)
+!>       exported node count for each neighbor pe (i-th pe)
       integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_EXPORT
-!<       exported node count for each neighbor pe (i-th pe)
+!>       exported node                            (i-th dof)
       integer(kind=kint ), dimension(STACK_EXPORT(NEIBPETOT))           &
      &        :: NOD_EXPORT
-!<       exported node                            (i-th dof)
+!>       communicated result vector
       real   (kind=kreal), dimension(6*N), intent(inout):: X
-!<       communicated result vector
+!>       communicator for mpi
       integer                            , intent(in)   ::SOLVER_COMM
-!<       communicator for mpi
+!>       Process ID
       integer                            , intent(in)   :: my_rank
-!<       Process ID
 !
       integer (kind = kint) :: neib, istart, inum, ierr, k, ii
 !

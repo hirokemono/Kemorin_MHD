@@ -1,20 +1,25 @@
+!>@file   m_nod_comm_table.f90
+!!@brief  module m_nod_comm_table
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed in 2000
+!!@n     Modified in 2006 
 !
-!      module m_nod_comm_table
 !> @brief Communication table for node
-!
-!     Written by H. Matsui on Aug., 2007
-!
-!      subroutine allocate_neib_id
-!
-!      subroutine allocate_nod_import_num
-!      subroutine allocate_nod_export_num
-!      subroutine allocate_nod_import_item
-!      subroutine allocate_nod_export_item
-!
-!      subroutine deallocate_neib_id
-!
-!      subroutine deallocate_nod_import_item
-!      subroutine deallocate_nod_export_item
+!!
+!!@verbatim
+!!      subroutine allocate_neib_id
+!!
+!!      subroutine allocate_nod_import_num
+!!      subroutine allocate_nod_export_num
+!!      subroutine allocate_nod_import_item
+!!      subroutine allocate_nod_export_item
+!!
+!!      subroutine deallocate_neib_id
+!!
+!!      subroutine deallocate_nod_import_item
+!!      subroutine deallocate_nod_export_item
+!!@endverbatim
 !
       module m_nod_comm_table
 !
@@ -23,29 +28,29 @@
       implicit  none
 !
 !
+!>     number of neighboring domain
       integer(kind = kint) :: num_neib
-!<     number of neighboring domain
+!>     neighboring pe id
       integer(kind = kint), allocatable, target :: id_neib(:)
-!<     neighboring pe id
 !
 !
+!>     total number of import node 
       integer(kind = kint) :: ntot_import
-!<     total number of import node 
+!>     import node count for each neighbor pe (i-th pe)
       integer(kind = kint), allocatable, target :: num_import(:)
-!<     import node count for each neighbor pe (i-th pe)
+!>     import node end point for each neighbor pe (i-th pe)
       integer(kind = kint), allocatable, target :: istack_import(:)
-!<     import node end point for each neighbor pe (i-th pe)
+!>     local id for import node                     (i-th)
       integer(kind = kint), allocatable, target :: item_import(:)
-!<     local id for import node                     (i-th)
 !
+!>     total number of export node 
       integer(kind = kint) :: ntot_export
-!<     total number of export node 
+!>     export node count for each neighbor pe (i-th pe)
       integer(kind = kint), allocatable, target :: num_export(:)
-!<     export node count for each neighbor pe (i-th pe)
+!>     export node end point for each neighbor pe (i-th pe)
       integer(kind = kint), allocatable, target :: istack_export(:)
-!<     export node end point for each neighbor pe (i-th pe)
+!>     local id for export node                     (i-th)
       integer(kind = kint), allocatable, target :: item_export(:)
-!<     local id for export node                     (i-th)
 !
 !
 !------------------------------------------------------------------

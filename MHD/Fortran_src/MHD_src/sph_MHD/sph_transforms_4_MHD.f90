@@ -33,10 +33,8 @@
       use m_work_4_sph_trans
       use init_sph_trans
 !
-      real(kind = kreal) :: stime, etime, etime_shortest
-      real(kind = kreal) :: etime_lag_largest_loop
-      real(kind = kreal) :: etime_lag_krloop_inner
-      real(kind = kreal) :: etime_lag_krloop_outer
+      real(kind = kreal) :: stime, etime(0:3), etime_shortest
+      real(kind = kreal) :: etime_trans(0:3)
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_addresses_trans_sph_MHD'
@@ -49,57 +47,64 @@
       call initialize_sph_trans
 !
 !
-      if(     id_lagendre_transfer .eq. iflag_lag_largest_loop          &
+      if(     id_lagendre_transfer .eq. iflag_lag_orginal_loop          &
+     &  .and. id_lagendre_transfer .eq. iflag_lag_largest_loop          &
      &  .and. id_lagendre_transfer .eq. iflag_lag_krloop_inner          &
      &  .and. id_lagendre_transfer .eq. iflag_lag_krloop_outer) return
+!
+      id_lagendre_transfer = iflag_lag_orginal_loop
+      stime = MPI_WTIME()
+      call sph_back_trans_4_MHD
+      call sph_forward_trans_4_MHD
+      etime(id_lagendre_transfer) = MPI_WTIME() - stime
 !
       id_lagendre_transfer = iflag_lag_largest_loop
       stime = MPI_WTIME()
       call sph_back_trans_4_MHD
       call sph_forward_trans_4_MHD
-      etime = MPI_WTIME() - stime
-!
-      call MPI_allREDUCE (etime, etime_lag_largest_loop, ione,          &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+      etime(id_lagendre_transfer) = MPI_WTIME() - stime
 !
       id_lagendre_transfer = iflag_lag_krloop_inner
       stime = MPI_WTIME()
       call sph_back_trans_4_MHD
       call sph_forward_trans_4_MHD
-      etime = MPI_WTIME() - stime
-!
-      call MPI_allREDUCE (etime, etime_lag_krloop_inner, ione,          &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+      etime(id_lagendre_transfer) = MPI_WTIME() - stime
 !
       id_lagendre_transfer = iflag_lag_krloop_outer
       stime = MPI_WTIME()
       call sph_back_trans_4_MHD
       call sph_forward_trans_4_MHD
-      etime = MPI_WTIME() - stime
+      etime(id_lagendre_transfer) = MPI_WTIME() - stime
 !
-      call MPI_allREDUCE (etime, etime_lag_krloop_outer, ione,          &
+      call MPI_allREDUCE (etime, etime_trans, ifour,                    &
      &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
 !
-      id_lagendre_transfer = iflag_lag_largest_loop
-      etime_shortest =       etime_lag_largest_loop
+      id_lagendre_transfer = iflag_lag_orginal_loop
+      etime_shortest =       etime_trans(iflag_lag_orginal_loop)
 !
-      if(etime_lag_krloop_inner .lt. etime_shortest) then
-        id_lagendre_transfer = iflag_lag_krloop_inner
-        etime_shortest =       etime_lag_krloop_inner
+      if(etime_trans(iflag_lag_largest_loop) .lt. etime_shortest) then
+        id_lagendre_transfer = iflag_lag_largest_loop
+        etime_shortest =       etime_trans(iflag_lag_largest_loop)
       end if
-      if(etime_lag_krloop_outer .lt. etime_shortest) then
+      if(etime_trans(iflag_lag_krloop_inner) .lt. etime_shortest) then
+        id_lagendre_transfer = iflag_lag_krloop_inner
+        etime_shortest =       etime_trans(iflag_lag_krloop_inner)
+      end if
+      if(etime_trans(iflag_lag_krloop_outer) .lt. etime_shortest) then
         id_lagendre_transfer = iflag_lag_krloop_outer
-        etime_shortest =       etime_lag_krloop_outer
+        etime_shortest =       etime_trans(iflag_lag_krloop_outer)
       end if
 !
       if(my_rank .eq. 0) then
         write(*,*) 'id_lagendre_transfer: ', id_lagendre_transfer
+        write(*,*) '0: elapsed by original loop: ',                     &
+     &            etime_trans(iflag_lag_orginal_loop)
         write(*,*) '1: elapsed by longest loop: ',                      &
-     &            etime_lag_largest_loop
+     &            etime_trans(iflag_lag_largest_loop)
         write(*,*) '2: elapsed by inner radius loop: ',                 &
-     &            etime_lag_krloop_inner
+     &            etime_trans(iflag_lag_krloop_inner)
         write(*,*) '3: elapsed by outer radius loop: ',                 &
-     &            etime_lag_krloop_outer
+     &            etime_trans(iflag_lag_krloop_outer)
       end if
 !
       end subroutine init_sph_transform_MHD

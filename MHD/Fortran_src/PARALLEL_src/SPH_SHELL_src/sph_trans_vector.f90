@@ -1,43 +1,46 @@
+!>@file   sph_trans_vector.f90
+!!@brief  module sph_trans_vector
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
+!!@n    Modified in Apr. 2013
 !
-!      module sph_trans_vector
-!
-!     Written by H. Matsui on Aug., 2007
-!
-!      subroutine sph_b_trans_vector(nb)
-!      subroutine sph_f_trans_vector(nb)
-!
-!   input /outpt arrays
-!
-!      radial component:      vr_rtp(3*i_rtp-2)
-!      elevetional component: vr_rtp(3*i_rtp-1)
-!      azimuthal component:   vr_rtp(3*i_rtp  )
-!
-!     forward transform: 
-!      Poloidal component:          sp_rj(3*i_rj-2)
-!      diff. of Poloidal component: sp_rj(3*i_rj-1)
-!      Toroidal component:          sp_rj(3*i_rj  )
-!
-!     backward transform: 
-!      Poloidal component:          sp_rj(3*i_rj-2)
-!      diff. of Poloidal component: sp_rj(3*i_rj-1)
-!      Toroidal component:          sp_rj(3*i_rj  )
-!
-!
-!
-!      subroutine sph_b_trans_grad_v(nb)
-!      subroutine sph_f_trans_grad_v(nb)
-!
-!   input /outpt arrays
-!
-!     forward transform: 
-!     backward transform: 
-!
-!      radial component:      vr_rtp(3*i_rtp-2)
-!      elevetional component: vr_rtp(3*i_rtp-1)
-!      azimuthal component:   vr_rtp(3*i_rtp  )
-!      Poloidal component:          sp_rj(3*i_rj-2)
-!      diff. of Poloidal component: sp_rj(3*i_rj-1)
-!      Toroidal component:          sp_rj(3*i_rj  )
+!>@brief Spherical hermonics transform for vector
+!!       and gradient of scalar
+!!
+!!@verbatim
+!!      subroutine sph_b_trans_vector(nb)
+!!      subroutine sph_f_trans_vector(nb)
+!!
+!!   input /outpt arrays for single field
+!!
+!!      radial component:      vr_rtp(3*i_rtp-2)
+!!      elevetional component: vr_rtp(3*i_rtp-1)
+!!      azimuthal component:   vr_rtp(3*i_rtp  )
+!!
+!!     forward transform: 
+!!      Poloidal component:          sp_rj(3*i_rj-2)
+!!      diff. of Poloidal component: sp_rj(3*i_rj-1)
+!!      Toroidal component:          sp_rj(3*i_rj  )
+!!
+!!     backward transform: 
+!!      Poloidal component:          sp_rj(3*i_rj-2)
+!!      diff. of Poloidal component: sp_rj(3*i_rj-1)
+!!      Toroidal component:          sp_rj(3*i_rj  )
+!!
+!!
+!!
+!!      subroutine sph_b_trans_grad_v(nb)
+!!      subroutine sph_f_trans_grad_v(nb)
+!!
+!!   input /outpt arrays for single field
+!!      radial component:      vr_rtp(3*i_rtp-2)
+!!      elevetional component: vr_rtp(3*i_rtp-1)
+!!      azimuthal component:   vr_rtp(3*i_rtp  )
+!!      Scalar spectr:         sp_rj(i_rj)
+!!@endverbatim
+!!
+!!@n @param  nb  number of fields to be transformed
 !
       module sph_trans_vector
 !
@@ -47,15 +50,12 @@
       use m_machine_parameter
       use m_spheric_parameter
       use m_spheric_param_smp
+      use m_work_4_sph_trans
       use FFT_selector
-      use schmidt_trans_vector
-      use schmidt_trans_vector_org
-      use schmidt_trans_vector_krin
-      use schmidt_trans_vector_spin
-      use schmidt_trans_grad_v
-      use schmidt_trans_grad_org
-      use schmidt_trans_grad_krin
-      use schmidt_trans_grad_spin
+      use legendre_transform_org
+      use legendre_transform_1loop
+      use legendre_transform_krin
+      use legendre_transform_spin
       use merge_polidal_toroidal_v
       use spherical_SRs_N
 !
@@ -93,17 +93,20 @@
 !
 !      call start_eleps_time(18)
       if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
-        if(iflag_debug .gt. 0) write(*,*) 'schmidt_b_trans_vector_spin'
-        call schmidt_b_trans_vector_spin(nb)
+        if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_spin'
+        call leg_bwd_trans_vector_spin(nb)
       else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
         if(iflag_debug .gt. 0) write(*,*) 'schmidt_b_trans_vector_krin'
-        call schmidt_b_trans_vector_krin(nb)
+        call leg_bwd_trans_vector_krin(nb)
+      else if(id_lagendre_transfer .eq. iflag_lag_largest_loop) then
+        if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_1loop'
+        call leg_bwd_trans_vector_1loop(nb)
       else
-        if(iflag_debug .gt. 0) write(*,*) 'schmidt_b_trans_vector'
-        call schmidt_b_trans_vector(nb)
+        if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_org'
+        call leg_bwd_trans_vector_org(nb)
       end if
 !      call end_eleps_time(18)
-!      call schmidt_b_trans_vector_org(nb)
+!      call leg_bwd_trans_vector_org(nb)
 !
 !      call check_vr_rtm(my_rank, nb3)
 !
@@ -151,16 +154,18 @@
 !      call check_vr_rtm(my_rank, nb3)
 !
       if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
-        if(iflag_debug .gt. 0) write(*,*) 'schmidt_f_trans_vector_spin'
-        call schmidt_f_trans_vector_spin(nb)
+        if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_spin'
+        call leg_fwd_trans_vector_spin(nb)
       else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
         if(iflag_debug .gt. 0) write(*,*) 'schmidt_f_trans_vector_krin'
-        call schmidt_f_trans_vector_krin(nb)
+        call leg_fwd_trans_vector_krin(nb)
+      else if(id_lagendre_transfer .eq. iflag_lag_largest_loop) then
+        if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_1loop'
+        call leg_fwd_trans_vector_1loop(nb)
       else
-        if(iflag_debug .gt. 0) write(*,*) 'schmidt_f_trans_vector'
-        call schmidt_f_trans_vector(nb)
+        if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_org'
+        call leg_fwd_trans_vector_org(nb)
       end if
-!      call schmidt_f_trans_vector_org(nb)
 !      call check_sp_rlm(my_rank, nb3)
 !
       START_TIME= MPI_WTIME()
@@ -194,13 +199,14 @@
       COMMtime = COMMtime + END_TIME - START_TIME
 !
       if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
-        call schmidt_b_trans_grad_spin(nb)
+        call leg_bwd_trans_grad_spin(nb)
       else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
-        call schmidt_b_trans_grad_krin(nb)
+        call leg_bwd_trans_grad_krin(nb)
+      else if(id_lagendre_transfer .eq. iflag_lag_largest_loop) then
+        call leg_bwd_trans_grad_1loop(nb)
       else
-        call schmidt_b_trans_grad_v(nb)
+        call leg_bwd_trans_grad_org(nb)
       end if
-!      call schmidt_b_trans_grad_org(nb)
 !
       call send_recv_rtm_2_rtp_N(nb3, vr_rtm, vr_rtp)
 !
@@ -227,7 +233,7 @@
       ncomp = 3*nb*nidx_rtp(1)*nidx_rtp(2)
       Nstacksmp(0:np_smp) = 3*nb*irt_rtp_smp_stack(0:np_smp)
 !
-      call forward_FFT_select(np_smp, Nstacksmp, ncomp, np, vr_rtp )
+      call forward_FFT_select(np_smp, Nstacksmp, ncomp, np, vr_rtp)
 !
       START_TIME= MPI_WTIME()
       call send_recv_rtp_2_rtm_N(nb3, vr_rtp, vr_rtm)
@@ -235,13 +241,14 @@
       COMMtime = COMMtime + END_TIME - START_TIME
 !
       if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
-        call schmidt_f_trans_grad_spin(nb)
+        call leg_fwd_trans_grad_spin(nb)
       else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
-        call schmidt_f_trans_grad_krin(nb)
+        call leg_fwd_trans_grad_krin(nb)
+      else if(id_lagendre_transfer .eq. iflag_lag_largest_loop) then
+        call leg_fwd_trans_grad_1loop(nb)
       else
-        call schmidt_f_trans_grad_v(nb)
+        call leg_fwd_trans_grad_org(nb)
       end if
-!      call schmidt_f_trans_grad_org(nb)
 !
       ncomp = 2*nb*nidx_rtp(1)*nidx_rtp(2)
       call send_recv_rlm_2_rj_N(ncomp, sp_rlm(1), sp_rj(1) )

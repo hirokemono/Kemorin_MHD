@@ -166,13 +166,13 @@
       do i = 1, num_bc_b
         if(bc_b_name(i) .eq. 'ICB') then
           if(ibc_b_type(i) .eq. iflag_pseudo_vacuum) then
-            iflag_icb_magne =  iflag_pseudo_vacuum
+            iflag_icb_magne =  iflag_radial_magne
           end if
         end if
 !
         if(bc_b_name(i) .eq. 'CMB') then
           if(ibc_b_type(i) .eq. iflag_pseudo_vacuum) then
-            iflag_cmb_magne =  iflag_pseudo_vacuum
+            iflag_cmb_magne =  iflag_radial_magne
           end if
         end if
 !
@@ -187,13 +187,13 @@
       do i = 1, num_bc_bs
         if(bc_bs_name(i) .eq. 'ICB') then
           if(ibc_bs_type(i) .eq. iflag_pseudo_vacuum) then
-            iflag_icb_magne =  iflag_pseudo_vacuum
+            iflag_icb_magne =  iflag_radial_magne
           end if
         end if
 !
         if(bc_bs_name(i) .eq. 'CMB') then
           if(ibc_bs_type(i) .eq. iflag_pseudo_vacuum) then
-            iflag_cmb_magne =  iflag_pseudo_vacuum
+            iflag_cmb_magne =  iflag_radial_magne
           end if
         end if
 !

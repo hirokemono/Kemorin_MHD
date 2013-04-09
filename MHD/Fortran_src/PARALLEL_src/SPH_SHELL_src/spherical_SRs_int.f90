@@ -1,14 +1,25 @@
+!>@file   spherical_SRs_int.f90
+!!@brief  module spherical_SRs_int
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!      module spherical_SRs_int
-!
-!     Written by H. Matsui on Aug., 2007
-!
-!      subroutine init_sph_send_recv_int(iX_rtp, iX_rtm, iX_rlm, iX_rj)
-!
-!      subroutine send_recv_rtp_2_rtm_int(iX_rtp, iX_rtm)
-!      subroutine send_recv_rtm_2_rtp_int(iX_rtm, iX_rtp)
-!      subroutine send_recv_rj_2_rlm_int(iX_rj, iX_rlm)
-!      subroutine send_recv_rlm_2_rj_int(iX_rlm, iX_rj)
+!>@brief  Integer data communications
+!!@n      for spherical hermonics transform
+!!
+!!@verbatim
+!!      subroutine init_sph_send_recv_int(iX_rtp, iX_rtm, iX_rlm, iX_rj)
+!!
+!!      subroutine send_recv_rtp_2_rtm_int(iX_rtp, iX_rtm)
+!!      subroutine send_recv_rtm_2_rtp_int(iX_rtm, iX_rtp)
+!!      subroutine send_recv_rj_2_rlm_int(iX_rj, iX_rlm)
+!!      subroutine send_recv_rlm_2_rj_int(iX_rlm, iX_rj)
+!!@endverbatim
+!!
+!!@n @param  iX_rtp(nnod_rtp)  @f$ f(r,\theta,\phi) @f$
+!!@n @param  iX_rtm(nnod_rtm)  @f$ f(r,\theta,m) @f$
+!!@n @param  iX_rlm(nnod_rlm)  @f$ f(r,l,m) @f$
+!!@n @param  iX_rj(nnod_rj)    @f$ f(r,j) @f$
 !
       module spherical_SRs_int
 !

@@ -1,40 +1,45 @@
+!>@file   m_work_4_sph_trans.f90
+!!@brief  module m_work_4_sph_trans
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007
 !
-!      module m_work_4_sph_trans
-!
-!     Written by H. Matsui on July, 2007
-!
-!      subroutine resize_work_4_sph_trans
-!
-!      subroutine allocate_work_4_sph_trans
-!      subroutine deallocate_work_4_sph_trans
-!
-!      subroutine allocate_work_4_zonal_fft
-!      subroutine deallocate_work_4_zonal_fft
-!
-!      subroutine allocate_wk_nod_data_to_sph
-!      subroutine deallocate_wk_nod_data_to_sph
-!
-!      subroutine check_vr_rtp(my_rank, nb)
-!      subroutine check_vr_rtm(my_rank, nb)
-!      subroutine check_sp_rlm(my_rank, nb)
-!
-!   compressed array
-!   input /outpt arrays
-!
-!      radial component:      vr_rtp(3*i_rtp-2)
-!      elevetional component: vr_rtp(3*i_rtp-1)
-!      azimuthal component:   vr_rtp(2*i_rtp  )
-!
-!      Poloidal component:          sp_rj(3*i_rj-2)
-!      diff. of Poloidal component: sp_rj(3*i_rj-1)
-!      Toroidal component:          sp_rj(3*i_rj  )
-!
-!  transform for scalar
-!   input /outpt arrays
-!
-!      field: vr_rtp(i_rtp)
-!      spectr: sp_rj(i_rj)
-!
+!>@brief  global addresses for spherical transform
+!!        communication test
+!!
+!!@verbatim
+!!      subroutine resize_work_4_sph_trans
+!!
+!!      subroutine allocate_work_4_sph_trans
+!!      subroutine deallocate_work_4_sph_trans
+!!
+!!      subroutine allocate_work_4_zonal_fft
+!!      subroutine deallocate_work_4_zonal_fft
+!!
+!!      subroutine allocate_wk_nod_data_to_sph
+!!      subroutine deallocate_wk_nod_data_to_sph
+!!
+!!      subroutine check_vr_rtp(my_rank, nb)
+!!      subroutine check_vr_rtm(my_rank, nb)
+!!      subroutine check_sp_rlm(my_rank, nb)
+!!
+!!   input /outpt data
+!!
+!!      radial component:      vr_rtp(3*i_rtp-2)
+!!      elevetional component: vr_rtp(3*i_rtp-1)
+!!      azimuthal component:   vr_rtp(2*i_rtp  )
+!!
+!!      Poloidal component:          sp_rj(3*i_rj-2)
+!!      diff. of Poloidal component: sp_rj(3*i_rj-1)
+!!      Toroidal component:          sp_rj(3*i_rj  )
+!!
+!!  transform for scalar
+!!   input /outpt arrays
+!!
+!!      field: vr_rtp(i_rtp)
+!!      spectr: sp_rj(i_rj)
+!!@endverbatim
+!!
       module m_work_4_sph_trans
 !
       use m_precision
@@ -42,52 +47,57 @@
       implicit none
 !
 !
+!>      integer flag to run elpse time check for legendre transform
       integer(kind = kint), parameter :: iflag_lag_undefined = -1
+!>      integer flag to perform Legendre transform 
+!@n     using original array order
+      integer(kind = kint), parameter :: iflag_lag_orginal_loop = 0
+!>      integer flag to perform Legendre transform 
+!!@n    using longer loop for original array order 
       integer(kind = kint), parameter :: iflag_lag_largest_loop = 1
+!>      integer flag to perform Legendre transform 
+!@n     with inneromst radial loop
       integer(kind = kint), parameter :: iflag_lag_krloop_inner = 2
+!>      integer flag to perform Legendre transform 
+!@n     with inneromst LEgendre polynomial loop
       integer(kind = kint), parameter :: iflag_lag_krloop_outer = 3
+!
+!>      Integer flag for Legendre transform
       integer(kind = kint)                                              &
      &              :: id_lagendre_transfer = iflag_lag_undefined
 !
+!>      maximum number of fields for Legendre transform
       integer(kind = kint) :: nb_sph_trans
 !
+!>      field data including pole and center  @f$ f(r,\theta,\phi) @f$ 
       real(kind = kreal), allocatable :: d_nod_rtp(:,:)
 !
+!>      Spectr data for spherical hermonics transform  @f$ f(r,j) @f$ 
       real(kind = kreal), allocatable :: sp_rj(:)
+!>      field data on Gauss-LEgendre points @f$ f(r,\theta,\phi) @f$ 
       real(kind = kreal), allocatable :: vr_rtp(:)
 !
+!>      Spectr data for Legendre transform  @f$ f(r,l,m) @f$ 
+!>@n      Order: sp_rlm(i_comp,i_fld,j_rlm,k_rtm)
+!>@n      size: sp_rlm(3*nb*nidx_rlm(2)*nidx_rtm(1))
       real(kind = kreal), allocatable :: sp_rlm(:)
+!>      field data for Legendre transform  @f$ f(r,\theta,m) @f$ 
+!!@n     Order: vr_rtm(i_comp,i_fld,l_rtm,k_rtm,m_rtm)
+!!@n     size:  vr_rtm(3*nb*nidx_rtm(2)*nidx_rtm(1)*nidx_rtm(3))
       real(kind = kreal), allocatable :: vr_rtm(:)
 !
-!      field: vr_rtm(i)... vr_rtm(i_comp,i_fld,l_rtm,k_rtm,m_rtm)
-!       size: vr_rtm_1(3,nb,nidx_rtm(2),nidx_rtm(1),nidx_rtm(3))
-!      spectr: sp_rlm(j)...sp_rlm(i_comp,i_fld,j_rlm,k_rtm)
-!        size: sp_rlm(3,nb,nidx_rlm(2),nidx_rtm(1))
 !
-      real(kind = kreal), allocatable :: sp_rlm_1(:,:,:)
-      real(kind = kreal), allocatable :: vr_rtm_1(:,:,:)
-!      real(kind = kreal), allocatable :: vr_rtm_1n(:,:,:)
-!      field: vr_rtm_1(i)... vr_rtm_1(i_fld,k_rtm,l_rtm,m_rtm,i_comp)
-!       size: vr_rtm_1(nb,nidx_rtm(1),nidx_rtm(2),nidx_rtm(3),3)
-!      spectr: sp_rlm_1(j)...sp_rlm_1(i_fld,k_rtm,j_rlm,i_comp)
-!        size: sp_rlm_1(nb,nidx_rtm(1),nidx_rlm(2),3)
-!
-      real(kind = kreal), allocatable :: sp_rlm_2(:,:,:)
-      real(kind = kreal), allocatable :: vr_rtm_2(:,:,:,:)
-!      field: vr_rtm_2(i,i_comp).vr_rtm_2(l_rtm,m_rtm,k_rtm,i_fld,i_comp)
-!       size: vr_rtm_2(nidx_rtm(2),nidx_rtm(3),nidx_rtm(1),nb,3)
-!      spectr: sp_rlm_2(j,i_comp)...sp_rlm_2(j_rlm,k_rtm,i_fld,i_comp)
-!        size: sp_rlm_2(nidx_rlm(2),nidx_rtm(1),nb,3)
-!
-!
-      integer(kind = kint), allocatable :: jdx_p_rlm_rtm(:)
-      integer(kind = kint), allocatable :: jdx_n_rlm_rtm(:)
+!>      Spectr hermonics order for Legendre transform
       integer(kind = kint), allocatable :: mdx_p_rlm_rtm(:)
+!>      Spectr hermonics order for Legendre transform
       integer(kind = kint), allocatable :: mdx_n_rlm_rtm(:)
+!>      @f$ 1 / \sinf \theta  for LEgendre transform@f$ 
       real(kind = kreal), allocatable :: asin_theta_1d_rtm(:)
 !
+!>      End address of spherical hermonics order for SMP parallelization
       integer(kind = kint), allocatable :: lstack_rlm(:)
 !
+!>      Data size for Legendre transform to check work area
       integer(kind = kint), private :: iflag_sph_trans = -1
 !
 ! ----------------------------------------------------------------------
@@ -114,8 +124,9 @@
       subroutine allocate_work_4_sph_trans
 !
       use m_spheric_parameter
+      use m_work_4_sph_trans_krin
+      use m_work_4_sph_trans_spin
 !
-      integer(kind = kint) :: num1, num2
 !
       allocate(lstack_rlm(0:nidx_rtm(3)))
 !
@@ -124,39 +135,25 @@
       allocate(asin_theta_1d_rtm(nidx_rtm(2)))
 !
       allocate(sp_rlm(3*nb_sph_trans*nnod_rlm))
-      num1 = nb_sph_trans*nidx_rlm(1)
-      allocate(sp_rlm_1(num1,nidx_rlm(2),3))
-      allocate(sp_rlm_2(nidx_rlm(2),num1,3))
-!
       allocate(vr_rtp(3*nb_sph_trans*nnod_rtp))
 !
       allocate(sp_rj(3*nb_sph_trans*nnod_rj))
 !
       allocate(vr_rtm(3*nb_sph_trans*nnod_rtm))
-      num1 = nb_sph_trans*nidx_rlm(1)
-      num2 = nidx_rtm(2)*nidx_rtm(3)
-      allocate(vr_rtm_1(num1,num2,3))
-!      allocate(vr_rtm_1n(num1,num2,3))
-      allocate(vr_rtm_2(nidx_rtm(2),nidx_rtm(3),num1,3))
-!
 !
       lstack_rlm = 0
       mdx_p_rlm_rtm = 0
       mdx_n_rlm_rtm = 0
       asin_theta_1d_rtm = 0.0d0
 !
+      sp_rj =  0.0d0
       vr_rtp = 0.0d0
 !
-      sp_rj = 0.0d0
       sp_rlm = 0.0d0
       vr_rtm = 0.0d0
 !
-      sp_rlm_1 = 0.0d0
-      vr_rtm_1 = 0.0d0
-      sp_rlm_2 = 0.0d0
-      vr_rtm_2 = 0.0d0
-!
-!      vr_rtm_1n = 0.0d0
+      call allocate_work_sph_trans_krin(nb_sph_trans)
+      call allocate_work_sph_trans_spin(nb_sph_trans)
 !
       iflag_sph_trans = nb_sph_trans
 !
@@ -166,15 +163,19 @@
 !
       subroutine deallocate_work_4_sph_trans
 !
+      use m_work_4_sph_trans_krin
+      use m_work_4_sph_trans_spin
+!
+!
+      call deallocate_work_sph_trans_spin
+      call deallocate_work_sph_trans_krin
+!
       deallocate(lstack_rlm)
       deallocate(mdx_p_rlm_rtm, mdx_n_rlm_rtm)
       deallocate(asin_theta_1d_rtm)
 !
-      deallocate(vr_rtp)
-!
-      deallocate(sp_rj)
-      deallocate(sp_rlm, sp_rlm_1, sp_rlm_2)
-      deallocate(vr_rtm, vr_rtm_1, vr_rtm_2)
+      deallocate(sp_rj, vr_rtp)
+      deallocate(sp_rlm, vr_rtm)
 !
       iflag_sph_trans = 0
 !

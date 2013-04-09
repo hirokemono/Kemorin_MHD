@@ -134,7 +134,7 @@
       if(iflag_icb_magne .eq. iflag_sph_fill_center) then
         kst = itwo
         call set_magne_center_rmat_sph
-      else if(iflag_icb_magne .eq. iflag_pseudo_vacuum) then
+      else if(iflag_icb_magne .eq. iflag_radial_magne) then
         kst = nlayer_ICB+1
         call set_qvacume_magne_icb_rmat_sph
       else
@@ -142,7 +142,7 @@
         call set_ins_magne_icb_rmat_sph
       end if
 !
-      if(iflag_cmb_magne .eq. iflag_pseudo_vacuum) then
+      if(iflag_cmb_magne .eq. iflag_radial_magne) then
         call set_qvacume_magne_cmb_rmat_sph
       else
         call set_ins_magne_cmb_rmat_sph

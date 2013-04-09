@@ -1,14 +1,46 @@
+!>@file   spherical_SR_rev_int.f90
+!!@brief  module spherical_SR_rev_int
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2013
 !
-!     module spherical_SR_rev_int
-!
-!     Written by H. Matsui on Aug., 2007
-!
-!      subroutine sph_send_recv_by_rev_int(nnod_org, nnod_new,          &
-!     &                           npe_send, isend_self, nnod_send,      &
-!     &                           id_pe_send, istack_send, inod_export, &
-!     &                           npe_recv, irecv_self, nnod_recv,      &
-!     &                           id_pe_recv, istack_recv, irev_import, &
-!     &                           iX_org, iX_new, SOLVER_COMM)
+!>@brief  Integer components data communication
+!!@n      for spherical hermonics transform using reverse import table
+!!
+!!@verbatim
+!!      subroutine sph_send_recv_by_rev_int(nnod_org, nnod_new,         &
+!!     &                           npe_send, isend_self, nnod_send,     &
+!!     &                           id_pe_send, istack_send, inod_export,&
+!!     &                           npe_recv, irecv_self, nnod_recv,     &
+!!     &                           id_pe_recv, istack_recv, irev_import,&
+!!     &                           iX_org, iX_new, SOLVER_COMM)
+!!@endverbatim
+!!
+!!@n @param  nnod_org    Number of data points for origin
+!!@n @param  nnod_new    Number of components for destination
+!!@n
+!!@n @param  npe_send    Number of processses to send
+!!@n @param  isend_self  Integer flag to copy within own process
+!!@n @param  nnod_send   Number of data points to send
+!!@n @param  id_pe_send(npe_send)      Process ID to send
+!!@n @param  istack_send(0:npe_send)
+!!                    End points of send buffer for each process
+!!@n @param  inod_export(nnod_send)
+!!                    local node ID to copy in send buffer
+!!@n
+!!@n @param  npe_recv    Number of processses to receive
+!!@n @param  irecv_self  Integer flag to copy within own process
+!!@n @param  nnod_recv   Number of data points to receive
+!!@n @param  id_pe_recv(npe_send)      Process ID to receive
+!!@n @param  istack_recv(0:npe_send)
+!!                    End points of receive buffer for each process
+!!@n @param  irev_import(nnod_recv)
+!!                    import buffer ID for each data point
+!!@n
+!!@n @param  iX_org(nnod_org)   Send data
+!!@n @param  iX_new(nnod_new)   Received data
+!!@n
+!!@n @param  SOLVER_COMM          MPI communicator
 !
       module spherical_SR_rev_int
 !

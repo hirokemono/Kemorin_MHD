@@ -1,22 +1,34 @@
+!>@file   copy_sph_comm_table_4_IO.f90
+!!@brief  module copy_sph_comm_table_4_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007 
 !
-!      module copy_sph_comm_table_4_IO
-!
-!     Written by H. Matsui on July, 2007
-!
-!      subroutine copy_comm_rtp_from_IO(my_rank, nnod_rtp)
-!      subroutine copy_comm_rtm_from_IO(my_rank, nnod_rtm)
-!      subroutine copy_comm_rlm_from_IO(my_rank, nnod_rlm)
-!      subroutine copy_comm_rj_from_IO(my_rank, nnod_rj)
-!
-!      subroutine copy_comm_rtp_to_IO(my_rank)
-!      subroutine copy_comm_rtm_to_IO(my_rank)
-!      subroutine copy_comm_rlm_to_IO(my_rank)
-!      subroutine copy_comm_rj_to_IO(my_rank)
-!
-!      subroutine set_comm_rtm_to_work_IO
-!      subroutine set_comm_rlm_to_work_IO
-!      subroutine set_comm_rtp_from_work_IO
-!      subroutine set_comm_rj_from_work_IO
+!>@brief  Copy communication table for spherical hermonica transform
+!!        between IO data
+!!
+!!@verbatim
+!!      subroutine copy_comm_rtp_from_IO(my_rank, nnod_rtp)
+!!      subroutine copy_comm_rtm_from_IO(my_rank, nnod_rtm)
+!!      subroutine copy_comm_rlm_from_IO(my_rank, nnod_rlm)
+!!      subroutine copy_comm_rj_from_IO(my_rank, nnod_rj)
+!!
+!!      subroutine copy_comm_rtp_to_IO(my_rank)
+!!      subroutine copy_comm_rtm_to_IO(my_rank)
+!!      subroutine copy_comm_rlm_to_IO(my_rank)
+!!      subroutine copy_comm_rj_to_IO(my_rank)
+!!@endverbatim
+!!
+!!@n @param my_rank   running process ID
+!!@n @param nnod_rtp
+!!      number of data points for @f$ f(r,\theta,\phi) @f$
+!!@n @param nnod_rtm
+!!      number of data points for @f$ f(r,\theta,m) @f$
+!!@n @param nnod_rlm 
+!!      number of data points for @f$ f(r,l,m) @f$
+!!@n @param nnod_rj  
+!!      number of data points for @f$ f(r,j) @f$
+!!
 !
       module copy_sph_comm_table_4_IO
 !
@@ -282,80 +294,5 @@
       end subroutine copy_comm_rj_to_IO
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
-      subroutine set_comm_rtm_to_work_IO
-!
-      integer(kind = kint) :: i
-!
-!
-      nwork_import_IO =    ithree
-      call allocate_import_work_IO
-!
-      do i = 1, ntot_item_sr_rtm
-        iwork_import_IO(i,1) = idx_gl_rtm_out(i,1)
-        iwork_import_IO(i,2) = idx_gl_rtm_out(i,2)
-        iwork_import_IO(i,3) = idx_gl_rtm_out(i,3)
-      end do
-!
-      call deallocate_idx_gl_rtm_out
-!
-      end subroutine set_comm_rtm_to_work_IO
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_comm_rlm_to_work_IO
-!
-      integer(kind = kint) :: i
-!
-!
-      nwork_import_IO =    itwo
-      call allocate_import_work_IO
-!
-      do i = 1, ntot_item_sr_rlm
-        iwork_import_IO(i,1) = idx_gl_rlm_out(i,1)
-        iwork_import_IO(i,2) = idx_gl_rlm_out(i,2)
-      end do
-!
-      call deallocate_idx_gl_rlm_out
-!
-      end subroutine set_comm_rlm_to_work_IO
-!
-! -----------------------------------------------------------------------! -----------------------------------------------------------------------!
-      subroutine set_comm_rtp_from_work_IO
-!
-      integer(kind = kint) :: i
-!
-!
-      call allocate_idx_gl_rtp_compare
-!
-      do i = 1, ntot_item_sr_rtp
-        idx_gl_rtp_compare(i,1) = iwork_import_IO(i,1)
-        idx_gl_rtp_compare(i,2) = iwork_import_IO(i,2)
-        idx_gl_rtp_compare(i,3) = iwork_import_IO(i,3)
-      end do
-!
-      call deallocate_import_work_IO
-!
-      end subroutine set_comm_rtp_from_work_IO
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_comm_rj_from_work_IO
-!
-      integer(kind = kint) :: i
-!
-!
-      call allocate_idx_gl_rj_compare
-!
-      do i = 1, ntot_item_sr_rj
-        idx_gl_rj_compare(i,1) = iwork_import_IO(i,1)
-        idx_gl_rj_compare(i,2) = iwork_import_IO(i,2)
-      end do
-!
-      call deallocate_import_work_IO
-!
-      end subroutine set_comm_rj_from_work_IO
-!
-! -----------------------------------------------------------------------!
       end module copy_sph_comm_table_4_IO

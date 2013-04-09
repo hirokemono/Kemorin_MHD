@@ -190,11 +190,11 @@
 !
       if(iflag_icb_magne .eq. iflag_sph_insulator) then
         call cal_sph_nod_icb_ins_mag2(ipol%i_magne)
-      else if(iflag_icb_magne .eq. iflag_pseudo_vacuum) then
+      else if(iflag_icb_magne .eq. iflag_radial_magne) then
         call cal_sph_nod_icb_qvc_mag2(ipol%i_magne)
       end if
 !
-      if(iflag_cmb_magne .eq. iflag_pseudo_vacuum) then
+      if(iflag_cmb_magne .eq. iflag_radial_magne) then
         call cal_sph_nod_cmb_qvc_mag2(ipol%i_magne)
       else
         call cal_sph_nod_cmb_ins_mag2(ipol%i_magne)

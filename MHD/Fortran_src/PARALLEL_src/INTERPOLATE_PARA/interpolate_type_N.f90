@@ -82,7 +82,7 @@
      &           itp_table%tbl_dest%inod_dest_4_dest,                   &
      &           itp_table%tbl_org%ntot_table_org,                      &
      &           NB, x_inter_org(1), NP_dest,                           &
-     &           X_dest(1), SOLVER_COMM, my_rank)
+     &           X_dest(1), SOLVER_COMM)
 !
 !
       if (comm_dest%num_neib .gt. 0) then

@@ -161,7 +161,7 @@
       if(iflag_icb_magne .eq. iflag_sph_fill_center) then
         kr_st = itwo
         call cal_sph_nod_center_b_and_j(ipol%i_magne, ipol%i_current)
-      else if(iflag_icb_magne .eq. iflag_pseudo_vacuum) then
+      else if(iflag_icb_magne .eq. iflag_radial_magne) then
         kr_st = nlayer_ICB+1
         call cal_sph_nod_icb_qvc_b_and_j(ipol%i_magne, ipol%i_current)
       else
@@ -170,7 +170,7 @@
       end if
 !
       kr_ed = nlayer_CMB-1
-      if(iflag_cmb_magne .eq. iflag_pseudo_vacuum) then
+      if(iflag_cmb_magne .eq. iflag_radial_magne) then
         call cal_sph_nod_cmb_qvc_b_and_j(ipol%i_magne, ipol%i_current)
       else
         call cal_sph_nod_cmb_ins_b_and_j(ipol%i_magne, ipol%i_current)
@@ -242,7 +242,7 @@
       if(iflag_icb_magne .eq. iflag_sph_fill_center) then
         kr_st = itwo
         call cal_dsdr_sph_center_2(ipol%i_magne)
-      else if(iflag_icb_magne .eq. iflag_pseudo_vacuum) then
+      else if(iflag_icb_magne .eq. iflag_radial_magne) then
         kr_st = nlayer_ICB+1
         call cal_sph_nod_icb_qvc_mag2(ipol%i_magne)
       else
@@ -251,7 +251,7 @@
       end if
 !
       kr_ed = nlayer_CMB-1
-      if(iflag_cmb_magne .eq. iflag_pseudo_vacuum) then
+      if(iflag_cmb_magne .eq. iflag_radial_magne) then
         call cal_sph_nod_cmb_qvc_mag2(ipol%i_magne)
       else
         call cal_sph_nod_cmb_ins_mag2(ipol%i_magne)

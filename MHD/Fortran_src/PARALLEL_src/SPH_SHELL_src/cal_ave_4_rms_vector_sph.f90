@@ -1,21 +1,26 @@
-!cal_ave_4_rms_vector_sph.f90
-!      module cal_ave_4_rms_vector_sph
+!>@file   cal_ave_4_rms_vector_sph.f90
+!!@brief  module cal_ave_4_rms_vector_sph
+!!
+!!@author H. Matsui
+!!@date Programmed in Feb., 2008
 !
-!     Written by H. Matsui on Feb., 2008
-!
-!
-!      subroutine surf_ave_4_each_sph_rms
-!      subroutine vol_ave_4_each_sph_rms(avol)
-!
-!      subroutine surf_ave_4_rms_vector_sph_int(icou)
-!        (1/4\pi) \int (\bf{u}_{l}^{m})^2 sin \theta d\theta d\phi
-!          = r^{-2} [ l(l+1) / (2l+1) 
-!           ( l(l+1)/r^2 (S_{l}^{m})^2 + (dS_{l}^{m}/dr)^2)
-!            + (T_{l}^{m})^2 ) ]
-!
-!      subroutine vol_ave_4_rms_sph(avol)
-!        1/V \int (\phi_l^m)^2 r^{2} sin \theta dr d\theta d\phi
-!          = [3/(ro^3-ri^3)] \int 1/(2l+1) (\phi_l^m)^2 r^{2} dr
+!>@brief  Take surface or volume average for mean square data
+!!
+!!@verbatim
+!!      subroutine surf_ave_4_each_sph_rms
+!!      subroutine vol_ave_4_each_sph_rms(avol)
+!!      subroutine vol_ave_4_rms_sph(avol)
+!!@endverbatim
+!!@f$ 
+!!        1/V \int (\phi_l^m)^2 r^{2} sin \theta dr d\theta d\phi
+!!          = [3/(ro^3-ri^3)] \int 1/(2l+1) (\phi_l^m)^2 r^{2} dr
+!!@f$ 
+!!
+!!@verbatim
+!!      subroutine surf_ave_4_sph_rms_int
+!!@endverbatim
+!!
+!!@n @param  avol    1 / Volume
 !
       module cal_ave_4_rms_vector_sph
 !

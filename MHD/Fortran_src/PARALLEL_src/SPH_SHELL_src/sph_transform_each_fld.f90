@@ -1,15 +1,25 @@
-!sph_transform_each_fld.f90
-!      module sph_transform_each_fld
+!>@file   sph_transform_each_fld.f90
+!!@brief  module sph_transform_each_fld
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
+!!@n    Modified in Apr. 2013
 !
-!        programmed by H.Matsui on Oct., 2009
+!>@brief Spherical hermonics transform for each field
+!!
+!!@verbatim
+!!      subroutine sph_back_trans_4_vector(is_fld, irtp_fld)
+!!      subroutine sph_back_trans_4_scalar(is_fld, irtp_fld)
+!!      subroutine sph_back_trans_4_grad(is_fld, is_grad, irtp_fld)
+!!
+!!      subroutine sph_forward_trans_4_vector(irtp_fld, is_fld)
+!!      subroutine sph_forward_trans_4_scalar(irtp_fld, is_fld)
+!!      subroutine sph_forward_trans_4_grad(irtp_fld, is_fld, is_grad)
+!!@endverbatim
+!!
+!!@n @param  is_fld    address of spectrum data (Poloidal component)
+!!@n @param  irtp_fld  address of field data
 !
-!      subroutine sph_back_trans_4_vector(is_fld, irtp_fld)
-!      subroutine sph_back_trans_4_scalar(is_fld, irtp_fld)
-!      subroutine sph_back_trans_4_grad(is_fld, is_grad, irtp_fld)
-!
-!      subroutine sph_forward_trans_4_vector(irtp_fld, is_fld)
-!      subroutine sph_forward_trans_4_scalar(irtp_fld, is_fld)
-!      subroutine sph_forward_trans_4_grad(irtp_fld, is_fld, is_grad)
 !
       module sph_transform_each_fld
 !

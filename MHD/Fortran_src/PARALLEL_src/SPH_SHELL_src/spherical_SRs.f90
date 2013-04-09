@@ -1,14 +1,25 @@
+!>@file   spherical_SRs.f90
+!!@brief  module spherical_SRs
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!      module spherical_SRs
-!
-!     Written by H. Matsui on Aug., 2007
-!
-!      subroutine init_sph_send_recv_1(X_rtp, X_rtm, X_rlm, X_rj)
-!
-!      subroutine send_recv_rtp_2_rtm(X_rtp, X_rtm)
-!      subroutine send_recv_rtm_2_rtp(X_rtm, X_rtp)
-!      subroutine send_recv_rj_2_rlm(X_rj, X_rlm)
-!      subroutine send_recv_rlm_2_rj(X_rlm, X_rj)
+!>@brief  One component data communications 
+!!@n      for spherical hermonics transform
+!!
+!!@verbatim
+!!      subroutine init_sph_send_recv_1(X_rtp, X_rtm, X_rlm, X_rj)
+!!
+!!      subroutine send_recv_rtp_2_rtm(X_rtp, X_rtm)
+!!      subroutine send_recv_rtm_2_rtp(X_rtm, X_rtp)
+!!      subroutine send_recv_rj_2_rlm(X_rj, X_rlm)
+!!      subroutine send_recv_rlm_2_rj(X_rlm, X_rj)
+!!@endverbatim
+!!
+!!@n @param  X_rtp(nnod_rtp)  @f$ f(r,\theta,\phi) @f$
+!!@n @param  X_rtm(nnod_rtm)  @f$ f(r,\theta,m) @f$
+!!@n @param  X_rlm(nnod_rlm)  @f$ f(r,l,m) @f$
+!!@n @param  X_rj(nnod_rj)    @f$ f(r,j) @f$
 !
       module spherical_SRs
 !

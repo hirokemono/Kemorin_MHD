@@ -55,7 +55,8 @@
 !
       else if(iflag_restart .eq. i_rst_dbench0                          &
      &   .or. iflag_restart .eq. i_rst_dbench1                          &
-     &   .or. iflag_restart .eq. i_rst_dbench2) then
+     &   .or. iflag_restart .eq. i_rst_dbench2                          &
+     &   .or. iflag_restart .eq. i_rst_dbench_qcv) then
         isig = 400
         call set_initial_velo_sph
         if(ipol%i_temp .gt. 0) then

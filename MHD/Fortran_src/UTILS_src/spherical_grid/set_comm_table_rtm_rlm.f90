@@ -8,11 +8,9 @@
 !
 !      subroutine count_comm_table_4_rlm(ip_rank)
 !      subroutine set_comm_table_4_rlm(ip_rank)
-!      subroutine set_global_id_4_comm_rlm
 !
 !      subroutine count_comm_table_4_rtm
 !      subroutine set_comm_table_4_rtm
-!      subroutine set_global_id_4_comm_rtm
 !
 !      subroutine count_num_domain_rtm_rlm(nneib_domain)
 !      subroutine set_comm_stack_rtm_rlm(ip_rank, nneib_domain,         &
@@ -119,23 +117,6 @@
       end do
 !
       end subroutine set_comm_table_4_rlm
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_global_id_4_comm_rlm
-!
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
-!
-      integer(kind = kint) :: i, inod
-!
-      do i = 1, ntot_item_sr_rlm
-        inod = item_sr_rlm(i)
-        idx_gl_rlm_out(i,1) = idx_global_rlm(inod,1)
-        idx_gl_rlm_out(i,2) = idx_global_rlm(inod,2)
-      end do
-!
-      end subroutine set_global_id_4_comm_rlm
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -250,24 +231,6 @@
 !
 !
       end subroutine set_comm_table_4_rtm
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_global_id_4_comm_rtm
-!
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
-!
-      integer(kind = kint) :: i, inod
-!
-      do i = 1, ntot_item_sr_rtm
-        inod = item_sr_rtm(i)
-        idx_gl_rtm_out(i,1) = idx_global_rtm(inod,1)
-        idx_gl_rtm_out(i,2) = idx_global_rtm(inod,2)
-        idx_gl_rtm_out(i,3) = idx_global_rtm(inod,3)
-      end do
-!
-      end subroutine set_global_id_4_comm_rtm
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

@@ -1,11 +1,14 @@
+!>@file   init_sph_trans.f90
+!!@brief  module init_sph_trans
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!      module init_sph_trans
-!
-!     Written by H. Matsui on Aug., 2007
-!
-!      subroutine initialize_sph_trans
-!
-!      subroutine radial_4_sph_trans
+!>@brief  Initialize spherical hermonics transform
+!!
+!!@verbatim
+!!      subroutine initialize_sph_trans
+!!@endverbatim
 !
       module init_sph_trans
 !

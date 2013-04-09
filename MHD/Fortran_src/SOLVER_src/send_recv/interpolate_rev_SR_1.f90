@@ -1,13 +1,43 @@
+!>@file   interpolate_rev_SR_1.f90
+!!@brief  module interpolate_rev_SR_1
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2009
 !
-!      module interpolate_rev_SR_1
-!
-!      Written by H. Matsui on Jan., 2009
-!
-!      subroutine interpolate_reverse_SR_1                              &
-!     &       (npe_send, isend_self, nnod_send, id_pe_send, istack_send,&
-!     &        npe_recv, irecv_self, nnod_recv, id_pe_recv, istack_recv,&
-!     &        inod_import, numnod, X_org, nnod_2nd, X,                 &
-!     &        SOLVER_COMM, my_rank)
+!>@brief  Scalar data communication
+!!@n      for reverse interpolation between two meshes
+!!
+!!@verbatim
+!!      subroutine interpolate_reverse_SR_1                             &
+!!     &      (npe_send, isend_self, nnod_send, id_pe_send, istack_send,&
+!!     &       npe_recv, irecv_self, nnod_recv, id_pe_recv, istack_recv,&
+!!     &       inod_import, nnod_org, X_org, nnod_new, X_new,           &
+!!     &       SOLVER_COMM, my_rank)
+!!@endverbatim
+!!
+!!@n @param  nnod_org    Number of data points for origin
+!!@n @param  nnod_new    Number of components for destination
+!!
+!!@n @param  npe_send    Number of processses to receive
+!!@n @param  isend_self  Integer flag to copy within own process
+!!@n @param  nnod_send   Number of data points to receive
+!!@n @param  id_pe_send(npe_send)      Process ID to receive
+!!@n @param  istack_send(0:npe_send)
+!!                    End points of receive buffer for each process
+!!
+!!@n @param  npe_recv    Number of processses to send
+!!@n @param  irecv_self  Integer flag to copy within own process
+!!@n @param  nnod_recv   Number of data points to send
+!!@n @param  id_pe_recv(npe_send)      Process ID to send
+!!@n @param  istack_recv(0:npe_send)
+!!                    End points of send buffer for each process
+!!@n @param  inod_import(nnod_recv)
+!!                    local node ID to copy to send buffer
+!!
+!!@n @param  X_new(nnod_new)   Send data
+!!@n @param  X_org(nnod_org)   Received data
+!!@n
+!!@n @param  SOLVER_COMM          MPI communicator
 !
       module interpolate_rev_SR_1
 !
@@ -27,40 +57,31 @@
       subroutine interpolate_reverse_SR_1                               &
      &       (npe_send, isend_self, nnod_send, id_pe_send, istack_send, &
      &        npe_recv, irecv_self, nnod_recv, id_pe_recv, istack_recv, &
-     &        inod_import, numnod, X_org, nnod_2nd, X,                  &
+     &        inod_import, nnod_org, X_org, nnod_new, X_new,            &
      &        SOLVER_COMM, my_rank)
 !
       use m_solver_SR
 !
 !
       integer, intent(in)   :: SOLVER_COMM
-!        communicator for mpi
       integer(kind = kint), intent(in) :: my_rank
 !
-      integer(kind = kint), intent(in) :: numnod
-!  number of node and component of field
-      integer(kind = kint), intent(in) :: nnod_2nd
-!  number of node and component of field
+      integer(kind = kint), intent(in) :: nnod_org
+      integer(kind = kint), intent(in) :: nnod_new
 !
       integer(kind = kint), intent(in) :: npe_send, isend_self
       integer(kind = kint), intent(in) :: nnod_send
       integer(kind = kint), intent(in) :: id_pe_send(npe_send)
-!      destination domiain ID to send    (i-th pe)
       integer(kind = kint ), intent(in) :: istack_send(0:npe_send)
 !
       integer(kind = kint), intent(in) :: npe_recv, irecv_self
       integer(kind = kint), intent(in) :: nnod_recv
       integer(kind = kint), intent(in) :: id_pe_recv(npe_recv)
-!      originate domiain ID to get   (i-th pe)
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
-!        imported node count for each neighbor pe (i-th pe)
       integer(kind=kint ), intent(in) :: inod_import(nnod_recv)
-!        imported node                            (i-th dof)
 !
-      real   (kind=kreal), intent(in):: X(nnod_2nd)
-!        interpolated result vector
-      real   (kind=kreal), intent(inout):: X_org(numnod)
-!        interpolated result vector
+      real   (kind=kreal), intent(in):: X_new(nnod_new)
+      real   (kind=kreal), intent(inout):: X_org(nnod_org)
 !
       integer (kind = kint) :: neib, istart, inum, iend, ierr
       integer (kind = kint) :: i, j, k
@@ -81,7 +102,7 @@
         iend  = istack_recv(neib  )
         do k= istart, iend
           j = inod_import(k)
-          WR(k) = X(j)
+          WR(k) = X_new(j)
         end do
       end do
 

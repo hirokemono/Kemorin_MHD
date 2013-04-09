@@ -1,21 +1,30 @@
+!>@file   sph_trans_scalar.f90
+!!@brief  module sph_trans_scalar
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
+!!@n    Modified in Apr. 2013
 !
-!      module sph_trans_scalar
-!
-!     Written by H. Matsui on Aug., 2007
-!
-!      subroutine sph_b_trans_scalar(nb)
-!      subroutine sph_f_trans_scalar(nb)
-!
-!   input /outpt arrays
-!      field: vr_rtp(i_rtp)
-!      spectr: sp_rj(i_rj)
-!
-!      subroutine sph_f_trans_tensor(nb)
-!      subroutine sph_b_trans_tensor(nb)
-!
-!   input /outpt arrays
-!      field: vr_rtp(i_rtp)
-!      spectr: sp_rj(i_rj)
+!>@brief Spherical hermonics transform for scalar
+!!       and symmetric tensor
+!!
+!!@verbatim
+!!      subroutine sph_b_trans_scalar(nb)
+!!      subroutine sph_f_trans_scalar(nb)
+!!
+!!   input /outpt arrays
+!!      field: vr_rtp(i_rtp)
+!!      spectr: sp_rj(i_rj)
+!!
+!!      subroutine sph_f_trans_tensor(nb)
+!!      subroutine sph_b_trans_tensor(nb)
+!!
+!!   input /outpt arrays
+!!      field: vr_rtp(i_rtp)
+!!      spectr: sp_rj(i_rj)
+!!@endverbatim
+!!
+!!@n @param  nb  number of fields to be transformed
 !
       module sph_trans_scalar
 !
@@ -28,10 +37,10 @@
       use m_spheric_param_smp
       use m_work_4_sph_trans
       use FFT_selector
-      use schmidt_trans_scalar
-      use schmidt_trans_scalar_org
-      use schmidt_trans_scalar_krin
-      use schmidt_trans_scalar_spin
+      use legendre_transform_org
+      use legendre_transform_1loop
+      use legendre_transform_krin
+      use legendre_transform_spin
       use spherical_SRs_N
       use m_parallel_var_dof
       use m_schmidt_poly_on_rtm
@@ -65,13 +74,14 @@
 !
 !      call check_sp_rlm(my_rank, nb)
       if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
-        call schmidt_b_trans_scalar_spin(nb)
+        call leg_bwd_trans_scalar_spin(nb)
       else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
-        call schmidt_b_trans_scalar_krin(nb)
+        call leg_bwd_trans_scalar_krin(nb)
+      else if(id_lagendre_transfer .eq. iflag_lag_largest_loop) then
+        call leg_bwd_trans_scalar_1loop(nb)
       else
-        call schmidt_b_trans_scalar(nb)
+        call leg_bwd_trans_scalar_org(nb)
       end if
-!      call schmidt_b_trans_scalar_org(nb)
 !
 !      call check_vr_rtm(my_rank, nb)
       START_TIME= MPI_WTIME()
@@ -114,13 +124,14 @@
 !      call check_vr_rtm(my_rank, nb)
 !
       if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
-        call schmidt_f_trans_scalar_spin(nb)
+        call leg_fwd_trans_scalar_spin(nb)
       else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
-        call schmidt_f_trans_scalar_krin(nb)
+        call leg_fwd_trans_scalar_krin(nb)
+      else if(id_lagendre_transfer .eq. iflag_lag_largest_loop) then
+        call leg_fwd_trans_scalar_1loop(nb)
       else
-        call schmidt_f_trans_scalar(nb)
+        call leg_fwd_trans_scalar_org(nb)
       end if
-      call schmidt_f_trans_scalar_krin(nb)
 !      call check_sp_rlm(my_rank, nb)
 !
       START_TIME= MPI_WTIME()

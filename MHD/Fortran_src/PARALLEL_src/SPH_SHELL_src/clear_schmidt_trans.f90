@@ -1,9 +1,24 @@
+!>@file   clear_schmidt_trans.f90
+!!@brief  module clear_schmidt_trans
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
+!!@n    Modified in Apr. 2013
 !
-!      module clear_schmidt_trans
+!>@brief Clear data for Legendre transform
+!!
+!!@verbatim
+!!      subroutine clear_b_trans_vector(nb)
+!!      subroutine clear_b_trans_scalar(nb)
+!!
+!!      subroutine clear_f_trans_vector(nb)
+!!      subroutine clear_f_trans_scalar(nb)
+!!      subroutine clear_f_trans_grad(nb)
+!!@endverbatim
+!!
+!!@n @param  nb  number of fields to be transformed
 !
       module clear_schmidt_trans
-!
-!     Written by H. Matsui on Aug., 2007
 !
       use m_precision
 !
@@ -15,13 +30,6 @@
       use m_work_4_sph_trans
 !
       implicit none
-!
-!      subroutine clear_b_trans_vector(nb)
-!      subroutine clear_b_trans_scalar(nb)
-!
-!      subroutine clear_f_trans_vector(nb)
-!      subroutine clear_f_trans_scalar(nb)
-!      subroutine clear_f_trans_grad(nb)
 !
 ! -----------------------------------------------------------------------
 !

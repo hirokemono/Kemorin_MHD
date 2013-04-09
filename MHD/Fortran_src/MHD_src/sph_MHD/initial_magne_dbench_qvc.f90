@@ -83,7 +83,7 @@
      &        - (three*r_ICB + three*r_CMB + four) * six * rr**2        &
      &        + (four*r_ICB + four*r_CMB + three*r_ICB*r_CMB)*six * rr  &
      &        - four*six * r_ICB*r_CMB)
-          d_rj(is,ipol%i_current)                                       &
+          d_rj(is,itor%i_current)                                       &
      &      =  (five / eight) * (-four*dnine * rr**2                    &
      &        + (three*r_ICB + three*r_CMB + four) * eight * rr         &
      &        - eight*six * r_ICB*r_CMB / rr)

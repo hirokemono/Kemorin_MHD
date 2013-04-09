@@ -1,9 +1,12 @@
+!>@file   set_phys_name_4_sph_trans.f90
+!!@brief  module set_phys_name_4_sph_trans
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2008
 !
-!     module set_phys_name_4_sph_trans
-!
-!      Written by H. Matsui on Jan., 2008
-!
-!      subroutine copy_sph_name_rj_to_rtp
+!!@verbatim
+!!      subroutine copy_sph_name_rj_to_rtp
+!!@endverbatim
 !
       module set_phys_name_4_sph_trans
 !

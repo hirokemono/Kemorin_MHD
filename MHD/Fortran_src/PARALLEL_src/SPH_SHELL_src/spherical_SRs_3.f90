@@ -1,14 +1,29 @@
+!>@file   spherical_SRs_3.f90
+!!@brief  module spherical_SRs_3
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!      module spherical_SRs_3
-!
-!     Written by H. Matsui on Aug., 2007
-!
-!      subroutine init_sph_send_recv_3(X_rtp, X_rtm, X_rlm, X_rj)
-!
-!      subroutine send_recv_rtp_2_rtm_3(X_rtp, X_rtm)
-!      subroutine send_recv_rtm_2_rtp_3(X_rtm, X_rtp)
-!      subroutine send_recv_rj_2_rlm_3(X_rj, X_rlm)
-!      subroutine send_recv_rlm_2_rj_3(X_rlm, X_rj)
+!>@brief  Three components data communications 
+!!@n      for spherical hermonics transform
+!!
+!!@verbatim
+!!      subroutine init_sph_send_recv_3(X_rtp, X_rtm, X_rlm, X_rj)
+!!
+!!      subroutine send_recv_rtp_2_rtm_3(X_rtp, X_rtm)
+!!      subroutine send_recv_rtm_2_rtp_3(X_rtm, X_rtp)
+!!      subroutine send_recv_rj_2_rlm_3(X_rj, X_rlm)
+!!      subroutine send_recv_rlm_2_rj_3(X_rlm, X_rj)
+!!@endverbatim
+!!
+!!@n @param  X_rtp(3*nnod_rtp)  @f$ f(r,\theta,\phi) @f$
+!!@n               (Order, X_rtp(i_comp,inod))
+!!@n @param  X_rtm(3*nnod_rtm)  @f$ f(r,\theta,m) @f$
+!!@n               (Order, X_rtm(i_comp,inod))
+!!@n @param  X_rlm(3*nnod_rlm)  @f$ f(r,l,m) @f$
+!!@n               (Order, X_rlm(i_comp,inod))
+!!@n @param  X_rj(3*nnod_rj)    @f$ f(r,j) @f$
+!!@n               (Order, X_rj(i_comp,inod))
 !
       module spherical_SRs_3
 !

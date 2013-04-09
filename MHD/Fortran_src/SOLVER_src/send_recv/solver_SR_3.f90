@@ -1,19 +1,44 @@
-!C*** 
-!C*** module solver_SR_3
-!C***
+!>@file   solver_SR_3.f90
+!!@brief  module solver_SR_3
+!!
+!!@author coded by K.Nakajima (RIST)
+!!@date coded by K.Nakajima (RIST) on jul. 1999 (ver 1.0)
+!!@n    modified by H. Matsui (U. of Chicago) on july 2007 (ver 1.1)
 !
-!    MPI SEND and RECEIVE routine for overlapped partitioning
-!     coded by K.Nakajima (RIST) on jul. 1999 (ver 1.0)
-!     modified by H. Matsui (U. of Chicago) on july 2007 (ver 1.1)
-!
-!      subroutine  SOLVER_SEND_RECV_3                                   &
-!     &                ( N, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,&
-!     &                                        STACK_EXPORT, NOD_EXPORT,&
-!     &                  X, SOLVER_COMM,my_rank)
-!      subroutine  solver_send_recv_3x3                                 &
-!     &                ( N, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,&
-!     &                                        STACK_EXPORT, NOD_EXPORT,&
-!     &                  X1, X2, X3, SOLVER_COMM,my_rank)
+!>@brief  MPI SEND and RECEIVE routine for vector fields
+!!        in overlapped partitioning
+!!
+!!@verbatim
+!!      subroutine  SOLVER_SEND_RECV_3                                  &
+!!     &                (N, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,&
+!!     &                                       STACK_EXPORT, NOD_EXPORT,&
+!!     &                 X, SOLVER_COMM,my_rank)
+!!      subroutine  solver_send_recv_3x3                                &
+!!     &                (N, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,&
+!!     &                                       STACK_EXPORT, NOD_EXPORT,&
+!!     &                 X1, X2, X3, SOLVER_COMM,my_rank)
+!!@endverbatim
+!!
+!!@n @param  N     Number of data points
+!!
+!!@n @param  NEIBPETOT    Number of processses to communicate
+!!@n @param  NEIBPE(NEIBPETOT)      Process ID to communicate
+!!@n @param  STACK_IMPORT(0:NEIBPETOT)
+!!                    End points of import buffer for each process
+!!@n @param  NOD_IMPORT(STACK_IMPORT(NEIBPETOT))
+!!                    local node ID to copy in import buffer
+!!@n @param  STACK_EXPORT(0:NEIBPETOT)
+!!                    End points of export buffer for each process
+!!@n @param  NOD_EXPORT(STACK_IMPORT(NEIBPETOT))
+!!                    local node ID to copy in export buffer
+!!
+!!@n @param  X(3*N)   vector field data
+!!@n @param  X1(3*N)  1st vector field data
+!!@n @param  X2(3*N)  2nd vector field data
+!!@n @param  X3(3*N)  3rd vector field data
+!!
+!!@n @param  SOLVER_COMM      MPI communicator
+!!@n @param  my_rank          own process rank
 !
       module solver_SR_3
 !
@@ -37,31 +62,29 @@
      &                  X, SOLVER_COMM,my_rank)
 
       use calypso_mpi
-!
       use m_solver_SR
 
-! ......................................................................
-
+!>       number of nodes
       integer(kind=kint )                , intent(in)   ::  N
-!<       number of nodes
+!>       total neighboring pe count
       integer(kind=kint )                , intent(in)   ::  NEIBPETOT
-!<       total neighboring pe count
+!>       neighboring pe id                        (i-th pe)
       integer(kind=kint ), dimension(NEIBPETOT) :: NEIBPE
-!<       neighboring pe id                        (i-th pe)
+!>       imported node count for each neighbor pe (i-th pe)
       integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_IMPORT
-!<       imported node count for each neighbor pe (i-th pe)
+!>       imported node                            (i-th dof)
       integer(kind=kint ), dimension(STACK_IMPORT(NEIBPETOT))           &
      &        :: NOD_IMPORT
-!<       imported node                            (i-th dof)
+!>       exported node count for each neighbor pe (i-th pe)
       integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_EXPORT
-!<       exported node count for each neighbor pe (i-th pe)
+!>       exported node                            (i-th dof)
       integer(kind=kint ), dimension(STACK_EXPORT(NEIBPETOT))           &
      &        :: NOD_EXPORT
-!<       exported node                            (i-th dof)
+!>       communicated result vector
       real   (kind=kreal), dimension(3*N), intent(inout):: X
-!<       communicated result vector
-      integer                            , intent(in)   ::SOLVER_COMM
 !<       communicator for mpi
+      integer                            , intent(in)   ::SOLVER_COMM
+!>       Own process
       integer                            , intent(in)   :: my_rank
 !
       integer (kind = kint) :: neib, istart, inum, iend, ierr, k, ii
@@ -123,33 +146,21 @@
      &                  X1, X2, X3, SOLVER_COMM,my_rank)
 
       use calypso_mpi
-!
       use m_solver_SR
 !
-! ......................................................................
-
       integer(kind=kint )                , intent(in)   ::  N
-!<       number of nodes
       integer(kind=kint )                , intent(in)   ::  NEIBPETOT
-!<       total neighboring pe count
       integer(kind=kint ), dimension(NEIBPETOT) :: NEIBPE
-!<       neighboring pe id                        (i-th pe)
       integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_IMPORT
-!<       imported node count for each neighbor pe (i-th pe)
       integer(kind=kint ), dimension(STACK_IMPORT(NEIBPETOT))           &
      &        :: NOD_IMPORT
-!<       imported node                            (i-th dof)
       integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_EXPORT
-!<       exported node count for each neighbor pe (i-th pe)
       integer(kind=kint ), dimension(STACK_EXPORT(NEIBPETOT))           &
      &        :: NOD_EXPORT
-!<       exported node                            (i-th dof)
       real   (kind=kreal), dimension(3*N), intent(inout):: X1
       real   (kind=kreal), dimension(3*N), intent(inout):: X2
       real   (kind=kreal), dimension(3*N), intent(inout):: X3
-!<       communicated result vector
       integer                            , intent(in)   ::SOLVER_COMM
-!<       communicator for mpi
       integer                            , intent(in)   :: my_rank
 !
       integer (kind = kint) :: neib, istart, inum, iend, ierr, k, ii
