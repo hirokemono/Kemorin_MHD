@@ -1,10 +1,15 @@
+!>@file   set_control_4_scheme.f90
+!!@brief  module set_control_4_scheme
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Matsui in 2002
+!!@n    Mmodified by H. Matsui in Aug., 2007
 !
-!      module set_control_4_scheme
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!
-!     subroutine set_control_4_FEM_params
+!> @brief set schemes for time integration from control
+!!
+!!@verbatim
+!!     subroutine set_control_4_FEM_params
+!!@endverbatim
 !
       module set_control_4_scheme
 !
@@ -69,10 +74,10 @@
           end if
         end if
 !
-        if (iflag_debug.eq.1) then
-         write(12,*) 'num_multi_pass  ',num_multi_pass
-         write(12,*) 'maxiter ',maxiter
-         write(12,*) 'maxiter_vecp ',maxiter_vecp
+        if (iflag_debug .gt. iflag_routine_msg) then
+          write(*,*) 'num_multi_pass  ',num_multi_pass
+          write(*,*) 'maxiter ',        maxiter
+          write(*,*) 'maxiter_vecp ',   maxiter_vecp
         end if
 !
 !  control for number of points for integration
@@ -92,9 +97,9 @@
           intg_point_t_evo =    intg_point_t_evo_ctl
         end if
 !
-        if (iflag_debug.eq.1) then
-         write(12,*) 'intg_point_poisson ',intg_point_poisson
-         write(12,*) 'intg_point_t_evo ',intg_point_t_evo
+        if (iflag_debug .gt. iflag_routine_msg) then
+          write(*,*) 'intg_point_poisson ', intg_point_poisson
+          write(*,*) 'intg_point_t_evo ',   intg_point_t_evo
         end if
 !
       end subroutine set_control_4_FEM_params

@@ -1,10 +1,16 @@
+!>@file   set_control_4_press.f90
+!!@brief  module set_control_4_press
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed by H. Okuda in 2000
+!!@n    Mmodified by H. Matsui in 2001
+!!@n    Mmodified by H. Matsui in Aug., 2007
 !
-!      module set_control_4_press
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!
-!     subroutine s_set_control_4_press
+!> @brief set boundary conditions for pressure from control data
+!!
+!!@verbatim
+!!     subroutine s_set_control_4_press
+!!@endverbatim
 !
       module set_control_4_press
 !
@@ -45,18 +51,14 @@
 !
 !  set boundary conditions for pressure
 !
-      if (iflag_debug.eq.1)  write(12,*) 'num_bc_p ', num_bc_p
-      if (num_bc_p/=0) then
+      if(iflag_debug.eq.iflag_full_msg)                                 &
+     &    write(*,*) 'num_bc_p ', num_bc_p
+      if(num_bc_p .gt. 0) then
 !
         call allocate_nod_bc_list_press
 !
         bc_p_name     = bc_p_name_ctl
         bc_p_magnitude = bc_p_magnitude_ctl
-!
-        if (iflag_debug.eq.1) then
-          write(12,*) 'bc_p_name ',bc_p_name
-          write(12,*) 'bc_p_magnitude ',bc_p_magnitude
-        end if
 !
         do i = 1, num_bc_p
           tmpchara = bc_p_type_ctl(i)
@@ -69,11 +71,19 @@
           end if
         end do
 !
+!
+        if (iflag_debug .eq. iflag_full_msg) then
+          write(*,*) 'i, ibc_p_type, bc_p_magnitude, bc_p_name'
+          do i = 1, num_bc_p
+            write(*,*)  i, ibc_p_type(i), bc_p_magnitude(i),            &
+     &                 trim(bc_p_name(i))
+          end do
+        end if
       end if
 !
 !
 !
-      if (num_bc_wall/=0) then
+      if (num_bc_wall .gt. 0) then
 !
         call allocate_press_surf_ctl
 !

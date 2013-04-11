@@ -15,7 +15,7 @@
 !
 !    new_rst_head_ctl           'rst_new/rst'
 !
-!    new_udt_head_ctl           'field_new/out'
+!    new_field_head_ctl         'field_new/out'
 !    new_spectr_file_head_ctl   'spectr_new/spectr'
 !
 !    new_vtk_head_ctl           'outall'
@@ -46,7 +46,7 @@
 !
       character(len=kchara) :: new_rst_head_ctl
 !
-      character(len=kchara) :: new_udt_head_ctl
+      character(len=kchara) :: new_field_head_ctl
       character(len=kchara) :: new_spectr_file_head_ctl
       character(len=kchara) :: new_vtk_head_ctl
 !
@@ -81,7 +81,7 @@
      &       :: hd_new_rst_head =     'new_rst_head_ctl'
 !
       character(len=kchara), parameter                                  &
-     &       :: hd_new_udt_head =     'new_udt_head_ctl'
+     &       :: hd_new_udt_head =     'new_field_head_ctl'
       character(len=kchara), parameter                                  &
      &       :: hd_new_spectr_head =  'new_spectr_file_head_ctl'
       character(len=kchara), parameter                                  &
@@ -169,7 +169,7 @@
      &          i_new_rst_head, new_rst_head_ctl)
 !
         call read_character_ctl_item(hd_new_udt_head,                   &
-     &          i_new_udt_head, new_udt_head_ctl)
+     &          i_new_udt_head, new_field_head_ctl)
         call read_character_ctl_item(hd_new_spectr_head,                &
      &          i_new_spectr_head, new_spectr_file_head_ctl)
         call read_character_ctl_item(hd_new_vtk_head,                   &

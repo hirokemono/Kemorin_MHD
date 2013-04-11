@@ -1,11 +1,16 @@
+!>@file   set_control_4_mag_p.f90
+!!@brief  module set_control_4_mag_p
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Matsui in 2002
+!!@n    Mmodified by H. Matsui in Aug., 2007
 !
-!      module set_control_4_mag_p
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!
-!
-!     subroutine s_set_control_4_mag_p
+!> @brief set boundary conditions for electric scalar potential
+!!        from control data
+!!
+!!@verbatim
+!!     subroutine s_set_control_4_mag_p
+!!@endverbatim
 !
       module set_control_4_mag_p
 !
@@ -48,7 +53,7 @@
       end if
 !
 !
-      if (num_bc_mag_p/=0) then
+      if (num_bc_mag_p .gt. 0) then
 !
         call allocate_nod_bc_list_mag_p
 !
@@ -71,7 +76,7 @@
 !
 !   set boundary_conditons for magnetic potential
 !
-      if (num_surf_magp/=0) then
+      if (num_surf_magp .gt. 0) then
 !
         call allocate_magp_surf_ctl
 !

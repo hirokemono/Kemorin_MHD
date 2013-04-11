@@ -230,7 +230,7 @@
         num_line_local(i_fln) = num_all_fline(my_rank+1,i_fln)          &
      &                         - num_all_fline(my_rank,i_fln)
 !
-        if(i_debug .gt. 0) then
+        if(i_debug .gt. iflag_full_msg) then
           write(my_rank+50,*)  'abs_flux_start',                        &
      &                        abs_flux_start_l, abs_flux_start
           write(my_rank+50,*)  'tot_flux_start',                        &
@@ -336,7 +336,7 @@
      &    numnod, numele, numsurf, nnod_4_surf,                         &
      &    ie_surf, isf_4_ele, iele_4_surf)
 !
-      if(i_debug .gt. 0) then
+      if(i_debug .gt. iflag_full_msg) then
         write(50+my_rank,*) 'ntot_gl_fline', ntot_gl_fline
         write(50+my_rank,*) 'ntot_gl_fline', ntot_gl_fline
         write(50+my_rank,*) 'num_all_fline', num_all_fline(:,i_fln)

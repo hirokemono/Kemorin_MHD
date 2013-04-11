@@ -1,10 +1,15 @@
+!>@file   set_control_4_normalize.f90
+!!@brief  module set_control_4_normalize
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Matsui in 2001
+!!@n    Mmodified by H. Matsui in Aug., 2007
 !
-!      module set_control_4_normalize
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!
-!     subroutine s_set_control_4_normalize
+!> @brief set normalizatios for MHD simulation from control data
+!!
+!!@verbatim
+!!     subroutine s_set_control_4_normalize
+!!@endverbatim
 !
       module set_control_4_normalize
 !
@@ -51,7 +56,7 @@
         dimless(1:num_dimless) =       dimless_ctl(1:num_dimless)
       end if
 !
-      if (iflag_debug.eq.1) then
+      if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'num_dimless ',num_dimless
         do i = 1, num_dimless
           write(*,*) i, trim(name_dimless(i)), ': ', dimless(i)
@@ -142,9 +147,10 @@
             num_coef_4_buoyancy = num_coef_4_buoyancy_ctl
           end if
         end if
-        if (iflag_debug.eq.1) write(*,*) 'i_n_c_buo', i_n_c_buo
-        if (iflag_debug.eq.1)   write(*,*) 'num_coef_4_buoyancy',       &
-     &                           num_coef_4_buoyancy
+        if (iflag_debug .ge. iflag_routine_msg) then
+          write(*,*) 'i_n_c_buo', i_n_c_buo
+          write(*,*) 'num_coef_4_buoyancy', num_coef_4_buoyancy
+        end if
 !
         if (iflag_4_composit_buo .eq. 0) then
           num_coef_4_comp_buo = 0
@@ -338,8 +344,6 @@
         coef_4_c_diffuse_power = coef_4_c_diff_power_ctl
         call deallocate_coef_4_dsc_diff_ctl
       end if
-!
-      if (iflag_debug.eq.1) write(*,*) 'end s_set_control_4_normalize'
 !
       end subroutine s_set_control_4_normalize
 !

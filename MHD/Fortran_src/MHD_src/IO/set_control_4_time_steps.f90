@@ -1,9 +1,16 @@
+!>@file   set_control_4_time_steps.f90
+!!@brief  module set_control_4_time_steps
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed by H. Okuda in 2000
+!!@n    modified by H. Matsui in 2001
+!!@n    modified by H. Matsui in Sep., 2006
 !
-!      module set_control_4_time_steps
-!
-!        programmed by H.Matsui on Sep., 2006
-!
-!      subroutine s_set_control_4_time_steps
+!> @brief set parameters for time stepping
+!!
+!!@verbatim
+!!      subroutine s_set_control_4_time_steps
+!!@endverbatim
 !
       module set_control_4_time_steps
 !
@@ -98,10 +105,12 @@
 !   parameters for time evolution
 !
       if(iflag_flexible_step .eq. iflag_flex_step) then
-        if (iflag_debug.eq.1) write(*,*) 'set_flex_time_step_controls'
+        if (iflag_debug .ge. iflag_routine_msg)                         &
+     &    write(*,*) 'set_flex_time_step_controls'
         call set_flex_time_step_controls
       else
-        if (iflag_debug.eq.1) write(*,*) 'set_fixed_time_step_controls'
+        if (iflag_debug .ge. iflag_routine_msg)                         &
+     &    write(*,*) 'set_fixed_time_step_controls'
         call set_fixed_time_step_controls
       end if
 !
@@ -115,7 +124,7 @@
         end if
       end if
 !
-      if (iflag_debug .gt. 0) then
+      if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'dt', dt, dt_fact, idt_digit
         write(*,*) 'i_step_init ',i_step_init
         write(*,*) 'i_step_number ',i_step_number
@@ -312,7 +321,7 @@
           end if
         end if
 !
-      if (iflag_debug .gt. 0) then
+      if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'iflag_restart ',iflag_restart
         write(*,*) 'time_init ',time_init
       end if

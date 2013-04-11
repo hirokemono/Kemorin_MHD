@@ -36,20 +36,24 @@
      &     .or. debug_flag_ctl .eq. 'Off'                               &
      &     .or. debug_flag_ctl .eq. 'off'                               &
      &     .or. debug_flag_ctl .eq. '0') then
-          i_debug =     izero
+          i_debug =     iflag_minimum_msg
         else if(debug_flag_ctl .eq. 'ON'                                &
      &     .or. debug_flag_ctl .eq. 'On'                                &
      &     .or. debug_flag_ctl .eq. 'on'                                &
+     &     .or. debug_flag_ctl .eq. 'SHORT'                             &
+     &     .or. debug_flag_ctl .eq. 'Short'                             &
+     &     .or. debug_flag_ctl .eq. 'short'                             &
      &     .or. debug_flag_ctl .eq. '1') then
-          i_debug =     ione
+          i_debug =     iflag_routine_msg
+        else if(debug_flag_ctl .eq. 'FULL'                              &
+     &     .or. debug_flag_ctl .eq. 'Full'                              &
+     &     .or. debug_flag_ctl .eq. 'full'                              &
+     &     .or. debug_flag_ctl .eq. '2') then
+          i_debug =     iflag_full_msg
         end if
       end if
 !
-      if(my_rank .eq. 0) then
-        iflag_debug = i_debug
-      else
-        iflag_debug = izero
-      end if
+      if(my_rank .eq. 0) iflag_debug = i_debug
 !
       end subroutine turn_off_debug_flag_by_ctl
 !

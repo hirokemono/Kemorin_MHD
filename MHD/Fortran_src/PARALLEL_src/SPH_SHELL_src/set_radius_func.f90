@@ -63,11 +63,12 @@
 !
 !* --------  radius  --------------
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_radius_dat_4_sph_dynamo'
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &      write(*,*) 'set_radius_dat_4_sph_dynamo'
       call set_radius_dat_4_sph_dynamo
 !
-      if (iflag_debug.eq.1) write(*,*) 'Set grid spacing',              &
-     &                                 iflag_radial_grid
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &      write(*,*) 'Set grid spacing', iflag_radial_grid
       if (iflag_radial_grid .eq. igrid_Chebyshev) then
         call set_dr_for_cheby
       else if (iflag_radial_grid .eq. igrid_non_euqidist) then
@@ -76,18 +77,20 @@
         call set_dr_for_equidist
       end if
 !
-      if(iflag_debug .gt. 0) call check_radial_fung_rj
+      if(iflag_debug .eq. iflag_full_msg) call check_radial_fung_rj
 !
 !*  ----------   reference of temperature --------
 !*
       if (ipol%i_ref_t .gt. 0) then
-        if (iflag_debug.eq.1) write(*,*) 'set_reftemp_4_sph'
+        if (iflag_debug .ge. iflag_routine_msg)                         &
+     &               write(*,*) 'set_reftemp_4_sph'
         call set_reftemp_4_sph(r_hot, r_cold, temp_hot, temp_cold)
       end if
 !*
 !*  ----------  rotation of earth  ---------------
 !*
-      if (iflag_debug.eq.1) write(*,*) 'set_rot_earth_4_sph'
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &                write(*,*) 'set_rot_earth_4_sph'
       call set_rot_earth_4_sph(rotate)
 !
       end subroutine set_radius_rot_reft_dat_4_sph
@@ -133,7 +136,7 @@
       call copy_fdm_nod_coefs_from_mat(nidx_rj(1))
       call copy_fdm_ele_coefs_from_mat(nidx_rj(1))
 !
-      if(iflag_debug .gt. 0) then
+      if(iflag_debug .eq. iflag_full_msg) then
         call check_fdm_2_coefs(nidx_rj(1), radius_1d_rj_r(1))
         call check_fdm_2e_coefs(nidx_rj(1), radius_1d_rj_r(1))
       end if

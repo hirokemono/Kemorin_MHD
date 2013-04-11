@@ -65,11 +65,8 @@
       call  MPI_COMM_SIZE(SOLVER_COMM, nprocs, ierr)
       call  MPI_COMM_RANK(SOLVER_COMM, my_rank  , ierr)
 !
-      if (i_debug .eq. 1 .and. my_rank .eq. 0) then
-        iflag_debug = 1
-      else
-        iflag_debug = 0
-      end if
+      if(my_rank .gt. 0) return
+      iflag_debug = i_debug
 !
       end subroutine parallel_cal_init
 !

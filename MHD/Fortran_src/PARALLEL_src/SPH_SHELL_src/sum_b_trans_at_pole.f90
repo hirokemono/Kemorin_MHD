@@ -97,11 +97,11 @@
         iflag_shell_local = iflag_MESH_w_center
       end if
 !
-      if(i_debug .ge. iflag_full_msg) write(*,*) 'iflag_shell_local',   &
+      if(i_debug .eq. iflag_full_msg) write(*,*) 'iflag_shell_local',   &
      &     my_rank, iflag_shell_local, internal_node, nnod_rtp
       call MPI_allreduce(iflag_shell_local, iflag_shell_mode, ione,     &
      &    MPI_INTEGER, MPI_MAX, SOLVER_COMM, ierr)
-      if(i_debug .gt. iflag_full_msg) write(*,*) 'iflag_shell_mode',    &
+      if(i_debug .eq. iflag_full_msg) write(*,*) 'iflag_shell_mode',    &
      &     my_rank, iflag_shell_mode
 !
       if(iflag_shell_mode .ne. iflag_MESH_same) then

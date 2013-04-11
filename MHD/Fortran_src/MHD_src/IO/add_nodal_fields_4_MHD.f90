@@ -1,9 +1,14 @@
+!>@file   add_nodal_fields_4_MHD.f90
+!!@brief  module add_nodal_fields_4_MHD
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed by H. Matsui Sep., 2006
 !
-!      module add_nodal_fields_4_MHD
-!
-!        programmed by H.Matsui on Sep., 2006
-!
-!      subroutine add_field_name_4_mhd
+!> @brief Add missing field for MHD dynamo to field list
+!!
+!!@verbatim
+!!      subroutine add_field_name_4_mhd
+!!@endverbatim
 !
       module add_nodal_fields_4_MHD
 !

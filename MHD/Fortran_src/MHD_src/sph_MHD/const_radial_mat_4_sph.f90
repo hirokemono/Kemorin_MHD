@@ -44,7 +44,8 @@
      &          write(*,*) 'const_radial_mat_4_temp_sph'
         call allocate_temp_mat_sph
         call const_radial_mat_4_temp_sph
-        if(i_debug .gt. 0) call check_temp_matrices_sph(my_rank)
+        if(i_debug .eq. iflag_full_msg)                                 &
+     &     call check_temp_matrices_sph(my_rank)
       end if
 !
       if (iflag_t_evo_4_magne .gt. 0) then
@@ -52,7 +53,8 @@
      &          write(*,*) 'const_radial_mat_4_magne_sph'
         call allocate_magne_mat_sph
         call const_radial_mat_4_magne_sph
-        if(i_debug .gt. 0) call check_magne_matrices_sph(my_rank)
+        if(i_debug .eq. iflag_full_msg)                                 &
+     &     call check_magne_matrices_sph(my_rank)
       end if
 !
       if(iflag_t_evo_4_composit .gt. 0) then
@@ -60,7 +62,8 @@
      &          write(*,*) 'const_radial_mat_4_composit_sph'
         call allocate_composit_mat_sph
         call const_radial_mat_4_composit_sph
-        if(i_debug .gt. 0) call check_composit_matrix_sph(my_rank)
+        if(i_debug .eq. iflag_full_msg)                                 &
+     &       call check_composit_matrix_sph(my_rank)
       end if
 !
 !      if(i_debug .gt. 0) close(50+my_rank)

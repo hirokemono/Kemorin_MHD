@@ -1,10 +1,17 @@
+!>@file   set_control_4_solver.f90
+!!@brief  module set_control_4_solver
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed by H. Okuda in 2000
+!!@n    modified by H. Matsui in 2001
+!!@n    modified by H. Matsui in Aug., 2007
 !
-!      module set_control_4_solver
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!
-!     subroutine s_set_control_4_solver
+!> @brief set parameters for linear solver for MHD simulation
+!!        from control data
+!!
+!!@verbatim
+!!     subroutine s_set_control_4_solver
+!!@endverbatim
 !
       module set_control_4_solver
 !

@@ -1,10 +1,16 @@
+!>@file   set_control_4_temp.f90
+!!@brief  module set_control_4_temp
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed by H. Okuda in 2000
+!!@n    Mmodified by H. Matsui in 2001
+!!@n    Mmodified by H. Matsui in Aug., 2007
 !
-!      module set_control_4_temp
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!
-!     subroutine s_set_control_4_temp
+!> @brief set boundary conditions for temperature from control data
+!!
+!!@verbatim
+!!     subroutine s_set_control_4_temp
+!!@endverbatim
 !
       module set_control_4_temp
 !
@@ -43,19 +49,14 @@
 !
 !   set boundary conditions for temperature
 !
-!
-      if (iflag_debug.eq.1) write(12,*)  'num_bc_e ',num_bc_e
-      if (num_bc_e/=0) then
+      if(iflag_debug .eq. iflag_full_msg)                               &
+     &          write(*,*)  'num_bc_e ',num_bc_e
+      if(num_bc_e .gt. 0) then
 !
         call allocate_nod_bc_list_temp
 !
         bc_e_name      =  bc_e_name_ctl
         bc_e_magnitude = bc_e_magnitude_ctl
-!
-        if (iflag_debug.eq.1)  then
-          write(12,*) 'bc_e_name ',bc_e_name
-          write(12,*) 'bc_e_magnitude ',bc_e_magnitude
-        end if
 !
         do i = 1, num_bc_e
           if ( bc_e_type_ctl(i) .eq. 'fixed' ) then
@@ -71,11 +72,18 @@
           end if
         end do
 !
+        if (iflag_debug .eq. iflag_full_msg) then
+          write(*,*) 'i, ibc_e_type, bc_e_magnitude, bc_e_name'
+          do i = 1, num_bc_e
+            write(*,*)  i, ibc_e_type(i), bc_e_magnitude(i),            &
+     &                 trim(bc_e_name(i))
+          end do
+        end if
       end if
 !
+!   set boundary conditions for heat flux
 !
-!
-      if (num_bc_h_flux/=0) then
+      if (num_bc_h_flux .gt. 0) then
 !
         call allocate_temp_surf_ctl
 !

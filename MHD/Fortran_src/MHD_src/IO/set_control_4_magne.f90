@@ -1,10 +1,15 @@
+!>@file   set_control_4_magne.f90
+!!@brief  module set_control_4_magne
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Matsui in 2002
+!!@n    Mmodified by H. Matsui in Aug., 2007
 !
-!      module set_control_4_magne
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!
-!     subroutine s_set_control_4_magne
+!> @brief set boundary conditions for magnetic field from control data
+!!
+!!@verbatim
+!!     subroutine s_set_control_4_magne
+!!@endverbatim
 !
       module set_control_4_magne
 !
@@ -46,7 +51,8 @@
 !
 !   set boundary_conditons for magnetic field
 !
-      if (iflag_debug .gt. 0)    write(*,*) 'num_bc_b ',num_bc_b
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &       write(*,*) 'num_bc_b ',num_bc_b
       if (num_bc_b .gt. 0) then
 !
         call allocate_nod_bc_list_magne
@@ -91,7 +97,7 @@
           end if
         end do
 !
-        if (iflag_debug.eq.1) then
+        if (iflag_debug .ge. iflag_routine_msg) then
           write(*,*)'i, ibc_b_type, bc_b_magnitude, bc_b_name'
           do i = 1, num_bc_b
             write(*,*) i, ibc_b_type(i), bc_b_magnitude(i),             &
@@ -102,7 +108,8 @@
       end if
 !
 !
-      if (iflag_debug.eq.1)  write(*,*) 'num_bc_bs ',num_bc_bs
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &           write(*,*) 'num_bc_bs ',num_bc_bs
       if (num_bc_bs .gt. 0) then
 !
         call allocate_magne_surf_ctl
@@ -123,14 +130,13 @@
           end if
         end do
 !
-        if (iflag_debug.eq.1) then
+        if (iflag_debug .ge. iflag_routine_msg) then
           write(*,*) 'i, ibc_bs_type, bc_bs_magnitude, bc_bs_name'
           do i = 1, num_bc_bs
             write(*,*) i, ibc_bs_type(i), bc_bs_magnitude(i),           &
      &                 trim(bc_bs_name(i))
           end do
         end if
-!
       end if
 !
 !

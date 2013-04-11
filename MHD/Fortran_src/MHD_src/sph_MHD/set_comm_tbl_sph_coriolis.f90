@@ -84,7 +84,7 @@
       end do
 !
 !
-!      if(i_debug .gt. 0) then
+!      if(i_debug .gt. iflag_full_msg) then
 !        write(50+my_rank,*) 'jminmax_gl: ',                             &
 !     &      jminmax_gl(1:2,my_rank+1)
 !        write(50+my_rank,*) 'jminmax_coriolis: ',                       &

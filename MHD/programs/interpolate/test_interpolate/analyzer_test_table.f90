@@ -66,7 +66,7 @@
 !
       if (my_rank .lt. ndomain_dest) then
         call s_count_smp_size_4_2nd
-        if (i_debug.eq.1) call check_smp_size_2nd(my_rank)
+        if(i_debug.eq.iflag_full_msg) call check_smp_size_2nd(my_rank)
       end if
 !
       call time_prog_barrier

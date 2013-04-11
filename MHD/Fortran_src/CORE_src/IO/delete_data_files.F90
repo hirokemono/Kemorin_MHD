@@ -1,11 +1,21 @@
-!delete_data_files.F90
-!      module delete_data_files
+!>@file   delete_data_files.f90
+!!@brief  module delete_data_files
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2006
+!!@n    modified in May, 2009
 !
-!        programmed by H.Matsui on July, 2006
-!        Modified by H.Matsui on May, 2009
-!
-!      subroutine delete_file_by_f(file_name)
-!      subroutine delete_parallel_files(iflag_fmt, nprocs, file_head)
+!>@brief Delete data files use close command
+!!
+!!@verbatim
+!!      subroutine delete_file_by_f(file_name)
+!!      subroutine delete_parallel_files(iflag_fmt, nprocs, file_head)
+!!@endverbatim
+!!
+!!@n @param  file_name   file name to delete
+!!@n @param  file_head   file header to delete
+!!@n @param  iflag_fmt   file format flag
+!!@n @param  nprocs      number of subdomains
 !
       module delete_data_files
 !

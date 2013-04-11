@@ -20,7 +20,7 @@ begin construct_table
     num_new_domain_ctl           2
     new_mesh_head_ctl          'mesh_target/in'
     new_rst_head_ctl           'rst_new/rst'
-    new_udt_head_ctl           'field_new/out'
+    new_field_head_ctl         'field_new/out'
 !
     new_mesh_file_fmt_ctl           'ascii'
     new_rst_files_fmt_ctl           'ascii'

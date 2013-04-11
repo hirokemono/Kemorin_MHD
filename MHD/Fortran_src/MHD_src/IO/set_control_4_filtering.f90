@@ -1,9 +1,15 @@
+!>@file   set_control_4_filtering.f90
+!!@brief  module set_control_4_filtering
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Matsui in July, 2012
 !
-!      module set_control_4_filtering
-!
-!        programmed by H.Matsui on July, 2012
-!
-!     subroutine s_set_control_4_filtering
+!> @brief set filtering parameters for SGS model
+!!        from control data
+!!
+!!@verbatim
+!!     subroutine s_set_control_4_filtering
+!!@endverbatim
 !
       module set_control_4_filtering
 !

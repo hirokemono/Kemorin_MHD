@@ -1,11 +1,17 @@
+!>@file   set_control_4_SGS.f90
+!!@brief  module set_control_4_SGS
+!!
+!!@author H. Matsui
+!!@date Programmed in 2003
+!!@n    modified in Aug., 2007
+!!@n    modified in Nov., 2009
 !
-!      module set_control_4_SGS
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!        modified by H.Matsui on Nov., 2009
-!
-!     subroutine s_set_control_4_SGS
+!> @brief set parameters for SGS model
+!!        from control data
+!!
+!!@verbatim
+!!     subroutine s_set_control_4_SGS
+!!@endverbatim
 !
       module set_control_4_SGS
 !

@@ -92,8 +92,7 @@
       call deallocate_surface_geometry
       call deallocate_edge_geometry
 !
-      if (iflag_debug.eq.1) write(*,*)' check_whole_num_of_elements'
-      if (i_debug .eq. 1) call check_whole_num_of_elements
+      if(i_debug .eq. iflag_full_msg) call check_whole_num_of_elements
 !
 !     ---------------------
 !

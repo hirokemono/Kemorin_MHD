@@ -1,10 +1,16 @@
+!>@file   set_control_4_vect_p.f90
+!!@brief  module set_control_4_vect_p
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed by H. Matsui in 2002
+!!@n    Mmodified by H. Matsui in Aug., 2007
 !
-!      module set_control_4_vect_p
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!
-!     subroutine s_set_control_4_vect_p
+!> @brief set boundary conditions for magnetic vector potential
+!!        from control data
+!!
+!!@verbatim
+!!     subroutine s_set_control_4_vect_p
+!!@endverbatim
 !
       module set_control_4_vect_p
 !
@@ -46,7 +52,8 @@
 !   set boundary_conditons for magnetic field
 !
 !
-      if (iflag_debug.eq.1)  write(12,*) 'num_bc_vp ',num_bc_vp
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &             write(*,*) 'num_bc_vp ',num_bc_vp
       if (num_bc_vp/=0) then
 !
         call allocate_nod_bc_list_vecp
@@ -87,10 +94,18 @@
           end if
         end do
 !
+        if (iflag_debug .eq. iflag_full_msg) then
+          write(*,*) 'i, ibc_vp_type, bc_vp_magnitude, bc_vp_name'
+          do i = 1, num_bc_vp
+            write(*,*)  i, ibc_vp_type(i), bc_vp_magnitude(i),          &
+     &                 trim(bc_vp_name(i))
+          end do
+        end if
       end if
 !
 !
-      if (iflag_debug.eq.1)  write(12,*) 'num_bc_vps ',num_bc_vps
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &            write(*,*) 'num_bc_vps ',num_bc_vps
       if (num_bc_vps/=0) then
 !
         call allocate_vect_p_surf_ctl
@@ -98,16 +113,18 @@
         bc_vps_name     =  bc_vps_name_ctl
         bc_vps_magnitude = bc_vps_magnitude_ctl
 !
-        if (iflag_debug.eq.1) then
-          write(12,*) 'bc_vps_name ',bc_vps_name
-          write(12,*) 'bc_vps_magnitude ',bc_vps_magnitude
-        end if
-!
         do i = 1, num_bc_vps
           call set_surf_group_types_vector(bc_vps_type_ctl(i),          &
      &        ibc_vps_type(i))
         end do
 !
+        if (iflag_debug .eq. iflag_full_msg) then
+          write(*,*) 'i, ibc_vps_type, bc_vps_magnitude, bc_vps_name'
+          do i = 1, num_bc_vps
+            write(*,*)  i, ibc_vps_type(i), bc_vps_magnitude(i),        &
+     &                 trim(bc_vps_name(i))
+          end do
+        end if
       end if
 !
       end subroutine s_set_control_4_vect_p

@@ -1,20 +1,17 @@
-!m_ctl_data_4_platforms.f90
-!      module m_ctl_data_4_platforms
+!>@file   m_ctl_data_4_platforms.f90
+!!@brief  module m_ctl_data_4_platforms
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007
 !
 !> @brief Control input routine for data file headers
-!
-!
-!        programmed by H.Matsui on July, 2007
-!
-!       Subroutine to read file name parameter block
-!
-!      subroutine read_ctl_data_4_platform
-!
-!>
-! ------------------------------------------------------------------
-!>@n      Example of control parameters
-!
-!>@n@code
+!!
+!!@verbatim
+!!      subroutine read_ctl_data_4_platform
+!!
+!! ------------------------------------------------------------------
+!!      Example of control parameters
+!!
 !!    begin data_files_def
 !!      debug_flag_ctl            'ON'
 !!
@@ -54,11 +51,11 @@
 !!      mesh_extension_flags_ctl    'ON'
 !!      memory_conservation_ctl     'YES'
 !!    end data_files_def
-!>@endcode
-!
-! ------------------------------------------------------------------
-!>@n
-!>@n@param      debug_flag_ctl             Debug flag ('On' or 'Off')
+!! ------------------------------------------------------------------
+!!@endverbatim
+!!
+!>@n@param      debug_flag_ctl             Debug flag
+!!                 ('Full', 'On', or 'Off')
 !>@n
 !>@n@param      num_subdomain_ctl
 !>                Number of subdomain (MPI processes)

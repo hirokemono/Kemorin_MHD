@@ -1,10 +1,16 @@
+!>@file   set_control_4_velo.f90
+!!@brief  module set_control_4_velo
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed by H. Okuda in 2000
+!!@n    Mmodified by H. Matsui in 2001
+!!@n    Mmodified by H. Matsui in Aug., 2007
 !
-!      module set_control_4_velo
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!
-!     subroutine s_set_control_4_velo
+!> @brief set boundary conditions for velocity from control data
+!!
+!!@verbatim
+!!     subroutine s_set_control_4_velo
+!!@endverbatim
 !
       module set_control_4_velo
 !
@@ -45,18 +51,14 @@
 !
 !  set boundary conditions for velocity
 !
-      if (iflag_debug.eq.1) write(12,*) 'num_bc_v ',num_bc_v
-      if (num_bc_v/=0) then
+      if (iflag_debug .eq. iflag_full_msg)                              &
+     &      write(*,*) 'num_bc_v ',num_bc_v
+      if (num_bc_v .gt. 0) then
 !
         call allocate_nod_bc_list_velo
 !
         bc_v_name      = bc_v_name_ctl
         bc_v_magnitude = bc_v_magnitude_ctl
-!
-        if (iflag_debug.eq.1) then
-          write(12,*) 'bc_v_name ',bc_v_name
-          write(12,*) 'bc_v_magnitude ',bc_v_magnitude
-        end if
 !
         iflag_4_hemi = 0
         do i = 1, num_bc_v
@@ -109,24 +111,26 @@
             ibc_v_type(i) =  iflag_bc_sgs_commute + 3
           end if
         end do
-        if (iflag_debug.eq.1)  write(12,*) 'ibc_v_type ',ibc_v_type
 !
+        if (iflag_debug .eq. iflag_full_msg) then
+          write(*,*) 'i, ibc_v_type, bc_v_magnitude, bc_v_name'
+          do i = 1, num_bc_v
+            write(*,*)  i, ibc_v_type(i), bc_v_magnitude(i),            &
+     &                 trim(bc_v_name(i))
+          end do
+        end if
       end if
 !
 !
 !
-      if (iflag_debug.eq.1) write(12,*) 'num_bc_tq',num_bc_tq
-      if (num_bc_tq .gt. 0) then
+      if(iflag_debug .eq. iflag_full_msg)                               &
+     &            write(*,*) 'num_bc_tq', num_bc_tq
+      if(num_bc_tq .gt. 0) then
 !
         call allocate_velo_surf_ctl
 !
         bc_tq_name      =  bc_torque_name_ctl
         bc_tq_magnitude =  bc_torque_magnitude_ctl
-!
-        if (iflag_debug.eq.1) then
-          write(12,*) 'bc_tq_name ',bc_tq_name
-          write(12,*) 'bc_tq_magnitude ',bc_tq_magnitude
-        end if
 !
         do i = 1, num_bc_tq
           call set_surf_group_types_vector(bc_torque_type_ctl(i),       &
@@ -143,6 +147,13 @@
           end if
         end do
 !
+        if (iflag_debug .eq. iflag_full_msg) then
+          write(*,*) 'i, ibc_tq_type, bc_tq_magnitude, bc_tq_name'
+          do i = 1, num_bc_tq
+            write(*,*)  i, ibc_tq_type(i), bc_tq_magnitude(i),          &
+     &                 trim(bc_tq_name(i))
+          end do
+        end if
       end if
 !
       end subroutine s_set_control_4_velo

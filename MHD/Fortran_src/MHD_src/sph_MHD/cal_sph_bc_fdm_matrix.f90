@@ -1,9 +1,14 @@
+!> @file cal_sph_bc_fdm_matrix.f90
+!!      module cal_sph_bc_fdm_matrix
+!!
+!! @author H. Matsui
+!! @date Written on May, 2003
 !
-!      module cal_sph_bc_fdm_matrix
-!
-!     Written by H. Matsui on Jan., 2010
-!
-!      subroutine s_cal_sph_bc_fdm_matrices
+!!> @brief calculate FDM matrices for boundaries
+!!
+!!@verbatim
+!!      subroutine s_cal_sph_bc_fdm_matrices
+!!@endverbatim
 !
       module cal_sph_bc_fdm_matrix
 !
@@ -30,22 +35,24 @@
       call cal_2nd_nod_ICB_fixed_fdm
       call cal_2nd_nod_ICB_fix_df_fdm
       call set_fixed_icb_fdm_mat_coefs
-      if (iflag_debug .gt. 0) call check_coef_fdm_fix_dr_ICB
 !
       call cal_2nd_nod_CMB_fixed_fdm
       call cal_2nd_nod_CMB_fix_df_fdm
       call set_fixed_cmb_fdm_mat_coefs
-      if (iflag_debug .gt. 0) call check_coef_fdm_fix_dr_CMB
 !
 !
       call cal_2nd_nod_ICB_free_bc_fdm
       call set_free_icb_fdm_mat_coefs
-      if (iflag_debug .gt. 0) call check_coef_fdm_free_ICB
 !
       call cal_2nd_nod_CMB_free_bc_fdm
       call set_free_cmb_fdm_mat_coefs
-      if (iflag_debug .gt. 0) call check_coef_fdm_free_CMB
 !
+      if (iflag_debug .eq. iflag_full_msg) then
+        call check_coef_fdm_fix_dr_ICB
+        call check_coef_fdm_fix_dr_CMB
+        call check_coef_fdm_free_ICB
+        call check_coef_fdm_free_CMB
+      end if
 !
 !      call cal_sph_bc_2nd_ele_fdm_mat
 !      call s_cal_sph_bc_4th_fdm_matrices

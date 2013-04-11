@@ -72,7 +72,7 @@
       integer(kind = kint) :: i, ist, ied, num7, ip, src_rank, nline
 !
 !
-      if(i_debug .gt. 0) then
+      if(i_debug .gt. iflag_full_msg) then
         write(my_rank+50,*) 'num_all_fline', num_all_fline(:,i_fln)
         write(my_rank+50,*) 'istack_all_fline', istack_all_fline(:,i_fln)
         ist = istack_all_fline(my_rank,i_fln) + 1
@@ -136,7 +136,7 @@
      &          id_neib, istack_export, item_export)
         call set_fline_start_from_neib(i_fln)
 !
-        if(i_debug .gt. 0) then
+        if(i_debug .gt. iflag_full_msg) then
           write(my_rank+50,*) 'istack_all_fline',                       &
      &                       istack_all_fline(:,i_fln)
           nline = istack_all_fline(nprocs,i_fln)                        &

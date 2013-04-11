@@ -1,12 +1,17 @@
+!>@file   set_control_4_model.f90
+!!@brief  module set_control_4_model
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed by H. Okuda in 2000
+!!@n    Mmodified by H. Matsui in 2001
+!!@n    Mmodified by H. Matsui in Aug., 2007
 !
-!      module set_control_4_model
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!
-!     subroutine s_set_control_4_model
-!     subroutine s_set_control_4_crank
-!
+!> @brief set models for MHD simulation from control data
+!!
+!!@verbatim
+!!     subroutine s_set_control_4_model
+!!     subroutine s_set_control_4_crank
+!!@endverbatim
 !
       module set_control_4_model
 !
@@ -77,7 +82,7 @@
           call parallel_abort(91, e_message)
         else
           num_t_evo_control = num_t_evo_control_ctl
-          if (iflag_debug.eq.1)                                         &
+          if (iflag_debug .ge. iflag_routine_msg)                       &
      &    write(*,*) 'num_t_evo_control ',num_t_evo_control
         end if
 !
@@ -88,7 +93,7 @@
 !
           call dealloc_t_evo_name_ctl
 !
-         if (iflag_debug.eq.1) then
+          if (iflag_debug .ge. iflag_routine_msg) then
             write(*,*) 'num_t_evo_control ',num_t_evo_control
             do i = 1, num_t_evo_control
               write(*,*) i, trim(t_evo_name(i))
@@ -120,7 +125,7 @@
         call parallel_abort(90, e_message)
       end if
 !
-      if (iflag_debug.eq.1) then
+      if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'iflag_t_evo_4_velo ',iflag_t_evo_4_velo
         write(*,*) 'iflag_t_evo_4_temp ',iflag_t_evo_4_temp
         write(*,*) 'iflag_t_evo_4_composit ',iflag_t_evo_4_composit
@@ -175,7 +180,7 @@
            depth_high_t = depth_high_t_ctl
          end if
 !
-        if (iflag_debug.eq.1) then
+        if (iflag_debug .ge. iflag_routine_msg) then
            write(*,*) 'iflag_4_ref_temp ',iflag_4_ref_temp
            write(*,*) 'low_temp ',low_temp
            write(*,*) 'high_temp ',high_temp
@@ -208,7 +213,7 @@
           end if
         end if
 !
-        if (iflag_debug.eq.1) then
+        if (iflag_debug .ge. iflag_routine_msg) then
            write(*,*) 'iflag_straficate ',iflag_straficate
            write(*,*) 'stratified_sigma ',stratified_sigma
            write(*,*) 'stratified_width ',stratified_width
@@ -228,10 +233,11 @@
           monitor_grp(i) = monitor_grp_ctl(i)
         end do
 !
-        do i = 1, num_monitor
-          if (iflag_debug.eq.1)                                         &
-     &        write(*,*) 'monitor_grp',i,monitor_grp(i)
-        end do
+        if (iflag_debug .ge. iflag_routine_msg) then
+          do i = 1, num_monitor
+            write(*,*) 'monitor_grp',i,monitor_grp(i)
+          end do
+        end if
       end if
 !
 !
@@ -291,11 +297,11 @@
         coef_exp_c = 1.0d0 - coef_imp_c
 !
 !
-        if (iflag_debug.eq.1) then
-         write(*,*) 'coef_imp_v ',coef_imp_v
-         write(*,*) 'coef_imp_t ',coef_imp_t
-         write(*,*) 'coef_imp_b ',coef_imp_b
-         write(*,*) 'coef_imp_c ',coef_imp_c
+        if (iflag_debug .ge. iflag_routine_msg) then
+          write(*,*) 'coef_imp_v ',coef_imp_v
+          write(*,*) 'coef_imp_t ',coef_imp_t
+          write(*,*) 'coef_imp_b ',coef_imp_b
+          write(*,*) 'coef_imp_c ',coef_imp_c
         end if
 !
       end subroutine s_set_control_4_crank

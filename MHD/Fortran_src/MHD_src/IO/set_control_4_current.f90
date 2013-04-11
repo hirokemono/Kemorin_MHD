@@ -1,11 +1,15 @@
+!>@file   set_control_4_current.f90
+!!@brief  module set_control_4_current
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Matsui in 2002
+!!@n    Mmodified by H. Matsui in Aug., 2007
 !
-!      module set_control_4_current
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!
-!
-!     subroutine s_set_control_4_current
+!> @brief set boundary conditions for current density from control data
+!!
+!!@verbatim
+!!     subroutine s_set_control_4_current
+!!@endverbatim
 !
       module set_control_4_current
 !
@@ -47,7 +51,8 @@
 !
 !   set boundary_conditons for magnetic field
 !
-      if (iflag_debug.eq.1)   write(*,*) 'num_bc_j ',num_bc_j
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &      write(*,*) 'num_bc_j ',num_bc_j
       if (num_bc_j .gt. 0) then
 !
         call allocate_nod_bc_list_j
@@ -56,7 +61,6 @@
         bc_j_magnitude = bc_j_magnitude_ctl
 !
         if (iflag_debug.eq.1) then
-          write(*,*) 'bc_j_name ',bc_j_name
           write(*,*) 'bc_j_magnitude ',bc_j_magnitude
         end if
 !
@@ -77,10 +81,18 @@
           end if
         end do
 !
+        if (iflag_debug .ge. iflag_routine_msg) then
+          write(*,*) 'i, ibc_j_type, bc_j_magnitude, bc_j_name'
+          do i = 1, num_bc_j
+            write(*,*) i, ibc_j_type(i), bc_j_magnitude(i),             &
+     &                 trim(bc_j_name(i))
+          end do
+        end if
       end if
 !
 !
-      if (iflag_debug.eq.1)  write(*,*) 'num_bc_js ',num_bc_js
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &      write(*,*) 'num_bc_js ',num_bc_js
       if (num_bc_js .gt. 0) then
 !
         call allocate_current_surf_ctl
@@ -88,17 +100,20 @@
         bc_js_name     =   bc_grad_j_name_ctl
         bc_js_magnitude =  bc_grad_j_magnitude_ctl
 !
-        if (iflag_debug.eq.1) then
-          write(*,*) 'bc_js_name ',bc_js_name
-          write(*,*) 'bc_js_magnitude ',bc_js_magnitude
-        end if
-!
         do i = 1, num_bc_js
           call set_surf_group_types_vector(bc_grad_j_type_ctl(i),       &
      &        ibc_js_type(i))
         end do
 !
+        if (iflag_debug .ge. iflag_routine_msg) then
+          write(*,*) 'i, ibc_js_type, bc_js_magnitude, bc_js_name'
+          do i = 1, num_bc_js
+            write(*,*) i, ibc_js_type(i), bc_js_magnitude(i),           &
+     &                 trim(bc_js_name(i))
+          end do
+        end if
       end if
+!
       end subroutine s_set_control_4_current
 !
 ! -----------------------------------------------------------------------

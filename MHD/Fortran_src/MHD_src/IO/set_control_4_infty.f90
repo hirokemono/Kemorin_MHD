@@ -1,10 +1,15 @@
+!>@file   set_control_4_infty.f90
+!!@brief  module set_control_4_infty
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Matsui in 2002
+!!@n    Mmodified by H. Matsui in Aug., 2007
 !
-!      module set_control_4_infty
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!
+!> @brief set infinite radius boundary from control data
+!!
+!!@verbatim
 !     subroutine s_set_control_4_infty
+!!@endverbatim
 !
       module set_control_4_infty
 !

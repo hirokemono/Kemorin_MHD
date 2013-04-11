@@ -87,7 +87,8 @@
 !
       call set_vp_evo_mat_sph_by_mat(nlayer_ICB, nlayer_CMB)
 !
-      if(i_debug .gt. 0) call check_vorticity_matrices_sph(my_rank)
+      if(i_debug .eq. iflag_full_msg)                                   &
+     &          call check_vorticity_matrices_sph(my_rank)
 !
 !$omp parallel do private(jst,jed,j)
       do ip = 1, np_smp
