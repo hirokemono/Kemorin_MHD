@@ -207,10 +207,10 @@
       use m_node_phys_address
       use m_node_phys_data
 !
-      use cvt_sph_vect_2_cart_smp
-      use cvt_vector_2_spheric_smp
+      use cvt_sph_vector_2_xyz_smp
+      use cvt_xyz_vector_2_sph_smp
       use cvt_sph_tensor_2_xyz_smp
-      use cvt_tensor_2_spheric_smp
+      use cvt_xyz_tensor_2_sph_smp
 !
       use products_nodal_fields
       use int_sgs_induction

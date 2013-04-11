@@ -1,19 +1,26 @@
-!m_tave_sph_ene_spectr.f90
-!      module m_tave_sph_ene_spectr
+!>@file   m_tave_sph_ene_spectr.f90
+!!        module m_tave_sph_ene_spectr
+!!
+!! @author H. Matsui
+!! @date   Programmed in  Nov., 2007
+!!
 !
-!      Written by H. Matsui on May, 2008
-!
-!      subroutine allocate_tave_sph_espec_name
-!      subroutine allocate_tave_sph_espec_data
-!      subroutine deallocate_tave_sph_espec_data
-!
-!      subroutine select_sph_ene_spec_data_file
-!      subroutine set_org_ene_spec_file_name
-!
-!      subroutine open_org_ene_spec_data
-!      subroutine open_tave_ene_spec_data
-!
-!      subroutine close_ene_spec_data
+!> @brief Time average spherical hermonics spectrum data
+!!
+!!@verbatim
+!!      subroutine allocate_tave_sph_espec_name
+!!      subroutine allocate_tave_sph_espec_data
+!!      subroutine deallocate_tave_sph_espec_data
+!!
+!!      subroutine select_sph_ene_spec_data_file
+!!      subroutine set_org_ene_spec_file_name
+!!
+!!      subroutine open_org_ene_spec_data
+!!      subroutine open_tave_ene_spec_data
+!!      subroutine open_tsigma_ene_spec_data
+!!
+!!      subroutine close_ene_spec_data
+!!@endverbatim
 !
       module m_tave_sph_ene_spectr
 !
@@ -41,6 +48,11 @@
       real(kind = kreal), allocatable :: ave_spec_l(:,:,:)
       real(kind = kreal), allocatable :: ave_spec_m(:,:,:)
       real(kind = kreal), allocatable :: ave_spec_lm(:,:,:)
+!
+      real(kind = kreal), allocatable :: sigma_spec_t(:,:)
+      real(kind = kreal), allocatable :: sigma_spec_l(:,:,:)
+      real(kind = kreal), allocatable :: sigma_spec_m(:,:,:)
+      real(kind = kreal), allocatable :: sigma_spec_lm(:,:,:)
 !
 !
       integer(kind = kint) :: iflag_sph_ene_file
@@ -98,6 +110,11 @@
       allocate( ave_spec_m(ncomp_sph_tave,0:ltr_sph,nri_sph) )
       allocate( ave_spec_lm(ncomp_sph_tave,0:ltr_sph,nri_sph) )
 !
+      allocate( sigma_spec_t(ncomp_sph_tave,nri_sph) )
+      allocate( sigma_spec_l(ncomp_sph_tave,0:ltr_sph,nri_sph) )
+      allocate( sigma_spec_m(ncomp_sph_tave,0:ltr_sph,nri_sph) )
+      allocate( sigma_spec_lm(ncomp_sph_tave,0:ltr_sph,nri_sph) )
+!
       kr_sph = 0
       spectr_t =    0.0d0
       spectr_l =    0.0d0
@@ -109,6 +126,11 @@
       ave_spec_m =  0.0d0
       ave_spec_lm = 0.0d0
 !
+      sigma_spec_t =  0.0d0
+      sigma_spec_l =  0.0d0
+      sigma_spec_m =  0.0d0
+      sigma_spec_lm = 0.0d0
+!
       end subroutine allocate_tave_sph_espec_data
 !
 !   --------------------------------------------------------------------
@@ -118,6 +140,8 @@
       deallocate(ene_sph_spec_name, kr_sph)
       deallocate(spectr_t, spectr_l, spectr_m, spectr_lm)
       deallocate(ave_spec_t, ave_spec_l, ave_spec_m, ave_spec_lm)
+      deallocate(sigma_spec_l, sigma_spec_m)
+      deallocate(sigma_spec_t, sigma_spec_lm)
 !
       end subroutine deallocate_tave_sph_espec_data
 !
@@ -239,6 +263,34 @@
       call write_average_ene_sph_head
 !
       end subroutine open_tave_ene_spec_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine open_tsigma_ene_spec_data
+!
+      character(len = kchara) :: fname_tave_rms_l
+      character(len = kchara) :: fname_tave_rms_m
+      character(len = kchara) :: fname_tave_rms_lm
+      character(len = kchara) :: fname_tave_rms
+!
+!
+      write(fname_tave_rms_l, '(a8,a)')                                 &
+     &        't_sigma_', trim(fname_org_rms_l)
+      write(fname_tave_rms_m, '(a8,a)')                                 &
+     &        't_sigma_', trim(fname_org_rms_m)
+      write(fname_tave_rms_lm,'(a8,a)')                                 &
+     &        't_sigma_', trim(fname_org_rms_lm)
+      write(fname_tave_rms,   '(a8,a)')                                 &
+     &        't_sigma_', trim(fname_org_rms)
+!
+      open(id_file_rms,   file=fname_tave_rms)
+      open(id_file_rms_l, file=fname_tave_rms_l)
+      open(id_file_rms_m, file=fname_tave_rms_m)
+      open(id_file_rms_lm,file=fname_tave_rms_lm)
+!
+      call write_average_ene_sph_head
+!
+      end subroutine open_tsigma_ene_spec_data
 !
 !   --------------------------------------------------------------------
 !

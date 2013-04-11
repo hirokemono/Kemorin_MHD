@@ -1,40 +1,47 @@
-!cvt_vector_2_cylinder_smp.f90
-!      module cvt_vector_2_cylinder_smp
+!>@file   cvt_xyz_vector_2_cyl_smp.f90
+!!@brief  module cvt_xyz_vector_2_cyl_smp
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2005
 !
-!      Written by H. Matsui on June, 2005
+!>@brief Convert symmetric tensor from Cartesian coordinate
+!!       to cylindrical coordinate
+!!
+!!@verbatim
+!!***********************************************************************
+!!*
+!!*   convert vector from certecian coordinate to cylindrical coordinate
+!!*      vs =  vx*cos(phi) + vy*sin(phi)
+!!*      vp = -vx*sin(phi) + vy*cos(phi)
+!!*
+!!***********************************************************************
+!!
+!!      subroutine cvt_vector_2_cyl_smp(np_smp, numnod,                 &
+!!     &          inod_smp_stack, vect, v_cyl, xx, rs, a_s)
+!!
+!!      subroutine overwrite_vector_2_cyl_smp(np_smp, numnod,           &
+!!     &          inod_smp_stack, vect, xx, rs, a_s)
+!!
+!!      subroutine cal_cylinder_r_comp_smp(np_smp, numnod,              &
+!!     &          inod_smp_stack, vect, v_s, xx, rs, a_s)
+!!
+!!***********************************************************************
+!!@endverbatim
+!!
+!!@n @param  np_smp   Number of SMP processes
+!!@n @param  numnod   Number of data points
+!!@n @param  inod_smp_stack(0:np_smp)
+!!                    End address of each SMP process
+!!@n @param  xx(numnod,3) position in Cartesian coordinate
+!!@n @param  s(numnod)    cylindrical radius
+!!@n @param  a_s(numnod)  1 / s
+!!
+!!@n @param  vect(numnod,3) vector in Cartesian coordinate
+!!
+!!@n @param  v_cyl(numnod,3) vector in cylindrical coordinate
+!!@n @param  v_s(numnod) s component of vector in Cartesian coordinate
 !
-!***********************************************************************
-!
-!*   convert vector from certecian coordinate to cylindrical coordinate
-!*      vs =  vx*cos(phi) + vy*sin(phi)
-!*      vp = -vx*sin(phi) + vy*cos(phi)
-!*
-!***********************************************************************
-!
-!      subroutine cvt_vector_2_cyl_smp(np_smp, numnod,                  &
-!     &          inod_smp_stack, vect, v_cyl, xx, rs, a_rs)
-!
-!      subroutine overwrite_vector_2_cyl_smp(np_smp, numnod,            &
-!     &          inod_smp_stack, vect, xx, rs, a_rs)
-!
-!      subroutine cal_cylinder_r_comp_smp(np_smp, numnod,               &
-!     &          inod_smp_stack, vect, v_s, xx, rs, a_rs)
-!
-!         numnod :: number of node
-!         vect :: vector in certecian coorcinate
-!
-!         v_sph :: obtained vector on spherical coordinate
-!         v_r :: obtained radial component
-!         v_theta :: obtained meridional component
-!         v_phi :: obtained zonal component
-!         v_s ::   obtained radial component for cylinder
-!
-!         xx :: position vector
-!         r :: radious
-!
-!***********************************************************************
-!
-      module cvt_vector_2_cylinder_smp
+      module cvt_xyz_vector_2_cyl_smp
 !
       use m_precision
 !
@@ -47,7 +54,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cvt_vector_2_cyl_smp(np_smp, numnod,                   &
-     &          inod_smp_stack, vect, v_cyl, xx, rs, a_rs)
+     &          inod_smp_stack, vect, v_cyl, xx, rs, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
@@ -55,7 +62,7 @@
        real(kind=kreal), intent(inout) :: v_cyl(numnod,3)
        real(kind=kreal), intent(in)    :: xx(numnod,3)
        real(kind=kreal), intent(in) :: rs(numnod)
-       real(kind=kreal), intent(in) :: a_rs(numnod)
+       real(kind=kreal), intent(in) :: a_s(numnod)
 !
        integer (kind = kint) :: ip, inod, ist, ied
        real(kind=kreal) :: vx, vy, vz
@@ -74,16 +81,13 @@
              v_cyl(inod,1) = vx
              v_cyl(inod,2) = vy
            else
-!
              v_cyl(inod,1) = (  vx * xx(inod,1) + vy * xx(inod,2) )     &
-     &                        * a_rs(inod)
+     &                        * a_s(inod)
              v_cyl(inod,2) = ( -vx * xx(inod,2) + vy * xx(inod,1) )     &
-     &                        * a_rs(inod)
-!
+     &                        * a_s(inod)
            end if
 !
            v_cyl(inod,3) = vz
-!
          end do
        end do
 !$omp end parallel do
@@ -94,13 +98,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine overwrite_vector_2_cyl_smp(np_smp, numnod,             &
-     &          inod_smp_stack, vect, xx, rs, a_rs)
+     &          inod_smp_stack, vect, xx, rs, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in)    :: xx(numnod,3)
        real(kind=kreal), intent(in) :: rs(numnod)
-       real(kind=kreal), intent(in) :: a_rs(numnod)
+       real(kind=kreal), intent(in) :: a_s(numnod)
 !
        real(kind=kreal), intent(inout) :: vect(numnod,3)
 !
@@ -121,9 +125,9 @@
              vect(inod,2) = vy
            else
              vect(inod,1) = (   vx * xx(inod,1) + vy * xx(inod,2) )     &
-     &                        * a_rs(inod)
+     &                        * a_s(inod)
              vect(inod,2) = (  -vx * xx(inod,2) + vy * xx(inod,1) )     &
-     &                        * a_rs(inod)
+     &                        * a_s(inod)
            end if
 !
          end do
@@ -136,14 +140,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_cylinder_r_comp_smp(np_smp, numnod,                &
-     &          inod_smp_stack, vect, v_s, xx, rs, a_rs)
+     &          inod_smp_stack, vect, v_s, xx, rs, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in) :: vect(numnod,3)
        real(kind=kreal), intent(in) :: xx(numnod,3)
        real(kind=kreal), intent(in) :: rs(numnod)
-       real(kind=kreal), intent(in) :: a_rs(numnod)
+       real(kind=kreal), intent(in) :: a_s(numnod)
 !
        real(kind=kreal), intent(inout) :: v_s(numnod)
 !
@@ -163,7 +167,7 @@
              v_s(inod) = vx
            else
              v_s(inod) = ( vx * xx(inod,1) + vy * xx(inod,2) )          &
-     &                    * a_rs(inod)
+     &                    * a_s(inod)
            end if
 !
          end do
@@ -174,4 +178,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module cvt_vector_2_cylinder_smp
+      end module cvt_xyz_vector_2_cyl_smp

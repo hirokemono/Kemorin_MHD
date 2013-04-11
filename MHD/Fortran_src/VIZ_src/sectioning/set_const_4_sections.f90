@@ -124,8 +124,8 @@
       use m_geometry_list_4_iso
 !
       use mag_of_field_smp
-      use cvt_vector_2_spheric_smp
-      use cvt_vector_2_cylinder_smp
+      use cvt_xyz_vector_2_sph_smp
+      use cvt_xyz_vector_2_cyl_smp
       use subtract_const_smp
 !
       use copy_field_smp

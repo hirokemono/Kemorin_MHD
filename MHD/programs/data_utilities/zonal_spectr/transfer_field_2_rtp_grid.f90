@@ -92,8 +92,8 @@
       use m_spheric_parameter
       use m_spheric_param_smp
       use m_sph_spectr_data
-      use cvt_vector_2_spheric_smp
-      use cvt_vector_2_cylinder_smp
+      use cvt_xyz_vector_2_sph_smp
+      use cvt_xyz_vector_2_cyl_smp
       use copy_field_smp
 !
       integer(kind = kint), intent(in) :: ifrag_trans_vect
@@ -142,8 +142,8 @@
       use m_spheric_parameter
       use m_spheric_param_smp
       use m_sph_spectr_data
-      use cvt_sph_vect_2_cart_smp
-      use cvt_cyl_vect_2_cart_smp
+      use cvt_sph_vector_2_xyz_smp
+      use cvt_cyl_vector_2_xyz_smp
       use copy_field_smp
 !
       integer(kind = kint), intent(in) :: ifrag_trans_vect

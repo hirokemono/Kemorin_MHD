@@ -33,7 +33,7 @@
       use m_precision
 !
       use m_constants
-      use cvt_cyl_vect_2_cart_smp
+      use cvt_cyl_vector_2_xyz_smp
 !
       implicit none
 !

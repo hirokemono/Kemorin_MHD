@@ -14,15 +14,22 @@
       implicit none
 !
 !
-!>    number of SMP threads
+!>      number of SMP threads
       integer(kind=kint) :: np_smp = 1
 !
-!>    debug flag for all processes (1: 0n, 0: Off)
+!>      integer flag for minimum message
+      integer(kind = kint), parameter :: iflag_minimum_msg =  0
+!>      integer flag for routine name output
+      integer(kind = kint), parameter :: iflag_routine_msg =  1
+!>      integer flag for full debug output
+      integer(kind = kint), parameter :: iflag_full_msg =     2
+!
+!>      debug flag for all processes (1: 0n, 0: Off)
       integer(kind = kint) :: i_debug =     0
-!>    debug flag for master process
+!>      debug flag for master process
       integer(kind = kint) :: iflag_debug = 0
 !
-!>    character array for error message
+!>      character array for error message
       character(len=256) :: e_message
 !
       end module m_machine_parameter

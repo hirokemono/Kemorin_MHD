@@ -58,7 +58,7 @@
       subroutine cvt_vector_2_spherical(numnod, vect, v_sph, xx, r, rs, &
      &          a_r, a_rs)
 !
-      use cvt_vector_2_spheric_smp
+      use cvt_xyz_vector_2_sph_smp
 !
        integer (kind = kint), intent(in) :: numnod
        real(kind=kreal), intent(in)    :: vect(numnod,3)
@@ -76,7 +76,7 @@
 !
       subroutine cal_radial_component(numnod, vect, v_r, xx, r, a_r)
 !
-      use cvt_vector_2_spheric_smp
+      use cvt_xyz_vector_2_sph_smp
 !
        integer (kind = kint), intent(in) :: numnod
        real(kind=kreal), intent(in)    :: vect(numnod,3)
@@ -95,7 +95,7 @@
       subroutine cal_theta_component(numnod, vect, v_theta, xx, r, rs,  &
      &          a_r, a_rs)
 !
-      use cvt_vector_2_spheric_smp
+      use cvt_xyz_vector_2_sph_smp
 !
        integer (kind = kint), intent(in) :: numnod
        real(kind=kreal), intent(in)    :: vect(numnod,3)
@@ -113,7 +113,7 @@
 !
       subroutine cal_phi_component(numnod, vect, v_phi, xx, rs, a_rs)
 !
-      use cvt_vector_2_spheric_smp
+      use cvt_xyz_vector_2_sph_smp
 !
        integer (kind = kint), intent(in) :: numnod
        real(kind=kreal), intent(in)    :: vect(numnod,3)
@@ -133,7 +133,7 @@
       subroutine cvt_vector_2_cylindrical(numnod, vect, v_cyl, xx,      &
      &          rs, a_rs)
 !
-      use cvt_vector_2_cylinder_smp
+      use cvt_xyz_vector_2_cyl_smp
 !
        integer (kind = kint), intent(in) :: numnod
        real(kind=kreal), intent(in)    :: vect(numnod,3)
@@ -152,7 +152,7 @@
       subroutine cal_cylinder_r_component(numnod, vect, v_s, xx,        &
      &          rs, a_rs)
 !
-      use cvt_vector_2_cylinder_smp
+      use cvt_xyz_vector_2_cyl_smp
 !
        integer (kind = kint), intent(in) :: numnod
        real(kind=kreal), intent(in)    :: vect(numnod,3)

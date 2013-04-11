@@ -1,26 +1,52 @@
-!cvt_asym_t_2_cylinder_smp.f90
-!      module cvt_asym_t_2_cylinder_smp
+!>@file   cvt_xyz_asym_t_2_cyl_smp.f90
+!!@brief  module cvt_xyz_asym_t_2_cyl_smp
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2009
 !
-!      Written by H. Matsui on March, 2009
+!>@brief Convert anti-symmetric tensor from Cartesian coordinate
+!!       to cylindrical coordinate
+!!
+!!@verbatim
+!!      subroutine cal_cyl_asym_t_smp(np_smp, numnod, inod_smp_stack,   &
+!!     &          tensor, tcyl, xx, s, a_s)
+!!
+!!      subroutine overwrite_cyl_asym_t_smp(np_smp, numnod,             &
+!!     &          inod_smp_stack, tensor, xx, s, a_s)
+!!
+!!      subroutine cal_sp_asym_t_smp(np_smp, numnod, inod_smp_stack,    &
+!!     &          tensor, t_sp)
+!!      subroutine cal_zs_asym_t_smp(np_smp, numnod, inod_smp_stack,    &
+!!     &          tensor, t_zs, xx, s, a_s)
+!!      subroutine cal_pz_asym_t_smp(np_smp, numnod, inod_smp_stack,    &
+!!     &          tensor, t_pz, xx, s, a_s)
+!!
+!!   usup =         ux*uy
+!!   uzus = (as) * (      x* uz*ux - y* uy*uz)
+!!   upuz = (as) * (      y* uz*ux + x* uy*uz)
+!!@endverbatim
+!!
+!!@n @param  np_smp   Number of SMP processes
+!!@n @param  numnod   Number of data points
+!!@n @param  inod_smp_stack(0:np_smp)
+!!                    End address of each SMP process
+!!@n @param  xx(numnod,3) position in Cartesian coordinate
+!!@n @param  s(numnod)    cylindrical radius
+!!@n @param  a_s(numnod)  1 / s
+!!
+!!@n @param  tensor(numnod,3)
+!!                    anti-symmetric tensor in Cartesian coordinate
+!!@n @param  tcyl(numnod,3)
+!!                    anti-symmetric tensor in Cylindrical coordinate
+!!@n @param  t_sp(numnod)
+!!                    @f$ T_{s\phi} @f$ in Cylindrical coordinate
+!!@n @param  t_zs(numnod)
+!!                    @f$ T_{zs} @f$  in Cylindrical coordinate
+!!@n @param  t_pz(numnod)
+!!                     @f$ T_{\phi z} @f$ in Cylindrical coordinate
+!!
 !
-!      subroutine cal_cyl_asym_t_smp(np_smp, numnod, inod_smp_stack,    &
-!     &          tensor, tcyl, xx, s, a_s)
-!
-!      subroutine overwrite_cyl_asym_t_smp(np_smp, numnod,              &
-!     &          inod_smp_stack, tensor, xx, s, a_s)
-!
-!      subroutine cal_sp_asym_t_smp(np_smp, numnod, inod_smp_stack,     &
-!     &          tensor, v_sp)
-!      subroutine cal_zs_asym_t_smp(np_smp, numnod, inod_smp_stack,     &
-!     &          tensor, v_zs, xx, s, a_s)
-!      subroutine cal_pz_asym_t_smp(np_smp, numnod, inod_smp_stack,     &
-!     &          tensor, v_pz, xx, s, a_s)
-!
-!   usup =         ux*uy
-!   uzus = (as) * (      x* uz*ux - y* uy*uz)
-!   upuz = (as) * (      y* uz*ux + x* uy*uz)
-!
-      module cvt_asym_t_2_cylinder_smp
+      module cvt_xyz_asym_t_2_cyl_smp
 !
       use m_precision
       use m_constants
@@ -129,13 +155,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sp_asym_t_smp(np_smp, numnod, inod_smp_stack,      &
-     &          tensor, v_sp)
+     &          tensor, t_sp)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in) :: tensor(numnod,3)
 !
-       real(kind=kreal), intent(inout) :: v_sp(numnod)
+       real(kind=kreal), intent(inout) :: t_sp(numnod)
 !
        integer (kind = kint) :: ip, inod, ist, ied
 !
@@ -145,7 +171,7 @@
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
          do inod = ist, ied
-           v_sp(inod) =   tensor(inod,1)
+           t_sp(inod) =   tensor(inod,1)
         end do
       end do
 !$omp end parallel do
@@ -155,7 +181,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_zs_asym_t_smp(np_smp, numnod, inod_smp_stack,      &
-     &          tensor, v_zs, xx, s, a_s)
+     &          tensor, t_zs, xx, s, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
@@ -164,7 +190,7 @@
        real(kind=kreal), intent(in) :: s(numnod)
        real(kind=kreal), intent(in) :: a_s(numnod)
 !
-       real(kind=kreal), intent(inout) :: v_zs(numnod)
+       real(kind=kreal), intent(inout) :: t_zs(numnod)
 !
        integer (kind = kint) :: ip, inod, ist, ied
        real(kind=kreal) :: tzx, tyz
@@ -179,9 +205,9 @@
            tyz = tensor(inod,3)
 !
            if ( s(inod).eq.0.0 ) then
-             v_zs(inod) =     tzx
+             t_zs(inod) =     tzx
            else
-             v_zs(inod) =   ( tzx * xx(inod,1)                          &
+             t_zs(inod) =   ( tzx * xx(inod,1)                          &
      &                      - tyz * xx(inod,2) ) * a_s(inod)
            end if
 !
@@ -194,7 +220,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_pz_asym_t_smp(np_smp, numnod, inod_smp_stack,      &
-     &          tensor, v_pz, xx, s, a_s)
+     &          tensor, t_pz, xx, s, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
@@ -203,7 +229,7 @@
        real(kind=kreal), intent(in) :: s(numnod)
        real(kind=kreal), intent(in) :: a_s(numnod)
 !
-       real(kind=kreal), intent(inout) :: v_pz(numnod)
+       real(kind=kreal), intent(inout) :: t_pz(numnod)
 !
        integer (kind = kint) :: ip, inod, ist, ied
        real(kind=kreal) :: tzx, tyz
@@ -218,9 +244,9 @@
            tyz = tensor(inod,3)
 !
            if ( s(inod).eq.0.0 ) then
-             v_pz(inod) =     tyz
+             t_pz(inod) =     tyz
            else
-             v_pz(inod) =   ( tzx * xx(inod,2)                          &
+             t_pz(inod) =   ( tzx * xx(inod,2)                          &
      &                      + tyz * xx(inod,1) ) * a_s(inod)
            end if
 !
@@ -232,4 +258,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module cvt_asym_t_2_cylinder_smp
+      end module cvt_xyz_asym_t_2_cyl_smp

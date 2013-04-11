@@ -1,40 +1,52 @@
-!cvt_cyl_vect_2_cart_smp.f90
-!      module cvt_cyl_vect_2_cart_smp
+!>@file   cvt_cyl_vector_2_xyz_smp.f90
+!!@brief  module cvt_cyl_vector_2_xyz_smp
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2007
 !
-!      Written by H. Matsui on Oct., 2007
+!>@brief Convert symmetric tensor from cylindrical coordinate
+!!       to Cartesian coordinate
+!!
+!!@verbatim
+!!*********************************************************************
+!!*
+!!*   convert vector from spherical coordinate to certecian coordinate
+!!*      vx =  vs*cos(phi) - vp*sin(phi)
+!!*      vy =  vs*sin(phi) + vp*cos(phi)
+!!*      vz =  vz
+!!*
+!!*********************************************************************
+!!
+!!      subroutine cvt_cyl_vect_2_xyz_smp(np_smp, numnod,               &
+!!     &          inod_smp_stack, vect, v_cyl, phi)
+!!
+!!      subroutine overwrite_cyl_vect_2_xyz_smp(np_smp, numnod,         &
+!!     &          inod_smp_stack, vect, phi)
+!!
+!!      subroutine cvt_cyl_vect_2_x_comp_smp(np_smp, numnod,            &
+!!     &          inod_smp_stack, v_x, v_cyl, phi)
+!!      subroutine cvt_cyl_vect_2_y_comp_smp(np_smp, numnod,            &
+!!     &          inod_smp_stack, v_y, v_cyl, phi)
+!!      subroutine cvt_cyl_vect_2_z_comp_smp(np_smp, numnod,            &
+!!     &          inod_smp_stack, v_z, v_cyl)
+!!
+!!*********************************************************************
+!!@endverbatim
+!!
+!!@n @param  np_smp   Number of SMP processes
+!!@n @param  numnod   Number of data points
+!!@n @param  inod_smp_stack(0:np_smp)
+!!                    End address of each SMP process
+!!@n @param  phi(numnod)  longigude
+!!
+!!@n @param  v_cyl(numnod,3) vector in cylindrical coordinate
+!!
+!!@n @param  vect(numnod,3) vector in Cartesian coordinate
+!!@n @param  v_x(numnod) x component of vector in Cartesian coordinate
+!!@n @param  v_y(numnod) y component of vector in Cartesian coordinate
+!!@n @param  v_z(numnod) z component of vector in Cartesian coordinate
 !
-!*********************************************************************
-!*
-!*   convert vector from spherical coordinate to certecian coordinate
-!*      vx =  vs*cos(phi) - vp*sin(phi)
-!*      vy =  vs*sin(phi) + vp*cos(phi)
-!*      vz =  vz
-!*
-!*********************************************************************
-!
-!      subroutine cvt_cyl_vect_2_xyz_smp(np_smp, numnod, inod_smp_stack,&
-!     &          vect, v_cyl, phi)
-!
-!      subroutine overwrite_cyl_vect_2_xyz_smp(np_smp, numnod,          &
-!     &          inod_smp_stack, vect, phi)
-!
-!      subroutine cvt_cyl_vect_2_x_comp_smp(np_smp, numnod,             &
-!     &          inod_smp_stack, v_x, v_cyl, phi)
-!      subroutine cvt_cyl_vect_2_y_comp_smp(np_smp, numnod,             &
-!     &          inod_smp_stack, v_y, v_cyl, phi)
-!      subroutine cvt_cyl_vect_2_z_comp_smp(np_smp, numnod,             &
-!     &          inod_smp_stack, v_z, v_cyl)
-!         numnod :: number of node
-!         phi :: longitude ( 0 to 2\pi)
-!         v_cyl :: vector on cylindrical coordinate
-!         vect :: obtained vector in certecian coorcinate
-!         v_x :: obtained x component
-!         v_y :: obtained y component
-!         v_z :: obtained z component
-!
-!*********************************************************************
-!
-      module cvt_cyl_vect_2_cart_smp
+      module cvt_cyl_vector_2_xyz_smp
 !
       use m_precision
 !
@@ -46,8 +58,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cvt_cyl_vect_2_xyz_smp(np_smp, numnod, inod_smp_stack, &
-     &          vect, v_cyl, phi)
+      subroutine cvt_cyl_vect_2_xyz_smp(np_smp, numnod,                 &
+     &          inod_smp_stack, vect, v_cyl, phi)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
@@ -196,4 +208,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module cvt_cyl_vect_2_cart_smp
+      end module cvt_cyl_vector_2_xyz_smp

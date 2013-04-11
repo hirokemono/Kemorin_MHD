@@ -1,24 +1,49 @@
-!cvt_cyl_asym_t_2_xyz_smp.f90
-!      module cvt_cyl_asym_t_2_xyz_smp
+!>@file   cvt_cyl_asym_t_2_xyz_smp.f90
+!!@brief  module cvt_cyl_asym_t_2_xyz_smp
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2009
 !
-!      Written by H. Matsui on March, 2009
-!
-!      subroutine cal_xyz_asym_t_by_cyl_smp(np_smp, numnod,             &
-!     &          inod_smp_stack, t_cyl, txyz, xx, s, a_s)
-!
-!      subroutine overwrite_xyz_asym_t_by_cyl_smp(np_smp, numnod,       &
-!     &          inod_smp_stack, tensor, xx, s, a_s)
-!
-!      subroutine cal_xy_asym_t_by_cyl_smp(np_smp, numnod,              &
-!     &          inod_smp_stack, t_cyl, v_xy)
-!      subroutine cal_zx_asym_t_by_cyl_smp(np_smp, numnod,              &
-!     &          inod_smp_stack, t_cyl, v_zx, xx, s, a_s)
-!      subroutine cal_yz_asym_t_by_cyl_smp(np_smp, numnod,              &
-!     &          inod_smp_stack, t_cyl, v_yz, xx, s, a_s)
-!
-!   uxuy =         us*up
-!   uzux = (as) * (      x* uz*us + y* up*uz)
-!   uyuz = (as) * (    - y* uz*us + x* up*uz)
+!>@brief Convert anti-symmetric tensor from Cartesian coordinate
+!!       to cylindrical coordinate
+!!
+!!@verbatim
+!!      subroutine cal_xyz_asym_t_by_cyl_smp(np_smp, numnod,            &
+!!     &          inod_smp_stack, t_cyl, txyz, xx, s, a_s)
+!!
+!!      subroutine overwrite_xyz_asym_t_by_cyl_smp(np_smp, numnod,      &
+!!     &          inod_smp_stack, tensor, xx, s, a_s)
+!!
+!!      subroutine cal_xy_asym_t_by_cyl_smp(np_smp, numnod,             &
+!!     &          inod_smp_stack, t_cyl, v_xy)
+!!      subroutine cal_zx_asym_t_by_cyl_smp(np_smp, numnod,             &
+!!     &          inod_smp_stack, t_cyl, v_zx, xx, s, a_s)
+!!      subroutine cal_yz_asym_t_by_cyl_smp(np_smp, numnod,             &
+!!     &          inod_smp_stack, t_cyl, v_yz, xx, s, a_s)
+!!
+!!   uxuy =         us*up
+!!   uzux = (as) * (      x* uz*us + y* up*uz)
+!!   uyuz = (as) * (    - y* uz*us + x* up*uz)
+!!@endverbatim
+!!
+!!@n @param  np_smp   Number of SMP processes
+!!@n @param  numnod   Number of data points
+!!@n @param  inod_smp_stack(0:np_smp)
+!!                    End address of each SMP process
+!!@n @param  xx(numnod,3) position in Cartesian coordinate
+!!@n @param  s(numnod)    cylindrical radius
+!!@n @param  a_s(numnod)  1 / s
+!!
+!!@n @param  tensor(numnod,3)
+!!                    anti-symmetric tensor in Cartesian coordinate
+!!@n @param  tcyl(numnod,3)
+!!                    anti-symmetric tensor in Cylindrical coordinate
+!!@n @param  v_sp(numnod)
+!!                    @f$ T_{s\phi} @f$ in Cylindrical coordinate
+!!@n @param  v_zs(numnod)
+!!                    @f$ T_{zs} @f$  in Cylindrical coordinate
+!!@n @param  v_pz(numnod)
+!!                     @f$ T_{\phiz} @f$ in Cylindrical coordinate
 !
       module cvt_cyl_asym_t_2_xyz_smp
 !

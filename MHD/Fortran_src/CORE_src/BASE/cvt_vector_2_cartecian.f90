@@ -35,7 +35,7 @@
       use m_precision
 !
       use m_constants
-      use cvt_sph_vect_2_cart_smp
+      use cvt_sph_vector_2_xyz_smp
 !
       implicit none
 !

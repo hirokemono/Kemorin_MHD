@@ -1,26 +1,57 @@
-!cvt_nodal_and_sph_field.f90
-!     module cvt_nodal_and_sph_field
+!>@file   cvt_nodal_and_sph_field.f90
+!!@brief  module cvt_nodal_and_sph_field
+!!
+!!@author H. Matsui
+!!@date Programmed in Nov., 2011
 !
-!      Written by H. Matsui on Feb., 2008
-!
-!      subroutine cvt_nod_vec_to_sph_vec(numnod, np_smp, inod_smp_stack,&
-!     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,        &
-!     &          i_field, ntot_phys, d_nod,                             &
-!     &          i_rtp, nnod_rtp, ntot_rtp, d_rtp, d_tmp)
-!      subroutine cvt_sph_vec_to_nod_vec                                &
-!     &         (numnod, np_smp, inod_smp_stack, colatitude, longitude, &
-!     &          i_rtp, nnod_rtp, ntot_rtp, d_rtp,                      &
-!     &          i_field, ntot_phys, d_nod, d_tmp)
-!
-!      subroutine cvt_nod_tsr_to_sph_tsr(numnod, np_smp, inod_smp_stack,&
-!     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,        &
-!     &          i_field, ntot_phys, d_nod,                             &
-!     &          i_rtp, nnod_rtp, ntot_rtp, d_rtp, d_tmp)
-!      subroutine cvt_sph_tsr_to_nod_tsr                                &
-!     &         (numnod, np_smp, inod_smp_stack, xx,                    &
-!     &          radius, s_cylinder, a_radius, a_s_cylinder,            &
-!     &          i_rtp, nnod_rtp, ntot_rtp, d_rtp,                      &
-!     &          i_field, ntot_phys, d_nod, d_tmp)
+!>@brief Convert vector and tensor between spherical grid and FEM grid
+!!
+!!@verbatim
+!!      subroutine cvt_nod_vec_to_sph_vec                               &
+!!     &         (numnod, np_smp, inod_smp_stack,                       &
+!!     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,       &
+!!     &          i_field, ntot_phys, d_nod,                            &
+!!     &          i_rtp, nnod_rtp, ntot_rtp, d_rtp, d_tmp)
+!!      subroutine cvt_sph_vec_to_nod_vec                               &
+!!     &         (numnod, np_smp, inod_smp_stack, colatitude, longitude,&
+!!     &          i_rtp, nnod_rtp, ntot_rtp, d_rtp,                     &
+!!     &          i_field, ntot_phys, d_nod, d_tmp)
+!!
+!!      subroutine cvt_nod_tsr_to_sph_tsr                               &
+!!     &         (numnod, np_smp, inod_smp_stack,                       &
+!!     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,       &
+!!     &          i_field, ntot_phys, d_nod,                            &
+!!     &          i_rtp, nnod_rtp, ntot_rtp, d_rtp, d_tmp)
+!!      subroutine cvt_sph_tsr_to_nod_tsr                               &
+!!     &         (numnod, np_smp, inod_smp_stack, xx,                   &
+!!     &          radius, s_cylinder, a_radius, a_s_cylinder,           &
+!!     &          i_rtp, nnod_rtp, ntot_rtp, d_rtp,                     &
+!!     &          i_field, ntot_phys, d_nod, d_tmp)
+!!@endverbatim
+!!
+!!@n @param  np_smp   Number of SMP processes
+!!@n @param  numnod   Number of FEM nodes
+!!@n @param  inod_smp_stack(0:np_smp)
+!!                    End address of FEM nodes for each SMP process
+!!@n @param  xx(numnod,3) position of FEM node
+!!@n @param  radius(numnod)     radius r of FEM node
+!!@n @param  s_cylinder(numnod)   cyrindrical radius s of FEM node
+!!@n @param  a_radius(numnod)     1/r of FEM node
+!!@n @param  a_s_cylinder(numnod) 1/s of FEM node
+!!@n @param  ntot_phys      total number of component
+!!                          of fields on FEM mesh
+!!@n @param  d_nod(numnod,ntot_phys)   fields on FEM mesh
+!!@n @param  i_field        address of field on FEM mesh
+!!
+!!@n @param  nnod_rtp   Number of spherical coordinate grid
+!!                     (No pole or center)
+!!@n @param  ntot_rtp    total number of component
+!!                          of fields on spherical grid
+!!@n @param  d_rtp(numnod,ntot_phys)   fields on spherical grid
+!!@n @param  i_rtp          address of field on spherical grid
+!!
+!!@n @param  d_tmp(numnod,6)   work array for data convert
+!!@n @param  d_tmp(nnod_rtp,6) work array for data convert
 !
       module cvt_nodal_and_sph_field
 !
@@ -35,12 +66,13 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine cvt_nod_vec_to_sph_vec(numnod, np_smp, inod_smp_stack, &
+      subroutine cvt_nod_vec_to_sph_vec                                 &
+     &         (numnod, np_smp, inod_smp_stack,                         &
      &          xx, radius, s_cylinder, a_radius, a_s_cylinder,         &
      &          i_field, ntot_phys, d_nod,                              &
      &          i_rtp, nnod_rtp, ntot_rtp, d_rtp, d_tmp)
 !
-      use cvt_vector_2_spheric_smp
+      use cvt_xyz_vector_2_sph_smp
       use copy_between_two_fields
 !
       integer(kind = kint), intent(in) :: i_rtp, i_field
@@ -78,7 +110,7 @@
      &          i_rtp, nnod_rtp, ntot_rtp, d_rtp,                       &
      &          i_field, ntot_phys, d_nod, d_tmp)
 !
-      use cvt_sph_vect_2_cart_smp
+      use cvt_sph_vector_2_xyz_smp
       use copy_between_two_fields
 !
       integer(kind = kint), intent(in) :: i_rtp, i_field
@@ -111,12 +143,13 @@
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      subroutine cvt_nod_tsr_to_sph_tsr(numnod, np_smp, inod_smp_stack, &
+      subroutine cvt_nod_tsr_to_sph_tsr                                 &
+     &         (numnod, np_smp, inod_smp_stack,                         &
      &          xx, radius, s_cylinder, a_radius, a_s_cylinder,         &
      &          i_field, ntot_phys, d_nod,                              &
      &          i_rtp, nnod_rtp, ntot_rtp, d_rtp, d_tmp)
 !
-      use cvt_tensor_2_spheric_smp
+      use cvt_xyz_tensor_2_sph_smp
       use copy_between_two_fields
 !
       integer(kind = kint), intent(in) :: i_rtp, i_field

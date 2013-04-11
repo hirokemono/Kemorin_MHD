@@ -1,41 +1,54 @@
-!cvt_sph_vect_2_cart_smp.f90
-!      module cvt_sph_vect_2_cart_smp
+!>@file   cvt_sph_vector_2_xyz_smp.f90
+!!@brief  module cvt_sph_vector_2_xyz_smp
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2005
 !
-!      Written by H. Matsui on June, 2005
+!>@brief Convert vector from Cartesian coordinate
+!!       to cylindrical coordinate
+!!
+!!@verbatim
+!!*********************************************************************
+!!*
+!!*   convert vector from spherical coordinate to certecian coordinate
+!!*      vx =  vr*sin(th)*cos(phi) + vt*cos(th)*cos(phi) - vp*sin(phi)
+!!*      vy =  vr*sin(th)*sin(phi) + vt*cos(th)*sin(phi) + vp*cos(phi)
+!!*      vz =  vr*cos(th) - vt*sin(th)
+!!*
+!!*********************************************************************
+!!
+!!      subroutine cvt_sph_vect_2_xyz_smp(np_smp, numnod,               &
+!!     &          inod_smp_stack, vect, v_sph, theta, phi)
+!!
+!!      subroutine overwrite_sph_vect_2_xyz_smp(np_smp, numnod,         &
+!!     &          inod_smp_stack, vect, theta, phi)
+!!
+!!      subroutine cal_sph_2_x_comp_smp(np_smp, numnod, inod_smp_stack, &
+!!     &          v_x, v_sph, theta, phi)
+!!      subroutine cal_sph_2_y_comp_smp(np_smp, numnod, inod_smp_stack, &
+!!     &          v_y, v_sph, theta, phi)
+!!      subroutine cal_sph_2_z_comp_smp(np_smp, numnod, inod_smp_stack, &
+!!     &          v_z, v_sph, theta)
+!!
+!!*********************************************************************
+!!@endverbatim
+!!
+!!@n @param  np_smp   Number of SMP processes
+!!@n @param  numnod   Number of data points
+!!@n @param  inod_smp_stack(0:np_smp)
+!!                    End address of each SMP process
+!!@n @param  xx(numnod,3) position in Cartesian coordinate
+!!@n @param  theta(numnod)  colatitude
+!!@n @param  phi(numnod)    longigude
+!!
+!!@n @param  v_sph(numnod,3) vector in spherical coordinate
+!!
+!!@n @param  vect(numnod,3) vector in Cartesian coordinate
+!!@n @param  v_x(numnod) x component of vector in Cartesian coordinate
+!!@n @param  v_y(numnod) y component of vector in Cartesian coordinate
+!!@n @param  v_z(numnod) z component of vector in Cartesian coordinate
 !
-!*********************************************************************
-!*
-!*   convert vector from spherical coordinate to certecian coordinate
-!*      vx =  vr*sin(th)*cos(phi) + vt*cos(th)*cos(phi) - vp*sin(phi)
-!*      vy =  vr*sin(th)*sin(phi) + vt*cos(th)*sin(phi) + vp*cos(phi)
-!*      vz =  vr*cos(th) - vt*sin(th)
-!*
-!*********************************************************************
-!
-!      subroutine cvt_sph_vect_2_xyz_smp(np_smp, numnod, inod_smp_stack,&
-!     &          vect, v_sph, theta, phi)
-!
-!      subroutine overwrite_sph_vect_2_xyz_smp(np_smp, numnod,          &
-!     &          inod_smp_stack, vect, theta, phi)
-!
-!      subroutine cal_sph_2_x_comp_smp(np_smp, numnod, inod_smp_stack,  &
-!     &          v_x, v_sph, theta, phi)
-!      subroutine cal_sph_2_y_comp_smp(np_smp, numnod, inod_smp_stack,  &
-!     &          v_y, v_sph, theta, phi)
-!      subroutine cal_sph_2_z_comp_smp(np_smp, numnod, inod_smp_stack,  &
-!     &          v_z, v_sph, theta)
-!         numnod :: number of node
-!         theta :: colatitude ( 0 to phi)
-!         phi :: longitude ( 0 to 2\pi)
-!         v_sph :: vector on spherical coordinate
-!         vect :: obtained vector in certecian coorcinate
-!         v_x :: obtained x component
-!         v_y :: obtained y component
-!         v_z :: obtained z component
-!
-!*********************************************************************
-!
-      module cvt_sph_vect_2_cart_smp
+      module cvt_sph_vector_2_xyz_smp
 !
       use m_precision
 !
@@ -47,8 +60,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cvt_sph_vect_2_xyz_smp(np_smp, numnod, inod_smp_stack, &
-     &          vect, v_sph, theta, phi)
+      subroutine cvt_sph_vect_2_xyz_smp(np_smp, numnod,                 &
+     &          inod_smp_stack, vect, v_sph, theta, phi)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
@@ -231,4 +244,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module cvt_sph_vect_2_cart_smp
+      end module cvt_sph_vector_2_xyz_smp

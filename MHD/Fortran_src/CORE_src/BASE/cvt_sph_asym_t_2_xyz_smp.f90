@@ -1,24 +1,53 @@
-!cvt_sph_asym_t_2_xyz_smp.f90
-!      module cvt_sph_asym_t_2_xyz_smp
+!>@file   cvt_sph_asym_t_2_xyz_smp.f90
+!!@brief  module cvt_sph_asym_t_2_xyz_smp
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2009
 !
-!      Written by H. Matsui on March, 2009
-!
-!      subroutine cal_xyz_asym_t_by_sph_smp(np_smp, numnod,             &
-!     &          inod_smp_stack, t_sph, txyz, xx, r, s, a_r, a_s)
-!
-!      subroutine overwrite_xyz_asym_t_by_sph_smp(np_smp, numnod,       &
-!     &          inod_smp_stack, tensor, xx, r, s, a_r, a_s)
-!
-!      subroutine cal_xy_asym_t_by_sph_smp(np_smp, numnod,              &
-!     &          inod_smp_stack, t_sph, v_xy, xx, r, s, a_r)
-!      subroutine cal_zx_asym_t_by_sph_smp(np_smp, numnod,              &
-!     &          inod_smp_stack, t_sph, v_zx, xx, r, s, a_r, a_s)
-!      subroutine cal_yz_asym_t_by_sph_smp(np_smp, numnod,              &
-!     &          inod_smp_stack, t_sph, v_yz, xx, r, s, a_r, a_s)
-!
-!   uxuy = (ar) *   (               -s *up*ur + z   *ut*up)
-!   uzux = (aras) * ( r*x *ur*ut + y*z *up*ur + s*y *ut*up)
-!   uyuz = (aras) * (-r*y *ur*ut + x*z *up*ur + s*x *ut*up)
+!>@brief Convert anti-symmetric tensor from spherical coordinate
+!!       to Cartesian coordinate
+!!
+!!@verbatim
+!!      subroutine cal_xyz_asym_t_by_sph_smp(np_smp, numnod,            &
+!!     &          inod_smp_stack, t_sph, txyz, xx, r, s, a_r, a_s)
+!!
+!!      subroutine overwrite_xyz_asym_t_by_sph_smp(np_smp, numnod,      &
+!!     &          inod_smp_stack, tensor, xx, r, s, a_r, a_s)
+!!
+!!      subroutine cal_xy_asym_t_by_sph_smp(np_smp, numnod,             &
+!!     &          inod_smp_stack, t_sph, v_xy, xx, r, s, a_r)
+!!      subroutine cal_zx_asym_t_by_sph_smp(np_smp, numnod,             &
+!!     &          inod_smp_stack, t_sph, v_zx, xx, r, s, a_r, a_s)
+!!      subroutine cal_yz_asym_t_by_sph_smp(np_smp, numnod,             &
+!!     &          inod_smp_stack, t_sph, v_yz, xx, r, s, a_r, a_s)
+!!
+!!   uxuy = (ar) *   (               -s *up*ur + z   *ut*up)
+!!   uzux = (aras) * ( r*x *ur*ut + y*z *up*ur + s*y *ut*up)
+!!   uyuz = (aras) * (-r*y *ur*ut + x*z *up*ur + s*x *ut*up)
+!!@endverbatim
+!!
+!!@n @param  np_smp   Number of SMP processes
+!!@n @param  numnod   Number of data points
+!!@n @param  inod_smp_stack(0:np_smp)
+!!                    End address of each SMP process
+!!@n @param  xx(numnod,3) position in Cartesian coordinate
+!!@n @param  r(numnod)    radius
+!!@n @param  s(numnod)    cylindrical radius
+!!@n @param  a_r(numnod)  1 / r
+!!@n @param  a_s(numnod)  1 / s
+!!
+!!@n @param  tensor(numnod,3)
+!!                    anti-symmetric tensor
+!!@n @param  t_sph(numnod,3)
+!!                    anti-symmetric tensor in spherical coordinate
+!!@n @param  tsph(numnod,3)
+!!                    anti-symmetric tensor in Cartesian coordinate
+!!@n @param  t_rt(numnod)
+!!                    @f$ T_{r\theta} @f$ in Cartesian coordinate
+!!@n @param  t_pr(numnod)
+!!                    @f$ T_{\phi r} @f$  in Cartesian coordinate
+!!@n @param  t_tp(numnod)
+!!                     @f$ T_{\theta \phi} @f$ in Cartesian coordinate
 !
       module cvt_sph_asym_t_2_xyz_smp
 !

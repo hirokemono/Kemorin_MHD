@@ -27,8 +27,8 @@
 !
       subroutine prod_model_coefs_4_tensor(itype_csim, ak_sgs, sk6)
 !
-      use cvt_tensor_2_cylinder_smp
-      use cvt_tensor_2_spheric_smp
+      use cvt_xyz_tensor_2_cyl_smp
+      use cvt_xyz_tensor_2_sph_smp
       use cvt_cyl_tensor_2_xyz_smp
       use cvt_sph_tensor_2_xyz_smp
       use overwrite_products_smp
@@ -94,10 +94,10 @@
 !
       subroutine prod_model_coefs_4_vector(itype_csim, ak_sgs, sk6)
 !
-      use cvt_vector_2_cylinder_smp
-      use cvt_vector_2_spheric_smp
-      use cvt_cyl_vect_2_cart_smp
-      use cvt_sph_vect_2_cart_smp
+      use cvt_xyz_vector_2_cyl_smp
+      use cvt_xyz_vector_2_sph_smp
+      use cvt_cyl_vector_2_xyz_smp
+      use cvt_sph_vector_2_xyz_smp
       use overwrite_products_smp
 !
       integer (kind = kint), intent(in) :: itype_csim
@@ -158,8 +158,8 @@
 !
       subroutine prod_model_coefs_4_asym_t(itype_csim, ak_sgs, sk6)
 !
-      use cvt_asym_t_2_cylinder_smp
-      use cvt_asym_t_2_spheric_smp
+      use cvt_xyz_asym_t_2_cyl_smp
+      use cvt_xyz_asym_t_2_sph_smp
       use cvt_cyl_asym_t_2_xyz_smp
       use cvt_sph_asym_t_2_xyz_smp
       use overwrite_products_smp

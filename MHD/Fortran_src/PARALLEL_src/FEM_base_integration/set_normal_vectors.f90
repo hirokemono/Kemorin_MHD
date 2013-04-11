@@ -50,7 +50,7 @@
 !
       subroutine s_cal_normal_vector_spherical
 !
-      use cvt_vector_2_spheric_smp
+      use cvt_xyz_vector_2_sph_smp
 !
 !
       call allocate_normal_vector_sph
@@ -65,7 +65,7 @@
 !
       subroutine s_cal_normal_vector_cylindrical
 !
-      use cvt_vector_2_cylinder_smp
+      use cvt_xyz_vector_2_cyl_smp
 !
 !
       call allocate_normal_vector_cyl

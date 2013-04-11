@@ -1,21 +1,38 @@
+!>@file   delete_field_smp.f90
+!!@brief  module delete_field_smp
+!!
+!!@author H. Matsui
+!!@date Programmed in May., 2009
 !
-!     module delete_field_smp
-!
-!        programmed by H.Matsui on May., 2009
-!
-!      need $omp parallel to use routines
-!
-!      subroutine delete_phys_data_smp(np_smp, nnod, inod_smp_stack,    &
-!     &          ntot_comp, numdir, i_field, field)
-!
-!      subroutine delete_scalar_smp(np_smp, nnod, inod_smp_stack,       &
-!     &          scalar)
-!      subroutine delete_vector_smp(np_smp, nnod, inod_smp_stack,       &
-!     &          vector)
-!      subroutine delete_sym_tensor_smp(np_smp, nnod, inod_smp_stack,   &
-!     &          tensor)
-!      subroutine delete_arb_vect_smp(np_smp, nnod, inod_smp_stack,     &
-!     &          numdir, vector)
+!>@brief Clear field to zero
+!!
+!!@verbatim
+!!      subroutine delete_phys_data_smp(np_smp, numnod, inod_smp_stack, &
+!!     &          ntot_comp, numdir, i_field, field)
+!!
+!!      subroutine delete_scalar_smp(np_smp, numnod, inod_smp_stack,    &
+!!     &          scalar)
+!!      subroutine delete_vector_smp(np_smp, numnod, inod_smp_stack,    &
+!!     &          vector)
+!!      subroutine delete_sym_tensor_smp(np_smp, numnod, inod_smp_stack,&
+!!     &          tensor)
+!!      subroutine delete_arb_vect_smp(np_smp, numnod, inod_smp_stack,  &
+!!     &          numdir, vector)
+!!@endverbatim
+!!
+!!@n @param  np_smp   Number of SMP processes
+!!@n @param  numnod     Number of data points
+!!@n @param  inod_smp_stack(0:np_smp)
+!!                    End address of each SMP process
+!!
+!!@n @param  ntot_comp total number of components of fields
+!!@n @param  field(numnod,ntot_comp)  fields data
+!!@n @param  numdir    number of components of field to be cleared
+!!@n @param  i_field   address of field to be cleared
+!!
+!!@n @param  scalar(numnod)   scalar field to be cleared
+!!@n @param  vector(numnod,3) vector field to be cleared
+!!@n @param  tensor(numnod,6) symmetric tensor field to be cleared
 !
       module delete_field_smp
 !
@@ -32,29 +49,29 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine delete_phys_data_smp(np_smp, nnod, inod_smp_stack,     &
+      subroutine delete_phys_data_smp(np_smp, numnod, inod_smp_stack,   &
      &          ntot_comp, numdir, i_field, field)
 !
       use m_constants
 !
-      integer (kind=kint), intent(in) :: np_smp, nnod
+      integer (kind=kint), intent(in) :: np_smp, numnod
       integer (kind=kint), intent(in) :: ntot_comp, numdir, i_field
       integer (kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(inout) :: field(nnod,ntot_comp)
+      real (kind=kreal), intent(inout) :: field(numnod,ntot_comp)
 !
 !
       if(numdir .eq. ione) then
-        call delete_scalar_smp(np_smp, nnod, inod_smp_stack,            &
+        call delete_scalar_smp(np_smp, numnod, inod_smp_stack,          &
      &      field(1,i_field) )
       else if(numdir .eq. ithree) then
-        call delete_vector_smp(np_smp, nnod, inod_smp_stack,            &
+        call delete_vector_smp(np_smp, numnod, inod_smp_stack,          &
      &      field(1,i_field) )
       else if(numdir .eq. isix) then
-        call delete_sym_tensor_smp(np_smp, nnod, inod_smp_stack,        &
+        call delete_sym_tensor_smp(np_smp, numnod, inod_smp_stack,      &
      &      field(1,i_field) )
       else
-        call delete_arb_vect_smp(np_smp, nnod, inod_smp_stack,         &
+        call delete_arb_vect_smp(np_smp, numnod, inod_smp_stack,        &
      &      numdir, field(1,i_field) )
       end if
 !
@@ -63,15 +80,15 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine delete_scalar_smp(np_smp, nnod, inod_smp_stack,        &
+      subroutine delete_scalar_smp(np_smp, numnod, inod_smp_stack,      &
      &          scalar)
 !
       use m_constants
 !
-      integer (kind=kint), intent(in) :: np_smp, nnod
+      integer (kind=kint), intent(in) :: np_smp, numnod
       integer (kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(inout) :: scalar(nnod)
+      real (kind=kreal), intent(inout) :: scalar(numnod)
 !
       integer (kind=kint) :: iproc, inod, ist, ied
 !
@@ -92,15 +109,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine delete_vector_smp(np_smp, nnod, inod_smp_stack,        &
+      subroutine delete_vector_smp(np_smp, numnod, inod_smp_stack,      &
      &          vector)
 !
       use m_constants
 !
-      integer (kind=kint), intent(in) :: np_smp, nnod
+      integer (kind=kint), intent(in) :: np_smp, numnod
       integer (kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(inout) :: vector(nnod,3)
+      real (kind=kreal), intent(inout) :: vector(numnod,3)
 !
       integer (kind=kint) :: iproc, inod, ist, ied
 !
@@ -123,15 +140,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine delete_sym_tensor_smp(np_smp, nnod, inod_smp_stack,    &
+      subroutine delete_sym_tensor_smp(np_smp, numnod, inod_smp_stack,  &
      &          tensor)
 !
       use m_constants
 !
-      integer (kind=kint), intent(in) :: np_smp, nnod
+      integer (kind=kint), intent(in) :: np_smp, numnod
       integer (kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(inout) :: tensor(nnod,6)
+      real (kind=kreal), intent(inout) :: tensor(numnod,6)
 !
       integer (kind=kint) :: iproc, inod, ist, ied
 !
@@ -158,15 +175,15 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine delete_arb_vect_smp(np_smp, nnod, inod_smp_stack,      &
+      subroutine delete_arb_vect_smp(np_smp, numnod, inod_smp_stack,    &
      &          numdir, vector)
 !
       use m_constants
 !
-      integer (kind=kint), intent(in) :: np_smp, nnod, numdir
+      integer (kind=kint), intent(in) :: np_smp, numnod, numdir
       integer (kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(inout) :: vector(nnod,numdir)
+      real (kind=kreal), intent(inout) :: vector(numnod,numdir)
 !
       integer (kind=kint) :: iproc, inod, ist, ied, nd
 !

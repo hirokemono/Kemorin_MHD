@@ -1,26 +1,53 @@
-!cvt_asym_t_2_spheric_smp.f90
-!      module cvt_asym_t_2_spheric_smp
+!>@file   cvt_xyz_asym_t_2_sph_smp.f90
+!!@brief  module cvt_xyz_asym_t_2_sph_smp
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2009
 !
-!      Written by H. Matsui on March, 2009
+!>@brief Convert anti-symmetric tensor from Cartesian coordinate
+!!       to spherical coordinate
+!!
+!!@verbatim
+!!      subroutine cal_sph_asym_t_smp(np_smp, numnod, inod_smp_stack,   &
+!!     &          tensor, tsph, xx, r, s, a_r, a_s)
+!!
+!!      subroutine overwrite_sph_asym_t_smp(np_smp, numnod,             &
+!!     &          inod_smp_stack, tensor, xx, r, s, a_r, a_s)
+!!
+!!      subroutine cal_rt_asym_t_smp(np_smp, numnod, inod_smp_stack,    &
+!!     &          tensor, t_rt, xx, r, s, a_s)
+!!      subroutine cal_pr_asym_t_smp(np_smp, numnod, inod_smp_stack,    &
+!!     &          tensor, t_pr, xx, r, s, a_r, a_s)
+!!      subroutine cal_tp_asym_t_smp(np_smp, numnod, inod_smp_stack,    &
+!!     &          tensor, t_tp, xx, r, s, a_r)
+!!
+!!   urut = (as) *   (              x   *uz*ux - y   *uy*uz)
+!!   upur = (aras) * (-s*s *ux*uy + y*z *uz*ux + x*z* uy*uz)
+!!   utup = (ar) *   (   z *ux*uy + y   *uz*ux + x   *uy*uz)
+!!@endverbatim
+!!
+!!@n @param  np_smp   Number of SMP processes
+!!@n @param  numnod   Number of data points
+!!@n @param  inod_smp_stack(0:np_smp)
+!!                    End address of each SMP process
+!!@n @param  xx(numnod,3) position in Cartesian coordinate
+!!@n @param  r(numnod)    radius
+!!@n @param  s(numnod)    cylindrical radius
+!!@n @param  a_r(numnod)  1 / r
+!!@n @param  a_s(numnod)  1 / s
+!!
+!!@n @param  tensor(numnod,3)
+!!                    anti-symmetric tensor in Cartesian coordinate
+!!@n @param  tsph(numnod,3)
+!!                    anti-symmetric tensor in spherical coordinate
+!!@n @param  t_rt(numnod)
+!!                    @f$ T_{r\theta} @f$ in spherical coordinate
+!!@n @param  t_pr(numnod)
+!!                    @f$ T_{\phi r} @f$  in spherical coordinate
+!!@n @param  t_tp(numnod)
+!!                     @f$ T_{\theta \phi} @f$ in spherical coordinate
 !
-!      subroutine cal_sph_asym_t_smp(np_smp, numnod, inod_smp_stack,    &
-!     &          tensor, tsph, xx, r, s, a_r, a_s)
-!
-!      subroutine overwrite_sph_asym_t_smp(np_smp, numnod,              &
-!     &          inod_smp_stack, tensor, xx, r, s, a_r, a_s)
-!
-!      subroutine cal_rt_asym_t_smp(np_smp, numnod, inod_smp_stack,     &
-!     &          tensor, v_rt, xx, r, s, a_s)
-!      subroutine cal_pr_asym_t_smp(np_smp, numnod, inod_smp_stack,     &
-!     &          tensor, v_pr, xx, r, s, a_r, a_s)
-!      subroutine cal_tp_asym_t_smp(np_smp, numnod, inod_smp_stack,     &
-!     &          tensor, v_tp, xx, r, s, a_r)
-!
-!   urut = (as) *   (              x   *uz*ux - y   *uy*uz)
-!   upur = (aras) * (-s*s *ux*uy + y*z *uz*ux + x*z* uy*uz)
-!   utup = (ar) *   (   z *ux*uy + y   *uz*ux + x   *uy*uz)
-!
-      module cvt_asym_t_2_spheric_smp
+      module cvt_xyz_asym_t_2_sph_smp
 !
       use m_precision
       use m_constants
@@ -157,7 +184,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_rt_asym_t_smp(np_smp, numnod, inod_smp_stack,      &
-     &          tensor, v_rt, xx, r, s, a_s)
+     &          tensor, t_rt, xx, r, s, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
@@ -167,7 +194,7 @@
        real(kind=kreal), intent(in) :: s(numnod)
        real(kind=kreal), intent(in) :: a_s(numnod)
 !
-       real(kind=kreal), intent(inout) :: v_rt(numnod)
+       real(kind=kreal), intent(inout) :: t_rt(numnod)
 !
        integer (kind = kint) :: ip, inod, ist, ied
        real(kind=kreal) :: txy, tzx, tyz
@@ -183,13 +210,13 @@
            tyz = tensor(inod,3)
 !
            if ( r(inod).eq.0.0 ) then
-             v_rt(inod) =     tzx
+             t_rt(inod) =     tzx
            else if ( s(inod).eq.0.0 .and. xx(inod,3) .gt. 0) then
-             v_rt(inod) =     tzx
+             t_rt(inod) =     tzx
            else if ( s(inod).eq.0.0 .and. xx(inod,3) .lt. 0) then
-             v_rt(inod) =     tzx
+             t_rt(inod) =     tzx
            else
-             v_rt(inod) =   ( tzx * xx(inod,1)                          &
+             t_rt(inod) =   ( tzx * xx(inod,1)                          &
      &                      - tyz * xx(inod,2) ) * a_s(inod)
            end if
 !
@@ -202,7 +229,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_pr_asym_t_smp(np_smp, numnod, inod_smp_stack,      &
-     &          tensor, v_pr, xx, r, s, a_r, a_s)
+     &          tensor, t_pr, xx, r, s, a_r, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
@@ -213,7 +240,7 @@
        real(kind=kreal), intent(in) :: a_r(numnod)
        real(kind=kreal), intent(in) :: a_s(numnod)
 !
-       real(kind=kreal), intent(inout) :: v_pr(numnod)
+       real(kind=kreal), intent(inout) :: t_pr(numnod)
 !
        integer (kind = kint) :: ip, inod, ist, ied
        real(kind=kreal) :: txy, tzx, tyz
@@ -229,13 +256,13 @@
            tyz = tensor(inod,3)
 !
            if ( r(inod).eq.0.0 ) then
-             v_pr(inod) =     tyz
+             t_pr(inod) =     tyz
            else if ( s(inod).eq.0.0 .and. xx(inod,3) .gt. 0) then
-             v_pr(inod) =     tyz
+             t_pr(inod) =     tyz
            else if ( s(inod).eq.0.0 .and. xx(inod,3) .lt. 0) then
-             v_pr(inod) =   - tyz
+             t_pr(inod) =   - tyz
            else
-             v_pr(inod) =   (-txy *  s(inod)  * s(inod)                 &
+             t_pr(inod) =   (-txy *  s(inod)  * s(inod)                 &
      &                      + tzx * xx(inod,2)*xx(inod,3)               &
      &                      + tyz * xx(inod,1)*xx(inod,3) )             &
      &                     * a_r(inod) * a_s(inod)
@@ -250,7 +277,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_tp_asym_t_smp(np_smp, numnod, inod_smp_stack,      &
-     &          tensor, v_tp, xx, r, s, a_r)
+     &          tensor, t_tp, xx, r, s, a_r)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
@@ -260,7 +287,7 @@
        real(kind=kreal), intent(in) :: s(numnod)
        real(kind=kreal), intent(in) :: a_r(numnod)
 !
-       real(kind=kreal), intent(inout) :: v_tp(numnod)
+       real(kind=kreal), intent(inout) :: t_tp(numnod)
 !
        integer (kind = kint) :: ip, inod, ist, ied
        real(kind=kreal) :: txy, tzx, tyz
@@ -276,13 +303,13 @@
            tyz = tensor(inod,3)
 !
            if ( r(inod).eq.0.0 ) then
-             v_tp(inod) =     txy
+             t_tp(inod) =     txy
            else if ( s(inod).eq.0.0 .and. xx(inod,3) .gt. 0) then
-             v_tp(inod) =     txy
+             t_tp(inod) =     txy
            else if ( s(inod).eq.0.0 .and. xx(inod,3) .lt. 0) then
-             v_tp(inod) =   - txy
+             t_tp(inod) =   - txy
            else
-             v_tp(inod) =   ( txy * xx(inod,3)                          &
+             t_tp(inod) =   ( txy * xx(inod,3)                          &
      &                      + tzx * xx(inod,2)                          &
      &                      + tyz * xx(inod,1) ) * a_r(inod)
            end if
@@ -295,4 +322,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module cvt_asym_t_2_spheric_smp
+      end module cvt_xyz_asym_t_2_sph_smp

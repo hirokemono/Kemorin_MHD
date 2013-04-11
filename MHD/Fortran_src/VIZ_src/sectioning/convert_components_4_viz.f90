@@ -29,10 +29,10 @@
       use set_nodal_field_for_psf
       use mag_of_field_smp
       use copy_field_smp
-      use cvt_vector_2_spheric_smp
-      use cvt_vector_2_cylinder_smp
-      use cvt_tensor_2_spheric_smp
-      use cvt_tensor_2_cylinder_smp
+      use cvt_xyz_vector_2_sph_smp
+      use cvt_xyz_vector_2_cyl_smp
+      use cvt_xyz_tensor_2_sph_smp
+      use cvt_xyz_tensor_2_cyl_smp
 !
       integer(kind = kint), intent(in) :: nnod
       integer(kind = kint), intent(in) :: istack_n_smp(0:np_smp)

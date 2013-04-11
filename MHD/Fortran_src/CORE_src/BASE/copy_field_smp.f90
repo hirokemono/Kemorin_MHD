@@ -1,19 +1,35 @@
+!>@file   copy_field_smp.f90
+!!@brief  module copy_field_smp
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2009
 !
-!      module copy_field_smp
-!
-!      Written by H. Matsui on June, 2005
-!
-!> @brief subroutine for data copy
-!
-!      subroutine copy_nod_scalar_smp(np_smp, numnod, inod_smp_stack,   &
-!     &          scalar, copied)
-!      subroutine copy_nod_vector_smp(np_smp, numnod, inod_smp_stack,   &
-!     &          vector, copied)
-!      subroutine copy_nod_sym_tensor_smp(np_smp, numnod,               &
-!     &          inod_smp_stack, tensor, copied)
-!
-!      subroutine copy_nod_integer_smp(np_smp, numnod, inod_smp_stack,  &
-!     &          int_scalar, int_copied)
+!> @brief subroutine to copy field data
+!!
+!!@verbatim
+!!      subroutine copy_nod_scalar_smp(np_smp, numnod, inod_smp_stack,  &
+!!     &          scalar, copied)
+!!      subroutine copy_nod_vector_smp(np_smp, numnod, inod_smp_stack,  &
+!!     &          vector, copied)
+!!      subroutine copy_nod_sym_tensor_smp(np_smp, numnod,              &
+!!     &          inod_smp_stack, tensor, copied)
+!!
+!!      subroutine copy_nod_integer_smp(np_smp, numnod, inod_smp_stack, &
+!!     &          int_scalar, int_copied)
+!!@endverbatim
+!!
+!!@n @param  np_smp   Number of SMP processes
+!!@n @param  numnod   Number of data points
+!!@n @param  inod_smp_stack(0:np_smp)
+!!                    End address of each SMP process
+!!
+!!@n @param  scalar(numnod)     original scalar field
+!!@n @param  vector(numnod,3)   original vector field
+!!@n @param  tensor(numnod,6)   original symmetric tensor field
+!!@n @param  int_scalar(numnod) original integer field
+!!
+!!@n @param  copied(numnod,n) copied field data
+!!@n @param  int_copied(numnod) copied integer field data
 !
       module copy_field_smp
 !

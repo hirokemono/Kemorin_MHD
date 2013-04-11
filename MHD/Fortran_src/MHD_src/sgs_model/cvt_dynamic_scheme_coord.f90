@@ -65,7 +65,7 @@
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
-      use cvt_vector_2_cylinder_smp
+      use cvt_xyz_vector_2_cyl_smp
 !
 !
       if(iflag_debug.gt.0) write(*,*) 'convert cylindrical corrdinate'
@@ -91,7 +91,7 @@
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
-      use cvt_vector_2_spheric_smp
+      use cvt_xyz_vector_2_sph_smp
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'convert spherical corrdinate'
@@ -118,7 +118,7 @@
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
-      use cvt_tensor_2_cylinder_smp
+      use cvt_xyz_tensor_2_cyl_smp
 !
 !
       if(iflag_debug.gt.0) write(*,*) 'convert cylindrical corrdinate'
@@ -141,7 +141,7 @@
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
-      use cvt_tensor_2_spheric_smp
+      use cvt_xyz_tensor_2_sph_smp
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'convert spherical corrdinate'

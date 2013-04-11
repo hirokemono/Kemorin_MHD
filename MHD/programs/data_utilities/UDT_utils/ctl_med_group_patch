@@ -4,13 +4,14 @@ begin meridional_group_patch
     num_subdomain_ctl           8
     num_smp_ctl                 1
 !
-    mesh_file_head_ctl          'mhd_0260_cp24r58n_LES1_2012Jan/8domains/cp24r58n_rs_grp_8_sl1/in'
-!    mesh_file_head_ctl         'mhd_0260_cp24r58n_LES1_2012Jan/cp24r58n_rs_grp/in'
+    mesh_file_head_ctl          'cp24r58n_rs_grp_8_sl1/in'
+!
+    mesh_file_fmt_ctl           'gzip'
     field_files_fmt_ctl         'gzip'
-  end
+  end data_files_def
 !
   begin models
     grouping_mesh_head_ctl   'ele_group_med'
-  end
+  end models
 !
-end
+end meridional_group_patch

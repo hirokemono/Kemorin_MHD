@@ -1,25 +1,46 @@
-!cal_add_smp.f90
-!     module cal_add_smp
+!>@file   cal_add_smp.f90
+!!@brief  module cal_add_smp
+!!
+!!@author H. Matsui
+!!@date Programmed...when??
 !
-!      Written by H. Matsui
-!
-!      subroutine add_scalars_smp(np_smp, nnod, inod_smp_stack,         &
-!     &          scalar1, scalar2, added)
-!      subroutine add_vectors_smp(np_smp, nnod, inod_smp_stack,         &
-!     &          vector1, vector2, added)
-!      subroutine add_tensors_smp(np_smp, nnod, inod_smp_stack,         &
-!     &          tensor1, tensor2, added)
-!
-!      subroutine add_const_to_scalar_smp(np_smp, nnod, inod_smp_stack, &
-!     &          scalar, const, added)
-!      subroutine add_const_to_vector_smp(np_smp, nnod, inod_smp_stack, &
-!     &          vector, const, added)
-!      subroutine add_const_to_tensor_smp(np_smp, nnod, inod_smp_stack, &
-!     &          tensor, const, added)
-!
-!         d_nod(inod,i_r) =  d_nod(inod,i_v1) + d_nod(inod,i_v2)
-!        i_r: result field ID
-!        i_v1, i_v2: source field IDs
+!>@brief  add two field data
+!!
+!!@verbatim
+!!      subroutine add_scalars_smp(np_smp, nnod, inod_smp_stack,        &
+!!     &          scalar1, scalar2, added)
+!!      subroutine add_vectors_smp(np_smp, nnod, inod_smp_stack,        &
+!!     &          vector1, vector2, added)
+!!      subroutine add_tensors_smp(np_smp, nnod, inod_smp_stack,        &
+!!     &          tensor1, tensor2, added)
+!!
+!!      subroutine add_const_to_scalar_smp(np_smp, nnod, inod_smp_stack,&
+!!     &          scalar, const, added)
+!!      subroutine add_const_to_vector_smp(np_smp, nnod, inod_smp_stack,&
+!!     &          vector, const, added)
+!!      subroutine add_const_to_tensor_smp(np_smp, nnod, inod_smp_stack,&
+!!     &          tensor, const, added)
+!!
+!!         d_nod(inod,i_r) =  d_nod(inod,i_v1) + d_nod(inod,i_v2)
+!!        i_r: result field ID
+!!        i_v1, i_v2: source field IDs
+!!@endverbatim
+!!
+!!@n @param  np_smp   Number of SMP processes
+!!@n @param  nnod     Number of data points
+!!@n @param  inod_smp_stack(0:np_smp)
+!!                    End address of each SMP process
+!!
+!!@n @param  scalar1(nnod)     Input scalar data 1
+!!@n @param  scalar2(nnod)     Input scalar data 2
+!!@n @param  vector1(nnod,3)   Input vector data 1
+!!@n @param  vector2(nnod,3)   Input vector data 2
+!!@n @param  tensor1(nnod,6)   Input symmetric tensor data 1
+!!@n @param  tensor2(nnod,6)   Input symmetric tenso data 2
+!!@n @param  const             Constant
+!!                      (scalar, vector, or symmetric tensor)
+!!@n @param  added(nnod,NB)    Solution
+!!                      (scalar, vector, or symmetric tensor)
 !
       module cal_add_smp
 !

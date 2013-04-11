@@ -81,7 +81,7 @@
 !
       use copy_field_4_sph_trans
       use copy_pole_field_sph_trans
-      use cvt_sph_vect_2_cart_smp
+      use cvt_sph_vector_2_xyz_smp
 !
       integer(kind = kint), intent(in) :: nvector_trans
       integer(kind = kint), intent(in) :: i_field, i_trns
@@ -180,7 +180,7 @@
      &          ntot_phys, d_nod)
 !
       use copy_field_4_sph_trans
-      use cvt_sph_vect_2_cart_smp
+      use cvt_sph_vector_2_xyz_smp
 !
       integer(kind = kint), intent(in) :: nvector_trans
       integer(kind = kint), intent(in) :: i_field, i_trns
@@ -271,7 +271,7 @@
 !
       use m_work_4_sph_trans
       use copy_field_4_sph_trans
-      use cvt_vector_2_spheric_smp
+      use cvt_xyz_vector_2_sph_smp
 !
       integer(kind = kint), intent(in) :: nvector_trans
       integer(kind = kint), intent(in) :: i_field, i_trns
@@ -306,7 +306,7 @@
 !
       use m_work_4_sph_trans
       use copy_field_4_sph_trans
-      use cvt_tensor_2_spheric_smp
+      use cvt_xyz_tensor_2_sph_smp
 !
       integer(kind = kint), intent(in) :: ntensor_trans
       integer(kind = kint), intent(in) :: i_field, i_trns

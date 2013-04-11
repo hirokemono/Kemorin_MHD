@@ -55,8 +55,8 @@
       subroutine transfer_corr_field_to_sph
 !
       use m_node_phys_data
-      use cvt_vector_2_spheric_smp
-      use cvt_tensor_2_spheric_smp
+      use cvt_xyz_vector_2_sph_smp
+      use cvt_xyz_tensor_2_sph_smp
 !
       integer(kind = kint) :: i_fld, ist, inod
 !
@@ -140,8 +140,8 @@
       subroutine transfer_corr_field_to_cyl
 !
       use m_node_phys_data
-      use cvt_vector_2_cylinder_smp
-      use cvt_tensor_2_cylinder_smp
+      use cvt_xyz_vector_2_cyl_smp
+      use cvt_xyz_tensor_2_cyl_smp
 !
       integer(kind = kint) :: i_fld, ist, inod
 !

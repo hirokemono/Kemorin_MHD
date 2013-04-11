@@ -1,21 +1,39 @@
+!>@file   subtract_const_smp.f90
+!!@brief  module subtract_const_smp
+!!
+!!@author H. Matsui
+!!@date Programmed...when??
 !
-!      module subtract_const_smp
-!
-!      Written by H. Matsui on June, 2005
-!
-!      subroutine subtruct_const_4_scalar_smp(np_smp, numnod,           &
-!     &          inod_smp_stack, dest, scalar, const)
-!      subroutine subtruct_const_4_vect_smp(np_smp, numnod,             &
-!     &          inod_smp_stack, dest, vector, const)
-!      subroutine subtruct_const_4_tensor_smp(np_smp, numnod,           &
-!     &          inod_smp_stack, dest, tensor, const)
-!
-!      subroutine subtruct_const_4_scalar_smp_ow(np_smp, numnod,        &
-!     &          inod_smp_stack, scalar, const)
-!      subroutine subtruct_const_4_vect_smp_ow(np_smp, numnod,          &
-!     &          inod_smp_stack, vector, const)
-!      subroutine subtruct_const_4_tensor_smp_ow(np_smp, numnod,        &
-!     &          inod_smp_stack, tensor, const)
+!>@brief  subtract constant from field data
+!!
+!!@verbatim
+!!      subroutine subtruct_const_4_scalar_smp(np_smp, nnod,          &
+!!     &          inod_smp_stack, dest, scalar, const)
+!!      subroutine subtruct_const_4_vect_smp(np_smp, nnod,            &
+!!     &          inod_smp_stack, dest, vector, const)
+!!      subroutine subtruct_const_4_tensor_smp(np_smp, nnod,          &
+!!     &          inod_smp_stack, dest, tensor, const)
+!!
+!!      subroutine subtruct_const_4_scalar_smp_ow(np_smp, nnod,       &
+!!     &          inod_smp_stack, scalar, const)
+!!      subroutine subtruct_const_4_vect_smp_ow(np_smp, nnod,         &
+!!     &          inod_smp_stack, vector, const)
+!!      subroutine subtruct_const_4_tensor_smp_ow(np_smp, nnod,       &
+!!     &          inod_smp_stack, tensor, const)
+!!@endverbatim
+!!
+!!@n @param  np_smp   Number of SMP processes
+!!@n @param  nnod     Number of data points
+!!@n @param  inod_smp_stack(0:np_smp)
+!!                    End address of each SMP process
+!!
+!!@n @param  scalar(nnod)     Input scalar data 1
+!!@n @param  vector(nnod,3)   Input vector data 1
+!!@n @param  tensor(nnod,6)   Input symmetric tensor data 1
+!!@n @param  const            Constant (scalar)
+!!
+!!@n @param  dest(nnod,NB)    Solution
+!!                      (scalar, vector, or symmetric tensor)
 !
       module subtract_const_smp
 !
@@ -29,21 +47,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine subtruct_const_4_scalar_smp(np_smp, numnod,            &
+      subroutine subtruct_const_4_scalar_smp(np_smp, nnod,              &
      &          inod_smp_stack, dest, scalar, const)
 !
-       integer (kind = kint), intent(in) :: np_smp, numnod
+       integer (kind = kint), intent(in) :: np_smp, nnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in)    :: const
-       real(kind=kreal), intent(in) :: scalar(numnod)
+       real(kind=kreal), intent(in) :: scalar(nnod)
 !
-       real(kind=kreal), intent(inout) :: dest(numnod)
+       real(kind=kreal), intent(inout) :: dest(nnod)
 !
        integer (kind = kint) :: ip, ist, ied, inod
 !
 !$omp parallel do private(ist,ied,inod)
-!cdir parallel do private(ist,ied,inod)
-!poption parallel
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -57,21 +73,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine subtruct_const_4_vect_smp(np_smp, numnod,              &
+      subroutine subtruct_const_4_vect_smp(np_smp, nnod,                &
      &          inod_smp_stack, dest, vector, const)
 !
-       integer (kind = kint), intent(in) :: np_smp, numnod
+       integer (kind = kint), intent(in) :: np_smp, nnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in)    :: const
-       real(kind=kreal), intent(in) :: vector(numnod,3)
+       real(kind=kreal), intent(in) :: vector(nnod,3)
 !
-       real(kind=kreal), intent(inout) :: dest(numnod,3)
+       real(kind=kreal), intent(inout) :: dest(nnod,3)
 !
        integer (kind = kint) :: ip, ist, ied, inod
 !
 !$omp parallel do private(ist,ied,inod)
-!cdir parallel do private(ist,ied,inod)
-!poption parallel
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -87,21 +101,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine subtruct_const_4_tensor_smp(np_smp, numnod,            &
+      subroutine subtruct_const_4_tensor_smp(np_smp, nnod,              &
      &          inod_smp_stack, dest, tensor, const)
 !
-       integer (kind = kint), intent(in) :: np_smp, numnod
+       integer (kind = kint), intent(in) :: np_smp, nnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in)    :: const
-       real(kind=kreal), intent(in) :: tensor(numnod,6)
+       real(kind=kreal), intent(in) :: tensor(nnod,6)
 !
-       real(kind=kreal), intent(inout) :: dest(numnod,6)
+       real(kind=kreal), intent(inout) :: dest(nnod,6)
 !
        integer (kind = kint) :: ip, ist, ied, inod
 !
 !$omp parallel do private(ist,ied,inod)
-!cdir parallel do private(ist,ied,inod)
-!poption parallel
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -121,20 +133,18 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine subtruct_const_4_scalar_smp_ow(np_smp, numnod,         &
+      subroutine subtruct_const_4_scalar_smp_ow(np_smp, nnod,           &
      &          inod_smp_stack, scalar, const)
 !
-       integer (kind = kint), intent(in) :: np_smp, numnod
+       integer (kind = kint), intent(in) :: np_smp, nnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in)    :: const
 !
-       real(kind=kreal), intent(inout) :: scalar(numnod)
+       real(kind=kreal), intent(inout) :: scalar(nnod)
 !
        integer (kind = kint) :: ip, ist, ied, inod
 !
 !$omp parallel do private(ist,ied,inod)
-!cdir parallel do private(ist,ied,inod)
-!poption parallel
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -148,20 +158,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine subtruct_const_4_vect_smp_ow(np_smp, numnod,           &
+      subroutine subtruct_const_4_vect_smp_ow(np_smp, nnod,             &
      &          inod_smp_stack, vector, const)
 !
-       integer (kind = kint), intent(in) :: np_smp, numnod
+       integer (kind = kint), intent(in) :: np_smp, nnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in)    :: const
 !
-       real(kind=kreal), intent(inout) :: vector(numnod,3)
+       real(kind=kreal), intent(inout) :: vector(nnod,3)
 !
        integer (kind = kint) :: ip, ist, ied, inod
 !
 !$omp parallel do private(ist,ied,inod)
-!cdir parallel do private(ist,ied,inod)
-!poption parallel
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -177,20 +185,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine subtruct_const_4_tensor_smp_ow(np_smp, numnod,         &
+      subroutine subtruct_const_4_tensor_smp_ow(np_smp, nnod,           &
      &          inod_smp_stack, tensor, const)
 !
-       integer (kind = kint), intent(in) :: np_smp, numnod
+       integer (kind = kint), intent(in) :: np_smp, nnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in)    :: const
 !
-       real(kind=kreal), intent(inout) :: tensor(numnod,6)
+       real(kind=kreal), intent(inout) :: tensor(nnod,6)
 !
        integer (kind = kint) :: ip, ist, ied, inod
 !
 !$omp parallel do private(ist,ied,inod)
-!cdir parallel do private(ist,ied,inod)
-!poption parallel
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
