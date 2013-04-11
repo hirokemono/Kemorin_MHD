@@ -72,7 +72,7 @@
      &   write(*,*) 'itp_rst_file_head: ', trim(itp_rst_file_head)
 !
       if (i_new_udt_head .gt. 0) then
-        itp_udt_file_head = new_udt_head_ctl
+        itp_udt_file_head = new_field_head_ctl
       end if
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'itp_udt_file_head: ', trim(itp_udt_file_head)

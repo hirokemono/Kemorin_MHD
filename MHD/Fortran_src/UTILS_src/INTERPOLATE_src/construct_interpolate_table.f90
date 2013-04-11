@@ -60,23 +60,23 @@
           call allocate_work_4_interpolate
 !
           if (ilevel .eq. 0) then
-            if (i_debug.eq.1 .and. jp.eq.1)                             &
+            if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'search_node_in_element_1st', ilevel, my_rank
             call search_node_in_element_1st(my_rank_2nd)
           else if (ilevel .eq. (num_search_times+1)) then
-            if (i_debug.eq.1 .and. jp.eq.1)                             &
+            if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'search_node_in_all_element', ilevel, my_rank
             error_level_final = search_error_level(num_search_times)*2
             call search_node_in_all_element(my_rank_2nd,                &
      &          error_level_final)
           else if (ilevel .eq. (num_search_times+2)) then
-            if (i_debug.eq.1 .and. jp.eq.1)                             &
+            if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'giveup_to_search_element', ilevel, my_rank
             error_level_final = search_error_level(num_search_times)*2
             call giveup_to_search_element(my_rank_2nd,                  &
      &          error_level_final)
           else
-            if (i_debug.eq.1 .and. jp.eq.1)                             &
+            if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'search_node_in_element_2nd', ilevel, my_rank
             call search_node_in_element_2nd(my_rank_2nd,                &
      &         i_search_sleeve(ilevel), search_error_level(ilevel) )

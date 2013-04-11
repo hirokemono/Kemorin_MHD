@@ -6,8 +6,8 @@ begin  plane_fft_control
 !
   begin new_data_files_def
     new_mesh_head_ctl       'mesh_new/in'
-    new_rst_head_ctl      'rst_new/rst'
-    new_udt_head_ctl       'outall'
+    new_rst_head_ctl        'rst_new/rst'
+    new_field_head_ctl      'outall'
   end new_data_files_def
 !
   begin plane_spectr_file_def

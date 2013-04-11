@@ -20,7 +20,7 @@ begin assemble_control
     new_sph_mode_head_ctl      'mesh_target/in'
 !
     new_rst_head_ctl           'rst_new/rst'
-    new_udt_head_ctl           'field_new/out'
+    new_field_head_ctl         'field_new/out'
     new_vtk_head_ctl           'outall'
 !
     new_dx_head_ctl            'outall'

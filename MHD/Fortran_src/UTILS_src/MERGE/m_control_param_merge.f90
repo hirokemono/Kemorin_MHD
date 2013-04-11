@@ -146,8 +146,8 @@
       end if
 !
       if (i_new_udt_head .gt. 0) then
-        new_udt_head =   new_udt_head_ctl
-        merged_data_head = new_udt_head_ctl
+        new_udt_head =     new_field_head_ctl
+        merged_data_head = new_field_head_ctl
       else
         new_udt_head = def_new_udt_head
       end if

@@ -24,10 +24,10 @@
 !>      integer flag for full debug output
       integer(kind = kint), parameter :: iflag_full_msg =     2
 !
-!>      debug flag for all processes (1: 0n, 0: Off)
-      integer(kind = kint) :: i_debug =     0
+!>      debug flag for all processes
+      integer(kind = kint) :: i_debug =     iflag_minimum_msg
 !>      debug flag for master process
-      integer(kind = kint) :: iflag_debug = 0
+      integer(kind = kint) :: iflag_debug = iflag_minimum_msg
 !
 !>      character array for error message
       character(len=256) :: e_message

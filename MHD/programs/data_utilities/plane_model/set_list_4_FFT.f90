@@ -87,7 +87,7 @@
 !
 !
       write(*,*) 'new_mesh_head_ctl    ', new_mesh_head_ctl
-!      write(*,*) 'new_udt_head_ctl     ', new_udt_head_ctl
+!      write(*,*) 'new_field_head_ctl     ', new_field_head_ctl
 !      write(*,*) 'new_rst_head_ctl     ', new_rst_head_ctl
 !      write(*,*) 'new_udt_type_ctl     ', new_udt_type_ctl
       write(*,*) 'nnod_plane_ctl       ', nnod_plane_ctl
@@ -187,7 +187,7 @@
 !
       if (i_new_udt_head .gt. 0) then
         itype_ucd_data_file = iflag_udt
-        ucd_header_name = new_udt_head_ctl
+        ucd_header_name = new_field_head_ctl
       else if (i_new_vtk_head .gt. 0) then
         itype_ucd_data_file = iflag_vtk
         ucd_header_name = new_vtk_head_ctl
