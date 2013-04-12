@@ -57,6 +57,7 @@ typedef struct {
 	float	_evolutionProgressValue;
 }
 
+- (int) getViewSize;
 - (void) updateProjection;
 - (void) updateModelView;
 - (void) resizeGL;

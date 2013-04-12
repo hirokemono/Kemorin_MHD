@@ -23,6 +23,27 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 @implementation KemoViewerOpenGLView
 // ---------------------------------
 
+// get number of pixels for OpenGL Window
+- (int) getViewSize
+{
+    int iflag_updated = 0;
+    
+//	NSRect rectView = [self bounds];
+    NSRect rectView = [self convertRectToBacking:[self bounds]];
+    
+	// ensure camera knows size changed
+	if ((YpixelGLWindow != rectView.size.height) ||
+	    (XpixelGLWindow != rectView.size.width)) {
+        YpixelGLWindow = rectView.size.height;
+        XpixelGLWindow = rectView.size.width;
+        
+//        printf("Pixel size %d, %d\n",XpixelGLWindow, YpixelGLWindow);
+        
+        iflag_updated = 1;
+    }
+    return iflag_updated;
+}
+
 // update the projection matrix based on camera and view info
 - (void) updateProjection
 {
@@ -48,13 +69,9 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 // a window dimension update, reseting of viewport and an update of the projection matrix
 - (void) resizeGL
 {
-	NSRect rectView = [self bounds];
-	
 	// ensure camera knows size changed
-	if ((YpixelGLWindow != rectView.size.height) ||
-	    (XpixelGLWindow != rectView.size.width)) {
-		YpixelGLWindow = rectView.size.height;
-		XpixelGLWindow = rectView.size.width;
+    int iflag_updated = [self getViewSize];
+	if (iflag_updated != 0) {
 		
 		update_projection_by_kemoviewer_size(XpixelGLWindow, YpixelGLWindow);
         
@@ -113,7 +130,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 // ---------------------------------
 
 
-- (void) SaveGLBufferToFileNoStep:(NSInteger) ImageFormatId:(NSString *)fileHeader
+- (void) SaveGLBufferToFileNoStep:(NSInteger)ImageFormatId:(NSString *)fileHeader
 {
 	write_kemoviewer_window_to_file((int) ImageFormatId, [fileHeader UTF8String]);
 	return;
@@ -467,11 +484,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	glFrontFace(GL_CCW);
 	glPolygonOffset (1.0f, 1.0f);
 	
-	
-	NSRect rectView = [self bounds];
-	XpixelGLWindow = rectView.size.height;
-	YpixelGLWindow = rectView.size.width;
-	set_kemoview_windowsize(XpixelGLWindow, YpixelGLWindow);
+	int iflag_updates = [self getViewSize];
+    if(iflag_updates != 0) set_kemoview_windowsize(XpixelGLWindow, YpixelGLWindow);
 		
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	BgColor4f[0] = [[defaults stringForKey:@"BackGroundRed"] floatValue];
