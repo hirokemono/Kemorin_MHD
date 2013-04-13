@@ -1,0 +1,1 @@
+/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/UTILS_src/spherical_grid/copy_sph_1d_global_index.f90

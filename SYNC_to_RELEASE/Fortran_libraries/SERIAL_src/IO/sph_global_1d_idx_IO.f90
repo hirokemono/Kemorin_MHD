@@ -1,0 +1,1 @@
+/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/IO/sph_global_1d_idx_IO.f90
