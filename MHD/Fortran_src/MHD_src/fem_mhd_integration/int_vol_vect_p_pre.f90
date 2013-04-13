@@ -50,8 +50,10 @@
       call reset_sk6(n_vector)
 !
 !   include external magnetic field
+!$omp parallel
       call add_const_to_vector_smp(np_smp, numele,  iele_smp_stack,     &
      &      d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
+!$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
       do k2=1, nnod_4_ele
@@ -83,11 +85,13 @@
 !
       call reset_sk6(n_vector)
 !
+!$omp parallel
       call add_const_to_vector_smp(np_smp, numele,  iele_smp_stack,     &
      &    d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
+!$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
-      do k2=1, nnod_4_ele
+      do k2 = 1, nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, iphys%i_velo,               &
      &      coef_induct, velo_1)
 !

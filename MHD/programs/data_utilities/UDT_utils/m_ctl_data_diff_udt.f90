@@ -78,9 +78,9 @@
 !     3rd level for file header
 !
       character(len=kchara), parameter                                  &
-     &         :: hd_ref_udt_head_ctl = 'reference_udt_head_ctl'
+     &         :: hd_ref_udt_head_ctl = 'reference_field_header_ctl'
       character(len=kchara), parameter                                  &
-     &         :: hd_tgt_udt_head_ctl = 'target_udt_header_ctl'
+     &         :: hd_tgt_udt_head_ctl = 'target_field_header_ctl'
 !
       integer (kind=kint) :: i_ref_udt_head_ctl = 0
       integer (kind=kint) :: i_tgt_udt_head_ctl = 0

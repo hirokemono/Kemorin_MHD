@@ -206,11 +206,6 @@
 !
       call time_prog_barrier
 !
-!     --------------------- 
-!
-       if (my_rank.eq.0) write(*,*)' end init_analyzer_snap'
-!
-!
       end subroutine init_analyzer_snap
 !
 ! ----------------------------------------------------------------------

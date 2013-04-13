@@ -1,27 +1,38 @@
+!>@file   cal_minmax_and_stacks.f90
+!!@brief  module cal_minmax_and_stacks
+!!
+!!@author H. Matsui
+!!@date Programmed. 2005
 !
-!     module cal_minmax_and_stacks
-!
-!     Writteg by H.Matsui on Oct., 2006
-!
-!      subroutine cal_divide_and_rest(i_quot, i_rest, i_org, i_divide)
-!      subroutine set_number_of_segments(i_divide, i_quot, i_rest,      &
-!     &          num_l)
-!      subroutine set_stack_of_segments(i_divide, i_quot, i_rest,       &
-!     &          istart, istack)
-!
-!      subroutine s_cal_numbers_from_stack(num, num_grp, istack_grp)
-!
-!      subroutine s_cal_total_and_stacks(num, num_grp, istack_begin,    &
-!     &          istack_grp, ntot_grp)
-!      subroutine s_cal_minmax_and_stacks(num, num_grp, istack_begin,   &
-!     &          istack_grp, ntot_grp, max_grp, min_grp)
-!      subroutine s_cal_dbl_minmax_and_stacks(num_out, num_in, num_grp, &
-!     &          istack_begin, istack_grp, ntot_grp, max_grp, min_grp)
-!
-!      subroutine count_number_4_smp( np_smp, istart, iend,             &
-!     &        i_smp_stack, max_4_smp)
-!      subroutine set_group_size_4_smp(np_smp, num_group,               &
-!     &          istack_group, istack_group_smp, max_4_smp)
+!>@brief  Set end points of listed data
+!!
+!!@verbatim
+!!      subroutine cal_divide_and_rest(i_quot, i_rest, i_org, i_divide)
+!!      subroutine set_number_of_segments(i_divide, i_quot, i_rest,     &
+!!     &          num_l)
+!!      subroutine set_stack_of_segments(i_divide, i_quot, i_rest,      &
+!!     &          istart, istack)
+!!
+!!      subroutine s_cal_numbers_from_stack(num, num_grp, istack_grp)
+!!
+!!      subroutine s_cal_total_and_stacks(num, num_grp, istack_begin,   &
+!!     &          istack_grp, ntot_grp)
+!!      subroutine s_cal_minmax_and_stacks(num, num_grp, istack_begin,  &
+!!     &          istack_grp, ntot_grp, max_grp, min_grp)
+!!      subroutine s_cal_dbl_minmax_and_stacks(num_out, num_in, num_grp,&
+!!     &          istack_begin, istack_grp, ntot_grp, max_grp, min_grp)
+!!
+!!      subroutine count_number_4_smp( np_smp, istart, iend,            &
+!!     &        i_smp_stack, max_4_smp)
+!!      subroutine set_group_size_4_smp(np_smp, num_group,              &
+!!     &          istack_group, istack_group_smp, max_4_smp)
+!!@endverbatim
+!!
+!!@n @param  i_quot     quotient
+!!@n @param  i_rest     rest of division
+!!@n @param  i_org      Input integer
+!!@n @param  i_divide   Number to devide
+!!
 !
       module cal_minmax_and_stacks
 !

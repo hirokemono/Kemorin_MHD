@@ -127,11 +127,11 @@
           iphys%i_nega_ujb = i0
         else if (field_name(i) .eq. fhd_mag_tension_work) then
           iphys%i_m_tension_wk = i0
-        else if (field_name(i) .eq. fhd_buoyancy_work) then
+        else if (field_name(i) .eq. fhd_buoyancy_flux) then
           iphys%i_buo_gen =   i0
-        else if (field_name(i) .eq. fhd_comp_buo_work) then
+        else if (field_name(i) .eq. fhd_comp_buo_flux) then
           iphys%i_c_buo_gen = i0
-        else if (field_name(i) .eq. fhd_filter_buo_work) then
+        else if (field_name(i) .eq. fhd_filter_buo_flux) then
           iphys%i_f_buo_gen = i0
         else if (field_name(i) .eq. fhd_vis_ene_diffuse) then
           iphys%i_vis_e_diffuse = i0
@@ -237,9 +237,9 @@
           iphys%i_SGS_Lor_wk =       i0
         else if ( field_name(i) .eq. fhd_Reynolds_work ) then
           iphys%i_reynolds_wk =      i0
-        else if ( field_name(i) .eq. fhd_SGS_buo_work ) then
+        else if ( field_name(i) .eq. fhd_SGS_buo_flux ) then
           iphys%i_SGS_buo_wk =       i0
-        else if ( field_name(i) .eq. fhd_SGS_comp_buo_work ) then
+        else if ( field_name(i) .eq. fhd_SGS_comp_buo_flux ) then
           iphys%i_SGS_comp_buo_wk =  i0
 !
         else if ( field_name(i) .eq. fhd_SGS_div_h_flux_true ) then
@@ -402,6 +402,11 @@
           iphys%i_chk_press_2 =     i0
         else if ( field_name(i) .eq. fhd_chk_potential_2 ) then
           iphys%i_chk_potential_2 = i0
+!
+!
+!   Old field label... Should be deleted later!!
+        else if (field_name(i) .eq. fhd_buoyancy_work) then
+          iphys%i_buo_gen =   i0
         end if
 !
         i0 = i0 + num_component(i)

@@ -151,7 +151,7 @@
            phys_check_name(1) = fhd_velo
            phys_check_name(2) = fhd_magne
 !
-          else if (phys_nod_name(i) .eq. fhd_buoyancy_work              &
+          else if (phys_nod_name(i) .eq. fhd_buoyancy_flux              &
      &        .or. phys_nod_name(i) .eq. fhd_h_flux                     &
      &        .or. phys_nod_name(i) .eq. fhd_ph_flux                    &
      &        .or. phys_nod_name(i) .eq. fhd_SGS_h_flux                 &
@@ -177,13 +177,13 @@
            phys_check_name(1) = fhd_velo
            phys_check_name(2) = fhd_SGS_h_flux
 !
-          else if (phys_nod_name(i) .eq. fhd_SGS_buo_work               &
+          else if (phys_nod_name(i) .eq. fhd_SGS_buo_flux               &
      &         ) then
            num_check = 2
            phys_check_name(1) = fhd_velo
            phys_check_name(2) = fhd_SGS_h_flux
 !
-          else if (phys_nod_name(i) .eq. fhd_SGS_comp_buo_work          &
+          else if (phys_nod_name(i) .eq. fhd_SGS_comp_buo_flux          &
      &         ) then
            num_check = 2
            phys_check_name(1) = fhd_velo
@@ -191,14 +191,14 @@
 !
           else if (phys_nod_name(i) .eq. fhd_composit_advect            &
      &        .or. phys_nod_name(i) .eq. fhd_c_flux                     &
-     &        .or. phys_nod_name(i) .eq. fhd_comp_buo_work              &
+     &        .or. phys_nod_name(i) .eq. fhd_comp_buo_flux              &
      &        .or. phys_nod_name(i) .eq. fhd_SGS_c_flux                 &
      &         ) then
            num_check = 2
            phys_check_name(1) = fhd_velo
            phys_check_name(2) = fhd_light
 !
-          else if (phys_nod_name(i) .eq. fhd_filter_buo_work            &
+          else if (phys_nod_name(i) .eq. fhd_filter_buo_flux            &
      &         ) then
            num_check = 2
            phys_check_name(1) = fhd_velo
@@ -391,6 +391,13 @@
            num_check = 2
            phys_check_name(1) = fhd_magne
            phys_check_name(2) = fhd_SGS_mag_induct_true
+!
+!
+!   Old field label... Should be deleted later!!
+          else if (phys_nod_name(i) .eq. fhd_buoyancy_work) then
+           num_check = 2
+           phys_check_name(1) = fhd_velo
+           phys_check_name(2) = fhd_temp
 !
           end if
 !

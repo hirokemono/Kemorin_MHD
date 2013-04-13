@@ -1,12 +1,16 @@
+!>@file   input_control.f90
+!!@brief  module input_control
+!!
+!!@author H.Matsui and H.Okuda
+!!@date     Programmed by H.Matsui and H.Okuda on July 2000 (ver 1.1)
+!!@n        Modified by H. Matsui on July, 2006
+!!@n        Modified by H. Matsui on May, 2007
 !
-!     module input_control
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        Modified by H. Matsui on July, 2006
-!        Modified by H. Matsui on May, 2007
-!
-!      subroutine input_control_4_MHD
+!>@brief  Load mesh and filtering data for MHD simulation
+!!
+!!@verbatim
+!!      subroutine input_control_4_MHD
+!!@endverbatim
 !
 !
       module input_control
@@ -94,24 +98,28 @@
 !
 ! ---------------------------------
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_local_node_id_4_monitor'
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &      write(*,*) 'set_local_node_id_4_monitor'
       call set_local_node_id_4_monitor
 !
-      if (iflag_debug.eq.1) write(*,*) 'read_boundary_files'
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &      write(*,*) 'read_boundary_files'
       call read_boundary_files
 !
 ! ---------------------------------
 !
-      if (iflag_debug.eq.1) write(*,*) 's_read_filtering_data'
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &      write(*,*) 's_read_filtering_data'
       call s_read_filtering_data
 !
       if(mod(iflag_SGS_filter,10).eq.1) then
-        if(iflag_debug.eq.1) write(*,*) 's_set_3d_filtering_group_id'
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &       write(*,*) 's_set_3d_filtering_group_id'
         call s_set_3d_filtering_group_id
 !
         if (iflag_SGS_model .eq. id_SGS_similarity                      &
      &       .and. iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_ON) then
-          if (iflag_debug.eq.1)                                         &
+          if (iflag_debug .ge. iflag_routine_msg)                       &
      &         write(*,*) 's_set_w_filtering_group_id'
           call s_set_w_filtering_group_id
         end if

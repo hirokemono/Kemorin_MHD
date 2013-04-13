@@ -4,7 +4,8 @@
 !!@author H. Matsui
 !!@date Programmed...when??
 !
-!>@brief  add two field data
+!>@brief subroutines to add two field data
+!!@n      Need $omp parallel to use these routines
 !!
 !!@verbatim
 !!      subroutine add_scalars_smp(np_smp, nnod, inod_smp_stack,        &
@@ -65,7 +66,7 @@
 !
       integer(kind = kint) :: ip, inod, ist, ied
 !
-!$omp parallel do private(inod,ist,ied)
+!$omp do private(inod,ist,ied)
       do ip = 1, np_smp
         ist = inod_smp_stack(ip-1) + 1
         ied = inod_smp_stack(ip)
@@ -73,7 +74,7 @@
           added(inod) = scalar1(inod) + scalar2(inod)
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
        end subroutine add_scalars_smp
 !
@@ -89,7 +90,7 @@
       real (kind=kreal), intent(inout) :: added(nnod,3)
       integer(kind = kint) :: ip, inod, ist, ied
 !
-!$omp parallel do private(inod,ist,ied)
+!$omp do private(inod,ist,ied)
       do ip = 1, np_smp
         ist = inod_smp_stack(ip-1) + 1
         ied = inod_smp_stack(ip)
@@ -99,7 +100,7 @@
           added(inod,3) = vector1(inod,3) + vector2(inod,3)
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
        end subroutine add_vectors_smp
 !
@@ -115,7 +116,7 @@
       real (kind=kreal), intent(inout) :: added(nnod,6)
       integer(kind = kint) :: ip, inod, ist, ied
 !
-!$omp parallel do private(inod,ist,ied)
+!$omp do private(inod,ist,ied)
       do ip = 1, np_smp
         ist = inod_smp_stack(ip-1) + 1
         ied = inod_smp_stack(ip)
@@ -128,7 +129,7 @@
           added(inod,6) = tensor1(inod,6) + tensor2(inod,6)
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine add_tensors_smp
 !
@@ -146,7 +147,7 @@
 !
       integer(kind = kint) :: ip, inod, ist, ied
 !
-!$omp parallel do private(inod,ist,ied)
+!$omp do private(inod,ist,ied)
       do ip = 1, np_smp
         ist = inod_smp_stack(ip-1) + 1
         ied = inod_smp_stack(ip)
@@ -154,7 +155,7 @@
           added(inod) = scalar(inod) + const
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
        end subroutine add_const_to_scalar_smp
 !
@@ -170,7 +171,7 @@
       real (kind=kreal), intent(inout) :: added(nnod,3)
       integer(kind = kint) :: ip, inod, ist, ied
 !
-!$omp parallel do private(inod,ist,ied)
+!$omp do private(inod,ist,ied)
       do ip = 1, np_smp
         ist = inod_smp_stack(ip-1) + 1
         ied = inod_smp_stack(ip)
@@ -180,7 +181,7 @@
           added(inod,3) = vector(inod,3) + const(3)
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
        end subroutine add_const_to_vector_smp
 !
@@ -196,7 +197,7 @@
       real (kind=kreal), intent(inout) :: added(nnod,6)
       integer(kind = kint) :: ip, inod, ist, ied
 !
-!$omp parallel do private(inod,ist,ied)
+!$omp do private(inod,ist,ied)
       do ip = 1, np_smp
         ist = inod_smp_stack(ip-1) + 1
         ied = inod_smp_stack(ip)
@@ -209,7 +210,7 @@
           added(inod,6) = tensor(inod,6) + const(6)
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine add_const_to_tensor_smp
 !

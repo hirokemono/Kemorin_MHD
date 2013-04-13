@@ -199,16 +199,16 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_work_agst_Lorentz   )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_Lorentz_work        )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_mag_tension_work    )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_buoyancy_work       )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_comp_buo_work       )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_filter_buo_work     )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_buoyancy_flux       )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_comp_buo_flux       )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_filter_buo_flux     )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_SGS_h_flux      )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_m_ene_gen       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_temp_gen        )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz_work    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_Reynolds_work       )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_buo_work        )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_comp_buo_work   )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_buo_flux        )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_comp_buo_flux   )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_temp_generation     )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_temp_gen       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_temp           )         &
@@ -256,6 +256,14 @@
       if (iflag .eq. 1) then
         icou = icou + 1
         phys_nod_name = phys_nod_name_ctl
+        num_nod_component = 1
+      end if
+!
+!   Old field label... Should be deleted later!!
+      if (     phys_nod_name_ctl .eq. fhd_buoyancy_work       ) then
+        iflag = 1
+        icou = icou + 1
+        phys_nod_name = fhd_buoyancy_flux
         num_nod_component = 1
       end if
 !

@@ -1,13 +1,19 @@
-!set_control_platform_data.f90
-!      module set_control_platform_data
+!>@file   set_control_platform_data.f90
+!!@brief  module set_control_platform_data
+!!
+!!@author H. Matsui
+!!@date Programmed in 2009
 !
-!        programmed by H.Matsui on Nov., 2009
-!
-!      subroutine turn_off_debug_flag_by_ctl(my_rank)
-!      subroutine set_control_smp_def
-!      subroutine set_control_mesh_def
-!      subroutine set_control_sph_mesh
-!      subroutine set_control_data_file_def
+!>@brief  Set file headers and number of processor and threds
+!!        from control data
+!!
+!!@verbatim
+!!      subroutine turn_off_debug_flag_by_ctl(my_rank)
+!!      subroutine set_control_smp_def
+!!      subroutine set_control_mesh_def
+!!      subroutine set_control_sph_mesh
+!!      subroutine set_control_data_file_def
+!!@endverbatim
 !
       module set_control_platform_data
 !

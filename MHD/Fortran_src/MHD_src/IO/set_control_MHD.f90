@@ -1,10 +1,14 @@
+!>@file   set_control_MHD.f90
+!!@brief  module set_control_MHD
+!!
+!!@author H. Matsui
+!!@date Programmed in 2002
 !
-!      module set_control_MHD
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!
-!     subroutine set_control
+!> @brief Set parameters for MHD dynamo simulation from control data
+!!
+!!@verbatim
+!!     subroutine set_control
+!!@endverbatim
 !
       module set_control_MHD
 !

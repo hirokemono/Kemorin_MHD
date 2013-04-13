@@ -336,18 +336,18 @@
               call write_one_label(rms_data_code, fhd_mag_tension_work)
               call write_one_label(time_step_data_code,                 &
      &            fhd_mag_tension_work)
-            else if ( phys_nod_name(i) .eq. fhd_buoyancy_work ) then
-              call write_one_label(rms_data_code, fhd_buoyancy_work)
+            else if ( phys_nod_name(i) .eq. fhd_buoyancy_flux ) then
+              call write_one_label(rms_data_code, fhd_buoyancy_flux)
               call write_one_label(time_step_data_code,                 &
-     &            fhd_buoyancy_work)
-            else if ( phys_nod_name(i) .eq. fhd_comp_buo_work ) then
-              call write_one_label(rms_data_code, fhd_comp_buo_work)
+     &            fhd_buoyancy_flux)
+            else if ( phys_nod_name(i) .eq. fhd_comp_buo_flux ) then
+              call write_one_label(rms_data_code, fhd_comp_buo_flux)
               call write_one_label(time_step_data_code,                 &
-     &            fhd_comp_buo_work)
-            else if ( phys_nod_name(i) .eq. fhd_filter_buo_work ) then
-              call write_one_label(rms_data_code, fhd_filter_buo_work)
+     &            fhd_comp_buo_flux)
+            else if ( phys_nod_name(i) .eq. fhd_filter_buo_flux ) then
+              call write_one_label(rms_data_code, fhd_filter_buo_flux)
               call write_one_label(time_step_data_code,                 &
-     &            fhd_filter_buo_work)
+     &            fhd_filter_buo_flux)
             else if ( phys_nod_name(i) .eq. fhd_vis_ene_diffuse ) then
               call write_one_label(rms_data_code, fhd_vis_ene_diffuse)
               call write_one_label(time_step_data_code,                 &
@@ -410,16 +410,16 @@
               call write_one_label(rms_data_code, fhd_Reynolds_work)
               call write_one_label(time_step_data_code,                 &
      &            fhd_Reynolds_work)
-            else if ( phys_nod_name(i) .eq. fhd_SGS_buo_work ) then
-              call write_one_label(rms_data_code, fhd_SGS_buo_work)
+            else if ( phys_nod_name(i) .eq. fhd_SGS_buo_flux ) then
+              call write_one_label(rms_data_code, fhd_SGS_buo_flux)
               call write_one_label(time_step_data_code,                 &
-     &            fhd_SGS_buo_work)
+     &            fhd_SGS_buo_flux)
             else if ( phys_nod_name(i)                                  &
-     &               .eq. fhd_SGS_comp_buo_work ) then
+     &               .eq. fhd_SGS_comp_buo_flux ) then
               call write_one_label(rms_data_code,                       &
-     &            fhd_SGS_comp_buo_work)
+     &            fhd_SGS_comp_buo_flux)
               call write_one_label(time_step_data_code,                 &
-     &            fhd_SGS_comp_buo_work)
+     &            fhd_SGS_comp_buo_flux)
 !
             else if ( phys_nod_name(i) .eq. fhd_SGS_div_h_flux_true )   &
      &             then
@@ -468,6 +468,13 @@
      &            fhd_SGS_m_ene_gen_true)
               call write_one_label(time_step_data_code,                 &
      &            fhd_SGS_m_ene_gen_true)
+!
+!    Old field label... Shold be deleted...
+            else if ( phys_nod_name(i) .eq. fhd_buoyancy_work ) then
+              call write_one_label(rms_data_code, fhd_buoyancy_work)
+              call write_one_label(time_step_data_code,                 &
+     &            fhd_buoyancy_work)
+
             end if
 !
           else

@@ -92,6 +92,7 @@
 !
       subroutine add_phys_name_tmp(fld_name)
 !
+      use m_machine_parameter
       use m_ctl_data_4_fields
 !
       character(len=kchara), intent(in) :: fld_name
@@ -121,6 +122,11 @@
       phys_nod_name_ctl(num_nod_phys_ctl) = fld_name
       visualize_ctl(num_nod_phys_ctl) =    'Viz_off'
       monitor_ctl(num_nod_phys_ctl) =      'Monitor_off'
+!
+      if(iflag_debug .eq. iflag_full_msg) then
+        write(*,*) trim(phys_nod_name_ctl(num_nod_phys_ctl) ),          &
+     &            ' is added at field ID ',   num_nod_phys_ctl
+      end if
 !
       end subroutine add_phys_name_tmp
 !

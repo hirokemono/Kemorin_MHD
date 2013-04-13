@@ -27,10 +27,12 @@
       use node_monitor_IO
 !
 !
-      if (iflag_debug.gt.0) write(*,*) 'copy_rj_spec_name_to_nod_fld'
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &     write(*,*) 'copy_rj_spec_name_to_nod_fld'
       call copy_rj_spec_name_to_nod_fld
 !
-      if (iflag_debug.eq.1) call check_nodal_field_name
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &     call check_nodal_field_name
 !
       call count_field_4_monitor(num_phys_rj, num_phys_comp_rj,         &
      &    iflag_monitor_rj, num_field_monitor, ntot_comp_monitor)

@@ -45,7 +45,8 @@
         call allocate_phys_name
         call ordering_nod_field_by_viz
 !
-        if (iflag_debug.eq.1) call check_nodal_field_name
+        if (iflag_debug .ge. iflag_routine_msg)                         &
+     &      call check_nodal_field_name
         call deallocate_phys_control
       end if
 !

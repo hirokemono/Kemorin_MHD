@@ -129,18 +129,22 @@
           if (iflag_4_lorentz.eq.1 .and. iflag_4_rotate.eq.1) then
             call vector_cst_phys_2_each_ele(k2, iphys%i_vecp,           &
      &          coef_lor, vect_1)
+!$omp parallel
             call add_const_to_vector_smp(np_smp, numele,                &
      &          iele_smp_stack, d_ele(1,iphys_ele%i_magne),             &
      &          ex_magne, vect_e)
+!$omp end parallel
 !
             call fem_skv_lorentz_rot_1st(iele_fl_smp_stack,             &
      &          num_int, k2, vect_1, vect_e, sk6)
           else if (iflag_4_rotate .eq. 0) then
             call vector_cst_phys_2_each_ele(k2, iphys%i_magne,          &
      &          coef_lor, magne_1)
+!$omp parallel
             call add_const_to_vector_smp(np_smp, numele,                &
      &          iele_smp_stack, d_ele(1,iphys_ele%i_magne),             &
      &          ex_magne, vect_e)
+!$omp end parallel
 !
             call fem_skv_vector_inertia_1st(iele_fl_smp_stack,          &
      &            num_int, k2, magne_1, vect_e, sk6)
@@ -346,18 +350,22 @@
           if (iflag_4_rotate .eq. 1) then
             call vector_cst_phys_2_each_ele(k2, iphys%i_vecp,           &
      &          coef_lor, vect_1)
+!$omp parallel
             call add_const_to_vector_smp(np_smp, numele,                &
      &          iele_smp_stack, d_ele(1,iphys_ele%i_magne),             &
      &          ex_magne, vect_e)
+!$omp end parallel
 !
             call fem_skv_lorentz_rot_1st(iele_fl_smp_stack,             &
      &          num_int, k2, vect_1, vect_e, sk6)
           else
             call vector_cst_phys_2_each_ele(k2, iphys%i_magne,          &
      &          coef_lor, magne_1)
+!$omp parallel
             call add_const_to_vector_smp(np_smp, numele,                &
      &          iele_smp_stack, d_ele(1,iphys_ele%i_magne),             &
      &          ex_magne, vect_e)
+!$omp end parallel
 !
             call fem_skv_vector_inertia_upw_1st(iele_fl_smp_stack,      &
      &          num_int, k2, magne_1, vect_e, d_ele(1,ie_upw), sk6)

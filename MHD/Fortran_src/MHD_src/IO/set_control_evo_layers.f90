@@ -1,10 +1,14 @@
+!>@file   set_control_evo_layers.f90
+!!@brief  module set_control_evo_layers
+!!
+!!@author H. Matsui
+!!@date Programmed in 2002
 !
-!      module set_control_evo_layers
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!
-!     subroutine s_set_control_evo_layers
+!> @brief Set parameters for simulation areas from control data
+!!
+!!@verbatim
+!!     subroutine s_set_control_evo_layers
+!!@endverbatim
 !
 !
       module set_control_evo_layers

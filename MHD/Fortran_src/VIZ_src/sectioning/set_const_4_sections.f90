@@ -204,8 +204,10 @@
         end if
       end if
 !
+!$omp parallel
       call subtruct_const_4_scalar_smp_ow(np_smp, nnod, istack_nod_smp, &
      &    c_ref_iso(1,i_iso), isosurf_value(i_iso))
+!$omp end parallel
 !
       end subroutine set_constant_4_iso
 !

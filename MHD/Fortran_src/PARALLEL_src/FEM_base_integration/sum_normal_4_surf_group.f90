@@ -138,7 +138,6 @@
       real(kind = kreal), intent(inout) :: tot_area_sf_grp(num_surf)
 !
 !
-      write(*,*) 'area_sf_grp_l', my_rank, area_sf_grp_l
       call MPI_allREDUCE (area_sf_grp_l, tot_area_sf_grp, num_surf,     &
      &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
 !

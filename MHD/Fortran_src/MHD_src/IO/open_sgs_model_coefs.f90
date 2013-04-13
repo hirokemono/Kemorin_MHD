@@ -48,16 +48,6 @@
         call write_sgs_whole_time_head(sgs_fld_whole_file_code)
         call write_sgs_coef_head(sgs_fld_whole_file_code)
 !
-        open (diff_fld_whole_file_code,file=diff_fld_whole_file_name,   &
-     &      status='replace')
-        call write_sgs_whole_time_head(diff_fld_whole_file_code)
-        call write_diff_coef_head(diff_fld_whole_file_code)
-!
-        open (diff_comp_whole_file_code,file=diff_comp_whole_file_name, &
-     &      status='replace')
-        call write_sgs_whole_time_head(diff_comp_whole_file_code)
-        call write_sgs_comps_head(diff_comp_whole_file_code)
-!
 !
         open (sgs_cor_file_code,file=sgs_cor_file_name,                 &
      &      status='replace')
@@ -106,6 +96,16 @@
 !
         if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
 !
+          open (diff_fld_whole_file_code,file=diff_fld_whole_file_name, &
+     &      status='replace')
+          call write_sgs_whole_time_head(diff_fld_whole_file_code)
+          call write_diff_coef_head(diff_fld_whole_file_code)
+!
+          open (diff_comp_whole_file_code,                              &
+     &        file=diff_comp_whole_file_name, status='replace')
+          call write_sgs_whole_time_head(diff_comp_whole_file_code)
+          call write_sgs_comps_head(diff_comp_whole_file_code)
+!
           open (diff_w_cor_file_code,file=diff_w_cor_file_name,         &
      &        status='replace')
           call write_sgs_whole_time_head(diff_w_cor_file_code)
@@ -123,7 +123,7 @@
           call write_diff_comps_head(diff_w_rms_file_code)
 !
 !
-          if (iset_DIFF_model_coefs .eq. 1 ) then
+          if (iset_DIFF_model_coefs .eq. 1) then
 !
             open (diff_coef_file_code,file=diff_coef_file_name,         &
      &            status='replace')

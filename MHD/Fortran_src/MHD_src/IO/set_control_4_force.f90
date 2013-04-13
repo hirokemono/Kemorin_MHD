@@ -1,10 +1,14 @@
+!>@file   set_control_4_force.f90
+!!@brief  module set_control_4_force
+!!
+!!@author H. Matsui
+!!@date Programmed in 2002
 !
-!      module set_control_4_force
-!
-!        programmed by H.Matsui
-!        modified by H.Matsui on Aug., 2007
-!
-!     subroutine s_set_control_4_force
+!> @brief Set parameters for forces from control data
+!!
+!!@verbatim
+!!     subroutine s_set_control_4_force
+!!@endverbatim
 !
       module set_control_4_force
 !
@@ -42,7 +46,8 @@
       else
         if (i_num_forces.gt.0) then
           num_force = num_force_ctl
-          if (iflag_debug.eq.1) write(*,*) 'num_force ', num_force
+          if (iflag_debug .ge. iflag_routine_msg)                       &
+     &      write(*,*) 'num_force ', num_force
         end if
       end if
 !
@@ -190,7 +195,8 @@
           end if
         end if
       end if
-      if (iflag_debug.eq.1) write(*,*) 'i_grav ',i_grav
+      if (iflag_debug .eq. iflag_routine_msg)                           &
+     &               write(*,*) 'i_grav ',i_grav
 !
 !  direction of angular velocity of rotation
 !
@@ -249,7 +255,7 @@
         end if
       end if
 !
-     if (iflag_debug .eq.1) then
+     if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'name_force '
         do i = 1, num_force
           write(*,*) i, trim(name_force(i))

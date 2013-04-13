@@ -13,8 +13,8 @@ begin difference_udts
   end data_files_def
 !
   begin data_file_header_ctl
-    reference_udt_head_ctl     'field/out'
-    target_udt_header_ctl     'field_new/out'
+    reference_field_header_ctl     'field/out'
+    target_field_header_ctl     'field_new/out'
   end data_file_header_ctl
 !
   begin models

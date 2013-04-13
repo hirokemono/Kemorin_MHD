@@ -44,6 +44,7 @@
 !
       subroutine s_reordering_by_layers
 !
+      use m_machine_parameter
       use m_control_parameter
       use m_iccg_parameter
       use m_parallel_var_dof
@@ -86,7 +87,7 @@
      &          iele_fl_end,   iele_cd_end,   iele_ins_end,             &
      &          new2oldele_layer(1), old2newele_layer(1) )
 !
-      if (my_rank .eq. 0 ) then
+      if (iflag_debug .gt. iflag_minimum_msg) then
        write(*,*) 'iele_fl_start, iele_fl_end',                         &
      &           iele_fl_start, iele_fl_end
        write(*,*) 'iele_cd_start, iele_cd_end',                         &

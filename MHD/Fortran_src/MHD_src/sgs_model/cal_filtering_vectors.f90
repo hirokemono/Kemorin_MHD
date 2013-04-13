@@ -24,15 +24,15 @@
 !
       subroutine cal_filtered_vector(i_filter, i_vect)
 !
-       use m_control_parameter
+      use m_control_parameter
 !
-       use cal_3d_filter_phys
-       use cal_3d_filter_phys_smp
-       use cal_line_filtering_vector
-       use copy_nodal_fields
-       use nod_phys_send_recv
+      use cal_3d_filter_phys
+      use cal_3d_filter_phys_smp
+      use cal_line_filtering_vector
+      use copy_nodal_fields
+      use nod_phys_send_recv
 !
-       integer (kind=kint), intent(in) :: i_filter, i_vect
+      integer (kind=kint), intent(in) :: i_filter, i_vect
 !
 !
       if ( iflag_SGS_filter .eq. 11 ) then

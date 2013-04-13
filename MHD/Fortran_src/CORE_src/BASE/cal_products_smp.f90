@@ -1,56 +1,72 @@
+!>@file   cal_products_smp.f90
+!!@brief  module cal_products_smp
+!!
+!!@author H. Matsui
+!!@date Programmed...May., 2009
 !
-!     module cal_products_smp
-!
-!        programmed by H.Matsui on May., 2009
-!
-!> @brief subroutines to obatine products of two fields
-!>      need $omp parallel to use these routines
-!
-!      subroutine cal_scalar_prod_w_coef_smp(np_smp, nnod,              &
-!     &          inod_smp_stack, coef, scalar1, scalar2, prod)
-!      subroutine cal_scalar_prod_no_coef_smp(np_smp, nnod,             &
-!     &          inod_smp_stack, scalar1, scalar2, prod)
-!
-!      subroutine cal_dot_prod_w_coef_smp(np_smp, nnod,                 &
-!     &          inod_smp_stack, coef, vect1, vect2, prod)
-!             prod(:) = coef * vect1(:,:) \cdot vect2(:,:)
-!      subroutine cal_dot_prod_no_coef_smp(np_smp, nnod,                &
-!     &          inod_smp_stack, vect1, vect2, prod)
-!             prod(:) = vect1(:,:) \cdot vect2(:,:)
-!
-!      subroutine cal_vect_prod_w_coef_smp(np_smp, nnod,                &
-!     &          inod_smp_stack, coef, vect1, vect2, prod)
-!             prod(:,:) = coef * vect1(:,:) \times vect2(:,:)
-!      subroutine cal_vect_prod_no_coef_smp(np_smp, nnod,               &
-!     &          inod_smp_stack, vect1, vect2, prod)
-!             prod(:,:) = vect1(:,:) \times vect2(:,:)
-!
-!      subroutine cal_vec_scalar_prod_no_coef_smp(np_smp, nnod,         &
-!     &          inod_smp_stack, vect1, scalar, prod)
-!             prod(:,:) = vect1(:,:)  * scalar(:)
-!      subroutine cal_vec_scalar_prod_w_coef_smp(np_smp, nnod,          &
-!     &          inod_smp_stack, coef, vect1, scalar, prod)
-!             prod(:,:) = coef * vect1(:,:)  * scalar(:)
-!
-!      subroutine cal_tensor_vec_prod_no_coef_smp(np_smp, nnod,         &
-!     &          inod_smp_stack, tensor, vector, prod)
-!             prod(:,:) = tensor(:,:) \cdot vector(:)
-!
-!       subroutine cal_scalar_mag_vector_prod_smp(np_smp, nnod,         &
-!     &          inod_smp_stack, scalar, vector, prod)
-!             prod(:) = |vect1(:,:)|  * scalar(:)
-!
-!      subroutine cal_tri_product_w_coef_smp(np_smp, nnod,              &
-!     &          inod_smp_stack, coef, vect1, vect2, vect3, prod)
-!             prod(:,:) = coef * vect1(:,:)
-!                            \cdot (vect2(:,:) \times vect3(:,:))
-!
-!      subroutine vector_vector_prod_smp(np_smp, nnod,                  &
-!     &          inod_smp_stack, vect1, vect2, prod)
-!             prod(:,:) = vect1(:,nd) * vect2(:,nd)
-!      subroutine tensor_tensor_prod_smp(np_smp, nnod,                  &
-!     &          inod_smp_stack, tensor1, tensor2, prod)
-!             prod(:,:) = tensor1(:,nd) * tensor2(:,nd)
+!>@brief subroutines to obatine products of two fields
+!!@n      need $omp parallel to use these routines
+!!
+!!      subroutine cal_scalar_prod_w_coef_smp(np_smp, nnod,             &
+!!     &          inod_smp_stack, coef, scalar1, scalar2, prod)
+!!      subroutine cal_scalar_prod_no_coef_smp(np_smp, nnod,            &
+!!     &          inod_smp_stack, scalar1, scalar2, prod)
+!!
+!!      subroutine cal_dot_prod_w_coef_smp(np_smp, nnod,                &
+!!     &          inod_smp_stack, coef, vect1, vect2, prod)
+!!             prod(:) = coef * vect1(:,:) \cdot vect2(:,:)
+!!      subroutine cal_dot_prod_no_coef_smp(np_smp, nnod,               &
+!!     &          inod_smp_stack, vect1, vect2, prod)
+!!             prod(:) = vect1(:,:) \cdot vect2(:,:)
+!!
+!!      subroutine cal_vect_prod_w_coef_smp(np_smp, nnod,               &
+!!     &          inod_smp_stack, coef, vect1, vect2, prod)
+!!             prod(:,:) = coef * vect1(:,:) \times vect2(:,:)
+!!      subroutine cal_vect_prod_no_coef_smp(np_smp, nnod,              &
+!!     &          inod_smp_stack, vect1, vect2, prod)
+!!             prod(:,:) = vect1(:,:) \times vect2(:,:)
+!!
+!!      subroutine cal_vec_scalar_prod_no_coef_smp(np_smp, nnod,        &
+!!     &          inod_smp_stack, vect1, scalar, prod)
+!!             prod(:,:) = vect1(:,:)  * scalar(:)
+!!      subroutine cal_vec_scalar_prod_w_coef_smp(np_smp, nnod,         &
+!!     &          inod_smp_stack, coef, vect1, scalar, prod)
+!!             prod(:,:) = coef * vect1(:,:)  * scalar(:)
+!!
+!!      subroutine cal_tensor_vec_prod_no_coef_smp(np_smp, nnod,        &
+!!     &          inod_smp_stack, tensor, vector, prod)
+!!             prod(:,:) = tensor(:,:) \cdot vector(:)
+!!
+!!       subroutine cal_scalar_mag_vector_prod_smp(np_smp, nnod,        &
+!!     &          inod_smp_stack, scalar, vector, prod)
+!!             prod(:) = |vect1(:,:)|  * scalar(:)
+!!
+!!      subroutine cal_tri_product_w_coef_smp(np_smp, nnod,             &
+!!     &          inod_smp_stack, coef, vect1, vect2, vect3, prod)
+!!             prod(:,:) = coef * vect1(:,:)
+!!                            \cdot (vect2(:,:) \times vect3(:,:))
+!!
+!!      subroutine vector_vector_prod_smp(np_smp, nnod,                 &
+!!     &          inod_smp_stack, vect1, vect2, prod)
+!!             prod(:,:) = vect1(:,nd) * vect2(:,nd)
+!!      subroutine tensor_tensor_prod_smp(np_smp, nnod,                 &
+!!     &          inod_smp_stack, tensor1, tensor2, prod)
+!!             prod(:,:) = tensor1(:,nd) * tensor2(:,nd)
+!!@endverbatim
+!!
+!!@n @param  np_smp   Number of SMP processes
+!!@n @param  nnod     Number of data points
+!!@n @param  inod_smp_stack(0:np_smp)
+!!                    End address of each SMP process
+!!@n @param  scalar1(nnod)     Input scalar data 1
+!!@n @param  scalar2(nnod)     Input scalar data 2
+!!@n @param  vect1(nnod,3)     Input vector data 1
+!!@n @param  vect2(nnod,3)     Input vector data 2
+!!@n @param  tensor1(nnod,6)   Input symmetric tensor data 1
+!!@n @param  tensor2(nnod,6)   Input symmetric tenso data 2
+!!
+!!@n @param  prod(nnod,NB)     Product
+!!                      (scalar, vector, or symmetric tensor)
 !
       module cal_products_smp
 !

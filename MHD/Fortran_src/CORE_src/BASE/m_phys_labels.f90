@@ -41,7 +41,7 @@
 !!   kinetic_helicity, magnetic_helicity
 !!   current_helicity, cross_helicity
 !!
-!!   buoyancy_work, Lorentz_work, mag_tension_work,
+!!   buoyancy_flux, Lorentz_work, mag_tension_work,
 !!   composite_buoyancy_flux, filtered_buoyancy_flux
 !!   magnetic_ene_generation, work_against_Lorentz
 !!   temp_generation, part_temp_gen
@@ -406,15 +406,15 @@
 !>        Field label for buoyancy flux
 !!         @f$ -u_{i} \alpha g_{i} T @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_buoyancy_work =     'buoyancy_flux'
+     &             :: fhd_buoyancy_flux =     'buoyancy_flux'
 !>        Field label for compositional buoyancy flux
 !!         @f$ -u_{i} \alpha_{c} g_{i} C @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_comp_buo_work =     'composite_buoyancy_flux'
+     &             :: fhd_comp_buo_flux =     'composite_buoyancy_flux'
 !>        Field label for filtered buoyancy flux
 !!         @f$ -u_{i} \alpha_{c} g_{i} \tilde{T} @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_filter_buo_work =   'filtered_buoyancy_flux'
+     &             :: fhd_filter_buo_flux =   'filtered_buoyancy_flux'
 !
 !>        Field label for divergence of SGS heat flux
 !!         @f$ \partial_{i} \left( \overline{u_{i}T} - \bar{u}_{i}\bar{T} \right) @f$
@@ -434,10 +434,10 @@
      &             :: fhd_Reynolds_work =     'Reynolds_work'
 !>        Field label for work of SGS buoyancy
       character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_buo_work =      'SGS_buoyancy_flux'
+     &             :: fhd_SGS_buo_flux =      'SGS_buoyancy_flux'
 !>        Field label for work of SGS compositional buoyancy
       character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_comp_buo_work = 'SGS_comp_buoyancy_flux'
+     &             :: fhd_SGS_comp_buo_flux = 'SGS_comp_buoyancy_flux'
 !
 !>        Field label for temperature flux
       character(len=kchara), parameter                                  &
@@ -755,5 +755,10 @@
       character(len=kchara), parameter                                  &
      &             :: thd_gravity =    'gravity'
 !
+!
+!>        Field label for buoyancy flux
+!!         @f$ -u_{i} \alpha g_{i} T @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_buoyancy_work =     'buoyancy_work'
 !
       end module m_phys_labels

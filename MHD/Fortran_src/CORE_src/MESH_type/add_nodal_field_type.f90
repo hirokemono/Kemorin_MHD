@@ -96,8 +96,10 @@
       real (kind=kreal), intent(inout) :: d_phys(nnod,ntot_comp)
 !
 !
+!$omp parallel
       call add_scalars_smp(np_smp, nnod, inod_smp_stack,               &
      &    d_phys(1,i_v1), d_phys(1,i_v2), d_phys(1,i_r))
+!$omp end parallel
 !
        end subroutine add_scalar_array_smp
 !
@@ -115,8 +117,10 @@
       real (kind=kreal), intent(inout) :: d_phys(nnod,ntot_comp)
 !
 !
+!$omp parallel
       call add_vectors_smp(np_smp, nnod, inod_smp_stack,                &
      &    d_phys(1,i_v1), d_phys(1,i_v2), d_phys(1,i_r))
+!$omp end parallel
 !
        end subroutine add_vector_array_smp
 !
@@ -134,8 +138,10 @@
       real (kind=kreal), intent(inout) :: d_phys(nnod,ntot_comp)
 !
 !
+!$omp parallel
       call add_tensors_smp(np_smp, nnod, inod_smp_stack,                &
      &    d_phys(1,i_v1), d_phys(1,i_v2), d_phys(1,i_r))
+!$omp end parallel
 !
       end subroutine add_tensor_array_smp
 !

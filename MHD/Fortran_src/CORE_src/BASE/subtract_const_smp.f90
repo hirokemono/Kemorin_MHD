@@ -5,6 +5,7 @@
 !!@date Programmed...when??
 !
 !>@brief  subtract constant from field data
+!!@n      need $omp parallel to use these routines
 !!
 !!@verbatim
 !!      subroutine subtruct_const_4_scalar_smp(np_smp, nnod,          &
@@ -59,7 +60,7 @@
 !
        integer (kind = kint) :: ip, ist, ied, inod
 !
-!$omp parallel do private(ist,ied,inod)
+!$omp do private(ist,ied,inod)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -67,7 +68,7 @@
            dest(inod) = scalar(inod) - const
          end do
        end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine subtruct_const_4_scalar_smp
 !
@@ -85,7 +86,7 @@
 !
        integer (kind = kint) :: ip, ist, ied, inod
 !
-!$omp parallel do private(ist,ied,inod)
+!$omp do private(ist,ied,inod)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -95,7 +96,7 @@
            dest(inod,3) = vector(inod,3) - const
          end do
        end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine subtruct_const_4_vect_smp
 !
@@ -113,7 +114,7 @@
 !
        integer (kind = kint) :: ip, ist, ied, inod
 !
-!$omp parallel do private(ist,ied,inod)
+!$omp do private(ist,ied,inod)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -126,7 +127,7 @@
            dest(inod,6) = tensor(inod,6) - const
          end do
        end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine subtruct_const_4_tensor_smp
 !
@@ -144,7 +145,7 @@
 !
        integer (kind = kint) :: ip, ist, ied, inod
 !
-!$omp parallel do private(ist,ied,inod)
+!$omp do private(ist,ied,inod)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -152,7 +153,7 @@
            scalar(inod) = scalar(inod) - const
          end do
        end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine subtruct_const_4_scalar_smp_ow
 !
@@ -169,7 +170,7 @@
 !
        integer (kind = kint) :: ip, ist, ied, inod
 !
-!$omp parallel do private(ist,ied,inod)
+!$omp do private(ist,ied,inod)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -179,7 +180,7 @@
            vector(inod,3) = vector(inod,3) - const
          end do
        end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine subtruct_const_4_vect_smp_ow
 !
@@ -196,7 +197,7 @@
 !
        integer (kind = kint) :: ip, ist, ied, inod
 !
-!$omp parallel do private(ist,ied,inod)
+!$omp do private(ist,ied,inod)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -209,7 +210,7 @@
            tensor(inod,6) = tensor(inod,6) - const
          end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine subtruct_const_4_tensor_smp_ow
 !

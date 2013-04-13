@@ -75,103 +75,137 @@
       use cal_magnetic_terms
       use cal_induction_terms
 !
-      integer (kind = kint) :: i
+!
+      if (iphys%i_h_advect .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_heat_advect)
+        call cal_terms_4_heat(iphys%i_h_advect)
+      end if
+!
+      if (iphys%i_ph_advect .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_part_h_advect)
+        call cal_terms_4_heat(iphys%i_ph_advect)
+      end if
+!
+      if (iphys%i_h_flux_div .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_div_h_flux)
+        call cal_terms_4_heat(iphys%i_h_flux_div)
+      end if
+!
+      if (iphys%i_ph_flux_div .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_div_ph_flux)
+        call cal_terms_4_heat(iphys%i_ph_flux_div)
+      end if
 !
 !
-      do i = 1, num_nod_phys
-        if (phys_nod_name(i).eq.fhd_heat_advect) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_terms_4_heat(iphys%i_h_advect)
-        else if (phys_nod_name(i).eq.fhd_part_h_advect) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_terms_4_heat(iphys%i_ph_advect)
-        else if (phys_nod_name(i).eq.fhd_div_h_flux) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_terms_4_heat(iphys%i_h_flux_div)
-        else if (phys_nod_name(i).eq.fhd_div_ph_flux) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_terms_4_heat(iphys%i_ph_flux_div)
-        else if (phys_nod_name(i).eq.fhd_inertia) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_terms_4_momentum(iphys%i_m_advect)
+      if (iphys%i_m_advect .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_inertia)
+        call cal_terms_4_momentum(iphys%i_m_advect)
+      end if
 !
-        else if (phys_nod_name(i).eq.fhd_div_m_flux) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_terms_4_momentum(iphys%i_m_flux_div)
-        else if (phys_nod_name(i).eq.fhd_div_maxwell_t) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_terms_4_momentum(iphys%i_maxwell_div)
-        else if (phys_nod_name(i).eq.fhd_div_induct_t) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_terms_4_magnetic(iphys%i_induct_div)
+      if (iphys%i_m_flux_div .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_div_m_flux)
+        call cal_terms_4_momentum(iphys%i_m_flux_div)
+      end if
 !
-        else if (phys_nod_name(i).eq.fhd_mag_tension) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_terms_4_momentum(iphys%i_m_tension)
-        else if (phys_nod_name(i).eq.fhd_Lorentz) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_terms_4_momentum(iphys%i_lorentz)
+      if (iphys%i_maxwell_div .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_div_maxwell_t)
+        call cal_terms_4_momentum(iphys%i_maxwell_div)
+      end if
 !
-        else if ( phys_nod_name(i) .eq. fhd_buoyancy) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_terms_4_momentum(iphys%i_buoyancy)
-        else if ( phys_nod_name(i) .eq. fhd_comp_buo) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_terms_4_momentum(iphys%i_comp_buo)
-        else if ( phys_nod_name(i) .eq. fhd_filter_buo) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_terms_4_momentum(iphys%i_filter_buo)
+      if (iphys%i_m_tension .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_mag_tension)
+        call cal_terms_4_momentum(iphys%i_m_tension)
+      end if
 !
-        else if (phys_nod_name(i).eq.fhd_Coriolis) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_terms_4_momentum(iphys%i_coriolis)
+      if (iphys%i_lorentz .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_Lorentz)
+        call cal_terms_4_momentum(iphys%i_lorentz)
+      end if
 !
-        else if (phys_nod_name(i).eq.fhd_mag_induct                     &
-     &      .and. iflag_t_evo_4_magne .gt. 0 ) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
+      if (iphys%i_buoyancy .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_buoyancy)
+        call cal_terms_4_momentum(iphys%i_buoyancy)
+      end if
+!
+      if (iphys%i_comp_buo .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_comp_buo)
+        call cal_terms_4_momentum(iphys%i_comp_buo)
+      end if
+!
+      if (iphys%i_filter_buo .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_filter_buo)
+        call cal_terms_4_momentum(iphys%i_filter_buo)
+      end if
+!
+      if (iphys%i_coriolis .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_Coriolis)
+        call cal_terms_4_momentum(iphys%i_coriolis)
+      end if
+!
+!
+      if (iphys%i_induct_div .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_div_induct_t)
+        call cal_terms_4_magnetic(iphys%i_induct_div)
+      end if
+!
+      if (iphys%i_induction .gt. izero                                  &
+     &      .and. iflag_t_evo_4_magne .gt. izero ) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_mag_induct)
           call cal_terms_4_magnetic(iphys%i_induction)
-        else if (phys_nod_name(i).eq.fhd_vp_induct) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_vecp_induction
+      end if
 !
-        else if (phys_nod_name(i).eq.fhd_thermal_diffusion) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_thermal_diffusion
-        else if (phys_nod_name(i).eq.fhd_viscous) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_viscous_diffusion
-        else if (phys_nod_name(i).eq.fhd_vecp_diffuse) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_vecp_diffusion
-        else if (phys_nod_name(i).eq.fhd_mag_diffuse                    &
-     &      .and. iflag_t_evo_4_magne .gt. 0 ) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_magnetic_diffusion
-        end if
-      end do
+      if (iphys%i_vp_induct .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_vp_induct)
+        call cal_vecp_induction
+      end if
 !
-      do i = 1, num_nod_phys
-      end do
+!
+      if (iphys%i_t_diffuse .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
+        call cal_thermal_diffusion
+      end if
+!
+      if (iphys%i_t_diffuse .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
+        call cal_thermal_diffusion
+      end if
+!
+      if (iphys%i_v_diffuse .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_viscous)
+        call cal_viscous_diffusion
+      end if
+!
+      if (iphys%i_vp_diffuse .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_vecp_diffuse)
+        call cal_vecp_diffusion
+      end if
+!
+      if (iphys%i_b_diffuse .gt. izero                                  &
+     &      .and. iflag_t_evo_4_magne .gt. izero ) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
+        call cal_magnetic_diffusion
+      end if
 !
       end subroutine cal_forces_4_monitor
 !
@@ -190,110 +224,124 @@
       use int_magne_diffusion
       use int_magne_induction
 !
-      integer (kind = kint) :: i
 !
-!
-      do i = 1, num_nod_phys
-        if (phys_nod_name(i).eq.fhd_mag_induct                          &
+      if (iphys%i_induction .gt. izero                                  &
      &      .and. iflag_t_evo_4_vect_p .gt. 0 ) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_mag_induct)
           call s_int_magne_induction
-        else if (phys_nod_name(i).eq.fhd_mag_diffuse                    &
+      end if
+!
+      if (iphys%i_b_diffuse .gt. izero                                  &
      &      .and. iflag_t_evo_4_vect_p .gt. 0 ) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call s_int_magne_diffusion
-        end if
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
+        call s_int_magne_diffusion
+      end if
 !
-        if (phys_nod_name(i).eq.fhd_e_field) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          if (iphys%i_vp_diffuse .gt. 0) then
-            call add_2_nod_vectors(iphys%i_electric,                    &
+      if (iphys%i_electric .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_e_field)
+        if (iphys%i_vp_diffuse .gt. 0) then
+          call add_2_nod_vectors(iphys%i_electric,                      &
      &          iphys%i_vp_diffuse, iphys%i_vp_induct)
-            call multi_by_const_nod_vector(iphys%i_electric,            &
+          call multi_by_const_nod_vector(iphys%i_electric,              &
      &          iphys%i_electric, dminus)
-          else
-            call multi_by_const_nod_vector(iphys%i_electric,            &
+        else
+          call multi_by_const_nod_vector(iphys%i_electric,              &
      &          iphys%i_current, coef_d_magne)
-            call cal_phys_vector_product(iphys%i_vp_induct,             &
+          call cal_phys_vector_product(iphys%i_vp_induct,               &
      &          iphys%i_velo, iphys%i_magne)
-            call subtract_2_nod_tensors(iphys%i_electric,               &
+          call subtract_2_nod_tensors(iphys%i_electric,                 &
      &          iphys%i_electric, iphys%i_vp_induct)
-          end if
         end if
-      end do
+      end if
 !
 !
 !
-      do i = 1, num_nod_phys
-!
-        if ( phys_nod_name(i).eq.fhd_Lorentz_work) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_tri_product_4_scalar(iphys%i_ujb, iphys%i_velo,      &
+      if (iphys%i_ujb .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_Lorentz_work)
+        call cal_tri_product_4_scalar(iphys%i_ujb, iphys%i_velo,        &
      &        iphys%i_current, iphys%i_magne, coef_lor)
+      end if
 !
-        else if ( phys_nod_name(i).eq.fhd_work_agst_Lorentz) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_tri_product_4_scalar(iphys%i_nega_ujb, iphys%i_velo, &
+      if (iphys%i_nega_ujb .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_work_agst_Lorentz)
+        call cal_tri_product_4_scalar(iphys%i_nega_ujb, iphys%i_velo,   &
      &        iphys%i_magne, iphys%i_current, coef_lor)
+      end if
 !
-        else if ( phys_nod_name(i).eq.fhd_mag_ene_gen) then
-          if ( iflag_t_evo_4_magne .gt. 0 ) then
-            call cal_tri_product_4_scalar(iphys%i_me_gen,               &
-     &          iphys%i_current, iphys%i_velo, iphys%i_magne, coef_lor)
-          else
-            call cal_phys_dot_product(iphys%i_me_gen, iphys%i_current,  &
-     &          iphys%i_vp_induct)
-          end if
-!
-        else if ( phys_nod_name(i).eq.fhd_buoyancy_work ) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_gravity_flux(coef_buo, iphys%i_temp,                 &
-     &        iphys%i_buo_gen)
-        else if ( phys_nod_name(i).eq.fhd_comp_buo_work ) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_gravity_flux(coef_comp_buo, iphys%i_light,           &
-     &        iphys%i_c_buo_gen)
-        else if ( phys_nod_name(i).eq.fhd_filter_buo_work) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_gravity_flux(coef_buo, iphys%i_filter_temp,          &
-     &        iphys%i_f_buo_gen)
-!
-        else if (phys_nod_name(i).eq.fhd_temp_generation) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_phys_product_4_scalar(iphys%i_par_t_gen,             &
-     &        iphys%i_h_advect, iphys%i_temp)
-        else if (phys_nod_name(i).eq.fhd_part_temp_gen ) then
-          if(iflag_debug.gt.0)                                          &
-     &             write(*,*) 'lead  ', trim(phys_nod_name(i))
-          call cal_phys_product_4_scalar(iphys%i_par_t_gen,             &
-     &        iphys%i_ph_advect, iphys%i_par_temp)
-!
-        else if (phys_nod_name(i).eq.fhd_vis_ene_diffuse ) then
-          call cal_phys_dot_product(iphys%i_vis_e_diffuse,              &
-     &         iphys%i_velo, iphys%i_v_diffuse)
-        else if (phys_nod_name(i).eq.fhd_mag_ene_diffuse ) then
-          call cal_phys_dot_product(iphys%i_mag_e_diffuse,              &
-     &        iphys%i_magne, iphys%i_b_diffuse)
-!
-        else if (phys_nod_name(i).eq.fhd_mag_tension_work ) then
-          call cal_phys_dot_product(iphys%i_m_tension_wk,               &
-     &         iphys%i_velo, iphys%i_m_tension)
-!
-        else if (phys_nod_name(i).eq.fhd_poynting ) then
-          call cal_phys_vector_product(iphys%i_poynting,                &
-     &         iphys%i_electric, iphys%i_magne)
-!
+      if (iphys%i_me_gen .gt. izero) then
+        if ( iflag_t_evo_4_magne .gt. 0 ) then
+          call cal_tri_product_4_scalar(iphys%i_me_gen,                 &
+     &        iphys%i_current, iphys%i_velo, iphys%i_magne, coef_lor)
+        else
+          call cal_phys_dot_product(iphys%i_me_gen, iphys%i_current,    &
+     &        iphys%i_vp_induct)
         end if
-      end do
+      end if
+!
+!
+!
+!
+      if (iphys%i_buo_gen .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_buoyancy_flux)
+        call cal_gravity_flux(coef_buo, iphys%i_temp,                   &
+     &        iphys%i_buo_gen)
+      end if
+!
+      if (iphys%i_c_buo_gen .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_comp_buo_flux)
+        call cal_gravity_flux(coef_comp_buo, iphys%i_light,             &
+     &      iphys%i_c_buo_gen)
+      end if
+!
+      if (iphys%i_f_buo_gen .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_filter_buo_flux)
+        call cal_gravity_flux(coef_buo, iphys%i_filter_temp,            &
+     &      iphys%i_f_buo_gen)
+      end if
+!
+!
+      if (iphys%i_temp_gen .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_temp_generation)
+        call cal_phys_product_4_scalar(iphys%i_temp_gen,                &
+     &        iphys%i_h_advect, iphys%i_temp)
+      end if
+!
+      if (iphys%i_par_t_gen .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_part_temp_gen)
+        call cal_phys_product_4_scalar(iphys%i_par_t_gen,               &
+     &        iphys%i_ph_advect, iphys%i_par_temp)
+      end if
+!
+!
+      if (iphys%i_vis_e_diffuse .gt. izero) then
+        call cal_phys_dot_product(iphys%i_vis_e_diffuse,                &
+     &         iphys%i_velo, iphys%i_v_diffuse)
+      end if
+!
+      if (iphys%i_mag_e_diffuse .gt. izero) then
+        call cal_phys_dot_product(iphys%i_mag_e_diffuse,                &
+     &      iphys%i_magne, iphys%i_b_diffuse)
+      end if
+!
+      if (iphys%i_m_tension_wk .gt. izero) then
+        call cal_phys_dot_product(iphys%i_m_tension_wk,                 &
+     &         iphys%i_electric, iphys%i_magne)
+      end if
+!
+      if (iphys%i_poynting .gt. izero) then
+        call cal_phys_vector_product(iphys%i_poynting,                  &
+     &         iphys%i_electric, iphys%i_magne)
+      end if
 !
       end subroutine cal_work_4_forces
 !

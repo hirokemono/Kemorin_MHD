@@ -1,12 +1,16 @@
+!>@file   set_control_nodal_data_MHD.f90
+!!@brief  module set_control_nodal_data_MHD
+!!
+!!@author H. Matsui
+!!@date Programmed in 2006
 !
-!      module set_control_nodal_data_MHD
-!
-!        programmed by H.Matsui on Sep., 2006
-!
-!     subroutine set_control_4_fields
-!     subroutine add_nodal_fields_2_ctl
-!     subroutine check_FEM_MHD_dependencies
-!
+!> @brief Set field information for MHD simulation from control data
+!!
+!!@verbatim
+!!     subroutine set_control_4_fields
+!!     subroutine add_nodal_fields_2_ctl
+!!     subroutine check_FEM_MHD_dependencies
+!!@endverbatim
 !
       module set_control_nodal_data_MHD
 !
@@ -38,7 +42,7 @@
         e_message = 'Set field for simulation'
         call parallel_abort(90, e_message)
       end if
-      if (iflag_debug.eq.1) write(*,*)                                 &
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)               &
      &    'original num_nod_phys_ctl ', num_nod_phys_ctl
 !
 !
@@ -48,7 +52,7 @@
 !
         call add_field_name_4_mhd
         call add_field_name_4_fem_mhd
-        if (iflag_debug.eq.1) write(*,*)                                &
+        if (iflag_debug .ge. iflag_routine_msg) write(*,*)              &
      &    'num_nod_phys after modified ', num_nod_phys_ctl
 !
 !    set nodal data
@@ -69,7 +73,8 @@
 !
 !     set work fields for SGS models
 !
-      if (iflag_debug.eq.1) write(*,*) 'add_work_area_4_sgs_model'
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &               write(*,*) 'add_work_area_4_sgs_model'
       call add_work_area_4_sgs_model
 !
       end subroutine add_field_name_4_fem_mhd

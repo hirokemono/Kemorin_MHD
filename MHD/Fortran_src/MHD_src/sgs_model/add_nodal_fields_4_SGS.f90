@@ -44,11 +44,11 @@
 !
         if(iflag_4_gravity .gt. 0) then
           call add_phys_name_tmp(fhd_SGS_h_flux)
-          call add_phys_name_tmp(fhd_SGS_buo_work)
+          call add_phys_name_tmp(fhd_SGS_buo_flux)
         end if
         if(iflag_4_composit_buo .gt. 0) then
           call add_phys_name_tmp(fhd_SGS_c_flux)
-          call add_phys_name_tmp(fhd_SGS_comp_buo_work)
+          call add_phys_name_tmp(fhd_SGS_comp_buo_flux)
         end if
       end if
 !
@@ -82,7 +82,7 @@
 !            call add_phys_name_tmp(fhd_grad_a_1)
 !            call add_phys_name_tmp(fhd_grad_a_2)
 !            call add_phys_name_tmp(fhd_grad_a_3)
-          else if( phys_nod_name_ctl(i) .eq. fhd_magne) then
+          else if(phys_nod_name_ctl(i) .eq. fhd_magne) then
             call add_phys_name_tmp(fhd_grad_b_1)
             call add_phys_name_tmp(fhd_grad_b_2)
             call add_phys_name_tmp(fhd_grad_b_3)
@@ -90,11 +90,11 @@
 !            call add_phys_name_tmp(fhd_grad_j_1)
 !            call add_phys_name_tmp(fhd_grad_j_2)
 !            call add_phys_name_tmp(fhd_grad_j_3)
-          else if( phys_nod_name_ctl(i) .eq. fhd_temp) then
+          else if(phys_nod_name_ctl(i) .eq. fhd_temp) then
             call add_phys_name_tmp(fhd_grad_temp)
-          else if( phys_nod_name_ctl(i) .eq. fhd_ref_temp) then
+          else if(phys_nod_name_ctl(i) .eq. fhd_ref_temp) then
             call add_phys_name_tmp(fhd_grad_par_temp)
-          else if( phys_nod_name_ctl(i) .eq. fhd_light) then
+          else if(phys_nod_name_ctl(i) .eq. fhd_light) then
             call add_phys_name_tmp(fhd_grad_composit)
           end if
         end do

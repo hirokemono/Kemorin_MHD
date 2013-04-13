@@ -15,56 +15,56 @@
 !  available forces
 !     gravity, Coriolis, Lorentz, Composite_gravity
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!      array force_ctl      4
-!        force_ctl   gravity              end
-!        force_ctl   Coriolis             end
-!        force_ctl   Lorentz              end
-!        force_ctl   Composite_gravity    end
-!      end array
-!
-!    end  forces_define
-!
-!    begin gravity_define
-!!!!! gravity_type !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!      0: constant
-!      1: constant_radial (constant intensity)
-!      2: radial (propotional to radius)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!      gravity_type_ctl     radial
-!
-!!!!! direction of gravity (opposite direction to that of buoyancy)
-!      array gravity_vec  3
-!        gravity_vec  x     0.000   end
-!        gravity_vec  y     0.000   end
-!        gravity_vec  z     -1.000   end
-!      end array
-!    end  gravity_define
-!
-!    begin Coriolis_define
-!!!!! direction of rotation vector for Coriolis force !!!!!!!!!!!!!
-!      array rotation_vec   3
-!        rotation_vec  x   0.000    end
-!        rotation_vec  y   0.000    end
-!        rotation_vec  z   1.000    end
-!      end array
-!
-!        tri_sph_int_file     'rot_int.dat'
-!        sph_int_file_format     'ascii'
-!    end  Coriolis_define
-!
-!    begin Magneto_convection_def
-!      magneto_cv_ctl    On
-!!!!!!!!!  magnetoconvection model!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!    array ext_magne_vec:   0...off  more than 1...On
-!     ext_magne_vec: external field (constant)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!      array ext_magne_vec   3
-!        ext_magne_vec  x     0.000   end
-!        ext_magne_vec  y     1.000   end
-!        ext_magne_vec  z     0.000   end
-!      end array
-!    end  Magneto_convection_def
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      array force_ctl      4
+!!        force_ctl   gravity              end
+!!        force_ctl   Coriolis             end
+!!        force_ctl   Lorentz              end
+!!        force_ctl   Composite_gravity    end
+!!      end array
+!!    end  forces_define
+!!
+!! !!!! gravity_type !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      0: constant
+!!      1: constant_radial (constant intensity)
+!!      2: radial (propotional to radius)
+!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!    begin gravity_define
+!!      gravity_type_ctl     radial
+!!
+!! !!!! direction of gravity (opposite direction to that of buoyancy)
+!!      array gravity_vec  3
+!!        gravity_vec  x     0.000   end
+!!        gravity_vec  y     0.000   end
+!!        gravity_vec  z     -1.000   end
+!!      end array gravity_vec
+!!    end  gravity_define
+!!
+!! !!!! direction of rotation vector for Coriolis force !!!!!!!!!!!!!
+!!
+!!    begin Coriolis_define
+!!      array rotation_vec   3
+!!        rotation_vec  x   0.000    end
+!!        rotation_vec  y   0.000    end
+!!        rotation_vec  z   1.000    end
+!!      end array rotation_vec
+!!
+!!      tri_sph_int_file     'rot_int.dat'
+!!      sph_int_file_format     'ascii'
+!!    end  Coriolis_define
+!!
+!!!!!!!!!!  magnetoconvection model!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!    array ext_magne_vec:   0...off  more than 1...On
+!!     ext_magne_vec: external field (constant)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!    begin Magneto_convection_def
+!!      magneto_cv_ctl    On
+!!      array ext_magne_vec   3
+!!        ext_magne_vec  x     0.000   end
+!!        ext_magne_vec  y     1.000   end
+!!        ext_magne_vec  z     0.000   end
+!!      end array ext_magne_vec
+!!    end  Magneto_convection_def
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 !
       module m_ctl_data_mhd_forces

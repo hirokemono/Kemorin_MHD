@@ -1,10 +1,14 @@
-!
-!      module lead_physical_values
-!
-!        programmed by H.Matsui
-!      Modified by H. Matsui on Aug, 2007
-!
-!      subroutine lead_fields_by_FEM
+!>@file   lead_physical_values.f90
+!!        module lead_physical_values
+!!
+!! @author H. Matsui
+!! @date ...when???
+!!
+!> @brief Evaluate many kind of field data
+!!
+!!@verbatim
+!!      subroutine lead_fields_by_FEM
+!!@endverbatim
 !
       module lead_physical_values
 !
@@ -43,7 +47,6 @@
         if (iflag_debug.gt.0) write(*,*) 'update_fields'
         call update_fields
 !
-        if (iflag_debug.gt.0) write(*,*) 'cal_field_by_rotation'
         call cal_field_by_rotation
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_helicity'

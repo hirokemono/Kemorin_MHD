@@ -103,8 +103,8 @@
      &       .or. phys_nod_name(i) .eq. fhd_Lorentz_work                &
      &       .or. phys_nod_name(i) .eq. fhd_mag_tension_work            &
      &       .or. phys_nod_name(i) .eq. fhd_buoyancy_work               &
-     &       .or. phys_nod_name(i) .eq. fhd_comp_buo_work               &
-     &       .or. phys_nod_name(i) .eq. fhd_filter_buo_work             &
+     &       .or. phys_nod_name(i) .eq. fhd_comp_buo_flux               &
+     &       .or. phys_nod_name(i) .eq. fhd_filter_buo_flux             &
      &       .or. phys_nod_name(i) .eq. fhd_heat_advect                 &
      &       .or. phys_nod_name(i) .eq. fhd_part_h_advect               &
      &       .or. phys_nod_name(i) .eq. fhd_div_h_flux                  &
@@ -116,8 +116,8 @@
      &       .or. phys_nod_name(i) .eq. fhd_SGS_m_ene_gen               &
      &       .or. phys_nod_name(i) .eq. fhd_SGS_Lorentz_work            &
      &       .or. phys_nod_name(i) .eq. fhd_Reynolds_work               &
-     &       .or. phys_nod_name(i) .eq. fhd_SGS_buo_work                &
-     &       .or. phys_nod_name(i) .eq. fhd_SGS_comp_buo_work           &
+     &       .or. phys_nod_name(i) .eq. fhd_SGS_buo_flux                &
+     &       .or. phys_nod_name(i) .eq. fhd_SGS_comp_buo_flux           &
      &       .or. phys_nod_name(i) .eq. fhd_thermal_diffusion           &
      &       .or. phys_nod_name(i) .eq. fhd_vis_ene_diffuse             &
      &       .or. phys_nod_name(i) .eq. fhd_mag_ene_diffuse             &
@@ -419,13 +419,13 @@
           else if ( phys_nod_name(i) .eq. fhd_mag_tension_work ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_m_tension_wk, j_ave%i_m_tension_wk)
-          else if ( phys_nod_name(i) .eq. fhd_buoyancy_work ) then
+          else if ( phys_nod_name(i) .eq. fhd_buoyancy_flux ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_buo_gen, j_ave%i_buo_gen)
-          else if ( phys_nod_name(i) .eq. fhd_comp_buo_work ) then
+          else if ( phys_nod_name(i) .eq. fhd_comp_buo_flux ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_c_buo_gen, j_ave%i_c_buo_gen)
-          else if ( phys_nod_name(i) .eq. fhd_filter_buo_work) then
+          else if ( phys_nod_name(i) .eq. fhd_filter_buo_flux) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_f_buo_gen, j_ave%i_f_buo_gen)
 !
@@ -483,10 +483,10 @@
           else if ( phys_nod_name(i) .eq. fhd_Reynolds_work ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_reynolds_wk, j_ave%i_reynolds_wk)
-          else if ( phys_nod_name(i) .eq. fhd_SGS_buo_work ) then
+          else if ( phys_nod_name(i) .eq. fhd_SGS_buo_flux ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_SGS_buo_wk, j_ave%i_SGS_buo_wk)
-          else if ( phys_nod_name(i) .eq. fhd_SGS_comp_buo_work ) then
+          else if ( phys_nod_name(i) .eq. fhd_SGS_comp_buo_flux ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_SGS_comp_buo_wk, j_ave%i_SGS_comp_buo_wk)
 !
@@ -515,6 +515,12 @@
           else if ( phys_nod_name(i) .eq. fhd_SGS_m_ene_gen_true ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_SGS_me_gen_tr, j_ave%i_SGS_me_gen_tr)
+!
+!   Old field label... Should be deleted later!!
+          else if ( phys_nod_name(i) .eq. fhd_buoyancy_work ) then
+            call set_rms_address(num_nod_component(i), i0, j0,          &
+     &          i_rms%i_buo_gen, j_ave%i_buo_gen)
+
           end if
 !
         else

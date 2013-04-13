@@ -62,8 +62,11 @@
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
 !
+!$omp parallel
       call add_const_to_vector_smp(np_smp, mesh%ele%numele,             &
      &    iele_fsmp_stack, bxe, ex_magne, fem_wk%vxe)
+!$omp end parallel
+!
       call int_vol_vector_inertia_type(mesh, jac_3d,                    &
      &    nod_fld, rhs_tbl, iele_fsmp_stack, n_int, iphys%i_magne,      &
      &    fem_wk%vxe, coef_lor, fem_wk, f_nl)
@@ -142,8 +145,11 @@
       do k2 = 1, mesh%ele%nnod_4_ele
         call vector_cst_phys_each_ele_type(mesh, nod_fld, k2,           &
      &      iphys%i_vecp, coef_lor, fem_wk%vector_1)
+!
+!$omp parallel
         call add_const_to_vector_smp(np_smp, mesh%ele%numele,           &
      &      iele_fsmp_stack, bxe, ex_magne, fem_wk%vxe)
+!$omp end parallel
 !
         call fem_skv_lorentz_rot_type(iele_fsmp_stack, n_int, k2,       &
      &      fem_wk%vxe, mesh%ele, jac_3d, fem_wk)
@@ -176,8 +182,11 @@
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
 !
+!$omp parallel
       call add_const_to_vector_smp(np_smp, mesh%ele%numele,             &
      &    iele_fsmp_stack, bxe, ex_magne, fem_wk%vxe)
+!$omp end parallel
+!
       call int_vol_vector_inertia_upw_type(mesh, jac_3d,                &
      &    nod_fld, rhs_tbl, iele_fsmp_stack, n_int, iphys%i_magne,      &
      &    fem_wk%vxe, vxe_up, coef_lor, fem_wk, f_nl)

@@ -63,8 +63,11 @@
       do k2=1, nnod_4_ele
         call vector_phys_2_each_element(k2, iphys%i_velo, velo_1)
         call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
+!
+!$omp parallel
         call add_const_to_vector_smp(np_smp, numele, iele_smp_stack,    &
      &    d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
+!$omp end parallel
 !
         call fem_skv_induction_1st(iele_cd_smp_stack, num_int, k2,      &
      &      coef_induct, velo_1, magne_1, d_ele(1,iphys_ele%i_velo),    &
@@ -118,8 +121,11 @@
       do k2=1, nnod_4_ele
         call vector_phys_2_each_element(k2, iphys%i_velo, velo_1)
         call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
+!
+!$omp parallel
         call add_const_to_vector_smp(np_smp, numele, iele_smp_stack,    &
      &      d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
+!$omp end parallel
 !
         call fem_skv_induction_upm_1st(iele_cd_smp_stack, num_int, k2,  &
      &      coef_induct, velo_1, magne_1, d_ele(1,iphys_ele%i_velo),    &
