@@ -1,21 +1,41 @@
-!m_coef_fdm_free_ICB.f90
-!      module m_coef_fdm_free_ICB
+!>@file   m_coef_fdm_free_ICB.f90
+!!@brief  module m_coef_fdm_free_ICB
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
 !
-!     Written by H. Matsui on Jan., 2010
-!
-!      subroutine cal_2nd_nod_ICB_free_bc_fdm
-!      dsdr =    mat_fdm_ICB_free_vp(2,1) * d_nod(ICB  )
-!              + mat_fdm_ICB_free_vp(2,3) * d_nod(ICB+1)
-!      dsfdr2 =  mat_fdm_ICB_free_vp(3,1) * d_nod(ICB  )
-!              + mat_fdm_ICB_free_vp(3,3) * d_nod(ICB+1)
-!
-!      dtdr =    mat_fdm_ICB_free_vt(2,1) * d_nod(ICB  )
-!              + mat_fdm_ICB_free_vt(2,3) * d_nod(ICB+1)
-!      dtfdr2 =  mat_fdm_ICB_free_vt(3,1) * d_nod(ICB  )
-!              + mat_fdm_ICB_free_vt(3,3) * d_nod(ICB+1)
-!
-!      subroutine set_free_icb_fdm_mat_coefs
-!      subroutine check_coef_fdm_free_ICB
+!>@brief Matrix to evaluate poloidal velocity and toroidal vorticity
+!!       at CMB with free slip boundary
+!!
+!!@verbatim
+!!      subroutine cal_2nd_nod_ICB_free_bc_fdm
+!!      subroutine set_free_icb_fdm_mat_coefs
+!!
+!!      subroutine check_coef_fdm_free_ICB
+!!
+!!    Matrix to evaluate radial derivative of poloidal velocity
+!!    at ICB with free slip boundary
+!!      dfdr =    coef_fdm_free_ICB_vp2( 0,2) * d_rj(ICB  )
+!!              + coef_fdm_free_ICB_vp2( 1,2) * d_rj(ICB+1)
+!!      d2fdr2 =  coef_fdm_free_ICB_vp2( 0,3) * d_rj(ICB  )
+!!              + coef_fdm_free_ICB_vp2( 1,3) * d_rj(ICB+1)
+!!
+!!    Matrix to evaluate radial derivative of toroidal vorticity
+!!    at ICB with free slip boundary
+!!      dfdr =    coef_fdm_free_ICB_vt2( 0,2) * d_rj(ICB  )
+!!      d2fdr2 =  coef_fdm_free_ICB_vt2( 0,3) * d_rj(ICB  )
+!!              + coef_fdm_free_ICB_vt2( 1,3) * d_rj(ICB+1)
+!!
+!!    Taylor expansion of free slip boundary at CMB
+!!      dfdr =    mat_fdm_2(2,1) * d_rj(CMB  )
+!!              + mat_fdm_2(2,2)
+!!                 * (-2*dfdr(CMB) + r(CMB) * d2fdr2(CMB))
+!!              + mat_fdm_2(2,3) * d_rj(CMB-1)
+!!      d2fdr2 =  mat_fdm_2(3,1) * d_rj(CMB  )
+!!              + mat_fdm_2(3,2)
+!!                 * (-2*dfdr(CMB) + r(CMB) * d2fdr2(CMB))
+!!              + mat_fdm_2(3,3) * d_rj(CMB-1)
+!!@endverbatim
 !
       module m_coef_fdm_free_ICB
 !
@@ -27,20 +47,33 @@
 !
       implicit none
 !
+!>      Matrix to evaluate radial derivative of poloidal velocity
+!!      at ICB with free slip boundary
       real(kind = kreal) :: coef_fdm_free_ICB_vp2(0:1,3)
-!      dfdr =    coef_fdm_free_ICB_vp2( 0,2) * d_nod(ICB  )
-!              + coef_fdm_free_ICB_vp2( 1,2) * d_nod(ICB+1)
-!      d2fdr2 =  coef_fdm_free_ICB_vp2( 0,3) * d_nod(ICB  )
-!              + coef_fdm_free_ICB_vp2( 1,3) * d_nod(ICB+1)
-!
+!>      Matrix to evaluate radial derivative of toroidal vorticity
+!!      at ICB with free slip boundary
       real(kind = kreal) :: coef_fdm_free_ICB_vt2(0:1,3)
-!      dfdr =    coef_fdm_free_ICB_vt2( 0,2) * d_nod(ICB  )
-!      d2fdr2 =  coef_fdm_free_ICB_vt2( 0,3) * d_nod(ICB  )
-!              + coef_fdm_free_ICB_vt2( 1,3) * d_nod(ICB+1)
 !
 !
-      real(kind = kreal), private :: mat_fdm_ICB_free_vp(3,3)
-      real(kind = kreal), private :: mat_fdm_ICB_free_vt(3,3)
+!>      Work matrix to evaluate coef_fdm_free_ICB_vp2(0:1,3)
+!!@verbatim
+!!      dsdr =    mat_fdm_ICB_free_vp(2,1) * d_rj(ICB  )
+!!              + mat_fdm_ICB_free_vp(2,3) * d_rj(ICB+1)
+!!      dsfdr2 =  mat_fdm_ICB_free_vp(3,1) * d_rj(ICB  )
+!!              + mat_fdm_ICB_free_vp(3,3) * d_rj(ICB+1)
+!!@endverbatim
+      real(kind = kreal) :: mat_fdm_ICB_free_vp(3,3)
+!
+!>      Work matrix to evaluate coef_fdm_free_ICB_vt2(0:1,3)
+!!@verbatim
+!!      dtdr =    mat_fdm_ICB_free_vt(2,1) * d_rj(ICB  )
+!!              + mat_fdm_ICB_free_vt(2,3) * d_rj(ICB+1)
+!!      dtfdr2 =  mat_fdm_ICB_free_vt(3,1) * d_rj(ICB  )
+!!              + mat_fdm_ICB_free_vt(3,3) * d_rj(ICB+1)
+!!@endverbatim
+      real(kind = kreal) :: mat_fdm_ICB_free_vt(3,3)
+!
+      private :: mat_fdm_ICB_free_vp, mat_fdm_ICB_free_vt
 !
 ! -----------------------------------------------------------------------
 !

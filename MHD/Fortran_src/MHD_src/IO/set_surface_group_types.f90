@@ -120,7 +120,6 @@
       character (len=kchara), intent(in) :: bc_type_ctl
       integer(kind = kint), intent(inout) :: ibc_type
 !
-      integer(kind = kint) :: i
 !
          if ( bc_type_ctl .eq. 'wall' ) then
           ibc_type = 70

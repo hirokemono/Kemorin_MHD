@@ -1,30 +1,35 @@
-!m_coef_fdm_fixed_CMB.f90
-!      module m_coef_fdm_fixed_CMB
+!>@file   m_coef_fdm_fixed_CMB.f90
+!!@brief  module m_coef_fdm_fixed_CMB
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
 !
-!     Written by H. Matsui on Jan., 2010
-!
-!      subroutine cal_2nd_nod_CMB_fixed_fdm
-!      dfdr =      mat_fdm_CMB_fix_2(2,1) * d_nod(CMB  )
-!                + mat_fdm_CMB_fix_2(2,2) * d_nod(CMB-1)
-!                + mat_fdm_CMB_fix_2(2,3) * d_nod(CMB+2)
-!      d2fdr2 =    mat_fdm_CMB_fix_2(3,1) * d_nod(CMB  )
-!                + mat_fdm_CMB_fix_2(3,2) * d_nod(CMB-1)
-!                + mat_fdm_CMB_fix_2(3,3) * d_nod(CMB+2)
-!
-!
-!      subroutine cal_2nd_nod_CMB_fix_df_fdm
-!
-!      d_nod(k) = mat_fdm_CMB_fix_dr_2(1,1) * d_nod(CMB  )
-!               + mat_fdm_CMB_fix_dr_2(1,2) * dfdr(CMB)
-!               + mat_fdm_CMB_fix_dr_2(1,3) * d_nod(CMB-1)
-!      d2fdr2 =   mat_fdm_CMB_fix_dr_2(3,1) * d_nod(CMB  )
-!               + mat_fdm_CMB_fix_dr_2(3,2) * dfdr(CMB)
-!               + mat_fdm_CMB_fix_dr_2(3,3) * d_nod(CMB-1)
-!
-!
-!      subroutine set_fixed_cmb_fdm_mat_coefs
-!      subroutine check_coef_fdm_fix_dr_CMB
-!
+!>@brief Matrix to evaluate radial derivative at CMB 
+!!
+!!@verbatim
+!!      subroutine cal_2nd_nod_CMB_fixed_fdm
+!!      subroutine cal_2nd_nod_CMB_fix_df_fdm
+!!      subroutine set_fixed_cmb_fdm_mat_coefs
+!!
+!!      subroutine check_coef_fdm_fix_dr_CMB
+!!
+!!   Matrix for derivatives with fixed field
+!!      dfdr =      coef_fdm_fix_CMB_2( 2,2) * d_rj(CMB-2)
+!!                + coef_fdm_fix_CMB_2( 1,2) * d_rj(CMB-1)
+!!                + coef_fdm_fix_CMB_2( 0,2) * d_rj(CMB  )
+!!      d2fdr2 =    coef_fdm_fix_CMB_2( 2,3) * d_rj(CMB-2)
+!!                + coef_fdm_fix_CMB_2( 1,3) * d_rj(CMB-1)
+!!                + coef_fdm_fix_CMB_2( 0,3) * d_rj(CMB  )
+!!
+!!   Matrix for field and 2nd derivatives with fixed gradient
+!!      d_rj(k) =  coef_fdm_fix_dr_CMB_2(-1,1) * d_rj(CMB-1)
+!!               + coef_fdm_fix_dr_CMB_2( 0,1) * d_rj(CMB  )
+!!               + coef_fdm_fix_dr_CMB_2( 1,1) * dfdr(CMB)
+!!      d2fdr2 =   coef_fdm_fix_dr_CMB_2(-1,3) * d_rj(CMB-1)
+!!               + coef_fdm_fix_dr_CMB_2( 0,3) * d_rj(CMB  )
+!!               + coef_fdm_fix_dr_CMB_2( 1,3) * dfdr(CMB)
+!!@endverbatim
+!!
       module m_coef_fdm_fixed_CMB
 !
       use m_precision
@@ -36,29 +41,36 @@
       implicit none
 !
 !
+!>      Matrix to evaluate radial derivative at CMB with fiexed field
       real(kind = kreal) :: coef_fdm_fix_CMB_2(0:2,3)
-!      dfdr =      coef_fdm_fix_CMB_2( 2,2) * d_nod(CMB-2)
-!                + coef_fdm_fix_CMB_2( 1,2) * d_nod(CMB-1)
-!                + coef_fdm_fix_CMB_2( 0,2) * d_nod(CMB  )
-!      d2fdr2 =    coef_fdm_fix_CMB_2( 2,3) * d_nod(CMB-2)
-!                + coef_fdm_fix_CMB_2( 1,3) * d_nod(CMB-1)
-!                + coef_fdm_fix_CMB_2( 0,3) * d_nod(CMB  )
 !
-!
+!>      Matrix to evaluate field at CMB with fiexed radial derivative
       real(kind = kreal) :: coef_fdm_fix_dr_CMB_2(-1:1,3)
-!      d_nod(k) = coef_fdm_fix_dr_CMB_2(-1,1) * d_nod(CMB-1)
-!               + coef_fdm_fix_dr_CMB_2( 0,1) * d_nod(CMB  )
-!               + coef_fdm_fix_dr_CMB_2( 1,1) * dfdr(CMB)
-!      d2fdr2 =  coef_fdm_fix_dr_CMB_2(-1,3) * d_nod(CMB-1)
-!              + coef_fdm_fix_dr_CMB_2( 0,3) * d_nod(CMB  )
-!              + coef_fdm_fix_dr_CMB_2( 1,3) * dfdr(CMB)
 !
 !
+!>      Work matrix to evaluate coef_fdm_fix_CMB_2(0:2,3)
+!!@verbatim
+!!      dfdr =      mat_fdm_CMB_fix_2(2,1) * d_rj(CMB  )
+!!                + mat_fdm_CMB_fix_2(2,2) * d_rj(CMB-1)
+!!                + mat_fdm_CMB_fix_2(2,3) * d_rj(CMB-2)
+!!      d2fdr2 =    mat_fdm_CMB_fix_2(3,1) * d_rj(CMB  )
+!!                + mat_fdm_CMB_fix_2(3,2) * d_rj(CMB-1)
+!!                + mat_fdm_CMB_fix_2(3,3) * d_rj(CMB-2)
+!!@endverbatim
       real(kind = kreal), private :: mat_fdm_CMB_fix_2(3,3)
-      real(kind = kreal), private :: mat_fdm_CMB_fix_dr_2(3,3)
-      real(kind = kreal) :: mat_taylor_3(3,3)
 !
-      private :: mat_taylor_3
+!>      Work matrix to evaluate coef_fdm_fix_dr_CMB_2(-1:1,3)
+!!@verbatim
+!!      d_rj(k) =  mat_fdm_CMB_fix_dr_2(1,1) * d_rj(CMB  )
+!!               + mat_fdm_CMB_fix_dr_2(1,2) * dfdr(CMB)
+!!               + mat_fdm_CMB_fix_dr_2(1,3) * d_rj(CMB-1)
+!!      d2fdr2 =   mat_fdm_CMB_fix_dr_2(3,1) * d_rj(CMB  )
+!!               + mat_fdm_CMB_fix_dr_2(3,2) * dfdr(CMB)
+!!               + mat_fdm_CMB_fix_dr_2(3,3) * d_rj(CMB-1)
+!!@endverbatim
+      real(kind = kreal), private :: mat_fdm_CMB_fix_dr_2(3,3)
+!
+      private :: mat_fdm_CMB_fix_2, mat_fdm_CMB_fix_dr_2
 !
 ! -----------------------------------------------------------------------
 !
@@ -69,6 +81,7 @@
       subroutine cal_2nd_nod_CMB_fixed_fdm
 !
       integer(kind = kint) :: ierr
+      real(kind = kreal) :: mat_taylor_3(3,3)
       real(kind = kreal) :: dr_n1, dr_n2
 !
 !
@@ -101,6 +114,7 @@
       subroutine cal_2nd_nod_CMB_fix_df_fdm
 !
       integer(kind = kint) :: ierr
+      real(kind = kreal) :: mat_taylor_3(3,3)
       real(kind = kreal) :: dr_n1
 !
 !

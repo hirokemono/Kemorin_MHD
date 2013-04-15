@@ -39,7 +39,7 @@
 !!                    End address of each SMP process
 !!@n @param  xx(numnod,3) position in Cartesian coordinate
 !!@n @param  theta(numnod)  colatitude
-!!@n @param  phi(numnod)    longigude
+!!@n @param  phi(numnod)    longitude
 !!
 !!@n @param  v_sph(numnod,3) vector in spherical coordinate
 !!

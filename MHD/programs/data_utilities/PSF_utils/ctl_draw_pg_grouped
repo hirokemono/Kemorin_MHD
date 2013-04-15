@@ -5,7 +5,7 @@ begin draw_grouping_pg_ctl
   begin pgplot_param_ctl
     num_panels_ctl     2
     color_mode_ctl      Rainbow
-  end
+  end pgplot_param_ctl
 !
 !  component for plot
 !     group_mesh_head_ctl:       mesh file name for grouping data
@@ -22,7 +22,7 @@ begin draw_grouping_pg_ctl
 !
       start_element_grp_name_ctl   'fluid_r1_s1'
       num_element_grp_ctl           480
-    end
+    end grouping_plot_ctl
 !
 !  component for plot
 !     field name, component to plot, label
@@ -34,14 +34,14 @@ begin draw_grouping_pg_ctl
         plot_field_ctl  data        vector  '\frmagnetic field'    end
         plot_field_ctl  vorticity   contour  '\frvorticity'        end
         plot_field_ctl  data        radius   '\frvorticity'        end
-      end array
+      end array plot_field_ctl
 !
 !  range for contour
 !     nline, min, max, = 0, 0 ... use minimum and max in data
       array contour_range_ctl    3
         contour_range_ctl   1   20  -5.0e0   5.0e0    end
         contour_range_ctl   2   10  -5.0e3   5.0e3    end
-      end array
+      end array contour_range_ctl
     end
 !
 end

@@ -37,7 +37,7 @@
 !!@n @param  numnod   Number of data points
 !!@n @param  inod_smp_stack(0:np_smp)
 !!                    End address of each SMP process
-!!@n @param  phi(numnod)  longigude
+!!@n @param  phi(numnod)  longitude
 !!
 !!@n @param  v_cyl(numnod,3) vector in cylindrical coordinate
 !!

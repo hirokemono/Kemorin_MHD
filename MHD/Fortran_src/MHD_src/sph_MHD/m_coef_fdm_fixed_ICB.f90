@@ -1,27 +1,35 @@
-!m_coef_fdm_fixed_ICB.f90
-!      module m_coef_fdm_fixed_ICB
+!>@file   m_coef_fdm_fixed_ICB.f90
+!!@brief  module m_coef_fdm_fixed_ICB
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
 !
-!     Written by H. Matsui on Jan., 2010
-!
-!      subroutine cal_2nd_nod_ICB_fixed_fdm
-!      dfdr =      coef_fdm_fix_ICB_2(2,1) * d_nod(ICB  )
-!                + coef_fdm_fix_ICB_2(2,2) * d_nod(ICB+1)
-!                + coef_fdm_fix_ICB_2(2,3) * d_nod(ICB+2)
-!      d2fdr2 =    coef_fdm_fix_ICB_2(3,1) * d_nod(ICB  )
-!                + coef_fdm_fix_ICB_2(3,2) * d_nod(ICB+1)
-!                + coef_fdm_fix_ICB_2(3,3) * d_nod(ICB+2)
-!
-!
-!      subroutine cal_2nd_nod_ICB_fix_df_fdm
-!
-!      d2fdr2 =  mat_fdm_2(3,1) * dfdr(ICB)
-!              + mat_fdm_2(3,2) * d_nod(ICB  )
-!              + mat_fdm_2(3,3) * d_nod(ICB+1)
-!
-!
-!      subroutine set_fixed_icb_fdm_mat_coefs
-!      subroutine check_coef_fdm_fix_dr_ICB
-!
+!>@brief Matrix to evaluate radial derivative at ICB
+!!
+!!@verbatim
+!!      subroutine cal_2nd_nod_ICB_fixed_fdm
+!!      subroutine cal_2nd_nod_ICB_fix_df_fdm
+!!      subroutine set_fixed_icb_fdm_mat_coefs
+!!
+!!      subroutine check_coef_fdm_fix_dr_ICB
+!!
+!!   Matrix for derivatives with fixed field
+!!      dfdr =      coef_fdm_fix_ICB_2( 0,2) * d_rj(ICB  )
+!!                + coef_fdm_fix_ICB_2( 1,2) * d_rj(ICB+1)
+!!                + coef_fdm_fix_ICB_2( 2,2) * d_rj(ICB+2)
+!!      d2fdr2 =    coef_fdm_fix_ICB_2( 0,3) * d_rj(ICB  )
+!!                + coef_fdm_fix_ICB_2( 1,3) * d_rj(ICB+1)
+!!                + coef_fdm_fix_ICB_2( 2,3) * d_rj(ICB+2)
+!!
+!!   Matrix for field and 2nd derivatives with fixed gradient
+!!      d_rj(k) =   coef_fdm_fix_dr_ICB_2(-1,2) * dfdr(ICB)
+!!                + coef_fdm_fix_dr_ICB_2( 0,2) * d_rj(ICB  )
+!!                + coef_fdm_fix_dr_ICB_2( 1,2) * d_rj(ICB+1)
+!!      d2fdr2 =    coef_fdm_fix_dr_ICB_2(-1,3) * dfdr(ICB)
+!!                + coef_fdm_fix_dr_ICB_2( 0,3) * d_rj(ICB  )
+!!                + coef_fdm_fix_dr_ICB_2( 1,3) * d_rj(ICB+1)
+!!@endverbatim
+!!
       module m_coef_fdm_fixed_ICB
 !
       use m_precision
@@ -33,29 +41,35 @@
       implicit none
 !
 !
+!>      Matrix to evaluate radial derivative at ICB with fiexed field
       real(kind = kreal) :: coef_fdm_fix_ICB_2(0:2,3)
-!      dfdr =      coef_fdm_fix_ICB_2( 0,2) * d_nod(ICB  )
-!                + coef_fdm_fix_ICB_2( 1,2) * d_nod(ICB+1)
-!                + coef_fdm_fix_ICB_2( 2,2) * d_nod(ICB+2)
-!      d2fdr2 =    coef_fdm_fix_ICB_2( 0,3) * d_nod(ICB  )
-!                + coef_fdm_fix_ICB_2( 1,3) * d_nod(ICB+1)
-!                + coef_fdm_fix_ICB_2( 2,3) * d_nod(ICB+2)
-!
-!
+!>      Matrix to evaluate field at ICB with fiexed radial derivative
       real(kind = kreal) :: coef_fdm_fix_dr_ICB_2(-1:1,3)
-!      d_nod(k) =  coef_fdm_fix_dr_ICB_2(-1,2) * dfdr(ICB)
-!                + coef_fdm_fix_dr_ICB_2( 0,2) * d_nod(ICB  )
-!                + coef_fdm_fix_dr_ICB_2( 1,2) * d_nod(ICB+1)
-!      d2fdr2 =    coef_fdm_fix_dr_ICB_2(-1,3) * dfdr(ICB)
-!                + coef_fdm_fix_dr_ICB_2( 0,3) * d_nod(ICB  )
-!                + coef_fdm_fix_dr_ICB_2( 1,3) * d_nod(ICB+1)
 !
 !
+!>      Work matrix to evaluate coef_fdm_fix_ICB_2(0:2,3)
+!!@verbatim
+!!      dfdr =      mat_fdm_ICB_fix_2(2,1) * d_rj(ICB  )
+!!                + mat_fdm_ICB_fix_2(2,2) * d_rj(ICB+1)
+!!                + mat_fdm_ICB_fix_2(2,3) * d_rj(ICB+2)
+!!      d2fdr2 =    mat_fdm_ICB_fix_2(3,1) * d_rj(ICB  )
+!!                + mat_fdm_ICB_fix_2(3,2) * d_rj(ICB+1)
+!!                + mat_fdm_ICB_fix_2(3,3) * d_rj(ICB+2)
+!!@endverbatim
       real(kind = kreal), private :: mat_fdm_ICB_fix_2(3,3)
-      real(kind = kreal), private :: mat_fdm_ICB_fix_dr_2(3,3)
-      real(kind = kreal) :: mat_taylor_3(3,3)
 !
-      private :: mat_taylor_3
+!>      Work matrix to evaluate coef_fdm_fix_dr_ICB_2(-1:1,3)
+!!@verbatim
+!!      d_rj(k) =  mat_fdm_ICB_fix_dr_2(2,1) * d_rj(ICB  )
+!!               + mat_fdm_ICB_fix_dr_2(2,2) * dfdr(ICB)
+!!               + mat_fdm_ICB_fix_dr_2(2,3) * d_rj(ICB+1)
+!!      d2fdr2 =   mat_fdm_ICB_fix_dr_2(3,1) * d_rj(ICB  )
+!!               + mat_fdm_ICB_fix_dr_2(3,2) * dfdr(ICB)
+!!               + mat_fdm_ICB_fix_dr_2(3,3) * d_rj(ICB+1)
+!!@endverbatim
+      real(kind = kreal), private :: mat_fdm_ICB_fix_dr_2(3,3)
+!
+      private :: mat_fdm_ICB_fix_2, mat_fdm_ICB_fix_dr_2
 !
 ! -----------------------------------------------------------------------
 !
@@ -66,6 +80,7 @@
       subroutine cal_2nd_nod_ICB_fixed_fdm
 !
       integer(kind = kint) :: ierr
+      real(kind = kreal) :: mat_taylor_3(3,3)
       real(kind = kreal) :: dr_p1, dr_p2
 !
 !
@@ -97,6 +112,7 @@
       subroutine cal_2nd_nod_ICB_fix_df_fdm
 !
       integer(kind = kint) :: ierr
+      real(kind = kreal) :: mat_taylor_3(3,3)
       real(kind = kreal) :: dr_p1
 !
 !

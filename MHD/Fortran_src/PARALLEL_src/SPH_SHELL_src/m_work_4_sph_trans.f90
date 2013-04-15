@@ -74,7 +74,7 @@
 !
 !>      Spectr data for spherical hermonics transform  @f$ f(r,j) @f$ 
       real(kind = kreal), allocatable :: sp_rj(:)
-!>      field data on Gauss-LEgendre points @f$ f(r,\theta,\phi) @f$ 
+!>      field data on Gauss-Legendre points @f$ f(r,\theta,\phi) @f$ 
       real(kind = kreal), allocatable :: vr_rtp(:)
 !
 !>      Spectr data for Legendre transform  @f$ f(r,l,m) @f$ 
@@ -91,7 +91,7 @@
       integer(kind = kint), allocatable :: mdx_p_rlm_rtm(:)
 !>      Spectr hermonics order for Legendre transform
       integer(kind = kint), allocatable :: mdx_n_rlm_rtm(:)
-!>      @f$ 1 / \sinf \theta  for LEgendre transform@f$ 
+!>      @f$ 1 / \sin \theta  for Legendre transform@f$ 
       real(kind = kreal), allocatable :: asin_theta_1d_rtm(:)
 !
 !>      End address of spherical hermonics order for SMP parallelization
