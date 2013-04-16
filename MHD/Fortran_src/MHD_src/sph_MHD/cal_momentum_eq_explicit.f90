@@ -11,8 +11,6 @@
 !
       implicit  none
 !
-!      subroutine s_cal_momentum_eq_exp_sph(i_step)
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -28,13 +26,16 @@
       use cal_nonlinear_sph_MHD
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'cal_rot_of_forces_sph_2'
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &     write(*,*) 'cal_rot_of_forces_sph_2'
       call cal_rot_of_forces_sph_2
 !
-      if (iflag_debug.eq.1) write(*,*) 'cal_rot_of_induction_sph'
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &     write(*,*) 'cal_rot_of_induction_sph'
       call cal_rot_of_induction_sph
 !
-      if (iflag_debug.eq.1) write(*,*) 'cal_div_of_fluxes_sph'
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &     write(*,*) 'cal_div_of_fluxes_sph'
       call cal_div_of_fluxes_sph
 !
       end subroutine s_cal_momentum_eq_exp_sph
@@ -47,7 +48,6 @@
       use m_control_params_sph_MHD
       use cal_explicit_terms
       use cal_vorticity_terms_adams
-!      use cal_momentum_terms_adams
       use cal_nonlinear_sph_MHD
 !
 !
@@ -69,7 +69,6 @@
       use cal_explicit_terms
       use cal_vorticity_terms_adams
       use cal_nonlinear_sph_MHD
-!      use cal_momentum_terms_adams
       use cal_vorticity_terms_adams
 !
       integer(kind = kint), intent(in) :: i_step

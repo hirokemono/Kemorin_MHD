@@ -89,12 +89,7 @@
       call cal_fdm_coeffients
 !
       call time_prog_barrier
-!
-! ---------------------------------
-!
-!      if(iflag_debug.gt.0) write(*,*)' s_cal_radial_jacobians'
-!      call s_cal_radial_jacobians(nidx_rj(1), radius_1d_rj_r(1) )
-!
+!*
 !* -----  set integrals for coriolis term -----------------
 !*
       if(iflag_4_coriolis .gt. 0) then

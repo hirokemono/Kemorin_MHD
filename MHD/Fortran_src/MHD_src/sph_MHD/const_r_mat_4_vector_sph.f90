@@ -1,10 +1,14 @@
-!const_r_mat_4_vector_sph.f90
-!      module const_r_mat_4_vector_sph
+!>@file   const_r_mat_4_vector_sph.f90
+!!@brief  module const_r_mat_4_vector_sph
+!!
+!!@date  Programmed by H.Matsui on Apr., 2009
 !
-!     Written by H. Matsui on Oct, 2009
-!
-!      subroutine const_radial_mat_vort_2step
-!      subroutine const_radial_mat_4_magne_sph
+!>@brief Construct matrix for time evolution of vector fields
+!!
+!!@verbatim
+!!      subroutine const_radial_mat_vort_2step
+!!      subroutine const_radial_mat_4_magne_sph
+!!@endverbatim
 !
       module const_r_mat_4_vector_sph
 !
@@ -31,11 +35,12 @@
       subroutine const_radial_mat_vort_2step
 !
       use m_control_params_sph_MHD
+      use m_ludcmp_band
       use set_free_slip_sph_mat_bc
       use set_non_slip_sph_mat_bc
       use set_sph_mom_mat_bc
       use cal_inner_core_rotation
-      use m_ludcmp_band
+      use mat_product_3band_mul
 !
       integer(kind = kint) :: kst, ked, ip, jst, jed, j
 !      integer(kind = kint) :: k
@@ -48,8 +53,10 @@
      &    kst, ked, coef_imp_v, coef_d_velo, vt_evo_mat)
       call set_radial_vect_evo_mat_sph(nidx_rj(1), nidx_rj(2),          &
      &    kst, ked, coef_imp_v, coef_d_velo, wt_evo_mat)
-      call set_radial_vp_mat_sph(kst, ked)
-      call set_radial_press_mat_sph(kst, ked)
+      call set_radial_vp_mat_sph(nidx_rj(1), nidx_rj(2),                &
+     &    kst, ked, vs_poisson_mat)
+      call set_radial_press_mat_sph(nidx_rj(1), nidx_rj(2),             &
+     &    kst, ked, coef_press, p_poisson_mat)
 !$omp end parallel
 !
 !   Boundary condition for ICB
@@ -85,7 +92,9 @@
       end if
 !
 !
-      call set_vp_evo_mat_sph_by_mat(nlayer_ICB, nlayer_CMB)
+      call cal_mat_product_3band_mul(nidx_rj(1), nidx_rj(2),            &
+     &    nlayer_ICB, nlayer_CMB, wt_evo_mat, vs_poisson_mat,           &
+     &    vp_evo_mat)
 !
       if(i_debug .eq. iflag_full_msg)                                   &
      &          call check_vorticity_matrices_sph(my_rank)

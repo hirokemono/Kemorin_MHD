@@ -248,13 +248,13 @@
       if (iflag_icb_composition .eq. iflag_fixed_flux) then
         call adjust_icb_fix_c_flux_sph
       else
-        call set_icb_fix_dscalar_sph
+        call set_icb_fix_composition_sph
       end if
 !
       if (iflag_cmb_composition .eq. iflag_fixed_flux) then
         call adjust_cmb_fix_c_flux_sph
       else
-        call set_cmb_fix_dscalar_sph
+        call set_cmb_fix_composition_sph
       end if
 !
       call lubksb_3band_mul(np_smp, idx_rj_smp_stack(0,2),              &

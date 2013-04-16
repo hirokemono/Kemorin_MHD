@@ -32,7 +32,7 @@
 !!      delta_t_psf_ctl          1.0e-3
 !!      delta_t_pvr_ctl          1.0e-2
 !!      delta_t_fline_ctl        1.0e-1
-!!      delta_t_ucd_ctl          1.0e-3
+!!      delta_t_field_ctl        1.0e-3
 !!      delta_t_monitor_ctl      1.0e-4
 !!      delta_t_sgs_coefs_ctl    2.0e-5
 !!      delta_t_boundary_ctl     1.0e-4
@@ -101,7 +101,7 @@
 !>                Increment time for volume rendering data output
 !>@n@param      delta_t_fline_ctl
 !>                Increment time for field line data output
-!>@n@param      delta_t_ucd_ctl
+!>@n@param      delta_t_field_ctl
 !>                Increment time for whole field data output
 !>@n@param      delta_t_monitor_ctl
 !>                Increment time for monotoring on nodes data output
@@ -187,7 +187,7 @@
 !
       real(kind=kreal) :: delta_t_check_ctl
       real(kind=kreal) :: delta_t_rst_ctl
-      real(kind=kreal) :: delta_t_ucd_ctl
+      real(kind=kreal) :: delta_t_field_ctl
       real(kind=kreal) :: delta_t_psf_ctl
       real(kind=kreal) :: delta_t_iso_ctl
       real(kind=kreal) :: delta_t_pvr_ctl
@@ -236,7 +236,7 @@
       character(len=kchara), parameter                                  &
      &       :: hd_delta_t_fline =     'delta_t_fline_ctl'
       character(len=kchara), parameter                                  &
-     &       :: hd_delta_t_ucd =       'delta_t_ucd_ctl'
+     &       :: hd_delta_t_ucd =       'delta_t_field_ctl'
       character(len=kchara), parameter                                  &
      &       :: hd_delta_t_monitor =   'delta_t_monitor_ctl'
       character(len=kchara), parameter                                  &
@@ -386,7 +386,7 @@
         call read_real_ctl_item(hd_delta_t_fline,                       &
      &          i_delta_t_fline, delta_t_fline_ctl)
         call read_real_ctl_item(hd_delta_t_ucd,                         &
-     &          i_delta_t_ucd, delta_t_ucd_ctl)
+     &          i_delta_t_ucd, delta_t_field_ctl)
         call read_real_ctl_item(hd_delta_t_monitor,                     &
      &        i_delta_t_monitor, delta_t_monitor_ctl)
         call read_real_ctl_item(hd_delta_t_sgs_coefs,                   &

@@ -1,15 +1,29 @@
-!set_sph_scalar_mat_bc.f90
-!      module set_sph_scalar_mat_bc
+!>@file   set_sph_scalar_mat_bc.f90
+!!@brief  module set_sph_scalar_mat_bc
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2009
 !
-!     Written by H. Matsui on Oct., 2009
-!
-!      subroutine set_fix_scalar_icb_rmat_sph(nri, jmax, evo_mat)
-!      subroutine set_fix_flux_icb_rmat_sph(nri, jmax, coef_imp, coef_d,&
-!     &          evo_mat)
-!
-!      subroutine set_fix_scalar_cmb_rmat_sph(nri, jmax, evo_mat)
-!      subroutine set_fix_flux_cmb_rmat_sph(nri, jmax, coef_imp, coef_d,&
-!     &          evo_mat)
+!>@brief  Construct matrix for scalar fields at boundaries
+!!
+!!@verbatim
+!!      subroutine set_fix_scalar_icb_rmat_sph(nri, jmax, evo_mat)
+!!      subroutine set_fix_flux_icb_rmat_sph(nri, jmax,                 &
+!!     &          coef_imp, coef_d, evo_mat)
+!!
+!!      subroutine set_fix_scalar_cmb_rmat_sph(nri, jmax, evo_mat)
+!!      subroutine set_fix_flux_cmb_rmat_sph(nri, jmax,                 &
+!!     &          coef_imp, coef_d, evo_mat)
+!!@endverbatim
+!!
+!!@n @param nri     Number of radial points
+!!@n @param jmax    Number of spherical hermonics modes
+!!@n @param kr_st   Start radial address to construct matrix
+!!@n @param kr_ed   End radial address to construct matrix
+!!@n @param coef_imp   Coefficient for contribution of implicit term
+!!@n @param coef_d     Coefficient of diffusiotn term
+!!
+!!@n @param evo_mat(3,nri,jmax)  Band matrix for time evolution
 !
       module set_sph_scalar_mat_bc
 !
@@ -46,8 +60,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_fix_flux_icb_rmat_sph(nri, jmax, coef_imp, coef_d, &
-     &          evo_mat)
+      subroutine set_fix_flux_icb_rmat_sph(nri, jmax,                   &
+     &          coef_imp, coef_d, evo_mat)
 !
       use m_coef_fdm_fixed_ICB
 !
@@ -89,8 +103,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_fix_flux_cmb_rmat_sph(nri, jmax, coef_imp, coef_d, &
-     &          evo_mat)
+      subroutine set_fix_flux_cmb_rmat_sph(nri, jmax,                   &
+     &          coef_imp, coef_d, evo_mat)
 !
       use m_coef_fdm_fixed_CMB
 !

@@ -877,6 +877,7 @@ void draw_mesh_kemo_glui(int iflag_streo_shutter, int iflag_dmesh) {
 	set_to_pick_surface_command(pick_surf_command);
 	
 	/*! Create viewer window*/
+    set_kemoview_retinamode(IZERO);
 	set_kemoview_windowsize(NPIX_X, NPIX_Y);
 	glutInitWindowSize(NPIX_X, NPIX_Y);
 	winid = glutCreateWindow("Kemoviewer");

@@ -6,7 +6,7 @@
 !!@n    Modified in Apr. 2013
 !
 !>@brief  Legendre transforms
-!!       (perform with single loop for r, l, \theta)
+!!       (perform with single loop for r, l, theta)
 !!
 !!
 !!@verbatim

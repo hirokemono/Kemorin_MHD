@@ -1,23 +1,33 @@
+!>@file   cal_inverse_small_matrix.f90
+!!@brief  module cal_inverse_small_matrix
+!!
+!!@date  Programmed by H.Matsui on July, 2009
 !
-!      module cal_inverse_small_matrix
-!
-!        programmed by H.Matsui on July, 2009
-!
-!      subroutine cal_det_22_matrix(a, det_a)
-!      subroutine cal_det_33_matrix(a, det_a)
-!      subroutine cal_det_44_matrix(a, det_a)
-!      recursive subroutine cal_det_nn_matrix(nsize, a, det_a)
-!
-!      subroutine cal_inverse_22_matrix(a, a_inv, ierr)
-!      subroutine cal_inverse_33_matrix(a, a_inv, ierr)
-!      subroutine cal_inverse_44_matrix(a, a_inv, ierr)
-!      subroutine cal_inverse_nn_matrix(nsize, a, a_inv, ierr)
-!
-!     definition of matrix
-!            / a(1,1)  a(1,2)  a(1,3)  \
-!       A =  | a(2,1)  a(2,2)  a(2,3)  |
-!            \ a(3,1)  a(3,2)  a(3,3)  /
-!
+!>@brief evaluate invert matrix for small matrix
+!!
+!!@verbatim
+!!      subroutine cal_det_22_matrix(a, det_a)
+!!      subroutine cal_det_33_matrix(a, det_a)
+!!      subroutine cal_det_44_matrix(a, det_a)
+!!      recursive subroutine cal_det_nn_matrix(nsize, a, det_a)
+!!
+!!      subroutine cal_inverse_22_matrix(a, a_inv, ierr)
+!!      subroutine cal_inverse_33_matrix(a, a_inv, ierr)
+!!      subroutine cal_inverse_44_matrix(a, a_inv, ierr)
+!!      subroutine cal_inverse_nn_matrix(nsize, a, a_inv, ierr)
+!!
+!!     definition of matrix
+!!            / a(1,1)  a(1,2)  a(1,3)  \
+!!       A =  | a(2,1)  a(2,2)  a(2,3)  |
+!!            \ a(3,1)  a(3,2)  a(3,3)  /
+!!@endverbatim
+!!
+!!@n @param nsize size of matrix
+!!@n @param a(nsize,nsize)      input matrix
+!!@n @param a_inv(nsize,nsize)  inverse matrix
+!!@n @param det_a               detarminant of matrix
+!!@n @param ierr                error flag
+!!
       module cal_inverse_small_matrix
 !
       use m_precision

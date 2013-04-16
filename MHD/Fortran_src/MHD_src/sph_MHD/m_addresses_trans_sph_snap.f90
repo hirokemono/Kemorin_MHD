@@ -1,10 +1,16 @@
-!m_addresses_trans_sph_snap.f90
-!      module m_addresses_trans_sph_snap
+!>@file   m_addresses_trans_sph_snap.f90
+!!@brief  module m_addresses_trans_sph_snap
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2012
 !
-!      Written by H. Matsui
-!
-!      subroutine set_addresses_snapshot_trans
-!      subroutine check_addresses_snapshot_trans
+!>@brief Field addresses for spherical hermonics transform
+!!       in MHD dynamo simulation
+!!
+!!@verbatim
+!!      subroutine set_addresses_snapshot_trans
+!!      subroutine check_addresses_snapshot_trans
+!!@endverbatim
 !
       module m_addresses_trans_sph_snap
 !
@@ -14,19 +20,24 @@
 !
       implicit none
 !
-!    number of fields to snapshot_transform
-!
+!>      number of vectors for backward spherical hermonics transform
       integer(kind = kint) :: nvector_snap_rj_2_rtp = 0
+!>      number of scalars for backward spherical hermonics transform
       integer(kind = kint) :: nscalar_snap_rj_2_rtp = 0
+!>      number of tensors for backward spherical hermonics transform
       integer(kind = kint) :: ntensor_snap_rj_2_rtp = 0
+!
+!>      number of vectors for forward spherical hermonics transform
       integer(kind = kint) :: nvector_snap_rtp_2_rj = 0
+!>      number of scalars for forward spherical hermonics transform
       integer(kind = kint) :: nscalar_snap_rtp_2_rj = 0
+!>      number of tensors for forward spherical hermonics transform
       integer(kind = kint) :: ntensor_snap_rtp_2_rj = 0
 !
-!    addresses for fields to backward transform
+!>    addresses for fields to backward transform
       type(phys_address), save :: bsnap_trns
 !
-!    addresses for forces to forward transform
+!>    addresses for forces to forward transform
       type(phys_address), save :: fsnap_trns
 !
       private :: add_transform_flag
@@ -124,13 +135,11 @@
 !
       subroutine check_addresses_snapshot_trans
 !
-      use m_machine_parameter
       use m_work_4_sph_trans
       use m_sph_phys_address
       use m_addresses_trans_sph_MHD
 !
 !
-      if(iflag_debug .gt. 0) then
         write(*,*) 'bsnap_trns%i_velo', bsnap_trns%i_velo,              &
      &            ipol%i_velo, irtp%i_velo
         write(*,*) 'bsnap_trns%i_vort', bsnap_trns%i_vort,              &
@@ -180,7 +189,6 @@
      &            ipol%i_c_buo_gen, irtp%i_c_buo_gen
         write(*,*) 'fsnap_trns%i_f_buo_gen', fsnap_trns%i_f_buo_gen,    &
      &            ipol%i_f_buo_gen, irtp%i_f_buo_gen
-      end if
 !
       end subroutine check_addresses_snapshot_trans
 !

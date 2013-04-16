@@ -1,10 +1,15 @@
-!cal_nonlinear_sph_MHD.f90
-!      module cal_nonlinear_sph_MHD
+!>@file   cal_nonlinear_sph_MHD.f90
+!!@brief  module cal_nonlinear_sph_MHD
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2009
 !
-!        programmed by H.Matsui on Oct., 2009
-!
-!      subroutine s_cal_nonlinear_sph_MHD
-!      subroutine add_reftemp_advect_sph_MHD
+!>@brief  Evaluate nonlinear terms in spherical coordinate grid
+!!
+!!@verbatim
+!!      subroutine s_cal_nonlinear_sph_MHD
+!!      subroutine add_reftemp_advect_sph_MHD
+!!@endverbatim
 !
       module cal_nonlinear_sph_MHD
 !

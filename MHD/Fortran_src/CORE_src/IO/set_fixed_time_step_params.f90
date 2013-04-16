@@ -54,7 +54,7 @@
      &    i_step_output_rst, delta_t_output_rst)
 !
       call set_monitor_param_4_fixed_step(ione, i_i_step_ucd,           &
-     &    i_delta_t_ucd, i_step_ucd_ctl, delta_t_ucd_ctl,               &
+     &    i_delta_t_ucd, i_step_ucd_ctl, delta_t_field_ctl,             &
      &    i_step_output_ucd, delta_t_output_ucd)
 !
       if(i_step_output_rst .gt. 0) then

@@ -783,6 +783,7 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH|GLUT_MULTISAMPLE);
 	};
 	/*! Create viewer window*/
+    set_kemoview_retinamode(IZERO);
 	set_kemoview_windowsize(NPIX_X, NPIX_Y);
 	glutInitWindowSize(NPIX_X, NPIX_Y);
 	winid = glutCreateWindow("Kemoviewer");

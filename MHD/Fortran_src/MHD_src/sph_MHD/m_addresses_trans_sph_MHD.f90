@@ -1,10 +1,16 @@
-!m_addresses_trans_sph_MHD.f90
-!      module m_addresses_trans_sph_MHD
+!>@file   m_addresses_trans_sph_MHD.f90
+!!@brief  module m_addresses_trans_sph_MHD
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
 !
-!      Written by H. Matsui
-!
-!      subroutine set_addresses_trans_sph_MHD
-!      subroutine check_add_trans_sph_MHD
+!>@brief Field addresses for spherical hermonics transform
+!!       in MHD dynamo simulation
+!!
+!!@verbatim
+!!      subroutine set_addresses_trans_sph_MHD
+!!      subroutine check_add_trans_sph_MHD
+!!@endverbatim
 !
       module m_addresses_trans_sph_MHD
 !
@@ -14,16 +20,17 @@
 !
       implicit none
 !
-!    number of fields to transform
-!
+!>      number of vectors for backward spherical hermonics transform
       integer(kind = kint) :: nvector_rj_2_rtp = 0
+!>      number of scalars for backward spherical hermonics transform
       integer(kind = kint) :: nscalar_rj_2_rtp = 0
+!>      number of vectors for forward spherical hermonics transform
       integer(kind = kint) :: nvector_rtp_2_rj = 0
 !
-!    addresses of fields for backward transform
+!>    addresses of fields for backward transform
       type(phys_address), save :: b_trns
 !
-!    addresses of forces for forward transform
+!>    addresses of forces for forward transform
       type(phys_address), save :: f_trns
 !
 !-----------------------------------------------------------------------

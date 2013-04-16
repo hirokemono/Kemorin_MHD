@@ -47,6 +47,7 @@
       use m_precision
 !
       use m_parallel_var_dof
+      use m_work_time
       use m_machine_parameter
       use m_spheric_parameter
       use m_spheric_param_smp
@@ -85,13 +86,15 @@
 !      call check_sp_rj(my_rank, nb3)
 !
       START_TIME= MPI_WTIME()
+      call start_eleps_time(18)
       call send_recv_rj_2_rlm_N(nb3, sp_rj, sp_rlm)
+      call end_eleps_time(18)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
 !      call check_sp_rlm(my_rank, nb3)
 !
-!      call start_eleps_time(18)
+      call start_eleps_time(22)
       if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
         if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_spin'
         call leg_bwd_trans_vector_spin(nb)
@@ -105,19 +108,23 @@
         if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_org'
         call leg_bwd_trans_vector_org(nb)
       end if
-!      call end_eleps_time(18)
+      call end_eleps_time(22)
 !      call leg_bwd_trans_vector_org(nb)
 !
 !      call check_vr_rtm(my_rank, nb3)
 !
       START_TIME= MPI_WTIME()
+      call start_eleps_time(19)
       call send_recv_rtm_2_rtp_N(nb3, vr_rtm, vr_rtp)
+      call end_eleps_time(19)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
 !      call check_vr_rtp(my_rank, nb3 )
 !
+      call start_eleps_time(24)
       call backward_FFT_select(np_smp, Nstacksmp, ncomp, np, vr_rtp)
+      call end_eleps_time(24)
 !
 !      call check_vr_rtp(my_rank, nb3 )
 !
@@ -142,17 +149,21 @@
 !
       call prod_r_vect_sph_f_trans(nb, vr_rtp)
 !
-!
 !      call check_vr_rtp(my_rank, nb3 )
+      call start_eleps_time(24)
       call forward_FFT_select(np_smp, Nstacksmp, ncomp, np, vr_rtp)
+      call end_eleps_time(24)
 !      call check_vr_rtp(my_rank, nb3 )
 !
       START_TIME= MPI_WTIME()
+      call start_eleps_time(20)
       call send_recv_rtp_2_rtm_N(nb3, vr_rtp, vr_rtm)
+      call end_eleps_time(20)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !      call check_vr_rtm(my_rank, nb3)
 !
+      call start_eleps_time(23)
       if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
         if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_spin'
         call leg_fwd_trans_vector_spin(nb)
@@ -166,10 +177,13 @@
         if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_org'
         call leg_fwd_trans_vector_org(nb)
       end if
+      call end_eleps_time(23)
 !      call check_sp_rlm(my_rank, nb3)
 !
       START_TIME= MPI_WTIME()
+      call start_eleps_time(21)
       call send_recv_rlm_2_rj_N(nb3, sp_rlm, sp_rj)
+      call end_eleps_time(21)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !      call check_sp_rj(my_rank, nb3)

@@ -1,17 +1,22 @@
+!>@file   set_scalar_boundary_sph.f90
+!!@brief  module set_scalar_boundary_sph
+!!
+!!@author H. Matsui
+!!@date Programmed in Apr., 2009
 !
-!      module set_scalar_boundary_sph
-!
-!      modified by H. Matsui on Apr., 2009
-!
-!      subroutine set_icb_fix_temp_sph
-!      subroutine set_cmb_fix_temp_sph
-!      subroutine set_icb_fix_h_flux_sph
-!      subroutine set_cmb_fix_h_flux_sph
-!
-!      subroutine set_icb_fix_dscalar_sph
-!      subroutine set_cmb_fix_dscalar_sph
-!      subroutine set_icb_fix_c_flux_sph
-!      subroutine set_cmb_fix_c_flux_sph
+!>@brief  Evaluate scalar fields at boundaries
+!!
+!!@verbatim
+!!      subroutine set_icb_fix_temp_sph
+!!      subroutine set_cmb_fix_temp_sph
+!!      subroutine set_icb_fix_h_flux_sph
+!!      subroutine set_cmb_fix_h_flux_sph
+!!
+!!      subroutine set_icb_fix_composition_sph
+!!      subroutine set_cmb_fix_composition_sph
+!!      subroutine set_icb_fix_c_flux_sph
+!!      subroutine set_cmb_fix_c_flux_sph
+!!@endverbatim
 !
       module set_scalar_boundary_sph
 !
@@ -75,23 +80,23 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_icb_fix_dscalar_sph
+      subroutine set_icb_fix_composition_sph
 !
 !
       call set_fixed_scalar_sph(nidx_rj(2), ione, nlayer_ICB,           &
      &    ipol%i_light, composition_ICB_bc)
 !
-      end subroutine set_icb_fix_dscalar_sph
+      end subroutine set_icb_fix_composition_sph
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_cmb_fix_dscalar_sph
+      subroutine set_cmb_fix_composition_sph
 !
 !
       call set_fixed_scalar_sph(nidx_rj(2), nlayer_CMB, nidx_rj(1),     &
      &    ipol%i_light, composition_CMB_bc)
 !
-      end subroutine set_cmb_fix_dscalar_sph
+      end subroutine set_cmb_fix_composition_sph
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

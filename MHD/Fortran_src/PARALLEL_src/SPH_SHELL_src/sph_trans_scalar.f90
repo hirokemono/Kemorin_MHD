@@ -31,6 +31,7 @@
       use m_precision
 !
       use m_parallel_var_dof
+      use m_work_time
       use m_phys_constants
       use m_machine_parameter
       use m_spheric_parameter
@@ -68,11 +69,14 @@
 !
 !      call check_sp_rj(my_rank, nb)
       START_TIME= MPI_WTIME()
+      call start_eleps_time(18)
       call send_recv_rj_2_rlm_N(nb, sp_rj(1), sp_rlm(1))
+      call end_eleps_time(18)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
 !      call check_sp_rlm(my_rank, nb)
+      call start_eleps_time(22)
       if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
         call leg_bwd_trans_scalar_spin(nb)
       else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
@@ -82,15 +86,20 @@
       else
         call leg_bwd_trans_scalar_org(nb)
       end if
+      call end_eleps_time(22)
 !
 !      call check_vr_rtm(my_rank, nb)
       START_TIME= MPI_WTIME()
+      call start_eleps_time(19)
       call send_recv_rtm_2_rtp_N(nb, vr_rtm(1), vr_rtp(1))
+      call end_eleps_time(19)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
 !      call check_vr_rtp(my_rank, nb)
+      call start_eleps_time(24)
       call backward_FFT_select(np_smp, Nstacksmp, ncomp, np, vr_rtp(1))
+      call end_eleps_time(24)
 !      call check_vr_rtp(my_rank, nb)
 !
       end subroutine sph_b_trans_scalar
@@ -114,15 +123,20 @@
 !
 !
 !      call check_vr_rtp(my_rank, nb)
+      call start_eleps_time(24)
       call forward_FFT_select(np_smp, Nstacksmp, ncomp, np, vr_rtp(1))
+      call end_eleps_time(24)
 !      call check_vr_rtp(my_rank, nb)
 !
       START_TIME= MPI_WTIME()
+      call start_eleps_time(20)
       call send_recv_rtp_2_rtm_N(nb, vr_rtp(1), vr_rtm(1))
+      call end_eleps_time(20)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !      call check_vr_rtm(my_rank, nb)
 !
+      call start_eleps_time(23)
       if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
         call leg_fwd_trans_scalar_spin(nb)
       else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
@@ -132,10 +146,13 @@
       else
         call leg_fwd_trans_scalar_org(nb)
       end if
+      call end_eleps_time(23)
 !      call check_sp_rlm(my_rank, nb)
 !
       START_TIME= MPI_WTIME()
+      call start_eleps_time(21)
       call send_recv_rlm_2_rj_N(nb, sp_rlm(1), sp_rj(1))
+      call end_eleps_time(21)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !      call check_sp_rj(my_rank, nb)

@@ -57,7 +57,7 @@
 !!                + mat_fdm_CMB_fix_2(3,2) * d_rj(CMB-1)
 !!                + mat_fdm_CMB_fix_2(3,3) * d_rj(CMB-2)
 !!@endverbatim
-      real(kind = kreal), private :: mat_fdm_CMB_fix_2(3,3)
+      real(kind = kreal) :: mat_fdm_CMB_fix_2(3,3)
 !
 !>      Work matrix to evaluate coef_fdm_fix_dr_CMB_2(-1:1,3)
 !!@verbatim
@@ -68,7 +68,7 @@
 !!               + mat_fdm_CMB_fix_dr_2(3,2) * dfdr(CMB)
 !!               + mat_fdm_CMB_fix_dr_2(3,3) * d_rj(CMB-1)
 !!@endverbatim
-      real(kind = kreal), private :: mat_fdm_CMB_fix_dr_2(3,3)
+      real(kind = kreal) :: mat_fdm_CMB_fix_dr_2(3,3)
 !
       private :: mat_fdm_CMB_fix_2, mat_fdm_CMB_fix_dr_2
 !

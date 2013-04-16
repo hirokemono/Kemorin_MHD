@@ -46,7 +46,7 @@
 !
 !     --------------------- 
 !
-      num_elapsed = 18
+      num_elapsed = 25
       call allocate_elapsed_times
 !
       elapse_labels(1) = 'Total time                 '
@@ -63,13 +63,21 @@
       elapse_labels(11) = 'PSF_time                  '
       elapse_labels(12) = 'Nonliner_terms            '
 !
-      elapse_labels(13) =  'Coriolis term             '
-      elapse_labels(14) =  'sph backward transform    '
-      elapse_labels(15) = 'cal nonlinear terms        '
-      elapse_labels(16) = 'sph forward transform      '
-      elapse_labels(17) = 'obtain explicit terms      '
+      elapse_labels(13) = 'Coriolis term             '
+      elapse_labels(14) = 'sph backward transform    '
+      elapse_labels(15) = 'cal nonlinear terms       '
+      elapse_labels(16) = 'sph forward transform     '
+      elapse_labels(17) = 'obtain explicit terms     '
 !
-      elapse_labels(18) = 'Communication time         '
+      elapse_labels(18) = 'transfer rj  => rlm        '
+      elapse_labels(19) = 'transfer rtm => rtp        '
+      elapse_labels(20) = 'transfer rtp => rtm        '
+      elapse_labels(21) = 'transfer rlm => rj         '
+      elapse_labels(22) = 'Legendre backward transform'
+      elapse_labels(23) = 'Legendre forward transform '
+      elapse_labels(24) = 'Fourier transform          '
+!
+      elapse_labels(num_elapsed) = 'Communication time        '
 !
 !   Load parameter file
 !
@@ -177,7 +185,7 @@
       if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_MHD'
       call SPH_finalize_MHD
 !
-      call copy_COMM_TIME_to_eleps(18)
+      call copy_COMM_TIME_to_eleps(num_elapsed)
       call end_eleps_time(1)
 !
       call output_elapsed_times

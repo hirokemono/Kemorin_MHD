@@ -1,12 +1,24 @@
-!set_sph_exp_nod_center.f90
-!      module set_sph_exp_nod_center
+!>@file   set_sph_exp_nod_center.f90
+!!@brief  module set_sph_exp_nod_center
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
 !
-!     Written by H. Matsui on Jan., 2010
-!
-!      subroutine cal_sph_nod_center_b_and_j(is_fld, is_rot)
-!      subroutine cal_dsdr_sph_center_2(is_fld)
-!      subroutine cal_sph_nod_center_rot2(is_fld, is_rot)
-!      subroutine cal_sph_nod_center_diffuse2(is_fld, is_diffuse)
+!>@brief  Evaluate field approaching to center
+!!
+!!@verbatim
+!!      subroutine cal_sph_nod_center_b_and_j(is_fld, is_rot)
+!!      subroutine cal_dsdr_sph_center_2(is_fld)
+!!      subroutine cal_sph_nod_center_rot2(is_fld, is_rot)
+!!      subroutine cal_sph_nod_center_diffuse2(is_fld, is_diffuse)
+!!@endverbatim
+!!
+!!@n param is_fld     Address of poloidal magnetic field
+!!                    (or velocity) in d_rj
+!!@n param is_rot     Address of poloidal currentdensity
+!!                    (or vorticity) in d_rj
+!!@n param is_diffuse Address of poloidal magnetic diffusion
+!!                    (or viscousity) in d_rj
 !
       module set_sph_exp_nod_center
 !

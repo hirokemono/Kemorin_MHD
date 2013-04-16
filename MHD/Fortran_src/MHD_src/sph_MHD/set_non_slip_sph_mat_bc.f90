@@ -1,13 +1,18 @@
-!set_non_slip_sph_mat_bc.f90
-!      module set_non_slip_sph_mat_bc
+!>@file   set_non_slip_sph_mat_bc.f90
+!!@brief  module set_non_slip_sph_mat_bc
+!!
+!!@author H. Matsui
+!!@date Programmed in Apr, 2009
 !
-!     Written by H. Matsui on Apr, 2009
-!
-!      subroutine set_non_slip_icb_vt_sph_mat
-!      subroutine set_rgd_icb_vp_sph_poisson_mat
-!
-!      subroutine set_non_slip_cmb_vt_sph_mat
-!      subroutine set_rgd_cmb_vp_sph_poisson_mat
+!>@brief  Construct matrix for non-slip boundaries
+!!
+!!@verbatim
+!!      subroutine set_non_slip_icb_vt_sph_mat
+!!      subroutine set_rgd_icb_vp_sph_poisson_mat
+!!
+!!      subroutine set_non_slip_cmb_vt_sph_mat
+!!      subroutine set_rgd_cmb_vp_sph_poisson_mat
+!!@endverbatim
 !
       module set_non_slip_sph_mat_bc
 !

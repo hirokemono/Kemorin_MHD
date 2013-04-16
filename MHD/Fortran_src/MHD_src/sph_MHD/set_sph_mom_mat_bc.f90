@@ -1,15 +1,20 @@
-!set_sph_mom_mat_bc.f90
-!      module set_sph_mom_mat_bc
+!>@file   set_sph_mom_mat_bc.f90
+!!@brief  module set_sph_mom_mat_bc
+!!
+!!@author H. Matsui
+!!@date Programmed in Apr, 2009
 !
-!     Written by H. Matsui on Apr, 2009
-!
-!      subroutine set_icb_wt_sph_evo_mat
-!      subroutine set_icb_vp_sph_poisson_mat
-!      subroutine set_icb_p_sph_poisson_mat
-!
-!      subroutine set_cmb_wt_sph_evo_mat
-!      subroutine set_cmb_vp_sph_poisson_mat
-!      subroutine set_cmb_p_sph_poisson_mat
+!>@brief  Construct matrix for fixed velocity at boundaries
+!!
+!!@verbatim
+!!      subroutine set_icb_wt_sph_evo_mat
+!!      subroutine set_icb_vp_sph_poisson_mat
+!!      subroutine set_icb_p_sph_poisson_mat
+!!
+!!      subroutine set_cmb_wt_sph_evo_mat
+!!      subroutine set_cmb_vp_sph_poisson_mat
+!!      subroutine set_cmb_p_sph_poisson_mat
+!!@endverbatim
 !
       module set_sph_mom_mat_bc
 !

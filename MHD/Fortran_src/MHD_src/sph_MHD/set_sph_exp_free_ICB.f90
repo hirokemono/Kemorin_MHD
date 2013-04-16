@@ -1,14 +1,23 @@
-!set_sph_exp_free_ICB.f90
-!      module set_sph_exp_free_ICB
+!>@file   set_sph_exp_free_ICB.f90
+!!@brief  module set_sph_exp_free_ICB
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
 !
-!     Written by H. Matsui on Jan., 2010
-!
-!      subroutine cal_sph_nod_icb_free_v_and_w(is_fld, is_rot)
-!      subroutine cal_sph_nod_icb_free_vpol2(is_fld)
-!      subroutine cal_sph_nod_icb_free_rot2(is_fld, is_rot)
-!      subroutine cal_sph_nod_icb_free_diffuse2(is_fld, is_diffuse)
-!      subroutine cal_sph_nod_icb_free_w_diffuse2(is_fld, is_diffuse)
-!
+!>@brief  Evaluate velocity with free slip boundary at ICB
+!!
+!!@verbatim
+!!      subroutine cal_sph_nod_icb_free_v_and_w(is_fld, is_rot)
+!!      subroutine cal_sph_nod_icb_free_vpol2(is_fld)
+!!      subroutine cal_sph_nod_icb_free_rot2(is_fld, is_rot)
+!!      subroutine cal_sph_nod_icb_free_diffuse2(is_fld, is_diffuse)
+!!      subroutine cal_sph_nod_icb_free_w_diffuse2(is_fld, is_diffuse)
+!!@endverbatim
+!!
+!!@n param is_fld     Address of poloidal velocity in d_rj 
+!!@n param is_rot     Address of poloidal vorticity in d_rj 
+!!@n param is_diffuse Address of poloidal viscousity in d_rj 
+
       module set_sph_exp_free_ICB
 !
       use m_precision

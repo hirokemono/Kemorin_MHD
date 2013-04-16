@@ -1,14 +1,23 @@
-!set_sph_magne_mat_bc.f90
-!      module set_sph_magne_mat_bc
+!>@file   set_sph_magne_mat_bc.f90
+!!@brief  module set_sph_magne_mat_bc
+!!
+!!@author H. Matsui
+!!@date Programmed in Apr, 2009
 !
-!     Written by H. Matsui on Apr, 2009
-!
-!      subroutine set_magne_center_rmat_sph
-!      subroutine set_ins_magne_icb_rmat_sph
-!      subroutine set_ins_magne_cmb_rmat_sph
-!
-!      subroutine set_qvacume_magne_icb_rmat_sph
-!      subroutine set_qvacume_magne_cmb_rmat_sph
+!>@brief  Construct matrix for magnetic field at boundaries
+!!
+!!@verbatim
+!!    Boundary condition for approaching to center
+!!      subroutine set_magne_center_rmat_sph
+!!
+!!    Boundary condition to connect potential field
+!!      subroutine set_ins_magne_icb_rmat_sph
+!!      subroutine set_ins_magne_cmb_rmat_sph
+!!
+!!    Boundary condition for radial magnetic field
+!!      subroutine set_qvacume_magne_icb_rmat_sph
+!!      subroutine set_qvacume_magne_cmb_rmat_sph
+!!@endverbatim
 !
       module set_sph_magne_mat_bc
 !

@@ -1,22 +1,29 @@
-!sph_transforms_4_MHD.f90
-!      module sph_transforms_4_MHD
+!>@file   sph_transforms_4_MHD.f90
+!!@brief  module sph_transforms_4_MHD
+!!
+!!@date  Programmed by H.Matsui on Oct., 2009
+!!@n     Modified by H.Matsui on March., 2013
 !
-!        programmed by H.Matsui on Oct., 2009
-!
-!      subroutine init_sph_transform_MHD
-!
-!      subroutine sph_back_trans_4_MHD
-!      subroutine sph_forward_trans_4_MHD
-!
-!      subroutine sph_back_trans_snapshot_MHD
-!      subroutine sph_forward_trans_snapshot_MHD
-!
+!>@brief Perform spherical hermonics transform for MHD dynamo model
+!!
+!!@verbatim
+!!      subroutine init_sph_transform_MHD
+!!
+!!      subroutine sph_back_trans_4_MHD
+!!      subroutine sph_forward_trans_4_MHD
+!!
+!!      subroutine sph_back_trans_snapshot_MHD
+!!      subroutine sph_forward_trans_snapshot_MHD
+!!@endverbatim
+!!
       module sph_transforms_4_MHD
 !
       use m_precision
       use m_constants
 !
       implicit  none
+!
+      private :: select_legendre_transform
 !
 !-----------------------------------------------------------------------
 !
@@ -26,86 +33,28 @@
 !
       subroutine init_sph_transform_MHD
 !
-      use m_parallel_var_dof
       use m_machine_parameter
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
       use m_work_4_sph_trans
       use init_sph_trans
 !
-      real(kind = kreal) :: stime, etime(0:3), etime_shortest
-      real(kind = kreal) :: etime_trans(0:3)
 !
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_addresses_trans_sph_MHD'
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &                     'set_addresses_trans_sph_MHD'
       call set_addresses_trans_sph_MHD
       call set_addresses_snapshot_trans
 !
-      if(iflag_debug .gt. 0) call check_add_trans_sph_MHD
-      if(iflag_debug .gt. 0) call check_addresses_snapshot_trans
+      if(iflag_debug .ge. iflag_routine_msg) then
+        call check_add_trans_sph_MHD
+        call check_addresses_snapshot_trans
+      end if
 !
       call initialize_sph_trans
 !
 !
-      if(     id_lagendre_transfer .eq. iflag_lag_orginal_loop          &
-     &  .and. id_lagendre_transfer .eq. iflag_lag_largest_loop          &
-     &  .and. id_lagendre_transfer .eq. iflag_lag_krloop_inner          &
-     &  .and. id_lagendre_transfer .eq. iflag_lag_krloop_outer) return
-!
-      id_lagendre_transfer = iflag_lag_orginal_loop
-      stime = MPI_WTIME()
-      call sph_back_trans_4_MHD
-      call sph_forward_trans_4_MHD
-      etime(id_lagendre_transfer) = MPI_WTIME() - stime
-!
-      id_lagendre_transfer = iflag_lag_largest_loop
-      stime = MPI_WTIME()
-      call sph_back_trans_4_MHD
-      call sph_forward_trans_4_MHD
-      etime(id_lagendre_transfer) = MPI_WTIME() - stime
-!
-      id_lagendre_transfer = iflag_lag_krloop_inner
-      stime = MPI_WTIME()
-      call sph_back_trans_4_MHD
-      call sph_forward_trans_4_MHD
-      etime(id_lagendre_transfer) = MPI_WTIME() - stime
-!
-      id_lagendre_transfer = iflag_lag_krloop_outer
-      stime = MPI_WTIME()
-      call sph_back_trans_4_MHD
-      call sph_forward_trans_4_MHD
-      etime(id_lagendre_transfer) = MPI_WTIME() - stime
-!
-      call MPI_allREDUCE (etime, etime_trans, ifour,                    &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
-!
-      id_lagendre_transfer = iflag_lag_orginal_loop
-      etime_shortest =       etime_trans(iflag_lag_orginal_loop)
-!
-      if(etime_trans(iflag_lag_largest_loop) .lt. etime_shortest) then
-        id_lagendre_transfer = iflag_lag_largest_loop
-        etime_shortest =       etime_trans(iflag_lag_largest_loop)
-      end if
-      if(etime_trans(iflag_lag_krloop_inner) .lt. etime_shortest) then
-        id_lagendre_transfer = iflag_lag_krloop_inner
-        etime_shortest =       etime_trans(iflag_lag_krloop_inner)
-      end if
-      if(etime_trans(iflag_lag_krloop_outer) .lt. etime_shortest) then
-        id_lagendre_transfer = iflag_lag_krloop_outer
-        etime_shortest =       etime_trans(iflag_lag_krloop_outer)
-      end if
-!
-      if(my_rank .eq. 0) then
-        write(*,*) 'id_lagendre_transfer: ', id_lagendre_transfer
-        write(*,*) '0: elapsed by original loop: ',                     &
-     &            etime_trans(iflag_lag_orginal_loop)
-        write(*,*) '1: elapsed by longest loop: ',                      &
-     &            etime_trans(iflag_lag_largest_loop)
-        write(*,*) '2: elapsed by inner radius loop: ',                 &
-     &            etime_trans(iflag_lag_krloop_inner)
-        write(*,*) '3: elapsed by outer radius loop: ',                 &
-     &            etime_trans(iflag_lag_krloop_outer)
-      end if
+      if(id_lagendre_transfer .ne. iflag_lag_undefined) return
+      call select_legendre_transform
 !
       end subroutine init_sph_transform_MHD
 !
@@ -189,6 +138,76 @@
       call copy_snap_scl_spec_from_trans
 !
       end subroutine sph_forward_trans_snapshot_MHD
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine select_legendre_transform
+!
+      use m_parallel_var_dof
+      use m_machine_parameter
+      use m_work_4_sph_trans
+!
+      real(kind = kreal) :: stime, etime(0:3), etime_shortest
+      real(kind = kreal) :: etime_trans(0:3)
+!
+!
+      id_lagendre_transfer = iflag_lag_orginal_loop
+      stime = MPI_WTIME()
+      call sph_back_trans_4_MHD
+      call sph_forward_trans_4_MHD
+      etime(id_lagendre_transfer) = MPI_WTIME() - stime
+!
+      id_lagendre_transfer = iflag_lag_largest_loop
+      stime = MPI_WTIME()
+      call sph_back_trans_4_MHD
+      call sph_forward_trans_4_MHD
+      etime(id_lagendre_transfer) = MPI_WTIME() - stime
+!
+      id_lagendre_transfer = iflag_lag_krloop_inner
+      stime = MPI_WTIME()
+      call sph_back_trans_4_MHD
+      call sph_forward_trans_4_MHD
+      etime(id_lagendre_transfer) = MPI_WTIME() - stime
+!
+      id_lagendre_transfer = iflag_lag_krloop_outer
+      stime = MPI_WTIME()
+      call sph_back_trans_4_MHD
+      call sph_forward_trans_4_MHD
+      etime(id_lagendre_transfer) = MPI_WTIME() - stime
+!
+      call MPI_allREDUCE (etime, etime_trans, ifour,                    &
+     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+!
+      id_lagendre_transfer = iflag_lag_orginal_loop
+      etime_shortest =       etime_trans(iflag_lag_orginal_loop)
+!
+      if(etime_trans(iflag_lag_largest_loop) .lt. etime_shortest) then
+        id_lagendre_transfer = iflag_lag_largest_loop
+        etime_shortest =       etime_trans(iflag_lag_largest_loop)
+      end if
+      if(etime_trans(iflag_lag_krloop_inner) .lt. etime_shortest) then
+        id_lagendre_transfer = iflag_lag_krloop_inner
+        etime_shortest =       etime_trans(iflag_lag_krloop_inner)
+      end if
+      if(etime_trans(iflag_lag_krloop_outer) .lt. etime_shortest) then
+        id_lagendre_transfer = iflag_lag_krloop_outer
+        etime_shortest =       etime_trans(iflag_lag_krloop_outer)
+      end if
+!
+      if(my_rank .eq. 0) then
+        write(*,*) 'id_lagendre_transfer: ', id_lagendre_transfer
+        write(*,*) '0: elapsed by original loop: ',                     &
+     &            etime_trans(iflag_lag_orginal_loop)
+        write(*,*) '1: elapsed by longest loop: ',                      &
+     &            etime_trans(iflag_lag_largest_loop)
+        write(*,*) '2: elapsed by inner radius loop: ',                 &
+     &            etime_trans(iflag_lag_krloop_inner)
+        write(*,*) '3: elapsed by outer radius loop: ',                 &
+     &            etime_trans(iflag_lag_krloop_outer)
+      end if
+!
+      end subroutine select_legendre_transform
 !
 !-----------------------------------------------------------------------
 !

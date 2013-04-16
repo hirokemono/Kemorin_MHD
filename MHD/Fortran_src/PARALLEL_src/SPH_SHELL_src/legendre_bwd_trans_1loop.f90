@@ -6,7 +6,7 @@
 !!@n    Modified in Apr. 2013
 !
 !>@brief  backward Legendre transform
-!!       (perform with single loop for r, l, \theta)
+!!       (perform with single loop for r, l, theta)
 !!
 !!@verbatim
 !!      subroutine legendre_b_trans_vector_1loop(nb)

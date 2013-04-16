@@ -1,20 +1,29 @@
-!cal_matrix_vector_smp.f90
-!     module cal_matrix_vector_smp
+!>@file   cal_matrix_vector_smp.f90
+!!@brief  module cal_matrix_vector_smp
+!!
+!!@date  Programmed by H.Matsui on July, 2009
 !
-!     Writteg by H.Matsui on July., 2009
-!
-!      subroutine cal_matvec_33_on_node(np_smp, nnod, istack_smp,       &
-!     &          mat, vec, prod)
-!      subroutine cal_matvec_44_on_node(np_smp, nnod, istack_smp,       &
-!     &          mat, vec, prod)
-!      subroutine cal_mat44_vec3_on_node(np_smp, nnod, istack_smp,      &
-!     &          mat, vec, prod)
-!      subroutine cal_mat44_vec3_for_viz(nnod, mat, vec, prod)
-!
-!     definition of matrix
-!            / mat(1,1)  mat(1,2)  mat(1,3)  \
-!       A =  | mat(2,1)  mat(2,2)  mat(2,3)  |
-!            \ mat(3,1)  mat(3,2)  mat(3,3)  /
+!>@brief Make products of constant matrix with vector at each node
+!!@n     need $omp parallel to use these routines 
+!!
+!!@verbatim
+!!      subroutine cal_matvec_33_on_node(np_smp, nnod, istack_smp,      &
+!!     &          mat, vec, prod)
+!!      subroutine cal_matvec_44_on_node(np_smp, nnod, istack_smp,      &
+!!     &          mat, vec, prod)
+!!      subroutine cal_mat44_vec3_on_node(np_smp, nnod, istack_smp,     &
+!!     &          mat, vec, prod)
+!!      subroutine cal_mat44_vec3_for_viz(nnod, mat, vec, prod)
+!!
+!!     definition of matrix
+!!            / mat(1,1)  mat(1,2)  mat(1,3)  \
+!!       A =  | mat(2,1)  mat(2,2)  mat(2,3)  |
+!!            \ mat(3,1)  mat(3,2)  mat(3,3)  /
+!!@endverbatim
+!!
+!!@n @param mat(3 or 4,3 or 4)      input matrix
+!!@n @param vec(nnod,3 or 4)      nodal field
+!!@n @param prod(nnod,3 or 4)     product
 !
       module cal_matrix_vector_smp
 !

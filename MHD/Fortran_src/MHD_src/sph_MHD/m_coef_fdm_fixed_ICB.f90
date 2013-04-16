@@ -56,7 +56,7 @@
 !!                + mat_fdm_ICB_fix_2(3,2) * d_rj(ICB+1)
 !!                + mat_fdm_ICB_fix_2(3,3) * d_rj(ICB+2)
 !!@endverbatim
-      real(kind = kreal), private :: mat_fdm_ICB_fix_2(3,3)
+      real(kind = kreal) :: mat_fdm_ICB_fix_2(3,3)
 !
 !>      Work matrix to evaluate coef_fdm_fix_dr_ICB_2(-1:1,3)
 !!@verbatim
@@ -67,7 +67,7 @@
 !!               + mat_fdm_ICB_fix_dr_2(3,2) * dfdr(ICB)
 !!               + mat_fdm_ICB_fix_dr_2(3,3) * d_rj(ICB+1)
 !!@endverbatim
-      real(kind = kreal), private :: mat_fdm_ICB_fix_dr_2(3,3)
+      real(kind = kreal) :: mat_fdm_ICB_fix_dr_2(3,3)
 !
       private :: mat_fdm_ICB_fix_2, mat_fdm_ICB_fix_dr_2
 !

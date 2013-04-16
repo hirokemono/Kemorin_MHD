@@ -1,10 +1,14 @@
-!const_r_mat_scalar_sph.f90
-!      module const_r_mat_4_scalar_sph
+!>@file   const_r_mat_4_scalar_sph.f90
+!!@brief  module const_r_mat_4_scalar_sph
+!!
+!!@date  Programmed by H.Matsui on Apr., 2009
 !
-!     Written by H. Matsui on Apr, 2009
-!
-!      subroutine const_radial_mat_4_temp_sph
-!      subroutine const_radial_mat_4_composit_sph
+!>@brief Construct matrix for time evolution of scalar fields
+!!
+!!@verbatim
+!!      subroutine const_radial_mat_4_temp_sph
+!!      subroutine const_radial_mat_4_composit_sph
+!!@endverbatim
 !
       module const_r_mat_4_scalar_sph
 !

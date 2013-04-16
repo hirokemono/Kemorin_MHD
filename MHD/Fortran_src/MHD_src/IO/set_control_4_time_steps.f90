@@ -195,7 +195,7 @@
      &    i_step_output_rst, delta_t_output_rst)
 !
       call set_monitor_param_4_flex_step(ione, i_i_step_ucd,            &
-     &    i_delta_t_ucd, i_step_ucd_ctl, delta_t_ucd_ctl,               &
+     &    i_delta_t_ucd, i_step_ucd_ctl, delta_t_field_ctl,             &
      &    i_step_output_ucd, delta_t_output_ucd)
 !
       i_step_init =   istep_rst_start * i_step_output_rst
