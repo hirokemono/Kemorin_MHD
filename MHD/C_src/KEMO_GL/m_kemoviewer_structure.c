@@ -563,6 +563,11 @@ void reset_kemoviewer_to_init_angle(){
     init_rot_animation(kemo_sgl->view_s);
 };
 
+
+void set_kemoview_retinamode(int i_retina){
+    set_gl_retinamode(kemo_sgl->view_s, i_retina);
+}
+
 void set_kemoview_windowsize(GLint npixel_x, GLint npixel_y){
 	set_gl_windowsize(kemo_sgl->view_s, npixel_x, npixel_y);
 };

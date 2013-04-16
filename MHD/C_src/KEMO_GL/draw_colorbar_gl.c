@@ -5,6 +5,8 @@
 
 static int ibase_8x12;
 static int ibase_12x16;
+static int ibase_16x24;
+static int ibase_20x32;
 
 static const GLfloat black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 
@@ -17,12 +19,18 @@ void init_colorbar_fonts(){
 	/*printf("Base %d \n",ibase_12x16);*/
 	YsGlUseFontBitmap12x16(ibase_12x16);
 	
+	/*printf("Base %d \n",ibase_16x24);*/
+	YsGlUseFontBitmap16x24(ibase_16x24);
+	/*printf("Base %d \n",ibase_20x32);*/
+	YsGlUseFontBitmap20x32(ibase_20x32);
 	return;
 }
 
-void draw_colorbar_gl(GLint nx_win, GLint ny_win, 
+void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 			GLfloat text_color[4], struct colormap_params *cmap_s){
 	int i, inum;
+    int ibase;
+    
 	GLfloat xwin, ywin;
 	GLfloat xbar_min, xbar_max;
 	GLfloat ybar_min, ybar_max, ydelta, y1, yline_zero;
@@ -34,7 +42,13 @@ void draw_colorbar_gl(GLint nx_win, GLint ny_win,
 	double psf_value, f_color[4], l_color[4];
 	char minlabel[20], maxlabel[20], zerolabel[20];
 	
-	xwin = (GLfloat)nx_win;
+	if(iflag_retina == IONE){
+        ibase = ibase_16x24;
+    } else {
+        ibase = ibase_16x24;
+    };
+    
+    xwin = (GLfloat)nx_win;
 	ywin = (GLfloat)ny_win;
 	xbar_min = 0.85 *  xwin;
 	xbar_max = 0.875 * xwin;
@@ -166,12 +180,12 @@ void draw_colorbar_gl(GLint nx_win, GLint ny_win,
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-	ysGlPlotBitmap2d(ibase_8x12, (xbar_max+3.0), (ybar_min-6.0), (GLubyte *)minlabel);
-	ysGlPlotBitmap2d(ibase_8x12, (xbar_max+3.0), (ybar_max-6.0), (GLubyte *)maxlabel);
+	ysGlPlotBitmap2d(ibase, (xbar_max+3.0), (ybar_min-6.0), (GLubyte *)minlabel);
+	ysGlPlotBitmap2d(ibase, (xbar_max+3.0), (ybar_max-6.0), (GLubyte *)maxlabel);
 	
 	
 	if(iflag_zero == 1){
-		ysGlPlotBitmap2d(ibase_8x12, (xbar_max+3.0), (yline_zero-6.0), (GLubyte *)zerolabel);
+		ysGlPlotBitmap2d(ibase, (xbar_max+3.0), (yline_zero-6.0), (GLubyte *)zerolabel);
 	};
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);

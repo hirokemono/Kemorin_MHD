@@ -24,6 +24,17 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 // ---------------------------------
 
 // get number of pixels for OpenGL Window
+- (void) setRetinaMode
+{
+    NSRect rectView_DISP = [self bounds];
+    if(XpixelGLWindow > rectView_DISP.size.width){
+        set_kemoview_retinamode(IONE);
+    } else {
+        set_kemoview_retinamode(IZERO);
+    };
+    return;
+}
+
 - (int) getViewSize
 {
     int iflag_updated = 0;
@@ -37,6 +48,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
         YpixelGLWindow = rectView.size.height;
         XpixelGLWindow = rectView.size.width;
         
+        [self setRetinaMode];
 //        printf("Pixel size %d, %d\n",XpixelGLWindow, YpixelGLWindow);
         
         iflag_updated = 1;
@@ -485,6 +497,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	glPolygonOffset (1.0f, 1.0f);
 	
 	int iflag_updates = [self getViewSize];
+    [self setRetinaMode];
+    
     if(iflag_updates != 0) set_kemoview_windowsize(XpixelGLWindow, YpixelGLWindow);
 		
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];

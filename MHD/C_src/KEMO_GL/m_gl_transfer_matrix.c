@@ -347,6 +347,12 @@ void update_projection_by_windowsize(struct view_element *view,
     return;
 }
 
+void set_gl_retinamode(struct view_element *view, int i_retina)
+{
+    view->iflag_retina = i_retina;
+    return;
+}
+
 
 void set_gl_rotation_parameter(struct view_element *view, GLdouble rot_vect[4])
 {

@@ -57,6 +57,7 @@ typedef struct {
 	float	_evolutionProgressValue;
 }
 
+- (void) setRetinaMode;
 - (int) getViewSize;
 - (void) updateProjection;
 - (void) updateModelView;

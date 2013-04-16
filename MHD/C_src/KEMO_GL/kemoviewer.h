@@ -34,6 +34,7 @@
   #define kemo_fftw_execute_dft_c2r  kemo_fftw_execute_dft_c2r_
 
   #define generate_ysfont8x12_c      generate_ysfont8x12_c_
+  #define generate_ysfont16x24_c     generate_ysfont16x24_c_
 #elif FC_NAME_UPPER
   #define open_wt_gzfile            OPEN_WT_GZFILE
   #define open_rd_gzfile            OPEN_RD_GZFILE
@@ -55,6 +56,7 @@
   #define kemo_fftw_execute_dft_c2r  KEMO_FFTW_EXECUTE_DFT_C2R
 
   #define generate_ysfont8x12_c      GENERATE_YSFONT8X12_C
+  #define generate_ysfont16x24_c     GENERATE_YSFONT16X24_C
 #elif FC_NAME_UPPER_STDCALL
   #define open_wt_gzfile            OPEN_WT_GZFILE
   #define open_rd_gzfile            OPEN_RD_GZFILE
@@ -80,6 +82,7 @@
   #define kemo_fftw_execute_dft_c2r  KEMO_FFTW_EXECUTE_DFT_C2R
 
   #define generate_ysfont8x12_c      GENERATE_YSFONT8X12_C
+  #define generate_ysfont16x24_c     GENERATE_YSFONT16X24_C
 #else
   #define open_wt_gzfile            open_wt_gzfile
   #define open_rd_gzfile            open_rd_gzfile
@@ -101,6 +104,7 @@
   #define kemo_fftw_execute_dft_c2r  kemo_fftw_execute_dft_c2r
 
   #define generate_ysfont8x12_c      generate_ysfont8x12_c
+  #define generate_ysfont16x24_c     generate_ysfont16x24_c
 #endif
 
 #define LENGTHBUF 4096     /* length of text buffer */
@@ -423,6 +427,7 @@ extern "C" {
 
     void reset_kemoviewer_to_init_angle();
 
+    void set_kemoview_retinamode(int i_retina);
     void set_kemoview_windowsize(GLint npixel_x, GLint npixel_y);
     void update_projection_by_kemoviewer_size(GLint npixel_x, GLint npixel_y);
 

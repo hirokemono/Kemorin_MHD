@@ -30,6 +30,7 @@ struct buffer_for_gl{
 struct view_element{
 	GLint gl_drawID;
 	
+    int   iflag_retina;
 	GLint nx_window, ny_window;
 	
 	GLdouble x_lookfrom[3];
@@ -98,6 +99,9 @@ void set_gl_windowsize(struct view_element *view, GLint npixel_x, GLint npixel_y
 void send_gl_windowsize(struct view_element *view, GLint *npixel_x, GLint *npixel_y);
 void update_projection_by_windowsize(struct view_element *view,
                                      GLint npixel_x, GLint npixel_y);
+
+void set_gl_retinamode(struct view_element *view, int i_retina);
+
 
 void set_gl_rotation_parameter(struct view_element *view, GLdouble rot_vect[4]);
 void set_gl_dragging_rotation(struct view_element *view, GLdouble rot_vect[4]);

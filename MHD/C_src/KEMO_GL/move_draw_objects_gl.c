@@ -50,8 +50,9 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			}
 
 			if(psf_m[i]->draw_psf_cbar > 0) {
-				draw_colorbar_gl(view_s->nx_window, view_s->ny_window, 
-						mesh_m->text_color, psf_m[i]->cmap_psf);
+				draw_colorbar_gl(view_s->iflag_retina,
+                                 view_s->nx_window, view_s->ny_window,
+                                 mesh_m->text_color, psf_m[i]->cmap_psf);
 			}
 		};
 	};
