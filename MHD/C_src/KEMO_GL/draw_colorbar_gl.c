@@ -2,6 +2,7 @@
 /* draw_colorbar_gl.c */
 
 #include "draw_colorbar_gl.h"
+#include "gl2ps.h"
 
 static int ibase_8x12;
 static int ibase_12x16;
@@ -10,18 +11,44 @@ static int ibase_20x32;
 
 static const GLfloat black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 
+
+static void ysGlPlotBitmap2d_retina(int iflag_retina,
+                                    GLfloat x_plot, GLfloat y_plot,
+                                    const char *label){
+    if(iflag_retina == IONE){
+        ysGlPlotBitmap2d(ibase_16x24, (x_plot-HALF), (y_plot-HALF), (GLubyte *)label);
+        ysGlPlotBitmap2d(ibase_16x24, (x_plot+HALF), (y_plot-HALF), (GLubyte *)label);
+        ysGlPlotBitmap2d(ibase_16x24, (x_plot+HALF), (y_plot+HALF), (GLubyte *)label);
+        ysGlPlotBitmap2d(ibase_16x24, (x_plot-HALF), (y_plot+HALF), (GLubyte *)label);
+
+        ysGlPlotBitmap2d(ibase_16x24, (x_plot-HALF), (y_plot    ), (GLubyte *)label);
+        ysGlPlotBitmap2d(ibase_16x24, (x_plot+HALF), (y_plot    ), (GLubyte *)label);
+        ysGlPlotBitmap2d(ibase_16x24, (x_plot    ), (y_plot-HALF), (GLubyte *)label);
+        ysGlPlotBitmap2d(ibase_16x24, (x_plot    ), (y_plot+HALF), (GLubyte *)label);
+
+        ysGlPlotBitmap2d(ibase_16x24, (x_plot    ), (y_plot    ), (GLubyte *)label);
+    } else {
+        ysGlPlotBitmap2d(ibase_8x12, (x_plot    ), (y_plot    ), (GLubyte *)label);
+    }
+    
+    gl2psText(label, "Times",12);
+    return;
+}
+
 void init_colorbar_fonts(){
 	
-	ibase_8x12 = glGenLists(0x100);
 	/*printf("Base %d \n",ibase_8x12);*/
+	ibase_8x12 = glGenLists(0x100);
 	YsGlUseFontBitmap8x12(ibase_8x12);
-	ibase_12x16 = glGenLists(0x100);
 	/*printf("Base %d \n",ibase_12x16);*/
+	ibase_12x16 = glGenLists(0x100);
 	YsGlUseFontBitmap12x16(ibase_12x16);
 	
 	/*printf("Base %d \n",ibase_16x24);*/
+	ibase_16x24 = glGenLists(0x100);
 	YsGlUseFontBitmap16x24(ibase_16x24);
 	/*printf("Base %d \n",ibase_20x32);*/
+	ibase_20x32 = glGenLists(0x100);
 	YsGlUseFontBitmap20x32(ibase_20x32);
 	return;
 }
@@ -29,7 +56,6 @@ void init_colorbar_fonts(){
 void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 			GLfloat text_color[4], struct colormap_params *cmap_s){
 	int i, inum;
-    int ibase;
     
 	GLfloat xwin, ywin;
 	GLfloat xbar_min, xbar_max;
@@ -42,12 +68,6 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 	double psf_value, f_color[4], l_color[4];
 	char minlabel[20], maxlabel[20], zerolabel[20];
 	
-	if(iflag_retina == IONE){
-        ibase = ibase_16x24;
-    } else {
-        ibase = ibase_16x24;
-    };
-    
     xwin = (GLfloat)nx_win;
 	ywin = (GLfloat)ny_win;
 	xbar_min = 0.85 *  xwin;
@@ -180,13 +200,22 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-	ysGlPlotBitmap2d(ibase, (xbar_max+3.0), (ybar_min-6.0), (GLubyte *)minlabel);
-	ysGlPlotBitmap2d(ibase, (xbar_max+3.0), (ybar_max-6.0), (GLubyte *)maxlabel);
+    glDisable(GL_LIGHTING);
+	glColor4fv(text_color);
+	ysGlPlotBitmap2d_retina(iflag_retina,
+                            (xbar_max+3.0), (ybar_min-6.0), minlabel);
+	ysGlPlotBitmap2d_retina(iflag_retina,
+                            (xbar_max+3.0), (ybar_max-6.0), maxlabel);
 	
 	
 	if(iflag_zero == 1){
-		ysGlPlotBitmap2d(ibase, (xbar_max+3.0), (yline_zero-6.0), (GLubyte *)zerolabel);
+		ysGlPlotBitmap2d_retina(iflag_retina, (xbar_max+3.0),
+                                (yline_zero-6.0), zerolabel);
 	};
+	glColor4fv(black);
+    glEnable(GL_LIGHTING);
+
+    
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
