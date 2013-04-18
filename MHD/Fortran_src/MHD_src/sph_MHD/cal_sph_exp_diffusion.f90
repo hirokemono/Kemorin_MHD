@@ -1,13 +1,22 @@
-!cal_sph_exp_diffusion.f90
+!>@file   cal_sph_exp_diffusion.f90
+!!@brief  module cal_sph_exp_diffusion
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan, 2010
 !
-!      module cal_sph_exp_diffusion
-!
-!     Written by H. Matsui on Jan, 2010
-!
-!      subroutine cal_sph_nod_scalar_diffuse2(kst, ked, is_fld,         &
-!     &          is_diffuse)
-!      subroutine cal_sph_nod_vect_diffuse2(kst, ked, is_fld,           &
-!     &          is_diffuse)
+!>@brief  Evaluate diffusion term
+!!
+!!@verbatim
+!!      subroutine cal_sph_nod_scalar_diffuse2(kst, ked, is_fld,        &
+!!     &          is_diffuse)
+!!      subroutine cal_sph_nod_vect_diffuse2(kst, ked, is_fld,          &
+!!     &          is_diffuse)
+!!@endverbatim
+!!
+!!@n @param kst   Start      radial ID to evaluate
+!!@n @param kst   End        radial ID to evaluate
+!!@n @param kst   is_fld     Input field address for d_rj
+!!@n @param kst   is_diffuse Diffusion term address for d_rj
 !
       module cal_sph_exp_diffusion
 !

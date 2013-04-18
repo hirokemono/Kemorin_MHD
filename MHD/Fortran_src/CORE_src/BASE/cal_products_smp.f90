@@ -7,6 +7,7 @@
 !>@brief subroutines to obatine products of two fields
 !!@n      need $omp parallel to use these routines
 !!
+!!@verbatim
 !!      subroutine cal_scalar_prod_w_coef_smp(np_smp, nnod,             &
 !!     &          inod_smp_stack, coef, scalar1, scalar2, prod)
 !!      subroutine cal_scalar_prod_no_coef_smp(np_smp, nnod,            &
@@ -19,10 +20,10 @@
 !!     &          inod_smp_stack, vect1, vect2, prod)
 !!             prod(:) = vect1(:,:) \cdot vect2(:,:)
 !!
-!!      subroutine cal_vect_prod_w_coef_smp(np_smp, nnod,               &
+!!      subroutine cal_cross_prod_w_coef_smp(np_smp, nnod,              &
 !!     &          inod_smp_stack, coef, vect1, vect2, prod)
 !!             prod(:,:) = coef * vect1(:,:) \times vect2(:,:)
-!!      subroutine cal_vect_prod_no_coef_smp(np_smp, nnod,              &
+!!      subroutine cal_cross_prod_no_coef_smp(np_smp, nnod,             &
 !!     &          inod_smp_stack, vect1, vect2, prod)
 !!             prod(:,:) = vect1(:,:) \times vect2(:,:)
 !!
@@ -200,7 +201,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vect_prod_w_coef_smp(np_smp, nnod,                 &
+      subroutine cal_cross_prod_w_coef_smp(np_smp, nnod,                &
      &          inod_smp_stack, coef, vect1, vect2, prod)
 !
       integer (kind=kint), intent(in) :: np_smp, nnod
@@ -230,11 +231,11 @@
       end do
 !$omp end do nowait
 !
-      end subroutine cal_vect_prod_w_coef_smp
+      end subroutine cal_cross_prod_w_coef_smp
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vect_prod_no_coef_smp(np_smp, nnod,                &
+      subroutine cal_cross_prod_no_coef_smp(np_smp, nnod,               &
      &          inod_smp_stack, vect1, vect2, prod)
 !
       integer (kind=kint), intent(in) :: np_smp, nnod
@@ -263,7 +264,7 @@
       end do
 !$omp end do nowait
 !
-      end subroutine cal_vect_prod_no_coef_smp
+      end subroutine cal_cross_prod_no_coef_smp
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

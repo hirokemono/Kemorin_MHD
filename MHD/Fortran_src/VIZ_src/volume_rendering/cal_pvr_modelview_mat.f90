@@ -270,14 +270,14 @@
      &                             / size(1)
 !
 !    /* find the direction of axis U */
-      call cal_vect_prod_no_coef_smp(ione, ione, ione_stack(0),         &
+      call cal_cross_prod_no_coef_smp(ione, ione, ione_stack(0),        &
      &    up_direction_vec(1,i_pvr), viewing_dir(1), u(1) )
       call cal_vector_magnitude(ione, ione, ione_stack(0),              &
      &    size(1), u(1) )
       u(1:3) = u(1:3) / size(1)
 !
 !    /*find the direction of axix V */
-      call cal_vect_prod_no_coef_smp(ione, ione, ione_stack(0),         &
+      call cal_cross_prod_no_coef_smp(ione, ione, ione_stack(0),        &
      &    viewing_dir(1), u(1), v(1) )
       call cal_vector_magnitude(ione, ione, ione_stack(0),              &
      &    size(1), v(1) )

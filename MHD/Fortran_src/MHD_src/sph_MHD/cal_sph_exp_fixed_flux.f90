@@ -1,21 +1,37 @@
-!cal_sph_exp_fixed_flux.f90
+!>@file   cal_sph_exp_fixed_flux.f90
+!!@brief  module cal_sph_exp_fixed_flux
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan, 2010
 !
-!      module cal_sph_exp_fixed_flux
-!
-!     Written by H. Matsui on Jan., 2010
-!
-!      subroutine cal_dsdr_sph_icb_fix_flux_2(jmax, flux_ICB,           &
-!     &          is_fld, is_grd)
-!      subroutine cal_div_sph_icb_fix_flux_2(jmax, flux_ICB,            &
-!     &          is_fld, is_div)
-!      subroutine cal_sph_icb_fix_flux_diffuse2(jmax, flux_ICB,         &
-!     &          is_fld, is_diffuse)
-!      subroutine cal_dsdr_sph_cmb_fix_flux_2(jmax, flux_CMB,           &
-!     &          is_fld, is_grd)
-!      subroutine cal_div_sph_cmb_fix_flux_2(jmax, flux_CMB,            &
-!     &          is_fld, is_div)
-!      subroutine cal_sph_cmb_fix_flux_diffuse2(jmax, flux_CMB,         &
-!     &          is_fld, is_diffuse)
+!>@brief  Evaluate scalar fields using fixed flux condition
+!!
+!!@verbatim
+!!      subroutine cal_dsdr_sph_icb_fix_flux_2(jmax, flux_ICB,          &
+!!     &          is_fld, is_grd)
+!!      subroutine cal_div_sph_icb_fix_flux_2(jmax, flux_ICB,           &
+!!     &          is_fld, is_div)
+!!      subroutine cal_sph_icb_fix_flux_diffuse2(jmax, flux_ICB,        &
+!!     &          is_fld, is_diffuse)
+!!      subroutine cal_dsdr_sph_cmb_fix_flux_2(jmax, flux_CMB,          &
+!!     &          is_fld, is_grd)
+!!      subroutine cal_div_sph_cmb_fix_flux_2(jmax, flux_CMB,           &
+!!     &          is_fld, is_div)
+!!      subroutine cal_sph_cmb_fix_flux_diffuse2(jmax, flux_CMB,        &
+!!     &          is_fld, is_diffuse)
+!!@endverbatim
+!!
+!!@n @param jmax  Number of modes for spherical hermonics @f$L*(L+2)@f$
+!!@n @param flux_ICB(jamx)  Spectrum of fixed flux at ICB
+!!@n @param flux_CMB(jamx)  Spectrum of fixed flux at CMB
+!!
+!!@n @param is_fld      Address of spectrum data d_rj
+!!                      (poloidal component for vector)
+!!@n @param is_grd      Address of gradient of spectrum data d_rj
+!!                      (poloidal component)
+!!@n @param is_div      Address of divergence of spectrum data d_rj
+!!@n @param is_diffuse  Address of divergence of spectrum data d_rj
+!!                      (poloidal component for vector)
 !
       module cal_sph_exp_fixed_flux
 !

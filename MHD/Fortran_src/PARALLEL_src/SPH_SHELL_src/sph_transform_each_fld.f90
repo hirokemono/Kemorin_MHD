@@ -17,8 +17,8 @@
 !!      subroutine sph_forward_trans_4_grad(irtp_fld, is_fld, is_grad)
 !!@endverbatim
 !!
-!!@n @param  is_fld    address of spectrum data (Poloidal component)
-!!@n @param  irtp_fld  address of field data
+!!@n @param is_fld    address of spectrum data (Poloidal component)
+!!@n @param irtp_fld  address of field data
 !
 !
       module sph_transform_each_fld

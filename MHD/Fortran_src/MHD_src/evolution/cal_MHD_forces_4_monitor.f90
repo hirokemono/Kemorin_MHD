@@ -249,11 +249,11 @@
      &          iphys%i_electric, dminus)
         else
           call multi_by_const_nod_vector(iphys%i_electric,              &
-     &          iphys%i_current, coef_d_magne)
-          call cal_phys_vector_product(iphys%i_vp_induct,               &
-     &          iphys%i_velo, iphys%i_magne)
+     &        iphys%i_current, coef_d_magne)
+          call cal_phys_cross_product(iphys%i_velo, iphys%i_magne,      &
+     &        iphys%i_vp_induct)
           call subtract_2_nod_tensors(iphys%i_electric,                 &
-     &          iphys%i_electric, iphys%i_vp_induct)
+     &        iphys%i_electric, iphys%i_vp_induct)
         end if
       end if
 !
@@ -262,24 +262,24 @@
       if (iphys%i_ujb .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_Lorentz_work)
-        call cal_tri_product_4_scalar(iphys%i_ujb, iphys%i_velo,        &
-     &        iphys%i_current, iphys%i_magne, coef_lor)
+        call cal_tri_product_4_scalar(coef_lor, iphys%i_velo,           &
+     &      iphys%i_current, iphys%i_magne, iphys%i_ujb)
       end if
 !
       if (iphys%i_nega_ujb .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_work_agst_Lorentz)
-        call cal_tri_product_4_scalar(iphys%i_nega_ujb, iphys%i_velo,   &
-     &        iphys%i_magne, iphys%i_current, coef_lor)
+        call cal_tri_product_4_scalar(coef_lor, iphys%i_velo,           &
+     &      iphys%i_magne, iphys%i_current, iphys%i_nega_ujb)
       end if
 !
       if (iphys%i_me_gen .gt. izero) then
         if ( iflag_t_evo_4_magne .gt. 0 ) then
-          call cal_tri_product_4_scalar(iphys%i_me_gen,                 &
-     &        iphys%i_current, iphys%i_velo, iphys%i_magne, coef_lor)
+          call cal_tri_product_4_scalar(coef_lor, iphys%i_current,      &
+     &        iphys%i_velo, iphys%i_magne, iphys%i_me_gen)
         else
-          call cal_phys_dot_product(iphys%i_me_gen, iphys%i_current,    &
-     &        iphys%i_vp_induct)
+          call cal_phys_dot_product(iphys%i_vp_induct, iphys%i_me_gen,  &
+     &        iphys%i_current)
         end if
       end if
 !
@@ -311,36 +311,36 @@
       if (iphys%i_temp_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_temp_generation)
-        call cal_phys_product_4_scalar(iphys%i_temp_gen,                &
-     &        iphys%i_h_advect, iphys%i_temp)
+        call cal_phys_product_4_scalar(iphys%i_h_advect, iphys%i_temp,  &
+     &      iphys%i_temp_gen)
       end if
 !
       if (iphys%i_par_t_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_part_temp_gen)
-        call cal_phys_product_4_scalar(iphys%i_par_t_gen,               &
-     &        iphys%i_ph_advect, iphys%i_par_temp)
+        call cal_phys_product_4_scalar(iphys%i_ph_advect,               &
+     &      iphys%i_par_temp, iphys%i_par_t_gen)
       end if
 !
 !
       if (iphys%i_vis_e_diffuse .gt. izero) then
-        call cal_phys_dot_product(iphys%i_vis_e_diffuse,                &
-     &         iphys%i_velo, iphys%i_v_diffuse)
+        call cal_phys_dot_product(iphys%i_velo, iphys%i_v_diffuse,      &
+     &      iphys%i_vis_e_diffuse)
       end if
 !
       if (iphys%i_mag_e_diffuse .gt. izero) then
-        call cal_phys_dot_product(iphys%i_mag_e_diffuse,                &
-     &      iphys%i_magne, iphys%i_b_diffuse)
+        call cal_phys_dot_product(iphys%i_magne, iphys%i_b_diffuse,     &
+     &      iphys%i_mag_e_diffuse)
       end if
 !
       if (iphys%i_m_tension_wk .gt. izero) then
-        call cal_phys_dot_product(iphys%i_m_tension_wk,                 &
-     &         iphys%i_electric, iphys%i_magne)
+        call cal_phys_dot_product(iphys%i_electric, iphys%i_magne,      &
+     &      iphys%i_m_tension_wk)
       end if
 !
       if (iphys%i_poynting .gt. izero) then
-        call cal_phys_vector_product(iphys%i_poynting,                  &
-     &         iphys%i_electric, iphys%i_magne)
+        call cal_phys_cross_product(iphys%i_electric, iphys%i_magne,    &
+     &      iphys%i_poynting)
       end if
 !
       end subroutine cal_work_4_forces

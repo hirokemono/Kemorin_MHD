@@ -54,8 +54,8 @@
 !   lead work of Reynolds stress
 !
       call cal_terms_4_momentum(iphys%i_SGS_div_m_flux)
-      call cal_phys_dot_product(iphys%i_reynolds_wk,                    &
-     &    iphys%i_velo, iphys%i_SGS_div_m_flux)
+      call cal_phys_dot_product(iphys%i_velo, iphys%i_SGS_div_m_flux,   &
+     &    iphys%i_reynolds_wk)
 !
 !   lead SGS buoyancy flux
 !

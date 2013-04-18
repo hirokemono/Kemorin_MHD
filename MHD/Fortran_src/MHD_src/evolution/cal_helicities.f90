@@ -31,17 +31,17 @@
       do i = 1, num_nod_phys
 !
         if ( phys_nod_name(i) .eq. 'kinetic_helicity' ) then
-         call cal_phys_dot_product(iphys%i_k_heli,                      &
-     &       iphys%i_velo, iphys%i_vort)
+         call cal_phys_dot_product(iphys%i_velo, iphys%i_vort,          &
+     &       iphys%i_k_heli)
         else if ( phys_nod_name(i) .eq. 'magnetic_helicity' ) then
-         call cal_phys_dot_product(iphys%i_m_heli,                      &
-     &       iphys%i_vecp, iphys%i_magne)
+         call cal_phys_dot_product(iphys%i_vecp, iphys%i_magne,         &
+     &       iphys%i_m_heli)
         else if ( phys_nod_name(i) .eq. 'current_helicity' ) then
-         call cal_phys_dot_product(iphys%i_c_heli,                      &
-     &       iphys%i_magne, iphys%i_current)
+         call cal_phys_dot_product(iphys%i_magne, iphys%i_current,      &
+     &       iphys%i_c_heli)
         else if ( phys_nod_name(i) .eq. 'cross_helicity' ) then
-         call cal_phys_dot_product(iphys%i_x_heli,                      &
-     &       iphys%i_velo, iphys%i_magne)
+         call cal_phys_dot_product(iphys%i_velo, iphys%i_magne,         &
+     &       iphys%i_x_heli)
         end if
 !
       end do

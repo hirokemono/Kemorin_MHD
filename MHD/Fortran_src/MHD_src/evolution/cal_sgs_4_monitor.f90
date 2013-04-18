@@ -133,29 +133,29 @@
       if (iphys%i_SGS_temp_gen .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_temp_gen)
-        call cal_phys_product_4_scalar(iphys%i_SGS_temp_gen,            &
-     &      iphys%i_temp, iphys%i_SGS_div_h_flux)
+        call cal_phys_product_4_scalar(iphys%i_temp,                    &
+     &      iphys%i_SGS_div_h_flux, iphys%i_SGS_temp_gen)
       end if
 !
       if (iphys%i_reynolds_wk .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_Reynolds_work)
-        call cal_phys_dot_product(iphys%i_reynolds_wk,                  &
-     &      iphys%i_velo, iphys%i_SGS_div_m_flux)
+        call cal_phys_dot_product(iphys%i_velo, iphys%i_SGS_div_m_flux, &
+     &      iphys%i_reynolds_wk)
       end if
 !
       if (iphys%i_SGS_Lor_wk .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_Lorentz_work)
-        call cal_phys_dot_product(iphys%i_SGS_Lor_wk,                   &
-     &      iphys%i_velo, iphys%i_SGS_Lorentz)
+        call cal_phys_dot_product(iphys%i_velo, iphys%i_SGS_Lorentz,    &
+     &      iphys%i_SGS_Lor_wk)
       end if
 !
       if (iphys%i_SGS_me_gen .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_m_ene_gen)
-        call cal_phys_dot_product(iphys%i_SGS_me_gen,                   &
-     &         iphys%i_magne, iphys%i_SGS_induction)
+        call cal_phys_dot_product(iphys%i_magne, iphys%i_SGS_induction, &
+     &      iphys%i_SGS_me_gen)
       end if
 !
       if (iphys%i_SGS_buo_wk .gt. 0) then
@@ -176,29 +176,29 @@
       if (iphys%i_SGS_Lor_wk_tr .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_Lorentz_wk_true)
-          call cal_phys_dot_product(iphys%i_SGS_Lor_wk_tr,              &
-     &         iphys%i_filter_velo, iphys%i_SGS_Lor_true)
+          call cal_phys_dot_product(iphys%i_filter_velo,                &
+     &        iphys%i_SGS_Lor_true, iphys%i_SGS_Lor_wk_tr)
       end if
 !
       if (iphys%i_reynolds_wk_tr .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_Reynolds_work_true)
-          call cal_phys_dot_product(iphys%i_reynolds_wk_tr,             &
-     &         iphys%i_filter_velo, iphys%i_SGS_div_mf_true)
+          call cal_phys_dot_product(iphys%i_filter_velo,                &
+     &        iphys%i_SGS_div_mf_true, iphys%i_reynolds_wk_tr)
       end if
 !
       if (iphys%i_SGS_t_gen_tr .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_temp_gen_true)
-          call cal_phys_product_4_scalar(iphys%i_SGS_t_gen_tr,          &
-     &        iphys%i_filter_temp,  iphys%i_SGS_div_hf_true)
+          call cal_phys_product_4_scalar(iphys%i_filter_temp,           &
+     &        iphys%i_SGS_div_hf_true, iphys%i_SGS_t_gen_tr)
       end if
 !
       if (iphys%i_SGS_me_gen_tr .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_m_ene_gen_true)
-          call cal_phys_dot_product(iphys%i_SGS_me_gen_tr,              &
-     &         iphys%i_filter_magne, iphys%i_SGS_idct_true)
+          call cal_phys_dot_product(iphys%i_filter_magne,               &
+     &        iphys%i_SGS_idct_true, iphys%i_SGS_me_gen_tr)
       end if
 !
       end subroutine cal_work_4_sgs_terms

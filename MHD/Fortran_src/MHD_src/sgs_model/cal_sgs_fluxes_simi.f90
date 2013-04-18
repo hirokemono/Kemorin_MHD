@@ -108,7 +108,7 @@
       integer (kind=kint), intent(in) :: i_fil_v, i_fil_b
 !
 !
-      call cal_phys_vector_product(i_sgs, i_v, i_b)
+      call cal_phys_cross_product(i_v, i_b, i_sgs)
       call cal_filtered_vector(i_sgs, i_sgs)
 !
       call subctract_uxb_vector(i_sgs, i_fil_v, i_fil_b)
@@ -213,7 +213,7 @@
       integer (kind=kint), intent(in) :: i_fil_v, i_fil_b
 !
 !
-      call cal_phys_vector_product(i_sgs, i_v, i_b)
+      call cal_phys_cross_product(i_v, i_b, i_sgs)
       call cal_w_filtered_vector(i_sgs, i_sgs)
 !
       call subctract_uxb_vector(i_sgs, i_fil_v, i_fil_b)

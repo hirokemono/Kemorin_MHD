@@ -1,12 +1,17 @@
-!cal_sol_sph_MHD_crank.f90
-!      module cal_sol_sph_MHD_crank
+!>@file   cal_sol_sph_MHD_crank.f90
+!!@brief  module cal_sol_sph_MHD_crank
+!!
+!!@author H. Matsui
+!!@date   Programmed  H. Matsui in Oct., 2009
 !
-!      modified by H. Matsui on Oct., 2009
-!
-!      subroutine s_cal_sol_sph_MHD_crank
-!      subroutine set_sph_field_to_start
-!
-!      subroutine check_ws_spectr
+!>@brief  Update fields for MHD dynamo model
+!!
+!!@verbatim
+!!      subroutine s_cal_sol_sph_MHD_crank
+!!      subroutine set_sph_field_to_start
+!!
+!!      subroutine check_ws_spectr
+!!@endverbatim
 !
       module cal_sol_sph_MHD_crank
 !
@@ -61,8 +66,9 @@
       if(iflag_t_evo_4_temp .gt. 0) call cal_sol_temperature_sph_crank
 !
 !  Input: ipol%i_light,  Solution: ipol%i_light
-      if(iflag_debug.gt.0) write(*,*) 'cal_sol_dscalar_sph_crank'
-      if(iflag_t_evo_4_composit .gt. 0) call cal_sol_dscalar_sph_crank
+      if(iflag_debug.gt.0) write(*,*) 'cal_sol_composition_sph_crank'
+      if(iflag_t_evo_4_composit .gt. 0)                                 &
+     &                             call cal_sol_composition_sph_crank
 !
 !  Input: ipol%i_magne, itor%i_magne
 !  Solution: ipol%i_magne, itor%i_magne, idpdr%i_magne

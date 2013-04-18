@@ -1,26 +1,31 @@
-!cal_sol_sph_fluid_crank.f90
-!      module cal_sol_sph_fluid_crank
+!>@file   cal_sol_sph_fluid_crank.f90
+!!@brief  module cal_sol_sph_fluid_crank
+!!
+!!@author H. Matsui
+!!@date   Programmed  H. Matsui in Oct., 2009
 !
-!      modified by H. Matsui on March, 2010
-!
-!      subroutine cal_sol_velo_by_vort_sph_crank
-!        Input:    ipol%i_vort, itor%i_vort
-!        Solution: ipol%i_velo, itor%i_velo, idpdr%i_velo
-!
-!      subroutine cal_sol_pressure_by_div_v
-!        Solution: ipol%i_press
-!
-!
-!      subroutine cal_sol_magne_sph_crank
-!        Input:    ipol%i_magne, itor%i_magne
-!        Solution: ipol%i_magne, itor%i_magne, idpdr%i_magne
-!
-!      subroutine cal_sol_temperature_sph_crank
-!        Input:    ipol%i_temp
-!        Solution: ipol%i_temp
-!      subroutine cal_sol_dscalar_sph_crank
-!        Input:    ipol%i_light
-!        Solution: ipol%i_light
+!>@brief  Update each field for MHD dynamo model
+!!
+!!@verbatim
+!!      subroutine cal_sol_velo_by_vort_sph_crank
+!!        Input address:    ipol%i_vort, itor%i_vort
+!!        Solution address: ipol%i_velo, itor%i_velo, idpdr%i_velo
+!!
+!!      subroutine cal_sol_pressure_by_div_v
+!!        Solution address: ipol%i_press
+!!
+!!
+!!      subroutine cal_sol_magne_sph_crank
+!!        Input address:    ipol%i_magne, itor%i_magne
+!!        Solution address: ipol%i_magne, itor%i_magne, idpdr%i_magne
+!!
+!!      subroutine cal_sol_temperature_sph_crank
+!!        Input address:    ipol%i_temp
+!!        Solution address: ipol%i_temp
+!!      subroutine cal_sol_composition_sph_crank
+!!        Input address:    ipol%i_light
+!!        Solution address: ipol%i_light
+!!@endverbatim
 !
       module cal_sol_sph_fluid_crank
 !
@@ -239,7 +244,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_dscalar_sph_crank
+      subroutine cal_sol_composition_sph_crank
 !
       use set_scalar_boundary_sph
       use adjust_fixed_flux_sph
@@ -261,7 +266,7 @@
      &    nidx_rj(2), nidx_rj(1), composit_evo_lu, i_composit_pivot,    &
      &    d_rj(1,ipol%i_light) )
 !
-      end subroutine cal_sol_dscalar_sph_crank
+      end subroutine cal_sol_composition_sph_crank
 !
 ! -----------------------------------------------------------------------
 !
