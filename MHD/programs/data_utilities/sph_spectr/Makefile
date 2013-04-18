@@ -12,8 +12,6 @@ TARGET_PICK_SPH_ENE =      pick_sph_ene
 TARGET_PICK_SPH_SPEC =     pick_sph_spec
 TARGET_PICK_GAUSS_COEF =   pick_gauss_coefs
 
-TARGET_PICK_ORDER_SPH =    pick_order_sph
-TARGET_PICK_DEGREE_SPH =   pick_degree_sph
 TARGET_ZM_SPH_SPEC =       zonal_mean_sph
 TARGET_T_AVE_SPEC =        t_ave_sph_spec
 TARGET_SPH_NEUTRAL =       sph_neutral_points
@@ -99,21 +97,6 @@ analyzer_pickup_gauss_coefs.o \
 main_pickup_gauss_coefs.o
 
 
-MOD_PICK_ORDER_SPH = \
-m_ctl_data_4_sph_utils.o \
-m_ctl_params_sph_utils.o \
-\
-analyzer_pick_order_sph.o \
-main_pick_order_sph.o
-
-
-MOD_PICK_DEGREE_SPH = \
-m_ctl_data_4_sph_utils.o \
-m_ctl_params_sph_utils.o \
-\
-analyzer_pick_degree_sph.o \
-main_pick_degree_sph.o
-
 MOD_ZM_SPH_SPEC = \
 m_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
@@ -162,10 +145,6 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_PICK_GAUSS_COEF =  $$(BUILDDIR)/$(TARGET_PICK_GAUSS_COEF)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_PICK_ORDER_SPH =   $$(BUILDDIR)/$(TARGET_PICK_ORDER_SPH)' \
-	>> $(MAKENAME)
-	@echo 'TARGET_PICK_DEGREE_SPH =  $$(BUILDDIR)/$(TARGET_PICK_DEGREE_SPH)' \
-	>> $(MAKENAME)
 	@echo 'TARGET_ZM_SPH_SPEC =      $$(BUILDDIR)/$(TARGET_ZM_SPH_SPEC)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_T_AVE_SPEC =       $$(BUILDDIR)/$(TARGET_T_AVE_SPEC)' \
@@ -188,7 +167,6 @@ target_task:
 	'$$(TARGET_PICK_SPH_VOL_ENE)   $$(TARGET_PICK_SPH_ENE)'  \
 	'$$(TARGET_PICK_SPH_SPEC)'                               \
 	'$$(TARGET_ZM_SPH_SPEC)        $$(TARGET_T_AVE_SPEC)'      \
-	'$$(TARGET_PICK_ORDER_SPH)     $$(TARGET_PICK_DEGREE_SPH)' \
 	'$$(TARGET_SPH_NEUTRAL)        $$(TARGET_TAVE_SPH_ENE_SPEC)' \
 	'$$(TARGET_PICK_GAUSS_COEF)    $$(TARGET_T_AVE_PICK_SPH_SPEC)' \
 	'$$(TARGET_T_AVE_GAUSS_COEFS)  $$(TARGET_T_AVE_PICK_SPH_ENE)'  >> $(MAKENAME)
@@ -240,20 +218,6 @@ target_task:
 	'$$(MOD_PICK_GAUSS_COEF)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_PICK_ORDER_SPH)': '$$(MOD_PICK_ORDER_SPH)' \
-	'$$(LIB_FILES_SPH_UTIL)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PICK_ORDER_SPH)' \
-	'$$(MOD_PICK_ORDER_SPH)' \
-	'-L. $$(LIBS_SPH_UTIL)  $$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_PICK_DEGREE_SPH)': '$$(MOD_PICK_DEGREE_SPH)' \
-	'$$(LIB_FILES_SPH_UTIL)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PICK_DEGREE_SPH)' \
-	'$$(MOD_PICK_DEGREE_SPH)' \
-	'-L. $$(LIBS_SPH_UTIL)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_ZM_SPH_SPEC)': '$$(MOD_ZM_SPH_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
@@ -334,10 +298,6 @@ mod_list:
 	@echo  $(MOD_PICK_GAUSS_COEF)    >> $(MAKENAME)
 	@echo  MOD_ZM_SPH_SPEC=  \\      >> $(MAKENAME)
 	@echo  $(MOD_ZM_SPH_SPEC)        >> $(MAKENAME)
-	@echo  MOD_PICK_ORDER_SPH=  \\   >> $(MAKENAME)
-	@echo  $(MOD_PICK_ORDER_SPH)     >> $(MAKENAME)
-	@echo  MOD_PICK_DEGREE_SPH=  \\  >> $(MAKENAME)
-	@echo  $(MOD_PICK_DEGREE_SPH)    >> $(MAKENAME)
 	@echo  MOD_TAVE_SPH_SPEC=  \\    >> $(MAKENAME)
 	@echo  $(MOD_TAVE_SPH_SPEC)      >> $(MAKENAME)
 	@echo  MOD_SPH_NEUTRAL=  \\      >> $(MAKENAME)

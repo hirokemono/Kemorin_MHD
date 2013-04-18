@@ -1,14 +1,15 @@
+!>@file   main_sph_zm_snap.f90
+!!@brief  program kemorin_sph_zm_snap
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Okuda in 2000
+!!@n    Modified by H. Matsui in May, 2003 (ver 2.0)
+!!@n    Connect to vizs  by H. Matsui in July 2006 (ver 2.0)
 !
-!     program  kemorin_sph_zm_snap
-
-!-----------------------------------------------------------------------
+!>@brief  Main program to evaluate zonal mean field
+!
       program kemorin_sph_zm_snap
 !
-!    main routine for GeoFEM/Tiger version       on mar. 2000 (ver 1.0)
-!    main routine for Kemo's MHD                 on May, 2003 (ver 2.0)
-!    main routine for Kemo's MHD connect to vizs on July 2006 (ver 3.0)
-!
-
       use m_precision
 !
       use m_parallel_var_dof
@@ -16,10 +17,11 @@
 !
       implicit none
 !
+!
       call parallel_cal_init
 !
-      call initialization
-      call evolution
+      call initialize_sph_zm_snap
+      call evolution_sph_zm_snap
 !
       call  parallel_cal_fin
 !

@@ -1,13 +1,16 @@
+!>@file   main_sph_snapshot_noviz.f90
+!!@brief  program sph_snap_noviz
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Okuda in 2000
+!!@n    Modified by H. Matsui in May, 2003 (ver 2.0)
+!!@n    Connect to vizs  by H. Matsui in July 2006 (ver 2.0)
 !
-!     program  sph_snap_noviz
-
-!-----------------------------------------------------------------------
+!>@brief  Main program to evaluate snapshots from spectr data
+!!        without visualization routines
+!
       program sph_snap_noviz
 !
-!    main routine for GeoFEM/Tiger version       on mar. 2000 (ver 1.0)
-!    main routine for snapshots for spherical MHD on May, 2012 (ver 2.0)
-!
-
       use m_precision
 !
       use m_parallel_var_dof
@@ -18,9 +21,9 @@
 !
       call parallel_cal_init
 !
-      call initialization
+      call initialize_noviz_sph_snap
 !
-      call evolution
+      call evolution_noviz_sph_snap
 !
       call parallel_cal_fin
 !

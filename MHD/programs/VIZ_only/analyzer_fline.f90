@@ -22,7 +22,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine initialization
+      subroutine initialize_fline
 !
       use m_control_data_vizs
       use set_control_visualizer
@@ -46,7 +46,7 @@
       call init_visualize_fline(ierr)
       if(ierr .gt. 0) call parallel_abort(ierr, e_message)
 !
-      end subroutine initialization
+      end subroutine initialize_fline
 !
 !  ---------------------------------------------------------------------
 !

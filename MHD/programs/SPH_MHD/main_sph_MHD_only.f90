@@ -1,11 +1,15 @@
+!>@file   main_sph_MHD_only.f90
+!!@brief  program sph_MHD_only
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Okuda in 2000
+!!@n    Modified by H. Matsui in May, 2003 (ver 2.0)
+!!@n    Connect to vizs  by H. Matsui in July 2006 (ver 2.0)
 !
-!     program  sph_MHD_only
+!>@brief  Main program for MHD dynamo simulation
+!!        without visualization and snapshot routines
 !
      program sph_MHD_only
-!
-!    main routine for GeoFEM/Tiger version       on mar. 2000 (ver 1.0)
-!    main routine for spherical  MHD             on May, 2003 (ver 2.0)
-!
 !
       use m_precision
 !
@@ -17,9 +21,9 @@
 !
       call parallel_cal_init
 !
-      call initialization
+      call initialize_sph_mhd_only
 !
-      call evolution
+      call evolution_sph_mhd_only
 !
       call parallel_cal_fin
 !

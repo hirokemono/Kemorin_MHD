@@ -1,12 +1,17 @@
-!analyzer_small_sph_MHD.f90
-!      module analyzer_small_sph_MHD
-!..................................................
+!>@file   analyzer_small_sph_MHD.f90
+!!@brief  module analyzer_small_sph_MHD
+!!
+!!@author H. Matsui
+!!@date   Programmed  H. Matsui in Apr., 2010
 !
-!      Written by H. Matsui and H. Okuda
-!      modified by H. Matsui on June, 2005 
+!>@brief  Main loop for MHD dynamo simulation
+!!        without visualization and snapshot routines
+!!
+!!@verbatim
+!!      subroutine initialize_sph_mhd_only
+!!      subroutine evolution_sph_mhd_only
+!!@endverbatim
 !
-!      subroutine initialization
-!      subroutine evolution
 !
       module analyzer_small_sph_MHD
 !
@@ -32,49 +37,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialization
+      subroutine initialize_sph_mhd_only
 !
       use set_control_sph_mhd
       use m_ctl_data_noviz_MHD
+      use init_sph_MHD_elapsed_label
 !
 !
-      total_start = MPI_WTIME()
       write(*,*) 'Simulation start: PE. ', my_rank
-!
-!     --------------------- 
-!
-      num_elapsed = 25
-      call allocate_elapsed_times
-!
-      elapse_labels(1) = 'Total time                 '
-      elapse_labels(2) = 'Initialization time        '
-      elapse_labels(3) = 'Time evolution loop time   '
-      elapse_labels(4) = 'Data IO time               '
-      elapse_labels(5) = 'Communication for RHS      '
-!
-      elapse_labels( 6) = 'snapshots_control         '
-      elapse_labels( 7) = 'lead_fields_4_sph_mhd     '
-      elapse_labels( 8) = 'output_sph_restart_control'
-      elapse_labels( 9) = 'Field data output         '
-      elapse_labels(10) = 'output_rms_sph_mhd_control'
-      elapse_labels(11) = 'PSF_time                  '
-      elapse_labels(12) = 'Nonliner_terms            '
-!
-      elapse_labels(13) =  'Coriolis term            '
-      elapse_labels(14) =  'sph backward transform   '
-      elapse_labels(15) = 'cal nonlinear terms       '
-      elapse_labels(16) = 'sph forward transform     '
-      elapse_labels(17) = 'obtain explicit terms     '
-!
-      elapse_labels(18) = 'transfer rj  => rlm        '
-      elapse_labels(19) = 'transfer rtm => rtp        '
-      elapse_labels(20) = 'transfer rtp => rtm        '
-      elapse_labels(21) = 'transfer rlm => rj         '
-      elapse_labels(22) = 'Legendre backward transform'
-      elapse_labels(23) = 'Legendre forward transform '
-      elapse_labels(24) = 'Fourier transform          '
-!
-      elapse_labels(num_elapsed) = 'Communication time        '
+      total_start = MPI_WTIME()
+      call set_sph_MHD_elapsed_label
 !
 !   Load parameter file
 !
@@ -99,11 +71,11 @@
 !
       call end_eleps_time(2)
 !
-      end subroutine initialization
+      end subroutine initialize_sph_mhd_only
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine evolution
+      subroutine evolution_sph_mhd_only
 !
 !
       call start_eleps_time(3)
@@ -145,7 +117,7 @@
       call time_prog_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
-      end subroutine evolution
+      end subroutine evolution_sph_mhd_only
 !
 ! ----------------------------------------------------------------------
 !

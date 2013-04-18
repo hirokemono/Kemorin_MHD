@@ -1,14 +1,15 @@
+!>@file   main_sph_snapshot.f90
+!!@brief  program kemorin_sph_snapshot
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Okuda in 2000
+!!@n    Modified by H. Matsui in May, 2003 (ver 2.0)
+!!@n    Connect to vizs  by H. Matsui in July 2006 (ver 2.0)
 !
-!     program  kemorin_sph_snapshot
-
-!-----------------------------------------------------------------------
+!>@brief  Main program to evaluate snapshots from spectr data
+!
       program kemorin_sph_snapshot
 !
-!    main routine for GeoFEM/Tiger version       on mar. 2000 (ver 1.0)
-!    main routine for Kemo's MHD                 on May, 2003 (ver 2.0)
-!    main routine for Kemo's MHD connect to vizs on July 2006 (ver 3.0)
-!
-
       use m_precision
 !
       use m_parallel_var_dof
@@ -19,9 +20,9 @@
 !
       call parallel_cal_init
 !
-      call initialization
+      call initialize_sph_snap
 !
-      call evolution
+      call evolution_sph_snap
 !
       call parallel_cal_fin
 !

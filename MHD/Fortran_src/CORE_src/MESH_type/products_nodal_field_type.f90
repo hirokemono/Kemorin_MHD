@@ -254,7 +254,7 @@
 !
 !
 !$omp parallel
-      call cal_vect_prod_no_coef_smp(np_smp, nnod, inod_smp_stack,    &
+      call cal_cross_prod_no_coef_smp(np_smp, nnod, inod_smp_stack,     &
      &    d_fld(1,i_v1), d_fld(1,i_v2),  d_fld(1,i_r) )
 !$omp end parallel
 !
@@ -263,7 +263,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_nod_tri_product_w_coef(np_smp, nnod,               &
-     &          inod_smp_stack, ntot_comp, d_fld, i_solution,          &
+     &          inod_smp_stack, ntot_comp, d_fld, i_solution,           &
      &          i_comp1, i_comp2, i_comp3, coef )
 !
       use cal_products_smp
@@ -279,7 +279,7 @@
 !
 !$omp parallel
       call cal_tri_product_w_coef_smp(np_smp, nnod, inod_smp_stack,     &
-     &    coef, d_fld(1,i_comp1), d_fld(1,i_comp2),                   &
+     &    coef, d_fld(1,i_comp1), d_fld(1,i_comp2),                     &
      &    d_fld(1,i_comp3), d_fld(1,i_solution) )
 !$omp end parallel
 !

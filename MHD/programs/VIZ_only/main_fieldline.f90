@@ -19,7 +19,7 @@
 !
       call parallel_cal_init
 !
-      call initialization
+      call initialize_fline
       call analyze
 !
       call  parallel_cal_fin

@@ -99,7 +99,7 @@
 !
       call FEM_finalize_MHD
 !
-      call copy_COMM_TIME_to_eleps(7)
+      call copy_COMM_TIME_to_eleps(num_elapsed)
       call end_eleps_time(1)
 !
       call output_elapsed_times

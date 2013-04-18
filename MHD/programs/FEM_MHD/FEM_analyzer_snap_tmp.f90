@@ -241,8 +241,8 @@
       if (iphys%i_reynolds_wk .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead radial', trim(fhd_Reynolds_work)
-        call cal_phys_dot_product(iphys%i_reynolds_wk,                  &
-     &         iphys%i_velo, iphys%i_SGS_div_m_flux)
+        call cal_phys_dot_product(iphys%i_velo, iphys%i_SGS_div_m_flux, &
+     &      iphys%i_reynolds_wk)
       end if
 !
 !
@@ -270,8 +270,8 @@
       if (iphys%i_SGS_me_gen .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_m_ene_gen)
-        call cal_phys_dot_product(iphys%i_SGS_me_gen,                   &
-     &         iphys%i_magne, iphys%i_SGS_induction)
+        call cal_phys_dot_product(iphys%i_magne, iphys%i_SGS_induction, &
+     &      iphys%i_SGS_me_gen)
       end if
 !
       end subroutine lead_specital_SGS

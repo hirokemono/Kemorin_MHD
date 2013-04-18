@@ -1,12 +1,14 @@
+!>@file   main_sph_MHD.f90
+!!@brief  program kemorin_sph_MHD
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Okuda in 2000
+!!@n    Modified by H. Matsui in May, 2003 (ver 2.0)
+!!@n    Connect to vizs  by H. Matsui in July 2006 (ver 2.0)
 !
-!     program  kemorin_sph_MHD
+!>@brief  Main program for MHD dynamo simulation
 !
-     program kemorin_sph_MHD
-!
-!    main routine for GeoFEM/Tiger version       on mar. 2000 (ver 1.0)
-!    main routine for Kemo's MHD                 on May, 2003 (ver 2.0)
-!    main routine for Kemo's MHD connect to vizs on July 2006 (ver 3.0)
-!
+      program kemorin_sph_MHD
 !
       use m_precision
 !
@@ -18,9 +20,9 @@
 !
       call parallel_cal_init
 !
-      call initialization
+      call initialize_sph_mhd
 !
-      call evolution
+      call evolution_sph_mhd
 !
       call parallel_cal_fin
 !

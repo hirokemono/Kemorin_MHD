@@ -1,11 +1,14 @@
+!>@file   main_sph_dynamobench.f90
+!!@brief  program sph_dynamobench
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Okuda in 2000
+!!@n    Modified by H. Matsui in May, 2003 (ver 2.0)
+!!@n    Connect to vizs  by H. Matsui in July 2006 (ver 2.0)
 !
-!     program  sph_dynamobench
-
-!-----------------------------------------------------------------------
+!> @brief Main program for dynamo benchmark check
+!
       program sph_dynamobench
-!
-!    main routine for GeoFEM/Tiger version       on mar. 2000 (ver 1.0)
-!    main routine for Benchmark check            on May, 2012 (ver 2.0)
 !
       use m_precision
 !
@@ -17,9 +20,9 @@
 !
       call parallel_cal_init
 !
-      call initialization
+      call initialize_sph_dynamobench
 !
-      call evolution
+      call evolution_sph_dynamobench
 !
       call parallel_cal_fin
 !

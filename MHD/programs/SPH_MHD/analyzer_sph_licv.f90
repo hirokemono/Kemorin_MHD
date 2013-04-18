@@ -1,11 +1,17 @@
-!analyzer_sph_licv.f90
-!      module analyzer_sph_licv
-!..................................................
+!>@file   analyzer_sph_licv.f90
+!!@brief  module analyzer_sph_licv
+!!
+!!@author H. Matsui
+!!@date   Programmed  H. Matsui in Apr., 2010
+!
+!>@brief  Main loop for linear convection model in spherical shell
+!!
+!!@verbatim
+!!      subroutine initialize_sph_licv
+!!      subroutine evolution_sph_licv
+!!@endverbatim
 !
       module analyzer_sph_licv
-!
-!      Written by H. Matsui and H. Okuda
-!      modified by H. Matsui on June, 2005 
 !
       use m_precision
 !
@@ -26,25 +32,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialization
+      subroutine initialize_sph_licv
 !
       use set_control_sph_mhd
       use m_ctl_data_noviz_MHD
+      use init_sph_MHD_elapsed_label
 !
-!
-      total_start = MPI_WTIME()
 !
       write(*,*) 'Simulation start: PE. ', my_rank
-!
-      num_elapsed = 4
-      call allocate_elapsed_times
-!
-      elapse_labels(1) = 'Total time                 '
-      elapse_labels(2) = 'Initialization time        '
-      elapse_labels(3) = 'Time evolution loop time   '
-      elapse_labels(4) = 'Data IO time               '
-      elapse_labels(5) = 'Communication for RHS      '
-      elapse_labels(6) = 'Communication time         '
+      total_start = MPI_WTIME()
+      call set_sph_MHD_elapsed_label
 !
 !   Load parameter file
 !
@@ -75,11 +72,11 @@
 !
       call end_eleps_time(2)
 !
-      end subroutine initialization
+      end subroutine initialize_sph_licv
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine evolution
+      subroutine evolution_sph_licv
 !
       use m_t_step_parameter
       use m_t_int_parameter
@@ -125,7 +122,7 @@
       if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_licv'
       call SPH_finalize_licv
 !
-      call copy_COMM_TIME_to_eleps(6)
+      call copy_COMM_TIME_to_eleps(num_elapsed)
       call end_eleps_time(1)
 !
       call output_elapsed_times
@@ -133,7 +130,7 @@
       call time_prog_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
-        end subroutine evolution
+        end subroutine evolution_sph_licv
 !
 ! ----------------------------------------------------------------------
 !

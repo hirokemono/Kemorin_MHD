@@ -1,12 +1,16 @@
-!analyzer_noviz_sph_snap.f90
-!      module analyzer_noviz_sph_snap
-!..................................................
+!>@file   analyzer_noviz_sph_snap.f90
+!!@brief  module analyzer_noviz_sph_snap
+!!
+!!@author H. Matsui
+!!@date   Programmed  H. Matsui in Apr., 2010
 !
-!      Written by H. Matsui
-!      modified by H. Matsui on June, 2005 
-!
-!      subroutine initialization
-!      subroutine evolution
+!>@brief  Main loop to evaluate snapshots from spectr data
+!!        without visualization routines
+!!
+!!@verbatim
+!!      subroutine initialize_noviz_sph_snap
+!!      subroutine evolution_noviz_sph_snap
+!!@endverbatim
 !
       module analyzer_noviz_sph_snap
 !
@@ -33,42 +37,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialization
+      subroutine initialize_noviz_sph_snap
 !
       use set_control_sph_mhd
       use set_control_SPH_to_FEM
       use m_ctl_data_noviz_MHD
+      use init_sph_MHD_elapsed_label
 !
 !
-      total_start = MPI_WTIME()
       write(*,*) 'Simulation start: PE. ', my_rank
-!
-!     --------------------- 
-!
-      num_elapsed = 18
-      call allocate_elapsed_times
-!
-      elapse_labels(1) = 'Total time                  '
-      elapse_labels(2) = 'Initialization time         '
-      elapse_labels(3) = 'Time evolution loop time    '
-      elapse_labels(4) = 'Data IO time                '
-      elapse_labels(5) = 'Communication for RHS       '
-!
-      elapse_labels( 6) = 'snapshots_control          '
-      elapse_labels( 7) = 'lead_fields_4_sph_mhd      '
-      elapse_labels( 8) = 'output_sph_restart_control '
-      elapse_labels( 9) = 'Field data output          '
-      elapse_labels(10) = 'output_rms_sph_mhd_control '
-      elapse_labels(11) = 'PSF_time                   '
-      elapse_labels(12) = 'Nonliner_terms             '
-!
-      elapse_labels(13) = 'Coriolis term              '
-      elapse_labels(14) = 'sph backward transform     '
-      elapse_labels(15) = 'cal nonlinear terms        '
-      elapse_labels(16) = 'sph forward transform      '
-      elapse_labels(17) = 'obtain explicit terms      '
-!
-      elapse_labels(18) = 'Communication time         '
+      total_start = MPI_WTIME()
+      call set_sph_MHD_elapsed_label
 !
 !   Load parameter file
 !
@@ -102,11 +81,11 @@
 !
       call end_eleps_time(2)
 !
-      end subroutine initialization
+      end subroutine initialize_noviz_sph_snap
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine evolution
+      subroutine evolution_noviz_sph_snap
 !
       integer(kind = kint) :: visval
       integer(kind = kint) :: istep_psf, istep_iso
@@ -162,7 +141,7 @@
       if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
       call SPH_finalize_snap
 !
-      call copy_COMM_TIME_to_eleps(18)
+      call copy_COMM_TIME_to_eleps(num_elapsed)
       call end_eleps_time(1)
 !
       call output_elapsed_times
@@ -170,7 +149,7 @@
       call time_prog_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
-      end subroutine evolution
+      end subroutine evolution_noviz_sph_snap
 !
 ! ----------------------------------------------------------------------
 !
