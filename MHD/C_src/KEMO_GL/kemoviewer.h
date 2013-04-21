@@ -419,6 +419,8 @@ extern "C" {
     void send_text_color_code(float c_code[4]);
 
     int set_image_file_format_id(char *image_fmt);
+    void get_kemoviewer_fliped_img(int npixel_x, int npixel_y,
+                                   unsigned char *glimage, unsigned char *fliped_img);
     void write_kemoviewer_window_to_file(int iflag_img, const char *fhead);
     void write_kemoviewer_window_step_file(int iflag_img, int istep, const char *fhead);
 

@@ -11,7 +11,7 @@
 // ==================================
 
 GLint XpixelGLWindow, YpixelGLWindow;
-
+GLint XpixelRectView, YpixelRectView;
 
 // single set of interaction flags and states
 GLdouble gDollyPanStartPoint[2] = {0.0, 0.0};
@@ -27,7 +27,13 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 - (void) setRetinaMode
 {
     NSRect rectView_DISP = [self bounds];
-    if(XpixelGLWindow > rectView_DISP.size.width){
+	if ((XpixelRectView != rectView_DISP.size.height) ||
+	    (YpixelRectView != rectView_DISP.size.width)) {
+        YpixelRectView = rectView_DISP.size.height;
+        XpixelRectView = rectView_DISP.size.width;
+    }
+    
+    if(XpixelGLWindow > XpixelRectView){
         set_kemoview_retinamode(IONE);
     } else {
         set_kemoview_retinamode(IZERO);
@@ -54,6 +60,16 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
         iflag_updated = 1;
     }
     return iflag_updated;
+}
+
+- (GLint) KemoviewHorizontalViewSize
+{
+    return XpixelGLWindow;
+}
+
+- (GLint) KemoviewVerticalViewSize
+{
+    return YpixelGLWindow;
 }
 
 // update the projection matrix based on camera and view info
@@ -88,24 +104,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 		update_projection_by_kemoviewer_size(XpixelGLWindow, YpixelGLWindow);
         
         [[self openGLContext] makeCurrentContext];
-		[_cocoaGLMessages updateInfoString:XpixelGLWindow:YpixelGLWindow];
-		
-		/* Reallocate memory for bitmapimage*/
-		[bmpRep release];
-		bmpRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil
-														 pixelsWide: XpixelGLWindow
-														 pixelsHigh: YpixelGLWindow
-													  bitsPerSample: 8 
-													samplesPerPixel: 3
-														   hasAlpha: NO  
-														   isPlanar: NO 
-													 colorSpaceName:NSDeviceRGBColorSpace 
-														//	bytesPerRow: (XpixelGLWindow*3) //pixelsWide*samplesPerPixel 
-														// bitsPerPixel: (8*3)   //bitsPerSample*samplesPerPixel
-														bytesPerRow: (XpixelGLWindow*3) //pixelsWide*samplesPerPixel 
-													   bitsPerPixel: 0  //bitsPerSample*samplesPerPixel
-				  ]; 
-		
+		[_cocoaGLMessages updateInfoString];
+		[_cocoaGLMessages updateRsolutionString:XpixelGLWindow:YpixelGLWindow];
 	}
 }
 
@@ -141,40 +141,11 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 // ---------------------------------
 
-
-- (void) SaveGLBufferToFileNoStep:(NSInteger)ImageFormatId:(NSString *)fileHeader
+-(id) DrawRotation: (NSInteger) int_degree : (NSInteger)rotationaxis
 {
-	write_kemoviewer_window_to_file((int) ImageFormatId, [fileHeader UTF8String]);
-	return;
-}
-- (void) SaveGLBufferToFileWithStep:(NSInteger) ImageFormatId:(NSInteger) istep:(NSString *)fileHeader
-{
-	write_kemoviewer_window_step_file((int) ImageFormatId, (int) istep, [fileHeader UTF8String]);
-	return;
-}
-
-- (void) GetGLBufferForMovie:(NSImage *)imageBuffer{
-	glReadBuffer(GL_FRONT);
-	glPixelStorei(GL_PACK_ALIGNMENT, IONE);
-	glReadPixels(IZERO, IZERO, XpixelGLWindow, YpixelGLWindow, GL_RGB,
-				 GL_UNSIGNED_BYTE, [bmpRep bitmapData]);
-
-	[imageBuffer addRepresentation:bmpRep];
-	[imageBuffer setFlipped:YES];
-	[imageBuffer lockFocusOnRepresentation:bmpRep]; // This will flip the rep.
-	[imageBuffer unlockFocus];
-	return;
-}
-
-
--(id) DrawRotation:(NSNumber *)degree:(NSNumber *)rotationaxis
-{
-	NSInteger id_rotaxis = [rotationaxis intValue];
-	NSInteger int_degree = [degree intValue];
-
-    set_current_kemoview(id_window);
-	set_kemoview_animation_rot_axis((int) id_rotaxis);
+	set_kemoview_animation_rot_axis((int) rotationaxis);
 	set_kemoview_animation_rot_angle((int) int_degree);
+    set_current_kemoview(id_window);
 	draw_kemoviewer_c();
 	rotate_kemoview();
 	
@@ -206,11 +177,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	// setup viewport and prespective
 	[self resizeGL]; // forces projection matrix update (does test for size changes)
 	[self updateModelView];  // update model view matrix for object
-	
-    if (fInfo) {
-		[_cocoaGLMessages  drawInfo:XpixelGLWindow:YpixelGLWindow];
-	}
-	
+	[_cocoaGLMessages  drawInfo:XpixelRectView:YpixelRectView];
 	[self swapbuffer_cocoa];
 }
 
@@ -260,7 +227,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 -(void) setInfo:(NSInteger)flag
 {
-	fInfo = flag;
+    [_cocoaGLMessages setDrawInfoFlag:flag];
 	[self setNeedsDisplay: YES];
 }
 
@@ -458,25 +425,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 // ---------------------------------
 
-- (IBAction)SendToClipAsPDF:(id)sender
-{
-	NSImage *imageBuffer = [[NSImage alloc] init];
-    NSData *poTiffData;
-	NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-	[pasteboard declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeTIFF, nil] owner:nil];
-
-	[self GetGLBufferForMovie:imageBuffer];
-	poTiffData = [imageBuffer TIFFRepresentation];
-
-	[pasteboard setData:poTiffData forType:NSTIFFPboardType];
-
-	[pasteboard release];
-	[poTiffData release];
-	[imageBuffer release];
-}
-
-// ---------------------------------
-
 // set initial OpenGL state (current context is set)
 // called after context is created
 - (void) prepareOpenGL
@@ -540,7 +488,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	draw_kemoviewer_c();
 	
 	// set start values...
-	fInfo =     0;
 	fAnimate =  0;
 	
     [NSColor setIgnoresAlpha:NO];

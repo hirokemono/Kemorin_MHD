@@ -20,10 +20,9 @@
 	IBOutlet id movieFormat_item;
 
 	QTMovie * KemoMovie;
-	NSImage *SnapshotImage;
+    NSImage *SnapshotImage;
 	NSInteger FramePerSecond;
 	QTTime duration;
-	NSDictionary *movieDict;
 
 	NSString *EvolutionImageFilehead;
 	NSString *EvolutionImageFilename;
@@ -51,6 +50,8 @@
 -(id) init;
 -(void) InitEvolutionStepByPSF;
 -(void) InitEvolutionStepByFline;
+
+- (IBAction)SendToClipAsPDF:(id)sender;
 
 - (IBAction)ShowRotationMovie:(id)sender;
 - (IBAction)ShowEvolutionMovie:(id)sender;

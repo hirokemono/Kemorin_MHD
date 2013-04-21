@@ -550,6 +550,14 @@ void write_kemoviewer_window_to_file(int iflag_img, const char *fhead){
 	write_gl_window_to_file(iflag_img, fhead, kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
 }
 
+void get_kemoviewer_fliped_img(int npixel_x, int npixel_y,
+                               unsigned char *glimage, unsigned char *fliped_img){
+    get_gl_buffer_to_bmp(npixel_x, npixel_y, glimage);
+    flip_gl_bitmap(npixel_x, npixel_y, glimage, fliped_img);
+    return;
+}
+
+
 void write_kemoviewer_window_step_file(int iflag_img, int istep, const char *fhead){
 	write_gl_window_step_file(iflag_img, istep, fhead, kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
 }

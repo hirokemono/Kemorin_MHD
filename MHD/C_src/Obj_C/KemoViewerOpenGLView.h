@@ -43,7 +43,7 @@ typedef struct {
 	NSTimer* timer;
 	
     bool fAnimate;
-    bool fInfo;
+    bool fResizing;
 	bool fDrawCaps;
     int id_window;
 	
@@ -59,15 +59,15 @@ typedef struct {
 
 - (void) setRetinaMode;
 - (int) getViewSize;
+- (GLint) KemoviewHorizontalViewSize;
+- (GLint) KemoviewVerticalViewSize;
+
 - (void) updateProjection;
 - (void) updateModelView;
 - (void) resizeGL;
 - (void) modify_view_Cocoa;
 - (void) UpdateImage;
 - (void) swapbuffer_cocoa;
-- (void) SaveGLBufferToFileNoStep:(NSInteger) ImageFormatId:(NSString *)fileHeader;
-- (void) SaveGLBufferToFileWithStep:(NSInteger) ImageFormatId:(NSInteger) istep:(NSString *)fileHeader;
-- (void) GetGLBufferForMovie:(NSImage *)imageBuffer;
 
 - (void) animationTimer:(NSTimer *)timer;
 
@@ -79,7 +79,7 @@ typedef struct {
 -(void) setQuickHelp:(NSInteger)flag;
 
 -(id) DrawEvolution:(NSInteger)timeStep;
--(id) DrawRotation:(NSNumber *)degree:(NSNumber *) rotationaxis;
+-(id) DrawRotation: (NSInteger) int_degree : (NSInteger) rotationaxis;
 
 - (void)keyDown:(NSEvent *)theEvent;
 
@@ -93,15 +93,13 @@ typedef struct {
 - (void) scrollWheel:(NSEvent *)theEvent;
 - (void) rightMouseDragged:(NSEvent *)theEvent;
 - (void) otherMouseDragged:(NSEvent *)theEvent;
-- (void)magnifyWithEvent:(NSEvent *)theEvent;
+- (void) magnifyWithEvent:(NSEvent *)theEvent;
 
 - (void) drawRect:(NSRect)rect;
 
 - (BOOL) acceptsFirstResponder;
 - (BOOL) becomeFirstResponder;
 - (BOOL) resignFirstResponder;
-
-- (IBAction)SendToClipAsPDF:(id)sender;
 
 - (void) prepareOpenGL;
 - (void) awakeFromNib;

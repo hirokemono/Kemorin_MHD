@@ -143,7 +143,7 @@
 			ImageFilehead = [[ImageSavePanelObj URL] path];
 		};
 		
-		[_kemoviewer SaveGLBufferToFileNoStep:id_format:ImageFilehead];
+        write_kemoviewer_window_to_file(id_format, [ImageFilehead UTF8String]);
 		[_kemoviewer UpdateImage];
 	};
 }

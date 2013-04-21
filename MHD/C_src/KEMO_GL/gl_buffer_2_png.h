@@ -11,6 +11,7 @@
 #include "png.h"
 #include "kemosrc_param_c.h"
 #include "kemoviewer_param_c.h"
+#include "gl_buffer_2_bmp.h"
 #include "write_image_2_png.h"
 
 /* prototypes */
@@ -20,7 +21,6 @@ void alloc_img_buffer_2_png_rgb(int num_x, int num_y);
 void link_img_buffer_4_png(unsigned char **image_p);
 void dealloc_img_buffer_2_png(int num_y);
 
-void get_gl_buffer_kemo(int num_x, int num_y);
 void gl_buffer_2_png(const char *fhead, int num_x, int num_y);
 
 #endif

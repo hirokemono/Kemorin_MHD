@@ -17,12 +17,13 @@
 	// string attributes
 	NSMutableDictionary * stanStringAttrib;
 
-	GLString * camStringTex;
 	GLString * helpStringTex;
 	GLString * infoStringTex;
 	GLString * msgStringTex;
 
+	bool fDrawinfo;
 	bool fDrawHelp;
+	bool fDrawResolution;
 }
 
 CFAbsoluteTime getElapsedTime ();
@@ -31,12 +32,13 @@ bool checkForceRedraw();
 
 -(void) setQuickHelpFlag:(NSInteger)flag;
 
-- (void) updateInfoString:(GLfloat)xWinSize:(GLfloat)yWinSize;
+- (void) updateInfoString;
+- (void) updateRsolutionString:(GLfloat)xWinSize :(GLfloat)yWinSize;
 - (void) createHelpString;
-- (void) createMessageString;
 
-- (void) drawInfo:(GLfloat) xWinSize:(GLfloat) yWinSize;
+- (void) drawInfo:(GLfloat) xWinSize : (GLfloat) yWinSize;
 
+- (void) setDrawInfoFlag : (NSInteger)flag;
 - (void) awakeFromNib;
 
 @end

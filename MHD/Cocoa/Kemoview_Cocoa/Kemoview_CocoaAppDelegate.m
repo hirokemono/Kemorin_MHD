@@ -16,7 +16,6 @@
 }
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 	// Insert code here to initialize your application 
-	NSLog(@"applicationDidFinishLaunching in Kemoview_CocoaAppDelegate:");
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication{

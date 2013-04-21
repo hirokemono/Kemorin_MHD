@@ -12,7 +12,7 @@
 static CFAbsoluteTime gStartTime = 0.0f;
 CFAbsoluteTime msgTime; // message posting time for expiration
 // time and message info
-CFAbsoluteTime gMsgPresistance = 10.0f;
+CFAbsoluteTime gMsgPresistance = 5.0f;
 
 GLString * gErrStringTex;
 float gErrorTime;
@@ -44,7 +44,7 @@ bool checkForceRedraw()
 static void reportError (char * strError)
 {
     NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
-    [attribs setObject: [NSFont fontWithName: @"Monaco" size: 9.0f] forKey: NSFontAttributeName];
+    [attribs setObject: [NSFont fontWithName: @"Monaco" size: 12.0f] forKey: NSFontAttributeName];
     [attribs setObject: [NSColor whiteColor] forKey: NSForegroundColorAttributeName];
 	
 	gErrorTime = getElapsedTime ();
@@ -71,15 +71,20 @@ GLenum glReportError ()
 @implementation SetCocoaGLMessases
 -(void) setQuickHelpFlag:(NSInteger)flag
 {
-fDrawHelp = flag;
+    fDrawHelp = flag;
 }
+- (void) setDrawInfoFlag : (NSInteger)flag
+{
+	fDrawinfo = flag;
+}
+
 
 
 // these functions create or update GLStrings one should expect to have to regenerate the image, bitmap and texture when the string changes thus these functions are not particularly light weight
 
-- (void) updateInfoString:(GLfloat)xWinSize :(GLfloat)yWinSize
+- (void) updateInfoString
 { // update info string texture
-	NSString * string = [NSString stringWithFormat:@"(%0.0f x %0.0f) \n%s \n%s", xWinSize, yWinSize, glGetString (GL_RENDERER), glGetString (GL_VERSION)];
+	NSString * string = [NSString stringWithFormat:@"Graphic Driver\n %s \n%s", glGetString (GL_RENDERER), glGetString (GL_VERSION)];
 	if (infoStringTex)
 		[infoStringTex setString:string withAttributes:stanStringAttrib];
 	else {
@@ -87,30 +92,36 @@ fDrawHelp = flag;
 	}
 }
 
+- (void) updateRsolutionString:(GLfloat)xWinSize :(GLfloat)yWinSize
+{ // update info string texture
+	NSString * string = [NSString stringWithFormat:@"Resolution: (%0.0f x %0.0f)", xWinSize, yWinSize];
+	if (msgStringTex)
+		[msgStringTex setString:string withAttributes:stanStringAttrib];
+	else {
+		msgStringTex = [[GLString alloc] initWithString:string withAttributes:stanStringAttrib withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:0.5f green:0.5f blue:0.5f alpha:0.5f] withBorderColor:[NSColor colorWithDeviceRed:0.8f green:0.8f blue:0.8f alpha:0.8f]];
+	}
+    msgTime = getElapsedTime ();
+    fDrawResolution = YES;
+}
+
 // ---------------------------------
 
 - (void) createHelpString
 {
-	NSString * string = [NSString stringWithFormat:@"Cmd-Shift-A: animate    Cmd-Shift-I: show info"];
+	NSString * string = [NSString stringWithFormat:@"Cmd-Shift-A: animate \nCmd-Shift-I: show driver info"];
 	helpStringTex = [[GLString alloc] initWithString:string withAttributes:stanStringAttrib withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.5f blue:0.0f alpha:0.5f] withBorderColor:[NSColor colorWithDeviceRed:0.3f green:0.8f blue:0.3f alpha:0.8f]];
 }
 
-// ---------------------------------
-
-- (void) createMessageString
-{
-	NSString * string = [NSString stringWithFormat:@"No messages..."];
-	msgStringTex = [[GLString alloc] initWithString:string withAttributes:stanStringAttrib withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:0.5f green:0.5f blue:0.5f alpha:0.5f] withBorderColor:[NSColor colorWithDeviceRed:0.8f green:0.8f blue:0.8f alpha:0.8f]];
-}
-
 // draw text info using our GLString class for much more optimized text drawing
-- (void) drawInfo:(GLfloat) xWinSize:(GLfloat) yWinSize
-{	
+
+- (void) drawInfo : (GLfloat) xWinSize : (GLfloat) yWinSize
+{
 	GLint matrixMode;
 	GLboolean depthTest = glIsEnabled (GL_DEPTH_TEST);
-	GLfloat messageTop = 10.0f;
+	GLfloat messageTop;
 	GLfloat TextColor4f[4], ErrTextColor4f[4];
-		
+    
+    if(fDrawHelp == NO && fDrawResolution==NO && fDrawinfo==NO) return;
 	send_text_color_code(TextColor4f);
 	
 	// set orthograhic 1:1  pixel transform in local view coords
@@ -121,32 +132,43 @@ fDrawHelp = flag;
 	glMatrixMode (GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity ();
-	glScalef (2.0f / xWinSize, -2.0f / xWinSize, 1.0f);
-	glTranslatef (-xWinSize / 2.0f, -xWinSize / 2.0f, 0.0f);
+	glScalef (1.0f / xWinSize, -1.0f / yWinSize, 1.0f);
 	
-	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE, TextColor4f);
-	[infoStringTex drawAtPoint:NSMakePoint (10.0f, xWinSize - [infoStringTex frameSize].height - 10.0f)];
-	[camStringTex drawAtPoint:NSMakePoint (10.0f, messageTop)];
-	messageTop += [camStringTex frameSize].height + 3.0f;
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, TextColor4f);
+    
+    messageTop = -floor(yWinSize) / 1.05;
+	if (fDrawinfo){
+        [infoStringTex drawAtPoint:NSMakePoint (-floor(xWinSize) / 1.05,
+                                                (floor(yWinSize) / 1.05 - 2.0*[infoStringTex frameSize].height))];
+    }
+
+	// help string
 	if (fDrawHelp){
-		[helpStringTex drawAtPoint:NSMakePoint (floor ((xWinSize - [helpStringTex frameSize].width) / 2.0f), floor ((yWinSize - [helpStringTex frameSize].height) / 3.0f))];
-	};		
-	// message string
+		[helpStringTex drawAtPoint:NSMakePoint (floor (-[helpStringTex frameSize].width),
+                                                floor (-[helpStringTex frameSize].height))];
+	}
+    
 	float currTime = getElapsedTime ();
 	if ((currTime - msgTime) < gMsgPresistance) {
-		TextColor4f[3] = (gMsgPresistance - getElapsedTime () + msgTime) * 0.1; // premultiplied fade
-		glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE, TextColor4f);
-		[msgStringTex drawAtPoint:NSMakePoint (10.0f, messageTop)];
-		messageTop += [msgStringTex frameSize].height + 3.0f;
-	}
+    // Resoluiton string
+        if (fDrawResolution){
+            TextColor4f[3] = (gMsgPresistance - getElapsedTime () + msgTime) * 0.2; // premultiplied fade
+            glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE, TextColor4f);
+            [msgStringTex drawAtPoint:NSMakePoint (-floor(xWinSize) / 1.05,
+                                                   messageTop)];
+            messageTop += [msgStringTex frameSize].height + 28.0f;
+        }
+	} else {
+        fDrawResolution = NO;
+    }
 	// global error message
 	if ((currTime - gErrorTime) < gMsgPresistance) {
-		ErrTextColor4f[3] = (gMsgPresistance - getElapsedTime () + gErrorTime) * 0.1; // premultiplied fade
+		ErrTextColor4f[3] = (gMsgPresistance - getElapsedTime () + gErrorTime) * 0.2; // premultiplied fade
 		ErrTextColor4f[0] = ONE;
 		ErrTextColor4f[1] = ZERO;
 		ErrTextColor4f[2] = ZERO;
 		glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE, ErrTextColor4f);
-		[gErrStringTex drawAtPoint:NSMakePoint (10.0f, messageTop)];
+		[gErrStringTex drawAtPoint:NSMakePoint (-floor(xWinSize) / 1.05, messageTop)];
 	}
 	
 	// reset orginal martices
@@ -165,10 +187,11 @@ fDrawHelp = flag;
 {
 	setStartTime (); // get app start time
 
-	fDrawHelp = 1;
+	fDrawHelp = IZERO;
+    fDrawResolution = IONE;
 
 	// init fonts for use with strings
-	NSFont * font =[NSFont fontWithName:@"Helvetica" size:12.0];
+	NSFont * font =[NSFont fontWithName:@"Helvetica" size:16.0];
 	stanStringAttrib = [[NSMutableDictionary dictionary] retain];
 	[stanStringAttrib setObject:font forKey:NSFontAttributeName];
 	[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
@@ -176,6 +199,8 @@ fDrawHelp = flag;
 	
 	// ensure strings are created
 	[self createHelpString];
-	[self createMessageString];
 }
+
+
+
 @end

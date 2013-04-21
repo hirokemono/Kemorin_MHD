@@ -20,6 +20,7 @@
 #include "draw_menu_bottun_gl.h"
 #include "rotate_animation.h"
 #include "set_each_psf_parameters.h"
+#include "gl_buffer_2_bmp.h"
 
 
 #include "kemoviewer.h"

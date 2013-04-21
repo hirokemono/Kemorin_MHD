@@ -9,6 +9,10 @@
 #import "KemoviewerMovieMaker.h"
 #include "kemoviewer.h"
 
+static unsigned char *glimage;
+NSImage *SnapshotImage;
+NSBitmapImageRep *bmpRep;
+
 @implementation KemoviewerMovieMaker
 @synthesize MovieFormatFlag;
 @synthesize FramePerSecond;
@@ -26,14 +30,6 @@
 	self.EvolutionEndStep =   1;
 	self.EvolutionIncrement = 1;
 	
-	movieDict = nil;
-	// when adding images we must provide a dictionary
-	// specifying the codec attributes
-	movieDict = [NSDictionary dictionaryWithObjectsAndKeys:@"mp4v",
-				 QTAddImageCodecType,
-				 [NSNumber numberWithLong:codecMaxQuality],
-				 QTAddImageCodecQuality,
-				 nil];
 	return self;
 }
 
@@ -72,63 +68,108 @@
 	// keep it around until we are done with it...
 	[overWriteflag release];
 	
-	SnapshotImage = [[NSImage alloc] init];
 	duration = QTMakeTime(IONE, self.FramePerSecond);
 }
 
 -(void) CloseKemoviewMovieFile{
 	[SnapshotImage release];
 	[KemoMovie release];
+    [bmpRep release];
+	free(glimage);
 }
 
--(void) AddKemoviewImageToMovie{
-	[_kemoviewer GetGLBufferForMovie:SnapshotImage];
-	
-	// imageData = [SnapshotImage TIFFRepresentation];
-	// NSString *tempName = [NSString stringWithCString:tmpnam(nil) 
-	//										encoding:[NSString defaultCStringEncoding]];
-	// NSLog(@"tempName: %@", tempName);
-	// [imageData writeToFile:tempName atomically:YES];
-	
+// ---------------------------------
+
+- (void) allocateBitmapArray
+{
+    GLint XViewsize = [_kemoviewer KemoviewHorizontalViewSize];
+    GLint YViewsize = [_kemoviewer KemoviewVerticalViewSize];
+
+	glimage = (unsigned char*)calloc(3*XViewsize*XViewsize, sizeof(unsigned char));
+	SnapshotImage = [[NSImage alloc] init];
+
+    bmpRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil
+                                                     pixelsWide: XViewsize
+                                                     pixelsHigh: YViewsize
+                                                  bitsPerSample: 8
+                                                samplesPerPixel: 3
+                                                       hasAlpha: NO
+                                                       isPlanar: NO
+                                                 colorSpaceName:NSDeviceRGBColorSpace
+              //	bytesPerRow: (XpixelGLWindow*3) //pixelsWide*samplesPerPixel
+              // bitsPerPixel: (8*3)   //bitsPerSample*samplesPerPixel
+                                                    bytesPerRow: (XViewsize*3) //pixelsWide*samplesPerPixel
+                                                   bitsPerPixel: 0  //bitsPerSample*samplesPerPixel
+              ]; 
+}
+
+-(void) AddKemoviewImageToMovie
+{
+	// when adding images we must provide a dictionary
+	// specifying the codec attributes
+	NSDictionary *movieDict = nil;
+	movieDict = [NSDictionary dictionaryWithObjectsAndKeys:@"mp4v",
+				 QTAddImageCodecType,
+				 [NSNumber numberWithLong:codecMaxQuality],
+				 QTAddImageCodecQuality,
+				 nil];
+
 	// Adds an image for the specified duration to the QTMovie
+    get_kemoviewer_fliped_img((int) [_kemoviewer KemoviewHorizontalViewSize],
+                              (int) [_kemoviewer KemoviewVerticalViewSize],
+                              glimage, [bmpRep bitmapData]);
+    
+	[SnapshotImage addRepresentation:bmpRep];
+
 	[KemoMovie addImage:SnapshotImage forDuration:duration withAttributes:movieDict];
 	[KemoMovie updateMovieFile];
 }
+
+
+// ---------------------------------
 
 -(void) SaveQTmovieRotation{
 	NSInteger istep;
 	NSInteger ied_deg = 360/self.RotationIncrement;
 	NSInteger int_degree;
 
-	if (CurrentMovieFormat == SAVE_QT_MOVIE) [self OpenKemoviewMovieFile:RotateImageFilenameNoStep];
+	if (CurrentMovieFormat == SAVE_QT_MOVIE){
+        [self allocateBitmapArray];
+        [self OpenKemoviewMovieFile:RotateImageFilenameNoStep];
+    }
 
 	[rotateProgreessBar setUsesThreadedAnimation:YES];
+    
 	for(istep = 0;istep<ied_deg;istep++){
 		int_degree = (istep*self.RotationIncrement);
-		NSNumber *degree = [[NSNumber alloc] initWithInt:int_degree];
-		NSNumber *rotaxis = [[NSNumber alloc] initWithInt:RotationAxisID];
 		[rotateProgreessBar incrementBy:(double) self.RotationIncrement];
 		[rotateProgreessBar displayIfNeeded];
 		
-		[_kemoviewer DrawRotation:degree:rotaxis];
+		[_kemoviewer DrawRotation:int_degree:RotationAxisID];
 
 		if (CurrentMovieFormat == SAVE_QT_MOVIE) {
 			[self AddKemoviewImageToMovie];
 		} else if (CurrentMovieFormat != 0) {
-			[_kemoviewer SaveGLBufferToFileWithStep:CurrentMovieFormat:istep:RotateImageFilehead];
+            write_kemoviewer_window_step_file((int) CurrentMovieFormat, (int) istep,
+                                              [RotateImageFilehead UTF8String]);
 		}
 	}
 	[rotateProgreessBar setDoubleValue:(double) 0];
 	[rotateProgreessBar displayIfNeeded];
 	[rotateProgreessBar stopAnimation:self];
 	
-	if (CurrentMovieFormat == SAVE_QT_MOVIE) [self CloseKemoviewMovieFile];
+	if (CurrentMovieFormat == SAVE_QT_MOVIE){
+        [self CloseKemoviewMovieFile];
+    }
 }
 
 -(void) SaveQTmovieEvolution{
 	int istep;
 	
-	if (CurrentMovieFormat == SAVE_QT_MOVIE) [self OpenKemoviewMovieFile:EvolutionImageFilename];
+	if (CurrentMovieFormat == SAVE_QT_MOVIE){
+        [self allocateBitmapArray];
+        [self OpenKemoviewMovieFile:EvolutionImageFilename];
+    }
 	
 	[evolutionProgreessBar setUsesThreadedAnimation:YES];
 	[evolutionProgreessBar setMinValue:(double) self.EvolutionStartStep];
@@ -140,13 +181,16 @@
 			if (CurrentMovieFormat == SAVE_QT_MOVIE) {
 				[self AddKemoviewImageToMovie];
 			} else if (CurrentMovieFormat != 0) {
-				[_kemoviewer SaveGLBufferToFileWithStep:CurrentMovieFormat:istep:EvolutionImageFilehead];
+                write_kemoviewer_window_step_file((int) CurrentMovieFormat, (int) istep,
+                                                  [EvolutionImageFilehead UTF8String]);
 			}
 
 			[evolutionProgreessBar incrementBy:(double) self.EvolutionIncrement];
 			[evolutionProgreessBar displayIfNeeded];
 		}
 	}
+    
+	if(CurrentMovieFormat == SAVE_QT_MOVIE) [bmpRep release];
 	[evolutionProgreessBar setDoubleValue:(double) self.EvolutionStartStep];
 	[evolutionProgreessBar displayIfNeeded];
 	[evolutionProgreessBar stopAnimation:self];
@@ -154,6 +198,28 @@
 	if (CurrentMovieFormat == SAVE_QT_MOVIE) [self CloseKemoviewMovieFile];
 }
 
+
+// ---------------------------------
+
+- (IBAction)SendToClipAsPDF:(id)sender
+{
+    [self allocateBitmapArray];
+    get_kemoviewer_fliped_img((int) [_kemoviewer KemoviewHorizontalViewSize],
+                              (int) [_kemoviewer KemoviewVerticalViewSize],
+                              glimage, [bmpRep bitmapData]);
+	[SnapshotImage addRepresentation:bmpRep];
+    
+    
+    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+	[pasteboard declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeTIFF, nil] owner:nil];
+	[pasteboard setData:[SnapshotImage TIFFRepresentation] forType:NSTIFFPboardType];
+    
+	free(glimage);
+    [bmpRep release];
+	[SnapshotImage release];
+}
+
+// ---------------------------------
 
 - (IBAction)ShowRotationMovie:(id)sender;
 {
