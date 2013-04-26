@@ -63,8 +63,9 @@ void kemo_gl_initial_lighting_c(struct view_element *view_s){
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	
-
+/*   This glClear send error on Cocoa....  Why?*/
 	glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);
+//    printf("kemo_gl_initial_lighting_c %d\n", glGetError());
 	
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
 	glLightfv(GL_LIGHT0, GL_POSITION, lightposition);

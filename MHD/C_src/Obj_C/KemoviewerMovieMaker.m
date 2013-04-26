@@ -155,8 +155,9 @@ NSBitmapImageRep *bmpRep;
 		}
 	}
 	[rotateProgreessBar setDoubleValue:(double) 0];
-	[rotateProgreessBar displayIfNeeded];
 	[rotateProgreessBar stopAnimation:self];
+    [rotateProgreessBar setDisplayedWhenStopped:NO];
+	[rotateProgreessBar displayIfNeeded];
 	
 	if (CurrentMovieFormat == SAVE_QT_MOVIE){
         [self CloseKemoviewMovieFile];
@@ -192,8 +193,9 @@ NSBitmapImageRep *bmpRep;
     
 	if(CurrentMovieFormat == SAVE_QT_MOVIE) [bmpRep release];
 	[evolutionProgreessBar setDoubleValue:(double) self.EvolutionStartStep];
-	[evolutionProgreessBar displayIfNeeded];
 	[evolutionProgreessBar stopAnimation:self];
+    [evolutionProgreessBar setDisplayedWhenStopped:NO];
+	[evolutionProgreessBar displayIfNeeded];
 	
 	if (CurrentMovieFormat == SAVE_QT_MOVIE) [self CloseKemoviewMovieFile];
 }

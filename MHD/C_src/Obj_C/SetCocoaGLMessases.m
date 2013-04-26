@@ -191,7 +191,7 @@ GLenum glReportError ()
     fDrawResolution = IONE;
 
 	// init fonts for use with strings
-	NSFont * font =[NSFont fontWithName:@"Helvetica" size:16.0];
+	NSFont * font =[NSFont fontWithName:@"Helvetica" size:18.0];
 	stanStringAttrib = [[NSMutableDictionary dictionary] retain];
 	[stanStringAttrib setObject:font forKey:NSFontAttributeName];
 	[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
