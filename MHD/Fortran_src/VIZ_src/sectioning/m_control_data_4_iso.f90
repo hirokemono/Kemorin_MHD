@@ -32,10 +32,10 @@
 !!    begin isosurf_result_define
 !!      result_type      constant
 !!      result_value     0.7
-!!    array output_field   2
-!!      output_field    velocity         vector   end
-!!      output_field    magnetic_field   radial   end
-!!    end array output_field
+!!      array output_field   2
+!!        output_field    velocity         vector   end
+!!        output_field    magnetic_field   radial   end
+!!      end array output_field
 !!    end isosurf_result_define
 !!
 !!  end isosurf_rendering
@@ -85,7 +85,7 @@
 !
         character(len=kchara) :: iso_result_type_ctl
 !
-        integer(kind = kint) :: num_iso_result_ctl
+        integer(kind = kint) :: num_iso_result_ctl = 0
         character(len=kchara), pointer :: iso_result_field_ctl(:)
         character(len=kchara), pointer :: iso_result_comp_ctl(:)
 !

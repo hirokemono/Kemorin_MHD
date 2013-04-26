@@ -1,14 +1,23 @@
-!cal_sph_exp_nod_cmb_qvac.f90
-!      module cal_sph_exp_nod_cmb_qvac
+!>@file   cal_sph_exp_nod_cmb_qvac.f90
+!!@brief  module cal_sph_exp_nod_cmb_qvac
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
 !
-!     Written by H. Matsui on Jan., 2010
-!
-!      subroutine cal_sph_nod_cmb_qvc_b_and_j(is_fld, is_rot)
-!      subroutine cal_sph_nod_cmb_qvc_mag2(is_fld)
-!
-!      subroutine cal_sph_nod_cmb_qvc_vp_rot2(is_fld, is_rot)
-!      subroutine cal_sph_nod_cmb_qvc_rot2(is_fld, is_rot)
-!      subroutine cal_sph_nod_cmb_qvc_diffuse2(is_fld, is_diffuse)
+!>@brief  Set pseudo vacuum magnetic boundary condition for CMB
+!!
+!!@verbatim
+!!      subroutine cal_sph_nod_cmb_qvc_b_and_j(is_fld, is_rot)
+!!      subroutine cal_sph_nod_cmb_qvc_mag2(is_fld)
+!!
+!!      subroutine cal_sph_nod_cmb_qvc_vp_rot2(is_fld, is_rot)
+!!      subroutine cal_sph_nod_cmb_qvc_rot2(is_fld, is_rot)
+!!      subroutine cal_sph_nod_cmb_qvc_diffuse2(is_fld, is_diffuse)
+!!@endverbatim
+!!
+!!@n @param is_fld       Field address of input field
+!!@n @param is_rot       Field address for curl of field
+!!@n @param is_diffuse   Field address for diffusion of field
 !
       module cal_sph_exp_nod_cmb_qvac
 !

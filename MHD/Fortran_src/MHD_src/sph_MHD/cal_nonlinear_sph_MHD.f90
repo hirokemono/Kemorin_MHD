@@ -34,9 +34,10 @@
 !
       use m_machine_parameter
       use m_spheric_param_smp
-      use products_sph_fields
+      use products_sph_fields_smp
 !
 !
+!$omp parallel
       if( (irtp%i_m_advect*iflag_t_evo_4_velo) .gt. 0) then
         call cal_rtp_cross_prod_w_coef(coef_velo,                       &
      &      irtp%i_vort, irtp%i_velo, irtp%i_m_advect)
@@ -64,6 +65,7 @@
         call rtp_vec_scalar_prod_w_coef(coef_scalar,                    &
      &     irtp%i_velo, irtp%i_light, irtp%i_c_flux)
       end if
+!$omp end parallel
 !
       end subroutine s_cal_nonlinear_sph_MHD
 !

@@ -1,59 +1,68 @@
-!sum_div_coriolis_rj_sph.f90
+!>@file   sum_div_coriolis_rj_sph.f90
+!!@brief  module sum_div_coriolis_rj_sph
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
 !
-!      module sum_div_coriolis_rj_sph
-!
-!      subroutine s_sum_div_coriolis_rj_sph(coef_cor)
-!
-!      subroutine sum_div_coriolis_rj_10(coef_cor, angular)
-!      subroutine sum_div_coriolis_rj_xy(coef_cor, anglar)
-!
-!*
-!*************************************************
-!
-!  Rotation of the Coriolos term
-!*     (wss) = wss(jc,1,j3)*w*dyb/r**2
-!*            + wss(jc,2,j3)*dw*yb/r**2
-!*
-!*     (wts) = wts(j3)*w*yb/r**2
-!*
-!*     (wst) = wst(1,j3)*( dw*dyb/r**2 + w*d2yb/r**2 - 2*w*dyb/r**3 )
-!*            + wst(2,j3)*( d2w/r**2 - 2*dw/r**3 )*yb
-!*
-!*     (wtt) = wtt(jc,1,j3)*dw*yb/r**2
-!*            + wtt(jc,2,j3)*w*( dyb/r**2 - 2*yb/r**3 )
-!*
-!   Divergence of the Coriolis term
-!*     (wsd) = wsd(jc,1,j3)*w*wsb/r**4
-!*            + wsd(jc,2,j3)*dw*dwsb/r**2
-!*     (wtd) = wtd(j3)*dw*dwtb/r**2
-!
-!  Radial componenet of the Coriolis term
-!*     (wsr) = wsr(jc,1,j3)*dw*dusb/r**2
-!*     (wtr) = wtr(j3)*dw*wtb/r**2
-!
-!*************************************************
-!*
-!*************************************************
-!*
-!*     wss(jc,1,j3) = sw(jc,1,j3)
-!*     wss(jc,2,j3) = sw(jc,2,j3)
-!*     wts(jc,j3)   = sw(jc,3,j3)
-!*     wst(jc,1,j3) = tw(jc,1,j3)
-!*     wst(jc,2,j3) = tw(jc,2,j3)
-!*     wtt(jc,1,j3) = tw(jc,3,j3)
-!*     wtt(jc,2,j3) = tw(jc,4,j3)
-!
-!*     wsd(jc,1,j3) = sd(jc,1,j3)
-!*     wsd(jc,2,j3) = sd(jc,2,j3)
-!*     wtd(jc,j3)   = td(jc,j3)
-!*
-!*     wsr(jc,j3) =   sr(jc,j3)
-!*     wtr(jc,j3) =   tr(jc,j3)
-!*
-!*************************************************
+!>@brief  Evaluate derivatives with no boundary conditions
+!!
+!!@verbatim
+!!      subroutine s_sum_div_coriolis_rj_sph(coef_cor)
+!!
+!!      subroutine sum_div_coriolis_rj_10(coef_cor, angular)
+!!      subroutine sum_div_coriolis_rj_xy(coef_cor, anglar)
+!!
+!!
+!!*************************************************
+!!
+!!  Rotation of the Coriolos term
+!!     (wss) = wss(jc,1,j3)*w*dyb/r**2
+!!            + wss(jc,2,j3)*dw*yb/r**2
+!!
+!!     (wts) = wts(j3)*w*yb/r**2
+!!
+!!     (wst) = wst(1,j3)*( dw*dyb/r**2 + w*d2yb/r**2 - 2*w*dyb/r**3 )
+!!            + wst(2,j3)*( d2w/r**2 - 2*dw/r**3 )*yb
+!!
+!!     (wtt) = wtt(jc,1,j3)*dw*yb/r**2
+!!            + wtt(jc,2,j3)*w*( dyb/r**2 - 2*yb/r**3 )
+!!
+!!   Divergence of the Coriolis term
+!!     (wsd) = wsd(jc,1,j3)*w*wsb/r**4
+!!            + wsd(jc,2,j3)*dw*dwsb/r**2
+!!     (wtd) = wtd(j3)*dw*dwtb/r**2
+!!
+!!  Radial componenet of the Coriolis term
+!!     (wsr) = wsr(jc,1,j3)*dw*dusb/r**2
+!!     (wtr) = wtr(j3)*dw*wtb/r**2
+!!
+!!*************************************************
+!!
+!!*************************************************
+!!
+!!     wss(jc,1,j3) = sw(jc,1,j3)
+!!     wss(jc,2,j3) = sw(jc,2,j3)
+!!     wts(jc,j3)   = sw(jc,3,j3)
+!!     wst(jc,1,j3) = tw(jc,1,j3)
+!!     wst(jc,2,j3) = tw(jc,2,j3)
+!!     wtt(jc,1,j3) = tw(jc,3,j3)
+!!     wtt(jc,2,j3) = tw(jc,4,j3)
+!!
+!!     wsd(jc,1,j3) = sd(jc,1,j3)
+!!     wsd(jc,2,j3) = sd(jc,2,j3)
+!!     wtd(jc,j3)   = td(jc,j3)
+!!
+!!     wsr(jc,j3) =   sr(jc,j3)
+!!     wtr(jc,j3) =   tr(jc,j3)
+!!
+!!*************************************************
+!!@endverbatim
+!!
+!!@n @param coef_cor  Coefficient for Coriolis term
+!!@n @param is_div_f  Poloidal address of divergence of Coriolis force
 !
       module sum_div_coriolis_rj_sph
-!*
+!
       use m_precision
 !
       use m_machine_parameter
@@ -73,29 +82,31 @@
 !*
 !*   ------------------------------------------------------------------
 !
-      subroutine s_sum_div_coriolis_rj_sph(coef_cor)
+      subroutine s_sum_div_coriolis_rj_sph(coef_cor, is_div_f)
 !
+      integer(kind = kint), intent(in) :: is_div_f
       real(kind = kreal), intent(in) :: coef_cor
 !
 !
       if (iflag_debug.eq.1) write(*,*)                                &
      &        'sum_div_coriolis_rj_10', omega_rj(1,2,1:3)
-      call sum_div_coriolis_rj_10(coef_cor)
+      call sum_div_coriolis_rj_10(coef_cor, is_div_f)
 !
       if( omega_rj(1,2,1).ne.zero .or. omega_rj(1,2,3).ne.zero) then
         if (iflag_debug.eq.1) write(*,*) 'sum_div_coriolis_rj_xy'
-        call sum_div_coriolis_rj_xy(coef_cor)
+        call sum_div_coriolis_rj_xy(coef_cor, is_div_f)
       end if
 !
       end subroutine s_sum_div_coriolis_rj_sph
 !
 !*   ------------------------------------------------------------------
 !*
-      subroutine sum_div_coriolis_rj_10(coef_cor)
+      subroutine sum_div_coriolis_rj_10(coef_cor, is_div_f)
 !
       use m_schmidt_poly_on_rtm
       use m_coriolis_coefs_tri_sph
 !
+      integer(kind = kint), intent(in) :: is_div_f
       real(kind = kreal), intent(in) :: coef_cor
 !
       integer(kind = kint) :: k, j, j30
@@ -113,7 +124,7 @@
           i21 = jlc_kcor(j30,2,2) + (k-1)*nidx_j_cor
           i12 = jlc_lcor(j30,1,2) + (k-1)*nidx_j_cor
 !
-          d_rj(inod,ipol%i_div_Coriolis)                                &
+          d_rj(inod,is_div_f)                                           &
      &       =  td(1,j30) * omega_rj(k,1,2)                             &
      &         * (g_sph_rj(j,3)*ar_1d_rj(k,2) * d_sph_cor(i12,ic_vp)    &
      &           - d_sph_cor(i12,ic_d2vp) )                             &
@@ -127,11 +138,11 @@
           inod = j + (k-1)*nidx_rj(2)
           i11 = idx_rj_degree_one(0) + (k-1)*nidx_j_cor
 !
-!          d_rj(inod,ipol%i_div_Coriolis)                               &
+!          d_rj(inod,is_div_f)                                          &
 !     &       =  four*pi*(two/three) * half * d_rj(i11,ipol%i_vort)     &
 !     &        + four*pi*(two/three) * omega_rj(k,1,2)                  &
 !     &          * d_rj(i11,idpdr%i_vort)
-          d_rj(inod,ipol%i_div_Coriolis)                                &
+          d_rj(inod,is_div_f)                                           &
      &       =  four*(two/three) * half * d_rj(i11,ipol%i_vort)         &
      &        + four*(two/three) * omega_rj(k,1,2)                      &
      &          * d_rj(i11,idpdr%i_vort)
@@ -139,8 +150,8 @@
 !
         do j = 1, nidx_rj(2)
           inod = j + (k-1)*nidx_rj(2)
-          d_rj(inod,ipol%i_div_Coriolis) = -coef_cor * ar_1d_rj(k,2)    &
-     &                                * d_rj(inod,ipol%i_div_Coriolis)
+          d_rj(inod,is_div_f) = -coef_cor * ar_1d_rj(k,2)               &
+     &                                * d_rj(inod,is_div_f)
         end do
       end do
 !$omp end parallel do
@@ -149,11 +160,12 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine sum_div_coriolis_rj_xy(coef_cor)
+      subroutine sum_div_coriolis_rj_xy(coef_cor, is_div_f)
 !
       use m_schmidt_poly_on_rtm
       use m_coriolis_coefs_tri_sph
 !
+      integer(kind = kint), intent(in) :: is_div_f
       real(kind = kreal), intent(in) :: coef_cor
 !
       integer(kind = kint) :: k, j, j30, inod
@@ -215,8 +227,7 @@
      &       + sd3(3,2,j30) * omega_rj(k,1,3) * d_sph_cor(l31,ic_dvt)   &
      &       + sd3(4,2,j30) * omega_rj(k,1,3) * d_sph_cor(l41,ic_dvt)
 !
-          d_rj(inod,ipol%i_div_Coriolis)                                &
-     &            = d_rj(inod,ipol%i_div_Coriolis)                      &
+          d_rj(inod,is_div_f) = d_rj(inod,is_div_f)                     &
      &             - coef_cor * ar_1d_rj(k,2) * (ct1 + ct3)
         end do
 !
@@ -242,8 +253,7 @@
      &          * d_rj(l11,idpdr%i_vort)
 !
 !
-          d_rj(inod,ipol%i_div_Coriolis)                                &
-     &        = d_rj(inod,ipol%i_div_Coriolis)                          &
+          d_rj(inod,is_div_f) = d_rj(inod,is_div_f)                     &
      &         - coef_cor * ar_1d_rj(k,2) * (ct1 + ct3)
         end do
       end do

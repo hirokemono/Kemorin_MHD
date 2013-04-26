@@ -1,19 +1,19 @@
-!
-!      module m_ctl_data_4_time_steps
+!>@file   m_ctl_data_4_time_steps.f90
+!!@brief  module m_ctl_data_4_time_steps
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep., 2006
+!!@n    Modified in Nov., 2006
 !
 !> @brief Control input routine for time step parameters
-!
-!        programmed by H.Matsui on Sep., 2006
-!        Modified by H.Matsui on Nov., 2006
-!
-!      subroutine read_time_step_ctl
-!
-!>
-!!!!!  information for time integration
-! ------------------------------------------------------------------
-!>@n      Example of control parameters for flexible time step
-!
-!>@n@code
+!!
+!!@verbatim
+!!
+!!      subroutine read_time_step_ctl
+!!
+!! ------------------------------------------------------------------
+!!      Example of control parameters for flexible time step
+!!
 !!    begin time_step_ctl
 !!      elapsed_time_ctl      42500.
 !!
@@ -37,11 +37,11 @@
 !!      delta_t_sgs_coefs_ctl    2.0e-5
 !!      delta_t_boundary_ctl     1.0e-4
 !!    end
-!>@endcode
 !!
-!>@n      Example of control parameters for fixed time step
+!! ------------------------------------------------------------------
 !!
-!>@n@code
+!!      Example of control parameters for fixed time step
+!!
 !!    begin time_step_ctl
 !!      elapsed_time_ctl      42500.
 !!
@@ -65,9 +65,9 @@
 !!      dt_ctl              5.0e-5
 !!      time_init_ctl       0.0e-8
 !!    end
-!>@endcode
-!
-! ------------------------------------------------------------------
+!!
+!! ------------------------------------------------------------------
+!!@endverbatim
 !>@n
 !>@n@param      elapsed_time_ctl
 !>                Simulation time on wall clock (sec.)

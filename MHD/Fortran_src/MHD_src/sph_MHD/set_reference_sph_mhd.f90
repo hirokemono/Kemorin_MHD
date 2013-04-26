@@ -1,28 +1,33 @@
+!> @file  set_reference_sph_mhd.f90
+!!      module set_reference_sph_mhd
+!!
+!! @author  H. Matsui
+!! @date Programmed in Sep., 2007
 !
-!     module set_reference_sph_mhd
-!
-!      Written by H.Matsui
-!      Modified by H.Matsui on Sep., 2007
-!
-!      subroutine adjust_by_ave_pressure_on_CMB
-!
-!      subroutine s_set_ref_temp_sph_mhd
-!
-!      subroutine sync_temp_by_per_temp_sph
-!        d_rj(inod,ipol%i_temp):        T => \Theta = T - T0
-!        d_rj(inod,ipol%i_par_temp):    \Theta = T - T0
-!        d_rj(inod,ipol%i_grad_t):      T => d \Theta / dr
-!        d_rj(inod,ipol%i_grad_part_t): d \Theta / dr
-!
-!
-!      subroutine trans_per_temp_to_temp_sph
-!        d_rj(inod,ipol%i_temp):        \Theta = T - T0 => T
-!        d_rj(inod,ipol%i_par_temp):    \Theta = T - T0
-!        d_rj(inod,ipol%i_grad_t):      d \Theta / dr   => dT / dr
-!        d_rj(inod,ipol%i_grad_part_t): d \Theta / dr
-!
-!
-!      subroutine delete_zero_degree_comp(is_vec)
+!> @brief Convert temperature data using reference temperature
+!!
+!!@verbatim
+!!      subroutine adjust_by_ave_pressure_on_CMB
+!!
+!!      subroutine s_set_ref_temp_sph_mhd
+!!
+!!      subroutine sync_temp_by_per_temp_sph
+!!        d_rj(inod,ipol%i_temp):        T => \Theta = T - T0
+!!        d_rj(inod,ipol%i_par_temp):    \Theta = T - T0
+!!        d_rj(inod,ipol%i_grad_t):      T => d \Theta / dr
+!!        d_rj(inod,ipol%i_grad_part_t): d \Theta / dr
+!!
+!!
+!!      subroutine trans_per_temp_to_temp_sph
+!!        d_rj(inod,ipol%i_temp):        \Theta = T - T0 => T
+!!        d_rj(inod,ipol%i_par_temp):    \Theta = T - T0
+!!        d_rj(inod,ipol%i_grad_t):      d \Theta / dr   => dT / dr
+!!        d_rj(inod,ipol%i_grad_part_t): d \Theta / dr
+!!
+!!      subroutine delete_zero_degree_comp(is_fld)
+!!@endverbatim
+!!
+!!@n @param is_fld Address of poloidal component
 !
       module set_reference_sph_mhd
 !
@@ -162,9 +167,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine delete_zero_degree_comp(is_vec)
+      subroutine delete_zero_degree_comp(is_fld)
 !
-      integer(kind = kint), intent(in) :: is_vec
+      integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint) :: k, inod
 !
 !
@@ -172,8 +177,8 @@
 !
       do k = 1, nidx_rj(1)
         inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
-        d_rj(inod,is_vec  ) = zero
-        d_rj(inod,is_vec+2) = zero
+        d_rj(inod,is_fld  ) = zero
+        d_rj(inod,is_fld+2) = zero
       end do
 !
       end subroutine delete_zero_degree_comp

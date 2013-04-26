@@ -1,23 +1,41 @@
-!cal_sph_exp_nod_none_bc.f90
-!      module cal_sph_exp_nod_none_bc
+!>@file   cal_sph_exp_nod_none_bc.f90
+!!@brief  module cal_sph_exp_nod_none_bc
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
 !
-!     Written by H. Matsui on Jan., 2010
-!
-!      subroutine cal_sph_nod_nobc_in_rot2(coef_fdm_fix_in_2, kr_in,    &
-!     &          is_fld, is_rot)
-!      subroutine cal_sph_nod_nobc_in_div2(coef_fdm_fix_in_2, kr_in,    &
-!     &          is_fld, is_rot)
-!      subroutine cal_sph_nod_nobc_in_diffuse2(coef_fdm_fix_in_2,       &
-!     &          kr_in,  is_fld, is_diffuse)
-!
-!      subroutine cal_sph_nod_nobc_out_rot2(coef_fdm_fix_out_2, kr_out, &
-!     &          is_fld, is_rot)
-!      subroutine cal_sph_nod_nobc_out_div2(coef_fdm_fix_out_2, kr_out, &
-!     &          is_fld, is_rot)
-!      subroutine cal_sph_nod_nobc_out_diffuse2(coef_fdm_fix_out_2,     &
-!     &          kr_out, is_fld, is_diffuse)
-!
-!      subroutine delete_bc_field(kr_bc, is_fld, is_diffuse)
+!>@brief  Evaluate derivatives with no boundary conditions
+!!
+!!@verbatim
+!!      subroutine cal_sph_nod_nobc_in_rot2(coef_fdm_fix_in_2, kr_in,   &
+!!     &          is_fld, is_rot)
+!!      subroutine cal_sph_nod_nobc_in_div2(coef_fdm_fix_in_2, kr_in,   &
+!!     &          is_fld, is_rot)
+!!      subroutine cal_sph_nod_nobc_in_diffuse2(coef_fdm_fix_in_2,      &
+!!     &          kr_in,  is_fld, is_diffuse)
+!!
+!!      subroutine cal_sph_nod_nobc_out_rot2(coef_fdm_fix_out_2, kr_out,&
+!!     &          is_fld, is_rot)
+!!      subroutine cal_sph_nod_nobc_out_div2(coef_fdm_fix_out_2, kr_out,&
+!!     &          is_fld, is_rot)
+!!      subroutine cal_sph_nod_nobc_out_diffuse2(coef_fdm_fix_out_2,    &
+!!     &          kr_out, is_fld, is_diffuse)
+!!
+!!      subroutine delete_bc_field(kr_bc, is_fld, is_diffuse)
+!!@endverbatim
+!!
+!!@n @param coef_fdm_fix_in_2(0:2,3)
+!!            Finite difference matrix for ICB with no boundary condition
+!!@n @param coef_fdm_fix_out_2(0:2,3)
+!!            Finite difference matrix for CMB with no boundary condition
+!!
+!!@n @param kr_in   radial ID for inner boundary
+!!@n @param kr_out  radial ID for outer boundary
+!!@n @param kr_bc   radial ID to be deleted
+!!
+!!@n @param is_fld       Field address of input field
+!!@n @param is_rot       Field address for curl of field
+!!@n @param is_diffuse   Field address for diffusion of field
 !
       module cal_sph_exp_nod_none_bc
 !

@@ -9,6 +9,7 @@
       module analyzer_viz
 !
       use m_precision
+      use m_machine_parameter
 !
       use m_parallel_var_dof
 !
@@ -39,7 +40,7 @@
 !
 !
 !  FEM Initialization
-        write(*,*) 'FEM_initialize_vizs'
+      if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_vizs'
       call FEM_initialize_vizs
 !
 !  VIZ Initialization

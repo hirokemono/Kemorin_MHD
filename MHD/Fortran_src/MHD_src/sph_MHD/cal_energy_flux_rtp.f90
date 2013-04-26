@@ -30,26 +30,23 @@
       use m_sph_spectr_data
       use m_sph_phys_address
       use sph_transforms_4_MHD
-      use cal_products_smp
+      use products_sph_fields_smp
 !
 !
 !$omp parallel
       if( (irtp%i_lorentz*irtp%i_ujb) .gt. 0) then
-        call cal_dot_prod_no_coef_smp(np_smp, nnod_rtp,                 &
-     &      inod_rtp_smp_stack, d_rtp(1,irtp%i_lorentz),                &
-     &      d_rtp(1,irtp%i_velo), d_rtp(1,irtp%i_ujb) )
+        call cal_rtp_dot_product(irtp%i_lorentz, irtp%i_velo,           &
+     &      irtp%i_ujb)
       end if
 !
       if( (irtp%i_lorentz*irtp%i_nega_ujb) .gt. 0) then
-        call cal_dot_prod_w_coef_smp(np_smp, nnod_rtp,                  &
-     &      inod_rtp_smp_stack, dminus, d_rtp(1,irtp%i_lorentz),        &
-     &      d_rtp(1,irtp%i_velo), d_rtp(1,irtp%i_nega_ujb) )
+        call cal_rtp_dot_prod_w_coef(dminus,                            &
+     &      irtp%i_lorentz, irtp%i_velo, irtp%i_nega_ujb)
       end if
 !
       if( (irtp%i_lorentz*irtp%i_me_gen) .gt. 0) then
-        call cal_dot_prod_w_coef_smp(np_smp, nnod_rtp,                  &
-     &      inod_rtp_smp_stack, dminus, d_rtp(1,irtp%i_lorentz),        &
-     &      d_rtp(1,irtp%i_velo), d_rtp(1,irtp%i_me_gen) )
+        call cal_rtp_dot_prod_w_coef(dminus,                            &
+     &      irtp%i_lorentz, irtp%i_velo, irtp%i_me_gen)
       end if
 !
       if(irtp%i_buo_gen .gt. 0) then

@@ -2,20 +2,30 @@
 !!      module solver_sph_coriolis_sr
 !!
 !! @author  H. Matsui
-!! @date Programmed in 2011
+!! @date Programmed in 2010
 !
 !
 !> @brief Communication routines for Coriolis term
-!
-!      subroutine solver_sph_coriolis_sr_1                              &
-!     &          (nshift_j_cor, jmax, nri, d_rj, jmax_cor, d_cor)
-!      subroutine solver_sph_coriolis_sr_3                              &
-!     &          (nshift_j_cor, jmax, nri, d_rj, jmax_cor, d_cor)
-!      subroutine solver_sph_coriolis_sr_5                              &
-!     &          (nshift_j_cor, jmax, nri, d_rj, jmax_cor, d_cor)
-!
-!      subroutine solver_sph_coriolis_sr_int                            &
-!     &          (nshift_j_cor, jmax, idx_j, jmax_cor, idx_cor_j)
+!!
+!!@verbatim
+!!      subroutine solver_sph_coriolis_sr_1                             &
+!!     &          (nshift_j_cor, jmax, nri, d_rj, jmax_cor, d_cor)
+!!      subroutine solver_sph_coriolis_sr_3                             &
+!!     &          (nshift_j_cor, jmax, nri, d_rj, jmax_cor, d_cor)
+!!      subroutine solver_sph_coriolis_sr_5                             &
+!!     &          (nshift_j_cor, jmax, nri, d_rj, jmax_cor, d_cor)
+!!
+!!      subroutine solver_sph_coriolis_sr_int                           &
+!!     &          (nshift_j_cor, jmax, idx_j, jmax_cor, idx_cor_j)
+!!@endverbatim
+!!
+!!@n @param nshift_j_cor  Difference of start mode between d_rj and d_cor
+!!@n @param nri           Number of radial grids
+!!@n @param jmax          Number of local spherical hermonics modes
+!!@n @param jmax_cor      Spectr data to evaluate Coriolis force 
+!!                                    @f$ f(r,j) @f$
+!!@n @param d_rj          Spectr data @f$ f(r,j) @f$
+!!@n @param d_cor  time step
 !
       module solver_sph_coriolis_sr
 !

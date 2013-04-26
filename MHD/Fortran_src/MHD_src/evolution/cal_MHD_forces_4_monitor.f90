@@ -217,7 +217,7 @@
       use m_node_phys_data
 !
       use buoyancy_flux
-      use products_nodal_fields
+      use products_nodal_fields_smp
       use add_nodal_fields
       use subtract_nodal_fields
       use multi_by_const_fields
@@ -250,8 +250,12 @@
         else
           call multi_by_const_nod_vector(iphys%i_electric,              &
      &        iphys%i_current, coef_d_magne)
+!
+!$omp parallel
           call cal_phys_cross_product(iphys%i_velo, iphys%i_magne,      &
      &        iphys%i_vp_induct)
+!$omp end parallel
+!
           call subtract_2_nod_tensors(iphys%i_electric,                 &
      &        iphys%i_electric, iphys%i_vp_induct)
         end if
@@ -259,16 +263,13 @@
 !
 !
 !
+!$omp parallel
       if (iphys%i_ujb .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_Lorentz_work)
         call cal_tri_product_4_scalar(coef_lor, iphys%i_velo,           &
      &      iphys%i_current, iphys%i_magne, iphys%i_ujb)
       end if
 !
       if (iphys%i_nega_ujb .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_work_agst_Lorentz)
         call cal_tri_product_4_scalar(coef_lor, iphys%i_velo,           &
      &      iphys%i_magne, iphys%i_current, iphys%i_nega_ujb)
       end if
@@ -282,6 +283,7 @@
      &        iphys%i_current)
         end if
       end if
+!$omp end parallel
 !
 !
 !
@@ -308,16 +310,13 @@
       end if
 !
 !
+!$omp parallel
       if (iphys%i_temp_gen .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_temp_generation)
         call cal_phys_product_4_scalar(iphys%i_h_advect, iphys%i_temp,  &
      &      iphys%i_temp_gen)
       end if
 !
       if (iphys%i_par_t_gen .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_part_temp_gen)
         call cal_phys_product_4_scalar(iphys%i_ph_advect,               &
      &      iphys%i_par_temp, iphys%i_par_t_gen)
       end if
@@ -342,6 +341,7 @@
         call cal_phys_cross_product(iphys%i_electric, iphys%i_magne,    &
      &      iphys%i_poynting)
       end if
+!$omp end parallel
 !
       end subroutine cal_work_4_forces
 !

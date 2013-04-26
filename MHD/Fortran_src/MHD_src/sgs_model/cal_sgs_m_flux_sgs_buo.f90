@@ -34,7 +34,7 @@
 !
       use cal_sgs_fluxes
       use cal_momentum_terms
-      use products_nodal_fields
+      use products_nodal_fields_smp
       use sgs_buoyancy_flux
       use merge_dynamic_coefs
       use set_sgs_diff_model_coefs
@@ -54,8 +54,11 @@
 !   lead work of Reynolds stress
 !
       call cal_terms_4_momentum(iphys%i_SGS_div_m_flux)
+!
+!$omp parallel
       call cal_phys_dot_product(iphys%i_velo, iphys%i_SGS_div_m_flux,   &
      &    iphys%i_reynolds_wk)
+!$omp end parallel
 !
 !   lead SGS buoyancy flux
 !

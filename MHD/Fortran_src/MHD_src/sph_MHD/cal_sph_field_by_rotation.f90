@@ -72,7 +72,7 @@
       end if
 !
       if( iflag_4_coriolis .gt. 0) then
-        call s_sum_div_coriolis_rj_sph(coef_cor)
+        call s_sum_div_coriolis_rj_sph(coef_cor, ipol%i_div_Coriolis)
       end if
 !
       call s_cal_div_buoyancies_sph_MHD

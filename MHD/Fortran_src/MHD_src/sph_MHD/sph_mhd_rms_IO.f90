@@ -1,10 +1,16 @@
-!     module sph_mhd_rms_IO
+!>@file   sph_mhd_rms_IO.f90
+!!@brief  module sph_mhd_rms_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in 2009
 !
-!        programmed by H.Matsui
-!
-!      subroutine open_sph_vol_rms_file_mhd
-!      subroutine output_rms_sph_mhd_control
-!      subroutine close_sph_vol_rms_file_mhd
+!>@brief  I/O routines for mean square and averaga data
+!!
+!!@verbatim
+!!      subroutine open_sph_vol_rms_file_mhd
+!!      subroutine output_rms_sph_mhd_control
+!!      subroutine close_sph_vol_rms_file_mhd
+!!@endverbatim
 !
       module sph_mhd_rms_IO
 !

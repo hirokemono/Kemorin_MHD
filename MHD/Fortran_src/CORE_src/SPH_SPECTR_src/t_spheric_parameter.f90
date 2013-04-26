@@ -2,78 +2,82 @@
 !!@brief  module t_spheric_parameter
 !!
 !!@author H. Matsui
-!!@date Programmed on July, 2007
+!!@date Programmed in July, 2007
+!
+!>@brief  Structure for indexing table of speherical harmonics transform
 !!
-!!@brief  structure for indexing table of speherical harmonics transform
-!
-!      iflag_radial_grid:: radial grid type
-!        igrid_Chebyshev =    2 :: Chebyshev collocation points
-!        igrid_non_euqidist = 1 :: non-equi-distance
-!        igrid_euqidistance = 0 :: equi-distance
-!
-!      subroutine alloc_type_spheric_parameter(sph)
-!        type(sph_grids), intent(inout) :: sph
-!      subroutine dealloc_type_spheric_parameter(sph)
-!        type(sph_grids), intent(inout) :: sph
-!
-!      subroutine alloc_type_radius_1d_gl(sph)
-!        type(sph_grids), intent(inout) :: sph
-!      subroutine alloc_type_spheric_param_rtp(rtp)
-!        type(sph_rtp_grid), intent(inout) :: rtp
-!      subroutine alloc_type_spheric_param_rtm(rtm)
-!        type(sph_rtm_grid), intent(inout) :: rtm
-!      subroutine alloc_type_spheric_param_rlm(rlm)
-!        type(sph_rlm_grid), intent(inout) :: rlm
-!      subroutine alloc_type_spheric_param_rj(rj)
-!        type(sph_rj_grid), intent(inout) :: rj
-!
-!      subroutine alloc_type_sph_1d_index_rtp(rtp)
-!        type(sph_rtp_grid), intent(inout) :: rtp
-!      subroutine alloc_type_sph_1d_index_rtm(rtm)
-!        type(sph_rtm_grid), intent(inout) :: rtm
-!      subroutine alloc_type_sph_1d_index_rlm(rlm)
-!        type(sph_rlm_grid), intent(inout) :: rlm
-!      subroutine alloc_type_sph_1d_index_rj(rj)
-!        type(sph_rj_grid), intent(inout) :: rj
-!
-!      subroutine dealloc_type_radius_1d_gl(sph)
-!        type(sph_grids), intent(inout) :: sph
-!      subroutine dealloc_type_spheric_param_rtp(rtp)
-!        type(sph_rtp_grid), intent(inout) :: rtp
-!      subroutine dealloc_type_spheric_param_rtm(rtm)
-!        type(sph_rtm_grid), intent(inout) :: rtm
-!      subroutine dealloc_type_spheric_param_rlm(rlm)
-!        type(sph_rlm_grid), intent(inout) :: rlm
-!      subroutine dealloc_type_spheric_param_rj(rj)
-!        type(sph_rj_grid), intent(inout) :: rj
-!
-!      subroutine dealloc_type_sph_1d_index_rtp(rtp)
-!        type(sph_rtp_grid), intent(inout) :: rtp
-!      subroutine dealloc_type_sph_1d_index_rtm(rtm)
-!        type(sph_rtm_grid), intent(inout) :: rtm
-!      subroutine dealloc_type_sph_1d_index_rlm(rlm)
-!        type(sph_rlm_grid), intent(inout) :: rlm
-!      subroutine dealloc_type_sph_1d_index_rj(rj)
-!        type(sph_rj_grid), intent(inout) :: rj
-!
-!      subroutine check_type_spheric_para_gl_part(sph)
-!        type(sph_grids), intent(in) :: sph
-!      subroutine check_type_spheric_parameter(my_rank, sph)
-!        integer(kind = kint), intent(in) :: my_rank
-!        type(sph_grids), intent(in) :: sph
-!      subroutine check_type_spheric_param_rtp(my_rank, rtp)
-!        integer(kind = kint), intent(in) :: my_rank
-!        type(sph_rtp_grid), intent(in) :: rtp
-!      subroutine check_type_spheric_param_rtm(my_rank, rtm)
-!        integer(kind = kint), intent(in) :: my_rank
-!        type(sph_rtm_grid), intent(in) :: rtm
-!      subroutine check_type_spheric_param_rlm(my_rank, rlm)
-!        integer(kind = kint), intent(in) :: my_rank
-!        type(sph_rlm_grid), intent(in) :: rlm
-!      subroutine check_type_spheric_param_rj(my_rank, rj)
-!        integer(kind = kint), intent(in) :: my_rank
-!        type(sph_rj_grid), intent(in) :: rj
-!
+!!@verbatim
+!!      iflag_radial_grid:: radial grid type
+!!        igrid_Chebyshev =    2 :: Chebyshev collocation points
+!!        igrid_non_euqidist = 1 :: non-equi-distance
+!!        igrid_euqidistance = 0 :: equi-distance
+!!
+!!      subroutine alloc_type_spheric_parameter(sph)
+!!        type(sph_grids), intent(inout) :: sph
+!!      subroutine dealloc_type_spheric_parameter(sph)
+!!        type(sph_grids), intent(inout) :: sph
+!!
+!!      subroutine alloc_type_radius_1d_gl(sph)
+!!        type(sph_grids), intent(inout) :: sph
+!!      subroutine alloc_type_spheric_param_rtp(rtp)
+!!        type(sph_rtp_grid), intent(inout) :: rtp
+!!      subroutine alloc_type_spheric_param_rtm(rtm)
+!!        type(sph_rtm_grid), intent(inout) :: rtm
+!!      subroutine alloc_type_spheric_param_rlm(rlm)
+!!        type(sph_rlm_grid), intent(inout) :: rlm
+!!      subroutine alloc_type_spheric_param_rj(rj)
+!!        type(sph_rj_grid), intent(inout) :: rj
+!!
+!!      subroutine alloc_type_sph_1d_index_rtp(rtp)
+!!        type(sph_rtp_grid), intent(inout) :: rtp
+!!      subroutine alloc_type_sph_1d_index_rtm(rtm)
+!!        type(sph_rtm_grid), intent(inout) :: rtm
+!!      subroutine alloc_type_sph_1d_index_rlm(rlm)
+!!        type(sph_rlm_grid), intent(inout) :: rlm
+!!      subroutine alloc_type_sph_1d_index_rj(rj)
+!!        type(sph_rj_grid), intent(inout) :: rj
+!!
+!!      subroutine dealloc_type_radius_1d_gl(sph)
+!!        type(sph_grids), intent(inout) :: sph
+!!      subroutine dealloc_type_spheric_param_rtp(rtp)
+!!        type(sph_rtp_grid), intent(inout) :: rtp
+!!      subroutine dealloc_type_spheric_param_rtm(rtm)
+!!        type(sph_rtm_grid), intent(inout) :: rtm
+!!      subroutine dealloc_type_spheric_param_rlm(rlm)
+!!        type(sph_rlm_grid), intent(inout) :: rlm
+!!      subroutine dealloc_type_spheric_param_rj(rj)
+!!        type(sph_rj_grid), intent(inout) :: rj
+!!
+!!      subroutine dealloc_type_sph_1d_index_rtp(rtp)
+!!        type(sph_rtp_grid), intent(inout) :: rtp
+!!      subroutine dealloc_type_sph_1d_index_rtm(rtm)
+!!        type(sph_rtm_grid), intent(inout) :: rtm
+!!      subroutine dealloc_type_sph_1d_index_rlm(rlm)
+!!        type(sph_rlm_grid), intent(inout) :: rlm
+!!      subroutine dealloc_type_sph_1d_index_rj(rj)
+!!        type(sph_rj_grid), intent(inout) :: rj
+!!
+!!      subroutine check_type_spheric_para_gl_part(sph)
+!!        type(sph_grids), intent(in) :: sph
+!!      subroutine check_type_spheric_parameter(my_rank, sph)
+!!        integer(kind = kint), intent(in) :: my_rank
+!!        type(sph_grids), intent(in) :: sph
+!!      subroutine check_type_spheric_param_rtp(my_rank, rtp)
+!!        integer(kind = kint), intent(in) :: my_rank
+!!        type(sph_rtp_grid), intent(in) :: rtp
+!!      subroutine check_type_spheric_param_rtm(my_rank, rtm)
+!!        integer(kind = kint), intent(in) :: my_rank
+!!        type(sph_rtm_grid), intent(in) :: rtm
+!!      subroutine check_type_spheric_param_rlm(my_rank, rlm)
+!!        integer(kind = kint), intent(in) :: my_rank
+!!        type(sph_rlm_grid), intent(in) :: rlm
+!!      subroutine check_type_spheric_param_rj(my_rank, rj)
+!!        integer(kind = kint), intent(in) :: my_rank
+!!        type(sph_rj_grid), intent(in) :: rj
+!!@endverbatim
+!!
+!!@n @param  my_rank     Running rank ID
+!!
       module t_spheric_parameter
 !
       use m_precision
@@ -81,65 +85,115 @@
 !
       implicit none
 !
+!>        structure of index table for @f$ f(r,\theta,\phi) @f$
       type sph_rtp_grid
+!>        number of global 1d data points for @f$ f(r,\theta,\phi) @f$
         integer(kind = kint) :: nidx_global_rtp(3)
+!>        number of 1d subdomains for @f$ f(r,\theta,\phi) @f$
         integer(kind = kint) :: ndomain_rtp(3)
+!>        1d subdomain ID for @f$ f(r,\theta,\phi) @f$ (start from 0)
         integer(kind = kint) :: sph_rank_rtp(3)
 !
+!>        number of data points for @f$ f(r,\theta,\phi) @f$
         integer(kind = kint) :: nnod_rtp
+!>        number of data points for pole and center
         integer(kind = kint) :: nnod_rtp_pole
 !
+!>        number of 1d data points for @f$ f(r,\theta,\phi) @f$
         integer(kind = kint) :: nidx_rtp(3)
-        integer(kind = kint) :: ist_rtp(3), ied_rtp(3)
+!>        1d start address of global data for @f$ f(r,\theta,\phi) @f$
+        integer(kind = kint) :: ist_rtp(3)
+!>        1d end address of global data for @f$ f(r,\theta,\phi) @f$
+        integer(kind = kint) :: ied_rtp(3)
 !
+!>        global data address @f$ f(r,\theta,\phi) @f$
         integer(kind = kint), pointer :: inod_global_rtp(:)
+!>        global address for each direction @f$ f(r,\theta,\phi) @f$
         integer(kind = kint), pointer :: idx_global_rtp(:,:)
 !
+!>        radial global address for @f$ f(r,\theta,\phi) @f$
         integer(kind = kint), pointer :: idx_gl_1d_rtp_r(:)
+!>        meridional global address for @f$ f(r,\theta,\phi) @f$
         integer(kind = kint), pointer :: idx_gl_1d_rtp_t(:)
+!>        zonal global address for @f$ f(r,\theta,\phi) @f$
         integer(kind = kint), pointer :: idx_gl_1d_rtp_p(:,:)
 !
+!>        1d radius data for @f$ f(r,\theta,\phi) @f$
         real(kind = kreal), pointer :: radius_1d_rtp_r(:)
+!>        1 / radius_1d_rtp_r
         real(kind = kreal), pointer :: a_r_1d_rtp_r(:)
       end type sph_rtp_grid
 !
 !
+!>        structure of index table for @f$ f(r,\theta,m) @f$
       type sph_rtm_grid
+!>        number of global 1d data points for @f$ f(r,\theta,m) @f$
         integer(kind = kint) :: nidx_global_rtm(3)
+!>        number of 1d subdomains for @f$ f(r,\theta,m) @f$
         integer(kind = kint) :: ndomain_rtm(3)
+!>        1d subdomain ID for @f$ f(r,\theta,m) @f$ (start from 0)
         integer(kind = kint) :: sph_rank_rtm(3)
 !
+!>        number of data points for @f$ f(r,\theta,m) @f$
         integer(kind = kint) :: nnod_rtm
+!>        number of 1d data points for @f$ f(r,\theta,m) @f$
         integer(kind = kint) :: nidx_rtm(3)
-        integer(kind = kint) :: ist_rtm(3), ied_rtm(3)
+!>        1d start address of global data for @f$ f(r,\theta,m) @f$
+        integer(kind = kint) :: ist_rtm(3)
+!>        1d end address of global data for @f$ f(r,\theta,m) @f$
+        integer(kind = kint) :: ied_rtm(3)
 !
+!>        global data address @f$ f(r,\theta,m) @f$
         integer(kind = kint), pointer :: inod_global_rtm(:)
+!>        global address for each direction @f$ f(r,\theta,m) @f$
         integer(kind = kint), pointer :: idx_global_rtm(:,:)
 !
+!>        radial global address for @f$ f(r,\theta,m) @f$
         integer(kind = kint), pointer :: idx_gl_1d_rtm_r(:)
+!>        meridional global address for @f$ f(r,\theta,m) @f$
         integer(kind = kint), pointer :: idx_gl_1d_rtm_t(:)
+!>        Zonal wave number for @f$ f(r,\theta,m) @f$
         integer(kind = kint), pointer :: idx_gl_1d_rtm_m(:,:)
 !
+!>        1d radius data for @f$ f(r,\theta,m) @f$
         real(kind = kreal), pointer :: radius_1d_rtm_r(:)
+!>        1 / radius_1d_rtm_r
         real(kind = kreal), pointer :: a_r_1d_rtm_r(:)
       end type sph_rtm_grid
 !
 !
+!>        structure of index table for @f$ f(r,l,m) @f$
       type sph_rlm_grid
+!>        number of global 1d data points for @f$ f(r,l,m) @f$
         integer(kind = kint) :: nidx_global_rlm(2)
+!>        number of 1d subdomains for @f$ f(r,l,m) @f$
         integer(kind = kint) :: ndomain_rlm(2)
+!>        1d subdomain ID for @f$ f(r,l,m) @f$ (start from 0)
         integer(kind = kint) :: sph_rank_rlm(2)
 !
+!>        number of data points for @f$ f(r,l,m) @f$
         integer(kind = kint) :: nnod_rlm
+!>        number of 1d data points for @f$ f(r,l,m) @f$
         integer(kind = kint) :: nidx_rlm(2)
-        integer(kind = kint) :: ist_rlm(2), ied_rlm(2)
+!>        1d start address of global data for @f$ f(r,l,m) @f$
+        integer(kind = kint) :: ist_rlm(2)
+!>        1d end address of global data for @f$ f(r,l,m) @f$
+        integer(kind = kint) :: ied_rlm(2)
 !
+!>        global data address @f$ f(r,l,m) @f$
         integer(kind = kint), pointer :: inod_global_rlm(:)
+!>        global address for each direction @f$ f(r,l,m) @f$
         integer(kind = kint), pointer :: idx_global_rlm(:,:)
 !
+!>        radial global address for @f$ f(r,l,m) @f$
         integer(kind = kint), pointer :: idx_gl_1d_rlm_r(:)
+!>        spherical hermonics mode for  @f$ f(r,l,m) @f$
+!!@n        idx_gl_1d_rj_j(j,1): global ID for spherical hermonics
+!!@n        idx_gl_1d_rj_j(j,2): spherical hermonincs degree
+!!@n        idx_gl_1d_rj_j(j,3): spherical hermonincs order
         integer(kind = kint), pointer :: idx_gl_1d_rlm_j(:,:)
 !
+!>        1d radius data for @f$ f(r,l,m) @f$
         real(kind = kreal), pointer :: radius_1d_rlm_r(:)
       end type sph_rlm_grid
 !
@@ -206,7 +260,7 @@
       end type sph_rj_grid
 !
 !
-!>  Structure of Grid and spectr data for spherical spectr method
+!>  Structure of grid and spectr data for spherical spectr method
       type sph_grids
 !>        integer flag for FEM mesh type
 !!@n      iflag_MESH_same:     same grid point as Gauss-Lagendre points

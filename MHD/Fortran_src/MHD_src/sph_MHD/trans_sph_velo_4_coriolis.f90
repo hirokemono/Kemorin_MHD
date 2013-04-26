@@ -1,7 +1,14 @@
-!trans_sph_velo_4_coriolis.f90
-!      module trans_sph_velo_4_coriolis
+!>@file   trans_sph_velo_4_coriolis.f90
+!!@brief  module trans_sph_velo_4_coriolis
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
 !
-!      subroutine s_trans_sph_velo_4_coriolis
+!>@brief  Data transfer to evaluate Coriolis term
+!!
+!!@verbatim
+!!      subroutine s_trans_sph_velo_4_coriolis
+!!@endverbatim
 !
       module trans_sph_velo_4_coriolis
 !

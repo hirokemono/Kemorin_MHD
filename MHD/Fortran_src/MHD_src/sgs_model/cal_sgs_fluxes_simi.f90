@@ -101,14 +101,17 @@
       subroutine cal_sgs_uxb_simi(i_sgs, i_v, i_b, i_fil_v, i_fil_b)
 !
       use cal_filtering_vectors
-      use products_nodal_fields
+      use products_nodal_fields_smp
       use cal_similarity_terms
 !
       integer (kind=kint), intent(in) :: i_sgs, i_v, i_b
       integer (kind=kint), intent(in) :: i_fil_v, i_fil_b
 !
 !
+!$omp parallel
       call cal_phys_cross_product(i_v, i_b, i_sgs)
+!$omp end parallel
+!
       call cal_filtered_vector(i_sgs, i_sgs)
 !
       call subctract_uxb_vector(i_sgs, i_fil_v, i_fil_b)
@@ -205,7 +208,7 @@
       subroutine cal_sgs_uxb_simi_wide(i_sgs, i_v, i_b,                 &
      &          i_fil_v, i_fil_b)
 !
-      use products_nodal_fields
+      use products_nodal_fields_smp
       use cal_similarity_terms
       use cal_w_filtering_vectors
 !
@@ -213,7 +216,10 @@
       integer (kind=kint), intent(in) :: i_fil_v, i_fil_b
 !
 !
+!$omp parallel
       call cal_phys_cross_product(i_v, i_b, i_sgs)
+!$omp end parallel
+!
       call cal_w_filtered_vector(i_sgs, i_sgs)
 !
       call subctract_uxb_vector(i_sgs, i_fil_v, i_fil_b)

@@ -1,10 +1,15 @@
-!
-!      module m_spheric_param_smp
-!
-!     Written by H. Matsui on July, 2007
-!
-!      subroutine allocate_sph_param_smp
-!      subroutine deallocate_sph_param_smp
+!>@file   m_spheric_param_smp.f90
+!!@brief  module m_spheric_param_smp
+!!
+!!@author H. Matsui
+!!@date Programmed on July, 2007
+!!
+!!@brief  indexing table of speherical harmonics transform
+!!
+!!@verbatim
+!!      subroutine allocate_sph_param_smp
+!!      subroutine deallocate_sph_param_smp
+!!@endverbatim
 !
       module m_spheric_param_smp
 !

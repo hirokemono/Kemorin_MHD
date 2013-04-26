@@ -1,53 +1,62 @@
+!>@file   m_ctl_data_4_fields.f90
+!!@brief  module m_ctl_data_4_fields
+!!
+!!@author H. Matsui
+!!@date Programmed in March. 2006
 !
-!      module m_ctl_data_4_fields
-!
-!        programmed by H.Matsui on March. 2006
-!
-!      subroutine deallocate_phys_control
-!      subroutine deallocate_quad_phys_control
-!      subroutine deallocate_linear_phys_control
-!
-!      subroutine read_phys_values(hd_phys_values, i_phys_values)
-!
-!    begin phys_values_ctl
-!      array nod_value_ctl   12
-!        nod_value_ctl  velocity            Viz_On   Monitor_On    end
-!        nod_value_ctl  temperature         Viz_On   Monitor_On    end
-!        nod_value_ctl  pressure            Viz_On   Monitor_Off   end
-!        nod_value_ctl  vorticity           Viz_On   Monitor_Off   end
-!        nod_value_ctl  vector_potential    Viz_Off  Monitor_Off   end
-!        nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
-!        nod_value_ctl  current_density     Viz_On   Monitor_Off   end
-!        nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off   end
-!        nod_value_ctl  composition         Viz_Off  Monitor_Off   end
-!
-!        nod_value_ctl  heat_flux             Viz_Off  Monitor_Off   end
-!        nod_value_ctl  momentum_flux         Viz_Off  Monitor_Off   end
-!        nod_value_ctl  maxwell_tensor        Viz_Off  Monitor_Off   end
-!        nod_value_ctl  vecp_induction        Viz_Off  Monitor_Off   end
-!      end array nod_value_ctl
-!
-!      array quad_field_name_ctl    5
-!        quad_field_name_ctl  vector_potential      end
-!        quad_field_name_ctl  heat_flux             end
-!        quad_field_name_ctl  momentum_flux         end
-!        quad_field_name_ctl  maxwell_tensor        end
-!        quad_field_name_ctl  vecp_induction        end
-!      end array quad_field_name_ctl
-!
-!      array linear_field_name_ctl    7
-!        linear_field_name_ctl  velocity              end
-!        linear_field_name_ctl  pressure              end
-!        linear_field_name_ctl  vorticity             end
-!        linear_field_name_ctl  temperature           end
-!        linear_field_name_ctl  magnetic_field        end
-!        linear_field_name_ctl  current_density       end
-!        linear_field_name_ctl  magnetic_potential    end
-!        linear_field_name_ctl  composition           end
-!      end array linear_field_name_ctl
-!    end phys_values_ctl
-!
-! -----------------------------------------------------------------------
+!>@brief  Control brog for field definition
+!!
+!!@verbatim
+!!      subroutine deallocate_phys_control
+!!      subroutine deallocate_quad_phys_control
+!!      subroutine deallocate_linear_phys_control
+!!
+!!      subroutine read_phys_values
+!!
+!! ---------------------------------------------------------------------
+!!
+!!     Example of control block
+!!
+!!    begin phys_values_ctl
+!!      array nod_value_ctl   12
+!!        nod_value_ctl  velocity            Viz_On   Monitor_On    end
+!!        nod_value_ctl  temperature         Viz_On   Monitor_On    end
+!!        nod_value_ctl  pressure            Viz_On   Monitor_Off   end
+!!        nod_value_ctl  vorticity           Viz_On   Monitor_Off   end
+!!        nod_value_ctl  vector_potential    Viz_Off  Monitor_Off   end
+!!        nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
+!!        nod_value_ctl  current_density     Viz_On   Monitor_Off   end
+!!        nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off   end
+!!        nod_value_ctl  composition         Viz_Off  Monitor_Off   end
+!!
+!!        nod_value_ctl  heat_flux             Viz_Off  Monitor_Off   end
+!!        nod_value_ctl  momentum_flux         Viz_Off  Monitor_Off   end
+!!        nod_value_ctl  maxwell_tensor        Viz_Off  Monitor_Off   end
+!!        nod_value_ctl  vecp_induction        Viz_Off  Monitor_Off   end
+!!      end array nod_value_ctl
+!!
+!!      array quad_field_name_ctl    5
+!!        quad_field_name_ctl  vector_potential      end
+!!        quad_field_name_ctl  heat_flux             end
+!!        quad_field_name_ctl  momentum_flux         end
+!!        quad_field_name_ctl  maxwell_tensor        end
+!!        quad_field_name_ctl  vecp_induction        end
+!!      end array quad_field_name_ctl
+!!
+!!      array linear_field_name_ctl    7
+!!        linear_field_name_ctl  velocity              end
+!!        linear_field_name_ctl  pressure              end
+!!        linear_field_name_ctl  vorticity             end
+!!        linear_field_name_ctl  temperature           end
+!!        linear_field_name_ctl  magnetic_field        end
+!!        linear_field_name_ctl  current_density       end
+!!        linear_field_name_ctl  magnetic_potential    end
+!!        linear_field_name_ctl  composition           end
+!!      end array linear_field_name_ctl
+!!    end phys_values_ctl
+!!
+!! ---------------------------------------------------------------------
+!!@endverbatim
 !
       module m_ctl_data_4_fields
 !
@@ -55,27 +64,39 @@
 !
       implicit  none
 !
+!>      Number of field
       integer (kind=kint)  :: num_nod_phys_ctl = 0
 !
+!>      Name list of field
       character (len=kchara), allocatable :: phys_nod_name_ctl(:)
+!>      flag for visualization output
       character (len=kchara), allocatable :: visualize_ctl(:)
+!>      flag for visualization output
       character (len=kchara), allocatable :: monitor_ctl(:)
 !
+!>      Number of field for the quadrature elements
       integer (kind=kint)  :: num_quad_field_ctl =   0
+!>      Name list of field for the quadrature elements
       character (len=kchara), allocatable :: quad_phys_name_ctl(:)
+!
+!>      Number of field for the linear elements
       integer (kind=kint)  :: num_linear_field_ctl = 0
+!>      Name list of field for the linear elements
       character (len=kchara), allocatable :: linear_phys_name_ctl(:)
 !
 !   label for entry of group
 !
+!>      label for block
       character(len=kchara), parameter                                  &
      &      :: hd_phys_values =  'phys_values_ctl'
+!>      Number of field
       integer (kind=kint) :: i_phys_values =   0
 !
 !   4th level for fields
 !
       character(len=kchara), parameter                                  &
      &      :: hd_num_nod_phys = 'nod_value_ctl'
+!>      Read flag for 'nod_value_ctl'
       integer (kind=kint) :: i_num_nod_phys =   0
 !
 !   4th level for each order
@@ -84,7 +105,9 @@
      &      :: hd_num_quad_field =   'quad_field_name_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_num_linear_field = 'linear_field_name_ctl'
+!>      Read flag for 'quad_field_name_ctl'
       integer (kind=kint) :: i_num_quad_field =   0
+!>      Read flag for 'linear_field_name_ctl'
       integer (kind=kint) :: i_num_linear_field = 0
 !
       private :: hd_phys_values, i_phys_values

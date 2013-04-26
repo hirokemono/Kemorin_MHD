@@ -1,12 +1,17 @@
+!> @file  set_sph_restart_IO.f90
+!!      module set_sph_restart_IO
+!!
+!! @author  H. Matsui
+!! @date Programmed in 2010
 !
-!      module set_sph_restart_IO
-!
-!      Written by H. Matsui on Oct., 2007
-!
-!      subroutine set_sph_restart_num_to_IO
-!      subroutine set_sph_restart_data_to_IO
-!
-!      subroutine set_sph_restart_from_IO
+!> @brief Copy between field data and IO buffer for restarting
+!!
+!!@verbatim
+!!      subroutine set_sph_restart_num_to_IO
+!!      subroutine set_sph_restart_data_to_IO
+!!
+!!      subroutine set_sph_restart_from_IO
+!!@endverbatim
 !
       module set_sph_restart_IO
 !

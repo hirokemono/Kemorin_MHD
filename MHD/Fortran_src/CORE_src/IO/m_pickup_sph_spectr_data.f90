@@ -59,6 +59,8 @@
 !
       subroutine allocate_num_pick_layer
 !
+!
+      write(*,*) 'num_pick_layer init ', num_pick_layer
       allocate( id_pick_layer(num_pick_layer) )
       allocate( r_pick_layer(num_pick_layer) )
       if(num_pick_layer .gt. 0) then
@@ -260,6 +262,7 @@
       read(tmpchara,*) ncomp_pick_sph_coef
 !
       ntot_pick_sph_mode = num_pick_sph_mode
+      call allocate_num_pick_layer
       call allocate_pick_sph_monitor
 !
       read(id_pick,*) (tmpchara,i=1,6),                                 &
@@ -282,6 +285,9 @@
       do inum = 1, num_pick_sph_mode
         do knum = 1, num_pick_layer
           ipick = knum + (inum-1) * num_pick_layer
+          write(*,*) 'inum', num_pick_layer, inum, knum, ipick, size(id_pick_layer), &
+     &     size(r_pick_layer), size(d_rj_pick_sph_gl,1),&
+     &    size(d_rj_pick_sph_gl,2), size(idx_pick_sph_gl)
           read(id_pick,*,err=99,end=99) i_step, time,                   &
      &               id_pick_layer(knum), r_pick_layer(knum), l, m,     &
      &               d_rj_pick_sph_gl(1:ncomp_pick_sph_coef,ipick)

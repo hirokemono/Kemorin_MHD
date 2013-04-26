@@ -5,7 +5,7 @@
 !!@date Programmed...May., 2009
 !
 !>@brief subroutines to obatine products of two fields
-!!@n      need $omp parallel to use these routines
+!!@n     $omp parallel is required to use these routines
 !!
 !!@verbatim
 !!      subroutine cal_scalar_prod_w_coef_smp(np_smp, nnod,             &

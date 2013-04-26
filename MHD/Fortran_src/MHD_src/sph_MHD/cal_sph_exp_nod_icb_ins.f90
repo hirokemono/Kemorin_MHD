@@ -1,14 +1,23 @@
-!cal_sph_exp_nod_icb_ins.f90
-!      module cal_sph_exp_nod_icb_ins
+!>@file   cal_sph_exp_nod_icb_ins.f90
+!!@brief  module cal_sph_exp_nod_icb_ins
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
 !
-!     Written by H. Matsui on Jan., 2010
-!
-!      subroutine cal_sph_nod_icb_ins_b_and_j(is_fld, is_rot)
-!      subroutine cal_sph_nod_icb_ins_mag2(is_fld)
-!
-!      subroutine cal_sph_nod_icb_ins_vp_rot2(is_fld, is_rot)
-!      subroutine cal_sph_nod_icb_ins_rot2(is_fld, is_rot)
-!      subroutine cal_sph_nod_icb_ins_diffuse2(is_fld, is_diffuse)
+!>@brief  Set insulated magnetic boundary condition for ICB
+!!
+!!@verbatim
+!!      subroutine cal_sph_nod_icb_ins_b_and_j(is_fld, is_rot)
+!!      subroutine cal_sph_nod_icb_ins_mag2(is_fld)
+!!
+!!      subroutine cal_sph_nod_icb_ins_vp_rot2(is_fld, is_rot)
+!!      subroutine cal_sph_nod_icb_ins_rot2(is_fld, is_rot)
+!!      subroutine cal_sph_nod_icb_ins_diffuse2(is_fld, is_diffuse)
+!!@endverbatim
+!!
+!!@n @param is_fld       Field address of input field
+!!@n @param is_rot       Field address for curl of field
+!!@n @param is_diffuse   Field address for diffusion of field
 !
       module cal_sph_exp_nod_icb_ins
 !

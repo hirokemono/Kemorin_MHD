@@ -1,25 +1,37 @@
-!cal_sph_exp_rotation.f90
+!>@file   !cal_sph_exp_rotation.f90
+!!@brief  module !cal_sph_exp_rotation
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
 !
-!      module cal_sph_exp_rotation
-!
-!     Written by H. Matsui on Jan, 2010
-!
-!      subroutine cal_sph_diff_pol_and_rot2(kst, ked, is_fld, is_rot)
-!        input:  d_rj(:,is_fld),   d_rj(:,is_fld+2)
-!        output: d_rj(:,is_fld+1), d_rj(:,is_rot:is_rot+2)
-!
-!      subroutine cal_sph_diff_poloidal(kst, ked, is_fld)
-!        input:  d_rj(:,is_fld)
-!        output: d_rj(:,is_fld+1)
-!
-!      subroutine cal_sph_nod_vect_rot2(kst, ked, is_fld, is_rot)
-!        input:  d_rj(:,is_fld),   d_rj(:,is_fld+2)
-!        output: d_rj(:,is_rot:is_rot+2)
-!
-!      subroutine cal_sph_nod_vect_w_div_rot2(kst, ked, is_fld, is_rot)
-!      subroutine cal_sph_nod_vect_div2(kst, ked, is_fld, is_div)
-!
-!      subroutine cal_sph_nod_diffuse_by_rot2(kst, ked, is_fld, is_rot)
+!>@brief  Evaluate derivatives explicitly
+!!
+!!@verbatim
+!!      subroutine cal_sph_diff_pol_and_rot2(kst, ked, is_fld, is_rot)
+!!        input:  d_rj(:,is_fld),   d_rj(:,is_fld+2)
+!!        output: d_rj(:,is_fld+1), d_rj(:,is_rot:is_rot+2)
+!!
+!!      subroutine cal_sph_diff_poloidal(kst, ked, is_fld)
+!!        input:  d_rj(:,is_fld)
+!!        output: d_rj(:,is_fld+1)
+!!
+!!      subroutine cal_sph_nod_vect_rot2(kst, ked, is_fld, is_rot)
+!!        input:  d_rj(:,is_fld),   d_rj(:,is_fld+2)
+!!        output: d_rj(:,is_rot:is_rot+2)
+!!
+!!      subroutine cal_sph_nod_vect_w_div_rot2(kst, ked, is_fld, is_rot)
+!!      subroutine cal_sph_nod_vect_div2(kst, ked, is_fld, is_div)
+!!
+!!      subroutine cal_sph_nod_diffuse_by_rot2(kst, ked, is_fld, is_rot)
+!!@endverbatim
+!!
+!!@n @param kst   start radial address to calicurate
+!!@n @param ked   end radial address to calicurate
+!!
+!!@n @param is_fld       Field address of input field
+!!@n @param is_rot       Field address of curl of field
+!!@n @param is_div       Field address of divergence of field
+!!@n @param is_diffuse   Field address for diffusion of field
 !
       module cal_sph_exp_rotation
 !

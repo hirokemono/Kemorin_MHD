@@ -161,7 +161,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_4_iso(i_psf)
+      subroutine read_control_4_iso(i_iso)
 !
       use m_read_control_elements
 !
@@ -169,13 +169,13 @@
       use m_control_params_4_iso
       use m_control_data_sections
 !
-      integer(kind = kint), intent(in) :: i_psf
+      integer(kind = kint), intent(in) :: i_iso
 !
 !
-      if(fname_iso_ctl(i_psf) .eq. 'NO_FILE') return
+      if(fname_iso_ctl(i_iso) .eq. 'NO_FILE') return
 !
-      open(iso_ctl_file_code, file=fname_iso_ctl(i_psf), status='old')
-      call read_control_data_4_iso(iso_ctl_struct(i_psf))
+      open(iso_ctl_file_code, file=fname_iso_ctl(i_iso), status='old')
+      call read_control_data_4_iso(iso_ctl_struct(i_iso))
       close(iso_ctl_file_code)
 !
       end subroutine read_control_4_iso

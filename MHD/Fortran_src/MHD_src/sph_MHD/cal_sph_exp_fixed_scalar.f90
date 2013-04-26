@@ -1,24 +1,38 @@
-!cal_sph_exp_fixed_scalar.f90
-!      module cal_sph_exp_fixed_scalar
+!>@file   cal_sph_exp_fixed_scalar.f90
+!!@brief  module cal_sph_exp_fixed_scalar
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
 !
-!     Written by H. Matsui on Jan., 2010
-!
-!      subroutine cal_dsdr_sph_icb_fix_scalar_2(jmax, fix_ICB,          &
-!     &          is_fld, is_grd)
-!      subroutine cal_sph_icb_fix_scalar_diffuse2(jmax, fix_ICB,        &
-!     &          is_fld, is_diffuse)
-!      subroutine cal_dsdr_sph_icb_nobc_2(is_fld, is_grd)
-!
-!      subroutine cal_dsdr_sph_cmb_fix_scalar_2(jmax, fix_CMB,          &
-!     &          is_fld, is_grd)
-!      subroutine cal_sph_cmb_fix_scalar_diffuse2(jmax, fix_CMB,        &
-!     &          is_fld, is_diffuse)
-!      subroutine cal_dsdr_sph_cmb_nobc_2(is_fld, is_grd)
-!
-!      subroutine cal_sph_div_flux_4_icb_fix(jmax, fix_ICB,             &
-!     &          is_fld, is_div)
-!      subroutine cal_sph_div_flux_4_cmb_fix(jmax, fix_CMB,             &
-!     &          is_fld, is_div)
+!>@brief  Set fixed scalar boundarry for explicit method
+!!
+!!@verbatim
+!!      subroutine cal_dsdr_sph_icb_fix_scalar_2(jmax, fix_ICB,         &
+!!     &          is_fld, is_grd)
+!!      subroutine cal_sph_icb_fix_scalar_diffuse2(jmax, fix_ICB,       &
+!!     &          is_fld, is_diffuse)
+!!      subroutine cal_dsdr_sph_icb_nobc_2(is_fld, is_grd)
+!!
+!!      subroutine cal_dsdr_sph_cmb_fix_scalar_2(jmax, fix_CMB,         &
+!!     &          is_fld, is_grd)
+!!      subroutine cal_sph_cmb_fix_scalar_diffuse2(jmax, fix_CMB,       &
+!!     &          is_fld, is_diffuse)
+!!      subroutine cal_dsdr_sph_cmb_nobc_2(is_fld, is_grd)
+!!
+!!      subroutine cal_sph_div_flux_4_icb_fix(jmax, fix_ICB,            &
+!!     &          is_fld, is_div)
+!!      subroutine cal_sph_div_flux_4_cmb_fix(jmax, fix_CMB,            &
+!!     &          is_fld, is_div)
+!!@endverbatim
+!!
+!!@n @param jmax         Number of local spherical hermonics mode
+!!
+!!@n @param fix_ICB(jmax) Spectr data for fixed fixed scalar at ICB
+!!@n @param fix_CMB(jmax) Spectr data for fixed fixed scalar at CMB
+!!
+!!@n @param is_fld       Field address of input field
+!!@n @param is_grd       Field address of radial gradient of field
+!!@n @param is_diffuse   Field address for diffusion of field
 !
       module cal_sph_exp_fixed_scalar
 !

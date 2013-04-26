@@ -1,62 +1,89 @@
+!>@file   m_read_control_elements.f90
+!!@brief  module m_read_control_elements
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2005
 !
-!      module m_read_control_elements
-!
-!      Written by H. Matsui on Jan., 2005
-!
-!      subroutine load_ctl_label_and_line
-!
-!      integer function right_begin_flag(ctl_name)
-!      integer function right_file_flag(ctl_name)
-!
-!      subroutine find_control_end_flag(ctl_name, iflag_end)
-!      subroutine find_control_array_flag(ctl_name, num_array)
-!      subroutine find_control_end_array_flag(ctl_name, num, iflag_end)
-!
-!       subroutine read_real_ctl_item(header, iflag_dat, real_data)
-!       subroutine read_integer_ctl_item(header, iflag_dat, int_data)
-!       subroutine read_character_ctl_item(header, iflag_dat,           &
-!     &           chara_data)
-!
-!       subroutine read_real2_ctl_item(header, iflag_dat, real_data)
-!       subroutine read_real3_ctl_item(header, iflag_dat, real_data)
-!       subroutine read_integer3_ctl_item(header, iflag_dat, int_data)
-!       subroutine read_character3_ctl_item(header, iflag_dat,          &
-!     &           chara_data)
-!
-!       subroutine read_file_names_from_ctl_line(num, icou, fname)
-!
-!      subroutine read_control_array_int_list(label, num, icou, ivect)
-!      subroutine read_control_array_int_r_list(label, num, icou,       &
-!     &          ivect, vect)
-!      subroutine read_control_array_vect_list(label, num, icou,        &
-!     &          chara, vect)
-!      subroutine read_control_array_int_v_list(label, num, icou,       &
-!     &          chara, ivect)
-!      subroutine read_control_array_real_list(label, num, icou,        &
-!     &          vec1)
-!      subroutine read_control_array_real2_list(label, num, icou,       &
-!     &          vec1, vec2)
-!      subroutine read_control_array_real3_list(label, num, icou,       &
-!     &          vec1, vec2, vec3)
-!      subroutine read_control_array_chara_list(label, num, icou, c_tbl)
-!      subroutine read_control_array_chara2_list(label, num, icou,      &
-!     &          c1_tbl, c2_tbl)
-!      subroutine read_control_array_chara3_list(label, num, icou,      &
-!     &          c1_tbl, c2_tbl, c3_tbl)
-!      subroutine read_control_array_char_r_list(label, num, icou,      &
-!     &          chara, vec1)
-!      subroutine read_control_array_c_r2_list(label, num, icou, chara, &
-!     &          vec1, vec2)
-!      subroutine read_control_array_c2_r_list(label, num, icou,        &
-!     &          c1_tbl, c2_tbl, vect)
-!      subroutine read_control_array_i_c_r_list(label, num, icou,       &
-!     &          ivect, chara, vect)
-!      subroutine read_control_array_int2_list(label, num, icou, int1,  &
-!     &          int2)
-!      subroutine read_control_array_i2_r_list(label, num, icou, int1,  &
-!     &          int2, vect)
-!      subroutine read_control_array_i2_r2_list(label, num, icou, int1, &
-!     &          int2, vec1, vec2)
+!>@brief  Subroutines to reead control data
+!!
+!!@verbatim
+!!      integer function right_begin_flag(ctl_name)
+!!      integer function right_file_flag(ctl_name)
+!!
+!!      subroutine find_control_end_flag(ctl_name, iflag_end)
+!!      subroutine find_control_array_flag(ctl_name, num_array)
+!!      subroutine find_control_end_array_flag(ctl_name, num, iflag_end)
+!!
+!!      subroutine read_real_ctl_item(label, iflag_dat, real_data)
+!!      subroutine read_integer_ctl_item(label, iflag_dat, int_data)
+!!      subroutine read_character_ctl_item(label, iflag_dat,            &
+!!     &           chara_data)
+!!
+!!      subroutine read_real2_ctl_item(label, iflag_dat, real_data)
+!!      subroutine read_real3_ctl_item(label, iflag_dat, real_data)
+!!      subroutine read_integer3_ctl_item(label, iflag_dat, int_data)
+!!      subroutine read_character3_ctl_item(label, iflag_dat,           &
+!!     &           chara_data)
+!!
+!!      subroutine read_file_names_from_ctl_line(num, icou, fname)
+!!
+!!      subroutine read_control_array_int_list(label, num, icou, ivect)
+!!      subroutine read_control_array_int_r_list(label, num, icou,      &
+!!     &          ivect, vect)
+!!      subroutine read_control_array_vect_list(label, num, icou,       &
+!!     &          c_tbl, vect)
+!!      subroutine read_control_array_int_v_list(label, num, icou,      &
+!!     &          c_tbl, ivect)
+!!      subroutine read_control_array_real_list(label, num, icou,       &
+!!     &          vec1)
+!!      subroutine read_control_array_real2_list(label, num, icou,      &
+!!     &          vec1, vec2)
+!!      subroutine read_control_array_real3_list(label, num, icou,      &
+!!     &          vec1, vec2, vec3)
+!!      subroutine read_control_array_chara_list(label, num, icou, c_tbl)
+!!      subroutine read_control_array_chara2_list(label, num, icou,     &
+!!     &          c1_tbl, c2_tbl)
+!!      subroutine read_control_array_chara3_list(label, num, icou,     &
+!!     &          c1_tbl, c2_tbl, c3_tbl)
+!!      subroutine read_control_array_char_r_list(label, num, icou,     &
+!!     &          c_tbl, vec1)
+!!      subroutine read_control_array_c_r2_list(label, num, icou, c_tbl,&
+!!     &          vec1, vec2)
+!!      subroutine read_control_array_c2_r_list(label, num, icou,       &
+!!     &          c1_tbl, c2_tbl, vect)
+!!      subroutine read_control_array_i_c_r_list(label, num, icou,      &
+!!     &          ivect, c_tbl, vect)
+!!      subroutine read_control_array_int2_list(label, num, icou, int1, &
+!!     &          int2)
+!!      subroutine read_control_array_i2_r_list(label, num, icou, int1, &
+!!     &          int2, vect)
+!!      subroutine read_control_array_i2_r2_list(label, num, icou, int1,&
+!!     &          int2, vec1, vec2)
+!!@endverbatim
+!!
+!!@n @param  ctl_name   label for control block
+!!@n @param  label      label for control items
+!!@n @param  iflag_end  integer flag for reading block
+!!@n @param  iflag_dat  integer flag for reading block
+!!@n @param  num_array  size of array block
+!!@n @param  num        number of blocks already read
+!!@n @param  icou       counter for reading array
+!!
+!!@n @param real_data     read real data
+!!@n @param int_data      read integre data
+!!@n @param chara_data    read character data
+!!
+!!@n @param ivect         integer array data
+!!@n @param int1          integer array data
+!!@n @param int2          integer array data
+!!@n @param vect          real array data
+!!@n @param vec1          real array data
+!!@n @param vec2          real array data
+!!@n @param vec3          real array data
+!!@n @param c_tbl         character array data
+!!@n @param c1_tbl         character array data
+!!@n @param c2_tbl         character array data
+!!@n @param c3_tbl         character array data
 !
       module m_read_control_elements
 !
@@ -65,14 +92,14 @@
 !
       implicit none
 !
+!>   control file id
       integer (kind=kint) :: ctl_file_code = 11
-!   control file id (input)
 !
+!>   character for read label
        character(len=kchara), private  :: header_chara
-!   temporal arrays for name of valuables
 !
+!>   temporal character for reading line
        character(len=255), private :: character_4_read
-!   temporal arrays for reading line
 !
       private :: read_integers_from_line, read_int_reals_from_line
       private :: read_vector_from_line, read_int_vect_from_line
@@ -223,14 +250,14 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_real_ctl_item(header, iflag_dat, real_data)
+      subroutine read_real_ctl_item(label, iflag_dat, real_data)
 !
-      character(len=kchara), intent(in) :: header
+      character(len=kchara), intent(in) :: label
       integer (kind=kint), intent(inout) :: iflag_dat
       real(kind = kreal), intent(inout) :: real_data
 !
 !
-      if(iflag_dat.gt.0 .or. header_chara.ne.header) return
+      if(iflag_dat.gt.0 .or. header_chara.ne.label) return
 !
       read(character_4_read,*) header_chara, real_data
       if (iflag_debug .gt. 0)  write(*,*) trim(header_chara), real_data
@@ -240,14 +267,14 @@
 !
 !   --------------------------------------------------------------------
 !
-       subroutine read_integer_ctl_item(header, iflag_dat, int_data)
+       subroutine read_integer_ctl_item(label, iflag_dat, int_data)
 !
-       character(len=kchara), intent(in) :: header
+       character(len=kchara), intent(in) :: label
        integer (kind=kint), intent(inout) :: iflag_dat
        integer (kind=kint), intent(inout) :: int_data
 !
 !
-      if(iflag_dat.gt.0 .or. header_chara.ne.header) return
+      if(iflag_dat.gt.0 .or. header_chara.ne.label) return
 !
       read(character_4_read,*) header_chara, int_data
       if (iflag_debug .gt. 0)  write(*,*) trim(header_chara), int_data
@@ -257,15 +284,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_character_ctl_item(header, iflag_dat,             &
+      subroutine read_character_ctl_item(label, iflag_dat,              &
      &           chara_data)
 !
-      character(len=kchara), intent(in) :: header
+      character(len=kchara), intent(in) :: label
       integer (kind=kint), intent(inout) :: iflag_dat
       character(len=kchara), intent(inout) :: chara_data
 !
 !
-      if(iflag_dat.gt.0 .or. header_chara.ne.header) return
+      if(iflag_dat.gt.0 .or. header_chara.ne.label) return
 !
       read(character_4_read,*) header_chara, chara_data
       if (iflag_debug .gt. 0)  write(*,*) trim(header_chara), ': ',     &
@@ -277,14 +304,14 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_real2_ctl_item(header, iflag_dat, real_data)
+      subroutine read_real2_ctl_item(label, iflag_dat, real_data)
 !
-      character(len=kchara), intent(in) :: header
+      character(len=kchara), intent(in) :: label
       integer (kind=kint), intent(inout) :: iflag_dat
       real(kind = kreal), intent(inout) :: real_data(2)
 !
 !
-      if(iflag_dat.gt.0 .or. header_chara.ne.header) return
+      if(iflag_dat.gt.0 .or. header_chara.ne.label) return
 !
       read(character_4_read,*) header_chara, real_data(1:2)
       if (iflag_debug .gt. 0)  write(*,'(a,a2,1p3e16.7)')               &
@@ -295,14 +322,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_real3_ctl_item(header, iflag_dat, real_data)
+      subroutine read_real3_ctl_item(label, iflag_dat, real_data)
 !
-      character(len=kchara), intent(in) :: header
+      character(len=kchara), intent(in) :: label
       integer (kind=kint), intent(inout) :: iflag_dat
       real(kind = kreal), intent(inout) :: real_data(3)
 !
 !
-      if(iflag_dat.gt.0 .or. header_chara.ne.header) return
+      if(iflag_dat.gt.0 .or. header_chara.ne.label) return
 !
       read(character_4_read,*) header_chara, real_data(1:3)
       if (iflag_debug .gt. 0)  write(*,'(a,a2,1p3e16.7)')               &
@@ -313,14 +340,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_integer3_ctl_item(header, iflag_dat, int_data)
+      subroutine read_integer3_ctl_item(label, iflag_dat, int_data)
 !
-      character(len=kchara), intent(in) :: header
+      character(len=kchara), intent(in) :: label
       integer (kind=kint), intent(inout) :: iflag_dat
       integer (kind=kint), intent(inout) :: int_data(3)
 !
 !
-      if(iflag_dat.gt.0 .or. header_chara.ne.header) return
+      if(iflag_dat.gt.0 .or. header_chara.ne.label) return
 !
       read(character_4_read,*) header_chara, int_data(1:3)
       if (iflag_debug .gt. 0)  write(*,'(a,a2,3i6)')                    &
@@ -331,15 +358,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_character3_ctl_item(header, iflag_dat,            &
+      subroutine read_character3_ctl_item(label, iflag_dat,             &
      &           chara_data)
 !
-      character(len=kchara), intent(in) :: header
+      character(len=kchara), intent(in) :: label
       integer (kind=kint), intent(inout) :: iflag_dat
       character(len=kchara), intent(inout) :: chara_data(3)
 !
 !
-      if(iflag_dat.gt.0 .or. header_chara.ne.header) return
+      if(iflag_dat.gt.0 .or. header_chara.ne.label) return
 !
       read(character_4_read,*) header_chara, chara_data(1:3)
       if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
@@ -403,33 +430,33 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_vector_from_line(num, icou, chara, vect)
+      subroutine read_vector_from_line(num, icou, c_tbl, vect)
 !
       integer (kind=kint), intent(in) :: num
       integer (kind=kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: chara(num)
+      character(len=kchara), intent(inout) :: c_tbl(num)
       real (kind=kreal), intent(inout) :: vect(num)
 !
 !
       if(icou .ge. num) return
       icou = icou + 1
-      read(character_4_read,*) header_chara, chara(icou), vect(icou)
+      read(character_4_read,*) header_chara, c_tbl(icou), vect(icou)
 !
       end subroutine read_vector_from_line
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_int_vect_from_line(num, icou, chara, ivect)
+      subroutine read_int_vect_from_line(num, icou, c_tbl, ivect)
 !
       integer (kind=kint), intent(in) :: num
       integer (kind=kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: chara(num)
+      character(len=kchara), intent(inout) :: c_tbl(num)
       integer (kind=kint), intent(inout) :: ivect(num)
 !
 !
       if(icou .ge. num) return
       icou = icou + 1
-      read(character_4_read,*) header_chara, chara(icou), ivect(icou)
+      read(character_4_read,*) header_chara, c_tbl(icou), ivect(icou)
 !
       end subroutine read_int_vect_from_line
 !
@@ -482,16 +509,16 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_array_chara(num, icou, chara)
+      subroutine read_control_array_chara(num, icou, c_tbl)
 !
       integer (kind = kint), intent(in) :: num
       integer (kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: chara(num)
+      character(len=kchara), intent(inout) :: c_tbl(num)
 !
 !
       if(icou .ge. num) return
       icou = icou + 1
-      read(character_4_read,*) header_chara, chara(icou)
+      read(character_4_read,*) header_chara, c_tbl(icou)
 !
       end subroutine read_control_array_chara
 !
@@ -531,34 +558,34 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_array_chara_real(num, icou, chara, vec1)
+      subroutine read_control_array_chara_real(num, icou, c_tbl, vec1)
 !
       integer (kind = kint), intent(in) :: num
       integer (kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: chara(num)
+      character(len=kchara), intent(inout) :: c_tbl(num)
       real (kind=kreal), intent(inout) :: vec1(num)
 !
 !
       if(icou .ge. num) return
       icou = icou + 1
-      read(character_4_read,*) header_chara, chara(icou), vec1(icou)
+      read(character_4_read,*) header_chara, c_tbl(icou), vec1(icou)
 !
       end subroutine read_control_array_chara_real
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_array_chara_real2(num, icou, chara,       &
+      subroutine read_control_array_chara_real2(num, icou, c_tbl,       &
      &          vec1, vec2)
 !
       integer (kind = kint), intent(in) :: num
       integer (kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: chara(num)
+      character(len=kchara), intent(inout) :: c_tbl(num)
       real (kind=kreal), intent(inout) :: vec1(num), vec2(num)
 !
 !
       if(icou .ge. num) return
       icou = icou + 1
-      read(character_4_read,*) header_chara, chara(icou),               &
+      read(character_4_read,*) header_chara, c_tbl(icou),               &
      &                           vec1(icou), vec2(icou)
 !
       end subroutine read_control_array_chara_real2
@@ -584,11 +611,11 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_int_ch_re(num, icou,                &
-     &          ivect, chara, vect)
+     &          ivect, c_tbl, vect)
 !
       integer (kind = kint), intent(in) :: num
       integer (kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: chara(num)
+      character(len=kchara), intent(inout) :: c_tbl(num)
       integer (kind = kint), intent(inout) :: ivect(num)
       real (kind=kreal), intent(inout) :: vect(num)
 !
@@ -596,7 +623,7 @@
       if(icou .ge. num) return
       icou = icou + 1
       read(character_4_read,*) header_chara,                            &
-     &                         ivect(icou), chara(icou), vect(icou)
+     &                         ivect(icou), c_tbl(icou), vect(icou)
 !
       end subroutine read_control_array_int_ch_re
 !
@@ -701,12 +728,12 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_vect_list(label, num, icou,         &
-     &          chara, vect)
+     &          c_tbl, vect)
 !
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: chara(num)
+      character(len=kchara), intent(inout) :: c_tbl(num)
       real (kind=kreal), intent(inout) :: vect(num)
 !
       if (icou .gt. 0) return
@@ -716,7 +743,7 @@
         if(icou .eq. num) exit
 !
         if(header_chara.eq.label) then
-          call read_vector_from_line(num, icou, chara, vect)
+          call read_vector_from_line(num, icou, c_tbl, vect)
         end if
       end do
 !
@@ -725,12 +752,12 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_int_v_list(label, num, icou,        &
-     &          chara, ivect)
+     &          c_tbl, ivect)
 !
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: chara(num)
+      character(len=kchara), intent(inout) :: c_tbl(num)
       integer (kind=kint), intent(inout) :: ivect(num)
 !
       if (icou .gt. 0) return
@@ -740,7 +767,7 @@
         if(icou .eq. num) exit
 !
         if(header_chara.eq.label) then
-          call read_int_vect_from_line(num, icou, chara, ivect)
+          call read_int_vect_from_line(num, icou, c_tbl, ivect)
         end if
       end do
 !
@@ -889,12 +916,12 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_char_r_list(label, num, icou,       &
-     &          chara, vec1)
+     &          c_tbl, vec1)
 !
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: chara(num)
+      character(len=kchara), intent(inout) :: c_tbl(num)
       real (kind=kreal), intent(inout) :: vec1(num)
 !
       if (icou .gt. 0) return
@@ -904,7 +931,7 @@
         if(icou .eq. num) exit
 !
         if(header_chara.eq.label) then
-          call read_control_array_chara_real(num, icou, chara, vec1)
+          call read_control_array_chara_real(num, icou, c_tbl, vec1)
         end if
       end do
 !
@@ -912,13 +939,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_array_c_r2_list(label, num, icou, chara,  &
+      subroutine read_control_array_c_r2_list(label, num, icou, c_tbl,  &
      &          vec1, vec2)
 !
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: chara(num)
+      character(len=kchara), intent(inout) :: c_tbl(num)
       real (kind=kreal), intent(inout) :: vec1(num), vec2(num)
 !
       if (icou .gt. 0) return
@@ -928,7 +955,7 @@
         if(icou .eq. num) exit
 !
         if(header_chara.eq.label) then
-          call read_control_array_chara_real2(num, icou, chara,         &
+          call read_control_array_chara_real2(num, icou, c_tbl,         &
      &          vec1, vec2)
         end if
       end do
@@ -963,12 +990,12 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_i_c_r_list(label, num, icou,        &
-     &          ivect, chara, vect)
+     &          ivect, c_tbl, vect)
 !
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: chara(num)
+      character(len=kchara), intent(inout) :: c_tbl(num)
       integer(kind = kint), intent(inout) :: ivect(num)
       real (kind=kreal), intent(inout) :: vect(num)
 !
@@ -980,7 +1007,7 @@
 !
         if(header_chara.eq.label) then
           call read_control_array_int_ch_re(num, icou,                  &
-     &        ivect, chara, vect)
+     &        ivect, c_tbl, vect)
         end if
       end do
 !

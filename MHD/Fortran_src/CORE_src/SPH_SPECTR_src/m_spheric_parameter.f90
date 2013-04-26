@@ -5,39 +5,43 @@
 !!@date Programmed on July, 2007
 !!
 !!@brief  indexing table of speherical harmonics transform
-!
-!      subroutine allocate_spheric_parameter
-!      subroutine deallocate_spheric_parameter
-!
-!      subroutine allocate_radius_1d_gl
-!      subroutine allocate_spheric_param_rtp
-!      subroutine allocate_spheric_param_rtm
-!      subroutine allocate_spheric_param_rlm
-!      subroutine allocate_spheric_param_rj
-!
-!      subroutine allocate_sph_1d_index_rtp
-!      subroutine allocate_sph_1d_index_rtm
-!      subroutine allocate_sph_1d_index_rlm
-!      subroutine allocate_sph_1d_index_rj
-!
-!      subroutine deallocate_radius_1d_gl
-!      subroutine deallocate_spheric_param_rtp
-!      subroutine deallocate_spheric_param_rtm
-!      subroutine deallocate_spheric_param_rlm
-!      subroutine deallocate_spheric_param_rj
-!
-!      subroutine deallocate_sph_1d_index_rtp
-!      subroutine deallocate_sph_1d_index_rtm
-!      subroutine deallocate_sph_1d_index_rlm
-!      subroutine deallocate_sph_1d_index_rj
-!
-!      subroutine check_global_spheric_parameter
-!      subroutine check_spheric_parameter(my_rank)
-!      subroutine check_spheric_param_rtp(my_rank)
-!      subroutine check_spheric_param_rtm(my_rank)
-!      subroutine check_spheric_param_rlm(my_rank)
-!      subroutine check_spheric_param_rj(my_rank)
-!      subroutine check_radial_fung_rj
+!!
+!!@verbatim
+!!      subroutine allocate_spheric_parameter
+!!      subroutine deallocate_spheric_parameter
+!!
+!!      subroutine allocate_radius_1d_gl
+!!      subroutine allocate_spheric_param_rtp
+!!      subroutine allocate_spheric_param_rtm
+!!      subroutine allocate_spheric_param_rlm
+!!      subroutine allocate_spheric_param_rj
+!!
+!!      subroutine allocate_sph_1d_index_rtp
+!!      subroutine allocate_sph_1d_index_rtm
+!!      subroutine allocate_sph_1d_index_rlm
+!!      subroutine allocate_sph_1d_index_rj
+!!
+!!      subroutine deallocate_radius_1d_gl
+!!      subroutine deallocate_spheric_param_rtp
+!!      subroutine deallocate_spheric_param_rtm
+!!      subroutine deallocate_spheric_param_rlm
+!!      subroutine deallocate_spheric_param_rj
+!!
+!!      subroutine deallocate_sph_1d_index_rtp
+!!      subroutine deallocate_sph_1d_index_rtm
+!!      subroutine deallocate_sph_1d_index_rlm
+!!      subroutine deallocate_sph_1d_index_rj
+!!
+!!      subroutine check_global_spheric_parameter
+!!      subroutine check_spheric_parameter(my_rank)
+!!      subroutine check_spheric_param_rtp(my_rank)
+!!      subroutine check_spheric_param_rtm(my_rank)
+!!      subroutine check_spheric_param_rlm(my_rank)
+!!      subroutine check_spheric_param_rj(my_rank)
+!!      subroutine check_radial_fung_rj
+!!@endverbatim
+!!
+!!@n @param  my_rank     Running rank ID
 !
       module m_spheric_parameter
 !

@@ -1,14 +1,23 @@
-!sph_mhd_rst_IO_control.f90
-!      module sph_mhd_rst_IO_control
+!>@file   sum_div_coriolis_rj_sph.f90
+!!@brief  module sum_div_coriolis_rj_sph
+!!
+!!@author H. Matsui
+!!@date Programmed in 2009
 !
-!      subroutine output_sph_restart_control
-!      subroutine output_sph_rst_by_elaps
-!
-!      subroutine read_alloc_sph_restart_data
-!
-!      subroutine init_radial_sph_interpolation
-!      subroutine read_alloc_sph_rst_4_snap
-!      subroutine output_spectr_4_snap(i_step)
+!>@brief  I/O routines for restart data
+!!
+!!@verbatim
+!!      subroutine output_sph_restart_control
+!!      subroutine output_sph_rst_by_elaps
+!!
+!!      subroutine read_alloc_sph_restart_data
+!!
+!!      subroutine init_radial_sph_interpolation
+!!      subroutine read_alloc_sph_rst_4_snap
+!!      subroutine output_spectr_4_snap(i_step)
+!!@endverbatim
+!!
+!!@n @param i_step  time step
 !
       module sph_mhd_rst_IO_control
 !
@@ -38,13 +47,12 @@
       integer(kind = kint) :: istep_fld
 !
 !
-      if ( mod(istep_max_dt,i_step_output_rst) .eq. 0 ) then
+      if ( mod(istep_max_dt,i_step_output_rst) .ne. 0 ) return
 !
-        istep_fld = istep_max_dt/i_step_output_rst
+      istep_fld = istep_max_dt/i_step_output_rst
 !
-        call set_sph_restart_data_to_IO
-        call sel_write_step_SPH_field_file(my_rank, istep_fld)
-      end if
+      call set_sph_restart_data_to_IO
+      call sel_write_step_SPH_field_file(my_rank, istep_fld)
 !
       end subroutine output_sph_restart_control
 !
