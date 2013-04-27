@@ -1,13 +1,22 @@
-!cal_sph_exp_1st_diff.f90
+!>@file   cal_sph_exp_1st_diff.f90
+!!@brief  module cal_sph_exp_1st_diff
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
 !
-!      module cal_sph_exp_1st_diff
-!
-!     Written by H. Matsui on Jan, 2010
-!
-!      subroutine cal_sph_nod_gradient_2(kst, ked, dnod_rj, dnod_dr)
-!
-!      subroutine cal_sph_nod_vect_dr_2(kst, ked, dnod_rj, dnod_dr)
-!      subroutine cal_sph_nod_vect_dr_2e(kst, ked, dele_rj, dnod_dr)
+!>@brief  Evaluate first radial derivative for spectr data
+!!
+!!@verbatim
+!!      subroutine cal_sph_nod_gradient_2(kst, ked, dnod_rj, dnod_dr)
+!!
+!!      subroutine cal_sph_nod_vect_dr_2(kst, ked, dnod_rj, dnod_dr)
+!!      subroutine cal_sph_nod_vect_dr_2e(kst, ked, dele_rj, dnod_dr)
+!!@endverbatim
+!!
+!!@n @param kst      Start radial address
+!!@n @param ked      End radial address
+!!@n @param dnod_rj(nnod_rj)      Input spectr data
+!!@n @param dnod_dr(nnod_rj,nd)   Gradient or radial derivative of field
 !
       module cal_sph_exp_1st_diff
 !

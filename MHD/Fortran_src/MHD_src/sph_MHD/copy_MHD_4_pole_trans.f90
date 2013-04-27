@@ -1,13 +1,18 @@
-!copy_MHD_4_pole_trans.f90
-!      module copy_MHD_4_pole_trans
+!> @file  copy_MHD_4_pole_trans.f90
+!!      module copy_MHD_4_pole_trans
+!!
+!! @author  H. Matsui
+!! @date Programmed in Oct., 2012
 !
-!        programmed by H.Matsui on Oct., 2009
-!
-!      subroutine copy_mhd_vec_from_pole_trans
-!      subroutine copy_mhd_scl_from_pole_trans
-!
-!      subroutine copy_snap_vec_from_pole_trans
-!      subroutine copy_snap_scl_from_pole_trans
+!> @brief copy spectr data for spherical transform at poles
+!!
+!!@verbatim
+!!      subroutine copy_mhd_vec_from_pole_trans
+!!      subroutine copy_mhd_scl_from_pole_trans
+!!
+!!      subroutine copy_snap_vec_from_pole_trans
+!!      subroutine copy_snap_scl_from_pole_trans
+!!@endverbatim
 !
       module copy_MHD_4_pole_trans
 !
@@ -118,6 +123,10 @@
       call copy_pole_vec_fld_from_trans(numnod, internal_node, xx,      &
      &    num_tot_nod_phys, nvector_snap_rj_2_rtp, iphys%i_b_diffuse,   &
      &    bsnap_trns%i_b_diffuse, d_nod)
+!
+      call copy_pole_vec_fld_from_trans(numnod, internal_node, xx,      &
+     &    num_tot_nod_phys, nvector_snap_rj_2_rtp, iphys%i_induction,   &
+     &    bsnap_trns%i_induction, d_nod)
 !
       call copy_pole_vec_fld_from_trans(numnod, internal_node, xx,      &
      &    num_tot_nod_phys, nvector_snap_rj_2_rtp, iphys%i_grad_t,      &

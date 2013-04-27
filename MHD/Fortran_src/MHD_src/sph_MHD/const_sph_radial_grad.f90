@@ -1,26 +1,31 @@
-!const_sph_radial_grad.f90
-!      module const_sph_radial_grad
+!> @file  const_sph_radial_grad.f90
+!!      module const_sph_radial_grad
+!!
+!! @author  H. Matsui
+!! @date Programmed in Oct. 2009
 !
-!      modified by H. Matsui on Oct., 2009
-!
-!      subroutine const_radial_grad_temp
-!      subroutine const_radial_grad_d_scalar
-!
-!      subroutine const_grad_vp_and_vorticity
-!        Input:    ipol%i_velo, itor%i_velo
-!        Solution: idpdr%i_velo, ipol%i_vort, itor%i_vort, idpdr%i_vort
-!
-!      subroutine const_grad_bp_and_current
-!        Input:    ipol%i_magne, itor%i_magne
-!        Solution: idpdr%i_magne,
-!                  ipol%i_current, itor%i_current, idpdr%i_current
-!
-!      subroutine const_grad_vp_and_vorticity
-!        Input:    ipol%i_velo, itor%i_velo
-!        Solution: idpdr%i_velo
-!      subroutine const_grad_poloidal_magne
-!        Input:    ipol%i_magne, itor%i_magne
-!        Solution: idpdr%i_magne
+!> @brief Evaluate radial delivatives
+!!
+!!@verbatim
+!!      subroutine const_radial_grad_temp
+!!      subroutine const_radial_grad_composit
+!!
+!!      subroutine const_grad_vp_and_vorticity
+!!        Input:    ipol%i_velo, itor%i_velo
+!!        Solution: idpdr%i_velo, ipol%i_vort, itor%i_vort, idpdr%i_vort
+!!
+!!      subroutine const_grad_bp_and_current
+!!        Input:    ipol%i_magne, itor%i_magne
+!!        Solution: idpdr%i_magne,
+!!                  ipol%i_current, itor%i_current, idpdr%i_current
+!!
+!!      subroutine const_grad_vp_and_vorticity
+!!        Input:    ipol%i_velo, itor%i_velo
+!!        Solution: idpdr%i_velo
+!!      subroutine const_grad_poloidal_magne
+!!        Input:    ipol%i_magne, itor%i_magne
+!!        Solution: idpdr%i_magne
+!!@endverbatim
 !
       module const_sph_radial_grad
 !
@@ -74,7 +79,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_grad_d_scalar
+      subroutine const_radial_grad_composit
 !
       use cal_sph_exp_fixed_scalar
       use cal_sph_exp_fixed_flux
@@ -104,7 +109,7 @@
      &       composition_CMB_bc, ipol%i_light, ipol%i_grad_composit)
       end if
 !
-      end subroutine const_radial_grad_d_scalar
+      end subroutine const_radial_grad_composit
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

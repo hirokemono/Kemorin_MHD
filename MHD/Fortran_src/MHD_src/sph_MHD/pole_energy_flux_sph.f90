@@ -1,10 +1,15 @@
-!pole_energy_flux_sph.f90
-!      module pole_energy_flux_sph
+!> @file  pole_energy_flux_sph.f90
+!!      module pole_energy_flux_sph
+!!
+!! @author  H. Matsui
+!! @date Programmed in Oct., 2012
 !
-!        programmed by H.Matsui on Oct., 2009
-!
-!      subroutine pole_nonlinear_sph_MHD
-!      subroutine pole_energy_flux_rtp
+!> @brief Evaluate nonlinear terms at poles
+!!
+!!@verbatim
+!!      subroutine pole_nonlinear_sph_MHD
+!!      subroutine pole_energy_flux_rtp
+!!@endverbatim
 !
       module pole_energy_flux_sph
 !
@@ -81,6 +86,7 @@
       use m_node_phys_data
       use m_node_phys_address
       use products_at_poles
+      use pole_poynting_flux_smp
 !
 !
 !$omp parallel
@@ -96,11 +102,29 @@
      &      d_nod(1,iphys%i_velo), d_nod(1,iphys%i_nega_ujb) )
       end if
 !
-      if( (iphys%i_lorentz*iphys%i_me_gen) .gt. 0) then
+      if( (iphys%i_induction*iphys%i_me_gen) .gt. 0) then
         call pole_sph_dot_prod_w_const(numnod, internal_node, xx,       &
-     &      nnod_rtp, nidx_rtp(1), dminus, d_nod(1,iphys%i_lorentz),    &
-     &      d_nod(1,iphys%i_velo), d_nod(1,iphys%i_me_gen) )
+     &      nnod_rtp, nidx_rtp(1), one, d_nod(1,iphys%i_induction),     &
+     &      d_nod(1,iphys%i_magne), d_nod(1,iphys%i_me_gen) )
       end if
+!
+!
+      if((iphys%i_current*iphys%i_vp_induct*iphys%i_electric) .gt. 0)   &
+     &     then
+        call cal_pole_electric_field_smp(numnod, internal_node, xx,     &
+     &      nnod_rtp, nidx_rtp(1), coef_d_magne,                        &
+     &      d_nod(1,iphys%i_current), d_nod(1,iphys%i_vp_induct),       &
+     &      d_nod(1,iphys%i_electric))
+      end if
+!
+      if((iphys%i_current*iphys%i_vp_induct*iphys%i_poynting) .gt. 0)   &
+     &     then
+        call cal_pole_poynting_flux_smp(numnod, internal_node, xx,      &
+     &      nnod_rtp, nidx_rtp(1), coef_d_magne,                        &
+     &      d_nod(1,iphys%i_current), d_nod(1,iphys%i_vp_induct),       &
+     &      d_nod(1,iphys%i_magne), d_nod(1,iphys%i_poynting))
+      end if
+!
 !
       if(iphys%i_buo_gen .gt. 0) then
         if(iflag_4_ref_temp .eq. 100) then

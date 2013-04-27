@@ -71,8 +71,7 @@
 !
       call s_set_plane_spectr_file_head
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
-      call set_parameters_data_by_spec(num_pe, iflag,                   &
-     &    kx_org, ky_org, iz_org)
+      call set_parameters_data_by_spec(num_pe, kx_org, ky_org, iz_org)
       call s_set_numnod_4_plane
 !
       call allocate_z_compliment_info(nz_all)

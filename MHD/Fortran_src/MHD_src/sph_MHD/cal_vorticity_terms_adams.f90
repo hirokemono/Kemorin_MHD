@@ -45,11 +45,11 @@
 !$omp do private (inod)
       do inod = ist, ied
         d_rj(inod,ipol%i_vort) = d_rj(inod,ipol%i_vort)                 &
-     &       + dt * (coef_exp_v*coef_d_velo*d_rj(inod,ipol%i_w_diffuse) &
+     &                 + dt * (coef_exp_v * d_rj(inod,ipol%i_w_diffuse) &
      &                           + adam_0 * d_rj(inod,ipol%i_forces)    &
      &                           + adam_1 * d_rj(inod,ipol%i_pre_mom))
         d_rj(inod,itor%i_vort) = d_rj(inod,itor%i_vort)                 &
-     &       + dt * (coef_exp_v*coef_d_velo*d_rj(inod,itor%i_w_diffuse) &
+     &                 + dt * (coef_exp_v * d_rj(inod,itor%i_w_diffuse) &
      &                           + adam_0 * d_rj(inod,itor%i_forces)    &
      &                           + adam_1 * d_rj(inod,itor%i_pre_mom))
 !

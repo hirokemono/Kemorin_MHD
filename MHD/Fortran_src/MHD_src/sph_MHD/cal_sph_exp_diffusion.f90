@@ -7,16 +7,18 @@
 !>@brief  Evaluate diffusion term
 !!
 !!@verbatim
-!!      subroutine cal_sph_nod_scalar_diffuse2(kst, ked, is_fld,        &
-!!     &          is_diffuse)
-!!      subroutine cal_sph_nod_vect_diffuse2(kst, ked, is_fld,          &
-!!     &          is_diffuse)
+!!      subroutine cal_sph_nod_scalar_diffuse2(kst, ked, coef_d,        &
+!!     &          is_fld, is_diffuse)
+!!      subroutine cal_sph_nod_vect_diffuse2(kst, ked, coef_d,          &
+!!     &          is_fld, is_diffuse)
 !!@endverbatim
 !!
-!!@n @param kst   Start      radial ID to evaluate
-!!@n @param kst   End        radial ID to evaluate
-!!@n @param kst   is_fld     Input field address for d_rj
-!!@n @param kst   is_diffuse Diffusion term address for d_rj
+!!@n @param kst   Start radial ID to evaluate
+!!@n @param ked   End radial ID to evaluate
+!!@n @param coef_d        Coefficient for diffusion term
+!!
+!!@n @param is_fld     Input field address for d_rj
+!!@n @param is_diffuse Diffusion term address for d_rj
 !
       module cal_sph_exp_diffusion
 !
@@ -36,12 +38,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_scalar_diffuse2(kst, ked, is_fld,          &
-     &          is_diffuse)
+      subroutine cal_sph_nod_scalar_diffuse2(kst, ked, coef_d,          &
+     &          is_fld, is_diffuse)
 !
       integer(kind = kint), intent(in) :: kst, ked
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: is_diffuse
+      real(kind = kreal), intent(in) :: coef_d
 !
       real(kind = kreal) :: d1s_dr1
       real(kind = kreal) :: d2s_dr2
@@ -66,8 +69,9 @@
      &           + d2nod_mat_fdm_2(k, 0) * d_rj(inod,is_fld  )          &
      &           + d2nod_mat_fdm_2(k, 1) * d_rj(i_p1,is_fld  )
 !
-        d_rj(inod,is_diffuse  ) = d2s_dr2 + two*ar_1d_rj(k,1) * d1s_dr1 &
-     &           - g_sph_rj(j,3)*ar_1d_rj(k,2)*d_rj(inod,is_fld  )
+        d_rj(inod,is_diffuse  )                                         &
+     &          = coef_d * (d2s_dr2 + two*ar_1d_rj(k,1) * d1s_dr1       &
+     &           - g_sph_rj(j,3)*ar_1d_rj(k,2)*d_rj(inod,is_fld) )
       end do
 !$omp end parallel do
 !
@@ -75,12 +79,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_vect_diffuse2(kst, ked, is_fld,            &
-     &          is_diffuse)
+      subroutine cal_sph_nod_vect_diffuse2(kst, ked, coef_d,            &
+     &          is_fld, is_diffuse)
 !
       integer(kind = kint), intent(in) :: kst, ked
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: is_diffuse
+      real(kind = kreal), intent(in) :: coef_d
 !
       real(kind = kreal) :: d2s_dr2, d2t_dr2
       integer(kind = kint) :: inod, i_p1, i_n1, j, k
@@ -104,10 +109,10 @@
      &           + d2nod_mat_fdm_2(k, 0) * d_rj(inod,is_fld+2)          &
      &           + d2nod_mat_fdm_2(k, 1) * d_rj(i_p1,is_fld+2)
 !
-        d_rj(inod,is_diffuse  ) =  d2s_dr2                              &
-     &           - g_sph_rj(j,3)*ar_1d_rj(k,2)*d_rj(inod,is_fld  )
-        d_rj(inod,is_diffuse+2) =  d2t_dr2                              &
-     &           - g_sph_rj(j,3)*ar_1d_rj(k,2)*d_rj(inod,is_fld+2)
+        d_rj(inod,is_diffuse  ) =  coef_d * (d2s_dr2                    &
+     &           - g_sph_rj(j,3)*ar_1d_rj(k,2)*d_rj(inod,is_fld  ) )
+        d_rj(inod,is_diffuse+2) =  coef_d * (d2t_dr2                    &
+     &           - g_sph_rj(j,3)*ar_1d_rj(k,2)*d_rj(inod,is_fld+2) )
       end do
 !$omp end parallel do
 !

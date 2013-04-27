@@ -1,9 +1,14 @@
-!buoyancy_flux.f90
-!     module buoyancy_flux
+!> @file  buoyancy_flux.f90
+!!      module buoyancy_flux
+!!
+!! @author  H. Matsui
+!! @date Programmed in June, 2005
 !
-!      Written by H. Matsui on June, 2005
-!
-!      subroutine cal_gravity_flux(coef, i_scalar, i_flux)
+!> @brief Evaluate buoyancy flux
+!!
+!!@verbatim
+!!      subroutine cal_gravity_flux(coef, i_scalar, i_flux)
+!!@endverbatim
 !
       module buoyancy_flux
 !

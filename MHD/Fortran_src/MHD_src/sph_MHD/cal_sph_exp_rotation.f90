@@ -22,11 +22,13 @@
 !!      subroutine cal_sph_nod_vect_w_div_rot2(kst, ked, is_fld, is_rot)
 !!      subroutine cal_sph_nod_vect_div2(kst, ked, is_fld, is_div)
 !!
-!!      subroutine cal_sph_nod_diffuse_by_rot2(kst, ked, is_fld, is_rot)
+!!      subroutine cal_sph_nod_diffuse_by_rot2(kst, ked, coef_d,        &
+!!     &          is_fld, is_rot)
 !!@endverbatim
 !!
 !!@n @param kst   start radial address to calicurate
 !!@n @param ked   end radial address to calicurate
+!!@n @param coef_d  Coefficient for diffusion term
 !!
 !!@n @param is_fld       Field address of input field
 !!@n @param is_rot       Field address of curl of field
@@ -239,9 +241,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_diffuse_by_rot2(kst, ked, is_fld, is_rot)
+      subroutine cal_sph_nod_diffuse_by_rot2(kst, ked, coef_d,          &
+     &          is_fld, is_rot)
 !
       integer(kind = kint), intent(in) :: kst, ked
+      real(kind = kreal), intent(in) :: coef_d
+!
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: is_rot
 !
@@ -267,9 +272,9 @@
      &           + d1nod_mat_fdm_2(k, 0) * d_rj(inod,is_fld+2)          &
      &           + d1nod_mat_fdm_2(k, 1) * d_rj(i_p1,is_fld+2)
 !
-        d_rj(inod,is_rot  ) =  -d_rj(inod,is_fld+2)
-        d_rj(inod,is_rot+1) =  -d1t_dr1
-        d_rj(inod,is_rot+2) =   d2s_dr2                                 &
+        d_rj(inod,is_rot  ) =  -coef_d * d_rj(inod,is_fld+2)
+        d_rj(inod,is_rot+1) =  -coef_d * d1t_dr1
+        d_rj(inod,is_rot+2) =   coef_d * d2s_dr2                        &
      &             - g_sph_rj(j,3)*ar_1d_rj(k,2)*d_rj(inod,is_fld)
       end do
 !$omp end parallel do

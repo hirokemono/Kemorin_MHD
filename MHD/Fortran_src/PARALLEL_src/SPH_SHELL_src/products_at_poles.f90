@@ -1,14 +1,35 @@
-!products_at_poles.f90
-!      module products_at_poles
+!> @file  products_at_poles.f90
+!!      module products_at_poles
+!!
+!! @author  H. Matsui
+!! @date Programmed in Oct., 2012
 !
-!        programmed by H.Matsui on Oct., 2009
-!
-!      subroutine pole_sph_dot_prod_w_const(numnod, internal_node, xx,  &
-!     &          nnod_rtp, nidx_rtp_r, coef, d_vec1, d_vec2, d_flux)
-!      subroutine pole_sph_cross_prod_w_const(numnod, internal_node, xx,&
-!     &          nnod_rtp, nidx_rtp_r, coef, d_vec1, d_vec2, d_prod)
-!      subroutine pole_vec_scalar_prod_w_const(numnod, internal_node,   &
-!     &          xx, nnod_rtp, nidx_rtp_r, coef, d_vec1, d_scl, d_prod)
+!> @brief Evaluate products at poles
+!!
+!!@verbatim
+!!      subroutine pole_sph_dot_prod_w_const(numnod, internal_node,     &
+!!     &          xx, nnod_rtp, nidx_rtp_r, coef, d_vec1, d_vec2,       &
+!!     &          d_prod)
+!!      subroutine pole_sph_cross_prod_w_const(numnod, internal_node,   &
+!!     &          xx, nnod_rtp, nidx_rtp_r, coef, d_vec1, d_vec2,       &
+!!     &          d_prod)
+!!      subroutine pole_vec_scalar_prod_w_const(numnod, internal_node,  &
+!!     &          xx, nnod_rtp, nidx_rtp_r, coef, d_vec1, d_scl,        &
+!!     &          d_prod)
+!!@endverbatim
+!!
+!!@n @param numnod               number of nodes
+!!@n @param internal_node        number of internal nodes
+!!@n @param xx                   position
+!!@n @param nnod_rtp             number of grid points
+!!                               for @f$ f(r,\theta,\phi) @f$
+!!@n @param nidx_rtp_r           number of radial points 
+!!                               for @f$ f(r,\theta,\phi) @f$
+!!@n @param coef                 coefficient
+!!@n @param d_vec1(numnod,3)     vector field
+!!@n @param d_vec2(numnod,3)     vector field
+!!@n @param d_scl(numnod)        scalar field
+!!@n @param d_prod(numnod,nd)    produced field
 !
       module products_at_poles
 !
@@ -23,8 +44,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine pole_sph_dot_prod_w_const(numnod, internal_node, xx,   &
-     &          nnod_rtp, nidx_rtp_r, coef, d_vec1, d_vec2, d_flux)
+      subroutine pole_sph_dot_prod_w_const(numnod, internal_node,       &
+     &          xx, nnod_rtp, nidx_rtp_r, coef, d_vec1, d_vec2,         &
+     &          d_prod)
 !
       integer(kind = kint), intent(in) :: numnod, internal_node
       real(kind = kreal), intent(in) :: xx(numnod,3)
@@ -35,7 +57,7 @@
       real(kind = kreal), intent(in) :: coef
       real(kind = kreal), intent(in) :: d_vec1(numnod,3)
       real(kind = kreal), intent(in) :: d_vec2(numnod,3)
-      real(kind = kreal), intent(inout) :: d_flux(numnod)
+      real(kind = kreal), intent(inout) :: d_prod(numnod)
 !
       integer(kind = kint) :: inod, kr
 !
@@ -47,7 +69,7 @@
       if(xx(inod+1,3) .gt. zero) then
         do kr = 1, nidx_rtp_r
           inod = inod + 1
-          d_flux(inod) =   coef * (d_vec1(inod,1)*d_vec2(inod,1)        &
+          d_prod(inod) =   coef * (d_vec1(inod,1)*d_vec2(inod,1)        &
      &                           + d_vec1(inod,2)*d_vec2(inod,2)        &
      &                           + d_vec1(inod,3)*d_vec2(inod,3)  )
         end do
@@ -59,7 +81,7 @@
       if(xx(inod+1,3) .lt. zero) then
         do kr = 1, nidx_rtp_r
           inod = inod + 1
-          d_flux(inod) =   coef * (d_vec1(inod,1)*d_vec2(inod,1)        &
+          d_prod(inod) =   coef * (d_vec1(inod,1)*d_vec2(inod,1)        &
      &                           + d_vec1(inod,2)*d_vec2(inod,2)        &
      &                           + d_vec1(inod,3)*d_vec2(inod,3)  )
         end do
@@ -69,7 +91,7 @@
 !
 !  copy field for center
       inod = inod + 1
-      d_flux(inod) =   coef * (d_vec1(inod,1)*d_vec2(inod,1)            &
+      d_prod(inod) =   coef * (d_vec1(inod,1)*d_vec2(inod,1)            &
      &                       + d_vec1(inod,2)*d_vec2(inod,2)            &
      &                       + d_vec1(inod,3)*d_vec2(inod,3)  )
 !
@@ -77,8 +99,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine pole_sph_cross_prod_w_const(numnod, internal_node, xx, &
-     &          nnod_rtp, nidx_rtp_r, coef, d_vec1, d_vec2, d_prod)
+      subroutine pole_sph_cross_prod_w_const(numnod, internal_node,     &
+     &          xx, nnod_rtp, nidx_rtp_r, coef, d_vec1, d_vec2,         &
+     &          d_prod)
 !
       integer(kind = kint), intent(in) :: numnod, internal_node
       real(kind = kreal), intent(in) :: xx(numnod,3)
@@ -141,7 +164,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine pole_vec_scalar_prod_w_const(numnod, internal_node,    &
-     &          xx, nnod_rtp, nidx_rtp_r, coef, d_vec1, d_scl, d_prod)
+     &          xx, nnod_rtp, nidx_rtp_r, coef, d_vec1, d_scl,          &
+     &          d_prod)
 !
       integer(kind = kint), intent(in) :: numnod, internal_node
       real(kind = kreal), intent(in) :: xx(numnod,3)
@@ -186,9 +210,9 @@
 !
 !  copy field for center
       inod = inod + 1
-          d_prod(inod,1) =   coef * d_vec1(inod,1)*d_scl(inod)
-          d_prod(inod,2) =   coef * d_vec1(inod,2)*d_scl(inod)
-          d_prod(inod,3) =   coef * d_vec1(inod,3)*d_scl(inod)
+      d_prod(inod,1) =   coef * d_vec1(inod,1)*d_scl(inod)
+      d_prod(inod,2) =   coef * d_vec1(inod,2)*d_scl(inod)
+      d_prod(inod,3) =   coef * d_vec1(inod,3)*d_scl(inod)
 !
       end subroutine pole_vec_scalar_prod_w_const
 !

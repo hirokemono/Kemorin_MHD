@@ -130,12 +130,23 @@
       subroutine sph_forward_trans_snapshot_MHD
 !
       use sph_trans_scalar
+      use sph_trans_vector
       use copy_snap_4_sph_trans
 !
 !
-      call copy_snap_scl_fld_to_trans
-      call sph_f_trans_scalar(nscalar_snap_rtp_2_rj)
-      call copy_snap_scl_spec_from_trans
+!   transform for vectors
+      if(nvector_snap_rtp_2_rj .gt. 0) then
+        call copy_snap_vec_fld_to_trans
+        call sph_f_trans_vector(nvector_snap_rtp_2_rj)
+        call copy_snap_vec_spec_from_trans
+      end if
+!
+!   transform for scalars
+      if(nscalar_snap_rtp_2_rj .gt. 0) then
+        call copy_snap_scl_fld_to_trans
+        call sph_f_trans_scalar(nscalar_snap_rtp_2_rj)
+        call copy_snap_scl_spec_from_trans
+      end if
 !
       end subroutine sph_forward_trans_snapshot_MHD
 !

@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed...May., 2009
 !
-!>@brief subroutines to obatine products of two fields
+!>@brief Obtain products of two fields
 !!@n     $omp parallel is required to use these routines
 !!
 !!@verbatim

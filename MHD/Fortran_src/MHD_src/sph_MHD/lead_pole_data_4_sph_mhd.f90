@@ -1,10 +1,14 @@
+!> @file  lead_pole_data_4_sph_mhd.f90
+!!      module lead_pole_data_4_sph_mhd
+!!
+!! @author  H. Matsui
+!! @date Programmed in Oct., 2012
 !
-!      module lead_pole_data_4_sph_mhd
-!
-!        programmed by H.Matsui
-!      Modified by H. Matsui on Aug, 2007
-!
-!      subroutine lead_pole_data_4_sph_mhd
+!> @brief Spherical transform at poles
+!!
+!!@verbatim
+!!      subroutine lead_pole_data_4_sph_mhd
+!!@endverbatim
 !
       module lead_pole_data_4_sph_mhd
 !

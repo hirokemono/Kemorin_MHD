@@ -295,9 +295,9 @@
       write(*,'(a,i10)') 'num_phys_rj ', num_phys_rj
       write(*,'(a)') 'number, component, stack, monitor_flag, name'
       do i = 1, num_phys_rj
-        write(*,'(4i6,a)') i, num_phys_comp_rj(i),                      &
+        write(*,'(4i6,a2,a)') i, num_phys_comp_rj(i),                   &
      &                     istack_phys_comp_rj(i), iflag_monitor_rj(i), &
-     &                     trim(phys_name_rj(i))
+     &                     '  ', trim(phys_name_rj(i))
       end do
 !
       end subroutine check_rj_spectr_name

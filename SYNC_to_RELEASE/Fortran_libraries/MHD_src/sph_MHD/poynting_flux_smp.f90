@@ -1,0 +1,1 @@
+/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/MHD_src/common/poynting_flux_smp.f90

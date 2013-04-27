@@ -15,7 +15,6 @@
       use m_machine_parameter
       use m_control_parameter
       use m_phys_labels
-      use m_physical_property
 !
       implicit none
 !
@@ -223,6 +222,7 @@
       use multi_by_const_fields
       use int_magne_diffusion
       use int_magne_induction
+      use nodal_poynting_flux_smp
 !
 !
       if (iphys%i_induction .gt. izero                                  &
@@ -239,31 +239,13 @@
         call s_int_magne_diffusion
       end if
 !
+!$omp parallel
       if (iphys%i_electric .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_e_field)
-        if (iphys%i_vp_diffuse .gt. 0) then
-          call add_2_nod_vectors(iphys%i_electric,                      &
-     &          iphys%i_vp_diffuse, iphys%i_vp_induct)
-          call multi_by_const_nod_vector(iphys%i_electric,              &
-     &          iphys%i_electric, dminus)
-        else
-          call multi_by_const_nod_vector(iphys%i_electric,              &
-     &        iphys%i_current, coef_d_magne)
-!
-!$omp parallel
-          call cal_phys_cross_product(iphys%i_velo, iphys%i_magne,      &
-     &        iphys%i_vp_induct)
-!$omp end parallel
-!
-          call subtract_2_nod_tensors(iphys%i_electric,                 &
-     &        iphys%i_electric, iphys%i_vp_induct)
-        end if
+        call cal_nod_electric_field_smp
       end if
 !
-!
-!
-!$omp parallel
       if (iphys%i_ujb .gt. izero) then
         call cal_tri_product_4_scalar(coef_lor, iphys%i_velo,           &
      &      iphys%i_current, iphys%i_magne, iphys%i_ujb)
@@ -275,13 +257,8 @@
       end if
 !
       if (iphys%i_me_gen .gt. izero) then
-        if ( iflag_t_evo_4_magne .gt. 0 ) then
-          call cal_tri_product_4_scalar(coef_lor, iphys%i_current,      &
-     &        iphys%i_velo, iphys%i_magne, iphys%i_me_gen)
-        else
-          call cal_phys_dot_product(iphys%i_vp_induct, iphys%i_me_gen,  &
-     &        iphys%i_current)
-        end if
+        call cal_phys_dot_product(iphys%i_induction, iphys%i_magne,     &
+     &      iphys%i_me_gen)
       end if
 !$omp end parallel
 !
@@ -338,8 +315,7 @@
       end if
 !
       if (iphys%i_poynting .gt. izero) then
-        call cal_phys_cross_product(iphys%i_electric, iphys%i_magne,    &
-     &      iphys%i_poynting)
+        call cal_nod_poynting_flux_smp
       end if
 !$omp end parallel
 !

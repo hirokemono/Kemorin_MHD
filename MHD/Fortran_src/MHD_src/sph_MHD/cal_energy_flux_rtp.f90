@@ -1,9 +1,15 @@
-!cal_energy_flux_rtp.f90
-!      module cal_energy_flux_rtp
+!> @file  cal_energy_flux_rtp.f90
+!!      module cal_energy_flux_rtp
+!!
+!! @author  H. Matsui
+!! @date Programmed in Oct., 2009
+!! @n    Modified in Apr., 2013
 !
-!        programmed by H.Matsui on Oct., 2009
-!
-!      subroutine s_cal_energy_flux_rtp
+!> @brief Evaluate energy fluxes for MHD dynamo in physical space
+!!
+!!@verbatim
+!!      subroutine s_cal_energy_flux_rtp
+!!@endverbatim
 !
       module cal_energy_flux_rtp
 !
@@ -29,24 +35,33 @@
       use m_physical_property
       use m_sph_spectr_data
       use m_sph_phys_address
+      use sph_poynting_flux_smp
       use sph_transforms_4_MHD
       use products_sph_fields_smp
 !
 !
 !$omp parallel
-      if( (irtp%i_lorentz*irtp%i_ujb) .gt. 0) then
+      if((irtp%i_lorentz*irtp%i_ujb) .gt. 0) then
         call cal_rtp_dot_product(irtp%i_lorentz, irtp%i_velo,           &
      &      irtp%i_ujb)
       end if
 !
-      if( (irtp%i_lorentz*irtp%i_nega_ujb) .gt. 0) then
+      if((irtp%i_lorentz*irtp%i_nega_ujb) .gt. 0) then
         call cal_rtp_dot_prod_w_coef(dminus,                            &
      &      irtp%i_lorentz, irtp%i_velo, irtp%i_nega_ujb)
       end if
 !
-      if( (irtp%i_lorentz*irtp%i_me_gen) .gt. 0) then
-        call cal_rtp_dot_prod_w_coef(dminus,                            &
-     &      irtp%i_lorentz, irtp%i_velo, irtp%i_me_gen)
+      if((irtp%i_induction*irtp%i_me_gen) .gt. 0) then
+        call cal_rtp_dot_product(irtp%i_induction, irtp%i_magne,        &
+     &      irtp%i_me_gen)
+      end if
+!
+      if((irtp%i_current*irtp%i_vp_induct*irtp%i_electric) .gt. 0) then
+        call cal_rtp_electric_field_smp
+      end if
+!
+      if((irtp%i_current*irtp%i_vp_induct*irtp%i_poynting) .gt. 0) then
+        call cal_rtp_poynting_flux_smp
       end if
 !
       if(irtp%i_buo_gen .gt. 0) then

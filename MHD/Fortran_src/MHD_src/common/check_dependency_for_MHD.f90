@@ -4,7 +4,7 @@
 !      Written by H.Matsui
 !      Moified by H. Matsui on Sep., 2007
 !
-!      subroutine check_dependencies -------------
+!      subroutine check_dependencies
 !
       module check_dependency_for_MHD
 !
@@ -297,21 +297,15 @@
 !
           else if (phys_nod_name(i) .eq. fhd_e_field                    &
      &       ) then
-             if (iflag_t_evo_4_vect_p .gt. 0) then
-               num_check = 2
-               phys_check_name(1) = fhd_vecp_diffuse
-               phys_check_name(2) = fhd_vp_induct
-             else
-               num_check = 2
-               phys_check_name(1) = fhd_vp_induct
-               phys_check_name(2) = fhd_current
-             end if
+            num_check = 2
+            phys_check_name(1) = fhd_vp_induct
+            phys_check_name(2) = fhd_current
 !
           else if (phys_nod_name(i) .eq. fhd_poynting                   &
      &       ) then
              num_check = 2
-             phys_check_name(1) = fhd_magne
-             phys_check_name(2) = fhd_e_field
+             phys_check_name(1) = fhd_current
+             phys_check_name(2) = fhd_vp_induct
 !
           else if (phys_nod_name(i) .eq. fhd_div_m_flux                 &
      &         ) then

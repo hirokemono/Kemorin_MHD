@@ -112,7 +112,7 @@
       type(communication_table), intent(inout) :: nod_comm
 !
       integer(kind = kint) :: lflag, kflag, k
-      integer(kind = kint) :: knum, num_rl
+      integer(kind = kint) :: knum
 !
 !
       lflag = iflag_Spole_t(ip_t)
@@ -153,7 +153,7 @@
       type(communication_table), intent(inout) :: nod_comm
 !
       integer(kind = kint) :: lflag, kflag, k
-      integer(kind = kint) :: knum, num_rl
+      integer(kind = kint) :: knum
 !
 !
       lflag = iflag_Npole_t(ip_t)
@@ -257,7 +257,7 @@
       type(communication_table), intent(inout) :: nod_comm
 !
       integer(kind = kint) :: lflag, kflag, k
-      integer(kind = kint) :: knum, num_rl
+      integer(kind = kint) :: knum
 !
 !
       lflag = iflag_Spole_t(jp_t)
@@ -298,7 +298,7 @@
       type(communication_table), intent(inout) :: nod_comm
 !
       integer(kind = kint) :: lflag, kflag, k
-      integer(kind = kint) :: knum, num_rl
+      integer(kind = kint) :: knum
 !
 !
       lflag = iflag_Npole_t(jp_t)

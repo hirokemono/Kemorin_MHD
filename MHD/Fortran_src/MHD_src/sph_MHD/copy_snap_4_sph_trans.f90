@@ -14,8 +14,8 @@
 !      subroutine copy_snap_scl_fld_to_trans
 !      subroutine copy_snap_scl_spec_from_trans
 !
-!!      subroutine copy_snap_vec_fld_to_trans
-!!      subroutine copy_snap_vec_spec_from_trans
+!      subroutine copy_snap_vec_fld_to_trans
+!      subroutine copy_snap_vec_spec_from_trans
 !
       module copy_snap_4_sph_trans
 !
@@ -47,7 +47,6 @@
       call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
      &      ipol%i_current, bsnap_trns%i_current)
 !
-!
       call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
      &      ipol%i_v_diffuse, bsnap_trns%i_v_diffuse)
       call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
@@ -56,6 +55,10 @@
      &      ipol%i_vp_diffuse, bsnap_trns%i_vp_diffuse)
       call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
      &      ipol%i_b_diffuse, bsnap_trns%i_b_diffuse)
+!
+      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
+     &      ipol%i_induction, bsnap_trns%i_induction)
+!
       call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
      &      ipol%i_grad_t, bsnap_trns%i_grad_t)
       call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
@@ -117,6 +120,14 @@
      &    irtp%i_b_diffuse, bsnap_trns%i_b_diffuse)
 !
       call copy_vec_fld_from_trans(nvector_snap_rj_2_rtp,               &
+     &    irtp%i_induction, bsnap_trns%i_induction)
+!
+      call copy_vec_fld_from_trans(nvector_snap_rj_2_rtp,               &
+     &    irtp%i_electric, bsnap_trns%i_electric)
+      call copy_vec_fld_from_trans(nvector_snap_rj_2_rtp,               &
+     &    irtp%i_poynting, bsnap_trns%i_poynting)
+!
+      call copy_vec_fld_from_trans(nvector_snap_rj_2_rtp,               &
      &    irtp%i_grad_t, bsnap_trns%i_grad_t)
       call copy_vec_fld_from_trans(nvector_snap_rj_2_rtp,               &
      &    irtp%i_grad_composit, bsnap_trns%i_grad_composit)
@@ -152,19 +163,20 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-!      subroutine copy_snap_vec_fld_to_trans
-!!
-!      use copy_sph_field_4_sph_trans
-!!
-!!
-!!$omp parallel
-!!   advection flag
-!      call copy_vec_fld_to_trans(nvector_snap_rtp_2_rj,                &
-!     &      irtp%i_m_advect, f_trns%i_m_advect)
-!!$omp end parallel
-!!
-!!      end  subroutine copy_snap_vec_fld_to_trans
-!!
+      subroutine copy_snap_vec_fld_to_trans
+!
+      use copy_sph_field_4_sph_trans
+!
+!
+!$omp parallel
+      call copy_vec_fld_to_trans(nvector_snap_rtp_2_rj,                 &
+     &      irtp%i_electric, fsnap_trns%i_electric)
+      call copy_vec_fld_to_trans(nvector_snap_rtp_2_rj,                 &
+     &      irtp%i_poynting, fsnap_trns%i_poynting)
+!$omp end parallel
+!
+      end  subroutine copy_snap_vec_fld_to_trans
+!
 !-----------------------------------------------------------------------
 !
       subroutine copy_snap_scl_fld_to_trans
@@ -191,18 +203,19 @@
 !
 !-----------------------------------------------------------------------
 !
-!      subroutine copy_snap_vec_spec_from_trans
+      subroutine copy_snap_vec_spec_from_trans
 !
-!      use copy_spectr_4_sph_trans
+      use copy_spectr_4_sph_trans
 !
 !
-!!$omp parallel
-!!   advection flag
-!      call copy_vec_spec_from_trans(nvector_snap_rtp_2_rj,             &
-!     &      ipol%i_m_advect, f_trns%i_m_advect)
-!!$omp end parallel
+!$omp parallel
+      call copy_vec_spec_from_trans(nvector_snap_rtp_2_rj,              &
+     &    ipol%i_electric, fsnap_trns%i_electric)
+      call copy_vec_spec_from_trans(nvector_snap_rtp_2_rj,              &
+     &    ipol%i_poynting, fsnap_trns%i_poynting)
+!$omp end parallel
 !
-!      end  subroutine copy_snap_vec_spec_from_trans
+      end  subroutine copy_snap_vec_spec_from_trans
 !
 !-----------------------------------------------------------------------
 !

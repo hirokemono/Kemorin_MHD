@@ -177,11 +177,11 @@
 !
 !
 !         Input: ipol%i_light,  Solution: ipol%i_grad_composit
-      if(ipol%i_grad_composit .gt. 0) call const_radial_grad_d_scalar
+      if(ipol%i_grad_composit .gt. 0) call const_radial_grad_composit
 !
-      if (iflag_debug .gt. 0) write(*,*) 'const_sph_dscalar_diffusion'
+      if (iflag_debug .gt. 0) write(*,*) 'const_sph_composit_diffusion'
 !         Input: ipol%i_light,  Solution: ipol%i_c_diffuse
-      if(ipol%i_c_diffuse .gt. 0) call const_sph_dscalar_diffusion
+      if(ipol%i_c_diffuse .gt. 0) call const_sph_composit_diffusion
 !
       end subroutine update_after_composit_sph
 !

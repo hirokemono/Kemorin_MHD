@@ -62,6 +62,7 @@
      &    nscalar_snap_rtp_2_rj, fsnap_trns%i_ujb)
       call add_transform_flag(ipol%i_nega_ujb, irtp%i_nega_ujb,         &
      &    nscalar_snap_rtp_2_rj, fsnap_trns%i_nega_ujb)
+!
       call add_transform_flag(ipol%i_buo_gen, irtp%i_buo_gen,           &
      &    nscalar_snap_rtp_2_rj, fsnap_trns%i_buo_gen)
       call add_transform_flag(ipol%i_c_buo_gen, irtp%i_c_buo_gen,       &
@@ -69,6 +70,12 @@
       call add_transform_flag(ipol%i_f_buo_gen, irtp%i_f_buo_gen,       &
      &    nscalar_snap_rtp_2_rj, fsnap_trns%i_f_buo_gen)
 !
+!
+      nvector_snap_rtp_2_rj = 0
+      call add_transform_flag(ipol%i_electric, irtp%i_electric,         &
+      &   nvector_snap_rtp_2_rj, fsnap_trns%i_electric)
+      call add_transform_flag(ipol%i_poynting, irtp%i_poynting,         &
+      &   nvector_snap_rtp_2_rj, fsnap_trns%i_poynting)
 !
 !
       nscalar_snap_rj_2_rtp = 0
@@ -118,6 +125,10 @@
      &    nvector_snap_rj_2_rtp, bsnap_trns%i_vp_diffuse)
       call add_transform_flag(ipol%i_b_diffuse, irtp%i_b_diffuse,       &
      &    nvector_snap_rj_2_rtp, bsnap_trns%i_b_diffuse)
+!
+      call add_transform_flag(ipol%i_induction, irtp%i_induction,       &
+     &    nvector_snap_rj_2_rtp, bsnap_trns%i_induction)
+!
       call add_transform_flag(ipol%i_grad_t, irtp%i_grad_t,             &
      &    nvector_snap_rj_2_rtp, bsnap_trns%i_grad_t)
       call add_transform_flag(ipol%i_grad_composit,                     &
@@ -126,6 +137,7 @@
 !
 !
       nb_sph_trans = max(nb_sph_trans,nscalar_snap_rtp_2_rj)
+      nb_sph_trans = max(nb_sph_trans,nvector_snap_rtp_2_rj)
       nb_sph_trans = max(nb_sph_trans,nscalar_snap_rj_2_rtp)
       nb_sph_trans = max(nb_sph_trans,nvector_snap_rj_2_rtp)
 !
@@ -139,6 +151,11 @@
       use m_sph_phys_address
       use m_addresses_trans_sph_MHD
 !
+!
+        write(*,*) 'nvector_snap_rj_2_rtp', nvector_snap_rj_2_rtp
+        write(*,*) 'nscalar_snap_rj_2_rtp', nscalar_snap_rj_2_rtp
+        write(*,*) 'nvector_snap_rtp_2_rj', nvector_snap_rtp_2_rj
+        write(*,*) 'nscalar_snap_rtp_2_rj', nscalar_snap_rtp_2_rj
 !
         write(*,*) 'bsnap_trns%i_velo', bsnap_trns%i_velo,              &
      &            ipol%i_velo, irtp%i_velo
@@ -162,6 +179,9 @@
         write(*,*) 'bsnap_trns%i_c_diffuse', bsnap_trns%i_c_diffuse,    &
      &            ipol%i_c_diffuse, irtp%i_c_diffuse
 !
+        write(*,*) 'bsnap_trns%i_induction', bsnap_trns%i_induction,    &
+     &            ipol%i_induction, irtp%i_induction
+!
         write(*,*) 'bsnap_trns%i_grad_t',    bsnap_trns%i_grad_t,       &
      &            ipol%i_grad_t, irtp%i_grad_t
         write(*,*) 'bsnap_trns%i_grad_composit',                        &
@@ -183,6 +203,11 @@
      &            ipol%i_ujb, irtp%i_ujb
         write(*,*) 'fsnap_trns%i_nega_ujb',  fsnap_trns%i_nega_ujb,     &
      &            ipol%i_nega_ujb, irtp%i_nega_ujb
+        write(*,*) 'fsnap_trns%i_electric',  fsnap_trns%i_electric,     &
+     &            ipol%i_electric, irtp%i_electric
+        write(*,*) 'fsnap_trns%i_poynting',  fsnap_trns%i_poynting,     &
+     &            ipol%i_poynting, irtp%i_poynting
+!
         write(*,*) 'fsnap_trns%i_buo_gen',   fsnap_trns%i_buo_gen,      &
      &            ipol%i_buo_gen, irtp%i_buo_gen
         write(*,*) 'fsnap_trns%i_c_buo_gen', fsnap_trns%i_c_buo_gen,    &

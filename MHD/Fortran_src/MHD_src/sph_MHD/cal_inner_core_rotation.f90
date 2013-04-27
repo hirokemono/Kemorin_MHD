@@ -1,12 +1,23 @@
-!cal_inner_core_rotation.f90
+!> @file  cal_inner_core_rotation.f90
+!!      module cal_inner_core_rotation
+!!
+!! @author  H. Matsui
+!! @date Programmed in Nov., 2012
 !
-!     Written by H. Matsui on Nov., 2012
-!
-!      subroutine set_inner_core_rotation
-!      subroutine set_icore_viscous_matrix
-!      subroutine cal_icore_viscous_drag_explicit
-!      subroutine cal_icore_coriolis_explicit
-!      subroutine int_icore_toroidal_lorentz
+!> @brief Evaluate torques for inner core rotation
+!!
+!!@verbatim
+!!      subroutine set_inner_core_rotation
+!!      subroutine set_icore_viscous_matrix
+!!      subroutine cal_icore_viscous_drag_explicit(coef_d,              &
+!!     &          it_velo, it_viscous)
+!!      subroutine cal_icore_coriolis_explicit
+!!      subroutine int_icore_toroidal_lorentz
+!!@endverbatim
+!!
+!!@n @param coef_d  Coefficient for diffusion term
+!!@n @param it_velo       Field address for toroidal velocity
+!!@n @param it_viscous    Field address for toroidal viscous dissipation
 !
       module cal_inner_core_rotation
 !
@@ -16,7 +27,6 @@
       use m_spheric_parameter
       use m_sph_phys_address
       use m_sph_spectr_data
-      use m_physical_property
 !
       implicit  none
 !
@@ -43,21 +53,34 @@
 !
       subroutine set_icore_viscous_matrix
 !
+      use m_t_int_parameter
+      use m_physical_property
 !
-      call set_rotate_icb_vt_sph_mat(idx_rj_degree_one(-1))
-      call set_rotate_icb_vt_sph_mat(idx_rj_degree_one( 0))
-      call set_rotate_icb_vt_sph_mat(idx_rj_degree_one( 1))
 !
+      call set_rotate_icb_vt_sph_mat(idx_rj_degree_one(-1),             &
+     &     coef_imp_v, coef_d_velo)
+      call set_rotate_icb_vt_sph_mat(idx_rj_degree_one( 0),             &
+     &     coef_imp_v, coef_d_velo)
+      call set_rotate_icb_vt_sph_mat(idx_rj_degree_one( 1),             &
+     &     coef_imp_v, coef_d_velo)
+!!
       end subroutine set_icore_viscous_matrix
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_icore_viscous_drag_explicit
+      subroutine cal_icore_viscous_drag_explicit(coef_d,                &
+     &          it_velo, it_viscous)
+!
+      real(kind = kreal), intent(in) :: coef_d
+      integer(kind = kint), intent(in) :: it_velo, it_viscous
 !
 !
-      call cal_icore_viscous_drag_l1(idx_rj_degree_one(-1))
-      call cal_icore_viscous_drag_l1(idx_rj_degree_one( 0))
-      call cal_icore_viscous_drag_l1(idx_rj_degree_one( 1))
+      call cal_icore_viscous_drag_l1(idx_rj_degree_one(-1), coef_d,     &
+     &    it_velo, it_viscous)
+      call cal_icore_viscous_drag_l1(idx_rj_degree_one( 0), coef_d,     &
+     &    it_velo, it_viscous)
+      call cal_icore_viscous_drag_l1(idx_rj_degree_one( 1), coef_d,     &
+     &    it_velo, it_viscous)
 !
       end subroutine cal_icore_viscous_drag_explicit
 !
@@ -65,6 +88,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_icore_coriolis_explicit
+!
+      use m_physical_property
 !
       integer(kind = kint) :: k
       integer(kind = kint) :: i11s, i10c, i11c
@@ -114,39 +139,39 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_rotate_icb_vt_sph_mat(idx_rj_l0)
+      subroutine set_rotate_icb_vt_sph_mat(idx_rj_l0, coef_imp, coef_d)
 !
       use m_t_int_parameter
-      use m_physical_property
       use m_schmidt_poly_on_rtm
       use m_radial_matrices_sph
       use m_fdm_coefs
 !
       integer(kind = kint), intent(in) :: idx_rj_l0
+      real(kind = kreal), intent(in) :: coef_imp, coef_d
 !
 !
       if(idx_rj_l0 .le. 0) return
 !
 !       vt_evo_mat(3,nlayer_ICB-1,idx_rj_l0) = zero
         vt_evo_mat(2,nlayer_ICB,  idx_rj_l0)                            &
-     &          = one + coef_imp_v*dt*coef_d_velo * five                &
+     &          = one + coef_imp*dt*coef_d * five                       &
      &           * (+ dr_1d_rj(nlayer_ICB, 2)                           &
      &              + two*ar_1d_rj(nlayer_ICB,1) )                      &
      &           * a_r_1d_rj_r(nlayer_ICB)
         vt_evo_mat(1,nlayer_ICB+1,idx_rj_l0)                            &
-     &          = - coef_imp_v*dt*coef_d_velo * five                    &
+     &          = - coef_imp*dt*coef_d * five                           &
      &             * dr_1d_rj(nlayer_ICB, 2)                            &
      &             * a_r_1d_rj_r(nlayer_ICB)
 !
 !        vt_evo_mat(2,nlayer_ICB,  idx_rj_l0)                           &
-!     &          = one + coef_imp_v*dt*coef_d_velo * five               &
+!     &          = one + coef_imp*dt*coef_d * five                      &
 !     &           * ( -d1nod_mat_fdm_2(nlayer_ICB,-1)                   &
 !     &                * radius_1d_rj_r(nlayer_ICB-1)**2                &
 !     &                * ar_1d_rj(nlayer_ICB,2)                         &
 !     &              - d1nod_mat_fdm_2(nlayer_ICB, 0)                   &
 !     &              + two*ar_1d_rj(nlayer_ICB,1) )
 !        vt_evo_mat(1,nlayer_ICB+1,idx_rj_l0)                           &
-!     &          = - coef_imp_v*dt*coef_d_velo * five                   &
+!     &          = - coef_imp*dt*coef_d * five                          &
 !     &             * d1nod_mat_fdm_2(nlayer_ICB, 1)
 !
       end subroutine set_rotate_icb_vt_sph_mat
@@ -187,11 +212,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_icore_viscous_drag_l1(idx_rj_l0)
+      subroutine cal_icore_viscous_drag_l1(idx_rj_l0, coef_d,           &
+     &          it_velo, it_viscous)
 !
       use m_fdm_coefs
 !
+      real(kind = kreal), intent(in) :: coef_d
       integer(kind = kint), intent(in) :: idx_rj_l0
+      integer(kind = kint), intent(in) :: it_velo, it_viscous
 !
       integer(kind = kint) ::  i10c_ri, i10c_r1
       real(kind = kreal) :: mat_1, mat_0
@@ -212,9 +240,10 @@
      &        - two*ar_1d_rj(nlayer_ICB,1)
       mat_1 =   dr_1d_rj(nlayer_ICB, 2)
 !
-      d_rj(i10c_ri,ipol%i_w_diffuse) =  five * a_r_1d_rj_r(nlayer_ICB)  &
-     &                            * (mat_0 * d_rj(i10c_ri,ipol%i_vort)  &
-     &                             + mat_1 * d_rj(i10c_r1,ipol%i_vort))
+      d_rj(i10c_ri,it_viscous)                                          &
+     &                   =  five  * coef_d * a_r_1d_rj_r(nlayer_ICB)    &
+     &                          * (mat_0 * d_rj(i10c_ri,it_velo)        &
+     &                           + mat_1 * d_rj(i10c_r1,it_velo))
 !
       end subroutine cal_icore_viscous_drag_l1
 !

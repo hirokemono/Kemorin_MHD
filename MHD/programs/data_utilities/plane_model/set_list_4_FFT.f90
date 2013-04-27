@@ -146,7 +146,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_parameters_data_by_spec(num_pe, iflag,             &
+      subroutine set_parameters_data_by_spec(num_pe,                    &
      &          kx_org, ky_org, iz_org)
 !
       use m_control_plane_fft
@@ -162,7 +162,7 @@
       use m_field_file_format
       use set_parallel_file_name
 !
-      integer(kind=kint ), intent(inout) :: num_pe, iflag
+      integer(kind=kint ), intent(inout) :: num_pe
       integer(kind=kint ), intent(inout) :: kx_org, ky_org, iz_org
 !
 !
