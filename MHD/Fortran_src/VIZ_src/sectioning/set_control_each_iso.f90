@@ -52,6 +52,10 @@
       call choose_ucd_file_format(iso%iso_output_type_ctl,              &
      &    iso%i_iso_out_type, itype_iso_file(i_iso) )
 !
+      if(iso%num_iso_result_ctl .gt. 0) then
+        id_iso_result_type(i_iso) = ione
+      end if
+!
       if      ( id_iso_result_type(i_iso) .eq. izero) then
         num_iso_output(i_iso) = ione
         istack_iso_output(i_iso) = istack_iso_output(i_iso-1) + ione

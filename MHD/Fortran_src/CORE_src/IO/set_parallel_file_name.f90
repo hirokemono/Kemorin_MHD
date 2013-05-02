@@ -1,66 +1,78 @@
-!set_parallel_file_name.f90
-!      module set_parallel_file_name
+!>@file   set_parallel_file_name.f90
+!!@brief  module set_parallel_file_name
+!!
+!!@author H. Matsui
+!!@date   Programmed  H. Matsui in 2004
 !
-!     written by H. Matsui
+!>@brief  Set file extension
+!!
+!!@verbatim
+!!      subroutine delete_directory_name(dir_file_name, file_name)
+!!
+!!      subroutine add_int_suffix(int_id, file_header, file_name)
+!!
+!!      subroutine add_dat_extension(file_header, file_name)
+!!                put ".dat" at the end
+!!      subroutine add_udt_extension(file_header, file_name)
+!!                put ".udt" at the end
+!!
+!!      subroutine add_vtk_extension(file_header, file_name)
+!!                put ".vtk" at the end
+!!      subroutine add_pvtk_extension(file_header, file_name)
+!!                put ".pvtk" at the end
+!!      subroutine add_vtd_extension(file_header, file_name)
+!!                put ".vtd" at the end
+!!      subroutine add_vtg_extension(file_header, file_name)
+!!                put ".vtg" at the end
+!!
+!!      subroutine add_grd_extension(file_header, file_name)
+!!                put ".grd" at the end
+!!      subroutine add_ucd_extension(file_header, file_name)
+!!                put ".inp" at the end
+!!
+!!      subroutine add_dx_extension(file_header, file_name)
+!!                put ".dx" at the end
+!!      subroutine add_node_extension(file_header, file_name)
+!!                put ".node.dat" at the end
+!!      subroutine add_connect_extension(file_header, file_name)
+!!                put ".connect.dat" at the end
+!!
+!!      subroutine add_fld_extension(file_header, file_name)
+!!                put ".fld" at the end
+!!      subroutine add_flb_extension(file_header, file_name)
+!!                put ".flb" at the end
+!!      subroutine add_fst_extension(file_header, file_name)
+!!                put ".fst" at the end
+!!      subroutine add_elaps_postfix(file_header, file_name)
+!!                put ".elps" at the end
+!!
+!!      subroutine add_gzip_extension(file_header, file_name)
+!!                put ".gz" and null character at the end
+!!
+!!      subroutine add_ksm_extension(file_header, file_name)
+!!                put ".ksm" at the end
+!!
+!!      subroutine add_gfm_extension(file_header, file_name)
+!!                put ".gfm" at the end
+!!
+!!      subroutine add_rtp_extension(file_header, file_name)
+!!                put ".rtp" at the end
+!!      subroutine add_rtm_extension(file_header, file_name)
+!!                put ".rtm" at the end
+!!      subroutine add_rlm_extension(file_header, file_name)
+!!                put ".rlm" at the end
+!!      subroutine add_rj_extension(file_header, file_name)
+!!                put ".rj" at the end
+!!
+!!      subroutine add_index_after_name(int_id, chara_head, chara_name)
+!!@endverbatim
+!!
+!!@n @param dir_file_name    file name (header) including directory name
+!!@n @param file_header      file header
+!!@n @param int_id           integer to be added at the end of header
+!!@n @param file_name        output file name
 !
-!      subroutine add_int_suffix(int_id, file_header, file_name)
-!
-!      subroutine add_dat_extension(file_header, file_name)
-!                put ".dat" at the end
-!      subroutine add_udt_extension(file_header, file_name)
-!                put ".udt" at the end
-!
-!      subroutine add_vtk_extension(file_header, file_name)
-!                put ".vtk" at the end
-!      subroutine add_pvtk_extension(file_header, file_name)
-!                put ".pvtk" at the end
-!      subroutine add_vtd_extension(file_header, file_name)
-!                put ".vtd" at the end
-!      subroutine add_vtg_extension(file_header, file_name)
-!                put ".vtg" at the end
-!
-!      subroutine add_grd_extension(file_header, file_name)
-!                put ".grd" at the end
-!      subroutine add_ucd_extension(file_header, file_name)
-!                put ".inp" at the end
-!
-!      subroutine add_dx_extension(file_header, file_name)
-!                put ".dx" at the end
-!      subroutine add_node_extension(file_header, file_name)
-!                put ".node.dat" at the end
-!      subroutine add_connect_extension(file_header, file_name)
-!                put ".connect.dat" at the end
-!
-!      subroutine add_fld_extension(file_header, file_name)
-!                put ".fld" at the end
-!      subroutine add_flb_extension(file_header, file_name)
-!                put ".flb" at the end
-!      subroutine add_fst_extension(file_header, file_name)
-!                put ".fst" at the end
-!      subroutine add_elaps_postfix(file_header, file_name)
-!                put ".elps" at the end
-!
-!      subroutine add_gzip_extension(file_header, file_name)
-!                put ".gz" and null character at the end
-!
-!      subroutine add_ksm_extension(file_header, file_name)
-!                put ".ksm" at the end
-!
-!      subroutine add_gfm_extension(file_header, file_name)
-!                put ".gfm" at the end
-!
-!      subroutine add_rtp_extension(file_header, file_name)
-!                put ".rtp" at the end
-!      subroutine add_rtm_extension(file_header, file_name)
-!                put ".rtm" at the end
-!      subroutine add_rlm_extension(file_header, file_name)
-!                put ".rlm" at the end
-!      subroutine add_rj_extension(file_header, file_name)
-!                put ".rj" at the end
-!
-!
-!      subroutine add_index_after_name(int_id, chara_head, chara_name)
-!
+
       module set_parallel_file_name
 !
       use m_precision
@@ -71,6 +83,33 @@
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine delete_directory_name(dir_file_name, file_name)
+!
+      character(len=kchara), intent(in) :: dir_file_name
+      character(len=kchara), intent(inout) :: file_name
+!
+      integer(kind = kint) :: i, len, len_name, idir_flag
+      character(len=kchara) :: fmt_txt
+!
+!
+      len_name = len_trim(dir_file_name)
+      idir_flag = 0
+      do i = len_name, 1, -1
+        if(dir_file_name(i:i) .eq. '/') then
+          idir_flag = i
+          exit
+        end if
+      end do
+      len = len_name - idir_flag
+!
+      write(fmt_txt,'(a2,i4,a1)') '(a',len,')'
+      write(file_name,fmt_txt) dir_file_name(idir_flag+1:len_name)
+!
+      end subroutine delete_directory_name
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine add_int_suffix(int_id, file_header, file_name)

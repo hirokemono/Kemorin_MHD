@@ -403,6 +403,14 @@
         else if ( field_name(i) .eq. fhd_chk_potential_2 ) then
           iphys%i_chk_potential_2 = i0
 !
+        else if ( field_name(i) .eq. fhd_velocity_scale) then
+          iphys%i_velo_scale =  i0
+        else if ( field_name(i) .eq. fhd_magnetic_scale) then
+          iphys%i_magne_scale = i0
+        else if ( field_name(i) .eq. fhd_temp_scale) then
+          iphys%i_temp_scale =  i0
+        else if ( field_name(i) .eq. fhd_composition_scale) then
+          iphys%i_comp_scale =  i0
 !
 !   Old field label... Should be deleted later!!
         else if (field_name(i) .eq. fhd_buoyancy_work) then

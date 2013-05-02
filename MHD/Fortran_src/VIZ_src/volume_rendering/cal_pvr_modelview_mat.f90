@@ -252,35 +252,47 @@
 !
       viewing_dir(1:3) = lookat_vec(1:3,i_pvr)                          &
      &                  - viewpoint_vec(1:3,i_pvr)
-      call cal_vector_magnitude(ione, ione, ione_stack(0), size(1),     &
-     &    viewing_dir(1) )
+!$omp parallel
+      call cal_vector_magnitude(ione, ione, ione_stack(0),              &
+     &    viewing_dir(1), size(1) )
+!$omp end parallel
       viewing_dir(1:3) = viewing_dir(1:3) / size(1)
 !
-      call cal_vector_magnitude(ione, ione, ione_stack(0), size(1),     &
-     &    viewing_dir(1) )
+!$omp parallel
+      call cal_vector_magnitude(ione, ione, ione_stack(0),              &
+     &    viewing_dir(1), size(1) )
+!$omp end parallel
       look_norm(1:3) = lookat_vec(1:3,i_pvr) / size(1)
 !
-      call cal_vector_magnitude(ione, ione, ione_stack(0), size(1),     &
-     &    viewpoint_vec(1,i_pvr) )
+!$omp parallel
+      call cal_vector_magnitude(ione, ione, ione_stack(0),              &
+     &    viewpoint_vec(1,i_pvr), size(1) )
+!$omp end parallel
       view_norm(1:3) = viewpoint_vec(1:3,i_pvr) / size(1)
 !
-      call cal_vector_magnitude(ione, ione, ione_stack(0), size(1),     &
-     &    up_direction_vec(1,i_pvr) )
+!$omp parallel
+      call cal_vector_magnitude(ione, ione, ione_stack(0),              &
+     &    up_direction_vec(1,i_pvr), size(1) )
+!$omp end parallel
       up_direction_vec(1:3,i_pvr) = up_direction_vec(1:3,i_pvr)         &
      &                             / size(1)
 !
 !    /* find the direction of axis U */
       call cal_cross_prod_no_coef_smp(ione, ione, ione_stack(0),        &
      &    up_direction_vec(1,i_pvr), viewing_dir(1), u(1) )
+!$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack(0),              &
-     &    size(1), u(1) )
+     &    u(1), size(1) )
+!$omp end parallel
       u(1:3) = u(1:3) / size(1)
 !
 !    /*find the direction of axix V */
       call cal_cross_prod_no_coef_smp(ione, ione, ione_stack(0),        &
      &    viewing_dir(1), u(1), v(1) )
+!$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack(0),              &
-     &    size(1), v(1) )
+     &    v(1), size(1) )
+!$omp end parallel
       v(1:3) = v(1:3) / size(1)
 !
       do i = 1, 3

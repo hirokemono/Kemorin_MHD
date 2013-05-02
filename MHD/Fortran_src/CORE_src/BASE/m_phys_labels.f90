@@ -729,7 +729,7 @@
      &             :: fhd_temp_scale =        'temperature_scale'
 !>        Field label for composition length scale
       character(len=kchara), parameter                                  &
-     &             :: fhd_composiiton_scale = 'composition_scale'
+     &             :: fhd_composition_scale = 'composition_scale'
 !
 !   --------------------------------------------------------------------
 !

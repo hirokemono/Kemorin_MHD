@@ -68,6 +68,7 @@
       use m_t_step_parameter
       use m_ctl_params_sph_trans
       use sph_rtp_zonal_rms_data
+      use cvt_nod_data_to_sph_data
 !
       integer(kind=kint ) :: visval, i_step
       integer(kind=kint ) :: istep_psf, istep_iso
@@ -84,8 +85,12 @@
         call FEM_to_SPH_bridge_sph_trans(visval)
 !
 !   Take zonal RMS
-        if (iflag_debug.gt.0) write(*,*) 'cal_sph_zonal_rms_data'
-        call cal_sph_zonal_rms_data
+        if (iflag_debug.gt.0) write(*,*) 'zonal_rms_all_rtp_field'
+        call zonal_rms_all_rtp_field
+!
+        call copy_nod_scalar_from_sph_data
+        call cvt_xyz_from_sph_vec_sph_data
+        call cvt_sph_to_xyz_tensor_data
 !
         ucd_header_name = zonal_udt_head
         call FEM_analyze_back_trans(i_step, istep_psf, istep_iso,       &

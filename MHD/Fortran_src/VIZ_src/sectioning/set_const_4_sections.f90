@@ -162,8 +162,10 @@
       else if (ncomp_org .eq. 3) then
         if (i_comp.eq.0) then
 !
+!$omp parallel
           call cal_vector_magnitude(np_smp, nnod, istack_nod_smp,       &
-     &        c_ref_iso(1,i_iso), d_nod(1,ist_field) )
+     &         d_nod(1,ist_field), c_ref_iso(1,i_iso) )
+!$omp end parallel
 !
         else if (i_comp.ge.1 .and. i_comp.le.3) then
 !
@@ -192,8 +194,10 @@
       else if (ncomp_org .eq. 6) then
         if (i_comp.eq.0) then
 !
+!$omp parallel
           call cal_sym_tensor_magnitude(np_smp, nnod, istack_nod_smp,   &
-     &        c_ref_iso(1,i_iso), d_nod(1,ist_field) )
+     &        d_nod(1,ist_field), c_ref_iso(1,i_iso) )
+!$omp end parallel
 !
         else if (i_comp.ge.1 .and. i_comp.le.6) then
 !

@@ -37,6 +37,8 @@
       end if
       call allocate_tave_sph_espec_data
 !
+!    Evaluate time average
+!
       call open_org_ene_spec_data
 !
       ist_true = -1
@@ -71,7 +73,7 @@
 !
       call close_ene_spec_data
 !
-!  -----------------------------------------------------------------
+!  Evaluate standard deviation
 !
       call open_org_ene_spec_data
 !
@@ -105,6 +107,7 @@
 !
       call divide_deviation_ene_sph(icou)
       call output_tsigma_ene_sph_data
+
 !
       stop
       end program t_average_sph_ene_spec

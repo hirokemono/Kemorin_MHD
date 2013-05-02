@@ -1,16 +1,34 @@
+!>@file   m_patch_data_iso.f90
+!!        module m_patch_data_iso
+!!
+!! @author H. Matsui
+!! @date   Programmed in ?June, 2006??
+!!
 !
-!      module m_patch_data_iso
+!> @brief data array for isosurfaces
+!!
+!!@verbatim
+!!      subroutine allocate_position_iso
+!!      subroutine allocate_dat_on_patch_iso(max_ncomp_iso)
+!!      subroutine allocate_num_patch_iso(np_smp, num_iso)
+!!      subroutine allocate_patch_data_iso
+!!
+!!      subroutine deallocate_position_iso
+!!      subroutine deallocate_dat_on_patch_iso
+!!      subroutine deallocate_num_patch_iso
+!!      subroutine deallocate_patch_data_iso
+!!@endverbatim
 !
       module m_patch_data_iso
-!
-!      Written by H. Matsui on June, 2006
 !
       use m_precision
 !
       implicit none
 !
 !
+!>      Total number of nodes for isosurfaces
       integer(kind = kint) :: nnod_iso_tot
+!>      End point of node list for each isosurfaces
       integer(kind = kint), allocatable :: istack_nod_iso_smp(:)
 !
       integer(kind = kint), allocatable :: inod_hash_iso(:)
@@ -28,16 +46,6 @@
       real(kind = kreal), allocatable :: dat_iso(:,:)
 !
       real(kind = kreal), allocatable :: tmp_iso(:,:)
-!
-!      subroutine allocate_position_iso
-!      subroutine allocate_dat_on_patch_iso(max_ncomp_iso)
-!      subroutine allocate_num_patch_iso(np_smp, num_iso)
-!      subroutine allocate_patch_data_iso
-!
-!      subroutine deallocate_position_iso
-!      subroutine deallocate_dat_on_patch_iso
-!      subroutine deallocate_num_patch_iso
-!      subroutine deallocate_patch_data_iso
 !
 !  ---------------------------------------------------------------------
 !
@@ -107,6 +115,7 @@
 !
       subroutine deallocate_position_iso
 !
+      deallocate(inod_hash_iso)
       deallocate(xyz_iso)
       deallocate(sph_iso)
       deallocate(cyl_iso)

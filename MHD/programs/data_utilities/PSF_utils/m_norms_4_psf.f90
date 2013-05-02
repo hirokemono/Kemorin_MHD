@@ -1,9 +1,12 @@
 !
 !      module m_norms_4_psf
 !
-      module m_norms_4_psf
-!
 !      Written by H. Matsui
+!
+!      subroutine allocate_norms_4_psf
+!      subroutine deallocate_norms_4_psf
+!
+      module m_norms_4_psf
 !
       use m_precision
 !
@@ -16,9 +19,6 @@
       real(kind = kreal) :: area_total_psf
 !
       real(kind = kreal) :: psf_min(3), psf_max(3)
-!
-!      subroutine allocate_norms_4_psf
-!      subroutine deallocate_norms_4_psf
 !
 !-----------------------------------------------------------------------
 !

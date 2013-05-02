@@ -1,14 +1,26 @@
+!>@file   sph_rtp_zonal_rms_data.f90
+!!@brief  module sph_rtp_zonal_rms_data
+!!
+!!@author H. Matsui
+!!@date Programmed in ????
 !
-!     module sph_rtp_zonal_rms_data
-!
-!      Written by H. Matsui on Oct., 2007
-!
-!      subroutine cal_sph_zonal_rms_data
-!      subroutine cal_sph_zonal_ave_data
+!>@brief Get zonal mean and RMS fields in spherical grid
+!!
+!!@verbatim
+!!      subroutine zonal_rms_all_rtp_field
+!!      subroutine zonal_mean_all_rtp_field
+!!
+!!      subroutine cal_sph_zonal_rms_data(numdir, irtp_fld)
+!!      subroutine cal_sph_zonal_ave_data(numdir, irtp_fld)
+!!@endverbatim
+!!
+!!@n @param  numdir     Number of component of field
+!!@n @param  irtp_fld   Start address for field @f$ f(\r,\theta\phi) @f$
 !
       module sph_rtp_zonal_rms_data
 !
       use m_precision
+      use m_constants
 !
       implicit  none
 ! 
@@ -18,18 +30,43 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine cal_sph_zonal_rms_data
+      subroutine zonal_rms_all_rtp_field
+!
+      use m_sph_spectr_data
+!
+!
+      call cal_sph_zonal_rms_data(ntot_phys_rtp, ione)
+!
+      end subroutine zonal_rms_all_rtp_field
+!
+! -------------------------------------------------------------------
+!
+      subroutine zonal_mean_all_rtp_field
+!
+      use m_sph_spectr_data
+!
+!
+      call cal_sph_zonal_ave_data(ntot_phys_rtp, ione)
+!
+      end subroutine zonal_mean_all_rtp_field
+!
+! -------------------------------------------------------------------
+! -------------------------------------------------------------------
+!
+      subroutine cal_sph_zonal_rms_data(numdir, irtp_fld)
 !
       use m_spheric_parameter
       use m_sph_spectr_data
 !
-      use cvt_nod_data_to_sph_data
-!
+      integer(kind = kint), intent(in) :: numdir, irtp_fld
       integer(kind = kint) :: nd, kt, iphi, inod
+      real(kind = kreal) :: anphi
 !
 !
-!$omp parallel private(nd,iphi)
-      do nd = 1, ntot_phys_rtp
+      anphi = one / dble(nidx_rtp(3))
+!
+!$omp parallel
+      do nd = irtp_fld, irtp_fld+numdir-1
 !$omp do private(kt)
         do kt = 1, nidx_rtp(1)*nidx_rtp(2)
           d_rtp(kt,nd) = d_rtp(kt,nd)**2
@@ -47,10 +84,14 @@
 !
 !$omp do private(kt)
         do kt = 1, nidx_rtp(1)*nidx_rtp(2)
-          d_rtp(kt,nd) = sqrt( d_rtp(kt,nd) / dble(nidx_rtp(3)) )
+          d_rtp(kt,nd) = sqrt( d_rtp(kt,nd) * anphi)
         end do
 !$omp end do nowait
+      end do
+!$omp end parallel
 !
+!$omp parallel
+      do nd = irtp_fld, irtp_fld+numdir-1
         do iphi = 2, nidx_rtp(3)
 !$omp do private(kt,inod)
           do kt = 1, nidx_rtp(1)*nidx_rtp(2)
@@ -62,25 +103,24 @@
       end do
 !$omp end parallel
 !
-        call copy_nod_scalar_from_sph_data
-        call cvt_xyz_from_sph_vec_sph_data
-        call cvt_sph_to_xyz_tensor_data
-!
       end subroutine cal_sph_zonal_rms_data
 !
 ! -------------------------------------------------------------------
 !
-      subroutine cal_sph_zonal_ave_data
+      subroutine cal_sph_zonal_ave_data(numdir, irtp_fld)
 !
       use m_spheric_parameter
       use m_sph_spectr_data
-      use cvt_nod_data_to_sph_data
 !
+      integer(kind = kint), intent(in) :: numdir, irtp_fld
       integer(kind = kint) :: nd, kt, iphi, inod
+      real(kind = kreal) :: anphi
 !
 !
-!$omp parallel private(nd,iphi)
-      do nd = 1, ntot_phys_rtp
+      anphi = one / dble(nidx_rtp(3))
+!
+!$omp parallel
+      do nd = irtp_fld, irtp_fld+numdir-1
         do iphi = 2, nidx_rtp(3)
 !$omp do private(kt,inod)
           do kt = 1, nidx_rtp(1)*nidx_rtp(2)
@@ -92,24 +132,24 @@
 !
 !$omp do private(kt)
         do kt = 1, nidx_rtp(1)*nidx_rtp(2)
-          d_rtp(kt,nd) = d_rtp(kt,nd) / dble(nidx_rtp(3))
+          d_rtp(kt,nd) = d_rtp(kt,nd) * anphi
         end do
 !$omp end do nowait
+      end do
+!$omp end parallel
 !
-        do iphi = 2, nidx_rtp(3)
+!$omp parallel
+      do nd = irtp_fld, irtp_fld+numdir-1
 !$omp do private(kt,inod)
+        do iphi = 2, nidx_rtp(3)
           do kt = 1, nidx_rtp(1)*nidx_rtp(2)
             inod = kt + (iphi-1) * nidx_rtp(1)*nidx_rtp(2)
             d_rtp(inod,nd) = d_rtp(kt,nd)
           end do
-!$omp end do nowait
         end do
+!$omp end do nowait
       end do
 !$omp end parallel
-!
-        call copy_nod_scalar_from_sph_data
-        call cvt_xyz_from_sph_vec_sph_data
-        call cvt_sph_to_xyz_tensor_data
 !
       end subroutine cal_sph_zonal_ave_data
 !

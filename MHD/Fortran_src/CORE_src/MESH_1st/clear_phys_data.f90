@@ -1,11 +1,19 @@
+!>@file   clear_phys_data.f90
+!!@brief  module clear_phys_data
+!!
+!!@author H. Matsui
+!!@date   Programmed  H. Matsui in Aug, 2007
 !
-!      module clear_phys_data
+!> @brief Delete nodal field
+!!
+!!@verbatim
+!!      subroutine clear_nodal_data(numdir, i_res)
+!!      subroutine clear_elemental_data(numdir, i_res)
+!!@endverbatim
+!!
+!!@n @param numdir  number of component
+!!@n @param numdir  field address to clear
 !
-!        programmed by H.Matsui
-!      Modified by H. Matsui on Aug, 2007
-!
-!      subroutine clear_nodal_data(numdir, i_res)
-!      subroutine clear_elemental_data(numdir, i_res)
 !
       module clear_phys_data
 !

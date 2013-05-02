@@ -12,7 +12,6 @@
 !      subroutine count_stack_tot_psf_field
 !
 !      subroutine write_headers_psf_comp_name(id_file)
-!      subroutine check_headers_psf_comp_name(id_file, ierr)
 !
       module m_psf_results
 !
@@ -139,17 +138,18 @@
 !
       integer(kind = kint), intent(in) :: id_file
 !
-      character(len=kchara) :: tmpchara
       integer(kind = kint) :: j, k
 !
 !
+      write(id_file,'(a)',advance='no') ' psf_no, step_no, '
       do j = 1, nfield_psf
         if ( ncomp_psf(j) .eq. 1) then
-          write(id_file,*) trim( psf_data_name(j) ), ', '
+          write(id_file,'(a,a2)',advance='no')                          &
+     &                 trim( psf_data_name(j) ), ', '
         else
           do k = 1, ncomp_psf(j)
-            write(tmpchara,1000) trim( psf_data_name(j) ), k
-            write(id_file,*) trim(tmpchara)
+            write(id_file,1000,advance='no')                            &
+     &                 trim( psf_data_name(j) ), k
           end do
         end if
       end do
@@ -157,45 +157,6 @@
  1000 format(a,'_',i1,', ')
 !
       end subroutine write_headers_psf_comp_name
-!
-!-----------------------------------------------------------------------
-!
-      subroutine check_headers_psf_comp_name(id_file, ierr)
-!
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(inout) :: ierr
-!
-      character(len=kchara) :: tmpchara, tmpchara2
-      integer(kind = kint) :: j, k
-!
-!
-      ierr = 0
-      do j = 1, nfield_psf
-        if ( ncomp_psf(j) .eq. 1) then
-          read(id_file,*,end=101,err=101) tmpchara
-          if( tmpchara .ne. psf_data_name(j) ) then
-            ierr = 1
-            exit
-          end if
-        else
-          do k = 1, ncomp_psf(j)
-            write(tmpchara2,1000) trim( psf_data_name(j) ), k
-            read(id_file,*,end=101,err=101) tmpchara
-            if( tmpchara .ne. tmpchara2 ) then
-              ierr = 1
-              exit
-            end if
-          end do
-        end if
-      end do
-!
-      return
- 101  ierr = 2
-      return
-!
- 1000 format(a,'_',i1)
-!
-      end subroutine check_headers_psf_comp_name
 !
 !-----------------------------------------------------------------------
 !

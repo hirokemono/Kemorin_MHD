@@ -132,11 +132,11 @@
 !      write min_max data
 !
           if( i_psf.eq.1 .and. istep.eq.i_step_init) then
-            write(id_min_psf,'(a)') ' psf_no, step_no, '
             call write_headers_psf_comp_name(id_min_psf)
+            write(id_min_psf,*)
 !
-            write(id_max_psf,'(a)') ' psf_no, step_no, '
             call write_headers_psf_comp_name(id_max_psf)
+            write(id_max_psf,*)
           end if
 !
           write(id_min_psf,'(2i10,1p255E25.15e3)') i_psf, istep,        &

@@ -1,15 +1,22 @@
+!> @file  m_field_data_IO.f90
+!!      module m_field_data_IO
+!!
+!! @author  H. Matsui
+!! @date Programmed in June, 2005
+!! @n    Modified in Oct., 2007
 !
-!      module m_field_data_IO
-!
-!      Written by H. Matsui on Oct., 2007
-!
-!      subroutine allocate_phys_data_name_IO
-!      subroutine allocate_phys_data_IO
-!
-!      subroutine deallocate_phys_data_name_IO
-!      subroutine deallocate_phys_data_IO
-!
-!      subroutine cal_istack_phys_comp_IO
+!> @brief Data for dield data IO
+!!
+!!@verbatim
+!!      subroutine allocate_phys_data_name_IO
+!!      subroutine allocate_phys_data_IO
+!!
+!!      subroutine deallocate_phys_data_name_IO
+!!      subroutine deallocate_phys_data_IO
+!!
+!!      subroutine cal_istack_phys_comp_IO
+!!@endverbatim
+!!
 !
       module m_field_data_IO
 !
@@ -18,9 +25,12 @@
       implicit none
 !
 !
+!>      file ID for field data IO
       integer(kind = kint), parameter :: id_phys_file = 15
+!>      file name for field data
       character(len=kchara) :: phys_file_name
 !
+!>      file header for field data
       character(len=kchara) :: phys_file_head = "rst"
       integer(kind = kint) :: iflag_field_data_fmt =  0
       integer(kind = kint) :: iflag_phys_header_def = 0

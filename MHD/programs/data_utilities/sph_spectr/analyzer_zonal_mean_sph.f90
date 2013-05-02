@@ -99,7 +99,7 @@
 !
 !  evaluate energies
 !
-        call take_zonal_mean_sph_spectr
+        call zonal_mean_all_sph_spectr
         call copy_rj_all_phys_data_to_IO
 !
 !

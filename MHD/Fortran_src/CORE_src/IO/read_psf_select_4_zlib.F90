@@ -44,12 +44,12 @@
 !
 #ifdef ZLIB_IO
       if (   mod(itype_psf,10) .eq. iflag_gzip) then
-        call read_psf_grd_gz(psf_head)
+        call read_psf_grd_gz(psf_name)
         return
       end if
 #endif
 !
-      call read_psf_grd(psf_head)
+      call read_psf_grd(psf_name)
 !
       end subroutine sel_read_psf_grid_file
 !

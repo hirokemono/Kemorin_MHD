@@ -1,17 +1,26 @@
-!read_psf_result.f90
-!      module read_psf_result
+!>@file   read_psf_result.f90
+!!        module read_psf_result
+!!
+!! @author H. Matsui
+!! @date   Programmed in ????
+!!
 !
-!      Written by H. Matsui
-!
-!      subroutine read_allocate_psf_ucd(psf_udt_name)
-!      subroutine read_allocate_psf_udt(psf_udt_name)
-!
-!      subroutine read_psf_grd(psf_grid_name)
-!      subroutine read_psf_data_udt(psf_udt_name)
-!
-!      subroutine read_allocate_psf_ncomps_udt
-!
-!      subroutine read_psf_field_name
+!> @brief read psf results
+!!
+!!@verbatim
+!!      subroutine read_allocate_psf_ucd(psf_udt_name)
+!!      subroutine read_allocate_psf_udt(psf_udt_name)
+!!
+!!      subroutine read_psf_grd(psf_grid_name)
+!!      subroutine read_psf_data_udt(psf_udt_name)
+!!
+!!      subroutine read_allocate_psf_ncomps_udt
+!!
+!!      subroutine read_psf_field_name
+!!@endverbatim
+!!
+!!@n @param psf_udt_name    file name of cross section field data
+!!@n @param psf_grid_name   file name of cross section mesh data
 !
       module read_psf_result
 !
@@ -151,8 +160,6 @@
         read(id_psf_result,*) inod_psf(i), xx_psf(i,1:3)
       end do
 !
-!      write(*,*) 'finish node data'
-!
       do i = 1, numele_psf
         read(id_psf_result,*) iele_psf(i), itmp,                        &
      &                        tmpchara, ie_psf(i,1:3)
@@ -170,9 +177,6 @@
       do i = 1, nfield_psf
         read(id_psf_result,*) psf_data_name(i)
       end do
-!
-!      write(*,*) 'finish field header', nfield_psf,                    &
-!     &        psf_data_name(1:nfield_psf)
 !
       end subroutine read_psf_field_name
 !

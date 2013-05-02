@@ -183,7 +183,8 @@
 !
       end subroutine read_and_alloc_udt_params
 !
-! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------
+!
       subroutine read_and_alloc_udt_file(my_rank, istep)
 !
       use udt_data_IO

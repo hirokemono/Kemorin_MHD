@@ -136,8 +136,8 @@
 !
 !  pick zonal mean
 !
-        if (iflag_debug.gt.0)  write(*,*) 'take_zonal_mean_sph_spectr'
-        call take_zonal_mean_sph_spectr
+        if (iflag_debug.gt.0)  write(*,*) 'zonal_mean_all_sph_spectr'
+        call zonal_mean_all_sph_spectr
 !
 !     data output
 !

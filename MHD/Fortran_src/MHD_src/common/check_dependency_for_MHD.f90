@@ -98,6 +98,7 @@
           else if  (phys_nod_name(i) .eq. fhd_grad_composit             &
      &         .or. phys_nod_name(i) .eq. fhd_filter_comp               &
      &         .or. phys_nod_name(i) .eq. fhd_comp_buo                  &
+     &         .or. phys_nod_name(i) .eq. fhd_c_diffuse                 &
      &       ) then
             num_check = 1
             phys_check_name(1) = fhd_light
@@ -106,6 +107,18 @@
      &       ) then
            num_check = 1
            phys_check_name(1) = fhd_filter_temp
+!
+          else if (phys_nod_name(i) .eq. fhd_temp_scale                 &
+     &       ) then
+            num_check = 2
+            phys_check_name(1) = fhd_temp
+            phys_check_name(2) = fhd_thermal_diffusion
+!
+          else if (phys_nod_name(i) .eq. fhd_composition_scale          &
+     &       ) then
+            num_check = 2
+            phys_check_name(1) = fhd_light
+            phys_check_name(2) = fhd_c_diffuse
 !
 !
           else if ( phys_nod_name(i) .eq. fhd_mag_induct                &
@@ -218,12 +231,14 @@
            phys_check_name(2) = fhd_temp
 !
           else if (phys_nod_name(i) .eq. fhd_kinetic_helicity           &
+     &        .or. phys_nod_name(i) .eq. fhd_velocity_scale             &
      &       ) then
            num_check = 2
            phys_check_name(1) = fhd_velo
            phys_check_name(2) = fhd_vort
 !
           else if (phys_nod_name(i) .eq. fhd_current_helicity           &
+     &        .or. phys_nod_name(i) .eq. fhd_magnetic_scale             &
      &       ) then
            num_check = 2
            phys_check_name(1) = fhd_magne

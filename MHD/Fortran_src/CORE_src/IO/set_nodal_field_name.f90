@@ -250,7 +250,7 @@
       if (    (phys_nod_name_ctl .eq. fhd_velocity_scale      )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_magnetic_scale      )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_temp_scale          )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_composiiton_scale   )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_composition_scale   )         &
      &       ) iflag = 1
 !
       if (iflag .eq. 1) then

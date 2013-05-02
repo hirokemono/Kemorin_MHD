@@ -35,11 +35,13 @@
       integer(kind=kint), intent(in) :: my_rank, nprocs, istep
 !
       character(len=kchara)  :: file_name, fname_tmp
+      character(len=kchara) :: fname_nodir
       integer(kind = kint) :: ip
 !
 !
       if(my_rank .gt. 0) return
 !
+      call delete_directory_name(ucd_header_name, fname_nodir)
       call add_int_suffix(istep, ucd_header_name, fname_tmp)
       call add_pvtk_extension(fname_tmp, file_name)
 !
@@ -52,7 +54,7 @@
       write(ucd_file_code,'(a,i6,a)')                                   &
      &     '       numberOfPieces="', nprocs, '" >'
       do ip = 0, nprocs-1
-        call set_parallel_ucd_file_name(ucd_header_name, iflag_vtk,     &
+        call set_parallel_ucd_file_name(fname_nodir, iflag_vtk,         &
      &      ip, istep, file_name)
         write(ucd_file_code,'(3a)') '   <Piece fileName="',             &
      &                       trim(file_name), '" />'

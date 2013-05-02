@@ -3,9 +3,9 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine SPH_init_sph_zm_snap
-!      subroutine SPH_analyze_snap(i_step)
-!      subroutine SPH_finalize_zm_snap
+!!      subroutine SPH_init_sph_zm_snap
+!!      subroutine SPH_analyze_snap(i_step)
+!!      subroutine SPH_finalize_zm_snap
 !
       module SPH_analyzer_zm_snap
 !
@@ -43,15 +43,11 @@
       use cal_sol_sph_MHD_crank
       use set_reference_sph_mhd
       use lead_fields_4_sph_mhd
-      use lead_pole_data_4_sph_mhd
       use sph_mhd_rst_IO_control
       use sph_mhd_rms_IO
-      use sph_transforms_4_MHD
-      use cal_energy_flux_rtp
-      use lead_pole_data_4_sph_mhd
-      use cal_nonlinear_sph_MHD
 !
       use cal_zonal_mean_sph_spectr
+      use sph_rtp_zonal_rms_data
 !
       integer(kind = kint), intent(in) :: i_step
 !
@@ -86,8 +82,11 @@
 !
 ! ----  Take zonal mean
 !
-      if (iflag_debug.eq.1) write(*,*) 'take_zonal_mean_sph_spectr'
-      call take_zonal_mean_sph_spectr
+      if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_sph_spectr'
+      call zonal_mean_all_sph_spectr
+!
+      if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_rtp_field'
+      call zonal_mean_all_rtp_field
 !
 !*  -----------  lead energy data --------------
 !*
@@ -96,23 +95,6 @@
       call output_rms_sph_mhd_control
       call end_eleps_time(10)
       call end_eleps_time(4)
-!
-! ----  spherical transform
-!
-      if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_4_MHD'
-      call sph_back_trans_4_MHD
-      if (iflag_debug.eq.1) write(*,*) 's_cal_nonlinear_sph_MHD'
-      call s_cal_nonlinear_sph_MHD
-!
-!
-      if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_snapshot_MHD'
-      call sph_back_trans_snapshot_MHD
-!
-      if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
-      call s_cal_energy_flux_rtp
-
-      if (iflag_debug.eq.1) write(*,*) 'lead_pole_fields_4_sph_mhd'
-      call lead_pole_fields_4_sph_mhd
 !
       end subroutine SPH_analyze_zm_snap
 !

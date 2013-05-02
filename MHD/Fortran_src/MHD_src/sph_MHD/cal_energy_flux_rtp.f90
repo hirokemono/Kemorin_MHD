@@ -38,6 +38,7 @@
       use sph_poynting_flux_smp
       use sph_transforms_4_MHD
       use products_sph_fields_smp
+      use mag_of_field_smp
 !
 !
 !$omp parallel
@@ -91,6 +92,28 @@
      &      d_rtp(1,irtp%i_filter_temp), d_rtp(1,irtp%i_velo),          &
      &      d_rtp(1,irtp%i_f_buo_gen) )
       end if
+!
+      if((irtp%i_vort*irtp%i_velo_scale) .gt. 0) then
+        call cal_len_scale_by_rot_smp(np_smp, nnod_rtp,                 &
+     &      inod_rtp_smp_stack, d_rtp(1,irtp%i_velo),                   &
+     &      d_rtp(1,irtp%i_vort), d_rtp(1,irtp%i_velo_scale))
+      end if
+      if((irtp%i_current*irtp%i_magne_scale) .gt. 0) then
+        call cal_len_scale_by_rot_smp(np_smp, nnod_rtp,                 &
+     &      inod_rtp_smp_stack, d_rtp(1,irtp%i_magne),                  &
+     &      d_rtp(1,irtp%i_current), d_rtp(1,irtp%i_magne_scale))
+      end if
+      if((irtp%i_t_diffuse*irtp%i_temp_scale) .gt. 0) then
+        call cal_len_scale_by_diffuse_smp(np_smp, nnod_rtp,             &
+     &      inod_rtp_smp_stack, d_rtp(1,irtp%i_temp),                   &
+     &      d_rtp(1,irtp%i_t_diffuse), d_rtp(1,irtp%i_temp_scale))
+      end if
+      if((irtp%i_c_diffuse*irtp%i_comp_scale) .gt. 0) then
+        call cal_len_scale_by_diffuse_smp(np_smp, nnod_rtp,             &
+     &      inod_rtp_smp_stack, d_rtp(1,irtp%i_light),                  &
+     &      d_rtp(1,irtp%i_c_diffuse), d_rtp(1,irtp%i_comp_scale))
+      end if
+!
 !$omp end parallel
 !
       end subroutine s_cal_energy_flux_rtp

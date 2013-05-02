@@ -1,9 +1,17 @@
+!>@file   m_bulk_values.f90
+!!        module m_bulk_values
+!!
+!! @author H. Matsui
+!! @date   Programmed in 2002
+!! @n      Modified  on Jan., 2013
+!!
 !
-!     module m_bulk_values
-!.......................................................................
-!
-!      subroutine count_bulk_values
-!      subroutine set_bulk_values
+!> @brief addresses for volume integrated data
+!!
+!!@verbatim
+!!      subroutine count_bulk_values
+!!      subroutine set_bulk_values
+!!@endverbatim
 !
       module m_bulk_values
 !
@@ -13,38 +21,95 @@
 !
       implicit  none
 !
+!>      number of fields for volume average data
       integer (kind = kint) :: num_bulk
+!>      number of fields for volume mean square data
       integer (kind = kint) :: num_rms
 !
+!>      volume average data for each subdomaine
       real(kind=kreal), dimension(:), allocatable :: bulk_local
+!>      volume average data for entire domain
       real(kind=kreal), dimension(:), allocatable :: bulk_global
 !
+!>      volume mean square data for each subdomaine
       real(kind=kreal), dimension(:), allocatable :: rms_local
+!>      volume mean square data for entire domain
       real(kind=kreal), dimension(:), allocatable :: rms_global
 !
+!>      Structure for addresses of volume average
       type(phys_address), save :: i_rms
+!>      Structure for addresses of mean square
       type(phys_address), save :: j_ave
 !
 !
+!>      Address for mean square of divergence of velocity
       integer(kind=kint) :: ir_divv = 0
-      integer(kind=kint) :: ja_divv = 0,   ja_amom = 0
-      integer(kind=kint) :: ir_me_ic = 0,  ir_divb = 0
-      integer(kind=kint) :: ja_mag_ic = 0, ja_divb = 0
-      integer(kind=kint) :: ir_diva = 0,           ja_diva = 0
+!>      Address for average of divergence of velocity
+      integer(kind=kint) :: ja_divv = 0
+!
+!>      Address for root mean square of vorticity
       integer(kind=kint) :: ir_rms_w = 0
-      integer(kind=kint) :: ir_sqj_ic = 0,         ja_j_ic = 0
-      integer(kind=kint) :: ir_rms_j = 0,          ir_rms_j_ic = 0
 !
-      integer(kind=kint) :: ir_divv_f = 0,         ja_divv_f = 0
+!>      Address for average of angular momentum
+      integer(kind=kint) :: ja_amom = 0
+!
+!>      Address for mean square of divergence of magnetic field
+      integer(kind=kint) :: ir_divb = 0
+!>      Address for average of divergence of magnetic field
+      integer(kind=kint) :: ja_divb = 0
+!
+!>      Address for magnetic energy including inner core
+      integer(kind=kint) :: ir_me_ic = 0
+!>      Address for average magnetic field including inner core
+      integer(kind=kint) :: ja_mag_ic = 0
+!
+!
+!>      Address for mean square of divergence 
+!!        of magnetic vector potential
+      integer(kind=kint) :: ir_diva = 0
+!>      Address for average of divergence of magnetic vector potential
+      integer(kind=kint) :: ja_diva = 0
+!
+!>      Address for mean square of current density including inner core
+      integer(kind=kint) :: ir_sqj_ic = 0
+!>      Address for average of current density including inner core
+      integer(kind=kint) :: ja_j_ic = 0
+!
+!>      Address for RMS of current density
+      integer(kind=kint) :: ir_rms_j = 0
+!>      Address for RMS of current density including inner core
+      integer(kind=kint) :: ir_rms_j_ic = 0
+!
+!>      Address for mean square of divergence of filtered velocity
+      integer(kind=kint) :: ir_divv_f = 0
+!>      Address for average of divergence of filtered velocity
+      integer(kind=kint) :: ja_divv_f = 0
+!
+!>      Address for average of filtered angular momentum
       integer(kind=kint) :: jr_amom_f = 0
-      integer(kind=kint) :: ir_me_f_ic = 0,        ja_mag_f_ic = 0
-      integer(kind=kint) :: ir_divb_f = 0
-      integer(kind=kint) :: ja_divb_f = 0
-      integer(kind=kint) :: ir_diva_f = 0,         ja_diva_f = 0
 !
+!>      Address for filtered magnetic energy including inner core
+      integer(kind=kint) :: ir_me_f_ic = 0
+!>      Address for average filtererd magnetic field including inner core
+      integer(kind=kint) :: ja_mag_f_ic = 0
+!
+!>      Address for mean square of divergence of filtered magnetic field
+      integer(kind=kint) :: ir_divb_f = 0
+!>      Address for average of divergence of filtered magnetic field
+      integer(kind=kint) :: ja_divb_f = 0
+!
+!>      Address for mean square of divergence
+!!      of filtered magnetic vector potential
+      integer(kind=kint) :: ir_diva_f = 0
+!>      Address for average of divergence
+!!      of filtered magnetic vector potential
+      integer(kind=kint) :: ja_diva_f = 0
+!
+!>      Address of volume of fluid area
       integer(kind=kint) :: ivol = 0
 !
-      real(kind=kreal) :: ave_mp_core, ave_mp_core_local
+      real(kind=kreal) :: ave_mp_core
+      real(kind=kreal) :: ave_mp_core_local
 !
       real(kind=kreal) :: ave_flux_local
 !
@@ -175,6 +240,14 @@
      &      ) then
          i0 = i0 + 1
          j0 = j0 + 6
+!
+        else if ( phys_nod_name(i) .eq. fhd_velocity_scale              &
+     &       .or. phys_nod_name(i) .eq. fhd_magnetic_scale              &
+     &       .or. phys_nod_name(i) .eq. fhd_temp_scale                  &
+     &       .or. phys_nod_name(i) .eq. fhd_composition_scale           &
+     &      ) then
+         i0 = i0 + 1
+         j0 = j0 + 1
         end if
 !
         else
@@ -515,6 +588,19 @@
           else if ( phys_nod_name(i) .eq. fhd_SGS_m_ene_gen_true ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_SGS_me_gen_tr, j_ave%i_SGS_me_gen_tr)
+!
+          else if ( phys_nod_name(i) .eq. fhd_velocity_scale ) then
+            call set_rms_address(num_nod_component(i), i0, j0,          &
+     &          i_rms%i_velo_scale, j_ave%i_velo_scale)
+          else if ( phys_nod_name(i) .eq. fhd_magnetic_scale ) then
+            call set_rms_address(num_nod_component(i), i0, j0,          &
+     &          i_rms%i_magne_scale, j_ave%i_magne_scale)
+          else if ( phys_nod_name(i) .eq. fhd_temp_scale ) then
+            call set_rms_address(num_nod_component(i), i0, j0,          &
+     &          i_rms%i_temp_scale, j_ave%i_temp_scale)
+          else if ( phys_nod_name(i) .eq. fhd_composition_scale ) then
+            call set_rms_address(num_nod_component(i), i0, j0,          &
+     &          i_rms%i_comp_scale, j_ave%i_comp_scale)
 !
 !   Old field label... Should be deleted later!!
           else if ( phys_nod_name(i) .eq. fhd_buoyancy_work ) then

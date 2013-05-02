@@ -8,6 +8,8 @@ TARGET_SPH_MHD =        sph_mhd
 TARGET_SPH_SNAP =       sph_snapshot
 TARGET_SPH_ZM_SNAP =    sph_zm_snapshot
 
+TARGET_SPH_SP_SNAP =    sph_special_snap
+
 TARGET_SPH_MHD_NOVIZ =     sph_mhd_noviz
 TARGET_SPH_SNAP_NOVIZ =    sph_snapshot_noviz
 TARGET_SPH_ZM_SNAP_NOVIZ = sph_zm_snapshot_noviz
@@ -64,6 +66,13 @@ SPH_analyzer_snap.o \
 SPH_analyzer_zm_snap.o \
 FEM_analyzer_sph_MHD.o
 
+MOD_SPH_SP_SNAP_MAIN = \
+main_sph_special_snap.o \
+analyzer_sph_special_snap.o \
+analyzer_sph_snap.o \
+SPH_analyzer_snap.o \
+FEM_analyzer_sph_MHD.o
+
 
 MOD_SPH_MHD_NOVIZ_MAIN =  \
 main_sph_MHD_noviz.o \
@@ -111,6 +120,7 @@ target_list:
 	@echo 'TARGET_SPH_MHD =        $$(BUILDDIR)/$(TARGET_SPH_MHD)'       >> $(MAKENAME)
 	@echo 'TARGET_SPH_LICV =       $$(BUILDDIR)/$(TARGET_SPH_LICV)'      >> $(MAKENAME)
 	@echo 'TARGET_SPH_SNAP =       $$(BUILDDIR)/$(TARGET_SPH_SNAP)'      >> $(MAKENAME)
+	@echo 'TARGET_SPH_SP_SNAP =    $$(BUILDDIR)/$(TARGET_SPH_SP_SNAP)'   >> $(MAKENAME)
 	@echo 'TARGET_SPH_ZM_SNAP =    $$(BUILDDIR)/$(TARGET_SPH_ZM_SNAP)'   >> $(MAKENAME)
 	@echo 'TARGET_SPH_D_BENCH =    $$(BUILDDIR)/$(TARGET_SPH_D_BENCH)'   >> $(MAKENAME)
 	@echo 'TARGET_SPH_MHD_MINI =   $$(BUILDDIR)/$(TARGET_SPH_MHD_MINI)'  >> $(MAKENAME)
@@ -124,6 +134,7 @@ target_task:
 	 '$$(TARGET_SPH_MHD)'        \
 	 '$$(TARGET_SPH_SNAP)'       \
 	 '$$(TARGET_SPH_ZM_SNAP)'    \
+	 '$$(TARGET_SPH_SP_SNAP)'    \
 	 '$$(TARGET_SPH_D_BENCH)'    \
 	 '$$(TARGET_SPH_LICV)'       \
 	 '$$(TARGET_SPH_MHD_NOVIZ)'  \
@@ -185,6 +196,12 @@ target_task:
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_MHD_MINI)' '$$(MOD_SPH_MINI_MHD_MAIN)' \
 	'-L. $$(LIBS_SPH_MHD)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	
+	@echo '$$(TARGET_SPH_SP_SNAP):  $$(MOD_SPH_SP_SNAP_MAIN)  $$(LIB_FILES_SPH_MHD)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_SP_SNAP)' '$$(MOD_SPH_SP_SNAP_MAIN)' \
+	'-L. $$(LIBS_SPH_MHD)  $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -202,6 +219,8 @@ mod_list:
 	@echo  $(MOD_SPH_MHD_NOVIZ_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_SNAP_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_SNAP_MAIN) >> $(MAKENAME)
+	@echo  MOD_SPH_SP_SNAP_MAIN=  \\ >> $(MAKENAME)
+	@echo  $(MOD_SPH_SP_SNAP_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_SNAP_NOVIZ_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_SNAP_NOVIZ_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_ZM_SNAP_MAIN=  \\ >> $(MAKENAME)

@@ -60,7 +60,6 @@
       subroutine allocate_num_pick_layer
 !
 !
-      write(*,*) 'num_pick_layer init ', num_pick_layer
       allocate( id_pick_layer(num_pick_layer) )
       allocate( r_pick_layer(num_pick_layer) )
       if(num_pick_layer .gt. 0) then

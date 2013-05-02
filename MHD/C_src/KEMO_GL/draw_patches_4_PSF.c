@@ -247,7 +247,7 @@ void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m) {
 						 (GLfloat) psf_s->xx_viz[inod][1],
 						 (GLfloat) psf_s->xx_viz[inod][2],
 						 (GLfloat) d_tri[0], (GLfloat) d_tri[1], (GLfloat) d_tri[2],
-					     (d_mag*0.05) );
+					     (d_mag*ascale*0.01) );
 		}
 	};
 	
