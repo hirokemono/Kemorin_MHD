@@ -88,11 +88,6 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_fdm_coeffients'
       call cal_fdm_coeffients
 !
-! ---------------------------------
-!
-!      if(iflag_debug.gt.0) write(*,*)' s_cal_radial_jacobians'
-!      call s_cal_radial_jacobians(nidx_rj(1), radius_1d_rj_r(1) )
-!
 !* -----  set integrals for coriolis term -----------------
 !*
       if(iflag_4_coriolis .gt. 0) then
@@ -142,8 +137,8 @@
 !*
 !* obtain linear terms for starting
 !*
-       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-       call set_sph_field_to_start
+      if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
+      call set_sph_field_to_start
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
@@ -152,8 +147,8 @@
 !
 !* -----  Open Volume integration data files -----------------
 !*
-       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
-       call open_sph_vol_rms_file_mhd
+      if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
+      call open_sph_vol_rms_file_mhd
 !
       end subroutine SPH_initialize_linear_conv
 !

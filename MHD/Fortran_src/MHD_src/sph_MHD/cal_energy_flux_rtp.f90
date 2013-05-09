@@ -113,7 +113,6 @@
      &      inod_rtp_smp_stack, d_rtp(1,irtp%i_light),                  &
      &      d_rtp(1,irtp%i_c_diffuse), d_rtp(1,irtp%i_comp_scale))
       end if
-!
 !$omp end parallel
 !
       end subroutine s_cal_energy_flux_rtp

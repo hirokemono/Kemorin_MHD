@@ -104,7 +104,7 @@
        iflag_radial_grid =  igrid_Chebyshev
       else if(raidal_grid_type_ctl .eq. 'equi_distance'                 &
      &   .or. raidal_grid_type_ctl .eq. 'Equi_distance'                 &
-     &   .or. raidal_grid_type_ctl .eq. 'EQUI)DISTANCE') then
+     &   .or. raidal_grid_type_ctl .eq. 'EQUI_DISTANCE') then
        iflag_radial_grid =  igrid_euqidistance
       end if
 !

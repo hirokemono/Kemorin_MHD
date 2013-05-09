@@ -146,7 +146,7 @@
 !
 !*  ----------------Modify spectr data ... ----------
 !*
-      call set_special_rj_fields
+!      call set_special_rj_fields
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
@@ -208,6 +208,8 @@
 !
       use cal_zonal_mean_sph_spectr
       use sph_rtp_zonal_rms_data
+      use sph_transforms_4_MHD
+      use products_sph_fields_smp
 !
       integer (kind =kint) :: iflag
 !
@@ -221,6 +223,19 @@
       if(iflag .eq. 0) then
         call enegy_fluxes_4_sph_mhd
       end if
+!
+!
+      call delete_rj_phys_data(ione, itor%i_magne)
+      call take_zonal_mean_rj_field(itwo, ipol%i_magne)
+      call sph_back_trans_4_MHD
+!
+!$omp parallel
+      if((irtp%i_induction*irtp%i_me_gen) .gt. 0) then
+       call cal_rtp_dot_product(irtp%i_induction, irtp%i_magne,        &
+     &      irtp%i_me_gen)
+      end if
+!$omp end parallel
+      call sph_forward_trans_snapshot_MHD
 !
 ! ----  Take zonal mean
 !

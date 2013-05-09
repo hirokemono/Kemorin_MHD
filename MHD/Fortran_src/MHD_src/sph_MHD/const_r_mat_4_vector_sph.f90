@@ -42,21 +42,19 @@
       use cal_inner_core_rotation
       use mat_product_3band_mul
 !
-      integer(kind = kint) :: kst, ked, ip, jst, jed, j
+      integer(kind = kint) :: ip, jst, jed, j
 !      integer(kind = kint) :: k
 !
 !
-      kst = nlayer_ICB+1
-      ked = nlayer_CMB-1
 !$omp parallel
       call set_radial_vect_evo_mat_sph(nidx_rj(1), nidx_rj(2),          &
-     &    kst, ked, coef_imp_v, coef_d_velo, vt_evo_mat)
+     &    nlayer_ICB, nlayer_CMB, coef_imp_v, coef_d_velo, vt_evo_mat)
       call set_radial_vect_evo_mat_sph(nidx_rj(1), nidx_rj(2),          &
-     &    kst, ked, coef_imp_v, coef_d_velo, wt_evo_mat)
-      call set_radial_vp_mat_sph(nidx_rj(1), nidx_rj(2),                &
-     &    kst, ked, vs_poisson_mat)
+     &    nlayer_ICB, nlayer_CMB, coef_imp_v, coef_d_velo, wt_evo_mat)
+      call set_radial_vp3_mat_sph(nidx_rj(1), nidx_rj(2),               &
+     &    nlayer_ICB, nlayer_CMB, vs_poisson_mat)
       call set_radial_press_mat_sph(nidx_rj(1), nidx_rj(2),             &
-     &    kst, ked, coef_press, p_poisson_mat)
+     &    nlayer_ICB, nlayer_CMB, coef_press, p_poisson_mat)
 !$omp end parallel
 !
 !   Boundary condition for ICB
@@ -66,10 +64,10 @@
 !
       if(iflag_icb_velocity .eq. iflag_free_slip) then
         call set_free_slip_icb_vt_sph_mat
-        call set_free_icb_vp_sph_poisson_mat
+        call set_free_icb_vp_poisson3_mat
       else
         call set_non_slip_icb_vt_sph_mat
-        call set_rgd_icb_vp_sph_poisson_mat
+        call set_rgd_icb_vp_poisson3_mat
       end if
 !
 !   Rotation for inner core
@@ -85,10 +83,10 @@
 !
       if(iflag_cmb_velocity .eq. iflag_free_slip) then
         call set_free_slip_cmb_vt_sph_mat
-        call set_free_cmb_vp_sph_poisson_mat
+        call set_free_cmb_vp_poisson3_mat
       else
         call set_non_slip_cmb_vt_sph_mat
-        call set_rgd_cmb_vp_sph_poisson_mat
+        call set_rgd_cmb_vp_poisson3_mat
       end if
 !
 !
@@ -138,17 +136,17 @@
       use m_control_params_sph_MHD
       use set_sph_magne_mat_bc
 !
-      integer(kind = kint) :: kst, ked, ip, jst, jed, j
+      integer(kind = kint) :: kr_in, ip, jst, jed, j
 !
 !
       if(iflag_icb_magne .eq. iflag_sph_fill_center) then
-        kst = itwo
+        kr_in = ione
         call set_magne_center_rmat_sph
       else if(iflag_icb_magne .eq. iflag_radial_magne) then
-        kst = nlayer_ICB+1
+        kr_in = nlayer_ICB
         call set_qvacume_magne_icb_rmat_sph
       else
-        kst = nlayer_ICB+1
+        kr_in = nlayer_ICB
         call set_ins_magne_icb_rmat_sph
       end if
 !
@@ -158,12 +156,11 @@
         call set_ins_magne_cmb_rmat_sph
       end if
 !
-      ked = nlayer_CMB-1
 !$omp parallel
       call set_radial_vect_evo_mat_sph(nidx_rj(1), nidx_rj(2),          &
-     &    kst, ked, coef_imp_b, coef_d_magne, bs_evo_mat)
+     &    kr_in, nlayer_CMB, coef_imp_b, coef_d_magne, bs_evo_mat)
       call set_radial_vect_evo_mat_sph(nidx_rj(1), nidx_rj(2),          &
-     &    kst, ked, coef_imp_b, coef_d_magne, bt_evo_mat)
+     &    kr_in, nlayer_CMB, coef_imp_b, coef_d_magne, bt_evo_mat)
 !$omp end parallel
 !
 !

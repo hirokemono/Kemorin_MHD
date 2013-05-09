@@ -37,14 +37,13 @@
 !
       subroutine const_radial_mat_4_temp_sph
 !
-      integer(kind = kint) :: kst, ked, ip, jst, jed, j
+      integer(kind = kint) :: ip, jst, jed, j
 !
 !
-      kst = nlayer_ICB+1
-      ked = nlayer_CMB-1
 !$omp parallel
       call set_radial_scalar_evo_mat_sph(nidx_rj(1), nidx_rj(2),        &
-     &    kst, ked, coef_imp_t, coef_d_temp, temp_evo_mat)
+     &    nlayer_ICB, nlayer_CMB, coef_imp_t, coef_d_temp,              &
+     &    temp_evo_mat)
 !$omp end parallel
 !
       if (iflag_icb_temp .eq. iflag_fixed_flux) then
@@ -81,14 +80,13 @@
 !
       subroutine const_radial_mat_4_composit_sph
 !
-      integer(kind = kint) :: kst, ked, ip, jst, jed, j
+      integer(kind = kint) :: ip, jst, jed, j
 !
 !
-      kst = nlayer_ICB+1
-      ked = nlayer_CMB-1
 !$omp parallel
       call set_radial_scalar_evo_mat_sph(nidx_rj(1), nidx_rj(2),        &
-     &    kst, ked, coef_imp_c, coef_d_light, composit_evo_mat)
+     &    nlayer_ICB, nlayer_CMB, coef_imp_c, coef_d_light,             &
+     &    composit_evo_mat)
 !$omp end parallel
 !
       if (iflag_icb_composition .eq. iflag_fixed_flux) then

@@ -309,6 +309,11 @@
      &       .or. restart_flag_ctl .eq. 'Kinematic'                     &
      &       .or. restart_flag_ctl .eq. 'KINEMATIC') then
             iflag_restart = i_rst_kinematic
+          else if(restart_flag_ctl .eq. '-20'                           &
+     &       .or. restart_flag_ctl .eq. 'linear_conveciton'             &
+     &       .or. restart_flag_ctl .eq. 'Linear_conveciton'             &
+     &       .or. restart_flag_ctl .eq. 'LINEAR_CONVECTION') then
+            iflag_restart = i_rst_licv
           end if
         end if
 !

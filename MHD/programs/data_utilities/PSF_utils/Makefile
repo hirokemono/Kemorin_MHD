@@ -13,6 +13,8 @@ TARGET_DRAW_CX =   drcx_fem
 TARGET_DRAW_CY =   drcy_fem
 TARGET_DRAW_MAP =  drmap_fem
 
+TARGET_LINE_ON_PSF = section_from_psf
+
 
 LIBS_PSF_UTIL = \
 '$$(LIB_UTILS)' \
@@ -76,6 +78,13 @@ drmap_fem.o \
 m_norms_4_psf.o \
 take_avarages_4_psf.o
 
+MOD_LINE_ON_PSF = \
+section_from_psf.o \
+take_avarages_4_psf.o \
+m_norms_4_psf.o \
+m_psf_edge_connect.o \
+m_line_from_psf.o
+
 #
 #  -------------------------------------------------------------------------
 #
@@ -91,6 +100,7 @@ target_list:
 	@echo 'TARGET_DRAW_CX =      $$(BUILDDIR)/$(TARGET_DRAW_CX)'      >> $(MAKENAME)
 	@echo 'TARGET_DRAW_CY =      $$(BUILDDIR)/$(TARGET_DRAW_CY)'      >> $(MAKENAME)
 	@echo 'TARGET_DRAW_MAP =     $$(BUILDDIR)/$(TARGET_DRAW_MAP)'     >> $(MAKENAME)
+	@echo 'TARGET_LINE_ON_PSF =  $$(BUILDDIR)/$(TARGET_LINE_ON_PSF)'  >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
@@ -100,7 +110,8 @@ target_task:
 	@echo '' >> $(MAKENAME)
 	@echo utils_pg: \
 	'$$(TARGET_DRAW_CZ) $$(TARGET_DRAW_MAP) ' \
-	'$$(TARGET_DRAW_CX) $$(TARGET_DRAW_CY) '  >> $(MAKENAME)
+	'$$(TARGET_DRAW_CX) $$(TARGET_DRAW_CY)  ' \
+	'$$(TARGET_LINE_ON_PSF) '               >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PSF_AVES)': '$$(MOD_PSF_AVES)' \
 	'$$(LIB_FILES_PSF_UTIL)' \
@@ -151,6 +162,13 @@ target_task:
 	'$$(MOD_MAP_PG)' '-L. $$(LIBS_PSF_UTIL)' \
 	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_LINE_ON_PSF)': '$$(MOD_LINE_ON_PSF)' \
+	'$$(LIB_FILES_PSF_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_LINE_ON_PSF)' \
+	'$$(MOD_LINE_ON_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
+	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -161,20 +179,22 @@ lib_name:
 	@echo  '#' >> $(MAKENAME)
 
 mod_list:
-	@echo  MOD_PSF_AVES =  \\   >> $(MAKENAME)
-	@echo  $(MOD_PSF_AVES)      >> $(MAKENAME)
-	@echo  MOD_PSF_2_VTK =  \\  >> $(MAKENAME)
-	@echo  $(MOD_PSF_2_VTK)     >> $(MAKENAME)
-	@echo  MOD_PSF_2_DX =  \\   >> $(MAKENAME)
-	@echo  $(MOD_PSF_2_DX)      >> $(MAKENAME)
-	@echo  MOD_ZCPLANE_PG =  \\ >> $(MAKENAME)
-	@echo  $(MOD_ZCPLANE_PG)    >> $(MAKENAME)
-	@echo  MOD_XCPLANE_PG =  \\ >> $(MAKENAME)
-	@echo  $(MOD_XCPLANE_PG)    >> $(MAKENAME)
-	@echo  MOD_YCPLANE_PG =  \\ >> $(MAKENAME)
-	@echo  $(MOD_YCPLANE_PG)    >> $(MAKENAME)
-	@echo  MOD_MAP_PG =  \\     >> $(MAKENAME)
-	@echo  $(MOD_MAP_PG)        >> $(MAKENAME)
+	@echo  MOD_PSF_AVES =  \\    >> $(MAKENAME)
+	@echo  $(MOD_PSF_AVES)       >> $(MAKENAME)
+	@echo  MOD_PSF_2_VTK =  \\   >> $(MAKENAME)
+	@echo  $(MOD_PSF_2_VTK)      >> $(MAKENAME)
+	@echo  MOD_PSF_2_DX =  \\    >> $(MAKENAME)
+	@echo  $(MOD_PSF_2_DX)       >> $(MAKENAME)
+	@echo  MOD_ZCPLANE_PG =  \\  >> $(MAKENAME)
+	@echo  $(MOD_ZCPLANE_PG)     >> $(MAKENAME)
+	@echo  MOD_XCPLANE_PG =  \\  >> $(MAKENAME)
+	@echo  $(MOD_XCPLANE_PG)     >> $(MAKENAME)
+	@echo  MOD_YCPLANE_PG =  \\  >> $(MAKENAME)
+	@echo  $(MOD_YCPLANE_PG)     >> $(MAKENAME)
+	@echo  MOD_MAP_PG =  \\      >> $(MAKENAME)
+	@echo  $(MOD_MAP_PG)         >> $(MAKENAME)
+	@echo  MOD_LINE_ON_PSF =  \\ >> $(MAKENAME)
+	@echo  $(MOD_LINE_ON_PSF)    >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 

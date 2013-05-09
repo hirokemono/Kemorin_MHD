@@ -34,6 +34,8 @@
 !
 !>     Initial field for kinematic dynamo
       integer(kind=kint), parameter :: i_rst_kinematic =  20
+!>     Initial field for linear convection model
+      integer(kind=kint), parameter :: i_rst_licv =  -20
 !
 !>     flag for the initial field
       integer(kind=kint) :: iflag_restart = i_rst_no_file

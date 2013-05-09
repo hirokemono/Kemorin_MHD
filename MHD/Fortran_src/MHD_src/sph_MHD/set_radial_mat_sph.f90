@@ -8,13 +8,15 @@
 !!
 !!@verbatim
 !!      subroutine set_radial_scalar_evo_mat_sph(nri, jmax,             &
-!!     &          kr_st, kr_ed, coef_imp, coef_d, evo_mat)
+!!     &           kr_in, kr_out, coef_imp, coef_d, evo_mat)
 !!      subroutine set_radial_vect_evo_mat_sph(nri, jmax,               &
-!!     &           kr_st, kr_ed, coef_imp, coef_d, evo_mat)
+!!     &          kr_in, kr_out, coef_imp, coef_d, evo_mat)
 !!
-!!      subroutine set_radial_vp_mat_sph(nri, jmax, kr_st, kr_ed,       &
+!!      subroutine set_radial_vp3_mat_sph(nri, jmax, kr_in, kr_out,     &
 !!     &          poisson_mat)
-!!      subroutine set_radial_press_mat_sph(nri, jmax, kr_st, kr_ed,    &
+!!      subroutine set_radial_vp5_mat_sph(nri, jmax, kr_in, kr_out,     &
+!!     &          poisson_mat)
+!!      subroutine set_radial_press_mat_sph(nri, jmax, kr_in, kr_out,   &
 !!     &          coef_p, poisson_mat)
 !!
 !!    Format of band matrix
@@ -45,6 +47,8 @@
 !!@n @param jmax    Number of spherical hermonics modes
 !!@n @param kr_st   Start radial address to construct matrix
 !!@n @param kr_ed   End radial address to construct matrix
+!!@n @param kr_in    Radial address for inner boundary
+!!@n @param kr_out   Radial address for outer boundary
 !!@n @param coef_imp   Coefficient for contribution of implicit term
 !!@n @param coef_d     Coefficient of diffusiotn term
 !!@n @param coef_p     Coefficient of pressure gradient
@@ -72,10 +76,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_radial_scalar_evo_mat_sph(nri, jmax,               &
-     &          kr_st, kr_ed, coef_imp, coef_d, evo_mat)
+     &          kr_in, kr_out, coef_imp, coef_d, evo_mat)
 !
       integer(kind = kint), intent(in) :: jmax, nri
-      integer(kind = kint), intent(in) :: kr_st, kr_ed
+      integer(kind = kint), intent(in) :: kr_in, kr_out
       real(kind = kreal), intent(in) :: coef_imp, coef_d
 !
       real(kind = kreal), intent(inout) :: evo_mat(3,nri,jmax)
@@ -84,7 +88,7 @@
 !
 !
 !$omp do private (k,j)
-      do k = kr_st, kr_ed
+      do k = kr_in+1, kr_out-1
         do j = 1, jmax
           evo_mat(3,k-1,j)                                              &
      &          =     - coef_imp*dt*coef_d * (  d2nod_mat_fdm_2(k,-1)   &
@@ -105,10 +109,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_radial_vect_evo_mat_sph(nri, jmax,                 &
-     &          kr_st, kr_ed, coef_imp, coef_d, evo_mat)
+     &          kr_in, kr_out, coef_imp, coef_d, evo_mat)
 !
       integer(kind = kint), intent(in) :: jmax, nri
-      integer(kind = kint), intent(in) :: kr_st, kr_ed
+      integer(kind = kint), intent(in) :: kr_in, kr_out
       real(kind = kreal), intent(in) :: coef_imp, coef_d
 !
       real(kind = kreal), intent(inout) :: evo_mat(3,nri,jmax)
@@ -117,7 +121,7 @@
 !
 !
 !$omp do private (k,j)
-      do k = kr_st, kr_ed
+      do k = kr_in+1, kr_out-1
         do j = 1, jmax
           evo_mat(3,k-1,j)                                              &
      &          =     - coef_imp*dt*coef_d *    d2nod_mat_fdm_2(k,-1)
@@ -134,11 +138,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_radial_vp_mat_sph(nri, jmax, kr_st, kr_ed,         &
+      subroutine set_radial_vp3_mat_sph(nri, jmax, kr_in, kr_out,       &
      &          poisson_mat)
 !
       integer(kind = kint), intent(in) :: jmax, nri
-      integer(kind = kint), intent(in) :: kr_st, kr_ed
+      integer(kind = kint), intent(in) :: kr_in, kr_out
 !
       real(kind = kreal), intent(inout) :: poisson_mat(3,nri,jmax)
 !
@@ -146,7 +150,7 @@
 !
 !
 !$omp do private (k,j)
-      do k = kr_st, kr_ed
+      do k = kr_in+1, kr_out-1
         do j = 1, jmax
           poisson_mat(3,k-1,j) = - d2nod_mat_fdm_2(k,-1)
           poisson_mat(2,k,  j) = - d2nod_mat_fdm_2(k, 0)             &
@@ -156,15 +160,43 @@
       end do
 !$omp end do nowait
 !
-      end subroutine set_radial_vp_mat_sph
+      end subroutine set_radial_vp3_mat_sph
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_radial_press_mat_sph(nri, jmax, kr_st, kr_ed,      &
+      subroutine set_radial_vp5_mat_sph(nri, jmax, kr_in, kr_out,       &
+     &          poisson_mat)
+!
+      integer(kind = kint), intent(in) :: jmax, nri
+      integer(kind = kint), intent(in) :: kr_in, kr_out
+!
+      real(kind = kreal), intent(inout) :: poisson_mat(5,nri,jmax)
+!
+      integer(kind = kint) :: k, j
+!
+!
+!$omp do private (k,j)
+      do k = kr_in+2, kr_out-2
+        do j = 1, jmax
+          poisson_mat(5,k-2,j) = - d2nod_mat_fdm_4(k,-2)
+          poisson_mat(4,k-1,j) = - d2nod_mat_fdm_4(k,-1)
+          poisson_mat(3,k,  j) = - d2nod_mat_fdm_4(k, 0)                &
+     &                             + g_sph_rj(j,3)*ar_1d_rj(k,2)
+          poisson_mat(2,k+1,j) = - d2nod_mat_fdm_4(k, 1)
+          poisson_mat(1,k+2,j) = - d2nod_mat_fdm_4(k, 2)
+        end do
+      end do
+!$omp end do nowait
+!
+      end subroutine set_radial_vp5_mat_sph
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_radial_press_mat_sph(nri, jmax, kr_in, kr_out,     &
      &          coef_p, poisson_mat)
 !
       integer(kind = kint), intent(in) :: jmax, nri
-      integer(kind = kint), intent(in) :: kr_st, kr_ed
+      integer(kind = kint), intent(in) :: kr_in, kr_out
       real(kind = kreal), intent(in) :: coef_p
 !
       real(kind = kreal), intent(inout) :: poisson_mat(3,nri,jmax)
@@ -173,7 +205,7 @@
 !
 !
 !$omp do private (k,j)
-      do k = kr_st, kr_ed
+      do k = kr_in+1, kr_out-1
         do j = 1, jmax
           poisson_mat(3,k-1,j) = coef_p * (d2nod_mat_fdm_2(k,-1)        &
      &                    + two*ar_1d_rj(k,1) * d1nod_mat_fdm_2(k,-1))

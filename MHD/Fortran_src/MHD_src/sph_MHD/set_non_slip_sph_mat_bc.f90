@@ -8,10 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine set_non_slip_icb_vt_sph_mat
-!!      subroutine set_rgd_icb_vp_sph_poisson_mat
+!!      subroutine set_rgd_icb_vp_poisson3_mat
+!!      subroutine set_rgd_icb_vp_poisson5_mat
 !!
 !!      subroutine set_non_slip_cmb_vt_sph_mat
-!!      subroutine set_rgd_cmb_vp_sph_poisson_mat
+!!      subroutine set_rgd_cmb_vp_poisson3_mat
+!!      subroutine set_rgd_cmb_vp_poisson5_mat
 !!@endverbatim
 !
       module set_non_slip_sph_mat_bc
@@ -48,7 +50,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rgd_icb_vp_sph_poisson_mat
+      subroutine set_rgd_icb_vp_poisson3_mat
 !
       use m_coef_fdm_fixed_ICB
 !
@@ -62,7 +64,31 @@
         vs_poisson_mat(1,nlayer_ICB+1,j) = -coef_fdm_fix_dr_ICB_2(1,3)
       end do
 !
-      end subroutine set_rgd_icb_vp_sph_poisson_mat
+      end subroutine set_rgd_icb_vp_poisson3_mat
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_rgd_icb_vp_poisson5_mat
+!
+      use m_vp_coef_fdm4_nonslip_ICB
+!
+      integer(kind = kint) :: j
+!
+!
+      do j = 1, nidx_rj(2)
+        vs_poisson_mat(4,nlayer_ICB,  j)= -coef_fdm_noslip_ICB1_4(-1,3)
+        vs_poisson_mat(3,nlayer_ICB+1,j) = -coef_fdm_noslip_ICB1_4(0,3) &
+     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_ICB,2)
+        vs_poisson_mat(2,nlayer_ICB+2,j)= -coef_fdm_noslip_ICB1_4(1,3)
+        vs_poisson_mat(1,nlayer_ICB+3,j)= -coef_fdm_noslip_ICB1_4(2,3)
+!
+        vs_poisson_mat(3,nlayer_ICB,  j)= -coef_fdm_noslip_ICB_4(0,3)   &
+     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_ICB,2)
+        vs_poisson_mat(2,nlayer_ICB+1,j)= -coef_fdm_noslip_ICB_4(1,3)
+        vs_poisson_mat(1,nlayer_ICB+2,j)= -coef_fdm_noslip_ICB_4(2,3)
+      end do
+!
+      end subroutine set_rgd_icb_vp_poisson5_mat
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -82,7 +108,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rgd_cmb_vp_sph_poisson_mat
+      subroutine set_rgd_cmb_vp_poisson3_mat
 !
       use m_coef_fdm_fixed_CMB
 !
@@ -96,7 +122,31 @@
 !       vs_poisson_mat(1,nlayer_CMB+1,j) = -coef_fdm_fix_dr_CMB_2(1,3)
       end do
 !
-      end subroutine set_rgd_cmb_vp_sph_poisson_mat
+      end subroutine set_rgd_cmb_vp_poisson3_mat
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_rgd_cmb_vp_poisson5_mat
+!
+      use m_vp_coef_fdm4_nonslip_CMB
+!
+      integer(kind = kint) :: j
+!
+!
+      do j = 1, nidx_rj(2)
+        vs_poisson_mat(5,nlayer_CMB-3,j)= -coef_fdm_noslip_CMB1_4(-2,3)
+        vs_poisson_mat(4,nlayer_CMB-2,j)= -coef_fdm_noslip_CMB1_4(-1,3)
+        vs_poisson_mat(3,nlayer_CMB-1,j)= -coef_fdm_noslip_CMB1_4( 0,3) &
+     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_CMB,2)
+        vs_poisson_mat(2,nlayer_CMB,  j)= -coef_fdm_noslip_CMB1_4( 1,3)
+!
+        vs_poisson_mat(5,nlayer_CMB-2,j)= -coef_fdm_noslip_CMB_4(-2,3)
+        vs_poisson_mat(4,nlayer_CMB-1,j)= -coef_fdm_noslip_CMB_4(-1,3)
+        vs_poisson_mat(3,nlayer_CMB,  j)= -coef_fdm_noslip_CMB_4( 0,3)  &
+     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_CMB,2)
+      end do
+!
+      end subroutine set_rgd_cmb_vp_poisson5_mat
 !
 ! -----------------------------------------------------------------------
 !

@@ -35,7 +35,7 @@
       private :: cal_2nd_ele_r_fdm_coefs
       private :: copy_fdm_nod_coefs_from_mat
       private :: copy_fdm_ele_coefs_from_mat
-!
+      private :: copy_fdm4_nod_coefs_from_mat
 !
 !  -------------------------------------------------------------------
 !
@@ -67,15 +67,8 @@
      &      write(*,*) 'set_radius_dat_4_sph_dynamo'
       call set_radius_dat_4_sph_dynamo
 !
-      if (iflag_debug .ge. iflag_routine_msg)                           &
-     &      write(*,*) 'Set grid spacing', iflag_radial_grid
-      if (iflag_radial_grid .eq. igrid_Chebyshev) then
-        call set_dr_for_cheby
-      else if (iflag_radial_grid .eq. igrid_non_euqidist) then
-        call set_dr_for_nonequi
-      else
-        call set_dr_for_equidist
-      end if
+!   Choose radial grid mode
+      call set_dr_for_nonequi
 !
       if(iflag_debug .eq. iflag_full_msg) call check_radial_fung_rj
 !
@@ -107,20 +100,11 @@
 !
       call allocate_fdm_matrices(nidx_rj(1))
 !
-      if (iflag_radial_grid .eq. igrid_Chebyshev) then
-        call nod_r_2nd_fdm_coefs_cheby
-      else if (iflag_radial_grid .eq. igrid_non_euqidist) then
-        call nod_r_2nd_fdm_coefs_nonequi
-      else
-        call nod_r_2nd_fdm_coefs_equi
-      end if
+!   Choose radial differences
+      call nod_r_2nd_fdm_coefs_nonequi
+      call nod_r_4th_fdm_coefs_nonequi
 !
       call cal_2nd_ele_r_fdm_coefs
-!
-!     if(iflag_debug .gt. 0) then
-!       call check_fdm_2_mat(nidx_rj(1), radius_1d_rj_r(1))
-!       call check_fdm_2e_mat(nidx_rj(1), radius_1d_rj_r(1))
-!      end if
 !
       end subroutine cal_fdm_matrices
 !
@@ -135,10 +119,12 @@
 !
       call copy_fdm_nod_coefs_from_mat(nidx_rj(1))
       call copy_fdm_ele_coefs_from_mat(nidx_rj(1))
+      call copy_fdm4_nod_coefs_from_mat(nidx_rj(1))
 !
       if(iflag_debug .eq. iflag_full_msg) then
         call check_fdm_2_coefs(nidx_rj(1), radius_1d_rj_r(1))
         call check_fdm_2e_coefs(nidx_rj(1), radius_1d_rj_r(1))
+        call check_fdm_4_coefs(nidx_rj(1), radius_1d_rj_r(1))
       end if
 !
       call deallocate_fdm_matrices
@@ -231,6 +217,46 @@
 !$omp end parallel do
 !
       end subroutine copy_fdm_ele_coefs_from_mat
+!
+! -----------------------------------------------------------------------
+!
+      subroutine copy_fdm4_nod_coefs_from_mat(nri)
+!
+      use m_fdm_coefs
+!
+      integer(kind = kint), intent(in) :: nri
+      integer(kind= kint) :: k
+!
+!
+!$omp parallel do private (k)
+      do k = 1, nri
+        d1nod_mat_fdm_4(k,-2) = mat_fdm_4(2,5,k)
+        d1nod_mat_fdm_4(k,-1) = mat_fdm_4(2,3,k)
+        d1nod_mat_fdm_4(k, 0) = mat_fdm_4(2,1,k)
+        d1nod_mat_fdm_4(k, 1) = mat_fdm_4(2,2,k)
+        d1nod_mat_fdm_4(k, 2) = mat_fdm_4(2,4,k)
+!
+        d2nod_mat_fdm_4(k,-2) = mat_fdm_4(3,5,k)
+        d2nod_mat_fdm_4(k,-1) = mat_fdm_4(3,3,k)
+        d2nod_mat_fdm_4(k, 0) = mat_fdm_4(3,1,k)
+        d2nod_mat_fdm_4(k, 1) = mat_fdm_4(3,2,k)
+        d2nod_mat_fdm_4(k, 2) = mat_fdm_4(3,4,k)
+!
+        d3nod_mat_fdm_4(k,-2) = mat_fdm_4(4,5,k)
+        d3nod_mat_fdm_4(k,-1) = mat_fdm_4(4,3,k)
+        d3nod_mat_fdm_4(k, 0) = mat_fdm_4(4,1,k)
+        d3nod_mat_fdm_4(k, 1) = mat_fdm_4(4,2,k)
+        d3nod_mat_fdm_4(k, 2) = mat_fdm_4(4,4,k)
+!
+        d4nod_mat_fdm_4(k,-2) = mat_fdm_4(5,5,k)
+        d4nod_mat_fdm_4(k,-1) = mat_fdm_4(5,3,k)
+        d4nod_mat_fdm_4(k, 0) = mat_fdm_4(5,1,k)
+        d4nod_mat_fdm_4(k, 1) = mat_fdm_4(5,2,k)
+        d4nod_mat_fdm_4(k, 2) = mat_fdm_4(5,4,k)
+      end do
+!$omp end parallel do
+!
+      end subroutine copy_fdm4_nod_coefs_from_mat
 !
 ! -----------------------------------------------------------------------
 !

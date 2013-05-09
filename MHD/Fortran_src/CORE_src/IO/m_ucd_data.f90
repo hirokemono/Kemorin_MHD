@@ -3,21 +3,31 @@
 !
 !        Written by H.Matsui on June, 2006
 !
-!      subroutine allocate_ucd_node
-!      subroutine allocate_ucd_ele
-!      subroutine allocate_ucd_phys_name
-!      subroutine allocate_ucd_phys_data
+!>@file   m_grid_fdm_coefs.f90
+!!@brief  module m_grid_fdm_coefs
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2006
 !
-!      subroutine deallocate_ucd_node
-!      subroutine deallocate_ucd_ele
-!      subroutine deallocate_ucd_phys_data
-!      subroutine deallocate_ucd_phys_name
-!      subroutine deallocate_ucd_data
-!
-!      subroutine disconnect_ucd_node
-!      subroutine disconnect_ucd_data
-!
-!      subroutine cal_istack_ucd_component
+!>@brief Arrays for Field data IO
+!!
+!!@verbatim
+!!      subroutine allocate_ucd_node
+!!      subroutine allocate_ucd_ele
+!!      subroutine allocate_ucd_phys_name
+!!      subroutine allocate_ucd_phys_data
+!!
+!!      subroutine deallocate_ucd_node
+!!      subroutine deallocate_ucd_ele
+!!      subroutine deallocate_ucd_phys_data
+!!      subroutine deallocate_ucd_phys_name
+!!      subroutine deallocate_ucd_data
+!!
+!!      subroutine disconnect_ucd_node
+!!      subroutine disconnect_ucd_data
+!!
+!!      subroutine cal_istack_ucd_component
+!!@endverbatim
 !
       module m_ucd_data
 !
@@ -27,33 +37,53 @@
 !
       implicit none
 !
+!>      file ID for field data IO
       integer (kind = kint), parameter :: ucd_file_code = 16
+!>      file name for field data
       character(len=kchara) :: ucd_file_name
 !
 !
+!>      file header for field data
       character(len=kchara) :: ucd_header_name = "field/out"
+!>      file header for original field data
       character(len=kchara) :: org_ucd_header =  "field_org/out"
 !
+!>      file type for field data IO
       integer (kind = kint) :: itype_ucd_data_file = iflag_fld
-!  data file type of field data
 !
-      integer(kind = kint) :: nnod_ucd, nele_ucd
+!>      number of nodes for field data
+      integer(kind = kint) :: nnod_ucd
+!>      number of elements for field data
+      integer(kind = kint) :: nele_ucd
+!>      number of nodes for each element for field data
       integer(kind = kint) :: nnod_4_ele_ucd
 !
+!>      position of nodes
       real (kind=kreal), pointer :: xx_ucd(:,:)
+!>      global node ID
       integer(kind = kint), pointer :: inod_gl_ucd(:)
+!>      global element ID
       integer(kind = kint), pointer :: iele_gl_ucd(:)
+!>      element connectivity
       integer(kind = kint), pointer :: ie_ucd(:,:)
+!>      element flag for hexahedral element
       character (len=5) :: hexmark = ' hex '
+!>      element flag for triangle element
       character (len=5) :: trimark = ' tri '
 !
 !
+!>      number of field for IO
       integer(kind=kint) :: num_field_ucd
+!>      total number of component for IO
       integer(kind=kint) :: ntot_comp_ucd
+!>      number of component for each field
       integer(kind=kint), pointer :: num_comp_ucd(:)
+!>      end address of component for each field
       integer(kind=kint), pointer :: istack_comp_ucd(:)
+!>      field name
       character (len=kchara), pointer :: phys_name_ucd(:)
 !
+!>      field data for IO
       real (kind=kreal), pointer :: d_nod_ucd(:,:)
 !
 ! -----------------------------------------------------------------------

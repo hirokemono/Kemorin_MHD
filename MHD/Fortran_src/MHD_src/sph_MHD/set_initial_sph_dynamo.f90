@@ -24,6 +24,7 @@
 !
       private :: set_initial_temp_sph, set_initial_magne_sph
       private :: set_initial_scalar_sph, set_initial_velo_sph
+      private :: set_ini_reference_temp_sph
 !
 !-----------------------------------------------------------------------
 !
@@ -60,6 +61,7 @@
         isig = 400
         call set_initial_velo_sph
         if(ipol%i_temp .gt. 0) then
+          call set_ini_reference_temp_sph
           call set_initial_temp_sph(isig)
         end if
         if(ipol%i_light .gt. 0) then
@@ -83,6 +85,10 @@
           call set_initial_magne_sph(0)
           call reduce_initial_magne_sph
         end if
+!
+      else if (iflag_restart .eq. i_rst_licv) then
+        call set_ini_reference_temp_sph
+        call set_all_part_temp_sph
       end if
 !
       call set_sph_restart_num_to_IO
@@ -119,20 +125,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_temp_sph(isig)
+      subroutine set_ini_reference_temp_sph
 !
       use m_control_parameter
       use m_spheric_parameter
       use m_sph_spectr_data
 !
-      integer ( kind = kint), intent(in) :: isig
+      integer ( kind = kint) :: inod, k
 !
-      integer ( kind = kint) :: inod, m, j, k, jj
-      real (kind = kreal) :: pi, xr, shell
-!
-!
-      pi = four * atan(one)
-      shell = r_CMB - r_ICB
 !
 !$omp parallel do
       do inod = 1, nnod_rj
@@ -140,6 +140,7 @@
       end do
 !$omp end parallel do
 !
+!   set reference temperature (l = m = 0)
       if (idx_rj_degree_zero .gt. 0) then
         if ( iflag_4_ref_temp .eq. 100 ) then
           do k = 1, nidx_rj(1)
@@ -155,7 +156,52 @@
         end if
       end if
 !
+      end subroutine set_ini_reference_temp_sph
 !
+!-----------------------------------------------------------------------
+!
+      subroutine set_all_part_temp_sph
+!
+      use m_control_parameter
+      use m_spheric_parameter
+      use m_sph_spectr_data
+!
+!
+      integer ( kind = kint) :: inod, j, k
+      real (kind = kreal) :: pi, xr, shell
+!
+!
+      pi = four * atan(one)
+      shell = r_CMB - r_ICB
+!
+      do j = 1, nidx_rj(2)
+        do k = nlayer_ICB, nlayer_CMB
+          xr = two * radius_1d_rj_r(k) - one * (r_CMB+r_ICB) / shell
+          inod = j + (k-1)*nidx_rj(2)
+!
+          d_rj(inod,ipol%i_temp) = (one-three*xr**2+three*xr**4-xr**6)  &
+     &                            * 0.1d0 * six / (sqrt(pi))
+        end do
+      end do
+!
+      end subroutine set_all_part_temp_sph
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_initial_temp_sph(isig)
+!
+      use m_control_parameter
+      use m_spheric_parameter
+      use m_sph_spectr_data
+!
+      integer ( kind = kint), intent(in) :: isig
+!
+      integer ( kind = kint) :: inod, m, j, k, jj
+      real (kind = kreal) :: pi, xr, shell
+!
+!
+      pi = four * atan(one)
+      shell = r_CMB - r_ICB
 !
       m = int( mod(isig,1000) / 100 )
       jj = 0

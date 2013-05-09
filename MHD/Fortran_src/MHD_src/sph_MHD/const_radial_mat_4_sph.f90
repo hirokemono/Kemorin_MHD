@@ -66,8 +66,6 @@
      &       call check_composit_matrix_sph(my_rank)
       end if
 !
-!      if(i_debug .gt. 0) close(50+my_rank)
-!
       end subroutine s_const_radial_mat_4_sph
 !
 ! -----------------------------------------------------------------------

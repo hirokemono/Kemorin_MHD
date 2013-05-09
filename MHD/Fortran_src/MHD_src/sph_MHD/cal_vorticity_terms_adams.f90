@@ -210,7 +210,7 @@
       do inod = 1, nnod_rj
         d_rj(inod,ipol%i_pre_mom) = d_rj(inod,ipol%i_forces)
         d_rj(inod,itor%i_pre_mom) = d_rj(inod,itor%i_forces)
-       end do
+      end do
 !$omp end do nowait
 !
       end subroutine set_adams_advect_4_ini

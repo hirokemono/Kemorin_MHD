@@ -1,17 +1,22 @@
+!>@file   m_psf_results.f90
+!!@brief  module m_psf_results
+!!
+!!@author H. Matsui
+!!@date Programmed in ????
 !
-!      module m_psf_results
-!
-!      Written by H. Matsui
-!
-!      subroutine allocate_psf_results
-!      subroutine allocate_psf_num_field
-!      subroutine allocate_psf_field_data
-!
-!      subroutine deallocate_psf_results
-!
-!      subroutine count_stack_tot_psf_field
-!
-!      subroutine write_headers_psf_comp_name(id_file)
+!>@brief set edge information for PSF results
+!!
+!!@verbatim
+!!      subroutine allocate_psf_results
+!!      subroutine allocate_psf_num_field
+!!      subroutine allocate_psf_field_data
+!!
+!!      subroutine deallocate_psf_results
+!!
+!!      subroutine count_stack_tot_psf_field
+!!
+!!      subroutine write_headers_psf_comp_name(id_file)
+!!@endverbatim
 !
       module m_psf_results
 !
