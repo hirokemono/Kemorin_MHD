@@ -54,14 +54,10 @@
       use cal_sph_exp_fixed_scalar
       use cal_inner_core_rotation
 !
-      integer(kind = kint) :: kr_st, kr_ed
 !
-!
-      kr_st = nlayer_ICB+1
-      kr_ed = nlayer_CMB-1
-      call cal_sph_nod_vect_diffuse2(kr_st, kr_ed, coef_d_velo,         &
-     &    ipol%i_velo, ipol%i_v_diffuse)
-      call cal_sph_nod_vect_dr_2(kr_st, kr_ed,                          &
+      call cal_sph_nod_vect_diffuse2(nlayer_ICB, nlayer_CMB,            &
+     &    coef_d_velo, ipol%i_velo, ipol%i_v_diffuse)
+      call cal_sph_nod_vect_dr_2(nlayer_ICB, nlayer_CMB,                &
      &    d_rj(1,ipol%i_v_diffuse), d_rj(1,idpdr%i_v_diffuse) )
 !
       if(iflag_icb_velocity .eq. iflag_free_slip) then
@@ -73,6 +69,7 @@
       end if
       call cal_dsdr_sph_icb_nobc_2(ipol%i_v_diffuse, idpdr%i_v_diffuse)
 !
+!   Ovewrite rotatable inner core 
       if(iflag_icb_velocity .eq. iflag_rotatable_ic) then
         call cal_icore_viscous_drag_explicit(coef_d_velo,               &
      &      itor%i_velo, itor%i_v_diffuse)
@@ -100,14 +97,10 @@
       use cal_sph_exp_fixed_scalar
       use cal_inner_core_rotation
 !
-      integer(kind = kint) :: kr_st, kr_ed
 !
-!
-      kr_st = nlayer_ICB+1
-      kr_ed = nlayer_CMB-1
-      call cal_sph_nod_vect_diffuse2(kr_st, kr_ed, coef_d_velo,         &
-     &    ipol%i_vort, ipol%i_w_diffuse)
-      call cal_sph_nod_vect_dr_2(kr_st, kr_ed,                          &
+      call cal_sph_nod_vect_diffuse2(nlayer_ICB, nlayer_CMB,            &
+     &   coef_d_velo, ipol%i_vort, ipol%i_w_diffuse)
+      call cal_sph_nod_vect_dr_2(nlayer_ICB, nlayer_CMB,                &
      &    d_rj(1,ipol%i_w_diffuse), d_rj(1,idpdr%i_w_diffuse) )
 !
 !
@@ -150,22 +143,22 @@
       use set_sph_exp_nod_center
       use cal_sph_exp_fixed_scalar
 !
-      integer(kind = kint) :: kr_st, kr_ed
+      integer(kind = kint) :: kr_in
 !
 !
       if(iflag_icb_magne .eq. iflag_sph_fill_center) then
-        kr_st = itwo
+        kr_in = ione
         call cal_sph_nod_center_diffuse2(coef_d_magne,                  &
      &      ipol%i_magne, ipol%i_b_diffuse)
         call cal_dsdr_sph_center_2(ipol%i_b_diffuse)
       else if(iflag_icb_magne .eq. iflag_radial_magne) then
-        kr_st = nlayer_ICB+1
+        kr_in = nlayer_ICB
         call cal_sph_nod_icb_qvc_diffuse2(coef_d_magne,                 &
      &      ipol%i_magne, ipol%i_b_diffuse)
         call cal_dsdr_sph_icb_nobc_2(ipol%i_b_diffuse,                  &
      &      idpdr%i_b_diffuse)
       else
-        kr_st = nlayer_ICB+1
+        kr_in = nlayer_ICB
         call cal_sph_nod_icb_ins_diffuse2(coef_d_magne,                 &
      &      ipol%i_magne, ipol%i_b_diffuse)
         call cal_dsdr_sph_icb_nobc_2(ipol%i_b_diffuse,                  &
@@ -173,10 +166,9 @@
       end if
 !
 !
-      kr_ed = nlayer_CMB-1
-      call cal_sph_nod_vect_diffuse2(kr_st, kr_ed, coef_d_magne,        &
+      call cal_sph_nod_vect_diffuse2(kr_in, nlayer_CMB, coef_d_magne,   &
      &    ipol%i_magne, ipol%i_b_diffuse)
-      call cal_sph_nod_vect_dr_2(kr_st, kr_ed,                          &
+      call cal_sph_nod_vect_dr_2(kr_in, nlayer_CMB,                     &
      &    d_rj(1,ipol%i_b_diffuse), d_rj(1,idpdr%i_b_diffuse) )
 !
       if(iflag_cmb_magne .eq. iflag_radial_magne) then
@@ -200,13 +192,9 @@
       use cal_sph_exp_fixed_scalar
       use cal_sph_exp_fixed_flux
 !
-      integer(kind = kint) :: kr_st, kr_ed
 !
-!
-      kr_st = nlayer_ICB+1
-      kr_ed = nlayer_CMB-1
-      call cal_sph_nod_scalar_diffuse2(kr_st, kr_ed, coef_d_temp,       &
-     &    ipol%i_temp, ipol%i_t_diffuse)
+      call cal_sph_nod_scalar_diffuse2(nlayer_ICB, nlayer_CMB,          &
+     &    coef_d_temp, ipol%i_temp, ipol%i_t_diffuse)
 !
       if (iflag_icb_temp .eq. iflag_fixed_flux) then
         call cal_sph_icb_fix_flux_diffuse2(nidx_rj(2), h_flux_ICB_bc,   &
@@ -234,13 +222,9 @@
       use cal_sph_exp_fixed_scalar
       use cal_sph_exp_fixed_flux
 !
-      integer(kind = kint) :: kr_st, kr_ed
 !
-!
-      kr_st = nlayer_ICB+1
-      kr_ed = nlayer_CMB-1
-      call cal_sph_nod_scalar_diffuse2(kr_st, kr_ed, coef_d_light,      &
-     &    ipol%i_light, ipol%i_c_diffuse)
+      call cal_sph_nod_scalar_diffuse2(nlayer_ICB, nlayer_CMB,          &
+     &    coef_d_light, ipol%i_light, ipol%i_c_diffuse)
 !
       if (iflag_icb_composition .eq. iflag_fixed_flux) then
         call cal_sph_icb_fix_flux_diffuse2(nidx_rj(2), c_flux_ICB_bc,   &

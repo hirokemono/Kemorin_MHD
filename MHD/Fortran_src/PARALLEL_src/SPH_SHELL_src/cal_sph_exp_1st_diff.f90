@@ -7,14 +7,13 @@
 !>@brief  Evaluate first radial derivative for spectr data
 !!
 !!@verbatim
-!!      subroutine cal_sph_nod_gradient_2(kst, ked, dnod_rj, dnod_dr)
-!!
-!!      subroutine cal_sph_nod_vect_dr_2(kst, ked, dnod_rj, dnod_dr)
-!!      subroutine cal_sph_nod_vect_dr_2e(kst, ked, dele_rj, dnod_dr)
+!!      subroutine cal_sph_nod_gradient_2(kr_in, kr_out,                &
+!!     &          dnod_rj, dnod_dr)
+!!      subroutine cal_sph_nod_vect_dr_2(kr_in, kr_out, dnod_rj, dnod_dr)
 !!@endverbatim
 !!
-!!@n @param kst      Start radial address
-!!@n @param ked      End radial address
+!!@n @param kr_in    radial ID for inner boundary
+!!@n @param kr_out   radial ID for outer boundary
 !!@n @param dnod_rj(nnod_rj)      Input spectr data
 !!@n @param dnod_dr(nnod_rj,nd)   Gradient or radial derivative of field
 !
@@ -34,9 +33,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_gradient_2(kst, ked, dnod_rj, dnod_dr)
+      subroutine cal_sph_nod_gradient_2(kr_in, kr_out,                  &
+     &          dnod_rj, dnod_dr)
 !
-      integer(kind = kint), intent(in) :: kst, ked
+      integer(kind = kint), intent(in) :: kr_in, kr_out
       real(kind = kreal), intent(in) :: dnod_rj(nnod_rj)
 !
       real(kind = kreal), intent(inout) :: dnod_dr(nnod_rj,3)
@@ -45,8 +45,8 @@
       integer(kind = kint) :: ist, ied
 !
 !
-      ist = (kst-1) * nidx_rj(2) + 1
-      ied = ked * nidx_rj(2)
+      ist  = kr_in * nidx_rj(2) + 1
+      ied = (kr_out-1) * nidx_rj(2)
 !$omp parallel do private(inod,i_p1,i_n1,j,k)
       do inod = ist, ied
         i_p1 = inod + nidx_rj(2)
@@ -67,9 +67,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_vect_dr_2(kst, ked, dnod_rj, dnod_dr)
+      subroutine cal_sph_nod_vect_dr_2(kr_in, kr_out, dnod_rj, dnod_dr)
 !
-      integer(kind = kint), intent(in) :: kst, ked
+      integer(kind = kint), intent(in) :: kr_in, kr_out
       real(kind = kreal), intent(in) :: dnod_rj(nnod_rj)
 !
       real(kind = kreal), intent(inout) :: dnod_dr(nnod_rj)
@@ -78,8 +78,8 @@
       integer(kind = kint) :: ist, ied
 !
 !
-      ist = (kst-1) * nidx_rj(2) + 1
-      ied = ked * nidx_rj(2)
+      ist  = kr_in * nidx_rj(2) + 1
+      ied = (kr_out-1) * nidx_rj(2)
 !$omp parallel do private(inod,i_p1,i_n1,j,k)
       do inod = ist, ied
         i_p1 = inod + nidx_rj(2)
@@ -94,34 +94,6 @@
 !$omp end parallel do
 !
       end subroutine cal_sph_nod_vect_dr_2
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_sph_nod_vect_dr_2e(kst, ked, dele_rj, dnod_dr)
-!
-      integer(kind = kint), intent(in) :: kst, ked
-      real(kind = kreal), intent(in) :: dele_rj(nnod_rj)
-!
-      real(kind = kreal), intent(inout) :: dnod_dr(nnod_rj)
-!
-      integer(kind = kint) :: inod, i_p1, j, k
-      integer(kind = kint) :: ist, ied
-!
-!
-      ist = (kst-1) * nidx_rj(2) + 1
-      ied = ked * nidx_rj(2)
-!$omp parallel do private(inod,i_p1,j,k)
-      do inod = ist, ied
-        i_p1 = inod + nidx_rj(2)
-        j = mod((inod-1),nidx_rj(2)) + 1
-        k = 1 + (inod- j) / nidx_rj(2)
-!
-        dnod_dr(inod) =  d1nod_mat_fdm_2e(k, 0) * dele_rj(inod)         &
-     &                 + d1nod_mat_fdm_2e(k, 1) * dele_rj(i_p1)
-      end do
-!$omp end parallel do
-!
-      end subroutine cal_sph_nod_vect_dr_2e
 !
 ! -----------------------------------------------------------------------
 !

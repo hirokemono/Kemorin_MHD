@@ -7,14 +7,14 @@
 !>@brief  Evaluate diffusion term
 !!
 !!@verbatim
-!!      subroutine cal_sph_nod_scalar_diffuse2(kst, ked, coef_d,        &
+!!      subroutine cal_sph_nod_scalar_diffuse2(kr_in, kr_out, coef_d,   &
 !!     &          is_fld, is_diffuse)
-!!      subroutine cal_sph_nod_vect_diffuse2(kst, ked, coef_d,          &
+!!      subroutine cal_sph_nod_vect_diffuse2(kr_in, kr_out, coef_d,     &
 !!     &          is_fld, is_diffuse)
 !!@endverbatim
 !!
-!!@n @param kst   Start radial ID to evaluate
-!!@n @param ked   End radial ID to evaluate
+!!@n @param kr_in    radial ID for inner boundary
+!!@n @param kr_out   radial ID for outer boundary
 !!@n @param coef_d        Coefficient for diffusion term
 !!
 !!@n @param is_fld     Input field address for d_rj
@@ -38,10 +38,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_scalar_diffuse2(kst, ked, coef_d,          &
+      subroutine cal_sph_nod_scalar_diffuse2(kr_in, kr_out, coef_d,     &
      &          is_fld, is_diffuse)
 !
-      integer(kind = kint), intent(in) :: kst, ked
+      integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: is_diffuse
       real(kind = kreal), intent(in) :: coef_d
@@ -52,8 +52,8 @@
       integer(kind = kint) :: ist, ied
 !
 !
-      ist = (kst-1) * nidx_rj(2) + 1
-      ied = ked * nidx_rj(2)
+      ist  = kr_in * nidx_rj(2) + 1
+      ied = (kr_out-1) * nidx_rj(2)
 !$omp parallel do private(inod,i_p1,i_n1,j,k,d2s_dr2,d1s_dr1)
 !cdir nodep
       do inod = ist, ied
@@ -79,10 +79,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_vect_diffuse2(kst, ked, coef_d,            &
+      subroutine cal_sph_nod_vect_diffuse2(kr_in, kr_out, coef_d,       &
      &          is_fld, is_diffuse)
 !
-      integer(kind = kint), intent(in) :: kst, ked
+      integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: is_diffuse
       real(kind = kreal), intent(in) :: coef_d
@@ -92,8 +92,8 @@
       integer(kind = kint) :: ist, ied
 !
 !
-      ist = (kst-1) * nidx_rj(2) + 1
-      ied = ked * nidx_rj(2)
+      ist  = kr_in * nidx_rj(2) + 1
+      ied = (kr_out-1) * nidx_rj(2)
 !$omp parallel do private(inod,i_p1,i_n1,j,k,d2s_dr2,d2t_dr2)
 !cdir nodep
       do inod = ist, ied

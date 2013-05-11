@@ -225,7 +225,6 @@
 !
       integer(kind = kint), intent(in) :: i_step
       integer(kind = kint) :: k, inod
-      integer(kind = kint) :: kr_st, kr_ed
 !
 !
 !      write(*,*) 'nlayer_ICB, nlayer_CMB', nlayer_ICB, nlayer_CMB
@@ -234,12 +233,10 @@
 !      write(*,*) 'ipol%i_light, ipol%i_grad_composit',                 &
 !     &          ipol%i_light, ipol%i_grad_composit
 !
-      kr_st = nlayer_ICB+1
-      kr_ed = nlayer_CMB-1
-      call cal_sph_nod_gradient_2(kr_st, kr_ed, d_rj(1,ipol%i_temp),    &
-     &    d_rj(1,ipol%i_grad_t) )
-      call cal_sph_nod_gradient_2(kr_st, kr_ed, d_rj(1,ipol%i_light),   &
-     &    d_rj(1,ipol%i_grad_composit) )
+      call cal_sph_nod_gradient_2(nlayer_ICB, nlayer_CMB,               &
+     &    d_rj(1,ipol%i_temp), d_rj(1,ipol%i_grad_t) )
+      call cal_sph_nod_gradient_2(nlayer_ICB, nlayer_CMB,               &
+     &    d_rj(1,ipol%i_light), d_rj(1,ipol%i_grad_composit) )
 !
 !      if(idx_rj_degree_zero .gt. 0) then
 !

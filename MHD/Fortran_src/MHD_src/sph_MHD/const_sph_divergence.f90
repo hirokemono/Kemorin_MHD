@@ -34,12 +34,8 @@
       use cal_sph_exp_fixed_scalar
       use cal_sph_exp_fixed_flux
 !
-      integer(kind = kint) :: kr_st, kr_ed
 !
-!
-      kr_st = nlayer_ICB+1
-      kr_ed = nlayer_CMB-1
-      call cal_sph_nod_vect_div2(kr_st, kr_ed,                          &
+      call cal_sph_nod_vect_div2(nlayer_ICB, nlayer_CMB,                &
      &    ipol%i_h_flux, ipol%i_h_advect)
 !
       if (iflag_icb_temp .eq. iflag_fixed_flux) then
@@ -67,12 +63,8 @@
       use cal_sph_exp_fixed_scalar
       use cal_sph_exp_fixed_flux
 !
-      integer(kind = kint) :: kr_st, kr_ed
 !
-!
-      kr_st = nlayer_ICB+1
-      kr_ed = nlayer_CMB-1
-      call cal_sph_nod_vect_div2(kr_st, kr_ed,                          &
+      call cal_sph_nod_vect_div2(nlayer_ICB, nlayer_CMB,                &
      &    ipol%i_c_flux, ipol%i_c_advect)
 !
       if (iflag_icb_temp .eq. iflag_fixed_flux) then
@@ -103,12 +95,10 @@
       use cal_sph_exp_nod_none_bc
 !
       integer(kind = kint), intent(in) :: is_fld, is_div
-      integer(kind = kint) :: kr_st, kr_ed
 !
 !
-      kr_st = nlayer_ICB+1
-      kr_ed = nlayer_CMB-1
-      call cal_sph_nod_vect_div2(kr_st, kr_ed, is_fld, is_div )
+      call cal_sph_nod_vect_div2(nlayer_ICB, nlayer_CMB,                &
+     &    is_fld, is_div)
 !
       call cal_sph_nod_nobc_in_div2(coef_fdm_fix_ICB_2, nlayer_ICB,     &
      &    is_fld, is_div)

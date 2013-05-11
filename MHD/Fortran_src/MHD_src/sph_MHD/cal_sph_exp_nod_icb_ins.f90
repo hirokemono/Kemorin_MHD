@@ -175,7 +175,6 @@
       real(kind = kreal) :: d2s_dr2,d2t_dr2
       integer(kind = kint) :: j, inod,i_p1,i_p2
 !
-!
 !$omp parallel do private(inod,i_p1,i_p2,d2s_dr2,d2t_dr2)
       do j = 1, nidx_rj(2)
         inod = j + (nlayer_ICB-1) * nidx_rj(2)

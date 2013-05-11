@@ -14,8 +14,6 @@
 !!
 !!      subroutine set_radial_vp3_mat_sph(nri, jmax, kr_in, kr_out,     &
 !!     &          poisson_mat)
-!!      subroutine set_radial_vp5_mat_sph(nri, jmax, kr_in, kr_out,     &
-!!     &          poisson_mat)
 !!      subroutine set_radial_press_mat_sph(nri, jmax, kr_in, kr_out,   &
 !!     &          coef_p, poisson_mat)
 !!
@@ -161,34 +159,6 @@
 !$omp end do nowait
 !
       end subroutine set_radial_vp3_mat_sph
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_radial_vp5_mat_sph(nri, jmax, kr_in, kr_out,       &
-     &          poisson_mat)
-!
-      integer(kind = kint), intent(in) :: jmax, nri
-      integer(kind = kint), intent(in) :: kr_in, kr_out
-!
-      real(kind = kreal), intent(inout) :: poisson_mat(5,nri,jmax)
-!
-      integer(kind = kint) :: k, j
-!
-!
-!$omp do private (k,j)
-      do k = kr_in+2, kr_out-2
-        do j = 1, jmax
-          poisson_mat(5,k-2,j) = - d2nod_mat_fdm_4(k,-2)
-          poisson_mat(4,k-1,j) = - d2nod_mat_fdm_4(k,-1)
-          poisson_mat(3,k,  j) = - d2nod_mat_fdm_4(k, 0)                &
-     &                             + g_sph_rj(j,3)*ar_1d_rj(k,2)
-          poisson_mat(2,k+1,j) = - d2nod_mat_fdm_4(k, 1)
-          poisson_mat(1,k+2,j) = - d2nod_mat_fdm_4(k, 2)
-        end do
-      end do
-!$omp end do nowait
-!
-      end subroutine set_radial_vp5_mat_sph
 !
 ! -----------------------------------------------------------------------
 !

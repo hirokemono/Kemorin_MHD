@@ -219,19 +219,19 @@
 !
 !
       write(50,*) ' coef_fdm_noslip_ICB_4'
-      write(50,*) 'mattix for d2fdr2'
+      write(50,*) 'matrix for d2fdr2'
       write(50,'(1p9E25.15e3)') coef_fdm_noslip_ICB_4(0:2,3)
-      write(50,*) 'mattix for d3fdr3'
+      write(50,*) 'matrix for d3fdr3'
       write(50,'(1p9E25.15e3)') coef_fdm_noslip_ICB_4(0:2,4)
 !
       write(50,*) ' coef_fdm_noslip_ICB1_4'
-      write(50,*) 'mattix for dfdr'
+      write(50,*) 'matrix for dfdr'
       write(50,'(1p9E25.15e3)') coef_fdm_noslip_ICB1_4(-1:2,2)
-      write(50,*) 'mattix for d2fdr2'
+      write(50,*) 'matrix for d2fdr2'
       write(50,'(1p9E25.15e3)') coef_fdm_noslip_ICB1_4(-1:2,3)
-      write(50,*) 'mattix for d3fdr3'
+      write(50,*) 'matrix for d3fdr3'
       write(50,'(1p9E25.15e3)') coef_fdm_noslip_ICB1_4(-1:2,4)
-      write(50,*) 'mattix for d4fdr4'
+      write(50,*) 'matrix for d4fdr4'
       write(50,'(1p9E25.15e3)') coef_fdm_noslip_ICB1_4(-1:2,5)
 !
       end subroutine check_4th_ICB_nonslip_vp_fdm

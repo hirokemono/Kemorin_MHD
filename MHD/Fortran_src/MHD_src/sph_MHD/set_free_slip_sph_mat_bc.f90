@@ -9,11 +9,9 @@
 !!@verbatim
 !!      subroutine set_free_slip_icb_vt_sph_mat
 !!      subroutine set_free_icb_vp_poisson3_mat
-!!      subroutine set_free_icb_vp_poisson5_mat
 !!
 !!      subroutine set_free_slip_cmb_vt_sph_mat
 !!      subroutine set_free_cmb_vp_poisson3_mat
-!!      subroutine set_free_cmb_vp_poisson5_mat
 !!@endverbatim
 !
       module set_free_slip_sph_mat_bc
@@ -74,30 +72,6 @@
       end subroutine set_free_icb_vp_poisson3_mat
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine set_free_icb_vp_poisson5_mat
-!
-      use m_vp_coef_fdm4_free_ICB
-!
-      integer(kind = kint) :: j
-!
-!
-      do j = 1, nidx_rj(2)
-        vs_poisson_mat(3,nlayer_ICB,  j)= -coef_fdm_free_ICB_vp4(0,3)   &
-     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_ICB,2)
-        vs_poisson_mat(2,nlayer_ICB+1,j)= -coef_fdm_free_ICB_vp4(1,3)
-        vs_poisson_mat(1,nlayer_ICB+2,j)= -coef_fdm_free_ICB_vp4(2,3)
-!
-        vs_poisson_mat(4,nlayer_ICB,  j)= -coef_fdm_free_ICB1_vp4(-1,3)
-        vs_poisson_mat(3,nlayer_ICB+1,j)= -coef_fdm_free_ICB1_vp4( 0,3) &
-     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_ICB,2)
-        vs_poisson_mat(2,nlayer_ICB+2,j)= -coef_fdm_free_ICB1_vp4(1,3)
-        vs_poisson_mat(1,nlayer_ICB+3,j)= -coef_fdm_free_ICB1_vp4(2,3)
-      end do
-!
-      end subroutine set_free_icb_vp_poisson5_mat
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine set_free_slip_cmb_vt_sph_mat
@@ -135,30 +109,6 @@
       end do
 !
       end subroutine set_free_cmb_vp_poisson3_mat
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_free_cmb_vp_poisson5_mat
-!
-      use m_vp_coef_fdm4_free_CMB
-!
-      integer(kind = kint) :: j
-!
-!
-      do j = 1, nidx_rj(2)
-        vs_poisson_mat(5,nlayer_CMB-3,j)= -coef_fdm_free_CMB1_vp4(-2,3)
-        vs_poisson_mat(4,nlayer_CMB-2,j)= -coef_fdm_free_CMB1_vp4(-1,3)
-        vs_poisson_mat(3,nlayer_CMB-1,j)= -coef_fdm_free_CMB1_vp4( 0,3) &
-     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_CMB,2)
-        vs_poisson_mat(2,nlayer_CMB,  j)= -coef_fdm_free_CMB1_vp4( 1,3)
-!
-        vs_poisson_mat(5,nlayer_CMB-2,j)= -coef_fdm_free_CMB_vp4(-2,3)
-        vs_poisson_mat(4,nlayer_CMB-1,j)= -coef_fdm_free_CMB_vp4(-1,3)
-        vs_poisson_mat(3,nlayer_CMB,  j)= -coef_fdm_free_CMB_vp4( 0,3)  &
-     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_CMB,2)
-      end do
-!
-      end subroutine set_free_cmb_vp_poisson5_mat
 !
 ! -----------------------------------------------------------------------
 !

@@ -51,12 +51,8 @@
       use cal_sph_exp_fixed_scalar
       use cal_sph_exp_fixed_flux
 !
-      integer(kind = kint) :: kr_st, kr_ed
 !
-!
-      kr_st = nlayer_ICB+1
-      kr_ed = nlayer_CMB-1
-      call cal_sph_nod_gradient_2(kr_st, kr_ed,                         &
+      call cal_sph_nod_gradient_2(nlayer_ICB, nlayer_CMB,               &
      &    d_rj(1,ipol%i_temp), d_rj(1,ipol%i_grad_t) )
 !
       if (iflag_icb_temp .eq. iflag_fixed_flux) then
@@ -85,13 +81,9 @@
       use cal_sph_exp_fixed_flux
       use cal_sph_exp_rotation
 !
-      integer(kind = kint) :: kr_st, kr_ed
 !
-!
-      kr_st = nlayer_ICB+1
-      kr_ed = nlayer_CMB-1
-      call cal_sph_nod_gradient_2(kr_st, kr_ed, d_rj(1,ipol%i_light),   &
-     &    d_rj(1,ipol%i_grad_composit) )
+      call cal_sph_nod_gradient_2(nlayer_ICB, nlayer_CMB,               &
+     &     d_rj(1,ipol%i_light), d_rj(1,ipol%i_grad_composit) )
 !
       if (iflag_icb_temp .eq. iflag_fixed_flux) then
         call cal_dsdr_sph_icb_fix_flux_2(nidx_rj(2), c_flux_ICB_bc,     &
@@ -122,8 +114,6 @@
       use set_sph_exp_free_CMB
       use cal_sph_exp_rotation
 !
-      integer(kind = kint) :: kr_st, kr_ed
-!
 !
       if     (iflag_icb_velocity .eq. iflag_free_slip) then
         call cal_sph_nod_icb_free_v_and_w(ipol%i_velo, ipol%i_vort)
@@ -141,9 +131,7 @@
         call cal_sph_nod_cmb_rigid_v_and_w(ipol%i_velo, ipol%i_vort)
       end if
 !
-      kr_st = nlayer_ICB+1
-      kr_ed = nlayer_CMB-1
-      call cal_sph_diff_pol_and_rot2(kr_st, kr_ed,                      &
+      call cal_sph_diff_pol_and_rot2(nlayer_ICB, nlayer_CMB,            &
      &    ipol%i_velo, ipol%i_vort)
 !
       end subroutine const_grad_vp_and_vorticity
@@ -160,21 +148,20 @@
       use extend_potential_field
       use cal_sph_exp_rotation
 !
-      integer(kind = kint) :: kr_st, kr_ed
+      integer(kind = kint) :: kr_in
 !
 !
       if(iflag_icb_magne .eq. iflag_sph_fill_center) then
-        kr_st = itwo
+        kr_in = ione
         call cal_sph_nod_center_b_and_j(ipol%i_magne, ipol%i_current)
       else if(iflag_icb_magne .eq. iflag_radial_magne) then
-        kr_st = nlayer_ICB+1
+        kr_in = nlayer_ICB
         call cal_sph_nod_icb_qvc_b_and_j(ipol%i_magne, ipol%i_current)
       else
-        kr_st = nlayer_ICB+1
+        kr_in = nlayer_ICB
         call cal_sph_nod_icb_ins_b_and_j(ipol%i_magne, ipol%i_current)
       end if
 !
-      kr_ed = nlayer_CMB-1
       if(iflag_cmb_magne .eq. iflag_radial_magne) then
         call cal_sph_nod_cmb_qvc_b_and_j(ipol%i_magne, ipol%i_current)
       else
@@ -182,7 +169,7 @@
       end if
 !
 !
-      call cal_sph_diff_pol_and_rot2(kr_st, kr_ed, ipol%i_magne,        &
+      call cal_sph_diff_pol_and_rot2(kr_in, nlayer_CMB, ipol%i_magne,   &
      &    ipol%i_current)
 !
 !      Extend potential field
@@ -206,8 +193,6 @@
       use set_sph_exp_free_CMB
       use cal_sph_exp_rotation
 !
-      integer(kind = kint) :: kr_st, kr_ed
-!
 !
       if     (iflag_icb_velocity .eq. iflag_free_slip) then
         call cal_sph_nod_icb_free_vpol2(ipol%i_velo)
@@ -223,9 +208,7 @@
         call cal_sph_nod_cmb_rigid_velo2(ipol%i_velo)
       end if
 !
-      kr_st = nlayer_ICB+1
-      kr_ed = nlayer_CMB-1
-      call cal_sph_diff_poloidal(kr_st, kr_ed, ipol%i_velo)
+      call cal_sph_diff_poloidal2(nlayer_ICB, nlayer_CMB, ipol%i_velo)
 !
       end subroutine const_grad_poloidal_velo
 !
@@ -241,21 +224,20 @@
       use extend_potential_field
       use cal_sph_exp_rotation
 !
-      integer(kind = kint) :: kr_st, kr_ed
+      integer(kind = kint) :: kr_in
 !
 !
       if(iflag_icb_magne .eq. iflag_sph_fill_center) then
-        kr_st = itwo
+        kr_in = ione
         call cal_dsdr_sph_center_2(ipol%i_magne)
       else if(iflag_icb_magne .eq. iflag_radial_magne) then
-        kr_st = nlayer_ICB+1
+        kr_in = nlayer_ICB
         call cal_sph_nod_icb_qvc_mag2(ipol%i_magne)
       else
-        kr_st = nlayer_ICB+1
+        kr_in = nlayer_ICB
         call cal_sph_nod_icb_ins_mag2(ipol%i_magne)
       end if
 !
-      kr_ed = nlayer_CMB-1
       if(iflag_cmb_magne .eq. iflag_radial_magne) then
         call cal_sph_nod_cmb_qvc_mag2(ipol%i_magne)
       else
@@ -263,7 +245,7 @@
       end if
 !
 !
-      call cal_sph_diff_poloidal(kr_st, kr_ed, ipol%i_magne)
+      call cal_sph_diff_poloidal2(kr_in, nlayer_CMB, ipol%i_magne)
 !
 !      Extend potential field
       call ext_outside_potential(ipol%i_magne, nlayer_CMB)

@@ -70,7 +70,7 @@
         call set_rgd_icb_vp_poisson3_mat
       end if
 !
-!   Rotation for inner core
+!   Overwrite rotation for inner core
 !
       if(iflag_icb_velocity .eq. iflag_rotatable_ic) then
         call set_icore_viscous_matrix

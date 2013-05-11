@@ -10,7 +10,6 @@
 !!@verbatim
 !!      subroutine set_dr_for_cheby
 !!      subroutine nod_r_2nd_fdm_coefs_cheby
-!!      subroutine nod_r_4th_fdm_coefs_cheby
 !!
 !!**********************************************************************
 !!
@@ -41,7 +40,7 @@
       use m_constants
       use m_spheric_parameter
 !
-      real(kind = kreal), allocatable, private :: drdn_rj(:,:)
+      real(kind = kreal), allocatable :: drdn_rj(:,:)
 !
       private :: nod_r_2nd_fdm_coef_cheby, nod_r_4th_fdm_coef_cheby
 !
@@ -225,114 +224,6 @@
       end subroutine nod_r_2nd_fdm_coefs_cheby
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine nod_r_4th_fdm_coefs_cheby
-!
-      use m_fdm_coefs
-      use set_radius_func_noequi
-!
-      integer(kind = kint) :: kr, kst, ked
-      real(kind = kreal) :: dr_p1, dr_n1, dr_p2, dr_n2
-!
-!
-      kr = 1
-      dr_p1 = radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr  )
-      dr_p2 = radius_1d_rj_r(kr+2) - radius_1d_rj_r(kr  )
-      call nod_r_4th_fdm_coef_noequi(kr,                                &
-     &       dr_p1, dr_p1, dr_p2, dr_p2, mat_fdm_4(1,1,kr) )
-!
-      kr = 2
-      dr_p1 = radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr  )
-      dr_n1 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-1)
-      dr_p2 = radius_1d_rj_r(kr+2) - radius_1d_rj_r(kr  )
-      call nod_r_4th_fdm_coef_noequi(kr,                                &
-     &       dr_n1, dr_n1, dr_p2, dr_p2, mat_fdm_4(1,1,kr) )
-!
-      if(nlayer_ICB .gt. 1) then
-        kr = 1
-        dr_p2 = dr_1d_rj(1,0) + dr_1d_rj(2,0)
-        dr_n2 = dr_1d_rj(1,1) + radius_1d_rj_r(1)
-        call nod_r_4th_fdm_coef_noequi(kr, dr_1d_rj(1,0),               &
-     &      radius_1d_rj_r(1), dr_p2, dr_n2, mat_fdm_4(1,1,1))
-!
-        kr = 2
-        dr_p2 = dr_1d_rj(kr,0) + dr_1d_rj(kr+1,0)
-        dr_n2 = dr_1d_rj(kr,1) + radius_1d_rj_r(1)
-        call nod_r_4th_fdm_coef_noequi(kr, dr_1d_rj(kr,0),              &
-     &      dr_1d_rj(kr,1), dr_p2, dr_n2, mat_fdm_4(1,1,kr))
-      end if
-!
-      do kr = 3, nlayer_ICB-2
-        call nod_r_4th_fdm_coef_cheby(kr, mat_fdm_4(1,1,kr) )
-      end do
-!
-      do kr = nlayer_ICB-1, nlayer_ICB+1
-        if(kr-2 .ge. 1) then
-          dr_p1 = radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr  )
-          dr_n1 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-1)
-          dr_p2 = radius_1d_rj_r(kr+2) - radius_1d_rj_r(kr  )
-          dr_n2 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-2)
-          call nod_r_4th_fdm_coef_noequi(kr,                            &
-     &       dr_p1, dr_n1, dr_p2, dr_n2, mat_fdm_4(1,1,kr) )
-        end if
-      end do
-!*
-!* ----------  outer core --------
-!*
-      do kr = nlayer_ICB+2, nlayer_CMB-2
-        call nod_r_4th_fdm_coef_cheby(kr, mat_fdm_4(1,1,kr) )
-      end do
-!*
-!* ----------  core mantle boundary --------
-!*
-      do kr = nlayer_CMB-1, nlayer_ICB+1
-        if(kr+2 .le. nidx_rj(1)) then
-          dr_p1 = radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr  )
-          dr_n1 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-1)
-          dr_p2 = radius_1d_rj_r(kr+2) - radius_1d_rj_r(kr  )
-          dr_n2 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-2)
-          call nod_r_4th_fdm_coef_noequi(kr,                            &
-     &       dr_p1, dr_n1, dr_p2, dr_n2, mat_fdm_4(1,1,kr) )
-        end if
-      end do
-!
-!* ----------  external of shell --------
-!*
-      kst = nlayer_CMB + 2
-      ked = nlayer_CMB + (nlayer_CMB - nlayer_ICB)/2 - 2
-      do kr = kst, min(ked,nidx_rj(1)-1)
-        call nod_r_4th_fdm_coef_cheby(kr, mat_fdm_4(1,1,kr) )
-      end do
-!
-      kst = nlayer_CMB + (nlayer_CMB - nlayer_ICB)/2 - 1
-      ked = nidx_rj(1) - 2
-      do kr = kst, ked
-        dr_p1 = radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr  )
-        dr_n1 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-1)
-        dr_p2 = radius_1d_rj_r(kr+2) - radius_1d_rj_r(kr  )
-        dr_n2 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-2)
-        call nod_r_4th_fdm_coef_noequi                                  &
-     &     (kr, dr_p1, dr_n1, dr_p2, dr_n2, mat_fdm_4(1,1,kr) )
-      end do
-!
-!* ---------- outer boundary of domains --------
-!
-      kr = nidx_rj(1) - 1
-      dr_p1 = radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr  )
-      dr_n1 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-1)
-      dr_n2 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-2)
-      call nod_r_4th_fdm_coef_noequi(kr,                                &
-     &       dr_p1, dr_n1, dr_n2, dr_n2, mat_fdm_4(1,1,kr) )
-!
-      kr = nidx_rj(1)
-      dr_n1 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-1)
-      dr_n2 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-2)
-      call nod_r_4th_fdm_coef_noequi(kr,                                &
-     &       dr_n1, dr_n1, dr_n2, dr_n2, mat_fdm_4(1,1,kr) )
-!
-      end subroutine nod_r_4th_fdm_coefs_cheby
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine nod_r_2nd_fdm_coef_cheby(kr, mat_fdm)
@@ -360,36 +251,26 @@
         write(*,*) 'singular matrix at nod_r_2nd_fdm_coef_cheby', kr
       end if
 !
-      end subroutine nod_r_2nd_fdm_coef_cheby
-!
-! -----------------------------------------------------------------------
-!
-      subroutine nod_r_4th_fdm_coef_cheby(kr, mat_fdm)
-!
-      use m_taylor_exp_matrix
-      use small_mat_mat_product
-      use cal_trans_mat_dfdr_2_dfdn
-      use cal_inverse_small_matrix
-!
-      integer(kind = kint), intent(in) :: kr
-      real(kind = kreal), intent(inout) :: mat_fdm(5,5)
-!
-      real(kind = kreal) :: fdm4_mat_dr_to_dn(5,5)
-      real(kind = kreal) :: mat_taylor_r5(5,5)
-      integer(kind = kint) :: ierr
-!
-!
-      call set_fdm4_dfdn_matrix(drdn_rj(kr,1), drdn_rj(kr,2),         &
-     &    drdn_rj(kr,3), drdn_rj(kr,4), fdm4_mat_dr_to_dn)
-      call mat_5x5_product(Taylor_exp_fdm4, fdm4_mat_dr_to_dn,        &
-     &    mat_taylor_r5)
-      call cal_inverse_nn_matrix(ifive, mat_taylor_r5, mat_fdm, ierr)
-!
-      if(ierr .eq. 1) then
-        write(*,*) 'singular matrix at nod_r_2nd_fdm_coef_cheby', kr
+      if(kr .le. 5) then
+        write(*,*) 'Cgebyshev matrix fdm2_mat_dr_to_dn', kr
+        write(*,*) fdm2_mat_dr_to_dn(1,1:3)
+        write(*,*) fdm2_mat_dr_to_dn(2,1:3)
+        write(*,*) fdm2_mat_dr_to_dn(3,1:3)
+        write(*,*) 'Taylor expansion matrix', kr
+        write(*,*) Taylor_exp_fdm2(1,1:3)
+        write(*,*) Taylor_exp_fdm2(2,1:3)
+        write(*,*) Taylor_exp_fdm2(3,1:3)
+        write(*,*) 'FDM source matrix', kr
+        write(*,*) mat_taylor_r3(1,1:3)
+        write(*,*) mat_taylor_r3(2,1:3)
+        write(*,*) mat_taylor_r3(3,1:3)
+        write(*,*) 'Inverse matrix', kr
+        write(*,*) mat_fdm(1,1:3)
+        write(*,*) mat_fdm(2,1:3)
+        write(*,*) mat_fdm(3,1:3)
       end if
 !
-      end subroutine nod_r_4th_fdm_coef_cheby
+      end subroutine nod_r_2nd_fdm_coef_cheby
 !
 ! -----------------------------------------------------------------------
 !
