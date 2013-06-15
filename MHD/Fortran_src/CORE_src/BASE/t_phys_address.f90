@@ -223,6 +223,9 @@
 !>        start address for divergence of magnetic induction
 !!         @f$ \partial_{i} \left(e_{ijk} u_{j} B_{k} \right) @f$
         integer (kind=kint) :: i_induct_div =      izero
+!>        Start address for pressure gradient
+!!         @f$ \partial_{i} p @f$
+        integer (kind=kint) :: i_press_grad  =    izero
 !>        start address for magnetic tension
 !!         @f$ B_{j} \partial_{j} B_{i} @f$
         integer (kind=kint) :: i_m_tension =       izero

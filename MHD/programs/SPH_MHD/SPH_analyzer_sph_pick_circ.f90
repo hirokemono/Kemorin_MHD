@@ -1,3 +1,8 @@
+!SPH_analyzer_sph_pick_circ.f90
+!     module SPH_analyzer_sph_pick_circ
+!
+!      Written by H. Matsui
+!
 !>@file   SPH_analyzer_d_bench.f90
 !!        module SPH_analyzer_d_bench
 !!
@@ -6,15 +11,15 @@
 !!@n      modified in 2013
 !
 !>@brief spherical harmonics part of 
-!!        Initialzation and evolution loop for dynamo benchmark check
+!!       Initialzation and evolution loop to pick up data on circle
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_dbench
-!!      subroutine SPH_analyze_dbench(i_step)
-!!      subroutine SPH_finalize_dbench
+!!      subroutine SPH_init_sph_pick_circle
+!!      subroutine SPH_analyze_pick_circle(i_step)
+!!      subroutine SPH_finalize_pick_circle
 !!@endverbatim
 !
-      module SPH_analyzer_d_bench
+      module SPH_analyzer_sph_pick_circ
 !
       use m_precision
 !
@@ -26,7 +31,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_dbench
+      subroutine SPH_init_sph_pick_circle
 !
       use m_constants
       use m_parallel_var_dof
@@ -38,7 +43,7 @@
       use m_sph_phys_address
       use m_rms_4_sph_spectr
       use m_node_id_spherical_IO
-      use m_field_4_dynamobench
+      use m_field_on_circle
 !
       use set_control_sph_mhd
       use load_data_for_sph_IO
@@ -54,8 +59,9 @@
       use cvt_nod_data_to_sph_data
       use r_interpolate_sph_data
       use sph_mhd_rst_IO_control
-      use m_field_at_mid_equator
+      use sph_MHD_circle_transform
 !
+      integer :: i
 !
 !   Load spherical harmonics data
 !
@@ -140,30 +146,31 @@
 !
 !* -----  find mid-equator point -----------------
 !*
-      call set_mid_equator_point_global
+!
+      call set_circle_point_global
 !
 !* -----  Oopen result file -----------------
 !*
-       if(iflag_debug .gt. 0) write(*,*) 'open_dynamobench_monitor_file'
-       call open_dynamobench_monitor_file
+       if(iflag_debug .gt. 0) write(*,*) 'open_field_data_on_circle'
+       call open_field_data_on_circle
 !
-      end subroutine SPH_init_sph_dbench
+      end subroutine SPH_init_sph_pick_circle
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_dbench(i_step)
+      subroutine SPH_analyze_pick_circle(i_step)
 !
       use m_work_time
       use m_t_step_parameter
       use m_node_id_spherical_IO
-      use m_field_4_dynamobench
+      use m_field_on_circle
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
       use set_reference_sph_mhd
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
-      use const_data_4_dynamobench
+      use sph_MHD_circle_transform
 !
       integer(kind = kint), intent(in) :: i_step
 !
@@ -198,25 +205,25 @@
 !*  -----------  lead mid-equator field --------------
 !*
       call start_eleps_time(10)
-      if(iflag_debug.gt.0)  write(*,*) 'const_data_4_dynamobench'
-      call s_const_data_4_dynamobench
-      call output_field_4_dynamobench(i_step, time)
+      if(iflag_debug.gt.0)  write(*,*) 'sph_transfer_on_circle'
+      call sph_transfer_on_circle
+      call write_field_data_on_circle(i_step, time)
       call end_eleps_time(10)
       call end_eleps_time(4)
 !
-      end subroutine SPH_analyze_dbench
+      end subroutine SPH_analyze_pick_circle
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_finalize_dbench
+      subroutine SPH_finalize_pick_circle
 !
-      use m_field_4_dynamobench
+      use m_field_on_circle
 !
 !
-      call close_dynamobench_monitor_file
+      call close_field_data_on_circle
 !
-      end subroutine SPH_finalize_dbench
+      end subroutine SPH_finalize_pick_circle
 !
 ! ----------------------------------------------------------------------
 !
-      end module SPH_analyzer_d_bench
+      end module SPH_analyzer_sph_pick_circ

@@ -549,7 +549,10 @@ begin MHD_control
       pick_gauss_coef_order_ctl    2
     end array pick_gauss_coef_order_ctl
 !
+    pick_circle_coord_ctl         spherical
     nphi_mid_eq_ctl         500
+    pick_cylindrical_radius_ctl   0.75
+    pick_vertical_position_ctl    0.6
   end sph_monitor_ctl
 !
 end MHD_control

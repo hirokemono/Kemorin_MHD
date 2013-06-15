@@ -8,6 +8,9 @@
 !!@n     $omp parallel is required to use these routines
 !!
 !!@verbatim
+!!      subroutine clear_rj_field_smp(numdir, i_res)
+!!
+!!      subroutine ovwrt_sph_coef_prod_vect_smp(coef, i_r)
 !!      subroutine cal_rtp_product_4_scalar(i_s1, i_s2, i_r)
 !!                d_rtp(,i_r) = d_rtp(,i_v1) * d_rtp(,i_v2)
 !!      subroutine cal_rtp_dot_product(i_v1, i_v2, i_r)
@@ -41,6 +44,11 @@
 !!                d_rtp(,i_r  ) = coef * d_rtp(,i_s1) * d_rtp(,i_v1  )
 !!                d_rtp(,i_r+1) = coef * d_rtp(,i_s1) * d_rtp(,i_v1+1)
 !!                d_rtp(,i_r+2) = coef * d_rtp(,i_s1) * d_rtp(,i_v1+2)
+!!
+!!      subroutine rtp_vect_prod_cvec_w_coef_smp(coef, c_vec, i_v2, i_r)
+!!      subroutine ovwrt_rtp_cvec_x_prod_w_coef(coef, c_vec, i_r)
+!!             d_rtp(,:i_r:i_r+2) = coef * c_vec(1:3)
+!!                                 \times d_rtp(,:i_v2:i_v2+2)
 !!@endverbatim
 !!
 !!@n @param  i_s1     Scalar field address for d_rtp
@@ -50,6 +58,7 @@
 !!@n @param  i_v3     Vector field address for d_rtp
 !!@n @param  i_t1     Symmetric tensor field address for d_rtp
 !!@n @param  coef     Scalar coefficients
+!!@n @param  c_vec(3) constant vector
 !!
 !!@n @param  i_r      Result field address for d_rtp
 !
@@ -68,6 +77,37 @@
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine clear_rtp_field_smp(numdir, i_r)
+!
+      use delete_field_smp
+!
+      integer (kind = kint), intent(in) :: i_r, numdir
+!
+!
+      call delete_phys_data_smp(np_smp, nnod_rtp, inod_rtp_smp_stack,   &
+     &    ntot_phys_rtp, numdir, i_r, d_rtp)
+!
+      end subroutine clear_rtp_field_smp
+!
+!-----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine ovwrt_sph_coef_prod_vect_smp(coef, i_r)
+!
+      use overwrite_prod_const_smp
+!
+      real(kind = kreal), intent(in) :: coef
+      integer (kind = kint), intent(in) :: i_r
+!
+!
+      call ovwrt_coef_prod_vect_smp(np_smp, nnod_rtp,                   &
+     &   inod_rtp_smp_stack, coef, d_rtp(1,i_r) )
+!
+      end subroutine ovwrt_sph_coef_prod_vect_smp
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine cal_rtp_product_4_scalar(i_s1, i_s2, i_r)
@@ -227,5 +267,39 @@
       end subroutine rtp_vec_scalar_prod_w_coef
 !
 !-----------------------------------------------------------------------
+!
+      subroutine rtp_vect_prod_cvec_w_coef_smp(coef, c_vec, i_v2, i_r)
+!
+      use cal_products_w_const_smp
+!
+      real (kind = kreal), intent(in) :: coef
+      real (kind = kreal), intent(in) :: c_vec(3)
+      integer(kind = kint), intent(in) :: i_r, i_v2
+!
+!
+      call cal_vect_prod_cvec_w_coef_smp(np_smp, nnod_rtp,             &
+     &    inod_rtp_smp_stack, coef, c_vec(1), d_rtp(1,i_v2),           &
+     &    d_rtp(1,i_r) )
+!
+      end subroutine rtp_vect_prod_cvec_w_coef_smp
+!
+!-----------------------------------------------------------------------
+!
+      subroutine ovwrt_rtp_cvec_x_prod_w_coef(coef, c_vec, i_r)
+!
+      use overwrite_prod_const_smp
+!
+      real (kind = kreal), intent(in) :: coef
+      real (kind = kreal), intent(in) :: c_vec(3)
+      integer(kind = kint), intent(in) :: i_r
+!
+!
+!
+      call ovwrt_vect_prod_cvec_coef_smp(np_smp, nnod_rtp,              &
+     &    inod_rtp_smp_stack, coef, c_vec, d_rtp(1,i_r))
+!
+      end subroutine ovwrt_rtp_cvec_x_prod_w_coef
+!
+! ----------------------------------------------------------------------
 !
       end module products_sph_fields_smp

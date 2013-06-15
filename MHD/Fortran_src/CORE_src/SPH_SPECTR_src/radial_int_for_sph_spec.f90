@@ -1,12 +1,18 @@
-!radial_int_for_sph_spec.f90
-!      module radial_int_for_sph_spec
+!>@file   radial_int_for_sph_spec.f90
+!!@brief  module radial_int_for_sph_spec
+!!
+!!@author H. Matsui
+!!@date Programmed on  Feb., 2008
 !
-!     Written by H. Matsui on Feb., 2008
-!
-!      subroutine radial_integration(nri, kg_st, kg_ed, radius,         &
-!     &          ntot_comp, f_org, f_int)
-!  Evaluate radial integration f_int =  \int f_org r^{2} dr
-!
+!>@brief  Evaluate radial integration
+!!
+!!@verbatim
+!!      subroutine radial_integration(nri, kg_st, kg_ed, radius,        &
+!!     &          ntot_comp, f_org, f_int)
+!!  Evaluate radial integration f_int =  \int f_org r^{2} dr
+!!@endverbatim
+!!
+!!@n @param  ltr      Truncation of spherical harmonics
 !
       module radial_int_for_sph_spec
 !
@@ -84,7 +90,7 @@
 !$omp do private(icomp)
         do icomp = 1, ntot_comp
           f_int(icomp) = f_int(icomp) + half * dr1                      &
-     &                 + (f_org(icomp,kr  ) + f_org(icomp,kr+1))
+     &                  * (f_org(icomp,kr  ) + f_org(icomp,kr+1))
         end do
 !$omp end do nowait
       end do
@@ -130,7 +136,7 @@
       end if
 !
 !$omp parallel private(dr1,dr2,drs,coef)
-      do kr = kst, kg_ed-1, 2
+      do kr = kst, kg_ed-2, 2
         dr1 = radius(kr+1) - radius(kr)
         dr2 = radius(kr+2) - radius(kr+1)
         drs = radius(kr+2) - radius(kr)

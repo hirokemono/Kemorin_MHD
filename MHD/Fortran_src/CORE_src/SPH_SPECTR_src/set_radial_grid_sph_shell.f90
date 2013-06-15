@@ -112,9 +112,8 @@
       integer(kind = kint), intent(inout) :: nlayer_ICB, nlayer_CMB
       integer(kind = kint), intent(inout) :: ntot_shell
 !
-      real(kind = kreal) :: dr, shell
+      real(kind = kreal) :: dr
       integer(kind = kint) :: ngrid_icore, ngrid_ext
-      integer(kind = kint) :: k
 !
 !
       dr = (r_CMB - r_ICB) / dble(nri)

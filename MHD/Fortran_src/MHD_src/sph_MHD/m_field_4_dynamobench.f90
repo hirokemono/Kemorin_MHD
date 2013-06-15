@@ -16,9 +16,9 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter :: ibench_temp =  1
-      integer(kind = kint), parameter :: ibench_velo =  2
-      integer(kind = kint), parameter :: ibench_magne = 5
+      integer(kind = kint) :: ibench_temp =  1
+      integer(kind = kint) :: ibench_velo =  2
+      integer(kind = kint) :: ibench_magne = 5
 !
       real(kind = kreal) :: KE_bench(3)
       real(kind = kreal) :: ME_bench(3)
