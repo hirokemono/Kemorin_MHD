@@ -101,6 +101,8 @@
      &                      :: e_hd_fil_div_a =    'div_filter_A'
 !
 !
+      character(len=kchara) :: e_hd_press_grad_v(3)
+!
       character(len=kchara), parameter                                  &
      &                      :: e_hd_mag_tension = 'mag_tension'
       character(len=kchara) :: e_hd_mag_tension_v(3)
@@ -220,6 +222,7 @@
       subroutine set_vector_vol_average_labels
 !
 !
+      call set_vector_label(e_hd_mag_tension, e_hd_press_grad_v)
       call set_vector_label(e_hd_mag_tension, e_hd_mag_tension_v)
       call set_vector_label(fhd_inertia,     e_hd_inertia_v)
       call set_vector_label(fhd_div_m_flux, e_hd_div_m_flux_v)

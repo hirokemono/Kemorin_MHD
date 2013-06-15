@@ -1,16 +1,31 @@
-!cal_subtract_smp.f90
-!     module cal_subtract_smp
+!>@file   cal_subtract_smp.f90
+!!@brief  module cal_subtract_smp
+!!
+!!@author H. Matsui
+!!@date Programmed...when??
 !
-!      Written by H. Matsui
-!
-!      subroutine subtract_scalars_smp(np_smp, nnod, inod_smp_stack,    &
-!     &          source, subt, sol)
-!      subroutine subtract_vectors_smp(np_smp, nnod, inod_smp_stack,    &
-!     &          source, subt, sol)
-!      subroutine subtract_tensors_smp(np_smp, nnod, inod_smp_stack,    &
-!     &          source, subt, sol)
-!
-!         sol(inod,:) =  source(inod,:) - subt(inod,i_v2)
+!>@brief subroutines to subtract field data
+!!@n      Need $omp parallel to use these routines
+!!
+!!@verbatim
+!!      subroutine subtract_scalars_smp(np_smp, nnod, inod_smp_stack,   &
+!!     &          source, subt, sol)
+!!      subroutine subtract_vectors_smp(np_smp, nnod, inod_smp_stack,   &
+!!     &          source, subt, sol)
+!!      subroutine subtract_tensors_smp(np_smp, nnod, inod_smp_stack,   &
+!!     &          source, subt, sol)
+!!
+!!         sol(inod,:) =  source(inod,:) - subt(inod,i_v2)
+!!@endverbatim
+!!
+!!@n @param  np_smp   Number of SMP processes
+!!@n @param  nnod     Number of data points
+!!@n @param  inod_smp_stack(0:np_smp)
+!!                    End address of each SMP process
+!!
+!!@n @param  source(nnod,:)      field to be subtructed
+!!@n @param  subt(nnod,:)        field to subtract
+!!@n @param  sol(nnod,:)         Solution
 !
       module cal_subtract_smp
 !
@@ -34,7 +49,7 @@
 !
       integer(kind = kint) :: ip, inod, ist, ied
 !
-!$omp parallel do private(inod,ist,ied)
+!$omp do private(inod,ist,ied)
       do ip = 1, np_smp
         ist = inod_smp_stack(ip-1) + 1
         ied = inod_smp_stack(ip)
@@ -42,7 +57,7 @@
           sol(inod) = source(inod) - subt(inod)
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine subtract_scalars_smp
 !
@@ -58,7 +73,7 @@
 !
       integer(kind = kint) :: ip, inod, ist, ied
 !
-!$omp parallel do private(inod,ist,ied)
+!$omp do private(inod,ist,ied)
       do ip = 1, np_smp
         ist = inod_smp_stack(ip-1) + 1
         ied = inod_smp_stack(ip)
@@ -68,7 +83,7 @@
           sol(inod,3) = source(inod,3) - subt(inod,3)
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine subtract_vectors_smp
 !
@@ -84,7 +99,7 @@
 !
       integer(kind = kint) :: ip, inod, ist, ied
 !
-!$omp parallel do private(inod,ist,ied)
+!$omp do private(inod,ist,ied)
       do ip = 1, np_smp
         ist = inod_smp_stack(ip-1) + 1
         ied = inod_smp_stack(ip)
@@ -97,7 +112,7 @@
           sol(inod,6) = source(inod,6) - subt(inod,6)
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine subtract_tensors_smp
 !

@@ -49,7 +49,7 @@
 !!
 !!   thermal_diffusion, viscous_diffusion, vorticity_diffusion
 !!   diffuse_vector_p, magnetic_diffusion, composition_diffusion
-!!   magnetic_tension, Lorentz_force
+!!   magnetic_tension, Lorentz_force, pressure_gradient
 !!   Coriolis_force, buoyancy, composite_buoyancy, filtered_buoyancy
 !!
 !!   div_inertia, div_Lorentz_force, div_Coriolis_force
@@ -173,6 +173,11 @@
 !
 !>        Field label for magnetic tension
 !!         @f$ B_{j} \partial_{j} B_{i} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_press_grad = 'pressure_gradient'
+!
+!>        Field label for pressure gradient
+!!         @f$ \partial_{i} p @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_mag_tension = 'magnetic_tension'
 !

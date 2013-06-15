@@ -182,7 +182,7 @@
 !
       nod_fld%num_component =>    num_nod_component
       nod_fld%istack_component => istack_nod_component
-      nod_fld%iorder_ele =>       iorder_nod_phys
+      nod_fld%iorder_eletype =>   iorder_nod_phys
       nod_fld%iflag_monitor =>    iflag_nod_fld_monitor
       nod_fld%phys_name =>        phys_nod_name
 !

@@ -72,7 +72,10 @@
 !!      pick_gauss_coef_order_ctl    2
 !!    end array pick_gauss_coef_order_ctl
 !!
-!!    nphi_mid_eq_ctl         500
+!!    pick_circle_coord_ctl         spherical
+!!    nphi_mid_eq_ctl               500
+!!    pick_cylindrical_radius_ctl   0.75
+!!    pick_vertical_position_ctl    0.6
 !!  end sph_monitor_ctl
 !!
 !! -----------------------------------------------------------------
@@ -117,7 +120,10 @@
       integer(kind = kint) :: num_pick_gauss_m_ctl = 0
       integer(kind = kint), allocatable :: idx_pick_gauss_m_ctl(:)
 !
+      character(len = kchara) :: pick_circle_coord_ctl = 'spherical'
       integer(kind = kint) :: nphi_mid_eq_ctl
+      real(kind = kreal) :: pick_s_ctl = 7.0d0/13.0d0 + 0.5d0
+      real(kind = kreal) :: pick_z_ctl = 0.0d0
 !
 !    label for entry
 !
@@ -159,6 +165,12 @@
 !
       character(len=kchara), parameter                                  &
      &            :: hd_nphi_mid_eq = 'nphi_mid_eq_ctl'
+      character(len=kchara), parameter                                  &
+     &            :: hd_pick_s_ctl = 'pick_cylindrical_radius_ctl'
+      character(len=kchara), parameter                                  &
+     &            :: hd_pick_z_ctl =  'pick_vertical_position_ctl'
+      character(len=kchara), parameter                                  &
+     &            :: hd_circle_coord = 'pick_circle_coord_ctl'
 !
 !
       integer (kind=kint) :: i_voume_ave_head =         0
@@ -179,6 +191,9 @@
       integer (kind=kint) :: i_num_pick_gauss_m =       0
 !
       integer (kind=kint) :: i_nphi_mid_eq =            0
+      integer (kind=kint) :: i_pick_s_ctl =             0
+      integer (kind=kint) :: i_pick_z_ctl =             0
+      integer (kind=kint) :: i_circle_coord =           0
 !
       private :: hd_pick_sph, i_pick_sph, hd_num_pick_layer
       private :: hd_gauss_coefs_head, hd_gauss_coefs_r
@@ -188,6 +203,7 @@
       private :: hd_num_pick_gauss_l, hd_num_pick_gauss_m
       private :: hd_voume_ave_head, hd_voume_rms_head
       private :: hd_layer_rms_head, hd_nphi_mid_eq
+      private :: hd_pick_s_ctl, hd_pick_z_ctl
 !
       private :: allocate_pick_layer_ctl, allocate_pick_sph_ctl
       private :: allocate_pick_sph_l_ctl, allocate_pick_sph_m_ctl
@@ -397,6 +413,10 @@
 !
         call read_real_ctl_item(hd_gauss_coefs_r,                       &
      &          i_gauss_coefs_r, gauss_coefs_radius_ctl)
+        call read_real_ctl_item(hd_pick_s_ctl,                          &
+     &          i_pick_s_ctl, pick_s_ctl)
+        call read_real_ctl_item(hd_pick_z_ctl,                          &
+     &          i_pick_z_ctl, pick_z_ctl)
 !
         call read_integer_ctl_item(hd_nphi_mid_eq,                      &
      &          i_nphi_mid_eq, nphi_mid_eq_ctl)
@@ -412,6 +432,9 @@
      &          i_voume_rms_head, volume_rms_spectr_head_ctl)
         call read_character_ctl_item(hd_layer_rms_head,                 &
      &          i_layer_rms_head, layered_rms_spectr_head_ctl)
+!
+        call read_character_ctl_item(hd_circle_coord,                   &
+     &          i_circle_coord, pick_circle_coord_ctl)
       end do
 !
       end subroutine read_pickup_sph_ctl

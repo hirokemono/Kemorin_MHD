@@ -33,8 +33,10 @@
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
 !
 !
+!$omp parallel
       call subtract_scalars_smp(np_smp, numnod, inod_smp_stack,         &
      &    d_nod(1,i_v1), d_nod(1,i_v2), d_nod(1,i_r))
+!$omp end parallel
 !
       end subroutine subtract_2_nod_scalars
 !
@@ -50,8 +52,10 @@
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
 !
 !
+!$omp parallel
       call subtract_vectors_smp(np_smp, numnod, inod_smp_stack,         &
      &    d_nod(1,i_v1), d_nod(1,i_v2), d_nod(1,i_r))
+!$omp end parallel
 !
       end subroutine subtract_2_nod_vectors
 !
@@ -67,8 +71,10 @@
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
 !
 !
+!$omp parallel
       call subtract_tensors_smp(np_smp, numnod, inod_smp_stack,         &
      &    d_nod(1,i_v1), d_nod(1,i_v2), d_nod(1,i_r))
+!$omp end parallel
 !
       end subroutine subtract_2_nod_tensors
 !

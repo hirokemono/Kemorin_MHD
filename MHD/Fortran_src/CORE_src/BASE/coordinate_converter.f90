@@ -2,55 +2,68 @@
 !!      module coordinate_converter
 !!
 !! @author  H. Matsui
-!! @date Programmed in 2001
+!! @date Programmed in Dec., 1997
 !
-!> @brief transfer position between coordinates
-!
-!      subroutine position_2_sph (n, xx, r, theta, phi, a_r, rs, a_rs )
-!
-!*********************************************************************
-!*
-!*     subroutine to convert position to spherical coordinate
-!*
-!*                                          '97,12,15
-!*
-!*********************************************************************
-!*
-!*********************************************************************
-!*
-!*       n: number of points
-!*      xx: position (x,y,z)
-!*      r, theta, phi: position in spherical coordinate
-!*      a_r = 1/r
-!*      rs:  cylindrical radius
-!*      a_rs = 1/rs
-!*
-!*********************************************************************
-!*
-!
-!      subroutine position_2_xyz(n, rr, theta, phi, xx, yy, zz)
-!
-!*********************************************************************
-!*
-!*     subroutine to convert position from spherical coordinate
-!*
-!*                                          '97,12,15
-!*
-!*********************************************************************
-!*
-!*********************************************************************
-!*
-!       n: number of points
-!
-!*      xx =  rr*sin(theta)*cos(phi)
-!*      yy =  rr*sin(theta)*sin(phi)
-!*      zz =  rr*cos(theta)
-!*
-!*********************************************************************
-!*
-!      subroutine position_cyl_2_xyz(n, ss, phi, xx, yy)
-!      subroutine position_sph_2_cyl_radius(n, r, theta, rs, a_rs, a_r)
-!      subroutine position_cyl_2_sph(n, zz, rs, r, theta, a_r, a_rs)
+!> @brief transfer position between Cartesian and spherical coordinates
+!!
+!!********************************************************************
+!!
+!!      subroutine position_2_sph (n, xx, r, theta, phi, a_r, rs, a_rs)
+!!
+!!       subroutine to convert position to spherical coordinate
+!!
+!!       n: number of points
+!!      xx: position (x,y,z)
+!!      r, theta, phi: position in spherical coordinate
+!!      a_r = 1/r
+!!      rs:  cylindrical radius
+!!      a_rs = 1/rs
+!!
+!!********************************************************************
+!!
+!!      subroutine position_2_xyz(n, rr, theta, phi, xx, yy, zz)
+!!
+!!       subroutine to convert position from spherical coordinate
+!!
+!!      xx =  rr*sin(theta)*cos(phi)
+!!      yy =  rr*sin(theta)*sin(phi)
+!!      zz =  rr*cos(theta)
+!!
+!!********************************************************************
+!!
+!!      subroutine position_cyl_2_xyz(n, ss, phi, xx, yy)
+!!
+!!       subroutine to convert position from cylindrical coordinate
+!!
+!!********************************************************************
+!!
+!!      subroutine position_sph_2_cyl_radius(n, r, theta, rs, a_rs, a_r)
+!!
+!!       subroutine to convert position from spherical coordinate 
+!!       to cylindrical radius
+!!
+!!********************************************************************
+!!
+!!      subroutine position_cyl_2_sph(n, zz, rs, r, theta, a_r, a_rs)
+!!
+!!       subroutine to convert position from cylindrical coordinate
+!!       to spherical coordinate
+!!
+!!********************************************************************
+!!@endverbatim
+!!
+!!@n @param  n         Number of points
+!!@n @param  xx(n,3)   position @f$ (x,y,z) @f$
+!!@n @param  r(n)      radius   @f$ r @f$
+!!@n @param  theta(n)  colatitude  @f$ \theta @f$
+!!@n @param  phi(n)    longitude   @f$ \phi @f$
+!!@n @param  a_r(n)     @f$ 1/ r @f$
+!!@n @param  rs(n)     cylindrical radius  @f$ s @f$
+!!@n @param  a_rs(n)    @f$ 1 / s @f$
+!!
+!!@n @param  xx(n)   position @f$ x @f$
+!!@n @param  yy(n)   position @f$ y @f$
+!!@n @param  zz(n)   position @f$ z @f$
 !
 !
       module coordinate_converter

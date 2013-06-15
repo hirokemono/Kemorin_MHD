@@ -1,15 +1,27 @@
+!>@file   cal_minmax_4_vector_smp.f90
+!!@brief  module cal_minmax_4_vector_smp
+!!
+!!@date  Programmed by H.Matsui on Aug., 2006
 !
-!     module   cal_minmax_4_vector_smp
-!
-!     written by H. Matsui on Aug., 2006
-!
-!      subroutine s_cal_minmax_4_vector_smp(numdat, np_smp, istack_smp, &
-!     &          min_vec, max_vec, vect)
-!      subroutine s_cal_minmax_4_scalar_smp(numdat, np_smp, istack_smp, &
-!     &          min_vec, max_vec, scalar)
-!
-!      subroutine cal_minmax_4_vector(numdat, min_vec, max_vec, vect)
-!      subroutine cal_minmax_4_scalar(numdat, min_vec, max_vec, scalar)
+!>@brief Find minimum and maximum values
+!!
+!!@verbatim
+!!      subroutine s_cal_minmax_4_vector_smp(nnod, np_smp, istack_smp,  &
+!!     &          min_vec, max_vec, vect)
+!!      subroutine s_cal_minmax_4_scalar_smp(nnod, np_smp, istack_smp,  &
+!!     &          min_vec, max_vec, scalar)
+!!
+!!      subroutine cal_minmax_4_vector(nnod, min_vec, max_vec, vect)
+!!      subroutine cal_minmax_4_scalar(nnod, min_vec, max_vec, scalar)
+!!@endverbatim
+!!
+!!@n @param nnod                   Number of data points
+!!@n @param np_smp                 Number of SMP processes
+!!@n @param istack_smp(0:np_smp)   End point for each SMP process
+!!@n @param min_vec(3)             Minimum value for each component
+!!@n @param max_vec(3)             Maximum value for each component
+!!@n @param vect(nnod,3)           Vector data
+!!@n @param scalar(nnod)           Scalar data
 !
       module   cal_minmax_4_vector_smp
 !
@@ -28,12 +40,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_minmax_4_vector_smp(numdat, np_smp, istack_smp,  &
+      subroutine s_cal_minmax_4_vector_smp(nnod, np_smp, istack_smp,    &
      &          min_vec, max_vec, vect)
 !
-      integer(kind = kint), intent(in) :: np_smp, numdat
+      integer(kind = kint), intent(in) :: np_smp, nnod
       integer(kind = kint), intent(in) :: istack_smp(0:np_smp)
-      real(kind = kreal), intent(in) :: vect(numdat,3)
+      real(kind = kreal), intent(in) :: vect(nnod,3)
 !
       real(kind = kreal), intent(inout) :: min_vec(3), max_vec(3)
 !
@@ -88,12 +100,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_minmax_4_scalar_smp(numdat, np_smp, istack_smp,  &
+      subroutine s_cal_minmax_4_scalar_smp(nnod, np_smp, istack_smp,    &
      &          min_vec, max_vec, scalar)
 !
-      integer(kind = kint), intent(in) :: np_smp, numdat
+      integer(kind = kint), intent(in) :: np_smp, nnod
       integer(kind = kint), intent(in) :: istack_smp(0:np_smp)
-      real(kind = kreal), intent(in) :: scalar(numdat)
+      real(kind = kreal), intent(in) :: scalar(nnod)
 !
       real(kind = kreal), intent(inout) :: min_vec, max_vec
 !
@@ -133,10 +145,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_minmax_4_vector(numdat, min_vec, max_vec, vect)
+      subroutine cal_minmax_4_vector(nnod, min_vec, max_vec, vect)
 !
-      integer(kind = kint), intent(in) :: numdat
-      real(kind = kreal), intent(in) :: vect(numdat,3)
+      integer(kind = kint), intent(in) :: nnod
+      real(kind = kreal), intent(in) :: vect(nnod,3)
 !
       real(kind = kreal), intent(inout) :: min_vec(3), max_vec(3)
 !
@@ -144,18 +156,18 @@
 !
 !
       istack_smp(0) = izero
-      istack_smp(1) = numdat
-      call s_cal_minmax_4_vector_smp(numdat, ione, istack_smp,          &
+      istack_smp(1) = nnod
+      call s_cal_minmax_4_vector_smp(nnod, ione, istack_smp,            &
      &    min_vec, max_vec, vect)
 !
       end subroutine cal_minmax_4_vector
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_minmax_4_scalar(numdat, min_vec, max_vec, scalar)
+      subroutine cal_minmax_4_scalar(nnod, min_vec, max_vec, scalar)
 !
-      integer(kind = kint), intent(in) :: numdat
-      real(kind = kreal), intent(in) :: scalar(numdat)
+      integer(kind = kint), intent(in) :: nnod
+      real(kind = kreal), intent(in) :: scalar(nnod)
 !
       real(kind = kreal), intent(inout) :: min_vec, max_vec
 !
@@ -163,8 +175,8 @@
 !
 !
       istack_smp(0) = izero
-      istack_smp(1) = numdat
-      call s_cal_minmax_4_scalar_smp(numdat, ione, istack_smp,          &
+      istack_smp(1) = nnod
+      call s_cal_minmax_4_scalar_smp(nnod, ione, istack_smp,            &
      &    min_vec, max_vec, scalar)
 !
       end subroutine cal_minmax_4_scalar

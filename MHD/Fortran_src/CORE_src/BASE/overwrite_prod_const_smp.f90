@@ -1,23 +1,37 @@
-!overwrite_prod_const_smp.f90
-!     module overwrite_prod_const_smp
+!>@file   overwrite_prod_const_smp.f90
+!!@brief  module overwrite_prod_const_smp
+!!
+!!@author H. Matsui
+!!@date Programmed in May 2009
 !
-!        programmed by H.Matsui on May., 2009
-!
-!      need $omp parallel to use routines
-!
-!      subroutine ovwrt_coef_prod_scalar_smp(np_smp, nnod,              &
-!     &          inod_smp_stack, coef, prod)
-!      subroutine ovwrt_coef_prod_vect_smp(np_smp, nnod,                &
-!     &          inod_smp_stack, coef, prod)
-!      subroutine ovwrt_coef_prod_tensor_smp(np_smp, nnod,              &
-!     &          inod_smp_stack, coef, prod)
-!
-!      subroutine ovwrt_vect_prod_cvec_coef_smp(np_smp, nnod,           &
-!     &          inod_smp_stack, coef, c_vec, prod)
-!             prod(:,:) = coef * c_vec(:) \times prod(:,:)
-!      subroutine ovwrt_vect_prod_cvec_smp(np_smp, nnod,                &
-!     &          inod_smp_stack, c_vec, prod)
-!             prod(:,:) = c_vec(:) \times prod(:,:)
+!>@brief subroutines to obatine products and overwrite to original data
+!!@n     $omp parallel is required to use these routines
+!!
+!!@verbatim
+!!      subroutine ovwrt_coef_prod_scalar_smp(np_smp, nnod,             &
+!!     &          inod_smp_stack, coef, prod)
+!!      subroutine ovwrt_coef_prod_vect_smp(np_smp, nnod,               &
+!!     &          inod_smp_stack, coef, prod)
+!!      subroutine ovwrt_coef_prod_tensor_smp(np_smp, nnod,             &
+!!     &          inod_smp_stack, coef, prod)
+!!
+!!      subroutine ovwrt_vect_prod_cvec_coef_smp(np_smp, nnod,          &
+!!     &          inod_smp_stack, coef, c_vec, prod)
+!!             prod(:,:) = coef * c_vec(:) \times prod(:,:)
+!!      subroutine ovwrt_vect_prod_cvec_smp(np_smp, nnod,               &
+!!     &          inod_smp_stack, c_vec, prod)
+!!             prod(:,:) = c_vec(:) \times prod(:,:)
+!!@endverbatim
+!!
+!!@n @param  np_smp   Number of SMP processes
+!!@n @param  nnod     Number of data points
+!!@n @param  inod_smp_stack(0:np_smp)
+!!                    End address of each SMP process
+!!@n @param  coef     Scalar coefficients
+!!@n @param  c_vec(3) constant vector
+!!
+!!@n @param  prod(nnod,NB)     Product
+!!                      (scalar, vector, or symmetric tensor)
 !
       module overwrite_prod_const_smp
 !

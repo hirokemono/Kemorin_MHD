@@ -31,7 +31,7 @@
 !
 !
       write(*,*) 'gzipped PSF UCD data: ', trim(gzip_name)
-      call open_rd_gzfile(gzip_name)
+      call open_wt_gzfile(gzip_name)
 !
       call write_psf_grid_gz
       call write_psf_data_gz
@@ -49,7 +49,7 @@
 !
 !
       write(*,*) 'gzipped PSF grid data: ', trim(gzip_name)
-      call open_rd_gzfile(gzip_name)
+      call open_wt_gzfile(gzip_name)
 !
       call write_psf_grid_gz
 !
@@ -65,7 +65,7 @@
 !
 !
       write(*,*) 'gzipped PSF result data: ', trim(gzip_name)
-      call open_rd_gzfile(gzip_name)
+      call open_wt_gzfile(gzip_name)
 !
       call write_psf_data_gz
 !
@@ -81,18 +81,19 @@
       integer(kind = kint) :: i
 !
 !
-      write(textbuf,'(5i10)')                                           &
-     &     numnod_psf, numele_psf, ncomptot_psf, izero, izero
+      write(textbuf,'(5i10,a1)')                                        &
+     &     numnod_psf, numele_psf, ncomptot_psf, izero, izero, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       do i = 1, numnod_psf
-        write(textbuf,'(i10,1p3e25.15E3)') inod_psf(i), xx_psf(i,1:3)
+        write(textbuf,'(i10,1p3e25.15E3,a1)')                           &
+     &                 inod_psf(i), xx_psf(i,1:3), char(0)
         call write_compress_txt(nbuf, textbuf)
       end do
 !
       do i = 1, numele_psf
-        write(textbuf,'(2i10,a5,3i10)') iele_psf(i), ione,              &
-     &                                   ' tri ', ie_psf(i,1:3)
+        write(textbuf,'(2i10,a5,3i10,a1)') iele_psf(i), ione,            &
+     &                                ' tri ', ie_psf(i,1:3), char(0)
         call write_compress_txt(nbuf, textbuf)
       end do
 !
@@ -103,19 +104,25 @@
       subroutine write_psf_data_gz
 !
       integer(kind = kint) :: i
+      character(len=kchara) :: fmt_txt
 !
 !
-      write(textbuf,'(255i5)') nfield_psf, ncomp_psf(1:nfield_psf)
+      write(fmt_txt,'(a1,i3,a6)')                                       &
+     &                   '(', (nfield_psf+1), 'i4,a1)'
+      write(textbuf,fmt_txt) nfield_psf, ncomp_psf(1:nfield_psf),       &
+     &                            char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       do i = 1, nfield_psf
-        write(textbuf,'(a,a1)') trim(psf_data_name(i)),','
+        write(textbuf,'(a,a1,a1)') trim(psf_data_name(i)),',',char(0)
         call write_compress_txt(nbuf, textbuf)
       end do
 !
+      write(fmt_txt,'(a5,i3,a16)')                                      &
+     &                   '(i10,', ncomptot_psf, '(1pE25.15e3),a1)'
       do i = 1, numnod_psf
-        write(textbuf,'(i10,1p255e25.15E3)')                            &
-     &              inod_psf(i), d_nod_psf(i,1:ncomptot_psf)
+        write(textbuf,fmt_txt)                                          &
+     &              inod_psf(i), d_nod_psf(i,1:ncomptot_psf), char(0)
         call write_compress_txt(nbuf, textbuf)
       end do
 !

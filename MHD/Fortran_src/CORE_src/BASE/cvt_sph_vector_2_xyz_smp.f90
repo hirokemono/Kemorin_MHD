@@ -4,8 +4,8 @@
 !!@author H. Matsui
 !!@date Programmed in June, 2005
 !
-!>@brief Convert vector from Cartesian coordinate
-!!       to cylindrical coordinate
+!>@brief Convert vector from spherical coordinate
+!!       to Cartesian coordinate
 !!
 !!@verbatim
 !!*********************************************************************
