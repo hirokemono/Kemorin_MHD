@@ -4,6 +4,7 @@
 !      Programmed by H. Matsui on June., 2012
 !
 !      subroutine s_const_data_4_dynamobench
+!      subroutine s_const_data_on_circle
 !
       module const_data_4_dynamobench
 !
