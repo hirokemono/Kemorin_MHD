@@ -11,6 +11,7 @@
 !
       use m_precision
       use m_parallel_var_dof
+      use m_work_time
 !
       use SPH_analyzer_sph_trans
       use SPH_analyzer_back_trans
@@ -31,6 +32,9 @@
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
 !
+!
+      num_elapsed = 30
+      call allocate_elapsed_times
 !
 !     ---------------------
 !
@@ -83,6 +87,7 @@
         call FEM_analyze_sph_trans(i_step, visval)
 !
 !   Transfer coordinate
+        if (iflag_debug.gt.0) write(*,*) 'FEM_to_SPH_bridge_sph_trans'
         call FEM_to_SPH_bridge_sph_trans(visval)
 !
 !   Take zonal RMS

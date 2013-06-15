@@ -11,6 +11,7 @@
 !
       use m_precision
       use m_parallel_var_dof
+      use m_work_time
 !
       use SPH_analyzer_back_trans
       use FEM_analyzer_back_trans
@@ -28,6 +29,10 @@
 !
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
+!
+!
+      num_elapsed = 30
+      call allocate_elapsed_times
 !
 !   ----  read controls
 !

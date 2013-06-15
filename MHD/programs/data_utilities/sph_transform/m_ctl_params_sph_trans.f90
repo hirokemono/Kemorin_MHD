@@ -96,10 +96,6 @@
      &    .or.  sph_transform_mode_ctl .eq. 'Radius_out'                &
      &    .or.  sph_transform_mode_ctl .eq. 'RADIUS_OUT') then
           id_lagendre_transfer = iflag_lag_krloop_outer
-        else if(sph_transform_mode_ctl .eq. 'long_loop'                 &
-     &    .or.  sph_transform_mode_ctl .eq. 'Long_loop'                 &
-     &    .or.  sph_transform_mode_ctl .eq. 'LONG_LOOP') then
-          id_lagendre_transfer = iflag_lag_largest_loop
         else if(sph_transform_mode_ctl .eq. 'original'                  &
      &    .or.  sph_transform_mode_ctl .eq. 'Original'                  &
      &    .or.  sph_transform_mode_ctl .eq. 'ORIGINAL') then

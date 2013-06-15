@@ -163,6 +163,7 @@
       use copy_rj_phys_data_4_IO
 !
       integer(kind = kint) :: i_step, k, inod
+      real(kind = kreal) :: real_grad_t0, real_comp_t0
 !
 !
       if(idx_rj_degree_zero .gt. 0) then
@@ -197,9 +198,13 @@
         if(idx_rj_degree_zero .gt. 0) then
           do k = nlayer_ICB, nlayer_CMB
             inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
+            real_grad_t0 = d_rj(inod,ipol%i_grad_t)                     &
+     &                    * ar_1d_rj(k,2)
+            real_comp_t0 = d_rj(inod,ipol%i_grad_composit)              &
+     &                    * ar_1d_rj(k,2)
             write(id_ave_den,'(2i10, 1p4E25.15e3)')                     &
-     &           i_step, k, d_rj(inod, ipol%i_grad_t),                  &
-     &           d_rj(inod, ipol%i_grad_composit), freq2(k), freq(k)
+     &           i_step, k, real_grad_t0, real_comp_t0,                 &
+     &           freq2(k), freq(k)
           end do
         end if
 !
@@ -243,7 +248,7 @@
         do k = nlayer_ICB, nlayer_CMB
           inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
           freq2(k) = (buo_ratio * d_rj(inod, ipol%i_grad_composit)      &
-     &                      + d_rj(inod, ipol%i_grad_t))
+     &              + d_rj(inod, ipol%i_grad_t)) * ar_1d_rj(k,2)
           if(freq2(k) .gt. 0.0d0) freq(k) = sqrt(freq2(k))
           freq2(k) = freq2(k) * radius_1d_rj_r(k  )**2
         end do
