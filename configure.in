@@ -23,13 +23,15 @@ dnl Include zlib Check related definitions
 builtin(include,MHD/confdb/ax_check_zlib.m4)
 dnl Include pgplot Check related definitions
 builtin(include,MHD/confdb/ax_check_pgplot.m4)
+dnl Include hdf5 Check
+builtin(include,MHD/confdb/hdf5.m4)
 #
 dnl Include Aquaterm Check
 builtin(include,MHD/confdb/ax_check_aquaterm.m4)
 #
 dnl Include pkg-config Check
 builtin(include,MHD/confdb/pkg.m4)
-
+#
 
 AC_CONFIG_SRCDIR([MHD/programs/SPH_MHD/main_sph_MHD.f90])
 # AC_CONFIG_HEADER([config.h])
@@ -116,6 +118,9 @@ AC_LANG_RESTORE
 
 # libtool check
 PKG_PROG_PKG_CONFIG
+
+# hdf5 check
+AX_CHECK_HDF5_FORTRAN
 
 #
 #  Check subroutien name for Fortran-C connection
@@ -223,7 +228,7 @@ else
 # Checks for OpenGL
 	if test ${USE_gl} = "yes"
 	then
-		AX_HAVE_OPENGL
+		AX_HAVE_OPENGL = "yes"
 		AC_SUBST(GL_CFLAGS)
 		AC_MSG_RESULT(GL_CFLAGS... "${GL_CFLAGS}")
 		AC_MSG_RESULT(CPPFLAGS... "${CPPFLAGS}")
