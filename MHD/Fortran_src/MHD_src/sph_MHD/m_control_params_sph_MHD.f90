@@ -95,7 +95,6 @@
 !
 !
       integer(kind = kint) :: iflag_sph_coriolis_file = 0
-      integer(kind = kint) :: iflag_tilted_coriolis =   0
 !
 !>      Start radial address of fluid shell for @f$ f(r,j) @f$
       integer(kind = kint) :: kr_rj_fluid_start =    1

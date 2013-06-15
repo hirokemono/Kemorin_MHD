@@ -39,9 +39,14 @@
       use sph_transforms_4_MHD
       use products_sph_fields_smp
       use mag_of_field_smp
+      use const_wz_coriolis_rtp
 !
 !
 !$omp parallel
+!      if((irtp%i_velo*irtp%i_coriolis) .gt. 0) then
+!        call cal_wz_coriolis_rtp
+!      end if
+!
       if((irtp%i_lorentz*irtp%i_ujb) .gt. 0) then
         call cal_rtp_dot_product(irtp%i_lorentz, irtp%i_velo,           &
      &      irtp%i_ujb)

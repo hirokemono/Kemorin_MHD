@@ -39,7 +39,6 @@
       use m_work_4_sph_trans
       use FFT_selector
       use legendre_transform_org
-      use legendre_transform_1loop
       use legendre_transform_krin
       use legendre_transform_spin
       use spherical_SRs_N
@@ -81,8 +80,6 @@
         call leg_bwd_trans_scalar_spin(nb)
       else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
         call leg_bwd_trans_scalar_krin(nb)
-      else if(id_lagendre_transfer .eq. iflag_lag_largest_loop) then
-        call leg_bwd_trans_scalar_1loop(nb)
       else
         call leg_bwd_trans_scalar_org(nb)
       end if
@@ -141,8 +138,6 @@
         call leg_fwd_trans_scalar_spin(nb)
       else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
         call leg_fwd_trans_scalar_krin(nb)
-      else if(id_lagendre_transfer .eq. iflag_lag_largest_loop) then
-        call leg_fwd_trans_scalar_1loop(nb)
       else
         call leg_fwd_trans_scalar_org(nb)
       end if

@@ -5,13 +5,11 @@
 !
 !      subroutine order_b_trans_vector_krin(nb)
 !      subroutine order_b_trans_scalar_krin(nb)
-!      subroutine order_b_trans_grad_krin(nb)
 !      subroutine order_f_trans_vector_krin(nb)
 !      subroutine order_f_trans_scalar_krin(nb)
 !
 !      subroutine back_f_trans_vector_krin(nb)
 !      subroutine back_f_trans_scalar_krin(nb)
-!      subroutine back_f_trans_grad_krin(nb)
 !      subroutine back_b_trans_vector_krin(nb)
 !      subroutine back_b_trans_scalar_krin(nb)
 !
@@ -88,34 +86,6 @@
 !$omp end parallel do
 !
       end subroutine order_b_trans_scalar_krin
-!
-! -----------------------------------------------------------------------
-!
-      subroutine order_b_trans_grad_krin(nb)
-!
-      integer(kind = kint), intent(in) :: nb
-!
-      integer(kind = kint) :: i_rlm, j_rlm
-      integer(kind = kint) :: i_rlm_1, k_rlm
-      integer(kind = kint) :: nd
-!
-!
-!$omp parallel do private(j_rlm,nd,i_rlm,i_rlm_1)
-      do k_rlm = 1, nidx_rtm(1)
-        do nd = 1, nb
-          do j_rlm = 1, nidx_rlm(2)
-            i_rlm = nd + (j_rlm-1) * nb                                 &
-     &                 + (k_rlm-1) * nb * nidx_rlm(2)
-            i_rlm_1 = nd + (k_rlm-1) * nb
-!
-            sp_rlm_krin(i_rlm_1,j_rlm,1) = sp_rlm(2*i_rlm-1)
-            sp_rlm_krin(i_rlm_1,j_rlm,2) = sp_rlm(2*i_rlm  )
-          end do
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine order_b_trans_grad_krin
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -239,34 +209,6 @@
 !$omp end parallel do
 !
       end subroutine back_f_trans_scalar_krin
-!
-! -----------------------------------------------------------------------
-!
-      subroutine back_f_trans_grad_krin(nb)
-!
-      integer(kind = kint), intent(in) :: nb
-!
-      integer(kind = kint) :: i_rlm, j_rlm, k_rtm
-      integer(kind = kint) :: i_rlm_1
-      integer(kind = kint) :: nd
-!
-!
-!$omp parallel do private(j_rlm,nd,i_rlm,i_rlm_1)
-      do k_rtm = 1, nidx_rtm(1)
-        do nd = 1, nb
-          do j_rlm = 1, nidx_rlm(2)
-            i_rlm = nd + (j_rlm-1) * nb                                 &
-     &                 + (k_rtm-1) * nb * nidx_rlm(2)
-            i_rlm_1 = nd + (k_rtm-1) * nb
-!
-            sp_rlm(2*i_rlm-1) = sp_rlm_krin(i_rlm_1,j_rlm,1)
-            sp_rlm(2*i_rlm  ) = sp_rlm_krin(i_rlm_1,j_rlm,2)
-          end do
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine back_f_trans_grad_krin
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

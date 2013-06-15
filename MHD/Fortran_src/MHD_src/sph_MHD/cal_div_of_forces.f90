@@ -118,7 +118,8 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol%i_press) = - d_rj(inod,ipol%i_div_inertia)
+!        d_rj(inod,ipol%i_press) = - d_rj(inod,ipol%i_div_inertia)
+        d_rj(inod,ipol%i_press) = zero
       end do
 !$omp end do nowait
 !

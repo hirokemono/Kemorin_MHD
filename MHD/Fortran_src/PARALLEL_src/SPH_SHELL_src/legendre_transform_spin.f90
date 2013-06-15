@@ -13,7 +13,6 @@
 !!    Backward transforms
 !!      subroutine leg_bwd_trans_vector_spin(nb)
 !!      subroutine leg_bwd_trans_scalar_spin(nb)
-!!      subroutine leg_bwd_trans_grad_spin(nb)
 !!        Input:  sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!        Output: vr_rtm   (Order: radius,theta,phi)
 !!
@@ -77,25 +76,6 @@
       end subroutine leg_bwd_trans_scalar_spin
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine leg_bwd_trans_grad_spin(nb)
-!
-      use ordering_schmidt_trans_spin
-      use legendre_bwd_trans_spin
-!
-      integer(kind = kint), intent(in) :: nb
-!
-!
-      call order_b_trans_grad_spin(nb)
-      call clear_b_trans_vector_spin(nb)
-!
-      call legendre_b_trans_grad_spin(nb)
-!
-      call back_b_trans_vector_spin(nb)
-!
-      end subroutine leg_bwd_trans_grad_spin
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine leg_fwd_trans_vector_spin(nb)
@@ -133,25 +113,6 @@
       call back_f_trans_scalar_spin(nb)
 !
       end subroutine leg_fwd_trans_scalar_spin
-!
-! -----------------------------------------------------------------------
-!
-      subroutine leg_fwd_trans_grad_spin(nb)
-!
-      use ordering_schmidt_trans_spin
-      use legendre_fwd_trans_spin
-!
-      integer(kind = kint), intent(in) :: nb
-!
-!
-      call order_f_trans_vector_spin(nb)
-      call clear_f_trans_grad_spin(nb)
-!
-      call legendre_f_trans_grad_spin(nb)
-!
-      call back_f_trans_grad_spin(nb)
-!
-      end subroutine leg_fwd_trans_grad_spin
 !
 ! -----------------------------------------------------------------------
 !

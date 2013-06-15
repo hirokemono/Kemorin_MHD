@@ -25,6 +25,10 @@
 !!      subroutine const_grad_poloidal_magne
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: idpdr%i_magne
+!!
+!!      subroutine const_pressure_gradient
+!!        Input:    ipol%i_press
+!!        Solution: ipol%i_press_grad
 !!@endverbatim
 !
       module const_sph_radial_grad
@@ -254,6 +258,30 @@
       end if
 !
       end subroutine const_grad_poloidal_magne
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine const_pressure_gradient
+!
+      use m_physical_property
+      use cal_sph_exp_1st_diff
+      use cal_sph_exp_nod_none_bc
+      use const_wz_coriolis_rtp
+!
+!
+      call cal_sph_nod_gradient_2(nlayer_ICB, nlayer_CMB,               &
+     &    d_rj(1,ipol%i_press), d_rj(1,ipol%i_press_grad) )
+!
+      call delete_bc_rj_vector(nlayer_ICB, ipol%i_press_grad)
+      call delete_bc_rj_vector(nlayer_CMB, ipol%i_press_grad)
+!
+!$omp parallel
+      call ovwrt_rj_coef_prod_vect_smp( (-coef_press),                  &
+     &    ipol%i_press_grad)
+!$omp end parallel
+!
+      end subroutine const_pressure_gradient
 !
 ! -----------------------------------------------------------------------
 !

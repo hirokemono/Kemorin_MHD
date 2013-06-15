@@ -134,19 +134,15 @@
      &        + sd(2,2,j30) * omega_rj(k,1,2) * d_sph_cor(i21,ic_dvt)
         end do
 !
-        do j = 1, idx_rj_degree_zero
-          inod = j + (k-1)*nidx_rj(2)
-          i11 = idx_rj_degree_one(0) + (k-1)*nidx_j_cor
+        if(idx_rj_degree_zero .gt. 0) then
+          inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
+          i11 = idx_rj_degree_one(0) + (k-1)*nidx_rj(2)
 !
-!          d_rj(inod,is_div_f)                                          &
-!     &       =  four*pi*(two/three) * half * d_rj(i11,ipol%i_vort)     &
-!     &        + four*pi*(two/three) * omega_rj(k,1,2)                  &
+!          d_rj(inod,is_div_f)                                           &
+!     &       =  four*(two/three) * half * d_rj(i11,ipol%i_vort)         &
+!     &        + four*(two/three) * omega_rj(k,1,2)                      &
 !     &          * d_rj(i11,idpdr%i_vort)
-          d_rj(inod,is_div_f)                                           &
-     &       =  four*(two/three) * half * d_rj(i11,ipol%i_vort)         &
-     &        + four*(two/three) * omega_rj(k,1,2)                      &
-     &          * d_rj(i11,idpdr%i_vort)
-        end do
+        end if
 !
         do j = 1, nidx_rj(2)
           inod = j + (k-1)*nidx_rj(2)
@@ -231,10 +227,10 @@
      &             - coef_cor * ar_1d_rj(k,2) * (ct1 + ct3)
         end do
 !
-        do j = 1, idx_rj_degree_zero
-          inod = j + (k-1)*nidx_rj(2)
-          i11 = idx_rj_degree_one(-1) + (k-1)*nidx_j_cor
-          l11 = idx_rj_degree_one( 1) + (k-1)*nidx_j_cor
+        if(idx_rj_degree_zero .gt. 0) then
+          inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
+          i11 = idx_rj_degree_one(-1) + (k-1)*nidx_rj(2)
+          l11 = idx_rj_degree_one( 1) + (k-1)*nidx_rj(2)
 !
 !          ct1 = four*pi*(two/three) * half * d_rj(i11,ipol%i_vort)     &
 !     &        + four*pi*(two/three) * omega_rj(k,1,2)                  &
@@ -255,7 +251,7 @@
 !
           d_rj(inod,is_div_f) = d_rj(inod,is_div_f)                     &
      &         - coef_cor * ar_1d_rj(k,2) * (ct1 + ct3)
-        end do
+        end if
       end do
 !$omp end parallel do
 !

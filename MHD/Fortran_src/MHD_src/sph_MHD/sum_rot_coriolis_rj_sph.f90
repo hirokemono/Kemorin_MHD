@@ -95,7 +95,7 @@
      &        'sum_rot_coriolis_rj_10', omega_rj(1,2,1:3)
       call sum_rot_coriolis_rj_10(coef_cor)
 !
-      if(iflag_tilted_coriolis .gt. 0) then
+      if( omega_rj(1,2,1).ne.zero .or. omega_rj(1,2,3).ne.zero) then
         if (iflag_debug.eq.1) write(*,*) 'sum_rot_coriolis_rj_xy'
         call sum_rot_coriolis_rj_xy(coef_cor)
       end if

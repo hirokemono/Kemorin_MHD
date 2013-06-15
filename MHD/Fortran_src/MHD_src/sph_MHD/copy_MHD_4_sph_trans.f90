@@ -116,8 +116,8 @@
       call copy_vec_fld_to_trans(nvector_rtp_2_rj,                      &
      &      irtp%i_m_advect, f_trns%i_m_advect)
 !   Coriolis flag
-!      call copy_vec_fld_to_trans(nvector_rtp_2_rj,                     &
-!     &      irtp%i_coriolis, f_trns%i_coriolis)
+      call copy_vec_fld_to_trans(nvector_rtp_2_rj,                      &
+     &      irtp%i_coriolis, f_trns%i_coriolis)
 !   Lorentz flag
       call copy_vec_fld_to_trans(nvector_rtp_2_rj,                      &
      &      irtp%i_lorentz, f_trns%i_lorentz)
@@ -148,8 +148,8 @@
       call copy_vec_spec_from_trans(nvector_rtp_2_rj,                   &
      &      ipol%i_m_advect, f_trns%i_m_advect)
 !   Coriolis flag
-!      call copy_vec_spec_from_trans(nvector_rtp_2_rj,                  &
-!     &      ipol%i_coriolis, f_trns%i_coriolis)
+      call copy_vec_spec_from_trans(nvector_rtp_2_rj,                   &
+     &      ipol%i_coriolis, f_trns%i_coriolis)
 !   Lorentz flag
       call copy_vec_spec_from_trans(nvector_rtp_2_rj,                   &
      &      ipol%i_lorentz, f_trns%i_lorentz)

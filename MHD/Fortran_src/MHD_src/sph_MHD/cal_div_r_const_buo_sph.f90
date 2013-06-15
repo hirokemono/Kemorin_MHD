@@ -15,6 +15,7 @@
       use m_physical_property
       use m_sph_spectr_data
       use m_sph_phys_address
+      use m_schmidt_poly_on_rtm
 !
       implicit  none
 !
@@ -90,7 +91,8 @@
      &          = two * a_r_1d_rj_r(k) * (coef_buo * d_rj(inod,is_t)    &
      &                   + coef_comp_buo * d_rj(inod,ipol%i_light))     &
      &           +  ( coef_buo * d_rj(inod,ids_t)                       &
-     &             + coef_comp_buo * d_rj(inod,ipol%i_grad_composit) )
+     &             + coef_comp_buo * d_rj(inod,ipol%i_grad_composit))   &
+     &              * g_sph_rj(j,3) * a_r_1d_rj_r(k)
         end do
 !$omp end parallel do
 !
@@ -112,7 +114,8 @@
           j = mod((inod-1),nidx_rj(2)) + 1
           k = 1 + (inod- j) / nidx_rj(2)
           d_rj(inod,is_div) = coef * ( two * d_rj(inod,is_fld)        &
-     &                       * a_r_1d_rj_r(k) + d_rj(inod,ids_fld) )
+     &                       * a_r_1d_rj_r(k) + d_rj(inod,ids_fld)    &
+     &                        * g_sph_rj(j,3) * a_r_1d_rj_r(k))
         end do
 !$omp end parallel do
 !

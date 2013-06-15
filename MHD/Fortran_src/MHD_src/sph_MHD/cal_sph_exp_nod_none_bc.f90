@@ -21,7 +21,7 @@
 !!      subroutine cal_sph_nod_nobc_out_diffuse2(coef_fdm_fix_out_2,    &
 !!     &          kr_out, is_fld, is_diffuse)
 !!
-!!      subroutine delete_bc_field(kr_bc, is_fld, is_diffuse)
+!!      subroutine delete_bc_rj_vector(kr_bc, is_fld, is_diffuse)
 !!@endverbatim
 !!
 !!@n @param coef_fdm_fix_in_2(0:2,3)
@@ -255,7 +255,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine delete_bc_field(kr_bc, is_fld)
+      subroutine delete_bc_rj_vector(kr_bc, is_fld)
 !
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: kr_bc
@@ -273,7 +273,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine delete_bc_field
+      end subroutine delete_bc_rj_vector
 !
 ! -----------------------------------------------------------------------
 !

@@ -29,16 +29,16 @@
 !
       use m_sph_phys_address
       use m_physical_property
-      use sum_r_coriolis_tri_sph
+!      use sum_r_coriolis_tri_sph
       use cal_r_buoyancies_on_sph
 !
 !
-      if( iflag_4_coriolis .gt. 0) then
-        call s_sum_r_coriolis_tri_sph(nlayer_ICB, coef_cor,             &
-     &      ipol%i_div_Coriolis)
-        call s_sum_r_coriolis_tri_sph(nlayer_CMB, coef_cor,             &
-     &      ipol%i_div_Coriolis)
-      end if
+!      if( iflag_4_coriolis .gt. 0) then
+!        call s_sum_r_coriolis_tri_sph(nlayer_ICB, coef_cor,             &
+!     &      ipol%i_div_Coriolis)
+!        call s_sum_r_coriolis_tri_sph(nlayer_CMB, coef_cor,             &
+!     &      ipol%i_div_Coriolis)
+!      end if
 !
       call s_cal_r_buoyancies_on_sph(nlayer_ICB)
       call s_cal_r_buoyancies_on_sph(nlayer_CMB)

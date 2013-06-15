@@ -11,13 +11,11 @@
 !!@verbatim
 !!      subroutine order_b_trans_vector_spin(nb)
 !!      subroutine order_b_trans_scalar_spin(nb)
-!!      subroutine order_b_trans_grad_spin(nb)
 !!      subroutine order_f_trans_vector_spin(nb)
 !!      subroutine order_f_trans_scalar_spin(nb)
 !!
 !!      subroutine back_f_trans_vector_spin(nb)
 !!      subroutine back_f_trans_scalar_spin(nb)
-!!      subroutine back_f_trans_grad_spin(nb)
 !!      subroutine back_b_trans_vector_spin(nb)
 !!      subroutine back_b_trans_scalar_spin(nb)
 !!@endverbatim
@@ -97,34 +95,6 @@
 !$omp end parallel do
 !
       end subroutine order_b_trans_scalar_spin
-!
-! -----------------------------------------------------------------------
-!
-      subroutine order_b_trans_grad_spin(nb)
-!
-      integer(kind = kint), intent(in) :: nb
-!
-      integer(kind = kint) :: i_rlm, j_rlm
-      integer(kind = kint) :: i_rlm_2, k_rtm
-      integer(kind = kint) :: nd
-!
-!
-!$omp parallel do private(j_rlm,nd,i_rlm,i_rlm_2)
-      do k_rtm = 1, nidx_rtm(1)
-        do nd = 1, nb
-          do j_rlm = 1, nidx_rlm(2)
-            i_rlm = nd + (j_rlm-1) * nb                                 &
-     &                 + (k_rtm-1) * nb * nidx_rlm(2)
-            i_rlm_2 = k_rtm + (nd-1) * nidx_rtm(1)
-!
-            sp_rlm_spin(j_rlm,i_rlm_2,1) = sp_rlm(2*i_rlm-1)
-            sp_rlm_spin(j_rlm,i_rlm_2,2) = sp_rlm(2*i_rlm  )
-          end do
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine order_b_trans_grad_spin
 !
 ! -----------------------------------------------------------------------
 !
@@ -244,34 +214,6 @@
 !$omp end parallel do
 !
       end subroutine back_f_trans_scalar_spin
-!
-! -----------------------------------------------------------------------
-!
-      subroutine back_f_trans_grad_spin(nb)
-!
-      integer(kind = kint), intent(in) :: nb
-!
-      integer(kind = kint) :: i_rlm, j_rlm, k_rtm
-      integer(kind = kint) :: i_rlm_2
-      integer(kind = kint) :: nd
-!
-!
-!$omp parallel do private(j_rlm,nd,i_rlm,i_rlm_2)
-      do k_rtm = 1, nidx_rtm(1)
-        do nd = 1, nb
-          do j_rlm = 1, nidx_rlm(2)
-            i_rlm = nd + (j_rlm-1) * nb                                 &
-     &                 + (k_rtm-1) * nb * nidx_rlm(2)
-            i_rlm_2 = k_rtm + (nd-1) * nidx_rtm(1)
-!
-            sp_rlm(2*i_rlm-1) = sp_rlm_spin(j_rlm,i_rlm_2,1)
-            sp_rlm(2*i_rlm  ) = sp_rlm_spin(j_rlm,i_rlm_2,2)
-          end do
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine back_f_trans_grad_spin
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

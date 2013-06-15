@@ -38,6 +38,7 @@
       use m_addresses_trans_sph_snap
       use m_work_4_sph_trans
       use init_sph_trans
+      use const_wz_coriolis_rtp
 !
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
@@ -52,6 +53,7 @@
 !
       call initialize_sph_trans
 !
+      call set_colatitude_rtp
 !
       if(id_lagendre_transfer .ne. iflag_lag_undefined) return
       call select_legendre_transform
@@ -159,17 +161,11 @@
       use m_machine_parameter
       use m_work_4_sph_trans
 !
-      real(kind = kreal) :: stime, etime(0:3), etime_shortest
-      real(kind = kreal) :: etime_trans(0:3)
+      real(kind = kreal) :: stime, etime(1:3), etime_shortest
+      real(kind = kreal) :: etime_trans(1:3)
 !
 !
       id_lagendre_transfer = iflag_lag_orginal_loop
-      stime = MPI_WTIME()
-      call sph_back_trans_4_MHD
-      call sph_forward_trans_4_MHD
-      etime(id_lagendre_transfer) = MPI_WTIME() - stime
-!
-      id_lagendre_transfer = iflag_lag_largest_loop
       stime = MPI_WTIME()
       call sph_back_trans_4_MHD
       call sph_forward_trans_4_MHD
@@ -193,10 +189,6 @@
       id_lagendre_transfer = iflag_lag_orginal_loop
       etime_shortest =       etime_trans(iflag_lag_orginal_loop)
 !
-      if(etime_trans(iflag_lag_largest_loop) .lt. etime_shortest) then
-        id_lagendre_transfer = iflag_lag_largest_loop
-        etime_shortest =       etime_trans(iflag_lag_largest_loop)
-      end if
       if(etime_trans(iflag_lag_krloop_inner) .lt. etime_shortest) then
         id_lagendre_transfer = iflag_lag_krloop_inner
         etime_shortest =       etime_trans(iflag_lag_krloop_inner)
@@ -208,10 +200,8 @@
 !
       if(my_rank .eq. 0) then
         write(*,*) 'id_lagendre_transfer: ', id_lagendre_transfer
-        write(*,*) '0: elapsed by original loop: ',                     &
+        write(*,*) '1: elapsed by original loop: ',                     &
      &            etime_trans(iflag_lag_orginal_loop)
-        write(*,*) '1: elapsed by longest loop: ',                      &
-     &            etime_trans(iflag_lag_largest_loop)
         write(*,*) '2: elapsed by inner radius loop: ',                 &
      &            etime_trans(iflag_lag_krloop_inner)
         write(*,*) '3: elapsed by outer radius loop: ',                 &

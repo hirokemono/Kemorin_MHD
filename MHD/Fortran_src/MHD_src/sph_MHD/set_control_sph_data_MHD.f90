@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!     subroutine s_set_control_sph_data_MHD
+!!      subroutine set_ctl_params_pick_circle
 !!     subroutine set_ctl_params_dynamobench
 !!     subroutine check_SPH_MHD_dependencies
 !!@endverbatim
@@ -91,10 +92,10 @@
      &    .or.  sph_transform_mode_ctl .eq. 'Radius_out'                &
      &    .or.  sph_transform_mode_ctl .eq. 'RADIUS_OUT') then
           id_lagendre_transfer = iflag_lag_krloop_outer
-        else if(sph_transform_mode_ctl .eq. 'long_loop'                 &
-     &    .or.  sph_transform_mode_ctl .eq. 'Long_loop'                 &
-     &    .or.  sph_transform_mode_ctl .eq. 'LONG_LOOP') then
-          id_lagendre_transfer = iflag_lag_largest_loop
+        else if(sph_transform_mode_ctl .eq. 'original'                  &
+     &    .or.  sph_transform_mode_ctl .eq. 'Original'                  &
+     &    .or.  sph_transform_mode_ctl .eq. 'ORIGINAL') then
+          id_lagendre_transfer = iflag_lag_orginal_loop
         end if
       end if
 !
@@ -124,11 +125,6 @@
           call choose_file_format(coriolis_file_fmt_ctl,                &
      &        i_coriolis_file_fmt, ifmt_cor_int_file)
         end if
-!
-        if(angular(1).ne.zero .or. angular(2).ne.zero) then
-          iflag_tilted_coriolis = 1
-        end if
-!
       end if
 !
 !
@@ -139,16 +135,124 @@
       subroutine set_ctl_params_dynamobench
 !
       use m_ctl_data_4_pickup_sph
+      use m_ctl_data_4_fields
+      use m_phys_labels
+      use m_phys_constants
+      use m_field_on_circle
+      use m_circle_transform
       use m_field_at_mid_equator
 !
+      integer(kind = kint) :: ifld
 !
+!
+      iflag_circle_coord = iflag_circle_sph
       if(i_nphi_mid_eq .gt. 0) then
-        mphi_mid_eq = nphi_mid_eq_ctl
+        mphi_circle = nphi_mid_eq_ctl
       else
-        mphi_mid_eq = -1
+        mphi_circle = -1
       end if
 !
+      write(*,*) 'phys_nod_name_ctl', allocated(phys_nod_name_ctl)
+      do ifld = 1, num_nod_phys_ctl
+        if(phys_nod_name_ctl(ifld) .eq. fhd_temp) ibench_temp = 1
+        if(phys_nod_name_ctl(ifld) .eq. fhd_velo) ibench_velo = 1
+        if(phys_nod_name_ctl(ifld) .eq. fhd_magne) ibench_magne = 1
+      end do
+!
+      d_circle%num_phys = ibench_velo + ibench_temp + ibench_magne
+      call alloc_phys_name_type(d_circle)
+!
+      ifld = 0
+      if(ibench_temp .gt. 0) then
+        ifld = ifld + 1
+        ibench_temp = d_circle%istack_component(ifld-1) + 1
+        d_circle%phys_name(ifld) =     fhd_temp
+        d_circle%num_component(ifld) = n_scalar
+        d_circle%istack_component(ifld)                                 &
+     &        = d_circle%istack_component(ifld-1) + n_scalar
+      end if
+      if(ibench_velo .gt. 0) then
+        ifld = ifld + 1
+        ibench_velo = d_circle%istack_component(ifld-1) + 1
+        d_circle%phys_name(ifld) =     fhd_velo
+        d_circle%num_component(ifld) = n_vector
+        d_circle%istack_component(ifld)                                 &
+     &        = d_circle%istack_component(ifld-1) + n_vector
+      end if
+      if(ibench_magne .gt. 0) then
+        ifld = ifld + 1
+        ibench_magne = d_circle%istack_component(ifld-1) + 1
+        d_circle%phys_name(ifld) =     fhd_magne
+        d_circle%num_component(ifld) = n_vector
+        d_circle%istack_component(ifld)                                 &
+     &        = d_circle%istack_component(ifld-1) + n_vector
+      end if
+      d_circle%iflag_monitor = ione
+      d_circle%ntot_phys =     d_circle%istack_component(ifld)
+      d_circle%num_phys_viz =  d_circle%num_phys
+      d_circle%ntot_phys_viz = d_circle%ntot_phys
+!
       end subroutine set_ctl_params_dynamobench
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_ctl_params_pick_circle
+!
+      use m_ctl_data_4_pickup_sph
+      use m_ctl_data_4_fields
+      use m_field_on_circle
+      use m_circle_transform
+      use t_phys_data
+      use ordering_field_by_viz
+!
+!
+      iflag_circle_coord = iflag_circle_sph
+      if (i_circle_coord .ne. 0) then
+        if(pick_circle_coord_ctl .eq. 'spherical'                       &
+     &     .or. pick_circle_coord_ctl .eq. 'Spherical'                  &
+     &     .or. pick_circle_coord_ctl .eq. 'SPHERICAL'                  &
+     &     .or. pick_circle_coord_ctl .eq. 'rtp'                        &
+     &     .or. pick_circle_coord_ctl .eq. 'RTP') then
+          iflag_circle_coord = iflag_circle_sph
+        else if(pick_circle_coord_ctl .eq. 'cyrindrical'                &
+     &     .or. pick_circle_coord_ctl .eq. 'Cyrindrical'                &
+     &     .or. pick_circle_coord_ctl .eq. 'CYRINDRICAL'                &
+     &     .or. pick_circle_coord_ctl .eq. 'spz'                        &
+     &     .or. pick_circle_coord_ctl .eq. 'SPZ') then
+          iflag_circle_coord = iflag_circle_cyl
+        end if
+      end if
+!
+      if(i_nphi_mid_eq .gt. 0) then
+        mphi_circle = nphi_mid_eq_ctl
+      else
+        mphi_circle = -1
+      end if
+!
+      if(i_pick_z_ctl .gt. 0) then
+        s_circle = pick_s_ctl
+      else
+        s_circle = 7.0d0/13.0d0 + 0.5d0
+      end if
+!
+      if(i_pick_z_ctl .gt. 0) then
+        z_circle = pick_z_ctl
+      else
+        z_circle = 0.0d0
+      end if
+!
+      d_circle%num_phys = num_nod_phys_ctl
+      call alloc_phys_name_type(d_circle)
+      call s_ordering_field_by_viz(d_circle%num_phys,                   &
+     &    d_circle%num_phys_viz, d_circle%num_component,                &
+     &    d_circle%phys_name, d_circle%iflag_monitor)
+!
+      call set_istack_4_nodal_field(d_circle%num_phys,                  &
+     &    d_circle%num_phys_viz, d_circle%num_component,                &
+     &    d_circle%ntot_phys, d_circle%ntot_phys_viz,                   &
+     &    d_circle%istack_component)
+!
+      end subroutine set_ctl_params_pick_circle
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

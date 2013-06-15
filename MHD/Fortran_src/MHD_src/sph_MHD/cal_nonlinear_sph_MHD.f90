@@ -35,6 +35,7 @@
       use m_machine_parameter
       use m_spheric_param_smp
       use products_sph_fields_smp
+      use const_wz_coriolis_rtp
 !
 !
 !$omp parallel
@@ -64,6 +65,10 @@
       if( (irtp%i_c_flux*iflag_t_evo_4_composit) .gt. 0) then
         call rtp_vec_scalar_prod_w_coef(coef_scalar,                    &
      &     irtp%i_velo, irtp%i_light, irtp%i_c_flux)
+      end if
+!
+      if( (irtp%i_Coriolis*iflag_4_coriolis) .gt. 0) then
+        call cal_wz_coriolis_rtp
       end if
 !$omp end parallel
 !

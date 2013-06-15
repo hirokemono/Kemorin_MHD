@@ -51,12 +51,9 @@
       integer(kind = kint), parameter :: iflag_lag_undefined = -1
 !>      integer flag to perform Legendre transform 
 !@n     using original array order
-      integer(kind = kint), parameter :: iflag_lag_orginal_loop = 0
+      integer(kind = kint), parameter :: iflag_lag_orginal_loop = 1
 !>      integer flag to perform Legendre transform 
 !!@n    using longer loop for original array order 
-      integer(kind = kint), parameter :: iflag_lag_largest_loop = 1
-!>      integer flag to perform Legendre transform 
-!@n     with inneromst radial loop
       integer(kind = kint), parameter :: iflag_lag_krloop_inner = 2
 !>      integer flag to perform Legendre transform 
 !@n     with inneromst LEgendre polynomial loop
@@ -68,6 +65,8 @@
 !
 !>      maximum number of fields for Legendre transform
       integer(kind = kint) :: nb_sph_trans
+!>      total number of components for spherical hermonics transform
+      integer(kind = kint) :: ntot_comp_sph_trans
 !
 !>      field data including pole and center  @f$ f(r,\theta,\phi) @f$ 
       real(kind = kreal), allocatable :: d_nod_rtp(:,:)
@@ -91,7 +90,7 @@
       integer(kind = kint), allocatable :: mdx_p_rlm_rtm(:)
 !>      Spectr hermonics order for Legendre transform
       integer(kind = kint), allocatable :: mdx_n_rlm_rtm(:)
-!>      @f$ 1 / \sin \theta  for Legendre transform@f$ 
+!>      @f$ 1 / \sin \theta @f$  for Legendre transform
       real(kind = kreal), allocatable :: asin_theta_1d_rtm(:)
 !
 !>      End address of spherical hermonics order for SMP parallelization

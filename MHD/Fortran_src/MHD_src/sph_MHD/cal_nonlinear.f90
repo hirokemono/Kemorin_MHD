@@ -99,22 +99,22 @@
 !
 !
       call start_eleps_time(14)
-      if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_4_MHD'
+      if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
       call sph_back_trans_4_MHD
       call end_eleps_time(14)
 !
       call start_eleps_time(15)
-      if (iflag_debug.eq.1) write(*,*) 's_cal_nonlinear_sph_MHD'
+      if (iflag_debug.ge.1) write(*,*) 's_cal_nonlinear_sph_MHD'
       call s_cal_nonlinear_sph_MHD
       call end_eleps_time(15)
 !
       call start_eleps_time(16)
-      if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_4_MHD'
+      if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
       call sph_forward_trans_4_MHD
       call end_eleps_time(16)
 !
       call start_eleps_time(17)
-      if (iflag_debug.eq.1) write(*,*) 's_cal_momentum_eq_exp_sph'
+      if (iflag_debug.ge.1) write(*,*) 's_cal_momentum_eq_exp_sph'
       call s_cal_momentum_eq_exp_sph
       call end_eleps_time(17)
 !

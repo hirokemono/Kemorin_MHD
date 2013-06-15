@@ -28,11 +28,6 @@
 !!      diff. of Poloidal component: sp_rj(3*i_rj-1)
 !!      Toroidal component:          sp_rj(3*i_rj  )
 !!
-!!
-!!
-!!      subroutine sph_b_trans_grad_v(nb)
-!!      subroutine sph_f_trans_grad_v(nb)
-!!
 !!   input /outpt arrays for single field
 !!      radial component:      vr_rtp(3*i_rtp-2)
 !!      elevetional component: vr_rtp(3*i_rtp-1)
@@ -54,7 +49,6 @@
       use m_work_4_sph_trans
       use FFT_selector
       use legendre_transform_org
-      use legendre_transform_1loop
       use legendre_transform_krin
       use legendre_transform_spin
       use merge_polidal_toroidal_v
@@ -101,9 +95,6 @@
       else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
         if(iflag_debug .gt. 0) write(*,*) 'schmidt_b_trans_vector_krin'
         call leg_bwd_trans_vector_krin(nb)
-      else if(id_lagendre_transfer .eq. iflag_lag_largest_loop) then
-        if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_1loop'
-        call leg_bwd_trans_vector_1loop(nb)
       else
         if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_org'
         call leg_bwd_trans_vector_org(nb)
@@ -170,9 +161,6 @@
       else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
         if(iflag_debug .gt. 0) write(*,*) 'schmidt_f_trans_vector_krin'
         call leg_fwd_trans_vector_krin(nb)
-      else if(id_lagendre_transfer .eq. iflag_lag_largest_loop) then
-        if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_1loop'
-        call leg_fwd_trans_vector_1loop(nb)
       else
         if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_org'
         call leg_fwd_trans_vector_org(nb)
@@ -189,85 +177,6 @@
 !      call check_sp_rj(my_rank, nb3)
 !
       end subroutine sph_f_trans_vector
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine sph_b_trans_grad_v(nb)
-!
-      integer(kind = kint), intent(in) :: nb
-!
-      integer(kind = kint) :: Nstacksmp(0:np_smp)
-      integer(kind = kint) :: np, ncomp, nb3, nb2
-!
-!
-      nb2 = 2*nb
-      nb3 = 3*nb
-      np =    nidx_rtp(3)
-      ncomp = 3*nb*nidx_rtp(1)*nidx_rtp(2)
-      Nstacksmp(0:np_smp) = 3*nb*irt_rtp_smp_stack(0:np_smp)
-!
-      START_TIME= MPI_WTIME()
-      call send_recv_rj_2_rlm_N(nb2, sp_rj(1), sp_rlm(1) )
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
-!
-      if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
-        call leg_bwd_trans_grad_spin(nb)
-      else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
-        call leg_bwd_trans_grad_krin(nb)
-      else if(id_lagendre_transfer .eq. iflag_lag_largest_loop) then
-        call leg_bwd_trans_grad_1loop(nb)
-      else
-        call leg_bwd_trans_grad_org(nb)
-      end if
-!
-      call send_recv_rtm_2_rtp_N(nb3, vr_rtm, vr_rtp)
-!
-      call backward_FFT_select(np_smp, Nstacksmp, ncomp, np, vr_rtp )
-!
-      call const_grad_v_sph_b_trans(nb, vr_rtp)
-!
-      end subroutine sph_b_trans_grad_v
-!
-! -----------------------------------------------------------------------
-!
-      subroutine sph_f_trans_grad_v(nb)
-!
-      integer(kind = kint), intent(in) :: nb
-!
-      integer(kind = kint) :: Nstacksmp(0:np_smp)
-      integer(kind = kint) :: np, ncomp, nb3
-!
-!
-      call prod_r_grad_v_sph_f_trans(nb, vr_rtp)
-!
-      np =    nidx_rtp(3)
-      nb3 = 3*nb
-      ncomp = 3*nb*nidx_rtp(1)*nidx_rtp(2)
-      Nstacksmp(0:np_smp) = 3*nb*irt_rtp_smp_stack(0:np_smp)
-!
-      call forward_FFT_select(np_smp, Nstacksmp, ncomp, np, vr_rtp)
-!
-      START_TIME= MPI_WTIME()
-      call send_recv_rtp_2_rtm_N(nb3, vr_rtp, vr_rtm)
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
-!
-      if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
-        call leg_fwd_trans_grad_spin(nb)
-      else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
-        call leg_fwd_trans_grad_krin(nb)
-      else if(id_lagendre_transfer .eq. iflag_lag_largest_loop) then
-        call leg_fwd_trans_grad_1loop(nb)
-      else
-        call leg_fwd_trans_grad_org(nb)
-      end if
-!
-      ncomp = 2*nb*nidx_rtp(1)*nidx_rtp(2)
-      call send_recv_rlm_2_rj_N(ncomp, sp_rlm(1), sp_rj(1) )
-!
-      end subroutine sph_f_trans_grad_v
 !
 ! -----------------------------------------------------------------------
 !

@@ -5,7 +5,6 @@
 !
 !      subroutine sph_back_trans_vector_w_pole(is_fld, irtp_fld)
 !      subroutine sph_back_trans_scalar_w_pole(is_fld, irtp_fld)
-!      subroutine sph_back_trans_grad_w_pole(is_fld, is_grad, irtp_fld)
 !
       module sph_back_trans_with_pole
 !
@@ -74,31 +73,6 @@
 !$omp end parallel
 !
       end subroutine sph_back_trans_scalar_w_pole
-!
-!-----------------------------------------------------------------------
-!
-      subroutine sph_back_trans_grad_w_pole(is_fld, is_grad, irtp_fld)
-!
-      use copy_spectr_4_sph_trans
-      use sph_trans_vector
-      use copy_sph_field_4_sph_trans
-!
-      integer(kind = kint), intent(in)  :: is_fld, is_grad, irtp_fld
-!
-!
-      if( (is_fld*is_grad*irtp_fld) .gt. 0) return
-!
-!$omp parallel
-      call copy_grad_spec_to_trans(ione, is_fld, is_grad, ione)
-!$omp end parallel
-!
-      call sph_b_trans_grad_v(ione)
-!
-!$omp parallel
-      call copy_vec_fld_from_trans(ione, irtp_fld, ione)
-!$omp end parallel
-!
-      end subroutine sph_back_trans_grad_w_pole
 !
 !-----------------------------------------------------------------------
 !

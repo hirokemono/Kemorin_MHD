@@ -30,8 +30,6 @@
      &     write(*,*) 'cal_rot_of_forces_sph_2'
       call cal_rot_of_forces_sph_2
 !
-      if (iflag_debug .ge. iflag_routine_msg)                           &
-     &     write(*,*) 'cal_rot_of_induction_sph'
       call cal_rot_of_induction_sph
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &

@@ -167,11 +167,17 @@
 !$omp parallel do private(inod)
       do j = 1, jmax
         inod = j + (kr_in-1) * jmax
-        d_rj(inod,is_grd  ) = flux_ICB(j)
+        d_rj(inod,is_grd  ) = flux_ICB(j) * g_sph_rj(j,13)              &
+     &                       * radius_1d_rj_r(kr_in)**2
         d_rj(inod,is_grd+1) = d_rj(inod,is_fld  )
         d_rj(inod,is_grd+2) = zero
       end do
 !$omp end parallel do
+!
+      if(idx_rj_degree_zero .eq. 0) return
+      inod = idx_rj_degree_zero + (kr_in-1) * jmax
+      d_rj(inod,is_grd  ) = flux_ICB(idx_rj_degree_zero)                &
+     &                     * radius_1d_rj_r(kr_in)**2
 !
       end subroutine cal_dsdr_sph_in_fix_flux_2
 !
@@ -247,11 +253,17 @@
 !$omp parallel do private(inod)
       do j = 1, jmax
         inod = j + (kr_out-1) * jmax
-        d_rj(inod,is_grd  ) = flux_CMB(j)
+        d_rj(inod,is_grd  ) = flux_CMB(j) * g_sph_rj(j,13)              &
+     &                       * radius_1d_rj_r(kr_out)**2
         d_rj(inod,is_grd+1) = d_rj(inod,is_fld  )
         d_rj(inod,is_grd+2) = zero
       end do
 !$omp end parallel do
+!
+      if(idx_rj_degree_zero .eq. 0) return
+      inod = idx_rj_degree_zero + (kr_out-1) * jmax
+      d_rj(inod,is_grd  ) = flux_CMB(idx_rj_degree_zero)                &
+     &                     * radius_1d_rj_r(kr_out)**2
 !
       end subroutine cal_dsdr_sph_out_fix_flux_2
 !

@@ -16,7 +16,6 @@
 !!
 !!      subroutine clear_f_trans_vector_krin(nb)
 !!      subroutine clear_f_trans_scalar_krin(nb)
-!!      subroutine clear_f_trans_grad_krin(nb)
 !!
 !!    Data for single vector field
 !!      radial component:      vr_rtp(3*i_rtp-2)
@@ -181,28 +180,6 @@
 !$omp end parallel do
 !
       end subroutine clear_f_trans_scalar_krin
-!
-! -----------------------------------------------------------------------
-!
-      subroutine clear_f_trans_grad_krin(nb)
-!
-      use m_spheric_parameter
-!
-      integer(kind = kint), intent(in) :: nb
-!
-      integer(kind = kint) ::  j_rlm, k_rtm
-!
-!
-!$omp parallel do private(j_rlm)
-      do k_rtm = 1, nidx_rtm(1)*nb
-          do j_rlm = 1, nidx_rlm(2)
-            sp_rlm_krin(k_rtm,j_rlm,1) = zero
-            sp_rlm_krin(k_rtm,j_rlm,2) = zero
-          end do
-      end do
-!$omp end parallel do
-!
-      end subroutine clear_f_trans_grad_krin
 !
 ! -----------------------------------------------------------------------
 !

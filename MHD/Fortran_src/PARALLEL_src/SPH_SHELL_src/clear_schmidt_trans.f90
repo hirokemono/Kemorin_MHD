@@ -13,7 +13,6 @@
 !!
 !!      subroutine clear_f_trans_vector(nb)
 !!      subroutine clear_f_trans_scalar(nb)
-!!      subroutine clear_f_trans_grad(nb)
 !!@endverbatim
 !!
 !!@n @param  nb  number of fields to be transformed
@@ -123,28 +122,6 @@
 !$omp end parallel do
 !
       end subroutine clear_f_trans_scalar
-!
-! -----------------------------------------------------------------------
-!
-      subroutine clear_f_trans_grad(nb)
-!
-      integer(kind = kint), intent(in) :: nb
-!
-      integer(kind = kint) :: ip, ist, ied, i_rlm
-!
-!
-!$omp parallel do private(ip,i_rlm,ist,ied)
-      do ip = 1, np_smp
-        ist = nb*inod_rlm_smp_stack(ip-1) + 1
-        ied = nb*inod_rlm_smp_stack(ip)
-        do i_rlm = ist, ied
-            sp_rlm(2*i_rlm-1) = zero
-            sp_rlm(2*i_rlm  ) = zero
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine clear_f_trans_grad
 !
 ! -----------------------------------------------------------------------
 !
