@@ -57,7 +57,7 @@
         call read_evolution_data(id_org_file, num_comp, num_layer,      &
     &       istep_read, time, coef, ierr)
         if(ierr .gt. 0) exit
-        write(*,*) 'read finish for average:', istep_read, ierr
+        write(*,*) 'read finish for average:', istep_read
 !
         if(mod((istep_read-istep_start),istep_inc) .eq. 0               &
      &     .and. istep_read.ge.istep_start) then
@@ -87,7 +87,7 @@
         call read_evolution_data(id_org_file, num_comp, num_layer,      &
     &       istep_read, time, coef, ierr)
         if(ierr .gt. 0) exit
-        write(*,*) 'read finish for deviation:', istep_read, ierr
+        write(*,*) 'read finish for deviation:', istep_read
 !
         if(mod((istep_read-istep_start),istep_inc) .eq. 0               &
      &     .and. istep_read.ge.istep_start) then

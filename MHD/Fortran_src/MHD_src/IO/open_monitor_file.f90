@@ -159,10 +159,15 @@
               call write_one_label(time_step_data_code, fhd_filter_comp)
 !
 !
+            else if ( phys_nod_name(i) .eq. fhd_press_grad ) then
+              call write_one_label(rms_data_code, fhd_press_grad)
+              call write_vector_label(time_step_data_code,              &
+      &            e_hd_press_grad_v)
+!
             else if ( phys_nod_name(i) .eq. fhd_mag_tension ) then
               call write_one_label(rms_data_code, e_hd_mag_tension)
               call write_vector_label(time_step_data_code,              &
-     &            e_hd_mag_tension_v)
+     &            e_hd_mag_tension)
 !
             else if ( phys_nod_name(i) .eq. fhd_inertia ) then
               call write_one_label(rms_data_code, fhd_inertia)

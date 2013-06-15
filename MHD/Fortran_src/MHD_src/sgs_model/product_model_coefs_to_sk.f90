@@ -13,6 +13,7 @@
 !
       use m_control_parameter
       use m_machine_parameter
+      use m_geometry_constants
       use m_geometry_parameter
       use m_geometry_data
       use m_phys_constants
@@ -42,7 +43,7 @@
 !
 !
       if(itype_csim .eq. 1) then
-        if(icoord_SGS_model_coef .eq. 1) then
+        if(icoord_SGS_model_coef .eq. iflag_spherical) then
 !$omp parallel private(k1)
           do k1 = 1, nnod_4_ele
             call overwrite_sph_tensor_smp(np_smp, numele,               &
@@ -56,7 +57,7 @@
           end do
 !$omp end parallel
 !
-        else if(icoord_SGS_model_coef .eq. 2) then
+        else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
 !$omp parallel private(k1)
           do k1 = 1, nnod_4_ele
             call overwrite_cyl_tensor_smp(np_smp, numele,               &
@@ -109,7 +110,7 @@
 !
 !
       if(itype_csim .eq. 1) then
-        if(icoord_SGS_model_coef .eq. 1) then
+        if(icoord_SGS_model_coef .eq. iflag_spherical) then
 !$omp parallel private(k1)
           do k1 = 1, nnod_4_ele
             call overwrite_vector_2_sph_smp(np_smp, numele,             &
@@ -122,7 +123,7 @@
           end do
 !$omp end parallel
 !
-        else if(icoord_SGS_model_coef .eq. 2) then
+        else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
 !$omp parallel private(k1)
           do k1 = 1, nnod_4_ele
             call overwrite_vector_2_cyl_smp(np_smp, numele,             &
@@ -173,7 +174,7 @@
 !
 !
       if(itype_csim .eq. 1) then
-        if(icoord_SGS_model_coef .eq. 1) then
+        if(icoord_SGS_model_coef .eq. iflag_spherical) then
 !$omp parallel private(k1)
           do k1 = 1, nnod_4_ele
             call overwrite_sph_asym_t_smp(np_smp, numele,               &
@@ -187,7 +188,7 @@
           end do
 !$omp end parallel
 !
-        else if(icoord_SGS_model_coef .eq. 2) then
+        else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
 !$omp parallel private(k1)
           do k1 = 1, nnod_4_ele
             call overwrite_cyl_asym_t_smp(np_smp, numele,               &

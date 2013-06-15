@@ -60,6 +60,8 @@
 !
               write(sgs_cor_file_code,1000) i_step_MHD, time, inum,     &
      &         (cor_sgs(inum,nd),nd=1,num_sgs_coefs)
+              write(sgs_cov_file_code,1000) i_step_MHD, time, inum,     &
+     &         (cov_sgs(inum,nd),nd=1,num_sgs_coefs)
               write(sgs_ratio_file_code,1000) i_step_MHD, time, inum,   &
      &         (ratio_sgs(inum,nd),nd=1,num_sgs_coefs)
 !
@@ -76,6 +78,8 @@
 !
             write(sgs_w_cor_file_code,1001)  i_step_MHD, time,          &
      &        (cor_sgs_w(nd),nd=1,num_sgs_coefs)
+            write(sgs_w_cov_file_code,1001)  i_step_MHD, time,          &
+     &        (cov_sgs_w(nd),nd=1,num_sgs_coefs)
             write(sgs_w_ratio_file_code,1001) i_step_MHD, time,         &
      &        (ratio_sgs_w(nd),nd=1, num_sgs_coefs)
             write(sgs_w_rms_file_code,1001) i_step_MHD, time,           &
@@ -90,6 +94,8 @@
 !
               write(diff_w_cor_file_code,1001) i_step_MHD, time,        &
      &          (cor_diff_w(nd),nd=1, num_diff_coefs)
+              write(diff_w_cov_file_code,1001) i_step_MHD, time,        &
+     &          (cov_diff_w(nd),nd=1, num_diff_coefs)
               write(diff_w_ratio_file_code,1001) i_step_MHD, time,      &
      &          (ratio_diff_w(nd),nd=1, num_diff_coefs)
               write(diff_w_rms_file_code,1001) i_step_MHD, time,        &
@@ -105,6 +111,10 @@
                   write(diff_cor_file_code,1000)                        &
      &                 i_step_MHD, time, inum,                          &
      &              (cor_diff(inum,nd),nd=1, num_diff_coefs)
+                  write(diff_cov_file_code,1000)                        &
+     &                 i_step_MHD, time, inum,                          &
+     &              (cov_diff(inum,nd),nd=1, num_diff_coefs)
+!
                   write(diff_ratio_file_code,1000)                      &
      &                 i_step_MHD, time, inum,                          &
      &              (ratio_diff(inum,nd),nd=1, num_diff_coefs)
@@ -146,6 +156,8 @@
 !
         call read_sgs_layerd_data(sgs_cor_file_code, iflag,             &
      &          n_layer_d, num_sgs_coefs, cor_sgs)
+        call read_sgs_layerd_data(sgs_cov_file_code, iflag,             &
+     &          n_layer_d, num_sgs_coefs, cov_sgs)
 !
         call read_sgs_layerd_data(sgs_ratio_file_code, iflag,           &
      &          n_layer_d, num_sgs_coefs, ratio_sgs)
@@ -160,6 +172,8 @@
      &      num_sgs_coefs, sgs_c_whole_clip)
         call read_sgs_whole_data(sgs_w_cor_file_code, iflag,            &
      &      num_sgs_coefs, cor_sgs_w)
+        call read_sgs_whole_data(sgs_w_cov_file_code, iflag,            &
+     &      num_sgs_coefs, cov_sgs_w)
         call read_sgs_whole_data(sgs_w_ratio_file_code, iflag,          &
      &      num_sgs_coefs, ratio_sgs_w)
 !
@@ -176,6 +190,8 @@
 !
           call read_sgs_whole_data(diff_w_cor_file_code, iflag,         &
      &        num_diff_coefs, cor_diff_w)
+          call read_sgs_whole_data(diff_w_cov_file_code, iflag,         &
+     &        num_diff_coefs, cov_diff_w)
           call read_sgs_whole_data(diff_w_ratio_file_code, iflag,       &
      &        num_diff_coefs, ratio_diff_w)
 !
@@ -189,6 +205,9 @@
 !
             call read_sgs_layerd_data(diff_cor_file_code, iflag,        &
      &          n_layer_d, num_diff_coefs, cor_diff)
+!
+            call read_sgs_layerd_data(diff_cov_file_code, iflag,        &
+     &          n_layer_d, num_diff_coefs, cov_diff)
 !
             call read_sgs_layerd_data(diff_ratio_file_code, iflag,      &
      &          n_layer_d, num_diff_coefs, ratio_diff)

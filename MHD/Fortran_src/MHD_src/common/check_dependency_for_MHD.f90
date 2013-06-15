@@ -62,6 +62,11 @@
            num_check = 1
            phys_check_name(1) = fhd_velo
 !
+          else if (phys_nod_name(i) .eq. fhd_press_grad                 &
+     &       ) then
+            num_check = 1
+            phys_check_name(1) = fhd_press
+!
           else if ( phys_nod_name(i) .eq. fhd_filter_b                  &
      &         .or. phys_nod_name(i) .eq. fhd_current                   &
      &         .or. phys_nod_name(i) .eq. fhd_mag_potential             &

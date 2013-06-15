@@ -53,6 +53,9 @@
       if(direction .eq. 'y' .or. direction .eq. 'Y') nd = 2
       if(direction .eq. 'z' .or. direction .eq. 'Z') nd = 3
 !
+      if(direction .eq. 'r' .or. direction .eq. 'R') nd = 11
+      if(direction .eq. 's' .or. direction .eq. 's') nd = 21
+!
       write(*,*) 'input output header'
       read(*,*) line_udt_head
 !

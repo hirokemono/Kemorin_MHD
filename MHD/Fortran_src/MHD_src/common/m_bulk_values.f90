@@ -201,6 +201,7 @@
      &       .or. phys_nod_name(i) .eq. fhd_div_induct_t                &
      &       .or. phys_nod_name(i) .eq. fhd_mag_induct                  &
      &       .or. phys_nod_name(i) .eq. fhd_vp_induct                   &
+     &       .or. phys_nod_name(i) .eq. fhd_press_grad                  &
      &       .or. phys_nod_name(i) .eq. fhd_Lorentz                     &
      &       .or. phys_nod_name(i) .eq. fhd_Coriolis                    &
      &       .or. phys_nod_name(i) .eq. fhd_buoyancy                    &
@@ -366,6 +367,10 @@
           else if ( phys_nod_name(i) .eq. fhd_per_density ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_par_density, j_ave%i_par_density)
+!
+          else if ( phys_nod_name(i) .eq. fhd_press_grad ) then
+            call set_rms_address(num_nod_component(i), i0, j0,          &
+     &          i_rms%i_press_grad, j_ave%i_press_grad)
 !
           else if ( phys_nod_name(i) .eq. fhd_mag_tension ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &

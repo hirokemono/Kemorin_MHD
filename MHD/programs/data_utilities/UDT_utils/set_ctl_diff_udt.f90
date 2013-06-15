@@ -59,6 +59,7 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
       use m_ctl_data_diff_udt
+      use m_geometry_constants
       use set_control_platform_data
       use set_control_4_2nd_files
       use m_file_format_switch
@@ -138,19 +139,19 @@
      &     .or. correlate_coord_ctl .eq. 'CARTESIAN'                    &
      &     .or. correlate_coord_ctl .eq. 'xyz'                          &
      &     .or. correlate_coord_ctl .eq. 'XYZ') then
-          iflag_correlate_coord = 0
+          iflag_correlate_coord = iflag_certecian
         else if(correlate_coord_ctl .eq. 'spherical'                    &
      &     .or. correlate_coord_ctl .eq. 'Spherical'                    &
      &     .or. correlate_coord_ctl .eq. 'SPHERICAL'                    &
      &     .or. correlate_coord_ctl .eq. 'rtp'                          &
      &     .or. correlate_coord_ctl .eq. 'RTP') then
-          iflag_correlate_coord = 1
+          iflag_correlate_coord = iflag_spherical
         else if(correlate_coord_ctl .eq. 'cyrindrical'                  &
      &     .or. correlate_coord_ctl .eq. 'Cyrindrical'                  &
      &     .or. correlate_coord_ctl .eq. 'CYRINDRICAL'                  &
      &     .or. correlate_coord_ctl .eq. 'spz'                          &
      &     .or. correlate_coord_ctl .eq. 'SPZ') then
-          iflag_correlate_coord = 2
+          iflag_correlate_coord = iflag_cylindrical
         end if
       else
         iflag_correlate_coord = 0

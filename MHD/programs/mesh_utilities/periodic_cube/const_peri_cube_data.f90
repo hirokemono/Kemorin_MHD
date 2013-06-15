@@ -151,7 +151,7 @@
       use modify_colat_cube_surf
 !
       integer(kind = kint) :: iele_start, inod_end, inum, ic
-      integer(kind = kint) :: inum1, iele_s2
+      integer(kind = kint) :: iele_s2
 !
 !
        write(*,*) 'max_coarse_level', max_coarse_level

@@ -30,12 +30,13 @@
 !
       subroutine cvt_vector_dynamic_scheme_coord
 !
+      use m_geometry_constants
       use m_control_parameter
 !
 !
-      if(icoord_SGS_model_coef .eq. 1) then
+      if(icoord_SGS_model_coef .eq. iflag_spherical) then
         call convert_dynamic_vectors_2_sph
-      else if(icoord_SGS_model_coef .eq. 2) then
+      else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
         call convert_dynamic_vectors_2_cyl
       end if
 !
@@ -45,12 +46,13 @@
 !
       subroutine cvt_tensor_dynamic_scheme_coord
 !
+      use m_geometry_constants
       use m_control_parameter
 !
 !
-      if(icoord_SGS_model_coef .eq. 1) then
+      if(icoord_SGS_model_coef .eq. iflag_spherical) then
         call convert_dynamic_tensors_2_sph
-      else if(icoord_SGS_model_coef .eq. 2) then
+      else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
         call convert_dynamic_tensors_2_cyl
       end if
 !

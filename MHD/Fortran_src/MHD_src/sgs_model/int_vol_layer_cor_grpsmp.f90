@@ -45,9 +45,9 @@
       sig_l_smp = 0.0d0
       cor_l_smp = 0.0d0
       sig_l(1:n_layer_d,1:18) = 0.0d0
-      cor_l(1:n_layer_d,1:9 ) = 0.0d0
+      cov_l(1:n_layer_d,1:9 ) = 0.0d0
       sig_w(1:18) = 0.0d0
-      cor_w(1:9) =  0.0d0
+      cov_w(1:9) =  0.0d0
 !
 !$omp parallel do &
 !$omp& private(ist_num,ied_num,nd,ist,ied,i_s,i_g,i_f,ii,ix,iele0,iele,&
@@ -111,7 +111,7 @@
      &                         - d_nod(i8, i_g) - ave_g(inum,nd) )**2 ) &
      &               * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
 !
-                cor_l(inum,nd) =   cor_l(inum,nd)                       &
+                cov_l(inum,nd) =   cov_l(inum,nd)                       &
      &              + ( an(1 ,ix) * ( d_nod(i1, i_f)                    &
      &                         - d_nod(i1, i_g) - ave_g(inum,nd) )      &
      &                       * ( d_nod(i1, i_s) - ave_s(inum,nd) )      &
@@ -149,7 +149,7 @@
             sig_l_smp(iproc,nd+9) = sig_l_smp(iproc,nd+9)               &
      &                             + sig_l(inum,nd+9)
             cor_l_smp(iproc,nd  ) = cor_l_smp(iproc,nd  )               &
-     &                             + cor_l(inum,nd  )
+     &                             + cov_l(inum,nd  )
           end do
 !
         end do
@@ -160,7 +160,7 @@
         do nd = 1, n_tensor
           sig_w(nd) =    sig_w(nd) +   sig_l_smp(iproc,nd  )
           sig_w(nd+9) =  sig_w(nd+9) + sig_l_smp(iproc,nd+9)
-          cor_w(nd) =    cor_w(nd) +   cor_l_smp(iproc,nd  )
+          cov_w(nd) =    cov_w(nd) +   cor_l_smp(iproc,nd  )
         end do
       end do
 !
@@ -189,9 +189,9 @@
       sig_l_smp = 0.0d0
       cor_l_smp = 0.0d0
       sig_l(1:n_layer_d,1:18) = 0.0d0
-      cor_l(1:n_layer_d,1:9 ) = 0.0d0
+      cov_l(1:n_layer_d,1:9 ) = 0.0d0
       sig_w(1:18) = 0.0d0
-      cor_w(1:9) =  0.0d0
+      cov_w(1:9) =  0.0d0
 !
 !$omp parallel do &
 !$omp& private(ist_num,ied_num,nd,ist,ied,i_s,i_g,i_f,ii,ix,   &
@@ -303,7 +303,7 @@
      &                         - d_nod(i20,i_g) - ave_g(inum,nd) )**2 ) &
      &               * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
 !
-                cor_l(inum,nd  ) = cor_l(inum,nd  )                     &
+                cov_l(inum,nd  ) = cov_l(inum,nd  )                     &
      &              + ( aw(1 ,ix) * ( d_nod(i1, i_f)                    &
      &                         - d_nod(i1, i_g) - ave_g(inum,nd) )      &
      &                       * ( d_nod(i1, i_s) - ave_s(inum,nd) )      &
@@ -377,7 +377,7 @@
             sig_l_smp(iproc,nd+9) = sig_l_smp(iproc,nd+9)               &
      &                             + sig_l(inum,nd+9)
             cor_l_smp(iproc,nd  ) = cor_l_smp(iproc,nd  )               &
-     &                             + cor_l(inum,nd  )
+     &                             + cov_l(inum,nd  )
           end do
 !
         end do
@@ -388,7 +388,7 @@
         do nd = 1, n_tensor
           sig_w(nd) =    sig_w(nd) +   sig_l_smp(iproc,nd  )
           sig_w(nd+9) =  sig_w(nd+9) + sig_l_smp(iproc,nd+9)
-          cor_w(nd) =    cor_w(nd) +   cor_l_smp(iproc,nd  )
+          cov_w(nd) =    cov_w(nd) +   cor_l_smp(iproc,nd  )
         end do
       end do
 !

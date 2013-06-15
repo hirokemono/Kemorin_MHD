@@ -6,9 +6,9 @@
 !     Written by H. Matsui on Nov., 2006
 !
       use m_precision
+      use m_geometry_constants
 !
       implicit none
-!
 !
       character(len = kchara) :: grouping_mesh_head = "grouping_mesh"
 !
@@ -30,7 +30,7 @@
       integer(kind = kint) :: ncomp_4_correlate =   3
       integer(kind = kint) :: icomp_4_correlate =   3
 !
-      integer(kind = kint) :: iflag_correlate_coord = 0
+      integer(kind = kint) :: iflag_correlate_coord = iflag_certecian
 !
       integer(kind = kint) :: i_diff_steps = 0
       real(kind = kreal) :: dt =  1.0d0

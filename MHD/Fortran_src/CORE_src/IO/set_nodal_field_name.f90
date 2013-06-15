@@ -92,6 +92,7 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_div_induct_t       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_mag_induct         )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_vp_induct          )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_press_grad         )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_Lorentz            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_Coriolis           )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_buoyancy           )           &

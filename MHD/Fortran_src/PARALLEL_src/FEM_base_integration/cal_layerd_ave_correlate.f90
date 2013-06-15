@@ -8,8 +8,9 @@
 !      subroutine divide_all_layer_ave_by_vol(numdir, vol_d,            &
 !     &          ave_1, ave_2, rms_1, rms_2, rms_ratio)
 !
-!      subroutine cal_layered_correlation(numdir, cor_d)
-!      subroutine cal_all_layer_correlation(numdir, cor_d)
+!      subroutine cal_layered_correlation(numdir, cor_d, cov_d)
+!      subroutine cal_all_layer_correlation(numdir, vol_d,              &
+!     &          cor_d, cov_d)
 !
       module cal_layerd_ave_correlate
 !
@@ -98,12 +99,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_layered_correlation(numdir, cor_d)
+      subroutine cal_layered_correlation(numdir, cor_d, cov_d)
 !
       use m_layering_ele_list
 !
       integer (kind = kint), intent(in) :: numdir
       real(kind = kreal), intent(inout) :: cor_d(n_layer_d,numdir)
+      real(kind = kreal), intent(inout) :: cov_d(n_layer_d,numdir)
 !
       integer (kind = kint) ::nd, nd2, igrp
 !
@@ -122,7 +124,8 @@
           if ( cor_d(igrp,nd) .eq. 0.0d0) then
             cor_d(igrp,nd) = 0.0d0
           else
-            cor_d(igrp,nd) = cor_les(igrp,nd) / cor_d(igrp,nd)
+            cor_d(igrp,nd) = cov_les(igrp,nd) / cor_d(igrp,nd)
+            cov_d(igrp,nd) = cov_les(igrp,nd) / volumes_layer(igrp)
           end if
         end do
 !$omp end do
@@ -133,10 +136,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_all_layer_correlation(numdir, cor_d)
+      subroutine cal_all_layer_correlation(numdir, vol_d,               &
+     &          cor_d, cov_d)
 !
       integer (kind = kint), intent(in) :: numdir
+      real(kind = kreal), intent(in) :: vol_d
       real(kind = kreal), intent(inout) :: cor_d(numdir)
+      real(kind = kreal), intent(inout) :: cov_d(numdir)
 !
       integer (kind = kint) ::nd, nd2
 !
@@ -149,7 +155,8 @@
         if ( cor_d(nd) .eq. 0.0d0) then
           cor_d(nd) = 0.0d0
         else
-          cor_d(nd) = cor_wg(nd) / cor_d(nd)
+          cor_d(nd) = cov_wg(nd) / cor_d(nd)
+          cov_d(nd) = cov_wg(nd) / vol_d
         end if
       end do
 !

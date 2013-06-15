@@ -13,6 +13,7 @@
       module set_control_4_force
 !
       use m_precision
+      use m_constants
 !
       implicit  none
 !
@@ -200,7 +201,8 @@
 !
 !  direction of angular velocity of rotation
 !
-      angular = 0.0d0
+      angular(1:2) = zero
+      angular(3) =   one
 !
       if (iflag_4_coriolis .gt. 0) then
         if (i_rotation_vec .eq. 0) then

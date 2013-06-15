@@ -52,7 +52,7 @@
         do iproc = 1, np_smp
           sig_w(nd) =   sig_w(nd) +   sig_l_smp(iproc,nd  )
           sig_w(nd+9) = sig_w(nd+9) + sig_l_smp(iproc,nd+9)
-          cor_w(nd) =   cor_w(nd) +   cor_l_smp(iproc,nd  )
+          cov_w(nd) =   cov_w(nd) +   cor_l_smp(iproc,nd  )
         end do
       end do
 !

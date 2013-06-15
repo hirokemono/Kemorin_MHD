@@ -54,6 +54,11 @@
         call write_sgs_time_head(sgs_cor_file_code)
         call write_sgs_comps_head(sgs_cor_file_code)
 !
+        open (sgs_cov_file_code,file=sgs_cor_file_name,                 &
+     &      status='replace')
+        call write_sgs_time_head(sgs_cov_file_code)
+        call write_sgs_comps_head(sgs_cov_file_code)
+!
         open (sgs_ratio_file_code,file=sgs_ratio_file_name,             &
      &      status='replace')
         call write_sgs_time_head(sgs_ratio_file_code)
@@ -79,6 +84,11 @@
      &        status='replace')
         call write_sgs_whole_time_head(sgs_w_cor_file_code)
         call write_sgs_comps_head(sgs_w_cor_file_code)
+!
+        open (sgs_w_cov_file_code,file=sgs_w_cov_file_name,             &
+     &        status='replace')
+        call write_sgs_whole_time_head(sgs_w_cov_file_code)
+        call write_sgs_comps_head(sgs_w_cov_file_code)
 !
         open (sgs_w_ratio_file_code,file=sgs_w_ratio_file_name,         &
      &        status='replace')
@@ -111,6 +121,11 @@
           call write_sgs_whole_time_head(diff_w_cor_file_code)
           call write_diff_comps_head(diff_w_cor_file_code)
 !
+          open (diff_w_cov_file_code,file=diff_w_cov_file_name,         &
+     &        status='replace')
+          call write_sgs_whole_time_head(diff_w_cov_file_code)
+          call write_diff_comps_head(diff_w_cov_file_code)
+!
           open (diff_w_ratio_file_code,file=diff_w_ratio_file_name,     &
      &        status='replace')
           call write_sgs_whole_time_head(diff_w_ratio_file_code)
@@ -134,6 +149,11 @@
      &          status='replace')
             call write_sgs_time_head(diff_cor_file_code)
             call write_diff_comps_head(diff_cor_file_code)
+!
+            open (diff_cov_file_code,file=diff_cov_file_name,           &
+     &          status='replace')
+            call write_sgs_time_head(diff_cov_file_code)
+            call write_diff_comps_head(diff_cov_file_code)
 !
             open (diff_ratio_file_code,file=diff_ratio_file_name,       &
      &          status='replace')
@@ -172,10 +192,12 @@
         close (sgs_fld_whole_file_code)
         close (sgs_comp_whole_file_code)
 !
+        close (sgs_cov_file_code)
         close (sgs_cor_file_code)
         close (sgs_ratio_file_code)
         close (sgs_rms_file_code)
         close (sgs_w_cor_file_code)
+        close (sgs_w_cov_file_code)
         close (sgs_w_ratio_file_code)
         close (sgs_w_rms_file_code)
 !
@@ -186,12 +208,14 @@
           close (diff_fld_whole_file_code)
           close (diff_comp_whole_file_code)
           close (diff_w_cor_file_code)
+          close (diff_w_cov_file_code)
           close (diff_w_ratio_file_code)
           close (diff_w_rms_file_code)
 !
           if (iset_DIFF_model_coefs .eq. 1 ) then
             close (diff_coef_file_code)
             close (diff_cor_file_code)
+            close (diff_cov_file_code)
             close (diff_ratio_file_code)
             close (diff_rms_file_code)
           end if
@@ -315,12 +339,14 @@
       subroutine write_sgs_comps_head(file_id)
 !
       use m_control_parameter
+      use m_geometry_constants
       use m_ele_info_4_dynamical
       use m_phys_labels
       use m_SGS_model_coefs
 !
       use add_direction_labels
       use write_field_labels
+      use sel_comp_labels_by_coord
 !
       integer(kind = kint), intent(in) :: file_id
       integer ( kind=kint) :: i
@@ -329,111 +355,47 @@
 !
       do i = 1, num_sgs_kinds
         if ( name_ak_sgs(i) .eq. fhd_SGS_h_flux ) then
-          if(icoord_SGS_model_coef .eq. 1) then
-            call add_vector_direction_label_rtp(fhd_SGS_h_flux,         &
-     &         lab(1), lab(2), lab(3))
-          else if(icoord_SGS_model_coef .eq. 2) then
-            call add_vector_direction_label_cyl(fhd_SGS_h_flux,         &
-     &          lab(1), lab(2), lab(3))
-          else
-            call add_vector_direction_label_xyz(fhd_SGS_h_flux,         &
-     &          lab(1), lab(2), lab(3))
-          end if
+          call sel_coord_vector_comp_labels(icoord_SGS_model_coef,      &
+     &        fhd_SGS_h_flux, lab(1) )
           call write_vector_label(file_id, lab(1))
 !
         else if ( name_ak_sgs(i) .eq. fhd_SGS_m_flux ) then
-          if(icoord_SGS_model_coef .eq. 1) then
-            call add_tensor_direction_label_rtp(fhd_SGS_m_flux,         &
-     &          lab(1), lab(2), lab(3), lab(4), lab(5), lab(6))
-          else if(icoord_SGS_model_coef .eq. 2) then
-            call add_tensor_direction_label_cyl(fhd_SGS_m_flux,         &
-     &          lab(1), lab(2), lab(3), lab(4), lab(5), lab(6))
-          else
-            call add_tensor_direction_label_xyz(fhd_SGS_m_flux,         &
-     &          lab(1), lab(2), lab(3), lab(4), lab(5), lab(6))
-          end if
-        call write_sym_tensor_label(file_id, lab(1))
+          call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
+     &        fhd_SGS_m_flux, lab(1) )
+          call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( name_ak_sgs(i) .eq. fhd_SGS_maxwell_t ) then
-          if(icoord_SGS_model_coef .eq. 1) then
-            call add_tensor_direction_label_rtp(fhd_SGS_maxwell_t,      &
-     &          lab(1), lab(2), lab(3), lab(4), lab(5), lab(6))
-          else if(icoord_SGS_model_coef .eq. 2) then
-            call add_tensor_direction_label_cyl(fhd_SGS_maxwell_t,      &
-     &          lab(1), lab(2), lab(3), lab(4), lab(5), lab(6))
-          else
-            call add_tensor_direction_label_xyz(fhd_SGS_maxwell_t,      &
-     &          lab(1), lab(2), lab(3), lab(4), lab(5), lab(6))
-          end if
+          call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
+     &        fhd_SGS_maxwell_t, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( name_ak_sgs(i) .eq. fhd_SGS_induction ) then
           if(iflag_t_evo_4_vect_p .gt. 0) then
             write(label,'(a)') 'SGS_uxB'
-            if(icoord_SGS_model_coef .eq. 1) then
-              call add_vector_direction_label_rtp(label,                &
-     &             lab(1), lab(2), lab(3))
-            else if(icoord_SGS_model_coef .eq. 2) then
-              call add_vector_direction_label_cyl(label,                &
-     &            lab(1), lab(2), lab(3))
-            else
-              call add_vector_direction_label_xyz(label,                &
-     &            lab(1), lab(2), lab(3))
-            end if
+            call sel_coord_vector_comp_labels(icoord_SGS_model_coef,    &
+     &          label, lab(1) )
             call write_vector_label(file_id, lab(1))
 !
           else
             write(label,'(a)') 'SGS_induction'
-            if(icoord_SGS_model_coef .eq. 1) then
-              call add_tensor_direction_label_rtp(label,                &
-     &            lab(1), lab(2), lab(3), lab(4), lab(5), lab(6))
-            else if(icoord_SGS_model_coef .eq. 2) then
-              call add_tensor_direction_label_cyl(label,                &
-     &            lab(1), lab(2), lab(3), lab(4), lab(5), lab(6))
-            else
-              call add_tensor_direction_label_xyz(label,                &
-     &            lab(1), lab(2), lab(3), lab(4), lab(5), lab(6))
-            end if
-              call write_sym_tensor_label(file_id, lab(1))
+            call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,    &
+     &          label, lab(1) )
+            call write_sym_tensor_label(file_id, lab(1))
           end if
 !
         else if ( name_ak_sgs(i) .eq. fhd_SGS_buoyancy ) then
-          if(icoord_SGS_model_coef .eq. 1) then
-            call add_tensor_direction_label_rtp(fhd_SGS_buoyancy,       &
-     &          lab(1), lab(2), lab(3), lab(4), lab(5), lab(6))
-          else if(icoord_SGS_model_coef .eq. 2) then
-            call add_tensor_direction_label_cyl(fhd_SGS_buoyancy,       &
-     &          lab(1), lab(2), lab(3), lab(4), lab(5), lab(6))
-          else
-            call add_tensor_direction_label_xyz(fhd_SGS_buoyancy,       &
-     &          lab(1), lab(2), lab(3), lab(4), lab(5), lab(6))
-          end if
+          call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
+     &          fhd_SGS_buoyancy, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( name_ak_sgs(i) .eq. fhd_SGS_comp_buo ) then
-          if(icoord_SGS_model_coef .eq. 1) then
-            call add_tensor_direction_label_rtp(fhd_SGS_comp_buo,       &
-     &          lab(1), lab(2), lab(3), lab(4), lab(5), lab(6))
-          else if(icoord_SGS_model_coef .eq. 2) then
-            call add_tensor_direction_label_cyl(fhd_SGS_comp_buo,       &
-     &          lab(1), lab(2), lab(3), lab(4), lab(5), lab(6))
-          else
-            call add_tensor_direction_label_xyz(fhd_SGS_comp_buo,       &
-     &          lab(1), lab(2), lab(3), lab(4), lab(5), lab(6))
-          end if
+          call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
+     &          fhd_SGS_comp_buo, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( name_ak_sgs(i) .eq. fhd_SGS_c_flux ) then
-          if(icoord_SGS_model_coef .eq. 1) then
-            call add_vector_direction_label_rtp(fhd_SGS_c_flux,         &
-     &         lab(1), lab(2), lab(3))
-          else if(icoord_SGS_model_coef .eq. 2) then
-            call add_vector_direction_label_cyl(fhd_SGS_c_flux,         &
-     &          lab(1), lab(2), lab(3))
-          else
-            call add_vector_direction_label_xyz(fhd_SGS_c_flux,         &
-     &          lab(1), lab(2), lab(3))
-          end if
+          call sel_coord_vector_comp_labels(icoord_SGS_model_coef,      &
+     &        fhd_SGS_c_flux, lab(1) )
           call write_vector_label(file_id, lab(1))
 !
         end if

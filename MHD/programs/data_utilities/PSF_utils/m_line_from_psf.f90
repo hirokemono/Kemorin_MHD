@@ -130,28 +130,46 @@
       integer(kind = kint), intent(in) :: nd
       real(kind = kreal), intent(in) :: xref
 !
-      integer(kind = kint) :: inod, iedge, k1, i1, i2, icou
-      real(kind = kreal) :: d1, d2, coef1
+      integer(kind = kint) :: iedge, k1, i1, i2, icou
+      real(kind = kreal) :: c1, c2, coef1
 !
 !
       numnod_line = 0
-      do inod = 1, numnod_psf
-        d1 = xx_psf(inod,nd) - xref
-        if(d1 .eq. 0.0d0) numnod_line = numnod_line + 1
+      do i1 = 1, numnod_psf
+        if(nd.eq.1 .or. nd.eq.2 .or. nd.eq.3) then
+          c1 = xx_psf(i1,nd)
+        else if(nd .eq. 11) then
+          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
+        else if(nd .eq. 21) then
+          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2)
+        end if
+        if(c1 .eq. xref) numnod_line = numnod_line + 1
       end do
 !
       do iedge = 1, numedge_psf
         i1 = iedge_psf(iedge,1)
         i2 = iedge_psf(iedge,2)
-        d1 = xx_psf(i1,nd) - xref
-        d2 = xx_psf(i2,nd) - xref
-        if( (d1*d2) .lt. 0.0d0)  numnod_line = numnod_line + 1
+!
+        if(nd.eq.1 .or. nd.eq.2 .or. nd.eq.3) then
+          c1 = xx_psf(i1,nd)
+          c2 = xx_psf(i2,nd)
+        else if(nd .eq. 11) then
+          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
+          c2 = sqrt(xx_psf(i2,1)**2 + xx_psf(i2,2)**2 +xx_psf(i2,3)**2)
+        else if(nd .eq. 21) then
+          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2)
+          c2 = sqrt(xx_psf(i2,1)**2 + xx_psf(i2,2)**2)
+        end if
+!
+        if( ((c1-xref)*(c2-xref)) .lt. 0.0d0) then
+          numnod_line = numnod_line + 1
+        end if
       end do
 !
       call allocate_psf_data_on_line
 !
-      do inod = 1, numnod_line
-        inod_line(inod) = inod
+      do i1 = 1, numnod_line
+        inod_line(i1) = i1
       end do
 !
       icou = 0
@@ -165,23 +183,39 @@
 !
 !
       icou = 0
-      do inod = 1, numnod_psf
-        d1 = xx_psf(inod,nd) - xref
-        if(d1 .eq. 0.0d0) then
+      do i1 = 1, numnod_psf
+        if(nd.eq.1 .or. nd.eq.2 .or. nd.eq.3) then
+          c1 = xx_psf(i1,nd)
+        else if(nd .eq. 11) then
+          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
+        else if(nd .eq. 21) then
+          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2)
+        end if
+        if(c1 .eq. xref) then
           icou = icou + 1
-          xx_line(icou,1:3) = xx_psf(inod,1:3)
+          xx_line(icou,1:3) = xx_psf(i1,1:3)
           d_nod_line(icou,1:ncomptot_psf)                               &
-     &                         = d_nod_psf(inod,1:ncomptot_psf)
+     &                         = d_nod_psf(i1,1:ncomptot_psf)
         end if
       end do
 !
       do iedge = 1, numedge_psf
         i1 = iedge_psf(iedge,1)
         i2 = iedge_psf(iedge,2)
-        d1 = xx_psf(i1,nd) - xref
-        d2 = xx_psf(i2,nd) - xref
-        if( (d1*d2) .lt. 0.0d0) then
-          coef1 =  (xx_psf(i2,nd) - xref)  / (d2 - d1)
+!
+        if(nd.eq.1 .or. nd.eq.2 .or. nd.eq.3) then
+          c1 = xx_psf(i1,nd)
+          c2 = xx_psf(i2,nd)
+        else if(nd .eq. 11) then
+          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
+          c2 = sqrt(xx_psf(i2,1)**2 + xx_psf(i2,2)**2 +xx_psf(i2,3)**2)
+        else if(nd .eq. 21) then
+          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2)
+          c2 = sqrt(xx_psf(i2,1)**2 + xx_psf(i2,2)**2)
+        end if
+!
+        if( ((c1-xref)*(c2-xref)) .lt. 0.0d0) then
+          coef1 =  (c2 - xref)  / (c2 - c1)
           write(*,*) 'find on edge', icou, coef1
 !
           icou = icou + 1

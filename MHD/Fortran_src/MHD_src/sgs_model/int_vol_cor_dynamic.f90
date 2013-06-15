@@ -80,9 +80,9 @@
 !
 !
       sig_l(1:n_layer_d,1:18) = 0.0d0
-      cor_l(1:n_layer_d,1:9 ) = 0.0d0
+      cov_l(1:n_layer_d,1:9 ) = 0.0d0
       sig_w(1:18) = 0.0d0
-      cor_w(1:9) =  0.0d0
+      cov_w(1:9) =  0.0d0
 !
       do inum = 1, n_layer_d
         sig_l_smp(1:np_smp,1:18) = 0.0d0
@@ -186,13 +186,13 @@
           do iproc = 1, np_smp
             sig_l(inum,nd  ) = sig_l(inum,nd  ) + sig_l_smp(iproc,nd  )
             sig_l(inum,nd+9) = sig_l(inum,nd+9) + sig_l_smp(iproc,nd+9)
-            cor_l(inum,nd  ) = cor_l(inum,nd  ) + cor_l_smp(iproc,nd  )
+            cov_l(inum,nd  ) = cov_l(inum,nd  ) + cor_l_smp(iproc,nd  )
           end do
         end do
         do nd = 1, n_tensor
           sig_w(nd) =    sig_w(nd) +   sig_l(inum,nd  )
           sig_w(nd+9) =  sig_w(nd+9) + sig_l(inum,nd+9)
-          cor_w(nd) =    cor_w(nd) +   cor_l(inum,nd  )
+          cov_w(nd) =    cov_w(nd) +   cov_l(inum,nd  )
         end do
 !
       end do
@@ -219,9 +219,9 @@
 !
 !
       sig_l(1:n_layer_d,1:18) = 0.0d0
-      cor_l(1:n_layer_d,1:9 ) = 0.0d0
+      cov_l(1:n_layer_d,1:9 ) = 0.0d0
       sig_w(1:18) = 0.0d0
-      cor_w(1:9) =  0.0d0
+      cov_w(1:9) =  0.0d0
 !
       do inum = 1, n_layer_d
         sig_l_smp(1:np_smp,1:18) = 0.0d0
@@ -410,13 +410,13 @@
           do iproc = 1, np_smp
             sig_l(inum,nd  ) = sig_l(inum,nd  ) + sig_l_smp(iproc,nd  )
             sig_l(inum,nd+9) = sig_l(inum,nd+9) + sig_l_smp(iproc,nd+9)
-            cor_l(inum,nd  ) = cor_l(inum,nd  ) + cor_l_smp(iproc,nd  )
+            cov_l(inum,nd  ) = cov_l(inum,nd  ) + cor_l_smp(iproc,nd  )
           end do
         end do
         do nd = 1, n_tensor
           sig_w(nd) =    sig_w(nd) +   sig_l(inum,nd  )
           sig_w(nd+9) =  sig_w(nd+9) + sig_l(inum,nd+9)
-          cor_w(nd) =    cor_w(nd) +   cor_l(inum,nd  )
+          cov_w(nd) =    cov_w(nd) +   cov_l(inum,nd  )
         end do
 !
       end do

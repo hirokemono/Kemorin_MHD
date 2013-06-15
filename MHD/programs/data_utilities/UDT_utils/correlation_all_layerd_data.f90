@@ -49,7 +49,8 @@
       call sum_layerd_correlation
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_layered_correlation'
-      call cal_layered_correlation(num_tot_nod_phys, cor_data(1,1))
+      call cal_layered_correlation(num_tot_nod_phys,                    &
+     &    cor_data(1,1), cov_data(1,1))
 !
       call take_sqrt_rms_data
 !
@@ -105,7 +106,7 @@
      &      n_layer_d, n_item_layer_d, layer_stack, item_layer,         &
      &      d_nod(1,icomp), d_nod_trans2(1,1),                          &
      &      ave_ref(1,icomp), ave_tgt(1,icomp),                         &
-     &      sig_l(1,icomp), sig_l(1,icomp_2),  cor_l(1,icomp) )
+     &      sig_l(1,icomp), sig_l(1,icomp_2),  cov_l(1,icomp) )
       end do
 !
       end subroutine  int_vol_dev_cor_all_layer

@@ -29,7 +29,6 @@
       use output_shell_surface_data
 !
       integer(kind= kint) :: inod_sf_end, irod_sf_end, iele_sf_end
-      integer(kind= kint) :: i
 !
 !
        write(*,*) 'set_rect_skin'

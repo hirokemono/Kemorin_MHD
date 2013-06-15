@@ -37,6 +37,7 @@
       real(kind = kreal), allocatable    :: rms_sgs_simi(:,:)
       real(kind = kreal), allocatable    :: rms_sgs_grad(:,:)
       real(kind = kreal), allocatable    :: cor_sgs(:,:)
+      real(kind = kreal), allocatable    :: cov_sgs(:,:)
       real(kind = kreal), allocatable    :: ratio_sgs(:,:)
 !
       real(kind = kreal), allocatable    :: ave_sgs_simi_w(:)
@@ -44,6 +45,7 @@
       real(kind = kreal), allocatable    :: rms_sgs_simi_w(:)
       real(kind = kreal), allocatable    :: rms_sgs_grad_w(:)
       real(kind = kreal), allocatable    :: cor_sgs_w(:)
+      real(kind = kreal), allocatable    :: cov_sgs_w(:)
       real(kind = kreal), allocatable    :: ratio_sgs_w(:)
 !
       real(kind = kreal), allocatable    :: ave_diff_simi(:,:)
@@ -51,6 +53,7 @@
       real(kind = kreal), allocatable    :: rms_diff_simi(:,:)
       real(kind = kreal), allocatable    :: rms_diff_grad(:,:)
       real(kind = kreal), allocatable    :: cor_diff(:,:)
+      real(kind = kreal), allocatable    :: cov_diff(:,:)
       real(kind = kreal), allocatable    :: ratio_diff(:,:)
 !
       real(kind = kreal), allocatable    :: ave_diff_simi_w(:)
@@ -58,6 +61,7 @@
       real(kind = kreal), allocatable    :: rms_diff_simi_w(:)
       real(kind = kreal), allocatable    :: rms_diff_grad_w(:)
       real(kind = kreal), allocatable    :: cor_diff_w(:)
+      real(kind = kreal), allocatable    :: cov_diff_w(:)
       real(kind = kreal), allocatable    :: ratio_diff_w(:)
 !
       real(kind = kreal), allocatable    :: coef_sgs_p(:,:)
@@ -100,12 +104,14 @@
        allocate( rms_sgs_simi(n_layer_d, num_sgs_coefs) )
        allocate( rms_sgs_grad(n_layer_d, num_sgs_coefs) )
        allocate( cor_sgs(n_layer_d, num_sgs_coefs) )
+       allocate( cov_sgs(n_layer_d, num_sgs_coefs) )
        allocate( ratio_sgs(n_layer_d, num_sgs_coefs) )
        allocate( ave_sgs_simi_w(num_sgs_coefs) )
        allocate( ave_sgs_grad_w(num_sgs_coefs) )
        allocate( rms_sgs_simi_w(num_sgs_coefs) )
        allocate( rms_sgs_grad_w(num_sgs_coefs) )
        allocate( cor_sgs_w(num_sgs_coefs) )
+       allocate( cov_sgs_w(num_sgs_coefs) )
        allocate( ratio_sgs_w(num_sgs_coefs) )
 !
        allocate( ave_diff_simi(n_layer_d, num_diff_coefs) )
@@ -113,12 +119,14 @@
        allocate( rms_diff_simi(n_layer_d, num_diff_coefs) )
        allocate( rms_diff_grad(n_layer_d, num_diff_coefs) )
        allocate( cor_diff(n_layer_d, num_diff_coefs) )
+       allocate( cov_diff(n_layer_d, num_diff_coefs) )
        allocate( ratio_diff(n_layer_d, num_diff_coefs) )
        allocate( ave_diff_simi_w(num_diff_coefs) )
        allocate( ave_diff_grad_w(num_diff_coefs) )
        allocate( rms_diff_simi_w(num_diff_coefs) )
        allocate( rms_diff_grad_w(num_diff_coefs) )
        allocate( cor_diff_w(num_diff_coefs) )
+       allocate( cov_diff_w(num_diff_coefs) )
        allocate( ratio_diff_w(num_diff_coefs) )
 !
        allocate( coef_sgs_p(n_layer_d, num_sgs_kinds) )
@@ -147,6 +155,7 @@
           rms_sgs_simi = 0.0d0
           rms_sgs_grad = 0.0d0
           cor_sgs =      0.0d0
+          cov_sgs =      0.0d0
           ratio_sgs =    0.0d0
         end if
  !
@@ -155,6 +164,7 @@
         rms_sgs_simi_w = 0.0d0
         rms_sgs_grad_w = 0.0d0
         cor_sgs_w =      0.0d0
+        cov_sgs_w =      0.0d0
         ratio_sgs_w =    0.0d0
       end if
 !
@@ -179,6 +189,7 @@
           rms_diff_simi = 0.0d0
           rms_diff_grad = 0.0d0
           cor_diff =      0.0d0
+          cov_diff =      0.0d0
           ratio_diff =    0.0d0
         end if
 !
@@ -187,6 +198,7 @@
         rms_diff_simi_w = 0.0d0
         rms_diff_grad_w = 0.0d0
         cor_diff_w =      0.0d0
+        cov_diff_w =      0.0d0
         ratio_diff_w =    0.0d0
       end if
 !
@@ -207,16 +219,16 @@
 !
        deallocate( ave_sgs_simi, ave_sgs_grad)
        deallocate( rms_sgs_simi, rms_sgs_grad)
-       deallocate( cor_sgs, ratio_sgs)
+       deallocate( cor_sgs, cov_sgs, ratio_sgs)
        deallocate( ave_sgs_simi_w, ave_sgs_grad_w)
        deallocate( rms_sgs_simi_w, rms_sgs_grad_w)
-       deallocate( cor_sgs_w, ratio_sgs_w)
+       deallocate( cor_sgs_w, cov_sgs_w, ratio_sgs_w)
 !
        deallocate( ave_diff_simi, ave_diff_grad)
        deallocate( rms_diff_simi, rms_diff_grad)
-       deallocate( cor_diff, ratio_diff, ave_diff_simi_w)
+       deallocate( cor_diff, cov_diff, ratio_diff, ave_diff_simi_w)
        deallocate( ave_diff_grad_w, rms_diff_simi_w, rms_diff_grad_w)
-       deallocate( cor_diff_w, ratio_diff_w)
+       deallocate( cor_diff_w, cov_diff_w, ratio_diff_w)
 !
        deallocate( coef_sgs_p, coef_diff_p)
        deallocate( coef_diff_wp)

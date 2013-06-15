@@ -71,6 +71,7 @@
 !
       use m_precision
 !
+      use m_constants
       use m_machine_parameter
       use m_parallel_var_dof
       use m_read_control_elements
@@ -88,7 +89,7 @@
       character (len=kchara) :: g_dir_name_ctl(3)
 !
       integer(kind=kint) :: num_angular_vect_ctl = 0
-      real(kind=kreal) :: angular_vect_ctl(3)
+      real(kind=kreal) :: angular_vect_ctl(3) = (/zero,zero,one/)
       character (len=kchara) :: angular_dir_name_ctl(3)
       character (len=kchara) :: sph_cor_file_name_ctl
       character (len=kchara) :: sph_cor_file_fmt_ctl

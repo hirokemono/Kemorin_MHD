@@ -119,6 +119,7 @@
 !
       subroutine analyze_grp_ave_udt
 !
+      use m_geometry_constants
       use m_layering_ele_list
       use m_node_phys_address
       use m_t_step_parameter
@@ -183,9 +184,9 @@
 !
 !    output udt data
 !
-          if     (iflag_correlate_coord .eq. 1) then
+          if     (iflag_correlate_coord .eq. iflag_spherical) then
             call transfer_corr_field_to_sph
-          else if(iflag_correlate_coord .eq. 2) then
+          else if(iflag_correlate_coord .eq. iflag_cylindrical) then
             call transfer_corr_field_to_cyl
           end if
 !

@@ -18,10 +18,10 @@
 !
 !      subroutine int_vol_dev_cor_ele_grps_type(mesh, ele_grp, jac_3d,  &
 !     &          num_int, d1_nod, d2_nod, ave_1, ave_2,                 &
-!     &          sig_1, sig_2, cor_l)
+!     &          sig_1, sig_2, cov_l)
 !      subroutine int_vol_dev_cor_1egrp_type(mesh, jac_3d,              &
 !     &          num_int,  nitem_grp, iele_grp, d1_nod, d2_nod,         &
-!     &          ave_1, ave_2, sig_1, sig_2, cor_l)
+!     &          ave_1, ave_2, sig_1, sig_2, cov_l)
 !
       module int_rms_ave_ele_grps_type
 !
@@ -226,7 +226,7 @@
 !
       subroutine int_vol_dev_cor_ele_grps_type(mesh, ele_grp, jac_3d,   &
      &          num_int, d1_nod, d2_nod, ave_1, ave_2,                  &
-     &          sig_1, sig_2, cor_l)
+     &          sig_1, sig_2, cov_l)
 !
       use int_vol_dev_cor_1egrp
 !
@@ -242,7 +242,7 @@
 !
       real(kind = kreal), intent(inout) :: sig_1(ele_grp%num_grp)
       real(kind = kreal), intent(inout) :: sig_2(ele_grp%num_grp)
-      real(kind = kreal), intent(inout) :: cor_l(ele_grp%num_grp)
+      real(kind = kreal), intent(inout) :: cov_l(ele_grp%num_grp)
 !
       integer(kind = kint) :: igrp, ist_grp, nitem_grp
 !
@@ -260,7 +260,7 @@
      &        nitem_grp, ele_grp%item_grp(ist_grp+1:ist_grp+nitem_grp), &
      &        num_int, jac_3d%ntot_int, jac_3d%xjac, jac_3d%an,         &
      &        d1_nod, d2_nod, ave_1(igrp), ave_2(igrp),                 &
-     &        sig_1(igrp), sig_2(igrp), cor_l(igrp) )
+     &        sig_1(igrp), sig_2(igrp), cov_l(igrp) )
         end do
 !$omp end parallel do
 !
@@ -276,7 +276,7 @@
      &        nitem_grp, ele_grp%item_grp(ist_grp+1:ist_grp+nitem_grp), &
      &        num_int, jac_3d%ntot_int, jac_3d%xjac, jac_3d%an,         &
      &        d1_nod, d2_nod, ave_1(igrp), ave_2(igrp),                 &
-     &        sig_1(igrp), sig_2(igrp), cor_l(igrp) )
+     &        sig_1(igrp), sig_2(igrp), cov_l(igrp) )
         end do
 !$omp end parallel do
 !
@@ -288,7 +288,7 @@
 !
       subroutine int_vol_dev_cor_1egrp_type(mesh, jac_3d,               &
      &          num_int,  nitem_grp, iele_grp, d1_nod, d2_nod,          &
-     &          ave_1, ave_2, sig_1, sig_2, cor_l)
+     &          ave_1, ave_2, sig_1, sig_2, cov_l)
 !
       use int_vol_dev_cor_1egrp
 !
@@ -302,7 +302,7 @@
       real(kind = kreal), intent(in) :: d2_nod(mesh%node%numnod)
       real(kind = kreal), intent(in) :: ave_1, ave_2
 !
-      real(kind = kreal), intent(inout) :: sig_1, sig_2, cor_l
+      real(kind = kreal), intent(inout) :: sig_1, sig_2, cov_l
 !
 !
       if (mesh%ele%nnod_4_ele .eq. num_t_quad) then
@@ -310,13 +310,13 @@
      &      mesh%ele%numele, mesh%ele%ie, mesh%ele%e_multi,             &
      &      nitem_grp, iele_grp, num_int, jac_3d%ntot_int,              &
      &      jac_3d%xjac, jac_3d%an, d1_nod, d2_nod,                     &
-     &      ave_1, ave_2, sig_1, sig_2, cor_l)
+     &      ave_1, ave_2, sig_1, sig_2, cov_l)
       else
         call int_vol_dev_cor_1egrp_l(mesh%node%numnod,                  &
      &      mesh%ele%numele, mesh%ele%ie, mesh%ele%e_multi,             &
      &      nitem_grp, iele_grp, num_int, jac_3d%ntot_int,              &
      &      jac_3d%xjac, jac_3d%an, d1_nod, d2_nod,                     &
-     &       ave_1, ave_2, sig_1, sig_2, cor_l)
+     &       ave_1, ave_2, sig_1, sig_2, cov_l)
       end if
 !
       end subroutine int_vol_dev_cor_1egrp_type

@@ -118,6 +118,7 @@
 !
       subroutine analyze_udt_correlate
 !
+      use m_geometry_constants
       use m_layering_ele_list
       use m_node_phys_data
       use m_t_step_parameter
@@ -177,11 +178,11 @@
 !
 !    output udt data
 !
-          if     (iflag_correlate_coord .eq. 1) then
+          if     (iflag_correlate_coord .eq. iflag_spherical) then
             if (iflag_debug .gt. 0) write(*,*)                          &
      &         'transfer_corr_field_to_sph'
             call transfer_corr_field_to_sph
-          else if(iflag_correlate_coord .eq. 2) then
+          else if(iflag_correlate_coord .eq. iflag_cylindrical) then
             if (iflag_debug .gt. 0) write(*,*)                          &
      &          'transfer_corr_field_to_cyl'
             call transfer_corr_field_to_cyl

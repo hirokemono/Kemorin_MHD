@@ -6,10 +6,10 @@
 !
 !      subroutine int_vol_dev_cor_1egrp_l(numnod, numele, ie, e_multi,  &
 !     &          nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,   &
-!     &          d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cor_l)
+!     &          d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
 !      subroutine int_vol_dev_cor_1egrp_q(numnod, numele, ie, e_multi,  &
 !     &          nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, aw,   &
-!     &          d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cor_l)
+!     &          d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
 !
       module int_vol_dev_cor_1egrp
 !
@@ -28,7 +28,7 @@
 !
       subroutine int_vol_dev_cor_1egrp_l(numnod, numele, ie, e_multi,   &
      &          nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,    &
-     &          d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cor_l)
+     &          d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
 !
       integer (kind = kint), intent(in) :: numnod, numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_linear)
@@ -43,7 +43,7 @@
 !
       real(kind = kreal), intent(in) :: d1_nod(numnod), d2_nod(numnod)
       real(kind = kreal), intent(in) :: ave_1, ave_2
-      real(kind = kreal), intent(inout) :: sig_1, sig_2, cor_l
+      real(kind = kreal), intent(inout) :: sig_1, sig_2, cov_l
 !
       integer (kind = kint) :: iele, inum
       integer (kind = kint) :: ii, ix
@@ -52,7 +52,7 @@
 !
       sig_1 = zero
       sig_2 = zero
-      cor_l = zero
+      cov_l = zero
       if(nitem_grp .le. izero) return
 !
       do ii= 1, num_int * num_int * num_int 
@@ -93,7 +93,7 @@
      &             + an(8, ix) * (d2_nod(i8 ) - ave_2)**2 )             &
      &            * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
 !
-          cor_l = cor_l                                                 &
+          cov_l = cov_l                                                 &
      &            + (an(1, ix) * (d1_nod(i1 ) - ave_1)                  &
      &                         * (d2_nod(i2 ) - ave_2)                  &
      &             + an(2, ix) * (d1_nod(i2 ) - ave_1)                  &
@@ -120,7 +120,7 @@
 !
       subroutine int_vol_dev_cor_1egrp_q(numnod, numele, ie, e_multi,   &
      &          nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, aw,    &
-     &          d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cor_l)
+     &          d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
 !
       integer (kind = kint), intent(in) :: numnod, numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_quad)
@@ -135,7 +135,7 @@
 !
       real(kind = kreal), intent(in) :: d1_nod(numnod), d2_nod(numnod)
       real(kind = kreal), intent(in) :: ave_1, ave_2
-      real(kind = kreal), intent(inout) :: sig_1, sig_2, cor_l
+      real(kind = kreal), intent(inout) :: sig_1, sig_2, cov_l
 !
       integer (kind = kint) :: iele, inum
       integer (kind = kint) :: ii, ix
@@ -146,7 +146,7 @@
 !
       sig_1 = zero
       sig_2 = zero
-      cor_l = zero
+      cov_l = zero
       if(nitem_grp .le. izero) return
 !
       do ii= 1, num_int * num_int * num_int 
@@ -223,7 +223,7 @@
      &             + aw(20,ix) * (d2_nod(i20) - ave_2)**2 )             &
      &            * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
 !
-          cor_l = cor_l                                                 &
+          cov_l = cov_l                                                 &
      &            + (aw(1, ix) * (d1_nod(i1 ) - ave_1)                  &
      &                         * (d2_nod(i2 ) - ave_2)                  &
      &             + aw(2, ix) * (d1_nod(i2 ) - ave_1)                  &

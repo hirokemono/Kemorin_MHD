@@ -30,6 +30,7 @@
       use m_constants
       use m_machine_parameter
       use m_parallel_var_dof
+      use m_geometry_constants
       use m_file_format_switch
       use m_phys_labels
       use m_control_parameter
@@ -349,13 +350,13 @@
      &     .or. SGS_model_coef_coord_ctl.eq.'SPHERICAL'                 &
      &     .or. SGS_model_coef_coord_ctl.eq.'sph'                       &
      &     .or. SGS_model_coef_coord_ctl.eq.'SPH'                       &
-     &       )               icoord_SGS_model_coef = 1
+     &       )               icoord_SGS_model_coef = iflag_spherical
           if (  SGS_model_coef_coord_ctl.eq.'cylindrical'               &
      &     .or. SGS_model_coef_coord_ctl.eq.'Cylindrical'               &
      &     .or. SGS_model_coef_coord_ctl.eq.'CYLINDRICAL'               &
      &     .or. SGS_model_coef_coord_ctl.eq.'spz'                       &
      &     .or. SGS_model_coef_coord_ctl.eq.'SPZ'                       &
-     &       )               icoord_SGS_model_coef = 2
+     &       )               icoord_SGS_model_coef = iflag_cylindrical
       end if
 !
 !

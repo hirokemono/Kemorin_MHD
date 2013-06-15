@@ -32,7 +32,9 @@
       integer(kind=kint), parameter :: sgs_cor_file_code =    24
       integer(kind=kint), parameter :: sgs_ratio_file_code =  25
       integer(kind=kint), parameter :: sgs_rms_file_code =    26
+      integer(kind=kint), parameter :: sgs_cov_file_code =    125
       integer(kind=kint), parameter :: diff_cor_file_code =   27
+      integer(kind=kint), parameter :: diff_cov_file_code =   126
       integer(kind=kint), parameter :: diff_ratio_file_code = 28
       integer(kind=kint), parameter :: diff_rms_file_code =   29
 !
@@ -42,9 +44,11 @@
       integer(kind=kint), parameter :: diff_comp_whole_file_code = 134
 !
       integer(kind=kint), parameter :: sgs_w_cor_file_code =    34
+      integer(kind=kint), parameter :: sgs_w_cov_file_code =    135
       integer(kind=kint), parameter :: sgs_w_ratio_file_code =  35
       integer(kind=kint), parameter :: sgs_w_rms_file_code =    36
       integer(kind=kint), parameter :: diff_w_cor_file_code =   37
+      integer(kind=kint), parameter :: diff_w_cov_file_code =   136
       integer(kind=kint), parameter :: diff_w_ratio_file_code = 38
       integer(kind=kint), parameter :: diff_w_rms_file_code =   39
 !
@@ -54,6 +58,10 @@
       integer(kind=kint), parameter :: dt_check_min_code =   17
 !
       integer(kind=kint), parameter :: id_dynamobench = 41
+!
+      integer(kind=kint), parameter :: id_circ_fid = 141
+      integer(kind=kint), parameter :: id_circ_sq =  142
+      integer(kind=kint), parameter :: id_circ_ph =  143
 !
       character(len=kchara) :: time_step_file
       character(len=kchara) :: time_step_data_file
@@ -92,11 +100,15 @@
       character(len=kchara), parameter                                  &
      &       :: sgs_cor_file_name =      'sgs_correlate.dat'
       character(len=kchara), parameter                                  &
+     &       :: sgs_cov_file_name =      'sgs_covariance.dat'
+      character(len=kchara), parameter                                  &
      &       :: sgs_ratio_file_name =    'sgs_rms_ratio.dat'
       character(len=kchara), parameter                                  &
      &       :: sgs_rms_file_name =      'sgs_rms.dat'
       character(len=kchara), parameter                                  &
      &       :: diff_cor_file_name =     'diff_correlate.dat'
+      character(len=kchara), parameter                                  &
+     &       :: diff_cov_file_name =     'diff_covariance.dat'
       character(len=kchara), parameter                                  &
      &       :: diff_ratio_file_name =   'diff_rms_ratio.dat'
       character(len=kchara), parameter                                  &
@@ -105,11 +117,15 @@
       character(len=kchara), parameter                                  &
      &       :: sgs_w_cor_file_name =    'sgs_correlate_whole.dat'
       character(len=kchara), parameter                                  &
+     &       :: sgs_w_cov_file_name =    'sgs_covariance_whole.dat'
+      character(len=kchara), parameter                                  &
      &       :: sgs_w_ratio_file_name =  'sgs_rms_ratio_whole.dat'
       character(len=kchara), parameter                                  &
      &       :: sgs_w_rms_file_name =    'sgs_rms_whole.dat'
       character(len=kchara), parameter                                  &
      &       :: diff_w_cor_file_name =   'diff_correlate_whole.dat'
+      character(len=kchara), parameter                                  &
+     &       :: diff_w_cov_file_name =   'diff_covariance_whole.dat'
       character(len=kchara), parameter                                  &
      &       :: diff_w_ratio_file_name = 'diff_rms_ratio_whole.dat'
       character(len=kchara), parameter                                  &

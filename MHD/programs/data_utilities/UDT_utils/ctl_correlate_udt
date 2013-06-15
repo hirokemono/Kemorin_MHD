@@ -5,6 +5,8 @@ begin correlate_udts
     num_smp_ctl                 4
 !
     mesh_file_head_ctl          'mesh_fine/in'
+!
+    mesh_file_fmt_ctl           'gzip'
     field_files_fmt_ctl         'gzip'
   end data_files_def
 !

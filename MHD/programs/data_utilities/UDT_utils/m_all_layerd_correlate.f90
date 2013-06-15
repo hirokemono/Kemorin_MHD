@@ -21,6 +21,7 @@
       real(kind = kreal), allocatable :: rms_ratio(:,:)
 !
       real(kind = kreal), allocatable :: cor_data(:,:)
+      real(kind = kreal), allocatable :: cov_data(:,:)
 !
 !
       integer (kind=kint), parameter :: id_layer_ave_ref = 30
@@ -30,6 +31,7 @@
       integer (kind=kint), parameter :: id_layer_ave_rto = 34
       integer (kind=kint), parameter :: id_layer_rms_rto = 35
       integer (kind=kint), parameter :: id_layer_correlt = 36
+      integer (kind=kint), parameter :: id_layer_covarit = 37
 !
       character(len=kchara), parameter                                  &
      &        :: fname_layer_ave_ref = 'ave_reference_layer.dat'
@@ -41,6 +43,8 @@
      &        :: fname_layer_rms_tgt = 'rms_target_layer.dat'
       character(len=kchara), parameter                                  &
      &        :: fname_layer_correlt = 'correlate_layer.dat'
+      character(len=kchara), parameter                                  &
+     &        :: fname_layer_covarnt = 'covariant_layer.dat'
       character(len=kchara), parameter                                  &
      &        :: fname_layer_ave_rto = 'ave_ratio_layer.dat'
       character(len=kchara), parameter                                  &
@@ -80,6 +84,7 @@
       allocate(rms_ratio(nlayer_correlate,ntot_correlate))
 !
       allocate(cor_data(nlayer_correlate,ntot_correlate))
+      allocate(cov_data(nlayer_correlate,ntot_correlate))
 !
       ave_ref =   0.0d0
       ave_tgt =   0.0d0
@@ -88,6 +93,7 @@
       ave_ratio = 0.0d0
       rms_ratio = 0.0d0
       cor_data =  0.0d0
+      cov_data =  0.0d0
 !
       end subroutine allocate_all_layer_correlate
 !
@@ -107,7 +113,7 @@
 !
       deallocate(ave_ref, ave_tgt, ave_ratio)
       deallocate(rms_ref, rms_tgt, rms_ratio)
-      deallocate(cor_data)
+      deallocate(cor_data, cov_data)
 !
       end subroutine deallocate_all_layer_correlate
 !
@@ -135,6 +141,7 @@
       call write_layerd_data(id_layer_rms_tgt, i_step, rms_tgt)
       call write_layerd_data(id_layer_rms_rto, i_step, rms_ratio)
       call write_layerd_data(id_layer_correlt, i_step, cor_data)
+      call write_layerd_data(id_layer_covarit, i_step, cov_data)
 !
       end subroutine write_layerd_correlate_data
 !
@@ -152,6 +159,7 @@
       call read_layerd_data(id_layer_rms_tgt, i_step, rms_tgt, ierr)
       call read_layerd_data(id_layer_rms_rto, i_step, rms_ratio, ierr)
       call read_layerd_data(id_layer_correlt, i_step, cor_data, ierr)
+      call read_layerd_data(id_layer_covarit, i_step, cov_data, ierr)
 !
       end subroutine read_layerd_correlate_data
 !
@@ -167,6 +175,7 @@
       call  write_layerd_header(id_layer_rms_tgt)
       call  write_layerd_header(id_layer_rms_rto)
       call  write_layerd_header(id_layer_correlt)
+      call  write_layerd_header(id_layer_covarit)
 !
       end subroutine write_layerd_correlate_header
 !
@@ -176,9 +185,6 @@
 !
       use m_constants
       use read_layer_evo_file_header
-!
-      integer(kind = kint) :: i_comp
-      character(len=kchara) :: tmpchara
 !
 !
       call count_num_comp_layer_evo_file(id_layer_ave_ref,              &
@@ -202,6 +208,8 @@
      &    fname_layer_rms_rto, ithree, ntot_correlate, cor_name)
       call read_field_name_evo_file(id_layer_correlt,                   &
      &    fname_layer_correlt, ithree, ntot_correlate, cor_name)
+      call read_field_name_evo_file(id_layer_covarit,                   &
+     &    fname_layer_covarnt, ithree, ntot_correlate, cor_name)
 !
       call allocate_all_layer_correlate
 !
@@ -218,6 +226,7 @@
       open(id_layer_rms_ref, file = fname_layer_rms_ref)
       open(id_layer_rms_tgt, file = fname_layer_rms_tgt)
       open(id_layer_correlt, file = fname_layer_correlt)
+      open(id_layer_covarit, file = fname_layer_covarnt)
       open(id_layer_ave_rto, file = fname_layer_ave_rto)
       open(id_layer_rms_rto, file = fname_layer_rms_rto)
 !
@@ -233,6 +242,7 @@
       close(id_layer_rms_ref)
       close(id_layer_rms_tgt)
       close(id_layer_correlt)
+      close(id_layer_covarit)
       close(id_layer_ave_rto)
       close(id_layer_rms_rto)
 !

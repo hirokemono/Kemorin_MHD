@@ -22,14 +22,14 @@
 !
       integer(kind = kint) :: ncomp_correlate, ncomp_correlate_2
       real(kind = kreal), allocatable :: ave_l(:,:),   rms_l(:,:)
-      real(kind = kreal), allocatable :: sig_l(:,:),   cor_l(:,:)
+      real(kind = kreal), allocatable :: sig_l(:,:),   cov_l(:,:)
       real(kind = kreal), allocatable :: ave_w(:),     rms_w(:)
-      real(kind = kreal), allocatable :: sig_w(:),     cor_w(:)
+      real(kind = kreal), allocatable :: sig_w(:),     cov_w(:)
 !
       real(kind = kreal), allocatable :: ave_les(:,:), rms_les(:,:)
-      real(kind = kreal), allocatable :: sig_les(:,:), cor_les(:,:)
+      real(kind = kreal), allocatable :: sig_les(:,:), cov_les(:,:)
       real(kind = kreal), allocatable :: ave_wg(:),    rms_wg(:)
-      real(kind = kreal), allocatable :: sig_wg(:),    cor_wg(:)
+      real(kind = kreal), allocatable :: sig_wg(:),    cov_wg(:)
 !
       real(kind = kreal), allocatable :: ave_l_smp(:,:)
       real(kind = kreal), allocatable :: rms_l_smp(:,:)
@@ -60,13 +60,13 @@
       allocate (rms_les(n_layer_d,ncomp_correlate_2))
 !
       allocate (sig_w(ncomp_correlate_2)  )
-      allocate (cor_w(ncomp_correlate)  )
+      allocate (cov_w(ncomp_correlate)  )
       allocate (sig_wg(ncomp_correlate_2)  )
-      allocate (cor_wg(ncomp_correlate)  )
+      allocate (cov_wg(ncomp_correlate)  )
       allocate (sig_l(n_layer_d,ncomp_correlate_2)  )
-      allocate (cor_l(n_layer_d,ncomp_correlate  )   )
+      allocate (cov_l(n_layer_d,ncomp_correlate  )   )
       allocate (sig_les(n_layer_d,ncomp_correlate_2))
-      allocate (cor_les(n_layer_d,ncomp_correlate  ) )
+      allocate (cov_les(n_layer_d,ncomp_correlate  ) )
 !
       allocate (ave_l_smp(np_smp,ncomp_correlate_2))
       allocate (rms_l_smp(np_smp,ncomp_correlate_2))
@@ -76,20 +76,20 @@
       if(n_layer_d .gt. 0) then
         ave_l = zero
         rms_l = zero
-        cor_l = zero
+        cov_l = zero
         rms_l = zero
         ave_les = zero
         rms_les = zero
         sig_les = zero
-        cor_les = zero
+        cov_les = zero
       end if
 !
       sig_w = 0.0d0
-      cor_w = 0.0d0
+      cov_w = 0.0d0
       ave_w = 0.0d0
       rms_w = 0.0d0
       sig_wg = 0.0d0
-      cor_wg = 0.0d0
+      cov_wg = 0.0d0
       ave_wg = 0.0d0
       rms_wg = 0.0d0
       ave_l_smp = 0.0d0
@@ -106,8 +106,8 @@
 !
       deallocate (ave_w, rms_w, ave_wg, rms_wg)
       deallocate (ave_l, rms_l, ave_les, rms_les)
-      deallocate (sig_w, cor_w, sig_wg, cor_wg)
-      deallocate (sig_l, cor_l, sig_les, cor_les )
+      deallocate (sig_w, cov_w, sig_wg, cov_wg)
+      deallocate (sig_l, cov_l, sig_les, cov_les )
       deallocate (ave_l_smp, rms_l_smp, sig_l_smp, cor_l_smp)
 !
       end subroutine deallocate_work_layer_correlate
@@ -149,11 +149,11 @@
       num_2 = ncomp_correlate_2 * n_layer_d
 !
       sig_les(1:n_layer_d,1:ncomp_correlate_2) = 0.0d0
-      cor_les(1:n_layer_d,1:ncomp_correlate  ) = 0.0d0
+      cov_les(1:n_layer_d,1:ncomp_correlate  ) = 0.0d0
 !
       call MPI_allREDUCE ( sig_l, sig_les, num_2,                       &
      &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
-      call MPI_allREDUCE ( cor_l, cor_les, num_1,                       &
+      call MPI_allREDUCE ( cov_l, cov_les, num_1,                       &
      &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
 !
       end subroutine sum_layerd_correlation
@@ -184,11 +184,11 @@
 !
 !
       sig_wg(1:ncomp_correlate_2) = 0.0d0
-      cor_wg(1:ncomp_correlate  ) = 0.0d0
+      cov_wg(1:ncomp_correlate  ) = 0.0d0
 !
       call MPI_allREDUCE ( sig_w, sig_wg, ncomp_correlate_2,            &
      &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
-      call MPI_allREDUCE ( cor_w, cor_wg, ncomp_correlate,              &
+      call MPI_allREDUCE ( cov_w, cov_wg, ncomp_correlate,              &
      &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
 !
       end subroutine sum_whole_correlation
