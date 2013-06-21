@@ -32,6 +32,20 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine const_2e_fdm_coefs
+!
+      use m_fdm_2e_coefs
+!
+!
+      call allocate_fdm_2e_coefs(nidx_rj(1))
+      call cal_2nd_ele_r_fdm_coefs(nlayer_ICB,                          &
+     &    nidx_rj(1), radius_1d_rj_r)
+!
+      end subroutine const_2e_fdm_coefs
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
       subroutine cal_sph_vect_dr_ele_2(kr_in, kr_out,                   &
      &          dele_rj, dnod_dr)
 !

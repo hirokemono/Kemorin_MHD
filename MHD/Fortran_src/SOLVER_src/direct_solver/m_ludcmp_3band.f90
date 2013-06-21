@@ -85,9 +85,9 @@
 !
 !
       REAL(kind = kreal), parameter :: TINY = 1.d-30
-      INTEGER  (kind = kint) :: i,imax,j, k
-      INTEGER  (kind = kint) :: ist, ied, kst, ked
-      REAL(kind = kreal) :: aamax,dum,sum
+      INTEGER  (kind = kint) :: i, j, k
+      INTEGER  (kind = kint) :: kst, ked
+      REAL(kind = kreal) :: aamax,dum
       integer(kind = kint), allocatable :: idx_org(:)
       REAL(kind = kreal), allocatable :: vwk(:)
  

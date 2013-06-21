@@ -33,7 +33,7 @@
       if(iflag_debug.gt.0)  write(*,*) 'mid_eq_transfer_dynamobench'
       call mid_eq_transfer_dynamobench
 !
-      call cal_rms_sph_rms_outer_core
+      call cal_rms_sph_outer_core
       call copy_energy_4_dynamobench
 !
       if(iflag_icb_velocity .eq. iflag_rotatable_ic) then
@@ -41,7 +41,7 @@
       end if
 !
       if(iflag_icb_magne .eq. iflag_sph_fill_center) then
-        call cal_rms_sph_rms_inner_core
+        call cal_rms_sph_inner_core
         call copy_icore_energy_4_dbench
       end if
 !

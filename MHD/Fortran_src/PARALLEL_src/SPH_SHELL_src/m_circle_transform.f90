@@ -15,7 +15,7 @@
 !!
 !1      subroutine copy_circle_spectrum_4_fft(numdir, v_rtp_circle)
 !!      subroutine cal_circle_spectrum_vector(numdir,                   &
-!!     &          vrtm_sqare, vrtm_phase)
+!!     &          vrtm_mag, vrtm_phase)
 !!
 !!      subroutine overwrt_circle_sph_vect_2_cyl
 !!@endverbatim
@@ -25,7 +25,7 @@
 !!@n @param  d_rj_circle(0:jmax,3)   Spectr field data
 !!@n @param  numdir   Number of components of field
 !!@n @param v_rtp_circle(mphi_circle,numdir)  Field along circle
-!!@n @param vrtm_sqare(0:mphi_circle,numdir)  Amplitude of spectrum data
+!!@n @param vrtm_mag(0:mphi_circle,numdir)  Amplitude of spectrum data
 !!                                        along with the circle
 !!@n @param vrtm_phase(0:mphi_circle,numdir)    Phase of spectrum data
 !!                                        along with the circle
@@ -222,11 +222,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_circle_spectrum_vector(numdir,                     &
-     &          vrtm_sqare, vrtm_phase)
+     &          vrtm_mag, vrtm_phase)
 !
       integer(kind = kint), intent(in) :: numdir
       real(kind = kreal), intent(inout)                                 &
-     &            :: vrtm_sqare(0:mphi_circle,numdir)
+     &            :: vrtm_mag(0:mphi_circle,numdir)
       real(kind = kreal), intent(inout)                                 &
      &            :: vrtm_phase(0:mphi_circle,numdir)
 !
@@ -235,22 +235,23 @@
 !$omp parallel do private(nd,m)
       do nd = 1, numdir
         do m = 1, ltr_circle-1
-          vrtm_sqare(m,nd) =  vcirc_rtm(-m,nd)**2 + vcirc_rtm(m,nd)**2
+          vrtm_mag(m,nd) = sqrt(vcirc_rtm(-m,nd)**2                     &
+     &                        + vcirc_rtm( m,nd)**2)
           vrtm_phase(m,nd) = atan2(vcirc_rtm(-m,nd),vcirc_rtm( m,nd))
         end do
       end do
 !$omp end parallel do
 !
       do nd = 1, numdir
-        vrtm_sqare(0,nd) = vcirc_rtm(0,nd)**2
+        vrtm_mag(0,nd) = abs(vcirc_rtm(0,nd))
         vrtm_phase(0,nd) = zero
 !
         if(ltr_circle .eq. (mphi_circle/2)) then
-          vrtm_sqare(ltr_circle,nd) = vcirc_rtm(ltr_circle,nd)**2
+          vrtm_mag(ltr_circle,nd) = abs(vcirc_rtm(ltr_circle,nd))
           vrtm_phase(ltr_circle,nd) = zero
         else
-          vrtm_sqare(ltr_circle,nd) = vcirc_rtm(-ltr_circle,nd)**2      &
-     &                              + vcirc_rtm( ltr_circle,nd)**2
+          vrtm_mag(ltr_circle,nd) = sqrt(vcirc_rtm(-ltr_circle,nd)**2   &
+     &                                 + vcirc_rtm( ltr_circle,nd)**2)
           vrtm_phase(ltr_circle,nd) = atan2(vcirc_rtm(-ltr_circle,nd),  &
      &                                      vcirc_rtm( ltr_circle,nd))
         end if

@@ -1,5 +1,5 @@
-!>@file   sum_div_coriolis_rj_sph.f90
-!!@brief  module sum_div_coriolis_rj_sph
+!>@file   sph_mhd_rst_IO_control.f90
+!!@brief  module sph_mhd_rst_IO_control
 !!
 !!@author H. Matsui
 !!@date Programmed in 2009

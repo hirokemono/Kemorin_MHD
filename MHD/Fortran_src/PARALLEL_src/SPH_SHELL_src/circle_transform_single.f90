@@ -10,18 +10,18 @@
 !!      subroutine initialize_circle_transform(ltr, s_circ, z_circ)
 !!
 !!      subroutine circle_transfer_vector(d_rj_circle, v_rtp_circle,    &
-!!     &          vrtm_sqare, vrtm_phase)
+!!     &          vrtm_mag, vrtm_phase)
 !!      subroutine circle_transfer_scalar(d_rj_circle, v_rtp_circle,    &
-!!     &          vrtm_sqare, vrtm_phase)
+!!     &          vrtm_mag, vrtm_phase)
 !!      subroutine circle_transfer_sym_tensor(d_rj_circle, v_rtp_circle,&
-!!     &          vrtm_sqare, vrtm_phase)
+!!     &          vrtm_mag, vrtm_phase)
 !!@endverbatim
 !!
 !!@n @param  ltr      Truncation of spherical harmonics
 !!@n @param  mphi_eq  Number of points along with circle
 !!@n @param  d_rj_circle(0:jmax_circle,3)   Spectr field data
 !!@n @param v_rtp_circle(mphi_eq,numdir)  Field along circle
-!!@n @param vrtm_sqare(0:mphi_eq,numdir)    Amplitude of spectrum data
+!!@n @param vrtm_mag(0:mphi_eq,numdir)    Amplitude of spectrum data
 !!                                        along with the circle
 !!@n @param vrtm_phase(0:mphi_eq,numdir)    Phase of spectrum data
 !!                                        along with the circle
@@ -92,7 +92,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine circle_transfer_vector(d_rj_circle, v_rtp_circle,      &
-     &          vrtm_sqare, vrtm_phase)
+     &          vrtm_mag, vrtm_phase)
 !
       use m_geometry_constants
       use m_circle_transform
@@ -101,7 +101,7 @@
       real(kind = kreal), intent(in) :: d_rj_circle(0:jmax_circle,3)
 !
       real(kind = kreal), intent(inout) :: v_rtp_circle(mphi_circle,3)
-      real(kind = kreal), intent(inout) :: vrtm_sqare(0:mphi_circle,3)
+      real(kind = kreal), intent(inout) :: vrtm_mag(0:mphi_circle,3)
       real(kind = kreal), intent(inout) :: vrtm_phase(0:mphi_circle,3)
 !
 !
@@ -111,7 +111,7 @@
         call overwrt_circle_sph_vect_2_cyl
       end if
 !
-      call cal_circle_spectrum_vector(ithree, vrtm_sqare, vrtm_phase)
+      call cal_circle_spectrum_vector(ithree, vrtm_mag, vrtm_phase)
       call copy_circle_spectrum_4_fft(ithree, v_rtp_circle)
 !
       call backward_FFT_sel_t(np_smp, istack_circfft_smp, ione,         &
@@ -126,21 +126,20 @@
 ! ----------------------------------------------------------------------
 !
       subroutine circle_transfer_scalar(d_rj_circle, v_rtp_circle,      &
-     &          vrtm_sqare, vrtm_phase)
+     &          vrtm_mag, vrtm_phase)
 !
       use m_circle_transform
       use FFT_selector
 !
       real(kind = kreal), intent(in) :: d_rj_circle(0:jmax_circle)
       real(kind = kreal), intent(inout) :: v_rtp_circle(mphi_circle)
-      real(kind = kreal), intent(inout) :: vrtm_sqare(0:mphi_circle)
+      real(kind = kreal), intent(inout) :: vrtm_mag(0:mphi_circle)
       real(kind = kreal), intent(inout) :: vrtm_phase(0:mphi_circle)
 !
 !
       call circle_lag_transfer_scalar(jmax_circle, d_rj_circle)
 !
-      call cal_circle_spectrum_vector                                   &
-    &    (ione, vrtm_sqare(0), vrtm_phase(0))
+      call cal_circle_spectrum_vector(ione, vrtm_mag(0), vrtm_phase(0))
       call copy_circle_spectrum_4_fft(ione, v_rtp_circle(1))
 !
       call backward_FFT_sel_t(np_smp, istack_circfft_smp, ione,         &
@@ -151,7 +150,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine circle_transfer_sym_tensor(d_rj_circle, v_rtp_circle,  &
-     &          vrtm_sqare, vrtm_phase)
+     &          vrtm_mag, vrtm_phase)
 !
       use m_phys_constants
       use m_circle_transform
@@ -159,7 +158,7 @@
 !
       real(kind = kreal), intent(in) :: d_rj_circle(0:jmax_circle,6)
       real(kind = kreal), intent(inout) :: v_rtp_circle(mphi_circle,6)
-      real(kind = kreal), intent(inout) :: vrtm_sqare(0:mphi_circle,6)
+      real(kind = kreal), intent(inout) :: vrtm_mag(0:mphi_circle,6)
       real(kind = kreal), intent(inout) :: vrtm_phase(0:mphi_circle,6)
 !
       integer(kind = kint) :: nd
@@ -167,7 +166,7 @@
 !
       do nd = 1, n_sym_tensor
         call circle_transfer_scalar(d_rj_circle(1,nd),                  &
-     &      v_rtp_circle(1,nd), vrtm_sqare(0,nd), vrtm_phase(0,nd) )
+     &      v_rtp_circle(1,nd), vrtm_mag(0,nd), vrtm_phase(0,nd) )
       end do
 !
       end subroutine circle_transfer_sym_tensor

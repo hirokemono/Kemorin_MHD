@@ -11,8 +11,8 @@
 !!@verbatim
 !!      subroutine set_radius_rot_reft_dat_4_sph(r_hot, r_cold,         &
 !!     &          temp_hot, temp_cold, rotate)
-!!      subroutine cal_fdm_matrices
-!!      subroutine cal_fdm_coeffients
+!!      subroutine const_2nd_fdm_matrices
+!!      subroutine const_2nd_fdm_coefs
 !!@endverbatim
 !!
 !!@n @param r_hot        radius at highest temperature point
@@ -32,10 +32,6 @@
 !
       implicit none
 !
-      private :: const_2nd_fdm_matrices, const_2nd_fdm_coefs
-      private :: const_4th_fdm_matrices, const_4th_fdm_coefs
-      private :: const_2e_fdm_coefs
-!
 !  -------------------------------------------------------------------
 !
       contains
@@ -48,7 +44,6 @@
       use m_sph_spectr_data
       use m_sph_phys_address
       use set_radius_func_noequi
-!      use set_radius_func_cheby
 !
       use set_radius_4_sph_dynamo
       use set_reference_temp_sph
@@ -68,7 +63,6 @@
 !
 !   Choose radial grid mode
       call set_dr_for_nonequi
-!      call set_dr_for_cheby
 !
       if(iflag_debug .eq. iflag_full_msg) call check_radial_fung_rj
 !
@@ -89,59 +83,19 @@
       end subroutine set_radius_rot_reft_dat_4_sph
 !
 !  -------------------------------------------------------------------
-!
-      subroutine cal_fdm_matrices
-!
-!
-      call const_2nd_fdm_matrices
-!      call const_4th_fdm_matrices
-!
-      end subroutine cal_fdm_matrices
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_fdm_coeffients
-!
-!
-      call const_2nd_fdm_coefs
-!
-!      call const_4th_fdm_coefs
-!      call const_2e_fdm_coefs
-!
-      end subroutine cal_fdm_coeffients
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine const_2nd_fdm_matrices
 !
       use m_fdm_coefs
       use set_radius_func_noequi
-!      use set_radius_func_cheby
 !
 !
       call allocate_fdm_matrices(nidx_rj(1))
 !   Choose radial differences
       call nod_r_2nd_fdm_coefs_nonequi
-!      call nod_r_2nd_fdm_coefs_cheby
 !
       end subroutine const_2nd_fdm_matrices
-!
-! -----------------------------------------------------------------------
-!
-      subroutine const_4th_fdm_matrices
-!
-      use m_fdm_4th_coefs
-      use const_radial_4th_fdm_noequi
-!      use const_radial_4th_fdm_cheby
-!
-!
-      call allocate_fdm4_matrices(nidx_rj(1))
-!   Choose radial differences
-      call nod_r_4th_fdm_coefs_nonequi
-!      call nod_r_4th_fdm_coefs_cheby
-!
-      end subroutine const_4th_fdm_matrices
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -150,7 +104,6 @@
 !
       use m_fdm_coefs
       use set_radius_func_noequi
-!      use set_radius_func_cheby
 !
 !
       call allocate_fdm_coefs(nidx_rj(1))
@@ -162,38 +115,6 @@
       end if
 !
       end subroutine const_2nd_fdm_coefs
-!
-! -----------------------------------------------------------------------
-!
-      subroutine const_4th_fdm_coefs
-!
-      use m_fdm_4th_coefs
-      use const_radial_4th_fdm_noequi
-!      use const_radial_4th_fdm_cheby
-!
-!
-      call allocate_fdm4_coefs(nidx_rj(1))
-      call copy_fdm4_nod_coefs_from_mat(nidx_rj(1))
-      call deallocate_fdm4_matrices
-!
-if(iflag_debug .eq. iflag_full_msg) then
-        call check_fdm_4_coefs(nidx_rj(1), radius_1d_rj_r(1))
-      end if
-!
-      end subroutine const_4th_fdm_coefs
-!
-! -----------------------------------------------------------------------
-!
-      subroutine const_2e_fdm_coefs
-!
-      use m_fdm_2e_coefs
-!
-!
-      call allocate_fdm_2e_coefs(nidx_rj(1))
-      call cal_2nd_ele_r_fdm_coefs(nlayer_ICB,                          &
-     &    nidx_rj(1), radius_1d_rj_r)
-!
-      end subroutine const_2e_fdm_coefs
 !
 ! -----------------------------------------------------------------------
 !

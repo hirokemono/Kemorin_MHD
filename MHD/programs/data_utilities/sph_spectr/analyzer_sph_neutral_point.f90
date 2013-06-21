@@ -124,15 +124,15 @@
       call set_dr_for_nonequi
       call time_prog_barrier
 !
-      if (iflag_debug.gt.0) write(*,*) 'cal_fdm_matrices'
-      call cal_fdm_matrices
+      if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
+      call const_2nd_fdm_matrices
       call time_prog_barrier
 !
 !      if (iflag_debug.gt.0) write(*,*) 's_cal_sph_bc_fdm_matrices'
 !      call s_cal_sph_bc_fdm_matrices
 !
-      if (iflag_debug.gt.0) write(*,*) 'cal_fdm_coeffients'
-      call cal_fdm_coeffients
+      if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_coefs'
+      call const_2nd_fdm_coefs
       call time_prog_barrier
 !
 ! ---------------------------------

@@ -22,12 +22,6 @@
 !
       implicit none
 !
-!>      radius at mid depth of fluid shell
-      real(kind = kreal) :: r_MID
-!
-!
-      private :: r_MID
-!
       private :: cal_field_4_dynamobench
       private :: cal_drift_by_v44
 !
@@ -45,7 +39,7 @@
       use m_circle_transform
       use sph_MHD_circle_transform
 !
-      integer(kind = kint) :: kr, ifld
+      real(kind = kreal) :: r_MID
 !
 !
       r_MID = half * (radius_1d_rj_r(nlayer_ICB)                        &

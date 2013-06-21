@@ -53,7 +53,8 @@
       end if
 !
       call set_control_sph_mesh
-      call set_control_data_file_def
+      call set_control_restart_file_def
+      call set_control_ucd_file_def
 !
       ifmt_org_sph_file =     iflag_sph_file_fmt
 !

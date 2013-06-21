@@ -49,6 +49,7 @@
       use set_control_4_composition
       use set_control_4_infty
       use set_control_4_2nd_files
+      use parallel_udt_IO_select
 !
 !
 !   set parameters for data files
@@ -57,7 +58,8 @@
       call check_control_num_domains
       call set_control_smp_def
       call set_control_mesh_def
-      call set_control_data_file_def
+      call set_control_restart_file_def
+      call set_control_parallel_field_def
       call set_control_org_field_file_def
 !
 !   set parameters for general information

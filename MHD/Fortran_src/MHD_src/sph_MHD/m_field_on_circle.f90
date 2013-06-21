@@ -11,7 +11,10 @@
 !!      subroutine deallocate_circle_field
 !!
 !!      subroutine write_field_data_on_circle(i_step, time)
+!!      subroutine read_field_data_on_circle(i_step, time, ierr)
+!!
 !!      subroutine open_field_data_on_circle
+!!      subroutine open_read_field_data_on_circle
 !!      subroutine close_field_data_on_circle
 !!@endverbatim
 !
@@ -20,13 +23,22 @@
       use m_precision
 !
       use m_constants
-      use m_parallel_var_dof
       use m_machine_parameter
       use m_spheric_parameter
 !
       use t_phys_data
 !
       implicit none
+!
+!
+!>      file name for field data on a circle
+      character(len=kchara) :: fname_circle_fld = 'circle_field.dat'
+!>      file name for spectr power data on a circle
+      character(len=kchara) :: fname_circle_mag                         &
+     &                        = 'circle_spec_mag.dat'
+!>      file name for spectr phase data on a circle
+      character(len=kchara) :: fname_circle_phs                         &
+     &                        = 'circle_spec_phase.dat'
 !
 !>      cylindrical radius for a circle to pick
       real(kind = kreal) :: s_circle
@@ -51,7 +63,7 @@
       real(kind = kreal), allocatable :: v_rtp_circle(:,:)
 !
 !>      Spectr data for circle point collected to 0 process
-      real(kind = kreal), allocatable :: vrtm_sqare(:,:)
+      real(kind = kreal), allocatable :: vrtm_mag(:,:)
 !>      Spectr data for circle point collected to 0 process
       real(kind = kreal), allocatable :: vrtm_phase(:,:)
 !
@@ -66,6 +78,7 @@
 !
       subroutine allocate_circle_field
 !
+      use m_parallel_var_dof
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_circle_transform
@@ -77,8 +90,10 @@
       allocate(v_rtp_circle(mphi_circle,6))
       v_rtp_circle = 0.0d0
 !
-      allocate( vrtm_sqare(0:mphi_circle,d_circle%ntot_phys) )
+      allocate( vrtm_mag(0:mphi_circle,d_circle%ntot_phys) )
       allocate( vrtm_phase(0:mphi_circle,d_circle%ntot_phys) )
+      vrtm_mag = 0.0d0
+      vrtm_phase = 0.0d0
 !
       num = nidx_global_rj(2)
       allocate( d_rj_circ_lc(0:num,d_circle%ntot_phys) )
@@ -99,10 +114,15 @@
 !
       subroutine deallocate_circle_field
 !
+      use m_parallel_var_dof
 !
-      deallocate(vrtm_sqare, vrtm_phase)
+!
+      deallocate(vrtm_mag, vrtm_phase)
       deallocate(d_rj_circ_lc)
       if(my_rank .eq. 0) deallocate(d_rj_circle, v_rtp_circle)
+!
+      call dealloc_phys_data_type(d_circle)
+      call dealloc_phys_name_type(d_circle)
 !
       end subroutine deallocate_circle_field
 !
@@ -111,6 +131,7 @@
 !
       subroutine write_field_data_on_circle(i_step, time)
 !
+      use m_parallel_var_dof
       use m_file_control_parameter
       use m_circle_transform
 !
@@ -138,7 +159,7 @@
      &              d_circle%ntot_phys_viz, '(1pE25.15e3))'
       do mphi = 0, mphi_circle / 2
         write(id_circ_sq,fmt_txt) i_step, time, mphi,                   &
-     &             vrtm_sqare(mphi,1:d_circle%ntot_phys_viz)
+     &             vrtm_mag(mphi,1:d_circle%ntot_phys_viz)
         write(id_circ_ph,fmt_txt) i_step, time, mphi,                   &
      &             vrtm_phase(mphi,1:d_circle%ntot_phys_viz)
       end do
@@ -147,8 +168,44 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine read_field_data_on_circle(i_step, time, ierr)
+!
+      use m_file_control_parameter
+      use m_circle_transform
+!
+      integer(kind = kint), intent(inout) :: i_step, ierr
+      real(kind = kreal), intent(inout) :: time
+!
+      integer(kind = kint) :: mphi, itmp
+      real(kind = kreal) :: rtmp
+!
+!
+      do mphi = 1, mphi_circle
+        read(id_circ_fid,*,err=99,end=99) i_step, time, itmp, rtmp,     &
+     &             d_circle%d_fld(mphi,1:d_circle%ntot_phys_viz)
+      end do
+!
+      do mphi = 0, mphi_circle / 2
+        read(id_circ_sq,*,err=99,end=99) i_step, time, itmp,            &
+     &             vrtm_mag(mphi,1:d_circle%ntot_phys_viz)
+        read(id_circ_ph,*,err=99,end=99) i_step, time, itmp,            &
+     &             vrtm_phase(mphi,1:d_circle%ntot_phys_viz)
+      end do
+!
+      ierr = 0
+      return
+!
+  99  continue
+      ierr = 1
+      return
+!
+      end subroutine read_field_data_on_circle
+!
+! ----------------------------------------------------------------------
+!
       subroutine open_field_data_on_circle
 !
+      use m_parallel_var_dof
       use m_file_control_parameter
       use m_phys_constants
       use m_circle_transform
@@ -161,9 +218,30 @@
 !
       if(my_rank .gt. 0) return
 !
-      open(id_circ_fid, file='circle_field.dat')
-      open(id_circ_sq,  file='circle_spec_square.dat')
-      open(id_circ_ph,  file='circle_spec_phase.dat')
+      open(id_circ_fid, file=fname_circle_fld)
+      open(id_circ_sq,  file=fname_circle_mag)
+      open(id_circ_ph,  file=fname_circle_phs)
+!
+      write(id_circ_fid,'(a)') '#'
+      write(id_circ_sq, '(a)') '#'
+      write(id_circ_ph, '(a)') '#'
+      write(id_circ_fid,'(a)') '# Cylindrical radius, vertial position'
+      write(id_circ_sq, '(a)') '# Cylindrical radius, vertial position'
+      write(id_circ_ph, '(a)') '# Cylindrical radius, vertial position'
+      write(id_circ_fid,'(1p2e23.12)') s_circle, z_circle
+      write(id_circ_sq, '(1p2e23.12)') s_circle, z_circle
+      write(id_circ_ph, '(1p2e23.12)') s_circle, z_circle
+!
+      write(id_circ_fid,'(a)') '#'
+      write(id_circ_sq, '(a)') '#'
+      write(id_circ_ph, '(a)') '#'
+      write(id_circ_fid,'(a)') '# Number of points and components'
+      write(id_circ_sq, '(a)') '# Number of modes and components'
+      write(id_circ_ph, '(a)') '# Number of modes and components'
+      write(id_circ_fid,'(2i10)') mphi_circle, d_circle%ntot_phys_viz
+      write(id_circ_sq, '(2i10)') mphi_circle/2, d_circle%ntot_phys_viz
+      write(id_circ_ph, '(2i10)') mphi_circle/2, d_circle%ntot_phys_viz
+!
 !
       write(label(1),'(a)') 't_step'
       call write_one_label(id_circ_fid, label(1))
@@ -212,8 +290,56 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine open_read_field_data_on_circle
+!
+      use m_file_control_parameter
+      use m_circle_transform
+      use skip_comment_f
+!
+      character(len=255) :: tmpchara
+      character(len=kchara) :: phi_name
+!
+!
+      open(id_circ_fid, file=fname_circle_fld)
+      open(id_circ_sq,  file=fname_circle_mag)
+      open(id_circ_ph,  file=fname_circle_phs)
+!
+      call skip_comment(tmpchara, id_circ_fid)
+      read(tmpchara,*) s_circle, z_circle
+      call skip_comment(tmpchara, id_circ_fid)
+      read(tmpchara,*) mphi_circle, d_circle%ntot_phys_viz
+!
+      call skip_comment(tmpchara, id_circ_sq)
+      call skip_comment(tmpchara, id_circ_ph)
+      call skip_comment(tmpchara, id_circ_sq)
+      call skip_comment(tmpchara, id_circ_ph)
+!
+      d_circle%num_phys_viz = d_circle%ntot_phys_viz
+      d_circle%num_phys =     d_circle%ntot_phys_viz
+      d_circle%ntot_phys =    d_circle%ntot_phys_viz
+!
+      write(*,*) 'alloc_phys_name_type'
+      call alloc_phys_name_type(d_circle)
+      write(*,*) 'allocate_circle_field'
+      call allocate_circle_field
+!
+      d_circle%num_component = 1
+!
+      write(*,*) 'read field name', size(d_circle%phys_name), d_circle%num_phys
+      read(id_circ_fid,*) tmpchara, tmpchara, tmpchara, phi_name,       &
+     &                  d_circle%phys_name(1:d_circle%num_phys)
+      read(id_circ_sq,*) tmpchara, tmpchara, tmpchara,                  &
+     &                  d_circle%phys_name(1:d_circle%num_phys)
+      read(id_circ_ph,*) tmpchara, tmpchara, tmpchara,                  &
+     &                  d_circle%phys_name(1:d_circle%num_phys)
+!
+      end subroutine open_read_field_data_on_circle
+!
+! ----------------------------------------------------------------------
+!
       subroutine close_field_data_on_circle
 !
+      use m_parallel_var_dof
       use m_file_control_parameter
 !
 !

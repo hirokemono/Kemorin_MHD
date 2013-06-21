@@ -133,7 +133,8 @@
       call set_control_mesh_def
       iorg_mesh_file_fmt = iflag_mesh_file_fmt
 !
-      call set_control_data_file_def
+      call set_control_restart_file_def
+      call set_control_ucd_file_def
       udt_original_header = ucd_header_name
 !
       call choose_ucd_file_format(udt_file_fmt_ctl, i_udt_files_fmt,    &

@@ -55,6 +55,7 @@
       use m_ctl_data_4_fields
       use m_ctl_data_4_pickup_sph
       use set_control_4_pickup_sph
+      use parallel_udt_IO_select
 !
       integer (kind = kint) :: i
 !
@@ -64,7 +65,8 @@
       call set_control_mesh_def
       call set_control_sph_mesh
       call set_control_org_sph_mesh
-      call set_control_data_file_def
+      call set_control_restart_file_def
+      call set_control_parallel_field_def
       call set_control_org_field_file_def
 !
 !    file header for field data

@@ -6,8 +6,8 @@
 !      subroutine init_rms_4_sph_spectr
 !
 !      subroutine cal_rms_sph_spec_rms_whole
-!      subroutine cal_rms_sph_rms_outer_core
-!      subroutine cal_rms_sph_rms_inner_core
+!      subroutine cal_rms_sph_outer_core
+!      subroutine cal_rms_sph_inner_core
 !
       module cal_rms_fields_by_sph
 !
@@ -75,7 +75,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_rms_sph_rms_inner_core
+      subroutine cal_rms_sph_inner_core
 !
       use m_spheric_parameter
 !
@@ -85,11 +85,11 @@
       call r_int_sph_rms_data(ione, nlayer_ICB)
       call cal_average_for_sph_rms(izero, nlayer_ICB)
 !
-      end subroutine cal_rms_sph_rms_inner_core
+      end subroutine cal_rms_sph_inner_core
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_rms_sph_rms_outer_core
+      subroutine cal_rms_sph_outer_core
 !
       use m_spheric_parameter
 !
@@ -99,7 +99,7 @@
       call r_int_sph_rms_data(nlayer_ICB, nlayer_CMB)
       call cal_average_for_sph_rms(nlayer_ICB, nlayer_CMB)
 !
-      end subroutine cal_rms_sph_rms_outer_core
+      end subroutine cal_rms_sph_outer_core
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

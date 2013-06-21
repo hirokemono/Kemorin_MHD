@@ -41,7 +41,6 @@
       use m_field_data_IO
       use set_sph_restart_IO
       use sph_mhd_rst_IO_control
-      use set_sph_restart_IO
       use initial_magne_dynamobench
       use initial_magne_dbench_qvc
 !

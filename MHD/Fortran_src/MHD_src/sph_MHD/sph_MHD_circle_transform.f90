@@ -53,15 +53,15 @@
         if(d_circle%num_component(ifld) .eq. n_sym_tensor) then
           call circle_transfer_sym_tensor                               &
      &       (d_rj_circle(0,icomp), v_rtp_circle(1,1),                  &
-     &        vrtm_sqare(0,icomp), vrtm_phase(0,icomp) )
+     &        vrtm_mag(0,icomp), vrtm_phase(0,icomp) )
         else if(d_circle%num_component(ifld) .eq. n_vector) then
           call circle_transfer_vector                                   &
      &       (d_rj_circle(0,icomp), v_rtp_circle(1,1),                  &
-     &        vrtm_sqare(0,icomp), vrtm_phase(0,icomp) )
+     &        vrtm_mag(0,icomp), vrtm_phase(0,icomp) )
         else
           call circle_transfer_scalar                                   &
      &       (d_rj_circle(0,icomp), v_rtp_circle(1,1),                  &
-     &        vrtm_sqare(0,icomp), vrtm_phase(0,icomp) )
+     &        vrtm_mag(0,icomp), vrtm_phase(0,icomp) )
         end if
 !
         do nd = 1, d_circle%num_component(ifld)
@@ -103,7 +103,7 @@
           kr_gl_rcirc_in =  kr
           kr_gl_rcirc_out = kr + 1
           coef_gl_rcirc_in =  (radius_1d_rj_r(kr+1) - r_circle)         &
-     &                      / dr_1d_rj(kr,0)
+     &                    / (radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr))
           coef_gl_rcirc_out = one - coef_gl_rcirc_in
           exit
         end if

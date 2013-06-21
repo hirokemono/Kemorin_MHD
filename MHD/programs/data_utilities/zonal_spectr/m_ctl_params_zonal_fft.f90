@@ -43,7 +43,8 @@
       call set_control_mesh_def
       call set_control_sph_mesh
 !
-      call set_control_data_file_def
+      call set_control_restart_file_def
+      call set_control_ucd_file_def
 !
       if(i_spectr_header .gt. 0) then
         phys_file_head = spectr_file_head_ctl

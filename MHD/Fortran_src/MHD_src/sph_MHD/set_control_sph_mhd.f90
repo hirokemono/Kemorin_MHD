@@ -37,6 +37,7 @@
       use set_control_4_composition
       use set_control_4_pickup_sph
       use set_control_4_2nd_files
+      use parallel_udt_IO_select
 !
       use check_dependency_for_MHD
 !
@@ -47,7 +48,8 @@
       call set_control_smp_def
       call set_control_mesh_def
       call set_control_sph_mesh
-      call set_control_data_file_def
+      call set_control_restart_file_def
+      call set_control_parallel_field_def
       call set_control_org_field_file_def
 !
       call s_set_control_4_model

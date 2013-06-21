@@ -67,6 +67,7 @@
       use m_sph_phys_address
 !
       integer(kind = kint) :: inum, j, l, inod
+      real(kind = kreal) :: a2r_4_gauss
 !
 !
       if(num_pick_gauss_mode .eq. 0) return
@@ -77,6 +78,7 @@
       end do
 !$omp end parallel do
 !
+      a2r_4_gauss = one / (r_4_gauss_coefs**2)
       rcmb_to_Re = radius_1d_rj_r(nlayer_CMB) / r_4_gauss_coefs
 !$omp parallel do private(j,inod)
       do inum = 1, num_pick_gauss_mode
@@ -85,7 +87,7 @@
         if(j .gt. izero) then
           inod =  j +    (nlayer_CMB-1) * nidx_rj(2)
           gauss_coef_lc(inum) = d_rj(inod,ipol%i_magne) * dble(l)       &
-     &                  * rcmb_to_Re**(l+1) * a_r_1d_rj_r(nlayer_CMB)
+     &                        * rcmb_to_Re**l *a2r_4_gauss
         end if
       end do
 !$omp end parallel do

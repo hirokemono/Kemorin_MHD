@@ -79,14 +79,14 @@
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
      &    high_temp, low_temp, angular)
 !
-      if (iflag_debug.gt.0) write(*,*) 'cal_fdm_matrices'
-      call cal_fdm_matrices
+      if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
+      call const_2nd_fdm_matrices
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_sph_bc_fdm_matrices'
       call s_cal_sph_bc_fdm_matrices
 !
-      if (iflag_debug.gt.0) write(*,*) 'cal_fdm_coeffients'
-      call cal_fdm_coeffients
+      if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_coefs'
+      call const_2nd_fdm_coefs
 !
 !* -----  set integrals for coriolis term -----------------
 !*
