@@ -18,13 +18,17 @@ builtin(include,MHD/confdb/ax_mpi.m4)
 
 dnl Include OpenGL Check related definitions
 builtin(include,MHD/confdb/ax_have_opengl.m4)
+
+builtin(include,MHD/confdb/ax_check_gl.m4)
+builtin(include,MHD/confdb/ax_check_glu.m4)
+builtin(include,MHD/confdb/ax_check_glut.m4)
 #
 dnl Include zlib Check related definitions
 builtin(include,MHD/confdb/ax_check_zlib.m4)
 dnl Include pgplot Check related definitions
 builtin(include,MHD/confdb/ax_check_pgplot.m4)
 dnl Include hdf5 Check
-builtin(include,MHD/confdb/hdf5.m4)
+builtin(include,MHD/confdb/ax_lib_hdf5.m4)
 #
 dnl Include Aquaterm Check
 builtin(include,MHD/confdb/ax_check_aquaterm.m4)
@@ -93,13 +97,6 @@ AC_SUBST(MPIFC)
 AC_LANG_RESTORE
 
 # AX_CHECK_LIBMPI
-AC_SUBST(MPIDIR)
-AC_SUBST(MPILIBS)
-AC_SUBST(MPIINCDIR)
-
-# AC_MSG_RESULT(MPIDIR..."${MPIDIR}")
-# AC_MSG_RESULT(MPIINCDIR..."${MPIINCDIR}")
-# AC_MSG_RESULT(MPILIBS..."${MPILIBS}")
 
 AC_LANG_SAVE
 AC_LANG(C)
@@ -120,7 +117,8 @@ AC_LANG_RESTORE
 PKG_PROG_PKG_CONFIG
 
 # hdf5 check
-AX_CHECK_HDF5_FORTRAN
+AX_LIB_HDF5(serial)
+AC_MSG_RESULT(HDF5_LDFLAGS... "${HDF5_LDFLAGS}")
 
 #
 #  Check subroutien name for Fortran-C connection
@@ -228,8 +226,7 @@ else
 # Checks for OpenGL
 	if test ${USE_gl} = "yes"
 	then
-		AX_HAVE_OPENGL = "yes"
-		AC_SUBST(GL_CFLAGS)
+		AX_HAVE_OPENGL
 		AC_MSG_RESULT(GL_CFLAGS... "${GL_CFLAGS}")
 		AC_MSG_RESULT(CPPFLAGS... "${CPPFLAGS}")
 		GL_INC="${GL_CFLAGS} -I/usr/X11/include"

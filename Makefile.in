@@ -65,6 +65,13 @@ PNG_LIBS =    @PNG_LIBS@
 FFTW3_CFLAGS= @FFTW3_CFLAGS@
 FFTW3_LIBS=   @FFTW3_LIBS@
 #
+#
+#    HDF5 fortran wrapper settings
+#
+HDF5_FFLAGS=    @HDF5_FFLAGS@
+HDF5_LDFLAGS=   @HDF5_LDFLAGS@
+HDF5_FLIBS=     @HDF5_FLIBS@
+#
 #   GLUT settings (Requirement: OpenGL, GLUT, libpng)
 #
 OPENGL_INC = @GL_INC@
