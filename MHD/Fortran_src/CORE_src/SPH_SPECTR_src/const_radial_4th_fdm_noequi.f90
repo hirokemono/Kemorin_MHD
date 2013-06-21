@@ -4,6 +4,9 @@
 !      Programmed by H. Matsui on June., 1994
 !      modified by H. Matsui on Apr., 2009
 !!
+!!      subroutine const_4th_fdm_matrices
+!!      subroutine const_4th_fdm_coefs
+!!
 !!      subroutine nod_r_4th_fdm_coefs_nonequi
 !!
 !!      subroutine nod_r_4th_fdm_coef_noequi(kr,                        &
@@ -21,6 +24,36 @@
       contains
 !
 !  -------------------------------------------------------------------
+!
+      subroutine const_4th_fdm_matrices
+!
+      use m_fdm_4th_coefs
+!
+!
+      call allocate_fdm4_matrices(nidx_rj(1))
+!   Choose radial differences
+      call nod_r_4th_fdm_coefs_nonequi
+!
+      end subroutine const_4th_fdm_matrices
+!
+! -----------------------------------------------------------------------
+!
+      subroutine const_4th_fdm_coefs
+!
+      use m_fdm_4th_coefs
+!
+      call allocate_fdm4_coefs(nidx_rj(1))
+      call copy_fdm4_nod_coefs_from_mat(nidx_rj(1))
+      call deallocate_fdm4_matrices
+!
+      if(iflag_debug .eq. iflag_full_msg) then
+        call check_fdm_4_coefs(nidx_rj(1), radius_1d_rj_r(1))
+      end if
+!
+      end subroutine const_4th_fdm_coefs
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
       subroutine nod_r_4th_fdm_coefs_nonequi
 !

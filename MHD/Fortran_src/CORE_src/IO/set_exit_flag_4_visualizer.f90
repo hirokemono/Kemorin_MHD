@@ -81,9 +81,9 @@
       integer (kind = kint) :: i_flag, i_step, interval
 !
       if ( interval .eq. 0) then
-       i_flag = ione
+        i_flag = ione
       else
-       i_flag = i_step - i_step/interval*interval
+        i_flag = mod(i_step,interval)
       end if
 !
       end subroutine set_output_flag

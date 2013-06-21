@@ -1,45 +1,54 @@
-!m_field_file_format.f90
-!      module m_field_file_format
+!>@file   m_field_file_format.f90
+!!@brief  module m_field_file_format
+!!
+!!@author H. Matsui
+!!@date Programmed in Nov., 2008
 !
-!      Written by H. Matsui on Nov., 2008
-!
-!      subroutine choose_para_ucd_file_format(file_fmt_ctl, i_file_fmt, &
-!     &          id_field_file_format)
-!      subroutine choose_ucd_file_format(file_fmt_ctl, i_file_fmt,      &
-!     &          id_field_file_format)
-!
-! ------------------------------------------------------------------
-!   flags for field data
-!
-!  subdomain  data file
-!   ASCII   data file
-!     UCD file:             ucd_ascii
-!     splitted UCD file:    udt_ascii
-!     VTK file:             vtk_ascii
-!     splitted VTK file:    vtd_ascii
-!   BINARY  data file
-!     splitted file:        binary
-!
-!   GZIPPED data file
-!     UCD file:             ucd_gzip
-!     splitted UCD file:    udt_gzip
-!     VTK file:             vtk_gzip
-!     splitted VTK file:    vtd_gzip
-!
-!  whole domain data file
-!   ASCII   data file
-!     UCD file:             single_ucd_ascii
-!     splitted UCD file:    single_udt_ascii
-!     VTK file:             single_vtk_ascii
-!     splitted VTK file:    single_vtd_ascii
-!
-!   GZIPPED data file
-!     UCD file:             single_ucd_gzip
-!     splitted UCD file:    single_udt_gzip
-!     VTK file:             single_vtk_gzip
-!     splitted VTK file:    single_vtd_gzip
-!
-! ------------------------------------------------------------------
+!>@brief Integer flags for field data file format
+!!
+!!
+!!@verbatim
+!!      subroutine choose_ucd_file_format(file_fmt_ctl, i_file_fmt,     &
+!!     &          id_field_file_format)
+!!
+!! ------------------------------------------------------------------
+!!   flag lists for field data
+!!
+!!  Distributed data file
+!!   ASCII   data file
+!!     UCD file:             ucd_ascii
+!!     splitted UCD file:    udt_ascii
+!!     VTK file:             vtk_ascii
+!!     splitted VTK file:    vtd_ascii
+!!   BINARY  data file
+!!     splitted file:        binary
+!!
+!!   GZIPPED data file
+!!     UCD file:             ucd_gzip
+!!     splitted UCD file:    udt_gzip
+!!     VTK file:             vtk_gzip
+!!     splitted VTK file:    vtd_gzip
+!!
+!!  Merged data file
+!!   ASCII   data file
+!!     UCD file:             single_ucd_ascii
+!!     splitted UCD file:    single_udt_ascii
+!!     VTK file:             single_vtk_ascii
+!!     splitted VTK file:    single_vtd_ascii
+!!     HDF5 file:            single_HDF5
+!!
+!!   GZIPPED data file
+!!     UCD file:             single_ucd_gzip
+!!     splitted UCD file:    single_udt_gzip
+!!     VTK file:             single_vtk_gzip
+!!     splitted VTK file:    single_vtd_gzip
+!!
+!! ------------------------------------------------------------------
+!!@endverbatim
+!!
+!!@n @param file_fmt_ctl   file format name (see above)
+!!@n @param i_file_fmt     integer flag if file format is read
+!!@n @param id_field_file_format   integer flag for file format
 !
       module m_field_file_format
 !
@@ -48,36 +57,70 @@
 !
       implicit    none
 !
+!>      Integer flag for origianl ascii data format
       integer(kind = kint), parameter :: iflag_ascii                    &
      &                     = id_ascii_file_fmt
+!>      Integer flag for origianl binary data format
       integer(kind = kint), parameter :: iflag_bin                      &
      &                     = id_binary_file_fmt
+!>      Integer flag for origianl gzipped ascii data format
       integer(kind = kint), parameter :: iflag_gzip                     &
      &                     = id_gzip_txt_file_fmt
 !
+!>      Integer flag for origianl ascii data format
       integer(kind = kint), parameter :: iflag_fld =       0
+!>      Integer flag for UCD data
       integer(kind = kint), parameter :: iflag_ucd =      10
+!>      Integer flag for UCD data
+!!         (Separated by FEM mesh part and field part)
       integer(kind = kint), parameter :: iflag_udt =      20
+!>      Integer flag for VTK data
       integer(kind = kint), parameter :: iflag_vtk =      30
+!>      Integer flag for VTK data
+!!         (Separated by FEM mesh part and field part)
       integer(kind = kint), parameter :: iflag_vtd =      40
 !
+!
+!>      Integer flag for distributed data
       integer(kind = kint), parameter :: iflag_para =      0
+!>      Integer flag for merged data
       integer(kind = kint), parameter :: iflag_single =  100
 !
 !
-      integer(kind = kint), parameter :: iflag_sgl_ucd = 110
-      integer(kind = kint), parameter :: iflag_sgl_udt = 120
-      integer(kind = kint), parameter :: iflag_sgl_vtk = 130
-      integer(kind = kint), parameter :: iflag_sgl_vtd = 140
+!>      Integer flag for merged UCD data
+      integer(kind = kint), parameter :: iflag_sgl_ucd =  110
+!>      Integer flag for merged UCD data
+!!         (Separated by FEM mesh part and field part)
+      integer(kind = kint), parameter :: iflag_sgl_udt =  120
+!>      Integer flag for merged VTK data
+      integer(kind = kint), parameter :: iflag_sgl_vtk =  130
+!>      Integer flag for merged VTK data
+!!         (Separated by FEM mesh part and field part)
+      integer(kind = kint), parameter :: iflag_sgl_vtd =  140
+!>      Integer flag for HDF file data
+      integer(kind = kint), parameter :: iflag_sgl_hdf5 = 150
 !
+!>      Integer flag for gzipped ascii original data
       integer(kind = kint), parameter :: iflag_fld_gz =       3
+!>      Integer flag for gzipped UCD data
       integer(kind = kint), parameter :: iflag_ucd_gz =      13
+!>      Integer flag for gzipped UCD data
+!!         (Separated by FEM mesh part and field part)
       integer(kind = kint), parameter :: iflag_udt_gz =      23
+!>      Integer flag for gzipped VTK data
       integer(kind = kint), parameter :: iflag_vtk_gz =      33
+!>      Integer flag for gzipped VTK data
+!!         (Separated by FEM mesh part and field part)
       integer(kind = kint), parameter :: iflag_vtd_gz =      43
+!>      Integer flag for merged amd gzipped UCD data
       integer(kind = kint), parameter :: iflag_sgl_ucd_gz = 113
+!>      Integer flag for merged amd gzipped UCD data
+!!         (Separated by FEM mesh part and field part)
       integer(kind = kint), parameter :: iflag_sgl_udt_gz = 123
+!>      Integer flag for merged amd gzipped VTK data
       integer(kind = kint), parameter :: iflag_sgl_vtk_gz = 133
+!>      Integer flag for merged amd gzipped VTK data
+!!         (Separated by FEM mesh part and field part)
       integer(kind = kint), parameter :: iflag_sgl_vtd_gz = 143
 !
 ! -----------------------------------------------------------------------
@@ -176,115 +219,6 @@
       end if
 !
       end subroutine choose_ucd_file_format
-!
-! -----------------------------------------------------------------------
-!
-      subroutine choose_para_ucd_file_format(file_fmt_ctl, i_file_fmt,  &
-     &          id_field_file_format)
-!
-      integer(kind= kint), intent(in) :: i_file_fmt
-      character(len=kchara), intent(in) :: file_fmt_ctl
-      integer(kind= kint), intent(inout) :: id_field_file_format
-!
-!
-      if (i_file_fmt .eq. 0) then
-        id_field_file_format = iflag_udt
-        return
-      end if
-!
-      if(file_fmt_ctl.eq.'single'                                       &
-     &   .or. file_fmt_ctl.eq.'SINGLE'                                  &
-     &   .or. file_fmt_ctl.eq.'merged'                                  &
-     &   .or. file_fmt_ctl.eq.'MERGED'                                  &
-     &   .or. file_fmt_ctl.eq.'single_ascii'                            &
-     &   .or. file_fmt_ctl.eq.'SINGLE_ASCII'                            &
-     &   .or. file_fmt_ctl.eq.'single_udt'                              &
-     &   .or. file_fmt_ctl.eq.'SINGLE_UDT'                              &
-     &   .or. file_fmt_ctl.eq.'single_udt_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'SINGLE_UDT_ASCII'                        &
-     &   .or. file_fmt_ctl.eq.'merged_ascii'                            &
-     &   .or. file_fmt_ctl.eq.'MERGED_ASCII'                            &
-     &   .or. file_fmt_ctl.eq.'merged_udt'                              &
-     &   .or. file_fmt_ctl.eq.'MERGED_UDT'                              &
-     &   .or. file_fmt_ctl.eq.'merged_udt_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'MERGED_UDT_ASCII') then
-           id_field_file_format = iflag_sgl_udt
-      else if(file_fmt_ctl.eq.'single_gzip'                             &
-     &   .or. file_fmt_ctl.eq.'SINGLE_GZIP'                             &
-     &   .or. file_fmt_ctl.eq.'single_udt_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'SINGLE_UDT_GZIP'                         &
-     &   .or. file_fmt_ctl.eq.'merged_gzip'                             &
-     &   .or. file_fmt_ctl.eq.'MERGED_GZIP'                             &
-     &   .or. file_fmt_ctl.eq.'merged_udt_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'MERGED_UDT_GZIP'                         &
-     &   .or. file_fmt_ctl.eq.'single_gz'                               &
-     &   .or. file_fmt_ctl.eq.'SINGLE_GZ'                               &
-     &   .or. file_fmt_ctl.eq.'single_udt_gz'                           &
-     &   .or. file_fmt_ctl.eq.'SINGLE_UDT_GZ'                           &
-     &   .or. file_fmt_ctl.eq.'merged_gz'                               &
-     &   .or. file_fmt_ctl.eq.'MERGED_GZ'                               &
-     &   .or. file_fmt_ctl.eq.'merged_udt_gz'                           &
-     &   .or. file_fmt_ctl.eq.'MERGED_UDT_GZ') then
-           id_field_file_format = iflag_sgl_udt + iflag_gzip
-!
-      else if(file_fmt_ctl.eq.'single_ucd'                              &
-     &   .or. file_fmt_ctl.eq.'SINGLE_UCD'                              &
-     &   .or. file_fmt_ctl.eq.'single_ucd_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'SINGLE_UCD_ASCII'                        &
-     &   .or. file_fmt_ctl.eq.'merged_ucd'                              &
-     &   .or. file_fmt_ctl.eq.'MERGED_UCD'                              &
-     &   .or. file_fmt_ctl.eq.'merged_ucd_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'MERGED_UCD_ASCII') then
-           id_field_file_format = iflag_sgl_ucd
-      else if(file_fmt_ctl.eq.'single_ucd_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'SINGLE_UCD_GZIP'                         &
-     &   .or. file_fmt_ctl.eq.'merged_ucd_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'MERGED_UCD_GZIP') then
-           id_field_file_format = iflag_sgl_ucd + iflag_gzip
-!
-      else if(file_fmt_ctl.eq.'single_vtd'                              &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTD'                              &
-     &   .or. file_fmt_ctl.eq.'single_vtd_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTD_ASCII'                        &
-     &   .or. file_fmt_ctl.eq.'merged_vtd'                              &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTD'                              &
-     &   .or. file_fmt_ctl.eq.'merged_vtd_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTD_ASCII') then
-           id_field_file_format = iflag_sgl_vtd
-      else if(file_fmt_ctl.eq.'single_vtd_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTD_GZIP'                         &
-     &   .or. file_fmt_ctl.eq.'merged_vtd_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTD_GZIP'                         &
-     &   .or. file_fmt_ctl.eq.'single_vtd_gz'                           &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTD_GZ'                           &
-     &   .or. file_fmt_ctl.eq.'merged_vtd_gz'                           &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTD_GZ') then
-           id_field_file_format = iflag_sgl_vtd + iflag_gzip
-!
-      else if(file_fmt_ctl.eq.'single_vtk'                              &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTK'                              &
-     &   .or. file_fmt_ctl.eq.'single_vtk_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTK_ASCII'                        &
-     &   .or. file_fmt_ctl.eq.'merged_vtk'                              &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTK'                              &
-     &   .or. file_fmt_ctl.eq.'merged_vtk_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTK_ASCII') then
-           id_field_file_format = iflag_sgl_vtk
-      else if(file_fmt_ctl.eq.'single_vtk_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTK_GZIP'                         &
-     &   .or. file_fmt_ctl.eq.'merged_vtk_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTK_GZIP'                         &
-     &   .or. file_fmt_ctl.eq.'single_vtk_gz'                           &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTK_GZ'                           &
-     &   .or. file_fmt_ctl.eq.'merged_vtk_gz'                           &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTK_GZ') then
-           id_field_file_format = iflag_sgl_vtk + iflag_gzip
-      else
-        call choose_ucd_file_format(file_fmt_ctl, i_file_fmt,           &
-     &          id_field_file_format)
-      end if
-!
-      end subroutine choose_para_ucd_file_format
 !
 ! -----------------------------------------------------------------------
 !

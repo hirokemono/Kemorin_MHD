@@ -12,7 +12,8 @@
 !!      subroutine set_control_smp_def
 !!      subroutine set_control_mesh_def
 !!      subroutine set_control_sph_mesh
-!!      subroutine set_control_data_file_def
+!!      subroutine set_control_restart_file_def
+!!      subroutine set_control_ucd_file_def
 !!@endverbatim
 !
       module set_control_platform_data
@@ -170,11 +171,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_data_file_def
+      subroutine set_control_restart_file_def
 !
       use m_field_data_IO
-      use m_ucd_data
-      use m_field_file_format
       use m_file_format_switch
 !
 !
@@ -182,19 +181,29 @@
         phys_file_head = rst_file_head_ctl
       end if
 !
+      call choose_file_format(rst_files_fmt_ctl, i_rst_files_fmt,       &
+     &    iflag_field_data_fmt)
+!
+      end subroutine set_control_restart_file_def
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_control_ucd_file_def
+!
+      use m_ucd_data
+      use m_field_file_format
+      use m_file_format_switch
+!
+!
       itype_ucd_data_file = i_udt_header
       if (i_udt_header .gt. 0) then
         ucd_header_name = udt_file_head_ctl
       end if
 !
-!   set data format
-!
-      call choose_file_format(rst_files_fmt_ctl, i_rst_files_fmt,       &
-     &    iflag_field_data_fmt)
-      call choose_para_ucd_file_format(udt_file_fmt_ctl,                &
+      call choose_ucd_file_format(udt_file_fmt_ctl,                     &
      &    i_udt_files_fmt, itype_ucd_data_file)
 !
-      end subroutine set_control_data_file_def
+      end subroutine set_control_ucd_file_def
 !
 ! -----------------------------------------------------------------------
 !
