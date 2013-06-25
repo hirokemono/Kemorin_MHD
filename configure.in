@@ -13,7 +13,6 @@ builtin(include,MHD/confdb/ax_pthread.m4)
 builtin(include,MHD/confdb/ax_openmp.m4)
 
 dnl Include MPI related definitions
-# builtin(include,MHD/confdb/ax_check_libmpi.m4)
 builtin(include,MHD/confdb/ax_mpi.m4)
 
 dnl Include OpenGL Check related definitions
@@ -81,44 +80,34 @@ AC_SUBST(ar_bin)
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 
-
-# Check MPI
-
-AC_LANG_SAVE
-AC_LANG(C)
-AX_MPI
-AC_SUBST(MPICC)
-AC_LANG_RESTORE
-
-AC_LANG_SAVE
-AC_LANG(Fortran)
-AX_MPI
-AC_SUBST(MPIFC)
-AC_LANG_RESTORE
-
-# AX_CHECK_LIBMPI
-
-AC_LANG_SAVE
-AC_LANG(C)
-# Checks for OpenMP for C compiler
-AX_OPENMP
-AC_SUBST(OPENMP_CFLAGS)
-AC_LANG_RESTORE
-
-AC_LANG_SAVE
-AC_LANG(Fortran)
-# Checks for OpenMP for Fortran Compiler
-AX_OPENMP
-AC_SUBST(OPENMP_FCFLAGS)
-AC_LANG_RESTORE
-
-
 # libtool check
 PKG_PROG_PKG_CONFIG
+
+# Checks using C compiler
+AC_LANG_SAVE
+AC_LANG(C)
+# Check OpenMP
+AX_OPENMP
+AC_SUBST(OPENMP_CFLAGS)
+# Check MPI
+AX_MPI
+AC_LANG_RESTORE
+
+# Checks using Fortran Compiler
+AC_LANG_SAVE
+AC_LANG(Fortran)
+# Check OpenMP
+AX_OPENMP
+AC_SUBST(OPENMP_FCFLAGS)
+# Check MPI
+AX_MPI
+AC_LANG_RESTORE
+
 
 # hdf5 check
 AX_LIB_HDF5(serial)
 AC_MSG_RESULT(HDF5_LDFLAGS... "${HDF5_LDFLAGS}")
+
 
 #
 #  Check subroutien name for Fortran-C connection
@@ -158,19 +147,11 @@ then
 	AC_FUNC_MALLOC
 	AC_CHECK_FUNCS([floor memset sqrt strrchr strtol])
 
-# Check FFTW3
+# FFTW3 check
 	if test ${USE_fftw3} = "yes"
 	then
 		PKG_CHECK_MODULES([FFTW3], fftw3, have_fftw3=yes, AC_MSG_ERROR(Cannot find FFTW 3.x))
-		echo "have_fftw3=$have_fftw3"
 	fi
-	if test ${have_fftw3} = "yes"
-	then
-		PKGFLAGS_FFTW3="fftw3"
-	fi
-	AC_SUBST(PKGFLAGS_FFTW3)
-	AC_SUBST(FFTW3_CFLAGS)
-	AC_SUBST(FFTW3_LIBS)
 
 # Check zlib
 	AX_CHECK_ZLIB
@@ -212,8 +193,9 @@ then
 	AC_SUBST(X_LIBS)
 	
 	USE_gl = "yes"
-	GL_LIBS="-framework GLUT -framework OpenGL  -framework Cocoa"
-	GL_INC="-I/usr/X11/include"
+
+#	GL_LIBS="-framework GLUT -framework OpenGL  -framework Cocoa"
+#	GL_INC="-I/usr/X11/include"
 	COCOA_FLAG="-D__APPLE__"
 # Check Aquaterm
 	LIBS=""
@@ -226,6 +208,10 @@ else
 # Checks for OpenGL
 	if test ${USE_gl} = "yes"
 	then
+        AX_CHECK_GL
+#        AX_CHECK_GLU
+#        AX_CHECK_GLUT
+
 		AX_HAVE_OPENGL
 		AC_MSG_RESULT(GL_CFLAGS... "${GL_CFLAGS}")
 		AC_MSG_RESULT(CPPFLAGS... "${CPPFLAGS}")

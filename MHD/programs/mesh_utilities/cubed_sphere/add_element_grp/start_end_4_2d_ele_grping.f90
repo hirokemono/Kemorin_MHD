@@ -40,7 +40,7 @@
       integer(kind = kint), intent(inout) :: item_st, item_ed
       real(kind = kreal), intent(inout) :: max_prev
 !
-      integer(kind = kint) :: ist_ele, iele, k1
+      integer(kind = kint) :: ist_ele, iele
 !
 !
       if(dmin_grping .ge. max_prev) then
@@ -83,8 +83,15 @@
 !
       integer(kind = kint) :: jst_ele, inum, iele
 !
+!
+      if(item_ed .lt. item_st) then
+        jtem_st = item_st
+        jtem_ed = item_ed
+        return
+      end if
+!
       if(dmin_grping .ge. max_prev) then
-        jst_ele = jtem_ed
+        jst_ele = jtem_ed + 1
       else
 !
         jst_ele = item_st
@@ -121,6 +128,7 @@
       do iele = ist_ele, ied_ele
         if ( sorted_array(iele) .lt. min_grping ) then
           item_start = iele + 1
+          item_end =   iele
         else if ( sorted_array(iele) .ge. max_grping ) then
           item_end = iele - 1
           exit

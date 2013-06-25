@@ -20,29 +20,28 @@
 !
       subroutine s_set_control_add_2d_egrp
 !
+      use m_constants
+      use m_parallel_var_dof
+      use m_ctl_data_4_platforms
+      use m_ctl_data_4_2nd_data
       use m_control_data_add_ele_grp
+      use m_read_mesh_data
       use m_add_ele_grp_parameter
+      use set_ctl_parallel_platform
+      use set_control_platform_data
 !
       real(kind = kreal) :: pi
-      real(kind = kreal), parameter :: one = 1.0d0, four = 4.0d0
 !
 !
-      if (i_org_mesh_ctl .gt. 0) then
-        original_mesh_head = orginal_mesh_head_ctl
+      call check_control_num_domains
+      call turn_off_debug_flag_by_ctl(my_rank)
+      call set_control_mesh_def
+      original_mesh_head = mesh_file_head
+!
+      if (i_new_mesh_head .gt. 0) then
+        modified_mesh_head = new_mesh_head_ctl
       else
-        write(*,*) 'set original mesh header'
-        stop
-      end if
-!
-      if (i_new_mesh_ctl .gt. 0) then
-        modified_mesh_head = modified_mesh_head_ctl
-      else
-        write(*,*) 'set refined mesh header'
-        stop
-      end if
-!
-      if (i_layered_mesh_head .gt. 0) then
-        layerd_mesh_head = layered_mesh_head_ctl
+        call parallel_abort(1, 'set modifield mesh prefix')
       end if
 !
       if (i_2nd_grp_direction .gt. 0) then
@@ -82,14 +81,11 @@
      &       .or. sph_grp_direction_ctl .eq. 'r_s') then
           iflag_grping_direction = 1
         else
-          write(*,*) 'set correct grouping mode'
-          stop
+          call parallel_abort(1, 'set correct grouping mode')
         end if
       else
-        write(*,*) 'set correct grouping mode'
-        stop
+        call parallel_abort(1, 'set correct grouping mode')
       end if
-      write(*,*) 'iflag_grping_direction', iflag_grping_direction
 !
       if (i_num_r_ele_grping .gt. 0) then
         num_r_ele_grp = num_r_ele_grouping_ctl
@@ -107,7 +103,6 @@
       end if
 !
 !
-        write(*,*) 'num_s_ele_grouping_ctl', num_s_ele_grouping_ctl
       if (i_num_s_ele_grping .gt. 0) then
         num_s_ele_grp = num_s_ele_grouping_ctl
         call allocate_add_s_ele_grping
@@ -124,7 +119,6 @@
       end if
 !
 !
-        write(*,*) 'num_t_ele_grouping_ctl', num_t_ele_grouping_ctl
       if (i_num_t_ele_grping .gt. 0) then
         num_t_ele_grp = num_t_ele_grouping_ctl
         call allocate_add_t_ele_grping
@@ -141,24 +135,25 @@
       end if
 !
 !
-        write(*,*) 'num_z_ele_grouping_ctl', num_z_ele_grouping_ctl
       if (i_num_z_ele_grping .gt. 0) then
         num_z_ele_grp = num_z_ele_grouping_ctl
         call allocate_add_z_ele_grping
 !
-        write(*,*) 'z_ele_grp_name'
         z_ele_grp_name(1:num_z_ele_grp)                                 &
      &        = z_ele_grping_name_ctl(1:num_z_ele_grp)
-        write(*,*) 'minmax_z_ele_grping'
         minmax_z_ele_grping(1:num_z_ele_grp,1)                          &
      &        = min_z_ele_grping_ctl(1:num_z_ele_grp)
-        write(*,*) 'minmax_z_ele_grping'
         minmax_z_ele_grping(1:num_z_ele_grp,2)                          &
      &        = max_z_ele_grping_ctl(1:num_z_ele_grp)
-        write(*,*) 'z_ele_grping_name_ctl'
         deallocate( z_ele_grping_name_ctl )
         deallocate( min_z_ele_grping_ctl  )
         deallocate( max_z_ele_grping_ctl  )
+!
+        if(iflag_debug .gt. 0) then
+          write(*,*) 'z_ele_grp_name'
+          write(*,*) 'minmax_z_ele_grping'
+          write(*,*) 'minmax_z_ele_grping'
+        end if
       end if
 !
 !
@@ -174,10 +169,13 @@
         end if
       end if
 !
-      write(*,*) 'num_r_ele_grp', num_r_ele_grp
-      write(*,*) 'num_t_ele_grp', num_t_ele_grp
-      write(*,*) 'num_s_ele_grp', num_s_ele_grp
-      write(*,*) 'num_z_ele_grp', num_z_ele_grp
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'iflag_grping_direction', iflag_grping_direction
+        write(*,*) 'num_r_ele_grp', num_r_ele_grp
+        write(*,*) 'num_t_ele_grp', num_t_ele_grp
+        write(*,*) 'num_s_ele_grp', num_s_ele_grp
+        write(*,*) 'num_z_ele_grp', num_z_ele_grp
+      end if
 !
       end subroutine s_set_control_add_2d_egrp
 !

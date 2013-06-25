@@ -16,10 +16,6 @@
       character (len = kchara), parameter                               &
      &         :: control_file_name = 'ctl_add_ele_grp'
 !
-      character (len = kchara) :: orginal_mesh_head_ctl
-      character (len = kchara) :: modified_mesh_head_ctl
-      character (len = kchara) :: layered_mesh_head_ctl
-!
       character (len = kchara) :: sph_grp_direction_ctl
       integer (kind = kint) :: num_r_ele_grouping_ctl = 0
       integer (kind = kint) :: num_t_ele_grouping_ctl = 0
@@ -53,19 +49,6 @@
       integer (kind=kint) :: i_files_ctl =        0
       integer (kind=kint) :: i_add_ele_grp_para = 0
 !
-!   3rd level for file_names
-!
-      character(len=kchara), parameter :: hd_org_mesh_ctl               &
-     &                      = 'orginal_mesh_head_ctl'
-      character(len=kchara), parameter :: hd_new_mesh_ctl               &
-     &                      = 'new_mesh_head_ctl'
-      character(len=kchara), parameter :: hd_layered_mesh_head          &
-     &                      = 'grouping_mesh_head_ctl'
-!
-      integer (kind=kint) :: i_org_mesh_ctl = 0
-      integer (kind=kint) :: i_new_mesh_ctl = 0
-      integer (kind=kint) :: i_layered_mesh_head = 0
-!
 !   3rd level for element_group_ctl
 !
       character(len=kchara), parameter :: hd_2nd_grp_direction          &
@@ -79,6 +62,7 @@
       character(len=kchara), parameter :: hd_num_z_ele_grping           &
      &                      = 'z_range_ctl'
 !
+      integer (kind=kint) :: i_layered_mesh_head = 0
       integer (kind=kint) :: i_2nd_grp_direction = 0
       integer (kind=kint) :: i_num_r_ele_grping =  0
       integer (kind=kint) :: i_num_t_ele_grping =  0
@@ -88,13 +72,11 @@
       private :: hd_add_ele_grp_ctl, i_add_ele_grp_ctl
       private :: hd_files_ctl, i_files_ctl
       private :: hd_add_ele_grp_para, i_add_ele_grp_para
-      private :: hd_org_mesh_ctl, hd_new_mesh_ctl, hd_layered_mesh_head
       private :: hd_2nd_grp_direction
       private :: hd_num_r_ele_grping, hd_num_t_ele_grping
       private :: hd_num_s_ele_grping, hd_num_z_ele_grping
 !
       private :: read_control_4_add_egrp_data
-      private :: read_ctl_data_4_add_egrp_mesh
       private :: read_ctl_data_4_add_2d_egrp
       private :: alloc_r_ele_grp_list_ctl, alloc_t_ele_grp_list_ctl
       private :: alloc_s_ele_grp_list_ctl, alloc_z_ele_grp_list_ctl
@@ -227,8 +209,10 @@
       end subroutine read_control_add_elegrp
 !
 ! -----------------------------------------------------------------------!
-       subroutine read_control_4_add_egrp_data
+      subroutine read_control_4_add_egrp_data
 !
+      use m_ctl_data_4_platforms
+      use m_ctl_data_4_2nd_data
 !
       if(right_begin_flag(hd_add_ele_grp_ctl) .eq. 0) return
       if (i_add_ele_grp_ctl .gt. 0) return
@@ -239,7 +223,9 @@
      &      i_add_ele_grp_ctl)
         if(i_add_ele_grp_ctl .gt. 0) exit
 !
-        call read_ctl_data_4_add_egrp_mesh
+        call read_ctl_data_4_platform
+        call read_ctl_data_4_new_data
+!
         call read_ctl_data_4_add_2d_egrp
       end do
 !
@@ -248,29 +234,6 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-       subroutine read_ctl_data_4_add_egrp_mesh
-!
-!
-      if(right_begin_flag(hd_files_ctl) .eq. 0) return
-      if (i_files_ctl .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_files_ctl, i_files_ctl)
-        if(i_files_ctl .gt. 0) exit
-!
-!
-        call read_character_ctl_item(hd_org_mesh_ctl,                   &
-     &           i_org_mesh_ctl, orginal_mesh_head_ctl)
-        call read_character_ctl_item(hd_new_mesh_ctl,                   &
-     &           i_new_mesh_ctl, modified_mesh_head_ctl)
-        call read_character_ctl_item(hd_layered_mesh_head,              &
-     &           i_layered_mesh_head, layered_mesh_head_ctl)
-      end do
-!
-      end subroutine read_ctl_data_4_add_egrp_mesh
-!
-! -----------------------------------------------------------------------!
       subroutine read_ctl_data_4_add_2d_egrp
 !
 !

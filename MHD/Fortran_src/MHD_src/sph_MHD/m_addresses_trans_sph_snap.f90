@@ -130,6 +130,8 @@
       call add_transform_flag(ipol%i_b_diffuse, irtp%i_b_diffuse,       &
      &    nvector_snap_rj_2_rtp, bsnap_trns%i_b_diffuse)
 !
+      call add_transform_flag(ipol%i_rot_inertia, irtp%i_rot_inertia,   &
+     &    nvector_snap_rj_2_rtp, bsnap_trns%i_rot_inertia)
       call add_transform_flag(ipol%i_rot_Coriolis, irtp%i_rot_Coriolis, &
      &    nvector_snap_rj_2_rtp, bsnap_trns%i_rot_Coriolis)
       call add_transform_flag(ipol%i_rot_Lorentz, irtp%i_rot_Lorentz,   &

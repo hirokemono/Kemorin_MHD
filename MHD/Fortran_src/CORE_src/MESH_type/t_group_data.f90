@@ -26,6 +26,8 @@
 !
 !      subroutine link_group_type(grp_org, grp_new)
 !      subroutine link_surf_group_type(sf_grp_org, sf_grp_new)
+!      subroutine unlink_group_type(grp)
+!      subroutine unlink_surf_group_type(sf_grp)
 !
 !      subroutine check_group_type_data(my_rank, grp)
 !      subroutine check_surf_grp_type_data(my_rank, sf_grp)
@@ -274,6 +276,34 @@
       sf_grp_new%item_sf_grp => sf_grp_org%item_sf_grp
 !
       end subroutine link_surf_group_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine unlink_group_type(grp)
+!
+      type(group_data), intent(inout) :: grp
+!
+      grp%num_grp =  0
+      grp%num_item = 0
+!
+      nullify(grp%grp_name, grp%istack_grp)
+      nullify(grp%item_grp)
+!
+      end subroutine unlink_group_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine unlink_surf_group_type(sf_grp)
+!
+      type(surface_group_data), intent(inout) :: sf_grp
+!
+      sf_grp%num_grp =  0
+      sf_grp%num_item = 0
+!
+      nullify(sf_grp%grp_name, sf_grp%istack_grp)
+      nullify(sf_grp%item_sf_grp)
+!
+      end subroutine unlink_surf_group_type
 !
 !  ---------------------------------------------------------------------
 ! ----------------------------------------------------------------------

@@ -62,6 +62,8 @@
      &      ipol%i_b_diffuse, bsnap_trns%i_b_diffuse)
 !
       call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
+     &      ipol%i_rot_inertia, bsnap_trns%i_rot_inertia)
+      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
      &      ipol%i_rot_Coriolis, bsnap_trns%i_rot_Coriolis)
       call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
      &      ipol%i_rot_Lorentz, bsnap_trns%i_rot_Lorentz)
@@ -138,6 +140,8 @@
       call copy_vec_fld_from_trans(nvector_snap_rj_2_rtp,               &
      &    irtp%i_b_diffuse, bsnap_trns%i_b_diffuse)
 !
+      call copy_vec_fld_from_trans(nvector_snap_rj_2_rtp,               &
+     &    irtp%i_rot_inertia, bsnap_trns%i_rot_inertia)
       call copy_vec_fld_from_trans(nvector_snap_rj_2_rtp,               &
      &    irtp%i_rot_Coriolis, bsnap_trns%i_rot_Coriolis)
       call copy_vec_fld_from_trans(nvector_snap_rj_2_rtp,               &

@@ -199,7 +199,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call link_nodal_field_names
+      call link_nodal_fld_type_names(nod_fld)
 !
       nod_fld%d_fld => d_nod
 !

@@ -1,13 +1,17 @@
 begin add_element_groups
 !
-  begin file_name_ctl
-    orginal_mesh_head_ctl    'shell_org/in'
-    new_mesh_head_ctl        'in'
-    grouping_mesh_head_ctl   'grouping_mesh'
-  end file_name_ctl
+  begin data_files_def
+    num_subdomain_ctl           2
+    mesh_file_head_ctl          'mesh/in'
+    mesh_file_fmt_ctl           'ascii'
+  end data_files_def
+!
+  begin new_data_files_def
+    new_mesh_head_ctl        'mesh_target/in'
+    new_mesh_file_fmt_ctl    'ascii'
+  end new_data_files_def
 !
   begin 2d_grouping_ctl
-!
 !      2nd_grp_direction_ctl: Grouping configration
 !           r_theta (sphere), cylindrical_r_z (s_z, cyrindrical)
 !           z_theta,          r_cylindrical_r (r_s)

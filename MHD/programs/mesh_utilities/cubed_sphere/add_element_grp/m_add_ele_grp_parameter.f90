@@ -10,6 +10,9 @@
       implicit    none
 !
 !
+      character(len=kchara) :: original_mesh_head
+      character(len=kchara) :: modified_mesh_head
+!
       integer (kind=kint) :: iflag_grping_direction = 0
 !
       integer (kind=kint) :: num_r_ele_grp
@@ -27,11 +30,6 @@
       integer (kind=kint) :: num_z_ele_grp
       character (len=kchara), allocatable :: z_ele_grp_name(:)
       real(kind = kreal), allocatable :: minmax_z_ele_grping(:,:)
-!
-      character(len=kchara) :: layerd_mesh_head
-!
-      character(len=kchara) :: original_mesh_head
-      character(len=kchara) :: modified_mesh_head
 !
 !      subroutine allocate_add_r_ele_grping
 !      subroutine allocate_add_t_ele_grping

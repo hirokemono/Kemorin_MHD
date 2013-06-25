@@ -1,9 +1,15 @@
 !set_new_2d_element_group.f90
 !      module set_new_2d_element_group
 !
-      module set_new_2d_element_group
-!
 !     Written by H. Matsui on Mar., 2008
+!
+!      subroutine alloc_r_ele_cubed_sph
+!      subroutine dealloc_r_ele_cubed_sph
+!      subroutine count_new_2d_element_group
+!      subroutine set_rele_cubed_sph
+!      subroutine set_new_2d_ele_group
+!
+      module set_new_2d_element_group
 !
       use m_precision
 !
@@ -14,12 +20,6 @@
       implicit none
 !
       real(kind = kreal), allocatable, private :: r_ele_sph(:)
-      private :: elminate_empty_2nd_ele_grp
-!
-!      subroutine alloc_r_ele_cubed_sph
-!      subroutine dealloc_r_ele_cubed_sph
-!      subroutine set_rele_cubed_sph
-!      subroutine s_set_new_2d_element_group
 !
 !   --------------------------------------------------------------------
 !
@@ -42,6 +42,7 @@
 !
       end subroutine dealloc_r_ele_cubed_sph
 !
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine set_rele_cubed_sph
@@ -81,11 +82,45 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine s_set_new_2d_element_group
+      subroutine count_new_2d_element_group
+!
+      use m_parallel_var_dof
+      use m_add_ele_grp_parameter
+      use m_element_group
+      use set_ele_grp2_by_2d
+!
+!
+      if (iflag_grping_direction .eq. 0) then
+        call count_added_egrp_item(r_ele_sph, theta_ele,                &
+     &      num_r_ele_grp, minmax_r_ele_grping,                         &
+     &      num_t_ele_grp, minmax_t_ele_grping)
+!
+      else if (iflag_grping_direction .eq. 1) then
+        call count_added_egrp_item(r_ele_sph,  s_ele,                   &
+     &      num_r_ele_grp, minmax_r_ele_grping,                         &
+     &      num_s_ele_grp, minmax_s_ele_grping)
+!
+      else if (iflag_grping_direction .eq. 2) then
+        call count_added_egrp_item(s_ele,  x_ele(1,3),                  &
+     &      num_s_ele_grp, minmax_s_ele_grping,                         &
+     &      num_z_ele_grp, minmax_z_ele_grping)
+      else if (iflag_grping_direction .eq. 3) then
+        call count_added_egrp_item(x_ele(1,3), theta_ele,               &
+     &      num_z_ele_grp, minmax_z_ele_grping,                         &
+     &      num_t_ele_grp, minmax_t_ele_grping)
+      end if
+!
+      call MPI_allREDUCE(nitem_added_lc, nitem_added_gl, ngrp_added,    &
+     &    MPI_INTEGER, MPI_SUM, SOLVER_COMM, ierr)
+!
+      end subroutine count_new_2d_element_group
+!
+!   --------------------------------------------------------------------
+!
+      subroutine set_new_2d_ele_group
 !
       use m_add_ele_grp_parameter
       use m_element_group
-      use m_2nd_group_data
       use set_ele_grp2_by_2d
 !
 !
@@ -109,42 +144,7 @@
      &      num_t_ele_grp, t_ele_grp_name, minmax_t_ele_grping)
       end if
 !
-      call elminate_empty_2nd_ele_grp
-!
-      end subroutine s_set_new_2d_element_group
-!
-!   --------------------------------------------------------------------
-!
-      subroutine elminate_empty_2nd_ele_grp
-!
-      use m_2nd_group_data
-!
-      integer(kind = kint) :: igrp, icou
-      integer(kind = kint) :: num_mat_tmp
-      integer(kind = kint), allocatable :: mat_istack_tmp(:)
-      character(len = kchara), allocatable :: mat_name_tmp(:)
-!
-!
-      num_mat_tmp = num_mat_2nd
-      allocate( mat_istack_tmp(0:num_mat_tmp) )
-      allocate( mat_name_tmp(num_mat_tmp) )
-!
-      mat_istack_tmp(0:num_mat_2nd) = mat_istack_2nd(0:num_mat_2nd)
-      mat_name_tmp(1:num_mat_2nd) =     mat_name_2nd(1:num_mat_2nd)
-!
-      icou = 0
-      do igrp = 1, num_mat_tmp
-        if(mat_istack_2nd(igrp) .gt. mat_istack_2nd(igrp-1)) then
-          icou = icou + 1
-          mat_istack_2nd(icou) = mat_istack_tmp(igrp)
-          mat_name_2nd(icou) =   mat_name_tmp(igrp)
-        end if
-      end do
-      num_mat_2nd = icou
-!
-      deallocate( mat_istack_tmp, mat_name_tmp)
-!
-      end subroutine elminate_empty_2nd_ele_grp
+      end subroutine set_new_2d_ele_group
 !
 !   --------------------------------------------------------------------
 !
