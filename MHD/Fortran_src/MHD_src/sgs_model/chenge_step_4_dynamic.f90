@@ -18,15 +18,38 @@
 !
       implicit none
 !
+      integer(kind=kint), parameter :: sgs_diff_max_code =   30
+      character(len=kchara), parameter                                  &
+     &           :: sgs_diff_max_name = "SGS_step_monitor.dat"
+!
+      private :: sgs_diff_max_code, sgs_diff_max_name
+!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_chenge_step_4_dynamic(my_rank)
+      subroutine open_sgs_diff_monitor(my_rank)
 !
-      use m_file_control_parameter
+      integer(kind = kint), intent(in) :: my_rank
+!
+!
+      if(my_rank .gt. 0) return
+!
+      open (sgs_diff_max_code,file = sgs_diff_max_name,                 &
+     &        status='old', position='append', err = 99)
+      return
+!
+  99  continue
+      open (sgs_diff_max_code,file = sgs_diff_max_name,                 &
+     &        status='replace')
+!
+      end subroutine open_sgs_diff_monitor
+!
+!-----------------------------------------------------------------------
+!
+      subroutine s_chenge_step_4_dynamic(my_rank)
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint) :: iflag, i, j
@@ -34,7 +57,8 @@
 !
 !
       iflag = mod(i_step_MHD, i_step_sgs_coefs)
-      if (iflag.eq.0) then
+      if (iflag .eq.0 ) then
+        call open_sgs_diff_monitor(my_rank)
 !
         diff_r = 0.0d0
         diff_max = 0.0d0
@@ -119,6 +143,7 @@
      &    'chenge step interbal for dynamic to ', i_step_sgs_coefs
         end if
 !
+        if(my_rank .eq. 0) close(sgs_diff_max_code)
       end if
 !
       end subroutine s_chenge_step_4_dynamic

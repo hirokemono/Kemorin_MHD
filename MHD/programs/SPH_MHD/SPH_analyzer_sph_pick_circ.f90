@@ -43,7 +43,6 @@
       use m_sph_phys_address
       use m_rms_4_sph_spectr
       use m_node_id_spherical_IO
-      use m_field_on_circle
 !
       use set_control_sph_mhd
       use load_data_for_sph_IO
@@ -60,8 +59,6 @@
       use r_interpolate_sph_data
       use sph_mhd_rst_IO_control
       use sph_MHD_circle_transform
-!
-      integer :: i
 !
 !   Load spherical harmonics data
 !
@@ -145,14 +142,8 @@
       call init_radial_sph_interpolation
 !
 !* -----  find mid-equator point -----------------
-!*
 !
       call set_circle_point_global
-!
-!* -----  Oopen result file -----------------
-!*
-       if(iflag_debug .gt. 0) write(*,*) 'open_field_data_on_circle'
-       call open_field_data_on_circle
 !
       end subroutine SPH_init_sph_pick_circle
 !
@@ -215,14 +206,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_finalize_pick_circle
+!      subroutine SPH_finalize_pick_circle
 !
-      use m_field_on_circle
-!
-!
-      call close_field_data_on_circle
-!
-      end subroutine SPH_finalize_pick_circle
+!      end subroutine SPH_finalize_pick_circle
 !
 ! ----------------------------------------------------------------------
 !

@@ -151,9 +151,14 @@
 !
       subroutine FEM_finalize_sph_trans
 !
+      use m_t_step_parameter
       use m_work_4_sph_trans
+      use merged_udt_vtk_file_IO
 !
 !
+      if(i_step_output_ucd .gt. 0) then
+        call finalize_merged_ucd
+      end if
       call deallocate_wk_nod_data_to_sph
 !
       end subroutine FEM_finalize_sph_trans

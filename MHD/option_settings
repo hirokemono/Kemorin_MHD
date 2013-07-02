@@ -9,7 +9,7 @@ Settings for Makefiles
 #
 #./configure --prefix='/Users/matsui/local' CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' \
 #  --enable-cocoa --enable-fftw3 --enable-gl --enable-glui --enable-gtk \
-#  --enable-libpng  --with-zlib=/Users/matsui/local \
+#  --enable-libpng  --with-zlib=/Users/matsui/local  --with-hdf5=/Users/matsui/local \
 #  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/usr/local 
 #
 #

@@ -106,8 +106,8 @@
 !
       call end_eleps_time(3)
 !
-      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_MHD'
-      call SPH_finalize_MHD
+!      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_MHD'
+!      call SPH_finalize_MHD
 !
       call copy_COMM_TIME_to_eleps(num_elapsed)
       call end_eleps_time(1)

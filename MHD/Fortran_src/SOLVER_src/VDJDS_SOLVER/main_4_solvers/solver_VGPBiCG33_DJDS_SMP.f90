@@ -630,7 +630,9 @@
       COMPtime= END_TIME - S1_TIME
       R1= 100.d0 * ( 1.d0 - COMMtime/COMPtime )
       if (my_rank.eq.0) then
+        open(43,file='solver_33.dat',position='append')
         write (43,'(i7,1p3e16.6)') ITER, COMPtime, COMMtime, R1
+        close(43)
       endif
 !
 !      write(50+my_rank,*) 'j, W(P1)', iter

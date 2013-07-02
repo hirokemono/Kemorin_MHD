@@ -202,7 +202,7 @@
       subroutine read_and_count_psf_ncomp
 !
       character(len=255) :: tmpchara
-      integer(kind = kint) :: i, itmp, itot
+      integer(kind = kint) :: i, itmp
 !
 !
       read(id_psf_result,'(a)') tmpchara
@@ -230,8 +230,6 @@
 !-----------------------------------------------------------------------
 !
       subroutine read_psf_num_comp
-!
-      integer(kind = kint) :: i
 !
 !
       ncomp_psf = -1

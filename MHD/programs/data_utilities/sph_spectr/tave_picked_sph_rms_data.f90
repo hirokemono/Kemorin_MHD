@@ -60,7 +60,7 @@
 !
         if(i_step .ge. istep_end) exit
       end do
-      call close_sph_rms_4_monitor(izero, id_pick)
+      close(id_pick)
 !
       acou = one / dble(icou)
       do ipick = 1, ntot_pick_sph_rms_mode*num_pick_rms_layer
@@ -73,9 +73,7 @@
       deallocate(ave_rms_pick_sph)
 !
       pickup_sph_rms_head = tave_pick_sph_rms_head
-      call open_sph_rms_4_monitor(izero, id_pick)
-      call write_sph_rms_4_monitor(izero, id_pick, i_step, time)
-      call close_sph_rms_4_monitor(izero, id_pick)
+      call write_sph_rms_4_monitor(izero, i_step, time)
 !
       write(*,*) '***** program finished *****'
       stop

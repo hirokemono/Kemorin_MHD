@@ -55,7 +55,7 @@
 !
         if(i_step .ge. istep_end) exit
       end do
-      call close_gauss_coefs_4_monitor(izero, id_pick)
+      close(id_pick)
 !
       acou = one / dble(icou)
       do ipick = 1, num_pick_gauss_mode
@@ -65,9 +65,7 @@
       deallocate(ave_gauss)
 !
       gauss_coefs_file_name = tave_pick_gauss_fname
-      call open_gauss_coefs_4_monitor(izero, id_pick)
-      call write_gauss_coefs_4_monitor(izero, id_pick, i_step, time)
-      call close_gauss_coefs_4_monitor(izero, id_pick)
+      call write_gauss_coefs_4_monitor(izero, i_step, time)
 !
       write(*,*) '***** program finished *****'
       stop

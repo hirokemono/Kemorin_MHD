@@ -19,10 +19,9 @@
       use m_read_control_elements
       use skip_comment_f
 !
-      use m_file_control_parameter
-!
       implicit none
 !
+      integer(kind=kint), parameter :: control_file_code = 11
       character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
       character(len=kchara), parameter                                  &
      &                      :: snap_ctl_name = 'control_snapshot'

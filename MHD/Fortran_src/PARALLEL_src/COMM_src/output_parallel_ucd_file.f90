@@ -6,7 +6,7 @@
 !
 !      subroutine output_grd_file
 !
-!      subroutine output_udt_one_snapshot(istep_udt)
+!      subroutine output_udt_one_snapshot(istep_ucd)
 !
       module output_parallel_ucd_file
 !
@@ -55,14 +55,15 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine output_udt_one_snapshot(istep_udt)
+      subroutine output_udt_one_snapshot(istep_ucd)
 !
       use m_ucd_data
       use set_ucd_data
       use merged_udt_vtk_file_IO
+      use copy_time_steps_4_restart
       use parallel_udt_IO_select
 !
-      integer(kind = kint), intent(in) :: istep_udt
+      integer(kind = kint), intent(in) :: istep_ucd
 !
 !
       call link_num_field_2_output
@@ -73,12 +74,17 @@
         call init_merged_ucd
       end if
 !
-      call sel_write_parallel_ucd_file(istep_udt)
+      call copy_time_steps_to_restart
+      call sel_write_parallel_ucd_file(istep_ucd)
 !
       call deallocate_ucd_node
 !
       call deallocate_ucd_ele
       call disconnect_ucd_data
+!
+      if (itype_ucd_data_file/100 .eq. iflag_single/100) then
+        call finalize_merged_ucd
+      end if
 !
       end subroutine output_udt_one_snapshot
 !

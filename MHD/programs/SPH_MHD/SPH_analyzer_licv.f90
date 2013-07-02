@@ -3,7 +3,6 @@
 !
 !      subroutine SPH_initialize_linear_conv
 !      subroutine SPH_analyze_linear_conv(i_step)
-!      subroutine SPH_finalize_licv
 !
 !      Written by H. Matsui
 !
@@ -222,14 +221,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_finalize_licv
-!
-      use sph_mhd_rms_IO
+!      subroutine SPH_finalize_licv
 !
 !
-      call close_sph_vol_rms_file_mhd
-!
-      end subroutine SPH_finalize_licv
+!      end subroutine SPH_finalize_licv
 !
 ! ----------------------------------------------------------------------
 !

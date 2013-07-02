@@ -5,9 +5,6 @@
 !                                    on July 2000 (ver 1.1)
 !        Modified by H. Matsui on Aug., 2007
 !
-!      subroutine open_maximum_file(my_rank)
-!      subroutine close_maximum_file(my_rank)
-!
 !      subroutine output_range_data
 !      subroutine skip_range_data
 !
@@ -18,31 +15,47 @@
 !
       implicit none
 !
+      integer(kind=kint), parameter :: maximum_data_code =     44
+      integer(kind=kint), parameter :: maximum_position_code = 45
+! 
+      character(len=kchara), parameter                                  &
+     &       :: minmax_data_file_name =     'maximum_data.dat'
+      character(len=kchara), parameter                                  &
+     &       :: minmax_posi_file_name =     'maximum_posi.dat'
+!
+      private :: maximum_data_code, minmax_data_file_name
+      private :: maximum_position_code, minmax_posi_file_name
+      private :: open_maximum_file
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine open_maximum_file(my_rank)
+      subroutine open_maximum_file
 !
-      use m_file_control_parameter
       use m_node_phys_data
       use m_cal_max_indices
-!
-      integer (kind = kint), intent(in) :: my_rank
 !
       integer(kind = kint) :: i
 !
 !
-      call allocate_phys_range
+      open (maximum_data_code,file = minmax_data_file_name,             &
+     &      status='old', position='append', err = 99)
+      open (maximum_position_code,file = minmax_posi_file_name,         &
+     &      status='old', position='append', err = 98)
+      return
 !
-      if ( my_rank .gt. 0 ) return
+!
+  98  continue
+      close(maximum_data_code)
+  99  continue
 !
       open (maximum_data_code,file = minmax_data_file_name,             &
-     &      status='replace')
+     &     status='replace')
       open (maximum_position_code,file = minmax_posi_file_name,         &
-     &      status='replace')
+     &     status='replace')
 !
       write(maximum_data_code,'(a)')                                    &
      &    'ID step time x y z  min:  max: '
@@ -58,51 +71,35 @@
       end subroutine open_maximum_file
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine close_maximum_file (my_rank)
-!
-      use m_file_control_parameter
-      use m_cal_max_indices
-!
-      integer (kind = kint), intent(in) :: my_rank
-!
-!
-      call deallocate_phys_range
-!
-      if ( my_rank .gt. 0 ) return
-      close (maximum_data_code)
-      close (maximum_position_code)
-!
-      end subroutine close_maximum_file
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine output_range_data
 !
       use m_parallel_var_dof
-      use m_file_control_parameter
       use m_node_phys_data
       use m_cal_max_indices
       use m_t_step_parameter
       use cal_max_indices
 !
 !
-       call s_cal_max_indices
+      call s_cal_max_indices
 !
-       if ( my_rank .eq. 0 ) then
+      if ( my_rank .ne. 0 ) return
 !
-         write(maximum_data_code,'(i10,1p250E25.15e3)')                 &
+      call open_maximum_file
+!
+      write(maximum_data_code,'(i10,1p250E25.15e3)')                    &
      &       ucd_step, time,                                            &
      &      phys_min(1:num_tot_nod_phys_vis),                           &
      &      phys_max(1:num_tot_nod_phys_vis)
 !
-         write(maximum_position_code,'(i10,1pE25.15e3,249i10)')         &
+      write(maximum_position_code,'(i10,1pE25.15e3,249i10)')            &
      &       ucd_step, time,                                            &
      &      node_min(1:num_tot_nod_phys_vis),                           &
      &      node_max(1:num_tot_nod_phys_vis)
 !
-       end if
+      close (maximum_data_code)
+      close (maximum_position_code)
 !
       end subroutine output_range_data
 !
@@ -111,7 +108,6 @@
       subroutine skip_range_data
 !
       use m_parallel_var_dof
-      use m_file_control_parameter
       use m_node_phys_data
       use m_t_step_parameter
 !

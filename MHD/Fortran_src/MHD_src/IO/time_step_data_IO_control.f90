@@ -1,14 +1,13 @@
 !
-!     module time_step_data_IO
+!     module time_step_data_IO_control
 !
 !        programmed by H.Matsui and H.Okuda
 !                                    on July 2000 (ver 1.1)
 !     modified by H. Matsui on Aug., 2007
 !
 !      subroutine output_time_step_control
-!      subroutine skip_time_step_data
 !
-      module time_step_data_IO
+      module time_step_data_IO_control
 !
       use m_precision
 !
@@ -29,7 +28,6 @@
       use m_node_phys_address
       use m_t_step_parameter
       use m_t_int_parameter
-      use m_file_control_parameter
       use m_bulk_values
 !
       use int_norm_div_MHD
@@ -37,6 +35,7 @@
       use estimate_stabilities
       use set_exit_flag_4_visualizer
       use int_bulk
+      use time_step_file_IO
 !
       integer (kind = kint) :: nd, ii
 !
@@ -90,52 +89,11 @@
           end if
         end do
 !
-        if ( my_rank .eq. 0 ) then
-!
-          write(time_step_data_code,'(i10,1p1000e20.11)')               &
-     &     i_step_MHD, time, bulk_global(1:num_bulk)
-          write(rms_data_code,'(i10,1p100e20.11)')                      &
-     &     i_step_MHD, time, rms_global(1:num_rms)
-!
-        end if
+        call output_monitor_file(my_rank)
       end if
 !
       end subroutine output_time_step_control
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine skip_time_step_data
-!
-      use m_parallel_var_dof
-      use m_t_step_parameter
-      use m_file_control_parameter
-      use m_bulk_values
-!
-      integer (kind = kint) :: i, iflag, i_read_step
-      real(kind = kreal) :: rtmp
-!
-!
-      iflag = i_step_init - mod(istep_max_dt, i_step_check)
-      if ( my_rank .eq. 0 ) then
-!
-        do
-          read(time_step_data_code,*,err=99,end=99)                     &
-     &            i_read_step, rtmp, (rtmp,i=1,num_bulk)
-          if (i_read_step .ge. i_step_init) exit
-        end do
- 99     continue
-!
-        do
-          read(rms_data_code,*,err=98,end=98)                           &
-     &            i_read_step, rtmp, (rtmp,i=1,num_rms)
-          if (i_read_step .ge. iflag) exit
-        end do
- 98     continue
-!
-      end if
-!
-      end subroutine skip_time_step_data
-!
-!  ---------------------------------------------------------------------
-!
-      end module time_step_data_IO
+      end module time_step_data_IO_control

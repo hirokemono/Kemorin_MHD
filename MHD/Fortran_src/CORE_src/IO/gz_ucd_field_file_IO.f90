@@ -95,22 +95,15 @@
 !
       call open_rd_gzfile(gzip_name)
 !
-      write(*,*) 'read_gz_step_data'
       call read_gz_step_data
-      write(*,*) 'skip_gz_comment_int2'
       call skip_gz_comment_int2(nnod_ucd, num_field_ucd)
-      write(*,*) 'allocate_ucd_phys_name'
       call allocate_ucd_phys_name
 !
-      write(*,*) 'read_gz_multi_int'
       call read_gz_multi_int(num_field_ucd, num_comp_ucd)
 !
-      write(*,*) 'cal_istack_ucd_component'
       call cal_istack_ucd_component
-      write(*,*) 'allocate_ucd_phys_data'
       call allocate_ucd_phys_data
 !
-      write(*,*) 'read_gz_field_data'
       call read_gz_field_data                                           &
      &         (nnod_ucd, num_field_ucd, ntot_comp_ucd,                 &
      &          num_comp_ucd, phys_name_ucd, d_nod_ucd)

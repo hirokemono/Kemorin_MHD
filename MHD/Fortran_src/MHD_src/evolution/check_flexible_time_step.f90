@@ -1,9 +1,12 @@
 !check_flexible_time_step.f90
 !     module check_flexible_time_step
 !
-      module check_flexible_time_step
-!
 !      Written by H. Matsui on Nov., 2009
+!
+!      subroutine set_new_time_and_step
+!      subroutine s_check_flexible_time_step
+!
+      module check_flexible_time_step
 !
       use m_precision
 !
@@ -16,10 +19,19 @@
 !
       implicit  none
 !
-      private :: shrink_delta_t, extend_delta_t
+      integer(kind=kint), parameter :: dt_check_max_code =   15
+      integer(kind=kint), parameter :: dt_check_min_code =   17
 !
-!      subroutine set_new_time_and_step
-!      subroutine s_check_flexible_time_step
+      character(len=kchara), parameter                                  &
+     &      :: dt_check_max_name = 'maximum_dt_chack.dat'
+      character(len=kchara), parameter                                  &
+     &      :: dt_check_min_name = 'minimum_dt_chack.dat'
+!
+!
+      private :: dt_check_max_code, dt_check_min_code
+      private :: dt_check_max_name, dt_check_min_name
+      private :: shrink_delta_t, extend_delta_t
+      private :: open_flex_step_monitor
 !
 ! -----------------------------------------------------------------------
 !
@@ -52,18 +64,12 @@
 !
       subroutine s_check_flexible_time_step
 !
-      use m_file_control_parameter
       use check_deltat_by_prev_rms
 !
 !
       if( mod(istep_flex_to_max,2) .eq. 0) then
 !        call s_check_deltat_by_previous
         call s_check_deltat_by_prev_rms
-!
-        if(my_rank .eq. izero) then
-          call write_max_delta_t_check(dt_check_max_code,               &
-     &        i_step_MHD, time)
-        end if
 !
         if(d_ratio_allmax .gt. min_eps_to_expand_dt) then
           call shrink_delta_t
@@ -80,8 +86,10 @@
           end if
 !
           if(my_rank .eq. izero) then
+            call open_flex_step_monitor
             call write_rms_delta_t_check(dt_check_max_code,             &
      &        i_step_MHD, time)
+            close(dt_check_max_code)
           end if
         end if
       end if
@@ -178,29 +186,16 @@
 !
       subroutine open_flex_step_monitor
 !
-      use m_file_control_parameter
-      use m_flex_delta_t_data
 !
+      open(dt_check_max_code, file=dt_check_max_name,                   &
+     &    form='formatted', status='old', position='append', err = 99)
+      return
 !
-      if(my_rank .eq. izero) then
-        open(dt_check_max_code, file = dt_check_max_name)
-        call write_delta_t_check_head(dt_check_max_code)
-      end if
+  99  continue
+      open(dt_check_max_code, file = dt_check_max_name)
+      call write_delta_t_check_head(dt_check_max_code)
 !
       end subroutine open_flex_step_monitor
-!
-! -----------------------------------------------------------------------
-!
-      subroutine close_flex_step_monitor
-!
-      use m_file_control_parameter
-!
-!
-      if(my_rank .eq. izero) then
-        close(dt_check_max_code)
-      end if
-!
-      end subroutine close_flex_step_monitor
 !
 ! -----------------------------------------------------------------------
 !

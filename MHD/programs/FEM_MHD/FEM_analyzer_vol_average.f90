@@ -5,7 +5,6 @@
 !
 !      subroutine FEM_initialize_snapshot
 !      subroutine FEM_analyze_vol_average(i_step)
-!      subroutine FEM_finalize_vol_average
 !
       module FEM_analyzer_vol_average
 !
@@ -33,7 +32,6 @@
       use input_control
       use initialize_4_snapshot
 !
-      use open_monitor_file
       use node_monitor_IO
       use open_sgs_model_coefs
 !
@@ -58,8 +56,6 @@
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap
 !
-      call s_open_monitor_file(my_rank)
-!
       end subroutine FEM_initialize_vol_average
 !
 ! ----------------------------------------------------------------------
@@ -74,7 +70,7 @@
       use lead_physical_values
       use convert_temperatures
 !
-      use time_step_data_IO
+      use time_step_data_IO_control
       use output_parallel_ucd_file
 !
       integer(kind=kint ), intent(in) :: i_step
@@ -108,14 +104,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_finalize_vol_average
+!      subroutine FEM_finalize_vol_average
 !
-      use open_monitor_file
-!
-!
-      call close_monitor_file(my_rank)
-!
-      end subroutine FEM_finalize_vol_average
+!      end subroutine FEM_finalize_vol_average
 !
 !-----------------------------------------------------------------------
 !

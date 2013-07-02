@@ -12,10 +12,13 @@
 !
       use m_precision
 !
-      use m_file_control_parameter
-!
       implicit none
 !
+      integer(kind=kint), parameter :: boundary_monitor_code = 22
+      character(len=kchara), parameter                                  &
+     &      :: boundary_file_name = 'boundary_monitor.dat'
+!
+      private :: boundary_monitor_code, boundary_file_name
 !
 ! ----------------------------------------------------------------------
 !
@@ -23,18 +26,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_open_boundary_monitor(my_rank)
+      subroutine s_open_boundary_monitor
 !
       use m_surface_group
 !
-      integer(kind=kint), intent(in) :: my_rank
       integer(kind = kint) :: i
 !
 !
-       if ( my_rank .gt. 0 ) return
-         write(time_step_data_file,'(a18)') 'boundary_monitor.dat'
+      open (boundary_monitor_code,file=boundary_file_name,              &
+     &    form='formatted', status='old', position='append', err = 99)
+      return
 !
-         open (boundary_monitor_code,file=time_step_data_file,          &
+  99  continue
+         open (boundary_monitor_code,file=boundary_file_name,           &
      &       status='replace')
 !
          write(boundary_monitor_code,'(a)', advance='NO')               &
@@ -67,11 +71,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine close_boundary_monitor(my_rank)
+      subroutine close_boundary_monitor
 !
-      integer(kind=kint), intent(in) :: my_rank
 !
-      if ( my_rank .gt. 0 ) return
       close(boundary_monitor_code)
 !
       end subroutine close_boundary_monitor

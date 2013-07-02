@@ -12,6 +12,20 @@
 !!       Sample program to generate initial field
 !!       This program generates initial condition
 !!        for dynamo benchmark case 1
+!!
+!!       j_lc = find_local_sph_mode_address(l, m)
+!!         Return local spherical hermonics mode address j_lc for Y(l,m)
+!!         If requested mode does not exist in the process, 0 is set
+!!       inod = local_sph_data_address(k, j_lc)
+!!         Return address of sphectrum data
+!!
+!!       Temperature :: d_rj(:,ipol%i_temp)
+!!       Composition :: d_rj(:,ipol%i_light)
+!!
+!!       Poloidal velocity ::       d_rj(:,ipol%i_velo)
+!!       Toroidal velocity ::       d_rj(:,itor%i_velo)
+!!       Poloidal magnetic field :: d_rj(:,ipol%i_magne)
+!!       Toroidal magnetic field :: d_rj(:,itor%i_magne)
 !!@endverbatim
 !
 !
@@ -26,6 +40,7 @@
       implicit none
 !
       private :: find_local_sph_mode_address
+      private :: local_sph_data_address
       private :: set_initial_velocity
       private :: set_initial_temperature
       private :: set_initial_composition
@@ -114,7 +129,7 @@
 !
       if (jj .gt. 0) then
         do k = 1, nidx_rj(1)
-          inod = jj + (k-1)*nidx_rj(2)
+          inod = local_sph_data_address(k,jj)
           d_rj(inod,ipol%i_temp) = (ar_1d_rj(k,1) * 20.d0/13.0d0        &
      &                              - 1.0d0 ) * 7.0d0 / 13.0d0
         end do
@@ -126,8 +141,8 @@
 !
       if (jj .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB
+          inod = local_sph_data_address(k,jj)
           xr = two * radius_1d_rj_r(k) - one * (r_CMB+r_ICB) / shell
-          inod = jj + (k-1)*nidx_rj(2)
 !
           d_rj(inod,ipol%i_temp) = (one-three*xr**2+three*xr**4-xr**6)  &
      &                            * A_temp * six / (sqrt(pi))
@@ -162,8 +177,8 @@
 !
       if (jj .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB
+          inod = local_sph_data_address(k,jj)
           xr = two * radius_1d_rj_r(k) - one * (r_CMB+r_ICB) / shell
-          inod = jj + (k-1)*nidx_rj(2)
           d_rj(inod,ipol%i_light) = (one-three*xr**2+three*xr**4-xr**6) &
      &                       * A_light * six / (sqrt(pi))
         end do
@@ -198,7 +213,7 @@
 !
       if (js .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB
-          is = js + (k-1)*nidx_rj(2)
+          is = local_sph_data_address(k,js)
           rr = radius_1d_rj_r(k)
           d_rj(is,ipol%i_magne) =  (five / two) * rr**2                 &
      &                       * (four*r_CMB - three*rr) / (r_CMB+three)
@@ -211,7 +226,7 @@
 !
       if (jt .gt. 0) then
         do k = 1, nlayer_CMB
-          it = jt + (k-1)*nidx_rj(2)
+          it = local_sph_data_address(k,jt)
           rr = radius_1d_rj_r(k)
 !
           d_rj(it,itor%i_magne)                                         &
@@ -245,6 +260,17 @@
       end do
 !
       end function find_local_sph_mode_address
+!
+!-----------------------------------------------------------------------
+!
+      integer function local_sph_data_address(kr, j_lc)
+!
+      integer(kind = kint), intent(in) :: kr, j_lc
+!
+!
+      local_sph_data_address = j_lc + (kr-1)*nidx_rj(2)
+!
+      end function local_sph_data_address
 !
 !-----------------------------------------------------------------------
 !

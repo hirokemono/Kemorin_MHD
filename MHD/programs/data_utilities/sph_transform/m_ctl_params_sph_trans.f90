@@ -57,8 +57,6 @@
       use set_control_4_pickup_sph
       use parallel_udt_IO_select
 !
-      integer (kind = kint) :: i
-!
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def

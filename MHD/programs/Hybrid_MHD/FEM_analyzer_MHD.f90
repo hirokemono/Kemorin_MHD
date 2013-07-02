@@ -29,6 +29,7 @@
       subroutine FEM_initialize_MHD
 !
       use m_control_parameter
+      use m_cal_max_indices
 !
       use load_mesh_data
       use input_control
@@ -43,11 +44,6 @@
       use check_deltat_by_prev_rms
       use construct_matrices
 !
-      use open_monitor_file
-      use node_monitor_IO
-      use open_sgs_model_coefs
-      use range_data_IO
-      use check_flexible_time_step
       use chenge_step_4_dynamic
 !
 !     Load mesh data
@@ -122,20 +118,8 @@
 !
       call output_grd_file_w_org_connect
 !
-      if (my_rank.eq.0) then
-        open(41,file='time_solver_11.dat')
-        open(43,file='time_solver_33.dat')
-      end if
-!
-      call s_open_monitor_file(my_rank)
-      call open_maximum_file(my_rank)
-      call s_open_node_monitor_file(my_rank)
-      call s_open_sgs_model_coefs(my_rank)
+      call allocate_phys_range
 !       call s_open_boundary_monitor(my_rank)
-      if (iflag_flexible_step .eq. iflag_flex_step) then
-        call open_flex_step_monitor
-      end if
-!
       call end_eleps_time(4)
 !
       end subroutine FEM_initialize_MHD
@@ -162,7 +146,7 @@
       use chenge_step_4_dynamic
       use convert_temperatures
 !
-      use time_step_data_IO
+      use time_step_data_IO_control
       use node_monitor_IO
       use sgs_model_coefs_IO
       use mhd_restart_file_IO_control
@@ -335,21 +319,13 @@
 !
       subroutine FEM_finalize_MHD
 !
-      use m_t_step_parameter
-      use open_monitor_file
-      use node_monitor_IO
-      use open_sgs_model_coefs
-      use range_data_IO
-      use check_flexible_time_step
+      use m_cal_max_indices
+      use merged_udt_vtk_file_IO
 !
 !
-      call close_monitor_file(my_rank)
-      call close_sgs_model_coefs(my_rank)
-      call close_maximum_file(my_rank)
-      call close_node_monitor_file
-      if (iflag_flexible_step .eq. iflag_flex_step) then
-        call close_flex_step_monitor
-      end if
+      call finalize_merged_ucd
+!
+      call deallocate_phys_range
 !        call close_boundary_monitor(my_rank)
 !
       end subroutine FEM_finalize_MHD

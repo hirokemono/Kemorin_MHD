@@ -118,8 +118,6 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_rms_4_monitor'
       call init_sph_rms_4_monitor
-      if (iflag_debug.gt.0) write(*,*) 'open_sph_rms_4_monitor'
-      call open_sph_rms_4_monitor(my_rank, id_file_rms_each)
 !
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
@@ -139,13 +137,8 @@
 !
         num_pick_rms_layer = 1
         if (iflag_debug.gt.0) write(*,*) 'write_sph_rms_4_monitor'
-        call write_sph_rms_4_monitor(my_rank, id_file_rms_each,         &
-     &      i_step, time)
+        call write_sph_rms_4_monitor(my_rank, i_step, time)
       end do
-!
-      call close_sph_rms_4_monitor(my_rank, id_file_rms_each)
-      call time_prog_barrier
-      if (iflag_debug.eq.1) write(*,*) 'exit analyze'
 !
       end subroutine analyze_pick_rms_vol
 !

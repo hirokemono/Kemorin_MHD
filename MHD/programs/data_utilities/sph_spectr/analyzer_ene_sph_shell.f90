@@ -109,15 +109,11 @@
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use copy_rj_phys_data_4_IO
-      use output_sph_rms_data
-      use output_sph_rms_all_layer
+      use output_sph_ms_file
 !
 !
       integer(kind = kint) :: i_step
 !
-!
-      call open_sph_rms_layer_file(my_rank)
-      call open_sph_vol_rms_file(my_rank)
 !
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
@@ -133,15 +129,13 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_sph_spec_rms_whole'
         call cal_rms_sph_spec_rms_whole
 !
-        call write_sph_rms_layer_data(my_rank, i_step, time)
-        call write_sph_rms_vol_data(my_rank, i_step, time)
+        call write_sph_vol_ave_file(my_rank, i_step, time)
+        call write_sph_vol_ms_file(my_rank, i_step, time)
+        call write_sph_vol_ms_spectr_file(my_rank, i_step, time)
+        call write_sph_layer_ms_file(my_rank, i_step, time)
       end do
 !
-      call close_sph_rms_layer_file(my_rank)
-      call close_sph_rms_vol_file(my_rank)
-      if (iflag_debug.eq.1) write(*,*) 'exit analyze_ene_sph_shell'
-!
-        end subroutine analyze_ene_sph_shell
+      end subroutine analyze_ene_sph_shell
 !
 ! ----------------------------------------------------------------------
 !

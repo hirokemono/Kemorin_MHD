@@ -1,9 +1,11 @@
 !correlation_all_layerd_data.f90
 !      module correlation_all_layerd_data
 !
-      module correlation_all_layerd_data
-!
 !     Written by H. Matsui on Nov., 2009
+!
+!      subroutine s_correlation_all_layerd_data
+!
+      module correlation_all_layerd_data
 !
       use m_precision
       use m_machine_parameter
@@ -14,15 +16,36 @@
 !
       implicit none
 !
+      real(kind = kreal), allocatable :: d_nod_trans2(:,:)
+!
+      private :: d_nod_trans2
       private :: int_vol_rms_ave_all_layer, int_vol_dev_cor_all_layer
       private :: cal_ave_rms_ratio_layers, take_sqrt_rms_data
-!
-!      subroutine s_correlation_all_layerd_data
 !
 !  ---------------------------------------------------------------------
 !
       contains
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine allocate_vec_transfer
+!
+      use m_geometry_parameter
+!
+      allocate(d_nod_trans2(numnod,6))
+      d_nod_trans2 = 0.0d0
+!
+      end subroutine allocate_vec_transfer
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_vec_transfer
+!
+      deallocate(d_nod_trans2)
+!
+      end subroutine deallocate_vec_transfer
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine s_correlation_all_layerd_data

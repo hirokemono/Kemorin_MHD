@@ -38,7 +38,6 @@
       use m_sph_phys_address
       use m_rms_4_sph_spectr
       use m_node_id_spherical_IO
-      use m_field_4_dynamobench
 !
       use set_control_sph_mhd
       use load_data_for_sph_IO
@@ -142,11 +141,6 @@
 !*
       call set_mid_equator_point_global
 !
-!* -----  Oopen result file -----------------
-!*
-       if(iflag_debug .gt. 0) write(*,*) 'open_dynamobench_monitor_file'
-       call open_dynamobench_monitor_file
-!
       end subroutine SPH_init_sph_dbench
 !
 ! ----------------------------------------------------------------------
@@ -208,14 +202,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_finalize_dbench
+!      subroutine SPH_finalize_dbench
 !
-      use m_field_4_dynamobench
-!
-!
-      call close_dynamobench_monitor_file
-!
-      end subroutine SPH_finalize_dbench
+!      end subroutine SPH_finalize_dbench
 !
 ! ----------------------------------------------------------------------
 !

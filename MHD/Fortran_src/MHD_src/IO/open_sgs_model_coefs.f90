@@ -6,9 +6,6 @@
 !                                    on July 2000 (ver 1.1)
 !     modified by H. Matsui on Aug., 2007
 !
-!      subroutine s_open_sgs_model_coefs(my_rank)
-!      subroutine close_sgs_model_coefs(my_rank)
-!
 !      subroutine write_sgs_coef_head(file_id)
 !
       module open_sgs_model_coefs
@@ -16,6 +13,9 @@
       use m_precision
 !
       implicit none
+!
+      integer(kind = kint), parameter :: iflag_layered = 1
+      integer(kind = kint), parameter :: iflag_whole = 2
 !
       private :: write_sgs_comps_head, write_diff_comps_head
       private :: write_sgs_whole_time_head
@@ -26,204 +26,162 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_open_sgs_model_coefs(my_rank)
+      subroutine open_SGS_model_coef_file(iflag_type, id_file,          &
+     &          file_name)
 !
-       use m_file_control_parameter
-       use m_ele_info_4_dynamical
-       use m_control_parameter
-!
-      integer (kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_file, iflag_type
+      character(len=kchara), intent(in) :: file_name
 !
 !
-      if (my_rank .eq. 0                                                &
-     &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      open (id_file,file=file_name, status='old',                       &
+     &    position='append', err = 99)
+      return
 !
-        open (sgs_fld_coef_file_code,file=sgs_fld_coef_file_name,       &
-     &      status='replace')
-        call write_sgs_time_head(sgs_fld_coef_file_code)
-        call write_sgs_coef_head(sgs_fld_coef_file_code)
+  99  continue
+      open (id_file,file=file_name, status='replace')
 !
-        open (sgs_fld_whole_file_code,file=sgs_fld_whole_file_name,     &
-     &      status='replace')
-        call write_sgs_whole_time_head(sgs_fld_whole_file_code)
-        call write_sgs_coef_head(sgs_fld_whole_file_code)
-!
-!
-        open (sgs_cor_file_code,file=sgs_cor_file_name,                 &
-     &      status='replace')
-        call write_sgs_time_head(sgs_cor_file_code)
-        call write_sgs_comps_head(sgs_cor_file_code)
-!
-        open (sgs_cov_file_code,file=sgs_cor_file_name,                 &
-     &      status='replace')
-        call write_sgs_time_head(sgs_cov_file_code)
-        call write_sgs_comps_head(sgs_cov_file_code)
-!
-        open (sgs_ratio_file_code,file=sgs_ratio_file_name,             &
-     &      status='replace')
-        call write_sgs_time_head(sgs_ratio_file_code)
-        call write_sgs_comps_head(sgs_ratio_file_code)
-!
-        open (sgs_comp_coef_file_code,file=sgs_comp_coef_file_name,     &
-     &      status='replace')
-        call write_sgs_time_head(sgs_comp_coef_file_code)
-        call write_sgs_comps_head(sgs_comp_coef_file_code)
-!
-        open (sgs_comp_whole_file_code,file=sgs_comp_whole_file_name,   &
-     &      status='replace')
-        call write_sgs_whole_time_head(sgs_comp_whole_file_code)
-        call write_sgs_comps_head(sgs_comp_whole_file_code)
-!
-        open (sgs_rms_file_code,file=sgs_rms_file_name,                 &
-     &      status='replace')
-        call write_sgs_time_head(sgs_rms_file_code)
-        call write_sgs_comps_head(sgs_rms_file_code)
-        call write_sgs_comps_head(sgs_rms_file_code)
-!
-        open (sgs_w_cor_file_code,file=sgs_w_cor_file_name,             &
-     &        status='replace')
-        call write_sgs_whole_time_head(sgs_w_cor_file_code)
-        call write_sgs_comps_head(sgs_w_cor_file_code)
-!
-        open (sgs_w_cov_file_code,file=sgs_w_cov_file_name,             &
-     &        status='replace')
-        call write_sgs_whole_time_head(sgs_w_cov_file_code)
-        call write_sgs_comps_head(sgs_w_cov_file_code)
-!
-        open (sgs_w_ratio_file_code,file=sgs_w_ratio_file_name,         &
-     &        status='replace')
-        call write_sgs_whole_time_head(sgs_w_ratio_file_code)
-        call write_sgs_comps_head(sgs_w_ratio_file_code)
-!
-        open (sgs_w_rms_file_code,file=sgs_w_rms_file_name,             &
-     &        status='replace')
-        call write_sgs_whole_time_head(sgs_w_rms_file_code)
-        call write_sgs_comps_head(sgs_w_rms_file_code)
-        call write_sgs_comps_head(sgs_w_rms_file_code)
-!
-        open (sgs_diff_max_code,file = sgs_diff_max_name,               &
-     &      status='replace')
-!
-        if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
-!
-          open (diff_fld_whole_file_code,file=diff_fld_whole_file_name, &
-     &      status='replace')
-          call write_sgs_whole_time_head(diff_fld_whole_file_code)
-          call write_diff_coef_head(diff_fld_whole_file_code)
-!
-          open (diff_comp_whole_file_code,                              &
-     &        file=diff_comp_whole_file_name, status='replace')
-          call write_sgs_whole_time_head(diff_comp_whole_file_code)
-          call write_sgs_comps_head(diff_comp_whole_file_code)
-!
-          open (diff_w_cor_file_code,file=diff_w_cor_file_name,         &
-     &        status='replace')
-          call write_sgs_whole_time_head(diff_w_cor_file_code)
-          call write_diff_comps_head(diff_w_cor_file_code)
-!
-          open (diff_w_cov_file_code,file=diff_w_cov_file_name,         &
-     &        status='replace')
-          call write_sgs_whole_time_head(diff_w_cov_file_code)
-          call write_diff_comps_head(diff_w_cov_file_code)
-!
-          open (diff_w_ratio_file_code,file=diff_w_ratio_file_name,     &
-     &        status='replace')
-          call write_sgs_whole_time_head(diff_w_ratio_file_code)
-          call write_diff_comps_head(diff_w_ratio_file_code)
-!
-          open (diff_w_rms_file_code,file=diff_w_rms_file_name,         &
-     &        status='replace')
-          call write_sgs_whole_time_head(diff_w_rms_file_code)
-          call write_diff_comps_head(diff_w_rms_file_code)
-          call write_diff_comps_head(diff_w_rms_file_code)
-!
-!
-          if (iset_DIFF_model_coefs .eq. 1) then
-!
-            open (diff_coef_file_code,file=diff_coef_file_name,         &
-     &            status='replace')
-            call write_sgs_time_head(diff_coef_file_code)
-            call write_diff_coef_head(diff_coef_file_code)
-!
-            open (diff_cor_file_code,file=diff_cor_file_name,           &
-     &          status='replace')
-            call write_sgs_time_head(diff_cor_file_code)
-            call write_diff_comps_head(diff_cor_file_code)
-!
-            open (diff_cov_file_code,file=diff_cov_file_name,           &
-     &          status='replace')
-            call write_sgs_time_head(diff_cov_file_code)
-            call write_diff_comps_head(diff_cov_file_code)
-!
-            open (diff_ratio_file_code,file=diff_ratio_file_name,       &
-     &          status='replace')
-            call write_sgs_time_head(diff_ratio_file_code)
-            call write_diff_comps_head(diff_ratio_file_code)
-!
-            open (diff_rms_file_code,file=diff_rms_file_name,           &
-     &          status='replace')
-            call write_sgs_time_head(diff_rms_file_code)
-            call write_diff_comps_head(diff_rms_file_code)
-            call write_diff_comps_head(diff_rms_file_code)
-!
-          end if
-        end if
-!
+      if(iflag_type .eq. iflag_layered) then
+        call write_sgs_time_head(id_file)
+      else if(iflag_type .eq. iflag_whole) then
+        call write_sgs_whole_time_head(id_file)
       end if
 !
-      end subroutine s_open_sgs_model_coefs
+      call write_sgs_coef_head(id_file)
+!
+      end subroutine open_SGS_model_coef_file
+!
+!-----------------------------------------------------------------------
+!
+      subroutine open_SGS_correlation_file(iflag_type, id_file,         &
+     &          file_name)
+!
+      integer(kind=kint), intent(in) :: id_file, iflag_type
+      character(len=kchara), intent(in) :: file_name
+!
+!
+      open (id_file,file=file_name, status='old',                       &
+     &    position='append', err = 99)
+      return
+!
+  99  continue
+      open (id_file,file=file_name, status='replace')
+!
+      if(iflag_type .eq. iflag_layered) then
+        call write_sgs_time_head(id_file)
+      else if(iflag_type .eq. iflag_whole) then
+        call write_sgs_whole_time_head(id_file)
+      end if
+!
+      call write_sgs_comps_head(id_file)
+!
+      end subroutine open_SGS_correlation_file
+!
+!-----------------------------------------------------------------------
+!
+      subroutine open_SGS_rms_ratio_file(iflag_type, id_file,           &
+     &          file_name)
+!
+      integer(kind=kint), intent(in) :: id_file, iflag_type
+      character(len=kchara), intent(in) :: file_name
+!
+!
+      open (id_file,file=file_name, status='old',                       &
+     &    position='append', err = 99)
+      return
+!
+  99  continue
+      open (id_file,file=file_name, status='replace')
+!
+      if(iflag_type .eq. iflag_layered) then
+        call write_sgs_time_head(id_file)
+      else if(iflag_type .eq. iflag_whole) then
+        call write_sgs_whole_time_head(id_file)
+      end if
+!
+      call write_sgs_comps_head(id_file)
+      call write_sgs_comps_head(id_file)
+!
+      end subroutine open_SGS_rms_ratio_file
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine close_sgs_model_coefs(my_rank)
+      subroutine open_SGS_diff_coef_file(iflag_type, id_file,           &
+     &          file_name)
 !
-       use m_file_control_parameter
-       use m_control_parameter
-!
-      integer (kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_file, iflag_type
+      character(len=kchara), intent(in) :: file_name
 !
 !
-      if (my_rank .eq. 0                                                &
-     &      .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      open (id_file,file=file_name, status='old',                       &
+     &    position='append', err = 99)
+      return
 !
-        close (sgs_fld_coef_file_code)
-        close (sgs_comp_coef_file_code)
-        close (sgs_fld_whole_file_code)
-        close (sgs_comp_whole_file_code)
+  99  continue
+      open (id_file,file=file_name, status='replace')
 !
-        close (sgs_cov_file_code)
-        close (sgs_cor_file_code)
-        close (sgs_ratio_file_code)
-        close (sgs_rms_file_code)
-        close (sgs_w_cor_file_code)
-        close (sgs_w_cov_file_code)
-        close (sgs_w_ratio_file_code)
-        close (sgs_w_rms_file_code)
-!
-        close (sgs_diff_max_code)
-!
-        if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
-!
-          close (diff_fld_whole_file_code)
-          close (diff_comp_whole_file_code)
-          close (diff_w_cor_file_code)
-          close (diff_w_cov_file_code)
-          close (diff_w_ratio_file_code)
-          close (diff_w_rms_file_code)
-!
-          if (iset_DIFF_model_coefs .eq. 1 ) then
-            close (diff_coef_file_code)
-            close (diff_cor_file_code)
-            close (diff_cov_file_code)
-            close (diff_ratio_file_code)
-            close (diff_rms_file_code)
-          end if
-        end if
-!
+      if(iflag_type .eq. iflag_layered) then
+        call write_sgs_time_head(id_file)
+      else if(iflag_type .eq. iflag_whole) then
+        call write_sgs_whole_time_head(id_file)
       end if
 !
-      end subroutine close_sgs_model_coefs
+      call write_diff_coef_head(id_file)
+!
+      end subroutine open_SGS_diff_coef_file
+!
+!-----------------------------------------------------------------------
+!
+      subroutine open_diff_correlation_file(iflag_type, id_file,        &
+     &          file_name)
+!
+      integer(kind=kint), intent(in) :: id_file, iflag_type
+      character(len=kchara), intent(in) :: file_name
+!
+!
+      open (id_file,file=file_name, status='old',                       &
+     &    position='append', err = 99)
+      return
+!
+  99  continue
+      open (id_file,file=file_name, status='replace')
+!
+      if(iflag_type .eq. iflag_layered) then
+        call write_sgs_time_head(id_file)
+      else if(iflag_type .eq. iflag_whole) then
+        call write_sgs_whole_time_head(id_file)
+      end if
+!
+      call write_diff_comps_head(id_file)
+!
+      end subroutine open_diff_correlation_file
+!
+!-----------------------------------------------------------------------
+!
+      subroutine open_diff_rms_ratio_file(iflag_type, id_file,          &
+     &          file_name)
+!
+      integer(kind=kint), intent(in) :: id_file, iflag_type
+      character(len=kchara), intent(in) :: file_name
+!
+!
+      open (id_file,file=file_name, status='old',                       &
+     &    position='append', err = 99)
+      return
+!
+  99  continue
+      open (id_file,file=file_name, status='replace')
+!
+      if(iflag_type .eq. iflag_layered) then
+        call write_sgs_time_head(id_file)
+      else if(iflag_type .eq. iflag_whole) then
+        call write_sgs_whole_time_head(id_file)
+      end if
+!
+      call write_diff_comps_head(id_file)
+      call write_diff_comps_head(id_file)
+!
+      end subroutine open_diff_rms_ratio_file
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

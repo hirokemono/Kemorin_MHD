@@ -35,6 +35,7 @@
       use m_geometry_parameter
       use m_nod_comm_table
       use m_merged_ucd_data
+      use hdf5_file_IO
 !
 !
       call allocate_merged_ucd_num
@@ -49,7 +50,25 @@
       call update_ele_by_double_address(nele_ucd, nnod_4_ele_ucd,       &
      &    ie_ucd)
 !
+!
+      if (itype_ucd_data_file .eq. iflag_sgl_hdf5) then
+        call parallel_init_hdf5
+      end if
+!
       end subroutine init_merged_ucd
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine finalize_merged_ucd
+!
+      use hdf5_file_IO
+!
+!
+      if (itype_ucd_data_file .eq. iflag_sgl_hdf5) then
+        call parallel_finalize_hdf5
+      end if
+!
+      end subroutine finalize_merged_ucd
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

@@ -29,6 +29,7 @@
       subroutine FEM_initialize_snapshot
 !
       use m_control_parameter
+      use m_cal_max_indices
 !
       use load_mesh_data
       use input_control
@@ -36,10 +37,6 @@
 !
       use set_ucd_data
       use output_ucd_file_control
-      use open_monitor_file
-      use node_monitor_IO
-      use open_sgs_model_coefs
-      use range_data_IO
 !
 !   --------------------------------
 !       setup mesh information
@@ -64,10 +61,7 @@
 !
       call output_grd_file_w_org_connect
 !
-      call s_open_monitor_file(my_rank)
-      call s_open_sgs_model_coefs(my_rank)
-      call open_maximum_file(my_rank)
-      call s_open_node_monitor_file(my_rank)
+      call allocate_phys_range
 !
       end subroutine FEM_initialize_snapshot
 !
@@ -88,7 +82,7 @@
       use chenge_step_4_dynamic
       use convert_temperatures
 !
-      use time_step_data_IO
+      use time_step_data_IO_control
       use node_monitor_IO
       use sgs_model_coefs_IO
       use mhd_restart_file_IO_control
@@ -183,16 +177,13 @@
       subroutine FEM_finalize_snapshot
 !
       use m_t_step_parameter
-      use open_monitor_file
-      use open_sgs_model_coefs
-      use node_monitor_IO
-      use range_data_IO
+      use m_cal_max_indices
+      use merged_udt_vtk_file_IO
 !
 !
-      call close_monitor_file(my_rank)
-      call close_sgs_model_coefs(my_rank)
-      call close_maximum_file(my_rank)
-      call close_node_monitor_file
+      call finalize_merged_ucd
+!
+      call deallocate_phys_range
 !        call close_boundary_monitor(my_rank)
 !
       end subroutine FEM_finalize_snapshot

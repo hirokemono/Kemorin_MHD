@@ -26,10 +26,10 @@
 !
       use m_parallel_var_dof
       use m_control_parameter
-      use m_file_control_parameter
       use m_t_step_parameter
       use m_ucd_data
       use parallel_udt_IO_select
+      use copy_time_steps_4_restart
       use range_data_IO
 !
 !
@@ -38,6 +38,7 @@
 !
       ucd_step = istep_max_dt / i_step_output_ucd
 !
+      call copy_time_steps_to_restart
       call sel_write_parallel_ucd_file(ucd_step)
       call output_range_data
 !

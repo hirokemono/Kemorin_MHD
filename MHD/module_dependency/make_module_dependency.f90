@@ -28,6 +28,10 @@
       character(len=25), parameter, private :: command_cpp              &
      &   = '	$(F90) -c $(F90FLAGS) $<'
 !
+      integer :: num_exclude = 1
+      character(len=31) ::  exclude_list(1) = (/'hdf5'/)
+!
+      private :: num_exclude
       private :: extend_mod_list, const_module_list
       private :: write_module_list
 !
@@ -108,6 +112,8 @@
       character(len=255), intent(in) :: filename
 !
       character(len=255) :: tmpchara, mod_input
+      character(len=31) ::  module_name
+      integer :: iflag, j
 !
 !
 !      write(*,*) 'open: ', trim(filename)
@@ -118,11 +124,25 @@
         if( len(trim(tmpchara)) .gt. 0) then
           read(tmpchara,*) mod_input
           if(mod_input == 'use' .or. mod_input == 'USE') then
-            num = num + 1
-            read(tmpchara,*) mod_input, mod_name(num)
+            read(tmpchara,*) mod_input, module_name
+!
+            iflag = 1
+            do j = 1, num_exclude
+              if(module_name .eq. exclude_list(j)) then
+                write(*,*) 'module dependency for ',                    &
+     &               trim(exclude_list(j)), ' is excluded'
+                iflag = 0
+                exit
+              end if
+            end do
+!
+            if(iflag .eq. 1) then
+              num = num + 1
+              read(tmpchara,*) mod_input, mod_name(num)
 !            write(*,*) num, trim(tmpchara), ':  ', trim(mod_name(num))
 !
-            if(num .eq. ntot) call extend_mod_list
+              if(num .eq. ntot) call extend_mod_list
+            end if
           end if
         end if
       end do

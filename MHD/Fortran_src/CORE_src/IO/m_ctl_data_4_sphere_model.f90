@@ -8,19 +8,19 @@
 !
 !      subroutine read_ctl_4_shell_define
 !
-! =======================================================
-!    example  for control section
-!
-!  begin num_grid_sph
-!    sph_grid_type_ctl       no_pole
-!    truncation_level_ctl     4
-!    ngrid_meridonal_ctl     12
-!    ngrid_zonal_ctl         24
+!! =======================================================
+!!    example of control section
 !!
+!!  begin num_grid_sph
 !!   sph_grid_type_ctl:  grid type for mesh data
 !!         no_pole:      Gaussian points only
 !!         with_pole:    Add pole grids
 !!         with_center:  Add center
+!!    sph_grid_type_ctl       no_pole
+!!    truncation_level_ctl     4
+!!    ngrid_meridonal_ctl     12
+!!    ngrid_zonal_ctl         24
+!!
 !!   raidal_grid_type_ctl:   Definition for radial grid   
 !!         explicit:        Set each radial grid explicitly
 !!         Chebyshev:       Set Chebyshev collocation points

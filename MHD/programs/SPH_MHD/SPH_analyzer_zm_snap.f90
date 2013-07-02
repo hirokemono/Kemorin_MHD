@@ -5,7 +5,6 @@
 !
 !!      subroutine SPH_init_sph_zm_snap
 !!      subroutine SPH_analyze_snap(i_step)
-!!      subroutine SPH_finalize_zm_snap
 !
       module SPH_analyzer_zm_snap
 !
@@ -97,17 +96,6 @@
       call end_eleps_time(4)
 !
       end subroutine SPH_analyze_zm_snap
-!
-! ----------------------------------------------------------------------
-!
-      subroutine SPH_finalize_zm_snap
-!
-      use SPH_analyzer_snap
-!
-!
-      call SPH_finalize_snap
-!
-      end subroutine SPH_finalize_zm_snap
 !
 ! ----------------------------------------------------------------------
 !

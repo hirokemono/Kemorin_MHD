@@ -3,16 +3,8 @@
 !
 !     Written by H. Matsui on Feb., 2008
 !
-!
 !      subroutine open_sph_vol_rms_file(my_rank)
-!
-!      subroutine close_sph_rms_vol_file(my_rank)
-!
-!      subroutine write_sph_rms_layer_head(ifile_rms, ifile_rms_l,      &
-!     &          ifile_rms_m, ifile_rms_lm)
-!
-!      subroutine write_sph_rms_vol_data(my_rank, istep, time)
-!      subroutine read_sph_rms_layerd_data(my_rank, istep, time)
+!      subroutine write_sph_rms_header(id_file, degree_label)
 !
       module output_sph_rms_data
 !
@@ -24,144 +16,29 @@
 !
       implicit none
 !
-      private :: write_sph_rms_header
-!
 !  --------------------------------------------------------------------
 !
       contains
 !
 !  --------------------------------------------------------------------
 !
-      subroutine open_sph_vol_rms_file(my_rank)
+      subroutine open_sph_vol_rms_file(id_file, fname_rms, mode_label)
 !
-      use set_parallel_file_name
-!
-      integer(kind = kint), intent(in) :: my_rank
-!
-      character(len = kchara) :: fname_rms_l,  fname_rms_m
-      character(len = kchara) :: fname_rms_lm, fname_rms
-      character(len = kchara) :: fname_ave
-      character(len=kchara) :: degree_label
+      integer(kind = kint), intent(in) :: id_file
+      character(len = kchara), intent(in) :: fname_rms, mode_label
 !
 !
-      if(my_rank .gt. 0) return
+      open(id_file, file=fname_rms, form='formatted',                   &
+     &    status='old', position='append', err = 99)
+      return
 !
-      call add_dat_extension(fhead_rms_vol, fname_rms)
-      open(id_file_rms_v,    file=fname_rms,    form='formatted')
-!
-      write(degree_label,'(a)') 'EMPTY'
-      call write_sph_rms_header(id_file_rms_v, degree_label)
-!
-      if(iflag_volume_rms_spec .gt. 0) then
-        write(fname_rms_l, '(a,a6)') trim(fhead_rms_vol), '_l.dat'
-        write(fname_rms_m, '(a,a6)') trim(fhead_rms_vol), '_m.dat'
-        write(fname_rms_lm,'(a,a7)') trim(fhead_rms_vol), '_lm.dat'
-!
-        open(id_file_rms_v_l,  file=fname_rms_l,  form='formatted')
-        open(id_file_rms_v_m,  file=fname_rms_m,  form='formatted')
-        open(id_file_rms_v_lm, file=fname_rms_lm, form='formatted')
-!
-        write(degree_label,'(a)') 'degree, '
-        call write_sph_rms_header(id_file_rms_v_l, degree_label)
-        write(degree_label,'(a)') 'order, '
-        call write_sph_rms_header(id_file_rms_v_m, degree_label)
-        write(degree_label,'(a)') 'diff_deg_order, '
-        call write_sph_rms_header(id_file_rms_v_lm, degree_label)
-      end if
-!
-      if(iflag_volume_ave_sph .gt. 0)  then
-        call add_dat_extension(fhead_ave_vol, fname_ave)
-        open(id_file_ave_v,    file=fname_ave,    form='formatted')
-!
-        write(degree_label,'(a)') 'EMPTY'
-        call write_sph_rms_header(id_file_ave_v, degree_label)
-      end if
-!
+   99 continue
+      open(id_file, file=fname_rms, form='formatted',                   &
+     &    status='replace')
+      call write_sph_rms_header(id_file, mode_label)
 !
       end subroutine open_sph_vol_rms_file
 !
-!  --------------------------------------------------------------------
-!
-      subroutine close_sph_rms_vol_file(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-!
-!
-      if(my_rank .gt. 0) return
-!
-      close(id_file_rms_v)
-!
-      if(iflag_volume_rms_spec .gt. 0) then
-        close(id_file_rms_v_l)
-        close(id_file_rms_v_m)
-        close(id_file_rms_v_lm)
-      end if
-!
-      if(iflag_volume_ave_sph .gt. 0) close(id_file_ave_v)
-!
-      end subroutine close_sph_rms_vol_file
-!
-!  --------------------------------------------------------------------
-!  --------------------------------------------------------------------
-!
-      subroutine write_sph_rms_vol_data(my_rank, istep, time)
-!
-!
-      integer(kind = kint), intent(in) :: my_rank
-      integer(kind = kint), intent(in) :: istep
-      real(kind = kreal), intent(in) :: time
-!
-      integer(kind = kint) :: lm
-!
-!
-      if(my_rank .gt. 0) return
-!
-      write(id_file_rms_v,'(i10,1pe23.14e3,1p200e23.14e3)')             &
-     &                 istep, time, rms_sph_vol(1:ntot_rms_rj)
-!
-      if(iflag_volume_rms_spec .gt. 0) then
-        do lm = 0, l_truncation
-          write(id_file_rms_v_l,'(i10,1pe23.14e3,i10,1p200e23.14e3)')   &
-     &            istep, time, lm, rms_sph_vol_l(1:ntot_rms_rj,lm)
-          write(id_file_rms_v_m,'(i10,1pe23.14e3,i10,1p200e23.14e3)')   &
-     &            istep, time, lm, rms_sph_vol_m(1:ntot_rms_rj,lm)
-          write(id_file_rms_v_lm,'(i10,1pe23.14e3,i10,1p200e23.14e3)')  &
-     &            istep, time, lm, rms_sph_vol_lm(1:ntot_rms_rj,lm)
-        end do
-      end if
-!
-      if(iflag_volume_ave_sph .gt. 0) then
-        write(id_file_ave_v,'(i10,1pe23.14e3,1p200e23.14e3)')           &
-     &                 istep, time, ave_sph_vol(1:ntot_rms_rj)
-      end if
-!
-      end subroutine write_sph_rms_vol_data
-!
-!  --------------------------------------------------------------------
-!  --------------------------------------------------------------------
-!
-      subroutine write_sph_rms_layer_head(ifile_rms, ifile_rms_l,       &
-     &          ifile_rms_m, ifile_rms_lm)
-!
-      integer(kind = kint), intent(in) :: ifile_rms, ifile_rms_l
-      integer(kind = kint), intent(in) :: ifile_rms_m, ifile_rms_lm
-!
-      character(len=kchara) :: degree_label
-!
-!
-      write(degree_label,'(a)') 'radial_id, '
-      call write_sph_rms_header(ifile_rms, degree_label)
-!
-      write(degree_label,'(a)') 'radial_id, degree, '
-      call write_sph_rms_header(ifile_rms_l, degree_label)
-      write(degree_label,'(a)') 'radial_id, order, '
-      call write_sph_rms_header(ifile_rms_m, degree_label)
-      write(degree_label,'(a)') 'radial_id, diff_deg_order, '
-      call write_sph_rms_header(ifile_rms_lm, degree_label)
-!
-      end subroutine write_sph_rms_layer_head
-!
-!  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
       subroutine write_sph_rms_header(id_file, degree_label)

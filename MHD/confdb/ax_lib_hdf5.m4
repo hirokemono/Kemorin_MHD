@@ -254,9 +254,9 @@ HDF5 support is being disabled (equivalent to --with-hdf5=no).
 
 #        H5FC=$(eval echo -n $H5CC | $SED -n 's/cc$/fc/p')
         H5FC=$(eval echo $H5CC | $SED -n 's/cc$/fc/p')
-
         AC_MSG_RESULT(H5FC... $[H5FC])
         AC_MSG_CHECKING([for matching HDF5 Fortran wrapper])
+
         if test -x "$H5FC"; then
             AC_MSG_RESULT([$H5FC])
             with_hdf5_fortran="yes"
@@ -296,6 +296,23 @@ HDF5 support is being disabled (equivalent to --with-hdf5=no).
             with_hdf5_fortran="no"
         fi
 
+        AC_MSG_RESULT(MPIFC... "${MPIFC}")
+        H5PFC=$(eval echo $H5CC | $SED -n 's/cc$/pfc/p')
+        AC_MSG_RESULT(H5PFC... $[H5PFC])
+        AC_MSG_CHECKING([for matching HDF5 parallel Fortran wrapper])
+        if test -x "$H5PFC"; then
+            AC_MSG_RESULT([$H5PFC])
+            with_hdf5_parallel_fortran="yes"
+            AC_SUBST([H5PFC])
+
+            dnl Make Fortran link line by inserting Fortran libraries
+#            HDF5_PFLIBS=$(eval $H5PFC -show)
+            HDF5_PFLIBS=$(eval $H5PFC -show | cut -d " " -f 3-)
+        else
+            AC_MSG_RESULT([no])
+            with_hdf5_parallel_fortran="no"
+        fi
+
 	AC_SUBST([HDF5_VERSION])
 	AC_SUBST([HDF5_CC])
 	AC_SUBST([HDF5_CFLAGS])
@@ -305,6 +322,7 @@ HDF5 support is being disabled (equivalent to --with-hdf5=no).
 	AC_SUBST([HDF5_FC])
 	AC_SUBST([HDF5_FFLAGS])
 	AC_SUBST([HDF5_FLIBS])
+	AC_SUBST([HDF5_PFLIBS])
 	AC_DEFINE([HAVE_HDF5], [1], [Defined if you have HDF5 support])
     fi
 fi

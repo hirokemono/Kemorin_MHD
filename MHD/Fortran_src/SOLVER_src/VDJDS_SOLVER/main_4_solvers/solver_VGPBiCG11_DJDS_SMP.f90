@@ -612,8 +612,11 @@
       IER = 0
       COMPtime= END_TIME - S1_TIME
       R1= 100.d0 * ( 1.d0 - COMMtime/COMPtime )
+    
       if (my_rank.eq.0) then
-        write (43,'(i7,1p3e16.6)') ITER, COMPtime, COMMtime, R1
+        open(41,file='solver_11.dat',position='append')
+        write (41,'(i7,1p3e16.6)') ITER, COMPtime, COMMtime, R1
+        close(41)
       endif
 !
       end subroutine solve_VGPBiCG11_DJDS_SMP

@@ -113,8 +113,6 @@
       integer(kind = kint) :: i_step
 !
 !
-      call open_sph_rms_one_layer_file(my_rank)
-!
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
 !   Input spectr data
@@ -130,14 +128,12 @@
         call cal_rms_sph_spec_rms_whole
 !
         if (iflag_debug.gt.0)                                           &
-     &      write(*,*) 'write_sph_picked_layer_rms_data'
-        call write_sph_picked_layer_rms_data(my_rank, i_step, time)
+     &      write(*,*) 'write_sph_1layer_ms_file'
+        call write_sph_1layer_ms_file(my_rank, i_step, time)
+        call write_sph_1layer_ms_spec_file(my_rank, i_step, time)
       end do
 !
-      call close_sph_rms_one_layer_file(my_rank)
-      if (iflag_debug.eq.1) write(*,*) 'exit analyze_ene_sph_layer'
-!
-        end subroutine analyze_ene_sph_layer
+      end subroutine analyze_ene_sph_layer
 !
 ! ----------------------------------------------------------------------
 !

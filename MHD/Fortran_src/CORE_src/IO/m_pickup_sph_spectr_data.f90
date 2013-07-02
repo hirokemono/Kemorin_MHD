@@ -13,10 +13,7 @@
 !      subroutine deallocate_pick_sph_mode
 !      subroutine deallocate_pick_sph_monitor
 !
-!      subroutine open_sph_spec_4_monitor(my_rank, id_pick)
-!      subroutine close_sph_spec_4_monitor(my_rank, id_pick)
-!      subroutine write_sph_spec_4_monitor(my_rank, id_pick,            &
-!     &          i_step, time)
+!      subroutine write_sph_spec_4_monitor(my_rank, i_step, time)
 !
 !      subroutine open_sph_spec_read_monitor(id_pick)
 !      subroutine read_sph_spec_4_monitor(id_pick, i_step, time, ierr)
@@ -28,6 +25,7 @@
 !
       implicit  none
 !
+      integer(kind = kint), parameter :: id_pick_mode = 22
       character(len = kchara) :: pickup_sph_head =  'picked_ene_spec'
 !
       integer(kind = kint) :: num_pick_sph = 0
@@ -50,6 +48,8 @@
       real(kind = kreal), allocatable :: d_rj_pick_sph_gl(:,:)
       real(kind = kreal), allocatable :: d_rj_pick_sph_lc(:,:)
       character(len=kchara), allocatable :: pick_sph_spec_name(:)
+!
+      private :: open_sph_spec_4_monitor
 !
 ! -----------------------------------------------------------------------
 !
@@ -155,60 +155,48 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine open_sph_spec_4_monitor(my_rank, id_pick)
+      subroutine open_sph_spec_4_monitor
 !
       use set_parallel_file_name
-!
-      integer(kind = kint), intent(in) :: my_rank, id_pick
 !
       integer(kind = kint) :: i_fld
       character(len = kchara) :: pickup_sph_name
 !
 !
-      if(num_pick_sph_mode .eq. izero) return
-      if(my_rank .gt. izero) return
-!
       call add_dat_extension(pickup_sph_head, pickup_sph_name)
-      open(id_pick, file = pickup_sph_name)
+      open(id_pick_mode, file = pickup_sph_name, form='formatted',      &
+     &    status='old', position='append', err = 99)
+      return
 !
-      write(id_pick,'(a)')
-      write(id_pick,'(a)')    '# num_layers, num_spectr'
-      write(id_pick,'(2i10)') num_pick_layer, num_pick_sph_mode
-      write(id_pick,'(a)')    '# number of component'
-      write(id_pick,'(i10)') ncomp_pick_sph_coef
+   99 continue
+      open(id_pick_mode, file = pickup_sph_name, form='formatted',      &
+     &    status='replace')
 !
-      write(id_pick,'(a)',advance='NO')    't_step, time, '
-      write(id_pick,'(a)',advance='NO')    'radius_ID, radius, '
-      write(id_pick,'(a)',advance='NO')    'degree, order, '
+      write(id_pick_mode,'(a)')
+      write(id_pick_mode,'(a)')    '# num_layers, num_spectr'
+      write(id_pick_mode,'(2i10)') num_pick_layer, num_pick_sph_mode
+      write(id_pick_mode,'(a)')    '# number of component'
+      write(id_pick_mode,'(i10)') ncomp_pick_sph_coef
+!
+      write(id_pick_mode,'(a)',advance='NO')    't_step, time, '
+      write(id_pick_mode,'(a)',advance='NO')    'radius_ID, radius, '
+      write(id_pick_mode,'(a)',advance='NO')    'degree, order, '
 !
       do i_fld = 1, ncomp_pick_sph_coef-1
-        write(id_pick,'(a,a2)',advance='no')                            &
+        write(id_pick_mode,'(a,a2)',advance='no')                       &
      &           trim(pick_sph_spec_name(i_fld)), ', '
       end do
-      write(id_pick,'(a)')                                              &
+      write(id_pick_mode,'(a)')                                         &
      &           trim(pick_sph_spec_name(ncomp_pick_sph_coef))
 !
       end subroutine open_sph_spec_4_monitor
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine close_sph_spec_4_monitor(my_rank, id_pick)
-!
-      integer(kind = kint), intent(in) :: my_rank, id_pick
-!
-!
-      if(num_pick_sph_mode .eq. izero) return
-      if(my_rank .gt. izero) return
-      close(id_pick)
-!
-      end subroutine close_sph_spec_4_monitor
-!
 ! -----------------------------------------------------------------------
 !
-      subroutine write_sph_spec_4_monitor(my_rank, id_pick,             &
-     &          i_step, time)
+      subroutine write_sph_spec_4_monitor(my_rank, i_step, time)
 !
-      integer(kind = kint), intent(in) :: my_rank, id_pick
+      integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
 !
@@ -218,22 +206,27 @@
       if(num_pick_sph_mode .eq. izero) return
       if(my_rank .gt. izero) return
 !
+      call open_sph_spec_4_monitor
+!
       do inum = 1, num_pick_sph_mode
         j = idx_pick_sph_gl(inum)
         l = int( aint(sqrt(dble(j))) )
         m = j - l*(l+1)
         do knum = 1, num_pick_layer
           ipick = knum + (inum-1) * num_pick_layer
-          write(id_pick,'(i10,1pe23.14e3)', advance='NO') i_step, time
-          write(id_pick,'(i10,1pe23.14e3,2i10)', advance='NO')          &
+          write(id_pick_mode,'(i10,1pe23.14e3)', advance='NO')          &
+     &               i_step, time
+          write(id_pick_mode,'(i10,1pe23.14e3,2i10)', advance='NO')     &
      &               id_pick_layer(knum), r_pick_layer(knum), l, m
           do i_fld = 1, ncomp_pick_sph_coef
-            write(id_pick,'(1pe23.14e3)', advance='NO')                 &
+            write(id_pick_mode,'(1pe23.14e3)', advance='NO')            &
      &              d_rj_pick_sph_gl(i_fld,ipick)
           end do
-          write(id_pick,'(a)') ''
+          write(id_pick_mode,'(a)') ''
         end do
       end do
+!
+      close(id_pick_mode)
 !
       end subroutine write_sph_spec_4_monitor
 !

@@ -65,7 +65,7 @@
 !
         if(i_step .ge. istep_end) exit
       end do
-      call close_sph_spec_4_monitor(izero, id_pick)
+      close(id_pick)
 !
       acou = one / dble(icou)
       do ipick = 1, num_pick_sph_mode*num_pick_layer
@@ -102,7 +102,7 @@
 !
         if(i_step .ge. istep_end) exit
       end do
-      call close_sph_spec_4_monitor(izero, id_pick)
+      close(id_pick)
 !
       acou = one / dble(icou)
       do ipick = 1, num_pick_sph_mode*num_pick_layer
@@ -120,9 +120,7 @@
       end do
 !
       pickup_sph_head = tave_header
-      call open_sph_spec_4_monitor(izero, id_pick)
-      call write_sph_spec_4_monitor(izero, id_pick, i_step, time)
-      call close_sph_spec_4_monitor(izero, id_pick)
+      call write_sph_spec_4_monitor(izero, i_step, time)
 !
 !    output standard deviation
 !
@@ -133,9 +131,7 @@
       end do
 !
       pickup_sph_head = sdev_header
-      call open_sph_spec_4_monitor(izero, id_pick)
-      call write_sph_spec_4_monitor(izero, id_pick, i_step, time)
-      call close_sph_spec_4_monitor(izero, id_pick)
+      call write_sph_spec_4_monitor(izero, i_step, time)
 !
       call deallocate_pick_sph_monitor
       call deallocate_num_pick_layer

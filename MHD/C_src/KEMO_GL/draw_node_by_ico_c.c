@@ -35,10 +35,11 @@ void draw_node_by_ico(int num_grp, int igrp, int *istack_grp, int *item_grp,
 			ied = istack_grp[ip+1];
 			set_patch_color_mode_c(node_color, color_mode, color_loop, (ip+1),
 				mesh_s->num_pe_sf, igrp, num_grp, ONE, single_color, f_color);
+            printf("f_color %e %e %e %e \n", f_color[0],f_color[1], f_color[2], f_color[3]);
 			
 			for(inum = ist; inum < ied; inum++){
 				inod = item_grp[inum]-1;
-				num_ico = set_icosahedron_potch(node_diam, &mesh_s->xx_draw[inod][0],
+				num_ico = set_icosahedron_patch(node_diam, &mesh_s->xx_draw[inod][0],
 												 xyz_patch, norm_patch);
 
 				for (i=0; i<num_ico; i++) {

@@ -90,7 +90,8 @@
       num_field_ucd = num_nod_phys_vis
       ntot_comp_ucd = num_tot_nod_phys_vis
 !
-      istack_comp_ucd =>   istack_nod_component(0:num_field_ucd)
+      istack_comp_ucd(0:num_field_ucd)                                  &
+     &             =>   istack_nod_component(0:num_field_ucd)
       num_comp_ucd =>      num_nod_component(1:num_field_ucd)
       phys_name_ucd =>     phys_nod_name(1:num_field_ucd)
 !

@@ -8,7 +8,6 @@ begin add_element_groups
 !
   begin new_data_files_def
     new_mesh_head_ctl        'mesh_target/in'
-    new_mesh_file_fmt_ctl    'ascii'
   end new_data_files_def
 !
   begin 2d_grouping_ctl

@@ -5,7 +5,6 @@
 !
 !      subroutine SPH_init_sph_snap
 !      subroutine SPH_analyze_snap(i_step)
-!      subroutine SPH_finalize_snap
 !
       module SPH_analyzer_snap
 !
@@ -196,14 +195,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_finalize_snap
+!      subroutine SPH_finalize_snap
 !
-      use sph_mhd_rms_IO
-!
-!
-      call close_sph_vol_rms_file_mhd
-!
-      end subroutine SPH_finalize_snap
+!      end subroutine SPH_finalize_snap
 !
 ! ----------------------------------------------------------------------
 !

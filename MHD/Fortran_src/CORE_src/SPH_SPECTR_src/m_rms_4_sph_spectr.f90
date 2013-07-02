@@ -40,26 +40,6 @@
       real(kind = kreal), allocatable :: ave_sph(:,:)
       real(kind = kreal), allocatable :: ave_sph_vol(:)
 !
-!     data file ID
-!
-      integer(kind = kint), parameter :: id_file_rms_each =   221
-      integer(kind = kint), parameter :: id_picked_mode =     222
-      integer(kind = kint), parameter :: id_file_gauss_coef = 223
-!
-      integer(kind = kint), parameter :: id_file_rms_l =    231
-      integer(kind = kint), parameter :: id_file_rms_m =    232
-      integer(kind = kint), parameter :: id_file_rms_lm =   233
-      integer(kind = kint), parameter :: id_file_rms =      234
-      integer(kind = kint), parameter :: id_file_rms_v_l =  235
-      integer(kind = kint), parameter :: id_file_rms_v_m =  236
-      integer(kind = kint), parameter :: id_file_rms_v_lm = 237
-      integer(kind = kint), parameter :: id_file_rms_v =    238
-      integer(kind = kint), parameter :: id_file_rms_l1 =   239
-      integer(kind = kint), parameter :: id_file_rms_m1 =   240
-      integer(kind = kint), parameter :: id_file_rms_lm1 =  241
-      integer(kind = kint), parameter :: id_file_rms1 =     242
-      integer(kind = kint), parameter :: id_file_ave_v =    243
-!
 !    output flag
 !
       integer(kind = kint) :: iflag_layer_rms_spec =  0

@@ -112,8 +112,6 @@
 !
 !
       call init_gauss_coefs_4_monitor
-      call open_gauss_coefs_4_monitor(my_rank, id_file_gauss_coef)
-!
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
 !   Input spectr data
@@ -126,12 +124,8 @@
 !  pickup components
 !
         call cal_gauss_coefficients
-        call write_gauss_coefs_4_monitor(my_rank, id_file_gauss_coef,   &
-     &      i_step, time)
+        call write_gauss_coefs_4_monitor(my_rank, i_step, time)
       end do
-!
-      call close_gauss_coefs_4_monitor(my_rank, id_file_gauss_coef)
-      if(iflag_debug.eq.1) write(*,*) 'exit analyze'
 !
       end subroutine analyze_pick_gauss_coef
 !

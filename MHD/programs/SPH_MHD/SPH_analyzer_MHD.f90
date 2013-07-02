@@ -3,7 +3,6 @@
 !
 !      subroutine SPH_initialize_MHD
 !      subroutine SPH_analyze_MHD(i_step)
-!      subroutine SPH_finalize_MHD
 !
 !      Written by H. Matsui
 !
@@ -231,14 +230,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_finalize_MHD
+!      subroutine SPH_finalize_MHD
 !
-      use sph_mhd_rms_IO
-!
-!
-      call close_sph_vol_rms_file_mhd
-!
-      end subroutine SPH_finalize_MHD
+!      end subroutine SPH_finalize_MHD
 !
 ! ----------------------------------------------------------------------
 !

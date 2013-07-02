@@ -10,7 +10,7 @@
 
 /* prototypes */
 void init_icosahedron_c();
-int set_icosahedron_potch(double size, double x_draw[3], 
+int set_icosahedron_patch(double size, double x_draw[3], 
 						  double *xyz_draw, double *norm_draw);
 
 int set_tube_vertex(int ncorner, double radius, double x_line[6], double dir_line[6],

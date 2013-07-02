@@ -8,7 +8,8 @@ TARGET_AVE_FIELDS =  ave_udt
 TARGET_DIFF_FIELDS = diff_udt
 TARGET_PROD_FIELDS = products_udt
 TARGET_RATIO_FIELDS = ratio_udt
-TARGET_CORR_FIELDS = correlate_udt
+TARGET_CORR_FIELDS =  correlate_udt
+TARGET_CORR_ONECOMP = correlate_w_1_comp
 
 TARGET_MED_PATCH =   med_ele_patch
 TARGET_MED_GRP_UDT = ele_grp_udt
@@ -76,6 +77,15 @@ read_layer_evo_file_header.o \
 transfer_correlate_field.o \
 correlation_all_layerd_data.o
 
+MOD_CORRELATE_ONECOMP = \
+main_udt_correlate_1comp.o \
+analyzer_udt_corr_1comp.o \
+\
+m_all_layerd_correlate.o \
+read_layer_evo_file_header.o \
+transfer_correlate_field.o \
+correlation_all_layerd_data.o
+
 MOD_MED_PATCH = \
 main_med_grp_patch.o \
 analyzer_med_grp_patch.o \
@@ -128,9 +138,11 @@ target_list:
 	@echo 'TARGET_PROD_FIELDS = '  \
 	'$$(BUILDDIR)/$(TARGET_PROD_FIELDS)'       >> $(MAKENAME)
 	@echo 'TARGET_RATIO_FIELDS = '  \
-	'$$(BUILDDIR)/$(TARGET_RATIO_FIELDS)'       >> $(MAKENAME)
+	'$$(BUILDDIR)/$(TARGET_RATIO_FIELDS)'      >> $(MAKENAME)
 	@echo 'TARGET_CORR_FIELDS = '  \
 	'$$(BUILDDIR)/$(TARGET_CORR_FIELDS)'       >> $(MAKENAME)
+	@echo 'TARGET_CORR_ONECOMP = '  \
+	'$$(BUILDDIR)/$(TARGET_CORR_ONECOMP)'      >> $(MAKENAME)
 	@echo 'TARGET_MED_PATCH = '  \
 	'$$(BUILDDIR)/$(TARGET_MED_PATCH)'         >> $(MAKENAME)
 	@echo 'TARGET_MED_GRP_UDT = '  \
@@ -149,6 +161,7 @@ target_task:
 	                    '$$(TARGET_PROD_FIELDS)'      \
 	                    '$$(TARGET_RATIO_FIELDS)'     \
 	                    '$$(TARGET_CORR_FIELDS)'      \
+	                    '$$(TARGET_CORR_ONECOMP)'     \
 	                    '$$(TARGET_MED_PATCH)'        \
 	                    '$$(TARGET_MED_GRP_UDT)'      \
 	                    '$$(TARGET_TAVE_LAYER_EVO)'   \
@@ -196,6 +209,16 @@ target_task:
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_CORR_FIELDS)' \
 	'$$(MOD_CORRELATE_FIELDS)' '$$(MOD_UDT_UTILS)' \
+	'-L. $$(LIBS_UDT_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	
+	@echo '$$(TARGET_CORR_ONECOMP)':  \
+	'$$(MOD_CORRELATE_ONECOMP)' '$$(MOD_UDT_UTILS)' \
+	'$$(LIB_FILES_UDT_UTIL)'  \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_CORR_ONECOMP)' \
+	'$$(MOD_CORRELATE_ONECOMP)' '$$(MOD_UDT_UTILS)' \
 	'-L. $$(LIBS_UDT_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -267,6 +290,8 @@ mod_list:
 	@echo  $(MOD_RATIO_FIELDS)        >> $(MAKENAME)
 	@echo  MOD_CORRELATE_FIELDS=  \\  >> $(MAKENAME)
 	@echo  $(MOD_CORRELATE_FIELDS)    >> $(MAKENAME)
+	@echo  MOD_CORRELATE_ONECOMP=  \\ >> $(MAKENAME)
+	@echo  $(MOD_CORRELATE_ONECOMP)   >> $(MAKENAME)
 	@echo  MOD_MED_PATCH= \\          >> $(MAKENAME)
 	@echo  $(MOD_MED_PATCH)           >> $(MAKENAME)
 	@echo  MOD_MED_GRP_UDT= \\        >> $(MAKENAME)

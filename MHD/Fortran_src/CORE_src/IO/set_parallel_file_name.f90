@@ -25,6 +25,17 @@
 !!      subroutine add_vtg_extension(file_header, file_name)
 !!                put ".vtg" at the end
 !!
+!!      subroutine add_hdf_extension(file_header, file_name)
+!!                put ".h5" at the end
+!!      subroutine add_xdmf_extension(file_header, file_name)
+!!                put ".xdmf" at the end
+!!      subroutine add_mesh_suffix(file_header, file_name)
+!!                put ".mesh" at the end
+!!      subroutine add_field_suffix(file_header, file_name)
+!!                put ".field" at the end
+!!      subroutine add_xdmf_suffix(file_header, file_name)
+!!                put ".solution" at the end
+!!
 !!      subroutine add_grd_extension(file_header, file_name)
 !!                put ".grd" at the end
 !!      subroutine add_ucd_extension(file_header, file_name)
@@ -65,12 +76,16 @@
 !!                put ".rj" at the end
 !!
 !!      subroutine add_index_after_name(int_id, chara_head, chara_name)
+!!      subroutine int_to_str(int_val, int_string)
+!!      subroutine real_to_str(real_val, real_string)
 !!@endverbatim
 !!
 !!@n @param dir_file_name    file name (header) including directory name
-!!@n @param file_header      file header
-!!@n @param int_id           integer to be added at the end of header
+!!@n @param file_header      file prefix
+!!@n @param int_id           integer to be added at the end of prefix
 !!@n @param file_name        output file name
+!!@n @param int_val          integer to be tranfered to character
+!!@n @param int_string       output character
 !
 
       module set_parallel_file_name
@@ -200,6 +215,67 @@
  1011 format (a,".vtg")
 !
       end subroutine add_vtg_extension
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine add_hdf_extension(file_header, file_name)
+!
+      character(len=kchara), intent(in) :: file_header
+      character(len=kchara), intent(inout) :: file_name
+!
+       write(file_name,1011) trim(file_header)
+ 1011 format (a,".h5")
+!
+      end subroutine add_hdf_extension
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_xdmf_extension(file_header, file_name)
+!
+      character(len=kchara), intent(in) :: file_header
+      character(len=kchara), intent(inout) :: file_name
+!
+      write(file_name,1011) trim(file_header)
+1011 format (a,".xdmf")
+!
+      end subroutine add_xdmf_extension
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_mesh_suffix(file_header, file_name)
+!
+      character(len=kchara), intent(in) :: file_header
+      character(len=kchara), intent(inout) :: file_name
+!
+      write(file_name,1011) trim(file_header)
+1011 format (a,".mesh")
+!
+      end subroutine add_mesh_suffix
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_field_suffix(file_header, file_name)
+!
+      character(len=kchara), intent(in) :: file_header
+      character(len=kchara), intent(inout) :: file_name
+!
+      write(file_name,1011) trim(file_header)
+1011 format (a,".field")
+!
+      end subroutine add_field_suffix
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_xdmf_suffix(file_header, file_name)
+!
+      character(len=kchara), intent(in) :: file_header
+      character(len=kchara), intent(inout) :: file_name
+!
+      write(file_name,1011) trim(file_header)
+1011 format (a,".solution")
+!
+      end subroutine add_xdmf_suffix
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -420,6 +496,35 @@
                 trim(chara_head), trim(ADJUSTL(charaint))
 !
       end subroutine add_index_after_name
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_to_str(int_val, int_string)
+!
+      integer(kind=kint), intent(in) :: int_val
+      character(len=kchara), intent(inout) :: int_string
+      character(len=kchara) :: tmp_string
+!
+!
+      write(tmp_string,*) int_val
+      write(int_string,'(a)') trim(adjustl(tmp_string))
+!
+      end subroutine int_to_str
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine real_to_str(real_val, real_string)
+!
+      real(kind=kreal), intent(in) :: real_val
+      character(len=kchara), intent(inout) :: real_string
+      character(len=kchara) :: tmp_string
+!
+!
+      write(tmp_string,*) real_val
+      write(real_string,'(a)') trim(adjustl(tmp_string))
+!
+      end subroutine real_to_str
 !
 !-----------------------------------------------------------------------
 !

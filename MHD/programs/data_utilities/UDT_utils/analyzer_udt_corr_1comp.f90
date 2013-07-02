@@ -1,12 +1,14 @@
-!analyzer_udt_correlation.f90
-!      module analyzer_udt_correlation
+!analyzer_udt_corr_1comp.f90
+!      module analyzer_udt_corr_1comp
 !
-!      subroutine initialize_udt_correlate
-!      subroutine analyze_udt_correlate
+!      subroutine initialize_udt_corre_1comp
+!      subroutine analyze_udt_corr_1comp
+!
+!      modified by H. Matsui on June., 2013 
 !
 !..................................................
 !
-      module analyzer_udt_correlation
+      module analyzer_udt_corr_1comp
 !
       use m_precision
       use m_constants
@@ -14,8 +16,6 @@
       use m_parallel_var_dof
 !
       use transfer_correlate_field
-!
-!      modified by H. Matsui on Nov., 2006 
 !
       implicit none
 !
@@ -25,7 +25,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialize_udt_correlate
+      subroutine initialize_udt_corre_1comp
 !
       use m_geometry_parameter
       use m_node_phys_address
@@ -49,8 +49,7 @@
 !
 !
       if (my_rank.eq.0) then
-        write(*,*) 'diff. udt files'
-        write(*,*) 'Input file: mesh data, udt data'
+        write(*,*) 'Correlation with specified component'
       end if
 !
 !     --------------------- 
@@ -91,6 +90,8 @@
       call allocate_2nd_data_arrays
       call allocate_vec_transfer
 !
+      call set_component_add_4_correlate
+!
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_iccgN_matrix'
@@ -113,11 +114,11 @@
       if (iflag_debug.eq.1) write(*,*)  's_int_whole_volume_w_layer'
       call s_int_whole_volume_w_layer
 !
-      end subroutine initialize_udt_correlate
+      end subroutine initialize_udt_corre_1comp
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze_udt_correlate
+      subroutine analyze_udt_corr_1comp
 !
       use m_geometry_constants
       use m_layering_ele_list
@@ -168,19 +169,12 @@
           call set_ucd_data_from_IO
           call deallocate_ucd_data
 !
-          ucd_header_name = tgt_udt_file_head
-          call sel_read_udt_param(my_rank, ucd_step)
-          call sel_read_udt_file(my_rank, ucd_step)
-          call set_2nd_data_by_udt
-          call deallocate_ucd_data
-!
           call phys_send_recv_all
-          call phys_2nd_send_recv_all
 !
 !    output udt data
 !
           call coord_transfer_4_1st_field
-          call coord_transfer_4_2nd_field
+          call copy_ref_component_to_2nd_fld
 !
           if (iflag_debug .gt. 0) write(*,*)                            &
      &          's_correlation_all_layerd_data'
@@ -196,9 +190,9 @@
       if (my_rank .eq. 0) call close_layerd_correlate_files
 !
 !
-      end subroutine analyze_udt_correlate
+      end subroutine analyze_udt_corr_1comp
 !
 ! ----------------------------------------------------------------------
 !
-      end module analyzer_udt_correlation
+      end module analyzer_udt_corr_1comp
 

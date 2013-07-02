@@ -59,6 +59,7 @@
       use gz_merged_udt_vtk_file_IO
       use gz_ucd_field_file_IO
       use gz_write_ucd_to_vtk_file
+      use hdf5_file_IO
 !
       integer(kind=kint), intent(in) :: istep_udt
 !
@@ -88,6 +89,13 @@
         call write_gz_udt_file(my_rank, istep_udt)
       else if(itype_ucd_data_file .eq. iflag_fld_gz) then
         call write_ucd_2_gz_fld_file(my_rank, istep_udt)
+#endif
+!
+#ifdef HDF5_IO
+      else if(itype_ucd_data_file .eq. iflag_sgl_hdf5) then
+        call parallel_write_hdf5_field_file(istep_udt)
+        call parallel_write_xdmf_snap_file(istep_udt)
+        call parallel_write_xdmf_evo_file(istep_udt)
 #endif
 !
       else if (itype_ucd_data_file .eq. iflag_sgl_vtk) then
@@ -129,6 +137,7 @@
       use gz_udt_file_IO
       use gz_merged_udt_vtk_file_IO
       use gz_write_ucd_to_vtk_file
+      use hdf5_file_IO
 !
 !
       if (itype_ucd_data_file .eq. iflag_bin) then
@@ -144,6 +153,11 @@
         call write_ucd_data_2_gz_vtk_grid(my_rank)
       else if(itype_ucd_data_file .eq. iflag_udt_gz) then
         call write_gz_grd_file(my_rank)
+#endif
+!
+#ifdef HDF5_IO
+      else if(itype_ucd_data_file .eq. iflag_sgl_hdf5) then
+        call parallel_write_hdf5_mesh_file
 #endif
 !
       else if(itype_ucd_data_file .eq. iflag_sgl_vtd) then

@@ -13,7 +13,6 @@
 !!      subroutine write_field_data_on_circle(i_step, time)
 !!      subroutine read_field_data_on_circle(i_step, time, ierr)
 !!
-!!      subroutine open_field_data_on_circle
 !!      subroutine open_read_field_data_on_circle
 !!      subroutine close_field_data_on_circle
 !!@endverbatim
@@ -30,6 +29,13 @@
 !
       implicit none
 !
+!
+!>      file ID for field data on a circle
+      integer(kind=kint), parameter :: id_circ_fid = 41
+!>      file DI for spectr power data on a circle
+      integer(kind=kint), parameter :: id_circ_sq =  42
+!>      file ID for spectr phase data on a circle
+      integer(kind=kint), parameter :: id_circ_ph =  43
 !
 !>      file name for field data on a circle
       character(len=kchara) :: fname_circle_fld = 'circle_field.dat'
@@ -69,6 +75,9 @@
 !
 !>       Structure for field data on circle
       type(phys_data), save :: d_circle
+!
+      private :: id_circ_fid, id_circ_sq, id_circ_ph
+      private :: open_field_data_on_circle
 !
 ! ----------------------------------------------------------------------
 !
@@ -132,7 +141,6 @@
       subroutine write_field_data_on_circle(i_step, time)
 !
       use m_parallel_var_dof
-      use m_file_control_parameter
       use m_circle_transform
 !
       integer(kind = kint), intent(in) :: i_step
@@ -146,6 +154,8 @@
       if(my_rank .gt. 0) return
 !
       amphi_circle = two*four*atan(one) / dble(mphi_circle)
+!
+      call open_field_data_on_circle
 !
       write(fmt_txt,'(a20,i5,a13)') '(i10,1pE25.15e3,i10,',             &
      &              (d_circle%ntot_phys_viz+1), '(1pE25.15e3))'
@@ -164,13 +174,14 @@
      &             vrtm_phase(mphi,1:d_circle%ntot_phys_viz)
       end do
 !
+      call close_field_data_on_circle
+!
       end subroutine write_field_data_on_circle
 !
 ! ----------------------------------------------------------------------
 !
       subroutine read_field_data_on_circle(i_step, time, ierr)
 !
-      use m_file_control_parameter
       use m_circle_transform
 !
       integer(kind = kint), intent(inout) :: i_step, ierr
@@ -206,7 +217,6 @@
       subroutine open_field_data_on_circle
 !
       use m_parallel_var_dof
-      use m_file_control_parameter
       use m_phys_constants
       use m_circle_transform
       use sel_comp_labels_by_coord
@@ -216,7 +226,20 @@
       character(len=kchara) :: label(6)
 !
 !
-      if(my_rank .gt. 0) return
+      open(id_circ_fid, file=fname_circle_fld,                          &
+     &    form='formatted', status='old', position='append', err = 99)
+      open(id_circ_sq,  file=fname_circle_mag,                          &
+     &    form='formatted', status='old', position='append', err = 98)
+      open(id_circ_ph,  file=fname_circle_phs,                          &
+     &    form='formatted', status='old', position='append', err = 97)
+!
+      return
+!
+  97  continue
+      close(id_circ_sq)
+  98  continue
+      close(id_circ_fid)
+  99  continue
 !
       open(id_circ_fid, file=fname_circle_fld)
       open(id_circ_sq,  file=fname_circle_mag)
@@ -292,7 +315,6 @@
 !
       subroutine open_read_field_data_on_circle
 !
-      use m_file_control_parameter
       use m_circle_transform
       use skip_comment_f
 !
@@ -325,7 +347,8 @@
 !
       d_circle%num_component = 1
 !
-      write(*,*) 'read field name', size(d_circle%phys_name), d_circle%num_phys
+      write(*,*) 'read field name', size(d_circle%phys_name),           &
+     &          d_circle%num_phys
       read(id_circ_fid,*) tmpchara, tmpchara, tmpchara, phi_name,       &
      &                  d_circle%phys_name(1:d_circle%num_phys)
       read(id_circ_sq,*) tmpchara, tmpchara, tmpchara,                  &
@@ -340,7 +363,6 @@
       subroutine close_field_data_on_circle
 !
       use m_parallel_var_dof
-      use m_file_control_parameter
 !
 !
       if(my_rank .gt. 0) return

@@ -57,7 +57,7 @@
         call FEM_analyze_vol_average(i_step)
       end do
 !
-      call FEM_finalize_vol_average
+!      call FEM_finalize_vol_average
 !
       end subroutine analyze
 !

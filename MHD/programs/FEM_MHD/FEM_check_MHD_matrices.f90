@@ -31,7 +31,6 @@
       use input_control
       use initialization_4_MHD
 !
-      use open_monitor_file
       use construct_matrices
       use write_djds_mat_MHD
 !

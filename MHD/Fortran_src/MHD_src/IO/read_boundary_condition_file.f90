@@ -24,7 +24,6 @@
 !
       use m_parallel_var_dof
       use m_control_parameter
-      use m_file_control_parameter
       use m_bc_data_list
       use m_surf_data_list
 !

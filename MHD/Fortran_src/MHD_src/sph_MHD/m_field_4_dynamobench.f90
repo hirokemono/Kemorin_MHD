@@ -5,16 +5,19 @@
 !
 !      subroutine open_dynamobench_monitor_file
 !      subroutine output_field_4_dynamobench(i_step, time)
-!      subroutine close_dynamobench_monitor_file
 !
       module m_field_4_dynamobench
 !
       use m_precision
       use m_constants
       use m_parallel_var_dof
-      use m_file_control_parameter
 !
       implicit none
+!
+      integer(kind=kint), parameter :: id_dynamobench = 41
+      character(len=kchara), parameter                                  &
+     &      :: dynamobench_field_name = 'dynamobench_field.dat'
+!
 !
       integer(kind = kint) :: ibench_temp =  1
       integer(kind = kint) :: ibench_velo =  2
@@ -37,6 +40,8 @@
 !
       real(kind = kreal) :: d_zero(0:4,7)
 !
+      private :: id_dynamobench, dynamobench_field_name
+      private :: open_dynamobench_monitor_file
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,8 +54,12 @@
       use m_control_params_sph_MHD
       use m_sph_phys_address
 !
-      if(my_rank .ne. 0) return
 !
+      open(id_dynamobench, file=dynamobench_field_name,                 &
+     &    form='formatted', status='old', position='append', err = 99)
+      return
+!
+  99  continue
       open(id_dynamobench, file=dynamobench_field_name)
 !
       write(id_dynamobench,'(a)', advance='NO') 't_step, time'
@@ -100,6 +109,8 @@
 !
       if(my_rank .ne. 0) return
 !
+      call open_dynamobench_monitor_file
+!
       write(id_dynamobench,'(i10,1pE25.15e3)', advance='NO')            &
      &     i_step, time
       write(id_dynamobench,'(1p3E25.15e3)', advance='NO') KE_bench(1:3)
@@ -138,16 +149,9 @@
       write(id_dynamobench,'(1p2E25.15e3)')                             &
      &     d_zero(0,ibench_velo+2), d_zero(0,ibench_temp)
 !
+      close(id_dynamobench)
+!
       end subroutine output_field_4_dynamobench
-!
-! ----------------------------------------------------------------------
-!
-      subroutine close_dynamobench_monitor_file
-!
-!
-      if(my_rank .ne. 0) close(id_dynamobench)
-!
-      end subroutine close_dynamobench_monitor_file
 !
 ! ----------------------------------------------------------------------
 !

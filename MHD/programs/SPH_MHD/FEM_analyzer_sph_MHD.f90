@@ -36,6 +36,7 @@
       use m_surface_geometry_data
       use m_edge_geometry_data
       use m_node_phys_address
+      use m_cal_max_indices
 !
       use load_mesh_data
       use const_mesh_info
@@ -87,10 +88,7 @@
 !
 !  connect grid data to volume output
 !
-      if(i_step_output_ucd.gt.0) then
-        if(iflag_debug .gt. 0) write(*,*) 'open_maximum_file'
-        call open_maximum_file(my_rank)
-      end if
+      if(i_step_output_ucd.gt.0) call allocate_phys_range
 !
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
       call output_grd_file_4_snapshot
@@ -187,9 +185,15 @@
       subroutine FEM_finalize
 !
       use m_t_step_parameter
+      use m_cal_max_indices
       use range_data_IO
+      use merged_udt_vtk_file_IO
 !
-      if(i_step_output_ucd.gt.0) call close_maximum_file(my_rank)
+!
+     if(i_step_output_ucd.gt.0) then
+       call deallocate_phys_range
+       call finalize_merged_ucd
+     end if
 !
       end subroutine FEM_finalize
 !

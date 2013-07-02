@@ -11,10 +11,7 @@
 !      subroutine deallocate_pick_gauss
 !      subroutine deallocate_gauss_coef_monitor
 !
-!      subroutine open_gauss_coefs_4_monitor(my_rank, id_pick)
-!      subroutine close_gauss_coefs_4_monitor(my_rank, id_pick)
-!      subroutine write_gauss_coefs_4_monitor(my_rank, id_pick,         &
-!     &          i_step, time)
+!      subroutine write_gauss_coefs_4_monitor(my_rank, i_step, time)
 !
 !      subroutine open_gauss_coefs_read_monitor(id_pick)
 !      subroutine read_gauss_coefs_4_monitor(id_pick, i_step, time,     &
@@ -28,6 +25,7 @@
       implicit  none
 !
 !
+      integer(kind = kint), parameter :: id_gauss_coef = 23
       character(len = kchara) :: gauss_coefs_file_head
       character(len = kchara) :: gauss_coefs_file_name
 !
@@ -48,6 +46,8 @@
 !
       real(kind = kreal) :: r_4_gauss_coefs = 2.91
       real(kind = kreal) :: rcmb_to_Re = 3.5d3 / 6.4d3
+!
+      private :: open_gauss_coefs_4_monitor
 !
 ! -----------------------------------------------------------------------
 !
@@ -124,56 +124,44 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine open_gauss_coefs_4_monitor(my_rank, id_pick)
+      subroutine open_gauss_coefs_4_monitor
 !
       use set_parallel_file_name
-!
-      integer(kind = kint), intent(in) :: my_rank, id_pick
 !
       integer(kind = kint) :: inum
 !
 !
-      if(num_pick_gauss_mode .eq. izero) return
-      if(my_rank .gt. izero) return
-!
       call add_dat_extension(gauss_coefs_file_head,                     &
      &    gauss_coefs_file_name)
-      open(id_pick, file = gauss_coefs_file_name)
+      open(id_gauss_coef, file = gauss_coefs_file_name,                 &
+     &    form='formatted', status='old', position='append', err = 99)
+      return
 !
-      write(id_pick,'(a)')    'num_spectr, reference_radius'
-      write(id_pick,'(i10,1pe25.15e3)')                                 &
+   99 continue
+      open(id_gauss_coef, file = gauss_coefs_file_name,                 &
+     &    form='formatted', status='replace')
+!
+!
+      write(id_gauss_coef,'(a)')    'num_spectr, reference_radius'
+      write(id_gauss_coef,'(i10,1pe25.15e3)')                           &
      &     num_pick_gauss_mode, r_4_gauss_coefs
 !
-      write(id_pick,'(a)',advance='NO')    't_step, time, '
+      write(id_gauss_coef,'(a)',advance='NO')    't_step, time, '
 !
       do inum = 1, num_pick_gauss_mode-1
-        write(id_pick,'(a,a2)',advance='no')                            &
+        write(id_gauss_coef,'(a,a2)',advance='no')                      &
      &            trim(gauss_mode_name(inum)), ', '
       end do
-      write(id_pick,'(a)')                                              &
+      write(id_gauss_coef,'(a)')                                        &
      &            trim(gauss_mode_name(num_pick_gauss_mode))
 !
       end subroutine open_gauss_coefs_4_monitor
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine close_gauss_coefs_4_monitor(my_rank, id_pick)
+      subroutine write_gauss_coefs_4_monitor(my_rank, i_step, time)
 !
-      integer(kind = kint), intent(in) :: my_rank, id_pick
-!
-!
-      if(num_pick_gauss_mode .eq. izero) return
-      if(my_rank .gt. izero) return
-      close(id_pick)
-!
-      end subroutine close_gauss_coefs_4_monitor
-!
-! -----------------------------------------------------------------------
-!
-      subroutine write_gauss_coefs_4_monitor(my_rank, id_pick,          &
-     &          i_step, time)
-!
-      integer(kind = kint), intent(in) :: my_rank, id_pick
+      integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
 !
@@ -183,11 +171,17 @@
       if(num_pick_gauss_mode .eq. izero) return
       if(my_rank .gt. izero) return
 !
-      write(id_pick,'(i10,1pe23.14e3)', advance='NO') i_step, time
+      call open_gauss_coefs_4_monitor
+!
+      write(id_gauss_coef,'(i10,1pe23.14e3)', advance='NO')             &
+     &       i_step, time
       do inum = 1, num_pick_gauss_mode
-        write(id_pick,'(1pe23.14e3)', advance='NO') gauss_coef_gl(inum)
+        write(id_gauss_coef,'(1pe23.14e3)', advance='NO')               &
+     &       gauss_coef_gl(inum)
       end do
-      write(id_pick,'(a)') ''
+      write(id_gauss_coef,'(a)') ''
+!
+      close(id_gauss_coef)
 !
       end subroutine write_gauss_coefs_4_monitor
 !

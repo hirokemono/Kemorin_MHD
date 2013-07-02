@@ -112,7 +112,6 @@
 !
 !
       call init_sph_spec_4_monitor
-      call open_sph_spec_4_monitor(my_rank, id_picked_mode)
 !
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
@@ -126,12 +125,8 @@
 !  pickup components
 !
         call pickup_sph_spec_4_monitor
-        call write_sph_spec_4_monitor(my_rank, id_picked_mode,          &
-     &      i_step, time)
+        call write_sph_spec_4_monitor(my_rank, i_step, time)
       end do
-!
-      call close_sph_spec_4_monitor(my_rank, id_picked_mode)
-      if(iflag_debug.eq.1) write(*,*) 'exit analyze'
 !
       end subroutine evolution
 !

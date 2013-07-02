@@ -43,6 +43,7 @@
       use link_data_to_1st_mesh
       use const_ele_layering_table
       use int_volume_of_domain
+      use correlation_all_layerd_data
 !
       use m_jacobians
       use cal_jacobian
@@ -184,11 +185,8 @@
 !
 !    output udt data
 !
-          if     (iflag_correlate_coord .eq. iflag_spherical) then
-            call transfer_corr_field_to_sph
-          else if(iflag_correlate_coord .eq. iflag_cylindrical) then
-            call transfer_corr_field_to_cyl
-          end if
+          call coord_transfer_4_1st_field
+          call coord_transfer_4_2nd_field
 !
           call s_correlation_all_layerd_data
           if (my_rank .eq. 0) then

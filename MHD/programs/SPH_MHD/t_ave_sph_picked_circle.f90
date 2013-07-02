@@ -75,17 +75,11 @@
       call close_field_data_on_circle
       call divide_deviation_circle_field(icou)
 !
-!
       call copy_average_circle_field
-      call open_field_data_on_circle
       call write_field_data_on_circle(istep, time)
-      call close_field_data_on_circle
-!
 !
       call copy_deviation_circle_field
-      call open_field_data_on_circle
       call write_field_data_on_circle(istep, time)
-      call close_field_data_on_circle
       call deallocate_circle_field
 !
       stop 'Finished'

@@ -190,7 +190,7 @@
       call count_num_comp_layer_evo_file(id_layer_ave_ref,              &
      &    fname_layer_ave_ref, ithree, ntot_correlate,                  &
      &    nlayer_correlate)
-      write(*,*)  'ntot_correlate',ntot_correlate, nlayer_correlate
+!      write(*,*)  'ntot_correlate',ntot_correlate, nlayer_correlate
 !
       call allocate_name_layer_correlate
 !
@@ -262,7 +262,7 @@
 !
       integer(kind = kint) :: igrp
 !
-      write(*,*) 'nlayer_correlate', nlayer_correlate
+!      write(*,*) 'nlayer_correlate', nlayer_correlate
       do igrp = 1, nlayer_correlate
         write(id_file,'(i10,1pE25.15e3,i10,1p255E25.15e3)')             &
      &            i_step, zero, igrp, data(igrp,1:ntot_correlate)

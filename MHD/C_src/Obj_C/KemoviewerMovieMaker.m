@@ -73,7 +73,6 @@ NSBitmapImageRep *bmpRep;
 
 -(void) CloseKemoviewMovieFile{
 	[SnapshotImage release];
-	[KemoMovie release];
 	free(glimage);
 }
 

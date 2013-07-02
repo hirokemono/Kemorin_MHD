@@ -7,6 +7,7 @@
 !      subroutine FEM_initialize_back_trans
 !      subroutine FEM_analyze_back_trans(i_step,                        &
 !     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+!      subroutine FEM_finalize_back_trans
 !
       module FEM_analyzer_back_trans
 !
@@ -167,9 +168,17 @@
 !
 !-----------------------------------------------------------------------
 !
-!      subroutine FEM_finalize
+      subroutine FEM_finalize_back_trans
 !
-!      end subroutine FEM_finalize
+      use m_t_step_parameter
+      use merged_udt_vtk_file_IO
+!
+!
+      if(i_step_output_ucd .gt. 0) then
+        call finalize_merged_ucd
+      end if
+!
+      end subroutine FEM_finalize_back_trans
 !
 !-----------------------------------------------------------------------
 !
