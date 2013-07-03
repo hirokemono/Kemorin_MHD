@@ -172,6 +172,7 @@
 #define ISET_PSF_VEC_INC  44
 #define ISET_PSF_REFVECT  45
 #define ISET_PSF_V_THICK  46
+#define PSFTANVEC_TOGGLE  47
 #define PSF_NOTHING_TODO  99
 
 #define ISET_FLINE_TYPE   11
@@ -218,6 +219,9 @@
 
 #define NORMAL_POLYGON  0
 #define REVERSE_POLYGON 1
+
+#define FULL_COMPONENT        0
+#define TANGENTIAL_COMPONENT  1
 
 #define IFLAG_LINE 0
 #define IFLAG_PIPE 1
@@ -506,6 +510,7 @@ extern "C" {
     void set_texture_current_psf(int img_fmt, const char *img_head);
     
     void set_current_psf_polygon_mode(int iflag);
+    void set_current_psf_tanvec_mode(int iflag);
     
     int send_draw_current_psf_refv();
     int toggle_draw_current_psf_refv();

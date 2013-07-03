@@ -47,6 +47,13 @@ int toggle_each_psf_polygon_mode(struct psf_menu_val *psf_menu){
 	return psf_menu->polygon_mode_psf;
 };
 
+void set_psf_vector_mode(struct psf_menu_val *psf_menu, int iflag){psf_menu->ivect_tangential = iflag;};
+int send_each_psf_vector_mode(struct psf_menu_val *psf_menu){return psf_menu->ivect_tangential;};
+int toggle_each_psf_vector_mode(struct psf_menu_val *psf_menu){
+	psf_menu->ivect_tangential = toggle_value_c(psf_menu->ivect_tangential);
+	return psf_menu->ivect_tangential;
+};
+
 int send_draw_psf_solid(struct psf_menu_val *psf_menu){return psf_menu->draw_psf_solid;};
 int toggle_draw_psf_solid(struct psf_menu_val *psf_menu){
 	psf_menu->draw_psf_solid = toggle_value_c(psf_menu->draw_psf_solid);
@@ -95,7 +102,9 @@ void set_psf_patch_color(struct psf_menu_val *psf_menu, int iflag){
 void set_each_isoline_color(struct psf_menu_val *psf_menu, int iflag)     {psf_menu->isoline_color = iflag;};
 void set_each_n_isoline(struct psf_menu_val *psf_menu, int nlline)        {psf_menu->n_isoline = nlline;};
 void set_each_vector_patch_color(struct psf_menu_val *psf_menu, int iflag){psf_menu->vector_patch_color = iflag;};
-void set_each_increment_vect(struct psf_menu_val *psf_menu, int increment){psf_menu->increment_vect = increment;};
+void set_each_increment_vect(struct psf_menu_val *psf_menu, int increment){
+    if(increment > 0) psf_menu->increment_vect = increment;
+};
 void set_each_scale_vect(struct psf_menu_val *psf_menu, double scale)     {psf_menu->scale_vect = scale;};
 void set_each_vector_thick(struct psf_menu_val *psf_menu, double size)    {psf_menu->vector_thick = size;};
 

@@ -41,6 +41,10 @@ void set_psf_polygon_mode(struct psf_menu_val *psf_menu, int iflag);
 int send_each_psf_polygon_mode(struct psf_menu_val *psf_menu);
 int toggle_each_psf_polygon_mode(struct psf_menu_val *psf_menu);
 
+void set_psf_vector_mode(struct psf_menu_val *psf_menu, int iflag);
+int send_each_psf_vector_mode(struct psf_menu_val *psf_menu);
+int toggle_each_psf_vector_mode(struct psf_menu_val *psf_menu);
+
 int send_draw_psf_solid(struct psf_menu_val *psf_menu);
 int toggle_draw_psf_solid(struct psf_menu_val *psf_menu);
 

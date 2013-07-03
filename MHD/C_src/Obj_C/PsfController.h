@@ -86,6 +86,7 @@
 	NSInteger psfVectorColorTag;
 
 	NSInteger psfPatchDirectionTag;
+	NSInteger psfTangentialVectorTag;
 
 	CGFloat PsfMinimumRange;
 	CGFloat PsfMaximumRange;
@@ -123,6 +124,7 @@
 @property NSInteger psfVectorColorTag;
 
 @property NSInteger psfPatchDirectionTag;
+@property NSInteger psfTangentialVectorTag;
 
 @property NSInteger currentPSFID;
 @property NSInteger currentPSFStep;
@@ -172,6 +174,7 @@
 - (IBAction)ChoosePsfPatchColorAction:(id)sender;
 - (IBAction)ChoosePsfLineColorAction:(id)sender;
 - (IBAction)ChoosePsfVectorColorAction:(id)sender;
+- (IBAction)ChoosePsfVectorModeAction:(id)sender;
 
 - (IBAction)SetPSFDisplayrange:(id)sender;
 - (IBAction)ShowIsolineNumber:(id)pSender;

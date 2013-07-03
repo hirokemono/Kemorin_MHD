@@ -201,6 +201,7 @@ void glut_PSF_draw_menu(){
 	int iflag_cbar =        send_kemoview_psf_draw_flags(COLORBAR_TOGGLE);
 	int iflag_vect =        send_kemoview_psf_draw_flags(PSFVECT_TOGGLE);
 	int iflag_PSF_polygon = send_kemoview_psf_draw_flags(PSF_POLYGON_SWITCH);
+    int iflag_PSF_tanvec =  send_kemoview_psf_draw_flags(PSFTANVEC_TOGGLE);
 	int if_psf =            send_draw_field_current_psf();
 	int ncomp =             send_ncomp_current_psf(if_psf);
 	
@@ -246,6 +247,15 @@ void glut_PSF_draw_menu(){
 		}
 		else{
 			glutAddMenuEntry("reverse => normal",PSF_POLYGON_SWITCH);
+		};
+	};
+    
+	if(iflag_solid != IZERO ){
+		if(iflag_PSF_polygon== NORMAL_POLYGON ){
+			glutAddMenuEntry("full => tangential",PSFTANVEC_TOGGLE);
+		}
+		else{
+			glutAddMenuEntry("tangential => full",PSFTANVEC_TOGGLE);
 		};
 	};
 	return;

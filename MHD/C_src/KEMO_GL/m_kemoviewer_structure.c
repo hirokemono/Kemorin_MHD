@@ -726,6 +726,7 @@ void set_texture_current_psf(int img_fmt, const char *img_head){
 
 
 void set_current_psf_polygon_mode(int iflag){set_psf_polygon_mode(psf_current_menu, iflag);};
+void set_current_psf_tanvec_mode(int iflag){set_psf_vector_mode(psf_current_menu, iflag);};
 
 int send_draw_current_psf_refv()  {return send_draw_psf_refv(psf_current_menu);};
 int toggle_draw_current_psf_refv(){return toggle_draw_psf_refv(psf_current_menu);};
@@ -753,7 +754,8 @@ int send_kemoview_psf_draw_flags(int selected){
 	else if (selected == ZEROGRID_TOGGLE)    {return send_draw_psf_zero(psf_current_menu);}
 	else if (selected == COLORBAR_TOGGLE)    {return send_draw_psf_cbar(psf_current_menu);}
 	else if (selected == PSF_POLYGON_SWITCH) {return send_each_psf_polygon_mode(psf_current_menu);}
-	else if (selected == PSFVECT_TOGGLE)     {return send_draw_psf_vect(psf_current_menu);};
+	else if (selected == PSFVECT_TOGGLE)     {return send_draw_psf_vect(psf_current_menu);}
+    else if (selected == PSFTANVEC_TOGGLE)   {return send_each_psf_vector_mode(psf_current_menu);};
 	return 0;
 }
 
@@ -767,6 +769,7 @@ int kemoview_psf_draw_switch_select(int selected){
 	else if (selected == PSF_POLYGON_SWITCH) {return toggle_each_psf_polygon_mode(psf_current_menu);}
 	else if (selected == PSFVECT_TOGGLE)     {return toggle_draw_psf_vect(psf_current_menu);}
 	else if (selected == PSFREFV_TOGGLE)     {return toggle_draw_psf_refv(psf_current_menu);}
+    else if (selected == PSFTANVEC_TOGGLE)   {return toggle_each_psf_vector_mode(psf_current_menu);}
 	else if (selected == WHITE_PSF_VECT)     {set_each_vector_patch_color(psf_current_menu, WHITE_SURFACE);}
 	else if (selected == RAINBOW_PSF_VECT)   {set_each_vector_patch_color(psf_current_menu, RAINBOW_SURFACE);};
 	return toggle;

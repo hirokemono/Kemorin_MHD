@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "take_normal_psf_c.h"
 
@@ -32,10 +33,31 @@ static void take_normal_ele_psf(struct psf_data *viz_s){
 
 
 static void take_normal_nod_psf(struct psf_data *viz_s){
-	int n, i, i1, i2, i3;
+	int n, i, i1, i2, i3, k, ist, ied;
 	double d, xe[3], d2h[3];
-	
-	for (i = 0; i < viz_s->nele_viz; i++){
+    int *nele_for_nod;
+    int *istack_ele_for_nod;
+    int ntot_ele_for_nod;
+    double *dist_to_ele;
+    int iflag_zero;
+    
+	nele_for_nod = (int *)calloc(viz_s->nnod_viz, sizeof(int *));
+	istack_ele_for_nod = (int *)calloc((viz_s->nnod_viz+1), sizeof(int *));
+	for (k = 0; k<3; k++){
+        for (i = 0; i < viz_s->nele_viz; i++){
+            i1 = viz_s->ie_viz[i][k] - 1;
+            nele_for_nod[i1] = nele_for_nod[i1] + 1;
+        };
+    };
+    for (i = 0; i < viz_s->nnod_viz; i++){
+        istack_ele_for_nod[i+1] = istack_ele_for_nod[i] + nele_for_nod[i];
+        nele_for_nod[i] = 0;
+    };
+    ntot_ele_for_nod = istack_ele_for_nod[viz_s->nnod_viz];
+    
+	dist_to_ele = (double *)calloc(ntot_ele_for_nod, sizeof(double *));
+
+    for (i = 0; i < viz_s->nele_viz; i++){
 		i1 = viz_s->ie_viz[i][0] - 1;
 		i2 = viz_s->ie_viz[i][1] - 1;
 		i3 = viz_s->ie_viz[i][2] - 1;
@@ -43,60 +65,71 @@ static void take_normal_nod_psf(struct psf_data *viz_s){
 		xe[0] = ( viz_s->xx_viz[i1][0] + viz_s->xx_viz[i2][0] + viz_s->xx_viz[i3][0] ) / 3.0;
 		xe[1] = ( viz_s->xx_viz[i1][1] + viz_s->xx_viz[i2][1] + viz_s->xx_viz[i3][1] ) / 3.0;
 		xe[2] = ( viz_s->xx_viz[i1][2] + viz_s->xx_viz[i2][2] + viz_s->xx_viz[i3][2] ) / 3.0;
-		
+
 		d2h[0] = sqrt( (xe[0] - viz_s->xx_viz[i1][0])*(xe[0] - viz_s->xx_viz[i1][0])
-				     + (xe[1] - viz_s->xx_viz[i1][1])*(xe[1] - viz_s->xx_viz[i1][1])
-				     + (xe[2] - viz_s->xx_viz[i1][2])*(xe[2] - viz_s->xx_viz[i1][2]) );
+                      + (xe[1] - viz_s->xx_viz[i1][1])*(xe[1] - viz_s->xx_viz[i1][1])
+                      + (xe[2] - viz_s->xx_viz[i1][2])*(xe[2] - viz_s->xx_viz[i1][2]) );
 		d2h[1] = sqrt( (xe[0] - viz_s->xx_viz[i2][0])*(xe[0] - viz_s->xx_viz[i2][0])
-				     + (xe[1] - viz_s->xx_viz[i2][1])*(xe[1] - viz_s->xx_viz[i2][1])
-				     + (xe[2] - viz_s->xx_viz[i2][2])*(xe[2] - viz_s->xx_viz[i2][2]) );
+                      + (xe[1] - viz_s->xx_viz[i2][1])*(xe[1] - viz_s->xx_viz[i2][1])
+                      + (xe[2] - viz_s->xx_viz[i2][2])*(xe[2] - viz_s->xx_viz[i2][2]) );
 		d2h[2] = sqrt( (xe[0] - viz_s->xx_viz[i3][0])*(xe[0] - viz_s->xx_viz[i3][0])
-				     + (xe[1] - viz_s->xx_viz[i3][1])*(xe[1] - viz_s->xx_viz[i3][1])
-				     + (xe[2] - viz_s->xx_viz[i3][2])*(xe[2] - viz_s->xx_viz[i3][2]) );
-		
-		if ( d2h[0] == 0.0 ) {
-			viz_s->norm_nod[i1][0] = viz_s->norm_ele[i][0];
-			viz_s->norm_nod[i1][1] = viz_s->norm_ele[i][1];
-			viz_s->norm_nod[i1][2] = viz_s->norm_ele[i][2];
-			}
-		else {
-			viz_s->norm_nod[i1][0] = viz_s->norm_nod[i1][0]
-					+ viz_s->norm_ele[i][0] * (d2h[1]+d2h[2]);
-			viz_s->norm_nod[i1][1] = viz_s->norm_nod[i1][1]
-					+ viz_s->norm_ele[i][1] * (d2h[1]+d2h[2]);
-			viz_s->norm_nod[i1][2] = viz_s->norm_nod[i1][2]
-					+ viz_s->norm_ele[i][2] * (d2h[1]+d2h[2]);
-		};
-		
-		if ( d2h[1] == 0.0 ) {
-			viz_s->norm_nod[i2][0] = viz_s->norm_ele[i][0];
-			viz_s->norm_nod[i2][1] = viz_s->norm_ele[i][1];
-			viz_s->norm_nod[i2][2] = viz_s->norm_ele[i][2];
-		}
-		else {
-			viz_s->norm_nod[i2][0] = viz_s->norm_nod[i2][0]
-					+ viz_s->norm_ele[i][0] * (d2h[0]+d2h[2]);
-			viz_s->norm_nod[i2][1] = viz_s->norm_nod[i2][1] 
-					+ viz_s->norm_ele[i][1] * (d2h[0]+d2h[2]);
-			viz_s->norm_nod[i2][2] = viz_s->norm_nod[i2][2]
-					+ viz_s->norm_ele[i][2] * (d2h[0]+d2h[2]);
-		};
-		
-		if ( d2h[2] == 0.0 ) {
-			viz_s->norm_nod[i3][0] = viz_s->norm_ele[i][0];
-			viz_s->norm_nod[i3][1] = viz_s->norm_ele[i][1];
-			viz_s->norm_nod[i3][2] = viz_s->norm_ele[i][2]; 
-		}
-        else {
-			viz_s->norm_nod[i3][0] = viz_s->norm_nod[i3][0]
-					+ viz_s->norm_ele[i][0] * (d2h[0]+d2h[1]);
-			viz_s->norm_nod[i3][1] = viz_s->norm_nod[i3][1]
-					+ viz_s->norm_ele[i][1] * (d2h[0]+d2h[1]);
-			viz_s->norm_nod[i3][2] = viz_s->norm_nod[i3][2]
-					+ viz_s->norm_ele[i][2] * (d2h[0]+d2h[1]);
-		}
-		
-	};
+                      + (xe[1] - viz_s->xx_viz[i3][1])*(xe[1] - viz_s->xx_viz[i3][1])
+                      + (xe[2] - viz_s->xx_viz[i3][2])*(xe[2] - viz_s->xx_viz[i3][2]) );
+        k = istack_ele_for_nod[i1] + nele_for_nod[i1];
+        nele_for_nod[i1] = nele_for_nod[i1] + 1;
+        dist_to_ele[k] = d2h[0];
+        k = istack_ele_for_nod[i2] + nele_for_nod[i2];
+        nele_for_nod[i2] = nele_for_nod[i2] + 1;
+        dist_to_ele[k] = d2h[1];
+        k = istack_ele_for_nod[i3] + nele_for_nod[i3];
+        nele_for_nod[i3] = nele_for_nod[i3] + 1;
+        dist_to_ele[k] = d2h[2];
+    };
+    for (i = 0; i < viz_s->nnod_viz; i++){
+        ist = istack_ele_for_nod[i];
+        ied = istack_ele_for_nod[i+1];
+        iflag_zero = 0;
+        for (k=ist; k<ied; k++){
+            if (dist_to_ele[k] == 0.0) {iflag_zero = 1;};
+        };
+        if (iflag_zero == 1){
+            for (k=ist; k<ied; k++){
+                if (dist_to_ele[k] == 0.0){
+                    dist_to_ele[k] = 1.0;
+                } else {
+                    dist_to_ele[k] = 0.0;
+                };
+            };
+        } else {
+            for (k=ist; k<ied; k++){
+                dist_to_ele[k] = 1.0 / dist_to_ele[k];
+            };
+        };
+        nele_for_nod[i] = 0;
+        viz_s->norm_nod[i][0] = 0.0;
+        viz_s->norm_nod[i][1] = 0.0;
+        viz_s->norm_nod[i][2] = 0.0;
+   };
+   
+    for (i = 0; i < viz_s->nele_viz; i++){
+        for (i1=0; i1<3; i1++){
+            i1 = viz_s->ie_viz[i][i1] - 1;
+            k = istack_ele_for_nod[i1] + nele_for_nod[i1];
+            nele_for_nod[i1] = nele_for_nod[i1] + 1;
+
+   
+            viz_s->norm_nod[i1][0] = viz_s->norm_nod[i1][0]
+                + dist_to_ele[k] * viz_s->norm_ele[i][0];
+            viz_s->norm_nod[i1][1] = viz_s->norm_nod[i1][1]
+                + dist_to_ele[k] * viz_s->norm_ele[i][1];
+            viz_s->norm_nod[i1][2] = viz_s->norm_nod[i1][2]
+                + dist_to_ele[k] * viz_s->norm_ele[i][2];
+        };
+    };
+    
+    free(dist_to_ele);
+    free(istack_ele_for_nod);
+    free(nele_for_nod);
 	
 	for (n = 0; n < viz_s->nnod_viz; n++){
 		d = sqrt( viz_s->norm_nod[n][0]*viz_s->norm_nod[n][0]

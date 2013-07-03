@@ -339,7 +339,7 @@
       subroutine allocate_surf_grp_item_4_surf
 !
       allocate( surf_item_sf(nsurf_surf_sf)  )
-      surf_item_sf = 0.0d0
+      surf_item_sf = 0
 !
       end subroutine allocate_surf_grp_item_4_surf
 !

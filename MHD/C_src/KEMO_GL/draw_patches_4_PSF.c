@@ -206,6 +206,7 @@ void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m) {
 	int inod, k;
 	int icomp = psf_s->istack_comp[psf_m->if_draw_psf];
 	int iflag_coord = psf_s->id_coord[psf_m->if_draw_psf];
+	int iflag_tangential = psf_m->ivect_tangential;
 	double ascale = ONE / psf_m->scale_vect;
 	
 	glPushMatrix();
@@ -222,33 +223,44 @@ void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m) {
 	
 	for (inod = 0; inod < psf_s->nnod_viz; inod++) {
 		if (inod % psf_m->increment_vect == 0) {
-			for (k=0; k<3; k++) v_tmp[k] = psf_s->d_nod[inod][icomp+k];
+            if(psf_s->norm_nod[inod][0] != 0.0
+               || psf_s->norm_nod[inod][1] !=0.0
+               || psf_s->norm_nod[inod][2] !=0.0){
+                for (k=0; k<3; k++) v_tmp[k] = psf_s->d_nod[inod][icomp+k];
 			
-			if(iflag_coord==1){
-				position_2_sph_c(IONE, psf_s->xx_viz[inod], x_rtp);
-				sph_vector_to_xyz_vect(x_rtp[1], x_rtp[2], v_tmp, v_xyz);
-			} else if(iflag_coord==2){
-				position_2_sph_c(IONE, psf_s->xx_viz[inod], x_rtp);
-				cyl_vector_to_xyz_vect(x_rtp[2], v_tmp, v_xyz);
-			} else {
-				for (k=0; k<3; k++) v_xyz[k] = v_tmp[k];
-			};
+                if(iflag_coord==1){
+                    position_2_sph_c(IONE, psf_s->xx_viz[inod], x_rtp);
+                    sph_vector_to_xyz_vect(x_rtp[1], x_rtp[2], v_tmp, v_xyz);
+                } else if(iflag_coord==2){
+                    position_2_sph_c(IONE, psf_s->xx_viz[inod], x_rtp);
+                    cyl_vector_to_xyz_vect(x_rtp[2], v_tmp, v_xyz);
+                } else {
+                    for (k=0; k<3; k++) v_xyz[k] = v_tmp[k];
+                };
 			
-			for (k=0; k<3; k++) {
-				d_tri[k] = psf_s->xx_viz[inod][k] + v_xyz[k]*ascale;
-			};
+                if(iflag_tangential==TANGENTIAL_COMPONENT){
+                    for (k=0; k<3; k++) {
+                        v_xyz[k] = v_xyz[k] - psf_s->norm_nod[inod][k]
+                         * (  v_xyz[0]*psf_s->norm_nod[inod][0]
+                            + v_xyz[1]*psf_s->norm_nod[inod][1]
+                            + v_xyz[2]*psf_s->norm_nod[inod][2]);
+                    };
+                };
+            
+                for (k=0; k<3; k++) {d_tri[k] = psf_s->xx_viz[inod][k] + v_xyz[k]*ascale;};
+
+                d_mag = sqrt(v_xyz[0]*v_xyz[0]+v_xyz[1]*v_xyz[1]+v_xyz[2]*v_xyz[2]);
+                if(psf_m->vector_patch_color == RAINBOW_SURFACE){
+                    set_rainbow_PSF_c(d_mag, psf_m->cmap_psf);
+                }
 			
-			d_mag = sqrt(v_xyz[0]*v_xyz[0]+v_xyz[1]*v_xyz[1]+v_xyz[2]*v_xyz[2]);
-			if(psf_m->vector_patch_color == RAINBOW_SURFACE){
-				set_rainbow_PSF_c(d_mag, psf_m->cmap_psf);
-			}
-			
-			glDrawArrowf((GLfloat) psf_s->xx_viz[inod][0],
-						 (GLfloat) psf_s->xx_viz[inod][1],
-						 (GLfloat) psf_s->xx_viz[inod][2],
-						 (GLfloat) d_tri[0], (GLfloat) d_tri[1], (GLfloat) d_tri[2],
-					     (d_mag*ascale*0.01) );
-		}
+                glDrawArrowf((GLfloat) psf_s->xx_viz[inod][0],
+                             (GLfloat) psf_s->xx_viz[inod][1],
+                             (GLfloat) psf_s->xx_viz[inod][2],
+                             (GLfloat) d_tri[0], (GLfloat) d_tri[1], (GLfloat) d_tri[2],
+                             (d_mag*ascale*0.01) );
+            };
+		};
 	};
 	
 	return;	

@@ -117,6 +117,7 @@ void set_kemoview_psf_data(struct psf_data *psf_s,struct psf_data *ucd_tmp,
 	mesh_m->iflag_view_type = VIEW_3D;
 	psf_m->draw_psf_solid =   IONE;
 	psf_m->polygon_mode_psf = INIT_POLYGON_MODE;
+	psf_m->ivect_tangential = INIT_TANGENTIAL_VECT;
 	
 	for (i=0;i<psf_s->nfield;i++){
 		set_linear_colormap(psf_m->cmap_psf_fld[i], psf_s->amp_min[i], psf_s->amp_max[i]);

@@ -10,6 +10,8 @@ TARGET_GAUSS_B_TRANS =     sph_gauss_back_trans
 TARGET_ZMEAN_TRANS =       zonal_mean_transform
 TARGET_PICK_ZM_FLD_SPH =   pick_zonal_mean_sph_fld
 TARGET_ZRMS_SPH_DATA =     zonal_rms_sph_grid
+TARGET_ZMEAN_STREAM =      sph_zm_streamfunc
+
 
 SOURCES = $(shell ls *.f90)
 
@@ -61,6 +63,19 @@ SPH_analyzer_sph_trans.o \
 FEM_analyzer_sph_trans.o \
 main_zm_transform.o
 
+MOD_ZMEAN_STREAM = \
+m_ctl_data_4_sph_trans.o \
+m_ctl_params_sph_trans.o \
+\
+sph_transfer_all_field.o \
+copy_all_field_4_sph_trans.o \
+\
+main_zm_streamfunc.o \
+analyzer_zm_streamfunc.o \
+visualizer_all.o \
+FEM_analyzer_back_trans.o \
+SPH_analyzer_back_trans.o \
+SPH_analyzer_zm_streamfunc.o
 
 MOD_PICK_ZM_FLD_SPH = \
 m_ctl_data_4_sph_trans.o \
@@ -111,6 +126,8 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_GAUSS_B_TRANS =   $$(BUILDDIR)/$(TARGET_GAUSS_B_TRANS)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_ZMEAN_STREAM =    $$(BUILDDIR)/$(TARGET_ZMEAN_STREAM)' \
+	>> $(MAKENAME)
 	@echo 'TARGET_ZMEAN_TRANS =     $$(BUILDDIR)/$(TARGET_ZMEAN_TRANS)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_PICK_ZM_FLD_SPH = $$(BUILDDIR)/$(TARGET_PICK_ZM_FLD_SPH)' \
@@ -122,7 +139,8 @@ target_task:
 	@echo sph_trans: \
 	'$$(TARGET_SPH_TRANS)          $$(TARGET_SPH_B_TRANS)'   \
 	'$$(TARGET_GAUSS_B_TRANS)      $$(TARGET_ZMEAN_TRANS)'   \
-	'$$(TARGET_PICK_ZM_FLD_SPH)    $$(TARGET_ZRMS_SPH_DATA)' >> $(MAKENAME)
+	'$$(TARGET_PICK_ZM_FLD_SPH)    $$(TARGET_ZRMS_SPH_DATA)' \
+    '$$(TARGET_ZMEAN_STREAM)'    >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_TRANS)': '$$(MOD_SPH_TRANS)' \
@@ -157,6 +175,14 @@ target_task:
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_ZMEAN_STREAM)': '$$(MOD_ZMEAN_STREAM)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ZMEAN_STREAM)' \
+	'$$(MOD_ZMEAN_STREAM)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PICK_ZM_FLD_SPH)': '$$(MOD_PICK_ZM_FLD_SPH)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
@@ -185,6 +211,8 @@ mod_list:
 	@echo  $(MOD_GAUSS_B_TRANS)     >> $(MAKENAME)
 	@echo  MOD_ZM_F_TRANS=  \\      >> $(MAKENAME)
 	@echo  $(MOD_ZM_F_TRANS)        >> $(MAKENAME)
+	@echo  MOD_ZMEAN_STREAM=  \\    >> $(MAKENAME)
+	@echo  $(MOD_ZMEAN_STREAM)      >> $(MAKENAME)
 	@echo  MOD_PICK_ZM_FLD_SPH=  \\ >> $(MAKENAME)
 	@echo  $(MOD_PICK_ZM_FLD_SPH)   >> $(MAKENAME)
 	@echo  MOD_ZRMS_SPH_SPEC=  \\   >> $(MAKENAME)

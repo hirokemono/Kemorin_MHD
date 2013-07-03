@@ -31,7 +31,7 @@
 !
       use m_geometry_data_4_merge
 !
-      integer(kind=kint) :: np, na
+      integer(kind=kint) :: np
 !
       write(*,*) 'Physical values for initial value'
       write(*,*) ' 1: ', trim(fhd_velo)

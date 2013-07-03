@@ -38,6 +38,7 @@
 @synthesize psfVectorColorTag;
 
 @synthesize psfPatchDirectionTag;
+@synthesize psfTangentialVectorTag;
 
 @synthesize PSFSurfaceSwitch;
 @synthesize PSFIsolineSwitch;
@@ -79,6 +80,7 @@
 	self.PSFOpacity = 1.0;
 	self.psfMoreOpenFlag = 0;
 	self.psfPatchDirectionTag = 0;
+    self.psfTangentialVectorTag = 0;
 	return self;
 }
 
@@ -177,6 +179,7 @@
 	self.PSFVectorIncrement = send_current_increment_vect();
 	
 	self.psfPatchDirectionTag = send_kemoview_psf_draw_flags(PSF_POLYGON_SWITCH);
+	self.psfTangentialVectorTag = send_kemoview_psf_draw_flags(PSFTANVEC_TOGGLE);
 	
 	self.psfLineColorTag =  send_current_isoline_color();
 	self.psfPatchColorTag = send_current_psf_patch_color();
@@ -501,6 +504,16 @@
 		set_current_psf_patch_color(TEXTURED_SURFACE);
 	}
 	
+	[_kemoviewer UpdateImage];
+}
+
+- (IBAction)ChoosePsfVectorModeAction:(id)sender;
+{
+	if(self.psfTangentialVectorTag == 0){
+		set_current_psf_tanvec_mode(FULL_COMPONENT);
+	} else if (self.psfVectorColorTag == 1) {
+		set_current_psf_tanvec_mode(TANGENTIAL_COMPONENT);
+	}
 	[_kemoviewer UpdateImage];
 }
 

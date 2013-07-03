@@ -43,11 +43,15 @@ double cal_normal_4_quad_c(double x1[3], double x2[3], double x3[3], double x4[3
 			  - (x3[1] - x1[1]) * (x4[0] - x2[0]);
 	
 	size = sqrt(normal[0]*normal[0] + normal[1]*normal[1] + normal[2]*normal[2]);
-	if(size >= ZERO){
+	if(size >= EPSILON){
 		normal[0] = normal[0] / size;
 		normal[1] = normal[1] / size;
 		normal[2] = normal[2] / size;
-	}
+	} else {
+		normal[0] = ZERO;
+		normal[1] = ZERO;
+		normal[2] = ZERO;
+    };
 	size = size * HALF;
 	
 	return size;
@@ -66,11 +70,15 @@ double cal_normal_4_triangle_c(double x1[3], double x2[3], double x3[3],
 			  - (x2[1] - x1[1]) * (x3[0] - x1[0]);
 	
 	size = sqrt(normal[0]*normal[0] + normal[1]*normal[1] + normal[2]*normal[2]);
-	if(size >= ZERO){
+	if(size >= EPSILON){
 		normal[0] = normal[0] / size;
 		normal[1] = normal[1] / size;
 		normal[2] = normal[2] / size;
-	}
+	} else {
+		normal[0] = ZERO;
+		normal[1] = ZERO;
+		normal[2] = ZERO;
+	};
 	size = size * HALF;
 	
 	return size;
