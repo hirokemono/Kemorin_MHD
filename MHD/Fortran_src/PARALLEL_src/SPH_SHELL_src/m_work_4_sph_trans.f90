@@ -93,6 +93,10 @@
 !>      @f$ 1 / \sin \theta @f$  for Legendre transform
       real(kind = kreal), allocatable :: asin_theta_1d_rtm(:)
 !
+!>      @f$ \sin \theta @f$ in sapherical grid (one-dimentional)
+      real(kind = kreal), allocatable :: sin_theta_1d_rtp(:)
+!
+!
 !>      End address of spherical hermonics order for SMP parallelization
       integer(kind = kint), allocatable :: lstack_rlm(:)
 !
@@ -140,10 +144,14 @@
 !
       allocate(vr_rtm(3*nb_sph_trans*nnod_rtm))
 !
+      allocate(sin_theta_1d_rtp(nidx_rtp(2)))
+!
       lstack_rlm = 0
       mdx_p_rlm_rtm = 0
       mdx_n_rlm_rtm = 0
       asin_theta_1d_rtm = 0.0d0
+!
+      sin_theta_1d_rtp = 0.0d0
 !
       sp_rj =  0.0d0
       vr_rtp = 0.0d0
@@ -171,7 +179,7 @@
 !
       deallocate(lstack_rlm)
       deallocate(mdx_p_rlm_rtm, mdx_n_rlm_rtm)
-      deallocate(asin_theta_1d_rtm)
+      deallocate(asin_theta_1d_rtm, sin_theta_1d_rtp)
 !
       deallocate(sp_rj, vr_rtp)
       deallocate(sp_rlm, vr_rtm)

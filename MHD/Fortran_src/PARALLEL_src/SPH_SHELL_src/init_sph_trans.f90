@@ -17,7 +17,7 @@
 !
       implicit none
 !
-      private :: set_mdx_rlm_rtm, set_sin_theta_rtm
+      private :: set_mdx_rlm_rtm, set_sin_theta_rtm, set_sin_theta_rtp
       private :: radial_4_sph_trans
 !
 ! -----------------------------------------------------------------------
@@ -50,6 +50,7 @@
       call s_cal_schmidt_poly_rtm
 !
       call set_sin_theta_rtm
+      call set_sin_theta_rtp
 !
       ncomp = 3*nb_sph_trans*nidx_rtp(1)*nidx_rtp(2)
       Nstacksmp(0:np_smp) = 3*nb_sph_trans*irt_rtp_smp_stack(0:np_smp)
@@ -121,6 +122,24 @@
       end do
 !
       end subroutine set_sin_theta_rtm
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_sin_theta_rtp
+!
+      use m_spheric_parameter
+      use m_schmidt_poly_on_rtm
+      use m_work_4_sph_trans
+!
+      integer(kind = kint) :: l_rtp, l_gl
+!
+!
+      do l_rtp = 1, nidx_rtp(2)
+        l_gl = idx_gl_1d_rtp_t(l_rtp)
+        sin_theta_1d_rtp(l_rtp) = sin(g_colat_rtm(l_gl))
+      end do
+!
+      end subroutine set_sin_theta_rtp
 !
 ! -----------------------------------------------------------------------
 !

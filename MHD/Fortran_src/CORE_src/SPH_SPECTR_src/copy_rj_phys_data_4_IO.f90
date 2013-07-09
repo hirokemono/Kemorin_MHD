@@ -159,7 +159,9 @@
       do i_fld = 1, num_phys_rj
         do j_IO = 1, num_phys_data_IO
           if (phys_name_rj(i_fld) .eq. phys_data_name_IO(j_IO)) then
-            if (num_phys_comp_rj(i_fld) .eq. 3) then
+            if (num_phys_comp_IO(j_IO) .eq. 3) then
+              call copy_each_sph_vector_from_IO(i_fld, j_IO)
+            else if (num_phys_comp_IO(j_IO) .eq. 2) then
               call copy_each_sph_vector_from_IO(i_fld, j_IO)
             else
               call copy_each_sph_field_from_IO(i_fld, j_IO)

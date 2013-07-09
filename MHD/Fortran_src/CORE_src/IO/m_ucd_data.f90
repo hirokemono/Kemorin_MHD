@@ -1,10 +1,5 @@
-!
-!      module m_ucd_data
-!
-!        Written by H.Matsui on June, 2006
-!
-!>@file   m_grid_fdm_coefs.f90
-!!@brief  module m_grid_fdm_coefs
+!>@file   m_ucd_data.f90
+!!@brief  module m_ucd_data
 !!
 !!@author H. Matsui
 !!@date Programmed in June, 2006

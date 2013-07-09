@@ -9,6 +9,7 @@
       module SPH_analyzer_zm_streamfunc
 !
       use m_precision
+      use m_constants
       use m_machine_parameter
       use m_parallel_var_dof
 !
@@ -69,13 +70,45 @@
         call zonal_mean_all_sph_spectr
 !
 !  spherical transform for vector
-        call sph_b_trans_all_vector
+        call sph_b_trans_streamline
 !
       end if
 !
       end subroutine SPH_analyze_zm_streamfunc
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine sph_b_trans_streamline
+!
+      use sph_trans_vector
+      use copy_all_spec_4_sph_trans
+      use copy_all_field_4_sph_trans
+      use pole_sph_transform
+!
+!
+      if (num_vector_rtp .gt. 0) then
+        if (iflag_debug.gt.0)                                           &
+     &        write(*,*) 'set_all_vec_spec_to_sph_t'
+        call set_all_vec_spec_to_sph_t
+!
+        if (iflag_debug.gt.0)                                           &
+     &        write(*,*) 'sph_b_trans_vector', num_vector_rtp
+        call sph_b_trans_vector(num_vector_rtp)
+!
+        if (iflag_debug.gt.0)                                           &
+     &      write(*,*) 'pole_b_trans_vector'
+        call pole_b_trans_vector(num_vector_rtp)
+!
+        if (iflag_debug.gt.0)                                           &
+     &        write(*,*) 'set_sph_vect_from_sph_trans'
+        call adjust_phi_comp_for_streamfunc
+        call set_sph_vect_from_sph_trans
+      end if
+!
+      end subroutine sph_b_trans_streamline
+!
+! -----------------------------------------------------------------------
 !
       subroutine set_ctl_data_4_zm_streamline
 !
@@ -122,24 +155,61 @@
       use m_sph_phys_address
 !
 !
-      integer(kind = kint) :: inod, ist, i
+      integer(kind = kint) :: inod, ist, i, k, j
 !
 !
       do i = 1, num_phys_rj
         if     (phys_name_rj(i) .eq. fhd_velo                           &
      &     .or. phys_name_rj(i) .eq. fhd_magne) then
           ist = istack_phys_comp_rj(i-1)
-!$omp parallel do
-          do inod = 1, nnod_rj
-            d_rj(inod,ist+3) =  d_rj(inod,ist+1)
-            d_rj(inod,ist+1) =  zero
-            d_rj(inod,ist+2) =  zero
+!$omp parallel do private(j,inod)
+          do k = 1, nidx_rj(1)
+            do j = 1, nidx_rj(2)
+              inod = (k-1)*nidx_rj(2) + j
+              d_rj(inod,ist+3) =  d_rj(inod,ist+1)
+              d_rj(inod,ist+1) =  zero
+              d_rj(inod,ist+2) =  zero
+            end do
           end do
 !$omp end parallel do
         end if
       end do
 !
       end subroutine set_rj_phys_for_zm_streamfunc
+!
+! ----------------------------------------------------------------------
+!
+      subroutine adjust_phi_comp_for_streamfunc
+!
+      use m_phys_labels
+      use m_spheric_parameter
+      use m_sph_spectr_data
+      use m_work_4_sph_trans
+!
+!
+      integer(kind = kint) :: inod, ist, j, i, k, l, m, jnod
+!
+!
+      do j = 1, num_vector_rtp
+!
+!$omp parallel do private(k,l,m,inod,jnod)
+          do m = 1, nidx_rtp(3)
+            do l = 1, nidx_rtp(2)
+              do k = 1, nidx_rtp(1)
+                inod = k + (l-1)*nidx_rtp(1)                            &
+     &                   + (m-1)*nidx_rtp(1)*nidx_rtp(2)
+                jnod = j + (inod-1)*num_vector_rtp
+                vr_rtp(3*jnod-2) =  zero
+                vr_rtp(3*jnod-1) =  zero
+                vr_rtp(3*jnod  ) = -vr_rtp(3*jnod  )                    &
+     &                      * radius_1d_rtp_r(k)*sin_theta_1d_rtp(l)
+              end do
+            end do
+          end do
+!$omp end parallel do
+      end do
+!
+      end subroutine adjust_phi_comp_for_streamfunc
 !
 ! ----------------------------------------------------------------------
 !
