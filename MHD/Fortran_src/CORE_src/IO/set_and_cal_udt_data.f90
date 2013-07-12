@@ -1,22 +1,33 @@
-!set_and_cal_udt_data.f90
-!      module set_and_cal_udt_data
+!>@file  set_and_cal_udt_data.f90
+!!       module set_and_cal_udt_data
+!!
+!!@author H. Matsui
+!!@date        programmed by H.Matsui on July, 2006
+!!@n           Modified by H.Matsui on July, 2013
 !
-!        programmed by H.Matsui on July, 2006
-!
-!      subroutine set_udt_local_nodes(numnod, xx)
-!
-!      subroutine count_udt_elements(internal_node, nele, nnod_ele, ie)
-!      subroutine set_udt_local_connect(internal_node,                  &
-!     &          nele, nnod_ele, ie)
-!      subroutine set_udt_global_connect(internal_node,                 &
-!     &          nele, nnod_ele, iele_global, ie)
-!
-!      subroutine set_field_by_udt_data(nnod, num_fld, ntot_cmp,        &
-!     &          num_comp, phys_name, d_nod)
-!      subroutine add_field_by_udt_data(nnod, num_fld, ntot_cmp,        &
-!     &          num_comp, phys_name, d_nod)
-!      subroutine subtract_field_by_udt_data(nnod, num_fld, ntot_cmp,   &
-!     &          num_comp, phys_name, d_nod)
+!>@brief set mesh and field data from UCD data input
+!!
+!!@verbatim
+!!      subroutine set_udt_local_nodes(numnod, xx)
+!!
+!!      subroutine count_udt_elements(internal_node, nele, nnod_ele, ie)
+!!      subroutine set_udt_local_connect(internal_node,                 &
+!!     &          nele, nnod_ele, ie)
+!!      subroutine set_udt_global_connect(internal_node,                &
+!!     &          nele, nnod_ele, iele_global, ie)
+!!
+!!      subroutine set_one_field_to_udt_data(nnod, numdir, i_field,     &
+!!     &          d_nod)
+!!      subroutine set_one_field_by_udt_data(nnod, numdir, i_field,     &
+!!     &          d_nod)
+!!
+!!      subroutine set_field_by_udt_data(nnod, num_fld, ntot_cmp,       &
+!!     &          num_comp, phys_name, d_nod)
+!!      subroutine add_field_by_udt_data(nnod, num_fld, ntot_cmp,       &
+!!     &          num_comp, phys_name, d_nod)
+!!      subroutine subtract_field_by_udt_data(nnod, num_fld, ntot_cmp,  &
+!!     &          num_comp, phys_name, d_nod)
+!!@endverbatim
 !
       module set_and_cal_udt_data
 !
@@ -131,6 +142,49 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
+      subroutine set_one_field_to_udt_data(nnod, numdir, i_field,       &
+     &          d_nod)
+!
+      integer(kind=kint), intent(in)  :: nnod, i_field, numdir
+      real(kind = kreal), intent(inout) :: d_nod(nnod,numdir)
+!
+      integer(kind = kint) :: inod, nd
+!
+!
+      do nd = 1, numdir
+!$omp parallel do
+       do inod = 1, nnod
+         d_nod_ucd(inod,nd+i_field-1) = d_nod(inod,nd)
+       end do
+!$omp end parallel do
+      end do
+!
+      end subroutine set_one_field_to_udt_data
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_one_field_by_udt_data(nnod, numdir, i_field,       &
+     &          d_nod)
+!
+      integer(kind=kint), intent(in)  :: nnod, i_field, numdir
+      real(kind = kreal), intent(inout) :: d_nod(nnod,numdir)
+!
+      integer(kind = kint) :: inod, nd
+!
+!
+      do nd = 1, numdir
+!$omp parallel do
+       do inod = 1, nnod
+         d_nod(inod,nd) = d_nod_ucd(inod,nd+i_field-1)
+       end do
+!$omp end parallel do
+      end do
+!
+      end subroutine set_one_field_by_udt_data
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
       subroutine set_field_by_udt_data(nnod, num_fld, ntot_cmp,         &
      &          num_comp, phys_name, d_nod)
 !
@@ -149,9 +203,11 @@
         do j = 1, num_fld
           if ( phys_name_ucd(i) .eq. phys_name(j) ) then
             do nd = 1, num_comp(j)
+!$omp parallel do
               do inod = 1, nnod
                 d_nod(inod,jcomp+nd) = d_nod_ucd(inod,icomp+nd)
               end do
+!$omp end parallel do
             end do
             exit
           end if
@@ -182,10 +238,12 @@
         do j = 1, num_fld
           if ( phys_name_ucd(i) .eq. phys_name(j) ) then
             do nd = 1, num_comp(j)
+!$omp parallel do
               do inod = 1, nnod
                 d_nod(inod,jcomp+nd) = d_nod(inod,jcomp+nd)             &
      &                                + d_nod_ucd(inod,icomp+nd)
               end do
+!$omp end parallel do
             end do
           end if
           jcomp = jcomp + num_comp(j)
@@ -215,10 +273,12 @@
         do j = 1, num_fld
           if ( phys_name_ucd(i) .eq. phys_name(j) ) then
             do nd = 1, num_comp(j)
+!$omp parallel do
               do inod = 1, nnod
                 d_nod(inod,jcomp+nd) = d_nod(inod,jcomp+nd)             &
      &                                - d_nod_ucd(inod,icomp+nd)
               end do
+!$omp end parallel do
             end do
           end if
           jcomp = jcomp + num_comp(j)

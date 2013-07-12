@@ -68,6 +68,7 @@
       use m_node_phys_data
       use m_ucd_data
       use m_ctl_params_4_prod_udt
+      use set_and_cal_udt_data
 !
       use ucd_IO_select
 !
@@ -94,14 +95,14 @@
         phys_name_ucd(icou) = fhd_temp_scale
         call cal_length_scale_by_diffuse1(iphys%i_temp,                 &
      &      iphys%i_t_diffuse)
-        d_nod_ucd(1:numnod,icou) = d_mag(1:numnod)
+        call set_one_field_to_udt_data(numnod, ione, icou, d_mag(1) )
       end if
 !
       if(iphys%i_velo  .gt. 0) then
         icou = icou + 1
         phys_name_ucd(icou) = fhd_velocity_scale
         call cal_vect_length_scale_by_rot(iphys%i_velo, iphys%i_vort)
-        d_nod_ucd(1:numnod,icou) = d_mag(1:numnod)
+        call set_one_field_to_udt_data(numnod, ione, icou, d_mag(1) )
       end if
 !
       if(iphys%i_magne .gt. 0) then
@@ -109,7 +110,7 @@
         phys_name_ucd(3) =    fhd_magnetic_scale
         call cal_vect_length_scale_by_rot(iphys%i_magne,                &
      &      iphys%i_current)
-        d_nod_ucd(1:numnod,icou) = d_mag(1:numnod)
+        call set_one_field_to_udt_data(numnod, ione, icou, d_mag(1) )
       end if
 !
       ucd_header_name = result_udt_file_head

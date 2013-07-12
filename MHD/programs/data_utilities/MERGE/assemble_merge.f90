@@ -24,7 +24,6 @@
       use m_original_ucd_4_merge
 !
       use set_merged_geometry
-      use read_ucd_data_4_merge
       use set_merged_udt_2_IO
       use ucd_IO_select
 
@@ -79,7 +78,7 @@
 !   loop for snap shots
 !
       do istep = istep_start, istep_end, increment_step
-        call s_read_ucd_data_4_merge(istep)
+        call read_ucd_data_4_merge(istep)
 !
         call link_merged_phys_2_udt_IO
 !

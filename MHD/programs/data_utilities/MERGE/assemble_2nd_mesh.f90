@@ -21,7 +21,6 @@
 !
       use set_merged_geometry
       use set_2nd_geometry_4_serial
-      use read_ucd_data_4_merge
       use set_merged_udt_2_IO
       use output_newdomain_ucd
       use field_IO_select
@@ -82,8 +81,8 @@
 !
 !
       do istep = istep_start, istep_end, increment_step
-!        write(*,*) 's_read_ucd_data_4_merge', istep
-        call s_read_ucd_data_4_merge(istep)
+!        write(*,*) 'read_ucd_data_4_merge', istep
+        call read_ucd_data_4_merge(istep)
         call assemble_2nd_udt_phys(istep)
         write(*,*) 'step', istep, 'finish '
       end do

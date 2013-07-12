@@ -4,6 +4,9 @@
 !      subroutine allocate_subdomain_parameters
 !      subroutine deallocate_subdomain_parameters
 !
+!      subroutine init_ucd_data_4_merge(istep)
+!      subroutine read_ucd_data_4_merge(istep)
+!
 !      subroutine set_field_list_4_merge
 !
       module m_original_ucd_4_merge
@@ -14,9 +17,8 @@
       implicit none
 !
 !
-      type(phys_data) :: ucd
-!
-      integer(kind=kint ), allocatable :: ifield_2_copy(:)
+      type(phys_data), save, private :: org_fld
+      integer(kind=kint ), allocatable, private :: ifield_2_copy(:)
 !
 ! -----------------------------------------------------------------------
 !
@@ -27,10 +29,10 @@
        subroutine allocate_subdomain_parameters
 !
 !
-       call alloc_phys_name_type(ucd)
+       call alloc_phys_name_type(org_fld)
 !
-       allocate ( ifield_2_copy(ucd%num_phys) )
-       if(ucd%num_phys .eq. 0) ifield_2_copy =   0
+       allocate ( ifield_2_copy(org_fld%num_phys) )
+       if(org_fld%num_phys .eq. 0) ifield_2_copy =   0
 !
        end subroutine allocate_subdomain_parameters
 !
@@ -39,11 +41,86 @@
        subroutine deallocate_subdomain_parameters
 !
 !
-       call dealloc_phys_name_type(ucd)
+       call dealloc_phys_name_type(org_fld)
 !
        deallocate ( ifield_2_copy)
 !
        end subroutine deallocate_subdomain_parameters
+!
+! -----------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine init_ucd_data_4_merge(istep)
+!
+      use m_ucd_data
+      use m_constants
+      use m_control_param_merge
+      use ucd_IO_select
+!
+       integer (kind = kint), intent(in) :: istep
+       integer (kind = kint) :: i
+!
+!
+      nnod_ucd = ione
+      itype_ucd_data_file = itype_org_ucd_file
+      ucd_header_name = udt_original_header
+      call sel_read_udt_param(izero, istep)
+      call deallocate_ucd_phys_data
+!
+      org_fld%num_phys =    num_field_ucd
+      call allocate_subdomain_parameters
+!
+      org_fld%istack_component(0) = 0
+      do i = 1, org_fld%num_phys
+        org_fld%num_component(i) =     num_comp_ucd(i)
+        org_fld%phys_name(i) =         phys_name_ucd(i)
+        org_fld%istack_component(i) = org_fld%istack_component(i-1)     &
+     &                              + org_fld%num_component(i)
+      end do
+!
+      call deallocate_ucd_phys_name
+!
+      end subroutine init_ucd_data_4_merge
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine read_ucd_data_4_merge(istep)
+!
+      use m_ucd_data
+      use m_control_param_merge
+      use m_geometry_data_4_merge
+      use set_read_geometry_2_merge
+      use ucd_IO_select
+!
+       integer (kind = kint), intent(in) :: istep
+!
+       integer (kind = kint) :: ip, my_rank
+!
+! ========================
+! * PES loops 
+! ========================
+!
+      num_field_ucd = org_fld%num_phys
+      ntot_comp_ucd = org_fld%istack_component(org_fld%num_phys)
+      call allocate_ucd_phys_name
+!
+      itype_ucd_data_file = itype_org_ucd_file
+      ucd_header_name = udt_original_header
+!
+      do ip =1, num_pe
+        my_rank = ip - 1
+        nnod_ucd = subdomain(ip)%node%numnod
+        call allocate_ucd_phys_data
+!
+        call sel_read_udt_file(my_rank, istep)
+!
+        call copy_udt_field_data_merge(ip, org_fld, ifield_2_copy)
+!
+        call deallocate_ucd_phys_data
+      end do
+      call deallocate_ucd_phys_name
+!
+      end subroutine read_ucd_data_4_merge
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -61,9 +138,9 @@
       ic = 0 
       ifield_2_copy = 0
       do  k = 1, num_nod_phys
-        do  j = 1, ucd%num_phys
-!          write(*,*) 'j,k',ucd_on_label(k),ucd%phys_name(j)
-          if(ucd_on_label(k) .eq. ucd%phys_name(j) ) then
+        do  j = 1, org_fld%num_phys
+!          write(*,*) 'j,k',ucd_on_label(k),org_fld%phys_name(j)
+          if(ucd_on_label(k) .eq. org_fld%phys_name(j) ) then
              ic = ic + 1
              ifield_2_copy(j) = k
              exit
@@ -76,11 +153,11 @@
       call allocate_merged_field_name
 !
       ic =  0 
-      do j = 1,ucd%num_phys
+      do j = 1,org_fld%num_phys
         if(ifield_2_copy(j) .gt. 0) then
           ic = ic + 1
-          merged_fld%num_component(ic) =  ucd%num_component(j)
-          merged_fld%phys_name(ic) = ucd%phys_name(j)
+          merged_fld%num_component(ic) =  org_fld%num_component(j)
+          merged_fld%phys_name(ic) =      org_fld%phys_name(j)
         end if
       end do
 !

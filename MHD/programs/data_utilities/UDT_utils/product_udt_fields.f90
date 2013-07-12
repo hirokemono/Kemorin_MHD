@@ -160,6 +160,7 @@
       use m_node_phys_data
       use m_ucd_data
       use ucd_IO_select
+      use set_and_cal_udt_data
 !
       integer(kind = kint), intent(in) :: i_step
       integer(kind = kint) :: nd, inod
@@ -168,31 +169,31 @@
       nnod_ucd = numnod
       ucd_step = i_step / i_step_output_ucd
 !
-       ucd_header_name = prod_udt_file1_head
-       call sel_read_udt_param(my_rank, ucd_step)
-       call sel_read_udt_file(my_rank, ucd_step)
+      ucd_header_name = prod_udt_file1_head
+      call sel_read_udt_param(my_rank, ucd_step)
+      call sel_read_udt_file(my_rank, ucd_step)
 !
-       do nd = 1, ncomp_4_product1
-         d_prod1(1:numnod,nd)                                           &
-     &         = d_nod_ucd(1:numnod,nd+i_field_product1-1)
-       end do
+      call set_one_field_by_udt_data(numnod, ncomp_4_product1,          &
+     &     i_field_product1, d_prod1)
 !
-       call deallocate_ucd_data
+      call deallocate_ucd_data
 !
 !
-       ucd_header_name = prod_udt_file2_head
-       call sel_read_udt_param(my_rank, ucd_step)
-       if (iflag_debug.eq.1) write(*,*) 'sel_read_udt_file',            &
+      ucd_header_name = prod_udt_file2_head
+      call sel_read_udt_param(my_rank, ucd_step)
+      if (iflag_debug.eq.1) write(*,*) 'sel_read_udt_file',             &
      &                                   prod_udt_file2_head
-       call sel_read_udt_file(my_rank, ucd_step)
+      call sel_read_udt_file(my_rank, ucd_step)
+!
+      call set_one_field_by_udt_data(numnod, ncomp_4_product2,          &
+     &    i_field_product2, d_prod2)
 !
        do nd = 1, ncomp_4_product2
          do inod = 1,  numnod
-           if(d_prod2(inod,nd) .eq. 0.0d0) then
-             d_prod2(inod,nd) = 0.0d0
+           if(d_prod2(inod,nd) .eq. zero) then
+             d_prod2(inod,nd) = zero
            else
-             d_prod2(inod,nd)                                           &
-     &          = one / d_nod_ucd(inod,nd+i_field_product2-1)
+             d_prod2(inod,nd) = one / d_prod2(inod,nd)
            end if
          end do
        end do
@@ -213,38 +214,34 @@
       use m_node_phys_data
       use m_ucd_data
       use ucd_IO_select
+      use set_and_cal_udt_data
 !
       integer(kind = kint), intent(in) :: i_step
-      integer(kind = kint) :: nd
 !
 !
       nnod_ucd = numnod
       ucd_step = i_step / i_step_output_ucd
 !
-       ucd_header_name = prod_udt_file1_head
-       call sel_read_udt_param(my_rank, ucd_step)
-       call sel_read_udt_file(my_rank, ucd_step)
+      ucd_header_name = prod_udt_file1_head
+      call sel_read_udt_param(my_rank, ucd_step)
+      call sel_read_udt_file(my_rank, ucd_step)
 !
-       do nd = 1, ncomp_4_product1
-         d_prod1(1:numnod,nd)                                           &
-     &         = d_nod_ucd(1:numnod,nd+i_field_product1-1)
-       end do
+      call set_one_field_by_udt_data(numnod, ncomp_4_product1,          &
+     &     i_field_product1, d_prod1)
 !
-       call deallocate_ucd_data
+      call deallocate_ucd_data
 !
 !
-       ucd_header_name = prod_udt_file2_head
-       call sel_read_udt_param(my_rank, ucd_step)
-       if (iflag_debug.eq.1) write(*,*) 'sel_read_udt_file',           &
+      ucd_header_name = prod_udt_file2_head
+      call sel_read_udt_param(my_rank, ucd_step)
+      if (iflag_debug.eq.1) write(*,*) 'sel_read_udt_file',             &
      &                                   prod_udt_file2_head
-       call sel_read_udt_file(my_rank, ucd_step)
+      call sel_read_udt_file(my_rank, ucd_step)
 !
-       do nd = 1, ncomp_4_product2
-         d_prod2(1:numnod,nd)                                           &
-     &         = d_nod_ucd(1:numnod,nd+i_field_product2-1)
-       end do
+      call set_one_field_by_udt_data(numnod, ncomp_4_product2,          &
+     &    i_field_product2, d_prod2)
 !
-        call deallocate_ucd_data
+      call deallocate_ucd_data
 !
       end subroutine set_data_for_product
 !

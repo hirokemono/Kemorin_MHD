@@ -13,7 +13,8 @@
 !      subroutine copy_read_nodal_data_2_merge(ip)
 !      subroutine copy_read_ele_data_2_merge(ip)
 !
-!      subroutine copy_udt_field_data_merge(ip)
+!      subroutine copy_udt_field_data_merge(ip, org_fld, ifield_2_copy)
+!        type(phys_data), intent(in) :: org_fld
 !
       module set_read_geometry_2_merge
 !
@@ -24,7 +25,6 @@
       integer(kind=kint ), allocatable ::  ioverlap_n(:)
       integer(kind=kint ), allocatable ::  ioverlap_e(:)
       private :: ioverlap_n
-!
 !
 !  ---------------------------------------------------------------------
 !
@@ -220,13 +220,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_udt_field_data_merge(ip)
+      subroutine copy_udt_field_data_merge(ip, org_fld, ifield_2_copy)
 !
       use m_ucd_data
       use m_geometry_data_4_merge
-      use m_original_ucd_4_merge
+      use t_phys_data
 !
+      type(phys_data), intent(in) :: org_fld
       integer(kind = kint), intent(in) :: ip
+      integer(kind=kint), intent(in) :: ifield_2_copy(org_fld%num_phys)
 !
       integer(kind = kint) :: i, ic0, ic, j, nd
       integer(kind = kint) :: inod, inod_global
@@ -237,13 +239,13 @@
 !
         if    (ioverlap_n(inod_global) .ge. 1 ) then
           if(merge_tbl%idomain_nod(inod_global) .eq. ip) then
-            do  j = 1, ucd%num_phys
-              ic0 = ucd%istack_component(j-1)
+            do  j = 1, org_fld%num_phys
+              ic0 = org_fld%istack_component(j-1)
 !
               if(ifield_2_copy(j) .gt. 0 ) then
                 i = ifield_2_copy(j)
                 ic = merged_fld%istack_component(i-1)
-                do nd = 1, ucd%num_component(j)
+                do nd = 1, org_fld%num_component(j)
                   merged_fld%d_fld(inod_global,ic+nd)                   &
      &                     = d_nod_ucd(inod,ic0+nd)
                 end do
