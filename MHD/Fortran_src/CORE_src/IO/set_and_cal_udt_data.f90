@@ -52,10 +52,10 @@
 !
 !$omp parallel do
       do inod = 1, numnod
-        inod_gl_ucd(inod) = inod
-        xx_ucd(inod,1) = xx(inod,1)
-        xx_ucd(inod,2) = xx(inod,2)
-        xx_ucd(inod,3) = xx(inod,3)
+        fem_ucd%inod_global(inod) = inod
+        fem_ucd%xx(inod,1) = xx(inod,1)
+        fem_ucd%xx(inod,2) = xx(inod,2)
+        fem_ucd%xx(inod,3) = xx(inod,3)
       end do
 !$omp end parallel do
 !
@@ -70,17 +70,18 @@
       integer(kind=kint), intent(in)  :: nele, nnod_ele
       integer(kind=kint), intent(in)  :: ie(nele, nnod_ele)
 !
-      integer(kind = kint) :: iele
+      integer(kind = kint) :: iele, icou
 !
 !
-      nnod_4_ele_ucd = nnod_ele
+      fem_ucd%nnod_4_ele = nnod_ele
 !
-      nele_ucd = 0
-!$omp parallel do reduction(+:nele_ucd)
+      icou = 0
+!$omp parallel do reduction(+:icou)
       do iele = 1, nele
-        if(ie(iele,1) .le. internal_node) nele_ucd = nele_ucd + 1
+        if(ie(iele,1) .le. internal_node) icou = icou + 1
       end do
 !$omp end parallel do
+      fem_ucd%nele = icou
 !
       end subroutine count_udt_elements
 !
@@ -100,9 +101,9 @@
       do iele = 1, nele
         if(ie(iele,1) .le. internal_node) then
           icou = icou + 1
-          iele_gl_ucd(icou) = icou
+          fem_ucd%iele_global(icou) = icou
           do k1 = 1, nnod_ele
-            ie_ucd(icou,k1) = ie(iele,k1)
+            fem_ucd%ie(icou,k1) = ie(iele,k1)
           end do
         end if
       end do
@@ -123,16 +124,16 @@
 !
 !
       call count_udt_elements(internal_node, nele, nnod_ele, ie)
-      call allocate_ucd_ele
+      call allocate_ucd_ele(fem_ucd)
 !
       icou = 0
       do iele = 1, nele
         if(ie(iele,1) .le. internal_node) then
           icou = icou + 1
-          iele_gl_ucd(icou) = iele_global(iele)
+          fem_ucd%iele_global(icou) = iele_global(iele)
           do k1 = 1, nnod_ele
             inod = ie(iele,k1)
-            ie_ucd(icou,k1) = inod_gl_ucd(inod)
+            fem_ucd%ie(icou,k1) = fem_ucd%inod_global(inod)
           end do
         end if
       end do
@@ -154,7 +155,7 @@
       do nd = 1, numdir
 !$omp parallel do
        do inod = 1, nnod
-         d_nod_ucd(inod,nd+i_field-1) = d_nod(inod,nd)
+         fem_ucd%d_ucd(inod,nd+i_field-1) = d_nod(inod,nd)
        end do
 !$omp end parallel do
       end do
@@ -175,7 +176,7 @@
       do nd = 1, numdir
 !$omp parallel do
        do inod = 1, nnod
-         d_nod(inod,nd) = d_nod_ucd(inod,nd+i_field-1)
+         d_nod(inod,nd) = fem_ucd%d_ucd(inod,nd+i_field-1)
        end do
 !$omp end parallel do
       end do
@@ -198,14 +199,14 @@
 !
 !
       icomp = 0
-      do i = 1, num_field_ucd
+      do i = 1, fem_ucd%num_field
         jcomp = 0
         do j = 1, num_fld
-          if ( phys_name_ucd(i) .eq. phys_name(j) ) then
+          if ( fem_ucd%phys_name(i) .eq. phys_name(j) ) then
             do nd = 1, num_comp(j)
 !$omp parallel do
               do inod = 1, nnod
-                d_nod(inod,jcomp+nd) = d_nod_ucd(inod,icomp+nd)
+                d_nod(inod,jcomp+nd) = fem_ucd%d_ucd(inod,icomp+nd)
               end do
 !$omp end parallel do
             end do
@@ -213,7 +214,7 @@
           end if
           jcomp = jcomp + num_comp(j)
         end do
-        icomp = icomp + num_comp_ucd(i)
+        icomp = icomp + fem_ucd%num_comp(i)
       end do
 !
       end subroutine set_field_by_udt_data
@@ -233,22 +234,22 @@
 !
 !
       icomp = 0
-      do i = 1, num_field_ucd
+      do i = 1, fem_ucd%num_field
         jcomp = 0
         do j = 1, num_fld
-          if ( phys_name_ucd(i) .eq. phys_name(j) ) then
+          if ( fem_ucd%phys_name(i) .eq. phys_name(j) ) then
             do nd = 1, num_comp(j)
 !$omp parallel do
               do inod = 1, nnod
                 d_nod(inod,jcomp+nd) = d_nod(inod,jcomp+nd)             &
-     &                                + d_nod_ucd(inod,icomp+nd)
+     &                                + fem_ucd%d_ucd(inod,icomp+nd)
               end do
 !$omp end parallel do
             end do
           end if
           jcomp = jcomp + num_comp(j)
         end do
-        icomp = icomp + num_comp_ucd(i)
+        icomp = icomp + fem_ucd%num_comp(i)
       end do
 !
       end subroutine add_field_by_udt_data
@@ -268,22 +269,22 @@
 !
 !
       icomp = 0
-      do i = 1, num_field_ucd
+      do i = 1, fem_ucd%num_field
         jcomp = 0
         do j = 1, num_fld
-          if ( phys_name_ucd(i) .eq. phys_name(j) ) then
+          if ( fem_ucd%phys_name(i) .eq. phys_name(j) ) then
             do nd = 1, num_comp(j)
 !$omp parallel do
               do inod = 1, nnod
                 d_nod(inod,jcomp+nd) = d_nod(inod,jcomp+nd)             &
-     &                                - d_nod_ucd(inod,icomp+nd)
+     &                                - fem_ucd%d_ucd(inod,icomp+nd)
               end do
 !$omp end parallel do
             end do
           end if
           jcomp = jcomp + num_comp(j)
         end do
-        icomp = icomp + num_comp_ucd(i)
+        icomp = icomp + fem_ucd%num_comp(i)
       end do
 !
       end subroutine subtract_field_by_udt_data

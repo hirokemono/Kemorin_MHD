@@ -71,7 +71,7 @@
 !
 !   link output pointer for udt
 !
-      nnod_4_ele_ucd = merged%ele%nnod_4_ele
+      fem_ucd%nnod_4_ele = merged%ele%nnod_4_ele
 !
 !   output grid data
 !
@@ -90,8 +90,8 @@
 !
       if(iflag_delete_org .gt. 0) then
         do istep = istep_start, istep_end, increment_step
-          ucd_header_name =     udt_original_header
-          itype_ucd_data_file = itype_org_ucd_file
+          fem_ucd%file_prefix =     udt_original_header
+          fem_ucd%ifmt_file = itype_org_ucd_file
           call delete_para_ucd_file(num_pe, istep)
         end do
       end if

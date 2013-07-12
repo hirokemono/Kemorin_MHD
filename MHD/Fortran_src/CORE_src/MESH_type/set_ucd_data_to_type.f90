@@ -38,10 +38,10 @@
       type(element_data), intent(in) :: ele
 !
 !
-      nnod_ucd = node%numnod
+      fem_ucd%nnod = node%numnod
 !
-      nele_ucd = ele%numele
-      nnod_4_ele_ucd = ele%nnod_4_ele
+      fem_ucd%nele =       ele%numele
+      fem_ucd%nnod_4_ele = ele%nnod_4_ele
 !
       end subroutine link_num_field_type_2_output
 !
@@ -54,8 +54,8 @@
       type(node_data), intent(in) :: node
 !
 !
-      xx_ucd =>      node%xx(1:node%numnod,1:3)
-      inod_gl_ucd => node%inod_global(1:node%numnod)
+      fem_ucd%xx =>          node%xx(1:node%numnod,1:3)
+      fem_ucd%inod_global => node%inod_global(1:node%numnod)
 !
       end subroutine link_node_data_type_2_output
 !
@@ -68,8 +68,8 @@
       type(element_data), intent(in) :: ele
 !
 !
-      ie_ucd =>      ele%ie(1:ele%numele,1:ele%nnod_4_ele)
-      iele_gl_ucd => ele%iele_global(1:ele%numele)
+      fem_ucd%ie =>          ele%ie(1:ele%numele,1:ele%nnod_4_ele)
+      fem_ucd%iele_global => ele%iele_global(1:ele%numele)
 !
       end subroutine link_ele_data_type_2_output
 !
@@ -84,16 +84,15 @@
       type(phys_data), intent(in) :: phys_nod
 !
 !
-      nnod_ucd =      node%numnod
-      num_field_ucd = phys_nod%num_phys_viz
-      ntot_comp_ucd = phys_nod%ntot_phys_viz
+      fem_ucd%nnod =      node%numnod
+      fem_ucd%num_field = phys_nod%num_phys_viz
+      fem_ucd%ntot_comp = phys_nod%ntot_phys_viz
 !
-      istack_comp_ucd(0:num_field_ucd)                                  &
-     &             => phys_nod%istack_component(0:num_field_ucd)
-      num_comp_ucd =>    phys_nod%num_component(1:num_field_ucd)
-      phys_name_ucd =>   phys_nod%phys_name(1:num_field_ucd)
+      fem_ucd%num_comp =>   phys_nod%num_component(1:fem_ucd%num_field)
+      fem_ucd%phys_name =>  phys_nod%phys_name(1:fem_ucd%num_field)
 !
-      d_nod_ucd =>       phys_nod%d_fld(1:nnod_ucd,1:ntot_comp_ucd)
+      fem_ucd%d_ucd                                                     &
+     &     => phys_nod%d_fld(1:fem_ucd%nnod,1:fem_ucd%ntot_comp)
 !
       end subroutine link_field_data_type_2_output
 !
@@ -108,15 +107,15 @@
       type(phys_data), intent(inout) :: phys_nod
 !
 !
-      phys_nod%num_phys =     num_field_ucd
-      phys_nod%num_phys_viz = num_field_ucd
+      phys_nod%num_phys =     fem_ucd%num_field
+      phys_nod%num_phys_viz = fem_ucd%num_field
 !
       call alloc_phys_name_type(phys_nod)
 !
       phys_nod%num_component(1:phys_nod%num_phys)                       &
-     &           = num_comp_ucd(1:phys_nod%num_phys)
+     &           = fem_ucd%num_comp(1:phys_nod%num_phys)
       phys_nod%phys_name(1:phys_nod%num_phys)                           &
-     &           = phys_name_ucd(1:phys_nod%num_phys)
+     &           = fem_ucd%phys_name(1:phys_nod%num_phys)
 !
       call s_cal_total_and_stacks(phys_nod%num_phys,                    &
      &    phys_nod%num_component, izero, phys_nod%istack_component,     &

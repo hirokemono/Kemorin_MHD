@@ -121,6 +121,7 @@
      &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
       use m_t_step_parameter
+      use m_ucd_data
       use field_IO_select
       use set_exit_flag_4_visualizer
       use ucd_IO_select
@@ -144,7 +145,7 @@
 !*
       if(i_step_output_ucd .gt. 0) then
         if( mod(i_step,i_step_output_ucd) .eq. 0) then
-          call sel_write_udt_file(my_rank, i_step)
+          call sel_write_udt_file(my_rank, i_step, fem_ucd)
         end if
       end if
 !

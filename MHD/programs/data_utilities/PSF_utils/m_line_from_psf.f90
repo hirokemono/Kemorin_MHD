@@ -36,23 +36,22 @@
       use m_psf_results
 !
 !
-      call alloc_ucd_node_t(line)
+      call allocate_ucd_node(line)
 !
       line%num_field =   nfield_psf
       line%ntot_comp = ncomptot_psf
-      call alloc_ucd_phys_name_t(line)
+      call allocate_ucd_phys_name(line)
 !
       if(line%num_field .gt. 0) then
         line%num_comp =     ncomp_psf
         line%phys_name = psf_data_name
       end if
-      line%istack_comp = istack_comp_psf
 !
-      call alloc_ucd_phys_data_t(line)
+      call allocate_ucd_phys_data(line)
 !
       line%nele = line%nnod/3 + 1
       line%nnod_4_ele = 3
-      call alloc_ucd_ele_t(line)
+      call allocate_ucd_ele(line)
 !
       end subroutine allocate_psf_data_on_line
 !
@@ -61,9 +60,9 @@
       subroutine deallocate_psf_data_on_line
 !
 !
-      call dealloc_ucd_data_t(line)
-      call dealloc_ucd_ele_t(line)
-      call dealloc_ucd_node_t(line)
+      call deallocate_ucd_data(line)
+      call deallocate_ucd_ele(line)
+      call deallocate_ucd_node(line)
 !
       end subroutine deallocate_psf_data_on_line
 !
@@ -73,15 +72,15 @@
       subroutine write_psf_line_data(file_header, istep)
 !
       use m_geometry_constants
-      use ucd_type_file_IO
+      use ucd_IO_select
 !
       character(len=kchara), intent(in) :: file_header
       integer(kind = kint), intent(in) :: istep
       integer(kind = kint), parameter :: delete_process = -1
 !
 !
-      line%header_name = file_header
-      call write_ucd_type_file(delete_process, istep, line)
+      line%file_prefix = file_header
+      call sel_write_ucd_file(delete_process, istep, line)
       call deallocate_psf_data_on_line
 !
       end subroutine write_psf_line_data

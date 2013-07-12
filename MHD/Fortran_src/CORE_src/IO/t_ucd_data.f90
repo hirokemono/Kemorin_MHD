@@ -7,21 +7,21 @@
 !>@brief Structure for Field data IO
 !!
 !!@verbatim
-!!      subroutine alloc_ucd_node_t(ucd)
-!!      subroutine alloc_ucd_ele_t(ucd)
-!!      subroutine alloc_ucd_phys_name_t(ucd)
-!!      subroutine alloc_ucd_phys_data_t(ucd)
+!!      subroutine allocate_ucd_node(ucd)
+!!      subroutine allocate_ucd_ele(ucd)
+!!      subroutine allocate_ucd_phys_name(ucd)
+!!      subroutine allocate_ucd_phys_data(ucd)
 !!
-!!      subroutine dealloc_ucd_node_t(ucd)
-!!      subroutine dealloc_ucd_ele_t(ucd)
-!!      subroutine dealloc_ucd_phys_data_t(ucd)
-!!      subroutine dealloc_ucd_phys_name_t(ucd)
-!!      subroutine dealloc_ucd_data_t(ucd)
+!!      subroutine deallocate_ucd_node(ucd)
+!!      subroutine deallocate_ucd_ele(ucd)
+!!      subroutine deallocate_ucd_phys_data(ucd)
+!!      subroutine deallocate_ucd_phys_name(ucd)
+!!      subroutine deallocate_ucd_data(ucd)
 !!
-!!      subroutine disconnect_ucd_node_t(ucd)
-!!      subroutine disconnect_ucd_data_t(ucd)
+!!      subroutine disconnect_ucd_node(ucd)
+!!      subroutine disconnect_ucd_data(ucd)
 !!
-!!      subroutine cal_istack_ucd_comp_type(ucd)
+!!      subroutine cal_istack_ucd_component(ucd)
 !!
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
@@ -41,10 +41,10 @@
 !
 !
 !>        file header for field data
-        character(len=kchara) :: header_name = "field/out"
+        character(len=kchara) :: file_prefix = "field/out"
 !
 !>        file type for field data IO
-        integer (kind = kint) :: itype_data_file = iflag_fld
+        integer (kind = kint) :: ifmt_file = iflag_fld
 !
 !>        number of nodes for field data
         integer(kind = kint) :: nnod
@@ -61,11 +61,6 @@
         integer(kind = kint), pointer :: iele_global(:)
 !>        element connectivity
         integer(kind = kint), pointer :: ie(:,:)
-!>        element flag for hexahedral element
-        character (len=5) :: hexmark = ' hex '
-!>        element flag for triangle element
-        character (len=5) :: trimark = ' tri '
-!
 !
 !>        number of field for IO
         integer(kind=kint) :: num_field
@@ -73,8 +68,6 @@
         integer(kind=kint) :: ntot_comp
 !>        number of component for each field
         integer(kind=kint), pointer :: num_comp(:)
-!>        end address of component for each field
-        integer(kind=kint), pointer :: istack_comp(:)
 !>        field name
         character (len=kchara), pointer :: phys_name(:)
 !
@@ -88,7 +81,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_ucd_node_t(ucd)
+      subroutine allocate_ucd_node(ucd)
 !
       type(ucd_data), intent(inout) :: ucd
 !
@@ -101,11 +94,11 @@
         ucd%inod_global = 0
       end if
 !
-      end subroutine alloc_ucd_node_t
+      end subroutine allocate_ucd_node
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_ucd_ele_t(ucd)
+      subroutine allocate_ucd_ele(ucd)
 !
       type(ucd_data), intent(inout) :: ucd
 !
@@ -118,28 +111,26 @@
         ucd%iele_global =   0
       end if
 !
-      end subroutine alloc_ucd_ele_t
+      end subroutine allocate_ucd_ele
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_ucd_phys_name_t(ucd)
+      subroutine allocate_ucd_phys_name(ucd)
 !
       type(ucd_data), intent(inout) :: ucd
 !
 !
       allocate( ucd%num_comp(ucd%num_field) )
-      allocate( ucd%istack_comp(0:ucd%num_field) )
       allocate( ucd%phys_name(ucd%num_field) )
 !
-      ucd%istack_comp = 0
       if(ucd%num_field .gt. 0) ucd%num_comp = 0
 !
-      end subroutine alloc_ucd_phys_name_t
+      end subroutine allocate_ucd_phys_name
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_ucd_phys_data_t(ucd)
+      subroutine allocate_ucd_phys_data(ucd)
 !
       type(ucd_data), intent(inout) :: ucd
 !
@@ -147,105 +138,104 @@
       allocate(ucd%d_ucd(ucd%nnod,ucd%ntot_comp) )
       if( (ucd%nnod*ucd%ntot_comp) .gt. 0) ucd%d_ucd = 0.0d0
 !
-      end subroutine alloc_ucd_phys_data_t
+      end subroutine allocate_ucd_phys_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_ucd_node_t(ucd)
+      subroutine deallocate_ucd_node(ucd)
 !
       type(ucd_data), intent(inout) :: ucd
 !
 !
       deallocate(ucd%xx, ucd%inod_global)
 !
-      end subroutine dealloc_ucd_node_t
+      end subroutine deallocate_ucd_node
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_ucd_ele_t(ucd)
+      subroutine deallocate_ucd_ele(ucd)
 !
       type(ucd_data), intent(inout) :: ucd
 !
 !
       deallocate(ucd%ie, ucd%iele_global)
 !
-      end subroutine dealloc_ucd_ele_t
+      end subroutine deallocate_ucd_ele
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_ucd_phys_data_t(ucd)
+      subroutine deallocate_ucd_phys_data(ucd)
 !
       type(ucd_data), intent(inout) :: ucd
 !
 !
       deallocate(ucd%d_ucd)
 !
-      end subroutine dealloc_ucd_phys_data_t
+      end subroutine deallocate_ucd_phys_data
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_ucd_phys_name_t(ucd)
+      subroutine deallocate_ucd_phys_name(ucd)
 !
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      deallocate(ucd%num_comp, ucd%istack_comp)
-      deallocate(ucd%phys_name)
+      deallocate(ucd%num_comp, ucd%phys_name)
 !
-      end subroutine dealloc_ucd_phys_name_t
+      end subroutine deallocate_ucd_phys_name
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_ucd_data_t(ucd)
+      subroutine deallocate_ucd_data(ucd)
 !
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      call dealloc_ucd_phys_name_t(ucd)
-      call dealloc_ucd_phys_data_t(ucd)
+      call deallocate_ucd_phys_name(ucd)
+      call deallocate_ucd_phys_data(ucd)
 !
-      end subroutine dealloc_ucd_data_t
+      end subroutine deallocate_ucd_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine disconnect_ucd_node_t(ucd)
+      subroutine disconnect_ucd_node(ucd)
 !
       type(ucd_data), intent(inout) :: ucd
 !
 !
       nullify(ucd%xx, ucd%inod_global)
 !
-      end subroutine disconnect_ucd_node_t
+      end subroutine disconnect_ucd_node
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine disconnect_ucd_data_t(ucd)
+      subroutine disconnect_ucd_data(ucd)
 !
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      nullify(ucd%num_comp, ucd%istack_comp)
+      nullify(ucd%num_comp)
       nullify(ucd%phys_name, ucd%d_ucd)
 !
-      end subroutine disconnect_ucd_data_t
+      end subroutine disconnect_ucd_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_istack_ucd_comp_type(ucd)
-!
-      use m_constants
-      use cal_minmax_and_stacks
+      subroutine cal_istack_ucd_component(ucd)
 !
       type(ucd_data), intent(inout) :: ucd
+      integer(kind = kint) :: inum
 !
 !
-      call s_cal_total_and_stacks(ucd%num_field, ucd%num_comp,          &
-     &    izero, ucd%istack_comp, ucd%ntot_comp)
+      ucd%ntot_comp = 0
+      do inum = 1, ucd%num_field
+        ucd%ntot_comp = ucd%ntot_comp + ucd%num_comp(inum)
+      end do
 !
-      end subroutine cal_istack_ucd_comp_type
+      end subroutine cal_istack_ucd_component
 !
 ! -------------------------------------------------------------------
 !

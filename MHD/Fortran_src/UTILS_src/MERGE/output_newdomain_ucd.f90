@@ -35,33 +35,31 @@
       integer (kind = kint) :: ip, my_rank
 !
 !
-      num_field_ucd = merged_fld%num_phys
-      ntot_comp_ucd = merged_fld%ntot_phys
-      call allocate_ucd_phys_name
+      fem_ucd%num_field = merged_fld%num_phys
+      fem_ucd%ntot_comp = merged_fld%ntot_phys
+      call allocate_ucd_phys_name(fem_ucd)
 !
-      istack_comp_ucd(0:num_field_ucd)                                  &
-     &     = merged_fld%istack_component(0:num_field_ucd)
-      num_comp_ucd(1:num_field_ucd)                                     &
-     &     = merged_fld%num_component(1:num_field_ucd)
-      phys_name_ucd(1:num_field_ucd)                                    &
-     &     = merged_fld%phys_name(1:num_field_ucd)
+      fem_ucd%num_comp(1:fem_ucd%num_field)                             &
+     &     = merged_fld%num_component(1:fem_ucd%num_field)
+      fem_ucd%phys_name(1:fem_ucd%num_field)                            &
+     &     = merged_fld%phys_name(1:fem_ucd%num_field)
 !
-      ucd_header_name =     new_udt_head
-      itype_ucd_data_file = itype_assembled_data
+      fem_ucd%file_prefix =     new_udt_head
+      fem_ucd%ifmt_file = itype_assembled_data
       do ip = 1, num_pe2
         my_rank = ip - 1
 !
-        nnod_ucd = subdomains_2(ip)%node%numnod
-        call allocate_ucd_node
-        call allocate_ucd_phys_data
+        fem_ucd%nnod = subdomains_2(ip)%node%numnod
+        call allocate_ucd_node(fem_ucd)
+        call allocate_ucd_phys_data(fem_ucd)
 !
         call copy_domain_data_from_global(ip)
-        call sel_write_udt_file(my_rank, istep)
+        call sel_write_udt_file(my_rank, istep, fem_ucd)
 !
-        call deallocate_ucd_phys_data
-        call deallocate_ucd_node
+        call deallocate_ucd_phys_data(fem_ucd)
+        call deallocate_ucd_node(fem_ucd)
       end do
-      call deallocate_ucd_phys_name
+      call deallocate_ucd_phys_name(fem_ucd)
 !
       end subroutine assemble_2nd_udt_phys
 !
@@ -76,20 +74,20 @@
       integer(kind = kint) :: ip, my_rank
 !
 !
-      ucd_header_name =    new_udt_head
-      itype_ucd_data_file = itype_assembled_data
+      fem_ucd%file_prefix =    new_udt_head
+      fem_ucd%ifmt_file = itype_assembled_data
       do ip = 1, num_pe2
         my_rank = ip - 1
 !
-        nnod_ucd = subdomains_2(ip)%node%numnod
-        call allocate_ucd_node
+        fem_ucd%nnod = subdomains_2(ip)%node%numnod
+        call allocate_ucd_node(fem_ucd)
         call copy_node_posi_from_global(ip)
 !
         call count_udt_elements                                         &
      &     (subdomains_2(ip)%node%internal_node,                        &
      &      subdomains_2(ip)%ele%numele,                                &
      &      subdomains_2(ip)%ele%nnod_4_ele, subdomains_2(ip)%ele%ie)
-        call allocate_ucd_ele
+        call allocate_ucd_ele(fem_ucd)
 !
         call set_udt_global_connect                                     &
      &     (subdomains_2(ip)%node%internal_node,                        &
@@ -97,13 +95,13 @@
      &      subdomains_2(ip)%ele%nnod_4_ele,                            &
      &      subdomains_2(ip)%ele%iele_global, subdomains_2(ip)%ele%ie)
 !
-        call sel_write_grd_file(my_rank)
+        call sel_write_grd_file(my_rank, fem_ucd)
 !
-        call deallocate_ucd_node
+        call deallocate_ucd_node(fem_ucd)
 !
-        if(   mod(itype_ucd_data_file,100)/10 .eq. iflag_vtd/10         &
-       & .or. mod(itype_ucd_data_file,100)/10 .eq. iflag_udt/10) then
-          call deallocate_ucd_ele
+        if(   mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_vtd/10           &
+       & .or. mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_udt/10) then
+          call deallocate_ucd_ele(fem_ucd)
         end if
       end do
 !
@@ -120,12 +118,12 @@
 !
       do inum = 1, subdomains_2(ip)%node%numnod
         inod = subdomains_2(ip)%node%inod_global(inum)
-        inod_gl_ucd(inum) = inod
+        fem_ucd%inod_global(inum) = inod
         if (inod .le. merged%node%numnod) then
-          d_nod_ucd(inum,1:ntot_comp_ucd)                               &
-     &        = merged_fld%d_fld(inod,1:ntot_comp_ucd)
+          fem_ucd%d_ucd(inum,1:fem_ucd%ntot_comp)                       &
+     &        = merged_fld%d_fld(inod,1:fem_ucd%ntot_comp)
         else
-          d_nod_ucd(inum,1:ntot_comp_ucd) = zero
+          fem_ucd%d_ucd(inum,1:fem_ucd%ntot_comp) = zero
         end if
       end do
 !
@@ -139,10 +137,10 @@
       integer (kind = kint) :: inum, inod
 !
 !
-      do inum = 1, nnod_ucd
+      do inum = 1, fem_ucd%nnod
         inod = subdomains_2(ip)%node%inod_global(inum)
-        inod_gl_ucd(inum) = inod
-        xx_ucd(inum,1:3) = merged%node%xx(inod,1:3)
+        fem_ucd%inod_global(inum) = inod
+        fem_ucd%xx(inum,1:3) = merged%node%xx(inod,1:3)
       end do
 !
       end subroutine copy_node_posi_from_global

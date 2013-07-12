@@ -76,23 +76,23 @@
       integer(kind = kint) :: icou
 !
 !
-      num_field_ucd = 0
-      if(iphys%i_temp  .gt. 0)  num_field_ucd = num_field_ucd + 1
-      if(iphys%i_velo  .gt. 0)  num_field_ucd = num_field_ucd + 1
-      if(iphys%i_magne .gt. 0)  num_field_ucd = num_field_ucd + 1
+      fem_ucd%num_field = 0
+      if(iphys%i_temp  .gt. 0) fem_ucd%num_field = fem_ucd%num_field+1
+      if(iphys%i_velo  .gt. 0) fem_ucd%num_field = fem_ucd%num_field+1
+      if(iphys%i_magne .gt. 0) fem_ucd%num_field = fem_ucd%num_field+1
 !
-      call allocate_ucd_phys_name
+      call allocate_ucd_phys_name(fem_ucd)
 !
-      num_comp_ucd(1:num_field_ucd) = ione
-      call cal_istack_ucd_component
+      fem_ucd%num_comp(1:fem_ucd%num_field) = ione
+      call cal_istack_ucd_component(fem_ucd)
 !
-      nnod_ucd =      numnod
-      call allocate_ucd_phys_data
+      fem_ucd%nnod =      numnod
+      call allocate_ucd_phys_data(fem_ucd)
 !
       icou = 0
       if(iphys%i_temp  .gt. 0) then
         icou = icou + 1
-        phys_name_ucd(icou) = fhd_temp_scale
+        fem_ucd%phys_name(icou) = fhd_temp_scale
         call cal_length_scale_by_diffuse1(iphys%i_temp,                 &
      &      iphys%i_t_diffuse)
         call set_one_field_to_udt_data(numnod, ione, icou, d_mag(1) )
@@ -100,22 +100,22 @@
 !
       if(iphys%i_velo  .gt. 0) then
         icou = icou + 1
-        phys_name_ucd(icou) = fhd_velocity_scale
+        fem_ucd%phys_name(icou) = fhd_velocity_scale
         call cal_vect_length_scale_by_rot(iphys%i_velo, iphys%i_vort)
         call set_one_field_to_udt_data(numnod, ione, icou, d_mag(1) )
       end if
 !
       if(iphys%i_magne .gt. 0) then
         icou = icou + 1
-        phys_name_ucd(3) =    fhd_magnetic_scale
+        fem_ucd%phys_name(3) =    fhd_magnetic_scale
         call cal_vect_length_scale_by_rot(iphys%i_magne,                &
      &      iphys%i_current)
         call set_one_field_to_udt_data(numnod, ione, icou, d_mag(1) )
       end if
 !
-      ucd_header_name = result_udt_file_head
-      call sel_write_udt_file(my_rank, ucd_step)
-      call deallocate_ucd_data
+      fem_ucd%file_prefix = result_udt_file_head
+      call sel_write_udt_file(my_rank, ucd_step, fem_ucd)
+      call deallocate_ucd_data(fem_ucd)
 !
       end subroutine const_MHD_length_scales
 !

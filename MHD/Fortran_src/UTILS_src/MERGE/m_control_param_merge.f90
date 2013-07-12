@@ -135,7 +135,7 @@
 !
       call set_control_restart_file_def
       call set_control_ucd_file_def
-      udt_original_header = ucd_header_name
+      udt_original_header = fem_ucd%file_prefix
 !
       call choose_ucd_file_format(udt_file_fmt_ctl, i_udt_files_fmt,    &
      &    itype_org_ucd_file)

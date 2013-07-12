@@ -61,24 +61,24 @@
        integer (kind = kint) :: i
 !
 !
-      nnod_ucd = ione
-      itype_ucd_data_file = itype_org_ucd_file
-      ucd_header_name = udt_original_header
-      call sel_read_udt_param(izero, istep)
-      call deallocate_ucd_phys_data
+      fem_ucd%nnod = ione
+      fem_ucd%ifmt_file = itype_org_ucd_file
+      fem_ucd%file_prefix = udt_original_header
+      call sel_read_udt_param(izero, istep, fem_ucd)
+      call deallocate_ucd_phys_data(fem_ucd)
 !
-      org_fld%num_phys =    num_field_ucd
+      org_fld%num_phys =    fem_ucd%num_field
       call allocate_subdomain_parameters
 !
       org_fld%istack_component(0) = 0
       do i = 1, org_fld%num_phys
-        org_fld%num_component(i) =     num_comp_ucd(i)
-        org_fld%phys_name(i) =         phys_name_ucd(i)
+        org_fld%num_component(i) =     fem_ucd%num_comp(i)
+        org_fld%phys_name(i) =         fem_ucd%phys_name(i)
         org_fld%istack_component(i) = org_fld%istack_component(i-1)     &
      &                              + org_fld%num_component(i)
       end do
 !
-      call deallocate_ucd_phys_name
+      call deallocate_ucd_phys_name(fem_ucd)
 !
       end subroutine init_ucd_data_4_merge
 !
@@ -100,25 +100,25 @@
 ! * PES loops 
 ! ========================
 !
-      num_field_ucd = org_fld%num_phys
-      ntot_comp_ucd = org_fld%istack_component(org_fld%num_phys)
-      call allocate_ucd_phys_name
+      fem_ucd%num_field = org_fld%num_phys
+      fem_ucd%ntot_comp = org_fld%istack_component(org_fld%num_phys)
+      call allocate_ucd_phys_name(fem_ucd)
 !
-      itype_ucd_data_file = itype_org_ucd_file
-      ucd_header_name = udt_original_header
+      fem_ucd%ifmt_file = itype_org_ucd_file
+      fem_ucd%file_prefix = udt_original_header
 !
       do ip =1, num_pe
         my_rank = ip - 1
-        nnod_ucd = subdomain(ip)%node%numnod
-        call allocate_ucd_phys_data
+        fem_ucd%nnod = subdomain(ip)%node%numnod
+        call allocate_ucd_phys_data(fem_ucd)
 !
-        call sel_read_udt_file(my_rank, istep)
+        call sel_read_udt_file(my_rank, istep, fem_ucd)
 !
         call copy_udt_field_data_merge(ip, org_fld, ifield_2_copy)
 !
-        call deallocate_ucd_phys_data
+        call deallocate_ucd_phys_data(fem_ucd)
       end do
-      call deallocate_ucd_phys_name
+      call deallocate_ucd_phys_name(fem_ucd)
 !
       end subroutine read_ucd_data_4_merge
 !

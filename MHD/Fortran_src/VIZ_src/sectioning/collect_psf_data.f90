@@ -47,8 +47,8 @@
      &    istack_ele_output_psf)
 !
       if(my_rank .gt. 0) return
-      psf_out(1:num_psf)%header_name = psf_header(1:num_psf)
-      psf_out(1:num_psf)%itype_data_file = itype_psf_file(1:num_psf)
+      psf_out(1:num_psf)%file_prefix = psf_header(1:num_psf)
+      psf_out(1:num_psf)%ifmt_file = itype_psf_file(1:num_psf)
       psf_out(1:num_psf)%nnod_4_ele = num_triangle
 !
       do i_psf = 1, num_psf
@@ -59,16 +59,12 @@
         psf_out(i_psf)%num_field = num_psf_output(i_psf)
         psf_out(i_psf)%ntot_comp = num_psf_out_comp(i_psf)
 !
-        call alloc_ucd_phys_name_t( psf_out(i_psf) )
+        call allocate_ucd_phys_name( psf_out(i_psf) )
         ist = istack_psf_output(i_psf-1)
 !
-        psf_out(i_psf)%istack_comp(0) = 0
         do i_fld = 1, psf_out(i_psf)%num_field
           psf_out(i_psf)%phys_name(i_fld) = name_psf_output(ist+i_fld)
           psf_out(i_psf)%num_comp(i_fld) =  ncomp_psf_output(ist+i_fld)
-          psf_out(i_psf)%istack_comp(i_fld)                             &
-     &          =  psf_out(i_psf)%istack_comp(i_fld-1)                  &
-     &            + ncomp_psf_output(ist+i_fld)
         end do
       end do
 !
@@ -150,8 +146,8 @@
      &    istack_ele_output_iso)
 !
       if(my_rank .gt. 0) return
-      iso_out(1:num_iso)%header_name = iso_header(1:num_iso)
-      iso_out(1:num_iso)%itype_data_file = itype_iso_file(1:num_iso)
+      iso_out(1:num_iso)%file_prefix = iso_header(1:num_iso)
+      iso_out(1:num_iso)%ifmt_file = itype_iso_file(1:num_iso)
       iso_out(1:num_iso)%nnod_4_ele = num_triangle
 !
       do i_iso = 1, num_iso
@@ -162,16 +158,12 @@
         iso_out(i_iso)%num_field = num_iso_output(i_iso)
         iso_out(i_iso)%ntot_comp = num_iso_out_comp(i_iso)
 !
-        call alloc_ucd_phys_name_t( iso_out(i_iso) )
+        call allocate_ucd_phys_name( iso_out(i_iso) )
 !
         ist = istack_iso_output(i_iso-1)
-        iso_out(i_iso)%istack_comp(0) = 0
         do i_fld = 1, iso_out(i_iso)%num_field
           iso_out(i_iso)%phys_name(i_fld) = name_iso_output(ist+i_fld)
           iso_out(i_iso)%num_comp(i_fld) =  ncomp_iso_output(ist+i_fld)
-          iso_out(i_iso)%istack_comp(i_fld)                             &
-     &          =  iso_out(i_iso)%istack_comp(i_fld-1)                  &
-     &            + ncomp_iso_output(ist+i_fld)
         end do
       end do
 !

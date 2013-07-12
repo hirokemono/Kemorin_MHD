@@ -34,19 +34,19 @@
       call link_local_mesh_4_ucd
       call link_field_data_2_output
 !
-      if (itype_ucd_data_file/100 .eq. iflag_single/100) then
+      if (fem_ucd%ifmt_file/100 .eq. iflag_single/100) then
         call init_merged_ucd
       end if
 !
       call sel_write_parallel_ucd_mesh
 !
-      if(   mod(itype_ucd_data_file,100)/10 .eq. iflag_udt/10           &
-     & .or. mod(itype_ucd_data_file,100)/10 .eq. iflag_vtd/10) then
-        call deallocate_ucd_ele
+      if(   mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_udt/10             &
+     & .or. mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_vtd/10) then
+        call deallocate_ucd_ele(fem_ucd)
       end if
 !
-      if(mod(itype_ucd_data_file,100)/10 .eq. iflag_vtd/10) then
-        call deallocate_ucd_node
+      if(mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_vtd/10) then
+        call deallocate_ucd_node(fem_ucd)
       end if
 !
 !
@@ -70,19 +70,19 @@
       call link_local_mesh_4_ucd
       call link_field_data_2_output
 !
-      if (itype_ucd_data_file/100 .eq. iflag_single/100) then
+      if (fem_ucd%ifmt_file/100 .eq. iflag_single/100) then
         call init_merged_ucd
       end if
 !
       call copy_time_steps_to_restart
       call sel_write_parallel_ucd_file(istep_ucd)
 !
-      call deallocate_ucd_node
+      call deallocate_ucd_node(fem_ucd)
 !
-      call deallocate_ucd_ele
-      call disconnect_ucd_data
+      call deallocate_ucd_ele(fem_ucd)
+      call disconnect_ucd_data(fem_ucd)
 !
-      if (itype_ucd_data_file/100 .eq. iflag_single/100) then
+      if (fem_ucd%ifmt_file/100 .eq. iflag_single/100) then
         call finalize_merged_ucd
       end if
 !

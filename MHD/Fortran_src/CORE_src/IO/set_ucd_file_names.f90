@@ -57,14 +57,15 @@
       integer(kind=kint), intent(in) :: nprocs, istep_ucd
 !
       integer(kind=kint) :: my_rank, ip
+      character(len=kchara) :: file_name
 !
 !
       do ip = 1, nprocs
         my_rank = ip - 1
-        call set_parallel_ucd_file_name(ucd_header_name,                &
-     &    itype_ucd_data_file, my_rank, istep_ucd, ucd_file_name)
+        call set_parallel_ucd_file_name(fem_ucd%file_prefix,            &
+     &    fem_ucd%ifmt_file, my_rank, istep_ucd, file_name)
 !
-        call delete_file_by_f(ucd_file_name)
+        call delete_file_by_f(file_name)
       end do
 !
       end subroutine delete_para_ucd_file

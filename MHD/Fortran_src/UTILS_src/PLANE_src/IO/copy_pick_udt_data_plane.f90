@@ -48,7 +48,7 @@
               ic = icomp_target(j) + ifield_target(j)
               ii = inod_global+(j-1)*nnod_target
 !
-              phys_data(ii) = d_nod_ucd(inod,ic)
+              phys_data(ii) = fem_ucd%d_ucd(inod,ic)
             end if
           end do
 !

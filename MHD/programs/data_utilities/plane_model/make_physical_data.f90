@@ -302,11 +302,11 @@
 !
 !    output data
 !
-        itype_ucd_data_file = iflag
-        call sel_write_ucd_file(izero, istep)
+        fem_ucd%ifmt_file = iflag
+        call sel_write_ucd_file(izero, istep, fem_ucd)
       end do
 !
-      call disconnect_ucd_data
-      call disconnect_ucd_node
+      call disconnect_ucd_data(fem_ucd)
+      call disconnect_ucd_node(fem_ucd)
 !
       end program make_physical_data

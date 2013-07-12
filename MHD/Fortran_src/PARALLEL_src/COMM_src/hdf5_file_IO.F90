@@ -49,7 +49,7 @@
 !
       nnod = internod_ucd_list(my_rank+1)
       allocate( fld_hdf5(9*nnod) )
-      allocate( ie_hdf5(8,nele_ucd) )
+      allocate( ie_hdf5(8,fem_ucd%nele) )
 !
 #ifdef HDF5_IO
       call h5open_f(hdferr)
@@ -90,9 +90,9 @@
 !
 !
 !$omp parallel do
-      do iele = 1, nele_ucd
-        do k1 = 1, nnod_4_ele_ucd
-          ie_hdf5(k1,iele) = ie_ucd(iele,k1) - 1
+      do iele = 1, fem_ucd%nele
+        do k1 = 1, fem_ucd%nnod_4_ele
+          ie_hdf5(k1,iele) = fem_ucd%ie(iele,k1) - 1
         end do
       end do
 !$omp end parallel do
@@ -108,9 +108,9 @@
 !
 !$omp parallel do
       do inod = 1, internod_ucd_list(my_rank+1)
-        fld_hdf5(3*inod-2) = xx_ucd(inod,1)
-        fld_hdf5(3*inod-1) = xx_ucd(inod,2)
-        fld_hdf5(3*inod  ) = xx_ucd(inod,3)
+        fld_hdf5(3*inod-2) = fem_ucd%xx(inod,1)
+        fld_hdf5(3*inod-1) = fem_ucd%xx(inod,2)
+        fld_hdf5(3*inod  ) = fem_ucd%xx(inod,3)
       end do
 !$omp end parallel do
 !
@@ -127,7 +127,7 @@
       ncomp_hdf5 = 1
 !$omp parallel do
       do inod = 1, internod_ucd_list(my_rank+1)
-        fld_hdf5(inod) = d_nod_ucd(inod,ist_fld+1)
+        fld_hdf5(inod) = fem_ucd%d_ucd(inod,ist_fld+1)
       end do
 !$omp end parallel do
 !
@@ -144,9 +144,9 @@
       ncomp_hdf5 = 3
 !$omp parallel do
       do inod = 1, internod_ucd_list(my_rank+1)
-        fld_hdf5(3*inod-2) = d_nod_ucd(inod,ist_fld+1)
-        fld_hdf5(3*inod-1) = d_nod_ucd(inod,ist_fld+2)
-        fld_hdf5(3*inod  ) = d_nod_ucd(inod,ist_fld+3)
+        fld_hdf5(3*inod-2) = fem_ucd%d_ucd(inod,ist_fld+1)
+        fld_hdf5(3*inod-1) = fem_ucd%d_ucd(inod,ist_fld+2)
+        fld_hdf5(3*inod  ) = fem_ucd%d_ucd(inod,ist_fld+3)
       end do
 !$omp end parallel do
 !
@@ -163,15 +163,15 @@
       ncomp_hdf5 = 9
 !$omp parallel do
       do inod = 1, internod_ucd_list(my_rank+1)
-        fld_hdf5(9*inod-8) = d_nod_ucd(inod,ist_fld+1)
-        fld_hdf5(9*inod-7) = d_nod_ucd(inod,ist_fld+2)
-        fld_hdf5(9*inod-6) = d_nod_ucd(inod,ist_fld+3)
-        fld_hdf5(9*inod-5) = d_nod_ucd(inod,ist_fld+1)
-        fld_hdf5(9*inod-4) = d_nod_ucd(inod,ist_fld+4)
-        fld_hdf5(9*inod-3) = d_nod_ucd(inod,ist_fld+5)
-        fld_hdf5(9*inod-2) = d_nod_ucd(inod,ist_fld+3)
-        fld_hdf5(9*inod-1) = d_nod_ucd(inod,ist_fld+5)
-        fld_hdf5(9*inod  ) = d_nod_ucd(inod,ist_fld+6)
+        fld_hdf5(9*inod-8) = fem_ucd%d_ucd(inod,ist_fld+1)
+        fld_hdf5(9*inod-7) = fem_ucd%d_ucd(inod,ist_fld+2)
+        fld_hdf5(9*inod-6) = fem_ucd%d_ucd(inod,ist_fld+3)
+        fld_hdf5(9*inod-5) = fem_ucd%d_ucd(inod,ist_fld+1)
+        fld_hdf5(9*inod-4) = fem_ucd%d_ucd(inod,ist_fld+4)
+        fld_hdf5(9*inod-3) = fem_ucd%d_ucd(inod,ist_fld+5)
+        fld_hdf5(9*inod-2) = fem_ucd%d_ucd(inod,ist_fld+3)
+        fld_hdf5(9*inod-1) = fem_ucd%d_ucd(inod,ist_fld+5)
+        fld_hdf5(9*inod  ) = fem_ucd%d_ucd(inod,ist_fld+6)
       end do
 !$omp end parallel do
 !
@@ -203,7 +203,7 @@
       integer :: hdferr
 !
 !
-      call set_merged_hdf_mesh_file_name(ucd_header_name, file_name)
+      call set_merged_hdf_mesh_file_name(fem_ucd%file_prefix, file_name)
 !
 ! Remove our own counts from the offset
 !
@@ -238,7 +238,7 @@
 ! Element data set dimensions are (number of elements) x (nodes per element)
 !
         dataspace_dims = 2
-        elem_dataspace_dim(1) = nnod_4_ele_ucd
+        elem_dataspace_dim(1) = fem_ucd%nnod_4_ele
         elem_dataspace_dim(2) = istack_ele_ucd_list(nprocs)
         call h5screate_simple_f(dataspace_dims, elem_dataspace_dim,     &
             elem_dataspace_id, hdferr)
@@ -274,8 +274,8 @@
 !
 ! And similarly create file/memory hyperslabs for elements
 !
-        hyperslab_size(1) = nnod_4_ele_ucd
-        hyperslab_size(2) = nele_ucd
+        hyperslab_size(1) = fem_ucd%nnod_4_ele
+        hyperslab_size(2) = fem_ucd%nele
         hyperslab_offset(1) = 0
         hyperslab_offset(2) = istack_ele_ucd_list(my_rank)
 
@@ -302,8 +302,8 @@
 !
 ! And the element data
 !
-        buf_dims(1) = nnod_4_ele_ucd
-        buf_dims(2) = nele_ucd
+        buf_dims(1) = fem_ucd%nnod_4_ele
+        buf_dims(2) = fem_ucd%nele
         call h5dwrite_f(elem_dataset_id, H5T_NATIVE_INTEGER,            &
             ie_hdf5, buf_dims, hdferr, elem_memory_dataspace,           &
             elem_file_dataspace, plist_id)
@@ -357,7 +357,7 @@
 !
 ! Setup the filename
 !
-      call set_merged_hdf_field_file_name(ucd_header_name,              &
+      call set_merged_hdf_field_file_name(fem_ucd%file_prefix,              &
      &    cur_step, file_name)
 !
 ! Progress update
@@ -382,18 +382,18 @@
 ! Go through each of the fields
 !
       icou = 0
-      do istep = 1, num_field_ucd, 1
+      do istep = 1, fem_ucd%num_field, 1
 !
 ! Transpose the field data to fit XDMF standards
 !
-        if(num_comp_ucd(istep) .eq. n_scalar) then
+        if(fem_ucd%num_comp(istep) .eq. n_scalar) then
           call copy_scalar_field_for_hdf5(icou)
-        else if(num_comp_ucd(istep) .eq. n_vector) then
+        else if(fem_ucd%num_comp(istep) .eq. n_vector) then
           call copy_vector_field_for_hdf5(icou)
-        else if(num_comp_ucd(istep) .eq. 6) then
+        else if(fem_ucd%num_comp(istep) .eq. 6) then
           call copy_sym_tensor_field_for_hdf5(icou)
         end if
-        icou = icou + num_comp_ucd(istep)
+        icou = icou + fem_ucd%num_comp(istep)
 !
 ! Create a dataspace of the appropriate size
 !
@@ -406,7 +406,7 @@
 !
 ! Create the dataset for the field
 !
-        call h5dcreate_f(id_hdf5, trim(phys_name_ucd(istep)),           &
+        call h5dcreate_f(id_hdf5, trim(fem_ucd%phys_name(istep)),           &
      &      H5T_NATIVE_DOUBLE,  &
             field_dataspace_id, field_dataset_id, hdferr)
 !
@@ -479,7 +479,7 @@
       if (my_rank .ne. 0) return
 !
 ! Get the XDMF file location/name
-      call set_merged_snap_xdmf_file_name(ucd_header_name,              &
+      call set_merged_snap_xdmf_file_name(fem_ucd%file_prefix,              &
      &    cur_vis_step, xdmf_dir_file)
 ! Open the XDMF file to append
       call parallel_write_xdmf_file(xdmf_dir_file, cur_vis_step)
@@ -499,7 +499,7 @@
       if (my_rank .ne. 0) return
 !
 ! Get the XDMF file location/name
-      call set_merged_xdmf_file_name(ucd_header_name, xdmf_dir_file)
+      call set_merged_xdmf_file_name(fem_ucd%file_prefix, xdmf_dir_file)
 ! Open the XDMF file to append
       call parallel_write_xdmf_file(xdmf_dir_file, cur_vis_step)
 !
@@ -550,12 +550,12 @@
 !
 !   Get the mesh file name
       call set_merged_hdf_mesh_file_name                                &
-     &   (ucd_header_name, mesh_dir_file)
+     &   (fem_ucd%file_prefix, mesh_dir_file)
       call delete_directory_name(mesh_dir_file, mesh_file_name)
 !
 !  Append field entry
       call real_to_str(time_IO, time_str)
-      call set_merged_hdf_field_file_name(ucd_header_name,              &
+      call set_merged_hdf_field_file_name(fem_ucd%file_prefix,          &
      &    cur_vis_step, field_dir_file)
       call delete_directory_name(field_dir_file, field_file_name)
       write(id_xdmf, '(2a)')                                            &
@@ -578,7 +578,7 @@
      &         '        <Topology TopologyType="Hexahedron" ',          &
                'NumberOfElements="', trim(elem_str), '">'
 !
-      call int_to_str(nnod_4_ele_ucd, tmp_str)
+      call int_to_str(fem_ucd%nnod_4_ele, tmp_str)
       write(id_xdmf, '(4a)')                                            &
      &         '          <DataItem Dimensions="', trim(elem_str),      &
      &         ' ', trim(tmp_str), '" NumberType="UInt" Format="HDF">'
@@ -587,25 +587,25 @@
       write(id_xdmf, '(a)') '          </DataItem>'
       write(id_xdmf, '(a)') '        </Topology>'
 !
-      do istep = 1, num_field_ucd, 1
-        if (num_comp_ucd(istep) .eq. 1) then
+      do istep = 1, fem_ucd%num_field, 1
+        if (fem_ucd%num_comp(istep) .eq. 1) then
           attr_str = "Scalar"
-        else if (num_comp_ucd(istep) .eq. 3) then
+        else if (fem_ucd%num_comp(istep) .eq. 3) then
           attr_str = "Vector"
-        else if (num_comp_ucd(istep) .eq. 6) then
+        else if (fem_ucd%num_comp(istep) .eq. 6) then
           attr_str = "Tensor"
         end if
 !
         write(id_xdmf, '(5a)')                                          &
-     &         '        <Attribute Name="', trim(phys_name_ucd(istep)), &
+     &         '        <Attribute Name="', trim(fem_ucd%phys_name(istep)), &
      &         '" AttributeType="', trim(attr_str), '" Center="Node">'
-        call int_to_str(num_comp_ucd(istep), tmp_str)
+        call int_to_str(fem_ucd%num_comp(istep), tmp_str)
         write(id_xdmf, '(5a)')                                          &
      &              '          <DataItem Dimensions="', trim(node_str), &
      &              ' ', trim(tmp_str), '" NumberType="Float" ',        &
                     'Precision="8" Format="HDF">'
         write(id_xdmf,'(4a)') '            ',                           &
-     &         trim(field_file_name), ':/', trim(phys_name_ucd(istep))
+     &         trim(field_file_name), ':/', trim(fem_ucd%phys_name(istep))
         write(id_xdmf, '(a)') '          </DataItem>'
         write(id_xdmf, '(a)') '        </Attribute>'
       end do

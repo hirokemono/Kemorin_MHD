@@ -14,7 +14,7 @@
 !
       use t_ucd_data
 !
-      use ucd_type_IO_select
+      use ucd_IO_select
       use read_layer_evo_file_header
       use set_model_coef_to_med_patch
 !
@@ -53,11 +53,11 @@
       call set_ele_grp_patch_2_psf_grd
       call set_psf_mesh_to_ucd_mesh(psf_ucd)
 !
-      psf_ucd%itype_data_file = iflag_udt
-      psf_ucd%header_name = tave_grp_udt_head
-      call sel_write_grd_type_file(-1, psf_ucd)
-      psf_ucd%header_name = tsig_grp_udt_head
-      call sel_write_grd_type_file(-1, psf_ucd)
+      psf_ucd%ifmt_file = iflag_udt
+      psf_ucd%file_prefix = tave_grp_udt_head
+      call sel_write_grd_file(-1, psf_ucd)
+      psf_ucd%file_prefix = tsig_grp_udt_head
+      call sel_write_grd_file(-1, psf_ucd)
 !
       call deallocate_med_grouping_patch
 !
@@ -134,12 +134,12 @@
 !
       call set_psf_mesh_to_ucd_field(psf_ucd)
 !
-      psf_ucd%itype_data_file = iflag_udt
-      psf_ucd%header_name = tave_grp_udt_head
-      call sel_write_udt_type_file(-1, istep_read, psf_ucd)
+      psf_ucd%ifmt_file = iflag_udt
+      psf_ucd%file_prefix = tave_grp_udt_head
+      call sel_write_udt_file(-1, istep_read, psf_ucd)
 !
       call set_field_to_med_patch(num_layer, num_comp,                  &
      &    comp_name, sigma_coef)
-      call sel_write_udt_type_file(-1, istep_read, psf_ucd)
+      call sel_write_udt_file(-1, istep_read, psf_ucd)
 !
       end program element_grouping_udt

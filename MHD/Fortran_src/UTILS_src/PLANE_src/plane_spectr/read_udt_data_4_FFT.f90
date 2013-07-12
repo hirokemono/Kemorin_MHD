@@ -37,11 +37,11 @@
        integer (kind = kint), intent(in) :: istep
 !
 !
-      nnod_ucd = ione
-      call sel_read_udt_param(izero, istep)
+      fem_ucd%nnod = ione
+      call sel_read_udt_param(izero, istep, fem_ucd)
 !
       call alloc_phys_name_type_by_output(plane_ucd)
-      call deallocate_ucd_phys_data
+      call deallocate_ucd_phys_data(fem_ucd)
 !
       end subroutine init_ucd_data_4_FFT
 !
@@ -63,20 +63,20 @@
 ! * PES loops 
 ! ========================
 !
-      nnod_ucd = merge_tbl%nnod_max
-      call allocate_ucd_phys_data
+      fem_ucd%nnod = merge_tbl%nnod_max
+      call allocate_ucd_phys_data(fem_ucd)
       do ip =1, num_pe
 !
         my_rank = ip - 1
-        nnod_ucd = subdomain(ip)%node%numnod
-        call sel_read_udt_file(my_rank, istep)
+        fem_ucd%nnod = subdomain(ip)%node%numnod
+        call sel_read_udt_file(my_rank, istep, fem_ucd)
 !
         call copy_and_pick_udt_data_merge                               &
      &    (subdomain(ip)%node%numnod, subdomain(ip)%node%internal_node, &
      &     num_spectr, subdomain(ip)%node%inod_global,                  &
      &     num_fft, icomp_fft, ifield_fft, phys_d)
       end do
-      call deallocate_ucd_phys_data
+      call deallocate_ucd_phys_data(fem_ucd)
 !
        end subroutine s_read_udt_data_4_FFT
 !

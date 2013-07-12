@@ -28,13 +28,13 @@
       use set_and_cal_udt_data
 !
 !
-      nnod_ucd = merge_tbl%nnod_merged
+      fem_ucd%nnod = merge_tbl%nnod_merged
       call link_node_data_type_2_output(merged%node)
 !
       call count_udt_elements(merged%node%numnod,                       &
      &    merge_tbl%nele_merged, merged%ele%nnod_4_ele,                 &
      &    merged%ele%ie)
-      call allocate_ucd_ele
+      call allocate_ucd_ele(fem_ucd)
 !
       call set_udt_global_connect(merged%node%numnod,                   &
      &    merge_tbl%nele_merged, merged%ele%nnod_4_ele,                 &
@@ -47,10 +47,10 @@
       subroutine link_merged_data_2_udt_IO
 !
 !
-      nnod_ucd = merge_tbl%nnod_merged
+      fem_ucd%nnod = merge_tbl%nnod_merged
       call link_node_data_type_2_output(merged%node)
 !
-      d_nod_ucd =>       merged_fld%d_fld
+      fem_ucd%d_ucd =>       merged_fld%d_fld
 !
       end subroutine link_merged_data_2_udt_IO
 !
@@ -59,14 +59,13 @@
       subroutine link_merged_phys_2_udt_IO
 !
 !
-      nnod_ucd = merge_tbl%nnod_merged
-      num_field_ucd =   merged_fld%num_phys
-      ntot_comp_ucd =   merged_fld%ntot_phys
+      fem_ucd%nnod =        merge_tbl%nnod_merged
+      fem_ucd%num_field =   merged_fld%num_phys
+      fem_ucd%ntot_comp =   merged_fld%ntot_phys
 !
-      istack_comp_ucd => merged_fld%istack_component
-      num_comp_ucd =>    merged_fld%num_component
-      phys_name_ucd =>   merged_fld%phys_name
-      d_nod_ucd =>       merged_fld%d_fld
+      fem_ucd%num_comp =>    merged_fld%num_component
+      fem_ucd%phys_name =>   merged_fld%phys_name
+      fem_ucd%d_ucd =>       merged_fld%d_fld
 !
       end subroutine link_merged_phys_2_udt_IO
 !

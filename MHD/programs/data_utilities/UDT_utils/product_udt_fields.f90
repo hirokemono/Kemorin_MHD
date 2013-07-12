@@ -91,20 +91,20 @@
 !
       write(*,*) 'i_step_init', i_step_init, i_step_output_ucd
       ucd_step = i_step_init / i_step_output_ucd
-      ucd_header_name = prod_udt_file1_head
-      call sel_read_udt_param(my_rank, ucd_step)
+      fem_ucd%file_prefix = prod_udt_file1_head
+      call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
 !
       call set_field_id_for_reference(product_field_1_name,             &
      &    i_field_product1, ncomp_4_product1)
-      call deallocate_ucd_data
+      call deallocate_ucd_data(fem_ucd)
 !
 !
-      ucd_header_name = prod_udt_file2_head
-      call sel_read_udt_param(my_rank, ucd_step)
+      fem_ucd%file_prefix = prod_udt_file2_head
+      call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
 !
       call set_field_id_for_reference(product_field_2_name,             &
      &    i_field_product2, ncomp_4_product2)
-      call deallocate_ucd_data
+      call deallocate_ucd_data(fem_ucd)
 !
       if(ncomp_4_product1.eq.1) then
         if(ncomp_4_product2 .eq. 1) then
@@ -166,24 +166,22 @@
       integer(kind = kint) :: nd, inod
 !
 !
-      nnod_ucd = numnod
+      fem_ucd%nnod = numnod
       ucd_step = i_step / i_step_output_ucd
 !
-      ucd_header_name = prod_udt_file1_head
-      call sel_read_udt_param(my_rank, ucd_step)
-      call sel_read_udt_file(my_rank, ucd_step)
+      fem_ucd%file_prefix = prod_udt_file1_head
+      call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
+      call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
 !
       call set_one_field_by_udt_data(numnod, ncomp_4_product1,          &
      &     i_field_product1, d_prod1)
 !
-      call deallocate_ucd_data
+      call deallocate_ucd_data(fem_ucd)
 !
 !
-      ucd_header_name = prod_udt_file2_head
-      call sel_read_udt_param(my_rank, ucd_step)
-      if (iflag_debug.eq.1) write(*,*) 'sel_read_udt_file',             &
-     &                                   prod_udt_file2_head
-      call sel_read_udt_file(my_rank, ucd_step)
+      fem_ucd%file_prefix = prod_udt_file2_head
+      call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
+      call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
 !
       call set_one_field_by_udt_data(numnod, ncomp_4_product2,          &
      &    i_field_product2, d_prod2)
@@ -198,7 +196,7 @@
          end do
        end do
 !
-        call deallocate_ucd_data
+        call deallocate_ucd_data(fem_ucd)
 !
       end subroutine set_data_for_ratio
 !
@@ -219,29 +217,27 @@
       integer(kind = kint), intent(in) :: i_step
 !
 !
-      nnod_ucd = numnod
+      fem_ucd%nnod = numnod
       ucd_step = i_step / i_step_output_ucd
 !
-      ucd_header_name = prod_udt_file1_head
-      call sel_read_udt_param(my_rank, ucd_step)
-      call sel_read_udt_file(my_rank, ucd_step)
+      fem_ucd%file_prefix = prod_udt_file1_head
+      call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
+      call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
 !
       call set_one_field_by_udt_data(numnod, ncomp_4_product1,          &
      &     i_field_product1, d_prod1)
 !
-      call deallocate_ucd_data
+      call deallocate_ucd_data(fem_ucd)
 !
 !
-      ucd_header_name = prod_udt_file2_head
-      call sel_read_udt_param(my_rank, ucd_step)
-      if (iflag_debug.eq.1) write(*,*) 'sel_read_udt_file',             &
-     &                                   prod_udt_file2_head
-      call sel_read_udt_file(my_rank, ucd_step)
+      fem_ucd%file_prefix = prod_udt_file2_head
+      call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
+      call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
 !
       call set_one_field_by_udt_data(numnod, ncomp_4_product2,          &
      &    i_field_product2, d_prod2)
 !
-      call deallocate_ucd_data
+      call deallocate_ucd_data(fem_ucd)
 !
       end subroutine set_data_for_product
 !
@@ -259,13 +255,13 @@
 !
       i_field = 0
       istack =  0
-      do i = 1, num_field_ucd
-        if (field_name .eq. phys_name_ucd(i) ) then
+      do i = 1, fem_ucd%num_field
+        if (field_name .eq. fem_ucd%phys_name(i) ) then
           i_field = istack + 1
-          ncomp =   num_comp_ucd(i)
+          ncomp =   fem_ucd%num_comp(i)
           exit
         end if
-        istack = istack + num_comp_ucd(i)
+        istack = istack + fem_ucd%num_comp(i)
       end do
 !
       if (i_field .eq. 0) then

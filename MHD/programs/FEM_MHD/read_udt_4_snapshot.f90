@@ -36,13 +36,13 @@
 !
       if (i_step .eq. (ucd_step*i_step_output_ucd) ) then
 !
-        ucd_header_name = org_ucd_header
+        fem_ucd%file_prefix = org_ucd_header
         call link_num_field_2_output
-        call sel_read_udt_param(my_rank, ucd_step)
-        call sel_read_udt_file(my_rank, ucd_step)
+        call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
+        call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
         call set_ucd_data_from_IO
 !
-        call deallocate_ucd_data
+        call deallocate_ucd_data(fem_ucd)
       end if
 !
       end subroutine read_udt_4_snap

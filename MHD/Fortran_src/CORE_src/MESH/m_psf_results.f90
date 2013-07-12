@@ -216,11 +216,10 @@
       psf_ucd%num_field = nfield_psf
       psf_ucd%ntot_comp = ncomptot_psf
       psf_ucd%num_comp =>       ncomp_psf
-      psf_ucd%istack_comp =>    istack_comp_psf
       psf_ucd%phys_name =>      psf_data_name
       psf_ucd%d_ucd =>          d_nod_psf
 !
-      psf_ucd%itype_data_file = iflag_psf_fmt
+      psf_ucd%ifmt_file = iflag_psf_fmt
 !
       end subroutine set_psf_mesh_to_ucd_field
 !

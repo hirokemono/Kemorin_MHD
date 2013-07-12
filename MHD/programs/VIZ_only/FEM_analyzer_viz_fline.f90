@@ -100,8 +100,8 @@
 !     ---------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_udt_param'
-        ucd_header_name = org_ucd_header
-      call sel_read_udt_param(my_rank, i_step_init)
+        fem_ucd%file_prefix = org_ucd_header
+      call sel_read_udt_param(my_rank, i_step_init, fem_ucd)
       call allocate_phys_data_by_output
 !
       end subroutine FEM_initialize_fline
@@ -129,9 +129,8 @@
       if(istep_fline .ge. 0) then
 !*  ----------   Count steps for visualization
 !*
-        if (iflag_debug.gt.0)  write(*,*) 'sel_read_udt_file'
-        ucd_header_name = org_ucd_header
-        call sel_read_udt_file(my_rank,i_step)
+        fem_ucd%file_prefix = org_ucd_header
+        call sel_read_udt_file(my_rank, i_step, fem_ucd)
         call set_ucd_data_from_IO
 !
         if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'

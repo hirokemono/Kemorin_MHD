@@ -101,13 +101,13 @@
         if (my_rank .lt. ndomain_org) then
           call link_num_field_2_output
 !
-          itype_ucd_data_file = itype_org_udt_file
-          ucd_header_name =     org_udt_file_head
-          call sel_read_udt_param(my_rank, ucd_step)
-          call sel_read_udt_file(my_rank, ucd_step)
+          fem_ucd%ifmt_file =   itype_org_udt_file
+          fem_ucd%file_prefix = org_udt_file_head
+          call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
+          call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
           call set_ucd_data_from_IO
 !
-          call deallocate_ucd_data
+          call deallocate_ucd_data(fem_ucd)
 !
           call phys_send_recv_all
         end if
@@ -126,11 +126,11 @@
           call link_2nd_node_data_2_output
           call link_2nd_field_data_2_output
 !
-          itype_ucd_data_file = itype_itp_udt_file
-          ucd_header_name =     itp_udt_file_head
-          call sel_write_udt_file(my_rank, ucd_step)
-          call disconnect_ucd_data
-          call disconnect_ucd_node
+          fem_ucd%ifmt_file =   itype_itp_udt_file
+          fem_ucd%file_prefix = itp_udt_file_head
+          call sel_write_udt_file(my_rank, ucd_step, fem_ucd)
+          call disconnect_ucd_data(fem_ucd)
+          call disconnect_ucd_node(fem_ucd)
         end if
       end do
 !

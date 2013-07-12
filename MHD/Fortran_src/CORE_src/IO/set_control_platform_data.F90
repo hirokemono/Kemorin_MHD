@@ -195,13 +195,13 @@
       use m_file_format_switch
 !
 !
-      itype_ucd_data_file = i_udt_header
+      fem_ucd%ifmt_file = i_udt_header
       if (i_udt_header .gt. 0) then
-        ucd_header_name = udt_file_head_ctl
+        fem_ucd%file_prefix = udt_file_head_ctl
       end if
 !
       call choose_ucd_file_format(udt_file_fmt_ctl,                     &
-     &    i_udt_files_fmt, itype_ucd_data_file)
+     &    i_udt_files_fmt, fem_ucd%ifmt_file)
 !
       end subroutine set_control_ucd_file_def
 !

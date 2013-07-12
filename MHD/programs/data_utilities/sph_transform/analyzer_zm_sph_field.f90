@@ -83,7 +83,7 @@
       do i_step = i_step_init, i_step_number
 !
 !   Input field data
-        ucd_header_name = org_ucd_header
+        fem_ucd%file_prefix = org_ucd_header
         call FEM_analyze_sph_trans(i_step, visval)
 !
 !   Transfer coordinate
@@ -98,7 +98,7 @@
         call cvt_xyz_from_sph_vec_sph_data
         call cvt_sph_to_xyz_tensor_data
 !
-        ucd_header_name = zonal_udt_head
+        fem_ucd%file_prefix = zonal_udt_head
         call FEM_analyze_back_trans(i_step, istep_psf, istep_iso,       &
      &          istep_pvr, istep_fline, visval)
 !

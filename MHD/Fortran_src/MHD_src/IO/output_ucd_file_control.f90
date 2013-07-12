@@ -78,19 +78,19 @@
       call link_local_org_mesh_4_ucd
       call link_field_data_2_output
 !
-      if (itype_ucd_data_file/100 .eq. iflag_single/100) then
+      if (fem_ucd%ifmt_file/100 .eq. iflag_single/100) then
         call init_merged_ucd
       end if
 !
       call sel_write_parallel_ucd_mesh
 !
-      if(   mod(itype_ucd_data_file,100)/10 .eq. iflag_udt/10           &
-     & .or. mod(itype_ucd_data_file,100)/10 .eq. iflag_vtd/10) then
-        call deallocate_ucd_ele
+      if(   mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_udt/10             &
+     & .or. mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_vtd/10) then
+        call deallocate_ucd_ele(fem_ucd)
       end if
 !
-      if(mod(itype_ucd_data_file,100)/10 .eq. iflag_vtd/10) then
-        call deallocate_ucd_node
+      if(mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_vtd/10) then
+        call deallocate_ucd_node(fem_ucd)
       end if
 !
       end subroutine output_grd_file_w_org_connect
@@ -107,12 +107,12 @@
       use set_and_cal_udt_data
 !
 !
-      xx_ucd =>      xx
-      inod_gl_ucd => globalnodid
+      fem_ucd%xx =>          xx
+      fem_ucd%inod_global => globalnodid
 !
       call count_udt_elements(internal_node, numele, nnod_4_ele,        &
      &    ie_org)
-      call allocate_ucd_ele
+      call allocate_ucd_ele(fem_ucd)
 !
       call set_udt_global_connect(internal_node, numele, nnod_4_ele,    &
      &    globalelmid_org, ie_org)
@@ -130,12 +130,12 @@
       use set_and_cal_udt_data
 !
 !
-      call allocate_ucd_node
+      call allocate_ucd_node(fem_ucd)
       call set_udt_local_nodes(numnod, xx)
 !
       call count_udt_elements(internal_node, numele, nnod_4_ele,        &
      &    ie_org)
-      call allocate_ucd_ele
+      call allocate_ucd_ele(fem_ucd)
 !
       call set_udt_local_connect(internal_node, numele, nnod_4_ele,     &
      &    ie_org)

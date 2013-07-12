@@ -13,7 +13,7 @@
       use m_precision
 !
       use m_parallel_var_dof
-      use ucd_type_IO_select
+      use ucd_IO_select
 !
       implicit  none
 !
@@ -36,7 +36,7 @@
       if (my_rank .ne. rank0) return
 !
       do i_psf = 1, num_psf
-        call sel_write_grd_type_file(delete_process, psf_out(i_psf))
+        call sel_write_grd_file(delete_process, psf_out(i_psf))
       end do
 !
       end subroutine output_psf_grids
@@ -54,7 +54,7 @@
 !
       if (my_rank .ne. rank0) return
       do i_psf = 1, num_psf
-        call sel_write_ucd_type_file(delete_process, istep_psf,         &
+        call sel_write_udt_file(delete_process, istep_psf,              &
      &      psf_out(i_psf))
       end do
 !
@@ -74,7 +74,7 @@
 !
       if (my_rank .ne. rank0) return
       do i_iso = 1, num_iso
-        call sel_write_ucd_type_file(delete_process, istep_iso,         &
+        call sel_write_ucd_file(delete_process, istep_iso,              &
     &       iso_out(i_iso))
       end do
 !

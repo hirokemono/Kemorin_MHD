@@ -66,13 +66,13 @@
 !
       call link_merged_grd_2_udt_IO
 !
-      itype_ucd_data_file = itype_assembled_data
-      ucd_header_name = merged_data_head
-      call sel_write_grd_file(izero)
+      fem_ucd%ifmt_file = itype_assembled_data
+      fem_ucd%file_prefix = merged_data_head
+      call sel_write_grd_file(izero, fem_ucd)
 !
-      if(    mod(itype_ucd_data_file,100)/10 .eq. iflag_vtd/10          &
-     &  .or. mod(itype_ucd_data_file,100)/10 .eq. iflag_udt/10) then
-        call deallocate_ucd_ele
+      if(    mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_vtd/10            &
+     &  .or. mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_udt/10) then
+        call deallocate_ucd_ele(fem_ucd)
       end if
 !
 !   loop for snap shots
@@ -82,11 +82,11 @@
 !
         call link_merged_phys_2_udt_IO
 !
-         itype_ucd_data_file = itype_assembled_data
-         ucd_header_name = merged_data_head
-         call sel_write_ucd_file(izero, istep)
+         fem_ucd%ifmt_file = itype_assembled_data
+         fem_ucd%file_prefix = merged_data_head
+         call sel_write_ucd_file(izero, istep, fem_ucd)
 !
-         call disconnect_ucd_data
+         call disconnect_ucd_data(fem_ucd)
 !
       write(*,*) 'step', istep, 'finish '
       end do

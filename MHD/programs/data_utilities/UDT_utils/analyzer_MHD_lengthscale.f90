@@ -36,12 +36,12 @@
       use m_ctl_data_product_udt
       use m_geometry_parameter
       use m_geometry_data
+      use m_ucd_data
       use nodal_vector_send_recv
       use load_mesh_data
       use const_mesh_info
       use product_udt_fields
       use set_fixed_time_step_params
-      use m_geometry_data
 !
 !
       if (my_rank.eq.0) then
@@ -83,10 +83,10 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'sel_read_udt_param'
-      ucd_header_name = org_ucd_header
-      nnod_ucd = numnod
-      inod_gl_ucd => globalnodid
-      call sel_read_udt_param(my_rank, i_step_init)
+      fem_ucd%file_prefix = org_ucd_header
+      fem_ucd%nnod = numnod
+      fem_ucd%inod_global => globalnodid
+      call sel_read_udt_param(my_rank, i_step_init, fem_ucd)
       call allocate_phys_data_by_output
 !
       call allocate_work_4_lscale
@@ -113,13 +113,11 @@
         if ( mod(i_step,i_step_output_ucd) .eq. 0) then
           ucd_step = i_step / i_step_output_ucd
 !
-          nnod_ucd = numnod
-          ucd_header_name = org_ucd_header
-         write(*,*) 'sel_read_alloc_udt_file'
-          call sel_read_alloc_udt_file(my_rank, ucd_step)
+          fem_ucd%nnod = numnod
+          fem_ucd%file_prefix = org_ucd_header
+          call sel_read_alloc_udt_file(my_rank, ucd_step, fem_ucd)
           call set_ucd_data_from_IO
-         write(*,*) 'deallocate_ucd_data'
-          call deallocate_ucd_data
+          call deallocate_ucd_data(fem_ucd)
 !
 !    output udt data
 !

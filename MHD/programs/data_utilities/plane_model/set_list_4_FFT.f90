@@ -186,13 +186,13 @@
       end if
 !
       if (i_new_udt_head .gt. 0) then
-        itype_ucd_data_file = iflag_udt
-        ucd_header_name = new_field_head_ctl
+        fem_ucd%ifmt_file = iflag_udt
+        fem_ucd%file_prefix = new_field_head_ctl
       else if (i_new_vtk_head .gt. 0) then
-        itype_ucd_data_file = iflag_vtk
-        ucd_header_name = new_vtk_head_ctl
+        fem_ucd%ifmt_file = iflag_vtk
+        fem_ucd%file_prefix = new_vtk_head_ctl
       else
-        itype_ucd_data_file = iflag_fld
+        fem_ucd%ifmt_file = iflag_fld
       end if
 !
 !

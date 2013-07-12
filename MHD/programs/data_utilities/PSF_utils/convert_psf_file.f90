@@ -47,7 +47,7 @@
       use take_avarages_4_psf
       use set_parallel_file_name
       use set_ucd_file_names
-      use ucd_type_IO_select
+      use ucd_IO_select
       use dx_grid
       use dx_phys
       use vtk_file_IO
@@ -96,10 +96,10 @@
         do istep = i_step_init, i_step_number, i_step_output_psf
 !
 !     read PSF field data
-          psf_ucd%itype_data_file = iflag_udt
-          psf_ucd%header_name = psf_header(i_psf)
+          psf_ucd%ifmt_file = iflag_udt
+          psf_ucd%file_prefix = psf_header(i_psf)
           if(istep .ne. i_step_init) then
-            call sel_read_udt_type_file(-1, istep, psf_ucd)
+            call sel_read_udt_file(-1, istep, psf_ucd)
           end if
           call cal_minmax_psf
 !

@@ -247,7 +247,7 @@
                 ic = merged_fld%istack_component(i-1)
                 do nd = 1, org_fld%num_component(j)
                   merged_fld%d_fld(inod_global,ic+nd)                   &
-     &                     = d_nod_ucd(inod,ic0+nd)
+     &                     = fem_ucd%d_ucd(inod,ic0+nd)
                 end do
               end if
             end do

@@ -34,8 +34,8 @@
       use m_node_phys_data
 !
 !
-      nnod_ucd = numnod
-      ntot_comp_ucd = num_nod_phys_vis
+      fem_ucd%nnod =      numnod
+      fem_ucd%ntot_comp = num_nod_phys_vis
 !
       end subroutine link_num_field_2_output
 !
@@ -48,11 +48,11 @@
       use set_and_cal_udt_data
 !
 !
-      xx_ucd =>      xx
-      inod_gl_ucd => globalnodid
+      fem_ucd%xx =>          xx
+      fem_ucd%inod_global => globalnodid
 !
       call count_udt_elements(internal_node, numele, nnod_4_ele, ie)
-      call allocate_ucd_ele
+      call allocate_ucd_ele(fem_ucd)
 !
       call set_udt_global_connect(internal_node, numele, nnod_4_ele,    &
      &    globalelmid, ie)
@@ -68,11 +68,11 @@
       use set_and_cal_udt_data
 !
 !
-      call allocate_ucd_node
+      call allocate_ucd_node(fem_ucd)
       call set_udt_local_nodes(numnod, xx)
 !
       call count_udt_elements(internal_node, numele, nnod_4_ele, ie)
-      call allocate_ucd_ele
+      call allocate_ucd_ele(fem_ucd)
 !
       call set_udt_local_connect(internal_node, numele, nnod_4_ele, ie)
 !
@@ -86,16 +86,14 @@
       use m_geometry_data
       use m_node_phys_data
 !
-      nnod_ucd =      numnod
-      num_field_ucd = num_nod_phys_vis
-      ntot_comp_ucd = num_tot_nod_phys_vis
+      fem_ucd%nnod =      numnod
+      fem_ucd%num_field = num_nod_phys_vis
+      fem_ucd%ntot_comp = num_tot_nod_phys_vis
 !
-      istack_comp_ucd(0:num_field_ucd)                                  &
-     &             =>   istack_nod_component(0:num_field_ucd)
-      num_comp_ucd =>      num_nod_component(1:num_field_ucd)
-      phys_name_ucd =>     phys_nod_name(1:num_field_ucd)
+      fem_ucd%num_comp =>  num_nod_component(1:fem_ucd%num_field)
+      fem_ucd%phys_name => phys_nod_name(1:fem_ucd%num_field)
 !
-      d_nod_ucd =>       d_nod(1:nnod_ucd,1:ntot_comp_ucd)
+      fem_ucd%d_ucd =>     d_nod(1:fem_ucd%nnod,1:fem_ucd%ntot_comp)
 !
       end subroutine link_field_data_2_output
 !
@@ -107,13 +105,14 @@
       use cal_minmax_and_stacks
 !
 !
-      num_nod_phys =     num_field_ucd
-      num_nod_phys_vis = num_field_ucd
+      num_nod_phys =     fem_ucd%num_field
+      num_nod_phys_vis = fem_ucd%num_field
 !
       call allocate_phys_name
 !
-      num_nod_component(1:num_nod_phys) = num_comp_ucd(1:num_nod_phys)
-      phys_nod_name(1:num_nod_phys)=  phys_name_ucd(1:num_nod_phys)
+      num_nod_component(1:num_nod_phys)                                 &
+     &     = fem_ucd%num_comp(1:num_nod_phys)
+      phys_nod_name(1:num_nod_phys) = fem_ucd%phys_name(1:num_nod_phys)
 !
       call s_cal_total_and_stacks(num_nod_phys, num_nod_component,      &
      &    izero, istack_nod_component, num_tot_nod_phys)

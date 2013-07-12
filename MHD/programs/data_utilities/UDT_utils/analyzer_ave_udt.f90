@@ -89,10 +89,10 @@
       call link_num_field_2_output
 !
       ucd_step = i_step_init / i_step_output_ucd
-      ucd_header_name = org_ucd_header
-      call sel_read_udt_param(my_rank, ucd_step)
+      fem_ucd%file_prefix = org_ucd_header
+      call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
 !
-      call sel_read_udt_file(my_rank, ucd_step)
+      call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
       call set_ucd_data_from_IO
 !
       icou = 1
@@ -102,7 +102,7 @@
           ucd_step = i_step / i_step_output_ucd
           icou = icou + 1
 !
-          call sel_read_udt_file(my_rank, ucd_step)
+          call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
           call add_by_ucd_data
 !
         end if
@@ -113,7 +113,7 @@
 !
 !    output udt data
 !
-      ucd_header_name = ave_udt_file_head
+      fem_ucd%file_prefix = ave_udt_file_head
       ucd_step = i_step_number
 !
       call output_udt_one_snapshot(ucd_step)

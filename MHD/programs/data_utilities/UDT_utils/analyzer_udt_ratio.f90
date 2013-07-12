@@ -105,9 +105,9 @@
 !
           call link_field_data_2_output
 !
-          ucd_header_name = result_udt_file_head
-          call sel_write_udt_file(my_rank, ucd_step)
-          call disconnect_ucd_data
+          fem_ucd%file_prefix = result_udt_file_head
+          call sel_write_udt_file(my_rank, ucd_step, fem_ucd)
+          call disconnect_ucd_data(fem_ucd)
 !
         end if
       end do

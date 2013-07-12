@@ -171,7 +171,7 @@
       use m_ucd_data
 !
 !
-      org_ucd_header =  ucd_header_name
+      org_ucd_header =  fem_ucd%file_prefix
 !
       end subroutine set_ctl_data_4_pick_zm
 !

@@ -43,7 +43,7 @@
       if (i_udt_header .eq. 1) org_ucd_header = udt_file_head_ctl
 !
       call choose_ucd_file_format(udt_file_fmt_ctl, i_udt_files_fmt,    &
-     &    itype_ucd_data_file)
+     &    fem_ucd%ifmt_file)
 !
       end subroutine set_control_params_4_viz
 !

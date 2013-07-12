@@ -71,7 +71,7 @@
       call link_num_field_2_output
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_udt_param'
-      call sel_read_udt_param(my_rank, istep_start)
+      call sel_read_udt_param(my_rank, istep_start, fem_ucd)
       call allocate_phys_data_by_output
 !
 !
@@ -113,8 +113,7 @@
 !
       do istep = istep_start, istep_end, istep_int
 !
-        if (iflag_debug.gt.0) write(*,*) 'sel_read_udt_file'
-        call sel_read_udt_file(my_rank, istep)
+        call sel_read_udt_file(my_rank, istep, fem_ucd)
 !
         if (iflag_debug.gt.0) write(*,*) 'set_ucd_data_from_IO'
         call set_ucd_data_from_IO

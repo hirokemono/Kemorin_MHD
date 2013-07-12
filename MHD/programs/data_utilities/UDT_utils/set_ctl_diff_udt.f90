@@ -77,7 +77,7 @@
 !   set data format
 !
       call choose_ucd_file_format(udt_file_fmt_ctl, i_udt_files_fmt,    &
-     &    itype_ucd_data_file)
+     &    fem_ucd%ifmt_file)
 !
 !   set field data name
 !

@@ -79,7 +79,7 @@
       call link_num_field_2_output
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_udt_param'
-      call sel_read_udt_param(my_rank, i_step_init)
+      call sel_read_udt_param(my_rank, i_step_init, fem_ucd)
 !
       end subroutine FEM_initialize_sph_trans
 !
@@ -104,7 +104,7 @@
 !*
       if(visval .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'sel_read_udt_file'
-        call sel_read_udt_file(my_rank, i_step)
+        call sel_read_udt_file(my_rank, i_step, fem_ucd)
         if (iflag_debug.gt.0) write(*,*) 'set_ucd_data_from_IO'
         call set_ucd_data_from_IO
       end if

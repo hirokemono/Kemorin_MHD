@@ -16,7 +16,7 @@
 !
       use read_layer_evo_file_header
       use set_model_coef_to_med_patch
-      use ucd_type_IO_select
+      use ucd_IO_select
 !
       implicit none
 !
@@ -53,9 +53,9 @@
       call set_ele_grp_patch_2_psf_grd
       call set_psf_mesh_to_ucd_mesh(psf_ucd)
 !
-      psf_ucd%itype_data_file = iflag_udt
-      psf_ucd%header_name = grp_ucd_data_head
-      call sel_write_grd_type_file(-1, psf_ucd)
+      psf_ucd%ifmt_file = iflag_udt
+      psf_ucd%file_prefix = grp_ucd_data_head
+      call sel_write_grd_file(-1, psf_ucd)
       call deallocate_med_grouping_patch
 !
 !    output udt data
@@ -66,9 +66,9 @@
 !
       call set_psf_mesh_to_ucd_field(psf_ucd)
 !
-      psf_ucd%itype_data_file = iflag_udt
-      psf_ucd%header_name = tave_grp_udt_head
-      call sel_write_udt_type_file(-1, istep_start, psf_ucd)
+      psf_ucd%ifmt_file = iflag_udt
+      psf_ucd%file_prefix = tave_grp_udt_head
+      call sel_write_udt_file(-1, istep_start, psf_ucd)
 !
       do
         call read_evolution_data(id_org_file, num_comp, num_layer,      &
@@ -81,7 +81,7 @@
           call sqrt_of_rms_coefs(num_layer, num_comp, coef)
           call set_field_to_med_patch(num_layer, num_comp,              &
      &          comp_name, coef)
-          call sel_write_udt_type_file(-1, istep_start, psf_ucd)
+          call sel_write_udt_file(-1, istep_start, psf_ucd)
         end if
 !
         if(istep_read .ge. istep_end) exit

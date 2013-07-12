@@ -124,9 +124,9 @@
 !
       if(my_rank .eq. 0) then
         do i_psf = 1, num_psf
-          call alloc_ucd_node_t(psf_out(i_psf))
-          call alloc_ucd_ele_t(psf_out(i_psf))
-          call alloc_ucd_phys_data_t(psf_out(i_psf))
+          call allocate_ucd_node(psf_out(i_psf))
+          call allocate_ucd_ele(psf_out(i_psf))
+          call allocate_ucd_phys_data(psf_out(i_psf))
         end do
       end if
 !
@@ -194,10 +194,10 @@
 !
       if(my_rank .eq. 0) then
         do i_psf = 1, num_psf
-          call dealloc_ucd_phys_data_t(psf_out(i_psf))
-          call dealloc_ucd_phys_name_t(psf_out(i_psf))
-          call dealloc_ucd_ele_t(psf_out(i_psf))
-          call dealloc_ucd_node_t(psf_out(i_psf))
+          call deallocate_ucd_phys_data(psf_out(i_psf))
+          call deallocate_ucd_phys_name(psf_out(i_psf))
+          call deallocate_ucd_ele(psf_out(i_psf))
+          call deallocate_ucd_node(psf_out(i_psf))
         end do
       end if
 !

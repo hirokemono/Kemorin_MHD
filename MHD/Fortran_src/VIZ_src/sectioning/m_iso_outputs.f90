@@ -112,9 +112,9 @@
 !
       if(my_rank .eq. 0) then
         do i_iso = 1, num_iso
-          call alloc_ucd_node_t(iso_out(i_iso))
-          call alloc_ucd_ele_t(iso_out(i_iso))
-          call alloc_ucd_phys_data_t(iso_out(i_iso))
+          call allocate_ucd_node(iso_out(i_iso))
+          call allocate_ucd_ele(iso_out(i_iso))
+          call allocate_ucd_phys_data(iso_out(i_iso))
         end do
       end if
 !
@@ -182,10 +182,10 @@
 !
       if(my_rank .eq. 0) then
         do i_iso = 1, num_iso
-          call dealloc_ucd_phys_data_t(iso_out(i_iso))
-          call dealloc_ucd_phys_name_t(iso_out(i_iso))
-          call dealloc_ucd_ele_t(iso_out(i_iso))
-          call dealloc_ucd_node_t(iso_out(i_iso))
+          call deallocate_ucd_phys_data(iso_out(i_iso))
+          call deallocate_ucd_phys_name(iso_out(i_iso))
+          call deallocate_ucd_ele(iso_out(i_iso))
+          call deallocate_ucd_node(iso_out(i_iso))
         end do
       end if
 !
