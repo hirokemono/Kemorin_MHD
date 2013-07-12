@@ -6,6 +6,7 @@
 !      subroutine s_set_ctl_data_4_sph_trans
 !      subroutine set_ctl_data_4_zm_trans
 !      subroutine set_ctl_data_4_pick_zm
+!      subroutine set_ctl_data_4_zm_streamline
 !
       module m_ctl_params_sph_trans
 !
@@ -125,10 +126,6 @@
 !      stepping parameter
 !
       call s_set_fixed_time_step_params(ierr, e_message)
-!
-      if (iflag_phys_header_def .eq. 2) then
-        i_step_output_ucd =   i_step_output_rst
-      end if
 !
 !   set pickup mode
 !

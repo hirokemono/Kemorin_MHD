@@ -1,30 +1,35 @@
-!transform_mat_operations.f90
+!>@file   transform_mat_operations.f90
+!!@brief  module transform_mat_operations
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui on ????
 !
-!      module transform_mat_operations
-!
-!>  @brief Matrix operations for Affine transforms
-!      subroutine Kemo_viewmatrix(mat, scale, shift, rotation, lookat)
-!      subroutine Kemo_rotaion_viewmatrix(mat, scale, shift, rotation,  &
-!     &          lookat, rot_movie, iaxis_rot)
-!
-!      subroutine Kemo_Unit(mat)
-!      subroutine Kemo_Scale(mat, scale)
-!      subroutine Kemo_Translate(mat, trans)
-!      subroutine Kemo_Rotate(mat, angle_deg, axis)
-!
-!      subroutine Kemo_Translate_mat(trans_mat, trans)
-!      subroutine Kemo_Scale_mat(scale_mat, scale)
-!      subroutine Kemo_Rotate_mat(rot_mat, angle_deg, axis)
-!
-!      subroutine  cal_matmat44(S, A, B)
-!
-!      subroutine  cal_matmat44_multi_smp(N, S, A, B)
-!           N(i,j,N) = A(i,j,N)B(i,j,N)
-!      subroutine  cal_matcmat44_multi_smp(N, S, A, B)
-!           N(i,j,N) = A(i,j,N)B(i,j)
-!      subroutine  cal_cmatmat44_multi_smp(N, S, A, B)
-!           N(i,j,N) = A(i,j)B(i,j,N)
-!         (!$omp parallel need befor using)
+!>@brief Matrix operations for Affine transforms
+!!
+!!@verbatim
+!!      subroutine Kemo_viewmatrix(mat, scale, shift, rotation, lookat)
+!!      subroutine Kemo_rotaion_viewmatrix(mat, scale, shift, rotation, &
+!!     &          lookat, rot_movie, iaxis_rot)
+!!
+!!      subroutine Kemo_Unit(mat)
+!!      subroutine Kemo_Scale(mat, scale)
+!!      subroutine Kemo_Translate(mat, trans)
+!!      subroutine Kemo_Rotate(mat, angle_deg, axis)
+!!
+!!      subroutine Kemo_Translate_mat(trans_mat, trans)
+!!      subroutine Kemo_Scale_mat(scale_mat, scale)
+!!      subroutine Kemo_Rotate_mat(rot_mat, angle_deg, axis)
+!!
+!!      subroutine  cal_matmat44(S, A, B)
+!!
+!!      subroutine  cal_matmat44_multi_smp(N, S, A, B)
+!!           N(i,j,N) = A(i,j,N)B(i,j,N)
+!!      subroutine  cal_matcmat44_multi_smp(N, S, A, B)
+!!           N(i,j,N) = A(i,j,N)B(i,j)
+!!      subroutine  cal_cmatmat44_multi_smp(N, S, A, B)
+!!           N(i,j,N) = A(i,j)B(i,j,N)
+!!         (!$omp parallel need befor using)
+!!@endverbatim
 !
       module transform_mat_operations
 !

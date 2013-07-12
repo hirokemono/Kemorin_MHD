@@ -32,8 +32,6 @@
 !
       implicit none
 !
-!>      file ID for field data IO
-      integer (kind = kint), parameter :: ucd_file_code = 16
 !>      file name for field data
       character(len=kchara) :: ucd_file_name
 !

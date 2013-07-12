@@ -1,40 +1,43 @@
-!overwrite_products_smp.f90
-!     module overwrite_products_smp
+!>@file   overwrite_products_smp.f90
+!!@brief  module overwrite_products_smp
+!!
+!!@author H. Matsui
+!!@date  programmed by H.Matsui on May., 2009
 !
-!        programmed by H.Matsui on May., 2009
+!>@brief subroutines to obatine products of two fields
+!>@n      need $omp parallel to use these routines
 !
-!> @brief subroutines to obatine products of two fields
-!>      need $omp parallel to use these routines
-!
-!      subroutine ovwrt_scalar_prod_no_coef_smp(np_smp, nnod,           &
-!     &          inod_smp_stack, scalar1, prod)
-!             prod(:) = prod(:)  * scalar(:)
-!      subroutine ovwrt_scalar_prod_w_coef_smp(np_smp, nnod,            &
-!     &          inod_smp_stack, coef, scalar1, scalar2, prod)
-!             prod(:) = coef * prod(:)  * scalar(:)
-!
-!      subroutine ovwrt_vec_scalar_prod_smp(np_smp, nnod,               &
-!     &          inod_smp_stack, scalar, prod)
-!             prod(:,:) = prod(:,:)  * scalar(:)
-!      subroutine ovwrt_vec_scalar_coef_smp(np_smp, nnod,               &
-!     &          inod_smp_stack, coef, vect1, scalar, prod)
-!             prod(:,:) = coef * prod(:,:)  * scalar(:)
-!
-!      subroutine ovwrt_tensor_scalar_prod_smp(np_smp, nnod,            &
-!     &          inod_smp_stack, scalar, prod)
-!      subroutine ovwrt_tensor_scalar_coef_smp(np_smp, nnod,            &
-!     &          inod_smp_stack, coef, scalar, prod)
-!
-!      subroutine ovwrt_tensor_vec_no_coef_smp(np_smp, nnod,            &
-!     &          inod_smp_stack, tensor, prod)
-!             prod(:,:) = tensor(:,:) \cdot prod(:)
-!
-!      subroutine ovwrt_vector_vector_prod_smp(np_smp, nnod,            &
-!     &          inod_smp_stack, vect1, prod)
-!             prod(:,:) = vect1(:,nd) * prod(:,nd)
-!      subroutine ovwrt_tensor_tensor_prod_smp(np_smp, nnod,            &
-!     &          inod_smp_stack, tensor1, prod)
-!             prod(:,:) = tensor1(:,nd) * prod(:,nd)
+!!@verbatim
+!!      subroutine ovwrt_scalar_prod_no_coef_smp(np_smp, nnod,          &
+!!     &          inod_smp_stack, scalar1, prod)
+!!             prod(:) = prod(:)  * scalar(:)
+!!      subroutine ovwrt_scalar_prod_w_coef_smp(np_smp, nnod,           &
+!!     &          inod_smp_stack, coef, scalar1, scalar2, prod)
+!!             prod(:) = coef * prod(:)  * scalar(:)
+!!
+!!      subroutine ovwrt_vec_scalar_prod_smp(np_smp, nnod,              &
+!!     &          inod_smp_stack, scalar, prod)
+!!             prod(:,:) = prod(:,:)  * scalar(:)
+!!      subroutine ovwrt_vec_scalar_coef_smp(np_smp, nnod,              &
+!!     &          inod_smp_stack, coef, vect1, scalar, prod)
+!!             prod(:,:) = coef * prod(:,:)  * scalar(:)
+!!
+!!      subroutine ovwrt_tensor_scalar_prod_smp(np_smp, nnod,           &
+!!     &          inod_smp_stack, scalar, prod)
+!!      subroutine ovwrt_tensor_scalar_coef_smp(np_smp, nnod,           &
+!!     &          inod_smp_stack, coef, scalar, prod)
+!!
+!!      subroutine ovwrt_tensor_vec_no_coef_smp(np_smp, nnod,           &
+!!     &          inod_smp_stack, tensor, prod)
+!!             prod(:,:) = tensor(:,:) \cdot prod(:)
+!!
+!!      subroutine ovwrt_vector_vector_prod_smp(np_smp, nnod,           &
+!!     &          inod_smp_stack, vect1, prod)
+!!             prod(:,:) = vect1(:,nd) * prod(:,nd)
+!!      subroutine ovwrt_tensor_tensor_prod_smp(np_smp, nnod,           &
+!!     &          inod_smp_stack, tensor1, prod)
+!!             prod(:,:) = tensor1(:,nd) * prod(:,nd)
+!!@endverbatim
 !
       module overwrite_products_smp
 !

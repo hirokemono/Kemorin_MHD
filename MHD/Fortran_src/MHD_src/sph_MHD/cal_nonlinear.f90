@@ -1,8 +1,15 @@
+!>@file   cal_nonlinear.f90
+!!@brief  module cal_nonlinear
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Oct., 2009
 !
-!      module cal_nonlinear
-!
-!      subroutine nonlinear
-!      subroutine licv_exp
+!>@brief Evaluate nonlinear terms by pseudo spectram scheme
+!!
+!!@verbatim
+!!      subroutine nonlinear
+!!      subroutine licv_exp
+!!@endverbatim
 !
 !
       module cal_nonlinear
@@ -15,7 +22,7 @@
 !
       implicit none
 !
-      private :: nonlinear_by_puesdo_sph
+      private :: nonlinear_by_pseudo_sph
 !
 !*   ------------------------------------------------------------------
 !*
@@ -36,8 +43,8 @@
 !
 !   ----  lead nonlinear terms by phesdo spectrum
 !
-      if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_puesdo_sph'
-      call nonlinear_by_puesdo_sph
+      if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
+      call nonlinear_by_pseudo_sph
 !
       if (iflag_4_ref_temp .eq. 100) then
         call add_reftemp_advect_sph_MHD
@@ -87,7 +94,7 @@
 !*
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_by_puesdo_sph
+      subroutine nonlinear_by_pseudo_sph
 !
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
@@ -114,11 +121,11 @@
       call end_eleps_time(16)
 !
       call start_eleps_time(17)
-      if (iflag_debug.ge.1) write(*,*) 's_cal_momentum_eq_exp_sph'
-      call s_cal_momentum_eq_exp_sph
+      if (iflag_debug.ge.1) write(*,*) 'cal_momentum_eq_exp_sph'
+      call cal_momentum_eq_exp_sph
       call end_eleps_time(17)
 !
-      end subroutine nonlinear_by_puesdo_sph
+      end subroutine nonlinear_by_pseudo_sph
 !
 !*   ------------------------------------------------------------------
 !*   ------------------------------------------------------------------

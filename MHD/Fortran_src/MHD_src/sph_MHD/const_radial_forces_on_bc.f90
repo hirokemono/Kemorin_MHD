@@ -1,11 +1,17 @@
-!const_radial_forces_on_bc.f90
+!>@file   const_radial_forces_on_bc.f90
+!!@brief  module const_radial_forces_on_bc
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Sep., 2009
 !
-!      module const_radial_forces_on_bc
-!
-!      subroutine s_const_radial_forces_on_bc
+!>@brief Evaluate radial component of forces at boundaries
+!!
+!!@verbatim
+!!      subroutine s_const_radial_forces_on_bc
+!!@endverbatim
 !
       module const_radial_forces_on_bc
-!*
+!
       use m_precision
 !
       use m_machine_parameter
@@ -19,11 +25,13 @@
 !
       implicit none
 !
-!*   ------------------------------------------------------------------
-!*
+      private :: cal_radial_force_on_sph
+!
+!   ------------------------------------------------------------------
+!
       contains
-!*
-!*   ------------------------------------------------------------------
+!
+!   ------------------------------------------------------------------
 !
       subroutine s_const_radial_forces_on_bc
 !

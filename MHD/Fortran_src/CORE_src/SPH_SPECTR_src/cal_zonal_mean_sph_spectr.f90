@@ -107,7 +107,7 @@
       integer(kind = kint), parameter :: m_zero(1) = (/izero/)
 !
 !
-      call pick_order_sph_spectr(ione, m_zero, numdir, is_fld)
+      call delete_order_sph_spectr(ione, m_zero, numdir, is_fld)
 !
       end subroutine delete_zonal_mean_rj_field
 !

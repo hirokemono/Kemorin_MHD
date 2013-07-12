@@ -1,12 +1,17 @@
+!>@file  merged_vtk_data_IO.f90
+!!       module merged_vtk_data_IO
+!!
+!!@author H. Matsui
+!!@date   Programmed by H. Matsui in Feb., 2013
 !
-!      module merged_vtk_data_IO
-!
-!      Written by H. Matsui on Feb., 2007
-!
-!      subroutine write_merged_vtk_fields(id_vtk, nnod, num_field,      &
-!     &          ntot_comp, ncomp_field, field_name, d_nod)
-!      subroutine write_merged_vtk_mesh(id_vtk, nnod, nele, nnod_ele,   &
-!     &          xx, ie)
+!> @brief Output routine for merged VTK data segments
+!!
+!!@verbatim
+!!      subroutine write_merged_vtk_fields(id_vtk, nnod, num_field,     &
+!!     &          ntot_comp, ncomp_field, field_name, d_nod)
+!!      subroutine write_merged_vtk_mesh(id_vtk, nnod, nele, nnod_ele,  &
+!!     &          xx, ie)
+!!@endverbatim
 !
       module merged_vtk_data_IO
 !
@@ -115,7 +120,7 @@
 !
       if(my_rank .eq. 0) then
         call write_vtk_connect_data(id_vtk, nele_ucd_list(ione),        &
-     &      nnod_ele, ie(1,1))
+     &      nnod_ele, nele_ucd_list(ione), ie(1,1))
       end if
 !
 !C
@@ -138,7 +143,7 @@
           call MPI_WAITALL (ione, req2, sta2, ierr)
 !
           call write_vtk_connect_data(id_vtk, nele_ucd_list(ip),        &
-     &        nnod_ele, ie_single_ucd(1))
+     &        nnod_ele, nele_ucd_list(ip), ie_single_ucd(1))
         end if
 !
         if(my_rank .eq. isend_rank) then
@@ -163,8 +168,8 @@
 !
 !
       if(my_rank .eq. 0) then
-        call write_multi_vtk_each_field(id_vtk, nnod,                   &
-     &      ione, internod_ucd_list(ione), ncomp_field, d_nod)
+        call write_vtk_each_field(id_vtk, nnod,                         &
+     &      ncomp_field, internod_ucd_list(ione), d_nod)
       end if
 !
       do ip = 2, nprocs
@@ -185,9 +190,8 @@
 !
           call MPI_WAITALL (ione, req2, sta2, ierr)
 !
-          call write_multi_vtk_each_field(id_vtk, nnod_ucd_list(ip),    &
-     &        ione, internod_ucd_list(ip), ncomp_field,                 &
-     &        d_single_ucd(1))
+          call write_vtk_each_field(id_vtk, nnod_ucd_list(ip),          &
+     &        ncomp_field, internod_ucd_list(ip), d_single_ucd(1))
         end if
 !
         if(my_rank .eq. isend_rank ) then

@@ -1,13 +1,17 @@
-!const_sph_divergence.f90
-!      module const_sph_divergence
+!>@file   const_sph_divergence.f90
+!!@brief  module const_sph_divergence
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Oct., 2009
 !
-!      modified by H. Matsui on Oct., 2009
-!
-!
-!      subroutine const_sph_heat_advect
-!      subroutine const_sph_scalar_advect
-!
-!      subroutine const_sph_div_force(is_fld, is_div)
+!>@brief Evaluate divergence of forces
+!!
+!!@verbatim
+!!      subroutine const_sph_heat_advect
+!!      subroutine const_sph_scalar_advect
+!!
+!!      subroutine const_sph_div_force(is_fld, is_div)
+!!@endverbatim
 !
       module const_sph_divergence
 !

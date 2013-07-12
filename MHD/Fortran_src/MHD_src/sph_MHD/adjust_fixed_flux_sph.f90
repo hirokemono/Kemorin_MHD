@@ -1,7 +1,19 @@
-!adjust_fixed_flux_sph.f90
-!      module adjust_fixed_flux_sph
+!>@file   adjust_fixed_flux_sph.f90
+!!@brief  module adjust_fixed_flux_sph
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Apr., 2009
 !
-!     Written by H. Matsui on Apr, 2009
+!>@brief Adjust temperature and composition boundary conditions
+!!       if perturbation is solved
+!!
+!!@verbatim
+!!      subroutine adjust_icb_fix_h_flux_sph
+!!      subroutine adjust_cmb_fix_h_flux_sph
+!!
+!!      subroutine adjust_icb_fix_c_flux_sph
+!!      subroutine adjust_cmb_fix_c_flux_sph
+!!@endverbatim
 !
       module adjust_fixed_flux_sph
 !
@@ -13,12 +25,6 @@
       implicit none
 !
        private :: adjust_in_fixed_flux_sph, adjust_out_fixed_flux_sph
-!
-!      subroutine adjust_icb_fix_h_flux_sph
-!      subroutine adjust_cmb_fix_h_flux_sph
-!
-!      subroutine adjust_icb_fix_c_flux_sph
-!      subroutine adjust_cmb_fix_c_flux_sph
 !
 ! -----------------------------------------------------------------------
 !

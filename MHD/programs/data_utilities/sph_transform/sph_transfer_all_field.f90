@@ -151,8 +151,8 @@
         call pole_b_trans_vector(num_vector_rtp)
 !
         if (iflag_debug.gt.0)                                           &
-     &        write(*,*) 'set_sph_vect_from_sph_trans'
-        call set_sph_vect_from_sph_trans
+     &        write(*,*) 'set_xyz_vect_from_sph_trans'
+        call set_xyz_vect_from_sph_trans
       end if
 !
       end subroutine sph_b_trans_all_vector

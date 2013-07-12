@@ -1,10 +1,15 @@
-!const_data_4_dynamobench.f90
-!      module const_data_4_dynamobench
+!>@file   const_data_4_dynamobench.f90
+!!@brief  module const_data_4_dynamobench
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in June, 2012
 !
-!      Programmed by H. Matsui on June., 2012
-!
-!      subroutine s_const_data_4_dynamobench
-!      subroutine s_const_data_on_circle
+!>@brief Evaluate dynamo benchmark results
+!!
+!!@verbatim
+!!      subroutine s_const_data_4_dynamobench
+!!      subroutine s_const_data_on_circle
+!!@endverbatim
 !
       module const_data_4_dynamobench
 !

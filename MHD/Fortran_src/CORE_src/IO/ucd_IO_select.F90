@@ -1,21 +1,29 @@
-!ucd_IO_select.f90
-!      module ucd_IO_select
+!>@file  ucd_IO_select.F90
+!!       module ucd_IO_select
+!!
+!!@author H. Matsui
+!!@date        programmed by H.Matsui on July, 2006
+!!@n           Modified by H.Matsui on May, 2009
 !
-!        programmed by H.Matsui on July, 2006
-!        Modified by H.Matsui on May, 2009
-!
-!      subroutine sel_write_ucd_file(my_rank, istep_udt)
-!      subroutine sel_write_udt_file(my_rank, istep_udt)
-!      subroutine sel_write_grd_file(my_rank)
-!
-!      subroutine sel_read_udt_param(my_rank, istep_udt)
-!      subroutine sel_read_alloc_udt_file(my_rank, istep_udt)
-!      subroutine sel_read_udt_file(my_rank, istep_udt)
-!
+!> @brief UCD data IO selector
+!!
+!!@verbatim
+!!      subroutine sel_write_ucd_file(my_rank, istep_udt)
+!!      subroutine sel_write_udt_file(my_rank, istep_udt)
+!!      subroutine sel_write_grd_file(my_rank)
+!!
+!!      subroutine sel_read_udt_param(my_rank, istep_udt)
+!!      subroutine sel_read_alloc_udt_file(my_rank, istep_udt)
+!!      subroutine sel_read_udt_file(my_rank, istep_udt)
+!!@endverbatim
+!!
+!!@param my_rank  process ID
+!!@param istep_udt    step number for output
 !
       module ucd_IO_select
 !
       use m_precision
+      use m_constants
       use m_file_format_switch
       use m_field_file_format
 !
@@ -31,12 +39,10 @@
 !
       use m_ucd_data
       use udt_file_IO
-      use gz_udt_file_IO
       use ucd_field_file_IO
       use ucd_field_file_IO_b
       use write_ucd_to_vtk_file
       use gz_ucd_field_file_IO
-!
       use gz_udt_file_IO
       use gz_write_ucd_to_vtk_file
 !
@@ -79,9 +85,9 @@
 !
       use m_ucd_data
       use udt_file_IO
-      use gz_udt_file_IO
       use ucd_field_file_IO
       use ucd_field_file_IO_b
+      use gz_udt_file_IO
       use gz_ucd_field_file_IO
 !
       integer(kind=kint), intent(in) :: my_rank, istep_udt
@@ -109,7 +115,6 @@
 !
       subroutine sel_write_grd_file(my_rank)
 !
-      use m_constants
       use m_ucd_data
       use udt_file_IO
       use write_ucd_to_vtk_file
@@ -144,9 +149,9 @@
 !
       use m_ucd_data
       use udt_file_IO
-      use gz_udt_file_IO
       use ucd_field_file_IO
       use ucd_field_file_IO_b
+      use gz_udt_file_IO
       use gz_ucd_field_file_IO
 !
       integer(kind=kint), intent(in) :: my_rank, istep_udt
@@ -176,9 +181,9 @@
 !
       use m_ucd_data
       use udt_file_IO
-      use gz_udt_file_IO
       use ucd_field_file_IO
       use ucd_field_file_IO_b
+      use gz_udt_file_IO
       use gz_ucd_field_file_IO
 !
       integer(kind=kint), intent(in) :: my_rank, istep_udt
@@ -208,9 +213,9 @@
 !
       use m_ucd_data
       use udt_file_IO
-      use gz_udt_file_IO
       use ucd_field_file_IO
       use ucd_field_file_IO_b
+      use gz_udt_file_IO
       use gz_ucd_field_file_IO
 !
       integer(kind=kint), intent(in) :: my_rank, istep_udt

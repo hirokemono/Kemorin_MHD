@@ -1,11 +1,21 @@
-!FEM_MHD_length_scale.f90
-!      module FEM_MHD_length_scale
+!>@file   FEM_MHD_length_scale.f90
+!!@brief  module FEM_MHD_length_scale
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui on March, 2013
 !
-!      subroutine allocate_work_4_lscale
-!      subroutine deallocate_work_4_lscale
+!>@brief Output FEM field data to distributed VTK file
+!!
+!!@verbatim
+!!      subroutine allocate_work_4_lscale
+!!      subroutine deallocate_work_4_lscale
+!!
+!!      subroutine const_MHD_length_scales(ucd_step)
+!!      subroutine find_field_address_4_lscale
+!!@endverbatim
+!!
+!!@param istep      Step number for UCD data
 !
-!      subroutine const_MHD_length_scales(ucd_step)
-!      subroutine find_field_address_4_lscale
 !
       module FEM_MHD_length_scale
 !
@@ -185,4 +195,3 @@
 !-----------------------------------------------------------------------
 !
       end module FEM_MHD_length_scale
-

@@ -1,15 +1,23 @@
+!>@file  udt_file_IO.f90
+!!       module udt_file_IO
+!!
+!! @author H. Matsui
+!! @date   Programmed in July, 2006
 !
-!      module udt_file_IO
-!
-!        programmed by H.Matsui on July, 2006
-!
-!      subroutine write_ucd_file(my_rank, istep)
-!      subroutine write_udt_file(my_rank, istep)
-!      subroutine write_grd_file(my_rank)
-!
-!      subroutine read_udt_file(my_rank, istep)
-!      subroutine read_and_alloc_udt_params(my_rank, istep)
-!      subroutine read_and_alloc_udt_file(my_rank, istep)
+!> @brief UCD format data IO
+!!
+!!@verbatim
+!!      subroutine write_ucd_file(my_rank, istep)
+!!      subroutine write_udt_file(my_rank, istep)
+!!      subroutine write_grd_file(my_rank)
+!!
+!!      subroutine read_udt_file(my_rank, istep)
+!!      subroutine read_and_alloc_udt_params(my_rank, istep)
+!!      subroutine read_and_alloc_udt_file(my_rank, istep)
+!!@endverbatim
+!!
+!!@param my_rank  process ID
+!!@param istep    step number for output
 !
       module udt_file_IO
 !
@@ -22,6 +30,9 @@
       use set_ucd_file_names
 !
       implicit none
+!
+!>      file ID for UCD file
+      integer(kind = kint), parameter, private :: id_ucd_file = 16
 !
       private :: write_udt_fields, write_ucd_mesh
 !
@@ -45,10 +56,10 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write ascii UCD file: ', trim(file_name)
 !
-      open(ucd_file_code,file=file_name, form='formatted')
+      open(id_ucd_file,file=file_name, form='formatted')
       call write_ucd_mesh
       call write_udt_fields
-      close(ucd_file_code)
+      close(id_ucd_file)
 !
       end subroutine write_ucd_file
 !
@@ -68,9 +79,9 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write ascii UCD field: ', trim(file_name)
 !
-      open(ucd_file_code,file=file_name, form='formatted')
+      open(id_ucd_file,file=file_name, form='formatted')
       call write_udt_fields
-      close(ucd_file_code)
+      close(id_ucd_file)
 !
       end subroutine write_udt_file
 !
@@ -90,9 +101,9 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write ascii UCD mesh: ', trim(file_name)
 !
-      open (ucd_file_code, file=file_name, status='replace')
+      open (id_ucd_file, file=file_name, status='replace')
       call write_ucd_mesh
-      close(ucd_file_code)
+      close(id_ucd_file)
 !
       end subroutine write_grd_file
 !
@@ -113,14 +124,14 @@
 !    (B) nodal data name
 !   =====================
       if(num_field_ucd .gt. 0) then
-        call write_udt_field_header(ucd_file_code, num_field_ucd,       &
+        call write_udt_field_header(id_ucd_file, num_field_ucd,         &
      &      num_comp_ucd, phys_name_ucd)
 !
 !    (C) fields
 !     *  global node ID, results
 !   ===================================================
-        call write_single_udt_data(ucd_file_code, nnod_ucd,             &
-     &      ntot_comp_ucd, inod_gl_ucd, d_nod_ucd)
+        call write_ucd_field_data(id_ucd_file, nnod_ucd,                &
+     &      ntot_comp_ucd, nnod_ucd, inod_gl_ucd, d_nod_ucd)
       end if
 !
       end subroutine write_udt_fields
@@ -139,17 +150,17 @@
       call set_parallel_ucd_file_name(ucd_header_name, iflag_udt,       &
      &    my_rank, istep, file_name)
 !
-      open (ucd_file_code, file=file_name, status='old')
+      open (id_ucd_file, file=file_name, status='old')
 !
-      call read_udt_field_header(ucd_file_code, num_field_ucd,          &
+      call read_udt_field_header(id_ucd_file, num_field_ucd,            &
      &    num_comp_ucd, phys_name_ucd)
 !
       call cal_istack_ucd_component
 !
-      call read_single_udt_data(ucd_file_code, nnod_ucd,                &
+      call read_ucd_field_data(id_ucd_file, nnod_ucd,                   &
      &    ntot_comp_ucd, d_nod_ucd)
 !
-      close(ucd_file_code)
+      close(id_ucd_file)
 !
       end subroutine read_udt_file
 !
@@ -166,17 +177,17 @@
       call set_parallel_ucd_file_name(ucd_header_name, iflag_udt,       &
      &    my_rank, istep, file_name)
 !
-      open (ucd_file_code, file=file_name, status='old')
-      read(ucd_file_code,*) num_field_ucd
-      close(ucd_file_code)
+      open (id_ucd_file, file=file_name, status='old')
+      read(id_ucd_file,'(i10)') num_field_ucd
+      close(id_ucd_file)
 !
       call allocate_ucd_phys_name
 !
 !
-      open (ucd_file_code, file=file_name, status='old')
-      call read_udt_field_header(ucd_file_code, num_field_ucd,          &
+      open (id_ucd_file, file=file_name, status='old')
+      call read_udt_field_header(id_ucd_file, num_field_ucd,            &
      &    num_comp_ucd, phys_name_ucd)
-      close(ucd_file_code)
+      close(id_ucd_file)
 !
       call cal_istack_ucd_component
       call allocate_ucd_phys_data
@@ -196,23 +207,23 @@
       call set_parallel_ucd_file_name(ucd_header_name, iflag_udt,       &
      &    my_rank, istep, file_name)
 !
-      open (ucd_file_code, file=file_name, status='old')
-      read(ucd_file_code,*) num_field_ucd
-      close(ucd_file_code)
+      open (id_ucd_file, file=file_name, status='old')
+      read(id_ucd_file,'(i10)') num_field_ucd
+      close(id_ucd_file)
 !
       call allocate_ucd_phys_name
 !
 !
-      open (ucd_file_code, file=file_name, status='old')
-      call read_udt_field_header(ucd_file_code, num_field_ucd,          &
+      open (id_ucd_file, file=file_name, status='old')
+      call read_udt_field_header(id_ucd_file, num_field_ucd,            &
      &    num_comp_ucd, phys_name_ucd)
 !
       call cal_istack_ucd_component
       call allocate_ucd_phys_data
 !
-      call read_single_udt_data(ucd_file_code, nnod_ucd,                &
+      call read_ucd_field_data(id_ucd_file, nnod_ucd,                   &
      &    ntot_comp_ucd, d_nod_ucd)
-      close(ucd_file_code)
+      close(id_ucd_file)
 !
       end subroutine read_and_alloc_udt_file
 !
@@ -231,7 +242,7 @@
 !     * num. of node, elements, nodal field components, 
 !       elemental fields components, and num of model
 !   ====================================================
-      call write_udt_mesh_header(ucd_file_code, nnod_ucd,               &
+      call write_udt_mesh_header(id_ucd_file, nnod_ucd,                 &
      &    nele_ucd, ntot_comp_ucd)
 !
 !   =====================
@@ -239,16 +250,16 @@
 !   =====================
 !     global node ID, position
 !   ==================================
-      call write_single_udt_data(ucd_file_code, nnod_ucd, ithree,       &
-     &    inod_gl_ucd, xx_ucd)
+      call write_ucd_field_data(id_ucd_file, nnod_ucd, ithree,          &
+     &    nnod_ucd, inod_gl_ucd, xx_ucd)
 !
 !   =====================
 !   [3] element data
 !   =====================
 !     * global element ID, node connection (by global ID)
 !   ===========================================================
-      call write_single_grd_connect(ucd_file_code, nnod_4_ele_ucd,      &
-     &   nele_ucd, iele_gl_ucd, ie_ucd)
+      call write_ucd_mesh_connect(id_ucd_file, nele_ucd,                &
+     &    nnod_4_ele_ucd, nele_ucd, iele_gl_ucd, ie_ucd)
 !
       end subroutine write_ucd_mesh
 !

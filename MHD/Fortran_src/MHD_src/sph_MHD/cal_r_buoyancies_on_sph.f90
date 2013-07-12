@@ -1,9 +1,16 @@
-!cal_r_buoyancies_on_sph.f90
-!      module cal_r_buoyancies_on_sph
+!>@file   cal_r_buoyancies_on_sph.f90
+!!@brief  module cal_r_buoyancies_on_sph
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Oct., 2009
 !
-!        programmed by H.Matsui on July, 2011
-!
-!      subroutine s_cal_r_buoyancies_on_sph(kr)
+!>@brief Evaluate buoyancy at specific radius
+!!
+!!@verbatim
+!!      subroutine s_cal_r_buoyancies_on_sph(kr)
+!!@endverbatim
+!!
+!!@param kr  Radial grid ID
 !
       module cal_r_buoyancies_on_sph
 !

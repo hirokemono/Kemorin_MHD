@@ -106,7 +106,7 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine set_sph_vect_from_sph_trans
+      subroutine set_xyz_vect_from_sph_trans
 !
       use copy_1st_nodal_4_sph_trans
 !
@@ -127,7 +127,7 @@
         end do
       end do
 !
-      end subroutine set_sph_vect_from_sph_trans
+      end subroutine set_xyz_vect_from_sph_trans
 !
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------

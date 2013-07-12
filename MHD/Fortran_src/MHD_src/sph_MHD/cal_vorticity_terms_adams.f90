@@ -1,20 +1,25 @@
-!cal_vorticity_terms_adams.f90
-!      module cal_vorticity_terms_adams
+!>@file   cal_vorticity_terms_adams.f90
+!!@brief  module cal_vorticity_terms_adams
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Oct., 2009
 !
-!      Written by H. Matsui on Ocrt. 2009
-!
-!      subroutine cal_vorticity_eq_adams
-!      subroutine cal_vorticity_eq_euler
-!
-!      subroutine set_MHD_terms_to_force(it_rot_buo)
-!      subroutine set_rot_cv_terms_to_force(it_rot_buo)
-!
-!      subroutine set_rot_advection_to_force
-!      subroutine add_coriolis_to_vort_force
-!      subroutine add_buoyancy_to_vort_force(it_rot_buo)
-!      subroutine add_lorentz_to_vort_force
-!
-!      subroutine set_adams_advect_4_ini
+!>@brief Evoluve the vorticity equation by explicit scheme 
+!!
+!!@verbatim
+!!      subroutine cal_vorticity_eq_adams
+!!      subroutine cal_vorticity_eq_euler
+!!
+!!      subroutine set_MHD_terms_to_force(it_rot_buo)
+!!      subroutine set_rot_cv_terms_to_force(it_rot_buo)
+!!
+!!      subroutine set_rot_advection_to_force
+!!      subroutine add_coriolis_to_vort_force
+!!      subroutine add_buoyancy_to_vort_force(it_rot_buo)
+!!      subroutine add_lorentz_to_vort_force
+!!
+!!      subroutine set_adams_advect_4_ini
+!!@endverbatim
 !
       module cal_vorticity_terms_adams
 !

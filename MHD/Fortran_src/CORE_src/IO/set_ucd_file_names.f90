@@ -1,8 +1,14 @@
-!set_ucd_file_names.f90
-!      module set_ucd_file_names
+!>@file   set_ucd_file_names.f90
+!!@brief  module set_ucd_file_names
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui on June, 2006
+!!@n       Modified by H.Matsui on March, 2013
 !
-!        Written by H.Matsui on June, 2006
-!
+!>@brief Append step, process, and file format suffix to UCD file prefix
+!!@n      (If process number is negative, process number is not appeded)
+!!
+!!@verbatim
 !!      subroutine delete_para_ucd_file(nprocs, istep_ucd)
 !!
 !!      subroutine set_parallel_ucd_file_name(file_header, itype_file,  &
@@ -21,6 +27,12 @@
 !!      subroutine set_merged_snap_xdmf_file_name(file_prefix,          &
 !!     &          istep_ucd, file_name)
 !!      subroutine set_merged_xdmf_file_name(file_prefix, file_name)
+!!@endverbatim
+!!
+!!@param nprocs     number of subdomains
+!!@param my_rank    subdomain ID
+!!@param istep      Step number for VTK data
+!
 !
       module set_ucd_file_names
 !
@@ -53,7 +65,6 @@
      &    itype_ucd_data_file, my_rank, istep_ucd, ucd_file_name)
 !
         call delete_file_by_f(ucd_file_name)
-!
       end do
 !
       end subroutine delete_para_ucd_file
@@ -74,7 +85,8 @@
 !
       call add_int_suffix(istep_ucd, file_header, fname_tmp)
 !
-      if (   itype_file/100 .eq. iflag_para/100) then
+      if (my_rank .ge. 0                                                &
+     &      .and. (itype_file/100) .eq. (iflag_para/100)) then
         call add_int_suffix(my_rank, fname_tmp, file_name)
       else
         file_name = fname_tmp
@@ -119,7 +131,8 @@
 !
       call add_int_suffix(izero, file_header, fname_tmp)
 !
-      if (   itype_file/100 .eq. iflag_para/100) then
+      if (my_rank .ge. 0                                                &
+     &     .and. itype_file/100 .eq. iflag_para/100) then
         call add_int_suffix(my_rank, fname_tmp, file_name)
       else
         file_name = fname_tmp

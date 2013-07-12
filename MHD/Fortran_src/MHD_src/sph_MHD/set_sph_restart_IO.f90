@@ -100,7 +100,7 @@
      &         ) then
           icou = icou + 1
           phys_data_name_IO(icou) = phys_name_rj(i_fld)
-          num_phys_comp_IO(icou) = n_solenoid
+          num_phys_comp_IO(icou) = n_vector
           istack_phys_comp_IO(icou) = istack_phys_comp_IO(icou-1)       &
      &                               + num_phys_comp_IO(icou)
         else if    (phys_name_rj(i_fld) .eq. fhd_press                  &
@@ -150,7 +150,7 @@
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_mom                &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_uxb                &
      &         ) then
-              call copy_each_sph_solenoid_to_IO(i_fld, j_IO)
+              call copy_each_sph_vector_to_IO(i_fld, j_IO)
 !
             else if(phys_name_rj(i_fld) .eq. fhd_press                  &
      &         .or. phys_name_rj(i_fld) .eq. fhd_temp                   &

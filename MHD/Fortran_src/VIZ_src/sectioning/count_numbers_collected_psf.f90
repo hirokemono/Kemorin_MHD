@@ -6,7 +6,7 @@
 !      subroutine count_numbers_4_psf_out(num_psf, istack_smp,          &
 !     &          ntot_out_psf, nmax_para_psf, num_para_psf,             &
 !     &          istack_para_psf, num_recv_psf, istack_recv_psf,        &
-!     &          num_out_psf, istack_out_psf)
+!     &          istack_out_psf)
 !
       module count_numbers_collected_psf
 !
@@ -23,7 +23,7 @@
       subroutine count_numbers_4_psf_out(num_psf, istack_smp,           &
      &          ntot_out_psf, nmax_para_psf, num_para_psf,              &
      &          istack_para_psf, num_recv_psf, istack_recv_psf,         &
-     &          num_out_psf, istack_out_psf)
+     &          istack_out_psf)
 !
       use m_machine_parameter
       use m_parallel_var_dof
@@ -44,7 +44,6 @@
      &                   :: num_recv_psf(num_psf*nprocs)
       integer(kind = kint), intent(inout)                               &
      &                   :: istack_recv_psf(0:num_psf*nprocs)
-      integer(kind = kint), intent(inout) :: num_out_psf(num_psf)
       integer(kind = kint), intent(inout) :: istack_out_psf(0:num_psf)
 !
       integer(kind = kint) :: isend(num_psf), irecv(num_psf,nprocs)
@@ -108,7 +107,6 @@
      &        min_tmp)
 !
           nmax_para_psf = max(nmax_para_psf, max_tmp)
-          num_out_psf(i) = ntot_tmp - istack_para_psf(ist)
           istack_out_psf(i) = ntot_tmp
         end do
         ntot_out_psf = istack_out_psf(num_psf)

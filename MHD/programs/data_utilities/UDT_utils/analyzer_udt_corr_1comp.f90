@@ -151,11 +151,6 @@
 !
       call set_correlate_data_names
 !
-      if (my_rank .eq. 0) then
-        call open_layerd_correlate_files
-        call write_layerd_correlate_header
-      end if
-!
 !     ---------------------
 !
       do i_step = i_step_init, i_step_number
@@ -180,14 +175,11 @@
      &          's_correlation_all_layerd_data'
           call s_correlation_all_layerd_data
 !
-          if (my_rank .eq. 0) then
-            write(*,*)  ' write_layerd_correlate_data', ucd_step
-            call write_layerd_correlate_data(ucd_step)
-          end if
-!
+          if (iflag_debug .gt. 0) write(*,*)                            &
+     &          ' write_layerd_correlate_data', ucd_step
+          call write_layerd_correlate_data(my_rank, ucd_step)
         end if
       end do
-      if (my_rank .eq. 0) call close_layerd_correlate_files
 !
 !
       end subroutine analyze_udt_corr_1comp

@@ -52,7 +52,7 @@
 !
       subroutine allocate_control_params_4_psf
 !
-      use m_multi_ucd_data
+      use m_field_file_format
 !
 !
       allocate(psf_header(num_psf))
@@ -72,7 +72,7 @@
       allocate(nele_grp_area_psf(num_psf))
       allocate(istack_grp_area_psf(0:num_psf))
 !
-      itype_psf_file =   id_type_UDT_file
+      itype_psf_file =   iflag_udt
       id_section_method =  0
       id_psf_group =       0
 !

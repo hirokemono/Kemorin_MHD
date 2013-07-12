@@ -1,15 +1,22 @@
-!set_coriolis_tri_sph.f90
+!>@file   set_coriolis_tri_sph.f90
+!!@brief  module set_coriolis_tri_sph
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Apr., 2010
 !
-!      module set_coriolis_tri_sph
-!
-!      subroutine s_set_coriolis_tri_sph
-!
-!      subroutine interact_rot_coriolis_z
-!      subroutine interact_rot_coriolis_x
-!      subroutine interact_rot_coriolis_y
+!>@brief Evaluate coeffeicients for rotation of Coriolis term
+!!       using Gaunt integrals
+!!
+!!@verbatim
+!!      subroutine s_set_coriolis_tri_sph
+!!
+!!      subroutine interact_rot_coriolis_z
+!!      subroutine interact_rot_coriolis_x
+!!      subroutine interact_rot_coriolis_y
+!!@endverbatim
 !
       module set_coriolis_tri_sph
-!*
+!
       use m_precision
 !
       use m_constants

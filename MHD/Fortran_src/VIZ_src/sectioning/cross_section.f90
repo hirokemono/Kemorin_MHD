@@ -119,12 +119,12 @@
      &    num_surf, num_surf_bc, surf_istack, surf_item,                &
      &    ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp)
 !
-      call allocate_psf_outputs_num(num_psf, nprocs)
+      call allocate_psf_outputs_num(nprocs, my_rank, num_psf)
 !
       if (iflag_debug.eq.1) write(*,*) 'collect_numbers_4_psf'
       call collect_numbers_4_psf
 !
-      call allocate_psf_outputs_data(max_ncomp_psf_out)
+      call allocate_psf_outputs_data(my_rank, num_psf)
       call allocate_SR_array_psf(my_rank, max_ncomp_psf_out,            &
      &    nnod_psf_tot, npatch_tot_psf_smp)
 !

@@ -1,29 +1,33 @@
+!>@file   solver_33_array.f90
+!!@brief  module solver_33_array
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui on July, 2006
 !
-!       end module solver_33_array
-!
-!     Written by H. Matsui
-!     Modified by H. Matsui on Sep., 2006
-!
-!     definition of matrix
-!            / a(1,1)  a(1,2)  a(1,3)  \
-!       A =  | a(2,1)  a(2,2)  a(2,3)  |
-!            \ a(3,1)  a(3,2)  a(3,3)  /
-!
-!      subroutine solve_33_array(x, b, a)
-!
-!     x(3):   Solution
-!     b(3):   Right hand vector
-!     a(3,3): coeeficients of matrix
-!
-!    Equation:
-!      b(1) = a(1,1)*x(1) + a(1,2)*x(2) + a(1,3)*x(3)
-!      b(2) = a(2,1)*x(1) + a(2,2)*x(2) + a(2,3)*x(3)
-!      b(3) = a(3,1)*x(1) + a(3,2)*x(2) + a(3,3)*x(3)
-!
-!      subroutine solve_22_array(x, b, a)
-!    Equation:
-!      b(1) = a(1,1)*x(1) + a(1,2)*x(2)
-!      b(2) = a(2,1)*x(1) + a(2,2)*x(2)
+!>@brief Solve linear equation for vector
+!!
+!!@verbatim
+!!     definition of matrix
+!!            / a(1,1)  a(1,2)  a(1,3)  \
+!!       A =  | a(2,1)  a(2,2)  a(2,3)  |
+!!            \ a(3,1)  a(3,2)  a(3,3)  /
+!!
+!!      subroutine solve_33_array(x, b, a)
+!!
+!!     x(3):   Solution
+!!     b(3):   Right hand vector
+!!     a(3,3): coeeficients of matrix
+!!
+!!    Equation:
+!!      b(1) = a(1,1)*x(1) + a(1,2)*x(2) + a(1,3)*x(3)
+!!      b(2) = a(2,1)*x(1) + a(2,2)*x(2) + a(2,3)*x(3)
+!!      b(3) = a(3,1)*x(1) + a(3,2)*x(2) + a(3,3)*x(3)
+!!
+!!      subroutine solve_22_array(x, b, a)
+!!    Equation:
+!!      b(1) = a(1,1)*x(1) + a(1,2)*x(2)
+!!      b(2) = a(2,1)*x(1) + a(2,2)*x(2)
+!!@endverbatim
 !
       module solver_33_array
 !

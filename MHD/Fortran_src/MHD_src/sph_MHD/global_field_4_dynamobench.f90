@@ -1,13 +1,18 @@
-!global_field_4_dynamobench.f90
-!      module global_field_4_dynamobench
+!>@file   global_field_4_dynamobench.f90
+!!@brief  module global_field_4_dynamobench
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in June., 2012
 !
-!      Programmed by H. Matsui on June., 2012
-!
-!      subroutine copy_energy_4_dynamobench
-!      subroutine copy_icore_energy_4_dbench
-!
-!      subroutine pick_inner_core_rotation
-!      subroutine pick_mag_torque_inner_core
+!>@brief Evaluate global data for dynamo benchmark test
+!!
+!!@verbatim
+!!      subroutine copy_energy_4_dynamobench
+!!      subroutine copy_icore_energy_4_dbench
+!!
+!!      subroutine pick_inner_core_rotation
+!!      subroutine pick_mag_torque_inner_core
+!!@endverbatim
 !
       module global_field_4_dynamobench
 !

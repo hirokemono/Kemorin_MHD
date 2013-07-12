@@ -32,7 +32,6 @@
 !
       use m_field_file_format
       use m_file_format_switch
-      use m_multi_ucd_data
       use set_area_4_viz
 !
       integer(kind = kint), intent(in) :: num_mat

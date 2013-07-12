@@ -1,7 +1,18 @@
-!cal_momentum_eq_explicit.f90
-!      module cal_momentum_eq_explicit
+!>@file   cal_momentum_eq_explicit.f90
+!!@brief  module cal_momentum_eq_explicit
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Oct., 2010
 !
-!      Written by H. Matsui on Ocrt. 2009
+!>@brief Time integration for momentum equation by explicit scheme
+!!
+!!@verbatim
+!!      subroutine cal_momentum_eq_exp_sph
+!!      subroutine cal_expricit_sph_adams
+!!      subroutine cal_expricit_sph_euler(i_step)
+!!@endverbatim
+!!
+!!@param i_step  time step
 !
       module cal_momentum_eq_explicit
 !
@@ -17,7 +28,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_momentum_eq_exp_sph
+      subroutine cal_momentum_eq_exp_sph
 !
       use m_control_params_sph_MHD
       use cal_explicit_terms
@@ -36,12 +47,12 @@
      &     write(*,*) 'cal_div_of_fluxes_sph'
       call cal_div_of_fluxes_sph
 !
-      end subroutine s_cal_momentum_eq_exp_sph
+      end subroutine cal_momentum_eq_exp_sph
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_expricit_sph_adams
+      subroutine cal_expricit_sph_adams
 !
       use m_control_params_sph_MHD
       use cal_explicit_terms
@@ -57,11 +68,11 @@
       if(iflag_t_evo_4_composit.gt.0) call cal_scalar_diff_advect_adams
 !$omp end parallel
 !
-      end subroutine s_cal_expricit_sph_adams
+      end subroutine cal_expricit_sph_adams
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_expricit_sph_euler(i_step)
+      subroutine cal_expricit_sph_euler(i_step)
 !
       use m_control_params_sph_MHD
       use cal_explicit_terms
@@ -87,7 +98,7 @@
       end if
 !$omp end parallel
 !
-      end subroutine s_cal_expricit_sph_euler
+      end subroutine cal_expricit_sph_euler
 !
 ! ----------------------------------------------------------------------
 !

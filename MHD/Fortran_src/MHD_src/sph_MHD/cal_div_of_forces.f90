@@ -1,9 +1,14 @@
-!cal_div_of_forces.f90
-!      module cal_div_of_forces
+!>@file   cal_div_of_forces.f90
+!!@brief  module cal_div_of_forces
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Oct. 2009
 !
-!      Written by H. Matsui on Oct. 2009
-!
-!      subroutine s_cal_div_of_forces
+!>@brief Evaluate divergence of forces for pressure evaluation
+!!
+!!@verbatim
+!!      subroutine s_cal_div_of_forces
+!!@endverbatim
 !
       module cal_div_of_forces
 !

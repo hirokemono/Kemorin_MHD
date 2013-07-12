@@ -1,9 +1,14 @@
+!>@file   set_control_sph_mhd.f90
+!!@brief  module set_control_sph_mhd
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Sep., 2009
 !
-!     module set_control_sph_mhd
-!
-!        programmed by H.Matsui on Spe., 2009
-!
-!      subroutine set_control_4_sph_mhd
+!>@brief Set control data for spherical transform MHD dynamo simulation
+!!
+!!@verbatim
+!!      subroutine set_control_4_sph_mhd
+!!@endverbatim
 !
       module set_control_sph_mhd
 !

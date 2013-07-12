@@ -70,14 +70,14 @@
 !
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) num_mat
-      write(*,*) 'num_mat', num_mat
+!      write(*,*) 'num_mat', num_mat
 !
       num_mat_bc = 0
       do igrp = 1, num_mat
         call skip_comment(character_4_read,id_file)
         read(character_4_read,*) name_tmp
         read(id_file,*) nnod, nele
-        write(*,*) 'nnod, nele', igrp, nnod, nele
+!        write(*,*) 'nnod, nele', igrp, nnod, nele
         num_mat_bc = num_mat_bc + nele
 !
         do inod = 1, nnod

@@ -104,15 +104,15 @@
       call write_udt_mesh_header(id_line_result, numnod_line,           &
      &    numele_line, ncomptot_line)
 !
-      call write_single_udt_data(id_line_result, numnod_line,           &
-     &    ithree, inod_line, xx_line)
-      call write_single_grd_connect(id_line_result, num_triangle,       &
-     &    numele_line, iele_line, ie_line)
+      call write_ucd_field_data(id_line_result, numnod_line,            &
+     &    ithree, numnod_line, inod_line, xx_line)
+      call write_ucd_mesh_connect(id_line_result, numele_line,          &
+     &    num_triangle, numele_line, iele_line, ie_line)
 !
       call write_udt_field_header(id_line_result, nfield_line,          &
      &    ncomp_line, line_data_name)
-      call write_single_udt_data(id_line_result, numnod_line,           &
-     &    ncomptot_line, inod_line, d_nod_line)
+      call write_ucd_field_data(id_line_result, numnod_line,            &
+     &    ncomptot_line, numnod_line, inod_line, d_nod_line)
 !
       close(id_line_result)
 !
@@ -142,7 +142,10 @@
           c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
         else if(nd .eq. 21) then
           c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2)
+        else
+          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
         end if
+!
         if(c1 .eq. xref) numnod_line = numnod_line + 1
       end do
 !
@@ -159,6 +162,9 @@
         else if(nd .eq. 21) then
           c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2)
           c2 = sqrt(xx_psf(i2,1)**2 + xx_psf(i2,2)**2)
+        else
+          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
+          c2 = sqrt(xx_psf(i2,1)**2 + xx_psf(i2,2)**2 +xx_psf(i2,3)**2)
         end if
 !
         if( ((c1-xref)*(c2-xref)) .lt. 0.0d0) then
@@ -190,7 +196,10 @@
           c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
         else if(nd .eq. 21) then
           c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2)
+        else
+          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
         end if
+!
         if(c1 .eq. xref) then
           icou = icou + 1
           xx_line(icou,1:3) = xx_psf(i1,1:3)
@@ -212,6 +221,9 @@
         else if(nd .eq. 21) then
           c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2)
           c2 = sqrt(xx_psf(i2,1)**2 + xx_psf(i2,2)**2)
+        else
+          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
+          c2 = sqrt(xx_psf(i2,1)**2 + xx_psf(i2,2)**2 +xx_psf(i2,3)**2)
         end if
 !
         if( ((c1-xref)*(c2-xref)) .lt. 0.0d0) then

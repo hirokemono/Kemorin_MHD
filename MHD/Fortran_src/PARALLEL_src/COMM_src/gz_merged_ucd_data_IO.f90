@@ -88,8 +88,8 @@
           iele_single_ucd(iele) = iele
         end do
 !
-        call write_gz_single_grd_connect(nnod_ele, nele_ucd_list(1),    &
-     &      iele_single_ucd(1), ie(1,1) )
+        call write_gz_ucd_mesh_connect(nele_ucd_list(1), nnod_ele,      &
+     &      nele_ucd_list(1), iele_single_ucd(1), ie(1,1) )
       end if
 !
       do ip = 2, nprocs
@@ -115,8 +115,8 @@
             iele_single_ucd(iele) = iele + istack_ele_ucd_list(ip-1)
           end do
 !
-          call write_gz_single_grd_connect(nnod_ele, nele_ucd_list(ip), &
-     &        iele_single_ucd(1), ie_single_ucd(1) )
+          call write_gz_ucd_mesh_connect(nele_ucd_list(ip), nnod_ele,   &
+     &        nele_ucd_list(ip), iele_single_ucd(1), ie_single_ucd(1) )
       end if
 !
         if(my_rank .eq. isend_rank ) then
@@ -138,13 +138,12 @@
 !
 !
       if(my_rank .eq. 0) then
-        do inod = 1, internod_ucd_list(ip)
+        do inod = 1, internod_ucd_list(1)
           inod_single_ucd(inod) = inod
         end do
 !
-        call write_gz_multi_udt_data(nnod,                              &
-     &      ione, internod_ucd_list(ione), ncomp_field,                 &
-     &      inod_single_ucd(1), d_nod(1,1) )
+        call write_gz_ucd_field_data(nnod, ncomp_field,                 &
+     &      internod_ucd_list(ione), inod_single_ucd(1), d_nod(1,1) )
       end if
 !
       do ip = 2, nprocs
@@ -170,9 +169,9 @@
      &                             + istack_internod_ucd_list(ip-1)
           end do
 !
-          call write_gz_multi_udt_data(nnod_ucd_list(ip),               &
-     &        ione, internod_ucd_list(ip), ncomp_field,                 &
-     &        inod_single_ucd(1), d_single_ucd(1))
+          call write_gz_ucd_field_data(nnod_ucd_list(ip), ncomp_field,  &
+     &        internod_ucd_list(ip), inod_single_ucd(1),                &
+     &        d_single_ucd(1))
         end if
 !
         if(my_rank .eq. isend_rank ) then

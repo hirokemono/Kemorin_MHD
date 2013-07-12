@@ -1,9 +1,15 @@
-!cal_div_r_const_buo_sph.f90
-!      module cal_div_r_const_buo_sph
+!>@file   cal_div_r_const_buo_sph.f90
+!!@brief  module cal_div_r_const_buo_sph
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in July, 2011
 !
-!        programmed by H.Matsui on July, 2011
-!
-!      subroutine cal_div_radial_const_gravity
+!>@brief Evaluate divergence of buoyancy under constant radial gravity
+!!       for pressure evaluation
+!!
+!!@verbatim
+!!      subroutine cal_div_radial_const_gravity
+!!@endverbatim
 !
       module cal_div_r_const_buo_sph
 !

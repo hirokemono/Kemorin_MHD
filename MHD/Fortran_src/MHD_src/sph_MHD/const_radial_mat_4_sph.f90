@@ -1,9 +1,14 @@
-!const_radial_mat_4_sph.f90
-!      module const_radial_mat_4_sph
+!>@file   const_radial_mat_4_sph.f90
+!!@brief  module const_radial_mat_4_sph
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Sep., 2009
 !
-!     Written by H. Matsui on Oct, 2009
-!
-!      subroutine s_const_radial_mat_4_sph
+!>@brief Construct 1D matrices for MHD dynamo simulaiton
+!!
+!!@verbatim
+!!      subroutine s_const_radial_mat_4_sph
+!!@endverbatim
 !
       module const_radial_mat_4_sph
 !
@@ -28,7 +33,6 @@
       use m_control_params_sph_MHD
       use const_r_mat_4_scalar_sph
       use const_r_mat_4_vector_sph
-!      use const_r_mat_4_momentum_sph
 !
 !
       if (iflag_t_evo_4_velo .gt. 0) then

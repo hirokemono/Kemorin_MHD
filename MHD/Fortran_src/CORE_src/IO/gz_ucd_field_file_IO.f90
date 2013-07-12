@@ -1,12 +1,20 @@
-!gz_ucd_field_file_IO.f90
-!      module gz_ucd_field_file_IO
+!>@file  gz_ucd_field_file_IO.f90
+!!       module gz_ucd_field_file_IO
+!!
+!! @author H. Matsui
+!! @date   Programmed in July, 2006
 !
-!     Written by H. Matsui
-!
-!      subroutine write_ucd_2_gz_fld_file(my_rank, istep)
-!
-!      subroutine read_ucd_2_gz_fld_file(my_rank, istep)
-!      subroutine read_alloc_ucd_2_gz_fld_file(my_rank, istep)
+!> @brief gzipped UCD ascii data IO
+!!
+!!@verbatim
+!!      subroutine write_ucd_2_gz_fld_file(my_rank, istep)
+!!
+!!      subroutine read_ucd_2_gz_fld_file(my_rank, istep)
+!!      subroutine read_alloc_ucd_2_gz_fld_file(my_rank, istep)
+!!@endverbatim
+!!
+!!@param my_rank  process ID
+!!@param istep    step number for output
 !
       module gz_ucd_field_file_IO
 !

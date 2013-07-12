@@ -1,10 +1,15 @@
-!cal_rot_buoyancies_sph_MHD.f90
-!      module cal_rot_buoyancies_sph_MHD
+!>@file   cal_rot_buoyancies_sph_MHD.f90
+!!@brief  module cal_rot_buoyancies_sph_MHD
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in July, 2011
 !
-!        programmed by H.Matsui on July, 2011
-!
-!      subroutine cal_rot_radial_self_gravity
-!      subroutine cal_boussinesq_density_sph
+!>@brief Evaluate rotation of buoyancy
+!!
+!!@verbatim
+!!      subroutine cal_rot_radial_self_gravity
+!!      subroutine cal_boussinesq_density_sph
+!!@endverbatim
 !
       module cal_rot_buoyancies_sph_MHD
 !

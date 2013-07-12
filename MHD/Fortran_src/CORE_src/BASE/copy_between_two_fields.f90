@@ -1,27 +1,42 @@
-!copy_between_two_fields.f90
-!     module copy_between_two_fields
+!>@file   copy_between_two_fields.f90
+!!@brief  module copy_between_two_fields
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui on Apr., 2006
 !
-!      Written by H. Matsui on Feb., 2008
-!
-!      subroutine copy_scalar_2_scalar_fld                              &
-!     &         (ifld_org, nnod_org, ntot_org_phys, d_org,              &
-!     &          ifld_dst, nnod_dst, ntot_dst_phys, d_dst)
-!      subroutine copy_vector_2_vector_fld                              &
-!     &         (ifld_org, nnod_org, ntot_org_phys, d_org,              &
-!     &          ifld_dst, nnod_dst, ntot_dst_phys, d_dst)
-!      subroutine copy_tensor_2_tensor_fld                              &
-!     &         (ifld_org, nnod_org, ntot_org_phys, d_org,              &
-!     &          ifld_dst, nnod_dst, ntot_dst_phys, d_dst)
-!
-!      subroutine fill_rest_scalar_field                                &
-!     &         (ifld_org, nnod_org, ntot_org_phys, d_org,              &
-!     &          ifld_dst, nnod_dst, ntot_dst_phys, d_dst)
-!      subroutine fill_rest_vector_field                                &
-!     &         (ifld_org, nnod_org, ntot_org_phys, d_org,              &
-!     &          ifld_dst, nnod_dst, ntot_dst_phys, d_dst)
-!      subroutine fill_rest_tensor_field                                &
-!     &         (ifld_org, nnod_org, ntot_org_phys, d_org,              &
-!     &          ifld_dst, nnod_dst, ntot_dst_phys, d_dst)
+!>@brief copy fields between two data arrays
+!!
+!!@verbatim
+!!      subroutine copy_scalar_2_scalar_fld                             &
+!!     &         (ifld_org, nnod_org, ntot_org_phys, d_org,             &
+!!     &          ifld_dst, nnod_dst, ntot_dst_phys, d_dst)
+!!      subroutine copy_vector_2_vector_fld                             &
+!!     &         (ifld_org, nnod_org, ntot_org_phys, d_org,             &
+!!     &          ifld_dst, nnod_dst, ntot_dst_phys, d_dst)
+!!      subroutine copy_tensor_2_tensor_fld                             &
+!!     &         (ifld_org, nnod_org, ntot_org_phys, d_org,             &
+!!     &          ifld_dst, nnod_dst, ntot_dst_phys, d_dst)
+!!
+!!      subroutine fill_rest_scalar_field                               &
+!!     &         (ifld_org, nnod_org, ntot_org_phys, d_org,             &
+!!     &          ifld_dst, nnod_dst, ntot_dst_phys, d_dst)
+!!      subroutine fill_rest_vector_field                               &
+!!     &         (ifld_org, nnod_org, ntot_org_phys, d_org,             &
+!!     &          ifld_dst, nnod_dst, ntot_dst_phys, d_dst)
+!!      subroutine fill_rest_tensor_field                               &
+!!     &         (ifld_org, nnod_org, ntot_org_phys, d_org,             &
+!!     &          ifld_dst, nnod_dst, ntot_dst_phys, d_dst)
+!!@endverbatim
+!!
+!!@param ifld_org        field ID for original data
+!!@param nnod_org        number of node for original data
+!!@param ntot_org_phys   total number of components for original field
+!!@param d_org           original field data
+!!
+!!@param ifld_dst        field ID for copied data
+!!@param nnod_dst        number of node for copied data
+!!@param ntot_dst_phys   total number of components for copied field
+!!@param d_dst           copied field data
 !
       module copy_between_two_fields
 !

@@ -1,21 +1,27 @@
-!copy_MHD_4_sph_trans.f90
-!      module copy_MHD_4_sph_trans
+!>@file   copy_MHD_4_sph_trans.f90
+!!@brief  module copy_MHD_4_sph_trans
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Oct., 2009
 !
-!        programmed by H.Matsui on Oct., 2009
-!
-!  routines for backward transform
-!      subroutine copy_mhd_vec_spec_to_trans
-!      subroutine copy_mhd_scl_spec_to_trans
-!
-!      subroutine copy_mhd_vec_fld_from_trans
-!      subroutine copy_mhd_scl_fld_from_trans
-!
-!  routines for forward transform
+!>@brief Copy spectrum data and field data to spherical transform buffer
+!!       for dynamo simulation
+!!
+!!@verbatim
+!!  routines for backward transform
+!!      subroutine copy_mhd_vec_spec_to_trans
+!!      subroutine copy_mhd_scl_spec_to_trans
+!!
+!!      subroutine copy_mhd_vec_fld_from_trans
+!!      subroutine copy_mhd_scl_fld_from_trans
+!!
+!!  routines for forward transform
 !!      subroutine copy_mhd_scalar_fld_to_trans
 !!      subroutine copy_mhd_scalar_spec_from_trans
-!
-!      subroutine copy_mhd_vec_fld_to_trans
-!      subroutine copy_mhd_vec_spec_from_trans
+!!
+!!      subroutine copy_mhd_vec_fld_to_trans
+!!      subroutine copy_mhd_vec_spec_from_trans
+!!@endverbatim
 !
       module copy_MHD_4_sph_trans
 !

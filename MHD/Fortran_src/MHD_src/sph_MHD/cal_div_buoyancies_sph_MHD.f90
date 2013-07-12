@@ -1,9 +1,14 @@
-!cal_div_buoyancies_sph_MHD.f90
-!      module cal_div_buoyancies_sph_MHD
+!>@file   cal_div_buoyancies_sph_MHD.f90
+!!@brief  module cal_div_buoyancies_sph_MHD
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in July, 2011
 !
-!        programmed by H.Matsui on July, 2011
-!
-!      subroutine s_cal_div_buoyancies_sph_MHD
+!>@brief Evaluate divergence of buoyancy for pressure evaluation
+!!
+!!@verbatim
+!!      subroutine s_cal_div_buoyancies_sph_MHD
+!!@endverbatim
 !
       module cal_div_buoyancies_sph_MHD
 !

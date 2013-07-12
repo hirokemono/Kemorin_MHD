@@ -172,11 +172,11 @@
 !*  ----------  add time evolution -----------------
 !*
       if(i_step .eq. 1) then
-        if(iflag_debug.gt.0) write(*,*) 's_cal_expricit_sph_euler'
-        call s_cal_expricit_sph_euler(i_step)
+        if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_euler'
+        call cal_expricit_sph_euler(i_step)
       else
-        if(iflag_debug.gt.0) write(*,*) 's_cal_expricit_sph_adams'
-        call s_cal_expricit_sph_adams
+        if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_adams'
+        call cal_expricit_sph_adams
       end if
 !*
 !*  ----------  time evolution by inplicit method ----------

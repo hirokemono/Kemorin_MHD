@@ -107,7 +107,7 @@
 !
 !*  ----------  add time evolution -----------------
 !*
-        if (iflag_debug.eq.1) write(*,*) 's_cal_expricit_sph_euler'
+        if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_linear_conv'
         call SPH_analyze_linear_conv(i_step_MHD)
 !*
 !*  -----------  exit loop --------------

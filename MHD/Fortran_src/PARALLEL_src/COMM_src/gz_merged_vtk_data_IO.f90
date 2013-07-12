@@ -102,7 +102,7 @@
         call write_gz_vtk_connect_head(istack_ele_ucd_list(nprocs),     &
      &      nnod_ele)
         call write_gz_vtk_connect_data(nele_ucd_list(ione), nnod_ele,   &
-     &      ie(1,1) )
+     &      nele_ucd_list(ione), ie(1,1) )
       end if
 !
 !C
@@ -126,7 +126,7 @@
           call MPI_WAITALL (ione, req2, sta2, ierr)
 !
           call write_gz_vtk_connect_data(nele_ucd_list(ip), nnod_ele,   &
-     &        ie_single_ucd(1) )
+     &        nele_ucd_list(ip), ie_single_ucd(1) )
 !
           call write_gz_vtk_cell_type(istack_ele_ucd_list(nprocs),      &
      &        nnod_ele)
@@ -152,8 +152,8 @@
 !
 !
       if(my_rank .eq. 0) then
-        call write_mul_gz_vtk_each_field(nnod,                          &
-     &      ione, internod_ucd_list(ione), ncomp_field, d_nod)
+        call write_gz_vtk_each_field(nnod, ncomp_field,                 &
+     &      internod_ucd_list(ione), d_nod)
       end if
 !
       do ip = 2, nprocs
@@ -174,9 +174,8 @@
 !
           call MPI_WAITALL (ione, req2, sta2, ierr)
 !
-          call write_mul_gz_vtk_each_field(nnod_ucd_list(ip),           &
-     &        ione, internod_ucd_list(ip), ncomp_field,                 &
-     &        d_single_ucd(1) )
+          call write_gz_vtk_each_field(nnod_ucd_list(ip), ncomp_field,  &
+     &        internod_ucd_list(ip), d_single_ucd(1) )
         end if
 !
         if(my_rank .eq. isend_rank ) then

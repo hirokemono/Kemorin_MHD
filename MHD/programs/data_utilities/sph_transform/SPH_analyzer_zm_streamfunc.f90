@@ -4,7 +4,6 @@
 !      Written by H. Matsui
 !
 !      subroutine SPH_analyze_zm_streamfunc(i_step, visval)
-!      subroutine set_ctl_data_4_zm_streamline
 !
       module SPH_analyzer_zm_streamfunc
 !
@@ -79,37 +78,6 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine sph_b_trans_streamline
-!
-      use sph_trans_vector
-      use copy_all_spec_4_sph_trans
-      use copy_all_field_4_sph_trans
-      use pole_sph_transform
-!
-!
-      if (num_vector_rtp .gt. 0) then
-        if (iflag_debug.gt.0)                                           &
-     &        write(*,*) 'set_all_vec_spec_to_sph_t'
-        call set_all_vec_spec_to_sph_t
-!
-        if (iflag_debug.gt.0)                                           &
-     &        write(*,*) 'sph_b_trans_vector', num_vector_rtp
-        call sph_b_trans_vector(num_vector_rtp)
-!
-        if (iflag_debug.gt.0)                                           &
-     &      write(*,*) 'pole_b_trans_vector'
-        call pole_b_trans_vector(num_vector_rtp)
-!
-        if (iflag_debug.gt.0)                                           &
-     &        write(*,*) 'set_sph_vect_from_sph_trans'
-        call adjust_phi_comp_for_streamfunc
-        call set_sph_vect_from_sph_trans
-      end if
-!
-      end subroutine sph_b_trans_streamline
-!
-! -----------------------------------------------------------------------
-!
       subroutine set_ctl_data_4_zm_streamline
 !
       use m_ctl_data_4_fields
@@ -146,6 +114,37 @@
       end subroutine set_ctl_data_4_zm_streamline
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine sph_b_trans_streamline
+!
+      use sph_trans_vector
+      use copy_all_spec_4_sph_trans
+      use copy_all_field_4_sph_trans
+      use pole_sph_transform
+!
+!
+      if (num_vector_rtp .gt. 0) then
+        if (iflag_debug.gt.0)                                           &
+     &        write(*,*) 'set_all_vec_spec_to_sph_t'
+        call set_all_vec_spec_to_sph_t
+!
+        if (iflag_debug.gt.0)                                           &
+     &        write(*,*) 'sph_b_trans_vector', num_vector_rtp
+        call sph_b_trans_vector(num_vector_rtp)
+!
+        if (iflag_debug.gt.0)                                           &
+     &      write(*,*) 'pole_b_trans_vector'
+        call pole_b_trans_vector(num_vector_rtp)
+!
+        if (iflag_debug.gt.0)                                           &
+     &        write(*,*) 'set_xyz_vect_from_sph_trans'
+        call adjust_phi_comp_for_streamfunc
+        call set_xyz_vect_from_sph_trans
+      end if
+!
+      end subroutine sph_b_trans_streamline
+!
+! -----------------------------------------------------------------------
 !
       subroutine set_rj_phys_for_zm_streamfunc
 !
@@ -187,7 +186,7 @@
       use m_work_4_sph_trans
 !
 !
-      integer(kind = kint) :: inod, ist, j, i, k, l, m, jnod
+      integer(kind = kint) :: inod, j, k, l, m, jnod
 !
 !
       do j = 1, num_vector_rtp

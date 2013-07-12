@@ -79,9 +79,7 @@
                 j2 = ie(jele,js2)
                 j3 = ie(jele,js3)
                 j4 = ie(jele,js4)
-                iflag_inside = 0
-                call check_4_on_3(i1, i2, i3, j1, j2, j3, j4,           &
-     &              iflag_inside )
+                iflag_inside = check_4_on_3(i1, i2, i3, j1, j2, j3, j4)
                 if (iflag_inside .eq. 1) then
                   isurf_flag(k1) =  k1
                   isurf_flag(k2) = -k1
@@ -148,8 +146,7 @@
                 j2 = ie(jele,js2)
                 j3 = ie(jele,js3)
                 j4 = ie(jele,js4)
-                call check_4_on_3(i1, i2, i3, j1, j2, j3, j4,           &
-     &              iflag_inside )
+                iflag_inside = check_4_on_3(i1, i2, i3, j1, j2, j3, j4)
                 if (iflag_inside .eq. 1) then
                   isurf_flag(k1) =  iflag_inside
                   isurf_flag(k2) =  iflag_inside

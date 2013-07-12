@@ -24,6 +24,9 @@
 !
       implicit none
 !
+!>      file ID for VTK file
+      integer(kind = kint), parameter, private :: id_vtk_file = 16
+!
 !-----------------------------------------------------------------------
 !
       contains
@@ -87,17 +90,17 @@
      &      istep, file_name)
 !
         write(*,*) 'single UCD data: ', trim(file_name)
-        open(ucd_file_code,file=ucd_file_name, form='formatted')
+        open(id_vtk_file,file=ucd_file_name, form='formatted')
       end if
 !
-      call write_merged_ucd_mesh(ucd_file_code, nnod_ucd, nele_ucd,     &
+      call write_merged_ucd_mesh(id_vtk_file, nnod_ucd, nele_ucd,       &
      &    nnod_4_ele_ucd, xx_ucd, ie_ucd, ntot_comp_ucd)
 !
-      call write_merged_ucd_fields(ucd_file_code, nnod_ucd,             &
+      call write_merged_ucd_fields(id_vtk_file, nnod_ucd,               &
      &    num_field_ucd, ntot_comp_ucd, num_comp_ucd, phys_name_ucd,    &
      &    d_nod_ucd)
 !
-      if(my_rank .eq. 0) close(ucd_file_code)
+      if(my_rank .eq. 0) close(id_vtk_file)
 !
       end subroutine write_merged_ucd_file
 !
@@ -117,14 +120,14 @@
      &      istep, file_name)
 !
         write(*,*) 'single UCD field data: ', trim(file_name)
-        open(ucd_file_code,file=ucd_file_name, form='formatted')
+        open(id_vtk_file,file=ucd_file_name, form='formatted')
       end if
 !
-      call write_merged_ucd_fields(ucd_file_code, nnod_ucd,             &
+      call write_merged_ucd_fields(id_vtk_file, nnod_ucd,               &
      &    num_field_ucd, ntot_comp_ucd, num_comp_ucd, phys_name_ucd,    &
      &    d_nod_ucd)
 !
-      if(my_rank .eq. 0) close(ucd_file_code)
+      if(my_rank .eq. 0) close(id_vtk_file)
 !
       end subroutine write_merged_udt_file
 !
@@ -142,13 +145,13 @@
      &      file_name)
 !
         write(*,*) 'single UCD grid data: ', trim(file_name)
-        open (ucd_file_code, file=ucd_file_name, status='replace')
+        open (id_vtk_file, file=ucd_file_name, status='replace')
       end if
 !
-      call write_merged_ucd_mesh(ucd_file_code, nnod_ucd, nele_ucd,     &
+      call write_merged_ucd_mesh(id_vtk_file, nnod_ucd, nele_ucd,       &
      &    nnod_4_ele_ucd, xx_ucd, ie_ucd, ntot_comp_ucd)
 !
-      if(my_rank .eq. 0) close(ucd_file_code)
+      if(my_rank .eq. 0) close(id_vtk_file)
 !
       end subroutine write_merged_grd_file
 !
@@ -169,18 +172,18 @@
      &      istep, file_name)
 !
         write(*,*) 'single VTK data: ', trim(file_name)
-        open (ucd_file_code, file=file_name, form='formatted',          &
+        open (id_vtk_file, file=file_name, form='formatted',            &
      &                  status ='unknown')
       end if
 !
-      call write_merged_vtk_mesh(ucd_file_code, nnod_ucd,               &
+      call write_merged_vtk_mesh(id_vtk_file, nnod_ucd,                 &
      &    nele_ucd, nnod_4_ele_ucd, xx_ucd, ie_ucd)
 !
-      call write_merged_vtk_fields(ucd_file_code, nnod_ucd,             &
+      call write_merged_vtk_fields(id_vtk_file, nnod_ucd,               &
      &    num_field_ucd, ntot_comp_ucd, num_comp_ucd, phys_name_ucd,    &
      &    d_nod_ucd)
 !
-      if(my_rank .eq. 0) close(ucd_file_code)
+      if(my_rank .eq. 0) close(id_vtk_file)
 !
       end subroutine write_merged_vtk_file
 !
@@ -200,15 +203,15 @@
      &      istep, file_name)
 !
         write(*,*) 'single VTK field data: ', file_name
-        open (ucd_file_code, file=file_name, form='formatted',          &
+        open (id_vtk_file, file=file_name, form='formatted',            &
      &                  status ='unknown')
       end if
 !
-      call write_merged_vtk_fields(ucd_file_code, nnod_ucd,             &
+      call write_merged_vtk_fields(id_vtk_file, nnod_ucd,               &
      &    num_field_ucd, ntot_comp_ucd, num_comp_ucd, phys_name_ucd,    &
      &    d_nod_ucd)
 !
-      if(my_rank .eq. 0) close(ucd_file_code)
+      if(my_rank .eq. 0) close(id_vtk_file)
 !
       end subroutine write_merged_vtk_phys
 !
@@ -226,14 +229,14 @@
      &      file_name)
 !
         write(*,*) 'single VTK grid data:     ', trim(file_name)
-        open (ucd_file_code,  file=file_name, form='formatted',         &
+        open (id_vtk_file,  file=file_name, form='formatted',           &
      &                  status ='unknown')
       end if
 !
-      call write_merged_vtk_mesh(ucd_file_code, nnod_ucd,               &
+      call write_merged_vtk_mesh(id_vtk_file, nnod_ucd,                 &
      &    nele_ucd, nnod_4_ele_ucd, xx_ucd, ie_ucd)
 !
-      if(my_rank .eq. 0) close(ucd_file_code)
+      if(my_rank .eq. 0) close(id_vtk_file)
 !
       end subroutine write_merged_vtk_grid
 !

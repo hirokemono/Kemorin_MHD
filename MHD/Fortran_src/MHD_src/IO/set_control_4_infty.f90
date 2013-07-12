@@ -8,7 +8,7 @@
 !> @brief set infinite radius boundary from control data
 !!
 !!@verbatim
-!     subroutine s_set_control_4_infty
+!!     subroutine s_set_control_4_infty
 !!@endverbatim
 !
       module set_control_4_infty

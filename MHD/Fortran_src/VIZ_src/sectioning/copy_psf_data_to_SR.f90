@@ -1,21 +1,30 @@
+!>@file  copy_psf_data_to_SR.f90
+!!       module copy_psf_data_to_SR
+!!
+!!@author H. Matsui
+!!@date   Programmed in March, 2007
+!!@n      Modified by H. Matsui in July, 2013
 !
-!      module copy_psf_data_to_SR
-!
-!      Written by H. Matsui on July, 2006
-!
-!      subroutine set_real_data_2_send_psf(ntot_psf, ncomp_dat,         &
-!     &          dat_psf, send)
-!      subroutine set_int_data_2_send_psf(ntot_psf, ncomp_dat,          &
-!     &          ie_psf, isend)
-!
-!      subroutine set_recv_2_real_data_psf(num_para, max_para,          &
-!     &          ncomp_dat, recv, dat_out)
-!      subroutine set_recv_2_int_data_psf(num_para, max_para,           &
-!     &          ncomp_dat, irecv, ie_out)
-!
-!      subroutine adjust_patch_connect_4_collect(nprocs, num_psf,       &
-!     &          ntot_output, istack_nod_para,                          &
-!     &          istack_ele_para, itri, ie_out)
+!> @brief Copy recieved sectioning data to output data field
+!!
+!!@verbatim
+!!      subroutine set_real_data_2_send_psf(ntot_psf, ncomp_dat,        &
+!!     &          dat_psf, send)
+!!      subroutine set_int_data_2_send_psf(ntot_psf, ncomp_dat,         &
+!!     &          ie_psf, isend)
+!!
+!!      subroutine set_recv_2_real_data_psf(i_psf, nprocs, num_psf,     &
+!!     &          ntot_output, istack_nod_para, istack_nod_recv,        &
+!!     &          ncomp_dat, recv, nnod_ucd, ntot_comp_ucd, d_ucd)
+!!      subroutine set_recv_2_int_data_psf(i_psf, nprocs, num_psf,      &
+!!     &          ntot_output, istack_nod_para,                         &
+!!     &          istack_nod_recv, itri, irecv, int_out)
+!!
+!!      subroutine set_recv_2_ele_connect_psf(i_psf, nprocs, num_psf,   &
+!!     &          ntot_output, istack_nod_para, istack_ele_para,        &
+!!     &          istack_ele_recv, itri, irecv,                         &
+!!     &          nele_ucd, nnod_4_ele_ucd, ie_ucd)
+!!@endverbatim
 !
       module copy_psf_data_to_SR
 !
@@ -73,79 +82,74 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_recv_2_real_data_psf(nprocs, num_psf,              &
-     &          ntot_output, istack_nod_para, nnod_recv,                &
-     &          istack_nod_recv, ncomp_dat, recv, dat_out)
+      subroutine set_recv_2_real_data_psf(i_psf, nprocs, num_psf,       &
+     &          ntot_output, istack_nod_para, istack_nod_recv,          &
+     &          ncomp_dat, recv, nnod_ucd, ntot_comp_ucd, d_ucd)
 !
-      integer(kind = kint), intent(in) :: nprocs, num_psf
+      integer(kind = kint), intent(in) :: i_psf, nprocs, num_psf
+      integer(kind = kint), intent(in) :: nnod_ucd, ntot_comp_ucd
       integer(kind = kint), intent(in) :: ntot_output, ncomp_dat
-      integer(kind = kint), intent(in)                                  &
-     &      :: istack_nod_para(0:nprocs*num_psf)
-      integer(kind = kint), intent(in) :: nnod_recv(nprocs*num_psf)
+      integer(kind = kint), intent(in) :: istack_nod_para(0:nprocs)
       integer(kind = kint), intent(in)                                  &
      &      :: istack_nod_recv(0:nprocs*num_psf)
-      real(kind = kreal), intent(inout) :: recv(ntot_output*ncomp_dat)
+      real(kind = kreal), intent(in) :: recv(ntot_output*ncomp_dat)
 !
       real(kind = kreal), intent(inout)                                 &
-     &                   :: dat_out(ntot_output,ncomp_dat)
+     &                   :: d_ucd(nnod_ucd,ntot_comp_ucd)
 !
-      integer(kind = kint) :: inum, nd, ip, i, j, k0, kk, jnod, kst
+      integer(kind = kint) :: inum, nd, ip, k0, kk
+      integer(kind = kint) :: inod, jnod, kst, num
 !
 !
-        do nd = 1, ncomp_dat
-          do i = 1, num_psf
-            do ip = 1, nprocs
-              j = ip + (i-1)*nprocs
-              k0 = (ip-1)*num_psf
-              kst = ncomp_dat * istack_nod_recv(k0)                     &
-     &             + (nd-1) * (istack_nod_recv(num_psf+k0)              &
-     &                         -istack_nod_recv( k0 ))                  &
-     &              + (istack_nod_recv(k0+i-1) - istack_nod_recv(k0))
-              do inum = 1, nnod_recv(k0+i)
-                jnod = istack_nod_para(j-1) + inum
-                kk = kst + inum
-                dat_out(jnod,nd) = recv(kk)
-              end do
-            end do
+      do nd = 1, ntot_comp_ucd
+        do ip = 1, nprocs
+          k0 = (ip-1)*num_psf
+          kst = ncomp_dat * istack_nod_recv(k0)                         &
+     &         + (nd-1) * (istack_nod_recv(num_psf+k0)                  &
+     &                    -istack_nod_recv( k0 ))                       &
+     &         + (istack_nod_recv(k0+i_psf-1) - istack_nod_recv(k0))
+          num = istack_nod_para(ip) - istack_nod_para(ip-1)
+          do inum = 1, num
+            jnod = inum + istack_nod_para(ip-1)
+            inod = inum + istack_nod_para(ip-1) - istack_nod_para(0)
+            kk = inum + kst
+            d_ucd(inod,nd) =   recv(kk)
           end do
         end do
+      end do
 !
       end subroutine set_recv_2_real_data_psf
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_recv_2_int_data_psf(nprocs, num_psf,               &
-     &          ntot_output, istack_ele_para, nele_recv,                &
-     &          istack_ele_recv, itri, irecv, ie_out)
+      subroutine set_recv_2_int_data_psf(i_psf, nprocs, num_psf,        &
+     &          ntot_output, istack_nod_para,                           &
+     &          istack_nod_recv, itri, irecv, int_out)
 !
-      integer(kind = kint), intent(in) :: nprocs, num_psf
+      integer(kind = kint), intent(in) :: i_psf, nprocs, num_psf
       integer(kind = kint), intent(in) :: ntot_output, itri
+      integer(kind = kint), intent(in) :: istack_nod_para(0:nprocs)
       integer(kind = kint), intent(in)                                  &
-     &      :: istack_ele_para(0:nprocs*num_psf)
-      integer(kind = kint), intent(in) :: nele_recv(nprocs*num_psf)
-      integer(kind = kint), intent(in)                                  &
-     &      :: istack_ele_recv(0:nprocs*num_psf)
+     &      :: istack_nod_recv(0:nprocs*num_psf)
       integer(kind = kint), intent(in) :: irecv(ntot_output*itri)
 !
-      integer(kind = kint), intent(inout) :: ie_out(ntot_output,itri)
+      integer(kind = kint), intent(inout) :: int_out(ntot_output,itri)
 !
-      integer(kind = kint) :: inum, nd, ip, i, j, k0, kk, jele, kst
+      integer(kind = kint) :: inum, nd, ip, k0, kk, jele, kst, num
 !
 !
       do nd = 1, itri
-        do i = 1, num_psf
-          do ip = 1, nprocs
-            j = ip + (i-1)*nprocs
+        do ip = 1, nprocs
             k0 = (ip-1)*num_psf
-            kst = itri * istack_ele_recv(k0)                            &
-     &           + (nd-1) * (istack_ele_recv(num_psf+k0)                &
-     &                       -istack_ele_recv( k0 ))                    &
-     &            + (istack_ele_recv(k0+i-1) - istack_ele_recv(k0))
-            do inum = 1, nele_recv(k0+i)
-              jele = istack_ele_para(j-1) + inum
-              kk = kst + inum
-              ie_out(jele,nd) = irecv(kk)
-            end do
+            kst = itri * istack_nod_recv(k0)                            &
+     &           + (nd-1) * (istack_nod_recv(num_psf+k0)                &
+     &                       -istack_nod_recv( k0 ))                    &
+     &            + (istack_nod_recv(k0+i_psf-1) - istack_nod_recv(k0))
+          num = istack_nod_para(ip) - istack_nod_para(ip-1)
+          do inum = 1, num
+            jele = istack_nod_para(ip-1) + inum
+            kk = kst + inum
+            int_out(jele,nd) = irecv(kk)
           end do
         end do
       end do
@@ -155,53 +159,47 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine adjust_patch_connect_4_collect(nprocs, num_psf,        &
-     &          ntot_output, istack_nod_para,                           &
-     &          istack_ele_para, itri, ie_out)
+      subroutine set_recv_2_ele_connect_psf(i_psf, nprocs, num_psf,     &
+     &          ntot_output, istack_nod_para, istack_ele_para,          &
+     &          istack_ele_recv, itri, irecv,                           &
+     &          nele_ucd, nnod_4_ele_ucd, ie_ucd)
 !
 !
-      integer(kind = kint), intent(in) :: nprocs, num_psf
+      integer(kind = kint), intent(in) :: i_psf, num_psf, nprocs
       integer(kind = kint), intent(in) :: ntot_output, itri
+      integer(kind = kint), intent(in) :: istack_nod_para(0:nprocs)
+      integer(kind = kint), intent(in) :: istack_ele_para(0:nprocs)
       integer(kind = kint), intent(in)                                  &
-     &      :: istack_nod_para(0:nprocs*num_psf)
-      integer(kind = kint), intent(in)                                  &
-     &      :: istack_ele_para(0:nprocs*num_psf)
+     &      :: istack_ele_recv(0:nprocs*num_psf)
+      integer(kind = kint), intent(in) :: irecv(ntot_output*itri)
+      integer(kind = kint), intent(in) :: nele_ucd, nnod_4_ele_ucd
 !
-      integer(kind = kint), intent(inout) :: ie_out(ntot_output,itri)
+      integer(kind = kint), intent(inout)                               &
+     &      :: ie_ucd(nele_ucd,nnod_4_ele_ucd)
 !
-      integer(kind = kint) :: ip, nd, i, ist, jst, jed, jele
+      integer(kind = kint) :: inum, k0, kk, kst, num
+      integer(kind = kint) :: ip, nd, iele
 !
-!
-!      do nd = 1, itri
-!        do i = 1, num_psf
-!          ist = (i-1)*nprocs
-!          do ip = 1, nprocs
-!            jst = istack_ele_para(ip+ist-1) + 1
-!            jed = istack_ele_para(ip+ist)
-!            do jele = jst, jed
-!              ie_out(jele,nd) = ie_out(jele,nd)                         &
-!     &                         - istack_nod_para(ist)
-!            end do
-!          end do
-!        end do
-!      end do
 !
       do nd = 1, itri
-        do i = 1, num_psf
-          ist = (i-1)*nprocs
-          do ip = 1, nprocs
-            jst = istack_ele_para(ip+ist-1) + 1
-            jed = istack_ele_para(ip+ist)
-            do jele = jst, jed
-              ie_out(jele,nd) = ie_out(jele,nd)                         &
-     &                         + istack_nod_para(ist+ip-1)              &
-     &                         - istack_nod_para(ist)
-            end do
+        do ip = 1, nprocs
+          k0 = (ip-1)*num_psf
+          kst = itri * istack_ele_recv(k0)                              &
+     &         + (nd-1) * (istack_ele_recv(num_psf+k0)                  &
+     &                    -istack_ele_recv( k0 ))                       &
+     &          + (istack_ele_recv(k0+i_psf-1) - istack_ele_recv(k0))
+          num = istack_ele_para(ip) - istack_ele_para(ip-1)
+          do inum = 1, num
+            iele = inum + istack_ele_para(ip-1) - istack_ele_para(0)
+            kk = kst + inum
+!
+            ie_ucd(iele,nd) = irecv(kk) + istack_nod_para(ip-1)         &
+     &                                  - istack_nod_para(0)
           end do
         end do
       end do
 !
-      end subroutine adjust_patch_connect_4_collect
+      end subroutine set_recv_2_ele_connect_psf
 !
 ! ----------------------------------------------------------------------
 !

@@ -1,14 +1,22 @@
-!gz_write_ucd_to_vtk_file.f90
-!      module gz_write_ucd_to_vtk_file
+!>@file   gz_write_ucd_to_vtk_file.f90
+!!@brief  module gz_write_ucd_to_vtk_file
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui on July, 2006
+!!@n       Modified by H.Matsui on March, 2013
 !
-!        programmed by H.Matsui on July, 2006
-!        Modified by H.Matsui on March, 2013
-!
-!      subroutine write_gz_parallel_vtk_file(my_rank, nprocs, istep)
-!
-!      subroutine write_ucd_data_2_gz_vtk(my_rank, istep)
-!      subroutine write_ucd_data_2_gz_vtk_phys(my_rank, istep)
-!      subroutine write_ucd_data_2_gz_vtk_grid(my_rank)
+!>@brief Output FEM field data to distributed VTK file (gzipped)
+!!
+!!@verbatim
+!!      subroutine write_gz_parallel_vtk_file(my_rank, nprocs, istep)
+!!
+!!      subroutine write_ucd_data_2_gz_vtk(my_rank, istep)
+!!      subroutine write_ucd_data_2_gz_vtk_phys(my_rank, istep)
+!!      subroutine write_ucd_data_2_gz_vtk_grid(my_rank)
+!!@endverbatim
+!!
+!!@param my_rank    subdomain ID
+!!@param istep      Step number for VTK data
 !
       module gz_write_ucd_to_vtk_file
 !

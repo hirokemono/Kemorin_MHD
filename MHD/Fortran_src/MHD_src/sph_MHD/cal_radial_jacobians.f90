@@ -1,13 +1,20 @@
-!cal_radial_jacobians.f90
-!     module cal_radial_jacobians
+!>@file   cal_radial_jacobians.f90
+!!@brief  module cal_radial_jacobians
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Oct., 2009
 !
-!     Written by H. Matsui on Sep. 2010
-!
-!
-!      subroutine s_cal_radial_jacobians(nri, radius)
-!
-!      subroutine cal_linear_radiaul_jacobian(nri, radius)
-!      subroutine cal_quad_radiaul_jacobian(nri, radius)
+!>@brief Set Jacobians in radial direction for radial FEM
+!!
+!!@verbatim
+!!      subroutine s_cal_radial_jacobians(nri, radius)
+!!
+!!      subroutine cal_linear_radiaul_jacobian(nri, radius)
+!!      subroutine cal_quad_radiaul_jacobian(nri, radius)
+!!@endverbatim
+!!
+!!@param nri           number of radial grid points
+!!@param radius(nri)   radius array
 !
       module cal_radial_jacobians
 !

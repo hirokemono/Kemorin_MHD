@@ -7,26 +7,19 @@
 !     &          ncomp_field, field_name, d_nod)
 !      subroutine write_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie)
 !
-!      subroutine write_multi_gz_vtk_data(ntot_nod, ist_nod, ied_nod,   &
-!     &          num_field, ntot_comp, ncomp_field, field_name, d_nod)
-!      subroutine write_multi_gz_vtk_mesh(ntot_nod, ist_nod, ied_nod,   &
-!     &          ntot_ele, nnod_ele, ist_ele, ied_ele, xx, ie)
-!
 !      subroutine write_gz_vtk_fields_head(nnod)
 !      subroutine write_gz_vtk_each_field_head(ncomp_field, field_name)
-!      subroutine write_gz_vtk_each_field(nnod, d_nod)
 !
-!      subroutine write_mul_gz_vtk_each_field(ntot_nod, ist, ied,       &
-!     &          ncomp_field, d_nod)
+!!      subroutine write_gz_vtk_each_field(ntot_nod, ncomp_field, nnod, &
+!!     &          d_nod)
 !
 !      subroutine write_gz_vtk_node_head(nnod)
 !
 !      subroutine write_gz_vtk_connect_head(nele, nnod_ele)
-!      subroutine write_gz_vtk_connect_data(nele, nnod_ele, ie)
 !      subroutine write_gz_vtk_cell_type(nele, nnod_ele)
 !
-!      subroutine write_mul_gz_vtk_connect_data(ntot_ele, nnod_ele,     &
-!     &          ist, ied, ie)
+!      subroutine write_gz_vtk_connect_data(ntot_ele, nnod_ele,         &
+!     &          nele, ie)
 !
       module gz_vtk_data_IO
 !
@@ -52,43 +45,9 @@
       character(len=kchara), intent(in) :: field_name(num_field)
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
-!
-      call write_multi_gz_vtk_data(nnod, ione, nnod,                    &
-     &    num_field, ntot_comp, ncomp_field, field_name, d_nod)
-!
-      end subroutine write_gz_vtk_data
-!
-! -----------------------------------------------------------------------
-!
-      subroutine write_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie)
-!
-      integer(kind = kint), intent(in) :: nnod, nele
-      integer(kind = kint), intent(in) :: nnod_ele
-      integer(kind = kint), intent(in) :: ie(nele,nnod_ele)
-      real(kind = kreal), intent(in) :: xx(nnod,3)
+      integer(kind = kint) :: icou, j
 !
 !
-      call write_multi_gz_vtk_mesh(nnod, ione, nnod, nele, nnod_ele,    &
-     &    ione, nele, xx, ie)
-!
-      end subroutine write_gz_vtk_mesh
-!
-! -----------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine write_multi_gz_vtk_data(ntot_nod, ist_nod, ied_nod,    &
-     &          num_field, ntot_comp, ncomp_field, field_name, d_nod)
-!
-      integer (kind=kint), intent(in) :: ntot_nod, ist_nod, ied_nod
-      integer (kind=kint), intent(in) :: num_field, ntot_comp
-      integer(kind=kint ), intent(in) :: ncomp_field(num_field)
-      character(len=kchara), intent(in) :: field_name(num_field)
-      real(kind = kreal), intent(in) :: d_nod(ntot_nod,ntot_comp)
-!
-      integer(kind = kint) :: icou, j, nnod
-!
-!
-      nnod = ied_nod - ist_nod + 1
       call write_gz_vtk_fields_head(nnod)
 !
       IF(ntot_comp .ge. 1) then
@@ -96,45 +55,35 @@
         do j = 1, num_field
           call write_gz_vtk_each_field_head(ncomp_field(j),             &
      &        field_name(j) )
-          call write_mul_gz_vtk_each_field(ntot_nod, ist_nod, ied_nod,  &
-     &        ncomp_field(j), d_nod(1,icou)  )
+          call write_gz_vtk_each_field(nnod, ncomp_field(j), nnod,      &
+     &        d_nod(1,icou)  )
           icou = icou + ncomp_field(j)
         end do
       end if
 !
-      end subroutine write_multi_gz_vtk_data
+      end subroutine write_gz_vtk_data
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_multi_gz_vtk_mesh(ntot_nod, ist_nod, ied_nod,    &
-     &          ntot_ele, nnod_ele, ist_ele, ied_ele, xx, ie)
+      subroutine write_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie)
 !
       use m_phys_constants
 !
-      integer(kind = kint), intent(in) :: ntot_nod, ntot_ele
-      integer(kind = kint), intent(in) :: ist_nod, ied_nod
+      integer(kind = kint), intent(in) :: nnod, nele
       integer(kind = kint), intent(in) :: nnod_ele
-      integer(kind = kint), intent(in) :: ist_ele, ied_ele
-      integer(kind = kint), intent(in) :: ie(ntot_ele,nnod_ele)
-      real(kind = kreal), intent(in) :: xx(ntot_nod,3)
+      integer(kind = kint), intent(in) :: ie(nele,nnod_ele)
+      real(kind = kreal), intent(in) :: xx(nnod,3)
 !
-      integer(kind = kint) :: nnod, nele
-!
-!
-      nnod = ied_nod - ist_nod + 1
-      nele = ied_ele - ist_ele + 1
 !
       call write_gz_vtk_node_head(nnod)
-      call write_mul_gz_vtk_each_field(ntot_nod, ist_nod, ied_nod,      &
-     &    n_vector, xx(1,1) )
+      call write_gz_vtk_each_field(nnod, n_vector, nnod, xx)
 !
       call write_gz_vtk_connect_head(nele, nnod_ele)
-      call write_mul_gz_vtk_connect_data(ntot_ele, nnod_ele,            &
-     &   ist_ele, ied_ele, ie)
+      call write_gz_vtk_connect_data(nele, nnod_ele, nele, ie)
 !
       call write_gz_vtk_cell_type(nele, nnod_ele)
 !
-      end subroutine write_multi_gz_vtk_mesh
+      end subroutine write_gz_vtk_mesh
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -183,33 +132,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_gz_vtk_each_field(nnod, ncomp_field, d_nod)
-!
-      integer (kind=kint), intent(in) :: nnod, ncomp_field
-      real(kind = kreal), intent(in) :: d_nod(nnod,ncomp_field)
-!
-!
-      call write_mul_gz_vtk_each_field(nnod, ione, nnod, ncomp_field,   &
-     &    d_nod)
-!
-      end subroutine write_gz_vtk_each_field
-!
-! -----------------------------------------------------------------------
-!
-      subroutine write_mul_gz_vtk_each_field(ntot_nod, ist, ied,        &
-     &          ncomp_field, d_nod)
+      subroutine write_gz_vtk_each_field(ntot_nod, ncomp_field, nnod,   &
+     &          d_nod)
 !
       use m_phys_constants
 !
       integer (kind=kint), intent(in) :: ntot_nod, ncomp_field
-      integer (kind=kint), intent(in) :: ist, ied
+      integer (kind=kint), intent(in) :: nnod
       real(kind = kreal), intent(in) :: d_nod(ntot_nod,ncomp_field)
 !
       integer(kind = kint) :: inod, nd, nd2
 !
 !
       if (ncomp_field .eq. n_sym_tensor) then
-        do inod = ist, ied
+        do inod = 1, nnod
           do nd2 = 1, 3
             write(textbuf,'(1p3e23.12,a1)')                             &
      &             (d_nod(inod,1+l_sim_t(nd,nd2)), nd=1,3), char(0)
@@ -217,19 +153,19 @@
           end do
         end do
       else if(ncomp_field .eq. n_vector) then
-        do inod = ist, ied
+        do inod = 1, nnod
           write(textbuf,'(1p3e23.12,a1)')                               &
      &               d_nod(inod,1:ncomp_field), char(0)
           call write_compress_txt(nbuf, textbuf)
         end do
       else if(ncomp_field .eq. n_scalar) then
-        do inod = ist, ied
+        do inod = 1, nnod
           write(textbuf,'(1pe23.12,a1)') d_nod(inod,1), char(0)
           call write_compress_txt(nbuf, textbuf)
         end do
       end if
 !
-      end subroutine write_mul_gz_vtk_each_field
+      end subroutine write_gz_vtk_each_field
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -278,18 +214,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_gz_vtk_connect_data(nele, nnod_ele, ie)
-!
-      integer(kind = kint), intent(in) :: nele, nnod_ele
-      integer(kind = kint), intent(in) :: ie(nele,nnod_ele)
-!
-!
-      call write_mul_gz_vtk_connect_data(nele, nnod_ele, ione, nele, ie)
-!
-      end subroutine write_gz_vtk_connect_data
-!
-! -----------------------------------------------------------------------
-!
       subroutine write_gz_vtk_cell_type(nele, nnod_ele)
 !
       use m_geometry_constants
@@ -321,11 +245,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_mul_gz_vtk_connect_data(ntot_ele, nnod_ele,      &
-     &          ist, ied, ie)
+      subroutine write_gz_vtk_connect_data(ntot_ele, nnod_ele,          &
+     &          nele, ie)
 !
       integer(kind = kint), intent(in) :: ntot_ele, nnod_ele
-      integer(kind = kint), intent(in) :: ist, ied
+      integer(kind = kint), intent(in) :: nele
       integer(kind = kint), intent(in) :: ie(ntot_ele,nnod_ele)
 !
       integer(kind = kint) :: iele
@@ -335,13 +259,13 @@
 !
       write(fmt_txt,'(a1,i3,a9)')   '(', (nnod_ele+1), '(i10),a1)'
 !
-      do iele = ist, ied
+      do iele = 1, nele
         ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
         write(textbuf,fmt_txt) nnod_ele, ie0(1:nnod_ele), char(0)
         call write_compress_txt(nbuf, textbuf)
       end do
 !
-      end subroutine write_mul_gz_vtk_connect_data
+      end subroutine write_gz_vtk_connect_data
 !
 ! -----------------------------------------------------------------------
 !

@@ -91,7 +91,7 @@
       if (iflag_debug.eq.1) write(*,*) 'allocate_num_patch_iso'
       call allocate_num_patch_iso(np_smp, num_iso)
 !
-      call allocate_iso_outputs_num(num_iso, nprocs)
+      call allocate_iso_outputs_num(nprocs, my_rank, num_iso)
 !
       end subroutine isosurface_init
 !
@@ -163,7 +163,7 @@
       call collect_numbers_4_iso
 !
 !
-      call allocate_iso_outputs_data(max_ncomp_iso_out)
+      call allocate_iso_outputs_data(my_rank,num_iso)
       call allocate_SR_array_iso(my_rank, nprocs,                       &
      &    nnod_iso_tot, npatch_tot_iso_smp)
 !
@@ -177,15 +177,10 @@
       call output_iso_ucds(istep_iso)
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'deallocate_SR_array_iso'
       call deallocate_SR_array_iso(my_rank)
-      if (iflag_debug.eq.1) write(*,*) 'deallocate_iso_outputs_data'
-      call deallocate_iso_outputs_data
-      if (iflag_debug.eq.1) write(*,*) 'deallocate_dat_on_patch_iso'
+      call deallocate_iso_outputs_data(my_rank, num_iso)
       call deallocate_dat_on_patch_iso
-      if (iflag_debug.eq.1) write(*,*) 'deallocate_patch_data_iso'
       call deallocate_patch_data_iso
-      if (iflag_debug.eq.1) write(*,*) 'deallocate_position_iso'
       call deallocate_position_iso
 !
       end subroutine isosurface_main

@@ -17,7 +17,7 @@
       implicit none
 !
 !
-      integer(kind = kint) :: istep_read, nd, ierr, icou
+      integer(kind = kint) :: istep_read, nd, ierr, icou, i
       real(kind = kreal)  :: time
 !
 !
@@ -52,12 +52,12 @@
 !
 !
 !
+      write(*,'(a,29X)', advance='NO') 'read data for average:'
       icou = 0
       do
         call read_evolution_data(id_org_file, num_comp, num_layer,      &
     &       istep_read, time, coef, ierr)
         if(ierr .gt. 0) exit
-        write(*,*) 'read finish for average:', istep_read
 !
         if(mod((istep_read-istep_start),istep_inc) .eq. 0               &
      &     .and. istep_read.ge.istep_start) then
@@ -67,11 +67,13 @@
      &                               + coef(1:num_layer,nd)
           end do
           icou = icou + 1
-           write(*,*) 'added', icou
         end if
+        write(*,'(28a1,i10,a8,i10)', advance='NO')                      &
+     &           (char(8),i=1,28), istep_read, ' count: ', icou
         if(istep_read .ge. istep_end) exit
       end do
       close(id_org_file)
+      write(*,*)
 !
       do nd = 1, num_comp
         ave_coef(1:num_layer,nd) = ave_coef(1:num_layer,nd)/dble(icou)
@@ -82,12 +84,12 @@
       call read_field_name_evo_file(id_org_file, group_data_file_name,  &
      &    ithree, num_comp, comp_name)
 !
+      write(*,'(a,29X)', advance='NO') 'read data for deviation:'
       icou = 0
       do
         call read_evolution_data(id_org_file, num_comp, num_layer,      &
     &       istep_read, time, coef, ierr)
         if(ierr .gt. 0) exit
-        write(*,*) 'read finish for deviation:', istep_read
 !
         if(mod((istep_read-istep_start),istep_inc) .eq. 0               &
      &     .and. istep_read.ge.istep_start) then
@@ -97,10 +99,13 @@
           end do
           icou = icou + 1
         end if
+        write(*,'(28a1,i10,a8,i10)', advance='NO')                      &
+     &           (char(8),i=1,28), istep_read, ' count: ', icou
 !
         if(istep_read .ge. istep_end) exit
       end do
       close(id_org_file)
+      write(*,*)
 !
       do nd = 1, num_comp
         sigma_coef(1:num_layer,nd) = sigma_coef(1:num_layer,nd)         &

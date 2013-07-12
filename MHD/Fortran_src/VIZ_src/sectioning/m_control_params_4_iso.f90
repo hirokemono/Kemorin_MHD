@@ -55,7 +55,7 @@
 !
       subroutine allocate_control_params_4_iso
 !
-      use m_multi_ucd_data
+      use m_field_file_format
 !
       allocate(iso_header(num_iso))
       allocate(itype_iso_file(num_iso))
@@ -75,7 +75,7 @@
       allocate(istack_grp_area_iso(0:num_iso))
 !
 !
-      itype_iso_file = id_type_UCD_file
+      itype_iso_file = iflag_ucd
       id_iso_result_type = 0
 !
       id_isosurf_data =  0

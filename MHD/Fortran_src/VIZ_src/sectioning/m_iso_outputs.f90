@@ -3,25 +3,29 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine allocate_iso_outputs_num(num_iso, nprocs)
-!      subroutine allocate_iso_outputs_data(max_ncomp_iso_out)
-!      subroutine allocate_SR_array_iso(my_rank, max_ncomp_iso_out,     &
-!     &          nnod_iso_tot, npatch_tot_iso_smp)
-!
-!      subroutine deallocate_iso_outputs_num
-!      subroutine deallocate_iso_outputs_data
-!      subroutine deallocate_SR_array_iso(my_rank)
+!!      subroutine allocate_iso_outputs_num(nprocs, my_rank, num_iso)
+!!      subroutine allocate_iso_outputs_data(my_rank, num_iso)
+!!      subroutine allocate_SR_array_iso(my_rank, max_ncomp_iso_out,    &
+!!     &          nnod_iso_tot, npatch_tot_iso_smp)
+!!
+!!      subroutine deallocate_iso_outputs_num
+!!      subroutine deallocate_iso_outputs_data(my_rank, num_iso)
+!!      subroutine deallocate_SR_array_iso(my_rank)
 !
       module m_iso_outputs
 !
       use m_precision
       use m_geometry_constants
 !
+      use t_ucd_data
+!
       implicit  none
 !
 !
+!>      Structure for isosurface output (used by master process)
+      type(ucd_data), allocatable, save :: iso_out(:)
+!
       integer(kind = kint) :: ntot_nod_output_iso = 0
-      integer(kind = kint), allocatable, target :: nnod_output_iso(:)
       integer(kind = kint), allocatable, target                         &
      &              :: istack_nod_output_iso(:)
 !
@@ -33,7 +37,6 @@
       integer(kind = kint), allocatable :: istack_nod_recv_iso(:)
 !
       integer(kind = kint) :: ntot_ele_output_iso = 0
-      integer(kind = kint), allocatable, target :: nele_output_iso(:)
       integer(kind = kint), allocatable, target                         &
      &              :: istack_ele_output_iso(:)
 !
@@ -44,13 +47,7 @@
       integer(kind = kint), allocatable :: nele_recv_iso(:)
       integer(kind = kint), allocatable :: istack_ele_recv_iso(:)
 !
-      real(kind = kreal), allocatable, target :: xx_output_iso(:,:)
-      integer(kind = kint), allocatable, target :: inod_output_iso(:)
       integer(kind = kint), allocatable :: ihash_output_iso(:)
-      integer(kind = kint), allocatable, target :: iele_output_iso(:)
-      integer(kind = kint), allocatable, target :: ie_output_iso(:,:)
-!
-      real(kind = kreal), allocatable, target :: dat_output_iso(:,:)
 !
 !
       real(kind = kreal), allocatable :: send_iso(:)
@@ -64,32 +61,35 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_iso_outputs_num(num_iso, nprocs)
+      subroutine allocate_iso_outputs_num(nprocs, my_rank, num_iso)
 !
-      integer(kind = kint), intent(in) :: num_iso, nprocs
+      integer(kind = kint), intent(in) :: num_iso, nprocs, my_rank
 !
-      allocate( nnod_output_iso(num_iso) )
+!
+      if(my_rank .eq. 0) then
+        allocate( iso_out(num_iso) )
+      else
+        allocate( iso_out(0) )
+      end if
+!
       allocate( istack_nod_output_iso(0:num_iso) )
       allocate( nnod_para_iso(num_iso*nprocs) )
       allocate( istack_nod_para_iso(0:num_iso*nprocs) )
       allocate( nnod_recv_iso(num_iso*nprocs) )
       allocate( istack_nod_recv_iso(0:num_iso*nprocs) )
 !
-      allocate( nele_output_iso(num_iso) )
       allocate( istack_ele_output_iso(0:num_iso) )
       allocate( nele_para_iso(num_iso*nprocs) )
       allocate( istack_ele_para_iso(0:num_iso*nprocs) )
       allocate( nele_recv_iso(num_iso*nprocs) )
       allocate( istack_ele_recv_iso(0:num_iso*nprocs) )
 !
-      nnod_output_iso = 0
       nnod_para_iso = 0
       nnod_recv_iso = 0
       istack_nod_output_iso = 0
       istack_nod_para_iso = 0
       istack_nod_recv_iso = 0
 !
-      nele_output_iso = 0
       nele_para_iso = 0
       nele_recv_iso = 0
       istack_ele_output_iso = 0
@@ -100,26 +100,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_iso_outputs_data(max_ncomp_iso_out)
+      subroutine allocate_iso_outputs_data(my_rank, num_iso)
 !
-      integer(kind=kint ) , intent(in)   ::  max_ncomp_iso_out
+      integer(kind=kint ) , intent(in) :: my_rank, num_iso
 !
-      allocate( xx_output_iso(ntot_nod_output_iso,3) )
-      allocate( inod_output_iso(ntot_nod_output_iso) )
+      integer(kind = kint) :: i_iso
+!
+!
       allocate( ihash_output_iso(ntot_nod_output_iso) )
-      allocate( iele_output_iso(ntot_ele_output_iso) )
-      allocate( ie_output_iso(ntot_ele_output_iso,num_triangle) )
-      allocate( dat_output_iso(ntot_nod_output_iso,max_ncomp_iso_out) )
+      if(ntot_nod_output_iso .gt. 0) ihash_output_iso = 0
 !
-      if(ntot_nod_output_iso .gt. 0) then
-        xx_output_iso = 0.0d0
-        dat_output_iso = 0.0d0
-        inod_output_iso =  0
-        ihash_output_iso = 0
-      end if
-      if(ntot_ele_output_iso .gt. 0) then
-        iele_output_iso = 0
-        ie_output_iso =   0
+      if(my_rank .eq. 0) then
+        do i_iso = 1, num_iso
+          call alloc_ucd_node_t(iso_out(i_iso))
+          call alloc_ucd_ele_t(iso_out(i_iso))
+          call alloc_ucd_phys_data_t(iso_out(i_iso))
+        end do
       end if
 !
       end subroutine allocate_iso_outputs_data
@@ -162,25 +158,36 @@
 !
       subroutine deallocate_iso_outputs_num
 !
-      deallocate( nnod_output_iso)
       deallocate( istack_nod_output_iso)
       deallocate( nnod_para_iso)
       deallocate( istack_nod_para_iso)
 !
-      deallocate( nele_output_iso)
       deallocate( istack_ele_output_iso)
       deallocate( nele_para_iso)
       deallocate( istack_ele_para_iso)
+!
+      deallocate( iso_out )
 !
       end subroutine deallocate_iso_outputs_num
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_iso_outputs_data
+      subroutine deallocate_iso_outputs_data(my_rank, num_iso)
 !
-      deallocate( xx_output_iso, inod_output_iso, ihash_output_iso )
-      deallocate( iele_output_iso, ie_output_iso )
-      deallocate( dat_output_iso )
+      integer(kind = kint), intent(in) :: my_rank, num_iso
+      integer(kind = kint) :: i_iso
+!
+!
+      deallocate(ihash_output_iso )
+!
+      if(my_rank .eq. 0) then
+        do i_iso = 1, num_iso
+          call dealloc_ucd_phys_data_t(iso_out(i_iso))
+          call dealloc_ucd_phys_name_t(iso_out(i_iso))
+          call dealloc_ucd_ele_t(iso_out(i_iso))
+          call dealloc_ucd_node_t(iso_out(i_iso))
+        end do
+      end if
 !
       end subroutine deallocate_iso_outputs_data
 !

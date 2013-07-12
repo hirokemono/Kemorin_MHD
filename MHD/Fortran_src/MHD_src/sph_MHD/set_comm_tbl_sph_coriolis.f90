@@ -1,11 +1,15 @@
-!set_comm_tbl_sph_coriolis.f90
-!      module set_comm_tbl_sph_coriolis
+!>@file   set_comm_tbl_sph_coriolis.f90
+!!@brief  module set_comm_tbl_sph_coriolis
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Apr., 2010
 !
-!     Written by H. Matsui on Apr., 2010
-!
-!      subroutine set_sr_address_4_coriolis
-!
-!      subroutine const_integral_sph_coriolis
+!>@brief Constract communication table to evaluate Coriolis term
+!!
+!!@verbatim
+!!      subroutine set_sr_address_4_coriolis
+!!      subroutine const_integral_sph_coriolis
+!!@endverbatim
 !
       module set_comm_tbl_sph_coriolis
 !
@@ -16,15 +20,23 @@
 !
       implicit none
 !
+!>      Range of local mode in each subdomain to evaluate Coriolis term
       integer(kind = kint), allocatable :: jminmax_coriolis(:,:)
+!>      Range of global mode in each subdomain to evaluate Coriolis term
       integer(kind = kint), allocatable :: jminmax_gl(:,:)
 !
+!>      Start harmonics mode address to send
       integer(kind = kint), allocatable :: ist_send_cor_j(:)
+!>      End harmonics mode address to send
       integer(kind = kint), allocatable :: ied_send_cor_j(:)
+!>      Start harmonics mode address to recieve
       integer(kind = kint), allocatable :: ist_recv_cor_j(:)
+!>      End harmonics mode address to recieve
       integer(kind = kint), allocatable :: ied_recv_cor_j(:)
 !
+!>      Send flags for Coriolis term
       integer(kind = kint), allocatable :: iflag_send_cor(:)
+!>      Recieve flags for Coriolis term
       integer(kind = kint), allocatable :: iflag_recv_cor(:)
 !
       private :: alloc_comm_tbl_sph_coriolis

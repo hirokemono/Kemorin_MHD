@@ -1,56 +1,66 @@
-! primefac.f90
-!-----------------------------------------------------------------------
-! 
-!  PRMFAC
+!>@file   primefac.f90
+!!@brief  module primefac
+!!
+!!@author  MADISON ACADEMIC COMPUTING CENTER
+!!@date    FORTRAN 77 VERSION 88.09
+!!@n       Modified in March, 2013
 !
 !> @brief  DECOMPOSE A NUMBER INTO ITS PRIME FACTORS.
-!
-!  CODED AT MADISON ACADEMIC COMPUTING CENTER,
-!  UNIVERSITY OF WISCONSIN, MADISON
-!
-!  FORTRAN 77 VERSION 88.09
-!
-!-----------------------------------------------------------------------
-!
-!      module primefac
-!
-!      SUBROUTINE prmfac (NUMBER, maxprim, nprm, iprm, iexp)
-!      subroutine primetest(NUMBER, iflag)
-!      subroutine countprimes(number_end, num_prime)
-!      subroutine setprimes(number_end, num_prime, i_prime_list)
-!
-!--------CALLING SEQUENCE
-!
-!  CALL PRMFAC (NUMBER, maxprim, NPRM, IPRM, IEXP)
-!  NUMBER - INTEGER CONSTANT OR VARIABLE, NUMBER TO BE DECOMPOSED
-!           INTO PRIME FACTORS.  NUMBER .GE. 2.
-!
-!  MAXPRIM - maximum number for .
-!
-!  NPRM   - INTEGER VARIABLE, WILL CONTAIN THE NO. OF DISTINCT PRIME
-!           FACTORS OF THE NUMBER.
-!
-!  IPRM   - INTEGER ARRAY OF SIZE AT LEAST 9, WILL CONTAIN THE PRIME
-!           FACTORS OF THE NUMBER.
-!
-!  IEXP   - INTEGER ARRAY OF SIZE AT LEAST 9, WILL CONTAIN THE
-!           EXPONENTS OF THE CORRESPONDING PRIME FACTORS.
-!
-!--------NOTES
-!
-!  (1)  UPON RETURN FROM PRMFAC,
-!       NUMBER = IPRM(1)**IEXP(1) * IPRM(2)**IEXP(2) * ... *
-!               IPRM(NPRM)**IEXP(NPRM)
-!
-!  (2)  A NUMBER REPRESENTED BY A (SINGLE-PRECISION) INTEGER
-!       VALUE ON THE VMS VAX CLUSTER CAN HAVE AT MOST 9 DISTINCT
-!       PRIME FACTORS.  ON MACHINES WHERE THE MAXIMUM INTEGER IS
-!       LARGER THAN 2**31 - 1, IPRM AND IEXP WOULD, IN GENERAL,
-!       HAVE TO BE DIMENSIONED LARGER SINCE LARGER NUMBERS MAY
-!       HAVE MORE THAN 9 DISTINCT PRIME FACTORS.
-!
-!---------DATA TO OBTAIN TRIAL DIVISORS 2, 3, 5, 7 AND ALL
-!         HIGHER NUMBERS NOT DIVISIBLE BY 2, 3, 5, 7.
+!!
+!!@verbatim
+!!-----------------------------------------------------------------------
+!! 
+!!  PRMFAC
+!!
+!!  DECOMPOSE A NUMBER INTO ITS PRIME FACTORS.
+!!
+!!  CODED AT MADISON ACADEMIC COMPUTING CENTER,
+!!  UNIVERSITY OF WISCONSIN, MADISON
+!!
+!!  FORTRAN 77 VERSION 88.09
+!!
+!!-----------------------------------------------------------------------
+!!
+!!      module primefac
+!!
+!!      SUBROUTINE prmfac (NUMBER, maxprim, nprm, iprm, iexp)
+!!      subroutine primetest(NUMBER, iflag)
+!!      subroutine countprimes(number_end, num_prime)
+!!      subroutine setprimes(number_end, num_prime, i_prime_list)
+!!
+!!--------CALLING SEQUENCE
+!!
+!!  CALL PRMFAC (NUMBER, maxprim, NPRM, IPRM, IEXP)
+!!  NUMBER - INTEGER CONSTANT OR VARIABLE, NUMBER TO BE DECOMPOSED
+!!           INTO PRIME FACTORS.  NUMBER .GE. 2.
+!!
+!!  MAXPRIM - maximum number for .
+!!
+!!  NPRM   - INTEGER VARIABLE, WILL CONTAIN THE NO. OF DISTINCT PRIME
+!!           FACTORS OF THE NUMBER.
+!!
+!!  IPRM   - INTEGER ARRAY OF SIZE AT LEAST 9, WILL CONTAIN THE PRIME
+!!           FACTORS OF THE NUMBER.
+!!
+!!  IEXP   - INTEGER ARRAY OF SIZE AT LEAST 9, WILL CONTAIN THE
+!!           EXPONENTS OF THE CORRESPONDING PRIME FACTORS.
+!!
+!!--------NOTES
+!!
+!!  (1)  UPON RETURN FROM PRMFAC,
+!!       NUMBER = IPRM(1)**IEXP(1) * IPRM(2)**IEXP(2) * ... *
+!!               IPRM(NPRM)**IEXP(NPRM)
+!!
+!!  (2)  A NUMBER REPRESENTED BY A (SINGLE-PRECISION) INTEGER
+!!       VALUE ON THE VMS VAX CLUSTER CAN HAVE AT MOST 9 DISTINCT
+!!       PRIME FACTORS.  ON MACHINES WHERE THE MAXIMUM INTEGER IS
+!!       LARGER THAN 2**31 - 1, IPRM AND IEXP WOULD, IN GENERAL,
+!!       HAVE TO BE DIMENSIONED LARGER SINCE LARGER NUMBERS MAY
+!!       HAVE MORE THAN 9 DISTINCT PRIME FACTORS.
+!!
+!!---------DATA TO OBTAIN TRIAL DIVISORS 2, 3, 5, 7 AND ALL
+!!         HIGHER NUMBERS NOT DIVISIBLE BY 2, 3, 5, 7.
+!!@endverbatim
 !
       module primefac
 !

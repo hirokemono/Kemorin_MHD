@@ -1,9 +1,14 @@
+!>@file   set_bc_flag_sph_velo.f90
+!!@brief  module set_bc_flag_sph_velo
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Oct., 2009
 !
-!      module set_bc_flag_sph_velo
-!
-!      Written by H. Matsui on Oct., 2009
-!
-!      subroutine s_set_bc_sph_mhd
+!>@brief Set boundary conditions flags for velocity
+!!
+!!@verbatim
+!!      subroutine s_set_bc_sph_mhd
+!!@endverbatim
 !
       module set_bc_flag_sph_velo
 !

@@ -406,6 +406,12 @@
            phys_check_name(1) = fhd_magne
            phys_check_name(2) = fhd_SGS_mag_induct_true
 !
+          else if (phys_nod_name(i) .eq. fhd_div_Lorentz                &
+     &        .or. phys_nod_name(i) .eq. fhd_rot_Lorentz                &
+     &       ) then
+           num_check = 1
+           phys_check_name(1) = fhd_Lorentz
+!
 !
 !   Old field label... Should be deleted later!!
           else if (phys_nod_name(i) .eq. fhd_buoyancy_work) then
@@ -413,6 +419,9 @@
            phys_check_name(1) = fhd_velo
            phys_check_name(2) = fhd_temp
 !
+!   If there is no field on list....
+          else
+            num_check = 0
           end if
 !
           call check_dependence_phys(num_nod_phys, num_check,           &

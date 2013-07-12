@@ -10,8 +10,9 @@ TARGET_GAUSS_B_TRANS =     sph_gauss_back_trans
 TARGET_ZMEAN_TRANS =       zonal_mean_transform
 TARGET_PICK_ZM_FLD_SPH =   pick_zonal_mean_sph_fld
 TARGET_ZRMS_SPH_DATA =     zonal_rms_sph_grid
-TARGET_ZMEAN_STREAM =      sph_zm_streamfunc
 
+TARGET_ZMEAN_STREAM =      sph_zm_streamfunc
+TARGET_ZMEAN_KENE =        sph_zm_kinetic_energies
 
 SOURCES = $(shell ls *.f90)
 
@@ -112,6 +113,21 @@ m_control_data_vizs.o  \
 analyzer_zonal_rms_sph.o \
 main_zonal_rms_sph.o
 
+MOD_ZMEAN_KENE = \
+m_ctl_data_4_sph_trans.o \
+m_ctl_params_sph_trans.o \
+\
+sph_transfer_all_field.o \
+copy_all_field_4_sph_trans.o \
+\
+main_zm_kinetic_energy.o \
+analyzer_zm_kinetic_energy.o \
+visualizer_all.o \
+FEM_analyzer_back_trans.o \
+SPH_analyzer_back_trans.o \
+SPH_analyzer_zm_energies.o
+
+
 #
 #  ------------------------------------------------------------------
 #
@@ -134,13 +150,15 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_ZRMS_SPH_DATA =   $$(BUILDDIR)/$(TARGET_ZRMS_SPH_DATA)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_ZMEAN_KENE =    $$(BUILDDIR)/$(TARGET_ZMEAN_KENE)' \
+	>> $(MAKENAME)
 
 target_task:
 	@echo sph_trans: \
 	'$$(TARGET_SPH_TRANS)          $$(TARGET_SPH_B_TRANS)'   \
 	'$$(TARGET_GAUSS_B_TRANS)      $$(TARGET_ZMEAN_TRANS)'   \
 	'$$(TARGET_PICK_ZM_FLD_SPH)    $$(TARGET_ZRMS_SPH_DATA)' \
-    '$$(TARGET_ZMEAN_STREAM)'    >> $(MAKENAME)
+    '$$(TARGET_ZMEAN_STREAM)       $$(TARGET_ZMEAN_KENE)'    >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_TRANS)': '$$(MOD_SPH_TRANS)' \
@@ -198,6 +216,14 @@ target_task:
 	'$$(MOD_ZRMS_SPH_SPEC)' \
 	'-L. $$(LIBS_SPH_UTIL)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_ZMEAN_KENE)': '$$(MOD_ZMEAN_KENE)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ZMEAN_KENE)' \
+	'$$(MOD_ZMEAN_KENE)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -217,6 +243,8 @@ mod_list:
 	@echo  $(MOD_PICK_ZM_FLD_SPH)   >> $(MAKENAME)
 	@echo  MOD_ZRMS_SPH_SPEC=  \\   >> $(MAKENAME)
 	@echo  $(MOD_ZRMS_SPH_SPEC)     >> $(MAKENAME)
+	@echo  MOD_ZMEAN_KENE=  \\      >> $(MAKENAME)
+	@echo  $(MOD_ZMEAN_KENE)        >> $(MAKENAME)
 
 module:
 	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(SPH_TRANSFORM_DIR)' $(SOURCES)

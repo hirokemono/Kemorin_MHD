@@ -1,17 +1,23 @@
+!>@file  gz_udt_file_IO.f90
+!!       module gz_udt_file_IO
+!!
+!! @author H. Matsui
+!! @date   Programmed in July, 2006
 !
-!      module gz_udt_file_IO
-!
-!        programmed by H.Matsui on July, 2006
-!
-!      subroutine write_gz_ucd_file(my_rank, istep)
-!      subroutine write_gz_udt_file(my_rank, istep)
-!      subroutine write_gz_grd_file(my_rank)
-!
-!      subroutine read_udt_file_gz(my_rank, istep)
-!      subroutine read_and_allocate_udt_head_gz(my_rank, istep)
-!      subroutine read_and_allocate_udt_file_gz(my_rank, istep)
-!
-!      subroutine write_gz_grd_file
+!> @brief gzipped UCD format data IO
+!!
+!!@verbatim
+!!      subroutine write_gz_ucd_file(my_rank, istep)
+!!      subroutine write_gz_udt_file(my_rank, istep)
+!!      subroutine write_gz_grd_file(my_rank)
+!!
+!!      subroutine read_udt_file_gz(my_rank, istep)
+!!      subroutine read_and_allocate_udt_head_gz(my_rank, istep)
+!!      subroutine read_and_allocate_udt_file_gz(my_rank, istep)
+!!@endverbatim
+!!
+!!@param my_rank  process ID
+!!@param istep    step number for output
 !
       module gz_udt_file_IO
 !
@@ -189,8 +195,8 @@
       if(num_field_ucd .gt. 0) then
         call write_gz_udt_field_header(num_field_ucd,                   &
      &      num_comp_ucd, phys_name_ucd)
-        call write_gz_single_udt_data(nnod_ucd, ntot_comp_ucd,          &
-     &      inod_gl_ucd, d_nod_ucd)
+        call write_gz_ucd_field_data(nnod_ucd, ntot_comp_ucd,           &
+     &      nnod_ucd, inod_gl_ucd, d_nod_ucd)
       end if
 !
       end subroutine write_gz_udt_fields
@@ -202,10 +208,10 @@
 !
       call write_gz_udt_mesh_header(nnod_ucd, nele_ucd, ntot_comp_ucd)
 !
-      call write_gz_single_udt_data(nnod_ucd, ithree,                   &
+      call write_gz_ucd_field_data(nnod_ucd, ithree, nnod_ucd,          &
      &    inod_gl_ucd, xx_ucd)
-      call write_gz_single_grd_connect(nnod_4_ele_ucd, nele_ucd,        &
-     &    iele_gl_ucd, ie_ucd)
+      call write_gz_ucd_mesh_connect(nele_ucd, nnod_4_ele_ucd,          &
+     &    nele_ucd, iele_gl_ucd, ie_ucd)
 !
       end subroutine write_gz_ucd_mesh
 !

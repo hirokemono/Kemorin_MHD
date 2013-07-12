@@ -13,13 +13,12 @@
       use m_precision
 !
       use m_parallel_var_dof
-      use m_multi_ucd_data
-      use output_multi_ucd
-      use link_psf_iso_2_write
+      use ucd_type_IO_select
 !
       implicit  none
 !
-      integer(kind = kint), parameter,  private :: rank0 = 0
+      integer(kind = kint), parameter, private :: rank0 = 0
+      integer(kind = kint), parameter, private :: delete_process = -1
 !
 !  ---------------------------------------------------------------------
 !
@@ -29,11 +28,16 @@
 !
       subroutine output_psf_grids
 !
+      use m_control_params_4_psf
+      use m_psf_outputs
+!
+      integer(kind = kint) :: i_psf
 !
       if (my_rank .ne. rank0) return
-      call link_psf_outputs
-      call output_multi_ucd_grids
-      call unlink_multl_ucd_data
+!
+      do i_psf = 1, num_psf
+        call sel_write_grd_type_file(delete_process, psf_out(i_psf))
+      end do
 !
       end subroutine output_psf_grids
 !
@@ -41,13 +45,18 @@
 !
       subroutine output_psf_fields(istep_psf)
 !
+      use m_control_params_4_psf
+      use m_psf_outputs
+!
       integer(kind = kint), intent(in) :: istep_psf
+      integer(kind = kint) :: i_psf
 !
 !
       if (my_rank .ne. rank0) return
-      call link_psf_outputs
-      call output_multi_ucd_fields(istep_psf)
-      call unlink_multl_ucd_data
+      do i_psf = 1, num_psf
+        call sel_write_ucd_type_file(delete_process, istep_psf,         &
+     &      psf_out(i_psf))
+      end do
 !
       end subroutine output_psf_fields
 !
@@ -56,13 +65,18 @@
 !
       subroutine output_iso_ucds(istep_iso)
 !
+      use m_control_params_4_iso
+      use m_iso_outputs
+!
       integer(kind = kint), intent(in) :: istep_iso
+      integer(kind = kint) :: i_iso
 !
 !
       if (my_rank .ne. rank0) return
-      call link_iso_outputs
-      call output_multi_ucd_fields(istep_iso)
-      call unlink_multl_ucd_data
+      do i_iso = 1, num_iso
+        call sel_write_ucd_type_file(delete_process, istep_iso,         &
+    &       iso_out(i_iso))
+      end do
 !
       end subroutine output_iso_ucds
 !

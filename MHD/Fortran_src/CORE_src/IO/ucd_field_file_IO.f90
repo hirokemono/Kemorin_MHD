@@ -1,12 +1,20 @@
-!ucd_field_file_IO.f90
-!      module ucd_field_file_IO
+!>@file  ucd_field_file_IO.f90
+!!       module ucd_field_file_IO
+!!
+!! @author H. Matsui
+!! @date   Programmed in July, 2006
 !
-!     Written by H. Matsui
-!
-!      subroutine write_ucd_2_fld_file(my_rank, istep)
-!
-!      subroutine read_ucd_2_fld_file(my_rank, istep)
-!      subroutine read_alloc_ucd_2_fld_file(my_rank, istep)
+!> @brief ascii format data IO
+!!
+!!@verbatim
+!!      subroutine write_ucd_2_fld_file(my_rank, istep)
+!!
+!!      subroutine read_ucd_2_fld_file(my_rank, istep)
+!!      subroutine read_alloc_ucd_2_fld_file(my_rank, istep)
+!!@endverbatim
+!!
+!!@param my_rank  process ID
+!!@param istep    step number for output
 !
       module ucd_field_file_IO
 !
@@ -22,6 +30,9 @@
       use set_ucd_file_names
 !
       implicit none
+!
+!>      file ID for field file IO
+      integer(kind = kint), parameter, private :: id_fld_file = 16
 !
 !------------------------------------------------------------------
 !
@@ -41,14 +52,14 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Write ascii step data file: ', trim(file_name)
 !
-      open(ucd_file_code, file = file_name, form = 'formatted')
+      open(id_fld_file, file = file_name, form = 'formatted')
 !
-      call write_step_data(ucd_file_code, my_rank)
-      call write_field_data(ucd_file_code,                              &
+      call write_step_data(id_fld_file, my_rank)
+      call write_field_data(id_fld_file,                                &
      &          nnod_ucd, num_field_ucd, ntot_comp_ucd,                 &
      &          num_comp_ucd, phys_name_ucd, d_nod_ucd)
 !
-      close (ucd_file_code)
+      close (id_fld_file)
 !
       end subroutine write_ucd_2_fld_file
 !
@@ -70,19 +81,19 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read ascii data file: ', trim(file_name)
 !
-      open(ucd_file_code, file = file_name, form = 'formatted')
+      open(id_fld_file, file = file_name, form = 'formatted')
 !
-      call read_step_data(ucd_file_code)
+      call read_step_data(id_fld_file)
 !
-      call skip_comment(character_4_read, ucd_file_code)
+      call skip_comment(character_4_read, id_fld_file)
       read(character_4_read,*) nnod_ucd, num_field_ucd
-      read(ucd_file_code,*) num_comp_ucd(1:num_field_ucd)
+      read(id_fld_file,*) num_comp_ucd(1:num_field_ucd)
 !
-      call read_field_data(ucd_file_code,                               &
+      call read_field_data(id_fld_file,                                 &
      &          nnod_ucd, num_field_ucd, ntot_comp_ucd,                 &
      &          num_comp_ucd, phys_name_ucd, d_nod_ucd)
 !
-      close (ucd_file_code)
+      close (id_fld_file)
 !
       end subroutine read_ucd_2_fld_file
 !
@@ -103,24 +114,24 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read ascii data file: ', trim(file_name)
 !
-      open(ucd_file_code, file = file_name, form = 'formatted')
+      open(id_fld_file, file = file_name, form = 'formatted')
 !
-      call read_step_data(ucd_file_code)
+      call read_step_data(id_fld_file)
 !
-      call skip_comment(character_4_read, ucd_file_code)
+      call skip_comment(character_4_read, id_fld_file)
       read(character_4_read,*) nnod_ucd, num_field_ucd
 !
       call allocate_ucd_phys_name
-      read(ucd_file_code,*) num_comp_ucd(1:num_field_ucd)
+      read(id_fld_file,*) num_comp_ucd(1:num_field_ucd)
 !
       call cal_istack_ucd_component
       call allocate_ucd_phys_data
 !
-      call read_field_data(ucd_file_code,                               &
+      call read_field_data(id_fld_file,                                 &
      &          nnod_ucd, num_field_ucd, ntot_comp_ucd,                 &
      &          num_comp_ucd, phys_name_ucd, d_nod_ucd)
 !
-      close (ucd_file_code)
+      close (id_fld_file)
 !
       end subroutine read_alloc_ucd_2_fld_file
 !

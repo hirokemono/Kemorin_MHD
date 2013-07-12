@@ -1,9 +1,14 @@
+!>@file   add_sph_MHD_fields_2_ctl.f90
+!!@brief  module add_sph_MHD_fields_2_ctl
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Sep., 2009
 !
-!      module add_sph_MHD_fields_2_ctl
-!
-!        programmed by H.Matsui on Sep., 2009
-!
-!      subroutine add_field_name_4_sph_mhd
+!>@brief Add fields in control list for MHD dynamo simulation
+!!
+!!@verbatim
+!!      subroutine add_field_name_4_sph_mhd
+!!@endverbatim
 !
       module add_sph_MHD_fields_2_ctl
 !

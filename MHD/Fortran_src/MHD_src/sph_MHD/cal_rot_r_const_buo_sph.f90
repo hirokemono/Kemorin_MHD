@@ -1,9 +1,14 @@
-!cal_rot_r_const_buo_sph.f90
-!      module cal_rot_r_const_buo_sph
+!>@file   cal_rot_r_const_buo_sph.f90
+!!@brief  module cal_rot_r_const_buo_sph
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in July, 2011
 !
-!        programmed by H.Matsui on July, 2011
-!
-!      subroutine cal_rot_radial_const_gravity
+!>@brief Evaluate rotation of buoyancy under constant radial gravity
+!!
+!!@verbatim
+!!      subroutine cal_rot_radial_const_gravity
+!!@endverbatim
 !
       module cal_rot_r_const_buo_sph
 !

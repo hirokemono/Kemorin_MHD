@@ -1,9 +1,15 @@
+!>@file   set_control_SPH_to_FEM.f90
+!!@brief  module set_control_SPH_to_FEM
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Sep., 2006
 !
-!      module set_control_SPH_to_FEM
-!
-!        programmed by H.Matsui on Sep., 2006
-!
-!     subroutine set_control_4_SPH_to_FEM
+!>@brief Set control data to transfer
+!!       from speherical frid to FEM grid
+!!
+!!@verbatim
+!!     subroutine set_control_4_SPH_to_FEM
+!!@endverbatim
 !
       module set_control_SPH_to_FEM
 !

@@ -84,10 +84,10 @@
       call write_udt_mesh_header(id_psf_result, numnod_psf,             &
      &    numele_psf, ncomptot_psf)
 !
-      call write_single_udt_data(id_psf_result, numnod_psf,             &
-     &    ithree, inod_psf, xx_psf)
-      call write_single_grd_connect(id_psf_result, num_triangle,        &
-     &    numele_psf, iele_psf, ie_psf)
+      call write_ucd_field_data(id_psf_result, numnod_psf,              &
+     &    ithree, numnod_psf, inod_psf, xx_psf)
+      call write_ucd_mesh_connect(id_psf_result, numele_psf,            &
+     &    num_triangle, numele_psf, iele_psf, ie_psf)
 !
       end subroutine write_psf_grid
 !
@@ -100,8 +100,8 @@
 !
       call write_udt_field_header(id_psf_result, nfield_psf,            &
      &    ncomp_psf, psf_data_name)
-      call write_single_udt_data(id_psf_result, numnod_psf,             &
-     &    ncomptot_psf, inod_psf, d_nod_psf)
+      call write_ucd_field_data(id_psf_result, numnod_psf,              &
+     &    ncomptot_psf, numnod_psf, inod_psf, d_nod_psf)
 !
       end subroutine write_psf_data
 !

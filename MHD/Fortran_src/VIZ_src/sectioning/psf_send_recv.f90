@@ -1,22 +1,27 @@
-!psf_send_recv.f90
-!      module psf_send_recv
+!>@file  psf_send_recv.f90
+!!       module psf_send_recv
+!!
+!!@author H. Matsui
+!!@date   Programmed in March, 2007
+!!@n      Modified by H. Matsui in July, 2013
 !
-!      Written by H. Matsui on March, 2007
-!
-!      subroutine psf_grids_send_recv(num_psf, nnod_psf, ntot_output,   &
-!     &          istack_nod_para, nnod_recv, istack_nod_recv, xx_psf,   &
-!     &          send, recv, xx_output)
-!      subroutine psf_hash_send_recv(num_psf, nnod_psf, ntot_output,    &
-!     &          istack_nod_para, nnod_recv, istack_nod_recv, ihash_psf,&
-!     &          isend, irecv, ihash_psf_gl)
-!
-!      subroutine psf_connect_send_recv(num_psf, nele_psf, ntot_output, &
-!     &          istack_nod_para, istack_ele_para,                      &
-!     &          nele_recv, istack_ele_recv, ie_patch,                  &
-!     &          isend, irecv, ie_output)
-!      subroutine psf_results_send_recv(nnod_psf, ntot_output,          &
-!     &          istack_nod_para, nnod_recv, istack_nod_recv, ncomp_dat,&
-!     &          dat_psf, send, recv, dat_out)
+!> @brief Collect sectioning data to head node
+!!
+!!@verbatim
+!!      subroutine psf_grids_send_recv(num_psf, nnod_psf, ntot_output,  &
+!!     &         istack_nod_para, istack_nod_recv, xx_psf,              &
+!!     &         send, recv, ucd_out)
+!!      subroutine psf_hash_send_recv(num_psf, nnod_psf, ntot_output,   &
+!!     &         istack_nod_para, istack_nod_recv, ihash_psf,           &
+!!     &         isend, irecv, ihash_psf_gl)
+!!
+!!      subroutine psf_connect_send_recv(num_psf, nele_psf, ntot_output,&
+!!     &         istack_nod_para, istack_ele_para, istack_ele_recv,     &
+!!     &         ie_patch, isend, irecv, ucd_out)
+!!      subroutine psf_results_send_recv(nnod_psf, ntot_output,         &
+!!     &         istack_nod_para, istack_nod_recv, ncomp_dat,           &
+!!     &         dat_psf, send, recv, ucd_out)
+!!@endverbatim
 !
       module psf_send_recv
 !
@@ -26,6 +31,8 @@
       use m_phys_constants
       use m_parallel_var_dof
       use m_mpi_flags_4_section
+!
+      use t_ucd_data
 !
       use copy_psf_data_to_SR
 !
@@ -41,13 +48,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine psf_grids_send_recv(num_psf, nnod_psf, ntot_output,    &
-     &          istack_nod_para, nnod_recv, istack_nod_recv, xx_psf,    &
-     &          send, recv, xx_output)
+     &          istack_nod_para, istack_nod_recv, xx_psf,               &
+     &          send, recv, ucd_out)
 !
       integer(kind = kint), intent(in) :: nnod_psf, num_psf
       integer(kind = kint), intent(in)                                  &
      &      :: istack_nod_para(0:nprocs*num_psf)
-      integer(kind = kint), intent(in) :: nnod_recv(nprocs*num_psf)
       integer(kind = kint), intent(in)                                  &
      &      :: istack_nod_recv(0:nprocs*num_psf)
       integer(kind = kint), intent(in) :: ntot_output
@@ -55,16 +61,12 @@
 !
       real(kind = kreal), intent(inout) :: send(nnod_psf*n_vector)
       real(kind = kreal), intent(inout) :: recv(ntot_output*n_vector)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: xx_output(ntot_output,n_vector)
+!
+      type(ucd_data), intent(inout) :: ucd_out(num_psf)
 !
       integer(kind = kint) :: num_send, num_recv
-      integer(kind = kint) :: ip, ip_sent, ist, i
+      integer(kind = kint) :: ip, ip_sent, ist, i_psf
 !
-!      do i = 1, nnod_psf
-!        write(70+my_rank,*) i, xx_psf(i,1:3)
-!      end do
-!      close(70+my_rank)
 !
       call set_real_data_2_send_psf(nnod_psf, n_vector, xx_psf, send)
 !
@@ -84,14 +86,13 @@
 !
         call MPI_WAITALL (nprocs, req2_psf, sta2_psf, ierr)
 !
-        call set_recv_2_real_data_psf(nprocs, num_psf,                  &
-     &      ntot_output, istack_nod_para, nnod_recv, istack_nod_recv,   &
-     &      n_vector, recv, xx_output)
-!
-!        do i = 1, ntot_output
-!          write(80+my_rank,*) i, xx_output(i,1:3)
-!        end do
-!        close(80+my_rank)
+        do i_psf = 1, num_psf
+          ist = (i_psf-1)*nprocs
+          call set_recv_2_real_data_psf(i_psf, nprocs, num_psf,         &
+     &        ntot_output, istack_nod_para(ist), istack_nod_recv,       &
+     &        n_vector, recv, ucd_out(i_psf)%nnod,                      &
+     &        n_vector, ucd_out(i_psf)%xx)
+        end do
 !
       end if
 !
@@ -103,13 +104,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine psf_hash_send_recv(num_psf, nnod_psf, ntot_output,     &
-     &          istack_nod_para, nnod_recv, istack_nod_recv, ihash_psf, &
+     &          istack_nod_para, istack_nod_recv, ihash_psf,            &
      &          isend, irecv, ihash_psf_gl)
 !
       integer(kind = kint), intent(in) :: nnod_psf, num_psf
       integer(kind = kint), intent(in)                                  &
      &      :: istack_nod_para(0:nprocs*num_psf)
-      integer(kind = kint), intent(in) :: nnod_recv(nprocs*num_psf)
       integer(kind = kint), intent(in)                                  &
      &      :: istack_nod_recv(0:nprocs*num_psf)
       integer(kind = kint), intent(in) :: ntot_output
@@ -121,12 +121,8 @@
      &                   :: ihash_psf_gl(ntot_output)
 !
       integer(kind = kint) :: num_recv
-      integer(kind = kint) :: ip, ip_sent, ist
+      integer(kind = kint) :: ip, ip_sent, ist, i_psf
 !
-!      do i = 1, nnod_psf
-!        write(70+my_rank,*) i, ihash_psf(i)
-!      end do
-!      close(70+my_rank)
 !
       call set_int_data_2_send_psf(nnod_psf, ione, ihash_psf, isend(1))
 !
@@ -145,14 +141,12 @@
 !
         call MPI_WAITALL (nprocs, req2_psf, sta2_psf, ierr)
 !
-        call set_recv_2_int_data_psf(nprocs, num_psf,                  &
-     &      ntot_output, istack_nod_para, nnod_recv, istack_nod_recv,   &
+        do i_psf = 1, num_psf
+          ist = (i_psf-1)*nprocs
+          call set_recv_2_int_data_psf(i_psf, nprocs, num_psf,          &
+     &      ntot_output, istack_nod_para(ist), istack_nod_recv,         &
      &      ione, irecv, ihash_psf_gl)
-!
-!        do i = 1, ntot_output
-!          write(80+my_rank,*) i, ihash_psf_gl(i,1:3)
-!        end do
-!        close(80+my_rank)
+        end do
 !
       end if
 !
@@ -164,9 +158,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine psf_connect_send_recv(num_psf, nele_psf, ntot_output,  &
-     &          istack_nod_para, istack_ele_para,                       &
-     &          nele_recv, istack_ele_recv, ie_patch,                   &
-     &          isend, irecv, ie_output)
+     &          istack_nod_para, istack_ele_para, istack_ele_recv,      &
+     &          ie_patch, isend, irecv, ucd_out)
 !
       integer(kind = kint), intent(in) :: num_psf, nele_psf
       integer(kind = kint), intent(in) :: ntot_output
@@ -174,22 +167,17 @@
      &      :: istack_nod_para(0:nprocs*num_psf)
       integer(kind = kint), intent(in)                                  &
      &      :: istack_ele_para(0:nprocs*num_psf)
-      integer(kind = kint), intent(in) :: nele_recv(nprocs*num_psf)
       integer(kind = kint), intent(in)                                  &
      &      :: istack_ele_recv(0:nprocs*num_psf)
       integer(kind = kint), intent(in) :: ie_patch(nele_psf,3)
 !
       integer(kind = kint), intent(inout) :: isend(nele_psf*3)
       integer(kind = kint), intent(inout) :: irecv(ntot_output*3)
-      integer(kind = kint), intent(inout) :: ie_output(ntot_output,3)
+!
+      type(ucd_data), intent(inout) :: ucd_out(num_psf)
 !
       integer(kind = kint) :: num_send, num_recv
-      integer(kind = kint) :: ip, ip_sent, ist
-!
-!      do i = 1, nele_psf
-!        write(50+my_rank,*) i, ie_patch(i,1:3)
-!      end do
-!      close(50+my_rank)
+      integer(kind = kint) :: ip, ip_sent, ist, i_psf
 !
 !
       call set_int_data_2_send_psf(nele_psf, ithree, ie_patch, isend)
@@ -204,26 +192,20 @@
           ist = ithree*istack_ele_recv( (ip-1)*num_psf ) + 1
           num_recv = ithree * (istack_ele_recv(ip*num_psf)              &
      &                     - istack_ele_recv( (ip-1)*num_psf ) )
-          call MPI_IRECV (irecv(ist), num_recv, MPI_INTEGER,    &
+          call MPI_IRECV (irecv(ist), num_recv, MPI_INTEGER,            &
      &        ip_sent, 0, SOLVER_COMM, req2_psf(ip), ierr)
         end do
 !
         call MPI_WAITALL (nprocs, req2_psf, sta2_psf, ierr)
 !
-        call set_recv_2_int_data_psf(nprocs, num_psf,                   &
-     &      ntot_output, istack_ele_para, nele_recv, istack_ele_recv,   &
-     &      ithree, irecv, ie_output)
-!
-        call adjust_patch_connect_4_collect(nprocs, num_psf,            &
-     &      ntot_output, istack_nod_para,                               &
-     &      istack_ele_para, ithree, ie_output)
-!
-!        write(60+my_rank,*) 'istack_ele_para', istack_ele_para
-!        write(60+my_rank,*) 'istack_nod_para', istack_nod_para
-!        do i = 1, ntot_output
-!          write(60+my_rank,*) i, ie_output(i,1:3)
-!        end do
-!        close(60+my_rank)
+        do i_psf = 1, num_psf
+          ist = (i_psf-1)*nprocs
+          call set_recv_2_ele_connect_psf(i_psf, nprocs, num_psf,       &
+     &        ntot_output, istack_nod_para(ist), istack_ele_para(ist),  &
+     &        istack_ele_recv, ithree, irecv,                           &
+     &        ucd_out(i_psf)%nele,ucd_out(i_psf)%nnod_4_ele,            &
+     &        ucd_out(i_psf)%ie)
+        end do
 !
       end if
 !
@@ -235,25 +217,24 @@
 ! ----------------------------------------------------------------------
 !
       subroutine psf_results_send_recv(num_psf, nnod_psf, ntot_output,  &
-     &          istack_nod_para, nnod_recv, istack_nod_recv, ncomp_dat, &
-     &          dat_psf, send, recv, dat_out)
+     &          istack_nod_para, istack_nod_recv, ncomp_dat,            &
+     &          dat_psf, send, recv, ucd_out)
 !
       integer(kind = kint), intent(in) :: num_psf, nnod_psf, ncomp_dat
       integer(kind = kint), intent(in) :: ntot_output
       integer(kind = kint), intent(in)                                  &
      &      :: istack_nod_para(0:nprocs*num_psf)
-      integer(kind = kint), intent(in) :: nnod_recv(nprocs*num_psf)
       integer(kind = kint), intent(in)                                  &
      &      :: istack_nod_recv(0:nprocs*num_psf)
       real(kind = kreal), intent(in) :: dat_psf(nnod_psf, ncomp_dat)
 !
       real(kind = kreal), intent(inout) :: send(nnod_psf*ncomp_dat)
       real(kind = kreal), intent(inout) :: recv(ntot_output*ncomp_dat)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: dat_out(ntot_output,ncomp_dat)
+!
+      type(ucd_data), intent(inout) :: ucd_out(num_psf)
 !
       integer(kind = kint) :: num_send, num_recv
-      integer(kind = kint) :: ip, ip_sent, ist
+      integer(kind = kint) :: ip, ip_sent, ist, i_psf
 !
 !
 !
@@ -275,9 +256,13 @@
 !
         call MPI_WAITALL (nprocs, req2_psf, sta2_psf, ierr)
 !
-        call set_recv_2_real_data_psf(nprocs, num_psf,                  &
-     &      ntot_output, istack_nod_para, nnod_recv, istack_nod_recv,   &
-     &      ncomp_dat, recv, dat_out)
+        do i_psf = 1, num_psf
+          ist = (i_psf-1)*nprocs
+          call set_recv_2_real_data_psf(i_psf, nprocs, num_psf,         &
+     &        ntot_output, istack_nod_para(ist), istack_nod_recv,       &
+     &        ncomp_dat, recv, ucd_out(i_psf)%nnod,                     &
+     &        ucd_out(i_psf)%ntot_comp, ucd_out(i_psf)%d_ucd)
+        end do
 !
       end if
 !
