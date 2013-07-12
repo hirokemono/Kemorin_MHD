@@ -30,6 +30,7 @@
       use m_isoline_dat_pg
       use m_file_format_switch
       use m_field_file_format
+      use m_psf_results
       use set_components_flags
 !
       integer(kind= kint) :: iint, i, j
@@ -117,13 +118,13 @@
 !
 !
       if(i_psf_data_ctl .gt. 0) then
-        fhead_plot_data = psf_file_head_ctl
+        psf_file_header = psf_file_head_ctl
       else
         write(*,*) 'set file header for psf data'
         stop
       end if
       call choose_ucd_file_format(psf_data_fmt_ctl,                     &
-     &    i_psf_data_fmt_ctl, itype_draw_psf_file )
+     &    i_psf_data_fmt_ctl, iflag_psf_fmt)
 !
       if(i_map_grid_file .gt. 0) then
         fhead_map_grid =  map_grid_file_ctl
@@ -184,9 +185,9 @@
         write(*,*) 'inc_pg',        inc_pg
 !
         write(*,*) 'nmax_line',            nmax_line
-        write(*,*) 'itype_draw_psf_file',  itype_draw_psf_file
+        write(*,*) 'iflag_psf_fmt',   iflag_psf_fmt
         write(*,*) 'fhead_map_grid',  trim(fhead_map_grid)
-        write(*,*) 'fhead_plot_data', trim(fhead_plot_data)
+        write(*,*) 'psf_file_header', trim(psf_file_header)
         do i = 1, ntot_plot_pg
           write(*,*) 'field_name', i, trim(field_name_4_plot(i))
           write(*,*) 'comp_name', trim(comp_name_4_plot(i))

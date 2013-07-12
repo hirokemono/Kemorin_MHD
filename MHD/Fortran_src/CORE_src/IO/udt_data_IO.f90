@@ -15,7 +15,11 @@
 !!      subroutine read_udt_field_header(ifile_psf, num_input,          &
 !!     &          ncomp_in, name_in)
 !!      subroutine read_ucd_field_data(ifile_psf, nnod_in,              &
-!!     &          ncomp_dat, dat_in)
+!!     &          ncomp_dat, inod_in, dat_in)
+!!      subroutine read_ucd_mesh_header(ifile_psf, nnod_in, nele_in,    &
+!!     &          ntot_comp)
+!!      subroutine read_ucd_mesh_data(ifile_psf, nnod_in, nele_in,      &
+!!     &          nnod_4_ele, inod_gl, iele_gl, xx_in, ie_in)
 !!
 !!      subroutine write_udt_mesh_header(ifile_psf, nnod_output,        &
 !!     &          nele_out, ncomp_output)
@@ -109,20 +113,81 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_ucd_field_data(ifile_psf, nnod_in,                &
-     &          ncomp_dat, dat_in)
+     &          ncomp_dat, inod_in, dat_in)
 !
       integer(kind = kint), intent(in) :: ifile_psf
       integer(kind = kint), intent(in) :: nnod_in, ncomp_dat
+      integer(kind = kint), intent(inout) :: inod_in(nnod_in)
       real(kind = kreal), intent(inout) :: dat_in(nnod_in, ncomp_dat)
 !
-      integer(kind = kint) :: inod, itmp
+      integer(kind = kint) :: inod
 !
 !
       do inod = 1, nnod_in
-        read(ifile_psf,*) itmp, dat_in(inod,1:ncomp_dat)
+        read(ifile_psf,*) inod_in(inod), dat_in(inod,1:ncomp_dat)
       end do
 !
       end subroutine read_ucd_field_data
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine read_ucd_mesh_header(ifile_psf, nnod_in, nele_in,      &
+     &          ntot_comp)
+!
+      integer(kind = kint), intent(in) :: ifile_psf
+      integer(kind = kint), intent(inout) :: nnod_in, nele_in
+      integer(kind = kint), intent(inout) :: ntot_comp
+!
+      integer(kind = kint) :: itmp
+!
+      read(ifile_psf,*) nnod_in, nele_in, ntot_comp, itmp, itmp
+!
+      end subroutine read_ucd_mesh_header
+!
+!-----------------------------------------------------------------------
+!
+      subroutine read_ucd_mesh_data(ifile_psf, nnod_in, nele_in,        &
+     &          nnod_4_ele, inod_gl, iele_gl, xx_in, ie_in)
+!
+      integer(kind = kint), intent(in) :: ifile_psf
+      integer(kind = kint), intent(in) :: nnod_in, nele_in, nnod_4_ele
+      integer(kind = kint), intent(inout) :: iele_gl(nele_in)
+      integer(kind = kint), intent(inout) :: ie_in(nele_in,nnod_4_ele)
+      integer(kind = kint), intent(inout) :: inod_gl(nnod_in)
+      real(kind = kreal), intent(inout) :: xx_in(nnod_in,3)
+!
+!
+      call read_ucd_field_data(ifile_psf, nnod_in,                      &
+     &          ithree, inod_gl, xx_in)
+      call read_ucd_mesh_connect(ifile_psf, nele_in,                    &
+     &          nnod_4_ele, iele_gl, ie_in)
+!
+      end subroutine  read_ucd_mesh_data
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine read_ucd_mesh_connect(ifile_psf, nele_in,              &
+     &          nnod_4_ele, iele_gl, ie_in)
+!
+      use m_geometry_constants
+!
+      integer(kind = kint), intent(in) :: ifile_psf
+      integer(kind = kint), intent(in) :: nele_in, nnod_4_ele
+      integer(kind = kint), intent(inout) :: iele_gl(nele_in)
+      integer(kind = kint), intent(inout) :: ie_in(nele_in,nnod_4_ele)
+!
+      integer(kind = kint) :: iele, itmp
+      character(len=6) :: eleflag
+!
+!
+      do iele = 1, nele_in
+        read(ifile_psf,*) iele_gl(iele), itmp,                          &
+     &       eleflag, ie_in(iele,1:nnod_4_ele)
+      end do
+!
+      end subroutine  read_ucd_mesh_connect
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

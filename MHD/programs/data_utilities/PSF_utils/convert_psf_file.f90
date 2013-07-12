@@ -7,9 +7,13 @@
 !
       use m_precision
       use m_constants
+      use t_ucd_data
 !
       implicit none
 !
+      type(ucd_data), save:: psf_ucd
+!
+      integer(kind = kint), parameter :: id_psf_result = 7
       integer(kind = kint), parameter :: id_min_psf = 21
       integer(kind = kint), parameter :: id_max_psf = 22
       character(len=kchara), parameter :: fname_min_psf = 'psf_min.dat'
@@ -19,7 +23,7 @@
 !
       private :: id_min_psf, fname_min_psf
       private :: id_max_psf, fname_max_psf
-      private :: node_file_name, conn_file_name
+      private :: id_psf_result, node_file_name, conn_file_name
 !
 !      subroutine s_convert_psf_file
 !
@@ -43,7 +47,7 @@
       use take_avarages_4_psf
       use set_parallel_file_name
       use set_ucd_file_names
-      use read_psf_result
+      use ucd_type_IO_select
       use dx_grid
       use dx_phys
       use vtk_file_IO
@@ -66,7 +70,9 @@
 !
 !   read grid data
 !
-        call sel_read_psf_grid_file(iflag_udt, psf_header(i_psf) )
+        psf_file_header = psf_header(i_psf)
+        call sel_read_alloc_psf_file(iflag_psf_fmt, i_step_init)
+        call set_psf_mesh_to_ucd_data(psf_ucd)
 !
         call allocate_norms_4_psf
 !
@@ -87,23 +93,14 @@
      &        id_psf_result, node_file_name, conn_file_name)
         end if
 !
-!    read field name
-!
-        call set_single_ucd_file_name(psf_header(i_psf), iflag_udt,     &
-     &      i_step_init, node_file_name)
-!
-        write(*,*) 'PSF udt data: ', node_file_name
-        open(id_psf_result, file=node_file_name, form='formatted')
-        call read_allocate_psf_ncomps_udt
-        close(id_psf_result)
-!
-!
         do istep = i_step_init, i_step_number, i_step_output_psf
 !
 !     read PSF field data
-          call sel_read_psf_udt_file                                    &
-     &        (iflag_udt, psf_header(i_psf), istep)
-!
+          psf_ucd%itype_data_file = iflag_udt
+          psf_ucd%header_name = psf_header(i_psf)
+          if(istep .ne. i_step_init) then
+            call sel_read_udt_type_file(-1, istep, psf_ucd)
+          end if
           call cal_minmax_psf
 !
 !      write converted data

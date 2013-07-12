@@ -3,7 +3,6 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine input_psf_result(itype_psf, psf_head, istep)
 !      subroutine cal_rms_ave_4_psf
 !      subroutine cal_minmax_psf
 !
@@ -18,26 +17,6 @@
 !-----------------------------------------------------------------------
 !
       contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine input_psf_result(itype_psf, psf_head, istep)
-!
-      use m_field_file_format
-      use read_psf_select_4_zlib
-!
-      integer(kind = kint), intent(in) :: itype_psf, istep
-      character(len=kchara), intent(in) :: psf_head
-!
-!
-      if(   mod(itype_psf,100)/10 .eq. iflag_udt/10) then
-          call sel_read_psf_grid_file(itype_psf, psf_head)
-          call sel_read_alloc_psf_udt_file(itype_psf, psf_head, istep)
-      else
-          call sel_read_alloc_psf_ucd_file(itype_psf, psf_head, istep)
-      end if
-!
-      end subroutine input_psf_result
 !
 !-----------------------------------------------------------------------
 !

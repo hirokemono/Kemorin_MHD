@@ -133,7 +133,7 @@
 !
       call cal_istack_ucd_comp_type(ucd)
 !
-      call read_gz_single_udt_data(ucd%nnod, ucd%ntot_comp, ucd%d_ucd)
+      call read_gz_udt_field_data(ucd%nnod, ucd%ntot_comp, ucd%d_ucd)
 !
       call close_gzfile
 !
@@ -196,7 +196,7 @@
       call cal_istack_ucd_comp_type(ucd)
       call alloc_ucd_phys_data_t(ucd)
 !
-      call read_gz_single_udt_data(ucd%nnod, ucd%ntot_comp, ucd%d_ucd)
+      call read_gz_udt_field_data(ucd%nnod, ucd%ntot_comp, ucd%d_ucd)
       call close_gzfile
 !
       end subroutine read_alloc_udt_type_file_gz

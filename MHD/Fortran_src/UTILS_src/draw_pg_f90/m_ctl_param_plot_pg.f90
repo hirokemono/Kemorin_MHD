@@ -14,7 +14,6 @@
 !
       integer(kind = kint) :: idisp_mode =    1
       integer(kind = kint) :: icolor_mode =   1
-      integer(kind = kint) :: itype_draw_psf_file = 0
 !
       integer(kind = kint) :: ist_pg, ied_pg, inc_pg
       real(kind = kreal) :: start_time_pg
@@ -45,7 +44,6 @@
       integer(kind = kint) :: ntot_plot_pg
 !
       character(len=kchara) :: fhead_map_grid
-      character(len=kchara) :: fhead_plot_data
       character(len=kchara), allocatable :: fhead_image_data(:)
 !
       character(len=kchara), allocatable :: field_name_4_plot(:)

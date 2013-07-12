@@ -158,7 +158,7 @@
       call cal_istack_ucd_component
 !
       call read_ucd_field_data(id_ucd_file, nnod_ucd,                   &
-     &    ntot_comp_ucd, d_nod_ucd)
+     &    ntot_comp_ucd, inod_gl_ucd, d_nod_ucd)
 !
       close(id_ucd_file)
 !
@@ -178,13 +178,11 @@
      &    my_rank, istep, file_name)
 !
       open (id_ucd_file, file=file_name, status='old')
-      read(id_ucd_file,'(i10)') num_field_ucd
-      close(id_ucd_file)
+      read(id_ucd_file,*) num_field_ucd
+      backspace(id_ucd_file)
 !
       call allocate_ucd_phys_name
 !
-!
-      open (id_ucd_file, file=file_name, status='old')
       call read_udt_field_header(id_ucd_file, num_field_ucd,            &
      &    num_comp_ucd, phys_name_ucd)
       close(id_ucd_file)
@@ -209,12 +207,10 @@
 !
       open (id_ucd_file, file=file_name, status='old')
       read(id_ucd_file,'(i10)') num_field_ucd
-      close(id_ucd_file)
+      backspace(id_ucd_file)
 !
       call allocate_ucd_phys_name
 !
-!
-      open (id_ucd_file, file=file_name, status='old')
       call read_udt_field_header(id_ucd_file, num_field_ucd,            &
      &    num_comp_ucd, phys_name_ucd)
 !
@@ -222,7 +218,7 @@
       call allocate_ucd_phys_data
 !
       call read_ucd_field_data(id_ucd_file, nnod_ucd,                   &
-     &    ntot_comp_ucd, d_nod_ucd)
+     &    ntot_comp_ucd, inod_gl_ucd, d_nod_ucd)
       close(id_ucd_file)
 !
       end subroutine read_and_alloc_udt_file

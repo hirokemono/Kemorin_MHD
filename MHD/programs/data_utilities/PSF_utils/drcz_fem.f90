@@ -20,7 +20,6 @@
       use draw_colorbar_pg
       use set_zplane_posi_pg
       use read_psf_select_4_zlib
-      use take_avarages_4_psf
       use set_parallel_file_name
       use rbcolor_pg
 !
@@ -67,8 +66,7 @@
       do istep = ist_pg, ied_pg, inc_pg
         time = dble(istep)*delta_time_pg
 !*
-        call input_psf_result(itype_draw_psf_file,                      &
-     &      fhead_plot_data, istep)
+        call sel_read_alloc_psf_file(iflag_psf_fmt, istep)
         call set_psffield_id_4_plot_pg
 !
         nnod_pg =     numnod_psf

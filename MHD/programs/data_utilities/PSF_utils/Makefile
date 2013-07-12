@@ -53,34 +53,29 @@ MOD_PSF_2_DX = \
 psf_2_dx.o \
 m_norms_4_psf.o \
 m_control_data_psf_utils.o \
-take_avarages_4_psf.o \
-convert_psf_file.o
+convert_psf_file.o \
+take_avarages_4_psf.o
 
 
 MOD_ZCPLANE_PG = \
 drcz_fem.o \
-m_norms_4_psf.o \
-take_avarages_4_psf.o
+m_norms_4_psf.o
 
 
 MOD_XCPLANE_PG = \
 drcx_fem.o \
-m_norms_4_psf.o \
-take_avarages_4_psf.o
+m_norms_4_psf.o
 
 MOD_YCPLANE_PG = \
 drcy_fem.o \
-m_norms_4_psf.o \
-take_avarages_4_psf.o
+m_norms_4_psf.o
 
 MOD_MAP_PG = \
 drmap_fem.o \
-m_norms_4_psf.o \
-take_avarages_4_psf.o
+m_norms_4_psf.o
 
 MOD_LINE_ON_PSF = \
 section_from_psf.o \
-take_avarages_4_psf.o \
 m_norms_4_psf.o \
 m_psf_edge_connect.o \
 m_line_from_psf.o

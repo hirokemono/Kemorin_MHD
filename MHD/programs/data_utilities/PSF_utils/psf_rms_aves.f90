@@ -12,16 +12,20 @@
 !
       use m_psf_results
       use m_field_file_format
+!
+      use t_ucd_data
+!
       use set_parallel_file_name
-      use read_psf_select_4_zlib
+      use ucd_type_IO_select
       use cal_psf_rms_aves
       use take_avarages_4_psf
+      use read_psf_select_4_zlib
 !
       implicit    none
 !
-      character(len=kchara) :: psf_org_header
-      integer(kind = kint) :: iflag_psf_fmt = iflag_udt
 !
+      type(ucd_data), save:: psf_ucd
+
       character(len=kchara) :: fname_tmp
       character(len=kchara) :: psf_ave_header
       character(len=kchara) :: psf_rms_header
@@ -43,22 +47,27 @@
 !  ===========
 !
       write(*,*) 'input psf file name'
-      read(*,*) psf_org_header
+      read(*,*) psf_file_header
 !
       write(*,*) 'inputistep_start, istep_end, istep_int'
       read(*,*) istep_start, istep_end, istep_int
 !
-      call add_int_suffix(istep_start, psf_org_header, fname_tmp)
+      call add_int_suffix(istep_start, psf_file_header, fname_tmp)
       write(psf_ave_header, '(a5,a)') 'tave_', trim(fname_tmp)
       write(psf_rms_header, '(a5,a)') 'trms_', trim(fname_tmp)
       write(psf_sdev_header,'(a5,a)') 'sdev_', trim(fname_tmp)
 !
 !
-      call input_psf_result(iflag_psf_fmt, psf_org_header, istep_start)
+      call sel_read_alloc_psf_file(iflag_psf_fmt, istep_start)
+      call set_psf_mesh_to_ucd_data(psf_ucd)
 !
-      call sel_write_psf_grd_file(iflag_psf_fmt, psf_ave_header)
-      call sel_write_psf_grd_file(iflag_psf_fmt, psf_rms_header)
-      call sel_write_psf_grd_file(iflag_psf_fmt, psf_sdev_header)
+      psf_ucd%itype_data_file = iflag_udt
+      psf_ucd%header_name = psf_ave_header
+      call sel_write_grd_type_file(-1, psf_ucd)
+      psf_ucd%header_name = psf_rms_header
+      call sel_write_grd_type_file(-1, psf_ucd)
+      psf_ucd%header_name = psf_sdev_header
+      call sel_write_grd_type_file(-1, psf_ucd)
 !
 !   Evaluate size of patches
 !
@@ -71,11 +80,14 @@
       trms_psf =  zero
       tsdev_psf = zero
 !
+      psf_ucd%itype_data_file = iflag_psf_fmt
+      psf_ucd%header_name = psf_file_header
+!
       icou = 0
       do istep = istep_start, istep_end, istep_int
         icou = icou + 1
-        call sel_read_psf_udt_file(iflag_psf_fmt,                       &
-     &       psf_org_header, istep)
+!
+        call sel_read_udt_type_file(-1, istep, psf_ucd)
 !
         do nd = 1, ncomptot_psf
           do inod = 1, numnod_psf
@@ -101,8 +113,8 @@
       icou = 0
       do istep = istep_start, istep_end, istep_int
         icou = icou + 1
-        call sel_read_psf_udt_file(iflag_psf_fmt,                       &
-     &       psf_org_header, istep)
+!
+        call sel_read_udt_type_file(-1, istep, psf_ucd)
 !
         do nd = 1, ncomptot_psf
           tsdev_psf(1:numnod_psf,nd) = tsdev_psf(1:numnod_psf,nd)       &
@@ -117,24 +129,25 @@
       end do
 !
 !
-!
       do nd = 1, ncomptot_psf
         d_nod_psf(1:numnod_psf,nd) = tave_psf(1:numnod_psf,nd)
       end do
-      call sel_write_psf_udt_file(iflag_psf_fmt, psf_ave_header,        &
-     &    istep_end)
+
+      psf_ucd%header_name = psf_ave_header
+      call sel_write_udt_type_file(-1, istep_end, psf_ucd)
 !
       do nd = 1, ncomptot_psf
         d_nod_psf(1:numnod_psf,nd) = trms_psf(1:numnod_psf,nd)
       end do
-      call sel_write_psf_udt_file(iflag_psf_fmt, psf_rms_header,        &
-     &    istep_end)
+!
+      psf_ucd%header_name = psf_rms_header
+      call sel_write_udt_type_file(-1, istep_end, psf_ucd)
 !
       do nd = 1, ncomptot_psf
         d_nod_psf(1:numnod_psf,nd) = tsdev_psf(1:numnod_psf,nd)
       end do
-      call sel_write_psf_udt_file(iflag_psf_fmt, psf_sdev_header,       &
-     &    istep_end)
+      psf_ucd%header_name = psf_sdev_header
+      call sel_write_udt_type_file(-1, istep_end, psf_ucd)
 !
       stop ' //// program normally terminated //// '
 !

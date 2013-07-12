@@ -16,31 +16,38 @@
 !!      subroutine count_stack_tot_psf_field
 !!
 !!      subroutine write_headers_psf_comp_name(id_file)
+!!
+!!      subroutine set_psf_mesh_to_ucd_data(psf_ucd)
+!!      subroutine set_psf_mesh_to_ucd_mesh(psf_ucd)
+!!      subroutine set_psf_mesh_to_ucd_field(psf_ucd)
+!!        type(ucd_data), intent(inout) :: psf_ucd
 !!@endverbatim
 !
       module m_psf_results
 !
       use m_precision
+      use m_field_file_format
 !
       implicit none
 !
-      integer(kind = kint) :: numnod_psf, numele_psf
+      character(len=kchara) :: psf_file_header
+      integer(kind = kint) :: iflag_psf_fmt = iflag_udt
+!
+      integer(kind = kint) :: numnod_psf, numele_psf, nnod_4_ele_psf
       integer(kind = kint) :: nfield_psf, ncomptot_psf
 !
-      real(kind = kreal), allocatable :: xx_psf(:,:)
-      real(kind = kreal), allocatable :: d_nod_psf(:,:)
-      integer(kind = kint), allocatable :: inod_psf(:)
+      real(kind = kreal), allocatable, target :: xx_psf(:,:)
+      real(kind = kreal), allocatable, target :: d_nod_psf(:,:)
+      integer(kind = kint), allocatable, target :: inod_psf(:)
 !
-      integer(kind = kint), allocatable :: iele_psf(:)
-      integer(kind = kint), allocatable :: ie_psf(:,:)
-      integer(kind = kint), allocatable :: ncomp_psf(:)
-      integer(kind = kint), allocatable :: istack_comp_psf(:)
-      character(len=kchara), allocatable :: psf_data_name(:)
+      integer(kind = kint), allocatable, target :: iele_psf(:)
+      integer(kind = kint), allocatable, target :: ie_psf(:,:)
+      integer(kind = kint), allocatable, target :: ncomp_psf(:)
+      integer(kind = kint), allocatable, target :: istack_comp_psf(:)
+      character(len=kchara), allocatable, target :: psf_data_name(:)
 !
       real(kind = kreal), allocatable :: ave_psf(:), rms_psf(:)
       real(kind = kreal), allocatable :: xmin_psf(:), xmax_psf(:)
-!
-      integer(kind = kint), parameter :: id_psf_result = 7
 !
       character(len=kchara) :: flag_psf
       integer(kind = kint) :: iflag_psf
@@ -162,6 +169,60 @@
  1000 format(a,'_',i1,', ')
 !
       end subroutine write_headers_psf_comp_name
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine set_psf_mesh_to_ucd_data(psf_ucd)
+!
+      use t_ucd_data
+!
+      type(ucd_data), intent(inout) :: psf_ucd
+!
+!
+      call set_psf_mesh_to_ucd_mesh(psf_ucd)
+      call set_psf_mesh_to_ucd_field(psf_ucd)
+!
+      end subroutine set_psf_mesh_to_ucd_data
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_psf_mesh_to_ucd_mesh(psf_ucd)
+!
+      use t_ucd_data
+!
+      type(ucd_data), intent(inout) :: psf_ucd
+!
+!
+      psf_ucd%nnod = numnod_psf
+      psf_ucd%nele = numele_psf
+      psf_ucd%nnod_4_ele = 3
+      psf_ucd%inod_global =>    inod_psf
+      psf_ucd%xx =>             xx_psf
+      psf_ucd%iele_global =>    iele_psf
+      psf_ucd%ie =>             ie_psf
+!
+      end subroutine set_psf_mesh_to_ucd_mesh
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_psf_mesh_to_ucd_field(psf_ucd)
+!
+      use t_ucd_data
+!
+      type(ucd_data), intent(inout) :: psf_ucd
+!
+!
+      psf_ucd%num_field = nfield_psf
+      psf_ucd%ntot_comp = ncomptot_psf
+      psf_ucd%num_comp =>       ncomp_psf
+      psf_ucd%istack_comp =>    istack_comp_psf
+      psf_ucd%phys_name =>      psf_data_name
+      psf_ucd%d_ucd =>          d_nod_psf
+!
+      psf_ucd%itype_data_file = iflag_psf_fmt
+!
+      end subroutine set_psf_mesh_to_ucd_field
 !
 !-----------------------------------------------------------------------
 !

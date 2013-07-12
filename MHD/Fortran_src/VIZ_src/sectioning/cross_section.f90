@@ -170,8 +170,6 @@
 !      call start_eleps_time(21)
       if (iflag_debug.eq.1) write(*,*) 'collect_field_4_psf'
       call collect_field_4_psf
-!
-      call time_prog_barrier
 !      call end_eleps_time(21)
 !
 !      call start_eleps_time(22)

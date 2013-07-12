@@ -19,7 +19,6 @@
       use drcap_pg
       use draw_colorbar_pg
       use read_psf_select_4_zlib
-      use take_avarages_4_psf
       use set_parallel_file_name
       use set_map_from_1patch
       use draw_mapframe_pg
@@ -69,8 +68,7 @@
       do istep = ist_pg, ied_pg, inc_pg
         time = dble(istep)*delta_time_pg
 !*
-        call input_psf_result(itype_draw_psf_file,                      &
-     &      fhead_plot_data, istep)
+        call sel_read_alloc_psf_file(iflag_psf_fmt, istep)
         call set_psffield_id_4_plot_pg
 !
 !     convert to map data

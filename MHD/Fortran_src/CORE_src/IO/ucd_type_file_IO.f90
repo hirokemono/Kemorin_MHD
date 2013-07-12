@@ -36,7 +36,7 @@
 !>      file ID for UCD file
       integer(kind = kint), parameter, private :: id_ucd_file = 16
 !
-      private :: write_udt_type_fields, write_ucd_mesh
+      private :: write_udt_type_fields, write_ucd_type_mesh
 !
 !-----------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@
      &     'Write ascii UCD file: ', trim(file_name)
 !
       open(id_ucd_file,file=file_name, form='formatted')
-      call write_ucd_mesh(ucd)
+      call write_ucd_type_mesh(ucd)
       call write_udt_type_fields(ucd)
       close(id_ucd_file)
 !
@@ -110,7 +110,7 @@
      &     'Write ascii UCD mesh: ', trim(file_name)
 !
       open (id_ucd_file, file=file_name, status='replace')
-      call write_ucd_mesh(ucd)
+      call write_ucd_type_mesh(ucd)
       close(id_ucd_file)
 !
       end subroutine write_grd_type_file
@@ -170,7 +170,7 @@
       call cal_istack_ucd_comp_type(ucd)
 !
       call read_ucd_field_data(id_ucd_file, ucd%nnod,                   &
-     &    ucd%ntot_comp, ucd%d_ucd)
+     &    ucd%ntot_comp, ucd%inod_global, ucd%d_ucd)
 !
       close(id_ucd_file)
 !
@@ -193,12 +193,10 @@
 !
       open (id_ucd_file, file=file_name, status='old')
       read(id_ucd_file,'(i10)') ucd%num_field
-      close(id_ucd_file)
+      backspace(id_ucd_file)
 !
       call alloc_ucd_phys_name_t(ucd)
 !
-!
-      open (id_ucd_file, file=file_name, status='old')
       call read_udt_field_header(id_ucd_file, ucd%num_field,            &
      &    ucd%num_comp, ucd%phys_name)
       close(id_ucd_file)
@@ -225,12 +223,10 @@
 !
       open (id_ucd_file, file=file_name, status='old')
       read(id_ucd_file,'(i10)') ucd%num_field
-      close(id_ucd_file)
+      backspace(id_ucd_file)
 !
       call alloc_ucd_phys_name_t(ucd)
 !
-!
-      open (id_ucd_file, file=file_name, status='old')
       call read_udt_field_header(id_ucd_file, ucd%num_field,            &
      &    ucd%num_comp, ucd%phys_name)
 !
@@ -238,7 +234,7 @@
       call alloc_ucd_phys_data_t(ucd)
 !
       call read_ucd_field_data(id_ucd_file, ucd%nnod,                   &
-     &    ucd%ntot_comp, ucd%d_ucd)
+     &    ucd%ntot_comp, ucd%inod_global, ucd%d_ucd)
       close(id_ucd_file)
 !
       end subroutine read_and_alloc_udt_type_file
@@ -246,7 +242,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_ucd_mesh(ucd)
+      subroutine write_ucd_type_mesh(ucd)
 !
       use udt_data_IO
 !
@@ -279,7 +275,7 @@
       call write_ucd_mesh_connect(id_ucd_file, ucd%nele,                &
      &    ucd%nnod_4_ele, ucd%nele, ucd%iele_global, ucd%ie)
 !
-      end subroutine write_ucd_mesh
+      end subroutine write_ucd_type_mesh
 !
 ! -----------------------------------------------------------------------
 !

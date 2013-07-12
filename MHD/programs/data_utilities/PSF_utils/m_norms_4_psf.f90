@@ -61,7 +61,7 @@
 !
       use m_psf_results
 !
-      integer(kind = kint) :: iele, i1, i2, i3
+      integer(kind = kint) :: iele
 !
       write(50,*) 'iele, area_psf(iele), norm_ele_psf(iele,1:3)'
       do iele = 1, numele_psf
