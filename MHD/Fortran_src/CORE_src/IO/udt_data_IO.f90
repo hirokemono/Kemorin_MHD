@@ -19,8 +19,8 @@
 !!
 !!      subroutine write_udt_mesh_header(ifile_psf, nnod_output,        &
 !!     &          nele_out, ncomp_output)
-!!      subroutine write_ucd_mesh_connect(ifile_psf, nnod_4_ele,        &
-!!     &          ntot_ele, ist, ied, iele_gl, ie_out)
+!!      subroutine write_ucd_mesh_connect(ifile_psf, ntot_ele,          &
+!!     &          nnod_4_ele, nele, iele_gl, ie_out)
 !!@endverbatim
 !
       module udt_data_IO
@@ -142,8 +142,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_ucd_mesh_connect(ifile_psf, nnod_4_ele,          &
-     &          ntot_ele, nele, iele_gl, ie_out)
+      subroutine write_ucd_mesh_connect(ifile_psf, ntot_ele,            &
+     &          nnod_4_ele, nele, iele_gl, ie_out)
 !
       use m_geometry_constants
 !
