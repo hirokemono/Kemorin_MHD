@@ -3,23 +3,26 @@
 !
 !        programmed by H.Matsui on July, 2006
 !
-!      subroutine init_merged_ucd
+!      subroutine init_merged_ucd(ucd)
+!      subroutine finalize_merged_ucd(ucd)
 !
-!      subroutine write_merged_ucd_file(istep)
-!      subroutine write_merged_udt_file(istep)
-!      subroutine write_merged_grd_file
+!      subroutine write_merged_ucd_file(istep, ucd)
+!      subroutine write_merged_udt_file(istep, ucd)
+!      subroutine write_merged_grd_file(ucd)
 !
-!      subroutine write_merged_vtk_file(istep)
-!      subroutine write_merged_vtk_phys(istep)
-!      subroutine write_merged_vtk_grid
+!      subroutine write_merged_vtk_file(istep, ucd)
+!      subroutine write_merged_vtk_phys(istep, ucd)
+!      subroutine write_merged_vtk_grid(ucd)
 !
       module merged_udt_vtk_file_IO
 !
       use m_precision
       use m_constants
       use m_parallel_var_dof
-      use m_ucd_data
       use m_field_file_format
+!
+      use t_ucd_data
+!
       use set_ucd_file_names
 !
       implicit none
@@ -33,28 +36,30 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_merged_ucd
+      subroutine init_merged_ucd(ucd)
 !
       use m_geometry_parameter
       use m_nod_comm_table
       use m_merged_ucd_data
       use hdf5_file_IO
 !
+      type(ucd_data), intent(inout) :: ucd
+!
 !
       call allocate_merged_ucd_num
-      call count_merged_ucd(numnod, internal_node, fem_ucd%nele)
+      call count_merged_ucd(numnod, internal_node, ucd%nele)
 !
       call allocate_merged_ucd_data(numnod,                             &
-     &    fem_ucd%nnod_4_ele, fem_ucd%ntot_comp)
+     &    ucd%nnod_4_ele, ucd%ntot_comp)
       call set_node_double_address                                      &
      &         (num_neib, id_neib, istack_import, item_import,          &
      &          istack_export, item_export)
 !
-      call update_ele_by_double_address(fem_ucd%nele, fem_ucd%nnod_4_ele,   &
-     &    fem_ucd%ie)
+      call update_ele_by_double_address(ucd%nele, ucd%nnod_4_ele,       &
+     &    ucd%ie)
 !
 !
-      if (fem_ucd%ifmt_file .eq. iflag_sgl_hdf5) then
+      if (ucd%ifmt_file .eq. iflag_sgl_hdf5) then
         call parallel_init_hdf5
       end if
 !
@@ -62,12 +67,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine finalize_merged_ucd
+      subroutine finalize_merged_ucd(ucd)
 !
       use hdf5_file_IO
 !
+      type(ucd_data), intent(in) :: ucd
 !
-      if (fem_ucd%ifmt_file .eq. iflag_sgl_hdf5) then
+!
+      if (ucd%ifmt_file .eq. iflag_sgl_hdf5) then
         call parallel_finalize_hdf5
       end if
 !
@@ -76,29 +83,30 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine write_merged_ucd_file(istep)
+      subroutine write_merged_ucd_file(istep, ucd)
 !
       use merged_ucd_data_IO
 !
       integer(kind = kint), intent(in) :: istep
+      type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: file_name
 !
 !
       if(my_rank .eq. 0) then
-        call set_single_ucd_file_name(fem_ucd%file_prefix, iflag_ucd,       &
+        call set_single_ucd_file_name(ucd%file_prefix, iflag_ucd,       &
      &      istep, file_name)
 !
         write(*,*) 'single UCD data: ', trim(file_name)
         open(id_vtk_file,file=file_name, form='formatted')
       end if
 !
-      call write_merged_ucd_mesh(id_vtk_file, fem_ucd%nnod, fem_ucd%nele,       &
-     &    fem_ucd%nnod_4_ele, fem_ucd%xx, fem_ucd%ie, fem_ucd%ntot_comp)
+      call write_merged_ucd_mesh(id_vtk_file, ucd%nnod, ucd%nele,       &
+     &    ucd%nnod_4_ele, ucd%xx, ucd%ie, ucd%ntot_comp)
 !
-      call write_merged_ucd_fields(id_vtk_file, fem_ucd%nnod,               &
-     &    fem_ucd%num_field, fem_ucd%ntot_comp, fem_ucd%num_comp, fem_ucd%phys_name,    &
-     &    fem_ucd%d_ucd)
+      call write_merged_ucd_fields(id_vtk_file, ucd%nnod,               &
+     &    ucd%num_field, ucd%ntot_comp, ucd%num_comp, ucd%phys_name,    &
+     &    ucd%d_ucd)
 !
       if(my_rank .eq. 0) close(id_vtk_file)
 !
@@ -106,26 +114,27 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_merged_udt_file(istep)
+      subroutine write_merged_udt_file(istep, ucd)
 !
       use merged_ucd_data_IO
 !
       integer(kind = kint), intent(in) ::  istep
+      type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: file_name
 !
 !
       if(my_rank .eq. 0) then
-        call set_single_ucd_file_name(fem_ucd%file_prefix, iflag_udt,       &
+        call set_single_ucd_file_name(ucd%file_prefix, iflag_udt,       &
      &      istep, file_name)
 !
         write(*,*) 'single UCD field data: ', trim(file_name)
         open(id_vtk_file,file=file_name, form='formatted')
       end if
 !
-      call write_merged_ucd_fields(id_vtk_file, fem_ucd%nnod,               &
-     &    fem_ucd%num_field, fem_ucd%ntot_comp, fem_ucd%num_comp, fem_ucd%phys_name,    &
-     &    fem_ucd%d_ucd)
+      call write_merged_ucd_fields(id_vtk_file, ucd%nnod,               &
+     &    ucd%num_field, ucd%ntot_comp, ucd%num_comp, ucd%phys_name,    &
+     &    ucd%d_ucd)
 !
       if(my_rank .eq. 0) close(id_vtk_file)
 !
@@ -133,23 +142,25 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_merged_grd_file
+      subroutine write_merged_grd_file(ucd)
 !
       use merged_ucd_data_IO
+!
+      type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: file_name
 !
 !
       if(my_rank .eq. 0) then
-        call set_single_grd_file_name(fem_ucd%file_prefix, iflag_udt,       &
+        call set_single_grd_file_name(ucd%file_prefix, iflag_udt,       &
      &      file_name)
 !
         write(*,*) 'single UCD grid data: ', trim(file_name)
         open (id_vtk_file, file=file_name, status='replace')
       end if
 !
-      call write_merged_ucd_mesh(id_vtk_file, fem_ucd%nnod, fem_ucd%nele,       &
-     &    fem_ucd%nnod_4_ele, fem_ucd%xx, fem_ucd%ie, fem_ucd%ntot_comp)
+      call write_merged_ucd_mesh(id_vtk_file, ucd%nnod, ucd%nele,       &
+     &    ucd%nnod_4_ele, ucd%xx, ucd%ie, ucd%ntot_comp)
 !
       if(my_rank .eq. 0) close(id_vtk_file)
 !
@@ -158,17 +169,18 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine write_merged_vtk_file(istep)
+      subroutine write_merged_vtk_file(istep, ucd)
 !
       use merged_vtk_data_IO
 !
       integer(kind = kint), intent(in) ::  istep
+      type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: file_name
 !
 !
       if(my_rank .eq. 0) then
-        call set_single_ucd_file_name(fem_ucd%file_prefix, iflag_vtk,       &
+        call set_single_ucd_file_name(ucd%file_prefix, iflag_vtk,       &
      &      istep, file_name)
 !
         write(*,*) 'single VTK data: ', trim(file_name)
@@ -176,12 +188,12 @@
      &                  status ='unknown')
       end if
 !
-      call write_merged_vtk_mesh(id_vtk_file, fem_ucd%nnod,                 &
-     &    fem_ucd%nele, fem_ucd%nnod_4_ele, fem_ucd%xx, fem_ucd%ie)
+      call write_merged_vtk_mesh(id_vtk_file, ucd%nnod,                 &
+     &    ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie)
 !
-      call write_merged_vtk_fields(id_vtk_file, fem_ucd%nnod,               &
-     &    fem_ucd%num_field, fem_ucd%ntot_comp, fem_ucd%num_comp, fem_ucd%phys_name,    &
-     &    fem_ucd%d_ucd)
+      call write_merged_vtk_fields(id_vtk_file, ucd%nnod,               &
+     &    ucd%num_field, ucd%ntot_comp, ucd%num_comp, ucd%phys_name,    &
+     &    ucd%d_ucd)
 !
       if(my_rank .eq. 0) close(id_vtk_file)
 !
@@ -189,17 +201,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_merged_vtk_phys(istep)
+      subroutine write_merged_vtk_phys(istep, ucd)
 !
       use merged_vtk_data_IO
 !
       integer(kind = kint), intent(in) :: istep
+      type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: file_name
 !
 !
       if(my_rank .eq. 0) then
-        call set_single_ucd_file_name(fem_ucd%file_prefix, iflag_vtd,       &
+        call set_single_ucd_file_name(ucd%file_prefix, iflag_vtd,       &
      &      istep, file_name)
 !
         write(*,*) 'single VTK field data: ', file_name
@@ -207,9 +220,9 @@
      &                  status ='unknown')
       end if
 !
-      call write_merged_vtk_fields(id_vtk_file, fem_ucd%nnod,               &
-     &    fem_ucd%num_field, fem_ucd%ntot_comp, fem_ucd%num_comp, fem_ucd%phys_name,    &
-     &    fem_ucd%d_ucd)
+      call write_merged_vtk_fields(id_vtk_file, ucd%nnod,               &
+     &    ucd%num_field, ucd%ntot_comp, ucd%num_comp, ucd%phys_name,    &
+     &    ucd%d_ucd)
 !
       if(my_rank .eq. 0) close(id_vtk_file)
 !
@@ -217,15 +230,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_merged_vtk_grid
+      subroutine write_merged_vtk_grid(ucd)
 !
       use merged_vtk_data_IO
+!
+      type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: file_name
 !
 !
       if(my_rank .eq. 0) then
-        call set_single_grd_file_name(fem_ucd%file_prefix, iflag_vtd,       &
+        call set_single_grd_file_name(ucd%file_prefix, iflag_vtd,       &
      &      file_name)
 !
         write(*,*) 'single VTK grid data:     ', trim(file_name)
@@ -233,8 +248,8 @@
      &                  status ='unknown')
       end if
 !
-      call write_merged_vtk_mesh(id_vtk_file, fem_ucd%nnod,                 &
-     &    fem_ucd%nele, fem_ucd%nnod_4_ele, fem_ucd%xx, fem_ucd%ie)
+      call write_merged_vtk_mesh(id_vtk_file, ucd%nnod,                 &
+     &    ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie)
 !
       if(my_rank .eq. 0) close(id_vtk_file)
 !

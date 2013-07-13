@@ -70,9 +70,7 @@
 !
       call link_num_field_2_output
 !
-      if (iflag_debug.gt.0) write(*,*) 'sel_read_udt_param'
-      call sel_read_udt_param(my_rank, istep_start, fem_ucd)
-      call allocate_phys_data_by_output
+      call allocate_phys_data_by_output(my_rank, istep_start)
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_phys_name_to_rtp_phys'
@@ -93,7 +91,6 @@
       use m_sph_spectr_data
       use set_ucd_data
       use transfer_field_2_rtp_grid
-      use ucd_IO_select
       use field_IO_select
       use copy_rtp_phys_data_4_IO
       use FFT_selector
@@ -112,11 +109,7 @@
       call initialize_FFT_select(np_smp, Nstacksmp, nidx_rtp(3))
 !
       do istep = istep_start, istep_end, istep_int
-!
-        call sel_read_udt_file(my_rank, istep, fem_ucd)
-!
-        if (iflag_debug.gt.0) write(*,*) 'set_ucd_data_from_IO'
-        call set_ucd_data_from_IO
+        call set_ucd_data_from_IO(my_rank, istep)
 !
         if (iflag_debug.gt.0) write(*,*) 'trans_nod_phys_2_rtp_phys'
         call trans_nod_phys_2_rtp_phys(ifrag_trans_vect)

@@ -61,23 +61,23 @@
 !
 !
       if      (fem_ucd%ifmt_file .eq. iflag_sgl_vtk) then
-        call write_merged_vtk_file(istep_udt)
+        call write_merged_vtk_file(istep_udt, fem_ucd)
       else if (fem_ucd%ifmt_file .eq. iflag_sgl_vtd) then
-        call write_merged_vtk_phys(istep_udt)
+        call write_merged_vtk_phys(istep_udt, fem_ucd)
       else if (fem_ucd%ifmt_file .eq. iflag_sgl_ucd) then
-        call write_merged_ucd_file(istep_udt)
+        call write_merged_ucd_file(istep_udt, fem_ucd)
       else if (fem_ucd%ifmt_file .eq. iflag_sgl_udt) then
-        call write_merged_udt_file(istep_udt)
+        call write_merged_udt_file(istep_udt, fem_ucd)
 !
 #ifdef ZLIB_IO
       else if (fem_ucd%ifmt_file .eq. iflag_sgl_vtk_gz) then
-        call write_gz_merged_vtk_file(istep_udt)
+        call write_gz_merged_vtk_file(istep_udt, fem_ucd)
       else if (fem_ucd%ifmt_file .eq. iflag_sgl_vtd_gz) then
-        call write_gz_merged_vtk_phys(istep_udt)
+        call write_gz_merged_vtk_phys(istep_udt, fem_ucd)
       else if (fem_ucd%ifmt_file .eq. iflag_sgl_ucd_gz) then
-        call write_gz_merged_ucd_file(istep_udt)
+        call write_gz_merged_ucd_file(istep_udt, fem_ucd)
       else if (fem_ucd%ifmt_file .eq. iflag_sgl_udt_gz) then
-        call write_gz_merged_udt_file(istep_udt)
+        call write_gz_merged_udt_file(istep_udt, fem_ucd)
 !
       else if(fem_ucd%ifmt_file .eq. iflag_vtk_gz) then
         call write_gz_parallel_vtk_file(my_rank, nprocs, istep_udt,     &
@@ -127,15 +127,15 @@
 !
 !
       if(fem_ucd%ifmt_file .eq. iflag_sgl_vtd) then
-        call write_merged_vtk_grid
+        call write_merged_vtk_grid(fem_ucd)
       else if(fem_ucd%ifmt_file .eq. iflag_sgl_udt) then
-        call write_merged_grd_file
+        call write_merged_grd_file(fem_ucd)
 !
 #ifdef ZLIB_IO
       else if (fem_ucd%ifmt_file .eq. iflag_sgl_vtd_gz) then
-        call write_gz_merged_vtk_grid
+        call write_gz_merged_vtk_grid(fem_ucd)
       else if(fem_ucd%ifmt_file .eq. iflag_sgl_udt_gz) then
-        call write_gz_merged_grd_file
+        call write_gz_merged_grd_file(fem_ucd)
 #endif
 !
 #ifdef HDF5_IO

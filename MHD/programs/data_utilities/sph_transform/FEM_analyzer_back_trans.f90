@@ -172,11 +172,11 @@
       subroutine FEM_finalize_back_trans
 !
       use m_t_step_parameter
-      use merged_udt_vtk_file_IO
+      use output_parallel_ucd_file
 !
 !
       if(i_step_output_ucd .gt. 0) then
-        call finalize_merged_ucd
+        call finalize_ucd_file_output
       end if
 !
       end subroutine FEM_finalize_back_trans

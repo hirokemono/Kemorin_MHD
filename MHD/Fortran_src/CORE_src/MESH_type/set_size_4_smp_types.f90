@@ -113,8 +113,6 @@
       type(node_data),    intent(in) :: nod
       type(element_data), intent(inout) :: ele
 !
-      integer (kind = kint) :: ip, iele, ist, ied
-!
 !
       call set_overlap_flag(np_smp, ele%istack_ele_smp,                 &
      &    nod%internal_node, ele%numele, ele%ie(1:ele%numele,1),        &

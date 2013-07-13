@@ -1,17 +1,22 @@
-!m_merged_ucd_data.f90
-!      module m_merged_ucd_data
+!>@file  m_merged_ucd_data.f90
+!!       module m_merged_ucd_data
+!!
+!!@author H. Matsui
+!!@date   Programmed by H. Matsui in Feb., 2013
 !
-!      Written by H. Matsui on Feb., 2007
-!
-!      subroutine allocate_merged_ucd_num
-!      subroutine allocate_merged_ucd_data(numnod, nnod_ele, ntot_comp)
-!      subroutine deallocate_merged_ucd_data
-!
-!      subroutine count_merged_ucd(nnod, nele)
-!      subroutine set_node_double_address                               &
-!     &         (NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-!     &          STACK_EXPORT, NOD_EXPORT)
-!      subroutine update_ele_by_double_address(nele, nnod_ele, ie)
+!> @brief Data for merged UCD file output
+!!
+!!@verbatim
+!!      subroutine allocate_merged_ucd_num
+!!      subroutine allocate_merged_ucd_data(numnod, nnod_ele, ntot_comp)
+!!      subroutine deallocate_merged_ucd_data
+!!
+!!      subroutine count_merged_ucd(nnod, nele)
+!!      subroutine set_node_double_address                              &
+!!     &         (NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,          &
+!!     &          STACK_EXPORT, NOD_EXPORT)
+!!      subroutine update_ele_by_double_address(nele, nnod_ele, ie)
+!!@endverbatim
 !
       module m_merged_ucd_data
 !
@@ -21,18 +26,17 @@
 !
       implicit none
 !
-      integer(kind = kint), allocatable :: nnod_ucd_list(:)
-      integer(kind = kint), allocatable :: nele_ucd_list(:)
-      integer(kind = kint), allocatable :: internod_ucd_list(:)
       integer(kind = kint), allocatable :: istack_nod_ucd_list(:)
       integer(kind = kint), allocatable :: istack_ele_ucd_list(:)
       integer(kind = kint), allocatable :: istack_internod_ucd_list(:)
       integer(kind = kint) :: nmax_nod_ucd_list
       integer(kind = kint) :: nmax_ele_ucd_list
-      integer(kind = kint) :: nmax_intnod_ucd_list
 !
+!>        number of node for each subdomain
       integer(kind = kint) :: nnod_ucd_local
+!>        local node ID
       integer(kind = kint), allocatable :: inod_local_ucd(:)
+!>        belonged subdomains ID for each node
       integer(kind = kint), allocatable :: ihome_pe_ucd(:)
 !
       integer(kind = kint), allocatable :: inod_single_ucd(:)
@@ -50,6 +54,7 @@
 !       status flag for recieving
 !
       private :: nmax_nod_ucd_list, nmax_ele_ucd_list
+      private :: nnod_ucd_local, ihome_pe_ucd, inod_local_ucd
 !
 ! -----------------------------------------------------------------------
 !
@@ -63,16 +68,10 @@
       allocate (sta1(MPI_STATUS_SIZE))
       if(my_rank .eq. 0) allocate(sta2(MPI_STATUS_SIZE))
 !
-      allocate(nnod_ucd_list(nprocs))
-      allocate(nele_ucd_list(nprocs))
-      allocate(internod_ucd_list(nprocs))
       allocate(istack_nod_ucd_list(0:nprocs))
       allocate(istack_ele_ucd_list(0:nprocs))
       allocate(istack_internod_ucd_list(0:nprocs))
 !
-      nnod_ucd_list = 0
-      nele_ucd_list = 0
-      internod_ucd_list = 0
       istack_nod_ucd_list = 0
       istack_ele_ucd_list = 0
       istack_internod_ucd_list = 0
@@ -132,9 +131,8 @@
 !
       deallocate(inod_local_ucd, ihome_pe_ucd)
 !
-      deallocate(nnod_ucd_list, istack_nod_ucd_list)
-      deallocate(nele_ucd_list, istack_ele_ucd_list)
-      deallocate(internod_ucd_list, istack_internod_ucd_list)
+      deallocate(istack_nod_ucd_list, istack_ele_ucd_list)
+      deallocate(istack_internod_ucd_list)
 !
       end subroutine deallocate_merged_ucd_data
 !
@@ -145,7 +143,18 @@
 !
       integer(kind = kint), intent(in) :: nnod, internal_node, nele
 !
+      integer(kind = kint), allocatable :: nnod_ucd_list(:)
+      integer(kind = kint), allocatable :: nele_ucd_list(:)
+      integer(kind = kint), allocatable :: internod_ucd_list(:)
       integer(kind = kint) :: ip
+!
+!
+      allocate(nnod_ucd_list(nprocs))
+      allocate(nele_ucd_list(nprocs))
+      allocate(internod_ucd_list(nprocs))
+      nnod_ucd_list = 0
+      nele_ucd_list = 0
+      internod_ucd_list = 0
 !
       call MPI_Allgather(nnod, ione, MPI_INTEGER,                       &
      &    nnod_ucd_list, ione, MPI_INTEGER, SOLVER_COMM, ierr)
@@ -163,9 +172,9 @@
      &                              + internod_ucd_list(ip)
         nmax_nod_ucd_list = max(nmax_nod_ucd_list,nnod_ucd_list(ip))
         nmax_ele_ucd_list = max(nmax_ele_ucd_list,nele_ucd_list(ip))
-        nmax_intnod_ucd_list                                            &
-     &             = max(nmax_intnod_ucd_list,internod_ucd_list(ip))
       end do
+!
+      deallocate(nnod_ucd_list, nele_ucd_list, internod_ucd_list)
 !
       end subroutine count_merged_ucd
 !

@@ -79,7 +79,7 @@
       call link_field_data_2_output
 !
       if (fem_ucd%ifmt_file/100 .eq. iflag_single/100) then
-        call init_merged_ucd
+        call init_merged_ucd(fem_ucd)
       end if
 !
       call sel_write_parallel_ucd_mesh

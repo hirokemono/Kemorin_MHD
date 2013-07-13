@@ -1,12 +1,17 @@
+!>@file  merged_ucd_data_IO.f90
+!!       module merged_ucd_data_IO
+!!
+!!@author H. Matsui
+!!@date   Programmed by H. Matsui in Feb., 2013
 !
-!      module merged_ucd_data_IO
-!
-!      Written by H. Matsui on Feb., 2007
-!
-!      subroutine write_merged_ucd_fields(id_ucd, nnod, num_field,      &
-!     &          ntot_comp, ncomp_field, field_name, d_nod)
-!      subroutine write_merged_ucd_mesh(id_ucd, nnod, nele, nnod_ele,   &
-!     &           xx, ie, ntot_comp)
+!> @brief Output routine for merged UCD data segments
+!!
+!!@verbatim
+!!      subroutine write_merged_ucd_fields(id_ucd, nnod, num_field,     &
+!!     &          ntot_comp, ncomp_field, field_name, d_nod)
+!!      subroutine write_merged_ucd_mesh(id_ucd, nnod, nele, nnod_ele,  &
+!!     &           xx, ie, ntot_comp)
+!!@endverbatim
 !
       module merged_ucd_data_IO
 !
@@ -92,12 +97,13 @@
 !
 !
       if(my_rank .eq. 0) then
-        do iele = 1, nele_ucd_list(ione)
+        do iele = 1, istack_ele_ucd_list(ione)
           iele_single_ucd(iele) = iele
         end do
 !
-        call write_ucd_mesh_connect(id_ucd, nele_ucd_list(1), nnod_ele, &
-     &      nele_ucd_list(1), iele_single_ucd(1), ie(1,1) )
+        call write_ucd_mesh_connect(id_ucd, istack_ele_ucd_list(1),     &
+     &      nnod_ele,istack_ele_ucd_list(1), iele_single_ucd(1),        &
+     &      ie(1,1) )
       end if
 !
       do ip = 2, nprocs
@@ -113,19 +119,20 @@
 !C
 !C-- RECV
         if(my_rank .eq. 0) then
-          num = nele_ucd_list(ip)*nnod_ele
+          num = (istack_ele_ucd_list(ip) - istack_ele_ucd_list(ip-1))   &
+     &         * nnod_ele
           call MPI_IRECV(ie_single_ucd(1), num, MPI_INTEGER,            &
      &        (ip-1), 0, SOLVER_COMM, req2, ierr)
 !
           call MPI_WAITALL (ione, req2, sta2, ierr)
 !
-          do iele = 1, nele_ucd_list(ip)
+          num = istack_ele_ucd_list(ip) - istack_ele_ucd_list(ip-1)
+          do iele = 1, num
             iele_single_ucd(iele) = iele + istack_ele_ucd_list(ip-1)
           end do
 !
-          call write_ucd_mesh_connect(id_ucd, nele_ucd_list(ip),        &
-     &        nnod_ele, nele_ucd_list(ip), iele_single_ucd(1),          &
-     &        ie_single_ucd(1) )
+          call write_ucd_mesh_connect(id_ucd, num, nnod_ele, num,       &
+     &        iele_single_ucd(1), ie_single_ucd(1) )
       end if
 !
         if(my_rank .eq. isend_rank ) then
@@ -138,24 +145,25 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_merged_udt_field(id_ucd, nnod, ncomp_field,      &
+      subroutine write_merged_udt_field(id_ucd, numnod, ncomp_field,    &
      &          d_nod)
 !
-      integer (kind=kint), intent(in) :: nnod, ncomp_field
-      real(kind = kreal), intent(in) :: d_nod(nnod,ncomp_field)
+      integer (kind=kint), intent(in) :: numnod, ncomp_field
+      real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_field)
 !
       integer(kind = kint), intent(in) ::  id_ucd
 !
-      integer(kind = kint) :: ip, num, inod, isend_rank
+      integer(kind = kint) :: ip, num, inod, nnod, isend_rank
 !
 !
       if(my_rank .eq. 0) then
-        do inod = 1, internod_ucd_list(1)
+        do inod = 1, istack_internod_ucd_list(1)
           inod_single_ucd(inod) = inod
         end do
 !
-        call write_ucd_field_data(id_ucd, nnod, ncomp_field,            &
-     &      internod_ucd_list(ione), inod_single_ucd(1), d_nod(1,1) )
+        call write_ucd_field_data(id_ucd, numnod, ncomp_field,          &
+     &      istack_internod_ucd_list(ione), inod_single_ucd(1),         &
+     &      d_nod(1,1) )
       end if
 !
       do ip = 2, nprocs
@@ -163,26 +171,29 @@
 !C
 !C-- SEND
         if(my_rank .eq. isend_rank) then
-          num = nnod*ncomp_field
+          num = numnod*ncomp_field
           call MPI_ISEND(d_nod(1,1), num, MPI_DOUBLE_PRECISION,         &
      &      izero, 0, SOLVER_COMM, req1, ierr)
         end if
 !C
 !C-- RECV
         if(my_rank .eq. 0) then
-          num = nnod_ucd_list(ip)*ncomp_field
+          num = (istack_nod_ucd_list(ip) - istack_nod_ucd_list(ip-1))   &
+     &         * ncomp_field
           call MPI_IRECV(d_single_ucd(1), num, MPI_DOUBLE_PRECISION,    &
      &        (ip-1), 0, SOLVER_COMM, req2, ierr)
 !
           call MPI_WAITALL (ione, req2, sta2, ierr)
 !
-          do inod = 1, internod_ucd_list(ip)
+          nnod = istack_nod_ucd_list(ip) - istack_nod_ucd_list(ip-1)
+          num = istack_internod_ucd_list(ip)                            &
+     &         - istack_internod_ucd_list(ip-1)
+          do inod = 1, num
             inod_single_ucd(inod) = inod + istack_nod_ucd_list(ip-1)
           end do
 !
-          call write_ucd_field_data(id_ucd, nnod_ucd_list(ip),          &
-     &        ncomp_field, internod_ucd_list(ip),                       &
-     &        inod_single_ucd(1), d_single_ucd(1))
+          call write_ucd_field_data(id_ucd, nnod,                       &
+     &        ncomp_field, num, inod_single_ucd(1), d_single_ucd(1))
         end if
 !
         if(my_rank .eq. isend_rank ) then

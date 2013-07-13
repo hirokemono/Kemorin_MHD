@@ -28,7 +28,6 @@
 !
       use m_machine_parameter
       use m_read_mesh_data
-      use m_ucd_data
       use m_field_data_IO
       use m_node_id_spherical_IO
 !

@@ -34,6 +34,8 @@
       real(kind=kreal), allocatable :: fld_hdf5(:)
       integer(kind=kint), allocatable :: ie_hdf5(:,:)
 !
+      private :: ncomp_hdf5, fld_hdf5, ie_hdf5
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -47,7 +49,8 @@
 !
 ! Initialize Fortran interface
 !
-      nnod = internod_ucd_list(my_rank+1)
+      nnod = istack_internod_ucd_list(my_rank+1)                        &
+     &      - istack_internod_ucd_list(my_rank)
       allocate( fld_hdf5(9*nnod) )
       allocate( ie_hdf5(8,fem_ucd%nele) )
 !
@@ -103,11 +106,13 @@
 !
       subroutine copy_node_position_for_hdf5
 !
-      integer(kind = kint) :: inod
+      integer(kind = kint) :: inod, nnod
 !
 !
+      nnod = istack_internod_ucd_list(my_rank+1)                        &
+     &      - istack_internod_ucd_list(my_rank)
 !$omp parallel do
-      do inod = 1, internod_ucd_list(my_rank+1)
+      do inod = 1, nnod
         fld_hdf5(3*inod-2) = fem_ucd%xx(inod,1)
         fld_hdf5(3*inod-1) = fem_ucd%xx(inod,2)
         fld_hdf5(3*inod  ) = fem_ucd%xx(inod,3)
@@ -121,12 +126,14 @@
       subroutine copy_scalar_field_for_hdf5(ist_fld)
 !
       integer(kind = kint), intent(in) :: ist_fld
-      integer(kind = kint) :: inod
+      integer(kind = kint) :: inod, nnod
 !
 !
       ncomp_hdf5 = 1
+      nnod = istack_internod_ucd_list(my_rank+1)                        &
+     &      - istack_internod_ucd_list(my_rank)
 !$omp parallel do
-      do inod = 1, internod_ucd_list(my_rank+1)
+      do inod = 1, nnod
         fld_hdf5(inod) = fem_ucd%d_ucd(inod,ist_fld+1)
       end do
 !$omp end parallel do
@@ -138,12 +145,14 @@
       subroutine copy_vector_field_for_hdf5(ist_fld)
 !
       integer(kind = kint), intent(in) :: ist_fld
-      integer(kind = kint) :: inod
+      integer(kind = kint) :: inod, nnod
 !
 !
       ncomp_hdf5 = 3
+      nnod = istack_internod_ucd_list(my_rank+1)                        &
+     &      - istack_internod_ucd_list(my_rank)
 !$omp parallel do
-      do inod = 1, internod_ucd_list(my_rank+1)
+      do inod = 1, nnod
         fld_hdf5(3*inod-2) = fem_ucd%d_ucd(inod,ist_fld+1)
         fld_hdf5(3*inod-1) = fem_ucd%d_ucd(inod,ist_fld+2)
         fld_hdf5(3*inod  ) = fem_ucd%d_ucd(inod,ist_fld+3)
@@ -157,12 +166,14 @@
       subroutine copy_sym_tensor_field_for_hdf5(ist_fld)
 !
       integer(kind = kint), intent(in) :: ist_fld
-      integer(kind = kint) :: inod
+      integer(kind = kint) :: inod, nnod
 !
 !
       ncomp_hdf5 = 9
+      nnod = istack_internod_ucd_list(my_rank+1)                        &
+     &      - istack_internod_ucd_list(my_rank)
 !$omp parallel do
-      do inod = 1, internod_ucd_list(my_rank+1)
+      do inod = 1, nnod
         fld_hdf5(9*inod-8) = fem_ucd%d_ucd(inod,ist_fld+1)
         fld_hdf5(9*inod-7) = fem_ucd%d_ucd(inod,ist_fld+2)
         fld_hdf5(9*inod-6) = fem_ucd%d_ucd(inod,ist_fld+3)
@@ -188,6 +199,7 @@
       character(len=kchara), parameter                                  &
      &                      :: elem_dataset_name = "elements"
 !
+      integer(kind = kint) :: nnod
       character(len = kchara) :: file_name
       integer(hid_t) :: id_hdf5
       integer(hid_t) :: plist_id      ! Property list identifier
@@ -202,6 +214,9 @@
       integer(hsize_t) :: buf_dims(2)
       integer :: hdferr
 !
+!
+      nnod = istack_internod_ucd_list(my_rank+1)                        &
+     &      - istack_internod_ucd_list(my_rank)
 !
       call set_merged_hdf_mesh_file_name(fem_ucd%file_prefix, file_name)
 !
@@ -259,7 +274,7 @@
 ! Create dataspace for memory hyperslab for nodes
 !
         hyperslab_size(1) = 3
-        hyperslab_size(2) = internod_ucd_list(my_rank+1)
+        hyperslab_size(2) = nnod
         hyperslab_offset(1) = 0
         hyperslab_offset(2) = istack_internod_ucd_list(my_rank)
         call h5screate_simple_f(dataspace_dims, hyperslab_size,         &
@@ -295,7 +310,7 @@
 ! Write the node data (finally!)
 !
         buf_dims(1) = 3
-        buf_dims(2) = internod_ucd_list(my_rank+1)
+        buf_dims(2) = nnod
         call h5dwrite_f(node_dataset_id, H5T_NATIVE_DOUBLE,             &
             fld_hdf5(1), buf_dims, hdferr, node_memory_dataspace,       &
             node_file_dataspace, plist_id)
@@ -341,7 +356,7 @@
 !
       integer(kind=kint), intent(in) :: cur_step
 #ifdef HDF5_IO
-      integer(kind = kint) :: istep, icou
+      integer(kind = kint) :: istep, icou, nnod
       character(len = kchara) :: file_name
       integer(hid_t) :: id_hdf5
       integer(hid_t) :: plist_id      ! Property list identifier
@@ -383,6 +398,8 @@
 !
       icou = 0
       do istep = 1, fem_ucd%num_field, 1
+        nnod = istack_internod_ucd_list(my_rank+1)                      &
+     &      - istack_internod_ucd_list(my_rank)
 !
 ! Transpose the field data to fit XDMF standards
 !
@@ -417,7 +434,7 @@
 ! Create dataspace for memory hyperslab
 !
         hyperslab_size(1) = ncomp_hdf5
-        hyperslab_size(2) = internod_ucd_list(my_rank+1)
+        hyperslab_size(2) = nnod
         hyperslab_offset(1) = 0
         hyperslab_offset(2) = istack_internod_ucd_list(my_rank)
         call h5screate_simple_f(dataspace_dims, hyperslab_size,         &
@@ -439,7 +456,7 @@
 ! Write the field data
 !
         buf_dims(1) = ncomp_hdf5
-        buf_dims(2) = internod_ucd_list(my_rank+1)
+        buf_dims(2) = nnod
         call h5dwrite_f(field_dataset_id, H5T_NATIVE_DOUBLE,            &
             fld_hdf5(1), buf_dims, hdferr, field_memory_dataspace,      &
             field_file_dataspace, plist_id)

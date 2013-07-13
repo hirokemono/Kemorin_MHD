@@ -7,11 +7,11 @@
 !      subroutine link_global_mesh_4_ucd
 !      subroutine link_local_mesh_4_ucd
 !      subroutine link_field_data_2_output
-!      subroutine allocate_phys_data_by_output
+!      subroutine allocate_phys_data_by_output(my_rank, istep_ucd)
 !
-!      subroutine set_ucd_data_from_IO
-!      subroutine add_by_ucd_data
-!      subroutine subtract_by_ucd_data
+!      subroutine set_ucd_data_from_IO(my_rank, istep_ucd)
+!      subroutine add_by_ucd_data(my_rank, istep_ucd)
+!      subroutine subtract_by_ucd_data(my_rank, istep_ucd)
 !
       module set_ucd_data
 !
@@ -99,11 +99,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_phys_data_by_output
+      subroutine allocate_phys_data_by_output(my_rank, istep_ucd)
 !
       use m_node_phys_data
       use cal_minmax_and_stacks
+      use ucd_IO_select
 !
+      integer(kind = kint),  intent(in) :: my_rank, istep_ucd
+!
+!
+      call sel_read_udt_param(my_rank, istep_ucd, fem_ucd)
 !
       num_nod_phys =     fem_ucd%num_field
       num_nod_phys_vis = fem_ucd%num_field
@@ -124,13 +129,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_ucd_data_from_IO
+      subroutine set_ucd_data_from_IO(my_rank, istep_ucd)
 !
       use m_geometry_parameter
       use m_node_phys_data
       use set_and_cal_udt_data
+      use ucd_IO_select
+!
+      integer(kind = kint),  intent(in) :: my_rank, istep_ucd
 !
 !
+      call sel_read_udt_file(my_rank, istep_ucd, fem_ucd)
       call set_field_by_udt_data(numnod, num_nod_phys,                  &
      &    num_tot_nod_phys, num_nod_component, phys_nod_name, d_nod)
 !
@@ -138,13 +147,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_by_ucd_data
+      subroutine add_by_ucd_data(my_rank, istep_ucd)
 !
       use m_geometry_parameter
       use m_node_phys_data
       use set_and_cal_udt_data
+      use ucd_IO_select
+!
+      integer(kind = kint),  intent(in) :: my_rank, istep_ucd
 !
 !
+      call sel_read_udt_file(my_rank, istep_ucd, fem_ucd)
       call add_field_by_udt_data(numnod, num_nod_phys,                  &
      &    num_tot_nod_phys, num_nod_component, phys_nod_name, d_nod)
 !
@@ -152,13 +165,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine subtract_by_ucd_data
+      subroutine subtract_by_ucd_data(my_rank, istep_ucd)
 !
       use m_geometry_parameter
       use m_node_phys_data
       use set_and_cal_udt_data
+      use ucd_IO_select
+!
+      integer(kind = kint),  intent(in) :: my_rank, istep_ucd
 !
 !
+      call sel_read_udt_file(my_rank, istep_ucd, fem_ucd)
       call subtract_field_by_udt_data(numnod, num_nod_phys,             &
      &    num_tot_nod_phys, num_nod_component, phys_nod_name, d_nod)
 !

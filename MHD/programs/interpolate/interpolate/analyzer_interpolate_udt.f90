@@ -24,6 +24,7 @@
       subroutine initialize_itp_udt
 !
       use m_ctl_params_4_gen_table
+      use m_t_step_parameter
       use m_geometry_parameter
       use m_node_phys_address
       use m_2nd_geometry_param
@@ -34,6 +35,10 @@
       use set_smp_size_4_2nd
       use link_data_to_1st_mesh
       use nodal_vector_send_recv
+!
+      use m_ucd_data
+      use ucd_IO_select
+      use set_ucd_data
 !
 !
       if (my_rank.eq.0)  write(*,*) 'Interpolate data to new mesh'
@@ -81,6 +86,16 @@
 !
       call init_send_recv
 !
+!     ---------------------
+!
+      if (my_rank .lt. ndomain_org) then
+        call link_num_field_2_output
+!
+        fem_ucd%ifmt_file =   itype_org_udt_file
+        fem_ucd%file_prefix = org_udt_file_head
+        call sel_read_udt_param(my_rank, i_step_init, fem_ucd)
+      end if
+!
       end subroutine initialize_itp_udt
 !
 ! ----------------------------------------------------------------------
@@ -99,15 +114,9 @@
 !
       do ucd_step = i_step_init, i_step_number, i_step_output_ucd
         if (my_rank .lt. ndomain_org) then
-          call link_num_field_2_output
-!
           fem_ucd%ifmt_file =   itype_org_udt_file
           fem_ucd%file_prefix = org_udt_file_head
-          call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
-          call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
-          call set_ucd_data_from_IO
-!
-          call deallocate_ucd_data(fem_ucd)
+          call set_ucd_data_from_IO(my_rank, ucd_step)
 !
           call phys_send_recv_all
         end if

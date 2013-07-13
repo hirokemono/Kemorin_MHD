@@ -1,25 +1,30 @@
-!gz_vtk_data_IO.f90
-!      module gz_vtk_data_IO
+!>@file  gz_vtk_data_IO.f90
+!!       module gz_vtk_data_IO
+!!
+!!@author H. Matsui
+!!@date   Programmed by H. Matsui in Feb., 2007
 !
-!      Written by H. Matsui on Feb., 2007
-!
-!      subroutine write_gz_vtk_data(nnod, num_field, ntot_comp,         &
-!     &          ncomp_field, field_name, d_nod)
-!      subroutine write_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie)
-!
-!      subroutine write_gz_vtk_fields_head(nnod)
-!      subroutine write_gz_vtk_each_field_head(ncomp_field, field_name)
-!
-!!      subroutine write_gz_vtk_each_field(ntot_nod, ncomp_field, nnod, &
+!> @brief Output routine for gzipped VTK data segments
+!!
+!!@verbatim
+!!      subroutine write_gz_vtk_data(nnod, num_field, ntot_comp,        &
+!!     &          ncomp_field, field_name, d_nod)
+!!      subroutine write_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie)
+!!
+!!      subroutine write_gz_vtk_fields_head(nnod)
+!!      subroutine write_gz_vtk_each_field_head(ncomp_field, field_name)
+!!
+!!      subroutine write_gz_vtk_each_field(ntot_nod, ncomp_field, nnod,&
 !!     &          d_nod)
-!
-!      subroutine write_gz_vtk_node_head(nnod)
-!
-!      subroutine write_gz_vtk_connect_head(nele, nnod_ele)
-!      subroutine write_gz_vtk_cell_type(nele, nnod_ele)
-!
-!      subroutine write_gz_vtk_connect_data(ntot_ele, nnod_ele,         &
-!     &          nele, ie)
+!!
+!!      subroutine write_gz_vtk_node_head(nnod)
+!!
+!!      subroutine write_gz_vtk_connect_head(nele, nnod_ele)
+!!      subroutine write_gz_vtk_cell_type(nele, nnod_ele)
+!!
+!!      subroutine write_gz_vtk_connect_data(ntot_ele, nnod_ele,        &
+!!     &          nele, ie)
+!!@endverbatim
 !
       module gz_vtk_data_IO
 !

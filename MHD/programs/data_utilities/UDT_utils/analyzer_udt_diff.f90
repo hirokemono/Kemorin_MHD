@@ -78,10 +78,10 @@
       use m_ctl_params_4_diff_udt
       use m_ucd_data
       use output_parallel_ucd_file
-      use ucd_IO_select
       use set_ucd_data
       use divide_phys_by_delta_t
       use nod_phys_send_recv
+      use ucd_IO_select
 !
       integer(kind = kint) :: i_step
 !
@@ -99,12 +99,10 @@
           call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
 !          end if
 !
-          call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
-          call set_ucd_data_from_IO
+          call set_ucd_data_from_IO(my_rank, ucd_step)
 !
           fem_ucd%file_prefix = tgt_udt_file_head
-          call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
-          call subtract_by_ucd_data
+          call subtract_by_ucd_data(my_rank, ucd_step)
 !
           call s_divide_phys_by_delta_t
 !

@@ -101,8 +101,8 @@
       if(my_rank .eq. 0) then
         call write_gz_vtk_connect_head(istack_ele_ucd_list(nprocs),     &
      &      nnod_ele)
-        call write_gz_vtk_connect_data(nele_ucd_list(ione), nnod_ele,   &
-     &      nele_ucd_list(ione), ie(1,1) )
+        call write_gz_vtk_connect_data(istack_ele_ucd_list(ione),       &
+     &      nnod_ele, istack_ele_ucd_list(ione), ie(1,1) )
       end if
 !
 !C
@@ -119,14 +119,16 @@
 !C
 !C-- RECV
         if(my_rank .eq. 0) then
-          num = nele_ucd_list(ip)*nnod_ele
+          num = (istack_ele_ucd_list(ip) - istack_ele_ucd_list(ip-1))   &
+     &         * nnod_ele
           call MPI_IRECV(ie_single_ucd(1), num, MPI_INTEGER,            &
      &        isend_rank, 0, SOLVER_COMM, req2, ierr)
 !
           call MPI_WAITALL (ione, req2, sta2, ierr)
 !
-          call write_gz_vtk_connect_data(nele_ucd_list(ip), nnod_ele,   &
-     &        nele_ucd_list(ip), ie_single_ucd(1) )
+          num = istack_ele_ucd_list(ip) - istack_ele_ucd_list(ip-1)
+          call write_gz_vtk_connect_data(num, nnod_ele,                 &
+     &        num, ie_single_ucd(1) )
 !
           call write_gz_vtk_cell_type(istack_ele_ucd_list(nprocs),      &
      &        nnod_ele)
@@ -142,18 +144,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_merged_gz_vtk_each_field(nnod, ncomp_field,      &
+      subroutine write_merged_gz_vtk_each_field(numnod, ncomp_field,    &
      &          d_nod )
 !
-      integer (kind=kint), intent(in) :: nnod, ncomp_field
-      real(kind = kreal), intent(in) :: d_nod(nnod,ncomp_field)
+      integer (kind=kint), intent(in) :: numnod, ncomp_field
+      real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_field)
 !
-      integer(kind = kint) :: ip, num, isend_rank
+      integer(kind = kint) :: ip, num, nnod, isend_rank
 !
 !
       if(my_rank .eq. 0) then
-        call write_gz_vtk_each_field(nnod, ncomp_field,                 &
-     &      internod_ucd_list(ione), d_nod)
+        call write_gz_vtk_each_field(numnod, ncomp_field,               &
+     &      istack_internod_ucd_list(ione), d_nod)
       end if
 !
       do ip = 2, nprocs
@@ -161,21 +163,25 @@
 !C
 !C-- SEND
         if(my_rank .eq. isend_rank ) then
-          num = nnod*ncomp_field
+          num = numnod*ncomp_field
           call MPI_ISEND(d_nod(1,1), num, MPI_DOUBLE_PRECISION,         &
      &      izero, 0, SOLVER_COMM, req1, ierr)
         end if
 !C
 !C-- RECV
         if(my_rank .eq. 0) then
-          num = nnod_ucd_list(ip)*ncomp_field
+          num = (istack_nod_ucd_list(ip) - istack_nod_ucd_list(ip-1))   &
+     &         * ncomp_field
           call MPI_IRECV(d_single_ucd(1), num, MPI_DOUBLE_PRECISION,    &
      &        (ip-1), 0, SOLVER_COMM, req2, ierr)
 !
           call MPI_WAITALL (ione, req2, sta2, ierr)
 !
-          call write_gz_vtk_each_field(nnod_ucd_list(ip), ncomp_field,  &
-     &        internod_ucd_list(ip), d_single_ucd(1) )
+          nnod = istack_nod_ucd_list(ip) - istack_nod_ucd_list(ip-1)
+          num = istack_internod_ucd_list(ip)                            &
+     &         - istack_internod_ucd_list(ip-1)
+          call write_gz_vtk_each_field(nnod, ncomp_field,               &
+     &        num, d_single_ucd(1) )
         end if
 !
         if(my_rank .eq. isend_rank ) then

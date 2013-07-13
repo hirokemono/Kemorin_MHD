@@ -86,8 +86,7 @@
       fem_ucd%file_prefix = org_ucd_header
       fem_ucd%nnod = numnod
       fem_ucd%inod_global => globalnodid
-      call sel_read_udt_param(my_rank, i_step_init, fem_ucd)
-      call allocate_phys_data_by_output
+      call allocate_phys_data_by_output(my_rank, i_step_init)
 !
       call allocate_work_4_lscale
       write(*,*) 'find_field_address_4_lscale'
@@ -115,8 +114,8 @@
 !
           fem_ucd%nnod = numnod
           fem_ucd%file_prefix = org_ucd_header
-          call sel_read_alloc_udt_file(my_rank, ucd_step, fem_ucd)
-          call set_ucd_data_from_IO
+          call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
+          call set_ucd_data_from_IO(my_rank, ucd_step)
           call deallocate_ucd_data(fem_ucd)
 !
 !    output udt data

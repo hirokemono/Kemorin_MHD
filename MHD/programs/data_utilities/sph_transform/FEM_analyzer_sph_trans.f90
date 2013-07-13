@@ -103,10 +103,7 @@
 !*  -----------  Output volume data --------------
 !*
       if(visval .eq. 0) then
-        if (iflag_debug.gt.0) write(*,*) 'sel_read_udt_file'
-        call sel_read_udt_file(my_rank, i_step, fem_ucd)
-        if (iflag_debug.gt.0) write(*,*) 'set_ucd_data_from_IO'
-        call set_ucd_data_from_IO
+        call set_ucd_data_from_IO(my_rank, i_step)
       end if
 !
       end subroutine FEM_analyze_sph_trans
@@ -153,11 +150,11 @@
 !
       use m_t_step_parameter
       use m_work_4_sph_trans
-      use merged_udt_vtk_file_IO
+      use output_parallel_ucd_file
 !
 !
       if(i_step_output_ucd .gt. 0) then
-        call finalize_merged_ucd
+        call finalize_ucd_file_output
       end if
       call deallocate_wk_nod_data_to_sph
 !

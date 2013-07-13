@@ -51,10 +51,6 @@
       if (my_rank.eq.0) write(*,*)                                      &
      &      'number of element for whole domain:  ', nele_g
 !
-!      do iele = 1, numele
-!        write(my_rank+50,*) iele, e_multi(iele)
-!      end do
-!
       end subroutine check_whole_num_of_elements
 !
 ! ----------------------------------------------------------------------

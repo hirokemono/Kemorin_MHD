@@ -91,9 +91,7 @@
       ucd_step = i_step_init / i_step_output_ucd
       fem_ucd%file_prefix = org_ucd_header
       call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
-!
-      call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
-      call set_ucd_data_from_IO
+      call set_ucd_data_from_IO(my_rank, ucd_step)
 !
       icou = 1
       do i_step = i_step_init+1, i_step_number
@@ -102,8 +100,7 @@
           ucd_step = i_step / i_step_output_ucd
           icou = icou + 1
 !
-          call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
-          call add_by_ucd_data
+          call add_by_ucd_data(my_rank, ucd_step)
 !
         end if
       end do

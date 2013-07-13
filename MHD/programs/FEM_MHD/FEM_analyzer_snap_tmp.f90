@@ -179,10 +179,10 @@
 !
       use m_t_step_parameter
       use m_cal_max_indices
-      use merged_udt_vtk_file_IO
+      use output_parallel_ucd_file
 !
 !
-      call finalize_merged_ucd
+      call finalize_ucd_file_output
       call deallocate_phys_range
 !        call close_boundary_monitor(my_rank)
 !

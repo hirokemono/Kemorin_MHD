@@ -99,10 +99,8 @@
 !
 !     ---------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'sel_read_udt_param'
-        fem_ucd%file_prefix = org_ucd_header
-      call sel_read_udt_param(my_rank, i_step_init, fem_ucd)
-      call allocate_phys_data_by_output
+      fem_ucd%file_prefix = org_ucd_header
+      call allocate_phys_data_by_output(my_rank, i_step_init)
 !
       end subroutine FEM_initialize_fline
 !
@@ -114,7 +112,6 @@
       use m_ucd_data
       use set_exit_flag_4_visualizer
       use nod_phys_send_recv
-      use ucd_IO_select
       use set_ucd_data
 !
       integer (kind =kint), intent(in) :: i_step
@@ -130,8 +127,7 @@
 !*  ----------   Count steps for visualization
 !*
         fem_ucd%file_prefix = org_ucd_header
-        call sel_read_udt_file(my_rank, i_step, fem_ucd)
-        call set_ucd_data_from_IO
+        call set_ucd_data_from_IO(my_rank, i_step)
 !
         if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
         call phys_send_recv_all
