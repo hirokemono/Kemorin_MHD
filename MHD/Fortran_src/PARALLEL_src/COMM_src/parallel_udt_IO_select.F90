@@ -4,10 +4,10 @@
 !        programmed by H.Matsui on July, 2006
 !        Modified by H.Matsui on May, 2009
 !
-!!      subroutine set_control_parallel_field_def
+!!      subroutine set_merged_ucd_file_define(ucd)
 !!
-!!      subroutine sel_write_parallel_ucd_file(istep_udt)
-!!      subroutine sel_write_parallel_ucd_mesh
+!!      subroutine sel_write_parallel_ucd_file(istep_ucd, ucd, m_ucd)
+!!      subroutine sel_write_parallel_ucd_mesh(ucd, m_ucd)
 !!
 !
       module parallel_udt_IO_select
@@ -16,6 +16,8 @@
       use m_parallel_var_dof
       use m_file_format_switch
       use m_field_file_format
+!
+      use t_ucd_data
 !
       implicit none
 !
@@ -27,27 +29,24 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_control_parallel_field_def
+      subroutine set_merged_ucd_file_define(ucd)
 !
       use m_ctl_data_4_platforms
-      use m_ucd_data
+!
+      type(ucd_data), intent(inout) :: ucd
 !
 !
-      fem_ucd%ifmt_file = i_udt_header
-      if (i_udt_header .gt. 0) then
-        fem_ucd%file_prefix = udt_file_head_ctl
-      end if
+      ucd%ifmt_file = i_udt_header
+      if(i_udt_header .gt. 0) ucd%file_prefix = udt_file_head_ctl
 !
       call choose_para_fld_file_format(udt_file_fmt_ctl,                &
-     &    i_udt_files_fmt, fem_ucd%ifmt_file)
+     &    i_udt_files_fmt, ucd%ifmt_file)
 !
-      end subroutine set_control_parallel_field_def
+      end subroutine set_merged_ucd_file_define
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_write_parallel_ucd_file(istep_udt)
-!
-      use m_ucd_data
+      subroutine sel_write_parallel_ucd_file(istep_ucd, ucd, m_ucd)
 !
       use ucd_IO_select
       use write_ucd_to_vtk_file
@@ -57,55 +56,55 @@
       use gz_write_ucd_to_vtk_file
       use hdf5_file_IO
 !
-      integer(kind=kint), intent(in) :: istep_udt
+      integer(kind=kint), intent(in) :: istep_ucd
+      type(ucd_data), intent(in) :: ucd
+      type(merged_ucd_data), intent(in) :: m_ucd
 !
 !
-      if      (fem_ucd%ifmt_file .eq. iflag_sgl_vtk) then
-        call write_merged_vtk_file(istep_udt, fem_ucd)
-      else if (fem_ucd%ifmt_file .eq. iflag_sgl_vtd) then
-        call write_merged_vtk_phys(istep_udt, fem_ucd)
-      else if (fem_ucd%ifmt_file .eq. iflag_sgl_ucd) then
-        call write_merged_ucd_file(istep_udt, fem_ucd)
-      else if (fem_ucd%ifmt_file .eq. iflag_sgl_udt) then
-        call write_merged_udt_file(istep_udt, fem_ucd)
+      if      (ucd%ifmt_file .eq. iflag_sgl_vtk) then
+        call write_merged_vtk_file(istep_ucd, ucd, m_ucd)
+      else if (ucd%ifmt_file .eq. iflag_sgl_vtd) then
+        call write_merged_vtk_phys(istep_ucd, ucd, m_ucd)
+      else if (ucd%ifmt_file .eq. iflag_sgl_ucd) then
+        call write_merged_ucd_file(istep_ucd, ucd, m_ucd)
+      else if (ucd%ifmt_file .eq. iflag_sgl_udt) then
+        call write_merged_udt_file(istep_ucd, ucd, m_ucd)
 !
 #ifdef ZLIB_IO
-      else if (fem_ucd%ifmt_file .eq. iflag_sgl_vtk_gz) then
-        call write_gz_merged_vtk_file(istep_udt, fem_ucd)
-      else if (fem_ucd%ifmt_file .eq. iflag_sgl_vtd_gz) then
-        call write_gz_merged_vtk_phys(istep_udt, fem_ucd)
-      else if (fem_ucd%ifmt_file .eq. iflag_sgl_ucd_gz) then
-        call write_gz_merged_ucd_file(istep_udt, fem_ucd)
-      else if (fem_ucd%ifmt_file .eq. iflag_sgl_udt_gz) then
-        call write_gz_merged_udt_file(istep_udt, fem_ucd)
+      else if (ucd%ifmt_file .eq. iflag_sgl_vtk_gz) then
+        call write_gz_merged_vtk_file(istep_ucd, ucd, m_ucd)
+      else if (ucd%ifmt_file .eq. iflag_sgl_vtd_gz) then
+        call write_gz_merged_vtk_phys(istep_ucd, ucd, m_ucd)
+      else if (ucd%ifmt_file .eq. iflag_sgl_ucd_gz) then
+        call write_gz_merged_ucd_file(istep_ucd, ucd, m_ucd)
+      else if (ucd%ifmt_file .eq. iflag_sgl_udt_gz) then
+        call write_gz_merged_udt_file(istep_ucd, ucd, m_ucd)
 !
-      else if(fem_ucd%ifmt_file .eq. iflag_vtk_gz) then
-        call write_gz_parallel_vtk_file(my_rank, nprocs, istep_udt,     &
-     &      fem_ucd)
-        call write_ucd_data_2_gz_vtk(my_rank, istep_udt, fem_ucd)
-      else if (fem_ucd%ifmt_file .eq. iflag_vtd_gz) then
-        call write_gz_parallel_vtk_file(my_rank, nprocs, istep_udt,     &
-     &      fem_ucd)
-        call write_ucd_data_2_gz_vtk_phys(my_rank, istep_udt, fem_ucd)
+      else if(ucd%ifmt_file .eq. iflag_vtk_gz) then
+        call write_gz_parallel_vtk_file(my_rank, nprocs, istep_ucd,     &
+     &      ucd)
+        call write_ucd_data_2_gz_vtk(my_rank, istep_ucd, ucd)
+      else if (ucd%ifmt_file .eq. iflag_vtd_gz) then
+        call write_gz_parallel_vtk_file(my_rank, nprocs, istep_ucd,     &
+     &      ucd)
+        call write_ucd_data_2_gz_vtk_phys(my_rank, istep_ucd, ucd)
 #endif
 !
 #ifdef HDF5_IO
-      else if(fem_ucd%ifmt_file .eq. iflag_sgl_hdf5) then
-        call parallel_write_hdf5_field_file(istep_udt)
-        call parallel_write_xdmf_snap_file(istep_udt)
-        call parallel_write_xdmf_evo_file(istep_udt)
+      else if(ucd%ifmt_file .eq. iflag_sgl_hdf5) then
+        call parallel_write_hdf5_field_file(istep_ucd, ucd, m_ucd)
+        call parallel_write_xdmf_snap_file(istep_ucd, ucd, m_ucd)
+        call parallel_write_xdmf_evo_file(istep_ucd, ucd, m_ucd)
 #endif
 !
-      else if(fem_ucd%ifmt_file .eq. iflag_vtk) then
-        call write_parallel_vtk_file(my_rank, nprocs, istep_udt,        &
-     &      fem_ucd)
-        call write_udt_data_2_vtk_file(my_rank, istep_udt, fem_ucd)
-      else if (fem_ucd%ifmt_file .eq. iflag_vtd) then
-        call write_parallel_vtk_file(my_rank, nprocs, istep_udt,        &
-     &      fem_ucd)
-        call write_udt_data_2_vtk_phys(my_rank, istep_udt, fem_ucd)
+      else if(ucd%ifmt_file .eq. iflag_vtk) then
+        call write_parallel_vtk_file(my_rank, nprocs, istep_ucd, ucd)
+        call write_udt_data_2_vtk_file(my_rank, istep_ucd, ucd)
+      else if (ucd%ifmt_file .eq. iflag_vtd) then
+        call write_parallel_vtk_file(my_rank, nprocs, istep_ucd, ucd)
+        call write_udt_data_2_vtk_phys(my_rank, istep_ucd, ucd)
       else
-        call sel_write_ucd_file(my_rank, istep_udt, fem_ucd)
+        call sel_write_ucd_file(my_rank, istep_ucd, ucd)
       end if
 !
       end subroutine sel_write_parallel_ucd_file
@@ -113,9 +112,7 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine sel_write_parallel_ucd_mesh
-!
-      use m_ucd_data
+      subroutine sel_write_parallel_ucd_mesh(ucd, m_ucd)
 !
       use ucd_IO_select
       use write_ucd_to_vtk_file
@@ -125,26 +122,29 @@
       use gz_write_ucd_to_vtk_file
       use hdf5_file_IO
 !
+      type(ucd_data), intent(in) :: ucd
+      type(merged_ucd_data), intent(in) :: m_ucd
 !
-      if(fem_ucd%ifmt_file .eq. iflag_sgl_vtd) then
-        call write_merged_vtk_grid(fem_ucd)
-      else if(fem_ucd%ifmt_file .eq. iflag_sgl_udt) then
-        call write_merged_grd_file(fem_ucd)
+!
+      if(ucd%ifmt_file .eq. iflag_sgl_vtd) then
+        call write_merged_vtk_grid(ucd, m_ucd)
+      else if(ucd%ifmt_file .eq. iflag_sgl_udt) then
+        call write_merged_grd_file(ucd, m_ucd)
 !
 #ifdef ZLIB_IO
-      else if (fem_ucd%ifmt_file .eq. iflag_sgl_vtd_gz) then
-        call write_gz_merged_vtk_grid(fem_ucd)
-      else if(fem_ucd%ifmt_file .eq. iflag_sgl_udt_gz) then
-        call write_gz_merged_grd_file(fem_ucd)
+      else if (ucd%ifmt_file .eq. iflag_sgl_vtd_gz) then
+        call write_gz_merged_vtk_grid(ucd, m_ucd)
+      else if(ucd%ifmt_file .eq. iflag_sgl_udt_gz) then
+        call write_gz_merged_grd_file(ucd, m_ucd)
 #endif
 !
 #ifdef HDF5_IO
-      else if(fem_ucd%ifmt_file .eq. iflag_sgl_hdf5) then
-        call parallel_write_hdf5_mesh_file
+      else if(ucd%ifmt_file .eq. iflag_sgl_hdf5) then
+        call parallel_write_hdf5_mesh_file(ucd, m_ucd)
 #endif
 !
       else
-        call sel_write_grd_file(my_rank, fem_ucd)
+        call sel_write_grd_file(my_rank, ucd)
       end if
 !
       end subroutine sel_write_parallel_ucd_mesh

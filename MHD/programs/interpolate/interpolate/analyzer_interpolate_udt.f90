@@ -91,8 +91,8 @@
       if (my_rank .lt. ndomain_org) then
         call link_num_field_2_output
 !
-        fem_ucd%ifmt_file =   itype_org_udt_file
-        fem_ucd%file_prefix = org_udt_file_head
+        call set_ucd_file_format(itype_org_udt_file)
+        call set_ucd_file_prefix(org_udt_file_head)
         call sel_read_udt_param(my_rank, i_step_init, fem_ucd)
       end if
 !
@@ -114,8 +114,8 @@
 !
       do ucd_step = i_step_init, i_step_number, i_step_output_ucd
         if (my_rank .lt. ndomain_org) then
-          fem_ucd%ifmt_file =   itype_org_udt_file
-          fem_ucd%file_prefix = org_udt_file_head
+          call set_ucd_file_format(itype_org_udt_file)
+          call set_ucd_file_prefix(org_udt_file_head)
           call set_ucd_data_from_IO(my_rank, ucd_step)
 !
           call phys_send_recv_all
@@ -132,11 +132,11 @@
 !
         if (my_rank .lt. ndomain_dest) then
 !
-          call link_2nd_node_data_2_output
-          call link_2nd_field_data_2_output
+          call link_2nd_node_data_2_output(fem_ucd)
+          call link_2nd_field_data_2_output(fem_ucd)
 !
-          fem_ucd%ifmt_file =   itype_itp_udt_file
-          fem_ucd%file_prefix = itp_udt_file_head
+          call set_ucd_file_format(itype_itp_udt_file)
+          call set_ucd_file_prefix(itp_udt_file_head)
           call sel_write_udt_file(my_rank, ucd_step, fem_ucd)
           call disconnect_ucd_data(fem_ucd)
           call disconnect_ucd_node(fem_ucd)

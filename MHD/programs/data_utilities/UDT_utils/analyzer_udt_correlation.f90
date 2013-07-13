@@ -157,15 +157,15 @@
 !
           ucd_step = i_step / i_step_output_ucd
 !
-          fem_ucd%file_prefix = ref_udt_file_head
+          call set_ucd_file_prefix(ref_udt_file_head)
           call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
           call set_ucd_data_from_IO(my_rank, ucd_step)
           call deallocate_ucd_data(fem_ucd)
 !
-          fem_ucd%file_prefix = tgt_udt_file_head
+          call set_ucd_file_prefix(tgt_udt_file_head)
           call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
           call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
-          call set_2nd_data_by_udt
+          call set_2nd_data_by_udt(fem_ucd)
           call deallocate_ucd_data(fem_ucd)
 !
           call phys_send_recv_all

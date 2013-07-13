@@ -1,13 +1,12 @@
 !assemble_2nd_mesh.f90
 !     program assemble_2nd_mesh
-
-      program assemble_2nd_mesh
-!
 ! * program 'assemble' assemble UCD of parts files to one UCD file
 !         programmed by m.iizuka (rist)  on sep. 1998 (ver 1.0)
 !         modified  by  H.Matsui (rist)  on sep. 2000 (ver 1.1)
 !         modified  by  H.Matsui (U. Chicago)  on Oct., 2003 (ver 1.2)
 !         modified  by  H.Matsui (U. Chicago)  on June, 2007 (ver 1.3)
+!
+      program assemble_2nd_mesh
 !
       use m_precision
 !
@@ -16,7 +15,6 @@
       use m_geometry_data_4_merge
       use m_control_data_4_merge
       use m_control_param_merge
-      use m_ucd_data
       use m_original_ucd_4_merge
 !
       use set_merged_geometry
@@ -69,11 +67,7 @@
       call set_field_list_4_merge
       call allocate_merged_field_data
 !
-!   link output pointer for udt
-!
-      fem_ucd%nnod_4_ele = merged%ele%nnod_4_ele
-!
-!   output grid data
+!   Cnostract grid data
 !
       call assemble_2nd_udt_nesh
 !
@@ -90,9 +84,8 @@
 !
       if(iflag_delete_org .gt. 0) then
         do istep = istep_start, istep_end, increment_step
-          fem_ucd%file_prefix =     udt_original_header
-          fem_ucd%ifmt_file = itype_org_ucd_file
-          call delete_para_ucd_file(num_pe, istep)
+          call delete_para_ucd_file(udt_original_header,                &
+     &        itype_org_ucd_file, num_pe, istep)
         end do
       end if
 !

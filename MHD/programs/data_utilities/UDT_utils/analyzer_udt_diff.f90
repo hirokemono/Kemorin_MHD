@@ -95,13 +95,13 @@
           ucd_step = i_step / i_step_output_ucd
 !
 !          if (i_step .eq. i_step_init) then
-          fem_ucd%file_prefix = ref_udt_file_head
+          call set_ucd_file_prefix(ref_udt_file_head)
           call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
 !          end if
 !
           call set_ucd_data_from_IO(my_rank, ucd_step)
 !
-          fem_ucd%file_prefix = tgt_udt_file_head
+          call set_ucd_file_prefix(tgt_udt_file_head)
           call subtract_by_ucd_data(my_rank, ucd_step)
 !
           call s_divide_phys_by_delta_t
@@ -110,9 +110,8 @@
 !
 !    output udt data
 !
-          fem_ucd%file_prefix = diff_udt_file_head
-!
           call link_field_data_2_output
+          call set_ucd_file_prefix(diff_udt_file_head)
           call sel_write_udt_file(my_rank, ucd_step, fem_ucd)
           call disconnect_ucd_data(fem_ucd)
         end if

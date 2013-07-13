@@ -9,16 +9,17 @@
 !!@n      (If process number is negative, process number is not appeded)
 !!
 !!@verbatim
-!!      subroutine delete_para_ucd_file(nprocs, istep_ucd)
+!!      subroutine delete_para_ucd_file(file_prefix, itype_file,        &
+!!     &          nprocs, istep_ucd)
 !!
-!!      subroutine set_parallel_ucd_file_name(file_header, itype_file,  &
+!!      subroutine set_parallel_ucd_file_name(file_prefix, itype_file,  &
 !!     &          my_rank, istep_ucd, file_name)
-!!      subroutine set_parallel_grd_file_name(file_header, itype_file,  &
+!!      subroutine set_parallel_grd_file_name(file_prefix, itype_file,  &
 !!     &          my_rank, file_name)
 !!
-!!      subroutine set_single_ucd_file_name(file_header, itype_file,    &
+!!      subroutine set_single_ucd_file_name(file_prefix, itype_file,    &
 !!     &          istep_ucd, file_name)
-!!      subroutine set_single_grd_file_name(file_header, itype_file,    &
+!!      subroutine set_single_grd_file_name(file_prefix, itype_file,    &
 !!     &          file_name)
 !!
 !!      subroutine set_merged_hdf_mesh_file_name(file_prefix, file_name)
@@ -49,12 +50,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine delete_para_ucd_file(nprocs, istep_ucd)
+      subroutine delete_para_ucd_file(file_prefix, itype_file,          &
+     &          nprocs, istep_ucd)
 !
-      use m_ucd_data
       use delete_data_files
 !
-      integer(kind=kint), intent(in) :: nprocs, istep_ucd
+      character(len=kchara), intent(in) :: file_prefix
+      integer(kind=kint), intent(in) :: itype_file, nprocs, istep_ucd
 !
       integer(kind=kint) :: my_rank, ip
       character(len=kchara) :: file_name
@@ -62,8 +64,8 @@
 !
       do ip = 1, nprocs
         my_rank = ip - 1
-        call set_parallel_ucd_file_name(fem_ucd%file_prefix,            &
-     &    fem_ucd%ifmt_file, my_rank, istep_ucd, file_name)
+        call set_parallel_ucd_file_name(file_prefix,                    &
+     &      itype_file, my_rank, istep_ucd, file_name)
 !
         call delete_file_by_f(file_name)
       end do
@@ -73,18 +75,18 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine set_parallel_ucd_file_name(file_header, itype_file,    &
+      subroutine set_parallel_ucd_file_name(file_prefix, itype_file,    &
      &          my_rank, istep_ucd, file_name)
 !
       use set_parallel_file_name
 !
       integer(kind=kint), intent(in) :: itype_file, my_rank, istep_ucd
-      character(len=kchara), intent(in) ::    file_header
+      character(len=kchara), intent(in) ::    file_prefix
       character(len=kchara), intent(inout) :: file_name
       character(len=kchara) :: fname_tmp
 !
 !
-      call add_int_suffix(istep_ucd, file_header, fname_tmp)
+      call add_int_suffix(istep_ucd, file_prefix, fname_tmp)
 !
       if (my_rank .ge. 0                                                &
      &      .and. (itype_file/100) .eq. (iflag_para/100)) then
@@ -119,18 +121,18 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_parallel_grd_file_name(file_header, itype_file,    &
+      subroutine set_parallel_grd_file_name(file_prefix, itype_file,    &
      &          my_rank, file_name)
 !
       use set_parallel_file_name
 !
       integer(kind=kint), intent(in) :: itype_file, my_rank
-      character(len=kchara), intent(in) ::    file_header
+      character(len=kchara), intent(in) ::    file_prefix
       character(len=kchara), intent(inout) :: file_name
       character(len=kchara) :: fname_tmp
 !
 !
-      call add_int_suffix(izero, file_header, fname_tmp)
+      call add_int_suffix(izero, file_prefix, fname_tmp)
 !
       if (my_rank .ge. 0                                                &
      &     .and. itype_file/100 .eq. iflag_para/100) then
@@ -158,18 +160,18 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine set_single_ucd_file_name(file_header, itype_file,      &
+      subroutine set_single_ucd_file_name(file_prefix, itype_file,      &
      &          istep_ucd, file_name)
 !
       use set_parallel_file_name
 !
       integer(kind=kint), intent(in) :: itype_file, istep_ucd
-      character(len=kchara), intent(in) ::    file_header
+      character(len=kchara), intent(in) ::    file_prefix
       character(len=kchara), intent(inout) :: file_name
       character(len=kchara) :: fname_tmp
 !
 !
-      call add_int_suffix(istep_ucd, file_header, file_name)
+      call add_int_suffix(istep_ucd, file_prefix, file_name)
 !
       if (    mod(itype_file,100)/10 .eq. iflag_vtk/10) then
         call add_vtk_extension(file_name, fname_tmp)
@@ -193,18 +195,18 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_single_grd_file_name(file_header, itype_file,      &
+      subroutine set_single_grd_file_name(file_prefix, itype_file,      &
      &          file_name)
 !
       use set_parallel_file_name
 !
       integer(kind=kint), intent(in) :: itype_file
-      character(len=kchara), intent(in) ::    file_header
+      character(len=kchara), intent(in) ::    file_prefix
       character(len=kchara), intent(inout) :: file_name
       character(len=kchara) :: fname_tmp
 !
 !
-      call add_int_suffix(izero, file_header, file_name)
+      call add_int_suffix(izero, file_prefix, file_name)
 !
       if     (mod(itype_file,100)/10 .eq. iflag_vtd/10) then
         call add_vtg_extension(file_name, fname_tmp)

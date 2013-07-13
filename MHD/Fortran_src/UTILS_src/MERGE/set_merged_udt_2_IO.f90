@@ -33,12 +33,12 @@
 !
       call count_udt_elements(merged%node%numnod,                       &
      &    merge_tbl%nele_merged, merged%ele%nnod_4_ele,                 &
-     &    merged%ele%ie)
+     &    merged%ele%ie, fem_ucd)
       call allocate_ucd_ele(fem_ucd)
 !
       call set_udt_global_connect(merged%node%numnod,                   &
      &    merge_tbl%nele_merged, merged%ele%nnod_4_ele,                 &
-     &    merged%ele%iele_global, merged%ele%ie)
+     &    merged%ele%iele_global, merged%ele%ie, fem_ucd)
 !
       end subroutine link_merged_grd_2_udt_IO
 !

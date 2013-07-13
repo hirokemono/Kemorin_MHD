@@ -27,6 +27,8 @@
 !
       subroutine set_control_4_sph_mhd
 !
+      use m_control_params_2nd_files
+!
       use set_control_platform_data
       use set_ctl_parallel_platform
       use set_control_4_model
@@ -41,8 +43,7 @@
       use set_control_4_magne
       use set_control_4_composition
       use set_control_4_pickup_sph
-      use set_control_4_2nd_files
-      use parallel_udt_IO_select
+      use output_parallel_ucd_file
 !
       use check_dependency_for_MHD
 !

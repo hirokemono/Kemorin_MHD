@@ -1,18 +1,21 @@
-!set_control_4_2nd_files.f90
-!      module set_control_4_2nd_files
+!m_control_params_2nd_files.f90
+!      module m_control_params_2nd_files
 !
 !        programmed by H.Matsui on Nov., 2009
 !
 !      subroutine set_control_org_sph_mesh
 !      subroutine set_control_org_field_file_def
 !
-      module set_control_4_2nd_files
+      module m_control_params_2nd_files
 !
       use m_precision
 !
       use m_constants
 !
       implicit  none
+!
+!>      file header for original field data
+      character(len=kchara) :: org_ucd_header =  "field_org/out"
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,7 +50,6 @@
 !
       use m_ctl_data_4_org_data
       use m_field_data_IO
-      use m_ucd_data
       use m_field_file_format
       use m_file_format_switch
 !
@@ -65,4 +67,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module set_control_4_2nd_files
+      end module m_control_params_2nd_files

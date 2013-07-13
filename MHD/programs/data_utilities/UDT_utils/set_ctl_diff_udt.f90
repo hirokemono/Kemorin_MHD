@@ -60,11 +60,11 @@
       use m_ctl_data_4_org_data
       use m_ctl_data_diff_udt
       use m_geometry_constants
-      use set_ctl_parallel_platform
-      use set_control_platform_data
-      use set_control_4_2nd_files
+      use m_control_params_2nd_files
       use m_file_format_switch
       use m_ucd_data
+      use set_ctl_parallel_platform
+      use set_control_platform_data
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)
@@ -74,10 +74,7 @@
       call set_control_org_field_file_def
 !
 !
-!   set data format
-!
-      call choose_ucd_file_format(udt_file_fmt_ctl, i_udt_files_fmt,    &
-     &    fem_ucd%ifmt_file)
+      call set_control_ucd_file_def
 !
 !   set field data name
 !

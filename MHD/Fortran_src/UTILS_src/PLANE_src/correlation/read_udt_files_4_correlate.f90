@@ -38,9 +38,9 @@
       integer (kind = kint), intent(in) :: istep
 !
 !
-      fem_ucd%ifmt_file =   itype_cor_ucd_file
-      fem_ucd%file_prefix = cor_udt_header
       fem_ucd%nnod =        ione
+      call set_ucd_file_format(itype_cor_ucd_file)
+      call set_ucd_file_prefix(cor_udt_header)
       call sel_read_udt_param(izero, istep, fem_ucd)
       call deallocate_ucd_phys_data(fem_ucd)
 !
@@ -74,20 +74,20 @@
 ! * PES loops 
 ! ========================
 !
-      fem_ucd%ifmt_file = itype_cor_ucd_file
       fem_ucd%nnod = merge_tbl%nnod_max
+      call set_ucd_file_format(itype_cor_ucd_file)
       call allocate_ucd_phys_data(fem_ucd)
       do ip =1, num_pe
         my_rank = ip - 1
 !
         fem_ucd%nnod =        subdomain(ip)%node%numnod
-        fem_ucd%file_prefix = cor_udt_header
+        call set_ucd_file_prefix(cor_udt_header)
         call sel_read_udt_file(my_rank, istep, fem_ucd)
 !
         call copy_and_pick_udt_data_merge                               &
      &    (subdomain(ip)%node%numnod, subdomain(ip)%node%internal_node, &
      &      num_domain, subdomain(ip)%node%inod_global, num_crt,        &
-     &      icomp_crt, ifield_crt, phys_d1(1))
+     &      icomp_crt, ifield_crt, phys_d1(1), fem_ucd)
       end do
       call deallocate_ucd_phys_data(fem_ucd)
 !
@@ -106,9 +106,9 @@
        integer (kind = kint) :: i
 !
 !
-      fem_ucd%ifmt_file =   itype_ref_ucd_file
-      fem_ucd%file_prefix = ref_udt_header
       fem_ucd%nnod = ione
+      call set_ucd_file_format(itype_ref_ucd_file)
+      call set_ucd_file_prefix(ref_udt_header)
       call sel_read_udt_param(izero, istep, fem_ucd)
       call deallocate_ucd_phys_data(fem_ucd)
 !
@@ -137,21 +137,21 @@
        integer (kind = kint) :: ip, my_rank
 !
 !
-      fem_ucd%ifmt_file = itype_ref_ucd_file
       fem_ucd%nnod = merge_tbl_2%nnod_max
+      call set_ucd_file_format(itype_ref_ucd_file)
       call allocate_ucd_phys_data(fem_ucd)
       do ip =1, num_pe2
         my_rank = ip - 1
 !
         fem_ucd%nnod =        subdomains_2(ip)%node%numnod
-        fem_ucd%file_prefix = ref_udt_header
+        call set_ucd_file_prefix(ref_udt_header)
         call sel_read_udt_file(my_rank, istep, fem_ucd)
 !
-        call copy_and_pick_udt_data_merge                              &
-     &      (subdomains_2(ip)%node%numnod,                             &
-     &       subdomains_2(ip)%node%internal_node, num_domain,          &
-     &       subdomains_2(ip)%node%inod_global, num_crt, icomp_crt,    &
-     &      ifield_crt2, phys_d2(1))
+        call copy_and_pick_udt_data_merge                               &
+     &      (subdomains_2(ip)%node%numnod,                              &
+     &       subdomains_2(ip)%node%internal_node, num_domain,           &
+     &       subdomains_2(ip)%node%inod_global, num_crt, icomp_crt,     &
+     &      ifield_crt2, phys_d2(1), fem_ucd)
       end do
       call deallocate_ucd_phys_data(fem_ucd)
 !

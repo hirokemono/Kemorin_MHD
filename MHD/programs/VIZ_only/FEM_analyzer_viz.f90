@@ -29,7 +29,7 @@
       use m_read_mesh_data
       use m_geometry_parameter
       use m_surface_group
-      use m_ucd_data
+      use m_control_params_2nd_files
       use m_surface_geometry_data
       use m_edge_geometry_data
       use m_jacobians
@@ -104,8 +104,6 @@
 !
 !     ---------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'sel_read_udt_param'
-        fem_ucd%file_prefix = org_ucd_header
       call allocate_phys_data_by_output(my_rank, i_step_init)
 !
       end subroutine FEM_initialize_vizs
@@ -116,9 +114,9 @@
       subroutine FEM_analyze_vizs(i_step,                               &
      &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
+      use m_control_params_2nd_files
       use set_exit_flag_4_visualizer
       use nod_phys_send_recv
-      use m_ucd_data
       use set_ucd_data
 !
       integer (kind =kint), intent(in) :: i_step
@@ -131,9 +129,6 @@
      &        istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
       if(visval .eq. 0) then
-!*  ----------   Count steps for visualization
-!*
-        fem_ucd%file_prefix = org_ucd_header
         call set_ucd_data_from_IO(my_rank, i_step)
 !
         if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'

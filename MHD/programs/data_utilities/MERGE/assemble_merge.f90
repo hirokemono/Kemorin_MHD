@@ -66,8 +66,8 @@
 !
       call link_merged_grd_2_udt_IO
 !
-      fem_ucd%ifmt_file = itype_assembled_data
-      fem_ucd%file_prefix = merged_data_head
+      call set_ucd_file_format(itype_assembled_data)
+      call set_ucd_file_prefix(merged_data_head)
       call sel_write_grd_file(izero, fem_ucd)
 !
       if(    mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_vtd/10            &
@@ -82,8 +82,8 @@
 !
         call link_merged_phys_2_udt_IO
 !
-         fem_ucd%ifmt_file = itype_assembled_data
-         fem_ucd%file_prefix = merged_data_head
+         call set_ucd_file_format(itype_assembled_data)
+         call set_ucd_file_prefix(merged_data_head)
          call sel_write_ucd_file(izero, istep, fem_ucd)
 !
          call disconnect_ucd_data(fem_ucd)

@@ -3,15 +3,13 @@
 !
 !      subroutine copy_and_pick_udt_data_merge(nnod, internod,          &
 !     &          nnod_target, inod_gl, nfield_target, icomp_target,     &
-!     &          ifield_target, phys_data)
-!
-      module copy_pick_udt_data_plane
+!     &          ifield_target, phys_data, ucd)
 !
 !      written by H. Matsui
 !
-      use m_precision
+      module copy_pick_udt_data_plane
 !
-      use m_ucd_data
+      use m_precision
 !
       implicit none
 !
@@ -23,7 +21,11 @@
 !
       subroutine copy_and_pick_udt_data_merge(nnod, internod,           &
      &          nnod_target, inod_gl, nfield_target, icomp_target,      &
-     &          ifield_target, phys_data)
+     &          ifield_target, phys_data, ucd)
+!
+      use t_ucd_data
+!
+      type(ucd_data), intent(in) :: ucd
 !
       integer(kind = kint), intent(in) :: nnod, internod
       integer(kind = kint), intent(in) :: nfield_target, nnod_target
@@ -48,7 +50,7 @@
               ic = icomp_target(j) + ifield_target(j)
               ii = inod_global+(j-1)*nnod_target
 !
-              phys_data(ii) = fem_ucd%d_ucd(inod,ic)
+              phys_data(ii) = ucd%d_ucd(inod,ic)
             end if
           end do
 !

@@ -116,9 +116,10 @@
       use m_ctl_data_4_fields
       use m_ctl_data_4_time_steps
       use m_node_id_spherical_IO
+      use m_ucd_data
       use set_parallel_file_name
       use set_control_platform_data
-      use m_ucd_data
+      use ucd_IO_select
 !
       integer(kind=kint ) :: i, icou
 !
@@ -135,8 +136,8 @@
 !
       call set_control_restart_file_def
       call set_control_ucd_file_def
-      udt_original_header = fem_ucd%file_prefix
 !
+      if(i_udt_header .gt. 0) udt_original_header = udt_file_head_ctl
       call choose_ucd_file_format(udt_file_fmt_ctl, i_udt_files_fmt,    &
      &    itype_org_ucd_file)
 !

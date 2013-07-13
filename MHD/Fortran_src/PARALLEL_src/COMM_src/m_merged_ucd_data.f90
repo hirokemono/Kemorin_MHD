@@ -7,15 +7,16 @@
 !> @brief Data for merged UCD file output
 !!
 !!@verbatim
-!!      subroutine allocate_merged_ucd_num
+!!      subroutine allocate_merged_ucd_num(m_ucd)
 !!      subroutine allocate_merged_ucd_data(numnod, nnod_ele, ntot_comp)
-!!      subroutine deallocate_merged_ucd_data
+!!      subroutine deallocate_merged_ucd_data(m_ucd)
 !!
-!!      subroutine count_merged_ucd(nnod, nele)
+!!      subroutine count_merged_ucd(nnod, nele, m_ucd)
 !!      subroutine set_node_double_address                              &
 !!     &         (NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,          &
 !!     &          STACK_EXPORT, NOD_EXPORT)
-!!      subroutine update_ele_by_double_address(nele, nnod_ele, ie)
+!!      subroutine update_ele_by_double_address(nele, nnod_ele, ie,     &
+!!     &          m_ucd)
 !!@endverbatim
 !
       module m_merged_ucd_data
@@ -26,9 +27,6 @@
 !
       implicit none
 !
-      integer(kind = kint), allocatable :: istack_nod_ucd_list(:)
-      integer(kind = kint), allocatable :: istack_ele_ucd_list(:)
-      integer(kind = kint), allocatable :: istack_internod_ucd_list(:)
       integer(kind = kint) :: nmax_nod_ucd_list
       integer(kind = kint) :: nmax_ele_ucd_list
 !
@@ -62,19 +60,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_merged_ucd_num
+      subroutine allocate_merged_ucd_num(m_ucd)
 !
+      use t_ucd_data
+!
+      type(merged_ucd_data), intent(inout) :: m_ucd
 !
       allocate (sta1(MPI_STATUS_SIZE))
       if(my_rank .eq. 0) allocate(sta2(MPI_STATUS_SIZE))
 !
-      allocate(istack_nod_ucd_list(0:nprocs))
-      allocate(istack_ele_ucd_list(0:nprocs))
-      allocate(istack_internod_ucd_list(0:nprocs))
-!
-      istack_nod_ucd_list = 0
-      istack_ele_ucd_list = 0
-      istack_internod_ucd_list = 0
+      call alloc_merged_ucd_stack(nprocs, m_ucd)
       nmax_nod_ucd_list = 0
       nmax_ele_ucd_list = 0
 !
@@ -119,7 +114,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine deallocate_merged_ucd_data
+      subroutine deallocate_merged_ucd_data(m_ucd)
+!
+      use t_ucd_data
+!
+      type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
       deallocate (sta1)
@@ -131,17 +130,19 @@
 !
       deallocate(inod_local_ucd, ihome_pe_ucd)
 !
-      deallocate(istack_nod_ucd_list, istack_ele_ucd_list)
-      deallocate(istack_internod_ucd_list)
+      call dealloc_merged_ucd_stack(m_ucd)
 !
       end subroutine deallocate_merged_ucd_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine count_merged_ucd(nnod, internal_node, nele)
+      subroutine count_merged_ucd(nnod, internal_node, nele, m_ucd)
+!
+      use t_ucd_data
 !
       integer(kind = kint), intent(in) :: nnod, internal_node, nele
+      type(merged_ucd_data), intent(inout) :: m_ucd
 !
       integer(kind = kint), allocatable :: nnod_ucd_list(:)
       integer(kind = kint), allocatable :: nele_ucd_list(:)
@@ -164,11 +165,12 @@
      &    internod_ucd_list, ione, MPI_INTEGER, SOLVER_COMM, ierr)
 !
       do ip = 1,  nprocs
-        istack_nod_ucd_list(ip) = istack_nod_ucd_list(ip-1)             &
+        m_ucd%istack_merged_nod(ip) = m_ucd%istack_merged_nod(ip-1)     &
      &                              + nnod_ucd_list(ip)
-        istack_ele_ucd_list(ip) = istack_ele_ucd_list(ip-1)             &
+        m_ucd%istack_merged_ele(ip) = m_ucd%istack_merged_ele(ip-1)     &
      &                              + nele_ucd_list(ip)
-        istack_internod_ucd_list(ip) = istack_internod_ucd_list(ip-1)   &
+        m_ucd%istack_merged_intnod(ip)                                  &
+     &                    = m_ucd%istack_merged_intnod(ip-1)            &
      &                              + internod_ucd_list(ip)
         nmax_nod_ucd_list = max(nmax_nod_ucd_list,nnod_ucd_list(ip))
         nmax_ele_ucd_list = max(nmax_ele_ucd_list,nele_ucd_list(ip))
@@ -184,6 +186,7 @@
      &         (NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,            &
      &          STACK_EXPORT, NOD_EXPORT)
 !
+      use t_ucd_data
       use solver_SR_int
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
@@ -215,8 +218,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine update_ele_by_double_address(nele, nnod_ele, ie)
+      subroutine update_ele_by_double_address(nele, nnod_ele, ie,       &
+     &          m_ucd)
 !
+      use t_ucd_data
+!
+      type(merged_ucd_data), intent(in) :: m_ucd
       integer(kind = kint), intent(in) :: nele, nnod_ele
       integer(kind = kint), intent(inout) :: ie(nele,nnod_ele)
 !
@@ -229,7 +236,7 @@
         do iele = 1, nele
           inod = ie(iele,k1)
           ip = ihome_pe_ucd(inod)
-          ie(iele,k1) = istack_internod_ucd_list(ip-1)                  &
+          ie(iele,k1) = m_ucd%istack_merged_intnod(ip-1)                &
      &                 + inod_local_ucd(inod)
         end do
 !$omp end do nowait

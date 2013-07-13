@@ -28,9 +28,9 @@
 !
       use m_read_mesh_data
       use m_geometry_parameter
-      use m_ucd_data
       use m_surface_geometry_data
       use m_edge_geometry_data
+      use m_control_params_2nd_files
       use ucd_IO_select
 !
       use set_control_visualizer
@@ -62,7 +62,6 @@
 !
 !     ---------------------
 !
-      fem_ucd%file_prefix = org_ucd_header
       call allocate_phys_data_by_output(my_rank, i_step_init)
 !
       end subroutine FEM_initialize_surface
@@ -72,7 +71,7 @@
 !
       subroutine FEM_analyze_surface(i_step, istep_psf, istep_iso)
 !
-      use m_ucd_data
+      use m_control_params_2nd_files
       use set_exit_flag_4_visualizer
       use nod_phys_send_recv
       use set_ucd_data
@@ -91,7 +90,6 @@
       if(istep_psf.ge.0 .or. istep_iso.ge.0) then
 !*  ----------   Count steps for visualization
 !*
-        fem_ucd%file_prefix = org_ucd_header
         call set_ucd_data_from_IO(my_rank, i_step)
 !
         if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'

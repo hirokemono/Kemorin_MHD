@@ -70,6 +70,7 @@
       subroutine analyze
 !
       use m_ucd_data
+      use m_control_params_2nd_files
       use m_t_step_parameter
       use m_ctl_params_sph_trans
       use sph_rtp_zonal_rms_data
@@ -83,7 +84,7 @@
       do i_step = i_step_init, i_step_number
 !
 !   Input field data
-        fem_ucd%file_prefix = org_ucd_header
+        call set_ucd_file_prefix(org_ucd_header)
         call FEM_analyze_sph_trans(i_step, visval)
 !
 !   Transfer coordinate
@@ -98,7 +99,7 @@
         call cvt_xyz_from_sph_vec_sph_data
         call cvt_sph_to_xyz_tensor_data
 !
-        fem_ucd%file_prefix = zonal_udt_head
+        call set_ucd_file_prefix(zonal_udt_head)
         call FEM_analyze_back_trans(i_step, istep_psf, istep_iso,       &
      &          istep_pvr, istep_fline, visval)
 !

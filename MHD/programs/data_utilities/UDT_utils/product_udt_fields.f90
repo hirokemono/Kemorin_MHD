@@ -91,7 +91,7 @@
 !
       write(*,*) 'i_step_init', i_step_init, i_step_output_ucd
       ucd_step = i_step_init / i_step_output_ucd
-      fem_ucd%file_prefix = prod_udt_file1_head
+      call set_ucd_file_prefix(prod_udt_file1_head)
       call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
 !
       call set_field_id_for_reference(product_field_1_name,             &
@@ -99,7 +99,7 @@
       call deallocate_ucd_data(fem_ucd)
 !
 !
-      fem_ucd%file_prefix = prod_udt_file2_head
+      call set_ucd_file_prefix(prod_udt_file2_head)
       call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
 !
       call set_field_id_for_reference(product_field_2_name,             &
@@ -169,22 +169,22 @@
       fem_ucd%nnod = numnod
       ucd_step = i_step / i_step_output_ucd
 !
-      fem_ucd%file_prefix = prod_udt_file1_head
+      call set_ucd_file_prefix(prod_udt_file1_head)
       call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
       call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
 !
       call set_one_field_by_udt_data(numnod, ncomp_4_product1,          &
-     &     i_field_product1, d_prod1)
+     &     i_field_product1, d_prod1, fem_ucd)
 !
       call deallocate_ucd_data(fem_ucd)
 !
 !
-      fem_ucd%file_prefix = prod_udt_file2_head
+      call set_ucd_file_prefix(prod_udt_file2_head)
       call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
       call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
 !
       call set_one_field_by_udt_data(numnod, ncomp_4_product2,          &
-     &    i_field_product2, d_prod2)
+     &    i_field_product2, d_prod2, fem_ucd)
 !
        do nd = 1, ncomp_4_product2
          do inod = 1,  numnod
@@ -220,22 +220,22 @@
       fem_ucd%nnod = numnod
       ucd_step = i_step / i_step_output_ucd
 !
-      fem_ucd%file_prefix = prod_udt_file1_head
+      call set_ucd_file_prefix(prod_udt_file1_head)
       call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
       call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
 !
       call set_one_field_by_udt_data(numnod, ncomp_4_product1,          &
-     &     i_field_product1, d_prod1)
+     &     i_field_product1, d_prod1, fem_ucd)
 !
       call deallocate_ucd_data(fem_ucd)
 !
 !
-      fem_ucd%file_prefix = prod_udt_file2_head
+      call set_ucd_file_prefix(prod_udt_file2_head)
       call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
       call sel_read_udt_file(my_rank, ucd_step, fem_ucd)
 !
       call set_one_field_by_udt_data(numnod, ncomp_4_product2,          &
-     &    i_field_product2, d_prod2)
+     &    i_field_product2, d_prod2, fem_ucd)
 !
       call deallocate_ucd_data(fem_ucd)
 !

@@ -155,7 +155,7 @@
 !
       call set_field_by_udt_data(node%numnod, phys_nod%num_phys,        &
      &    phys_nod%ntot_phys, phys_nod%num_component,                   &
-     &    phys_nod%phys_name, phys_nod%d_fld)
+     &    phys_nod%phys_name, phys_nod%d_fld, fem_ucd)
 !
       end subroutine set_ucd_data_type_from_IO
 !
@@ -173,7 +173,7 @@
 !
       call add_field_by_udt_data(node%numnod, phys_nod%num_phys,        &
      &    phys_nod%ntot_phys, phys_nod%num_component,                   &
-     &    phys_nod%phys_name, phys_nod%d_fld)
+     &    phys_nod%phys_name, phys_nod%d_fld, fem_ucd)
 !
       end subroutine add_by_ucd_data_type
 !
@@ -191,7 +191,7 @@
 !
       call subtract_field_by_udt_data(node%numnod, phys_nod%num_phys,   &
      &    phys_nod%ntot_phys, phys_nod%num_component,                   &
-     &    phys_nod%phys_name, phys_nod%d_fld)
+     &    phys_nod%phys_name, phys_nod%d_fld, fem_ucd)
 !
       end subroutine subtract_by_ucd_data_type
 !

@@ -8,17 +8,19 @@
 !> @brief UCD data IO selector
 !!
 !!@verbatim
-!!      subroutine sel_write_ucd_file(my_rank, istep_udt, ucd)
-!!      subroutine sel_write_udt_file(my_rank, istep_udt, ucd)
+!!      subroutine set_ucd_file_define(ucd)
+!!
+!!      subroutine sel_write_ucd_file(my_rank, istep_ucd, ucd)
+!!      subroutine sel_write_udt_file(my_rank, istep_ucd, ucd)
 !!      subroutine sel_write_grd_file(my_rank, ucd)
 !!
-!!      subroutine sel_read_udt_param(my_rank, istep_udt, ucd)
-!!      subroutine sel_read_alloc_udt_file(my_rank, istep_udt, ucd)
-!!      subroutine sel_read_udt_file(my_rank, istep_udt, ucd)
+!!      subroutine sel_read_udt_param(my_rank, istep_ucd, ucd)
+!!      subroutine sel_read_alloc_udt_file(my_rank, istep_ucd, ucd)
+!!      subroutine sel_read_udt_file(my_rank, istep_ucd, ucd)
 !!@endverbatim
 !!
 !!@param my_rank  process ID
-!!@param istep_udt    step number for output
+!!@param istep_ucd    step number for output
 !
       module ucd_IO_select
 !
@@ -37,7 +39,24 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_write_ucd_file(my_rank, istep_udt, ucd)
+      subroutine set_ucd_file_define(ucd)
+!
+      use m_ctl_data_4_platforms
+!
+      type(ucd_data), intent(inout) :: ucd
+!
+!
+      ucd%ifmt_file = i_udt_header
+      if (i_udt_header .gt. 0) ucd%file_prefix = udt_file_head_ctl
+!
+      call choose_ucd_file_format(udt_file_fmt_ctl,                     &
+     &    i_udt_files_fmt, ucd%ifmt_file)
+!
+      end subroutine set_ucd_file_define
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sel_write_ucd_file(my_rank, istep_ucd, ucd)
 !
       use udt_file_IO
       use ucd_field_file_IO
@@ -47,43 +66,43 @@
       use gz_ucd_field_file_IO
       use gz_write_ucd_to_vtk_file
 !
-      integer(kind=kint), intent(in) :: my_rank, istep_udt
+      integer(kind=kint), intent(in) :: my_rank, istep_ucd
       type(ucd_data), intent(in) :: ucd
 !
 !
       if (ucd%ifmt_file .eq. iflag_bin) then
-        call write_ucd_2_fld_file_b(my_rank, istep_udt, ucd)
+        call write_ucd_2_fld_file_b(my_rank, istep_ucd, ucd)
 !
 #ifdef ZLIB_IO
       else if(ucd%ifmt_file .eq. iflag_vtk_gz) then
-        call write_ucd_data_2_gz_vtk(my_rank, istep_udt, ucd)
+        call write_ucd_data_2_gz_vtk(my_rank, istep_ucd, ucd)
       else if (ucd%ifmt_file .eq. iflag_vtd_gz) then
-        call write_ucd_data_2_gz_vtk_phys(my_rank, istep_udt, ucd)
+        call write_ucd_data_2_gz_vtk_phys(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_ucd_gz) then
-        call write_gz_ucd_file(my_rank, istep_udt, ucd)
+        call write_gz_ucd_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
-        call write_gz_udt_file(my_rank, istep_udt, ucd)
+        call write_gz_udt_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
-        call write_ucd_2_gz_fld_file(my_rank, istep_udt, ucd)
+        call write_ucd_2_gz_fld_file(my_rank, istep_ucd, ucd)
 #endif
 !
       else if(ucd%ifmt_file .eq. iflag_vtk) then
-        call write_udt_data_2_vtk_file(my_rank, istep_udt, ucd)
+        call write_udt_data_2_vtk_file(my_rank, istep_ucd, ucd)
       else if (ucd%ifmt_file .eq. iflag_vtd) then
-        call write_udt_data_2_vtk_phys(my_rank, istep_udt, ucd)
+        call write_udt_data_2_vtk_phys(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_ucd) then
-        call write_ucd_file(my_rank, istep_udt, ucd)
+        call write_ucd_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_udt) then
-        call write_udt_file(my_rank, istep_udt, ucd)
+        call write_udt_file(my_rank, istep_ucd, ucd)
       else
-        call write_ucd_2_fld_file(my_rank, istep_udt, ucd)
+        call write_ucd_2_fld_file(my_rank, istep_ucd, ucd)
       end if
 !
       end subroutine sel_write_ucd_file
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_write_udt_file(my_rank, istep_udt, ucd)
+      subroutine sel_write_udt_file(my_rank, istep_ucd, ucd)
 !
       use udt_file_IO
       use ucd_field_file_IO
@@ -91,24 +110,24 @@
       use gz_udt_file_IO
       use gz_ucd_field_file_IO
 !
-      integer(kind=kint), intent(in) :: my_rank, istep_udt
+      integer(kind=kint), intent(in) :: my_rank, istep_ucd
       type(ucd_data), intent(in) :: ucd
 !
 !
       if (ucd%ifmt_file .eq. iflag_bin) then
-        call write_ucd_2_fld_file_b(my_rank, istep_udt, ucd)
+        call write_ucd_2_fld_file_b(my_rank, istep_ucd, ucd)
 !
 #ifdef ZLIB_IO
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
-        call write_gz_udt_file(my_rank, istep_udt, ucd)
+        call write_gz_udt_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
-        call write_ucd_2_gz_fld_file(my_rank, istep_udt, ucd)
+        call write_ucd_2_gz_fld_file(my_rank, istep_ucd, ucd)
 #endif
 !
       else if(ucd%ifmt_file .eq. iflag_udt) then
-        call write_udt_file(my_rank, istep_udt, ucd)
+        call write_udt_file(my_rank, istep_ucd, ucd)
       else
-        call write_ucd_2_fld_file(my_rank, istep_udt, ucd)
+        call write_ucd_2_fld_file(my_rank, istep_ucd, ucd)
       end if
 !
       end subroutine sel_write_udt_file
@@ -147,7 +166,7 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine sel_read_udt_param(my_rank, istep_udt, ucd)
+      subroutine sel_read_udt_param(my_rank, istep_ucd, ucd)
 !
       use udt_file_IO
       use ucd_field_file_IO
@@ -155,31 +174,31 @@
       use gz_udt_file_IO
       use gz_ucd_field_file_IO
 !
-      integer(kind=kint), intent(in) :: my_rank, istep_udt
+      integer(kind=kint), intent(in) :: my_rank, istep_ucd
       type(ucd_data), intent(inout) :: ucd
 !
 !
       if (ucd%ifmt_file .eq. iflag_bin) then
-        call read_alloc_ucd_2_fld_header_b(my_rank, istep_udt, ucd)
+        call read_alloc_ucd_2_fld_header_b(my_rank, istep_ucd, ucd)
 !
 #ifdef ZLIB_IO
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
-        call read_and_alloc_udt_head_gz(my_rank, istep_udt, ucd)
+        call read_and_alloc_udt_head_gz(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
-        call read_alloc_ucd_2_gz_fld_file(my_rank, istep_udt, ucd)
+        call read_alloc_ucd_2_gz_fld_file(my_rank, istep_ucd, ucd)
 #endif
 !
       else if(ucd%ifmt_file .eq. iflag_udt) then
-        call read_and_alloc_udt_params(my_rank, istep_udt, ucd)
+        call read_and_alloc_udt_params(my_rank, istep_ucd, ucd)
       else
-        call read_alloc_ucd_2_fld_file(my_rank, istep_udt, ucd)
+        call read_alloc_ucd_2_fld_file(my_rank, istep_ucd, ucd)
       end if
 !
       end subroutine sel_read_udt_param
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_read_alloc_udt_file(my_rank, istep_udt, ucd)
+      subroutine sel_read_alloc_udt_file(my_rank, istep_ucd, ucd)
 !
       use udt_file_IO
       use ucd_field_file_IO
@@ -187,31 +206,31 @@
       use gz_udt_file_IO
       use gz_ucd_field_file_IO
 !
-      integer(kind=kint), intent(in) :: my_rank, istep_udt
+      integer(kind=kint), intent(in) :: my_rank, istep_ucd
       type(ucd_data), intent(inout) :: ucd
 !
 !
       if (ucd%ifmt_file .eq. iflag_bin) then
-        call read_alloc_ucd_2_fld_file_b(my_rank, istep_udt, ucd)
+        call read_alloc_ucd_2_fld_file_b(my_rank, istep_ucd, ucd)
 !
 #ifdef ZLIB_IO
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
-        call read_and_alloc_udt_file_gz(my_rank, istep_udt, ucd)
+        call read_and_alloc_udt_file_gz(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
-        call read_alloc_ucd_2_gz_fld_file(my_rank, istep_udt, ucd)
+        call read_alloc_ucd_2_gz_fld_file(my_rank, istep_ucd, ucd)
 #endif
 !
       else if(ucd%ifmt_file .eq. iflag_udt) then
-        call read_and_alloc_udt_file(my_rank, istep_udt, ucd)
+        call read_and_alloc_udt_file(my_rank, istep_ucd, ucd)
       else
-        call read_alloc_ucd_2_fld_file(my_rank, istep_udt, ucd)
+        call read_alloc_ucd_2_fld_file(my_rank, istep_ucd, ucd)
       end if
 !
       end subroutine sel_read_alloc_udt_file
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_read_udt_file(my_rank, istep_udt, ucd)
+      subroutine sel_read_udt_file(my_rank, istep_ucd, ucd)
 !
       use udt_file_IO
       use ucd_field_file_IO
@@ -219,24 +238,24 @@
       use gz_udt_file_IO
       use gz_ucd_field_file_IO
 !
-      integer(kind=kint), intent(in) :: my_rank, istep_udt
+      integer(kind=kint), intent(in) :: my_rank, istep_ucd
       type(ucd_data), intent(inout) :: ucd
 !
 !
       if (ucd%ifmt_file .eq. iflag_bin) then
-        call read_ucd_2_fld_file_b(my_rank, istep_udt, ucd)
+        call read_ucd_2_fld_file_b(my_rank, istep_ucd, ucd)
 !
 #ifdef ZLIB_IO
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
-        call read_udt_file_gz(my_rank, istep_udt, ucd)
+        call read_udt_file_gz(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
-        call read_ucd_2_gz_fld_file(my_rank, istep_udt, ucd)
+        call read_ucd_2_gz_fld_file(my_rank, istep_ucd, ucd)
 #endif
 !
       else if(ucd%ifmt_file .eq. iflag_udt) then
-        call read_udt_file(my_rank, istep_udt, ucd)
+        call read_udt_file(my_rank, istep_ucd, ucd)
       else
-        call read_ucd_2_fld_file(my_rank, istep_udt, ucd)
+        call read_ucd_2_fld_file(my_rank, istep_ucd, ucd)
       end if
 !
       end subroutine sel_read_udt_file

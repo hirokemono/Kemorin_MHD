@@ -77,6 +77,7 @@
       use m_t_step_parameter
       use m_ctl_params_4_diff_udt
       use m_ucd_data
+      use m_control_params_2nd_files
       use ucd_IO_select
       use set_ucd_data
       use divide_phys_by_delta_t
@@ -89,7 +90,7 @@
       call link_num_field_2_output
 !
       ucd_step = i_step_init / i_step_output_ucd
-      fem_ucd%file_prefix = org_ucd_header
+      call set_ucd_file_prefix(org_ucd_header)
       call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
       call set_ucd_data_from_IO(my_rank, ucd_step)
 !
@@ -110,10 +111,8 @@
 !
 !    output udt data
 !
-      fem_ucd%file_prefix = ave_udt_file_head
-      ucd_step = i_step_number
-!
-      call output_udt_one_snapshot(ucd_step)
+      call set_ucd_file_prefix(ave_udt_file_head)
+      call output_udt_one_snapshot(i_step_number)
 !
       end subroutine analyze_ave_udt
 !

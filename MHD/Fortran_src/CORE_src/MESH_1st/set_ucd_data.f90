@@ -51,11 +51,12 @@
       fem_ucd%xx =>          xx
       fem_ucd%inod_global => globalnodid
 !
-      call count_udt_elements(internal_node, numele, nnod_4_ele, ie)
+      call count_udt_elements(internal_node, numele, nnod_4_ele, ie,    &
+     &    fem_ucd)
       call allocate_ucd_ele(fem_ucd)
 !
       call set_udt_global_connect(internal_node, numele, nnod_4_ele,    &
-     &    globalelmid, ie)
+     &    globalelmid, ie, fem_ucd)
 !
       end subroutine link_global_mesh_4_ucd
 !
@@ -69,12 +70,14 @@
 !
 !
       call allocate_ucd_node(fem_ucd)
-      call set_udt_local_nodes(numnod, xx)
+      call set_udt_local_nodes(numnod, xx, fem_ucd)
 !
-      call count_udt_elements(internal_node, numele, nnod_4_ele, ie)
+      call count_udt_elements(internal_node, numele, nnod_4_ele, ie,    &
+     &    fem_ucd)
       call allocate_ucd_ele(fem_ucd)
 !
-      call set_udt_local_connect(internal_node, numele, nnod_4_ele, ie)
+      call set_udt_local_connect(internal_node, numele, nnod_4_ele, ie, &
+     &    fem_ucd)
 !
       end subroutine link_local_mesh_4_ucd
 !
@@ -141,7 +144,8 @@
 !
       call sel_read_udt_file(my_rank, istep_ucd, fem_ucd)
       call set_field_by_udt_data(numnod, num_nod_phys,                  &
-     &    num_tot_nod_phys, num_nod_component, phys_nod_name, d_nod)
+     &    num_tot_nod_phys, num_nod_component, phys_nod_name, d_nod,    &
+     &    fem_ucd)
 !
       end subroutine set_ucd_data_from_IO
 !
@@ -159,7 +163,8 @@
 !
       call sel_read_udt_file(my_rank, istep_ucd, fem_ucd)
       call add_field_by_udt_data(numnod, num_nod_phys,                  &
-     &    num_tot_nod_phys, num_nod_component, phys_nod_name, d_nod)
+     &    num_tot_nod_phys, num_nod_component, phys_nod_name, d_nod,    &
+     &    fem_ucd)
 !
       end subroutine add_by_ucd_data
 !
@@ -177,7 +182,8 @@
 !
       call sel_read_udt_file(my_rank, istep_ucd, fem_ucd)
       call subtract_field_by_udt_data(numnod, num_nod_phys,             &
-     &    num_tot_nod_phys, num_nod_component, phys_nod_name, d_nod)
+     &    num_tot_nod_phys, num_nod_component, phys_nod_name, d_nod,    &
+     &    fem_ucd)
 !
       end subroutine subtract_by_ucd_data
 !

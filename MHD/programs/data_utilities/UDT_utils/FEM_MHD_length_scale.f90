@@ -95,14 +95,16 @@
         fem_ucd%phys_name(icou) = fhd_temp_scale
         call cal_length_scale_by_diffuse1(iphys%i_temp,                 &
      &      iphys%i_t_diffuse)
-        call set_one_field_to_udt_data(numnod, ione, icou, d_mag(1) )
+        call set_one_field_to_udt_data(numnod, ione, icou, d_mag(1),    &
+     &      fem_ucd)
       end if
 !
       if(iphys%i_velo  .gt. 0) then
         icou = icou + 1
         fem_ucd%phys_name(icou) = fhd_velocity_scale
         call cal_vect_length_scale_by_rot(iphys%i_velo, iphys%i_vort)
-        call set_one_field_to_udt_data(numnod, ione, icou, d_mag(1) )
+        call set_one_field_to_udt_data(numnod, ione, icou, d_mag(1),    &
+     &      fem_ucd)
       end if
 !
       if(iphys%i_magne .gt. 0) then
@@ -110,10 +112,11 @@
         fem_ucd%phys_name(3) =    fhd_magnetic_scale
         call cal_vect_length_scale_by_rot(iphys%i_magne,                &
      &      iphys%i_current)
-        call set_one_field_to_udt_data(numnod, ione, icou, d_mag(1) )
+        call set_one_field_to_udt_data(numnod, ione, icou, d_mag(1),    &
+     &      fem_ucd)
       end if
 !
-      fem_ucd%file_prefix = result_udt_file_head
+      call set_ucd_file_prefix(result_udt_file_head)
       call sel_write_udt_file(my_rank, ucd_step, fem_ucd)
       call deallocate_ucd_data(fem_ucd)
 !

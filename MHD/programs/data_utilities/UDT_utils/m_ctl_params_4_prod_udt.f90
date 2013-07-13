@@ -47,11 +47,11 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
       use m_ctl_data_product_udt
-      use set_control_platform_data
-      use set_control_4_2nd_files
       use m_file_format_switch
       use m_ucd_data
       use m_parallel_var_dof
+      use m_control_params_2nd_files
+      use set_control_platform_data
 !
 !
       if (nprocs .ne. num_subdomain_ctl) then
@@ -62,11 +62,7 @@
       call set_control_smp_def
       call set_control_mesh_def
       call set_control_org_field_file_def
-!
-!   set data format
-!
-      call choose_ucd_file_format(udt_file_fmt_ctl, i_udt_files_fmt,    &
-     &    fem_ucd%ifmt_file)
+      call set_control_ucd_file_def
 !
 !   set fiale name
 !

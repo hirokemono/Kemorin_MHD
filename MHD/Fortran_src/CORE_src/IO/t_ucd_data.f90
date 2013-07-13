@@ -12,6 +12,8 @@
 !!      subroutine allocate_ucd_phys_name(ucd)
 !!      subroutine allocate_ucd_phys_data(ucd)
 !!
+!!      subroutine alloc_merged_ucd_stack(nprocs, m_ucd)
+!!
 !!      subroutine deallocate_ucd_node(ucd)
 !!      subroutine deallocate_ucd_ele(ucd)
 !!      subroutine deallocate_ucd_phys_data(ucd)
@@ -20,6 +22,8 @@
 !!
 !!      subroutine disconnect_ucd_node(ucd)
 !!      subroutine disconnect_ucd_data(ucd)
+!!
+!!      subroutine dealloc_merged_ucd_stack(m_ucd)
 !!
 !!      subroutine cal_istack_ucd_component(ucd)
 !!
@@ -72,8 +76,19 @@
         character (len=kchara), pointer :: phys_name(:)
 !
 !>        field data for IO
-          real (kind=kreal), pointer :: d_ucd(:,:)
-        end type ucd_data
+        real (kind=kreal), pointer :: d_ucd(:,:)
+      end type ucd_data
+!
+!
+!>        Structure for numbers of FEM mesh for merged IO
+      type merged_ucd_data
+!>        end point for number of node for each subdomain
+        integer(kind = kint), pointer :: istack_merged_nod(:)
+!>        end point for number of element for each subdomain
+        integer(kind = kint), pointer :: istack_merged_ele(:)
+!>        end point for number of internal node for each subdomain
+        integer(kind = kint), pointer :: istack_merged_intnod(:)
+      end type merged_ucd_data
 !
 ! -----------------------------------------------------------------------
 !
@@ -139,6 +154,25 @@
       if( (ucd%nnod*ucd%ntot_comp) .gt. 0) ucd%d_ucd = 0.0d0
 !
       end subroutine allocate_ucd_phys_data
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_merged_ucd_stack(nprocs, m_ucd)
+!
+      integer(kind = kint), intent(in) :: nprocs
+      type(merged_ucd_data), intent(inout) :: m_ucd
+!
+!
+      allocate(m_ucd%istack_merged_nod(0:nprocs))
+      allocate(m_ucd%istack_merged_ele(0:nprocs))
+      allocate(m_ucd%istack_merged_intnod(0:nprocs))
+!
+      m_ucd%istack_merged_nod =    0
+      m_ucd%istack_merged_ele =    0
+      m_ucd%istack_merged_intnod = 0
+!
+      end subroutine alloc_merged_ucd_stack
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -220,6 +254,20 @@
       nullify(ucd%phys_name, ucd%d_ucd)
 !
       end subroutine disconnect_ucd_data
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_merged_ucd_stack(m_ucd)
+!
+      type(merged_ucd_data), intent(inout) :: m_ucd
+!
+!
+      deallocate(m_ucd%istack_merged_nod)
+      deallocate(m_ucd%istack_merged_ele)
+      deallocate(m_ucd%istack_merged_intnod)
+!
+      end subroutine dealloc_merged_ucd_stack
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

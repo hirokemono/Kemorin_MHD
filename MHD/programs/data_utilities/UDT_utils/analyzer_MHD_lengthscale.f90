@@ -37,6 +37,7 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_ucd_data
+      use m_control_params_2nd_files
       use nodal_vector_send_recv
       use load_mesh_data
       use const_mesh_info
@@ -83,9 +84,9 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'sel_read_udt_param'
-      fem_ucd%file_prefix = org_ucd_header
       fem_ucd%nnod = numnod
       fem_ucd%inod_global => globalnodid
+      call set_ucd_file_prefix(org_ucd_header)
       call allocate_phys_data_by_output(my_rank, i_step_init)
 !
       call allocate_work_4_lscale
@@ -102,6 +103,7 @@
       use m_geometry_parameter
       use m_ctl_params_4_prod_udt
       use m_ucd_data
+      use m_control_params_2nd_files
       use m_node_phys_data
       use FEM_MHD_length_scale
 !
@@ -113,7 +115,7 @@
           ucd_step = i_step / i_step_output_ucd
 !
           fem_ucd%nnod = numnod
-          fem_ucd%file_prefix = org_ucd_header
+          call set_ucd_file_prefix(org_ucd_header)
           call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
           call set_ucd_data_from_IO(my_rank, ucd_step)
           call deallocate_ucd_data(fem_ucd)

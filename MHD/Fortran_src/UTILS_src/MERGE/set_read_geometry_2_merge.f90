@@ -13,7 +13,8 @@
 !      subroutine copy_read_nodal_data_2_merge(ip)
 !      subroutine copy_read_ele_data_2_merge(ip)
 !
-!      subroutine copy_udt_field_data_merge(ip, org_fld, ifield_2_copy)
+!      subroutine copy_udt_field_data_merge(ip, ifield_2_copy,          &
+!     &          org_fld, ucd)
 !        type(phys_data), intent(in) :: org_fld
 !
       module set_read_geometry_2_merge
@@ -220,13 +221,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_udt_field_data_merge(ip, org_fld, ifield_2_copy)
+      subroutine copy_udt_field_data_merge(ip, ifield_2_copy,           &
+     &          org_fld, ucd)
 !
-      use m_ucd_data
       use m_geometry_data_4_merge
       use t_phys_data
+      use t_ucd_data
 !
       type(phys_data), intent(in) :: org_fld
+      type(ucd_data), intent(in) :: ucd
       integer(kind = kint), intent(in) :: ip
       integer(kind=kint), intent(in) :: ifield_2_copy(org_fld%num_phys)
 !
@@ -247,7 +250,7 @@
                 ic = merged_fld%istack_component(i-1)
                 do nd = 1, org_fld%num_component(j)
                   merged_fld%d_fld(inod_global,ic+nd)                   &
-     &                     = fem_ucd%d_ucd(inod,ic0+nd)
+     &                     = ucd%d_ucd(inod,ic0+nd)
                 end do
               end if
             end do

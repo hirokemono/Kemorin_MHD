@@ -302,7 +302,7 @@
 !
 !    output data
 !
-        fem_ucd%ifmt_file = iflag
+        call set_ucd_file_format(iflag_udt)
         call sel_write_ucd_file(izero, istep, fem_ucd)
       end do
 !

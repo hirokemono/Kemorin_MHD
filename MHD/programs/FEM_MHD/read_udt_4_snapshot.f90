@@ -25,6 +25,7 @@
       use m_control_parameter
       use m_t_step_parameter
       use m_ucd_data
+      use m_control_params_2nd_files
 !
       use set_ucd_data
       use ucd_IO_select
@@ -36,7 +37,7 @@
 !
       if (i_step .eq. (ucd_step*i_step_output_ucd) ) then
 !
-        fem_ucd%file_prefix = org_ucd_header
+        call set_ucd_file_prefix(org_ucd_header)
         call link_num_field_2_output
         call sel_read_udt_param(my_rank, ucd_step, fem_ucd)
         call set_ucd_data_from_IO(my_rank, ucd_step)

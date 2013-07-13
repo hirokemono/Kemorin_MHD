@@ -44,8 +44,8 @@
       fem_ucd%phys_name(1:fem_ucd%num_field)                            &
      &     = merged_fld%phys_name(1:fem_ucd%num_field)
 !
-      fem_ucd%file_prefix =     new_udt_head
       fem_ucd%ifmt_file = itype_assembled_data
+      call set_ucd_file_prefix(new_udt_head)
       do ip = 1, num_pe2
         my_rank = ip - 1
 !
@@ -74,8 +74,10 @@
       integer(kind = kint) :: ip, my_rank
 !
 !
-      fem_ucd%file_prefix =    new_udt_head
       fem_ucd%ifmt_file = itype_assembled_data
+      fem_ucd%nnod_4_ele = merged%ele%nnod_4_ele
+      call set_ucd_file_prefix(new_udt_head)
+!
       do ip = 1, num_pe2
         my_rank = ip - 1
 !
@@ -86,14 +88,16 @@
         call count_udt_elements                                         &
      &     (subdomains_2(ip)%node%internal_node,                        &
      &      subdomains_2(ip)%ele%numele,                                &
-     &      subdomains_2(ip)%ele%nnod_4_ele, subdomains_2(ip)%ele%ie)
+     &      subdomains_2(ip)%ele%nnod_4_ele, subdomains_2(ip)%ele%ie,   &
+     &      fem_ucd)
         call allocate_ucd_ele(fem_ucd)
 !
         call set_udt_global_connect                                     &
      &     (subdomains_2(ip)%node%internal_node,                        &
      &      subdomains_2(ip)%ele%numele,                                &
      &      subdomains_2(ip)%ele%nnod_4_ele,                            &
-     &      subdomains_2(ip)%ele%iele_global, subdomains_2(ip)%ele%ie)
+     &      subdomains_2(ip)%ele%iele_global, subdomains_2(ip)%ele%ie,  &
+     &      fem_ucd)
 !
         call sel_write_grd_file(my_rank, fem_ucd)
 !

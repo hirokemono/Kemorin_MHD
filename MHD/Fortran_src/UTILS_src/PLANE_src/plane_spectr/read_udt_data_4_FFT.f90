@@ -29,6 +29,7 @@
 !
       use m_constants
       use m_control_param_merge
+      use m_ucd_data
       use set_list_4_FFT
       use ucd_IO_select
       use set_ucd_data_to_type
@@ -52,6 +53,7 @@
        use m_geometry_data_4_merge
        use m_spectr_4_ispack
        use m_file_format_switch
+       use m_ucd_data
        use set_list_4_FFT
        use ucd_IO_select
 !
@@ -74,7 +76,7 @@
         call copy_and_pick_udt_data_merge                               &
      &    (subdomain(ip)%node%numnod, subdomain(ip)%node%internal_node, &
      &     num_spectr, subdomain(ip)%node%inod_global,                  &
-     &     num_fft, icomp_fft, ifield_fft, phys_d)
+     &     num_fft, icomp_fft, ifield_fft, phys_d, fem_ucd)
       end do
       call deallocate_ucd_phys_data(fem_ucd)
 !
