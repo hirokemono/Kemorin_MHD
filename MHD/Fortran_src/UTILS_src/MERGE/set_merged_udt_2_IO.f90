@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on Apr., 2010
 !
-!      subroutine link_merged_grd_2_udt_IO
+!      subroutine link_write_merged_grd_2_ucd(ifile_format, ucd_prefix)
 !      subroutine link_merged_data_2_udt_IO
 !      subroutine link_merged_phys_2_udt_IO
 !
@@ -23,13 +23,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine link_merged_grd_2_udt_IO
+      subroutine link_write_merged_grd_2_ucd(ifile_format, ucd_prefix)
 !
       use set_and_cal_udt_data
+      use set_ucd_data
+      use ucd_IO_select
+!
+      integer(kind = kint), intent(in) :: ifile_format
+      character(len = kchara), intent(in) :: ucd_prefix
 !
 !
-      fem_ucd%nnod = merge_tbl%nnod_merged
-      call link_node_data_type_2_output(merged%node)
+      call link_node_data_2_output(merge_tbl%nnod_merged,               &
+     &    merged%node%inod_global, merged%node%xx, fem_ucd)
 !
       call count_udt_elements(merged%node%numnod,                       &
      &    merge_tbl%nele_merged, merged%ele%nnod_4_ele,                 &
@@ -40,34 +45,62 @@
      &    merge_tbl%nele_merged, merged%ele%nnod_4_ele,                 &
      &    merged%ele%iele_global, merged%ele%ie, fem_ucd)
 !
-      end subroutine link_merged_grd_2_udt_IO
+!
+!
+      fem_ucd%ifmt_file = ifile_format
+      fem_ucd%file_prefix = ucd_prefix
+      call sel_write_grd_file(izero, fem_ucd)
+!
+      if(    mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_vtd/10            &
+     &  .or. mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_udt/10) then
+        call deallocate_ucd_ele(fem_ucd)
+      end if
+!
+      end subroutine link_write_merged_grd_2_ucd
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine link_merged_data_2_udt_IO
+      subroutine link_write_merged_udt(istep, ifile_format, ucd_prefix)
+!
+      use set_ucd_data_to_type
+      use set_ucd_data
+      use ucd_IO_select
+!
+      integer(kind = kint), intent(in) :: ifile_format, istep
+      character(len = kchara), intent(in) :: ucd_prefix
 !
 !
-      fem_ucd%nnod = merge_tbl%nnod_merged
-      call link_node_data_type_2_output(merged%node)
+      call link_field_data_type_2_output(merge_tbl%nnod_merged,         &
+     &    merged_fld, fem_ucd)
 !
-      fem_ucd%d_ucd =>       merged_fld%d_fld
+      fem_ucd%ifmt_file = ifile_format
+      fem_ucd%file_prefix = ucd_prefix
+      call sel_write_ucd_file(izero, istep, fem_ucd)
+      call disconnect_ucd_data(fem_ucd)
 !
-      end subroutine link_merged_data_2_udt_IO
+      end subroutine link_write_merged_udt
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine link_merged_phys_2_udt_IO
+      subroutine link_write_merged_ucd(ifile_format, istep)
+!
+      use set_ucd_data_to_type
+      use set_ucd_data
+      use ucd_IO_select
+!
+      integer(kind = kint), intent(in) :: ifile_format, istep
 !
 !
-      fem_ucd%nnod =        merge_tbl%nnod_merged
-      fem_ucd%num_field =   merged_fld%num_phys
-      fem_ucd%ntot_comp =   merged_fld%ntot_phys
+      call link_node_data_2_output(merge_tbl%nnod_merged,               &
+     &    merged%node%inod_global, merged%node%xx, fem_ucd)
+      call link_field_data_type_2_output(merge_tbl%nnod_merged,         &
+     &    merged_fld, fem_ucd)
 !
-      fem_ucd%num_comp =>    merged_fld%num_component
-      fem_ucd%phys_name =>   merged_fld%phys_name
-      fem_ucd%d_ucd =>       merged_fld%d_fld
+      fem_ucd%ifmt_file = ifile_format
+      call sel_write_ucd_file(izero, istep, fem_ucd)
+      call disconnect_ucd_data(fem_ucd)
 !
-      end subroutine link_merged_phys_2_udt_IO
+      end subroutine link_write_merged_ucd
 !
 ! -----------------------------------------------------------------------
 !

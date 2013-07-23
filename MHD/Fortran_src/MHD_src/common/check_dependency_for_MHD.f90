@@ -91,6 +91,7 @@
      &         .or. phys_nod_name(i) .eq. fhd_part_temp                 &
      &         .or. phys_nod_name(i) .eq. fhd_filter_temp               &
      &         .or. phys_nod_name(i) .eq. fhd_buoyancy                  &
+     &         .or. phys_nod_name(i) .eq. fhd_heat_source               &
      &       ) then
            num_check = 1
            phys_check_name(1) = fhd_temp
@@ -104,6 +105,7 @@
      &         .or. phys_nod_name(i) .eq. fhd_filter_comp               &
      &         .or. phys_nod_name(i) .eq. fhd_comp_buo                  &
      &         .or. phys_nod_name(i) .eq. fhd_c_diffuse                 &
+     &         .or. phys_nod_name(i) .eq. fhd_light_source              &
      &       ) then
             num_check = 1
             phys_check_name(1) = fhd_light
@@ -308,6 +310,11 @@
            num_check = 2
            phys_check_name(1) = fhd_density
            phys_check_name(2) = fhd_ref_density
+!
+          else if (phys_nod_name(i) .eq. fhd_entropy_source             &
+     &       ) then
+           num_check = 1
+           phys_check_name(1) = fhd_entropy
 !
           else if (phys_nod_name(i) .eq. fhd_per_entropy                &
      &       ) then

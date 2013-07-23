@@ -35,27 +35,27 @@
        integer (kind=kint), intent(in) :: i_filter, i_scalar
 !
 !
-      if (iflag_SGS_filter .eq. 11) then
+      if (iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING) then
 !
         call cal_3d_ez_filter_scalar_phys(num_whole_filter_grp,         &
      &      id_whole_filter_grp, i_filter, i_scalar)
 !
-      else if ( iflag_SGS_filter .eq. 21 ) then
+      else if ( iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING ) then
 !
         call cal_3d_filter_scalar_phys_smp(num_whole_filter_grp,        &
      &      id_whole_filter_grp, i_filter, i_scalar)
 !
-      else if ( iflag_SGS_filter .eq. 31 ) then
+      else if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING) then
 !
         call cal_3d_ez_filter_scalar_smp(num_whole_filter_grp,          &
      &      id_whole_filter_grp, i_filter, i_scalar)
 !
-      else if ( iflag_SGS_filter .eq. 1 ) then
+      else if ( iflag_SGS_filter .eq. id_SGS_3D_FILTERING) then
 !
         call cal_3d_filter_scalar_phys(num_whole_filter_grp,            &
      &      id_whole_filter_grp, i_filter, i_scalar)
 !
-      else if ( iflag_SGS_filter .eq. 2 ) then
+      else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
 !
         if (i_filter .ne. i_scalar) then
            call copy_scalar_component(i_filter, i_scalar)
@@ -82,27 +82,27 @@
        integer (kind=kint), intent(in) :: i_filter, i_scalar
 !
 !
-      if (iflag_SGS_filter .eq. 11) then
+      if (iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING) then
 !
         call cal_3d_ez_filter_scalar_phys(num_fluid_filter_grp,         &
      &         id_fluid_filter_grp, i_filter, i_scalar)
 !
-      else if ( iflag_SGS_filter .eq. 21 ) then
+      else if ( iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING ) then
 !
         call cal_3d_filter_scalar_phys_smp(num_fluid_filter_grp,        &
      &         id_fluid_filter_grp, i_filter, i_scalar)
 !
-      else if ( iflag_SGS_filter .eq. 31 ) then
+      else if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING) then
 !
         call cal_3d_ez_filter_scalar_smp(num_fluid_filter_grp,          &
      &         id_fluid_filter_grp, i_filter, i_scalar)
 !
-      else if ( iflag_SGS_filter .eq. 1 ) then
+      else if ( iflag_SGS_filter .eq. id_SGS_3D_FILTERING) then
 !
         call cal_3d_filter_scalar_phys(num_fluid_filter_grp,            &
      &         id_fluid_filter_grp, i_filter, i_scalar)
 !
-      else if ( iflag_SGS_filter .eq. 2 ) then
+      else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
 !
         if (i_filter .ne. i_scalar) then
            call copy_scalar_component(i_filter, i_scalar)

@@ -33,7 +33,6 @@
       use load_mesh_data
       use const_mesh_info
       use load_data_for_sph_IO
-      use set_ucd_data
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
       use set_phys_name_4_sph_trans

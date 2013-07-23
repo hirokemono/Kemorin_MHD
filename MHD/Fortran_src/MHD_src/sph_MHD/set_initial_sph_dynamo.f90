@@ -203,14 +203,7 @@
       shell = r_CMB - r_ICB
 !
       m = int( mod(isig,1000) / 100 )
-      jj = 0
-      do j = 1, nidx_rj(2)
-        if (   idx_gl_1d_rj_j(j,2).eq.m                                 &
-     &   .and. idx_gl_1d_rj_j(j,3).eq.m) then
-         jj = j
-         exit
-        end if
-      end do
+      jj = find_local_sph_mode_address(m,m)
 !
       if (jj .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB
@@ -256,14 +249,8 @@
 !
 !
       m = int( mod(isig,1000) / 100 )
-      jj = 0
-      do j = 1, nidx_rj(2)
-        if (   idx_gl_1d_rj_j(j,2).eq.m                                 &
-     &   .and. idx_gl_1d_rj_j(j,3).eq.m) then
-         jj = j
-         exit
-        end if
-      end do
+      jj = find_local_sph_mode_address(m,m)
+!
 !
       if (jj .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB
@@ -291,23 +278,8 @@
       integer(kind = kint), parameter :: ls = 1, lt = 2
 !
 !
-      m = int(dble( mod(isig,1000) / 100 ))
-      js = 0
-      jt = 0
-      do j = 1, nidx_rj(2)
-        if (   idx_gl_1d_rj_j(j,2).eq.ls                                &
-     &   .and. idx_gl_1d_rj_j(j,3).eq.0) then
-         js = j
-         exit
-        end if
-      end do
-      do j = 1, nidx_rj(2)
-        if (   idx_gl_1d_rj_j(j,2).eq.lt                                &
-     &   .and. idx_gl_1d_rj_j(j,3).eq.0) then
-         jt = j
-         exit
-        end if
-      end do
+      js = find_local_sph_mode_address(ls,izero)
+      jt = find_local_sph_mode_address(lt,izero)
 !
       pi = four * atan(one)
 !

@@ -23,11 +23,13 @@
 !!     &          d_nod, ucd)
 !!
 !!      subroutine set_field_by_udt_data(nnod, num_fld, ntot_cmp,       &
-!!     &          num_comp, phys_name, d_nod, ucd)
+!!     &          phys_name, d_nod, ucd)
 !!      subroutine add_field_by_udt_data(nnod, num_fld, ntot_cmp,       &
-!!     &          num_comp, phys_name, d_nod, ucd)
+!!     &          phys_name, d_nod, ucd)
 !!      subroutine subtract_field_by_udt_data(nnod, num_fld, ntot_cmp,  &
-!!     &          num_comp, phys_name, d_nod, ucd)
+!!     &          phys_name, d_nod, ucd)
+!!
+!!      subroutine find_field_id_in_ucd(ucd, field_name)
 !!@endverbatim
 !
       module set_and_cal_udt_data
@@ -201,36 +203,30 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_field_by_udt_data(nnod, num_fld, ntot_cmp,         &
-     &          num_comp, phys_name, d_nod, ucd)
+     &          phys_name, d_nod, ucd)
 !
       type(ucd_data), intent(in) :: ucd
 !
       integer(kind=kint), intent(in)  :: nnod, num_fld, ntot_cmp
-      integer(kind=kint), intent(in)  :: num_comp(num_fld)
       character (len=kchara), intent(in) :: phys_name(num_fld)
       real(kind = kreal), intent(inout) :: d_nod(nnod,ntot_cmp)
 !
       integer(kind = kint) :: inod, nd
-      integer (kind = kint) :: i, j, icomp, jcomp
+      integer (kind = kint) :: j, i_fld, j_fld, ncomp
 !
 !
-      icomp = 0
-      do i = 1, ucd%num_field
-        jcomp = 0
-        do j = 1, num_fld
-          if ( ucd%phys_name(i) .eq. phys_name(j) ) then
-            do nd = 1, num_comp(j)
+      j_fld = 0
+      do j = 1, num_fld
+        call find_field_id_in_ucd(ucd, phys_name(j), i_fld, ncomp)
+        if(i_fld .gt. 0) then
+          do nd = 0, ncomp-1
 !$omp parallel do
-              do inod = 1, nnod
-                d_nod(inod,jcomp+nd) = ucd%d_ucd(inod,icomp+nd)
-              end do
-!$omp end parallel do
+            do inod = 1, nnod
+              d_nod(inod,j_fld+nd) = ucd%d_ucd(inod,i_fld+nd)
             end do
-            exit
-          end if
-          jcomp = jcomp + num_comp(j)
-        end do
-        icomp = icomp + ucd%num_comp(i)
+!$omp end parallel do
+          end do
+        end if
       end do
 !
       end subroutine set_field_by_udt_data
@@ -238,36 +234,31 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_field_by_udt_data(nnod, num_fld, ntot_cmp,         &
-     &          num_comp, phys_name, d_nod, ucd)
+     &          phys_name, d_nod, ucd)
 !
       type(ucd_data), intent(in) :: ucd
 !
       integer(kind=kint), intent(in)  :: nnod, num_fld, ntot_cmp
-      integer(kind=kint), intent(in)  :: num_comp(num_fld)
       character (len=kchara), intent(in) :: phys_name(num_fld)
       real(kind = kreal), intent(inout) :: d_nod(nnod,ntot_cmp)
 !
       integer(kind = kint) :: inod, nd
-      integer (kind = kint) :: i, j, icomp, jcomp
+      integer (kind = kint) :: j, i_fld, j_fld, ncomp
 !
 !
-      icomp = 0
-      do i = 1, ucd%num_field
-        jcomp = 0
-        do j = 1, num_fld
-          if ( ucd%phys_name(i) .eq. phys_name(j) ) then
-            do nd = 1, num_comp(j)
+      j_fld = 0
+      do j = 1, num_fld
+        call find_field_id_in_ucd(ucd, phys_name(j), i_fld, ncomp)
+        if(i_fld .gt. 0) then
+          do nd = 0, ncomp-1
 !$omp parallel do
-              do inod = 1, nnod
-                d_nod(inod,jcomp+nd) = d_nod(inod,jcomp+nd)             &
-     &                                + ucd%d_ucd(inod,icomp+nd)
-              end do
-!$omp end parallel do
+            do inod = 1, nnod
+              d_nod(inod,j_fld+nd) = d_nod(inod,j_fld+nd)             &
+     &                              + ucd%d_ucd(inod,i_fld+nd)
             end do
-          end if
-          jcomp = jcomp + num_comp(j)
-        end do
-        icomp = icomp + ucd%num_comp(i)
+!$omp end parallel do
+          end do
+        end if
       end do
 !
       end subroutine add_field_by_udt_data
@@ -275,40 +266,62 @@
 ! -----------------------------------------------------------------------
 !
       subroutine subtract_field_by_udt_data(nnod, num_fld, ntot_cmp,    &
-     &          num_comp, phys_name, d_nod, ucd)
+     &          phys_name, d_nod, ucd)
 !
       type(ucd_data), intent(in) :: ucd
 !
       integer(kind=kint), intent(in)  :: nnod, num_fld, ntot_cmp
-      integer(kind=kint), intent(in)  :: num_comp(num_fld)
       character (len=kchara), intent(in) :: phys_name(num_fld)
       real(kind = kreal), intent(inout) :: d_nod(nnod,ntot_cmp)
 !
       integer(kind = kint) :: inod, nd
-      integer (kind = kint) :: i, j, icomp, jcomp
+      integer (kind = kint) :: j, i_fld, j_fld, ncomp
 !
 !
-      icomp = 0
-      do i = 1, ucd%num_field
-        jcomp = 0
-        do j = 1, num_fld
-          if ( ucd%phys_name(i) .eq. phys_name(j) ) then
-            do nd = 1, num_comp(j)
+      j_fld = 0
+      do j = 1, num_fld
+        call find_field_id_in_ucd(ucd, phys_name(j), i_fld, ncomp)
+        if(i_fld .gt. 0) then
+          do nd = 0, ncomp-1
 !$omp parallel do
-              do inod = 1, nnod
-                d_nod(inod,jcomp+nd) = d_nod(inod,jcomp+nd)             &
-     &                                - ucd%d_ucd(inod,icomp+nd)
-              end do
-!$omp end parallel do
+            do inod = 1, nnod
+              d_nod(inod,j_fld+nd) = d_nod(inod,j_fld+nd)             &
+     &                              - ucd%d_ucd(inod,i_fld+nd)
             end do
-          end if
-          jcomp = jcomp + num_comp(j)
-        end do
-        icomp = icomp + ucd%num_comp(i)
+!$omp end parallel do
+          end do
+        end if
       end do
 !
       end subroutine subtract_field_by_udt_data
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine find_field_id_in_ucd(ucd, field_name, i_field, ncomp)
+!
+      use m_parallel_var_dof
+!
+      character(len = kchara), intent(in) :: field_name
+      integer(kind = kint), intent(inout) :: i_field, ncomp
+      integer(kind = kint) :: i, istack
+!
+      type(ucd_data), intent(in) :: ucd
+!
+!
+      i_field = 0
+      istack =  0
+      do i = 1, ucd%num_field
+        if (field_name .eq. ucd%phys_name(i) ) then
+          i_field = istack + 1
+          ncomp = ucd%num_comp(i)
+          exit
+        end if
+        istack = istack + ucd%num_comp(i)
+      end do
+!
+      end subroutine find_field_id_in_ucd
+!
+!-----------------------------------------------------------------------
 !
       end module set_and_cal_udt_data

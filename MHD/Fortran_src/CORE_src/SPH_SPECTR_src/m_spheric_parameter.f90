@@ -676,5 +676,37 @@
       end subroutine check_radial_fung_rj
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      integer function find_local_sph_mode_address(l, m)
+!
+      integer(kind = kint), intent(in) :: l, m
+!
+      integer(kind = kint) :: j
+!
+!
+      find_local_sph_mode_address = 0
+      do j = 1, nidx_rj(2)
+        if (   idx_gl_1d_rj_j(j,2) .eq. l                               &
+     &   .and. idx_gl_1d_rj_j(j,3) .eq. m) then
+          find_local_sph_mode_address = j
+          return
+        end if
+      end do
+!
+      end function find_local_sph_mode_address
+!
+!-----------------------------------------------------------------------
+!
+      integer function local_sph_data_address(kr, j_lc)
+!
+      integer(kind = kint), intent(in) :: kr, j_lc
+!
+!
+      local_sph_data_address = j_lc + (kr-1)*nidx_rj(2)
+!
+      end function local_sph_data_address
+!
+!-----------------------------------------------------------------------
 !
       end module m_spheric_parameter

@@ -297,7 +297,7 @@ HDF5 support is being disabled (equivalent to --with-hdf5=no).
         fi
 
         AC_MSG_RESULT(MPIFC... "${MPIFC}")
-        H5PFC=$(eval echo $H5CC | $SED -n 's/cc$/pfc/p')
+        H5PFC=$(eval echo $H5CC | $SED -n 's/pcc$/pfc/p')
         AC_MSG_RESULT(H5PFC... $[H5PFC])
         AC_MSG_CHECKING([for matching HDF5 parallel Fortran wrapper])
         if test -x "$H5PFC"; then

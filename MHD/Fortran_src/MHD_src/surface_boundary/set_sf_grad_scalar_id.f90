@@ -20,6 +20,7 @@
       use set_surface_bc
 !
       use m_precision
+      use m_boundary_condition_IDs
 !
       implicit  none
 !
@@ -68,15 +69,15 @@
 !
 ! -----------set boundary using SGS case
 !
-            if (ibc_sf_type(j) .eq. 0) then
+            if (ibc_sf_type(j) .eq. iflag_fixed_grad_s) then
               ngrp_sf_fix = ngrp_sf_fix + 1
               nele_sf_fix = nele_sf_fix                                 &
      &                   + surf_istack(i) - surf_istack(i-1)
-            else if (ibc_sf_type(j) .eq. 1) then
+            else if (ibc_sf_type(j) .eq. (-iflag_fixed_grad_s)) then
               call count_surf_group_from_data(i, ngrp_sf_fix,           &
      &            nele_sf_fix, field_name, num_surf, surf_istack,       &
      &            surf_name)
-            else if (ibc_sf_type(j) .eq. 100) then
+            else if (ibc_sf_type(j) .eq. iflag_lead_grad_s) then
               ngrp_sf_lead = ngrp_sf_lead + 1
             end if
 !
@@ -131,17 +132,17 @@
 !
 ! -----------set boundary using SGS case
 !
-            if (ibc_sf_type(j) .eq. 0) then
+            if (ibc_sf_type(j) .eq. iflag_fixed_grad_s) then
               call set_surf_group_from_ctl(num_surf, surf_istack,       &
      &            ngrp_sf_fix, nele_sf_fix, l_f1, i, id_grp_sf_fix,     &
      &            ist_sf_fix, sf_apt_fix, bc_sf_mag(j))
 !
-            else if (ibc_sf_type(j) .eq. 1) then
+            else if (ibc_sf_type(j) .eq. (-iflag_fixed_grad_s)) then
               call  set_surf_group_from_data(num_surf, surf_name,       &
      &            ngrp_sf_fix, nele_sf_fix, l_f1, i, id_grp_sf_fix,     &
      &            ist_sf_fix, sf_apt_fix, field_name)
 !
-            else if (ibc_sf_type(j) .eq. 100) then
+            else if (ibc_sf_type(j) .eq. iflag_lead_grad_s) then
               l_l1 = l_l1 + 1
               id_grp_sf_lead(l_l1) = i
             end if

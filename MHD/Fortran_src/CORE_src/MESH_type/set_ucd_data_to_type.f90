@@ -3,24 +3,27 @@
 !
 !        programmed by H.Matsui on July, 2006
 !
-!      subroutine link_num_field_type_2_output
-!      subroutine link_node_data_type_2_output
-!      subroutine link_ele_data_type_2_output
-!      subroutine link_field_data_type_2_output
+!      subroutine link_num_field_type_2_output(node, ele, ucd)
+!      subroutine link_node_data_type_2_output(node, ucd)
+!      subroutine link_ele_data_type_2_output(ele, ucd)
+!      subroutine link_field_data_type_2_output(node, phys_nod, ucd)
 !
-!      subroutine alloc_phys_name_type_by_output(phys_nod)
-!      subroutine alloc_phys_data_type_by_output(node, phys_nod)
+!      subroutine alloc_phys_name_type_by_output(ucd, phys_nod)
+!      subroutine alloc_phys_data_type_by_output(ucd, node, phys_nod)
+!      subroutine set_ucd_data_type_from_IO(my_rank, istep_ucd,         &
+!     &          numnod, ucd, phys_nod)
 !
-!      subroutine set_ucd_data_type_from_IO
-!      subroutine add_by_ucd_data_type
-!      subroutine subtract_by_ucd_data_type
+!      subroutine set_ucd_data_type_from_IO_once(my_rank, istep_ucd,    &
+!     &          numnod, ucd, phys_nod)
+!      subroutine add_by_ucd_data_type(my_rank, istep_ucd,              &
+!     &          numnod, ucd, phys_nod)
+!      subroutine subtract_by_ucd_data_type(my_rank, istep_ucd,         &
+!     &          numnod, ucd, phys_nod)
 !
       module set_ucd_data_to_type
 !
       use m_precision
       use m_constants
-!
-      use m_ucd_data
 !
       implicit none
 !
@@ -30,92 +33,99 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine link_num_field_type_2_output(node, ele)
+      subroutine link_node_data_type_2_output(node, ucd)
 !
       use t_geometry_data
+      use t_ucd_data
+      use set_ucd_data
 !
       type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(ucd_data), intent(inout) :: ucd
 !
 !
-      fem_ucd%nnod = node%numnod
-!
-      fem_ucd%nele =       ele%numele
-      fem_ucd%nnod_4_ele = ele%nnod_4_ele
-!
-      end subroutine link_num_field_type_2_output
-!
-!-----------------------------------------------------------------------
-!
-      subroutine link_node_data_type_2_output(node)
-!
-      use t_geometry_data
-!
-      type(node_data), intent(in) :: node
-!
-!
-      fem_ucd%xx =>          node%xx(1:node%numnod,1:3)
-      fem_ucd%inod_global => node%inod_global(1:node%numnod)
+      call link_node_data_2_output(node%numnod, node%inod_global,       &
+     &     node%xx, ucd)
 !
       end subroutine link_node_data_type_2_output
 !
 !-----------------------------------------------------------------------
 !
-      subroutine link_ele_data_type_2_output(ele)
+      subroutine link_ele_data_type_2_output(ele, ucd)
 !
       use t_geometry_data
+      use t_ucd_data
+      use set_ucd_data
 !
       type(element_data), intent(in) :: ele
+      type(ucd_data), intent(inout) :: ucd
 !
 !
-      fem_ucd%ie =>          ele%ie(1:ele%numele,1:ele%nnod_4_ele)
-      fem_ucd%iele_global => ele%iele_global(1:ele%numele)
+      call link_ele_data_2_output(ele%numele, ele%nnod_4_ele,           &
+     &   ele%iele_global, ele%ie, ucd)
 !
       end subroutine link_ele_data_type_2_output
 !
 !-----------------------------------------------------------------------
 !
-      subroutine link_field_data_type_2_output(node, phys_nod)
+      subroutine link_num_field_type_2_output(node, phys_nod, ucd)
 !
       use t_geometry_data
       use t_phys_data
+      use t_ucd_data
+      use set_ucd_data
 !
       type(node_data), intent(in) :: node
       type(phys_data), intent(in) :: phys_nod
+      type(ucd_data), intent(inout) :: ucd
 !
 !
-      fem_ucd%nnod =      node%numnod
-      fem_ucd%num_field = phys_nod%num_phys_viz
-      fem_ucd%ntot_comp = phys_nod%ntot_phys_viz
+      call link_num_field_2_output(node%numnod, phys_nod%num_phys_viz,  &
+     &    ucd)
 !
-      fem_ucd%num_comp =>   phys_nod%num_component(1:fem_ucd%num_field)
-      fem_ucd%phys_name =>  phys_nod%phys_name(1:fem_ucd%num_field)
+      end subroutine link_num_field_type_2_output
 !
-      fem_ucd%d_ucd                                                     &
-     &     => phys_nod%d_fld(1:fem_ucd%nnod,1:fem_ucd%ntot_comp)
+!-----------------------------------------------------------------------
+!
+      subroutine link_field_data_type_2_output(numnod, phys_nod, ucd)
+!
+      use t_phys_data
+      use t_ucd_data
+      use set_ucd_data
+!
+      integer(kind = kint),  intent(in) :: numnod
+      type(phys_data), intent(in) :: phys_nod
+      type(ucd_data), intent(inout) :: ucd
+!
+!
+      call link_field_data_2_output(numnod, phys_nod%num_phys,          &
+     &    phys_nod%ntot_phys, phys_nod%num_phys_viz,                    &
+     &    phys_nod%ntot_phys_viz, phys_nod%num_component,               &
+     &    phys_nod%phys_name, phys_nod%d_fld, ucd)
 !
       end subroutine link_field_data_type_2_output
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_phys_name_type_by_output(phys_nod)
+      subroutine alloc_phys_name_type_by_output(ucd, phys_nod)
 !
       use t_phys_data
+      use t_ucd_data
       use cal_minmax_and_stacks
 !
+      type(ucd_data), intent(in) :: ucd
       type(phys_data), intent(inout) :: phys_nod
 !
 !
-      phys_nod%num_phys =     fem_ucd%num_field
-      phys_nod%num_phys_viz = fem_ucd%num_field
+      phys_nod%num_phys =     ucd%num_field
+      phys_nod%num_phys_viz = ucd%num_field
 !
       call alloc_phys_name_type(phys_nod)
 !
       phys_nod%num_component(1:phys_nod%num_phys)                       &
-     &           = fem_ucd%num_comp(1:phys_nod%num_phys)
+     &           = ucd%num_comp(1:phys_nod%num_phys)
       phys_nod%phys_name(1:phys_nod%num_phys)                           &
-     &           = fem_ucd%phys_name(1:phys_nod%num_phys)
+     &           = ucd%phys_name(1:phys_nod%num_phys)
 !
       call s_cal_total_and_stacks(phys_nod%num_phys,                    &
      &    phys_nod%num_component, izero, phys_nod%istack_component,     &
@@ -126,16 +136,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_phys_data_type_by_output(node, phys_nod)
+      subroutine alloc_phys_data_type_by_output(ucd, node, phys_nod)
 !
       use t_geometry_data
       use t_phys_data
+      use t_ucd_data
 !
+      type(ucd_data), intent(in) :: ucd
       type(node_data), intent(in) :: node
       type(phys_data), intent(inout) :: phys_nod
 !
 !
-      call alloc_phys_name_type_by_output(phys_nod)
+      call alloc_phys_name_type_by_output(ucd, phys_nod)
       call alloc_phys_data_type(node%numnod, phys_nod)
 !
       end subroutine alloc_phys_data_type_by_output
@@ -143,55 +155,96 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_ucd_data_type_from_IO(node, phys_nod)
+      subroutine set_ucd_data_type_from_IO(my_rank, istep_ucd,          &
+     &          ucd, node, phys_nod)
 !
       use t_geometry_data
       use t_phys_data
+      use t_ucd_data
       use set_and_cal_udt_data
+      use ucd_IO_select
 !
+      integer(kind = kint),  intent(in) :: my_rank, istep_ucd
+      type(ucd_data), intent(inout) :: ucd
       type(node_data), intent(in) :: node
       type(phys_data), intent(inout) :: phys_nod
 !
 !
+      call sel_read_udt_file(my_rank, istep_ucd, ucd)
       call set_field_by_udt_data(node%numnod, phys_nod%num_phys,        &
-     &    phys_nod%ntot_phys, phys_nod%num_component,                   &
-     &    phys_nod%phys_name, phys_nod%d_fld, fem_ucd)
+     &    phys_nod%ntot_phys, phys_nod%phys_name, phys_nod%d_fld, ucd)
 !
       end subroutine set_ucd_data_type_from_IO
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_by_ucd_data_type(node, phys_nod)
+      subroutine set_ucd_data_type_from_IO_once(my_rank, istep_ucd,     &
+     &          numnod, ucd, phys_nod)
 !
-      use t_geometry_data
       use t_phys_data
+      use t_ucd_data
       use set_and_cal_udt_data
+      use ucd_IO_select
 !
-      type(node_data), intent(in) :: node
+      integer(kind = kint),  intent(in) :: my_rank, istep_ucd
+      integer(kind = kint),  intent(in) :: numnod
+      type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: phys_nod
 !
 !
-      call add_field_by_udt_data(node%numnod, phys_nod%num_phys,        &
-     &    phys_nod%ntot_phys, phys_nod%num_component,                   &
-     &    phys_nod%phys_name, phys_nod%d_fld, fem_ucd)
+      ucd%nnod = numnod
+      call sel_read_alloc_udt_file(my_rank, istep_ucd, ucd)
+      call set_field_by_udt_data(numnod, phys_nod%num_phys,             &
+     &    phys_nod%ntot_phys, phys_nod%phys_name, phys_nod%d_fld, ucd)
+      call deallocate_ucd_data(ucd)
+!
+      end subroutine set_ucd_data_type_from_IO_once
+!
+! -----------------------------------------------------------------------
+!
+      subroutine add_by_ucd_data_type(my_rank, istep_ucd,               &
+     &          numnod, ucd, phys_nod)
+!
+      use t_phys_data
+      use t_ucd_data
+      use set_and_cal_udt_data
+      use ucd_IO_select
+!
+      integer(kind = kint),  intent(in) :: my_rank, istep_ucd
+      integer(kind = kint),  intent(in) :: numnod
+      type(ucd_data), intent(inout) :: ucd
+      type(phys_data), intent(inout) :: phys_nod
+!
+!
+      ucd%nnod = numnod
+      call sel_read_alloc_udt_file(my_rank, istep_ucd, ucd)
+      call add_field_by_udt_data(numnod, phys_nod%num_phys,             &
+     &    phys_nod%ntot_phys, phys_nod%phys_name, phys_nod%d_fld, ucd)
+      call deallocate_ucd_data(ucd)
 !
       end subroutine add_by_ucd_data_type
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine subtract_by_ucd_data_type(node, phys_nod)
+      subroutine subtract_by_ucd_data_type(my_rank, istep_ucd,          &
+     &          numnod, ucd, phys_nod)
 !
-      use t_geometry_data
       use t_phys_data
+      use t_ucd_data
       use set_and_cal_udt_data
+      use ucd_IO_select
 !
-      type(node_data), intent(in) :: node
+      integer(kind = kint),  intent(in) :: my_rank, istep_ucd
+      integer(kind = kint),  intent(in) :: numnod
       type(phys_data), intent(inout) :: phys_nod
+      type(ucd_data), intent(inout) :: ucd
 !
 !
-      call subtract_field_by_udt_data(node%numnod, phys_nod%num_phys,   &
-     &    phys_nod%ntot_phys, phys_nod%num_component,                   &
-     &    phys_nod%phys_name, phys_nod%d_fld, fem_ucd)
+      ucd%nnod = numnod
+      call sel_read_alloc_udt_file(my_rank, istep_ucd, ucd)
+      call subtract_field_by_udt_data(numnod, phys_nod%num_phys,        &
+     &    phys_nod%ntot_phys, phys_nod%phys_name, phys_nod%d_fld, ucd)
+      call deallocate_ucd_data(ucd)
 !
       end subroutine subtract_by_ucd_data_type
 !

@@ -51,6 +51,7 @@
       use set_control_4_composition
       use set_control_4_infty
       use output_parallel_ucd_file
+      use read_boundary_condition_file
 !
 !
 !   set parameters for data files
@@ -61,7 +62,7 @@
       call set_control_mesh_def
       call set_control_restart_file_def
       call set_control_parallel_field_def
-      call set_control_org_field_file_def
+      call set_control_org_fld_file_def
 !
 !   set parameters for general information
 !
@@ -126,6 +127,10 @@
 !   set boundary_conditons for magnetic potential
 !
       call s_set_control_4_infty
+!
+!   set flag to read boundary condition file
+!
+      call check_read_boundary_files
 !
 !   set control parameters
 !

@@ -31,13 +31,12 @@
       use m_surface_geometry_data
       use m_edge_geometry_data
       use m_control_params_2nd_files
-      use ucd_IO_select
+      use m_ucd_input_data
 !
       use set_control_visualizer
       use const_mesh_info
       use load_mesh_data
       use set_parallel_file_name
-      use set_ucd_data
 !
 !   --------------------------------
 !       setup mesh information
@@ -72,9 +71,9 @@
       subroutine FEM_analyze_surface(i_step, istep_psf, istep_iso)
 !
       use m_control_params_2nd_files
+      use m_ucd_input_data
       use set_exit_flag_4_visualizer
       use nod_phys_send_recv
-      use set_ucd_data
 !
       integer (kind =kint), intent(in) :: i_step
       integer (kind =kint), intent(inout) :: istep_psf, istep_iso
@@ -88,11 +87,7 @@
      &    visval, istep_iso)
 !
       if(istep_psf.ge.0 .or. istep_iso.ge.0) then
-!*  ----------   Count steps for visualization
-!*
-        call set_ucd_data_from_IO(my_rank, i_step)
-!
-        if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
+        call set_data_by_read_ucd(my_rank, i_step)
         call phys_send_recv_all
       end if
 !

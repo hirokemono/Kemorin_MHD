@@ -35,7 +35,6 @@
       use input_control
       use initialize_4_snapshot
 !
-      use set_ucd_data
       use output_ucd_file_control
 !
 !   --------------------------------

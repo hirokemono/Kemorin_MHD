@@ -74,9 +74,9 @@
 !
       if(i_step_output_ucd .eq. 0) return
 !
-      call link_num_field_2_output
+      call link_fem_num_field_2_ucd_out
       call link_local_org_mesh_4_ucd
-      call link_field_data_2_output
+      call link_fem_field_data_2_ucd_out
 !
       if (fem_ucd%ifmt_file/100 .eq. iflag_single/100) then
         call init_merged_ucd(fem_ucd, merged_ucd)
@@ -107,8 +107,7 @@
       use set_and_cal_udt_data
 !
 !
-      fem_ucd%xx =>          xx
-      fem_ucd%inod_global => globalnodid
+      call link_fem_node_data_2_ucd_out
 !
       call count_udt_elements(internal_node, numele, nnod_4_ele,        &
      &    ie_org, fem_ucd)

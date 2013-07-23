@@ -55,13 +55,13 @@
 !
 #ifdef ZLIB_IO
       if (   mod(itype_psf,10) .eq. iflag_gzip) then
-        call read_alloc_psf_grd_gz(psf_name)
+        call read_alloc_psf_grd_gz(grd_name)
         call read_allocate_psf_udt_gz(psf_name)
         return
       end if
 #endif
 !
-      call read_psf_grd(psf_name)
+      call read_psf_grd(grd_name)
       call read_allocate_psf_udt(psf_name)
 !
       end subroutine sel_read_alloc_psf_udt_file

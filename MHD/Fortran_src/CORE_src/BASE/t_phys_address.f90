@@ -74,6 +74,17 @@
 !!         @f$  S - S_{0} @f$
         integer (kind=kint) :: i_par_entropy =     izero
 !
+!>        start address for heat source
+!!         @f$ q_{T} @f$
+        integer (kind=kint) :: i_heat_source =     izero
+!>        start address for composion source
+!!         @f$ q_{C} @f$
+        integer (kind=kint) :: i_light_source =    izero
+!>        start address for entropysource
+!!         @f$ q_{S} @f$
+        integer (kind=kint) :: i_entropy_source =  izero
+!
+!
 !>        start address for momentum equation's potential
 !!         @f$  \varphi @f$
         integer (kind=kint) :: i_p_phi =           izero

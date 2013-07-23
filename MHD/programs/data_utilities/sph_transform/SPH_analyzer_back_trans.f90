@@ -27,6 +27,7 @@
       use m_node_id_spherical_IO
       use m_field_data_IO
       use m_sph_spectr_data
+      use m_sph_phys_address
 !
       use load_data_for_sph_IO
       use r_interpolate_sph_data
@@ -64,6 +65,9 @@
 !
       call allocate_phys_rj_data
       call allocate_phys_rtp_data
+!
+      call set_sph_sprctr_data_address
+      call set_sph_nod_data_address
 !
 !  ---- initialize spherical hermonics transform
 !

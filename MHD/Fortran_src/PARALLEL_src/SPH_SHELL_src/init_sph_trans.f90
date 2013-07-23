@@ -136,6 +136,7 @@
 !
       do l_rtp = 1, nidx_rtp(2)
         l_gl = idx_gl_1d_rtp_t(l_rtp)
+        cos_theta_1d_rtp(l_rtp) = cos(g_colat_rtm(l_gl))
         sin_theta_1d_rtp(l_rtp) = sin(g_colat_rtm(l_gl))
       end do
 !

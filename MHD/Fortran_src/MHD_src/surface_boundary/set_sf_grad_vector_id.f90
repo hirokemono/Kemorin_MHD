@@ -5,7 +5,7 @@
 !
 !      subroutine count_num_sf_grad_vector                              &
 !     &          (num_surf, surf_istack, surf_name, num_bc_sf,          &
-!     &           bc_sf_name, ibc_sf_type, bc_sf_mag,                   &
+!     &           bc_sf_name, ibc_sf_type,                              &
 !     &           field_name_x, field_name_y, field_name_z,             &
 !     &           nmax_sf_fix, nmax_ele_sf_fix, nmax_sf_lead,           &
 !     &           ngrp_sf_fix, nele_sf_fix, ngrp_sf_lead)
@@ -19,9 +19,10 @@
 !
       module set_sf_grad_vector_id
 !
-      use set_surface_bc
-!
       use m_precision
+      use m_boundary_condition_IDs
+!
+      use set_surface_bc
 !
       implicit  none
 !
@@ -33,7 +34,7 @@
 !
       subroutine count_num_sf_grad_vector                               &
      &          (num_surf, surf_istack, surf_name, num_bc_sf,           &
-     &           bc_sf_name, ibc_sf_type, bc_sf_mag,                    &
+     &           bc_sf_name, ibc_sf_type,                               &
      &           field_name_x, field_name_y, field_name_z,              &
      &           nmax_sf_fix, nmax_ele_sf_fix, nmax_sf_lead,            &
      &           ngrp_sf_fix, nele_sf_fix, ngrp_sf_lead)
@@ -43,7 +44,6 @@
       character(len=kchara), intent(in) :: surf_name(num_surf)
 !
       integer (kind=kint) :: num_bc_sf
-      real (kind=kreal), intent(in) :: bc_sf_mag(num_bc_sf)
       integer (kind=kint), intent(in) :: ibc_sf_type(num_bc_sf)
       character (len=kchara), intent(in) :: bc_sf_name(num_bc_sf)
       character(len=kchara), intent(in) :: field_name_x
@@ -79,13 +79,14 @@
 !
 ! -----------set boundary from control file
               do nd = 1, 3
-                if ( ibc_sf_type(j)==(nd) ) then
+                if ( ibc_sf_type(j) .eq. (iflag_fixed_grad + nd) ) then
                   ngrp_sf_fix(nd) = ngrp_sf_fix(nd) + 1
                   nele_sf_fix(nd) = nele_sf_fix(nd)                     &
      &                         + surf_istack(i) - surf_istack(i-1)
 !
 ! -----------set boundary from data file
-                else if ( ibc_sf_type(j)==(-nd) ) then
+                else if (ibc_sf_type(j) .eq. -(iflag_fixed_grad + nd))  &
+     &              then
                   if      (nd .eq. 1) then
                     field_name = field_name_x
                   else if (nd .eq. 2) then
@@ -100,7 +101,7 @@
 !
 ! -----------set boundary from data file
 !
-                else if ( ibc_sf_type(j)==(nd+100) ) then
+                else if ( ibc_sf_type(j)==(nd+iflag_lead_grad) ) then
                   ngrp_sf_lead(nd) = ngrp_sf_lead(nd) + 1
                 end if
 !
@@ -170,14 +171,14 @@
 ! -----------set boundary from control file
 !
             do nd = 1, 3
-              if ( ibc_sf_type(j)==(nd) ) then
+              if ( ibc_sf_type(j) .eq. (iflag_fixed_grad+nd) ) then
                 call set_surf_group_from_ctl(num_surf, surf_istack,     &
                     nmax_sf_fix, nmax_ele_sf_fix, l_f1(nd), i,          &
      &              id_grp_sf_fix(1,nd), ist_ele_sf_fix(0,nd),          &
      &              sf_apt_fix(1,nd), bc_sf_mag(j))
 !
 ! -----------set boundary from data file
-              else if ( ibc_sf_type(j)==(-nd) ) then
+              else if ( ibc_sf_type(j) .eq. -(iflag_fixed_grad+nd) ) then
                 if      (nd .eq. 1) then
                   field_name = field_name_x
                 else if (nd .eq. 2) then
@@ -192,7 +193,7 @@
      &              sf_apt_fix(1,nd), field_name )
 !
 ! -----------lead boundary values
-              else if ( ibc_sf_type(j)==(nd+100) ) then
+              else if ( ibc_sf_type(j) .eq. (nd+iflag_lead_grad) ) then
                 l_l1(nd) = l_l1(nd) + 1
                 id_grp_sf_lead(l_l1(nd),nd) = i
               end if

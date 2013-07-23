@@ -47,7 +47,7 @@
 !
        iflag_SGS_model =      id_SGS_none
        iflag_dynamic_SGS =    id_SGS_DYNAMIC_OFF
-       iflag_SGS_filter =     0
+       iflag_SGS_filter =     id_SGS_NO_FILTERING
 !
       if (i_SGS_model .eq. 0) then
         iflag_SGS_model =   id_SGS_none

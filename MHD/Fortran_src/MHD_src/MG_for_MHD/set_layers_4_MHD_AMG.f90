@@ -5,7 +5,7 @@
 !        programmed H.Matsui on Dec., 2008
 !
 !      subroutine set_layers_type_4_MHD(geom, grps, MHD_mesh)
-!      subroutine set_empty_layers_type_4_MHD(geom, grps, MHD_mesh)
+!      subroutine set_empty_layers_type_4_MHD(MHD_mesh)
 !        type(mesh_geometry), intent(in) :: geom
 !        type(mesh_groups), intent(in) :: grps
 !
@@ -73,14 +73,10 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine set_empty_layers_type_4_MHD(geom, grps, MHD_mesh)
+      subroutine set_empty_layers_type_4_MHD(MHD_mesh)
 !
       use m_control_parameter
-      use t_mesh_data
       use t_geometry_data_MHD
-!
-      type(mesh_geometry), intent(in) :: geom
-      type(mesh_groups), intent(in) :: grps
 !
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !

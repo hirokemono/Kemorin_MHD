@@ -40,7 +40,7 @@
 !
       call s_set_surf_scalar_id(num_surf, surf_name,                    &
      &   num_bc_h_flux, bc_h_flux_name, ibc_h_flux_type,                &
-     &   name_st, ngrp_sf_sgs_temp, id_grp_sf_sgs_temp)
+     &   ngrp_sf_sgs_temp, id_grp_sf_sgs_temp)
 !
       end subroutine set_surf_temp_id
 !
@@ -54,7 +54,7 @@
 !
       call s_set_surf_scalar_id(num_surf, surf_name,                    &
      &   num_bc_wall, bc_wall_name, ibc_wall_type,                      &
-     &   name_sp, ngrp_sf_sgs_p, id_grp_sf_sgs_p)
+     &   ngrp_sf_sgs_p, id_grp_sf_sgs_p)
 !
       end subroutine set_surf_press_id
 !
@@ -68,7 +68,7 @@
 !
       call s_set_surf_scalar_id(num_surf, surf_name,                    &
      &   num_surf_magp, surf_magp_name, isurf_magp_type,                &
-     &   name_smp, ngrp_sf_sgs_magp, id_grp_sf_sgs_magp)
+     &   ngrp_sf_sgs_magp, id_grp_sf_sgs_magp)
 !
       end subroutine set_surf_magne_p_id
 !
@@ -82,7 +82,7 @@
 !
       call s_set_surf_scalar_id(num_surf, surf_name,                    &
      &   num_surf_composition, surf_composit_name, isurf_composit_type, &
-     &   name_sds, ngrp_sf_sgs_cmg, id_grp_sf_sgs_cmg)
+     &   ngrp_sf_sgs_cmg, id_grp_sf_sgs_cmg)
 !
       end subroutine set_surf_fix_composition_id
 !

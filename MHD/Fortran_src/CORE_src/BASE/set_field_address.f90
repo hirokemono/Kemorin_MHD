@@ -97,6 +97,13 @@
         else if ( field_name(i) .eq. fhd_ref_density ) then
           iphys%i_ref_density = i0
 !
+        else if ( field_name(i) .eq. fhd_heat_source ) then
+          iphys%i_heat_source = i0
+        else if ( field_name(i) .eq. fhd_light_source ) then
+          iphys%i_light_source = i0
+        else if ( field_name(i) .eq. fhd_entropy_source ) then
+          iphys%i_entropy_source = i0
+!
         else if ( field_name(i) .eq. fhd_filter_v ) then
           iphys%i_filter_velo = i0
         else if ( field_name(i) .eq. fhd_filter_temp ) then

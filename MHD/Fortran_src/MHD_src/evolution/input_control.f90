@@ -63,7 +63,6 @@
       use element_IO_select
       use surface_IO_select
       use edge_IO_select
-      use read_boundary_condition_file
       use set_3d_filtering_group_id
       use read_filtering_data
       use set_ele_comm_tbl_4_IO
@@ -72,6 +71,7 @@
       use set_surface_geometry_4_IO
       use set_edge_geometry_4_IO
       use node_monitor_IO
+      use read_bc_values_file_1st
 !
 !  --  read geometry
 !
@@ -102,9 +102,11 @@
      &      write(*,*) 'set_local_node_id_4_monitor'
       call set_local_node_id_4_monitor
 !
-      if (iflag_debug .ge. iflag_routine_msg)                           &
-     &      write(*,*) 'read_boundary_files'
-      call read_boundary_files
+! ----  open data file for boundary data
+!
+      if (iflag_boundary_file .eq. id_read_boundary_file) then
+        call read_boundary_values_file_1(my_rank)
+      end if
 !
 ! ---------------------------------
 !
@@ -112,7 +114,10 @@
      &      write(*,*) 's_read_filtering_data'
       call s_read_filtering_data
 !
-      if(mod(iflag_SGS_filter,10).eq.1) then
+      if     (iflag_SGS_filter .eq. id_SGS_3D_FILTERING                 &
+     &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING              &
+     &   .or. iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING             &
+     &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING ) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &       write(*,*) 's_set_3d_filtering_group_id'
         call s_set_3d_filtering_group_id

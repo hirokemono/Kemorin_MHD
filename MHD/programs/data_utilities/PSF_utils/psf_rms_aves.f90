@@ -19,6 +19,7 @@
       use ucd_IO_select
       use cal_psf_rms_aves
       use take_avarages_4_psf
+      use take_normals_4_psf
       use read_psf_select_4_zlib
 !
       implicit    none
@@ -35,7 +36,7 @@
       integer(kind = kint) :: istep_int
 !
       integer(kind = kint) :: istep, icou
-      integer(kind = kint) :: inod, nd
+      integer(kind = kint) :: inod, nd, i
 !
       real(kind = kreal) :: acou
       real(kind = kreal), allocatable :: tave_psf(:,:)
@@ -53,9 +54,9 @@
       read(*,*) istep_start, istep_end, istep_int
 !
       call add_int_suffix(istep_start, psf_file_header, fname_tmp)
-      write(psf_ave_header, '(a5,a)') 'tave_', trim(fname_tmp)
-      write(psf_rms_header, '(a5,a)') 'trms_', trim(fname_tmp)
-      write(psf_sdev_header,'(a5,a)') 'sdev_', trim(fname_tmp)
+      write(psf_ave_header, '(a9,a)') 'time_ave_', trim(fname_tmp)
+      write(psf_rms_header, '(a9,a)') 'time_rms_', trim(fname_tmp)
+      write(psf_sdev_header,'(a9,a)') 'time_dev_', trim(fname_tmp)
 !
 !
       call sel_read_alloc_psf_file(iflag_psf_fmt, istep_start)
@@ -71,7 +72,10 @@
 !
 !   Evaluate size of patches
 !
-      call open_psf_ave_rms_data
+      call allocate_norms_4_psf
+      call cal_norm_area_4_psf
+!
+      call open_psf_ave_rms_data(psf_file_header)
 !
       allocate( tave_psf(numnod_psf,ncomptot_psf) )
       allocate( trms_psf(numnod_psf,ncomptot_psf) )
@@ -84,10 +88,17 @@
       psf_ucd%file_prefix = psf_file_header
 !
       icou = 0
+      write(*,'(a,i10)', advance='NO')                                  &
+     &          'read for averaging. Step:  ', istep_start
       do istep = istep_start, istep_end, istep_int
         icou = icou + 1
+        write(*,'(10a1)', advance='NO') (char(8),i=1,10)
+        write(*,'(i10)', advance='NO') istep
 !
         call sel_read_udt_file(-1, istep, psf_ucd)
+        call cal_rms_ave_4_psf
+        call cal_minmax_psf
+!
 !
         do nd = 1, ncomptot_psf
           do inod = 1, numnod_psf
@@ -97,8 +108,9 @@
           end do
         end do
 !
-        call cal_psf_ave_rms_data(istep)
+        call write_psf_ave_rms_data(istep)
       end do
+      write(*,*)
       call close_psf_ave_rms_data
 !
       acou = one / dble(icou)
@@ -111,8 +123,12 @@
 !
 !
       icou = 0
+      write(*,'(a,i10)', advance='NO')                                &
+     &          'read for RMS. Step:  ', istep
       do istep = istep_start, istep_end, istep_int
         icou = icou + 1
+        write(*,'(10a1)', advance='NO') (char(8),i=1,10)
+        write(*,'(i10)', advance='NO') istep
 !
         call sel_read_udt_file(-1, istep, psf_ucd)
 !
@@ -122,6 +138,7 @@
      &                                 - tave_psf(1:numnod_psf,nd))**2
         end do
       end do
+      write(*,*)
 !
       do nd = 1, ncomptot_psf
         tsdev_psf(1:numnod_psf,nd)                                      &

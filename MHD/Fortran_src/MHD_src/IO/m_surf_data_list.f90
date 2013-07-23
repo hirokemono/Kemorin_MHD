@@ -27,6 +27,7 @@
 !
       implicit  none
 !
+!
       integer (kind=kint) :: num_bc_tq
       real (kind=kreal), allocatable :: bc_tq_magnitude(:)
       integer (kind=kint), allocatable :: ibc_tq_type(:)

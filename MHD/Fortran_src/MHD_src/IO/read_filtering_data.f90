@@ -29,7 +29,7 @@
       use m_control_parameter
 !
 !
-      if (iflag_SGS_filter .eq. 2) then
+      if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
         call read_line_filtering_data
       else
         call read_3d_filter_moments

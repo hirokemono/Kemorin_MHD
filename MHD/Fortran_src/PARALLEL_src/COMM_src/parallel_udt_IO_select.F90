@@ -58,7 +58,7 @@
 !
       integer(kind=kint), intent(in) :: istep_ucd
       type(ucd_data), intent(in) :: ucd
-      type(merged_ucd_data), intent(in) :: m_ucd
+      type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
       if      (ucd%ifmt_file .eq. iflag_sgl_vtk) then
@@ -123,7 +123,7 @@
       use hdf5_file_IO
 !
       type(ucd_data), intent(in) :: ucd
-      type(merged_ucd_data), intent(in) :: m_ucd
+      type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
       if(ucd%ifmt_file .eq. iflag_sgl_vtd) then

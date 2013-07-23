@@ -17,6 +17,7 @@
       use m_precision
 !
       use m_constants
+      use m_boundary_condition_IDs
       use m_boundary_field_IO
       use t_group_data
       use t_nodal_bc_data

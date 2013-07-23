@@ -29,7 +29,6 @@
       use m_t_step_parameter
       use set_control_platform_data
       use set_fixed_time_step_params
-      use ucd_IO_select
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: ierr
@@ -38,7 +37,7 @@
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def
       call set_control_mesh_def
-      call set_control_ucd_file_def
+      call set_control_org_fld_file_def
 !
       call s_set_fixed_time_step_params(ierr, e_message)
       if(ierr .gt. 0) return

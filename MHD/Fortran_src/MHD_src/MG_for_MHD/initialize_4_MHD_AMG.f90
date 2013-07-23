@@ -59,12 +59,11 @@
 !
 !     --------------------- 
 !
-      if(iflag_debug .gt. 0) write(*,*) 's_link_djds_tbl_MHD_4_MG'
+      if(iflag_debug .gt. 0) write(*,*) 'alloc_MG_djds_tbl_lin_idx'
       call alloc_MG_djds_tbl_lin_idx(num_MG_level)
       if(iflag_debug .gt. 0) write(*,*) 's_link_djds_tbl_MHD_4_MG'
       call s_link_djds_tbl_MHD_4_MG(MG_djds_tbl(0), MG_djds_tbl_fl(0),  &
-     &    MG_djds_tbl_cd(0), MG_djds_tbl_ins(0), MG_djds_tbl_l(0),      &
-     &    MG_djds_tbl_fll(0), MG_djds_tbl_cdl(0), MG_djds_tbl_insl(0))
+     &    MG_djds_tbl_l(0), MG_djds_tbl_fll(0) )
       call time_prog_barrier
 !
 !     --------------------- 
@@ -81,8 +80,7 @@
           call s_const_mesh_types_info(MG_mesh(i_level),                &
      &      MG_surf_mesh(i_level), MG_edge_mesh(i_level) )
         else
-          call set_empty_layers_type_4_MHD(MG_mesh(i_level)%mesh,       &
-     &      MG_mesh(i_level)%group,  MG_MHD_mesh(i_level) )
+          call set_empty_layers_type_4_MHD(MG_MHD_mesh(i_level) )
           call empty_mesh_types_info(MG_mesh(i_level),                  &
      &      MG_surf_mesh(i_level), MG_edge_mesh(i_level) )
         end if
@@ -290,11 +288,7 @@
         call s_set_MHD_idx_4_mat_type( MG_mesh(i_level)%mesh,           &
      &      MG_MHD_mesh(i_level), MG_FEM_tbl(i_level),                  &
      &      MG_djds_tbl(i_level), MG_djds_tbl_fl(i_level),              &
-     &      MG_djds_tbl_cd(i_level), MG_djds_tbl_ins(i_level),          &
-     &      MG_djds_const_idx(i_level), MG_djds_const_idx_fl(i_level),  &
-     &      MG_djds_const_idx_cd(i_level),                              &
-     &      MG_djds_const_idx_ins(i_level),                             &
-     &      MG_djds_const_full_cd(i_level)  )
+     &      MG_djds_const_idx(i_level), MG_djds_const_idx_fl(i_level) )
 !
         if(MG_mesh(i_level)%mesh%ele%nnod_4_ele .eq. num_t_linear) then
           if(iflag_debug .gt. 0) write(*,*) 'link_MG_djds_const_lin_idx'
@@ -305,12 +299,8 @@
           call set_MHD_idx_linear_mat_type( MG_mesh(i_level)%mesh,      &
      &        MG_MHD_mesh(i_level), MG_FEM_tbl(i_level),                &
      &        MG_djds_tbl(i_level), MG_djds_tbl_fl(i_level),            &
-     &        MG_djds_tbl_cd(i_level), MG_djds_tbl_ins(i_level),        &
      &        MG_djds_const_idx_l(i_level),                             &
-     &        MG_djds_const_idx_fll(i_level),                           &
-     &        MG_djds_const_idx_cdl(i_level),                           &
-     &        MG_djds_const_idx_insl(i_level),                          &
-     &        MG_djds_const_idx_fullcdl(i_level)  )
+     &        MG_djds_const_idx_fll(i_level) )
         end if
       end do
       call time_prog_barrier

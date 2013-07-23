@@ -254,10 +254,6 @@
       end do
 !
 !
-!   link output pointer for udt
-!
-      if(iflag .eq. 1) call link_merged_data_2_udt_IO
-!
       do istep = ist, ied, iint
 !
 !    read spectral data
@@ -302,11 +298,7 @@
 !
 !    output data
 !
-        call set_ucd_file_format(iflag_udt)
-        call sel_write_ucd_file(izero, istep, fem_ucd)
+        call link_write_merged_ucd(iflag_udt, istep)
       end do
-!
-      call disconnect_ucd_data(fem_ucd)
-      call disconnect_ucd_node(fem_ucd)
 !
       end program make_physical_data

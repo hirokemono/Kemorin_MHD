@@ -76,7 +76,6 @@ else
 fi
 AC_SUBST(ar_bin)
 
-# AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 
@@ -102,10 +101,12 @@ AC_SUBST(OPENMP_FCFLAGS)
 # Check MPI
 AX_MPI
 AC_LANG_RESTORE
+AC_SUBST(MPIDIR)
+AC_SUBST(MPIINCDIR)
 
 
 # hdf5 check
-AX_LIB_HDF5(serial)
+AX_LIB_HDF5(parallel)
 AC_MSG_RESULT(HDF5_LDFLAGS... "${HDF5_LDFLAGS}")
 AC_MSG_RESULT(HDF5_PFLIBS... "${HDF5_PFLIBS}")
 
@@ -211,7 +212,7 @@ else
 # Checks for OpenGL
 	if test ${USE_gl} = "yes"
 	then
-        AX_CHECK_GL
+#        AX_CHECK_GL
 #        AX_CHECK_GLU
 #        AX_CHECK_GLUT
 
@@ -275,6 +276,75 @@ if test -n "${LIBS}"
 	PGPLOT_LIBS="${LDFLAGS} ${LIBS}"
 fi
 AC_SUBST(PGPLOT_LIBS)
+
+
+AC_MSG_RESULT()
+AC_MSG_RESULT(---------------------------------------------------------------)
+AC_MSG_RESULT()
+AC_MSG_RESULT( Configuration summary )
+AC_MSG_RESULT()
+if test -n "${OPENMP_FCFLAGS}"; then
+        AC_MSG_RESULT(    Use OpenMP ...        yes)
+else
+        AC_MSG_RESULT(    Use OpenMP ...         no)
+fi
+if test -n "${COCOA_FLAG}"; then
+        AC_MSG_RESULT(    Use Cocoa...          yes)
+else
+        AC_MSG_RESULT(    Use Cocoa...           no)
+fi
+if test -n "${X_LIBS}"; then
+        AC_MSG_RESULT(    Use X Window...       yes)
+else
+        AC_MSG_RESULT(    Use X Window...        no)
+fi
+AC_MSG_RESULT()
+if test -n "${FFTW3_LIBS}"; then
+        AC_MSG_RESULT(    Use FFTW3 ...         yes)
+else
+        AC_MSG_RESULT(    Use FFTW3 ...          no)
+fi
+if test -n "${HDF5_PFLIBS}"; then
+        AC_MSG_RESULT(    Use parallel HDF5 ... yes)
+else
+        AC_MSG_RESULT(    Use parallel HDF5 ...  no)
+fi
+AC_MSG_RESULT()
+if test -n "${ZLIB_LIB}"; then
+        AC_MSG_RESULT(    Use zlib ...          yes)
+else
+        AC_MSG_RESULT(    Use zlib ...           no)
+fi
+if test -n "${PNG_LIBS}"; then
+        AC_MSG_RESULT(    Use PNG output...     yes)
+else
+        AC_MSG_RESULT(    Use PNG output...      no)
+fi
+AC_MSG_RESULT()
+if test -n "${CXX}"; then
+        AC_MSG_RESULT(    Use GLUI...           yes)
+else
+        AC_MSG_RESULT(    Use GLUI...            no)
+fi
+if test -n "${GTK2_LIBS}"; then
+        AC_MSG_RESULT(    Use GTK2+...          yes)
+else
+        AC_MSG_RESULT(    Use GTK2+...           no)
+fi
+if test -n "${PGPLOT_LIBS}"; then
+        AC_MSG_RESULT(    Use PGPLOT...         yes)
+else
+        AC_MSG_RESULT(    Use PGPLOT...          no)
+fi
+if test -n "${AQUATERM_LIBS}"; then
+        AC_MSG_RESULT(    Use Aquaterm...       yes)
+else
+        AC_MSG_RESULT(    Use Aquaterm...        no)
+fi
+AC_MSG_RESULT()
+AC_MSG_RESULT(---------------------------------------------------------------)
+AC_MSG_RESULT()
+
 
 
 AC_CONFIG_FILES([Makefile])

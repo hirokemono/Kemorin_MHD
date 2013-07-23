@@ -41,7 +41,7 @@
 !
       call s_count_num_surf_scalar(num_surf, surf_name,                 &
      &    num_bc_h_flux, bc_h_flux_name,                                &
-     &    ibc_h_flux_type, bc_h_flux_magnitude, ngrp_sf_sgs_temp)
+     &    ibc_h_flux_type, ngrp_sf_sgs_temp)
 !
       end subroutine count_num_surf_temp
 !
@@ -54,8 +54,7 @@
 !
 !
       call s_count_num_surf_scalar(num_surf, surf_name,                 &
-     &    num_bc_wall, bc_wall_name,                                    &
-     &    ibc_wall_type, bc_wall_magnitude, ngrp_sf_sgs_p)
+     &    num_bc_wall, bc_wall_name, ibc_wall_type, ngrp_sf_sgs_p)
 !
       end subroutine count_num_surf_press
 !
@@ -69,7 +68,7 @@
 !
       call s_count_num_surf_scalar(num_surf, surf_name,                 &
      &    num_surf_magp, surf_magp_name,                                &
-     &    isurf_magp_type, surf_magp_magnitude, ngrp_sf_sgs_magp)
+     &    isurf_magp_type, ngrp_sf_sgs_magp)
 !
       end subroutine count_num_surf_magne_p
 !
@@ -83,7 +82,7 @@
 !
       call s_count_num_surf_scalar                                      &
      &  (num_surf, surf_name, num_surf_composition, surf_composit_name, &
-     &   isurf_composit_type, surf_composit_magnitude, ngrp_sf_sgs_cmg)
+     &   isurf_composit_type, ngrp_sf_sgs_cmg)
 !
       end subroutine count_num_surf_composition
 !

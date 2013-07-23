@@ -40,7 +40,6 @@
       implicit none
 !
       private :: find_local_sph_mode_address
-      private :: local_sph_data_address
       private :: set_initial_velocity
       private :: set_initial_temperature
       private :: set_initial_composition
@@ -124,9 +123,10 @@
       pi = four * atan(one)
       shell = r_CMB - r_ICB
 !
-!   set reference temperature (l = m = 0)
+!   search address for (l = m = 0)
       jj = find_local_sph_mode_address(izero, izero)
 !
+!   set reference temperature if (l = m = 0) mode is there
       if (jj .gt. 0) then
         do k = 1, nidx_rj(1)
           inod = local_sph_data_address(k,jj)
@@ -136,12 +136,17 @@
       end if
 !
 !
-!   set initial temperature (l = m = 4)
+!   search address for (l = m = 4)
       jj =  find_local_sph_mode_address(ifour, ifour)
 !
+!   set reference temperature if (l = m = 4) mode is there
       if (jj .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB
+!
+!   set address to substitute at (Nr, j)
           inod = local_sph_data_address(k,jj)
+!
+!   set reference temperature if (l = m = 4) mode is there
           xr = two * radius_1d_rj_r(k) - one * (r_CMB+r_ICB) / shell
 !
           d_rj(inod,ipol%i_temp) = (one-three*xr**2+three*xr**4-xr**6)  &
@@ -215,8 +220,9 @@
         do k = nlayer_ICB, nlayer_CMB
           is = local_sph_data_address(k,js)
           rr = radius_1d_rj_r(k)
-          d_rj(is,ipol%i_magne) =  (five / two) * rr**2                 &
-     &                       * (four*r_CMB - three*rr) / (r_CMB+three)
+!   Substitute poloidal mangetic field
+          d_rj(is,ipol%i_magne) =  (5.0d0/8.0d0) * (-3.0d0 * rr**3      &
+     &                     + 4.0d0 * r_CMB * rr**2 - r_ICB**4 / rr)
         end do
       end if
 !
@@ -228,49 +234,13 @@
         do k = 1, nlayer_CMB
           it = local_sph_data_address(k,jt)
           rr = radius_1d_rj_r(k)
-!
-          d_rj(it,itor%i_magne)                                         &
-     &          =  (ten / three) * rr * sin(pi*rr/r_CMB)
-          d_rj(it,ipol%i_current) =  d_rj(it,itor%i_magne)
-          d_rj(it,idpdr%i_current)                                      &
-     &          = (ten / three) * (sin(pi*rr/r_CMB)    &
-     &                          + (pi/r_CMB) * rr * cos(pi*rr/r_CMB) )
+!   Substitute totoidal mangetic field
+          d_rj(it,itor%i_magne) = (10.0d0/3.0d0) * rr                   &
+     &                           * sin(pi*(rr-r_ICB))
         end do
       end if
 !
       end subroutine set_initial_magne_sph
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      integer function find_local_sph_mode_address(l, m)
-!
-      integer(kind = kint), intent(in) :: l, m
-!
-      integer(kind = kint) :: j
-!
-!
-      find_local_sph_mode_address = 0
-      do j = 1, nidx_rj(2)
-        if (   idx_gl_1d_rj_j(j,2) .eq. l                               &
-     &   .and. idx_gl_1d_rj_j(j,3) .eq. m) then
-          find_local_sph_mode_address = j
-          return
-        end if
-      end do
-!
-      end function find_local_sph_mode_address
-!
-!-----------------------------------------------------------------------
-!
-      integer function local_sph_data_address(kr, j_lc)
-!
-      integer(kind = kint), intent(in) :: kr, j_lc
-!
-!
-      local_sph_data_address = j_lc + (kr-1)*nidx_rj(2)
-!
-      end function local_sph_data_address
 !
 !-----------------------------------------------------------------------
 !

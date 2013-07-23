@@ -5,7 +5,7 @@
 !
 !      subroutine s_count_num_surf_vector                               &
 !     &          (num_surf, inod_stack_sf_grp, surf_name,               &
-!     &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,        &
+!     &           num_bc_sf, bc_sf_name, ibc_sf_type,                   &
 !     &           field_name, nmax_sf_sgs, ngrp_sf_sgs, ngrp_sf_dat_n,  &
 !     &           nnod_sf_dat_n)
 !      subroutine s_set_surf_vector_id                                  &
@@ -18,6 +18,7 @@
       module set_surf_vector_id
 !
       use m_precision
+      use m_boundary_condition_IDs
 !
       use set_surface_bc
 !
@@ -31,7 +32,7 @@
 !
       subroutine s_count_num_surf_vector                                &
      &          (num_surf, inod_stack_sf_grp, surf_name,                &
-     &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,         &
+     &           num_bc_sf, bc_sf_name, ibc_sf_type,                    &
      &           field_name, nmax_sf_sgs, ngrp_sf_sgs, ngrp_sf_dat_n,   &
      &           nnod_sf_dat_n)
 !
@@ -40,7 +41,6 @@
       character(len=kchara), intent(in) :: surf_name(num_surf)
 !
       integer (kind=kint) :: num_bc_sf
-      real (kind=kreal), intent(in) :: bc_sf_mag(num_bc_sf)
       integer (kind=kint), intent(in) :: ibc_sf_type(num_bc_sf)
       character (len=kchara), intent(in) :: bc_sf_name(num_bc_sf)
       character (len=kchara), intent(in) :: field_name
@@ -76,18 +76,19 @@
               do nd = 1, 3
 !
 ! -----------set boundary from control file
-                if ( ibc_sf_type(j)==(14+nd) ) then
+                if ( ibc_sf_type(j) .eq. (iflag_bc_sgs_commute+nd) )    &
+     &           then
                   isig_s(nd) = 1
                 end if
               end do
 !
 ! -----------set boundary from control file
-              if (ibc_sf_type(j)==10) then
+              if (ibc_sf_type(j) .eq. iflag_fixed_norm) then
                 ngrp_sf_dat_n = ngrp_sf_dat_n + 1
                 nnod_sf_dat_n = nnod_sf_dat_n                           &
      &                  + inod_stack_sf_grp(i) - inod_stack_sf_grp(i-1)
                 isig_s(1:3) = 1
-              else if (ibc_sf_type(j)==-10) then
+              else if (ibc_sf_type(j) .eq. -iflag_fixed_norm) then
                 call count_surf_nod_group_from_data(i, ngrp_sf_dat_n,   &
      &              nnod_sf_dat_n, field_name, num_surf,                &
      &              inod_stack_sf_grp, surf_name)
@@ -163,20 +164,20 @@
            do nd = 1, 3
 !
 ! -----------set boundary from control file
-              if ( ibc_sf_type(j)==(14+nd) ) then
+              if ( ibc_sf_type(j) .eq. (iflag_bc_sgs_commute+nd) ) then
                 isig_s(nd) = 1
               end if
             end do
 !
 ! -----------set boundary from control file
 !
-            if (ibc_sf_type(j)==10) then
+            if (ibc_sf_type(j) .eq. iflag_fixed_norm) then
               call set_sf_nod_grp_from_ctl(num_surf, inod_stack_sf_grp, &
      &            ngrp_sf_fix_n, nnod_sf_fix_n, l_10, i,                &
      &            id_grp_sf_fix_n, ist_nod_sf_fix_n, sf_apt_fix_n,      &
      &            bc_sf_mag(j))
               isig_s(1:3) = 1
-            else if (ibc_sf_type(j)==-10) then
+            else if (ibc_sf_type(j) .eq. -iflag_fixed_norm) then
               call set_sf_nod_grp_from_data(num_surf, surf_name,        &
      &            ngrp_sf_fix_n, nnod_sf_fix_n, l_10, i,                &
      &            id_grp_sf_fix_n, ist_nod_sf_fix_n, sf_apt_fix_n,      &

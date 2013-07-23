@@ -36,8 +36,7 @@
       use set_normal_vectors
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
-      use set_ucd_data
-      use ucd_IO_select
+      use m_ucd_input_data
       use output_parallel_ucd_file
 !
       use cvt_nod_data_to_sph_data
@@ -75,11 +74,7 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'link_num_field_2_output'
-      call link_num_field_2_output
-!
-      if (iflag_debug.gt.0) write(*,*) 'sel_read_udt_param'
-      call sel_read_udt_param(my_rank, i_step_init, fem_ucd)
+      call init_read_ucd_data(my_rank, i_step_init)
 !
       end subroutine FEM_initialize_sph_trans
 !
@@ -89,8 +84,7 @@
       subroutine FEM_analyze_sph_trans(i_step, visval)
 !
       use m_t_step_parameter
-      use set_ucd_data
-      use ucd_IO_select
+      use m_ucd_input_data
 !
       integer (kind =kint), intent(in) :: i_step
       integer (kind =kint), intent(inout) :: visval
@@ -103,7 +97,7 @@
 !*  -----------  Output volume data --------------
 !*
       if(visval .eq. 0) then
-        call set_ucd_data_from_IO(my_rank, i_step)
+        call set_data_by_read_ucd(my_rank, i_step)
       end if
 !
       end subroutine FEM_analyze_sph_trans

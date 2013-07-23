@@ -99,18 +99,19 @@
       if( (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                    &
      &       .or. iflag_SGS_model.eq.id_SGS_similarity)) then
 !
-        if (iflag_SGS_filter.eq.1 .or. iflag_SGS_filter.eq.11) then
+        if   (iflag_SGS_filter .eq. id_SGS_3D_FILTERING                 &
+     &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING) then
           if (iflag_debug .gt. 0)                                       &
      &      write(*,*)' s_set_istart_3d_filtering'
           call s_set_istart_3d_filtering
 !
-        else if (iflag_SGS_filter.eq.21                                 &
-     &     .or. iflag_SGS_filter.eq.31) then
+        else if (iflag_SGS_filter.eq.id_SGS_3D_SMP_FILTERING            &
+     &     .or. iflag_SGS_filter.eq.id_SGS_3D_EZ_SMP_FILTERING) then
           if (iflag_debug .gt. 0)                                       &
      &      write(*,*)' s_const_tbl_3d_filtering_smp'
           call s_const_tbl_3d_filtering_smp
 !
-        else if (iflag_SGS_filter.eq.2) then
+        else if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
           if (iflag_debug.gt.0) write(*,*)' ordering_l_filter_smp'
           call ordering_l_filter_smp
         end if
@@ -118,12 +119,13 @@
 !
       if( (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                    &
      &      .and. iflag_SGS_model.eq.id_SGS_similarity) ) then
-        if (iflag_SGS_filter.eq.1 .or. iflag_SGS_filter.eq.11) then
+        if    (iflag_SGS_filter .eq. id_SGS_3D_FILTERING                &
+     &    .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING) then
           if (iflag_debug .gt. 0) write(*,*)' s_set_istart_w_filtering'
           call s_set_istart_w_filtering
 !
-        else if (iflag_SGS_filter.eq.21                                 &
-     &     .or. iflag_SGS_filter.eq.31) then
+        else if (iflag_SGS_filter.eq.id_SGS_3D_SMP_FILTERING            &
+     &     .or. iflag_SGS_filter.eq.id_SGS_3D_EZ_SMP_FILTERING) then
 !
           if (iflag_debug .gt. 0)                                       &
      &      write(*,*)' s_const_tbl_w_filtering_smp'

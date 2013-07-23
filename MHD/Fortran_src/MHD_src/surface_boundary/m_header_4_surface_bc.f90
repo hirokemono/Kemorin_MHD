@@ -38,11 +38,8 @@
       character(len=kchara), parameter :: name_sjn = 'normal_current'
 !
 !
-      character(len=kchara), parameter :: name_st = 'temperature_surf'
-      character(len=kchara), parameter :: name_sp = 'pressure_surf'
       character(len=kchara), parameter                                  &
      &      :: name_smp = 'magnetic_potential_surf'
-      character(len=kchara), parameter :: name_sds = 'composition_surf'
 !
 !
 !

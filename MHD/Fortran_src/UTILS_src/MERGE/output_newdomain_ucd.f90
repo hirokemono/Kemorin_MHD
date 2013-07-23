@@ -14,9 +14,11 @@
       use m_control_param_merge
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
-      use m_ucd_data
+      use t_ucd_data
 !
       implicit none
+!
+      type(ucd_data), save, private :: fem_ucd
 !
       private :: copy_domain_data_from_global
       private :: copy_node_posi_from_global
@@ -45,7 +47,7 @@
      &     = merged_fld%phys_name(1:fem_ucd%num_field)
 !
       fem_ucd%ifmt_file = itype_assembled_data
-      call set_ucd_file_prefix(new_udt_head)
+      fem_ucd%file_prefix = new_udt_head
       do ip = 1, num_pe2
         my_rank = ip - 1
 !
@@ -53,7 +55,7 @@
         call allocate_ucd_node(fem_ucd)
         call allocate_ucd_phys_data(fem_ucd)
 !
-        call copy_domain_data_from_global(ip)
+        call copy_domain_data_from_global(ip, fem_ucd)
         call sel_write_udt_file(my_rank, istep, fem_ucd)
 !
         call deallocate_ucd_phys_data(fem_ucd)
@@ -76,14 +78,14 @@
 !
       fem_ucd%ifmt_file = itype_assembled_data
       fem_ucd%nnod_4_ele = merged%ele%nnod_4_ele
-      call set_ucd_file_prefix(new_udt_head)
+      fem_ucd%file_prefix = new_udt_head
 !
       do ip = 1, num_pe2
         my_rank = ip - 1
 !
         fem_ucd%nnod = subdomains_2(ip)%node%numnod
         call allocate_ucd_node(fem_ucd)
-        call copy_node_posi_from_global(ip)
+        call copy_node_posi_from_global(ip, fem_ucd)
 !
         call count_udt_elements                                         &
      &     (subdomains_2(ip)%node%internal_node,                        &
@@ -114,20 +116,22 @@
 !  ---------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_domain_data_from_global(ip)
+      subroutine copy_domain_data_from_global(ip, ucd)
 !
       integer(kind = kint), intent(in) :: ip
+      type(ucd_data), intent(inout) :: ucd
+!
       integer (kind = kint) :: inod, inum
 !
 !
       do inum = 1, subdomains_2(ip)%node%numnod
         inod = subdomains_2(ip)%node%inod_global(inum)
-        fem_ucd%inod_global(inum) = inod
+        ucd%inod_global(inum) = inod
         if (inod .le. merged%node%numnod) then
-          fem_ucd%d_ucd(inum,1:fem_ucd%ntot_comp)                       &
-     &        = merged_fld%d_fld(inod,1:fem_ucd%ntot_comp)
+          ucd%d_ucd(inum,1:ucd%ntot_comp)                               &
+     &        = merged_fld%d_fld(inod,1:ucd%ntot_comp)
         else
-          fem_ucd%d_ucd(inum,1:fem_ucd%ntot_comp) = zero
+          ucd%d_ucd(inum,1:ucd%ntot_comp) = zero
         end if
       end do
 !
@@ -135,16 +139,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_node_posi_from_global(ip)
+      subroutine copy_node_posi_from_global(ip, ucd)
 !
       integer(kind = kint), intent(in) :: ip
+      type(ucd_data), intent(inout) :: ucd
+!
       integer (kind = kint) :: inum, inod
 !
 !
-      do inum = 1, fem_ucd%nnod
+      do inum = 1, ucd%nnod
         inod = subdomains_2(ip)%node%inod_global(inum)
-        fem_ucd%inod_global(inum) = inod
-        fem_ucd%xx(inum,1:3) = merged%node%xx(inod,1:3)
+        ucd%inod_global(inum) = inod
+        ucd%xx(inum,1:3) = merged%node%xx(inod,1:3)
       end do
 !
       end subroutine copy_node_posi_from_global

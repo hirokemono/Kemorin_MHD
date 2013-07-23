@@ -15,8 +15,6 @@
 !!
 !!      subroutine count_stack_tot_psf_field
 !!
-!!      subroutine write_headers_psf_comp_name(id_file)
-!!
 !!      subroutine set_psf_mesh_to_ucd_data(psf_ucd)
 !!      subroutine set_psf_mesh_to_ucd_mesh(psf_ucd)
 !!      subroutine set_psf_mesh_to_ucd_field(psf_ucd)
@@ -145,32 +143,6 @@
       end subroutine deallocate_psf_results
 !
 !-----------------------------------------------------------------------
-!
-      subroutine write_headers_psf_comp_name(id_file)
-!
-      integer(kind = kint), intent(in) :: id_file
-!
-      integer(kind = kint) :: j, k
-!
-!
-      write(id_file,'(a)',advance='no') ' psf_no, step_no, '
-      do j = 1, nfield_psf
-        if ( ncomp_psf(j) .eq. 1) then
-          write(id_file,'(a,a2)',advance='no')                          &
-     &                 trim( psf_data_name(j) ), ', '
-        else
-          do k = 1, ncomp_psf(j)
-            write(id_file,1000,advance='no')                            &
-     &                 trim( psf_data_name(j) ), k
-          end do
-        end if
-      end do
-!
- 1000 format(a,'_',i1,', ')
-!
-      end subroutine write_headers_psf_comp_name
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine set_psf_mesh_to_ucd_data(psf_ucd)
@@ -189,18 +161,17 @@
 !
       subroutine set_psf_mesh_to_ucd_mesh(psf_ucd)
 !
+      use m_geometry_constants
       use t_ucd_data
+      use set_ucd_data
 !
       type(ucd_data), intent(inout) :: psf_ucd
 !
 !
-      psf_ucd%nnod = numnod_psf
-      psf_ucd%nele = numele_psf
-      psf_ucd%nnod_4_ele = 3
-      psf_ucd%inod_global =>    inod_psf
-      psf_ucd%xx =>             xx_psf
-      psf_ucd%iele_global =>    iele_psf
-      psf_ucd%ie =>             ie_psf
+      call link_node_data_2_output(numnod_psf, inod_psf, xx_psf,        &
+     &    psf_ucd)
+      call link_ele_data_2_output(numele_psf, num_triangle,             &
+     &    iele_psf, ie_psf, psf_ucd)
 !
       end subroutine set_psf_mesh_to_ucd_mesh
 !
@@ -209,15 +180,14 @@
       subroutine set_psf_mesh_to_ucd_field(psf_ucd)
 !
       use t_ucd_data
+      use set_ucd_data
 !
       type(ucd_data), intent(inout) :: psf_ucd
 !
 !
-      psf_ucd%num_field = nfield_psf
-      psf_ucd%ntot_comp = ncomptot_psf
-      psf_ucd%num_comp =>       ncomp_psf
-      psf_ucd%phys_name =>      psf_data_name
-      psf_ucd%d_ucd =>          d_nod_psf
+      call link_field_data_2_output(numnod_psf,                         &
+     &    nfield_psf, ncomptot_psf, nfield_psf, ncomptot_psf,           &
+     &    ncomp_psf, psf_data_name, d_nod_psf, psf_ucd)
 !
       psf_ucd%ifmt_file = iflag_psf_fmt
 !

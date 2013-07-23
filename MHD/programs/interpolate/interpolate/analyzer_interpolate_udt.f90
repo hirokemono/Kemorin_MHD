@@ -15,6 +15,8 @@
 !
       implicit none
 !
+      private :: link_2nd_field_data_2_output
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -35,10 +37,6 @@
       use set_smp_size_4_2nd
       use link_data_to_1st_mesh
       use nodal_vector_send_recv
-!
-      use m_ucd_data
-      use ucd_IO_select
-      use set_ucd_data
 !
 !
       if (my_rank.eq.0)  write(*,*) 'Interpolate data to new mesh'
@@ -86,16 +84,6 @@
 !
       call init_send_recv
 !
-!     ---------------------
-!
-      if (my_rank .lt. ndomain_org) then
-        call link_num_field_2_output
-!
-        call set_ucd_file_format(itype_org_udt_file)
-        call set_ucd_file_prefix(org_udt_file_head)
-        call sel_read_udt_param(my_rank, i_step_init, fem_ucd)
-      end if
-!
       end subroutine initialize_itp_udt
 !
 ! ----------------------------------------------------------------------
@@ -104,8 +92,8 @@
 !
       use m_t_step_parameter
       use m_ucd_data
+      use m_ucd_input_data
       use m_ctl_params_4_gen_table
-      use set_ucd_data
       use set_udt_to_2nd_data
       use ucd_IO_select
       use interpolate_nodal_data
@@ -114,9 +102,8 @@
 !
       do ucd_step = i_step_init, i_step_number, i_step_output_ucd
         if (my_rank .lt. ndomain_org) then
-          call set_ucd_file_format(itype_org_udt_file)
-          call set_ucd_file_prefix(org_udt_file_head)
-          call set_ucd_data_from_IO(my_rank, ucd_step)
+          call set_data_by_read_ucd_once(my_rank, ucd_step,             &
+   &          itype_org_udt_file, org_udt_file_head)
 !
           call phys_send_recv_all
         end if
@@ -131,8 +118,6 @@
 !    output udt data
 !
         if (my_rank .lt. ndomain_dest) then
-!
-          call link_2nd_node_data_2_output(fem_ucd)
           call link_2nd_field_data_2_output(fem_ucd)
 !
           call set_ucd_file_format(itype_itp_udt_file)
@@ -146,5 +131,29 @@
       end subroutine analyze_itp_udt
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine link_2nd_field_data_2_output(ucd)
+!
+      use m_2nd_geometry_param
+      use m_2nd_geometry_data
+      use m_2nd_phys_data
+      use set_ucd_data
+!
+      use t_ucd_data
+!
+      type(ucd_data), intent(inout) :: ucd
+!
+!
+      call link_node_data_2_output(nnod_2nd, globalnodid_2nd, xx_2nd,   &
+     &    ucd)
+      call link_field_data_2_output(nnod_2nd, num_nod_phys_2nd,         &
+     &    ntot_nod_phys_2nd, num_nod_phys_2nd_vis,                      &
+     &    ntot_nod_phys_2nd_vis, ncomps_nod_2nd, phys_nod_name_2nd,     &
+     &    d_nod_2nd, ucd)
+!
+      end subroutine link_2nd_field_data_2_output
+!
+!-----------------------------------------------------------------------
 !
       end module analyzer_interpolate_udt

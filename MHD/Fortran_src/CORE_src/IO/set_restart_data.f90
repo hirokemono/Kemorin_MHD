@@ -210,13 +210,15 @@
       end if
 !
       if    (d_name .eq. fhd_temp                                       &
-     &  .or. d_name .eq. fhd_pre_heat) then
+     &  .or. d_name .eq. fhd_pre_heat                                   &
+     &  .or. d_name .eq. fhd_heat_source) then
         iflag = 1
         return
       end if
 !
       if    (d_name .eq. fhd_light                                      &
-     &  .or. d_name .eq. fhd_pre_composit) then
+     &  .or. d_name .eq. fhd_pre_composit                               &
+     &  .or. d_name .eq. fhd_light_source) then
         iflag = 1
         return
       end if

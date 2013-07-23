@@ -38,14 +38,13 @@
 !
       subroutine output_grd_file
 !
-      use set_ucd_data
       use merged_udt_vtk_file_IO
       use parallel_udt_IO_select
 !
 !
-      call link_num_field_2_output
-      call link_local_mesh_4_ucd
-      call link_field_data_2_output
+      call link_fem_num_field_2_ucd_out
+      call link_local_mesh_4_ucd_out
+      call link_fem_field_data_2_ucd_out
 !
       if (fem_ucd%ifmt_file/100 .eq. iflag_single/100) then
         call init_merged_ucd(fem_ucd, merged_ucd)
@@ -69,7 +68,6 @@
 !
       subroutine output_udt_one_snapshot(istep_ucd)
 !
-      use set_ucd_data
       use merged_udt_vtk_file_IO
       use copy_time_steps_4_restart
       use parallel_udt_IO_select
@@ -77,9 +75,9 @@
       integer(kind = kint), intent(in) :: istep_ucd
 !
 !
-      call link_num_field_2_output
-      call link_local_mesh_4_ucd
-      call link_field_data_2_output
+      call link_fem_num_field_2_ucd_out
+      call link_local_mesh_4_ucd_out
+      call link_fem_field_data_2_ucd_out
 !
       if (fem_ucd%ifmt_file/100 .eq. iflag_single/100) then
         call init_merged_ucd(fem_ucd, merged_ucd)

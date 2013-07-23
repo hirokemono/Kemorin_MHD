@@ -65,7 +65,7 @@
 !
       call s_count_num_surf_vector                                      &
      &    (sf_grp%num_grp, sf_nod%inod_stack_sf_grp, sf_grp%grp_name,   &
-     &     num_bc_tq, bc_tq_name, ibc_tq_type, bc_tq_magnitude,         &
+     &     num_bc_tq, bc_tq_name, ibc_tq_type,                          &
      &     name_svn, velo%sgs%nmax_sf_dat, velo%sgs%ngrp_sf_dat,        &
      &     velo%normal%ngrp_sf_fix_fx, velo%normal%nitem_sf_fix_fx)
 !
@@ -90,7 +90,7 @@
 !
       call s_count_num_surf_vector                                      &
      &    (sf_grp%num_grp, sf_nod%inod_stack_sf_grp, sf_grp%grp_name,   &
-     &     num_bc_vps, bc_vps_name, ibc_vps_type, bc_vps_magnitude,     &
+     &     num_bc_vps, bc_vps_name, ibc_vps_type,                       &
      &     name_san, vector_p%sgs%nmax_sf_dat,                          &
      &     vector_p%sgs%ngrp_sf_dat, vector_p%normal%ngrp_sf_fix_fx,    &
      &     vector_p%normal%nitem_sf_fix_fx)
@@ -111,7 +111,7 @@
 !
       call s_count_num_surf_vector                                      &
      &    (sf_grp%num_grp, sf_nod%inod_stack_sf_grp, sf_grp%grp_name,   &
-     &     num_bc_bs, bc_bs_name, ibc_bs_type, bc_bs_magnitude,         &
+     &     num_bc_bs, bc_bs_name, ibc_bs_type,                          &
      &     name_sbn, magne%sgs%nmax_sf_dat, magne%sgs%ngrp_sf_dat,      &
      &     magne%normal%ngrp_sf_fix_fx, magne%normal%nitem_sf_fix_fx)
 !
@@ -131,7 +131,7 @@
 !
       call s_count_num_surf_vector                                      &
      &    (sf_grp%num_grp, sf_nod%inod_stack_sf_grp, sf_grp%grp_name,   &
-     &     num_bc_js, bc_js_name, ibc_js_type, bc_js_magnitude,         &
+     &     num_bc_js, bc_js_name, ibc_js_type,                          &
      &     name_sjn, current%sgs%nmax_sf_dat, current%sgs%ngrp_sf_dat,  &
      &     current%normal%ngrp_sf_fix_fx,                               &
      &     current%normal%nitem_sf_fix_fx)
@@ -151,7 +151,7 @@
 !
       call count_num_sf_grad_vector                                     &
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
-     &     num_bc_tq, bc_tq_name, ibc_tq_type, bc_tq_magnitude,         &
+     &     num_bc_tq, bc_tq_name, ibc_tq_type,                          &
      &     name_vxg, name_vyg, name_vzg, velo%torque%nmax_sf_fix_fx,    &
      &     velo%torque%nmax_ele_sf_fix_fx,                              &
      &     velo%torque_lead%nmax_sf_dat, velo%torque%ngrp_sf_fix_fx,    &
@@ -172,7 +172,7 @@
 !
       call count_num_sf_grad_vector                                     &
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
-     &     num_bc_vps, bc_vps_name, ibc_vps_type, bc_vps_magnitude,     &
+     &     num_bc_vps, bc_vps_name, ibc_vps_type,                       &
      &     name_axg, name_ayg, name_azg, vect_p%grad%nmax_sf_fix_fx,    &
      &     vect_p%grad%nmax_ele_sf_fix_fx,                              &
      &     vect_p%torque_lead%nmax_sf_dat, vect_p%grad%ngrp_sf_fix_fx,  &
@@ -192,7 +192,7 @@
 !
       call count_num_sf_grad_vector                                     &
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
-     &     num_bc_bs, bc_bs_name, ibc_bs_type, bc_bs_magnitude,         &
+     &     num_bc_bs, bc_bs_name, ibc_bs_type,                          &
      &     name_bxg, name_byg, name_bzg, magne%grad%nmax_sf_fix_fx,     &
      &     magne%grad%nmax_ele_sf_fix_fx,                               &
      &     magne%torque_lead%nmax_sf_dat, magne%grad%ngrp_sf_fix_fx,    &
@@ -212,7 +212,7 @@
 !
       call count_num_sf_grad_vector                                     &
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
-     &     num_bc_js, bc_js_name, ibc_js_type, bc_js_magnitude,         &
+     &     num_bc_js, bc_js_name, ibc_js_type,                          &
      &     name_jxg, name_jyg, name_jzg, current%grad%nmax_sf_fix_fx,   &
      &     current%grad%nmax_ele_sf_fix_fx,                             &
      &     current%torque_lead%nmax_sf_dat,                             &

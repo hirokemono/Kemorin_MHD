@@ -54,6 +54,11 @@
       integer (kind=kint) :: iflag_t_evo_4_vect_p =   0
       integer (kind=kint) :: iflag_t_evo_4_composit = 0
 !
+!
+      integer (kind=kint), parameter :: id_no_boundary_file =   0
+      integer (kind=kint), parameter :: id_read_boundary_file = 1
+      integer (kind=kint) :: iflag_boundary_file = id_no_boundary_file
+!
       integer (kind=kint) :: iflag_implicit_correct = 0
 !
 !
@@ -99,7 +104,14 @@
       integer (kind=kint), parameter :: id_SGS_DYNAMIC_ON =    1
       integer (kind=kint) :: iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
 !
-      integer (kind=kint) :: iflag_SGS_filter =       1
+      integer (kind=kint), parameter :: id_SGS_NO_FILTERING =         0
+      integer (kind=kint), parameter :: id_SGS_3D_FILTERING =         1
+      integer (kind=kint), parameter :: id_SGS_3D_EZ_FILTERING =     11
+      integer (kind=kint), parameter :: id_SGS_3D_SMP_FILTERING =    21
+      integer (kind=kint), parameter :: id_SGS_3D_EZ_SMP_FILTERING = 31
+      integer (kind=kint), parameter :: id_SGS_LINE_FILTERING =       2
+      integer (kind=kint), parameter :: id_SGS_PLANE_FILTERING =      3
+      integer (kind=kint) :: iflag_SGS_filter = id_SGS_3D_FILTERING
       integer (kind=kint) :: iset_DIFF_model_coefs =  0
       integer (kind=kint) :: iset_SGS_nagetive_clip = 0
       integer (kind=kint) :: iset_SGS_coef_marging =  0

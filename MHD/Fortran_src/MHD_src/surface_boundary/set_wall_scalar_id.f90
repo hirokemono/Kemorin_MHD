@@ -17,6 +17,7 @@
       module set_wall_scalar_id
 !
       use m_precision
+      use m_boundary_condition_IDs
 !
       implicit  none
 !
@@ -61,13 +62,13 @@
 !
 ! -----------set boundary
 !
-          if (ibc_sf_type(j) .eq. 70) then
+          if (ibc_sf_type(j) .eq. iflag_surf_wall) then
             ngrp_sf_wall = ngrp_sf_wall + 1
 !
-          else if (ibc_sf_type(j) .eq. 71) then
+          else if (ibc_sf_type(j) .eq. iflag_surf_sph_in) then
             ngrp_sf_spin = ngrp_sf_spin + 1
 !
-          else if (ibc_sf_type(j) .eq. 72) then
+          else if (ibc_sf_type(j) .eq. iflag_surf_sph_out) then
             ngrp_sf_spout = ngrp_sf_spout + 1
           end if
 !
@@ -122,15 +123,15 @@
 !
 ! -----------set boundary
 !
-            if (ibc_sf_type(j) .eq. 70) then
+            if (ibc_sf_type(j) .eq. iflag_surf_wall) then
               l_w1 = l_w1 + 1
               id_grp_sf_wall(l_w1) = i
 !
-            else if (ibc_sf_type(j) .eq. 71) then
+            else if (ibc_sf_type(j) .eq. iflag_surf_sph_in) then
               l_i1 = l_i1 + 1
               id_grp_sf_spin(l_i1) = i
 !
-            else if (ibc_sf_type(j) .eq. 72) then
+            else if (ibc_sf_type(j) .eq. iflag_surf_sph_out) then
               l_o1 = l_o1 + 1
               id_grp_sf_spout(l_o1) = i
             end if

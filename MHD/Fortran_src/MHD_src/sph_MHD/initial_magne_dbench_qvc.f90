@@ -37,22 +37,8 @@
       integer(kind = kint), parameter :: ls = 1, lt = 2
 !
 !
-      js = 0
-      jt = 0
-      do j = 1, nidx_rj(2)
-        if (   idx_gl_1d_rj_j(j,2).eq.ls                                &
-     &   .and. idx_gl_1d_rj_j(j,3).eq.0) then
-         js = j
-         exit
-        end if
-      end do
-      do j = 1, nidx_rj(2)
-        if (   idx_gl_1d_rj_j(j,2).eq.lt                                &
-     &   .and. idx_gl_1d_rj_j(j,3).eq.0) then
-         jt = j
-         exit
-        end if
-      end do
+      js = find_local_sph_mode_address(ls,izero)
+      jt = find_local_sph_mode_address(lt,izero)
 !
       pi = four * atan(one)
 !

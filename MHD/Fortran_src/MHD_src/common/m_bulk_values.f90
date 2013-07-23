@@ -161,6 +161,9 @@
      &       .or. phys_nod_name(i) .eq. fhd_part_light                  &
      &       .or. phys_nod_name(i) .eq. fhd_entropy                     &
      &       .or. phys_nod_name(i) .eq. fhd_per_entropy                 &
+     &       .or. phys_nod_name(i) .eq. fhd_heat_source                 &
+     &       .or. phys_nod_name(i) .eq. fhd_light_source                &
+     &       .or. phys_nod_name(i) .eq. fhd_entropy_source              &
      &       .or. phys_nod_name(i) .eq. fhd_density                     &
      &       .or. phys_nod_name(i) .eq. fhd_per_density                 &
      &       .or. phys_nod_name(i) .eq. fhd_mag_ene_gen                 &
@@ -367,6 +370,16 @@
           else if ( phys_nod_name(i) .eq. fhd_per_density ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_par_density, j_ave%i_par_density)
+!
+          else if ( phys_nod_name(i) .eq. fhd_heat_source ) then
+            call set_rms_address(num_nod_component(i), i0, j0,          &
+     &          i_rms%i_heat_source, j_ave%i_heat_source)
+          else if ( phys_nod_name(i) .eq. fhd_light_source ) then
+            call set_rms_address(num_nod_component(i), i0, j0,          &
+     &          i_rms%i_light_source, j_ave%i_light_source)
+          else if ( phys_nod_name(i) .eq. fhd_entropy_source ) then
+            call set_rms_address(num_nod_component(i), i0, j0,          &
+     &          i_rms%i_entropy_source, j_ave%i_entropy_source)
 !
           else if ( phys_nod_name(i) .eq. fhd_press_grad ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &

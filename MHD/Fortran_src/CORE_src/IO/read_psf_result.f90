@@ -66,9 +66,6 @@
       open(id_psf_result, file=psf_grid_name, form='formatted',         &
      &     status='old')
 !
-      call read_ucd_mesh_header(id_psf_result, numnod_psf, numele_psf,  &
-     &    ncomptot_psf)
-!
       call read_alloc_psf_grd_data
       close(id_psf_result)
 !

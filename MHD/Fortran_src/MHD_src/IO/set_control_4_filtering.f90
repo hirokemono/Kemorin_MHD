@@ -49,22 +49,22 @@
      &   .or. SGS_filter_name_ctl .eq. '3-dimensional'                  &
      &   .or. SGS_filter_name_ctl .eq. '3-Dimensional'                  &
      &   .or. SGS_filter_name_ctl .eq. '3-DIMENSIONAL'                  &
-     &  )  iflag_SGS_filter = 1
+     &  )  iflag_SGS_filter = id_SGS_3D_FILTERING
 !
         if   (SGS_filter_name_ctl .eq. 'line'                           &
      &   .or. SGS_filter_name_ctl .eq. 'Line'                           &
      &   .or. SGS_filter_name_ctl .eq. 'LINE'                           &
-     &  )  iflag_SGS_filter = 2
+     &  )  iflag_SGS_filter = id_SGS_LINE_FILTERING
 !
         if   (SGS_filter_name_ctl .eq. 'plane'                          &
      &   .or. SGS_filter_name_ctl .eq. 'Plane'                          &
      &   .or. SGS_filter_name_ctl .eq. 'PLANE'                          &
-     &  )  iflag_SGS_filter = 3
+     &  )  iflag_SGS_filter = id_SGS_PLANE_FILTERING
 !
         if   (SGS_filter_name_ctl .eq. '3d_easy'                        &
      &   .or. SGS_filter_name_ctl .eq. '3D_easy'                        &
      &   .or. SGS_filter_name_ctl .eq. '3D_EASY'                        &
-     &  )  iflag_SGS_filter = 11
+     &  )  iflag_SGS_filter = id_SGS_3D_EZ_FILTERING
 !
         if   (SGS_filter_name_ctl .eq. '3d-smp'                         &
      &   .or. SGS_filter_name_ctl .eq. '3D-smp'                         &
@@ -74,12 +74,12 @@
      &   .or. SGS_filter_name_ctl .eq. '3-dimensional-smp'              &
      &   .or. SGS_filter_name_ctl .eq. '3-Dimensional-smp'              &
      &   .or. SGS_filter_name_ctl .eq. '3-DIMENSIONAL-SMP'              &
-     &  )  iflag_SGS_filter = 21
+     &  )  iflag_SGS_filter = id_SGS_3D_SMP_FILTERING
 !
         if   (SGS_filter_name_ctl .eq. '3d_easy_smp'                    &
      &   .or. SGS_filter_name_ctl .eq. '3D_easy_smp'                    &
      &   .or. SGS_filter_name_ctl .eq. '3D_EASY_SMP'                    &
-     &  )  iflag_SGS_filter = 31
+     &  )  iflag_SGS_filter = id_SGS_3D_EZ_SMP_FILTERING
 !
         if (iflag_debug .gt. 0)  write(*,*)                             &
      &       'iflag_SGS_filter',     iflag_SGS_filter
@@ -87,7 +87,7 @@
 !
       if (iflag_SGS_model.eq.id_SGS_similarity                          &
      &     .or. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-        if (iflag_SGS_filter .eq. 0) then
+        if (iflag_SGS_filter .eq. id_SGS_NO_FILTERING) then
           e_message = 'Set filtering type for dynamic model'
           call parallel_abort(90, e_message)
         end if
@@ -95,7 +95,10 @@
 !
 !
 !
-      if (mod(iflag_SGS_filter,10) .eq. 1) then
+      if     (iflag_SGS_filter .eq. id_SGS_3D_FILTERING                 &
+     &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING              &
+     &   .or. iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING             &
+     &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING ) then
         if (i_num_whole_filter_grp .gt. 0) then
           num_whole_filter_grp =   num_whole_filter_grp_ctl
         else
@@ -232,7 +235,7 @@
         end if
       end if
 !
-      if (iflag_SGS_filter .eq. 2) then
+      if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
         if (i_filter_head_ctl .eq. 1) then
           filter_line_head = filter_head_ctl
         else

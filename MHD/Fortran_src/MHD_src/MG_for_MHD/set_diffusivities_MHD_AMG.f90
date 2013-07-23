@@ -33,8 +33,6 @@
       type(element_data), intent(in) :: ele
       type(coefs_4_MHD_AMG), intent(inout) :: ak_AMG
 !
-      integer(kind = kint) :: iele
-!
 !  allocate
 !    For thermal
 !

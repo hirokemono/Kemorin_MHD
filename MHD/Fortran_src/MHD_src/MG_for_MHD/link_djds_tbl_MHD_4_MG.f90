@@ -4,8 +4,7 @@
 !      Written by Hiroaki Matsui on Dec., 2008
 !
 !      subroutine s_link_djds_tbl_MHD_4_MG( djds_tbl, djds_tbl_fl,      &
-!     &          djds_tbl_cd, djds_tbl_ins, djds_tbl_l, djds_tbl_fll,   &
-!     &          djds_tbl_cdl, djds_tbl_insl)
+!     &          djds_tbl_l, djds_tbl_fll)
 !        type(DJDS_ordering_table),  intent(inout) :: djds_tbl
 !        type(DJDS_ordering_table),  intent(inout) :: djds_tbl_fl
 !        type(DJDS_ordering_table),  intent(inout) :: djds_tbl_cd
@@ -53,17 +52,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_link_djds_tbl_MHD_4_MG( djds_tbl, djds_tbl_fl,       &
-     &          djds_tbl_cd, djds_tbl_ins, djds_tbl_l, djds_tbl_fll,    &
-     &          djds_tbl_cdl, djds_tbl_insl)
+     &          djds_tbl_l, djds_tbl_fll)
 !
       type(DJDS_ordering_table),  intent(inout) :: djds_tbl
       type(DJDS_ordering_table),  intent(inout) :: djds_tbl_fl
-      type(DJDS_ordering_table),  intent(inout) :: djds_tbl_cd
-      type(DJDS_ordering_table),  intent(inout) :: djds_tbl_ins
       type(DJDS_ordering_table),  intent(inout) :: djds_tbl_l
       type(DJDS_ordering_table),  intent(inout) :: djds_tbl_fll
-      type(DJDS_ordering_table),  intent(inout) :: djds_tbl_cdl
-      type(DJDS_ordering_table),  intent(inout) :: djds_tbl_insl
 !
 !
       write(*,*) 'link_first_djds_tbl_4_MG'

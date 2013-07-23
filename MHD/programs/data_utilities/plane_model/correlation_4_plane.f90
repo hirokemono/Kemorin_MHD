@@ -15,6 +15,10 @@
       use m_2nd_geometry_4_merge
       use m_control_plane_correlate
       use m_read_mesh_data
+!
+      use t_phys_data
+      use t_ucd_data
+!
       use set_plane_size_correlate
       use set_numnod_4_plane
       use set_merged_geometry
@@ -31,6 +35,11 @@
 !  ===========
 ! . for local 
 !  ===========
+
+      type(phys_data), save :: cor_phys
+      type(phys_data), save :: ref_phys
+
+      type(ucd_data), save :: plane_ucd
 
       integer(kind=kint ) :: istep
       integer(kind=kint ) :: ist, ied, iint
@@ -73,10 +82,9 @@
 !
 !   read field name and number of components
 !
-      call init_udt_4_correlate(ist)
-      call init_2nd_udt_4_correlate(ist)
+      call init_udt_4_correlate(ist, cor_phys, plane_ucd)
 !
-      call s_set_list_4_correlate
+      call s_set_list_4_correlate(ref_phys, cor_phys)
 !
       write(*,*) 'internal_node, ele',                                  &
      &           merge_tbl%inter_nod_m,  merge_tbl%inter_ele_m
@@ -104,10 +112,7 @@
       do istep = ist, ied, iint
 !
        write(*,*) 'read_udt_4_correlate'
-       call read_udt_4_correlate(istep)
-       write(*,*) 'read_2nd_udt_4_correlate'
-       call read_2nd_udt_4_correlate(istep)
-!
+       call read_udt_4_correlate(istep, plane_ucd)
 !
 !  -------  Cross correlatiion
 !

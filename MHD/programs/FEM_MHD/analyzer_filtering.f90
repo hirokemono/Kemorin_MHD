@@ -24,6 +24,7 @@
 !
       subroutine init_analyzer
 !
+      use FEM_analyzer_snapshot
       use m_ctl_data_fem_MHD
       use set_control_MHD
 !
@@ -50,7 +51,7 @@
 !
 !     --------------------- 
 !
-      call FEM_initialize_filtered
+      call FEM_initialize_snapshot
 !
       call init_visualize(ierr)
 !
@@ -61,6 +62,7 @@
       subroutine analyze
 !
       use m_t_step_parameter
+      use FEM_analyzer_snapshot
 !
       integer(kind=kint ) :: i_step, visval
       integer(kind=kint ) :: istep_psf, istep_iso
@@ -80,7 +82,7 @@
         end if
       end do
 !
-      call FEM_finalize_filtered
+      call FEM_finalize_snapshot
 !
       end subroutine analyze
 !

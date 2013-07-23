@@ -29,12 +29,11 @@
       use m_ctl_params_zonal_fft
       use m_read_mesh_data
       use m_node_id_spherical_IO
-      use ucd_IO_select
+      use m_ucd_input_data
       use load_mesh_data
       use const_mesh_info
       use sph_file_IO_select
       use copy_sph_node_4_IO
-      use set_ucd_data
       use transfer_field_2_rtp_grid
       use copy_rtp_phys_data_4_IO
       use count_num_sph_smp
@@ -68,8 +67,6 @@
 !
 !  -------------------------------
 !
-      call link_num_field_2_output
-!
       call allocate_phys_data_by_output(my_rank, istep_start)
 !
 !
@@ -89,7 +86,7 @@
       use m_spheric_param_smp
       use m_ctl_params_zonal_fft
       use m_sph_spectr_data
-      use set_ucd_data
+      use m_ucd_input_data
       use transfer_field_2_rtp_grid
       use field_IO_select
       use copy_rtp_phys_data_4_IO
@@ -109,7 +106,7 @@
       call initialize_FFT_select(np_smp, Nstacksmp, nidx_rtp(3))
 !
       do istep = istep_start, istep_end, istep_int
-        call set_ucd_data_from_IO(my_rank, istep)
+        call set_data_by_read_ucd(my_rank, istep)
 !
         if (iflag_debug.gt.0) write(*,*) 'trans_nod_phys_2_rtp_phys'
         call trans_nod_phys_2_rtp_phys(ifrag_trans_vect)

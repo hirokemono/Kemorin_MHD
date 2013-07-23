@@ -4,7 +4,7 @@
 !        programmed by H.Matsui on Nov., 2009
 !
 !      subroutine set_control_org_sph_mesh
-!      subroutine set_control_org_field_file_def
+!      subroutine set_control_org_fld_file_def
 !
       module m_control_params_2nd_files
 !
@@ -16,6 +16,8 @@
 !
 !>      file header for original field data
       character(len=kchara) :: org_ucd_header =  "field_org/out"
+!>      file header for original field data
+      integer(kind=kint) :: ifmt_org_ucd
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,8 +48,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_org_field_file_def
+      subroutine set_control_org_fld_file_def
 !
+      use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
       use m_field_data_IO
       use m_field_file_format
@@ -63,7 +66,10 @@
         org_ucd_header = org_udt_head_ctl
       end if
 !
-      end subroutine set_control_org_field_file_def
+      call choose_ucd_file_format(udt_file_fmt_ctl,                     &
+     &    i_udt_files_fmt, ifmt_org_ucd)
+!
+      end subroutine set_control_org_fld_file_def
 !
 ! -----------------------------------------------------------------------
 !

@@ -17,10 +17,10 @@
 !!*
 !!*********************************************************************
 !!
-!!      subroutine cvt_sph_vect_2_xyz_smp(np_smp, numnod,               &
+!!      subroutine cvt_sph_vect_2_cyl_smp(np_smp, numnod,               &
 !!     &          inod_smp_stack, v_cyl, v_sph, theta)
 !!
-!!      subroutine overwrite_sph_vect_2_xyz_smp(np_smp, numnod,         &
+!!      subroutine overwrite_sph_vect_2_cyl_smp(np_smp, numnod,         &
 !!     &          inod_smp_stack, vect, theta)
 !!
 !!      subroutine cal_sph_2_s_comp_smp(np_smp, numnod, inod_smp_stack, &
@@ -53,7 +53,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cvt_sph_vect_2_xyz_smp(np_smp, numnod,                 &
+      subroutine cvt_sph_vect_2_cyl_smp(np_smp, numnod,                 &
      &          inod_smp_stack, v_cyl, v_sph, theta)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
@@ -80,12 +80,12 @@
        end do
 !$omp end parallel do
 !
-      end subroutine cvt_sph_vect_2_xyz_smp
+      end subroutine cvt_sph_vect_2_cyl_smp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine overwrite_sph_vect_2_xyz_smp(np_smp, numnod,           &
+      subroutine overwrite_sph_vect_2_cyl_smp(np_smp, numnod,           &
      &          inod_smp_stack, vect, theta)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
@@ -116,7 +116,7 @@
        end do
 !$omp end parallel do
 !
-      end subroutine overwrite_sph_vect_2_xyz_smp
+      end subroutine overwrite_sph_vect_2_cyl_smp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

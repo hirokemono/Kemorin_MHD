@@ -6,7 +6,8 @@ SUBDIRS = \
 MERGE \
 \
 PSF_utils \
-UDT_utils \
+FEM_utils \
+SPH_MHD_utils \
 \
 sph_transform \
 sph_spectr    \
@@ -43,8 +44,8 @@ target_list:
 	done
 
 target_task:
-	@echo data_utils: 'assembles psf_utils sph_trans' \
-	'zonal_trans udt_utils sph_data_util plane_utils' \
+	@echo data_utils: 'assembles psf_utils fem_utils sph_utils' \
+	'zonal_trans sph_trans sph_data_util plane_utils' \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \

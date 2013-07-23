@@ -44,6 +44,7 @@
       use set_control_4_composition
       use set_control_4_pickup_sph
       use output_parallel_ucd_file
+      use read_boundary_condition_file
 !
       use check_dependency_for_MHD
 !
@@ -56,7 +57,7 @@
       call set_control_sph_mesh
       call set_control_restart_file_def
       call set_control_parallel_field_def
-      call set_control_org_field_file_def
+      call set_control_org_fld_file_def
 !
       call s_set_control_4_model
 !
@@ -99,6 +100,11 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_magne'
       call s_set_control_4_magne
+!
+!   set flag to read boundary condition file
+!
+      if (iflag_debug.gt.0) write(*,*) 'check_read_boundary_files'
+      call check_read_boundary_files
 !
 !   set control parameters
 !

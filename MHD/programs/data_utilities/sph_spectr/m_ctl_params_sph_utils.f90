@@ -66,7 +66,7 @@
       call set_control_restart_file_def
       call set_control_parallel_field_def
       call set_control_org_sph_mesh
-      call set_control_org_field_file_def
+      call set_control_org_fld_file_def
 !
 !    file header for field data
 !

@@ -72,7 +72,11 @@
      &     .or. phys_name_rj(i_fld) .eq. fhd_pre_mom                    &
      &     .or. phys_name_rj(i_fld) .eq. fhd_pre_uxb                    &
      &     .or. phys_name_rj(i_fld) .eq. fhd_pre_heat                   &
-     &     .or. phys_name_rj(i_fld) .eq. fhd_pre_composit) then
+     &     .or. phys_name_rj(i_fld) .eq. fhd_pre_composit               &
+     &     .or. phys_name_rj(i_fld) .eq. fhd_heat_source                &
+     &     .or. phys_name_rj(i_fld) .eq. fhd_light_source               &
+     &     .or. phys_name_rj(i_fld) .eq. fhd_entropy_source             &
+     &     ) then
            num_phys_data_IO = num_phys_data_IO + 1
          end if
        end do
@@ -110,6 +114,9 @@
      &         .or. phys_name_rj(i_fld) .eq. fhd_mag_potential          &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_heat               &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_composit           &
+     &         .or. phys_name_rj(i_fld) .eq. fhd_heat_source            &
+     &         .or. phys_name_rj(i_fld) .eq. fhd_light_source           &
+     &         .or. phys_name_rj(i_fld) .eq. fhd_entropy_source         &
      &         ) then
           icou = icou + 1
           phys_data_name_IO(icou) = phys_name_rj(i_fld)
@@ -159,6 +166,9 @@
      &         .or. phys_name_rj(i_fld) .eq. fhd_mag_potential          &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_heat               &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_composit           &
+     &         .or. phys_name_rj(i_fld) .eq. fhd_heat_source            &
+     &         .or. phys_name_rj(i_fld) .eq. fhd_light_source           &
+     &         .or. phys_name_rj(i_fld) .eq. fhd_entropy_source         &
      &         ) then
               call copy_each_sph_field_to_IO(i_fld, j_IO)
             end if
@@ -209,6 +219,9 @@
      &         .or. phys_name_rj(i_fld) .eq. fhd_mag_potential          &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_heat               &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_composit           &
+     &         .or. phys_name_rj(i_fld) .eq. fhd_heat_source            &
+     &         .or. phys_name_rj(i_fld) .eq. fhd_light_source           &
+     &         .or. phys_name_rj(i_fld) .eq. fhd_entropy_source         &
      &         ) then
               call copy_each_sph_field_from_IO(i_fld, j_IO)
             end if

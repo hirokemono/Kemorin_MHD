@@ -1,16 +1,16 @@
 !
 !      module set_list_4_correlate
 !
-      module set_list_4_correlate
-!
 !     Written by H. Matsui
+!
+!      subroutine set_ctl_params_correlate(ist, ied, iint)
+!      subroutine s_set_list_4_correlate(ref_phys, cor_phys)
+!
+      module set_list_4_correlate
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine set_ctl_params_correlate(ist, ied, iint)
-!      subroutine s_set_list_4_correlate
 !
 !  ---------------------------------------------------------------------
 !
@@ -41,22 +41,27 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_list_4_correlate
+      subroutine s_set_list_4_correlate(ref_phys, cor_phys)
 !
       use m_correlate_4_plane
       use m_ctl_data_4_fields
+!
+      use t_phys_data
+!
+      type(phys_data), intent(inout) :: cor_phys
+      type(phys_data), intent(inout) :: ref_phys
 !
       integer (kind = kint) :: i, j, k, ii, jj, icomp, icomp2
 !
 !
       num_crt = 0
-      do i = 1, cor_ucd%num_phys
-        do k = 1, ref_ucd%num_phys
-          if ( cor_ucd%phys_name(i) .eq. ref_ucd%phys_name(k) ) then
+      do i = 1, cor_phys%num_phys
+        do k = 1, ref_phys%num_phys
+          if ( cor_phys%phys_name(i) .eq. ref_phys%phys_name(k) ) then
             do j = 1, num_nod_phys_ctl
-              if (    phys_nod_name_ctl(j) .eq. cor_ucd%phys_name(i)    &
+              if (    phys_nod_name_ctl(j) .eq. cor_phys%phys_name(i)   &
      &          .and. visualize_ctl(j) .eq. 'Viz_On' ) then
-                num_crt = num_crt + cor_ucd%num_component(i)
+                num_crt = num_crt + cor_phys%num_component(i)
                 exit
               end if
             end do
@@ -69,30 +74,30 @@
 !
       icomp = 1
       ii = 1
-      do i = 1, cor_ucd%num_phys
+      do i = 1, cor_phys%num_phys
         icomp2 = 1
-        do k = 1, ref_ucd%num_phys
-          if ( cor_ucd%phys_name(i) .eq. ref_ucd%phys_name(k) ) then
+        do k = 1, ref_phys%num_phys
+          if ( cor_phys%phys_name(i) .eq. ref_phys%phys_name(k) ) then
             do j = 1, num_nod_phys_ctl
-              if (    phys_nod_name_ctl(j) .eq. cor_ucd%phys_name(i)    &
+              if (    phys_nod_name_ctl(j) .eq. cor_phys%phys_name(i)   &
      &          .and. visualize_ctl(j) .eq. 'Viz_On' ) then
 !
-                do jj = 1, cor_ucd%num_component(i)
+                do jj = 1, cor_phys%num_component(i)
                   crt_name(ii+jj-1) =   phys_nod_name_ctl(j)
                   ifield_crt(ii+jj-1) = icomp
                   ifield_crt2(ii+jj-1) = icomp2
                   icomp_crt(ii+jj-1) = jj-1
                 end do
 !
-                if ( cor_ucd%num_component(i) .eq. 1) then
+                if ( cor_phys%num_component(i) .eq. 1) then
                   crt_comp(ii) = 'scalar'
                   ii = ii + 1
-                else if ( cor_ucd%num_component(i) .eq. 3) then
+                else if ( cor_phys%num_component(i) .eq. 3) then
                   crt_comp(ii  ) = 'x'
                   crt_comp(ii+1) = 'y'
                   crt_comp(ii+2) = 'z'
                   ii = ii + 3
-                else if ( cor_ucd%num_component(i) .eq. 6) then
+                else if ( cor_phys%num_component(i) .eq. 6) then
                   crt_comp(ii  ) = 'xx'
                   crt_comp(ii+1) = 'xy'
                   crt_comp(ii+2) = 'xz'
@@ -104,9 +109,9 @@
               end if
             end do
           end if
-          icomp2 = icomp2 + ref_ucd%num_component(k)
+          icomp2 = icomp2 + ref_phys%num_component(k)
         end do
-        icomp = icomp + cor_ucd%num_component(i)
+        icomp = icomp + cor_phys%num_component(i)
       end do
 !
       write(*,*) 'ifield_crt ', ifield_crt

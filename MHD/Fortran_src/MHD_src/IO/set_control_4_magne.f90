@@ -88,12 +88,6 @@
             ibc_b_type(i) = iflag_bc_sgs + 2
           else if ( tmpchara .eq. 'sgs_z' ) then
             ibc_b_type(i) = iflag_bc_sgs + 3
-          else if ( tmpchara .eq. 'SGS_commute_x' ) then
-            ibc_b_type(i) = iflag_bc_sgs_commute + 1
-          else if ( tmpchara .eq. 'SGS_commute_y' ) then
-            ibc_b_type(i) = iflag_bc_sgs_commute + 2
-          else if ( tmpchara .eq. 'SGS_commute_z' ) then
-            ibc_b_type(i) = iflag_bc_sgs_commute + 3
           end if
         end do
 !

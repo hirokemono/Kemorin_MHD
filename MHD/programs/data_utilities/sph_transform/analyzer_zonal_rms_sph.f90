@@ -72,6 +72,7 @@
       subroutine analyze
 !
       use m_ucd_data
+      use m_ucd_input_data
       use m_control_params_2nd_files
       use m_t_step_parameter
       use m_ctl_params_sph_trans
@@ -86,7 +87,7 @@
       do i_step = i_step_init, i_step_number
 !
 !   Input field data
-        call set_ucd_file_prefix(org_ucd_header)
+        call set_input_ucd_file_prefix(org_ucd_header)
         call FEM_analyze_sph_trans(i_step, visval)
 !
 !   Transfer to spherical hermonics transform

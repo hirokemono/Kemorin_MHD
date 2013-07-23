@@ -95,22 +95,22 @@
 !
       if ( iflag_t_evo_4_magne.ge.1 ) then
         call alloc_type_djds11_mat(femmesh%mesh%node%numnod,            &
-     &       femmesh%mesh%node%internal_node, djds_tbl_fl, mat_magp)
+     &       femmesh%mesh%node%internal_node, djds_tbl, mat_magp)
 !
         if ( iflag_t_evo_4_magne .ge. 3 ) then
           call alloc_type_djds33_mat(femmesh%mesh%node%numnod,          &
-     &       femmesh%mesh%node%internal_node, djds_tbl_fl, mat_magne)
+     &       femmesh%mesh%node%internal_node, djds_tbl, mat_magne)
         end if
       end if
 !
 !
       if ( iflag_t_evo_4_vect_p.ge.1 ) then
         call alloc_type_djds11_mat(femmesh%mesh%node%numnod,            &
-     &       femmesh%mesh%node%internal_node, djds_tbl_fl, mat_magp)
+     &       femmesh%mesh%node%internal_node, djds_tbl, mat_magp)
 !
         if ( iflag_t_evo_4_vect_p .ge. 3 ) then
           call alloc_type_djds33_mat(femmesh%mesh%node%numnod,          &
-     &       femmesh%mesh%node%internal_node, djds_tbl_fl, mat_magne)
+     &       femmesh%mesh%node%internal_node, djds_tbl, mat_magne)
         end if
       end if
 !

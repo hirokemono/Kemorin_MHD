@@ -67,7 +67,7 @@
       use m_geometry_data_MHD
       use m_solver_djds
 !
-      integer (kind=kint) :: nd, in, inod, iele, k1
+      integer (kind=kint) :: in, inod, iele, k1
 !
 !
       aiccg_magne = 0.0d0

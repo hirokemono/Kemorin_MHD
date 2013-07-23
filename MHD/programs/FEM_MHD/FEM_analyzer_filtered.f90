@@ -3,10 +3,8 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!      subroutine FEM_initialize_filtered
 !      subroutine FEM_analyze_filtered(i_step, istep_psf, istep_iso,    &
 !     &          istep_pvr, istep_fline, visval)
-!      subroutine FEM_finalize_filtered
 !
       module FEM_analyzer_filtered
 !
@@ -22,17 +20,6 @@
 ! ----------------------------------------------------------------------
 !
        contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine FEM_initialize_filtered
-!
-      use FEM_analyzer_snapshot
-!
-!
-      call FEM_initialize_snapshot
-!
-      end subroutine FEM_initialize_filtered
 !
 ! ----------------------------------------------------------------------
 !
@@ -144,16 +131,5 @@
       end subroutine FEM_analyze_filtered
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine FEM_finalize_filtered
-!
-      use FEM_analyzer_snapshot
-!
-!
-      call FEM_finalize_snapshot
-!
-      end subroutine FEM_finalize_filtered
-!
-!-----------------------------------------------------------------------
 !
       end module FEM_analyzer_filtered

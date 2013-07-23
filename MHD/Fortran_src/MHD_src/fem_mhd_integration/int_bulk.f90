@@ -72,6 +72,16 @@
      &    iphys%i_par_density)
 !
       call int_all_4_scalar (iele_fl_smp_stack, intg_point_t_evo,       &
+     &    i_rms%i_heat_source, j_ave%i_heat_source,                     &
+     &    iphys%i_heat_source)
+      call int_all_4_scalar (iele_fl_smp_stack, intg_point_t_evo,       &
+     &    i_rms%i_light_source, j_ave%i_light_source,                   &
+     &    iphys%i_light_source)
+      call int_all_4_scalar (iele_fl_smp_stack, intg_point_t_evo,       &
+     &    i_rms%i_entropy_source, j_ave%i_entropy_source,               &
+     &    iphys%i_entropy_source)
+!
+      call int_all_4_scalar (iele_fl_smp_stack, intg_point_t_evo,       &
      &    i_rms%i_filter_temp, j_ave%i_filter_temp,                     &
      &    iphys%i_filter_temp)
       call int_all_4_scalar (iele_fl_smp_stack, intg_point_t_evo,       &

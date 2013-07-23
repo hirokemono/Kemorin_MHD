@@ -179,6 +179,9 @@
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_uxb                &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_heat               &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_composit           &
+     &         .or. phys_name_rj(i_fld) .eq. fhd_heat_source            &
+     &         .or. phys_name_rj(i_fld) .eq. fhd_light_source           &
+     &         .or. phys_name_rj(i_fld) .eq. fhd_entropy_source         &
      &         ) then
               call set_org_rj_phys_data_from_IO(j_fld)
               call r_interpolate_sph_vector(i_fld)

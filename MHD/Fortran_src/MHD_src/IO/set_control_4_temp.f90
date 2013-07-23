@@ -67,8 +67,6 @@
             ibc_e_type(i) =  iflag_bc_fix_flux
           else if ( bc_e_type_ctl(i) .eq. 'sgs' ) then
             ibc_e_type(i) =  iflag_bc_sgs_s
-          else if ( bc_e_type_ctl(i) .eq. 'SGS_commute' ) then
-            ibc_e_type(i) =  iflag_bc_sgs_commute_s
           end if
         end do
 !

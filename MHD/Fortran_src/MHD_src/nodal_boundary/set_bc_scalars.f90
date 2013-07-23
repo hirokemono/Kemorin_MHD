@@ -16,6 +16,7 @@
 !
       use m_constants
       use m_phys_labels
+      use m_boundary_condition_IDs
       use set_nod_bc_scalar_id
 !
       implicit none

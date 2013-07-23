@@ -16,6 +16,9 @@
       use m_control_plane_fft
       use m_ctl_data_4_plane_model
       use m_geometry_data_4_merge
+!
+      use t_ucd_data
+!
       use count_number_with_overlap
       use set_geometry_to_merge
       use set_numnod_4_plane
@@ -30,6 +33,8 @@
 ! . for local 
 !  ===========
 
+      type(ucd_data), save :: fft_ucd
+!
       integer(kind=kint ) :: istep
       integer(kind=kint ) :: ist, ied, iint
 
@@ -70,7 +75,7 @@
 !   read field name and number of components
 !
       write(*,*) 'init_ucd_data_4_FFT'
-      call init_ucd_data_4_FFT(ist)
+      call init_ucd_data_4_FFT(ist, fft_ucd)
 !
       call set_fields_4_FFT
 !
@@ -94,7 +99,7 @@
 !
       do istep = ist, ied, iint
 !
-       call s_read_udt_data_4_FFT(istep)
+       call s_read_udt_data_4_FFT(istep, fft_ucd)
 !
 !  -------   Fourier Transform
 !

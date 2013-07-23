@@ -61,7 +61,7 @@
 !
 !
       if (ucd%ifmt_file .eq. iflag_sgl_hdf5) then
-        call parallel_init_hdf5(ucd, merged_ucd)
+        call parallel_init_hdf5(ucd, m_ucd)
       end if
 !
       end subroutine init_merged_ucd
@@ -78,7 +78,7 @@
 !
 !
       if (ucd%ifmt_file .eq. iflag_sgl_hdf5) then
-        call parallel_finalize_hdf5
+        call parallel_finalize_hdf5(m_ucd)
       end if
       call deallocate_merged_ucd_data(m_ucd)
 !

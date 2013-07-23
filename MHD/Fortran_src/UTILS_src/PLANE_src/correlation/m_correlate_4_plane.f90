@@ -18,7 +18,6 @@
 !
       use m_file_format_switch
       use m_field_file_format
-      use t_phys_data
 !
       implicit    none
 !
@@ -34,9 +33,6 @@
 !
       integer (kind = kint) :: itype_cor_ucd_file = iflag_fld
       integer (kind = kint) :: itype_ref_ucd_file = iflag_fld
-!
-      type(phys_data) :: cor_ucd
-      type(phys_data) :: ref_ucd
 !
 !
       real   (kind=kreal), allocatable  ::  phys_d1(:)

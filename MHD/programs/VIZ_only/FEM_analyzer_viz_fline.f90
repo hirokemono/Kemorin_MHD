@@ -32,11 +32,11 @@
       use m_surface_geometry_data
       use m_edge_geometry_data
       use m_jacobians
+      use m_ucd_input_data
 !
       use const_mesh_info
       use load_mesh_data
       use set_parallel_file_name
-      use set_ucd_data
       use const_RHS_assemble_list
 !
       use cal_jacobian
@@ -44,7 +44,6 @@
       use set_normal_vectors
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
-      use ucd_IO_select
 !
 !   --------------------------------
 !       setup mesh information
@@ -109,9 +108,9 @@
       subroutine FEM_analyze_fline(i_step, istep_fline)
 !
       use m_control_params_2nd_files
+      use m_ucd_input_data
       use set_exit_flag_4_visualizer
       use nod_phys_send_recv
-      use set_ucd_data
 !
       integer (kind =kint), intent(in) :: i_step
       integer (kind =kint), intent(inout) :: istep_fline
@@ -125,7 +124,7 @@
       if(istep_fline .ge. 0) then
 !*  ----------   Count steps for visualization
 !*
-        call set_ucd_data_from_IO(my_rank, i_step)
+        call set_data_by_read_ucd(my_rank, i_step)
 !
         if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
         call phys_send_recv_all

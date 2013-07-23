@@ -21,6 +21,7 @@
       use m_precision
 !
       use m_constants
+      use m_boundary_condition_IDs
       use m_phys_labels
       use m_bc_data_list
       use t_group_data

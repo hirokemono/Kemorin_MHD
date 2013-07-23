@@ -23,6 +23,10 @@
 !!   composition:        Composition anormally C
 !!   entropy:            Entropy               S
 !!
+!!   heat_source:            heat source              q_{T}
+!!   composition_source:     compositoin source       q_{T}
+!!   entropy_source:         entropy source           q_{S}
+!!
 !!   electric_field:    electric field   E
 !!   poynting_flux:     Poynting flux    S = E \times B
 !!
@@ -313,6 +317,19 @@
 !!         @f$  S_{0} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_ref_entropy =  'reference_entropy'
+!
+!>        Field label for heat source
+!!         @f$ q_{T} @f$
+      character(len=kchara), parameter                                  &
+     &              :: fhd_heat_source =  'heat_source'
+!>        Field label for composion source
+!!         @f$ q_{C} @f$
+      character(len=kchara), parameter                                  &
+     &              :: fhd_light_source =  'compositoin_source'
+!>        Field label for entropysource
+!!         @f$ q_{S} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_entropy_source =  'entropy_source'
 !
 !>        Field label for density
 !!         @f$ \rho @f$

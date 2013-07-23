@@ -26,6 +26,7 @@
       use set_merged_geometry
       use set_merged_udt_2_IO
       use ucd_IO_select
+      use set_ucd_data_to_type
 
       implicit    none
 !
@@ -64,29 +65,16 @@
 !
 !   output grid data
 !
-      call link_merged_grd_2_udt_IO
-!
-      call set_ucd_file_format(itype_assembled_data)
-      call set_ucd_file_prefix(merged_data_head)
-      call sel_write_grd_file(izero, fem_ucd)
-!
-      if(    mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_vtd/10            &
-     &  .or. mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_udt/10) then
-        call deallocate_ucd_ele(fem_ucd)
-      end if
+      call link_write_merged_grd_2_ucd(itype_assembled_data, &
+     &     merged_data_head)
 !
 !   loop for snap shots
 !
       do istep = istep_start, istep_end, increment_step
         call read_ucd_data_4_merge(istep)
 !
-        call link_merged_phys_2_udt_IO
-!
-         call set_ucd_file_format(itype_assembled_data)
-         call set_ucd_file_prefix(merged_data_head)
-         call sel_write_ucd_file(izero, istep, fem_ucd)
-!
-         call disconnect_ucd_data(fem_ucd)
+        call link_write_merged_udt(istep, itype_assembled_data,         &
+     &      merged_data_head)
 !
       write(*,*) 'step', istep, 'finish '
       end do

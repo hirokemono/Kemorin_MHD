@@ -25,6 +25,7 @@
       module set_surf_vector_id_type
 !
       use m_precision
+      use m_boundary_condition_IDs
 !
       implicit  none
 !
@@ -81,14 +82,14 @@
            do nd = 1, 3
 !
 ! -----------set boundary from control file
-              if ( ibc_sf_type(j)==(14+nd) ) then
+              if ( ibc_sf_type(j)==(iflag_bc_sgs_commute+nd) ) then
                 isig_s(nd) = 1
               end if
             end do
 !
 ! -----------set boundary from control file
 !
-            if ( abs(ibc_sf_type(j)) .eq. 10) then
+            if ( abs(ibc_sf_type(j)) .eq. iflag_fixed_norm) then
               l_10 = l_10 + 1
               id_grp_sf_fix_n(l_10) = i
 !
@@ -154,7 +155,8 @@
 ! -----------set fixed boundary
 !
             do nd = 1, 3
-              if ( abs( ibc_sf_type(j) ) .eq. nd ) then
+              if ( abs( ibc_sf_type(j) ) .eq. (nd+iflag_fixed_grad) )   &
+     &           then
                 l_f1(nd) = l_f1(nd) + 1
                 i_dest = l_f1(nd)
                 id_grp_sf_fix(i_dest,nd) = i
@@ -163,7 +165,7 @@
      &                    + surf_istack(i) - surf_istack(i-1)
 !
 ! -----------lead boundary values
-              else if ( ibc_sf_type(j)==(nd+100) ) then
+              else if ( ibc_sf_type(j)==(nd+iflag_lead_grad) ) then
                 l_l1(nd) = l_l1(nd) + 1
                 id_grp_sf_lead(l_l1(nd),nd) = i
               end if
@@ -214,13 +216,13 @@
 !
 ! -----------set boundary using SGS case
 !
-            if (ibc_sf_type(j) .eq. 0 .or. ibc_sf_type(j) .eq. 1) then
+            if (abs(ibc_sf_type(j)) .eq. iflag_fixed_grad_s) then
               l_f1 = l_f1 + 1
               id_grp_sf_fix(l_f1) = i
               ist_sf_fix(l_f1) = ist_sf_fix(l_f1-1)                     &
      &                          + surf_istack(i) - surf_istack(i-1)
 !
-            else if (ibc_sf_type(j) .eq. 100) then
+            else if (ibc_sf_type(j) .eq. iflag_lead_grad_s) then
               l_l1 = l_l1 + 1
               id_grp_sf_lead(l_l1) = i
             end if

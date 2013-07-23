@@ -11,6 +11,7 @@
 !!      subroutine allocate_ucd_ele(ucd)
 !!      subroutine allocate_ucd_phys_name(ucd)
 !!      subroutine allocate_ucd_phys_data(ucd)
+!!      subroutine alloc_merged_hdt5_array(my_rank, ucd, m_ucd)
 !!
 !!      subroutine alloc_merged_ucd_stack(nprocs, m_ucd)
 !!
@@ -24,6 +25,8 @@
 !!      subroutine disconnect_ucd_data(ucd)
 !!
 !!      subroutine dealloc_merged_ucd_stack(m_ucd)
+!!      subroutine dealloc_merged_hdt5_ele_list(m_ucd)
+!!      subroutine dealloc_merged_hdt5_array(m_ucd)
 !!
 !!      subroutine cal_istack_ucd_component(ucd)
 !!
@@ -88,6 +91,13 @@
         integer(kind = kint), pointer :: istack_merged_ele(:)
 !>        end point for number of internal node for each subdomain
         integer(kind = kint), pointer :: istack_merged_intnod(:)
+!
+!>        number of components for HDF data output
+        integer(kind = kint) :: ncomp_hdf5
+!>        Real work array for HDF data output
+        real(kind=kreal), pointer :: fld_hdf5(:)
+!>        Integer array for HDF data output
+        integer(kind=kint), pointer :: ie_hdf5(:,:)
       end type merged_ucd_data
 !
 ! -----------------------------------------------------------------------
@@ -173,6 +183,24 @@
       m_ucd%istack_merged_intnod = 0
 !
       end subroutine alloc_merged_ucd_stack
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_merged_hdt5_array(my_rank, ucd, m_ucd)
+!
+      integer(kind = kint), intent(in) :: my_rank
+      type(ucd_data), intent(in) :: ucd
+      type(merged_ucd_data), intent(inout) :: m_ucd
+!
+      integer(kind = kint) :: nnod
+!
+!
+      nnod = m_ucd%istack_merged_intnod(my_rank+1)                      &
+     &      - m_ucd%istack_merged_intnod(my_rank)
+      allocate( m_ucd%fld_hdf5(9*nnod) )
+      allocate( m_ucd%ie_hdf5(8,ucd%nele) )
+!
+      end subroutine alloc_merged_hdt5_array
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -268,6 +296,28 @@
       deallocate(m_ucd%istack_merged_intnod)
 !
       end subroutine dealloc_merged_ucd_stack
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_merged_hdt5_ele_list(m_ucd)
+!
+      type(merged_ucd_data), intent(inout) :: m_ucd
+!
+!
+      deallocate(m_ucd%ie_hdf5)
+!
+      end subroutine dealloc_merged_hdt5_ele_list
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_merged_hdt5_array(m_ucd)
+!
+      type(merged_ucd_data), intent(inout) :: m_ucd
+!
+!
+      deallocate(m_ucd%fld_hdf5)
+!
+      end subroutine dealloc_merged_hdt5_array
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

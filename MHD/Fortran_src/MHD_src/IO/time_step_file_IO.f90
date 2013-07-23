@@ -212,6 +212,22 @@
               call write_one_label(rms_data_code,      fhd_per_density)
               call write_one_label(time_step_data_code,fhd_per_density)
 !
+            else if ( phys_nod_name(i) .eq. fhd_heat_source) then
+              call write_one_label(rms_data_code,      fhd_heat_source)
+              call write_one_label(time_step_data_code,fhd_heat_source)
+!
+            else if ( phys_nod_name(i) .eq. fhd_light_source) then
+              call write_one_label(rms_data_code,                       &
+     &            fhd_light_source)
+              call write_one_label(time_step_data_code,                 &
+     &            fhd_light_source)
+!
+            else if ( phys_nod_name(i) .eq. fhd_entropy_source) then
+              call write_one_label(rms_data_code,                       &
+     &            fhd_entropy_source)
+              call write_one_label(time_step_data_code,                 &
+     &            fhd_entropy_source)
+!
 !
             else if ( phys_nod_name(i) .eq. fhd_filter_v ) then
               call write_two_labels(rms_data_code,                      &

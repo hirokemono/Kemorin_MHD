@@ -40,7 +40,7 @@
 !
       call s_count_num_surf_vector                                      &
      &    (num_surf, inod_stack_sf_grp, surf_name,                      &
-     &     num_bc_tq, bc_tq_name, ibc_tq_type, bc_tq_magnitude,         &
+     &     num_bc_tq, bc_tq_name, ibc_tq_type,                          &
      &     name_svn, nmax_sf_sgs_velo, ngrp_sf_sgs_velo,                &
      &     ngrp_sf_fix_vn, nnod_sf_fix_vn)
 !
@@ -61,7 +61,7 @@
 !
       call s_count_num_surf_vector                                      &
      &    (num_surf, inod_stack_sf_grp, surf_name,                      &
-     &     num_bc_vps, bc_vps_name, ibc_vps_type, bc_vps_magnitude,     &
+     &     num_bc_vps, bc_vps_name, ibc_vps_type,                       &
      &     name_san, nmax_sf_sgs_vect_p, ngrp_sf_sgs_vect_p,            &
      &     ngrp_sf_fix_vpn, nnod_sf_fix_vpn)
 !
@@ -78,7 +78,7 @@
 !
       call s_count_num_surf_vector                                      &
      &    (num_surf, inod_stack_sf_grp, surf_name,                      &
-     &     num_bc_bs, bc_bs_name, ibc_bs_type, bc_bs_magnitude,         &
+     &     num_bc_bs, bc_bs_name, ibc_bs_type,                          &
      &     name_sbn, nmax_sf_sgs_magne, ngrp_sf_sgs_magne,              &
      &     ngrp_sf_fix_bn, nnod_sf_fix_bn)
 !
@@ -95,7 +95,7 @@
 !
       call s_count_num_surf_vector                                      &
      &    (num_surf, inod_stack_sf_grp, surf_name,                      &
-     &     num_bc_js, bc_js_name, ibc_js_type, bc_js_magnitude,         &
+     &     num_bc_js, bc_js_name, ibc_js_type,                          &
      &     name_sjn, nmax_sf_sgs_current, ngrp_sf_sgs_current,          &
      &     ngrp_sf_fix_jn, nnod_sf_fix_jn)
 !
@@ -112,7 +112,7 @@
 !
       call count_num_sf_grad_vector                                     &
      &    (num_surf, surf_istack, surf_name,                            &
-     &     num_bc_tq, bc_tq_name, ibc_tq_type, bc_tq_magnitude,         &
+     &     num_bc_tq, bc_tq_name, ibc_tq_type,                          &
      &     name_vxg, name_vyg, name_vzg, nmax_sf_fix_tq,                &
      &     nmax_ele_sf_fix_tq, nmax_sf_lead_tq, ngrp_sf_fix_tq,         &
      &     nele_sf_fix_tq, ngrp_sf_lead_tq)
@@ -129,7 +129,7 @@
 !
       call count_num_sf_grad_vector                                     &
      &    (num_surf, surf_istack, surf_name,                            &
-     &     num_bc_vps, bc_vps_name, ibc_vps_type, bc_vps_magnitude,     &
+     &     num_bc_vps, bc_vps_name, ibc_vps_type,                       &
      &     name_axg, name_ayg, name_azg, nmax_sf_fix_grad_a,            &
      &     nmax_ele_sf_fix_grad_a, nmax_sf_lead_vect_p,                 &
      &     ngrp_sf_fix_grad_a, nele_sf_fix_grad_a, ngrp_sf_lead_vect_p)
@@ -146,7 +146,7 @@
 !
       call count_num_sf_grad_vector                                     &
      &    (num_surf, surf_istack, surf_name,                            &
-     &     num_bc_bs, bc_bs_name, ibc_bs_type, bc_bs_magnitude,         &
+     &     num_bc_bs, bc_bs_name, ibc_bs_type,                          &
      &     name_bxg, name_byg, name_bzg, nmax_sf_fix_grad_b,            &
      &     nmax_ele_sf_fix_grad_b, nmax_sf_lead_b, ngrp_sf_fix_grad_b,  &
      &     nele_sf_fix_grad_b, ngrp_sf_lead_b)
@@ -163,7 +163,7 @@
 !
       call count_num_sf_grad_vector                                     &
      &    (num_surf, surf_istack, surf_name,                            &
-     &     num_bc_js, bc_js_name, ibc_js_type, bc_js_magnitude,         &
+     &     num_bc_js, bc_js_name, ibc_js_type,                          &
      &     name_jxg, name_jyg, name_jzg, nmax_sf_fix_grad_j,            &
      &     nmax_ele_sf_fix_grad_j, nmax_sf_lead_j, ngrp_sf_fix_grad_j,  &
      &     nele_sf_fix_grad_j, ngrp_sf_lead_j)

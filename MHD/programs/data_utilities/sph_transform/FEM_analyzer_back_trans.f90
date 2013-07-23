@@ -40,7 +40,6 @@
       use set_normal_vectors
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
-      use set_ucd_data
       use output_parallel_ucd_file
 !
 !   --------------------------------

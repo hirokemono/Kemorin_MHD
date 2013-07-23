@@ -75,8 +75,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
       call SPH_initialize_MHD
-      if(iflag_debug .gt. 0) write(*,*) 'SPH_to_FEM_initialize'
-      call SPH_to_FEM_initialize
+      if(iflag_debug .gt. 0) write(*,*) 'SPH_to_FEM_init_MHD'
+      call SPH_to_FEM_init_MHD
       call time_prog_barrier
 !
       call end_eleps_time(2)
@@ -116,8 +116,8 @@
 !*
         call start_eleps_time(4)
 !
-        if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge'
-        call SPH_to_FEM_bridge
+        if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
+        call SPH_to_FEM_bridge_MHD
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze'
         call FEM_analyze(i_step_MHD, istep_psf, istep_iso,              &
      &      istep_pvr, istep_fline, visval)

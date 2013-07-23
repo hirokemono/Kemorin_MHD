@@ -88,8 +88,8 @@
       iflag_velo =  0
       iflag_magne = 0
       do ifld = 1, num_nod_phys_ctl
-        if(phys_nod_name_ctl(ifld) .eq. fhd_velo)  iflag_velo =  1
-        if(phys_nod_name_ctl(ifld) .eq. fhd_magne) iflag_magne = 1
+        if(phys_nod_name_ctl(ifld) .eq. fhd_velo)  iflag_velo =  2
+        if(phys_nod_name_ctl(ifld) .eq. fhd_magne) iflag_magne = 2
       end do
 !
       call deallocate_phys_control
@@ -98,18 +98,21 @@
       call allocate_phys_control
 !
       ifld = 0
-      if(iflag_velo .eq. 1) then
-        ifld = ifld+1
-        phys_nod_name_ctl(ifld) = fhd_velo
+      if(iflag_velo .gt. 0) then
+        phys_nod_name_ctl(ifld+1) = fhd_velo
+        phys_nod_name_ctl(ifld+2) = fhd_vort
+        ifld = ifld+2
+      end if
+      if(iflag_magne .gt. 0) then
+        phys_nod_name_ctl(ifld+1) = fhd_magne
+        phys_nod_name_ctl(ifld+2) = fhd_current
+        ifld = ifld+2
+      end if
+!
+      do ifld = 1, num_nod_phys_ctl
         visualize_ctl(ifld) =  'Viz_On'
         monitor_ctl(ifld) =    'Monitor_Off'
-      end if
-      if(iflag_magne .eq. 1) then
-        ifld = ifld+1
-        phys_nod_name_ctl(ifld) = fhd_magne
-        visualize_ctl(ifld) =     'Viz_On'
-        monitor_ctl(ifld) =       'Monitor_Off'
-      end if
+      end do
 !
       end subroutine set_ctl_data_4_zm_streamline
 !
@@ -153,26 +156,42 @@
       use m_sph_spectr_data
       use m_sph_phys_address
 !
+      integer(kind = kint) :: inod, k, j
 !
-      integer(kind = kint) :: inod, ist, i, k, j
 !
-!
-      do i = 1, num_phys_rj
-        if     (phys_name_rj(i) .eq. fhd_velo                           &
-     &     .or. phys_name_rj(i) .eq. fhd_magne) then
-          ist = istack_phys_comp_rj(i-1)
+      if(ipol%i_velo .gt. 0) then
 !$omp parallel do private(j,inod)
-          do k = 1, nidx_rj(1)
-            do j = 1, nidx_rj(2)
-              inod = (k-1)*nidx_rj(2) + j
-              d_rj(inod,ist+3) =  d_rj(inod,ist+1)
-              d_rj(inod,ist+1) =  zero
-              d_rj(inod,ist+2) =  zero
-            end do
-          end do
+        do k = 1, nidx_rj(1)
+          do j = 1, nidx_rj(2)
+            inod = (k-1)*nidx_rj(2) + j
+            d_rj(inod,itor%i_vort ) =  d_rj(inod,itor%i_velo)
+            d_rj(inod,ipol%i_vort ) =  zero
+            d_rj(inod,idpdr%i_vort) =  zero
+!
+            d_rj(inod,itor%i_velo ) =  d_rj(inod,ipol%i_velo)
+            d_rj(inod,ipol%i_velo ) =  zero
+            d_rj(inod,idpdr%i_velo) =  zero
+           end do
+        end do
 !$omp end parallel do
-        end if
-      end do
+      end if
+!
+      if(ipol%i_magne .gt. 0) then
+!$omp parallel do private(j,inod)
+        do k = 1, nidx_rj(1)
+          do j = 1, nidx_rj(2)
+            inod = (k-1)*nidx_rj(2) + j
+            d_rj(inod,itor%i_current ) =  d_rj(inod,itor%i_magne)
+            d_rj(inod,ipol%i_current ) =  zero
+            d_rj(inod,idpdr%i_current) =  zero
+!
+            d_rj(inod,itor%i_magne ) =  d_rj(inod,ipol%i_magne)
+            d_rj(inod,ipol%i_magne ) =  zero
+            d_rj(inod,idpdr%i_magne) =  zero
+           end do
+        end do
+!$omp end parallel do
+      end if
 !
       end subroutine set_rj_phys_for_zm_streamfunc
 !

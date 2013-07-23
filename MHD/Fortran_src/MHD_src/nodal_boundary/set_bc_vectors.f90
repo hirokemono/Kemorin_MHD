@@ -15,6 +15,7 @@
       use m_precision
 !
       use m_constants
+      use m_boundary_condition_IDs
       use set_nod_bc_vector_id
 !
       implicit none

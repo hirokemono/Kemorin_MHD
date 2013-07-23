@@ -4,9 +4,7 @@
 !      programmed by H.Matsui on March, 2009
 !
 !      subroutine s_set_MHD_idx_4_mat_type(mesh, MHD_mesh, rhs_tbl,     &
-!     &          djds_tbl, djds_tbl_fl, djds_tbl_cd, djds_tbl_ins,      &
-!     &          djds_const, djds_const_fl, djds_const_cd,              &
-!     &          djds_const_ins, djds_const_full_cd)
+!     &          djds_tbl, djds_tbl_fl, djds_const, djds_const_fl)
 !        type(mesh_geometry), intent(in) :: mesh
 !        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -21,9 +19,7 @@
 !        type(table_mat_const), intent(inout) :: djds_const_full_cd
 !
 !      subroutine set_MHD_idx_linear_mat_type(mesh, MHD_mesh, rhs_tbl,  &
-!     &          djds_tbl, djds_tbl_fl, djds_tbl_cd, djds_tbl_ins,      &
-!     &          djds_const, djds_const_fl, djds_const_cd,              &
-!     &          djds_const_ins, djds_const_full_cd)
+!     &          djds_tbl, djds_tbl_fl, djds_const, djds_const_fl)
 !        type(mesh_geometry), intent(in) :: mesh
 !        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -59,9 +55,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_set_MHD_idx_4_mat_type(mesh, MHD_mesh, rhs_tbl,      &
-     &          djds_tbl, djds_tbl_fl, djds_tbl_cd, djds_tbl_ins,       &
-     &          djds_const, djds_const_fl, djds_const_cd,               &
-     &          djds_const_ins, djds_const_full_cd)
+     &          djds_tbl, djds_tbl_fl, djds_const, djds_const_fl)
 !
       use m_control_parameter
 !
@@ -71,14 +65,9 @@
 !
       type(DJDS_ordering_table),  intent(inout) :: djds_tbl
       type(DJDS_ordering_table),  intent(inout) :: djds_tbl_fl
-      type(DJDS_ordering_table),  intent(inout) :: djds_tbl_cd
-      type(DJDS_ordering_table),  intent(inout) :: djds_tbl_ins
 !
       type(table_mat_const), intent(inout) :: djds_const
       type(table_mat_const), intent(inout) :: djds_const_fl
-      type(table_mat_const), intent(inout) :: djds_const_cd
-      type(table_mat_const), intent(inout) :: djds_const_ins
-      type(table_mat_const), intent(inout) :: djds_const_full_cd
 !
 !
       write(*,*) 'alloc_type_marix_list'
@@ -125,9 +114,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_MHD_idx_linear_mat_type(mesh, MHD_mesh, rhs_tbl,   &
-     &          djds_tbl, djds_tbl_fl, djds_tbl_cd, djds_tbl_ins,       &
-     &          djds_const, djds_const_fl, djds_const_cd,               &
-     &          djds_const_ins, djds_const_full_cd)
+     &          djds_tbl, djds_tbl_fl, djds_const, djds_const_fl)
 !
       use m_control_parameter
       use m_geometry_constants
@@ -138,14 +125,9 @@
 !
       type(DJDS_ordering_table),  intent(inout) :: djds_tbl
       type(DJDS_ordering_table),  intent(inout) :: djds_tbl_fl
-      type(DJDS_ordering_table),  intent(inout) :: djds_tbl_cd
-      type(DJDS_ordering_table),  intent(inout) :: djds_tbl_ins
 !
       type(table_mat_const), intent(inout) :: djds_const
       type(table_mat_const), intent(inout) :: djds_const_fl
-      type(table_mat_const), intent(inout) :: djds_const_cd
-      type(table_mat_const), intent(inout) :: djds_const_ins
-      type(table_mat_const), intent(inout) :: djds_const_full_cd
 !
 !
       call alloc_type_marix_list(num_t_linear, rhs_tbl,                 &

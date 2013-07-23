@@ -28,47 +28,6 @@
       implicit  none
 !
 !
-      integer(kind = kint), parameter :: iflag_bc_fixed =   0
-      integer(kind = kint), parameter :: iflag_bc_fix_s =   1
-      integer(kind = kint), parameter :: iflag_bc_fix_x =   1
-      integer(kind = kint), parameter :: iflag_bc_fix_y =   2
-      integer(kind = kint), parameter :: iflag_bc_fix_z =   3
-      integer(kind = kint), parameter :: iflag_bc_file_x = -1
-      integer(kind = kint), parameter :: iflag_bc_file_y = -2
-      integer(kind = kint), parameter :: iflag_bc_file_z = -3
-!
-      integer(kind = kint), parameter :: iflag_bc_fix_flux = 11
-!
-      integer(kind = kint), parameter :: iflag_bc_sgs =            4
-      integer(kind = kint), parameter :: iflag_bc_sgs_s =          5
-      integer(kind = kint), parameter :: iflag_bc_sgs_x =          5
-      integer(kind = kint), parameter :: iflag_bc_sgs_y =          6
-      integer(kind = kint), parameter :: iflag_bc_sgs_z =          7
-      integer(kind = kint), parameter :: iflag_bc_sgs_commute =   14
-      integer(kind = kint), parameter :: iflag_bc_sgs_commute_s=  15
-      integer(kind = kint), parameter :: iflag_bc_sgs_commute_x = 15
-      integer(kind = kint), parameter :: iflag_bc_sgs_commute_y = 16
-      integer(kind = kint), parameter :: iflag_bc_sgs_commute_z = 17
-!
-      integer(kind = kint), parameter :: iflag_bc_rot =   10
-      integer(kind = kint), parameter :: iflag_bc_rot_x = 11
-      integer(kind = kint), parameter :: iflag_bc_rot_y = 12
-      integer(kind = kint), parameter :: iflag_bc_rot_z = 13
-!
-      integer(kind = kint), parameter :: iflag_free_sph =        100
-      integer(kind = kint), parameter :: iflag_non_slip_sph =    200
-      integer(kind = kint), parameter :: iflag_no_vr =           200
-      integer(kind = kint), parameter :: iflag_rotatable_icore = 301
-!
-      integer(kind = kint), parameter :: iflag_insulator =       100
-      integer(kind = kint), parameter :: iflag_sph_2_center =    200
-!
-      integer(kind = kint), parameter :: iflag_pseudo_vacuum =   400
-!
-      integer(kind = kint), parameter :: iflag_bc_special =      999
-!
-!
-!
       integer (kind=kint) :: num_bc_e
       real (kind=kreal),      allocatable :: bc_e_magnitude(:)
       integer (kind=kint),    allocatable :: ibc_e_type(:)

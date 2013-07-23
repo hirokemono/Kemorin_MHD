@@ -5,15 +5,15 @@
 !
 !
 !      subroutine s_count_num_surf_scalar(num_surf, surf_name,          &
-!     &          num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,         &
-!     &          ngrp_sf_sgs)
+!     &          num_bc_sf, bc_sf_name, ibc_sf_type, ngrp_sf_sgs)
 !      subroutine s_set_surf_scalar_id(num_surf, surf_name,             &
-!     &          num_bc_sf, bc_sf_name, ibc_sf_type, field_name,        &
+!     &          num_bc_sf, bc_sf_name, ibc_sf_type,                    &
 !     &          ngrp_sf_sgs, id_grp_sf_sgs)
 !
       module set_surf_scalar_id
 !
       use m_precision
+      use m_boundary_condition_IDs
 !
       implicit  none
 !
@@ -24,14 +24,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_count_num_surf_scalar(num_surf, surf_name,           &
-     &          num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,          &
-     &          ngrp_sf_sgs)
+     &          num_bc_sf, bc_sf_name, ibc_sf_type, ngrp_sf_sgs)
 !
       integer (kind=kint), intent(in) :: num_surf
       character (len=kchara), intent(in) :: surf_name(num_surf)
 !
       integer (kind=kint), intent(in) :: num_bc_sf
-      real (kind=kreal), intent(in) :: bc_sf_mag(num_bc_sf)
       integer (kind=kint), intent(in) :: ibc_sf_type(num_bc_sf)
       character (len=kchara), intent(in) :: bc_sf_name(num_bc_sf)
 !! 
@@ -59,7 +57,7 @@
 !
 ! -----------set boundary using SGS case
 !
-            if (ibc_sf_type(j) .eq. 15) then
+            if (ibc_sf_type(j) .eq. iflag_bc_sgs_commute_s) then
               isig_s = 1
             end if
 !
@@ -76,7 +74,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_set_surf_scalar_id(num_surf, surf_name,              &
-     &          num_bc_sf, bc_sf_name, ibc_sf_type, field_name,         &
+     &          num_bc_sf, bc_sf_name, ibc_sf_type,                     &
      &          ngrp_sf_sgs, id_grp_sf_sgs)
 !
       integer (kind=kint), intent(in) :: num_surf
@@ -85,7 +83,6 @@
       integer (kind=kint), intent(in) :: num_bc_sf
       integer (kind=kint), intent(in) :: ibc_sf_type(num_bc_sf)
       character (len=kchara), intent(in) :: bc_sf_name(num_bc_sf)
-      character(len=kchara), intent(in) :: field_name
 ! 
       integer(kind=kint), intent(in) :: ngrp_sf_sgs
       integer(kind=kint), intent(inout) :: id_grp_sf_sgs(ngrp_sf_sgs)
@@ -107,7 +104,7 @@
             isig_s = 0
 !
 ! -----------set boundary using SGS case
-            if (ibc_sf_type(j) .eq. 15) then
+            if (ibc_sf_type(j) .eq. iflag_bc_sgs_commute_s) then
               isig_s = 1
             end if
 !

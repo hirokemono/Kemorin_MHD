@@ -47,13 +47,15 @@ psf_2_vtk.o \
 m_norms_4_psf.o \
 m_control_data_psf_utils.o \
 take_avarages_4_psf.o \
-convert_psf_file.o
+convert_psf_file.o \
+cal_psf_rms_aves.o
 
 MOD_PSF_2_DX = \
 psf_2_dx.o \
 m_norms_4_psf.o \
 m_control_data_psf_utils.o \
 convert_psf_file.o \
+cal_psf_rms_aves.o \
 take_avarages_4_psf.o
 
 

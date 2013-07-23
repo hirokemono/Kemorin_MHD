@@ -14,15 +14,9 @@
       type(ucd_data), save:: psf_ucd
 !
       integer(kind = kint), parameter :: id_psf_result = 7
-      integer(kind = kint), parameter :: id_min_psf = 21
-      integer(kind = kint), parameter :: id_max_psf = 22
-      character(len=kchara), parameter :: fname_min_psf = 'psf_min.dat'
-      character(len=kchara), parameter :: fname_max_psf = 'psf_max.dat'
 !
       character(len=kchara) :: node_file_name, conn_file_name
 !
-      private :: id_min_psf, fname_min_psf
-      private :: id_max_psf, fname_max_psf
       private :: id_psf_result, node_file_name, conn_file_name
 !
 !      subroutine s_convert_psf_file
@@ -51,6 +45,7 @@
       use dx_grid
       use dx_phys
       use vtk_file_IO
+      use cal_psf_rms_aves
 !
       integer(kind = kint), intent(in) :: iflag_convert
 !
@@ -59,18 +54,12 @@
 !
 !
 !
-      write(*,*) 'average file name: psf_ave.dat'
-      write(*,*) 'RMS file name:     psf_rms.dat'
-!
-      open(id_min_psf, file=fname_min_psf, form='formatted')
-      open(id_max_psf, file=fname_max_psf, form='formatted')
-!
-!
       do i_psf = 1, num_psf
+        psf_file_header = psf_header(i_psf)
+        call open_psf_range_data(psf_file_header)
 !
 !   read grid data
 !
-        psf_file_header = psf_header(i_psf)
         call sel_read_alloc_psf_file(iflag_psf_fmt, i_step_init)
         call set_psf_mesh_to_ucd_data(psf_ucd)
 !
@@ -126,29 +115,16 @@
      &          d_nod_psf, id_psf_result, psf_header(i_psf) )
           end if
 !
-!      write min_max data
-!
-          if( i_psf.eq.1 .and. istep.eq.i_step_init) then
-            call write_headers_psf_comp_name(id_min_psf)
-            write(id_min_psf,*)
-!
-            call write_headers_psf_comp_name(id_max_psf)
-            write(id_max_psf,*)
-          end if
-!
-          write(id_min_psf,'(2i10,1p255E25.15e3)') i_psf, istep,        &
-     &           xmin_psf(1:ncomptot_psf)
-          write(id_max_psf,'(2i10,1p255E25.15e3)') i_psf, istep,        &
-     &           xmax_psf(1:ncomptot_psf)
-!
+!      write range data
+          call write_psf_range_data(istep)
         end do
 !
         call deallocate_norms_4_psf
         call deallocate_psf_results
+!
+        call close_psf_range_data
       end do
 !
-      close(id_min_psf)
-      close(id_max_psf)
 !
       end subroutine s_convert_psf_file
 !

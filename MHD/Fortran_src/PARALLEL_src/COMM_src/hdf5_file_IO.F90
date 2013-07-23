@@ -4,7 +4,7 @@
 !      Written by E. Heien in June 2013
 !
 !      subroutine parallel_init_hdf5(ucd, m_ucd)
-!      subroutine parallel_finalize_hdf5
+!      subroutine parallel_finalize_hdf5(m_ucd)
 !
 !      subroutine parallel_write_hdf5_mesh_file(ucd, m_ucd)
 !      subroutine parallel_write_hdf5_field_file(cur_step, ucd, m_ucd)
@@ -21,7 +21,6 @@
 !
       use t_ucd_data
 !
-      use set_ucd_data
       use set_ucd_file_names
       use set_parallel_file_name
 !
@@ -31,11 +30,6 @@
 !
       implicit none
 !
-      integer(kind = kint) :: ncomp_hdf5
-      real(kind=kreal), allocatable :: fld_hdf5(:)
-      integer(kind=kint), allocatable :: ie_hdf5(:,:)
-!
-      private :: ncomp_hdf5, fld_hdf5, ie_hdf5
       private :: parallel_write_xdmf_file
 !
 !  ---------------------------------------------------------------------
@@ -47,19 +41,15 @@
       subroutine parallel_init_hdf5(ucd, m_ucd)
 !
       type(ucd_data), intent(in) :: ucd
-      type(merged_ucd_data), intent(in) :: m_ucd
+      type(merged_ucd_data), intent(inout) :: m_ucd
 !
-      integer(kind = kint) :: nnod
       integer :: hdferr
 !
 ! Initialize Fortran interface
 !
-      nnod = m_ucd%istack_merged_intnod(my_rank+1)                      &
-     &      - m_ucd%istack_merged_intnod(my_rank)
-      allocate( fld_hdf5(9*nnod) )
-      allocate( ie_hdf5(8,ucd%nele) )
 !
 #ifdef HDF5_IO
+      call alloc_merged_hdt5_array(my_rank, ucd, m_ucd)
       call h5open_f(hdferr)
 #endif
 !
@@ -67,41 +57,34 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine parallel_finalize_hdf5
+      subroutine parallel_finalize_hdf5(m_ucd)
 !
+      type(merged_ucd_data), intent(inout) :: m_ucd
       integer :: hdferr
 !
 ! Close Fortran interface
 !
 #ifdef HDF5_IO
       call h5close_f(hdferr)
+      call dealloc_merged_hdt5_array(m_ucd)
 #endif
-!
-      deallocate(fld_hdf5)
 !
       end subroutine parallel_finalize_hdf5
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine deallocate_ie_hdf5
-!
-      deallocate(ie_hdf5)
-!
-      end subroutine deallocate_ie_hdf5
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_ele_connect_for_hdf5(ucd)
+      subroutine copy_ele_connect_for_hdf5(ucd, m_ucd)
 !
       type(ucd_data), intent(in) :: ucd
+      type(merged_ucd_data), intent(inout) :: m_ucd
       integer(kind = kint) :: iele, k1
 !
 !
 !$omp parallel do
       do iele = 1, ucd%nele
         do k1 = 1, ucd%nnod_4_ele
-          ie_hdf5(k1,iele) = ucd%ie(iele,k1) - 1
+          m_ucd%ie_hdf5(k1,iele) = ucd%ie(iele,k1) - 1
         end do
       end do
 !$omp end parallel do
@@ -110,18 +93,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_node_position_for_hdf5(internod, ucd)
+      subroutine copy_node_position_for_hdf5(intnod, ucd, m_ucd)
 !
-      integer(kind = kint), intent(in) :: internod
+      integer(kind = kint), intent(in) :: intnod
       type(ucd_data), intent(in) :: ucd
+      type(merged_ucd_data), intent(inout) :: m_ucd
       integer(kind = kint) :: inod
 !
 !
 !$omp parallel do
-      do inod = 1, internod
-        fld_hdf5(3*inod-2) = ucd%xx(inod,1)
-        fld_hdf5(3*inod-1) = ucd%xx(inod,2)
-        fld_hdf5(3*inod  ) = ucd%xx(inod,3)
+      do inod = 1, intnod
+        m_ucd%fld_hdf5(3*inod-2) = ucd%xx(inod,1)
+        m_ucd%fld_hdf5(3*inod-1) = ucd%xx(inod,2)
+        m_ucd%fld_hdf5(3*inod  ) = ucd%xx(inod,3)
       end do
 !$omp end parallel do
 !
@@ -129,17 +113,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_scalar_field_for_hdf5(nnod, ist_fld, ucd)
+      subroutine copy_scalar_field_for_hdf5(intnod, ist_fld,            &
+     &          ucd, m_ucd)
 !
-      integer(kind = kint), intent(in) :: ist_fld, nnod
+      integer(kind = kint), intent(in) :: ist_fld, intnod
       type(ucd_data), intent(in) :: ucd
+      type(merged_ucd_data), intent(inout) :: m_ucd
       integer(kind = kint) :: inod
 !
 !
-      ncomp_hdf5 = 1
+      m_ucd%ncomp_hdf5 = 1
 !$omp parallel do
-      do inod = 1, nnod
-        fld_hdf5(inod) = ucd%d_ucd(inod,ist_fld+1)
+      do inod = 1, intnod
+        m_ucd%fld_hdf5(inod) = ucd%d_ucd(inod,ist_fld+1)
       end do
 !$omp end parallel do
 !
@@ -147,19 +133,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_vector_field_for_hdf5(nnod, ist_fld, ucd)
+      subroutine copy_vector_field_for_hdf5(intnod, ist_fld,            &
+     &          ucd, m_ucd)
 !
-      integer(kind = kint), intent(in) :: ist_fld, nnod
+      integer(kind = kint), intent(in) :: ist_fld, intnod
       type(ucd_data), intent(in) :: ucd
+      type(merged_ucd_data), intent(inout) :: m_ucd
       integer(kind = kint) :: inod
 !
 !
-      ncomp_hdf5 = 3
+      m_ucd%ncomp_hdf5 = 3
 !$omp parallel do
-      do inod = 1, nnod
-        fld_hdf5(3*inod-2) = ucd%d_ucd(inod,ist_fld+1)
-        fld_hdf5(3*inod-1) = ucd%d_ucd(inod,ist_fld+2)
-        fld_hdf5(3*inod  ) = ucd%d_ucd(inod,ist_fld+3)
+      do inod = 1, intnod
+        m_ucd%fld_hdf5(3*inod-2) = ucd%d_ucd(inod,ist_fld+1)
+        m_ucd%fld_hdf5(3*inod-1) = ucd%d_ucd(inod,ist_fld+2)
+        m_ucd%fld_hdf5(3*inod  ) = ucd%d_ucd(inod,ist_fld+3)
       end do
 !$omp end parallel do
 !
@@ -167,25 +155,27 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_sym_tensor_field_for_hdf5(nnod, ist_fld, ucd)
+      subroutine copy_sym_tensor_field_for_hdf5(intnod, ist_fld,        &
+     &          ucd, m_ucd)
 !
-      integer(kind = kint), intent(in) :: ist_fld, nnod
+      integer(kind = kint), intent(in) :: ist_fld, intnod
       type(ucd_data), intent(in) :: ucd
+      type(merged_ucd_data), intent(inout) :: m_ucd
       integer(kind = kint) :: inod
 !
 !
-      ncomp_hdf5 = 9
+      m_ucd%ncomp_hdf5 = 9
 !$omp parallel do
-      do inod = 1, nnod
-        fld_hdf5(9*inod-8) = ucd%d_ucd(inod,ist_fld+1)
-        fld_hdf5(9*inod-7) = ucd%d_ucd(inod,ist_fld+2)
-        fld_hdf5(9*inod-6) = ucd%d_ucd(inod,ist_fld+3)
-        fld_hdf5(9*inod-5) = ucd%d_ucd(inod,ist_fld+1)
-        fld_hdf5(9*inod-4) = ucd%d_ucd(inod,ist_fld+4)
-        fld_hdf5(9*inod-3) = ucd%d_ucd(inod,ist_fld+5)
-        fld_hdf5(9*inod-2) = ucd%d_ucd(inod,ist_fld+3)
-        fld_hdf5(9*inod-1) = ucd%d_ucd(inod,ist_fld+5)
-        fld_hdf5(9*inod  ) = ucd%d_ucd(inod,ist_fld+6)
+      do inod = 1, intnod
+        m_ucd%fld_hdf5(9*inod-8) = ucd%d_ucd(inod,ist_fld+1)
+        m_ucd%fld_hdf5(9*inod-7) = ucd%d_ucd(inod,ist_fld+2)
+        m_ucd%fld_hdf5(9*inod-6) = ucd%d_ucd(inod,ist_fld+3)
+        m_ucd%fld_hdf5(9*inod-5) = ucd%d_ucd(inod,ist_fld+1)
+        m_ucd%fld_hdf5(9*inod-4) = ucd%d_ucd(inod,ist_fld+4)
+        m_ucd%fld_hdf5(9*inod-3) = ucd%d_ucd(inod,ist_fld+5)
+        m_ucd%fld_hdf5(9*inod-2) = ucd%d_ucd(inod,ist_fld+3)
+        m_ucd%fld_hdf5(9*inod-1) = ucd%d_ucd(inod,ist_fld+5)
+        m_ucd%fld_hdf5(9*inod  ) = ucd%d_ucd(inod,ist_fld+6)
       end do
 !$omp end parallel do
 !
@@ -197,7 +187,7 @@
       subroutine parallel_write_hdf5_mesh_file(ucd, m_ucd)
 !
       type(ucd_data), intent(in) :: ucd
-      type(merged_ucd_data), intent(in) :: m_ucd
+      type(merged_ucd_data), intent(inout) :: m_ucd
 !
 #ifdef HDF5_IO
       character(len=kchara), parameter                                  &
@@ -245,8 +235,8 @@
 ! We first have to transpose the data so it fits correctly to the XDMF format
 ! We also take this opportunity to use the "real" (C-like) indexing
 !
-        call copy_node_position_for_hdf5(nnod, ucd)
-        call copy_ele_connect_for_hdf5(ucd)
+        call copy_node_position_for_hdf5(nnod, ucd, m_ucd)
+        call copy_ele_connect_for_hdf5(ucd, m_ucd)
 !
 ! Node data set dimensions are (number of nodes) x 3
 !
@@ -318,7 +308,7 @@
         buf_dims(1) = 3
         buf_dims(2) = nnod
         call h5dwrite_f(node_dataset_id, H5T_NATIVE_DOUBLE,             &
-            fld_hdf5(1), buf_dims, hdferr, node_memory_dataspace,       &
+            m_ucd%fld_hdf5(1), buf_dims, hdferr, node_memory_dataspace, &
             node_file_dataspace, plist_id)
 !
 ! And the element data
@@ -326,7 +316,7 @@
         buf_dims(1) = ucd%nnod_4_ele
         buf_dims(2) = ucd%nele
         call h5dwrite_f(elem_dataset_id, H5T_NATIVE_INTEGER,            &
-            ie_hdf5, buf_dims, hdferr, elem_memory_dataspace,           &
+            m_ucd%ie_hdf5, buf_dims, hdferr, elem_memory_dataspace,     &
             elem_file_dataspace, plist_id)
 !
 ! Close parallel access property list
@@ -347,11 +337,11 @@
 !
 ! Deallocate transpose arrays
 !
-        call deallocate_ie_hdf5
+        call dealloc_merged_hdt5_ele_list(m_ucd)
 !
 ! Close file
 !
-      call h5fclose_f(id_hdf5, hdferr)
+        call h5fclose_f(id_hdf5, hdferr)
 #endif
 !
       end subroutine parallel_write_hdf5_mesh_file
@@ -362,7 +352,7 @@
 !
       integer(kind=kint), intent(in) :: cur_step
       type(ucd_data), intent(in) :: ucd
-      type(merged_ucd_data), intent(in) :: m_ucd
+      type(merged_ucd_data), intent(inout) :: m_ucd
 !
 #ifdef HDF5_IO
       integer(kind = kint) :: istep, icou, nnod
@@ -413,18 +403,18 @@
 ! Transpose the field data to fit XDMF standards
 !
         if(ucd%num_comp(istep) .eq. n_scalar) then
-          call copy_scalar_field_for_hdf5(nnod, icou, ucd)
+          call copy_scalar_field_for_hdf5(nnod, icou, ucd, m_ucd)
         else if(ucd%num_comp(istep) .eq. n_vector) then
-          call copy_vector_field_for_hdf5(nnod, icou, ucd)
+          call copy_vector_field_for_hdf5(nnod, icou, ucd, m_ucd)
         else if(ucd%num_comp(istep) .eq. 6) then
-          call copy_sym_tensor_field_for_hdf5(nnod, icou, ucd)
+          call copy_sym_tensor_field_for_hdf5(nnod, icou, ucd, m_ucd)
         end if
         icou = icou + ucd%num_comp(istep)
 !
 ! Create a dataspace of the appropriate size
 !
         dataspace_dims = 2
-        field_dataspace_dim(1) = ncomp_hdf5
+        field_dataspace_dim(1) = m_ucd%ncomp_hdf5
         field_dataspace_dim(2) = m_ucd%istack_merged_intnod(nprocs)
         call h5screate_simple_f(dataspace_dims, field_dataspace_dim,    &
             field_dataspace_id, hdferr)
@@ -442,7 +432,7 @@
 !
 ! Create dataspace for memory hyperslab
 !
-        hyperslab_size(1) = ncomp_hdf5
+        hyperslab_size(1) = m_ucd%ncomp_hdf5
         hyperslab_size(2) = nnod
         hyperslab_offset(1) = 0
         hyperslab_offset(2) = m_ucd%istack_merged_intnod(my_rank)
@@ -464,11 +454,11 @@
 !
 ! Write the field data
 !
-        buf_dims(1) = ncomp_hdf5
+        buf_dims(1) = m_ucd%ncomp_hdf5
         buf_dims(2) = nnod
         call h5dwrite_f(field_dataset_id, H5T_NATIVE_DOUBLE,            &
-            fld_hdf5(1), buf_dims, hdferr, field_memory_dataspace,      &
-            field_file_dataspace, plist_id)
+            m_ucd%fld_hdf5(1), buf_dims, hdferr,                        &
+            field_memory_dataspace, field_file_dataspace, plist_id)
 !
 ! Close parallel access property list
 !

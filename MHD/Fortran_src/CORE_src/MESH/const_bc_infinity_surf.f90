@@ -17,6 +17,8 @@
 !
       implicit  none
 !
+      integer(kind = kint), parameter :: iflag_surf_infty =      0
+!
       integer (kind=kint) :: num_bc_infty
       real (kind=kreal), allocatable :: bc_infty_magnitude(:)
       integer (kind=kint), allocatable :: ibc_infty_type(:)
@@ -35,7 +37,7 @@
       allocate(bc_infty_name(num_bc_infty))
 !
       if(num_bc_infty .gt. 0) then
-        ibc_infty_type = 0
+        ibc_infty_type =     0
         bc_infty_magnitude = 0.0d0
       end if
 !
@@ -57,6 +59,8 @@
       subroutine count_num_bc_infinity(num_surf, surf_name,             &
      &          ngrp_sf_infty)
 !
+      use m_surf_data_list
+!
       integer(kind=kint), intent(in) :: num_surf
       character(len=kchara), intent(in) :: surf_name(num_surf)
 !
@@ -72,7 +76,7 @@
 !
         do jgrp = 1, num_bc_infty
           if (surf_name(igrp) .eq. bc_infty_name(jgrp)                  &
-     &           .and. ibc_infty_type(jgrp).eq.0 ) then
+     &           .and. ibc_infty_type(jgrp) .eq. iflag_surf_infty) then
               ngrp_sf_infty = ngrp_sf_infty + 1
           end if
         end do
@@ -84,6 +88,8 @@
 !
       subroutine set_bc_infty_id(num_surf, surf_name,                   &
      &          ngrp_sf_infty, id_grp_sf_infty)
+!
+      use m_surf_data_list
 !
       integer(kind=kint), intent(in) :: num_surf
       character(len=kchara), intent(in) :: surf_name(num_surf)
@@ -107,7 +113,7 @@
 ! ----------- check surface group
 !
           if (surf_name(igrp) .eq. bc_infty_name(jgrp)                  &
-     &         .and. ibc_infty_type(jgrp) .eq. 0 ) then
+     &         .and. ibc_infty_type(jgrp) .eq. iflag_surf_infty) then
             icou = icou + 1
             id_grp_sf_infty(icou) = igrp
           end if
