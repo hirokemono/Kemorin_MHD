@@ -6,15 +6,15 @@ Settings for Makefiles
 # -------------------------------------------------------------------------------
 #
 # setenv PKG_CONFIG_PATH /Users/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig;
-#./configure --prefix='/Users/matsui/local' CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' --enable-fftw3 
+#./configure --prefix='/Users/matsui/local' CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' --enable-fftw3 --with-hdf5=/Users/matsui/local/bin/h5pcc
 #
 #
-#  Makefile for geoynamo platform CALIPSO
+#  Makefile for geoynamo platform Calypso
 #    Written by H. Matsui
 #
 SHELL           = /bin/sh
 #
-#  directories of GeoFEM
+#  directories of Calypso
 #
 SRCDIR = /Users/matsui/src_release
 INSTDIR= /Users/matsui/local
@@ -38,7 +38,7 @@ MPILIBS =
 #
 SHELL           = /bin/sh
 #
-#  directories of GeoFEM
+#  directories of Calypso
 #
 SRCDIR = /Users/matsui/src_release
 INSTDIR= /Users/matsui/local
@@ -86,12 +86,12 @@ FFTW3_LIBS=   -L/Users/matsui/local/lib -lfftw3 -lm
 #  CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' --enable-fftw3
 #
 #
-#  Makefile for geoynamo platform CALIPSO
+#  Makefile for geoynamo platform Calypso
 #    Written by H. Matsui
 #
 SHELL           = /bin/sh
 #
-#  directories of GeoFEM
+#  directories of Calypso
 #
 SRCDIR = /Users/matsui/src_release
 INSTDIR= /Users/matsui/local
@@ -140,12 +140,12 @@ FFTW3_LIBS=   -L/opt/local/lib -lfftw3 -lm
 #  CFLAGS='-O3  -Wall -g' FCFLAGS='-O3 -warn all -g' \
 #  --enable-fftw3
 #
-#  Makefile for geoynamo platform CALIPSO
+#  Makefile for geoynamo platform Calypso
 #    Written by H. Matsui
 #
 SHELL           = /bin/sh
 #
-#  directories of GeoFEM
+#  directories of Calypso
 #
 SRCDIR = /home/matsui/src_release
 INSTDIR= /home/matsui/local
@@ -202,12 +202,12 @@ FFTW3_LIBS=   -L/usr/local/lib -lfftw3 -lm
 #  FCFLAGS="-64 -Oss -noifswpl -omp -pardiag=2 -autoinline=2 -model=L1" \
 #  MPICC=mpcc_r MPIFC=mpif90_r
 #
-#  Makefile for geoynamo platform CALIPSO
+#  Makefile for geoynamo platform Calypso
 #    Written by H. Matsui
 #
 SHELL           = /bin/sh
 #
-#  directories of GeoFEM
+#  directories of Calypso
 #
 SRCDIR = /GPFS/matsui/src_release
 INSTDIR= /home0/matsui/local
@@ -284,12 +284,12 @@ CXXFLAGS =
 # ./configure --prefix=/Users/matsui/local CC=cc FC=f90 FCFLAGS='-O3 -qsuffix=f=f90:cpp=F90'
 #
 #
-#  Makefile for geoynamo platform CALIPSO
+#  Makefile for geoynamo platform Calypso
 #    Written by H. Matsui
 #
 SHELL           = /bin/sh
 #
-#  directories of GeoFEM
+#  directories of Calypso
 #
 SRCDIR = /Users/matsui/src_release
 INSTDIR= /Users/matsui/local

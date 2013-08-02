@@ -28,7 +28,7 @@
       use m_control_parameter
       use m_t_step_parameter
       use m_ucd_data
-      use parallel_udt_IO_select
+      use parallel_ucd_IO_select
       use copy_time_steps_4_restart
       use range_data_IO
 !
@@ -69,7 +69,7 @@
       use set_ucd_data
 !
       use merged_udt_vtk_file_IO
-      use parallel_udt_IO_select
+      use parallel_ucd_IO_select
 !
 !
       if(i_step_output_ucd .eq. 0) return

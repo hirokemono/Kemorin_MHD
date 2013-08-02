@@ -40,10 +40,12 @@
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: my_rank
+      character(len=kchara) ::  fname_tmp
 !
 ! ***** open output file
 !
-             call add_int_suffix(my_rank, mesh_file_header, fname)
+             call add_int_suffix(my_rank, mesh_file_header, fname_tmp)
+             call add_gfm_extension(fname_tmp, fname)
              open (l_out, file=fname, form='formatted' )
 !
 ! ..... write 0. header lines
@@ -63,11 +65,13 @@
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: my_rank
+      character(len=kchara) ::  fname_tmp
 !
 ! ***** open output file
 !
-             call add_int_suffix(my_rank, mesh_file_header, fname)
-             open (l_out, file=fname, form='unformatted' )
+       call add_int_suffix(my_rank, mesh_file_header, fname_tmp)
+       call add_gfm_extension(fname_tmp, fname)
+       open (l_out, file=fname, form='unformatted' )
 !
 ! ..... write 0. header lines
 !

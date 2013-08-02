@@ -292,6 +292,7 @@ extern "C" {
     int send_iflag_current_kemoview();
     
     void draw_kemoviewer_c();
+    void draw_kemoviewer_to_ps();
     void kemoviewer_initial_lighting();
 
     void init_kemoview_background_color();
@@ -305,7 +306,7 @@ extern "C" {
     int kemoview_open_data_glut(const char *file_name);
 
     void close_mesh_view();
-    void close_psf_view();
+    int close_psf_view();
     void close_fline_view();
 
     void set_to_pick_surface_command(const char *command);

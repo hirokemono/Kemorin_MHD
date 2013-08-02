@@ -191,12 +191,13 @@
 !
       use cal_zonal_mean_sph_spectr
 !
+      integer (kind =kint), parameter :: ideg_del(1) = (/0/)
 !
-!      call delete_rj_phys_data(itwo, ipol%i_velo)
-      if (my_rank.eq.0) write(*,*) 'Take zonam mean velocity'
-      call take_zonal_mean_rj_field(ithree, itor%i_velo)
-      if (my_rank.eq.0) write(*,*) 'Take zonam mean temperature'
-      call take_zonal_mean_rj_field(ione, itor%i_temp)
+!
+!      call take_zonal_mean_rj_field(ithree, ipol%i_velo)
+!      if (my_rank.eq.0) write(*,*) 'Take zonam mean temperature'
+!      call take_zonal_mean_rj_field(ione, ipol%i_temp)
+      call delete_degree_sph_spectr(ione, ideg_del, ione, ipol%i_temp)
 !
       end subroutine set_special_rj_fields
 !
@@ -214,31 +215,11 @@
       use sph_transforms_4_MHD
       use products_sph_fields_smp
 !
-      integer (kind =kint) :: iflag
 !
+      call s_lead_fields_4_sph_mhd
 !
-      call set_lead_physical_values_flag(iflag)
-!
-      if ( (iflag*mod(istep_max_dt,i_step_output_rst)) .eq.0 ) then
-         call pressure_4_sph_mhd
-      end if
-!
-      if(iflag .eq. 0) then
-        call enegy_fluxes_4_sph_mhd
-      end if
-!
-!
-!      call delete_rj_phys_data(ione, itor%i_magne)
-!      call take_zonal_mean_rj_field(ithree, ipol%i_velo)
-!      call take_zonal_mean_rj_field(ithree, ipol%i_temp)
       call sph_back_trans_4_MHD
 !
-!$omp parallel
-      if((irtp%i_induction*irtp%i_me_gen) .gt. 0) then
-       call cal_rtp_dot_product(irtp%i_induction, irtp%i_magne,        &
-     &      irtp%i_me_gen)
-      end if
-!$omp end parallel
       call sph_forward_trans_snapshot_MHD
 !
 ! ----  Take zonal mean

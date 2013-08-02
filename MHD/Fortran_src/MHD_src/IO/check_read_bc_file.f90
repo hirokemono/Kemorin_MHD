@@ -1,11 +1,11 @@
-!
-!      module read_boundary_condition_file
+!check_read_bc_file.f90
+!      module check_read_bc_file
 !
 !      Written by H. Matsui on July, 2005
 !
 !      subroutine check_read_boundary_files
 !
-      module read_boundary_condition_file
+      module check_read_bc_file
 !
       use m_precision
 !
@@ -125,4 +125,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module read_boundary_condition_file
+      end module check_read_bc_file

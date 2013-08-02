@@ -10,6 +10,14 @@ SPH_MHD \
 mesh_utilities \
 data_utilities
 
+LIBS_SPH_MHD = \
+'$$(LIB_CALYPSO)'  \
+'$$(LIB_FFTPACK)'
+
+
+LIB_FILES_SPH_MHD = \
+'$$(LIB_CALYPSO_FILE)'   \
+'$$(LIB_FFTPACK_FILE)'
 
 
 #
@@ -59,6 +67,11 @@ target_task:
 
 
 lib_name:
+	@echo  LIBS_SPH_MHD=  \\          >> $(MAKENAME)
+	@echo  $(LIBS_SPH_MHD)            >> $(MAKENAME)
+	@echo  LIB_FILES_SPH_MHD=  \\     >> $(MAKENAME)
+	@echo  $(LIB_FILES_SPH_MHD)       >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		echo 'generate library list for ' $$dir ; \

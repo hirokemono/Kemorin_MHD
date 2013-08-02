@@ -13,7 +13,6 @@
 !
       use m_precision
       use m_boundary_condition_IDs
-      use const_bc_infinity_surf
 !
       implicit none
 !

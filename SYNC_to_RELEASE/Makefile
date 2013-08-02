@@ -44,6 +44,12 @@ ifdef FFTW3_LIBS
   F90LIBS+= $$(FFTW3_LIBS)
 endif
 
+ifdef HDF5_FLIBS
+  FORTRAN_C_CONNECT += -DHDF5_IO
+  F_INCLUDE+= $$(HDF5_FFLAGS)
+  F90LIBS+= $$(HDF5_LDFLAGS) $$(HDF5_FLIBS)
+endif
+
 ifdef MPILIBS
   F90LIBS+= -L$(MPILIBDIR) $(MPILIBS)
 endif
@@ -108,6 +114,12 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo 'FFTW3_CFLAGS = $(FFTW3_CFLAGS)'                  >> $(MAKENAME)
 	@echo 'FFTW3_LIBS =   $(FFTW3_LIBS)'                    >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# HDF5 settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'HDF5_FFLAGS = $(HDF5_FFLAGS)'    >> $(MAKENAME)
+	@echo 'HDF5_LDFLAGS = $(HDF5_LDFLAGS)'  >> $(MAKENAME)
+	@echo 'HDF5_FLIBS = $(HDF5_FLIBS)'      >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)

@@ -411,14 +411,14 @@
 
 
 - (IBAction) ClosePsfFile:(id)pId{
-	close_psf_view();
+    int num_loaded = close_psf_view();
+    self.DrawPsfFlag = send_iflag_draw_current_psf();
 
-	self.DrawPsfFlag = send_iflag_draw_current_psf();
-	[self CopyPsfDisplayFlagsFromC];
+	if(num_loaded > 0){
+        [self CopyPsfDisplayFlagsFromC];
+        [self SetCurrentPsfMenu];
+    };
 	[_kemoviewer UpdateImage];
-
-	int num_loaded = send_num_loaded_PSF();
-	if(num_loaded > 0) [self SetCurrentPsfMenu];
 };
 
 - (IBAction) CurrentPsfAction:(id)sender

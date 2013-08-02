@@ -172,7 +172,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	return;
 }
 
-- (IBAction) UpdateElementTable
+- (void) UpdateElementTable
 {
 	int i, iflag;
 	char name[4096];

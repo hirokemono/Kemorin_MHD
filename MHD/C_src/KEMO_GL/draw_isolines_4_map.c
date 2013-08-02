@@ -59,11 +59,9 @@ static void draw_zeroline_4_map(struct psf_data *psf_s, struct psf_menu_val *psf
 								struct buffer_for_gl *gl_buf){
 	int inum = 0;
 
-	glPointSize(TWO);
-	inum = draw_isoline_map_triangle(inum, ZERO, psf_m->icomp_draw_psf, black, 
+	inum = draw_isoline_map_triangle(inum, ZERO, psf_m->icomp_draw_psf, black,
 							  psf_s, gl_buf);
 	if(inum > 0) glDrawArrays(GL_LINES, IZERO, (ITWO*inum));
-	glPointSize(ONE);
 	
 	return;
 }
@@ -98,7 +96,9 @@ static void draw_isolines_4_map(int ist, int ied, struct psf_data *psf_s,
 
 
 void draw_map_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m,
-						  struct buffer_for_gl *gl_buf){
+						  struct buffer_for_gl *gl_buf, int iflag_retina,
+                          int iflag_write_ps){
+    int ierr;
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -108,14 +108,20 @@ void draw_map_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glLineWidth(HALF * ((float) iflag_retina+IONE));
+    if (iflag_write_ps == ON) {ierr = gl2psLineWidth(ONE);};
 	
 	if(psf_m->draw_psf_grid  != 0){
         find_start_positive_lines(psf_m);
         if(psf_m->ist_positive_line > 1){
             glEnable(GL_LINE_STIPPLE);
             glLineStipple(1,0x3333);
+            if (iflag_write_ps == ON) {ierr = gl2psEnable(GL2PS_LINE_STIPPLE);};
+
             draw_isolines_4_map(IONE, psf_m->ist_positive_line,
                                 psf_s, psf_m, gl_buf);
+
+            if (iflag_write_ps == ON) {ierr = gl2psDisable(GL2PS_LINE_STIPPLE);};
             glDisable(GL_LINE_STIPPLE);
         };
         if(psf_m->ist_positive_line < psf_m->n_isoline){
@@ -124,7 +130,13 @@ void draw_map_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m,
         };
     };
 	if(psf_m->draw_psf_zero  != 0){
+        glLineWidth( (float) iflag_retina + ONE );
+        if (iflag_write_ps == ON) {ierr = gl2psLineWidth(TWO);};
+
         draw_zeroline_4_map(psf_s, psf_m, gl_buf);
+
+        glLineWidth(HALF * ((float) iflag_retina+IONE));
+        if (iflag_write_ps == ON) {ierr = gl2psLineWidth(ONE);};
     };
 	
 	

@@ -6,16 +6,6 @@ SPH_MHD_MAINDIR =   $$(PROG_DIR)/SPH_MHD
 
 TARGET_SPH_MHD_MINI =   sph_mhd
 
-
-LIBS_SPH_MHD = \
-'$$(LIB_CALYPSO)'  \
-'$$(LIB_FFTPACK)'
-
-LIB_FILES_SPH_MHD = \
-'$$(LIB_CALYPSO_FILE)' \
-'$$(LIB_FFTPACK_FILE)'
-
-
 SOURCES = $(shell ls *.f90)
 
 MOD_SPH_MINI_MHD_MAIN =  \
@@ -46,12 +36,6 @@ target_task:
 
 
 lib_name:
-	@echo  LIBS_SPH_MHD=  \\          >> $(MAKENAME)
-	@echo  $(LIBS_SPH_MHD)            >> $(MAKENAME)
-	@echo  LIB_FILES_SPH_MHD=  \\     >> $(MAKENAME)
-	@echo  $(LIB_FILES_SPH_MHD)       >> $(MAKENAME)
-	@echo  '#' >> $(MAKENAME)
-
 
 mod_list:
 	@echo  MOD_SPH_MINI_MHD_MAIN=  \\ >> $(MAKENAME)

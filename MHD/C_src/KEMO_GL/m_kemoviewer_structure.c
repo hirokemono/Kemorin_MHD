@@ -133,7 +133,6 @@ int send_nlimit_load_psf(){return kemo_sgl->psf_a->nlimit_loaded;};
 int add_kemoview_array(){
 	int id_load = add_new_kemoview_array(kemoview_a);
     check_array_size(kemoview_a);
-    printf("add_kemoview_array, id_load %d\n",id_load);
 	return id_load;
 }
 
@@ -164,6 +163,15 @@ void draw_kemoviewer_c(){
 /*    printf("Draw objects to %d ID: %d\n", kemoview_a->id_current, kemo_sgl->view_s->gl_drawID);*/
 	draw_objects(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
 			kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, kemo_sgl->gl_buf);
+	return;
+};
+
+void draw_kemoviewer_to_ps(){
+    /*    printf("Draw objects to %d ID: %d\n", kemoview_a->id_current, kemo_sgl->view_s->gl_drawID);*/
+    kemo_sgl->view_s->iflag_write_ps = ON;
+	draw_objects(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m,
+                 kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, kemo_sgl->gl_buf);
+    kemo_sgl->view_s->iflag_write_ps = OFF;
 	return;
 };
 
@@ -204,7 +212,7 @@ void close_mesh_view(){
 	return;
 }
 
-void close_psf_view(){
+int close_psf_view(){
 	dealloc_draw_psf_flags(kemo_sgl->psf_d[kemo_sgl->psf_a->id_current],
                            kemo_sgl->psf_m[kemo_sgl->psf_a->id_current]);
 	deallc_all_psf_data(kemo_sgl->psf_d[kemo_sgl->psf_a->id_current]);
@@ -214,7 +222,7 @@ void close_psf_view(){
 	psf_current_data = kemo_sgl->psf_d[kemo_sgl->psf_a->id_current];
 	psf_current_menu = kemo_sgl->psf_m[kemo_sgl->psf_a->id_current];
 
-	return;
+	return send_num_loaded_PSF();
 }
 
 void close_fline_view(){

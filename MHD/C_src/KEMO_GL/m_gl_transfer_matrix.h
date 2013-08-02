@@ -30,6 +30,7 @@ struct buffer_for_gl{
 struct view_element{
 	GLint gl_drawID;
 	
+    int   iflag_write_ps;
     int   iflag_retina;
 	GLint nx_window, ny_window;
 	

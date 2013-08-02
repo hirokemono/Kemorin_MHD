@@ -30,7 +30,6 @@
 - (id) init;
 - (id) dealloc;
 
-- (IBAction) SetNodeGroupLabels:(id)pId;
 - (IBAction) ShowAllNodeGroupAction:(id)pId;
 - (IBAction) HideAllNodeGroupAction:(id)pId;
 
@@ -46,7 +45,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 			  row:(int)rowIndex;
 - (void)tableView:(NSTableView *)aTableView didClickTableColumn:(NSTableColumn *)tableColumn;
 
-- (IBAction)UpdateNodeTable;
+- (void)UpdateNodeTable;
 - (IBAction)ChooseNodeGrpNodeColorAction:(id)sender;
 - (IBAction)SetNodeGrpNodeColorAction:(id)sender;
 

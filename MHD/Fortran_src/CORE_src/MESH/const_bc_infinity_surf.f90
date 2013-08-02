@@ -17,8 +17,6 @@
 !
       implicit  none
 !
-      integer(kind = kint), parameter :: iflag_surf_infty =      0
-!
       integer (kind=kint) :: num_bc_infty
       real (kind=kreal), allocatable :: bc_infty_magnitude(:)
       integer (kind=kint), allocatable :: ibc_infty_type(:)
@@ -60,6 +58,7 @@
      &          ngrp_sf_infty)
 !
       use m_surf_data_list
+      use m_boundary_condition_IDs
 !
       integer(kind=kint), intent(in) :: num_surf
       character(len=kchara), intent(in) :: surf_name(num_surf)
@@ -90,6 +89,7 @@
      &          ngrp_sf_infty, id_grp_sf_infty)
 !
       use m_surf_data_list
+      use m_boundary_condition_IDs
 !
       integer(kind=kint), intent(in) :: num_surf
       character(len=kchara), intent(in) :: surf_name(num_surf)

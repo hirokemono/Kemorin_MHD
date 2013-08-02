@@ -44,7 +44,7 @@
       use set_control_4_composition
       use set_control_4_pickup_sph
       use output_parallel_ucd_file
-      use read_boundary_condition_file
+      use check_read_bc_file
 !
       use check_dependency_for_MHD
 !

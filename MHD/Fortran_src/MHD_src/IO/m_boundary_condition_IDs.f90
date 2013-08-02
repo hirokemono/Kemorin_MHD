@@ -77,4 +77,7 @@
       integer(kind = kint), parameter :: iflag_surf_sph_in =    71
       integer(kind = kint), parameter :: iflag_surf_sph_out =   72
 !
+      integer(kind = kint), parameter :: iflag_surf_infty =      0
+
+!
       end module m_boundary_condition_IDs

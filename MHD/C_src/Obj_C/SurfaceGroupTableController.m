@@ -32,7 +32,7 @@
 	return self;
 }
 
-- (IBAction) SetSurfaceGroupLabels:(id)pId
+- (void) SetSurfaceGroupLabels:(id)pId
 {
 	int i;
 	char name[4096];
@@ -170,7 +170,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	return;
 }
 
-- (IBAction) UpdateSurfaceTable
+- (void) UpdateSurfaceTable
 {
 	int i, iflag;
 	char name[4096];

@@ -29,25 +29,6 @@
 	return self;
 }
 
-- (IBAction) SetNodeGroupLabels:(id)pId
-{
-	int i;
-	char name[4096];
-	NSString *stname;
-	
-	[NodeGroupDisplayNames removeAllObjects];
-	[NodeGroupDisplayNodeFlags removeAllObjects];
-	NumNodeGroup = send_ngrp_nod_sf();
-	for(i=0;i<NumNodeGroup;i++){
-		send_nod_gp_name_sf(name,i);
-		stname = [[NSString alloc] initWithUTF8String:name];
-		[NodeGroupDisplayNames      addObject:stname];
-		[NodeGroupDisplayNodeFlags  addObject:[[NSNumber alloc ] initWithInt:0] ];
-		[stname release];
-	}
-	[_nodeTableView reloadData];
-}
-
 - (IBAction) ShowAllNodeGroupAction:(id)pId{
 	int i;
 	
@@ -122,7 +103,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	return;
 }
 
-- (IBAction) UpdateNodeTable
+- (void) UpdateNodeTable
 {
 	int i, iflag;
 	char name[4096];

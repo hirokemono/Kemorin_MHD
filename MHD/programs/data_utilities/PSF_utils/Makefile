@@ -15,6 +15,8 @@ TARGET_DRAW_MAP =  drmap_fem
 
 TARGET_LINE_ON_PSF = section_from_psf
 
+TARGET_FIX_TEMP_PSF = psf_per_temp_2_temp
+
 
 LIBS_PSF_UTIL = \
 '$$(LIB_UTILS)' \
@@ -82,6 +84,9 @@ m_norms_4_psf.o \
 m_psf_edge_connect.o \
 m_line_from_psf.o
 
+MOD_FIX_TEMP_PSF = \
+fix_temperature_4_psf.o
+
 #
 #  -------------------------------------------------------------------------
 #
@@ -90,14 +95,15 @@ dir_list:
 	@echo 'PSF_UTIL_MAINDIR = $(PSF_UTIL_MAINDIR)' >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_PSF_AVES =     $$(BUILDDIR)/$(TARGET_PSF_AVES)'     >> $(MAKENAME)
-	@echo 'TARGET_PSF_2_VTK =    $$(BUILDDIR)/$(TARGET_PSF_2_VTK)'    >> $(MAKENAME)
-	@echo 'TARGET_PSF_2_DX =     $$(BUILDDIR)/$(TARGET_PSF_2_DX)'     >> $(MAKENAME)
-	@echo 'TARGET_DRAW_CZ =      $$(BUILDDIR)/$(TARGET_DRAW_CZ)'      >> $(MAKENAME)
-	@echo 'TARGET_DRAW_CX =      $$(BUILDDIR)/$(TARGET_DRAW_CX)'      >> $(MAKENAME)
-	@echo 'TARGET_DRAW_CY =      $$(BUILDDIR)/$(TARGET_DRAW_CY)'      >> $(MAKENAME)
-	@echo 'TARGET_DRAW_MAP =     $$(BUILDDIR)/$(TARGET_DRAW_MAP)'     >> $(MAKENAME)
-	@echo 'TARGET_LINE_ON_PSF =  $$(BUILDDIR)/$(TARGET_LINE_ON_PSF)'  >> $(MAKENAME)
+	@echo 'TARGET_PSF_AVES =     $$(BUILDDIR)/$(TARGET_PSF_AVES)'      >> $(MAKENAME)
+	@echo 'TARGET_PSF_2_VTK =    $$(BUILDDIR)/$(TARGET_PSF_2_VTK)'     >> $(MAKENAME)
+	@echo 'TARGET_PSF_2_DX =     $$(BUILDDIR)/$(TARGET_PSF_2_DX)'      >> $(MAKENAME)
+	@echo 'TARGET_DRAW_CZ =      $$(BUILDDIR)/$(TARGET_DRAW_CZ)'       >> $(MAKENAME)
+	@echo 'TARGET_DRAW_CX =      $$(BUILDDIR)/$(TARGET_DRAW_CX)'       >> $(MAKENAME)
+	@echo 'TARGET_DRAW_CY =      $$(BUILDDIR)/$(TARGET_DRAW_CY)'       >> $(MAKENAME)
+	@echo 'TARGET_DRAW_MAP =     $$(BUILDDIR)/$(TARGET_DRAW_MAP)'      >> $(MAKENAME)
+	@echo 'TARGET_LINE_ON_PSF =  $$(BUILDDIR)/$(TARGET_LINE_ON_PSF)'   >> $(MAKENAME)
+	@echo 'TARGET_FIX_TEMP_PSF =  $$(BUILDDIR)/$(TARGET_FIX_TEMP_PSF)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
@@ -108,7 +114,7 @@ target_task:
 	@echo utils_pg: \
 	'$$(TARGET_DRAW_CZ) $$(TARGET_DRAW_MAP) ' \
 	'$$(TARGET_DRAW_CX) $$(TARGET_DRAW_CY)  ' \
-	'$$(TARGET_LINE_ON_PSF) '               >> $(MAKENAME)
+	'$$(TARGET_LINE_ON_PSF) $$(TARGET_FIX_TEMP_PSF)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PSF_AVES)': '$$(MOD_PSF_AVES)' \
 	'$$(LIB_FILES_PSF_UTIL)' \
@@ -166,6 +172,13 @@ target_task:
 	'$$(MOD_LINE_ON_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
 	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_FIX_TEMP_PSF)': '$$(MOD_FIX_TEMP_PSF)' \
+	'$$(LIB_FILES_PSF_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_FIX_TEMP_PSF)' \
+	'$$(MOD_FIX_TEMP_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
+	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -192,6 +205,8 @@ mod_list:
 	@echo  $(MOD_MAP_PG)         >> $(MAKENAME)
 	@echo  MOD_LINE_ON_PSF =  \\ >> $(MAKENAME)
 	@echo  $(MOD_LINE_ON_PSF)    >> $(MAKENAME)
+	@echo  MOD_FIX_TEMP_PSF =  \\ >> $(MAKENAME)
+	@echo  $(MOD_FIX_TEMP_PSF)    >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 

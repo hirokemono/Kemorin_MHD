@@ -113,8 +113,8 @@ AC_ARG_WITH([hdf5],
   AS_HELP_STRING(
     [--with-hdf5=[yes/no/PATH]],
     m4_case(m4_normalize([$1]),
-            [serial],   [location of h5cc for serial HDF5 configuration],
-            [parallel], [location of h5pcc for parallel HDF5 configuration],
+            [serial],   [full path of h5cc for serial HDF5 configuration],
+            [parallel], [full path of h5pcc for parallel HDF5 configuration],
             [location of h5cc or h5pcc for HDF5 configuration])
   ),
   [if test "$withval" = "no"; then

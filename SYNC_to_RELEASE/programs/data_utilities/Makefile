@@ -4,6 +4,7 @@
 
 SUBDIRS = \
 MERGE \
+INITIAL_FIELD \
 SNAPSHOT_MHD
 
 
@@ -39,6 +40,7 @@ target_task:
 	@echo data_utils: \
 	assembles \
 	sph_snapshots \
+	sph_initial \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \

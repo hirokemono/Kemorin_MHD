@@ -465,7 +465,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     id_window = send_current_kemoview();
     set_current_kemoview(id_window);
 
-    printf("awakeFromNib in KemoViewerOpenGLView on %d\n", id_window);
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	NSString *pickSurfName = [defaults stringForKey:@"PickSurfaceCommand"];
 	int anaglyphFlag = [[defaults stringForKey:@"AnaglyphFlag"] intValue];

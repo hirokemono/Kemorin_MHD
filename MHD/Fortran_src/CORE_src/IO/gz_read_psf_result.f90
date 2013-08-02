@@ -101,7 +101,6 @@
       call count_stack_tot_psf_field
       call allocate_psf_field_data
 !
-      call read_gz_udt_field_name(nfield_psf, ncomp_psf, psf_data_name)
       call read_gz_udt_field_data(numnod_psf, ncomptot_psf, d_nod_psf)
 !
       end subroutine read_alloc_psf_udt_data_gz

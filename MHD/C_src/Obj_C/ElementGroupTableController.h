@@ -56,7 +56,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 
 - (void)tableView:(NSTableView *)aTableView didClickTableColumn:(NSTableColumn *)tableColumn;
 
-- (IBAction) UpdateElementTable;
+- (void) UpdateElementTable;
 
 - (IBAction)ChooseEleGrpPatchColorAction:(id)sender;
 - (IBAction)ChooseEleGrpLineColorAction:(id)sender;

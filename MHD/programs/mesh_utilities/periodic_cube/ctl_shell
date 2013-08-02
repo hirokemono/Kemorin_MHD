@@ -111,20 +111,20 @@ begin   make_shell
         ele_layer_id_ctl   15
         ele_layer_id_ctl   16
       end array
-    end
+    end element_group_ctl
 !
     begin surface_group_ctl
       array surf_grp_name_ctl    3
         surf_grp_name_ctl     ICB_surf       1
         surf_grp_name_ctl     CMB_surf       2
         surf_grp_name_ctl     infinity_surf  3
-      end array
+      end array surf_grp_name_ctl
 !
       array surf_layer_id_ctl  3
         surf_layer_id_ctl    IN     5
         surf_layer_id_ctl    OUT    12
         surf_layer_id_ctl    OUT    16
-      end array
+      end array surf_layer_id_ctl
     end
 !
   end
@@ -134,7 +134,7 @@ begin   make_shell
       sp_r_coarse_ratio    2   2
       sp_r_coarse_ratio    2   1
       sp_r_coarse_ratio    1   2
-	end array
-  end
+	end array sp_r_coarse_ratio
+  end coarse_shell_ctl
 !
 end

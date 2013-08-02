@@ -43,13 +43,16 @@
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
+      integer(kind = kint) :: nnod_hdf
       integer :: hdferr
 !
 ! Initialize Fortran interface
 !
 !
 #ifdef HDF5_IO
-      call alloc_merged_hdt5_array(my_rank, ucd, m_ucd)
+      nnod_hdf = m_ucd%istack_merged_intnod(my_rank+1)                  &
+     &          - m_ucd%istack_merged_intnod(my_rank)
+      call alloc_merged_hdt5_array(nnod_hdf, ucd, m_ucd)
       call h5open_f(hdferr)
 #endif
 !
@@ -78,13 +81,14 @@
 !
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(inout) :: m_ucd
-      integer(kind = kint) :: iele, k1
+      integer(kind = kint) :: iele, k1, i
 !
 !
-!$omp parallel do
+!$omp parallel do private(iele,k1,i)
       do iele = 1, ucd%nele
         do k1 = 1, ucd%nnod_4_ele
-          m_ucd%ie_hdf5(k1,iele) = ucd%ie(iele,k1) - 1
+          i = k1 + (iele-1) * ucd%nnod_4_ele
+          m_ucd%ie_hdf5(i) = ucd%ie(iele,k1) - 1
         end do
       end do
 !$omp end parallel do
@@ -101,6 +105,7 @@
       integer(kind = kint) :: inod
 !
 !
+      m_ucd%ncomp_hdf5 = 3
 !$omp parallel do
       do inod = 1, intnod
         m_ucd%fld_hdf5(3*inod-2) = ucd%xx(inod,1)
@@ -241,7 +246,7 @@
 ! Node data set dimensions are (number of nodes) x 3
 !
         dataspace_dims = 2
-        node_dataspace_dim(1) = 3
+        node_dataspace_dim(1) = m_ucd%ncomp_hdf5
         node_dataspace_dim(2) = m_ucd%istack_merged_intnod(nprocs)
         call h5screate_simple_f(dataspace_dims, node_dataspace_dim,     &
             node_dataspace_id, hdferr)
@@ -316,7 +321,7 @@
         buf_dims(1) = ucd%nnod_4_ele
         buf_dims(2) = ucd%nele
         call h5dwrite_f(elem_dataset_id, H5T_NATIVE_INTEGER,            &
-            m_ucd%ie_hdf5, buf_dims, hdferr, elem_memory_dataspace,     &
+            m_ucd%ie_hdf5(1), buf_dims, hdferr, elem_memory_dataspace,  &
             elem_file_dataspace, plist_id)
 !
 ! Close parallel access property list

@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine pick_psf_by_sections(nd, xref)
-!!      subroutine write_psf_line_data(file_header, istep)
+!!      subroutine write_psf_line_data(iflag_format, file_header, istep)
 !!      subroutine deallocate_psf_data_on_line
 !!@endverbatim
 !
@@ -69,16 +69,17 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine write_psf_line_data(file_header, istep)
+      subroutine write_psf_line_data(iflag_format, file_header, istep)
 !
       use m_geometry_constants
       use ucd_IO_select
 !
       character(len=kchara), intent(in) :: file_header
-      integer(kind = kint), intent(in) :: istep
+      integer(kind = kint), intent(in) :: istep, iflag_format
       integer(kind = kint), parameter :: delete_process = -1
 !
 !
+      line%ifmt_file =   iflag_format
       line%file_prefix = file_header
       call sel_write_ucd_file(delete_process, istep, line)
       call deallocate_psf_data_on_line

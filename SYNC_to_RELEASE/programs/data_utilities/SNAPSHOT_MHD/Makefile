@@ -10,16 +10,6 @@ TARGET_SPH_ZM_SNAP_NOVIZ = sph_zm_snapshot
 TARGET_SPH_D_BENCH =    sph_dynamobench
 
 
-LIBS_SPH_MHD = \
-'$$(LIB_CALYPSO)'  \
-'$$(LIB_FFTPACK)'
-
-
-LIB_FILES_SPH_MHD = \
-'$$(LIB_CALYPSO_FILE)'   \
-'$$(LIB_FFTPACK_FILE)'
-
-
 SOURCES = $(shell ls *.f90)
 
 MOD_SPH_SNAP_NOVIZ_MAIN =  \
@@ -83,12 +73,6 @@ target_task:
 
 
 lib_name:
-	@echo  LIBS_SPH_MHD=  \\          >> $(MAKENAME)
-	@echo  $(LIBS_SPH_MHD)            >> $(MAKENAME)
-	@echo  LIB_FILES_SPH_MHD=  \\     >> $(MAKENAME)
-	@echo  $(LIB_FILES_SPH_MHD)       >> $(MAKENAME)
-	@echo  '#' >> $(MAKENAME)
-
 
 mod_list:
 	@echo  MOD_SPH_SNAP_NOVIZ_MAIN=  \\ >> $(MAKENAME)

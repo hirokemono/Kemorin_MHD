@@ -8,19 +8,6 @@ TARGET_GEN_SPH_NOSF =       gen_sph_grids
 TARGET_TEST_SPH_GRID =      check_sph_grids
 
 
-LIBS_MESH_UTIL = \
-'$$(LIB_CALYPSO)'
-
-LIBS_MESH_CHECK = \
-'$$(LIB_CALYPSO)'
-
-LIB_FILES_MESH_UTIL = \
-'$$(LIB_CALYPSO_FILE)'
-
-LIB_FILES_MESH_CHECK = \
-'$$(LIB_CALYPSO_FILE)'
-
-
 SOURCES = $(shell ls *.f90)
 
 MOD_GEN_SPH_GRID_NOSF = \
@@ -52,33 +39,24 @@ target_task:
 	'$$(TARGET_GEN_SPH_NOSF)'   >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_GEN_SPH_NOSF)': '$$(MOD_GEN_SPH_GRID_NOSF)' \
-	'$$(LIB_FILES_MESH_UTIL)' \
+	'$$(LIB_CALYPSO_FILE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_GEN_SPH_NOSF)' \
 	'$$(MOD_GEN_SPH_GRID_NOSF)' \
-	'-L. $$(LIBS_MESH_UTIL)' \
+	'-L. $$(LIB_CALYPSO)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_TEST_SPH_GRID):' \
-	'$$(MOD_TEST_SPH_GRID) $$(LIB_FILES_MESH_CHECK)' \
+	'$$(MOD_TEST_SPH_GRID) $$(LIB_CALYPSO_FILE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_TEST_SPH_GRID)' \
 	'$$(MOD_TEST_SPH_GRID)' \
-	'-L. $$(LIBS_MESH_CHECK)' \
+	'-L. $$(LIB_CALYPSO)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 
 lib_name:
-	@echo  LIBS_MESH_UTIL=  \\          >> $(MAKENAME)
-	@echo  $(LIBS_MESH_UTIL)            >> $(MAKENAME)
-	@echo  LIBS_MESH_CHECK=  \\         >> $(MAKENAME)
-	@echo  $(LIBS_MESH_CHECK)           >> $(MAKENAME)
-	@echo  LIB_FILES_MESH_UTIL=  \\     >> $(MAKENAME)
-	@echo  $(LIB_FILES_MESH_UTIL)       >> $(MAKENAME)
-	@echo  LIB_FILES_MESH_CHECK=  \\    >> $(MAKENAME)
-	@echo  $(LIB_FILES_MESH_CHECK)      >> $(MAKENAME)
-	@echo  '#' >> $(MAKENAME)
 
 mod_list:
 	@echo  MOD_GEN_SPH_GRID_NOSF=  \\ >> $(MAKENAME)

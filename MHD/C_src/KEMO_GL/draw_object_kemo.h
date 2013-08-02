@@ -26,7 +26,8 @@ void draw_objects_4_map(int shading_mode, struct psf_data *psf_s,
 						struct buffer_for_gl *gl_buf, int iflag_coast, int iflag_grid);
 	
 void draw_solid_objects_4_psf(struct psf_data *psf_s, struct psf_menu_val *psf_m,
-							  struct buffer_for_gl *gl_buf);
+							  struct buffer_for_gl *gl_buf, int iflag_retina,
+                              int iflag_write_ps);
 void draw_solid_patch_4_psf(int shading_mode, struct psf_data *psf_s,
 							struct psf_menu_val *psf_m, struct buffer_for_gl *gl_buf);
 void draw_transparent_objects_4_psf(int shading_mode, struct psf_data *psf_s, struct psf_menu_val *psf_m, 

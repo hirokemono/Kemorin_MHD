@@ -22,6 +22,9 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 			struct mesh_menu_val *mesh_m, struct view_element *view){
 	const char *mesh_file_head = "in_surface";
 	
+    view->iflag_retina = IONE;
+    view->iflag_write_ps = OFF;
+    
 	mesh_m->iflag_draw_mesh = iflag_dmesh;
 	mesh_m->iflag_view_type = VIEW_3D;
 	

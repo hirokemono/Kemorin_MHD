@@ -36,11 +36,12 @@ void draw_objects_4_map(int shading_mode, struct psf_data *psf_s,
         draw_patches_4_map(shading_mode, psf_s, psf_m, gl_buf);
     }
 	if( (psf_m->draw_psf_grid+psf_m->draw_psf_zero) != 0){
-		draw_map_PSF_isoline(psf_s, psf_m, gl_buf);
+		draw_map_PSF_isoline(psf_s, psf_m, gl_buf, view_s->iflag_retina,
+                             view_s->iflag_write_ps);
 	};
 
 	if(iflag_coast != 0)   {draw_map_coast(gl_buf);}
-	if(iflag_grid != 0){draw_flame_4_map(gl_buf);};
+	if(iflag_grid != 0){draw_flame_4_map(gl_buf, view_s->iflag_write_ps);};
 	
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
@@ -50,11 +51,12 @@ void draw_objects_4_map(int shading_mode, struct psf_data *psf_s,
 }
 
 void draw_solid_objects_4_psf(struct psf_data *psf_s, struct psf_menu_val *psf_m,
-							  struct buffer_for_gl *gl_buf){
+							  struct buffer_for_gl *gl_buf, int iflag_retina,
+                              int iflag_write_ps){
 
 	if(psf_m->draw_psf_vect  != 0) draw_arrow_4_PSF(psf_s, psf_m);
 	if( (psf_m->draw_psf_grid+psf_m->draw_psf_zero) != 0){
-		draw_PSF_isoline(psf_s, psf_m, gl_buf);
+		draw_PSF_isoline(psf_s, psf_m, gl_buf, iflag_retina, iflag_write_ps);
 	};
 	return;
 }

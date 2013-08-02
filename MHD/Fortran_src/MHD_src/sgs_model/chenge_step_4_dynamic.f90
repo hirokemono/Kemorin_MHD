@@ -114,7 +114,7 @@
           end if
 !
           if (my_rank .eq. 0) write(sgs_diff_max_code,*)                &
-     &    'chenge step interbal for dynamic to ', i_step_sgs_coefs
+     &    'change step interbal for dynamic to ', i_step_sgs_coefs
         end if
 !
 !
@@ -140,7 +140,7 @@
           end if
 !
           if (my_rank .eq. 0) write(sgs_diff_max_code,*)                &
-     &    'chenge step interbal for dynamic to ', i_step_sgs_coefs
+     &    'change step interbal for dynamic to ', i_step_sgs_coefs
         end if
 !
         if(my_rank .eq. 0) close(sgs_diff_max_code)

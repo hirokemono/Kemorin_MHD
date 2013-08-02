@@ -102,6 +102,7 @@ AC_SUBST(OPENMP_FCFLAGS)
 AX_MPI
 AC_LANG_RESTORE
 AC_SUBST(MPIDIR)
+AC_SUBST(MPILIBS)
 AC_SUBST(MPIINCDIR)
 
 
@@ -279,9 +280,7 @@ AC_SUBST(PGPLOT_LIBS)
 
 
 AC_MSG_RESULT()
-AC_MSG_RESULT(---------------------------------------------------------------)
-AC_MSG_RESULT()
-AC_MSG_RESULT( Configuration summary )
+AC_MSG_RESULT(-----   Configuration summary   -------------------------------)
 AC_MSG_RESULT()
 if test -n "${OPENMP_FCFLAGS}"; then
         AC_MSG_RESULT(    Use OpenMP ...        yes)

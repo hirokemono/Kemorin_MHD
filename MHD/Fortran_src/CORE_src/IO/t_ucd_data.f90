@@ -11,7 +11,7 @@
 !!      subroutine allocate_ucd_ele(ucd)
 !!      subroutine allocate_ucd_phys_name(ucd)
 !!      subroutine allocate_ucd_phys_data(ucd)
-!!      subroutine alloc_merged_hdt5_array(my_rank, ucd, m_ucd)
+!!      subroutine alloc_merged_hdt5_array(nnod_hdf, ucd, m_ucd)
 !!
 !!      subroutine alloc_merged_ucd_stack(nprocs, m_ucd)
 !!
@@ -97,7 +97,7 @@
 !>        Real work array for HDF data output
         real(kind=kreal), pointer :: fld_hdf5(:)
 !>        Integer array for HDF data output
-        integer(kind=kint), pointer :: ie_hdf5(:,:)
+        integer(kind=kint), pointer :: ie_hdf5(:)
       end type merged_ucd_data
 !
 ! -----------------------------------------------------------------------
@@ -186,19 +186,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_merged_hdt5_array(my_rank, ucd, m_ucd)
+      subroutine alloc_merged_hdt5_array(nnod_hdf, ucd, m_ucd)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: nnod_hdf
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
-      integer(kind = kint) :: nnod
 !
-!
-      nnod = m_ucd%istack_merged_intnod(my_rank+1)                      &
-     &      - m_ucd%istack_merged_intnod(my_rank)
-      allocate( m_ucd%fld_hdf5(9*nnod) )
-      allocate( m_ucd%ie_hdf5(8,ucd%nele) )
+      allocate( m_ucd%fld_hdf5(9*nnod_hdf) )
+      allocate( m_ucd%ie_hdf5(ucd%nnod_4_ele*ucd%nele) )
 !
       end subroutine alloc_merged_hdt5_array
 !

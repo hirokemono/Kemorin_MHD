@@ -62,7 +62,7 @@
 !
         call deallocate_psf_results
 !
-        call write_psf_line_data(line_udt_head, istep)
+        call write_psf_line_data(iflag_ucd, line_udt_head, istep)
       end do
 !
       stop ' //// program normally terminated //// '

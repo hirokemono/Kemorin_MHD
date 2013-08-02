@@ -28,8 +28,8 @@ void init_mapgrid_position(){
 	return;
 }
 
-void draw_flame_4_map(struct buffer_for_gl *gl_buf){
-	int i, j, nd, inum;
+void draw_flame_4_map(struct buffer_for_gl *gl_buf, int iflag_write_ps){
+	int i, j, nd, inum, ierr;
 	double rtp_flame[6], d_map_flame[4], f_color[4];
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -40,6 +40,7 @@ void draw_flame_4_map(struct buffer_for_gl *gl_buf){
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_LINE_STIPPLE);
 	glLineStipple(1,0x3333);
+    if (iflag_write_ps == ON) {ierr = gl2psEnable(GL2PS_LINE_STIPPLE);};
 	
 	set_black_color_c(f_color);
 	
@@ -81,7 +82,9 @@ void draw_flame_4_map(struct buffer_for_gl *gl_buf){
 		for(nd=0;nd<4;nd++){gl_buf->rgba[j][nd] = f_color[nd];}
 	}
 	if(inum>0){glDrawArrays(GL_LINES, IZERO, (ITWO*inum));};
-	glDisable(GL_LINE_STIPPLE);	
+    
+    if (iflag_write_ps == ON) {ierr = gl2psDisable(GL2PS_LINE_STIPPLE);};
+	glDisable(GL_LINE_STIPPLE);
 	
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -89,8 +92,9 @@ void draw_flame_4_map(struct buffer_for_gl *gl_buf){
 	return;
 }
 
-void draw_sph_flame(double radius, struct buffer_for_gl *gl_buf){
-	int i, j, k, nd, inum;
+void draw_sph_flame(double radius, struct buffer_for_gl *gl_buf,
+                    int iflag_write_ps){
+	int i, j, k, nd, inum, ierr;
 	double f_color[4];
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -101,6 +105,7 @@ void draw_sph_flame(double radius, struct buffer_for_gl *gl_buf){
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_LINE_STIPPLE);
 	glLineStipple(1,0x3333);
+    if (iflag_write_ps == ON) {ierr = gl2psEnable(GL2PS_LINE_STIPPLE);};
 	
 	set_black_color_c(f_color);
 	
@@ -132,7 +137,9 @@ void draw_sph_flame(double radius, struct buffer_for_gl *gl_buf){
 	}
 	
 	if(inum>0){glDrawArrays(GL_LINES, IZERO, (ITWO*inum));};
-	glDisable(GL_LINE_STIPPLE);	
+    
+    if (iflag_write_ps == ON) {ierr = gl2psDisable(GL2PS_LINE_STIPPLE);};
+	glDisable(GL_LINE_STIPPLE);
 	
 	
 	glDisableClientState(GL_VERTEX_ARRAY);

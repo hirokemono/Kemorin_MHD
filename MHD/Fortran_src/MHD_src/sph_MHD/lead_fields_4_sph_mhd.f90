@@ -80,8 +80,12 @@
       use m_sph_phys_address
       use sph_transforms_4_MHD
       use cal_energy_flux_rtp
+      use cal_energy_flux_rj
 !
 !
+!
+      if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rj'
+      call s_cal_energy_flux_rj
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_snapshot_MHD'
       call sph_back_trans_snapshot_MHD

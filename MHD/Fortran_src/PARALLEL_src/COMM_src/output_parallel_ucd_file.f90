@@ -27,7 +27,7 @@
 !
       subroutine set_control_parallel_field_def
 !
-      use parallel_udt_IO_select
+      use parallel_ucd_IO_select
 !
 !
       call set_merged_ucd_file_define(fem_ucd)
@@ -39,7 +39,7 @@
       subroutine output_grd_file
 !
       use merged_udt_vtk_file_IO
-      use parallel_udt_IO_select
+      use parallel_ucd_IO_select
 !
 !
       call link_fem_num_field_2_ucd_out
@@ -70,7 +70,7 @@
 !
       use merged_udt_vtk_file_IO
       use copy_time_steps_4_restart
-      use parallel_udt_IO_select
+      use parallel_ucd_IO_select
 !
       integer(kind = kint), intent(in) :: istep_ucd
 !
@@ -104,7 +104,9 @@
       use merged_udt_vtk_file_IO
 !
 !
-      call finalize_merged_ucd(fem_ucd, merged_ucd)
+      if (fem_ucd%ifmt_file/100 .eq. iflag_single/100) then
+        call finalize_merged_ucd(fem_ucd, merged_ucd)
+      end if
 !
       end subroutine finalize_ucd_file_output
 !

@@ -1,5 +1,5 @@
-!parallel_udt_IO_select.F90
-!      module parallel_udt_IO_select
+!parallel_ucd_IO_select.F90
+!      module parallel_ucd_IO_select
 !
 !        programmed by H.Matsui on July, 2006
 !        Modified by H.Matsui on May, 2009
@@ -10,7 +10,7 @@
 !!      subroutine sel_write_parallel_ucd_mesh(ucd, m_ucd)
 !!
 !
-      module parallel_udt_IO_select
+      module parallel_ucd_IO_select
 !
       use m_precision
       use m_parallel_var_dof
@@ -270,4 +270,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module parallel_udt_IO_select
+      end module parallel_ucd_IO_select

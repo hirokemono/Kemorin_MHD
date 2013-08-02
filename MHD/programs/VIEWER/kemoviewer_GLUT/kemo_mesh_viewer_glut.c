@@ -260,10 +260,10 @@ static void nod_grp_handler(int sel){
 };
 
 static void psf_handler(int sel){
-    int toggle;
+    int nload_psf, toggle;
     
 	if (sel == PSF_OFF) {
-		close_psf_view();
+		nload_psf = close_psf_view();
 		draw_mesh_w_menu();
 	}
 	else {

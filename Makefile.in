@@ -1,10 +1,10 @@
 #
-#  Makefile for GeoFEM dynamo platform
+#  Makefile for Kemo's Dynamo toolkit
 #    Written by H. Matsui
 #
 SHELL           = @SHELL@
 #
-#  directories of GeoFEM
+#  directories of Kemo's Dynamo toolkit
 #
 SRCDIR = @abs_top_srcdir@
 INSTDIR= @prefix@
@@ -64,7 +64,6 @@ PNG_LIBS =    @PNG_LIBS@
 #
 FFTW3_CFLAGS= @FFTW3_CFLAGS@
 FFTW3_LIBS=   @FFTW3_LIBS@
-#
 #
 #    HDF5 fortran wrapper settings
 #

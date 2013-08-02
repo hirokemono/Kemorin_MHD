@@ -19,7 +19,11 @@
 !!        Solution: idpdr%i_magne,
 !!                  ipol%i_current, itor%i_current, idpdr%i_current
 !!
-!!      subroutine const_grad_vp_and_vorticity
+!!      subroutine const_grad_poloidal_moment(i_field)
+!!        Input:    i_field, i_field+2
+!!        Solution: i_field+1
+!!
+!!      subroutine const_grad_poloidal_velo
 !!        Input:    ipol%i_velo, itor%i_velo
 !!        Solution: idpdr%i_velo
 !!      subroutine const_grad_poloidal_magne
@@ -189,7 +193,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_grad_poloidal_velo
+      subroutine const_grad_poloidal_moment(i_field)
 !
       use set_sph_exp_rigid_ICB
       use set_sph_exp_rigid_CMB
@@ -197,22 +201,33 @@
       use set_sph_exp_free_CMB
       use cal_sph_exp_rotation
 !
+      integer(kind = kint), intent(in) :: i_field
+!
 !
       if     (iflag_icb_velocity .eq. iflag_free_slip) then
-        call cal_sph_nod_icb_free_vpol2(ipol%i_velo)
+        call cal_sph_nod_icb_free_vpol2(i_field)
       else if(iflag_icb_velocity .eq. iflag_rotatable_ic) then
-        call cal_sph_nod_icb_rotate_velo2(ipol%i_velo)
+        call cal_sph_nod_icb_rotate_velo2(i_field)
       else
-        call cal_sph_nod_icb_rigid_velo2(ipol%i_velo)
+        call cal_sph_nod_icb_rigid_velo2(i_field)
       end if
 !
       if(iflag_cmb_velocity .eq. iflag_free_slip) then
-        call cal_sph_nod_cmb_free_vpol2(ipol%i_velo)
+        call cal_sph_nod_cmb_free_vpol2(i_field)
       else
-        call cal_sph_nod_cmb_rigid_velo2(ipol%i_velo)
+        call cal_sph_nod_cmb_rigid_velo2(i_field)
       end if
 !
-      call cal_sph_diff_poloidal2(nlayer_ICB, nlayer_CMB, ipol%i_velo)
+      call cal_sph_diff_poloidal2(nlayer_ICB, nlayer_CMB, i_field)
+!
+      end subroutine const_grad_poloidal_moment
+!
+! -----------------------------------------------------------------------
+!
+      subroutine const_grad_poloidal_velo
+!
+!
+      call const_grad_poloidal_moment(ipol%i_velo)
 !
       end subroutine const_grad_poloidal_velo
 !

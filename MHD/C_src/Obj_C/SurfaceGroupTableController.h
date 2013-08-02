@@ -38,11 +38,9 @@
 - (id) init;
 - (id) dealloc;
 
-- (IBAction) SetSurfaceGroupLabels:(id)pId;
+- (void) SetSurfaceGroupLabels:(id)pId;
 - (IBAction) ShowAllSurfaceGroupAction:(id)pId;
 - (IBAction) HideAllSurfaceGroupAction:(id)pId;
-
-- (IBAction) SetSurfaceGroupLabels:(id)pId;
 
 - (int)numberOfRowsInTableView:(NSTableView *)aTableView;
 
@@ -57,7 +55,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 
 - (void)tableView:(NSTableView *)aTableView didClickTableColumn:(NSTableColumn *)tableColumn;
 
-- (IBAction)UpdateSurfaceTable;
+- (void)UpdateSurfaceTable;
 
 - (IBAction)ChooseSurfGrpPatchColorAction:(id)sender;
 - (IBAction)ChooseSurfGrpLineColorAction:(id)sender;

@@ -51,7 +51,7 @@
       use set_control_4_composition
       use set_control_4_infty
       use output_parallel_ucd_file
-      use read_boundary_condition_file
+      use check_read_bc_file
 !
 !
 !   set parameters for data files

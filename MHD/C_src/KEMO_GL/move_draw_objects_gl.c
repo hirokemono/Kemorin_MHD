@@ -46,7 +46,8 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 					draw_solid_patch_4_psf(mesh_m->shading_mode, 
 										   psf_s[i], psf_m[i], gl_buf);
 				}
-				draw_solid_objects_4_psf(psf_s[i], psf_m[i], gl_buf);
+				draw_solid_objects_4_psf(psf_s[i], psf_m[i], gl_buf,
+                                         view_s->iflag_retina, view_s->iflag_write_ps);
 			}
 
 			if(psf_m[i]->draw_psf_cbar > 0) {
@@ -66,7 +67,8 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 
 	if(mesh_m->iflag_view_type != VIEW_MAP) {
 		if(mesh_m->iflag_draw_coast != 0)   {draw_coastline(mesh_m->radius_coast, gl_buf);};
-		if(mesh_m->iflag_draw_sph_grid != 0){draw_sph_flame(mesh_m->radius_coast, gl_buf);};
+		if(mesh_m->iflag_draw_sph_grid != 0){draw_sph_flame(mesh_m->radius_coast, gl_buf,
+                                                            view_s->iflag_write_ps);};
 	};
 	
 	 /* Draw Transparent Objects */
