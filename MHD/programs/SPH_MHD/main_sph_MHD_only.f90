@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed by H. Okuda in 2000
 !!@n    Modified by H. Matsui in May, 2003 (ver 2.0)
-!!@n    Connect to vizs  by H. Matsui in July 2006 (ver 2.0)
+!!@n    Disconnect to vizs  by H. Matsui in July 2006 (ver 2.0)
 !
 !>@brief  Main program for MHD dynamo simulation
 !!        without visualization and snapshot routines

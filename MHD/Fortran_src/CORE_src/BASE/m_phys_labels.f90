@@ -239,7 +239,8 @@
      &             :: fhd_filter_buo =    'filtered_buoyancy'
 !
 !>        Field label for divergence of SGS momentum flux
-!!         @f$ \partial_{i} \left( \overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j} \right) @f$
+!!         @f$ \partial_{i} \left( \overline{u_{i}u_{j}}
+!!             - \bar{u}_{i}\bar{u}_{j} \right) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_div_SGS_m_flux =      'div_SGS_m_flux'
 !>        Field label for SGS heat flux
@@ -251,22 +252,26 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_c_flux =          'SGS_composit_flux'
 !>        Field label for divergence of SGS Maxwell tensor
-!!         @f$ \partial_{i} \left( \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} \right) @f$
+!!         @f$ \partial_{i} \left( \overline{B_{i}B_{j}}
+!!              - \bar{B}_{i}\bar{B}_{j} \right) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_Lorentz =         'SGS_Lorentz'
 !>        Field label for divergence of SGS magnetic induction tensor
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_induction =       'SGS_induction'
 !>        Field label for SGS induction for vector potential
-!!         @f$e_{ijk}\left(\overline{u_{j}B_{k}} - \bar{u}_{j}\bar{B}_{k} \right) @f$
+!!         @f$ e_{ijk}\left(\overline{u_{j}B_{k}}
+!!            - \bar{u}_{j}\bar{B}_{k} \right) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_vp_induct =       'SGS_vecp_induction'
 !>        Field label for true divergence of SGS momentum flux
-!!         @f$ \partial_{i} \left( \overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j} \right) @f$
+!!         @f$ \partial_{i} \left( \overline{u_{i}u_{j}}
+!!            - \bar{u}_{i}\bar{u}_{j} \right) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_div_m_flux_true = 'SGS_div_m_flux_true'
 !>        Field label for true divergence of SGS Maxwell tensor
-!!         @f$ \partial_{i} \left( \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} \right) @f$
+!!         @f$ \partial_{i} \left( \overline{B_{i}B_{j}}
+!!             - \bar{B}_{i}\bar{B}_{j} \right) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_Lorentz_true =    'SGS_Lorentz_true'
 !>        Field label for true divergence

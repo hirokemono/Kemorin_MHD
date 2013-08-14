@@ -207,7 +207,7 @@
       call allocate_iso_edge_type(edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_part_edges'
-      call set_part_edges(surf%numsurf, edge%numedge, edge%numedge_iso, &
+      call set_part_edges(surf%numsurf, edge%numedge_iso,               &
      &    edge%iedge_4_sf, edge%iedge_isolate)
 !
       end subroutine construct_bc_edge

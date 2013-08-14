@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in March, 2012
 !
-!>@brief Field addresses for spherical hermonics transform
+!>@brief Field addresses for spherical harmonics transform
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
@@ -20,18 +20,18 @@
 !
       implicit none
 !
-!>      number of vectors for backward spherical hermonics transform
+!>      number of vectors for backward spherical harmonics transform
       integer(kind = kint) :: nvector_snap_rj_2_rtp = 0
-!>      number of scalars for backward spherical hermonics transform
+!>      number of scalars for backward spherical harmonics transform
       integer(kind = kint) :: nscalar_snap_rj_2_rtp = 0
-!>      number of tensors for backward spherical hermonics transform
+!>      number of tensors for backward spherical harmonics transform
       integer(kind = kint) :: ntensor_snap_rj_2_rtp = 0
 !
-!>      number of vectors for forward spherical hermonics transform
+!>      number of vectors for forward spherical harmonics transform
       integer(kind = kint) :: nvector_snap_rtp_2_rj = 0
-!>      number of scalars for forward spherical hermonics transform
+!>      number of scalars for forward spherical harmonics transform
       integer(kind = kint) :: nscalar_snap_rtp_2_rj = 0
-!>      number of tensors for forward spherical hermonics transform
+!>      number of tensors for forward spherical harmonics transform
       integer(kind = kint) :: ntensor_snap_rtp_2_rj = 0
 !
 !>    addresses for fields to backward transform

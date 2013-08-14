@@ -1,18 +1,17 @@
-!>@file   analyzer_noviz_sph_MHD.f90
-!!@brief  module analyzer_noviz_sph_MHD
+!>@file   analyzer_full_sph_MHD.f90
+!!@brief  module analyzer_full_sph_MHD
 !!
 !!@author H. Matsui
 !!@date   Programmed  H. Matsui in Apr., 2010
 !
 !>@brief  Main loop for MHD dynamo simulation
-!!        without visualization routines
 !!
 !!@verbatim
-!!      subroutine initialize_noviz_sph_MHD
-!!      subroutine evolution_noviz_sph_MHD
+!!      subroutine initialize_full_sph_mhd
+!!      subroutine evolution_full_sph_mhd
 !!@endverbatim
 !
-      module analyzer_noviz_sph_MHD
+      module analyzer_full_sph_MHD
 !
       use m_precision
 !
@@ -28,6 +27,7 @@
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_MHD
+      use sections_for_1st
 !
       implicit none
 !
@@ -37,11 +37,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialize_noviz_sph_MHD
+      subroutine initialize_full_sph_mhd
 !
       use set_control_sph_mhd
       use set_control_SPH_to_FEM
-      use m_ctl_data_noviz_MHD
+      use m_ctl_data_sph_MHD
       use init_sph_MHD_elapsed_label
 !
 !
@@ -53,8 +53,9 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_MHD_noviz'
-      call read_control_4_MHD_noviz
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD'
+      call read_control_4_sph_MHD
+!
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
       call set_control_4_sph_mhd
       call set_control_4_SPH_to_FEM
@@ -65,27 +66,33 @@
       call end_eleps_time(4)
       call start_eleps_time(2)
 !
-!     --------------------- 
-!
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize'
-      call FEM_initialize
-      call time_prog_barrier
+!     ---------------------
 !
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
       call SPH_initialize_MHD
+!
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize'
+      call FEM_initialize
+      call time_prog_barrier
+!
       if(iflag_debug .gt. 0) write(*,*) 'SPH_to_FEM_init_MHD'
       call SPH_to_FEM_init_MHD
       call time_prog_barrier
 !
+!        Initialize visualization
+!
+      if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
+      call init_visualize_surface(ierr)
+!
       call end_eleps_time(2)
 !
-      end subroutine initialize_noviz_sph_MHD
+      end subroutine initialize_full_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine evolution_noviz_sph_MHD
+      subroutine evolution_full_sph_mhd
 !
       integer(kind = kint) :: visval
       integer(kind = kint) :: istep_psf, istep_iso
@@ -124,6 +131,15 @@
 !
         call end_eleps_time(4)
 !
+!*  ----------- Visualization --------------
+!*
+        if(visval .eq. 0) then
+          if (iflag_debug.eq.1) write(*,*) 'visualize_surface', my_rank
+          call start_eleps_time(11)
+          call visualize_surface(istep_psf, istep_iso, ierr)
+          call end_eleps_time(11)
+        end if
+!
 !*  -----------  exit loop --------------
 !*
         if(i_step_MHD .ge. i_step_number) exit
@@ -147,8 +163,8 @@
       call time_prog_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
-      end subroutine evolution_noviz_sph_MHD
+      end subroutine evolution_full_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !
-      end module analyzer_noviz_sph_MHD
+      end module analyzer_full_sph_MHD

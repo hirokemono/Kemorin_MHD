@@ -11,7 +11,7 @@
 !     &          nnod_4_ele, nnod_4_edge, ie, iedge_4_sf,               &
 !     &          ie_edge, iedge_4_ele)
 !
-!      subroutine set_part_edges(numsurf, numedge, nunmedge_part,       &
+!      subroutine set_part_edges(numsurf, nunmedge_part,                &
 !     &          iedge_4_sf, iedge_part)
 !
       module set_edge_data
@@ -167,22 +167,21 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine set_part_edges(numsurf, numedge, nunmedge_part,        &
+      subroutine set_part_edges(numsurf, nunmedge_part,                 &
      &          iedge_4_sf, iedge_part)
 !
       use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: nunmedge_part
-      integer(kind = kint), intent(in) :: numsurf, numedge
+      integer(kind = kint), intent(in) :: numsurf
       integer(kind = kint), intent(in)                                  &
      &                     :: iedge_4_sf(numsurf,nedge_4_surf)
 !
       integer(kind = kint), intent(inout)                               &
      &                     :: iedge_part(nunmedge_part)
 !
-      integer(kind = kint) :: k1, k2, ihash, ist, ied
-      integer(kind = kint) :: i, isurf, is, iedge
-      integer(kind = kint) :: j, jsurf, js
+      integer(kind = kint) :: k1, k2, ihash, ist, ied, iedge
+      integer(kind = kint) :: jsurf, js
 !
 !
       iedge = 0

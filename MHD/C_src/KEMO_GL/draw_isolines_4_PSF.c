@@ -13,7 +13,7 @@ double cal_isoline_value(int j, struct psf_menu_val *psf_m){
 	range_max = psf_m->cmap_psf->color_data[psf_m->cmap_psf->n_color_point-1];
 	
 	v_line = range_min + (range_max - range_min)
-			* ((double) j) / ((double) psf_m->n_isoline+1);
+			* ((double) j) / ((double) psf_m->n_isoline-1);
 	
 	return v_line;
 }

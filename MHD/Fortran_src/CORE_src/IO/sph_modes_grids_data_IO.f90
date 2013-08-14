@@ -39,7 +39,7 @@
 !      write(*,*) '! domain and communication'
       call read_domain_info(mesh_file_id)
 !
-!      write(*,*) '! truncation level for spherical hermonics'
+!      write(*,*) '! truncation level for spherical harmonics'
       call read_gl_resolution_sph(mesh_file_id)
 !      write(*,*) '! segment ID for each direction'
       call read_rank_4_sph(mesh_file_id)
@@ -70,7 +70,7 @@
 !      write(*,*) '! domain and communication'
       call read_domain_info(mesh_file_id)
 !
-!      write(*,*) '! truncation level for spherical hermonics'
+!      write(*,*) '! truncation level for spherical harmonics'
       call read_gl_resolution_sph(mesh_file_id)
 !      write(*,*) '! segment ID for each direction'
       call read_rank_4_sph(mesh_file_id)
@@ -139,7 +139,7 @@
 !
       call write_domain_info(id_mesh)
 !
-!      write(*,*) '! truncation level for spherical hermonics'
+!      write(*,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph(id_mesh)
 !      write(*,*) '! segment ID for each direction'
       call write_rank_4_sph(id_mesh)
@@ -184,7 +184,7 @@
 !
       call write_domain_info(id_mesh)
 !
-!      write(*,*) '! truncation level for spherical hermonics'
+!      write(*,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph(id_mesh)
 !      write(*,*) '! segment ID for each direction'
       call write_rank_4_sph(id_mesh)
@@ -223,7 +223,7 @@
       write(id_mesh,'(a)') '! '
 !
       call write_domain_info(id_mesh)
-!      write(*,*) '! truncation level for spherical hermonics'
+!      write(*,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph(id_mesh)
 !      write(*,*) '! segment ID for each direction'
       call write_rank_4_sph(id_mesh)
@@ -259,7 +259,7 @@
       write(id_mesh,'(a)') '! '
 !
       call write_domain_info(id_mesh)
-!      write(id_mesh,*) '! truncation level for spherical hermonics'
+!      write(id_mesh,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph(id_mesh)
 !      write(id_mesh,*) '! segment ID for each direction'
       call write_rank_4_sph(id_mesh)

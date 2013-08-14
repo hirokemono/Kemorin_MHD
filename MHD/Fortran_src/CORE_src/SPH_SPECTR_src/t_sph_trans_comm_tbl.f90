@@ -1,24 +1,27 @@
-!t_sph_trans_comm_tbl.f90
-!      module t_sph_trans_comm_tbl
-!
-!     Written by H. Matsui on July, 2007
+!>@file   t_sph_trans_comm_tbl.f90
+!!@brief  module t_sph_trans_comm_tbl
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007 
 !
 !> @brief Structure for communication table for spherical transform
-!
-!      subroutine alloc_type_sph_comms_stack(comms_sph)
-!      subroutine alloc_type_sph_comms_item(sph_mesh, comms_sph)
-!      subroutine dealloc_type_sph_comms_item(comms_sph)
-!        type(sph_grids), intent(in) :: sph_mesh
-!        type(sph_comm_tables), intent(inout) :: comms_sph
-!
-!      subroutine alloc_type_sph_comm_stack(comm)
-!      subroutine alloc_type_sph_comm_item(numnod, comm)
-!      subroutine dealloc_type_sph_comm_item(comm)
-!        type(sph_comm_tbl), intent(inout) :: comm
-!
-!      subroutine set_reverse_sph_comm_tbl_t(numnod, comm)
-!        integer(kind = kint), intent(in) :: numnod
-!        type(sph_comm_tbl), intent(inout) :: comm
+!!
+!!@verbatim
+!!      subroutine alloc_type_sph_comms_stack(comms_sph)
+!!      subroutine alloc_type_sph_comms_item(sph_mesh, comms_sph)
+!!      subroutine dealloc_type_sph_comms_item(comms_sph)
+!!        type(sph_grids), intent(in) :: sph_mesh
+!!        type(sph_comm_tables), intent(inout) :: comms_sph
+!!
+!!      subroutine alloc_type_sph_comm_stack(comm)
+!!      subroutine alloc_type_sph_comm_item(numnod, comm)
+!!      subroutine dealloc_type_sph_comm_item(comm)
+!!        type(sph_comm_tbl), intent(inout) :: comm
+!!
+!!      subroutine set_reverse_sph_comm_tbl_t(numnod, comm)
+!!        integer(kind = kint), intent(in) :: numnod
+!!        type(sph_comm_tbl), intent(inout) :: comm
+!!@endverbatim
 !
       module t_sph_trans_comm_tbl
 !
@@ -29,20 +32,31 @@
 !
 !> Structure for communication table for each spherical grid
       type sph_comm_tbl
+!>        number of domain to communicate from @f$ f(r,j) @f$ 
         integer(kind = kint) :: nneib_domain
+!>        total number of data points to communicate
         integer(kind = kint) :: ntot_item_sr
+!>        integer flag for transfering data within same process
         integer(kind = kint) :: iflag_self
+!>        process IDs to communicate
         integer(kind = kint), pointer :: id_domain(:)
+!>        end point for communication to each process
         integer(kind = kint), pointer :: istack_sr(:)
+!>        local data id to communicate
         integer(kind = kint), pointer :: item_sr(:)
+!>        communication table id for local point
         integer(kind = kint), pointer :: irev_sr(:)
       end type sph_comm_tbl
 !
 !>  Structure for communication table for spherical transform
       type sph_comm_tables
+!>        Communication table for @f$ f(r,t,p) @f$ 
         type(sph_comm_tbl) :: comm_rtp
+!>        Communication table for @f$ f(r,t,m) @f$ 
         type(sph_comm_tbl) :: comm_rtm
+!>        Communication table for @f$ f(r,l,m) @f$ 
         type(sph_comm_tbl) :: comm_rlm
+!>        Communication table for @f$ f(r,j) @f$ 
         type(sph_comm_tbl) :: comm_rj
       end type sph_comm_tables
 !

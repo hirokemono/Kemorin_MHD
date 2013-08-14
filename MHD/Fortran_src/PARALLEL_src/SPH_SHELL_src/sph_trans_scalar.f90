@@ -5,7 +5,7 @@
 !!@date Programmed in Aug., 2007
 !!@n    Modified in Apr. 2013
 !
-!>@brief Spherical hermonics transform for scalar
+!>@brief Spherical harmonics transform for scalar
 !!       and symmetric tensor
 !!
 !!@verbatim

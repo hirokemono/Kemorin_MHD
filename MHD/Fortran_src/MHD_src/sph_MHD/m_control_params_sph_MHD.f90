@@ -17,7 +17,7 @@
 !!      subroutine deallocate_dscalar_bc_array
 !!@endverbatim
 !!
-!!@n @param jmax  number of modes for spherical hermonics @f$L*(L+2)@f$
+!!@n @param jmax  number of modes for spherical harmonics @f$L*(L+2)@f$
 !
       module m_control_params_sph_MHD
 !

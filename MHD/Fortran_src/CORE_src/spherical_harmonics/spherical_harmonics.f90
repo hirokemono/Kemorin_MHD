@@ -7,7 +7,7 @@
 !      subroutine idx28
 !
 !***********************************************************************
-!*    subroutine for make indices for spherical hermonics
+!*    subroutine for make indices for spherical harmonics
 !*                                     97,12,19
 !***********************************************************************
 !*
@@ -36,7 +36,7 @@
 !*            g(j,17)  : 0                              (l=m=0)
 !
 !
-!   Note: g(0,3) = 1/2 for spherical hermonics transform
+!   Note: g(0,3) = 1/2 for spherical harmonics transform
 !    (See g_sph_rlm in schmidt_poly_on_rtm_grid.f90)
 !
 !*
@@ -44,8 +44,8 @@
 !*
 !      subroutine spheric
 !*************************************************************
-!*     lead spherical hermonics
-!*         and differential of spherical hermonics
+!*     lead spherical harmonics
+!*         and differential of spherical harmonics
 !*************************************************************
 !*
 !*************************************************************
@@ -151,7 +151,7 @@
 !*
       integer(kind = kint) :: j, l, m
 !
-!* ---------- lead spherical hermonics ----------
+!* ---------- lead spherical harmonics ----------
 !*
       s(0,0) = one
       s(0,1) = zero

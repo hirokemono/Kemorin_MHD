@@ -68,7 +68,7 @@
 !>@n@param      edge_file_head_ctl         File header for edge data
 !>@n
 !>@n@param      sph_files_head_ctl
-!>               File header for spherical hermonics mode files
+!>               File header for spherical harmonics mode files
 !>@n
 !>@n@param      mesh_sph_grid_ctl
 !>               File header for spherical grid data

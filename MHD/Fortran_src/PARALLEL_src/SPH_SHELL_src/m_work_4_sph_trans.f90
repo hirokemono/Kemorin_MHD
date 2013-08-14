@@ -65,13 +65,13 @@
 !
 !>      maximum number of fields for Legendre transform
       integer(kind = kint) :: nb_sph_trans
-!>      total number of components for spherical hermonics transform
+!>      total number of components for spherical harmonics transform
       integer(kind = kint) :: ntot_comp_sph_trans
 !
 !>      field data including pole and center  @f$ f(r,\theta,\phi) @f$ 
       real(kind = kreal), allocatable :: d_nod_rtp(:,:)
 !
-!>      Spectr data for spherical hermonics transform  @f$ f(r,j) @f$ 
+!>      Spectr data for spherical harmonics transform  @f$ f(r,j) @f$
       real(kind = kreal), allocatable :: sp_rj(:)
 !>      field data on Gauss-Legendre points @f$ f(r,\theta,\phi) @f$ 
       real(kind = kreal), allocatable :: vr_rtp(:)
@@ -86,9 +86,9 @@
       real(kind = kreal), allocatable :: vr_rtm(:)
 !
 !
-!>      Spectr hermonics order for Legendre transform
+!>      Spectr harmonics order for Legendre transform
       integer(kind = kint), allocatable :: mdx_p_rlm_rtm(:)
-!>      Spectr hermonics order for Legendre transform
+!>      Spectr harmonics order for Legendre transform
       integer(kind = kint), allocatable :: mdx_n_rlm_rtm(:)
 !>      @f$ 1 / \sin \theta @f$  for Legendre transform
       real(kind = kreal), allocatable :: asin_theta_1d_rtm(:)
@@ -99,7 +99,7 @@
       real(kind = kreal), allocatable :: cos_theta_1d_rtp(:)
 !
 !
-!>      End address of spherical hermonics order for SMP parallelization
+!>      End address of spherical harmonics order for SMP parallelization
       integer(kind = kint), allocatable :: lstack_rlm(:)
 !
 !>      Data size for Legendre transform to check work area

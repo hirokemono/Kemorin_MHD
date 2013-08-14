@@ -162,7 +162,7 @@
             if (num_phys_comp_IO(j_IO) .eq. 3) then
               call copy_each_sph_vector_from_IO(i_fld, j_IO)
             else if (num_phys_comp_IO(j_IO) .eq. 2) then
-              call copy_each_sph_vector_from_IO(i_fld, j_IO)
+              call copy_each_sph_solenoid_from_IO(i_fld, j_IO)
             else
               call copy_each_sph_field_from_IO(i_fld, j_IO)
             end if

@@ -4,7 +4,7 @@
 !!@date  Programmed by H.Matsui on Oct., 2009
 !!@n     Modified by H.Matsui on March., 2013
 !
-!>@brief Perform spherical hermonics transform for MHD dynamo model
+!>@brief Perform spherical harmonics transform for MHD dynamo model
 !!
 !!@verbatim
 !!      subroutine init_sph_transform_MHD

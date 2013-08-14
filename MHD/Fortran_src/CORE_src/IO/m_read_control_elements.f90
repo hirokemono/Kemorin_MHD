@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in Jan., 2005
 !
-!>@brief  Subroutines to reead control data
+!>@brief  Subroutines to read control data
 !!
 !!@verbatim
 !!      integer function right_begin_flag(ctl_name)

@@ -7,8 +7,9 @@
 !!@n    Connect to vizs  by H. Matsui in July 2006 (ver 2.0)
 !
 !>@brief  Main program for MHD dynamo simulation
+!!        without cross sectioning routines
 !
-      program kemorin_sph_MHD
+     program kemorin_sph_MHD
 !
       use m_precision
 !
@@ -20,9 +21,9 @@
 !
       call parallel_cal_init
 !
-      call initialize_sph_mhd
+      call initialize_sph_MHD
 !
-      call evolution_sph_mhd
+      call evolution_sph_MHD
 !
       call parallel_cal_fin
 !

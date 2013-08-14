@@ -69,7 +69,7 @@
       call set_sph_sprctr_data_address
       call set_sph_nod_data_address
 !
-!  ---- initialize spherical hermonics transform
+!  ---- initialize spherical harmonics transform
 !
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
       call initialize_sph_trans

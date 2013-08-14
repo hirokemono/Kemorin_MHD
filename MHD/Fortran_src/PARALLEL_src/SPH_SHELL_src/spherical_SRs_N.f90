@@ -5,7 +5,7 @@
 !!@date Programmed in Aug., 2007
 !
 !>@brief  Arbitrary components data communications 
-!!@n      for spherical hermonics transform
+!!@n      for spherical harmonics transform
 !!
 !!@verbatim
 !!      subroutine init_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)

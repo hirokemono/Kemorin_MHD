@@ -5,7 +5,7 @@
 !!@date Programmed in March, 2013
 !
 !>@brief  Arbitrary components data communication
-!!@n      for spherical hermonics transform using reverse import table
+!!@n      for spherical harmonics transform using reverse import table
 !!
 !!@verbatim
 !!      subroutine sph_send_recv_by_rev_N(NB, nnod_org, nnod_new,       &

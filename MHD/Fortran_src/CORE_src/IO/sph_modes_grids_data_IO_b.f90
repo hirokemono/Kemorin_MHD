@@ -41,7 +41,7 @@
 !      write(*,*) '! domain and communication'
       call read_domain_info_b(mesh_file_id)
 !
-!      write(*,*) '! truncation level for spherical hermonics'
+!      write(*,*) '! truncation level for spherical harmonics'
       call read_gl_resolution_sph_b(mesh_file_id)
 !      write(*,*) '! segment ID for each direction'
       call read_rank_4_sph_b(mesh_file_id)
@@ -72,7 +72,7 @@
 !      write(*,*) '! domain and communication'
       call read_domain_info_b(mesh_file_id)
 !
-!      write(*,*) '! truncation level for spherical hermonics'
+!      write(*,*) '! truncation level for spherical harmonics'
       call read_gl_resolution_sph_b(mesh_file_id)
 !      write(*,*) '! segment ID for each direction'
       call read_rank_4_sph_b(mesh_file_id)
@@ -136,7 +136,7 @@
 !      write(*,*) '! domain and communication'
       call write_domain_info_b(id_mesh)
 !
-!      write(*,*) '! truncation level for spherical hermonics'
+!      write(*,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph_b(id_mesh)
 !      write(*,*) '! segment ID for each direction'
       call write_rank_4_sph_b(id_mesh)
@@ -167,7 +167,7 @@
 !      write(*,*) '! domain and communication'
       call write_domain_info_b(id_mesh)
 !
-!      write(*,*) '! truncation level for spherical hermonics'
+!      write(*,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph_b(id_mesh)
 !      write(*,*) '! segment ID for each direction'
       call write_rank_4_sph_b(id_mesh)

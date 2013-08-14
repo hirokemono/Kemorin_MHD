@@ -33,7 +33,7 @@
       use m_sph_spectr_data
 !
       real (kind = kreal) :: pi, rr
-      integer(kind = kint) :: is, it, k, j, js, jt
+      integer(kind = kint) :: is, it, k, js, jt
       integer(kind = kint), parameter :: ls = 1, lt = 2
 !
 !

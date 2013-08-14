@@ -5,7 +5,7 @@
 !! @date   Programmed in  May, 2008
 !!
 !
-!> @brief Evaluate time average spherical hermonics spectrum data
+!> @brief Evaluate time average spherical harmonics spectrum data
 !!
 !!@verbatim
 !!      subroutine sum_average_ene_sph

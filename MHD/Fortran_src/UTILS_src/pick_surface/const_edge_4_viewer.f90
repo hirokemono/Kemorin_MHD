@@ -120,7 +120,7 @@
       call allocate_domain_edge_item_sf
 !
       write(*,*) 'set_part_edges'
-      call set_part_edges(surfpetot_viewer, edgepetot_viewer,           &
+      call set_part_edges(surfpetot_viewer,                             &
      &    nedge_domain_sf, iedge_sf_viewer, edge_item_domain_sf)
 !
       end subroutine construct_edge_4_domain

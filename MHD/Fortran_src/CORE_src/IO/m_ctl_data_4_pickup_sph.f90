@@ -22,7 +22,7 @@
 !!
 !! -----------------------------------------------------------------
 !!
-!!      control block for pickup spherical hermonics
+!!      control block for pickup spherical harmonics
 !!
 !!  begin sph_monitor_ctl
 !!    volume_average_head_ctl      'sph_ave_volume'

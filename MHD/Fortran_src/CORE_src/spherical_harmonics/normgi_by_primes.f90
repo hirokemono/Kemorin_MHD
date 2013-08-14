@@ -93,8 +93,8 @@
       integer(kind = kint) kiu(0:2), kil(0:4), ktu(0:2), ktl(0:4)
       integer(kind = kint) ksu(0:4), ksl(0:2)
       integer(kind = kint) :: itmin, itmax, is, it, i2exp
-      integer(kind = kint) :: i, j, m, imax_fact, nmax_prm_ks
-      real(kind = kreal) ::  tsum, tfac, gs2
+      integer(kind = kint) :: i, m, nmax_prm_ks
+      real(kind = kreal) ::  tsum, tfac
 !
 !
       call conut_prims_normgi(m1,l1,m2,l2,m3,l3)
@@ -205,7 +205,6 @@
       end if
 !*
       call dealloc_int_prime_ks
-!      write(99,*) 'gs_prime, gs_fact', gs_prime - gs2
 !
       end function gs_prime
 !

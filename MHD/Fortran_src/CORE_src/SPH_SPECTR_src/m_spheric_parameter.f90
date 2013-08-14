@@ -216,16 +216,16 @@
 !
 !>      radial global address @f$ f(r,l,m) @f$
       integer(kind = kint), allocatable :: idx_gl_1d_rlm_r(:)
-!>      spherical hermonics mode for  @f$ f(r,l,m) @f$
-!!@n        idx_gl_1d_rlm_j(j,1): global ID for spherical hermonics
+!>      spherical harmonics mode for  @f$ f(r,l,m) @f$
+!!@n        idx_gl_1d_rlm_j(j,1): global ID for spherical harmonics
 !!@n        idx_gl_1d_rlm_j(j,2): spherical hermonincs degree
 !!@n        idx_gl_1d_rlm_j(j,3): spherical hermonincs order
       integer(kind = kint), allocatable :: idx_gl_1d_rlm_j(:,:)
 !
 !>      radial global address @f$ f(r,j) @f$
       integer(kind = kint), allocatable :: idx_gl_1d_rj_r(:)
-!>      spherical hermonics mode for  @f$ f(r,j) @f$
-!!@n        idx_gl_1d_rj_j(j,1): global ID for spherical hermonics
+!>      spherical harmonics mode for  @f$ f(r,j) @f$
+!!@n        idx_gl_1d_rj_j(j,1): global ID for spherical harmonics
 !!@n        idx_gl_1d_rj_j(j,2): spherical hermonincs degree
 !!@n        idx_gl_1d_rj_j(j,3): spherical hermonincs order
       integer(kind = kint), allocatable :: idx_gl_1d_rj_j(:,:)

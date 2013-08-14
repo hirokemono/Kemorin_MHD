@@ -1,7 +1,107 @@
-!m_coriolis_coefs_tri_sph.f90
+!>@file   m_coriolis_coefs_tri_sph.f90
+!!@brief  module m_coriolis_coefs_tri_sph
+!!
+!!@author H. Matsui
+!!@date Programmed in 1994
+!!@n Modified in 2010
 !
-!      module m_coriolis_coefs_tri_sph
-!
+!>@brief  Coefficients for Coriolis force in spectrum space
+!!
+!!@verbatim
+!!      subroutine alloc_g0
+!!      subroutine alloc_g0_xy
+!!
+!!      subroutine dealloc_g0
+!!      subroutine dealloc_g0_xy
+!!
+!!*************************************************
+!!*
+!!*  Rotation of the Coriolos term
+!!*     (wss) = wss(jc,1,j3)*w*dyb/r**2
+!!*            + wss(jc,2,j3)*dw*yb/r**2
+!!*
+!!*     (wts) = wts(j3)*w*yb/r**2
+!!*
+!!*     (wst) = wst(1,j3)*( dw*dyb/r**2 + w*d2yb/r**2 - 2*w*dyb/r**3 )
+!!*            + wst(2,j3)*( d2w/r**2 - 2*dw/r**3 )*yb
+!!*
+!!*     (wtt) = wtt(jc,1,j3)*dw*yb/r**2
+!!*            + wtt(jc,2,j3)*w*( dyb/r**2 - 2*yb/r**3 )
+!!*
+!!*   Divergence of the Coriolis term
+!!*     (wsd) = wsd(jc,1,j3)*w*wsb/r**4
+!!*            + wsd(jc,2,j3)*dw*dwsb/r**2
+!!*     (wtd) = wtd(j3)*dw*dwtb/r**2
+!!*
+!!*  Radial componenet of the Coriolis term
+!!*     (wsr) = wsr(jc,1,j3)*dw*dusb/r**2
+!!*     (wtr) = wtr(j3)*dw*wtb/r**2
+!!
+!!*************************************************
+!!*
+!!*************************************************
+!!*
+!!*     wss(jc,1,j3) = sw(jc,1,j3)
+!!*     wss(jc,2,j3) = sw(jc,2,j3)
+!!*     wts(jc,j3)   = sw(jc,3,j3)
+!!*     wst(jc,1,j3) = tw(jc,1,j3)
+!!*     wst(jc,2,j3) = tw(jc,2,j3)
+!!*     wtt(jc,1,j3) = tw(jc,3,j3)
+!!*     wtt(jc,2,j3) = tw(jc,4,j3)
+!!*
+!!*     wsd(jc,1,j3) = sd(jc,1,j3)
+!!*     wsd(jc,2,j3) = sd(jc,2,j3)
+!!*     wtd(jc,j3)   = td(jc,j3)
+!!*
+!!*     wsr(jc,j3) =   sr(jc,j3)
+!!*     wtr(jc,j3) =   tr(jc,j3)
+!!*
+!!*************************************************
+!!*
+!!*************************************************************
+!!*
+!!*      gk_cor(j3,jk,2) : gaunt integral for Coriolis term
+!!*              jgl_kcor(j3,1,2) : index for gk_cor(j3,1,2)
+!!*              jgl_kcor(j3,2,2) : index for gk_cor(j3,2,2)
+!!*      el_cor(j3,1,2) : elsasser integral for Coriolis term
+!!*              jgl_lcor(j3,1,2) : index for el_cor(j3,1,2)
+!!*
+!!*************************************************************
+!!*
+!!*******************************************************************
+!!*                                                                 *
+!!*  Adams - Gaunt integrals                                        *
+!!*                                                                 *
+!!*  (m1,m2,m3)  //  (m1)   (m2)   (m3)                             *
+!!* Ki         = || Y    * Y    * Y     sin(theta) d(theta)d(phi)   *
+!!*  (l1,l2,l3)  //  (l1)   (l2)   (l3)                             *
+!!*                                                                 *
+!!*                            (m2)        (m3)                     *
+!!*  (m1,m2,m3)  //  (m1)    dy(l2)      dy(l3)                     *
+!!* Li         = || Y    *[ -------- * ----------                   *
+!!*  (l1,l2,l3)  //  (l1)   d(theta)    d(phi)                      *
+!!*                                                                 *
+!!*                    (m2)        (m3)                             *
+!!*                  dy(l2)      dy(l3)                             *
+!!*              - ---------- * -------- ] d(theta)d(phi)           *
+!!*                  d(phi)     d(theta)                            *
+!!*                                                                 *
+!!*  where                                                          *
+!!*                   (m)   (m)  | sin(m*phi) |                     *
+!!*                  Y   = P   * |   1        |                     *
+!!*                   (l)   (l)  | cos(m*phi) |                     *
+!!*                                                                 *
+!!*                         (m)     2(l-m)!     1                   *
+!!*                        P   = [----------]**--- * P(l,m)         *
+!!*                         (l)      (l+m)!     2                   *
+!!*                         (0)                                     *
+!!*                        P   =           P(l,0)                   *
+!!*                         (l)                                     *
+!!*                                                                 *
+!!*******************************************************************
+!!
+!!@endverbatim
+!!
       module m_coriolis_coefs_tri_sph
 !*
       use m_precision
@@ -11,111 +111,61 @@
 !
       implicit none
 !
-      real(kind = kreal), allocatable :: sw(:,:,:), tw(:,:,:)
-      real(kind = kreal), allocatable :: sd(:,:,:), td(:,:)
-      real(kind = kreal), allocatable :: sr(:,:), tr(:,:)
+!>      Coefficients for curl of Coriolis force for poloidal vorticity
+      real(kind = kreal), allocatable :: sw(:,:,:)
+!>      Coefficients for curl of Coriolis force for toroidal vorticity
+      real(kind = kreal), allocatable :: tw(:,:,:)
+!>      Coefficients for divergence of Coriolis force 
+!!       for poloidal vorticity by poloidal velocity
+      real(kind = kreal), allocatable :: sd(:,:,:)
+!>      Coefficients for divergence of Coriolis force 
+!!       for poloidal vorticity by Toroidal velocity
+      real(kind = kreal), allocatable :: td(:,:)
+!>      Coefficients for radial compoonent of Coriolis force 
+!!       for poloidal vorticity by poloidal velocity
+      real(kind = kreal), allocatable :: sr(:,:)
+!>      Coefficients for radial compoennt of Coriolis force 
+!!       for poloidal vorticity by Toroidal velocity
+      real(kind = kreal), allocatable :: tr(:,:)
 !
 !
-      real(kind = kreal), allocatable :: sw1(:,:,:), tw1(:,:,:)
-      real(kind = kreal), allocatable :: sd1(:,:,:), td1(:,:)
-      real(kind = kreal), allocatable :: sr1(:,:), tr1(:,:)
+!>      Coefficients for curl of Coriolis force
+!!       by Y_{1}^{1s} for poloidal vorticity
+      real(kind = kreal), allocatable :: sw1(:,:,:)
+!>      Coefficients for curl of Coriolis force
+!!       by Y_{1}^{1s}for toroidal vorticity
+      real(kind = kreal), allocatable :: tw1(:,:,:)
+!>      Coefficients for divergence of Coriolis force 
+!!       by Y_{1}^{1s} for poloidal vorticity by poloidal velocity
+      real(kind = kreal), allocatable :: sd1(:,:,:)
+!>      Coefficients for divergence of Coriolis force 
+!!       by Y_{1}^{1s} for poloidal vorticity by Toroidal velocity
+      real(kind = kreal), allocatable :: td1(:,:)
+!>      Coefficients for radial compoonent of Coriolis force 
+!!       by Y_{1}^{1s} for poloidal vorticity by poloidal velocity
+      real(kind = kreal), allocatable :: sr1(:,:)
+!>      Coefficients for radial compoennt of Coriolis force 
+!!       by Y_{1}^{1s} for poloidal vorticity by Toroidal velocity
+      real(kind = kreal), allocatable :: tr1(:,:)
 !
-      real(kind = kreal), allocatable :: sw3(:,:,:), tw3(:,:,:)
-      real(kind = kreal), allocatable :: sd3(:,:,:), td3(:,:)
-      real(kind = kreal), allocatable :: sr3(:,:), tr3(:,:)
-!
-!
-!      subroutine alloc_g0
-!      subroutine alloc_g0_xy
-!*
-!      subroutine dealloc_g0
-!      subroutine dealloc_g0_xy
-!
-!*************************************************
-!
-!  Rotation of the Coriolos term
-!*     (wss) = wss(jc,1,j3)*w*dyb/r**2
-!*            + wss(jc,2,j3)*dw*yb/r**2
-!*
-!*     (wts) = wts(j3)*w*yb/r**2
-!*
-!*     (wst) = wst(1,j3)*( dw*dyb/r**2 + w*d2yb/r**2 - 2*w*dyb/r**3 )
-!*            + wst(2,j3)*( d2w/r**2 - 2*dw/r**3 )*yb
-!*
-!*     (wtt) = wtt(jc,1,j3)*dw*yb/r**2
-!*            + wtt(jc,2,j3)*w*( dyb/r**2 - 2*yb/r**3 )
-!*
-!   Divergence of the Coriolis term
-!*     (wsd) = wsd(jc,1,j3)*w*wsb/r**4
-!*            + wsd(jc,2,j3)*dw*dwsb/r**2
-!*     (wtd) = wtd(j3)*dw*dwtb/r**2
-!
-!  Radial componenet of the Coriolis term
-!*     (wsr) = wsr(jc,1,j3)*dw*dusb/r**2
-!*     (wtr) = wtr(j3)*dw*wtb/r**2
-!
-!*************************************************
-!*
-!*************************************************
-!*
-!*     wss(jc,1,j3) = sw(jc,1,j3)
-!*     wss(jc,2,j3) = sw(jc,2,j3)
-!*     wts(jc,j3)   = sw(jc,3,j3)
-!*     wst(jc,1,j3) = tw(jc,1,j3)
-!*     wst(jc,2,j3) = tw(jc,2,j3)
-!*     wtt(jc,1,j3) = tw(jc,3,j3)
-!*     wtt(jc,2,j3) = tw(jc,4,j3)
-!
-!*     wsd(jc,1,j3) = sd(jc,1,j3)
-!*     wsd(jc,2,j3) = sd(jc,2,j3)
-!*     wtd(jc,j3)   = td(jc,j3)
-!*
-!*     wsr(jc,j3) =   sr(jc,j3)
-!*     wtr(jc,j3) =   tr(jc,j3)
-!*
-!*************************************************
-!*
-!*************************************************************
-!*
-!*      gk_cor(j3,jk,2) : gaunt integral for Coriolis term
-!*              jgl_kcor(j3,1,2) : index for gk_cor(j3,1,2)
-!*              jgl_kcor(j3,2,2) : index for gk_cor(j3,2,2)
-!*      el_cor(j3,1,2) : elsasser integral for Coriolis term
-!*              jgl_lcor(j3,1,2) : index for el_cor(j3,1,2)
-!*
-!*************************************************************
-!*
-!*******************************************************************
-!*                                                                 *
-!*  Adams - Gaunt integrals                                        *
-!*                                                                 *
-!*  (m1,m2,m3)  //  (m1)   (m2)   (m3)                             *
-!* Ki         = || Y    * Y    * Y    *sin(theta) d(theta)d(phi)   *
-!*  (l1,l2,l3)  //  (l1)   (l2)   (l3)                             *
-!*                                                                 *
-!*                            (m2)        (m3)                     *
-!*  (m1,m2,m3)  //  (m1)    dy(l2)      dy(l3)                     *
-!* Li         = || Y    *[ -------- * ----------                   *
-!*  (l1,l2,l3)  //  (l1)   d(theta)    d(phi)                      *
-!*                                                                 *
-!*                    (m2)        (m3)                             *
-!*                  dy(l2)      dy(l3)                             *
-!*              - ---------- * -------- ] d(theta)d(phi)           *
-!*                  d(phi)     d(theta)                            *
-!*                                                                 *
-!*  where                                                          *
-!*                   (m)   (m)  | sin(m*phi) |                     *
-!*                  Y   = P   * |   1        |                     *
-!*                   (l)   (l)  | cos(m*phi) |                     *
-!*                                                                 *
-!*                         (m)    2*(l-m)!     1                   *
-!*                        P   = [----------]**--- * P(l,m)         *
-!*                         (l)      (l+m)!     2                   *
-!*                         (0)                                     *
-!*                        P   =           P(l,0)                   *
-!*                         (l)                                     *
-!*                                                                 *
-!*******************************************************************
+!>      Coefficients for curl of Coriolis force
+!!        by Y_{1}^{1c} for poloidal vorticity
+      real(kind = kreal), allocatable :: sw3(:,:,:)
+!>      Coefficients for curl of Coriolis force
+!!       by Y_{1}^{1c} for toroidal vorticity
+      real(kind = kreal), allocatable :: tw3(:,:,:)
+!>      Coefficients for divergence of Coriolis force 
+!!       by Y_{1}^{1c} for poloidal vorticity by poloidal velocity
+      real(kind = kreal), allocatable :: sd3(:,:,:)
+!>      Coefficients for divergence of Coriolis force 
+!!       by Y_{1}^{1c} for poloidal vorticity by Toroidal velocity
+      real(kind = kreal), allocatable :: td3(:,:)
+!>      Coefficients for radial compoonent of Coriolis force
+!!       by Y_{1}^{1c} for poloidal vorticity by poloidal velocity
+      real(kind = kreal), allocatable :: sr3(:,:)
+!>      Coefficients for radial compoennt of Coriolis force
+!!       by Y_{1}^{1c} for poloidal vorticity by Toroidal velocity
+      real(kind = kreal), allocatable :: tr3(:,:)
 !
 !*   ------------------------------------------------------------------
 !*

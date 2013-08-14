@@ -14,7 +14,7 @@
 !!        for dynamo benchmark case 1
 !!
 !!       j_lc = find_local_sph_mode_address(l, m)
-!!         Return local spherical hermonics mode address j_lc for Y(l,m)
+!!         Return local spherical harmonics mode address j_lc for Y(l,m)
 !!         If requested mode does not exist in the process, 0 is set
 !!       inod = local_sph_data_address(k, j_lc)
 !!         Return address of sphectrum data
@@ -26,6 +26,9 @@
 !!       Toroidal velocity ::       d_rj(:,itor%i_velo)
 !!       Poloidal magnetic field :: d_rj(:,ipol%i_magne)
 !!       Toroidal magnetic field :: d_rj(:,itor%i_magne)
+!
+!!       Heat source ::          d_rj(:,ipol%i_heat_source)
+!!       Light element source :: d_rj(:,ipol%i_light_source)
 !!@endverbatim
 !
 !
@@ -44,6 +47,8 @@
       private :: set_initial_temperature
       private :: set_initial_composition
       private :: set_initial_magne_sph
+      private :: set_initial_heat_source_sph
+      private :: set_initial_composit_source_sph
 !
 !-----------------------------------------------------------------------
 !
@@ -76,6 +81,14 @@
 !  Set initial magnetic field if magnetic field is exist
       if(ipol%i_magne .gt. izero) call set_initial_magne_sph
 !
+!  Set heat source if  heat source is exist
+      if(ipol%i_heat_source .gt. izero) then
+        call set_initial_heat_source_sph
+      end if
+!  Set light element source if light element is exist
+      if(ipol%i_light_source .gt. izero) then
+        call set_initial_composit_source_sph
+      end if
 !
 !  Copy initial field to restart IO data
       call set_sph_restart_num_to_IO
@@ -212,8 +225,7 @@
 !$omp end parallel do
 !
 !
-!   Set initial poloidal magnetic field
-!
+!    Find local address for l = 1, m = 0
       js =  find_local_sph_mode_address(ione, izero)
 !
       if (js .gt. 0) then
@@ -226,8 +238,7 @@
         end do
       end if
 !
-!   Set initial toroidal magnetic field
-!
+!    Find local address for l = 2, m = 0
       jt =  find_local_sph_mode_address(itwo, izero)
 !
       if (jt .gt. 0) then
@@ -241,6 +252,71 @@
       end if
 !
       end subroutine set_initial_magne_sph
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine set_initial_heat_source_sph
+!
+      use m_control_params_sph_MHD
+      use m_sph_spectr_data
+!
+      real (kind = kreal) :: rr
+      integer(kind = kint) :: ii, k, jj
+!
+!
+!$omp parallel do
+      do ii = 1, nnod_rj
+        d_rj(ii,ipol%i_heat_source) = zero
+      end do
+!$omp end parallel do
+!
+!
+!    Find address for l = m = 0
+      jj =  find_local_sph_mode_address(izero, izero)
+!
+      if (jj .gt. 0) then
+        do k = nlayer_ICB, nlayer_CMB
+          ii = local_sph_data_address(k,jj)
+          rr = radius_1d_rj_r(k)
+!   Substitute initial heat source
+          d_rj(ii,ipol%i_heat_source) = -two / rr
+        end do
+      end if
+!
+      end subroutine set_initial_heat_source_sph
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_initial_composit_source_sph
+!
+      use m_control_params_sph_MHD
+      use m_sph_spectr_data
+!
+!      real (kind = kreal) :: rr
+      integer(kind = kint) :: ii, k, jj
+!
+!
+!$omp parallel do
+      do ii = 1, nnod_rj
+        d_rj(ii,ipol%i_light_source) = zero
+      end do
+!$omp end parallel do
+!
+!
+!    Find address for l = m = 0
+      jj =  find_local_sph_mode_address(izero, izero)
+!
+      if (jj .gt. 0) then
+        do k = nlayer_ICB, nlayer_CMB
+          ii = local_sph_data_address(k,jj)
+!          rr = radius_1d_rj_r(k)
+!   Substitute initial heat source
+          d_rj(ii,ipol%i_light_source) = one
+        end do
+      end if
+!
+      end subroutine set_initial_composit_source_sph
 !
 !-----------------------------------------------------------------------
 !

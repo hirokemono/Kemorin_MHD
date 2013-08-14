@@ -2,8 +2,6 @@
 #
 #
 
-MAIN_SRC =       main.f90
-
 SUBDIRS = \
 SPH_MHD \
 \
@@ -23,9 +21,6 @@ LIB_FILES_SPH_MHD = \
 #
 #  -------------------------------------------------------------------------
 #
-
-main_srcs:
-	@echo 'MAIN_SRC =       $$(PROG_DIR)/$(MAIN_SRC)'        >> $(MAKENAME)
 
 dir_list:
 	@echo 'PROG_DIR = $$(MHDDIR)/programs'     >> $(MAKENAME)

@@ -108,7 +108,7 @@
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use copy_rj_phys_data_4_IO
-      use output_sph_ms_file
+      use output_sph_m_square_file
 !
 !
       integer(kind = kint) :: i_step

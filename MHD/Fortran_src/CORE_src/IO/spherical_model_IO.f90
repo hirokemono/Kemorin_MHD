@@ -112,7 +112,7 @@
 !
       write(id_file,'(a)') '!'
       write(id_file,'(a)') '! num. of global grids'
-      write(id_file,'(a)') '! truncation level for spherical hermonics'
+      write(id_file,'(a)') '! truncation level for spherical harmonics'
       write(id_file,'(a)') '!'
 !
       write(id_file,'(3i10)') nidx_gl_sph_IO(1:ndir_sph_IO)

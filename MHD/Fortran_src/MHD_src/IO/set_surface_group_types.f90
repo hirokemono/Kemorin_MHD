@@ -1,13 +1,18 @@
+!>@file   set_surface_group_types.f90
+!!@brief  module set_surface_group_types
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed by H. Matsui in Sep. 2005
 !
-!       module set_surface_group_types
-!
-!      Written by H. Matsui on Sep, 2005
-!
-!      subroutine set_surf_group_types_scalar(bc_type_ctl, ibc_type)
-!      subroutine set_surf_group_types_vector(bc_type_ctl, ibc_type)
-!      subroutine set_stress_free_group_types(bc_type_ctl, ibc_type)
-!      subroutine set_surf_wall_group_types(bc_type_ctl, ibc_type)
-!      subroutine set_surf_infty_group_types(bc_type_ctl, ibc_type)
+!> @brief set surface boundary condition flags from conterol input
+!!
+!!@verbatim
+!!      subroutine set_surf_group_types_scalar(bc_type_ctl, ibc_type)
+!!      subroutine set_surf_group_types_vector(bc_type_ctl, ibc_type)
+!!      subroutine set_stress_free_group_types(bc_type_ctl, ibc_type)
+!!      subroutine set_surf_wall_group_types(bc_type_ctl, ibc_type)
+!!      subroutine set_surf_infty_group_types(bc_type_ctl, ibc_type)
+!!@endverbatim
 !
       module set_surface_group_types
 !
@@ -27,21 +32,21 @@
       character (len=kchara), intent(in) :: bc_type_ctl
       integer(kind = kint), intent(inout) :: ibc_type
 !
-         if ( bc_type_ctl .eq. 'fixed_ctl' ) then
-          ibc_type =  iflag_surf_fix_s
-         else if ( bc_type_ctl .eq. 'fixed_dat' ) then
-          ibc_type = -iflag_surf_fix_s
-         else if ( bc_type_ctl .eq. 'sgs_correct' ) then
-          ibc_type = iflag_bc_sgs_commute_s
+      if ( bc_type_ctl .eq. 'fixed_ctl' ) then
+        ibc_type =  iflag_surf_fix_s
+      else if ( bc_type_ctl .eq. 'fixed_dat' ) then
+        ibc_type = -iflag_surf_fix_s
+      else if ( bc_type_ctl .eq. 'sgs_correct' ) then
+        ibc_type = iflag_bc_sgs_commute_s
 !
-         else if ( bc_type_ctl .eq. 'grad_ctl' ) then
-          ibc_type =  iflag_fixed_grad_s
-         else if ( bc_type_ctl .eq. 'grad_dat' ) then
-          ibc_type = -iflag_fixed_grad_s
+      else if ( bc_type_ctl .eq. 'grad_ctl' ) then
+        ibc_type =  iflag_fixed_grad_s
+      else if ( bc_type_ctl .eq. 'grad_dat' ) then
+        ibc_type = -iflag_fixed_grad_s
 !
-         else if ( bc_type_ctl .eq. 'lead_grad' ) then
-          ibc_type = iflag_lead_grad_s
-         end if
+      else if ( bc_type_ctl .eq. 'lead_grad' ) then
+        ibc_type = iflag_lead_grad_s
+      end if
 !
       end subroutine set_surf_group_types_scalar
 !

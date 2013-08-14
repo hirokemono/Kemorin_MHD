@@ -1,13 +1,21 @@
+!>@file   m_time_data_IO.f90
+!!@brief  module m_time_data_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2007
 !
-!      module m_time_data_IO
-!
-!      Written by H. Matsui on Oct., 2007
-!
-!      subroutine write_step_data(id_file, my_rank)
-!      subroutine read_step_data(id_file)
-!
-!      subroutine write_step_data_b(id_file, my_rank)
-!      subroutine read_step_data_b(id_file)
+!>@brief  time and time step data for data IO
+!!
+!!@verbatim
+!!      subroutine write_step_data(id_file, my_rank)
+!!      subroutine read_step_data(id_file)
+!!
+!!      subroutine write_step_data_b(id_file, my_rank)
+!!      subroutine read_step_data_b(id_file)
+!!@endverbatim
+!!
+!!@n @param  my_rank   Process ID
+!!@n @param  id_file   file ID for data IO
 !
       module m_time_data_IO
 !
@@ -15,8 +23,11 @@
 !
       implicit none
 !
+!>      Time step
       integer(kind = kint) :: i_time_step_IO
+!>      Time                  @f$ t @f$
       real(kind = kreal) :: time_IO
+!>      Length of time step   @f$ \Delta t @f$
       real(kind = kreal) :: delta_t_IO
 !
 ! -------------------------------------------------------------------

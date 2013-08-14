@@ -21,7 +21,7 @@
       use m_pickup_sph_spectr_data
       use pickup_sph_coefs
       use pickup_gauss_coefficients
-      use output_sph_ms_file
+      use output_sph_m_square_file
 !
       implicit none
 !

@@ -35,7 +35,7 @@
 !!@endverbatim
 !!
 !!@n @param nri     Number of radial points
-!!@n @param jmax    Number of spherical hermonics modes
+!!@n @param jmax    Number of spherical harmonics modes
 !!@n @param kr_st   Start radial address to construct matrix
 !!@n @param kr_ed   End radial address to construct matrix
 !!@n @param kr_in    Radial address for inner boundary

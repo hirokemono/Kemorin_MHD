@@ -47,7 +47,7 @@
       end if
         call output_set_radial_grid
 !
-!  ========= Generate spherical hermonics table ========================
+!  ========= Generate spherical harmonics table ========================
 !
       call time_prog_barrier
       call s_const_global_sph_grids_modes
@@ -69,7 +69,7 @@
       call para_gen_fem_mesh_for_sph
       call end_eleps_time(4)
 !
-!  ========= Tri-spectral hermonics integration ===================
+!  ========= Tri-spectral harmonics integration ===================
 !C===
       call start_eleps_time(5)
       if(my_rank .eq. 0)  call gaunt_coriolis(l_truncation)

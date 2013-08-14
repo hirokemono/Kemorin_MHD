@@ -1,16 +1,22 @@
-!m_comm_tbl_sph_coriolis.f90
-!      module m_comm_tbl_sph_coriolis
+!>@file   m_comm_tbl_sph_coriolis.f90
+!!@brief  module m_comm_tbl_sph_coriolis
+!!
+!!@author H. Matsui
+!!@date Programmed in Apr., 2010
 !
-!     Written by H. Matsui on Apr., 2010
-!
-!      subroutine alloc_comm_neib_sph_coriolis
-!      subroutine alloc_comm_item_sph_coriolis
-!      subroutine dealloc_comm_item_sph_coriolis
-!
-!      subroutine alloc_comm_work_sph_coriolis(nri)
-!      subroutine dealloc_comm_work_sph_coriolis
-!
-!      subroutine check_comm_tbl_sph_cor(my_rank)
+!>@brief  Communication table for spectr data
+!!        to evaluate Coriolils term
+!!
+!!@verbatim
+!!      subroutine alloc_comm_neib_sph_coriolis
+!!      subroutine alloc_comm_item_sph_coriolis
+!!      subroutine dealloc_comm_item_sph_coriolis
+!!
+!!      subroutine alloc_comm_work_sph_coriolis(nri)
+!!      subroutine dealloc_comm_work_sph_coriolis
+!!
+!!      subroutine check_comm_tbl_sph_cor(my_rank)
+!!@endverbatim
 !
       module m_comm_tbl_sph_coriolis
 !
@@ -19,28 +25,46 @@
       implicit none
 !
 !
+!>     number of neighboring domain to send
       integer(kind = kint) :: nneib_send_cor
+!>     total number of export mode
       integer(kind = kint) :: ntot_send_cor
+!>     neighboring pe id to export
       integer(kind = kint), allocatable :: ip_send_cor(:)
+!>     export mode end point for each neighbor pe (i-th pe)
       integer(kind = kint), allocatable :: istack_send_cor(:)
+!>     local id for export mode                     (i-th)
       integer(kind = kint), allocatable :: idx_send_cor(:)
 !
+!>     number of neighboring domain to receive
       integer(kind = kint) :: nneib_recv_cor
+!>     total number of import mode 
       integer(kind = kint) :: ntot_recv_cor
+!>     neighboring pe id to import
       integer(kind = kint), allocatable :: ip_recv_cor(:)
+!>     import mode end point for each neighbor pe (i-th pe)
       integer(kind = kint), allocatable :: istack_recv_cor(:)
+!>     local id for import mode                     (i-th)
       integer(kind = kint), allocatable :: idx_recv_cor(:)
 !
 !  work area
 !
+!>      integer work area to send
       integer(kind = kint), allocatable :: isend_sph_cor(:)
+!>      integer work area to receive
       integer(kind = kint), allocatable :: irecv_sph_cor(:)
+!>      real work area to send
       real(kind = kreal), allocatable :: send_sph_cor(:)
+!>      real work area to receive
       real(kind = kreal), allocatable :: recv_sph_cor(:)
 !
+!>      status flag for send
       integer, allocatable :: sta1_cor(:,:)
+!>      status flag for receive
       integer, allocatable :: sta2_cor(:,:)
+!>      request flag for send
       integer, allocatable :: req1_cor(:  )
+!>      request flag for receive
       integer, allocatable :: req2_cor(:  )
 !
 ! -----------------------------------------------------------------------

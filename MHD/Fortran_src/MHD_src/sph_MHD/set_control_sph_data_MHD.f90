@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed on Sep., 2009
 !
-!>@brief  Set control parameters for spherical hermonics dynamo from IO
+!>@brief  Set control parameters for spherical harmonics dynamo from IO
 !!
 !!@verbatim
 !!     subroutine s_set_control_sph_data_MHD

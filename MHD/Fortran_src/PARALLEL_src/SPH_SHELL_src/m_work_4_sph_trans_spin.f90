@@ -5,7 +5,7 @@
 !!@date Programmed in July, 2007
 !
 !>@brief  Field data for Legendre transform
-!!       (innermost loop is spherical hermonics)
+!!       (innermost loop is spherical harmonics)
 !!
 !!@verbatim
 !!      subroutine allocate_work_sph_trans_spin(nb_sph_trans)

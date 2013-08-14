@@ -6,7 +6,7 @@
 !!
 !
 !> @brief Evaluate time average and standard deviation 
-!!        from spherical hermonics spectrum data
+!!        from spherical harmonics spectrum data
 !
       program t_average_sph_ene_spec
 !

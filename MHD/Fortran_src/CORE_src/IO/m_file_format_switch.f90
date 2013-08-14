@@ -1,10 +1,25 @@
+!>@file   m_file_format_switch.f90
+!!@brief  module m_file_format_switch
+!!
+!!@author H. Matsui
+!!@date Programmed in Nov., 2008
 !
-!      module m_file_format_switch
-!
-!      Written by H. Matsui on Nov., 2008
-!
-!      subroutine choose_file_format(file_fmt_ctl, i_file_fmt,          &
-!                id_file_fmt)
+!>@brief  integer flags for file format
+!!
+!!@verbatim
+!!      subroutine choose_file_format(file_fmt_ctl, i_file_fmt,         &
+!!                id_file_fmt)
+!!
+!!        File format name
+!!          'ascii':            text (formatted) data
+!!          'gzip':             gziopped text (formatted) data
+!!          'binary' or 'bin':  binary (unformatted) data
+!!
+!!@endverbatim
+!!
+!!@n @param  file_fmt_ctl   File format name
+!!@n @param  i_file_fmt     Check flag if file format is read
+!!@n @param  id_file_fmt    File format flag (Output)
 !
       module m_file_format_switch
 !

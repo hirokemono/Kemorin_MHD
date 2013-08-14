@@ -111,17 +111,17 @@
           gg(4) = gs(m1,l1,m2,l2,m3,l3-1)
         end if
 !*
-        setei = leades(m1,l1,m2,l2,m3,l3,gg)
+        setei = leades(m2,l2,m3,l3,gg)
       end if
 !*
       end function setei
 !
 !  ----------------------------------------------------------------------
 !
-      double precision function leades(m1,l1,m2,l2,m3,l3,gg)
+      double precision function leades(m2,l2,m3,l3,gg)
 !
-      integer(kind = kint), intent(in) :: l1, l2, l3
-      integer(kind = kint), intent(in) :: m1, m2, m3
+      integer(kind = kint), intent(in) :: l2, l3
+      integer(kind = kint), intent(in) :: m2, m3
       real(kind = kreal), intent(in) ::  gg(4)
 !
       real(kind = kreal) a1,a2,a3,a4,a5

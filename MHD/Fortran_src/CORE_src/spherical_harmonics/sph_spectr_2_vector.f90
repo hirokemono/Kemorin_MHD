@@ -24,7 +24,7 @@
 !*      b_pole(m) : vector field ( 1:r , 2: theta , 3:phi)
 !*       r1   : 1 / (radious)
 !*       sit  : sin(theta)
-!*     s(j,m) : spherical hermonics
+!*     s(j,m) : spherical harmonics
 !*   ( 0:original , 1:differentialof phi , 2:differential of thetra)
 !*     g3(j)  : l*(l+1)
 !*
@@ -81,7 +81,7 @@
 !*      vp(m) : vector field ( 1:r , 2: theta , 3:phi)
 !*       r1   : 1 / (radious)
 !*       cst  : cos(theta)
-!*     s(j,m) : spherical hermonics
+!*     s(j,m) : spherical harmonics
 !*   ( 0:original , 1:differentialof phi , 2:differential of thetra)
 !*     g3(j)  : l*(l+1)
 !******************************************************

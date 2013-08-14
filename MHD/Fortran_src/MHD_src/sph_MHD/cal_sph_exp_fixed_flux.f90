@@ -21,7 +21,7 @@
 !!     &          coef_d, is_fld, is_diffuse)
 !!@endverbatim
 !!
-!!@n @param jmax  Number of modes for spherical hermonics @f$L*(L+2)@f$
+!!@n @param jmax  Number of modes for spherical harmonics @f$L*(L+2)@f$
 !!@n @param flux_ICB(jamx)  Spectrum of fixed flux at ICB
 !!@n @param flux_CMB(jamx)  Spectrum of fixed flux at CMB
 !!@n @param coef_d        Coefficient for diffusion term

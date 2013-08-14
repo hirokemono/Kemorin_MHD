@@ -25,7 +25,7 @@
 !!     &          is_fld, is_div)
 !!@endverbatim
 !!
-!!@n @param jmax         Number of local spherical hermonics mode
+!!@n @param jmax         Number of local spherical harmonics mode
 !!
 !!@n @param fix_ICB(jmax) Spectr data for fixed fixed scalar at ICB
 !!@n @param fix_CMB(jmax) Spectr data for fixed fixed scalar at CMB

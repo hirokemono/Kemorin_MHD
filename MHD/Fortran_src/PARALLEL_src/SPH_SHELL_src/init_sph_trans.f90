@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in Aug., 2007
 !
-!>@brief  Initialize spherical hermonics transform
+!>@brief  Initialize spherical harmonics transform
 !!
 !!@verbatim
 !!      subroutine initialize_sph_trans

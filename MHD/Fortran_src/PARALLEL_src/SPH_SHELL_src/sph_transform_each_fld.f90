@@ -5,7 +5,7 @@
 !!@date Programmed in Aug., 2007
 !!@n    Modified in Apr. 2013
 !
-!>@brief Spherical hermonics transform for each field
+!>@brief Spherical harmonics transform for each field
 !!
 !!@verbatim
 !!      subroutine sph_back_trans_4_vector(is_fld, irtp_fld)

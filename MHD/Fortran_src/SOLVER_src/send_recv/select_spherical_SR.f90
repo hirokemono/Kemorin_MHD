@@ -9,7 +9,7 @@
 !!@author H. Matsui
 !!@date Programmed in March, 2013
 !
-!>@brief  Select communication routines for spherical hermonics transform
+!>@brief  Select communication routines for spherical harmonics transform
 !!
 !!@verbatim
 !!      subroutine sel_sph_send_recv_N(NB, nnod_org, nnod_new,          &

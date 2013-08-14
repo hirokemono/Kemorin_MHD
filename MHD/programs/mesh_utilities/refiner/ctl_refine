@@ -9,7 +9,7 @@ begin refine_control
 !
     refine_info_head_ctl         'refine_info'
     old_refine_info_head_ctl     'refine_info'
-  end
+  end file_name_ctl
 !
   begin refine_parameter_ctl
 !
@@ -55,7 +55,7 @@ begin refine_control
       refine_data_ctl   tri_zs5       triple_on_z5_plane    end
       refine_data_ctl   tri_zs6       triple_on_z6_plane    end
       refine_data_ctl   tri_full      triple                end
-    end array
+    end array refine_data_ctl
 !
     array refine_code_ctl   40
       refine_code_ctl   double        200     end
@@ -123,6 +123,6 @@ begin refine_control
       refine_code_ctl   five_s6       516     end
 !
       refine_code_ctl   tri_full      300     end
-	end array
-  end
-end
+    end array refine_code_ctl
+  end refine_parameter_ctl
+end refine_control

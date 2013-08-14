@@ -6,7 +6,7 @@
 !!@n    Modified in Apr. 2013
 !
 !>@brief  Legendre transforms
-!!       (innermost loop is spherical hermonics)
+!!       (innermost loop is spherical harmonics)
 !!
 !!
 !!@verbatim

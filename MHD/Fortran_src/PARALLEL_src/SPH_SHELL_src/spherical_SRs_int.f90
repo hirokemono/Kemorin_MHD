@@ -5,7 +5,7 @@
 !!@date Programmed in Aug., 2007
 !
 !>@brief  Integer data communications
-!!@n      for spherical hermonics transform
+!!@n      for spherical harmonics transform
 !!
 !!@verbatim
 !!      subroutine init_sph_send_recv_int(iX_rtp, iX_rtm, iX_rlm, iX_rj)

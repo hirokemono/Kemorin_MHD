@@ -2,7 +2,7 @@
 !      module cal_gaunt_itgs
 !
 !***********************************************************************
-!*       subroutine of lead Gaunt integrals with hermonics
+!*       subroutine of lead Gaunt integrals with harmonics
 !*                                  update : 1995 08 08
 !***********************************************************************
 !*
@@ -39,7 +39,7 @@
 !***********************************************************************
 !*
 !*          ei : elsasser integral only Schmidt function (input)
-!*          li : Elsasser integral with hermonics (output)
+!*          li : Elsasser integral with harmonics (output)
 !*                            (m2)        (m3)                     
 !*  (m1,m2,m3)  //  (m1)    dY(l2)      dY(l3)                     
 !* Li         = || Y    *[ -------- * ----------                   
@@ -131,7 +131,7 @@
       integer(kind = kint), intent(in) :: m1, m2, m3
 !
       integer(kind = kint) :: mm1, mm2, mm3
-      real(kind = kreal)  :: ei, li
+      real(kind = kreal)  :: ei
 !
 !
       leadli = zero
@@ -146,17 +146,15 @@
 !*
             if (mm1 .eq. mm2+mm3) then
               ei =     setei(l1, mm1, l2, mm2, l3, mm3)
-              leadli = normli(ei ,m1 ,m2 ,m3 ,mm1 ,mm2 ,mm3 )
+              leadli =          normli(ei ,m1 ,m2 ,m3 ,mm1)
 !*
             else if (mm2 .eq. mm1+mm3) then
               ei = setei(l2, mm2, l1, mm1, l3, mm3)
-              li = normli(ei ,m2 ,m1 ,m3 ,mm2 ,mm1 ,mm3)
-              leadli = -li
+              leadli = dminus * normli(ei ,m2 ,m1 ,m3 ,mm2)
 !*
             else if (mm3 .eq. mm2+mm1) then
               ei = setei(l3, mm3, l2, mm2, l1, mm1)
-              li = normli( ei ,m3 ,m2 ,m1 ,mm3 ,mm2 ,mm1 )
-              leadli = -li
+              leadli = dminus * normli( ei ,m3 ,m2 ,m1 ,mm3)
             end if
 !*
           end if
@@ -197,9 +195,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      double precision function normli(ei,m1,m2,m3,mm1,mm2,mm3)
+      double precision function normli(ei,m1,m2,m3,mm1)
 !
-      integer(kind = kint), intent(in) :: m1,  m2,  m3, mm1, mm2, mm3
+      integer(kind = kint), intent(in) :: m1,  m2,  m3, mm1
       real(kind = kreal), intent(in) :: ei
 !
 !

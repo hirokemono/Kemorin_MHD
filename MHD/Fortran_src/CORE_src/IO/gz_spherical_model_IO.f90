@@ -109,7 +109,7 @@
       write(textbuf,'(a,a1)') '! num. of global grids', char(0)
       call write_compress_txt(nbuf, textbuf)
       write(textbuf,'(a,a1)')                                           &
-     &    '! truncation level for spherical hermonics', char(0)
+     &    '! truncation level for spherical harmonics', char(0)
       call write_compress_txt(nbuf, textbuf)
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)

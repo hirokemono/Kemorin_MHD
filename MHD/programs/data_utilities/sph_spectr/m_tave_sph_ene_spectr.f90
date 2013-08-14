@@ -5,7 +5,7 @@
 !! @date   Programmed in  Nov., 2007
 !!
 !
-!> @brief Time average spherical hermonics spectrum data
+!> @brief Time average spherical harmonics spectrum data
 !!
 !!@verbatim
 !!      subroutine allocate_tave_sph_espec_name

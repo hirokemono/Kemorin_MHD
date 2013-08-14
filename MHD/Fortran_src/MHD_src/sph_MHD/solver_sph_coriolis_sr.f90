@@ -21,7 +21,7 @@
 !!
 !!@n @param nshift_j_cor  Difference of start mode between d_rj and d_cor
 !!@n @param nri           Number of radial grids
-!!@n @param jmax          Number of local spherical hermonics modes
+!!@n @param jmax          Number of local spherical harmonics modes
 !!@n @param jmax_cor      Spectr data to evaluate Coriolis force 
 !!                                    @f$ f(r,j) @f$
 !!@n @param d_rj          Spectr data @f$ f(r,j) @f$

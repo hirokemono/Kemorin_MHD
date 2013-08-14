@@ -1,22 +1,33 @@
-!m_pickup_sph_spectr_data.f90
-!      module m_pickup_sph_spectr_data
+!>@file   m_pickup_sph_spectr_data.f90
+!!@brief  module m_pickup_sph_spectr_data
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2012
 !
-!        programmed by H.Matsui on Dec., 2012
-!
-!      subroutine allocate_num_pick_layer
-!      subroutine allocate_pick_sph_mode
-!      subroutine allocate_pick_sph_l
-!      subroutine allocate_pick_sph_m
-!      subroutine allocate_pick_sph_monitor
-!
-!      subroutine deallocate_num_pick_layer
-!      subroutine deallocate_pick_sph_mode
-!      subroutine deallocate_pick_sph_monitor
-!
-!      subroutine write_sph_spec_4_monitor(my_rank, i_step, time)
-!
-!      subroutine open_sph_spec_read_monitor(id_pick)
-!      subroutine read_sph_spec_4_monitor(id_pick, i_step, time, ierr)
+!>@brief  Data arrays to monitoring specified modes
+!!
+!!@verbatim
+!!      subroutine allocate_num_pick_layer
+!!      subroutine allocate_pick_sph_mode
+!!      subroutine allocate_pick_sph_l
+!!      subroutine allocate_pick_sph_m
+!!      subroutine allocate_pick_sph_monitor
+!!
+!!      subroutine deallocate_num_pick_layer
+!!      subroutine deallocate_pick_sph_mode
+!!      subroutine deallocate_pick_sph_monitor
+!!
+!!      subroutine write_sph_spec_4_monitor(my_rank, i_step, time)
+!!
+!!      subroutine open_sph_spec_read_monitor(id_pick)
+!!      subroutine read_sph_spec_4_monitor(id_pick, i_step, time, ierr)
+!!@endverbatim
+!!
+!!@n @param  my_rank   Process ID
+!!@n @param  i_step    time step
+!!@n @param  time      time
+!!@n @param  id_pick   file ID
+!!@n @param  ierr      Error flag (0:success, 1:error)
 !
       module m_pickup_sph_spectr_data
 !
@@ -25,28 +36,47 @@
 !
       implicit  none
 !
+!>      File ID for spectrum monitor file
       integer(kind = kint), parameter :: id_pick_mode = 22
+!>      File prefix for spectr monitoring file
       character(len = kchara) :: pickup_sph_head =  'picked_ene_spec'
 !
+!>      Number of modes of monitoring spectrum to be evaluated
       integer(kind = kint) :: num_pick_sph = 0
+!>      Degree and Order ID of  monitoring spectrum to be evaluated
       integer(kind = kint), allocatable :: idx_pick_sph_mode(:)
+!>      Number of degrees of  monitoring spectrum to be evaluated
       integer(kind = kint) :: num_pick_sph_l = 0
+!>      Degree ID of  monitoring spectrum to be evaluated
       integer(kind = kint), allocatable :: idx_pick_sph_l(:)
+!>      Number of orders of  monitoring spectrum to be evaluated
       integer(kind = kint) :: num_pick_sph_m = 0
+!>      Order ID of  monitoring spectrum to be evaluated
       integer(kind = kint), allocatable :: idx_pick_sph_m(:)
 !
+!>      Number of radial layer for monitoring spectrum
       integer(kind = kint) :: num_pick_layer = 0
+!>      Radial ID for monitoring spectrum
       integer(kind = kint), allocatable :: id_pick_layer(:)
+!>      Radius for monitoring spectrum
       real(kind = kreal), allocatable :: r_pick_layer(:)
 !
+!>      Total number of modes of  monitoring spectrum to be evaluated
       integer(kind = kint) :: ntot_pick_sph_mode = 0
+!>      Number of modes of  monitoring spectrum to be evaluated
       integer(kind = kint) :: num_pick_sph_mode =  0
+!>      Global spherical harmonics ID to evaluate  monitoring spectrum
       integer(kind = kint), allocatable :: idx_pick_sph_gl(:)
+!>      Local spherical harmonics ID to evaluate  monitoring spectrum
       integer(kind = kint), allocatable :: idx_pick_sph_lc(:)
 !
+!>      number of component for monitoring spectrum
       integer(kind = kint) :: ncomp_pick_sph_coef =  0
+!>      monitoring spectrum
       real(kind = kreal), allocatable :: d_rj_pick_sph_gl(:,:)
+!>      Localy evaluated  monitoring spectrum
       real(kind = kreal), allocatable :: d_rj_pick_sph_lc(:,:)
+!>      Name of  monitoring spectrum
       character(len=kchara), allocatable :: pick_sph_spec_name(:)
 !
       private :: open_sph_spec_4_monitor

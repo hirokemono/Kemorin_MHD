@@ -35,7 +35,7 @@
 !
       use m_sph_phys_address
       use set_parallel_file_name
-      use output_sph_rms_data
+      use output_sph_m_square_file
 !
       integer(kind = kint), intent(in) :: my_rank, istep
       real(kind = kreal), intent(in) :: time
@@ -54,9 +54,8 @@
      &    fname_tmp2)
       call add_dat_extension(fname_tmp2, fname_rms)
 !
-      open(id_file_rms1,      file=fname_rms,      form='formatted')
       write(mode_label,'(a)') 'radial_id, '
-      call write_sph_rms_header(id_file_rms1, mode_label)
+      call open_sph_vol_rms_file(id_file_rms1, fname_rms, mode_label)
 !
       do k = 1, num_pick_layer
         kg = id_pick_layer(k)
@@ -74,7 +73,7 @@
 !
       use m_sph_phys_address
       use set_parallel_file_name
-      use output_sph_rms_data
+      use output_sph_m_square_file
 !
       integer(kind = kint), intent(in) :: my_rank, istep
       real(kind = kreal), intent(in) :: time

@@ -90,7 +90,7 @@
         call set_input_ucd_file_prefix(org_ucd_header)
         call FEM_analyze_sph_trans(i_step, visval)
 !
-!   Transfer to spherical hermonics transform
+!   Transfer to spherical harmonics transform
         call FEM_to_SPH_bridge_sph_trans(visval)
 !
 !   Take zonal RMS

@@ -37,7 +37,7 @@
 !      write(*,*) '! domain and communication'
       call read_domain_info_gz
 !
-!      write(*,*) '! truncation level for spherical hermonics'
+!      write(*,*) '! truncation level for spherical harmonics'
       call read_gl_resolution_sph_gz
 !      write(*,*) '! segment ID for each direction'
       call read_rank_4_sph_gz
@@ -66,7 +66,7 @@
 !      write(*,*) '! domain and communication'
       call read_domain_info_gz
 !
-!      write(*,*) '! truncation level for spherical hermonics'
+!      write(*,*) '! truncation level for spherical harmonics'
       call read_gl_resolution_sph_gz
 !      write(*,*) '! segment ID for each direction'
       call read_rank_4_sph_gz
@@ -145,7 +145,7 @@
 !
       call write_domain_info_gz
 !
-!      write(*,*) '! truncation level for spherical hermonics'
+!      write(*,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph_gz
 !      write(*,*) '! segment ID for each direction'
       call write_rank_4_sph_gz
@@ -220,7 +220,7 @@
 !
       call write_domain_info_gz
 !
-!      write(*,*) '! truncation level for spherical hermonics'
+!      write(*,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph_gz
 !      write(*,*) '! segment ID for each direction'
       call write_rank_4_sph_gz
@@ -291,7 +291,7 @@
 !
 !
       call write_domain_info_gz
-!      write(*,*) '! truncation level for spherical hermonics'
+!      write(*,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph_gz
 !      write(*,*) '! segment ID for each direction'
       call write_rank_4_sph_gz
@@ -360,7 +360,7 @@
 !
       call write_domain_info_gz
 !
-!      write(*,*) '! truncation level for spherical hermonics'
+!      write(*,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph_gz
 !      write(*,*) '! segment ID for each direction'
       call write_rank_4_sph_gz

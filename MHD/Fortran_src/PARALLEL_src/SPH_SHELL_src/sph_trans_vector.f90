@@ -5,7 +5,7 @@
 !!@date Programmed in Aug., 2007
 !!@n    Modified in Apr. 2013
 !
-!>@brief Spherical hermonics transform for vector
+!>@brief Spherical harmonics transform for vector
 !!       and gradient of scalar
 !!
 !!@verbatim

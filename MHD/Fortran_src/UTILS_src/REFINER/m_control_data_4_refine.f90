@@ -48,13 +48,10 @@
 !
 !   2nd level for partitioner_control
 !
-      character(len=kchara), parameter :: hd_files_ctl                  &
-     &                      = 'file_name_ctl'
       character(len=kchara), parameter :: hd_single_refine_files        &
      &                      = 'single_itp_table_ctl'
       character(len=kchara), parameter :: hd_refine_param               &
      &                      = 'refine_parameter_ctl'
-      integer (kind=kint) :: i_files_ctl =    0
       integer (kind=kint) :: i_single_refine_files =  0
       integer (kind=kint) :: i_refine_param = 0
 !
@@ -97,8 +94,8 @@
       private :: control_file_name
       private :: hd_refine_ctl, i_refine_ctl
       private :: hd_single_refine_files, i_single_refine_files
-      private :: hd_files_ctl, hd_refine_param
-      private :: i_files_ctl,  i_refine_param
+      private :: hd_refine_param
+      private :: i_refine_param
       private :: hd_org_f_ctl, hd_refined_f_ctl
       private :: hd_course_to_fine_ctl, hd_fine_to_course_ctl
       private :: hd_refine_info_ctl, hd_old_refine_info_ctl

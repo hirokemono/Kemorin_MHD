@@ -1,13 +1,17 @@
+!>@file   m_ctl_data_4_sphere_model.f90
+!!@brief  module m_ctl_data_4_sphere_model
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007
 !
-!      module m_ctl_data_4_sphere_model
-!
-!        programmed by H.Matsui on July, 2007
-!
-!      subroutine deallocate_r_layers
-!      subroutine deallocate_boundary_layers
-!
-!      subroutine read_ctl_4_shell_define
-!
+!>@brief  control data for resolutions of spherical shell
+!!
+!!@verbatim
+!!      subroutine deallocate_r_layers
+!!      subroutine deallocate_boundary_layers
+!!
+!!      subroutine read_ctl_4_shell_define
+!!
 !! =======================================================
 !!    example of control section
 !!
@@ -26,31 +30,32 @@
 !!         Chebyshev:       Set Chebyshev collocation points
 !!         equi_distance:   Set equi-diatance grid
 !!
-!    raidal_grid_type_ctl   explicit
-!    array r_layer       4
-!      r_layer    1  0.3584615384615
-!      r_layer    2  0.5384615384615     ICB
-!      r_layer    3  1.038461538462      Mid
-!      r_layer    4  1.538461538462      CMB
-!    end array r_layer
+!!    raidal_grid_type_ctl   explicit
+!!    array r_layer       4
+!!      r_layer    1  0.3584615384615
+!!      r_layer    2  0.5384615384615     ICB
+!!      r_layer    3  1.038461538462      Mid
+!!      r_layer    4  1.538461538462      CMB
+!!    end array r_layer
 !!
-!    raidal_grid_type_ctl   Chebyshev
-!     num_fluid_grid_ctl  5
-!     fluid_core_size_ctl   0.35
-!     ICB_to_CMB_ratio_ctl  1.0
-!     Min_radius_ctl      0.0
-!     ICB_radius_ctl      0.5384615384615
-!     CMB_radius_ctl      1.538461538462
-!     Max_radius_ctl      2.0
-!
-!    array boundaries_ctl   3
-!      boundaries_ctl  to_Center   1
-!      boundaries_ctl  ICB         2
-!      boundaries_ctl  CMB         4
-!    end array  boundaries_ctl
-!  end num_grid_sph
-!
-! =======================================================
+!!    raidal_grid_type_ctl   Chebyshev
+!!     num_fluid_grid_ctl  5
+!!     fluid_core_size_ctl   0.35
+!!     ICB_to_CMB_ratio_ctl  1.0
+!!     Min_radius_ctl      0.0
+!!     ICB_radius_ctl      0.5384615384615
+!!     CMB_radius_ctl      1.538461538462
+!!     Max_radius_ctl      2.0
+!!
+!!    array boundaries_ctl   3
+!!      boundaries_ctl  to_Center   1
+!!      boundaries_ctl  ICB         2
+!!      boundaries_ctl  CMB         4
+!!    end array  boundaries_ctl
+!!  end num_grid_sph
+!!
+!! =======================================================
+!!@endverbatim
 !
       module m_ctl_data_4_sphere_model
 !
@@ -58,54 +63,61 @@
 !
       implicit  none
 !
-!     resolution of cubed sphere
-!
-      character(len = kchara) :: divide_type_ctl = 'sphere'
-      integer(kind = kint) :: numele_4_90deg
-      integer(kind = kint) :: nend_adjust_ctl
-!
 !     resolution of spherical harmonics
 !
+!>      Truncation lavel of spherical harmonics
       integer(kind = kint) :: ltr_ctl
+!>      Type of spherical grids
       character(len = kchara) :: sph_grid_type_ctl
 !
+!>      Number of radial grids
       integer(kind = kint) :: numlayer_shell_ctl
+!>      Number of grids in meridional direction
       integer(kind = kint) :: ngrid_elevation_ctl
+!>      Number of grids in longitudinal direction
       integer(kind = kint) :: ngrid_azimuth_ctl
 !
+!>      Manually defined radius
       real(kind = kreal), allocatable :: radius_layer_ctl(:)
+!>      Manually defined radial ID
       integer(kind = kint), allocatable :: kr_layer_ctl(:)
 !
 !      boundaries
 !
+!>      Number of boundary sphere to be defined
       integer(kind = kint) :: numlayer_bc_ctl
+!>      Radial ID of boundary sphere to be defined
       integer(kind = kint), allocatable :: kr_boundary_ctl(:)
+!>      Name of boundary sphere to be defined
       character(len = kchara), allocatable :: bc_bondary_name_ctl(:)
 !
+!>      Grid spacing type
       character(len = kchara) :: raidal_grid_type_ctl
+!>      Minimum radius of the simulation domain @f$ R_{c} @f$
       integer(kind = kint) :: num_fluid_grid_ctl
+!>      ICB radius     @f$ R_{i} @f$
       real(kind = kreal) :: Min_radius_ctl
+!>      ICB radius     @f$ R_{i} @f$
       real(kind = kreal) :: ICB_radius_ctl
+!>      CMB radius     @f$ R_{o} @f$
       real(kind = kreal) :: CMB_radius_ctl
+!>      Maximum radius of the simulation domain @f$ R_{m} @f$
       real(kind = kreal) :: Max_radius_ctl
+!>      Size of the fluid shell
+!!       @f$ L = R_{o} - R_{i} @f$
       real(kind = kreal) :: fluid_core_size_ctl
+!>      Ratio of inner core radius to the outer core radius
+!!       @f$ R_{i} / R_{o} @f$
       real(kind = kreal) :: ICB_to_CMB_ratio_ctl
 !
 !
-!   labels of entry
+!   labels of data field
 !
       character(len=kchara), parameter :: hd_shell_def = 'num_grid_sph'
       integer(kind = kint) :: i_shell_def =   0
 !
 !   labels of shell define
 !
-      character(len=kchara), parameter                                  &
-     &      ::  hd_divide_def =     'divide_mode'
-      character(len=kchara), parameter                                  &
-     &      ::  hd_numele_4_90deg = 'numele_4_90deg'
-!
-      character(len=kchara), parameter                                  &
-     &      ::  hd_nend_adjust =    'nend_adjust_ctl'
       character(len=kchara), parameter                                  &
      &      ::  hd_numlayer_shell = 'r_layer'
 !
@@ -138,9 +150,6 @@
       character(len=kchara), parameter                                  &
      &      ::  hd_bc_sph = 'boundaries_ctl'
 !
-      integer (kind=kint) :: i_divide_def =     0
-      integer (kind=kint) :: i_numele_4_90deg = 0
-      integer (kind=kint) :: i_nend_adjust =    0
       integer (kind=kint) :: i_numlayer_shell = 0
 !
       integer (kind=kint) :: i_ntheta_shell = 0
@@ -162,8 +171,7 @@
 !   3rd level for boundary define
 !
       private :: hd_shell_def, i_shell_def
-      private :: hd_divide_def, hd_numele_4_90deg
-      private :: hd_nend_adjust, hd_numlayer_shell
+      private :: hd_numlayer_shell
       private :: hd_ntheta_shell, hd_nphi_shell, hd_sph_truncate
       private :: hd_r_grid_type, hd_n_fluid_grid, hd_Min_radius
       private :: hd_ICB_radius, hd_CMB_radius, hd_Max_radius
@@ -256,8 +264,6 @@
      &        i_sph_g_type, sph_grid_type_ctl)
         call read_character_ctl_item(hd_r_grid_type,                    &
      &        i_r_grid_type, raidal_grid_type_ctl)
-        call read_character_ctl_item(hd_divide_def,                     &
-     &        i_divide_def, divide_type_ctl)
 !
         call read_integer_ctl_item(hd_sph_truncate,                     &
      &          i_sph_truncate, ltr_ctl)
@@ -265,11 +271,6 @@
      &        i_nphi_shell, ngrid_elevation_ctl)
         call read_integer_ctl_item(hd_nphi_shell,                       &
      &        i_ntheta_shell, ngrid_azimuth_ctl)
-!
-        call read_integer_ctl_item(hd_numele_4_90deg,                   &
-     &        i_numele_4_90deg, numele_4_90deg)
-        call read_integer_ctl_item(hd_nend_adjust,                      &
-     &        i_nend_adjust, nend_adjust_ctl)
 !
         call read_integer_ctl_item(hd_n_fluid_grid,                     &
      &         i_n_fluid_grid, num_fluid_grid_ctl)

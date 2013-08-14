@@ -1,5 +1,5 @@
-!>@file   main_sph_MHD_noviz.f90
-!!@brief  program kemorin_sph_MHD_noviz
+!>@file   main_full_sph_MHD.f90
+!!@brief  program kemorin_sph_MHD
 !!
 !!@author H. Matsui
 !!@date Programmed by H. Okuda in 2000
@@ -7,25 +7,24 @@
 !!@n    Connect to vizs  by H. Matsui in July 2006 (ver 2.0)
 !
 !>@brief  Main program for MHD dynamo simulation
-!!        without visualization routines
 !
-     program kemorin_sph_MHD_noviz
+      program kemorin_sph_MHD
 !
       use m_precision
 !
       use m_parallel_var_dof
-      use analyzer_noviz_sph_MHD
+      use analyzer_full_sph_MHD
 !
       implicit none
 !
 !
       call parallel_cal_init
 !
-      call initialize_noviz_sph_MHD
+      call initialize_full_sph_mhd
 !
-      call evolution_noviz_sph_MHD
+      call evolution_full_sph_mhd
 !
-      call  parallel_cal_fin
+      call parallel_cal_fin
 !
       stop
-      end program kemorin_sph_MHD_noviz
+      end program kemorin_sph_MHD

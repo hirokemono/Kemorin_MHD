@@ -26,7 +26,7 @@
       call check_global_spheric_parameter
       call output_set_radial_grid
 !
-!  ========= Generate spherical hermonics table ========================
+!  ========= Generate spherical harmonics table ========================
 !
       call s_const_global_sph_grids_modes
 !
@@ -41,7 +41,7 @@
         stop "*** spherical shell mesh done"
       end if
 !
-!  ========= Tri-spectral hermonics integration ===================
+!  ========= Tri-spectral harmonics integration ===================
 !C===
       if(iflag_debug .gt. 0) write(*,*) 'gaunt_coriolis'
       call gaunt_coriolis(l_truncation)

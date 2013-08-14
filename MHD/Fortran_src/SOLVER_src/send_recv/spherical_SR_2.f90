@@ -5,7 +5,7 @@
 !!@date Programmed in Aug., 2007
 !
 !>@brief  Two components data communication
-!!@n      for spherical hermonics transform
+!!@n      for spherical harmonics transform
 !!
 !!@verbatim
 !!      subroutine sph_send_recv_2(nnod_org, nnod_new,                  &

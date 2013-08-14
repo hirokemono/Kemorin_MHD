@@ -6,7 +6,7 @@
 !!@n    Modified in Apr. 2013
 !
 !>@brief  backward Legendre transform
-!!       (innermost loop is spherical hermonics)
+!!       (innermost loop is spherical harmonics)
 !!
 !!@verbatim
 !!      subroutine legendre_b_trans_vector_spin(nb)

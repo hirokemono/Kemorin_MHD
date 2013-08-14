@@ -75,7 +75,7 @@
         call deallocate_ele_edge_item_tmp
 !
 !        write(*,*) 'set_part_edges', igrp
-        call set_part_edges(surfpetot_viewer, edgepetot_viewer,         &
+        call set_part_edges(surfpetot_viewer,                           &
      &      nedge_grp, iedge_sf_viewer, ele_edge_item_sf(ist+1) )
 !
       end do
@@ -139,7 +139,7 @@
         call deallocate_sf_edge_item_tmp
 !
 !        write(*,*) 'set_part_edges', igrp
-        call set_part_edges(surfpetot_viewer, edgepetot_viewer,         &
+        call set_part_edges(surfpetot_viewer,                           &
      &      nedge_grp, iedge_sf_viewer, surf_edge_item_sf(ist+1) )
 !
       end do

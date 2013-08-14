@@ -1,17 +1,29 @@
-!FEM_analyzer_sph_MHD.f90
+!>@file   FEM_analyzer_sph_MHD.f90
+!!@brief  module FEM_analyzer_sph_MHD
+!!
+!!@author H. Matsui
+!!@date Programmed in Apr., 2010
 !
-!      module FEM_analyzer_sph_MHD
-!
-!       Written by H. Matsui
-!
-!      subroutine FEM_initialize
-!      subroutine FEM_analyze(i_step                                    &
-!     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
-!      subroutine FEM_finalize
-!
-!      subroutine SPH_to_FEM_init_MHD
-!      subroutine SPH_to_FEM_bridge_MHD
-!      subroutine FEM_to_SPH_bridge
+!>@brief Top routines to transfer spherical hermonics grids data
+!!       to FEM data for data visualization
+!!
+!!@verbatim
+!!      subroutine FEM_initialize
+!!      subroutine FEM_analyze(i_step                                   &
+!!     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+!!      subroutine FEM_finalize
+!!
+!!      subroutine SPH_to_FEM_init_MHD
+!!      subroutine SPH_to_FEM_bridge_MHD
+!!      subroutine FEM_to_SPH_bridge
+!!@endverbatim
+!!
+!!@n @param  i_step       Current time step
+!!@n @param  istep_psf    Time step increment for cross sectioning
+!!@n @param  istep_iso    Time step increment for iso surfaces
+!!@n @param  istep_pvr    Time step increment for volume rendering
+!!@n @param  istep_fline  Time step increment for field line generation
+!!@n @param  visval       Return flag to call visualization routines
 !
       module FEM_analyzer_sph_MHD
 !
@@ -185,7 +197,6 @@
 !
       use m_t_step_parameter
       use m_cal_max_indices
-      use range_data_IO
       use output_parallel_ucd_file
 !
 !

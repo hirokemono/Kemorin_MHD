@@ -1,21 +1,32 @@
-!m_gauss_coefs_monitor_data.f90
-!      module m_gauss_coefs_monitor_data
+!>@file   m_gauss_coefs_monitor_data.f90
+!!@brief  module m_gauss_coefs_monitor_data
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2012
 !
-!        programmed by H.Matsui on Dec., 2012
-!
-!      subroutine allocate_pick_gauss
-!      subroutine allocate_pick_gauss_l
-!      subroutine allocate_pick_gauss_m
-!      subroutine allocate_gauss_coef_monitor
-!
-!      subroutine deallocate_pick_gauss
-!      subroutine deallocate_gauss_coef_monitor
-!
-!      subroutine write_gauss_coefs_4_monitor(my_rank, i_step, time)
-!
-!      subroutine open_gauss_coefs_read_monitor(id_pick)
-!      subroutine read_gauss_coefs_4_monitor(id_pick, i_step, time,     &
-!     &          ierr)
+!>@brief  Data arrays for gauss coefficients
+!!
+!!@verbatim
+!!      subroutine allocate_pick_gauss
+!!      subroutine allocate_pick_gauss_l
+!!      subroutine allocate_pick_gauss_m
+!!      subroutine allocate_gauss_coef_monitor
+!!
+!!      subroutine deallocate_pick_gauss
+!!      subroutine deallocate_gauss_coef_monitor
+!!
+!!      subroutine write_gauss_coefs_4_monitor(my_rank, i_step, time)
+!!
+!!      subroutine open_gauss_coefs_read_monitor(id_pick)
+!!      subroutine read_gauss_coefs_4_monitor(id_pick, i_step, time,    &
+!!     &          ierr)
+!!@endverbatim
+!!
+!!@n @param  my_rank   Process ID
+!!@n @param  i_step    time step
+!!@n @param  time      time
+!!@n @param  id_pick   file ID
+!!@n @param  ierr      Error flag (0:success, 1:error)
 !
       module m_gauss_coefs_monitor_data
 !
@@ -25,26 +36,44 @@
       implicit  none
 !
 !
+!>      File ID for Gauss coefficients IO
       integer(kind = kint), parameter :: id_gauss_coef = 23
+!>      File prefix for Gauss coefficients file
       character(len = kchara) :: gauss_coefs_file_head
+!>      File name for Gauss coefficients file
       character(len = kchara) :: gauss_coefs_file_name
 !
+!>      Number of modes of Gauss coefficients to be evaluated
       integer(kind = kint) :: num_pick_gauss_coefs = 0
+!>      Degree and Order ID of Gauss coefficients to be evaluated
       integer(kind = kint), allocatable :: idx_pick_gauss_mode(:)
+!>      Number of degrees of Gauss coefficients to be evaluated
       integer(kind = kint) :: num_pick_gauss_l = 0
+!>      Degree ID of Gauss coefficients to be evaluated
       integer(kind = kint), allocatable :: idx_pick_gauss_l(:)
+!>      Number of orders of Gauss coefficients to be evaluated
       integer(kind = kint) :: num_pick_gauss_m = 0
+!>      Order ID of Gauss coefficients to be evaluated
       integer(kind = kint), allocatable :: idx_pick_gauss_m(:)
 !
+!>      Total number of modes of Gauss coefficients to be evaluated
       integer(kind = kint) :: ntot_pick_gauss_mode
+!>      Number of modes of Gauss coefficients to be evaluated
       integer(kind = kint) :: num_pick_gauss_mode
+!>      Global spherical harmonics ID to evaluate Gauss coefficients
       integer(kind = kint), allocatable :: idx_pick_gauss_coef_gl(:)
+!>      Local spherical harmonics ID to evaluate Gauss coefficients
       integer(kind = kint), allocatable :: idx_pick_gauss_coef_lc(:)
+!>      Gauss coefficients
       real(kind = kreal), allocatable :: gauss_coef_gl(:)
+!>      Localy evaluated Gauss coefficients
       real(kind = kreal), allocatable :: gauss_coef_lc(:)
+!>      Name of Gauss coefficients  (g_{l}^{m} or h_{l}^{m})
       character(len=kchara), allocatable :: gauss_mode_name(:)
 !
+!>      Radius to evaluate Gauss coefficients (Default: 6400km/2200km)
       real(kind = kreal) :: r_4_gauss_coefs = 2.91
+!>      Radius RAtio between CMB and point to be evaluated
       real(kind = kreal) :: rcmb_to_Re = 3.5d3 / 6.4d3
 !
       private :: open_gauss_coefs_4_monitor
