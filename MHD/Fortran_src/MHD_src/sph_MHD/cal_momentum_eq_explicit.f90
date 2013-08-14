@@ -64,8 +64,8 @@
       if(iflag_t_evo_4_velo .gt. 0)   call cal_vorticity_eq_adams
 !
       if(iflag_t_evo_4_magne .gt. 0)  call cal_diff_induction_MHD_adams
-      if(iflag_t_evo_4_temp .gt. 0)   call cal_heat_diff_advect_adams
-      if(iflag_t_evo_4_composit.gt.0) call cal_scalar_diff_advect_adams
+      if(iflag_t_evo_4_temp .gt. 0)   call sel_heat_diff_adv_src_adams
+      if(iflag_t_evo_4_composit.gt.0) call sel_light_diff_adv_src_adams
 !$omp end parallel
 !
       end subroutine cal_expricit_sph_adams
@@ -86,15 +86,15 @@
 !$omp parallel
       if(iflag_t_evo_4_velo .gt. 0)   call cal_vorticity_eq_euler
 !
-      if(iflag_t_evo_4_temp .gt. 0)   call cal_heat_diff_advect_euler
+      if(iflag_t_evo_4_temp .gt. 0)   call sel_heat_diff_adv_src_euler
       if(iflag_t_evo_4_magne .gt. 0)  call cal_diff_induction_MHD_euler
-      if(iflag_t_evo_4_composit.gt.0) call cal_scalar_diff_advect_euler
+      if(iflag_t_evo_4_composit.gt.0) call sel_light_diff_adv_src_euler
 !
       if (i_step .eq. 1) then
         if(iflag_t_evo_4_velo .gt. 0)   call set_adams_advect_4_ini
-        if(iflag_t_evo_4_temp .gt. 0)   call set_adams_heat_ini
+        if(iflag_t_evo_4_temp .gt. 0)   call sel_ini_adams_heat_w_src
         if(iflag_t_evo_4_magne.gt.0)    call set_adams_mag_induct_ini
-        if(iflag_t_evo_4_composit.gt.0) call set_adams_dscalar_ini
+        if(iflag_t_evo_4_composit.gt.0) call sel_ini_adams_light_w_src
       end if
 !$omp end parallel
 !

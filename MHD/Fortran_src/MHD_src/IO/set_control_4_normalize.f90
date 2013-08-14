@@ -66,8 +66,9 @@
 !    set normalization for thermal
 !
       if (iflag_t_evo_4_temp.eq.0) then
-        num_coef_4_termal = 0
+        num_coef_4_termal =    0
         num_coef_4_t_diffuse = 0
+        num_coef_4_h_source =  0
       else
 !
         if (i_n_thermal.eq.0) then
@@ -85,6 +86,10 @@
         else
           num_coef_4_t_diffuse = num_coef_4_t_diffuse_ctl
         end if
+!
+        if (i_n_h_src .eq. 0) then
+          num_coef_4_h_source = num_coef_4_h_source_ctl
+        end if
       end if
 !
       if (num_coef_4_termal.gt.0) then
@@ -99,6 +104,13 @@
         coef_4_t_diffuse_name = coef_4_t_diffuse_name_ctl
         coef_4_t_diffuse_power = coef_4_t_diffuse_power_ctl
         call deallocate_coef_4_t_diffuse_ctl
+      end if
+!
+      if (num_coef_4_h_source.gt.0) then
+        call allocate_coef_4_h_source
+        coef_4_h_source_name = coef_4_h_src_name_ctl
+        coef_4_h_source_power = coef_4_h_src_power_ctl
+        call deallocate_coef_4_h_source_ctl
       end if
 !
 !    set coefficients for momentum equation
@@ -311,10 +323,11 @@
 !
       if (iflag_t_evo_4_composit.eq.0) then
         num_coef_4_composition =  0
-        num_coef_4_c_diffuse = 0
+        num_coef_4_c_diffuse =    0
+        num_coef_4_c_source =     0
       else
 !
-        if (i_n_dscalar.eq.0) then
+        if (i_n_dscalar .eq. 0) then
           e_message =                                                   &
      &     'Set coefficients for time stepping for composition scalar'
           call parallel_abort(90, e_message)
@@ -322,12 +335,16 @@
           num_coef_4_composition = num_coef_4_composit_ctl
         end if
 !
-        if (i_n_dsc_diff.eq.0) then
+        if (i_n_dsc_diff .eq. 0) then
           e_message =                                                   &
      &     'Set coefficients for time stepping for scalar diffusion'
           call parallel_abort(90, e_message)
         else
           num_coef_4_c_diffuse = num_coef_4_c_diffuse_ctl
+        end if
+!
+        if (i_n_dsc_src .gt. 0) then
+          num_coef_4_c_source = num_coef_4_c_src_ctl
         end if
       end if
 !
@@ -343,6 +360,13 @@
         coef_4_c_diffuse_name =  coef_4_c_diff_name_ctl
         coef_4_c_diffuse_power = coef_4_c_diff_power_ctl
         call deallocate_coef_4_dsc_diff_ctl
+      end if
+!
+      if (num_coef_4_c_source.gt.0) then
+        call allocate_coef_4_c_source
+        coef_4_c_source_name =  coef_4_c_src_name_ctl
+        coef_4_c_source_power = coef_4_c_src_power_ctl
+        call deallocate_coef_4_dsc_src_ctl
       end if
 !
       end subroutine s_set_control_4_normalize

@@ -1,9 +1,11 @@
-!m_physical_property.f90
-!     module m_physical_property
+!>@file   m_physical_property.f90
+!!@brief  module m_physical_property
+!!
+!!@author H. Matsui
+!!@date Programmed in 2001
+!!@date Modified in Jan., 2007
 !
-!> @brief coefficients for each term
-!
-!     Written by H. Matsui
+!>@brief  Coeffiecients of each term
 !
       module m_physical_property
 !
@@ -77,6 +79,10 @@
 !>     coefficient for chemical buoyancy
       real  (kind=kreal) :: coef_comp_buo
 !
+!>     coefficient for heat source term
+      real  (kind=kreal) :: coef_h_src
+!>     coefficient for compositional source term
+      real  (kind=kreal) :: coef_c_src
 !
 !>     Parameter for stratified layer (amplitude)
       real  (kind=kreal) :: stratified_sigma

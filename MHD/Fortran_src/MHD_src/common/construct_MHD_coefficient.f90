@@ -1,14 +1,40 @@
+!>@file   construct_MHD_coefficient.f90
+!!@brief  module construct_MHD_coefficient
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep., 2007
 !
-!     module construct_MHD_coefficient
-!
-!      Written by H.Matsui
-!      Moified by H. Matsui on Sep., 2007
-!
-!      subroutine construct_coefficient(coef, num_dimless, dimless,     &
-!     &     name_dimless, num_coef, coef_name, coef_power,              &
-!     &     r_low_t, r_high_t)
-!      subroutine set_implicit_4_inf_viscous(coef_field,                &
-!     &          coef_imp, coef_exp)
+!>@brief  Subroutine to construct coeeficient from dimansionless numbers
+!!
+!!@verbatim
+!!      subroutine construct_coefficient(coef, num_dimless, dimless,    &
+!!     &     name_dimless, num_coef, coef_name, coef_power,             &
+!!     &     r_low_t, r_high_t)
+!!      subroutine set_implicit_4_inf_viscous(coef_field,               &
+!!     &          coef_imp, coef_exp)
+!!@endverbatim
+!!
+!!@n @param coef          Coefficient of term (output)
+!!
+!!@n @param num_dimless   Number of inout dimewnsionless numbers
+!!@n @param dimless(num_dimless)
+!!                        Value of the dimewnsionless numbers
+!!@n @param name_dimless(num_dimless)
+!!                        Name of dimensionless numbers
+!!
+!!@n @param num_coef      Number of dimensionless number to construct
+!!@n @param coef_name(num_coef)
+!!                        Name of dimensionless number to construct
+!!@n @param coef_power(num_coef)
+!!                        Power of dimensionless number to construct
+!!
+!!@n @param r_low_t       Radius at low reference tomperature
+!!@n @param r_high_t      Radius at high reference tomperature
+!!
+!!@n @param coef_field    Coefficient for evolution of field
+!!@n @param coef_imp      Contribution of implicit term
+!!@n @param coef_exp      Contribution of explicit term
+!!
 !
       module construct_MHD_coefficient
 !

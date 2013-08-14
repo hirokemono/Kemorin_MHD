@@ -1,11 +1,22 @@
-!check_field_dependency.f90
-!     module check_field_dependency
+!>@file   check_field_dependency.f90
+!!@brief  module check_field_dependency
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep., 2007
 !
-!      Written by H.Matsui
-!      Moified by H. Matsui on Sep., 2007
-!
-!      subroutine check_dependence_phys(num_nod_phys, num_check,        &
-!     &   target_name, phys_nod_name, phys_check_name)
+!>@brief  Subroutine to check dependecy of field
+!!
+!!@verbatim
+!!      subroutine check_dependence_phys(num_nod_phys, num_check,       &
+!!     &          target_name, phys_nod_name, phys_check_name)
+!!@endverbatim
+!!
+!!@n @param num_nod_phys         Number of fields
+!!@n @param num_check            Number of fields to be required
+!!@n @param target_name          Field name to be checked dependency
+!!@n @param phys_nod_name(num_nod_phys)
+!!                               Name of fields
+!!@n @param phys_check_name(num_check)  List of field name to be required
 !
       module check_field_dependency
 !
@@ -20,7 +31,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_dependence_phys(num_nod_phys, num_check,         &
-     &   target_name, phys_nod_name, phys_check_name)
+     &          target_name, phys_nod_name, phys_check_name)
 !
       use m_parallel_var_dof
 !

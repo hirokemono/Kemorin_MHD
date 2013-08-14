@@ -1,10 +1,14 @@
-!check_dependency_for_MHD.f90
-!     module check_dependency_for_MHD
+!>@file   check_dependency_for_MHD.f90
+!!@brief  module check_dependency_for_MHD
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep., 2007
 !
-!      Written by H.Matsui
-!      Moified by H. Matsui on Sep., 2007
-!
-!      subroutine check_dependencies
+!>@brief  Check dependecy of field list fro MHD dynamo
+!!
+!!@verbatim
+!!      subroutine check_dependencies
+!!@endverbatim
 !
       module check_dependency_for_MHD
 !
@@ -12,6 +16,7 @@
 !
       implicit none
 !
+!>      list of required field name
       character(len=kchara), allocatable :: phys_check_name(:)
       private :: phys_check_name
 !

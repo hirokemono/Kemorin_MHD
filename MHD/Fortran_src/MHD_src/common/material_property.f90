@@ -1,82 +1,16 @@
+!>@file   material_property.f90
+!!@brief  module material_property
+!!
+!!@author H. Matsui
+!!@date Programmed in 2001
+!!@date Modified in Jan., 2007
 !
-!     module material_property
-!
-!      Written by H.Matsui
-!      Moified by H. Matsui on Sep., 2007
-!
-!      subroutine set_material_property
-!
-!
-!  This subroutine is for set coefficients of diffusion and forces.
-!       ak_d_temp is coefficient for thermal diffusion,
-!       ak_d_velo is for kinetic viscousity,  and 
-!       ak_buo are coefficients for forces.
-!     Please edit this routine to apply to your model.
-!
-!  This subroutine supports three types of normalization \\
-! \begin{itemize}
-!  \item Forced convection ( normalize_control = 0 )
-!   \begin{eqnarray}
-!      \partial_{t} v_{i} + v_{j} v_{i,j}
-!                &=& - P_{,i} + \frac{1}{R_{e}} v_{i,jj} \\
-!      \partial_{t} T + v_{j} T_{,j}
-!                &=& \frac{1}{P_{r}R_{e}} T_{i,jj} .\\
-!  \end{eqnarray}
-!     where, $ R_{e}$ and $P_{r}$ are the Reynolds number and 
-!     Prandtl number, respectively.
-!     In this model, we set dimless(1) = $ R_{e} $
-!     and dimless(2) = $ P_{r} $.
-!
-!  \item Thermal convection ( normalize_control = 1 )
-!   \begin{eqnarray}
-!      \partial_{t} v_{i} + v_{j} v_{i,j}
-!                &=& - P_{,i} + \frac{1}{P_{r}G_{r}} v_{i,jj} \\
-!      \partial_{t} T + v_{j} T_{,j}
-!                &=& \frac{1}{R_{a}} T_{i,jj} .\\
-!  \end{eqnarray}
-!     where, $ R_{a}$ and $P_{r}$ are the Rayleigh number and 
-!     Prandtl number, respectively.
-!     In this model, we set dimless(1) = $ R_{a} $
-!     and dimless(2) = $ P_{r} $.
-!
-!  \item Thermal convection with Coriolis force
-!                  ( normalize_control = -1 )
-!   \begin{eqnarray}
-!      \partial_{t} v_{i} + v_{j} v_{i,j}
-!                &=& - P_{,i} + P_{r} v_{i,jj}
-!                    - P_{r}\sqrt{T_{a}} e_{ijk} \Omega_{j} v_{k}
-!                    - P_{r} R_{a} \left( T - T_{0} \right) \hat{g} \\
-!      \partial_{t} T + v_{j} T_{,j}
-!                &=& T_{i,jj} .\\
-!  \end{eqnarray}
-!   where, $\Omega_{i}$ is the angular velocity vector; 
-!   and $ R_{a}$, $P_{r}$, $T_{a}$ are the Rayleigh, Prandtl,
-!     and Taylor numbers, respectively.
-!     In this model, we set dimless(1) = $ R_{a} $
-!     and dimless(2) = $ P_{r} $.
-!     When you carry out simulations where only the Coriolis force
-!     works the fluid,  please set the Rayleigh number
-!      ( =dimless(2) ) to be 0.
-!  \end{itemize}
-!  \item Thermal convection with Coriolis force for dynamo Benchmark
-!                  ( normalize_control = -2 )
-!   \begin{eqnarray}
-!      E_{k} [ \partial_{t} v_{i} + v_{j} v_{i,j} - v_{i,jj} ]
-!                &=& - P_{,i} -  e_{ijk} \Omega_{j} v_{k}
-!                    - \tilde{R}_{a} \left( T - T_{0} \right) r/r_{0} \\
-!      \partial_{t} T + v_{j} T_{,j}
-!                &=& P_{r}^{-1} T_{i,jj} .\\
-!  \end{eqnarray}
-!   where, $\Omega_{i}$ is the angular velocity vector; 
-!   and $ R_{a}$, $P_{r}$, $T_{a}$ are the Rayleigh, Prandtl,
-!     and Taylor numbers, respectively.
-!     In this model, we set dimless(1) = $ R_{a} $
-!     and dimless(2) = $ P_{r} $.
-!     When you carry out simulations where only the Coriolis force
-!     works the fluid,  please set the Rayleigh number
-!      ( =dimless(2) ) to be 0.
-!  \end{itemize}
-!\endDESC
+!>@brief  Subroutines to set coeffiecient of each term
+!!
+!!@verbatim
+!!      subroutine set_material_property
+!!@endverbatim
+!!
 !
       module material_property
 !
@@ -109,6 +43,7 @@
 !
         coef_temp =   one
         coef_d_temp = one
+        coef_h_src =  one
 !
         call construct_coefficient(coef_temp, num_dimless, dimless,     &
      &      name_dimless, num_coef_4_termal, coef_4_termal_name,        &
@@ -117,6 +52,10 @@
         call construct_coefficient(coef_d_temp, num_dimless, dimless,   &
      &      name_dimless, num_coef_4_t_diffuse, coef_4_t_diffuse_name,  &
      &      coef_4_t_diffuse_power, depth_low_t, depth_high_t)
+!
+        call construct_coefficient(coef_h_src, num_dimless, dimless,    &
+     &      name_dimless, num_coef_4_h_source, coef_4_h_source_name,    &
+     &      coef_4_h_source_power, depth_low_t, depth_high_t)
 !
         call set_implicit_4_inf_viscous(coef_temp,                      &
      &      coef_imp_t, coef_exp_t)
@@ -216,7 +155,8 @@
 !
       if (iflag_t_evo_4_composit.ge.1) then
         coef_scalar =   one
-        coef_d_light = one
+        coef_d_light =  one
+        coef_c_src =    one
 !
         call construct_coefficient(coef_scalar, num_dimless, dimless,   &
      &      name_dimless, num_coef_4_composition, coef_4_composit_name, &
@@ -225,6 +165,10 @@
         call construct_coefficient(coef_d_light, num_dimless, dimless,  &
      &      name_dimless, num_coef_4_c_diffuse, coef_4_c_diffuse_name,  &
      &      coef_4_c_diffuse_power, depth_low_t, depth_high_t)
+!
+        call construct_coefficient(coef_c_src, num_dimless, dimless,    &
+     &      name_dimless, num_coef_4_c_source, coef_4_c_source_name,    &
+     &      coef_4_c_source_power, depth_low_t, depth_high_t)
 !
         call set_implicit_4_inf_viscous(coef_scalar,                    &
      &      coef_imp_c, coef_exp_c)
@@ -244,12 +188,14 @@
        write(*,*)' coefficient for Lorentz force:       ',coef_lor
        write(*,*)' coefficient for temperature:         ',coef_temp
        write(*,*)' coefficient for thermal diffusion:   ',coef_d_temp
+       write(*,*)' coefficient for heat source:         ',coef_h_src
        write(*,*)' coefficient for magnetic field:      ',coef_magne
        write(*,*)' coefficient for magnetic potential:  ',coef_mag_p
        write(*,*)' coefficient for magnetic diffusion:  ',coef_d_magne
        write(*,*)' coefficient for induction:           ',coef_induct
        write(*,*)' coefficient for dummy scalar:        ',coef_scalar
        write(*,*)' coefficient for composite diffusion: ',coef_d_light
+       write(*,*)' coefficient for light element source:',coef_c_src
        write(*,*)''
       end if
 !
