@@ -87,7 +87,7 @@
       use sph_mhd_rst_IO_control
       use set_reference_sph_mhd
 !
-        integer(kind=kint ) :: istep
+        integer(kind=kint ) :: istep, iflag_finish
 !
 !     ---------------------
 !
@@ -97,6 +97,7 @@
 !*
       time =       time_init
       i_step_MHD = i_step_init
+      iflag_finish = 0
 !
 !*  -------  time evelution  -----------
 !*
@@ -108,11 +109,11 @@
 !*  ----------  add time evolution -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_linear_conv'
-        call SPH_analyze_linear_conv(i_step_MHD)
+        call SPH_analyze_linear_conv(i_step_MHD, iflag_finish)
 !*
 !*  -----------  exit loop --------------
 !*
-        if(i_step_MHD .ge. i_step_number) exit
+        if(iflag_finish .gt. izero) exit
       end do
 !
       call end_eleps_time(3)

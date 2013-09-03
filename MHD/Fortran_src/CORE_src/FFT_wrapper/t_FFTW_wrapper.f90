@@ -9,6 +9,7 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !!      subroutine init_FFTW_type(Nsmp, Nstacksmp, Nfft, WK)
+!!      subroutine finalize_FFTW_type(Nsmp, WK)
 !!      subroutine verify_wk_FFTW_type(Nsmp, Nstacksmp, Nfft, WK)
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
@@ -116,6 +117,20 @@
      &      WK%plan_backward, WK%aNfft, WK%X_FFTW, WK%C_FFTW)
 !
       end subroutine init_FFTW_type
+!
+! ------------------------------------------------------------------
+!
+      subroutine finalize_FFTW_type(Nsmp, WK)
+!
+      integer(kind = kint), intent(in) ::  Nsmp
+!
+      type(working_FFTW), intent(inout) :: WK
+!
+!
+      call destroy_FFTW_smp(Nsmp, WK%plan_forward, WK%plan_backward)
+      call dealloc_work_4_FFTW_t(WK)
+!
+      end subroutine finalize_FFTW_type
 !
 ! ------------------------------------------------------------------
 !

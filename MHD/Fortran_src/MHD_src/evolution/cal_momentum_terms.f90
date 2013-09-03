@@ -40,9 +40,9 @@
 !
       call reset_ff_smps
 !
-      if (iflag_4_supg .eq. 1) then
+      if (iflag_4_supg .eq. id_turn_ON) then
        call int_vol_velo_monitor_upw(i_field)
-      else if (iflag_4_supg .eq. 2) then
+      else if (iflag_4_supg .eq. id_magnetic_SUPG) then
        call int_vol_velo_monitor_upm(i_field)
       else
        call int_vol_velo_monitor_pg(i_field)

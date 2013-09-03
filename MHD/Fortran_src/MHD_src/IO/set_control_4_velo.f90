@@ -41,7 +41,7 @@
       integer (kind = kint) :: i, iflag_4_hemi
 !
 !
-      if ( iflag_t_evo_4_velo .eq. 0 ) then
+      if (iflag_t_evo_4_velo .eq. id_no_evolution) then
         num_bc_v = 0
         num_bc_tq = 0
       else
@@ -89,7 +89,7 @@
             ibc_v_type(i) = iflag_bc_rot + 3
           else if ( tmpchara .eq. 'vr_0' ) then
             ibc_v_type(i) = iflag_no_vr
-          else if ( tmpchara .eq. 'free_sph' ) then
+          else if ( tmpchara .eq. 'free_slip_sph' ) then
             ibc_v_type(i) = iflag_free_sph
           else if ( tmpchara .eq. 'non_slip_sph' ) then
             ibc_v_type(i) = iflag_non_slip_sph
@@ -132,7 +132,7 @@
           call set_stress_free_group_types(bc_torque_type_ctl(i),       &
      &       ibc_tq_type(i) )
 !
-          if      (bc_torque_type_ctl(i) .eq. 'free_sph' ) then
+          if      (bc_torque_type_ctl(i) .eq. 'free_slip_sph' ) then
             ibc_tq_type(i) = iflag_free_sph
           else if (bc_torque_type_ctl(i) .eq. 'non_slip_sph' ) then
             ibc_tq_type(i) = iflag_non_slip_sph

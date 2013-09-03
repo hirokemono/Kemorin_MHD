@@ -13,39 +13,39 @@
 !
 !      subroutine read_momentum_ctl
 !
-!   --------------------------------------------------------------------
-! example
-!
-!  begin momentum
-!    array coef_4_velocity_ctl            1
-!      coef_4_velocity_ctl          One                        1.0  end
-!    end array
-!    array coef_4_press_ctl               1
-!      coef_4_press_ctl             Ekman_number              -1.0  end
-!    end array
-!    array coef_4_v_diffuse_ctl           1
-!      coef_4_v_diffuse_ctl         One                        1.0  end
-!    end array
-!    array coef_4_buoyancy_ctl            3
-!      coef_4_buoyancy_ctl          Radial_parameter           1.0  end
-!      coef_4_buoyancy_ctl          modified_Rayleigh_number   1.0  end
-!      coef_4_buoyancy_ctl          Ekman_number              -1.0  end
-!    end array
-!    array coef_4_Coriolis_ctl            2
-!      coef_4_Coriolis_ctl          Two                        1.0  end
-!      coef_4_Coriolis_ctl          Ekman_number              -1.0  end
-!    end array
-!    array coef_4_Lorentz_ctl             2
-!      coef_4_Lorentz_ctl           magnetic_Prandtl_number   -1.0  end
-!      coef_4_Lorentz_ctl           Ekman_number              -1.0  end
-!    end array
-!    array coef_4_composit_buoyancy_ctl   3
-!      coef_4_composit_buoyancy_ctl  Radial_parameter           1.0  end
-!      coef_4_composit_buoyancy_ctl  Composite_Rayleigh_number  1.0  end
-!      coef_4_composit_buoyancy_ctl  Ekman_number              -1.0  end
-!    end array
-!  end  momentum
-!   --------------------------------------------------------------------
+!!   --------------------------------------------------------------------
+!! example of control block
+!!
+!!  begin momentum
+!!    array coef_4_velocity_ctl            1
+!!      coef_4_velocity_ctl          One                        1.0
+!!    end array
+!!    array coef_4_press_ctl               1
+!!      coef_4_press_ctl             Ekman_number              -1.0
+!!    end array
+!!    array coef_4_v_diffuse_ctl           1
+!!      coef_4_v_diffuse_ctl         One                        1.0
+!!    end array
+!!    array coef_4_buoyancy_ctl            3
+!!      coef_4_buoyancy_ctl          Radial_parameter           1.0
+!!      coef_4_buoyancy_ctl          modified_Rayleigh_number   1.0
+!!      coef_4_buoyancy_ctl          Ekman_number              -1.0
+!!    end array
+!!    array coef_4_Coriolis_ctl            2
+!!      coef_4_Coriolis_ctl          Two                        1.0
+!!      coef_4_Coriolis_ctl          Ekman_number              -1.0
+!!    end array
+!!    array coef_4_Lorentz_ctl             2
+!!      coef_4_Lorentz_ctl           magnetic_Prandtl_number   -1.0
+!!      coef_4_Lorentz_ctl           Ekman_number              -1.0
+!!    end array
+!!    array coef_4_composit_buoyancy_ctl   3
+!!      coef_4_composit_buoyancy_ctl  Radial_parameter           1.0
+!!      coef_4_composit_buoyancy_ctl  Composite_Rayleigh_number  1.0
+!!      coef_4_composit_buoyancy_ctl  Ekman_number              -1.0
+!!    end array
+!!  end  momentum
+!!   --------------------------------------------------------------------
 !
 !
       module m_ctl_data_momentum_norm

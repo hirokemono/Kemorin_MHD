@@ -31,38 +31,38 @@
       subroutine allocate_aiccg_matrices
 !
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
        call allocate_aiccg_press
 !
-       if ( iflag_t_evo_4_velo .ge. 3 ) then
+       if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
         call allocate_aiccg_velo
        end if
       end if
 !
-      if ( iflag_t_evo_4_temp.ge.3 ) then
+      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         call allocate_aiccg_temp
       end if
 !
-      if ( iflag_t_evo_4_composit.ge.3 ) then
-       call allocate_aiccg_composit
+      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+        call allocate_aiccg_composit
       end if
 !
-      if ( iflag_t_evo_4_magne.ge.1 ) then
-       call allocate_aiccg_mag_p
-!       call allocate_aiccg_mag_p_ins
-!       call allocate_aiccg_mag_p_cd
-       if ( iflag_t_evo_4_magne .ge. 3 ) then
-        call allocate_aiccg_magne
-       end if
-      end if
-!
-      if ( iflag_t_evo_4_vect_p.ge.1 ) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
         call allocate_aiccg_mag_p
 !        call allocate_aiccg_mag_p_ins
 !        call allocate_aiccg_mag_p_cd
-       if ( iflag_t_evo_4_vect_p .ge. 3 ) then
-        call allocate_aiccg_magne
-       end if
+        if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
+          call allocate_aiccg_magne
+        end if
+      end if
+!
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        call allocate_aiccg_mag_p
+!        call allocate_aiccg_mag_p_ins
+!        call allocate_aiccg_mag_p_cd
+        if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
+          call allocate_aiccg_magne
+        end if
       end if
 !
       end subroutine allocate_aiccg_matrices
@@ -72,36 +72,36 @@
       subroutine reset_aiccg_matrices
 !
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
-       call reset_aiccg_press
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+        call reset_aiccg_press
 !
-       if ( iflag_t_evo_4_velo .ge. 3 ) then
-        call reset_aiccg_velo
-       end if
+        if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+          call reset_aiccg_velo
+        end if
       end if
 !
-      if ( iflag_t_evo_4_temp.ge.3 ) then
+      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         call reset_aiccg_temp
       end if
 !
-      if ( iflag_t_evo_4_composit.ge.3 ) then
+      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         call reset_aiccg_composit
       end if
 !
-      if ( iflag_t_evo_4_magne.ge.1 ) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
         call reset_aiccg_mag_p
 !        call reset_aiccg_mag_p_ins
 !        call reset_aiccg_mag_p_cd
-        if ( iflag_t_evo_4_magne .ge. 3 ) then
+        if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
           call reset_aiccg_magne
         end if
       end if
 !
-      if ( iflag_t_evo_4_vect_p.ge.1 ) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call reset_aiccg_mag_p
 !        call reset_aiccg_mag_p_ins
 !        call reset_aiccg_mag_p_cd
-        if ( iflag_t_evo_4_vect_p .ge. 3 ) then
+        if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
           call reset_aiccg_magne
         end if
       end if

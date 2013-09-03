@@ -2,12 +2,12 @@ begin add_element_groups
 !
   begin data_files_def
     num_subdomain_ctl           2
-    mesh_file_head_ctl          'mesh/in'
+    mesh_file_prefix            'mesh/in'
     mesh_file_fmt_ctl           'ascii'
   end data_files_def
 !
   begin new_data_files_def
-    new_mesh_head_ctl        'mesh_target/in'
+    new_mesh_prefix             'mesh_target/in'
   end new_data_files_def
 !
   begin 2d_grouping_ctl

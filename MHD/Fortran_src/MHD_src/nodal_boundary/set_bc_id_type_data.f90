@@ -92,12 +92,12 @@
       type(nodal_boundarty_conditions), intent(inout) :: nodal_bc
 !
 !
-      if ( iflag_t_evo_4_temp .ge. 1 ) then
+      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         call alloc_scalar_nod_bc_type(nod%numnod, nodal_bc%temp)
         call alloc_scalar_nod_bc_type(nod%numnod, nodal_bc%sgs_temp)
       end if
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
 !
         if ( iflag_debug .eq.1) write(*,*) 'allocate boundary 4 v'
         call alloc_vector_nod_bc_type(nod%numnod, nodal_bc%velocity)
@@ -112,11 +112,11 @@
         call alloc_scalar_nod_bc_type(nod%numnod, nodal_bc%sgs_press)
       end if
 !
-      if ( iflag_t_evo_4_composit .ge. 1 ) then
+      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         call alloc_scalar_nod_bc_type(nod%numnod, nodal_bc%composition)
       end if
 !
-      if ( iflag_t_evo_4_magne .ge. 1 ) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
         call alloc_vector_nod_bc_type(nod%numnod, nodal_bc%magne)
         call alloc_vector_nod_bc_type(nod%numnod, nodal_bc%sgs_magne)
         call alloc_scalar_nod_bc_type(nod%numnod, nodal_bc%magne_p)
@@ -124,7 +124,7 @@
         call alloc_vector_nod_bc_type(nod%numnod, nodal_bc%current)
       end if
 !
-      if ( iflag_t_evo_4_vect_p .ge. 1 ) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call alloc_vector_nod_bc_type(nod%numnod, nodal_bc%magne)
         call alloc_vector_nod_bc_type(nod%numnod, nodal_bc%sgs_magne)
         call alloc_vector_nod_bc_type(nod%numnod, nodal_bc%vector_p)
@@ -154,12 +154,12 @@
       type(nodal_boundarty_conditions), intent(inout) :: nodal_bc
 !
 !
-      if ( iflag_t_evo_4_temp .ge. 1 ) then
+      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         call set_bc_temp_id_type(mesh, MHD_mesh, group%nod_grp,         &
      &      nodal_bc)
       end if
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if (iflag_debug .eq. 1)  write(*,*)  'set boundary id 4 v'
         call set_bc_velo_id_type(mesh, MHD_mesh, group%nod_grp,         &
      &      nodal_bc)
@@ -168,12 +168,12 @@
      &      nodal_bc)
       end if
 !
-      if ( iflag_t_evo_4_composit .ge. 1 ) then
+      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         call set_bc_d_scalar_id_type(mesh, MHD_mesh, group%nod_grp,     &
      &      nodal_bc)
       end if
 !
-      if ( iflag_t_evo_4_magne .ge. 1 ) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
         if (iflag_debug .eq. 1)  write(*,*)  'set boundary ID 4 magne'
         call set_bc_magne_id_type(mesh, group%nod_grp, nodal_bc)
         if (iflag_debug .eq. 1) write(*,*)  'set boundary ID 4 magne_p'
@@ -183,7 +183,7 @@
         call set_bc_current_id_type(mesh, group%nod_grp, nodal_bc)
       end if
 !
-      if ( iflag_t_evo_4_vect_p .ge. 1 ) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if (iflag_debug .eq. 1) write(*,*)  'set boundary ID 4 magne'
         call set_bc_magne_id_type(mesh, group%nod_grp, nodal_bc)
         if (iflag_debug .eq. 1) write(*,*)  'set boundary ID 4 vect_p'

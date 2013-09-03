@@ -2,11 +2,11 @@ begin zonal_fft
   begin data_files_def
     num_subdomain_ctl    4
     num_smp_ctl          1
-    mesh_file_head_ctl     'in_single'
+    mesh_file_prefix       'in_single'
     mesh_sph_grid_ctl      'in_rtp'
     spectr_file_head_ctl   'zonal_spec/spectral'
 !
-    field_file_head_ctl    'field/out'
+    field_file_prefix      'field/out'
   end data_files_def
 !
   begin time_step_ctl

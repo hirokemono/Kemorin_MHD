@@ -46,7 +46,7 @@
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
       call nonlinear_by_pseudo_sph
 !
-      if (iflag_4_ref_temp .eq. 100) then
+      if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD
       end if
 !
@@ -54,37 +54,41 @@
 !*
       call start_eleps_time(13)
       if (iflag_debug.eq.1) write(*,*) 'sum_coriolis_rj_sph'
-      if(iflag_4_coriolis .gt. 0) call sum_coriolis_rj_sph
+      if(iflag_4_coriolis .gt. id_turn_OFF) call sum_coriolis_rj_sph
       call end_eleps_time(13)
 !
 !$omp parallel
-      if(      iflag_4_gravity  .gt. 0                                  &
-     &   .and. iflag_4_coriolis .gt. 0                                  &
-     &   .and. iflag_4_lorentz  .gt. 0) then
+      if(      iflag_4_gravity  .ne. id_turn_OFF                        &
+     &   .and. iflag_4_coriolis .ne. id_turn_OFF                        &
+     &   .and. iflag_4_lorentz  .ne. id_turn_OFF) then
         call set_MHD_terms_to_force(itor%i_rot_buoyancy)
-      else if( iflag_4_gravity  .eq. 0                                  &
-     &   .and. iflag_4_composit_buo .gt. 0                              &
-     &   .and. iflag_4_coriolis .gt. 0                                  &
-     &   .and. iflag_4_lorentz  .gt. 0) then
+      else if( iflag_4_gravity  .eq.     id_turn_OFF                    &
+     &   .and. iflag_4_composit_buo .ne. id_turn_OFF                    &
+     &   .and. iflag_4_coriolis .ne.     id_turn_OFF                    &
+     &   .and. iflag_4_lorentz  .ne.     id_turn_OFF) then
         call set_MHD_terms_to_force(itor%i_rot_comp_buo)
-      else if( iflag_4_gravity  .gt. 0                                  &
-     &   .and. iflag_4_coriolis .gt. 0                                  &
-     &   .and. iflag_4_lorentz  .eq. 0) then
+      else if( iflag_4_gravity  .ne. id_turn_OFF                        &
+     &   .and. iflag_4_coriolis .ne. id_turn_OFF                        &
+     &   .and. iflag_4_lorentz  .eq. id_turn_OFF) then
         call set_rot_cv_terms_to_force(itor%i_rot_buoyancy)
-      else if( iflag_4_gravity  .eq. 0                                  &
-     &   .and. iflag_4_composit_buo .gt. 0                              &
-     &   .and. iflag_4_coriolis .gt. 0                                  &
-     &   .and. iflag_4_lorentz  .eq. 0) then
+      else if( iflag_4_gravity  .eq.     id_turn_OFF                    &
+     &   .and. iflag_4_composit_buo .ne. id_turn_OFF                    &
+     &   .and. iflag_4_coriolis .ne.     id_turn_OFF                    &
+     &   .and. iflag_4_lorentz  .eq.     id_turn_OFF) then
         call set_rot_cv_terms_to_force(itor%i_rot_comp_buo)
       else
         call set_rot_advection_to_force
-        if(iflag_4_coriolis .gt. 0) call add_coriolis_to_vort_force
-        if(iflag_4_lorentz .gt. 0) call add_lorentz_to_vort_force
-        if(iflag_4_gravity .gt. 0) then
+        if(iflag_4_coriolis .ne. id_turn_OFF) then
+          call add_coriolis_to_vort_force
+        end if
+        if(iflag_4_lorentz .ne.  id_turn_OFF) then
+          call add_lorentz_to_vort_force
+        end if
+        if(iflag_4_gravity .ne.  id_turn_OFF) then
           call add_buoyancy_to_vort_force(itor%i_rot_buoyancy)
-        else if(iflag_4_composit_buo .gt. 0) then
+        else if(iflag_4_composit_buo .ne. id_turn_OFF) then
           call add_buoyancy_to_vort_force(itor%i_rot_comp_buo)
-        else if(iflag_4_filter_gravity .gt. 0) then
+        else if(iflag_4_filter_gravity .ne. id_turn_OFF) then
           call add_buoyancy_to_vort_force(itor%i_rot_filter_buo)
         end if
       end if
@@ -142,7 +146,7 @@
 !*  ----  copy velocity for coriolis term ------------------
 !*
       if (iflag_debug.eq.1) write(*,*) 'sum_coriolis_rj_sph'
-      if(iflag_4_coriolis .gt. 0) call sum_coriolis_rj_sph
+      if(iflag_4_coriolis .ne. id_turn_OFF) call sum_coriolis_rj_sph
 !
 !   ----  lead nonlinear terms by phesdo spectrum
 !
@@ -154,15 +158,17 @@
       end do
 !$omp end parallel do
 !
-      if (iflag_4_ref_temp .eq. 100) then
+      if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD
       end if
 !
 !$omp parallel
-      if(iflag_4_coriolis .gt. 0) call add_coriolis_to_vort_force
-      if(iflag_4_gravity .gt. 0) then
+      if(iflag_4_coriolis .ne. id_turn_OFF) then
+        call add_coriolis_to_vort_force
+      end if
+      if(iflag_4_gravity .ne.  id_turn_OFF) then
         call add_buoyancy_to_vort_force(itor%i_rot_buoyancy)
-      else if(iflag_4_composit_buo .gt. 0) then
+      else if(iflag_4_composit_buo .ne. id_turn_OFF) then
         call add_buoyancy_to_vort_force(itor%i_rot_comp_buo)
       end if
 !$omp end parallel

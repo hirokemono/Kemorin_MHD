@@ -1,20 +1,20 @@
 begin MHD_control
 !!!!! Define for files !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-!  num_subdomain_ctl: number of subdomains (not used)
+!  num_subdomain_ctl: number of subdomains
 !  num_smp_ctl:       number of smp processes
 !
-!  mesh_file_head_ctl:  header of mesh file (Default: in.domain#)
+!  mesh_file_prefix:    prefix of mesh file (Default: in.domain#)
 !
-!  rst_file_head_ctl:   header of restart file
+!  restart_file_prefix: prefix of restart file
 !                            (Default: restart/rst.step#.domain#)
 !
-!  field_file_head_ctl: header for snapshot field data 
+!  field_file_prefix:   prefix for snapshot field data
 !                            (Default: out.step#.domain#.udt)
 !
-!    mesh_file_fmt_ctl:   data format for mesh file
-!    rst_files_fmt_ctl:   data format for restart files
-!    field_files_fmt_ctl: data format for udt files
+!    mesh_file_fmt_ctl:    data format for mesh file
+!    restart_file_fmt_ctl: data format for restart files
+!    field_file_fmt_ctl:   data format for field files
 !                            (ascii or binary, Dafault is 'ascii')
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -23,18 +23,17 @@ begin MHD_control
     num_subdomain_ctl           2
     num_smp_ctl                 4
 !
-    mesh_file_head_ctl          'mesh/in'
-    sph_files_head_ctl          'sph_grid/in'
+    sph_file_prefix            'sph_grid/in'
 !
-    coriolis_tri_int_name_ctl   'sph_shell/rot_int.dat'
+    coriolis_int_file_name      'sph_shell/rot_int.dat'
 !
-    rst_file_head_ctl           'restart/rst'
-    field_file_head_ctl         'field/out'
+    restart_file_prefix         'restart/rst'
+    field_file_prefix           'field/out'
 !
     mesh_file_fmt_ctl           'ascii'
-    sph_files_fmt_ctl           'ascii'
-    rst_files_fmt_ctl           'ascii'
-    field_files_fmt_ctl         'ascii'
+    sph_file_fmt_ctl            'ascii'
+    restart_file_fmt_ctl        'ascii'
+    field_file_fmt_ctl          'ascii'
     coriolis_file_fmt_ctl       'ascii'
   end data_files_def
 !
@@ -135,7 +134,7 @@ begin MHD_control
 !     file_x, file_y, file_z
 !     rot_x,  rot_y,  rot_z
 !       (Note: set all compornents of the rotation vector!!)
-!     free_sph
+!     free_slip_sph
 !     specitial (you have to define the B.C. in source file)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       array bc_velocity    7
@@ -247,12 +246,15 @@ begin MHD_control
 !     coef_4_termal_ctl:      time integration and advection of temp
 !     coef_4_velocity_ctl:    time integration and advection of temperature
 !     coef_4_magnetic_ctl:    time integration and advection of magnetic f.
-!     num_coef_4_termal_diffusion:   coefficients for thermal diffusion
-!     num_coef_4_viscous_diffusion:  coefficients for viscous diffusion
-!     num_coef_4_magnetic_diffusion: coefficients for magnetic diffusion
-!     num_coef_4_buoyancy:   coefficients for buoyancy
-!     num_coef_4_Coriolis:   coefficients for Coriolis force
-!     num_coef_4_Lorentz:    coefficients for Lorantz force
+!     coef_4_t_diffuse_ctl:   coefficients for thermal diffusion
+!     coef_4_v_diffuse_ctl:   coefficients for viscous diffusion
+!     coef_4_m_diffuse_ctl:   coefficients for magnetic diffusion
+!     coef_4_buoyancy_ctl:    coefficients for buoyancy
+!     coef_4_Coriolis_ctl:    coefficients for Coriolis force
+!     coef_4_Lorentz_ctl:     coefficients for Lorantz force
+!     coef_4_composit_buoyancy_ctl: 
+!                             coefficients for compositional buoyancy
+!     coef_4_induction_ctl:   coefficients for magnetic induction
 !
 !     One:  1, Zero (Ignore), Two:  2,   Radial_parameter: (1-ri/ro)
 !     Radial_35: (1-0.35)
@@ -447,7 +449,8 @@ begin MHD_control
 !                                j = l*(l+1) + m
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin restart_file_ctl
-       rst_ctl                -2
+      rst_ctl                dynamo_benchmark_1
+!      rst_ctl               start_from_rst_file
     end restart_file_ctl
 !
 !!!!!!   method for time evolution  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -467,8 +470,9 @@ begin MHD_control
 !   method_4_velo_ctl:    method for Crank Nicolson Scheme
 !   precond_4_crank_ctl:  preconditioning method for Crank Nicolson Scheme
 !
-!   spherical transfer mode:  'radius_in' 'radius_out' 'long_loop'
-!   FFT_library_ctl:  Selection of FFT librarry  ('ISPACK' or 'FFTPACK')
+!!   Legendre_trans_loop_ctl: spherical transfer loop type
+!!                   ('inner_radial_loop' 'outer_radial_loop' 'long_loop')
+!!   FFT_library_ctl:  Selection of FFT librarry  ('FFTW3' or 'FFTPACK')
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
@@ -500,13 +504,13 @@ begin MHD_control
   end visual_control
 !
   begin sph_monitor_ctl
-    volume_average_head_ctl      'sph_ave_volume'
-    volume_rms_spectr_head_ctl   'sph_rms_volume'
-    layered_rms_spectr_head_ctl  'sph_rms_layer'
+    volume_average_prefix        'sph_ave_volume'
+    volume_pwr_spectr_prefix     'sph_pwr_volume'
+    layered_pwr_spectr_prefix    'sph_pwr_layer'
 !
-    picked_sph_head_ctl   'sph_spectr/picked_mode'
+    picked_sph_prefix            'sph_spectr/picked_mode'
+    gauss_coefs_prefix           'sph_spectr/gauss_coefs'
 !
-    gauss_coefs_head_ctl  'sph_spectr/gauss_coefs'
     gauss_coefs_radius_ctl    2.91
 !
 !

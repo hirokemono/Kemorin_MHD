@@ -40,8 +40,8 @@
       integer (kind = kint) :: i
 !
 !
-       if ( iflag_t_evo_4_magne .eq. 0                                  &
-      &     .and.  iflag_t_evo_4_vect_p .eq. 0) then
+       if ( iflag_t_evo_4_magne .eq. id_no_evolution                    &
+      &     .and.  iflag_t_evo_4_vect_p .eq. id_no_evolution) then
         num_bc_j = 0
         num_bc_js = 0
       else

@@ -23,6 +23,7 @@
       module int_vol_lump_crank_type
 !
       use m_precision
+      use m_constants
 !
       use t_solver_djds
       use t_geometry_data_MHD
@@ -58,27 +59,32 @@
 !
 !
 !$omp parallel
-       if ( iflag_t_evo_4_velo.eq.3 .and. coef_velo.gt.0.0d0 ) then
+       if (iflag_t_evo_4_velo .eq. id_Crank_nicolson                    &
+     &     .and. coef_velo .gt. zero ) then
          call init_33_mat_type_lump(mesh%node, MHD_mesh%fluid,          &
      &       djds_tbl_fl, mk_MHD%fluid,  mat_velo)
        end if
 !
-      if ( iflag_t_evo_4_temp.eq.3 .and. coef_temp.gt.0.0d0 ) then
+      if (iflag_t_evo_4_temp .eq. id_Crank_nicolson                     &
+     &     .and. coef_temp .gt. zero ) then
         call init_11_mat_type_lump(mesh%node, MHD_mesh%fluid,           &
      &      djds_tbl_fl, mk_MHD%fluid, mat_temp)
       end if
 !
-      if (iflag_t_evo_4_magne.eq.3 .and. coef_magne.gt.0.0d0) then
+      if (iflag_t_evo_4_magne .eq. id_Crank_nicolson                    &
+     &     .and. coef_magne .gt. zero) then
         call init_33_mat_type_lump(mesh%node, MHD_mesh%conduct,         &
-      &     djds_tbl_cd, mk_MHD%conduct, mat_magne)
+     &     djds_tbl_cd, mk_MHD%conduct, mat_magne)
       end if
 !
-      if (iflag_t_evo_4_vect_p.eq.3 .and. coef_magne.gt.0.0d0) then
+      if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson                   &
+     &     .and. coef_magne .gt. zero) then
         call init_33_mat_type_lump(mesh%node, MHD_mesh%conduct,         &
-      &     djds_tbl_cd, mk_MHD%conduct, mat_magne)
+     &     djds_tbl_cd, mk_MHD%conduct, mat_magne)
        end if
 !
-      if(iflag_t_evo_4_composit.eq.3 .and. coef_scalar.gt.0.0d0) then
+      if(iflag_t_evo_4_composit .eq. id_Crank_nicolson                  &
+     &     .and. coef_scalar .gt. zero) then
         call init_11_mat_type_lump(mesh%node, MHD_mesh%fluid,           &
      &      djds_tbl_fl, mk_MHD%fluid, mat_d_scalar)
       end if

@@ -10,18 +10,19 @@
 !
 !  begin new_data_files_def
 !    num_new_domain_ctl           2
-!    new_mesh_head_ctl          'mesh_target/in'
-!    new_sph_mode_head_ctl      'sph_new/in_rj'
 !
-!    new_rst_head_ctl           'rst_new/rst'
+!    new_mesh_prefix            'mesh_target/in'
+!    new_sph_mode_prefix        'sph_new/in_rj'
 !
-!    new_field_head_ctl         'field_new/out'
-!    new_spectr_file_head_ctl   'spectr_new/spectr'
+!    new_restart_prefix         'rst_new/rst'
 !
-!    new_vtk_head_ctl           'outall'
+!    new_field_file_prefix      'field_new/out'
+!    new_spectr_file_prefix     'spectr_new/spectr'
 !
-!    new_dx_head_ctl            'outall'
-!    new_dx_data_head_ctl       'field_new/field'
+!    new_vtk_prefix             'outall'
+!
+!    new_dx_head_prefix         'outall'
+!    new_dx_data_prefix         'field_new/field'
 !
 !    new_mesh_file_fmt_ctl           'ascii'
 !    new_rst_files_fmt_ctl           'ascii'
@@ -41,17 +42,17 @@
 !
       integer(kind = kint) :: num_new_domain_ctl
 !
-      character(len=kchara) :: new_mesh_head_ctl
-      character(len=kchara) :: new_sph_mode_head_ctl
+      character(len=kchara) :: new_mesh_prefix
+      character(len=kchara) :: new_sph_mode_prefix
 !
-      character(len=kchara) :: new_rst_head_ctl
+      character(len=kchara) :: new_restart_prefix
 !
-      character(len=kchara) :: new_field_head_ctl
-      character(len=kchara) :: new_spectr_file_head_ctl
-      character(len=kchara) :: new_vtk_head_ctl
+      character(len=kchara) :: new_field_file_prefix
+      character(len=kchara) :: new_spectr_file_prefix
+      character(len=kchara) :: new_vtk_prefix
 !
-      character(len=kchara) :: new_dx_head_ctl
-      character(len=kchara) :: new_dx_data_head_ctl
+      character(len=kchara) :: new_dx_head_prefix
+      character(len=kchara) :: new_dx_data_prefix
 !
       character(len=kchara) :: new_mesh_file_fmt_ctl = 'ascii'
       character(len=kchara) :: new_sph_file_fmt_ctl =  'ascii'
@@ -73,24 +74,24 @@
      &       :: hd_num_new_domain =    'num_new_domain_ctl'
 !
       character(len=kchara), parameter                                  &
-     &       :: hd_new_mesh_head =     'new_mesh_head_ctl'
+     &       :: hd_new_mesh_head =     'new_mesh_prefix'
       character(len=kchara), parameter                                  &
-     &       :: hd_new_sph_mode_head = 'new_sph_mode_head_ctl'
+     &       :: hd_new_sph_mode_head = 'new_sph_mode_prefix'
 !
       character(len=kchara), parameter                                  &
-     &       :: hd_new_rst_head =     'new_rst_head_ctl'
+     &       :: hd_new_rst_head =     'new_restart_prefix'
 !
       character(len=kchara), parameter                                  &
-     &       :: hd_new_udt_head =     'new_field_head_ctl'
+     &       :: hd_new_udt_head =     'new_field_file_prefix'
       character(len=kchara), parameter                                  &
-     &       :: hd_new_spectr_head =  'new_spectr_file_head_ctl'
+     &       :: hd_new_spectr_head =  'new_spectr_file_prefix'
       character(len=kchara), parameter                                  &
-     &       :: hd_new_vtk_head =     'new_vtk_head_ctl'
+     &       :: hd_new_vtk_head =     'new_vtk_prefix'
 !
       character(len=kchara), parameter                                  &
-     &       :: hd_new_dx_head =      'new_dx_head_ctl'
+     &       :: hd_new_dx_head =      'new_dx_head_prefix'
       character(len=kchara), parameter                                  &
-     &       :: hd_new_dx_data_head = 'new_dx_data_head_ctl'
+     &       :: hd_new_dx_data_head = 'new_dx_data_prefix'
 !
       character(len=kchara), parameter                                  &
      &       :: hd_new_mesh_file_fmt = 'new_mesh_file_fmt_ctl'
@@ -161,24 +162,24 @@
 !
 !
         call read_character_ctl_item(hd_new_mesh_head,                  &
-     &        i_new_mesh_head, new_mesh_head_ctl)
+     &        i_new_mesh_head, new_mesh_prefix)
         call read_character_ctl_item(hd_new_sph_mode_head,              &
-     &        i_new_sph_mode_head, new_sph_mode_head_ctl)
+     &        i_new_sph_mode_head, new_sph_mode_prefix)
 !
         call read_character_ctl_item(hd_new_rst_head,                   &
-     &          i_new_rst_head, new_rst_head_ctl)
+     &          i_new_rst_head, new_restart_prefix)
 !
         call read_character_ctl_item(hd_new_udt_head,                   &
-     &          i_new_udt_head, new_field_head_ctl)
+     &          i_new_udt_head, new_field_file_prefix)
         call read_character_ctl_item(hd_new_spectr_head,                &
-     &          i_new_spectr_head, new_spectr_file_head_ctl)
+     &          i_new_spectr_head, new_spectr_file_prefix)
         call read_character_ctl_item(hd_new_vtk_head,                   &
-     &          i_new_vtk_head, new_vtk_head_ctl)
+     &          i_new_vtk_head, new_vtk_prefix)
 !
         call read_character_ctl_item(hd_new_dx_head,                    &
-     &        i_new_dx_head, new_dx_head_ctl)
+     &        i_new_dx_head, new_dx_head_prefix)
         call read_character_ctl_item(hd_new_dx_data_head,               &
-     &        i_new_dx_data_head, new_dx_data_head_ctl)
+     &        i_new_dx_data_head, new_dx_data_prefix)
 !
         call read_character_ctl_item(hd_new_mesh_file_fmt,              &
      &        i_new_mesh_file_fmt, new_mesh_file_fmt_ctl)

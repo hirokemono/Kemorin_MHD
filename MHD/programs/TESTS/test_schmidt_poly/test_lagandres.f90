@@ -58,7 +58,7 @@
 !        write(*,*) j, idx_gl_1d_rlm_j(j,1:3)
 !      end do
 !
-      write(*,*) 'gauss-Lagendre colatitude'
+      write(*,*) 'Gauss-Legendre colatitude'
       do i = 1, n_point
         write(*,'(i5,1p2E25.15e3)') i, g_colat_rtm(i), weight_rtm(i)
       end do
@@ -67,7 +67,7 @@
       call alloc_mag_lag(ntheta, ltr)
       call gquad(ntheta)
 !
-      write(*,*) 'gauss-Lagendre colatitude by MAG'
+      write(*,*) 'Gauss-Legendre colatitude by MAG'
       do i = 1, ntheta
         write(*,'(i5,1p2E25.15e3)') i, colat(i), gauss_w(i)
       end do

@@ -11,7 +11,6 @@
       implicit none
 !
       integer(kind = kint), parameter, private :: my_rank = izero
-      integer(kind = kint), parameter, private :: ifile_type = izero
 !
 !      subroutine initialize_cutshell
 !      subroutine analyze_cutshell
@@ -40,7 +39,6 @@
 !  read global mesh
 !
       mesh_file_head = original_mesh_head
-      iflag_mesh_file_fmt = ifile_type
       call input_mesh(my_rank)
 !
       call deallocate_element_geometry
@@ -71,7 +69,6 @@
       call allocate_2nd_nod_import_item
       call allocate_2nd_nod_export_item
 !
-      iflag_mesh_file_fmt = ifile_type
       mesh_file_head = modified_mesh_head
       call output_2nd_mesh(my_rank)
       call deallocate_2nd_mesh

@@ -33,7 +33,7 @@
 !
 !
       if (i_mesh_header .eq. 1) then
-        mesh_file_header = mesh_file_head_ctl
+        mesh_file_header = mesh_file_prefix
       else
         mesh_file_header = 'mesh/in'
       end if

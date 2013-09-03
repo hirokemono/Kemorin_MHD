@@ -11,10 +11,10 @@
 !!  begin mesh_test
 !!    begin data_files_def
 !!      num_smp_ctl            1
-!!      mesh_file_head_ctl       'mesh/in'
-!!      elem_file_head_ctl       'mesh/element'
-!!      surf_file_head_ctl       'mesh/surface'
-!!      edge_file_head_ctl       'mesh/edge'
+!!      mesh_file_prefix         'mesh/in'
+!!      elem_file_prefix         'mesh/element'
+!!      surf_file_prefix         'mesh/surface'
+!!      edge_file_prefix         'mesh/edge'
 !!    end data_files_def
 !!  end  mesh_test
 !!

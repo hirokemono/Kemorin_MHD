@@ -32,6 +32,8 @@
 !!     &           label_sp, label_sz, label_pz)
 !!
 !!      subroutine add_vector_sph_spectr_label(field_label,             &
+!!     &           label_pol, label_tor, label_dpol)
+!!      subroutine add_vector_power_sph_label(field_label,              &
 !!     &           label_pol, label_tor, label_tot)
 !!@endverbatim
 !
@@ -64,6 +66,7 @@
 !!
 !!@n @param  label_pol  name for poloidal component (field_name_pol)
 !!@n @param  label_tor  name for toroidal component (field_name_tor)
+!!@n @param  label_dpol name for diff. of poloidal (field_name_pol_dr)
 !!@n @param  label_tot  name for total    amplitude (field_name_tot)
 !
       module add_direction_labels
@@ -310,6 +313,23 @@
       write(label_dpol,'(a,a)') trim(field_label), trim(dr_pol_label)
 !
       end subroutine add_vector_sph_spectr_label
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_vector_power_sph_label(field_label,                &
+     &           label_pol, label_tor, label_tot)
+!
+      character(len=kchara), intent(in) :: field_label
+      character(len=kchara), intent(inout) :: label_pol
+      character(len=kchara), intent(inout) :: label_tor
+      character(len=kchara), intent(inout) :: label_tot
+!
+!
+      write(label_pol,'(a,a)') trim(field_label), trim(pol_label)
+      write(label_tor,'(a,a)') trim(field_label), trim(tor_label)
+      write(label_tot,'(a,a)') trim(field_label)
+!
+      end subroutine add_vector_power_sph_label
 !
 !-----------------------------------------------------------------------
 !

@@ -72,7 +72,7 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
-      call cal_commute_error_4_filter_hf(n_quad)
+      call cal_commute_error_4_filter_hf(ifilter_4delta)
       call delete_field_by_fixed_t_bc(iphys%i_sgs_grad_f)
 !
       call scalar_send_recv(iphys%i_sgs_grad_f)
@@ -81,7 +81,7 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
-      call cal_commute_error_4_h_flux(n_second)
+      call cal_commute_error_4_h_flux(ifilter_2delta)
 !
       call scalar_send_recv(iphys%i_sgs_grad)
 !

@@ -50,17 +50,17 @@
 !
         call s_int_bulk
 !
-        if  ( iflag_t_evo_4_velo .ge. 1 ) then
+        if  (iflag_t_evo_4_velo .gt. id_no_evolution) then
           call int_norm_div_v
           call int_rms_div_v
           call cal_stability_4_advect
         end if
-        if  ( iflag_t_evo_4_vect_p.ge.1 ) then
+        if  (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
           call int_norm_div_a
           call int_rms_div_a
         end if
-        if  ( iflag_t_evo_4_magne.ge.1                                  &
-     &         .or. iflag_t_evo_4_vect_p.ge.1 ) then
+        if  (iflag_t_evo_4_magne .gt. id_no_evolution                   &
+     &         .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
           call int_norm_div_b
           call int_rms_div_b
         end if

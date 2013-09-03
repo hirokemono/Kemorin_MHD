@@ -99,7 +99,7 @@
         isig = 400
         call set_initial_temp(isig)
         isig = 0
-        if (iflag_t_evo_4_vect_p .ge. 1) then
+        if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
           call set_initial_vect_p(isig)
         else
           call set_initial_magne(isig)
@@ -122,7 +122,7 @@
       else if (iflag_restart .eq. i_rst_kinematic) then
         call set_initial_kinematic
         isig = 2000
-        if (iflag_t_evo_4_vect_p .ge. 1) then
+        if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
           call set_initial_vect_p(isig)
         else
           call set_initial_magne(isig)
@@ -130,7 +130,7 @@
 !
       else if ( iflag_restart .ge. 1000  ) then
         call set_initial_temp(iflag_restart)
-        if (iflag_t_evo_4_vect_p .ge. 1) then
+        if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
           call set_initial_vect_p(iflag_restart)
         else
           call set_initial_magne(iflag_restart)

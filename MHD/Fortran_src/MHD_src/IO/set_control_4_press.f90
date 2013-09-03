@@ -41,7 +41,7 @@
       integer (kind = kint) :: i
 !
 !
-      if ( iflag_t_evo_4_velo .eq. 0 ) then
+      if (iflag_t_evo_4_velo .eq. id_no_evolution) then
         num_bc_p = 0
         num_bc_wall = 0
       else

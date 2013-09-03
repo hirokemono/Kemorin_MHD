@@ -62,89 +62,89 @@
 !
       call count_num_bc_nod
 !
-      if ( iflag_t_evo_4_temp .ge. 1 ) then
-       call allocate_bc_ene
-       call allocate_bc_t_sgs
-       call set_bc_temp_id
-       call set_boundary_ene
+      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+        call allocate_bc_ene
+        call allocate_bc_t_sgs
+        call set_bc_temp_id
+        call set_boundary_ene
       end if
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
 !
-       if ( iflag_debug .eq.1)  write(*,*) 'allocate boundary 4 v'
-       call allocate_bc_velo
-       call allocate_bc_v_sgs
-       call allocate_bc_vr0
-       call allocate_bc_vfr
-       call allocate_bc_rot
-       call allocate_bc_vsp
+        if ( iflag_debug .eq.1)  write(*,*) 'allocate boundary 4 v'
+        call allocate_bc_velo
+        call allocate_bc_v_sgs
+        call allocate_bc_vr0
+        call allocate_bc_vfr
+        call allocate_bc_rot
+        call allocate_bc_vsp
 !
-       if ( iflag_debug .eq.1)  write(*,*) 'allocate boundary 4 P'
-       call allocate_bc_press
-       call allocate_bc_p_sgs
+        if (iflag_debug .eq.1)  write(*,*) 'allocate boundary 4 P'
+        call allocate_bc_press
+        call allocate_bc_p_sgs
 !
-       if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 v'
-       call set_bc_velo_id
-       if ( iflag_debug .eq.1) write(*,*)  'set boundary values 4 v'
-       call set_boundary_velo
-       if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 P'
-       call set_bc_press_id
+        if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 v'
+        call set_bc_velo_id
+        if ( iflag_debug .eq.1) write(*,*)  'set boundary values 4 v'
+        call set_boundary_velo
+        if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 P'
+        call set_bc_press_id
       end if
 !
-       if ( iflag_t_evo_4_composit .ge. 1 ) then
-       call allocate_bc_composition
-       call set_bc_composition_id
-       call set_boundary_composition
+      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+        call allocate_bc_composition
+        call set_bc_composition_id
+        call set_boundary_composition
       end if
 !
-      if ( iflag_t_evo_4_magne .ge. 1 ) then
-       call allocate_bc_magne
-       call allocate_bc_b_sgs
-       call allocate_bc_magne_p
-       call allocate_bc_magp_sgs
-       call allocate_bc_current
+      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
+        call allocate_bc_magne
+        call allocate_bc_b_sgs
+        call allocate_bc_magne_p
+        call allocate_bc_magp_sgs
+        call allocate_bc_current
 !
-       if (iflag_debug .eq.1) write(*,*)  'set boundary ID 4 magne'
-       call set_bc_magne_id
-       if (iflag_debug .eq.1)  write(*,*) 'set boundary ID 4 magne_p'
-       call set_bc_m_potential_id
-       if (iflag_debug .eq.1)  write(*,*) 'set boundary ID 4 current'
-       call set_bc_current_id
+        if (iflag_debug.eq.1) write(*,*)  'set boundary ID 4 magne'
+        call set_bc_magne_id
+        if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 magne_p'
+        call set_bc_m_potential_id
+        if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 current'
+        call set_bc_current_id
 !
-       if (iflag_debug .eq.1)  write(*,*) 'set boundary value 4 magne'
-       call set_boundary_magne
-       if (iflag_debug .eq.1) write(*,*) 'set boundary value 4 magne'
-       call set_boundary_m_phi
-       if (iflag_debug .eq.1) write(*,*) 'set boundary value 4 current'
-       call set_boundary_current
+        if (iflag_debug.eq.1)  write(*,*) 'set boundary value 4 magne'
+        call set_boundary_magne
+        if (iflag_debug.eq.1) write(*,*) 'set boundary value 4 magne'
+        call set_boundary_m_phi
+        if (iflag_debug.eq.1) write(*,*) 'set boundary value 4 current'
+        call set_boundary_current
       end if
 !
-      if ( iflag_t_evo_4_vect_p .ge. 1 ) then
-       call allocate_bc_magne
-       call allocate_bc_b_sgs
-       call allocate_bc_vect_p
-       call allocate_bc_vecp_sgs
-       call allocate_bc_magne_p
-       call allocate_bc_magp_sgs
-       call allocate_bc_current
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        call allocate_bc_magne
+        call allocate_bc_b_sgs
+        call allocate_bc_vect_p
+        call allocate_bc_vecp_sgs
+        call allocate_bc_magne_p
+        call allocate_bc_magp_sgs
+        call allocate_bc_current
 !
-       if (iflag_debug .eq.1) write(*,*) 'set boundary ID 4 magne'
-       call set_bc_magne_id
-       if (iflag_debug .eq.1) write(*,*) 'set boundary ID 4 vect_p'
-       call set_bc_vect_p_id
-       if (iflag_debug .eq.1) write(*,*) 'set boundary ID 4 magne_p'
-       call set_bc_m_potential_id
-       if (iflag_debug .eq.1) write(*,*) 'set boundary ID 4 current'
-       call set_bc_current_id
+        if (iflag_debug .eq.1) write(*,*) 'set boundary ID 4 magne'
+        call set_bc_magne_id
+        if (iflag_debug .eq.1) write(*,*) 'set boundary ID 4 vect_p'
+        call set_bc_vect_p_id
+        if (iflag_debug .eq.1) write(*,*) 'set boundary ID 4 magne_p'
+        call set_bc_m_potential_id
+        if (iflag_debug .eq.1) write(*,*) 'set boundary ID 4 current'
+        call set_bc_current_id
 !
-       if (iflag_debug .eq.1) write(*,*) 'set boundary value 4 magne'
-       call set_boundary_magne
-       if (iflag_debug .eq.1) write(*,*) 'set boundary value 4 vect_p'
-       call set_boundary_vect_p
-       if (iflag_debug .eq.1) write(*,*) 'set boundary value 4 magne'
-       call set_boundary_m_phi
-       if (iflag_debug .eq.1) write(*,*) 'set boundary value 4 current'
-       call set_boundary_current
+        if (iflag_debug .eq.1) write(*,*) 'set boundary value 4 magne'
+        call set_boundary_magne
+        if (iflag_debug .eq.1) write(*,*) 'set boundary value 4 vect_p'
+        call set_boundary_vect_p
+        if (iflag_debug .eq.1) write(*,*) 'set boundary value 4 magne'
+        call set_boundary_m_phi
+        if (iflag_debug .eq.1) write(*,*) 'set boundary value 4 current'
+        call set_boundary_current
       end if
 !
       end subroutine set_bc_id_data

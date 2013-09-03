@@ -60,7 +60,7 @@
         call  parallel_abort(4000, e_message)
       end if
 !
-      call set_control_smp_def
+      call set_control_smp_def(my_rank)
       call set_control_mesh_def
       call set_control_org_fld_file_def
       call set_control_ucd_file_def

@@ -35,17 +35,17 @@
 !
       iflag_layer_rms_spec =  i_layer_rms_head
       if(iflag_layer_rms_spec .gt. 0) then
-        fhead_rms_layer = layered_rms_spectr_head_ctl
+        fhead_rms_layer = layered_pwr_spectr_prefix
       end if      
 !
       iflag_volume_rms_spec = i_voume_rms_head
       if(iflag_volume_rms_spec .gt. 0) then
-        fhead_rms_vol = volume_rms_spectr_head_ctl
+        fhead_rms_vol = volume_pwr_spectr_prefix
       end if
 !
       iflag_volume_ave_sph =  i_voume_ave_head
       if(iflag_volume_ave_sph .gt. 0) then
-        fhead_ave_vol = volume_average_head_ctl
+        fhead_ave_vol = volume_average_prefix
       end if
 !
 !
@@ -125,7 +125,7 @@
 !   set pickup gauss coefficients
 !
       if(i_gauss_coefs_head .gt. 0) then
-        gauss_coefs_file_head = gauss_coefs_head_ctl
+        gauss_coefs_file_head = gauss_coefs_prefix
       else
         num_pick_gauss_coefs = 0
         num_pick_gauss_l = 0

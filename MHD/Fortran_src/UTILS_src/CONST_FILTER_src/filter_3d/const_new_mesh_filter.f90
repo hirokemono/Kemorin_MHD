@@ -44,6 +44,7 @@
       use m_2nd_geometry_data
       use m_nod_filter_comm_table
       use m_filter_file_names
+      use m_file_format_switch
       use m_internal_4_partitioner
       use m_partitioner_comm_table
       use set_parallel_file_name
@@ -92,7 +93,7 @@
       call add_int_suffix(my_rank2, new_filter_coef_head,               &
      &    mesh_file_name)
 !
-      if (ifile_type .eq. 1) then
+      if (iflag_mesh_file_fmt .eq. id_binary_file_fmt) then
 !
         write(*,*) 'binary mesh file: ', mesh_file_name
         open (filter_coef_code, file = mesh_file_name,                  &
@@ -100,7 +101,7 @@
 !          write(*,*) 'write_filter_geometry_b'
         call write_filter_geometry_b(filter_coef_code)
 !
-        else
+      else
 !
         write(*,*) 'ascii mesh file: ', trim(mesh_file_name)
         open (filter_coef_code, file = mesh_file_name,                  &

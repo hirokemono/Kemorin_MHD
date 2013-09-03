@@ -44,7 +44,6 @@
 !
 !  --  read geometry
 !
-      iflag_mesh_file_fmt = ifile_type
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'
       call input_mesh(my_rank)
 !

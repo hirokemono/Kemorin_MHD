@@ -81,7 +81,7 @@
         if(ipol%i_temp .gt. 0)  call set_noize_scalar_sph(ipol%i_temp)
         if(ipol%i_light .gt. 0) call set_noize_scalar_sph(ipol%i_light)
         if(ipol%i_magne .gt. 0) then
-          call set_initial_magne_sph(0)
+          call set_initial_magne_sph
           call reduce_initial_magne_sph
         end if
 !
@@ -141,7 +141,7 @@
 !
 !   set reference temperature (l = m = 0)
       if (idx_rj_degree_zero .gt. 0) then
-        if ( iflag_4_ref_temp .eq. 100 ) then
+        if ( iflag_4_ref_temp .eq. id_sphere_ref_temp ) then
           do k = 1, nidx_rj(1)
             inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
             d_rj(inod,ipol%i_temp) = reftemp_rj(k,0)
@@ -195,7 +195,7 @@
 !
       integer ( kind = kint), intent(in) :: isig
 !
-      integer ( kind = kint) :: inod, m, j, k, jj
+      integer ( kind = kint) :: inod, m, k, jj
       real (kind = kreal) :: pi, xr, shell
 !
 !
@@ -226,7 +226,7 @@
 !
       integer ( kind = kint), intent(in) :: isig, is_fld
 !
-      integer ( kind = kint) :: inod, m, j, k, jj
+      integer ( kind = kint) :: inod, m, k, jj
       real (kind = kreal) :: pi, xr, shell
 !
 !
@@ -265,16 +265,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_magne_sph(isig)
+      subroutine set_initial_magne_sph
 !
       use m_control_params_sph_MHD
       use m_spheric_parameter
       use m_sph_spectr_data
 !
-      integer ( kind = kint), intent(in) :: isig
-!
       real (kind = kreal) :: pi, rr
-      integer(kind = kint) :: is, it, m, k, j, js, jt
+      integer(kind = kint) :: is, it, k, js, jt
       integer(kind = kint), parameter :: ls = 1, lt = 2
 !
 !
@@ -379,7 +377,7 @@
 !
 !
       if (idx_rj_degree_zero .gt. 0) then
-        if ( iflag_4_ref_temp .eq. 100 ) then
+        if ( iflag_4_ref_temp .eq. id_sphere_ref_temp ) then
           do k = 1, nidx_rj(1)
             inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
             d_rj(inod,is_fld) = reftemp_rj(k,0)

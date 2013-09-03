@@ -3,9 +3,9 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!      subroutine int_norm_div_v_monitor
-!      subroutine int_norm_div_b_monitor
-!      subroutine int_norm_div_a_monitor
+!      subroutine int_norm_div_v_monitor(iloop, rsig)
+!      subroutine int_norm_div_b_monitor(iloop, rsig)
+!      subroutine int_norm_div_a_monitor(iloop, rsig)
 !      subroutine int_norm_div_v
 !      subroutine int_norm_div_b
 !      subroutine int_norm_div_a
@@ -36,12 +36,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_norm_div_v_monitor(iloop)
+      subroutine int_norm_div_v_monitor(iloop, rsig)
 !
       use m_node_phys_address
       use m_geometry_data_MHD
 !
       integer(kind = kint), intent(in) :: iloop
+      real(kind = kreal), intent(inout) :: rsig
 !
 !
       call int_norm_divergence(iele_fl_smp_stack, ja_divv,             &
@@ -63,12 +64,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_norm_div_b_monitor(iloop)
+      subroutine int_norm_div_b_monitor(iloop, rsig)
 !
       use m_node_phys_address
       use m_geometry_parameter
 !
       integer(kind = kint), intent(in) :: iloop
+      real(kind = kreal), intent(inout) :: rsig
 !
 !
       call int_norm_divergence(iele_smp_stack, ja_divb, iphys%i_magne)
@@ -88,12 +90,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_norm_div_a_monitor(iloop)
+      subroutine int_norm_div_a_monitor(iloop, rsig)
 !
       use m_node_phys_address
       use m_geometry_parameter
 !
       integer(kind = kint), intent(in) :: iloop
+      real(kind = kreal), intent(inout) :: rsig
 !
 !
       call int_norm_divergence(iele_smp_stack, ja_diva, iphys%i_vecp)

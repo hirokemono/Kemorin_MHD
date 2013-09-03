@@ -4,11 +4,11 @@ begin visualizer
     num_subdomain_ctl           2
     num_smp_ctl                 4
 !
-    mesh_file_head_ctl          'mesh/in'
-    field_file_head_ctl         'field/out'
+    mesh_file_prefix             'mesh/in'
+    field_file_prefix           'field/out'
 !
     mesh_file_fmt_ctl           'ascii'
-    field_files_fmt_ctl         'ascii'
+    field_file_fmt_ctl          'ascii'
   end data_files_def
 !
   begin time_step_ctl

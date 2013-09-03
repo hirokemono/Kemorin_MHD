@@ -156,8 +156,7 @@
       subroutine open_gauss_coefs_4_monitor
 !
       use set_parallel_file_name
-!
-      integer(kind = kint) :: inum
+      use write_field_labels
 !
 !
       call add_dat_extension(gauss_coefs_file_head,                     &
@@ -175,14 +174,11 @@
       write(id_gauss_coef,'(i10,1pe25.15e3)')                           &
      &     num_pick_gauss_mode, r_4_gauss_coefs
 !
-      write(id_gauss_coef,'(a)',advance='NO')    't_step, time, '
+      write(id_gauss_coef,'(a)',advance='NO')    't_step    time    '
 !
-      do inum = 1, num_pick_gauss_mode-1
-        write(id_gauss_coef,'(a,a2)',advance='no')                      &
-     &            trim(gauss_mode_name(inum)), ', '
-      end do
-      write(id_gauss_coef,'(a)')                                        &
-     &            trim(gauss_mode_name(num_pick_gauss_mode))
+      call write_multi_labels(id_gauss_coef, num_pick_gauss_mode,       &
+     &    gauss_mode_name)
+      write(id_gauss_coef,'(a)') ''
 !
       end subroutine open_gauss_coefs_4_monitor
 !

@@ -85,7 +85,8 @@
 !
 !   control for time evolution scheme
 !
-        if ( iflag_scheme.eq.3 .or. iflag_scheme.eq.4) then
+        if ( iflag_scheme .eq. id_Crank_nicolson                        &
+     &     .or. iflag_scheme .eq. id_Crank_nicolson) then
 !
           if ((i_method_4_velo*i_precond_4_crank) .eq. 0) then
             e_message                                                   &
@@ -137,9 +138,7 @@
         if (       precond_4_solver .eq. 'DIAG'                         &
      &       .and. iflag_ordering .eq. 2                                &
      &       .and. mc_color .eq. 0 ) then
-          if ( iflag_scheme .le. 2) then
-            iflag_ordering = 0
-          else if (precond_4_crank .eq. 'DIAG') then
+          if(precond_4_crank .eq. 'DIAG') then
             iflag_ordering = 0
           end if
         end if

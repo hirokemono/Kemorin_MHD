@@ -1,10 +1,17 @@
+!>@file   const_global_sph_grids_modes.f90
+!!@brief  module const_global_sph_grids_modes
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007
 !
-!      module const_global_sph_grids_modes
-!
-!     Written by H. Matsui on July, 2007
-!
-!      subroutine s_const_global_sph_grids_modes
-!      subroutine check_nidx_local(ip_rank)
+!>@brief  Set global spherical harmonics ID
+!!
+!!@verbatim
+!!      subroutine s_const_global_sph_grids_modes
+!!      subroutine check_nidx_local(ip_rank)
+!!@endverbatim
+!!
+!!@param ip_rank process ID
 !
       module const_global_sph_grids_modes
 !
@@ -328,7 +335,7 @@
       call set_wavenumber_4_ispack_fft(nidx_global_rtp(2),              &
      &    nidx_global_rtp(3), mspec_4_ispack, mdx_ispack)
 !
-      call set_zonal_wavenum_4_lagendre(ndomain_rtm(3),                 &
+      call set_zonal_wavenum_4_legendre(ndomain_rtm(3),                 &
      &    l_truncation, nidx_global_rj(2), nidx_global_rtp(2),          &
      &    nidx_global_rtp(3), jdx_fsph, mdx_4_lgd)
 !

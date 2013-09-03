@@ -10,7 +10,9 @@
 !>@brief  Selector of Fourier transform using structure
 !!
 !!@verbatim
-!!      subroutine initialize_FFT_sel_t(Nsmp, Nstacksmp, Nfft, WKS)
+!!      subroutine initialize_FFT_sel_t(my_rank, Nsmp, Nstacksmp, Nfft, &
+!!     &          WKS)
+!!      subroutine finalize_FFT_sel_t(Nsmp, WKS)
 !!      subroutine verify_FFT_sel_t(Nsmp, Nstacksmp, Nfft, WKS)
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT for ISPACK
@@ -86,34 +88,64 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine initialize_FFT_sel_t(Nsmp, Nstacksmp, Nfft, WKS)
+      subroutine initialize_FFT_sel_t(my_rank, Nsmp, Nstacksmp, Nfft,   &
+     &          WKS)
 !
       use FFT_selector
 !
-      integer(kind = kint), intent(in) ::  Nfft
+      integer(kind = kint), intent(in) ::  my_rank, Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !
       type(working_FFTs), intent(inout) :: WKS
 !
 !
       if(iflag_FFT .eq. iflag_ISPACK) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK'
+        if(my_rank .eq. 0) write(*,*) 'Use ISPACK'
         call init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK)
 #ifdef FFTW3
 !      else if(iflag_FFT .eq. iflag_FFTW) then
-!        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW by kemo_wrapper'
+!        if(my_rank .eq. 0) write(*,*) 'Use FFTW by kemo_wrapper'
 !        call init_FFTW_kemo_type(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
+        if(my_rank .eq. 0) write(*,*) 'Use FFTW'
         call init_FFTW_type(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTW)
 #endif
       else
-        if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
+        if(my_rank .eq. 0) write(*,*) 'Use FFTPACK'
         call init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
       end if
 !
 !
       end subroutine initialize_FFT_sel_t
+!
+! ------------------------------------------------------------------
+!
+      subroutine finalize_FFT_sel_t(Nsmp, WKS)
+!
+      use FFT_selector
+!
+      integer(kind = kint), intent(in) ::  Nsmp
+      type(working_FFTs), intent(inout) :: WKS
+!
+!
+      if(iflag_FFT .eq. iflag_ISPACK) then
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK'
+        call finalize_wk_ispack_t(WKS%WK_ISPACK)
+#ifdef FFTW3
+!      else if(iflag_FFT .eq. iflag_FFTW) then
+!        if(iflag_debug .gt. 0) write(*,*)                              &
+!     &      'Finalize FFTW by kemo_wrapper'
+!        call finalize_FFTW_kemo_type(Nsmp, WKS%WK_FFTW)
+      else if(iflag_FFT .eq. iflag_FFTW) then
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
+        call finalize_FFTW_type(Nsmp, WKS%WK_FFTW)
+#endif
+      else
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
+        call finalize_WK_FFTPACK_t(WKS%WK_FFTPACK)
+      end if
+!
+      end subroutine finalize_FFT_sel_t
 !
 ! ------------------------------------------------------------------
 !

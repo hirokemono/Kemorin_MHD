@@ -84,18 +84,18 @@
 !
 !
       if(i_sph_transform_mode .gt. 0) then
-        if(     sph_transform_mode_ctl .eq. 'radius_in'                 &
-     &    .or.  sph_transform_mode_ctl .eq. 'Radius_in'                 &
-     &    .or.  sph_transform_mode_ctl .eq. 'RADIUS_IN') then
-          id_lagendre_transfer = iflag_lag_krloop_inner
-        else if(sph_transform_mode_ctl .eq. 'radius_out'                &
-     &    .or.  sph_transform_mode_ctl .eq. 'Radius_out'                &
-     &    .or.  sph_transform_mode_ctl .eq. 'RADIUS_OUT') then
-          id_lagendre_transfer = iflag_lag_krloop_outer
-        else if(sph_transform_mode_ctl .eq. 'original'                  &
-     &    .or.  sph_transform_mode_ctl .eq. 'Original'                  &
-     &    .or.  sph_transform_mode_ctl .eq. 'ORIGINAL') then
-          id_lagendre_transfer = iflag_lag_orginal_loop
+        if(     Legendre_trans_loop_ctl .eq. 'radius_in'                &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'Radius_in'                &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'RADIUS_IN') then
+          id_legendre_transfer = iflag_leg_krloop_inner
+        else if(Legendre_trans_loop_ctl .eq. 'radius_out'               &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'Radius_out'               &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'RADIUS_OUT') then
+          id_legendre_transfer = iflag_leg_krloop_outer
+        else if(Legendre_trans_loop_ctl .eq. 'original'                 &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'Original'                 &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'ORIGINAL') then
+          id_legendre_transfer = iflag_leg_orginal_loop
         end if
       end if
 !
@@ -107,12 +107,14 @@
      &    .or.  FFT_library_ctl .eq. 'FFTPACK') then
           iflag_FFT = iflag_FFTPACK
         else if(FFT_library_ctl .eq. 'fftw'                             &
-     &    .or.  FFT_library_ctl .eq. 'FFTW') then
+     &    .or.  FFT_library_ctl .eq. 'FFTW'                             &
+     &    .or.  FFT_library_ctl .eq. 'fftw3'                            &
+     &    .or.  FFT_library_ctl .eq. 'FFTW3') then
           iflag_FFT = iflag_FFTW
         end if
       end if
 !
-      if (iflag_4_coriolis .gt. 0) then
+      if (iflag_4_coriolis .gt. id_turn_OFF) then
         iflag_sph_coriolis_file                                         &
      &         = max(i_sph_coriolis_file,i_coriolis_tri_int_name)
         if(i_sph_coriolis_file .gt. 0) then
@@ -121,7 +123,7 @@
      &         i_sph_coriolis_fmt, ifmt_cor_int_file)
         end if
         if(i_coriolis_tri_int_name .gt. 0) then
-          sph_cor_file_name = coriolis_tri_int_name_ctl
+          sph_cor_file_name = coriolis_int_file_name
           call choose_file_format(coriolis_file_fmt_ctl,                &
      &        i_coriolis_file_fmt, ifmt_cor_int_file)
         end if

@@ -3,7 +3,7 @@ begin para_refine_tbl_control
   begin data_files_def
     debug_flag_ctl            'ON'
     num_subdomain_ctl           4
-    mesh_file_head_ctl        'mesh_ref2_4/in'
+    mesh_file_prefix          'mesh_ref2_4/in'
   end data_files_def
 !
   begin parallel_course_mesh_ctl

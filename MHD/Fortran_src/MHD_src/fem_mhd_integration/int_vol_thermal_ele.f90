@@ -63,7 +63,7 @@
      &        iphys%i_temp, iphys%i_SGS_h_flux, coef_nega_t,            &
      &        sgs_e, vect_e)
           call fem_skv_scl_inertia_modsgs_1st(iele_fl_smp_stack,        &
-     &        num_int, k2, n_filter_final, ak_diff(1,iak_diff_hf),      &
+     &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_hf),       &
      &        temp_e, sgs_e, vect_e, d_ele(1,iphys_ele%i_velo), sk6)
         else if(iflag_SGS_heat .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_h_flux,       &
@@ -115,7 +115,7 @@
      &        iphys%i_temp, iphys%i_SGS_h_flux, coef_nega_t,            &
      &        sgs_e, vect_e)
           call fem_skv_scl_inertia_msgs_upw_1(iele_fl_smp_stack,        &
-     &        num_int, k2, n_filter_final, ak_diff(1,iak_diff_hf),      &
+     &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_hf),       &
      &        temp_e, sgs_e, vect_e, d_ele(1,iphys_ele%i_velo),         &
      &        d_ele(1,iphys_ele%i_velo), sk6)
         else if(iflag_SGS_heat .ne. id_SGS_none) then

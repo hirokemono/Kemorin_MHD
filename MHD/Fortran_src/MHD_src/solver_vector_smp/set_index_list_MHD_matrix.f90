@@ -38,8 +38,9 @@
 !      write(*,*) 'set_index_list_4_mat_etr_l'
       call set_index_list_4_mat_etr_l
 !
-      if (iflag_t_evo_4_velo.ne.0 .or. iflag_t_evo_4_temp.ne.0          &
-     &  .or. iflag_t_evo_4_composit .ne. 0) then
+      if (iflag_t_evo_4_velo .ne. id_no_evolution                       &
+     &  .or. iflag_t_evo_4_temp .ne. id_no_evolution                    &
+     &  .or. iflag_t_evo_4_composit .ne. id_no_evolution) then
 !        write(*,*) 'allocate_marix_list_fl'
         call allocate_marix_list_fl
 !
@@ -49,7 +50,8 @@
         call set_index_list_4_mat_fl_l
       end if
 !
-      if (iflag_t_evo_4_magne.ne.0 .or. iflag_t_evo_4_vect_p.eq.4) then
+      if (iflag_t_evo_4_magne .ne. id_no_evolution                      &
+     &     .or. iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass) then
 !        write(*,*) 'allocate_marix_list_cd'
         call allocate_marix_list_cd
 !        write(*,*) 'allocate_marix_list_ins'

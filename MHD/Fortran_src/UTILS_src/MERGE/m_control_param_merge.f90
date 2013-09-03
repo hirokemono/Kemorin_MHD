@@ -144,12 +144,12 @@
 !
       if (i_new_vtk_head .gt. 0) then
         itype_assembled_data = iflag_vtk
-        merged_data_head = new_vtk_head_ctl
+        merged_data_head = new_vtk_prefix
       end if
 !
       if (i_new_udt_head .gt. 0) then
-        new_udt_head =     new_field_head_ctl
-        merged_data_head = new_field_head_ctl
+        new_udt_head =     new_field_file_prefix
+        merged_data_head = new_field_file_prefix
       else
         new_udt_head = def_new_udt_head
       end if
@@ -195,7 +195,7 @@
 !
 !
       if (i_new_mesh_head .gt. 0) then
-        new_mesh_head = new_mesh_head_ctl
+        new_mesh_head = new_mesh_prefix
       else
         new_mesh_head = def_merged_mesh_header
       end if
@@ -223,18 +223,18 @@
 !
 !
       if (i_rst_header .gt. 0) then
-        org_rst_head = rst_file_head_ctl
+        org_rst_head = restart_file_prefix
       else
         org_rst_head = org_rst_def_head
       end if
 !
       if (i_new_rst_head .gt. 0) then
-        new_rst_head = new_rst_head_ctl
+        new_rst_head = new_restart_prefix
       else
         new_rst_head = new_rst_def_head
       end if
 !
-      call choose_file_format(rst_files_fmt_ctl, i_rst_files_fmt,       &
+      call choose_file_format(restart_file_fmt_ctl, i_rst_files_fmt,    &
      &    iorg_rst_file_fmt)
       call choose_file_format(new_rst_files_fmt_ctl,                    &
      &    i_new_rst_files_fmt, inew_rst_file_fmt)
@@ -269,7 +269,7 @@
       end if
 !
       if (i_new_mesh_head .gt. 0) then
-        new_mesh_head = new_mesh_head_ctl
+        new_mesh_head = new_mesh_prefix
       else
         new_mesh_head = def_newmesh_head
       end if

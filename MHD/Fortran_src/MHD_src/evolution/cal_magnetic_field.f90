@@ -34,7 +34,8 @@
       use cal_magnetic_correct
       use cal_rms_potentials
 !
-      integer(kind=kint ) :: iloop, maxiter_insulater
+      integer(kind=kint) :: iloop, maxiter_insulater
+      real(kind = kreal) :: rel_correct
 !
 !
       if ( cd_ele_grp_name(1) .eq. 'all'                                &
@@ -52,7 +53,7 @@
 !----  set magnetic field in insulate layer
 !
       iloop = -1
-      call int_rms_div_b_monitor(iloop)
+      call int_norm_div_b_monitor(iloop, rel_correct)
 !
 !
       do iloop = 0, maxiter
@@ -65,12 +66,12 @@
       if (iflag_debug.eq.1) write(*,*) 'magnetic_correction'
         call cal_magnetic_co
 !
-        call cal_rms_scsalar_potential(iloop, rsig)
+        call cal_rms_scalar_potential(iloop, rel_correct)
 !
-        call int_norm_div_b_monitor(iloop)
-!        call int_rms_div_b_monitor(iloop)
+        call int_norm_div_b_monitor(iloop, rel_correct)
+!        call int_rms_div_b_monitor(iloop, rel_correct)
 !
-        if ( abs(rsig) .lt. eps_4_magne ) go to 20
+        if ( abs(rel_correct) .lt. eps_4_magne ) go to 20
 !
       end do
  20   continue

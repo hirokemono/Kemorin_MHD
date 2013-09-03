@@ -95,7 +95,7 @@
 !
 !     read filtering information
 !
-        call s_read_filter_file_4_sorting(ifile_type, my_rank)
+        call s_read_filter_file_4_sorting(ifmt_3d_filter, my_rank)
 !
 !
         call deallocate_whole_filter_coefs

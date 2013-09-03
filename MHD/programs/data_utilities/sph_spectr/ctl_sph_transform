@@ -3,14 +3,14 @@ begin spherical_transform
   begin data_files_def
     num_subdomain_ctl    4
     num_smp_ctl          1
-    sph_files_head_ctl          'sph_grid/in'
+    sph_file_prefix          'sph_grid/in'
 !
-    rst_file_head_ctl      'restart/rst'
+    restart_file_prefix    'restart/rst'
 !
     mesh_file_fmt_ctl      'gzip'
-    sph_files_fmt_ctl      'gzip'
-    rst_files_fmt_ctl      'ascii'
-    spectr_files_fmt_ctl   'ascii'
+    sph_file_fmt_ctl       'gzip'
+    restart_file_fmt_ctl   'ascii'
+    spectr_file_fmt_ctl    'ascii'
   end data_files_def
 !
   begin org_data_files_def
@@ -21,15 +21,15 @@ begin spherical_transform
   begin model
     begin phys_values_ctl
       array nod_value_ctl   8
-        nod_value_ctl  velocity            Viz_On   Monitor_On    end
-        nod_value_ctl  temperature         Viz_On   Monitor_On    end
-        nod_value_ctl  pressure            Viz_On   Monitor_Off   end
-        nod_value_ctl  vorticity           Viz_On   Monitor_Off   end
-        nod_value_ctl  vector_potential    Viz_Off  Monitor_Off   end
-        nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
-        nod_value_ctl  current_density     Viz_On   Monitor_Off   end
-        nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off   end
-!        nod_value_ctl  composition         Viz_Off  Monitor_Off   end
+        nod_value_ctl  velocity            Viz_On   Monitor_On
+        nod_value_ctl  temperature         Viz_On   Monitor_On
+        nod_value_ctl  pressure            Viz_On   Monitor_Off
+        nod_value_ctl  vorticity           Viz_On   Monitor_Off
+        nod_value_ctl  vector_potential    Viz_Off  Monitor_Off
+        nod_value_ctl  magnetic_field      Viz_On   Monitor_On
+        nod_value_ctl  current_density     Viz_On   Monitor_Off
+        nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off
+!        nod_value_ctl  composition         Viz_Off  Monitor_Off
       end array nod_value_ctl
     end phys_values_ctl
 !
@@ -55,13 +55,13 @@ begin spherical_transform
   end sph_transform_ctl
 !
   begin sph_monitor_ctl
-    volume_average_head_ctl      'sph_ave_volume'
-    volume_rms_spectr_head_ctl   'sph_rms_volume'
-    layered_rms_spectr_head_ctl  'sph_rms_layer'
+    volume_average_prefix        'sph_ave_volume'
+    volume_pwr_spectr_prefix     'sph_pwr_volume'
+    layered_pwr_spectr_prefix    'sph_pwr_layer'
 !
-    picked_sph_head_ctl     'sph_spectr/picked_mode'
+    picked_sph_prefix            'sph_spectr/picked_mode'
+    gauss_coefs_prefix           'sph_spectr/gauss_coefs'
 !
-    gauss_coefs_head_ctl    'sph_spectr/gauss_coefs'
     gauss_coefs_radius_ctl    2.91
 !
 !   if num_pick_layer_ctl = 0 or negative: 

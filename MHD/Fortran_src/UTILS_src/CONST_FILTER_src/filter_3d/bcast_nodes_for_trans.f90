@@ -33,8 +33,6 @@
       character(len=kchara), intent(in) :: mesh_head
 !
 !
-      iflag_mesh_file_fmt = ifile_type
-!
       START_TIME= MPI_WTIME()
       if(my_rank .eq. 0) then
         call count_nnod_whole_domain(mesh_head)

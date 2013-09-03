@@ -65,7 +65,7 @@
 !
 !    set normalization for thermal
 !
-      if (iflag_t_evo_4_temp.eq.0) then
+      if (iflag_t_evo_4_temp .eq. id_no_evolution) then
         num_coef_4_termal =    0
         num_coef_4_t_diffuse = 0
         num_coef_4_h_source =  0
@@ -115,7 +115,7 @@
 !
 !    set coefficients for momentum equation
 !
-      if (iflag_t_evo_4_velo.eq.0) then
+      if (iflag_t_evo_4_velo .eq. id_no_evolution) then
         num_coef_4_velocity =  0
         num_coef_4_press =     0
         num_coef_4_v_diffuse = 0
@@ -149,7 +149,8 @@
           num_coef_4_v_diffuse = num_coef_4_v_diffuse_ctl
         end if
 !
-        if(iflag_4_gravity.eq.0 .and. iflag_4_filter_gravity.eq.0) then
+        if(iflag_4_gravity .eq. id_turn_OFF                             &
+     &      .and. iflag_4_filter_gravity .eq. id_turn_OFF) then
           num_coef_4_buoyancy = 0
         else
           if (i_n_buo.eq.0) then
@@ -164,7 +165,7 @@
           write(*,*) 'num_coef_4_buoyancy', num_coef_4_buoyancy
         end if
 !
-        if (iflag_4_composit_buo .eq. 0) then
+        if (iflag_4_composit_buo .eq. id_turn_OFF) then
           num_coef_4_comp_buo = 0
         else
           if (i_n_c_buo.eq.0) then
@@ -175,7 +176,7 @@
           end if
         end if
 !
-        if (iflag_4_coriolis .eq.0) then
+        if (iflag_4_coriolis .eq. id_turn_OFF) then
           num_coef_4_Coriolis = 0
         else
           if (i_n_cor.eq.0) then
@@ -186,7 +187,7 @@
           end if
         end if
 !
-        if (iflag_4_lorentz .eq.0) then
+        if (iflag_4_lorentz .eq. id_turn_OFF) then
           num_coef_4_Lorentz = 0
         else
           if (i_n_lor.eq.0) then
@@ -249,9 +250,8 @@
 !
 !    coefficients for inducition equation
 !
-      if (iflag_t_evo_4_magne.eq.0                                      &
-     &  .and. iflag_t_evo_4_vect_p.eq.0) then
-!
+      if (iflag_t_evo_4_magne .eq. id_no_evolution                      &
+     &  .and. iflag_t_evo_4_vect_p .eq. id_no_evolution) then
         num_coef_4_magnetic = 0
         num_coef_4_mag_p = 0
         num_coef_4_m_diffuse = 0
@@ -267,7 +267,8 @@
           num_coef_4_magnetic = num_coef_4_magnetic_ctl
         end if
 !
-        if (i_n_mag_p.eq.0 .and. iflag_t_evo_4_vect_p.gt.0) then
+        if (i_n_mag_p.eq.0                                              &
+     &       .and. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
           e_message =                                                   &
      &     'Set coefficients for integration for magnetic potential'
           call parallel_abort(90, e_message)
@@ -321,7 +322,7 @@
 !
 !    set normalization for dummy scalar
 !
-      if (iflag_t_evo_4_composit.eq.0) then
+      if (iflag_t_evo_4_composit .eq. id_no_evolution) then
         num_coef_4_composition =  0
         num_coef_4_c_diffuse =    0
         num_coef_4_c_source =     0

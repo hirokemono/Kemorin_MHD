@@ -3,7 +3,7 @@
 #
 
 SPH_COMMDIR = $$(PARA_SRCDIR)/SPH_SHELL_src
-SRC_COMM_SPH = $(shell ls *.f90)
+SRC_COMM_SPH = $(shell ls *.f90 *.F90)
 MOD_COMM_SPH = $(addsuffix .o,$(basename $(SRC_COMM_SPH)) )
 
 #

@@ -52,7 +52,7 @@
         call cal_sgs_uxb_2_evo
       end if
 !
-      if ( iflag_4_supg .ge. 1) then
+      if ( iflag_4_supg .gt. id_turn_OFF) then
         call int_vol_vect_p_pre_ele_upm
       else
         call int_vol_vect_p_pre_ele
@@ -69,19 +69,19 @@
 !
 !  -----for explicit euler
 !
-      if ( iflag_t_evo_4_vect_p .eq. 1 ) then 
+      if (iflag_t_evo_4_vect_p .eq. id_explicit_euler) then
         call cal_vect_p_pre_euler
 !
 !  -----for Adams_Bashforth
 !
-      else if ( iflag_t_evo_4_vect_p .eq. 2 ) then 
+      else if (iflag_t_evo_4_vect_p .eq. id_explicit_adams2) then
         call cal_vect_p_pre_adams
 !
 !  -----for Ceank-nicolson
 !
-      else if ( iflag_t_evo_4_vect_p.eq.3 ) then
+      else if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson) then
         call cal_vect_p_pre_crank
-      else if ( iflag_t_evo_4_vect_p.eq.4 ) then
+      else if (iflag_t_evo_4_vect_p.eq.id_Crank_nicolson_cmass) then
         call cal_vect_p_pre_consist_crank
       end if
 !

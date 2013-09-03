@@ -34,7 +34,7 @@
       if (iflag_commute_velo .eq. id_SGS_commute_ON                     &
      &     .and. ngrp_sf_sgs_p.gt.0) then
         call int_surf_sgs_velo_co_ele(intg_point_poisson,               &
-     &      ngrp_sf_sgs_p, id_grp_sf_sgs_p, n_filter_final,             &
+     &      ngrp_sf_sgs_p, id_grp_sf_sgs_p, ifilter_final,              &
      &      iak_diff_v, iphys%i_p_phi)
       end if
 !
@@ -51,7 +51,7 @@
       if (iflag_commute_magne .eq. id_SGS_commute_ON                    &
      &     .and. ngrp_sf_sgs_magp.gt.0) then
          call int_surf_sgs_velo_co_ele(intg_point_poisson,              &
-     &       ngrp_sf_sgs_magp,  id_grp_sf_sgs_magp, n_filter_final,     &
+     &       ngrp_sf_sgs_magp,  id_grp_sf_sgs_magp, ifilter_final,      &
      &       iak_diff_b, iphys%i_m_phi)
       end if
 !

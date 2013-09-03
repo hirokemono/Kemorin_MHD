@@ -12,7 +12,7 @@
 !!  begin const_plane_mesh
 !!  
 !!    begin  data_files_def
-!!      mesh_file_head_ctl     'mesh/in'
+!!      mesh_file_prefix       'mesh/in'
 !!    end data_files_def
 !!  
 !!    begin filter_files_def

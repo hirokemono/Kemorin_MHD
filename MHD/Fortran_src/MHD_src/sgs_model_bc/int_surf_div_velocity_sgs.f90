@@ -34,7 +34,7 @@
       if (iflag_commute_velo .ne. id_SGS_commute_ON) return
       call int_surf_sgs_div_velo_ele(intg_point_poisson,                &
      &      nmax_sf_sgs_velo, ngrp_sf_sgs_velo, id_grp_sf_sgs_velo,     &
-     &      n_filter_final, iak_diff_v, iphys%i_velo)
+     &      ifilter_final, iak_diff_v, iphys%i_velo)
 !
       end subroutine int_surf_sgs_div_velo
 !
@@ -49,7 +49,7 @@
       if (iflag_commute_magne .ne. id_SGS_commute_ON) return
       call int_surf_sgs_div_velo_ele(intg_point_poisson,                &
      &       nmax_sf_sgs_vect_p, ngrp_sf_sgs_vect_p,                    &
-     &       id_grp_sf_sgs_vect_p, n_filter_final, iak_diff_b,          &
+     &       id_grp_sf_sgs_vect_p, ifilter_final, iak_diff_b,           &
      &       iphys%i_vecp)
 !
       end subroutine int_surf_sgs_div_vect_p
@@ -65,7 +65,7 @@
       if (iflag_commute_magne .ne. id_SGS_commute_ON) return
       call int_surf_sgs_div_velo_ele(intg_point_poisson,                &
      &       nmax_sf_sgs_magne, ngrp_sf_sgs_magne,                      &
-     &       id_grp_sf_sgs_magne, n_filter_final,  iak_diff_b,          &
+     &       id_grp_sf_sgs_magne, ifilter_final, iak_diff_b,            &
      &       iphys%i_magne)
 !
       end subroutine int_surf_sgs_div_magne

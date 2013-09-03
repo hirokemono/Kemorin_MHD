@@ -61,7 +61,7 @@
 !
 !  ----------  lead advection term
 !
-      if ( iflag_4_supg .ge. 1) then
+      if ( iflag_4_supg .gt. id_turn_OFF) then
        call int_vol_temp_ele_upw
       else
        call int_vol_temp_ele
@@ -77,8 +77,8 @@
 !      call check_ff_smp(n_scalar)
 !      call check_ff_nl_smp(n_scalar)
 !
-      if ( iflag_straficate .eq. 1 ) then
-        if ( iflag_4_supg .ge. 1) then
+      if (iflag_t_strat .gt. id_turn_OFF) then
+        if ( iflag_4_supg .gt. id_turn_OFF) then
           call cal_stratified_layer_upw
         else
           call cal_stratified_layer
@@ -86,13 +86,13 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_temp .eq. 1 ) then
+      if (iflag_t_evo_4_temp .eq. id_explicit_euler) then
         call cal_temp_pre_euler
-      else if ( iflag_t_evo_4_temp .eq. 2 ) then 
+      else if (iflag_t_evo_4_temp .eq. id_explicit_adams2) then
         call cal_temp_pre_adams
-      else if ( iflag_t_evo_4_temp .eq. 3 ) then 
+      else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson) then
         call cal_temp_pre_crank
-      else if ( iflag_t_evo_4_temp .eq. 4 ) then 
+      else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank
       end if
 !

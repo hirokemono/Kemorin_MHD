@@ -112,7 +112,7 @@
         if ( iflag_SGS_lorentz .ne. id_SGS_none) then
          num_dvxi = num_dvxi + 18
         else if (iflag_SGS_induction .ne. id_SGS_none                   &
-     &     .and. iflag_t_evo_4_magne .gt. 0 ) then
+     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
          num_dvxi = num_dvxi + 18
         end if
 !
@@ -130,7 +130,7 @@
         if ( iflag_SGS_lorentz .ne. id_SGS_none) then
          num_dvxi = num_dvxi + 9
         else if (iflag_SGS_induction .ne. id_SGS_none                   &
-     &     .and. iflag_t_evo_4_magne .gt. 0 ) then
+     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
          num_dvxi = num_dvxi + 9
         end if
 !
@@ -160,7 +160,7 @@
          i_dfbx = i + 9
          i = i + 18
         else if (iflag_SGS_induction .ne. id_SGS_none                   &
-     &     .and. iflag_t_evo_4_magne .gt. 0 ) then
+     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
          i_dbx = i
          i_dfbx = i + 9
          i = i + 18
@@ -184,7 +184,7 @@
          i_dbx = i
          i = i + 9
         else if (iflag_SGS_induction .ne. id_SGS_none                   &
-     &     .and. iflag_t_evo_4_magne .gt. 0 ) then
+     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
          i_dbx = i
          i = i + 9
         end if

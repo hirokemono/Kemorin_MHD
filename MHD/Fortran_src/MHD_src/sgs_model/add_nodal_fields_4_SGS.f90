@@ -42,11 +42,11 @@
         call add_phys_name_tmp(fhd_div_SGS_m_flux)
         call add_phys_name_tmp(fhd_Reynolds_work)
 !
-        if(iflag_4_gravity .gt. 0) then
+        if(iflag_4_gravity .gt. id_turn_OFF) then
           call add_phys_name_tmp(fhd_SGS_h_flux)
           call add_phys_name_tmp(fhd_SGS_buo_flux)
         end if
-        if(iflag_4_composit_buo .gt. 0) then
+        if(iflag_4_composit_buo .gt. id_turn_OFF) then
           call add_phys_name_tmp(fhd_SGS_c_flux)
           call add_phys_name_tmp(fhd_SGS_comp_buo_flux)
         end if

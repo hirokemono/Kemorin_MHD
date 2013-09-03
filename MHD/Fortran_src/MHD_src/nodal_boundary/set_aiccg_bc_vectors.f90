@@ -33,34 +33,34 @@
 !
 !   set boundary conditions for matrix
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         call set_aiccg_bc_press_nod
 !
-        if ( iflag_t_evo_4_velo .ge. 3 ) then
+        if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
           call set_aiccg_bc_velo
         end if
       end if
 !
 
-      if ( iflag_t_evo_4_temp .ge. 3 ) then
+      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         call set_aiccg_bc_temp_nod
       end if
 !
-      if ( iflag_t_evo_4_composit .ge. 3 ) then
+      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         call set_aiccg_bc_composition_nod
       end if
 !
-      if ( iflag_t_evo_4_magne .ge. 1 ) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
         call set_aiccg_bc_mag_p_nod
 !
-        if ( iflag_t_evo_4_magne .ge. 3 ) then
+        if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
           call set_aiccg_bc_magne_nod
         end if
       end if
 !
-      if ( iflag_t_evo_4_vect_p .ge. 1 ) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call set_aiccg_bc_mag_p_nod
-        if ( iflag_t_evo_4_vect_p .ge. 3 ) then
+        if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
           call set_aiccg_bc_vecp_nod
         end if
       end if

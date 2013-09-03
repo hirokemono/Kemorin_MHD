@@ -80,18 +80,18 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
         call sel_int_poisson_sgs_mat_type(mesh%ele, jac_3d_l,           &
      &      filter_MHD, rhs_tbl, djds_const_fl_l, fem_wk,               &
-     &      intg_point_poisson, iflag_commute_velo, n_filter_final,     &
+     &      intg_point_poisson, iflag_commute_velo, ifilter_final,      &
      &      ak_AMG%ak_diff_v, mat_press)
       end if
 !
-      if ( iflag_t_evo_4_magne.ge.1 .or.                                &
-     &     iflag_t_evo_4_vect_p.ge.1) then
+      if ( iflag_t_evo_4_magne .gt. id_no_evolution                     &
+     &    .or.  iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call sel_int_poisson_sgs_mat_type(mesh%ele, jac_3d_l,           &
      &      filter_MHD, rhs_tbl, djds_const_l, fem_wk,                  &
-     &      intg_point_poisson, iflag_commute_magne, n_filter_final,    &
+     &      intg_point_poisson, iflag_commute_magne, ifilter_final,     &
      &      ak_AMG%ak_diff_b, mat_magp)
       end if
 !
@@ -122,38 +122,38 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
 !
 !
-      if ( iflag_t_evo_4_velo .ge. 3 ) then
+      if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
         call sel_int_diffuse_sgs_mat33_type(mesh%ele, jac_3d,           &
      &      filter_MHD, rhs_tbl, djds_const_fl, fem_wk, coef_imp_v,     &
-     &      intg_point_t_evo, iflag_commute_velo, n_filter_final,       &
+     &      intg_point_t_evo, iflag_commute_velo, ifilter_final,        &
      &      ak_AMG%ak_diff_v, ak_AMG%ak_d_velo, mat_velo)
       end if
 !
-      if ( iflag_t_evo_4_magne .ge. 3 ) then
+      if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
         call sel_int_diffuse_sgs_mat33_type(mesh%ele, jac_3d,           &
      &      filter_MHD, rhs_tbl, djds_const_cd, fem_wk, coef_imp_b,     &
-     &      intg_point_t_evo, iflag_commute_magne, n_filter_final,      &
+     &      intg_point_t_evo, iflag_commute_magne, ifilter_final,       &
      &      ak_AMG%ak_diff_b, ak_AMG%ak_d_magne, mat_magne)
       end if
 !
-      if ( iflag_t_evo_4_vect_p .ge. 3 ) then
+      if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
         call sel_int_diffuse_sgs_mat33_type(mesh%ele, jac_3d,           &
      &      filter_MHD, rhs_tbl, djds_const, fem_wk, coef_imp_b,        &
-     &      intg_point_t_evo, iflag_commute_magne, n_filter_final,      &
+     &      intg_point_t_evo, iflag_commute_magne, ifilter_final,       &
      &      ak_AMG%ak_diff_b, ak_AMG%ak_d_magne, mat_magne)
       end if
 !
-      if ( iflag_t_evo_4_temp .ge. 3 ) then
+      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         call sel_int_diffuse_sgs_mat11_type(mesh%ele, jac_3d,           &
      &      filter_MHD, rhs_tbl, djds_const_fl, fem_wk, coef_imp_t,     &
-     &      intg_point_t_evo, iflag_commute_temp, n_filter_final,       &
+     &      intg_point_t_evo, iflag_commute_temp, ifilter_final,        &
      &      ak_AMG%ak_diff_t, ak_AMG%ak_d_temp, mat_temp)
       end if
 !
-      if ( iflag_t_evo_4_composit .ge. 3 ) then
+      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         call sel_int_diffuse_sgs_mat11_type(mesh%ele, jac_3d,           &
      &      filter_MHD, rhs_tbl, djds_const_fl, fem_wk, coef_imp_c,     &
-     &      intg_point_t_evo, iflag_commute_composit, n_filter_final,   &
+     &      intg_point_t_evo, iflag_commute_composit, ifilter_final,    &
      &      ak_AMG%ak_diff_d, ak_AMG%ak_d_composit, mat_d_scalar)
       end if
 !

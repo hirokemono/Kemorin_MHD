@@ -5,13 +5,13 @@ begin construct_table
     num_subdomain_ctl           128
     num_smp_ctl                 128
 !
-    mesh_file_head_ctl          'mesh/in'
+    mesh_file_prefix            'mesh/in'
     mesh_file_fmt_ctl           'ascii'
   end data_files_def
 !
   begin new_data_files_def
     num_new_domain_ctl           2
-    new_mesh_head_ctl          'mesh_target/in'
+    new_mesh_prefix                 'mesh_target/in'
     new_mesh_file_fmt_ctl           'ascii'
   end new_data_files_def
 !

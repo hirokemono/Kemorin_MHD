@@ -101,16 +101,16 @@
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)
-      call set_control_smp_def
+      call set_control_smp_def(my_rank)
 !
       if (i_mesh_header .ne. 0) then
-        org_mesh_head = mesh_file_head_ctl
+        org_mesh_head = mesh_file_prefix
       else
         org_mesh_head = def_org_mesh_head
       end if
 !
       if (i_new_mesh_head .ne. 0) then
-        dest_mesh_head = new_mesh_head_ctl
+        dest_mesh_head = new_mesh_prefix
       else
         dest_mesh_head = def_dest_mesh_head
       end if

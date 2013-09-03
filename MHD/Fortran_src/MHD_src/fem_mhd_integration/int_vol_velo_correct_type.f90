@@ -57,7 +57,7 @@
       if (iflag_commute_velo .eq. id_SGS_commute_ON) then
         call int_vol_sgs_solenoidal_co_type(mesh, jac_3d, jac_3d_l,     &
      &          FEM_elens, rhs_tbl, nod_fld, iele_fsmp_stack,           &
-     &          intg_point_poisson, i_scalar, n_filter_final,           &
+     &          intg_point_poisson, i_scalar, ifilter_final,            &
      &          ak_diff(1,iak_diff_v), fem_wk, f_nl)
       else
         call int_vol_solenoidal_co_type(mesh, jac_3d, jac_3d_l,         &

@@ -11,6 +11,7 @@
 !!  ---------------------------------------------------------------------
 !!
 !!      subroutine init_4_ispack(Nsmp, Nstacksmp, Nfft)
+!!      subroutine finalize_4_ispack
 !!      subroutine verify_work_4_ispack(Nsmp, Nstacksmp, Nfft)
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK
@@ -117,6 +118,16 @@
       call allocate_work_4_ispack(Nsmp, Nfft)
 !
       end subroutine init_4_ispack
+!
+! ------------------------------------------------------------------
+!
+      subroutine finalize_4_ispack
+!
+!
+      call deallocate_const_4_ispack
+      call deallocate_work_4_ispack
+!
+      end subroutine finalize_4_ispack
 !
 ! ------------------------------------------------------------------
 !

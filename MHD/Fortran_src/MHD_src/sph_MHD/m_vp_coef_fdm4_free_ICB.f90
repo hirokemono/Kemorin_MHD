@@ -130,9 +130,9 @@
       mat_taylor_4(1,3) = zero
       mat_taylor_4(1,4) = zero
 !
-      mat_taylor_4(2,1) =  zero
-      mat_taylor_4(2,2) =  one
-      mat_taylor_4(2,3) = -half * r0
+      mat_taylor_4(2,1) =  one
+      mat_taylor_4(2,2) =  -r0
+      mat_taylor_4(2,3) =  half * r0*r0
       mat_taylor_4(2,4) =  zero
 !
       mat_taylor_4(3,1) = one
@@ -190,11 +190,14 @@
       mat_taylor_5(1,4) = zero
       mat_taylor_5(1,5) = zero
 !
-      mat_taylor_5(2,1) = zero
-      mat_taylor_5(2,2) = one
-      mat_taylor_5(2,3) = - (dr_n1 + half * r0)
-      mat_taylor_5(2,4) = half * dr_n1 * (dr_n1 + r0)
-      mat_taylor_5(2,5) = - dr_n1**2 * (dr_n1/six + r0/four)
+      mat_taylor_5(2,1) = one
+      mat_taylor_5(2,2) =-dr_n1                 - r0
+      mat_taylor_5(2,3) = dr_n1*dr_n1 / two     + r0*dr_n1              &
+    &                     + half*r0*r0
+      mat_taylor_5(2,4) =-dr_n1**3 / six        - r0*dr_n1*dr_n1 / two  &
+    &                     - half*r0*r0*dr_n1
+      mat_taylor_5(2,5) = dr_n1**4 / (six*four) + r0*dr_n1**3 / six     &
+    &                     + half*r0*r0*dr_n1*dr_n1 / two
 !
       mat_taylor_5(3,1) = one
       mat_taylor_5(3,2) =-dr_n1
@@ -209,9 +212,9 @@
       mat_taylor_5(4,5) = dr_p1**4 / (six*four)
 !
       mat_taylor_5(5,1) = one
-      mat_taylor_5(5,2) =-dr_p2
+      mat_taylor_5(5,2) = dr_p2
       mat_taylor_5(5,3) = dr_p2*dr_p2 / two
-      mat_taylor_5(5,4) =-dr_p2**3 / six
+      mat_taylor_5(5,4) = dr_p2**3 / six
       mat_taylor_5(5,5) = dr_p2**4 / (six*four)
 !
       call cal_inverse_nn_matrix(ifive, mat_taylor_5,                   &

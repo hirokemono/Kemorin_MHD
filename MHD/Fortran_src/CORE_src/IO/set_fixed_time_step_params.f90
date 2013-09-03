@@ -65,6 +65,9 @@
         istep_rst_end =   i_step_number
       end if
 !
+      if(i_step_init .eq. -1)   istep_rst_start = -1
+      if(i_step_number .eq. -1) istep_rst_end =   -1
+!
       call set_monitor_param_4_fixed_step(izero, i_i_step_psf,          &
      &    i_delta_t_psf, i_step_psf_ctl, delta_t_psf_ctl,               &
      &    i_step_output_psf, delta_t_output_psf)

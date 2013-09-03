@@ -39,8 +39,8 @@
 !
       if (     iflag_SGS_heat .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
-     &     write(*,*) 'cal_sgs_h_flux_grad', n_filter_final
-        call cal_sgs_h_flux_grad(n_filter_final)
+     &     write(*,*) 'cal_sgs_h_flux_grad', ifilter_final
+        call cal_sgs_h_flux_grad(ifilter_final)
 !
       else if (iflag_SGS_heat .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1) write(*,*) 'cal_sgs_hf_simi'
@@ -66,8 +66,8 @@
 !
       if (  iflag_SGS_inertia .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
-     &    write(*,*) 'cal_sgs_m_flux_grad', n_filter_final
-        call cal_sgs_m_flux_grad(n_filter_final)
+     &    write(*,*) 'cal_sgs_m_flux_grad', ifilter_final
+        call cal_sgs_m_flux_grad(ifilter_final)
 !
       else if (iflag_SGS_inertia .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
@@ -94,8 +94,8 @@
 !
       if (     iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
-     &    write(*,*) 'cal_sgs_maxwell_grad', n_filter_final
-        call cal_sgs_maxwell_grad(n_filter_final)
+     &    write(*,*) 'cal_sgs_maxwell_grad', ifilter_final
+        call cal_sgs_maxwell_grad(ifilter_final)
 !
       else if (iflag_SGS_lorentz .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
@@ -122,8 +122,8 @@
 !
       if     (iflag_SGS_induction .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
-     &    write(*,*) 'cal_sgs_induct_t_grad', n_filter_final
-        call cal_sgs_induct_t_grad(n_filter_final)
+     &    write(*,*) 'cal_sgs_induct_t_grad', ifilter_final
+        call cal_sgs_induct_t_grad(ifilter_final)
 !
       else if(iflag_SGS_induction .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
@@ -145,12 +145,12 @@
 !
       if     (iflag_SGS_induction .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
-     &      write(*,*) 'cal_sgs_uxb_2_ff_grad', n_filter_final
-        call cal_sgs_uxb_2_ff_grad(n_filter_final)
+     &      write(*,*) 'cal_sgs_uxb_2_ff_grad', ifilter_final
+        call cal_sgs_uxb_2_ff_grad(ifilter_final)
 !
       else if(iflag_SGS_induction .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
-     &      write(*,*) 'cal_sgs_uxb_2_ff_simi', n_filter_final
+     &      write(*,*) 'cal_sgs_uxb_2_ff_simi', ifilter_final
         call cal_sgs_uxb_2_ff_simi
 !
       else if(iflag_SGS_induction .eq. id_SGS_diffusion) then

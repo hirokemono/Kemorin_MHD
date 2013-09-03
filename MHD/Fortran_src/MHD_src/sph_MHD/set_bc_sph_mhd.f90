@@ -45,19 +45,19 @@
       use set_bc_flag_sph_velo
 !
 !
-      if (iflag_t_evo_4_velo .gt. 0) then
+      if (iflag_t_evo_4_velo .gt.     id_no_evolution) then
         call set_sph_bc_velo_sph
       end if
 !
-      if (iflag_t_evo_4_temp .gt. 0) then
+      if (iflag_t_evo_4_temp .gt.     id_no_evolution) then
         call set_sph_bc_temp_sph
       end if
 !
-      if (iflag_t_evo_4_magne .gt. 0) then
+      if (iflag_t_evo_4_magne .gt.    id_no_evolution) then
         call set_sph_bc_magne_sph
       end if
 !
-      if (iflag_t_evo_4_composit .gt. 0) then
+      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         call set_sph_bc_composition_sph
       end if
 !
@@ -150,7 +150,8 @@
 !
       h_flux_ICB_bc(1:nidx_rj(2)) = - h_flux_ICB_bc(1:nidx_rj(2))
 !
-      if(idx_rj_degree_zero.gt.0 .and. iflag_4_ref_temp.eq.100) then
+      if(idx_rj_degree_zero .gt. 0                                      &
+     &      .and. iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         temp_ICB_bc(idx_rj_degree_zero)                                 &
      &   = temp_ICB_bc(idx_rj_degree_zero) - reftemp_rj(nlayer_ICB,0)
         temp_CMB_bc(idx_rj_degree_zero)                                 &

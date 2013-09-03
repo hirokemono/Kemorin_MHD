@@ -38,25 +38,28 @@
       use m_machine_parameter
 !
 !
-      if ( (iflag_4_gravity*iflag_4_composit_buo) .gt. 0) then
+      if ((iflag_4_gravity*iflag_4_composit_buo) .gt. id_turn_OFF) then
 !
         if (iflag_debug.eq.1)                                           &
      &      write(*,*)'cal_rot_double_buoyancy_sph_MHD', ipol%i_temp
           call cal_rot_double_buoyancy_sph_MHD(ipol%i_temp)
 !
-      else if ( iflag_4_gravity .gt. 0) then
+      else if ( iflag_4_gravity .gt. id_turn_OFF) then
 !
-        if (iflag_debug.eq.1) write(*,*) 'cal_rot_buoyancy_sph_MHD'
+        if (iflag_debug.eq.1) write(*,*)                                &
+     &      'cal_rot_buoyancy_sph_MHD', ipol%i_temp
         call cal_rot_buoyancy_sph_MHD(coef_buo, ipol%i_temp,            &
      &        itor%i_rot_buoyancy)
 !
-      else if ( iflag_4_composit_buo .gt. 0) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_rot_buoyancy_sph_MHD'
+      else if ( iflag_4_composit_buo .gt. id_turn_OFF) then
+        if (iflag_debug.eq.1) write(*,*)                                &
+     &      'cal_rot_buoyancy_sph_MHD', ipol%i_light
         call cal_rot_buoyancy_sph_MHD(coef_comp_buo, ipol%i_light,      &
      &      itor%i_rot_comp_buo)
 !
-      else if (iflag_4_filter_gravity .gt. 0) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_rot_buoyancy_sph_MHD'
+      else if (iflag_4_filter_gravity .gt. id_turn_OFF) then
+        if (iflag_debug.eq.1) write(*,*)                                &
+     &      'cal_rot_buoyancy_sph_MHD', ipol%i_filter_temp
         call cal_rot_buoyancy_sph_MHD(coef_buo, ipol%i_filter_temp,     &
      &      itor%i_rot_filter_buo)
       end if

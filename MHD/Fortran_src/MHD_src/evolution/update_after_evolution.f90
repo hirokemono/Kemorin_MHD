@@ -103,7 +103,8 @@
         call velocity_on_element
       end if
 !
-       if ( iflag_4_rotate.eq.1 .and. iphys_ele%i_vort.ne.0) then
+       if ( iflag_4_rotate .eq. id_turn_ON                              &
+     &      .and. iphys_ele%i_vort .ne. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'vorticity_on_element'
         call vorticity_on_element
@@ -368,7 +369,8 @@
          call rot_magne_on_element
        end if
 !
-       if (iphys_ele%i_current.ne.0 .and. iflag_4_rotate .eq. 1) then
+       if (iphys_ele%i_current .ne. 0                                   &
+     &     .and. iflag_4_rotate .eq. id_turn_ON) then
          if (iflag_debug.gt.0) write(*,*) 'current_on_element'
          call current_on_element
        end if
@@ -549,7 +551,8 @@
         end if
        end if
 !
-       if (iphys_ele%i_current.ne.0 .and. iflag_4_rotate .eq. 1) then
+       if (iphys_ele%i_current .ne. 0                                   &
+     &     .and. iflag_4_rotate .eq. id_turn_ON) then
          if (iflag_debug.gt.0)  write(*,*) 'current_on_element'
          call current_on_element
        end if

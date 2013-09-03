@@ -90,7 +90,7 @@
 !*
 !* -----  set integrals for coriolis term -----------------
 !*
-!      if(iflag_4_coriolis .gt. 0) then
+!      if(iflag_4_coriolis .gt. id_turn_OFF) then
 !        if ( iflag_debug.gt.0 ) write(*,*) 'init_sum_coriolis_sph'
 !        call init_sum_coriolis_sph
 !      end if

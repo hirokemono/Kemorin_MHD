@@ -72,7 +72,7 @@
 !
       aiccg_magne = 0.0d0
 !
-      if (iflag_t_evo_4_magne .ge. 3) then
+      if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
         do inod = 1, numnod
           aiccg_magne(9*inod-8) = 1.0d0
           aiccg_magne(9*inod-4) = 1.0d0

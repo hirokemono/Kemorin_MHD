@@ -46,8 +46,8 @@
       use m_int_vol_data
 !
 !
-      call cal_sgs_h_flux_grad_no_coef(n_second, iphys%i_SGS_h_flux,    &
-     &    iphys%i_sgs_temp, i_dvx)
+      call cal_sgs_h_flux_grad_no_coef(ifilter_2delta,                  &
+     &    iphys%i_SGS_h_flux, iphys%i_sgs_temp, i_dvx)
 !
       end subroutine cal_sgs_h_flux_grad_4_dyn
 !
@@ -60,8 +60,8 @@
       use m_int_vol_data
 !
 !
-      call cal_sgs_h_flux_grad_w_coef(n_quad, iphys%i_sgs_grad_f,       &
-     &    iphys%i_filter_temp, i_dfvx)
+      call cal_sgs_h_flux_grad_w_coef(ifilter_4delta,                   &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_temp, i_dfvx)
 !
       end subroutine cal_sgs_filter_hf_grad
 !
@@ -74,8 +74,8 @@
       use m_int_vol_data
 !
 !
-      call cal_sgs_h_flux_grad_no_coef(n_quad, iphys%i_sgs_grad_f,      &
-     &    iphys%i_filter_temp, i_dfvx)
+      call cal_sgs_h_flux_grad_no_coef(ifilter_4delta,                  &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_temp, i_dfvx)
 !
       end subroutine cal_sgs_filter_hf_grad_4_dyn
 !

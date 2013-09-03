@@ -76,7 +76,7 @@
 !
 !  -----  Inertia including Reynolds stress by rotation form --------
 !
-          if (iflag_4_rotate .eq. 1) then
+          if (iflag_4_rotate .eq. id_turn_ON) then
 !
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
      &        .and. iflag_commute_inertia .eq. id_SGS_commute_ON) then
@@ -86,7 +86,7 @@
               call fem_skv_rot_inertia_1st(iele_fl_smp_stack,           &
      &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_vort), sk6)
               call fem_skv_div_sgs_tensor_1st                           &
-     &               (iele_fl_smp_stack, num_int, k2, n_filter_final,   &
+     &               (iele_fl_smp_stack, num_int, k2, ifilter_final,    &
      &                ak_diff(1,iak_diff_mf), sgs_t, tensor_e, sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
@@ -107,7 +107,7 @@
               call SGS_tensor_cst_each_ele_1st(k2, iphys%i_velo,        &
      &            iphys%i_SGS_m_flux, coef_nega_v, sgs_t, tensor_e)
               call fem_skv_vec_inertia_modsgs_1st(iele_fl_smp_stack,    &
-     &            num_int, k2, n_filter_final, ak_diff(1,iak_diff_mf),  &
+     &            num_int, k2, ifilter_final, ak_diff(1,iak_diff_mf),   &
      &            velo_1, sgs_t, tensor_e, d_ele(1,iphys_ele%i_velo),   &
      &            sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
@@ -125,8 +125,9 @@
 !
 !  -----   set Lorentz force  --------
 !
-        if (iflag_4_lorentz .gt. 0) then
-          if (iflag_4_lorentz.eq.1 .and. iflag_4_rotate.eq.1) then
+        if (iflag_4_lorentz .gt. id_turn_OFF) then
+          if (iflag_4_lorentz .eq. id_turn_ON                           &
+     &         .and. iflag_4_rotate .eq. id_turn_ON) then
             call vector_cst_phys_2_each_ele(k2, iphys%i_vecp,           &
      &          coef_lor, vect_1)
 !$omp parallel
@@ -137,7 +138,7 @@
 !
             call fem_skv_lorentz_rot_1st(iele_fl_smp_stack,             &
      &          num_int, k2, vect_1, vect_e, sk6)
-          else if (iflag_4_rotate .eq. 0) then
+          else if (iflag_4_rotate .eq. id_turn_OFF) then
             call vector_cst_phys_2_each_ele(k2, iphys%i_magne,          &
      &          coef_lor, magne_1)
 !$omp parallel
@@ -157,7 +158,7 @@
               call SGS_tensor_cst_each_ele_1st(k2, iphys%i_magne,       &
      &              iphys%i_SGS_maxwell, coef_lor, sgs_t, tensor_e)
               call fem_skv_div_sgs_tensor_1st                           &
-     &            (iele_fl_smp_stack, num_int, k2, n_filter_final,      &
+     &            (iele_fl_smp_stack, num_int, k2, ifilter_final,       &
      &             ak_diff(1,iak_diff_lor), sgs_t, tensor_e, sk6)
             else
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_maxwell,  &
@@ -171,7 +172,7 @@
 !
 !  --------  set coriolis force
 !
-        if ( iflag_4_coriolis .eq. 1 ) then
+        if ( iflag_4_coriolis .eq. id_FORCE_ele_int ) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_velo,             &
      &        coef_cor, velo_1)
           call fem_skv_coriolis_1st(iele_fl_smp_stack, num_int, k2,     &
@@ -180,22 +181,23 @@
 !
 ! ---------  set buoyancy
 !
-        if(iflag_4_gravity.eq.1 .and. iflag_4_composit_buo.eq.1) then
+        if(iflag_4_gravity .eq. id_FORCE_ele_int                        &
+     &     .and. iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_double_gvec_each_ele_1st(k2, iphys%i_temp,           &
      &        iphys%i_light, ak_buo, ak_comp_buo, vect_e)
           call fem_skv_vector_1st(iele_fl_smp_stack, num_int, k2,       &
      &        vect_e, sk6)
-        else if (iflag_4_gravity .eq. 1) then
+        else if (iflag_4_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_temp, ak_buo,   &
      &        vect_e)
           call fem_skv_vector_1st(iele_fl_smp_stack, num_int, k2,       &
      &        vect_e, sk6)
-        else if (iflag_4_composit_buo .eq. 1) then
+        else if (iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_light,          &
      &        ak_comp_buo, vect_e)
           call fem_skv_vector_1st(iele_fl_smp_stack, num_int, k2,       &
      &        vect_e, sk6)
-        else if (iflag_4_filter_gravity .eq. 1) then
+        else if (iflag_4_filter_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_filter_temp,    &
      &        ak_buo, vect_e)
           call fem_skv_vector_1st(iele_fl_smp_stack, num_int, k2,       &
@@ -272,7 +274,7 @@
 !
 !  -----  Inertia including Reynolds stress by rotation form --------
 !
-          if (iflag_4_rotate .eq. 1) then
+          if (iflag_4_rotate .eq. id_turn_ON) then
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
      &        .and. iflag_commute_inertia .eq. id_SGS_commute_ON) then
               call SGS_tensor_cst_each_ele_1st(k2, iphys%i_velo,        &
@@ -282,7 +284,7 @@
      &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_vort),       &
      &            d_ele(1,ie_upw), sk6)
               call fem_skv_div_sgs_tensor_1st_upw                       &
-     &               (iele_fl_smp_stack, num_int, k2, n_filter_final,   &
+     &               (iele_fl_smp_stack, num_int, k2, ifilter_final,    &
      &                ak_diff(1,iak_diff_mf), d_ele(1,ie_upw),          &
      &                sgs_t, tensor_e, sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
@@ -305,7 +307,7 @@
               call SGS_tensor_cst_each_ele_1st(k2, iphys%i_velo,        &
      &            iphys%i_SGS_m_flux, coef_nega_v, sgs_t, tensor_e)
               call fem_skv_vec_inertia_msgs_upw_1(iele_fl_smp_stack,    &
-     &            num_int, k2, n_filter_final, ak_diff(1,iak_diff_mf),  &
+     &            num_int, k2, ifilter_final, ak_diff(1,iak_diff_mf),   &
      &            velo_1, sgs_t, tensor_e, d_ele(1,iphys_ele%i_velo),   &
      &            d_ele(1,ie_upw), sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
@@ -321,10 +323,6 @@
             end if
           end if
 !
-          if (iflag_4_rotate .eq. 1) then
-          else
-          end if
-!
 !    set Reynolds stress
 !
           if ( iflag_SGS_inertia .ne. id_SGS_none) then
@@ -332,7 +330,7 @@
               call SGS_tensor_cst_each_ele_1st(k2, iphys%i_velo,        &
      &            iphys%i_SGS_m_flux, coef_nega_v, sgs_t, tensor_e)
               call fem_skv_div_sgs_tensor_1st_upw                       &
-     &               (iele_fl_smp_stack, num_int, k2, n_filter_final,   &
+     &               (iele_fl_smp_stack, num_int, k2, ifilter_final,    &
      &                ak_diff(1,iak_diff_mf), d_ele(1,ie_upw),          &
      &                sgs_t, tensor_e, sk6)
             else
@@ -346,8 +344,8 @@
 !
 !  -----   set Lorentz force  --------
 !
-        if (iflag_4_lorentz .gt. 0) then
-          if (iflag_4_rotate .eq. 1) then
+        if (iflag_4_lorentz .gt. id_turn_OFF) then
+          if (iflag_4_rotate .eq. id_turn_ON) then
             call vector_cst_phys_2_each_ele(k2, iphys%i_vecp,           &
      &          coef_lor, vect_1)
 !$omp parallel
@@ -378,7 +376,7 @@
               call SGS_tensor_cst_each_ele_1st(k2, iphys%i_magne,       &
      &            iphys%i_SGS_maxwell, coef_lor, sgs_t, tensor_e)
               call fem_skv_div_sgs_tensor_1st_upw                       &
-     &               (iele_fl_smp_stack, num_int, k2, n_filter_final,   &
+     &               (iele_fl_smp_stack, num_int, k2, ifilter_final,    &
      &                ak_diff(1,iak_diff_lor), d_ele(1,ie_upw),         &
      &                sgs_t, tensor_e, sk6)
             else
@@ -392,7 +390,7 @@
 !
 !  --------  set coriolis force
 !
-        if ( iflag_4_coriolis .eq. 1 ) then
+        if ( iflag_4_coriolis .eq. id_FORCE_ele_int ) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_velo,             &
      &        coef_cor, velo_1)
           call fem_skv_coriolis_upw_1st(iele_fl_smp_stack,              &
@@ -401,22 +399,23 @@
 !
 ! ---------  set buoyancy
 !
-        if(iflag_4_gravity.eq.1 .and. iflag_4_composit_buo.eq.1) then
+        if(iflag_4_gravity .eq. id_FORCE_ele_int                        &
+     &     .and. iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_double_gvec_each_ele_1st(k2, iphys%i_temp,           &
      &        iphys%i_light, ak_buo, ak_comp_buo, vect_e)
           call fem_skv_vector_field_upw_1st(iele_fl_smp_stack,          &
      &        num_int, k2, d_ele(1,ie_upw), vect_e, sk6)
-        else if (iflag_4_gravity .eq. 1) then
+        else if (iflag_4_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_temp, ak_buo,   &
      &        vect_e)
           call fem_skv_vector_field_upw_1st(iele_fl_smp_stack,          &
      &        num_int, k2, d_ele(1,ie_upw), vect_e, sk6)
-        else if (iflag_4_composit_buo .eq. 1) then
+        else if (iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_light,          &
      &        ak_comp_buo, vect_e)
           call fem_skv_vector_field_upw_1st(iele_fl_smp_stack,          &
      &        num_int, k2, d_ele(1,ie_upw), vect_e, sk6)
-        else if (iflag_4_filter_gravity .eq. 1) then
+        else if (iflag_4_filter_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_filter_temp,    &
      &        ak_buo, vect_e)
           call fem_skv_vector_field_upw_1st(iele_fl_smp_stack,          &

@@ -79,7 +79,7 @@
      &    ibc_t_sgs_id, bc_t_sgs_id_apt, iflag_bc_sgs_s, i0)
 !
 !
-      if (iflag_4_ref_temp.gt.0) then
+      if (iflag_4_ref_temp .ne. id_no_ref_temp) then
         call set_fixed_bc_4_par_temp
       end if
 !

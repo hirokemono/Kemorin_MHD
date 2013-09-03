@@ -127,7 +127,7 @@
       use m_node_phys_address
 !
 !
-      call cal_sgs_induct_t_grad_no_coef(n_second,                      &
+      call cal_sgs_induct_t_grad_no_coef(ifilter_2delta,                &
      &    iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne,            &
      &    i_dvx, i_dbx)
 !
@@ -141,8 +141,9 @@
       use m_control_parameter
       use m_node_phys_address
 !
-      call cal_sgs_induct_t_grad_w_coef(n_quad, iphys%i_sgs_grad_f,     &
-     &    iphys%i_filter_velo, iphys%i_filter_magne, i_dfvx, i_dfbx)
+      call cal_sgs_induct_t_grad_w_coef(ifilter_4delta,                 &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_velo,                      &
+     &    iphys%i_filter_magne, i_dfvx, i_dfbx)
 !
       end subroutine cal_sgs_filter_induct_grad
 !
@@ -153,8 +154,9 @@
       use m_control_parameter
       use m_node_phys_address
 !
-      call cal_sgs_induct_t_grad_no_coef(n_quad, iphys%i_sgs_grad_f,    &
-     &    iphys%i_filter_velo, iphys%i_filter_magne, i_dfvx, i_dfbx)
+      call cal_sgs_induct_t_grad_no_coef(ifilter_4delta,                &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_velo,                      &
+     &    iphys%i_filter_magne, i_dfvx, i_dfbx)
 !
       end subroutine cal_sgs_filter_idt_grad_4_dyn
 !

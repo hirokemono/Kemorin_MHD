@@ -45,7 +45,7 @@
 !
 !
       call int_vol_poisson_sgs_mat11(n_int, idx_4_fll_mat,              &
-     &    n_filter_final, ak_diff(1,iak_diff_v),                        &
+     &    ifilter_final, ak_diff(1,iak_diff_v),                         &
      &    num_press_comp, aiccg_press)
 !
       end subroutine int_vol_velo_sgs_poisson_mat
@@ -64,7 +64,7 @@
 !
 !
       call int_vol_poisson_sgs_mat11(n_int, idx_4_l_mat,                &
-     &    n_filter_final, ak_diff(1,iak_diff_b),                        &
+     &    ifilter_final, ak_diff(1,iak_diff_b),                         &
      &    num_mp_comp, aiccg_mag_p)
 !
       end subroutine int_vol_magne_sgs_poisson_mat
@@ -86,7 +86,7 @@
 !
 !
       call int_vol_crank_sgs_mat33(n_int, idx_4_fl_mat, coef_imp_v,     &
-     &    n_filter_final, ak_diff(1,iak_diff_v), ak_d_velo,             &
+     &    ifilter_final, ak_diff(1,iak_diff_v), ak_d_velo,              &
      &    num_velo_comp, aiccg_velo)
 !
       end subroutine int_vol_velo_sgs_crank_mat
@@ -106,7 +106,7 @@
       integer(kind = kint), intent(in) :: n_int
 !
       call int_vol_crank_sgs_mat33(n_int, idx_4_cd_mat_full,            &
-     &    coef_imp_b, n_filter_final, ak_diff(1,iak_diff_b),            &
+     &    coef_imp_b, ifilter_final, ak_diff(1,iak_diff_b),             &
      &    ak_d_magne, num_mag_comp, aiccg_magne)
 !
       end subroutine int_vol_magne_sgs_crank_mat
@@ -127,7 +127,7 @@
 !
 !
       call int_vol_crank_sgs_mat33(n_int, idx_4_mat, coef_imp_b,        &
-     &    n_filter_final,  ak_diff(1,iak_diff_b), ak_d_magne,           &
+     &    ifilter_final, ak_diff(1,iak_diff_b), ak_d_magne,             &
      &    num_mag_comp, aiccg_magne)
 !
       end subroutine int_vol_vecp_sgs_crank_mat
@@ -149,7 +149,7 @@
 !
 !
       call int_vol_crank_sgs_mat11(n_int, idx_4_fl_mat, coef_imp_t,     &
-     &    n_filter_final, ak_diff(1,iak_diff_t), ak_d_temp,             &
+     &    ifilter_final, ak_diff(1,iak_diff_t), ak_d_temp,              &
      &    num_temp_comp, aiccg_temp)
 !
       end subroutine int_vol_temp_sgs_crank_mat
@@ -171,7 +171,7 @@
 !
 !
       call int_vol_crank_sgs_mat11(n_int, idx_4_fl_mat, coef_imp_c,     &
-     &    n_filter_final, ak_diff(1,iak_diff_c), ak_d_composit,         &
+     &    ifilter_final, ak_diff(1,iak_diff_c), ak_d_composit,          &
      &    num_composit_comp, aiccg_composit)
 !
       end subroutine int_vol_composit_sgs_crank_mat

@@ -7,6 +7,8 @@
 !> @brief Output mean square of spectr data
 !!
 !!@verbatim
+!!      subroutine write_total_energy_to_screen(my_rank, istep, time)
+!!
 !!      subroutine write_sph_vol_ave_file(my_rank, istep, time)
 !!      subroutine write_sph_vol_ms_file(my_rank, istep, time)
 !!      subroutine write_sph_vol_ms_spectr_file(my_rank, istep, time)
@@ -48,6 +50,44 @@
 !
       contains
 !
+!  --------------------------------------------------------------------
+!
+      subroutine write_total_energy_to_screen(my_rank, istep, time)
+!
+      use m_phys_labels
+!
+      integer(kind = kint), intent(in) :: my_rank, istep
+      real(kind = kreal), intent(in) :: time
+!
+      integer(kind = kint) :: i, icomp
+!
+!
+      if(my_rank .gt. 0) return
+      write(*,'(a10,i10,a10,1pe15.8)',advance='no')                     &
+     &            'time step=',istep,'time=',time
+!
+      do i = 1, num_rms_rj
+        if (rms_name_rj(i) .eq. fhd_velo) then
+          icomp = istack_rms_comp_rj(i)
+          write(*,'(a,1pe15.8)',advance='no')                           &
+     &              '  E_kin = ', rms_sph_vol(icomp)
+          exit
+        end if
+      end do
+!
+      do i = 1, num_rms_rj
+        if (rms_name_rj(i) .eq. fhd_magne) then
+          icomp = istack_rms_comp_rj(i)
+          write(*,'(a,1pe15.8)',advance='no')                           &
+     &              '  E_mag = ', rms_sph_vol(icomp)
+          exit
+        end if
+      end do
+      write(*,*)
+!
+      end subroutine write_total_energy_to_screen
+!
+!  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
       subroutine write_sph_vol_ave_file(my_rank, istep, time)
@@ -174,15 +214,15 @@
 !
 !
       write(fname_rms, '(a,a6)') trim(fhead_rms_layer), '_l.dat'
-      write(mode_label,'(a)') 'radial_id, degree, '
+      write(mode_label,'(a)') 'radial_id    degree    '
       call open_sph_vol_rms_file(id_file_rms_l, fname_rms, mode_label)
 !
       write(fname_rms, '(a,a6)') trim(fhead_rms_layer), '_m.dat'
-      write(mode_label,'(a)') 'radial_id, order, '
+      write(mode_label,'(a)') 'radial_id    order    '
       call open_sph_vol_rms_file(id_file_rms_m, fname_rms, mode_label)
 !
       write(fname_rms,'(a,a7)') trim(fhead_rms_layer), '_lm.dat'
-      write(mode_label,'(a)') 'radial_id, diff_deg_order, '
+      write(mode_label,'(a)') 'radial_id    diff_deg_order    '
       call open_sph_vol_rms_file(id_file_rms_lm, fname_rms, mode_label)
 !
       do kg = 1, nidx_global_rj(1)
@@ -228,10 +268,11 @@
 !
       use m_phys_labels
       use add_direction_labels
+      use write_field_labels
 !
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara), intent(in) :: mode_label
-      integer(kind = kint) :: i, icomp_st
+      integer(kind = kint) :: i
 !
       character(len=kchara) :: label_pol, label_tor, label_dpol
       character(len=kchara) :: label_rr,  label_rt,  label_rp
@@ -248,46 +289,54 @@
       write(id_file,'(16i5)')   num_rms_comp_rj(1:num_rms_rj)
 !
 !
-      write(id_file,'(a)',advance='no')    't_step, time, '
+      write(id_file,'(a)',advance='no')    't_step    time    '
       if(mode_label .ne. 'EMPTY') then
         write(id_file,'(a)',advance='no') trim(mode_label)
       end if
 !
       do i = 1, num_rms_rj
-          icomp_st = istack_rms_comp_rj(i-1) + 1
           if ( rms_name_rj(i) .eq. fhd_velo) then
-            write(id_file,'(a)',advance='no')                           &
-     &            'K_ene_pol, K_ene_tor, K_ene, '
+            write(label_pol,'(a)')   'K_ene_pol'
+            write(label_tor,'(a)')   'K_ene_tor'
+            write(label_dpol,'(a)')  'K_ene'
+            call write_three_labels(id_file,                            &
+     &          label_pol, label_tor, label_dpol)
 !
           else if (rms_name_rj(i) .eq. fhd_magne) then
-            write(id_file,'(a)',advance='no')                           &
-     &            'M_ene_pol, M_ene_tor, M_ene, '
+            write(label_pol,'(a)')   'M_ene_pol'
+            write(label_tor,'(a)')   'M_ene_tor'
+            write(label_dpol,'(a)')  'M_ene'
+            call write_three_labels(id_file,                            &
+     &          label_pol, label_tor, label_dpol)
 !
           else if (rms_name_rj(i) .eq. fhd_filter_v) then
-            write(id_file,'(a)',advance='no')                           &
-     &          'filter_KE_pol, filter_KE_tor, filter_KE, '
+            write(label_pol,'(a)')   'filter_KE_pol'
+            write(label_tor,'(a)')   'filter_KE_tor'
+            write(label_dpol,'(a)')  'filter_KE'
+            call write_three_labels(id_file,                            &
+     &          label_pol, label_tor, label_dpol)
 !
           else if (rms_name_rj(i) .eq. fhd_filter_b) then
-            write(id_file,'(a)',advance='no')                           &
-     &          'filter_ME_pol, filter_ME_tor, filter_ME, '
+            write(label_pol,'(a)')   'filter_ME_pol'
+            write(label_tor,'(a)')   'filter_ME_tor'
+            write(label_dpol,'(a)')  'filter_ME'
+            call write_three_labels(id_file,                            &
+     &          label_pol, label_tor, label_dpol)
 !
           else if (num_rms_comp_rj(i) .eq. 1) then
-            write(id_file,'(a,a2)',advance='no')                        &
-     &           trim(rms_name_rj(i)), ', '
+            call write_one_label(id_file, rms_name_rj(i))
 !
           else if (num_rms_comp_rj(i) .eq. 3) then
-            call add_vector_sph_spectr_label(rms_name_rj(i),            &
+            call add_vector_power_sph_label(rms_name_rj(i),             &
      &          label_pol, label_tor, label_dpol)
-            write(id_file,'(6a)',advance='no') trim(label_pol), ', ',   &
-     &         trim(label_tor), ', ',  trim(rms_name_rj(i)), ', '
+            call write_three_labels(id_file,                            &
+     &          label_pol, label_tor, label_dpol)
           else if (num_rms_comp_rj(i) .eq. 6) then
             call add_tensor_direction_label_rtp(rms_name_rj(i),         &
      &          label_rr, label_rt, label_rp, label_tt, label_tp,       &
      &          label_pp)
-            write(id_file,'(12a)',advance='no')                         &
-     &          trim(label_rr), ', ',  trim(label_rt), ', ',            &
-     &          trim(label_rp), ', ',  trim(label_tt), ', ',            &
-     &          trim(label_tp), ', ',  trim(label_pp), ', '
+            call write_six_labels(id_file, label_rr, label_rt,          &
+     &          label_rp, label_tt, label_tp, label_pp)
           end if
       end do
       write(id_file,*)

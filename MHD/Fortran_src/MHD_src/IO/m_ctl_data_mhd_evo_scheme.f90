@@ -11,8 +11,8 @@
 !!      subroutine read_time_loop_ctl
 !!
 !! !!!!  control for initial and restart data  !!!!!!!!!!!!!!!!!!!!!!!!!!
-!!   no_data:      No initial values
-!!   restart_file: Read restart data as initial values
+!!   no_data:             No initial values
+!!   start_from_rst_file: Read restart data as initial values
 !!
 !!   dynamo_benchmark_0: Initial values for dynamo benchmark Case 0
 !!   dynamo_benchmark_1: Initial values for dynamo benchmark Case 1
@@ -24,18 +24,9 @@
 !!   rotate_y: rotate around y-axis
 !!   rotate_z: rotate around z-axis
 !!
-!!     20: Initial values for kinematic dynamo
-!!
-!!  <-100: Initial value for convection in rotating shell
-!!          int(num/100)... wave number in zonal direction
-!!  >1000: Initial value for MHD dynamo in rotating shell
-!!          int(num/100)... wave number of temperature in zonal direction
-!!          int(num/1000)... index j for spherical harmonics 
-!!                           by degree l and order m
-!!                                j = l*(l+1) + m
 !! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    begin restart_file_ctl
-!!       rst_ctl                -2
+!!     rst_ctl                start_from_rst_file
 !!    end restart_file_ctl
 !!
 !! !!!   method for time evolution  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -55,8 +46,9 @@
 !!   method_4_velo_ctl:    method for Crank Nicolson Scheme
 !!   precond_4_crank_ctl:  preconditioning method for Crank Nicolson Scheme
 !!
-!!   spherical transfer mode:  'radius_in' 'radius_out' 'long_loop'
-!!   FFT_library_ctl:  Selection of FFT librarry  ('ISPACK' or 'FFTPACK')
+!!   Legendre_trans_loop_ctl: Legendre_transform loop type
+!!                   ('inner_radial_loop' 'outer_radial_loop' 'long_loop')
+!!   FFT_library_ctl:  Selection of FFT librarry  ('FFTW3' or 'FFTPACK')
 !!
 !! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -76,11 +68,13 @@
 !!      method_4_velo_ctl      CG 
 !!      precond_4_crank_ctl     SSOR   
 !!      modify_coriolis_4_crank_ctl  0
-!!      sph_transform_mode_ctl   'radius_in'
-!!      FFT_library_ctl          'ISPACK'
+!!
+!!      Legendre_trans_loop_ctl   'inner_radial_loop'
+!!      FFT_library_ctl           'FFTW'
 !!    end time_loop_ctl
 !!
-!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@endverbatim
+!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!@endverbatim
 !
       module m_ctl_data_mhd_evo_scheme
 !
@@ -112,7 +106,7 @@
       character (len=kchara)   :: method_4_velo_ctl
       character (len=kchara)   :: precond_4_crank_ctl
 ! 
-      character(len = kchara) :: sph_transform_mode_ctl
+      character(len = kchara) :: Legendre_trans_loop_ctl
       character(len = kchara) :: FFT_library_ctl
 !
 !     label for entry
@@ -161,7 +155,7 @@
       character(len=kchara), parameter                                  &
      &      :: hd_precond_4_crank = 'precond_4_crank_ctl'
       character(len=kchara), parameter                                  &
-     &      :: hd_sph_transform_mode =  'sph_transform_mode_ctl'
+     &      :: hd_sph_transform_mode =  'Legendre_trans_loop_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_FFT_package =  'FFT_library_ctl'
 !
@@ -243,7 +237,7 @@
         call read_character_ctl_item(hd_precond_4_crank,                &
      &        i_precond_4_crank, precond_4_crank_ctl)
         call read_character_ctl_item(hd_sph_transform_mode,             &
-     &          i_sph_transform_mode, sph_transform_mode_ctl)
+     &          i_sph_transform_mode, Legendre_trans_loop_ctl)
         call read_character_ctl_item(hd_FFT_package,                    &
      &          i_FFT_package, FFT_library_ctl)
 !

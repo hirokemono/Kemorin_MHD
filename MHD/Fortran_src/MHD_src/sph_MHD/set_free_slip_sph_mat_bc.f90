@@ -45,7 +45,7 @@
 !       vt_evo_mat(3,nlayer_ICB-1,j) = zero
         vt_evo_mat(2,nlayer_ICB,  j) = one                              &
      &                            + coef_imp_v*dt*coef_d_velo           &
-     &                            + (-coef_fdm_free_ICB_vt2(0,3)        &
+     &                             *(-coef_fdm_free_ICB_vt2(0,3)        &
      &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_ICB,2) )
         vt_evo_mat(1,nlayer_ICB+1,j) = -coef_fdm_free_ICB_vt2(1,3)      &
      &                            * coef_imp_v*dt*coef_d_velo

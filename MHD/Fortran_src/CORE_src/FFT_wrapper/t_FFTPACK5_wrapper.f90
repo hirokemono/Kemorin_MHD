@@ -10,6 +10,7 @@
 !!  ------------------------------------------------------------------
 !!
 !!      subroutine init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WK)
+!!      subroutine finalize_WK_FFTPACK_t(WK)
 !!      subroutine verify_wk_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WK)
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT
@@ -123,6 +124,18 @@
       call alloc_work_4_FFTPACK_t(Nsmp, Nfft, WK)
 !
       end subroutine init_WK_FFTPACK_t
+!
+! ------------------------------------------------------------------
+!
+      subroutine finalize_WK_FFTPACK_t(WK)
+!
+      type(working_FFTPACK), intent(inout) :: WK
+!
+!
+      call dealloc_const_FFTPACK_t(WK)
+      call dealloc_work_4_FFTPACK_t(WK)
+!
+      end subroutine finalize_WK_FFTPACK_t
 !
 ! ------------------------------------------------------------------
 !

@@ -98,9 +98,9 @@
       mat_taylor_3(1,2) = zero
       mat_taylor_3(1,3) = zero
 !
-      mat_taylor_3(2,1) = zero
-      mat_taylor_3(2,2) = one
-      mat_taylor_3(2,3) = -half * r0
+      mat_taylor_3(2,1) = one
+      mat_taylor_3(2,2) = -r0
+      mat_taylor_3(2,3) = half * r0*r0
 !
       mat_taylor_3(3,1) = one
       mat_taylor_3(3,2) = dr_p1
@@ -141,13 +141,13 @@
       mat_taylor_3(1,2) = zero
       mat_taylor_3(1,3) = zero
 !
-      mat_taylor_3(2,1) = one
-      mat_taylor_3(2,2) = -half * r0
+      mat_taylor_3(2,1) = two
+      mat_taylor_3(2,2) = -r0
       mat_taylor_3(2,3) = zero
 !
       mat_taylor_3(3,1) = one
       mat_taylor_3(3,2) = dr_p1
-      mat_taylor_3(3,3) = half * dr_p1*dr_p1
+      mat_taylor_3(3,3) = half * r0*r0
 !
       call cal_inverse_33_matrix(mat_taylor_3, mat_fdm_ICB_free_vt,     &
      &      ierr)
@@ -160,7 +160,7 @@
       coef_fdm_free_ICB_vt2(0,1) = one
       coef_fdm_free_ICB_vt2(1,1) = zero
       coef_fdm_free_ICB_vt2(0,2) = mat_fdm_ICB_free_vt(2,1)
-      coef_fdm_free_ICB_vt2(1,2) = mat_fdm_ICB_free_vt(2,3)
+      coef_fdm_free_ICB_vt2(1,2) = zero
       coef_fdm_free_ICB_vt2(0,3) = mat_fdm_ICB_free_vt(3,1)
       coef_fdm_free_ICB_vt2(1,3) = mat_fdm_ICB_free_vt(3,3)
 !

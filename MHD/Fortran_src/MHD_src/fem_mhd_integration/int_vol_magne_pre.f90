@@ -79,7 +79,7 @@
      &         iphys%i_velo, iphys%i_SGS_induct_t, coef_induct,         &
      &         sgs_e, vect_e)
            call fem_skv_div_sgs_asym_t_1st(iele_cd_smp_stack,           &
-      &        num_int, k2, n_filter_final, ak_diff(1,iak_diff_uxb),    &
+      &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_uxb),     &
       &        sgs_e, vect_e, sk6)
         else if (iflag_SGS_induction .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_induct_t,     &
@@ -137,7 +137,7 @@
      &        iphys%i_velo, iphys%i_SGS_induct_t, coef_induct,          &
      &        sgs_e, vect_e)
           call fem_skv_div_sgs_asym_t_1st_upw(iele_cd_smp_stack,        &
-      &       num_int, k2, n_filter_final, ak_diff(1,iak_diff_uxb),     &
+      &       num_int, k2, ifilter_final, ak_diff(1,iak_diff_uxb),      &
       &       d_ele(1,iphys_ele%i_magne), sgs_e, vect_e, sk6)
         else if (iflag_SGS_induction .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_induct_t,     &

@@ -49,7 +49,6 @@
 !  --  read filter geometry
 !
       if (iflag_debug.eq.1) write(*,*) 'read_filter_geometry_file'
-      ifmt_filter_file = ifile_type
       filter_file_head = filter_3d_head
       call read_filter_geometry_file(file_name, my_rank)
 !
@@ -68,12 +67,14 @@
       subroutine set_ctl_param_filter_comm_test
 !
       use m_filter_file_names
+      use m_file_format_switch
       use m_ctl_data_filter_files
 !
 !
       if (i_filter_head_ctl .gt. 0) then
         filter_3d_head = filter_head_ctl
       end if
+      ifmt_filter_file = id_ascii_file_fmt
 !
       end subroutine set_ctl_param_filter_comm_test
 !

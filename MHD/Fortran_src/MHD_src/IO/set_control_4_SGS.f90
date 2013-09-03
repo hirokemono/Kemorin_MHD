@@ -100,10 +100,7 @@
       end if
 !
 !
-      n_filter_final = 1
-      n_second = 1
-      n_quad = 2
-!
+      ifilter_final = ifilter_2delta
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         iset_DIFF_model_coefs = 0

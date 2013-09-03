@@ -10,6 +10,7 @@
       module int_vol_lumped_mat_crank
 !
       use m_precision
+      use m_constants
 !
       use m_geometry_parameter
       use m_geometry_data_MHD
@@ -34,23 +35,28 @@
       use m_control_parameter
 !
 !$omp parallel
-      if ( iflag_t_evo_4_velo.eq.3 .and. coef_velo.gt.0.0d0 ) then
+      if (iflag_t_evo_4_velo .eq. id_Crank_nicolson                     &
+     &     .and. coef_velo .gt. zero) then
         call init_velo_matrix_lump
       end if
 !
-      if ( iflag_t_evo_4_temp.eq.3 .and. coef_temp.gt.0.0d0 ) then
+      if (iflag_t_evo_4_temp .eq. id_Crank_nicolson                     &
+     &     .and. coef_temp .gt. zero) then
         call init_temp_matrix_lump
       end if
 !
-      if (iflag_t_evo_4_magne.eq.3 .and. coef_magne.gt.0.0d0) then
+      if (iflag_t_evo_4_magne .eq. id_Crank_nicolson                    &
+     &     .and. coef_magne .gt. zero) then
         call init_magne_matrix_lump
       end if
 !
-       if (iflag_t_evo_4_vect_p.eq.3 .and. coef_magne.gt.0.0d0) then
+       if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson                  &
+     &     .and. coef_magne .gt. zero) then
         call init_vect_p_matrix_lump
        end if
 !
-      if (iflag_t_evo_4_composit.eq.3 .and. coef_scalar.gt.0.0d0) then
+      if (iflag_t_evo_4_composit .eq. id_Crank_nicolson                 &
+     &     .and. coef_scalar .gt. zero) then
         call init_d_scalar_matrix_lump
       end if
 !$omp end parallel

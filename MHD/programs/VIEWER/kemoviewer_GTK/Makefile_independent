@@ -95,7 +95,7 @@ install:
 clean:
 	rm -f *.o ;
 	rm -f *.mod ;
-	rm -f *.~ ;
+	rm -f *~ ;
 	rm -f *.par ;
 	rm -f *.diag
 	rm -f $(TARGET_KEMOVIEW_GTK)

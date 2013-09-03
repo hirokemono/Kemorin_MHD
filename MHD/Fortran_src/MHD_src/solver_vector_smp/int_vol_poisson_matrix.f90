@@ -37,12 +37,12 @@
       subroutine int_vol_poisson_matrices
 !
 !
-      if (iflag_t_evo_4_velo .gt. 0) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         call sel_int_press_poisson_mat_sgs(intg_point_poisson)
       end if
 !
-      if (     iflag_t_evo_4_magne .gt. 0                               &
-     &    .or. iflag_t_evo_4_vect_p .gt. 0) then
+      if (     iflag_t_evo_4_magne .gt.  id_no_evolution                &
+     &    .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call sel_int_mag_p_poisson_mat_sgs(intg_point_poisson)
       end if
 !
@@ -53,23 +53,23 @@
       subroutine int_vol_crank_matrices
 !
 !
-      if ( iflag_t_evo_4_velo .ge. 3 ) then
+      if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
         call sel_int_velo_crank_mat_sgs(intg_point_t_evo)
       end if
 !
-      if ( iflag_t_evo_4_magne .ge. 3 ) then
+      if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
         call sel_int_magne_crank_mat_sgs(intg_point_t_evo)
       end if
 !
-      if ( iflag_t_evo_4_vect_p .ge. 3 ) then
+      if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
         call sel_int_vecp_crank_mat_sgs(intg_point_t_evo)
       end if
 !
-      if ( iflag_t_evo_4_temp .ge. 3 ) then
+      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         call sel_int_temp_crank_mat_sgs(intg_point_t_evo)
       end if
 !
-      if ( iflag_t_evo_4_composit .ge. 3 ) then
+      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         call sel_int_composit_crank_mat_sgs(intg_point_t_evo)
       end if
 !

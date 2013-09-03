@@ -76,7 +76,7 @@
       ist  = kr_in * nidx_rj(2) + 1
       ied = (kr_out-1) * nidx_rj(2)
       j = idx_rj_degree_zero
-!$omp parallel do private(inod,i_p1,i_n1,j,k,d1sdr)
+!$omp parallel do private(inod,i_p1,i_n1,k,d1sdr)
       do k = kr_in+1, kr_out-1
         inod = (k-1) * nidx_rj(2) + idx_rj_degree_zero
         i_p1 = inod + nidx_rj(2)

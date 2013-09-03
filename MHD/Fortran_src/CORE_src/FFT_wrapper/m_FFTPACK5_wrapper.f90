@@ -10,6 +10,7 @@
 !!  ---------------------------------------------------------------------
 !!
 !!      subroutine init_4_FFTPACK(Nsmp, Nstacksmp, Nfft)
+!!      subroutine finalize_4_FFTPACK
 !!      subroutine verify_work_4_FFTPACK(Nsmp, Nstacksmp, Nfft)
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT
@@ -119,6 +120,18 @@
       call allocate_work_4_FFTPACK(Nsmp, Nfft)
 !
       end subroutine init_4_FFTPACK
+!
+! ------------------------------------------------------------------
+!
+      subroutine finalize_4_FFTPACK
+!
+      use FFTPACK5_wrapper
+!
+!
+      call deallocate_const_4_FFTPACK
+      call deallocate_work_4_FFTPACK
+!
+      end subroutine finalize_4_FFTPACK
 !
 ! ------------------------------------------------------------------
 !

@@ -34,9 +34,9 @@
       use m_ctl_data_mhd_evolution
 !
 !
-      if       (iflag_t_evo_4_velo.eq.0                                 &
-     &    .and. iflag_t_evo_4_temp.eq.0                                 &
-     &    .and. iflag_t_evo_4_composit.eq.0) then
+      if       (iflag_t_evo_4_velo .eq. id_no_evolution                 &
+     &    .and. iflag_t_evo_4_temp .eq. id_no_evolution                 &
+     &    .and. iflag_t_evo_4_composit .eq. id_no_evolution) then
 !
           num_fl_ele_grp =  1
           call allocate_fluid_ele_grp_name
@@ -47,8 +47,8 @@
       else
         call set_fluid_layer_egrp_name
 !
-        if     (iflag_t_evo_4_magne.eq.0                                &
-     &    .and. iflag_t_evo_4_vect_p.eq.0) then
+        if     (iflag_t_evo_4_magne .eq. id_no_evolution                &
+     &    .and. iflag_t_evo_4_vect_p .eq. id_no_evolution) then
           num_cd_ele_grp =  1
           call allocate_conduct_ele_grp_name
           cd_ele_grp_name = 'none'

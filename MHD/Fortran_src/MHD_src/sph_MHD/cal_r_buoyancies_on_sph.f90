@@ -41,9 +41,9 @@
       integer(kind= kint), intent(in) :: kr
 !
 !
-      if ( (iflag_4_gravity*iflag_4_composit_buo) .gt. 0) then
+      if ((iflag_4_gravity*iflag_4_composit_buo) .gt. id_turn_OFF) then
 !
-        if(iflag_4_ref_temp .ne. 100) then
+        if(iflag_4_ref_temp .ne. id_sphere_ref_temp) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*)'cal_r_double_buoyancy_on_sph', ipol%i_temp
           call cal_r_double_buoyancy_on_sph(kr, ipol%i_temp,            &
@@ -55,9 +55,9 @@
      &        ipol%i_div_buoyancy)
         end if
 !
-      else if ( iflag_4_gravity .gt. 0) then
+      else if ( iflag_4_gravity .gt. id_turn_OFF) then
 !
-        if(iflag_4_ref_temp .ne. 100) then
+        if(iflag_4_ref_temp .ne. id_sphere_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
           call cal_r_buoyancy_on_sph(kr, coef_buo, ipol%i_temp,         &
      &        ipol%i_div_buoyancy)
@@ -67,12 +67,12 @@
      &        ipol%i_div_buoyancy)
         end if
 !
-      else if (iflag_4_composit_buo .gt. 0) then
+      else if (iflag_4_composit_buo .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
         call cal_r_buoyancy_on_sph(kr, coef_comp_buo, ipol%i_light,     &
      &      ipol%i_div_comp_buo)
 !
-      else if (iflag_4_filter_gravity .gt. 0) then
+      else if (iflag_4_filter_gravity .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
         call cal_r_buoyancy_on_sph(kr, coef_buo, ipol%i_filter_temp,    &
      &      ipol%i_div_filter_buo)

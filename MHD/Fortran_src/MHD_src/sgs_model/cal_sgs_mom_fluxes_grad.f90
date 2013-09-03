@@ -70,8 +70,8 @@
       use m_int_vol_data
 !
 !
-      call cal_sgs_m_flux_grad_no_coef(n_second, iphys%i_SGS_m_flux,    &
-     &    iphys%i_velo, i_dvx)
+      call cal_sgs_m_flux_grad_no_coef(ifilter_2delta,                  &
+     &    iphys%i_SGS_m_flux, iphys%i_velo, i_dvx)
 !
       end subroutine cal_sgs_m_flux_grad_4_dyn
 !
@@ -85,8 +85,8 @@
       use m_int_vol_data
 !
 !
-      call cal_sgs_m_flux_grad_no_coef(n_second, iphys%i_SGS_maxwell,   &
-     &    iphys%i_magne, i_dbx)
+      call cal_sgs_m_flux_grad_no_coef(ifilter_2delta,                  &
+     &    iphys%i_SGS_maxwell, iphys%i_magne, i_dbx)
 !
       end subroutine cal_sgs_maxwell_grad_4_dyn
 !
@@ -101,9 +101,9 @@
       use m_int_vol_data
 !
 !
-      call cal_sgs_m_flux_grad_w_coef(itype_SGS_m_flux_coef, n_quad,    &
-     &    icomp_sgs_mf, iphys%i_sgs_grad_f, iphys%i_filter_velo,        &
-     &    i_dfvx)
+      call cal_sgs_m_flux_grad_w_coef(itype_SGS_m_flux_coef,            &
+     &    ifilter_4delta, icomp_sgs_mf, iphys%i_sgs_grad_f,             &
+     &    iphys%i_filter_velo, i_dfvx)
 !
       end subroutine cal_sgs_filter_m_flux_grad
 !
@@ -117,9 +117,9 @@
       use m_int_vol_data
 !
 !
-      call cal_sgs_m_flux_grad_w_coef(itype_SGS_maxwell_coef, n_quad,   &
-     &    icomp_sgs_lor, iphys%i_sgs_grad_f, iphys%i_filter_magne,      &
-     &    i_dfbx)
+      call cal_sgs_m_flux_grad_w_coef(itype_SGS_maxwell_coef,           &
+     &    ifilter_4delta, icomp_sgs_lor, iphys%i_sgs_grad_f,            &
+     &    iphys%i_filter_magne, i_dfbx)
 !
       end subroutine cal_sgs_filter_maxwell_grad
 !
@@ -133,8 +133,8 @@
       use m_int_vol_data
 !
 !
-      call cal_sgs_m_flux_grad_no_coef(n_quad, iphys%i_sgs_grad_f,      &
-     &    iphys%i_filter_velo, i_dfvx)
+      call cal_sgs_m_flux_grad_no_coef(ifilter_4delta,                  &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_velo, i_dfvx)
 !
       end subroutine cal_sgs_filter_mf_grad_4_dyn
 !
@@ -148,8 +148,8 @@
       use m_int_vol_data
 !
 !
-      call cal_sgs_m_flux_grad_no_coef(n_quad, iphys%i_sgs_grad_f,      &
-     &    iphys%i_filter_magne, i_dfbx)
+      call cal_sgs_m_flux_grad_no_coef(ifilter_4delta,                  &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, i_dfbx)
 !
       end subroutine cal_sgs_filter_mxwl_grad_4_dyn
 !

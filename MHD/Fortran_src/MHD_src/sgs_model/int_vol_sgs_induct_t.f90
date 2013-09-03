@@ -39,7 +39,7 @@
      &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      if (iflag_4_supg .ge. 1) then
+      if (iflag_4_supg .gt. id_turn_OFF) then
         call int_vol_sgs_induct_t_upm(i_filter, ie_dvx, ie_dbx,         &
      &      ifield_v, ifield_b, sk_v)
       else

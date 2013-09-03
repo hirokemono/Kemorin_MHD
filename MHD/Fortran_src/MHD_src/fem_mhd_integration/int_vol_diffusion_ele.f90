@@ -268,7 +268,7 @@
       if (iak_diff .gt. 0) then
         call int_vol_scalar_sgs_diffuse_1st(iele_fsmp_stack,            &
      &      intg_point_t_evo, coef_crank, ak_d, i_scalar,               &
-     &      n_filter_final, iak_diff)
+     &      ifilter_final, iak_diff)
       else
         call int_vol_scalar_diffuse_1st(iele_fsmp_stack,                &
      &      intg_point_t_evo, coef_crank, ak_d, i_scalar)
@@ -295,7 +295,7 @@
       if (iak_diff .gt. 0) then
         call int_vol_vector_sgs_diffuse_1st(iele_fsmp_stack,            &
      &      intg_point_t_evo, coef_crank, ak_d, i_vector,               &
-     &      n_filter_final, iak_diff)
+     &      ifilter_final, iak_diff)
       else
         call int_vol_vector_diffuse_1st(iele_fsmp_stack,                &
      &      intg_point_t_evo, coef_crank, ak_d, i_vector)

@@ -54,7 +54,7 @@
       call deallocate_gauss_colatitude
       call deallocate_gauss_points
 !
-!     set Lagendre polynomials
+!     set Legendre polynomials
 !
       call allocate_index_4_sph(nth)
       call allocate_schmidt_polynomial

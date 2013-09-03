@@ -76,7 +76,7 @@
 !
 ! set reference temperature (for spherical shell)
 !
-      if ( iflag_4_ref_temp .eq. 100 ) then
+      if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         do k = 1, nlayer_ICB-1
           reftemp_rj(k,0) = high_temp
           reftemp_rj(k,1) = zero
@@ -113,7 +113,7 @@
       integer(kind = kint) :: k, inod
 !
 !
-      if (iflag_4_ref_temp .ne. 100) return
+      if (iflag_4_ref_temp .ne. id_sphere_ref_temp) return
 !
       if (idx_rj_degree_zero .gt. 0) then
         do k = 1, nidx_rj(1)
@@ -144,7 +144,7 @@
       integer(kind = kint) :: k, inod
 !
 !
-      if (iflag_4_ref_temp .ne. 100) return
+      if (iflag_4_ref_temp .ne. id_sphere_ref_temp) return
 !
 !$omp parallel do
       do inod = 1, nnod_rj

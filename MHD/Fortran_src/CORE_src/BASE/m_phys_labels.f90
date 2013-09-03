@@ -226,7 +226,7 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_Coriolis =      'Coriolis_force'
 !>        Field label for buoyancy
-!!         @f$ -\alpha g_{i} T @f$
+!!         @f$ -\alpha_{T} g_{i} T @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_buoyancy =      'buoyancy'
 !>        Field label for compositional buoyancy
@@ -431,7 +431,7 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_mag_tension_work =  'mag_tension_work'
 !>        Field label for buoyancy flux
-!!         @f$ -u_{i} \alpha g_{i} T @f$
+!!         @f$ -u_{i} \alpha_{T} g_{i} T @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_buoyancy_flux =     'buoyancy_flux'
 !>        Field label for compositional buoyancy flux
@@ -784,7 +784,7 @@
 !
 !
 !>        Field label for buoyancy flux
-!!         @f$ -u_{i} \alpha g_{i} T @f$
+!!         @f$ -u_{i} \alpha_{T} g_{i} T @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_buoyancy_work =     'buoyancy_work'
 !

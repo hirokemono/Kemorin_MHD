@@ -103,7 +103,8 @@
       ncomp = ntot_phys_rtp*nidx_rtp(1)*nidx_rtp(2)
       Nstacksmp(0:np_smp) = ntot_phys_rtp*irt_rtp_smp_stack(0:np_smp)
 !
-      call initialize_FFT_select(np_smp, Nstacksmp, nidx_rtp(3))
+      call initialize_FFT_select(my_rank, np_smp, Nstacksmp,            &
+     &    nidx_rtp(3))
 !
       do istep = istep_start, istep_end, istep_int
         call set_data_by_read_ucd(my_rank, istep)

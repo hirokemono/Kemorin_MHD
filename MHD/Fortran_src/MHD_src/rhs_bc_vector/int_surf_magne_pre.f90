@@ -36,7 +36,7 @@
 !
        if (iflag_SGS_induction .ne. id_SGS_none                         &
      &     .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
-         call int_surf_div_induct_t_sgs(num_int, n_filter_final,        &
+         call int_surf_div_induct_t_sgs(num_int, ifilter_final,         &
      &      iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne)
       end if
 !
@@ -63,7 +63,7 @@
       if (i_field .eq. iphys%i_SGS_induction) then
         if (iflag_SGS_induction .ne. id_SGS_none                        &
      &     .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
-          call int_surf_div_induct_t_sgs(num_int, n_filter_final,       &
+          call int_surf_div_induct_t_sgs(num_int, ifilter_final,        &
      &      iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne)
         end if
       end if

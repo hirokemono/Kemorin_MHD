@@ -41,7 +41,7 @@
 !
       if(iphys%i_current .gt. izero)then
         if(iflag_nod_update(iphys%i_current) .eq.0 ) then
-          if(iflag_t_evo_4_vect_p .ge.1 ) then
+          if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then
             if (iflag_debug .ge. iflag_routine_msg)                     &
      &        write(*,*) 'cal_current_density'
             call cal_current_density

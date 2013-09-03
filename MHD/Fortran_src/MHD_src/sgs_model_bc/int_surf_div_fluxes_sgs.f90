@@ -41,7 +41,7 @@
 !
 !
       call int_sf_skv_sgs_div_v_flux(n_int, ngrp_sf_sgs_temp,           &
-     &    id_grp_sf_sgs_temp, n_filter_final, iphys%i_SGS_h_flux,       &
+     &    id_grp_sf_sgs_temp, ifilter_final, iphys%i_SGS_h_flux,        &
      &    iphys%i_velo, iphys%i_temp, ak_diff(1,iak_diff_hf),           &
      &    coef_temp)
 !
@@ -61,7 +61,7 @@
 !
 !
       call int_sf_skv_sgs_div_t_flux(n_int, nmax_sf_sgs_velo,           &
-     &    ngrp_sf_sgs_velo, id_grp_sf_sgs_velo, n_filter_final,         &
+     &    ngrp_sf_sgs_velo, id_grp_sf_sgs_velo, ifilter_final,          &
      &    iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,               &
      &    ak_diff(1,iak_diff_mf), coef_velo)
 !

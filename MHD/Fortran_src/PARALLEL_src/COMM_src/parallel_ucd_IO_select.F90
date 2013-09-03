@@ -1,14 +1,22 @@
-!parallel_ucd_IO_select.F90
-!      module parallel_ucd_IO_select
-!
-!        programmed by H.Matsui on July, 2006
-!        Modified by H.Matsui on May, 2009
-!
+!>@file   parallel_ucd_IO_select.F90
+!!@brief  module parallel_ucd_IO_select
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2006
+!!@n    Modified in May,  2009
+!!@n    Modified in June, 2013
+!!
+!>@brief Select field data output routine including merged field data
+!!
+!!
+!!@verbatim
 !!      subroutine set_merged_ucd_file_define(ucd)
 !!
 !!      subroutine sel_write_parallel_ucd_file(istep_ucd, ucd, m_ucd)
 !!      subroutine sel_write_parallel_ucd_mesh(ucd, m_ucd)
+!!@endverbatim
 !!
+!!@param istep_ucd  setp number for field data output
 !
       module parallel_ucd_IO_select
 !
@@ -235,21 +243,27 @@
            id_field_file_format = iflag_sgl_vtd + iflag_gzip
 !
       else if(file_fmt_ctl.eq.'single_vtk'                              &
+     &   .or. file_fmt_ctl.eq.'single_VTK'                              &
      &   .or. file_fmt_ctl.eq.'SINGLE_VTK'                              &
      &   .or. file_fmt_ctl.eq.'single_vtk_ascii'                        &
      &   .or. file_fmt_ctl.eq.'SINGLE_VTK_ASCII'                        &
      &   .or. file_fmt_ctl.eq.'merged_vtk'                              &
+     &   .or. file_fmt_ctl.eq.'merged_VTK'                              &
      &   .or. file_fmt_ctl.eq.'MERGED_VTK'                              &
      &   .or. file_fmt_ctl.eq.'merged_vtk_ascii'                        &
      &   .or. file_fmt_ctl.eq.'MERGED_VTK_ASCII') then
            id_field_file_format = iflag_sgl_vtk
       else if(file_fmt_ctl.eq.'single_vtk_gzip'                         &
+     &   .or. file_fmt_ctl.eq.'single_VTK_gzip'                         &
      &   .or. file_fmt_ctl.eq.'SINGLE_VTK_GZIP'                         &
      &   .or. file_fmt_ctl.eq.'merged_vtk_gzip'                         &
+     &   .or. file_fmt_ctl.eq.'merged_VTK_gzip'                         &
      &   .or. file_fmt_ctl.eq.'MERGED_VTK_GZIP'                         &
      &   .or. file_fmt_ctl.eq.'single_vtk_gz'                           &
+     &   .or. file_fmt_ctl.eq.'single_VTK_gz'                           &
      &   .or. file_fmt_ctl.eq.'SINGLE_VTK_GZ'                           &
      &   .or. file_fmt_ctl.eq.'merged_vtk_gz'                           &
+     &   .or. file_fmt_ctl.eq.'merged_VTK_gz'                           &
      &   .or. file_fmt_ctl.eq.'MERGED_VTK_GZ') then
            id_field_file_format = iflag_sgl_vtk + iflag_gzip
       else if(file_fmt_ctl.eq.'single_hdf5'                             &

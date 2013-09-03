@@ -39,7 +39,7 @@
 !    For thermal
 !
 !
-      if (iflag_t_evo_4_temp.ge.1) then
+      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
 !
         coef_temp =   one
         coef_d_temp = one
@@ -65,7 +65,7 @@
 !
 !    For convection
 !
-      if (iflag_t_evo_4_velo.ge.1) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
 !
         coef_velo =     one
         coef_d_velo =   one
@@ -94,26 +94,27 @@
         acoef_press = one / coef_press
         coef_nega_v = - coef_velo
 !
-        if (iflag_4_gravity.gt.0 .or. iflag_4_filter_gravity.gt.0) then
+        if (iflag_4_gravity .gt. id_turn_OFF                            &
+     &     .or. iflag_4_filter_gravity .gt. id_turn_OFF) then
           call construct_coefficient(coef_buo, num_dimless, dimless,    &
      &       name_dimless, num_coef_4_buoyancy, coef_4_buoyancy_name,   &
      &       coef_4_buoyancy_power, depth_low_t, depth_high_t)
         end if
 !
-        if (iflag_4_composit_buo .gt. 0) then
+        if (iflag_4_composit_buo .gt. id_turn_OFF) then
           call construct_coefficient(coef_comp_buo, num_dimless,        &
      &       dimless, name_dimless, num_coef_4_comp_buo,                &
      &       coef_4_comp_buo_name, coef_4_comp_buo_power,               &
      &       depth_low_t, depth_high_t)
         end if
 !
-        if (iflag_4_coriolis .gt. 0) then
+        if (iflag_4_coriolis .gt. id_turn_OFF) then
           call construct_coefficient(coef_cor, num_dimless, dimless,    &
      &       name_dimless, num_coef_4_Coriolis, coef_4_Coriolis_name,   &
      &       coef_4_Coriolis_power, depth_low_t, depth_high_t)
         end if
 !
-        if ( iflag_4_lorentz.ge.1 ) then
+        if ( iflag_4_lorentz .gt. id_turn_OFF) then
           call construct_coefficient(coef_lor, num_dimless, dimless,    &
      &       name_dimless, num_coef_4_Lorentz, coef_4_Lorentz_name,     &
      &       coef_4_Lorentz_power, depth_low_t, depth_high_t)
@@ -123,7 +124,8 @@
 !
 !   For Induction
 !
-      if (iflag_t_evo_4_magne.ge.1 .or. iflag_t_evo_4_vect_p.ge.1) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
+     &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
 !
         coef_magne =   one
         coef_mag_p =   one
@@ -153,7 +155,7 @@
 !
 !   For light element
 !
-      if (iflag_t_evo_4_composit.ge.1) then
+      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         coef_scalar =   one
         coef_d_light =  one
         coef_c_src =    one

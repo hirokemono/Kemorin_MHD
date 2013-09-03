@@ -1,34 +1,39 @@
-!
-!      module m_ctl_data_4_divide_sphere
-!
-!        programmed by H.Matsui on July, 2007
-!
-!      subroutine deallocate_ndomain_rtp_ctl
-!      subroutine deallocate_ndomain_rtm_ctl
-!      subroutine deallocate_ndomain_rj_ctl
-!
-!      subroutine read_ctl_ndomain_4_shell
-!
-!  ---------------------------------------------------------------------
-!    example of control data
-!
-!  begin num_domain_ctl
-!    array  num_domain_sph_grid   2
-!      num_domain_sph_grid    radial       2   end
-!      num_domain_sph_grid   meridional    2   end
-!    end array num_domain_sph_grid
+!>@file   m_ctl_data_4_divide_sphere.f90
+!!@brief  module m_ctl_data_4_divide_sphere
 !!
-!    array num_domain_lagendre   2
-!      num_domain_lagendre   radial        2   end
-!      num_domain_lagendre   zonal         2   end
-!    end array num_domain_lagendre
+!!@author H. Matsui
+!!@date Programmed in July, 2007
+!
+!>@brief  Control data for domain decomposition for spherical transform
 !!
-!    array num_domain_spectr     1
-!      num_domain_spectr     modes         4   end
-!    end array num_domain_spectr
-!  end num_domain_ctl
+!!@verbatim
+!!      subroutine deallocate_ndomain_rtp_ctl
+!!      subroutine deallocate_ndomain_rtm_ctl
+!!      subroutine deallocate_ndomain_rj_ctl
 !!
-!  ---------------------------------------------------------------------
+!!      subroutine read_ctl_ndomain_4_shell
+!!
+!!  ---------------------------------------------------------------------
+!!    example of control data
+!!
+!!  begin num_domain_ctl
+!!    array  num_domain_sph_grid   2
+!!      num_domain_sph_grid    radial       2   end
+!!      num_domain_sph_grid   meridional    2   end
+!!    end array num_domain_sph_grid
+!!
+!!    array num_domain_legendre   2
+!!      num_domain_legendre   radial        2   end
+!!      num_domain_legendre   zonal         2   end
+!!    end array num_domain_legendre
+!!
+!!    array num_domain_spectr     1
+!!      num_domain_spectr     modes         4   end
+!!    end array num_domain_spectr
+!!  end num_domain_ctl
+!!
+!!  ---------------------------------------------------------------------
+!!@endverbatim
 !
       module m_ctl_data_4_divide_sphere
 !
@@ -38,15 +43,15 @@
 !
 !
       integer(kind = kint) :: ndir_domain_sph_grid
-      integer(kind = kint) :: ndir_domain_lagendre
+      integer(kind = kint) :: ndir_domain_legendre
       integer(kind = kint) :: ndir_domain_spectr
 !
       character(len=kchara), allocatable :: dir_domain_sph_grid_ctl(:)
-      character(len=kchara), allocatable :: dir_domain_lagendre_ctl(:)
+      character(len=kchara), allocatable :: dir_domain_legendre_ctl(:)
       character(len=kchara), allocatable :: dir_domain_spectr_ctl(:)
 !
       integer(kind = kint), allocatable :: num_domain_sph_grid_ctl(:)
-      integer(kind = kint), allocatable :: num_domain_lagendre_ctl(:)
+      integer(kind = kint), allocatable :: num_domain_legendre_ctl(:)
       integer(kind = kint), allocatable :: num_domain_spectr_ctl(:)
 !
 !    label for group entry
@@ -60,7 +65,7 @@
       character(len=kchara), parameter                                  &
      &      :: hd_ndomain_rtp =  'num_domain_sph_grid'
       character(len=kchara), parameter                                  &
-     &       :: hd_ndomain_rtm = 'num_domain_lagendre'
+     &       :: hd_ndomain_rtm = 'num_domain_legendre'
       character(len=kchara), parameter                                  &
      &       :: hd_ndomain_rj  = 'num_domain_spectr'
 !
@@ -92,9 +97,9 @@
 !
       subroutine allocate_ndomain_rtm_ctl
 !
-      allocate(dir_domain_lagendre_ctl(ndir_domain_lagendre))
-      allocate(num_domain_lagendre_ctl(ndir_domain_lagendre))
-      num_domain_lagendre_ctl = 0
+      allocate(dir_domain_legendre_ctl(ndir_domain_legendre))
+      allocate(num_domain_legendre_ctl(ndir_domain_legendre))
+      num_domain_legendre_ctl = 0
 !
       end subroutine allocate_ndomain_rtm_ctl
 !
@@ -122,8 +127,8 @@
 !
       subroutine deallocate_ndomain_rtm_ctl
 !
-      deallocate(dir_domain_lagendre_ctl)
-      deallocate(num_domain_lagendre_ctl)
+      deallocate(dir_domain_legendre_ctl)
+      deallocate(num_domain_legendre_ctl)
 !
       end subroutine deallocate_ndomain_rtm_ctl
 !
@@ -164,12 +169,12 @@
         end if
 !
         call find_control_array_flag(hd_ndomain_rtm,                    &
-     &      ndir_domain_lagendre)
-        if(ndir_domain_lagendre.gt.0 .and. i_ndomain_rtm.eq.0) then
+     &      ndir_domain_legendre)
+        if(ndir_domain_legendre.gt.0 .and. i_ndomain_rtm.eq.0) then
           call allocate_ndomain_rtm_ctl
           call read_control_array_int_v_list(hd_ndomain_rtm,            &
-     &        ndir_domain_lagendre, i_ndomain_rtm,                      &
-     &        dir_domain_lagendre_ctl, num_domain_lagendre_ctl)
+     &        ndir_domain_legendre, i_ndomain_rtm,                      &
+     &        dir_domain_legendre_ctl, num_domain_legendre_ctl)
         end if
 !
         call find_control_array_flag(hd_ndomain_rj, ndir_domain_spectr)

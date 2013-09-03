@@ -189,7 +189,7 @@
      &                      trim(rms_name_rj(i_fld))
 !
           else if (num_rms_comp_rj(i_fld) .eq. 3) then
-            call add_vector_sph_spectr_label(rms_name_rj(i_fld),        &
+            call add_vector_power_sph_label(rms_name_rj(i_fld),         &
      &          rms_pick_sph_name(ist+1), rms_pick_sph_name(ist+2),     &
      &          rms_pick_sph_name(ist+3))
             write(rms_pick_sph_name(ist+3),'(a)') rms_name_rj(i_fld)

@@ -1,13 +1,24 @@
+!>@file   m_2d_sph_trans_table.f90
+!!@brief  module m_2d_sph_trans_table
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007
 !
-!      module m_2d_sph_trans_table
-!
-!     Written by H. Matsui on July, 2007
-!
-!      subroutine allocate_2d_sph_trans_table(ntheta, nphi, jmax)
-!      subroutine deallocate_2d_sph_trans_table
-!
-!      subroutine check_2d_sph_indices(my_rank, nphi, ltr, jmax)
-!      subroutine check_2d_sph_trans_table(my_rank, ntheta, nphi, jmax)
+!>@brief  Indices of spherical transform for second harmonics
+!!
+!!@verbatim
+!!      subroutine allocate_2d_sph_trans_table(ntheta, nphi, jmax)
+!!      subroutine deallocate_2d_sph_trans_table
+!!
+!!      subroutine check_2d_sph_indices(my_rank, nphi, ltr, jmax)
+!!      subroutine check_2d_sph_trans_table(my_rank, ntheta, nphi, jmax)
+!!@endverbatim
+!!
+!!@param my_rank  Process ID
+!!@param ntheta   Number of meridional grids
+!!@param nphi     Number of zonal grids
+!!@param ltr      Truncation degree
+!!@param jmax     Number of spherical harmonics modes
 !
       module m_2d_sph_trans_table
 !
@@ -91,13 +102,13 @@
         write(my_rank+50,*) m, mdx_ispack(m)
       end do
 !
-      write(my_rank+50,*) 'zonal wave numbers before Lagendre trans.'
+      write(my_rank+50,*) 'zonal wave numbers before Legendre trans.'
       write(my_rank+50,*) 'm, mdx_4_lgd(m)'
       do m = 0, nphi
         write(my_rank+50,*) m, mdx_4_lgd(m)
       end do
 !
-      write(my_rank+50,*) 'spectr data after Lagendre transform'
+      write(my_rank+50,*) 'spectr data after Legendre transform'
       write(my_rank+50,*) 'j, jtbl_fsph(j,1:3)'
       do j = 0, jmax
         write(my_rank+50,*) j, jtbl_fsph(j,1:3)

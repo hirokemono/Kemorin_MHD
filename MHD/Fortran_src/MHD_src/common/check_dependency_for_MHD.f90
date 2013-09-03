@@ -136,7 +136,7 @@
           else if ( phys_nod_name(i) .eq. fhd_mag_induct                &
      &       ) then
 !
-           if (iflag_t_evo_4_magne .ge. 1) then
+           if (iflag_t_evo_4_magne .gt. id_no_evolution) then
             num_check = 2
             phys_check_name(1) = fhd_velo
             phys_check_name(2) = fhd_magne
@@ -157,7 +157,7 @@
 !
           else if ( phys_nod_name(i) .eq. fhd_SGS_induction             &
      &       ) then
-           if (iflag_t_evo_4_magne .ge. 1) then
+           if (iflag_t_evo_4_magne .gt. id_no_evolution) then
             num_check = 2
             phys_check_name(1) = fhd_velo
             phys_check_name(2) = fhd_magne
@@ -443,12 +443,13 @@
 !
 !   check dependencies for time evolution
 !
-      if ( iflag_t_evo_4_vect_p*iflag_t_evo_4_magne .ge. 1 ) then 
-         call parallel_abort(402,'You should choose vector potential or &
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
+     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+         call parallel_abort(402,'You should choose vector potential OR &
      &  magnetic field for time evolution')
       end if
 !
-      if ( iflag_t_evo_4_velo .gt. 0 ) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
            target_name = 'time integration for velocity'
            num_check = 2
            phys_check_name(1) = fhd_velo
@@ -457,7 +458,7 @@
      &           target_name, phys_nod_name, phys_check_name)
       end if
 !
-      if ( iflag_t_evo_4_temp .gt. 0 ) then
+      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
            target_name = 'time integration for temperature'
            num_check = 2
            phys_check_name(1) = fhd_temp
@@ -466,7 +467,7 @@
      &           target_name, phys_nod_name, phys_check_name)
       end if
 !
-      if ( iflag_t_evo_4_composit .gt. 0 ) then
+      if (iflag_t_evo_4_composit .ne. id_no_evolution) then
            target_name = 'time integration for dummy scalar'
            num_check = 2
            phys_check_name(1) = fhd_light
@@ -475,7 +476,7 @@
      &           target_name, phys_nod_name, phys_check_name)
       end if
 !
-      if ( iflag_t_evo_4_magne .gt. 0 ) then
+      if (iflag_t_evo_4_magne .ne. id_no_evolution) then
            target_name = 'time integration for magnetic field'
            num_check = 2
            phys_check_name(1) = fhd_magne
@@ -484,7 +485,7 @@
      &           target_name, phys_nod_name, phys_check_name)
       end if
 !
-      if ( iflag_t_evo_4_vect_p .gt. 0 ) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
            target_name = 'time integration for vector potential'
            num_check = 2
            phys_check_name(1) = fhd_vecp
@@ -494,7 +495,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_velo .gt. 0) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if ( iflag_SGS_inertia .ne. id_SGS_none) then
           target_name = 'solving SGS momentum flux'
           num_check = 1
@@ -513,7 +514,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_temp .gt. 0) then
+      if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
         if ( iflag_SGS_heat .ne. id_SGS_none) then
           target_name = 'solving SGS heat flux'
           num_check = 1
@@ -524,7 +525,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_magne .gt.  0) then
+      if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
         if ( iflag_SGS_induction .ne. id_SGS_none) then
           target_name = 'solving SGS magnetic induction'
           num_check = 1
@@ -535,7 +536,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_vect_p .gt. 0) then
+      if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if ( iflag_SGS_induction .ne. id_SGS_none) then
           target_name = 'solving SGS induction 4 vector potential'
           num_check = 1
@@ -546,7 +547,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_composit .gt. 0) then
+      if ( iflag_t_evo_4_composit .gt. id_no_evolution) then
         if (iflag_SGS_comp_flux .ne. id_SGS_none) then
           target_name = 'solving SGS compsition flux'
           num_check = 1
@@ -557,8 +558,8 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_velo .gt. 0 ) then
-        if ( iflag_4_gravity .gt. 0) then
+      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
+        if ( iflag_4_gravity .gt. id_turn_OFF) then
           target_name = 'temperature is required for buoyancy'
           num_check = 1
           phys_check_name(1) = fhd_temp
@@ -566,7 +567,7 @@
      &           target_name, phys_nod_name, phys_check_name)
         end if
 !
-        if ( iflag_4_composit_buo .gt. 0) then
+        if ( iflag_4_composit_buo .gt. id_turn_OFF) then
           target_name                                                   &
      &        = 'composition is required for compositional buoyancy'
           num_check = 1
@@ -575,7 +576,7 @@
      &           target_name, phys_nod_name, phys_check_name)
         end if
 !
-        if ( iflag_4_filter_gravity .gt. 0) then
+        if ( iflag_4_filter_gravity .gt. id_turn_OFF) then
           target_name                                                   &
      &      = 'filtered temperature is required for filtered buoyancy'
           num_check = 1
@@ -584,7 +585,7 @@
      &           target_name, phys_nod_name, phys_check_name)
         end if
 !
-        if ( iflag_4_lorentz .gt. 0) then
+        if ( iflag_4_lorentz .gt. id_turn_OFF) then
           target_name = 'magnetic field is required for Lorentz force'
           num_check = 1
           phys_check_name(1) = fhd_magne
@@ -613,17 +614,18 @@
       end if
 !
       if(iflag_SGS_gravity .gt. id_SGS_none) then
-        if(iflag_4_gravity.eq.0 .and. iflag_4_composit_buo.eq.0) then
+        if(iflag_4_gravity .eq. id_turn_OFF                             &
+     &     .and. iflag_4_composit_buo .eq. id_turn_OFF) then
           call parallel_abort(100, 'set one of gravity sources')
         end if
-        if(iflag_4_gravity .gt. 0) then
+        if(iflag_4_gravity .gt. id_turn_OFF) then
           if(iflag_SGS_inertia.eq.id_SGS_none                           &
      &       .or. iflag_SGS_heat.eq.id_SGS_none) then
             call parallel_abort(100,                                    &
      &          'Turn on SGS momentum flux and heat flux')
           end if
         end if
-        if(iflag_4_composit_buo .gt. 0) then
+        if(iflag_4_composit_buo .gt. id_turn_OFF) then
           if(iflag_SGS_inertia.eq.id_SGS_none                           &
      &       .or. iflag_SGS_comp_flux.eq.id_SGS_none) then
               call parallel_abort(100,                                  &
@@ -632,7 +634,7 @@
         end if
       end if
 !
-      if ( iflag_t_evo_4_temp .gt. 0) then
+      if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
         if (iflag_SGS_heat .eq. id_SGS_similarity                       &
      &          .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           target_name = 'filterd temp. is required for SGS heat flux'
@@ -644,7 +646,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_magne .gt.  0) then
+      if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
         if ( iflag_SGS_induction .eq. id_SGS_similarity                 &
      &      .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           target_name = 'filterd u and B is required for SGS induction'
@@ -657,7 +659,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_vect_p .gt. 0) then
+      if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if ( iflag_SGS_induction .eq. id_SGS_similarity                 &
      &      .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           target_name = 'filterd u and B is required for SGS induction'
@@ -669,7 +671,7 @@
         end if
       end if
 !
-      if ( iflag_t_evo_4_vect_p .gt. 0) then
+      if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if ( iflag_commute_correction .gt. id_SGS_commute_OFF           &
      &       .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           target_name = 'filterd A is required for dynamic model'

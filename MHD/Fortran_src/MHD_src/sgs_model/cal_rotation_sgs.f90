@@ -133,19 +133,19 @@
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
 !
-       if ( iflag_4_supg .eq. 2) then
+       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
         call int_sgs_rot_upw_1st(iele_fsmp_stack, intg_point_t_evo,     &
-     &      n_filter_final, iak_diff, i_vector, iphys_ele%i_magne)
-       else if ( iflag_4_supg .ge. 1) then
+     &      ifilter_final, iak_diff, i_vector, iphys_ele%i_magne)
+       else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_sgs_rot_upw_1st(iele_fsmp_stack, intg_point_t_evo,     &
-     &      n_filter_final, iak_diff, i_vector, iphys_ele%i_velo)
+     &      ifilter_final, iak_diff, i_vector, iphys_ele%i_velo)
        else
         call int_sgs_rot_1st(iele_fsmp_stack, intg_point_t_evo,         &
-     &      n_filter_final, iak_diff, i_vector)
+     &      ifilter_final, iak_diff, i_vector)
        end if
 !
        call int_surf_rotation_sgs(intg_point_t_evo,                     &
-     &     nmax_grp_sf, ngrp_sf, id_grp_sf, n_filter_final, iak_diff,   &
+     &     nmax_grp_sf, ngrp_sf, id_grp_sf, ifilter_final, iak_diff,    &
      &     i_vector)
 !
       end subroutine choose_int_vol_rot_sgs

@@ -1,16 +1,16 @@
 begin products_udts
 !
 !  make a products of specified field
-!     produced field file : field_file_head_ctl
+!     produced field file : field_file_prefix
 !
   begin data_files_def
     num_subdomain_ctl           2
     num_smp_ctl                 4
 !
-    mesh_file_head_ctl          'mesh_fine/in'
+    mesh_file_prefix            'mesh_fine/in'
 !
-    field_file_head_ctl         'field_prod/out'
-    field_files_fmt_ctl         'gzip'
+    field_file_prefix           'field_prod/out'
+    field_file_fmt_ctl          'gzip'
   end data_files_def
 !
   begin org_data_files_def

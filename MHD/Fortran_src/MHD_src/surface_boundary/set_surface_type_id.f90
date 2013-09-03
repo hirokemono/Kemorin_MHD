@@ -35,18 +35,18 @@
       type(surface_boundarty_conditions), intent(inout) :: sf_dat
 !
 !
-      if ( iflag_t_evo_4_temp .ge. 1 ) then
+      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         call set_bc_h_flux_type_id(grp%surf_grp, sf_dat%temp)
       end if
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         call set_bc_torque_type_id(grp%surf_grp, grp%surf_nod_grp,      &
      &      sf_dat%velo)
         call set_bc_wall_type_id(grp%surf_grp, sf_dat%press)
       end if
 !
-      if ( iflag_t_evo_4_magne.ge.1                                     &
-     &      .or. iflag_t_evo_4_vect_p.ge.1 ) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
+     &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call set_bc_magne_surf_type_id(grp%surf_grp, grp%surf_nod_grp,  &
      &      sf_dat%magne)
         call set_bc_current_surf_type_id(grp%surf_grp,                  &
@@ -54,12 +54,12 @@
         call set_surf_mag_p_type_id(grp%surf_grp, sf_dat%magne_p)
       end if
 !
-      if ( iflag_t_evo_4_vect_p .ge. 1 ) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call set_bc_vect_p_surf_type_id(grp%surf_grp, grp%surf_nod_grp, &
      &      sf_dat%vector_p)
       end if
 ! 
-      if ( iflag_t_evo_4_composit .ge. 1 ) then
+      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         call set_bc_composition_type_id(grp%surf_grp, sf_dat%comp_sf)
       end if
 ! 

@@ -41,6 +41,7 @@
       use m_parallel_var_dof
       use m_2nd_pallalel_vector
       use m_filter_elength
+      use m_file_format_switch
 !
       use m_read_mesh_data
       use m_ctl_data_4_platforms
@@ -76,20 +77,21 @@
 !
 !
       if(i_new_mesh_head .gt. 0) then
-        target_mesh_head = new_mesh_head_ctl
+        target_mesh_head = new_mesh_prefix
       else
         write(*,*) 'set target mesh file name'
         stop
       end if
 !
       if(i_mesh_header .gt. 0) then
-        org_mesh_head =  mesh_file_head_ctl
-        mesh_file_head = mesh_file_head_ctl
+        org_mesh_head =  mesh_file_prefix
+        mesh_file_head = mesh_file_prefix
       else
         write(*,*) 'set original mesh file name'
         stop
       end if
 !
+      iflag_mesh_file_fmt = id_ascii_file_fmt
 !
       iflag_set_filter_elen = i_org_filter_elen_head
       if(iflag_set_filter_elen .gt. 0) then

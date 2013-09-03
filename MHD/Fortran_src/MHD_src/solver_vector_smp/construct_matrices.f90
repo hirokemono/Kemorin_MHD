@@ -104,10 +104,10 @@
 !
 !   Diffusion matrix
 !
-      if ( iflag_scheme .eq. 3 ) then
+      if (iflag_scheme .eq. id_Crank_nicolson) then
         call int_vol_crank_mat_lump
         call int_vol_crank_matrices
-      else if ( iflag_scheme .eq. 4 ) then
+      else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call int_vol_crank_mat_consist
         call int_vol_crank_matrices
       end if

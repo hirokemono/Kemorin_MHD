@@ -41,7 +41,7 @@
       use cal_r_buoyancies_on_sph
 !
 !
-!      if( iflag_4_coriolis .gt. 0) then
+!      if( iflag_4_coriolis .gt. id_turn_OFF) then
 !        call s_sum_r_coriolis_tri_sph(nlayer_ICB, coef_cor,             &
 !     &      ipol%i_div_Coriolis)
 !        call s_sum_r_coriolis_tri_sph(nlayer_CMB, coef_cor,             &
@@ -62,7 +62,7 @@
       call cal_radial_force_on_sph(nlayer_CMB,                          &
      &      ipol%i_m_advect, ipol%i_div_inertia)
 !
-      if( iflag_4_lorentz .gt. 0) then
+      if( iflag_4_lorentz .gt. id_turn_OFF) then
         call cal_radial_force_on_sph(nlayer_ICB,                        &
      &      ipol%i_lorentz, ipol%i_div_inertia)
         call cal_radial_force_on_sph(nlayer_CMB,                        &

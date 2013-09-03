@@ -31,7 +31,7 @@
 !
 ! ----  read boundary data for temperature
 !
-      if ( iflag_t_evo_4_temp .ge. 1 ) then
+      if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &    num_bc_e, ibc_e_type)
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
@@ -40,7 +40,7 @@
 !
 ! ----  read boundary data for velocity
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      num_bc_v, ibc_v_type)
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
@@ -54,15 +54,15 @@
 !
 ! ----  read boundary data for dummy scalar
 !
-      if ( iflag_t_evo_4_composit .ge. 1 ) then
+      if ( iflag_t_evo_4_composit .gt. id_no_evolution) then
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      num_bc_composit, ibc_composit_type)
       end if
 !
 ! ----  read boundary data for magnetic field
 !
-      if ( iflag_t_evo_4_magne .ge. 1                                   &
-     &      .or. iflag_t_evo_4_vect_p .ge. 1) then
+      if ( iflag_t_evo_4_magne .gt. id_no_evolution                     &
+     &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      num_bc_b, ibc_b_type)
@@ -77,7 +77,7 @@
 !
 ! ----  read boundary data for vector potential
 !
-      if ( iflag_t_evo_4_vect_p .ge. 1 ) then
+      if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      num_bc_vp, ibc_vp_type)
@@ -92,8 +92,8 @@
 !
 ! ----  read boundary data for current density
 !
-      if ( iflag_t_evo_4_magne .ge. 1                                   &
-     &      .or. iflag_t_evo_4_vect_p .ge. 1) then
+      if ( iflag_t_evo_4_magne .gt. id_no_evolution                     &
+     &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      num_bc_j, ibc_j_type)

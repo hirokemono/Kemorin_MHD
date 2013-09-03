@@ -54,14 +54,14 @@
       end if
 !
 !
-      if(iflag_t_evo_4_vect_p .gt. izero) then
+      if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if( (iphys%i_vecp*iphys%i_chk_uxb) .gt. izero) then
           nfld_dratio = nfld_dratio + 1
           ntot_dratio = ntot_dratio + 3
         end if
       end if
 !
-      if(iflag_t_evo_4_magne .gt. izero) then
+      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
         if( (iphys%i_magne*iphys%i_chk_uxb) .gt. izero) then
           nfld_dratio = nfld_dratio + 1
           ntot_dratio = ntot_dratio + 3
@@ -115,7 +115,7 @@
       end if
 !
 !
-      if(iflag_t_evo_4_vect_p .gt. izero) then
+      if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if( (iphys%i_vecp*iphys%i_chk_uxb) .gt. izero) then
           icou = icou + 1
           i_drmax_b =           istack_dratio(icou-1) + 1
@@ -125,7 +125,7 @@
         end if
       end if
 !
-      if(iflag_t_evo_4_magne .gt. izero) then
+      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
         if( (iphys%i_magne*iphys%i_chk_uxb) .gt. izero) then
           icou = icou + 1
           i_drmax_b =           istack_dratio(icou-1) + 1

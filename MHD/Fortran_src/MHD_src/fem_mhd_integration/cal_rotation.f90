@@ -112,10 +112,10 @@
        integer(kind = kint), intent(in) :: i_vector
        integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-       if ( iflag_4_supg .eq. 2) then
+       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
         call int_vol_rot_upw_1st(iele_fsmp_stack, intg_point_t_evo,     &
      &      i_vector, iphys_ele%i_magne)
-       else if ( iflag_4_supg .ge. 1) then
+       else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_vol_rot_upw_1st(iele_fsmp_stack, intg_point_t_evo,     &
      &      i_vector, iphys_ele%i_velo)
        else

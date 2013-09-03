@@ -32,7 +32,7 @@
       call set_gauss_colatitude
 !
 !
-      write(*,*) 'gauss-Lagendre colatitude'
+      write(*,*) 'Gauss-Legendre colatitude'
       do i = 1, n_point
         write(*,'(i5,1p3E25.15e3)') i,w_point(i),                       &
      &         w_colat(i),w_col_deg(i)

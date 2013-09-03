@@ -58,7 +58,7 @@
 ! lead induction terms
 !
       if (iflag_debug .eq. 0 ) write(*,*) 'coefs_4_time_evolution'
-      if (iflag_4_supg .ge. 1) then
+      if (iflag_4_supg .gt. id_turn_OFF) then
        call int_vol_magne_pre_ele_upm
       else
        call int_vol_magne_pre_ele
@@ -67,18 +67,17 @@
 !
       call int_surf_magne_pre_ele
 !
-      if ( iflag_t_evo_4_magne .eq. 1 ) then
+      if (iflag_t_evo_4_magne .eq. id_explicit_euler) then
        call cal_magne_pre_euler
 !
-      else if ( iflag_t_evo_4_magne .eq. 2 ) then 
+      else if (iflag_t_evo_4_magne .eq. id_explicit_adams2) then
        call cal_magne_pre_adams
 !
-      else if ( iflag_t_evo_4_magne .eq. 3 ) then 
+      else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson) then
        call cal_magne_pre_crank
 !
-      else if ( iflag_t_evo_4_magne .eq. 4 ) then 
+      else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass) then 
        call cal_magne_pre_consist_crank
-!
       end if
 !
        call set_boundary_magne

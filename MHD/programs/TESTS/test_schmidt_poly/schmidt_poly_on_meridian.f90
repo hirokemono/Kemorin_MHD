@@ -48,7 +48,7 @@
       weight_med(1:nth_g) =  w_coefs(1:nth_g)
 !
 !
-!     set Lagendre polynomials
+!     set Legendre polynomials
 !
       nth = ltr_g
       call allocate_index_4_sph(nth)

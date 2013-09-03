@@ -101,7 +101,7 @@
         call int_sk_4_fixed_velo
       end if
 !
-      if ( iflag_4_coriolis .eq. 11) then
+      if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
         if (iflag_debug.eq.1) write(*,*) 'int_vol_coriolis_crank_ele'
         call int_vol_coriolis_crank_ele
       end if

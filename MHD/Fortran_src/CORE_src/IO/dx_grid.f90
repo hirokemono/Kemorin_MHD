@@ -38,28 +38,28 @@
       character(len=kchara), intent(in) :: dx_conn_fname
 !
       integer(kind = kint) :: nd, i, j
-      integer(kind = kint) :: numele_quad, n_quad
+      integer(kind = kint) :: numele_quad, nsegment_quad
       integer(kind = kint) :: inod, iele
       integer(kind = kint) :: iq(8)
 !
 !
       if (nnod_ele .eq. num_t_linear) then
-        n_quad = 5
+        nsegment_quad = 5
         numele_quad = 5*nele
         call set_1_hexa_2_5_tetra
       else if (nnod_ele .eq. num_t_quad) then
-        n_quad = 21
+        nsegment_quad = 21
         numele_quad = 20*nele
         call set_1_hexa_2_21_tetra
       else if (nnod_ele .eq. num_t_lag) then
-        n_quad = 40
+        nsegment_quad = 40
         numele_quad = 40*nele
         call set_1_hexa_2_40_tetra
       else if (nnod_ele .eq. num_triangle) then
-        n_quad = 1
+        nsegment_quad = 1
         numele_quad = nele
       else if (nnod_ele .eq. num_linear_edge) then
-        n_quad = 1
+        nsegment_quad = 1
         numele_quad = nele
       end if
 !
@@ -82,7 +82,7 @@
 !
       do iele = 1, nele
         if (nnod_ele.eq.num_t_quad .or. nnod_ele.eq.num_t_lag) then
-          do j = 1, n_quad
+          do j = 1, nsegment_quad
             do i = 1, 4
               iq(i) = ie(iele,ie_tetra(i,j))-1
             end do

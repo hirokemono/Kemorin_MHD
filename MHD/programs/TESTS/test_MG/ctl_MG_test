@@ -3,7 +3,7 @@ begin solver_test_ctl
   begin data_files_def
     num_subdomain_ctl        4
     num_smp_ctl              1
-    mesh_file_head_ctl       'mesh/in'
+    mesh_file_prefix         'mesh/in'
   end data_files_def
 !
   begin MG_grids_ctl

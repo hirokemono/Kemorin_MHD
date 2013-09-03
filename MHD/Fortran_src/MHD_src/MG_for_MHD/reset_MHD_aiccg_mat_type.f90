@@ -66,46 +66,47 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         call reset_scalar_mat_layer_type(num_t_linear,                  &
      &      MHD_mesh%fluid%iele_start_fld, MHD_mesh%fluid%iele_end_fld, &
      &      femmesh%mesh%node, femmesh%mesh%ele, djds_tbl_fl_l,         &
      &      mat_press)
       end if
 !
-      if ( iflag_t_evo_4_velo .ge. 3 ) then
+      if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
         call reset_vector_mat_layer_type(femmesh%mesh%ele%nnod_4_ele,   &
      &      MHD_mesh%fluid%iele_start_fld, MHD_mesh%fluid%iele_end_fld, &
      &      femmesh%mesh%node, femmesh%mesh%ele, djds_tbl_fl,           &
      &      mat_velo)
       end if
 !
-      if ( iflag_t_evo_4_temp.ge.3 ) then
+      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         call reset_scalar_mat_layer_type(femmesh%mesh%ele%nnod_4_ele,   &
      &      MHD_mesh%fluid%iele_start_fld, MHD_mesh%fluid%iele_end_fld, &
      &      femmesh%mesh%node, femmesh%mesh%ele, djds_tbl_fl,           &
      &      mat_temp)
       end if
 !
-      if ( iflag_t_evo_4_composit.ge.3 ) then
+      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         call reset_scalar_mat_layer_type(femmesh%mesh%ele%nnod_4_ele,   &
      &      MHD_mesh%fluid%iele_start_fld, MHD_mesh%fluid%iele_end_fld, &
      &      femmesh%mesh%node, femmesh%mesh%ele, djds_tbl_fl,           &
      &      mat_d_scalar)
       end if
 !
-      if (iflag_t_evo_4_magne.ge.1 .or. iflag_t_evo_4_vect_p.ge.1) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
+     &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call reset_whole_scalar_mat_type(femmesh%mesh%node, mat_magp)
         call reset_scalar_mat_layer_type(num_t_linear, ione,            &
      &      femmesh%mesh%ele%numele, femmesh%mesh%node, &
      &      femmesh%mesh%ele, djds_tbl_l,  mat_magp)
       end if
 !
-      if ( iflag_t_evo_4_vect_p.ge.1 ) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call reset_whole_vector_mat_type(femmesh%mesh%node, mat_magne)
       end if
 !
-      if ( iflag_t_evo_4_magne .ge. 3 ) then
+      if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
         call reset_vector_mat_layer_type(femmesh%mesh%ele%nnod_4_ele,   &
      &      MHD_mesh%conduct%iele_start_fld,                            &
      &      MHD_mesh%conduct%iele_end_fld,                              &

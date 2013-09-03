@@ -98,7 +98,7 @@
       use m_node_phys_address
 !
 !
-      call cal_sgs_vp_induct_grad_no_coef(n_second,                     &
+      call cal_sgs_vp_induct_grad_no_coef(ifilter_2delta,               &
      &    iphys%i_SGS_vp_induct, iphys%i_magne, i_dvx)
 !
       end subroutine cal_sgs_uxb_grad_4_dyn
@@ -111,8 +111,8 @@
       use m_node_phys_address
 !
 !
-      call cal_sgs_vp_induct_grad_no_coef(n_quad, iphys%i_sgs_grad_f,   &
-     &    iphys%i_filter_magne, i_dfvx)
+      call cal_sgs_vp_induct_grad_no_coef(ifilter_4delta,               &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, i_dfvx)
 !
       end subroutine cal_sgs_filter_uxb_grad_4_dyn
 !

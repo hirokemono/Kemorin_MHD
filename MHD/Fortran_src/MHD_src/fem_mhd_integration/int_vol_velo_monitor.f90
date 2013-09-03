@@ -53,7 +53,7 @@
 !
 !
       if(i_field .eq. iphys%i_m_advect) then
-        if (iflag_4_rotate .eq. 1) then
+        if (iflag_4_rotate .eq. id_turn_ON) then
           call int_vol_rot_inertia_1st(iele_fl_smp_stack,               &
      &        intg_point_t_evo, iphys%i_velo,                           &
      &        d_ele(1,iphys_ele%i_vort), coef_nega_v)
@@ -88,11 +88,11 @@
         call int_vol_Lorentz_pg(iele_fl_smp_stack,                      &
      &        intg_point_t_evo)
       else if(i_field .eq. iphys%i_lorentz) then
-        if (iflag_4_rotate.eq.0) then
-          call int_vol_full_Lorentz_pg(iele_fl_smp_stack,               &
-     &        intg_point_t_evo)
-        else if (iflag_4_rotate.eq.1) then
+        if (iflag_4_rotate .eq. id_turn_ON) then
           call int_vol_full_rot_Lorentz_pg(iele_fl_smp_stack,           &
+     &        intg_point_t_evo)
+        else
+          call int_vol_full_Lorentz_pg(iele_fl_smp_stack,               &
      &        intg_point_t_evo)
         end if
       end if
@@ -105,7 +105,7 @@
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux(iele_fl_smp_stack,              &
      &        intg_point_t_evo, iphys%i_velo, iphys%i_SGS_m_flux,       &
-     &        n_filter_final, iak_diff_mf, coef_nega_v)
+     &        ifilter_final, iak_diff_mf, coef_nega_v)
         else
           call int_vol_div_tsr_w_const_1st(iele_fl_smp_stack,           &
      &        intg_point_t_evo, iphys%i_SGS_m_flux, coef_nega_v)
@@ -115,7 +115,7 @@
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux(iele_fl_smp_stack,              &
      &        intg_point_t_evo, iphys%i_magne, iphys%i_SGS_maxwell,     &
-     &        n_filter_final, iak_diff_lor, coef_lor)
+     &        ifilter_final, iak_diff_lor, coef_lor)
         else
           call int_vol_div_tsr_w_const_1st(iele_fl_smp_stack,           &
      &        intg_point_t_evo, iphys%i_SGS_maxwell, coef_lor)
@@ -163,7 +163,7 @@
 !
 !
       if(i_field .eq. iphys%i_m_advect) then
-        if (iflag_4_rotate .eq. 1) then
+        if (iflag_4_rotate .eq. id_turn_ON) then
           call int_vol_rot_inertia_upw_1st(iele_fl_smp_stack,           &
      &        intg_point_t_evo, iphys%i_velo,                           &
      &        d_ele(1,iphys_ele%i_vort), d_ele(1,iv_upw), coef_nega_v)
@@ -199,12 +199,12 @@
         call int_vol_Lorentz_upw(iele_fl_smp_stack,                     &
      &        intg_point_t_evo, iv_upw)
       else if(i_field .eq. iphys%i_lorentz) then
-        if (iflag_4_rotate.eq.0) then
-          call int_vol_full_Lorentz_upw(iele_fl_smp_stack,              &
-     &        intg_point_t_evo, iv_upw)
-        else if (iflag_4_rotate.eq.1) then
+        if (iflag_4_rotate .eq. id_turn_ON) then
           call int_vol_full_rot_Lorentz_pg(iele_fl_smp_stack,           &
      &        intg_point_t_evo)
+        else
+          call int_vol_full_Lorentz_upw(iele_fl_smp_stack,              &
+     &        intg_point_t_evo, iv_upw)
         end if
       end if
 !
@@ -217,7 +217,7 @@
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux_upw(iele_fl_smp_stack,          &
      &        intg_point_t_evo, iv_upw, iphys%i_velo,                   &
-     &        iphys%i_SGS_m_flux, n_filter_final, iak_diff_mf,          &
+     &        iphys%i_SGS_m_flux, ifilter_final, iak_diff_mf,           &
      &        coef_nega_v)
         else
           call int_vol_div_tsr_w_const_upw_1(iele_fl_smp_stack,         &
@@ -229,7 +229,7 @@
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux_upw(iele_fl_smp_stack,          &
      &        intg_point_t_evo, iv_upw, iphys%i_magne,                  &
-     &        iphys%i_SGS_maxwell, n_filter_final, iak_diff_lor,        &
+     &        iphys%i_SGS_maxwell, ifilter_final, iak_diff_lor,         &
      &        coef_lor)
         else
           call int_vol_div_tsr_w_const_upw_1(iele_fl_smp_stack,         &

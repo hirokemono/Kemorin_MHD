@@ -9,6 +9,7 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !!      subroutine init_4_FFTW_kemo(Nsmp, Nstacksmp, Nfft)
+!!      subroutine finalize_4_FFTW_kemo(Nsmp)
 !!      subroutine verify_work_4_FFTW_kemo(Nsmp, Nstacksmp, Nfft)
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
@@ -112,6 +113,18 @@
      &          plan_forward, plan_backward,  aNfft, X_FFTW, C_FFTW)
 !
       end subroutine init_4_FFTW_kemo
+!
+! ------------------------------------------------------------------
+!
+      subroutine finalize_4_FFTW_kemo(Nsmp)
+!
+      integer(kind = kint), intent(in) ::  Nsmp
+!
+!
+      call destroy_kemo_FFTW_smp(Nsmp, plan_forward, plan_backward)
+      call deallocate_work_4_FFTW
+!
+      end subroutine finalize_4_FFTW_kemo
 !
 ! ------------------------------------------------------------------
 !

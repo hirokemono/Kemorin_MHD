@@ -263,9 +263,9 @@
 !>  Structure of grid and spectr data for spherical spectr method
       type sph_grids
 !>        integer flag for FEM mesh type
-!!@n      iflag_MESH_same:     same grid point as Gauss-Lagendre points
-!!@n      iflag_MESH_w_pole:   Gauss-Lagendre points with poles
-!!@n      iflag_MESH_w_center: Gauss-Lagendre points with center and poles
+!!@n      iflag_MESH_same:     same grid point as Gauss-Legendre points
+!!@n      iflag_MESH_w_pole:   Gauss-Legendre points with poles
+!!@n      iflag_MESH_w_center: Gauss-Legendre points with center and poles
         integer (kind=kint) :: iflag_shell_mode =   iflag_MESH_same
 !>        radial grid type flag
 !!@n      igrid_Chebyshev =    2 :: Chebyshev collocation points

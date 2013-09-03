@@ -225,11 +225,13 @@
 !
       if(idx_rj_degree_zero .eq. 0) return
         inod = idx_rj_degree_zero + (kr_in-1) * jmax
-        d1t_dr1 =  coef_fdm_fix_in_2( 0,2) * fix_ICB(j)                 &
-     &           + coef_fdm_fix_in_2( 1,2) * d_rj(i_p1,is_fld)          &
-     &           + coef_fdm_fix_in_2( 2,2) * d_rj(i_p2,is_fld)
+        i_p1 = inod + jmax
+        i_p2 = i_p1 + jmax
+        d1t_dr1 = coef_fdm_fix_in_2( 0,2) * fix_ICB(idx_rj_degree_zero) &
+     &          + coef_fdm_fix_in_2( 1,2) * d_rj(i_p1,is_fld)           &
+     &          + coef_fdm_fix_in_2( 2,2) * d_rj(i_p2,is_fld)
 !
-      d_rj(inod,is_grd  ) = d1t_dr1 * radius_1d_rj_r(kr_in)**2
+        d_rj(inod,is_grd  ) = d1t_dr1 * radius_1d_rj_r(kr_in)**2
 !
       end subroutine cal_dsdr_sph_fix_scalar_in_2
 !
@@ -332,14 +334,13 @@
 !$omp end parallel do
 !
       if(idx_rj_degree_zero .eq. 0) return
-!
         inod = idx_rj_degree_zero + (kr_out-1) * jmax
         i_n1 = inod - jmax
         i_n2 = i_n1 - jmax
 !
-        d1t_dr1 =  coef_fdm_fix_out_2(2,2) * d_rj(i_n2,is_fld)          &
-     &           + coef_fdm_fix_out_2(1,2) * d_rj(i_n1,is_fld)          &
-     &           + coef_fdm_fix_out_2(0,2) * fix_CMB(j)
+        d1t_dr1 = coef_fdm_fix_out_2(2,2) * d_rj(i_n2,is_fld)           &
+     &          + coef_fdm_fix_out_2(1,2) * d_rj(i_n1,is_fld)           &
+     &          + coef_fdm_fix_out_2(0,2) * fix_CMB(idx_rj_degree_zero)
 !
         d_rj(inod,is_grd  ) = d1t_dr1 * radius_1d_rj_r(kr_out)**2
 !

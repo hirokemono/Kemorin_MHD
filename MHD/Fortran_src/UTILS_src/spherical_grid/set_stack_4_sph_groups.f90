@@ -64,7 +64,7 @@
 !
       if (nidx_global_rtp(1) .gt. nlayer_CMB) then
         call set_stack_sph_grp_by_list(icou,                            &
-     &      nlayer_CMB, nlayer_CMB, nidx_rtp(1),                        &
+     &      nidx_global_rtp(1), nidx_global_rtp(1), nidx_rtp(1),        &
      &      idx_gl_1d_rtp_r(1), name_ED, num_radial_grp_rtp,            &
      &      istack_radial_grp_rtp, name_radial_grp_rtp)
       end if

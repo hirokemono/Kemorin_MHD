@@ -28,6 +28,7 @@
 !
       subroutine initialize_sph_trans
 !
+      use m_parallel_var_dof
       use m_machine_parameter
       use m_spheric_parameter
       use m_spheric_param_smp
@@ -36,6 +37,7 @@
       use schmidt_poly_on_rtm_grid
       use FFT_selector
       use spherical_SRs_N
+      use select_fourier_transform
 !
       integer(kind = kint) :: ncomp
       integer(kind = kint) :: Nstacksmp(0:np_smp)
@@ -52,9 +54,10 @@
       call set_sin_theta_rtm
       call set_sin_theta_rtp
 !
+!
       ncomp = 3*nb_sph_trans*nidx_rtp(1)*nidx_rtp(2)
       Nstacksmp(0:np_smp) = 3*nb_sph_trans*irt_rtp_smp_stack(0:np_smp)
-      call initialize_FFT_select(np_smp, Nstacksmp, nidx_rtp(3))
+      call s_select_fourier_transform(ncomp, Nstacksmp)
 !
       ncomp = 3*nb_sph_trans
       call init_sph_send_recv_N(ncomp, vr_rtp, vr_rtm, sp_rlm, sp_rj)
@@ -66,9 +69,9 @@
 !
       subroutine set_mdx_rlm_rtm
 !
+      use m_parallel_var_dof
       use m_spheric_parameter
       use m_work_4_sph_trans
-      use m_parallel_var_dof
 !
       integer(kind = kint) :: m, mm, j
       integer(kind = kint), allocatable :: mdx_rlm_rtm(:)

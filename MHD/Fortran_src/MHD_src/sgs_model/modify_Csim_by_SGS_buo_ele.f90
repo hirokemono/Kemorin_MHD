@@ -33,19 +33,20 @@
 !
       call clear_model_coefs_2_ele(n_sym_tensor, icomp_sgs_mf)
 !
-      if(iflag_4_gravity.gt.0 .and. iflag_4_composit_buo.gt.0) then
+      if(iflag_4_gravity .gt. id_turn_OFF                               &
+     &     .and. iflag_4_composit_buo .gt. id_turn_OFF) then
         if(itype_SGS_m_flux_coef .eq. 1) then
           call modify_cmpCsim_by_SGS_dbuo_ele
         else
           call modify_fldCsim_by_SGS_dbuo_ele
         end if
-      else if(iflag_4_gravity .gt. 0) then
+      else if(iflag_4_gravity .gt. id_turn_OFF) then
         if(itype_SGS_m_flux_coef .eq. 1) then
           call modify_cmpCsim_by_SGS_buo_ele(iak_sgs_tbuo)
         else
           call modify_fldCsim_by_SGS_buo_ele(iak_sgs_tbuo)
         end if
-      else if(iflag_4_composit_buo .gt. 0) then
+      else if(iflag_4_composit_buo .gt. id_turn_OFF) then
         if(itype_SGS_m_flux_coef .eq. 1) then
           call modify_cmpCsim_by_SGS_buo_ele(iak_sgs_cbuo)
         else

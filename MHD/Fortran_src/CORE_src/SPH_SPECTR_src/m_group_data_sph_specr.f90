@@ -88,7 +88,7 @@
 !
       allocate(istack_bc_grp_rtp(0:num_bc_grp_rtp))
       allocate(name_bc_grp_rtp(num_bc_grp_rtp))
-      istack_bc_grp_rtp = 0
+      istack_bc_grp_rtp(0:num_bc_grp_rtp) = 0
 !
       end subroutine allocate_rtp_nod_grp_stack
 !
@@ -98,7 +98,7 @@
 !
       allocate(istack_radial_grp_rtp(0:num_radial_grp_rtp))
       allocate(name_radial_grp_rtp(num_radial_grp_rtp))
-      istack_radial_grp_rtp = 0
+      istack_radial_grp_rtp(0:num_radial_grp_rtp) = 0
 !
       end subroutine allocate_rtp_r_grp_stack
 !
@@ -108,7 +108,7 @@
 !
       allocate(istack_theta_grp_rtp(0:num_theta_grp_rtp))
       allocate(name_theta_grp_rtp(num_theta_grp_rtp))
-      istack_theta_grp_rtp = 0
+      istack_theta_grp_rtp(0:num_theta_grp_rtp) = 0
 !
       end subroutine allocate_rtp_theta_grp_stack
 !
@@ -118,7 +118,7 @@
 !
       allocate(istack_zonal_grp_rtp(0:num_zonal_grp_rtp))
       allocate(name_zonal_grp_rtp(num_zonal_grp_rtp))
-      istack_zonal_grp_rtp = 0
+      istack_zonal_grp_rtp(0:num_zonal_grp_rtp) = 0
 !
       end subroutine allocate_rtp_zonal_grp_stack
 !
@@ -129,20 +129,23 @@
 !
       allocate(istack_radial_grp_rj(0:num_radial_grp_rj))
       allocate(name_radial_grp_rj(num_radial_grp_rj))
-      istack_radial_grp_rj = 0
+      istack_radial_grp_rj(0:num_radial_grp_rj) = 0
 !
       end subroutine allocate_rj_r_grp_stack
 !
-! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------
+!
       subroutine allocate_rj_sphere_grp_stack
 !
       allocate(istack_sphere_grp_rj(0:num_sphere_grp_rj))
       allocate(name_sphere_grp_rj(num_sphere_grp_rj))
-      istack_sphere_grp_rj = 0
+      istack_sphere_grp_rj(0:num_sphere_grp_rj) = 0
 !
       end subroutine allocate_rj_sphere_grp_stack
 !
-! -----------------------------------------------------------------------! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
       subroutine allocate_rtp_nod_grp_item
 !
       allocate(item_bc_grp_rtp(ntot_bc_grp_rtp))
@@ -187,7 +190,8 @@
 !
       end subroutine allocate_rj_r_grp_item
 !
-! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------
+!
       subroutine allocate_rj_sphere_grp_item
 !
       allocate(item_sphere_grp_rj(ntot_sphere_grp_rj))
@@ -197,7 +201,8 @@
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------
+!
       subroutine deallocate_rtp_nod_grp_item
 !
       deallocate(item_bc_grp_rtp)
@@ -230,7 +235,9 @@
 !
       subroutine deallocate_rtp_zonal_grp_item
 !
+      write(*,*) 'deallocate item_zonal_grp_rtp'
       deallocate(item_zonal_grp_rtp)
+      write(*,*) 'deallocate istack_zonal_grp_rtp', size(istack_zonal_grp_rtp)
       deallocate(istack_zonal_grp_rtp)
       deallocate(name_zonal_grp_rtp)
 !

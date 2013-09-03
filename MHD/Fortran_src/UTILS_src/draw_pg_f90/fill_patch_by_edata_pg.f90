@@ -85,7 +85,7 @@
       real(kind = kreal), intent(in) :: xmax, xmin
 !
       integer :: inod, iele, i1, i2, i3, i4
-      real :: x_tri(4), y_tri(4), rsig
+      real :: x_tri(4), y_tri(4)
 !
 !
       call pgbbuf

@@ -58,12 +58,11 @@
 !
       if (i_flag .ne. 0) return
 !
-      if(my_rank .eq. 0) write(*,'(a10,i10,a10,e15.8)')                 &
-     &            'i_step=',i_step_MHD,'time=',time
-!
       call cal_rms_sph_outer_core
       call cal_gauss_coefficients
       call pickup_sph_spec_4_monitor
+!
+      call write_total_energy_to_screen(my_rank, i_step_MHD, time)
 !
       call write_sph_vol_ave_file(my_rank, i_step_MHD, time)
       call write_sph_vol_ms_file(my_rank, i_step_MHD, time)

@@ -34,10 +34,10 @@
       use m_node_phys_data
 !
 !
-      if ( iflag_4_coriolis .eq. 2) then
+      if ( iflag_4_coriolis .eq. id_FORCE_at_node) then
         call cal_coriolis_nod(angular, coef_cor, ml_o_fl,               &
      &      d_nod(1,iphys%i_velo), ff_nl)
-      else if ( iflag_4_coriolis .eq. 12) then
+      else if ( iflag_4_coriolis .eq. id_Coriolis_nod_imp) then
         call cal_coriolis_nod(angular, coef_cor, ml_o_fl,               &
      &      d_nod(1,iphys%i_velo), ff)
       end if
@@ -81,22 +81,23 @@
 !
 ! ---------  set buoyancy at each node
 !
-      if(iflag_4_gravity.eq.2 .and. iflag_4_composit_buo.eq.2) then
+      if(iflag_4_gravity .eq. id_FORCE_at_node                          &
+     &     .and. iflag_4_composit_buo .eq. id_FORCE_at_node) then
         call set_double_gravity_2_each_node(iphys%i_temp,               &
      &      iphys%i_light, iphys%i_buoyancy, coef_buo, coef_comp_buo)
         call int_vol_buoyancy_nod(iphys%i_buoyancy, ml_o_fl, ff_nl)
 !
-      else if (iflag_4_gravity .eq. 2) then
+      else if (iflag_4_gravity .eq. id_FORCE_at_node) then
         call set_gravity_2_each_node(iphys%i_temp, iphys%i_buoyancy,    &
      &      coef_buo)
         call int_vol_buoyancy_nod(iphys%i_buoyancy, ml_o_fl, ff_nl)
 !
-      else if (iflag_4_composit_buo .eq. 2) then
+      else if (iflag_4_composit_buo .eq. id_FORCE_at_node) then
         call set_gravity_2_each_node(iphys%i_light, iphys%i_comp_buo,   &
      &      coef_comp_buo)
         call int_vol_buoyancy_nod(iphys%i_comp_buo, ml_o_fl, ff_nl)
 !
-      else if (iflag_4_filter_gravity .eq. 2) then
+      else if (iflag_4_filter_gravity .eq. id_FORCE_at_node) then
         call set_gravity_2_each_node(iphys%i_filter_temp,               &
      &      iphys%i_filter_buo, coef_buo)
         call int_vol_buoyancy_nod(iphys%i_filter_buo, ml_o_fl, ff_nl)

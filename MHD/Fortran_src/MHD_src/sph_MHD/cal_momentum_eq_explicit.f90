@@ -61,11 +61,19 @@
 !
 !
 !$omp parallel
-      if(iflag_t_evo_4_velo .gt. 0)   call cal_vorticity_eq_adams
+      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+        call cal_vorticity_eq_adams
+      end if
 !
-      if(iflag_t_evo_4_magne .gt. 0)  call cal_diff_induction_MHD_adams
-      if(iflag_t_evo_4_temp .gt. 0)   call sel_heat_diff_adv_src_adams
-      if(iflag_t_evo_4_composit.gt.0) call sel_light_diff_adv_src_adams
+      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
+        call cal_diff_induction_MHD_adams
+      end if
+      if(iflag_t_evo_4_temp .gt. id_no_evolution) then
+        call sel_heat_diff_adv_src_adams
+      end if
+      if(iflag_t_evo_4_composit .gt. id_no_evolution) then
+        call sel_light_diff_adv_src_adams
+      end if
 !$omp end parallel
 !
       end subroutine cal_expricit_sph_adams
@@ -84,17 +92,33 @@
 !
 !
 !$omp parallel
-      if(iflag_t_evo_4_velo .gt. 0)   call cal_vorticity_eq_euler
+      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+        call cal_vorticity_eq_euler
+      end if
 !
-      if(iflag_t_evo_4_temp .gt. 0)   call sel_heat_diff_adv_src_euler
-      if(iflag_t_evo_4_magne .gt. 0)  call cal_diff_induction_MHD_euler
-      if(iflag_t_evo_4_composit.gt.0) call sel_light_diff_adv_src_euler
+      if(iflag_t_evo_4_temp .gt. id_no_evolution) then
+        call sel_heat_diff_adv_src_euler
+      end if
+      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
+        call cal_diff_induction_MHD_euler
+      end if
+      if(iflag_t_evo_4_composit .gt. id_no_evolution) then
+        call sel_light_diff_adv_src_euler
+      end if
 !
       if (i_step .eq. 1) then
-        if(iflag_t_evo_4_velo .gt. 0)   call set_adams_advect_4_ini
-        if(iflag_t_evo_4_temp .gt. 0)   call sel_ini_adams_heat_w_src
-        if(iflag_t_evo_4_magne.gt.0)    call set_adams_mag_induct_ini
-        if(iflag_t_evo_4_composit.gt.0) call sel_ini_adams_light_w_src
+        if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+          call set_adams_advect_4_ini
+        end if
+        if(iflag_t_evo_4_temp .gt. id_no_evolution) then
+          call sel_ini_adams_heat_w_src
+        end if
+        if(iflag_t_evo_4_magne.gt.id_no_evolution) then
+          call set_adams_mag_induct_ini
+        end if
+        if(iflag_t_evo_4_composit .gt. id_no_evolution) then
+          call sel_ini_adams_light_w_src
+        end if
       end if
 !$omp end parallel
 !

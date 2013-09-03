@@ -44,7 +44,7 @@
 !
       call int_vol_composition_diffuse_ele
 !
-      if ( iflag_4_supg .ge. 1) then
+      if ( iflag_4_supg .gt. id_turn_OFF) then
         call int_vol_composition_ele_upw
       else
         call int_vol_composition_ele
@@ -54,16 +54,16 @@
       call set_bc_grad_composition
 !
 !
-      if ( iflag_t_evo_4_composit .eq. 1 ) then
+      if     (iflag_t_evo_4_composit .eq. id_explicit_euler) then
        call cal_composit_pre_euler
 !
-      else if ( iflag_t_evo_4_composit .eq. 2 ) then
+      else if(iflag_t_evo_4_composit .eq. id_explicit_adams2) then
        call cal_composit_pre_adams
 !
-      else if ( iflag_t_evo_4_composit.eq.3 ) then
+      else if(iflag_t_evo_4_composit .eq. id_Crank_nicolson) then
        call cal_composit_pre_crank
 !
-      else if ( iflag_t_evo_4_composit.eq.4 ) then
+      else if(iflag_t_evo_4_composit .eq. id_Crank_nicolson_cmass) then
        call cal_composit_pre_consist_crank
       end if
 !

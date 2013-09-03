@@ -35,13 +35,13 @@
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)
-      call set_control_smp_def
+      call set_control_smp_def(my_rank)
       call set_control_mesh_def
 !
       org_mesh_head = mesh_file_head
 !
       if (i_new_mesh_head .ne. 0) then
-        dest_mesh_head = new_mesh_head_ctl
+        dest_mesh_head = new_mesh_prefix
       else
         dest_mesh_head = def_dest_mesh_head
       end if
@@ -66,20 +66,20 @@
       end if
 !
       if (i_new_rst_head .gt. 0) then
-        itp_rst_file_head = new_rst_head_ctl
+        itp_rst_file_head = new_restart_prefix
       end if
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'itp_rst_file_head: ', trim(itp_rst_file_head)
 !
       if (i_new_udt_head .gt. 0) then
-        itp_udt_file_head = new_field_head_ctl
+        itp_udt_file_head = new_field_file_prefix
       end if
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'itp_udt_file_head: ', trim(itp_udt_file_head)
 !
 !
       if (i_rst_header .ne. 0) then
-        org_rst_file_head = rst_file_head_ctl
+        org_rst_file_head = restart_file_prefix
       end if
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'org_rst_file_head: ', trim(org_rst_file_head)
@@ -111,7 +111,7 @@
       call choose_file_format(new_mesh_file_fmt_ctl,                    &
      &    i_new_mesh_file_fmt, ifmt_itp_mesh_file)
 !
-      call choose_file_format(rst_files_fmt_ctl, i_rst_files_fmt,       &
+      call choose_file_format(restart_file_fmt_ctl, i_rst_files_fmt,    &
      &    ifmt_org_rst_file)
       call choose_file_format(new_rst_files_fmt_ctl,                    &
      &    i_new_rst_files_fmt, ifmt_itp_rst_file)

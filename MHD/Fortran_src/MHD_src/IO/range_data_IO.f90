@@ -37,8 +37,7 @@
 !
       use m_node_phys_data
       use m_cal_max_indices
-!
-      integer(kind = kint) :: i
+      use write_field_labels
 !
 !
       open (maximum_data_code,file = minmax_data_file_name,             &
@@ -57,16 +56,22 @@
       open (maximum_position_code,file = minmax_posi_file_name,         &
      &     status='replace')
 !
-      write(maximum_data_code,'(a)')                                    &
-     &    'ID step time x y z  min:  max: '
-      write(maximum_position_code,'(a)')                                &
-     &    'ID step time x y z  min_node:  max_node: '
+      write(maximum_data_code,'(a)',advance='no')                       &
+     &    'ID step time x y z     '
+      write(maximum_position_code,'(a)',advance='no')                   &
+     &    'ID step time x y z     '
 !
-      do i = 1, num_tot_nod_phys_vis
-        write(maximum_data_code,'(a,a2)') trim(phys_nod_name(i)), ', '
-        write(maximum_position_code,'(a,a2)')                           &
-     &        trim(phys_nod_name(i)), ', '
-      end do
+      call write_multi_labels(maximum_data_code,                        &
+     &    num_tot_nod_phys_vis, phys_nod_name)
+      call write_multi_labels(maximum_data_code,                        &
+     &    num_tot_nod_phys_vis, phys_nod_name)
+      call write_multi_labels(maximum_position_code,                    &
+     &    num_tot_nod_phys_vis, phys_nod_name)
+      call write_multi_labels(maximum_position_code,                    &
+     &    num_tot_nod_phys_vis, phys_nod_name)
+!
+      write(maximum_data_code,'(a)')     ''
+      write(maximum_position_code,'(a)') ''
 !
       end subroutine open_maximum_file
 !

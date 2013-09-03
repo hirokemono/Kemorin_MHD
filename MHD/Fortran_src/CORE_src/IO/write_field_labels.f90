@@ -1,22 +1,28 @@
-!write_field_labels.f90
-!      module write_field_labels
+!>@file   write_field_labels.f90
+!!@brief  module write_field_labels
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2009
 !
-!        programmed by H.Matsui on June, 2009
-!
-!      subroutine write_one_label(id_file, label1)
-!      subroutine write_vector_label(id_file, label_v)
-!      subroutine write_sym_tensor_label(id_file, label_st)
-!
-!      subroutine write_two_labels(id_file, label1, label2)
-!      subroutine write_three_labels(id_file, label1, label2, label3)
-!      subroutine write_four_labels(id_file, label1, label2,            &
-!     &          label3, label4)
-!      subroutine write_six_labels(id_file, label1, label2,             &
-!     &          label3, label4, label5, label6)
-!      subroutine write_seven_labels(id_file, label1, label2,           &
-!     &          label3, label4, label5, label6, label7)
-!
-!      subroutine write_multi_labels(id_file, nlabel, labels)
+!>@brief  Write field labels in one line
+!!
+!!@verbatim
+!!      subroutine write_one_label(id_file, label1)
+!!      subroutine write_vector_label(id_file, label_v)
+!!      subroutine write_sym_tensor_label(id_file, label_st)
+!!
+!!      subroutine write_two_labels(id_file, label1, label2)
+!!      subroutine write_three_labels(id_file, label1, label2, label3)
+!!      subroutine write_four_labels(id_file, label1, label2,           &
+!!     &          label3, label4)
+!!      subroutine write_six_labels(id_file, label1, label2,            &
+!!     &          label3, label4, label5, label6)
+!!      subroutine write_seven_labels(id_file, label1, label2,          &
+!!     &          label3, label4, label5, label6, label7)
+!!
+!!      subroutine write_multi_labels(id_file, nlabel, labels)
+!!@endverbatim
+!!
 !
       module write_field_labels
 !
@@ -172,7 +178,7 @@
       integer(kind = kint), intent(in) :: id_file
       character(len=kchara), intent(in) :: label1
 !
-      write(id_file,'(2a)',advance='no') trim(label1), ', '
+      write(id_file,'(2a)',advance='no') trim(label1), '    '
 !
       end subroutine write_one_label_cont
 !

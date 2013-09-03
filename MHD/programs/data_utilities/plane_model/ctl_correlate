@@ -13,19 +13,19 @@ begin  plane_correlate_control
 !       (equi_distance, half_Chebyshev, or Chebyshev)
 !
   begin plane_mesh_ctl
-    nnod_plane_ctl        24     24     24      end
-    ndomain_plane_ctl      1      1      1      end
-!    unit_len_plane_ctl    one    one    one     end
-!    plane_size_ctl      1.0e0  1.0e0  1.0e0   end
+    nnod_plane_ctl        24     24     24
+    ndomain_plane_ctl      1      1      1
+!    unit_len_plane_ctl    one    one    one
+!    plane_size_ctl      1.0e0  1.0e0  1.0e0
 !    horizontal_grid_ctl   Chebyshev
 !    num_of_sleeve_ctl    2
   end plane_mesh_ctl
 !
   begin reference_plane_mesh_ctl
-!    nnod_plane_ctl        24     24     24      end
-    ndomain_plane_ctl      1      1      1      end
-!    unit_len_plane_ctl    one    one    one     end
-!    plane_size_ctl      1.0e0  1.0e0  1.0e0   end
+!    nnod_plane_ctl        24     24     24
+    ndomain_plane_ctl      1      1      1
+!    unit_len_plane_ctl    one    one    one
+!    plane_size_ctl      1.0e0  1.0e0  1.0e0
 !    horizontal_grid_ctl   Chebyshev
 !    num_of_sleeve_ctl    2
   end
@@ -33,14 +33,14 @@ begin  plane_correlate_control
   begin model
     begin phys_values_ctl
       num_nod_phys_ctl   8
-        nod_value_ctl  velocity            Viz_On   Monitor_On    end
-        nod_value_ctl  temperature         Viz_On   Monitor_On    end
-        nod_value_ctl  pressure            Viz_On   Monitor_On    end
-        nod_value_ctl  vector_potential    Viz_On   Monitor_On    end
-        nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
-        nod_value_ctl  magnetic_potential  Viz_On   Monitor_On    end
-        nod_value_ctl  vorticity           Viz_On   Monitor_On    end
-        nod_value_ctl  current_density     Viz_On   Monitor_On    end
+        nod_value_ctl  velocity            Viz_On   Monitor_On
+        nod_value_ctl  temperature         Viz_On   Monitor_On
+        nod_value_ctl  pressure            Viz_On   Monitor_On
+        nod_value_ctl  vector_potential    Viz_On   Monitor_On
+        nod_value_ctl  magnetic_field      Viz_On   Monitor_On
+        nod_value_ctl  magnetic_potential  Viz_On   Monitor_On
+        nod_value_ctl  vorticity           Viz_On   Monitor_On
+        nod_value_ctl  current_density     Viz_On   Monitor_On
       end
     end
 !

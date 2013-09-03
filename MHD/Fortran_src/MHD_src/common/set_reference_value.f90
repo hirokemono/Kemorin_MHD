@@ -35,7 +35,7 @@
 !
 ! set reference temperature (for spherical shell)
 !
-      if ( iflag_4_ref_temp .eq. 100 ) then
+      if ( iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         d_nod(1:numnod,iphys%i_ref_t) = zero
 !
         do inum = 1, numnod_fluid
@@ -52,7 +52,7 @@
         end do
       end if
 !
-      if ( iflag_4_ref_temp .eq. 200 ) then
+      if ( iflag_4_ref_temp .eq. id_linear_r_ref_temp) then
         d_nod(1:numnod,iphys%i_ref_t) = zero
 !
         do inum = 1, numnod_fluid
@@ -79,7 +79,7 @@
         end do
       end if
 !
-      if ( iflag_straficate.gt.1 ) then
+      if (iflag_t_strat .gt. id_turn_OFF) then
         d_nod(1:numnod,iphys%i_gref_t) = zero
 !
         do inum = 1, numnod_fluid

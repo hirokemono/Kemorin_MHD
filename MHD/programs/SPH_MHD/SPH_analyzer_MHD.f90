@@ -2,7 +2,7 @@
 !     module SPH_analyzer_MHD
 !
 !      subroutine SPH_initialize_MHD
-!      subroutine SPH_analyze_MHD(i_step)
+!      subroutine SPH_analyze_MHD(i_step, iflag_finish)
 !
 !      Written by H. Matsui
 !
@@ -97,7 +97,7 @@
 !*
 !* -----  set integrals for coriolis term -----------------
 !*
-      if(iflag_4_coriolis .gt. 0) then
+      if(iflag_4_coriolis .gt. id_turn_OFF) then
         if ( iflag_debug.gt.0 ) write(*,*) 'init_sum_coriolis_sph'
         call init_sum_coriolis_sph
       end if
@@ -166,7 +166,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_MHD(i_step)
+      subroutine SPH_analyze_MHD(i_step, iflag_finish)
 !
       use m_work_time
       use m_t_step_parameter
@@ -180,6 +180,7 @@
       use sph_mhd_rms_IO
 !
       integer(kind = kint), intent(in) :: i_step
+      integer(kind = kint), intent(inout) :: iflag_finish
 !
 !*  ----------  add time evolution -----------------
 !*
@@ -218,6 +219,13 @@
       call start_eleps_time(8)
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
       call output_sph_restart_control
+!
+      total_time = MPI_WTIME() - total_start
+      if      (istep_rst_end .eq. -1                                    &
+     &   .and. total_time.gt.elapsed_time) then
+        call output_sph_rst_by_elaps
+        iflag_finish = 1
+      end if
       call end_eleps_time(8)
 !
 !*  -----------  lead energy data --------------
@@ -230,6 +238,9 @@
       if(iflag_debug.gt.0) write(*,*) 'sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph
 !
+      if(i_step .ge. i_step_number .and. i_step_number.gt.0) then
+        iflag_finish = 1
+      end if
       call end_eleps_time(4)
 !
       end subroutine SPH_analyze_MHD

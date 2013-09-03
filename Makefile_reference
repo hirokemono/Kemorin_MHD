@@ -99,6 +99,12 @@ all: mpif.h makemake
 	cd $(MAKEDIR); make
 
 
+$(MAKE_MOD_DEP): $(MHDDIR)/module_dependency/make_module_dependency.f90
+	if [ ! -d $(BUILDDIR) ]; then \
+		mkdir $(BUILDDIR); \
+	fi
+	$(F90_LOCAL) -c -o $(MAKEDIR)/make_module_dependency.o $<
+	$(F90_LOCAL) -o $@ $(MAKEDIR)/make_module_dependency.o
 
 makemake: mpif.h
 	echo "# Construct Makefile"; \

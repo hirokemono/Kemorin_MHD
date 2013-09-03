@@ -31,27 +31,27 @@
       use m_control_parameter
 !
 !
-      if ( iflag_t_evo_4_temp .ge. 1 ) then
+      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         call set_bc_h_flux_id
       end if
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         call set_bc_torque_id
         call set_bc_wall_id
       end if
 !
-      if ( iflag_t_evo_4_magne.ge.1                                     &
-     &      .or. iflag_t_evo_4_vect_p.ge.1 ) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
+     &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call set_bc_magne_surf_id
         call set_bc_current_surf_id
         call set_surf_mag_p_id
       end if
 !
-      if ( iflag_t_evo_4_vect_p .ge. 1 ) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call set_bc_vect_p_surf_id
       end if
 ! 
-      if ( iflag_t_evo_4_composit .ge. 1 ) then
+      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         call set_surf_composition_id
       end if
 ! 

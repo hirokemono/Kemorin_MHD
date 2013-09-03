@@ -118,7 +118,7 @@
       end if
 !
       if(my_rank .eq. 0) then
-        write(*,*) 'SPH_SR_arbitrary_mode: ', iflag_sph_SRN
+        write(*,*) 'Comm. mode for sph. trans.: ', iflag_sph_SRN
         write(*,*) '0: Time by reg. import list: ', etime_item_import
         write(*,*) '1: Time by rev. import list: ', etime_irev_import
       end if

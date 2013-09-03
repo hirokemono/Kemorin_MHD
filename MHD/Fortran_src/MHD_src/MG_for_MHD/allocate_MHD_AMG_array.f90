@@ -78,43 +78,43 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
         call alloc_type_djds11_mat(femmesh%mesh%node%numnod,            &
      &      femmesh%mesh%node%internal_node, djds_tbl_fl, mat_press)
 !
-        if ( iflag_t_evo_4_velo .ge. 3 ) then
+        if ( iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
           call alloc_type_djds33_mat(femmesh%mesh%node%numnod,          &
      &        femmesh%mesh%node%internal_node, djds_tbl_fl, mat_velo)
         end if
       end if
 !
-      if ( iflag_t_evo_4_temp.ge.3 ) then
+      if ( iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         call alloc_type_djds11_mat(femmesh%mesh%node%numnod,            &
      &      femmesh%mesh%node%internal_node, djds_tbl_fl, mat_temp)
       end if
 !
-      if ( iflag_t_evo_4_magne.ge.1 ) then
+      if ( iflag_t_evo_4_magne .ge. id_no_evolution) then
         call alloc_type_djds11_mat(femmesh%mesh%node%numnod,            &
      &       femmesh%mesh%node%internal_node, djds_tbl, mat_magp)
 !
-        if ( iflag_t_evo_4_magne .ge. 3 ) then
+        if ( iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
           call alloc_type_djds33_mat(femmesh%mesh%node%numnod,          &
      &       femmesh%mesh%node%internal_node, djds_tbl, mat_magne)
         end if
       end if
 !
 !
-      if ( iflag_t_evo_4_vect_p.ge.1 ) then
+      if ( iflag_t_evo_4_vect_p .ge. id_no_evolution) then
         call alloc_type_djds11_mat(femmesh%mesh%node%numnod,            &
      &       femmesh%mesh%node%internal_node, djds_tbl, mat_magp)
 !
-        if ( iflag_t_evo_4_vect_p .ge. 3 ) then
+        if ( iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
           call alloc_type_djds33_mat(femmesh%mesh%node%numnod,          &
      &       femmesh%mesh%node%internal_node, djds_tbl, mat_magne)
         end if
       end if
 !
-      if ( iflag_t_evo_4_composit.ge.1 ) then
+      if ( iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         call alloc_type_djds11_mat(femmesh%mesh%node%numnod,            &
      &       femmesh%mesh%node%internal_node, djds_tbl_fl,              &
      &       mat_d_scalar)
@@ -138,31 +138,32 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
         call alloc_type_zero_mat(mat_press)
 !
-        if ( iflag_t_evo_4_velo .ge. 3 ) then
+        if ( iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
           call alloc_type_zero_mat(mat_velo)
         end if
       end if
 !
-      if ( iflag_t_evo_4_temp.ge.3 ) then
+      if ( iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         call alloc_type_zero_mat(mat_temp)
       end if
 !
-      if(iflag_t_evo_4_magne.ge.1 .or. iflag_t_evo_4_vect_p.ge.1) then
+      if(iflag_t_evo_4_magne .gt. id_no_evolution                       &
+     &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call alloc_type_zero_mat(mat_magp)
       end if
 !
-      if ( iflag_t_evo_4_magne .ge. 3 ) then
+      if ( iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
         call alloc_type_zero_mat(mat_magne)
       end if
 !
-      if ( iflag_t_evo_4_vect_p .ge. 3 ) then
+      if ( iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
         call alloc_type_zero_mat(mat_magne)
       end if
 !
-      if ( iflag_t_evo_4_composit.ge.1 ) then
+      if ( iflag_t_evo_4_composit .gt. id_no_evolution) then
         call alloc_type_zero_mat(mat_d_scalar)
       end if
 !

@@ -16,7 +16,7 @@
       integer (kind = kint) :: control_file_code = 13
       character (len = kchara) :: control_file_name='ctl_sph_transform'
 !
-      character(len = kchara) :: sph_transform_mode_ctl
+      character(len = kchara) :: Legendre_trans_loop_ctl
       character(len = kchara) :: FFT_library_ctl
 !
       character(len = kchara) :: zm_spec_file_head_ctl
@@ -43,7 +43,7 @@
 !   2nd level
 !
       character(len=kchara), parameter :: hd_sph_transform_mode         &
-     &                        =  'sph_transform_mode_ctl'
+     &                        =  'Legendre_trans_loop_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_FFT_package =  'FFT_library_ctl'
 !
@@ -174,7 +174,7 @@
 !
 !
         call read_character_ctl_item(hd_sph_transform_mode,             &
-     &          i_sph_transform_mode, sph_transform_mode_ctl)
+     &          i_sph_transform_mode, Legendre_trans_loop_ctl)
         call read_character_ctl_item(hd_FFT_package,                    &
      &          i_FFT_package, FFT_library_ctl)
         call read_character_ctl_item(hd_zm_sph_spec_file,               &

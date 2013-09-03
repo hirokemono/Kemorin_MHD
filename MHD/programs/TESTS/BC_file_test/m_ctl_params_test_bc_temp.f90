@@ -33,7 +33,7 @@
 !
 !
       if (i_mesh_header .ne. 0) then
-        mesh_file_head = mesh_file_head_ctl
+        mesh_file_head = mesh_file_prefix
       else
         mesh_file_head = def_mesh_file_head
       end if

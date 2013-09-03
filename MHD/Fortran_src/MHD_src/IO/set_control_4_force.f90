@@ -35,14 +35,14 @@
       integer (kind = kint) :: i, iflag
 !
 !
-      iflag_4_gravity =        0
-      iflag_4_coriolis =       0
-      iflag_4_lorentz =        0
-      iflag_4_rotate =         0
-      iflag_4_composit_buo =   0
-      iflag_4_filter_gravity = 0
+      iflag_4_gravity =        id_turn_OFF
+      iflag_4_coriolis =       id_turn_OFF
+      iflag_4_lorentz =        id_turn_OFF
+      iflag_4_rotate =         id_turn_OFF
+      iflag_4_composit_buo =   id_turn_OFF
+      iflag_4_filter_gravity = id_turn_OFF
 !
-      if (iflag_t_evo_4_velo.eq.0) then
+      if (iflag_t_evo_4_velo .eq. id_no_evolution) then
         num_force = 0
       else
         if (i_num_forces.gt.0) then
@@ -68,7 +68,7 @@
      &      .or.  name_force(i) .eq. 'Gravity_element'                  &
      &      .or.  name_force(i) .eq. 'GRAVITY_ELEMENT'                  &
      &      ) then
-            iflag_4_gravity =  1
+            iflag_4_gravity =  id_FORCE_ele_int
           else if(name_force(i) .eq. 'gravity_node'                     &
      &      .or.  name_force(i) .eq. 'Gravity_node'                     &
      &      .or.  name_force(i) .eq. 'GRAVITY_NODE'                     &
@@ -76,10 +76,10 @@
      &      .or.  name_force(i) .eq. 'Gravity_nod'                      &
      &      .or.  name_force(i) .eq. 'GRAVITY_NOD'                      &
      &      ) then
-            if (iflag_t_evo_4_velo .eq. 4) then
-              iflag_4_gravity = 1
+            if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass) then
+              iflag_4_gravity = id_FORCE_ele_int
             else
-              iflag_4_gravity = 2
+              iflag_4_gravity = id_FORCE_at_node
             end if
 !
           else if (name_force(i) .eq. 'composite_gravity'               &
@@ -92,7 +92,7 @@
      &      .or.   name_force(i) .eq. 'Composite_gravity_element'       &
      &      .or.   name_force(i) .eq. 'COMPOSITE_GRAVITY_ELEMENT'       &
      &      ) then
-            iflag_4_composit_buo =  1
+            iflag_4_composit_buo =  id_FORCE_ele_int
 !
           else if (name_force(i) .eq. 'composite_gravity_nod'           &
      &      .or.   name_force(i) .eq. 'Composite_gravity_nod'           &
@@ -101,49 +101,51 @@
      &      .or.   name_force(i) .eq. 'Composite_gravity_node'          &
      &      .or.   name_force(i) .eq. 'COMPOSITE_GRAVITY_NODE'          &
      &      ) then
-            if (iflag_t_evo_4_velo .eq. 4) then
-              iflag_4_composit_buo = 1
+            if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass) then
+              iflag_4_composit_buo = id_FORCE_ele_int
             else
-              iflag_4_composit_buo = 2
+              iflag_4_composit_buo = id_FORCE_at_node
             end if
 !
           else if(name_force(i) .eq. 'filtered_gravity'                 &
      &      .or.  name_force(i) .eq. 'Filtered_gravity'                 &
      &      .or.  name_force(i) .eq. 'FILTERED_GRAVITY'                 &
      &      ) then
-            iflag_4_filter_gravity =  1
+            iflag_4_filter_gravity =  id_FORCE_ele_int
 !
           else if ( name_force(i) .eq. 'Coriolis' ) then
-              iflag_4_coriolis = 1
+              iflag_4_coriolis = id_FORCE_ele_int
           else if ( name_force(i) .eq. 'Coriolis_node' ) then
-            if (iflag_t_evo_4_velo .eq. 4) then
-              iflag_4_coriolis = 1
+            if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass) then
+              iflag_4_coriolis = id_FORCE_ele_int
             else
-              iflag_4_coriolis = 2
+              iflag_4_coriolis = id_FORCE_at_node
             end if
           else if ( name_force(i) .eq. 'Coriolis_imp' ) then
-            if (iflag_t_evo_4_velo .eq. 3) then
-              iflag_4_coriolis = 11
-            else if (iflag_t_evo_4_velo .eq. 4) then
-              iflag_4_coriolis = 11
+            if (iflag_t_evo_4_velo .eq. id_Crank_nicolson) then
+              iflag_4_coriolis = id_Coriolis_ele_imp
+            else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass)   &
+     &          then
+              iflag_4_coriolis = id_Coriolis_ele_imp
             else
-              iflag_4_coriolis = 1
+              iflag_4_coriolis = id_FORCE_ele_int
             end if
           else if ( name_force(i) .eq. 'Coriolis_node_imp' ) then
-            if (iflag_t_evo_4_velo .eq. 3) then
-              iflag_4_coriolis = 12
-            else if (iflag_t_evo_4_velo .eq. 4) then
-              iflag_4_coriolis = 11
+            if (iflag_t_evo_4_velo .eq. id_Crank_nicolson) then
+              iflag_4_coriolis = id_Coriolis_nod_imp
+            else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass)   &
+     &               then
+              iflag_4_coriolis = id_Coriolis_ele_imp
             else
-              iflag_4_coriolis = 1
+              iflag_4_coriolis = id_FORCE_ele_int
             end if
 !
           else if ( name_force(i) .eq. 'Lorentz' ) then
-            iflag_4_lorentz = 1
+            iflag_4_lorentz = id_turn_ON
           else if ( name_force(i) .eq. 'Lorentz_full' ) then
-            iflag_4_lorentz = 2
+            iflag_4_lorentz = id_Lorentz_w_Emag
           else if ( name_force(i) .eq. 'Rotation_form' ) then
-            iflag_4_rotate = 1
+            iflag_4_rotate =  id_turn_ON
           end if
         end do
       end if
@@ -204,40 +206,34 @@
       angular(1:2) = zero
       angular(3) =   one
 !
-      if (iflag_4_coriolis .gt. 0) then
-        if (i_rotation_vec .eq. 0) then
-          e_message = 'Set rotation vector for Coriolis term'
-          call parallel_abort(90, e_message)
-        else
+      if ((iflag_4_coriolis*i_rotation_vec) .gt. 0) then
+        do i = 1, i_rotation_vec
+          tmpchara = angular_dir_name_ctl(i)
 !
-          do i = 1, i_rotation_vec
-            tmpchara = angular_dir_name_ctl(i)
-!
-!            if (my_rank.eq.0) write(*,*) 'tmpchara ',tmpchara
-            if ( tmpchara .eq. 'x' .or. tmpchara .eq. 'X' ) then
-              angular(1) = angular_vect_ctl(i)
-            else if ( tmpchara .eq. 'y' .or. tmpchara .eq. 'Y' ) then
-              angular(2) = angular_vect_ctl(i)
-            else if ( tmpchara .eq. 'z' .or. tmpchara .eq. 'Z' ) then
-              angular(3) = angular_vect_ctl(i)
-            end if
-          end do
-        end if
+          if ( tmpchara .eq. 'x' .or. tmpchara .eq. 'X' ) then
+            angular(1) = angular_vect_ctl(i)
+          else if ( tmpchara .eq. 'y' .or. tmpchara .eq. 'Y' ) then
+            angular(2) = angular_vect_ctl(i)
+          else if ( tmpchara .eq. 'z' .or. tmpchara .eq. 'Z' ) then
+            angular(3) = angular_vect_ctl(i)
+          end if
+        end do
       end if
+!
 !
 !  setting for external mangnetic field
 !
       if (i_magneto_cv .eq. 0) then
-        iflag_magneto_cv = 0
+        iflag_magneto_cv = id_turn_OFF
       else
         if(magneto_cv_ctl .eq. 'on' .or. magneto_cv_ctl .eq. 'On'       &
      &    .or. magneto_cv_ctl .eq. 'ON' .or. magneto_cv_ctl .eq. '1')   &
-     &    iflag_magneto_cv = 1
+     &    iflag_magneto_cv = id_turn_ON
       end if
 !
       ex_magne = 0.0d0
 !
-      if (iflag_magneto_cv .gt. 0) then
+      if (iflag_magneto_cv .gt. id_turn_OFF) then
         if (i_magne_vect .eq. 0) then
           e_message = 'Set external magnetic field'
           call parallel_abort(90, e_message)
@@ -270,7 +266,7 @@
         write(*,*) 'magneto_cv ',iflag_magneto_cv
         write(*,'(a,1p3E25.15e3)') 'ex_magne ',ex_magne
         write(*,*) 'iflag_4_coriolis', iflag_4_coriolis
-        if(iflag_4_coriolis .gt. 0) then
+        if(iflag_4_coriolis .gt. id_turn_OFF) then
           write(*,'(a, 1p3E25.15e3)') 'rotation ', angular(1:3)
         end if
       end if

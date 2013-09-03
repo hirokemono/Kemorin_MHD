@@ -28,31 +28,31 @@
       use m_iccg_parameter
 !
 !
-      if ( iflag_t_evo_4_velo .ge. 3 ) then
+      if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
         eps_4_velo_crank = eps_crank * coef_d_velo * dt**2
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'eps_4_velo', eps_4_velo_crank
       end if
 !
-      if ( iflag_t_evo_4_temp .ge. 3 ) then
+      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         eps_4_temp_crank = eps_crank * coef_d_temp * dt**2
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'eps_4_temp_crank', eps_4_temp_crank
       end if
 !
-      if ( iflag_t_evo_4_magne .ge. 3 ) then
+      if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
         eps_4_magne_crank = eps_crank * coef_d_magne * dt**2
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'eps_4_magne_crank', eps_4_magne_crank
       end if
 !
-      if ( iflag_t_evo_4_vect_p .ge. 3 ) then
+      if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
         eps_4_magne_crank = eps_crank * coef_d_magne * dt**2
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'eps_4_magne_crank', eps_4_magne_crank
       end if
 !
-      if ( iflag_t_evo_4_composit .ge. 3 ) then
+      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         eps_4_d_scalar_crank = eps_crank * coef_d_magne * dt**2
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'iflag_t_evo_4_composit', iflag_t_evo_4_composit

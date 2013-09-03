@@ -68,16 +68,16 @@
 !
       call int_vol_viscosity_ele
 !
-      if ( iflag_4_coriolis .eq. 11) then
+      if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
          if (iflag_debug.eq.1) write(*,*) 'int_vol_coriolis_crank_ele'
         call int_vol_coriolis_crank_ele
       end if
 !
 ! -------     advection and forces
 !
-      if (iflag_4_supg .eq. 1) then
+      if (iflag_4_supg .eq. id_turn_ON) then
        call int_vol_velo_pre_ele_upw
-      else if (iflag_4_supg .eq. 2) then
+      else if (iflag_4_supg .eq. id_magnetic_SUPG) then
        call int_vol_velo_pre_ele_upm
       else
        call int_vol_velo_pre_ele
@@ -88,16 +88,16 @@
       call int_surf_velo_pre_ele
 !
 !
-      if ( iflag_t_evo_4_velo .eq. 1 ) then 
+      if (iflag_t_evo_4_velo .eq. id_explicit_euler) then
        call cal_velo_pre_euler
 !
-      else if ( iflag_t_evo_4_velo .eq. 2 ) then 
+      else if (iflag_t_evo_4_velo .eq. id_explicit_adams2) then
        call cal_velo_pre_adams
 !
-      else if ( iflag_t_evo_4_velo .eq. 3 ) then 
+      else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson) then
        call cal_velo_pre_crank
 !
-      else if ( iflag_t_evo_4_velo .eq. 4 ) then 
+      else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass) then 
        call cal_velo_pre_consist_crank
       end if
 !

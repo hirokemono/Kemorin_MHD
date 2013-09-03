@@ -77,6 +77,8 @@
 !
       subroutine evolution_sph_mhd_only
 !
+      integer(kind = kint) :: iflag_finish
+!
 !
       call start_eleps_time(3)
 !
@@ -84,6 +86,7 @@
 !*
       time =       time_init
       i_step_MHD = i_step_init
+      iflag_finish = 0
 !*
 !*  -------  time evelution loop start -----------
 !*
@@ -95,11 +98,11 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
-        call SPH_analyze_MHD(i_step_MHD)
+        call SPH_analyze_MHD(i_step_MHD, iflag_finish)
 !
 !*  -----------  exit loop --------------
 !*
-        if(i_step_MHD .ge. i_step_number) exit
+        if(iflag_finish .gt. 0) exit
       end do
 !
 !  time evolution end

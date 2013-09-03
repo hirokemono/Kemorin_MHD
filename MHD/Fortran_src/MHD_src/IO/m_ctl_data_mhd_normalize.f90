@@ -21,16 +21,16 @@
 !!     Taylor_number, Ekman_number
 !!     Elsasser_number
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!    begin dimensionless_ctl
-!      array dimless_ctl 6
-!        dimless_ctl  Prandtl_number                   1.0e-0  end
-!        dimless_ctl  modified_Rayleigh_number         1.0E+2  end
-!        dimless_ctl  Ekman_number                     1.0e-3  end
-!        dimless_ctl  magnetic_Prandtl_number          5.0e+0  end
-!        dimless_ctl  Composite_Rayleigh_number        1.0E+2  end
-!        dimless_ctl  Composite_Prandtl_number         1.0E+2  end
-!      end array
-!    end  dimensionless_ctl
+!!    begin dimensionless_ctl
+!!      array dimless_ctl 6
+!!        dimless_ctl  Prandtl_number                   1.0e-0
+!!        dimless_ctl  modified_Rayleigh_number         1.0E+2
+!!        dimless_ctl  Ekman_number                     1.0e-3
+!!        dimless_ctl  magnetic_Prandtl_number          5.0e+0
+!!        dimless_ctl  Composite_Rayleigh_number        1.0E+2
+!!        dimless_ctl  Composite_Prandtl_number         1.0E+2
+!!      end array
+!!    end  dimensionless_ctl
 !!
 !!!!!! Normalization settings  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!

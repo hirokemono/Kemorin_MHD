@@ -76,9 +76,9 @@
 !
 !      call check_sp_rlm(my_rank, nb)
       call start_eleps_time(22)
-      if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
+      if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
         call leg_bwd_trans_scalar_spin(nb)
-      else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
+      else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         call leg_bwd_trans_scalar_krin(nb)
       else
         call leg_bwd_trans_scalar_org(nb)
@@ -134,9 +134,9 @@
 !      call check_vr_rtm(my_rank, nb)
 !
       call start_eleps_time(23)
-      if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
+      if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
         call leg_fwd_trans_scalar_spin(nb)
-      else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
+      else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         call leg_fwd_trans_scalar_krin(nb)
       else
         call leg_fwd_trans_scalar_org(nb)

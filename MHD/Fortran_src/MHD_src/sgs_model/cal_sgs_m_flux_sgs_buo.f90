@@ -62,29 +62,29 @@
 !
 !   lead SGS buoyancy flux
 !
-      if(iflag_4_gravity .gt. 0) then
+      if(iflag_4_gravity .gt. id_turn_OFF) then
         call cal_SGS_gravity_flux(coef_buo, iphys%i_SGS_h_flux,         &
      &      iphys%i_SGS_buo_wk)
       end if
-      if(iflag_4_composit_buo .gt. 0) then
+      if(iflag_4_composit_buo .gt. id_turn_OFF) then
         call cal_SGS_gravity_flux(coef_comp_buo, iphys%i_SGS_c_flux,    &
      &      iphys%i_SGS_comp_buo_wk)
        end if
 !
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
 !
-      if(iflag_4_gravity .gt. 0) then
+      if(iflag_4_gravity .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps_1st(intg_point_t_evo,            &
      &      n_layer_d, n_item_layer_d, layer_stack, item_layer,         &
      &      d_nod(1,iphys%i_reynolds_wk), d_nod(1,iphys%i_SGS_buo_wk),  &
      &      sgs_l(1,1), sgs_l(1,4), sgs_l(1,2), sgs_l(1,5) )
 !
-        if(iflag_4_composit_buo .gt. 0) then
+        if(iflag_4_composit_buo .gt. id_turn_OFF) then
           call int_vol_rms_ave_ele_grps_1st(intg_point_t_evo,           &
      &        n_layer_d, n_item_layer_d, layer_stack, item_layer,       &
      &        d_nod(1,iphys%i_SGS_comp_buo_wk), sgs_l(1,3), sgs_l(1,6))
         end if
-      else if(iflag_4_composit_buo .gt. 0) then
+      else if(iflag_4_composit_buo .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps_1st(intg_point_t_evo,            &
      &      n_layer_d, n_item_layer_d, layer_stack,                     &
      &      item_layer, d_nod(1,iphys%i_reynolds_wk),                   &
@@ -97,7 +97,7 @@
 !
 !   Parameterize model coeffisient including SGS Buoyancy
 !
-      if(iflag_4_gravity .gt. 0) then
+      if(iflag_4_gravity .gt. id_turn_OFF) then
 !        call cal_Csim_buo_by_Reynolds_ratio(n_layer_d, ifive,          &
 !     &      sgs_c_coef(1,icomp_sgs_tbuo), sgs_f_coef(1,iak_sgs_tbuo) )
         call single_Csim_buo_by_mf_ratio(n_layer_d, ifive,              &
@@ -105,7 +105,7 @@
         call clippging_sgs_coefs(ncomp_sgs_buo,                         &
      &      iak_sgs_tbuo, icomp_sgs_tbuo)
       end if
-      if(iflag_4_composit_buo .gt. 0) then
+      if(iflag_4_composit_buo .gt. id_turn_OFF) then
 !        call cal_Csim_buo_by_Reynolds_ratio(n_layer_d, isix,           &
 !     &      sgs_c_coef(1,icomp_sgs_cbuo), sgs_f_coef(1,iak_sgs_cbuo) )
         call single_Csim_buo_by_mf_ratio(n_layer_d, isix,               &

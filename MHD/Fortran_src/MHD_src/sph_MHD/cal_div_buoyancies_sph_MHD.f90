@@ -38,9 +38,9 @@
       use m_machine_parameter
 !
 !
-      if ( (iflag_4_gravity*iflag_4_composit_buo) .gt. 0) then
+      if ((iflag_4_gravity*iflag_4_composit_buo) .gt. id_turn_OFF) then
 !
-        if(iflag_4_ref_temp .ne. 100) then
+        if(iflag_4_ref_temp .ne. id_sphere_ref_temp) then
           if (iflag_debug.ge.1) write(*,*)                              &
      &        'cal_div_double_buoyancy_sph_MHD by temp', ipol%i_temp
           call cal_div_double_buoyancy_sph_MHD(ipol%i_temp,             &
@@ -53,9 +53,9 @@
      &        ipol%i_grad_part_t)
         end if
 !
-      else if (iflag_4_gravity .gt. 0) then
+      else if (iflag_4_gravity .gt. id_turn_OFF) then
 !
-        if(iflag_4_ref_temp .ne. 100) then
+        if(iflag_4_ref_temp .ne. id_sphere_ref_temp) then
           if (iflag_debug.ge.1)  write(*,*)                             &
      &      'cal_div_buoyancy_sph_MHD by temperature'
           call cal_div_buoyancy_sph_MHD(coef_buo, ipol%i_temp,          &
@@ -67,13 +67,13 @@
      &        ipol%i_par_temp, ipol%i_grad_part_t, ipol%i_div_buoyancy)
         end if
 !
-      else if (iflag_4_composit_buo .gt. 0) then
+      else if (iflag_4_composit_buo .gt. id_turn_OFF) then
           if (iflag_debug.ge.1)  write(*,*)                             &
      &      'cal_div_buoyancy_sph_MHD by composition'
         call cal_div_buoyancy_sph_MHD(coef_comp_buo, ipol%i_light,      &
      &      ipol%i_grad_composit, ipol%i_div_comp_buo)
 !
-      else if(iflag_4_filter_gravity .gt. 0) then
+      else if(iflag_4_filter_gravity .gt. id_turn_OFF) then
           if (iflag_debug.ge.1)  write(*,*)                             &
      &      'cal_div_buoyancy_sph_MHD by filtrered temperature'
         call cal_div_buoyancy_sph_MHD(coef_buo, ipol%i_filter_temp,     &

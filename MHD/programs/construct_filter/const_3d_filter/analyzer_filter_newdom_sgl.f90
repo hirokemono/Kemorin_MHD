@@ -49,7 +49,6 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_const_domain_tbl_by_file'
-      iflag_mesh_file_fmt = ifile_type
       call s_const_domain_tbl_by_file(target_mesh_head)
 !
       end subroutine init_analyzer

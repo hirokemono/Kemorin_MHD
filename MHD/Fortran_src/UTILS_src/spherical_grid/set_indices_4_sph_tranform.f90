@@ -1,33 +1,38 @@
+!>@file   set_indices_4_sph_tranform.f90
+!!@brief  module set_indices_4_sph_tranform
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007
 !
-!      module set_indices_4_sph_tranform
-!
-!     Written by H. Matsui on July, 2007
-!
-!      subroutine cal_local_nums(n_div, ist, ied, num, istack)
-!      subroutine cal_local_nums_rev(n_div, ist, ied, num, istack)
-!      subroutine cal_local_num_rtm_m(ndomain_m, ltr, num, istack)
-!
-!      subroutine merge_num_3_local_layers(n_div, num_1, num_2, num_3,  &
-!     &          ist, num, istack)
-!
-!      subroutine set_aria_id(n_div, ist, ied, n_local, ip_local)
-!
-!      subroutine set_wavenumber_4_ispack_fft(nth, nph,                 &
-!     &          mspec_4_ispack, mdx_ispack)
-!        output: mspec_4_ispack, mdx_ispack
-!      subroutine set_zonal_wavenum_4_lagendre(ndomain_m,               &
-!     &          ltr, jmax, nth, nph, jdx_fsph, mdx_4_lgd)
-!        output: jdx_fsph, mdx_4_lgd
-!
-!      subroutine set_merged_index_4_sph_trans(ndomain_m, ltr, jmax,    &
-!     &          nph, istack_m, mdx_4_lgd, nidx_ml, istack_ml, jdx_lag)
-!        output: nidx_ml, istack_ml, jdx_lag
-!
-!      subroutine set_trans_table_fft_2_lgd(ltr, nth, nph,              &
-!     &          mspec_4_ispack, jdx_fsph, mtbl_fft_2_lgd)
-!        output: mtbl_fft_2_lgd
-!      subroutine set_trans_table_lgd_2_sph(jmax, jtbl_fsph, jtbl_isph)
-!        output: jtbl_isph
+!>@brief  Set control parameters for spherical harmonics dynamo from IO
+!!
+!!@verbatim
+!!      subroutine cal_local_nums(n_div, ist, ied, num, istack)
+!!      subroutine cal_local_nums_rev(n_div, ist, ied, num, istack)
+!!      subroutine cal_local_num_rtm_m(ndomain_m, ltr, num, istack)
+!!
+!!      subroutine merge_num_3_local_layers(n_div, num_1, num_2, num_3, &
+!!     &          ist, num, istack)
+!!
+!!      subroutine set_aria_id(n_div, ist, ied, n_local, ip_local)
+!!
+!!      subroutine set_wavenumber_4_ispack_fft(nth, nph,                &
+!!     &          mspec_4_ispack, mdx_ispack)
+!!        output: mspec_4_ispack, mdx_ispack
+!!      subroutine set_zonal_wavenum_4_legendre(ndomain_m,              &
+!!     &          ltr, jmax, nth, nph, jdx_fsph, mdx_4_lgd)
+!!        output: jdx_fsph, mdx_4_lgd
+!!
+!!      subroutine set_merged_index_4_sph_trans(ndomain_m, ltr, jmax,   &
+!!     &          nph, istack_m, mdx_4_lgd, nidx_ml, istack_ml, jdx_lag)
+!!        output: nidx_ml, istack_ml, jdx_lag
+!!
+!!      subroutine set_trans_table_fft_2_lgd(ltr, nth, nph,             &
+!!     &          mspec_4_ispack, jdx_fsph, mtbl_fft_2_lgd)
+!!        output: mtbl_fft_2_lgd
+!!      subroutine set_trans_table_lgd_2_sph(jmax, jtbl_fsph, jtbl_isph)
+!!        output: jtbl_isph
+!!@endverbatim
 !
       module set_indices_4_sph_tranform
 !
@@ -267,7 +272,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_zonal_wavenum_4_lagendre(ndomain_m,                &
+      subroutine set_zonal_wavenum_4_legendre(ndomain_m,                &
      &          ltr, jmax, nth, nph, jdx_fsph, mdx_4_lgd)
 !
       integer(kind = kint), intent(in) :: ltr, jmax
@@ -355,7 +360,7 @@
 !      end do
 !
 !
-      end subroutine set_zonal_wavenum_4_lagendre
+      end subroutine set_zonal_wavenum_4_legendre
 !
 ! -----------------------------------------------------------------------
 !

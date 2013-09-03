@@ -39,7 +39,7 @@
       original_mesh_head = mesh_file_head
 !
       if (i_new_mesh_head .gt. 0) then
-        modified_mesh_head = new_mesh_head_ctl
+        modified_mesh_head = new_mesh_prefix
       else
         call parallel_abort(1, 'set modifield mesh prefix')
       end if

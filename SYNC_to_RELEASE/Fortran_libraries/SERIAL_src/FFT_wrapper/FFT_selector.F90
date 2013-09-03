@@ -10,7 +10,8 @@
 !>@brief  Selector of Fourier transform
 !!
 !!@verbatim
-!!      subroutine initialize_FFT_select(Nsmp, Nstacksmp, Nfft)
+!!      subroutine initialize_FFT_select(my_rank, Nsmp, Nstacksmp, Nfft)
+!!      subroutine finalize_FFT_select(Nsmp)
 !!      subroutine verify_FFT_select(Nsmp, Nstacksmp, Nfft)
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT for ISPACK
@@ -69,11 +70,17 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter :: iflag_ISPACK =    0
+!>      integer flag for undefined
+      integer(kind = kint), parameter :: iflag_UNDEFINED_FFT =   0
+!>      integer flag to use FFTPACK5
       integer(kind = kint), parameter :: iflag_FFTPACK =   1
+!>      integer flag to use FFTW3
       integer(kind = kint), parameter :: iflag_FFTW =      2
+!      integer(kind = kint), parameter :: iflag_FFTW = 3
+!>      integer flag to use ISPACK
+      integer(kind = kint), parameter :: iflag_ISPACK =    3
 !
-      integer(kind = kint) :: iflag_FFT = iflag_FFTPACK
+      integer(kind = kint) :: iflag_FFT = iflag_UNDEFINED_FFT
 !
 ! ------------------------------------------------------------------
 !
@@ -81,23 +88,43 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine initialize_FFT_select(Nsmp, Nstacksmp, Nfft)
+      subroutine initialize_FFT_select(my_rank, Nsmp, Nstacksmp, Nfft)
 !
-      integer(kind = kint), intent(in) ::  Nfft
+      integer(kind = kint), intent(in) ::  my_rank, Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !
 !
 #ifdef FFTW3
       if(iflag_FFT .eq. iflag_FFTW) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
+        if(my_rank .eq. 0) write(*,*) 'Use FFTW'
         call init_4_FFTW(Nsmp, Nstacksmp, Nfft)
         return
       end if
 #endif
-      if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
+      if(my_rank .eq. 0) write(*,*) 'Use FFTPACK'
       call init_4_FFTPACK(Nsmp, Nstacksmp, Nfft)
 !
       end subroutine initialize_FFT_select
+!
+! ------------------------------------------------------------------
+!
+      subroutine finalize_FFT_select(Nsmp)
+!
+      integer(kind = kint), intent(in) ::  Nsmp
+!
+!
+#ifdef FFTW3
+      if(iflag_FFT .eq. iflag_FFTW) then
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
+        call finalize_4_FFTW(Nsmp)
+        return
+      end if
+#endif
+!
+      if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
+      call finalize_4_FFTPACK
+!
+      end subroutine finalize_FFT_select
 !
 ! ------------------------------------------------------------------
 !

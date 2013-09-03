@@ -84,7 +84,7 @@
       write(*,*) 'np_smp', np_smp
       write(*,*) 'istack_circfft_smp', istack_circfft_smp
       write(*,*) 'mphi_circle', mphi_circle
-      call initialize_FFT_sel_t(np_smp, istack_circfft_smp,             &
+      call initialize_FFT_sel_t(my_rank, np_smp, istack_circfft_smp,    &
      &    mphi_circle, WK_circle_fft)
 !
       end subroutine initialize_circle_transform

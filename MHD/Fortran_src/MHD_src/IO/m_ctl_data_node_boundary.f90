@@ -3,58 +3,58 @@
 !
 !        programmed by H.Matsui
 !
-!      subroutine deallocate_bc_velo_ctl
-!      subroutine deallocate_bc_velo_ctl
-!      subroutine deallocate_bc_press_ctl
-!      subroutine deallocate_bc_composit_ctl
-!      subroutine deallocate_bc_magne_ctl
-!      subroutine deallocate_bc_magne_p_ctl
-!      subroutine deallocate_bc_vect_p_ctl
-!      subroutine deallocate_bc_current_ctl
-!
-!      subroutine read_bc_4_node
-!
-! ------------------------------------------------------------------
-!   example
-!
-!    begin bc_4_node (or boundary_condition)
+!!      subroutine deallocate_bc_velo_ctl
+!!      subroutine deallocate_bc_velo_ctl
+!!      subroutine deallocate_bc_press_ctl
+!!      subroutine deallocate_bc_composit_ctl
+!!      subroutine deallocate_bc_magne_ctl
+!!      subroutine deallocate_bc_magne_p_ctl
+!!      subroutine deallocate_bc_vect_p_ctl
+!!      subroutine deallocate_bc_current_ctl
+!!
+!!      subroutine read_bc_4_node
+!!
+!! ------------------------------------------------------------------
+!!   example
+!!
+!!    begin bc_4_node (or boundary_condition)
 !!!!!!  boundary condition for temperature  !!!!!!!!!!!!!!!!!!!!!!!!
 !!  available type:  fixed, file
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!      array bc_temperature   2
-!        bc_temperature  fixed ICB  1.000
-!        bc_temperature  fixed CMB  0.000
-!      end array bc_temperature
+!!      array bc_temperature   2
+!!        bc_temperature  fixed ICB  1.000
+!!        bc_temperature  fixed CMB  0.000
+!!      end array bc_temperature
 !!!!!!  boundary condition for velocity  !!!!!!!!!!!!!!!!!!!!!!!!
 !!  available type
 !!     fix_x,  fix_y,  fix_z
 !!     file_x, file_y, file_z
 !!     rot_x,  rot_y,  rot_z
 !!       (Note: set all compornents of the rotation vector!!)
-!!     free_sph
+!!     free_slip_sph
 !!     specitial (you have to define the B.C. in source file)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!      array bc_velocity  7
-!        bc_velocity  fix_x  ICB     0.000
-!        bc_velocity  fix_y  ICB     0.000
-!        bc_velocity  fix_z  ICB     0.000
-!        bc_velocity  fix_x  CMB     0.000
-!        bc_velocity  fix_y  CMB     0.000
-!        bc_velocity  fix_z  CMB     0.000
-!        bc_velocity  fix_z  equator 0.000
-!      end array bc_velocity
+!!      array bc_velocity  7
+!!        bc_velocity  fix_x  ICB     0.000
+!!        bc_velocity  fix_y  ICB     0.000
+!!        bc_velocity  fix_z  ICB     0.000
+!!        bc_velocity  fix_x  CMB     0.000
+!!        bc_velocity  fix_y  CMB     0.000
+!!        bc_velocity  fix_z  CMB     0.000
+!!        bc_velocity  fix_z  equator 0.000
+!!      end array bc_velocity
 !!!!!!  boundary condition for pressure  !!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  available type:  fixed, file
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!      array bc_pressure  1
-!        bc_pressure  fixed Press  0.000
-!      end array bc_pressure
+!!      array bc_pressure  1
+!!        bc_pressure  fixed Press  0.000
+!!      end array bc_pressure
 !!!!!!  boundary condition for dummy scalar  !!!!!!!!!!!!!!!!!!!!!!!
 !!  available type:  fixed, file
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!      array bc_composition  1
-!        bc_composition fixed  Press  0.000
-!      end array bc_composition
+!!      array bc_composition  1
+!!        bc_composition fixed  Press  0.000
+!!      end array bc_composition
 !!!!!!  boundary condition for magnetic field  !!!!!!!!!!!!!!!!!!!!!
 !!  available type
 !!     fix_x,  fix_y,  fix_z
@@ -62,35 +62,35 @@
 !!     insulator (not recommend)
 !!     sph
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!      array bc_magnetic_field   2
-!        bc_magnetic_field  fix_x  equator     0.000
-!        bc_magnetic_field  fix_y  equator     0.000
-!        bc_magnetic_field  fix_x  infinity     0.000
-!        bc_magnetic_field  fix_y  infinity     0.000
-!        bc_magnetic_field  fix_z  infinity     0.000
-!      end array bc_magnetic_field
+!!      array bc_magnetic_field   2
+!!        bc_magnetic_field  fix_x  equator     0.000
+!!        bc_magnetic_field  fix_y  equator     0.000
+!!        bc_magnetic_field  fix_x  infinity     0.000
+!!        bc_magnetic_field  fix_y  infinity     0.000
+!!        bc_magnetic_field  fix_z  infinity     0.000
+!!      end array bc_magnetic_field
 !!!!!!  boundary condition for magnetic potential  !!!!!!!!!!!!!!!!!
 !!  available type:  fixed, file, sph
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!      array bc_electric_potential   3
-!        bc_electric_potential fixed   Centre  0.000
-!        bc_electric_potential fixed  infinity  0.000
-!        bc_electric_potential fixed  equator   0.000
-!      end array bc_electric_potential
+!!      array bc_electric_potential   3
+!!        bc_electric_potential fixed   Centre  0.000
+!!        bc_electric_potential fixed  infinity  0.000
+!!        bc_electric_potential fixed  equator   0.000
+!!      end array bc_electric_potential
 !!!!!!  boundary condition for vector potential  !!!!!!!!!!!!!!!!!!!
 !!  available type
 !!     fix_x,  fix_y,  fix_z
 !!     file_x, file_y, file_z
 !!     sph
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!      array bc_vector_potential    6
-!        bc_vector_potential fix_x   infinity  0.000
-!        bc_vector_potential fix_y   infinity  0.000
-!        bc_vector_potential fix_z   infinity  0.000
-!        bc_vector_potential insulate_shell   ICB  0.000
-!        bc_vector_potential insulate_shell   CMB 0.000
-!        bc_vector_potential fix_z   equator   0.000
-!      end array bc_vector_potential
+!!      array bc_vector_potential    6
+!!        bc_vector_potential fix_x   infinity  0.000
+!!        bc_vector_potential fix_y   infinity  0.000
+!!        bc_vector_potential fix_z   infinity  0.000
+!!        bc_vector_potential insulate_shell   ICB  0.000
+!!        bc_vector_potential insulate_shell   CMB 0.000
+!!        bc_vector_potential fix_z   equator   0.000
+!!      end array bc_vector_potential
 !!!!!!  boundary condition for current density !!!!!!!!!!!!!!!!!!!!!
 !!  available type
 !!     fix_x,  fix_y,  fix_z
@@ -98,14 +98,14 @@
 !!     insulator (not recommend)
 !!     sph
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!      array bc_current   0
+!!      array bc_current   0
 !!        bc_current  fix_x  infinity     0.000
 !!        bc_current  fix_y  infinity     0.000
 !!        bc_current  fix_z  infinity     0.000
-!      end array bc_current
-!    end  bc_4_node (or boundary_condition)
-!
-! ------------------------------------------------------------------
+!!      end array bc_current
+!!    end  bc_4_node (or boundary_condition)
+!!
+!! ------------------------------------------------------------------
 !
       module m_ctl_data_node_boundary
 !

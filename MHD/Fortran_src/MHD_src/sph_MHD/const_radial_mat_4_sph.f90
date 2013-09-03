@@ -35,7 +35,7 @@
       use const_r_mat_4_vector_sph
 !
 !
-      if (iflag_t_evo_4_velo .gt. 0) then
+      if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
         call allocate_velo_mat_sph
 !
         if(iflag_debug .gt. 0)                                          &
@@ -43,7 +43,7 @@
         call const_radial_mat_vort_2step
       end if
 !
-      if (iflag_t_evo_4_temp .gt. 0) then
+      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
           if(iflag_debug .gt. 0)                                        &
      &          write(*,*) 'const_radial_mat_4_temp_sph'
         call allocate_temp_mat_sph
@@ -52,7 +52,7 @@
      &     call check_temp_matrices_sph(my_rank)
       end if
 !
-      if (iflag_t_evo_4_magne .gt. 0) then
+      if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
           if(iflag_debug .gt. 0)                                        &
      &          write(*,*) 'const_radial_mat_4_magne_sph'
         call allocate_magne_mat_sph
@@ -61,7 +61,7 @@
      &     call check_magne_matrices_sph(my_rank)
       end if
 !
-      if(iflag_t_evo_4_composit .gt. 0) then
+      if(iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
           if(iflag_debug .gt. 0)                                        &
      &          write(*,*) 'const_radial_mat_4_composit_sph'
         call allocate_composit_mat_sph

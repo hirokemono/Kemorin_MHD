@@ -115,7 +115,7 @@
 !
 !     ---- magnetic field update
 !
-      if (iflag_4_ref_temp .gt. 0) then
+      if (iflag_4_ref_temp .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
         call set_2_perturbation_temp
       end if

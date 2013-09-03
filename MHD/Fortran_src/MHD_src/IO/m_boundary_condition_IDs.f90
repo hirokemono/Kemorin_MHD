@@ -2,7 +2,7 @@
 !!@brief  module m_boundary_condition_IDs
 !!
 !!@author H. Matsui and H. Okuda
-!!@date Programmed by H. Matsui in Feb., 2009
+!!@date Modified by H. Matsui in Feb., 2009
 !
 !> @brief boundary condition flag list
 !

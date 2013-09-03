@@ -10,12 +10,11 @@
       use m_constants
       use m_machine_parameter
       use m_control_param_4_refiner
+      use m_file_format_switch
       use itp_table_IO_select_4_zlib
       use set_parallel_file_name
 !
       implicit none
-!
-      integer(kind = kint), parameter, private :: ifile_type = 0
 !
       integer(kind = kint), private :: iflag_merge = 0
 !
@@ -85,7 +84,7 @@
 !
       table_file_header = course_2_fine_head
       write(*,*) 'table field header: ', trim(table_file_header)
-      call sel_write_interpolate_table(izero, ifile_type)
+      call sel_write_interpolate_table(izero, id_ascii_file_fmt)
       call deallocate_itp_coefs_dst_IO
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_fine_to_course_origin'
@@ -102,7 +101,7 @@
       table_file_header = fine_2_course_head
       write(*,*) 'table field header: ', trim(table_file_header)
 !
-      call sel_write_interpolate_table(izero, ifile_type)
+      call sel_write_interpolate_table(izero, id_ascii_file_fmt)
       call deallocate_itp_coefs_dst_IO
 !
       end subroutine const_single_refine_itp_tbl
@@ -155,7 +154,7 @@
       table_file_header = course_2_fine_head
 !
       write(*,*) 'table field header: ', trim(table_file_header)
-      call sel_write_interpolate_table(izero, ifile_type)
+      call sel_write_interpolate_table(izero, id_ascii_file_fmt)
       call deallocate_itp_coefs_dst_IO
 !
 !
@@ -173,7 +172,7 @@
       table_file_header = fine_2_course_head
 !
       write(*,*) 'table field header: ', trim(table_file_header)
-      call sel_write_interpolate_table(izero, ifile_type)
+      call sel_write_interpolate_table(izero, id_ascii_file_fmt)
       call deallocate_itp_coefs_dst_IO
 !
       end subroutine const_merged_refine_itp_tbl

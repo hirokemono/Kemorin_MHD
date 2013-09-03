@@ -3,9 +3,9 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!      subroutine int_rms_div_v_monitor
-!      subroutine int_rms_div_b_monitor
-!      subroutine int_rms_div_a_monitor
+!      subroutine int_rms_div_v_monitor(iloop, rsig)
+!      subroutine int_rms_div_b_monitor(iloop, rsig)
+!      subroutine int_rms_div_a_monitor(iloop, rsig)
 !      subroutine int_rms_div_v
 !      subroutine int_rms_div_b
 !      subroutine int_rms_div_a
@@ -36,12 +36,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_rms_div_v_monitor(iloop)
+      subroutine int_rms_div_v_monitor(iloop, rsig)
 !
       use m_node_phys_address
       use m_geometry_data_MHD
 !
       integer(kind = kint), intent(in) :: iloop
+      real(kind = kreal), intent(inout) :: rsig
 !
 !
       call int_rms_divergence(iele_fl_smp_stack, ir_divv, iphys%i_velo)
@@ -63,12 +64,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_rms_div_b_monitor(iloop)
+      subroutine int_rms_div_b_monitor(iloop, rsig)
 !
       use m_node_phys_address
       use m_geometry_parameter
 !
       integer(kind = kint), intent(in) :: iloop
+      real(kind = kreal), intent(inout) :: rsig
 !
 !
       call int_rms_divergence(iele_smp_stack, ir_divb, iphys%i_magne)
@@ -91,12 +93,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_rms_div_a_monitor(iloop)
+      subroutine int_rms_div_a_monitor(iloop, rsig)
 !
       use m_node_phys_address
       use m_geometry_parameter
 !
       integer(kind = kint), intent(in) :: iloop
+      real(kind = kreal), intent(inout) :: rsig
 !
 !
       call int_rms_divergence(iele_smp_stack, ir_diva, iphys%i_vecp)

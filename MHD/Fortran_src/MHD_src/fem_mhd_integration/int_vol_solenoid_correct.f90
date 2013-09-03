@@ -70,7 +70,7 @@
 !
       if (iak_diff .gt. 0) then
         call int_vol_sgs_solenoidal_co_1st(iele_fsmp_stack,             &
-     &      intg_point_poisson, i_scalar, n_filter_final, iak_diff)
+     &      intg_point_poisson, i_scalar, ifilter_final, iak_diff)
       else
         call int_vol_solenoidal_co_1st(iele_fsmp_stack,                 &
      &      intg_point_poisson, i_scalar)

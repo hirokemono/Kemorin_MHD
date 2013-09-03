@@ -39,10 +39,10 @@
      &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      if ( iflag_4_supg .ge. 2) then
+      if ( iflag_4_supg .eq. id_magnetic_SUPG) then
         call int_vol_sgs_flux_upwind(i_filter, iphys_ele%i_magne,       &
      &      numdir, i_field, id_dx, sk_v)
-      else if ( iflag_4_supg .ge. 1) then
+      else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_vol_sgs_flux_upwind(i_filter, iphys_ele%i_velo,        &
      &      numdir, i_field, id_dx, sk_v)
       else

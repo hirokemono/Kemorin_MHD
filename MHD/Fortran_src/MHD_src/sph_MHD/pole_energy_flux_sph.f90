@@ -127,7 +127,7 @@
 !
 !
       if(iphys%i_buo_gen .gt. 0) then
-        if(iflag_4_ref_temp .eq. 100) then
+        if(iflag_4_ref_temp .eq. id_sphere_ref_temp) then
           call pole_sph_buoyancy_flux                                   &
      &       (numnod, internal_node, xx, nnod_rtp, nidx_rtp(1),         &
      &        coef_buo, d_nod(1,iphys%i_par_temp),                      &

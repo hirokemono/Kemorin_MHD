@@ -71,7 +71,7 @@
 !
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_commute_error_f_temp', iphys%i_sgs_grad_f
-      call cal_commute_error_f_temp(n_quad, iphys%i_sgs_grad_f)
+      call cal_commute_error_f_temp(ifilter_4delta, iphys%i_sgs_grad_f)
 !
       call vector_send_recv(iphys%i_sgs_grad_f)
 !
@@ -81,7 +81,7 @@
 !
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_commute_error_temp', iphys%i_sgs_grad
-      call cal_commute_error_temp(n_second, iphys%i_sgs_grad)
+      call cal_commute_error_temp(ifilter_2delta, iphys%i_sgs_grad)
 !
       call vector_send_recv(iphys%i_sgs_grad)
 !

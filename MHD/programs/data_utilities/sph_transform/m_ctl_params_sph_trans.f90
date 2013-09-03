@@ -59,7 +59,7 @@
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)
-      call set_control_smp_def
+      call set_control_smp_def(my_rank)
       call set_control_mesh_def
       call set_control_sph_mesh
       call set_control_org_sph_mesh
@@ -88,18 +88,18 @@
 !   setting for spherical transform
 !
       if(i_sph_transform_mode .gt. 0) then
-        if(     sph_transform_mode_ctl .eq. 'radius_in'                 &
-     &    .or.  sph_transform_mode_ctl .eq. 'Radius_in'                 &
-     &    .or.  sph_transform_mode_ctl .eq. 'RADIUS_IN') then
-          id_lagendre_transfer = iflag_lag_krloop_inner
-        else if(sph_transform_mode_ctl .eq. 'radius_out'                &
-     &    .or.  sph_transform_mode_ctl .eq. 'Radius_out'                &
-     &    .or.  sph_transform_mode_ctl .eq. 'RADIUS_OUT') then
-          id_lagendre_transfer = iflag_lag_krloop_outer
-        else if(sph_transform_mode_ctl .eq. 'original'                  &
-     &    .or.  sph_transform_mode_ctl .eq. 'Original'                  &
-     &    .or.  sph_transform_mode_ctl .eq. 'ORIGINAL') then
-          id_lagendre_transfer = iflag_lag_orginal_loop
+        if(     Legendre_trans_loop_ctl .eq. 'inner_radial_loop'        &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'Inner_radial_loop'        &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'INNER_RADIAL_LOOP') then
+          id_legendre_transfer = iflag_leg_krloop_inner
+        else if(Legendre_trans_loop_ctl .eq. 'outer_radial_loop'        &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'Outer_radial_loop'        &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'OUTER_RADIAL_LOOP') then
+          id_legendre_transfer = iflag_leg_krloop_outer
+        else if(Legendre_trans_loop_ctl .eq. 'long_loop'                &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'Long_loop'                &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'LONG_LOOP') then
+          id_legendre_transfer = iflag_leg_orginal_loop
         end if
       end if
 !
@@ -111,7 +111,9 @@
      &    .or.  FFT_library_ctl .eq. 'FFTPACK') then
           iflag_FFT = iflag_FFTPACK
         else if(FFT_library_ctl .eq. 'fftw'                             &
-     &    .or.  FFT_library_ctl .eq. 'FFTW') then
+     &    .or.  FFT_library_ctl .eq. 'FFTW'                             &
+     &    .or.  FFT_library_ctl .eq. 'fftw3'                            &
+     &    .or.  FFT_library_ctl .eq. 'FFTW3') then
           iflag_FFT = iflag_FFTW
         end if
       end if

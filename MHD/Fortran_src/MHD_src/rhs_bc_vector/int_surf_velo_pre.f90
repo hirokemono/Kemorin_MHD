@@ -42,7 +42,7 @@
 !
       if (iflag_SGS_lorentz .ne. id_SGS_none) then
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
-          call int_surf_lorentz_sgs(num_int, n_filter_final,            &
+          call int_surf_lorentz_sgs(num_int, ifilter_final,             &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne)
         end if
       end if
@@ -75,7 +75,7 @@
 !
       if (i_field .eq. iphys%i_SGS_Lorentz) then
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
-          call int_surf_lorentz_sgs(num_int, n_filter_final,            &
+          call int_surf_lorentz_sgs(num_int, ifilter_final,             &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne)
         end if
       end if

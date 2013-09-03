@@ -89,10 +89,10 @@
 !      call check_sp_rlm(my_rank, nb3)
 !
       call start_eleps_time(22)
-      if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
+      if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
         if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_spin'
         call leg_bwd_trans_vector_spin(nb)
-      else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
+      else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         if(iflag_debug .gt. 0) write(*,*) 'schmidt_b_trans_vector_krin'
         call leg_bwd_trans_vector_krin(nb)
       else
@@ -155,10 +155,10 @@
 !      call check_vr_rtm(my_rank, nb3)
 !
       call start_eleps_time(23)
-      if(id_lagendre_transfer .eq. iflag_lag_krloop_outer) then
+      if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
         if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_spin'
         call leg_fwd_trans_vector_spin(nb)
-      else if(id_lagendre_transfer .eq. iflag_lag_krloop_inner) then
+      else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         if(iflag_debug .gt. 0) write(*,*) 'schmidt_f_trans_vector_krin'
         call leg_fwd_trans_vector_krin(nb)
       else

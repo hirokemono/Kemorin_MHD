@@ -53,7 +53,7 @@
 !*
 !      call check_ws_spectr
 !
-      if(iflag_t_evo_4_velo .gt. 0) then
+      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
 !         Input:    ipol%i_vort, itor%i_vort
 !         Solution: ipol%i_velo, itor%i_velo, idpdr%i_velo
         if (iflag_debug .gt. 0)                                         &
@@ -63,29 +63,40 @@
 !
 !  Input: ipol%i_temp,  Solution: ipol%i_temp
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_temperature_sph_crank'
-      if(iflag_t_evo_4_temp .gt. 0) call cal_sol_temperature_sph_crank
+      if(iflag_t_evo_4_temp .gt. id_no_evolution) then
+        call cal_sol_temperature_sph_crank
+      end if
 !
 !  Input: ipol%i_light,  Solution: ipol%i_light
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_composition_sph_crank'
-      if(iflag_t_evo_4_composit .gt. 0)                                 &
-     &                             call cal_sol_composition_sph_crank
+      if(iflag_t_evo_4_composit .gt. id_no_evolution) then
+        call cal_sol_composition_sph_crank
+      end if
 !
 !  Input: ipol%i_magne, itor%i_magne
 !  Solution: ipol%i_magne, itor%i_magne, idpdr%i_magne
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_magne_sph_crank'
-      if(iflag_t_evo_4_magne .gt. 0) call cal_sol_magne_sph_crank
+      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
+        call cal_sol_magne_sph_crank
+      end if
 !
 !*  ---- update after evolution ------------------
 !      call check_vs_spectr
 !
-      if(iflag_t_evo_4_velo .gt. 0) then
+      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
         call update_after_vorticity_sph
         call cal_rot_radial_self_gravity
       end if
 !
-      if(iflag_t_evo_4_temp .gt. 0)     call update_after_heat_sph
-      if(iflag_t_evo_4_composit .gt. 0) call update_after_composit_sph
-      if(iflag_t_evo_4_magne .gt. 0)    call update_after_magne_sph
+      if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
+        call update_after_heat_sph
+      end if
+      if(iflag_t_evo_4_composit .gt. id_no_evolution) then
+        call update_after_composit_sph
+      end if
+      if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
+        call update_after_magne_sph
+      end if
 !
       end subroutine s_cal_sol_sph_MHD_crank
 !
@@ -102,11 +113,14 @@
         call const_grad_vp_and_vorticity
       end if
 !
+      if(iflag_debug.gt.0) write(*,*) 'update_after_vorticity_sph'
       call update_after_vorticity_sph
-!
+      if(iflag_debug.gt.0) write(*,*) 'cal_rot_radial_self_gravity'
       call cal_rot_radial_self_gravity
 !
+      if(iflag_debug.gt.0) write(*,*) 'update_after_heat_sph'
       call update_after_heat_sph
+      if(iflag_debug.gt.0) write(*,*) 'update_after_composit_sph'
       call update_after_composit_sph
 !
       if(ipol%i_magne*ipol%i_current .gt. 0) then
@@ -163,10 +177,13 @@
 !
 !
 !         Input: ipol%i_temp,  Solution: ipol%i_grad_t
+      if(iflag_debug .gt. 0)  write(*,*)                                &
+     &           'const_radial_grad_temp', ipol%i_grad_t
       if(ipol%i_grad_t .gt. 0)   call const_radial_grad_temp
 !
 !         Input: ipol%i_temp,  Solution: ipol%i_t_diffuse
-      if(iflag_debug .gt. 0) write(*,*)'const_sph_thermal_diffusion'
+      if(iflag_debug .gt. 0)  write(*,*)                                &
+     &           'const_sph_thermal_diffusion', ipol%i_t_diffuse
       if(ipol%i_t_diffuse .gt. 0) call const_sph_thermal_diffusion
 !
       end subroutine update_after_heat_sph

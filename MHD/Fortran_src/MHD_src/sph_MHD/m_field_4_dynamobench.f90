@@ -90,37 +90,39 @@
   99  continue
       open(id_dynamobench, file=dynamobench_field_name)
 !
-      write(id_dynamobench,'(a)', advance='NO') 't_step, time'
+      write(id_dynamobench,'(a)', advance='NO') 't_step    time    '
       write(id_dynamobench,'(a)', advance='NO')                         &
-     &     ', KE_pol, KE_tor, KE_total'
+     &     'KE_pol    KE_tor    KE_total    '
 !
       if(irtp%i_magne .gt. 0) then
         write(id_dynamobench,'(a)', advance='NO')                       &
-     &     ', ME_pol, ME_tor, ME_total'
+     &     'ME_pol    ME_tor    ME_total    '
       end if
 !
       if(iflag_icb_magne .eq. iflag_sph_fill_center) then
         write(id_dynamobench,'(a)', advance='NO')                       &
-     &     ', ME_pol_icore, ME_tor_icore, ME_total_icore'
+     &     'ME_pol_icore    ME_tor_icore    ME_total_icore    '
       end if
 !
       if(iflag_icb_velocity .eq. iflag_rotatable_ic) then
-        write(id_dynamobench,'(a)', advance='NO') ', omega_ic_z'
+        write(id_dynamobench,'(a)', advance='NO') 'omega_ic_z    '
       end if
 !
       if(iflag_icb_magne .eq. iflag_sph_fill_center                     &
      &  .and. iflag_icb_velocity .eq. iflag_rotatable_ic) then
-        write(id_dynamobench,'(a)', advance='NO') ', MAG_torque_ic_z'
+        write(id_dynamobench,'(a)', advance='NO') 'MAG_torque_ic_z    '
       end if
 !
       write(id_dynamobench,'(a)', advance='NO')                         &
-     &     ', phi_1, phi_2, phi_3, phi_4, omega_vp44, omega_vt54'
+     &     'phi_1    phi_2    phi_3    phi_4    '
+      write(id_dynamobench,'(a)', advance='NO')                         &
+     &     'omega_vp44    omega_vt54    '
 !
       if(irtp%i_magne .gt. 0) then
-        write(id_dynamobench,'(a)', advance='NO') ', B_theta'
+        write(id_dynamobench,'(a)', advance='NO') 'B_theta    '
       end if
 !
-      write(id_dynamobench,'(a)')  ', v_phi, temp'
+      write(id_dynamobench,'(a)')  'v_phi    temp'
 !
       end subroutine open_dynamobench_monitor_file
 !

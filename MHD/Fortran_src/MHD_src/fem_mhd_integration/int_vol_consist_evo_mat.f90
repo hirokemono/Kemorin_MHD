@@ -45,28 +45,32 @@
         call fem_skv_mass_matrix_1st(iele_smp_stack,                    &
      &      intg_point_t_evo, k2, sk6)
 !
-        if ( iflag_t_evo_4_velo.eq.4 .and. coef_velo.gt.0.0d0 ) then
+        if ( iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass            &
+     &      .and. coef_velo.gt.0.0d0 ) then
           call add_skv1_2_MHD_matrix33(idx_4_fl_mat, k2, sk6,           &
      &        num_velo_comp, aiccg_velo)
         end if
 !
-        if ( iflag_t_evo_4_temp.eq.4 .and. coef_temp.gt.0.0d0 ) then
+        if ( iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass            &
+     &      .and. coef_temp.gt.0.0d0 ) then
           call add_skv1_2_MHD_matrix11(idx_4_fl_mat, k2, sk6,           &
      &        num_temp_comp, aiccg_temp)
         end if
 !
-        if ( iflag_t_evo_4_composit.eq.4                                &
+        if ( iflag_t_evo_4_composit .eq. id_Crank_nicolson_cmass        &
      &      .and. coef_scalar.gt.0.0d0) then
           call add_skv1_2_MHD_matrix11(idx_4_fl_mat, k2, sk6,           &
      &        num_composit_comp, aiccg_composit)
         end if
 !
-        if ( iflag_t_evo_4_magne.eq.4 .and. coef_magne.gt.0.0d0) then
+        if ( iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass           &
+     &      .and. coef_magne.gt.0.0d0) then
           call add_skv1_2_MHD_matrix33(idx_4_cd_mat_full, k2, sk6,      &
      &        num_mag_comp, aiccg_magne)
         end if
 !
-        if ( iflag_t_evo_4_vect_p.eq.4 .and. coef_magne.gt.0.0d0) then
+        if ( iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass          &
+     &      .and. coef_magne.gt.0.0d0) then
           call add_skv1_2_MHD_matrix33(idx_4_cd_mat_full, k2, sk6,      &
      &        num_mag_comp, aiccg_magne)
         end if

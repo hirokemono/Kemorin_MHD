@@ -15,14 +15,14 @@
 !!      num_subdomain_ctl           2
 !!      num_smp_ctl                 1
 !!  
-!!      mesh_file_head_ctl       'mesh/in'
+!!      mesh_file_prefix         'mesh/in'
 !!      mesh_file_fmt_ctl        'gzip'
 !!    end data_files_def
 !!  
 !!    begin boundary_ctl
 !!      node_grp_name_ctl      'CMB'
-!!      hermonics_degree_ctl      2
-!!      hermonics_order_ctl      -2
+!!      harmonics_degree_ctl      2
+!!      harmonics_order_ctl      -2
 !!    end boundary_ctl
 !!  end mesh_test
 !!
@@ -59,9 +59,9 @@
       character(len=kchara), parameter                                  &
      &                      :: hd_nod_grp_t =  'node_grp_name_ctl'
       character(len=kchara), parameter                                  &
-     &                      :: hd_sph_degree = 'hermonics_degree_ctl'
+     &                      :: hd_sph_degree = 'harmonics_degree_ctl'
       character(len=kchara), parameter                                  &
-     &                      :: hd_sph_order =  'hermonics_order_ctl'
+     &                      :: hd_sph_order =  'harmonics_order_ctl'
       integer (kind=kint) :: i_nod_grp_t =    0
       integer (kind=kint) :: i_sph_degree =   0
       integer (kind=kint) :: i_sph_order =    0

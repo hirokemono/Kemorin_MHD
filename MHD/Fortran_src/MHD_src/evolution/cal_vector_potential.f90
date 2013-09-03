@@ -35,6 +35,7 @@
       use cal_rms_potentials
 !
       integer(kind=kint ) :: iloop
+      real(kind = kreal) :: rel_correct
 !
 !
       call init_4_sol_m_potential
@@ -47,8 +48,8 @@
 !     --------------------- 
 !
       iloop = -1
-      call int_norm_div_a_monitor(iloop)
-!      call int_rms_div_a_monitor(iloop)
+      call int_norm_div_a_monitor(iloop, rel_correct)
+!      call int_rms_div_a_monitor(iloop, rel_correct)
 !
       call init_4_sol_m_potential
 !
@@ -62,12 +63,12 @@
         call cal_vector_p_co
 !
 !
-        call cal_rms_scsalar_potential(iloop, rsig)
+        call cal_rms_scalar_potential(iloop, rel_correct)
 !
-        call int_norm_div_a_monitor(iloop)
-!        call int_rms_div_a_monitor(iloop)
+        call int_norm_div_a_monitor(iloop, rel_correct)
+!        call int_rms_div_a_monitor(iloop, rel_correct)
 !
-        if ( abs(rsig) .lt. eps_4_magne ) go to 20
+        if ( abs(rel_correct) .lt. eps_4_magne ) go to 20
 !
       end do
  20   continue

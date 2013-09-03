@@ -173,12 +173,12 @@
 !
 !     ---- magnetic field update
 !
-      if ( iflag_t_evo_4_vect_p .ge. 1 ) then
+      if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'cal_magne_vector_potential'
         call cal_magne_vector_potential
         call update_with_vector_potential
 !
-      else if ( iflag_t_evo_4_magne .ge. 1 ) then
+      else if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
 !
         if (iflag_debug.eq.1) write(*,*) 's_cal_magnetic_field'
         call s_cal_magnetic_field
@@ -187,8 +187,8 @@
 !
 !     ---- temperature update
 !
-      if ( iflag_t_evo_4_temp .gt. 0) then
-        if( iflag_4_ref_temp .gt. 0) then
+      if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
+        if( iflag_4_ref_temp .ne. id_no_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_parturbation_temp'
           call cal_parturbation_temp
         else
@@ -201,7 +201,7 @@
 !
 !     ----- composition update
 !
-      if ( iflag_t_evo_4_composit .ge. 1 ) then
+      if ( iflag_t_evo_4_composit .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'cal_light_element_variation'
         call cal_light_element_variation
 !
@@ -210,7 +210,7 @@
 !
 !     ---- velocity update
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
         call velocity_evolution
         call update_with_velocity

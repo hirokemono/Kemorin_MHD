@@ -45,14 +45,14 @@
         end if
         maxiter_vecp = maxiter
 !
-        if (i_iflag_supg.eq.0) then
-          iflag_4_supg = 0
+        if (i_iflag_supg .eq. 0) then
+          iflag_4_supg = id_turn_OFF
         else
           iflag_4_supg = iflag_supg_ctl
         end if
 !
         if (maxiter.gt.1) then
-          if (iflag_t_evo_4_velo.gt.0) then
+          if (iflag_t_evo_4_velo .gt. id_no_evolution) then
             if (i_eps_4_velo.eq.0) then
               e_message                                                 &
      &         = 'Set conservation area for velocity iteration'
@@ -62,8 +62,8 @@
             end if
           end if
 !
-          if (iflag_t_evo_4_magne.gt.0                                  &
-     &              .or. iflag_t_evo_4_vect_p.gt.0) then
+          if (iflag_t_evo_4_magne .gt. id_no_evolution                  &
+     &            .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
             if (i_eps_4_magne.eq.0) then
               e_message                                                 &
      &         = 'Set conservation area for magnetic iteration'

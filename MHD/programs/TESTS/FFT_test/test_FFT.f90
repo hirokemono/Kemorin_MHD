@@ -47,7 +47,7 @@
 !
       z(1:nfld,1:ngrd) = x(1:nfld,1:ngrd)
 !
-      call initialize_FFT_select(np_smp, nstack, ngrd)
+      call initialize_FFT_select(izero, np_smp, nstack, ngrd)
 !
       call forward_FFT_select(np_smp, nstack, nfld, ngrd, x)
 !

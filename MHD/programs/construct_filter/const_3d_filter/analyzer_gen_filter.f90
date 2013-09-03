@@ -132,6 +132,7 @@
       use m_filter_coef_combained
       use m_comm_data_IO
       use m_filter_file_names
+      use m_file_format_switch
 !
       use cal_element_size
       use set_parallel_file_name
@@ -162,7 +163,7 @@
 !       output filter length and coefs
 !  ---------------------------------------------------
 !
-      ifmt_filter_file = ifile_type
+      ifmt_filter_file = ifmt_filter_elen
       filter_file_head = filter_elen_head
       call sel_write_filter_elen_file(my_rank)
 !
@@ -178,12 +179,12 @@
 !
         call add_int_suffix(my_rank, filter_coef_head, file_name)
 !
-        if (ifile_type .eq. 0) then
-          open(filter_coef_code, file=file_name, form='formatted')
-          call write_filter_geometry(filter_coef_code)
-        else
+        if (ifmt_3d_filter .eq. id_binary_file_fmt) then
           open(filter_coef_code, file=file_name, form='unformatted')
           call write_filter_geometry_b(filter_coef_code)
+        else
+          open(filter_coef_code, file=file_name, form='formatted')
+          call write_filter_geometry(filter_coef_code)
         end if
 !
         num_failed_whole = 0
@@ -213,7 +214,7 @@
 !       output filter moments
 !  ---------------------------------------------------
 !
-        ifmt_filter_file = ifile_type
+        ifmt_filter_file = ifmt_filter_moms
         filter_file_head = filter_moms_head
         call sel_write_filter_moms_file(my_rank)
       end if

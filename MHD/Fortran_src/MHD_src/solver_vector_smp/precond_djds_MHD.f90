@@ -37,29 +37,31 @@
 !C +-----------------+
 !C===
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         call precond_djds_press
       end if
 !
-      if ( iflag_t_evo_4_velo .ge. 3 ) then
+      if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
         call precond_djds_velo
       end if
 !
-      if ( iflag_t_evo_4_temp.ge.3 ) then
+      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         call precond_djds_temp
       end if
 !
-      if ( iflag_t_evo_4_composit.ge.3 ) then
+      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         call precond_djds_d_scalar
       end if
 !
-      if (iflag_t_evo_4_vect_p.ge.1 .or. iflag_t_evo_4_magne.ge.1) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
+     &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
         call precond_djds_mag_potential
 !        call precond_djds_mag_p_ins
 !        call precond_djds_mag_p_cd
       end if
 !
-      if (iflag_t_evo_4_vect_p.ge.1 .or. iflag_t_evo_4_magne.ge.1) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
+     &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
         call precond_djds_magne
       end if
 !

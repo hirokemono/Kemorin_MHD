@@ -62,29 +62,29 @@
       use m_surf_data_composition
 !
 !
-      if ( iflag_t_evo_4_temp .ge. 1 ) then
+      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         call allocate_surf_data_temp
       end if
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         call allocate_surf_data_velo
         call allocate_surf_data_torque
         call allocate_surf_press
       end if
 !
-      if ( iflag_t_evo_4_magne.ge.1                                     &
-     &      .or. iflag_t_evo_4_vect_p.ge.1 ) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution                       &
+     &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call allocate_surf_data_magne
         call allocate_surf_data_current
         call allocate_surf_data_magne_p
         call allocate_surf_magp_grad
       end if
 !
-      if ( iflag_t_evo_4_vect_p .ge. 1 ) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call allocate_surf_data_vect_p
       end if
 ! 
-      if ( iflag_t_evo_4_composit .ge. 1 ) then
+      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         call allocate_surf_data_composit
       end if
 !
@@ -98,27 +98,27 @@
       use m_surf_data_list
 !
 !
-      if ( iflag_t_evo_4_temp .ge. 1 ) then
+      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         if(num_bc_h_flux.gt.0) call deallocate_temp_surf_ctl
       end if
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if(num_bc_tq.gt.0) call deallocate_velo_surf_ctl
         if(num_bc_wall.gt.0) call deallocate_press_surf_ctl
       end if
 !
-      if ( iflag_t_evo_4_magne.ge.1                                     &
-     &      .or. iflag_t_evo_4_vect_p.ge.1 ) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
+     &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if(num_bc_bs.gt.0) call deallocate_magne_surf_ctl
         if(num_bc_js.gt.0) call deallocate_current_surf_ctl
         if(num_surf_magp.gt.0) call deallocate_magp_surf_ctl
       end if
 !
-      if ( iflag_t_evo_4_vect_p .ge. 1 ) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if(num_bc_vps.gt.0) call deallocate_vect_p_surf_ctl
       end if
 ! 
-      if ( iflag_t_evo_4_composit .ge. 1 ) then
+      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         if(num_surf_composition.gt.0) call deallocate_composit_surf_ctl
       end if
 !

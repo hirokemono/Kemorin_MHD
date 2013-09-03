@@ -9,11 +9,13 @@
 !!
 !!@verbatim
 !!      subroutine turn_off_debug_flag_by_ctl(my_rank)
-!!      subroutine set_control_smp_def
+!!      subroutine set_control_smp_def(my_rank)
 !!      subroutine set_control_mesh_def
 !!      subroutine set_control_sph_mesh
 !!      subroutine set_control_restart_file_def
 !!@endverbatim
+!!
+!!@param my_rank  preocess ID
 !
       module set_control_platform_data
 !
@@ -65,10 +67,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_smp_def
+      subroutine set_control_smp_def(my_rank)
 !
       use m_machine_parameter
 !
+      integer(kind = kint), intent(in) :: my_rank
       integer, external :: omp_get_max_threads
 !
 !
@@ -80,7 +83,7 @@
 !
 #ifdef _OPENMP
       if (np_smp .lt. omp_get_max_threads()) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
+        if(my_rank .eq. 0) write(*,*)                                   &
      &               'Number of SMP threads is chenged to', np_smp
         call omp_set_num_threads(np_smp)
       end if
@@ -106,7 +109,7 @@
       end if
 !
       if (i_mesh_header .gt. 0) then
-        mesh_file_head = mesh_file_head_ctl
+        mesh_file_head = mesh_file_prefix
       else
         mesh_file_head = def_mesh_file_head
       end if
@@ -127,36 +130,18 @@
       use m_field_data_IO
       use m_file_format_switch
 !
-!
-      if(i_sph_mode_header .gt. 0) then
-        sph_rj_head = sph_mode_head_ctl
-      end if
-!
-      if(i_sph_rlm_header .gt. 0) then
-        sph_rlm_head = sph_lag_spec_head_ctl
-      end if
-!
-      if(i_sph_lag_header .gt. 0) then
-        sph_rtm_head = sph_lag_head_ctl
-      end if
-!
-      if(i_sph_grid_header .gt. 0) then
-        sph_rtp_head = sph_grid_head_ctl
-      end if
-!
 !   set data format
 !
       call choose_file_format(sph_file_fmt_ctl, i_sph_files_fmt,        &
      &    iflag_sph_file_fmt)
-      call choose_file_format(spectr_files_fmt_ctl, i_spect_files_fmt,  &
+      call choose_file_format(spectr_file_fmt_ctl, i_spect_files_fmt,   &
      &    iflag_sph_spectr_fmt)
 !
 !   set file header at once
 !
       if(i_sph_files_header .gt. 0) then
-        sph_head =       sph_files_head_ctl
-        mesh_file_head = sph_files_head_ctl
-        iflag_sph_file_ext =  1
+        sph_head =       sph_file_prefix
+        mesh_file_head = sph_file_prefix
         iflag_mesh_file_ext = 1
         iflag_mesh_file_fmt = iflag_sph_file_fmt
       end if
@@ -177,10 +162,10 @@
 !
 !
       if (i_rst_header .gt. 0) then
-        phys_file_head = rst_file_head_ctl
+        phys_file_head = restart_file_prefix
       end if
 !
-      call choose_file_format(rst_files_fmt_ctl, i_rst_files_fmt,       &
+      call choose_file_format(restart_file_fmt_ctl, i_rst_files_fmt,    &
      &    iflag_field_data_fmt)
 !
       end subroutine set_control_restart_file_def

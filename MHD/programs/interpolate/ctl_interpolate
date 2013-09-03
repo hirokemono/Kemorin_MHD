@@ -5,22 +5,22 @@ begin construct_table
     num_subdomain_ctl           128
     num_smp_ctl                 128
 !
-    mesh_file_head_ctl          'mesh/in'
+    mesh_file_prefix            'mesh/in'
 !
-    rst_file_head_ctl           'restart/rst'
+    restart_file_prefix         'restart/rst'
 !
-    field_file_head_ctl         'field/out'
+    field_file_prefix           'field/out'
 !
     mesh_file_fmt_ctl           'ascii'
-    rst_files_fmt_ctl           'ascii'
-    field_files_fmt_ctl         'ascii'
+    restart_file_fmt_ctl        'ascii'
+    field_file_fmt_ctl          'ascii'
   end data_files_def
 !
   begin new_data_files_def
     num_new_domain_ctl           2
-    new_mesh_head_ctl          'mesh_target/in'
-    new_rst_head_ctl           'rst_new/rst'
-    new_field_head_ctl         'field_new/out'
+    new_mesh_prefix            'mesh_target/in'
+    new_restart_prefix         'rst_new/rst'
+    new_field_file_prefix      'field_new/out'
 !
     new_mesh_file_fmt_ctl           'ascii'
     new_rst_files_fmt_ctl           'ascii'
@@ -35,15 +35,15 @@ begin construct_table
   begin model_4_interpolate
     begin phys_values_ctl
       array nod_value_ctl   8
-        nod_value_ctl  velocity            Viz_On   Monitor_On    end
-        nod_value_ctl  temperature         Viz_On   Monitor_On    end
-        nod_value_ctl  pressure            Viz_On   Monitor_Off   end
-        nod_value_ctl  vorticity           Viz_On   Monitor_Off   end
-        nod_value_ctl  vector_potential    Viz_Off  Monitor_Off   end
-        nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
-        nod_value_ctl  current_density     Viz_On   Monitor_Off   end
-        nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off   end
-!        nod_value_ctl  composition         Viz_Off  Monitor_Off   end
+        nod_value_ctl  velocity            Viz_On   Monitor_On
+        nod_value_ctl  temperature         Viz_On   Monitor_On
+        nod_value_ctl  pressure            Viz_On   Monitor_Off
+        nod_value_ctl  vorticity           Viz_On   Monitor_Off
+        nod_value_ctl  vector_potential    Viz_Off  Monitor_Off
+        nod_value_ctl  magnetic_field      Viz_On   Monitor_On
+        nod_value_ctl  current_density     Viz_On   Monitor_Off
+        nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off
+!        nod_value_ctl  composition         Viz_Off  Monitor_Off
       end array nod_value_ctl
     end phys_values_ctl
 !

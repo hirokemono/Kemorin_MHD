@@ -265,9 +265,9 @@
      &       .or. restart_flag_ctl .eq. 'NO_DATA') then
             iflag_restart = i_rst_no_file
           else if(restart_flag_ctl .eq. '1'                             &
-     &       .or. restart_flag_ctl .eq. 'restart_file'                  &
-     &       .or. restart_flag_ctl .eq. 'Restart_file'                  &
-     &       .or. restart_flag_ctl .eq. 'RESTART_FILE') then
+     &       .or. restart_flag_ctl .eq. 'start_from_rst_file'           &
+     &       .or. restart_flag_ctl .eq. 'Start_from_rst_file'           &
+     &       .or. restart_flag_ctl .eq. 'START_FROM_RST_FILE') then
             iflag_restart = i_rst_by_file
           else if(restart_flag_ctl .eq. '-1'                            &
      &       .or. restart_flag_ctl .eq. 'dynamo_benchmark_0'            &

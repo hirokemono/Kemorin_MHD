@@ -47,9 +47,9 @@
 !
         call cal_ff_smp_2_multi_pass (n_vector, ff_nl_smp, ff_m_smp)
 !
-        if ( iflag_4_supg .eq. 1 ) then
+        if ( iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_vector_upw
-        else if ( iflag_4_supg .eq. 2 ) then
+        else if ( iflag_4_supg .eq. id_magnetic_SUPG) then
           call int_multi_pass_vector_upm
         else
           call int_multi_pass_vector
@@ -70,9 +70,9 @@
 !
         call cal_ff_smp_2_multi_pass (n_scalar, ff_nl_smp, ff_m_smp)
 !
-        if ( iflag_4_supg .eq. 1 ) then
+        if ( iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_scalar_upw
-        else if ( iflag_4_supg .eq. 2 ) then
+        else if ( iflag_4_supg .eq. id_magnetic_SUPG) then
           call int_multi_pass_scalar_upm
         else
           call int_multi_pass_scalar
@@ -94,9 +94,9 @@
 !
         call cal_ff_smp_2_multi_pass (n_vector, ff_nl_smp, ff_m_smp)
 !
-        if ( iflag_4_supg .eq. 1 ) then
+        if ( iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_vector_fl_upw
-        else if ( iflag_4_supg .eq. 2 ) then
+        else if ( iflag_4_supg .eq. id_magnetic_SUPG) then
           call int_multi_pass_vector_fl_upm
         else
           call int_multi_pass_vector_fl
@@ -117,9 +117,9 @@
 !
         call cal_ff_smp_2_multi_pass (n_scalar, ff_nl_smp, ff_m_smp)
 !
-        if ( iflag_4_supg .eq. 1 ) then
+        if ( iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_scalar_fl_upw
-        else if ( iflag_4_supg .eq. 2 ) then
+        else if ( iflag_4_supg .eq. id_magnetic_SUPG) then
           call int_multi_pass_scalar_fl_upm
         else
           call int_multi_pass_scalar_fl
@@ -141,7 +141,7 @@
 !
         call cal_ff_smp_2_multi_pass(n_vector, ff_nl_smp, ff_m_smp)
 !
-        if (iflag_4_supg .ge. 1) then
+        if (iflag_4_supg .gt. id_turn_OFF) then
           call int_multi_pass_vector_cd_upm
         else
           call int_multi_pass_vector_cd
@@ -162,7 +162,7 @@
 !
         call cal_ff_smp_2_multi_pass(n_scalar, ff_nl_smp, ff_m_smp)
 !
-        if (iflag_4_supg .ge. 1) then
+        if (iflag_4_supg .gt. id_turn_OFF) then
           call int_multi_pass_scalar_cd_upm
         else
           call int_multi_pass_scalar_cd

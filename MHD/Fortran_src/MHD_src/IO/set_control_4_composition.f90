@@ -39,7 +39,7 @@
       integer (kind = kint) :: i
 !
 !
-      if (iflag_t_evo_4_composit .eq. 0) then
+      if (iflag_t_evo_4_composit .eq. id_no_evolution) then
         num_surf_composition = 0
         num_bc_composit =   0
       else

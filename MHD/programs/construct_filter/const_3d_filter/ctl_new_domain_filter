@@ -3,12 +3,12 @@ begin change_filter_domain_ctl
   begin data_files_def
     num_subdomain_ctl           64
     num_smp_ctl                 1
-    mesh_file_head_ctl          'mesh_ref2_64/in'
+    mesh_file_prefix            'mesh_ref2_64/in'
   end data_files_def
 !
   begin new_data_files_def
     num_new_domain_ctl          4
-    new_mesh_head_ctl           'mesh_ref2_4/in'
+    new_mesh_prefix             'mesh_ref2_4/in'
   end new_data_files_def
 !
   begin orginal_filter_files_ctl

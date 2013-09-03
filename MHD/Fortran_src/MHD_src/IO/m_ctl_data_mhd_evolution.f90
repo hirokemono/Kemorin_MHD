@@ -3,41 +3,41 @@
 !
 !        programmed by H.Matsui on March. 2006
 !
-!      subroutine dealloc_t_evo_name_ctl
-!      subroutine dealloc_ele_fl_grp_ctl
-!      subroutine dealloc_ele_cd_grp_ctl
-!
-!      subroutine read_mhd_time_evo_ctl
-!      subroutine read_mhd_layer_ctl
-!
-! -----------------------------------------------------------------------
-!
+!!      subroutine dealloc_t_evo_name_ctl
+!!      subroutine dealloc_ele_fl_grp_ctl
+!!      subroutine dealloc_ele_cd_grp_ctl
+!!
+!!      subroutine read_mhd_time_evo_ctl
+!!      subroutine read_mhd_layer_ctl
+!!
+!! -----------------------------------------------------------------------
+!!
 !!!!!!  physical values for time evolution !!!!!!!!!!!!!!!!!!
 !! aviable valuables: velocity, temperature, magnetic_field
 !!                    vector_potential, composition
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!    begin time_evolution_ctl
-!      array time_evo_ctl   4
-!        time_evo_ctl  temperature        end
-!        time_evo_ctl  velocity           end
-!        time_evo_ctl  vector_potential   end
-!        time_evo_ctl  composition        end
-!      end array time_evo_ctl
-!    end  time_evolution_ctl
-!
-!!!!!  setting for layers 
-!
-!    begin layers_ctl
-!      array fluid_ele_grp    1
-!        fluid_ele_grp    outer_core   end
-!      end array fluid_ele_grp
-!
-!      array conduct_ele_grp    2
-!         conduct_ele_grp    inner_core   end
-!         conduct_ele_grp    outer_core   end
-!      end array conduct_ele_grp
-!    end  layers_ctl
-!
+!!    begin time_evolution_ctl
+!!      array time_evo_ctl   4
+!!        time_evo_ctl  temperature
+!!        time_evo_ctl  velocity
+!!        time_evo_ctl  vector_potential
+!!        time_evo_ctl  composition
+!!      end array time_evo_ctl
+!!    end  time_evolution_ctl
+!!
+!! !!!  setting for layers
+!!
+!!    begin layers_ctl
+!!      array fluid_ele_grp    1
+!!        fluid_ele_grp    outer_core
+!!      end array fluid_ele_grp
+!!
+!!      array conduct_ele_grp    2
+!!         conduct_ele_grp    inner_core
+!!         conduct_ele_grp    outer_core
+!!      end array conduct_ele_grp
+!!    end  layers_ctl
+!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
       module m_ctl_data_mhd_evolution

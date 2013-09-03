@@ -2,9 +2,9 @@ begin spherical_shell_ctl
   begin data_files_def
     num_subdomain_ctl    4
     num_smp_ctl          1
-    sph_files_head_ctl     'in'
+    sph_file_prefix      'in'
 !
-    coriolis_tri_int_name_ctl   'coriolis_int.dat'
+    coriolis_int_file_name     'coriolis_int.dat'
 !
     memory_conservation_ctl     'YES'
   end data_files_def
@@ -15,10 +15,10 @@ begin spherical_shell_ctl
       num_domain_sph_grid   meridional    2   end
     end array num_domain_sph_grid
 !
-    array num_domain_lagendre   2
-      num_domain_lagendre   radial        2   end
-      num_domain_lagendre   zonal         2   end
-    end array num_domain_lagendre
+    array num_domain_legendre   2
+      num_domain_legendre   radial        2   end
+      num_domain_legendre   zonal         2   end
+    end array num_domain_legendre
 !
     array num_domain_spectr     1
       num_domain_spectr     modes         4   end

@@ -67,8 +67,8 @@
 !
 !      data file name
 !
-      character(len = kchara) :: fhead_rms_vol =    'sph_rms_volume'
-      character(len = kchara) :: fhead_rms_layer =  'sph_rms_layer'
+      character(len = kchara) :: fhead_rms_vol =    'sph_pwr_volume'
+      character(len = kchara) :: fhead_rms_layer =  'sph_pwr_layer'
 !
       character(len = kchara) :: fname_org_rms_l
       character(len = kchara) :: fname_org_rms_m

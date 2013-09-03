@@ -49,8 +49,8 @@
 !      data file name
 !
       character(len = kchara) :: fhead_ave_vol =    'sph_ave_volume'
-      character(len = kchara) :: fhead_rms_vol =    'sph_rms_volume'
-      character(len = kchara) :: fhead_rms_layer =  'sph_rms_layer'
+      character(len = kchara) :: fhead_rms_vol =    'sph_pwr_volume'
+      character(len = kchara) :: fhead_rms_layer =  'sph_pwr_layer'
 !
 ! -----------------------------------------------------------------------
 !

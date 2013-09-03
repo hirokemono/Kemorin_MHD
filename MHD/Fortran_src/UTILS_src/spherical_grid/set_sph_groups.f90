@@ -1,9 +1,16 @@
-!set_item_4_sph_groups.f90
-!      module set_sph_groups
+!>@file   set_sph_groups.f90
+!!@brief  module set_sph_groups
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2010
+!
+!>@brief Set groups for spherical harmonics indexing
+!!
+!!@verbatim
+!!      subroutine s_set_sph_groups
+!!@endverbatim
 !
       module set_sph_groups
-!
-!     Written by H. Matsui on July, 2007
 !
       use m_precision
 !
@@ -16,8 +23,6 @@
       private :: set_rj_spectr_grp
       private :: set_no_rtp_node_grp
       private :: set_no_rtp_meridian_grp, set_no_rtp_zonal_grp
-!
-!      subroutine s_set_sph_groups
 !
 ! -----------------------------------------------------------------------
 !
@@ -116,10 +121,10 @@
 !
       subroutine set_no_rtp_node_grp
 !
-      num_zonal_grp_rtp =  0
-      ntot_zonal_grp_rtp = 0
-      call allocate_rtp_zonal_grp_stack
-      call allocate_rtp_zonal_grp_item
+      num_bc_grp_rtp =  0
+      ntot_bc_grp_rtp = 0
+      call allocate_rtp_nod_grp_stack
+      call allocate_rtp_nod_grp_item
 !
       end subroutine set_no_rtp_node_grp
 !
@@ -139,9 +144,9 @@
       subroutine set_no_rtp_zonal_grp
 !
       num_zonal_grp_rtp =  0
-      ntot_bc_grp_rtp = 0
-      call allocate_rtp_nod_grp_stack
-      call allocate_rtp_nod_grp_item
+      ntot_zonal_grp_rtp = 0
+      call allocate_rtp_zonal_grp_stack
+      call allocate_rtp_zonal_grp_item
 !
       end subroutine set_no_rtp_zonal_grp
 !

@@ -34,14 +34,14 @@
       real(kind = kreal), intent(in) :: xmax, xmin, scalar
 !
       integer :: idx_color
-      real(kind = kreal) rsig
+      real(kind = kreal) :: scalar_normed
       real(kind = kreal) ::  dr, dg, db
       real r, g, b
 !
 !
-      call normalize_by_linear(xmin, xmax, scalar, rsig)
+      call normalize_by_linear(xmin, xmax, scalar, scalar_normed)
 !
-      idx_color = rsig * (num_color-5) + 4
+      idx_color = scalar_normed * (num_color-5) + 4
       if(idx_color .gt. num_color) idx_color = num_color
       if(idx_color .lt. 5) idx_color = 5
 !
@@ -74,16 +74,16 @@
       integer, intent(in) :: num_color
 !
       integer :: inum, idx_color, nd
-      real(kind = kreal) :: rsig
+      real(kind = kreal) :: scalar_normed
       real(kind = kreal) ::  drgb(3)
       real rgb(3)
 !
 !
       do inum = 1, num_color-5
         idx_color = inum + 4
-        rsig = (dble(inum) - half) / dble(num_color-5)
+        scalar_normed = (dble(inum) - half) / dble(num_color-5)
 !
-        call color_rainbow(rsig, drgb(1), drgb(2), drgb(3))
+        call color_rainbow(scalar_normed, drgb(1), drgb(2), drgb(3))
 !
         rgb(1:3) = drgb(1:3)
         do nd = 1, 3
@@ -103,16 +103,17 @@
       integer, intent(in) :: num_color
 !
       integer :: inum, idx_color, nd
-      real(kind = kreal) :: rsig
+      real(kind = kreal) :: scalar_normed
       real(kind = kreal) ::  drgb(3)
       real rgb(3)
 !
 !
       do inum = 1, num_color-5
         idx_color = inum + 4
-        rsig = (dble(inum) - half) / dble(num_color-5)
+        scalar_normed = (dble(inum) - half) / dble(num_color-5)
 !
-        call color_sym_grayscale(rsig, drgb(1), drgb(2), drgb(3))
+        call color_sym_grayscale(scalar_normed,                         &
+     &      drgb(1), drgb(2), drgb(3))
 !
         rgb(1:3) = drgb(1:3)
         do nd = 1, 3

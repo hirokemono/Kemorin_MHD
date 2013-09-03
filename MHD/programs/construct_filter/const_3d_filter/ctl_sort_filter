@@ -3,7 +3,7 @@ begin const_filter
   begin data_files_def
     num_subdomain_ctl           64
     num_smp_ctl                 1
-    mesh_file_head_ctl          'mesh_ref2_64/in'
+    mesh_file_prefix            'mesh_ref2_64/in'
   end data_files_def
 !
   begin filter_files_def

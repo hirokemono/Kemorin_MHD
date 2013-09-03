@@ -147,7 +147,7 @@
         fluid_w_filter_grp(1:num_fluid_filter_grp)                      &
      &         = fluid_filter_grp(1:num_fluid_filter_grp)
 !
-        if ( iflag_t_evo_4_temp.gt.0 ) then
+        if (iflag_t_evo_4_temp .gt. id_no_evolution) then
           if (     heat_filter_ctl .eq. 'whole_filtering'               &
      &      .or.   heat_filter_ctl .eq. 'Whole_filtering'               &
      &      .or.   heat_filter_ctl .eq. 'WHOLE_FILTERING') then
@@ -161,7 +161,7 @@
           end if
         end if
 !
-        if ( iflag_t_evo_4_velo.gt.0 ) then
+        if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
           if (     momentum_filter_ctl .eq. 'whole_filtering'           &
      &      .or.   momentum_filter_ctl .eq. 'Whole_filtering'           &
      &      .or.   momentum_filter_ctl .eq. 'WHOLE_FILTERING') then
@@ -175,7 +175,8 @@
           end if
         end if
 !
-        if ( (iflag_t_evo_4_magne+iflag_t_evo_4_vect_p) .gt. 0 ) then
+        if (iflag_t_evo_4_magne .gt. id_no_evolution                    &
+     &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
           if (     induction_filter_ctl .eq. 'whole_filtering'          &
      &      .or.   induction_filter_ctl .eq. 'Whole_filtering'          &
      &      .or.   induction_filter_ctl .eq. 'WHOLE_FILTERING') then

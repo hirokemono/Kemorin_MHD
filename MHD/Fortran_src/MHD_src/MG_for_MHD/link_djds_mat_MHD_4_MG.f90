@@ -63,31 +63,32 @@
 !
 !   set boundary conditions for matrix
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         call link_djds_mat_press_4_MG(mat_press)
       end if
 !
-      if ( iflag_t_evo_4_velo .ge. 3 ) then
+      if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
         call link_djds_mat_velo_4_MG(mat_velo)
       end if
 !
-      if ( iflag_t_evo_4_temp.ge.3 ) then
+      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         call link_djds_mat_temp_4_MG(mat_temp)
       end if
 !
-      if ( iflag_t_evo_4_composit.ge.3 ) then
+      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         call link_djds_mat_dscalar_4_MG(mat_d_scalar)
       end if
 !
-      if (iflag_t_evo_4_magne.ge.1 .or. iflag_t_evo_4_vect_p.ge.1) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
+     &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call link_djds_mat_magp_4_MG(mat_magp)
       end if
 !
-      if ( iflag_t_evo_4_magne .ge. 3 ) then
+      if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
         call link_djds_mat_magne_4_MG(mat_magne)
       end if
 !
-      if ( iflag_t_evo_4_vect_p .ge. 3 ) then
+      if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
         call link_djds_mat_magne_4_MG(mat_magne)
       end if
 !

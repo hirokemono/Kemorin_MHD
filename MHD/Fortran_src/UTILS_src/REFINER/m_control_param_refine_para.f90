@@ -49,7 +49,7 @@
       end if
 !
       if(i_mesh_header .gt. 0) then
-        para_fine_mesh_head = mesh_file_head_ctl
+        para_fine_mesh_head = mesh_file_prefix
       end if
 !
 !

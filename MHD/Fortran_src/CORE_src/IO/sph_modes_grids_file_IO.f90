@@ -43,12 +43,8 @@
       character(len=kchara) :: fname_tmp
 !
 !
-      if(iflag_sph_file_ext.gt.0) then
-        call add_int_suffix(my_rank, sph_head, fname_tmp)
-        call add_rtp_extension(fname_tmp, sph_file_name)
-      else
-        call add_int_suffix(my_rank, sph_rtp_head, sph_file_name)
-      end if
+      call add_int_suffix(my_rank, sph_head, fname_tmp)
+      call add_rtp_extension(fname_tmp, sph_file_name)
 !
       end subroutine set_fname_sph_rtp
 !
@@ -60,12 +56,8 @@
       character(len=kchara) :: fname_tmp
 !
 !
-      if(iflag_sph_file_ext.gt.0) then
-        call add_int_suffix(my_rank, sph_head, fname_tmp)
-        call add_rj_extension(fname_tmp, sph_file_name)
-      else
-        call add_int_suffix(my_rank, sph_rj_head, sph_file_name)
-      end if
+      call add_int_suffix(my_rank, sph_head, fname_tmp)
+      call add_rj_extension(fname_tmp, sph_file_name)
 !
       end subroutine set_fname_sph_rj
 !
@@ -77,12 +69,8 @@
       character(len=kchara) :: fname_tmp
 !
 !
-      if(iflag_sph_file_ext.gt.0) then
-        call add_int_suffix(my_rank, sph_head, fname_tmp)
-        call add_rtm_extension(fname_tmp, sph_file_name)
-      else
-        call add_int_suffix(my_rank, sph_rtm_head, sph_file_name)
-      end if
+      call add_int_suffix(my_rank, sph_head, fname_tmp)
+      call add_rtm_extension(fname_tmp, sph_file_name)
 !
       end subroutine set_fname_sph_rtm
 !
@@ -94,12 +82,8 @@
       character(len=kchara) :: fname_tmp
 !
 !
-      if(iflag_sph_file_ext.gt.0) then
-        call add_int_suffix(my_rank, sph_head, fname_tmp)
-        call add_rlm_extension(fname_tmp, sph_file_name)
-      else
-        call add_int_suffix(my_rank, sph_rlm_head, sph_file_name)
-      end if
+      call add_int_suffix(my_rank, sph_head, fname_tmp)
+      call add_rlm_extension(fname_tmp, sph_file_name)
 !
       end subroutine set_fname_sph_rlm
 !
@@ -112,12 +96,8 @@
       character(len=kchara) :: fname_tmp
 !
 !
-      if(iflag_sph_file_ext.gt.0) then
-        call add_int_suffix(my_rank, org_sph_rj_head, fname_tmp)
-        call add_rj_extension(fname_tmp, sph_file_name)
-      else
-        call add_int_suffix(my_rank, org_sph_rj_head, sph_file_name)
-      end if
+      call add_int_suffix(my_rank, org_sph_rj_head, fname_tmp)
+      call add_rj_extension(fname_tmp, sph_file_name)
 !
       end subroutine set_fname_org_sph_rj
 !

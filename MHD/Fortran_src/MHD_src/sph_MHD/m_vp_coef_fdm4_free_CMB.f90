@@ -130,9 +130,9 @@
       mat_taylor_4(1,3) = zero
       mat_taylor_4(1,4) = zero
 !
-      mat_taylor_4(2,1) =  zero
-      mat_taylor_4(2,2) =  one
-      mat_taylor_4(2,3) = -half * r0
+      mat_taylor_4(2,1) =  one
+      mat_taylor_4(2,2) =  -r0
+      mat_taylor_4(2,3) =  half * r0*r0
       mat_taylor_4(2,4) =  zero
 !
       mat_taylor_4(3,1) =  one
@@ -181,11 +181,14 @@
       mat_taylor_5(1,4) = zero
       mat_taylor_5(1,5) = zero
 !
-      mat_taylor_5(2,1) = zero
-      mat_taylor_5(2,2) = one
-      mat_taylor_5(2,3) = (dr_p1 - half * r0)
-      mat_taylor_5(2,4) = half * dr_p1 * (dr_p1 - r0)
-      mat_taylor_5(2,5) = dr_p1**2 * (dr_p1/six - r0/four)
+      mat_taylor_5(3,1) = one
+      mat_taylor_5(3,2) = dr_p1                 - r0
+      mat_taylor_5(3,3) = dr_p1*dr_p1 / two     - r0*dr_p1              &
+     &                   + half*r0*r0
+      mat_taylor_5(3,4) = dr_p1**3 / six        - r0*dr_p1*dr_p1 / two  &
+     &                   + half*r0*r0 * dr_p1
+      mat_taylor_5(3,5) = dr_p1**4 / (six*four) - r0*dr_p1**3 / six     &
+     &                   + half*r0*r0 * dr_p1*dr_p1 / two
 !
       mat_taylor_5(3,1) = one
       mat_taylor_5(3,2) = dr_p1

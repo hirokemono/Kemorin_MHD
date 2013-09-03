@@ -38,7 +38,7 @@
 !
       call reset_ff_smps
 !
-      if ( iflag_4_supg .ge. 1) then
+      if ( iflag_4_supg .gt. id_turn_OFF) then
         call int_vol_vect_p_pre_ele_upm
       else
         call int_vol_vect_p_pre_ele

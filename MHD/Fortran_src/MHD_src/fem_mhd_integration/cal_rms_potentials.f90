@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on March, 2006
 !
-!      subroutine cal_rms_pressure_4_loop(iloop)
-!      subroutine cal_rms_scsalar_potential(iloop)
+!      subroutine cal_rms_pressure_4_loop(iloop, rsig)
+!      subroutine cal_rms_scalar_potential(iloop, rsig)
 !
       module cal_rms_potentials
 !
@@ -59,7 +59,7 @@
         ave_pr0 = ave_pr
         rms_pr0 = rms_pr
       end if
-      rsig = (rms_pr - rms_mp0) / rms_pr0
+      rsig = (rms_pr - rms_pr0) / rms_pr0
 !
       if (iflag_debug.eq.1)                                             &
      &         write(12,*) 'average and RMS of presssur correction: ',  &
@@ -69,7 +69,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_rms_scsalar_potential(iloop, rsig)
+      subroutine cal_rms_scalar_potential(iloop, rsig)
 !
       use m_node_phys_address
 !
@@ -101,7 +101,7 @@
      &         write(12,*) 'average and RMS of potential correction: ', &
      &         iloop, ave_mp, rms_mp
 !
-      end subroutine cal_rms_scsalar_potential
+      end subroutine cal_rms_scalar_potential
 !
 ! ----------------------------------------------------------------------
 !

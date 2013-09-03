@@ -25,13 +25,13 @@
 !!      control block for pickup spherical harmonics
 !!
 !!  begin sph_monitor_ctl
-!!    volume_average_head_ctl      'sph_ave_volume'
-!!    volume_rms_spectr_head_ctl   'sph_rms_volume'
-!!    layered_rms_spectr_head_ctl  'sph_rms_layer'
+!!    volume_average_prefix        'sph_ave_volume'
+!!    volume_pwr_spectr_prefix     'sph_pwr_volume'
+!!    layered_pwr_spectr_prefix    'sph_pwr_layer'
 !!
-!!    picked_sph_head_ctl          'sph_spectr/picked_mode'
+!!    picked_sph_prefix            'sph_spectr/picked_mode'
+!!    gauss_coefs_prefix           'sph_spectr/gauss_coefs'
 !!
-!!    gauss_coefs_head_ctl        'sph_spectr/gauss_coefs'
 !!    gauss_coefs_radius_ctl        2.91
 !!
 !!   if num_pick_layer_ctl = 0 or negative:
@@ -90,12 +90,12 @@
 !
       implicit  none
 !
-      character(len = kchara) :: volume_average_head_ctl
-      character(len = kchara) :: volume_rms_spectr_head_ctl
-      character(len = kchara) :: layered_rms_spectr_head_ctl
+      character(len = kchara) :: volume_average_prefix
+      character(len = kchara) :: volume_pwr_spectr_prefix
+      character(len = kchara) :: layered_pwr_spectr_prefix
 !
       character(len = kchara) :: picked_mode_head_ctl
-      character(len = kchara) :: gauss_coefs_head_ctl
+      character(len = kchara) :: gauss_coefs_prefix
       real(kind = kreal) :: gauss_coefs_radius_ctl = 2.91
 !
       integer(kind = kint) :: num_pick_layer_ctl = 0
@@ -134,15 +134,15 @@
 !   labels for item
 !
       character(len=kchara), parameter                                  &
-     &           :: hd_voume_ave_head = 'volume_average_head_ctl'
+     &           :: hd_voume_ave_head = 'volume_average_prefix'
       character(len=kchara), parameter                                  &
-     &           :: hd_voume_rms_head = 'volume_rms_spectr_head_ctl'
+     &           :: hd_voume_rms_head = 'volume_pwr_spectr_prefix'
       character(len=kchara), parameter                                  &
-     &           :: hd_layer_rms_head = 'layered_rms_spectr_head_ctl'
+     &           :: hd_layer_rms_head = 'layered_pwr_spectr_prefix'
       character(len=kchara), parameter                                  &
-     &           :: hd_picked_mode_head = 'picked_sph_head_ctl'
+     &           :: hd_picked_mode_head = 'picked_sph_prefix'
       character(len=kchara), parameter                                  &
-     &           :: hd_gauss_coefs_head = 'gauss_coefs_head_ctl'
+     &           :: hd_gauss_coefs_head = 'gauss_coefs_prefix'
       character(len=kchara), parameter                                  &
      &           :: hd_gauss_coefs_r =    'gauss_coefs_radius_ctl'
 !
@@ -422,16 +422,16 @@
      &          i_nphi_mid_eq, nphi_mid_eq_ctl)
 !
         call read_character_ctl_item(hd_gauss_coefs_head,               &
-     &          i_gauss_coefs_head, gauss_coefs_head_ctl)
+     &          i_gauss_coefs_head, gauss_coefs_prefix)
         call read_character_ctl_item(hd_picked_mode_head,               &
      &          i_picked_mode_head, picked_mode_head_ctl)
 !
         call read_character_ctl_item(hd_voume_ave_head,                 &
-     &          i_voume_ave_head, volume_average_head_ctl)
+     &          i_voume_ave_head, volume_average_prefix)
         call read_character_ctl_item(hd_voume_rms_head,                 &
-     &          i_voume_rms_head, volume_rms_spectr_head_ctl)
+     &          i_voume_rms_head, volume_pwr_spectr_prefix)
         call read_character_ctl_item(hd_layer_rms_head,                 &
-     &          i_layer_rms_head, layered_rms_spectr_head_ctl)
+     &          i_layer_rms_head, layered_pwr_spectr_prefix)
 !
         call read_character_ctl_item(hd_circle_coord,                   &
      &          i_circle_coord, pick_circle_coord_ctl)

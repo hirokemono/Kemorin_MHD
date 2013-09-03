@@ -86,9 +86,9 @@
       real(kind = kreal), intent(inout) :: dt, t_init
 !
 !
-      write(*,*) 'new_mesh_head_ctl    ', new_mesh_head_ctl
-!      write(*,*) 'new_field_head_ctl     ', new_field_head_ctl
-!      write(*,*) 'new_rst_head_ctl     ', new_rst_head_ctl
+      write(*,*) 'new_mesh_prefix         ', new_mesh_prefix
+!      write(*,*) 'new_field_file_prefix  ', new_field_file_prefix
+!      write(*,*) 'new_restart_prefix     ', new_restart_prefix
 !      write(*,*) 'new_udt_type_ctl     ', new_udt_type_ctl
       write(*,*) 'nnod_plane_ctl       ', nnod_plane_ctl
       write(*,*) 'ndomain_plane_ctl    ', ndomain_plane_ctl
@@ -104,13 +104,13 @@
 !      write(*,*) 'horizontal_grid2_ctl  ', horizontal_grid2_ctl
 !
       if (i_new_mesh_head .gt. 0) then
-        mesh_file_head = new_mesh_head_ctl
+        mesh_file_head = new_mesh_prefix
       else
         mesh_file_head = def_new_mesh_head
       end if
 !
       if (i_new_rst_head .gt. 0) then
-        rst_head_plane = new_rst_head_ctl
+        rst_head_plane = new_restart_prefix
       else
         rst_head_plane = def_newrst_head
       end if
@@ -180,17 +180,17 @@
 !      write(*,*) 'horizontal_grid2_ctl  ', horizontal_grid2_ctl
 !
       if (i_new_mesh_head .gt. 0) then
-        mesh_file_head = new_mesh_head_ctl
+        mesh_file_head = new_mesh_prefix
       else
         mesh_file_head = def_new_mesh_head
       end if
 !
       if (i_new_udt_head .gt. 0) then
         call set_ucd_file_format(iflag_udt)
-        call set_ucd_file_prefix(new_field_head_ctl)
+        call set_ucd_file_prefix(new_field_file_prefix)
       else if (i_new_vtk_head .gt. 0) then
         call set_ucd_file_format(iflag_vtk)
-        call set_ucd_file_prefix(new_vtk_head_ctl)
+        call set_ucd_file_prefix(new_vtk_prefix)
       else
         call set_ucd_file_format(iflag_fld)
       end if

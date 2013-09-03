@@ -141,7 +141,7 @@
 !>       @f$ B_{i}e_{ijk} \partial_{j} \left(e_{klm}u_{l}B_{m}\right) @f$
         integer (kind=kint) :: i_me_gen =          izero
 !>        start address for buoyancy flux
-!!         @f$ -u_{i} \alpha g_{i} T @f$
+!!         @f$ -u_{i} \alpha_{T} g_{i} T @f$
         integer (kind=kint) :: i_buo_gen =         izero
 !>        start address for compositional buoyancy flux
 !!         @f$ -u_{i} \alpha_{c} g_{i} C @f$
@@ -247,7 +247,7 @@
 !!         @f$ -2 e_{ijk} \Omega_{j} u_{k} @f$
         integer (kind=kint) :: i_coriolis =        izero
 !>        start address for buoyancy
-!!         @f$ -\alpha g_{i} T @f$
+!!         @f$ -\alpha_{T} g_{i} T @f$
         integer (kind=kint) :: i_buoyancy =        izero
 !>        start address for compositional buoyancy
 !!         @f$ -\alpha_{C} g_{i} C @f$

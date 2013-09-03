@@ -11,6 +11,7 @@
 !!  ---------------------------------------------------------------------
 !!
 !!      subroutine init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WK)
+!!      subroutine finalize_wk_ispack_t(WK)
 !!      subroutine verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WK)
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK
@@ -121,6 +122,18 @@
       call alloc_work_ispack_t(Nsmp, Nfft, WK)
 !
       end subroutine init_wk_ispack_t
+!
+! ------------------------------------------------------------------
+!
+      subroutine finalize_wk_ispack_t(WK)
+!
+      type(working_ISPACK), intent(inout) :: WK
+!
+!
+      call dealloc_const_ispack_t(WK)
+      call dealloc_work_ispack_t(WK)
+!
+      end subroutine finalize_wk_ispack_t
 !
 ! ------------------------------------------------------------------
 !

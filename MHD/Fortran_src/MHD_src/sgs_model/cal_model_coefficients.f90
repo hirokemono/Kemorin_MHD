@@ -45,9 +45,9 @@
         call cal_model_coef_sgs_heat_flux
         call cal_model_coef_sgs_maxwell
 !
-        if(iflag_t_evo_4_magne .gt. 0) then
+        if(iflag_t_evo_4_magne .gt. id_no_evolution) then
           call cal_model_coef_sgs_mag_induct
-        else if(iflag_t_evo_4_vect_p .gt. 0) then
+        else if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then
           call cal_model_coef_sgs_uxb
         end if
       end if

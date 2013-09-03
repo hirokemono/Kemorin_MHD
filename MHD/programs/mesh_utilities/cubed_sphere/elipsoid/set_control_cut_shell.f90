@@ -22,6 +22,7 @@
 !
       use m_control_data_4_cutshell
       use const_cutshell_mesh
+      use m_file_format_switch
 !
 !
       if (i_org_f_ctl .gt. 0) then
@@ -38,6 +39,7 @@
         stop
       end if
 !
+      iflag_mesh_file_fmt = id_ascii_file_fmt
 !
       if (i_cutshell_type .gt. 0) then
         if    (   cutshell_type_ctl .eq. 'hemisphere'                   &

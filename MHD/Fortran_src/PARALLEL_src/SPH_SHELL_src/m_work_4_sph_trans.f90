@@ -48,20 +48,20 @@
 !
 !
 !>      integer flag to run elpse time check for legendre transform
-      integer(kind = kint), parameter :: iflag_lag_undefined = -1
+      integer(kind = kint), parameter :: iflag_leg_undefined = -1
 !>      integer flag to perform Legendre transform 
 !@n     using original array order
-      integer(kind = kint), parameter :: iflag_lag_orginal_loop = 1
+      integer(kind = kint), parameter :: iflag_leg_orginal_loop = 1
 !>      integer flag to perform Legendre transform 
 !!@n    using longer loop for original array order 
-      integer(kind = kint), parameter :: iflag_lag_krloop_inner = 2
+      integer(kind = kint), parameter :: iflag_leg_krloop_inner = 2
 !>      integer flag to perform Legendre transform 
 !@n     with inneromst LEgendre polynomial loop
-      integer(kind = kint), parameter :: iflag_lag_krloop_outer = 3
+      integer(kind = kint), parameter :: iflag_leg_krloop_outer = 3
 !
 !>      Integer flag for Legendre transform
       integer(kind = kint)                                              &
-     &              :: id_lagendre_transfer = iflag_lag_undefined
+     &              :: id_legendre_transfer = iflag_leg_undefined
 !
 !>      maximum number of fields for Legendre transform
       integer(kind = kint) :: nb_sph_trans

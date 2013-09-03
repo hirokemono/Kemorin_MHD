@@ -3,13 +3,28 @@
 !
 !        programmed by H.Matsui on Dec., 2012
 !
-!      subroutine allocate_pick_sph_rms
-!      subroutine deallocate_pick_sph_rms
+!>@file   m_pickup_sph_rms_data.f90
+!!@brief  module m_pickup_sph_rms_data
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2012
 !
-!      subroutine write_sph_rms_4_monitor(my_rank, i_step, time)
-!
-!      subroutine open_sph_rms_read_monitor(id_pick)
-!      subroutine read_sph_rms_4_monitor(id_pick, i_step, time, ierr)
+!>@brief  Data IO routines for monitoring spectrum data
+!!
+!!@verbatim
+!!      subroutine allocate_pick_sph_rms
+!!      subroutine deallocate_pick_sph_rms
+!!
+!!      subroutine write_sph_rms_4_monitor(my_rank, i_step, time)
+!!
+!!      subroutine open_sph_rms_read_monitor(id_pick)
+!!      subroutine read_sph_rms_4_monitor(id_pick, i_step, time, ierr)
+!!@endverbatim
+!!
+!!@n @param my_rank     Procdess ID
+!!@n @param i_step      Time step
+!!@n @param time        Time
+!!@n @param ierr        Error flag (No error: 0)
 !
       module m_pickup_sph_rms_data
 !
@@ -90,8 +105,8 @@
       subroutine open_sph_rms_4_monitor
 !
       use set_parallel_file_name
+      use write_field_labels
 !
-      integer(kind = kint) :: i_fld
       character(len = kchara) :: pick_sph_rms_name
 !
 !
@@ -112,16 +127,13 @@
       write(id_each_ms,'(i10)') ncomp_pick_sph_rms
 !
 !
-      write(id_each_ms,'(a)',advance='NO')    't_step, time, '
-      write(id_each_ms,'(a)',advance='NO')    'radius_ID, radius, '
-      write(id_each_ms,'(a)',advance='NO')    'degree, order, '
+      write(id_each_ms,'(a)',advance='NO')    't_step    time    '
+      write(id_each_ms,'(a)',advance='NO')    'radius_ID    radius    '
+      write(id_each_ms,'(a)',advance='NO')    'degree    order    '
 !
-      do i_fld = 1, ncomp_pick_sph_rms-1
-        write(id_each_ms,'(a,a2)',advance='NO')                         &
-     &           trim(rms_pick_sph_name(i_fld)), ', '
-      end do
-      write(id_each_ms,'(a)')                                           &
-     &           trim(rms_pick_sph_name(ncomp_pick_sph_rms))
+      call write_multi_labels(id_each_ms, ncomp_pick_sph_rms,           &
+     &    rms_pick_sph_name)
+      write(id_each_ms,'(a)') ''
 !
       end subroutine open_sph_rms_4_monitor
 !

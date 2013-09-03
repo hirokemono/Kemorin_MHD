@@ -1,9 +1,14 @@
+!>@file   set_ctl_gen_shell_grids.f90
+!!@brief  module set_ctl_gen_shell_grids
+!!
+!!@author H. Matsui
+!!@date Programmed on July, 2007
 !
-!      module set_ctl_gen_shell_grids
-!
-!        programmed by H.Matsui on July, 2007
-!
-!      subroutine s_set_control_4_gen_shell_grids
+!>@brief  Set control data for domain decomposition for spherical transform
+!!
+!!@verbatim
+!!      subroutine s_set_control_4_gen_shell_grids
+!!@endverbatim
 !
       module set_ctl_gen_shell_grids
 !
@@ -45,7 +50,7 @@
       call set_control_sph_mesh
 !
       if(i_coriolis_tri_int_name .gt. 0) then
-        sph_cor_file_name = coriolis_tri_int_name_ctl
+        sph_cor_file_name = coriolis_int_file_name
       end if
 !
       call choose_file_format(coriolis_file_fmt_ctl,                    &
@@ -206,20 +211,20 @@
 !
       ndomain_rtm(1:3) = 1
       if (ndir_domain_sph_grid .gt. 0) then
-        do i = 1, ndir_domain_lagendre
-          if (         dir_domain_lagendre_ctl(i) .eq. 'radial'         &
-     &            .or. dir_domain_lagendre_ctl(i) .eq. 'Radial'         &
-     &            .or. dir_domain_lagendre_ctl(i) .eq. 'RADIAL'         &
-     &            .or. dir_domain_lagendre_ctl(i) .eq. 'r'              &
-     &            .or. dir_domain_lagendre_ctl(i) .eq. 'R'     ) then
-             ndomain_rtm(1) = num_domain_lagendre_ctl(i)
-          else if (    dir_domain_lagendre_ctl(i) .eq. 'zonal'          &
-     &            .or. dir_domain_lagendre_ctl(i) .eq. 'Zonal'          &
-     &            .or. dir_domain_lagendre_ctl(i) .eq. 'ZONAL'          &
-     &            .or. dir_domain_lagendre_ctl(i) .eq. 'phi'            &
-     &            .or. dir_domain_lagendre_ctl(i) .eq. 'Phi'            &
-     &            .or. dir_domain_lagendre_ctl(i) .eq. 'PHI'   ) then
-             ndomain_rtm(3) = num_domain_lagendre_ctl(i)
+        do i = 1, ndir_domain_legendre
+          if (         dir_domain_legendre_ctl(i) .eq. 'radial'         &
+     &            .or. dir_domain_legendre_ctl(i) .eq. 'Radial'         &
+     &            .or. dir_domain_legendre_ctl(i) .eq. 'RADIAL'         &
+     &            .or. dir_domain_legendre_ctl(i) .eq. 'r'              &
+     &            .or. dir_domain_legendre_ctl(i) .eq. 'R'     ) then
+             ndomain_rtm(1) = num_domain_legendre_ctl(i)
+          else if (    dir_domain_legendre_ctl(i) .eq. 'zonal'          &
+     &            .or. dir_domain_legendre_ctl(i) .eq. 'Zonal'          &
+     &            .or. dir_domain_legendre_ctl(i) .eq. 'ZONAL'          &
+     &            .or. dir_domain_legendre_ctl(i) .eq. 'phi'            &
+     &            .or. dir_domain_legendre_ctl(i) .eq. 'Phi'            &
+     &            .or. dir_domain_legendre_ctl(i) .eq. 'PHI'   ) then
+             ndomain_rtm(3) = num_domain_legendre_ctl(i)
            end if
         end do
 !

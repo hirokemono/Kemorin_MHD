@@ -26,9 +26,15 @@
 !!       Toroidal velocity ::       d_rj(:,itor%i_velo)
 !!       Poloidal magnetic field :: d_rj(:,ipol%i_magne)
 !!       Toroidal magnetic field :: d_rj(:,itor%i_magne)
-!
+!!
 !!       Heat source ::          d_rj(:,ipol%i_heat_source)
 !!       Light element source :: d_rj(:,ipol%i_light_source)
+!!
+!!       nidx_rj(1) :: Number of radial grids
+!!       nlayer_ICB :: radial ID for ICB
+!!       nlayer_CMB :: radial ID for CMB
+!!       r_ICB :: ICB radius
+!!       r_CMB :: CMB radius
 !!@endverbatim
 !
 !
@@ -212,7 +218,7 @@
       use m_sph_spectr_data
 !
       real (kind = kreal) :: pi, rr
-      integer(kind = kint) :: is, it, k, js, jt
+      integer(kind = kint) :: is, it, k, js, jt, is_ICB, is_CMB
 !
 !
       pi = four * atan(one)
@@ -225,7 +231,7 @@
 !$omp end parallel do
 !
 !
-!    Find local address for l = 1, m = 0
+!    Find local addrtess for (l,m) = (1,0)
       js =  find_local_sph_mode_address(ione, izero)
 !
       if (js .gt. 0) then
@@ -235,6 +241,26 @@
 !   Substitute poloidal mangetic field
           d_rj(is,ipol%i_magne) =  (5.0d0/8.0d0) * (-3.0d0 * rr**3      &
      &                     + 4.0d0 * r_CMB * rr**2 - r_ICB**4 / rr)
+        end do
+!
+!   Fill potential field if inner core exist
+        is_ICB = local_sph_data_address(nlayer_ICB,js)
+        do k = 1, nlayer_ICB-1
+          is = local_sph_data_address(k,js)
+          rr = radius_1d_rj_r(k) / r_ICB
+!   Substitute poloidal mangetic field
+          d_rj(is,ipol%i_magne) =  d_rj(is_ICB,ipol%i_magne)            &
+     &                            * rr**(ione+1)
+        end do
+!
+!   Fill potential field if external of the core exist
+        is_CMB = local_sph_data_address(nlayer_CMB,js)
+        do k = nlayer_CMB+1, nidx_rj(1)
+          is = local_sph_data_address(k,js)
+          rr = radius_1d_rj_r(k) / r_CMB
+!   Substitute poloidal mangetic field
+          d_rj(is,ipol%i_magne) =  d_rj(is_ICB,ipol%i_magne)            &
+     &                            * rr**(-ione)
         end do
       end if
 !

@@ -39,7 +39,7 @@
       num_sgs_kinds = 0
       num_diff_coefs = 0
       num_diff_kinds = 0
-      if (iflag_t_evo_4_temp .gt. 0) then
+      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         if (iflag_SGS_heat .ne. id_SGS_none) then
           num_sgs_coefs = num_sgs_coefs + 3
           num_sgs_kinds = num_sgs_kinds + 1
@@ -50,7 +50,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_velo .gt. 0) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if (iflag_SGS_inertia .ne. id_SGS_none) then
           num_sgs_coefs = num_sgs_coefs + 6
           num_sgs_kinds = num_sgs_kinds + 1
@@ -70,24 +70,24 @@
         end if
 !
         if (iflag_SGS_gravity .ne. id_SGS_none) then
-          if(iflag_4_gravity .gt. 0) then
+          if(iflag_4_gravity .gt. id_turn_OFF) then
             num_sgs_coefs = num_sgs_coefs + 6
             num_sgs_kinds = num_sgs_kinds + 1
           end if
-          if(iflag_4_composit_buo .gt. 0) then
+          if(iflag_4_composit_buo .gt. id_turn_OFF) then
             num_sgs_coefs = num_sgs_coefs + 6
             num_sgs_kinds = num_sgs_kinds + 1
           end if
         end if
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. 0) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if (iflag_SGS_induction .ne. id_SGS_none) then
           num_sgs_coefs = num_sgs_coefs + 3
           num_sgs_kinds = num_sgs_kinds + 1
         end if
       end if
-      if (iflag_t_evo_4_magne.gt.0) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
         if (iflag_SGS_induction .ne. id_SGS_none) then
           num_sgs_coefs = num_sgs_coefs + 3
           num_sgs_kinds = num_sgs_kinds + 1
@@ -98,7 +98,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_composit .gt. 0) then
+      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         if (iflag_SGS_comp_flux .ne. id_SGS_none) then
           num_sgs_coefs = num_sgs_coefs + 3
           num_sgs_kinds = num_sgs_kinds + 1
@@ -109,7 +109,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_temp .gt. 0) then
+      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_temp .eq. id_SGS_commute_ON) then
           num_diff_coefs = num_diff_coefs + 3
@@ -117,7 +117,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_composit .gt. 0) then
+      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_composit .eq. id_SGS_commute_ON) then
           num_diff_coefs = num_diff_coefs + 3
@@ -125,7 +125,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_velo .gt. 0) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &        .and. iflag_commute_velo .eq. id_SGS_commute_ON) then
           num_diff_coefs = num_diff_coefs + 9
@@ -133,7 +133,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. 0) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &       .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
           num_diff_coefs = num_diff_coefs + 9
@@ -141,7 +141,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_magne .gt. 0) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
         if(iflag_SGS_model .gt. id_SGS_none                             &
      &      .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
           num_diff_coefs = num_diff_coefs + 9
@@ -163,7 +163,7 @@
        j = 1
        id = 1
        jd = 1
-       if (iflag_t_evo_4_temp .gt. 0) then
+       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
          if (iflag_SGS_heat .ne. id_SGS_none) then
            icomp_sgs_hf = i
            iak_sgs_hf =   j
@@ -182,7 +182,7 @@
          end if
        end if
 !
-       if (iflag_t_evo_4_velo .gt. 0) then
+       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
          if (iflag_SGS_inertia .ne. id_SGS_none) then
            icomp_sgs_mf = i
            iak_sgs_mf =   j
@@ -226,7 +226,7 @@
             i = i + ncomp_sgs_coefs(j)
             j = j + 1
           end if
-          if(iflag_4_composit_buo .gt. 0) then
+          if(iflag_4_composit_buo .gt. id_turn_OFF) then
             icomp_sgs_cbuo = i
             iak_sgs_cbuo =   j
             name_ak_sgs(j) = fhd_SGS_comp_buo
@@ -237,7 +237,7 @@
         end if
        end if
 !
-       if (iflag_t_evo_4_vect_p .gt. 0) then
+       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
          if (iflag_SGS_induction .ne. id_SGS_none) then
            icomp_sgs_uxb = i
            iak_sgs_uxb =   j
@@ -247,7 +247,7 @@
            j = j + 1
          end if
        end if
-       if (iflag_t_evo_4_magne .gt. 0) then
+       if (iflag_t_evo_4_magne .gt. id_no_evolution) then
          if (iflag_SGS_induction .ne. id_SGS_none) then
            icomp_sgs_uxb = i
            iak_sgs_uxb =   j
@@ -266,7 +266,7 @@
          end if
        end if
 !
-       if (iflag_t_evo_4_composit .gt. 0) then
+       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
          if (iflag_SGS_comp_flux .ne. id_SGS_none) then
            icomp_sgs_cf = i
            iak_sgs_cf =   j
@@ -292,7 +292,7 @@
        end do
 !
 !
-      if (iflag_t_evo_4_temp .gt. 0) then
+      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_temp .eq. id_SGS_commute_ON) then
             icomp_diff_t = id
@@ -304,7 +304,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_composit .gt. 0) then
+      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &        .and. iflag_commute_composit .eq. id_SGS_commute_ON) then
             icomp_diff_c = id
@@ -316,7 +316,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_velo .gt. 0) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_velo .eq. id_SGS_commute_ON) then
             icomp_diff_v = id
@@ -328,7 +328,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. 0) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
             icomp_diff_b = id
@@ -340,7 +340,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_magne .gt. 0) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
             icomp_diff_b = id

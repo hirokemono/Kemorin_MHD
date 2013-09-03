@@ -188,8 +188,8 @@
       subroutine open_sph_spec_4_monitor
 !
       use set_parallel_file_name
+      use write_field_labels
 !
-      integer(kind = kint) :: i_fld
       character(len = kchara) :: pickup_sph_name
 !
 !
@@ -208,16 +208,14 @@
       write(id_pick_mode,'(a)')    '# number of component'
       write(id_pick_mode,'(i10)') ncomp_pick_sph_coef
 !
-      write(id_pick_mode,'(a)',advance='NO')    't_step, time, '
-      write(id_pick_mode,'(a)',advance='NO')    'radius_ID, radius, '
-      write(id_pick_mode,'(a)',advance='NO')    'degree, order, '
+      write(id_pick_mode,'(a)',advance='NO')    't_step    time    '
+      write(id_pick_mode,'(a)',advance='NO')    'radius_ID    radius    '
+      write(id_pick_mode,'(a)',advance='NO')    'degree    order    '
 !
-      do i_fld = 1, ncomp_pick_sph_coef-1
-        write(id_pick_mode,'(a,a2)',advance='no')                       &
-     &           trim(pick_sph_spec_name(i_fld)), ', '
-      end do
-      write(id_pick_mode,'(a)')                                         &
-     &           trim(pick_sph_spec_name(ncomp_pick_sph_coef))
+      call write_multi_labels(id_pick_mode, ncomp_pick_sph_coef,        &
+     &    pick_sph_spec_name)
+
+      write(id_pick_mode,'(a)') ''
 !
       end subroutine open_sph_spec_4_monitor
 !

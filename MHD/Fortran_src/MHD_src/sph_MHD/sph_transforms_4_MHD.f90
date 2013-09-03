@@ -55,7 +55,7 @@
 !
       call set_colatitude_rtp
 !
-      if(id_lagendre_transfer .ne. iflag_lag_undefined) return
+      if(id_legendre_transfer .ne. iflag_leg_undefined) return
       call select_legendre_transform
 !
       end subroutine init_sph_transform_MHD
@@ -165,48 +165,57 @@
       real(kind = kreal) :: etime_trans(1:3)
 !
 !
-      id_lagendre_transfer = iflag_lag_orginal_loop
+      id_legendre_transfer = iflag_leg_orginal_loop
       stime = MPI_WTIME()
       call sph_back_trans_4_MHD
       call sph_forward_trans_4_MHD
-      etime(id_lagendre_transfer) = MPI_WTIME() - stime
+      etime(id_legendre_transfer) = MPI_WTIME() - stime
 !
-      id_lagendre_transfer = iflag_lag_krloop_inner
+      id_legendre_transfer = iflag_leg_krloop_inner
       stime = MPI_WTIME()
       call sph_back_trans_4_MHD
       call sph_forward_trans_4_MHD
-      etime(id_lagendre_transfer) = MPI_WTIME() - stime
+      etime(id_legendre_transfer) = MPI_WTIME() - stime
 !
-      id_lagendre_transfer = iflag_lag_krloop_outer
+      id_legendre_transfer = iflag_leg_krloop_outer
       stime = MPI_WTIME()
       call sph_back_trans_4_MHD
       call sph_forward_trans_4_MHD
-      etime(id_lagendre_transfer) = MPI_WTIME() - stime
+      etime(id_legendre_transfer) = MPI_WTIME() - stime
 !
       call MPI_allREDUCE (etime, etime_trans, ifour,                    &
      &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
 !
-      id_lagendre_transfer = iflag_lag_orginal_loop
-      etime_shortest =       etime_trans(iflag_lag_orginal_loop)
+      id_legendre_transfer = iflag_leg_orginal_loop
+      etime_shortest =       etime_trans(iflag_leg_orginal_loop)
 !
-      if(etime_trans(iflag_lag_krloop_inner) .lt. etime_shortest) then
-        id_lagendre_transfer = iflag_lag_krloop_inner
-        etime_shortest =       etime_trans(iflag_lag_krloop_inner)
+      if(etime_trans(iflag_leg_krloop_inner) .lt. etime_shortest) then
+        id_legendre_transfer = iflag_leg_krloop_inner
+        etime_shortest =       etime_trans(iflag_leg_krloop_inner)
       end if
-      if(etime_trans(iflag_lag_krloop_outer) .lt. etime_shortest) then
-        id_lagendre_transfer = iflag_lag_krloop_outer
-        etime_shortest =       etime_trans(iflag_lag_krloop_outer)
+      if(etime_trans(iflag_leg_krloop_outer) .lt. etime_shortest) then
+        id_legendre_transfer = iflag_leg_krloop_outer
+        etime_shortest =       etime_trans(iflag_leg_krloop_outer)
       end if
 !
-      if(my_rank .eq. 0) then
-        write(*,*) 'id_lagendre_transfer: ', id_lagendre_transfer
+      if(my_rank .gt. 0) return
+        write(*,'(a,i4)', advance='no')                                 &
+     &         'Selected id_legendre_transfer: ', id_legendre_transfer
+!
+        if     (id_legendre_transfer .eq. iflag_leg_orginal_loop) then
+          write(*,'(a,a)') ' (LONG_LOOP) '
+        else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
+          write(*,'(a,a)') ' (INNER_RADIAL_LOOP) '
+        else if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
+          write(*,'(a,a)') ' (OUTER_RADIAL_LOOP) '
+        end if
+!
         write(*,*) '1: elapsed by original loop: ',                     &
-     &            etime_trans(iflag_lag_orginal_loop)
+     &            etime_trans(iflag_leg_orginal_loop)
         write(*,*) '2: elapsed by inner radius loop: ',                 &
-     &            etime_trans(iflag_lag_krloop_inner)
+     &            etime_trans(iflag_leg_krloop_inner)
         write(*,*) '3: elapsed by outer radius loop: ',                 &
-     &            etime_trans(iflag_lag_krloop_outer)
-      end if
+     &            etime_trans(iflag_leg_krloop_outer)
 !
       end subroutine select_legendre_transform
 !

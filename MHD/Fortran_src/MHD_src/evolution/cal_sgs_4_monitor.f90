@@ -88,7 +88,7 @@
       end if
 !
       if (      iphys%i_SGS_induction .gt. 0                            &
-     &   .and. iflag_t_evo_4_magne .gt. 0) then
+     &   .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
         call cal_terms_4_magnetic(iphys%i_SGS_induction)
@@ -123,7 +123,7 @@
 !
 !
       if (     iphys%i_SGS_induction .gt. 0                             &
-     &   .and. iflag_t_evo_4_vect_p .gt. 0) then
+     &   .and. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
         call int_vol_sgs_induction

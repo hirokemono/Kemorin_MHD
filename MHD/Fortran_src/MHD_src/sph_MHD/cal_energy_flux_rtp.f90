@@ -71,7 +71,7 @@
       end if
 !
       if(irtp%i_buo_gen .gt. 0) then
-        if(iflag_4_ref_temp .eq. 100) then
+        if(iflag_4_ref_temp .eq. id_sphere_ref_temp) then
           call cal_buoyancy_flux_rtp_smp(np_smp, nnod_rtp, nidx_rtp(1), &
      &        inod_rtp_smp_stack, radius_1d_rtp_r, coef_buo,            &
      &        d_rtp(1,irtp%i_par_temp), d_rtp(1,irtp%i_velo),           &

@@ -3,17 +3,17 @@ begin spherical_transform
   begin data_files_def
     num_subdomain_ctl    4
     num_smp_ctl          1
-    sph_files_head_ctl         'sphc_lm48r64c_64/in'
+    sph_file_prefix         'sph_lm48r64c_64/in'
 !
-    rst_file_head_ctl          'restart/rst'
-    field_file_head_ctl        'field/out'
+    restart_file_prefix        'restart/rst'
+    field_file_prefix          'field/out'
     spectr_file_head_ctl       'sph_spectr/spectral'
 !
 !
-    sph_files_fmt_ctl      'gzip'
-    rst_files_fmt_ctl      'ascii'
-    field_files_fmt_ctl    'ascii'
-    spectr_files_fmt_ctl   'ascii'
+    sph_file_fmt_ctl       'gzip'
+    restart_file_fmt_ctl   'ascii'
+    field_file_fmt_ctl     'ascii'
+    spectr_file_fmt_ctl    'ascii'
   end data_files_def
 !
   begin org_data_files_def
@@ -23,15 +23,15 @@ begin spherical_transform
   begin model
     begin phys_values_ctl
       array nod_value_ctl   8
-        nod_value_ctl  velocity            Viz_On   Monitor_On    end
-        nod_value_ctl  temperature         Viz_On   Monitor_On    end
-        nod_value_ctl  pressure            Viz_On   Monitor_Off   end
-        nod_value_ctl  vorticity           Viz_On   Monitor_Off   end
-        nod_value_ctl  vector_potential    Viz_Off  Monitor_Off   end
-        nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
-        nod_value_ctl  current_density     Viz_On   Monitor_Off   end
-        nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off   end
-!        nod_value_ctl  composition         Viz_Off  Monitor_Off   end
+        nod_value_ctl  velocity            Viz_On   Monitor_On
+        nod_value_ctl  temperature         Viz_On   Monitor_On
+        nod_value_ctl  pressure            Viz_On   Monitor_Off
+        nod_value_ctl  vorticity           Viz_On   Monitor_Off
+        nod_value_ctl  vector_potential    Viz_Off  Monitor_Off
+        nod_value_ctl  magnetic_field      Viz_On   Monitor_On
+        nod_value_ctl  current_density     Viz_On   Monitor_Off
+        nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off
+!        nod_value_ctl  composition         Viz_Off  Monitor_Off
       end array nod_value_ctl
     end phys_values_ctl
 !
@@ -51,9 +51,7 @@ begin spherical_transform
     radial_CMB_group_name        ICB
     radial_ICB_group_name        CMB
 
-!     spherical transfer mode  'radius_in' 'radius_out' 'long_loop'
-!     sph_transform_mode_ctl   'radius_in'
-     FFT_library_ctl          'ISPACK'
+    FFT_library_ctl          'ISPACK'
 !
     zm_spectr_head_ctl     'sph_spectr/zm_spectr'
     zonal_udt_head_ctl     'zm_field/zm_spectr'

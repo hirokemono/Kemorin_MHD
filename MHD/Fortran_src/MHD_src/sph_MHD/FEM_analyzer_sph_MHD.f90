@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in Apr., 2010
 !
-!>@brief Top routines to transfer spherical hermonics grids data
+!>@brief Top routines to transfer spherical harmonics grids data
 !!       to FEM data for data visualization
 !!
 !!@verbatim

@@ -56,8 +56,9 @@
       end if
 !
 !
-      if(iflag_t_evo_4_velo.ge.3 .or. iflag_t_evo_4_vect_p.ge.3         &
-     &  .or. iflag_t_evo_4_magne.ge.3) then
+      if(     iflag_t_evo_4_velo .ge.   id_Crank_nicolson               &
+     &   .or. iflag_t_evo_4_vect_p .ge. id_Crank_nicolson               &
+     &   .or. iflag_t_evo_4_magne .ge.  id_Crank_nicolson) then
         method = method_4_velo
         if ( ((method(1:1).eq.'M').or.(method(1:1).eq.'m')) .and.       &
      &       ((method(2:2).eq.'G').or.(method(2:2).eq.'g')) .and.       &

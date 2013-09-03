@@ -67,11 +67,11 @@
 !
       call const_sph_div_force(ipol%i_m_advect, ipol%i_div_inertia)
 !
-      if( iflag_4_lorentz .gt. 0) then
+      if(iflag_4_lorentz .gt. id_turn_OFF) then
         call const_sph_div_force(ipol%i_lorentz, ipol%i_div_Lorentz)
       end if
 !
-      if( iflag_4_coriolis .gt. 0) then
+      if(iflag_4_coriolis .gt. id_turn_OFF) then
         call const_sph_div_force(ipol%i_coriolis, ipol%i_div_Coriolis)
 !        call s_sum_div_coriolis_rj_sph(coef_cor, ipol%i_div_Coriolis)
       end if

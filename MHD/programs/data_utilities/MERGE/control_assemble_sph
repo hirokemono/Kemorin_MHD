@@ -3,19 +3,18 @@ begin assemble_control
   begin data_files_def
     num_subdomain_ctl           2
 
-    sph_files_head_ctl          'sph_lm31t48r96c_2/in'
-    rst_file_head_ctl           'rst_2/rst'
+    sph_file_prefix             'sph_lm31t48r96c_2/in'
+    restart_file_prefix         'rst_2/rst'
 !
-    sph_files_fmt_ctl           'gzip'
-    rst_files_fmt_ctl           'gzip'
+    sph_file_fmt_ctl            'gzip'
+    restart_file_fmt_ctl        'gzip'
   end data_files_def
 !
   begin new_data_files_def
     num_new_domain_ctl           4
 !
-    new_sph_mode_head_ctl      'sph_lm31t48r96c_4/in'
-!
-    new_rst_head_ctl           'rst_4/rst'
+    new_sph_mode_prefix        'sph_lm31t48r96c_4/in'
+    new_restart_prefix         'rst_4/rst'
 !
     new_sph_files_fmt_ctl      'ascii'
     new_rst_files_fmt_ctl      'ascii'

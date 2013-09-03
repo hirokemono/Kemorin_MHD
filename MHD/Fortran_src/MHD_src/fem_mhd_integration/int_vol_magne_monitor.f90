@@ -56,7 +56,7 @@
       else if (i_field .eq. iphys%i_SGS_induction) then
         if(iflag_commute_induction .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_pg(iele_cd_smp_stack,           &
-     &        intg_point_t_evo, n_filter_final)
+     &        intg_point_t_evo, ifilter_final)
         else
           call int_vol_div_as_tsr_w_const_1st(iele_cd_smp_stack,        &
      &        intg_point_t_evo, iphys%i_SGS_induct_t, coef_induct)
@@ -88,7 +88,7 @@
       else if (i_field .eq. iphys%i_SGS_induction) then
         if(iflag_commute_induction .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_upm(iele_cd_smp_stack,          &
-     &        intg_point_t_evo, n_filter_final)
+     &        intg_point_t_evo, ifilter_final)
         else
           call int_vol_div_as_tsr_cst_upw_1(iele_cd_smp_stack,          &
      &        intg_point_t_evo, iphys%i_SGS_induct_t, coef_induct,      &

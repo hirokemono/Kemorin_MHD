@@ -68,7 +68,7 @@
       end if
 !
       if (i_new_sph_mode_head .gt. 0) then
-        new_sph_head = new_sph_mode_head_ctl
+        new_sph_head = new_sph_mode_prefix
       end if
 !
       call choose_file_format(new_sph_file_fmt_ctl,                     &
@@ -76,11 +76,11 @@
 !
 !
       if (i_rst_header .gt. 0) then
-        org_sph_fst_head = rst_file_head_ctl
+        org_sph_fst_head = restart_file_prefix
       end if
 !
       if (i_new_rst_head .gt. 0) then
-        new_sph_fst_head = new_rst_head_ctl
+        new_sph_fst_head = new_restart_prefix
       end if
 !
       if(i_del_org_data .gt. 0) then

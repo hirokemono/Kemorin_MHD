@@ -83,7 +83,7 @@
 !
       if (iak_diff .gt. 0) then
         call int_vol_sgs_div_v_linear_1st(iele_fsmp_stack,              &
-     &      intg_point_poisson, i_vector, n_filter_final, iak_diff)
+     &      intg_point_poisson, i_vector, ifilter_final, iak_diff)
       else
         call int_vol_div_vect_linear_1st(iele_fsmp_stack,               &
      &      intg_point_poisson, i_vector)

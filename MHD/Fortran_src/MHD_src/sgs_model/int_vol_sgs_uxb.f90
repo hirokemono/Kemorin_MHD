@@ -36,7 +36,7 @@
      &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      if (iflag_4_supg .eq. 1) then
+      if (iflag_4_supg .eq. id_turn_ON) then
         call int_vol_sgs_uxb_upm(i_filter, i_field, id_dx, sk_v)
       else
         call int_vol_sgs_uxb_pg(i_filter, i_field, id_dx, sk_v)

@@ -47,12 +47,6 @@
 !
       character(len=kchara) :: sph_head =     "in_sph"
       integer(kind = kint) :: iflag_sph_file_fmt = 0
-      integer(kind = kint) :: iflag_sph_file_ext = 0
-!
-      character(len=kchara) :: sph_rj_head =  "in_rj"
-      character(len=kchara) :: sph_rlm_head = "in_rlm"
-      character(len=kchara) :: sph_rtm_head = "in_rtm"
-      character(len=kchara) :: sph_rtp_head = "in_rtp"
 !
       character(len=kchara) :: org_sph_rj_head =      "sph_org/in_rj"
       integer(kind = kint) :: iflag_org_sph_rj_head = 0

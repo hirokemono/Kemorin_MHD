@@ -38,7 +38,7 @@
      &  .or. phys_nod_name(i) .eq. fhd_light                            &
      &  .or. phys_nod_name(i) .eq. fhd_temp     ) then
         num_ele_phys = num_ele_phys + 1
-        if ( iflag_4_rotate.eq.1 ) then
+        if ( iflag_4_rotate .eq. id_turn_ON ) then
           num_ele_phys = num_ele_phys + 1
         end if
         if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                   &
@@ -60,7 +60,7 @@
           phys_ele_name(j) = fhd_velo
           j = j + 1
 !
-          if ( iflag_4_rotate.eq.1 ) then
+          if ( iflag_4_rotate .eq. id_turn_ON ) then
             num_ele_component(j) = 3
             phys_ele_name(j) = fhd_vort
             j = j + 1
@@ -77,7 +77,7 @@
           num_ele_component(j) = 3
           phys_ele_name(j) = fhd_magne
           j = j + 1
-          if ( iflag_4_rotate.eq.1 ) then
+          if ( iflag_4_rotate .eq. id_turn_ON ) then
             num_ele_component(j) = 3
             phys_ele_name(j) = fhd_current
             j = j + 1

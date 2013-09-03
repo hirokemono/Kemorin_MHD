@@ -34,19 +34,19 @@
 !
 !
       if (i_mesh_header .gt. 0) then
-        local_file_header = mesh_file_head_ctl
+        local_file_header = mesh_file_prefix
       end if
 !
       if (i_elem_header .gt. 0) then
-        local_ele_header = elem_file_head_ctl
+        local_ele_header = elem_file_prefix
       end if
 !
       if (i_surf_header .gt. 0) then
-        local_surf_header = surf_file_head_ctl
+        local_surf_header = surf_file_prefix
       end if
 !
       if (i_edge_header .gt. 0) then
-        local_edge_header = edge_file_head_ctl
+        local_edge_header = edge_file_prefix
       end if
 !
 !   set local data format

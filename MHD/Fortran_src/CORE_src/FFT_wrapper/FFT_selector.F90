@@ -4,13 +4,11 @@
 !!@author H. Matsui
 !!@date Programmed in Oct., 2009
 !
-!      module FFT_selector
-!
-!
 !>@brief  Selector of Fourier transform
 !!
 !!@verbatim
-!!      subroutine initialize_FFT_select(Nsmp, Nstacksmp, Nfft)
+!!      subroutine initialize_FFT_select(my_rank, Nsmp, Nstacksmp, Nfft)
+!!      subroutine finalize_FFT_select(Nsmp)
 !!      subroutine verify_FFT_select(Nsmp, Nstacksmp, Nfft)
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT for ISPACK
@@ -54,6 +52,7 @@
 !! ------------------------------------------------------------------
 !!@endverbatim
 !!
+!!@n @param my_rank     Procdess ID
 !!@n @param Nsmp  Number of SMP processors
 !!@n @param Nstacksmp(0:Nsmp)   End number for each SMP process
 !!@n @param M           Number of components for Fourier transforms
@@ -71,15 +70,17 @@
 !
       implicit none
 !
-!>      integer flag to use ISPACK
-      integer(kind = kint), parameter :: iflag_ISPACK =    0
+!>      integer flag for undefined
+      integer(kind = kint), parameter :: iflag_UNDEFINED_FFT =   0
 !>      integer flag to use FFTPACK5
       integer(kind = kint), parameter :: iflag_FFTPACK =   1
 !>      integer flag to use FFTW3
       integer(kind = kint), parameter :: iflag_FFTW =      2
 !      integer(kind = kint), parameter :: iflag_FFTW = 3
+!>      integer flag to use ISPACK
+      integer(kind = kint), parameter :: iflag_ISPACK =    3
 !
-      integer(kind = kint) :: iflag_FFT = iflag_ISPACK
+      integer(kind = kint) :: iflag_FFT = iflag_UNDEFINED_FFT
 !
 ! ------------------------------------------------------------------
 !
@@ -87,30 +88,55 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine initialize_FFT_select(Nsmp, Nstacksmp, Nfft)
+      subroutine initialize_FFT_select(my_rank, Nsmp, Nstacksmp, Nfft)
 !
-      integer(kind = kint), intent(in) ::  Nfft
+      integer(kind = kint), intent(in) ::  my_rank, Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !
 !
       if(iflag_FFT .eq. iflag_ISPACK) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK'
+        if(my_rank .eq. 0) write(*,*) 'Use ISPACK'
         call init_4_ispack(Nsmp, Nstacksmp, Nfft)
 #ifdef FFTW3
 !      else if(iflag_FFT .eq. iflag_FFTW) then
-!        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW by kemo_wrapper'
+!        if(my_rank .eq. 0) write(*,*) 'Use FFTW by kemo_wrapper'
 !        call init_4_FFTW_kemo(Nsmp, Nstacksmp, Nfft)
       else if(iflag_FFT .eq. iflag_FFTW) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
+        if(my_rank .eq. 0) write(*,*) 'Use FFTW'
         call init_4_FFTW(Nsmp, Nstacksmp, Nfft)
 #endif
       else
-        if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
+        if(my_rank .eq. 0) write(*,*) 'Use FFTPACK'
         call init_4_FFTPACK(Nsmp, Nstacksmp, Nfft)
       end if
 !
 !
       end subroutine initialize_FFT_select
+!
+! ------------------------------------------------------------------
+!
+      subroutine finalize_FFT_select(Nsmp)
+!
+      integer(kind = kint), intent(in) ::  Nsmp
+!
+!
+      if(iflag_FFT .eq. iflag_ISPACK) then
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK'
+        call finalize_4_ispack
+#ifdef FFTW3
+!      else if(iflag_FFT .eq. iflag_FFTW) then
+!        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW by kemo_wrapper'
+!        call finalize_4_FFTW_kemo(Nsmp)
+      else if(iflag_FFT .eq. iflag_FFTW) then
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
+        call finalize_4_FFTW(Nsmp)
+#endif
+      else
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
+        call finalize_4_FFTPACK
+      end if
+!
+      end subroutine finalize_FFT_select
 !
 ! ------------------------------------------------------------------
 !

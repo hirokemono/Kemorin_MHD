@@ -41,7 +41,7 @@
 !
        call reset_ff_smps
 !
-        if ( iflag_4_supg .ge. 1) then
+        if ( iflag_4_supg .gt. id_turn_OFF) then
           call int_div_sgs_hf_simi_upw(i_flux, i_vect, i_scalar)
         else
           call int_div_sgs_hf_simi_pg(i_flux, i_vect, i_scalar)

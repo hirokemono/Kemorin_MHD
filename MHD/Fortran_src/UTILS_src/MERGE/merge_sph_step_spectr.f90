@@ -51,7 +51,6 @@
       iflag_sph_file_fmt = ifmt_new_sph_file
       do ip = 1, np_sph_new
         my_rank = ip - 1
-        sph_rj_head = new_sph_head
         sph_head =    new_sph_head
         call set_local_rj_mesh_4_merge(my_rank, new_sph_mesh(ip))
       end do

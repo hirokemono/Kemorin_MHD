@@ -52,27 +52,29 @@
       use m_control_parameter
 !
 !
-      if ( iflag_t_evo_4_velo .ge. 1 ) then
+      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
         call write_djds_mat_press
       end if
 !
-      if ( iflag_t_evo_4_velo .ge. 3 ) then
+      if ( iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
         call write_djds_mat_velo
       end if
 !
-      if ( iflag_t_evo_4_temp.ge.3 ) then
+      if ( iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         call write_djds_mat_temp
       end if
 !
-      if ( iflag_t_evo_4_composit.ge.3 ) then
+      if ( iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         call write_djds_mat_d_scalar
       end if
 !
-      if (iflag_t_evo_4_vect_p.ge.1 .or. iflag_t_evo_4_magne.ge.1) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
+     &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
         call write_djds_mat_mag_p
       end if
 !
-      if (iflag_t_evo_4_vect_p.ge.1 .or. iflag_t_evo_4_magne.ge.1) then
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
+     &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
         call write_djds_mat_magne
       end if
 !

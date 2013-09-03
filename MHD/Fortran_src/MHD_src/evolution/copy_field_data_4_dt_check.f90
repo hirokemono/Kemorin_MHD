@@ -64,7 +64,7 @@
       end if
 !
 !
-      if(iflag_t_evo_4_vect_p .gt. izero) then
+      if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if( (iphys%i_chk_uxb*iphys%i_vecp) .gt. izero) then
           call copy_vector_component(iphys%i_chk_uxb, iphys%i_vecp)
         end if

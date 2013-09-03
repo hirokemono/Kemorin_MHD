@@ -46,23 +46,24 @@
 !
 !    For thermal
 !
-      if (iflag_t_evo_4_temp.ge.1) then
+      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         allocate( ak_d_temp(numele) )
         ak_d_temp(1:numele) = coef_d_temp
       end if
 !
 !    For convection
 !
-      if (iflag_t_evo_4_velo.ge.1) then
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         allocate( ak_d_velo(numele) )
         ak_d_velo(1:numele) = coef_d_velo
 !
-        if (iflag_4_gravity.gt.0 .or. iflag_4_filter_gravity.gt.0) then
+        if (iflag_4_gravity .gt. id_turn_OFF                            &
+     &     .or. iflag_4_filter_gravity .gt. id_turn_OFF) then
           allocate ( ak_buo(numele) )
           ak_buo(1:numele) = coef_buo
         end if
 !
-        if ( iflag_4_composit_buo .gt. 0) then
+        if ( iflag_4_composit_buo .gt. id_turn_OFF) then
           allocate ( ak_comp_buo(numele) )
           ak_comp_buo(1:numele) = coef_comp_buo
         end if
@@ -70,14 +71,15 @@
 !
 !   For Induction
 !
-      if (iflag_t_evo_4_magne.ge.1 .or. iflag_t_evo_4_vect_p.ge.1) then
+      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
+     &    .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         allocate ( ak_d_magne(numele) )
         ak_d_magne(1:numele) = coef_d_magne
       end if
 !
 !   For dummy scalar
 !
-      if (iflag_t_evo_4_composit.ge.1) then
+      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         allocate ( ak_d_composit(numele) )
         ak_d_composit(1:numele) = coef_d_light
       end if
