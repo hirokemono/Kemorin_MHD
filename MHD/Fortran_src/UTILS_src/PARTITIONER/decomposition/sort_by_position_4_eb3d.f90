@@ -46,21 +46,21 @@
 !
       ip0 = ione
 !
-      write(*,*) 'copy_position_sort_4_rcb'
+!      write(*,*) 'copy_position_sort_4_rcb'
       call copy_position_sort_4_rcb(nnod, ip0, IGROUP, xx1, ncou,       &
      &    VAL, IS1)
 !
-        write(*,*) 'quicksort_real_w_index'
+!        write(*,*) 'quicksort_real_w_index'
       call quicksort_real_w_index(nnod, VAL, ione, nnod, IS1)
 !
-        write(*,*) 'sorting_by_2nd_direction'
+!        write(*,*) 'sorting_by_2nd_direction'
       call sorting_by_2nd_direction(nnod, ncou, xx1, xx2, VAL, IS1)
 !
       call sorting_by_2nd_direction(nnod, ncou, xx2, xx3, VAL, IS1)
 !
       call cal_divide_and_rest(num1, irest1, nnod, ndiv(1) )
 !
-      write(*,*) 'set_domain_list_by_order'
+!      write(*,*) 'set_domain_list_by_order'
       call set_domain_list_by_order(nnod, ione, ndiv(1), num1, irest1,  &
      &    IS1, IGROUP)
 !
@@ -120,17 +120,17 @@
      &        VAL, IS1)
         end if
 !
-        write(*,*) 'quicksort_real_w_index'
+!        write(*,*) 'quicksort_real_w_index'
         call quicksort_real_w_index(nnod, VAL, ione, nnod, IS1)
 !
-        write(*,*) 'sorting_by_2nd_direction'
+!        write(*,*) 'sorting_by_2nd_direction'
         call sorting_by_2nd_direction(nnod, ncou, xx1, xx2, VAL, IS1)
 !
         call sorting_by_2nd_direction(nnod, ncou, xx2, xx3, VAL, IS1)
 !
         call cal_divide_and_rest(num1, irest1, nnod, ndiv(1) )
 !
-        write(*,*) 'set_domain_list_by_order'
+!        write(*,*) 'set_domain_list_by_order'
         call set_domain_list_w_rev(nnod, j, ndiv(1), num1, irest1,      &
      &      IS1, IGROUP)
 !

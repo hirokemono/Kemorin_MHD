@@ -51,39 +51,39 @@
       ip0 = 1
       IGROUP_cmb(1:num_CMB) = 1
 !
-        write(*,*) 'copy_position_sort_4_rcb'
+!        write(*,*) 'copy_position_sort_4_rcb'
       call copy_position_sort_4_rcb(num_CMB, ip0, IGROUP_cmb,           &
      &    longitude, ncou, VAL, IS1)
 !
-        write(*,*) 'quicksort_real_w_index'
+!        write(*,*) 'quicksort_real_w_index'
       call quicksort_real_w_index(num_CMB, VAL, ione, num_CMB, IS1)
 !
-        write(*,*) 'sorting_by_2nd_direction'
+!        write(*,*) 'sorting_by_2nd_direction'
       call sorting_by_2nd_direction(num_CMB, ncou, longitude,           &
      &    colatitude, VAL, IS1)
 !
       call cal_divide_and_rest(num1, irest1, num_CMB, iphi)
 !
-        write(*,*) 'set_domain_list_by_order'
+!        write(*,*) 'set_domain_list_by_order'
       call set_domain_list_by_order(num_CMB, ione, iphi, num1, irest1,  &
      &    IS1, IGROUP_cmb)
 !
 !
       do ip0 = 1, iphi
 !
-        write(*,*) 'copy_position_sort_4_rcb'
+!        write(*,*) 'copy_position_sort_4_rcb'
         call copy_position_sort_4_rcb(num_CMB, ip0, IGROUP_cmb,         &
      &      colatitude, ncou, VAL, IS1)
 !
         call quicksort_real_w_index(num_CMB, VAL, ione, ncou, IS1)
 !
-        write(*,*) 'sorting_by_2nd_direction'
+!        write(*,*) 'sorting_by_2nd_direction'
         call sorting_by_2nd_direction(num_CMB, ncou, colatitude,        &
      &      longitude, VAL, IS1)
 !
         call cal_divide_and_rest(num1, irest1, ncou, itheta)
 !
-        write(*,*) 'set_domain_list_by_order'
+!        write(*,*) 'set_domain_list_by_order'
         call set_domain_list_by_order(num_CMB, iphi, itheta,            &
      &      num1, irest1, IS1, IGROUP_cmb)
 !
@@ -123,10 +123,10 @@
 !   grouping outer core
 !
       num0 = nlayer_CMB-nlayer_ICB + 1
-      write(*,*) 'cal_divide_and_rest'
+!      write(*,*) 'cal_divide_and_rest'
       call cal_divide_and_rest(num1, irest1, num0, iradius)
 !
-      write(*,*) 'set_domain_list_by_order'
+!      write(*,*) 'set_domain_list_by_order'
       call set_domain_list_by_order(num0, ione, iradius, num1, irest1,  &
      &    IS_radial(1), IGROUP_radius(nlayer_ICB) )
 !
@@ -137,19 +137,19 @@
 !   grouping inner core
 !
       num0 = nlayer_ICB - 1
-      write(*,*) 'cal_divide_and_rest'
+!      write(*,*) 'cal_divide_and_rest'
       call cal_divide_and_rest(num1, irest1, num0, iradius)
 !
-      write(*,*) 'set_domain_list_by_order'
+!      write(*,*) 'set_domain_list_by_order'
       call set_domain_list_by_order(num0, ione, iradius, num1, irest1,  &
      &    IS_radial(1), IGROUP_radius(1) )
 !
 !   grouping mantle
 !
-      write(*,*) 'cal_divide_and_rest'
+!      write(*,*) 'cal_divide_and_rest'
       call cal_divide_and_rest(num1, irest1, num_layer, iradius)
 !
-      write(*,*) 'num1, irest1', num1, irest1
+!      write(*,*) 'num1, irest1', num1, irest1
       kk = nlayer_CMB
       do i = 1, iradius
         if (i.le.irest1) then
