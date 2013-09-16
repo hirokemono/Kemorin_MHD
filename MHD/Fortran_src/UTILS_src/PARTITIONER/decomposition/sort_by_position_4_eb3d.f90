@@ -169,17 +169,17 @@
         call copy_position_sort_4_rcb(nnod, ip0, IGROUP, xx2, ncou,     &
      &      VAL, IS1)
 !
-        write(*,*) 'quicksort_real_w_index'
+!        write(*,*) 'quicksort_real_w_index'
         call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
 !
-        write(*,*) 'sorting_by_2nd_direction'
+!        write(*,*) 'sorting_by_2nd_direction'
         call sorting_by_2nd_direction(nnod, ncou, xx2, xx3, VAL, IS1)
 !
         call sorting_by_2nd_direction(nnod, ncou, xx3, xx1, VAL, IS1)
 !
         call cal_divide_and_rest(num1, irest1, ncou, ndiv(2) )
 !
-        write(*,*) 'set_domain_list_by_order', ndiv(1), ndiv(2)
+!        write(*,*) 'set_domain_list_by_order', ndiv(1), ndiv(2)
         call set_domain_list_by_order(nnod, ndiv(1), ndiv(2), num1,     &
      &      irest1, IS1, IGROUP)
 !
