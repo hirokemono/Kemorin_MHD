@@ -119,7 +119,7 @@
 !
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_nod
-      type(vector_surf_bc_type), intent(inout) :: vector_p
+      type(velocity_surf_bc_type), intent(inout) :: vector_p
 !
 !
       call set_surf_vect_p_type_id(sf_grp, sf_nod, vector_p)

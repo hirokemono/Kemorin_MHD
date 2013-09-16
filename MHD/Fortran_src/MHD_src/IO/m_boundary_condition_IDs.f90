@@ -128,6 +128,16 @@
 !>      surface flag for outer boundary of spheical shell
       integer(kind = kint), parameter :: iflag_surf_sph_out =   72
 !
+!>      surface flag for free slip on outer spherical boundary
+      integer(kind = kint), parameter :: iflag_surf_free_sph_in =  401
+!>      surface flag for free slip on inner spherical boundary
+      integer(kind = kint), parameter :: iflag_surf_free_sph_out = 402
+!
+!>      surface flag for pseudo vacuum on outer spherical boundary
+      integer(kind = kint), parameter :: iflag_surf_qvc_sph_in =   401
+!>      surface flag for pseudo vacuum on inner spherical boundary
+      integer(kind = kint), parameter :: iflag_surf_qvc_sph_out =  402
+!
 !>      surface flag for infinite radius
       integer(kind = kint), parameter :: iflag_surf_infty =      0
 !

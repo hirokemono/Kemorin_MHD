@@ -6,7 +6,7 @@
 !
 !      subroutine count_num_surf_grad_scalar                            &
 !     &          (num_surf, surf_istack, surf_name,                     &
-!     &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,        &
+!     &           num_bc_sf, bc_sf_name, ibc_sf_type,                   &
 !     &           ngrp_sf_fix, nele_sf_fix, ngrp_sf_lead)
 !      subroutine s_set_surf_grad_scalar_id                             &
 !     &          (num_surf, surf_istack, surf_name,                     &
@@ -32,7 +32,7 @@
 !
       subroutine count_num_surf_grad_scalar                             &
      &          (num_surf, surf_istack, surf_name,                      &
-     &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,         &
+     &           num_bc_sf, bc_sf_name, ibc_sf_type,                    &
      &           field_name, ngrp_sf_fix, nele_sf_fix, ngrp_sf_lead)
 !
       integer(kind=kint), intent(in) :: num_surf
@@ -40,7 +40,6 @@
       character(len=kchara), intent(in) :: surf_name(num_surf)
 !
       integer (kind=kint), intent(in) :: num_bc_sf
-      real (kind=kreal), intent(in) :: bc_sf_mag(num_bc_sf)
       integer (kind=kint), intent(in) :: ibc_sf_type(num_bc_sf)
       character (len=kchara), intent(in) :: bc_sf_name(num_bc_sf)
       character(len=kchara), intent(in) :: field_name

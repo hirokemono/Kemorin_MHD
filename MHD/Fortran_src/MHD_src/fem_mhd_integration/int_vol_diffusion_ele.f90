@@ -127,7 +127,7 @@
       use m_geometry_data_MHD
       use m_SGS_address
 !
-      if (coef_scalar.gt.zero .and. coef_exp_c.gt.zero) then
+      if (coef_light.gt.zero .and. coef_exp_c.gt.zero) then
         call int_vol_scalar_diffuse_ele(iele_fl_smp_stack,              &
      &      iak_diff_c, coef_exp_c, ak_d_composit, iphys%i_light)
       end if

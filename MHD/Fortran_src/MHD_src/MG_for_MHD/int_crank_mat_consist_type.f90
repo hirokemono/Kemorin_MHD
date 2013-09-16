@@ -85,7 +85,7 @@
         end if
 !
         if ( iflag_t_evo_4_composit .eq. id_Crank_nicolson_cmass        &
-     &      .and. coef_scalar.gt.0.0d0) then
+     &      .and. coef_light.gt.0.0d0) then
           write(*,*) 'init_consist_mat_d_scalar_type', k2
           call add_skv1_2_matrix11_type(mesh%ele, rhs_tbl,              &
      &        djds_const_fl, fem_wk, k2, mat_d_scalar)

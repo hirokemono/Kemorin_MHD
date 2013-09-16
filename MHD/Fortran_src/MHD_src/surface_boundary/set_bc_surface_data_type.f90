@@ -64,7 +64,7 @@
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         call alloc_surf_vector_dat_type(sf_dat%velo%sgs)
         call alloc_surf_scaler_type(sf_dat%velo%normal)
-        call alloc_surf_vector_type(sf_dat%velo%torque)
+        call alloc_surf_vector_type(sf_dat%velo%grad)
         call alloc_surf_vector_dat_type(sf_dat%velo%torque_lead)
         call alloc_surf_scaler_dat_type(sf_dat%velo%free_sph_in)
         call alloc_surf_scaler_dat_type(sf_dat%velo%free_sph_out)

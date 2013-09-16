@@ -10,6 +10,7 @@
 !!      subroutine set_surf_group_types_scalar(bc_type_ctl, ibc_type)
 !!      subroutine set_surf_group_types_vector(bc_type_ctl, ibc_type)
 !!      subroutine set_stress_free_group_types(bc_type_ctl, ibc_type)
+!!      subroutine set_pseudo_vacuum_group_types(bc_type_ctl, ibc_type)
 !!      subroutine set_surf_wall_group_types(bc_type_ctl, ibc_type)
 !!      subroutine set_surf_infty_group_types(bc_type_ctl, ibc_type)
 !!@endverbatim
@@ -112,9 +113,9 @@
       integer(kind = kint), intent(inout) :: ibc_type
 !
          if ( bc_type_ctl .eq. 'free_sph_in' ) then
-          ibc_type = 101
+          ibc_type = iflag_surf_free_sph_in
          else if ( bc_type_ctl .eq. 'free_sph_out' ) then
-          ibc_type = 102
+          ibc_type = iflag_surf_free_sph_out
          end if
 !
       end subroutine set_stress_free_group_types
@@ -136,6 +137,21 @@
          end if
 !
       end subroutine set_surf_wall_group_types
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_pseudo_vacuum_group_types(bc_type_ctl, ibc_type)
+!
+      character (len=kchara), intent(in) :: bc_type_ctl
+      integer(kind = kint), intent(inout) :: ibc_type
+!
+         if ( bc_type_ctl .eq. 'pseudo_vacuum_in' ) then
+          ibc_type = iflag_surf_qvc_sph_in
+         else if ( bc_type_ctl .eq. 'pseudo_vacuum_out' ) then
+          ibc_type = iflag_surf_qvc_sph_out
+         end if
+!
+      end subroutine set_pseudo_vacuum_group_types
 !
 !-----------------------------------------------------------------------
 !

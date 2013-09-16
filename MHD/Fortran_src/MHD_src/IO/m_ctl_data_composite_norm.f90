@@ -177,7 +177,7 @@
         call find_control_array_flag(hd_n_dsc_src,                      &
      &      num_coef_4_c_src_ctl)
         if(num_coef_4_c_src_ctl.gt.0 .and. i_n_dsc_src.eq.0) then
-          call allocate_coef_4_dsc_diff_ctl
+          call allocate_coef_4_dsc_src_ctl
           call read_control_array_vect_list(hd_n_dsc_src,               &
      &        num_coef_4_c_src_ctl, i_n_dsc_src,                        &
      &        coef_4_c_src_name_ctl, coef_4_c_src_power_ctl)

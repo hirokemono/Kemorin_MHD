@@ -39,6 +39,12 @@
       integer (kind=kint), allocatable :: ist_ele_sf_fix_grad_a(:,:)
       real (kind=kreal), allocatable :: sf_apt_fix_grad_a(:,:)
 !
+      integer (kind=kint) :: ngrp_sf_qvc_in
+      integer (kind=kint), allocatable :: id_grp_sf_qvc_in(:)
+!
+      integer (kind=kint) :: ngrp_sf_qvc_out
+      integer (kind=kint), allocatable :: id_grp_sf_qvc_out(:)
+!
 !-----------------------------------------------------------------------
 !
       contains 
@@ -71,6 +77,12 @@
       allocate( id_grp_sf_lead_vect_p(nmax_sf_lead_vect_p,3) )
       if (nmax_sf_lead_vect_p.gt.0) id_grp_sf_lead_vect_p = 0
 !
+      allocate( id_grp_sf_qvc_in(ngrp_sf_qvc_in) )
+      if (ngrp_sf_qvc_in.gt.0) id_grp_sf_qvc_in = 0
+!
+      allocate( id_grp_sf_qvc_out(ngrp_sf_qvc_out) )
+      if (ngrp_sf_qvc_out.gt.0) id_grp_sf_qvc_out = 0
+!
       end subroutine allocate_surf_data_vect_p
 !
 !-----------------------------------------------------------------------
@@ -89,6 +101,8 @@
       deallocate( sf_apt_fix_grad_a )
 !
       deallocate( id_grp_sf_lead_vect_p )
+!
+      deallocate( id_grp_sf_qvc_in, id_grp_sf_qvc_out )
 !
       end subroutine deallocate_surf_data_vect_p
 !

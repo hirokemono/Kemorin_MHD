@@ -72,7 +72,7 @@
       type velocity_surf_bc_type
         type(vector_surf_bc_data_type) :: sgs
         type(scaler_surf_flux_bc_type) :: normal
-        type(vector_surf_flux_bc_type) :: torque
+        type(vector_surf_flux_bc_type) :: grad
         type(vector_surf_bc_data_type) :: torque_lead
         type(scaler_surf_bc_data_type) :: free_sph_in
         type(scaler_surf_bc_data_type) :: free_sph_out
@@ -104,7 +104,7 @@
         type(scaler_surf_bc_type) :: temp
 !
         type(velocity_surf_bc_type) :: velo
-        type(vector_surf_bc_type) ::   vector_p
+        type(velocity_surf_bc_type) :: vector_p
         type(vector_surf_bc_type) ::   magne
         type(vector_surf_bc_type) ::   current
 !

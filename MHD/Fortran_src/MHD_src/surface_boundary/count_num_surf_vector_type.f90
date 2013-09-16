@@ -12,7 +12,7 @@
 !      subroutine count_num_surf_vect_p_type(sf_grp, sf_nod, vector_p)
 !        type(surface_group_data), intent(in) :: sf_grp
 !        type(surface_node_grp_data), intent(in) :: sf_nod
-!        type(vector_surf_bc_type), intent(inout) :: vector_p
+!        type(velocity_surf_bc_type), intent(inout) :: vector_p
 !      subroutine count_num_surf_magne_type(sf_grp, sf_nod, magne)
 !        type(surface_group_data), intent(in) :: sf_grp
 !        type(surface_node_grp_data), intent(in) :: sf_nod
@@ -27,7 +27,7 @@
 !        type(velocity_surf_bc_type), intent(inout) :: velo
 !      subroutine count_num_surf_grad_vecp_type(sf_grp, vect_p)
 !        type(surface_group_data), intent(in) :: sf_grp
-!        type(vector_surf_bc_type), intent(inout) :: vect_p
+!        type(velocity_surf_bc_type), intent(inout) :: vect_p
 !      subroutine count_num_surf_grad_b_type(sf_grp, magne)
 !        type(surface_group_data), intent(in) :: sf_grp
 !        type(vector_surf_bc_type), intent(inout) :: magne
@@ -55,6 +55,7 @@
       subroutine count_num_surf_velo_type(sf_grp, sf_nod, velo)
 !
       use t_surface_group_connect
+      use m_boundary_condition_IDs
       use set_surf_vector_id
       use set_stress_free_surf_id
 !
@@ -71,6 +72,7 @@
 !
       call count_num_stress_free_surf(sf_grp%num_grp, sf_grp%grp_name,  &
      &    num_bc_tq, bc_tq_name, ibc_tq_type,                           &
+     &    iflag_surf_free_sph_in, iflag_surf_free_sph_out,              &
      &    velo%free_sph_in%ngrp_sf_dat, velo%free_sph_out%ngrp_sf_dat)
 !
       end subroutine count_num_surf_velo_type
@@ -81,11 +83,13 @@
       subroutine count_num_surf_vect_p_type(sf_grp, sf_nod, vector_p)
 !
       use t_surface_group_connect
+      use m_boundary_condition_IDs
       use set_surf_vector_id
+      use set_stress_free_surf_id
 !
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_nod
-      type(vector_surf_bc_type), intent(inout) :: vector_p
+      type(velocity_surf_bc_type), intent(inout) :: vector_p
 !
 !
       call s_count_num_surf_vector                                      &
@@ -95,6 +99,12 @@
      &     vector_p%sgs%ngrp_sf_dat, vector_p%normal%ngrp_sf_fix_fx,    &
      &     vector_p%normal%nitem_sf_fix_fx)
 !
+      call count_num_stress_free_surf(sf_grp%num_grp, sf_grp%grp_name,  &
+     &    num_bc_tq, bc_tq_name, ibc_tq_type,                           &
+     &    iflag_surf_qvc_sph_in, iflag_surf_qvc_sph_out,                &
+     &    vector_p%free_sph_in%ngrp_sf_dat,                             &
+     &    vector_p%free_sph_out%ngrp_sf_dat)
+!
       end subroutine count_num_surf_vect_p_type
 !
 !-----------------------------------------------------------------------
@@ -103,6 +113,7 @@
 !
       use t_surface_group_connect
       use set_surf_vector_id
+      use set_stress_free_surf_id
 !
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_nod
@@ -152,10 +163,10 @@
       call count_num_sf_grad_vector                                     &
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
      &     num_bc_tq, bc_tq_name, ibc_tq_type,                          &
-     &     name_vxg, name_vyg, name_vzg, velo%torque%nmax_sf_fix_fx,    &
-     &     velo%torque%nmax_ele_sf_fix_fx,                              &
-     &     velo%torque_lead%nmax_sf_dat, velo%torque%ngrp_sf_fix_fx,    &
-     &     velo%torque%nitem_sf_fix_fx, velo%torque_lead%ngrp_sf_dat)
+     &     name_vxg, name_vyg, name_vzg, velo%grad%nmax_sf_fix_fx,      &
+     &     velo%grad%nmax_ele_sf_fix_fx,                                &
+     &     velo%torque_lead%nmax_sf_dat, velo%grad%ngrp_sf_fix_fx,      &
+     &     velo%grad%nitem_sf_fix_fx, velo%torque_lead%ngrp_sf_dat)
 !
       end subroutine count_num_surf_torque_type
 !
@@ -167,7 +178,7 @@
       use set_sf_grad_vector_id
 !
       type(surface_group_data), intent(in) :: sf_grp
-      type(vector_surf_bc_type), intent(inout) :: vect_p
+      type(velocity_surf_bc_type), intent(inout) :: vect_p
 !
 !
       call count_num_sf_grad_vector                                     &

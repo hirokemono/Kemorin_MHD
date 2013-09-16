@@ -118,7 +118,7 @@
        use m_finite_element_matrix
 !
        ff_m_smp = 0.0d0
-       if (coef_scalar.gt.0.0d0) then
+       if (coef_light.gt.0.0d0) then
          call int_vol_initial_scalar(iele_fl_smp_stack, iphys%i_light)
        end if
 !

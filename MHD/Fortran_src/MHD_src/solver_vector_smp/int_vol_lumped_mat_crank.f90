@@ -56,7 +56,7 @@
        end if
 !
       if (iflag_t_evo_4_composit .eq. id_Crank_nicolson                 &
-     &     .and. coef_scalar .gt. zero) then
+     &     .and. coef_light .gt. zero) then
         call init_d_scalar_matrix_lump
       end if
 !$omp end parallel

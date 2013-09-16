@@ -33,6 +33,7 @@
 !
       use m_surface_group_connect
       use m_surf_data_torque
+      use m_boundary_condition_IDs
       use set_surf_vector_id
       use set_stress_free_surf_id
 !
@@ -46,6 +47,7 @@
 !
       call s_stress_free_surf_id(num_surf, surf_name,                   &
      &    num_bc_tq, bc_tq_name, ibc_tq_type,                           &
+     &    iflag_surf_free_sph_in, iflag_surf_free_sph_out,              &
      &    ngrp_sf_fr_in, ngrp_sf_fr_out,                                &
      &    id_grp_sf_fr_in, id_grp_sf_fr_out)
 !
@@ -57,7 +59,9 @@
 !
       use m_surface_group_connect
       use m_surf_data_vector_p
+      use m_boundary_condition_IDs
       use set_surf_vector_id
+      use set_stress_free_surf_id
 !
 !
       call s_set_surf_vector_id                                         &
@@ -66,6 +70,12 @@
      &     name_san, nmax_sf_sgs_vect_p, id_grp_sf_sgs_vect_p,          &
      &     ngrp_sf_fix_vpn, id_grp_sf_fix_vpn,                          &
      &     nnod_sf_fix_vpn, ist_nod_sf_fix_vpn, sf_apt_fix_vpn)
+!
+      call s_stress_free_surf_id(num_surf, surf_name,                   &
+     &    num_bc_vps, bc_vps_name, ibc_vps_type,                        &
+     &    iflag_surf_qvc_sph_in, iflag_surf_qvc_sph_out,                &
+     &    ngrp_sf_qvc_in, ngrp_sf_qvc_out,                              &
+     &    id_grp_sf_qvc_in, id_grp_sf_qvc_out)
 !
       end subroutine set_surf_vect_p_id
 !

@@ -6,9 +6,11 @@
 !
 !      subroutine count_num_stress_free_surf(num_surf, surf_name,       &
 !     &          num_bc_tq, bc_tq_name, ibc_tq_type,                    &
+!     &          iflag_free_in, iflag_free_out,                         &
 !     &          ngrp_sf_fr_in, ngrp_sf_fr_out)
 !      subroutine s_stress_free_surf_id(num_surf, surf_name,            &
 !     &          num_bc_tq, bc_tq_name, ibc_tq_type,                    &
+!     &          iflag_free_in, iflag_free_out,                         &
 !     &          ngrp_sf_fr_in, ngrp_sf_fr_out,                         &
 !     &          id_grp_sf_fr_in, id_grp_sf_fr_out)
 !
@@ -26,6 +28,7 @@
 !
       subroutine count_num_stress_free_surf(num_surf, surf_name,        &
      &          num_bc_tq, bc_tq_name, ibc_tq_type,                     &
+     &          iflag_free_in, iflag_free_out,                          &
      &          ngrp_sf_fr_in, ngrp_sf_fr_out)
 !
       integer(kind=kint), intent(in) :: num_surf
@@ -34,6 +37,8 @@
       integer (kind=kint) :: num_bc_tq
       integer (kind=kint), intent(in) :: ibc_tq_type(num_bc_tq)
       character (len=kchara), intent(in) :: bc_tq_name(num_bc_tq)
+!
+      integer(kind=kint), intent(in) :: iflag_free_in, iflag_free_out
 !
       integer(kind=kint), intent(inout) :: ngrp_sf_fr_in
       integer(kind=kint), intent(inout) :: ngrp_sf_fr_out
@@ -49,11 +54,11 @@
           if (surf_name(i) .eq. bc_tq_name(j)) then
 !
 ! -----------set boundary from control file
-            if ( ibc_tq_type(j) .eq. (101) ) then
+            if ( ibc_tq_type(j) .eq. iflag_free_in) then
               ngrp_sf_fr_in = ngrp_sf_fr_in + 1
 !
 ! -----------set boundary from data file
-            else if ( ibc_tq_type(j) .eq. (102) ) then
+            else if ( ibc_tq_type(j) .eq. iflag_free_out) then
               ngrp_sf_fr_out = ngrp_sf_fr_out + 1
             end if
           end if
@@ -67,6 +72,7 @@
 !
       subroutine s_stress_free_surf_id(num_surf, surf_name,             &
      &          num_bc_tq, bc_tq_name, ibc_tq_type,                     &
+     &          iflag_free_in, iflag_free_out,                          &
      &          ngrp_sf_fr_in, ngrp_sf_fr_out,                          &
      &          id_grp_sf_fr_in, id_grp_sf_fr_out)
 !
@@ -76,6 +82,9 @@
       integer (kind=kint) :: num_bc_tq
       integer (kind=kint), intent(in) :: ibc_tq_type(num_bc_tq)
       character (len=kchara), intent(in) :: bc_tq_name(num_bc_tq)
+!
+      integer(kind=kint), intent(in) :: iflag_free_in, iflag_free_out
+!
       integer(kind=kint), intent(in) :: ngrp_sf_fr_in, ngrp_sf_fr_out
 !
       integer(kind=kint), intent(inout)                                 &
@@ -99,12 +108,12 @@
           if (surf_name(i)==bc_tq_name(j)) then
 !
 ! -----------set boundary from control file
-            if ( ibc_tq_type(j)==(101) ) then
+            if ( ibc_tq_type(j) .eq. iflag_free_in) then
               l_f1 = l_f1 + 1
               id_grp_sf_fr_in(l_f1) = i
 !
 ! -----------set boundary from data file
-            else if ( ibc_tq_type(j)==(102) ) then
+            else if ( ibc_tq_type(j) .eq. iflag_free_out) then
               l_f2 = l_f2 + 1
               id_grp_sf_fr_out(l_f2) = i
 !

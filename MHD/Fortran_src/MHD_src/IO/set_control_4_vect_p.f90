@@ -110,6 +110,8 @@
         do i = 1, num_bc_vps
           call set_surf_group_types_vector(bc_vps_type_ctl(i),          &
      &        ibc_vps_type(i))
+          call set_pseudo_vacuum_group_types(bc_vps_type_ctl(i),        &
+     &        ibc_vps_type(i))
         end do
 !
         if (iflag_debug .eq. iflag_full_msg) then

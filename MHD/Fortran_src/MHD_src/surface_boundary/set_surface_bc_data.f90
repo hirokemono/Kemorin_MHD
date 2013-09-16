@@ -72,7 +72,7 @@
         call allocate_surf_press
       end if
 !
-      if (iflag_t_evo_4_magne .gt. id_no_evolution                       &
+      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
      &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call allocate_surf_data_magne
         call allocate_surf_data_current

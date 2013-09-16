@@ -132,8 +132,7 @@
 !
       call count_num_surf_grad_scalar                                   &
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
-     &     num_bc_h_flux, bc_h_flux_name,                               &
-     &     ibc_h_flux_type, bc_h_flux_magnitude, name_hf,               &
+     &     num_bc_h_flux, bc_h_flux_name, ibc_h_flux_type, name_hf,     &
      &     temp%flux%ngrp_sf_fix_fx, temp%flux%nitem_sf_fix_fx,         &
      &     temp%flux_lead%ngrp_sf_dat)
 !
@@ -153,7 +152,7 @@
       call count_num_surf_grad_scalar                                   &
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
      &     num_surf_composition, surf_composit_name,                    &
-     &     isurf_composit_type, surf_composit_magnitude, name_dsg,      &
+     &     isurf_composit_type, name_dsg,                               &
      &     comp_sf%flux%ngrp_sf_fix_fx, comp_sf%flux%nitem_sf_fix_fx,   &
      &     comp_sf%flux_lead%ngrp_sf_dat)
 !
@@ -173,7 +172,7 @@
 !
       call count_num_surf_grad_scalar                                   &
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
-     &     num_bc_wall, bc_wall_name, ibc_wall_type, bc_wall_magnitude, &
+     &     num_bc_wall, bc_wall_name, ibc_wall_type,                    &
      &     name_pg, press%grad%ngrp_sf_fix_fx,                          &
      &     press%grad%nitem_sf_fix_fx, press%grad_lead%ngrp_sf_dat)
 !
@@ -192,8 +191,7 @@
 !
       call count_num_surf_grad_scalar                                   &
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
-     &     num_surf_magp, surf_magp_name,                               &
-     &     isurf_magp_type, surf_magp_magnitude, name_mpg,              &
+     &     num_surf_magp, surf_magp_name, isurf_magp_type, name_mpg,    &
      &     magne_p%grad%ngrp_sf_fix_fx, magne_p%grad%nitem_sf_fix_fx,   &
      &     magne_p%grad_lead%ngrp_sf_dat)
 !

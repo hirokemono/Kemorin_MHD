@@ -72,7 +72,7 @@
 !
 !
       call cal_sol_vec_pre_consist(n_scalar,                            &
-     &    iphys%i_pre_composit, coef_scalar)
+     &    iphys%i_pre_composit, coef_light)
 !
       end subroutine cal_sol_d_scalar_consist
 !

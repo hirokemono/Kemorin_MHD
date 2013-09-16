@@ -84,7 +84,7 @@
        end if
 !
       if(iflag_t_evo_4_composit .eq. id_Crank_nicolson                  &
-     &     .and. coef_scalar .gt. zero) then
+     &     .and. coef_light .gt. zero) then
         call init_11_mat_type_lump(mesh%node, MHD_mesh%fluid,           &
      &      djds_tbl_fl, mk_MHD%fluid, mat_d_scalar)
       end if
