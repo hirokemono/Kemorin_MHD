@@ -261,6 +261,7 @@
      &       .or. phys_nod_name(i) .eq. fhd_filter_b                    &
      &       .or. phys_nod_name(i) .eq. fhd_vecp                        &
      &       .or. phys_nod_name(i) .eq. fhd_filter_a                    &
+     &       .or. phys_nod_name(i) .eq. fhd_mag_potential               &
      &      ) then
             i0 = i0 + 1
             j0 = j0 + 1
@@ -269,7 +270,7 @@
 !
       end do
 !
-      num_rms =  i0
+      num_rms =  i0 + 1
       num_bulk = j0
 !
        return
@@ -646,6 +647,9 @@
           else if ( phys_nod_name(i) .eq. fhd_filter_a ) then
             call set_rms_address(n_scalar, i0, j0,                      &
      &          ir_diva_f, ja_diva_f)
+          else if ( phys_nod_name(i) .eq. fhd_mag_potential ) then
+            call set_rms_address(num_nod_component(i), i0, j0,          &
+     &          i_rms%i_mag_p, j_ave%i_mag_p)
           end if
 
         end if
