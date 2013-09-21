@@ -46,6 +46,20 @@
 #define IFLAG_UDT      0
 #define IFLAG_UCD      1
 
+#define IFLAG_FULL_MESH   0
+#define IFLAG_SURF_MESH   1
+#define IFLAG_SURF_UDT   10
+#define IFLAG_SURF_UCD   11
+#define IFLAG_LINE_UCD   12
+#define IFLAG_QUAD_UCD   13
+
+#define IFLAG_FULL_MESH_GZ  100
+#define IFLAG_SURF_MESH_GZ  101
+#define IFLAG_SURF_UDT_GZ   110
+#define IFLAG_SURF_UCD_GZ   111
+#define IFLAG_LINE_UCD_GZ   112
+#define IFLAG_QUAD_UCD_GZ   113
+
 #define SHUTTER_OFF 0
 #define SHUTTER_ON  1
 #define ANAGLYPH_OFF 0
@@ -55,8 +69,9 @@
 #define ON  1
 
 struct mesh_menu_val{
-	char mesh_header[LENGTHBUF];
+	char mesh_file_name[LENGTHBUF];
 	char pick_surface_command[LENGTHBUF];
+    int iformat_surface_mesh;
 
 	int iflag_streo_stutter;
 	int iflag_streo_anaglyph;

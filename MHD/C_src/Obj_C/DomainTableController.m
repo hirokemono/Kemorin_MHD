@@ -71,7 +71,7 @@
 - (IBAction) SelectMeshFile:(id)pId{
 	int iflag_filetype;
 
-	NSArray *meshFileTypes = [NSArray arrayWithObjects:@"ksm",@"KSM",@"gz",@"GZ",@"0",nil];
+	NSArray *meshFileTypes = [NSArray arrayWithObjects:@"ksm",@"KSM",@"gz",@"GZ",@"gfm",@"GFM",nil];
 	NSOpenPanel *MeshOpenPanelObj	= [NSOpenPanel openPanel];
 	[MeshOpenPanelObj setTitle:@"Choose mesh data"];
     [MeshOpenPanelObj setAllowedFileTypes:meshFileTypes];

@@ -18,11 +18,6 @@
 #include "skip_comment_c.h"
 
 /* prototypes */
-void run_pick_surface_c(char *file_head, struct mesh_menu_val *mesh_m);
-int set_kemoview_data_fmt_flag(const char *file_name, char *file_head);
-
-void init_draw_mesh(struct viewer_mesh *mesh_d, struct mesh_menu_val *mesh_m,
-					struct view_element *view);
 
 int kemoview_open_data(const char *file_name, struct viewer_mesh *mesh_d, struct mesh_menu_val *mesh_m, 
 					  struct kemo_array_control *psf_a, struct psf_data **psf_d, struct psf_menu_val **psf_m, 

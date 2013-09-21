@@ -51,7 +51,7 @@
 - (IBAction) OpenKemoviewerFileByMenu:(id)pId;
 {
 	NSArray *kemoviewFileTypes = [NSArray arrayWithObjects:@"ksm",@"KSM",@"udt",@"UDT",@"inp",@"INP",
-							  @"gz",@"GZ",@"0",nil];
+							  @"gz",@"GZ",@"gfm",@"GFM",nil];
 	NSOpenPanel *KemoviewOpenPanelObj	= [NSOpenPanel openPanel];
 	[KemoviewOpenPanelObj setTitle:@"Choose data for Kemoviewer"];
     [KemoviewOpenPanelObj setAllowedFileTypes:kemoviewFileTypes];

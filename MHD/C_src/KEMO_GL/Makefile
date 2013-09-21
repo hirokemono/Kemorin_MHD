@@ -435,6 +435,7 @@ module:
 	take_normal_psf_c.o \
 	check_psf_data_viewer_c.o \
 	read_viewer_mesh_c.o \
+	read_viewer_mesh_gz_c.o \
 	read_psf_data_viewer_c.o \
 	skip_comment_c.o \
 	move_draw_objects_gl.o \
@@ -445,6 +446,9 @@ module:
 	draw_mapgrid.o \
 	set_psf_viewer.o \
 	set_rgba_table_c.o \
+	set_surface_mesh_data.o \
+	set_normal_on_node_4_mesh.o \
+	take_normal_surf_mesh_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

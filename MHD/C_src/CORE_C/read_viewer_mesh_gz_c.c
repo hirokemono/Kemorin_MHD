@@ -69,8 +69,7 @@ static void read_group_item_gz_viewer(int npe, int ngrp, int *stack_sf,
 };
 
 
-int read_viewer_mesh_gz_c(const char *file_head, struct viewer_mesh *mesh_s){
-	char file_name[LENGTHBUF];
+int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	char buf[LENGTHBUF];    /* array for reading line */
 	char **tmp_name_sf;
 	int itmp;
@@ -79,7 +78,6 @@ int read_viewer_mesh_gz_c(const char *file_head, struct viewer_mesh *mesh_s){
 	
 	lbuf[0] = LENGTHBUF;
 	
-	sprintf(file_name, "%s.ksm.gz",file_head);
 	printf("kemoviewer mesh file name: %s \n",file_name);
 	
 	ierr = open_rd_gzfile_w_flag(file_name);

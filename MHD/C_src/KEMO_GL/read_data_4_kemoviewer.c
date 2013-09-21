@@ -6,11 +6,34 @@
 /* subroutine for reading PSF data by UCD */
 
 
-static void set_kemoviewer_mesh(const char *file_head, struct viewer_mesh *mesh_s, 
+static void set_viewer_mesh(struct viewer_mesh *mesh_s){
+	
+	alloc_normal_surf_viewer_s(mesh_s);
+	alloc_domain_center_s(mesh_s);
+	alloc_mesh_draw_s(mesh_s);
+	
+	set_surface_mesh_size(mesh_s);
+	take_normal_surf_mesh_c(mesh_s);
+	set_surface_normal_4_each_node(mesh_s);
+	set_normal_on_node_4_mesh(mesh_s);
+	
+	return;
+}
+
+static void set_kemoviewer_mesh(struct viewer_mesh *mesh_s,
 								struct mesh_menu_val *mesh_m, struct view_element *view){
+	int ierr;
+    
+    if (mesh_m->iformat_surface_mesh == IFLAG_SURF_MESH_GZ) {
+        ierr = read_viewer_mesh_gz_c(mesh_m->mesh_file_name, mesh_s);
+    } else {
+        ierr = read_viewer_mesh(mesh_m->mesh_file_name, mesh_s);
+    };
 	
-	check_gzip_viewer_mesh_first(file_head, mesh_s);
-	
+    if (ierr != 0) {
+        printf("File %s is not found.\n", mesh_m->mesh_file_name);
+        exit(1);
+    }
 	set_viewer_mesh(mesh_s);
 	
 	alloc_draw_mesh_flags(mesh_s, mesh_m);
@@ -20,11 +43,12 @@ static void set_kemoviewer_mesh(const char *file_head, struct viewer_mesh *mesh_
 
 void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s, 
 			struct mesh_menu_val *mesh_m, struct view_element *view){
-	const char *mesh_file_head = "in_surface";
 	
     view->iflag_retina = IONE;
     view->iflag_write_ps = OFF;
     
+    strngcopy(mesh_m->mesh_file_name, "in_surface.ksm");
+    mesh_m->iformat_surface_mesh = IFLAG_SURF_MESH;
 	mesh_m->iflag_draw_mesh = iflag_dmesh;
 	mesh_m->iflag_view_type = VIEW_3D;
 	
@@ -33,7 +57,7 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 	init_icosahedron_c();
 	init_viewer_parameters(mesh_m);
 	
-	if (mesh_m->iflag_draw_mesh > 0) set_kemoviewer_mesh(mesh_file_head, mesh_s, mesh_m, view);
+	if (mesh_m->iflag_draw_mesh > 0) set_kemoviewer_mesh(mesh_s, mesh_m, view);
 	return;
 }
 
@@ -95,7 +119,7 @@ void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
 			struct mesh_menu_val *mesh_m, struct view_element *view){
 	mesh_m->iflag_draw_mesh = IONE;
 	
-	set_kemoviewer_mesh(mesh_m->mesh_header, mesh_s, mesh_m, view);
+	set_kemoviewer_mesh(mesh_s, mesh_m, view);
 
 	reset_light_by_size_of_domain(view->scale_factor[0]);
 	reset_to_init_angle(view);

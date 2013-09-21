@@ -48,8 +48,7 @@ static long read_group_item_4_viewer(int sum_o, int npe, int ngrp, int *stack_sf
 	return sum_offset;
 };
 
-void read_viewer_mesh(const char *file_head, struct viewer_mesh *mesh_s){
-	char file_name[LENGTHBUF], gz_file_name[LENGTHBUF];
+int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	char buf[LENGTHBUF];    /* array for reading line */
 	char **tmp_name_sf;
 	int itmp;
@@ -57,14 +56,12 @@ void read_viewer_mesh(const char *file_head, struct viewer_mesh *mesh_s){
 	long sum_offset = 0;
 	int i;
 	
-	sprintf(file_name, "%s.ksm",file_head);
-	sprintf(gz_file_name, "%s.ksm.gz",file_head);
 	printf("kemoviewer mesh file name: %s \n",file_name);
 	
 	/* Error for failed file*/ 	
 	if ((fp = fopen(file_name, "r")) == NULL) {
 		fprintf(stderr, "Cannot open file!\n");
-		exit (2);                    /* terminate with error message */
+		return 1;                    /* terminate with error message */
 	}
 	/* Skip comment lines*/
 	offset = skip_comment_c(fp);
@@ -362,30 +359,5 @@ void read_viewer_mesh(const char *file_head, struct viewer_mesh *mesh_s){
 
 	fclose(fp);                                /* close file */
 	
-	return;
+	return 0;
 };
-
-void check_gzip_viewer_mesh_first(const char *file_head, struct viewer_mesh *mesh_s)
-{
-	int ierr;
-	ierr = read_viewer_mesh_gz_c(file_head, mesh_s);
-	if(ierr == 0) return;
-	
-	read_viewer_mesh(file_head, mesh_s);
-	return;
-}
-
-void set_viewer_mesh(struct viewer_mesh *mesh_s){
-	
-	alloc_normal_surf_viewer_s(mesh_s);
-	alloc_domain_center_s(mesh_s);
-	alloc_mesh_draw_s(mesh_s);
-	
-	set_surface_mesh_size(mesh_s);
-	take_normal_surf_mesh_c(mesh_s);
-	set_surface_normal_4_each_node(mesh_s);
-	set_normal_on_node_4_mesh(mesh_s);
-	
-	return;
-}
-

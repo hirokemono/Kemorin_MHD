@@ -343,11 +343,7 @@ module:
 	'$$(KEMO_C_DIR)'/read_viewer_mesh_c.c \
 	read_viewer_mesh_c.h \
 	m_surface_mesh_4_viewer_c.o \
-	read_viewer_mesh_gz_c.o \
 	skip_comment_c.o \
-	set_surface_mesh_data.o \
-	set_normal_on_node_4_mesh.o \
-	take_normal_surf_mesh_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

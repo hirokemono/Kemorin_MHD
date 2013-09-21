@@ -9,18 +9,35 @@
 
 #include "set_kemoviewer_ucd_data.h"
 
-void run_pick_surface_c(char *file_head, struct mesh_menu_val *mesh_m)
-{
+static void run_pick_surface_c(struct mesh_menu_val *mesh_m){
+	char file_head[LENGTHBUF];
+	char file_tmp[LENGTHBUF];
+	char file_ext[LENGTHBUF];
 	char command[LENGTHBUF];
+    
+    if (mesh_m->iformat_surface_mesh == IFLAG_FULL_MESH_GZ) {
+        get_ext_from_file_name(mesh_m->mesh_file_name, file_head, file_ext);
+    } else {
+        strngcopy(file_head, mesh_m->mesh_file_name);
+    };
+    get_ext_from_file_name(file_head, file_tmp, file_ext);
+    get_ext_from_file_name(file_tmp, file_head, file_ext);
+    
 	strcpy(command,mesh_m->pick_surface_command);
 	strcat(command, "    ");
 	strcat(command, file_head);
 	printf("pick surface command line: %s\n", command);
 	system(command);
+    
+    if (mesh_m->iformat_surface_mesh == IFLAG_FULL_MESH_GZ) {
+        sprintf(mesh_m->mesh_file_name, "%s.ksm.gz",file_head);
+    } else {
+        sprintf(mesh_m->mesh_file_name, "%s.ksm",file_head);
+    };
 	return;
 }
 
-int set_kemoview_data_fmt_flag(const char *file_name, char *file_head){
+static int set_kemoview_data_fmt_flag(const char *file_name, char *file_head){
 	int ifile_type;
 	char file_head2[LENGTHBUF];
 	char file_ext[LENGTHBUF];
@@ -39,9 +56,16 @@ int set_kemoview_data_fmt_flag(const char *file_name, char *file_head){
 				&& file_ext[1] == 'S'
 				&& file_ext[2] == 'M') ){
 			ifile_type = IFLAG_SURF_MESH_GZ;
-		} else if( file_ext[0] == '0' && file_ext[1] == '\0'){
+		} else if((file_ext[0] == 'g'
+                && file_ext[1] == 'f'
+                && file_ext[2] == 'm')
+             ||	  (file_ext[0] == 'G'
+                && file_ext[1] == 'F'
+                && file_ext[2] == 'M') ){
 			ifile_type = IFLAG_FULL_MESH_GZ;
-		} else if((file_ext[0] == 'u' 
+            get_ext_from_file_name(file_head2, file_head, file_ext);
+            strngcopy(file_head2, file_head);
+		} else if((file_ext[0] == 'u'
 				&& file_ext[1] == 'd' 
 				&& file_ext[2] == 't')
 			||	  (file_ext[0] == 'U'
@@ -67,9 +91,16 @@ int set_kemoview_data_fmt_flag(const char *file_name, char *file_head){
 				&& file_ext[1] == 'S'
 				&& file_ext[2] == 'M') ){
 			ifile_type = IFLAG_SURF_MESH;
-	} else if(	   file_ext[0] == '0' && file_ext[1] == '\0'){
+    } else if((file_ext[0] == 'g'
+            && file_ext[1] == 'f'
+            && file_ext[2] == 'm')
+        ||	  (file_ext[0] == 'G'
+            && file_ext[1] == 'F'
+            && file_ext[2] == 'M') ){
 			ifile_type = IFLAG_FULL_MESH;
-	} else if(	  (file_ext[0] == 'u' 
+            get_ext_from_file_name(file_head, file_head2, file_ext);
+            strngcopy(file_head, file_head2);
+	} else if(	  (file_ext[0] == 'u'
 				&& file_ext[1] == 'd' 
 				&& file_ext[2] == 't')
 			||	  (file_ext[0] == 'U'
@@ -89,7 +120,7 @@ int set_kemoview_data_fmt_flag(const char *file_name, char *file_head){
 	return ifile_type;
 }
 
-void init_draw_mesh(struct viewer_mesh *mesh_d, struct mesh_menu_val *mesh_m,
+static void init_draw_mesh(struct viewer_mesh *mesh_d, struct mesh_menu_val *mesh_m,
 					struct view_element *view){
 	if (mesh_m->iflag_draw_mesh > 0) {
 		dealloc_all_mesh_4_viewer_s(mesh_d);
@@ -142,15 +173,22 @@ int kemoview_open_data(const char *file_name, struct viewer_mesh *mesh_d, struct
 	printf("file_name %s\n", file_name);
 		
 	if(ifile_type == IFLAG_SURF_MESH || ifile_type == IFLAG_SURF_MESH_GZ){
-		strngcopy(mesh_m->mesh_header, file_head);
+        mesh_m->iformat_surface_mesh = ifile_type;
+		strngcopy(mesh_m->mesh_file_name, file_name);
 		init_draw_mesh(mesh_d, mesh_m, view);
 		ierr = ifile_type;
 	} else if(ifile_type == IFLAG_FULL_MESH_GZ){
-		strngcopy(mesh_m->mesh_header, file_head);
+        mesh_m->iformat_surface_mesh = ifile_type;
+		strngcopy(mesh_m->mesh_file_name, file_name);
+		run_pick_surface_c(mesh_m);
+        mesh_m->iformat_surface_mesh = IFLAG_SURF_MESH_GZ;
+		init_draw_mesh(mesh_d, mesh_m, view);
 		return ifile_type;
 	} else if(ifile_type == IFLAG_FULL_MESH){
-		strngcopy(mesh_m->mesh_header, file_head);
-		run_pick_surface_c(file_head, mesh_m);
+        mesh_m->iformat_surface_mesh = ifile_type;
+		strngcopy(mesh_m->mesh_file_name, file_name);
+		run_pick_surface_c(mesh_m);
+        mesh_m->iformat_surface_mesh = IFLAG_SURF_MESH;
 		init_draw_mesh(mesh_d, mesh_m, view);
 		ierr = IFLAG_SURF_MESH;
 	} else if(ifile_type == IFLAG_SURF_UDT || ifile_type == IFLAG_SURF_UDT_GZ){
