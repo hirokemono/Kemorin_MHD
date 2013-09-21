@@ -757,7 +757,7 @@ static void make_1st_level_menu(){
 void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	int narg_glut = 0;
 	char **arg_glut;
-	
+    GLboolean bStereo;
 	/* Initialize arrays for viewer */
 	
 	allocate_single_kemoviwewer_struct(iflag_dmesh);
@@ -774,6 +774,7 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	/*! GTK Initialization*/
 	gtk_set_locale();
 	gtk_init (&narg_glut, &arg_glut);
+    
 	/*! Initializations with GLUT*/
 	glutInit(&narg_glut, arg_glut);
 	if(iflag_streo_shutter == SHUTTER_ON){
