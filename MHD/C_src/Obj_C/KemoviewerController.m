@@ -170,8 +170,8 @@
 	AnaglyphFlag = (1-[_streoViewTypeMenu indexOfSelectedItem]);
 	set_to_iflag_anaglyph((int) AnaglyphFlag);
 	[defaults setInteger:((int) AnaglyphFlag) forKey:@"AnaglyphFlag"];
-	[defaults release];
 
+    printf("AnaglyphFlag %d\n", (int) AnaglyphFlag);
 	[_kemoviewer UpdateImage];
 }
 
