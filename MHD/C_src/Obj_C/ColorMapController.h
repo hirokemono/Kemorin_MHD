@@ -1,3 +1,4 @@
+/*
 //
 //  ColorMapController.h
 //  025-NSTableView
@@ -5,6 +6,7 @@
 //  Created by Hiroaki Matsui on 11/08/22.
 //  Copyright 2011 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
 //
+*/
 
 #import <Cocoa/Cocoa.h>
 #import "KemoViewerOpenGLView.h"
