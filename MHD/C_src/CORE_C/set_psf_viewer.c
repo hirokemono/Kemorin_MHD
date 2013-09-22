@@ -9,70 +9,21 @@
 
 #include "set_psf_viewer.h"
 
-static void copy_viewer_udt_node(struct psf_data *viz_s, struct psf_data *viz_tmp){
-	int i, j;
-	
-	for (i = 0; i < viz_tmp->nnod_viz; i++) {
-		viz_s->inod_viz[i] = viz_tmp->inod_viz[i];
-		for(j = 0; j < 3; j++) viz_s->xx_viz[i][j] = viz_tmp->xx_viz[i][j];
-	};
-	return;
-}
-
-static void copy_viewer_udt_connect(struct psf_data *viz_s, struct psf_data *viz_tmp){
-	int i, j;
-		
-	for (i = 0; i < viz_tmp->nele_viz; i++) {
-		for(j=0;j<viz_s->nnod_4_ele_viz;j++){
-			viz_s->ie_viz[i][j] = viz_tmp->ie_viz[i][j];
-		};
-	};
-	return;
-}
-
-static void set_viewer_udt_quad(struct psf_data *viz_s, struct psf_data *viz_tmp){
+static void set_viewer_udt_quad(struct psf_data *viz_copied, struct psf_data *viz_org){
 	int i;
 
-	for (i = 0; i < viz_tmp->nele_viz; i++) {
-		viz_s->ie_viz[2*i  ][0] = viz_tmp->ie_viz[i][0];
-		viz_s->ie_viz[2*i  ][1] = viz_tmp->ie_viz[i][1];
-		viz_s->ie_viz[2*i  ][2] = viz_tmp->ie_viz[i][2];
+	for (i = 0; i < viz_org->nele_viz; i++) {
+		viz_copied->ie_viz[2*i  ][0] = viz_org->ie_viz[i][0];
+		viz_copied->ie_viz[2*i  ][1] = viz_org->ie_viz[i][1];
+		viz_copied->ie_viz[2*i  ][2] = viz_org->ie_viz[i][2];
 		
-		viz_s->ie_viz[2*i+1][0] = viz_tmp->ie_viz[i][2];
-		viz_s->ie_viz[2*i+1][1] = viz_tmp->ie_viz[i][3];
-		viz_s->ie_viz[2*i+1][2] = viz_tmp->ie_viz[i][0];
+		viz_copied->ie_viz[2*i+1][0] = viz_org->ie_viz[i][2];
+		viz_copied->ie_viz[2*i+1][1] = viz_org->ie_viz[i][3];
+		viz_copied->ie_viz[2*i+1][2] = viz_org->ie_viz[i][0];
 	};
 	return;
 }
 
-static void set_viewer_udt_field(struct psf_data *viz_s, struct psf_data *viz_tmp){
-	int i;
-	
-	viz_s->nfield = viz_tmp->nfield;
-	alloc_psf_num_data_s(viz_s);
-	
-	viz_s->istack_comp[0] = viz_tmp->istack_comp[0];
-	for (i = 0; i < viz_s->nfield; i++) {
-		viz_s->ncomp[i] = viz_tmp->ncomp[i];
-		viz_s->istack_comp[i+1] = viz_tmp->istack_comp[i+1];
-		viz_s->id_coord[i] = viz_tmp->id_coord[i];
-		strngcopy(viz_s->data_name[i], viz_tmp->data_name[i]);
-	};
-	viz_s->ncomptot = viz_s->istack_comp[viz_s->nfield];
-	
-	return;
-}
-
-static void copy_viewer_udt_data(struct psf_data *viz_s, struct psf_data *viz_tmp){
-	int i, j;
-	
-	for (i = 0; i < viz_tmp->nnod_viz; i++) {
-		for (j = 0; j < viz_tmp->ncomptot; j++){
-			viz_s->d_nod[i][j] = viz_tmp->d_nod[i][j];
-		};
-	};
-	return;
-}
 
 static void count_new_node_for_mapping_tri(struct psf_data *viz_s, struct psf_data *viz_tmp){
 	int num_map_patch;
@@ -277,7 +228,9 @@ static void set_new_data_for_mapping(struct psf_data *viz_s){
 
 void set_viewer_ucd_data(struct psf_data *viz_s, struct psf_data *viz_tmp){
 	
-	set_viewer_udt_field(viz_s, viz_tmp);
+	viz_s->nfield = viz_tmp->nfield;
+	alloc_psf_field_name_c(viz_s);
+    copy_viewer_udt_field_name(viz_s, viz_tmp);
 
 	viz_s->nnod_viz = viz_tmp->nnod_viz;
 	if (viz_tmp->nnod_4_ele_viz == 4) {
@@ -290,6 +243,7 @@ void set_viewer_ucd_data(struct psf_data *viz_s, struct psf_data *viz_tmp){
 		
 	alloc_viz_node_s(viz_s);
 	alloc_viz_ele_s(viz_s);
+    alloc_psf_field_data_c(viz_s);
 	alloc_psf_data_s(viz_s);
 
 	copy_viewer_udt_node(viz_s, viz_tmp);
@@ -302,7 +256,7 @@ void set_viewer_ucd_data(struct psf_data *viz_s, struct psf_data *viz_tmp){
 	};
 
 	dealloc_psf_data_s(viz_tmp);
-	dealloc_psf_grid_s(viz_tmp);
+	dealloc_psf_mesh_c(viz_tmp);
 }
 
 void set_evolution_udt_data(struct psf_data *viz_s, struct psf_data *viz_tmp){
@@ -313,7 +267,10 @@ void set_evolution_udt_data(struct psf_data *viz_s, struct psf_data *viz_tmp){
 
 void set_ucd_with_mapping(struct psf_data *viz_s, struct psf_data *viz_tmp){
 	
-	set_viewer_udt_field(viz_s, viz_tmp);
+	viz_s->nfield = viz_tmp->nfield;
+	alloc_psf_field_name_c(viz_s);
+	copy_viewer_udt_field_name(viz_s, viz_tmp);
+
 	if (viz_tmp->nnod_4_ele_viz == 4) {
 		count_new_node_for_mapping_quad(viz_s, viz_tmp);
 	} else {
@@ -322,6 +279,7 @@ void set_ucd_with_mapping(struct psf_data *viz_s, struct psf_data *viz_tmp){
 
 	alloc_psf_data_s(viz_s);
 	alloc_viz_ele_s(viz_s);
+    alloc_psf_field_data_c(viz_s);
 	alloc_viz_node_s(viz_s);
 	alloc_psf_cutting_4_map(viz_s);
 	
@@ -338,7 +296,7 @@ void set_ucd_with_mapping(struct psf_data *viz_s, struct psf_data *viz_tmp){
 	set_new_data_for_mapping(viz_s);
 
 	dealloc_psf_data_s(viz_tmp);
-	dealloc_psf_grid_s(viz_tmp);
+	dealloc_psf_mesh_c(viz_tmp);
 	return;
 }
 

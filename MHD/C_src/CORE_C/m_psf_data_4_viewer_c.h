@@ -5,16 +5,17 @@
 
 #define UCD_LABEL_LEN		1024
 
+#define IFLAG_MESH       99
+#define IFLAG_SURFACES   2
+#define IFLAG_LINES      1
+
 #define IFLAG_SURF_UDT   10
 #define IFLAG_SURF_UCD   11
-#define IFLAG_LINE_UCD   12
-#define IFLAG_QUAD_UCD   13
 #define IFLAG_SURF_UDT_GZ   110
 #define IFLAG_SURF_UCD_GZ   111
-#define IFLAG_LINE_UCD_GZ   112
-#define IFLAG_QUAD_UCD_GZ   113
 
 #include "kemosrc_param_c.h"
+#include "skip_comment_c.h"
 
 
 struct psf_data{
@@ -70,18 +71,25 @@ struct psf_data{
 
 void alloc_viz_node_s(struct psf_data *viz_s);
 void alloc_viz_ele_s(struct psf_data *viz_s);
-void alloc_psf_num_data_s(struct psf_data *viz_s);
+void alloc_psf_field_name_c(struct psf_data *viz_s);
 void alloc_psf_data_s(struct psf_data *viz_s);
+void alloc_psf_field_data_c(struct psf_data *viz_s);
 void alloc_psf_cutting_4_map(struct psf_data *viz_s);
 
 void alloc_psf_norm_s(struct psf_data *viz_s);
 void alloc_psf_length_s(struct psf_data *viz_s);
 void alloc_psf_cutting_4_map(struct psf_data *viz_s);
 
-void dealloc_psf_grid_s(struct psf_data *viz_s);
+void dealloc_psf_mesh_c(struct psf_data *viz_s);
+void dealloc_psf_field_data_c(struct psf_data *viz_s);
 void dealloc_psf_data_s(struct psf_data *viz_s);
 void dealloc_psf_cutting_4_map(struct psf_data *viz_s);
 void deallc_all_psf_data(struct psf_data *viz_s);
 void deallc_all_fline_data(struct psf_data *viz_s);
+
+void copy_viewer_udt_node(struct psf_data *viz_copied, struct psf_data *viz_org);
+void copy_viewer_udt_connect(struct psf_data *viz_copied, struct psf_data *viz_org);
+void copy_viewer_udt_field_name(struct psf_data *viz_copied, struct psf_data *viz_org);
+void copy_viewer_udt_data(struct psf_data *viz_copied, struct psf_data *viz_org);
 
 #endif

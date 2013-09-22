@@ -150,7 +150,7 @@
 };
 
 - (IBAction) DrawFlineFile:(id)pId{
-	NSArray *flineFileTypes = [NSArray arrayWithObjects:@"inp",@"gz",@"INP",@"GZ",nil];
+	NSArray *flineFileTypes = [NSArray arrayWithObjects:@"inp",@"vtk",@"gz",@"INP",@"VTK",@"GZ",nil];
 	NSOpenPanel *flineOpenPanelObj	= [NSOpenPanel openPanel];
 	[flineOpenPanelObj setTitle:@"Choose field line data"];
     [flineOpenPanelObj setAllowedFileTypes:flineFileTypes];
@@ -171,10 +171,8 @@
 			FlineOpenFilehead =   [FlineOpenFilehead stringByDeletingPathExtension];
 		};
 	
-		int iflag_filetype =  kemoview_open_data_glut([self.FlineOpenFilename UTF8String]);
-		if(iflag_filetype == IFLAG_LINE_UCD || iflag_filetype == IFLAG_LINE_UCD_GZ){
-			[self OpenFieldlineFile:(NSString *)FlineOpenFilehead];
-		};
+		int iflag_datatype =  kemoview_open_data_glut([self.FlineOpenFilename UTF8String]);
+		if(iflag_datatype == IFLAG_LINES) [self OpenFieldlineFile:(NSString *)FlineOpenFilehead];
 	};	
 
 }

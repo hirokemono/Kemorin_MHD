@@ -193,16 +193,18 @@ void send_background_color(GLfloat color[4]){copy_rgba_color_c(kemo_sgl->mesh_m-
 
 /* Routines for menu selection */
 int kemoview_open_data_glut(const char *file_name){
-	int ierr;
-	ierr = kemoview_open_data(file_name, kemo_sgl->mesh_d, kemo_sgl->mesh_m, kemo_sgl->psf_a, kemo_sgl->psf_d, kemo_sgl->psf_m,
-							 kemo_sgl->fline_d, kemo_sgl->fline_m, ucd_tmp, ucd_menu,kemo_sgl->view_s);
+	int iflag_datatype;
+	iflag_datatype = kemoview_open_data(file_name, kemo_sgl->mesh_d, kemo_sgl->mesh_m,
+                                        kemo_sgl->psf_a, kemo_sgl->psf_d, kemo_sgl->psf_m,
+                                        kemo_sgl->fline_d, kemo_sgl->fline_m, ucd_tmp,
+                                        ucd_menu,kemo_sgl->view_s);
 
 	if (kemo_sgl->psf_a->id_current >= IZERO) {
 		psf_current_data = kemo_sgl->psf_d[kemo_sgl->psf_a->id_current];
 		psf_current_menu = kemo_sgl->psf_m[kemo_sgl->psf_a->id_current];
 	};
 
-	return ierr;
+	return iflag_datatype;
 }
 
 void close_mesh_view(){
@@ -249,14 +251,15 @@ void load_modelview_file_glut(const char *file_name){
 
 
 static void evolution_psf_viewer(){
-	int id_load, ierr;
+	int id_load;
 	printf("Loading PSF %d \n",kemo_sgl->psf_a->nmax_loaded);
 	for(id_load=0; id_load<kemo_sgl->psf_a->nmax_loaded; id_load++){
 		if(kemo_sgl->psf_a->iflag_loaded[id_load] > 0){
 			printf("Loaded PSF file %d %d %s\n",id_load, kemo_sgl->psf_m[id_load]->iflag_psf_file,
 					kemo_sgl->psf_m[id_load]->psf_header);
 			kemo_sgl->psf_m[id_load]->psf_step = kemo_sgl->psf_a->istep_sync;
-			ierr = evolution_PSF_data(kemo_sgl->psf_d[id_load], ucd_tmp, kemo_sgl->psf_m[id_load]);
+			evolution_PSF_data(kemo_sgl->psf_d[id_load], ucd_tmp,
+                                      kemo_sgl->psf_m[id_load], ucd_menu);
 		};
 	}
 	
@@ -267,8 +270,8 @@ void evolution_fline_viewer(){
 	int ierr;
 	if (kemo_sgl->fline_m->iflag_draw_fline > 0) {
 		kemo_sgl->fline_m->fline_step = kemo_sgl->psf_a->istep_sync;
-		ierr = refresh_FLINE_data(kemo_sgl->fline_m->fline_header, 
-				kemo_sgl->fline_m->fline_step, kemo_sgl->fline_d, ucd_tmp);
+		ierr = refresh_FLINE_data(kemo_sgl->fline_d, ucd_tmp,
+                                  kemo_sgl->fline_m, ucd_menu);
 	}
 	return;
 }

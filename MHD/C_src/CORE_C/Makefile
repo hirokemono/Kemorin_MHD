@@ -25,10 +25,12 @@ OBJ_KEMO_C = \
  read_viewer_mesh_c.o \
  read_grouping_mesh_c.o \
  read_psf_data_viewer_c.o \
+ read_psf_vtk_data_c.o \
  set_psf_viewer.o \
  \
  read_viewer_mesh_gz_c.o \
  read_psf_data_gz_c.o \
+ read_psf_vtk_data_gz_c.o \
  \
  set_surface_mesh_data.o \
  set_normal_on_node_4_mesh.o \
@@ -240,6 +242,7 @@ module:
 	'$$(KEMO_C_DIR)'/m_psf_data_4_viewer_c.c \
 	m_psf_data_4_viewer_c.h \
 	kemosrc_param_c.o \
+    skip_comment_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE)' \
 	'$$(KEMO_C_DIR)'/m_psf_data_4_viewer_c.c \
@@ -332,7 +335,29 @@ module:
 	read_psf_data_viewer_c.h \
 	kemosrc_param_c.o \
 	m_psf_data_4_viewer_c.o \
-	read_psf_data_gz_c.o \
+	skip_comment_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	read_psf_vtk_data_gz_c.o: \
+	'$$(KEMO_C_DIR)'/read_psf_vtk_data_gz_c.c \
+	read_psf_vtk_data_gz_c.h \
+	kemosrc_param_c.o \
+	m_psf_data_4_viewer_c.o \
+	skip_comment_c.o \
+	kemo_zlib_io_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	read_psf_vtk_data_c.o: \
+	'$$(KEMO_C_DIR)'/read_psf_vtk_data_c.c \
+	read_psf_vtk_data_c.h \
+	kemosrc_param_c.o \
+	m_psf_data_4_viewer_c.o \
 	skip_comment_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \

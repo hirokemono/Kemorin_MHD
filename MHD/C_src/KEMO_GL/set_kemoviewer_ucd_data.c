@@ -31,8 +31,10 @@ static void run_pick_surface_c(struct mesh_menu_val *mesh_m){
     
     if (mesh_m->iformat_surface_mesh == IFLAG_FULL_MESH_GZ) {
         sprintf(mesh_m->mesh_file_name, "%s.ksm.gz",file_head);
+        mesh_m->iformat_surface_mesh = IFLAG_SURF_MESH_GZ;
     } else {
         sprintf(mesh_m->mesh_file_name, "%s.ksm",file_head);
+        mesh_m->iformat_surface_mesh = IFLAG_SURF_MESH;
     };
 	return;
 }
@@ -79,6 +81,20 @@ static int set_kemoview_data_fmt_flag(const char *file_name, char *file_head){
 				&& file_ext[1] == 'N'
 				&& file_ext[2] == 'P') ){
 			ifile_type = IFLAG_SURF_UCD_GZ;
+        } else if((file_ext[0] == 'v'
+                && file_ext[1] == 't'
+                && file_ext[2] == 'd')
+            ||	  (file_ext[0] == 'V'
+                && file_ext[1] == 'T'
+                && file_ext[2] == 'D') ){
+            ifile_type = IFLAG_SURF_VTD_GZ;
+        } else if(	  (file_ext[0] == 'v'
+                && file_ext[1] == 't'
+                && file_ext[2] == 'k')
+            ||	  (file_ext[0] == 'V'
+                && file_ext[1] == 'T'
+                && file_ext[2] == 'K') ){
+            ifile_type = IFLAG_SURF_VTK_GZ;
 		} else {
 			ifile_type = 99;
 		};
@@ -91,12 +107,12 @@ static int set_kemoview_data_fmt_flag(const char *file_name, char *file_head){
 				&& file_ext[1] == 'S'
 				&& file_ext[2] == 'M') ){
 			ifile_type = IFLAG_SURF_MESH;
-    } else if((file_ext[0] == 'g'
-            && file_ext[1] == 'f'
-            && file_ext[2] == 'm')
-        ||	  (file_ext[0] == 'G'
-            && file_ext[1] == 'F'
-            && file_ext[2] == 'M') ){
+    } else if(    (file_ext[0] == 'g'
+                && file_ext[1] == 'f'
+                && file_ext[2] == 'm')
+            ||	  (file_ext[0] == 'G'
+                && file_ext[1] == 'F'
+                && file_ext[2] == 'M') ){
 			ifile_type = IFLAG_FULL_MESH;
             get_ext_from_file_name(file_head, file_head2, file_ext);
             strngcopy(file_head, file_head2);
@@ -107,13 +123,27 @@ static int set_kemoview_data_fmt_flag(const char *file_name, char *file_head){
 				&& file_ext[1] == 'D'
 				&& file_ext[2] == 'T') ){
 			ifile_type = IFLAG_SURF_UDT;
-	} else if(	  (file_ext[0] == 'i' 
+	} else if(	  (file_ext[0] == 'i'
 				&& file_ext[1] == 'n' 
 				&& file_ext[2] == 'p')
 			||	  (file_ext[0] == 'I'
 				&& file_ext[1] == 'N'
 				&& file_ext[2] == 'P') ){
 			ifile_type = IFLAG_SURF_UCD;
+    } else if(	  (file_ext[0] == 'v'
+                && file_ext[1] == 't'
+                && file_ext[2] == 'd')
+            ||	  (file_ext[0] == 'V'
+                && file_ext[1] == 'T'
+                && file_ext[2] == 'D') ){
+             ifile_type = IFLAG_SURF_VTD;
+    } else if(	  (file_ext[0] == 'v'
+                && file_ext[1] == 't'
+                && file_ext[2] == 'k')
+            ||	  (file_ext[0] == 'V'
+                && file_ext[1] == 'T'
+                && file_ext[2] == 'K') ){
+             ifile_type = IFLAG_SURF_VTK;
 	} else {
 		ifile_type = 99;
 	};
@@ -165,61 +195,58 @@ int kemoview_open_data(const char *file_name, struct viewer_mesh *mesh_d, struct
 					  struct psf_data *fline_d, struct fline_menu_val *fline_m, 
 					  struct psf_data *ucd_tmp, struct ucd_file_menu_val *ucd_m,
 					  struct view_element *view){
-	int ierr;
+	int iflag_datatype;
+	int iflag_fileformat;
 	char file_head[LENGTHBUF];
 	
-	int ifile_type = set_kemoview_data_fmt_flag(file_name, file_head);
-	printf("ifile_type %d\n", ifile_type);
+	iflag_fileformat = set_kemoview_data_fmt_flag(file_name, file_head);
+	printf("iflag_fileformat %d\n", iflag_fileformat);
 	printf("file_name %s\n", file_name);
 		
-	if(ifile_type == IFLAG_SURF_MESH || ifile_type == IFLAG_SURF_MESH_GZ){
-        mesh_m->iformat_surface_mesh = ifile_type;
+	if(   iflag_fileformat == IFLAG_SURF_MESH || iflag_fileformat == IFLAG_SURF_MESH_GZ
+       || iflag_fileformat == IFLAG_FULL_MESH || iflag_fileformat == IFLAG_FULL_MESH_GZ){
+        mesh_m->iformat_surface_mesh = iflag_fileformat;
 		strngcopy(mesh_m->mesh_file_name, file_name);
+        
+        if(iflag_fileformat == IFLAG_FULL_MESH || iflag_fileformat == IFLAG_FULL_MESH_GZ){
+            run_pick_surface_c(mesh_m);
+        };
+        
 		init_draw_mesh(mesh_d, mesh_m, view);
-		ierr = ifile_type;
-	} else if(ifile_type == IFLAG_FULL_MESH_GZ){
-        mesh_m->iformat_surface_mesh = ifile_type;
-		strngcopy(mesh_m->mesh_file_name, file_name);
-		run_pick_surface_c(mesh_m);
-        mesh_m->iformat_surface_mesh = IFLAG_SURF_MESH_GZ;
-		init_draw_mesh(mesh_d, mesh_m, view);
-		return ifile_type;
-	} else if(ifile_type == IFLAG_FULL_MESH){
-        mesh_m->iformat_surface_mesh = ifile_type;
-		strngcopy(mesh_m->mesh_file_name, file_name);
-		run_pick_surface_c(mesh_m);
-        mesh_m->iformat_surface_mesh = IFLAG_SURF_MESH;
-		init_draw_mesh(mesh_d, mesh_m, view);
-		ierr = IFLAG_SURF_MESH;
-	} else if(ifile_type == IFLAG_SURF_UDT || ifile_type == IFLAG_SURF_UDT_GZ){
+		iflag_datatype = IFLAG_MESH;
+        
+    } else if(   iflag_fileformat == IFLAG_SURF_UDT || iflag_fileformat == IFLAG_SURF_UDT_GZ
+              || iflag_fileformat == IFLAG_SURF_VTD || iflag_fileformat == IFLAG_SURF_VTD_GZ){
+        ucd_m->iformat_ucd_file = iflag_fileformat;
 		ucd_m->ucd_step = get_index_from_file_head(file_head, ucd_m->ucd_header);
-		ierr = check_gzip_psf_grd_first(ucd_m->ucd_header, ucd_tmp);
-		if(ierr == IFLAG_SURF_UDT || ierr == IFLAG_SURF_UDT_GZ){
-			check_gzip_psf_udt_first(ucd_m->ucd_header, ucd_m->ucd_step, ucd_tmp);
+		iflag_datatype = check_gzip_psf_grd_first(ucd_m, ucd_tmp);
+		if(iflag_datatype != 0){
+			check_gzip_psf_udt_first(ucd_m, ucd_tmp);
 			init_draw_psf(mesh_m, psf_a, psf_d, psf_m, ucd_tmp, ucd_m, view);
-			psf_m[psf_a->id_current]->iflag_psf_file = IFLAG_UDT;
+			psf_m[psf_a->id_current]->iflag_psf_file = iflag_fileformat;
 		} else{
-			dealloc_psf_grid_s(ucd_tmp);
+			dealloc_psf_mesh_c(ucd_tmp);
 		};
 
-	} else if(ifile_type == IFLAG_SURF_UCD || ifile_type == IFLAG_SURF_UCD_GZ
-			  || ifile_type == IFLAG_LINE_UCD || ifile_type == IFLAG_LINE_UCD_GZ){
+	} else if( iflag_fileformat == IFLAG_SURF_UCD || iflag_fileformat == IFLAG_SURF_UCD_GZ
+            || iflag_fileformat == IFLAG_SURF_VTK || iflag_fileformat == IFLAG_SURF_VTK_GZ){
+        ucd_m->iformat_ucd_file = iflag_fileformat;
 		ucd_m->ucd_step = get_index_from_file_head(file_head, ucd_m->ucd_header);
-		ierr = check_gzip_kemoview_ucd_first(ucd_m->ucd_header, ucd_m->ucd_step, ucd_tmp);
+		iflag_datatype = check_gzip_kemoview_ucd_first(ucd_m, ucd_tmp);
 
-		if(ierr == IFLAG_SURF_UCD || ierr == IFLAG_SURF_UCD_GZ){
+		if(iflag_datatype == IFLAG_SURFACES){
 			init_draw_psf(mesh_m, psf_a, psf_d, psf_m, ucd_tmp, ucd_m, view);
-			psf_m[psf_a->id_current]->iflag_psf_file = IFLAG_UCD;
-		} else if(ierr == IFLAG_LINE_UCD || ierr == IFLAG_LINE_UCD_GZ){
+			psf_m[psf_a->id_current]->iflag_psf_file = iflag_fileformat;
+		} else if(iflag_datatype == IFLAG_LINES){
 			init_draw_fline(mesh_m, psf_a, fline_d, fline_m, ucd_tmp, ucd_m, view);
 		} else {
 			dealloc_psf_data_s(ucd_tmp);
-			dealloc_psf_grid_s(ucd_tmp);
+			dealloc_psf_mesh_c(ucd_tmp);
 		}
 	} else {
-		ierr = 0;
+		iflag_datatype = 0;
 	};
 	
-	return ierr;
+	return iflag_datatype;
 }
 

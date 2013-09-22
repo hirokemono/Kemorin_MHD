@@ -25,6 +25,7 @@ void open_rd_gzfile(const char *gz_file_name);
 void close_gzfile();
 
 int open_rd_gzfile_w_flag(const char *gz_file_name);
+int check_gzfile_eof();
 
 void write_compress_txt(int *num_buffer, char *input_txt);
 void write_compress_txt_nolf(int *num_buffer, char *input_txt);

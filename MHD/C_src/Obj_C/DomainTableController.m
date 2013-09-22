@@ -69,8 +69,6 @@
 }
 
 - (IBAction) SelectMeshFile:(id)pId{
-	int iflag_filetype;
-
 	NSArray *meshFileTypes = [NSArray arrayWithObjects:@"ksm",@"KSM",@"gz",@"GZ",@"gfm",@"GFM",nil];
 	NSOpenPanel *MeshOpenPanelObj	= [NSOpenPanel openPanel];
 	[MeshOpenPanelObj setTitle:@"Choose mesh data"];
@@ -90,11 +88,8 @@
 			MeshOpenFilehead =   [MeshOpenFilehead stringByDeletingPathExtension];
 		};
 
-		iflag_filetype = kemoview_open_data_glut([MeshOpenFilehead UTF8String]);
-		if(iflag_filetype==IFLAG_SURF_MESH_GZ || iflag_filetype==IFLAG_SURF_MESH
-		   || iflag_filetype==IFLAG_SURF_MESH/* || iflag_filetype==IFLAG_FULL_MESH_GZ*/ ) {
-			[self OpenSurfaceMeshFile:MeshOpenFilehead];
-		};
+		int iflag_datatype = kemoview_open_data_glut([MeshOpenFilehead UTF8String]);
+		if(iflag_datatype==IFLAG_MESH ) [self OpenSurfaceMeshFile:MeshOpenFilehead];
 	};	
 }
 

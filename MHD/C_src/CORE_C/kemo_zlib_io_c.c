@@ -46,6 +46,10 @@ int open_rd_gzfile_w_flag(const char *gz_file_name){
 	return 0;
 }
 
+int check_gzfile_eof(){
+    return gzeof(file_gz);
+}
+
 void write_compress_txt(int *num_buffer, char *input_txt){
 	int writelen, num_txt;
 	

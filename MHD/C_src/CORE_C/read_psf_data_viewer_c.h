@@ -11,17 +11,10 @@
 #include "kemosrc_param_c.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "skip_comment_c.h"
-#include "read_psf_data_gz_c.h"
 
 /* prototypes */
 int read_kemoview_ucd(const char *file_head, struct psf_data *viz_s);
 int read_psf_grd(const char *file_head, struct psf_data *viz_s);
-void read_psf_udt(const char *file_head, int istep, struct psf_data *viz_s);
-
-int read_fline_ucd(const char *file_head, struct psf_data *viz_s);
-
-int check_gzip_kemoview_ucd_first(const char *file_head, int istep, struct psf_data *viz_s);
-int check_gzip_psf_grd_first(const char *file_head, struct psf_data *viz_s);
-void check_gzip_psf_udt_first(const char *file_head, int istep, struct psf_data *viz_s);
+int read_psf_udt(const char *file_head, int istep, struct psf_data *viz_s);
 
 #endif

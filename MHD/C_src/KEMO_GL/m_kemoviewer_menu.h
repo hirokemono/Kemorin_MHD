@@ -43,22 +43,23 @@
 #define SAVE_QT_MOVIE  999
 #define NO_SAVE_FILE   0
 
-#define IFLAG_UDT      0
-#define IFLAG_UCD      1
+#define IFLAG_MESH      99
+#define IFLAG_SURFACES   2
+#define IFLAG_LINES      1
 
 #define IFLAG_FULL_MESH   0
 #define IFLAG_SURF_MESH   1
 #define IFLAG_SURF_UDT   10
 #define IFLAG_SURF_UCD   11
-#define IFLAG_LINE_UCD   12
-#define IFLAG_QUAD_UCD   13
+#define IFLAG_SURF_VTD   20
+#define IFLAG_SURF_VTK   21
 
 #define IFLAG_FULL_MESH_GZ  100
 #define IFLAG_SURF_MESH_GZ  101
 #define IFLAG_SURF_UDT_GZ   110
 #define IFLAG_SURF_UCD_GZ   111
-#define IFLAG_LINE_UCD_GZ   112
-#define IFLAG_QUAD_UCD_GZ   113
+#define IFLAG_SURF_VTD_GZ   120
+#define IFLAG_SURF_VTK_GZ   121
 
 #define SHUTTER_OFF 0
 #define SHUTTER_ON  1
@@ -219,6 +220,8 @@ struct fline_menu_val{
 
 struct ucd_file_menu_val{
 	char ucd_header[LENGTHBUF];
+    int iformat_ucd_file;
+    int iformat_viz_type;
 	int ucd_step;
 };
 

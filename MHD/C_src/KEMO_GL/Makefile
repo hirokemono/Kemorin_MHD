@@ -17,6 +17,7 @@ ysglusefontbitmap.o \
 psf_data_array_manager.o \
 read_data_4_kemoviewer.o \
 set_kemoviewer_ucd_data.o \
+select_read_psf_viewer_c.o \
 \
 icosahedron_c.o \
 init_gl_lighting_c.o \
@@ -436,19 +437,18 @@ module:
 	check_psf_data_viewer_c.o \
 	read_viewer_mesh_c.o \
 	read_viewer_mesh_gz_c.o \
-	read_psf_data_viewer_c.o \
 	skip_comment_c.o \
 	move_draw_objects_gl.o \
 	icosahedron_c.o \
 	init_gl_lighting_c.o \
 	modify_object_4_viewer_c.o \
-	read_psf_data_viewer_c.o \
 	draw_mapgrid.o \
 	set_psf_viewer.o \
 	set_rgba_table_c.o \
 	set_surface_mesh_data.o \
 	set_normal_on_node_4_mesh.o \
 	take_normal_surf_mesh_c.o \
+	select_read_psf_viewer_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -466,7 +466,21 @@ module:
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
-
+	
+	@echo \
+	select_read_psf_viewer_c.o: \
+	'$$(KEMO_C_GLDIR)'/select_read_psf_viewer_c.c \
+	select_read_psf_viewer_c.h \
+	m_psf_data_4_viewer_c.o \
+	m_kemoviewer_menu.o \
+	read_psf_data_viewer_c.o \
+	read_psf_vtk_data_c.o \
+	read_psf_data_gz_c.o \
+	read_psf_vtk_data_gz_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
 	@echo \
 	draw_colorbar_gl.o: \
 	'$$(KEMO_C_GLDIR)'/draw_colorbar_gl.c \

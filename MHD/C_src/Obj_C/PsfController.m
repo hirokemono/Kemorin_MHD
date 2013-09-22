@@ -377,12 +377,12 @@
 }
 
 - (IBAction) OpenPsfFile:(id)pId{
-	NSArray *psfFileTypes = [NSArray arrayWithObjects:@"udt",@"inp",@"gz",@"UDT",@"INP",@"GZ",nil];
+	NSArray *psfFileTypes = [NSArray arrayWithObjects:@"udt",@"inp",@"vtk",@"vtd",@"gz",
+                             @"UDT",@"INP",@"VTK",@"VTD",@"GZ",nil];
 	NSOpenPanel *PsfOpenPanelObj	= [NSOpenPanel openPanel];
 	[PsfOpenPanelObj setTitle:@"Choose surface rendering data"];
     [PsfOpenPanelObj setAllowedFileTypes:psfFileTypes];
 	NSInteger PsfOpenInteger	= [PsfOpenPanelObj runModal];
-	int ierr;
 	
 	if(PsfOpenInteger == NSOKButton){
 		PsfOpenDirectory = [[PsfOpenPanelObj directoryURL] path];
@@ -400,12 +400,8 @@
 			PsfOpenFilehead =   [PsfOpenFilehead stringByDeletingPathExtension];
 		};
 		
-		ierr = kemoview_open_data_glut([PsfOpenFilename UTF8String]);
-
-		if(ierr == IFLAG_SURF_UDT || ierr ==IFLAG_SURF_UDT_GZ
-		   || ierr == IFLAG_SURF_UCD || ierr ==IFLAG_SURF_UCD_GZ){
-			[self DrawPsfFile:PsfOpenFilehead];
-		};
+		int iflag_datatype = kemoview_open_data_glut([PsfOpenFilename UTF8String]);
+		if(iflag_datatype == IFLAG_SURFACES) [self DrawPsfFile:PsfOpenFilehead];
 	};	
 }
 

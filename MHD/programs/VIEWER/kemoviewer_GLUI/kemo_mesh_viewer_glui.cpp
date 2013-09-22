@@ -69,7 +69,7 @@ static void init_kemoview_data_glui(int val){
 	char file_name[LENGTHBUF];
 	char file_head[LENGTHBUF];
 	char file_ext[LENGTHBUF];
-	int ierr;
+	int iflag_datatype;
 	
 	getcwd(current, sizeof(current));
 	
@@ -82,7 +82,7 @@ static void init_kemoview_data_glui(int val){
 	printf("file_head %s\n", file_head);
 	printf("file_ext %s\n", file_ext);
 	
-	ierr = kemoview_open_data_glut(file_name);
+	iflag_datatype = kemoview_open_data_glut(file_name);
 	
 	GLUI_Master.close_all();
 	draw_mesh_w_menu();

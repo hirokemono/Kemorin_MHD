@@ -39,7 +39,7 @@ void alloc_viz_ele_s(struct psf_data *viz_s){
 	return;
 };
 
-void alloc_psf_num_data_s(struct psf_data *viz_s){
+void alloc_psf_field_name_c(struct psf_data *viz_s){
 	int i;
 	
 	viz_s->ncomp =       (int *)calloc(viz_s->nfield,sizeof(int));
@@ -53,14 +53,17 @@ void alloc_psf_num_data_s(struct psf_data *viz_s){
 	};
 };
 
-void alloc_psf_data_s(struct psf_data *viz_s){
+void alloc_psf_field_data_c(struct psf_data *viz_s){
 	int i;
 	/* allocate memory  d_nod[node #][component]*/
 	viz_s->d_nod = (double **)calloc(viz_s->nnod_viz,sizeof(double *));
 	for (i = 0; i < viz_s->nnod_viz; i++){
 		viz_s->d_nod[i] = (double *)calloc(viz_s->ncomptot,sizeof(double));
 	};
-	
+};
+
+void alloc_psf_data_s(struct psf_data *viz_s){
+	int i;
 	/* allocate memory  d_amp[node #][field]*/
 	viz_s->d_amp = (double **)calloc(viz_s->nnod_viz,sizeof(double *));
 	for (i = 0; i < viz_s->nnod_viz; i++){
@@ -161,6 +164,21 @@ static void dealloc_psf_length_s(struct psf_data *viz_s){
 	return;
 };
 
+void dealloc_psf_field_data_c(struct psf_data *viz_s){
+	int i;
+
+	for (i = 0; i < viz_s->nnod_viz; i++) free(viz_s->d_nod[i]);
+	free(viz_s->d_nod);
+	
+	free(viz_s->ncomp);
+	free(viz_s->istack_comp);
+	
+	for (i = 0; i < viz_s->nfield; i++) free(viz_s->data_name[i]);
+	free(viz_s->data_name);
+	
+	return;
+};
+
 void dealloc_psf_data_s(struct psf_data *viz_s){
 	int i;
 	/* deallocate memory*/
@@ -177,23 +195,16 @@ void dealloc_psf_data_s(struct psf_data *viz_s){
 	for (i = 0; i < viz_s->nnod_viz; i++) free(viz_s->d_amp[i]);
 	free(viz_s->d_amp);
 	
-	for (i = 0; i < viz_s->nnod_viz; i++) free(viz_s->d_nod[i]);
-	free(viz_s->d_nod);
-	
 	free(viz_s->id_coord);
 	
-	free(viz_s->ncomp);
-	free(viz_s->istack_comp);
-	
-	for (i = 0; i < viz_s->nfield; i++) free(viz_s->data_name[i]);
-	free(viz_s->data_name);
+    dealloc_psf_field_data_c(viz_s);
 		
 	viz_s->ncomptot = 0;
 	viz_s->nfield =   0;
 	return;
 };
 
-void dealloc_psf_grid_s(struct psf_data *viz_s){
+void dealloc_psf_mesh_c(struct psf_data *viz_s){
 	int i;
 	free(viz_s->iele_viz_far);
 	free(viz_s->z_ele_viz);
@@ -228,7 +239,7 @@ void deallc_all_psf_data(struct psf_data *viz_s){
 	dealloc_psf_cutting_4_map(viz_s);
 	dealloc_psf_norm_s(viz_s);
 	dealloc_psf_data_s(viz_s);
-	dealloc_psf_grid_s(viz_s);
+	dealloc_psf_mesh_c(viz_s);
 	return;
 };
 
@@ -236,8 +247,63 @@ void deallc_all_fline_data(struct psf_data *viz_s){
 	dealloc_psf_norm_s(viz_s);
 	dealloc_psf_length_s(viz_s);
 	dealloc_psf_data_s(viz_s);
-	dealloc_psf_grid_s(viz_s);
+	dealloc_psf_mesh_c(viz_s);
 	return;
 };
 
+
+void copy_viewer_udt_node(struct psf_data *viz_copied, struct psf_data *viz_org){
+	int i, j;
+	
+	for (i = 0; i < viz_org->nnod_viz; i++) {
+		viz_copied->inod_viz[i] = viz_org->inod_viz[i];
+		for(j = 0; j < 3; j++) viz_copied->xx_viz[i][j] = viz_org->xx_viz[i][j];
+	};
+	return;
+}
+
+void copy_viewer_udt_connect(struct psf_data *viz_copied, struct psf_data *viz_org){
+	int i, j;
+    
+	for (i = 0; i < viz_org->nele_viz; i++) {
+		for(j=0;j<viz_copied->nnod_4_ele_viz;j++){
+			viz_copied->ie_viz[i][j] = viz_org->ie_viz[i][j];
+		};
+	};
+	return;
+}
+
+void copy_viewer_udt_field_name(struct psf_data *viz_copied, struct psf_data *viz_org){
+	int i, imin_fld;
+	
+    imin_fld = viz_org->nfield;
+    if (viz_copied->nfield < imin_fld) imin_fld = viz_copied->nfield;
+    
+	viz_copied->istack_comp[0] = viz_org->istack_comp[0];
+	for (i = 0; i < imin_fld; i++) {
+		viz_copied->ncomp[i] = viz_org->ncomp[i];
+		viz_copied->istack_comp[i+1] = viz_org->istack_comp[i+1];
+		viz_copied->id_coord[i] = viz_org->id_coord[i];
+		strngcopy(viz_copied->data_name[i], viz_org->data_name[i]);
+	};
+	viz_copied->ncomptot = viz_copied->istack_comp[imin_fld];
+	
+	return;
+}
+
+void copy_viewer_udt_data(struct psf_data *viz_copied, struct psf_data *viz_org){
+	int i, j, imin_comp, imin_nod;
+	
+    imin_nod = viz_org->nnod_viz;
+    imin_comp = viz_org->ncomptot;
+    if (viz_copied->nnod_viz < imin_nod)  imin_nod =  viz_copied->nnod_viz;
+    if (viz_copied->ncomptot < imin_comp) imin_comp = viz_copied->ncomptot;
+    
+	for (i = 0; i < imin_nod; i++) {
+		for (j = 0; j < imin_comp; j++){
+			viz_copied->d_nod[i][j] = viz_org->d_nod[i][j];
+		};
+	};
+	return;
+}
 

@@ -17,6 +17,7 @@
   #define open_wt_gzfile            open_wt_gzfile_
   #define open_rd_gzfile            open_rd_gzfile_
   #define close_gzfile              close_gzfile_
+  #define check_gzfile_eof          check_gzfile_eof_
   #define write_compress_txt        write_compress_txt_
   #define write_compress_txt_contd  write_compress_txt_contd_
   #define get_one_line_from_gz      get_one_line_from_gz_
@@ -39,6 +40,7 @@
   #define open_wt_gzfile            OPEN_WT_GZFILE
   #define open_rd_gzfile            OPEN_RD_GZFILE
   #define close_gzfile              CLOSE_GZFILE
+  #define check_gzfile_eof          CHECK_GZFILE_EOF
   #define write_compress_txt        WRITE_COMPRESS_TXT
   #define write_compress_txt_contd  WRITE_COMPRESS_TXT_CONTD
   #define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
@@ -61,6 +63,7 @@
   #define open_wt_gzfile            OPEN_WT_GZFILE
   #define open_rd_gzfile            OPEN_RD_GZFILE
   #define close_gzfile              CLOSE_GZFILE
+  #define check_gzfile_eof          CHECK_GZFILE_EOF
   #define write_compress_txt        WRITE_COMPRESS_TXT
   #define write_compress_txt_contd  WRITE_COMPRESS_TXT_CONTD
   #define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
@@ -87,6 +90,7 @@
   #define open_wt_gzfile            open_wt_gzfile
   #define open_rd_gzfile            open_rd_gzfile
   #define close_gzfile              close_gzfile
+  #define check_gzfile_eof          check_gzfile_eof
   #define write_compress_txt        write_compress_txt
   #define write_compress_txt_contd  write_compress_txt_contd
   #define get_one_line_from_gz      get_one_line_from_gz
@@ -190,9 +194,6 @@
 #define SAVE_QT_MOVIE  999
 #define NO_SAVE_FILE   0
 
-#define IFLAG_UDT      0
-#define IFLAG_UCD      1
-
 #define RAINBOW_SURFACE  0
 #define WHITE_SURFACE    1
 #define GREEN_SURFACE    2
@@ -240,19 +241,23 @@
 #define ANAGLYPH_OFF 0
 #define ANAGLYPH_ON  1
 
+#define IFLAG_MESH       99
+#define IFLAG_SURFACES   2
+#define IFLAG_LINES      1
+
 #define IFLAG_FULL_MESH   0
 #define IFLAG_SURF_MESH   1
 #define IFLAG_SURF_UDT   10
 #define IFLAG_SURF_UCD   11
-#define IFLAG_LINE_UCD   12
-#define IFLAG_QUAD_UCD   13
+#define IFLAG_SURF_VTD   20
+#define IFLAG_SURF_VTK   21
 
 #define IFLAG_FULL_MESH_GZ  100
 #define IFLAG_SURF_MESH_GZ  101
 #define IFLAG_SURF_UDT_GZ   110
 #define IFLAG_SURF_UCD_GZ   111
-#define IFLAG_LINE_UCD_GZ   112
-#define IFLAG_QUAD_UCD_GZ   113
+#define IFLAG_SURF_VTD_GZ   120
+#define IFLAG_SURF_VTK_GZ   121
 
 #define EPSILON  1.e-9
 

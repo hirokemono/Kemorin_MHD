@@ -110,14 +110,12 @@ static void take_normal_nod_psf(struct psf_data *viz_s){
         viz_s->norm_nod[i][1] = 0.0;
         viz_s->norm_nod[i][2] = 0.0;
    };
-   
     for (i = 0; i < viz_s->nele_viz; i++){
         for (i1=0; i1<3; i1++){
             i1 = viz_s->ie_viz[i][i1] - 1;
             k = istack_ele_for_nod[i1] + nele_for_nod[i1];
             nele_for_nod[i1] = nele_for_nod[i1] + 1;
 
-   
             viz_s->norm_nod[i1][0] = viz_s->norm_nod[i1][0]
                 + dist_to_ele[k] * viz_s->norm_ele[i][0];
             viz_s->norm_nod[i1][1] = viz_s->norm_nod[i1][1]

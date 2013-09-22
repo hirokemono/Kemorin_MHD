@@ -15,33 +15,29 @@
 @synthesize ImageFormatFlag;
 - (void) OpenKemoviewerFile:(NSString*) kemoviewOpenFilename
 {
-	int iflag_filetype;
+	int iflag_datatype;
 	NSString *kemoviewOpenFilehead = [kemoviewOpenFilename stringByDeletingPathExtension];
 	NSString *KemoviewOpenFileext =  [kemoviewOpenFilename pathExtension];
 	
 	if([KemoviewOpenFileext isEqualToString:@"gz"] || [KemoviewOpenFileext isEqualToString:@"GZ"]){
 		KemoviewOpenFileext =    [kemoviewOpenFilehead pathExtension];
 		kemoviewOpenFilehead =   [kemoviewOpenFilehead stringByDeletingPathExtension];
-		if([KemoviewOpenFileext isEqualToString:@"0"]){
-/*			iflag_filetype == IFLAG_FULL_MESH_GZ;*/
-			return;
-		};
-	}
+		if([KemoviewOpenFileext isEqualToString:@"0"]) return;
+	};
 
 	[_fileReadBar setUsesThreadedAnimation:YES];
 	[_fileReadBar startAnimation:self];
-	iflag_filetype = kemoview_open_data_glut((char *) [kemoviewOpenFilename UTF8String]);
+	iflag_datatype = kemoview_open_data_glut((char *) [kemoviewOpenFilename UTF8String]);
 	[_fileReadBar stopAnimation:self];
 	
-	if(iflag_filetype==IFLAG_SURF_MESH || iflag_filetype==IFLAG_SURF_MESH_GZ) {
+	if(iflag_datatype==IFLAG_MESH) {
 		[_domainTableController OpenSurfaceMeshFile:kemoviewOpenFilehead];
 	}
-	else if(   iflag_filetype==IFLAG_SURF_UDT || iflag_filetype==IFLAG_SURF_UDT_GZ
-			|| iflag_filetype==IFLAG_SURF_UCD || iflag_filetype==IFLAG_SURF_UCD_GZ) {
+	else if(iflag_datatype==IFLAG_SURFACES) {
 		[_psfController DrawPsfFile:kemoviewOpenFilehead];
 		[_movieMakerController InitEvolutionStepByPSF];
 	}
-	else if(iflag_filetype==IFLAG_LINE_UCD || iflag_filetype==IFLAG_LINE_UCD_GZ) {
+	else if(iflag_datatype==IFLAG_LINES) {
 		[_flineController OpenFieldlineFile:kemoviewOpenFilehead];
 		[_movieMakerController InitEvolutionStepByFline];
 	};
@@ -51,7 +47,7 @@
 - (IBAction) OpenKemoviewerFileByMenu:(id)pId;
 {
 	NSArray *kemoviewFileTypes = [NSArray arrayWithObjects:@"ksm",@"KSM",@"udt",@"UDT",@"inp",@"INP",
-							  @"gz",@"GZ",@"gfm",@"GFM",nil];
+							  @"vtk",@"VTK",@"vtd",@"VTD",@"gz",@"GZ",@"gfm",@"GFM",nil];
 	NSOpenPanel *KemoviewOpenPanelObj	= [NSOpenPanel openPanel];
 	[KemoviewOpenPanelObj setTitle:@"Choose data for Kemoviewer"];
     [KemoviewOpenPanelObj setAllowedFileTypes:kemoviewFileTypes];

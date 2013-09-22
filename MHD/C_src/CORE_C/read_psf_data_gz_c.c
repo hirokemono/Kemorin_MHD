@@ -28,7 +28,7 @@ static void read_gz_viz_node_data(struct psf_data *viz_s){
 };
 
 static int read_gz_kemoview_connect_data(struct psf_data *viz_s){
-	int i, iflag;
+	int i, iflag_datatype;
 	int itmp;
 	char celllabel[4];    /* array for cell label */
 	char buf[LENGTHBUF];    /* array for reading line */
@@ -42,27 +42,27 @@ static int read_gz_kemoview_connect_data(struct psf_data *viz_s){
 				&& celllabel[1] == 'r'
 				&& celllabel[2] == 'i'){
 		printf("Triangle patch data \n");
-		iflag = IFLAG_SURF_UCD_GZ;
+		iflag_datatype = IFLAG_SURFACES;
 		viz_s->nnod_4_ele_viz = 3;
 	} else if(	   celllabel[0] == 'l' 
 				&& celllabel[1] == 'i'
 				&& celllabel[2] == 'n'
 				&& celllabel[3] == 'e'){
 		printf("Line data \n");
-		iflag = IFLAG_LINE_UCD_GZ;
+		iflag_datatype = IFLAG_LINES;
 		viz_s->nnod_4_ele_viz = 2;
 	} else if(   celllabel[0] == 'q' 
 			  && celllabel[1] == 'u'
 			  && celllabel[2] == 'a'
 			  && celllabel[3] == 'd'){
 		printf("Line data \n");
-		iflag = IFLAG_QUAD_UCD_GZ;
+		iflag_datatype = IFLAG_SURFACES;
 		viz_s->nnod_4_ele_viz = 4;
 	};
 	
 	alloc_viz_ele_s(viz_s);
 	
-	if(iflag == IFLAG_SURF_UCD_GZ){
+	if(viz_s->nnod_4_ele_viz == 3){
 		sscanf(buf, "%d %d tri %d %d %d", &itmp, &itmp,
 		   &viz_s->ie_viz[0][0], &viz_s->ie_viz[0][1], &viz_s->ie_viz[0][2]);
 	
@@ -73,7 +73,7 @@ static int read_gz_kemoview_connect_data(struct psf_data *viz_s){
 		};
 	}
 	
-	else if(iflag == IFLAG_LINE_UCD_GZ){
+	else if(viz_s->nnod_4_ele_viz == 2){
 		sscanf(buf, "%d %d %3s %d %d %d", &itmp, &itmp, celllabel,
 				&viz_s->ie_viz[0][0], &viz_s->ie_viz[0][1], &viz_s->ie_viz[0][2]);
 		
@@ -84,7 +84,7 @@ static int read_gz_kemoview_connect_data(struct psf_data *viz_s){
 		};
 	}
 	
-	else if(iflag == IFLAG_QUAD_UCD_GZ){
+	else if(viz_s->nnod_4_ele_viz == 4){
 		sscanf(buf, "%d %d %4s %d %d %d %d", &itmp, &itmp, celllabel,
 			   &viz_s->ie_viz[0][0], &viz_s->ie_viz[0][1],
 			   &viz_s->ie_viz[0][2], &viz_s->ie_viz[0][3]);
@@ -96,7 +96,7 @@ static int read_gz_kemoview_connect_data(struct psf_data *viz_s){
 				   &viz_s->ie_viz[i][2], &viz_s->ie_viz[i][3]);
 		};
 	};
-	return iflag;
+	return iflag_datatype;
 };
 
 static int read_gz_psf_connect_data(struct psf_data *viz_s){
@@ -125,7 +125,7 @@ static int read_gz_psf_connect_data(struct psf_data *viz_s){
 		sscanf(buf, "%d %d tri %d %d %d", &itmp, &itmp, 
 			&viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1], &viz_s->ie_viz[i][2]);
 	};
-	return 0;
+	return IFLAG_SURFACES;
 };
 
 
@@ -141,7 +141,7 @@ static void read_gz_viz_phys_data(struct psf_data *viz_s){
 	sscanf(buf, "%d%n", &viz_s->nfield, &nread);
 	iread = iread + nread;
 	
-	alloc_psf_num_data_s(viz_s);
+	alloc_psf_field_name_c(viz_s);
 	j = 0;
 	for (i = 0; i < num_word[0]-1; i++) {
 		sscanf(&buf[iread], "%d%n", &viz_s->ncomp[j], &nread);
@@ -168,6 +168,7 @@ static void read_gz_viz_phys_data(struct psf_data *viz_s){
 	};
 	viz_s->ncomptot = viz_s->istack_comp[viz_s->nfield];
 	
+    alloc_psf_field_data_c(viz_s);
 	alloc_psf_data_s(viz_s);
 	
 	/* read field name */
@@ -197,25 +198,25 @@ static void read_gz_viz_phys_data(struct psf_data *viz_s){
 
 int read_psf_grd_gz(const char *file_head, struct psf_data *viz_s){
 	char file_name[LENGTHBUF];
-	int ierr;
+	int iflag_datatype;
 	
 	/* printf("file header in: %s \n", file_head); */
 	sprintf(file_name, "%s.0.grd.gz",file_head);
 	printf("gzipped grd file name: %s \n",file_name);
-	ierr = open_rd_gzfile_w_flag(file_name);
-	if (ierr == 1){
-		return ierr;
+	iflag_datatype = open_rd_gzfile_w_flag(file_name);
+	if (iflag_datatype == 1){
+		return -1;
 	}
 	
 	read_gz_viz_node_data(viz_s);
-	ierr = read_gz_psf_connect_data(viz_s);
-	if (ierr == -1){
-		dealloc_psf_grid_s(viz_s);
-		return ierr;
+	iflag_datatype = read_gz_psf_connect_data(viz_s);
+	if (iflag_datatype == -1){
+		dealloc_psf_mesh_c(viz_s);
+		return iflag_datatype;
 	}
 	
 	close_gzfile();
-	return 0;
+	return IFLAG_SURFACES;
 }
 
 int read_psf_udt_gz(const char *file_head, int istep, struct psf_data *viz_s){
@@ -236,23 +237,21 @@ int read_psf_udt_gz(const char *file_head, int istep, struct psf_data *viz_s){
 
 int read_kemoview_ucd_gz(const char *file_head, struct psf_data *viz_s){
 	char file_name[LENGTHBUF];
-	int iflag;
+	int iflag_datatype;
 	
 	sprintf(file_name, "%s.inp.gz",file_head);
 	printf("gzipped UCD file name: %s \n",file_name);
-	iflag = open_rd_gzfile_w_flag(file_name);
-	if (iflag == 1){
-		return iflag;
-	}
+	iflag_datatype = open_rd_gzfile_w_flag(file_name);
+	if (iflag_datatype == 1) return -1;
 	
 	read_gz_viz_node_data(viz_s);
-	iflag = read_gz_kemoview_connect_data(viz_s);
-	if (iflag == -1){
-		dealloc_psf_grid_s(viz_s);
-		return iflag;
+	iflag_datatype = read_gz_kemoview_connect_data(viz_s);
+	if (iflag_datatype == -1){
+		dealloc_psf_mesh_c(viz_s);
+		return iflag_datatype;
 	}
 	
 	read_gz_viz_phys_data(viz_s);
 	close_gzfile();
-	return iflag;
+	return iflag_datatype;
 }

@@ -242,7 +242,7 @@ void read_kemoview_data_gtk(){
 	char file_head2[LENGTHBUF];
 	char file_ext[LENGTHBUF];
 	char pick_command[LENGTHBUF];
-	int ierr;
+	int iflag_datatype;
 	
 	
 	gtk_file_menu("Input data file");
@@ -268,7 +268,7 @@ void read_kemoview_data_gtk(){
 		set_to_pick_surface_command(pick_command);
 	}
 	
-	ierr = kemoview_open_data_glut(file_name);
+	iflag_datatype = kemoview_open_data_glut(file_name);
 	return;
 };
 

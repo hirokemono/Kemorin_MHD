@@ -75,7 +75,7 @@ void read_kemoview_data_glut(){
 	char file_head2[LENGTHBUF];
 	char file_ext[LENGTHBUF];
 	char pick_command[LENGTHBUF];
-	int ierr;
+	int iflag_datatype;
 	
 	input_file_name(file_name);
 	get_ext_from_file_name(file_name, file_head, file_ext);
@@ -95,7 +95,7 @@ void read_kemoview_data_glut(){
 		set_to_pick_surface_command(pick_command);
 	}
 	
-	ierr = kemoview_open_data_glut(file_name);
+	iflag_datatype = kemoview_open_data_glut(file_name);
 	return;
 };
 
