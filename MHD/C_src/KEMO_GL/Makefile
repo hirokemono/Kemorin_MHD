@@ -333,6 +333,7 @@ module:
 	draw_isolines_4_PSF.o: \
 	'$$(KEMO_C_GLDIR)'/draw_isolines_4_PSF.c \
 	draw_isolines_4_PSF.h \
+	gl2ps.o \
 	m_kemoviewer_menu.o \
 	m_psf_data_4_viewer_c.o \
 	m_gl_transfer_matrix.o \
@@ -347,6 +348,7 @@ module:
 	draw_isolines_4_map.o: \
 	'$$(KEMO_C_GLDIR)'/draw_isolines_4_map.c \
 	draw_isolines_4_map.h \
+	gl2ps.o \
 	m_kemoviewer_menu.o \
 	m_psf_data_4_viewer_c.o \
 	m_gl_transfer_matrix.o \
@@ -484,6 +486,7 @@ module:
 	@echo \
 	draw_colorbar_gl.o: \
 	'$$(KEMO_C_GLDIR)'/draw_colorbar_gl.c \
+	gl2ps.o \
 	draw_colorbar_gl.h \
 	m_color_table_c.o \
 	coordinate_converter_c.o \
@@ -570,6 +573,7 @@ module:
 	draw_mapgrid.o: \
 	'$$(KEMO_C_GLDIR)'/draw_mapgrid.c \
 	draw_mapgrid.h \
+	gl2ps.o \
 	kemoviewer_param_c.o \
 	m_gl_transfer_matrix.o \
 	coordinate_converter_c.o \
