@@ -53,8 +53,6 @@
       private :: set_initial_temperature
       private :: set_initial_composition
       private :: set_initial_magne_sph
-      private :: set_initial_heat_source_sph
-      private :: set_initial_composit_source_sph
 !
 !-----------------------------------------------------------------------
 !
@@ -93,7 +91,7 @@
       end if
 !  Set light element source if light element is exist
       if(ipol%i_light_source .gt. izero) then
-        call set_initial_composit_source_sph
+        call set_initial_light_source_sph
       end if
 !
 !  Copy initial field to restart IO data
@@ -129,7 +127,7 @@
       use m_sph_spectr_data
 !
       integer ( kind = kint) :: inod, k, jj
-      real (kind = kreal) :: pi, xr, shell
+      real (kind = kreal) :: pi, rr, xr, shell
       real(kind = kreal), parameter :: A_temp = 0.1d0
 !
 !
@@ -143,7 +141,7 @@
       shell = r_CMB - r_ICB
 !
 !   search address for (l = m = 0)
-      jj = find_local_sph_mode_address(izero, izero)
+      jj = find_local_sph_mode_address(0, 0)
 !
 !   set reference temperature if (l = m = 0) mode is there
       if (jj .gt. 0) then
@@ -155,21 +153,23 @@
       end if
 !
 !
-!   search address for (l = m = 4)
-      jj =  find_local_sph_mode_address(ifour, ifour)
+!    Find local addrtess for (l,m) = (4,4)
+      jj =  find_local_sph_mode_address(4, 4)
 !
-!   set reference temperature if (l = m = 4) mode is there
+!    If data for (l,m) = (4,4) is there, set initial temperature 
       if (jj .gt. 0) then
+!    Set initial field from ICB to CMB
         do k = nlayer_ICB, nlayer_CMB
 !
-!   set address to substitute at (Nr, j)
+!    Set radius data
+          rr = radius_1d_rj_r(k)
+!    Set 1d address to substitute at (Nr, j)
           inod = local_sph_data_address(k,jj)
 !
-!   set reference temperature if (l = m = 4) mode is there
-          xr = two * radius_1d_rj_r(k) - one * (r_CMB+r_ICB) / shell
-!
+!    set initial temperature
+          xr = two * rr - one * (r_CMB+r_ICB) / shell
           d_rj(inod,ipol%i_temp) = (one-three*xr**2+three*xr**4-xr**6)  &
-     &                            * A_temp * six / (sqrt(pi))
+     &                            * A_temp * three / (two*sqrt(pi))
         end do
       end if
 !
@@ -195,16 +195,29 @@
       end do
 !$omp end parallel do
 !
+!   search address for (l = m = 0)
+      jj = find_local_sph_mode_address(0, 0)
 !
-!   set initial composition (l = m = 4)
-      jj =  find_local_sph_mode_address(ifour, ifour)
+!   set reference temperature if (l = m = 0) mode is there
+!
+      if (jj .gt. 0) then
+        do k = 1, nidx_rj(1)
+          inod = local_sph_data_address(k,jj)
+          d_rj(inod,ipol%i_light) = (ar_1d_rj(k,1) * 20.d0/13.0d0       &
+     &                              - 1.0d0 ) * 7.0d0 / 13.0d0
+        end do
+      end if
+!
+!
+!    Find local addrtess for (l,m) = (4,4)
+      jj =  find_local_sph_mode_address(4, 4)
 !
       if (jj .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB
           inod = local_sph_data_address(k,jj)
           xr = two * radius_1d_rj_r(k) - one * (r_CMB+r_ICB) / shell
           d_rj(inod,ipol%i_light) = (one-three*xr**2+three*xr**4-xr**6) &
-     &                       * A_light * six / (sqrt(pi))
+     &                            * A_light * three / (two*sqrt(pi))
         end do
       end if
 !
@@ -264,7 +277,8 @@
         end do
       end if
 !
-!    Find local address for l = 2, m = 0
+!
+!    Find local addrtess for (l,m) = (2,0)
       jt =  find_local_sph_mode_address(itwo, izero)
 !
       if (jt .gt. 0) then
@@ -306,7 +320,7 @@
           ii = local_sph_data_address(k,jj)
           rr = radius_1d_rj_r(k)
 !   Substitute initial heat source
-          d_rj(ii,ipol%i_heat_source) = -two / rr
+          d_rj(ii,ipol%i_heat_source) = two / rr
         end do
       end if
 !
@@ -314,7 +328,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_composit_source_sph
+      subroutine set_initial_light_source_sph
 !
       use m_control_params_sph_MHD
       use m_sph_spectr_data
@@ -342,7 +356,7 @@
         end do
       end if
 !
-      end subroutine set_initial_composit_source_sph
+      end subroutine set_initial_light_source_sph
 !
 !-----------------------------------------------------------------------
 !
