@@ -25,6 +25,8 @@
 !
       implicit none
 !
+      private :: write_gz_vtk_data, write_gz_vtk_mesh
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -102,6 +104,58 @@
       call close_gzfile
 !
       end subroutine write_gz_vtk_grid
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine write_gz_vtk_data(nnod, num_field, ntot_comp,          &
+     &          ncomp_field, field_name, d_nod)
+!
+      integer (kind=kint), intent(in) :: nnod
+      integer (kind=kint), intent(in) :: num_field, ntot_comp
+      integer(kind=kint ), intent(in) :: ncomp_field(num_field)
+      character(len=kchara), intent(in) :: field_name(num_field)
+      real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
+!
+      integer(kind = kint) :: icou, j
+!
+!
+      call write_gz_vtk_fields_head(nnod)
+!
+      IF(ntot_comp .ge. 1) then
+        icou = 1
+        do j = 1, num_field
+          call write_gz_vtk_each_field_head(ncomp_field(j),             &
+     &        field_name(j) )
+          call write_gz_vtk_each_field(nnod, ncomp_field(j), nnod,      &
+     &        d_nod(1,icou)  )
+          icou = icou + ncomp_field(j)
+        end do
+      end if
+!
+      end subroutine write_gz_vtk_data
+!
+! -----------------------------------------------------------------------
+!
+      subroutine write_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie)
+!
+      use m_phys_constants
+!
+      integer(kind = kint), intent(in) :: nnod, nele
+      integer(kind = kint), intent(in) :: nnod_ele
+      integer(kind = kint), intent(in) :: ie(nele,nnod_ele)
+      real(kind = kreal), intent(in) :: xx(nnod,3)
+!
+!
+      call write_gz_vtk_node_head(nnod)
+      call write_gz_vtk_each_field(nnod, n_vector, nnod, xx)
+!
+      call write_gz_vtk_connect_head(nele, nnod_ele)
+      call write_gz_vtk_connect_data(nele, nnod_ele, nele, ie)
+!
+      call write_gz_vtk_cell_type(nele, nnod_ele)
+!
+      end subroutine write_gz_vtk_mesh
 !
 ! -----------------------------------------------------------------------
 !

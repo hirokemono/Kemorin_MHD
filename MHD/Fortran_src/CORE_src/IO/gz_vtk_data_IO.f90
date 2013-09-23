@@ -7,10 +7,6 @@
 !> @brief Output routine for gzipped VTK data segments
 !!
 !!@verbatim
-!!      subroutine write_gz_vtk_data(nnod, num_field, ntot_comp,        &
-!!     &          ncomp_field, field_name, d_nod)
-!!      subroutine write_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie)
-!!
 !!      subroutine write_gz_vtk_fields_head(nnod)
 !!      subroutine write_gz_vtk_each_field_head(ncomp_field, field_name)
 !!
@@ -24,7 +20,35 @@
 !!
 !!      subroutine write_gz_vtk_connect_data(ntot_ele, nnod_ele,        &
 !!     &          nele, ie)
+!!
+!!
+!!      subroutine read_gz_vtk_fields_head(nnod)
+!!      subroutine read_gz_vtk_each_field_head(iflag_end,               &
+!!     &          ncomp_field, field_name)
+!!
+!!      subroutine read_gz_vtk_each_field(ntot_nod, ncomp_field, nnod,&
+!!     &          d_nod)
+!!
+!!      subroutine read_gz_vtk_node_head(nnod)
+!!
+!!      subroutine read_gz_vtk_connect_head(nele, nnod_ele)
+!!      subroutine read_gz_vtk_cell_type(nele)
+!!
+!!      subroutine read_gz_vtk_connect_data(ntot_ele, nnod_ele,         &
+!!     &          nele, ie)
 !!@endverbatim
+!!
+!!@n @param iflag_end              Integer flag for the end of file
+!!@n @param nnod                   Number of nodes
+!!@n @param nele                   Number of elements
+!!@n @param nnod_ele               Number of nodes for each element
+!!@n @param xx(nnod,3)             position of nodes
+!!@n @param nnod_ele               number of nodes for each element
+!!@n @param ie(nele,nnod_ele)      element connectivity
+!!@n @param ntot_comp              total number of components
+!!@n @param ncomp_field(num_field) number of components
+!!@n @param field_name(num_field)  list of field names
+!!@n @param d_nod(nnod,ntot_comp)  field data
 !
       module gz_vtk_data_IO
 !
@@ -40,58 +64,6 @@
       contains
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine write_gz_vtk_data(nnod, num_field, ntot_comp,          &
-     &          ncomp_field, field_name, d_nod)
-!
-      integer (kind=kint), intent(in) :: nnod
-      integer (kind=kint), intent(in) :: num_field, ntot_comp
-      integer(kind=kint ), intent(in) :: ncomp_field(num_field)
-      character(len=kchara), intent(in) :: field_name(num_field)
-      real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
-!
-      integer(kind = kint) :: icou, j
-!
-!
-      call write_gz_vtk_fields_head(nnod)
-!
-      IF(ntot_comp .ge. 1) then
-        icou = 1
-        do j = 1, num_field
-          call write_gz_vtk_each_field_head(ncomp_field(j),             &
-     &        field_name(j) )
-          call write_gz_vtk_each_field(nnod, ncomp_field(j), nnod,      &
-     &        d_nod(1,icou)  )
-          icou = icou + ncomp_field(j)
-        end do
-      end if
-!
-      end subroutine write_gz_vtk_data
-!
-! -----------------------------------------------------------------------
-!
-      subroutine write_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie)
-!
-      use m_phys_constants
-!
-      integer(kind = kint), intent(in) :: nnod, nele
-      integer(kind = kint), intent(in) :: nnod_ele
-      integer(kind = kint), intent(in) :: ie(nele,nnod_ele)
-      real(kind = kreal), intent(in) :: xx(nnod,3)
-!
-!
-      call write_gz_vtk_node_head(nnod)
-      call write_gz_vtk_each_field(nnod, n_vector, nnod, xx)
-!
-      call write_gz_vtk_connect_head(nele, nnod_ele)
-      call write_gz_vtk_connect_data(nele, nnod_ele, nele, ie)
-!
-      call write_gz_vtk_cell_type(nele, nnod_ele)
-!
-      end subroutine write_gz_vtk_mesh
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
       subroutine write_gz_vtk_fields_head(nnod)
 !
@@ -271,6 +243,163 @@
       end do
 !
       end subroutine write_gz_vtk_connect_data
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine read_gz_vtk_fields_head(nnod)
+!
+      integer(kind=kint ), intent(inout) :: nnod
+      character(len=kchara)  :: label
+!
+!
+      call skip_gz_comment_chara_int(label, nnod)
+!
+      end subroutine read_gz_vtk_fields_head
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_gz_vtk_each_field_head(iflag_end,                 &
+     &          ncomp_field, field_name)
+!
+      use m_phys_constants
+!
+      integer(kind=kint ), intent(inout) :: iflag_end, ncomp_field
+      character(len=kchara), intent(inout) :: field_name
+!
+      integer(kind = kint) :: nchara
+      character(len=kchara)  :: vtk_fld_type
+!
+!
+      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+      if(nchara .eq. izero) go to 99
+!
+      read(textbuf,*) vtk_fld_type, field_name
+      if(vtk_fld_type .eq. 'TENSORS') then
+        ncomp_field = n_sym_tensor
+      else if(vtk_fld_type .eq. 'VECTORS') then
+        ncomp_field = n_vector
+      else
+        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        ncomp_field = n_scalar
+      end if
+      iflag_end = izero
+      return
+!
+  99  continue
+      iflag_end = ione
+      return
+!
+      end subroutine read_gz_vtk_each_field_head
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_gz_vtk_each_field(ntot_nod, ncomp_field, nnod,   &
+     &          d_nod)
+!
+      use m_phys_constants
+!
+      integer (kind=kint), intent(in) :: ntot_nod, ncomp_field
+      integer (kind=kint), intent(in) :: nnod
+      real(kind = kreal), intent(inout) :: d_nod(ntot_nod,ncomp_field)
+!
+      integer(kind = kint) :: nchara
+      integer(kind = kint) :: inod
+      real(kind = kreal) :: rtmp
+!
+!
+      if (ncomp_field .eq. n_sym_tensor) then
+        do inod = 1, nnod
+          call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+          read(textbuf,*) d_nod(inod,1:3)
+          call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+          read(textbuf,*) rtmp, d_nod(inod,4:5)
+          call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+          read(textbuf,*) rtmp, rtmp, d_nod(inod,6)
+        end do
+      else
+        do inod = 1, nnod
+          call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+          read(textbuf,*) d_nod(inod,1:ncomp_field)
+        end do
+      end if
+!
+      end subroutine read_gz_vtk_each_field
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine read_gz_vtk_node_head(nnod)
+!
+      integer(kind = kint), intent(inout) :: nnod
+!
+      integer(kind = kint) :: nchara
+      character(len=kchara) :: tmpchara
+!
+!
+      call skip_gz_comment_chara(tmpchara)
+      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+!
+      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+      read(textbuf,'(a,i10,a)')  tmpchara, nnod
+!
+      end subroutine read_gz_vtk_node_head
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine read_gz_vtk_connect_head(nele, nnod_ele)
+!
+      integer(kind = kint), intent(inout) :: nele, nnod_ele
+!
+      integer(kind = kint) :: nchara, nums
+      character(len=kchara) :: tmpchara
+!
+!
+      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+      read(textbuf,*) tmpchara, nele, nums
+      nnod_ele = nums / nele - 1
+!
+      end subroutine read_gz_vtk_connect_head
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_gz_vtk_cell_type(nele)
+!
+      integer(kind = kint), intent(in) :: nele
+!
+      integer(kind = kint) :: nchara, iele
+!
+!
+      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+!
+      do iele = 1, nele
+        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+      end do
+!
+      end subroutine read_gz_vtk_cell_type
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_gz_vtk_connect_data(ntot_ele, nnod_ele,           &
+     &          nele, ie)
+!
+      integer(kind = kint), intent(in) :: ntot_ele, nnod_ele
+      integer(kind = kint), intent(in) :: nele
+      integer(kind = kint), intent(inout) :: ie(ntot_ele,nnod_ele)
+!
+      integer(kind = kint) :: nchara, iele, itmp
+!
+!
+      do iele = 1, nele
+        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        read(textbuf,*) itmp, ie(iele,1:nnod_ele)
+        ie(iele,1:nnod_ele) = ie(iele,1:nnod_ele) + 1
+      end do
+!
+      end subroutine read_gz_vtk_connect_data
 !
 ! -----------------------------------------------------------------------
 !

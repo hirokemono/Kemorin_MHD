@@ -1,30 +1,34 @@
-!boundary_field_file_IO.f90
-!     module boundary_field_file_IO
+!>@file   boundary_field_file_IO.f90
+!!@brief  module boundary_field_file_IO
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Matsui in 2000
+!!@n    Mmodified by H. Matsui in Aug., 2007
 !
 !
-!     programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!     modified by H. Matsui on Aug., 2007
-!
-!
-!    format for data file for boundary data
-!
-!      line   :  number of type of boundary
-!      line...:  name of group type (node or surface) and group name
-!      line   :  name of physical values
-!               ( temperature, heat_flux, 
-!                 velocity_x, velocity_y, velocity_z,
-!                 torque_x, torque_y, torque_z, normal_velocity
-!                 pressure,
-!                 magnetic_x, magne_y, magne_z,
-!                 magnetic_potential, infinity
-!                 dunny_scalar )
-!      line...:   values
-!
-!      subroutine read_boundary_values_file(my_rank,                    &
-!     &          num_bc, bc_istack, bc_name,                            &
-!     &          num_surf, surf_istack, surf_name)
-!      subroutine write_boundary_values_file(my_rank)
+!> @brief IO routine for boundary fields
+!!
+!!@verbatim
+!!      subroutine read_boundary_values_file(my_rank,                   &
+!!     &          num_bc, bc_istack, bc_name,                           &
+!!     &          num_surf, surf_istack, surf_name)
+!!      subroutine write_boundary_values_file(my_rank)
+!!
+!!    format for data file for boundary data
+!!
+!!      line   :  number of type of boundary
+!!      line...:  name of group type (node or surface) and group name
+!!      line   :  name of physical values
+!!               ( temperature, heat_flux,
+!!                 velocity_x, velocity_y, velocity_z,
+!!                 torque_x, torque_y, torque_z, normal_velocity
+!!                 pressure,
+!!                 magnetic_x, magne_y, magne_z,
+!!                 magnetic_potential, infinity
+!!                 dunny_scalar )
+!!      line...:   values
+!!
+!!@endverbatim
 !
       module boundary_field_file_IO
 !

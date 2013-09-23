@@ -30,12 +30,18 @@
 !!
 !!      subroutine cal_istack_ucd_component(ucd)
 !!
+!!      subroutine append_new_ucd_field_name(new_field_name,            &
+!!     &          ncomp_new_field, tmp, ucd)
+!!      subroutine append_new_ucd_field_data(ncomp_new_field, d_tmp,    &
+!!     &          tmp, ucd)
+!!
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
 !
       module t_ucd_data
 !
       use m_precision
+      use m_constants
       use m_field_file_format
       use m_file_format_switch
 !
@@ -331,6 +337,63 @@
 !
       end subroutine cal_istack_ucd_component
 !
-! -------------------------------------------------------------------
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine append_new_ucd_field_name(new_field_name,              &
+     &          ncomp_new_field, tmp, ucd)
+!
+      use copy_between_two_fields
+!
+      character(len=kchara), intent(in)  :: new_field_name
+      integer(kind = kint), intent(in) :: ncomp_new_field
+      type(ucd_data), intent(inout) :: tmp, ucd
+!
+!
+      tmp%phys_name(1:ucd%num_field) = ucd%phys_name(1:ucd%num_field)
+      tmp%num_comp(1:ucd%num_field) =  ucd%num_comp(1:ucd%num_field)
+!
+      call copy_fields_2_fields(ucd%ntot_comp,                          &
+     &          ione, ucd%nnod, ucd%ntot_comp, ucd%d_ucd,               &
+     &          ione, tmp%nnod, tmp%ntot_comp, tmp%d_ucd)
+!
+      call deallocate_ucd_data(ucd)
+!
+      ucd%num_field = ucd%num_field + 1
+      call allocate_ucd_phys_name(ucd)
+!
+      ucd%phys_name(1:tmp%num_field) = tmp%phys_name(1:tmp%num_field)
+      ucd%num_comp(1:tmp%num_field) =  tmp%num_comp(1:tmp%num_field)
+!
+      ucd%ntot_comp = ucd%ntot_comp + ncomp_new_field
+      ucd%num_comp(ucd%num_field) =   ncomp_new_field
+      ucd%phys_name(ucd%num_field) =  new_field_name
+!
+      call allocate_ucd_phys_data(ucd)
+!
+      end subroutine append_new_ucd_field_name
+!
+! -----------------------------------------------------------------------
+!
+      subroutine append_new_ucd_field_data(ncomp_new_field, d_tmp,      &
+     &          tmp, ucd)
+!
+      use copy_between_two_fields
+!
+      type(ucd_data), intent(inout) :: tmp, ucd
+      integer(kind = kint), intent(in) :: ncomp_new_field
+      real(kind = kreal) :: d_tmp(ucd%nnod,ncomp_new_field)
+!
+!
+      call copy_fields_2_fields(tmp%ntot_comp,                          &
+     &          ione, tmp%nnod, tmp%ntot_comp, tmp%d_ucd,               &
+     &          ione, ucd%nnod, ucd%ntot_comp, ucd%d_ucd)
+      call copy_fields_2_fields(ncomp_new_field,                        &
+     &          ione, ucd%nnod, ncomp_new_field, d_tmp(1,1),            &
+     &          (tmp%ntot_comp+1), ucd%nnod, ucd%ntot_comp, ucd%d_ucd)
+!
+      end subroutine append_new_ucd_field_data
+!
+! -----------------------------------------------------------------------
 !
       end module t_ucd_data

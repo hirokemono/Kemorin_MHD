@@ -15,11 +15,12 @@
 !!      subroutine read_gz_udt_field_num(num_input)
 !!      subroutine read_gz_udt_field_name(num_input, ncomp_in, name_in)
 !!      subroutine read_gz_udt_field_header(num_input, ncomp_in, name_in)
-!!      subroutine read_gz_udt_field_data(nnod_in, ncomp_dat, dat_in)
+!!      subroutine read_gz_udt_field_data(nnod_in, ncomp_dat,           &
+!!     &          dat_in)
 !!      subroutine read_gz_udt_mesh_header(nnod_input, nele_in,         &
 !!     &          ncomptot_in)
-!!      subroutine read_gz_ucd_mesh_connect(nele_in, nnod_4_ele,        &
-!!     &          iele_gl, ie_out)
+!!      subroutine read_gz_ucd_mesh_data(nnod_in, nele_in,              &
+!!     &          nnod_4_ele, inod_gl, iele_gl, xx_in, ie_in)
 !!
 !!      subroutine write_gz_udt_mesh_header(nnod_output,                &
 !!     &          nele_out, ncomp_output)
@@ -155,12 +156,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_gz_udt_field_data(nnod_in, ncomp_dat, dat_in)
+      subroutine read_gz_udt_field_data(nnod_in, ncomp_dat,             &
+     &          dat_in)
 !
       integer(kind = kint), intent(in) :: nnod_in, ncomp_dat
       real(kind = kreal), intent(inout) :: dat_in(nnod_in, ncomp_dat)
 !
-      integer(kind = kint) :: inod, itmp, ist
+      integer(kind = kint) :: inod, ist, itmp
       integer(kind = kint) :: nchara
 !
 !
@@ -200,26 +202,33 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_gz_ucd_mesh_connect(nele_in, nnod_4_ele,         &
-     &          iele_gl, ie_out)
+      subroutine read_gz_ucd_mesh_data(nnod_in, nele_in,                &
+     &          nnod_4_ele, inod_gl, iele_gl, xx_in, ie_in)
 !
-      integer(kind = kint), intent(in) :: nele_in, nnod_4_ele
+      integer(kind = kint), intent(in) :: nnod_in, nele_in, nnod_4_ele
       integer(kind = kint), intent(inout) :: iele_gl(nele_in)
-      integer(kind = kint), intent(inout) :: ie_out(nele_in,nnod_4_ele)
+      integer(kind = kint), intent(inout) :: ie_in(nele_in,nnod_4_ele)
+      integer(kind = kint), intent(inout) :: inod_gl(nnod_in)
+      real(kind = kreal), intent(inout) :: xx_in(nnod_in,3)
 !
       integer(kind = kint) :: nchara
-      integer(kind = kint) :: iele
+      integer(kind = kint) :: inod, iele
       integer(kind = kint) :: itmp
       character(len=kchara) :: tmpchara
 !
 !
+      do inod = 1, nnod_in
+        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        read(textbuf,*) inod_gl(inod), xx_in(inod,1:3)
+      end do
+!
       do iele = 1, nele_in
         call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
         read(textbuf,*) iele_gl(iele), itmp, tmpchara,                  &
-     &                  ie_out(iele,1:nnod_4_ele)
+     &                  ie_in(iele,1:nnod_4_ele)
       end do
 !
-      end subroutine  read_gz_ucd_mesh_connect
+      end subroutine  read_gz_ucd_mesh_data
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

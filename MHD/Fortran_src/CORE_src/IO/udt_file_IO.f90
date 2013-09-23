@@ -14,6 +14,8 @@
 !!      subroutine read_udt_file(my_rank, istep, ucd)
 !!      subroutine read_and_alloc_udt_params(my_rank, istep, ucd)
 !!      subroutine read_and_alloc_udt_file(my_rank, istep, ucd)
+!!      subroutine read_and_alloc_ucd_file(my_rank, istep, nnod_ele, ucd)
+!!      subroutine read_grd_file(my_rank, nnod_ele, ucd)
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
 !!
@@ -37,6 +39,7 @@
       integer(kind = kint), parameter, private :: id_ucd_file = 16
 !
       private :: write_udt_fields, write_ucd_mesh
+      private :: read_ucd_mesh
 !
 !-----------------------------------------------------------------------
 !
@@ -170,7 +173,7 @@
       call cal_istack_ucd_component(ucd)
 !
       call read_ucd_field_data(id_ucd_file, ucd%nnod,                   &
-     &    ucd%ntot_comp, ucd%inod_global, ucd%d_ucd)
+     &    ucd%ntot_comp, ucd%d_ucd)
 !
       close(id_ucd_file)
 !
@@ -234,12 +237,70 @@
       call allocate_ucd_phys_data(ucd)
 !
       call read_ucd_field_data(id_ucd_file, ucd%nnod,                   &
-     &    ucd%ntot_comp, ucd%inod_global, ucd%d_ucd)
+     &    ucd%ntot_comp, ucd%d_ucd)
       close(id_ucd_file)
 !
       end subroutine read_and_alloc_udt_file
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine read_and_alloc_ucd_file(my_rank, istep, nnod_ele, ucd)
+!
+      use udt_data_IO
+!
+      integer(kind=kint), intent(in) :: my_rank, istep, nnod_ele
+      type(ucd_data), intent(inout) :: ucd
+!
+      character(len=kchara) :: file_name
+!
+!
+      call set_parallel_ucd_file_name(ucd%file_prefix, iflag_ucd,       &
+     &    my_rank, istep, file_name)
+!
+      open (id_ucd_file, file=file_name, status='old')
+!
+      call read_ucd_mesh(nnod_ele, ucd)
+!
+      read(id_ucd_file,'(i10)') ucd%num_field
+      backspace(id_ucd_file)
+!
+      call allocate_ucd_phys_name(ucd)
+!
+      call read_udt_field_header(id_ucd_file, ucd%num_field,            &
+     &    ucd%num_comp, ucd%phys_name)
+!
+      call cal_istack_ucd_component(ucd)
+      call allocate_ucd_phys_data(ucd)
+!
+      call read_ucd_field_data(id_ucd_file, ucd%nnod,                   &
+     &    ucd%ntot_comp, ucd%d_ucd)
+      close(id_ucd_file)
+!
+      end subroutine read_and_alloc_ucd_file
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_grd_file(my_rank, nnod_ele, ucd)
+!
+      integer(kind=kint), intent(in) :: my_rank, nnod_ele
+      type(ucd_data), intent(inout) :: ucd
+!
+      character(len=kchara) :: file_name
+!
+!
+      call set_parallel_grd_file_name(ucd%file_prefix, iflag_udt,       &
+     &    my_rank, file_name)
+!
+      write(*,*) 'PSF grid data: ', trim(file_name)
+      open(id_ucd_file, file=file_name, form='formatted',               &
+     &     status='old')
+!
+      call read_ucd_mesh(nnod_ele, ucd)
+      close(id_ucd_file)
+!
+      end subroutine read_grd_file
+!
+!-----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine write_ucd_mesh(ucd)
@@ -278,5 +339,28 @@
       end subroutine write_ucd_mesh
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine read_ucd_mesh(nnod_ele, ucd)
+!
+      use udt_data_IO
+!
+      integer(kind=kint), intent(in) :: nnod_ele
+      type(ucd_data), intent(inout) :: ucd
+!
+!
+      call read_ucd_mesh_header(id_ucd_file, ucd%nnod, ucd%nele,        &
+     &    ucd%ntot_comp)
+      ucd%nnod_4_ele = nnod_ele
+!
+      call allocate_ucd_node(ucd)
+      call allocate_ucd_ele(ucd)
+!
+      call read_ucd_mesh_data(id_ucd_file, ucd%nnod, ucd%nele,          &
+     &    ucd%nnod_4_ele, ucd%inod_global, ucd%iele_global,             &
+     &    ucd%xx, ucd%ie)
+!
+      end subroutine read_ucd_mesh
+!
+!-----------------------------------------------------------------------
 !
       end module udt_file_IO

@@ -11,9 +11,11 @@
 !!      subroutine write_gz_udt_file(my_rank, istep, ucd)
 !!      subroutine write_gz_grd_file(my_rank, ucd)
 !!
-!!      subroutine read_udt_file_gz(my_rank, istep, ucd)
-!!      subroutine read_and_alloc_udt_head_gz(my_rank, istep, ucd)
-!!      subroutine read_and_alloc_udt_file_gz(my_rank, istep, ucd)
+!!      subroutine read_gz_udt_file(my_rank, istep, ucd)
+!!      subroutine read_alloc_gz_udt_head(my_rank, istep, ucd)
+!!      subroutine read_alloc_gz_udt_file(my_rank, istep, ucd)
+!!      subroutine read_alloc_gz_ucd_file(my_rank, istep, nnod_ele, ucd)
+!!      subroutine read_gz_ucd_grd(my_rank, nnod_ele, ucd)
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
 !!
@@ -112,7 +114,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_udt_file_gz(my_rank, istep, ucd)
+      subroutine read_gz_udt_file(my_rank, istep, ucd)
 !
       integer(kind=kint), intent(in) :: my_rank, istep
       type(ucd_data), intent(inout) :: ucd
@@ -134,14 +136,13 @@
       call cal_istack_ucd_component(ucd)
 !
       call read_gz_udt_field_data(ucd%nnod, ucd%ntot_comp, ucd%d_ucd)
-!
       call close_gzfile
 !
-      end subroutine read_udt_file_gz
+      end subroutine read_gz_udt_file
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_and_alloc_udt_head_gz(my_rank, istep, ucd)
+      subroutine read_alloc_gz_udt_head(my_rank, istep, ucd)
 !
       integer(kind=kint), intent(in) :: my_rank, istep
       type(ucd_data), intent(inout) :: ucd
@@ -168,11 +169,11 @@
       call cal_istack_ucd_component(ucd)
       call allocate_ucd_phys_data(ucd)
 !
-      end subroutine read_and_alloc_udt_head_gz
+      end subroutine read_alloc_gz_udt_head
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_and_alloc_udt_file_gz(my_rank, istep, ucd)
+      subroutine read_alloc_gz_udt_file(my_rank, istep, ucd)
 !
       integer(kind=kint), intent(in) :: my_rank, istep
       type(ucd_data), intent(inout) :: ucd
@@ -184,7 +185,7 @@
      &    my_rank, istep, gzip_name)
 !
       if(i_debug.gt.0 .or. my_rank.eq.0) write(*,*)                     &
-     &     'Write gzipped data file: ', trim(gzip_name)
+     &     'Read gzipped data file: ', trim(gzip_name)
       call open_rd_gzfile(gzip_name)
 !
       call read_gz_udt_field_num(ucd%num_field)
@@ -199,7 +200,73 @@
       call read_gz_udt_field_data(ucd%nnod, ucd%ntot_comp, ucd%d_ucd)
       call close_gzfile
 !
-      end subroutine read_and_alloc_udt_file_gz
+      end subroutine read_alloc_gz_udt_file
+!
+!-----------------------------------------------------------------------
+!
+      subroutine read_alloc_gz_ucd_file(my_rank, istep, nnod_ele, ucd)
+!
+      integer(kind=kint), intent(in) :: my_rank, istep, nnod_ele
+      type(ucd_data), intent(inout) :: ucd
+!
+      character(len=kchara) :: gzip_name
+!
+!
+      call set_parallel_ucd_file_name(ucd%file_prefix, iflag_ucd_gz,    &
+     &    my_rank, istep, gzip_name)
+!
+      if(i_debug.gt.0 .or. my_rank.eq.0) write(*,*)                     &
+     &     'Read gzipped UCD data file: ', trim(gzip_name)
+      call open_rd_gzfile(gzip_name)
+!
+      call read_gz_udt_mesh_header(ucd%nnod, ucd%nele, ucd%ntot_comp)
+      ucd%nnod_4_ele = nnod_ele
+!
+      call allocate_ucd_node(ucd)
+      call allocate_ucd_ele(ucd)
+!
+      call read_gz_ucd_mesh_data(ucd%nnod, ucd%nele, ucd%nnod_4_ele,    &
+     &    ucd%inod_global, ucd%iele_global, ucd%xx, ucd%ie)
+!
+      call read_gz_udt_field_num(ucd%num_field)
+      call allocate_ucd_phys_name(ucd)
+!
+      call read_gz_udt_field_name(ucd%num_field, ucd%num_comp,          &
+     &    ucd%phys_name)
+!
+      call cal_istack_ucd_component(ucd)
+      call allocate_ucd_phys_data(ucd)
+!
+      call read_gz_udt_field_data(ucd%nnod, ucd%ntot_comp, ucd%d_ucd)
+      call close_gzfile
+!
+      end subroutine read_alloc_gz_ucd_file
+!
+!-----------------------------------------------------------------------
+!
+      subroutine read_gz_ucd_grd(my_rank, nnod_ele, ucd)
+!
+      integer(kind=kint), intent(in) :: my_rank, nnod_ele
+      type(ucd_data), intent(inout) :: ucd
+!
+      character(len=kchara) :: gzip_name
+!
+!
+      call set_parallel_grd_file_name(ucd%file_prefix, iflag_udt_gz,    &
+     &    my_rank, gzip_name)
+      call open_rd_gzfile(gzip_name)
+!
+      call read_gz_udt_mesh_header(ucd%nnod, ucd%nele, ucd%ntot_comp)
+      ucd%nnod_4_ele = nnod_ele
+!
+      call allocate_ucd_node(ucd)
+      call allocate_ucd_ele(ucd)
+!
+      call read_gz_ucd_mesh_data(ucd%nnod, ucd%nele, ucd%nnod_4_ele,    &
+     &    ucd%inod_global, ucd%iele_global, ucd%xx, ucd%ie)
+      call close_gzfile
+!
+      end subroutine read_gz_ucd_grd
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

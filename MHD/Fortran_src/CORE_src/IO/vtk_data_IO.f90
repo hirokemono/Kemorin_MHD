@@ -7,10 +7,6 @@
 !> @brief Output routine for VTK data segments
 !!
 !!@verbatim
-!!      subroutine write_vtk_data(id_vtk, nnod, num_field, ntot_comp,   &
-!!     &          ncomp_field, field_name, d_nod)
-!!      subroutine write_vtk_mesh(id_vtk, nnod, nele, nnod_ele, xx, ie)
-!!
 !!      subroutine write_vtk_fields_head(id_vtk, nnod)
 !!      subroutine write_vtk_each_field_head(id_vtk, ncomp_field,       &
 !!     &          field_name)
@@ -19,13 +15,37 @@
 !!     &          nnod, d_nod)
 !!
 !!      subroutine write_vtk_node_head(id_vtk, nnod)
-!!
 !!      subroutine write_vtk_connect_head(id_vtk, nele, nnod_ele)
 !!      subroutine write_vtk_cell_type(id_vtk, nele, nnod_ele)
 !!
 !!      subroutine write_vtk_connect_data(id_vtk, ntot_ele, nnod_ele,   &
 !!     &          nele, ie)
+!!
+!!
+!!      subroutine read_vtk_fields_head(id_vtk, nnod)
+!!      subroutine read_vtk_each_field_head(id_vtk, iflag_end,          &
+!!     &          ncomp_field, field_name)
+!!      subroutine read_vtk_each_field(id_vtk, ntot_nod, ncomp_field,   &
+!!     &          nnod, d_nod)
+!!
+!!      subroutine read_vtk_node_head(id_vtk, nnod)
+!!      subroutine read_vtk_connect_head(id_vtk, nele, nnod_ele)
+!!      subroutine read_vtk_cell_type(id_vtk, nele)
+!!      subroutine read_vtk_connect_data(id_vtk, ntot_ele, nnod_ele,    &
+!!     &          nele, ie)
 !!@endverbatim
+!!
+!!@n @param id_vtk                 file ID for VTK data file
+!!@n @param nnod                   Number of nodes
+!!@n @param nele                   Number of elements
+!!@n @param nnod_ele               Number of nodes for each element
+!!@n @param xx(nnod,3)             position of nodes
+!!@n @param nnod_ele               number of nodes for each element
+!!@n @param ie(nele,nnod_ele)      element connectivity
+!!@n @param ntot_comp              total number of components
+!!@n @param ncomp_field(num_field) number of components
+!!@n @param field_name(num_field)  list of field names
+!!@n @param d_nod(nnod,ntot_comp)  field data
 !
       module vtk_data_IO
 !
@@ -38,61 +58,6 @@
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine write_vtk_data(id_vtk, nnod, num_field, ntot_comp,     &
-     &          ncomp_field, field_name, d_nod)
-!
-      integer (kind=kint), intent(in) :: nnod
-      integer (kind=kint), intent(in) :: num_field, ntot_comp
-      integer(kind=kint ), intent(in) :: ncomp_field(num_field)
-      character(len=kchara), intent(in) :: field_name(num_field)
-      real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
-!
-      integer(kind = kint), intent(in) ::  id_vtk
-!
-      integer(kind = kint) :: icou, j
-!
-!
-      call write_vtk_fields_head(id_vtk, nnod)
-!
-      IF(ntot_comp .ge. 1) then
-        icou = 1
-        do j = 1, num_field
-          call write_vtk_each_field_head(id_vtk, ncomp_field(j),        &
-     &        field_name(j) )
-          call write_vtk_each_field(id_vtk, nnod, ncomp_field(j),       &
-     &        nnod, d_nod(1,icou) )
-          icou = icou + ncomp_field(j)
-        end do
-      end if
-!
-      end subroutine write_vtk_data
-!
-! -----------------------------------------------------------------------
-!
-      subroutine write_vtk_mesh(id_vtk, nnod, nele, nnod_ele,  xx, ie)
-!
-      use m_phys_constants
-!
-      integer(kind = kint), intent(in) :: nnod, nele, nnod_ele
-      integer(kind = kint), intent(in) :: ie(nele,nnod_ele)
-      real(kind = kreal), intent(in) :: xx(nnod,3)
-!
-      integer(kind = kint), intent(in) ::  id_vtk
-!
-!
-      call write_vtk_node_head(id_vtk, nnod)
-      call write_vtk_each_field(id_vtk, nnod, ithree, nnod, xx)
-!
-      call write_vtk_connect_head(id_vtk, nele, nnod_ele)
-      call write_vtk_connect_data(id_vtk, nele, nnod_ele, nele, ie)
-!
-      call write_vtk_cell_type(id_vtk, nele, nnod_ele)
-!
-      end subroutine write_vtk_mesh
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine write_vtk_fields_head(id_vtk, nnod)
@@ -248,6 +213,161 @@
       end do
 !
       end subroutine  write_vtk_connect_data
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine read_vtk_fields_head(id_vtk, nnod)
+!
+      use skip_comment_f
+!
+      integer(kind = kint), intent(in) :: id_vtk
+      integer(kind=kint ), intent(inout) :: nnod
+!
+      character(len=kchara)  :: tmpchara, label
+!
+!
+      call skip_comment(tmpchara, id_vtk)
+      read(tmpchara,*) label, nnod
+! 
+      end subroutine read_vtk_fields_head
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_vtk_each_field_head(id_vtk, iflag_end,            &
+     &          ncomp_field, field_name)
+!
+      use m_phys_constants
+!
+      integer(kind = kint), intent(in) ::  id_vtk
+      integer(kind=kint ), intent(inout) :: ncomp_field, iflag_end
+      character(len=kchara), intent(inout) :: field_name
+!
+      character(len=kchara)  :: vtk_fld_type, tmpchara
+!
+!
+      read(id_vtk,*,err=99) vtk_fld_type, field_name
+      if(vtk_fld_type .eq. 'TENSORS') then
+        ncomp_field = n_sym_tensor
+      else if(vtk_fld_type .eq. 'VECTORS') then
+        ncomp_field = n_vector
+      else
+        read(id_vtk,*) tmpchara
+        ncomp_field = n_scalar
+      end if
+      iflag_end = 0
+      return
+!
+  99  continue
+      iflag_end = 1
+      return
+!
+      end subroutine read_vtk_each_field_head
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_vtk_each_field(id_vtk, ntot_nod, ncomp_field,     &
+     &          nnod, d_nod)
+!
+      use m_phys_constants
+!
+      integer(kind = kint), intent(in) ::  id_vtk
+      integer (kind=kint), intent(in) :: ntot_nod, nnod, ncomp_field
+!
+      real(kind = kreal), intent(inout) :: d_nod(ntot_nod,ncomp_field)
+!
+      integer(kind = kint) :: inod
+      real(kind = kreal) :: rtmp
+!
+!
+      if (ncomp_field .eq. n_sym_tensor) then
+        do inod = 1, nnod
+          read(id_vtk,*) d_nod(inod,1:3)
+          read(id_vtk,*) rtmp, d_nod(inod,4:5)
+          read(id_vtk,*) rtmp, rtmp, d_nod(inod,6)
+        end do
+      else
+        do inod = 1, nnod
+          read(id_vtk,*) d_nod(inod,1:ncomp_field)
+        end do
+      end if
+!
+      end subroutine read_vtk_each_field
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine read_vtk_node_head(id_vtk, nnod)
+!
+      integer(kind = kint), intent(in) :: id_vtk
+      integer(kind = kint), intent(inout) :: nnod
+!
+      character(len=kchara) :: tmpchara
+!
+!
+      read(id_vtk,*) tmpchara
+      read(id_vtk,*) tmpchara
+      read(id_vtk,*) tmpchara
+      read(id_vtk,*) tmpchara
+!
+      read(id_vtk,'(a,i10,a)')  tmpchara, nnod
+!
+      end subroutine read_vtk_node_head
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_vtk_connect_head(id_vtk, nele, nnod_ele)
+!
+      integer(kind = kint), intent(in) ::  id_vtk
+      integer(kind = kint), intent(inout) :: nele, nnod_ele
+!
+      integer(kind = kint) :: nums
+      character(len=kchara) :: tmpchara
+!
+!
+      read(id_vtk,*) tmpchara, nele, nums
+      nnod_ele = nums / nele - 1
+!
+      end subroutine read_vtk_connect_head
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_vtk_cell_type(id_vtk, nele)
+!
+      integer(kind = kint), intent(in) :: nele
+      integer(kind = kint), intent(in) :: id_vtk
+!
+      integer(kind = kint) :: iele, icellid
+      character(len=kchara) :: tmpchara
+!
+!
+      read(id_vtk,*) tmpchara
+      do iele = 1, nele
+        read(id_vtk,*) icellid
+      end do
+!
+      end subroutine read_vtk_cell_type
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_vtk_connect_data(id_vtk, ntot_ele, nnod_ele,      &
+     &          nele, ie)
+!
+      integer(kind = kint), intent(in) :: id_vtk
+      integer(kind = kint), intent(in) :: ntot_ele, nnod_ele
+      integer(kind = kint), intent(in) :: nele
+      integer(kind = kint), intent(inout) :: ie(ntot_ele,nnod_ele)
+!
+      integer(kind = kint) :: iele, itmp
+!
+!
+      do iele = 1, nele
+        read(id_vtk,*) itmp, ie(iele,1:nnod_ele)
+        ie(iele,1:nnod_ele) = ie(iele,1:nnod_ele) + 1
+      end do
+!
+      end subroutine  read_vtk_connect_data
 !
 ! ----------------------------------------------------------------------
 !

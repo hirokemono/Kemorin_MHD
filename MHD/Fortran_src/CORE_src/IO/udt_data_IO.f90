@@ -113,18 +113,17 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_ucd_field_data(ifile_psf, nnod_in,                &
-     &          ncomp_dat, inod_in, dat_in)
+     &          ncomp_dat, dat_in)
 !
       integer(kind = kint), intent(in) :: ifile_psf
       integer(kind = kint), intent(in) :: nnod_in, ncomp_dat
-      integer(kind = kint), intent(inout) :: inod_in(nnod_in)
       real(kind = kreal), intent(inout) :: dat_in(nnod_in, ncomp_dat)
 !
-      integer(kind = kint) :: inod
+      integer(kind = kint) :: inod, itmp
 !
 !
       do inod = 1, nnod_in
-        read(ifile_psf,*) inod_in(inod), dat_in(inod,1:ncomp_dat)
+        read(ifile_psf,*) itmp, dat_in(inod,1:ncomp_dat)
       end do
 !
       end subroutine read_ucd_field_data
@@ -157,37 +156,20 @@
       integer(kind = kint), intent(inout) :: inod_gl(nnod_in)
       real(kind = kreal), intent(inout) :: xx_in(nnod_in,3)
 !
-!
-      call read_ucd_field_data(ifile_psf, nnod_in,                      &
-     &          ithree, inod_gl, xx_in)
-      call read_ucd_mesh_connect(ifile_psf, nele_in,                    &
-     &          nnod_4_ele, iele_gl, ie_in)
-!
-      end subroutine  read_ucd_mesh_data
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine read_ucd_mesh_connect(ifile_psf, nele_in,              &
-     &          nnod_4_ele, iele_gl, ie_in)
-!
-      use m_geometry_constants
-!
-      integer(kind = kint), intent(in) :: ifile_psf
-      integer(kind = kint), intent(in) :: nele_in, nnod_4_ele
-      integer(kind = kint), intent(inout) :: iele_gl(nele_in)
-      integer(kind = kint), intent(inout) :: ie_in(nele_in,nnod_4_ele)
-!
-      integer(kind = kint) :: iele, itmp
+      integer(kind = kint) :: inod, iele, itmp
       character(len=6) :: eleflag
 !
+!
+      do inod = 1, nnod_in
+        read(ifile_psf,*) inod_gl(inod), xx_in(inod,1:3)
+      end do
 !
       do iele = 1, nele_in
         read(ifile_psf,*) iele_gl(iele), itmp,                          &
      &       eleflag, ie_in(iele,1:nnod_4_ele)
       end do
 !
-      end subroutine  read_ucd_mesh_connect
+      end subroutine  read_ucd_mesh_data
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
