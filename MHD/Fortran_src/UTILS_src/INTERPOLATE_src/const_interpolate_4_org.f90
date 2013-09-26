@@ -62,36 +62,38 @@
      &      write(*,*) 'copy_itp_table_org_to_IO', my_rank_2nd, nprocs
           call copy_itp_table_org_to_IO
 !
+          ifmt_itp_table_file = ifile_type
           if (my_rank_2nd .ge. nprocs) then
             num_org_domain_IO = 0
           else
             table_file_header = work_header
 !
-            call sel_read_itp_table_dest(my_rank_2nd,                   &
-     &          ifile_type, ierr)
+            call sel_read_itp_table_dest(my_rank_2nd, ierr)
 !
             if (ierr.ne.0) call parallel_abort(ierr,'Check work file')
 !
           end if
 !
           table_file_header = table_file_head
-          call sel_write_interpolate_table(my_rank_2nd, ifile_type)
+          call sel_write_interpolate_table(my_rank_2nd)
 !
         end if
       end do
 !
 !
       if ( my_rank .ge. nprocs_2nd) then
+        ifmt_itp_table_file = ifile_type
         table_file_header = work_header
 !
-        call sel_read_itp_table_dest(my_rank, ifile_type, ierr)
+        call sel_read_itp_table_dest(my_rank, ierr)
 !
         if (ierr.ne.0) call parallel_abort(ierr,'Check work file')
 !
         num_dest_domain_IO = 0
 !
         table_file_header = table_file_head
-        call sel_write_interpolate_table(my_rank, ifile_type)
+        ifmt_itp_table_file = ifile_type
+        call sel_write_interpolate_table(my_rank)
 !
       end if
 !
@@ -115,9 +117,10 @@
       do ip = 1, nprocs_dest
 !
         n_dest_rank = mod(n_org_rank+ip,nprocs_dest)
+        ifmt_itp_table_file = ifile_type
         table_file_header = work_header
 !
-        call sel_read_itp_table_dest(n_dest_rank, ifile_type, ierr)
+        call sel_read_itp_table_dest(n_dest_rank, ierr)
 !
         if (ierr.ne.0) call parallel_abort(ierr,'Check work file')
 !
@@ -144,8 +147,9 @@
       istack_nod_table_wtype_org(0:4*nprocs_dest) = 0
       do ip = 1, nprocs_dest
         n_dest_rank = mod(n_org_rank+ip,nprocs_dest)
+        ifmt_itp_table_file = ifile_type
         table_file_header = work_header
-        call sel_read_itp_coefs_dest(n_dest_rank, ifile_type, ierr)
+        call sel_read_itp_coefs_dest(n_dest_rank, ierr)
         if (ierr.ne.0) call parallel_abort(ierr,'Check work file')
 !
         call set_interpolation_4_orgin(n_org_rank, n_dest_rank)

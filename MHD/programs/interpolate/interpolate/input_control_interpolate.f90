@@ -79,10 +79,11 @@
 !
 !  --  read interpolate table
 !
+      ifmt_itp_table_file = ifile_type
       table_file_header = table_file_head
       if (iflag_debug.gt.0) write(*,*) 'sel_read_interpolate_table: ',  &
      &                                trim(table_file_header)
-      call sel_read_interpolate_table(my_rank, ifile_type, ierr)
+      call sel_read_interpolate_table(my_rank, ierr)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_table_dest_from_IO'

@@ -15,16 +15,11 @@
       implicit none
 !
 !
-      character(len = kchara), parameter                                &
-     &             :: def_org_mesh_head =  "mesh_fine/in"
-      character(len = kchara), parameter                                &
-     &             :: def_dest_mesh_head = "mesh_coase/in"
-      character(len = kchara), parameter                                &
-     &             :: def_table_file_head = "mesh/table"
-!
-      character(len = kchara) :: org_mesh_head =   def_org_mesh_head
-      character(len = kchara) :: dest_mesh_head =  def_dest_mesh_head
-      character(len = kchara) :: table_file_head = def_table_file_head
+      character(len = kchara) :: org_mesh_head =   "mesh_fine/in"
+      character(len = kchara) :: dest_mesh_head =  "mesh_coase/in"
+      character(len = kchara) :: table_file_head = "mesh/table"
+      character(len = kchara)                                           &
+     &             :: sgl_table_file_head = "single_itp_table"
 !
       character(len = kchara) :: org_rst_file_head = "restart/rst"
       character(len = kchara) :: org_udt_file_head = "field/out"
@@ -105,20 +100,14 @@
 !
       if (i_mesh_header .ne. 0) then
         org_mesh_head = mesh_file_prefix
-      else
-        org_mesh_head = def_org_mesh_head
       end if
 !
       if (i_new_mesh_head .ne. 0) then
         dest_mesh_head = new_mesh_prefix
-      else
-        dest_mesh_head = def_dest_mesh_head
       end if
 !
       if (i_table_head_ctl .ne. 0) then
         table_file_head = table_head_ctl
-      else
-        table_file_head = def_table_file_head
       end if
 !
       call choose_file_format(mesh_file_fmt_ctl, i_mesh_file_fmt,       &

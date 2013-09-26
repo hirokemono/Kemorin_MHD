@@ -73,7 +73,7 @@
 !
       use m_machine_parameter
       use t_geometry_data
-      use t_interpolate_table_orgin
+      use t_interpolate_tbl_org
       use interpolate_matrix_para
 !
       type(element_data), intent(in) :: ele

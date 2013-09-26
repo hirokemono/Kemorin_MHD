@@ -21,7 +21,7 @@
       subroutine s_set_stack_tbl_org_smp_type(tbl_org)
 !
       use m_machine_parameter
-      use t_interpolate_table_orgin
+      use t_interpolate_tbl_org
       use cal_minmax_and_stacks
 !
       type(interpolate_table_org), intent(inout) :: tbl_org

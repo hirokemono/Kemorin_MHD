@@ -1,10 +1,10 @@
-//
+/*
 //  read_psf_vtk_data_c.h
 //  Kemoview_Cocoa
 //
 //  Created by Hiroaki Matsui on 13/01/12.
 //
-//
+*/
 
 #ifndef READ_PSF_VTK_DATA_C__
 #define READ_PSF_VTK_DATA_C__

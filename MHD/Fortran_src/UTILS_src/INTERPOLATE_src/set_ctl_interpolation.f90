@@ -42,14 +42,14 @@
 !
       if (i_new_mesh_head .ne. 0) then
         dest_mesh_head = new_mesh_prefix
-      else
-        dest_mesh_head = def_dest_mesh_head
       end if
 !
       if (i_table_head_ctl .ne. 0) then
         table_file_head = table_head_ctl
-      else
-        table_file_head = def_table_file_head
+      end if
+!
+      if (i_single_itp_tbl .ne. 0) then
+        sgl_table_file_head = single_itp_tbl_head_ctl
       end if
 !
       if (iflag_debug.eq.1) then

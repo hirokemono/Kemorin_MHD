@@ -29,7 +29,9 @@ begin construct_table
 !
 !
   begin interpolate_tbl_ctl
-    interpolate_list_header_ctl  'mesh_fine/fine_2_coase'
+    interpolate_list_prefix     'mesh_fine/fine_2_coase'
+!
+    interpolate_table_format_ctl   "ascii"
   end interpolate_tbl_ctl
 !
   begin model_4_interpolate

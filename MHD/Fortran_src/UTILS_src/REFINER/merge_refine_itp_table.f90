@@ -36,7 +36,7 @@
       use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_refine_flag_parameters
-      use t_interpolate_table_orgin
+      use t_interpolate_tbl_org
       use copy_local_position_2_ele
       use modify_local_positions
 !

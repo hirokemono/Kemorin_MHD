@@ -26,6 +26,7 @@
       use const_coriolis_sph
 !
       use FEM_analyzer_sph_MHD
+      use SPH_analyzer_zm_snap
 !
       implicit none
 !
@@ -85,8 +86,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine evolution_voviz_sph_zm_snap
-!
-      use SPH_analyzer_zm_snap
 !
       integer(kind = kint) :: visval
       integer(kind = kint) :: istep_psf, istep_iso

@@ -377,7 +377,6 @@
         end do
 !
         if(num_surf_grp_ctl.gt.0) call deallocate_surf_grp_name_ctl
-!
       end if
 !
       do j = 1, num_surf_grp_csp
@@ -391,6 +390,7 @@
 !
 !
       num_edge_latitude_ref = num_edge_latitude_ctl
+      write(*,*) 'num_edge_latitude_ref', num_edge_latitude_ref
       call allocate_ref_edge_latitude
 !
       if(num_edge_latitude_ctl .gt. 0) then
@@ -402,6 +402,7 @@
       end if
 !
       max_coarse_level = num_level_coarse
+      write(*,*) 'max_coarse_level', max_coarse_level
       call allocate_coarsing_parameter
 !
       icoarse_level(1:max_coarse_level,1)                               &
@@ -411,12 +412,11 @@
 !
 !
       write(*,*) 'num_edge_latitude_ref', num_edge_latitude_ref
-      do j = 1, num_edge_latitude_ref
-        write(*,*) j, kr_edge_latitude_ref(j) , edge_latitude_ref(j)
-      end do
-!
-!
       if(num_edge_latitude_ref .gt. 0) then
+        do j = 1, num_edge_latitude_ref
+          write(*,*) j, kr_edge_latitude_ref(j) , edge_latitude_ref(j)
+        end do
+!
         ked = kr_edge_latitude_ref(1)
         do k = 1, ked
           edge_latitude(k) = 45.0d0                                     &

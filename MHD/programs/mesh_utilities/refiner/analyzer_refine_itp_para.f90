@@ -54,18 +54,19 @@
 !
 !
 !
+      ifmt_itp_table_file = ifile_type
       table_file_header = course_2_fine_head
-      call sel_read_interpolate_table(izero, ifile_type, ierr)
+      call sel_read_interpolate_table(izero, ierr)
       call copy_interpolate_types_from_IO(izero, c2f_single)
       call copy_stk_type_itp_wtp_org2dest(c2f_single)
 !
       table_file_header = fine_2_course_head
-      call sel_read_interpolate_table(izero, ifile_type, ierr)
+      call sel_read_interpolate_table(izero, ierr)
       call copy_interpolate_types_from_IO(izero, f2c_single)
       call copy_stk_type_itp_wtp_org2dest(f2c_single)
 !
       table_file_header = refine_info_head
-      call sel_read_interpolate_table(izero, ifile_type, ierr)
+      call sel_read_interpolate_table(izero, ierr)
       call copy_interpolate_types_from_IO(izero, f2c_ele_single)
       call copy_stk_type_itp_wtp_org2dest(f2c_ele_single)
 !
@@ -125,23 +126,24 @@
      &    merge_tbl_2%iele_local, merge_tbl_2%idomain_ele)
 !
 !
+      ifmt_itp_table_file = ifile_type
       do ip = 1, nprocs_larger
         my_rank = ip - 1
 !
         table_file_header = c2f_para_head
         call copy_interpolate_types_to_IO( c2f_para(ip) )
         write(*,*) 'table field header: ', trim(table_file_header)
-        call sel_write_interpolate_table(my_rank, ifile_type)
+        call sel_write_interpolate_table(my_rank)
 !
         table_file_header = f2c_para_head
         call copy_interpolate_types_to_IO( f2c_para(ip) )
         write(*,*) 'table field header: ', trim(table_file_header)
-        call sel_write_interpolate_table(my_rank, ifile_type)
+        call sel_write_interpolate_table(my_rank)
 !
         table_file_header = f2c_ele_para_head
         call copy_interpolate_types_to_IO( f2c_ele_para(ip) )
         write(*,*) 'table field header: ', trim(table_file_header)
-        call sel_write_interpolate_table(my_rank, ifile_type)
+        call sel_write_interpolate_table(my_rank)
       end do
 !
 !

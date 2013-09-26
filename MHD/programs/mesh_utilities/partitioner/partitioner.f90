@@ -50,7 +50,7 @@
 !
 !C===
 !C-- create subdomain mesh
-      call PROC_LOCAL
+      call const_communication_table
 !
 !  ========= Construct subdomain information for viewer ==============
 !

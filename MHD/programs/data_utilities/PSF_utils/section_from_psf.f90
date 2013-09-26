@@ -13,7 +13,7 @@
       use m_psf_results
       use m_field_file_format
       use set_parallel_file_name
-      use read_psf_select_4_zlib
+      use load_psf_data
 !
       use m_line_from_psf
       use m_psf_edge_connect
@@ -56,7 +56,7 @@
       read(*,*) line_udt_head
 !
       do istep = istep_start, istep_end, istep_int
-        call sel_read_alloc_psf_file(iflag_psf_fmt, istep)
+        call s_load_psf_data(istep)
         call find_psf_edges
         call pick_psf_by_sections(nd, xref)
 !

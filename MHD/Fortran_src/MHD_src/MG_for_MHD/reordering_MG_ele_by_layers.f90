@@ -156,7 +156,7 @@
       subroutine reordering_ele_interpolate_type(numele,                &
      &          old2newele_layer, tbl_org)
 !
-      use t_interpolate_table_orgin
+      use t_interpolate_tbl_org
       use reordering_element_MHD
 !
       integer(kind = kint), intent(in) :: numele

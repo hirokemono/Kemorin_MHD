@@ -67,7 +67,6 @@
 !!      eps_crank_ctl           1.0e-6
 !!      method_4_velo_ctl      CG 
 !!      precond_4_crank_ctl     SSOR   
-!!      modify_coriolis_4_crank_ctl  0
 !!
 !!      Legendre_trans_loop_ctl   'inner_radial_loop'
 !!      FFT_library_ctl           'FFTW'

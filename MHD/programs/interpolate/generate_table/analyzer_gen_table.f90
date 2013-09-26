@@ -102,8 +102,9 @@
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_table_dest_to_IO'
       call copy_itp_table_dest_to_IO
 !
+      ifmt_itp_table_file = ifile_type
       table_file_header = work_header
-      call sel_write_itp_coefs_dest(my_rank, ifile_type)
+      call sel_write_itp_coefs_dest(my_rank)
 !
       call time_prog_barrier
 !

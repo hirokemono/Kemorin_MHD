@@ -6,6 +6,7 @@
 !      subroutine deallocate_search_param_ctl
 !      subroutine read_control_4_gen_itp_table
 !      subroutine read_control_4_interpolate
+!      subroutine read_control_4_distribute_itp
 !
 !     required module for 3rd level
 !
@@ -26,11 +27,17 @@
      &                 :: fname_table_ctl = "ctl_gen_table"
       character(len = kchara), parameter                                &
      &                 :: fname_itp_ctl = "ctl_interpolate"
+      character(len = kchara), parameter                                &
+     &                 :: fname_dist_itp_ctl = "ctl_distribute_itp"
+!
 !
       character(len = kchara) :: table_head_ctl = "mesh/itp_table"
+      character(len = kchara) :: ifmt_itp_table_file_ctl = "ascii"
 !
       character(len = kchara) :: itp_node_head_ctl = "node_test_itp"
       character(len = kchara) :: reverse_element_table_ctl = "OFF"
+!
+      character(len = kchara) :: single_itp_tbl_head_ctl = "single_itp"
 !
       character(len = kchara) :: ele_hash_type_ctl = "sphere"
       integer(kind = kint) :: num_r_divide_ctl = 0
@@ -52,6 +59,10 @@
       character(len=kchara), parameter :: hd_table_control              &
      &                   = 'construct_table'
       integer (kind=kint) :: i_table_control = 0
+!
+      character(len=kchara), parameter :: hd_distribute_itp             &
+     &                   = 'parallel_table'
+      integer (kind=kint) :: i_distribute_itp = 0
 !
 !     2nd level for const_filter
 !
@@ -75,15 +86,21 @@
 !     3rd level for file header
 !
       character(len=kchara), parameter                                  &
-     &         :: hd_table_head_ctl = 'interpolate_list_header_ctl'
+     &         :: hd_table_head_ctl =    'interpolate_list_prefix'
       character(len=kchara), parameter                                  &
-     &         :: hd_itp_node_head_ctl = 'interpolated_node_header_ctl'
+     &         :: hd_itp_node_head_ctl = 'interpolated_node_prefix'
       character(len=kchara), parameter                                  &
-     &         :: hd_reverse_ele_tbl = 'reverse_element_table_ctl'
+     &         :: hd_reverse_ele_tbl =   'reverse_element_table_ctl'
+      character(len=kchara), parameter                                  &
+     &         :: hd_single_itp_tbl =    'single_interpolate_prefix'
+      character(len=kchara), parameter                                  &
+     &         :: hd_fmt_itp_tbl =    'interpolate_table_format_ctl'
 !
       integer (kind=kint) :: i_table_head_ctl =     0
       integer (kind=kint) :: i_itp_node_head_ctl =  0
       integer (kind=kint) :: i_reverse_ele_tbl =    0
+      integer (kind=kint) :: i_single_itp_tbl =     0
+      integer (kind=kint) :: i_fmt_itp_tbl =        0
 !
 !     3rd level for element hash
 !
@@ -118,13 +135,14 @@
       private :: hd_table_control, i_table_control
       private :: hd_itp_files, hd_itp_model, i_itp_files, i_itp_model
       private :: hd_iteration_ctl, i_iteration_ctl
-      private :: hd_element_hash, i_element_hash
+      private :: hd_element_hash, i_element_hash, hd_fmt_itp_tbl
       private :: hd_table_head_ctl, hd_itp_node_head_ctl
-      private :: hd_reverse_ele_tbl
+      private :: hd_reverse_ele_tbl, hd_single_itp_tbl
       private :: hd_num_search, hd_itr, hd_eps
 !
       private :: allocate_search_param_ctl
       private :: read_const_itp_tbl_ctl_data
+      private :: read_control_dist_itp_data
       private :: read_itp_files_ctl, read_element_hash_ctl
       private :: read_itaration_param_ctl, read_itaration_model_ctl
 !
@@ -193,6 +211,21 @@
       end subroutine read_control_4_interpolate
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine read_control_4_distribute_itp
+!
+!
+      ctl_file_code = table_ctl_file_code
+      open(ctl_file_code, file=fname_dist_itp_ctl, status='old')
+!
+      call load_ctl_label_and_line
+      call read_control_dist_itp_data
+!
+      close(ctl_file_code)
+!
+      end subroutine read_control_4_distribute_itp
+!
+!  ---------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine read_const_itp_tbl_ctl_data
@@ -221,6 +254,30 @@
       end subroutine read_const_itp_tbl_ctl_data
 !
 !   --------------------------------------------------------------------
+!
+      subroutine read_control_dist_itp_data
+!
+      use m_ctl_data_4_platforms
+      use m_ctl_data_4_2nd_data
+!
+!
+      if(right_begin_flag(hd_distribute_itp) .eq. 0) return
+      if (i_distribute_itp.gt.0) return
+      do
+        call load_ctl_label_and_line
+!
+        call find_control_end_flag(hd_distribute_itp, i_distribute_itp)
+        if(i_distribute_itp .gt. 0) exit
+!
+        call read_ctl_data_4_platform
+        call read_ctl_data_4_new_data
+!
+        call read_itp_files_ctl
+      end do
+!
+      end subroutine read_control_dist_itp_data
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine read_itp_files_ctl
@@ -239,8 +296,13 @@
      &        i_table_head_ctl, table_head_ctl)
         call read_character_ctl_item(hd_itp_node_head_ctl,              &
      &        i_itp_node_head_ctl, itp_node_head_ctl)
+        call read_character_ctl_item(hd_single_itp_tbl,                 &
+     &        i_single_itp_tbl, single_itp_tbl_head_ctl)
         call read_character_ctl_item(hd_reverse_ele_tbl,                &
      &        i_reverse_ele_tbl, reverse_element_table_ctl)
+!
+        call read_character_ctl_item(hd_fmt_itp_tbl, i_fmt_itp_tbl,     &
+     &      ifmt_itp_table_file_ctl)
       end do
 !
       end subroutine read_itp_files_ctl

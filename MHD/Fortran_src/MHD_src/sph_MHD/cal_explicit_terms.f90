@@ -17,7 +17,7 @@
 !!      subroutine sel_light_diff_adv_src_adams
 !!      subroutine sel_light_diff_adv_src_euler
 !!
-!!      subroutine set_adams_mag_induct_ini
+!!      subroutine set_ini_adams_mag_induct
 !!      subroutine sel_ini_adams_heat_w_src
 !!      subroutine sel_ini_adams_light_w_src
 !!@endverbatim
@@ -195,7 +195,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_adams_mag_induct_ini
+      subroutine set_ini_adams_mag_induct
 !
       integer(kind = kint) :: inod
 !
@@ -207,7 +207,7 @@
        end do
 !$omp end do
 !
-      end subroutine set_adams_mag_induct_ini
+      end subroutine set_ini_adams_mag_induct
 !
 ! ----------------------------------------------------------------------
 !

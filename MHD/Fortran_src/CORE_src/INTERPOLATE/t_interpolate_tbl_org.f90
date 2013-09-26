@@ -1,19 +1,23 @@
-!t_interpolate_table_orgin.f90
-!      module t_interpolate_table_orgin
+!>@file   t_interpolate_tbl_org.f90
+!!@brief  module t_interpolate_tbl_org
+!!
+!!@author H. Matsui
+!!@date  Programmed by H. Matsui in Nov., 2008
 !
 !> @brief Structure of interpolation table for source mesh
+!!
+!!@verbatim
+!!      subroutine alloc_type_itp_num_org(tbl_org)
+!!      subroutine alloc_type_itp_table_org(tbl_org)
+!!      subroutine alloc_type_istack_tbl_wtp_smp(np_smp, tbl_org)
+!!      subroutine alloc_type_zero_itp_tbl_org(tbl_org)
+!!
+!!      subroutine dealloc_type_itp_num_org(tbl_org)
+!!      subroutine dealloc_type_itp_table_org(tbl_org)
+!!      subroutine dealloc_type_istack_tbl_wtp_smp(tbl_org)
+!!@endverbatim
 !
-!      Written by H.Matsui on Nov., 2008
-!
-!      subroutine alloc_type_itp_num_org(tbl_org)
-!      subroutine alloc_type_itp_table_org(tbl_org)
-!      subroutine alloc_type_istack_tbl_wtp_smp(np_smp, tbl_org)
-!
-!      subroutine dealloc_type_itp_num_org(tbl_org)
-!      subroutine dealloc_type_itp_table_org(tbl_org)
-!      subroutine dealloc_type_istack_tbl_wtp_smp(tbl_org)
-!
-      module t_interpolate_table_orgin
+      module t_interpolate_tbl_org
 !
       use m_precision
 !
@@ -23,33 +27,33 @@
 !> Structure of interpolation table for source grid
       type interpolate_table_org
 !
+!>   number of subdomain to send interpolated data
         integer(kind = kint) :: num_dest_domain
-!<   number of subdomain to send interpolated data
+!>   flag if target nodes have same prosess
         integer(kind = kint) :: iflag_self_itp_send
-!<   flag if target nodes have same prosess
+!>   subdomain rank to send interpolated data
         integer(kind = kint), pointer :: id_dest_domain(:)
-!<   subdomain rank to send interpolated data
+!>   end address to send interpolated data
         integer(kind = kint), pointer :: istack_nod_tbl_org(:)
-!<   end address to send interpolated data
 !
+!>   end address to send interpolated data including interpolate type
         integer(kind = kint), pointer  :: istack_nod_tbl_wtype_org(:)
-!<   end address to send interpolated data including interpolate type
 !
+!>   total number of node to interpolate in original subdomain
         integer(kind = kint) :: ntot_table_org
-!<   total number of node to interpolate in original subdomain
+!>   global node ID for target domain
         integer(kind = kint), pointer :: inod_gl_dest_4_org(:)
-!<   global node ID for target domain
+!>   local element ID to make interpolation
         integer(kind = kint), pointer :: iele_org_4_org(:)
-!<   local element ID to make interpolation
+!>   interpolation type ID
         integer(kind = kint), pointer :: itype_inter_org(:)
-!<   interpolation type ID
+!>   Coordinate of target node in element coordinate
         real(kind = kreal), pointer :: coef_inter_org(:,:)
-!<   Coordinate of target node in element coordinate
 !
+!>   end address of table to interpolation at original elements
         integer(kind = kint), pointer :: istack_tbl_wtype_org_smp(:)
-!<   end address of table to interpolation at original elements
+!>   maximum number of interpolation at original elements
         integer(kind = kint) :: imax_tbl_wtype_org_smp
-!<   maximum number of interpolation at original elements
 !
       end type interpolate_table_org
 !
@@ -112,6 +116,23 @@
       end subroutine alloc_type_istack_tbl_wtp_smp
 !
 !-----------------------------------------------------------------------
+!
+      subroutine alloc_type_zero_itp_tbl_org(tbl_org)
+!
+      use m_constants
+!
+      type(interpolate_table_org), intent(inout) :: tbl_org
+!
+!
+      tbl_org%num_dest_domain = 0
+      tbl_org%ntot_table_org =  0
+      call alloc_type_itp_num_org(tbl_org)
+      call alloc_type_istack_tbl_wtp_smp(izero, tbl_org)
+      call alloc_type_itp_table_org(tbl_org)
+!
+      end subroutine alloc_type_zero_itp_tbl_org
+!
+!------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine dealloc_type_itp_num_org(tbl_org)
@@ -149,4 +170,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module t_interpolate_table_orgin
+      end module t_interpolate_tbl_org

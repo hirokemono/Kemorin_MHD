@@ -23,7 +23,7 @@
 !
       subroutine set_merged_itp_course_to_fine
 !
-      use t_interpolate_table_orgin
+      use t_interpolate_tbl_org
       use set_refine_interpolate_tbl
       use merge_refine_itp_table
 !

@@ -188,16 +188,28 @@
       subroutine set_special_rj_fields
 !
       use m_sph_phys_address
+      use m_spheric_parameter
 !
       use cal_zonal_mean_sph_spectr
 !
-      integer (kind =kint), parameter :: ideg_del(1) = (/0/)
+      integer (kind =kint), allocatable :: ipick_degree(:)
+      integer(kind = kint) :: ltr_half
+      integer(kind = kint) :: l
 !
 !
+      ltr_half = 3*(l_truncation+1) / 4
+      allocate(ipick_degree(ltr_half))
+      do l = 1, ltr_half
+        ipick_degree(l) = l-1
+      end do
+!
+      call pick_degree_sph_spectr(ltr_half, ipick_degree,               &
+     &    ithree, ipol%i_velo)
+      deallocate(ipick_degree)
+
 !      call take_zonal_mean_rj_field(ithree, ipol%i_velo)
 !      if (my_rank.eq.0) write(*,*) 'Take zonam mean temperature'
 !      call take_zonal_mean_rj_field(ione, ipol%i_temp)
-      call delete_degree_sph_spectr(ione, ideg_del, ione, ipol%i_temp)
 !
       end subroutine set_special_rj_fields
 !

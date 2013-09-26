@@ -20,7 +20,7 @@
       use cal_psf_rms_aves
       use take_avarages_4_psf
       use take_normals_4_psf
-      use read_psf_select_4_zlib
+      use load_psf_data
 !
       implicit    none
 !
@@ -59,7 +59,7 @@
       write(psf_sdev_header,'(a9,a)') 'time_dev_', trim(fname_tmp)
 !
 !
-      call sel_read_alloc_psf_file(iflag_psf_fmt, istep_start)
+      call s_load_psf_data(istep_start)
       call set_psf_mesh_to_ucd_data(psf_ucd)
 !
       psf_ucd%ifmt_file = iflag_udt

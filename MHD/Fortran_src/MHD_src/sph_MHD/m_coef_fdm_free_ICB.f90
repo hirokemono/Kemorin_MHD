@@ -147,7 +147,7 @@
 !
       mat_taylor_3(3,1) = one
       mat_taylor_3(3,2) = dr_p1
-      mat_taylor_3(3,3) = half * r0*r0
+      mat_taylor_3(3,3) = half * dr_p1*dr_p1
 !
       call cal_inverse_33_matrix(mat_taylor_3, mat_fdm_ICB_free_vt,     &
      &      ierr)

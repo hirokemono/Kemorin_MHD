@@ -95,11 +95,13 @@
       integer(kind = kint) :: i_level
 !
 !
+      ifmt_itp_table_file = ifile_type
+!
       do i_level = 1, num_MG_level
         if(i_level.eq.1 .or. my_rank.lt.MG_vector(i_level-1)%nprocs)    &
      &      then
           table_file_header = MG_f2c_tbl_head(i_level)
-          call sel_read_interpolate_table(my_rank, ifile_type, ierr)
+          call sel_read_interpolate_table(my_rank, ierr)
           call copy_interpolate_types_from_IO(my_rank,                  &
      &        MG_itp(i_level)%f2c )
         else
@@ -115,7 +117,7 @@
         if(i_level.eq.1 .or. my_rank.lt.MG_vector(i_level-1)%nprocs)    &
      &      then
           table_file_header = MG_c2f_tbl_head(i_level)
-          call sel_read_interpolate_table(my_rank, ifile_type, ierr)
+          call sel_read_interpolate_table(my_rank, ierr)
           call copy_interpolate_types_from_IO(my_rank,                  &
      &        MG_itp(i_level)%c2f )
         else
@@ -132,7 +134,7 @@
           if(i_level.eq.1 .or. my_rank.lt.MG_vector(i_level-1)%nprocs)  &
      &      then
             table_file_header = MG_f2c_eletbl_head(i_level)
-            call sel_read_interpolate_table(my_rank, ifile_type, ierr)
+            call sel_read_interpolate_table(my_rank, ierr)
 !
             call copy_interpolate_types_from_IO(my_rank,                &
      &           MG_c2f_ele_tbl(i_level) )

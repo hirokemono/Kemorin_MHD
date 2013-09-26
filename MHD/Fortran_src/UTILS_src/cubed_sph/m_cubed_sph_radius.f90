@@ -47,7 +47,7 @@
 !
       subroutine allocate_ref_edge_latitude
 !
-      allocate(kr_edge_latitude_ref(num_edge_latitude_ref))
+      allocate(kr_edge_latitude_ref(0:num_edge_latitude_ref+1))
       allocate(edge_latitude_ref(num_edge_latitude_ref))
       allocate(edge_latitude(n_shell))
 !

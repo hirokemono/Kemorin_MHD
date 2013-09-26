@@ -19,6 +19,7 @@
 !
       implicit none
 !
+!
       call parallel_cal_init
 !
       call initialize_noviz_sph_zm_snap

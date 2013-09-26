@@ -85,9 +85,10 @@
       integer(kind = kint) :: ierr
 !
 !
+      ifmt_itp_table_file = ifile_type
       table_file_header = finer_inter_file_head
       write(*,*) 'sel_read_interpolate_table', table_file_header
-      call sel_read_interpolate_table(my_rank, ifile_type, ierr)
+      call sel_read_interpolate_table(my_rank, ierr)
 !
       call copy_itp_table_dest_from_IO(my_rank)
       call copy_itp_table_org_from_IO(my_rank)

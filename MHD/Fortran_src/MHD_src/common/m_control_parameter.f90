@@ -118,7 +118,7 @@
       integer (kind=kint) :: iflag_boundary_file = id_no_boundary_file
 !
 !
-!>      Thermal stratificatio flag
+!>      Thermal stratification flag
       integer (kind=kint) :: iflag_t_strat
 !>      Magneto convectio flag
       integer (kind=kint) :: iflag_magneto_cv
@@ -151,6 +151,7 @@
       real (kind=kreal) :: eps_4_velo
 !>      Error torrance for time integration
       real (kind=kreal) :: eps_4_magne
+!
 !
 !>      Ordering type for linear solver
       character (len=kchara) :: ordering_name

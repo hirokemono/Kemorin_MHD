@@ -37,7 +37,7 @@
       use m_field_file_format
 !
       use set_control_visualizer
-      use read_psf_select_4_zlib
+      use load_psf_data
       use take_avarages_4_psf
       use set_parallel_file_name
       use set_ucd_file_names
@@ -60,7 +60,7 @@
 !
 !   read grid data
 !
-        call sel_read_alloc_psf_file(iflag_psf_fmt, i_step_init)
+        call s_load_psf_data(i_step_init)
         call set_psf_mesh_to_ucd_data(psf_ucd)
 !
         call allocate_norms_4_psf

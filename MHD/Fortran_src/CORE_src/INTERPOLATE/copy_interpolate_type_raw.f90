@@ -90,7 +90,7 @@
 !
       subroutine copy_itp_tbl_type_org_from_raw(my_rank, tbl_org)
 !
-      use t_interpolate_table_orgin
+      use t_interpolate_tbl_org
       use m_interpolate_table_orgin
 !
       integer(kind = kint), intent(in) :: my_rank

@@ -41,6 +41,7 @@
       use m_ctl_data_noviz_MHD
       use set_control_sph_mhd
       use set_control_sph_data_MHD
+      use set_control_SPH_to_FEM
       use init_sph_MHD_elapsed_label
 !
 !
@@ -56,6 +57,7 @@
       call read_control_4_snap_noviz
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
       call set_control_4_sph_mhd
+      call set_control_4_SPH_to_FEM
       call set_ctl_params_dynamobench
 !
 !    IO elapsed end

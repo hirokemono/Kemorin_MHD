@@ -16,5 +16,13 @@
 !
       include 'mpif.h'
 !
+!>     MPI communicator
+      integer :: CALYPSO_COMM
+!
+!>     integer size for MPI
+      integer :: CALYPSO_INTEGER
+!>     real size for MPI
+      integer :: CALYPSO_REAL
+!
       end module calypso_mpi
 !

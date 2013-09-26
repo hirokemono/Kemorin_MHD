@@ -1,9 +1,13 @@
 !
 !      module set_org_ele_4_each_bin
 !
-      module set_org_ele_4_each_bin
-!
 !     Written by H. Matsui on Sep., 2006
+!
+!      subroutine s_count_num_org_ele_4_each_bin
+!      subroutine s_set_org_ele_4_each_bin
+!      subroutine s_set_bin_stack_4_org_ele
+!
+      module set_org_ele_4_each_bin
 !
       use m_precision
       use m_machine_parameter
@@ -11,10 +15,6 @@
       implicit none
 !
       private :: s_set_start_and_end_3d_bin, s_set_start_and_end_1d_bin
-!
-!      subroutine s_count_num_org_ele_4_each_bin
-!      subroutine s_set_org_ele_4_each_bin
-!      subroutine s_set_bin_stack_4_org_ele
 !
 !-----------------------------------------------------------------------
 !
@@ -57,7 +57,7 @@
               do jt_bin = isph_st(2), isph_ed(2)
                 do jp_bin = isph_st(3), isph_ed(3)
                   itmp = mod(jp_bin-1,num_sph_grid(3)) + 1
-                  ihash = jr_bin + (itmp - 1) * num_sph_bin(1)         &
+                  ihash = jr_bin + (itmp - 1) * num_sph_bin(1)          &
      &                 + (jt_bin-1) * num_sph_bin(1) * num_sph_bin(3)
                   nele_bin_smp(ip,ihash) = nele_bin_smp(ip,ihash) + 1
                 end do

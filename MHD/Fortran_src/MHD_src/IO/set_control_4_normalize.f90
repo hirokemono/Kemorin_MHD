@@ -349,21 +349,21 @@
         end if
       end if
 !
-      if (num_coef_4_composition.gt.0) then
+      if (num_coef_4_composition .gt. 0) then
         call allocate_coef_4_composition
         coef_4_composit_name =  coef_4_composit_name_ctl
         coef_4_composit_power = coef_4_composit_power_ctl
         call deallocate_coef_4_dscalar_ctl
       end if
 !
-      if (num_coef_4_c_diffuse.gt.0) then
+      if (num_coef_4_c_diffuse .gt. 0) then
         call allocate_coef_4_c_diffuse
         coef_4_c_diffuse_name =  coef_4_c_diff_name_ctl
         coef_4_c_diffuse_power = coef_4_c_diff_power_ctl
         call deallocate_coef_4_dsc_diff_ctl
       end if
 !
-      if (num_coef_4_c_source.gt.0) then
+      if (num_coef_4_c_source .gt. 0) then
         call allocate_coef_4_c_source
         coef_4_c_source_name =  coef_4_c_src_name_ctl
         coef_4_c_source_power = coef_4_c_src_power_ctl

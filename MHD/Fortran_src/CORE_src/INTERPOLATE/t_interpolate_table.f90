@@ -17,7 +17,7 @@
       use m_constants
       use t_comm_table
       use t_geometry_data
-      use t_interpolate_table_orgin
+      use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
 !
       implicit none
@@ -70,17 +70,8 @@
       type(interpolate_table), intent(inout) :: itp_info
 !
 !
-      itp_info%tbl_org%num_dest_domain = 0
-      itp_info%tbl_org%ntot_table_org =  0
-      call alloc_type_itp_num_org(itp_info%tbl_org)
-      call alloc_type_istack_tbl_wtp_smp(izero, itp_info%tbl_org)
-      call alloc_type_itp_table_org(itp_info%tbl_org)
-!
-!
-      itp_info%tbl_dest%num_org_domain =  0
-      itp_info%tbl_dest%ntot_table_dest = 0
-      call alloc_type_itp_num_dest(itp_info%tbl_dest)
-      call alloc_type_itp_table_dest(itp_info%tbl_dest)
+      call alloc_type_zero_itp_tbl_org(itp_info%tbl_org)
+      call alloc_type_zero_itp_tbl_dest(itp_info%tbl_dest)
 !
       end subroutine alloc_zero_itp_tables
 !

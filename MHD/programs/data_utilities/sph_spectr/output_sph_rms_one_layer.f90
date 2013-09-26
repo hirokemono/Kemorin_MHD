@@ -90,7 +90,7 @@
       call add_int_suffix(id_pick_layer(num_pick_layer), fname_tmp1,    &
      &    fname_tmp2)
       call add_dat_extension(fname_tmp2, fname_rms)
-      write(mode_label,'(a)') 'radial_id, degree, '
+      write(mode_label,'(a)') 'radial_id    degree'
       call open_sph_vol_rms_file                                        &
      &    (id_file_rms_l, fname_rms, mode_label)
 !
@@ -99,7 +99,7 @@
       call add_int_suffix(id_pick_layer(num_pick_layer), fname_tmp1,    &
      &    fname_tmp2)
       call add_dat_extension(fname_tmp2, fname_rms)
-      write(mode_label,'(a)') 'radial_id, order, '
+      write(mode_label,'(a)') 'radial_id    order'
       call open_sph_vol_rms_file                                        &
      &    (id_file_rms_m, fname_rms, mode_label)
 !
@@ -108,7 +108,7 @@
       call add_int_suffix(id_pick_layer(num_pick_layer), fname_tmp1,    &
      &    fname_tmp2)
       call add_dat_extension(fname_tmp2, fname_rms)
-      write(mode_label,'(a)') 'radial_id, diff_deg_order, '
+      write(mode_label,'(a)') 'radial_id    diff_deg_order'
       call open_sph_vol_rms_file                                        &
      &    (id_file_rms_lm, fname_rms, mode_label)
 !

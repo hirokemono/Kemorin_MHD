@@ -83,8 +83,9 @@
       call copy_itp_table_dest_to_IO
 !
       table_file_header = course_2_fine_head
+      ifmt_itp_table_file = id_ascii_file_fmt
       write(*,*) 'table field header: ', trim(table_file_header)
-      call sel_write_interpolate_table(izero, id_ascii_file_fmt)
+      call sel_write_interpolate_table(izero)
       call deallocate_itp_coefs_dst_IO
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_fine_to_course_origin'
@@ -101,7 +102,7 @@
       table_file_header = fine_2_course_head
       write(*,*) 'table field header: ', trim(table_file_header)
 !
-      call sel_write_interpolate_table(izero, id_ascii_file_fmt)
+      call sel_write_interpolate_table(izero)
       call deallocate_itp_coefs_dst_IO
 !
       end subroutine const_single_refine_itp_tbl
@@ -152,9 +153,10 @@
 !
 !
       table_file_header = course_2_fine_head
+      ifmt_itp_table_file = id_ascii_file_fmt
 !
       write(*,*) 'table field header: ', trim(table_file_header)
-      call sel_write_interpolate_table(izero, id_ascii_file_fmt)
+      call sel_write_interpolate_table(izero)
       call deallocate_itp_coefs_dst_IO
 !
 !
@@ -172,7 +174,7 @@
       table_file_header = fine_2_course_head
 !
       write(*,*) 'table field header: ', trim(table_file_header)
-      call sel_write_interpolate_table(izero, id_ascii_file_fmt)
+      call sel_write_interpolate_table(izero)
       call deallocate_itp_coefs_dst_IO
 !
       end subroutine const_merged_refine_itp_tbl

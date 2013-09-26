@@ -113,7 +113,7 @@
 !
       subroutine copy_itp_tbl_type_org_from_IO(my_rank, tbl_org)
 !
-      use t_interpolate_table_orgin
+      use t_interpolate_tbl_org
       use m_interpolate_table_org_IO
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -206,7 +206,7 @@
 !
       subroutine copy_itp_tbl_type_org_to_IO(tbl_org)
 !
-      use t_interpolate_table_orgin
+      use t_interpolate_tbl_org
       use m_interpolate_table_org_IO
 !
       type(interpolate_table_org), intent(inout) :: tbl_org

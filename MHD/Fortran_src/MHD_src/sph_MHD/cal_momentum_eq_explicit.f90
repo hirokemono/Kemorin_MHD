@@ -61,14 +61,14 @@
 !
 !
 !$omp parallel
-      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(iflag_t_evo_4_velo .gt.     id_no_evolution) then
         call cal_vorticity_eq_adams
       end if
 !
-      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
         call cal_diff_induction_MHD_adams
       end if
-      if(iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
         call sel_heat_diff_adv_src_adams
       end if
       if(iflag_t_evo_4_composit .gt. id_no_evolution) then
@@ -85,21 +85,20 @@
       use m_control_params_sph_MHD
       use cal_explicit_terms
       use cal_vorticity_terms_adams
-      use cal_nonlinear_sph_MHD
-      use cal_vorticity_terms_adams
+!      use cal_nonlinear_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step
 !
 !
 !$omp parallel
-      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(iflag_t_evo_4_velo .gt.     id_no_evolution) then
         call cal_vorticity_eq_euler
       end if
 !
-      if(iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
         call sel_heat_diff_adv_src_euler
       end if
-      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
         call cal_diff_induction_MHD_euler
       end if
       if(iflag_t_evo_4_composit .gt. id_no_evolution) then
@@ -107,14 +106,14 @@
       end if
 !
       if (i_step .eq. 1) then
-        if(iflag_t_evo_4_velo .gt. id_no_evolution) then
-          call set_adams_advect_4_ini
+        if(iflag_t_evo_4_velo .gt.     id_no_evolution) then
+          call set_ini_adams_inertia
         end if
-        if(iflag_t_evo_4_temp .gt. id_no_evolution) then
+        if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
           call sel_ini_adams_heat_w_src
         end if
-        if(iflag_t_evo_4_magne.gt.id_no_evolution) then
-          call set_adams_mag_induct_ini
+        if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
+          call set_ini_adams_mag_induct
         end if
         if(iflag_t_evo_4_composit .gt. id_no_evolution) then
           call sel_ini_adams_light_w_src

@@ -1,14 +1,19 @@
-!t_interpolate_tbl_dest.f90
-!      module t_interpolate_tbl_dest
+!>@file   t_interpolate_tbl_dest.f90
+!!@brief  module t_interpolate_tbl_dest
+!!
+!!@author H. Matsui
+!!@date  Programmed by H. Matsui in Nov., 2008
 !
 !> @brief Structure of interpolation table for target mesh
-!
-!      Written by H.Matsui on Nov., 2008
-!
-!      subroutine alloc_type_itp_num_dest(tbl_dest)
-!      subroutine alloc_type_itp_table_dest(tbl_dest)
-!      subroutine dealloc_type_itp_num_dest(tbl_dest)
-!      subroutine dealloc_type_itp_table_dest(tbl_dest)
+!!
+!!@verbatim
+!!      subroutine alloc_type_itp_num_dest(tbl_dest)
+!!      subroutine alloc_type_itp_table_dest(tbl_dest)
+!!      subroutine alloc_type_zero_itp_tbl_dest(tbl_dest)
+!!
+!!      subroutine dealloc_type_itp_num_dest(tbl_dest)
+!!      subroutine dealloc_type_itp_table_dest(tbl_dest)
+!!@endverbatim
 !
       module t_interpolate_tbl_dest
 !
@@ -20,22 +25,22 @@
 !> Structure of interpolation table for target grid
       type interpolate_table_dest
 !
+!>   number of subdomain to receive interpolated data
         integer(kind = kint) :: num_org_domain
-!<   number of subdomain to receive interpolated data
+!>   flag if original nodes have same prosess
         integer(kind = kint) :: iflag_self_itp_recv
-!<   flag if original nodes have same prosess
+!>   subdomain rank to receive interpolated data
         integer(kind = kint), pointer :: id_org_domain(:)
-!<   subdomain rank to receive interpolated data
+!>   end address to receive interpolated data
         integer(kind = kint), pointer :: istack_nod_tbl_dest(:)
-!<   end address to receive interpolated data
 !
+!>   end address to receive interpolated data including interpolate type
         integer(kind = kint), pointer :: istack_nod_tbl_wtype_dest(:)
-!<   end address to receive interpolated data including interpolate type
 !
+!>   total number of interpolated node in target subdomain
         integer(kind = kint) :: ntot_table_dest
-!<   total number of interpolated node in target subdomain
+!>   local node ID to set interpolated data
         integer(kind = kint), pointer :: inod_dest_4_dest(:)
-!<   local node ID to set interpolated data
 !
       end type interpolate_table_dest
 !
@@ -78,6 +83,20 @@
       end subroutine alloc_type_itp_table_dest
 !
 !-----------------------------------------------------------------------
+!
+      subroutine alloc_type_zero_itp_tbl_dest(tbl_dest)
+!
+      type(interpolate_table_dest), intent(inout) :: tbl_dest
+!
+!
+      tbl_dest%num_org_domain =  0
+      tbl_dest%ntot_table_dest = 0
+      call alloc_type_itp_num_dest(tbl_dest)
+      call alloc_type_itp_table_dest(tbl_dest)
+!
+      end subroutine alloc_type_zero_itp_tbl_dest
+!
+!------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine dealloc_type_itp_num_dest(tbl_dest)

@@ -80,13 +80,14 @@
 !
 !     ---------------------
 !
-          table_file_header = FEM_2_SPH_tbl_head
-          call sel_read_interpolate_table(my_rank, ifile_type, ierr)
-          call copy_interpolate_types_from_IO(my_rank, itp_FEM_2_SPH)
+      ifmt_itp_table_file = ifile_type
+      table_file_header = FEM_2_SPH_tbl_head
+      call sel_read_interpolate_table(my_rank, ierr)
+      call copy_interpolate_types_from_IO(my_rank, itp_FEM_2_SPH)
 !
-          table_file_header = SPH_2_FEM_tbl_head
-          call sel_read_interpolate_table(my_rank, ifile_type, ierr)
-          call copy_interpolate_types_from_IO(my_rank, itp_SPH_2_FEM)
+      table_file_header = SPH_2_FEM_tbl_head
+      call sel_read_interpolate_table(my_rank, ierr)
+      call copy_interpolate_types_from_IO(my_rank, itp_SPH_2_FEM)
 !
 !
       call initialize_sph_trans

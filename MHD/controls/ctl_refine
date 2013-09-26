@@ -1,6 +1,6 @@
 begin refine_control
 !
-  begin file_name_ctl
+  begin single_itp_table_ctl
     orginal_mesh_head_ctl     'mesh_1/in'
     refined_mesh_head_ctl     'mesh_2/in'
 !
@@ -9,7 +9,7 @@ begin refine_control
 !
     refine_info_head_ctl         'refine_info'
     old_refine_info_head_ctl     'refine_info'
-  end
+  end single_itp_table_ctl
 !
   begin refine_parameter_ctl
 !

@@ -2,7 +2,7 @@
 !!@brief  module set_control_sph_data_MHD
 !!
 !!@author H. Matsui
-!!@date Programmed on Sep., 2009
+!!@date Programmed in Sep., 2009
 !
 !>@brief  Set control parameters for spherical harmonics dynamo from IO
 !!
@@ -84,17 +84,17 @@
 !
 !
       if(i_sph_transform_mode .gt. 0) then
-        if(     Legendre_trans_loop_ctl .eq. 'radius_in'                &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'Radius_in'                &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'RADIUS_IN') then
+        if(     Legendre_trans_loop_ctl .eq. 'inner_radial_loop'        &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'Inner_radial_loop'        &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'INNER_RADIAL_LOOP') then
           id_legendre_transfer = iflag_leg_krloop_inner
-        else if(Legendre_trans_loop_ctl .eq. 'radius_out'               &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'Radius_out'               &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'RADIUS_OUT') then
+        else if(Legendre_trans_loop_ctl .eq. 'outer_radial_loop'        &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'Outer_radial_loop'        &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'OUTER_RADIAL_LOOP') then
           id_legendre_transfer = iflag_leg_krloop_outer
-        else if(Legendre_trans_loop_ctl .eq. 'original'                 &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'Original'                 &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'ORIGINAL') then
+        else if(Legendre_trans_loop_ctl .eq. 'long_loop'                &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'Long_loop'                &
+     &    .or.  Legendre_trans_loop_ctl .eq. 'LONG_LOOP') then
           id_legendre_transfer = iflag_leg_orginal_loop
         end if
       end if

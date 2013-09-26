@@ -8,7 +8,7 @@
       use m_precision
 !
       use t_interpolate_table
-      use t_interpolate_table_orgin
+      use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
 !
       implicit none

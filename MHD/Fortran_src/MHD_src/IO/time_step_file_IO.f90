@@ -596,12 +596,15 @@
             else if ( phys_nod_name(i) .eq. fhd_filter_v) then
               call write_one_label(rms_data_code,       e_hd_fil_div_v)
               call write_one_label(time_step_data_code, e_hd_fil_div_v)
-            else if ( phys_nod_name(i) .eq. fhd_filter_b) then
-              call write_one_label(rms_data_code,       e_hd_fil_div_b)
-              call write_one_label(time_step_data_code, e_hd_fil_div_b)
             else if ( phys_nod_name(i) .eq. fhd_filter_a) then
               call write_one_label(rms_data_code,       e_hd_fil_div_a)
               call write_one_label(time_step_data_code, e_hd_fil_div_a)
+            else if ( phys_nod_name(i) .eq. fhd_filter_b) then
+              call write_one_label(rms_data_code,       e_hd_fil_div_b)
+              call write_one_label(time_step_data_code, e_hd_fil_div_b)
+            else if ( phys_nod_name(i) .eq. fhd_mag_potential ) then
+              call write_one_label(rms_data_code,       e_hd_mag_p)
+              call write_one_label(time_step_data_code, e_hd_mag_p)
             end if
 !
           end if

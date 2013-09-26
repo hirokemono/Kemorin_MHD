@@ -3,13 +3,13 @@
 !
 !      Written by H. Matsui on Aug., 2007
 !
+!      subroutine const_communication_table
+!
       module generate_local_all_mesh
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine PROC_LOCAL
 !
 !   --------------------------------------------------------------------
 !
@@ -17,7 +17,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine PROC_LOCAL
+      subroutine const_communication_table
 !
       use m_constants
       use m_geometry_parameter
@@ -78,7 +78,7 @@
 !
       call deallocate_mesh_infomations
 !
-      end subroutine PROC_LOCAL
+      end subroutine const_communication_table
 !
 !   --------------------------------------------------------------------
 !

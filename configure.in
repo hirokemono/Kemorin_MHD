@@ -199,8 +199,8 @@ then
 	
 	USE_gl = "yes"
 
-#	GL_LIBS="-framework GLUT -framework OpenGL  -framework Cocoa"
-#	GL_INC="-I/usr/X11/include"
+	GL_LIBS="-framework GLUT -framework OpenGL  -framework Cocoa"
+	GL_INC="-I/usr/X11/include"
 	COCOA_FLAG="-D__APPLE__"
 # Check Aquaterm
 	LIBS=""

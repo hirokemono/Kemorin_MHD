@@ -1,0 +1,23 @@
+begin parallel_table
+  begin data_files_def
+    debug_flag_ctl            'OFF'
+!
+    num_subdomain_ctl           128
+    mesh_file_prefix            'mesh/in'
+    mesh_file_fmt_ctl           'ascii'
+  end data_files_def
+!
+  begin new_data_files_def
+    num_new_domain_ctl           2
+    new_mesh_prefix            'mesh_target/in'
+    new_mesh_file_fmt_ctl           'ascii'
+  end new_data_files_def
+!
+  begin interpolate_tbl_ctl
+    interpolate_list_prefix  'mesh_fine/fine_2_coase'
+    single_interpolate_prefix  'fine_to_coarse'
+!
+    interpolate_table_format_ctl   "ascii"
+  end interpolate_tbl_ctl
+!
+end parallel_table

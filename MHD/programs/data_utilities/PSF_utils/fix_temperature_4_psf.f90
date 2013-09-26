@@ -19,7 +19,7 @@
 !
       use set_parallel_file_name
       use ucd_IO_select
-      use read_psf_select_4_zlib
+      use load_psf_data
 !
       implicit    none
 !
@@ -66,7 +66,7 @@
 !
       psf_file_header = psf_org_header
       psf_ucd%file_prefix = psf_org_header
-      call sel_read_alloc_psf_file(psf_ucd%ifmt_file, istep_start)
+      call s_load_psf_data(istep_start)
       call set_psf_mesh_to_ucd_data(psf_ucd)
 !
       psf_ucd%file_prefix = psf_fixed_header

@@ -13,6 +13,7 @@ begin partitioner_control
     surf_file_prefix         'mesh/surface'
     edge_file_prefix         'mesh/edge'
 !
+    mesh_file_fmt_ctl        'gzip'
     memory_conservation_ctl     'NO'
   end data_files_def
 !
