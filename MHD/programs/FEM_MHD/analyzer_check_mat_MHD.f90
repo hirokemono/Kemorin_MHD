@@ -34,8 +34,6 @@
       call read_control_4_fem_MHD
       call set_control
 !
-      call time_prog_barrier
-!
       call FEM_check_MHD_mat
 !
       end subroutine init_analyzer

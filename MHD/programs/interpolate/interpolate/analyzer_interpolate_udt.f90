@@ -108,8 +108,6 @@
           call phys_send_recv_all
         end if
 !
-        call time_prog_barrier
-!
 !    interpolation
 !
         if (iflag_debug.gt.0) write(*,*) 's_interpolate_nodal_data'

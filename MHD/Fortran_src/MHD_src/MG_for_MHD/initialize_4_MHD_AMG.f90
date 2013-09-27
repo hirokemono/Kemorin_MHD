@@ -55,7 +55,6 @@
       MG_vector(0)%isize_solver_vect = -1
       call alloc_iccgN_vec_type                                         &
      &           (isix, numnod,  MG_vector(0))
-      call time_prog_barrier
 !
 !     --------------------- 
 !
@@ -64,7 +63,6 @@
       if(iflag_debug .gt. 0) write(*,*) 's_link_djds_tbl_MHD_4_MG'
       call s_link_djds_tbl_MHD_4_MG(MG_djds_tbl(0), MG_djds_tbl_fl(0),  &
      &    MG_djds_tbl_l(0), MG_djds_tbl_fll(0) )
-      call time_prog_barrier
 !
 !     --------------------- 
 !
@@ -87,7 +85,6 @@
 !
         call deallocate_edge_geom_type(MG_edge_mesh(i_level)%edge)
       end do
-      call time_prog_barrier
 !
 !     ---------------------
 !
@@ -98,7 +95,6 @@
      &      MG_vector(i_level), MG_FEM_mat(i_level),                    &
      &      MG_mk_MHD(i_level) )
       end do
-      call time_prog_barrier
 !
 !     --------------------- 
 !
@@ -112,7 +108,6 @@
         call s_set_sgs_diff_array_MHD_AMG(MG_mesh(i_level)%mesh%ele,    &
      &      ak_MHD_AMG(i_level) )
       end do
-      call time_prog_barrier
 !
 !     --------------------- 
 !
@@ -122,7 +117,6 @@
         call s_const_comm_tbl_type_fluid(MG_vector(i_level),            &
      &      MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level) )
       end do
-      call time_prog_barrier
 !
 !     ---------------------
 !
@@ -135,7 +129,6 @@
           call empty_infty_surf_type(MG_mesh(i_level)%group)
         end if
       end do
-      call time_prog_barrier
 !
 !     --------------------- 
 !
@@ -185,7 +178,6 @@
      &        MG_jacobians(i_level))
         end if
       end do
-      call time_prog_barrier
 !
 !     --------------------- 
 !
@@ -202,7 +194,6 @@
      &        MG_FEM_tbl(i_level),  MG_next_table(i_level))
         end if
       end do
-      call time_prog_barrier
 !
 !     --------------------- 
 !
@@ -225,21 +216,17 @@
      &        MG_djds_tbl(i_level) )
         end if
       end do
-      call time_prog_barrier
 !
 !     -----  set DJDS matrix connectivity
 !
       if(iflag_debug .gt. 0) write(*,*) 's_link_MG_MHD_mesh_data'
       call s_link_MG_MHD_mesh_data
-      call time_prog_barrier
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_MG_djds_connect_type'
       call set_MG_djds_connect_type
-      call time_prog_barrier
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_MG_djds_conn_lin_type_MHD'
       call set_MG_djds_conn_lin_type_MHD
-      call time_prog_barrier
 !
 !     --------------------- 
 !
@@ -249,7 +236,6 @@
         call s_int_normal_4_all_surf_type(MG_surf_mesh(i_level)%surf,   &
      &      MG_jacobians(i_level)%jac_2d)
       end do
-      call time_prog_barrier
 !
       do i_level = 1, num_MG_level
         call s_int_surface_param_type(MG_mesh(i_level)%mesh,            &
@@ -257,7 +243,6 @@
      &      MG_jacobians(i_level)%jac_sf_grp,                           &
      &      MG_mesh(i_level)%group)
       end do
-      call time_prog_barrier
 !
 !     --------------------- 
 !
@@ -269,7 +254,6 @@
         call s_set_bc_surface_data_type(MG_mesh(i_level)%group,         &
      &      MG_surf_bc(i_level) )
       end do
-      call time_prog_barrier
 !
 !     --------------------- 
 !
@@ -303,7 +287,6 @@
      &        MG_djds_const_idx_fll(i_level) )
         end if
       end do
-      call time_prog_barrier
 !
 !     ---------------------
 !

@@ -62,8 +62,6 @@
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_params_4_test_mesh'
       call set_ctl_params_4_test_mesh
 !
-      call time_prog_barrier
-!
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_mesh'

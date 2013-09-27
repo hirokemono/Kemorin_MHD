@@ -46,8 +46,6 @@
       if (iflag_debug.eq.1) write(*,*) 's_input_control_itp_mesh'
       call s_input_control_itp_mesh
 !
-      call time_prog_barrier
-!
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
@@ -60,16 +58,12 @@
         call set_nod_and_ele_infos
       end if
 !
-      call time_prog_barrier
-!
 !     --------------------- 
 !
       if (my_rank .lt. ndomain_dest) then
         call s_count_smp_size_4_2nd
         if(i_debug.eq.iflag_full_msg) call check_smp_size_2nd(my_rank)
       end if
-!
-      call time_prog_barrier
 !
       end subroutine init_analyzer
 !

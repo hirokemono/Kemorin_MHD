@@ -13,6 +13,7 @@
       use m_precision
       use m_constants
       use m_parallel_var_dof
+      use calypso_mpi
 !
       use gz_vtk_data_IO
 !
@@ -147,6 +148,7 @@
       if(my_rank .eq. 0) then
         call write_gz_vtk_cell_type(istack_numele(nprocs), nnod_ele)
       end if
+      call calypso_MPI_barrier(ierr)
 !
       end subroutine write_merged_gz_vtk_connect
 !
@@ -198,7 +200,7 @@
           call MPI_WAITALL (ione, req1, sta1, ierr)
         end if
       end do 
-      call  time_prog_barrier
+      call  calypso_MPI_barrier(ierr)
 !
       end subroutine write_merged_gz_vtk_each_field
 !

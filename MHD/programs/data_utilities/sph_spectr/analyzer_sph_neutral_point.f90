@@ -80,18 +80,13 @@
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
       call set_ctl_data_4_sph_utils
 !
-      call time_prog_barrier
-!
 !       set mesh informations
 !
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'
       call input_mesh(my_rank)
 !
-      call time_prog_barrier
-!
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)
-      call time_prog_barrier
 !
 !       set spectr grids
 !
@@ -121,18 +116,15 @@
       call set_radius_dat_4_sph_dynamo
       if (iflag_debug.gt.0) write(*,*) 'set_dr_for_nonequi'
       call set_dr_for_nonequi
-      call time_prog_barrier
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
       call const_2nd_fdm_matrices
-      call time_prog_barrier
 !
 !      if (iflag_debug.gt.0) write(*,*) 's_cal_sph_bc_fdm_matrices'
 !      call s_cal_sph_bc_fdm_matrices
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_coefs'
       call const_2nd_fdm_coefs
-      call time_prog_barrier
 !
 ! ---------------------------------
 !
@@ -144,7 +136,6 @@
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
       call initialize_sph_trans
 !
-      call time_prog_barrier
 !      call check_schmidt_poly_rtm(my_rank+40)
 !
       end subroutine init_analyzer
@@ -185,7 +176,6 @@
 !          if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
           call set_rj_phys_data_from_IO
         end if
-        call time_prog_barrier
 !
 !  pickup components
 !

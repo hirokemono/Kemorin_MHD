@@ -33,6 +33,7 @@
 !
       use m_machine_parameter
       use m_parallel_var_dof
+      use calypso_mpi
 !
       use t_mesh_data
       use t_surface_data
@@ -62,7 +63,7 @@
       num_pvr = num_pvr_ctl
       if (num_pvr .gt. 0) call pvr_init_type(fem, sf_mesh_psf%surf,     &
      &                        fld_nod)
-      call time_prog_barrier
+      call calypso_MPI_barrier(ierr)
 !
       ierror = ierr
 !

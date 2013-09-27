@@ -51,18 +51,13 @@
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
       call set_ctl_data_4_sph_utils
 !
-      call time_prog_barrier
-!
 !       set mesh informations
 !
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'
       call input_mesh(my_rank)
 !
-      call time_prog_barrier
-!
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)
-      call time_prog_barrier
 !
 !       set spectr grids
 !
@@ -90,7 +85,6 @@
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
       call initialize_sph_trans
 !
-      call time_prog_barrier
 !      call check_schmidt_poly_rtm(my_rank+40)
 !
       end subroutine initialize_ene_sph_layer
@@ -119,7 +113,6 @@
         call sel_read_step_SPH_field_file(my_rank, i_step)
 !
         call set_rj_phys_data_from_IO
-        call time_prog_barrier
 !
 !  evaluate energies
 !

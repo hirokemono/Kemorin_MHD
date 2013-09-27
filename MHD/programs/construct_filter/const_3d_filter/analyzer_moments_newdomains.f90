@@ -51,9 +51,6 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
       call set_control_filter_newdomain
 !
-!
-      call time_prog_barrier
-!
       end subroutine init_analyzer
 !
 ! ----------------------------------------------------------------------
@@ -69,8 +66,6 @@
      &  .or. iflag_set_filter_moms.gt.0) then
         call trans_filter_moms_newmesh_para
       end if
-!
-      call time_prog_barrier
 !
       end subroutine analyze
 !

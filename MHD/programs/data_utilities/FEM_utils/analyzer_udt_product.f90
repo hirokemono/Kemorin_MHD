@@ -54,8 +54,6 @@
       if (iflag_debug.eq.1) write(*,*) 'input_mesh'
       call input_mesh(my_rank)
 !
-      call time_prog_barrier
-!
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'

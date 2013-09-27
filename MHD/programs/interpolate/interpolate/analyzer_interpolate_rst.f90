@@ -138,7 +138,6 @@
           call phys_send_recv_all
         end if
 !
-        call time_prog_barrier
         call MPI_Bcast(time, ione, MPI_DOUBLE_PRECISION, izero,         &
      &      SOLVER_COMM, ierr)
         call MPI_Bcast(i_step_MHD, ione, MPI_INTEGER, izero,            &
@@ -146,8 +145,6 @@
 !
         if (iflag_debug.gt.0)  write(*,*) 's_interpolate_nodal_data'
         call s_interpolate_nodal_data
-!
-        call time_prog_barrier
 !
         if (my_rank .lt. ndomain_dest) then
           numgrid_phys_IO = nnod_2nd

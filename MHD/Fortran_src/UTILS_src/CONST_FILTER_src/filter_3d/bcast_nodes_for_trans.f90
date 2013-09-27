@@ -38,7 +38,6 @@
         call count_nnod_whole_domain(mesh_head)
       end if
 !
-      call time_prog_barrier
       call MPI_Bcast(nnod_s_domin, ione, MPI_INTEGER, izero,            &
      &    SOLVER_COMM, ierr)
 !
@@ -57,8 +56,6 @@
         call set_domain_grp_each_domain(mesh_head, my_rank)
       end if
 !
-      call time_prog_barrier
-!
       END_TIME= MPI_WTIME()
       COMMtime = END_TIME - START_TIME
       START_TIME = END_TIME
@@ -76,7 +73,6 @@
       integer(kind = kint), intent(in) :: nprocs_2nd
 !
 !
-      call time_prog_barrier
       call MPI_Bcast(num_intnod_sub(1),     nprocs_2nd, MPI_INTEGER,    &
      &    izero, SOLVER_COMM, ierr)
       call MPI_Bcast(istack_intnod_sub(1),  nprocs_2nd, MPI_INTEGER,    &
@@ -112,8 +108,6 @@
 !
 !
       num = 3 * nnod_global
-      call time_prog_barrier
-!
 !
       call MPI_Bcast(xx_whole_nod(1,1), num, MPI_DOUBLE_PRECISION,      &
      &    izero, SOLVER_COMM, ierr)

@@ -73,7 +73,6 @@
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_iccgN_matrix'
       call allocate_iccgN_matrix(isix, nnod_rtp)
-      call time_prog_barrier
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
       call init_rms_4_sph_spectr
@@ -100,15 +99,11 @@
         call init_sum_coriolis_sph
       end if
 !
-      call time_prog_barrier
-!
-! --------- set reference temperature 
+! --------- set reference temperature
 !
       call allocate_reft_rj_data
       call s_set_ref_temp_sph_mhd
 !      call check_reference_temp(my_rank)
-!
-      call time_prog_barrier
 !
 ! ---------------------------------
 !
@@ -132,13 +127,11 @@
 !
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
       call s_set_bc_sph_mhd
-      call time_prog_barrier
 !
 !  -------------------------------
 !
       if(iflag_debug.gt.0) write(*,*)' s_const_radial_mat_4_sph'
       call s_const_radial_mat_4_sph
-      call time_prog_barrier
 !*
 !* obtain linear terms for starting
 !*

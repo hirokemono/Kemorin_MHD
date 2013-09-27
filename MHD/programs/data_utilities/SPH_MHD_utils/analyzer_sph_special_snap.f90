@@ -14,6 +14,7 @@
       module analyzer_sph_special_snap
 !
       use m_precision
+      use calypso_mpi
 !
       use m_machine_parameter
       use m_parallel_var_dof
@@ -110,7 +111,7 @@
 !
       call output_elapsed_times
 !
-      call time_prog_barrier
+      call calypso_MPI_barrier(ierr)
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
       end subroutine evolution_sph_special_snap
@@ -197,7 +198,7 @@
       integer(kind = kint) :: l
 !
 !
-      ltr_half = 3*(l_truncation+1) / 4
+      ltr_half = 1*(l_truncation+1) / 2
       allocate(ipick_degree(ltr_half))
       do l = 1, ltr_half
         ipick_degree(l) = l-1
@@ -205,6 +206,8 @@
 !
       call pick_degree_sph_spectr(ltr_half, ipick_degree,               &
      &    ithree, ipol%i_velo)
+      call pick_degree_sph_spectr(ltr_half, ipick_degree,               &
+     &    ithree, ipol%i_magne)
       deallocate(ipick_degree)
 
 !      call take_zonal_mean_rj_field(ithree, ipol%i_velo)

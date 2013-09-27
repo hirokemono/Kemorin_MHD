@@ -40,8 +40,6 @@
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_params_sph_bc_temp'
       call set_ctl_params_sph_bc_temp
 !
-      call time_prog_barrier
-!
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'
@@ -62,8 +60,6 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_sph_temp_bc'
       call const_sph_temp_bc
-!
-      call time_prog_barrier
 !
       end subroutine analyze_bc_temp
 !

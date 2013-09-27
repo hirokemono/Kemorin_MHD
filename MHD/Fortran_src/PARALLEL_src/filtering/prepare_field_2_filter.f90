@@ -85,7 +85,6 @@
       end do
 !$omp end parallel do
 !
-      call time_prog_barrier
 !      write(*,*) 'istack_import_filter(num_neib_filter)', istack_import_filter(num_neib_filter)
 !      write(*,*) 'istack_export_filter(num_neib_filter)', istack_export_filter(num_neib_filter)
 !      write(*,*) 'item_import_filter', size(item_import_filter)
@@ -100,7 +99,6 @@
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
-      call time_prog_barrier
 !      call parallel_abort(size(x_vec_filtering), 'x_vec_filtering')
 !
 !

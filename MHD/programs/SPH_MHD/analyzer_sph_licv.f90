@@ -14,6 +14,7 @@
       module analyzer_sph_licv
 !
       use m_precision
+      use calypso_mpi
 !
       use m_machine_parameter
       use m_parallel_var_dof
@@ -58,17 +59,11 @@
       call end_eleps_time(4)
       call start_eleps_time(2)
 !
-!     --------------------- 
-!
-      call time_prog_barrier
-!
 !   matrix assembling
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_linear_conv'
       call SPH_initialize_linear_conv
-      call time_prog_barrier
-!
-      call time_prog_barrier
+      call calypso_MPI_barrier(ierr)
 !
       call end_eleps_time(2)
 !
@@ -128,7 +123,7 @@
 !
       call output_elapsed_times
 !
-      call time_prog_barrier
+      call calypso_MPI_barrier(ierr)
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
         end subroutine evolution_sph_licv

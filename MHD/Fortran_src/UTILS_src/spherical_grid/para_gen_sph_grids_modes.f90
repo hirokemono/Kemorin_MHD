@@ -14,6 +14,7 @@
       use m_machine_parameter
       use m_parallel_var_dof
       use m_work_time
+      use calypso_mpi
 !
       use set_local_sphere_by_global
 !
@@ -120,8 +121,7 @@
 !
       if(iflag_memory_conserve_sph .gt. 0) then
         write(*,*) 'barrier for rlm', my_rank
-        call time_prog_barrier
-        write(*,*) 'barrier out for rlm', my_rank
+        call calypso_MPI_barrier(ierr)
       end if
 !
       end subroutine para_gen_sph_transfer_grids
@@ -199,10 +199,6 @@
 !
       call deallocate_rtp_1d_local_idx
       call deallocate_rj_1d_local_idx
-!
-!      write(*,*) 'barrier for rj', my_rank
-!      call time_prog_barrier
-!      write(*,*) 'barrier out for rj', my_rank
 !
       end subroutine para_gen_sph_modes_grids
 !

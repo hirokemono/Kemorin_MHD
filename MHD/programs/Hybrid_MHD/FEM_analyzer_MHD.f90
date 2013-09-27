@@ -63,7 +63,6 @@
 !
 !    IO elapsed end 
 !    precondition elaps start
-      call time_prog_barrier
       call end_eleps_time(4)
       call start_eleps_time(2)
 !

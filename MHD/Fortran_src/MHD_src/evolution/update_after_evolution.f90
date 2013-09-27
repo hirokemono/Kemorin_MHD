@@ -410,7 +410,6 @@
            iflag_nod_update(iphys%i_filter_magne+1) = 1
            iflag_nod_update(iphys%i_filter_magne+2) = 1
          end if
-         call time_prog_barrier
 !
            if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
      &         'filtered_magne_on_ele', iphys_ele%i_filter_magne

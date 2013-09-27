@@ -29,8 +29,6 @@
 !
 !     --------------------- 
 !
-      call time_prog_barrier
-!
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
       call read_control_4_fem_snap
       if (iflag_debug.eq.1) write(*,*) 'set_control'

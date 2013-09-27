@@ -41,21 +41,17 @@
       call read_control_4_gen_shell_grids
       call s_set_control_4_gen_shell_grids
 !
-      call time_prog_barrier
       if(my_rank .eq. 0) then
         call check_global_spheric_parameter
       end if
-        call output_set_radial_grid
+      call output_set_radial_grid
 !
 !  ========= Generate spherical harmonics table ========================
 !
-      call time_prog_barrier
       call s_const_global_sph_grids_modes
 !
       if(iflag_debug .gt. 0) write(*,*) 's_const_1d_ele_connect_4_sph'
       call s_const_1d_ele_connect_4_sph
-!
-      call time_prog_barrier
 !
       call start_eleps_time(2)
       call para_gen_sph_transfer_grids
@@ -73,7 +69,6 @@
 !C===
       call start_eleps_time(5)
       if(my_rank .eq. 0)  call gaunt_coriolis(l_truncation)
-      call time_prog_barrier
       call end_eleps_time(5)
       call end_eleps_time(1)
 !

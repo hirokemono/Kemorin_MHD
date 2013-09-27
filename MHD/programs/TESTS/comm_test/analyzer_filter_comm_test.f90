@@ -79,7 +79,6 @@
       end if
 !
       call deallocate_filter_comm_test_IO
-      call time_prog_barrier
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'
 !

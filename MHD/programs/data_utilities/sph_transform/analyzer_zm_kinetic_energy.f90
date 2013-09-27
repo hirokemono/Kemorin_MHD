@@ -43,7 +43,6 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans
-      call time_prog_barrier
 !
 !  -------------------------------
 !

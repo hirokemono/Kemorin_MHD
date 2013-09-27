@@ -15,6 +15,7 @@
 !
       use m_machine_parameter
       use m_parallel_var_dof
+      use calypso_mpi
 !
       implicit  none
 !
@@ -34,7 +35,7 @@
 !
       num_pvr = num_pvr_ctl
       if (num_pvr .gt. 0) call pvr_init_1st
-      call time_prog_barrier
+      call calypso_MPI_barrier(ierr)
 !
       ierror = ierr
 !

@@ -204,9 +204,6 @@
 !
       call int_mass_matrices
 !
-!     --------------------- 
-!
-      call time_prog_barrier
 !
       end subroutine init_analyzer_snap
 !

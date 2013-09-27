@@ -131,8 +131,6 @@
       if (iflag_debug.eq.1) write(*,*) 'collect_mesh_4_psf'
       call collect_mesh_4_psf
 !
-      call time_prog_barrier
-!
       if (iflag_debug.eq.1) write(*,*) 'output_psf_grids'
       call output_psf_grids
 !

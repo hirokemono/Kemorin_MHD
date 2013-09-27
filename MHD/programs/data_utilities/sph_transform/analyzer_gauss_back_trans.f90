@@ -39,7 +39,6 @@
       call read_control_data_sph_trans
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans
-      call time_prog_barrier
 !
 !  ------  initialize FEM data
 !

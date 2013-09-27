@@ -75,7 +75,6 @@
           call alloc_zero_mesh_data( MG_mesh(i_level),                  &
      &        MG_surf_mesh(i_level), MG_edge_mesh(i_level))
         end if
-        call time_prog_barrier
 !
         call sync_group_name_4_empty(MG_vector(i_level)%nprocs,         &
      &      MG_mesh(i_level)%group%nod_grp,                             &
@@ -107,8 +106,6 @@
         else
           call alloc_zero_itp_tables(MG_itp(i_level)%f2c)
         end if
-!
-        call time_prog_barrier
       end do
 !
 !
@@ -123,8 +120,6 @@
         else
           call alloc_zero_itp_tables(MG_itp(i_level)%c2f)
         end if
-!
-        call time_prog_barrier
       end do
 !
 !
@@ -142,7 +137,6 @@
             call alloc_zero_itp_tables(MG_c2f_ele_tbl(i_level))
           end if
 !
-          call time_prog_barrier
         end do
       end if
 !

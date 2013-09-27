@@ -45,8 +45,6 @@
       call s_set_ctl_data_4_sph_trans
       call set_ctl_data_4_pick_zm
 !
-      call time_prog_barrier
-!
 !    Initialize FEM grid
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_back_trans'
       call FEM_initialize_back_trans

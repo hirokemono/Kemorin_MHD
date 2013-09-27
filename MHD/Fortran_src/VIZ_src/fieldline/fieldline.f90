@@ -77,8 +77,6 @@
       call allocate_local_fline
       call allocate_global_fline_num
 !
-      call time_prog_barrier
-!
       end subroutine field_line_init
 !
 !  ---------------------------------------------------------------------
@@ -148,7 +146,6 @@
       integer(kind = kint) :: i_fln
 !
 !
-      call time_prog_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_local_field_4_fline'
       call set_local_field_4_fline(numnod, inod_smp_stack,              &
      &          xx, radius, a_radius, s_cylinder, a_s_cylinder,         &
@@ -156,7 +153,6 @@
      &          d_nod)
 !
       do i_fln = 1, num_fline
-      call time_prog_barrier
         if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
         call s_set_fields_for_fieldline(i_fln,                          &
      &        numnod, numele, numsurf, nnod_4_surf,                     &
@@ -164,8 +160,6 @@
      &        x_surf, vnorm_surf, area_surf,                            &
      &        num_mat, num_mat_bc, mat_istack,  mat_item)
       end do
-!
-      call time_prog_barrier
 !
       do i_fln = 1, num_fline
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
@@ -176,12 +170,9 @@
      &          num_neib, ntot_import, ntot_export, id_neib,            &
      &          istack_import, istack_export, item_import, item_export)
 !
-        call time_prog_barrier
         if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
         call s_collect_fline_data(istep_psf, i_fln)
       end do
-!
-        call time_prog_barrier
 !
       end subroutine field_line_main
 !

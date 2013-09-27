@@ -34,7 +34,6 @@
 !
       num_fline = num_fline_ctl
       if (num_fline .gt. 0) call field_line_init_1st
-      call time_prog_barrier
 !
       ierror = ierr
 !

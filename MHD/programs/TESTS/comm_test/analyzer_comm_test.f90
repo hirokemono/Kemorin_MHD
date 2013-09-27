@@ -107,8 +107,6 @@
         call deallocate_geom_comm_test_IO
       end if
 !
-      call time_prog_barrier
-!
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'
 !
       end subroutine analyze

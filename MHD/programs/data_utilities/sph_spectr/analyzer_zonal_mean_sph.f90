@@ -10,6 +10,8 @@
       module analyzer_zonal_mean_sph
 !
       use m_precision
+      use calypso_mpi
+!
       use m_constants
       use m_machine_parameter
       use m_schmidt_poly_on_rtm
@@ -45,8 +47,6 @@
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
       call set_ctl_data_4_sph_utils
 !
-      call time_prog_barrier
-!
 !       set spectr grids
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
@@ -65,9 +65,7 @@
       call allocate_phys_rj_data
       call set_sph_sprctr_data_address
 !
-!  -------------------------------
-!
-      call time_prog_barrier
+      call calypso_MPI_barrier(ierr)
 !
       end subroutine init_analyzer
 !
@@ -95,7 +93,6 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO
-        call time_prog_barrier
 !
 !  evaluate energies
 !

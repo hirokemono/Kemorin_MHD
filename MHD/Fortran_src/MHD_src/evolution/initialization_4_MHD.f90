@@ -145,8 +145,6 @@
 !
 !     ---------------------
 !
-      call time_prog_barrier
-!
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
       call allocate_array
 !
@@ -215,7 +213,6 @@
 !
 !     ---------------------
 !
-      call time_prog_barrier
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_node'
       call cal_volume_node
 !
@@ -246,7 +243,6 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_stability_4_diffuse'
       call cal_stability_4_diffuse
-      call time_prog_barrier
 !
 !     ---------------------
 !

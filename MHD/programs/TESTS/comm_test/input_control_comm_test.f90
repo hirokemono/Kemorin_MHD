@@ -37,17 +37,11 @@
       use set_edge_geometry_4_IO
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'time_prog_barrier'
-      call time_prog_barrier
-!
-!
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_comm_test'
       call read_control_4_comm_test
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_comm_test'
       call set_ctl_params_4_comm_test
-!
-      call time_prog_barrier
 !
 !  --  read geometry
 !

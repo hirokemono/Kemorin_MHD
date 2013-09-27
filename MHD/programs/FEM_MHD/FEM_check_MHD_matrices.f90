@@ -45,7 +45,6 @@
       call input_mesh(my_rank)
 !
       call input_control_4_MHD
-      call time_prog_barrier
 !
 !   matrix assembling
 !

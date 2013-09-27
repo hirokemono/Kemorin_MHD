@@ -27,8 +27,6 @@
       use set_control_visualizer
 !
 !
-      call time_prog_barrier
-!
 !     read controls
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'

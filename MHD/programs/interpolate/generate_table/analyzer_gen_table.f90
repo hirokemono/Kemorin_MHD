@@ -106,16 +106,12 @@
       table_file_header = work_header
       call sel_write_itp_coefs_dest(my_rank)
 !
-      call time_prog_barrier
-!
 !   construct table for originate domain
 !
       if (iflag_debug.eq.1)                                             &
      &   write(*,*) 'const_interpolate_table_4_orgin'
       call const_interpolate_table_4_orgin
 !
-!
-      call time_prog_barrier
 !
       if (my_rank .eq. 0) then
         call delete_parallel_files(ione, nprocs, work_header)

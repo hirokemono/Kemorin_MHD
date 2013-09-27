@@ -91,12 +91,10 @@
 !      call cvt_double_rgba_to_char_rgb(ntot_pixel, rgba_lc(1,1),       &
 !     &    rgb_chara_lc(1,1))
 !
-!      call time_prog_barrier
 !      write(img_head_tmp,'(a,i1)')  'img_tmp.', my_rank
 !      call sel_output_image_file(id_pvr_file_type(i_pvr),              &
 !     &    img_head_tmp, n_pvr_pixel(1,i_pvr), n_pvr_pixel(2,i_pvr),    &
 !     &    rgb_chara_lc)
-!      call time_prog_barrier
 !
       end subroutine s_ray_trace_4_each_image
 !

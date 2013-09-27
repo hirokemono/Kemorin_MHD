@@ -17,11 +17,10 @@
       module merged_vtk_data_IO
 !
       use m_precision
+      use calypso_mpi
       use m_constants
       use m_parallel_var_dof
       use vtk_data_IO
-!
-      use t_ucd_data
 !
       implicit none
 !
@@ -159,6 +158,7 @@
           call write_vtk_cell_type(id_vtk,                              &
      &        istack_numele(nprocs),  nnod_ele)
       end if
+      call  calypso_MPI_barrier(ierr)
 !
       end subroutine write_merged_vtk_connect
 !
@@ -211,7 +211,7 @@
           call MPI_WAITALL (ione, req1, sta1, ierr)
         end if
       end do
-      call time_prog_barrier
+      call calypso_MPI_barrier(ierr)
 !
       end subroutine write_merged_vtk_each_field
 !

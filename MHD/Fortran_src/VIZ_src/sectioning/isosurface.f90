@@ -171,8 +171,6 @@
       if (iflag_debug.eq.1) write(*,*) 'collect_data_4_iso'
       call collect_data_4_iso
 !
-      call time_prog_barrier
-!
       if (iflag_debug.eq.1) write(*,*) 'output_iso_ucds'
       call output_iso_ucds(istep_iso)
 !

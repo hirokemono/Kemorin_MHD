@@ -51,8 +51,6 @@
       if (iflag_debug.eq.1) write(*,*) 'input_mesh'
       call input_mesh(my_rank)
 !
-      call time_prog_barrier
-!
 !  -----    construct geometry informations
 !
       if (iflag_debug.gt.0) write(*,*) 'allocate_iccgN_matrix'
@@ -64,7 +62,6 @@
 !  -------------------------------
 !
       call deallocate_edge_geometry
-      call time_prog_barrier
 !
       if (iflag_debug.gt.0) write(*,*) 'init_send_recv'
       call init_send_recv

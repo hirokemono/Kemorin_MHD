@@ -36,8 +36,6 @@
       call read_control_data_section_only(ierr)
       call set_control_params_4_viz(my_rank, ierr)
 !
-      call time_prog_barrier
-!
 !
 !  FEM Initialization
       call FEM_initialize_surface

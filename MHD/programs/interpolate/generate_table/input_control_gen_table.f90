@@ -30,17 +30,11 @@
       use load_mesh_data
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'time_prog_barrier'
-      call time_prog_barrier
-!
-!
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_gen_itp_table'
       call read_control_4_gen_itp_table
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_gen_table'
       call set_ctl_params_4_gen_table
-!
-      call time_prog_barrier
 !
 !  --  read geometry
 !

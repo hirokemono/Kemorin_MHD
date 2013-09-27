@@ -34,8 +34,6 @@
       use input_MG_data
 !
 !
-      call time_prog_barrier
-!
       call input_meshes_4_MHD
 !
       if (     ((method_4_solver(1:1).eq.'M')                           &

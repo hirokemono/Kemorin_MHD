@@ -20,6 +20,7 @@
       module volume_rendering
 !
       use m_precision
+      use calypso_mpi
 !
       use m_constants
       use m_machine_parameter
@@ -237,7 +238,7 @@
      &                'write_pvr_image_file', i_pvr
           call write_pvr_image_file(i_pvr, i_rot, istep_pvr)
 !
-          call time_prog_barrier
+          call calypso_MPI_barrier(ierr)
         end do
 !
       end do

@@ -12,6 +12,8 @@
       module analyzer_MHD_lengthscale
 !
       use m_precision
+      use calypso_mpi
+!
       use m_constants
       use m_machine_parameter
       use m_parallel_var_dof
@@ -59,8 +61,6 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_mesh'
       call input_mesh(my_rank)
-!
-      call time_prog_barrier
 !
 !     ---------------------
 !
@@ -113,7 +113,7 @@
       end do
 !
       call deallocate_work_4_lscale
-      call time_prog_barrier
+      call calypso_MPI_barrier(ierr)
 !
       end subroutine analyze_MHD_lscale
 !

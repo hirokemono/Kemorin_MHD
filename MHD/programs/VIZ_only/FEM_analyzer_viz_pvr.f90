@@ -56,8 +56,6 @@
 !
       call allocate_iccgN_matrix(isix, numnod)
 !
-      call time_prog_barrier
-!
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)
 !
@@ -76,7 +74,6 @@
 !     --------------------- 
 !
       call deallocate_edge_geometry
-      call time_prog_barrier
 !
 !     ---------------------
 !

@@ -40,8 +40,6 @@
       integer (kind = kint) :: nd, ii
 !
 !
-      call time_prog_barrier
-!
       call set_output_flag(ii, istep_max_dt, i_step_check)
 !
       if ( ii .eq. 0 ) then

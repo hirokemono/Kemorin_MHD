@@ -39,10 +39,6 @@
       use set_stack_tbl_wtype_org_smp
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'time_prog_barrier'
-      call time_prog_barrier
-!
-!
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_interpolate'
       call read_control_4_interpolate
 !
@@ -50,8 +46,6 @@
       call set_ctl_params_interpolation
 !
       call set_ctl_4_itp_steps
-!
-      call time_prog_barrier
 !
 !  --  read geometry for origin (if exist)
 !
@@ -63,8 +57,6 @@
 !
       end if
 !
-      call time_prog_barrier
-!
 !  --  read 2nd mesh for target (if exist)
 !
 !
@@ -73,9 +65,6 @@
         iflag_mesh_file_fmt = ifmt_itp_mesh_file
         call input_2nd_mesh(my_rank)
       end if
-!
-      call time_prog_barrier
-      call MPI_COMM_DUP (SOLVER_COMM, SOLVER_COMM, ierr)
 !
 !  --  read interpolate table
 !
@@ -93,8 +82,6 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_stack_tbl_wtype_org_smp'
       call s_set_stack_tbl_wtype_org_smp
-!
-      call time_prog_barrier
 !
       end subroutine s_input_control_interpolate
 !

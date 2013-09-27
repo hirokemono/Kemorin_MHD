@@ -41,8 +41,6 @@
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_zonal_fft'
       call s_set_ctl_data_4_zonal_fft
 !
-      call time_prog_barrier
-!
 !       set spectr grids
 !
       call sel_read_geom_rtp_file(my_rank)
@@ -69,9 +67,7 @@
 !
       call set_idx_4_zonal_ene_spec
 !
-      call time_prog_barrier
-!
-       end subroutine init_analyzer
+      end subroutine init_analyzer
 !
 ! ----------------------------------------------------------------------
 !

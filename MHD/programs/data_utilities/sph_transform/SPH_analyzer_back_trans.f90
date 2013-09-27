@@ -75,7 +75,7 @@
       call initialize_sph_trans
       call init_pole_transform
 !
-      call time_prog_barrier
+!      call calypso_MPI_barrier(ierr)
 !      call check_schmidt_poly_rtm(my_rank+40)
 !
       end subroutine SPH_initialize_back_trans

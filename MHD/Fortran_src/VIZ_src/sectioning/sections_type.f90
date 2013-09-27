@@ -79,14 +79,12 @@
         call cross_section_init_type(fem,                               &
      &      sf_mesh_psf%surf, eg_mesh_psf%edge, fld_nod)
       end if
-      call time_prog_barrier
 !
       num_iso = num_iso_ctl
       if (num_iso .gt. 0) then
         call isosurface_init_type(fem,                                  &
      &      sf_mesh_psf%surf, eg_mesh_psf%edge, fld_nod)
       end if
-      call time_prog_barrier
 !
       ierror = ierr
 !

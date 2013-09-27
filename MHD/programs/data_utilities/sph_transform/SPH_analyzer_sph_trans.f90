@@ -54,9 +54,6 @@
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
       call initialize_sph_trans
 !
-      call time_prog_barrier
-!      call check_schmidt_poly_rtm(my_rank+40)
-!
       end subroutine SPH_initialize_sph_trans
 !
 ! ----------------------------------------------------------------------

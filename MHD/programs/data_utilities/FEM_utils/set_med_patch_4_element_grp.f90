@@ -304,7 +304,6 @@
         allocate(xyz_med_g(3,3*npatch_g))
       end if
 !
-      call time_prog_barrier
       call MPI_Isend(xyz_med(1,1), 9*npatch_grp, MPI_DOUBLE_PRECISION,  &
      &      izero, 0, SOLVER_COMM, req1, ierr)
 !

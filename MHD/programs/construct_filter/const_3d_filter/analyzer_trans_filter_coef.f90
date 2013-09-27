@@ -41,8 +41,6 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
       call set_control_filter_newdomain
 !
-      call time_prog_barrier
-!
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'bcast_parallel_domain_tbl'

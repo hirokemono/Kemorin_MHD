@@ -55,8 +55,6 @@
       call set_control_filter_newdomain
 !
 !
-      call time_prog_barrier
-!
       if (iflag_debug.eq.1) write(*,*) 'bcast_parallel_domain_tbl'
       call bcast_parallel_domain_tbl(target_mesh_head)
 !
@@ -74,8 +72,6 @@
       if (iflag_debug.eq.1) write(*,*) 'local_newdomain_filter_para'
       call local_newdomain_filter_para
 !
-      call time_prog_barrier
-!
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_para'
       if (iflag_set_filter_elen .gt. 0                                  &
      &  .or. iflag_set_filter_moms.gt.0) then
@@ -86,8 +82,6 @@
         if (iflag_debug.eq.1) write(*,*) 'filters_4_newdomains_para'
         call filters_4_newdomains_para
       end if
-!
-      call time_prog_barrier
 !
       end subroutine analyze
 !

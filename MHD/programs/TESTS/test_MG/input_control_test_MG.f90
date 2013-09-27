@@ -35,24 +35,17 @@
 !
 !  --  read control data
 !
-      if (iflag_debug.eq.1) write(*,*) 'time_prog_barrier'
-      call time_prog_barrier
-!
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_mesh_test'
       call read_control_4_MG_test
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_test_MG'
       call set_ctl_test_MG
 !
-      call time_prog_barrier
-!
 !  --  read geometry
 !
       iflag_mesh_file_fmt = ifile_type
       if (iflag_debug.eq.1) write(*,*) 'input_mesh'
       call input_mesh(my_rank)
-!
-      call time_prog_barrier
 !
 !  --  read geometry data for MG
 !

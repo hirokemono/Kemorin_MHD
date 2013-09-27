@@ -62,9 +62,6 @@
       call initialize_sph_trans
       call init_pole_transform
 !
-      call time_prog_barrier
-!      call check_schmidt_poly_rtm(my_rank+40)
-!
       end subroutine SPH_init_gauss_back_trans
 !
 ! ----------------------------------------------------------------------

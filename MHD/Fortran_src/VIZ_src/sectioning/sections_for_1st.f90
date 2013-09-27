@@ -45,11 +45,9 @@
 !
       num_psf = num_psf_ctl
       if (num_psf .gt. 0)  call cross_section_init_1st
-      call time_prog_barrier
 !
       num_iso = num_iso_ctl
       if (num_iso .gt. 0) call isosurface_init_1st
-      call time_prog_barrier
 !
       ierror = ierr
 !

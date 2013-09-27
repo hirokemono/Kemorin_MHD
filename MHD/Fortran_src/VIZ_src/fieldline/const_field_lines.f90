@@ -20,6 +20,7 @@
       use m_machine_parameter
       use m_parallel_var_dof
       use m_source_4_filed_line
+      use calypso_mpi
 !
       implicit  none
 !
@@ -82,7 +83,7 @@
           write(my_rank+50,*) i, isf_fline_start(1:3,i)
         end do
       end if
-      call time_prog_barrier
+      call calypso_MPI_barrier(ierr)
 !
       iflag_comm = 0
       nnod_line_l = 0
@@ -106,7 +107,7 @@
      &          num_neib, ntot_import, id_neib, istack_import,          &
      &          item_import)
         end do
-        call time_prog_barrier
+        call calypso_MPI_barrier(ierr)
 !
         do ip = 1, nprocs
           src_rank = ip - 1

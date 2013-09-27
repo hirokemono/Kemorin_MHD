@@ -7,24 +7,25 @@
 !!@n    Modified on Dec., 2012
 !
 !> @brief  Basic parameters for MPI parallelization
-!
-!      subroutine parallel_cal_init
-!      subroutine parallel_cal_fin
-!
-!      subroutine parallel_abort(code , message)
-!      subroutine time_prog_barrier
-!
-!      subroutine verify_iccgN_matrix(NB, numnod)
-!      subroutine allocate_iccgN_matrix(NB, numnod)
-!      subroutine deallocate_iccgN_matrix
-!
-!      subroutine allocate_iccg_int_matrix(numnod)
-!      subroutine deallocate_iccg_int_matrix
+!!
+!!@verbatim
+!!      subroutine parallel_cal_init
+!!      subroutine parallel_cal_fin
+!!
+!!      subroutine parallel_abort(code , message)
+!!
+!!      subroutine verify_iccgN_matrix(NB, numnod)
+!!      subroutine allocate_iccgN_matrix(NB, numnod)
+!!      subroutine deallocate_iccgN_matrix
+!!
+!!      subroutine allocate_iccg_int_matrix(numnod)
+!!      subroutine deallocate_iccg_int_matrix
+!!@endverbatim
 !
       module   m_parallel_var_dof
 !
-      use calypso_mpi
       use m_precision
+      use calypso_mpi
 !
       implicit  none
 !
@@ -80,15 +81,6 @@
       end subroutine parallel_cal_fin
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine time_prog_barrier
-!
-!
-      call MPI_BARRIER(SOLVER_COMM, ierr)
-!
-       end subroutine time_prog_barrier
-!
 !  ---------------------------------------------------------------------
 !
        subroutine parallel_abort(code, message)

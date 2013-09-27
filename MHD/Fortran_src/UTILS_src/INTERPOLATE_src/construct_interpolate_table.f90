@@ -92,7 +92,6 @@
         call check_missing_nodes(ierr_local, my_rank)
 !
   1     continue
-        call time_prog_barrier
 !
         call MPI_allREDUCE (ierr_local, ierr_missing, 1,                &
      &      MPI_INTEGER, MPI_SUM, SOLVER_COMM, ierr)
@@ -100,7 +99,6 @@
 !
       end do
 !
-      call time_prog_barrier
       if (ierr_missing .gt. 0) then
         write(*,*) 'There is missing nodes in domain ', my_rank
       end if

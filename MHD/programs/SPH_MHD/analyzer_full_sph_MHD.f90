@@ -14,6 +14,7 @@
       module analyzer_full_sph_MHD
 !
       use m_precision
+      use calypso_mpi
 !
       use m_machine_parameter
       use m_parallel_var_dof
@@ -75,17 +76,16 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize'
       call FEM_initialize
-      call time_prog_barrier
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_to_FEM_init_MHD'
       call SPH_to_FEM_init_MHD
-      call time_prog_barrier
 !
 !        Initialize visualization
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
       call init_visualize_surface(ierr)
 !
+      call calypso_MPI_barrier(ierr)
       call end_eleps_time(2)
 !
       end subroutine initialize_full_sph_mhd
@@ -161,7 +161,7 @@
 !
       call output_elapsed_times
 !
-      call time_prog_barrier
+      call calypso_MPI_barrier(ierr)
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
       end subroutine evolution_full_sph_mhd

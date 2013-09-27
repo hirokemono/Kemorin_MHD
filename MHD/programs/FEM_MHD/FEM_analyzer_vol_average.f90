@@ -49,8 +49,6 @@
 !
 !     --------------------- 
 !
-      call time_prog_barrier
-!
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'

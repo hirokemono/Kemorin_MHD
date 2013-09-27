@@ -330,8 +330,6 @@
       end do
       ntot_gl_fline = istack_all_fline(nprocs,i_fln)
 !
-      call time_prog_barrier
-!
       call set_fline_start_surf(my_rank, i_fln,                         &
      &    numnod, numele, numsurf, nnod_4_surf,                         &
      &    ie_surf, isf_4_ele, iele_4_surf)

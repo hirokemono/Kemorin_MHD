@@ -14,8 +14,10 @@
 !
       use m_precision
       use m_constants
+!
       use m_parallel_var_dof
 !
+      use calypso_mpi
       use gz_ucd_data_IO
 !
       implicit none
@@ -141,7 +143,7 @@
           call MPI_WAITALL (ione, req1, sta1, ierr)
         end if
       end do 
-      call  time_prog_barrier
+      call  calypso_MPI_barrier(ierr)
 !
       end subroutine write_merged_gz_ucd_connect
 !
@@ -204,7 +206,7 @@
         end if
 !
       end do 
-      call  time_prog_barrier
+      call  calypso_MPI_barrier(ierr)
 !
       end subroutine write_merged_gz_udt_field
 !

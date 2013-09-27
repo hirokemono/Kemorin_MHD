@@ -88,8 +88,6 @@
         end if
       end do
 !
-      call time_prog_barrier
-!
       if (my_rank .ge. nprocs_2nd) then
         ifmt_itp_table_file = ifile_type
         table_file_header = work_header

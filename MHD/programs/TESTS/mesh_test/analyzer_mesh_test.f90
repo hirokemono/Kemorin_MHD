@@ -68,8 +68,6 @@
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_params_4_test_mesh'
       call set_ctl_params_4_test_mesh
 !
-      call time_prog_barrier
-!
 !  --  read geometry
 !
       iflag_mesh_file_fmt = ifile_type

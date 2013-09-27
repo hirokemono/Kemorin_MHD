@@ -37,8 +37,6 @@
 !
       if(ierr .gt. 0) call parallel_abort(ierr, e_message)
 !
-      call time_prog_barrier
-!
 !  FEM Initialization
       call FEM_initialize_fline
 !
