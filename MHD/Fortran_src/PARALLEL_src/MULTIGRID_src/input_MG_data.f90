@@ -94,8 +94,6 @@
       integer(kind = kint) :: i_level
 !
 !
-      ifmt_itp_table_file = ifile_type
-!
       do i_level = 1, num_MG_level
         if(i_level.eq.1 .or. my_rank.lt.MG_vector(i_level-1)%nprocs)    &
      &      then

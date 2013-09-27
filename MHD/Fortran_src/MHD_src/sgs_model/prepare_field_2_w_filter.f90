@@ -39,12 +39,6 @@
       end do
 !$omp end parallel do
 !
-!$omp parallel do
-      do inod = internal_node+1, nnod_w_filtering
-        x_vec_w_fil(inod) = 0.0d0
-      end do
-!$omp end parallel do
-!
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &    (nnod_w_filtering, num_neib_w_fil, id_neib_w_fil,             &
@@ -69,20 +63,10 @@
 !
 !
 !$omp parallel do
-!cdir parallel do
-!poption parallel
       do inod=1, internal_node
         x_vec_w_fil(3*inod-2) = d_nod(inod,id_phys  )
         x_vec_w_fil(3*inod-1) = d_nod(inod,id_phys+1)
         x_vec_w_fil(3*inod  ) = d_nod(inod,id_phys+2)
-      end do
-!$omp end parallel do
-!
-!$omp parallel do
-      do inod = internal_node+1, nnod_w_filtering
-        x_vec_w_fil(3*inod-2) = 0.0d0
-        x_vec_w_fil(3*inod-1) = 0.0d0
-        x_vec_w_fil(3*inod  ) = 0.0d0
       end do
 !$omp end parallel do
 !
@@ -117,17 +101,6 @@
         x_vec_w_fil(6*inod-2) = d_nod(inod,id_phys+3)
         x_vec_w_fil(6*inod-1) = d_nod(inod,id_phys+4)
         x_vec_w_fil(6*inod  ) = d_nod(inod,id_phys+5)
-      end do
-!$omp end parallel do
-!
-!$omp parallel do
-      do inod = internal_node+1, nnod_w_filtering
-        x_vec_w_fil(6*inod-5) = 0.0d0
-        x_vec_w_fil(6*inod-4) = 0.0d0
-        x_vec_w_fil(6*inod-3) = 0.0d0
-        x_vec_w_fil(6*inod-2) = 0.0d0
-        x_vec_w_fil(6*inod-1) = 0.0d0
-        x_vec_w_fil(6*inod  ) = 0.0d0
       end do
 !$omp end parallel do
 !

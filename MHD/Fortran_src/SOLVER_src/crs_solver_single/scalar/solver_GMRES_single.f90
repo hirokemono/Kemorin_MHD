@@ -65,7 +65,7 @@
 
       integer(kind=kint ) :: IFLAG, MONITORFLAG
       integer(kind=kint ) :: AV, CS, SN, R, S, V, W, Y, MAXIT
-      real   (kind=kreal) :: TOL, WVAL
+      real   (kind=kreal) :: TOL, WVAL, BB
 
       real   (kind=kreal)   ZERO, ONE
       parameter ( ZERO = 0.0D+0, ONE = 1.0D+0 )

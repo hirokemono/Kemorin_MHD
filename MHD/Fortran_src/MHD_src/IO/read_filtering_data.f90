@@ -150,6 +150,7 @@
       use m_filter_file_names
       use m_filter_coef_combained
       use m_geometry_parameter
+      use m_field_file_format
       use filter_moment_data_IO
       use filter_moment_data_IO_b
       use read_line_filter_data
@@ -175,7 +176,7 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
      &      .or. iflag_SGS_model.eq.id_SGS_similarity) then
-        if (ifile_type.eq.1) then
+        if (ifmt_line_filter .eq. iflag_bin) then
           call read_line_filter_data_b(filter_file_code)
         else
           call read_line_filter_data_a(filter_file_code)

@@ -9,23 +9,24 @@
 !     &          id_filter_grp, ngrp_fil, istack_fil, ntot_fil,         &
 !     &          inod_fil, istack_near_f, ntot_near_f, inod_near_f,     &
 !     &          filter_w, istack_sum_fil, max_sum_fil, ntot_sum_fil,   &
-!     &          ist_sum_fil, ied_sum_fil, nnod_fil, x_vec_fil)
+!     &          ist_sum_fil, ied_sum_fil, nnod_fil, x_vec_fil,         &
+!     &          nnod, x_vec)
 !      subroutine sum_3d_filter_vector_phys(num_filter_grp,             &
 !     &          id_filter_grp, ngrp_fil, istack_fil, ntot_fil,         &
 !     &          inod_fil, istack_near_f, ntot_near_f, inod_near_f,     &
 !     &          filter_w, istack_sum_fil, max_sum_fil, ntot_sum_fil,   &
-!     &          ist_sum_fil, ied_sum_fil, nnod_fil, x_vec_fil)
+!     &          ist_sum_fil, ied_sum_fil, nnod_fil, x_vec_fil,         &
+!     &          nnod, x_vec)
 !      subroutine sum_3d_filter_tensor_phys(num_filter_grp,             &
 !     &          id_filter_grp, ngrp_fil, istack_fil, ntot_fil,         &
 !     &          inod_fil, istack_near_f, ntot_near_f, inod_near_f,     &
 !     &          filter_w, istack_sum_fil, max_sum_fil, ntot_sum_fil,   &
-!     &          ist_sum_fil, ied_sum_fil, nnod_fil, x_vec_fil)
+!     &          ist_sum_fil, ied_sum_fil, nnod_fil, x_vec_fil,         &
+!     &          nnod, x_vec)
 !
       module sum_3d_filter_phys
 !
       use m_precision
-!
-      use m_parallel_var_dof
 !
       implicit none
 !
@@ -39,7 +40,8 @@
      &          id_filter_grp, ngrp_fil, istack_fil, ntot_fil,          &
      &          inod_fil, istack_near_f, ntot_near_f, inod_near_f,      &
      &          filter_w, istack_sum_fil, max_sum_fil, ntot_sum_fil,    &
-     &          ist_sum_fil, ied_sum_fil, nnod_fil, x_vec_fil)
+     &          ist_sum_fil, ied_sum_fil, nnod_fil, x_vec_fil,          &
+     &          nnod, x_vec)
 !
       integer(kind = kint), intent(in) :: num_filter_grp
       integer(kind = kint), intent(in) :: id_filter_grp(num_filter_grp)
@@ -60,6 +62,9 @@
 !
       integer(kind = kint), intent(in) :: nnod_fil
       real(kind = kreal), intent(in) :: x_vec_fil(nnod_fil)
+!
+      integer(kind = kint), intent(in) :: nnod
+      real(kind = kreal), intent(inout) :: x_vec(nnod)
 !
       integer(kind = kint) :: igrp, ist, ied, inum, inod, ii, i
       integer(kind = kint) :: jnum, jnod, knum, kst, ked
@@ -103,7 +108,8 @@
      &          id_filter_grp, ngrp_fil, istack_fil, ntot_fil,          &
      &          inod_fil, istack_near_f, ntot_near_f, inod_near_f,      &
      &          filter_w, istack_sum_fil, max_sum_fil, ntot_sum_fil,    &
-     &          ist_sum_fil, ied_sum_fil, nnod_fil, x_vec_fil)
+     &          ist_sum_fil, ied_sum_fil, nnod_fil, x_vec_fil,          &
+     &          nnod, x_vec)
 !
       integer(kind = kint), intent(in) :: num_filter_grp
       integer(kind = kint), intent(in) :: id_filter_grp(num_filter_grp)
@@ -124,6 +130,9 @@
 !
       integer(kind = kint), intent(in) :: nnod_fil
       real(kind = kreal), intent(in) :: x_vec_fil(3*nnod_fil)
+!
+      integer(kind = kint), intent(in) :: nnod
+      real(kind = kreal), intent(inout) :: x_vec(3*nnod)
 !
       integer(kind = kint) :: igrp, ist, ied, inum, inod, ii, i
       integer(kind = kint) :: jnum, jnod, knum, kst, ked
@@ -173,7 +182,8 @@
      &          id_filter_grp, ngrp_fil, istack_fil, ntot_fil,          &
      &          inod_fil, istack_near_f, ntot_near_f, inod_near_f,      &
      &          filter_w, istack_sum_fil, max_sum_fil, ntot_sum_fil,    &
-     &          ist_sum_fil, ied_sum_fil, nnod_fil, x_vec_fil)
+     &          ist_sum_fil, ied_sum_fil, nnod_fil, x_vec_fil,          &
+     &          nnod, x_vec)
 !
       integer(kind = kint), intent(in) :: num_filter_grp
       integer(kind = kint), intent(in) :: id_filter_grp(num_filter_grp)
@@ -194,6 +204,9 @@
 !
       integer(kind = kint), intent(in) :: nnod_fil
       real(kind = kreal), intent(in) :: x_vec_fil(6*nnod_fil)
+!
+      integer(kind = kint), intent(in) :: nnod
+      real(kind = kreal), intent(inout) :: x_vec(6*nnod)
 !
       integer(kind = kint) :: igrp, ist, ied, inum, inod, ii, i
       integer(kind = kint) :: jnum, jnod, knum, kst, ked

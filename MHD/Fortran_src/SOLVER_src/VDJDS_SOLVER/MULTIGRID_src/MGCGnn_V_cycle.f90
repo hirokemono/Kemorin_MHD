@@ -110,20 +110,20 @@
 !
 !$omp parallel do
       do i = 1, NB*NP
-        MG_vect(0)%bb(i) =    B(i)
+        MG_vect(0)%b_vec(i)   B(i)
         MG_vect(0)%x_vec(i) = X(i)
       end do
 !$omp end parallel do
 !
       call back_2_original_order_bxn(NP, NB, djds_tbl(0)%NEWtoOLD,      &
-     &    MG_vect(0)%bb, MG_vect(0)%x_vec)
+     &    MG_vect(0)%b_vec, MG_vect(0)%x_vec)
 !
 !C restrict the residual vector
       DO i = 0, num_MG_level-1
         NP_f = matNN(i  )%num_diag
         NP_c = matNN(i+1)%num_diag
         call s_interpolate_type_N(NP_f, NP_c, NB, MG_comm(i+1),         &
-     &      MG_itp(i+1)%f2c, MG_vect(i)%bb, MG_vect(i+1)%bb,            &
+     &      MG_itp(i+1)%f2c, MG_vect(i)%b_vec, MG_vect(i+1)%b_vec,      &
      &      PEsmpTOT, my_rank, SOLVER_COMM )
         MG_vect(i+1)%x_vec(1:NP_c) = zero
       end do
@@ -142,7 +142,7 @@
         ierr = IER
         if(NP_f.gt.0) then
           call solveNN_DJDS_struct(NB, PEsmpTOT, MG_comm(i),            &
-     &      djds_tbl(i), matNN(i),NP_f, MG_vect(i)%bb,                  &
+     &      djds_tbl(i), matNN(i),NP_f, MG_vect(i)%b_vec,               &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
      &      EPS_MG, iter_mid, iter_res, my_rank,  SOLVER_COMM)
          else
@@ -162,7 +162,7 @@
       ierr = IER
       if(NP_f.gt.0) then
         call solveNN_DJDS_struct(NB, PEsmpTOT, MG_comm(i),              &
-     &      djds_tbl(i), matNN(i), NP_f, MG_vect(i)%bb,                 &
+     &      djds_tbl(i), matNN(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
      &      EPS_MG, iter_lowest, iter_res, my_rank,  SOLVER_COMM)
       else
@@ -188,7 +188,7 @@
         ierr = IER
         if(NP_f.gt.0) then
           call solveNN_DJDS_struct(NB, PEsmpTOT, MG_comm(i),            &
-     &      djds_tbl(i), matNN(i),NP_f, MG_vect(i)%bb,                  &
+     &      djds_tbl(i), matNN(i),NP_f, MG_vect(i)%b_vec,               &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
      &      EPS_MG, iter_lowest, iter_res, my_rank,  SOLVER_COMM)
          else
@@ -199,7 +199,7 @@
 !
       call change_order_2_solve_bxn(NP, NB, PEsmpTOT,                   &
      &    djds_tbl(0)%STACKmcG, djds_tbl(0)%NEWtoOLD,                   &
-     &    MG_vect(0)%bb, MG_vect(0)%x_vec)
+     &    MG_vect(0)%b_vec, MG_vect(0)%x_vec)
 !
 !$omp parallel do
       do i = 1, NB*NP
@@ -233,7 +233,7 @@
 !
       call change_order_2_solve_bxn(matNN%num_diag, NB,  PEsmpTOT,      &
             djds_tbl%STACKmcG, djds_tbl%NEWtoOLD,                       &
-     &      MG_vect%bb, MG_vect%x_vec)
+     &      MG_vect%b_vec, MG_vect%x_vec)
 !
 !C calculate residual
         call subtruct_matvec_nn                                         &
@@ -247,10 +247,10 @@
      &       djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                &
      &       djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                  &
      &       matNN%D, matNN%AL, matNN%AU, W(1,ZQ),                      &
-     &       MG_vect%bb, MG_vect%x_vec)
+     &       MG_vect%b_vec, MG_vect%x_vec)
 !
       call back_2_original_order_bxn(matNN%num_diag, NB,                &
-     &    djds_tbl%NEWtoOLD, MG_vect%bb, MG_vect%x_vec)
+     &    djds_tbl%NEWtoOLD, MG_vect%b_vec, MG_vect%x_vec)
 !
         BNRM20=zero
         call cal_local_norm_n(matNN%num_diag, NB, PEsmpTOT,             &

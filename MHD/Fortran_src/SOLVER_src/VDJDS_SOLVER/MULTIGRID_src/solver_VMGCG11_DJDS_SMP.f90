@@ -214,6 +214,8 @@
       integer(kind=kint ) :: iter, MAXIT
       integer(kind=kint ) :: ist, ied
 !
+      real(kind=kreal) :: START_TIME, END_TIME, COMMtime
+!
 !C +-------+
 !C | INIT. |
 !C +-------+

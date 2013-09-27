@@ -18,6 +18,7 @@
 !
       use m_machine_parameter
       use m_parallel_var_dof
+      use m_array_for_send_recv
       use m_iccg_parameter
       use m_ctl_parameter_Multigrid
       use m_geometry_parameter
@@ -102,7 +103,7 @@
      &     ((method(4:4).eq.'G').or.(method(4:4).eq.'g')) ) then
         call VMGCG33_DJDS_SMP(num_MG_level, MG_comm_fl,                 &
      &      MG_itp, MG_djds_tbl_fl, MG_mat_velo, MG_vector, np_smp,     &
-     &      numnod, bb(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest,    &
+     &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
      &      eps_4_velo_crank, EPS_MG,  my_rank, SOLVER_COMM,            &
      &      precond_4_crank, METHOD_MG, PRECOND_MG, ierr)
       else
@@ -111,7 +112,7 @@
      &     itotal_fl_l, itotal_fl_u, NHYP, np_smp, inter_smp_stack,     &
      &     STACKmc, NLmaxHYP, NUmaxHYP, IVECT, NEWtoOLD,                &
      &     OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U, LtoU,     &
-     &     aiccg_velo(im_velo_d), bb(1), x_vec(1),                      &
+     &     aiccg_velo(im_velo_d), b_vec(1), x_vec(1),                   &
      &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
      &     aiccg_velo(im_velo_l), aiccg_velo(im_velo_u),                &
      &     ALUG_velo_L, ALUG_velo_U, eps_4_velo_crank, itr, ierr,       &
@@ -153,7 +154,7 @@
      &     ((method(4:4).eq.'G').or.(method(4:4).eq.'g')) ) then
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm_fl,                 &
      &      MG_itp, MG_djds_tbl_fll, MG_mat_press, MG_vector, np_smp,   &
-     &      numnod, bb(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest,    &
+     &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
      &      eps, EPS_MG,  my_rank, SOLVER_COMM,                         &
      &      precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
       else
@@ -162,7 +163,7 @@
      &     itotal1_fl_l, itotal1_fl_u,  NHYP1, np_smp, inter_smp_stack, &
      &     STACKmc1, NLmaxHYP1, NUmaxHYP1, IVECT1, NEWtoOLD1,           &
      &     OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U, NEWtoOLD_DJDS1_U, LtoU1, &
-     &     aiccg_press(im_press_d), bb(1), x_vec(1),                    &
+     &     aiccg_press(im_press_d), b_vec(1), x_vec(1),                 &
      &     indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,        &
      &     aiccg_press(im_press_l), aiccg_press(im_press_u),            &
      &     ALUG_press_L, ALUG_press_U, eps, itr, ierr,                  &
@@ -204,7 +205,7 @@
      &     ((method(4:4).eq.'G').or.(method(4:4).eq.'g')) ) then
         call VMGCG33_DJDS_SMP(num_MG_level, MG_comm,                    &
      &      MG_itp, MG_djds_tbl, MG_mat_magne, MG_vector, np_smp,       &
-     &      numnod, bb(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest,    &
+     &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
      &      eps_4_magne_crank, EPS_MG,  my_rank, SOLVER_COMM,           &
      &      precond_4_crank, METHOD_MG, PRECOND_MG, ierr)
       else
@@ -212,7 +213,7 @@
      &    (internal_node, numnod, NLmax, NUmax, itotal_l, itotal_u,     &
      &     NHYP, np_smp, inter_smp_stack, STACKmc, NLmaxHYP, NUmaxHYP,  &
      &     IVECT, NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,           &
-     &     NEWtoOLD_DJDS_U, LtoU, aiccg_magne(im_mag_d), bb(1),         &
+     &     NEWtoOLD_DJDS_U, LtoU, aiccg_magne(im_mag_d), b_vec(1),      &
      &     x_vec(1), indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,  &
      &     aiccg_magne(im_mag_l), aiccg_magne(im_mag_u),                &
      &     ALUG_magne_L, ALUG_magne_U, eps_4_magne_crank, itr, ierr,    &
@@ -255,7 +256,7 @@
      &     ((method(4:4).eq.'G').or.(method(4:4).eq.'g')) ) then
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm,                    &
      &      MG_itp, MG_djds_tbl_l, MG_mat_magp, MG_vector, np_smp,      &
-     &      numnod, bb(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest,    &
+     &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
      &      eps, EPS_MG,  my_rank, SOLVER_COMM,                         &
      &      precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
       else
@@ -264,8 +265,8 @@
      &     NHYP1, np_smp, inter_smp_stack, STACKmc1,                    &
      &     NLmaxHYP1, NUmaxHYP1, IVECT1, NEWtoOLD1,                     &
      &     OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U, NEWtoOLD_DJDS1_U,        &
-     &     LtoU1, aiccg_mag_p(im_mp_d), bb(1), x_vec(1), indexDJDS1_L,  &
-     &     indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,                      &
+     &     LtoU1, aiccg_mag_p(im_mp_d), b_vec(1), x_vec(1),             &
+     &     indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,        &
      &     aiccg_mag_p(im_mp_l), aiccg_mag_p(im_mp_u),                  &
      &     ALUG_mag_p_L, ALUG_mag_p_U,                                  &
      &     eps, itr, ierr, my_rank, num_neib, id_neib,                  &
@@ -323,8 +324,9 @@
 !      call CG                                                          &
 !     &   ( internal_node, numnod, ntot_l, ntot_u,                      &
 !     &     d_crs, al_crs, istack_l_crs, item_l_crs, au_crs,            &
-!     &     istack_u_crs, item_u_crs, bb(1), x_vec(1), precond_4_solver,&
-!     &     1.0d0, 1.0d0, eps_4_temp_crank, itr, ierr, my_rank,         &
+!     &     istack_u_crs, item_u_crs, b_vec(1), x_vec(1),               &
+!     &     precond_4_solver,1.0d0, 1.0d0, eps_4_temp_crank,            &
+!     &     itr, ierr, my_rank,                                         &
 !     &     neigh_pe_num_fl, neigh_pe_data_fl,                          &
 !     &     istack_import_fl, item_import_fl,                           &
 !     &     istack_export_fl, item_export_fl,                           &
@@ -337,7 +339,7 @@
      &     ((method(4:4).eq.'G').or.(method(4:4).eq.'g')) ) then
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm_fl,                 &
      &      MG_itp, MG_djds_tbl_fl, MG_mat_temp, MG_vector, np_smp,     &
-     &      numnod, bb(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest,    &
+     &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
      &      eps_4_temp_crank, EPS_MG,  my_rank, SOLVER_COMM,            &
      &      precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
       else
@@ -346,7 +348,7 @@
      &      itotal_fl_l, itotal_fl_u, NHYP, np_smp, inter_smp_stack,    &
      &      STACKmc, NLmaxHYP, NUmaxHYP, IVECT, NEWtoOLD,               &
      &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U, LtoU,    &
-     &      aiccg_temp(im_temp_d), bb(1), x_vec(1),                     &
+     &      aiccg_temp(im_temp_d), b_vec(1), x_vec(1),                  &
      &      indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,           &
      &      aiccg_temp(im_temp_l), aiccg_temp(im_temp_u),               &
      &      ALUG_temp_l, ALUG_temp_u, eps_4_temp_crank, itr, ierr,      &
@@ -383,9 +385,9 @@
       call start_eleps_time(5)
       ierr = i_debug
 !
-!       write(50+my_rank,*) 'inod, bb(inod), x_vec(inod)'
+!       write(50+my_rank,*) 'inod, b_vec(inod), x_vec(inod)'
 !       do inod = 1, numnod
-!        write(50+my_rank,*) inod, bb(inod), x_vec(inod)
+!        write(50+my_rank,*) inod, b_vec(inod), x_vec(inod)
 !       end do
 !
 !       call s_check_DJDS_ordering(internal_node, numnod,               &
@@ -410,7 +412,7 @@
      &     ((method(4:4).eq.'G').or.(method(4:4).eq.'g')) ) then
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm_fl,                 &
      &      MG_itp, MG_djds_tbl_fl, MG_mat_d_scalar, MG_vector, np_smp, &
-     &      numnod, bb(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest,    &
+     &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
      &      eps_4_d_scalar_crank, EPS_MG,  my_rank, SOLVER_COMM,        &
      &      precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
       else
@@ -419,7 +421,7 @@
      &      itotal_fl_l, itotal_fl_u, NHYP, np_smp, inter_smp_stack,    &
      &      STACKmc, NLmaxHYP, NUmaxHYP, IVECT,  NEWtoOLD,              &
      &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U, LtoU,    &
-     &      aiccg_composit(im_cps_d), bb(1), x_vec(1),                  &
+     &      aiccg_composit(im_cps_d), b_vec(1), x_vec(1),               &
      &      indexDJDS_L, indexDJDS_U,  itemDJDS_L, itemDJDS_U,          &
      &      aiccg_composit(im_cps_l), aiccg_composit(im_cps_u),         &
      &      ALUG_composit_l, ALUG_composit_u, eps_4_d_scalar_crank,     &

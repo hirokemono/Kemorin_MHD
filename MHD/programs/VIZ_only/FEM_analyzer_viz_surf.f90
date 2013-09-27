@@ -32,6 +32,7 @@
       use m_edge_geometry_data
       use m_control_params_2nd_files
       use m_ucd_input_data
+      use m_array_for_send_recv
 !
       use set_control_visualizer
       use const_mesh_info
@@ -45,7 +46,7 @@
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'
       call input_mesh(my_rank)
 !
-      call allocate_iccgN_matrix(isix, numnod)
+      call allocate_vector_for_solver(isix, numnod)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)

@@ -23,6 +23,7 @@
 !
       subroutine FEM_initialize_sph_trans
 !
+      use m_array_for_send_recv
       use m_edge_geometry_data
       use m_jacobians
       use m_t_step_parameter
@@ -53,8 +54,8 @@
 !
 !  -----    construct geometry informations
 !
-      if (iflag_debug.gt.0) write(*,*) 'allocate_iccgN_matrix'
-      call allocate_iccgN_matrix(isix, numnod)
+      if (iflag_debug.gt.0) write(*,*) 'allocate_vector_for_solver'
+      call allocate_vector_for_solver(isix, numnod)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)

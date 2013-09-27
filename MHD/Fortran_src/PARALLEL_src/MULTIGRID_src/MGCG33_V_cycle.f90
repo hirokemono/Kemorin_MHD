@@ -111,14 +111,14 @@
         if(my_rank .eq. 0) write(*,*) 'copy vector'
 !$omp parallel do
       do i = 1, 3*NP
-        MG_vect(0)%bb(i) =    B(i)
+        MG_vect(0)%b_vec(i) = B(i)
         MG_vect(0)%x_vec(i) = X(i)
       end do
 !$omp end parallel do
 !
         if(my_rank .eq. 0) write(*,*) 'back_2_original_order_bx3'
       call back_2_original_order_bx3(NP, djds_tbl(0)%NEWtoOLD,          &
-     &    MG_vect(0)%bb, MG_vect(0)%x_vec)
+     &    MG_vect(0)%b_vec, MG_vect(0)%x_vec)
 !
 !C restrict the residual vector
       DO i = 0, num_MG_level-1
@@ -126,7 +126,7 @@
         NP_c = mat33(i+1)%num_diag
         if(my_rank .eq. 0) write(*,*) 's_interpolate_type_3 level ', i
         call s_interpolate_type_3(NP_f, NP_c, MG_comm(i+1),             &
-     &      MG_itp(i+1)%f2c, MG_vect(i)%bb, MG_vect(i+1)%bb,            &
+     &      MG_itp(i+1)%f2c, MG_vect(i)%b_vec, MG_vect(i+1)%b_vec,      &
      &      PEsmpTOT, my_rank, SOLVER_COMM )
         MG_vect(i+1)%x_vec(1:NP_c) = zero
       end do
@@ -145,7 +145,7 @@
         ierr = IER
         if(NP_f.gt.0) then
           call solve33_DJDS_struct(PEsmpTOT, MG_comm(i),                &
-     &      djds_tbl(i), mat33(i), NP_f, MG_vect(i)%bb,                 &
+     &      djds_tbl(i), mat33(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
      &      EPS_MG, iter_mid, iter_res, my_rank,  SOLVER_COMM)
         else
@@ -165,7 +165,7 @@
       ierr = IER
       if(NP_f.gt.0) then
         call solve33_DJDS_struct(PEsmpTOT, MG_comm(i),                  &
-     &      djds_tbl(i), mat33(i), NP_f, MG_vect(i)%bb,                 &
+     &      djds_tbl(i), mat33(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
      &      EPS_MG, iter_lowest, iter_res, my_rank,  SOLVER_COMM)
       else
@@ -191,7 +191,7 @@
         ierr = IER
         if(NP_f.gt.0) then
           call solve33_DJDS_struct(PEsmpTOT, MG_comm(i),                &
-     &      djds_tbl(i), mat33(i), NP_f, MG_vect(i)%bb,                 &
+     &      djds_tbl(i), mat33(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
      &      EPS_MG, iter_lowest, iter_res, my_rank,  SOLVER_COMM)
         else
@@ -201,7 +201,7 @@
       end do
 !
       call change_order_2_solve_bx3(NP, PEsmpTOT, djds_tbl(0)%STACKmcG, &
-     &    djds_tbl(0)%NEWtoOLD, MG_vect(0)%bb, MG_vect(0)%x_vec)
+     &    djds_tbl(0)%NEWtoOLD, MG_vect(0)%b_vec, MG_vect(0)%x_vec)
 !
 !$omp parallel do
       do i = 1, 3*NP
@@ -233,7 +233,7 @@
 !
       call change_order_2_solve_bx3(mat33%num_diag, PEsmpTOT,           &
             djds_tbl%STACKmcG, djds_tbl%NEWtoOLD,                       &
-     &      MG_vect%bb, MG_vect%x_vec)
+     &      MG_vect%b_vec, MG_vect%x_vec)
 !
 !C calculate residual
         call subtruct_matvec_33                                         &
@@ -247,10 +247,10 @@
      &       djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                &
      &       djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                  &
      &       mat33%D, mat33%AL,  mat33%AU, W(1,ZQ),                     &
-     &       MG_vect%bb, MG_vect%x_vec)
+     &       MG_vect%b_vec, MG_vect%x_vec)
 !
       call back_2_original_order_bx3(mat33%num_diag, djds_tbl%NEWtoOLD, &
-     &    MG_vect%bb, MG_vect%x_vec)
+     &    MG_vect%b_vec, MG_vect%x_vec)
 !
         BNRM20=zero
         call cal_local_norm_3(mat33%num_diag, PEsmpTOT,                 &

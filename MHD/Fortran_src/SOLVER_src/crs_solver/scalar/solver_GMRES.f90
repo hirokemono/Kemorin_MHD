@@ -94,7 +94,7 @@
 
       integer(kind=kint ) :: MAXIT, IFLAG, MONITORFLAG
       integer(kind=kint ) :: AV, CS, SN, R, S, V, W, Y
-      real   (kind=kreal) :: TOL, WVAL
+      real   (kind=kreal) :: TOL, WVAL, BB
 
       data IFLAG/0/
 

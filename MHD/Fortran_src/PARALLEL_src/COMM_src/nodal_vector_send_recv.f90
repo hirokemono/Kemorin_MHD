@@ -43,6 +43,7 @@
 !
       subroutine nod_scalar_send_recv(scl_nod)
 !
+      use m_array_for_send_recv
       use solver_SR
 !
       real(kind = kreal), intent(inout) :: scl_nod(numnod)
@@ -76,6 +77,7 @@
 !
       subroutine nod_vector_send_recv(vec_nod)
 !
+      use m_array_for_send_recv
       use solver_SR_3
 !
       real(kind = kreal), intent(inout) :: vec_nod(numnod,3)
@@ -112,6 +114,7 @@
 !
       subroutine nod_tensor_send_recv(tsr_nod)
 !
+      use m_array_for_send_recv
       use solver_SR_6
 !
       real(kind = kreal), intent(inout) :: tsr_nod(numnod,6)

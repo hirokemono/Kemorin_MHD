@@ -27,7 +27,7 @@
 !             total pe count (1 to petot)
 ! 
         real(kind=kreal), pointer :: x_vec(:)
-        real(kind=kreal), pointer :: bb(:)
+        real(kind=kreal), pointer :: b_vec(:)
         integer(kind = kint) :: isize_solver_vect
 ! 
         integer(kind=kint), pointer :: ix_vec(:)
@@ -67,11 +67,11 @@
 !
 !
        allocate(vect%x_vec(NB*nnod))
-       allocate(vect%bb(NB*nnod))
+       allocate(vect%b_vec(NB*nnod))
 !
        if(nnod .gt. 0) then
          vect%x_vec  =0.0d00
-         vect%bb  =0.0d00
+         vect%b_vec  =0.0d00
        end if
 !
        vect%isize_solver_vect = NB*nnod
@@ -85,7 +85,7 @@
        type(vectors_4_solver), intent(inout) :: vect
 !
 !
-       deallocate(vect%x_vec, vect%bb)
+       deallocate(vect%x_vec, vect%b_vec)
        vect%isize_solver_vect = 0
 !
        end subroutine dealloc_iccgN_vec_type

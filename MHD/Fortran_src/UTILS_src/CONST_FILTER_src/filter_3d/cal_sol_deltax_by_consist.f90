@@ -25,6 +25,7 @@
       subroutine cal_sol_dx_by_consist(dx_nod, nd_dx)
 !
       use m_parallel_var_dof
+      use m_array_for_send_recv
       use m_machine_parameter
       use m_nod_comm_table
       use m_ctl_params_4_gen_filter
@@ -52,12 +53,12 @@
 !
       do inod = 1, numnod
         x_vec(inod) = ff(inod,nd_dx)
-        bb(inod) =   ff(inod,nd_dx)
+        b_vec(inod) = ff(inod,nd_dx)
       end do
 !
 !       write(50+my_rank,*) 'div_b'
 !       do inod=1, numnod
-!         write(50+my_rank,*) bb(inod)
+!         write(50+my_rank,*) b_vec(inod)
 !       end do
 !
       if (my_rank .eq. 0 ) then
@@ -68,7 +69,7 @@
       call solve(internal_node, numnod, ntot_mass_l, ntot_mass_u,       &
      &             aiccg_mass(im_mass_d), aiccg_mass(im_mass_l),        &
      &             istack_mass_l, item_mass_l, aiccg_mass(im_mass_u),   &
-     &             istack_mass_u, item_mass_u, bb(1), x_vec(1),         &
+     &             istack_mass_u, item_mass_u, b_vec(1), x_vec(1),      &
      &             nset, num_neib,  id_neib,                            &
      &             istack_import, item_import,                          &
      &             istack_export, item_export,                          &

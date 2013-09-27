@@ -88,7 +88,7 @@
       real   (kind=kreal), dimension(:,:), allocatable :: H
 
       integer(kind=kint ) :: IFLAG, AV, CS, SN, R, S, V, W, Y, MAXIT
-      real   (kind=kreal) :: TOL, WVAL
+      real   (kind=kreal) :: TOL, WVAL, BB
       real   (kind=kreal), dimension(3) :: PW
 
       data IFLAG/0/

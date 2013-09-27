@@ -25,6 +25,7 @@
 !
       subroutine FEM_initialize_fline
 !
+      use m_array_for_send_recv
       use m_read_mesh_data
       use m_geometry_parameter
       use m_surface_group
@@ -54,7 +55,7 @@
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'
       call input_mesh(my_rank)
 !
-      call allocate_iccgN_matrix(isix, numnod)
+      call allocate_vector_for_solver(isix, numnod)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)

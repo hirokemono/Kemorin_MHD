@@ -8,26 +8,27 @@
 !     &          ntot_fil_smp, inod_fil_smp, istack_near_f_smp,         &
 !     &          ntot_near_f_smp, inod_near_f_smp, filter_w_smp,        &
 !     &          max_sum_fil_smp, istack_sum_f_smp, ntot_sum_f_smp,     &
-!     &          ist_sum_f_smp, ied_sum_f_smp, nnod_fil, x_vec_fil)
+!     &          ist_sum_f_smp, ied_sum_f_smp, nnod_fil, x_vec_fil,     &
+!     &          nnod, x_vec)
 !      subroutine sum_3d_filter_vector_phys_smp(num_filter_grp,         &
 !     &          id_filter_grp, ngrp_fil_smp, istack_fil_smp,           &
 !     &          ntot_fil_smp, inod_fil_smp, istack_near_f_smp,         &
 !     &          ntot_near_f_smp, inod_near_f_smp, filter_w_smp,        &
 !     &          max_sum_fil_smp, istack_sum_f_smp, ntot_sum_f_smp,     &
-!     &          ist_sum_f_smp, ied_sum_f_smp, nnod_fil, x_vec_fil)
+!     &          ist_sum_f_smp, ied_sum_f_smp, nnod_fil, x_vec_fil,     &
+!     &          nnod, x_vec)
 !      subroutine sum_3d_filter_tensor_phys_smp(num_filter_grp,         &
 !     &          id_filter_grp, ngrp_fil_smp, istack_fil_smp,           &
 !     &          ntot_fil_smp, inod_fil_smp, istack_near_f_smp,         &
 !     &          ntot_near_f_smp, inod_near_f_smp, filter_w_smp,        &
 !     &          max_sum_fil_smp, istack_sum_f_smp, ntot_sum_f_smp,     &
-!     &          ist_sum_f_smp, ied_sum_f_smp, nnod_fil, x_vec_fil)
+!     &          ist_sum_f_smp, ied_sum_f_smp, nnod_fil, x_vec_fil,     &
+!     &          nnod, x_vec)
 !
       module sum_3d_filter_phys_smp
 !
       use m_precision
-!
       use m_machine_parameter
-      use m_parallel_var_dof
 !
       implicit none
 !
@@ -42,7 +43,8 @@
      &          ntot_fil_smp, inod_fil_smp, istack_near_f_smp,          &
      &          ntot_near_f_smp, inod_near_f_smp, filter_w_smp,         &
      &          max_sum_fil_smp, istack_sum_f_smp, ntot_sum_f_smp,      &
-     &          ist_sum_f_smp, ied_sum_f_smp, nnod_fil, x_vec_fil)
+     &          ist_sum_f_smp, ied_sum_f_smp, nnod_fil, x_vec_fil,      &
+     &          nnod, x_vec)
 !
       integer(kind = kint), intent(in) :: num_filter_grp
       integer(kind = kint), intent(in) :: id_filter_grp(num_filter_grp)
@@ -72,6 +74,9 @@
 !
       integer(kind = kint), intent(in) :: nnod_fil
       real(kind = kreal), intent(in) :: x_vec_fil(nnod_fil)
+!
+      integer(kind = kint), intent(in) :: nnod
+      real(kind = kreal), intent(inout) :: x_vec(nnod)
 !
       integer(kind = kint) :: ip, jgrp, ist, ied, inum, inod, ii, i
       integer(kind = kint) :: igrp, jnum, jnod, knum, kst, ked
@@ -120,7 +125,8 @@
      &          ntot_fil_smp, inod_fil_smp, istack_near_f_smp,          &
      &          ntot_near_f_smp, inod_near_f_smp, filter_w_smp,         &
      &          max_sum_fil_smp, istack_sum_f_smp, ntot_sum_f_smp,      &
-     &          ist_sum_f_smp, ied_sum_f_smp, nnod_fil, x_vec_fil)
+     &          ist_sum_f_smp, ied_sum_f_smp, nnod_fil, x_vec_fil,      &
+     &          nnod, x_vec)
 !
       integer(kind = kint), intent(in) :: num_filter_grp
       integer(kind = kint), intent(in) :: id_filter_grp(num_filter_grp)
@@ -150,6 +156,9 @@
 !
       integer(kind = kint), intent(in) :: nnod_fil
       real(kind = kreal), intent(in) :: x_vec_fil(3*nnod_fil)
+!
+      integer(kind = kint), intent(in) :: nnod
+      real(kind = kreal), intent(inout) :: x_vec(3*nnod)
 !
       integer(kind = kint) :: ip, jgrp, ist, ied, inum, inod, ii, i
       integer(kind = kint) :: igrp, jnum, jnod, knum, kst, ked
@@ -206,7 +215,8 @@
      &          ntot_fil_smp, inod_fil_smp, istack_near_f_smp,          &
      &          ntot_near_f_smp, inod_near_f_smp, filter_w_smp,         &
      &          max_sum_fil_smp, istack_sum_f_smp, ntot_sum_f_smp,      &
-     &          ist_sum_f_smp, ied_sum_f_smp, nnod_fil, x_vec_fil)
+     &          ist_sum_f_smp, ied_sum_f_smp, nnod_fil, x_vec_fil,      &
+     &          nnod, x_vec)
 !
       integer(kind = kint), intent(in) :: num_filter_grp
       integer(kind = kint), intent(in) :: id_filter_grp(num_filter_grp)
@@ -236,6 +246,9 @@
 !
       integer(kind = kint), intent(in) :: nnod_fil
       real(kind = kreal), intent(in) :: x_vec_fil(6*nnod_fil)
+!
+      integer(kind = kint), intent(in) :: nnod
+      real(kind = kreal), intent(inout) :: x_vec(6*nnod)
 !
       integer(kind = kint) :: ip, jgrp, ist, ied, inum, inod, ii, i
       integer(kind = kint) :: igrp, jnum, jnod, knum, kst, ked

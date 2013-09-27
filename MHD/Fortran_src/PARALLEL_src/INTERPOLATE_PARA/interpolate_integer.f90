@@ -30,6 +30,7 @@
       use m_interpolate_table_orgin
       use m_interpolate_table_dest
 !
+      use m_array_for_send_recv
       use m_work_4_interpolation
 !
       use interpolate_imark_para

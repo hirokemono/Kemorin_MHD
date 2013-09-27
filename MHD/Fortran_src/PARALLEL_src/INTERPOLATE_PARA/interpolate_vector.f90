@@ -32,6 +32,7 @@
       use m_interpolate_table_orgin
       use m_interpolate_table_dest
 !
+      use m_array_for_send_recv
       use m_work_4_interpolation
 !
       use interpolate_parallel
@@ -45,7 +46,7 @@
 !
 !     initialize
 !
-      call verify_iccgN_matrix(n_vector, numnod)
+      call verify_vector_for_solver(n_vector, numnod)
       call verify_2nd_iccg_matrix(n_vector, nnod_2nd)
 !
       call verifty_work_4_itp_field(n_vector, ntot_table_org)

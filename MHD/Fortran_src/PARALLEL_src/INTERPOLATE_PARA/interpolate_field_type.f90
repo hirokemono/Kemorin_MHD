@@ -28,6 +28,7 @@
       use m_machine_parameter
       use m_phys_constants
       use m_parallel_var_dof
+      use m_array_for_send_recv
       use m_2nd_pallalel_vector
 !
       use t_mesh_data
@@ -51,7 +52,7 @@
 !
 !     initialize
 !
-      call verify_iccgN_matrix(n_scalar, mesh_org%node%numnod)
+      call verify_vector_for_solver(n_scalar, mesh_org%node%numnod)
       call verify_2nd_iccg_matrix(n_scalar, mesh_dst%node%numnod)
 !
 !$omp parallel do
@@ -82,6 +83,7 @@
       use m_machine_parameter
       use m_phys_constants
       use m_parallel_var_dof
+      use m_array_for_send_recv
       use m_2nd_pallalel_vector
 !
       use t_mesh_data
@@ -105,7 +107,7 @@
 !
 !     initialize
 !
-      call verify_iccgN_matrix(n_vector, mesh_org%node%numnod)
+      call verify_vector_for_solver(n_vector, mesh_org%node%numnod)
       call verify_2nd_iccg_matrix(n_vector, mesh_dst%node%numnod)
 !
 !$omp parallel do
@@ -140,6 +142,7 @@
       use m_machine_parameter
       use m_phys_constants
       use m_parallel_var_dof
+      use m_array_for_send_recv
       use m_2nd_pallalel_vector
 !
       use t_mesh_data
@@ -163,7 +166,7 @@
 !
 !     initialize
 !
-      call verify_iccgN_matrix(n_sym_tensor, mesh_org%node%numnod)
+      call verify_vector_for_solver(n_sym_tensor, mesh_org%node%numnod)
       call verify_2nd_iccg_matrix(n_sym_tensor, mesh_dst%node%numnod)
 !
 !$omp parallel do

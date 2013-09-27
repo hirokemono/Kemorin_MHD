@@ -86,6 +86,7 @@
       subroutine count_diff_node_comm_test
 !
       use m_parallel_var_dof
+      use m_array_for_send_recv
 !
 !
       call count_node_comm_test(numnod, internal_node,                  &
@@ -99,6 +100,7 @@
       subroutine set_diff_node_comm_test
 !
       use m_parallel_var_dof
+      use m_array_for_send_recv
 !
 !
       call compare_nod_comm_test(numnod, internal_node,                 &

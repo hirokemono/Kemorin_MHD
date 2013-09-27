@@ -68,6 +68,7 @@
 !
       subroutine scalar_type_send_recv(id_phys, mesh, nod_phys)
 !
+      use m_array_for_send_recv
       use solver_SR
 !
       integer (kind = kint), intent(in) :: id_phys
@@ -103,6 +104,7 @@
 !
       subroutine vector_type_send_recv(id_phys, mesh, nod_phys)
 !
+      use m_array_for_send_recv
       use solver_SR_3
 !
       integer (kind = kint), intent(in) :: id_phys
@@ -142,6 +144,7 @@
 !
       subroutine sym_tensor_type_send_recv(id_phys, mesh, nod_phys)
 !
+      use m_array_for_send_recv
       use solver_SR_6
 !
       integer (kind = kint), intent(in) :: id_phys

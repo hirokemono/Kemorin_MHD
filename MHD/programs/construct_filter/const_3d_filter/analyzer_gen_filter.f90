@@ -125,6 +125,7 @@
 !
       subroutine analyze
 !
+      use m_array_for_send_recv
       use m_geometry_parameter
       use m_matrix_4_filter
       use m_crs_matrix_4_filter
@@ -153,8 +154,8 @@
 !       set element size for each node
 !  ---------------------------------------------------
 !
-      if(iflag_debug.eq.1)  write(*,*) 'allocate_iccgN_matrix'
-      call allocate_iccgN_matrix(ithree, numnod)
+      if(iflag_debug.eq.1)  write(*,*) 'allocate_vector_for_solver'
+      call allocate_vector_for_solver(ithree, numnod)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
       call s_cal_element_size

@@ -46,6 +46,7 @@
       subroutine node_send_recv_test
 !
       use m_nod_comm_table
+      use m_array_for_send_recv
 !
       integer(kind = kint) :: inod
 !

@@ -9,6 +9,7 @@
 !
       use m_parallel_var_dof
       use m_filter_coefs
+      use m_field_file_format
 !
       implicit none
 !
@@ -34,12 +35,12 @@
 !
       integer(kind = kint), intent(in) :: inod
 !
-      if (ifile_type .eq. 0) then
+      if (ifmt_3d_filter .eq. iflag_ascii) then
         write(filter_coef_code,'(4i12)')  inod, nnod_near_1nod_weight,  &
      &                  i_exp_level_1nod_weight
         call write_filter_coef_4_each(filter_coef_code)
 !
-      else if (ifile_type .eq. 1) then
+      else if (ifmt_3d_filter .eq. iflag_bin) then
 !
         write(filter_coef_code) nnod_near_1nod_weight,                  &
      &           i_exp_level_1nod_weight
@@ -58,10 +59,10 @@
       integer(kind = kint), intent(in) :: inod
       integer(kind = kint), parameter :: izero = 0
 !
-      if (ifile_type .eq. 0) then
+      if (ifmt_3d_filter .eq. iflag_ascii) then
         write(filter_coef_code,'(4i12)') inod,                          &
      &            nnod_near_1nod_weight, izero
-      else if (ifile_type .eq. 1) then
+      else if (ifmt_3d_filter .eq. iflag_bin) then
         write(filter_coef_code) nnod_near_1nod_weight
       end if
 !
@@ -75,10 +76,10 @@
 !
       integer(kind = kint), intent(in) :: inod
 !
-      if (ifile_type .eq. 0) then
+      if (ifmt_3d_filter .eq. iflag_ascii) then
         write(filter_coef_code,'(4i12)') inod,                          &
      &          (-nnod_near_1nod_weight), i_exp_level_1nod_weight
-      else if (ifile_type .eq. 1) then
+      else if (ifmt_3d_filter .eq. iflag_bin) then
         write(filter_coef_code) (-nnod_near_1nod_weight)
       end if
 !
@@ -95,7 +96,7 @@
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint) :: inod
 !
-      if (ifile_type .eq. 0) then
+      if (ifmt_3d_filter .eq. iflag_ascii) then
 !
         call skip_comment(character_4_read, id_file)
         read(character_4_read,*)  inod, nnod_near_1nod_weight,          &
@@ -103,7 +104,7 @@
 !
         call read_filter_coef_4_each(id_file)
 !
-      else if (ifile_type .eq. 1) then
+      else if (ifmt_3d_filter .eq. iflag_bin) then
 !
         read(id_file) nnod_near_1nod_weight, i_exp_level_1nod_weight
         if (nnod_near_1nod_weight.gt. 0) then

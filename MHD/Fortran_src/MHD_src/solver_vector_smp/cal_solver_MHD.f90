@@ -144,6 +144,7 @@
       subroutine copy_ff_to_rhs33
 !
       use m_parallel_var_dof
+      use m_array_for_send_recv
       use m_machine_parameter
       use m_geometry_parameter
       use m_finite_element_matrix
@@ -157,9 +158,9 @@
         ied = inod_smp_stack(ip)
 !cdir nodep
         do inod = ist, ied
-          bb(3*inod-2) =    ff(inod,1)
-          bb(3*inod-1) =    ff(inod,2)
-          bb(3*inod  ) =    ff(inod,3)
+          b_vec(3*inod-2) = ff(inod,1)
+          b_vec(3*inod-1) = ff(inod,2)
+          b_vec(3*inod  ) = ff(inod,3)
           x_vec(3*inod-2) = ff(inod,1)
           x_vec(3*inod-1) = ff(inod,2)
           x_vec(3*inod  ) = ff(inod,3)
@@ -174,6 +175,7 @@
       subroutine copy_ff_to_rhs11
 !
       use m_parallel_var_dof
+      use m_array_for_send_recv
       use m_machine_parameter
       use m_geometry_parameter
       use m_finite_element_matrix
@@ -187,7 +189,7 @@
         ied = inod_smp_stack(ip)
 !cdir nodep
         do inod = ist, ied
-          bb(inod) =    ff(inod,1)
+          b_vec(inod) =    ff(inod,1)
           x_vec(inod) = ff(inod,1)
         end do
       end do
@@ -200,6 +202,7 @@
       subroutine copy_ff_potential_to_rhs(i_field)
 !
       use m_parallel_var_dof
+      use m_array_for_send_recv
       use m_machine_parameter
       use m_geometry_parameter
       use m_node_phys_data
@@ -215,7 +218,7 @@
         ied = inod_smp_stack(ip)
 !cdir nodep
         do inod = ist, ied
-          bb(inod) =    ff(inod,1)
+          b_vec(inod) = ff(inod,1)
           x_vec(inod) = d_nod(inod,i_field)
         end do
       end do
@@ -229,6 +232,7 @@
       subroutine copy_solver_vec_to_vector(i_field)
 !
       use m_parallel_var_dof
+      use m_array_for_send_recv
       use m_machine_parameter
       use m_geometry_parameter
       use m_node_phys_data
@@ -257,6 +261,7 @@
       subroutine copy_solver_vec_to_scalar(i_field)
 !
       use m_parallel_var_dof
+      use m_array_for_send_recv
       use m_machine_parameter
       use m_geometry_parameter
       use m_node_phys_data

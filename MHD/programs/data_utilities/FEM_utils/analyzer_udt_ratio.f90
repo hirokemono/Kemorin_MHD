@@ -27,6 +27,7 @@
       subroutine initialize_udt_ratio
 !
       use m_ctl_params_4_prod_udt
+      use m_array_for_send_recv
       use m_ctl_data_product_udt
       use m_geometry_parameter
       use nodal_vector_send_recv
@@ -66,8 +67,8 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'allocate_iccgN_matrix'
-      call allocate_iccgN_matrix(isix, numnod)
+      if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
+      call allocate_vector_for_solver(isix, numnod)
 !
       call init_send_recv
 !

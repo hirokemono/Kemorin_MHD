@@ -25,6 +25,7 @@
 !
       subroutine FEM_initialize_back_trans
 !
+      use m_array_for_send_recv
       use m_geometry_parameter
       use m_node_phys_data
       use m_edge_geometry_data
@@ -53,8 +54,8 @@
 !
 !  -----    construct geometry informations
 !
-      if (iflag_debug.gt.0) write(*,*) 'allocate_iccgN_matrix'
-      call allocate_iccgN_matrix(isix, numnod)
+      if (iflag_debug.gt.0) write(*,*) 'allocate_vector_for_solver'
+      call allocate_vector_for_solver(isix, numnod)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)

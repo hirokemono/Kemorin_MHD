@@ -34,6 +34,7 @@
       subroutine SPH_init_sph_pick_circle
 !
       use m_constants
+      use m_array_for_send_recv
       use m_parallel_var_dof
       use m_machine_parameter
       use m_control_parameter
@@ -73,8 +74,8 @@
       call set_sph_sprctr_data_address
       call set_sph_nod_data_address
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'allocate_iccgN_matrix'
-      call allocate_iccgN_matrix(isix, nnod_rtp)
+      if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
+      call allocate_vector_for_solver(isix, nnod_rtp)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
       call init_rms_4_sph_spectr
