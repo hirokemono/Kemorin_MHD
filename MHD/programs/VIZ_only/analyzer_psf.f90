@@ -26,6 +26,7 @@
 !
       subroutine init_analyzer
 !
+      use calypso_mpi
       use m_control_data_section_only
       use set_control_visualizer
 !
@@ -42,7 +43,7 @@
 !
 !  VIZ Initialization
       call init_visualize_surface(ierr)
-      if(ierr .gt. 0) call parallel_abort(ierr, e_message)
+      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
       end subroutine init_analyzer
 !

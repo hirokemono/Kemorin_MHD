@@ -99,9 +99,6 @@
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
-!      call parallel_abort(size(x_vec_filtering), 'x_vec_filtering')
-!
-!
       end subroutine prepare_vector_2_filter
 !
 ! ----------------------------------------------------------------------

@@ -16,6 +16,7 @@
       use m_parallel_var_dof
       use m_control_data_4_pvr
       use m_control_params_4_pvr
+      use calypso_mpi
 !
       use set_field_comp_for_viz
 !
@@ -90,7 +91,7 @@
       call check_field_4_viz(num_nod_phys, phys_nod_name,               &
      &    ione, pvr%pvr_field_ctl, num_field )
       if(num_field .eq. 0) then
-        call parallel_abort(10,'set correct field name')
+        call calypso_MPI_abort(10,'set correct field name')
       end if
 !
 !
@@ -102,7 +103,7 @@
 !
 !
       if ( nele_grp_area_pvr(i_pvr) .eq. 0)                             &
-     &     call parallel_abort(100, 'set correct element group')
+     &     call calypso_MPI_abort(100, 'set correct element group')
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'i_pvr', i_pvr
@@ -152,7 +153,7 @@
      &    nele_grp_area_pvr(i_pvr), id_ele_grp_area_pvr(ist) )
 !
       if (icheck_ncomp(1) .gt. 1)                                       &
-     &     call parallel_abort(100, 'set scalar for rendering')
+     &     call calypso_MPI_abort(100, 'set scalar for rendering')
 !
 !
       if(pvr%i_ambient .gt. 0) then

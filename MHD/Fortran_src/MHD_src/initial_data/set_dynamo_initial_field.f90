@@ -72,12 +72,13 @@
 !
       subroutine set_initial_data
 !
+      use calypso_mpi
+      use m_parallel_var_dof
       use m_control_parameter
       use m_initial_field_control
       use m_t_step_parameter
       use m_node_phys_address
       use m_physical_property
-      use m_parallel_var_dof
 !
       use set_initial_rotation
       use dynamobench_initial_temp
@@ -138,7 +139,7 @@
 !
       else if (iflag_restart .ne. i_rst_no_file                         &
      &   .and. iflag_restart .ne. i_rst_by_file) then
-       call parallel_abort(10,'cannot set initial data!!!')
+       call calypso_MPI_abort(10,'cannot set initial data!!!')
 !
       end if
 !

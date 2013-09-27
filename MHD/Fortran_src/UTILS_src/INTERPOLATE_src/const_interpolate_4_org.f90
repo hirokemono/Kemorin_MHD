@@ -7,6 +7,7 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_machine_parameter
 !
@@ -70,7 +71,9 @@
 !
             call sel_read_itp_table_dest(my_rank_2nd, ierr)
 !
-            if (ierr.ne.0) call parallel_abort(ierr,'Check work file')
+            if (ierr.ne.0) then
+              call calypso_MPI_abort(ierr,'Check work file')
+            end if
 !
           end if
 !
@@ -87,7 +90,7 @@
 !
         call sel_read_itp_table_dest(my_rank, ierr)
 !
-        if (ierr.ne.0) call parallel_abort(ierr,'Check work file')
+        if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
         num_dest_domain_IO = 0
 !
@@ -122,7 +125,7 @@
 !
         call sel_read_itp_table_dest(n_dest_rank, ierr)
 !
-        if (ierr.ne.0) call parallel_abort(ierr,'Check work file')
+        if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
         call count_num_interpolation_4_orgin(n_org_rank, n_dest_rank)
 !
@@ -150,7 +153,7 @@
         ifmt_itp_table_file = ifile_type
         table_file_header = work_header
         call sel_read_itp_coefs_dest(n_dest_rank, ierr)
-        if (ierr.ne.0) call parallel_abort(ierr,'Check work file')
+        if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
         call set_interpolation_4_orgin(n_org_rank, n_dest_rank)
 !

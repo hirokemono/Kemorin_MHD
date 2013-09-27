@@ -143,6 +143,7 @@
 !
       subroutine input_restart_files
 !
+      use calypso_mpi
       use m_control_parameter
       use m_t_int_parameter
       use m_file_format_switch
@@ -153,7 +154,7 @@
 !
 !
       call check_step_FEM_field_file(my_rank, istep_rst_start, ierr)
-      if(ierr .gt. 0) call parallel_abort(10,'No restart file.')
+      if(ierr .gt. 0) call calypso_MPI_abort(10,'No restart file.')
 !
       call sel_read_alloc_step_FEM_file(my_rank, istep_rst_start)
 !

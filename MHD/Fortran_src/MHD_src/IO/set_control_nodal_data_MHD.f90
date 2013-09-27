@@ -30,6 +30,7 @@
 !
       subroutine set_control_4_fields
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_node_phys_data
 !
@@ -41,7 +42,7 @@
 !
       if(i_num_nod_phys.le.0) then
         e_message = 'Set field for simulation'
-        call parallel_abort(90, e_message)
+        call calypso_MPI_abort(90, e_message)
       end if
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)               &
      &    'original num_nod_phys_ctl ', num_nod_phys_ctl

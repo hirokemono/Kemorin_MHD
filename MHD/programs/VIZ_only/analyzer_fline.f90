@@ -24,6 +24,7 @@
 !
       subroutine initialize_fline
 !
+      use calypso_mpi
       use m_control_data_vizs
       use set_control_visualizer
 !
@@ -35,14 +36,14 @@
       call read_control_data_vizs
       call set_control_params_4_viz(my_rank, ierr)
 !
-      if(ierr .gt. 0) call parallel_abort(ierr, e_message)
+      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
       call FEM_initialize_fline
 !
 !  VIZ Initialization
       call init_visualize_fline(ierr)
-      if(ierr .gt. 0) call parallel_abort(ierr, e_message)
+      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
       end subroutine initialize_fline
 !

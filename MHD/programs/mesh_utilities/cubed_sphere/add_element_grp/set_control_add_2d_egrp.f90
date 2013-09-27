@@ -20,8 +20,9 @@
 !
       subroutine s_set_control_add_2d_egrp
 !
-      use m_constants
+      use calypso_mpi
       use m_parallel_var_dof
+      use m_constants
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
       use m_control_data_add_ele_grp
@@ -41,7 +42,7 @@
       if (i_new_mesh_head .gt. 0) then
         modified_mesh_head = new_mesh_prefix
       else
-        call parallel_abort(1, 'set modifield mesh prefix')
+        call calypso_MPI_abort(1, 'set modifield mesh prefix')
       end if
 !
       if (i_2nd_grp_direction .gt. 0) then
@@ -81,10 +82,10 @@
      &       .or. sph_grp_direction_ctl .eq. 'r_s') then
           iflag_grping_direction = 1
         else
-          call parallel_abort(1, 'set correct grouping mode')
+          call calypso_MPI_abort(1, 'set correct grouping mode')
         end if
       else
-        call parallel_abort(1, 'set correct grouping mode')
+        call calypso_MPI_abort(1, 'set correct grouping mode')
       end if
 !
       if (i_num_r_ele_grping .gt. 0) then

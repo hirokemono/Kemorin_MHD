@@ -10,6 +10,9 @@
 !
       use m_precision
 !
+      use calypso_mpi
+      use m_parallel_var_dof
+!
       implicit none
 !
 !   --------------------------------------------------------------------
@@ -20,7 +23,6 @@
 !
       subroutine set_ctl_params_interpolation
 !
-      use m_parallel_var_dof
       use m_machine_parameter
       use m_2nd_geometry_param
       use m_2nd_pallalel_vector
@@ -125,7 +127,7 @@
       if (nprocs .ne. max(ndomain_org,ndomain_dest) ) then
         write(e_message,*)                                              &
      &     'Num. of rank is larger num. of orgin or destinate dom.'
-        call  parallel_abort(4000, e_message)
+        call  calypso_MPI_abort(4000, e_message)
       end if
 !
       end subroutine set_ctl_params_interpolation
@@ -138,8 +140,6 @@
       use m_t_step_parameter
       use m_ctl_data_4_time_steps
 !
-      use m_parallel_var_dof
-!
 !   parameters for time evolution
 !
         if (i_i_step_init.eq.0) then
@@ -150,7 +150,7 @@
 !
         if (i_i_step_number.eq.0) then
           e_message = 'Set step number to finish'
-            call parallel_abort(90, e_message)
+            call calypso_MPI_abort(90, e_message)
         else
           i_step_number = i_step_number_ctl
         end if

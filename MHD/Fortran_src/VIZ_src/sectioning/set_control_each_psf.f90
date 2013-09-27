@@ -30,6 +30,7 @@
       subroutine count_control_4_psf(i_psf, psf,                        &
      &          num_mat, mat_name, num_nod_phys, phys_nod_name)
 !
+      use calypso_mpi
       use m_field_file_format
       use m_file_format_switch
       use set_area_4_viz
@@ -66,7 +67,7 @@
      &                          + nele_grp_area_psf(i_psf)
 !
       if ( nele_grp_area_psf(i_psf) .eq. 0)                             &
-     &  call parallel_abort(100, 'set correct element group')
+     &  call calypso_MPI_abort(100, 'set correct element group')
 !
       end subroutine count_control_4_psf
 !

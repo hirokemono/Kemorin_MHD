@@ -25,6 +25,7 @@
 !
       subroutine set_component_add_4_correlate
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_ctl_params_4_diff_udt
       use m_node_phys_data
@@ -43,7 +44,7 @@
       end do
 !
       if(i_field_4_correlate .eq. 0) then
-        call parallel_abort(1, 'set correct field name')
+        call calypso_MPI_abort(1, 'set correct field name')
       end if
 !
       call s_set_components_flags(correlate_comp_name,                  &

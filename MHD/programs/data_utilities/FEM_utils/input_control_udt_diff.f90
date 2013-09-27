@@ -25,13 +25,14 @@
 !
       subroutine s_input_control_udt_diff
 !
+      use calypso_mpi
+      use m_parallel_var_dof
+!
       use m_ctl_params_4_diff_udt
       use m_ctl_data_diff_udt
 !
       use set_ctl_diff_udt
       use set_control_nodal_data
-!
-      use m_parallel_var_dof
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_diff_udt'
@@ -42,7 +43,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
       call s_set_control_nodal_data(ierr)
-      if (ierr .ne. 0) call parallel_abort(ierr, e_message)
+      if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
       call s_set_ctl_4_diff_udt_steps
@@ -53,13 +54,14 @@
 !
       subroutine s_input_control_ave_udt
 !
+      use calypso_mpi
+      use m_parallel_var_dof
+!
       use m_ctl_params_4_diff_udt
       use m_ctl_data_diff_udt
 !
       use set_ctl_diff_udt
       use set_control_nodal_data
-!
-      use m_parallel_var_dof
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_ave_udt'
@@ -70,7 +72,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
       call s_set_control_nodal_data(ierr)
-      if (ierr .ne. 0) call parallel_abort(ierr, e_message)
+      if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
       call s_set_ctl_4_diff_udt_steps

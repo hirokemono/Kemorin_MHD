@@ -82,6 +82,7 @@
 !
       subroutine set_ctl_params_4_gen_table
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_machine_parameter
       use m_2nd_geometry_param
@@ -140,7 +141,7 @@
       if (nprocs .ne. ndomain_dest) then
         write(e_message,*) 'Number of destination domains  ',           &
      &                   'shuld be the number of processes'
-        call  parallel_abort(4000, e_message)
+        call  calypso_MPI_abort(4000, e_message)
       end if
 !
 !

@@ -25,8 +25,9 @@
 !
       subroutine set_control_4_FEM_params
 !
-      use m_machine_parameter
+      use calypso_mpi
       use m_parallel_var_dof
+      use m_machine_parameter
       use m_control_parameter
       use m_ctl_data_4_fem_int_pts
       use m_ctl_data_mhd_evo_scheme
@@ -56,7 +57,7 @@
             if (i_eps_4_velo.eq.0) then
               e_message                                                 &
      &         = 'Set conservation area for velocity iteration'
-              call parallel_abort(90, e_message)
+              call calypso_MPI_abort(90, e_message)
             else
               eps_4_velo = eps_4_velo_ctl
             end if
@@ -67,7 +68,7 @@
             if (i_eps_4_magne.eq.0) then
               e_message                                                 &
      &         = 'Set conservation area for magnetic iteration'
-              call parallel_abort(90, e_message)
+              call calypso_MPI_abort(90, e_message)
             else
               eps_4_magne = eps_4_magne_ctl
             end if
@@ -84,7 +85,7 @@
 !
         if (i_intg_point_poisson.eq.0.0d0) then
           e_message  = 'Set number of integration points for Poisson'
-          call parallel_abort(90, e_message)
+          call calypso_MPI_abort(90, e_message)
         else
           intg_point_poisson =  intg_point_poisson_ctl
         end if
@@ -92,7 +93,7 @@
         if (i_intg_point_t_evo.eq.0.0d0) then
           e_message                                                     &
      &       = 'Set number of integration points for time integration'
-          call parallel_abort(90, e_message)
+          call calypso_MPI_abort(90, e_message)
         else
           intg_point_t_evo =    intg_point_t_evo_ctl
         end if

@@ -26,9 +26,10 @@
 !
       subroutine s_set_control_4_filtering
 !
+      use calypso_mpi
+      use m_parallel_var_dof
       use m_constants
       use m_machine_parameter
-      use m_parallel_var_dof
       use m_file_format_switch
       use m_phys_labels
       use m_control_parameter
@@ -89,7 +90,7 @@
      &     .or. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_SGS_filter .eq. id_SGS_NO_FILTERING) then
           e_message = 'Set filtering type for dynamic model'
-          call parallel_abort(90, e_message)
+          call calypso_MPI_abort(90, e_message)
         end if
       end if
 !

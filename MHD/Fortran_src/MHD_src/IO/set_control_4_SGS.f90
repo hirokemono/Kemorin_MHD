@@ -27,6 +27,7 @@
 !
       subroutine s_set_control_4_SGS
 !
+      use calypso_mpi
       use m_constants
       use m_machine_parameter
       use m_parallel_var_dof
@@ -119,7 +120,7 @@
         if (i_SGS_clips.eq.0) then
           e_message                                                     &
      &      = 'Set cliping method for model coefficient'
-          call parallel_abort(90, e_message)
+          call calypso_MPI_abort(90, e_message)
         else
 !
           if (  SGS_negative_clip_ctl.eq.'none'                         &
@@ -224,7 +225,7 @@
       if (iflag_SGS_model .ne. id_SGS_none) then
         if (i_n_SGS_terms.eq.0) then
             e_message = 'Set equations to apply SGS model'
-            call parallel_abort(90, e_message)
+            call calypso_MPI_abort(90, e_message)
         else
 !
           do i = 1, num_SGS_term_ctl

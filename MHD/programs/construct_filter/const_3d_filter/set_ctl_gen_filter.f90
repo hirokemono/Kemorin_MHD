@@ -26,11 +26,12 @@
 !
       subroutine set_ctl_params_gen_filter
 !
+      use calypso_mpi
+      use m_parallel_var_dof
       use m_ctl_data_4_solvers
       use m_ctl_data_org_filter_name
       use m_filter_elength
       use m_reference_moments
-      use m_parallel_var_dof
 !
       integer(kind = kint) :: i
 !
@@ -351,7 +352,7 @@
       if (iflag_tgt_filter_type .eq. -1                                 &
      &  .and. i_org_filter_coef_head .eq. 0) then
         e_message = "set original filter coefficient datafile"
-        call parallel_abort(100, e_message)
+        call calypso_MPI_abort(100, e_message)
       end if
 !
       end subroutine set_ctl_params_gen_filter

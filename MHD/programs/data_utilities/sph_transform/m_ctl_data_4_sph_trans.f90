@@ -105,11 +105,12 @@
 !
       subroutine read_sph_trans_control_data
 !
+      use calypso_mpi
+      use m_parallel_var_dof
       use m_machine_parameter
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
       use m_control_data_pvrs
-      use m_parallel_var_dof
 !
 !
 !   2 begin phys_values_ctl
@@ -130,7 +131,7 @@
         call read_sph_trans_params_ctl
 !
         call read_viz_control_data
-        if(ierr .gt. 0) call parallel_abort(ierr, e_message)
+        if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
       end do
 !
       end subroutine read_sph_trans_control_data

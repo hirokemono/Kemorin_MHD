@@ -80,8 +80,9 @@
 !
       subroutine set_field_id_4_product
 !
-      use m_ctl_params_4_prod_udt
+      use calypso_mpi
       use m_parallel_var_dof
+      use m_ctl_params_4_prod_udt
       use m_ucd_data
       use m_ucd_input_data
       use m_t_step_parameter
@@ -99,7 +100,7 @@
      &   product_field_2_name, i_field_product2, ncomp_4_product2)
 !
       if( (i_field_product1*i_field_product2) .eq. 0) then
-        call parallel_abort(100,'Field does not excist')
+        call calypso_MPI_abort(100,'Field does not excist')
       end if
 !
       if(ncomp_4_product1.eq.1) then

@@ -165,6 +165,7 @@
 !
       subroutine read_mhd_control_ctl
 !
+      use calypso_mpi
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_solvers
       use m_ctl_data_4_fem_int_pts
@@ -185,7 +186,7 @@
         call read_fem_int_points_ctl
 !
         call read_crs_solver_param_ctl(ierr)
-        if(ierr .gt. 0) call parallel_abort(ierr, e_message)
+        if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
         call read_DJDS_solver_param_ctl
 !

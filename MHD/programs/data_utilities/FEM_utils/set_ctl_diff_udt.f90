@@ -6,11 +6,12 @@
 !     Written by H. Matsui on July, 2006
 !     Modified by H. Matsui on JUne, 2007
 !
+      use m_precision
+!
+      use calypso_mpi
       use m_parallel_var_dof
       use m_machine_parameter
       use m_ctl_params_4_diff_udt
-!
-      use m_precision
 !
       implicit none
 !
@@ -40,7 +41,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
       call s_set_control_nodal_data(ierr)
-      if (ierr .ne. 0) call parallel_abort(ierr, e_message)
+      if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
       call s_set_ctl_4_diff_udt_steps
@@ -178,7 +179,7 @@
 !
         if (i_i_step_number.eq.0) then
           e_message = 'Set step number to finish'
-            call parallel_abort(90, e_message)
+            call calypso_MPI_abort(90, e_message)
         else
           i_step_number = i_step_number_ctl
         end if

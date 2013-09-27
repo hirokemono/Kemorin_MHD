@@ -44,20 +44,21 @@
 !
       subroutine set_ctl_params_prod_udt
 !
+      use calypso_mpi
+      use m_parallel_var_dof
       use m_read_mesh_data
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
       use m_ctl_data_product_udt
       use m_file_format_switch
       use m_ucd_data
-      use m_parallel_var_dof
       use m_control_params_2nd_files
       use set_control_platform_data
 !
 !
       if (nprocs .ne. num_subdomain_ctl) then
         write(e_message,*) 'Number of processes should be num. of mesh'
-        call  parallel_abort(4000, e_message)
+        call  calypso_MPI_abort(4000, e_message)
       end if
 !
       call set_control_smp_def(my_rank)

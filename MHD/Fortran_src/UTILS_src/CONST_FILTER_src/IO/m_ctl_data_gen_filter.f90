@@ -212,6 +212,7 @@
 !
       subroutine read_filter_param_ctl
 !
+      use calypso_mpi
       use m_read_control_elements
       use skip_comment_f
 !
@@ -227,7 +228,7 @@
 !
 !
         call read_crs_solver_param_ctl(ierr)
-        if(ierr .gt. 0) call parallel_abort(ierr, e_message)
+        if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
         call read_DJDS_solver_param_ctl
 !

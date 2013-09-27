@@ -17,9 +17,10 @@
 !
       use m_precision
 !
+      use calypso_mpi
+      use m_parallel_var_dof
       use m_constants
       use m_machine_parameter
-      use m_parallel_var_dof
       use m_control_data_4_fline
       use m_control_params_4_fline
 !
@@ -81,7 +82,7 @@
      &                              + nele_grp_area_fline(i_fln)
 !
       if ( nele_grp_area_fline(i_fln) .eq. 0)                           &
-     &  call parallel_abort(100, 'set correct element group')
+     &  call calypso_MPI_abort(100, 'set correct element group')
 !
 !
       character_256 = fln%starting_type_ctl
@@ -199,7 +200,8 @@
      &    ione, ifield_4_fline(i_fln), icomp_4_fline(i_fln),            &
      &    ncomp, ncomp_org, tmpchara)
       if(icomp_4_fline(i_fln) .ne. icomp_VECTOR) then
-        call parallel_abort(100,'Choose vector field for field line')
+        call calypso_MPI_abort(100,                                     &
+     &      'Choose vector field for field line')
       end if
 !
       call set_components_4_viz(num_nod_phys, phys_nod_name,            &
@@ -207,7 +209,7 @@
      &    ione, ifield_linecolor(i_fln), icomp_linecolor(i_fln),        &
      &    ncomp, ncomp_org, name_color_output(i_fln))
       if(ncomp(1) .ne. ione) then
-        call parallel_abort(101,'field color should be scalar')
+        call calypso_MPI_abort(101,'field color should be scalar')
       end if
 !
       ist = istack_grp_area_fline(i_fln-1) + 1

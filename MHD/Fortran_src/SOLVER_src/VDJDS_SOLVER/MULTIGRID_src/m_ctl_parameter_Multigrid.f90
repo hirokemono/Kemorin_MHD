@@ -27,12 +27,13 @@
 !
       subroutine set_ctl_data_4_Multigrid
 !
+      use calypso_mpi
+      use m_parallel_var_dof
       use m_machine_parameter
       use m_type_AMG_data
       use m_type_AMG_mesh
       use m_ctl_data_4_Multigrid
       use set_parallel_file_name
-      use m_parallel_var_dof
 !
       integer(kind = kint) :: i
 !
@@ -48,7 +49,7 @@
       if ( num_MG_level .gt. max_MG_level) then
           write(e_message,*)                                            &
      &           'Resize maximum MG level to ', num_MG_level
-          call parallel_abort(999, e_message)
+          call calypso_MPI_abort(999, e_message)
       end if
 !
       if (num_MG_level .gt. 0) then
@@ -60,7 +61,7 @@
      &              = MG_mesh_file_head_ctl(1:num_MG_level)
         else
           e_message = 'Set coarse mesh header'
-          call parallel_abort(1000, e_message)
+          call calypso_MPI_abort(1000, e_message)
         end if
 !
         if (i_MG_fine_2_coarse_tbl .eq. num_MG_level) then
@@ -68,7 +69,7 @@
      &              = MG_fine_2_coarse_tbl_ctl(1:num_MG_level)
         else
           e_message = 'Set restriction table header'
-          call parallel_abort(1001, e_message)
+          call calypso_MPI_abort(1001, e_message)
         end if
 !
         if (i_MG_coarse_2_fine_tbl .eq. num_MG_level) then
@@ -76,7 +77,7 @@
      &              = MG_coarse_2_fine_tbl_ctl(1:num_MG_level)
         else
           e_message = 'Set prolongation table header'
-          call parallel_abort(1002, e_message)
+          call calypso_MPI_abort(1002, e_message)
         end if
 !
         if (i_MG_f2c_ele_tbl .eq. num_MG_level) then
