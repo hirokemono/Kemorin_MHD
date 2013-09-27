@@ -10,8 +10,9 @@
 !
       use m_precision
 !
-      use analyzer_udt_diff
       use m_parallel_var_dof
+      use calypso_mpi
+      use analyzer_udt_diff
 
       implicit none
 !
@@ -21,7 +22,7 @@
       call initialize_udt_diff
       call analyze_udt_diff
 
-      call parallel_cal_fin
+      call calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'
       stop

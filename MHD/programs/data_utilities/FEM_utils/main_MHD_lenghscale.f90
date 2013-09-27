@@ -10,8 +10,9 @@
 !
       use m_precision
 !
-      use analyzer_MHD_lengthscale
       use m_parallel_var_dof
+      use calypso_mpi
+      use analyzer_MHD_lengthscale
 
       implicit none
 !
@@ -22,7 +23,7 @@
 
       call analyze_MHD_lscale
 
-      call parallel_cal_fin
+      call calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'
       stop

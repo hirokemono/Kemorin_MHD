@@ -9,8 +9,9 @@
 !
       use m_precision
 !
-      use analyzer_udt_ratio
       use m_parallel_var_dof
+      use calypso_mpi
+      use analyzer_udt_ratio
 
       implicit none
 !
@@ -20,7 +21,7 @@
       call initialize_udt_ratio
       call analyze_udt_ratio
 !
-      call parallel_cal_fin
+      call calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'
       stop

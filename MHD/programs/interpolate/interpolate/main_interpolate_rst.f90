@@ -7,8 +7,9 @@
 !
       use m_precision
 !
-      use analyzer_interpolate_rst
       use m_parallel_var_dof
+      use calypso_mpi
+      use analyzer_interpolate_rst
 !
       implicit none
 !
@@ -19,7 +20,7 @@
 !
       call analyze_itp_rst
 !
-      call parallel_cal_fin
+      call calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'
       stop

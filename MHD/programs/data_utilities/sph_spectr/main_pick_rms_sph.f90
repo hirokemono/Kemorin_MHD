@@ -10,6 +10,7 @@
       use m_precision
 !
       use m_parallel_var_dof
+      use calypso_mpi
       use analyzer_pick_rms_sph
 
       implicit none
@@ -21,7 +22,7 @@
 
       call analyze_pick_rms_sph
 
-      call parallel_cal_fin
+      call calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'
       stop

@@ -5,6 +5,7 @@
       use m_constants
       use m_parallel_var_dof
       use m_work_time
+      use calypso_mpi
 !
       use m_read_ctl_gen_sph_shell
       use m_parallel_sph_grids
@@ -75,7 +76,7 @@
 !  ========= Construct subdomain information for viewer ==============
 !
       call output_elapsed_times
-      call parallel_cal_fin
+      call calypso_MPI_finalize
 !
       write(*,*) 'program normally terminated'
 !

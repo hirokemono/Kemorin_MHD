@@ -4,6 +4,7 @@
       use m_precision
 !
       use m_parallel_var_dof
+      use calypso_mpi
       use analyzer_add_ele_group
 !
       implicit none
@@ -13,7 +14,7 @@
 !
       call initialize_add_egrp
 !
-      call parallel_cal_fin
+      call calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'
       stop

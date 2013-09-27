@@ -11,8 +11,9 @@
 !
       use m_precision
 !
-      use analyzer_udt_corr_1comp
       use m_parallel_var_dof
+      use calypso_mpi
+      use analyzer_udt_corr_1comp
 
       implicit none
 !
@@ -23,7 +24,7 @@
 
       call analyze_udt_corr_1comp
 
-      call parallel_cal_fin
+      call calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'
       stop

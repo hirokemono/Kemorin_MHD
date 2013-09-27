@@ -6,6 +6,7 @@
       use m_precision
 !
       use m_parallel_var_dof
+      use calypso_mpi
       use analyzer_zm_kinetic_energy
 !
       implicit none
@@ -15,7 +16,7 @@
       call init_zm_kinetic_energy
       call analyze_zm_kinetic_energy
 
-      call parallel_cal_fin
+      call calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'
       stop

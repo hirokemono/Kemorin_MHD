@@ -9,6 +9,7 @@
       use m_precision
 !
       use analyzer_time_ave_sph
+      use calypso_mpi
       use m_parallel_var_dof
 !
       implicit none
@@ -21,7 +22,7 @@
 
       call evolution
 
-      call parallel_cal_fin
+      call calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'
       stop

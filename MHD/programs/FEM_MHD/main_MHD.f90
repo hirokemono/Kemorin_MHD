@@ -10,8 +10,9 @@
 !
       use m_precision
 !
-      use analyzer_MHD
+      use calypso_mpi
       use m_parallel_var_dof
+      use analyzer_MHD
 !
       implicit none
 !
@@ -21,7 +22,7 @@
       call initialization_MHD
       call evolution_MHD
 !
-      call parallel_cal_fin
+      call calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'
       stop

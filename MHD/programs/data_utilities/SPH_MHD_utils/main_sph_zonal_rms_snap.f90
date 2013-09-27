@@ -13,6 +13,7 @@
       use m_precision
 !
       use m_parallel_var_dof
+      use calypso_mpi
       use analyzer_sph_zonal_rms_snap
 !
       implicit none
@@ -23,7 +24,7 @@
       call initialize_sph_zonal_rms_snap
       call evolution_sph_zonal_rms_snap
 !
-      call  parallel_cal_fin
+      call  calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'
       stop

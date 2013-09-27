@@ -9,6 +9,7 @@
       use m_precision
 !
       use m_parallel_var_dof
+      use calypso_mpi
       use analyzer_zm_transform
 !
       implicit none
@@ -18,7 +19,7 @@
       call init_zm_trans
       call analyze_zm_trans
 
-      call parallel_cal_fin
+      call calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'
       stop

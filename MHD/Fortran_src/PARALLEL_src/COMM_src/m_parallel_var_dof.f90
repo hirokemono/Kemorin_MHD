@@ -10,7 +10,6 @@
 !!
 !!@verbatim
 !!      subroutine parallel_cal_init
-!!      subroutine parallel_cal_fin
 !!
 !!      subroutine parallel_abort(code , message)
 !!
@@ -70,15 +69,6 @@
       iflag_debug = i_debug
 !
       end subroutine parallel_cal_init
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine parallel_cal_fin
-!
-!
-      call  MPI_FINALIZE(ierr)
-!
-      end subroutine parallel_cal_fin
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

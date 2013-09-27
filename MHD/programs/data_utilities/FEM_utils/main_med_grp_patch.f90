@@ -11,8 +11,9 @@
 !
       use m_precision
 !
-      use analyzer_med_grp_patch
       use m_parallel_var_dof
+      use calypso_mpi
+      use analyzer_med_grp_patch
 
       implicit none
 !
@@ -23,7 +24,7 @@
 
       call analyze_med_grp_patch
 
-      call parallel_cal_fin
+      call calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'
       stop

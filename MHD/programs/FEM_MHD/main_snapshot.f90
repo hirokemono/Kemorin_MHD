@@ -11,8 +11,9 @@
 
       use m_precision
 !
-      use analyzer_snap
       use m_parallel_var_dof
+      use calypso_mpi
+      use analyzer_snap
 
       implicit none
 !
@@ -22,7 +23,7 @@
       call init_analyzer
       call analyze
 !
-      call parallel_cal_fin
+      call calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'
       stop
