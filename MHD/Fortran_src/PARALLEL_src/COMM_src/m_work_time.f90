@@ -18,6 +18,8 @@
       use m_precision
       use m_constants
 !
+      use calypso_mpi
+!
       implicit  none
 !
       real (kind=kreal)  ::  total_time, total_start

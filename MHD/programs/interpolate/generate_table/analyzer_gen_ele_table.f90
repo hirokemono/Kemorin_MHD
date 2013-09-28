@@ -80,6 +80,7 @@
 !
       subroutine analyze
 !
+      use calypso_mpi
       use m_ctl_params_4_gen_table
       use construct_interpolate_table
       use const_interpolate_4_org
@@ -110,7 +111,6 @@
 !
       call copy_itp_table_dest_to_IO
 !
-      ifmt_itp_table_file = ifile_type
       table_file_header = work_header
       call sel_write_itp_coefs_dest(my_rank)
 !

@@ -62,6 +62,7 @@
 !
       subroutine cal_mesh_outline_pvr(i_pvr, numnod, xx)
 !
+      use calypso_mpi
       use m_constants
       use m_machine_parameter
       use m_parallel_var_dof

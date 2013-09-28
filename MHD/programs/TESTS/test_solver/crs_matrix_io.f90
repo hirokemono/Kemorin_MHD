@@ -142,12 +142,13 @@
 !
       subroutine read_communication_data
 !
+      use calypso_mpi
       use m_nod_comm_table
 !
 !
       call allocate_neib_id
 !
-      if (nprocs.ne.1) then
+      if (nprocs .ne. 1) then
         read (id_file,*) id_neib(1:num_neib)
 
         call allocate_nod_import_num

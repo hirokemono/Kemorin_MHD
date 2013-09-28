@@ -115,7 +115,6 @@
       use set_field_to_restart
       use set_2nd_field_to_restart
 !
-      character(len=kchara) :: restart_tmp
       integer(kind = kint) :: i_step
 !
 !

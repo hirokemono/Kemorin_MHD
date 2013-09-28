@@ -49,7 +49,7 @@
       if (my_rank .lt. ndomain_org) then
 !
         mesh_file_head = org_mesh_head
-        iflag_mesh_file_fmt = ifile_type
+        iflag_mesh_file_fmt = ifmt_org_mesh_file
         if (iflag_debug.gt.0)                                           &
      &     write(*,*) 'read mesh for original mesh ', mesh_file_head
         call input_mesh(my_rank)
@@ -61,7 +61,7 @@
 !
       if (my_rank .lt. ndomain_dest) then
          mesh_file_head = dest_mesh_head
-         iflag_mesh_file_fmt = ifile_type
+         iflag_mesh_file_fmt = ifmt_itp_mesh_file
          if (iflag_debug.gt.0)                                          &
      &    write(*,*) 'read mesh for interpolated mesh ', mesh_file_head
          call input_2nd_mesh(my_rank)
@@ -69,7 +69,6 @@
 !
 !  --  read interpolate table
 !
-      ifmt_itp_table_file = ifile_type
       table_file_header = table_file_head
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'sel_read_interpolate_table', table_file_header

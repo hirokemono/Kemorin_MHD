@@ -36,6 +36,7 @@
 !
       subroutine collect_diff_filter_nod_ctest
 !
+      use calypso_mpi
       use collect_diff_4_comm_test
 !
       call collect_diff_ctest(nprocs, nnod_filter_diff_local,           &

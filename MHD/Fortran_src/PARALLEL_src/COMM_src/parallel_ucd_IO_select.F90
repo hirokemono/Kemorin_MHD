@@ -25,6 +25,8 @@
       use m_file_format_switch
       use m_field_file_format
 !
+      use calypso_mpi
+!
       use t_ucd_data
 !
       implicit none

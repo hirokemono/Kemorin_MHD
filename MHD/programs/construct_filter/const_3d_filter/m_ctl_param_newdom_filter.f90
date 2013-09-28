@@ -37,6 +37,7 @@
 !
       subroutine set_control_filter_newdomain
 !
+      use calypso_mpi
       use m_machine_parameter
       use m_parallel_var_dof
       use m_2nd_pallalel_vector

@@ -150,7 +150,7 @@
 !
       call add_int_suffix(my_rank, org_filter_coef_head,                &
      &        file_name)
-      if (ifile_type .eq. 0) then
+      if (ifmt_3d_filter .eq. iflag_ascii) then
         open(org_filter_coef_code, file=file_name, form='formatted')
         call read_filter_geometry(org_filter_coef_code)
       else
@@ -196,6 +196,7 @@
       use m_filter_elength
       use m_filter_moments
       use m_filter_coefs
+      use m_field_file_format
       use set_parallel_file_name
       use correct_wrong_filters
       use filter_geometry_IO
@@ -214,7 +215,7 @@
 !
       write(*,*) 'org_filter_coef_head', org_filter_coef_head
       call add_int_suffix(my_rank, org_filter_coef_head, file_name)
-      if (ifile_type .eq. 0) then
+      if (ifmt_3d_filter .eq. iflag_ascii) then
         open(org_filter_coef_code, file=file_name, form='formatted')
         call read_filter_geometry(org_filter_coef_code)
       else

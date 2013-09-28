@@ -19,6 +19,8 @@
       use m_parallel_var_dof
       use m_phys_constants
 !
+      use calypso_mpi
+!
       use t_ucd_data
 !
       use set_ucd_file_names

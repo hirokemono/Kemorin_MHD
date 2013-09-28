@@ -30,6 +30,8 @@
       subroutine set_inod_4_newdomain_filter
 !
       use m_internal_4_partitioner
+      use m_filter_file_names
+      use m_field_file_format
 !
       integer(kind = kint) :: ip2, my_rank2
 !
@@ -42,7 +44,7 @@
 !
         call deallocate_neib_domain_IO
 !
-        call marking_used_node_4_filtering(ip2, ifile_type)
+        call marking_used_node_4_filtering(ip2, ifmt_3d_filter)
 !
         call set_num_globalnod_4_newdomain(ip2)
 !

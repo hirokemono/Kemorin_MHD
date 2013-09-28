@@ -65,6 +65,7 @@
       use m_new_filter_func_4_sorting
       use m_filter_file_names
       use m_filter_coefs
+      use m_field_file_format
       use m_read_mesh_data
       use m_comm_data_IO
       use mesh_IO_select
@@ -97,21 +98,17 @@
 !
         call add_int_suffix(my_rank2, new_filter_coef_head,             &
      &      mesh_file_name)
-        if (ifile_type .eq. 1) then
 !
-!          write(*,*) 'binary mesh file: ', trim(mesh_file_name)
-          open (filter_coef_code, file = mesh_file_name,                &
-     &      form = 'unformatted')
-          call read_filter_geometry_b(filter_coef_code)
-!
-        else
-!
+        if (ifmt_3d_filter .eq. iflag_ascii) then
 !          write(*,*) 'ascii mesh file: ', trim(mesh_file_name)
           open (filter_coef_code, file = mesh_file_name,                &
      &      form = 'formatted')
 !          write(*,*) 'read_filter_geometry'
           call read_filter_geometry(filter_coef_code)
-!
+        else
+          open (filter_coef_code, file = mesh_file_name,                &
+     &      form = 'unformatted')
+          call read_filter_geometry_b(filter_coef_code)
         end if
 !
 !        write(*,*) 'copy_filter_comm_tbl_from_IO'
@@ -133,7 +130,7 @@
         call allocate_fluid_filter_coefs2
 !
 !        write(*,*) 'trans_filter_4_new_domains'
-        call trans_filter_4_new_domains(ip2, ifile_type)
+        call trans_filter_4_new_domains(ip2, ifmt_3d_filter)
 !        write(*,*) 'reorder_filter_new_domain'
         call reorder_filter_new_domain
 !

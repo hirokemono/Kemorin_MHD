@@ -24,6 +24,7 @@
 !
       use m_constants
       use m_parallel_var_dof
+      use calypso_mpi
 !
       implicit  none
 !

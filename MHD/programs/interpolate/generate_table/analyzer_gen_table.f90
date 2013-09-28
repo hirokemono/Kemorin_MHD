@@ -73,6 +73,7 @@
 !
       subroutine analyze
 !
+      use calypso_mpi
       use construct_interpolate_table
       use const_interpolate_4_org
       use order_dest_table_by_domain
@@ -102,7 +103,6 @@
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_table_dest_to_IO'
       call copy_itp_table_dest_to_IO
 !
-      ifmt_itp_table_file = ifile_type
       table_file_header = work_header
       call sel_write_itp_coefs_dest(my_rank)
 !

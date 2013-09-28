@@ -62,7 +62,6 @@
 !
 !
 !
-          ifmt_itp_table_file = ifile_type
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'copy_itp_table_org_to_IO', my_rank_2nd, nprocs
           call copy_itp_table_org_to_IO
@@ -91,7 +90,6 @@
       end do
 !
       if (my_rank .ge. nprocs_2nd) then
-        ifmt_itp_table_file = ifile_type
         table_file_header = work_header
         call sel_read_itp_table_dest(my_rank, ierr)
 !

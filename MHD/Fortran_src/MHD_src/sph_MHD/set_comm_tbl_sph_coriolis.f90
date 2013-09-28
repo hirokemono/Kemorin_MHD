@@ -16,6 +16,7 @@
       use m_precision
 !
       use m_machine_parameter
+      use calypso_mpi
       use m_parallel_var_dof
 !
       implicit none

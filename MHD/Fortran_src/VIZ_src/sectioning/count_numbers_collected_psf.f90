@@ -25,6 +25,7 @@
      &          istack_para_psf, num_recv_psf, istack_recv_psf,         &
      &          istack_out_psf)
 !
+      use calypso_mpi
       use m_machine_parameter
       use m_parallel_var_dof
       use m_mpi_flags_4_section

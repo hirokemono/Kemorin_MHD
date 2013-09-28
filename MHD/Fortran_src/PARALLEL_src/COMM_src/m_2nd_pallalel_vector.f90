@@ -38,7 +38,7 @@
 !
       subroutine copy_num_processes_to_2nd
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
 !
       nprocs_2nd = nprocs

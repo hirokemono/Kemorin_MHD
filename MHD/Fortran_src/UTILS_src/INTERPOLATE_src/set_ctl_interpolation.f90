@@ -33,6 +33,7 @@
       use m_ctl_data_4_2nd_data
       use m_file_format_switch
       use m_field_file_format
+      use itp_table_IO_select_4_zlib
       use set_control_platform_data
 !
 !
@@ -112,6 +113,9 @@
      &    ifmt_org_mesh_file)
       call choose_file_format(new_mesh_file_fmt_ctl,                    &
      &    i_new_mesh_file_fmt, ifmt_itp_mesh_file)
+!
+      call choose_file_format(ifmt_itp_table_file_ctl, i_fmt_itp_tbl,   &
+     &    ifmt_itp_table_file)
 !
       call choose_file_format(restart_file_fmt_ctl, i_rst_files_fmt,    &
      &    ifmt_org_rst_file)

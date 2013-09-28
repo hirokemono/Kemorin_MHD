@@ -55,7 +55,7 @@
 !
       subroutine allocate_global_fline_num
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
 !
       allocate(istack_nod_line_gl(0:nprocs))

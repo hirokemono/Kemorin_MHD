@@ -209,7 +209,7 @@
 !
       subroutine allocate_nod_stack_ctest_IO
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       allocate( num_nod_diff_pe(nprocs)  )
       allocate( istack_nod_diff_pe(0:nprocs)  )
@@ -223,7 +223,7 @@
 !
       subroutine allocate_geom_stack_ctest_IO
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
 !
       allocate( num_ele_diff_pe(nprocs)  )

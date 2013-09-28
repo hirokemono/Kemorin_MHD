@@ -13,9 +13,10 @@
       use m_precision
 !
       use m_constants
-      use m_parallel_var_dof
-      use t_comm_table
       use m_const_ele_comm_tbl
+      use m_parallel_var_dof
+      use calypso_mpi
+      use t_comm_table
 !
       implicit  none
 !

@@ -26,7 +26,6 @@
 !
       use m_machine_parameter
       use m_control_params_4_fline
-      use m_parallel_var_dof
       use m_geometry_constants
       use m_global_fline
 !
@@ -43,6 +42,7 @@
      &    num_surf, num_surf_bc, surf_name, surf_istack, surf_item,     &
      &    num_nod_phys, phys_nod_name)
 !
+      use calypso_mpi
       use m_source_4_filed_line
       use m_local_fline
       use set_fline_control

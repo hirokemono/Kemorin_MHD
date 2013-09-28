@@ -17,12 +17,11 @@
       use m_precision
       use calypso_mpi
 !
+!
       implicit  none
 !
 !>      MPI communicator for CALYPSO
       integer(kind=kint) :: SOLVER_COMM
-!>      total number of processes
-      integer(kind=kint) :: nprocs
 ! 
 !>      process ID (start from 0)
       integer(kind=kint) :: my_rank
@@ -39,12 +38,9 @@
 !
       subroutine parallel_cal_init
 !
-      use m_machine_parameter
 !
-!
-      call  MPI_INIT(ierr)
+      call calypso_MPI_init
       call  MPI_COMM_DUP (MPI_COMM_WORLD, SOLVER_COMM, ierr)
-      call  MPI_COMM_SIZE(SOLVER_COMM, nprocs, ierr)
       call  MPI_COMM_RANK(SOLVER_COMM, my_rank  , ierr)
 !
       end subroutine parallel_cal_init

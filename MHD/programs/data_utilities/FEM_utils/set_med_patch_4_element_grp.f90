@@ -228,6 +228,7 @@
 !
       subroutine init_ele_grp_med_patch(file_head, num_mat, num_mat_bc)
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use set_parallel_file_name
 !

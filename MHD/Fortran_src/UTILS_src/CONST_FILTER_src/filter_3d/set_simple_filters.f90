@@ -183,15 +183,15 @@
 !
       integer(kind = kint), intent(in) :: id_dest, id_org, inod
 !
-      filter_x_nod(inod,id_dest) =  filter_x_nod(inod,id_dest)
-      filter_y_nod(inod,id_dest) =  filter_y_nod(inod,id_dest)
-      filter_z_nod(inod,id_dest) =  filter_z_nod(inod,id_dest)
-      filter_xy_nod(inod,id_dest) = filter_xy_nod(inod,id_dest)
-      filter_yz_nod(inod,id_dest) = filter_yz_nod(inod,id_dest)
-      filter_zx_nod(inod,id_dest) = filter_zx_nod(inod,id_dest)
-      filter_x2_nod(inod,id_dest) = filter_x2_nod(inod,id_dest)
-      filter_y2_nod(inod,id_dest) = filter_y2_nod(inod,id_dest)
-      filter_z2_nod(inod,id_dest) = filter_z2_nod(inod,id_dest)
+      filter_x_nod(inod,id_dest) =  filter_x_nod(inod,id_org)
+      filter_y_nod(inod,id_dest) =  filter_y_nod(inod,id_org)
+      filter_z_nod(inod,id_dest) =  filter_z_nod(inod,id_org)
+      filter_xy_nod(inod,id_dest) = filter_xy_nod(inod,id_org)
+      filter_yz_nod(inod,id_dest) = filter_yz_nod(inod,id_org)
+      filter_zx_nod(inod,id_dest) = filter_zx_nod(inod,id_org)
+      filter_x2_nod(inod,id_dest) = filter_x2_nod(inod,id_org)
+      filter_y2_nod(inod,id_dest) = filter_y2_nod(inod,id_org)
+      filter_z2_nod(inod,id_dest) = filter_z2_nod(inod,id_org)
 !
       end subroutine copy_filter_moments_each_nod
 !

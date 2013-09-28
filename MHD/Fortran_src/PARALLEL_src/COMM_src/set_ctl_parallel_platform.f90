@@ -11,12 +11,6 @@
 !
       use m_precision
 !
-      use m_constants
-      use m_machine_parameter
-      use m_parallel_var_dof
-      use m_ctl_data_4_platforms
-      use calypso_mpi
-!
       implicit  none
 !
 ! -----------------------------------------------------------------------
@@ -27,6 +21,12 @@
 !
       subroutine check_control_num_domains
 !
+      use m_constants
+      use m_machine_parameter
+      use m_parallel_var_dof
+      use m_ctl_data_4_platforms
+!
+      use calypso_mpi
 !
 !
       if (i_num_subdomain .gt. 0) then

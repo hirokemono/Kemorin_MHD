@@ -99,7 +99,7 @@
 !
       subroutine allocate_filter_stk_ctest_IO
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       allocate( num_filter_nod_diff_pe(nprocs)  )
       allocate( istack_filter_nod_diff_pe(0:nprocs)  )

@@ -1,26 +1,28 @@
 !write_filters_4_each_node.f90
 !      module write_filters_4_each_node
 !
-      module write_filters_4_each_node
-!
 !     Written by H. Matsui on Mar., 2008
-!
-      use m_precision
-!
-      use m_parallel_var_dof
-      use m_filter_coefs
-      use m_field_file_format
-!
-      implicit none
-!
-      character(len=255) :: character_4_read = ''
-      private :: character_4_read
 !
 !      subroutine write_each_filter_stack_coef(inod)
 !      subroutine write_each_no_filter_coef(inod)
 !      subroutine write_each_same_filter_coef(inod)
 !
 !      subroutine read_each_filter_stack_coef(id_file)
+!
+      module write_filters_4_each_node
+!
+      use m_precision
+!
+      use m_constants
+      use m_parallel_var_dof
+      use m_filter_coefs
+      use m_filter_file_names
+      use m_field_file_format
+!
+      implicit none
+!
+      character(len=255) :: character_4_read = ''
+      private :: character_4_read
 !
 ! -----------------------------------------------------------------------
 !
@@ -30,7 +32,6 @@
 !
       subroutine write_each_filter_stack_coef(inod)
 !
-      use m_filter_file_names
       use filter_IO_for_sorting
 !
       integer(kind = kint), intent(in) :: inod
@@ -54,10 +55,8 @@
 !
       subroutine write_each_no_filter_coef(inod)
 !
-      use m_filter_file_names
-!
       integer(kind = kint), intent(in) :: inod
-      integer(kind = kint), parameter :: izero = 0
+!
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
         write(filter_coef_code,'(4i12)') inod,                          &
@@ -71,8 +70,6 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_each_same_filter_coef(inod)
-!
-      use m_filter_file_names
 !
       integer(kind = kint), intent(in) :: inod
 !

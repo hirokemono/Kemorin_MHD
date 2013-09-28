@@ -127,6 +127,7 @@
 !
       subroutine trans_filter_moms_each_domain(my_rank_2nd)
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_2nd_geometry_data
       use m_2nd_filter_moments

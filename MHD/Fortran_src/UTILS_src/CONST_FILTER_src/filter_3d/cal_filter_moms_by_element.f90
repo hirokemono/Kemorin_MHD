@@ -64,7 +64,7 @@
       use filter_moments_send_recv
       use int_vol_elesize_on_node
 !
-      integer(kind = kint) :: iele, inod, n, im_x, im_y, im_z
+      integer(kind = kint) :: inod, n, im_x, im_y, im_z
 !
 !
       do n = 1, num_order_3d

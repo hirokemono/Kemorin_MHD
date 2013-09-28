@@ -27,17 +27,25 @@
       use solver_SR
 !
       integer(kind = kint), intent(in) :: nnod
-      real(kind = kreal), intent(inout) :: x_vec(3*nnod)
+      real(kind = kreal), intent(inout) :: x_vec(nnod)
       real(kind = kreal), intent(inout) :: d_nod(nnod)
+!
+      integer(kind = kint) :: inod
 !
 !
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV(nnod, num_neib, id_neib,                    &
      &                      istack_import, item_import,                 &
      &                      istack_export, item_export,                 &
-     &                      d_nod(1),SOLVER_COMM, my_rank)
+     &                      x_vec(1),SOLVER_COMM, my_rank)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
+!
+!$omp parallel do
+      do inod=1, nnod
+        d_nod(inod) = x_vec(inod  )
+      end do
+!$omp end parallel do
 !
       end subroutine scalar_send_recv_3d_filter
 !

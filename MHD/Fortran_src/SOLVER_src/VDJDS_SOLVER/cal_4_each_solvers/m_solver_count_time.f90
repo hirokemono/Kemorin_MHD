@@ -49,12 +49,13 @@
 !
       use calypso_mpi
 !
-    integer(kind=kint), intent(in) :: iflag_op, solver_comm, my_rank, time_kind
-    integer(kind=kint) :: ierr, NPROCS, i, num_of_kinds
-    real   (kind=kreal) :: recv_time, send_time, out_time
+      integer(kind=kint), intent(in) :: iflag_op, solver_comm
+      integer(kind=kint), intent(in) :: my_rank, time_kind
+      integer(kind=kint) :: ierr, i, num_of_kinds
+      real   (kind=kreal) :: recv_time, send_time, out_time
 
     !C num_of_kinds must be less than or equal to TIME_KINDS
-    num_of_kinds = 15
+      num_of_kinds = 15
 
     !C iflag_op:1 start 2 stop 3 print time 0 reset time_table
       if     (iflag_op .eq. 0) then
@@ -75,7 +76,7 @@
         recv_time = 0
         CALL MPI_REDUCE(send_time, recv_time, 1, MPI_DOUBLE_PRECISION,  &
      &                   MPI_SUM, 0, SOLVER_COMM, ierr)
-        CALL MPI_COMM_SIZE(SOLVER_COMM, NPROCS, ierr)
+        CALL MPI_COMM_SIZE(SOLVER_COMM, nprocs, ierr)
         IF(my_rank == 0) THEN
           out_time = recv_time / NPROCS
           WRITE(*,'("***", i3, ":", 1pe16.6, " sec")')                  &

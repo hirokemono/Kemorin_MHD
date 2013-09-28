@@ -34,6 +34,7 @@
       use m_reference_moments
       use m_matrix_4_filter
       use m_filter_file_names
+      use m_field_file_format
       use m_crs_matrix_4_filter
       use fem_const_filter_matrix
       use add_nodes_elems_4_each_nod
@@ -69,7 +70,7 @@
 !
       call allocate_tmp_4_filter_sort
 !
-      if (ifile_type .eq. 0) then
+      if (ifmt_3d_filter .eq. iflag_ascii) then
         write(filter_coef_code,'(a)') '!'
         write(filter_coef_code,'(a)') '! filter coefficients'
         write(filter_coef_code,'(a)') '!'
@@ -92,11 +93,12 @@
       subroutine init_4_cal_fluid_fileters
 !
       use m_filter_file_names
+      use m_field_file_format
       use set_element_id_4_node
       use set_element_list_4_filter
 !
 !
-      if (ifile_type .eq. 0) then
+      if (ifmt_3d_filter .eq. iflag_ascii) then
         write(filter_coef_code,'(a)') '!'
         write(filter_coef_code,'(a)') '! filter coefficients for fluid'
         write(filter_coef_code,'(a)') '!'

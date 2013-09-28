@@ -1,12 +1,13 @@
 !check_num_fail_nod_commute.f90
 !      module check_num_fail_nod_commute
 !
-      module check_num_fail_nod_commute
-!
 !     Written by H. Matsui on Nov., 2006
+!
+      module check_num_fail_nod_commute
 !
       use m_precision
 !
+      use calypso_mpi
       use m_parallel_var_dof
 !
       implicit none

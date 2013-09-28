@@ -22,6 +22,7 @@
 !
       subroutine s_const_comm_table_fluid
 !
+      use calypso_mpi
       use m_machine_parameter
       use m_control_parameter
       use m_parallel_var_dof

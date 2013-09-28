@@ -54,7 +54,6 @@
 !
 !
 !
-      ifmt_itp_table_file = ifile_type
       table_file_header = course_2_fine_head
       call sel_read_interpolate_table(izero, ierr)
       call copy_interpolate_types_from_IO(izero, c2f_single)
@@ -126,7 +125,6 @@
      &    merge_tbl_2%iele_local, merge_tbl_2%idomain_ele)
 !
 !
-      ifmt_itp_table_file = ifile_type
       do ip = 1, nprocs_larger
         my_rank = ip - 1
 !

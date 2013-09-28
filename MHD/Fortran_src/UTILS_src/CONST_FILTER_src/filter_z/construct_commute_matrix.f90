@@ -6,6 +6,7 @@
 !        programmed by H. Matsui on June, 2007
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -28,8 +29,7 @@
       use m_int_edge_vart_width
 !
 !
-      integer (kind = kint) :: kk, kfact, inod, i, k1, ii, jj, k2
-      real(kind = kreal), parameter :: zero = 0.0d0, one = 1.0d0
+      integer (kind = kint) :: kk, kfact, inod, i, k1, jj, k2
 !
 !
 !   components for normalization on node
