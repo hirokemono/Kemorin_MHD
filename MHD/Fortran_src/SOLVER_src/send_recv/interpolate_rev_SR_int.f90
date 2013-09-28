@@ -11,8 +11,7 @@
 !!      subroutine interpolate_reverse_SR_int                           &
 !!     &      (npe_send, isend_self, nnod_send, id_pe_send, istack_send,&
 !!     &       npe_recv, irecv_self, nnod_recv, id_pe_recv, istack_recv,&
-!!     &       inod_import, nnod_org, iX_org, nnod_new, iX_new,         &
-!!     &       SOLVER_COMM)
+!!     &       inod_import, nnod_org, iX_org, nnod_new, iX_new)
 !!@endverbatim
 !!
 !!@n @param  nnod_org    Number of data points for origin
@@ -36,8 +35,6 @@
 !!
 !!@n @param  iX_new(nnod_new)   Send data
 !!@n @param  iX_org(nnod_org)   Received data
-!!@n
-!!@n @param  SOLVER_COMM          MPI communicator
 !
       module interpolate_rev_SR_int
 !
@@ -56,12 +53,9 @@
       subroutine interpolate_reverse_SR_int                             &
      &       (npe_send, isend_self, nnod_send, id_pe_send, istack_send, &
      &        npe_recv, irecv_self, nnod_recv, id_pe_recv, istack_recv, &
-     &        inod_import, nnod_org, iX_org, nnod_new, iX_new,          &
-     &        SOLVER_COMM)
+     &        inod_import, nnod_org, iX_org, nnod_new, iX_new)
 !
       use m_solver_SR
-!
-      integer, intent(in)   :: SOLVER_COMM
 !
       integer(kind = kint), intent(in) :: nnod_org
       integer(kind = kint), intent(in) :: nnod_new
@@ -106,7 +100,7 @@
         istart= istack_recv(neib-1) + 1
         inum  = istack_recv(neib  ) - istack_recv(neib-1)
         call MPI_ISEND(iWR(istart), inum, MPI_INTEGER,                  &
-     &      id_pe_recv(neib), 0, SOLVER_COMM, req2(neib), ierr)
+     &      id_pe_recv(neib), 0, CALYPSO_COMM, req2(neib), ierr)
       end do
 !C
 !C-- RECEIVE
@@ -114,7 +108,7 @@
         istart= istack_send(neib-1) + 1
         inum  = istack_send(neib  ) - istack_send(neib-1)
         call MPI_IRECV(iX_org(istart), inum, MPI_INTEGER,               &
-     &      id_pe_send(neib), 0, SOLVER_COMM, req1(neib), ierr)
+     &      id_pe_send(neib), 0, CALYPSO_COMM, req1(neib), ierr)
       end do
 !
       call MPI_WAITALL (ncomm_send, req1, sta1, ierr)

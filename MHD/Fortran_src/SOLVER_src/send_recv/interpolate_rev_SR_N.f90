@@ -11,8 +11,7 @@
 !!      subroutine interpolate_reverse_SR_N                             &
 !!     &      (npe_send, isend_self, nnod_send, id_pe_send, istack_send,&
 !!     &       npe_recv, irecv_self, nnod_recv, id_pe_recv, istack_recv,&
-!!     &       inod_import, nnod_org, NB, X_org, nnod_new, X_new,       &
-!!     &       SOLVER_COMM)
+!!     &       inod_import, nnod_org, NB, X_org, nnod_new, X_new)
 !!@endverbatim
 !!
 !!@n @param  NB    Number of components for communication
@@ -37,8 +36,6 @@
 !!
 !!@n @param  X_new(NB*nnod_new)   Send data
 !!@n @param  X_org(NB*nnod_org)   Received data
-!!@n
-!!@n @param  SOLVER_COMM          MPI communicator
 !
       module interpolate_rev_SR_N
 !
@@ -57,12 +54,9 @@
       subroutine interpolate_reverse_SR_N                               &
      &       (npe_send, isend_self, nnod_send, id_pe_send, istack_send, &
      &        npe_recv, irecv_self, nnod_recv, id_pe_recv, istack_recv, &
-     &        inod_import, nnod_org, NB, X_org, nnod_new, X_new,        &
-     &        SOLVER_COMM)
+     &        inod_import, nnod_org, NB, X_org, nnod_new, X_new)
 !
       use m_solver_SR
-!
-      integer, intent(in)   :: SOLVER_COMM
 !
       integer(kind = kint), intent(in) :: nnod_org
       integer(kind = kint), intent(in) :: nnod_new
@@ -112,7 +106,7 @@
         istart= NB *  istack_recv(neib-1) + 1
         inum  = NB * (istack_recv(neib  ) - istack_recv(neib-1) )
         call MPI_ISEND(WR(istart), inum, MPI_DOUBLE_PRECISION,          &
-     &      id_pe_recv(neib), 0, SOLVER_COMM, req2(neib), ierr)
+     &      id_pe_recv(neib), 0, CALYPSO_COMM, req2(neib), ierr)
       end do
 !
 !C
@@ -121,7 +115,7 @@
         istart= NB *  istack_send(neib-1) + 1
         inum  = NB * (istack_send(neib  ) - istack_send(neib-1) )
         call MPI_IRECV(X_org(istart), inum, MPI_DOUBLE_PRECISION,       &
-     &      id_pe_send(neib), 0, SOLVER_COMM, req1(neib), ierr)
+     &      id_pe_send(neib), 0, CALYPSO_COMM, req1(neib), ierr)
       end do
 !
       call MPI_WAITALL (ncomm_send, req1, sta1, ierr)

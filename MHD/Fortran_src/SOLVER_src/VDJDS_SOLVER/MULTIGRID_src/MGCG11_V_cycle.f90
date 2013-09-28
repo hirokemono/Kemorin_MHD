@@ -124,7 +124,7 @@
         ierr = IER
         call s_interpolate_type_1(NP_f, NP_c, MG_comm(i+1),             &
      &      MG_itp(i+1)%f2c, MG_vect(i)%b_vec, MG_vect(i+1)%b_vec,      &
-     &       PEsmpTOT, my_rank, SOLVER_COMM)
+     &      PEsmpTOT)
         MG_vect(i+1)%x_vec(1:NP_c) = zero
       end do
 !
@@ -160,7 +160,7 @@
         write(*,*) 's_interpolate_type_1 restriction', i
         call s_interpolate_type_1(NP_f, NP_c, MG_comm(i+1),             &
      &      MG_itp(i+1)%f2c, MG_vect(i)%x_vec, MG_vect(i+1)%x_vec,      &
-     &      PEsmpTOT, my_rank, SOLVER_COMM )
+     &      PEsmpTOT)
       end do
 !
 !    at the coarsest level
@@ -192,7 +192,7 @@
         write(*,*) 's_interpolate_type_1 interpolation', i
         call s_interpolate_type_1(NP_c, NP_f, MG_comm(i),               &
      &      MG_itp(i+1)%c2f, MG_vect(i+1)%x_vec, MG_vect(i)%x_vec,      &
-     &      PEsmpTOT, my_rank, SOLVER_COMM )
+     &      PEsmpTOT)
 !
 !        write(*,*) 'j, MG_vect(i)%x_vec(j)', i
 !        do j = 1, NP_f

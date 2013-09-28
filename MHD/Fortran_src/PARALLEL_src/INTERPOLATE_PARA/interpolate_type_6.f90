@@ -4,13 +4,11 @@
 !     Written by H. Matsui on Jan., 2009
 !
 !      subroutine s_interpolate_type_6(NP_org, NP_dest,                 &
-!     &          comm_dest, itp_table, X_org, X_dest, PEsmpTOT,         &
-!     &          my_rank, SOLVER_COMM)
+!     &          comm_dest, itp_table, X_org, X_dest, PEsmpTOT)
 !        type(communication_table), intent(in) :: comm_dest
 !        type(interpolate_table), intent(in) :: itp_table
 !        integer(kind = kint), intent(in) :: PEsmpTOT
 !        integer(kind = kint), intent(in) :: NP_org, NP_dest
-!        integer(kind = kint), intent(in) :: SOLVER_COMM, my_rank
 !        real(kind = kreal), intent(in) :: X_org(isix*NP_org)
 !        real(kind = kreal), intent(inout) :: X_dest(isix*NP_dest)
 !
@@ -27,8 +25,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_interpolate_type_6(NP_org, NP_dest,                  &
-     &          comm_dest, itp_table, X_org, X_dest, PEsmpTOT,          &
-     &          my_rank, SOLVER_COMM)
+     &          comm_dest, itp_table, X_org, X_dest, PEsmpTOT)
 !
       use m_constants
       use t_comm_table
@@ -43,7 +40,6 @@
       type(interpolate_table), intent(in) :: itp_table
       integer(kind = kint), intent(in) :: PEsmpTOT
       integer(kind = kint), intent(in) :: NP_org, NP_dest
-      integer(kind = kint), intent(in) :: SOLVER_COMM, my_rank
       real(kind = kreal), intent(in) :: X_org(isix*NP_org)
 !
       real(kind = kreal), intent(inout) :: X_dest(isix*NP_dest)
@@ -82,7 +78,7 @@
      &           itp_table%tbl_dest%istack_nod_tbl_dest,                &
      &           itp_table%tbl_dest%inod_dest_4_dest,                   &
      &           itp_table%tbl_org%ntot_table_org,                      &
-     &           x_inter_org(1), NP_dest, X_dest(1), SOLVER_COMM)
+     &           x_inter_org(1), NP_dest, X_dest(1) )
 !
 !
       if (comm_dest%num_neib .gt. 0) then

@@ -11,8 +11,7 @@
 !!      subroutine interpolate_send_recv_1                              &
 !!     &      (npe_send, isend_self, nnod_send, id_pe_send, istack_send,&
 !!     &       npe_recv, irecv_self, nnod_recv, id_pe_recv, istack_recv,&
-!!     &       inod_import, nnod_org, X_org, nnod_new, X_new,           &
-!!     &       SOLVER_COMM)
+!!     &       inod_import, nnod_org, X_org, nnod_new, X_new)
 !!@endverbatim
 !!
 !!@n @param  nnod_org    Number of data points for origin
@@ -36,8 +35,6 @@
 !!
 !!@n @param  X_org(nnod_org)   Send data
 !!@n @param  X_new(nnod_new)   Received data
-!!@n
-!!@n @param  SOLVER_COMM          MPI communicator
 !
       module interpolate_SR_1
 !
@@ -57,13 +54,10 @@
       subroutine interpolate_send_recv_1                                &
      &       (npe_send, isend_self, nnod_send, id_pe_send, istack_send, &
      &        npe_recv, irecv_self, nnod_recv, id_pe_recv, istack_recv, &
-     &        inod_import, nnod_org, X_org, nnod_new, X_new,            &
-     &        SOLVER_COMM)
+     &        inod_import, nnod_org, X_org, nnod_new, X_new)
 !
       use m_solver_SR
 !
-!
-      integer, intent(in)   :: SOLVER_COMM
 !
       integer(kind = kint), intent(in) :: nnod_org
       integer(kind = kint), intent(in) :: nnod_new
@@ -100,7 +94,7 @@
         istart= istack_send(neib-1) + 1
         inum  = istack_send(neib  ) - istack_send(neib-1)
         call MPI_ISEND(X_org(istart), inum, MPI_DOUBLE_PRECISION,       &
-     &      id_pe_send(neib), 0, SOLVER_COMM, req1(neib), ierr)
+     &      id_pe_send(neib), 0, CALYPSO_COMM, req1(neib), ierr)
       end do
 !C
 !C-- RECEIVE
@@ -108,7 +102,7 @@
         istart= istack_recv(neib-1) + 1
         inum  = istack_recv(neib  ) - istack_recv(neib-1)
         call MPI_IRECV(WR(istart), inum, MPI_DOUBLE_PRECISION,          &
-     &      id_pe_recv(neib), 0, SOLVER_COMM, req2(neib), ierr)
+     &      id_pe_recv(neib), 0, CALYPSO_COMM, req2(neib), ierr)
       end do
 !
       call MPI_WAITALL (ncomm_recv, req2, sta2, ierr)

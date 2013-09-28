@@ -65,7 +65,7 @@
 !
       call s_interpolate_type_1                                         &
      &  (mesh_org%node%numnod, mesh_dst%node%numnod, mesh_dst%nod_comm, &
-     &    itp_table, x_vec, xvec_2nd, np_smp, my_rank, SOLVER_COMM)
+     &    itp_table, x_vec, xvec_2nd, np_smp)
 !
 !$omp parallel do
       do inod = 1, mesh_dst%node%numnod
@@ -122,7 +122,7 @@
 !
       call s_interpolate_type_3                                         &
      &  (mesh_org%node%numnod, mesh_dst%node%numnod, mesh_dst%nod_comm, &
-     &    itp_table, x_vec, xvec_2nd, np_smp, my_rank, SOLVER_COMM)
+     &    itp_table, x_vec, xvec_2nd, np_smp)
 !
 !$omp parallel do
       do inod = 1, mesh_dst%node%numnod
@@ -184,7 +184,7 @@
 !
       call s_interpolate_type_6                                         &
      &  (mesh_org%node%numnod, mesh_dst%node%numnod, mesh_dst%nod_comm, &
-     &    itp_table, x_vec, xvec_2nd, np_smp, my_rank, SOLVER_COMM)
+     &    itp_table, x_vec, xvec_2nd, np_smp)
 !
 !$omp parallel do
       do inod = 1, mesh_dst%node%numnod
