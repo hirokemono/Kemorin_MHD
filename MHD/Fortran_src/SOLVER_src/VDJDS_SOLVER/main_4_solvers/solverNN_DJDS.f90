@@ -17,7 +17,7 @@
 !     &           my_rank, NEIBPETOT, NEIBPE,                           &
 !     &           STACK_IMPORT, NOD_IMPORT,                             &
 !     &           STACK_EXPORT, NOD_EXPORT,                             &
-!     &           SOLVER_COMM, METHOD, PRECOND, ITERactual)
+!     &           METHOD, PRECOND, ITERactual)
 !
 !      subroutine  init_solveNN_DJDS_kemo                               &
 !     &         ( N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,         &
@@ -28,7 +28,7 @@
 !     &           my_rank, NEIBPETOT, NEIBPE,                           &
 !     &           STACK_IMPORT, NOD_IMPORT,                             &
 !     &           STACK_EXPORT, NOD_EXPORT,                             &
-!     &           SOLVER_COMM, METHOD, PRECOND, ITERactual)
+!     &           METHOD, PRECOND, ITERactual)
 !
       module solverNN_DJDS
 !
@@ -130,7 +130,7 @@
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           SOLVER_COMM, METHOD, PRECOND, ITERactual)
+     &           METHOD, PRECOND, ITERactual)
 
 ! \beginSUBROUTINE
 !      solver subsystem entry for N*N Block Matrix with DJDS ordering
@@ -206,8 +206,6 @@
       integer(kind=kint), dimension(NP)     :: OtoN_U
 ! \beginARG
 !
-      integer                              , intent(in)   :: SOLVER_COMM
-! \beginARG       communicator for mpi
       integer                              , intent(in)   :: my_rank
 ! \beginARG       process ID for mpi
       integer(kind=kint )                  , intent(in)   ::  NEIBPETOT
@@ -258,8 +256,7 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
 !C
 !C-- GPBiCG using n*n solver
@@ -278,8 +275,7 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
 !C
 !C-- CG
@@ -294,8 +290,7 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
 !
 !C-- Gauss-Zeidel
@@ -314,8 +309,7 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !C
 !C-- Jacobi
 
@@ -334,8 +328,7 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
       end if
 !
@@ -365,7 +358,7 @@
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           SOLVER_COMM, METHOD, PRECOND, ITERactual)
+     &           METHOD, PRECOND, ITERactual)
 
 ! \beginSUBROUTINE
 !      solver subsystem entry for N*N Block Matrix with DJDS ordering
@@ -414,7 +407,6 @@
       integer(kind=kint), dimension(NP)     :: OtoN_L, NtoO_U, LtoU
       integer(kind=kint), dimension(NP)     :: OtoN_U
 !
-      integer                              , intent(in)   :: SOLVER_COMM
       integer                              , intent(in)   :: my_rank
       integer(kind=kint )                  , intent(in)   ::  NEIBPETOT
       integer(kind=kint ), dimension(NEIBPETOT) :: NEIBPE 
@@ -451,8 +443,7 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
 !C
 !C-- GPBiCG using n*n solver
@@ -471,8 +462,7 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
 !C
 !C-- CG
@@ -487,8 +477,7 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
 !
 !C-- Gauss-Zeidel
@@ -507,8 +496,7 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !C
 !C-- Jacobi
 
@@ -527,8 +515,7 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
       end if
 !

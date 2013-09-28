@@ -8,19 +8,19 @@
 !
 !C
 !C***
-!C***  VCG11_DJDS_SMP
+!C***  VMGCG11_DJDS_SMP
 !C***
 !      subroutine VMGCG11_DJDS_SMP(num_MG_level, MG_comm, MG_itp,       &
 !     &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,          &
 !     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,  my_rank,     &
-!     &          SOLVER_COMM, PRECOND, METHOD_MG, PRECOND_MG, IER)
+!     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
 !
 !      subroutine init_VMGCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND,          &
 !     &           METHOD_MG, PRECOND_MG, my_rank)
 !      subroutine solve_VMGCG11_DJDS_SMP(num_MG_level, MG_comm, MG_itp, &
 !     &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,          &
 !     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,  my_rank,     &
-!     &          SOLVER_COMM, PRECOND, METHOD_MG, PRECOND_MG, IER)
+!     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
 !      integer(kind = kint), intent(in) :: num_MG_level
 !      type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
 !      type(DJDS_ordering_table), intent(in) :: djds_tbl(0:num_MG_level)
@@ -35,7 +35,7 @@
 !
 !      character (len=kchara), intent(in) :: PRECOND
 !      character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
-!      integer(kind = kint), intent(in) ::  my_rank, SOLVER_COMM
+!      integer(kind = kint), intent(in) ::  my_rank
 !      integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
 !      integer(kind=kint ), intent(inout) :: ITR, IER
 !      real(kind = kreal), intent(in) :: EPS
@@ -61,7 +61,7 @@
       subroutine VMGCG11_DJDS_SMP(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,           &
      &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,  my_rank,      &
-     &          SOLVER_COMM, PRECOND, METHOD_MG, PRECOND_MG, IER)
+     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
 !
       use calypso_mpi
 !
@@ -84,7 +84,7 @@
 !
       character (len=kchara), intent(in) :: PRECOND
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
-      integer(kind = kint), intent(in) ::  my_rank, SOLVER_COMM
+      integer(kind = kint), intent(in) ::  my_rank
       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
       real(kind = kreal), intent(in) :: EPS
       real(kind = kreal), intent(in) :: EPS_MG
@@ -97,7 +97,7 @@
       call solve_VMGCG11_DJDS_SMP(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,           &
      &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,  my_rank,      &
-     &          SOLVER_COMM, PRECOND, METHOD_MG, PRECOND_MG, IER)
+     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
 !
       end subroutine VMGCG11_DJDS_SMP
 !
@@ -135,7 +135,7 @@
       subroutine solve_VMGCG11_DJDS_SMP(num_MG_level, MG_comm, MG_itp,  &
      &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,           &
      &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,  my_rank,      &
-     &          SOLVER_COMM, PRECOND, METHOD_MG, PRECOND_MG, IER)
+     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
 !
       use calypso_mpi
       use solver_SR
@@ -173,7 +173,7 @@
 !
       character (len=kchara), intent(in) :: PRECOND
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
-      integer(kind = kint), intent(in) ::  my_rank, SOLVER_COMM
+      integer(kind = kint), intent(in) ::  my_rank
       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
       real(kind = kreal), intent(in) :: EPS
       real(kind = kreal), intent(in) :: EPS_MG
@@ -308,7 +308,7 @@
 !
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -331,7 +331,7 @@
         write(*,*) 's_MGCG11_V_cycle', IER
         call s_MGCG11_V_cycle(num_MG_level, MG_comm, MG_itp,            &
      &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, W(1,R), W(1,Z), &
-     &          iter_mid, iter_lowest, EPS_MG, my_rank, SOLVER_COMM,    &
+     &          iter_mid, iter_lowest, EPS_MG, my_rank,                 &
      &          METHOD_MG, PRECOND_MG, IER)
       write(*,*) 'IER', IER
 !
@@ -351,7 +351,7 @@
 !
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (RHO0, RHO, 1, MPI_DOUBLE_PRECISION,           &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !C===
@@ -376,7 +376,7 @@
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,P) )
+     &     STACK_EXPORT, NOD_EXPORT, W(1,P))
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !C
@@ -403,7 +403,7 @@
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (C10, C1, 1, MPI_DOUBLE_PRECISION,           &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
         ALPHA= RHO / C1
@@ -429,7 +429,7 @@
 !
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
       RESID= dsqrt(DNRM2/BNRM2)

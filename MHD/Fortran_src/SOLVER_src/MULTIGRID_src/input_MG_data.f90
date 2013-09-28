@@ -104,6 +104,7 @@
         else
           call alloc_zero_itp_tables(MG_itp(i_level)%f2c)
         end if
+!
       end do
 !
 !
@@ -118,6 +119,7 @@
         else
           call alloc_zero_itp_tables(MG_itp(i_level)%c2f)
         end if
+!
       end do
 !
 !
@@ -178,6 +180,7 @@
       subroutine sync_group_name_4_empty(np_mpi,                        &
      &          nod_grp, ele_grp, sf_grp)
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use t_group_data
 !
@@ -198,7 +201,7 @@
       end if
 !
       call MPI_BCAST(num_grp_g, ithree, MPI_INTEGER, 0,                 &
-     &    SOLVER_COMM, ierr)
+     &    CALYPSO_COMM, ierr)
 !
       if(my_rank .ge. np_mpi) then
         nod_grp%num_grp = num_grp_g(1)
@@ -228,7 +231,7 @@
 !
       nlen_comm = kchara*ntot_grp
       call MPI_BCAST(grp_name_g, nlen_comm, MPI_CHARACTER, 0,           &
-     &    SOLVER_COMM, ierr)
+     &    CALYPSO_COMM, ierr)
 !
       if(my_rank .ge. np_mpi) then
         ied = nod_grp%num_grp

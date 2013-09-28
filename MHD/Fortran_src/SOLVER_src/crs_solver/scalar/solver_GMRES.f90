@@ -28,8 +28,7 @@
      &                  RESID,  ITER, ERROR,                            &
      &                  my_rank, NEIBPETOT, NEIBPE,                     &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
-     &                  STACK_EXPORT, NOD_EXPORT,                       &
-     &                  SOLVER_COMM , NSET)     
+     &                  STACK_EXPORT, NOD_EXPORT, NSET)     
 
 ! \beginSUBROUTINE
 !     GMRES solves the linear system Ax = b using the
@@ -54,7 +53,6 @@
       integer(kind=kint ),                   intent(inout)::  ERROR
       integer(kind=kint ),                   intent(in   )::  my_rank
 
-      integer                              , intent(in)   :: SOLVER_COMM
       integer(kind=kint )                  , intent(in)   :: NSET
 
       integer(kind=kint )                  , intent(in)   :: NP, N
@@ -189,7 +187,7 @@
 !C===
       call cal_local_norm_1(NP, N, B, BNRM20)
       call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       if (BNRM2.eq.ZERO) BNRM2= ONE
 !C===
       ITER= 0
@@ -205,7 +203,7 @@
 !C===
         call cal_local_norm_1(NP, N, WW(1,R), DNRM20)
         call MPI_allREDUCE (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,     &
-     &                      MPI_SUM, SOLVER_COMM, ierr)
+     &                      MPI_SUM, CALYPSO_COMM, ierr)
 !
         RNORM= dsqrt(DNRM2)
         coef= ONE/RNORM
@@ -265,7 +263,7 @@
             call cal_local_s_product_1(NP, N, WW(1,W), WW(1,V+K-1),     &
      &          VAL0)
             call MPI_allREDUCE (VAL0, VAL, 1, MPI_DOUBLE_PRECISION,     &
-     &          MPI_SUM, SOLVER_COMM, ierr)
+     &          MPI_SUM, CALYPSO_COMM, ierr)
 !
             WW(1:N,W)= WW(1:N,W) - VAL * WW(1:N,V+K-1)
             H(K,I) = VAL
@@ -273,7 +271,7 @@
 !
           call cal_local_norm_1(NP, N, WW(1,W), VAL0)
           call MPI_allREDUCE (VAL0, VAL, 1, MPI_DOUBLE_PRECISION,       &
-     &       MPI_SUM, SOLVER_COMM, ierr)
+     &       MPI_SUM, CALYPSO_COMM, ierr)
 
           H(I+1,I)= dsqrt(VAL)
           coef= ONE / H(I+1,I)
@@ -393,7 +391,7 @@
 
         call cal_local_norm_1(NP, N,  WW(1,R), DNRM20)
         call MPI_allREDUCE  (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,    &
-     &                       MPI_SUM, SOLVER_COMM, ierr)                
+     &                       MPI_SUM, CALYPSO_COMM, ierr)
 
         WW(I+1,S)= dsqrt(DNRM2/BNRM2)
         RESID    = WW( I+1,S )

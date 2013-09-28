@@ -24,8 +24,7 @@
      &                  RESID,  ITER, ERROR,                            &
      &                  my_rank, NEIBPETOT, NEIBPE,                     &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
-     &                  STACK_EXPORT, NOD_EXPORT,                       &
-     &                  SOLVER_COMM , NSET)     
+     &                  STACK_EXPORT, NOD_EXPORT, NSET)
 
 ! \beginSUBROUTINE
 !     GMRES solves the linear system Ax = b using the
@@ -52,7 +51,6 @@
       integer(kind=kint ),                   intent(inout)::  ERROR
       integer(kind=kint ),                   intent(in   )::  my_rank
 
-      integer                              , intent(in)   :: SOLVER_COMM
       integer(kind=kint )                  , intent(in)   :: NSET
 
       real   (kind=kreal), dimension(3*NP) , intent(inout)::  B
@@ -393,7 +391,7 @@
       enddo
 
       call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       if (BNRM2.eq.ZERO) BNRM2= ONE
 !C===
       
@@ -414,7 +412,7 @@
           DNRM20= DNRM20+WW(3*ik-2,R)**2+WW(3*ik-1,R)**2+WW(3*ik,R)**2
         enddo
         call MPI_allREDUCE (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,     &
-     &                      MPI_SUM, SOLVER_COMM, ierr)
+     &                      MPI_SUM, CALYPSO_COMM, ierr)
 
         RNORM= dsqrt(DNRM2)
         coef= ONE/RNORM
@@ -602,7 +600,7 @@
 
           enddo
           call MPI_allREDUCE (VAL0, VAL, 1, MPI_DOUBLE_PRECISION,       &
-     &                        MPI_SUM, SOLVER_COMM, ierr)
+     &                        MPI_SUM, CALYPSO_COMM, ierr)
  
           do ik= 1, N
             WW(3*ik-2,W)= WW(3*ik-2,W) - VAL * WW(3*ik-2,V+K-1)
@@ -617,7 +615,7 @@
           VAL0= VAL0+WW(3*ik-2,W)**2+WW(3*ik-1,W)**2+WW(3*ik,W)**2
         enddo
         call MPI_allREDUCE (VAL0, VAL, 1, MPI_DOUBLE_PRECISION,         &
-     &                      MPI_SUM, SOLVER_COMM, ierr)
+     &                      MPI_SUM, CALYPSO_COMM, ierr)
 
         H(I+1,I)= dsqrt(VAL)
         coef= ONE / H(I+1,I)
@@ -889,7 +887,7 @@
         enddo
 
         call MPI_allREDUCE  (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,    &
-     &                       MPI_SUM, SOLVER_COMM, ierr)
+     &                       MPI_SUM, CALYPSO_COMM, ierr)
 
         WW(I+1,S)= dsqrt(DNRM2/BNRM2)
         RESID    = WW( I+1,S )

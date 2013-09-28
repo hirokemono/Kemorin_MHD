@@ -73,7 +73,7 @@
      &             nset, num_neib,  id_neib,                            &
      &             istack_import, item_import,                          &
      &             istack_export, item_export,                          &
-     &             my_rank, SOLVER_COMM, itr_res, imonitor_solve,       &
+     &             my_rank, itr_res, imonitor_solve,                    &
      &             method_elesize, precond_elesize,                     &
      &             INTARRAY, REALARRAY )
 !

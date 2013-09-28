@@ -27,10 +27,6 @@
      &                  INU, IAU, B, X, PRECOND, SIGMA_DIAG,SIGMA,      &
      &                  RESID,  ITER, ERROR,                            &
      &                  NSET)
-!     &                  my_rank, NEIBPETOT, NEIBPE,                    &
-!     &                  STACK_IMPORT, NOD_IMPORT,                      &
-!     &                  STACK_EXPORT, NOD_EXPORT,                      &
-!     &                  SOLVER_COMM , NSET)
 
 ! \beginSUBROUTINE
 !     CG_N_1PE solves the linear system Ax = b using the
@@ -59,9 +55,6 @@
       real   (kind=kreal),                   intent(in   )::  SIGMA
       integer(kind=kint ),                   intent(inout)::  ITER
       integer(kind=kint ),                   intent(inout)::  ERROR
-!      integer(kind=kint ),                   intent(in   )::  my_rank
-
-!      integer                              , intent(in)   :: SOLVER_COMM
       integer(kind=kint )                  , intent(in)   :: NSET
 
       real   (kind=kreal), dimension(NB*NP) , intent(inout)::  B
@@ -343,8 +336,6 @@
         enddo
       enddo
 
-!      call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,      &
-!     &                    MPI_SUM, SOLVER_COMM, ierr)
       BNRM2 = BNRM20
       if (BNRM2.eq.0.d0) BNRM2= 1.d0
       ITER = 0
@@ -508,8 +499,6 @@
       enddo
       enddo
 
-!      call MPI_allREDUCE (RHO0, RHO, 1, MPI_DOUBLE_PRECISION,          &
-!     &                    MPI_SUM, SOLVER_COMM, ierr)
        RHO = RHO0
 !C===
 
@@ -599,8 +588,6 @@
       enddo
       enddo
 
-!      call MPI_allREDUCE (C10, C1, 1, MPI_DOUBLE_PRECISION,            &
-!     &                    MPI_SUM, SOLVER_COMM, ierr)
       C1 = C10
       ALPHA= RHO / C1
 !C===
@@ -627,8 +614,6 @@
       enddo
       enddo
 
-!      call MPI_allREDUCE (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,      &
-!     &                    MPI_SUM, SOLVER_COMM, ierr)
       DNRM2 = DNRM20
       RESID= dsqrt(DNRM2/BNRM2)
 

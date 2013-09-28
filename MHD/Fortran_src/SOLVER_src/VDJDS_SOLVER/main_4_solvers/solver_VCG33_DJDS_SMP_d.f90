@@ -9,7 +9,7 @@
 !C
 !C
 !C***
-!C***  VCG33_DJDS_SMP
+!C***  VCG33_DJDS_SMP_d
 !C***
 !      subroutine VCG33_DJDS_SMP_d                                      &
 !     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
@@ -19,8 +19,7 @@
 !     &           EPS, ITR, IER,                                        &
 !     &           my_rank, NEIBPETOT, NEIBPE,                           &
 !     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT,                             &
-!     &           SOLVER_COMM, PRECOND, iterPREmax)
+!     &           STACK_EXPORT, NOD_EXPORT, PRECOND, iterPREmax)
 !C
 !      subroutine init_VCG33_DJDS_SMP_d(NP, PEsmpTOT, PRECOND)
 !      subroutine solve_VCG33_DJDS_SMP_d                                &
@@ -31,10 +30,9 @@
 !     &           EPS, ITR, IER,                                        &
 !     &           my_rank, NEIBPETOT, NEIBPE,                           &
 !     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT,                             &
-!     &           SOLVER_COMM, PRECOND, iterPREmax)
+!     &           STACK_EXPORT, NOD_EXPORT, PRECOND, iterPREmax)
 !C
-!C     VCG33_DJDS_SMP solves the linear system Ax = b with 3*3 block
+!C     VCG33_DJDS_SMP_d solves the linear system Ax = b with 3*3 block
 !C     using the Conjugate Gradient iterative method with preconditioning.
 !C     Elements are ordered in descending Jagged Diagonal Storage
 !C     for Vector Processing and Cyclic Ordering for SMP Parallel Computation
@@ -59,13 +57,11 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-!     &           SOLVER_COMM, PRECOND, iterPREmax)
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+!     &           PRECOND, iterPREmax)
 !
       integer(kind=kint ), intent(in) :: N, NP, NL, NU, NPL, NPU
       integer(kind=kint ), intent(in) :: PEsmpTOT, NVECT
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
       integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
       character(len=kchara), intent(in) :: PRECOND
       real   (kind=kreal), intent(in) :: EPS
@@ -115,9 +111,8 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-!     &           SOLVER_COMM, PRECOND, iterPREmax)
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+!     &           PRECOND, iterPREmax)
 !
       end subroutine VCG33_DJDS_SMP_d
 !
@@ -165,9 +160,8 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-!     &           SOLVER_COMM, PRECOND, iterPREmax)
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+!     &           PRECOND, iterPREmax)
 
       use calypso_mpi
 !
@@ -188,7 +182,6 @@
 !
       integer(kind=kint ), intent(in) :: N, NP, NL, NU, NPL, NPU
       integer(kind=kint ), intent(in) :: PEsmpTOT, NVECT
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
       integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
       character(len=kchara), intent(in) :: PRECOND
       real   (kind=kreal), intent(in) :: EPS
@@ -251,8 +244,6 @@
       call init_work_CG_33(NP)
 !      call clear_vector_solve_33(NP, X)
 
-      call MPI_BARRIER ( SOLVER_COMM, ierr )
-
 !C
 !C-- change B,X
 
@@ -291,7 +282,7 @@
 
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -374,7 +365,7 @@
 
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (RHO0, RHO, 1, MPI_DOUBLE_PRECISION,           &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !C===
@@ -428,7 +419,7 @@
 
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (C10, C1, 1, MPI_DOUBLE_PRECISION,             &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
       ALPHA= RHO / C1
@@ -447,7 +438,7 @@
 !
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
       RESID= dsqrt(DNRM2/BNRM2)

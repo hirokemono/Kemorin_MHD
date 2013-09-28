@@ -32,10 +32,6 @@
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
      &                  RESID,  ITER, ERROR,                            &
      &                  NSET)
-!     &                  my_rank, NEIBPETOT, NEIBPE,                    &
-!     &                  STACK_IMPORT, NOD_IMPORT,                      &
-!     &                  STACK_EXPORT, NOD_EXPORT,                      &
-!     &                  SOLVER_COMM , NSET)
 
 ! \beginSUBROUTINE
 !     BiCGSTAB_N_1PE solves the linear system Ax = b using the
@@ -58,8 +54,6 @@
       integer(kind=kint ),                   intent(inout)::  ITER
       integer(kind=kint ),                   intent(inout)::  ERROR
 !
-!      integer(kind=kint ),                   intent(in   )::  my_rank
-!      integer                              , intent(in)   :: SOLVER_COMM
       integer(kind=kint )                  , intent(in)   :: NSET
 
       real   (kind=kreal), dimension(NB*NP) , intent(inout)::  B
@@ -300,8 +294,6 @@
         end do
       enddo
 
-!      call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,      &
-!     &                    MPI_SUM, SOLVER_COMM, ierr)
       BNRM2 = BNRM20
       if (BNRM2.eq.0.d0) BNRM2= 1.d0
 
@@ -325,8 +317,6 @@
         end do
       enddo
 
-!      call MPI_allREDUCE (RHO0, RHO, 1, MPI_DOUBLE_PRECISION,          &
-!     &                    MPI_SUM, SOLVER_COMM, ierr)
       RHO = RHO0
 !C===
 
@@ -569,8 +559,6 @@
         end do
       enddo
 
-!      call MPI_allREDUCE (C20, C2, 1, MPI_DOUBLE_PRECISION,            &
-!     &                    MPI_SUM, SOLVER_COMM, ierr)
       C2 = C20
       ALPHA= RHO / C2
 
@@ -803,8 +791,6 @@
         end do
       enddo
 
-!      call MPI_allREDUCE (C0, CG, 2, MPI_DOUBLE_PRECISION,             &
-!     &                    MPI_SUM, SOLVER_COMM, ierr)
       CG(1:2) = C0(1:2)
       OMEGA= CG(1) / CG(2)
 !C===
@@ -826,13 +812,10 @@
 
       RHO1= RHO
 
-!      call MPI_allREDUCE  (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,     &
-!     &                     MPI_SUM, SOLVER_COMM, ierr)
       DNRM2 = DNRM20
       RESID= dsqrt(DNRM2/BNRM2)
 
 !C##### ITERATION HISTORY
-!        if (my_rank.eq.0) write (*, 1000) ITER, RESID
         write (*, 1000) ITER, RESID
  1000   format ('BiCGSTAB: ', i5, 1pe16.6)
 !C#####

@@ -38,7 +38,7 @@
      &                   D, AL, INL, IAL, AU, INU, IAU, B, X, PRESET,   &
      &                   NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,   &
      &                                      STACK_EXPORT, NOD_EXPORT,   &
-     &                   my_rank,SOLVER_COMM, ITERactual, ERROR,        &
+     &                   my_rank, ITERactual, ERROR,                    &
      &                   METHOD, PRECOND, INTARRAY, REALARRAY         )
 
 ! \beginSUBROUTINE
@@ -103,8 +103,6 @@
 ! \beginARG       exported node                            (i-th node)
       integer                              , intent(in)   :: my_rank
 ! \beginARG       process ID for mpi
-      integer                              , intent(in)   :: SOLVER_COMM
-! \beginARG       communicator for mpi
       integer(kind=kint )                  , intent(out)  :: ITERactual
 ! \beginARG       actual iteration number
       integer(kind=kint )                  , intent(inout):: ERROR
@@ -185,7 +183,7 @@
       enddo
 
       call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
 
 
       if (BNRM2.eq.0.d0) ERROR= 120
@@ -206,7 +204,7 @@
      &         B, X, PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,   &
      &         my_rank, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
      &                                     STACK_EXPORT, NOD_EXPORT,    &
-     &                   SOLVER_COMM, PRESET)
+     &         PRESET)
 
         else if ( ((METHOD(1:1).eq.'B').or.(METHOD(1:1).eq.'b')) .and.  &
      &            ((METHOD(2:2).eq.'I').or.(METHOD(2:2).eq.'i')) .and.  &
@@ -218,7 +216,7 @@
      &         PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,         &
      &         my_rank, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
      &                                     STACK_EXPORT, NOD_EXPORT,    &
-     &                   SOLVER_COMM, PRESET)
+     &         PRESET)
 
         else if ( ((METHOD(1:1).eq.'G').or.(METHOD(1:1).eq.'g')) .and.  &
      &            ((METHOD(2:2).eq.'P').or.(METHOD(2:2).eq.'p')) .and.  &
@@ -230,7 +228,7 @@
      &         PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,         &
      &         my_rank, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
      &                                     STACK_EXPORT, NOD_EXPORT,    &
-     &                   SOLVER_COMM, PRESET)
+     &         PRESET)
 
         else if ( ((METHOD(1:1).eq.'G').or.(METHOD(1:1).eq.'g')) .and.  &
      &            ((METHOD(2:2).eq.'M').or.(METHOD(2:2).eq.'m')) .and.  &
@@ -242,7 +240,7 @@
      &         PRECOND, SIGMA_DIAG, SIGMA, NREST, RESID, ITER,  ERROR,  &
      &         my_rank, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
      &                                     STACK_EXPORT, NOD_EXPORT,    &
-     &                   SOLVER_COMM, PRESET)
+     &         PRESET)
         endif
       endif
 
@@ -271,10 +269,5 @@
       endif
 !C===
 
-      call MPI_BARRIER  (SOLVER_COMM,ierr)      
-
       end subroutine solve
       end module solver
-
-
-

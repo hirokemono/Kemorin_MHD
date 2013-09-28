@@ -13,8 +13,7 @@ FEM_base_integration \
 ORDERING_4_DJDS      \
 INTERPOLATE_PARA     \
 filtering            \
-SPH_SHELL_src        \
-MULTIGRID_src
+SPH_SHELL_src
 
 #
 #  -------------------------------------------------------------------------

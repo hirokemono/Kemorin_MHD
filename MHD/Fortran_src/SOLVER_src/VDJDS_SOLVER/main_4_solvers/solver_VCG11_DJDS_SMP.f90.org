@@ -433,7 +433,8 @@
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, WS, WR, W(1,ZQ) )
+     &     STACK_EXPORT, NOD_EXPORT, WS, WR, W(1,ZQ) , SOLVER_COMM,     &
+     &     my_rank)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -515,7 +516,8 @@
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, WS, WR, W(1,P) )
+     &     STACK_EXPORT, NOD_EXPORT, WS, WR, W(1,P) , SOLVER_COMM,      &
+     &     my_rank)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
  
@@ -705,7 +707,7 @@
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, WS, WR, X )
+     &     STACK_EXPORT, NOD_EXPORT, WS, WR, X , SOLVER_COMM,my_rank)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 

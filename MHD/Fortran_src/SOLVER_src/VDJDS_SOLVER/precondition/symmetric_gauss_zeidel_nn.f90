@@ -9,7 +9,7 @@
 !     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !     &            ALU_U, B, S, NEIBPETOT, NEIBPE,                      &
 !     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!     &            SOLVER_COMM, my_rank, niter)
+!     &            niter)
 !
 !       subroutine full_sym_gauss_zeidel_nn                             &
 !     &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,    &
@@ -17,7 +17,7 @@
 !     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !     &            ALU_U, B, S, NEIBPETOT, NEIBPE,                      &
 !     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!     &            SOLVER_COMM, my_rank, niter)
+!     &            niter)
 !
 !
 !       subroutine weak_sym_gauss_zeidel_3xnn                           &
@@ -26,7 +26,7 @@
 !     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !     &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,    &
 !     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!     &            SOLVER_COMM, my_rank, niter)
+!     &            niter)
 !
 !       subroutine full_sym_gauss_zeidel_3xnn                           &
 !     &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,    &
@@ -34,7 +34,7 @@
 !     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !     &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,    &
 !     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!     &            SOLVER_COMM, my_rank, niter)
+!     &            niter)
 !
       module symmetric_gauss_zeidel_nn
 !
@@ -58,14 +58,13 @@
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B, S, NEIBPETOT, NEIBPE,                       &
      &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            SOLVER_COMM, my_rank, niter)
+     &            niter)
 !
       use calypso_mpi
 !
       integer(kind=kint ), intent(in) :: niter
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
+      integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
       integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &
@@ -136,14 +135,13 @@
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B, S, NEIBPETOT, NEIBPE,                       &
      &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            SOLVER_COMM, my_rank, niter)
+     &            niter)
 !
       use calypso_mpi
 !
       integer(kind=kint ), intent(in) :: niter
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
+      integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
       integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &
@@ -221,14 +219,13 @@
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,     &
      &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            SOLVER_COMM, my_rank, niter)
+     &            niter)
 !
       use calypso_mpi
 !
       integer(kind=kint ), intent(in) :: niter
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
+      integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
       integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &
@@ -301,14 +298,13 @@
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,     &
      &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            SOLVER_COMM, my_rank, niter)
+     &            niter)
 !
       use calypso_mpi
 !
       integer(kind=kint ), intent(in) :: niter
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
+      integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
       integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &

@@ -32,8 +32,7 @@
      &                  RESID,  ITER, ERROR, iterPREmax,                &
      &                  my_rank, NEIBPETOT, NEIBPE,                     &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
-     &                  STACK_EXPORT, NOD_EXPORT,                       &
-     &                  SOLVER_COMM , NSET)     
+     &                  STACK_EXPORT, NOD_EXPORT, NSET)
 
       use calypso_mpi
 !
@@ -46,7 +45,6 @@
 !
       integer(kind=kint ), intent(in):: N, NP, NPU, NPL, my_rank
       integer(kind=kint ), intent(in):: NEIBPETOT, iterPREmax
-      integer(kind=kint ), intent(in):: SOLVER_COMM
       integer(kind=kint ), intent(in):: NSET
       real   (kind=kreal), intent(in):: SIGMA, SIGMA_DIAG
 
@@ -211,7 +209,7 @@
       enddo
 
       call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       if (BNRM2.eq.0.d0) BNRM2= 1.d0
 
       iter= 0
@@ -221,7 +219,6 @@
 !C*************************************************************** iterative procedures
 !C
       do iter= 1, MAXIT
-        call MPI_BARRIER  (SOLVER_COMM,ierr)
 !C
 !C +-----------------+
 !C | RHO= {r}{r_tld} |
@@ -234,7 +231,7 @@
       enddo
 
       call MPI_allREDUCE (RHO0, RHO, 1, MPI_DOUBLE_PRECISION,           &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
 !C===
 
 !C
@@ -451,7 +448,7 @@
       enddo
 
       call MPI_allREDUCE (C20, C2, 1, MPI_DOUBLE_PRECISION,             &
-     &                    MPI_SUM, SOLVER_COMM, ierr) 
+     &                    MPI_SUM, CALYPSO_COMM, ierr) 
       ALPHA= RHO / C2
 
 !C
@@ -659,7 +656,7 @@
       enddo
 
       call MPI_allREDUCE (C0, CG, 2, MPI_DOUBLE_PRECISION,              &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       OMEGA= CG(1) / CG(2)
 !C===
 
@@ -682,7 +679,7 @@
       RHO1= RHO
 
       call MPI_allREDUCE  (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,      &
-     &                     MPI_SUM, SOLVER_COMM, ierr)
+     &                     MPI_SUM, CALYPSO_COMM, ierr)
       RESID= dsqrt(DNRM2/BNRM2)
 
 !C##### ITERATION HISTORY

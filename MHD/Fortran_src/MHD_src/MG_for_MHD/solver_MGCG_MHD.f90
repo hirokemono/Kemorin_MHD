@@ -104,7 +104,7 @@
         call VMGCG33_DJDS_SMP(num_MG_level, MG_comm_fl,                 &
      &      MG_itp, MG_djds_tbl_fl, MG_mat_velo, MG_vector, np_smp,     &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
-     &      eps_4_velo_crank, EPS_MG,  my_rank, SOLVER_COMM,            &
+     &      eps_4_velo_crank, EPS_MG,  my_rank,                         &
      &      precond_4_crank, METHOD_MG, PRECOND_MG, ierr)
       else
         call solve33_DJDS_kemo                                          &
@@ -119,7 +119,7 @@
      &     my_rank, neigh_pe_num_fl, neigh_pe_data_fl,                  &
      &     istack_import_fl, item_import_fl,                            &
      &     istack_export_fl, NOD_EXPORT_NEW_fl,                         &
-     &     SOLVER_COMM, method_4_velo, precond_4_crank, itr_res)
+     &     method_4_velo, precond_4_crank, itr_res)
       end if
 !
       call end_eleps_time(5)
@@ -155,7 +155,7 @@
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm_fl,                 &
      &      MG_itp, MG_djds_tbl_fll, MG_mat_press, MG_vector, np_smp,   &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
-     &      eps, EPS_MG,  my_rank, SOLVER_COMM,                         &
+     &      eps, EPS_MG,  my_rank,                                      &
      &      precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
       else
         call solve_DJDS_kemo                                            &
@@ -170,7 +170,7 @@
      &     my_rank, neigh_pe_num_fl, neigh_pe_data_fl,                  &
      &     istack_import_fl, item_import_fl,                            &
      &     istack_export_fl, NOD_EXPORT_NEW_fl1,                        &
-     &     SOLVER_COMM, method_4_solver, precond_4_solver, itr_res)
+     &     method_4_solver, precond_4_solver, itr_res)
       end if
 !
       call end_eleps_time(5)
@@ -206,7 +206,7 @@
         call VMGCG33_DJDS_SMP(num_MG_level, MG_comm,                    &
      &      MG_itp, MG_djds_tbl, MG_mat_magne, MG_vector, np_smp,       &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
-     &      eps_4_magne_crank, EPS_MG,  my_rank, SOLVER_COMM,           &
+     &      eps_4_magne_crank, EPS_MG,  my_rank,                        &
      &      precond_4_crank, METHOD_MG, PRECOND_MG, ierr)
       else
         call solve33_DJDS_kemo                                          &
@@ -220,7 +220,7 @@
      &     my_rank, num_neib, id_neib,                                  &
      &     istack_import, item_import,                                  &
      &     istack_export, NOD_EXPORT_NEW,                               &
-     &     SOLVER_COMM, method_4_velo, precond_4_crank, itr_res)
+     &     method_4_velo, precond_4_crank, itr_res)
       end if
 !
       call end_eleps_time(5)
@@ -257,7 +257,7 @@
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm,                    &
      &      MG_itp, MG_djds_tbl_l, MG_mat_magp, MG_vector, np_smp,      &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
-     &      eps, EPS_MG,  my_rank, SOLVER_COMM,                         &
+     &      eps, EPS_MG,  my_rank,                                      &
      &      precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
       else
         call solve_DJDS_kemo                                            &
@@ -272,7 +272,7 @@
      &     eps, itr, ierr, my_rank, num_neib, id_neib,                  &
      &     istack_import, item_import,                                  &
      &     istack_export, NOD_EXPORT_NEW1,                              &
-     &     SOLVER_COMM, method_4_solver, precond_4_solver, itr_res)
+     &     method_4_solver, precond_4_solver, itr_res)
       end if
 !
       call end_eleps_time(5)
@@ -340,7 +340,7 @@
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm_fl,                 &
      &      MG_itp, MG_djds_tbl_fl, MG_mat_temp, MG_vector, np_smp,     &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
-     &      eps_4_temp_crank, EPS_MG,  my_rank, SOLVER_COMM,            &
+     &      eps_4_temp_crank, EPS_MG,  my_rank,                         &
      &      precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
       else
         call solve_DJDS_kemo                                            &
@@ -355,7 +355,7 @@
      &      my_rank, neigh_pe_num_fl, neigh_pe_data_fl,                 &
      &      istack_import_fl, item_import_fl,                           &
      &      istack_export_fl, NOD_EXPORT_NEW_fl,                        &
-     &      SOLVER_COMM, method_4_solver, precond_4_solver, itr_res)
+     &      method_4_solver, precond_4_solver, itr_res)
       end if
 !
       call end_eleps_time(5)
@@ -413,7 +413,7 @@
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm_fl,                 &
      &      MG_itp, MG_djds_tbl_fl, MG_mat_d_scalar, MG_vector, np_smp, &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
-     &      eps_4_d_scalar_crank, EPS_MG,  my_rank, SOLVER_COMM,        &
+     &      eps_4_d_scalar_crank, EPS_MG,  my_rank,                     &
      &      precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
       else
         call solve_DJDS_kemo                                            &
@@ -428,7 +428,7 @@
      &      itr, ierr,  my_rank, neigh_pe_num_fl, neigh_pe_data_fl,     &
      &      istack_import_fl, item_import_fl,                           &
      &      istack_export_fl, NOD_EXPORT_NEW_fl,                        &
-     &      SOLVER_COMM, method_4_solver, precond_4_solver, itr_res)
+     &      method_4_solver, precond_4_solver, itr_res)
       end if
 !
       call end_eleps_time(5)

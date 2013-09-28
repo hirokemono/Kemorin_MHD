@@ -3,7 +3,7 @@
 !      module m_solver_count_time
 !
 !      subroutine reset_solver_time
-!      subroutine count_time(iflag_op, SOLVER_COMM, my_rank, time_kind)
+!      subroutine count_time(iflag_op, my_rank, time_kind)
 !
       module m_solver_count_time
 !
@@ -45,11 +45,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_time(iflag_op, SOLVER_COMM, my_rank, time_kind)
+      subroutine count_time(iflag_op, my_rank, time_kind)
 !
       use calypso_mpi
 !
-      integer(kind=kint), intent(in) :: iflag_op, solver_comm
+      integer(kind=kint), intent(in) :: iflag_op
       integer(kind=kint), intent(in) :: my_rank, time_kind
       integer(kind=kint) :: ierr, i, num_of_kinds
       real   (kind=kreal) :: recv_time, send_time, out_time
@@ -75,9 +75,9 @@
         send_time = time_table(time_kind)
         recv_time = 0
         CALL MPI_REDUCE(send_time, recv_time, 1, MPI_DOUBLE_PRECISION,  &
-     &                   MPI_SUM, 0, SOLVER_COMM, ierr)
-        CALL MPI_COMM_SIZE(SOLVER_COMM, nprocs, ierr)
-        IF(my_rank == 0) THEN
+     &                   MPI_SUM, 0, CALYPSO_COMM, ierr)
+        CALL MPI_COMM_SIZE(CALYPSO_COMM, nprocs, ierr)
+        IF(my_rank .eq. 0) THEN
           out_time = recv_time / NPROCS
           WRITE(*,'("***", i3, ":", 1pe16.6, " sec")')                  &
      &         time_kind, out_time
@@ -85,7 +85,7 @@
 !
       else if(iflag_op .eq. 4) then
 !
-        CALL MPI_COMM_SIZE(SOLVER_COMM, NPROCS, ierr)
+        CALL MPI_COMM_SIZE(CALYPSO_COMM, NPROCS, ierr)
         IF(my_rank .eq. 0) THEN
           WRITE(*,'(a)') "#  2:sr_aggre"
           WRITE(*,'(a)') "#  3:sr_elem"
@@ -106,12 +106,12 @@
           send_time = time_table(i)
           recv_time = 0
 
-          CALL MPI_barrier(solver_comm, ierr)
+          CALL MPI_barrier(CALYPSO_COMM, ierr)
 !
           IF(prt_ech_PE(i)) WRITE(*,'( i3,a3,i3,a1,1pe16.6,a4)')        &
      &         my_rank,"--#", i, ":", send_time, " sec"
           CALL MPI_REDUCE(send_time, recv_time, 1,                      &
-     &         MPI_DOUBLE_PRECISION, MPI_SUM, 0, SOLVER_COMM, ierr)
+     &         MPI_DOUBLE_PRECISION, MPI_SUM, 0, CALYPSO_COMM, ierr)
 
           IF(my_rank == 0) THEN
              out_time = recv_time / NPROCS

@@ -9,8 +9,7 @@
 !     &                  EPS,  ITER, ERROR,                             &
 !     &                  my_rank, NEIBPETOT, NEIBPE,                    &
 !     &                  STACK_IMPORT, NOD_IMPORT,                      &
-!     &                  STACK_EXPORT, NOD_EXPORT,                      &
-!     &                  SOLVER_COMM , NSET)
+!     &                  STACK_EXPORT, NOD_EXPORT, NSET)
 !
 !
 !     BiCGSTAB solves the linear system Ax = b using the
@@ -42,8 +41,7 @@
      &                  EPS,  ITER, ERROR,                              &
      &                  my_rank, NEIBPETOT, NEIBPE,                     &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
-     &                  STACK_EXPORT, NOD_EXPORT,                       &
-     &                  SOLVER_COMM , NSET)     
+     &                  STACK_EXPORT, NOD_EXPORT, NSET)
 !
       use calypso_mpi
 !
@@ -62,7 +60,6 @@
       integer(kind=kint ),                   intent(inout)::  ERROR
       integer(kind=kint ),                   intent(in   )::  my_rank
 
-      integer                              , intent(in)   :: SOLVER_COMM
       integer(kind=kint )                  , intent(in)   :: NSET
 
       integer(kind=kint ), intent(in   )::  NP, N, NPL, NPU
@@ -147,7 +144,7 @@
 
       call cal_local_norm_1(NP, N, B, BNRM20)
       call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       if (BNRM2.eq.0.d0) BNRM2= 1.d0
 !C===
 
@@ -162,7 +159,7 @@
 !C===
       call cal_local_s_product_1(NP, N, W(1,RT), W(1,R), RHO0)
       call MPI_allREDUCE (RHO0, RHO, 1, MPI_DOUBLE_PRECISION,           &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
 !C===
 
 !C
@@ -230,7 +227,7 @@
 
       call cal_local_s_product_1(NP, N, W(1,RT), W(1,V), C20)
       call MPI_allREDUCE (C20, C2, 1, MPI_DOUBLE_PRECISION,             &
-     &                    MPI_SUM, SOLVER_COMM, ierr) 
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
         ALPHA= RHO / C2
 
 !C
@@ -291,7 +288,7 @@
         call cal_local_sproduct_norm_1(NP, N,                           &
      &     W(1,T), W(1,S), C0(1), C0(2) )
         call MPI_allREDUCE (C0, CG, 2, MPI_DOUBLE_PRECISION,            &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
         OMEGA= CG(1) / CG(2)
 !C===
 
@@ -307,7 +304,7 @@
 !
         call cal_local_norm_1(NP, N,  W(1,S), DNRM20)
         call MPI_allREDUCE  (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,    &
-     &                     MPI_SUM, SOLVER_COMM, ierr)
+     &                     MPI_SUM, CALYPSO_COMM, ierr)
         RESID= dsqrt(DNRM2/BNRM2)
 
         if (my_rank.eq.0 .and. MONITORFLAG.eq.1)                        &

@@ -10,30 +10,26 @@
 !     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
 !     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !     &            ALU_U, B, S, NEIBPETOT, NEIBPE,                      &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!     &            SOLVER_COMM, my_rank)
+!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !       subroutine weak_gauss_zeidel_backward_nn                        &
 !     &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,    &
 !     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
 !     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !     &            ALU_U, B, S, NEIBPETOT, NEIBPE,                      &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!     &            SOLVER_COMM, my_rank)
+!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
 !       subroutine weak_gauss_zeidel_forward_3xnn                       &
 !     &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,    &
 !     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
 !     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !     &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,    &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!     &            SOLVER_COMM, my_rank)
+!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !       subroutine weak_gauss_zeidel_backward_3xnn                      &
 !     &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,    &
 !     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
 !     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !     &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,    &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!     &            SOLVER_COMM, my_rank)
+!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
 !    complete Gauss-Zeidel (data communication for each hyperplane)
 !
@@ -42,30 +38,26 @@
 !     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
 !     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !     &            ALU_U, B, S, NEIBPETOT, NEIBPE,                      &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!     &            SOLVER_COMM, my_rank)
+!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !       subroutine full_gauss_zeidel_backward_nn                        &
 !     &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,    &
 !     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
 !     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !     &            ALU_U, B, S, NEIBPETOT, NEIBPE,                      &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!     &            SOLVER_COMM, my_rank)
+!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
 !       subroutine full_gauss_zeidel_forward_3xnn                       &
 !     &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,    &
 !     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
 !     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !     &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,    &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!     &            SOLVER_COMM, my_rank)
+!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !       subroutine full_gauss_zeidel_backward_3xnn                      &
 !     &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,    &
 !     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
 !     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !     &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,    &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!     &            SOLVER_COMM, my_rank)
+!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
 !        at (NB*NB*i-8, NB*NB*i-4, NB*NB*i) 
 !       ALU_U = 1 / Diag (Ordered by DJDS ordering for upper component)
@@ -94,11 +86,9 @@
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B, S, NEIBPETOT, NEIBPE,                       &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            SOLVER_COMM, my_rank)
+     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
+      integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
       integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &
@@ -154,11 +144,9 @@
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B, S, NEIBPETOT, NEIBPE,                       &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            SOLVER_COMM, my_rank)
+     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
+      integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
       integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &
@@ -213,11 +201,9 @@
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,     &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            SOLVER_COMM, my_rank)
+     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
+      integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
       integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &
@@ -272,11 +258,9 @@
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,     &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            SOLVER_COMM, my_rank)
+     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
+      integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
       integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &
@@ -332,11 +316,9 @@
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B, S, NEIBPETOT, NEIBPE,                       &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            SOLVER_COMM, my_rank)
+     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
+      integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
       integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &
@@ -394,11 +376,9 @@
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B, S, NEIBPETOT, NEIBPE,                       &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            SOLVER_COMM, my_rank)
+     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
+      integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
       integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &
@@ -459,11 +439,9 @@
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,     &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            SOLVER_COMM, my_rank)
+     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
+      integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
       integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &
@@ -522,11 +500,9 @@
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,     &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            SOLVER_COMM, my_rank)
+     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
+      integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
       integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &

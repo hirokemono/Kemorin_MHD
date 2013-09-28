@@ -5,26 +5,22 @@
 !
 !      Written by H. Matsui on Sep. 2011
 !
-!      subroutine empty_VCG_DJDS_SMP                                    &
-!     &         (EPS, ITR, IER, my_rank, SOLVER_COMM)
+!      subroutine empty_VCG_DJDS_SMP(EPS, ITR, IER)
 !        subroutine solve_VCG11_DJDS_SMP
 !        subroutine solve_VCG33_DJDS_SMP
 !        subroutine solve_VCGnn_DJDS_SMP
 !
-!      subroutine empty_VGPBiCG_DJDS_SMP                                &
-!     &         (EPS, ITR, IER, my_rank, SOLVER_COMM)
+!      subroutine empty_VGPBiCG_DJDS_SMP(EPS, ITR, IER)
 !        subroutine solve_VGPBiCGnn_DJDS_SMP
 !        subroutine solve_VGPBiCG33_DJDS_SMP
 !        subroutine solve_VGPBiCG11_DJDS_SMP
 !
-!      subroutine empty_VBiCGSTAB_DJDS_SMP                              &
-!     &         (EPS, ITR, IER, my_rank, SOLVER_COMM)
+!      subroutine empty_VBiCGSTAB_DJDS_SMP(EPS, ITR, IER)
 !        subroutine solve_VBiCGSTAB11_DJDS_SMP
 !        subroutine solve_VBiCGSTAB33_DJDS_SMP
 !        subroutine solve_VBiCGSTABnn_DJDS_SMP
 !
-!      subroutine empty_VGAUSS_ZEIDEL_DJDS_SMP                          &
-!     &         (EPS, ITR, IER, my_rank, SOLVER_COMM)
+!      subroutine empty_VGAUSS_ZEIDEL_DJDS_SMP(EPS, ITR, IER)
 !        subroutine solve_VGAUSS_ZEIDEL11_DJDS_SMP
 !        subroutine solve_VGAUSS_ZEIDEL33_DJDS_SMP
 !        subroutine solve_VGAUSS_ZEIDELnn_DJDS_SMP
@@ -48,13 +44,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine empty_VCG_DJDS_SMP                                     &
-     &         (EPS, ITR, IER, my_rank, SOLVER_COMM)
+      subroutine empty_VCG_DJDS_SMP(EPS, ITR, IER)
 
       use calypso_mpi
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank
       real   (kind=kreal), intent(in) :: EPS
       integer(kind=kint ), intent(inout) :: ITR, IER
 
@@ -70,7 +63,7 @@
 !
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (ZERO, BNRM2, 1, MPI_DOUBLE_PRECISION,         &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -81,19 +74,19 @@
 !C
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (ZERO, RHO, 1, MPI_DOUBLE_PRECISION,         &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (ZERO, C1, 1, MPI_DOUBLE_PRECISION,          &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !C===
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (ZERO, DNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
         RESID= dsqrt(DNRM2/BNRM2)
@@ -114,13 +107,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine empty_VGPBiCG_DJDS_SMP                                 &
-     &         (EPS, ITR, IER, my_rank, SOLVER_COMM)
+      subroutine empty_VGPBiCG_DJDS_SMP(EPS, ITR, IER)
 !
       use calypso_mpi
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank
       real   (kind=kreal), intent(in) :: EPS
       integer(kind=kint ), intent(inout) :: ITR, IER
 
@@ -133,9 +123,9 @@
 
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (zero, BNRM2, 1, MPI_DOUBLE_PRECISION,         &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       call MPI_allREDUCE (zero, RHO, 1, MPI_DOUBLE_PRECISION,           &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -147,7 +137,7 @@
       do iter= 1, MAXIT
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (zero, RHO1, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !C
@@ -159,7 +149,7 @@
         C0 = 0.0d0
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (C0, CG,  5, MPI_DOUBLE_PRECISION,           &
-     &                     MPI_SUM, SOLVER_COMM, ierr)
+     &                     MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !C
@@ -170,9 +160,9 @@
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE  (zero, DNRM2, 1, MPI_DOUBLE_PRECISION,      &
-     &                     MPI_SUM, SOLVER_COMM, ierr)
+     &                     MPI_SUM, CALYPSO_COMM, ierr)
         call MPI_allREDUCE  (zero, COEF1, 1, MPI_DOUBLE_PRECISION,      &
-     &                     MPI_SUM, SOLVER_COMM, ierr)
+     &                     MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -195,13 +185,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine empty_VBiCGSTAB_DJDS_SMP                               &
-     &         (EPS, ITR, IER, my_rank, SOLVER_COMM)
+      subroutine empty_VBiCGSTAB_DJDS_SMP(EPS, ITR, IER)
 !
       use calypso_mpi
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank
       real   (kind=kreal), intent(in) :: EPS
       integer(kind=kint ), intent(inout) :: ITR, IER
 
@@ -218,7 +205,7 @@
 
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (zero, BNRM2, 1, MPI_DOUBLE_PRECISION,         &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -232,7 +219,7 @@
 !C===
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (zero, RHO, 1, MPI_DOUBLE_PRECISION,         &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !C
@@ -241,7 +228,7 @@
 !C +----------------+
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (zero, C2, 1, MPI_DOUBLE_PRECISION,          &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !C
@@ -252,7 +239,7 @@
         C0 = 0.0d0
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (C0, CG, 2, MPI_DOUBLE_PRECISION, MPI_SUM,   &
-     &                    SOLVER_COMM, ierr)
+     &                    CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -264,7 +251,7 @@
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (zero, DNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
         RESID= dsqrt(DNRM2/BNRM2)
@@ -285,13 +272,10 @@
 !
 !  ---------------------------------------------------------------------
 !C
-      subroutine empty_VGAUSS_ZEIDEL_DJDS_SMP                           &
-     &         (EPS, ITR, IER, my_rank, SOLVER_COMM)
+      subroutine empty_VGAUSS_ZEIDEL_DJDS_SMP(EPS, ITR, IER)
 !
       use calypso_mpi
 !
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
-      integer(kind=kint ), intent(in) :: my_rank
       real   (kind=kreal), intent(in) :: EPS
       integer(kind=kint ), intent(inout) :: ITR, IER
 
@@ -306,7 +290,7 @@
 !C===
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (zero, BNRM2, 1, MPI_DOUBLE_PRECISION,         &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -320,7 +304,7 @@
 !C===
          START_TIME= MPI_WTIME()
          call MPI_allREDUCE (zero, DNRM2, 1, MPI_DOUBLE_PRECISION,      &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
          END_TIME= MPI_WTIME()
          COMMtime = COMMtime + END_TIME - START_TIME
 !

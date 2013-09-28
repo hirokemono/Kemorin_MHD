@@ -13,7 +13,9 @@ VDJDS_SOLVER  \
 crs_solver    \
 \
 direct_solver     \
-crs_solver_single
+crs_solver_single \
+\
+MULTIGRID_src
 
 #
 #  -------------------------------------------------------------------------

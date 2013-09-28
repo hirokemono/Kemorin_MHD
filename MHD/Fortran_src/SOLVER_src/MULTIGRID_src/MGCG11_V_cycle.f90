@@ -1,14 +1,13 @@
-!MGCGnn_V_cycle.f90
-!      module MGCGnn_V_cycle
+!MGCG11_V_cycle.f90
+!      module MGCG11_V_cycle
 !
 !     Written by Kemorin
 !
-!      subroutine init_MGCGnn_V_cycle(NP, NB, PEsmpTOT,                 &
+!      subroutine init_MGCG11_V_cycle(NP, PEsmpTOT,                     &
 !     &          METHOD_MG, PRECOND_MG, my_rank)
-!
-!      subroutine s_MGCGnn_V_cycle(num_MG_level, MG_comm, MG_itp,       &
-!     &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,      &
-!     &          iter_mid, iter_lowest, EPS_MG, my_rank, SOLVER_COMM,   &
+!      subroutine s_MGCG11_V_cycle(num_MG_level, MG_comm, MG_itp,       &
+!     &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,          &
+!     &          iter_mid, iter_lowest, EPS_MG, my_rank,                &
 !     &          METHOD_MG, PRECOND_MG, IER)
 !       integer(kind = kint), intent(in) :: num_MG_level
 !       type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
@@ -17,20 +16,20 @@
 !       type(MG_itp_table), intent(in) ::        MG_itp(num_MG_level)
 !
 !       integer(kind = kint), intent(in) :: PEsmpTOT
-!       integer(kind = kint), intent(in) :: NP, NB
+!       integer(kind = kint), intent(in) :: NP
 !       real(kind = kreal), intent(in), target :: B(NP)
 !
 !       real(kind = kreal), intent(inout), target :: X(NP)
 !       type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
 !
-!       integer(kind = kint), intent(in) :: my_rank, SOLVER_COMM
+!       integer(kind = kint), intent(in) :: my_rank
 !       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
 !       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
 !       real(kind = kreal), intent(in) :: EPS_MG
 !
 !       integer(kind = kint), intent(inout) :: IER
 !
-      module MGCGnn_V_cycle
+      module MGCG11_V_cycle
 !
       use m_precision
 !
@@ -38,13 +37,13 @@
       use t_interpolate_table
       use t_solver_djds
       use t_vector_for_solver
-      use m_work_4_MGCGnn
+      use djds_matrix_calcs_11
 !
       implicit none
 !
       logical, private :: print_residual_on_each_level = .true.
 !
-       private :: cal_residualnn_type
+       private :: cal_residual11_type
 !
 !  ---------------------------------------------------------------------
 !
@@ -52,192 +51,216 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_MGCGnn_V_cycle(NP, NB, PEsmpTOT,                  &
+      subroutine init_MGCG11_V_cycle(NP, PEsmpTOT,                      &
      &          METHOD_MG, PRECOND_MG, my_rank)
 !
       use m_constants
-      use solver_DJDSnn_struct
+      use solver_DJDS11_struct
 !
-      integer(kind = kint), intent(in) :: PEsmpTOT, my_rank
-      integer(kind = kint), intent(in) :: NP, NB
+      integer(kind = kint), intent(in) :: NP, PEsmpTOT, my_rank
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
       integer(kind = kint) :: ierr
 !
 !
-      call initNN_DJDS_struct(NP, NB, PEsmpTOT, METHOD_MG, PRECOND_MG,  &
+      call init_DJDS11_struct(NP, PEsmpTOT, METHOD_MG, PRECOND_MG,      &
      &    my_rank, ierr)
 !
-      end subroutine init_MGCGnn_V_cycle
+      end subroutine init_MGCG11_V_cycle
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_MGCGnn_V_cycle(num_MG_level, MG_comm, MG_itp,        &
-     &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,       &
-     &          iter_mid, iter_lowest, EPS_MG, my_rank, SOLVER_COMM,    &
+      subroutine s_MGCG11_V_cycle(num_MG_level, MG_comm, MG_itp,        &
+     &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,           &
+     &          iter_mid, iter_lowest, EPS_MG, my_rank,                 &
      &          METHOD_MG, PRECOND_MG, IER)
 !
       use calypso_mpi
 !
       use m_constants
       use t_comm_table
-      use solver_DJDSnn_struct
-      use interpolate_type_N
+      use solver_DJDS11_struct
+      use interpolate_type_1
       use empty_solver_DJDS
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
       type(DJDS_ordering_table), intent(in) :: djds_tbl(0:num_MG_level)
-      type(DJDS_MATRIX), intent(in) ::         matNN(0:num_MG_level)
+      type(DJDS_MATRIX), intent(in) ::         mat11(0:num_MG_level)
       type(MG_itp_table), intent(in) ::        MG_itp(num_MG_level)
 !
       integer(kind = kint), intent(in) :: PEsmpTOT
-      integer(kind = kint), intent(in) :: NP, NB
-      real(kind = kreal), intent(in) :: B(NB*NP)
+      integer(kind = kint), intent(in) :: NP
+      real(kind = kreal), intent(in) :: B(NP)
 !
-      real(kind = kreal), intent(inout) :: X(NB*NP)
+      real(kind = kreal), intent(inout) :: X(NP)
       type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
 !
-      integer(kind = kint), intent(in) :: my_rank, SOLVER_COMM
+      integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
-      real(kind = kreal), intent(in) :: EPS_MG
       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
+      real(kind = kreal), intent(in) :: EPS_MG
+!
       integer(kind = kint), intent(inout) :: IER
 !
       integer(kind = kint) :: NP_f, NP_c
-      integer(kind = kint) :: i, iter_res, ierr
+      integer(kind = kint) :: i, j, iter_res, ierr
       real(kind = kreal) :: resd
 !
 !
 !$omp parallel do
-      do i = 1, NB*NP
-        MG_vect(0)%b_vec(i)   B(i)
+      do i = 1, NP
+        MG_vect(0)%b_vec(i) = B(i)
         MG_vect(0)%x_vec(i) = X(i)
       end do
 !$omp end parallel do
 !
-      call back_2_original_order_bxn(NP, NB, djds_tbl(0)%NEWtoOLD,      &
+      call back_2_original_order_bx1(NP, djds_tbl(0)%NEWtoOLD,          &
      &    MG_vect(0)%b_vec, MG_vect(0)%x_vec)
 !
 !C restrict the residual vector
       DO i = 0, num_MG_level-1
-        NP_f = matNN(i  )%num_diag
-        NP_c = matNN(i+1)%num_diag
-        call s_interpolate_type_N(NP_f, NP_c, NB, MG_comm(i+1),         &
+        NP_f = mat11(i  )%num_diag
+        NP_c = mat11(i+1)%num_diag
+        ierr = IER
+        call s_interpolate_type_1(NP_f, NP_c, MG_comm(i+1),             &
      &      MG_itp(i+1)%f2c, MG_vect(i)%b_vec, MG_vect(i+1)%b_vec,      &
      &      PEsmpTOT)
         MG_vect(i+1)%x_vec(1:NP_c) = zero
       end do
 !
+!
 !C calculate residual
       if(print_residual_on_each_level) Then
-        call cal_residualnn_type(djds_tbl(0), matNN(0), MG_vect(0),     &
-     &      PEsmpTOT, NB, SOLVER_COMM, resd)
+        call cal_residual11_type(djds_tbl(0), mat11(0), MG_vect(0),     &
+     &      PEsmpTOT, resd)
         if(my_rank .eq. 0) write(*,*) '0-th level, pre ', resd
       end if
 !
       do i = 0, num_MG_level-1
 !
-        NP_f = matNN(i  )%num_diag
-        NP_c = matNN(i+1)%num_diag
+        NP_f = mat11(i  )%num_diag
+        NP_c = mat11(i+1)%num_diag
         ierr = IER
-        if(NP_f.gt.0) then
-          call solveNN_DJDS_struct(NB, PEsmpTOT, MG_comm(i),            &
-     &      djds_tbl(i), matNN(i),NP_f, MG_vect(i)%b_vec,               &
-     &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_mid, iter_res, my_rank,  SOLVER_COMM)
-         else
-          call empty_solve_DJDS_kemo(EPS_MG, iter_mid, iter_res, ierr,  &
-     &        my_rank, SOLVER_COMM, METHOD_MG)
-         end if
 !
-        call s_interpolate_type_N(NP_f, NP_c, NB, MG_comm(i+1),         &
+        write(*,*) 'solve_DJDS11_struct', i
+        if(NP_f.gt.0) then
+          call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                &
+     &      djds_tbl(i), mat11(i), NP_f, MG_vect(i)%b_vec,              &
+     &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
+     &      EPS_MG, iter_mid, iter_res, my_rank)
+        else
+          call empty_solve_DJDS_kemo(EPS_MG, iter_mid, iter_res, ierr,  &
+     &        my_rank, METHOD_MG)
+        end if
+!        write(*,*) 'j, MG_vect(i)%x_vec(j)', i
+!        do j = 1, NP_f
+!          write(*,*) j, MG_vect(i)%x_vec(j), MG_vect(i)%b_vec(j)
+!        end do
+!
+        write(*,*) 's_interpolate_type_1 restriction', i
+        call s_interpolate_type_1(NP_f, NP_c, MG_comm(i+1),             &
      &      MG_itp(i+1)%f2c, MG_vect(i)%x_vec, MG_vect(i+1)%x_vec,      &
      &      PEsmpTOT)
       end do
 !
 !    at the coarsest level
 !
+!      write(*,*) 'j, MG_vect(i)%x_vec(j)', i
+!      do j = 1, NP_c
+!        write(*,*) j, MG_vect(i)%x_vec(j)
+!      end do
+!
       i = num_MG_level
-      NP_f = matNN(i  )%num_diag
+      NP_c = mat11(i  )%num_diag
       ierr = IER
       if(NP_f.gt.0) then
-        call solveNN_DJDS_struct(NB, PEsmpTOT, MG_comm(i),              &
-     &      djds_tbl(i), matNN(i), NP_f, MG_vect(i)%b_vec,              &
+        write(*,*) 'solve_DJDS11_struct', i
+        call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                  &
+     &      djds_tbl(i), mat11(i), NP_c, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_lowest, iter_res, my_rank,  SOLVER_COMM)
+     &      EPS_MG, iter_lowest, iter_res, my_rank)
       else
         call empty_solve_DJDS_kemo(EPS_MG, iter_lowest, iter_res, ierr, &
-     &        my_rank, SOLVER_COMM, METHOD_MG)
+     &        my_rank, METHOD_MG)
       end if
 !
 !
       do i = num_MG_level-1, 0, -1
-        NP_f = matNN(i  )%num_diag
-        NP_c = matNN(i+1)%num_diag
-        call s_interpolate_type_N(NP_c, NP_f, NB, MG_comm(i),           &
-     &       MG_itp(i+1)%c2f, MG_vect(i+1)%x_vec, MG_vect(i)%x_vec,     &
-     &       PEsmpTOT)
+        NP_f = mat11(i  )%num_diag
+        NP_c = mat11(i+1)%num_diag
+        ierr = IER
+        write(*,*) 's_interpolate_type_1 interpolation', i
+        call s_interpolate_type_1(NP_c, NP_f, MG_comm(i),               &
+     &      MG_itp(i+1)%c2f, MG_vect(i+1)%x_vec, MG_vect(i)%x_vec,      &
+     &      PEsmpTOT)
+!
+!        write(*,*) 'j, MG_vect(i)%x_vec(j)', i
+!        do j = 1, NP_f
+!          write(*,*) j, MG_vect(i)%x_vec(j)
+!        end do
 !
 !C calculate residual
         if(print_residual_on_each_level) Then
-          call cal_residualnn_type(djds_tbl(i), matNN(i), MG_vect(i),   &
-     &        PEsmpTOT, NB, SOLVER_COMM, resd)
+        write(*,*) 'cal_residual11_type', i
+          call cal_residual11_type(djds_tbl(i), mat11(i), MG_vect(i),   &
+     &      PEsmpTOT, resd)
           if(my_rank .eq. 0) write(*,*) i, 'th level, pre ', resd
         end if
 !
-        ierr = IER
         if(NP_f.gt.0) then
-          call solveNN_DJDS_struct(NB, PEsmpTOT, MG_comm(i),            &
-     &      djds_tbl(i), matNN(i),NP_f, MG_vect(i)%b_vec,               &
+          write(*,*) 'solve_DJDS11_struct', i
+          call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                &
+     &      djds_tbl(i), mat11(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_lowest, iter_res, my_rank,  SOLVER_COMM)
-         else
+     &      EPS_MG, iter_lowest, iter_res, my_rank)
+        else
           call empty_solve_DJDS_kemo(EPS_MG, iter_lowest, iter_res,     &
-     &        ierr,  my_rank, SOLVER_COMM, METHOD_MG)
-         end if
+     &        ierr, my_rank, METHOD_MG)
+        end if
+!
+!        write(*,*) 'j, MG_vect(i)%x_vec(j)', i
+!        do j = 1, NP_f
+!          write(*,*) j, MG_vect(i)%x_vec(j), MG_vect(i)%b_vec(j)
+!        end do
       end do
 !
-      call change_order_2_solve_bxn(NP, NB, PEsmpTOT,                   &
-     &    djds_tbl(0)%STACKmcG, djds_tbl(0)%NEWtoOLD,                   &
-     &    MG_vect(0)%b_vec, MG_vect(0)%x_vec)
+      call change_order_2_solve_bx1(NP, PEsmpTOT, djds_tbl(0)%STACKmcG, &
+     &    djds_tbl(0)%NEWtoOLD, MG_vect(0)%b_vec, MG_vect(0)%x_vec)
 !
 !$omp parallel do
-      do i = 1, NB*NP
+      do i = 1, NP
         X(i) = MG_vect(0)%x_vec(i)
       end do
 !$omp end parallel do
 !
-      end subroutine s_MGCGnn_V_cycle
+      end subroutine s_MGCG11_V_cycle
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
-      subroutine cal_residualnn_type(djds_tbl, matNN, MG_vect,          &
-     &          PEsmpTOT, NB, SOLVER_COMM, resd)
+      subroutine cal_residual11_type(djds_tbl, mat11, MG_vect,          &
+     &          PEsmpTOT, resd)
 !
       use calypso_mpi
 !
       use m_constants
-      use m_work_4_MGCGnn
-      use djds_matrix_calcs_nn
-      use cal_norm_products_nn
+      use m_work_4_MGCG11
+      use djds_norm_products_11
 !
       type(DJDS_ordering_table), intent(in) :: djds_tbl
-      type(DJDS_MATRIX), intent(in) ::      matNN
+      type(DJDS_MATRIX), intent(in) ::      mat11
 !
       type(vectors_4_solver), intent(inout) :: MG_vect
-      integer(kind = kint), intent(in) :: NB, PEsmpTOT
-      integer(kind = kint), intent(in) :: SOLVER_COMM
+      integer(kind = kint), intent(in) :: PEsmpTOT
       real(kind = kreal), intent(inout) :: resd
 !
 !
-      call change_order_2_solve_bxn(matNN%num_diag, NB,  PEsmpTOT,      &
+      call change_order_2_solve_bx1(mat11%num_diag, PEsmpTOT,           &
             djds_tbl%STACKmcG, djds_tbl%NEWtoOLD,                       &
      &      MG_vect%b_vec, MG_vect%x_vec)
 !
 !C calculate residual
-        call subtruct_matvec_nn                                         &
-     &       (matNN%num_diag, NB, djds_tbl%NLmax, djds_tbl%NUmax,       &
+        call subtruct_matvec_11                                         &
+     &       (mat11%num_diag, djds_tbl%NLmax, djds_tbl%NUmax,           &
      &       djds_tbl%itotal_l, djds_tbl%itotal_u,                      &
      &       djds_tbl%npLX1, djds_tbl%npUX1, djds_tbl%NHYP, PEsmpTOT,   &
      &       djds_tbl%STACKmcG, djds_tbl%STACKmc,                       &
@@ -246,24 +269,24 @@
      &       djds_tbl%NEWtoOLD_DJDS_U, djds_tbl%LtoU,                   &
      &       djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                &
      &       djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                  &
-     &       matNN%D, matNN%AL, matNN%AU, W(1,ZQ),                      &
+     &       mat11%D, mat11%AL,  mat11%AU, W(1,ZQ),                     &
      &       MG_vect%b_vec, MG_vect%x_vec)
 !
-      call back_2_original_order_bxn(matNN%num_diag, NB,                &
-     &    djds_tbl%NEWtoOLD, MG_vect%b_vec, MG_vect%x_vec)
+      call back_2_original_order_bx1(mat11%num_diag, djds_tbl%NEWtoOLD, &
+     &    MG_vect%b_vec, MG_vect%x_vec)
 !
         BNRM20=zero
-        call cal_local_norm_n(matNN%num_diag, NB, PEsmpTOT,             &
+        call djds_local_norm_1(mat11%num_diag, PEsmpTOT,                &
      &      djds_tbl%STACKmcG, W(1,ZQ), BNRM20, DNRMsmp)
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (BNRM20, resd, 1, MPI_DOUBLE_PRECISION,      &
-     &        MPI_SUM, SOLVER_COMM, ierr)
+     &        MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !
-      end subroutine cal_residualnn_type
+      end subroutine cal_residual11_type
 !
 !  ---------------------------------------------------------------------
 !
-      end module MGCGnn_V_cycle
+      end module MGCG11_V_cycle

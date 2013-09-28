@@ -8,7 +8,7 @@
 !
 !      subroutine s_MGCG33_V_cycle(num_MG_level, MG_comm, MG_itp,       &
 !     &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,          &
-!     &          iter_mid, iter_lowest, EPS_MG, my_rank, SOLVER_COMM,   &
+!     &          iter_mid, iter_lowest, EPS_MG, my_rank,                &
 !     &          METHOD_MG, PRECOND_MG, IER)
 !       integer(kind = kint), intent(in) :: num_MG_level
 !       type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
@@ -23,7 +23,7 @@
 !       real(kind = kreal), intent(inout), target :: X(NP)
 !       type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
 !
-!       integer(kind = kint), intent(in) :: my_rank, SOLVER_COMM
+!       integer(kind = kint), intent(in) :: my_rank
 !       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
 !       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
 !       real(kind = kreal), intent(in) :: EPS_MG
@@ -73,7 +73,7 @@
 !
       subroutine s_MGCG33_V_cycle(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,           &
-     &          iter_mid, iter_lowest, EPS_MG, my_rank, SOLVER_COMM,    &
+     &          iter_mid, iter_lowest, EPS_MG, my_rank,                 &
      &          METHOD_MG, PRECOND_MG, IER)
 !
       use calypso_mpi
@@ -97,7 +97,7 @@
       real(kind = kreal), intent(inout) :: X(3*NP)
       type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
 !
-      integer(kind = kint), intent(in) :: my_rank, SOLVER_COMM
+      integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
       real(kind = kreal), intent(in) :: EPS_MG
       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
@@ -134,7 +134,7 @@
 !C calculate residual
       if(print_residual_on_each_level) Then
         call cal_residual33_type(djds_tbl(0), mat33(0), MG_vect(0),     &
-     &      PEsmpTOT, SOLVER_COMM, resd)
+     &      PEsmpTOT, resd)
         if(my_rank .eq. 0) write(*,*) '0-th level, pre ', resd
       end if
 !
@@ -147,10 +147,10 @@
           call solve33_DJDS_struct(PEsmpTOT, MG_comm(i),                &
      &      djds_tbl(i), mat33(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_mid, iter_res, my_rank,  SOLVER_COMM)
+     &      EPS_MG, iter_mid, iter_res, my_rank)
         else
           call empty_solve_DJDS_kemo(EPS_MG, iter_mid, iter_res, ierr,  &
-     &        my_rank, SOLVER_COMM, METHOD_MG)
+     &        my_rank, METHOD_MG)
         end if
 !
         call s_interpolate_type_3(NP_f, NP_c, MG_comm(i+1),             &
@@ -167,10 +167,10 @@
         call solve33_DJDS_struct(PEsmpTOT, MG_comm(i),                  &
      &      djds_tbl(i), mat33(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_lowest, iter_res, my_rank,  SOLVER_COMM)
+     &      EPS_MG, iter_lowest, iter_res, my_rank)
       else
         call empty_solve_DJDS_kemo(EPS_MG, iter_lowest, iter_res, ierr, &
-     &        my_rank, SOLVER_COMM, METHOD_MG)
+     &        my_rank, METHOD_MG)
        end if
 !
 !
@@ -184,7 +184,7 @@
 !C calculate residual
         if(print_residual_on_each_level) Then
           call cal_residual33_type(djds_tbl(i), mat33(i), MG_vect(i),   &
-     &      PEsmpTOT, SOLVER_COMM, resd)
+     &      PEsmpTOT, resd)
           if(my_rank .eq. 0) write(*,*) i, 'th level, pre ', resd
         end if
 !
@@ -193,10 +193,10 @@
           call solve33_DJDS_struct(PEsmpTOT, MG_comm(i),                &
      &      djds_tbl(i), mat33(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_lowest, iter_res, my_rank,  SOLVER_COMM)
+     &      EPS_MG, iter_lowest, iter_res, my_rank)
         else
           call empty_solve_DJDS_kemo(EPS_MG, iter_lowest, iter_res,     &
-     &        ierr, my_rank, SOLVER_COMM, METHOD_MG)
+     &        ierr, my_rank, METHOD_MG)
         end if
       end do
 !
@@ -214,7 +214,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_residual33_type(djds_tbl, mat33, MG_vect,          &
-     &          PEsmpTOT, SOLVER_COMM, resd)
+     &          PEsmpTOT, resd)
 !
       use calypso_mpi
 !
@@ -227,7 +227,6 @@
 !
       type(vectors_4_solver), intent(inout) :: MG_vect
       integer(kind = kint), intent(in) :: PEsmpTOT
-      integer(kind = kint), intent(in) :: SOLVER_COMM
       real(kind = kreal), intent(inout) :: resd
 !
 !
@@ -258,7 +257,7 @@
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (BNRM20, resd, 1, MPI_DOUBLE_PRECISION,      &
-     &        MPI_SUM, SOLVER_COMM, ierr)
+     &        MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !

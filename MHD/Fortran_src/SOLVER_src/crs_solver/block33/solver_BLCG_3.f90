@@ -39,8 +39,7 @@
      &                  RESID,  ITER, ERROR, iterPREmax,                &
      &                  my_rank, NEIBPETOT, NEIBPE,                     &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
-     &                  STACK_EXPORT, NOD_EXPORT,                       &
-     &                  SOLVER_COMM , NSET)     
+     &                  STACK_EXPORT, NOD_EXPORT, NSET)
 
       use calypso_mpi
 !
@@ -50,7 +49,6 @@
 !
       integer(kind=kint ), intent(in):: N, NP, NPU, NPL, my_rank
       integer(kind=kint ), intent(in):: NEIBPETOT, iterPREmax
-      integer(kind=kint ), intent(in):: SOLVER_COMM
       integer(kind=kint ), intent(in):: NSET
       real   (kind=kreal), intent(in):: SIGMA, SIGMA_DIAG
 
@@ -296,7 +294,7 @@
       enddo
 
       call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
 
       if (BNRM2.eq.0.d0) BNRM2= 1.d0
       ITER = 0
@@ -520,7 +518,7 @@
       enddo
 
       call MPI_allREDUCE (RHO0, RHO, 1, MPI_DOUBLE_PRECISION,           &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
 !C===
 
 !C
@@ -574,7 +572,7 @@
      &           + WW(3*i  ,P)*WW(3*i  ,Q)
       enddo
       call MPI_allREDUCE (C10, C1, 1, MPI_DOUBLE_PRECISION,             &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       ALPHA= RHO / C1
 !C===
 
@@ -599,7 +597,7 @@
      &                                  + WW(3*i  ,R)**2
       enddo
       call MPI_allREDUCE (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
 
         RESID= dsqrt(DNRM2/BNRM2)
 
@@ -1913,12 +1911,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine GAUSSJ33(a, n, np, SOLVER_COMM)
+      subroutine GAUSSJ33(a, n, np)
 
       use calypso_mpi
 !
 !
-      integer(kind=kint) :: SOLVER_COMM
       integer(kind=kint) :: n, np
       real(kind=kreal), dimension(np,np) :: a
 !
@@ -1951,7 +1948,7 @@
         enddo
 !
         call MPI_allREDUCE (ierr_l, ierr_g, 1, MPI_INTEGER,             &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
         if(ierr_g .gt. 0) return
 !
         ipiv(icol)= ipiv(icol) + 1
@@ -1971,7 +1968,7 @@
           ierr_l = 1
         end if
         call MPI_allREDUCE (ierr_l, ierr_g, 1, MPI_INTEGER,             &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
         if(ierr_g .gt. 0) return
 !
         pivinv= 1.d0 / a(icol,icol)

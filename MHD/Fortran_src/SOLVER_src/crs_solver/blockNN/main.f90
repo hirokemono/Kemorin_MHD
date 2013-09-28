@@ -30,7 +30,6 @@
       integer(kind=kint ), pointer         :: STACK_EXPORT(:)
       integer(kind=kint ), pointer         :: NOD_EXPORT  (:)
 
-      integer :: SOLVER_COMM
       integer :: ERROR
 
       character(len=kchara)                :: PRECOND, METHOD
@@ -55,7 +54,7 @@
       call MPI_INIT      (ierr)
       call MPI_COMM_SIZE (MPI_COMM_WORLD, PETOT, ierr )
       call MPI_COMM_RANK (MPI_COMM_WORLD, my_rank, ierr )
-      call MPI_COMM_DUP  (MPI_COMM_WORLD, SOLVER_COMM, ierr)
+      call MPI_COMM_DUP  (MPI_COMM_WORLD, CALYPSO_COMM, ierr)
 
 !C
 !C-- CNTL DATA
@@ -90,16 +89,16 @@
         close (11)
       endif
 
-      call MPI_BARRIER(SOLVER_COMM,ierr)
+      call MPI_BARRIER(CALYPSO_COMM,ierr)
       call MPI_BCAST  (METHOD  ,20,       MPI_CHARACTER,                &
-     &                   0, SOLVER_COMM, ierr)
+     &                   0, CALYPSO_COMM, ierr)
       call MPI_BCAST  (PRECOND  ,20,       MPI_CHARACTER,               &
-     &                   0, SOLVER_COMM, ierr)
+     &                   0, CALYPSO_COMM, ierr)
       call MPI_BCAST  (REALARRAY(1), 10, MPI_DOUBLE_PRECISION,          &
-     &                 0, SOLVER_COMM, ierr)
+     &                 0, CALYPSO_COMM, ierr)
       call MPI_BCAST  (INTARRAY(1) , 10, MPI_INTEGER,                   &
-     &                 0, SOLVER_COMM, ierr)
-      call MPI_BARRIER(SOLVER_COMM,ierr)
+     &                 0, CALYPSO_COMM, ierr)
+      call MPI_BARRIER(CALYPSO_COMM,ierr)
 
 !
 !C 
@@ -168,7 +167,7 @@
 !C
 !C-- ICCG computation
 
-      call MPI_BARRIER  (SOLVER_COMM,ierr)
+      call MPI_BARRIER  (CALYPSO_COMM,ierr)
       STARTTIME= MPI_WTIME()
       im1= -1000000
  
@@ -183,7 +182,7 @@
      &                   D, AL, INL, IAL, AU, INU, IAU, B, X, PRESET,   &
      &                   NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,   &
      &                                      STACK_EXPORT, NOD_EXPORT,   &
-     &                   my_rank, SOLVER_COMM, ITERactual, ERROR,       &
+     &                   my_rank, ITERactual, ERROR,                    &
      &                   METHOD, PRECOND, INTARRAY, REALARRAY         )
 
 
@@ -197,7 +196,7 @@
 
       ENDTIME= MPI_WTIME()
 
-      call MPI_BARRIER  (SOLVER_COMM,ierr)
+      call MPI_BARRIER  (CALYPSO_COMM,ierr)
 
       if (my_rank.eq.0) then
         RTIME= ENDTIME-STARTTIME

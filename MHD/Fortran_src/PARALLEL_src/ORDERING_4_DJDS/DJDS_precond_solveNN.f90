@@ -75,7 +75,7 @@
      &     my_rank, num_neib, id_neib,                                  &
      &     istack_import, item_import,                                  &
      &     istack_export, NOD_EXPORT_NEW,                               &
-     &     SOLVER_COMM, method_4_solver, precond_4_solver, itr_res)
+     &     method_4_solver, precond_4_solver, itr_res)
 
       call copy_solution_2_crs_nn
 

@@ -18,8 +18,7 @@
 !     &           EPS, ITR, IER,                                        &
 !     &           my_rank, NEIBPETOT, NEIBPE,                           &
 !     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT,                             &
-!     &           SOLVER_COMM, PRECOND)
+!     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !C
 !      subroutine init_VJACOBInn_DJDS_SMP(NP, NB, PEsmpTOT)
 !      subroutine solve_VJACOBInn_DJDS_SMP                              &
@@ -30,8 +29,7 @@
 !     &           EPS, ITR, IER,                                        &
 !     &           my_rank, NEIBPETOT, NEIBPE,                           &
 !     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT,                             &
-!     &           SOLVER_COMM, PRECOND)
+!     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !C
 !C     VCG_DJDS_SMP solves the linear system Ax = b 
 !C     using the Conjugate Gradient iterative method with preconditioning.
@@ -58,8 +56,7 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
       use calypso_mpi
 !
@@ -76,7 +73,6 @@
       integer(kind=kint ), intent(in) :: N, NP, NB
       integer(kind=kint ), intent(in) :: NL, NU, NPL, NPU, NVECT
       integer(kind=kint ), intent(in) :: PEsmpTOT
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
       integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
       character (len=kchara), intent(in) :: PRECOND
       real   (kind=kreal), intent(in) :: EPS
@@ -125,8 +121,7 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
 !
       end subroutine VJACOBInn_DJDS_SMP
@@ -160,8 +155,7 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
       use calypso_mpi
 !
@@ -178,7 +172,6 @@
       integer(kind=kint ), intent(in) :: N, NP, NB
       integer(kind=kint ), intent(in) :: NL, NU, NPL, NPU, NVECT
       integer(kind=kint ), intent(in) :: PEsmpTOT
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
       integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
       character (len=kchara), intent(in) :: PRECOND
       real   (kind=kreal), intent(in) :: EPS
@@ -269,7 +262,7 @@
 !
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -304,7 +297,7 @@
 !
          START_TIME= MPI_WTIME()
          call MPI_allREDUCE (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,    &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
          END_TIME= MPI_WTIME()
          COMMtime = COMMtime + END_TIME - START_TIME
 !

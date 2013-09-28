@@ -6,8 +6,7 @@
 !C***
 !
 !      subroutine  empty_solve_DJDS_kemo                                &
-!     &         (EPS, ITER, ITERactual, IER, my_rank, SOLVER_COMM,      &
-!     &          METHOD)
+!     &         (EPS, ITER, ITERactual, IER, my_rank, METHOD)
 !
       module empty_solver_DJDS
 !
@@ -23,12 +22,10 @@
 !C
 !C--- through for empty domain
       subroutine  empty_solve_DJDS_kemo                                 &
-     &         (EPS, ITER, ITERactual, IER, my_rank, SOLVER_COMM,       &
-     &          METHOD)
+     &         (EPS, ITER, ITERactual, IER, my_rank, METHOD)
 
       use empties_VCG_DJDS_SMP
 
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
       integer(kind=kint ), intent(in) :: my_rank, ITER
       real   (kind=kreal), intent(in) :: EPS
       character(len=kchara ), intent(in):: METHOD
@@ -46,8 +43,7 @@
      &          ((METHOD(4:4).eq.'G').or.(METHOD(4:4).eq.'g')) .and.    &
      &          ((METHOD(5:5).eq.'S').or.(METHOD(5:5).eq.'s')) ) then
 !
-       call empty_VBiCGSTAB_DJDS_SMP                                    &
-     &         (EPS, ITR, IER, my_rank, SOLVER_COMM)
+       call empty_VBiCGSTAB_DJDS_SMP(EPS, ITR, IER)
 !
 !C
 !C-- GPBiCG
@@ -58,16 +54,14 @@
      &          ((METHOD(5:5).eq.'C').or.(METHOD(5:5).eq.'c')) .and.    &
      &          ((METHOD(6:6).eq.'G').or.(METHOD(6:6).eq.'g')) ) then
 !
-       call empty_VGPBiCG_DJDS_SMP                                      &
-     &         (EPS, ITR, IER, my_rank, SOLVER_COMM)
+       call empty_VGPBiCG_DJDS_SMP(EPS, ITR, IER)
 !
 !C
 !C-- CG
       else if ( ((METHOD(1:1).eq.'C').or.(METHOD(1:1).eq.'c')) .and.    &
      &          ((METHOD(2:2).eq.'G').or.(METHOD(2:2).eq.'g')) ) then
 !
-        call empty_VCG_DJDS_SMP                                         &
-     &         (EPS, ITR, IER, my_rank, SOLVER_COMM)
+        call empty_VCG_DJDS_SMP(EPS, ITR, IER)
 !
 !C-- Gauss-Zeidel
 
@@ -77,8 +71,7 @@
      &          ((METHOD(4:4).eq.'S').or.(METHOD(4:4).eq.'s')) .and.    &
      &          ((METHOD(5:5).eq.'S').or.(METHOD(5:5).eq.'s')) ) then
 !
-        call empty_VGAUSS_ZEIDEL_DJDS_SMP                               &
-     &         (EPS, ITR, IER, my_rank, SOLVER_COMM)
+        call empty_VGAUSS_ZEIDEL_DJDS_SMP(EPS, ITR, IER)
 !C
 !C-- Jacobi
 
@@ -89,8 +82,7 @@
      &          ((METHOD(5:5).eq.'B').or.(METHOD(5:5).eq.'b')) .and.    &
      &          ((METHOD(6:6).eq.'I').or.(METHOD(6:6).eq.'i')) ) then
 !
-        call empty_VGAUSS_ZEIDEL_DJDS_SMP                               &
-     &         (EPS, ITR, IER, my_rank, SOLVER_COMM)
+        call empty_VGAUSS_ZEIDEL_DJDS_SMP(EPS, ITR, IER)
 !
       end if
 !

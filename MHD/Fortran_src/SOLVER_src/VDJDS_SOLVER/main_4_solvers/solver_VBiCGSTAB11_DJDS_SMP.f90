@@ -18,7 +18,7 @@
 !     &           my_rank, NEIBPETOT, NEIBPE,                           &
 !     &           STACK_IMPORT, NOD_IMPORT,                             &
 !     &           STACK_EXPORT, NOD_EXPORT,                             &
-!     &           SOLVER_COMM, PRECOND, iterPREmax)
+!     &           PRECOND, iterPREmax)
 !
 !      subroutine init_VBiCGSTAB11_DJDS_SMP(NP, PEsmpTOT, PRECOND)
 !      subroutine solve_VBiCGSTAB11_DJDS_SMP                            &
@@ -30,7 +30,7 @@
 !     &           my_rank, NEIBPETOT, NEIBPE,                           &
 !     &           STACK_IMPORT, NOD_IMPORT,                             &
 !     &           STACK_EXPORT, NOD_EXPORT,                             &
-!     &           SOLVER_COMM, PRECOND, iterPREmax)
+!     &           PRECOND, iterPREmax)
 !C
 !C     VBiCGSTAB11_DJDS_SMP solves the linear system Ax = b
 !C     using the BiCGSTAB iterative method with preconditioning.
@@ -58,13 +58,11 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-!     &           SOLVER_COMM, PRECOND, iterPREmax)
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+!     &          PRECOND, iterPREmax)
 !
       integer(kind=kint ), intent(in) :: N, NP, NL, NU, NPL, NPU, NVECT
       integer(kind=kint ), intent(in) :: PEsmpTOT
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
       integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
       character(len=kchara), intent(in) :: PRECOND
       real   (kind=kreal), intent(in) :: EPS
@@ -114,9 +112,8 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-!     &           SOLVER_COMM, PRECOND, iterPREmax)
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+!     &           PRECOND, iterPREmax)
 !
       end subroutine VBiCGSTAB11_DJDS_SMP
 !
@@ -160,9 +157,8 @@
      &           EPS, ITR, IER,                                         &
      &           my_rank, NEIBPETOT, NEIBPE,                            &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT,                              &
-!     &           SOLVER_COMM, PRECOND, iterPREmax)
-     &           SOLVER_COMM, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+!     &          PRECOND, iterPREmax)
 
       use calypso_mpi
 !
@@ -181,7 +177,6 @@
 !
       integer(kind=kint ), intent(in) :: N, NP, NL, NU, NPL, NPU, NVECT
       integer(kind=kint ), intent(in) :: PEsmpTOT
-      integer(kind=kint ), intent(in) :: SOLVER_COMM
       integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
       character(len=kchara), intent(in) :: PRECOND
       real   (kind=kreal), intent(in) :: EPS
@@ -284,7 +279,7 @@
 
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -306,7 +301,7 @@
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (RHO0, RHO, 1, MPI_DOUBLE_PRECISION,         &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !C===
@@ -408,7 +403,7 @@
 
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (C20, C2, 1, MPI_DOUBLE_PRECISION,           &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
         ALPHA= RHO / C2
@@ -515,7 +510,7 @@
 
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (C0, CG, 2, MPI_DOUBLE_PRECISION, MPI_SUM,   &
-     &                    SOLVER_COMM, ierr)
+     &                    CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -533,7 +528,7 @@
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,     &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
         RESID= dsqrt(DNRM2/BNRM2)

@@ -29,8 +29,7 @@
      &                  RESID,  ITER, ERROR,                            &
      &                  my_rank, NEIBPETOT, NEIBPE,                     &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
-     &                  STACK_EXPORT, NOD_EXPORT,                       &
-     &                  SOLVER_COMM , NSET)     
+     &                  STACK_EXPORT, NOD_EXPORT, NSET)
 
 ! \beginSUBROUTINE
 !     GPBiCG_N solves the linear system Ax = b using the
@@ -57,7 +56,6 @@
       integer(kind=kint ),                   intent(inout)::  ERROR
       integer(kind=kint ),                   intent(in   )::  my_rank
 
-      integer                              , intent(in)   :: SOLVER_COMM
       integer(kind=kint )                  , intent(in)   :: NSET
 
       real   (kind=kreal), dimension(NB*NP) , intent(inout)::  B
@@ -309,9 +307,9 @@
       enddo
 
       call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       call MPI_allREDUCE (RHO0  , RHO,   1, MPI_DOUBLE_PRECISION,       &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
 
       if (BNRM2.eq.0.d0) BNRM2= 1.d0      
 !C===
@@ -556,7 +554,7 @@
       enddo
 
       call MPI_allREDUCE (RHO10, RHO1, 1, MPI_DOUBLE_PRECISION,         &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
 
       ALPHA= RHO / RHO1
 !C===
@@ -936,7 +934,7 @@
       enddo
 
       call MPI_allREDUCE (C0, CG,  5, MPI_DOUBLE_PRECISION,             &
-     &                    MPI_SUM, SOLVER_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr)
       if (iter.eq.1) then
         EQ(1)= CG(2)/CG(5)
         EQ(2)= 0.d0
@@ -993,9 +991,9 @@
       enddo
 
       call MPI_allREDUCE  (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,      &
-     &                     MPI_SUM, SOLVER_COMM, ierr)
+     &                     MPI_SUM, CALYPSO_COMM, ierr)
       call MPI_allREDUCE  (COEF10, COEF1, 1, MPI_DOUBLE_PRECISION,      &
-     &                     MPI_SUM, SOLVER_COMM, ierr)
+     &                     MPI_SUM, CALYPSO_COMM, ierr)
 
 !C
 !C +--------------------------------------+

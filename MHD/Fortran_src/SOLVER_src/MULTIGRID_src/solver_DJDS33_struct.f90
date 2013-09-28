@@ -8,10 +8,10 @@
 !
 !      subroutine solve33_DJDS_struct(PEsmpTOT, comm_tbl, djds_tbl,     &
 !     &           mat33, NP, B, X, METHOD, PRECOND,ierr, eps, itr,      &
-!     &           itr_res, my_rank, SOLVER_COMM)
+!     &           itr_res, my_rank)
 !      subroutine init_solve33_DJDS_struct(PEsmpTOT, comm_tbl, djds_tbl,&
 !     &           mat33, NP, B, X, METHOD, PRECOND,ierr, eps, itr,      &
-!     &           itr_res, my_rank, SOLVER_COMM)
+!     &           itr_res, my_rank)
 !
 !      subroutine precond_DJDS33_struct(PEsmpTOT, djds_tbl, mat33,      &
 !     &          PRECOND, sigma_diag)
@@ -49,13 +49,12 @@
 !
       subroutine solve33_DJDS_struct(PEsmpTOT, comm_tbl, djds_tbl,      &
      &           mat33, NP, B, X, METHOD, PRECOND,ierr, eps, itr,       &
-     &           itr_res, my_rank, SOLVER_COMM)
+     &           itr_res, my_rank)
 !
       use t_comm_table
       use solver33_DJDS
 !
       integer(kind = kint), intent(in)  :: my_rank, PEsmpTOT
-      integer(kind = kint), intent(in)  :: SOLVER_COMM
       integer(kind = kint), intent(in)  :: itr
       real(kind = kreal), intent(in) :: eps
       type(communication_table), intent(in) :: comm_tbl
@@ -85,7 +84,7 @@
      &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
-     &     SOLVER_COMM, METHOD, PRECOND, itr_res)
+     &     METHOD, PRECOND, itr_res)
 !
       end subroutine solve33_DJDS_struct
 !
@@ -93,13 +92,12 @@
 !
       subroutine init_solve33_DJDS_struct(PEsmpTOT, comm_tbl, djds_tbl, &
      &           mat33, NP, B, X, METHOD, PRECOND,ierr, eps, itr,       &
-     &           itr_res, my_rank, SOLVER_COMM)
+     &           itr_res, my_rank)
 !
       use t_comm_table
       use solver33_DJDS
 !
       integer(kind = kint), intent(in)  :: my_rank, PEsmpTOT
-      integer(kind = kint), intent(in)  :: SOLVER_COMM
       integer(kind = kint), intent(in)  :: itr
       real(kind = kreal), intent(in) :: eps
       type(communication_table), intent(in) :: comm_tbl
@@ -129,7 +127,7 @@
      &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
-     &     SOLVER_COMM, METHOD, PRECOND, itr_res)
+     &     METHOD, PRECOND, itr_res)
 !
       end subroutine init_solve33_DJDS_struct
 !
