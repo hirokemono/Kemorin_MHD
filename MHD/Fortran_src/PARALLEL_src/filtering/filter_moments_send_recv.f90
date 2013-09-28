@@ -174,8 +174,7 @@
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV(numnod, num_neib, id_neib,                  &
      &                      istack_import, item_import,                 &
-     &                      istack_export, item_export,                 &
-     &                      x_vec(1), SOLVER_COMM, my_rank )
+     &                      istack_export, item_export, x_vec(1) )
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -213,8 +212,7 @@
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_3(numnod, num_neib, id_neib,                &
      &                        istack_import, item_import,               &
-     &                        istack_export, item_export,               &
-     &                        x_vec(1), SOLVER_COMM, my_rank )
+     &                        istack_export, item_export, x_vec(1) )
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !

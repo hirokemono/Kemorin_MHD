@@ -118,8 +118,7 @@
 !
           call SOLVER_SEND_RECV                                         &
      &       ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &         STACK_EXPORT, NOD_EXPORT, SCALE, SOLVER_COMM,            &
-     &         my_rank)
+     &         STACK_EXPORT, NOD_EXPORT, SCALE)
 !
           call mat_scaling_crs_ilu(N, NP, NPL, NPU, D, AL, INL, IAL,    &
      &         INU, IAU, AU, SCALE)
@@ -150,7 +149,7 @@
 !C-- INTERFACE data EXCHANGE
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X , SOLVER_COMM,my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
 !C
       call subtruct_crs_matvec_11 (NP, N, NPL, NPU, INL, INU, IAL, IAU, &
      &    D, AL, AU, W(1,R), B, X)
@@ -220,8 +219,7 @@
 
         call SOLVER_SEND_RECV                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,P) , SOLVER_COMM,              &
-     &     my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, W(1,P) )
 
         call cal_crs_matvec_11(NP, N, NPL, NPU, INL, INU, IAL, IAU,     &
      &      D, AL, AU, W(1,Q), W(1,P) )
@@ -270,7 +268,7 @@
 
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X , SOLVER_COMM,my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
 !
       end subroutine        CG
 !

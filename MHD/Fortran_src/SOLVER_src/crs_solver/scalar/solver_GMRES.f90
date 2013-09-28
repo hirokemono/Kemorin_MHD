@@ -138,7 +138,7 @@
 
        call SOLVER_SEND_RECV                                            &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, D, SOLVER_COMM,my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, D)
      
 !C
 !C +-------------------+
@@ -163,14 +163,14 @@
 !C===
         call SOLVER_SEND_RECV                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X, SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
 
         call subtruct_crs_matvec_11 (NP, N, NPL, NPU, INL, INU,         &
      &      IAL, IAU, D, AL, AU, WW(1,AV), B, X)
 
         call SOLVER_SEND_RECV                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,AV), SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, WW(1,AV) )
 
         WW(1:NP,R)= WW(1:NP,AV)
 
@@ -231,14 +231,14 @@
 !C===
           call SOLVER_SEND_RECV                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,V+I-1), SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, WW(1,V+I-1) )
 
           call cal_crs_matvec_11(NP, N, NPL, NPU, INL, INU, IAL, IAU,   &
      &        D, AL, AU, WW(1,W), WW(1,V+I-1))
 !
           call SOLVER_SEND_RECV                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,W), SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, WW(1,W) )
 
 !C
 !C-- incomplete CHOLESKY
@@ -384,7 +384,7 @@
 
         call SOLVER_SEND_RECV                                           &
      &      ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,          &
-     &        STACK_EXPORT, NOD_EXPORT, X, SOLVER_COMM, my_rank)
+     &        STACK_EXPORT, NOD_EXPORT, X)
 
         call subtruct_crs_matvec_11 (NP, N, NPL, NPU, INL, INU,         &
      &      IAL, IAU, D, AL, AU, WW(1,AV), B, X)
@@ -402,7 +402,7 @@
 
         call SOLVER_SEND_RECV                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &    STACK_EXPORT, NOD_EXPORT, WW(1,R), SOLVER_COMM, my_rank)
+     &    STACK_EXPORT, NOD_EXPORT, WW(1,R) )
 
 !C
 !C-- incomplete CHOLESKY
@@ -445,7 +445,7 @@
 !C-- INTERFACE data EXCHANGE
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X, SOLVER_COMM,my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
 
       deallocate (H)
       deallocate (WW)

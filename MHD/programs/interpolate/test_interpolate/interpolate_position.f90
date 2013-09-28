@@ -7,6 +7,7 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_machine_parameter
 !
@@ -74,15 +75,14 @@
      &           num_org_domain, iflag_self_itp_recv, ntot_table_dest,  &
      &           id_org_domain, istack_nod_table_dest,                  &
      &           inod_dest_4_dest, ntot_table_org, x_inter_org(1),      &
-     &           nnod_2nd, xvec_2nd(1), SOLVER_COMM)
+     &           nnod_2nd, xvec_2nd(1), CALYPSO_COMM)
 !
 !
       if (num_neib_2.gt.0) then
         call SOLVER_SEND_RECV_3                                         &
      &                (nnod_2nd, num_neib_2, id_neib_2,                 &
      &                 istack_import_2, item_import_2,                  &
-     &                 istack_export_2, item_export_2,                  &
-     &                 xvec_2nd(1), SOLVER_COMM, my_rank)
+     &                 istack_export_2, item_export_2, xvec_2nd(1) )
       end if
 !
       do inod = 1, nnod_2nd
@@ -123,7 +123,7 @@
      &           num_org_domain, iflag_self_itp_recv, ntot_table_dest,  &
      &           id_org_domain, istack_nod_table_dest,                  &
      &           inod_dest_4_dest, ntot_table_org, inod_gl_dest_4_org,  &
-     &           nnod_2nd, ivec_2nd(1), SOLVER_COMM)
+     &           nnod_2nd, ivec_2nd(1), CALYPSO_COMM)
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'solver_send_recv_i'
@@ -132,7 +132,7 @@
      &                (nnod_2nd, num_neib_2, id_neib_2,                 &
      &                 istack_import_2, item_import_2,                  &
      &                 istack_export_2, item_export_2,                  &
-     &                 ivec_2nd(1), SOLVER_COMM, my_rank)
+     &                 ivec_2nd(1))
       end if
 !
       inod_global_itp(1:nnod_2nd) = ivec_2nd(1:nnod_2nd)

@@ -32,8 +32,6 @@
       use crs_matrix_io
 !
 !
-!     --------------------- 
-!
 !C-- CNTL DATA
 
       call read_control_4_solver_test
@@ -52,6 +50,7 @@
 !
       subroutine analyze
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_iccg_parameter
       use m_crs_matrix
@@ -80,7 +79,7 @@
 
       ENDTIME= MPI_WTIME()
 
-      call MPI_BARRIER  (SOLVER_COMM,ierr)
+      call MPI_BARRIER  (CALYPSO_COMM,ierr)
 
       if (my_rank.eq.0) then
         RTIME= ENDTIME-STARTTIME

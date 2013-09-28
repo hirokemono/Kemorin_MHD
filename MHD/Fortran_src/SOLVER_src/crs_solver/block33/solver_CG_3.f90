@@ -140,7 +140,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, SCALE, SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, SCALE)
 
       do i= 1, N
         ip1= 3*i-2
@@ -298,7 +298,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X, SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
 
 !C
 !C-- BEGIN calculation
@@ -480,7 +480,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,P), SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, WW(1,P) )
 
 !C
         call cal_crs_matvec_33(NP, N, NPL, NPU, INL, INU, IAL, IAU,     &
@@ -556,7 +556,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X, SOLVER_COMM,my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
 
       deallocate (WW)
 

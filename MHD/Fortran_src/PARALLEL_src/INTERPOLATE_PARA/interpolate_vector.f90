@@ -84,8 +84,7 @@
         call SOLVER_SEND_RECV_3                                         &
      &                (nnod_2nd, num_neib_2, id_neib_2,                 &
      &                 istack_import_2, item_import_2,                  &
-     &                 istack_export_2, item_export_2,                  &
-     &                 xvec_2nd(1), SOLVER_COMM, my_rank)
+     &                 istack_export_2, item_export_2, xvec_2nd(1) )
       end if
 !
 !$omp parallel do

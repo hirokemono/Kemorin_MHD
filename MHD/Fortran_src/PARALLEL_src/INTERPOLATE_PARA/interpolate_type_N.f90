@@ -89,8 +89,7 @@
         call SOLVER_SEND_RECV_N(NP_dest, NB,                            &
      &      comm_dest%num_neib, comm_dest%id_neib,                      &
      &      comm_dest%istack_import, comm_dest%item_import,             &
-     &      comm_dest%istack_export, comm_dest%item_export,             &
-     &      X_dest(1), SOLVER_COMM, my_rank)
+     &      comm_dest%istack_export, comm_dest%item_export, X_dest(1))
       end if
 !
       end subroutine s_interpolate_type_N

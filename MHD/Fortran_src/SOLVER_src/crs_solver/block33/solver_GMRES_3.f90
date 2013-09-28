@@ -150,7 +150,7 @@
 
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,R), SOLVER_COMM, my_rank)
+     &       STACK_EXPORT, NOD_EXPORT, WW(1,R))
 
         do ik= N+1, NP
           D(1,1,ik)= WW(3*ik-2,R)
@@ -247,7 +247,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X , SOLVER_COMM,my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
 
 !C
 !C-- BEGIN calculation
@@ -287,7 +287,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT,NOD_EXPORT, WW(1,AV), SOLVER_COMM, my_rank)
+     &     STACK_EXPORT,NOD_EXPORT, WW(1,AV))
 
       do ik= 1, NP
         WW(3*ik-2,R)= WW(3*ik-2,AV)
@@ -453,7 +453,7 @@
 !C===
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &    STACK_EXPORT, NOD_EXPORT, WW(1,V+I-1), SOLVER_COMM, my_rank)
+     &    STACK_EXPORT, NOD_EXPORT, WW(1,V+I-1))
 
       do j= 1, N
            X1= WW(3*j-2,V+I-1)
@@ -490,7 +490,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,W), SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, WW(1,W))
 
 !C
 !C-- incomplete CHOLESKY
@@ -745,7 +745,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &    STACK_EXPORT, NOD_EXPORT, X, SOLVER_COMM, my_rank)
+     &    STACK_EXPORT, NOD_EXPORT, X)
 
       do j= 1, N
            X1= X(3*j-2)
@@ -788,7 +788,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &    STACK_EXPORT, NOD_EXPORT, WW(1,R), SOLVER_COMM, my_rank)
+     &    STACK_EXPORT, NOD_EXPORT, WW(1,R))
 
 !C
 !C-- incomplete CHOLESKY
@@ -936,7 +936,7 @@
 !C-- INTERFACE data EXCHANGE
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X , SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
 
       deallocate (H)
       deallocate (WW)

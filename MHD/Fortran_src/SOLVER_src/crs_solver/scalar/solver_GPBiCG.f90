@@ -124,7 +124,7 @@
 
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, D, SOLVER_COMM,my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, D)
 !C
 !C +-------------------+
 !C | ILU decomposition |
@@ -181,7 +181,7 @@
 
         call SOLVER_SEND_RECV                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,R) , SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, W(1,R) )
 
 !C
 !C-- incomplete CHOLESKY
@@ -220,7 +220,7 @@
 
         call SOLVER_SEND_RECV                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,P) , SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, W(1,P) )
 
         call cal_crs_matvec_11(NP, N, NPL, NPU, INL, INU, IAL, IAU,     &
      &      D, AL, AU, W(1,PT), W(1,P) )
@@ -258,8 +258,7 @@
 !C
         call SOLVER_SEND_RECVx3                                         &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,PT), W(1,T), W(1,T0),          &
-     &     SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, W(1,PT), W(1,T), W(1,T0) )
 
         W(1:NP,TT) = W(1:NP,T)
         W(1:NP,W2) = W(1:NP,PT)
@@ -283,7 +282,7 @@
 !C-- calc. [A]{t_tld}
         call SOLVER_SEND_RECV                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,TT), SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, W(1,TT) )
 
         call cal_crs_matvec_11(NP, N, NPL, NPU, INL, INU, IAL, IAU,     &
      &      D, AL, AU, W(1,WK), W(1,TT) )
@@ -364,7 +363,7 @@
 !C-- INTERFACE data EXCHANGE
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X, SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
 
       deallocate (W)
 

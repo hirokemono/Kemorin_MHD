@@ -27,7 +27,7 @@
       integer(kind = kint), parameter :: isix = 6
 !
       call init_work_4_SR_fl( neigh_pe_num_fl, neigh_pe_data_fl,        &
-     &       istack_import_fl, SOLVER_COMM, my_rank )
+     &       istack_import_fl)
       call init_window_4_SR_fl(isix, neigh_pe_num_fl, istack_import_fl)
 !
       end subroutine init_RMA_SendRecv_fl

@@ -39,8 +39,7 @@
         call SOLVER_SEND_RECV_N                                         &
      &      (NP, NB, comm_tbl%num_neib, comm_tbl%id_neib,               &
      &      comm_tbl%istack_import, comm_tbl%item_import,               &
-     &      comm_tbl%istack_export, comm_tbl%item_export,               &
-     &      X(1), SOLVER_COMM, my_rank)
+     &      comm_tbl%istack_export, comm_tbl%item_export, X(1))
       end if
 !
       end subroutine SOLVER_SEND_RECV_N_type

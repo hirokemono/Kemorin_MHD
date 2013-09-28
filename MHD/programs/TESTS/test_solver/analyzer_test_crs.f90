@@ -51,6 +51,7 @@
 !
       subroutine analyze
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_crs_matrix
       use crs_matrix_io
@@ -75,7 +76,7 @@
 
       ENDTIME= MPI_WTIME()
 
-      call MPI_BARRIER  (SOLVER_COMM,ierr)
+      call MPI_BARRIER  (CALYPSO_COMM,ierr)
 
       if (my_rank.eq.0) then
         RTIME= ENDTIME-STARTTIME

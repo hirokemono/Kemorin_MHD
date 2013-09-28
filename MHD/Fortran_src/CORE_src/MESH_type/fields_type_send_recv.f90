@@ -88,7 +88,7 @@
      &    mesh%nod_comm%num_neib, mesh%nod_comm%id_neib,                &
      &    mesh%nod_comm%istack_import, mesh%nod_comm%item_import,       &
      &    mesh%nod_comm%istack_export, mesh%nod_comm%item_export,       &
-     &    x_vec(1), SOLVER_COMM, my_rank)
+     &    x_vec(1) )
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -126,7 +126,7 @@
      &    mesh%nod_comm%num_neib, mesh%nod_comm%id_neib,                &
      &    mesh%nod_comm%istack_import, mesh%nod_comm%item_import,       &
      &    mesh%nod_comm%istack_export, mesh%nod_comm%item_export,       &
-     &    x_vec(1), SOLVER_COMM, my_rank)
+     &    x_vec(1) )
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -169,7 +169,7 @@
      &    mesh%nod_comm%num_neib, mesh%nod_comm%id_neib,                &
      &    mesh%nod_comm%istack_import, mesh%nod_comm%item_import,       &
      &    mesh%nod_comm%istack_export, mesh%nod_comm%item_export,       &
-     &    x_vec(1), SOLVER_COMM, my_rank)
+     &    x_vec(1))
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !

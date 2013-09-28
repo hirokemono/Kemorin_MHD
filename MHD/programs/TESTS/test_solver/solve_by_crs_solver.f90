@@ -12,6 +12,7 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_nod_comm_table
       use m_geometry_parameter
@@ -34,7 +35,7 @@
 !
       use solver
 !
-      call MPI_BARRIER  (SOLVER_COMM,ierr)
+      call MPI_BARRIER  (CALYPSO_COMM,ierr)
       STARTTIME= MPI_WTIME()
  
       PRESET_crs= 2
@@ -46,7 +47,7 @@
      &                   X_crs, PRESET_crs, num_neib,                   &
      &                   id_neib, istack_import, item_import,           &
      &                   istack_export, item_export,                    &
-     &                   my_rank, SOLVER_COMM, ITERactual, errno,       &
+     &                   my_rank, CALYPSO_COMM, ITERactual, errno,      &
      &                   METHOD_crs, PRECOND_crs,                       &
      &                   INTARRAY_crs, REALARRAY_crs         )
 !
@@ -58,7 +59,7 @@
 !
       use solver33
 !
-      call MPI_BARRIER  (SOLVER_COMM,ierr)
+      call MPI_BARRIER  (CALYPSO_COMM,ierr)
       STARTTIME= MPI_WTIME()
  
       PRESET_crs= 2
@@ -70,7 +71,7 @@
      &                   X_crs, PRESET_crs, num_neib,                   &
      &                   id_neib, istack_import, item_import,           &
      &                   istack_export, item_export,                    &
-     &                   my_rank, SOLVER_COMM, ITERactual, errno,       &
+     &                   my_rank, CALYPSO_COMM, ITERactual, errno,      &
      &                   METHOD_crs, PRECOND_crs,                       &
      &                   INTARRAY_crs, REALARRAY_crs         )
 !
@@ -83,7 +84,7 @@
       use solverNN
 !
 !
-      call MPI_BARRIER  (SOLVER_COMM,ierr)
+      call MPI_BARRIER  (CALYPSO_COMM,ierr)
       STARTTIME= MPI_WTIME()
  
       PRESET_crs= 2
@@ -97,7 +98,7 @@
      &                   num_neib, id_neib,                             &
      &                   istack_import, item_import,                    &
      &                   istack_export, item_export,                    &
-     &                   my_rank, SOLVER_COMM, ITERactual, ierr,        &
+     &                   my_rank, CALYPSO_COMM, ITERactual, ierr,       &
      &                   METHOD_crs, PRECOND_crs,                       &
      &                   INTARRAY_crs, REALARRAY_crs         )
 !

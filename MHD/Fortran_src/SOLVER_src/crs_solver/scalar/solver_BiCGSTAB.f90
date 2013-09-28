@@ -119,7 +119,7 @@
 
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, D, SOLVER_COMM,my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, D)
 
       if (NSET.ge.1) then
 !C
@@ -190,7 +190,7 @@
 
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,P) , SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, W(1,P) )
 
 !C
 !C-- incomplete CHOLESKY
@@ -219,7 +219,7 @@
 
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,PT) , SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, W(1,PT) )
 
       call cal_crs_matvec_11(NP, N, NPL, NPU, INL, INU, IAL, IAU,       &
      &    D, AL, AU, W(1,V), W(1,PT))
@@ -247,7 +247,7 @@
 
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,S) , SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, W(1,S) )
 
 !C
 !C-- incomplete CHOLESKY
@@ -276,7 +276,7 @@
 
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,ST) , SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, W(1,ST) )
 
       call cal_crs_matvec_11(NP, N, NPL, NPU, INL, INU, IAL, IAU,       &
      &    D, AL, AU, W(1,T), W(1,ST))
@@ -322,7 +322,7 @@
 !C-- INTERFACE data EXCHANGE
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X, SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
 !
       end subroutine        BiCGSTAB
 !

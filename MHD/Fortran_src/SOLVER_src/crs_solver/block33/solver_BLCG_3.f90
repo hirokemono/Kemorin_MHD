@@ -152,13 +152,13 @@
         enddo
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,1), SOLVER_COMM, my_rank)
+     &       STACK_EXPORT, NOD_EXPORT, WW(1,1))
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,2), SOLVER_COMM, my_rank)
+     &       STACK_EXPORT, NOD_EXPORT, WW(1,2))
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,3), SOLVER_COMM, my_rank)
+     &       STACK_EXPORT, NOD_EXPORT, WW(1,3))
         do i= N+1, NP
           D(1,1,i)= WW(3*i-2,1)
           D(2,1,i)= WW(3*i-1,1)
@@ -182,7 +182,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, SCALE, SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, SCALE)
 
       do i= 1, NP
         ip1= 3*i-2
@@ -285,7 +285,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X , SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
 
       call subtruct_crs_matvec_33(NP, N, NPL, NPU, INL, INU, IAL, IAU,  &
      &    D, AL, AU,  WW(1,R), B, X)
@@ -399,7 +399,7 @@
 
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,ZP), SOLVER_COMM, my_rank)
+     &       STACK_EXPORT, NOD_EXPORT, WW(1,ZP))
 
         call a_SCHWARTZ_33_BSSOR(iterPRE, iterPREmax, R, ZP, Z,         &
      &      SIGMA_DIAG, N, NP, NPL, NPU, D, AL, INL, IAL,               &
@@ -497,7 +497,7 @@
 
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,ZP), SOLVER_COMM, my_rank)
+     &       STACK_EXPORT, NOD_EXPORT, WW(1,ZP))
 
         call a_SCHWARTZ_33_BSSOR(iterPRE, iterPREmax, R, ZP, Z,         &
      &      SIGMA_DIAG, N, NP, NPL, NPU, D, AL, INL, IAL,               &
@@ -556,7 +556,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,P) , SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, WW(1,P))
 !
         call cal_crs_matvec_33(NP, N, NPL, NPU, INL, INU, IAL, IAU,     &
      &      D, AL, AU,  WW(1,Q), WW(1,P) )
@@ -630,7 +630,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X, SOLVER_COMM,my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
 
       deallocate (WW)
 !

@@ -51,7 +51,7 @@
      &    (nnod_filtering, num_neib_filter, id_neib_filter,             &
      &     istack_import_filter, item_import_filter,                    &
      &     istack_export_filter, item_export_filter,                    &
-     &                      x_vec_filtering(1), SOLVER_COMM, my_rank )
+     &     x_vec_filtering(1) )
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -95,7 +95,7 @@
      &    (nnod_filtering, num_neib_filter, id_neib_filter,             &
      &     istack_import_filter, item_import_filter,                    &
      &     istack_export_filter, item_export_filter,                    &
-     &     x_vec_filtering(1), SOLVER_COMM, my_rank )
+     &     x_vec_filtering(1) )
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -139,7 +139,7 @@
      &    (nnod_filtering, num_neib_filter, id_neib_filter,             &
      &     istack_import_filter, item_import_filter,                    &
      &     istack_export_filter, item_export_filter,                    &
-     &     x_vec_filtering(1), SOLVER_COMM, my_rank )
+     &     x_vec_filtering(1) )
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !

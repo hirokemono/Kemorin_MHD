@@ -96,7 +96,7 @@
       call solver_send_recv_i(mesh%node%numnod, mesh%nod_comm%num_neib, &
      &    mesh%nod_comm%id_neib, mesh%nod_comm%istack_import,           &
      &    mesh%nod_comm%item_import, mesh%nod_comm%istack_export,       &
-     &    mesh%nod_comm%item_export, iflag_nod, SOLVER_COMM, my_rank)
+     &    mesh%nod_comm%item_export, iflag_nod)
 !
 !
       call mark_reduced_neib_domain(mesh%nod_comm%num_neib,             &

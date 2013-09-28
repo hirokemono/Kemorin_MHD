@@ -42,7 +42,7 @@
 !
       call solver_send_recv_i(numnod, num_neib, id_neib,                &
      &    istack_import, item_import, istack_export, item_export,       &
-     &    iflag_nod, SOLVER_COMM, my_rank)
+     &    iflag_nod)
 !
 !
       call mark_reduced_neib_domain(num_neib,                           &

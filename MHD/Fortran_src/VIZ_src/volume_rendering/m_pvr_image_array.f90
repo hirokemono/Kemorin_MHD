@@ -140,11 +140,11 @@
       num = 4*num_pixel_xy
       call MPI_Gather(rgba_lc(1,1), num, MPI_DOUBLE_PRECISION,          &
      &                rgba_recv(1,1), num, MPI_DOUBLE_PRECISION,        &
-     &                izero, SOLVER_COMM, ierr)
+     &                izero, CALYPSO_COMM, ierr)
 !
       call MPI_Gather(ave_depth_lc, ione, MPI_DOUBLE_PRECISION,         &
      &                ave_depth_gl(1), ione, MPI_DOUBLE_PRECISION,      &
-     &                izero, SOLVER_COMM, ierr)
+     &                izero, CALYPSO_COMM, ierr)
 !
       if(my_rank .eq. 0) then
         do ip = 1, nprocs

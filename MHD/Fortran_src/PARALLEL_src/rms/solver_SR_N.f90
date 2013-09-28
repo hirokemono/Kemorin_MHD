@@ -15,13 +15,12 @@
       implicit none
 !
 !      subroutine  SOLVER_SEND_RECV_N                                   &
-!     &            (NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,&
-!     &                                        STACK_EXPORT, NOD_EXPORT,&
-!     &             X, SOLVER_COMM,my_rank)
+!     &          (NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,  &
+!     &                                      STACK_EXPORT, NOD_EXPORT, X)
 !      subroutine  solver_send_recv_Nx3                                 &
 !     &            (NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,&
 !     &                                        STACK_EXPORT, NOD_EXPORT,&
-!     &             X1, X2, X3, SOLVER_COMM,my_rank)
+!     &             X1, X2, X3)
 !
 !-----------------------------------------------------------------------
 !
@@ -30,12 +29,11 @@
 !-----------------------------------------------------------------------
 !
 !C
-!C*** SOLVER_SEND_RECV
+!C*** SOLVER_SEND_RECV_N
 !C
       subroutine  SOLVER_SEND_RECV_N                                    &
-     &            (NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT, &
-     &                                        STACK_EXPORT, NOD_EXPORT, &
-     &             X, SOLVER_COMM,my_rank)
+     &         (NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
+     &                                     STACK_EXPORT, NOD_EXPORT, X)
 !
 ! ......................................................................
 
@@ -56,10 +54,6 @@
      &        :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT))
 ! \beginARG       exported node                            (i-th dof)
       real(kind=kreal), intent(inout):: X(NB*NP)
-! \beginARG       communicated result vector
-      integer, intent(in)   ::SOLVER_COMM
-! \beginARG       communicator for mpi
-      integer, intent(in)   :: my_rank
 
       integer(kind = kint) :: neib, istart, inum, ierr, k, ii, ix, nd
       integer(kind = kint) :: import_NB
@@ -67,7 +61,7 @@
 !C    Check array size
 !C
       if (iflag_init .eq. 0) call init_work_4_SR                        &
-     &       ( NEIBPETOT, NEIBPE, STACK_IMPORT, SOLVER_COMM, my_rank )
+     &       ( NEIBPETOT, NEIBPE, STACK_IMPORT )
       if (iflag_win .lt. (NB*STACK_IMPORT(NEIBPETOT)) ) then
         call delete_window_4_SR
         call init_window_4_SR(NB, NEIBPETOT, STACK_IMPORT)
@@ -115,13 +109,11 @@
       end subroutine solver_send_recv_N
 !
 !-----------------------------------------------------------------------
-!C
-!C*** SOLVER_SEND_RECV
-!C
+!
       subroutine  solver_send_recv_Nx3                                  &
      &            (NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT, &
      &                                        STACK_EXPORT, NOD_EXPORT, &
-     &             X1, X2, X3, SOLVER_COMM,my_rank)
+     &             X1, X2, X3)
 
 ! ......................................................................
 
@@ -139,9 +131,6 @@
       real   (kind=kreal), intent(inout):: X2(NB*NP)
       real   (kind=kreal), intent(inout):: X3(NB*NP)
 ! \beginARG       communicated result vector
-      integer(kind=kint ), intent(in)   ::SOLVER_COMM
-! \beginARG       communicator for mpi
-      integer(kind=kint ), intent(in)   :: my_rank
 
       integer (kind = kint) :: neib, istart, inum, ierr, k, ii, ix, nd
       integer(kind = kint) :: import_NB, NB3
@@ -151,7 +140,7 @@
       NB3 = 3*NB
 !
       if (iflag_init .eq. 0) call init_work_4_SR                        &
-     &       ( NEIBPETOT, NEIBPE, STACK_IMPORT, SOLVER_COMM, my_rank )
+     &       ( NEIBPETOT, NEIBPE, STACK_IMPORT )
       if (iflag_win .lt. (NB3*STACK_IMPORT(NEIBPETOT)) ) then
         call delete_window_4_SR
         call init_window_4_SR(NB3, NEIBPETOT, STACK_IMPORT)

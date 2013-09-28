@@ -7,12 +7,11 @@
 !
 !      subroutine  SOLVER_SEND_RECV_3                                   &
 !     &            (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
-!     &                                    STACK_EXPORT, NOD_EXPORT,    &
-!     &             X, SOLVER_COMM,my_rank)
+!     &                                    STACK_EXPORT, NOD_EXPORT, X)
 !      subroutine  solver_send_recv_3x3                                 &
 !     &            (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
 !     &                                    STACK_EXPORT, NOD_EXPORT,    &
-!     &             X1, X2, X3, SOLVER_COMM,my_rank)
+!     &             X1, X2, X3)
 !
       module solver_SR_3
 !
@@ -31,12 +30,11 @@
 !-----------------------------------------------------------------------
 !
 !C
-!C*** SOLVER_SEND_RECV
+!C*** SOLVER_SEND_RECV_3
 !C
       subroutine  SOLVER_SEND_RECV_3                                    &
      &            (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,     &
-     &                                    STACK_EXPORT, NOD_EXPORT,     &
-     &             X, SOLVER_COMM,my_rank)
+     &                                    STACK_EXPORT, NOD_EXPORT, X)
 !
 ! ......................................................................
 
@@ -58,9 +56,6 @@
 ! \beginARG       exported node                            (i-th dof)
       real   (kind=kreal), intent(inout):: X(ithree*NP)
 ! \beginARG       communicated result vector
-      integer, intent(in)   ::SOLVER_COMM
-! \beginARG       communicator for mpi
-      integer, intent(in)   :: my_rank
 
       integer(kind = kint) :: neib, istart, inum, ierr, k, ii, ix
       integer(kind = kint) :: import_NB
@@ -68,7 +63,7 @@
 !C    Check array size
 !C
       if (iflag_init .eq. 0) call init_work_4_SR                        &
-     &       ( NEIBPETOT, NEIBPE, STACK_IMPORT, SOLVER_COMM, my_rank )
+     &       ( NEIBPETOT, NEIBPE, STACK_IMPORT)
       if (iflag_win .lt. (ithree*STACK_IMPORT(NEIBPETOT)) ) then
         call delete_window_4_SR
         call init_window_4_SR(ithree, NEIBPETOT, STACK_IMPORT)
@@ -116,13 +111,11 @@
       end subroutine SOLVER_SEND_RECV_3
 !
 !-----------------------------------------------------------------------
-!C
-!C*** SOLVER_SEND_RECV
-!C
+!
       subroutine  solver_send_recv_3x3                                  &
      &            (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,     &
      &                                    STACK_EXPORT, NOD_EXPORT,     &
-     &             X1, X2, X3, SOLVER_COMM,my_rank)
+     &             X1, X2, X3)
 
 ! ......................................................................
 
@@ -140,9 +133,6 @@
       real   (kind=kreal), intent(inout):: X2(ithree*NP)
       real   (kind=kreal), intent(inout):: X3(ithree*NP)
 ! \beginARG       communicated result vector
-      integer(kind=kint ), intent(in)   ::SOLVER_COMM
-! \beginARG       communicator for mpi
-      integer(kind=kint ), intent(in)   :: my_rank
 
       integer (kind = kint) :: neib, istart, inum, ierr, k, ii, ix
       integer(kind = kint) :: import_NB
@@ -150,7 +140,7 @@
 !C    Check array size
 !C
       if (iflag_init .eq. 0) call init_work_4_SR                        &
-     &       ( NEIBPETOT, NEIBPE, STACK_IMPORT, SOLVER_COMM, my_rank )
+     &       ( NEIBPETOT, NEIBPE, STACK_IMPORT )
       if (iflag_win .lt. (inine*STACK_IMPORT(NEIBPETOT)) ) then
         call delete_window_4_SR
         call init_window_4_SR(inine, NEIBPETOT, STACK_IMPORT)

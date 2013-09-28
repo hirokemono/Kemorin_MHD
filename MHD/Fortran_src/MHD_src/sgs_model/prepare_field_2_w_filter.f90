@@ -43,8 +43,7 @@
       call SOLVER_SEND_RECV                                             &
      &    (nnod_w_filtering, num_neib_w_fil, id_neib_w_fil,             &
      &     istack_import_w_fil, item_import_w_fil,                      &
-     &     istack_export_w_fil, item_export_w_fil,                      &
-     &     x_vec_w_fil(1), SOLVER_COMM, my_rank )
+     &     istack_export_w_fil, item_export_w_fil, x_vec_w_fil(1) )
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -74,8 +73,7 @@
       call SOLVER_SEND_RECV_3                                           &
      &    (nnod_w_filtering, num_neib_w_fil, id_neib_w_fil,             &
      &     istack_import_w_fil, item_import_w_fil,                      &
-     &     istack_export_w_fil, item_export_w_fil,                      &
-     &     x_vec_w_fil(1), SOLVER_COMM, my_rank )
+     &     istack_export_w_fil, item_export_w_fil, x_vec_w_fil(1))
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -108,8 +106,7 @@
       call SOLVER_SEND_RECV_6                                           &
      &    (nnod_w_filtering, num_neib_w_fil, id_neib_w_fil,             &
      &     istack_import_w_fil, item_import_w_fil,                      &
-     &     istack_export_w_fil, item_export_w_fil,                      &
-     &     x_vec_w_fil(1), SOLVER_COMM, my_rank )
+     &     istack_export_w_fil, item_export_w_fil, x_vec_w_fil(1))
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !

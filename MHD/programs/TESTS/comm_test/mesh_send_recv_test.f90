@@ -60,13 +60,11 @@
 !
       call solver_send_recv_i(numnod, num_neib, id_neib,                &
      &                        istack_import, item_import,               &
-     &                        istack_export, item_export,               &
-     &                        ix_vec, SOLVER_COMM, my_rank)
+     &                        istack_export, item_export, ix_vec)
 !
       call solver_send_recv_3(numnod, num_neib, id_neib,                &
      &                        istack_import, item_import,               &
-     &                        istack_export, item_export,               &
-     &                        x_vec, SOLVER_COMM, my_rank)
+     &                        istack_export, item_export, x_vec)
 !
       end subroutine node_send_recv_test
 !
@@ -96,12 +94,12 @@
       call solver_send_recv_i(numele, num_neib_ele, id_neib_ele,        &
      &                        istack_import_ele, item_import_ele,       &
      &                        istack_export_ele, item_export_ele,       &
-     &                        iele_gl_comm, SOLVER_COMM, my_rank)
+     &                        iele_gl_comm)
 !
       call solver_send_recv_3(numele, num_neib_ele, id_neib_ele,        &
      &                        istack_import_ele, item_import_ele,       &
      &                        istack_export_ele, item_export_ele,       &
-     &                        x_ele_comm, SOLVER_COMM, my_rank)
+     &                        x_ele_comm)
 !
       end subroutine ele_send_recv_test
 !
@@ -132,12 +130,12 @@
       call solver_send_recv_i(numsurf, num_neib_surf, id_neib_surf,     &
      &                        istack_import_surf, item_import_surf,     &
      &                        istack_export_surf, item_export_surf,     &
-     &                        isurf_gl_comm, SOLVER_COMM, my_rank)
+     &                        isurf_gl_comm)
 !
       call solver_send_recv_3(numsurf, num_neib_surf, id_neib_surf,     &
      &                        istack_import_surf, item_import_surf,     &
      &                        istack_export_surf, item_export_surf,     &
-     &                        x_surf_comm, SOLVER_COMM, my_rank)
+     &                        x_surf_comm)
 !
       end subroutine surf_send_recv_test
 !
@@ -168,12 +166,12 @@
       call solver_send_recv_i(numedge, num_neib_edge, id_neib_edge,     &
      &                        istack_import_edge, item_import_edge,     &
      &                        istack_export_edge, item_export_edge,     &
-     &                        iedge_gl_comm, SOLVER_COMM, my_rank)
+     &                        iedge_gl_comm)
 !
       call solver_send_recv_3(numedge, num_neib_edge, id_neib_edge,     &
      &                        istack_import_edge, item_import_edge,     &
      &                        istack_export_edge, item_export_edge,     &
-     &                        x_edge_comm, SOLVER_COMM, my_rank)
+     &                        x_edge_comm)
 !
       end subroutine edge_send_recv_test
 !

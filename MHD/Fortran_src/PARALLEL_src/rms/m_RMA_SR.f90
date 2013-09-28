@@ -5,8 +5,7 @@
 !
 !      Written by H. Matsui on May, 2007
 !
-!      subroutine init_work_4_SR                                        &
-!     &       ( NEIBPETOT, NEIBPE, STACK_IMPORT, SOLVER_COMM, my_rank )
+!      subroutine init_work_4_SR( NEIBPETOT, NEIBPE, STACK_IMPORT)
 !      subroutine init_window_4_SR(NB, NEIBPETOT, STACK_IMPORT)
 !      subroutine init_window_4_SR_int(NB, NEIBPETOT, STACK_IMPORT)
 !
@@ -62,8 +61,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine init_work_4_SR                                        &
-     &       ( NEIBPETOT, NEIBPE, STACK_IMPORT, SOLVER_COMM, my_rank )
+       subroutine init_work_4_SR( NEIBPETOT, NEIBPE, STACK_IMPORT )
 !
       integer(kind=kint ), intent(in) ::  NEIBPETOT
 !        total neighboring pe count
@@ -71,9 +69,6 @@
 !        neighboring pe id                        (i-th pe)
       integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
 !        imported node count for each neighbor pe (i-th pe)
-      integer(kind=kint ), intent(in)   ::SOLVER_COMM
-!        communicator for mpi
-      integer(kind=kint ), intent(in)   :: my_rank
 !
 !
       integer, allocatable :: tmp_stack(:)
@@ -96,14 +91,14 @@
 !
       do neib= 1, NEIBPETOT
         call MPI_ISEND (STACK_IMPORT(neib-1), 1, MPI_INTEGER,           &
-     &                 NEIBPE(neib), 0, SOLVER_COMM, req1(neib), ierr)
+     &                 NEIBPE(neib), 0, CALYPSO_COMM, req1(neib), ierr)
       enddo
 !C
 !C-- RECEIVE
 !
       do neib= 1, NEIBPETOT
        call MPI_IRECV (tmp_stack(neib), 1, MPI_INTEGER,                 &
-     &                 NEIBPE(neib), 0, SOLVER_COMM, req2(neib), ierr)
+     &                 NEIBPE(neib), 0, CALYPSO_COMM, req2(neib), ierr)
       enddo
 
       call MPI_WAITALL (NEIBPETOT, req2, sta2, ierr)
@@ -113,7 +108,7 @@
        import_a(neib) = tmp_stack(neib)
       enddo
 !
-!        call MPI_COMM_GROUP(SOLVER_COMM, group, ierr) 
+!        call MPI_COMM_GROUP(CALYPSO_COMM, group, ierr)
 !        call MPI_GROUP_INCL(group, NEIBPETOT, NEIBPE, nbr_group, ierr)
 !        call MPI_GROUP_free(group, ierr)
 !
@@ -139,7 +134,7 @@
       size_window = NB*STACK_IMPORT(NEIBPETOT) * kreal
 !
       call MPI_WIN_CREATE(WRecieve, size_window, kreal,                 &
-     &    MPI_INFO_NULL, SOLVER_COMM, win, ierr)
+     &    MPI_INFO_NULL, CALYPSO_COMM, win, ierr)
 !
       iflag_win = NB*STACK_IMPORT(NEIBPETOT)
 !
@@ -160,7 +155,7 @@
       size_window = NB*STACK_IMPORT(NEIBPETOT) * kint
 !
       call MPI_WIN_CREATE(WRecieve, size_window, kint,                  &
-     &    MPI_INFO_NULL, SOLVER_COMM, iwin, ierr)
+     &    MPI_INFO_NULL, CALYPSO_COMM, iwin, ierr)
 !
       iflag_iwin = NB*STACK_IMPORT(NEIBPETOT)
 !

@@ -232,7 +232,7 @@
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X , SOLVER_COMM,my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -275,7 +275,7 @@
      &            AL, AU, ALU_L, X, B)
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X , SOLVER_COMM,my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
 !
          call subtruct_matvec_11                                        &
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,            &
@@ -320,7 +320,7 @@
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X , SOLVER_COMM,my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 

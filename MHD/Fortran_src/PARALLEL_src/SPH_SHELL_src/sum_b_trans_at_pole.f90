@@ -60,6 +60,7 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_constants
       use m_machine_parameter
       use m_spheric_parameter
@@ -100,7 +101,7 @@
       if(i_debug .eq. iflag_full_msg) write(*,*) 'iflag_shell_local',   &
      &     my_rank, iflag_shell_local, internal_node, nnod_rtp
       call MPI_allreduce(iflag_shell_local, iflag_shell_mode, ione,     &
-     &    MPI_INTEGER, MPI_MAX, SOLVER_COMM, ierr)
+     &    MPI_INTEGER, MPI_MAX, CALYPSO_COMM, ierr)
       if(i_debug .eq. iflag_full_msg) write(*,*) 'iflag_shell_mode',    &
      &     my_rank, iflag_shell_mode
 !
@@ -126,9 +127,9 @@
 !
       ncomp = nb*nidx_rj(1)
       call MPI_allreduce(v_np_local, v_n_pole, ncomp,                   &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    MPI_DOUBLE_PRECISION, MPI_SUM, CALYPSO_COMM, ierr)
       call MPI_allreduce(v_sp_local, v_s_pole, ncomp,                   &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    MPI_DOUBLE_PRECISION, MPI_SUM, CALYPSO_COMM, ierr)
 !
       end subroutine sum_b_trans_pole_scalar
 !
@@ -146,9 +147,9 @@
 !
       ncomp = n_vector*nb*nidx_rj(1)
       call MPI_allreduce(v_np_local, v_n_pole, ncomp,                   &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    MPI_DOUBLE_PRECISION, MPI_SUM, CALYPSO_COMM, ierr)
       call MPI_allreduce(v_sp_local, v_s_pole, ncomp,                   &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    MPI_DOUBLE_PRECISION, MPI_SUM, CALYPSO_COMM, ierr)
 !
       end subroutine sum_b_trans_pole_vect
 !
@@ -163,7 +164,7 @@
       v_center =   zero
 !
       call MPI_allreduce(v_ct_local, v_center, nb,                      &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    MPI_DOUBLE_PRECISION, MPI_SUM, CALYPSO_COMM, ierr)
 !
       end subroutine sum_b_trans_center_scalar
 !
@@ -180,7 +181,7 @@
 !
       ncomp = n_vector*nb
       call MPI_allreduce(v_ct_local, v_center, ncomp,                   &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    MPI_DOUBLE_PRECISION, MPI_SUM, CALYPSO_COMM, ierr)
 !
       end subroutine sum_b_trans_center_vect
 !

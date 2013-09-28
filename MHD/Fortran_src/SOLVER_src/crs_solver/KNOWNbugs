@@ -40,15 +40,13 @@ us via e-mail at 'geofem-comment@tokyo.rist.or.jp'.
     -existing version:
           call SOLVER_SEND_RECV                                         &
      &       ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &         STACK_EXPORT, NOD_EXPORT, WS, WR, SCALE, SOLVER_COMM,    &
-     &         my_rank)
+     &         STACK_EXPORT, NOD_EXPORT, WS, WR, SCALE)
 
     -new version:
           call SOLVER_SEND_RECV                                         &
      &       ( NP, NN, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,     &
                    --
-     &         STACK_EXPORT, NOD_EXPORT, WS, WR, SCALE, SOLVER_COMM,    &
-     &         my_rank)
+     &         STACK_EXPORT, NOD_EXPORT, WS, WR, SCALE)
 
 (4) substitute file 'solver_SR.f90' with the following file and re-compile.
 
@@ -59,7 +57,7 @@ us via e-mail at 'geofem-comment@tokyo.rist.or.jp'.
      &                ( N, NN,                                          &
      &                     NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT, &
      &                                        STACK_EXPORT, NOD_EXPORT, &
-     &                  WS, WR, X, SOLVER_COMM,my_rank)
+     &                  WS, WR, X)
 
       implicit REAL*8 (A-H,O-Z)
       include  'mpif.h'
@@ -75,8 +73,6 @@ us via e-mail at 'geofem-comment@tokyo.rist.or.jp'.
       real   (kind=kreal), dimension(NN) , intent(inout):: WS
       real   (kind=kreal), dimension(NN) , intent(inout):: WR
       real   (kind=kreal), dimension(N)  , intent(inout):: X
-      integer                            , intent(in)   ::SOLVER_COMM
-      integer                            , intent(in)   :: my_rank
 
       integer(kind=kint ), dimension(:,:), save, allocatable :: sta1
       integer(kind=kint ), dimension(:,:), save, allocatable :: sta2
@@ -107,7 +103,7 @@ us via e-mail at 'geofem-comment@tokyo.rist.or.jp'.
            WS(k)= X(NOD_EXPORT(k))
         enddo
         call MPI_ISEND (WS(istart+1), inum, MPI_DOUBLE_PRECISION,       &
-     &                  NEIBPE(neib), 0, SOLVER_COMM,                   &
+     &                  NEIBPE(neib), 0, CALYPSO_COMM,                  &
      &                  req1(neib), ierr)
       enddo
 
@@ -118,7 +114,7 @@ us via e-mail at 'geofem-comment@tokyo.rist.or.jp'.
         istart= STACK_IMPORT(neib-1)
         inum  = STACK_IMPORT(neib  ) - istart
         call MPI_IRECV (WR(istart+1), inum, MPI_DOUBLE_PRECISION,       &
-     &                  NEIBPE(neib), 0, SOLVER_COMM,                   &
+     &                  NEIBPE(neib), 0, CALYPSO_COMM,                  &
      &                  req2(neib), ierr)
       enddo
 

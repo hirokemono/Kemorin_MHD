@@ -144,7 +144,7 @@
 
         call SOLVER_SEND_RECV_n                                         &
      &     ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,       &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,R) , SOLVER_COMM, my_rank)
+     &       STACK_EXPORT, NOD_EXPORT, WW(1,R))
         do k1 = 1, NB
          do i= N+1, NP
           ii = NB*(i-1)
@@ -244,7 +244,7 @@
 !C-- INTERFACE data EXCHANGE
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, X, SOLVER_COMM,my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
 
 !C
 !C-- BEGIN calculation
@@ -340,7 +340,7 @@
 
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,R) , SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, WW(1,R))
 
 !C
 !C-- incomplete CHOLESKY
@@ -501,7 +501,7 @@
 
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,P) , SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, WW(1,P))
 
       do j= 1, N
         jj = NB*(j-1)
@@ -590,15 +590,15 @@
 
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,PT), SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, WW(1,PT))
 
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,T), SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, WW(1,T))
 
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,T0), SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, WW(1,T0))
 
       do i= 1, NP
         ii = NB*(i-1)
@@ -857,7 +857,7 @@
 !C-- calc. [A]{t_tld}
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,TT), SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, WW(1,TT))
 
       do j= 1, N
         jj = NB*(j-1)
@@ -1028,7 +1028,7 @@
 !C-- INTERFACE data EXCHANGE
       call SOLVER_SEND_RECV_n                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, X, SOLVER_COMM, my_rank)
+     &     STACK_EXPORT, NOD_EXPORT, X)
 
       deallocate (WW)
 

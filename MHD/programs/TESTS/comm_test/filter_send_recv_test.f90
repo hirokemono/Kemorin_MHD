@@ -38,12 +38,11 @@
       call solver_send_recv_i(nnod_filtering, num_neib_filter,          &
      &    id_neib_filter, istack_import_filter, item_import_filter,     &
      &    istack_export_filter, item_export_filter,                     &
-     &    inod_gl_filter_comm, SOLVER_COMM, my_rank)
+     &    inod_gl_filter_comm)
 !
       call solver_send_recv_3(nnod_filtering, num_neib_filter,          &
      &    id_neib_filter, istack_import_filter, item_import_filter,     &
-     &    istack_export_filter, item_export_filter,                     &
-     &    xx_filter_comm, SOLVER_COMM, my_rank)
+     &    istack_export_filter, item_export_filter, xx_filter_comm)
 !
       end subroutine nod_filter_send_recv_test
 !
