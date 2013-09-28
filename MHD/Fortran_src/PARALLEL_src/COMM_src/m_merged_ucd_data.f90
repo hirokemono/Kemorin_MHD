@@ -158,12 +158,12 @@
       nele_ucd_list = 0
       internod_ucd_list = 0
 !
-      call MPI_Allgather(nnod, ione, MPI_INTEGER,                       &
-     &    nnod_ucd_list, ione, MPI_INTEGER, SOLVER_COMM, ierr)
-      call MPI_Allgather(nele, ione, MPI_INTEGER,                       &
-     &    nele_ucd_list, ione, MPI_INTEGER, SOLVER_COMM, ierr)
-      call MPI_Allgather(internal_node, ione, MPI_INTEGER,              &
-     &    internod_ucd_list, ione, MPI_INTEGER, SOLVER_COMM, ierr)
+      call MPI_Allgather(nnod, ione, CALYPSO_INTEGER,                   &
+     &    nnod_ucd_list, ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr)
+      call MPI_Allgather(nele, ione, CALYPSO_INTEGER,                   &
+     &    nele_ucd_list, ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr)
+      call MPI_Allgather(internal_node, ione, CALYPSO_INTEGER,          &
+     &    internod_ucd_list, ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr)
 !
       do ip = 1,  nprocs
         m_ucd%istack_merged_nod(ip) = m_ucd%istack_merged_nod(ip-1)     &

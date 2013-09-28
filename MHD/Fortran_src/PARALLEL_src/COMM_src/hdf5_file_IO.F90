@@ -230,7 +230,7 @@
 ! Setup file access property list with parallel I/O access.
 !
       call h5pcreate_f(H5P_FILE_ACCESS_F, plist_id, hdferr)
-      call h5pset_fapl_mpio_f(plist_id, SOLVER_COMM, info, hdferr)
+      call h5pset_fapl_mpio_f(plist_id, CALYPSO_COMM, info, hdferr)
 !
 ! Create new file collectively.
 !
@@ -392,7 +392,7 @@
 ! Setup file access property list with parallel I/O access.
 !
       call h5pcreate_f(H5P_FILE_ACCESS_F, plist_id, hdferr)
-      call h5pset_fapl_mpio_f(plist_id, SOLVER_COMM, info, hdferr)
+      call h5pset_fapl_mpio_f(plist_id, CALYPSO_COMM, info, hdferr)
 !
 ! Create new file collectively.
 !
