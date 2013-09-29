@@ -53,7 +53,7 @@
       integer(kind=kint ), intent(inout):: iX(NP)
 ! \beginARG       communicated result vector
 
-      integer(kind = kint) :: neib, istart, inum, ierr, k, ii
+      integer(kind = kint) :: neib, istart, inum, k, ii
       integer(kind = kint) :: import_NB
 !
 !C    Check array size
@@ -75,9 +75,9 @@
         iWS(k  )= iX(ii  )
       end do
 !
-      call MPI_WIN_FENCE(MPI_MODE_NOPRECEDE,iwin,ierr)
-!      call MPI_WIN_POST(inbr_group ,MPI_MODE_NOCHECK , iwin, ierr)
-!      call MPI_WIN_START(inbr_group ,MPI_MODE_NOCHECK , iwin, ierr)
+      call MPI_WIN_FENCE(MPI_MODE_NOPRECEDE,iwin,ierr_MPI)
+!      call MPI_WIN_POST(inbr_group ,MPI_MODE_NOCHECK , iwin, ierr_MPI)
+!      call MPI_WIN_START(inbr_group ,MPI_MODE_NOCHECK , iwin, ierr_MPI)
 !
       do neib= 1, NEIBPETOT
         istart= STACK_EXPORT(neib-1) + 1
@@ -85,13 +85,13 @@
         import_NB = import_a(neib) + 1
         call MPI_PUT (iWS(istart), inum, CALYPSO_INTEGER,               &
      &                NEIBPE(neib), import_NB, inum,                    &
-     &                CALYPSO_INTEGER, iwin, ierr)
+     &                CALYPSO_INTEGER, iwin, ierr_MPI)
 !
       enddo
 !
-!      call MPI_WIN_COMPLETE (iwin, ierr)
-!      call MPI_WIN_wait (iwin, ierr)
-      call MPI_WIN_FENCE(MPI_MODE_NOSUCCEED,iwin,ierr)
+!      call MPI_WIN_COMPLETE (iwin, ierr_MPI)
+!      call MPI_WIN_wait (iwin, ierr_MPI)
+      call MPI_WIN_FENCE(MPI_MODE_NOSUCCEED,iwin,ierr_MPI)
 !
       do k= STACK_IMPORT(0)+1, STACK_IMPORT(NEIBPETOT)
         ii   = NOD_IMPORT(k)

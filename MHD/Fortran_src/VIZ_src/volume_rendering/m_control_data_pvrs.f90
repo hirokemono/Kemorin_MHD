@@ -6,7 +6,7 @@
 !      subroutine allocate_pvr_ctl_struct
 !      subroutine deallocate_pvr_file_header_ctl
 !
-!      subroutine read_viz_control_data
+!      subroutine read_viz_control_data(ierr)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    array  volume_rendering  1
@@ -78,7 +78,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_viz_control_data
+      subroutine read_viz_control_data(ierr)
 !
       use m_read_control_elements
 !
@@ -86,6 +86,8 @@
       use m_control_data_flines
 !
       use skip_comment_f
+!
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       ierr = 0
@@ -104,7 +106,7 @@
         if(num_iso_ctl .gt. 0) call read_files_4_iso_ctl
 !
         call find_control_array_flag(hd_pvr_ctl, num_pvr_ctl)
-        if(num_pvr_ctl .gt. 0) call read_files_4_pvr_ctl
+        if(num_pvr_ctl .gt. 0) call read_files_4_pvr_ctl(ierr)
         if(ierr .gt. 0) return
 !
         call find_control_array_flag(hd_fline_ctl, num_fline_ctl)
@@ -115,10 +117,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_files_4_pvr_ctl
+      subroutine read_files_4_pvr_ctl(ierr)
 !
       use m_read_control_elements
       use skip_comment_f
+!
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       ierr = 0

@@ -28,12 +28,13 @@
       use m_control_data_vizs
       use set_control_visualizer
 !
+      integer(kind = kint) :: ierr
 !
 !     read controls
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
-      call read_control_data_vizs
+      call read_control_data_vizs(ierr)
       call set_control_params_4_viz(my_rank, ierr)
 !
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
@@ -42,7 +43,7 @@
       call FEM_initialize_fline
 !
 !  VIZ Initialization
-      call init_visualize_fline(ierr)
+      call init_visualize_fline
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
       end subroutine initialize_fline
@@ -62,7 +63,7 @@
         call FEM_analyze_fline(i_step, istep_fline)
 !
 !  Generate field lines
-        if(istep_fline .ge. 0) call visualize_fline(istep_fline, ierr)
+        if(istep_fline .ge. 0) call visualize_fline(istep_fline)
       end do
 !
       end subroutine analyze

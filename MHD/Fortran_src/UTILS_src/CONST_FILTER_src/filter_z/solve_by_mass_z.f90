@@ -38,7 +38,7 @@
       use m_crs_matrix
       use DJDS_precond_solve11
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, ierr
 !
 !
       NB_crs = 1
@@ -57,7 +57,7 @@
       end do
 !
          write(*,*) 'solve_by_djds_solver11'
-      call solve_by_djds_solver11
+      call solve_by_djds_solver11(ierr)
 !
       do i = 1, numnod
         sol_mk_crs(i) = X_crs(i)
@@ -85,7 +85,7 @@
       use copy_matrix_2_djds_array
       use solver_DJDS
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, ierr
 !
 !
       NB_crs = 1

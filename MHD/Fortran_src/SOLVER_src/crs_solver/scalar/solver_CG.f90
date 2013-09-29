@@ -151,7 +151,7 @@
 !
       call cal_local_norm_1(NP, N, B, BNRM20)
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
       if (BNRM2.eq.0.d0) BNRM2= 1.d0
       ITER = 0
@@ -187,7 +187,7 @@
 !C===
         call cal_local_s_product_1(NP, N, W(1,R), W(1,Z), RHO0)
         call MPI_allREDUCE (RHO0, RHO, 1, CALYPSO_REAL,                 &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !C===
 
 !C
@@ -225,7 +225,7 @@
 !
         call cal_local_s_product_1(NP, N, W(1,P), W(1,Q), C10)
         call MPI_allREDUCE (C10, C1, 1, CALYPSO_REAL,                   &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
         ALPHA= RHO / C1
         RHO1 = RHO
 !C===
@@ -241,7 +241,7 @@
 
         call cal_local_norm_1(NP, N,  W(1,R), DNRM20)
         call MPI_allREDUCE (DNRM20, DNRM2, 1, CALYPSO_REAL,             &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
         RESID = dsqrt(DNRM2/BNRM2)
 

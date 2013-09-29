@@ -185,7 +185,7 @@
 !C===
       call cal_local_norm_1(NP, N, B, BNRM20)
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
       if (BNRM2.eq.ZERO) BNRM2= ONE
 !C===
       ITER= 0
@@ -201,7 +201,7 @@
 !C===
         call cal_local_norm_1(NP, N, WW(1,R), DNRM20)
         call MPI_allREDUCE (DNRM20, DNRM2, 1, CALYPSO_REAL,             &
-     &                      MPI_SUM, CALYPSO_COMM, ierr)
+     &                      MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
         RNORM= dsqrt(DNRM2)
         coef= ONE/RNORM
@@ -261,7 +261,7 @@
             call cal_local_s_product_1(NP, N, WW(1,W), WW(1,V+K-1),     &
      &          VAL0)
             call MPI_allREDUCE (VAL0, VAL, 1, CALYPSO_REAL,             &
-     &          MPI_SUM, CALYPSO_COMM, ierr)
+     &          MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
             WW(1:N,W)= WW(1:N,W) - VAL * WW(1:N,V+K-1)
             H(K,I) = VAL
@@ -269,7 +269,7 @@
 !
           call cal_local_norm_1(NP, N, WW(1,W), VAL0)
           call MPI_allREDUCE (VAL0, VAL, 1, CALYPSO_REAL,               &
-     &       MPI_SUM, CALYPSO_COMM, ierr)
+     &       MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
           H(I+1,I)= dsqrt(VAL)
           coef= ONE / H(I+1,I)
@@ -389,7 +389,7 @@
 
         call cal_local_norm_1(NP, N,  WW(1,R), DNRM20)
         call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,            &
-     &                       MPI_SUM, CALYPSO_COMM, ierr)
+     &                       MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
         WW(I+1,S)= dsqrt(DNRM2/BNRM2)
         RESID    = WW( I+1,S )

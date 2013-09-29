@@ -29,6 +29,8 @@
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
 !
+      integer(kind = kint) :: ierr
+!
 !
       num_elapsed = 30
       call allocate_elapsed_times
@@ -75,7 +77,7 @@
 !
         if (visval .eq. 0) then
           call visualize_all(istep_psf, istep_iso,                      &
-     &        istep_pvr, istep_fline, ierr)
+     &        istep_pvr, istep_fline)
         end if
       end do
 !

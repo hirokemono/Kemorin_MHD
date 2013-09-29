@@ -38,6 +38,8 @@
       use set_ele_field_names_MHD
       use add_nodal_fields_4_MHD
 !
+      integer(kind = kint) :: ierr
+!
 !   set physical values
 !
       if(i_num_nod_phys.le.0) then

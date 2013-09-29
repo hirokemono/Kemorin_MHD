@@ -51,10 +51,10 @@
 !C
 !C-- init. MPI
 
-      call MPI_INIT      (ierr)
-      call MPI_COMM_SIZE (MPI_COMM_WORLD, PETOT, ierr )
-      call MPI_COMM_RANK (MPI_COMM_WORLD, my_rank, ierr )
-      call MPI_COMM_DUP  (MPI_COMM_WORLD, CALYPSO_COMM, ierr)
+      call MPI_INIT      (ierr_MPI)
+      call MPI_COMM_SIZE (MPI_COMM_WORLD, PETOT, ierr_MPI )
+      call MPI_COMM_RANK (MPI_COMM_WORLD, my_rank, ierr_MPI )
+      call MPI_COMM_DUP  (MPI_COMM_WORLD, CALYPSO_COMM, ierr_MPI)
 
 !C
 !C-- CNTL DATA
@@ -89,16 +89,16 @@
         close (11)
       endif
 
-      call MPI_BARRIER(CALYPSO_COMM,ierr)
+      call MPI_BARRIER(CALYPSO_COMM,ierr_MPI)
       call MPI_BCAST  (METHOD  ,20,      CALYPSO_CHARACTER,             &
-     &                   0, CALYPSO_COMM, ierr)
+     &                   0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST  (PRECOND  ,20,     CALYPSO_CHARACTER,             &
-     &                   0, CALYPSO_COMM, ierr)
+     &                   0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST  (REALARRAY(1), 10, CALYPSO_REAL,                  &
-     &                 0, CALYPSO_COMM, ierr)
+     &                 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST  (INTARRAY(1) , 10, CALYPSO_INTEGER,               &
-     &                 0, CALYPSO_COMM, ierr)
-      call MPI_BARRIER(CALYPSO_COMM,ierr)
+     &                 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BARRIER(CALYPSO_COMM,ierr_MPI)
 
 !
 !C 
@@ -167,7 +167,7 @@
 !C
 !C-- ICCG computation
 
-      call MPI_BARRIER  (CALYPSO_COMM,ierr)
+      call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
       STARTTIME= MPI_WTIME()
       im1= -1000000
  
@@ -196,14 +196,14 @@
 
       ENDTIME= MPI_WTIME()
 
-      call MPI_BARRIER  (CALYPSO_COMM,ierr)
+      call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
 
       if (my_rank.eq.0) then
         RTIME= ENDTIME-STARTTIME
         write (*, '("*** ELAPCE TIME", 1pe16.6, " sec.")') RTIME
       endif
 
-      call MPI_FINALIZE(ierr)
+      call MPI_FINALIZE(ierr_MPI)
       end program ICCG_SOLVER
 
 

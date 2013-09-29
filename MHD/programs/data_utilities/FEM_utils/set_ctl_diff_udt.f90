@@ -32,6 +32,8 @@
       use set_control_nodal_data
       use set_control_ele_layering
 !
+      integer(kind = kint) :: ierr
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_diff_udt'
       call set_ctl_params_diff_udt

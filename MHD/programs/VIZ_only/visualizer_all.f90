@@ -3,6 +3,10 @@
 !
 !      Written by H. Matsui on July, 2006
 !
+!      subroutine init_visualize(ierr)
+!      subroutine visualize_all(istep_psf, istep_iso, istep_pvr,        &
+!     &          istep_fline)
+!
       module visualizer_all
 !
       use m_precision
@@ -21,16 +25,13 @@
 !
       implicit  none
 !
-!      subroutine psf_init(ierr)
-!      subroutine psf_main(istep_psf, ierr)
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize(ierror)
+      subroutine init_visualize(ierr)
 !
       use m_quad_2_triangle
       use m_control_data_sections
@@ -38,7 +39,7 @@
       use m_control_data_flines
       use set_psf_case_table
 !
-      integer(kind = kint), intent(inout) :: ierror
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       if ( (num_psf_ctl+num_iso_ctl+num_pvr_ctl) .gt. 0) then
@@ -53,23 +54,20 @@
       if (num_iso .gt. 0) call isosurface_init_1st
 !
       num_pvr = num_pvr_ctl
-      if (num_pvr .gt. 0) call pvr_init_1st
+      if (num_pvr .gt. 0) call pvr_init_1st(ierr)
 !
       num_fline = num_fline_ctl
       if (num_fline .gt. 0) call field_line_init_1st
-!
-      ierror = ierr
 !
       end subroutine init_visualize
 !
 !  ---------------------------------------------------------------------
 !
       subroutine visualize_all(istep_psf, istep_iso, istep_pvr,         &
-     &          istep_fline, ierror)
+     &          istep_fline)
 !
       integer(kind = kint), intent(in) :: istep_psf, istep_iso
       integer(kind = kint), intent(in) :: istep_pvr, istep_fline
-      integer(kind = kint), intent(inout) :: ierror
 !
 !
       if (num_psf.gt.0 .and. istep_psf.gt.0) then
@@ -84,8 +82,6 @@
       if (num_fline.gt.0 .and. istep_fline.gt.0) then
         call field_line_main_1st(istep_fline)
       end if
-!
-      ierror = ierr
 !
       end subroutine visualize_all
 !

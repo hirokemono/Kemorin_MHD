@@ -37,6 +37,8 @@
       use set_fixed_time_step_params
       use m_geometry_data
 !
+      integer(kind = kint) :: ierr
+!
 !
       if (my_rank.eq.0) then
         write(*,*) 'averaging udt files'

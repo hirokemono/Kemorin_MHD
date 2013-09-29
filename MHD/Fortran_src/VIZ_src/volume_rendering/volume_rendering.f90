@@ -7,7 +7,7 @@
 !     &          nnod_4_surf, inod_smp_stack, xx,                       &
 !     &          e_multi, ie_surf, isf_4_ele, iele_4_surf,              &
 !     &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,   &
-!     &          num_nod_phys, phys_nod_name)
+!     &          num_nod_phys, phys_nod_name, ierr)
 !
 !      subroutine pvr_main(istep_pvr, numnod, numele, numsurf,          &
 !     &         nnod_4_ele, nnod_4_surf, inod_smp_stack, iele_smp_stack,&
@@ -49,7 +49,7 @@
      &          nnod_4_surf, inod_smp_stack, xx,                        &
      &          e_multi, ie_surf, isf_4_ele, iele_4_surf,               &
      &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,    &
-     &          num_nod_phys, phys_nod_name)
+     &          num_nod_phys, phys_nod_name, ierr)
 !
       use set_pvr_control
       use cal_pvr_modelview_mat
@@ -73,12 +73,14 @@
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
+      integer(kind = kint), intent(inout) :: ierr
+!
 !
       integer(kind = kint) :: i_pvr
 !
 !
       call s_set_pvr_control(num_mat, mat_name,                         &
-     &    num_nod_phys, phys_nod_name)
+     &    num_nod_phys, phys_nod_name, ierr)
 !
       call s_find_pvr_surf_domain(numele, numsurf, e_multi,             &
      &          isf_4_ele, iele_4_surf, num_mat, num_mat_bc,            &
@@ -238,7 +240,7 @@
      &                'write_pvr_image_file', i_pvr
           call write_pvr_image_file(i_pvr, i_rot, istep_pvr)
 !
-          call calypso_MPI_barrier(ierr)
+          call calypso_MPI_barrier
         end do
 !
       end do

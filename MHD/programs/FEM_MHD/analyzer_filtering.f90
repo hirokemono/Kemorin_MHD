@@ -28,6 +28,8 @@
       use m_ctl_data_fem_MHD
       use set_control_MHD
 !
+      integer(kind = kint) :: ierr
+!
 !
       write(*,*) 'Simulation start: PE. ', my_rank
 !
@@ -78,7 +80,7 @@
 !  Visualization
         if (visval.eq.0) then
           call visualize_all(istep_psf, istep_iso, istep_pvr,           &
-     &        istep_fline, ierr)
+     &        istep_fline)
         end if
       end do
 !

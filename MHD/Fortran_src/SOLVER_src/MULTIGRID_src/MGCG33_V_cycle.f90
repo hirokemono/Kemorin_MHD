@@ -252,7 +252,7 @@
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (BNRM20, resd, 1, CALYPSO_REAL,              &
-     &        MPI_SUM, CALYPSO_COMM, ierr)
+     &        MPI_SUM, CALYPSO_COMM, ierr_MPI)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !

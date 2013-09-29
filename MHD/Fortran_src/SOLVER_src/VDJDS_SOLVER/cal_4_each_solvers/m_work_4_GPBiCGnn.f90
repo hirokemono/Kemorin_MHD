@@ -20,7 +20,6 @@
       private :: iflag_work_GPBiCGnn
 !
       integer(kind = kint) :: iterPRE
-      integer(kind = kint) :: ierr
 !
       real(kind=kreal) :: RESID, TOL
       real(kind=kreal) :: ALPHA, BETA, QSI, ETA

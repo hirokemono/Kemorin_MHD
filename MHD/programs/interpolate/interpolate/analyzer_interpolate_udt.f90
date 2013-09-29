@@ -39,13 +39,15 @@
       use link_data_to_1st_mesh
       use nodal_vector_send_recv
 !
+      integer(kind = kint) :: ierr
+!
 !
       if (my_rank.eq.0)  write(*,*) 'Interpolate data to new mesh'
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
-      call s_input_control_interpolate
+      call s_input_control_interpolate(ierr)
       call set_ctl_interpolate_udt
 !
 !     --------------------- 

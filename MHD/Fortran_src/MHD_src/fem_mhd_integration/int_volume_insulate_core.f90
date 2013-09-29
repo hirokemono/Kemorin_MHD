@@ -38,7 +38,7 @@
      &     iele_in_core_smp_stack, iele_in_core, vol_i_core_local)
 !
         call MPI_allREDUCE (vol_i_core_local, vol_i_core, 1,            &
-     &       CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &       CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
         if (my_rank.eq.0) write(*,*) vol_i_core
 !

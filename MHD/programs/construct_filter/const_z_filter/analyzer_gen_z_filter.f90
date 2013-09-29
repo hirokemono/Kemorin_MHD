@@ -70,7 +70,7 @@
       use set_matrices_4_z_filter
       use write_z_filter_4_nod
 !
-      integer(kind=kint) :: n_int
+      integer(kind=kint) :: n_int, ierr
       integer (kind = kint), parameter :: n_int_points = 200
 !
 !C
@@ -181,11 +181,11 @@
         if   (SOLVER_crs.eq.'block33'                                   &
      &    .or. SOLVER_crs.eq.'BLOCK33') then
           write(*,*) 'solve_by_djds_solver33'
-          call solve_by_djds_solver33
+          call solve_by_djds_solver33(ierr)
         else if (SOLVER_crs.eq.'blockNN'                                &
      &    .or. SOLVER_crs.eq.'BLOCKNN') then
           write(*,*) 'solve_by_djds_solverNN'
-          call solve_by_djds_solverNN
+          call solve_by_djds_solverNN(ierr)
         end if
       end if
 !

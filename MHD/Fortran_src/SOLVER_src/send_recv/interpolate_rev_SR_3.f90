@@ -75,7 +75,7 @@
       real   (kind=kreal), intent(in):: X_new(ithree*nnod_new)
       real   (kind=kreal), intent(inout):: X_org(ithree*nnod_org)
 !
-      integer (kind = kint) :: neib, istart, inum, iend, ierr
+      integer (kind = kint) :: neib, istart, inum, iend
       integer (kind = kint) :: i, j, k
       integer (kind = kint) :: ncomm_send, ncomm_recv
       integer (kind = kint) :: ist_send, ist_recv
@@ -103,7 +103,7 @@
         istart= ithree *  istack_recv(neib-1) + 1
         inum  = ithree * (istack_recv(neib  ) - istack_recv(neib-1) )
         call MPI_ISEND(WR(istart), inum, CALYPSO_REAL,                  &
-     &      id_pe_recv(neib), 0, CALYPSO_COMM, req2(neib), ierr)
+     &      id_pe_recv(neib), 0, CALYPSO_COMM, req2(neib), ierr_MPI)
       end do
 !C
 !C-- RECEIVE
@@ -112,10 +112,10 @@
         istart= ithree *  istack_send(neib-1) + 1
         inum  = ithree * (istack_send(neib  ) - istack_send(neib-1) )
         call MPI_IRECV(X_org(istart), inum, CALYPSO_REAL,               &
-     &      id_pe_send(neib), 0, CALYPSO_COMM, req1(neib), ierr)
+     &      id_pe_send(neib), 0, CALYPSO_COMM, req1(neib), ierr_MPI)
       end do
 !
-      call MPI_WAITALL (ncomm_send, req1, sta1, ierr)
+      call MPI_WAITALL (ncomm_send, req1, sta1, ierr_MPI)
 !
 !    copy in same domain
 !
@@ -130,7 +130,7 @@
         end do
       end if
 
-      call MPI_WAITALL (ncomm_recv, req2, sta2, ierr)
+      call MPI_WAITALL (ncomm_recv, req2, sta2, ierr_MPI)
 
       end subroutine interpolate_reverse_SR_3
 !

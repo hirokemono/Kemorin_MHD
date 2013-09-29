@@ -59,18 +59,19 @@
       use DJDS_precond_solve33
       use DJDS_precond_solveNN
 !
+      integer(kind = kint) :: ierr
 !
 !      call check_crs_matrix_components(my_rank)
 !C
 !C-- ICCG computation
       if (SOLVER_crs .eq. 'scalar' .or. SOLVER_crs.eq.'SCALAR') then
-        call solve_by_djds_solver11
+        call solve_by_djds_solver11(ierr)
       else if (SOLVER_crs.eq.'block33'                                  &
      &    .or. SOLVER_crs.eq.'BLOCK33') then
-        call solve_by_djds_solver33
+        call solve_by_djds_solver33(ierr)
       else if (SOLVER_crs.eq.'blockNN'                                  &
      &    .or. SOLVER_crs.eq.'BLOCKNN') then
-        call solve_by_djds_solverNN
+        call solve_by_djds_solverNN(ierr)
       end if
 
       call output_solution
@@ -79,7 +80,7 @@
 
       ENDTIME= MPI_WTIME()
 
-      call MPI_BARRIER  (CALYPSO_COMM,ierr)
+      call MPI_BARRIER  (CALYPSO_COMM, ierr_MPI)
 
       if (my_rank.eq.0) then
         RTIME= ENDTIME-STARTTIME

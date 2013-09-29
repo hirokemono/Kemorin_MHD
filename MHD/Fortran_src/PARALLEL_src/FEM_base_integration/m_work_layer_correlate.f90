@@ -130,9 +130,9 @@
       rms_les(1:n_layer_d,1:ncomp_correlate_2) = 0.0d0
 !
         call MPI_allREDUCE ( ave_l(1,1), ave_les(1,1), num,             &
-     &     CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &     CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
         call MPI_allREDUCE ( rms_l(1,1), rms_les(1,1), num,             &
-     &     CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &     CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine sum_layerd_averages
 !
@@ -154,9 +154,9 @@
       cov_les(1:n_layer_d,1:ncomp_correlate  ) = 0.0d0
 !
       call MPI_allREDUCE ( sig_l, sig_les, num_2,                       &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call MPI_allREDUCE ( cov_l, cov_les, num_1,                       &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine sum_layerd_correlation
 !
@@ -173,9 +173,9 @@
       rms_wg(1:ncomp_correlate_2) = 0.0d0
 !
         call MPI_allREDUCE (ave_w, ave_wg, ncomp_correlate_2,           &
-     &     CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &     CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
         call MPI_allREDUCE (rms_w, rms_wg, ncomp_correlate_2,           &
-     &     CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &     CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine sum_whole_averages
 !
@@ -191,9 +191,9 @@
       cov_wg(1:ncomp_correlate  ) = 0.0d0
 !
       call MPI_allREDUCE ( sig_w, sig_wg, ncomp_correlate_2,            &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call MPI_allREDUCE ( cov_w, cov_wg, ncomp_correlate,              &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine sum_whole_correlation
 !

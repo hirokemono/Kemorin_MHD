@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on Apr., 2008
 !
-!      subroutine const_filter_func_nod_by_nod(inod)
-!      subroutine const_fluid_filter_nod_by_nod(inod)
+!      subroutine const_filter_func_nod_by_nod(inod, ierr)
+!      subroutine const_fluid_filter_nod_by_nod(inod, ierr)
 !
       module cal_filter_func_each_node
 !
@@ -37,12 +37,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_filter_func_nod_by_nod(inod)
+      subroutine const_filter_func_nod_by_nod(inod, ierr)
 !
       use cal_1d_moments_4_fliter
       use set_simple_filters
 !
       integer(kind = kint), intent(in) :: inod
+      integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: i, ist, ied, iint, ntmp, num_free
       integer(kind = kint) :: ibest_fixed_point, ibest_mat_size
@@ -111,7 +112,7 @@
           do mat_size = num_free, ntmp
             num_fixed_point = mat_size - num_free
 !
-            call const_filter_mat_each_nod(inod, num_fixed_point)
+            call const_filter_mat_each_nod(inod, num_fixed_point, ierr)
 !
             if (ierr .eq. 1) goto 20
 !
@@ -178,9 +179,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_fluid_filter_nod_by_nod(inod)
+      subroutine const_fluid_filter_nod_by_nod(inod, ierr)
 !
       integer(kind = kint), intent(in) :: inod
+      integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: i, ist, ied, iint, ntmp, num_free
       integer(kind = kint) :: ibest_fixed_point, ibest_mat_size
@@ -257,7 +259,8 @@
               do mat_size = num_free, ntmp
                 num_fixed_point = mat_size - num_free
 !
-                call const_filter_mat_each_nod(inod, num_fixed_point)
+                call const_filter_mat_each_nod(inod, num_fixed_point,   &
+     &              ierr)
                 if (ierr .eq. 1) goto 21
 !
                 call s_cal_sol_filter_func_nod(inod, ierr)

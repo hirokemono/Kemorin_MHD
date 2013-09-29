@@ -367,7 +367,7 @@
 !        if (my_rank.eq.0) then
           write (*,'(//,"#### GeoFEM SOLVER abort CODE=", i8,/)') ERROR
 !        endif
-!        call MPI_FINALIZE(ierr)
+!        call MPI_FINALIZE(ierr_MPI)
         stop
       endif
 

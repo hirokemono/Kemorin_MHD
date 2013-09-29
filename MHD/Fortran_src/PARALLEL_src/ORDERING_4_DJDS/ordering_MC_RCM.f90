@@ -138,7 +138,7 @@
 !C
 !C-- ORDERING
         call MPI_allREDUCE (NHYP, NHYPmax, 1, CALYPSO_INTEGER, MPI_MAX, &
-     &                      CALYPSO_COMM, ierr)
+     &                      CALYPSO_COMM, ierr_MPI)
 
         NCOLORtot= min_color
         if (NCOLORtot.gt.NHYPmax/2) then
@@ -164,7 +164,7 @@
      &      item_mc_l, item_mc_u, NCOLORtot, IVECmc, IVnew, IW, IFLAG)
 !
         call MPI_allREDUCE (IFLAG, IFLAGmax, 1, CALYPSO_INTEGER,        &
-     &                    MPI_MAX, CALYPSO_COMM, ierr)
+     &                    MPI_MAX, CALYPSO_COMM, ierr_MPI)
       
         if (IFLAGmax.eq.1) then
           NCOLORtot= NCOLORtot + 1

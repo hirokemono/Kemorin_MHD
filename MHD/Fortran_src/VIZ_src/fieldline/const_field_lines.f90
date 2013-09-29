@@ -83,7 +83,7 @@
           write(my_rank+50,*) i, isf_fline_start(1:3,i)
         end do
       end if
-      call calypso_MPI_barrier(ierr)
+      call calypso_MPI_barrier
 !
       iflag_comm = 0
       nnod_line_l = 0
@@ -107,7 +107,7 @@
      &          num_neib, ntot_import, id_neib, istack_import,          &
      &          item_import)
         end do
-        call calypso_MPI_barrier(ierr)
+        call calypso_MPI_barrier
 !
         do ip = 1, nprocs
           src_rank = ip - 1
@@ -115,9 +115,9 @@
           num7 = 7*(istack_all_fline(ip,i_fln) - ist)
           if(num7 .gt. 0) then
             call mpi_Bcast(id_fline_export(1,ist+1), num7,              &
-     &          CALYPSO_INTEGER, src_rank, CALYPSO_COMM, ierr)
+     &          CALYPSO_INTEGER, src_rank, CALYPSO_COMM, ierr_MPI)
             call mpi_Bcast(fline_export(1,ist+1), num7,                 &
-     &          CALYPSO_REAL, src_rank, CALYPSO_COMM, ierr)
+     &          CALYPSO_REAL, src_rank, CALYPSO_COMM, ierr_MPI)
           end if
         end do
 !
@@ -299,7 +299,7 @@
 !
       call MPI_AllGather(icou, ione, CALYPSO_INTEGER,                   &
      &    num_all_fline(1,i_fln), ione, CALYPSO_INTEGER,                &
-     &    CALYPSO_COMM, ierr)
+     &    CALYPSO_COMM, ierr_MPI)
 !
       do ip = 1, nprocs
         istack_all_fline(ip,i_fln) = istack_all_fline(ip-1,i_fln)       &

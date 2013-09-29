@@ -189,7 +189,7 @@
       enddo
 
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
       if (BNRM2.eq.0.d0) ERROR= 320
 !C===
 
@@ -605,7 +605,7 @@
         if (my_rank.eq.0) then
           write (*,'(//,"#### GeoFEM SOLVER abort CODE=", i8,/)') ERROR
         endif
-        call MPI_FINALIZE(ierr)
+        call MPI_FINALIZE(ierr_MPI)
         stop
       endif
 

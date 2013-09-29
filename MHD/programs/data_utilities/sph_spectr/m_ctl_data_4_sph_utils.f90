@@ -109,7 +109,6 @@
 !
 !   2 begin phys_values_ctl
 !
-      ierr = 0
       if(right_begin_flag(hd_sph_trans_ctl) .eq. 0) return
       if (i_sph_trans_ctl .gt. 0) return
       do

@@ -28,6 +28,8 @@
       use m_ctl_param_newdom_filter
       use bcast_nodes_for_trans
 !
+      integer(kind = kint) :: ierr
+!
 !
       call copy_num_processes_to_2nd
 !
@@ -39,7 +41,7 @@
       call read_control_filter_newdomain
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
-      call set_control_filter_newdomain
+      call set_control_filter_newdomain(ierr)
 !
 !     --------------------- 
 !

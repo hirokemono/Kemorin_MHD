@@ -31,6 +31,8 @@
 !
       use bcast_nodes_for_trans
 !
+      integer(kind = kint) :: ierr
+!
 !
       if (my_rank.eq.0) then
         write(*,*) 'Transfer filtering table to another decomposition'
@@ -52,7 +54,7 @@
       call read_control_filter_newdomain
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
-      call set_control_filter_newdomain
+      call set_control_filter_newdomain(ierr)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'bcast_parallel_domain_tbl'

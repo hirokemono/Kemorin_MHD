@@ -217,16 +217,16 @@
 !
 !
       call MPI_ISEND (num_diff_l, ione, CALYPSO_INTEGER,                &
-     &    izero, 0, CALYPSO_COMM, req1(ione), ierr)
+     &    izero, 0, CALYPSO_COMM, req1(ione), ierr_MPI)
       if (my_rank .eq. 0) then
         do ip = 1, nprocs
           id_rank = ip - 1
           call MPI_IRECV(num_diff_pe(ip), ione, CALYPSO_INTEGER,        &
-     &        id_rank, 0, CALYPSO_COMM, req2(ip), ierr)
+     &        id_rank, 0, CALYPSO_COMM, req2(ip), ierr_MPI)
         end do
-        call MPI_WAITALL (nprocs, req2(1), sta2(1,1), ierr)
+        call MPI_WAITALL (nprocs, req2(1), sta2(1,1), ierr_MPI)
       end if
-      call MPI_WAITALL (ione, req1(1), sta1(1,1), ierr)
+      call MPI_WAITALL (ione, req1(1), sta1(1,1), ierr_MPI)
 !
       if (my_rank .eq. 0) then
         call s_cal_total_and_stacks(nprocs, num_diff_pe,                &
@@ -262,39 +262,39 @@
 !
       num = num_diff_l
       call MPI_ISEND (id_diff, num, CALYPSO_INTEGER,                    &
-     &    izero, 0, CALYPSO_COMM, req1(ione), ierr)
+     &    izero, 0, CALYPSO_COMM, req1(ione), ierr_MPI)
       if (my_rank .eq. 0) then
         do ip = 1, np
           id_rank = ip - 1
           ist = istack_diff_pe(ip-1) + 1
           num = num_diff_pe(ip)
           call MPI_IRECV (id_diff_IO(ist), num, CALYPSO_INTEGER,        &
-     &        id_rank, 0, CALYPSO_COMM, req2(ip), ierr)
+     &        id_rank, 0, CALYPSO_COMM, req2(ip), ierr_MPI)
         end do
-        call MPI_WAITALL (np, req2(1), sta2(1,1), ierr)
+        call MPI_WAITALL (np, req2(1), sta2(1,1), ierr_MPI)
       end if
-      call MPI_WAITALL (ione, req1(1), sta1(1,1), ierr)
+      call MPI_WAITALL (ione, req1(1), sta1(1,1), ierr_MPI)
 !
 !
       num = 2*num_diff_l
       call MPI_ISEND (id_gl_diff, num, CALYPSO_INTEGER,                 &
-     &    izero, 0, CALYPSO_COMM, req1(ione), ierr)
+     &    izero, 0, CALYPSO_COMM, req1(ione), ierr_MPI)
       if (my_rank .eq. 0) then
         do ip = 1, np
           id_rank = ip - 1
           ist = 2*istack_diff_pe(ip-1) + 1
           num = 2*num_diff_pe(ip)
           call MPI_IRECV(id_gl_diff_IO(ist), num, CALYPSO_INTEGER,      &
-     &        id_rank, 0, CALYPSO_COMM, req2(ip), ierr)
+     &        id_rank, 0, CALYPSO_COMM, req2(ip), ierr_MPI)
         end do
-        call MPI_WAITALL (np, req2(1), sta2(1,1), ierr)
+        call MPI_WAITALL (np, req2(1), sta2(1,1), ierr_MPI)
       end if
-      call MPI_WAITALL (ione, req1(1), sta1(1,1), ierr)
+      call MPI_WAITALL (ione, req1(1), sta1(1,1), ierr_MPI)
 !
 !
       num = 6*num_diff_l
       call MPI_ISEND (x_diff, num, CALYPSO_REAL,                        &
-     &    izero, 0, CALYPSO_COMM, req1(ione), ierr)
+     &    izero, 0, CALYPSO_COMM, req1(ione), ierr_MPI)
       if (my_rank .eq. 0) then
         do ip = 1, np
           id_rank = ip - 1
@@ -302,11 +302,11 @@
           num = 6*num_diff_pe(ip)
           call MPI_IRECV (x_diff_IO(ist), num,                          &
      &         CALYPSO_REAL, id_rank, 0, CALYPSO_COMM, req2(ip),        &
-     &        ierr)
+     &        ierr_MPI)
         end do
-        call MPI_WAITALL (np, req2(1), sta2(1,1), ierr)
+        call MPI_WAITALL (np, req2(1), sta2(1,1), ierr_MPI)
       end if
-      call MPI_WAITALL (ione, req1(1), sta1(1,1), ierr)
+      call MPI_WAITALL (ione, req1(1), sta1(1,1), ierr_MPI)
 !
       end subroutine collect_diff_ctest
 !

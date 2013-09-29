@@ -278,7 +278,7 @@
 
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -300,7 +300,7 @@
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (RHO0, RHO, 1, CALYPSO_REAL,                 &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !C===
@@ -412,7 +412,7 @@
 
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (C20, C2, 1, CALYPSO_REAL,                   &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
         ALPHA= RHO / C2
@@ -526,7 +526,7 @@
 
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (C0, CG, 2, CALYPSO_REAL, MPI_SUM,           &
-     &                    CALYPSO_COMM, ierr)
+     &                    CALYPSO_COMM, ierr_MPI)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -544,7 +544,7 @@
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (DNRM20, DNRM2, 1, CALYPSO_REAL,             &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
         RESID= dsqrt(DNRM2/BNRM2)

@@ -70,7 +70,6 @@
       subroutine lsq_model_coefs_4_comps(ncomp_sgs)
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_layering_ele_list
 !
       integer(kind = kint), intent(in) :: ncomp_sgs
@@ -78,7 +77,7 @@
 !
       sgs_les(1:n_layer_d,1:ncomp_sgs) = 0.0d0
         call MPI_allREDUCE ( sgs_l, sgs_les, ncomp_sgs*n_layer_d,       &
-     &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine lsq_model_coefs_4_comps
 !
@@ -87,14 +86,14 @@
       subroutine lsq_whole_model_coefs(ncomp_sgs)
 !
       use calypso_mpi
-      use m_parallel_var_dof
+
 !
       integer(kind = kint), intent(in) :: ncomp_sgs
 !
 !
       sgs_wg(1:ncomp_sgs) = 0.0d0
       call MPI_allREDUCE ( sgs_w, sgs_wg, ncomp_sgs,                    &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !      write(*,*) 'sgs_les_whole', icomp_f, sgs_les
 !
       end subroutine lsq_whole_model_coefs

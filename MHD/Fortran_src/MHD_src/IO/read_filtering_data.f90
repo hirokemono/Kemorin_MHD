@@ -49,11 +49,12 @@
 !
       subroutine read_3d_filter_moments
 !
-      use m_parallel_var_dof
       use m_control_parameter
       use m_filter_file_names
       use m_geometry_parameter
       use filter_moment_IO_select
+!
+      integer(kind = kint) :: ierr
 !
 !
       if(iflag_SGS_model .eq. id_SGS_NL_grad) then
@@ -145,7 +146,6 @@
 !
       subroutine read_line_filtering_data
 !
-      use m_parallel_var_dof
       use m_control_parameter
       use m_filter_file_names
       use m_filter_coef_combained
@@ -157,6 +157,8 @@
       use set_parallel_file_name
       use filter_moment_IO_select
       use filter_IO_select_4_zlib
+!
+      integer(kind = kint) :: ierr
 !
 !
       ifmt_filter_file = ifmt_filter_elen

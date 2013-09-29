@@ -112,7 +112,7 @@
       end if
 !
       call MPI_allREDUCE(nitem_added_lc, nitem_added_gl, ngrp_added,    &
-     &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine count_new_2d_element_group
 !

@@ -13,8 +13,6 @@
 !
       implicit none
 !
-      integer(kind=kint ) :: ierr = 0
-!
 !
       call init_analyzer
 !

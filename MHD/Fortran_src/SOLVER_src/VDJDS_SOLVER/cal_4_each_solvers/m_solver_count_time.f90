@@ -51,7 +51,7 @@
 !
       integer(kind=kint), intent(in) :: iflag_op
       integer(kind=kint), intent(in) :: time_kind
-      integer(kind=kint) :: ierr, i, num_of_kinds
+      integer(kind=kint) :: i, num_of_kinds
       real   (kind=kreal) :: recv_time, send_time, out_time
 
     !C num_of_kinds must be less than or equal to TIME_KINDS
@@ -75,8 +75,8 @@
         send_time = time_table(time_kind)
         recv_time = 0
         CALL MPI_REDUCE(send_time, recv_time, 1, CALYPSO_REAL,          &
-     &                   MPI_SUM, 0, CALYPSO_COMM, ierr)
-        CALL MPI_COMM_SIZE(CALYPSO_COMM, nprocs, ierr)
+     &                   MPI_SUM, 0, CALYPSO_COMM, ierr_MPI)
+        CALL MPI_COMM_SIZE(CALYPSO_COMM, nprocs, ierr_MPI)
         IF(my_rank .eq. 0) THEN
           out_time = recv_time / NPROCS
           WRITE(*,'("***", i3, ":", 1pe16.6, " sec")')                  &
@@ -85,7 +85,7 @@
 !
       else if(iflag_op .eq. 4) then
 !
-        CALL MPI_COMM_SIZE(CALYPSO_COMM, NPROCS, ierr)
+        CALL MPI_COMM_SIZE(CALYPSO_COMM, NPROCS, ierr_MPI)
         IF(my_rank .eq. 0) THEN
           WRITE(*,'(a)') "#  2:sr_aggre"
           WRITE(*,'(a)') "#  3:sr_elem"
@@ -106,12 +106,12 @@
           send_time = time_table(i)
           recv_time = 0
 
-          CALL MPI_barrier(CALYPSO_COMM, ierr)
+          CALL MPI_barrier(CALYPSO_COMM, ierr_MPI)
 !
           IF(prt_ech_PE(i)) WRITE(*,'( i3,a3,i3,a1,1pe16.6,a4)')        &
      &         my_rank,"--#", i, ":", send_time, " sec"
           CALL MPI_REDUCE(send_time, recv_time, 1,                      &
-     &         CALYPSO_REAL, MPI_SUM, 0, CALYPSO_COMM, ierr)
+     &         CALYPSO_REAL, MPI_SUM, 0, CALYPSO_COMM, ierr_MPI)
 
           IF(my_rank == 0) THEN
              out_time = recv_time / NPROCS

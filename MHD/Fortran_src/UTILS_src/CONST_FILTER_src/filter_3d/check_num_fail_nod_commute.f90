@@ -88,7 +88,7 @@
         isend_failed(1) = num_failed_whole
         isend_failed(2) = num_failed_fluid
         call MPI_ISEND (isend_failed(1), itwo, CALYPSO_INTEGER,         &
-     &      izero, izero, CALYPSO_COMM, i_req1, ierr)
+     &      izero, izero, CALYPSO_COMM, i_req1, ierr_MPI)
       end if
 !C
 !C-- RECEIVE
@@ -97,10 +97,10 @@
           id_dest = ip - 1
           call MPI_IRECV (irecv_failed(1,id_dest), itwo,                &
      &        CALYPSO_INTEGER, id_dest, izero, CALYPSO_COMM,            &
-     &        i_req2(id_dest), ierr)
+     &        i_req2(id_dest), ierr_MPI)
         end do
 !
-        call MPI_WAITALL (nprocs-1, i_req2(1), i_sta2(1,1), ierr)
+        call MPI_WAITALL (nprocs-1, i_req2(1), i_sta2(1,1), ierr_MPI)
 !
         do ip= 2, nprocs
           id_dest = ip - 1
@@ -113,7 +113,7 @@
       end if
 !
       if (my_rank .ne. izero) then
-        call MPI_WAITALL (ione, i_req1, i_sta1(1), ierr)
+        call MPI_WAITALL (ione, i_req1, i_sta1(1), ierr_MPI)
       end if
 !
 !

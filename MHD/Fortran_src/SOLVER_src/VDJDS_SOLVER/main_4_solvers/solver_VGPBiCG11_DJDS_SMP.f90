@@ -273,9 +273,9 @@
 
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call MPI_allREDUCE (RHO0, RHO, 1, CALYPSO_REAL,                   &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -393,7 +393,7 @@
 
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (RHO10, RHO1, 1, CALYPSO_REAL,               &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -507,7 +507,7 @@
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (C0, CG,  5, CALYPSO_REAL,                   &
-     &                     MPI_SUM, CALYPSO_COMM, ierr)
+     &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -545,9 +545,9 @@
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,            &
-     &                     MPI_SUM, CALYPSO_COMM, ierr)
+     &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
         call MPI_allREDUCE  (COEF10, COEF1, 1, CALYPSO_REAL,            &
-     &                     MPI_SUM, CALYPSO_COMM, ierr)
+     &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !      if (my_rank.eq.0) write(*,*) 'DNRM2, COEF1', DNRM2, COEF1

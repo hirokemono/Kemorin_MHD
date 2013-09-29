@@ -3,9 +3,9 @@
 !
 !      Written by H. Matsui on Apr., 2012
 !
-!      subroutine init_sections_type(ierror,                            &
-!     &          fem, sf_mesh_psf, eg_mesh_psf, fld_nod)
-!      subroutine sectioning_type(istep_psf, istep_iso, ierror,         &
+!      subroutine init_sections_type(                                   &
+!     &         (fem, sf_mesh_psf, eg_mesh_psf, fld_nod)
+!      subroutine sectioning_type(istep_psf, istep_iso,                 &
 !     &          fem, eg_mesh_psf, fld_nod)
 !        type(mesh_data), intent(in) :: fem
 !        type(surface_geometry), intent(in) :: sf_mesh_psf
@@ -46,8 +46,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_sections_type(ierror,                             &
-     &          fem, sf_mesh_psf, eg_mesh_psf, fld_nod)
+      subroutine init_sections_type                                     &
+     &         (fem, sf_mesh_psf, eg_mesh_psf, fld_nod)
 !
       use m_control_data_sections
       use m_control_params_4_psf
@@ -62,8 +62,6 @@
       type(surface_geometry), intent(inout) :: sf_mesh_psf
       type(edge_geometry), intent(inout) :: eg_mesh_psf
       type(phys_data), intent(inout) :: fld_nod
-!
-      integer(kind = kint), intent(inout) :: ierror
 !
 !
       if ( (num_psf_ctl+num_iso_ctl) .gt. 0) then
@@ -86,13 +84,11 @@
      &      sf_mesh_psf%surf, eg_mesh_psf%edge, fld_nod)
       end if
 !
-      ierror = ierr
-!
       end subroutine init_sections_type
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sectioning_type(istep_psf, istep_iso, ierror,          &
+      subroutine sectioning_type(istep_psf, istep_iso,                  &
      &          fem, eg_mesh_psf, fld_nod)
 !
       use m_control_params_4_psf
@@ -105,7 +101,6 @@
       type(phys_data), intent(in) :: fld_nod
 !
       integer(kind = kint), intent(in) :: istep_psf, istep_iso
-      integer(kind = kint), intent(inout) :: ierror
 !
 !
 !      call set_linear_phy_data_type(fem, fld_nod)
@@ -118,7 +113,6 @@
         call isosurface_main_type(istep_psf, fem,                       &
      &      eg_mesh_psf%edge, fld_nod)
       end if
-      ierror = ierr
 !
       end subroutine sectioning_type
 !

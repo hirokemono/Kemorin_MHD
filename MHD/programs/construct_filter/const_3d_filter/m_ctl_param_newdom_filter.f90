@@ -1,9 +1,11 @@
 !m_ctl_param_newdom_filter.f90
 !      module m_ctl_param_newdom_filter
 !
-      module m_ctl_param_newdom_filter
-!
 !      modified by H. Matsui on Apr., 2008
+!
+!      subroutine set_control_filter_newdomain(ierr)
+!
+      module m_ctl_param_newdom_filter
 !
       use m_precision
 !
@@ -27,15 +29,13 @@
       integer(kind = kint), parameter :: id_org_filter_coef = 23
       integer(kind = kint), parameter :: id_org_filter_elen = 25
 !
-!      subroutine set_control_filter_newdomain
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_filter_newdomain
+      subroutine set_control_filter_newdomain(ierr)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -49,6 +49,8 @@
       use m_ctl_data_4_2nd_data
       use m_ctl_data_filter_files
       use m_ctl_data_org_filter_name
+!
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       if(i_num_new_domain .gt. 0) then

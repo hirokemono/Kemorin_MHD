@@ -31,11 +31,12 @@
       use m_control_data_vizs
       use set_control_visualizer
 !
+      integer(kind = kint) :: ierr
 !
 !     read controls
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
-      call read_control_data_vizs
+      call read_control_data_vizs(ierr)
       call set_control_params_4_viz(my_rank, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
@@ -67,7 +68,7 @@
 !  Rendering
         if(visval .eq. 0) then
           call visualize_all(istep_psf, istep_iso, istep_pvr,           &
-     &        istep_fline, ierr)
+     &        istep_fline)
         end if
       end do
 !

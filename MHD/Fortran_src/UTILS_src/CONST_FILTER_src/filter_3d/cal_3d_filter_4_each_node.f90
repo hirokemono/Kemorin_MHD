@@ -1,9 +1,13 @@
 !
 !      module cal_3d_filter_4_each_node
 !
-      module cal_3d_filter_4_each_node
-!
 !        programmed by H.Matsui on Mar., 2008
+!
+!      subroutine const_filter_mat_each_nod(inod, num_fixed_point, ierr)
+!      subroutine cal_filter_and_coefficients
+!      subroutine cal_rms_filter_coefs(rms_weight, rms_filter)
+!
+      module cal_3d_filter_4_each_node
 !
       use m_precision
 !
@@ -11,17 +15,13 @@
 !
       implicit none
 !
-!      subroutine const_filter_mat_each_nod(inod, num_fixed_point)
-!      subroutine cal_filter_and_coefficients
-!      subroutine cal_rms_filter_coefs(rms_weight, rms_filter)
-!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_filter_mat_each_nod(inod, num_fixed_point)
+      subroutine const_filter_mat_each_nod(inod, num_fixed_point, ierr)
 !
       use m_matrix_4_filter
       use set_constant_filter_coefs
@@ -31,6 +31,7 @@
 !
       integer(kind = kint), intent(in) :: inod
       integer(kind = kint), intent(in) :: num_fixed_point
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       ierr = 0

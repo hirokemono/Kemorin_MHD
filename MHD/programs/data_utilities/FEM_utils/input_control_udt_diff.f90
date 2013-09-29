@@ -34,6 +34,8 @@
       use set_ctl_diff_udt
       use set_control_nodal_data
 !
+      integer(kind = kint) :: ierr
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_diff_udt'
       call read_control_4_diff_udt
@@ -62,6 +64,8 @@
 !
       use set_ctl_diff_udt
       use set_control_nodal_data
+!
+      integer(kind = kint) :: ierr
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_ave_udt'

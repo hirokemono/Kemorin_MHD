@@ -35,7 +35,7 @@
 !
       use solver
 !
-      call MPI_BARRIER  (CALYPSO_COMM,ierr)
+      call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
       STARTTIME= MPI_WTIME()
  
       PRESET_crs= 2
@@ -59,7 +59,7 @@
 !
       use solver33
 !
-      call MPI_BARRIER  (CALYPSO_COMM,ierr)
+      call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
       STARTTIME= MPI_WTIME()
  
       PRESET_crs= 2
@@ -84,7 +84,7 @@
       use solverNN
 !
 !
-      call MPI_BARRIER  (CALYPSO_COMM,ierr)
+      call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
       STARTTIME= MPI_WTIME()
  
       PRESET_crs= 2

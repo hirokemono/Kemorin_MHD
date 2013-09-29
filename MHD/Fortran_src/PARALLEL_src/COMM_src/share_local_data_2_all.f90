@@ -47,7 +47,7 @@
 !
 !
       call MPI_AllGather(n_local, ione, CALYPSO_INTEGER,                &
-     &    num_each, ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr)
+     &    num_each, ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
 !
       istack(0) = 0
       do ip = 1, nprocs
@@ -80,7 +80,7 @@
       int_send(1:n_local) = int_local(1:n_local)
 !
       call MPI_AllGather(int_send, nmax, CALYPSO_INTEGER,               &
-     &    int_recv, nmax, CALYPSO_INTEGER, CALYPSO_COMM, ierr)
+     &    int_recv, nmax, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
 !
       do ip = 1, nprocs
         do i = 1, num_each(ip)
@@ -114,7 +114,7 @@
       real_send(1:n_local) = real_local(1:n_local)
 !
       call MPI_AllGather(real_send(1), nmax, CALYPSO_REAL,              &
-     &    real_recv(1), nmax, CALYPSO_REAL,  CALYPSO_COMM, ierr)
+     &    real_recv(1), nmax, CALYPSO_REAL,  CALYPSO_COMM, ierr_MPI)
 !
       do ip = 1, nprocs
         do i = 1, num_each(ip)
@@ -154,7 +154,7 @@
       call MPI_AllGather                                                &
      &    (real_send(1), (ithree*nmax), CALYPSO_REAL,                   &
      &     real_recv(1), (ithree*nmax), CALYPSO_REAL,                   &
-     &     CALYPSO_COMM, ierr)
+     &     CALYPSO_COMM, ierr_MPI)
 !
       do ip = 1, nprocs
         do i = 1, num_each(ip)
@@ -199,7 +199,7 @@
       call MPI_AllGather                                                &
      &    (real_send(1), (isix*nmax), CALYPSO_REAL,                     &
      &     real_recv(1), (isix*nmax), CALYPSO_REAL,                     &
-     &     CALYPSO_COMM, ierr)
+     &     CALYPSO_COMM, ierr_MPI)
 !
       do ip = 1, nprocs
         do i = 1, num_each(ip)

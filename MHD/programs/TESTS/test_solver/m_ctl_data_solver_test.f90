@@ -89,6 +89,8 @@
       use m_read_control_elements
       use skip_comment_f
 !
+      integer(kind = kint) :: ierr
+!
 !
       if(right_begin_flag(hd_solver_test_ctl) .eq. 0) return
       if (i_solver_test_ctl .gt. 0) return

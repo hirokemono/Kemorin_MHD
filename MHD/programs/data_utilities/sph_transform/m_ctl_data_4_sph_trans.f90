@@ -112,6 +112,7 @@
       use m_ctl_data_4_org_data
       use m_control_data_pvrs
 !
+      integer(kind = kint) :: ierr
 !
 !   2 begin phys_values_ctl
 !
@@ -130,7 +131,7 @@
         call read_sph_trans_model_ctl
         call read_sph_trans_params_ctl
 !
-        call read_viz_control_data
+        call read_viz_control_data(ierr)
         if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
       end do
 !

@@ -27,6 +27,8 @@
       use m_ctl_data_fem_MHD
       use set_control_MHD
 !
+      integer(kind = kint) :: ierr
+!
 !
       write(*,*) 'Simulation start: PE. ', my_rank
 !
@@ -77,7 +79,7 @@
         if (visval.eq.0) then
           call start_eleps_time(4)
           call visualize_all(istep_psf, istep_iso, istep_pvr,           &
-     &        istep_fline, ierr)
+     &        istep_fline)
 !
           call end_eleps_time(4)
         end if

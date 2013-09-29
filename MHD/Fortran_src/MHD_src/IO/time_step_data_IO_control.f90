@@ -66,9 +66,9 @@
 !
 !
         call MPI_allREDUCE (bulk_local, bulk_global, num_bulk,          &
-     &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
         call MPI_allREDUCE (rms_local, rms_global, num_rms,             &
-     &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
 !
          do nd = 1, num_bulk

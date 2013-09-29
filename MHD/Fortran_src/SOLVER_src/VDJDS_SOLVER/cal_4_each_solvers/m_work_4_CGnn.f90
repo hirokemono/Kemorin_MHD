@@ -20,7 +20,6 @@
       private :: iflag_work_CGnn
 !
       integer(kind = kint) :: iterPRE
-      integer(kind = kint) :: ierr
 !
       real(kind=kreal) :: RESID, TOL
       real(kind=kreal) :: BNRM2,  DNRM2,  C1,  RHO, RHO1, ALPHA, BETA

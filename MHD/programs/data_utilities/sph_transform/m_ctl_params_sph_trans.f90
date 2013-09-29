@@ -57,6 +57,8 @@
       use set_control_4_pickup_sph
       use output_parallel_ucd_file
 !
+      integer(kind = kint) :: ierr
+!
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)

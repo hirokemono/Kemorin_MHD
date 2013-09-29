@@ -293,8 +293,8 @@
       real(kind = kreal), allocatable :: xyz_med_g(:,:)
 !
 !
-      call MPI_Gather(npatch_grp, ione, CALYPSO_INTEGER,                &
-     &    npatch_l, ione, CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr)
+      call MPI_Gather(npatch_grp, ione, CALYPSO_INTEGER, npatch_l,      &
+     &    ione, CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .eq. 0) then
         do ip = 1, nprocs
@@ -307,18 +307,18 @@
       end if
 !
       call MPI_Isend(xyz_med(1,1), 9*npatch_grp, CALYPSO_REAL,          &
-     &      izero, 0, CALYPSO_COMM, req1, ierr)
+     &      izero, 0, CALYPSO_COMM, req1, ierr_MPI)
 !
       if(my_rank .eq. 0) then
         do ip = 1, nprocs
           ist = 3*istack_npatch_l(ip-1) + 1
           num = 9*npatch_l(ip)
-          call MPI_Irecv(xyz_med_g(1,ist), num,                         &
-     &        CALYPSO_REAL, (ip-1), 0, CALYPSO_COMM, req2(ip), ierr)
+          call MPI_Irecv(xyz_med_g(1,ist), num, CALYPSO_REAL,           &
+     &        (ip-1), 0, CALYPSO_COMM, req2(ip), ierr_MPI)
         end do
-        call MPI_WAITALL(nprocs, req2, sta2, ierr)
+        call MPI_WAITALL(nprocs, req2, sta2, ierr_MPI)
       end if
-      call MPI_WAITALL(ione, req1, sta1, ierr)
+      call MPI_WAITALL(ione, req1, sta1, ierr_MPI)
 !
       if(my_rank .eq. 0) then
           write(id_file,'(a)') '#'

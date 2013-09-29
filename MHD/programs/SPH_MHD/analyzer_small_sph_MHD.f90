@@ -68,7 +68,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
       call SPH_initialize_MHD
-      call calypso_MPI_barrier(ierr)
+      call calypso_MPI_barrier
 !
       call end_eleps_time(2)
 !
@@ -118,7 +118,7 @@
 !
       call output_elapsed_times
 !
-      call calypso_MPI_barrier(ierr)
+      call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
       end subroutine evolution_sph_mhd_only

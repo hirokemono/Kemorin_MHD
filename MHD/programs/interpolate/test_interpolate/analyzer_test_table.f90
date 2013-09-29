@@ -34,7 +34,9 @@
       use const_mesh_info
       use set_smp_size_4_2nd
 !
-!     --------------------- 
+      integer(kind = kint) :: ierr
+!
+!     ---------------------
 !
       if (my_rank.eq.0) then
         write(*,*) 'Construct commutation filter'
@@ -44,7 +46,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_itp_mesh'
-      call s_input_control_itp_mesh
+      call s_input_control_itp_mesh(ierr)
 !
 !     --------------------- 
 !

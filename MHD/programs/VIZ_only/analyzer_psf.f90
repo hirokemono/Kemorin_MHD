@@ -30,6 +30,7 @@
       use m_control_data_section_only
       use set_control_visualizer
 !
+      integer(kind = kint) :: ierr
 !
 !     read controls
 !
@@ -42,7 +43,7 @@
       call FEM_initialize_surface
 !
 !  VIZ Initialization
-      call init_visualize_surface(ierr)
+      call init_visualize_surface
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
       end subroutine init_analyzer
@@ -63,7 +64,7 @@
 !
 !  Generate field lines
         if(istep_psf.ge.0 .or. istep_iso.ge.0) then
-           call visualize_surface(istep_psf, istep_iso, ierr)
+           call visualize_surface(istep_psf, istep_iso)
         end if
       end do
 !

@@ -305,9 +305,9 @@
       enddo
 
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call MPI_allREDUCE (RHO0  , RHO,   1, CALYPSO_REAL,               &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
       if (BNRM2.eq.0.d0) BNRM2= 1.d0      
 !C===
@@ -552,7 +552,7 @@
       enddo
 
       call MPI_allREDUCE (RHO10, RHO1, 1, CALYPSO_REAL,                 &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
       ALPHA= RHO / RHO1
 !C===
@@ -932,7 +932,7 @@
       enddo
 
       call MPI_allREDUCE (C0, CG,  5, CALYPSO_REAL,                     &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
       if (iter.eq.1) then
         EQ(1)= CG(2)/CG(5)
         EQ(2)= 0.d0
@@ -989,9 +989,9 @@
       enddo
 
       call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,              &
-     &                     MPI_SUM, CALYPSO_COMM, ierr)
+     &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call MPI_allREDUCE  (COEF10, COEF1, 1, CALYPSO_REAL,              &
-     &                     MPI_SUM, CALYPSO_COMM, ierr)
+     &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
 !C
 !C +--------------------------------------+

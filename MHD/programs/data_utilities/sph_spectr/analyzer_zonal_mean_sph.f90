@@ -65,7 +65,7 @@
       call allocate_phys_rj_data
       call set_sph_sprctr_data_address
 !
-      call calypso_MPI_barrier(ierr)
+      call calypso_MPI_barrier
 !
       end subroutine init_analyzer
 !

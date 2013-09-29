@@ -34,7 +34,7 @@
       use copy_interpolate_org_IO
 !
       integer(kind = kint) :: jp
-      integer(kind = kint) :: my_rank_2nd
+      integer(kind = kint) :: my_rank_2nd, ierr
 !
 !
 !    set domain ID to be searched
@@ -109,7 +109,7 @@
 !
       integer(kind = kint), intent(in) :: n_org_rank, nprocs_dest
 !
-      integer(kind = kint) :: ip, n_dest_rank
+      integer(kind = kint) :: ip, n_dest_rank, ierr
 !
 !
       num_dest_domain = 0

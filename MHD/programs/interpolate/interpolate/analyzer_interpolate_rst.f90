@@ -42,13 +42,15 @@
 !
       use m_node_phys_data
 !
+      integer(kind = kint) :: ierr
+!
 !
       if (my_rank.eq.0)  write(*,*) 'Interpolate data to new mesh'
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
-      call s_input_control_interpolate
+      call s_input_control_interpolate(ierr)
 !
 !     --------------------- 
 !
@@ -140,9 +142,9 @@
         end if
 !
         call MPI_Bcast(time, ione, CALYPSO_REAL, izero,                 &
-     &      CALYPSO_COMM, ierr)
+     &      CALYPSO_COMM, ierr_MPI)
         call MPI_Bcast(i_step_MHD, ione, CALYPSO_INTEGER, izero,        &
-     &      CALYPSO_COMM, ierr)
+     &      CALYPSO_COMM, ierr_MPI)
 !
         if (iflag_debug.gt.0)  write(*,*) 's_interpolate_nodal_data'
         call s_interpolate_nodal_data

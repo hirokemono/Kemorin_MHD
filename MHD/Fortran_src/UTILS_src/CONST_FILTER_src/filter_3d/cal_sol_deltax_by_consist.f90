@@ -39,6 +39,7 @@
       real(kind= kreal), intent(inout) :: dx_nod(numnod)
 !
       integer (kind = kint) :: inod
+      integer(kind = kint) :: ierr
 !
 !
       call init_solver(ierr)

@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui on Apr., 2012
 !
-!      subroutine init_visualize_surface(ierror)
-!      subroutine visualize_surface(istep_psf, istep_iso, ierror)
+!      subroutine init_visualize_surface
+!      subroutine visualize_surface(istep_psf, istep_iso)
 !
 !      subroutine cross_section_init_1st
 !      subroutine isosurface_init_1st
@@ -27,15 +27,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize_surface(ierror)
+      subroutine init_visualize_surface
 !
       use m_control_data_sections
       use m_control_params_4_psf
       use m_control_params_4_iso
 !
       use set_psf_case_table
-!
-      integer(kind = kint), intent(inout) :: ierror
 !
 !
       if ( (num_psf_ctl+num_iso_ctl) .gt. 0) then
@@ -49,19 +47,16 @@
       num_iso = num_iso_ctl
       if (num_iso .gt. 0) call isosurface_init_1st
 !
-      ierror = ierr
-!
       end subroutine init_visualize_surface
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine visualize_surface(istep_psf, istep_iso, ierror)
+      subroutine visualize_surface(istep_psf, istep_iso)
 !
       use m_control_params_4_psf
       use m_control_params_4_iso
 !
       integer(kind = kint), intent(in) :: istep_psf, istep_iso
-      integer(kind = kint), intent(inout) :: ierror
 !
 !
       if (num_psf.gt.0 .and. istep_psf.gt.0) then
@@ -70,7 +65,6 @@
       if (num_iso.gt.0 .and. istep_iso.gt.0) then
         call isosurface_main_1st(istep_iso)
       end if
-      ierror = ierr
 !
       end subroutine visualize_surface
 !

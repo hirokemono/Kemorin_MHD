@@ -57,7 +57,7 @@
       real   (kind=kreal), intent(inout):: X(ithree*NP)
 ! \beginARG       communicated result vector
 
-      integer(kind = kint) :: neib, istart, inum, ierr, k, ii, ix
+      integer(kind = kint) :: neib, istart, inum, k, ii, ix
       integer(kind = kint) :: import_NB
 !
 !C    Check array size
@@ -82,9 +82,9 @@
         WS(ix  )= X(ii  )
       end do
 !
-      call MPI_WIN_FENCE(MPI_MODE_NOPRECEDE,win,ierr)
-!      call MPI_WIN_POST(nbr_group ,MPI_MODE_NOCHECK , win, ierr)
-!      call MPI_WIN_START(nbr_group ,MPI_MODE_NOCHECK , win, ierr)
+      call MPI_WIN_FENCE(MPI_MODE_NOPRECEDE,win,ierr_MPI)
+!      call MPI_WIN_POST(nbr_group ,MPI_MODE_NOCHECK , win, ierr_MPI)
+!      call MPI_WIN_START(nbr_group ,MPI_MODE_NOCHECK , win, ierr_MPI)
 !
       do neib= 1, NEIBPETOT
         istart= ithree*STACK_EXPORT(neib-1) + 1
@@ -92,13 +92,13 @@
         import_NB = ithree*import_a(neib) + 1
         call MPI_PUT (WS(istart), inum, CALYPSO_REAL,                   &
      &                NEIBPE(neib), import_NB, inum,                    &
-     &                CALYPSO_REAL, win, ierr)
+     &                CALYPSO_REAL, win, ierr_MPI)
 !
       enddo
 !
-!      call MPI_WIN_COMPLETE (win, ierr)
-!      call MPI_WIN_wait (win, ierr)
-      call MPI_WIN_FENCE(MPI_MODE_NOSUCCEED,win,ierr)
+!      call MPI_WIN_COMPLETE (win, ierr_MPI)
+!      call MPI_WIN_wait (win, ierr_MPI)
+      call MPI_WIN_FENCE(MPI_MODE_NOSUCCEED,win,ierr_MPI)
 !
       do k= STACK_IMPORT(0)+1, STACK_IMPORT(NEIBPETOT)
         ii   = ithree * NOD_IMPORT(k)
@@ -134,7 +134,7 @@
       real   (kind=kreal), intent(inout):: X3(ithree*NP)
 ! \beginARG       communicated result vector
 
-      integer (kind = kint) :: neib, istart, inum, ierr, k, ii, ix
+      integer (kind = kint) :: neib, istart, inum, ierr_MPI, k, ii, ix
       integer(kind = kint) :: import_NB
 !
 !C    Check array size
@@ -164,9 +164,9 @@
          WS(ix  )= X3(ii  )
       end do
 !
-      call MPI_WIN_FENCE(MPI_MODE_NOPRECEDE,win,ierr)
-!      call MPI_WIN_POST(nbr_group ,MPI_MODE_NOCHECK , win, ierr)
-!      call MPI_WIN_START(nbr_group ,MPI_MODE_NOCHECK , win, ierr)
+      call MPI_WIN_FENCE(MPI_MODE_NOPRECEDE,win,ierr_MPI)
+!      call MPI_WIN_POST(nbr_group ,MPI_MODE_NOCHECK , win, ierr_MPI)
+!      call MPI_WIN_START(nbr_group ,MPI_MODE_NOCHECK , win, ierr_MPI)
 !
       do neib= 1, NEIBPETOT
         istart= inine*STACK_EXPORT(neib-1)
@@ -174,13 +174,13 @@
         import_NB = inine*import_a(neib) + 1
         call MPI_PUT (WS(istart+1), inum, CALYPSO_REAL,                 &
      &                  NEIBPE(neib), import_NB, inum,                  &
-     &                  CALYPSO_REAL, win, ierr)
+     &                  CALYPSO_REAL, win, ierr_MPI)
 !
       enddo
 !
-!      call MPI_WIN_COMPLETE (win, ierr)
-!      call MPI_WIN_wait (win, ierr)
-      call MPI_WIN_FENCE(MPI_MODE_NOSUCCEED,win,ierr)
+!      call MPI_WIN_COMPLETE (win, ierr_MPI)
+!      call MPI_WIN_wait (win, ierr_MPI)
+      call MPI_WIN_FENCE(MPI_MODE_NOSUCCEED,win,ierr_MPI)
 !
       do k= STACK_IMPORT(0)+1, STACK_IMPORT(NEIBPETOT)
         ii   = ithree * NOD_IMPORT(k)

@@ -40,7 +40,7 @@
       end if
 !
       call MPI_Bcast(nnod_s_domin, ione, CALYPSO_INTEGER, izero,        &
-     &    CALYPSO_COMM, ierr)
+     &    CALYPSO_COMM, ierr_MPI)
 !
       END_TIME= MPI_WTIME()
       COMMtime = END_TIME - START_TIME
@@ -75,26 +75,26 @@
 !
 !
       call MPI_Bcast(num_intnod_sub(1), nprocs_2nd, CALYPSO_INTEGER,    &
-     &    izero, CALYPSO_COMM, ierr)
+     &    izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(istack_intnod_sub(1), nprocs_2nd, CALYPSO_INTEGER, &
-     &    izero, CALYPSO_COMM, ierr)
+     &    izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(ntot_intnod_sub,  ione, CALYPSO_INTEGER,           &
-     &    izero, CALYPSO_COMM, ierr)
+     &    izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(nmax_intnod_sub,  ione, CALYPSO_INTEGER,           &
-     &    izero, CALYPSO_COMM, ierr)
+     &    izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(nmin_intnod_sub,  ione, CALYPSO_INTEGER,           &
-     &    izero, CALYPSO_COMM, ierr)
+     &    izero, CALYPSO_COMM, ierr_MPI)
 !
       call MPI_Bcast(numnod_4_subdomain(1), nprocs_2nd,                 &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr)
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(istack_numnod_sub(1),  nprocs_2nd,                 &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr)
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(ntot_numnod_sub,  ione, CALYPSO_INTEGER,           &
-     &    izero, CALYPSO_COMM, ierr)
+     &    izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(nmax_numnod_sub,  ione, CALYPSO_INTEGER,           &
-     &    izero, CALYPSO_COMM, ierr)
+     &    izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(nmin_numnod_sub,  ione, CALYPSO_INTEGER,           &
-     &    izero, CALYPSO_COMM, ierr)
+     &    izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_num_filter_part_table
 !
@@ -111,11 +111,11 @@
       num = 3 * nnod_global
 !
       call MPI_Bcast(xx_whole_nod(1,1), num, CALYPSO_REAL,              &
-     &    izero, CALYPSO_COMM, ierr)
+     &    izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(inod_intnod_sub(1), ntot_intnod_sub,               &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr)
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(inod_4_subdomain(1), ntot_numnod_sub,              &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr)
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_xx_whole_nod
 !

@@ -150,9 +150,9 @@
       call cal_local_sproduct_and_norm_1(NP, N,                         &
      &           B, W(1,R), W(1,RT), RHO0, BNRM20)
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call MPI_allREDUCE (RHO0  , RHO,   1, CALYPSO_REAL,               &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
       if (BNRM2.eq.0.d0) BNRM2= 1.d0
 !C===
@@ -224,7 +224,7 @@
         call cal_local_s_product_1(NP, N, W(1,RT), W(1,PT), RHO10)
 !
         call MPI_allREDUCE (RHO10, RHO1, 1, CALYPSO_REAL,               &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
         ALPHA= RHO / RHO1
 !C===
 
@@ -291,7 +291,7 @@
         call cal_5_products_norm_1(NP, N,                               &
      &          W(1,Y), W(1,T), W(1,TT), CG, C0)
         call MPI_allREDUCE (C0, CG,  5, CALYPSO_REAL,                   &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
         if (iter.eq.1) then
           EQ(1)= CG(2)/CG(5)
@@ -329,9 +329,9 @@
      &      COEF10, DNRM20)
 
         call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,            &
-     &                     MPI_SUM, CALYPSO_COMM, ierr)
+     &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
         call MPI_allREDUCE  (COEF10, COEF1, 1, CALYPSO_REAL,            &
-     &                     MPI_SUM, CALYPSO_COMM, ierr)
+     &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
 !C +---------------------------------+
 !C | BETA = ALPHA*COEF1 / (QSI*RHO)  |

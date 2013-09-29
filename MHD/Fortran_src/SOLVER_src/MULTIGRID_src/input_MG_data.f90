@@ -36,7 +36,7 @@
       use edge_IO_select
       use set_mesh_types
 !
-      integer(kind = kint) :: i_level
+      integer(kind = kint) :: i_level, ierr
 !
       do i_level = 1, num_MG_level
         if(my_rank .lt. MG_vector(i_level)%nprocs ) then
@@ -91,7 +91,7 @@
       use itp_table_IO_select_4_zlib
       use copy_interpolate_type_IO
 !
-      integer(kind = kint) :: i_level
+      integer(kind = kint) :: i_level, ierr
 !
 !
       do i_level = 1, num_MG_level
@@ -201,7 +201,7 @@
       end if
 !
       call MPI_BCAST(num_grp_g, ithree, CALYPSO_INTEGER, 0,             &
-     &    CALYPSO_COMM, ierr)
+     &    CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ge. np_mpi) then
         nod_grp%num_grp = num_grp_g(1)
@@ -231,7 +231,7 @@
 !
       nlen_comm = kchara*ntot_grp
       call MPI_BCAST(grp_name_g, nlen_comm, CALYPSO_CHARACTER, 0,       &
-     &    CALYPSO_COMM, ierr)
+     &    CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ge. np_mpi) then
         ied = nod_grp%num_grp

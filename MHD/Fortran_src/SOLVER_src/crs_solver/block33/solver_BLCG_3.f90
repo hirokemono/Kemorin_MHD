@@ -83,7 +83,7 @@
 
       integer(kind=kint ), parameter ::NB= 3 
 !
-      integer(kind=kint ) :: P, Q, R, Z, ZP, MAXIT, IFLAG, ierr
+      integer(kind=kint ) :: P, Q, R, Z, ZP, MAXIT, IFLAG
       integer(kind=kint ) :: i, j, k, ip, inod, ip1, ip2, ip3
       integer(kind=kint ) :: iterPRE
       integer(kind=kint ) :: isL, iEL, isU, iEU
@@ -293,7 +293,7 @@
       enddo
 
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
       if (BNRM2.eq.0.d0) BNRM2= 1.d0
       ITER = 0
@@ -517,7 +517,7 @@
       enddo
 
       call MPI_allREDUCE (RHO0, RHO, 1, CALYPSO_REAL,                   &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !C===
 
 !C
@@ -571,7 +571,7 @@
      &           + WW(3*i  ,P)*WW(3*i  ,Q)
       enddo
       call MPI_allREDUCE (C10, C1, 1, CALYPSO_REAL,                     &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
       ALPHA= RHO / C1
 !C===
 
@@ -596,7 +596,7 @@
      &                                  + WW(3*i  ,R)**2
       enddo
       call MPI_allREDUCE (DNRM20, DNRM2, 1, CALYPSO_REAL,               &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
         RESID= dsqrt(DNRM2/BNRM2)
 
@@ -1919,7 +1919,7 @@
       real(kind=kreal), dimension(np,np) :: a
 !
       integer(kind=kint) :: ierr_g, ierr_l
-      integer(kind=kint) :: i, icol, irow, j, k, l, ll, ierr
+      integer(kind=kint) :: i, icol, irow, j, k, l, ll
       integer(kind=kint), dimension(n) :: indxc, indxr, ipiv
 
       real(kind=kreal) :: big, dum, pivinv
@@ -1947,7 +1947,7 @@
         enddo
 !
         call MPI_allREDUCE (ierr_l, ierr_g, 1, MPI_INTEGER,             &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
         if(ierr_g .gt. 0) return
 !
         ipiv(icol)= ipiv(icol) + 1
@@ -1967,7 +1967,7 @@
           ierr_l = 1
         end if
         call MPI_allREDUCE (ierr_l, ierr_g, 1, MPI_INTEGER,             &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
         if(ierr_g .gt. 0) return
 !
         pivinv= 1.d0 / a(icol,icol)

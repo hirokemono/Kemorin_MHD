@@ -28,6 +28,8 @@
       use m_ctl_param_newdom_filter
       use const_domain_tbl_by_file
 !
+      integer(kind = kint) :: ierr
+!
 !
       if (my_rank.eq.0) then
         write(*,*) 'Transfer filtering table to another decomposition'
@@ -49,7 +51,7 @@
       call read_control_filter_newdomain
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
-      call set_control_filter_newdomain
+      call set_control_filter_newdomain(ierr)
 !
       end subroutine init_analyzer
 !

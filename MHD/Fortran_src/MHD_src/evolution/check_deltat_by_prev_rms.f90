@@ -105,9 +105,9 @@
       end if
 !
       call MPI_allREDUCE (rms_dt_local, rms_dt_global(1), ntot_dratio,  &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call MPI_allREDUCE (ave_dt_local, ave_dt_global(1), ntot_dratio,  &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
 !
       do i = 1, ntot_dratio
@@ -201,9 +201,9 @@
 !
 !
       call MPI_allREDUCE (rms_dt_local, rms_dt_global(1), ntot_dratio,  &
-     &    CALYPSO_REAL, MPI_MAX, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_MAX, CALYPSO_COMM, ierr_MPI)
       call MPI_allREDUCE (ave_dt_local, ave_dt_global(1), ntot_dratio,  &
-     &    CALYPSO_REAL, MPI_MIN, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_MIN, CALYPSO_COMM, ierr_MPI)
 !
       rms_dt_global(0) = time - dt
       rms_dt_pre1 = 0.0d0

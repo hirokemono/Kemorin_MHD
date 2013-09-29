@@ -49,7 +49,7 @@
       call int_rms_divergence(iele_fl_smp_stack, ir_divv, iphys%i_velo)
 !
       call MPI_allREDUCE (rms_local(ir_divv) , rms_div_v_sig, 1,        &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       rms_div_v_sig = sqrt(rms_div_v_sig / vol_fluid)
 !
@@ -78,7 +78,7 @@
       call int_rms_divergence(iele_smp_stack, ir_divb, iphys%i_magne)
 !
       call MPI_allREDUCE (rms_local(ir_divb) , rms_div_b_sig, 1,        &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       rms_div_b_sig = sqrt(rms_div_b_sig / volume)
 !
@@ -108,7 +108,7 @@
       call int_rms_divergence(iele_smp_stack, ir_diva, iphys%i_vecp)
 !
       call MPI_allREDUCE ( rms_local(ir_diva) , rms_div_a_sig, 1,       &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       rms_div_a_sig = sqrt(rms_div_a_sig / volume)
       if (rms_div_a_sig .ne. 0.0d0 .and. iloop .ge.0) then

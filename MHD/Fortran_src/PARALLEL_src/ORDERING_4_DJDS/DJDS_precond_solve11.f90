@@ -7,7 +7,7 @@
 !     solve by DJDS solver using CRS matrix
 !     results are also copied to CRS array
 !
-!     subroutine solve_by_djds_solver11
+!     subroutine solve_by_djds_solver11(ierr)
 !
       module DJDS_precond_solve11
 !
@@ -22,7 +22,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_by_djds_solver11
+      subroutine solve_by_djds_solver11(ierr)
 !
       use calypso_mpi
       use m_parallel_var_dof
@@ -40,12 +40,14 @@
       use transfer_crs_2_djds
       use copy_matrix_2_djds_array
 !
+      integer(kind = kint), intent(inout) :: ierr
+!
 !
       call transfer_crs_2_djds_matrix
 !C
 !C== PRECONDITIONING
 !
-        call MPI_BARRIER(CALYPSO_COMM, ierr)
+        call MPI_BARRIER(CALYPSO_COMM, ierr_MPI)
         STARTTIME= MPI_WTIME()
  
         ierr = 1

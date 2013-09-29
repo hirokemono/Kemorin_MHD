@@ -91,26 +91,26 @@
 !
       do neib= 1, NEIBPETOT
         call MPI_ISEND (STACK_IMPORT(neib-1), 1, CALYPSO_INTEGER,       &
-     &                 NEIBPE(neib), 0, CALYPSO_COMM, req1(neib), ierr)
+     &      NEIBPE(neib), 0, CALYPSO_COMM, req1(neib), ierr_MPI)
       enddo
 !C
 !C-- RECEIVE
 !
       do neib= 1, NEIBPETOT
        call MPI_IRECV (tmp_stack(neib), 1, CALYPSO_INTEGER,             &
-     &                 NEIBPE(neib), 0, CALYPSO_COMM, req2(neib), ierr)
+     &     NEIBPE(neib), 0, CALYPSO_COMM, req2(neib), ierr_MPI)
       enddo
 
-      call MPI_WAITALL (NEIBPETOT, req2, sta2, ierr)
-      call MPI_WAITALL (NEIBPETOT, req1, sta1, ierr)
+      call MPI_WAITALL (NEIBPETOT, req2, sta2, ierr_MPI)
+      call MPI_WAITALL (NEIBPETOT, req1, sta1, ierr_MPI)
 !
       do neib= 1, NEIBPETOT
        import_a(neib) = tmp_stack(neib)
       enddo
 !
-!        call MPI_COMM_GROUP(CALYPSO_COMM, group, ierr)
-!        call MPI_GROUP_INCL(group, NEIBPETOT, NEIBPE, nbr_group, ierr)
-!        call MPI_GROUP_free(group, ierr)
+!        call MPI_COMM_GROUP(CALYPSO_COMM, group, ierr_MPI)
+!        call MPI_GROUP_INCL(group, NEIBPETOT, NEIBPE, nbr_group, ierr_MPI)
+!        call MPI_GROUP_free(group, ierr_MPI)
 !
       deallocate( tmp_stack )
       deallocate( sta1, sta2, req1, req2 )
@@ -134,7 +134,7 @@
       size_window = NB*STACK_IMPORT(NEIBPETOT) * kreal
 !
       call MPI_WIN_CREATE(WRecieve, size_window, kreal,                 &
-     &    MPI_INFO_NULL, CALYPSO_COMM, win, ierr)
+     &    MPI_INFO_NULL, CALYPSO_COMM, win, ierr_MPI)
 !
       iflag_win = NB*STACK_IMPORT(NEIBPETOT)
 !
@@ -155,7 +155,7 @@
       size_window = NB*STACK_IMPORT(NEIBPETOT) * kint
 !
       call MPI_WIN_CREATE(WRecieve, size_window, kint,                  &
-     &    MPI_INFO_NULL, CALYPSO_COMM, iwin, ierr)
+     &    MPI_INFO_NULL, CALYPSO_COMM, iwin, ierr_MPI)
 !
       iflag_iwin = NB*STACK_IMPORT(NEIBPETOT)
 !

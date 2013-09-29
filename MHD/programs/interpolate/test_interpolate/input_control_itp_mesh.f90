@@ -1,16 +1,15 @@
 !
 !      module input_control_itp_mesh
 !
-      module input_control_itp_mesh
-!
 !     Written by H. Matsui on July, 2006
+!
+!     subroutine s_input_control_itp_mesh(ierr)
+!
+      module input_control_itp_mesh
 !
       use m_precision
 !
       implicit none
-!
-!     subroutine s_input_control_itp_mesh
-!
 !
 ! ----------------------------------------------------------------------
 !
@@ -18,7 +17,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_itp_mesh
+      subroutine s_input_control_itp_mesh(ierr)
 !
         use m_parallel_var_dof
         use m_machine_parameter
@@ -35,6 +34,8 @@
         use copy_interpolate_dest_IO
         use copy_interpolate_org_IO
         use set_stack_tbl_wtype_org_smp
+!
+      integer(kind = kint), intent(inout) :: ierr
 !
 !  ----------------------------------------
 !

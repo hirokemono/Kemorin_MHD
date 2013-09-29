@@ -29,7 +29,6 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_parallel_var_dof
 !
       implicit  none
 !
@@ -54,17 +53,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_data_vizs
+      subroutine read_control_data_vizs(ierr)
 !
       use m_read_control_elements
       use skip_comment_f
+!
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       ctl_file_code = viz_ctl_file_code
       open (ctl_file_code, file=fname_viz_ctl, status='old' )
 !
       call load_ctl_label_and_line
-      call read_vizs_control_data
+      call read_vizs_control_data(ierr)
 !
       close(ctl_file_code)
 !
@@ -72,7 +73,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_vizs_control_data
+      subroutine read_vizs_control_data(ierr)
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
@@ -80,6 +81,8 @@
 !
       use skip_comment_f
       use m_control_data_pvrs
+!
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       ierr = 0
@@ -94,7 +97,7 @@
         call read_ctl_data_4_platform
         call read_time_step_ctl
 !
-        call read_viz_control_data
+        call read_viz_control_data(ierr)
       end do
 !
       end subroutine read_vizs_control_data

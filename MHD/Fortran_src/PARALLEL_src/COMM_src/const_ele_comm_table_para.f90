@@ -84,12 +84,12 @@
 !
       num_send = ele_comm_tmp(ip)%num_neib
       call MPI_Allgather(num_send, ione, CALYPSO_INTEGER, num_recv,     &
-     &    ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr)
+     &    ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
       ele_comm_tmp(1:nprocs)%num_neib = num_recv(1:nprocs)
 !
       num_send = ele_comm_tmp(ip)%ntot_import
       call MPI_Allgather(num_send, ione, CALYPSO_INTEGER, num_recv,     &
-     &    ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr)
+     &    ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
       ele_comm_tmp(1:nprocs)%ntot_import = num_recv(1:nprocs)
 !
 !
@@ -115,7 +115,7 @@
           num_recv(1:num) = ele_comm_tmp(ip)%id_neib(1:num)
         end if
         call MPI_Bcast(num_recv(1), num, CALYPSO_INTEGER, my_rank,      &
-     &      CALYPSO_COMM, ierr)
+     &      CALYPSO_COMM, ierr_MPI)
 !
         ele_comm_tmp(ip)%id_neib(1:num) = num_recv(1:num)
       end do
@@ -126,7 +126,7 @@
           num_recv(1:num) = ele_comm_tmp(ip)%istack_import(1:num)
         end if
         call MPI_Bcast(num_recv(1), num, CALYPSO_INTEGER, my_rank,      &
-     &      CALYPSO_COMM, ierr)
+     &      CALYPSO_COMM, ierr_MPI)
 !
         ele_comm_tmp(ip)%istack_import(0) =     0
         ele_comm_tmp(ip)%istack_import(1:num) = num_recv(1:num)
@@ -138,7 +138,7 @@
           num_recv(1:num) = ele_comm_tmp(ip)%item_import(1:num)
         end if
         call MPI_Bcast(num_recv(1), num, CALYPSO_INTEGER, my_rank,      &
-     &      CALYPSO_COMM, ierr)
+     &      CALYPSO_COMM, ierr_MPI)
 !
         ele_comm_tmp(ip)%item_import(1:num) = num_recv(1:num)
       end do
@@ -150,7 +150,7 @@
           num_recv(1:num) = ele_comm_tmp(ip)%item_import(1:num)
         end if
         call MPI_Bcast(num_recv(1), num, CALYPSO_INTEGER, my_rank,      &
-     &      CALYPSO_COMM, ierr)
+     &      CALYPSO_COMM, ierr_MPI)
 !
         ele_comm_tmp(ip)%item_import(1:num) = num_recv(1:num)
       end do
@@ -167,7 +167,7 @@
         end if
 !
         call MPI_Bcast(num_recv(1), num, CALYPSO_INTEGER, my_rank,      &
-     &      CALYPSO_COMM, ierr)
+     &      CALYPSO_COMM, ierr_MPI)
 !
         do j = 1, num
           do k1 = 1, nnod_4_ele

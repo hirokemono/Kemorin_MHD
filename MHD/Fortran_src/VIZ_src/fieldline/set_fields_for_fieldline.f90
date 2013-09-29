@@ -210,10 +210,10 @@
         end do
 !
         call MPI_allREDUCE(tot_flux_start_l, tot_flux_start, ione,      &
-     &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
         call MPI_AllGather(abs_flux_start_l, ione,                      &
      &      CALYPSO_REAL, flux_stack_fline(1), ione,                    &
-     &      CALYPSO_REAL, CALYPSO_COMM, ierr)
+     &      CALYPSO_REAL, CALYPSO_COMM, ierr_MPI)
 !
         flux_stack_fline(0) = 0.0d0
         do ip = 1, nprocs
@@ -319,7 +319,7 @@
 !
       call MPI_AllGather(num_line_local(i_fln), ione, CALYPSO_INTEGER,  &
      &    num_all_fline(1,i_fln), ione, CALYPSO_INTEGER,                &
-     &    CALYPSO_COMM, ierr)
+     &    CALYPSO_COMM, ierr_MPI)
 !
       if( id_fline_direction(i_fln) .eq. 0) then
         num_all_fline(1:nprocs,i_fln) = 2*num_all_fline(1:nprocs,i_fln)

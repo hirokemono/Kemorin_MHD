@@ -61,17 +61,19 @@
 !
       if (my_rank.ne.0) then
         call MPI_ISEND (isend, num_psf, CALYPSO_INTEGER, rank0, 0,      &
-     &                  CALYPSO_COMM, req1_psf(1), ierr)
+     &                  CALYPSO_COMM, req1_psf(1), ierr_MPI)
       end if
 !
       if (my_rank.eq.rank0) then
         do ip = 2, nprocs
           ip_sent = ip - 1
           call MPI_IRECV (irecv(1,ip), num_psf, CALYPSO_INTEGER,        &
-     &                    ip_sent, 0, CALYPSO_COMM, req2_psf(ip), ierr)
+     &                    ip_sent, 0, CALYPSO_COMM, req2_psf(ip),       &
+     &                    ierr_MPI)
         end do
 !
-        call MPI_WAITALL ((nprocs-1), req2_psf(2), sta2_psf(1,2), ierr)
+        call MPI_WAITALL ((nprocs-1), req2_psf(2), sta2_psf(1,2),       &
+     &                    ierr_MPI)
 !
         do i = 1, num_psf
           j = (i-1)*nprocs + 1
@@ -89,7 +91,7 @@
       end if
 !
       if (my_rank.ne.0) then
-        call MPI_WAITALL (ione, req1_psf(1), sta1_psf(1,1), ierr)
+        call MPI_WAITALL (ione, req1_psf(1), sta1_psf(1,1), ierr_MPI)
       end if
 !
 !

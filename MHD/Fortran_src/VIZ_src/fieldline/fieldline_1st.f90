@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui on Apr., 2012
 !
-!      subroutine init_visualize_fline(ierror)
-!      subroutine visualize_fline(istep_fline, ierror)
+!      subroutine init_visualize_fline
+!      subroutine visualize_fline(istep_fline)
 !
 !      subroutine field_line_init_1st
 !      subroutine field_line_main_1st(istep_psf)
@@ -24,36 +24,29 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize_fline(ierror)
+      subroutine init_visualize_fline
 !
       use m_control_data_flines
       use m_control_params_4_fline
-!
-      integer(kind = kint), intent(inout) :: ierror
 !
 !
       num_fline = num_fline_ctl
       if (num_fline .gt. 0) call field_line_init_1st
 !
-      ierror = ierr
-!
       end subroutine init_visualize_fline
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine visualize_fline(istep_fline, ierror)
+      subroutine visualize_fline(istep_fline)
 !
       use m_control_params_4_fline
 !
       integer(kind = kint), intent(in) :: istep_fline
-      integer(kind = kint), intent(inout) :: ierror
 !
 !
       if (num_fline.gt.0 .and. istep_fline .gt. 0) then
         call field_line_main_1st(istep_fline)
       end if
-!
-      ierror = ierr
 !
       end subroutine visualize_fline
 !

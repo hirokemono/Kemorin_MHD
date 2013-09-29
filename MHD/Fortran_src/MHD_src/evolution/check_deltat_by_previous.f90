@@ -97,9 +97,9 @@
       end do
 !
       call MPI_allREDUCE (d_ratio_max_l, d_ratio_max, ntot_dratio,  &
-     &    CALYPSO_REAL, MPI_MAX, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_MAX, CALYPSO_COMM, ierr_MPI)
       call MPI_allREDUCE (d_ratio_min_l, d_ratio_min, ntot_dratio,  &
-     &    CALYPSO_REAL, MPI_MIN, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_MIN, CALYPSO_COMM, ierr_MPI)
 !
 !
       d_ratio_allmax = d_ratio_max(1)

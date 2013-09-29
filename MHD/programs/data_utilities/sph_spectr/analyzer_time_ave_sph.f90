@@ -67,7 +67,7 @@
 !
 !  -------------------------------
 !
-      call calypso_MPI_barrier(ierr)
+      call calypso_MPI_barrier
 !
       end subroutine initialization
 !

@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine s_input_control_interpolate
+!      subroutine s_input_control_interpolate(ierr)
 !      subroutine set_ctl_interpolate_udt
 !
       module input_control_interpolate
@@ -21,7 +21,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_interpolate
+      subroutine s_input_control_interpolate(ierr)
 !
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
@@ -37,6 +37,8 @@
       use copy_interpolate_dest_IO
       use copy_interpolate_org_IO
       use set_stack_tbl_wtype_org_smp
+!
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_interpolate'
@@ -91,9 +93,11 @@
       use calypso_mpi
       use set_control_nodal_data
 !
+      integer(kind = kint) :: ierr
+!
 !
       call s_set_control_nodal_data(ierr)
-      if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
+      if (ierr .ne. 0) call calypso_MPI_abort(ierr_MPI, e_message)
 !
       end subroutine set_ctl_interpolate_udt
 !

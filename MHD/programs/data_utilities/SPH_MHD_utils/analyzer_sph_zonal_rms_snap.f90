@@ -82,9 +82,9 @@
 !        Initialize visualization
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
-      call init_visualize_surface(ierr)
+      call init_visualize_surface
 !
-      call calypso_MPI_barrier(ierr)
+      call calypso_MPI_barrier
       call end_eleps_time(2)
 !
       end subroutine initialize_sph_zonal_rms_snap
@@ -138,7 +138,7 @@
         if(visval .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
           call start_eleps_time(11)
-          call visualize_surface(istep_psf, istep_iso, ierr)
+          call visualize_surface(istep_psf, istep_iso)
           call end_eleps_time(11)
         end if
         call end_eleps_time(1)
@@ -163,7 +163,7 @@
 !
       call output_elapsed_times
 !
-      call calypso_MPI_barrier(ierr)
+      call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
       end subroutine evolution_sph_zonal_rms_snap

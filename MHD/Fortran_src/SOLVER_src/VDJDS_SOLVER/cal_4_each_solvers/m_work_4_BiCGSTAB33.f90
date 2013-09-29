@@ -18,7 +18,6 @@
       private :: iflag_work_BiCGSTAB33
 !
       integer(kind = kint) :: iterPRE
-      integer(kind = kint) :: ierr
 !
       real(kind=kreal) :: RESID, TOL
       real(kind=kreal) :: ALPHA, BETA, OMEGA

@@ -208,7 +208,7 @@
       enddo
 
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
       if (BNRM2.eq.0.d0) BNRM2= 1.d0
 
       iter= 0
@@ -230,7 +230,7 @@
       enddo
 
       call MPI_allREDUCE (RHO0, RHO, 1, CALYPSO_REAL,                   &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !C===
 
 !C
@@ -447,7 +447,7 @@
       enddo
 
       call MPI_allREDUCE (C20, C2, 1, CALYPSO_REAL,                     &
-     &                    MPI_SUM, CALYPSO_COMM, ierr) 
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI) 
       ALPHA= RHO / C2
 
 !C
@@ -655,7 +655,7 @@
       enddo
 
       call MPI_allREDUCE (C0, CG, 2, CALYPSO_REAL,                      &
-     &                    MPI_SUM, CALYPSO_COMM, ierr)
+     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
       OMEGA= CG(1) / CG(2)
 !C===
 
@@ -678,7 +678,7 @@
       RHO1= RHO
 
       call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,              &
-     &                     MPI_SUM, CALYPSO_COMM, ierr)
+     &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
       RESID= dsqrt(DNRM2/BNRM2)
 
 !C##### ITERATION HISTORY

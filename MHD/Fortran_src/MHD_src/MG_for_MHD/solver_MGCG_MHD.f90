@@ -43,6 +43,8 @@
       use solver_VMGCG11_DJDS_SMP
       use solver_VMGCG33_DJDS_SMP
 !
+      integer(kind = kint) :: ierr
+!
 !
       method = method_4_solver
       if ( ((method(1:1).eq.'M').or.(method(1:1).eq.'m')) .and.         &
@@ -86,6 +88,7 @@
       use solver33_DJDS
       use solver_VMGCG33_DJDS_SMP
 !
+      integer(kind = kint) :: ierr
 !
 !
       method = method_4_velo
@@ -139,6 +142,8 @@
       use solver_DJDS
       use solver_VMGCG11_DJDS_SMP
 !
+      integer(kind = kint) :: ierr
+!
 !
        method = method_4_solver
       if (iflag_debug.eq.1) then
@@ -189,6 +194,8 @@
       use solver33_DJDS
       use solver_VMGCG33_DJDS_SMP
 !
+      integer(kind = kint) :: ierr
+!
 !
        method = method_4_velo
        if (iflag_debug.eq.1) then
@@ -237,6 +244,8 @@
       use m_mag_potential_matrix
       use solver_DJDS
       use solver_VMGCG11_DJDS_SMP
+!
+      integer(kind = kint) :: ierr
 !
 !
       method = method_4_solver
@@ -291,7 +300,7 @@
 !      use check_DJDS_ordering
 !      use solver_CG
 !
-!      integer :: i
+      integer(kind = kint) :: ierr
 !
 !
       method = method_4_solver
@@ -371,6 +380,8 @@
       use solver_DJDS
       use solver_VMGCG11_DJDS_SMP
 !      use check_DJDS_ordering
+!
+      integer(kind = kint) :: ierr
 !
 !
       method = method_4_solver

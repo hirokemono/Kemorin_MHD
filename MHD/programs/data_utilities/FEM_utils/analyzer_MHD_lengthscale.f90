@@ -45,6 +45,8 @@
       use product_udt_fields
       use set_fixed_time_step_params
 !
+      integer(kind = kint) :: ierr
+!
 !
       if (my_rank.eq.0) then
         write(*,*) 'Get length scale'
@@ -114,7 +116,7 @@
       end do
 !
       call deallocate_work_4_lscale
-      call calypso_MPI_barrier(ierr)
+      call calypso_MPI_barrier
 !
       end subroutine analyze_MHD_lscale
 !

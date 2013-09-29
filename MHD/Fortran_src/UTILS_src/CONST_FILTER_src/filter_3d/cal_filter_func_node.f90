@@ -14,12 +14,6 @@
       integer(kind = kint), parameter :: num_fixed_point = 0
       private :: num_fixed_point
 !
-!      subroutine const_filter_func_nod_by_nod
-!      subroutine const_fluid_filter_nod_by_nod
-!
-!      subroutine set_simple_filter
-!      subroutine set_simple_fluid_filter
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -33,7 +27,7 @@
       use cal_filter_func_each_node
       use expand_filter_area_4_1node
 !
-      integer(kind = kint) :: inod
+      integer(kind = kint) :: inod, ierr
 !
 !
       call init_4_cal_fileters
@@ -41,7 +35,7 @@
       write(70+my_rank,*) ' Best condition for filter'
 !
       do inod = inod_start_filter, inod_end_filter
-        call const_filter_func_nod_by_nod(inod)
+        call const_filter_func_nod_by_nod(inod, ierr)
       end do
 !
       end subroutine const_commute_filter_coefs
@@ -55,7 +49,7 @@
       use cal_filter_func_each_node
       use expand_filter_area_4_1node
 !
-      integer(kind = kint) :: inod
+      integer(kind = kint) :: inod, ierr
 !
 !
       call init_4_cal_fluid_fileters
@@ -63,7 +57,7 @@
       write(70+my_rank,*) ' Best condition for fluid filter'
 !
       do inod = inod_start_filter, inod_end_filter
-        call const_fluid_filter_nod_by_nod(inod)
+        call const_fluid_filter_nod_by_nod(inod, ierr)
       end do
 !
       end subroutine const_fluid_filter_coefs

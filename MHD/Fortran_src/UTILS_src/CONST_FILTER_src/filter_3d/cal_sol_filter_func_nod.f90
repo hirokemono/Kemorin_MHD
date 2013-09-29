@@ -82,6 +82,7 @@
       use solver_single
 !
       integer(kind = kint), intent(in) :: inod
+      integer(kind = kint) :: ierr
 !
 !
       INTARRAY(1) = itr

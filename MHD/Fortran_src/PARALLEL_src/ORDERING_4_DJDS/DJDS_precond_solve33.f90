@@ -1,5 +1,5 @@
 !
-!      module DJDS_precond_solve33
+!      module DJDS_precond_solve33(ierr)
 !
 !     Written by H. Matsui
 !     Modified by H. Matsui on Apr., 2008
@@ -20,7 +20,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_by_djds_solver33
+      subroutine solve_by_djds_solver33(ierr)
 !
       use calypso_mpi
       use m_parallel_var_dof
@@ -38,12 +38,14 @@
       use transfer_crs_2_djds
       use copy_matrix_2_djds_array
 !
+      integer(kind = kint), intent(inout) :: ierr
+!
 !
       call transfer_crs_2_djds_matrix
 !C
 !C== PRECONDITIONING
 !
-        call MPI_BARRIER  (CALYPSO_COMM, ierr)
+        call MPI_BARRIER  (CALYPSO_COMM, ierr_MPI)
         STARTTIME= MPI_WTIME()
 !
         if (num_neib .gt. 0) then

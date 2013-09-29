@@ -57,7 +57,7 @@
       call FEM_initialize_MHD
 !
       call start_eleps_time(2)
-      call init_visualize_surface(ierr)
+      call init_visualize_surface
       call end_eleps_time(2)
 !
       end subroutine initialization_MHD
@@ -85,7 +85,7 @@
 !  Visualization
         if (visval.eq.0) then
           call start_eleps_time(4)
-          call visualize_surface(istep_psf, istep_iso, ierr)
+          call visualize_surface(istep_psf, istep_iso)
           call end_eleps_time(4)
         end if
 !

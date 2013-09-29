@@ -47,7 +47,7 @@
       end do
 !
       call MPI_allREDUCE ( nele_l, nele_g, 1, CALYPSO_INTEGER,          &
-     &   MPI_SUM, CALYPSO_COMM, ierr)
+     &   MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       if (my_rank.eq.0) write(*,*)                                      &
      &      'number of element for whole domain:  ', nele_g

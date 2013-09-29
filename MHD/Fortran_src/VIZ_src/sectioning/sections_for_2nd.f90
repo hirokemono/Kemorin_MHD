@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui on Apr., 2012
 !
-!      subroutine init_sections_2nd(ierror)
-!      subroutine sectioning_2nd(istep_psf, istep_iso, ierror)
+!      subroutine init_sections_2nd
+!      subroutine sectioning_2nd(istep_psf, istep_iso)
 !
 !      subroutine cross_section_init_2nd
 !      subroutine isosurface_init_2nd
@@ -27,7 +27,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_sections_2nd(ierror)
+      subroutine init_sections_2nd
 !
       use m_quad_2_triangle
 !
@@ -37,8 +37,6 @@
 !
       use const_linear_mesh_2nd
       use set_psf_case_table
-!
-      integer(kind = kint), intent(inout) :: ierror
 !
 !
       if ( (num_psf_ctl+num_iso_ctl) .gt. 0) then
@@ -54,13 +52,11 @@
       num_iso = num_iso_ctl
       if (num_iso .gt. 0) call isosurface_init_2nd
 !
-      ierror = ierr
-!
       end subroutine init_sections_2nd
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sectioning_2nd(istep_psf, istep_iso, ierror)
+      subroutine sectioning_2nd(istep_psf, istep_iso)
 !
       use m_control_params_4_psf
       use m_control_params_4_iso
@@ -68,7 +64,6 @@
       use const_linear_mesh_2nd
 !
       integer(kind = kint), intent(in) :: istep_psf, istep_iso
-      integer(kind = kint), intent(inout) :: ierror
 !
 !
       call set_linear_phys_data_2nd
@@ -79,7 +74,6 @@
       if (num_iso.gt.0 .and. istep_iso.gt.0) then
         call isosurface_main_2nd(istep_iso)
       end if
-      ierror = ierr
 !
       end subroutine sectioning_2nd
 !

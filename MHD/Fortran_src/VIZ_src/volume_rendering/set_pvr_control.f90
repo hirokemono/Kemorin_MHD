@@ -4,7 +4,7 @@
 !     Written by H. Matsui on May., 2006
 !
 !      subroutine s_set_pvr_control(num_mat, mat_name,                  &
-!     &          num_nod_phys, phys_nod_name)
+!     &          num_nod_phys, phys_nod_name, ierr)
 !
       module set_pvr_control
 !
@@ -25,7 +25,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_pvr_control(num_mat, mat_name,                   &
-     &          num_nod_phys, phys_nod_name)
+     &          num_nod_phys, phys_nod_name, ierr)
 !
       use set_control_each_pvr
       use set_field_comp_for_viz
@@ -35,6 +35,7 @@
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+      integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: i
 !
@@ -45,7 +46,7 @@
       call allocate_pvr_ctl_struct
 !
       do i = 1, num_pvr
-        call read_control_pvr(i)
+        call read_control_pvr(i, ierr)
       end do
 !
       do i = 1, num_pvr
@@ -73,11 +74,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_pvr(i_pvr)
+      subroutine read_control_pvr(i_pvr, ierr)
 !
       use m_parallel_var_dof
 !
       integer(kind = kint), intent(in) :: i_pvr
+      integer(kind = kint), intent(inout) :: ierr
+!
+!
 !
       if(fname_pvr_ctl(i_pvr) .eq. 'NO_FILE') return
 !

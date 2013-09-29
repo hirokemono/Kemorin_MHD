@@ -171,6 +171,8 @@
       use m_ctl_data_4_fem_int_pts
       use m_ctl_data_mhd_evo_scheme
 !
+      integer(kind = kint) :: ierr
+!
 !
       if(right_begin_flag(hd_control) .eq. 0) return
       if (i_control .gt. 0) return

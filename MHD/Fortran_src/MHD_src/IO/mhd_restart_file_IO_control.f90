@@ -24,7 +24,7 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_t_step_parameter
 !
       implicit  none
@@ -143,7 +143,6 @@
 !
       subroutine input_restart_files
 !
-      use calypso_mpi
       use m_control_parameter
       use m_t_int_parameter
       use m_file_format_switch
@@ -151,6 +150,8 @@
       use field_IO_select
       use set_field_to_restart
       use copy_time_steps_4_restart
+!
+      integer(kind = kint) :: ierr
 !
 !
       call check_step_FEM_field_file(my_rank, istep_rst_start, ierr)

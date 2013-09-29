@@ -92,7 +92,7 @@
       call sum_4_volume(iele_fl_smp_stack, vol_fl_local)
 !
       call MPI_allREDUCE (vol_fl_local, vol_fluid, 1,                   &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       if (vol_fluid .eq. 0.0d0) then
         a_vol_fl = 1.0d30
@@ -115,7 +115,7 @@
       call sum_4_volume(iele_cd_smp_stack, vol_cd_local)
 !
       call MPI_allREDUCE (vol_cd_local, vol_conduct, 1,                 &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       if (vol_conduct .eq. 0.0d0) then
         a_vol_cd = 1.0d30
@@ -138,7 +138,7 @@
       call sum_4_volume(iele_ins_smp_stack, vol_ins_local)
 !
       call MPI_allREDUCE (vol_ins_local, vol_insulate, 1,               &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       if (vol_insulate .eq. 0.0d0) then
         a_vol_ins = 1.0d30

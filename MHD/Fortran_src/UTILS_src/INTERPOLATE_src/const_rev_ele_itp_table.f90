@@ -36,7 +36,7 @@
       use const_interpolate_4_org
 !
       integer(kind = kint) :: jp
-      integer(kind = kint) :: my_rank_2nd
+      integer(kind = kint) :: my_rank_2nd, ierr
 !
 !
 !    set domain ID to be searched

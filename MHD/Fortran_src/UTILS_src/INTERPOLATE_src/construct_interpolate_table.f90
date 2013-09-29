@@ -95,7 +95,7 @@
   1     continue
 !
         call MPI_allREDUCE (ierr_local, ierr_missing, 1,                &
-     &      CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr)
+     &      CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
         if (ierr_missing .eq. 0) exit
 !
       end do

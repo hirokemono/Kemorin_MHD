@@ -49,7 +49,7 @@
       call int_norm_divergence(iele_fl_smp_stack, ja_divv,             &
      &    iphys%i_velo)
       call MPI_allREDUCE ( bulk_local(ja_divv) , div_v_sig, 1,         &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
 !
       div_v_sig = abs(div_v_sig) / vol_fluid
@@ -77,7 +77,7 @@
 !
       call int_norm_divergence(iele_smp_stack, ja_divb, iphys%i_magne)
       call MPI_allREDUCE ( bulk_local(ja_divb) , div_b_sig, 1,          &
-     &  CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &  CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       div_b_sig = abs(div_b_sig) / volume
 !
@@ -104,7 +104,7 @@
 !
       call int_norm_divergence(iele_smp_stack, ja_diva, iphys%i_vecp)
       call MPI_allREDUCE ( bulk_local(ja_diva) , div_a_sig, 1,          &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       div_a_sig = abs(div_a_sig) / volume
 !

@@ -57,6 +57,7 @@
       use m_ctl_data_4_pickup_sph
 !
       integer (kind = kint) :: i
+      integer(kind = kint) :: ierr
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)

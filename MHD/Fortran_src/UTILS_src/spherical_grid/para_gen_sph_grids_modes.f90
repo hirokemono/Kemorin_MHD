@@ -121,7 +121,7 @@
 !
       if(iflag_memory_conserve_sph .gt. 0) then
         write(*,*) 'barrier for rlm', my_rank
-        call calypso_MPI_barrier(ierr)
+        call calypso_MPI_barrier
       end if
 !
       end subroutine para_gen_sph_transfer_grids
