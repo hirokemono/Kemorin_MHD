@@ -3,7 +3,6 @@
 !
       use m_precision
       use m_constants
-      use m_parallel_var_dof
       use m_work_time
       use calypso_mpi
 !
@@ -23,7 +22,7 @@
       implicit none
 !
 !
-      call parallel_cal_init
+      call calypso_MPI_init
       total_start = MPI_WTIME()
 !
 !     --------------------- 

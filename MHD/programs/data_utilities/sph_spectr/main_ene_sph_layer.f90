@@ -8,7 +8,6 @@
       program ene_sph_layer
 !
       use m_precision
-      use m_parallel_var_dof
       use calypso_mpi
 !
       use analyzer_ene_sph_layer
@@ -16,7 +15,7 @@
       implicit none
 !
 !
-      call parallel_cal_init
+      call calypso_MPI_init
 !
       call initialize_ene_sph_layer
       call analyze_ene_sph_layer

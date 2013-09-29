@@ -10,14 +10,13 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
       use calypso_mpi
       use analyzer_udt_diff
 
       implicit none
 !
 !
-      call parallel_cal_init
+      call calypso_MPI_init
 !
       call initialize_udt_diff
       call analyze_udt_diff

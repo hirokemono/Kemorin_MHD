@@ -23,19 +23,6 @@
 !
       real(kind=kreal) :: START_TIME, END_TIME, COMMtime
 ! 
-! ----------------------------------------------------------------------
-!
-      contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine parallel_cal_init
-!
-!
-      call calypso_MPI_init
-!
-      end subroutine parallel_cal_init
-!
 !  ---------------------------------------------------------------------
 !
       end module   m_parallel_var_dof

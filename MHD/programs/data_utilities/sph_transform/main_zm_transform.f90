@@ -8,13 +8,12 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
       use calypso_mpi
       use analyzer_zm_transform
 !
       implicit none
 !
-      call parallel_cal_init
+      call calypso_MPI_init
 !
       call init_zm_trans
       call analyze_zm_trans

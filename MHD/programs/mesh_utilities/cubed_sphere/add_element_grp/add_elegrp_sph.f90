@@ -3,14 +3,13 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
       use calypso_mpi
       use analyzer_add_ele_group
 !
       implicit none
 !
 !
-      call parallel_cal_init
+      call calypso_MPI_init
 !
       call initialize_add_egrp
 !

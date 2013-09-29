@@ -11,13 +11,12 @@
       use m_precision
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use analyzer_MHD
 !
       implicit none
 !
 !
-      call parallel_cal_init
+      call calypso_MPI_init
 !
       call initialization_MHD
       call evolution_MHD

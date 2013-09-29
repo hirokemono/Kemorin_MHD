@@ -9,14 +9,13 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
       use calypso_mpi
       use analyzer_pick_rms_vol
 !
       implicit none
 !
 !
-      call parallel_cal_init
+      call calypso_MPI_init
 !
       call initialyze_pick_rms_vol
       call analyze_pick_rms_vol

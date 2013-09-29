@@ -11,14 +11,13 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
       use calypso_mpi
       use analyzer_fline
 !
       implicit none
 !
 !
-      call parallel_cal_init
+      call calypso_MPI_init
 !
       call initialize_fline
       call analyze

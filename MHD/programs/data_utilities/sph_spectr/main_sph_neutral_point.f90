@@ -10,12 +10,11 @@
 !
       use analyzer_sph_neutral_point
       use calypso_mpi
-      use m_parallel_var_dof
 
       implicit none
 !
 !
-      call parallel_cal_init
+      call calypso_MPI_init
 !
       call init_analyzer
 

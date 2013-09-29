@@ -10,12 +10,11 @@
 !
       use analyzer_time_ave_sph
       use calypso_mpi
-      use m_parallel_var_dof
 !
       implicit none
 !
 !
-      call parallel_cal_init
+      call calypso_MPI_init
 !
 !
       call initialization

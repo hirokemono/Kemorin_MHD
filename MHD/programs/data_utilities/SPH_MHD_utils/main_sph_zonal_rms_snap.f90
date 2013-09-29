@@ -12,14 +12,13 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
       use calypso_mpi
       use analyzer_sph_zonal_rms_snap
 !
       implicit none
 !
 !
-      call parallel_cal_init
+      call calypso_MPI_init
 !
       call initialize_sph_zonal_rms_snap
       call evolution_sph_zonal_rms_snap
