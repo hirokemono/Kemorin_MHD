@@ -7,7 +7,6 @@
 !
       use m_precision
 !
-      use calypso_mpi
       use m_parallel_var_dof
 !
       implicit none
@@ -76,6 +75,7 @@
 !
       subroutine s_check_num_fail_nod_commute
 !
+      use calypso_mpi
       use m_filter_coefs
 !
       integer(kind = kint) :: ip, id_dest
@@ -87,16 +87,17 @@
       if (my_rank .ne. izero) then
         isend_failed(1) = num_failed_whole
         isend_failed(2) = num_failed_fluid
-        call MPI_ISEND (isend_failed(1), itwo, MPI_INTEGER,             &
-     &      izero, izero, SOLVER_COMM, i_req1, ierr)
+        call MPI_ISEND (isend_failed(1), itwo, CALYPSO_INTEGER,         &
+     &      izero, izero, CALYPSO_COMM, i_req1, ierr)
       end if
 !C
 !C-- RECEIVE
       if (my_rank .eq. izero) then
         do ip = 2, nprocs
           id_dest = ip - 1
-          call MPI_IRECV (irecv_failed(1,id_dest), itwo, MPI_INTEGER,   &
-     &        id_dest, izero, SOLVER_COMM,  i_req2(id_dest), ierr)
+          call MPI_IRECV (irecv_failed(1,id_dest), itwo,                &
+     &        CALYPSO_INTEGER, id_dest, izero, CALYPSO_COMM,            &
+     &        i_req2(id_dest), ierr)
         end do
 !
         call MPI_WAITALL (nprocs-1, i_req2(1), i_sta2(1,1), ierr)

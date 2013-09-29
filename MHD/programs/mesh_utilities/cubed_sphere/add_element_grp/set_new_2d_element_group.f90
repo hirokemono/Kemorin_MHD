@@ -84,6 +84,7 @@
 !
       subroutine count_new_2d_element_group
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_add_ele_grp_parameter
       use m_element_group
@@ -111,7 +112,7 @@
       end if
 !
       call MPI_allREDUCE(nitem_added_lc, nitem_added_gl, ngrp_added,    &
-     &    MPI_INTEGER, MPI_SUM, SOLVER_COMM, ierr)
+     &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr)
 !
       end subroutine count_new_2d_element_group
 !

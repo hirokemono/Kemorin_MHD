@@ -27,6 +27,7 @@
 !
       subroutine s_check_deltat_by_previous
 !
+      use calypso_mpi
       use m_control_parameter
       use m_node_phys_address
 !
@@ -96,9 +97,9 @@
       end do
 !
       call MPI_allREDUCE (d_ratio_max_l, d_ratio_max, ntot_dratio,  &
-     &    MPI_DOUBLE_PRECISION, MPI_MAX, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_MAX, CALYPSO_COMM, ierr)
       call MPI_allREDUCE (d_ratio_min_l, d_ratio_min, ntot_dratio,  &
-     &    MPI_DOUBLE_PRECISION, MPI_MIN, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_MIN, CALYPSO_COMM, ierr)
 !
 !
       d_ratio_allmax = d_ratio_max(1)

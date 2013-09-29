@@ -86,9 +86,7 @@
 !
       if (my_rank.eq.0) write (*,*) ITERactual, "  iters"
 
-      call MPI_BARRIER  (SOLVER_COMM,ierr)
-!
-       end subroutine init_analyzer
+      end subroutine init_analyzer
 !
 ! ----------------------------------------------------------------------
 !

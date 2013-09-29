@@ -20,9 +20,6 @@
 !
       implicit  none
 !
-!>      MPI communicator for CALYPSO
-      integer(kind=kint) :: SOLVER_COMM
-! 
 !>      process ID (start from 0)
       integer(kind=kint) :: my_rank
 !>      error flag
@@ -40,8 +37,7 @@
 !
 !
       call calypso_MPI_init
-      call  MPI_COMM_DUP (MPI_COMM_WORLD, SOLVER_COMM, ierr)
-      call  MPI_COMM_RANK(SOLVER_COMM, my_rank  , ierr)
+      call  MPI_COMM_RANK(CALYPSO_COMM, my_rank  , ierr)
 !
       end subroutine parallel_cal_init
 !

@@ -30,6 +30,7 @@
 !
       subroutine count_rcm(NHYP, OLDtoNEW, NEWtoOLD,  NLmax, NUmax)
 !
+      use calypso_mpi
       use m_machine_parameter
       use m_parallel_var_dof
       use m_iccg_parameter
@@ -136,8 +137,8 @@
 !C===
 !C
 !C-- ORDERING
-        call MPI_allREDUCE (NHYP, NHYPmax, 1, MPI_INTEGER, MPI_MAX,     &
-     &                    SOLVER_COMM, ierr)
+        call MPI_allREDUCE (NHYP, NHYPmax, 1, CALYPSO_INTEGER, MPI_MAX, &
+     &                      CALYPSO_COMM, ierr)
 
         NCOLORtot= min_color
         if (NCOLORtot.gt.NHYPmax/2) then
@@ -162,8 +163,8 @@
      &      ntot_mc_l, ntot_mc_u, istack_mc_l, istack_mc_u,             &
      &      item_mc_l, item_mc_u, NCOLORtot, IVECmc, IVnew, IW, IFLAG)
 !
-        call MPI_allREDUCE (IFLAG, IFLAGmax, 1, MPI_INTEGER, MPI_MAX,   &
-     &                    SOLVER_COMM, ierr)
+        call MPI_allREDUCE (IFLAG, IFLAGmax, 1, CALYPSO_INTEGER,        &
+     &                    MPI_MAX, CALYPSO_COMM, ierr)
       
         if (IFLAGmax.eq.1) then
           NCOLORtot= NCOLORtot + 1

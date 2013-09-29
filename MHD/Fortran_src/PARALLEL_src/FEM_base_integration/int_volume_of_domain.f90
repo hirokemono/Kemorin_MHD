@@ -52,6 +52,7 @@
 !
       subroutine s_int_volume_of_domain
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_geometry_parameter
       use m_geometry_data
@@ -70,7 +71,7 @@
 !
 !      write(*,*) 'MPI_allREDUCE'
        call MPI_allREDUCE (vol_local, volume, 1,                        &
-     &  MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &  CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
        if (volume .eq. 0.0d0) then
          a_vol = 1.0d30

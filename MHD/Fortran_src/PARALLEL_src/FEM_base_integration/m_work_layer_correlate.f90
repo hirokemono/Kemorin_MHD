@@ -117,6 +117,7 @@
 !
       subroutine sum_layerd_averages
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_layering_ele_list
 !
@@ -129,9 +130,9 @@
       rms_les(1:n_layer_d,1:ncomp_correlate_2) = 0.0d0
 !
         call MPI_allREDUCE ( ave_l(1,1), ave_les(1,1), num,             &
-     &     MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &     CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
         call MPI_allREDUCE ( rms_l(1,1), rms_les(1,1), num,             &
-     &     MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &     CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
       end subroutine sum_layerd_averages
 !
@@ -139,6 +140,7 @@
 !
       subroutine sum_layerd_correlation
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_layering_ele_list
 !
@@ -152,9 +154,9 @@
       cov_les(1:n_layer_d,1:ncomp_correlate  ) = 0.0d0
 !
       call MPI_allREDUCE ( sig_l, sig_les, num_2,                       &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
       call MPI_allREDUCE ( cov_l, cov_les, num_1,                       &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
       end subroutine sum_layerd_correlation
 !
@@ -163,6 +165,7 @@
 !
       subroutine sum_whole_averages
 !
+      use calypso_mpi
       use m_parallel_var_dof
 !
 !
@@ -170,9 +173,9 @@
       rms_wg(1:ncomp_correlate_2) = 0.0d0
 !
         call MPI_allREDUCE (ave_w, ave_wg, ncomp_correlate_2,           &
-     &     MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &     CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
         call MPI_allREDUCE (rms_w, rms_wg, ncomp_correlate_2,           &
-     &     MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &     CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
       end subroutine sum_whole_averages
 !
@@ -180,6 +183,7 @@
 !
       subroutine sum_whole_correlation
 !
+      use calypso_mpi
       use m_parallel_var_dof
 !
 !
@@ -187,9 +191,9 @@
       cov_wg(1:ncomp_correlate  ) = 0.0d0
 !
       call MPI_allREDUCE ( sig_w, sig_wg, ncomp_correlate_2,            &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
       call MPI_allREDUCE ( cov_w, cov_wg, ncomp_correlate,              &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
       end subroutine sum_whole_correlation
 !

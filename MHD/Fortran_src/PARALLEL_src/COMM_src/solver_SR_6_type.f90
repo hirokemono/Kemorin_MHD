@@ -3,11 +3,9 @@
 !
 !     Written by H. Matsui on Jan., 2009
 !
-!      subroutine SOLVER_SEND_RECV_6_type(NP, comm_tbl, X, my_rank,     &
-!     &          SOLVER_COMM)
+!      subroutine SOLVER_SEND_RECV_6_type(NP, comm_tbl, X)
 !        type(communication_table), intent(in) :: comm_tbl
 !        integer(kind = kint), intent(in) :: NP
-!        integer(kind = kint), intent(in) :: SOLVER_COMM, my_rank
 !        real(kind = kreal), intent(inout) :: X(6*NP)
 !
       module solver_SR_6_type
@@ -22,15 +20,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine SOLVER_SEND_RECV_6_type(NP, comm_tbl, X, my_rank,      &
-     &          SOLVER_COMM)
+      subroutine SOLVER_SEND_RECV_6_type(NP, comm_tbl, X)
 !
       use t_comm_table
       use solver_SR_6
 !
       type(communication_table), intent(in) :: comm_tbl
       integer(kind = kint), intent(in) :: NP
-      integer(kind = kint), intent(in) :: SOLVER_COMM, my_rank
 !
       real(kind = kreal), intent(inout) :: X(6*NP)
 !

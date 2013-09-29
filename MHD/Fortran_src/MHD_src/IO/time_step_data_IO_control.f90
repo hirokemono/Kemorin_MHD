@@ -21,6 +21,7 @@
 !
       subroutine output_time_step_control
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_control_parameter
       use m_geometry_data
@@ -65,9 +66,9 @@
 !
 !
         call MPI_allREDUCE (bulk_local, bulk_global, num_bulk,          &
-     &      MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
         call MPI_allREDUCE (rms_local, rms_global, num_rms,             &
-     &      MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
 !
          do nd = 1, num_bulk

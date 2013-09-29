@@ -84,66 +84,69 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-       subroutine cal_volume_4_fluid
+      subroutine cal_volume_4_fluid
 !
+      use calypso_mpi
       use m_geometry_data_MHD
 !
-       call sum_4_volume(iele_fl_smp_stack, vol_fl_local)
+      call sum_4_volume(iele_fl_smp_stack, vol_fl_local)
 !
-       call MPI_allREDUCE (vol_fl_local, vol_fluid, 1,                  &
-     &     MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+      call MPI_allREDUCE (vol_fl_local, vol_fluid, 1,                   &
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
-       if (vol_fluid .eq. 0.0d0) then
-         a_vol_fl = 1.0d30
-       else
-         a_vol_fl = 1.0d0 / vol_fluid
-       end if
+      if (vol_fluid .eq. 0.0d0) then
+        a_vol_fl = 1.0d30
+      else
+        a_vol_fl = 1.0d0 / vol_fluid
+      end if
 !
-       end subroutine cal_volume_4_fluid
+      end subroutine cal_volume_4_fluid
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine cal_volume_4_conduct
+      subroutine cal_volume_4_conduct
 !
+      use calypso_mpi
       use m_geometry_data_MHD
 !
       real(kind=kreal) :: vol_cd_local
 !
 !
-       call sum_4_volume(iele_cd_smp_stack, vol_cd_local)
+      call sum_4_volume(iele_cd_smp_stack, vol_cd_local)
 !
-       call MPI_allREDUCE (vol_cd_local, vol_conduct, 1,                &
-     &  MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+      call MPI_allREDUCE (vol_cd_local, vol_conduct, 1,                 &
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
-       if (vol_conduct .eq. 0.0d0) then
-         a_vol_cd = 1.0d30
-       else
-         a_vol_cd = 1.0d0 / vol_conduct
-       end if
+      if (vol_conduct .eq. 0.0d0) then
+        a_vol_cd = 1.0d30
+      else
+        a_vol_cd = 1.0d0 / vol_conduct
+      end if
 !
-       end subroutine cal_volume_4_conduct
+      end subroutine cal_volume_4_conduct
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine cal_volume_4_insulate
+      subroutine cal_volume_4_insulate
 !
+      use calypso_mpi
       use m_geometry_data_MHD
 !
       real(kind=kreal) :: vol_ins_local
 !
 !
-       call sum_4_volume(iele_ins_smp_stack, vol_ins_local)
+      call sum_4_volume(iele_ins_smp_stack, vol_ins_local)
 !
-       call MPI_allREDUCE (vol_ins_local, vol_insulate, 1,              &
-     &  MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+      call MPI_allREDUCE (vol_ins_local, vol_insulate, 1,               &
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
-       if (vol_insulate .eq. 0.0d0) then
-         a_vol_ins = 1.0d30
-       else
-         a_vol_ins = 1.0d0 / vol_insulate
-       end if
+      if (vol_insulate .eq. 0.0d0) then
+        a_vol_ins = 1.0d30
+      else
+        a_vol_ins = 1.0d0 / vol_insulate
+      end if
 !
-       end subroutine cal_volume_4_insulate
+      end subroutine cal_volume_4_insulate
 !
 !  ---------------------------------------------------------------------
 !

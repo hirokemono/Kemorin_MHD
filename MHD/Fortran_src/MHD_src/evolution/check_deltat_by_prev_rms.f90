@@ -1,12 +1,16 @@
 !check_deltat_by_prev_rms.f90
 !     module check_deltat_by_prev_rms
 !
-      module check_deltat_by_prev_rms
-!
 !      Written by H. Matsui on Nov., 2009
+!
+!      subroutine s_check_deltat_by_prev_rms
+!      subroutine set_ele_rms_4_previous_step
+!
+      module check_deltat_by_prev_rms
 !
       use m_precision
 !
+      use calypso_mpi
       use m_control_parameter
       use m_constants
       use m_machine_parameter
@@ -19,9 +23,6 @@
       use int_all_rms_scalar
 !
       implicit  none
-!
-!      subroutine s_check_deltat_by_prev_rms
-!      subroutine set_ele_rms_4_previous_step
 !
 ! ----------------------------------------------------------------------
 !
@@ -104,9 +105,9 @@
       end if
 !
       call MPI_allREDUCE (rms_dt_local, rms_dt_global(1), ntot_dratio,  &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
       call MPI_allREDUCE (ave_dt_local, ave_dt_global(1), ntot_dratio,  &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
 !
       do i = 1, ntot_dratio
@@ -200,9 +201,9 @@
 !
 !
       call MPI_allREDUCE (rms_dt_local, rms_dt_global(1), ntot_dratio,  &
-     &    MPI_DOUBLE_PRECISION, MPI_MAX, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_MAX, CALYPSO_COMM, ierr)
       call MPI_allREDUCE (ave_dt_local, ave_dt_global(1), ntot_dratio,  &
-     &    MPI_DOUBLE_PRECISION, MPI_MIN, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_MIN, CALYPSO_COMM, ierr)
 !
       rms_dt_global(0) = time - dt
       rms_dt_pre1 = 0.0d0

@@ -16,11 +16,11 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_constants
       use m_machine_parameter
       use m_parallel_var_dof
       use m_source_4_filed_line
-      use calypso_mpi
 !
       implicit  none
 !
@@ -114,10 +114,10 @@
           ist = istack_all_fline(ip-1,i_fln)
           num7 = 7*(istack_all_fline(ip,i_fln) - ist)
           if(num7 .gt. 0) then
-            call mpi_Bcast(id_fline_export(1,ist+1), num7, MPI_INTEGER, &
-     &          src_rank, SOLVER_COMM, ierr)
+            call mpi_Bcast(id_fline_export(1,ist+1), num7,              &
+     &          CALYPSO_INTEGER, src_rank, CALYPSO_COMM, ierr)
             call mpi_Bcast(fline_export(1,ist+1), num7,                 &
-     &          MPI_DOUBLE_PRECISION, src_rank, SOLVER_COMM, ierr)
+     &          CALYPSO_REAL, src_rank, CALYPSO_COMM, ierr)
           end if
         end do
 !
@@ -297,8 +297,9 @@
         if(id_fline_export(1,iline) .eq. my_rank) icou = icou + 1
       end do
 !
-      call MPI_AllGather(icou, ione, MPI_INTEGER,                       &
-     &    num_all_fline(1,i_fln), ione, MPI_INTEGER, SOLVER_COMM, ierr)
+      call MPI_AllGather(icou, ione, CALYPSO_INTEGER,                   &
+     &    num_all_fline(1,i_fln), ione, CALYPSO_INTEGER,                &
+     &    CALYPSO_COMM, ierr)
 !
       do ip = 1, nprocs
         istack_all_fline(ip,i_fln) = istack_all_fline(ip-1,i_fln)       &

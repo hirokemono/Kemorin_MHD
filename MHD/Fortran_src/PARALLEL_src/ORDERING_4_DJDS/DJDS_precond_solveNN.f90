@@ -21,6 +21,7 @@
 !
       subroutine solve_by_djds_solverNN
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_nod_comm_table
       use m_geometry_parameter
@@ -41,7 +42,7 @@
 !C
 !C== PRECONDITIONING
 !
-        call MPI_BARRIER  (SOLVER_COMM,ierr)
+        call MPI_BARRIER  (CALYPSO_COMM, ierr)
         STARTTIME= MPI_WTIME()
 
         write(*,*) 'resize_work_4_SR'

@@ -38,6 +38,7 @@
 !
       subroutine int_rms_div_v_monitor(iloop, rsig)
 !
+      use calypso_mpi
       use m_node_phys_address
       use m_geometry_data_MHD
 !
@@ -48,7 +49,7 @@
       call int_rms_divergence(iele_fl_smp_stack, ir_divv, iphys%i_velo)
 !
       call MPI_allREDUCE (rms_local(ir_divv) , rms_div_v_sig, 1,        &
-     &  MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
       rms_div_v_sig = sqrt(rms_div_v_sig / vol_fluid)
 !
@@ -66,6 +67,7 @@
 !
       subroutine int_rms_div_b_monitor(iloop, rsig)
 !
+      use calypso_mpi
       use m_node_phys_address
       use m_geometry_parameter
 !
@@ -76,7 +78,7 @@
       call int_rms_divergence(iele_smp_stack, ir_divb, iphys%i_magne)
 !
       call MPI_allREDUCE (rms_local(ir_divb) , rms_div_b_sig, 1,        &
-     &  MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
       rms_div_b_sig = sqrt(rms_div_b_sig / volume)
 !
@@ -95,6 +97,7 @@
 !
       subroutine int_rms_div_a_monitor(iloop, rsig)
 !
+      use calypso_mpi
       use m_node_phys_address
       use m_geometry_parameter
 !
@@ -105,7 +108,7 @@
       call int_rms_divergence(iele_smp_stack, ir_diva, iphys%i_vecp)
 !
       call MPI_allREDUCE ( rms_local(ir_diva) , rms_div_a_sig, 1,       &
-     &  MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
       rms_div_a_sig = sqrt(rms_div_a_sig / volume)
       if (rms_div_a_sig .ne. 0.0d0 .and. iloop .ge.0) then

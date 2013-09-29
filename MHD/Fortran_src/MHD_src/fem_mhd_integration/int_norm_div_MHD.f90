@@ -38,6 +38,7 @@
 !
       subroutine int_norm_div_v_monitor(iloop, rsig)
 !
+      use calypso_mpi
       use m_node_phys_address
       use m_geometry_data_MHD
 !
@@ -48,7 +49,7 @@
       call int_norm_divergence(iele_fl_smp_stack, ja_divv,             &
      &    iphys%i_velo)
       call MPI_allREDUCE ( bulk_local(ja_divv) , div_v_sig, 1,         &
-     &    MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
 !
       div_v_sig = abs(div_v_sig) / vol_fluid
@@ -66,6 +67,7 @@
 !
       subroutine int_norm_div_b_monitor(iloop, rsig)
 !
+      use calypso_mpi
       use m_node_phys_address
       use m_geometry_parameter
 !
@@ -75,7 +77,7 @@
 !
       call int_norm_divergence(iele_smp_stack, ja_divb, iphys%i_magne)
       call MPI_allREDUCE ( bulk_local(ja_divb) , div_b_sig, 1,          &
-     &  MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &  CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
       div_b_sig = abs(div_b_sig) / volume
 !
@@ -92,6 +94,7 @@
 !
       subroutine int_norm_div_a_monitor(iloop, rsig)
 !
+      use calypso_mpi
       use m_node_phys_address
       use m_geometry_parameter
 !
@@ -100,8 +103,8 @@
 !
 !
       call int_norm_divergence(iele_smp_stack, ja_diva, iphys%i_vecp)
-      call MPI_allREDUCE ( bulk_local(ja_diva) , div_a_sig, 1,         &
-     &  MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+      call MPI_allREDUCE ( bulk_local(ja_diva) , div_a_sig, 1,          &
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
       div_a_sig = abs(div_a_sig) / volume
 !

@@ -22,6 +22,7 @@
 !
       subroutine s_cal_average_mag_potential
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_control_parameter
       use m_geometry_constants
@@ -83,7 +84,7 @@
         end do
 !
         call MPI_allREDUCE (ave_mp_core_local, ave_mp_core, 1,          &
-     &       MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &       CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
         ave_mp_core = ave_mp_core * vol_i_core
         if (my_rank.eq.0) write(84,*) ' ave_mp: ', ave_mp_core

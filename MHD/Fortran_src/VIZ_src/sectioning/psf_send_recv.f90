@@ -72,8 +72,8 @@
       call set_real_data_2_send_psf(nnod_psf, n_vector, xx_psf, send)
 !
       num_send = n_vector*nnod_psf
-      call MPI_ISEND (send(1), num_send, MPI_DOUBLE_PRECISION,          &
-     &      rank0, 0, SOLVER_COMM,  req1_psf(1), ierr)
+      call MPI_ISEND (send(1), num_send, CALYPSO_REAL,                  &
+     &      rank0, 0, CALYPSO_COMM,  req1_psf(1), ierr)
 !
       if (my_rank .eq. rank0) then
         do ip = 1, nprocs
@@ -81,8 +81,8 @@
           ist = n_vector*istack_nod_recv( (ip-1)*num_psf ) + 1
           num_recv = n_vector * (istack_nod_recv(ip*num_psf)            &
      &                       - istack_nod_recv( (ip-1)*num_psf ) )
-          call MPI_IRECV (recv(ist), num_recv, MPI_DOUBLE_PRECISION,    &
-     &        ip_sent, 0, SOLVER_COMM, req2_psf(ip), ierr)
+          call MPI_IRECV (recv(ist), num_recv, CALYPSO_REAL,            &
+     &        ip_sent, 0, CALYPSO_COMM, req2_psf(ip), ierr)
         end do
 !
         call MPI_WAITALL (nprocs, req2_psf, sta2_psf, ierr)
@@ -127,8 +127,8 @@
 !
       call set_int_data_2_send_psf(nnod_psf, ione, ihash_psf, isend(1))
 !
-      call MPI_ISEND(isend(1), nnod_psf, MPI_INTEGER,                   &
-     &    rank0, 0, SOLVER_COMM,  req1_psf(1), ierr)
+      call MPI_ISEND(isend(1), nnod_psf, CALYPSO_INTEGER,               &
+     &    rank0, 0, CALYPSO_COMM,  req1_psf(1), ierr)
 !
       if (my_rank .eq. rank0) then
         do ip = 1, nprocs
@@ -136,8 +136,8 @@
           ist = istack_nod_recv( (ip-1)*num_psf ) + 1
           num_recv = (istack_nod_recv(ip*num_psf)                       &
      &              - istack_nod_recv( (ip-1)*num_psf ) )
-          call MPI_IRECV (irecv(ist), num_recv, MPI_INTEGER,            &
-     &        ip_sent, 0, SOLVER_COMM, req2_psf(ip), ierr)
+          call MPI_IRECV (irecv(ist), num_recv, CALYPSO_INTEGER,        &
+     &        ip_sent, 0, CALYPSO_COMM, req2_psf(ip), ierr)
         end do
 !
         call MPI_WAITALL (nprocs, req2_psf, sta2_psf, ierr)
@@ -184,8 +184,8 @@
       call set_int_data_2_send_psf(nele_psf, ithree, ie_patch, isend)
 !
       num_send = ithree*nele_psf
-      call MPI_ISEND (isend(1), num_send, MPI_INTEGER,                  &
-     &      rank0, 0, SOLVER_COMM,  req1_psf(1), ierr)
+      call MPI_ISEND (isend(1), num_send, CALYPSO_INTEGER,              &
+     &      rank0, 0, CALYPSO_COMM,  req1_psf(1), ierr)
 !
       if (my_rank .eq. rank0) then
         do ip = 1, nprocs
@@ -193,8 +193,8 @@
           ist = ithree*istack_ele_recv( (ip-1)*num_psf ) + 1
           num_recv = ithree * (istack_ele_recv(ip*num_psf)              &
      &                     - istack_ele_recv( (ip-1)*num_psf ) )
-          call MPI_IRECV (irecv(ist), num_recv, MPI_INTEGER,            &
-     &        ip_sent, 0, SOLVER_COMM, req2_psf(ip), ierr)
+          call MPI_IRECV (irecv(ist), num_recv, CALYPSO_INTEGER,        &
+     &        ip_sent, 0, CALYPSO_COMM, req2_psf(ip), ierr)
         end do
 !
         call MPI_WAITALL (nprocs, req2_psf, sta2_psf, ierr)
@@ -242,8 +242,8 @@
       call set_real_data_2_send_psf(nnod_psf, ncomp_dat, dat_psf, send)
 !
       num_send = ncomp_dat*nnod_psf
-      call MPI_ISEND (send(1), num_send, MPI_DOUBLE_PRECISION,          &
-     &      rank0, 0, SOLVER_COMM,  req1_psf(1), ierr)
+      call MPI_ISEND (send(1), num_send, CALYPSO_REAL,                  &
+     &      rank0, 0, CALYPSO_COMM,  req1_psf(1), ierr)
 !
       if (my_rank .eq. rank0) then
         do ip = 1, nprocs
@@ -251,8 +251,8 @@
           ist = ncomp_dat*istack_nod_recv( (ip-1)*num_psf ) + 1
           num_recv = ncomp_dat * (istack_nod_recv(ip*num_psf)           &
      &                          - istack_nod_recv( (ip-1)*num_psf ) )
-          call MPI_IRECV (recv(ist), num_recv, MPI_DOUBLE_PRECISION,    &
-     &        ip_sent, 0, SOLVER_COMM, req2_psf(ip), ierr)
+          call MPI_IRECV (recv(ist), num_recv, CALYPSO_REAL,            &
+     &        ip_sent, 0, CALYPSO_COMM, req2_psf(ip), ierr)
         end do
 !
         call MPI_WAITALL (nprocs, req2_psf, sta2_psf, ierr)

@@ -216,20 +216,20 @@
       integer(kind = kint) :: ip, id_rank
 !
 !
-      call MPI_ISEND (num_diff_l, ione, MPI_INTEGER,                    &
-     &    izero, 0, SOLVER_COMM, req1(ione), ierr)
+      call MPI_ISEND (num_diff_l, ione, CALYPSO_INTEGER,                &
+     &    izero, 0, CALYPSO_COMM, req1(ione), ierr)
       if (my_rank .eq. 0) then
         do ip = 1, nprocs
           id_rank = ip - 1
-          call MPI_IRECV(num_diff_pe(ip), ione, MPI_INTEGER, &
-     &        id_rank, 0, SOLVER_COMM, req2(ip), ierr)
+          call MPI_IRECV(num_diff_pe(ip), ione, CALYPSO_INTEGER,        &
+     &        id_rank, 0, CALYPSO_COMM, req2(ip), ierr)
         end do
         call MPI_WAITALL (nprocs, req2(1), sta2(1,1), ierr)
       end if
       call MPI_WAITALL (ione, req1(1), sta1(1,1), ierr)
 !
       if (my_rank .eq. 0) then
-        call s_cal_total_and_stacks(nprocs, num_diff_pe,     &
+        call s_cal_total_and_stacks(nprocs, num_diff_pe,                &
      &      izero, istack_diff_pe, ntot_diff_pe)
       end if
 !
@@ -261,15 +261,15 @@
 !
 !
       num = num_diff_l
-      call MPI_ISEND (id_diff, num, MPI_INTEGER,                        &
-     &    izero, 0, SOLVER_COMM, req1(ione), ierr)
+      call MPI_ISEND (id_diff, num, CALYPSO_INTEGER,                    &
+     &    izero, 0, CALYPSO_COMM, req1(ione), ierr)
       if (my_rank .eq. 0) then
         do ip = 1, np
           id_rank = ip - 1
           ist = istack_diff_pe(ip-1) + 1
           num = num_diff_pe(ip)
-          call MPI_IRECV (id_diff_IO(ist), num, MPI_INTEGER,            &
-     &        id_rank, 0, SOLVER_COMM, req2(ip), ierr)
+          call MPI_IRECV (id_diff_IO(ist), num, CALYPSO_INTEGER,        &
+     &        id_rank, 0, CALYPSO_COMM, req2(ip), ierr)
         end do
         call MPI_WAITALL (np, req2(1), sta2(1,1), ierr)
       end if
@@ -277,15 +277,15 @@
 !
 !
       num = 2*num_diff_l
-      call MPI_ISEND (id_gl_diff, num, MPI_INTEGER,                     &
-     &    izero, 0, SOLVER_COMM, req1(ione), ierr)
+      call MPI_ISEND (id_gl_diff, num, CALYPSO_INTEGER,                 &
+     &    izero, 0, CALYPSO_COMM, req1(ione), ierr)
       if (my_rank .eq. 0) then
         do ip = 1, np
           id_rank = ip - 1
           ist = 2*istack_diff_pe(ip-1) + 1
           num = 2*num_diff_pe(ip)
-          call MPI_IRECV(id_gl_diff_IO(ist), num, MPI_INTEGER,          &
-     &        id_rank, 0, SOLVER_COMM, req2(ip), ierr)
+          call MPI_IRECV(id_gl_diff_IO(ist), num, CALYPSO_INTEGER,      &
+     &        id_rank, 0, CALYPSO_COMM, req2(ip), ierr)
         end do
         call MPI_WAITALL (np, req2(1), sta2(1,1), ierr)
       end if
@@ -293,15 +293,15 @@
 !
 !
       num = 6*num_diff_l
-      call MPI_ISEND (x_diff, num, MPI_DOUBLE_PRECISION,                &
-     &    izero, 0, SOLVER_COMM, req1(ione), ierr)
+      call MPI_ISEND (x_diff, num, CALYPSO_REAL,                        &
+     &    izero, 0, CALYPSO_COMM, req1(ione), ierr)
       if (my_rank .eq. 0) then
         do ip = 1, np
           id_rank = ip - 1
           ist = 6*istack_diff_pe(ip-1) + 1
           num = 6*num_diff_pe(ip)
           call MPI_IRECV (x_diff_IO(ist), num,                          &
-     &         MPI_DOUBLE_PRECISION, id_rank, 0, SOLVER_COMM, req2(ip), &
+     &         CALYPSO_REAL, id_rank, 0, CALYPSO_COMM, req2(ip),        &
      &        ierr)
         end do
         call MPI_WAITALL (np, req2(1), sta2(1,1), ierr)

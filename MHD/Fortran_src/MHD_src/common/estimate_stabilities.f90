@@ -43,7 +43,7 @@
 !
        if ( nprocs .gt. 1 ) then
          call MPI_allREDUCE (min_length, cfl_advect, 1,                 &
-     &    MPI_DOUBLE_PRECISION, MPI_MIN, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_MIN, CALYPSO_COMM, ierr)
        else
          cfl_advect = min_length
        endif
@@ -104,7 +104,7 @@
       end do
 !
       call MPI_allREDUCE (cfl_advect0, cfl_advect, 1,                   &
-     &  MPI_DOUBLE_PRECISION, MPI_MIN, SOLVER_COMM, ierr)
+     &  CALYPSO_REAL, MPI_MIN, CALYPSO_COMM, ierr)
 !
       if ( my_rank .eq. 0 ) then
          write(12,*) 'time_step:', i_step_MHD, ' Delta t:', dt,         &

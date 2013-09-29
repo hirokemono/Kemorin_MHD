@@ -176,15 +176,16 @@
 !
       subroutine sum_volumes_4_layerd
 !
+      use calypso_mpi
       use m_parallel_var_dof
 !
 !
       volumes_layer =   zero
       vol_total_layer = zero
       call MPI_allREDUCE ( vol_l, volumes_layer, n_layer_d,             &
-     &     MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &     CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
       call MPI_allREDUCE ( vol_w, vol_total_layer, ione,                &
-     &     MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &     CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
       end subroutine sum_volumes_4_layerd
 !

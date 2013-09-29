@@ -22,6 +22,7 @@
 !
       subroutine solve_by_djds_solver33
 !
+      use calypso_mpi
       use m_parallel_var_dof
       use m_nod_comm_table
       use m_geometry_parameter
@@ -42,7 +43,7 @@
 !C
 !C== PRECONDITIONING
 !
-        call MPI_BARRIER  (SOLVER_COMM,ierr)
+        call MPI_BARRIER  (CALYPSO_COMM, ierr)
         STARTTIME= MPI_WTIME()
 !
         if (num_neib .gt. 0) then

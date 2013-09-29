@@ -283,6 +283,7 @@
 !
       subroutine collect_ele_grp_patch(grp_name)
 !
+      use calypso_mpi
       use m_parallel_var_dof
 !
       character(len=kchara), intent(in) :: grp_name
@@ -292,8 +293,8 @@
       real(kind = kreal), allocatable :: xyz_med_g(:,:)
 !
 !
-      call MPI_Gather(npatch_grp, ione, MPI_INTEGER,                    &
-     &    npatch_l, ione, MPI_INTEGER, izero, SOLVER_COMM, ierr)
+      call MPI_Gather(npatch_grp, ione, CALYPSO_INTEGER,                &
+     &    npatch_l, ione, CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr)
 !
       if(my_rank .eq. 0) then
         do ip = 1, nprocs
@@ -305,16 +306,15 @@
         allocate(xyz_med_g(3,3*npatch_g))
       end if
 !
-      call MPI_Isend(xyz_med(1,1), 9*npatch_grp, MPI_DOUBLE_PRECISION,  &
-     &      izero, 0, SOLVER_COMM, req1, ierr)
+      call MPI_Isend(xyz_med(1,1), 9*npatch_grp, CALYPSO_REAL,          &
+     &      izero, 0, CALYPSO_COMM, req1, ierr)
 !
       if(my_rank .eq. 0) then
         do ip = 1, nprocs
           ist = 3*istack_npatch_l(ip-1) + 1
           num = 9*npatch_l(ip)
           call MPI_Irecv(xyz_med_g(1,ist), num,                         &
-     &        MPI_DOUBLE_PRECISION, (ip-1), 0, SOLVER_COMM,             &
-     &        req2(ip), ierr)
+     &        CALYPSO_REAL, (ip-1), 0, CALYPSO_COMM, req2(ip), ierr)
         end do
         call MPI_WAITALL(nprocs, req2, sta2, ierr)
       end if

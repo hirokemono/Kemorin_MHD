@@ -329,8 +329,7 @@
 !     &     itr, ierr, my_rank,                                         &
 !     &     neigh_pe_num_fl, neigh_pe_data_fl,                          &
 !     &     istack_import_fl, item_import_fl,                           &
-!     &     istack_export_fl, item_export_fl,                           &
-!     &     SOLVER_COMM, 1)
+!     &     istack_export_fl, item_export_fl, 1)
 !       call deallocate_check_djds_array
 !
       if ( ((method(1:1).eq.'M').or.(method(1:1).eq.'m')) .and.         &

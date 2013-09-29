@@ -232,9 +232,7 @@
 !
 !    finerizing
 !
-      if (my_rank.eq.0) write (*,*) itr_res, "  iters"
-
-      call MPI_BARRIER  (SOLVER_COMM,ierr)
+       if (my_rank.eq.0) write (*,*) itr_res, "  iters"
 !
        end subroutine init_analyzer
 !

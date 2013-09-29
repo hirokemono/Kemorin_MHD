@@ -47,8 +47,8 @@
       integer(kind = kint) :: ip, i, inod, inum
 !
 !
-      call MPI_AllGather(n_local, ione, MPI_INTEGER,                    &
-     &    num_each, ione, MPI_INTEGER, SOLVER_COMM, ierr)
+      call MPI_AllGather(n_local, ione, CALYPSO_INTEGER,                &
+     &    num_each, ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr)
 !
       istack(0) = 0
       do ip = 1, nprocs
@@ -80,8 +80,8 @@
 !
       int_send(1:n_local) = int_local(1:n_local)
 !
-      call MPI_AllGather(int_send, nmax, MPI_INTEGER,                   &
-     &    int_recv, nmax, MPI_INTEGER, SOLVER_COMM, ierr)
+      call MPI_AllGather(int_send, nmax, CALYPSO_INTEGER,               &
+     &    int_recv, nmax, CALYPSO_INTEGER, CALYPSO_COMM, ierr)
 !
       do ip = 1, nprocs
         do i = 1, num_each(ip)
@@ -114,8 +114,8 @@
 !
       real_send(1:n_local) = real_local(1:n_local)
 !
-      call MPI_AllGather(real_send(1), nmax, MPI_DOUBLE_PRECISION,      &
-     &    real_recv(1), nmax, MPI_DOUBLE_PRECISION,  SOLVER_COMM, ierr)
+      call MPI_AllGather(real_send(1), nmax, CALYPSO_REAL,              &
+     &    real_recv(1), nmax, CALYPSO_REAL, CALYPSO_COMM, ierr)
 !
       do ip = 1, nprocs
         do i = 1, num_each(ip)
@@ -153,9 +153,9 @@
       end do
 !
       call MPI_AllGather                                                &
-     &    (real_send(1), (ithree*nmax), MPI_DOUBLE_PRECISION,           &
-     &     real_recv(1), (ithree*nmax), MPI_DOUBLE_PRECISION,           &
-     &     SOLVER_COMM, ierr)
+     &    (real_send(1), (ithree*nmax), CALYPSO_REAL,                   &
+     &     real_recv(1), (ithree*nmax), CALYPSO_REAL,                   &
+     &     CALYPSO_COMM, ierr)
 !
       do ip = 1, nprocs
         do i = 1, num_each(ip)
@@ -198,9 +198,9 @@
       end do
 !
       call MPI_AllGather                                                &
-     &    (real_send(1), (isix*nmax), MPI_DOUBLE_PRECISION,             &
-     &     real_recv(1), (isix*nmax), MPI_DOUBLE_PRECISION,             &
-     &     SOLVER_COMM, ierr)
+     &    (real_send(1), (isix*nmax), CALYPSO_REAL,                     &
+     &     real_recv(1), (isix*nmax), CALYPSO_REAL,                     &
+     &     CALYPSO_COMM, ierr)
 !
       do ip = 1, nprocs
         do i = 1, num_each(ip)

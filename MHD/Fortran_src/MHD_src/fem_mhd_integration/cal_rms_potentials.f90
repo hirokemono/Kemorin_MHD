@@ -10,6 +10,7 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_constants
       use m_machine_parameter
       use m_parallel_var_dof
@@ -51,9 +52,9 @@
      &         i_rms%i_press, j_ave%i_press, iphys%i_press)
 !
       call MPI_allREDUCE ( bulk_local(j_ave%i_press) , ave_pr, ione,    &
-     &  MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
       call MPI_allREDUCE ( rms_local(i_rms%i_press) , rms_pr, ione,     &
-     &  MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
       if (iloop .eq. 0) then
         ave_pr0 = ave_pr
@@ -87,9 +88,9 @@
      &    i_rms%i_mag_p, j_ave%i_mag_p, iphys%i_mag_p)
 !
       call MPI_allREDUCE ( bulk_local(j_ave%i_mag_p) , ave_mp, ione,    &
-     &  MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
       call MPI_allREDUCE ( rms_local(i_rms%i_mag_p) , rms_mp, ione,     &
-     &  MPI_DOUBLE_PRECISION, MPI_SUM, SOLVER_COMM, ierr)
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr)
 !
       if (iloop .eq. 0) then
         ave_mp0 = ave_mp

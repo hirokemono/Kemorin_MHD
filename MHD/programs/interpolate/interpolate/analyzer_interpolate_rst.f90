@@ -102,6 +102,7 @@
 !
       subroutine analyze_itp_rst
 !
+      use calypso_mpi
       use m_node_phys_data
       use m_ctl_params_4_gen_table
       use m_time_data_IO
@@ -138,10 +139,10 @@
           call phys_send_recv_all
         end if
 !
-        call MPI_Bcast(time, ione, MPI_DOUBLE_PRECISION, izero,         &
-     &      SOLVER_COMM, ierr)
-        call MPI_Bcast(i_step_MHD, ione, MPI_INTEGER, izero,            &
-     &      SOLVER_COMM, ierr)
+        call MPI_Bcast(time, ione, CALYPSO_REAL, izero,                 &
+     &      CALYPSO_COMM, ierr)
+        call MPI_Bcast(i_step_MHD, ione, CALYPSO_INTEGER, izero,        &
+     &      CALYPSO_COMM, ierr)
 !
         if (iflag_debug.gt.0)  write(*,*) 's_interpolate_nodal_data'
         call s_interpolate_nodal_data

@@ -85,11 +85,11 @@
       integer(kind = kint) :: ip
 !
 !
-      call MPI_AllGather(nnod_line_l, ione, MPI_INTEGER,                &
-     &    nnod_line_gl(1), ione, MPI_INTEGER, SOLVER_COMM, ierr)
+      call MPI_AllGather(nnod_line_l, ione, CALYPSO_INTEGER,                &
+     &    nnod_line_gl(1), ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr)
 !
-      call MPI_AllGather(nele_line_l, ione, MPI_INTEGER,                &
-     &    nele_line_gl(1), ione, MPI_INTEGER, SOLVER_COMM, ierr)
+      call MPI_AllGather(nele_line_l, ione, CALYPSO_INTEGER,            &
+     &    nele_line_gl(1), ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr)
 !
       istack_nod_line_gl(0) = 0
       istack_ele_line_gl(0) = 0
@@ -112,15 +112,15 @@
 !
 !
       num = 2*nele_line_l
-      call MPI_Isend(iedge_line_l(1,1), num, MPI_INTEGER, izero,        &
-     &   0, SOLVER_COMM, req1_fline(1), ierr)
+      call MPI_Isend(iedge_line_l(1,1), num, CALYPSO_INTEGER, izero,    &
+     &   0, CALYPSO_COMM, req1_fline(1), ierr)
 !
       if(my_rank .eq. 0) then
         do ip = 1, nprocs
           ist = istack_ele_line_gl(ip-1) + 1
           num = 2*nele_line_gl(ip)
-          call MPI_Irecv(iedge_line_gl(1,ist), num, MPI_INTEGER,        &
-     &         (ip-1), 0, SOLVER_COMM, req2_fline(ip), ierr)
+          call MPI_Irecv(iedge_line_gl(1,ist), num, CALYPSO_INTEGER,    &
+     &         (ip-1), 0, CALYPSO_COMM, req2_fline(ip), ierr)
         end do
 !
         call MPI_WAITALL(nprocs, req2_fline, sta2_fline, ierr)
@@ -149,15 +149,15 @@
 !
 !
       num = 3*nnod_line_l
-      call MPI_Isend(xx_line_l(1,1), num, MPI_DOUBLE_PRECISION, izero,  &
-     &    0, SOLVER_COMM, req1_fline(1), ierr)
+      call MPI_Isend(xx_line_l(1,1), num, CALYPSO_REAL, izero,          &
+     &    0, CALYPSO_COMM, req1_fline(1), ierr)
 !
       if(my_rank .eq. 0) then
         do ip = 1, nprocs
           ist = istack_nod_line_gl(ip-1) + 1
           num = 3*nnod_line_gl(ip)
-          call MPI_Irecv(xx_line_gl(1,ist), num, MPI_DOUBLE_PRECISION,  &
-     &        (ip-1), 0, SOLVER_COMM, req2_fline(ip), ierr)
+          call MPI_Irecv(xx_line_gl(1,ist), num, CALYPSO_REAL,          &
+     &        (ip-1), 0, CALYPSO_COMM, req2_fline(ip), ierr)
         end do
 !
         call MPI_WAITALL(nprocs, req2_fline, sta2_fline, ierr)
@@ -175,15 +175,15 @@
 !
 !
       num = nnod_line_l
-      call MPI_Isend(col_line_l(1), num, MPI_DOUBLE_PRECISION, izero,   &
-     &    0, SOLVER_COMM, req1_fline(1), ierr)
+      call MPI_Isend(col_line_l(1), num, CALYPSO_REAL, izero,           &
+     &    0, CALYPSO_COMM, req1_fline(1), ierr)
 !
       if(my_rank .eq. 0) then
         do ip = 1, nprocs
           ist = istack_nod_line_gl(ip-1) + 1
           num = nnod_line_gl(ip)
-          call MPI_Irecv(col_line_gl(ist), num, MPI_DOUBLE_PRECISION,   &
-     &        (ip-1), 0, SOLVER_COMM, req2_fline(ip), ierr)
+          call MPI_Irecv(col_line_gl(ist), num, CALYPSO_REAL,           &
+     &        (ip-1), 0, CALYPSO_COMM, req2_fline(ip), ierr)
         end do
 !
         call MPI_WAITALL(nprocs, req2_fline, sta2_fline, ierr)
