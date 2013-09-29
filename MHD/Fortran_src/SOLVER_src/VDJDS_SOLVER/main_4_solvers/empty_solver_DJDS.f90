@@ -1,12 +1,12 @@
 !
 !  module empty_solver_DJDS.f90
 !
-!C*** 
+!C***
 !C*** module empty_solver_DJDS
 !C***
 !
 !      subroutine  empty_solve_DJDS_kemo                                &
-!     &         (EPS, ITER, ITERactual, IER, my_rank, METHOD)
+!     &         (EPS, ITER, ITERactual, IER, METHOD)
 !
       module empty_solver_DJDS
 !
@@ -22,11 +22,12 @@
 !C
 !C--- through for empty domain
       subroutine  empty_solve_DJDS_kemo                                 &
-     &         (EPS, ITER, ITERactual, IER, my_rank, METHOD)
+     &         (EPS, ITER, ITERactual, IER, METHOD)
 
+      use calypso_mpi
       use empties_VCG_DJDS_SMP
 
-      integer(kind=kint ), intent(in) :: my_rank, ITER
+      integer(kind=kint ), intent(in) :: ITER
       real   (kind=kreal), intent(in) :: EPS
       character(len=kchara ), intent(in):: METHOD
       integer(kind=kint ), intent(inout)  :: ITERactual

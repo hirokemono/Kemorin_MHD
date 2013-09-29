@@ -30,8 +30,7 @@
      &                 (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, &
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
      &                  RESID,  ITER, ERROR, iterPREmax,                &
-     &                  my_rank, NEIBPETOT, NEIBPE,                     &
-     &                  STACK_IMPORT, NOD_IMPORT,                       &
+     &                  NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
      &                  STACK_EXPORT, NOD_EXPORT, NSET)
 
       use calypso_mpi
@@ -40,7 +39,7 @@
       use solver_BLCG_3
 !
 
-      integer(kind=kint ), intent(in):: N, NP, NPU, NPL, my_rank
+      integer(kind=kint ), intent(in):: N, NP, NPU, NPL
       integer(kind=kint ), intent(in):: NEIBPETOT, iterPREmax
       integer(kind=kint ), intent(in):: NSET
       real   (kind=kreal), intent(in):: SIGMA, SIGMA_DIAG

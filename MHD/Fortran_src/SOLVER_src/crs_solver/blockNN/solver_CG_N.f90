@@ -21,8 +21,7 @@
 !C
       subroutine CG_N  (N, NP, NB, NPL, NPU, D, AL, INL, IAL, AU,       &
      &                  INU, IAU, B, X, PRECOND, SIGMA_DIAG,SIGMA,      &
-     &                  RESID,  ITER, ERROR,                            &
-     &                  my_rank, NEIBPETOT, NEIBPE,                     &
+     &                  RESID,  ITER, ERROR, NEIBPETOT, NEIBPE,         &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
      &                  STACK_EXPORT, NOD_EXPORT, NSET)
 
@@ -56,7 +55,6 @@
       real   (kind=kreal),                   intent(in   )::  SIGMA
       integer(kind=kint ),                   intent(inout)::  ITER
       integer(kind=kint ),                   intent(inout)::  ERROR
-      integer(kind=kint ),                   intent(in   )::  my_rank
 
       integer(kind=kint )                  , intent(in)   :: NSET
 

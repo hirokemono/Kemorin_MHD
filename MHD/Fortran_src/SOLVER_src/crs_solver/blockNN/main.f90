@@ -90,13 +90,13 @@
       endif
 
       call MPI_BARRIER(CALYPSO_COMM,ierr)
-      call MPI_BCAST  (METHOD  ,20,       MPI_CHARACTER,                &
+      call MPI_BCAST  (METHOD  ,20,      CALYPSO_CHARACTER,             &
      &                   0, CALYPSO_COMM, ierr)
-      call MPI_BCAST  (PRECOND  ,20,       MPI_CHARACTER,               &
+      call MPI_BCAST  (PRECOND  ,20,     CALYPSO_CHARACTER,             &
      &                   0, CALYPSO_COMM, ierr)
       call MPI_BCAST  (REALARRAY(1), 10, CALYPSO_REAL,                  &
      &                 0, CALYPSO_COMM, ierr)
-      call MPI_BCAST  (INTARRAY(1) , 10, MPI_INTEGER,                   &
+      call MPI_BCAST  (INTARRAY(1) , 10, CALYPSO_INTEGER,               &
      &                 0, CALYPSO_COMM, ierr)
       call MPI_BARRIER(CALYPSO_COMM,ierr)
 

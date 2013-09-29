@@ -50,10 +50,10 @@
      &     ((method(3:3).eq.'C').or.(method(3:3).eq.'c')) .and.         &
      &     ((method(4:4).eq.'G').or.(method(4:4).eq.'g')) ) then
         call init_VMGCG11_DJDS_SMP(numnod, np_smp,                      &
-            precond_4_solver,  METHOD_MG, PRECOND_MG, my_rank)
+            precond_4_solver,  METHOD_MG, PRECOND_MG)
       else
         call init_solver_DJDS(numnod, np_smp, method,                   &
-            precond_4_solver, my_rank, ierr)
+            precond_4_solver, ierr)
       end if
 !
 !
@@ -66,10 +66,10 @@
      &       ((method(3:3).eq.'C').or.(method(3:3).eq.'c')) .and.       &
      &       ((method(4:4).eq.'G').or.(method(4:4).eq.'g')) ) then
           call init_VMGCG33_DJDS_SMP(numnod, np_smp,                    &
-              precond_4_crank,  METHOD_MG, PRECOND_MG, my_rank)
+              precond_4_crank,  METHOD_MG, PRECOND_MG)
         else
           call init_solver33_DJDS(numnod, np_smp, method,               &
-              precond_4_crank, my_rank, ierr)
+              precond_4_crank, ierr)
         end if
       end if
 !
@@ -104,7 +104,7 @@
         call VMGCG33_DJDS_SMP(num_MG_level, MG_comm_fl,                 &
      &      MG_itp, MG_djds_tbl_fl, MG_mat_velo, MG_vector, np_smp,     &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
-     &      eps_4_velo_crank, EPS_MG,  my_rank,                         &
+     &      eps_4_velo_crank, EPS_MG,                                   &
      &      precond_4_crank, METHOD_MG, PRECOND_MG, ierr)
       else
         call solve33_DJDS_kemo                                          &
@@ -116,7 +116,7 @@
      &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
      &     aiccg_velo(im_velo_l), aiccg_velo(im_velo_u),                &
      &     ALUG_velo_L, ALUG_velo_U, eps_4_velo_crank, itr, ierr,       &
-     &     my_rank, neigh_pe_num_fl, neigh_pe_data_fl,                  &
+     &     neigh_pe_num_fl, neigh_pe_data_fl,                           &
      &     istack_import_fl, item_import_fl,                            &
      &     istack_export_fl, NOD_EXPORT_NEW_fl,                         &
      &     method_4_velo, precond_4_crank, itr_res)
@@ -155,8 +155,7 @@
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm_fl,                 &
      &      MG_itp, MG_djds_tbl_fll, MG_mat_press, MG_vector, np_smp,   &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
-     &      eps, EPS_MG,  my_rank,                                      &
-     &      precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
+     &      eps, EPS_MG, precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
       else
         call solve_DJDS_kemo                                            &
      &     (internal_node, numnod, NLmax1, NUmax1,                      &
@@ -167,7 +166,7 @@
      &     indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,        &
      &     aiccg_press(im_press_l), aiccg_press(im_press_u),            &
      &     ALUG_press_L, ALUG_press_U, eps, itr, ierr,                  &
-     &     my_rank, neigh_pe_num_fl, neigh_pe_data_fl,                  &
+     &     neigh_pe_num_fl, neigh_pe_data_fl,                           &
      &     istack_import_fl, item_import_fl,                            &
      &     istack_export_fl, NOD_EXPORT_NEW_fl1,                        &
      &     method_4_solver, precond_4_solver, itr_res)
@@ -206,7 +205,7 @@
         call VMGCG33_DJDS_SMP(num_MG_level, MG_comm,                    &
      &      MG_itp, MG_djds_tbl, MG_mat_magne, MG_vector, np_smp,       &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
-     &      eps_4_magne_crank, EPS_MG,  my_rank,                        &
+     &      eps_4_magne_crank, EPS_MG,                                  &
      &      precond_4_crank, METHOD_MG, PRECOND_MG, ierr)
       else
         call solve33_DJDS_kemo                                          &
@@ -217,8 +216,7 @@
      &     x_vec(1), indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,  &
      &     aiccg_magne(im_mag_l), aiccg_magne(im_mag_u),                &
      &     ALUG_magne_L, ALUG_magne_U, eps_4_magne_crank, itr, ierr,    &
-     &     my_rank, num_neib, id_neib,                                  &
-     &     istack_import, item_import,                                  &
+     &     num_neib, id_neib, istack_import, item_import,               &
      &     istack_export, NOD_EXPORT_NEW,                               &
      &     method_4_velo, precond_4_crank, itr_res)
       end if
@@ -257,8 +255,7 @@
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm,                    &
      &      MG_itp, MG_djds_tbl_l, MG_mat_magp, MG_vector, np_smp,      &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
-     &      eps, EPS_MG,  my_rank,                                      &
-     &      precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
+     &      eps, EPS_MG, precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
       else
         call solve_DJDS_kemo                                            &
      &    (internal_node, numnod, NLmax1, NUmax1, itotal1_l, itotal1_u, &
@@ -269,7 +266,7 @@
      &     indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,        &
      &     aiccg_mag_p(im_mp_l), aiccg_mag_p(im_mp_u),                  &
      &     ALUG_mag_p_L, ALUG_mag_p_U,                                  &
-     &     eps, itr, ierr, my_rank, num_neib, id_neib,                  &
+     &     eps, itr, ierr, num_neib, id_neib,                           &
      &     istack_import, item_import,                                  &
      &     istack_export, NOD_EXPORT_NEW1,                              &
      &     method_4_solver, precond_4_solver, itr_res)
@@ -339,8 +336,8 @@
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm_fl,                 &
      &      MG_itp, MG_djds_tbl_fl, MG_mat_temp, MG_vector, np_smp,     &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
-     &      eps_4_temp_crank, EPS_MG,  my_rank,                         &
-     &      precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
+     &      eps_4_temp_crank, EPS_MG, precond_4_solver,                 &
+     &      METHOD_MG, PRECOND_MG, ierr)
       else
         call solve_DJDS_kemo                                            &
      &     (internal_node, numnod, NLmax, NUmax,                        &
@@ -351,7 +348,7 @@
      &      indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,           &
      &      aiccg_temp(im_temp_l), aiccg_temp(im_temp_u),               &
      &      ALUG_temp_l, ALUG_temp_u, eps_4_temp_crank, itr, ierr,      &
-     &      my_rank, neigh_pe_num_fl, neigh_pe_data_fl,                 &
+     &      neigh_pe_num_fl, neigh_pe_data_fl,                          &
      &      istack_import_fl, item_import_fl,                           &
      &      istack_export_fl, NOD_EXPORT_NEW_fl,                        &
      &      method_4_solver, precond_4_solver, itr_res)
@@ -412,8 +409,8 @@
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm_fl,                 &
      &      MG_itp, MG_djds_tbl_fl, MG_mat_d_scalar, MG_vector, np_smp, &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
-     &      eps_4_d_scalar_crank, EPS_MG,  my_rank,                     &
-     &      precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
+     &      eps_4_d_scalar_crank, EPS_MG, precond_4_solver,             &
+     &      METHOD_MG, PRECOND_MG, ierr)
       else
         call solve_DJDS_kemo                                            &
      &     (internal_node, numnod, NLmax, NUmax,                        &
@@ -424,7 +421,7 @@
      &      indexDJDS_L, indexDJDS_U,  itemDJDS_L, itemDJDS_U,          &
      &      aiccg_composit(im_cps_l), aiccg_composit(im_cps_u),         &
      &      ALUG_composit_l, ALUG_composit_u, eps_4_d_scalar_crank,     &
-     &      itr, ierr,  my_rank, neigh_pe_num_fl, neigh_pe_data_fl,     &
+     &      itr, ierr, neigh_pe_num_fl, neigh_pe_data_fl,               &
      &      istack_import_fl, item_import_fl,                           &
      &      istack_export_fl, NOD_EXPORT_NEW_fl,                        &
      &      method_4_solver, precond_4_solver, itr_res)

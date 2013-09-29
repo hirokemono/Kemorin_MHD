@@ -138,12 +138,12 @@
       ave_depth_lc = ave_depth_lc / covered_area
 !
       num = 4*num_pixel_xy
-      call MPI_Gather(rgba_lc(1,1), num, MPI_DOUBLE_PRECISION,          &
-     &                rgba_recv(1,1), num, MPI_DOUBLE_PRECISION,        &
+      call MPI_Gather(rgba_lc(1,1), num, CALYPSO_REAL,                  &
+     &                rgba_recv(1,1), num, CALYPSO_REAL,                &
      &                izero, CALYPSO_COMM, ierr)
 !
-      call MPI_Gather(ave_depth_lc, ione, MPI_DOUBLE_PRECISION,         &
-     &                ave_depth_gl(1), ione, MPI_DOUBLE_PRECISION,      &
+      call MPI_Gather(ave_depth_lc, ione, CALYPSO_REAL,                 &
+     &                ave_depth_gl(1), ione, CALYPSO_REAL,              &
      &                izero, CALYPSO_COMM, ierr)
 !
       if(my_rank .eq. 0) then

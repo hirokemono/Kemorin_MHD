@@ -14,8 +14,7 @@
 !     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
 !     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
 !     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITR, IER,                                        &
-!     &           my_rank, NEIBPETOT, NEIBPE,                           &
+!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                     &
 !     &           STACK_IMPORT, NOD_IMPORT,                             &
 !     &           STACK_EXPORT, NOD_EXPORT, PRECOND, iterPREmax)
 !C
@@ -25,8 +24,7 @@
 !     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
 !     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
 !     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITR, IER,                                        &
-!     &           my_rank, NEIBPETOT, NEIBPE,                           &
+!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                     &
 !     &           STACK_IMPORT, NOD_IMPORT,                             &
 !     &           STACK_EXPORT, NOD_EXPORT, PRECOND, iterPREmax)
 !C
@@ -53,15 +51,14 @@
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITR, IER,                                         &
-     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !     &           PRECOND, iterPREmax)
 !
       integer(kind=kint ), intent(in) :: N, NP, NB, NL, NU, NPL, NPU
       integer(kind=kint ), intent(in) :: PEsmpTOT, NVECT
-      integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
+      integer(kind=kint ), intent(in) :: NEIBPETOT
       character(len=kchara), intent(in) :: PRECOND
       real   (kind=kreal), intent(in) :: EPS
       integer(kind=kint ), intent(inout) :: ITR, IER
@@ -107,8 +104,7 @@
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITR, IER,                                         &
-     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !     &           PRECOND, iterPREmax)
@@ -160,8 +156,7 @@
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITR, IER,                                         &
-     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !     &           PRECOND, iterPREmax)
@@ -184,7 +179,7 @@
 !
       integer(kind=kint ), intent(in) :: N, NP, NB, NL, NU, NPL, NPU
       integer(kind=kint ), intent(in) :: PEsmpTOT, NVECT
-      integer(kind=kint ), intent(in) :: my_rank, NEIBPETOT
+      integer(kind=kint ), intent(in) :: NEIBPETOT
       character(len=kchara), intent(in) :: PRECOND
       real   (kind=kreal), intent(in) :: EPS
       integer(kind=kint ), intent(inout) :: ITR, IER

@@ -4,10 +4,10 @@
 !     Written by Kemorin
 !
 !      subroutine init_MGCG11_V_cycle(NP, PEsmpTOT,                     &
-!     &          METHOD_MG, PRECOND_MG, my_rank)
+!     &          METHOD_MG, PRECOND_MG)
 !      subroutine s_MGCG11_V_cycle(num_MG_level, MG_comm, MG_itp,       &
 !     &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,          &
-!     &          iter_mid, iter_lowest, EPS_MG, my_rank,                &
+!     &          iter_mid, iter_lowest, EPS_MG,                         &
 !     &          METHOD_MG, PRECOND_MG, IER)
 !       integer(kind = kint), intent(in) :: num_MG_level
 !       type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
@@ -22,7 +22,6 @@
 !       real(kind = kreal), intent(inout), target :: X(NP)
 !       type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
 !
-!       integer(kind = kint), intent(in) :: my_rank
 !       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
 !       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
 !       real(kind = kreal), intent(in) :: EPS_MG
@@ -52,18 +51,18 @@
 !  ---------------------------------------------------------------------
 !
       subroutine init_MGCG11_V_cycle(NP, PEsmpTOT,                      &
-     &          METHOD_MG, PRECOND_MG, my_rank)
+     &          METHOD_MG, PRECOND_MG)
 !
       use m_constants
       use solver_DJDS11_struct
 !
-      integer(kind = kint), intent(in) :: NP, PEsmpTOT, my_rank
+      integer(kind = kint), intent(in) :: NP, PEsmpTOT
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
       integer(kind = kint) :: ierr
 !
 !
       call init_DJDS11_struct(NP, PEsmpTOT, METHOD_MG, PRECOND_MG,      &
-     &    my_rank, ierr)
+     &    ierr)
 !
       end subroutine init_MGCG11_V_cycle
 !
@@ -71,7 +70,7 @@
 !
       subroutine s_MGCG11_V_cycle(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,           &
-     &          iter_mid, iter_lowest, EPS_MG, my_rank,                 &
+     &          iter_mid, iter_lowest, EPS_MG,                          &
      &          METHOD_MG, PRECOND_MG, IER)
 !
       use calypso_mpi
@@ -95,7 +94,6 @@
       real(kind = kreal), intent(inout) :: X(NP)
       type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
 !
-      integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
       real(kind = kreal), intent(in) :: EPS_MG
@@ -147,10 +145,10 @@
           call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                &
      &      djds_tbl(i), mat11(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_mid, iter_res, my_rank)
+     &      EPS_MG, iter_mid, iter_res)
         else
           call empty_solve_DJDS_kemo(EPS_MG, iter_mid, iter_res, ierr,  &
-     &        my_rank, METHOD_MG)
+     &        METHOD_MG)
         end if
 !        write(*,*) 'j, MG_vect(i)%x_vec(j)', i
 !        do j = 1, NP_f
@@ -178,10 +176,10 @@
         call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                  &
      &      djds_tbl(i), mat11(i), NP_c, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_lowest, iter_res, my_rank)
+     &      EPS_MG, iter_lowest, iter_res)
       else
         call empty_solve_DJDS_kemo(EPS_MG, iter_lowest, iter_res, ierr, &
-     &        my_rank, METHOD_MG)
+     &      METHOD_MG)
       end if
 !
 !
@@ -212,10 +210,10 @@
           call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                &
      &      djds_tbl(i), mat11(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_lowest, iter_res, my_rank)
+     &      EPS_MG, iter_lowest, iter_res)
         else
           call empty_solve_DJDS_kemo(EPS_MG, iter_lowest, iter_res,     &
-     &        ierr, my_rank, METHOD_MG)
+     &        ierr, METHOD_MG)
         end if
 !
 !        write(*,*) 'j, MG_vect(i)%x_vec(j)', i

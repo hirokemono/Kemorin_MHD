@@ -40,8 +40,8 @@
      &                   D, AL, INL, IAL, AU, INU, IAU, B, X, PRESET,   &
      &                   NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,   &
      &                                      STACK_EXPORT, NOD_EXPORT,   &
-     &                   my_rank, ITERactual, ERROR,                    &
-     &                   METHOD, PRECOND, INTARRAY, REALARRAY         )
+     &                   ITERactual, ERROR, METHOD, PRECOND,            &
+     &                   INTARRAY, REALARRAY)
 
 ! \beginSUBROUTINE
 !      solver subsystem entry for 3*3 Block Matrix
@@ -103,8 +103,6 @@
       integer(kind=kint ), dimension(STACK_EXPORT(NEIBPETOT))           &
      &       :: NOD_EXPORT
 ! \beginARG       exported node                            (i-th node)
-      integer                              , intent(in)   :: my_rank
-! \beginARG       process ID for mpi
       integer(kind=kint )                  , intent(out)  :: ITERactual
 ! \beginARG       actual iteration number
       integer(kind=kint )                  , intent(inout):: ERROR
@@ -206,9 +204,8 @@
       FLAGmethod = 1
       call CG_3 (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,  &
      &           PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,       &
-     &           my_rank, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,  &
-     &                                       STACK_EXPORT, NOD_EXPORT,  &
-     &           PRESET)
+     &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
+     &                              STACK_EXPORT, NOD_EXPORT, PRESET)
       endif
       endif
 
@@ -222,9 +219,8 @@
       call BiCGSTAB_3                                                   &
      &          (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,  &
      &           PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,       &
-     &           my_rank, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,  &
-     &                                       STACK_EXPORT, NOD_EXPORT,  &
-     &           PRESET)
+     &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
+     &                              STACK_EXPORT, NOD_EXPORT, PRESET)
       endif
       endif
 
@@ -238,9 +234,8 @@
       call GPBiCG_3                                                     &
      &          (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,  &
      &           PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,       &
-     &           my_rank, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,  &
-     &                                       STACK_EXPORT, NOD_EXPORT,  &
-     &           PRESET)
+     &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
+     &                              STACK_EXPORT, NOD_EXPORT, PRESET)
       endif
       endif
 
@@ -254,9 +249,8 @@
       call GMRES_3                                                      &
      &          (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,  &
      &           PRECOND, SIGMA_DIAG, SIGMA, NREST, RESID, ITER,  ERROR,&
-     &           my_rank, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,  &
-     &                                       STACK_EXPORT, NOD_EXPORT,  &
-     &           PRESET)
+     &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
+     &                              STACK_EXPORT, NOD_EXPORT, PRESET)
       endif
       endif
 
@@ -365,9 +359,8 @@
      &          (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,  &
      &           PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,       &
      &           iterPREmax,                                            &
-     &           my_rank, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,  &
-     &                                       STACK_EXPORT, NOD_EXPORT,  &
-     &           PRESET)
+     &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
+     &                              STACK_EXPORT, NOD_EXPORT, PRESET)
       endif
       endif
 
@@ -478,9 +471,8 @@
      &          (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,  &
      &           PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,       &
      &           iterPREmax,                                            &
-     &           my_rank, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,  &
-     &                                       STACK_EXPORT, NOD_EXPORT,  &
-     &           PRESET)
+     &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
+     &                              STACK_EXPORT, NOD_EXPORT, PRESET)
       endif
       endif
 
@@ -593,9 +585,8 @@
      &          (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,  &
      &           PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,       &
      &           iterPREmax,                                            &
-     &           my_rank, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,  &
-     &                                       STACK_EXPORT, NOD_EXPORT,  &
-     &           PRESET)
+     &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
+     &                              STACK_EXPORT, NOD_EXPORT, PRESET)
       endif
       endif
 

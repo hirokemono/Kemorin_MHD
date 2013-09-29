@@ -12,14 +12,14 @@
 !C***
 !      subroutine VMGCGnn_DJDS_SMP(num_MG_level, MG_comm, MG_itp,       &
 !     &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,      &
-!     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,  my_rank,     &
+!     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,               &
 !     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
 !
 !      subroutine init_VMGCGnn_DJDS_SMP(NP, NB, PEsmpTOT,               &
-!     &          PRECOND, METHOD_MG, PRECOND_MG, my_rank)
+!     &          PRECOND, METHOD_MG, PRECOND_MG)
 !      subroutine solve_VMGCGnn_DJDS_SMP(num_MG_level, MG_comm, MG_itp, &
 !     &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,      &
-!     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,  my_rank,     &
+!     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,               &
 !     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
 !      integer(kind = kint), intent(in) :: num_MG_level
 !      type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
@@ -35,7 +35,6 @@
 !
 !      character (len=kchara), intent(in) :: PRECOND
 !      character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
-!      integer(kind = kint), intent(in) ::  my_rank
 !      integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
 !      integer(kind=kint ), intent(inout) :: ITR, IER
 !      real(kind = kreal), intent(in) :: EPS
@@ -60,7 +59,7 @@
 !C
       subroutine VMGCGnn_DJDS_SMP(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,       &
-     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,  my_rank,      &
+     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,                &
      &          PRECOND, METHOD_MG, PRECOND_MG, IER)
 !
       use t_comm_table
@@ -82,7 +81,6 @@
 !
       character (len=kchara), intent(in) :: PRECOND
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
-      integer(kind = kint), intent(in) ::  my_rank
       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
       real(kind = kreal), intent(in) :: EPS
       real(kind = kreal), intent(in) :: EPS_MG
@@ -90,11 +88,11 @@
 !
 !
       call init_VMGCGnn_DJDS_SMP(NP, NB, PEsmpTOT,                      &
-     &          PRECOND, METHOD_MG, PRECOND_MG, my_rank)
+     &          PRECOND, METHOD_MG, PRECOND_MG)
 !C
       call solve_VMGCGnn_DJDS_SMP(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,       &
-     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,  my_rank,      &
+     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,                &
      &          PRECOND, METHOD_MG, PRECOND_MG, IER)
 !
       end subroutine VMGCGnn_DJDS_SMP
@@ -102,14 +100,14 @@
 !  ---------------------------------------------------------------------
 !C
       subroutine init_VMGCGnn_DJDS_SMP(NP, NB, PEsmpTOT,                &
-     &          PRECOND, METHOD_MG, PRECOND_MG, my_rank)
+     &          PRECOND, METHOD_MG, PRECOND_MG)
 !
       use m_work_4_MGCGnn
 !
       use incomplete_cholesky_nn
       use MGCGnn_V_cycle
 !
-      integer(kind = kint), intent(in) :: PEsmpTOT, my_rank
+      integer(kind = kint), intent(in) :: PEsmpTOT
       integer(kind = kint), intent(in) :: NP, NB
       character (len=kchara), intent(in) :: PRECOND
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
@@ -124,8 +122,7 @@
         call verify_work_4_I_Choleskynn(NP, NB)
       end if
 !
-      call init_MGCGnn_V_cycle(NP, NB, PEsmpTOT, METHOD_MG, PRECOND_MG, &
-     &    my_rank)
+      call init_MGCGnn_V_cycle(NP, NB, PEsmpTOT, METHOD_MG, PRECOND_MG)
 !
       end subroutine init_VMGCGnn_DJDS_SMP
 !
@@ -133,7 +130,7 @@
 !C
       subroutine solve_VMGCGnn_DJDS_SMP(num_MG_level, MG_comm, MG_itp,  &
      &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,       &
-     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,  my_rank,      &
+     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,                &
      &          PRECOND, METHOD_MG, PRECOND_MG, IER)
 !
       use calypso_mpi
@@ -171,7 +168,6 @@
 !
       character (len=kchara), intent(in) :: PRECOND
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
-      integer(kind = kint), intent(in) ::  my_rank
       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
       real(kind = kreal), intent(in) :: EPS
       real(kind = kreal), intent(in) :: EPS_MG
@@ -210,7 +206,6 @@
 !
       integer(kind=kint ) :: npLX1, npUX1
       integer(kind=kint ) :: iter, MAXIT
-      integer(kind=kint ) :: ist, ied
 !
 !C
 !C +-------+
@@ -325,8 +320,7 @@
 !
        call s_MGCGnn_V_cycle(num_MG_level, MG_comm, MG_itp,             &
      &     djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, W(1,R), W(1,Z),  &
-     &     iter_mid, iter_lowest, EPS_MG, my_rank,                      &
-     &     METHOD_MG, PRECOND_MG, IER)
+     &     iter_mid, iter_lowest, EPS_MG, METHOD_MG, PRECOND_MG, IER)
 !
 !C
 !C +---------------+

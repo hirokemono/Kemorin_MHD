@@ -200,7 +200,7 @@
         num_grp_g(3) = sf_grp%num_grp
       end if
 !
-      call MPI_BCAST(num_grp_g, ithree, MPI_INTEGER, 0,                 &
+      call MPI_BCAST(num_grp_g, ithree, CALYPSO_INTEGER, 0,             &
      &    CALYPSO_COMM, ierr)
 !
       if(my_rank .ge. np_mpi) then
@@ -230,7 +230,7 @@
       end if
 !
       nlen_comm = kchara*ntot_grp
-      call MPI_BCAST(grp_name_g, nlen_comm, MPI_CHARACTER, 0,           &
+      call MPI_BCAST(grp_name_g, nlen_comm, CALYPSO_CHARACTER, 0,       &
      &    CALYPSO_COMM, ierr)
 !
       if(my_rank .ge. np_mpi) then

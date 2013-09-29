@@ -6,15 +6,14 @@
 !C***
 !
 !      subroutine  init_solver_DJDS                                     &
-!     &         (NP, PEsmpTOT, METHOD, PRECOND, my_rank, ERROR)
+!     &         (NP, PEsmpTOT, METHOD, PRECOND, ERROR)
 !
 !      subroutine  solve_DJDS_kemo                                      &
 !     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
 !     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
 !     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
 !     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITER, IER,                                       &
-!     &           my_rank, NEIBPETOT, NEIBPE,                           &
+!     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                    &
 !     &           STACK_IMPORT, NOD_IMPORT,                             &
 !     &           STACK_EXPORT, NOD_EXPORT,                             &
 !     &           METHOD, PRECOND, ITERactual)
@@ -24,8 +23,7 @@
 !     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
 !     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
 !     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITER, IER,                                       &
-!     &           my_rank, NEIBPETOT, NEIBPE,                           &
+!     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                    &
 !     &           STACK_IMPORT, NOD_IMPORT,                             &
 !     &           STACK_EXPORT, NOD_EXPORT,                             &
 !     &           METHOD, PRECOND, ITERactual)
@@ -53,7 +51,7 @@
 !C
 !C--- init_solver
       subroutine  init_solver_DJDS                                      &
-     &         (NP, PEsmpTOT, METHOD, PRECOND, my_rank, ERROR)
+     &         (NP, PEsmpTOT, METHOD, PRECOND, ERROR)
 !
       use calypso_mpi
 !
@@ -63,7 +61,7 @@
       use solver_GAUS_ZIDL11_DJDS
       use solver_JACOBI11_DJDS
 
-      integer(kind=kint ), intent(in) :: NP, PEsmpTOT, my_rank
+      integer(kind=kint ), intent(in) :: NP, PEsmpTOT
       character(len=kchara) , intent(in):: METHOD
       character(len=kchara) , intent(in):: PRECOND
       integer(kind=kint), intent(inout) :: ERROR
@@ -141,8 +139,7 @@
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITER, IER,                                        &
-     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                     &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT,                              &
      &           METHOD, PRECOND, ITERactual)
@@ -213,8 +210,6 @@
 ! \beginARG
 !
 
-      integer                              , intent(in)   :: my_rank
-! \beginARG       process ID for mpi
       integer(kind=kint )                  , intent(in)   ::  NEIBPETOT
 ! \beginARG       total neighboring pe count
       integer(kind=kint ), dimension(NEIBPETOT) :: NEIBPE 
@@ -258,8 +253,7 @@
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITR, IER,                                         &
-     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
@@ -277,8 +271,7 @@
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITR, IER,                                         &
-     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
@@ -293,8 +286,7 @@
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITR, IER,                                         &
-     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
@@ -313,8 +305,7 @@
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITR, IER,                                         &
-     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !C
@@ -332,8 +323,7 @@
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITR, IER,                                         &
-     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
@@ -360,8 +350,7 @@
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITER, IER,                                        &
-     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                     &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT,                              &
      &           METHOD, PRECOND, ITERactual)
@@ -404,7 +393,6 @@
       integer(kind=kint), dimension(NP)     :: OtoN_L, NtoO_U, LtoU
       integer(kind=kint), dimension(NP)     :: OtoN_U
 !
-      integer                              , intent(in)   :: my_rank
       integer(kind=kint )                  , intent(in)   ::  NEIBPETOT
       integer(kind=kint ), dimension(NEIBPETOT) :: NEIBPE 
       integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_IMPORT
@@ -437,8 +425,7 @@
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITR, IER,                                         &
-     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
@@ -456,8 +443,7 @@
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITR, IER,                                         &
-     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
@@ -472,8 +458,7 @@
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITR, IER,                                         &
-     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
@@ -492,8 +477,7 @@
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITR, IER,                                         &
-     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !C
@@ -511,8 +495,7 @@
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
-     &           EPS, ITR, IER,                                         &
-     &           my_rank, NEIBPETOT, NEIBPE,                            &
+     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !

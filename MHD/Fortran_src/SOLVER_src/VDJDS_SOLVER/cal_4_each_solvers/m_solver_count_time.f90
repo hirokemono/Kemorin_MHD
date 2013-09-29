@@ -3,7 +3,7 @@
 !      module m_solver_count_time
 !
 !      subroutine reset_solver_time
-!      subroutine count_time(iflag_op, my_rank, time_kind)
+!      subroutine count_time(iflag_op, time_kind)
 !
       module m_solver_count_time
 !
@@ -45,12 +45,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_time(iflag_op, my_rank, time_kind)
+      subroutine count_time(iflag_op, time_kind)
 !
       use calypso_mpi
 !
       integer(kind=kint), intent(in) :: iflag_op
-      integer(kind=kint), intent(in) :: my_rank, time_kind
+      integer(kind=kint), intent(in) :: time_kind
       integer(kind=kint) :: ierr, i, num_of_kinds
       real   (kind=kreal) :: recv_time, send_time, out_time
 

@@ -72,8 +72,7 @@
      &     NEWtoOLD_DJDS_U, LtoU, aiccg(im_d), b_djds, x_djds,          &
      &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
      &     aiccg(im_l), aiccg(im_u),                                    &
-     &     ALUG_L, ALUG_U, eps, itr, ierr,                              &
-     &     my_rank, num_neib, id_neib,                                  &
+     &     ALUG_L, ALUG_U, eps, itr, ierr, num_neib, id_neib,           &
      &     istack_import, item_import,                                  &
      &     istack_export, NOD_EXPORT_NEW,                               &
      &     method_4_solver, precond_4_solver, itr_res)

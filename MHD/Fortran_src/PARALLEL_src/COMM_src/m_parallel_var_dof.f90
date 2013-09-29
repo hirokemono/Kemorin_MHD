@@ -20,8 +20,6 @@
 !
       implicit  none
 !
-!>      process ID (start from 0)
-      integer(kind=kint) :: my_rank
 !>      error flag
       integer(kind=kint) :: ierr
 !

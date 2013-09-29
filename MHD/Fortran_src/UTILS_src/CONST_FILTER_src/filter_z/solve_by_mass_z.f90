@@ -98,7 +98,7 @@
 !
       call copy_RH_vect_2_crs_nn
 !
-        write(*,*) 'init_solve_DJDS_kemo', my_rank
+        write(*,*) 'init_solve_DJDS_kemo'
       call init_solve_DJDS_kemo                                         &
      &   ( internal_node, numnod, NLmax, NUmax, itotal_l, itotal_u,     &
      &     NHYP, np_smp, inter_smp_stack, STACKmc, NLmaxHYP, NUmaxHYP,  &
@@ -106,8 +106,7 @@
      &     NEWtoOLD_DJDS_U, LtoU, aiccg(im_d), b_djds, x_djds,          &
      &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
      &     aiccg(im_l), aiccg(im_u),                                    &
-     &     ALUG_L, ALUG_U, eps, itr, ierr,                              &
-     &     my_rank, num_neib, id_neib,                                  &
+     &     ALUG_L, ALUG_U, eps, itr, ierr, num_neib, id_neib,           &
      &     istack_import, item_import,                                  &
      &     istack_export, NOD_EXPORT_NEW,                               &
      &     method_4_solver, precond_4_solver, itr_res)

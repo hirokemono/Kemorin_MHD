@@ -4,14 +4,14 @@
 !     Written by H. Matsui on Jan., 2005
 !
 !      subroutine initNN_DJDS_struct(NP, NB, PEsmpTOT,                  &
-!     &          METHOD, PRECOND, my_rank, ierr)
+!     &          METHOD, PRECOND, ierr)
 !
 !      subroutine solveNN_DJDS_struct(NB, PEsmpTOT, comm_tbl, djds_tbl, &
 !     &           matNN, NP, B, X, METHOD, PRECOND,ierr, eps, itr,      &
-!     &           itr_res, my_rank)
+!     &           itr_res)
 !      subroutine init_solveNN_DJDS_struct(NB, PEsmpTOT, comm_tbl,      &
 !     &          djds_tbl, matNN, NP, B, X, METHOD, PRECOND, ierr,      &
-!     &          eps, itr, itr_res, my_rank)
+!     &          eps, itr, itr_res)
 !
 !      subroutine precond_DJDSnn_struct(NB, PEsmpTOT, djds_tbl, matNN,  &
 !     &          PRECOND, sigma_diag)
@@ -31,17 +31,17 @@
 ! ----------------------------------------------------------------------
 !
       subroutine initNN_DJDS_struct(NP, NB, PEsmpTOT,                   &
-     &          METHOD, PRECOND, my_rank, ierr)
+     &          METHOD, PRECOND, ierr)
 !
       use solverNN_DJDS
 !
-      integer(kind = kint), intent(in)  :: NP, NB, PEsmpTOT, my_rank
+      integer(kind = kint), intent(in)  :: NP, NB, PEsmpTOT
       character(len=kchara ), intent(in):: METHOD, PRECOND
       integer(kind = kint), intent(inout)  :: ierr
 !
 !
       call init_solverNN_DJDS(NP, NB, PEsmpTOT, METHOD, PRECOND,        &
-     &    my_rank, ierr)
+     &    ierr)
 !
       end subroutine initNN_DJDS_struct
 !
@@ -49,12 +49,12 @@
 !
       subroutine solveNN_DJDS_struct(NB, PEsmpTOT, comm_tbl, djds_tbl,  &
      &           matNN, NP, B, X, METHOD, PRECOND,ierr, eps, itr,       &
-     &           itr_res, my_rank)
+     &           itr_res)
 !
       use t_comm_table
       use solverNN_DJDS
 !
-      integer(kind = kint), intent(in)  :: NB, my_rank, PEsmpTOT
+      integer(kind = kint), intent(in)  :: NB, PEsmpTOT
       integer(kind = kint), intent(in)  :: itr
       real(kind = kreal), intent(in) :: eps
       type(communication_table), intent(in) :: comm_tbl
@@ -80,8 +80,7 @@
      &     djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                  &
      &     djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                    &
      &     matNN%AL, matNN%AU,  matNN%ALUG_L, matNN%ALUG_U,             &
-     &     eps, itr, ierr, my_rank,                                     &
-     &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
+     &     eps, itr, ierr, comm_tbl%num_neib, comm_tbl%id_neib,         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
      &     METHOD, PRECOND, itr_res)
@@ -92,12 +91,12 @@
 !
       subroutine init_solveNN_DJDS_struct(NB, PEsmpTOT, comm_tbl,       &
      &          djds_tbl, matNN, NP, B, X, METHOD, PRECOND, ierr,       &
-     &          eps, itr, itr_res, my_rank)
+     &          eps, itr, itr_res)
 !
       use t_comm_table
       use solverNN_DJDS
 !
-      integer(kind = kint), intent(in)  :: NB, my_rank, PEsmpTOT
+      integer(kind = kint), intent(in)  :: NB, PEsmpTOT
       integer(kind = kint), intent(in)  :: itr
       real(kind = kreal), intent(in) :: eps
       type(communication_table), intent(in) :: comm_tbl
@@ -123,8 +122,7 @@
      &     djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                  &
      &     djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                    &
      &     matNN%AL, matNN%AU,  matNN%ALUG_L, matNN%ALUG_U,             &
-     &     eps, itr, ierr, my_rank,                                     &
-     &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
+     &     eps, itr, ierr, comm_tbl%num_neib, comm_tbl%id_neib,         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
      &     METHOD, PRECOND, itr_res)

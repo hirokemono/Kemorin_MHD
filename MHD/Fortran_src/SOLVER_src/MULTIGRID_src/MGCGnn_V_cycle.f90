@@ -4,11 +4,11 @@
 !     Written by Kemorin
 !
 !      subroutine init_MGCGnn_V_cycle(NP, NB, PEsmpTOT,                 &
-!     &          METHOD_MG, PRECOND_MG, my_rank)
+!     &          METHOD_MG, PRECOND_MG)
 !
 !      subroutine s_MGCGnn_V_cycle(num_MG_level, MG_comm, MG_itp,       &
 !     &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,      &
-!     &          iter_mid, iter_lowest, EPS_MG, my_rank,                &
+!     &          iter_mid, iter_lowest, EPS_MG,                         &
 !     &          METHOD_MG, PRECOND_MG, IER)
 !       integer(kind = kint), intent(in) :: num_MG_level
 !       type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
@@ -23,7 +23,6 @@
 !       real(kind = kreal), intent(inout), target :: X(NP)
 !       type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
 !
-!       integer(kind = kint), intent(in) :: my_rank
 !       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
 !       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
 !       real(kind = kreal), intent(in) :: EPS_MG
@@ -53,19 +52,19 @@
 !  ---------------------------------------------------------------------
 !
       subroutine init_MGCGnn_V_cycle(NP, NB, PEsmpTOT,                  &
-     &          METHOD_MG, PRECOND_MG, my_rank)
+     &          METHOD_MG, PRECOND_MG)
 !
       use m_constants
       use solver_DJDSnn_struct
 !
-      integer(kind = kint), intent(in) :: PEsmpTOT, my_rank
+      integer(kind = kint), intent(in) :: PEsmpTOT
       integer(kind = kint), intent(in) :: NP, NB
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
       integer(kind = kint) :: ierr
 !
 !
       call initNN_DJDS_struct(NP, NB, PEsmpTOT, METHOD_MG, PRECOND_MG,  &
-     &    my_rank, ierr)
+     &   ierr)
 !
       end subroutine init_MGCGnn_V_cycle
 !
@@ -73,7 +72,7 @@
 !
       subroutine s_MGCGnn_V_cycle(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,       &
-     &          iter_mid, iter_lowest, EPS_MG, my_rank,                 &
+     &          iter_mid, iter_lowest, EPS_MG,                          &
      &          METHOD_MG, PRECOND_MG, IER)
 !
       use calypso_mpi
@@ -97,7 +96,6 @@
       real(kind = kreal), intent(inout) :: X(NB*NP)
       type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
 !
-      integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
       real(kind = kreal), intent(in) :: EPS_MG
       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
@@ -144,10 +142,10 @@
           call solveNN_DJDS_struct(NB, PEsmpTOT, MG_comm(i),            &
      &      djds_tbl(i), matNN(i),NP_f, MG_vect(i)%b_vec,               &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_mid, iter_res, my_rank)
+     &      EPS_MG, iter_mid, iter_res)
          else
           call empty_solve_DJDS_kemo(EPS_MG, iter_mid, iter_res, ierr,  &
-     &        my_rank, METHOD_MG)
+     &        METHOD_MG)
          end if
 !
         call s_interpolate_type_N(NP_f, NP_c, NB, MG_comm(i+1),         &
@@ -164,10 +162,10 @@
         call solveNN_DJDS_struct(NB, PEsmpTOT, MG_comm(i),              &
      &      djds_tbl(i), matNN(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_lowest, iter_res, my_rank)
+     &      EPS_MG, iter_lowest, iter_res)
       else
         call empty_solve_DJDS_kemo(EPS_MG, iter_lowest, iter_res, ierr, &
-     &        my_rank, METHOD_MG)
+     &      METHOD_MG)
       end if
 !
 !
@@ -190,10 +188,10 @@
           call solveNN_DJDS_struct(NB, PEsmpTOT, MG_comm(i),            &
      &      djds_tbl(i), matNN(i),NP_f, MG_vect(i)%b_vec,               &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_lowest, iter_res, my_rank)
+     &      EPS_MG, iter_lowest, iter_res)
          else
           call empty_solve_DJDS_kemo(EPS_MG, iter_lowest, iter_res,     &
-     &        ierr,  my_rank, METHOD_MG)
+     &        ierr, METHOD_MG)
          end if
       end do
 !
