@@ -20,7 +20,6 @@
       subroutine s_construct_interpolate_table(ierr_missing)
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_machine_parameter
       use m_ctl_params_4_gen_table
       use m_geometry_parameter

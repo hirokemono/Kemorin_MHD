@@ -14,7 +14,9 @@
       module fields_type_send_recv
 !
       use m_precision
-      use m_parallel_var_dof
+!
+      use calypso_mpi
+      use m_work_time
 !
       use t_mesh_data
       use t_phys_data
@@ -83,14 +85,13 @@
       end do
 !$omp end parallel do
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV(mesh%node%numnod,                           &
      &    mesh%nod_comm%num_neib, mesh%nod_comm%id_neib,                &
      &    mesh%nod_comm%istack_import, mesh%nod_comm%item_import,       &
      &    mesh%nod_comm%istack_export, mesh%nod_comm%item_export,       &
      &    x_vec(1) )
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod=1, mesh%node%numnod
@@ -121,14 +122,13 @@
       end do
 !$omp end parallel do
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_3(mesh%node%numnod,                         &
      &    mesh%nod_comm%num_neib, mesh%nod_comm%id_neib,                &
      &    mesh%nod_comm%istack_import, mesh%nod_comm%item_import,       &
      &    mesh%nod_comm%istack_export, mesh%nod_comm%item_export,       &
      &    x_vec(1) )
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod=1, mesh%node%numnod
@@ -164,14 +164,13 @@
       end do
 !$omp end parallel do
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_6(mesh%node%numnod,                         &
      &    mesh%nod_comm%num_neib, mesh%nod_comm%id_neib,                &
      &    mesh%nod_comm%istack_import, mesh%nod_comm%item_import,       &
      &    mesh%nod_comm%istack_export, mesh%nod_comm%item_export,       &
      &    x_vec(1))
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod=1, mesh%node%numnod

@@ -16,7 +16,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       implicit none
 !
@@ -188,7 +188,6 @@
 !
       subroutine set_sph_range_coriolis
 !
-      use calypso_mpi
       use m_constants
       use m_spheric_parameter
       use m_comm_tbl_sph_coriolis

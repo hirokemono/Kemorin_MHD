@@ -118,7 +118,6 @@
       subroutine sum_layerd_averages
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_layering_ele_list
 !
       integer (kind = kint) :: num
@@ -141,7 +140,6 @@
       subroutine sum_layerd_correlation
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_layering_ele_list
 !
       integer (kind = kint) :: num_1, num_2
@@ -166,7 +164,6 @@
       subroutine sum_whole_averages
 !
       use calypso_mpi
-      use m_parallel_var_dof
 !
 !
       ave_wg(1:ncomp_correlate_2) = 0.0d0
@@ -184,7 +181,6 @@
       subroutine sum_whole_correlation
 !
       use calypso_mpi
-      use m_parallel_var_dof
 !
 !
       sig_wg(1:ncomp_correlate_2) = 0.0d0

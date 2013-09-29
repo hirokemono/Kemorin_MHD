@@ -11,7 +11,8 @@
       module send_recv_3d_filtering
 !
       use m_precision
-      use m_parallel_var_dof
+      use m_work_time
+      use calypso_mpi
 !
       implicit none
 !
@@ -33,12 +34,11 @@
       integer(kind = kint) :: inod
 !
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV(nnod, num_neib, id_neib,                    &
      &                      istack_import, item_import,                 &
      &                      istack_export, item_export, x_vec(1) )
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod=1, nnod
@@ -62,12 +62,11 @@
       integer(kind = kint) :: inod
 !
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_3 (nnod, num_neib, id_neib,                 &
      &                         istack_import, item_import,              &
      &                         istack_export, item_export, x_vec(1) )
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod=1, nnod
@@ -93,12 +92,11 @@
       integer(kind = kint) :: inod
 !
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_6(nnod, num_neib, id_neib,                  &
      &       istack_import, item_import, istack_export, item_export,    &
      &       x_vec(1) )
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod =1, nnod

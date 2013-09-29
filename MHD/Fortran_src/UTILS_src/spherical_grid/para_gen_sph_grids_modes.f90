@@ -12,7 +12,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_parallel_var_dof
       use m_work_time
       use calypso_mpi
 !

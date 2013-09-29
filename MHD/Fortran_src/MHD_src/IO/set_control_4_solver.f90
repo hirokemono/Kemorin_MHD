@@ -32,7 +32,6 @@
       subroutine s_set_control_4_solver
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_iccg_parameter
       use m_ctl_data_4_solvers
       use m_ctl_parameter_Multigrid

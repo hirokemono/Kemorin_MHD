@@ -133,7 +133,6 @@
       subroutine s_sum_norm_of_surf_grp_para(num_surf, tot_area_sf_grp)
 !
       use calypso_mpi
-      use m_parallel_var_dof
 !
       integer(kind = kint), intent(in) :: num_surf
       real(kind = kreal), intent(inout) :: tot_area_sf_grp(num_surf)

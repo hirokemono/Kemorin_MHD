@@ -12,7 +12,6 @@
       use m_precision
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter

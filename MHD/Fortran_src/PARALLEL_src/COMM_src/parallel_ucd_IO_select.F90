@@ -21,7 +21,6 @@
       module parallel_ucd_IO_select
 !
       use m_precision
-      use m_parallel_var_dof
       use m_file_format_switch
       use m_field_file_format
 !

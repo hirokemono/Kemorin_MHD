@@ -17,8 +17,8 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_machine_parameter
-      use m_parallel_var_dof
       use m_ctl_data_4_solvers
 !
       implicit  none
@@ -212,7 +212,6 @@
 !
       subroutine read_filter_param_ctl
 !
-      use calypso_mpi
       use m_read_control_elements
       use skip_comment_f
 !

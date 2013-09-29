@@ -14,8 +14,8 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_machine_parameter
-      use m_parallel_var_dof
       use m_read_control_elements
       use skip_comment_f
 !
@@ -165,7 +165,6 @@
 !
       subroutine read_mhd_control_ctl
 !
-      use calypso_mpi
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_solvers
       use m_ctl_data_4_fem_int_pts

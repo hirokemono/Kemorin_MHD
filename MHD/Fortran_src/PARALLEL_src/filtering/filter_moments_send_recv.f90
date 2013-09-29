@@ -154,6 +154,8 @@
 !
       subroutine scalar_send_recv_filter(scalar)
 !
+      use calypso_mpi
+      use m_work_time
       use m_geometry_parameter
       use m_parallel_var_dof
       use m_array_for_send_recv
@@ -171,12 +173,11 @@
       end do
 !cdir end parallel do
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV(numnod, num_neib, id_neib,                  &
      &                      istack_import, item_import,                 &
      &                      istack_export, item_export, x_vec(1) )
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod=1, numnod
@@ -190,6 +191,8 @@
 !
       subroutine vector_send_recv_filter(vector)
 !
+      use calypso_mpi
+      use m_work_time
       use m_geometry_parameter
       use m_parallel_var_dof
       use m_array_for_send_recv
@@ -209,12 +212,11 @@
       end do
 !$omp end parallel do
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_3(numnod, num_neib, id_neib,                &
      &                        istack_import, item_import,               &
      &                        istack_export, item_export, x_vec(1) )
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod=1, numnod

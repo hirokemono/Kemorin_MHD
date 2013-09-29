@@ -7,22 +7,19 @@
 !!@n    Modified on Dec., 2012
 !
 !> @brief  Basic parameters for MPI parallelization
-!!
-!!@verbatim
-!!      subroutine parallel_cal_init
-!!@endverbatim
+!
+!      subroutine parallel_cal_init
 !
       module   m_parallel_var_dof
 !
-      use m_precision
       use calypso_mpi
-!
 !
       implicit  none
 !
+! ----------------------------------------------------------------------
 !
-      real(kind=kreal) :: START_TIME, END_TIME, COMMtime
-! 
-!  ---------------------------------------------------------------------
+!      contains
+!
+! ----------------------------------------------------------------------
 !
       end module   m_parallel_var_dof

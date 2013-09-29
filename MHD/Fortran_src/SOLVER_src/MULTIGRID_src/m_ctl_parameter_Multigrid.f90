@@ -28,7 +28,6 @@
       subroutine set_ctl_data_4_Multigrid
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_machine_parameter
       use m_type_AMG_data
       use m_type_AMG_mesh

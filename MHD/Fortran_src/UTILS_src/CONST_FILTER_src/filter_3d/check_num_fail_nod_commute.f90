@@ -7,7 +7,7 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       implicit none
 !
@@ -75,7 +75,6 @@
 !
       subroutine s_check_num_fail_nod_commute
 !
-      use calypso_mpi
       use m_filter_coefs
 !
       integer(kind = kint) :: ip, id_dest

@@ -31,7 +31,6 @@
       subroutine set_control_4_fields
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_node_phys_data
 !
       use set_control_nodal_data

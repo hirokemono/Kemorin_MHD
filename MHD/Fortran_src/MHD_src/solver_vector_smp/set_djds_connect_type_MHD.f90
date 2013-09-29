@@ -11,7 +11,6 @@
       use m_precision
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_machine_parameter
       use m_constants
       use m_type_AMG_mesh

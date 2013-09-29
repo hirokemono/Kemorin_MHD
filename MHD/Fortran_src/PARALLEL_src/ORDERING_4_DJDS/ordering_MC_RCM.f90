@@ -32,7 +32,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_parallel_var_dof
       use m_iccg_parameter
       use m_geometry_parameter
       use m_matrix_work

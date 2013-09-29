@@ -12,8 +12,8 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_machine_parameter
-      use m_parallel_var_dof
       use m_control_data_4_psf
       use m_control_params_4_psf
 !
@@ -30,7 +30,6 @@
       subroutine count_control_4_psf(i_psf, psf,                        &
      &          num_mat, mat_name, num_nod_phys, phys_nod_name)
 !
-      use calypso_mpi
       use m_field_file_format
       use m_file_format_switch
       use set_area_4_viz

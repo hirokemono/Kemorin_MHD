@@ -177,7 +177,6 @@
       subroutine sum_volumes_4_layerd
 !
       use calypso_mpi
-      use m_parallel_var_dof
 !
 !
       volumes_layer =   zero

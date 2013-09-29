@@ -80,7 +80,6 @@
 !
       subroutine read_3d_filtering_data
 !
-      use m_parallel_var_dof
       use m_control_parameter
       use m_filter_file_names
       use m_filter_coef_combained
@@ -115,7 +114,6 @@
 !
       subroutine read_w_filtering_data
 !
-      use m_parallel_var_dof
       use m_control_parameter
       use m_nod_w_filter_comm_table
       use m_filter_file_names

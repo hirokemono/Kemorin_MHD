@@ -14,7 +14,6 @@
 !
       use calypso_mpi
       use m_constants
-      use m_parallel_var_dof
       use m_internal_4_partitioner
 !
       implicit none
@@ -27,6 +26,7 @@
 !
       subroutine bcast_parallel_domain_tbl(mesh_head)
 !
+      use m_work_time
       use m_2nd_pallalel_vector
       use m_domain_group_4_partition
       use const_domain_tbl_by_file
@@ -34,33 +34,32 @@
       character(len=kchara), intent(in) :: mesh_head
 !
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       if(my_rank .eq. 0) then
         call count_nnod_whole_domain(mesh_head)
       end if
 !
       call MPI_Bcast(nnod_s_domin, ione, CALYPSO_INTEGER, izero,        &
      &    CALYPSO_COMM, ierr_MPI)
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
-      END_TIME= MPI_WTIME()
-      COMMtime = END_TIME - START_TIME
-      START_TIME = END_TIME
-      if(my_rank .eq. 0) write(*,*) 'count total node time: ', COMMtime
+      if(my_rank .eq. 0) write(*,*) 'count total node time: ',          &
+     &                              SendRecvtime
 !
       call allocate_domain_nese_group
       call allocate_local_nese_id_tbl
       call allocate_org_gl_nese_id
 !
+      START_SRtime = MPI_WTIME()
       if(my_rank .eq. 0) then
         call set_domain_grp_whole_domain(mesh_head)
       else
         call set_domain_grp_each_domain(mesh_head, my_rank)
       end if
 !
-      END_TIME= MPI_WTIME()
-      COMMtime = END_TIME - START_TIME
-      START_TIME = END_TIME
-      if(my_rank .eq. 0) write(*,*) 'set domain table time: ', COMMtime
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
+      if(my_rank .eq. 0) write(*,*) 'set domain table time: ',          &
+     &                             SendRecvtime
 !
       end subroutine bcast_parallel_domain_tbl
 !

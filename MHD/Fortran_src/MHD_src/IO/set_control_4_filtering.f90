@@ -27,7 +27,6 @@
       subroutine s_set_control_4_filtering
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_constants
       use m_machine_parameter
       use m_file_format_switch

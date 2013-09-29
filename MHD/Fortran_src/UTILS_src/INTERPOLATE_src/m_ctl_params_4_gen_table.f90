@@ -83,7 +83,6 @@
       subroutine set_ctl_params_4_gen_table
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_machine_parameter
       use m_2nd_geometry_param
       use m_2nd_pallalel_vector

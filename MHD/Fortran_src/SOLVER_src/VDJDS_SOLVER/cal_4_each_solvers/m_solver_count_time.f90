@@ -11,7 +11,7 @@
 !
       implicit none
 !
-      real(kind=kreal) :: COMMtime, COMPtime
+      real(kind=kreal) :: COMMtime, COMPtime, SRtime
       real(kind=kreal) :: S1_TIME, E1_TIME
       real(kind=kreal) :: START_TIME, END_TIME
       real(kind=kreal) :: R1

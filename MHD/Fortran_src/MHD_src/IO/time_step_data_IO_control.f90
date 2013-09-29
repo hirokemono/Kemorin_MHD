@@ -22,7 +22,6 @@
       subroutine output_time_step_control
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_control_parameter
       use m_geometry_data
       use m_geometry_parameter

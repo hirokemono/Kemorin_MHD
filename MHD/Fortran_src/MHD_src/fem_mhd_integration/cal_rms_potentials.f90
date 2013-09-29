@@ -13,7 +13,6 @@
       use calypso_mpi
       use m_constants
       use m_machine_parameter
-      use m_parallel_var_dof
       use m_geometry_parameter
       use m_geometry_data_MHD
       use m_bulk_values

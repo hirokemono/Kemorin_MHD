@@ -23,7 +23,6 @@
       subroutine s_cal_average_mag_potential
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_control_parameter
       use m_geometry_constants
       use m_geometry_parameter

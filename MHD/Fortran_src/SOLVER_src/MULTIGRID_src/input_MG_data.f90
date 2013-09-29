@@ -10,8 +10,8 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_constants
-      use m_parallel_var_dof
       use m_type_AMG_data
       use m_type_AMG_mesh
 !
@@ -180,8 +180,6 @@
       subroutine sync_group_name_4_empty(np_mpi,                        &
      &          nod_grp, ele_grp, sf_grp)
 !
-      use calypso_mpi
-      use m_parallel_var_dof
       use t_group_data
 !
       integer(kind = kint), intent(in) :: np_mpi

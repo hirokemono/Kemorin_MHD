@@ -51,7 +51,7 @@
       if     (iflag_shell_mode.eq.iflag_no_FEMMESH                      &
         .or.  iflag_shell_mode.eq.iflag_MESH_same) return
 !
-      if (iflag_debug.gt.0)  write(*,*) 'sph_b_trans_scalar', nb
+      if (iflag_debug.gt.0)  write(*,*) 'sum_b_trans_pole_scalar', nb
       call schmidt_b_trans_pole_scalar(nb)
       call sum_b_trans_pole_scalar(nb)
 !
@@ -76,7 +76,7 @@
       if     (iflag_shell_mode.eq.iflag_no_FEMMESH                      &
         .or.  iflag_shell_mode.eq.iflag_MESH_same) return
 !
-      if (iflag_debug.gt.0)  write(*,*) 'sph_b_trans_vector', nb
+      if (iflag_debug.gt.0)  write(*,*) 'sum_b_trans_pole_vect', nb
       call schmidt_b_trans_pole_vect(nb)
       call sum_b_trans_pole_vect(nb)
 !

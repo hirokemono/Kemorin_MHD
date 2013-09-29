@@ -13,7 +13,8 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
+      use calypso_mpi
+      use m_work_time
       use m_geometry_parameter
       use m_nod_filter_comm_table
 !
@@ -46,15 +47,13 @@
       end do
 !$omp end parallel do
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &    (nnod_filtering, num_neib_filter, id_neib_filter,             &
      &     istack_import_filter, item_import_filter,                    &
      &     istack_export_filter, item_export_filter,                    &
      &     x_vec_filtering(1) )
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
-!
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       end subroutine prepare_scalar_2_filter
 !
@@ -90,14 +89,13 @@
 !      write(*,*) 'item_import_filter', size(item_import_filter)
 !      write(*,*) 'item_export_filter', size(item_export_filter)
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
      &    (nnod_filtering, num_neib_filter, id_neib_filter,             &
      &     istack_import_filter, item_import_filter,                    &
      &     istack_export_filter, item_export_filter,                    &
      &     x_vec_filtering(1) )
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       end subroutine prepare_vector_2_filter
 !
@@ -134,15 +132,13 @@
       end do
 !$omp end parallel do
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_6                                           &
      &    (nnod_filtering, num_neib_filter, id_neib_filter,             &
      &     istack_import_filter, item_import_filter,                    &
      &     istack_export_filter, item_export_filter,                    &
      &     x_vec_filtering(1) )
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
-!
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       end subroutine prepare_sym_tensor_2_filter
 !

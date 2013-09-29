@@ -12,7 +12,8 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
+      use calypso_mpi
+      use m_work_time
       use m_geometry_parameter
       use m_nod_w_filter_comm_table
 !
@@ -39,14 +40,12 @@
       end do
 !$omp end parallel do
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &    (nnod_w_filtering, num_neib_w_fil, id_neib_w_fil,             &
      &     istack_import_w_fil, item_import_w_fil,                      &
      &     istack_export_w_fil, item_export_w_fil, x_vec_w_fil(1) )
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
-!
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       end subroutine prepare_scalar_2_w_fil
 !
@@ -69,14 +68,12 @@
       end do
 !$omp end parallel do
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
      &    (nnod_w_filtering, num_neib_w_fil, id_neib_w_fil,             &
      &     istack_import_w_fil, item_import_w_fil,                      &
      &     istack_export_w_fil, item_export_w_fil, x_vec_w_fil(1))
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
-!
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       end subroutine prepare_vector_2_w_fil
 !
@@ -102,14 +99,12 @@
       end do
 !$omp end parallel do
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_6                                           &
      &    (nnod_w_filtering, num_neib_w_fil, id_neib_w_fil,             &
      &     istack_import_w_fil, item_import_w_fil,                      &
      &     istack_export_w_fil, item_export_w_fil, x_vec_w_fil(1))
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
-!
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       end subroutine prepare_sym_tensor_2_w_fil
 !

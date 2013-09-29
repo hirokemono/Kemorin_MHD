@@ -14,7 +14,6 @@
       use m_control_parameter
       use m_constants
       use m_machine_parameter
-      use m_parallel_var_dof
       use m_geometry_data_MHD
       use m_flex_delta_t_data
       use m_t_step_parameter

@@ -21,7 +21,6 @@
       subroutine s_set_control_add_2d_egrp
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_constants
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data

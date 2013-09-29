@@ -26,7 +26,6 @@
       subroutine set_control_4_FEM_params
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_machine_parameter
       use m_control_parameter
       use m_ctl_data_4_fem_int_pts

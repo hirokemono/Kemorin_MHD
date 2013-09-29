@@ -21,7 +21,6 @@
       use calypso_mpi
       use m_constants
       use m_machine_parameter
-      use m_parallel_var_dof
       use m_control_params_4_fline
       use m_source_4_filed_line
 !

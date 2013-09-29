@@ -22,7 +22,6 @@
       subroutine solve_by_djds_solverNN(ierr)
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_nod_comm_table
       use m_geometry_parameter
       use m_machine_parameter

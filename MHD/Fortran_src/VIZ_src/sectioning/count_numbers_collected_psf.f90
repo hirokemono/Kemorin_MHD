@@ -27,7 +27,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_parallel_var_dof
       use m_mpi_flags_4_section
       use copy_psf_data_to_SR
       use cal_minmax_and_stacks

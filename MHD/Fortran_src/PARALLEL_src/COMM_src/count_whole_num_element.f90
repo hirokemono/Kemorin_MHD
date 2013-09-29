@@ -20,7 +20,6 @@
       subroutine check_whole_num_of_elements
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_machine_parameter
       use m_geometry_parameter
       use m_geometry_data

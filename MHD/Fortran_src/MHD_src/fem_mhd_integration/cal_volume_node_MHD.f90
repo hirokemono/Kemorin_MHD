@@ -12,7 +12,7 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_machine_parameter
       use m_geometry_data
       use sum_volume_of_domain
@@ -86,7 +86,6 @@
 !
       subroutine cal_volume_4_fluid
 !
-      use calypso_mpi
       use m_geometry_data_MHD
 !
       call sum_4_volume(iele_fl_smp_stack, vol_fl_local)
@@ -106,7 +105,6 @@
 !
       subroutine cal_volume_4_conduct
 !
-      use calypso_mpi
       use m_geometry_data_MHD
 !
       real(kind=kreal) :: vol_cd_local
@@ -129,7 +127,6 @@
 !
       subroutine cal_volume_4_insulate
 !
-      use calypso_mpi
       use m_geometry_data_MHD
 !
       real(kind=kreal) :: vol_ins_local

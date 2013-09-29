@@ -16,7 +16,6 @@
 !
       use calypso_mpi
       use m_constants
-      use m_parallel_var_dof
 !
       implicit  none
 !

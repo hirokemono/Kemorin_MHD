@@ -25,7 +25,6 @@
       use calypso_mpi
       use m_machine_parameter
       use m_control_parameter
-      use m_parallel_var_dof
       use m_nod_comm_table
       use m_comm_table_4_MHD
       use m_geometry_parameter

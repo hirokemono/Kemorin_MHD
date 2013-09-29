@@ -15,7 +15,9 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
+      use calypso_mpi
+      use m_work_time
+!
       use m_2nd_pallalel_vector
       use m_2nd_geometry_param
       use m_2nd_nod_comm_table
@@ -79,13 +81,12 @@
       end do
 !$omp end parallel do
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV(nnod_2nd, num_neib_2, id_neib_2,            &
      &                      istack_import_2, item_import_2,             &
      &                      istack_export_2, item_export_2,             &
      &                      xvec_2nd(1) )
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod=1, nnod_2nd
@@ -113,13 +114,12 @@
       end do
 !$omp end parallel do
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_3(nnod_2nd, num_neib_2, id_neib_2,          &
      &                        istack_import_2, item_import_2,           &
      &                        istack_export_2, item_export_2,           &
      &                        xvec_2nd(1) )
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod=1, nnod_2nd
@@ -152,13 +152,12 @@
       end do
 !$omp end parallel do
 !
-      START_TIME= MPI_WTIME()
+      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_6                                           &
      &      (nnod_2nd, num_neib_2, id_neib_2,                           &
      &       istack_import_2, item_import_2,                            &
      &       istack_export_2, item_export_2, xvec_2nd(1) )
-      END_TIME= MPI_WTIME()
-      COMMtime = COMMtime + END_TIME - START_TIME
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod=1, nnod_2nd

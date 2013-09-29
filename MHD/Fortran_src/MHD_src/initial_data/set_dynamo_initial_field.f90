@@ -73,7 +73,6 @@
       subroutine set_initial_data
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_control_parameter
       use m_initial_field_control
       use m_t_step_parameter

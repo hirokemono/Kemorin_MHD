@@ -13,7 +13,6 @@
       use m_precision
 !
       use m_constants
-      use m_parallel_var_dof
       use m_control_data_4_pvr
       use m_control_params_4_pvr
       use calypso_mpi

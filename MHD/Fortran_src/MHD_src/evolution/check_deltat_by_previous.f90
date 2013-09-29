@@ -7,9 +7,9 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_constants
       use m_machine_parameter
-      use m_parallel_var_dof
       use m_flex_delta_t_data
 !
       implicit  none
@@ -27,7 +27,6 @@
 !
       subroutine s_check_deltat_by_previous
 !
-      use calypso_mpi
       use m_control_parameter
       use m_node_phys_address
 !

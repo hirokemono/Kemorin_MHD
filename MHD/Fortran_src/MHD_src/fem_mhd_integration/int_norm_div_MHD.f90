@@ -17,7 +17,7 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_control_parameter
       use m_geometry_data
       use m_bulk_values
@@ -38,7 +38,6 @@
 !
       subroutine int_norm_div_v_monitor(iloop, rsig)
 !
-      use calypso_mpi
       use m_node_phys_address
       use m_geometry_data_MHD
 !
@@ -67,7 +66,6 @@
 !
       subroutine int_norm_div_b_monitor(iloop, rsig)
 !
-      use calypso_mpi
       use m_node_phys_address
       use m_geometry_parameter
 !
@@ -94,7 +92,6 @@
 !
       subroutine int_norm_div_a_monitor(iloop, rsig)
 !
-      use calypso_mpi
       use m_node_phys_address
       use m_geometry_parameter
 !
