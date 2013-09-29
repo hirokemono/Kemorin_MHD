@@ -30,7 +30,7 @@
 !
       subroutine set_index_list_4_mat_etr
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       integer(kind = kint) :: nod1, nod2, mat_num, k2
       integer(kind = kint) :: iproc, iele, inum, iconn

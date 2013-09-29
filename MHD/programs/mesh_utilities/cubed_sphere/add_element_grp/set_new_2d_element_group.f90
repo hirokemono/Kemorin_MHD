@@ -85,7 +85,6 @@
       subroutine count_new_2d_element_group
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_add_ele_grp_parameter
       use m_element_group
       use set_ele_grp2_by_2d

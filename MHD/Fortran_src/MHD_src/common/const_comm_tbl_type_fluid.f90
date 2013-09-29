@@ -70,7 +70,7 @@
       subroutine set_comm_tbl_type_fluid(vect, mesh, fluid,             &
      &          nod_fl_comm)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_machine_parameter
       use t_vector_for_solver
       use t_mesh_data

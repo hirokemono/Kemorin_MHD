@@ -27,7 +27,7 @@
 !
       subroutine s_sum_normal_4_surf_group
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
@@ -86,7 +86,7 @@
      &          num_surf, num_surf_bc, surf_item, num_surf_smp,         &
      &          isurf_grp_smp_stack, area_sf_grp)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       integer(kind = kint) , intent(in) :: numele
       real(kind = kreal), intent(in) :: e_multi(numele)

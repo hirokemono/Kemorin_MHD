@@ -9,7 +9,7 @@
       module analyzer_snap_tmp
 !
       use m_precision
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       use FEM_analyzer_snap_tmp
       use visualizer_all

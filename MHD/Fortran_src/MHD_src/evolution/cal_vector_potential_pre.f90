@@ -26,7 +26,7 @@
 !
       subroutine cal_vector_p_pre
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_finite_element_matrix
       use m_node_phys_address
 !

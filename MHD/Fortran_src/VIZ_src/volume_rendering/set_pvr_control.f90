@@ -76,7 +76,7 @@
 !
       subroutine read_control_pvr(i_pvr, ierr)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       integer(kind = kint), intent(in) :: i_pvr
       integer(kind = kint), intent(inout) :: ierr

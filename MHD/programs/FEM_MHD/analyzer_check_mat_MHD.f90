@@ -9,7 +9,7 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       use FEM_check_MHD_matrices
 !

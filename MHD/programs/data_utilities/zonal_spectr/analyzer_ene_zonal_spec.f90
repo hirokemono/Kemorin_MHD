@@ -23,7 +23,7 @@
 !
       subroutine init_analyzer
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_ctl_data_4_zonal_fft
       use m_ctl_params_zonal_fft
       use m_node_id_spherical_IO
@@ -73,7 +73,7 @@
 !
       subroutine analyze
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_ctl_params_zonal_fft
       use m_sph_zonal_ene_spectr
       use copy_rtp_phys_data_4_IO

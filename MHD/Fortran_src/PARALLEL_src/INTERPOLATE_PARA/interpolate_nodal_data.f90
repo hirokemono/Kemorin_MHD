@@ -19,7 +19,7 @@
 !
       subroutine s_interpolate_nodal_data
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_node_phys_data
       use m_2nd_phys_data
 !

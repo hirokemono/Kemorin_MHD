@@ -24,7 +24,7 @@
 !
       subroutine set_control
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_control_params_2nd_files
 !
       use set_control_platform_data

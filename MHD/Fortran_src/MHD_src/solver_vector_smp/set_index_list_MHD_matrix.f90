@@ -21,7 +21,7 @@
 !
       subroutine set_index_list_4_matrix
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_control_parameter
       use m_sorted_node
       use m_sorted_node_MHD

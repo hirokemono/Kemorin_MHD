@@ -10,7 +10,7 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_parameter
       use m_crs_connect
       use m_crs_matrix

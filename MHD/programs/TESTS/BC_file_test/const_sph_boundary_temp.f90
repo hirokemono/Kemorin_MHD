@@ -22,7 +22,7 @@
 !
       subroutine const_sph_temp_bc
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_node_group
       use m_ctl_params_test_bc_temp
       use m_boundary_field_IO

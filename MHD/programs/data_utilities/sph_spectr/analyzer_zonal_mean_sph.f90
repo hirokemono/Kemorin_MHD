@@ -15,7 +15,6 @@
       use m_constants
       use m_machine_parameter
       use m_schmidt_poly_on_rtm
-      use m_parallel_var_dof
       use field_IO_select
 !
         implicit none

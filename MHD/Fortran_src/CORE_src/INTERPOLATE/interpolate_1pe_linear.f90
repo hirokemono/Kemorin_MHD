@@ -39,7 +39,7 @@
       use interpolate_scalar_edge2
       use interpolate_scalar_surf4
       use interpolate_scalar_ele8
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       integer (kind = kint), intent(in) :: np_smp
       integer (kind = kint), intent(in) :: numnod, numele

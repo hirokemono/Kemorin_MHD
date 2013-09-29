@@ -11,7 +11,7 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_control_parameter
       use m_magne_matrix
       use m_mag_potential_matrix

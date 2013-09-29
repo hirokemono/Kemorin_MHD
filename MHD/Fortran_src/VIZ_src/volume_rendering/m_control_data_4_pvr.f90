@@ -162,7 +162,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_read_control_elements
       use m_ctl_data_4_view_transfer
       use skip_comment_f

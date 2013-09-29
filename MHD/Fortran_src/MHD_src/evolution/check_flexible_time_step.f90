@@ -12,7 +12,7 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_t_step_parameter
       use m_t_int_parameter
       use m_flex_delta_t_data

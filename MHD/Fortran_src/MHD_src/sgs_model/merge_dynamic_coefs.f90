@@ -32,7 +32,7 @@
       subroutine merge_coefs_4_dynamic(numdir, n_layer,                 &
      &          c_comps,  c_fields, cor)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_control_parameter
 !
       integer (kind = kint), intent(in) :: numdir, n_layer

@@ -12,7 +12,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       use m_control_params_4_psf
       use m_control_params_4_iso

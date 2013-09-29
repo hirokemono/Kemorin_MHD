@@ -22,7 +22,7 @@
 !
       subroutine init_analyzer
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_read_mesh_data
       use m_ctl_data_newdomain_filter
       use m_ctl_param_newdom_filter

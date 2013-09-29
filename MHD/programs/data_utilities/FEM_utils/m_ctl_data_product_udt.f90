@@ -8,7 +8,7 @@
 !     required module for 3rd level
 !
       use m_precision
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_machine_parameter
       use m_read_control_elements
       use skip_comment_f

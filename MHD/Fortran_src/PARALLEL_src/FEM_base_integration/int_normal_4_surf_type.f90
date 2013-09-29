@@ -55,7 +55,7 @@
       use t_geometry_data
       use t_group_data
       use t_surface_group_geometry
-      use m_parallel_var_dof
+      use calypso_mpi
       use sum_normal_4_surf_group
 !
       type(element_data),       intent(in) :: ele

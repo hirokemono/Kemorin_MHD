@@ -10,7 +10,7 @@
       module analyzer_MHD
 !
       use m_precision
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_work_time
 !
       use FEM_analyzer_MHD

@@ -9,7 +9,7 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_all_layerd_correlate
       use m_layering_ele_list
       use m_work_layer_correlate

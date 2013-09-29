@@ -11,7 +11,7 @@
       use m_precision
 !
       use m_constants
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_ctl_params_4_gen_filter
       use m_geometry_parameter
       use m_filter_coefs

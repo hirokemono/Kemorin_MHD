@@ -19,7 +19,7 @@
 !
       subroutine set_ctl_params_4_solver_test
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_machine_parameter
       use m_type_AMG_mesh
       use m_iccg_parameter

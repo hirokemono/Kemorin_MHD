@@ -33,7 +33,7 @@
 !
       subroutine solve_crs_by_mass_z
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_crs_connect
       use m_crs_matrix
       use DJDS_precond_solve11
@@ -72,7 +72,7 @@
 !
       subroutine solve_crs_by_mass_z2
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_machine_parameter
       use m_nod_comm_table
       use m_geometry_parameter

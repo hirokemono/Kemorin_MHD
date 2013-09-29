@@ -23,7 +23,7 @@
 !
       subroutine  initialize_add_egrp
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_control_data_add_ele_grp
       use m_add_ele_grp_parameter
       use m_read_mesh_data

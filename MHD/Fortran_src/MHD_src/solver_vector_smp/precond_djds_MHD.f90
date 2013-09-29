@@ -20,7 +20,7 @@
 !
       subroutine matrix_precondition
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_control_parameter
       use m_geometry_parameter
       use m_geometry_data

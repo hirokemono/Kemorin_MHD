@@ -20,9 +20,9 @@
 !
       subroutine SPH_initialize_linear_conv
 !
+      use calypso_mpi
       use m_constants
       use m_array_for_send_recv
-      use m_parallel_var_dof
       use m_machine_parameter
       use m_control_parameter
 !

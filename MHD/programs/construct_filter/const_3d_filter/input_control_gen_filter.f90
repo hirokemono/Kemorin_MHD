@@ -20,7 +20,7 @@
       subroutine input_control_3d_commute
 !
       use m_machine_parameter
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       use read_ctl_gen_filter
       use set_ctl_gen_filter

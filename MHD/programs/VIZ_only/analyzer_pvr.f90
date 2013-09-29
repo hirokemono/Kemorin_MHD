@@ -7,8 +7,6 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
-!
       use FEM_analyzer_viz_pvr
       use volume_rendering_1st
 !

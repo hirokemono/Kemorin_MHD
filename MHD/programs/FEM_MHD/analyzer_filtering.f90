@@ -9,7 +9,7 @@
       module analyzer_filtering
 !
       use m_precision
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       use FEM_analyzer_filtered
       use visualizer_all

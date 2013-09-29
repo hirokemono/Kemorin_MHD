@@ -24,7 +24,7 @@
 !
       subroutine init_analyzer
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use const_mesh_info
       use cal_jacobian
 !
@@ -235,7 +235,7 @@
 !
         subroutine analyze
 !
-        use m_parallel_var_dof
+        use calypso_mpi
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'

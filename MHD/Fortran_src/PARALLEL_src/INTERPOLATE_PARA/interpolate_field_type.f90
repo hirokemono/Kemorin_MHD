@@ -27,7 +27,7 @@
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
 !
@@ -82,7 +82,7 @@
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
 !
@@ -141,7 +141,7 @@
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
 !

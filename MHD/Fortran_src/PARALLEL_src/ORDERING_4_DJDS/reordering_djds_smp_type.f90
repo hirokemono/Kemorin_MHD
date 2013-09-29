@@ -25,7 +25,7 @@
       use t_crs_connect
       use t_solver_djds
 !
-!      use m_parallel_var_dof
+!      use calypso_mpi
       use m_machine_parameter
       use m_matrix_work
       use m_colored_connect

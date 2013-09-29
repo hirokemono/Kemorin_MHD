@@ -18,7 +18,7 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_work_time
       use m_control_parameter
       use m_control_params_sph_MHD

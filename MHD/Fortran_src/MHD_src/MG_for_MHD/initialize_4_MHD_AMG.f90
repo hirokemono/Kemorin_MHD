@@ -13,7 +13,7 @@
       use m_machine_parameter
       use m_type_AMG_mesh
       use m_type_AMG_data_4_MHD
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       implicit none
 !

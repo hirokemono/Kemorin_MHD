@@ -81,7 +81,6 @@
       subroutine set_field_id_4_product
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_ctl_params_4_prod_udt
       use m_ucd_data
       use m_ucd_input_data
@@ -148,7 +147,7 @@
 !
       subroutine set_data_for_product(i_step)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_parameter
       use m_geometry_data
       use m_t_step_parameter

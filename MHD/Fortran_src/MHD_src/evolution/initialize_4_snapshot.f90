@@ -19,7 +19,7 @@
 !
       subroutine init_analyzer_snap
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_machine_parameter
       use m_control_parameter
       use m_t_step_parameter

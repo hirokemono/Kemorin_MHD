@@ -29,7 +29,7 @@
 !
       subroutine set_ctl_data_4_sph_utils
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_machine_parameter
       use m_t_step_parameter
       use m_read_mesh_data

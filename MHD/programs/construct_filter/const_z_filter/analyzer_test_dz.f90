@@ -22,7 +22,7 @@
       subroutine init_analyzer
 !
       use calypso_mpi
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_parameter
       use m_geometry_data
       use m_crs_connect

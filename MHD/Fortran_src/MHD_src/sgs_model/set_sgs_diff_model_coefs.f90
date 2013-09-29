@@ -35,7 +35,7 @@
 !
       subroutine clippging_sgs_coefs(numdir, ifield_d, icomp_f)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_control_parameter
       use m_t_step_parameter
       use m_ele_info_4_dynamical

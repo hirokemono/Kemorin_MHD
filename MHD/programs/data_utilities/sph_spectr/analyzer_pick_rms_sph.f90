@@ -13,7 +13,7 @@
       use m_constants
       use m_machine_parameter
       use m_schmidt_poly_on_rtm
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       use cal_rms_fields_by_sph
       use field_IO_select

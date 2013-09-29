@@ -19,7 +19,7 @@
 !
       subroutine s_input_control_itp_mesh(ierr)
 !
-        use m_parallel_var_dof
+        use calypso_mpi
         use m_machine_parameter
         use m_2nd_pallalel_vector
         use m_ctl_params_4_gen_table

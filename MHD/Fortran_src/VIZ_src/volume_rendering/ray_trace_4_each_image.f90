@@ -17,7 +17,7 @@
 !
       use m_constants
       use m_geometry_constants
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometries_in_pvr_screen
       use set_rgba_4_each_pixel
 !

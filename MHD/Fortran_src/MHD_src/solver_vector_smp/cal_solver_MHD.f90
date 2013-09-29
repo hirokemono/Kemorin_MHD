@@ -77,7 +77,7 @@
 !
       subroutine cal_sol_magne_pre_crank
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_parameter
       use m_node_phys_address
       use solver_MGCG_MHD
@@ -143,7 +143,7 @@
 !
       subroutine copy_ff_to_rhs33
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_array_for_send_recv
       use m_machine_parameter
       use m_geometry_parameter
@@ -174,7 +174,7 @@
 !
       subroutine copy_ff_to_rhs11
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_array_for_send_recv
       use m_machine_parameter
       use m_geometry_parameter
@@ -201,7 +201,7 @@
 !
       subroutine copy_ff_potential_to_rhs(i_field)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_array_for_send_recv
       use m_machine_parameter
       use m_geometry_parameter
@@ -231,7 +231,7 @@
 !
       subroutine copy_solver_vec_to_vector(i_field)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_array_for_send_recv
       use m_machine_parameter
       use m_geometry_parameter
@@ -260,7 +260,7 @@
 !
       subroutine copy_solver_vec_to_scalar(i_field)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_array_for_send_recv
       use m_machine_parameter
       use m_geometry_parameter

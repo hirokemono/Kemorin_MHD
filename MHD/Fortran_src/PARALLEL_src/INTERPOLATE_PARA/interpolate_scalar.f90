@@ -20,7 +20,7 @@
 !
       subroutine s_interpolate_scalar(i_dest, i_origin)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
@@ -99,7 +99,7 @@
 !
       subroutine interpolate_by_matrix_1(i_dest, i_origin)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data

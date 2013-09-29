@@ -21,7 +21,7 @@
 !
       subroutine s_input_control_generate_table
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_machine_parameter
       use m_read_mesh_data
       use m_ctl_params_4_gen_table

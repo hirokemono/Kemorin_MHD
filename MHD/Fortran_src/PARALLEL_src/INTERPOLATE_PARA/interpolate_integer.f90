@@ -20,7 +20,7 @@
 !
       subroutine s_interpolate_integer(i_vector_dest, i_vector_org)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data

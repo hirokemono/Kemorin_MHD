@@ -105,7 +105,7 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
       use m_ctl_data_4_pickup_sph
-      use m_parallel_var_dof
+      use calypso_mpi
 !
 !   2 begin phys_values_ctl
 !

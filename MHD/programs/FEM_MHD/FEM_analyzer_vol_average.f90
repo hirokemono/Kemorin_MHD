@@ -14,7 +14,7 @@
       use m_t_step_parameter
       use m_t_int_parameter
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       implicit none
 !

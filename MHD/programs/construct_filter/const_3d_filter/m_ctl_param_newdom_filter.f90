@@ -39,7 +39,7 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_2nd_pallalel_vector
       use m_filter_elength
       use m_file_format_switch

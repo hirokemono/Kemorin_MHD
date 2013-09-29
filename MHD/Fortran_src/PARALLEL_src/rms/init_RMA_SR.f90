@@ -20,7 +20,7 @@
 !
       subroutine init_RMA_SendRecv
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_nod_comm_table
       use m_RMA_SR
 !

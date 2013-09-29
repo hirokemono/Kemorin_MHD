@@ -47,7 +47,7 @@
       use m_machine_parameter
       use m_control_parameter
       use m_iccg_parameter
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_data
       use m_geometry_data_MHD
       use m_element_group

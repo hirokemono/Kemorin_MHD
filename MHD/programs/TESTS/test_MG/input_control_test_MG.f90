@@ -23,7 +23,7 @@
 !
       subroutine s_input_control_test_MG
 !
-        use m_parallel_var_dof
+        use calypso_mpi
         use m_machine_parameter
 !
         use m_ctl_data_test_MG

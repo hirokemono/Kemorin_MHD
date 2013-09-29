@@ -10,7 +10,7 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_parallel_var_dof
+      use calypso_mpi
 !
 !      modified by H. Matsui on Nov., 2006 
 !

@@ -7,7 +7,7 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_machine_parameter
 !
       implicit none
@@ -118,7 +118,7 @@
 !
       subroutine cal_filter_func_nod_lu(ierr2)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_ctl_params_4_gen_filter
 !
       use m_matrix_4_filter

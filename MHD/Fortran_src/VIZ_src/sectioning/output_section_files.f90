@@ -12,7 +12,7 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use ucd_IO_select
 !
       implicit  none

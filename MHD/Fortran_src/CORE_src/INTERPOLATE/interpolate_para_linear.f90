@@ -37,7 +37,7 @@
      &          ie, v_org, num_dest_domain, istack_tbl_wtype_smp,       &
      &          num_points, iele_gauss, itype_gauss, xi_gauss, vect)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       integer (kind = kint), intent(in) :: np_smp
       integer (kind = kint), intent(in) :: numnod, numele

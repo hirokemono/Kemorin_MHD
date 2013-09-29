@@ -28,7 +28,7 @@
 !
       subroutine cal_sgs_uxb_2_monitor
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_node_phys_address
       use m_node_phys_data
 !

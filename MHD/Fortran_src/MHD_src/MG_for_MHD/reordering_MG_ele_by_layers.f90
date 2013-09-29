@@ -73,7 +73,7 @@
       subroutine reordering_ele_types_by_layer(iflag_last_level,        &
      &          MG_mesh, MG_MHD_mesh, f2c_table, c2f_table)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use t_mesh_data
       use t_geometry_data_MHD
       use t_interpolate_table

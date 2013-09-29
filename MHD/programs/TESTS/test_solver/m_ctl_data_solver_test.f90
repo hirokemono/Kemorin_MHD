@@ -84,7 +84,6 @@
       subroutine read_ctl_data_test
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_machine_parameter
       use m_read_control_elements
       use skip_comment_f

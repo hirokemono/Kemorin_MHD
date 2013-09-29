@@ -27,7 +27,7 @@
       subroutine set_ctl_params_gen_filter
 !
       use calypso_mpi
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_ctl_data_4_solvers
       use m_ctl_data_org_filter_name
       use m_filter_elength

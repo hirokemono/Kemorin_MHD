@@ -35,7 +35,7 @@
      &          nnod_4_ele, ie, v_org, istack_smp, num_points,          &
      &          iele_gauss, inod_gauss, vect)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       integer (kind = kint), intent(in) :: np_smp
       integer (kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer (kind = kint), intent(in) :: ie(numele,nnod_4_ele)

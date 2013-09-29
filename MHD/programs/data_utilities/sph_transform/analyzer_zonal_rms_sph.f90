@@ -10,7 +10,7 @@
       module analyzer_zonal_rms_sph
 !
       use m_precision
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_work_time
 !
       use SPH_analyzer_sph_trans

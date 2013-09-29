@@ -24,7 +24,7 @@
 !
       subroutine set_ctl_params_sph_bc_temp
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_machine_parameter
       use m_file_format_switch
       use m_read_mesh_data

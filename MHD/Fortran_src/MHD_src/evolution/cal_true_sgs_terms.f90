@@ -39,7 +39,7 @@
 !
       subroutine cal_true_sgs_terms_pre
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_node_phys_data
 !
       integer(kind = kint) :: i

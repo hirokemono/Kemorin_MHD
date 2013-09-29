@@ -37,7 +37,7 @@
 !
       subroutine const_mesh_each_filter_domain(work_f_head, my_rank2)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_ctl_param_newdom_filter
       use m_2nd_nod_comm_table
       use m_2nd_geometry_param

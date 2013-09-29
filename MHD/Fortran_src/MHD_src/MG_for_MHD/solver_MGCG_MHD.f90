@@ -17,7 +17,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_array_for_send_recv
       use m_iccg_parameter
       use m_ctl_parameter_Multigrid

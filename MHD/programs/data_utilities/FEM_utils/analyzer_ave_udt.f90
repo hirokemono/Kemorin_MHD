@@ -14,7 +14,7 @@
       use m_precision
       use m_constants
       use m_machine_parameter
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       implicit none
 !
@@ -27,7 +27,7 @@
       subroutine initialize_ave_udt
 !
       use m_array_for_send_recv
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_parameter
       use m_node_phys_address
       use input_control_udt_diff

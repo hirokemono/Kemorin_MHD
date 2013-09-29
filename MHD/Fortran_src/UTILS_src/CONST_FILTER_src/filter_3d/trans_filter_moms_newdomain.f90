@@ -34,7 +34,7 @@
 !
       subroutine trans_filter_moms_newmesh_para
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       use set_filter_moms_2_new_mesh
 !

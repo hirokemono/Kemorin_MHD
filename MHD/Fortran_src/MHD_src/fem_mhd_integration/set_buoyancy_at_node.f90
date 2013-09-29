@@ -288,7 +288,7 @@
 !
       subroutine int_vol_buoyancy_nod(i_fc, ml_o_fl, ff)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_node_phys_data
 !
       integer (kind=kint), intent(in) :: i_fc

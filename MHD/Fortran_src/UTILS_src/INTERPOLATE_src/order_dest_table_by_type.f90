@@ -19,7 +19,7 @@
 !
       subroutine s_order_dest_table_by_type
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_constants
       use m_geometry_parameter
       use m_geometry_data

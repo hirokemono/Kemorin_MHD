@@ -157,7 +157,7 @@
       use calypso_mpi
       use m_work_time
       use m_geometry_parameter
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_array_for_send_recv
       use m_nod_comm_table
 !
@@ -194,7 +194,7 @@
       use calypso_mpi
       use m_work_time
       use m_geometry_parameter
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_array_for_send_recv
       use m_nod_comm_table
 !

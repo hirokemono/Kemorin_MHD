@@ -300,7 +300,7 @@
 !
       subroutine find_field_id_in_ucd(ucd, field_name, i_field, ncomp)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       character(len = kchara), intent(in) :: field_name
       integer(kind = kint), intent(inout) :: i_field, ncomp

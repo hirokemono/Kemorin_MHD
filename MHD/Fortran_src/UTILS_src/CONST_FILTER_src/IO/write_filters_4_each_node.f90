@@ -14,7 +14,7 @@
       use m_precision
 !
       use m_constants
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_filter_coefs
       use m_filter_file_names
       use m_field_file_format

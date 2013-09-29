@@ -238,7 +238,7 @@
 !
       subroutine int_edge_d2_vart_w(n_int)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
@@ -278,7 +278,7 @@
 !
       subroutine int_edge_d2_vart_w2(n_int)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs

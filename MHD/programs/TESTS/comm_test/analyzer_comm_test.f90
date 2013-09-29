@@ -23,7 +23,7 @@
 !
       subroutine init_analyzer
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use const_mesh_info
       use input_control_comm_test
 !
@@ -46,8 +46,8 @@
 !
       subroutine analyze
 !
+      use calypso_mpi
       use m_array_for_send_recv
-      use m_parallel_var_dof
       use m_array_for_send_recv
       use m_geometry_parameter
       use m_geometry_4_comm_test

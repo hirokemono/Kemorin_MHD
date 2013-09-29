@@ -86,7 +86,7 @@
 !
       subroutine read_mhd_control_data
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_ctl_data_4_platforms
       use m_control_data_sections
       use m_ctl_data_node_monitor

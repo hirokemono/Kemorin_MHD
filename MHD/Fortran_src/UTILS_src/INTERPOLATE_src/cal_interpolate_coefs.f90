@@ -55,7 +55,7 @@
      &          error_level, iflag_message, iflag_org_tmp)
 !
       use m_ctl_params_4_gen_table
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_2nd_geometry_param
       use m_connect_hexa_2_tetra
       use subroutines_4_search_table

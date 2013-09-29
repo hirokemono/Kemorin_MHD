@@ -22,7 +22,7 @@
 !
       subroutine init_analyzer
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_parameter
       use m_geometry_data
       use m_iccg_parameter
@@ -240,7 +240,7 @@
 !
       subroutine analyze
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'

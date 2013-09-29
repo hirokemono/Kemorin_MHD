@@ -22,7 +22,7 @@
 !
       subroutine cal_mag_potential
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_control_parameter
       use m_finite_element_matrix
 !

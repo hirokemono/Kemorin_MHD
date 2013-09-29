@@ -19,7 +19,7 @@
 !
       subroutine filtering_all_fields
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_node_phys_data
 !
       use cal_filtering_scalars

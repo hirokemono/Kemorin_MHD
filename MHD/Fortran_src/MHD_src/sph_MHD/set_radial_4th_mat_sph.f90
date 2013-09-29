@@ -51,7 +51,7 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_constants
       use m_t_int_parameter
       use m_spheric_parameter

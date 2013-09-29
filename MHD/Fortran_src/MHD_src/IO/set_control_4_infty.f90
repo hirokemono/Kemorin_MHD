@@ -25,7 +25,7 @@
 !
       subroutine s_set_control_4_infty
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_control_parameter
       use m_ctl_data_surf_boundary
       use m_node_phys_address

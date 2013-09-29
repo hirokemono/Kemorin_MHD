@@ -53,7 +53,7 @@
 !
       subroutine set_med_patch_ele_grp(file_head)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_constants
       use m_geometry_parameter
       use m_geometry_data
@@ -229,7 +229,6 @@
       subroutine init_ele_grp_med_patch(file_head, num_mat, num_mat_bc)
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use set_parallel_file_name
 !
       character(len=kchara), intent(in) :: file_head
@@ -266,7 +265,7 @@
 !
       subroutine clean_ele_grp_med_patch
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
 !
       deallocate(mark_elegrp)
@@ -284,7 +283,6 @@
       subroutine collect_ele_grp_patch(grp_name)
 !
       use calypso_mpi
-      use m_parallel_var_dof
 !
       character(len=kchara), intent(in) :: grp_name
       integer(kind = kint) :: np_recv

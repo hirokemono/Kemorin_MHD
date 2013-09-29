@@ -26,7 +26,6 @@
       subroutine set_component_add_4_correlate
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_ctl_params_4_diff_udt
       use m_node_phys_data
       use set_components_flags

@@ -11,7 +11,7 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_phys_constants
       use m_machine_parameter
       use m_control_parameter

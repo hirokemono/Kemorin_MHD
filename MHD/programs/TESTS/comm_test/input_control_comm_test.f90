@@ -21,7 +21,7 @@
 !
       subroutine s_input_control_comm_test
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_machine_parameter
       use m_read_mesh_data
 !
@@ -82,7 +82,7 @@
 !
       subroutine set_ctl_params_4_comm_test
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_read_mesh_data
       use set_control_platform_data
       use set_control_surface_mesh

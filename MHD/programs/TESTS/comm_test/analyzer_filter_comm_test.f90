@@ -24,7 +24,7 @@
 !
       subroutine init_analyzer
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use input_ctl_filter_comm_test
 !
 !
@@ -41,7 +41,7 @@
 !
       subroutine analyze
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_filter_comm_test
       use filter_send_recv_test
       use set_diff_filter_comm_test

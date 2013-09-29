@@ -25,7 +25,7 @@
 !
       subroutine s_set_control_4_current
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_machine_parameter
       use m_control_parameter
       use m_ctl_data_node_boundary

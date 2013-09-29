@@ -21,8 +21,8 @@
 !
       subroutine s_input_ctl_filter_comm_test
 !
+      use calypso_mpi
       use m_machine_parameter
-      use m_parallel_var_dof
       use m_ctl_data_filter_comm_test
       use m_nod_filter_comm_table
       use m_filter_file_names

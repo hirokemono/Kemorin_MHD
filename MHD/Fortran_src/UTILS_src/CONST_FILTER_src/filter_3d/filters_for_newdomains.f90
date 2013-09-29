@@ -24,7 +24,7 @@
 !
       subroutine filters_4_newdomains_para
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_domain_group_4_partition
 !
 !

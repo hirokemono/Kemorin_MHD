@@ -25,7 +25,7 @@
 !
       subroutine init_analyzer
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_ctl_data_solver_test
       use set_control_solver_test
 !
@@ -51,7 +51,6 @@
       subroutine analyze
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_iccg_parameter
       use m_crs_matrix
       use crs_matrix_io

@@ -45,7 +45,6 @@
       subroutine set_ctl_params_prod_udt
 !
       use calypso_mpi
-      use m_parallel_var_dof
       use m_read_mesh_data
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data

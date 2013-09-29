@@ -10,7 +10,7 @@
 !
       use m_precision
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_constants
       use m_internal_4_partitioner
       use set_filters_4_new_domains

@@ -26,7 +26,7 @@
       subroutine s_input_control_udt_diff
 !
       use calypso_mpi
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       use m_ctl_params_4_diff_udt
       use m_ctl_data_diff_udt
@@ -57,7 +57,6 @@
       subroutine s_input_control_ave_udt
 !
       use calypso_mpi
-      use m_parallel_var_dof
 !
       use m_ctl_params_4_diff_udt
       use m_ctl_data_diff_udt
@@ -92,7 +91,7 @@
 !
       use set_ctl_diff_udt
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_corr_udt'
@@ -112,7 +111,7 @@
 !
       use set_ctl_diff_udt
 !
-      use m_parallel_var_dof
+      use calypso_mpi
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_med_grp_patch'
@@ -128,7 +127,7 @@
 !
       subroutine s_input_mesh_udt_diff
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_ctl_params_4_diff_udt
       use load_mesh_data
 !

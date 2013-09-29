@@ -61,7 +61,7 @@
 !
       subroutine const_MHD_length_scales(ucd_step)
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_geometry_parameter
       use m_phys_labels
       use m_node_phys_address

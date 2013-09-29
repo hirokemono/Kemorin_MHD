@@ -10,7 +10,7 @@
       module reconnect_psf_overlap_nod
 !
       use m_precision
-      use m_parallel_var_dof
+      use calypso_mpi
 !
       implicit  none
 !

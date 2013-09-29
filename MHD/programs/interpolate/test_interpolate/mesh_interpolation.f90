@@ -19,7 +19,7 @@
 !
       subroutine interpolation_4_mesh_test
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_machine_parameter
       use m_ctl_params_4_gen_table
       use m_interpolated_geometry

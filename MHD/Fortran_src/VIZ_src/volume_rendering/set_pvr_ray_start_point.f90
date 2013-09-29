@@ -16,7 +16,7 @@
       use m_control_params_4_pvr
       use m_geometries_in_pvr_screen
       use m_surf_grp_4_pvr_domain
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_pvr_ray_startpoints
 !
       implicit  none

@@ -19,7 +19,7 @@
 !
       subroutine nod_filter_send_recv_test
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_nod_filter_comm_table
       use m_geometry_filter_comm_test
       use solver_SR_3

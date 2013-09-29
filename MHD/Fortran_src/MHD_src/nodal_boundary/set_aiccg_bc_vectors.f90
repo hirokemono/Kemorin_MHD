@@ -25,7 +25,7 @@
 !
       subroutine set_aiccg_bc_phys
 !
-      use m_parallel_var_dof
+      use calypso_mpi
       use m_control_parameter
 !
       use set_aiccg_nod_bc_vect
