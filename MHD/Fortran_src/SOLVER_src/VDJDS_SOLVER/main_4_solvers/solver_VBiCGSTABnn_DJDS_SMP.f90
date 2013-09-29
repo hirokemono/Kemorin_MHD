@@ -286,7 +286,7 @@
      &    BNRM20, DNRMsmp)
 
       START_TIME= MPI_WTIME()
-      call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
+      call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
@@ -308,7 +308,7 @@
      &    W(1,R), W(1,RT), RHO0, SP1smp)
 !
         START_TIME= MPI_WTIME()
-        call MPI_allREDUCE (RHO0, RHO, 1, MPI_DOUBLE_PRECISION,         &
+        call MPI_allREDUCE (RHO0, RHO, 1, CALYPSO_REAL,                 &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
@@ -417,7 +417,7 @@
      &      W(1,RT), W(1,V), C20, SP1smp)
 
         START_TIME= MPI_WTIME()
-        call MPI_allREDUCE (C20, C2, 1, MPI_DOUBLE_PRECISION,           &
+        call MPI_allREDUCE (C20, C2, 1, CALYPSO_REAL,                   &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
@@ -527,7 +527,7 @@
      &           W(1,T), W(1,S), C0(1), C0(2), SP1smp, DNRMsmp)
 
         START_TIME= MPI_WTIME()
-        call MPI_allREDUCE (C0, CG, 2, MPI_DOUBLE_PRECISION, MPI_SUM,   &
+        call MPI_allREDUCE (C0, CG, 2, CALYPSO_REAL, MPI_SUM,           &
      &                    CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
@@ -545,7 +545,7 @@
      &      ALPHA, OMEGA, DNRMsmp)
 !
         START_TIME= MPI_WTIME()
-        call MPI_allREDUCE (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,     &
+        call MPI_allREDUCE (DNRM20, DNRM2, 1, CALYPSO_REAL,             &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME

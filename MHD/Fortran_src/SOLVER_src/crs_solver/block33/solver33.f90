@@ -190,7 +190,7 @@
         BNRM20= BNRM20+B(3*i-2)**2+B(3*i-1)**2+B(3*i)**2
       enddo
 
-      call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
+      call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
       if (BNRM2.eq.0.d0) ERROR= 320
 !C===

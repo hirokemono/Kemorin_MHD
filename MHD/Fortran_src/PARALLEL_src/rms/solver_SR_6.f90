@@ -89,9 +89,9 @@
         istart= isix*STACK_EXPORT(neib-1) + 1
         inum  = isix*(STACK_EXPORT(neib  ) - STACK_EXPORT(neib-1))
         import_NB = isix*import_a(neib) + 1
-        call MPI_PUT (WS(istart), inum, MPI_DOUBLE_PRECISION,           &
+        call MPI_PUT (WS(istart), inum, CALYPSO_REAL,                   &
      &                NEIBPE(neib), import_NB, inum,                    &
-     &                MPI_DOUBLE_PRECISION, win, ierr)
+     &                CALYPSO_REAL, win, ierr)
 !
       enddo
 !

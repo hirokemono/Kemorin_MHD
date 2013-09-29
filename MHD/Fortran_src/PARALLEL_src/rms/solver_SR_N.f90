@@ -88,9 +88,9 @@
         istart= NB*STACK_EXPORT(neib-1) + 1
         inum  = NB*(STACK_EXPORT(neib  ) - STACK_EXPORT(neib-1))
         import_NB = NB*import_a(neib) + 1
-        call MPI_PUT (WS(istart), inum, MPI_DOUBLE_PRECISION,           &
+        call MPI_PUT (WS(istart), inum, CALYPSO_REAL,                   &
      &                NEIBPE(neib), import_NB, inum,                    &
-     &                MPI_DOUBLE_PRECISION, win, ierr)
+     &                CALYPSO_REAL, win, ierr)
 !
       enddo
 !
@@ -168,9 +168,9 @@
         istart= NB3*STACK_EXPORT(neib-1)
         inum  = NB3*STACK_EXPORT(neib  ) - istart
         import_NB = NB3*import_a(neib) + 1
-        call MPI_PUT (WS(istart+1), inum, MPI_DOUBLE_PRECISION,         &
+        call MPI_PUT (WS(istart+1), inum, CALYPSO_REAL,                 &
      &                  NEIBPE(neib), import_NB, inum,                  &
-     &                  MPI_DOUBLE_PRECISION, win, ierr)
+     &                  CALYPSO_REAL, win, ierr)
 !
       enddo
 !

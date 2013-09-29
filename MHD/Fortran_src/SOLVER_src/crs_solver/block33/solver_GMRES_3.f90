@@ -390,7 +390,7 @@
         BNRM20= BNRM20+B(3*ik-2)**2+B(3*ik-1)**2+B(3*ik)**2
       enddo
 
-      call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
+      call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
       if (BNRM2.eq.ZERO) BNRM2= ONE
 !C===
@@ -411,7 +411,7 @@
         do ik= 1, N
           DNRM20= DNRM20+WW(3*ik-2,R)**2+WW(3*ik-1,R)**2+WW(3*ik,R)**2
         enddo
-        call MPI_allREDUCE (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,     &
+        call MPI_allREDUCE (DNRM20, DNRM2, 1, CALYPSO_REAL,             &
      &                      MPI_SUM, CALYPSO_COMM, ierr)
 
         RNORM= dsqrt(DNRM2)
@@ -599,7 +599,7 @@
      &                 + WW(3*ik  ,W)*WW(3*ik  ,V+K-1)                 
 
           enddo
-          call MPI_allREDUCE (VAL0, VAL, 1, MPI_DOUBLE_PRECISION,       &
+          call MPI_allREDUCE (VAL0, VAL, 1, CALYPSO_REAL,               &
      &                        MPI_SUM, CALYPSO_COMM, ierr)
  
           do ik= 1, N
@@ -614,7 +614,7 @@
         do ik= 1, N
           VAL0= VAL0+WW(3*ik-2,W)**2+WW(3*ik-1,W)**2+WW(3*ik,W)**2
         enddo
-        call MPI_allREDUCE (VAL0, VAL, 1, MPI_DOUBLE_PRECISION,         &
+        call MPI_allREDUCE (VAL0, VAL, 1, CALYPSO_REAL,                 &
      &                      MPI_SUM, CALYPSO_COMM, ierr)
 
         H(I+1,I)= dsqrt(VAL)
@@ -886,7 +886,7 @@
           DNRM20= DNRM20+WW(3*ik-2,R)**2+WW(3*ik-1,R)**2+WW(3*ik,R)**2
         enddo
 
-        call MPI_allREDUCE  (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,    &
+        call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,            &
      &                       MPI_SUM, CALYPSO_COMM, ierr)
 
         WW(I+1,S)= dsqrt(DNRM2/BNRM2)

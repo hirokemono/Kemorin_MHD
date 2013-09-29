@@ -83,9 +83,9 @@
         istart= STACK_EXPORT(neib-1) + 1
         inum  = (STACK_EXPORT(neib  ) - STACK_EXPORT(neib-1))
         import_NB = import_a(neib) + 1
-        call MPI_PUT (iWS(istart), inum, MPI_INTEGER,                   &
+        call MPI_PUT (iWS(istart), inum, CALYPSO_INTEGER,               &
      &                NEIBPE(neib), import_NB, inum,                    &
-     &                MPI_INTEGER, iwin, ierr)
+     &                CALYPSO_INTEGER, iwin, ierr)
 !
       enddo
 !

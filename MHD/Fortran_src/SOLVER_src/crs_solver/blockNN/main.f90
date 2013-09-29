@@ -94,7 +94,7 @@
      &                   0, CALYPSO_COMM, ierr)
       call MPI_BCAST  (PRECOND  ,20,       MPI_CHARACTER,               &
      &                   0, CALYPSO_COMM, ierr)
-      call MPI_BCAST  (REALARRAY(1), 10, MPI_DOUBLE_PRECISION,          &
+      call MPI_BCAST  (REALARRAY(1), 10, CALYPSO_REAL,                  &
      &                 0, CALYPSO_COMM, ierr)
       call MPI_BCAST  (INTARRAY(1) , 10, MPI_INTEGER,                   &
      &                 0, CALYPSO_COMM, ierr)

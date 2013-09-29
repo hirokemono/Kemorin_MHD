@@ -284,9 +284,9 @@
      &           B, W(1,R), W(1,RT), RHO0, BNRM20, SP1smp, DNRMsmp)
 
       START_TIME= MPI_WTIME()
-      call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
+      call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
-      call MPI_allREDUCE (RHO0, RHO, 1, MPI_DOUBLE_PRECISION,           &
+      call MPI_allREDUCE (RHO0, RHO, 1, CALYPSO_REAL,                   &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
@@ -407,7 +407,7 @@
      &           W(1,RT), W(1,PT), RHO10, SP1smp)
 
         START_TIME= MPI_WTIME()
-        call MPI_allREDUCE (RHO10, RHO1, 1, MPI_DOUBLE_PRECISION,       &
+        call MPI_allREDUCE (RHO10, RHO1, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
@@ -530,7 +530,7 @@
      &          W(1,Y), W(1,T), W(1,TT), CG, C0, C0_smp)
 !
         START_TIME= MPI_WTIME()
-        call MPI_allREDUCE (C0, CG,  5, MPI_DOUBLE_PRECISION,           &
+        call MPI_allREDUCE (C0, CG,  5, CALYPSO_REAL,                   &
      &                     MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
@@ -568,9 +568,9 @@
      &          ETA, QSI, DNRMsmp, COEFsmp)
 !
         START_TIME= MPI_WTIME()
-        call MPI_allREDUCE  (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,    &
+        call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,            &
      &                     MPI_SUM, CALYPSO_COMM, ierr)
-        call MPI_allREDUCE  (COEF10, COEF1, 1, MPI_DOUBLE_PRECISION,    &
+        call MPI_allREDUCE  (COEF10, COEF1, 1, CALYPSO_REAL,            &
      &                     MPI_SUM, CALYPSO_COMM, ierr)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME

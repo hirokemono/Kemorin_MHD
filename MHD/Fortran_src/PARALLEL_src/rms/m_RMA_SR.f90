@@ -90,14 +90,14 @@
 !  send address for put
 !
       do neib= 1, NEIBPETOT
-        call MPI_ISEND (STACK_IMPORT(neib-1), 1, MPI_INTEGER,           &
+        call MPI_ISEND (STACK_IMPORT(neib-1), 1, CALYPSO_INTEGER,       &
      &                 NEIBPE(neib), 0, CALYPSO_COMM, req1(neib), ierr)
       enddo
 !C
 !C-- RECEIVE
 !
       do neib= 1, NEIBPETOT
-       call MPI_IRECV (tmp_stack(neib), 1, MPI_INTEGER,                 &
+       call MPI_IRECV (tmp_stack(neib), 1, CALYPSO_INTEGER,             &
      &                 NEIBPE(neib), 0, CALYPSO_COMM, req2(neib), ierr)
       enddo
 

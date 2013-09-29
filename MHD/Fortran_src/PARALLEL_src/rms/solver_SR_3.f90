@@ -90,9 +90,9 @@
         istart= ithree*STACK_EXPORT(neib-1) + 1
         inum  = ithree*(STACK_EXPORT(neib  ) - STACK_EXPORT(neib-1))
         import_NB = ithree*import_a(neib) + 1
-        call MPI_PUT (WS(istart), inum, MPI_DOUBLE_PRECISION,           &
+        call MPI_PUT (WS(istart), inum, CALYPSO_REAL,                   &
      &                NEIBPE(neib), import_NB, inum,                    &
-     &                MPI_DOUBLE_PRECISION, win, ierr)
+     &                CALYPSO_REAL, win, ierr)
 !
       enddo
 !
@@ -172,9 +172,9 @@
         istart= inine*STACK_EXPORT(neib-1)
         inum  = inine*STACK_EXPORT(neib  ) - istart
         import_NB = inine*import_a(neib) + 1
-        call MPI_PUT (WS(istart+1), inum, MPI_DOUBLE_PRECISION,         &
+        call MPI_PUT (WS(istart+1), inum, CALYPSO_REAL,                 &
      &                  NEIBPE(neib), import_NB, inum,                  &
-     &                  MPI_DOUBLE_PRECISION, win, ierr)
+     &                  CALYPSO_REAL, win, ierr)
 !
       enddo
 !

@@ -293,7 +293,7 @@
         BNRM20= BNRM20+B(3*i-2)**2+B(3*i-1)**2+B(3*i)**2
       enddo
 
-      call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
+      call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
 
       if (BNRM2.eq.0.d0) BNRM2= 1.d0
@@ -517,7 +517,7 @@
      &             + WW(3*i  ,R)*WW(3*i  ,Z)
       enddo
 
-      call MPI_allREDUCE (RHO0, RHO, 1, MPI_DOUBLE_PRECISION,           &
+      call MPI_allREDUCE (RHO0, RHO, 1, CALYPSO_REAL,                   &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
 !C===
 
@@ -571,7 +571,7 @@
         C10= C10 + WW(3*i-2,P)*WW(3*i-2,Q) + WW(3*i-1,P)*WW(3*i-1,Q)    &
      &           + WW(3*i  ,P)*WW(3*i  ,Q)
       enddo
-      call MPI_allREDUCE (C10, C1, 1, MPI_DOUBLE_PRECISION,             &
+      call MPI_allREDUCE (C10, C1, 1, CALYPSO_REAL,                     &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
       ALPHA= RHO / C1
 !C===
@@ -596,7 +596,7 @@
         DNRM20= DNRM20 + WW(3*i-2,R)**2 + WW(3*i-1,R)**2                &
      &                                  + WW(3*i  ,R)**2
       enddo
-      call MPI_allREDUCE (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,       &
+      call MPI_allREDUCE (DNRM20, DNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
 
         RESID= dsqrt(DNRM2/BNRM2)

@@ -74,7 +74,7 @@
       else if(iflag_op .eq. 3) then
         send_time = time_table(time_kind)
         recv_time = 0
-        CALL MPI_REDUCE(send_time, recv_time, 1, MPI_DOUBLE_PRECISION,  &
+        CALL MPI_REDUCE(send_time, recv_time, 1, CALYPSO_REAL,          &
      &                   MPI_SUM, 0, CALYPSO_COMM, ierr)
         CALL MPI_COMM_SIZE(CALYPSO_COMM, nprocs, ierr)
         IF(my_rank .eq. 0) THEN
@@ -111,7 +111,7 @@
           IF(prt_ech_PE(i)) WRITE(*,'( i3,a3,i3,a1,1pe16.6,a4)')        &
      &         my_rank,"--#", i, ":", send_time, " sec"
           CALL MPI_REDUCE(send_time, recv_time, 1,                      &
-     &         MPI_DOUBLE_PRECISION, MPI_SUM, 0, CALYPSO_COMM, ierr)
+     &         CALYPSO_REAL, MPI_SUM, 0, CALYPSO_COMM, ierr)
 
           IF(my_rank == 0) THEN
              out_time = recv_time / NPROCS

@@ -299,9 +299,9 @@
      &                                         +WW(3*i  ,RT)*WW(3*i  ,R)
       enddo
 
-      call MPI_allREDUCE (BNRM20, BNRM2, 1, MPI_DOUBLE_PRECISION,       &
+      call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
-      call MPI_allREDUCE (RHO0  , RHO,   1, MPI_DOUBLE_PRECISION,       &
+      call MPI_allREDUCE (RHO0  , RHO,   1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
 
       if (BNRM2.eq.0.d0) BNRM2= 1.d0      
@@ -501,7 +501,7 @@
      &                                        +WW(3*j  ,RT)*WW(3*j  ,PT)
       enddo
 
-      call MPI_allREDUCE (RHO10, RHO1, 1, MPI_DOUBLE_PRECISION,         &
+      call MPI_allREDUCE (RHO10, RHO1, 1, CALYPSO_REAL,                 &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
 
       ALPHA= RHO / RHO1
@@ -847,7 +847,7 @@
      &                                        +WW(3*j  ,TT)*WW(3*j  ,TT)
       enddo
 
-      call MPI_allREDUCE (C0, CG,  5, MPI_DOUBLE_PRECISION,             &
+      call MPI_allREDUCE (C0, CG,  5, CALYPSO_REAL,                     &
      &                    MPI_SUM, CALYPSO_COMM, ierr)
       if (iter.eq.1) then
         EQ(1)= CG(2)/CG(5)
@@ -913,9 +913,9 @@
      &                 + WW(3*j-1,R)*WW(3*j-1,RT) + WW(3*j,R)*WW(3*j,RT)
       enddo
 
-      call MPI_allREDUCE  (DNRM20, DNRM2, 1, MPI_DOUBLE_PRECISION,      &
+      call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,              &
      &                     MPI_SUM, CALYPSO_COMM, ierr)
-      call MPI_allREDUCE  (COEF10, COEF1, 1, MPI_DOUBLE_PRECISION,      &
+      call MPI_allREDUCE  (COEF10, COEF1, 1, CALYPSO_REAL,              &
      &                     MPI_SUM, CALYPSO_COMM, ierr)
 
       BETA = ALPHA*COEF1 / (QSI*RHO)
