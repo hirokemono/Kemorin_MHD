@@ -63,21 +63,27 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_rotation_whole', iphys%i_sgs_simi, iphys%i_sgs_grad_f
-      call cal_rotation_whole(iphys%i_sgs_simi, iphys%i_sgs_grad_f)
+      call cal_rotation_whole(iflag_mag_supg,                           &
+     &    iphys%i_sgs_simi, iphys%i_sgs_grad_f)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_whole', i_sgs_simi_p, i_sgs_grad_fp
-      call cal_gradent_whole(i_sgs_simi_p, i_sgs_grad_fp)
-!      call cal_divergence_whole(iphys%i_sgs_simi+6, iphys%i_sgs_grad_f)
+      call cal_gradent_whole(iflag_mag_supg,                            &
+     &    i_sgs_simi_p, i_sgs_grad_fp)
+!      call cal_divergence_whole(iflag_mag_supg,                        &
+!     &    iphys%i_sgs_simi+6, iphys%i_sgs_grad_f)
 !
 !   take rotation and gradient of vector potential (to iphys%i_sgs_grad)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_rotation_whole',            &
      &                     iphys%i_sgs_grad, iphys%i_vecp
-      call cal_rotation_whole(iphys%i_sgs_grad, iphys%i_vecp)
+      call cal_rotation_whole(iflag_mag_supg,                           &
+     &    iphys%i_sgs_grad, iphys%i_vecp)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_mag_p
-      call cal_gradent_in_fluid(i_sgs_grad_p, iphys%i_mag_p)
-!      call cal_divergence_whole(iphys%i_sgs_grad+6, iphys%i_vecp)
+      call cal_gradent_in_fluid(iflag_mag_supg,                         &
+     &    i_sgs_grad_p, iphys%i_mag_p)
+!      call cal_divergence_whole(iflag_mag_supg,                        &
+!     &    iphys%i_sgs_grad+6, iphys%i_vecp)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

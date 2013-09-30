@@ -62,28 +62,33 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_rotation_in_fluid',        &
      &                      iphys%i_sgs_simi, iphys%i_sgs_grad_f
-      call cal_rotation_in_fluid(iphys%i_sgs_simi, iphys%i_filter_velo)
+      call cal_rotation_in_fluid(iflag_velo_supg, iphys%i_sgs_simi,     &
+     &    iphys%i_filter_velo)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_simi_p, i_sgs_grad_fp
-      call cal_gradent_in_fluid(i_sgs_simi_p, i_sgs_grad_fp)
+      call cal_gradent_in_fluid(iflag_velo_supg,                        &
+     &    i_sgs_simi_p, i_sgs_grad_fp)
 !      if (iflag_debug.gt.0)   write(*,*)                               &
 !     &    'cal_divergence_in_fluid', iphys%i_sgs_simi+6,               &
 !     &    iphys%i_filter_velo
-!      call cal_divergence_in_fluid(iphys%i_sgs_simi+6,                 &
+!      call cal_divergence_in_fluid(iflag_velo_supg, iphys%i_sgs_simi+6,&
 !     &    iphys%i_filter_velo)
 !
 !   take rotation and gradient of velocity (to iphys%i_sgs_grad)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_rotation_in_fluid',         &
      &                     iphys%i_sgs_grad, iphys%i_velo
-      call cal_rotation_in_fluid(iphys%i_sgs_grad, iphys%i_velo)
+      call cal_rotation_in_fluid(iflag_velo_supg, iphys%i_sgs_grad,     &
+     &    iphys%i_velo)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_press
-      call cal_gradent_in_fluid(i_sgs_grad_p, iphys%i_press)
+      call cal_gradent_in_fluid(iflag_velo_supg,                        &
+     &    i_sgs_grad_p, iphys%i_press)
 !      if (iflag_debug.gt.0)                                            &
 !     &   write(*,*) 'cal_divergence_in_fluid', iphys%i_sgs_grad+6,     &
 !     &               iphys%i_velo
-!      call cal_divergence_in_fluid(iphys%i_sgs_grad+3, iphys%i_velo)
+!      call cal_divergence_in_fluid(iflag_velo_supg,                    &
+!     &    iphys%i_sgs_grad+3, iphys%i_velo)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

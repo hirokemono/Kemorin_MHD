@@ -117,7 +117,7 @@
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_t_evo_4_vector'
-      call cal_t_evo_4_vector
+      call cal_t_evo_4_vector(iflag_mag_supg)
 !
       if (iflag_debug.eq.1)   write(*,*) 'set_boundary_magne_4_rhs'
       call set_boundary_magne_4_rhs

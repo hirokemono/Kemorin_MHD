@@ -32,6 +32,11 @@
 !! !!!   method for time evolution  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !!   iflag_supg_ctl:      0...no SUPG 1...SUPG
+!!   iflag_supg_v_ctl           Off
+!!   iflag_supg_t_ctl           Off
+!!   iflag_supg_b_ctl           Off
+!!   iflag_supg_c_ctl           Off
+!!
 !!   num_multi_pass_ctl:  iteration counts for multi pass
 !!   maxiter_ctl:         maximum iteration number for correction
 !!   eps_4_velo_ctl:      ||div v||_{n} / ||div v||_{n-1}
@@ -91,7 +96,12 @@
       real(kind=kreal) :: coef_imp_c_ctl
 !
 !
-      integer(kind=kint) :: iflag_supg_ctl
+      character(len=kchara) :: iflag_supg_ctl
+      character(len=kchara) :: iflag_supg_v_ctl
+      character(len=kchara) :: iflag_supg_t_ctl
+      character(len=kchara) :: iflag_supg_b_ctl
+      character(len=kchara) :: iflag_supg_c_ctl
+!
       integer(kind=kint) :: num_multi_pass_ctl
       integer(kind=kint) :: maxiter_ctl
 ! 
@@ -128,6 +138,15 @@
       character(len=kchara), parameter                                  &
      &      :: hd_iflag_supg =     'iflag_supg_ctl'
       character(len=kchara), parameter                                  &
+     &      :: hd_iflag_v_supg =   'iflag_supg_v_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_iflag_t_supg =   'iflag_supg_t_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_iflag_b_supg =   'iflag_supg_b_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_iflag_c_supg =   'iflag_supg_c_ctl'
+!
+      character(len=kchara), parameter                                  &
      &      :: hd_num_multi_pass = 'num_multi_pass_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_maxiter =        'maxiter_ctl'
@@ -159,6 +178,11 @@
      &      :: hd_FFT_package =  'FFT_library_ctl'
 !
       integer (kind=kint) :: i_iflag_supg =         0
+      integer (kind=kint) :: i_iflag_v_supg =       0
+      integer (kind=kint) :: i_iflag_t_supg =       0
+      integer (kind=kint) :: i_iflag_b_supg =       0
+      integer (kind=kint) :: i_iflag_c_supg =       0
+!
       integer (kind=kint) :: i_num_multi_pass =     0
       integer (kind=kint) :: i_maxiter =            0
       integer (kind=kint) :: i_eps_4_velo =         0
@@ -178,6 +202,8 @@
       private :: hd_restart_file, hd_rst_flag, i_restart_file
       private :: hd_time_loop, i_time_loop
       private :: hd_iflag_supg, hd_num_multi_pass, hd_maxiter
+      private :: hd_iflag_v_supg, hd_iflag_t_supg, hd_iflag_b_supg
+      private :: hd_iflag_c_supg
       private :: hd_eps_4_velo, hd_eps_4_magne, hd_scheme
       private :: hd_diff_correct, hd_coef_imp_v, hd_coef_imp_t
       private :: hd_coef_imp_b, hd_coef_imp_c, hd_eps_crank
@@ -255,8 +281,17 @@
         call read_real_ctl_item(hd_eps_crank, i_eps_crank,              &
      &        eps_crank_ctl)
 !
-        call read_integer_ctl_item(hd_iflag_supg, i_iflag_supg,         &
+        call read_character_ctl_item(hd_iflag_supg, i_iflag_supg,       &
      &        iflag_supg_ctl)
+        call read_character_ctl_item(hd_iflag_v_supg, i_iflag_v_supg,   &
+     &        iflag_supg_v_ctl)
+        call read_character_ctl_item(hd_iflag_t_supg, i_iflag_t_supg,   &
+     &        iflag_supg_t_ctl)
+        call read_character_ctl_item(hd_iflag_b_supg, i_iflag_b_supg,   &
+     &        iflag_supg_b_ctl)
+        call read_character_ctl_item(hd_iflag_c_supg, i_iflag_c_supg,   &
+     &        iflag_supg_c_ctl)
+!
         call read_integer_ctl_item(hd_num_multi_pass, i_num_multi_pass, &
      &        num_multi_pass_ctl)
         call read_integer_ctl_item(hd_maxiter, i_maxiter, maxiter_ctl)

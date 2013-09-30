@@ -34,6 +34,8 @@
 !
       use solver
 !
+      integer(kind = kint) :: ierr
+!
       call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
       STARTTIME= MPI_WTIME()
  
@@ -46,8 +48,7 @@
      &                   X_crs, PRESET_crs, num_neib,                   &
      &                   id_neib, istack_import, item_import,           &
      &                   istack_export, item_export,                    &
-     &                   my_rank, CALYPSO_COMM, ITERactual, errno,      &
-     &                   METHOD_crs, PRECOND_crs,                       &
+     &                   ITERactual, ierr, METHOD_crs, PRECOND_crs,     &
      &                   INTARRAY_crs, REALARRAY_crs         )
 !
       end subroutine solve_by_crs_solver11
@@ -57,6 +58,8 @@
       subroutine solve_by_crs_solver33
 !
       use solver33
+!
+      integer(kind = kint) :: ierr
 !
       call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
       STARTTIME= MPI_WTIME()
@@ -70,8 +73,7 @@
      &                   X_crs, PRESET_crs, num_neib,                   &
      &                   id_neib, istack_import, item_import,           &
      &                   istack_export, item_export,                    &
-     &                   my_rank, CALYPSO_COMM, ITERactual, errno,      &
-     &                   METHOD_crs, PRECOND_crs,                       &
+     &                   ITERactual, ierr, METHOD_crs, PRECOND_crs,     &
      &                   INTARRAY_crs, REALARRAY_crs         )
 !
       end subroutine solve_by_crs_solver33
@@ -82,6 +84,7 @@
 !
       use solverNN
 !
+      integer(kind = kint) :: ierr
 !
       call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
       STARTTIME= MPI_WTIME()
@@ -97,8 +100,7 @@
      &                   num_neib, id_neib,                             &
      &                   istack_import, item_import,                    &
      &                   istack_export, item_export,                    &
-     &                   my_rank, CALYPSO_COMM, ITERactual, ierr,       &
-     &                   METHOD_crs, PRECOND_crs,                       &
+     &                   ITERactual, ierr, METHOD_crs, PRECOND_crs,     &
      &                   INTARRAY_crs, REALARRAY_crs         )
 !
       end  subroutine solve_by_crs_solverNN

@@ -36,7 +36,7 @@
 !
       call reset_sk6(n_vector)
 !
-      if (iflag_4_supg .eq. id_turn_ON) then
+      if (iflag_mag_supg .eq. id_turn_ON) then
         call int_simi_vp_induct_upm
       else
         call int_simi_vp_induct

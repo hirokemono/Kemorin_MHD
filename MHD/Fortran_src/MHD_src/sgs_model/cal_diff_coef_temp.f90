@@ -48,13 +48,15 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
      &        iphys%i_sgs_simi, iphys%i_filter_temp
-      call cal_gradent_in_fluid(iphys%i_sgs_simi, iphys%i_filter_temp)
+      call cal_gradent_in_fluid(iflag_temp_supg,                        &
+     &    iphys%i_sgs_simi, iphys%i_filter_temp)
 !
 !   take gradient of temperature (to iphys%i_sgs_grad)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
      &                     iphys%i_sgs_grad, iphys%i_sgs_temp
-      call cal_gradent_in_fluid(iphys%i_sgs_grad, iphys%i_sgs_temp)
+      call cal_gradent_in_fluid(iflag_temp_supg,                        &
+     &    iphys%i_sgs_grad, iphys%i_sgs_temp)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

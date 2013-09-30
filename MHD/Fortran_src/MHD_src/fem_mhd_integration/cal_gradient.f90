@@ -3,9 +3,9 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine cal_gradent_whole(i_res, i_scalar)
-!      subroutine cal_gradent_in_fluid(i_res, i_scalar)
-!      subroutine cal_gradent_in_conduct(i_res, i_scalar)
+!      subroutine cal_gradent_whole(iflag_4_supg, i_res, i_scalar)
+!      subroutine cal_gradent_in_fluid(iflag_4_supg, i_res, i_scalar)
+!      subroutine cal_gradent_in_conduct(iflag_4_supg, i_res, i_scalar)
 !
       module cal_gradient
 !
@@ -29,19 +29,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_gradent_whole(i_res, i_scalar)
+      subroutine cal_gradent_whole(iflag_4_supg, i_res, i_scalar)
 !
       use m_geometry_parameter
       use m_node_phys_data
 !
-      integer(kind = kint), intent(in) :: i_scalar
-      integer(kind = kint), intent(in) :: i_res
+      integer(kind = kint), intent(in) :: iflag_4_supg
+      integer(kind = kint), intent(in) :: i_scalar, i_res
 !
 !
 !
        call reset_ff_smps
 !
-       call choose_int_vol_grads(iele_smp_stack, i_scalar)
+       call choose_int_vol_grads(iflag_4_supg,                          &
+     &     iele_smp_stack, i_scalar)
 !
        call set_ff_nl_smp_2_ff(n_vector)
        call cal_ff_2_vector(d_nod(1,i_res), ff_nl, ml)
@@ -54,18 +55,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_gradent_in_fluid(i_res, i_scalar)
+      subroutine cal_gradent_in_fluid(iflag_4_supg, i_res, i_scalar)
 !
       use m_geometry_data_MHD
       use m_node_phys_data
 !
-      integer(kind = kint), intent(in) :: i_scalar
-      integer(kind = kint), intent(in) :: i_res
+      integer(kind = kint), intent(in) :: iflag_4_supg
+      integer(kind = kint), intent(in) :: i_scalar, i_res
 !
 !
        call reset_ff_smps
 !
-       call choose_int_vol_grads(iele_fl_smp_stack, i_scalar)
+       call choose_int_vol_grads(iflag_4_supg, iele_fl_smp_stack,       &
+     &     i_scalar)
 !
        call set_ff_nl_smp_2_ff(n_vector)
        call cal_ff_2_vector(d_nod(1,i_res), ff_nl, ml_fl)
@@ -78,18 +80,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_gradent_in_conduct(i_res, i_scalar)
+      subroutine cal_gradent_in_conduct(iflag_4_supg, i_res, i_scalar)
 !
       use m_geometry_data_MHD
       use m_node_phys_data
 !
-      integer(kind = kint), intent(in) :: i_scalar
-      integer(kind = kint), intent(in) :: i_res
+      integer(kind = kint), intent(in) :: iflag_4_supg
+      integer(kind = kint), intent(in) :: i_scalar, i_res
 !
 !
        call reset_ff_smps
 !
-       call choose_int_vol_grads(iele_cd_smp_stack, i_scalar)
+       call choose_int_vol_grads(iflag_4_supg, iele_cd_smp_stack,       &
+     &     i_scalar)
 !
        call set_ff_nl_smp_2_ff(n_vector)
        call cal_ff_2_vector(d_nod(1,i_res), ff_nl, ml_cd)
@@ -103,7 +106,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine choose_int_vol_grads(iele_fsmp_stack, i_scalar)
+      subroutine choose_int_vol_grads(iflag_4_supg,                     &
+     &          iele_fsmp_stack, i_scalar)
 !
       use m_control_parameter
       use m_element_phys_address
@@ -111,7 +115,7 @@
       use int_vol_vect_diff_1st
       use int_vol_vect_diff_upw_1st
 !
-      integer(kind = kint), intent(in) :: i_scalar
+      integer(kind = kint), intent(in) :: iflag_4_supg, i_scalar
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
 !

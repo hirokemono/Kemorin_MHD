@@ -70,7 +70,6 @@
 !
 !  --  read geometry
 !
-      iflag_mesh_file_fmt = ifile_type
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'
       call input_mesh(my_rank)
 !
@@ -171,8 +170,6 @@
 !     output element data
 !  -------------------------------
 !
-      iflag_mesh_file_fmt = ifile_type
-!
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_geometry_to_IO'
       mesh_ele_file_head = mesh_ele_def_head
       call copy_ele_geometry_to_IO
@@ -192,7 +189,6 @@
 !     output surface data
 !  -------------------------------
 !
-      iflag_mesh_file_fmt = ifile_type
       mesh_surf_file_head = mesh_def_surf_head
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO'
       call copy_surf_connect_to_IO

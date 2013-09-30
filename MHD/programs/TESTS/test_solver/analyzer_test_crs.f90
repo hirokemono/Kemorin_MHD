@@ -75,7 +75,7 @@
 
       ENDTIME= MPI_WTIME()
 
-      call MPI_BARRIER  (CALYPSO_COMM,ierr)
+      call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
 
       if (my_rank.eq.0) then
         RTIME= ENDTIME-STARTTIME

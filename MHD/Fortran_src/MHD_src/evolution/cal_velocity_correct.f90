@@ -128,7 +128,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_t_evo_4_vector_fl'
-      call cal_t_evo_4_vector_fl
+      call cal_t_evo_4_vector_fl(iflag_velo_supg)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
       call int_coriolis_nod_exp

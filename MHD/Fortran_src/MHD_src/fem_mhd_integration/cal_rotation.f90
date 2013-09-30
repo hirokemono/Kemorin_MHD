@@ -3,9 +3,10 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine cal_rotation_whole(i_res, i_vector)
-!      subroutine cal_rotation_in_fluid(i_res, i_vector)
-!      subroutine cal_rotation_in_conduct(i_res, i_vector)
+!      subroutine cal_rotation_whole(iflag_4_supg, i_res, i_vector)
+!      subroutine cal_rotation_in_fluid(iflag_4_supg, i_res, i_vector)
+!      subroutine cal_rotation_in_conduct(iflag_4_supg,                 &
+!     &          i_res, i_vector)
 !
 !      private :: choose_int_vol_rotations
 !
@@ -29,18 +30,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rotation_whole(i_res, i_vector)
+      subroutine cal_rotation_whole(iflag_4_supg, i_res, i_vector)
 !
       use m_geometry_parameter
       use m_node_phys_data
 !
-      integer(kind = kint), intent(in) :: i_vector
-      integer(kind = kint), intent(in) :: i_res
+      integer(kind = kint), intent(in) :: iflag_4_supg
+      integer(kind = kint), intent(in) :: i_vector, i_res
 !
 !
        call reset_ff_smps
 !
-       call choose_int_vol_rotations(iele_smp_stack, i_vector)
+       call choose_int_vol_rotations(iflag_4_supg,                      &
+     &     iele_smp_stack, i_vector)
 !
        call set_ff_nl_smp_2_ff(n_vector)
        call cal_ff_2_vector(d_nod(1,i_res), ff_nl, ml)
@@ -53,18 +55,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rotation_in_fluid(i_res, i_vector)
+      subroutine cal_rotation_in_fluid(iflag_4_supg, i_res, i_vector)
 !
       use m_geometry_data_MHD
       use m_node_phys_data
 !
-      integer(kind = kint), intent(in) :: i_vector
-      integer(kind = kint), intent(in) :: i_res
+      integer(kind = kint), intent(in) :: iflag_4_supg
+      integer(kind = kint), intent(in) :: i_vector, i_res
 !
 !
        call reset_ff_smps
 !
-       call choose_int_vol_rotations(iele_fl_smp_stack, i_vector)
+       call choose_int_vol_rotations(iflag_4_supg,                      &
+     &     iele_fl_smp_stack, i_vector)
 !
        call set_ff_nl_smp_2_ff(n_vector)
        call cal_ff_2_vector(d_nod(1,i_res), ff_nl, ml_fl)
@@ -78,18 +81,19 @@
 !-----------------------------------------------------------------------
 !------- subroutine cal_rotation_in_conduct ---------------------
 !
-      subroutine cal_rotation_in_conduct(i_res, i_vector)
+      subroutine cal_rotation_in_conduct(iflag_4_supg, i_res, i_vector)
 !
       use m_geometry_data_MHD
       use m_node_phys_data
 !
-      integer(kind = kint), intent(in) :: i_vector
-      integer(kind = kint), intent(in) :: i_res
+      integer(kind = kint), intent(in) :: iflag_4_supg
+      integer(kind = kint), intent(in) :: i_vector, i_res
 !
 !
        call reset_ff_smps
 !
-       call choose_int_vol_rotations(iele_cd_smp_stack, i_vector)
+       call choose_int_vol_rotations(iflag_4_supg,                      &
+     &     iele_cd_smp_stack, i_vector)
 !
        call cal_ff_smp_2_vector(d_nod(1,i_res), ff_nl_smp, ml_cd)
 !
@@ -101,7 +105,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine choose_int_vol_rotations(iele_fsmp_stack, i_vector)
+      subroutine choose_int_vol_rotations(iflag_4_supg,                 &
+     &          iele_fsmp_stack, i_vector)
 !
       use m_control_parameter
       use m_element_phys_address
@@ -109,7 +114,7 @@
       use int_vol_vect_diff_1st
       use int_vol_vect_diff_upw_1st
 !
-       integer(kind = kint), intent(in) :: i_vector
+       integer(kind = kint), intent(in) :: iflag_4_supg, i_vector
        integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
        if ( iflag_4_supg .eq. id_magnetic_SUPG) then

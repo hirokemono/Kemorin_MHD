@@ -86,9 +86,9 @@
 !
        call reset_ff_smps
 !
-       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
+       if (iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_div_sgs_mf_simi_upm(i_flux, i_vect)
-       else if ( iflag_4_supg .eq. id_turn_ON) then
+       else if (iflag_velo_supg .eq. id_turn_ON) then
         call int_div_sgs_mf_simi_upw(i_flux, i_vect)
        else
         call int_div_sgs_mf_simi_pg(i_flux, i_vect)

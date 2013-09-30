@@ -75,9 +75,9 @@
 !
 ! -------     advection and forces
 !
-      if (iflag_4_supg .eq. id_turn_ON) then
+      if (iflag_velo_supg .eq. id_turn_ON) then
        call int_vol_velo_pre_ele_upw
-      else if (iflag_4_supg .eq. id_magnetic_SUPG) then
+      else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
        call int_vol_velo_pre_ele_upm
       else
        call int_vol_velo_pre_ele
@@ -116,7 +116,7 @@
        use cal_sol_vector_explicit
        use int_vol_coriolis_term
 !
-       call cal_t_evo_4_vector_fl
+       call cal_t_evo_4_vector_fl(iflag_velo_supg)
 !
        if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
        call int_coriolis_nod_exp
@@ -136,7 +136,7 @@
        use cal_sol_vector_explicit
        use int_vol_coriolis_term
 !
-       call cal_t_evo_4_vector_fl
+       call cal_t_evo_4_vector_fl(iflag_velo_supg)
 !
        if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
        call int_coriolis_nod_exp
@@ -166,7 +166,7 @@
 !         if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
        end if
 !
-       call cal_t_evo_4_vector_fl
+       call cal_t_evo_4_vector_fl(iflag_velo_supg)
 !
        if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
        call int_coriolis_nod_exp

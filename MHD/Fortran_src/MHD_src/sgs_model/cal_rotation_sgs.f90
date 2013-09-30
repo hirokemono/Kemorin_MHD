@@ -3,12 +3,15 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine cal_rotation_sgs_all(nmax_grp_sf, ngrp_sf,            &
-!     &          id_grp_sf, iak_diff, i_res, i_vector)
-!      subroutine cal_rotation_sgs_fluid(nmax_grp_sf, ngrp_sf,          &
-!     &          id_grp_sf, iak_diff, i_res, i_vector)
-!      subroutine cal_rotation_sgs_conduct(nmax_grp_sf, ngrp_sf,        &
-!     &          id_grp_sf, iak_diff, i_res, i_vector)
+!      subroutine cal_rotation_sgs_all(iflag_4_supg,                    &
+!     &          nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff,             &
+!     &          i_res, i_vector)
+!      subroutine cal_rotation_sgs_fluid(iflag_4_supg,                  &
+!     &          nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff,             &
+!     &          i_res, i_vector)
+!      subroutine cal_rotation_sgs_conduct(iflag_4_supg,                &
+!     &          nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff,             &
+!     &          i_res, i_vector)
 !
       module cal_rotation_sgs
 !
@@ -30,12 +33,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rotation_sgs_all(nmax_grp_sf, ngrp_sf,             &
-     &          id_grp_sf, iak_diff, i_res, i_vector)
+      subroutine cal_rotation_sgs_all(iflag_4_supg,                     &
+     &          nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff,              &
+     &          i_res, i_vector)
 !
       use m_geometry_parameter
       use m_node_phys_data
 !
+      integer(kind = kint), intent(in) :: iflag_4_supg
       integer(kind = kint), intent(in) :: i_vector, i_res
       integer(kind = kint), intent(in) :: iak_diff
       integer(kind = kint), intent(in) :: nmax_grp_sf
@@ -45,8 +50,8 @@
 !
        call reset_ff_smps
 !
-       call choose_int_vol_rot_sgs(iele_smp_stack, nmax_grp_sf,         &
-     &     ngrp_sf, id_grp_sf, iak_diff, i_vector)
+       call choose_int_vol_rot_sgs(iflag_4_supg, iele_smp_stack,        &
+     &     nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff, i_vector)
 !
        call set_ff_nl_smp_2_ff(n_vector)
        call cal_ff_2_vector(d_nod(1,i_res), ff_nl, ml)
@@ -59,12 +64,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rotation_sgs_fluid(nmax_grp_sf, ngrp_sf,        &
-     &          id_grp_sf, iak_diff, i_res, i_vector)
+      subroutine cal_rotation_sgs_fluid(iflag_4_supg,                   &
+     &          nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff,              &
+     &          i_res, i_vector)
 !
       use m_geometry_data_MHD
       use m_node_phys_data
 !
+      integer(kind = kint), intent(in) :: iflag_4_supg
       integer(kind = kint), intent(in) :: i_vector, i_res
       integer(kind = kint), intent(in) :: iak_diff
       integer(kind = kint), intent(in) :: nmax_grp_sf
@@ -74,8 +81,8 @@
 !
        call reset_ff_smps
 !
-       call choose_int_vol_rot_sgs(iele_fl_smp_stack, nmax_grp_sf,      &
-     &     ngrp_sf, id_grp_sf, iak_diff, i_vector)
+       call choose_int_vol_rot_sgs(iflag_4_supg, iele_fl_smp_stack,     &
+     &     nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff, i_vector)
 !
        call set_ff_nl_smp_2_ff(n_vector)
        call cal_ff_2_vector(d_nod(1,i_res), ff_nl, ml_fl)
@@ -88,12 +95,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rotation_sgs_conduct(nmax_grp_sf, ngrp_sf,         &
-     &          id_grp_sf, iak_diff, i_res, i_vector)
+      subroutine cal_rotation_sgs_conduct(iflag_4_supg,                 &
+     &          nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff,              &
+     &          i_res, i_vector)
 !
       use m_geometry_data_MHD
       use m_node_phys_data
 !
+      integer(kind = kint), intent(in) :: iflag_4_supg
       integer(kind = kint), intent(in) :: i_vector, i_res
       integer(kind = kint), intent(in) :: iak_diff
       integer(kind = kint), intent(in) :: nmax_grp_sf
@@ -103,8 +112,8 @@
 !
        call reset_ff_smps
 !
-       call choose_int_vol_rot_sgs(iele_cd_smp_stack, nmax_grp_sf,      &
-     &     ngrp_sf, id_grp_sf, iak_diff, i_vector)
+       call choose_int_vol_rot_sgs(iflag_4_supg, iele_cd_smp_stack,     &
+     &     nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff, i_vector)
 !
        call set_ff_nl_smp_2_ff(n_vector)
        call cal_ff_2_vector(d_nod(1,i_res), ff_nl, ml_cd)
@@ -117,8 +126,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine choose_int_vol_rot_sgs(iele_fsmp_stack, nmax_grp_sf,   &
-     &       ngrp_sf, id_grp_sf, iak_diff, i_vector)
+      subroutine choose_int_vol_rot_sgs(iflag_4_supg, iele_fsmp_stack,  &
+     &          nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff, i_vector)
 !
       use m_control_parameter
       use m_element_phys_address
@@ -126,6 +135,7 @@
       use int_sgs_vect_diff_upw_1st
       use int_surf_rot_sgs
 !
+      integer(kind = kint), intent(in) :: iflag_4_supg
       integer(kind = kint), intent(in) :: nmax_grp_sf
       integer(kind = kint), intent(in) :: ngrp_sf(3)
       integer(kind = kint), intent(in) :: id_grp_sf(nmax_grp_sf,3)

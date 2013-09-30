@@ -44,7 +44,7 @@
 !
       call int_vol_composition_diffuse_ele
 !
-      if ( iflag_4_supg .gt. id_turn_OFF) then
+      if (iflag_comp_supg .gt. id_turn_OFF) then
         call int_vol_composition_ele_upw
       else
         call int_vol_composition_ele
@@ -80,7 +80,7 @@
        use cal_multi_pass
        use cal_sol_vector_explicit
 !
-       call cal_t_evo_4_scalar_fl
+       call cal_t_evo_4_scalar_fl(iflag_comp_supg)
        call cal_sol_d_scalar_euler
 !
        end subroutine cal_composit_pre_euler
@@ -92,7 +92,7 @@
        use cal_multi_pass
        use cal_sol_vector_explicit
 !
-       call cal_t_evo_4_scalar_fl
+       call cal_t_evo_4_scalar_fl(iflag_comp_supg)
        call cal_sol_d_scalar_adams
 !
        end subroutine cal_composit_pre_adams
@@ -115,7 +115,7 @@
 !         if (iflag_initial_step.eq.1) coef_imp_c = 1.0d0 / coef_imp_c
        end if
 !
-       call cal_t_evo_4_scalar_fl
+       call cal_t_evo_4_scalar_fl(iflag_comp_supg)
 !
        call set_boundary_composition_4_rhs
        call cal_sol_d_scalar_linear

@@ -40,9 +40,9 @@
 !
       call reset_ff_smps
 !
-      if (iflag_4_supg .eq. id_turn_ON) then
+      if (iflag_velo_supg .eq. id_turn_ON) then
        call int_vol_velo_monitor_upw(i_field)
-      else if (iflag_4_supg .eq. id_magnetic_SUPG) then
+      else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
        call int_vol_velo_monitor_upm(i_field)
       else
        call int_vol_velo_monitor_pg(i_field)
@@ -50,7 +50,7 @@
 !
       call int_surf_velo_monitor(i_field)
 !
-       call cal_t_evo_4_vector_fl
+       call cal_t_evo_4_vector_fl(iflag_velo_supg)
 !       call set_boundary_velo_4_rhs
 !
        call cal_ff_2_vector(d_nod(1,i_field), ff_nl, ml_fl)

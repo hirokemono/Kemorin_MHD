@@ -3,12 +3,12 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!      subroutine cal_t_evo_4_vector
-!      subroutine cal_t_evo_4_scalar
-!      subroutine cal_t_evo_4_vector_fl
-!      subroutine cal_t_evo_4_scalar_fl
-!      subroutine cal_t_evo_4_vector_cd
-!      subroutine cal_t_evo_4_scalar_cd
+!      subroutine cal_t_evo_4_vector(iflag_4_supg)
+!      subroutine cal_t_evo_4_scalar(iflag_4_supg)
+!      subroutine cal_t_evo_4_vector_fl(iflag_4_supg)
+!      subroutine cal_t_evo_4_scalar_fl(iflag_4_supg)
+!      subroutine cal_t_evo_4_vector_cd(iflag_4_supg)
+!      subroutine cal_t_evo_4_scalar_cd(iflag_4_supg)
 !      subroutine cal_multi_pass_4_vector_ff
 !      subroutine cal_multi_pass_4_scalar_ff
 !      subroutine cal_multi_pass_4_vector_fl
@@ -40,16 +40,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_t_evo_4_vector
+      subroutine cal_t_evo_4_vector(iflag_4_supg)
+!
+      integer(kind = kint), intent(in) :: iflag_4_supg
 !
 !
       if ( num_multi_pass .gt. 1 ) then
 !
         call cal_ff_smp_2_multi_pass (n_vector, ff_nl_smp, ff_m_smp)
 !
-        if ( iflag_4_supg .eq. id_turn_ON) then
+        if (iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_vector_upw
-        else if ( iflag_4_supg .eq. id_magnetic_SUPG) then
+        else if (iflag_4_supg .eq. id_magnetic_SUPG) then
           call int_multi_pass_vector_upm
         else
           call int_multi_pass_vector
@@ -63,16 +65,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_t_evo_4_scalar
+      subroutine cal_t_evo_4_scalar(iflag_4_supg)
+!
+      integer(kind = kint), intent(in) :: iflag_4_supg
 !
 !
       if ( num_multi_pass .gt. 1 ) then
 !
         call cal_ff_smp_2_multi_pass (n_scalar, ff_nl_smp, ff_m_smp)
 !
-        if ( iflag_4_supg .eq. id_turn_ON) then
+        if (iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_scalar_upw
-        else if ( iflag_4_supg .eq. id_magnetic_SUPG) then
+        else if (iflag_4_supg .eq. id_magnetic_SUPG) then
           call int_multi_pass_scalar_upm
         else
           call int_multi_pass_scalar
@@ -87,16 +91,18 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_t_evo_4_vector_fl
+      subroutine cal_t_evo_4_vector_fl(iflag_4_supg)
+!
+      integer(kind = kint), intent(in) :: iflag_4_supg
 !
 !
       if ( num_multi_pass .gt. 1 ) then
 !
         call cal_ff_smp_2_multi_pass (n_vector, ff_nl_smp, ff_m_smp)
 !
-        if ( iflag_4_supg .eq. id_turn_ON) then
+        if (iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_vector_fl_upw
-        else if ( iflag_4_supg .eq. id_magnetic_SUPG) then
+        else if (iflag_4_supg .eq. id_magnetic_SUPG) then
           call int_multi_pass_vector_fl_upm
         else
           call int_multi_pass_vector_fl
@@ -110,16 +116,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_t_evo_4_scalar_fl
+      subroutine cal_t_evo_4_scalar_fl(iflag_4_supg)
+!
+      integer(kind = kint), intent(in) :: iflag_4_supg
 !
 !
       if ( num_multi_pass .gt. 1 ) then
 !
         call cal_ff_smp_2_multi_pass (n_scalar, ff_nl_smp, ff_m_smp)
 !
-        if ( iflag_4_supg .eq. id_turn_ON) then
+        if (iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_scalar_fl_upw
-        else if ( iflag_4_supg .eq. id_magnetic_SUPG) then
+        else if (iflag_4_supg .eq. id_magnetic_SUPG) then
           call int_multi_pass_scalar_fl_upm
         else
           call int_multi_pass_scalar_fl
@@ -134,7 +142,9 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_t_evo_4_vector_cd
+      subroutine cal_t_evo_4_vector_cd(iflag_4_supg)
+!
+      integer(kind = kint), intent(in) :: iflag_4_supg
 !
 !
       if ( num_multi_pass .gt. 1 ) then
@@ -155,7 +165,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_t_evo_4_scalar_cd
+      subroutine cal_t_evo_4_scalar_cd(iflag_4_supg)
+!
+      integer(kind = kint), intent(in) :: iflag_4_supg
 !
 !
       if ( num_multi_pass .gt. 1 ) then

@@ -38,13 +38,13 @@
 !
       call reset_ff_smps
 !
-      if ( iflag_4_supg .gt. id_turn_OFF) then
+      if (iflag_mag_supg .gt. id_turn_OFF) then
         call int_vol_vect_p_pre_ele_upm
       else
         call int_vol_vect_p_pre_ele
       end if
 !
-      call cal_t_evo_4_vector_cd
+      call cal_t_evo_4_vector_cd(iflag_mag_supg)
       call set_boundary_vect_p_4_rhs
 !
       call cal_ff_2_vector(d_nod(1,iphys%i_vp_induct), ff_nl, ml_cd)

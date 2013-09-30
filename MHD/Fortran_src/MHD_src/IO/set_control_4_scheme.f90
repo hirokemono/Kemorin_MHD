@@ -31,6 +31,8 @@
       use m_ctl_data_4_fem_int_pts
       use m_ctl_data_mhd_evo_scheme
 !
+      integer (kind=kint) :: iflag_4_supg = id_turn_OFF
+!
 !
         if (i_num_multi_pass.eq.0) then
           num_multi_pass = 1
@@ -45,10 +47,41 @@
         end if
         maxiter_vecp = maxiter
 !
+        iflag_4_supg = id_turn_OFF
         if (i_iflag_supg .eq. 0) then
-          iflag_4_supg = id_turn_OFF
-        else
-          iflag_4_supg = iflag_supg_ctl
+          if(   iflag_supg_ctl .eq. 'ON'                              &
+     &     .or. iflag_supg_ctl .eq. 'On'                              &
+     &     .or. iflag_supg_ctl .eq. 'on'                              &
+     &     .or. iflag_supg_ctl .eq. '1')   iflag_4_supg = id_turn_ON
+        end if
+!
+        iflag_velo_supg = iflag_4_supg
+        iflag_temp_supg = iflag_4_supg
+        iflag_mag_supg =  iflag_4_supg
+        iflag_comp_supg = iflag_4_supg
+        if (i_iflag_v_supg .eq. 0) then
+          if(   iflag_supg_v_ctl .eq. 'ON'                              &
+     &     .or. iflag_supg_v_ctl .eq. 'On'                              &
+     &     .or. iflag_supg_v_ctl .eq. 'on'                              &
+     &     .or. iflag_supg_v_ctl .eq. '1') iflag_velo_supg = id_turn_ON
+        end if
+        if (i_iflag_t_supg .eq. 0) then
+          if(   iflag_supg_t_ctl .eq. 'ON'                              &
+     &     .or. iflag_supg_t_ctl .eq. 'On'                              &
+     &     .or. iflag_supg_t_ctl .eq. 'on'                              &
+     &     .or. iflag_supg_t_ctl .eq. '1') iflag_temp_supg = id_turn_ON
+        end if
+        if (i_iflag_b_supg .eq. 0) then
+          if(   iflag_supg_b_ctl .eq. 'ON'                              &
+     &     .or. iflag_supg_b_ctl .eq. 'On'                              &
+     &     .or. iflag_supg_b_ctl .eq. 'on'                              &
+     &     .or. iflag_supg_b_ctl .eq. '1') iflag_mag_supg = id_turn_ON
+        end if
+        if (i_iflag_c_supg .eq. 0) then
+          if(   iflag_supg_c_ctl .eq. 'ON'                              &
+     &     .or. iflag_supg_c_ctl .eq. 'On'                              &
+     &     .or. iflag_supg_c_ctl .eq. 'on'                              &
+     &     .or. iflag_supg_c_ctl .eq. '1') iflag_comp_supg = id_turn_ON
         end if
 !
         if (maxiter.gt.1) then

@@ -40,7 +40,7 @@
 !
       call reset_ff_smps
 !
-      if (iflag_4_supg .gt. id_turn_OFF) then
+      if (iflag_mag_supg .gt. id_turn_OFF) then
        call int_vol_magne_monitor_upm(i_field)
       else
        call int_vol_magne_monitor_pg(i_field)
@@ -48,7 +48,7 @@
 !
       call int_surf_magne_monitor(i_field)
 !
-       call cal_t_evo_4_vector_cd
+       call cal_t_evo_4_vector_cd(iflag_mag_supg)
        call set_boundary_magne_4_rhs
 !
        call cal_ff_2_vector(d_nod(1,i_field), ff_nl, ml_cd)

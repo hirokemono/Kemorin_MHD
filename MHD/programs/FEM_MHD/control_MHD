@@ -915,7 +915,12 @@ begin MHD_control
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
     begin time_loop_ctl
-      iflag_supg_ctl           0
+      iflag_supg_ctl             Off
+      iflag_supg_v_ctl           Off
+      iflag_supg_t_ctl           Off
+      iflag_supg_b_ctl           Off
+      iflag_supg_c_ctl           Off
+
       num_multi_pass_ctl       3
       maxiter_ctl              1
       eps_4_velo_ctl           5.0e-1

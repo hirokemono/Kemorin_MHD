@@ -3,13 +3,12 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine cal_gradent(i_res, i_scalar)
-!      subroutine cal_gradent_in_fluid(i_res, i_scalar)
-!      subroutine cal_gradent_in_conduct(i_res, i_scalar)
-!
-!      subroutine cal_gradent_w_const(i_res, i_scalar, const)
-!      subroutine cal_gradent_in_fluid_w_const(i_res, i_scalar, const)
-!      subroutine cal_gradent_in_conduct_w_const(i_res, i_scalar, const)
+!      subroutine cal_gradent_w_const(iflag_4_supg,                     &
+!     &          i_res, i_scalar, const)
+!      subroutine cal_gradent_in_fluid_w_const(iflag_4_supg,            &
+!     &          i_res, i_scalar, const)
+!      subroutine cal_gradent_in_conduct_w_const(iflag_4_supg,          &
+!     &          i_res, i_scalar, const)
 !
       module cal_gradient_w_const
 !
@@ -33,21 +32,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_gradent_w_const(i_res, i_scalar, const)
+      subroutine cal_gradent_w_const(iflag_4_supg,                      &
+     &          i_res, i_scalar, const)
 !
       use m_geometry_parameter
       use m_node_phys_data
 !
       real(kind = kreal), intent(in) :: const
-      integer(kind = kint), intent(in) :: i_scalar
-      integer(kind = kint), intent(in) :: i_res
+      integer(kind = kint), intent(in) :: iflag_4_supg
+      integer(kind = kint), intent(in) :: i_scalar, i_res
 !
 !
 !
        call reset_ff_smps
 !
-       call choose_int_vol_grads_w_const(iele_smp_stack, const,         &
-      &    i_scalar)
+       call choose_int_vol_grads_w_const(iflag_4_supg,                  &
+      &    iele_smp_stack, const, i_scalar)
 !
        call set_ff_nl_smp_2_ff(n_vector)
        call cal_ff_2_vector(d_nod(1,i_res), ff_nl, ml)
@@ -60,21 +60,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_gradent_in_fluid_w_const(i_res, i_scalar, const)
+      subroutine cal_gradent_in_fluid_w_const(iflag_4_supg,             &
+     &          i_res, i_scalar, const)
 !
       use m_geometry_data_MHD
       use m_geometry_parameter
       use m_node_phys_data
 !
       real(kind = kreal), intent(in) :: const
-      integer(kind = kint), intent(in) :: i_scalar
-      integer(kind = kint), intent(in) :: i_res
+      integer(kind = kint), intent(in) :: iflag_4_supg
+      integer(kind = kint), intent(in) :: i_scalar, i_res
 !
 !
        call reset_ff_smps
 !
-       call choose_int_vol_grads_w_const(iele_fl_smp_stack, const,      &
-     &     i_scalar)
+       call choose_int_vol_grads_w_const(iflag_4_supg,                  &
+     &     iele_fl_smp_stack, const, i_scalar)
 !
        call set_ff_nl_smp_2_ff(n_vector)
        call cal_ff_2_vector(d_nod(1,i_res), ff_nl, ml_fl)
@@ -87,21 +88,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_gradent_in_conduct_w_const(i_res, i_scalar, const)
+      subroutine cal_gradent_in_conduct_w_const(iflag_4_supg,           &
+     &          i_res, i_scalar, const)
 !
       use m_geometry_data_MHD
       use m_geometry_parameter
       use m_node_phys_data
 !
       real(kind = kreal), intent(in) :: const
-      integer(kind = kint), intent(in) :: i_scalar
-      integer(kind = kint), intent(in) :: i_res
+      integer(kind = kint), intent(in) :: iflag_4_supg
+      integer(kind = kint), intent(in) :: i_scalar, i_res
 !
 !
        call reset_ff_smps
 !
-       call choose_int_vol_grads_w_const(iele_cd_smp_stack, const,      &
-     &     i_scalar)
+       call choose_int_vol_grads_w_const(iflag_4_supg,                  &
+     &     iele_cd_smp_stack, const, i_scalar)
 !
        call set_ff_nl_smp_2_ff(n_vector)
        call cal_ff_2_vector(d_nod(1,i_res), ff_nl, ml_cd)
@@ -115,8 +117,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine choose_int_vol_grads_w_const(iele_fsmp_stack, const,   &
-     &          i_scalar)
+      subroutine choose_int_vol_grads_w_const(iflag_4_supg,             &
+     &          iele_fsmp_stack, const, i_scalar)
 !
       use m_control_parameter
       use m_element_phys_address
@@ -125,7 +127,7 @@
 !
 !
       real(kind = kreal), intent(in) :: const
-      integer(kind = kint), intent(in) :: i_scalar
+      integer(kind = kint), intent(in) :: iflag_4_supg, i_scalar
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       if ( iflag_4_supg .eq. id_magnetic_SUPG) then

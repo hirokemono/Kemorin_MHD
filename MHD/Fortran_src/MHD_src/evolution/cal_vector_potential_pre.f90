@@ -52,7 +52,7 @@
         call cal_sgs_uxb_2_evo
       end if
 !
-      if ( iflag_4_supg .gt. id_turn_OFF) then
+      if (iflag_mag_supg .gt. id_turn_OFF) then
         call int_vol_vect_p_pre_ele_upm
       else
         call int_vol_vect_p_pre_ele
@@ -100,7 +100,7 @@
        use cal_multi_pass
        use cal_sol_vector_explicit
 !
-       call cal_t_evo_4_vector_cd
+       call cal_t_evo_4_vector_cd(iflag_mag_supg)
        call cal_sol_vect_p_pre_euler
 !
        end subroutine cal_vect_p_pre_euler
@@ -112,7 +112,7 @@
        use cal_multi_pass
        use cal_sol_vector_explicit
 !
-       call cal_t_evo_4_vector_cd
+       call cal_t_evo_4_vector_cd(iflag_mag_supg)
        call cal_sol_vect_p_pre_adams
 !
        end subroutine cal_vect_p_pre_adams
@@ -134,7 +134,7 @@
 !         if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
        end if
 !
-       call cal_t_evo_4_vector_cd
+       call cal_t_evo_4_vector_cd(iflag_mag_supg)
 !
        call set_boundary_vect_p_4_rhs
 !

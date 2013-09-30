@@ -61,7 +61,7 @@
 !
 !  ----------  lead advection term
 !
-      if ( iflag_4_supg .gt. id_turn_OFF) then
+      if (iflag_temp_supg .gt. id_turn_OFF) then
        call int_vol_temp_ele_upw
       else
        call int_vol_temp_ele
@@ -78,7 +78,7 @@
 !      call check_ff_nl_smp(n_scalar)
 !
       if (iflag_t_strat .gt. id_turn_OFF) then
-        if ( iflag_4_supg .gt. id_turn_OFF) then
+        if (iflag_temp_supg .gt. id_turn_OFF) then
           call cal_stratified_layer_upw
         else
           call cal_stratified_layer
@@ -114,7 +114,7 @@
        use cal_multi_pass
        use cal_sol_vector_explicit
 !
-       call cal_t_evo_4_scalar_fl
+       call cal_t_evo_4_scalar_fl(iflag_temp_supg)
        call cal_sol_temp_euler
 !
        end subroutine cal_temp_pre_euler
@@ -126,7 +126,7 @@
        use cal_multi_pass
        use cal_sol_vector_explicit
 !
-       call cal_t_evo_4_scalar_fl
+       call cal_t_evo_4_scalar_fl(iflag_temp_supg)
 !       call check_ff(n_scalar)
 !       call check_ff_nl(n_scalar)
        call cal_sol_temp_adams
@@ -152,7 +152,7 @@
        end if
 !
        if (iflag_debug.eq.1) write(*,*) 'multi_pass temp'
-       call cal_t_evo_4_scalar_fl
+       call cal_t_evo_4_scalar_fl(iflag_temp_supg)
 !
        call set_boundary_ene_4_rhs
 !

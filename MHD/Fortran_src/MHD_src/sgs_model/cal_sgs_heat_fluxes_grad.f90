@@ -106,7 +106,7 @@
       call reset_sk6(n_vector)
       call reset_ff_smp
 !
-      call sel_int_vol_sgs_flux(i_filter, n_vector,                     &
+      call sel_int_vol_sgs_flux(iflag_temp_supg, i_filter, n_vector,    &
      &    i_field, ie_dvx, sk6)
 !
 !     set elemental model coefficients
@@ -146,7 +146,7 @@
       call reset_sk6(n_vector)
       call reset_ff_smp
 !
-      call sel_int_vol_sgs_flux(i_filter, n_vector,                     &
+      call sel_int_vol_sgs_flux(iflag_temp_supg, i_filter, n_vector,   &
      &   i_field, ie_dvx, sk6)
 !
       call add3_skv_to_ff_v_smp_1st(ff_smp, sk6)

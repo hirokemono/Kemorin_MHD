@@ -6,7 +6,7 @@
 !        modified by H. Matsui on July, 2007
 !        modified by H. Matsui on April, 2012
 !
-!      subroutine sel_int_vol_sgs_flux(i_filter, numdir,                &
+!      subroutine sel_int_vol_sgs_flux(iflag_4_supg, i_filter, numdir,  &
 !     &           i_field, id_dx, sk_v)
 !
       module int_vol_sgs_flux
@@ -27,11 +27,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_int_vol_sgs_flux(i_filter, numdir,                 &
+      subroutine sel_int_vol_sgs_flux(iflag_4_supg, i_filter, numdir,   &
      &           i_field, id_dx, sk_v)
 !
       use m_element_phys_address
 !
+      integer(kind = kint), intent(in) :: iflag_4_supg
       integer (kind = kint), intent(in) :: id_dx, i_filter
       integer (kind = kint), intent(in) :: numdir, i_field
 !
