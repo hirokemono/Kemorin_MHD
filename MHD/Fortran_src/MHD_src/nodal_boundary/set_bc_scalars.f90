@@ -38,19 +38,22 @@
 !
 !
       l_fr = 0
-      call set_bc_scalar_id(num_bc_v, bc_v_name, ibc_v_type,            &
-     &    bc_v_magnitude, ibc_velo_fr, ibc2_velo_fr, num_bc_fr_nod,     &
-     &          ibc_fr_id, bc_fr_id_apt, iflag_free_sph, l_fr)
+      call set_bc_scalar_id(velo_nod%num_bc, velo_nod%bc_name,          &
+     &    velo_nod%ibc_type, velo_nod%bc_magnitude,                     &
+     &    ibc_velo_fr, ibc2_velo_fr, num_bc_fr_nod,                     &
+     &    ibc_fr_id, bc_fr_id_apt, iflag_free_sph, l_fr)
 !
       l_r0 = 0
-      call set_bc_scalar_id(num_bc_v, bc_v_name, ibc_v_type,            &
-     &    bc_v_magnitude, ibc_velo_r0, ibc2_velo_r0, num_bc_vr0_nod,    &
-     &          ibc_vr0_id, bc_vr0_id_apt, iflag_no_vr, l_r0)
+      call set_bc_scalar_id(velo_nod%num_bc, velo_nod%bc_name,          &
+     &    velo_nod%ibc_type, velo_nod%bc_magnitude,                     &
+     &    ibc_velo_r0, ibc2_velo_r0, num_bc_vr0_nod,                    &
+     &    ibc_vr0_id, bc_vr0_id_apt, iflag_no_vr, l_r0)
 !
       l_vsp = 0
-      call set_bc_scalar_id(num_bc_v, bc_v_name, ibc_v_type,            &
-     &    bc_v_magnitude, ibc_velo_vsp, ibc2_velo_vsp, num_bc_vsp_nod,  &
-     &          ibc_vsp_id, bc_vsp_id_apt, iflag_bc_special, l_vsp)
+      call set_bc_scalar_id(velo_nod%num_bc, velo_nod%bc_name,          &
+     &    velo_nod%ibc_type, velo_nod%bc_magnitude,                     &
+     &    ibc_velo_vsp, ibc2_velo_vsp, num_bc_vsp_nod,                  &
+     &    ibc_vsp_id, bc_vsp_id_apt, iflag_bc_special, l_vsp)
 !
       end subroutine set_bc_velo_4_sphere_id
 !
@@ -69,13 +72,15 @@
 !
 !
       ii = 0
-      call set_fixed_bc_scalar_id(num_bc_e, bc_e_name, ibc_e_type,      &
-     &    bc_e_magnitude, ibc_temp, ibc2_temp, num_bc_e_nod,            &
+      call set_fixed_bc_scalar_id(temp_nod%num_bc, temp_nod%bc_name,    &
+     &    temp_nod%ibc_type, temp_nod%bc_magnitude,                     &
+     &    ibc_temp, ibc2_temp, num_bc_e_nod,                            &
      &    ibc_e_id, bc_e_id_apt, fhd_temp, ii)
 !
       i0 = 0
-      call set_bc_scalar_id(num_bc_e, bc_e_name, ibc_e_type,            &
-     &    bc_e_magnitude, ibc_t_sgs, ibc2_t_sgs, num_bc_t_sgs_nod,      &
+      call set_bc_scalar_id(temp_nod%num_bc, temp_nod%bc_name,          &
+     &    temp_nod%ibc_type, temp_nod%bc_magnitude,                     &
+     &    ibc_t_sgs, ibc2_t_sgs, num_bc_t_sgs_nod,                      &
      &    ibc_t_sgs_id, bc_t_sgs_id_apt, iflag_bc_sgs_s, i0)
 !
 !
@@ -99,13 +104,15 @@
 !
 !
       ii = 0
-      call set_fixed_bc_scalar_id(num_bc_p, bc_p_name, ibc_p_type,      &
-     &    bc_p_magnitude, ibc_press, ibc2_press, num_bc_p_nod,          &
+      call set_fixed_bc_scalar_id(press_nod%num_bc, press_nod%bc_name,  &
+     &    press_nod%ibc_type, press_nod%bc_magnitude,                   &
+     &    ibc_press, ibc2_press, num_bc_p_nod,                          &
      &    ibc_p_id, bc_p_id_apt, fhd_press, ii)
 !
       i0 = 0
-      call set_bc_scalar_id(num_bc_p, bc_p_name, ibc_p_type,            &
-     &    bc_p_magnitude, ibc_press_sgs, ibc2_press_sgs, num_bc_ps_nod, &
+      call set_bc_scalar_id(press_nod%num_bc, press_nod%bc_name,        &
+     &    press_nod%ibc_type, press_nod%bc_magnitude,                   &
+     &    ibc_press_sgs, ibc2_press_sgs, num_bc_ps_nod,                 &
      &    ibc_ps_id, bc_ps_id_apt, iflag_bc_sgs_s, i0)
 !
       call set_potential_4_fixed_press
@@ -126,17 +133,19 @@
 !
 !
       ii = 0
-      call set_fixed_bc_scalar_id(num_bc_mag_p, bc_mag_p_name,          &
-     &    ibc_mag_p_type, bc_mag_p_magnitude, ibc_mag_p, ibc2_mag_p,    &
+      call set_fixed_bc_scalar_id(e_potential_nod%num_bc,               &
+     &    e_potential_nod%bc_name, e_potential_nod%ibc_type,            &
+     &    e_potential_nod%bc_magnitude, ibc_mag_p, ibc2_mag_p,          &
      &    num_bc_mag_p_nod, ibc_mag_p_id, bc_mag_p_id_apt,              &
      &    fhd_mag_potential, ii)
 !
-      call set_bc_sph_magne_p_id(num_bc_mag_p, bc_mag_p_name,           &
-     &    ibc_mag_p_type, ii)
+      call set_bc_sph_magne_p_id(e_potential_nod%num_bc,                &
+     &    e_potential_nod%bc_name, e_potential_nod%ibc_type, ii)
 !
       i0 = 0
-      call set_bc_scalar_id(num_bc_mag_p, bc_mag_p_name,                &
-     &    ibc_mag_p_type, bc_mag_p_magnitude, ibc_mp_sgs, ibc2_mp_sgs,  &
+      call set_bc_scalar_id(e_potential_nod%num_bc,                     &
+     &    e_potential_nod%bc_name, e_potential_nod%ibc_type,            &
+     &    e_potential_nod%bc_magnitude, ibc_mp_sgs, ibc2_mp_sgs,        &
      &    num_bc_mp_sgs_nod, ibc_mp_sgs_id, bc_mp_sgs_id_apt,           &
      &    iflag_bc_sgs_s, i0)
 !
@@ -153,8 +162,8 @@
       integer (kind = kint) :: ii
 !
       ii = 0
-      call set_fixed_bc_scalar_id(num_bc_composit, bc_composit_name,    &
-     &    ibc_composit_type,  bc_composit_magnitude, ibc_composit,      &
+      call set_fixed_bc_scalar_id(light_nod%num_bc, light_nod%bc_name,  &
+     &    light_nod%ibc_type,  light_nod%bc_magnitude, ibc_composit,    &
      &    ibc2_composit, num_bc_composition_nod, ibc_composit_id,       &
      &    bc_composit_id_apt, fhd_light, ii)
 !

@@ -76,25 +76,25 @@
 !
 !
       call count_num_bc_vector(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_v, bc_v_name, ibc_v_type,            &
-     &    velocity%num_bc_nod, iflag_bc_fixed)
+     &    nod_grp%grp_name, velo_nod%num_bc, velo_nod%bc_name,          &
+     &    velo_nod%ibc_type, velocity%num_bc_nod, iflag_bc_fixed)
 !
       call count_num_bc_vector(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_v, bc_v_name, ibc_v_type,            &
-     &    sgs_velo%num_bc_nod, iflag_bc_sgs)
+     &    nod_grp%grp_name, velo_nod%num_bc, velo_nod%bc_name,          &
+     &    velo_nod%ibc_type, sgs_velo%num_bc_nod, iflag_bc_sgs)
 !
       call count_num_bc_scalar(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_v, bc_v_name, ibc_v_type,            &
-     &   rotation%num_bc_nod, iflag_bc_rot_x)
+     &    nod_grp%grp_name, velo_nod%num_bc, velo_nod%bc_name,          &
+     &    velo_nod%ibc_type, rotation%num_bc_nod, iflag_bc_rot_x)
       call count_num_bc_scalar(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_v, bc_v_name, ibc_v_type,            &
-     &    free_plane%num_bc_nod, iflag_free_sph)
+     &    nod_grp%grp_name, velo_nod%num_bc, velo_nod%bc_name,          &
+     &    velo_nod%ibc_type, free_plane%num_bc_nod, iflag_free_sph)
       call count_num_bc_scalar(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_v, bc_v_name, ibc_v_type,            &
-     &    no_radial_v%num_bc_nod, iflag_no_vr)
+     &    nod_grp%grp_name, velo_nod%num_bc, velo_nod%bc_name,          &
+     &    velo_nod%ibc_type, no_radial_v%num_bc_nod, iflag_no_vr)
       call count_num_bc_scalar(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_v, bc_v_name, ibc_v_type,            &
-     &    free_sphere%num_bc_nod, iflag_bc_special)
+     &    nod_grp%grp_name, velo_nod%num_bc, velo_nod%bc_name,          &
+     &    velo_nod%ibc_type, free_sphere%num_bc_nod, iflag_bc_special)
 !
 !
       call cal_max_int_4_vector(velocity%nmax_bc, velocity%num_bc_nod)
@@ -112,10 +112,12 @@
 !
 !
       call count_num_bc_scalar(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_p, bc_p_name, ibc_p_type,            &
+     &    nod_grp%grp_name, press_nod%num_bc,                           &
+     &    press_nod%bc_name, press_nod%ibc_type,                        &
      &    press%num_bc_nod, iflag_bc_fix_s)
       call count_num_bc_scalar(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_p, bc_p_name, ibc_p_type,            &
+     &    nod_grp%grp_name, press_nod%num_bc,                           &
+     &    press_nod%bc_name, press_nod%ibc_type,                        &
      &    sgs_press%num_bc_nod, iflag_bc_sgs_s)
 !
       end subroutine count_num_bc_press
@@ -130,10 +132,12 @@
 !
 !
       call count_num_bc_scalar(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_e, bc_e_name, ibc_e_type,            &
+     &    nod_grp%grp_name, temp_nod%num_bc,                            &
+     &    temp_nod%bc_name, temp_nod%ibc_type,                          &
      &    temp%num_bc_nod, iflag_bc_fix_s)
       call count_num_bc_scalar(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_e, bc_e_name, ibc_e_type,            &
+     &    nod_grp%grp_name, temp_nod%num_bc,                            &
+     &    temp_nod%bc_name, temp_nod%ibc_type,                          &
      &    sgs_temp%num_bc_nod, iflag_bc_sgs_s)
 !
       end subroutine count_num_bc_temp
@@ -148,11 +152,13 @@
 !
 !
       call count_num_bc_vector(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_vp, bc_vp_name, ibc_vp_type,         &
+     &    nod_grp%grp_name, a_potential_nod%num_bc,                     &
+     &    a_potential_nod%bc_name, a_potential_nod%ibc_type,            &
      &    vector_p%num_bc_nod, iflag_bc_fixed)
 !
       call count_num_bc_vector(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_vp, bc_vp_name, ibc_vp_type,         &
+     &    nod_grp%grp_name, a_potential_nod%num_bc,                     &
+     &    a_potential_nod%bc_name, a_potential_nod%ibc_type,            &
      &    sgs_vect_p%num_bc_nod, iflag_bc_sgs)
 !
 !
@@ -171,16 +177,19 @@
       type(vect_fixed_nod_bc_type), intent(inout) :: sgs_magne
 !
 !
-      call count_num_bc_vector(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_b, bc_b_name, ibc_b_type,            &
+      call count_num_bc_vector                                          &
+     &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
+     &    magne_nod%num_bc, magne_nod%bc_name, magne_nod%ibc_type,      &
      &    magne%num_bc_nod, iflag_bc_fixed)
 !
-      call count_num_bc_vector(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_b, bc_b_name, ibc_b_type,            &
+      call count_num_bc_vector                                          &
+     &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
+     &    magne_nod%num_bc, magne_nod%bc_name, magne_nod%ibc_type,      &
      &    sgs_magne%num_bc_nod, iflag_bc_sgs)
 !
-      call add_num_bc_magne(nod_grp%num_grp, nod_grp%istack_grp,        &
-     &    nod_grp%grp_name, num_bc_b, bc_b_name, ibc_b_type,            &
+      call add_num_bc_magne                                             &
+     &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
+     &    magne_nod%num_bc, magne_nod%bc_name, magne_nod%ibc_type,      &
      &    magne%num_bc_nod)
 !
 !
@@ -200,15 +209,18 @@
 !
 !
       call count_num_bc_scalar(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_mag_p, bc_mag_p_name,                &
-     &    ibc_mag_p_type, magne_p%num_bc_nod, iflag_bc_fix_s)
+     &    nod_grp%grp_name, e_potential_nod%num_bc,                     &
+     &    e_potential_nod%bc_name, e_potential_nod%ibc_type,            &
+     &    magne_p%num_bc_nod, iflag_bc_fix_s)
       call count_num_bc_scalar(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_mag_p, bc_mag_p_name,                &
-     &    ibc_mag_p_type, sgs_mag_p%num_bc_nod, iflag_bc_sgs_s)
+     &    nod_grp%grp_name, e_potential_nod%num_bc,                     &
+     &    e_potential_nod%bc_name, e_potential_nod%ibc_type,            &
+     &    sgs_mag_p%num_bc_nod, iflag_bc_sgs_s)
 !
       call add_num_bc_mag_p(nod_grp%num_grp, nod_grp%istack_grp,        &
-     &    nod_grp%grp_name, num_bc_mag_p, bc_mag_p_name,                &
-     &    ibc_mag_p_type, sgs_mag_p%num_bc_nod)
+     &    nod_grp%grp_name, e_potential_nod%num_bc,                     &
+     &    e_potential_nod%bc_name, e_potential_nod%ibc_type,            &
+     &    sgs_mag_p%num_bc_nod)
 !
       end subroutine count_num_bc_magp
 !
@@ -221,8 +233,8 @@
 !
 !
       call count_num_bc_vector(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_j, bc_j_name, ibc_j_type,            &
-     &    current%num_bc_nod, izero)
+     &    nod_grp%grp_name, current_nod%num_bc, current_nod%bc_name,    &
+     &    current_nod%ibc_type, current%num_bc_nod, izero)
 !
       call cal_max_int_4_vector(current%nmax_bc, current%num_bc_nod)
 !
@@ -237,8 +249,8 @@
 !
 !
       call count_num_bc_scalar(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, num_bc_composit, bc_composit_name,          &
-     &    ibc_composit_type, composition%num_bc_nod, iflag_bc_fix_s)
+     &    nod_grp%grp_name, light_nod%num_bc, light_nod%bc_name,        &
+     &    light_nod%ibc_type, composition%num_bc_nod, iflag_bc_fix_s)
 !
       end subroutine count_num_bc_composit
 !

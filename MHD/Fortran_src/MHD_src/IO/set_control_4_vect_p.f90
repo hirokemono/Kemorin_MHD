@@ -42,10 +42,10 @@
 !
 !
       if (iflag_t_evo_4_vect_p .eq. id_no_evolution) then
-        num_bc_vp = 0
+        a_potential_nod%num_bc =  0
         a_potential_surf%num_bc = 0
       else
-        num_bc_vp = num_bc_vp_ctl
+        a_potential_nod%num_bc =  num_bc_vp_ctl
         a_potential_surf%num_bc = num_bc_vps_ctl
       end if
 !
@@ -53,46 +53,47 @@
 !
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
-     &             write(*,*) 'num_bc_vp ',num_bc_vp
-      if (num_bc_vp/=0) then
+     &     write(*,*) 'a_potential_nod%num_bc ',a_potential_nod%num_bc
+      if (a_potential_nod%num_bc .gt. 0) then
 !
         call allocate_nod_bc_list_vecp
 !
-        bc_vp_name = bc_vp_name_ctl
-        bc_vp_magnitude = bc_vp_magnitude_ctl
+        a_potential_nod%bc_name =      bc_vp_name_ctl
+        a_potential_nod%bc_magnitude = bc_vp_magnitude_ctl
 !
-        do i = 1, num_bc_vp
+        do i = 1, a_potential_nod%num_bc
           tmpchara = bc_vp_type_ctl(i)
           if ( tmpchara .eq. 'fix_x' ) then
-            ibc_vp_type(i) = iflag_bc_fixed + 1
+            a_potential_nod%ibc_type(i) = iflag_bc_fixed + 1
           else if ( tmpchara .eq. 'fix_y' ) then
-            ibc_vp_type(i) = iflag_bc_fixed + 2
+            a_potential_nod%ibc_type(i) = iflag_bc_fixed + 2
           else if ( tmpchara .eq. 'fix_z' ) then
-            ibc_vp_type(i) = iflag_bc_fixed + 3
+            a_potential_nod%ibc_type(i) = iflag_bc_fixed + 3
           else if ( tmpchara .eq. 'file_x' ) then
-            ibc_vp_type(i) = iflag_bc_fixed - 1
+            a_potential_nod%ibc_type(i) = iflag_bc_fixed - 1
           else if ( tmpchara .eq. 'file_y' ) then
-            ibc_vp_type(i) = iflag_bc_fixed - 2
+            a_potential_nod%ibc_type(i) = iflag_bc_fixed - 2
           else if ( tmpchara .eq. 'file_z' ) then
-            ibc_vp_type(i) = iflag_bc_fixed - 3
+            a_potential_nod%ibc_type(i) = iflag_bc_fixed - 3
           else if ( tmpchara .eq. 'insulate_shell' ) then
-            ibc_vp_type(i) = iflag_insulator
+            a_potential_nod%ibc_type(i) = iflag_insulator
           else if ( tmpchara .eq. 'sgs_x' ) then
-            ibc_vp_type(i) = iflag_bc_sgs + 1
+            a_potential_nod%ibc_type(i) = iflag_bc_sgs + 1
           else if ( tmpchara .eq. 'sgs_y' ) then
-            ibc_vp_type(i) = iflag_bc_sgs + 2
+            a_potential_nod%ibc_type(i) = iflag_bc_sgs + 2
           else if ( tmpchara .eq. 'sgs_z' ) then
-            ibc_vp_type(i) = iflag_bc_sgs + 3
+            a_potential_nod%ibc_type(i) = iflag_bc_sgs + 3
 !          else if ( tmpchara .eq. 'sph' ) then
-!            ibc_vp_type(i) = 999
+!            a_potential_nod%ibc_type(i) = 999
           end if
         end do
 !
         if (iflag_debug .eq. iflag_full_msg) then
-          write(*,*) 'i, ibc_vp_type, bc_vp_magnitude, bc_vp_name'
-          do i = 1, num_bc_vp
-            write(*,*)  i, ibc_vp_type(i), bc_vp_magnitude(i),          &
-     &                 trim(bc_vp_name(i))
+          write(*,*) 'i, a_potential_nod'
+          do i = 1, a_potential_nod%num_bc
+            write(*,*)  i, a_potential_nod%ibc_type(i),                 &
+     &                  a_potential_nod%bc_magnitude(i),                &
+     &                  trim(a_potential_nod%bc_name(i))
           end do
         end if
       end if

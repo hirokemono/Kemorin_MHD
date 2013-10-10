@@ -45,30 +45,30 @@
 !
       if (iflag_t_evo_4_magne .eq. id_no_evolution                      &
      &       .and.  iflag_t_evo_4_vect_p .eq. id_no_evolution) then
-        num_bc_mag_p = 0
+        e_potential_nod%num_bc =  0
         e_potential_surf%num_bc = 0
       else
-        num_bc_mag_p = num_bc_mag_p_ctl
+        e_potential_nod%num_bc =  num_bc_mag_p_ctl
         e_potential_surf%num_bc = num_bc_grad_magp_ctl
       end if
 !
 !
-      if (num_bc_mag_p .gt. 0) then
+      if (e_potential_nod%num_bc .gt. 0) then
 !
         call allocate_nod_bc_list_mag_p
 !
-        bc_mag_p_name     = bc_mag_p_name_ctl
-        bc_mag_p_magnitude = bc_mag_p_magnitude_ctl
+        e_potential_nod%bc_name =      bc_mag_p_name_ctl
+        e_potential_nod%bc_magnitude = bc_mag_p_magnitude_ctl
 !
 !
-        do i = 1, num_bc_mag_p
+        do i = 1, e_potential_nod%num_bc
           tmpchara = bc_mag_p_type_ctl(i)
           if ( tmpchara .eq. 'fixed' ) then
-            ibc_mag_p_type(i) =  iflag_bc_fix_s
+            e_potential_nod%ibc_type(i) =  iflag_bc_fix_s
           else if ( tmpchara .eq. 'file' ) then
-            ibc_mag_p_type(i) = -iflag_bc_fix_s
+            e_potential_nod%ibc_type(i) = -iflag_bc_fix_s
           else if ( tmpchara .eq. 'sgs' ) then
-            ibc_mag_p_type(i) = iflag_bc_sgs_s
+            e_potential_nod%ibc_type(i) = iflag_bc_sgs_s
           end if
         end do
 !

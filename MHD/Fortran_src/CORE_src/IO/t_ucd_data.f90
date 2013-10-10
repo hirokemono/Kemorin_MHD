@@ -7,6 +7,7 @@
 !>@brief Structure for Field data IO
 !!
 !!@verbatim
+!!      subroutine allocate_ucd_nodal_data(ucd)
 !!      subroutine allocate_ucd_node(ucd)
 !!      subroutine allocate_ucd_ele(ucd)
 !!      subroutine allocate_ucd_phys_name(ucd)
@@ -20,6 +21,7 @@
 !!      subroutine deallocate_ucd_phys_data(ucd)
 !!      subroutine deallocate_ucd_phys_name(ucd)
 !!      subroutine deallocate_ucd_data(ucd)
+!!      subroutine deallocate_ucd_mesh(ucd)
 !!
 !!      subroutine disconnect_ucd_node(ucd)
 !!      subroutine disconnect_ucd_data(ucd)
@@ -109,6 +111,19 @@
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine allocate_ucd_nodal_data(ucd)
+!
+      type(ucd_data), intent(inout) :: ucd
+!
+!
+      call allocate_ucd_node(ucd)
+      call allocate_ucd_phys_name(ucd)
+      call allocate_ucd_phys_data(ucd)
+!
+      end subroutine allocate_ucd_nodal_data
 !
 ! -----------------------------------------------------------------------
 !
@@ -260,6 +275,19 @@
       call deallocate_ucd_phys_data(ucd)
 !
       end subroutine deallocate_ucd_data
+!
+! -----------------------------------------------------------------------
+!
+      subroutine deallocate_ucd_mesh(ucd)
+!
+      type(ucd_data), intent(inout) :: ucd
+!
+!
+      call deallocate_ucd_data(ucd)
+      call deallocate_ucd_ele(ucd)
+      call deallocate_ucd_node(ucd)
+!
+      end subroutine deallocate_ucd_mesh
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

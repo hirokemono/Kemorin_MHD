@@ -45,6 +45,8 @@
 !
       subroutine set_psf_udt_mesh(ucd)
 !
+      use coordinate_converter
+!
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -60,6 +62,10 @@
 !
       call deallocate_ucd_node(ucd)
       call deallocate_ucd_ele(ucd)
+!
+      call position_2_sph (numnod_psf, xx_psf,                          &
+     &    rtp_psf(1,1), rtp_psf(1,2), rtp_psf(1,3),                     &
+     &    ar_psf, ss_psf, ar_psf)
 !
       end subroutine set_psf_udt_mesh
 !

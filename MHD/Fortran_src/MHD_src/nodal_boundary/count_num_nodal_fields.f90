@@ -39,13 +39,13 @@
      &          num_bc_field,  bc_field_name, ibc_field_type,           &
      &          num_bc_nod, iref)
 !
-      integer (kind=kint),    intent(in) :: num_bc
-      integer (kind=kint),    intent(in) :: bc_istack(0:num_bc)
-      character (len=kchara), intent(in) :: bc_name(num_bc)
-      integer (kind=kint),    intent(in) :: iref
-      integer (kind=kint),    intent(in) :: num_bc_field
-      integer (kind=kint),    intent(in) :: ibc_field_type(num_bc_field)
-      character (len=kchara), intent(in) :: bc_field_name(num_bc_field)
+      integer(kind=kint),    intent(in) :: num_bc
+      integer(kind=kint),    intent(in) :: bc_istack(0:num_bc)
+      character(len=kchara), intent(in) :: bc_name(num_bc)
+      integer(kind=kint),    intent(in) :: iref
+      integer(kind=kint),    intent(in) :: num_bc_field
+      integer(kind=kint),    intent(in) :: ibc_field_type(num_bc_field)
+      character(len=kchara), intent(in) :: bc_field_name(num_bc_field)
 !
       integer (kind=kint), intent(inout) :: num_bc_nod
 !
@@ -78,17 +78,17 @@
      &          num_bc_field, bc_field_name, ibc_field_type,            &
      &          num_bc_nod, iref)
 !
-      integer (kind=kint),    intent(in) :: num_bc
-      integer (kind=kint),    intent(in) :: bc_istack(0:num_bc)
-      character (len=kchara), intent(in) :: bc_name(num_bc)
-      integer (kind=kint),    intent(in) :: iref
-      integer (kind=kint),    intent(in) :: num_bc_field
-      integer (kind=kint),    intent(in) :: ibc_field_type(num_bc_field)
-      character (len=kchara), intent(in) :: bc_field_name(num_bc_field)
+      integer(kind=kint),    intent(in) :: num_bc
+      integer(kind=kint),    intent(in) :: bc_istack(0:num_bc)
+      character(len=kchara), intent(in) :: bc_name(num_bc)
+      integer(kind=kint),    intent(in) :: iref
+      integer(kind=kint),    intent(in) :: num_bc_field
+      integer(kind=kint),    intent(in) :: ibc_field_type(num_bc_field)
+      character(len=kchara), intent(in) :: bc_field_name(num_bc_field)
 !
-      integer (kind=kint), intent(inout) :: num_bc_nod(3)
+      integer(kind=kint), intent(inout) :: num_bc_nod(3)
 !
-      integer (kind = kint) :: i, j, nd
+      integer(kind = kint) :: i, j, nd
 !
 !
       num_bc_nod(1:3)  = 0

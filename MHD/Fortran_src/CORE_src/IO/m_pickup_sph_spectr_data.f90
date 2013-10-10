@@ -308,8 +308,8 @@
           read(id_pick,*,err=99,end=99) i_step, time,                   &
      &               id_pick_layer(knum), r_pick_layer(knum), l, m,     &
      &               d_rj_pick_sph_gl(1:ncomp_pick_sph_coef,ipick)
+          idx_pick_sph_gl(inum) = l*(l+1) + m
         end do
-        idx_pick_sph_gl(inum) = l*(l+1) + m
       end do
       return
 !

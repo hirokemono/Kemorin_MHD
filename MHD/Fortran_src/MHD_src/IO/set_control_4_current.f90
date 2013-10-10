@@ -42,50 +42,50 @@
 !
        if ( iflag_t_evo_4_magne .eq. id_no_evolution                    &
       &     .and.  iflag_t_evo_4_vect_p .eq. id_no_evolution) then
-        num_bc_j = 0
+        current_nod%num_bc =  0
         current_surf%num_bc = 0
       else
-        num_bc_j = num_bc_j_ctl
+        current_nod%num_bc =  num_bc_j_ctl
         current_surf%num_bc = num_bc_grad_j_ctl
       end if
 !
 !   set boundary_conditons for magnetic field
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
-     &      write(*,*) 'num_bc_j ',num_bc_j
-      if (num_bc_j .gt. 0) then
+     &      write(*,*) 'current_nod%num_bc ',current_nod%num_bc
+      if (current_nod%num_bc .gt. 0) then
 !
         call allocate_nod_bc_list_j
 !
-        bc_j_name      = bc_j_name_ctl
-        bc_j_magnitude = bc_j_magnitude_ctl
+        current_nod%bc_name =      bc_j_name_ctl
+        current_nod%bc_magnitude = bc_j_magnitude_ctl
 !
-        if (iflag_debug.eq.1) then
-          write(*,*) 'bc_j_magnitude ',bc_j_magnitude
-        end if
+        if (iflag_debug.eq.1) write(*,*) 'current_nod%bc_magnitude ',  &
+     &                                    current_nod%bc_magnitude
 !
-        do i = 1, num_bc_j
+        do i = 1, current_nod%num_bc
           tmpchara = bc_j_type_ctl(i)
           if ( tmpchara .eq. 'fix_x' ) then
-            ibc_j_type(i) = 1
+            current_nod%ibc_type(i) = 1
           else if ( tmpchara .eq. 'fix_y' ) then
-            ibc_j_type(i) = 2
+            current_nod%ibc_type(i) = 2
           else if ( tmpchara .eq. 'fix_z' ) then
-            ibc_j_type(i) = 3
+            current_nod%ibc_type(i) = 3
           else if ( tmpchara .eq. 'file_x' ) then
-            ibc_j_type(i) = -1
+            current_nod%ibc_type(i) = -1
           else if ( tmpchara .eq. 'file_y' ) then
-            ibc_j_type(i) = -2
+            current_nod%ibc_type(i) = -2
           else if ( tmpchara .eq. 'file_z' ) then
-            ibc_j_type(i) = -3
+            current_nod%ibc_type(i) = -3
           end if
         end do
 !
         if (iflag_debug .ge. iflag_routine_msg) then
-          write(*,*) 'i, ibc_j_type, bc_j_magnitude, bc_j_name'
-          do i = 1, num_bc_j
-            write(*,*) i, ibc_j_type(i), bc_j_magnitude(i),             &
-     &                 trim(bc_j_name(i))
+          write(*,*) 'i, current_nod'
+          do i = 1, current_nod%num_bc
+            write(*,*) i, current_nod%ibc_type(i),                      &
+     &                 current_nod%bc_magnitude(i),                     &
+     &                 trim(current_nod%bc_name(i))
           end do
         end if
       end if

@@ -44,6 +44,11 @@
       integer(kind = kint), allocatable, target :: istack_comp_psf(:)
       character(len=kchara), allocatable, target :: psf_data_name(:)
 !
+      real(kind = kreal), allocatable, target :: rtp_psf(:,:)
+      real(kind = kreal), allocatable, target :: ss_psf(:)
+      real(kind = kreal), allocatable, target :: ar_psf(:)
+      real(kind = kreal), allocatable, target :: as_psf(:)
+!
       real(kind = kreal), allocatable :: ave_psf(:), rms_psf(:)
       real(kind = kreal), allocatable :: xmin_psf(:), xmax_psf(:)
 !
@@ -63,8 +68,17 @@
       allocate ( ie_psf(numele_psf,3) )
       allocate ( iele_psf(numele_psf) )
 !
+      allocate ( rtp_psf(numnod_psf,3) )
+      allocate ( ss_psf(numnod_psf) )
+      allocate ( ar_psf(numnod_psf) )
+      allocate ( as_psf(numnod_psf) )
+!
       if(numnod_psf .gt. 0) then
-        xx_psf = 0.0d0
+        xx_psf =  0.0d0
+        rtp_psf = 0.0d0
+        ss_psf =  0.0d0
+        ar_psf =  0.0d0
+        as_psf =  0.0d0
         inod_psf = 0
       end if
       if(numele_psf .gt. 0) then
@@ -129,6 +143,7 @@
       subroutine deallocate_psf_results
 !
       deallocate ( d_nod_psf )
+      deallocate ( rtp_psf, ss_psf, ar_psf, as_psf )
       deallocate ( inod_psf, xx_psf )
       deallocate ( iele_psf, ie_psf )
       deallocate ( ncomp_psf )

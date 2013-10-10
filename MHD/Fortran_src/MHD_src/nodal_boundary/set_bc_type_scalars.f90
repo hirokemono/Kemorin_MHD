@@ -45,19 +45,19 @@
 !
 !
       l_fr = 0
-      call s_set_bc_scalar_type_id(num_bc_v, bc_v_name, ibc_v_type,     &
-     &    bc_v_magnitude, nod_grp, nodal_bc%free_plane,                 &
-     &   iflag_free_sph, l_fr)
+      call s_set_bc_scalar_type_id(velo_nod%num_bc, velo_nod%bc_name,   &
+     &    velo_nod%ibc_type, velo_nod%bc_magnitude,                     &
+     &    nod_grp, nodal_bc%free_plane, iflag_free_sph, l_fr)
 !
       l_r0 = 0
-      call s_set_bc_scalar_type_id(num_bc_v, bc_v_name, ibc_v_type,     &
-     &    bc_v_magnitude, nod_grp, nodal_bc%no_radial_v,                &
-     &    iflag_no_vr, l_r0)
+      call s_set_bc_scalar_type_id(velo_nod%num_bc, velo_nod%bc_name,   &
+     &    velo_nod%ibc_type, velo_nod%bc_magnitude,                     &
+     &    nod_grp, nodal_bc%no_radial_v, iflag_no_vr, l_r0)
 !
       l_vsp = 0
-      call s_set_bc_scalar_type_id(num_bc_v, bc_v_name, ibc_v_type,     &
-     &    bc_v_magnitude, nod_grp, nodal_bc%free_sphere,                &
-     &    iflag_bc_special, l_vsp)
+      call s_set_bc_scalar_type_id(velo_nod%num_bc, velo_nod%bc_name,   &
+     &    velo_nod%ibc_type, velo_nod%bc_magnitude,                     &
+     &    nod_grp, nodal_bc%free_sphere, iflag_bc_special, l_vsp)
 !
       end subroutine set_bc_type_velo_4_sphere_id
 !
@@ -76,13 +76,14 @@
       integer (kind = kint) :: ii, i0
 !
       ii = 0
-      call set_fixed_bc_scalar_type_id(num_bc_e, bc_e_name, ibc_e_type, &
-     &    bc_e_magnitude, fhd_temp, nod_grp, nodal_bc%temp, ii)
+      call set_fixed_bc_scalar_type_id(temp_nod%num_bc,                 &
+     &    temp_nod%bc_name, temp_nod%ibc_type, temp_nod%bc_magnitude,   &
+     &    fhd_temp, nod_grp, nodal_bc%temp, ii)
 !
       i0 = 0
-      call s_set_bc_scalar_type_id(num_bc_e, bc_e_name, ibc_e_type,     &
-     &    bc_e_magnitude, nod_grp, nodal_bc%sgs_temp,                   &
-     &    iflag_bc_sgs_s, i0)
+      call s_set_bc_scalar_type_id(temp_nod%num_bc,                     &
+     &    temp_nod%bc_name, temp_nod%ibc_type, temp_nod%bc_magnitude,   &
+     &    nod_grp, nodal_bc%sgs_temp, iflag_bc_sgs_s, i0)
 !
 !
       end subroutine set_bc_type_fixed_temp_id
@@ -102,12 +103,15 @@
 !
 !
       ii = 0
-      call set_fixed_bc_scalar_type_id(num_bc_p, bc_p_name, ibc_p_type, &
-     &    bc_p_magnitude, fhd_press, nod_grp, nodal_bc%press, ii)
+      call set_fixed_bc_scalar_type_id(press_nod%num_bc,                &
+     &    press_nod%bc_name, press_nod%ibc_type,                        &
+     &    press_nod%bc_magnitude, fhd_press, nod_grp,                   &
+     &    nodal_bc%press, ii)
 !
       i0 = 0
-      call s_set_bc_scalar_type_id(num_bc_p, bc_p_name, ibc_p_type,     &
-     &    bc_p_magnitude, nod_grp, nodal_bc%sgs_press,                  &
+      call s_set_bc_scalar_type_id(press_nod%num_bc,                    &
+     &    press_nod%bc_name, press_nod%ibc_type,                        &
+     &    press_nod%bc_magnitude, nod_grp, nodal_bc%sgs_press,          &
      &    iflag_bc_sgs_s, i0)
 !
 !      call set_potential_4_fix_press_type(nodal_bc%press)
@@ -129,17 +133,20 @@
 !
 !
       ii = 0
-      call set_fixed_bc_scalar_type_id(num_bc_mag_p, bc_mag_p_name,     &
-     &    ibc_mag_p_type, bc_mag_p_magnitude, fhd_mag_potential,        &
+      call set_fixed_bc_scalar_type_id(e_potential_nod%num_bc,          &
+     &    e_potential_nod%bc_name, e_potential_nod%ibc_type,            &
+     &    e_potential_nod%bc_magnitude, fhd_mag_potential,              &
      &    nod_grp, nodal_bc%magne_p, ii)
 !
       i0 = 0
-      call s_set_bc_scalar_type_id(num_bc_mag_p, bc_mag_p_name,         &
-     &    ibc_mag_p_type, bc_mag_p_magnitude, nod_grp,                  &
+      call s_set_bc_scalar_type_id(e_potential_nod%num_bc,              &
+     &    e_potential_nod%bc_name, e_potential_nod%ibc_type,            &
+     &    e_potential_nod%bc_magnitude, nod_grp,                        &
      &    nodal_bc%sgs_mag_p, iflag_bc_sgs_s, i0)
 !
-      call set_bc_sph_magp_type_id(num_bc_mag_p, bc_mag_p_name,         &
-     &    ibc_mag_p_type, nod_grp, nodal_bc%magne_p, ii)
+      call set_bc_sph_magp_type_id(e_potential_nod%num_bc,              &
+     &    e_potential_nod%bc_name, e_potential_nod%ibc_type,            &
+     &    nod_grp, nodal_bc%magne_p, ii)
 !
       end subroutine set_bc_type_fixed_mag_p_id
 !
@@ -157,8 +164,9 @@
 !
 !
       ii = 0
-      call set_fixed_bc_scalar_type_id(num_bc_composit,                 &
-     &    bc_composit_name, ibc_composit_type,  bc_composit_magnitude,  &
+      call set_fixed_bc_scalar_type_id                                  &
+     &   (light_nod%num_bc, light_nod%bc_name,                          &
+     &    light_nod%ibc_type, light_nod%bc_magnitude,                   &
      &    fhd_light, nod_grp, nodal_bc%composition, ii)
 !
       end subroutine set_bc_type_fixed_composit_id

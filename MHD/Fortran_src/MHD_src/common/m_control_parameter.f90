@@ -139,7 +139,7 @@
 !>      ID for using SUPG by mangeitc field
       integer (kind=kint), parameter :: id_magnetic_SUPG =  2
 !
-!>      SUPG flag for valocity
+!>      SUPG flag for velocity
       integer (kind=kint) :: iflag_velo_supg = id_turn_OFF
 !>      SUPG flag for temperature
       integer (kind=kint) :: iflag_temp_supg = id_turn_OFF

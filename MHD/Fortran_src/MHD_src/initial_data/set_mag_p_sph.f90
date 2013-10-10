@@ -40,8 +40,8 @@
       call allocate_schmidt_polynomial
 !
 !
-      jj = int( aint( bc_mag_p_magnitude(j)) )
-      ll = int( aint( sqrt(bc_mag_p_magnitude(j)) ))
+      jj = int( aint( e_potential_nod%bc_magnitude(j)) )
+      ll = int( aint( sqrt(e_potential_nod%bc_magnitude(j)) ))
       mm = jj - ll*(ll+1)
 !
       do k=1, bc_istack(i)-bc_istack(i-1)

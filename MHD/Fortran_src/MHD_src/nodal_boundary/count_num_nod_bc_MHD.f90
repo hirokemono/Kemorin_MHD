@@ -60,25 +60,25 @@
 !
 !
       call count_num_bc_vector(num_bc, bc_istack, bc_name,              &
-     &    num_bc_v, bc_v_name, ibc_v_type, num_bc_v_nod,                &
-     &    iflag_bc_fixed)
+     &    velo_nod%num_bc, velo_nod%bc_name, velo_nod%ibc_type,         &
+     &    num_bc_v_nod, iflag_bc_fixed)
 !
       call count_num_bc_vector(num_bc, bc_istack, bc_name,              &
-     &    num_bc_v, bc_v_name, ibc_v_type, num_bc_v_sgs_nod,            &
-     &    iflag_bc_sgs)
+     &    velo_nod%num_bc, velo_nod%bc_name, velo_nod%ibc_type,         &
+     &    num_bc_v_sgs_nod, iflag_bc_sgs)
 !
       call count_num_bc_scalar(num_bc, bc_istack, bc_name,              &
-     &    num_bc_v, bc_v_name, ibc_v_type, num_bc_v10_nod,              &
-     &    iflag_bc_rot_x)
+     &    velo_nod%num_bc, velo_nod%bc_name, velo_nod%ibc_type,         &
+     &    num_bc_v10_nod, iflag_bc_rot_x)
       call count_num_bc_scalar(num_bc, bc_istack, bc_name,              &
-     &    num_bc_v, bc_v_name, ibc_v_type, num_bc_fr_nod,               &
-     &    iflag_free_sph)
+     &    velo_nod%num_bc, velo_nod%bc_name, velo_nod%ibc_type,         &
+     &    num_bc_fr_nod, iflag_free_sph)
       call count_num_bc_scalar(num_bc, bc_istack, bc_name,              &
-     &    num_bc_v, bc_v_name, ibc_v_type, num_bc_vr0_nod,              &
-     &    iflag_no_vr)
+     &    velo_nod%num_bc, velo_nod%bc_name, velo_nod%ibc_type,         &
+     &    num_bc_vr0_nod, iflag_no_vr)
       call count_num_bc_scalar(num_bc, bc_istack, bc_name,              &
-     &    num_bc_v, bc_v_name, ibc_v_type, num_bc_vsp_nod,              &
-     &    iflag_bc_special)
+     &    velo_nod%num_bc, velo_nod%bc_name, velo_nod%ibc_type,         &
+     &    num_bc_vsp_nod, iflag_bc_special)
 !
 !
       call cal_max_int_4_vector(nmax_bc_v_nod, num_bc_v_nod)
@@ -96,11 +96,11 @@
 !
 !
       call count_num_bc_scalar(num_bc, bc_istack, bc_name,              &
-     &    num_bc_p, bc_p_name, ibc_p_type, num_bc_p_nod,                &
-     &    iflag_bc_fix_s)
+     &    press_nod%num_bc, press_nod%bc_name, press_nod%ibc_type,      &
+     &    num_bc_p_nod, iflag_bc_fix_s)
       call count_num_bc_scalar(num_bc, bc_istack, bc_name,              &
-     &    num_bc_p, bc_p_name, ibc_p_type, num_bc_ps_nod,               &
-     &    iflag_bc_sgs_s)
+     &    press_nod%num_bc, press_nod%bc_name, press_nod%ibc_type,      &
+     &    num_bc_ps_nod, iflag_bc_sgs_s)
 !
       end subroutine count_num_bc_press
 !
@@ -114,11 +114,11 @@
 !
 !
       call count_num_bc_scalar(num_bc, bc_istack, bc_name,              &
-     &    num_bc_e, bc_e_name, ibc_e_type, num_bc_e_nod,                &
-     &    iflag_bc_fix_s)
+     &    temp_nod%num_bc, temp_nod%bc_name, temp_nod%ibc_type,         &
+     &    num_bc_e_nod, iflag_bc_fix_s)
       call count_num_bc_scalar(num_bc, bc_istack, bc_name,              &
-     &    num_bc_e, bc_e_name, ibc_e_type, num_bc_t_sgs_nod,            &
-     &    iflag_bc_sgs_s)
+     &    temp_nod%num_bc, temp_nod%bc_name, temp_nod%ibc_type,         &
+     &    num_bc_t_sgs_nod, iflag_bc_sgs_s)
 !
       end subroutine count_num_bc_temp
 !
@@ -132,12 +132,12 @@
 !
 !
       call count_num_bc_vector(num_bc, bc_istack, bc_name,              &
-     &    num_bc_vp, bc_vp_name, ibc_vp_type, num_bc_vp_nod,            &
-     &    iflag_bc_fixed)
+     &    a_potential_nod%num_bc, a_potential_nod%bc_name,              &
+     &    a_potential_nod%ibc_type, num_bc_vp_nod, iflag_bc_fixed)
 !
       call count_num_bc_vector(num_bc, bc_istack, bc_name,              &
-     &    num_bc_vp, bc_vp_name, ibc_vp_type, num_bc_a_sgs_nod,         &
-     &    iflag_bc_sgs)
+     &    a_potential_nod%num_bc, a_potential_nod%bc_name,              &
+     &    a_potential_nod%ibc_type, num_bc_a_sgs_nod, iflag_bc_sgs)
 !
 !
       call cal_max_int_4_vector(nmax_bc_vp_nod, num_bc_vp_nod)
@@ -155,15 +155,16 @@
 !
 !
       call count_num_bc_vector(num_bc, bc_istack, bc_name,              &
-     &    num_bc_b, bc_b_name, ibc_b_type, num_bc_b_nod,                &
-     &    iflag_bc_fixed)
+     &    magne_nod%num_bc, magne_nod%bc_name, magne_nod%ibc_type,      &
+     &     num_bc_b_nod, iflag_bc_fixed)
 !
       call count_num_bc_vector(num_bc, bc_istack, bc_name,              &
-     &    num_bc_b, bc_b_name, ibc_b_type, num_bc_b_sgs_nod,            &
-     &    iflag_bc_sgs)
+     &    magne_nod%num_bc, magne_nod%bc_name, magne_nod%ibc_type,      &
+     &    num_bc_b_sgs_nod, iflag_bc_sgs)
 !
       call add_num_bc_magne(num_bc, bc_istack, bc_name,                 &
-     &    num_bc_b, bc_b_name, ibc_b_type, num_bc_b_nod)
+     &    magne_nod%num_bc, magne_nod%bc_name, magne_nod%ibc_type,      &
+     &    num_bc_b_nod)
 !
 !
       call cal_max_int_4_vector(nmax_bc_b_nod, num_bc_b_nod)
@@ -181,15 +182,15 @@
 !
 !
       call count_num_bc_scalar(num_bc, bc_istack, bc_name,              &
-     &    num_bc_mag_p, bc_mag_p_name, ibc_mag_p_type,                  &
-     &    num_bc_mag_p_nod, iflag_bc_fix_s)
+     &    e_potential_nod%num_bc, e_potential_nod%bc_name,              &
+     &    e_potential_nod%ibc_type, num_bc_mag_p_nod, iflag_bc_fix_s)
       call count_num_bc_scalar(num_bc, bc_istack, bc_name,              &
-     &    num_bc_mag_p, bc_mag_p_name, ibc_mag_p_type,                  &
-     &    num_bc_mp_sgs_nod, iflag_bc_sgs_s)
+     &    e_potential_nod%num_bc, e_potential_nod%bc_name,              &
+     &    e_potential_nod%ibc_type, num_bc_mp_sgs_nod, iflag_bc_sgs_s)
 !
       call add_num_bc_mag_p(num_bc, bc_istack, bc_name,                 &
-     &    num_bc_mag_p, bc_mag_p_name,                                  &
-     &    ibc_mag_p_type, num_bc_mag_p_nod)
+     &    e_potential_nod%num_bc, e_potential_nod%bc_name,              &
+     &    e_potential_nod%ibc_type, num_bc_mag_p_nod)
 !
       end subroutine count_num_bc_magp
 !
@@ -202,7 +203,8 @@
 !
 !
       call count_num_bc_vector(num_bc, bc_istack, bc_name,              &
-     &    num_bc_j, bc_j_name, ibc_j_type, num_bc_j_nod, izero)
+     &    current_nod%num_bc, current_nod%bc_name,                      &
+     &    current_nod%ibc_type, num_bc_j_nod, izero)
 !
       call cal_max_int_4_vector(nmax_bc_j_nod, num_bc_j_nod)
 !
@@ -217,7 +219,7 @@
 !
 !
       call count_num_bc_scalar(num_bc, bc_istack, bc_name,              &
-     &    num_bc_composit, bc_composit_name, ibc_composit_type,         &
+     &    light_nod%num_bc, light_nod%bc_name, light_nod%ibc_type,      &
      &    num_bc_composition_nod, iflag_bc_fix_s)
 !
       end subroutine count_num_bc_composit

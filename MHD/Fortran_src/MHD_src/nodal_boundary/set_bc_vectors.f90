@@ -44,19 +44,22 @@
       field_name(3) = 'velocity_z'
 !
       l_f(1:3) = 0
-      call set_fixed_vector_id(num_bc_v, bc_v_name, ibc_v_type,         &
-     &    bc_v_magnitude, ibc_velo, ibc2_velo, nmax_bc_v_nod,           &
+      call set_fixed_vector_id(velo_nod%num_bc, velo_nod%bc_name,       &
+     &    velo_nod%ibc_type, velo_nod%bc_magnitude,                     &
+     &    ibc_velo, ibc2_velo, nmax_bc_v_nod,                           &
      &    ibc_v_id, bc_v_id_apt, field_name, l_f)
 !
       l_s(1:3) = 0
-      call set_bc_vector_id(num_bc_v, bc_v_name, ibc_v_type,            &
-     &    bc_v_magnitude, ibc_v_sgs, ibc2_v_sgs, nmax_bc_v_sgs_nod,     &
+      call set_bc_vector_id(velo_nod%num_bc, velo_nod%bc_name,          &
+     &    velo_nod%ibc_type, velo_nod%bc_magnitude,                     &
+     &    ibc_v_sgs, ibc2_v_sgs, nmax_bc_v_sgs_nod,                     &
      &    ibc_v_sgs_id, bc_v_sgs_apt, iflag_bc_sgs, l_s)
 !
       l_r(1:3) = 0
-      call set_bc_rotate_id(num_bc_v, bc_v_name, ibc_v_type,            &
-     &    bc_v_magnitude, ibc_velo_rot, ibc2_velo_rot, num_bc_v10_nod,  &
-     &          ibc_v10_id, bc_v10_id_apt, iflag_bc_rot, l_r)
+      call set_bc_rotate_id(velo_nod%num_bc, velo_nod%bc_name,          &
+     &    velo_nod%ibc_type, velo_nod%bc_magnitude,                     &
+     &    ibc_velo_rot, ibc2_velo_rot, num_bc_v10_nod,                  &
+     &    ibc_v10_id, bc_v10_id_apt, iflag_bc_rot, l_r)
 !
       end subroutine set_bc_fixed_velo_id
 !
@@ -75,14 +78,17 @@
       field_name(3) = 'vector_potential_z'
 !
       l_f(1:3) = 0
-      call set_fixed_vector_id(num_bc_vp, bc_vp_name, ibc_vp_type,      &
-     &    bc_vp_magnitude, ibc_vp, ibc2_vp, nmax_bc_vp_nod,             &
-     &    ibc_vp_id, bc_vp_id_apt, field_name, l_f)
+      call set_fixed_vector_id(a_potential_nod%num_bc,                  &
+     &    a_potential_nod%bc_name, a_potential_nod%ibc_type,            &
+     &    a_potential_nod%bc_magnitude, ibc_vp, ibc2_vp,                &
+     &    nmax_bc_vp_nod, ibc_vp_id, bc_vp_id_apt, field_name, l_f)
 !
       l_s(1:3) = 0
-      call set_bc_vector_id(num_bc_vp, bc_vp_name, ibc_vp_type,         &
-     &    bc_vp_magnitude, ibc_a_sgs, ibc2_a_sgs, nmax_bc_a_sgs_nod,    &
-     &    ibc_a_sgs_id, bc_a_sgs_id_apt, iflag_bc_sgs, l_s)
+      call set_bc_vector_id(a_potential_nod%num_bc,                     &
+     &    a_potential_nod%bc_name, a_potential_nod%ibc_type,            &
+     &    a_potential_nod%bc_magnitude, ibc_a_sgs, ibc2_a_sgs,          &
+     &    nmax_bc_a_sgs_nod, ibc_a_sgs_id, bc_a_sgs_id_apt,             &
+     &    iflag_bc_sgs, l_s)
 !
       end subroutine set_bc_fixed_vect_p_id
 !
@@ -101,15 +107,18 @@
       field_name(3) = 'magnetic_z'
 !
       l_f(1:3) = 0
-      call set_fixed_vector_id(num_bc_b, bc_b_name, ibc_b_type,         &
-     &    bc_b_magnitude, ibc_magne, ibc2_magne, nmax_bc_b_nod,         &
+      call set_fixed_vector_id(magne_nod%num_bc, magne_nod%bc_name,     &
+     &    magne_nod%ibc_type, magne_nod%bc_magnitude,                   &
+     &    ibc_magne, ibc2_magne, nmax_bc_b_nod,                         &
      &    ibc_b_id, bc_b_id_apt, field_name, l_f)
 !
-      call set_sph_magne_id(num_bc_b, bc_b_name, ibc_b_type, l_f)
+      call set_sph_magne_id(magne_nod%num_bc, magne_nod%bc_name,        &
+     &    magne_nod%ibc_type, l_f)
 !
       l_s(1:3) = 0
-      call set_bc_vector_id(num_bc_b, bc_b_name, ibc_b_type,            &
-     &    bc_b_magnitude, ibc_b_sgs, ibc2_b_sgs, nmax_bc_b_sgs_nod,     &
+      call set_bc_vector_id(magne_nod%num_bc, magne_nod%bc_name,        &
+     &    magne_nod%ibc_type, magne_nod%bc_magnitude,                   &
+     &    ibc_b_sgs, ibc2_b_sgs, nmax_bc_b_sgs_nod,                     &
      &    ibc_b_sgs_id, bc_b_sgs_id_apt, iflag_bc_sgs, l_s)
 !
       end subroutine set_bc_fixed_magne_id
@@ -128,9 +137,10 @@
       field_name(3) = 'current_z'
 !
       l_f(1:3) = 0
-      call set_fixed_vector_id(num_bc_j, bc_j_name, ibc_j_type,         &
-     &    bc_j_magnitude, ibc_j, ibc2_j, nmax_bc_j_nod,                 &
-     &    ibc_j_id, bc_j_id_apt, field_name, l_f)
+      call set_fixed_vector_id(current_nod%num_bc, current_nod%bc_name, &
+     &    current_nod%ibc_type, current_nod%bc_magnitude,               &
+     &    ibc_j, ibc2_j, nmax_bc_j_nod, ibc_j_id, bc_j_id_apt,          &
+     &    field_name, l_f)
 !
       end subroutine set_bc_fixed_current_id
 !
