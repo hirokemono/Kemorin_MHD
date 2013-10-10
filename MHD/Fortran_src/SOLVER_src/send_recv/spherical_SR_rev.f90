@@ -34,7 +34,7 @@
 !!@n @param  id_pe_recv(npe_send)      Process ID to receive
 !!@n @param  istack_recv(0:npe_send)
 !!                    End points of receive buffer for each process
-!!@n @param  irev_import(nnod_recv)
+!!@n @param  irev_import(nnod_new)
 !!                    import buffer ID for each data point
 !!@n
 !!@n @param  X_org(nnod_org)   Send data

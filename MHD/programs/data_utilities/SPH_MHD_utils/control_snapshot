@@ -37,6 +37,10 @@ begin MHD_control
     coriolis_file_fmt_ctl       'ascii'
   end data_files_def
 !
+  begin  org_data_files_def
+    orginal_restart_prefix           'rst_org/rst'
+  end  org_data_files_def
+!
   begin model
 !!!!!  physical values!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! available valuables 

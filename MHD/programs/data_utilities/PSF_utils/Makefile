@@ -13,7 +13,8 @@ TARGET_DRAW_CX =   drcx_fem
 TARGET_DRAW_CY =   drcy_fem
 TARGET_DRAW_MAP =  drmap_fem
 
-TARGET_LINE_ON_PSF = section_from_psf
+TARGET_LINE_ON_PSF =   section_from_psf
+TARGET_DBENCH_ON_PSF = psf_dynamobench
 
 TARGET_FIX_TEMP_PSF = psf_per_temp_2_temp
 
@@ -82,7 +83,16 @@ MOD_LINE_ON_PSF = \
 section_from_psf.o \
 m_norms_4_psf.o \
 m_psf_edge_connect.o \
-m_line_from_psf.o
+m_line_from_psf.o \
+const_section_from_triangle.o
+
+MOD_DYNAMOBENCH_PSF = \
+psf_dynamobench.o \
+m_norms_4_psf.o \
+m_psf_edge_connect.o \
+m_line_from_psf.o \
+const_section_from_triangle.o \
+m_dynamobench_data_by_psf.o
 
 MOD_FIX_TEMP_PSF = \
 fix_temperature_4_psf.o
@@ -103,18 +113,20 @@ target_list:
 	@echo 'TARGET_DRAW_CY =      $$(BUILDDIR)/$(TARGET_DRAW_CY)'       >> $(MAKENAME)
 	@echo 'TARGET_DRAW_MAP =     $$(BUILDDIR)/$(TARGET_DRAW_MAP)'      >> $(MAKENAME)
 	@echo 'TARGET_LINE_ON_PSF =  $$(BUILDDIR)/$(TARGET_LINE_ON_PSF)'   >> $(MAKENAME)
-	@echo 'TARGET_FIX_TEMP_PSF =  $$(BUILDDIR)/$(TARGET_FIX_TEMP_PSF)' >> $(MAKENAME)
+	@echo 'TARGET_DBENCH_ON_PSF = $$(BUILDDIR)/$(TARGET_DBENCH_ON_PSF)' >> $(MAKENAME)
+	@echo 'TARGET_FIX_TEMP_PSF =  $$(BUILDDIR)/$(TARGET_FIX_TEMP_PSF)'  >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo psf_utils: \
 	'$$(TARGET_PSF_2_VTK)    $$(TARGET_PSF_2_DX) '         \
-	'$$(TARGET_PSF_AVES) ' >> $(MAKENAME)
+	'$$(TARGET_PSF_AVES)     $$(TARGET_DBENCH_ON_PSF) '    \
+    '$$(TARGET_LINE_ON_PSF)'  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo utils_pg: \
 	'$$(TARGET_DRAW_CZ) $$(TARGET_DRAW_MAP) ' \
 	'$$(TARGET_DRAW_CX) $$(TARGET_DRAW_CY)  ' \
-	'$$(TARGET_LINE_ON_PSF) $$(TARGET_FIX_TEMP_PSF)' >> $(MAKENAME)
+	'$$(TARGET_FIX_TEMP_PSF)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PSF_AVES)': '$$(MOD_PSF_AVES)' \
 	'$$(LIB_FILES_PSF_UTIL)' \
@@ -172,6 +184,13 @@ target_task:
 	'$$(MOD_LINE_ON_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
 	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_DBENCH_ON_PSF)': '$$(MOD_DYNAMOBENCH_PSF)' \
+	'$$(LIB_FILES_PSF_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_DBENCH_ON_PSF)' \
+	'$$(MOD_DYNAMOBENCH_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
+	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FIX_TEMP_PSF)': '$$(MOD_FIX_TEMP_PSF)' \
 	'$$(LIB_FILES_PSF_UTIL)' \
 	>> $(MAKENAME)
@@ -189,24 +208,26 @@ lib_name:
 	@echo  '#' >> $(MAKENAME)
 
 mod_list:
-	@echo  MOD_PSF_AVES =  \\    >> $(MAKENAME)
-	@echo  $(MOD_PSF_AVES)       >> $(MAKENAME)
-	@echo  MOD_PSF_2_VTK =  \\   >> $(MAKENAME)
-	@echo  $(MOD_PSF_2_VTK)      >> $(MAKENAME)
-	@echo  MOD_PSF_2_DX =  \\    >> $(MAKENAME)
-	@echo  $(MOD_PSF_2_DX)       >> $(MAKENAME)
-	@echo  MOD_ZCPLANE_PG =  \\  >> $(MAKENAME)
-	@echo  $(MOD_ZCPLANE_PG)     >> $(MAKENAME)
-	@echo  MOD_XCPLANE_PG =  \\  >> $(MAKENAME)
-	@echo  $(MOD_XCPLANE_PG)     >> $(MAKENAME)
-	@echo  MOD_YCPLANE_PG =  \\  >> $(MAKENAME)
-	@echo  $(MOD_YCPLANE_PG)     >> $(MAKENAME)
-	@echo  MOD_MAP_PG =  \\      >> $(MAKENAME)
-	@echo  $(MOD_MAP_PG)         >> $(MAKENAME)
-	@echo  MOD_LINE_ON_PSF =  \\ >> $(MAKENAME)
-	@echo  $(MOD_LINE_ON_PSF)    >> $(MAKENAME)
-	@echo  MOD_FIX_TEMP_PSF =  \\ >> $(MAKENAME)
-	@echo  $(MOD_FIX_TEMP_PSF)    >> $(MAKENAME)
+	@echo  MOD_PSF_AVES =  \\        >> $(MAKENAME)
+	@echo  $(MOD_PSF_AVES)           >> $(MAKENAME)
+	@echo  MOD_PSF_2_VTK =  \\       >> $(MAKENAME)
+	@echo  $(MOD_PSF_2_VTK)          >> $(MAKENAME)
+	@echo  MOD_PSF_2_DX =  \\        >> $(MAKENAME)
+	@echo  $(MOD_PSF_2_DX)           >> $(MAKENAME)
+	@echo  MOD_ZCPLANE_PG =  \\      >> $(MAKENAME)
+	@echo  $(MOD_ZCPLANE_PG)         >> $(MAKENAME)
+	@echo  MOD_XCPLANE_PG =  \\      >> $(MAKENAME)
+	@echo  $(MOD_XCPLANE_PG)         >> $(MAKENAME)
+	@echo  MOD_YCPLANE_PG =  \\      >> $(MAKENAME)
+	@echo  $(MOD_YCPLANE_PG)         >> $(MAKENAME)
+	@echo  MOD_MAP_PG =  \\          >> $(MAKENAME)
+	@echo  $(MOD_MAP_PG)             >> $(MAKENAME)
+	@echo  MOD_LINE_ON_PSF =  \\     >> $(MAKENAME)
+	@echo  $(MOD_LINE_ON_PSF)        >> $(MAKENAME)
+	@echo  MOD_DYNAMOBENCH_PSF =  \\ >> $(MAKENAME)
+	@echo  $(MOD_DYNAMOBENCH_PSF)    >> $(MAKENAME)
+	@echo  MOD_FIX_TEMP_PSF =  \\    >> $(MAKENAME)
+	@echo  $(MOD_FIX_TEMP_PSF)       >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 

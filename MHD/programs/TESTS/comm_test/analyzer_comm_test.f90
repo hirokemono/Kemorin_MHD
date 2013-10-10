@@ -4,8 +4,8 @@
 !
 !      modified by H. Matsui on Aug., 2006 
 !
-!      subroutine init_analyzer
-!      subroutine analyze
+!      subroutine initialize_communication_test
+!      subroutine analyze_communication_test
 !
       module analyzer_comm_test
 !
@@ -21,7 +21,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine initialize_communication_test
 !
       use calypso_mpi
       use const_mesh_info
@@ -40,11 +40,11 @@
 !       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
 !      call set_local_element_info
 !
-       end subroutine init_analyzer
+       end subroutine initialize_communication_test
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_communication_test
 !
       use calypso_mpi
       use m_array_for_send_recv
@@ -63,6 +63,8 @@
       call allocate_iccg_int_matrix(numnod)
       call allocate_vector_for_solver(ithree, numnod)
       call allocate_cflag_collect_diff
+!
+      call node_send_recv4_test
 !
       call node_send_recv_test
       call count_diff_node_comm_test
@@ -109,9 +111,7 @@
         call deallocate_geom_comm_test_IO
       end if
 !
-      if (iflag_debug.eq.1) write(*,*) 'exit analyze'
-!
-      end subroutine analyze
+      end subroutine analyze_communication_test
 !
 ! ----------------------------------------------------------------------
 !

@@ -1,39 +1,41 @@
-!t_surface_bc_data.f90
-!      module t_surface_bc_data
-!
-!     Written by H. Matsui on Feb., 2009
+!>@file   t_surface_bc_data.f90
+!!@brief  module t_surface_bc_data
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Matsui in 2009
 !
 !>    @brief flux boundary condition lists for MHD dynamo model
-!
-!
-!>
-!>        (module m_surf_data_temp)
-!>        (module m_surf_data_composition)
-!>        (module m_surf_data_press)
-!>        (module m_surf_data_magne_p)
-!>        (module m_surf_data_torque)
-!>        (module m_surf_data_vector_p)
-!>        (module m_surf_data_magne)
-!>        (module m_surf_data_current)
-!>
-!
-!      subroutine alloc_surf_scaler_type(flux_sf)
-!        type(scaler_surf_flux_bc_type), intent(inout) :: flux_sf
-!      subroutine alloc_surf_vector_type(flux_sf)
-!        type(vector_surf_flux_bc_type), intent(inout) :: flux_sf
-!      subroutine alloc_surf_scaler_dat_type(scaler_sf)
-!        type(scaler_surf_bc_data_type),  intent(inout) :: scaler_sf
-!      subroutine alloc_surf_vector_dat_type(vector_sf)
-!        type(vector_surf_bc_data_type),  intent(inout) :: vector_sf
-!
-!      subroutine dealloc_surf_scaler_type(flux_sf)
-!        type(scaler_surf_flux_bc_type), intent(inout) :: flux_sf
-!      subroutine dealloc_surf_vector_type(flux_sf)
-!        type(vector_surf_flux_bc_type), intent(inout) :: flux_sf
-!      subroutine dealloc_surf_scaler_dat_type(scaler_sf)
-!        type(scaler_surf_bc_data_type),  intent(inout) :: scaler_sf
-!      subroutine dealloc_surf_vector_dat_type(vector_sf)
-!        type(vector_surf_bc_data_type),  intent(inout) :: vector_sf
+!!
+!@n        (module m_surf_data_temp)
+!@n        (module m_surf_data_composition)
+!@n        (module m_surf_data_press)
+!@n        (module m_surf_data_magne_p)
+!@n        (module m_surf_data_torque)
+!@n        (module m_surf_data_vector_p)
+!@n        (module m_surf_data_magne)
+!@n        (module m_surf_data_current)
+!@n
+!!
+!!
+!!@verbatim
+!!      subroutine alloc_surf_scaler_type(flux_sf)
+!!        type(scaler_surf_flux_bc_type), intent(inout) :: flux_sf
+!!      subroutine alloc_surf_vector_type(flux_sf)
+!!        type(vector_surf_flux_bc_type), intent(inout) :: flux_sf
+!!      subroutine alloc_surf_scaler_dat_type(scaler_sf)
+!!        type(scaler_surf_bc_data_type),  intent(inout) :: scaler_sf
+!!      subroutine alloc_surf_vector_dat_type(vector_sf)
+!!        type(vector_surf_bc_data_type),  intent(inout) :: vector_sf
+!!
+!!      subroutine dealloc_surf_scaler_type(flux_sf)
+!!        type(scaler_surf_flux_bc_type), intent(inout) :: flux_sf
+!!      subroutine dealloc_surf_vector_type(flux_sf)
+!!        type(vector_surf_flux_bc_type), intent(inout) :: flux_sf
+!!      subroutine dealloc_surf_scaler_dat_type(scaler_sf)
+!!        type(scaler_surf_bc_data_type),  intent(inout) :: scaler_sf
+!!      subroutine dealloc_surf_vector_dat_type(vector_sf)
+!!        type(vector_surf_bc_data_type),  intent(inout) :: vector_sf
+!!@endverbatim
 !
       module t_surface_bc_data
 !

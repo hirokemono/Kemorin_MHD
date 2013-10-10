@@ -43,10 +43,10 @@
        if ( iflag_t_evo_4_magne .eq. id_no_evolution                    &
       &     .and.  iflag_t_evo_4_vect_p .eq. id_no_evolution) then
         num_bc_j = 0
-        num_bc_js = 0
+        current_surf%num_bc = 0
       else
         num_bc_j = num_bc_j_ctl
-        num_bc_js = num_bc_grad_j_ctl
+        current_surf%num_bc = num_bc_grad_j_ctl
       end if
 !
 !   set boundary_conditons for magnetic field
@@ -92,24 +92,25 @@
 !
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
-     &      write(*,*) 'num_bc_js ',num_bc_js
-      if (num_bc_js .gt. 0) then
+     &      write(*,*) 'current_surf%num_bc ',current_surf%num_bc
+      if (current_surf%num_bc .gt. 0) then
 !
         call allocate_current_surf_ctl
 !
-        bc_js_name     =   bc_grad_j_name_ctl
-        bc_js_magnitude =  bc_grad_j_magnitude_ctl
+        current_surf%bc_name     =   bc_grad_j_name_ctl
+        current_surf%bc_magnitude =  bc_grad_j_magnitude_ctl
 !
-        do i = 1, num_bc_js
+        do i = 1, current_surf%num_bc
           call set_surf_group_types_vector(bc_grad_j_type_ctl(i),       &
-     &        ibc_js_type(i))
+     &        current_surf%ibc_type(i))
         end do
 !
         if (iflag_debug .ge. iflag_routine_msg) then
-          write(*,*) 'i, ibc_js_type, bc_js_magnitude, bc_js_name'
-          do i = 1, num_bc_js
-            write(*,*) i, ibc_js_type(i), bc_js_magnitude(i),           &
-     &                 trim(bc_js_name(i))
+          write(*,*) 'i, current_surf'
+          do i = 1, current_surf%num_bc
+            write(*,*) i, current_surf%ibc_type(i),                     &
+     &                current_surf%bc_magnitude(i),                     &
+     &                trim(current_surf%bc_name(i))
           end do
         end if
       end if

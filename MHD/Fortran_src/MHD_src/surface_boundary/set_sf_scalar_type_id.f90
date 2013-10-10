@@ -64,7 +64,7 @@
 !
 !
       call s_set_surf_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
-     &   num_bc_h_flux, bc_h_flux_name, ibc_h_flux_type,                &
+     &   h_flux_surf%num_bc, h_flux_surf%bc_name, h_flux_surf%ibc_type, &
      &   temp%sgs%ngrp_sf_dat, temp%sgs%id_grp_sf_dat)
 !
       end subroutine set_surf_temp_type_id
@@ -80,7 +80,7 @@
 !
 !
       call s_set_surf_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
-     &   num_surf_composition, surf_composit_name, isurf_composit_type, &
+     &   light_surf%num_bc, light_surf%bc_name, light_surf%ibc_type,    &
      &   comp_sf%sgs%ngrp_sf_dat, comp_sf%sgs%id_grp_sf_dat)
 !
       end subroutine set_surf_composit_type_id
@@ -96,7 +96,7 @@
 !
 !
       call s_set_surf_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
-     &   num_bc_wall, bc_wall_name, ibc_wall_type,                      &
+     &   wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,       &
      &   press%sgs%ngrp_sf_dat, press%sgs%id_grp_sf_dat)
 !
       end subroutine set_surf_press_type_id
@@ -112,8 +112,9 @@
 !
 !
       call s_set_surf_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
-     &   num_surf_magp, surf_magp_name, isurf_magp_type,                &
-     &   magne_p%sgs%ngrp_sf_dat, magne_p%sgs%id_grp_sf_dat)
+     &   e_potential_surf%num_bc, e_potential_surf%bc_name,             &
+     &   e_potential_surf%ibc_type, magne_p%sgs%ngrp_sf_dat,            &
+     &   magne_p%sgs%id_grp_sf_dat)
 !
       end subroutine set_surf_magne_p_type_id
 !
@@ -130,7 +131,7 @@
 !
       call set_sf_grad_scalar_id_type                                   &
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
-     &   num_bc_h_flux, bc_h_flux_name, ibc_h_flux_type,                &
+     &   h_flux_surf%num_bc, h_flux_surf%bc_name, h_flux_surf%ibc_type, &
      &   temp%flux%ngrp_sf_fix_fx, temp%flux%id_grp_sf_fix_fx,          &
      &   temp%flux%ist_ele_sf_fix_fx, temp%flux_lead%ngrp_sf_dat,       &
      &   temp%flux_lead%id_grp_sf_dat)
@@ -149,7 +150,7 @@
 !
       call set_sf_grad_scalar_id_type                                   &
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
-     &   num_surf_composition, surf_composit_name, isurf_composit_type, &
+     &   light_surf%num_bc, light_surf%bc_name, light_surf%ibc_type,    &
      &   comp_sf%flux%ngrp_sf_fix_fx, comp_sf%flux%id_grp_sf_fix_fx,    &
      &   comp_sf%flux%ist_ele_sf_fix_fx, comp_sf%flux_lead%ngrp_sf_dat, &
      &   comp_sf%flux_lead%id_grp_sf_dat)
@@ -168,7 +169,7 @@
 !
       call set_sf_grad_scalar_id_type                                   &
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
-     &   num_bc_wall, bc_wall_name, ibc_wall_type,                      &
+     &   wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,       &
      &   press%grad%ngrp_sf_fix_fx, press%grad%id_grp_sf_fix_fx,        &
      &   press%grad%ist_ele_sf_fix_fx, press%grad_lead%ngrp_sf_dat,     &
      &   press%grad_lead%id_grp_sf_dat)
@@ -187,9 +188,10 @@
 !
       call set_sf_grad_scalar_id_type                                   &
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
-     &   num_surf_magp, surf_magp_name, isurf_magp_type,                &
-     &   magne_p%grad%ngrp_sf_fix_fx, magne_p%grad%id_grp_sf_fix_fx,    &
-     &   magne_p%grad%ist_ele_sf_fix_fx, magne_p%grad_lead%ngrp_sf_dat, &
+     &   e_potential_surf%num_bc, e_potential_surf%bc_name,             &
+     &   e_potential_surf%ibc_type, magne_p%grad%ngrp_sf_fix_fx,        &
+     &   magne_p%grad%id_grp_sf_fix_fx, magne_p%grad%ist_ele_sf_fix_fx, &
+     &   magne_p%grad_lead%ngrp_sf_dat, &
      &   magne_p%grad_lead%id_grp_sf_dat)
 !
       end subroutine set_surf_grad_magne_p_type_id
@@ -206,8 +208,8 @@
 !
 !
       call s_set_wall_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
-     &    num_bc_wall, bc_wall_name,                                    &
-     &    ibc_wall_type, bc_wall_magnitude,                             &
+     &    wall_surf%num_bc, wall_surf%bc_name,                          &
+     &    wall_surf%ibc_type, wall_surf%bc_magnitude,                   &
      &    press%wall%ngrp_sf_dat, press%wall%id_grp_sf_dat,             &
      &    press%sph_in%ngrp_sf_dat, press%sph_in%id_grp_sf_dat,         &
      &    press%sph_out%ngrp_sf_dat, press%sph_out%id_grp_sf_dat)
@@ -225,8 +227,8 @@
 !
 !
       call s_set_wall_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
-     &    num_surf_magp, surf_magp_name,                                &
-     &    isurf_magp_type, surf_magp_magnitude,                         &
+     &    e_potential_surf%num_bc, e_potential_surf%bc_name,            &
+     &    e_potential_surf%ibc_type, e_potential_surf%bc_magnitude,     &
      &    magne_p%wall%ngrp_sf_dat, magne_p%wall%id_grp_sf_dat,         &
      &    magne_p%sph_in%ngrp_sf_dat, magne_p%sph_in%id_grp_sf_dat,     &
      &    magne_p%sph_out%ngrp_sf_dat, magne_p%sph_out%id_grp_sf_dat)

@@ -4,6 +4,7 @@ begin spherical_shell_ctl
     num_smp_ctl          1
     sph_file_prefix      'in'
 !
+    sph_file_fmt_ctl           'gzip'
     coriolis_int_file_name     'coriolis_int.dat'
 !
     memory_conservation_ctl     'YES'

@@ -46,10 +46,10 @@
       if (iflag_t_evo_4_magne .eq. id_no_evolution                      &
      &       .and.  iflag_t_evo_4_vect_p .eq. id_no_evolution) then
         num_bc_mag_p = 0
-        num_surf_magp = 0
+        e_potential_surf%num_bc = 0
       else
         num_bc_mag_p = num_bc_mag_p_ctl
-        num_surf_magp = num_bc_grad_magp_ctl
+        e_potential_surf%num_bc = num_bc_grad_magp_ctl
       end if
 !
 !
@@ -76,20 +76,20 @@
 !
 !   set boundary_conditons for magnetic potential
 !
-      if (num_surf_magp .gt. 0) then
+      if (e_potential_surf%num_bc .gt. 0) then
 !
         call allocate_magp_surf_ctl
 !
-        surf_magp_name      =  bc_grad_magp_name_ctl
-        surf_magp_magnitude = bc_grad_magp_magnitude_ctl
-        isurf_magp_type= 0
+        e_potential_surf%bc_name =      bc_grad_magp_name_ctl
+        e_potential_surf%bc_magnitude = bc_grad_magp_magnitude_ctl
+        e_potential_surf%ibc_type=      0
 !
 !
-        do i = 1, num_surf_magp
+        do i = 1, e_potential_surf%num_bc
           call set_surf_group_types_scalar(bc_grad_magp_type_ctl(i),    &
-     &        isurf_magp_type(i) )
+     &        e_potential_surf%ibc_type(i) )
           call set_surf_wall_group_types(bc_grad_magp_type_ctl(i),      &
-     &        isurf_magp_type(i) )
+     &        e_potential_surf%ibc_type(i) )
         end do
 !
       end if

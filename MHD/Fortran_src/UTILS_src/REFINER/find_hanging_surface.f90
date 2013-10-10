@@ -265,8 +265,6 @@
         icou = icou + 1
       end if
 !
-          write(*,*) bc_item_2nd
-!
       end subroutine add_hanging_node_group_item
 !
 ! -----------------------------------------------------------------------

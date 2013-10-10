@@ -154,9 +154,10 @@
 !
 !
 !    Find local addrtess for (l,m) = (4,4)
-      jj =  find_local_sph_mode_address(4, 4)
+!      jj =  find_local_sph_mode_address(4, 4)
+      jj =  find_local_sph_mode_address(5, 5)
 !
-!    If data for (l,m) = (4,4) is there, set initial temperature 
+!    If data for (l,m) = (4,4) is there, set initial temperature
       if (jj .gt. 0) then
 !    Set initial field from ICB to CMB
         do k = nlayer_ICB, nlayer_CMB

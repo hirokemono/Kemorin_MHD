@@ -43,10 +43,10 @@
 !
       if (iflag_t_evo_4_vect_p .eq. id_no_evolution) then
         num_bc_vp = 0
-        num_bc_vps = 0
+        a_potential_surf%num_bc = 0
       else
         num_bc_vp = num_bc_vp_ctl
-        num_bc_vps = num_bc_vps_ctl
+        a_potential_surf%num_bc = num_bc_vps_ctl
       end if
 !
 !   set boundary_conditons for magnetic field
@@ -99,26 +99,27 @@
 !
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
-     &            write(*,*) 'num_bc_vps ',num_bc_vps
-      if (num_bc_vps/=0) then
+     &    write(*,*) 'a_potential_surf%num_bc ',a_potential_surf%num_bc
+      if (a_potential_surf%num_bc .gt. 0) then
 !
         call allocate_vect_p_surf_ctl
 !
-        bc_vps_name     =  bc_vps_name_ctl
-        bc_vps_magnitude = bc_vps_magnitude_ctl
+        a_potential_surf%bc_name =      bc_vps_name_ctl
+        a_potential_surf%bc_magnitude = bc_vps_magnitude_ctl
 !
-        do i = 1, num_bc_vps
+        do i = 1, a_potential_surf%num_bc
           call set_surf_group_types_vector(bc_vps_type_ctl(i),          &
-     &        ibc_vps_type(i))
+     &        a_potential_surf%ibc_type(i))
           call set_pseudo_vacuum_group_types(bc_vps_type_ctl(i),        &
-     &        ibc_vps_type(i))
+     &        a_potential_surf%ibc_type(i))
         end do
 !
         if (iflag_debug .eq. iflag_full_msg) then
-          write(*,*) 'i, ibc_vps_type, bc_vps_magnitude, bc_vps_name'
-          do i = 1, num_bc_vps
-            write(*,*)  i, ibc_vps_type(i), bc_vps_magnitude(i),        &
-     &                 trim(bc_vps_name(i))
+          write(*,*) 'i, a_potential_surf'
+          do i = 1, a_potential_surf%num_bc
+            write(*,*)  i, a_potential_surf%ibc_type(i),                &
+     &                     a_potential_surf%bc_magnitude(i),            &
+     &                     trim(a_potential_surf%bc_name(i))
           end do
         end if
       end if

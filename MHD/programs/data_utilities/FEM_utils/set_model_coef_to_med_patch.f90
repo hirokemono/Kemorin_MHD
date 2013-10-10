@@ -27,6 +27,7 @@
       use m_ctl_params_ele_grp_udt
       use m_tave_SGS_model_coefs
       use m_merdional_grouping_patch
+      use coordinate_converter
 !
       integer(kind = kint) :: igrp, i, ist, ied, ist_nod
       integer(kind = kint) :: icou, inod, inum
@@ -71,6 +72,10 @@
           xx_psf(icou,1:3) = xx_egrp(inod,1:3)
         end do
       end do
+!
+      call position_2_sph (numnod_psf, xx_psf,                          &
+     &    rtp_psf(1,1), rtp_psf(1,2), rtp_psf(1,3),                     &
+     &    ar_psf, ss_psf, ar_psf)
 !
       end subroutine set_ele_grp_patch_2_psf_grd
 !

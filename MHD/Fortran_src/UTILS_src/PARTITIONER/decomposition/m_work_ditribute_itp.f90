@@ -29,11 +29,11 @@
 !
       implicit none
 !
-      integer(kind = kint), allocatable :: nprocs_itp_dest
-      integer(kind = kint), allocatable :: nprocs_itp_org
+      integer(kind = kint) :: nprocs_itp_dest
+      integer(kind = kint) :: nprocs_itp_org
 !
-      integer(kind = kint), allocatable :: ntot_nod_dest
-      integer(kind = kint), allocatable :: ntot_ele_org
+      integer(kind = kint) :: ntot_nod_dest
+      integer(kind = kint) :: ntot_ele_org
 !
       integer(kind = kint), allocatable :: iele_lc_org(:,:)
       integer(kind = kint), allocatable :: inod_lc_dest(:,:)

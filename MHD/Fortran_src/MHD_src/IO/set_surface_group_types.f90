@@ -33,14 +33,17 @@
       character (len=kchara), intent(in) :: bc_type_ctl
       integer(kind = kint), intent(inout) :: ibc_type
 !
-      if ( bc_type_ctl .eq. 'fixed_ctl' ) then
+      if      ( bc_type_ctl .eq. 'fixed_ctl'                            &
+     &    .or.  bc_type_ctl .eq. 'fixed') then
         ibc_type =  iflag_surf_fix_s
       else if ( bc_type_ctl .eq. 'fixed_dat' ) then
         ibc_type = -iflag_surf_fix_s
       else if ( bc_type_ctl .eq. 'sgs_correct' ) then
         ibc_type = iflag_bc_sgs_commute_s
 !
-      else if ( bc_type_ctl .eq. 'grad_ctl' ) then
+      else if ( bc_type_ctl .eq. 'grad_ctl'                             &
+     &    .or.  bc_type_ctl .eq. 'grad'                                 &
+     &    .or.  bc_type_ctl .eq. 'gradient' ) then
         ibc_type =  iflag_fixed_grad_s
       else if ( bc_type_ctl .eq. 'grad_dat' ) then
         ibc_type = -iflag_fixed_grad_s
@@ -58,11 +61,14 @@
       character (len=kchara), intent(in) :: bc_type_ctl
       integer(kind = kint), intent(inout) :: ibc_type
 !
-         if ( bc_type_ctl .eq. 'fix_ctl_x' ) then
+         if      ( bc_type_ctl .eq. 'fix_ctl_x'                         &
+     &        .or. bc_type_ctl .eq. 'fix_x') then
           ibc_type = iflag_surf_fix_x
-         else if ( bc_type_ctl .eq. 'fix_ctl_y' ) then
+         else if ( bc_type_ctl .eq. 'fix_ctl_y'                         &
+     &        .or. bc_type_ctl .eq. 'fix_y' ) then
           ibc_type = iflag_surf_fix_y
-         else if ( bc_type_ctl .eq. 'fix_ctl_z' ) then
+         else if ( bc_type_ctl .eq. 'fix_ctl_z'                         &
+     &        .or. bc_type_ctl .eq. 'fix_z' ) then
           ibc_type = iflag_surf_fix_z
          else if ( bc_type_ctl .eq. 'fix_dat_x' ) then
           ibc_type = -iflag_surf_fix_x

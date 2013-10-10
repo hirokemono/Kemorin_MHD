@@ -155,7 +155,6 @@
         mphi_circle = -1
       end if
 !
-      write(*,*) 'phys_nod_name_ctl', allocated(phys_nod_name_ctl)
       do ifld = 1, num_nod_phys_ctl
         if(phys_nod_name_ctl(ifld) .eq. fhd_temp) ibench_temp = 1
         if(phys_nod_name_ctl(ifld) .eq. fhd_velo) ibench_velo = 1

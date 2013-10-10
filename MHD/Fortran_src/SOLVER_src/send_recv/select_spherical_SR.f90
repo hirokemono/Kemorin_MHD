@@ -77,7 +77,7 @@
 !!                    End points of receive buffer for each process
 !!@n @param  inod_import(nnod_recv)
 !!                    local node ID to copy from receive buffer
-!!@n @param  irev_import(nnod_recv)
+!!@n @param  irev_import(nnod_new)
 !!                    import buffer ID for each data point
 !!@n
 !!@n @param  X_org(NB*nnod_org)   Arbitrary components of send data

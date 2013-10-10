@@ -9,7 +9,6 @@
 !!@verbatim
 !!      subroutine pick_psf_by_sections(nd, xref)
 !!      subroutine write_psf_line_data(iflag_format, file_header, istep)
-!!      subroutine deallocate_psf_data_on_line
 !!@endverbatim
 !
       module m_line_from_psf
@@ -21,189 +20,88 @@
 !
       implicit none
 !
-      type(ucd_data), save, private :: line
-!
-      private :: allocate_psf_data_on_line, deallocate_psf_data_on_line
-!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_psf_data_on_line
-!
-      use m_psf_results
-!
-!
-      call allocate_ucd_node(line)
-!
-      line%num_field =   nfield_psf
-      line%ntot_comp = ncomptot_psf
-      call allocate_ucd_phys_name(line)
-!
-      if(line%num_field .gt. 0) then
-        line%num_comp =     ncomp_psf
-        line%phys_name = psf_data_name
-      end if
-!
-      call allocate_ucd_phys_data(line)
-!
-      line%nele = line%nnod/3 + 1
-      line%nnod_4_ele = 3
-      call allocate_ucd_ele(line)
-!
-      end subroutine allocate_psf_data_on_line
-!
-!-----------------------------------------------------------------------
-!
-      subroutine deallocate_psf_data_on_line
-!
-!
-      call deallocate_ucd_data(line)
-      call deallocate_ucd_ele(line)
-      call deallocate_ucd_node(line)
-!
-      end subroutine deallocate_psf_data_on_line
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine write_psf_line_data(iflag_format, file_header, istep)
+      subroutine write_psf_line_data(iflag_format, file_header, istep,  &
+     &          line)
 !
       use m_geometry_constants
       use ucd_IO_select
 !
       character(len=kchara), intent(in) :: file_header
       integer(kind = kint), intent(in) :: istep, iflag_format
+      type(ucd_data), intent(inout) :: line
+!
       integer(kind = kint), parameter :: delete_process = -1
 !
 !
       line%ifmt_file =   iflag_format
       line%file_prefix = file_header
       call sel_write_ucd_file(delete_process, istep, line)
-      call deallocate_psf_data_on_line
+      call deallocate_ucd_mesh(line)
 !
       end subroutine write_psf_line_data
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine pick_psf_by_sections(nd, xref)
+      subroutine pick_psf_by_sections(nd, xref, line)
 !
       use m_psf_edge_connect
+      use const_section_from_triangle
 !
       integer(kind = kint), intent(in) :: nd
       real(kind = kreal), intent(in) :: xref
+      type(ucd_data), intent(inout) :: line
 !
-      integer(kind = kint) :: iedge, k1, i1, i2, icou
-      real(kind = kreal) :: c1, c2, coef1
+      real(kind = kreal), allocatable :: ref_tri(:)
+      integer(kind = kint) :: i1
 !
+!   Count number of lines
 !
-      line%nnod = 0
+      allocate(ref_tri(numnod_psf))
+!
       do i1 = 1, numnod_psf
         if(nd.eq.1 .or. nd.eq.2 .or. nd.eq.3) then
-          c1 = xx_psf(i1,nd)
+          ref_tri(i1) = xx_psf(i1,nd)
         else if(nd .eq. 11) then
-          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
+          ref_tri(i1) = rtp_psf(i1,1)
         else if(nd .eq. 21) then
-          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2)
+          ref_tri(i1) = ss_psf(i1)
         else
-          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
-        end if
-!
-        if(c1 .eq. xref) line%nnod = line%nnod + 1
-      end do
-!
-      do iedge = 1, numedge_psf
-        i1 = iedge_psf(iedge,1)
-        i2 = iedge_psf(iedge,2)
-!
-        if(nd.eq.1 .or. nd.eq.2 .or. nd.eq.3) then
-          c1 = xx_psf(i1,nd)
-          c2 = xx_psf(i2,nd)
-        else if(nd .eq. 11) then
-          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
-          c2 = sqrt(xx_psf(i2,1)**2 + xx_psf(i2,2)**2 +xx_psf(i2,3)**2)
-        else if(nd .eq. 21) then
-          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2)
-          c2 = sqrt(xx_psf(i2,1)**2 + xx_psf(i2,2)**2)
-        else
-          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
-          c2 = sqrt(xx_psf(i2,1)**2 + xx_psf(i2,2)**2 +xx_psf(i2,3)**2)
-        end if
-!
-        if( ((c1-xref)*(c2-xref)) .lt. 0.0d0) then
-          line%nnod = line%nnod + 1
+          ref_tri(i1) = rtp_psf(i1,1)
         end if
       end do
 !
-      call allocate_psf_data_on_line
 !
-      do i1 = 1, line%nnod
-        line%inod_global(i1) = i1
-      end do
-!
-      icou = 0
-      do iedge = 1, line%nele
-        line%iele_global(iedge) = iedge
-        do k1 = 1, 3
-          icou = icou + 1
-          line%ie(iedge,k1) = ione + mod(icou-1,line%nnod)
-        end do
-      end do
+      call allocate_edge_section_flags(numnod_psf, numedge_psf)
+      call count_section_fld_in_triangle(numnod_psf, numedge_psf,       &
+     &    nfield_psf, ncomptot_psf, iedge_psf, ref_tri, xref,           &
+     &    line%num_field, line%ntot_comp, line%nnod)
 !
 !
-      icou = 0
-      do i1 = 1, numnod_psf
-        if(nd.eq.1 .or. nd.eq.2 .or. nd.eq.3) then
-          c1 = xx_psf(i1,nd)
-        else if(nd .eq. 11) then
-          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
-        else if(nd .eq. 21) then
-          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2)
-        else
-          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
-        end if
+      call allocate_ucd_nodal_data(line)
 !
-        if(c1 .eq. xref) then
-          icou = icou + 1
-          line%xx(icou,1:3) = xx_psf(i1,1:3)
-          line%d_ucd(icou,1:ncomptot_psf)                               &
-     &                         = d_nod_psf(i1,1:ncomptot_psf)
-        end if
-      end do
+      call set_section_fld_in_triangle(numnod_psf, numedge_psf,         &
+     &    nfield_psf, ncomptot_psf, xx_psf, iedge_psf,                  &
+     &    ncomp_psf, psf_data_name, d_nod_psf, ref_tri, xref,           &
+     &    line%nnod, line%inod_global, line%xx,                         &
+     &    line%num_comp, line%phys_name, line%d_ucd)
 !
-      do iedge = 1, numedge_psf
-        i1 = iedge_psf(iedge,1)
-        i2 = iedge_psf(iedge,2)
+      deallocate(ref_tri)
 !
-        if(nd.eq.1 .or. nd.eq.2 .or. nd.eq.3) then
-          c1 = xx_psf(i1,nd)
-          c2 = xx_psf(i2,nd)
-        else if(nd .eq. 11) then
-          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
-          c2 = sqrt(xx_psf(i2,1)**2 + xx_psf(i2,2)**2 +xx_psf(i2,3)**2)
-        else if(nd .eq. 21) then
-          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2)
-          c2 = sqrt(xx_psf(i2,1)**2 + xx_psf(i2,2)**2)
-        else
-          c1 = sqrt(xx_psf(i1,1)**2 + xx_psf(i1,2)**2 +xx_psf(i1,3)**2)
-          c2 = sqrt(xx_psf(i2,1)**2 + xx_psf(i2,2)**2 +xx_psf(i2,3)**2)
-        end if
+      call count_sections_in_triangle                                   &
+     &   (numele_psf, ie_psf, ie_edge_psf, line%nele, line%nnod_4_ele)
+      call allocate_ucd_ele(line)
 !
-        if( ((c1-xref)*(c2-xref)) .lt. 0.0d0) then
-          coef1 =  (c2 - xref)  / (c2 - c1)
-          write(*,*) 'find on edge', icou, coef1
+      call set_sections_in_triangle(numele_psf, ie_psf, ie_edge_psf,    &
+     &    line%nele, line%iele_global, line%ie)
 !
-          icou = icou + 1
-          line%xx(icou,1:3) =  coef1 * xx_psf(i1,1:3)                   &
-     &               + (one - coef1) * xx_psf(i2,1:3)
-          line%d_ucd(icou,1:ncomptot_psf)                               &
-     &                         =  coef1 * d_nod_psf(i1,1:ncomptot_psf)  &
-     &                  + (one - coef1) * d_nod_psf(i2,1:ncomptot_psf)
-        end if
-      end do
+      call deallocate_edge_section_flags
 !
       end subroutine pick_psf_by_sections
 !

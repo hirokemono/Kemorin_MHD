@@ -194,10 +194,7 @@
 !
       if(my_rank .eq. 0) then
         do i_psf = 1, num_psf
-          call deallocate_ucd_phys_data(psf_out(i_psf))
-          call deallocate_ucd_phys_name(psf_out(i_psf))
-          call deallocate_ucd_ele(psf_out(i_psf))
-          call deallocate_ucd_node(psf_out(i_psf))
+          call deallocate_ucd_mesh(psf_out(i_psf))
         end do
       end if
 !

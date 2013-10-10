@@ -105,11 +105,9 @@ analyzer_zonal_mean_sph.o \
 main_zonal_mean_sph.o
 
 MOD_SPH_NEUTRAL = \
-m_ctl_data_4_sph_utils.o \
-m_ctl_params_sph_utils.o \
-\
-analyzer_sph_neutral_point.o \
-main_sph_neutral_point.o
+neutral_point_by_pick_sph.o \
+m_neutral_pt_by_pick_sph.o
+
 
 MOD_TAVE_SPH_ENE_SPEC = \
 t_average_sph_ene_spec.o \

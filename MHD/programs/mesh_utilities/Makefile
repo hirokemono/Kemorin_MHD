@@ -17,6 +17,7 @@ refiner
 LIBS_MESH_UTIL = \
 '$$(LIB_UTILS)'  \
 '$$(LIB_PARA)'   \
+'$$(LIB_SOLVER)' \
 '$$(LIB_MESH)'
 
 LIBS_MESH_CHECK = \
@@ -27,6 +28,7 @@ LIBS_MESH_CHECK = \
 LIB_FILES_MESH_UTIL = \
 '$$(LIB_UTILS_FILE)'  \
 '$$(LIB_PARA_FILE)'   \
+'$$(LIB_SOLVER_FILE)' \
 '$$(LIB_MESH_FILE)'
 
 LIB_FILES_MESH_CHECK = \

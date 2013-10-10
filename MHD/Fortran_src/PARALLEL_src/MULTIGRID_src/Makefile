@@ -2,7 +2,7 @@
 #
 #
 
-MG_SRCDIR = $$(SOLVER_SRCDIR)/MULTIGRID_src
+MG_SRCDIR = $$(PARA_SRCDIR)/MULTIGRID_src
 SRC_MULTIGRID = $(shell ls *.f90)
 MOD_MULTIGRID = $(addsuffix .o,$(basename $(SRC_MULTIGRID)) )
 

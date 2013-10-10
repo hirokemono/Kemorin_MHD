@@ -17,9 +17,8 @@
 !
       call calypso_MPI_init
 !
-      call init_analyzer
-
-      call analyze
+      call initialize_communication_test
+      call analyze_communication_test
 
       call  calypso_MPI_finalize
 !
