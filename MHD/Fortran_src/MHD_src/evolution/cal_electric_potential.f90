@@ -21,6 +21,7 @@
 !
       subroutine cal_scalar_potential
 !
+      use m_machine_parameter
       use m_finite_element_matrix
 !
       use int_vol_fractional_div
@@ -34,6 +35,7 @@
       call reset_ff
       call reset_ff_smps
 !
+      if (iflag_debug .gt. 0)  write(*,*) 'int_vol_divergence_vect_p'
       call int_vol_divergence_vect_p
 !
 !      call int_surf_sgs_div_vect_p
@@ -44,8 +46,10 @@
 !
       call set_boundary_fmag
 !
+      if (iflag_debug .gt. 0)  write(*,*) 'cal_sol_mag_po'
       call cal_sol_mag_po
 !
+      if (iflag_debug .gt. 0)  write(*,*) 'set_boundary_m_phi'
       call set_boundary_m_phi
 !
       end subroutine cal_scalar_potential

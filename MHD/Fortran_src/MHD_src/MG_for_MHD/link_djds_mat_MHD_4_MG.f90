@@ -1,29 +1,34 @@
-!link_djds_mat_MHD_4_MG.f90
-!      module link_djds_mat_MHD_4_MG
+!>@file   link_djds_mat_MHD_4_MG.f90
+!!@brief  module link_djds_mat_MHD_4_MG
+!!
+!!@author H. Matsui
+!!@date Programmed  H. Matsui in  Dec., 2010
 !
-!      Written by Hiroaki Matsui on Dec., 2008
-!
-!      subroutine s_link_djds_mat_MHD_4_MG(mat_velo, mat_magne,         &
-!     &           mat_temp, mat_d_scalar, mat_press, mat_magp)
-!        type(DJDS_MATRIX),  intent(inout) :: mat_velo
-!        type(DJDS_MATRIX),  intent(inout) :: mat_magne
-!        type(DJDS_MATRIX),  intent(inout) :: mat_temp
-!        type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
-!        type(DJDS_MATRIX),  intent(inout) :: mat_press
-!        type(DJDS_MATRIX),  intent(inout) :: mat_magp
-!
-!      subroutine link_djds_mat_velo_4_MG(mat_velo)
-!        type(DJDS_MATRIX), intent(inout) :: mat_velo
-!      subroutine link_djds_mat_magne_4_MG(mat_magne)
-!        type(DJDS_MATRIX), intent(inout) :: mat_magne
-!      subroutine link_djds_mat_press_4_MG(mat_press)
-!        type(DJDS_MATRIX), intent(inout) :: mat_press
-!      subroutine link_djds_mat_magp_4_MG(mat_magp)
-!        type(DJDS_MATRIX), intent(inout) :: mat_magp
-!      subroutine link_djds_mat_temp_4_MG(mat_temp)
-!        type(DJDS_MATRIX), intent(inout) :: mat_temp
-!      subroutine link_djds_mat_dscalar_4_MG(mat_d_scalar)
-!        type(DJDS_MATRIX), intent(inout) :: mat_d_scalar
+!> @brief Connect primary matrix data for MGCG
+!!
+!!@verbatim
+!!      subroutine s_link_djds_mat_MHD_4_MG(mat_velo, mat_magne         &
+!!     &           mat_temp, mat_d_scalar, mat_press, mat_magp)
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_velo
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_magne
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_temp
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_press
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_magp
+!!
+!!      subroutine link_djds_mat_velo_4_MG(mat_velo)
+!!        type(DJDS_MATRIX), intent(inout) :: mat_velo
+!!      subroutine link_djds_mat_magne_4_MG(mat_magne)
+!!        type(DJDS_MATRIX), intent(inout) :: mat_magne
+!!      subroutine link_djds_mat_press_4_MG(mat_press)
+!!        type(DJDS_MATRIX), intent(inout) :: mat_press
+!!      subroutine link_djds_mat_magp_4_MG(mat_magp)
+!!        type(DJDS_MATRIX), intent(inout) :: mat_magp
+!!      subroutine link_djds_mat_temp_4_MG(mat_temp)
+!!        type(DJDS_MATRIX), intent(inout) :: mat_temp
+!!      subroutine link_djds_mat_dscalar_4_MG(mat_d_scalar)
+!!        type(DJDS_MATRIX), intent(inout) :: mat_d_scalar
+!!@endverbatim
 !
       module link_djds_mat_MHD_4_MG
 !
@@ -64,31 +69,38 @@
 !   set boundary conditions for matrix
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+        if(iflag_debug .gt. 0) write(*,*) 'link_djds_mat_press_4_MG'
         call link_djds_mat_press_4_MG(mat_press)
       end if
 !
       if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+        if(iflag_debug .gt. 0) write(*,*) 'link_djds_mat_velo_4_MG'
         call link_djds_mat_velo_4_MG(mat_velo)
       end if
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
+        if(iflag_debug .gt. 0) write(*,*) 'link_djds_mat_temp_4_MG'
         call link_djds_mat_temp_4_MG(mat_temp)
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+        if(iflag_debug .gt. 0) write(*,*) 'link_djds_mat_dscalar_4_MG'
         call link_djds_mat_dscalar_4_MG(mat_d_scalar)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
      &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        if(iflag_debug .gt. 0) write(*,*) 'link_djds_mat_magp_4_MG'
         call link_djds_mat_magp_4_MG(mat_magp)
       end if
 !
       if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
+        if(iflag_debug .gt. 0) write(*,*) 'link_djds_mat_magne_4_MG'
         call link_djds_mat_magne_4_MG(mat_magne)
       end if
 !
       if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
+        if(iflag_debug .gt. 0) write(*,*) 'link_djds_mat_magne_4_MG'
         call link_djds_mat_magne_4_MG(mat_magne)
       end if
 !
@@ -204,7 +216,6 @@
       type(DJDS_MATRIX), intent(inout) :: mat_temp
 !
 !
-       write(*,*) 'mat_temp', numnod, im_temp_d, im_temp_l, im_temp_u
        mat_temp%num_diag =      numnod
        mat_temp%internal_diag = internal_node
        mat_temp%istart_diag =   im_temp_d

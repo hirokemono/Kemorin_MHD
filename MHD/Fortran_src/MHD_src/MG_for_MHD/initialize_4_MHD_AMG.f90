@@ -327,6 +327,7 @@
 !
       do i_level = 1, num_MG_level
         if(my_rank .lt. MG_vector(i_level)%nprocs) then
+          if (iflag_debug.eq.1) write(*,*) 'set MG matrices', i_level
           call s_set_aiccg_matrices_type(MG_mesh(i_level),              &
      &      MG_surf_mesh(i_level),  MG_MHD_mesh(i_level),               &
      &      MG_node_bc(i_level), MG_surf_bc(i_level),                   &
@@ -347,7 +348,7 @@
 !
       do i_level = 1, num_MG_level
         if(my_rank .lt. MG_vector(i_level)%nprocs) then
-          if (iflag_debug.eq.1) write(*,*) 'preconditioning', i_level
+          if (iflag_debug.gt.0) write(*,*) 'preconditioning', i_level
           call s_matrices_precond_type(PRECOND_MG,                      &
      &      MG_djds_tbl(i_level), MG_djds_tbl_fl(i_level),              &
      &      MG_djds_tbl_l(i_level),  MG_djds_tbl_fll(i_level),          &

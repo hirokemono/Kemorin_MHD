@@ -42,7 +42,7 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1)  write(*,*) 'vector_p_pre'
+      if (iflag_debug .gt. 0)  write(*,*) 'vector_p_pre'
       call cal_vector_p_pre
 !
 !     --------------------- 
@@ -55,16 +55,20 @@
 !
       do iloop = 0, maxiter_vecp
 !
+        if (iflag_debug.gt.0) write(*,*) 'cal_scalar_potential'
         call cal_scalar_potential
 !
+        if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
         call cal_sol_m_potential
 !
-        if (iflag_debug.eq.1) write(*,*) 'vector_potential_correct'
+        if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
         call cal_vector_p_co
 !
 !
+        if (iflag_debug.gt.0) write(*,*) 'cal_rms_scalar_potential'
         call cal_rms_scalar_potential(iloop, rel_correct)
 !
+        if (iflag_debug.gt.0) write(*,*) 'int_norm_div_a_monitor'
         call int_norm_div_a_monitor(iloop, rel_correct)
 !        call int_rms_div_a_monitor(iloop, rel_correct)
 !
