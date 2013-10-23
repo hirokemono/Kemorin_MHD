@@ -162,8 +162,7 @@
 !
 !
       call s_set_wall_scalar_id(num_surf, surf_name,                    &
-     &    wall_surf%num_bc, wall_surf%bc_name,                          &
-     &    wall_surf%ibc_type, wall_surf%bc_magnitude,                   &
+     &    wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,      &
      &    ngrp_sf_wall_p, id_grp_sf_wall_p,                             &
      &    ngrp_sf_spin_p, id_grp_sf_spin_p,                             &
      &    ngrp_sf_spout_p, id_grp_sf_spout_p)
@@ -180,7 +179,7 @@
 !
       call s_set_wall_scalar_id(num_surf, surf_name,                    &
      &    e_potential_surf%num_bc, e_potential_surf%bc_name,            &
-     &    e_potential_surf%ibc_type, e_potential_surf%bc_magnitude,     &
+     &    e_potential_surf%ibc_type,                                    &
      &    ngrp_sf_wall_mp, id_grp_sf_wall_mp,                           &
      &    ngrp_sf_spin_mp, id_grp_sf_spin_mp,                           &
      &    ngrp_sf_spout_mp, id_grp_sf_spout_mp)

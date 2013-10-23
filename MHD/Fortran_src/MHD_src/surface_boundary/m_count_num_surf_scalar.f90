@@ -160,8 +160,7 @@
 !
 !
       call count_num_wall_surf(num_surf, surf_name,                     &
-     &    wall_surf%num_bc, wall_surf%bc_name,                          &
-     &    wall_surf%ibc_type, wall_surf%bc_magnitude,                   &
+     &    wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,      &
      &    ngrp_sf_wall_p, ngrp_sf_spin_p, ngrp_sf_spout_p)
 !
       end subroutine count_num_wall_press
@@ -176,8 +175,8 @@
 !
       call count_num_wall_surf(num_surf, surf_name,                     &
      &   e_potential_surf%num_bc, e_potential_surf%bc_name,             &
-     &   e_potential_surf%ibc_type, e_potential_surf%bc_magnitude,      &
-     &   ngrp_sf_wall_mp, ngrp_sf_spin_mp, ngrp_sf_spout_mp)
+     &   e_potential_surf%ibc_type, ngrp_sf_wall_mp,                    &
+     &   ngrp_sf_spin_mp, ngrp_sf_spout_mp)
 !
       end subroutine count_num_wall_magne_p
 !

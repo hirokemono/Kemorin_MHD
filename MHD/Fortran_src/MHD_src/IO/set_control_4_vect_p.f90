@@ -35,6 +35,7 @@
       use m_node_group
       use m_bc_data_list
       use m_surf_data_list
+      use set_node_group_types
       use set_surface_group_types
 !
       character(len=kchara) :: tmpchara
@@ -62,27 +63,14 @@
         a_potential_nod%bc_magnitude = bc_vp_magnitude_ctl
 !
         do i = 1, a_potential_nod%num_bc
+         call set_nod_group_types_vector(bc_vp_type_ctl(i),             &
+     &       a_potential_nod%ibc_type(i))
+         call set_nod_group_types_sgs_vect(bc_vp_type_ctl(i),           &
+     &       a_potential_nod%ibc_type(i))
+!
           tmpchara = bc_vp_type_ctl(i)
-          if ( tmpchara .eq. 'fix_x' ) then
-            a_potential_nod%ibc_type(i) = iflag_bc_fixed + 1
-          else if ( tmpchara .eq. 'fix_y' ) then
-            a_potential_nod%ibc_type(i) = iflag_bc_fixed + 2
-          else if ( tmpchara .eq. 'fix_z' ) then
-            a_potential_nod%ibc_type(i) = iflag_bc_fixed + 3
-          else if ( tmpchara .eq. 'file_x' ) then
-            a_potential_nod%ibc_type(i) = iflag_bc_fixed - 1
-          else if ( tmpchara .eq. 'file_y' ) then
-            a_potential_nod%ibc_type(i) = iflag_bc_fixed - 2
-          else if ( tmpchara .eq. 'file_z' ) then
-            a_potential_nod%ibc_type(i) = iflag_bc_fixed - 3
-          else if ( tmpchara .eq. 'insulate_shell' ) then
+          if ( tmpchara .eq. 'insulate_shell' ) then
             a_potential_nod%ibc_type(i) = iflag_insulator
-          else if ( tmpchara .eq. 'sgs_x' ) then
-            a_potential_nod%ibc_type(i) = iflag_bc_sgs + 1
-          else if ( tmpchara .eq. 'sgs_y' ) then
-            a_potential_nod%ibc_type(i) = iflag_bc_sgs + 2
-          else if ( tmpchara .eq. 'sgs_z' ) then
-            a_potential_nod%ibc_type(i) = iflag_bc_sgs + 3
 !          else if ( tmpchara .eq. 'sph' ) then
 !            a_potential_nod%ibc_type(i) = 999
           end if

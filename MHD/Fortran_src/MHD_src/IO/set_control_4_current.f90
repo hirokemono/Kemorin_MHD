@@ -34,6 +34,7 @@
       use m_node_group
       use m_bc_data_list
       use m_surf_data_list
+      use set_node_group_types
       use set_surface_group_types
 !
       character(len=kchara) :: tmpchara
@@ -64,20 +65,8 @@
      &                                    current_nod%bc_magnitude
 !
         do i = 1, current_nod%num_bc
-          tmpchara = bc_j_type_ctl(i)
-          if ( tmpchara .eq. 'fix_x' ) then
-            current_nod%ibc_type(i) = 1
-          else if ( tmpchara .eq. 'fix_y' ) then
-            current_nod%ibc_type(i) = 2
-          else if ( tmpchara .eq. 'fix_z' ) then
-            current_nod%ibc_type(i) = 3
-          else if ( tmpchara .eq. 'file_x' ) then
-            current_nod%ibc_type(i) = -1
-          else if ( tmpchara .eq. 'file_y' ) then
-            current_nod%ibc_type(i) = -2
-          else if ( tmpchara .eq. 'file_z' ) then
-            current_nod%ibc_type(i) = -3
-          end if
+         call set_nod_group_types_vector(bc_j_type_ctl(i),             &
+     &       current_nod%ibc_type(i))
         end do
 !
         if (iflag_debug .ge. iflag_routine_msg) then

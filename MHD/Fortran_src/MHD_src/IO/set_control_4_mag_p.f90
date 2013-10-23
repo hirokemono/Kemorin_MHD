@@ -35,9 +35,9 @@
       use m_node_group
       use m_bc_data_list
       use m_surf_data_list
+      use set_node_group_types
       use set_surface_group_types
 !
-      character(len=kchara) :: tmpchara
       integer (kind = kint) :: i
 !
 !
@@ -62,14 +62,10 @@
 !
 !
         do i = 1, e_potential_nod%num_bc
-          tmpchara = bc_mag_p_type_ctl(i)
-          if ( tmpchara .eq. 'fixed' ) then
-            e_potential_nod%ibc_type(i) =  iflag_bc_fix_s
-          else if ( tmpchara .eq. 'file' ) then
-            e_potential_nod%ibc_type(i) = -iflag_bc_fix_s
-          else if ( tmpchara .eq. 'sgs' ) then
-            e_potential_nod%ibc_type(i) = iflag_bc_sgs_s
-          end if
+          call set_nod_group_types_scalar(bc_mag_p_type_ctl(i),         &
+     &        e_potential_nod%ibc_type(i))
+          call set_nod_group_types_sgs_scalar(bc_mag_p_type_ctl(i),     &
+     &        e_potential_nod%ibc_type(i))
         end do
 !
       end if

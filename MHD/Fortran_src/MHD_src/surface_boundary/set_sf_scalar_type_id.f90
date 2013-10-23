@@ -208,8 +208,7 @@
 !
 !
       call s_set_wall_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
-     &    wall_surf%num_bc, wall_surf%bc_name,                          &
-     &    wall_surf%ibc_type, wall_surf%bc_magnitude,                   &
+     &    wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,      &
      &    press%wall%ngrp_sf_dat, press%wall%id_grp_sf_dat,             &
      &    press%sph_in%ngrp_sf_dat, press%sph_in%id_grp_sf_dat,         &
      &    press%sph_out%ngrp_sf_dat, press%sph_out%id_grp_sf_dat)
@@ -228,7 +227,7 @@
 !
       call s_set_wall_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
      &    e_potential_surf%num_bc, e_potential_surf%bc_name,            &
-     &    e_potential_surf%ibc_type, e_potential_surf%bc_magnitude,     &
+     &    e_potential_surf%ibc_type,                                    &
      &    magne_p%wall%ngrp_sf_dat, magne_p%wall%id_grp_sf_dat,         &
      &    magne_p%sph_in%ngrp_sf_dat, magne_p%sph_in%id_grp_sf_dat,     &
      &    magne_p%sph_out%ngrp_sf_dat, magne_p%sph_out%id_grp_sf_dat)

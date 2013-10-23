@@ -45,7 +45,8 @@
 !
       do i = 1, velo_nod%num_bc
         if(iflag_icb_velocity .ne. iflag_fixed_velo) exit
-        if(velo_nod%bc_name(i) .eq. 'ICB') then
+        if(velo_nod%bc_name(i) .eq. ICB_nod_grp_name                    &
+     &    .or. velo_nod%bc_name(i) .eq. CTR_nod_grp_name) then
           call set_sph_velo_ICB_flag(velo_nod%ibc_type(i),              &
      &        velo_nod%bc_magnitude(i))
         end if
@@ -53,8 +54,10 @@
 !
       do i = 1, torque_surf%num_bc
         if(iflag_icb_velocity .ne. iflag_fixed_velo) exit
-        if    (torque_surf%bc_name(i) .eq. 'ICB_surf'                   &
-     &    .or. torque_surf%bc_name(i) .eq. 'ICB') then 
+        if    (torque_surf%bc_name(i) .eq. ICB_sf_grp_name              &
+     &    .or. torque_surf%bc_name(i) .eq. ICB_nod_grp_name             &
+     &    .or. torque_surf%bc_name(i) .eq. CTR_sf_grp_name              &
+     &    .or. torque_surf%bc_name(i) .eq. CTR_nod_grp_name) then
           call set_sph_velo_ICB_flag(torque_surf%ibc_type(i),           &
      &        torque_surf%bc_magnitude(i))
         end if
@@ -64,7 +67,7 @@
 !
       do i = 1, velo_nod%num_bc
         if(iflag_cmb_velocity .ne. iflag_fixed_velo) exit
-        if(velo_nod%bc_name(i) .eq. 'CMB') then 
+        if(velo_nod%bc_name(i) .eq. CMB_nod_grp_name) then
           call set_sph_velo_CMB_flag(velo_nod%ibc_type(i),              &
      &        velo_nod%bc_magnitude(i))
         end if
@@ -72,8 +75,8 @@
 !
       do i = 1, torque_surf%num_bc
         if(iflag_cmb_velocity .ne. iflag_fixed_velo) exit
-        if(     torque_surf%bc_name(i) .eq. 'CMB_surf'                  &
-     &     .or. torque_surf%bc_name(i) .eq. 'CMB') then 
+        if(     torque_surf%bc_name(i) .eq. CMB_sf_grp_name             &
+     &     .or. torque_surf%bc_name(i) .eq. CMB_nod_grp_name) then
           call set_sph_velo_CMB_flag(torque_surf%ibc_type(i),           &
      &        torque_surf%bc_magnitude(i))
         end if
@@ -92,11 +95,12 @@
 !
       if      (ibc_type .eq. iflag_free_sph) then
         iflag_icb_velocity = iflag_free_slip
-        return
       else if (ibc_type .eq. iflag_non_slip_sph) then
         iflag_icb_velocity = iflag_fixed_velo
       else if (ibc_type .eq. iflag_rotatable_icore) then
         iflag_icb_velocity = iflag_rotatable_ic
+      else if (ibc_type .eq. iflag_sph_2_center) then
+        iflag_icb_velocity = iflag_sph_fill_center
 !
       else if (ibc_type .eq. (iflag_bc_rot+1)) then
         iflag_icb_velocity = iflag_fixed_velo
@@ -127,7 +131,6 @@
 !
       if      (ibc_type .eq. iflag_free_sph) then
         iflag_cmb_velocity = iflag_free_slip
-        return
       else if (ibc_type .eq. iflag_non_slip_sph) then
         iflag_cmb_velocity = iflag_fixed_velo
 !

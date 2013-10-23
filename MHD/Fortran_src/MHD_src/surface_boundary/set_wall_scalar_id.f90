@@ -6,10 +6,10 @@
 !      Modified by H. Matsui on Mar. 2009
 !
 !      subroutine count_num_wall_surf(num_surf, surf_name,              &
-!     &          num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,         &
+!     &          num_bc_sf, bc_sf_name, ibc_sf_type,                    &
 !     &          ngrp_sf_wall, ngrp_sf_spin, ngrp_sf_spout)
 !      subroutine s_set_wall_scalar_id(num_surf, surf_name,             &
-!     &          num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,         &
+!     &          num_bc_sf, bc_sf_name, ibc_sf_type,                    &
 !     &          ngrp_sf_wall, id_grp_sf_wall,                          &
 !     &          ngrp_sf_spin, id_grp_sf_spin,                          &
 !     &          ngrp_sf_spout, id_grp_sf_spout)
@@ -28,14 +28,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine count_num_wall_surf(num_surf, surf_name,               &
-     &          num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,          &
+     &          num_bc_sf, bc_sf_name, ibc_sf_type,                     &
      &          ngrp_sf_wall, ngrp_sf_spin, ngrp_sf_spout)
 !
       integer (kind=kint), intent(in) :: num_surf
       character (len=kchara), intent(in) :: surf_name(num_surf)
 !
       integer (kind=kint), intent(in) :: num_bc_sf
-      real (kind=kreal), intent(in) :: bc_sf_mag(num_bc_sf)
       integer (kind=kint), intent(in) :: ibc_sf_type(num_bc_sf)
       character (len=kchara), intent(in) :: bc_sf_name(num_bc_sf)
 ! 
@@ -81,7 +80,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_set_wall_scalar_id(num_surf, surf_name,              &
-     &          num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,          &
+     &          num_bc_sf, bc_sf_name, ibc_sf_type,                     &
      &          ngrp_sf_wall, id_grp_sf_wall,                           &
      &          ngrp_sf_spin, id_grp_sf_spin,                           &
      &          ngrp_sf_spout, id_grp_sf_spout)
@@ -90,7 +89,6 @@
       character (len=kchara), intent(in) :: surf_name(num_surf)
 !
       integer (kind=kint), intent(in) :: num_bc_sf
-      real (kind=kreal), intent(in) :: bc_sf_mag(num_bc_sf)
       integer (kind=kint), intent(in) :: ibc_sf_type(num_bc_sf)
       character (len=kchara), intent(in) :: bc_sf_name(num_bc_sf)
 ! 
