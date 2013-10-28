@@ -34,12 +34,12 @@
       use m_work_4_interpolation
 !
       use interpolate_imark_para
-      use interpolate_SR_int
+      use select_calypso_SR
       use solver_SR_int
 !
 !
-      real(kind = kreal), intent(in) :: i_vector_org(numnod)
-      real(kind = kreal), intent(inout) :: i_vector_dest(nnod_2nd)
+      integer(kind = kint), intent(in) :: i_vector_org(numnod)
+      integer(kind = kint), intent(inout) :: i_vector_dest(nnod_2nd)
 !
 !     initialize
 !
@@ -62,13 +62,14 @@
 !
 !     communication
 !
-      call interpolate_send_recv_int                                    &
-     &          (num_dest_domain, iflag_self_itp_send, ntot_table_org,  &
-     &           id_dest_domain, istack_nod_table_org,                  &
-     &           num_org_domain, iflag_self_itp_recv, ntot_table_dest,  &
-     &           id_org_domain, istack_nod_table_dest,                  &
-     &           inod_dest_4_dest, ntot_table_org, i_inter_org(1),      &
-     &           nnod_2nd, ivec_2nd(1) )
+      call sel_calypso_send_recv_int                                    &
+     &          (iflag_import_item, ntot_table_org, nnod_2nd,           &
+     &           num_dest_domain, iflag_self_itp_send,                  &
+     &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
+     &           num_org_domain, iflag_self_itp_recv,                   &
+     &           id_org_domain, istack_nod_tbl_dest,                    &
+     &           inod_dest_4_dest, irev_dest_4_dest,                    &
+     &           i_inter_org(1), ivec_2nd(1) )
 !
 !
       if (num_neib_2.gt.0) then

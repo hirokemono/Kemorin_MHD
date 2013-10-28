@@ -37,7 +37,7 @@
       use m_work_4_interpolation
 !
       use interpolate_parallel
-      use interpolate_SR_1
+      use select_calypso_SR
       use solver_SR
 !
 !
@@ -71,13 +71,14 @@
 !
 !     communication
 !
-      call interpolate_send_recv_1                                      &
-     &          (num_dest_domain, iflag_self_itp_send, ntot_table_org,  &
-     &           id_dest_domain, istack_nod_table_org,                  &
-     &           num_org_domain, iflag_self_itp_recv, ntot_table_dest,  &
-     &           id_org_domain, istack_nod_table_dest,                  &
-     &           inod_dest_4_dest, ntot_table_org, x_inter_org(1),      &
-     &           nnod_2nd, xvec_2nd(1) )
+      call sel_calypso_send_recv                                        &
+     &          (iflag_import_item, ntot_table_org, nnod_2nd,           &
+     &           num_dest_domain, iflag_self_itp_send,                  &
+     &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
+     &           num_org_domain, iflag_self_itp_recv,                   &
+     &           id_org_domain, istack_nod_tbl_dest,                    &
+     &           inod_dest_4_dest, irev_dest_4_dest,                    &
+     &           x_inter_org(1), xvec_2nd(1) )
 !
 !
       if (num_neib_2.gt.0) then
@@ -117,7 +118,7 @@
       use m_work_4_interpolation
 !
       use matvec_by_djo
-      use interpolate_SR_1
+      use select_calypso_SR
       use solver_SR
 !
 !
@@ -151,13 +152,14 @@
 !
 !     communication
 !
-      call interpolate_send_recv_1                                      &
-     &          (num_dest_domain, iflag_self_itp_send, ntot_table_org,  &
-     &           id_dest_domain, istack_nod_table_org,                  &
-     &           num_org_domain, iflag_self_itp_recv, ntot_table_dest,  &
-     &           id_org_domain, istack_nod_table_dest,                  &
-     &           inod_dest_4_dest, ntot_table_org, x_inter_org(1),      &
-     &           nnod_2nd, xvec_2nd(1) )
+      call sel_calypso_send_recv                                        &
+     &          (iflag_import_item, ntot_table_org, nnod_2nd,           &
+     &           num_dest_domain, iflag_self_itp_send,                  &
+     &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
+     &           num_org_domain, iflag_self_itp_recv,                   &
+     &           id_org_domain, istack_nod_tbl_dest,                    &
+     &           inod_dest_4_dest, irev_dest_4_dest,                    &
+     &           x_inter_org(1), xvec_2nd(1) )
 !
 !
       if (num_neib_2.gt.0) then

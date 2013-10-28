@@ -32,7 +32,7 @@
       use m_work_4_interpolation
 !
       use interpolate_parallel
-      use interpolate_SR_1
+      use select_calypso_SR
       use solver_SR
 !
       type(communication_table), intent(in) :: comm_dest
@@ -64,20 +64,20 @@
 !
 !     communication
 !
-      call interpolate_send_recv_1                                      &
-     &          (itp_table%tbl_org%num_dest_domain,                     &
+      call sel_calypso_send_recv(iflag_import_item,                     &
+     &           itp_table%tbl_org%ntot_table_org, NP_dest,             &
+     &           itp_table%tbl_org%num_dest_domain,                     &
      &           itp_table%tbl_org%iflag_self_itp_send,                 &
-     &           itp_table%tbl_org%ntot_table_org,                      &
      &           itp_table%tbl_org%id_dest_domain,                      &
      &           itp_table%tbl_org%istack_nod_tbl_org,                  &
+     &           itp_table%tbl_org%inod_itp_send,                       &
      &           itp_table%tbl_dest%num_org_domain,                     &
      &           itp_table%tbl_dest%iflag_self_itp_recv,                &
-     &           itp_table%tbl_dest%ntot_table_dest,                    &
      &           itp_table%tbl_dest%id_org_domain,                      &
      &           itp_table%tbl_dest%istack_nod_tbl_dest,                &
      &           itp_table%tbl_dest%inod_dest_4_dest,                   &
-     &           itp_table%tbl_org%ntot_table_org,                      &
-     &           x_inter_org(1), NP_dest, X_dest(1) )
+     &           itp_table%tbl_dest%irev_dest_4_dest,                   &
+     &           x_inter_org(1), X_dest(1) )
 !
 !
       if (comm_dest%num_neib .gt. 0) then
