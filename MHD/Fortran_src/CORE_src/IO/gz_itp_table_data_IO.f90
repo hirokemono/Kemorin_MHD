@@ -3,11 +3,12 @@
 !
 !        programmed by H.Matsui on Sep. 2012
 !
-!      subroutine write_gz_itp_domain_org(my_rank)
-!      subroutine write_gz_itp_table_org
+!      subroutine write_gz_itp_table_org(my_rank)
+!      subroutine write_gz_itp_coefs_org
 !
 !      subroutine read_gz_itp_domain_org(n_rank)
 !      subroutine read_gz_itp_table_org
+!      subroutine read_gz_itp_coefs_org
 !
 !      subroutine write_gz_itp_table_dest(my_rank)
 !      subroutine write_gz_itp_coefs_dest
@@ -31,7 +32,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_gz_itp_domain_org(my_rank)
+      subroutine write_gz_itp_table_org(my_rank)
 !
       use m_interpolate_table_org_IO
 !
@@ -42,9 +43,9 @@
       call write_compress_txt(nbuf, textbuf)
       write(textbuf,'(a,a1)') '!  domain ID ', char(0)
       call write_compress_txt(nbuf, textbuf)
-      write(textbuf,'(a,a1)') '!  number of destination domain', char(0)
+      write(textbuf,'(a,a1)') '!  number of domain to export', char(0)
       call write_compress_txt(nbuf, textbuf)
-      write(textbuf,'(a,a1)') '!  domain IDs to send', char(0)
+      write(textbuf,'(a,a1)') '!  domain IDs to export', char(0)
       call write_compress_txt(nbuf, textbuf)
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
@@ -63,11 +64,31 @@
       end if
 !
 !
-      end subroutine write_gz_itp_domain_org
+!
+      write(textbuf,'(a,a1)') '!', char(0)
+      call write_compress_txt(nbuf, textbuf)
+      write(textbuf,'(a,a1)') '!  stack of node to export', char(0)
+      call write_compress_txt(nbuf, textbuf)
+      write(textbuf,'(a,a1)') '!  exported node ID', char(0)
+      call write_compress_txt(nbuf, textbuf)
+      write(textbuf,'(a,a1)') '!', char(0)
+      call write_compress_txt(nbuf, textbuf)
+!
+      if (num_dest_domain_IO .gt. 0) then
+        call write_gz_multi_int_8i10(num_dest_domain_IO,                &
+     &      istack_nod_table_org_IO(1))
+        call write_gz_multi_int_8i10(ntot_table_org_IO,                 &
+     &      inod_itp_send_IO(1))
+      else
+        write(textbuf,'(a1)') char(0)
+        call write_compress_txt(nbuf, textbuf)
+      end if
+!
+      end subroutine write_gz_itp_table_org
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_gz_itp_table_org
+      subroutine write_gz_itp_coefs_org
 !
       use m_interpolate_table_org_IO
 !
@@ -109,7 +130,7 @@
         call write_compress_txt(nbuf, textbuf)
       end if
 !
-      end subroutine write_gz_itp_table_org
+      end subroutine write_gz_itp_coefs_org
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -137,20 +158,34 @@
 !
       use m_interpolate_table_org_IO
 !
+!
+      if (num_dest_domain_IO .eq. 0) return
+        istack_nod_table_org_IO(0) = 0
+        call read_gz_multi_int(num_dest_domain_IO,                      &
+     &      istack_nod_table_org_IO(1))
+        ntot_table_org_IO = istack_nod_table_org_IO(num_dest_domain_IO)
+!
+        call allocate_itp_table_org_IO
+        call read_gz_multi_int(ntot_table_org_IO, inod_itp_send_IO)
+!
+      end subroutine read_gz_itp_table_org
+!
+!-----------------------------------------------------------------------
+!
+      subroutine read_gz_itp_coefs_org
+!
+      use m_interpolate_table_org_IO
+!
       integer(kind = kint) :: i, inod, nchara
 !
 !
-      if (num_dest_domain_IO .gt. 0) then
+      if (num_dest_domain_IO .eq. 0) return
 !
         istack_table_wtype_org_IO(0) = 0
         do i = 1, num_dest_domain_IO
           call read_gz_multi_int(ifour,                                 &
      &        istack_table_wtype_org_IO(4*i-3) )
         end do
-        ntot_table_org_IO                                               &
-     &        = istack_table_wtype_org_IO(4*num_dest_domain_IO)
-!
-        call allocate_itp_table_org_IO
 !
         do inod = 1, ntot_table_org_IO
           call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
@@ -159,9 +194,7 @@
      &        coef_inter_org_IO(inod,1:3)
         end do
 !
-      end if
-!
-      end subroutine read_gz_itp_table_org
+      end subroutine read_gz_itp_coefs_org
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -177,9 +210,9 @@
       call write_compress_txt(nbuf, textbuf)
       write(textbuf,'(a,a1)') '!  domain ID ', char(0)
       call write_compress_txt(nbuf, textbuf)
-      write(textbuf,'(a,a1)') '!  number of domain of origin', char(0)
+      write(textbuf,'(a,a1)') '! number of domain to import', char(0)
       call write_compress_txt(nbuf, textbuf)
-      write(textbuf,'(a,a1)') '!  originate domain IDs', char(0)
+      write(textbuf,'(a,a1)') '!  domain IDs to import', char(0)
       call write_compress_txt(nbuf, textbuf)
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
@@ -200,9 +233,9 @@
 !
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
-      write(textbuf,'(a,a1)') '!  stack of originate domain', char(0)
+      write(textbuf,'(a,a1)') '!  stack of node to import', char(0)
       call write_compress_txt(nbuf, textbuf)
-      write(textbuf,'(a,a1)') '!  destination node ID', char(0)
+      write(textbuf,'(a,a1)') '!  imported node ID', char(0)
       call write_compress_txt(nbuf, textbuf)
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
@@ -291,7 +324,7 @@
       use m_interpolate_table_dest_IO
 !
 !
-      if (num_org_domain_IO .gt. 0) then
+      if (num_org_domain_IO .eq. 0) return
         istack_table_dest_IO(0) = 0
         call read_gz_multi_int(num_org_domain_IO,                       &
      &      istack_table_dest_IO(1))
@@ -299,7 +332,6 @@
 !
         call allocate_itp_nod_dst_IO
         call read_gz_multi_int(ntot_table_dest_IO, inod_dest_IO)
-      end if
 !
       end subroutine read_gz_itp_table_dest
 !
@@ -312,7 +344,7 @@
       integer(kind = kint) :: i, inod, nchara
 !
 !
-      if (num_org_domain_IO .gt. 0) then
+      if (num_org_domain_IO .eq. 0) return
         istack_table_wtype_dest_IO(0) = 0
         do i = 1, num_org_domain_IO
           call read_gz_multi_int(ifour,                                 &
@@ -329,8 +361,6 @@
      &        iele_orgin_IO(inod), itype_inter_dest_IO(inod),           &
      &        coef_inter_dest_IO(inod,1:3)
         end do
-!
-      end if
 !
       end subroutine read_gz_itp_coefs_dest
 !

@@ -42,8 +42,8 @@
 !
       call write_gz_itp_table_dest(my_rank)
 !
-      call write_gz_itp_domain_org(my_rank)
-      call write_gz_itp_table_org
+      call write_gz_itp_table_org(my_rank)
+      call write_gz_itp_coefs_org
 !
       call close_gzfile
 !
@@ -80,8 +80,9 @@
 !
 !        write(*,*) 'read_gz_itp_domain_org'
       call read_gz_itp_domain_org(n_rank_file)
-!        write(*,*) 'read_gz_itp_table_org'
+!        write(*,*) 'read_gz_itp_coefs_org'
       call read_gz_itp_table_org
+      call read_gz_itp_coefs_org
 !
       call close_gzfile
 !

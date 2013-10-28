@@ -3,11 +3,12 @@
 !
 !        programmed by H.Matsui on Sep. 2006 (ver 1.2)
 !
-!      subroutine write_interpolate_domain_org(id_file, my_rank)
-!      subroutine write_interpolate_table_org(id_file)
+!      subroutine write_interpolate_table_org(id_file, my_rank)
+!      subroutine write_interpolate_coefs_org(id_file)
 !
 !      subroutine read_interpolate_domain_org(id_file, n_rank)
 !      subroutine read_interpolate_table_org(id_file)
+!      subroutine read_interpolate_coefs_org(id_file)
 !
 !      subroutine write_interpolate_table_dest(id_file, my_rank)
 !      subroutine write_interpolate_coefs_dest(id_file)
@@ -32,7 +33,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_interpolate_domain_org(id_file, my_rank)
+      subroutine write_interpolate_table_org(id_file, my_rank)
 !
       use m_interpolate_table_org_IO
 !
@@ -41,8 +42,8 @@
 !
       write(id_file,'(a)') '!'
       write(id_file,'(a)') '!  domain ID '
-      write(id_file,'(a)') '!  number of destination domain'
-      write(id_file,'(a)') '!  domain IDs to send'
+      write(id_file,'(a)') '!  number of domain to export'
+      write(id_file,'(a)') '!  domain IDs to export'
       write(id_file,'(a)') '!'
 !
       write(id_file,'(i10)') my_rank
@@ -56,17 +57,33 @@
       end if
 !
 !
-      end subroutine write_interpolate_domain_org
+      write(id_file,'(a)') '!'
+      write(id_file,'(a)') '!  stack of node to export'
+      write(id_file,'(a)') '!  exported node ID'
+      write(id_file,'(a)') '!'
+!
+      if (num_dest_domain_IO .gt. 0) then
+        write(id_file,'(8i10)')                                         &
+              istack_nod_table_org_IO(1:num_dest_domain_IO)
+        write(id_file,'(8i10)') inod_itp_send_IO(1:ntot_table_org_IO)
+!
+      else
+        write(id_file,*)
+      end if
+!
+!
+      end subroutine write_interpolate_table_org
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_interpolate_table_org(id_file)
+      subroutine write_interpolate_coefs_org(id_file)
 !
       use m_interpolate_table_org_IO
 !
       integer(kind = kint), intent(in) :: id_file
 !
       integer(kind = kint) :: i, inod
+!
 !
       write(id_file,'(a)') '!'
       write(id_file,'(a)') '!  stack by interpolation type'
@@ -92,7 +109,7 @@
         write(id_file,*)
       end if
 !
-      end subroutine write_interpolate_table_org
+      end subroutine write_interpolate_coefs_org
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -113,11 +130,8 @@
       read(character_4_read,*) num_dest_domain_IO
 !
       if (num_dest_domain_IO .gt. 0) then
-!
         call allocate_itp_num_org_IO
-!
         read(id_file,*) id_dest_domain_IO(1:num_dest_domain_IO)
-!
       end if
 !
       end subroutine read_interpolate_domain_org
@@ -132,31 +146,47 @@
 !
       integer(kind = kint), intent(in) :: id_file
 !
-      integer(kind = kint) :: i, inod
 !
+      if (num_dest_domain_IO .eq. 0) return
 !
+      call read_stack_array(character_4_read, id_file,                  &
+     &      num_dest_domain_IO, istack_nod_table_org_IO)
+      ntot_table_org_IO = istack_nod_table_org_IO(num_dest_domain_IO)
 !
-      if (num_dest_domain_IO .gt. 0) then
+      call allocate_itp_table_org_IO
 !
-        call read_stack_array(character_4_read, id_file,                &
-     &      ifour, istack_table_wtype_org_IO(0) )
-        do i = 2, num_dest_domain_IO
-          read(id_file,*) istack_table_wtype_org_IO(4*i-3:4*i)
-        end do
-        ntot_table_org_IO                                               &
-     &        = istack_table_wtype_org_IO(4*num_dest_domain_IO)
-!
-        call allocate_itp_table_org_IO
-!
-        do inod = 1, ntot_table_org_IO
-          read(id_file,*) inod_gl_dest_4_org_IO(inod),                  &
-     &        iele_org_4_org_IO(inod), itype_inter_org_IO(inod),        &
-     &        coef_inter_org_IO(inod,1:3)
-        end do
-!
-      end if
+      read(id_file,*) inod_itp_send_IO(1:ntot_table_org_IO)
 !
       end subroutine read_interpolate_table_org
+!
+!-----------------------------------------------------------------------
+!
+      subroutine read_interpolate_coefs_org(id_file)
+!
+      use m_interpolate_table_org_IO
+!
+      use skip_comment_f
+!
+      integer(kind = kint), intent(in) :: id_file
+!
+      integer(kind = kint) :: i
+!
+!
+      if (num_dest_domain_IO .eq. 0) return
+!
+      call read_stack_array(character_4_read, id_file,                  &
+     &      ifour, istack_table_wtype_org_IO(0) )
+      do i = 2, num_dest_domain_IO
+        read(id_file,*) istack_table_wtype_org_IO(4*i-3:4*i)
+      end do
+!
+      do i = 1, ntot_table_org_IO
+        read(id_file,*) inod_gl_dest_4_org_IO(i),                       &
+     &        iele_org_4_org_IO(i), itype_inter_org_IO(i),              &
+     &        coef_inter_org_IO(i,1:3)
+      end do
+!
+      end subroutine read_interpolate_coefs_org
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -170,8 +200,8 @@
 !
       write(id_file,'(a)') '!'
       write(id_file,'(a)') '!  domain ID '
-      write(id_file,'(a)') '!  number of domain of origin'
-      write(id_file,'(a)') '!  originate domain IDs'
+      write(id_file,'(a)') '!  number of domain to import'
+      write(id_file,'(a)') '!  domain IDs to import'
       write(id_file,'(a)') '!'
 !
       write(id_file,'(i10)') my_rank
@@ -186,8 +216,8 @@
 !
 !
       write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  stack of originate domain'
-      write(id_file,'(a)') '!  destination node ID'
+      write(id_file,'(a)') '!  stack of node to import'
+      write(id_file,'(a)') '!  imported node ID'
       write(id_file,'(a)') '!'
 !
       if (num_org_domain_IO .gt. 0) then
@@ -255,10 +285,8 @@
       read(character_4_read,*) num_org_domain_IO
 !
       if (num_org_domain_IO .gt. 0) then
-!
         call allocate_itp_num_dst_IO
         read(id_file,*) id_org_domain_IO(1:num_org_domain_IO)
-!
       end if
 !
       end subroutine read_interpolate_domain_dest
@@ -274,17 +302,15 @@
       integer(kind = kint), intent(in) :: id_file
 !
 !
-      if (num_org_domain_IO .gt. 0) then
+      if (num_org_domain_IO .eq. 0) return
 !
-        call read_stack_array(character_4_read, id_file,                &
+      call read_stack_array(character_4_read, id_file,                  &
      &    num_org_domain_IO, istack_table_dest_IO)
-        ntot_table_dest_IO = istack_table_dest_IO(num_org_domain_IO)
+      ntot_table_dest_IO = istack_table_dest_IO(num_org_domain_IO)
 !
-        call allocate_itp_nod_dst_IO
+      call allocate_itp_nod_dst_IO
 !
-        read(id_file,*) inod_dest_IO(1:ntot_table_dest_IO)
-!
-      end if
+      read(id_file,*) inod_dest_IO(1:ntot_table_dest_IO)
 !
       end subroutine read_interpolate_table_dest
 !
@@ -301,7 +327,7 @@
       integer(kind = kint) :: i, inod
 !
 !
-      if (num_org_domain_IO .gt. 0) then
+      if (num_org_domain_IO .eq. 0) return
 !
         call read_stack_array(character_4_read, id_file,                &
      &      ifour, istack_table_wtype_dest_IO(0) )
@@ -318,8 +344,6 @@
      &        iele_orgin_IO(inod), itype_inter_dest_IO(inod),           &
      &        coef_inter_dest_IO(inod,1:3)
         end do
-!
-      end if
 !
       end subroutine read_interpolate_coefs_dest
 !

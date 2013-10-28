@@ -39,8 +39,8 @@
       open (id_tbl_file, file = file_name, form = 'formatted')
       call write_interpolate_table_dest(id_tbl_file, my_rank)
 !
-      call write_interpolate_domain_org(id_tbl_file, my_rank)
-      call write_interpolate_table_org(id_tbl_file)
+      call write_interpolate_table_org(id_tbl_file, my_rank)
+      call write_interpolate_coefs_org(id_tbl_file)
 !
       close(id_tbl_file)
 !
@@ -77,6 +77,8 @@
       call read_interpolate_domain_org(id_tbl_file, n_rank_file)
 !        write(*,*) 'read_interpolate_table_org'
       call read_interpolate_table_org(id_tbl_file)
+!        write(*,*) 'read_interpolate_coefs_org'
+      call read_interpolate_coefs_org(id_tbl_file)
 !
       close(id_tbl_file)
 !

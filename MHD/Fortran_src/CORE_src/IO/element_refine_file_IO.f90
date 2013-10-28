@@ -43,6 +43,7 @@
         call read_interpolate_table_dest_b(id_refine_table)
         call read_interpolate_domain_org_b(id_refine_table, nrank_ref)
         call read_interpolate_table_org_b(id_refine_table)
+        call read_interpolate_coefs_org_b(id_refine_table)
 !
         call read_element_refine_data_b(id_refine_table)
         close(id_refine_table)
@@ -56,6 +57,7 @@
         call read_interpolate_table_dest(id_refine_table)
         call read_interpolate_domain_org(id_refine_table, nrank_ref)
         call read_interpolate_table_org(id_refine_table)
+        call read_interpolate_coefs_org(id_refine_table)
 !
         call read_element_refine_data(id_refine_table)
         close(id_refine_table)
@@ -81,8 +83,8 @@
      &      form='unformatted')
 !
         call write_interpolate_table_dest_b(id_refine_table, my_rank)
-        call write_interpolate_domain_org_b(id_refine_table, my_rank)
-        call write_interpolate_table_org_b(id_refine_table)
+        call write_interpolate_table_org_b(id_refine_table, my_rank)
+        call write_interpolate_coefs_org_b(id_refine_table)
 !
         call write_element_refine_data_b(id_refine_table)
         close(id_refine_table)
@@ -93,8 +95,8 @@
         open (id_refine_table,file = refine_info_fname)
 !
         call write_interpolate_table_dest(id_refine_table, my_rank)
-        call write_interpolate_domain_org(id_refine_table, my_rank)
-        call write_interpolate_table_org(id_refine_table)
+        call write_interpolate_table_org(id_refine_table, my_rank)
+        call write_interpolate_coefs_org(id_refine_table)
 !
         call write_element_refine_data(id_refine_table)
         close(id_refine_table)
