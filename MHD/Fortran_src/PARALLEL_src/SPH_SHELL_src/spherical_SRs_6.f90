@@ -39,6 +39,7 @@
 !
 !>      Data communication mode for six components data
       integer(kind = kint) :: iflag_sph_SR6 = iflag_import_item
+      private :: iflag_sph_SR6
 !
 ! ----------------------------------------------------------------------
 !

@@ -38,7 +38,7 @@
 !C== PRECONDITIONING
 !
       if (iflag_debug.eq.1)                                             &
-     &  write(*,*) 'precond: ', precond_4_solver, sigma_diag
+     &  write(*,*) 'precond: ', trim(precond_4_solver),' ', sigma_diag
       call precond_DJDS11                                               &
      &         (internal_node, numnod, NLmax1, itotal1_fl_l, NHYP1,     &
      &          np_smp, inter_smp_stack, STACKmc1, NLmaxHYP1, IVECT1,   &
@@ -61,7 +61,7 @@
 !C== PRECONDITIONING
 !
       if (iflag_debug.eq.1)                                             &
-     &  write(*,*) 'precond: ', precond_4_solver, sigma_diag
+     &  write(*,*) 'precond: ', trim(precond_4_solver),' ', sigma_diag
       call precond_DJDS11                                               &
      &         (internal_node, numnod, NLmax, itotal_fl_l, NHYP,        &
      &          np_smp, inter_smp_stack, STACKmc, NLmaxHYP, IVECT,      &
@@ -83,7 +83,7 @@
 !C== PRECONDITIONING
 !
       if (iflag_debug.eq.1)                                             &
-     &  write(*,*) 'precond: ', precond_4_solver, sigma_diag
+     &  write(*,*) 'precond: ', trim(precond_4_solver),' ', sigma_diag
       call precond_DJDS11                                               &
      &         (internal_node, numnod, NLmax, itotal_fl_l, NHYP,        &
      &          np_smp, inter_smp_stack, STACKmc, NLmaxHYP, IVECT,      &

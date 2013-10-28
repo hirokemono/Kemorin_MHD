@@ -39,6 +39,7 @@
       integer(kind = kint) :: i_level, ierr
 !
       do i_level = 1, num_MG_level
+        iflag_mesh_file_fmt = ifmt_MG_mesh_file(i_level)
         if(my_rank .lt. MG_vector(i_level)%nprocs ) then
 !
           mesh_file_head = MG_mesh_file_head(i_level)
@@ -98,6 +99,8 @@
         if(i_level.eq.1 .or. my_rank.lt.MG_vector(i_level-1)%nprocs)    &
      &      then
           table_file_header = MG_f2c_tbl_head(i_level)
+          ifmt_itp_table_file = ifmt_MG_table_file(i_level)
+          write(*,*) 'MG_f2c_tbl_head format', ifmt_itp_table_file
           call sel_read_interpolate_table(my_rank, ierr)
           call copy_interpolate_types_from_IO(my_rank,                  &
      &        MG_itp(i_level)%f2c )
@@ -113,6 +116,8 @@
         if(i_level.eq.1 .or. my_rank.lt.MG_vector(i_level-1)%nprocs)    &
      &      then
           table_file_header = MG_c2f_tbl_head(i_level)
+          ifmt_itp_table_file = ifmt_MG_table_file(i_level)
+          write(*,*) 'MG_c2f_tbl_head format', ifmt_itp_table_file
           call sel_read_interpolate_table(my_rank, ierr)
           call copy_interpolate_types_from_IO(my_rank,                  &
      &        MG_itp(i_level)%c2f )

@@ -39,8 +39,8 @@
 !
       do i = 1, num_org_domain
 !
-        ist = istack_nod_table_dest(i-1) + 1
-        ied = istack_nod_table_dest(i)
+        ist = istack_nod_tbl_dest(i-1) + 1
+        ied = istack_nod_tbl_dest(i)
         ist_type = 4*(i-1)
 !
 !        write(*,*) 'count', i, ist, ied
@@ -73,8 +73,8 @@
 !      write(*,*) 'set', istack_nod_table_wtype_dest
       do i = 1, num_org_domain
 !
-        ist = istack_nod_table_dest(i-1) + 1
-        ied = istack_nod_table_dest(i)
+        ist = istack_nod_tbl_dest(i-1) + 1
+        ied = istack_nod_tbl_dest(i)
         ist_type = 4*(i-1)
 !
         if (nnod_4_ele .eq. num_t_linear) then
@@ -95,7 +95,7 @@
 !
       call copy_table_2_order
 !
-      ntot_table_dest = istack_nod_table_dest(num_org_domain)
+      ntot_table_dest = istack_nod_tbl_dest(num_org_domain)
 !
       do i = 1, internal_node
         inod_gl_dest(i) = globalnodid(inod_dest_4_dest(i))

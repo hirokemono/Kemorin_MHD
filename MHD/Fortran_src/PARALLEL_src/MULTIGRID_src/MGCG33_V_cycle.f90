@@ -3,31 +3,31 @@
 !
 !     Written by Kemorin
 !
-!      subroutine init_MGCG33_V_cycle(NP, PEsmpTOT,                     &
-!     &          METHOD_MG, PRECOND_MG)
-!
-!      subroutine s_MGCG33_V_cycle(num_MG_level, MG_comm, MG_itp,       &
-!     &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,          &
-!     &          iter_mid, iter_lowest, EPS_MG,                         &
-!     &          METHOD_MG, PRECOND_MG, IER)
-!       integer(kind = kint), intent(in) :: num_MG_level
-!       type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
-!       type(DJDS_ordering_table), intent(in) :: djds_tbl(0:num_MG_level)
-!       type(DJDS_MATRIX), intent(in) ::         mat11(0:num_MG_level)
-!       type(MG_itp_table), intent(in) ::        MG_itp(num_MG_level)
-!
-!       integer(kind = kint), intent(in) :: PEsmpTOT
-!       integer(kind = kint), intent(in) :: NP
-!       real(kind = kreal), intent(in), target :: B(NP)
-!
-!       real(kind = kreal), intent(inout), target :: X(NP)
-!       type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
-!
-!       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
-!       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
-!       real(kind = kreal), intent(in) :: EPS_MG
-!
-!       integer(kind = kint), intent(inout) :: IER
+!!      subroutine init_MGCG33_V_cycle(NP, PEsmpTOT,                    &
+!!     &          METHOD_MG, PRECOND_MG)
+!!
+!!      subroutine s_MGCG33_V_cycle(num_MG_level, MG_comm, MG_itp,      &
+!!     &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,         &
+!!     &          iter_mid, iter_lowest, EPS_MG,                        &
+!!     &          METHOD_MG, PRECOND_MG, IER)
+!!       integer(kind = kint), intent(in) :: num_MG_level
+!!       type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
+!!       type(DJDS_ordering_table), intent(in) :: djds_tbl(0:num_MG_level)
+!!       type(DJDS_MATRIX), intent(in) ::         mat11(0:num_MG_level)
+!!       type(MG_itp_table), intent(in) ::        MG_itp(num_MG_level)
+!!
+!!       integer(kind = kint), intent(in) :: PEsmpTOT
+!!       integer(kind = kint), intent(in) :: NP
+!!       real(kind = kreal), intent(in), target :: B(NP)
+!!
+!!       real(kind = kreal), intent(inout), target :: X(NP)
+!!       type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
+!!
+!!       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
+!!       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
+!!       real(kind = kreal), intent(in) :: EPS_MG
+!!
+!!       integer(kind = kint), intent(inout) :: IER
 !
       module MGCG33_V_cycle
 !
@@ -168,13 +168,15 @@
      &      METHOD_MG)
        end if
 !
-!
       do i = num_MG_level-1, 0, -1
         NP_f = mat33(i  )%num_diag
         NP_c = mat33(i+1)%num_diag
-        call s_interpolate_type_3(NP_c, NP_f, MG_comm(i),               &
+        call s_interpolate_type_3x(NP_c, NP_f, MG_comm(i),              &
      &      MG_itp(i+1)%c2f,  MG_vect(i+1)%x_vec, MG_vect(i)%x_vec,     &
      &      PEsmpTOT)
+      call calypso_MPI_barrier
+      call calypso_MPI_abort(1, 'tako')
+!
 !
 !C calculate residual
         if(print_residual_on_each_level) Then

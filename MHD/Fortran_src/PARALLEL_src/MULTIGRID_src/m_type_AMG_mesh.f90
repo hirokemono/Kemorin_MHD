@@ -59,6 +59,9 @@
       character(len = kchara), allocatable :: MG_c2f_tbl_head(:)
       character(len = kchara), allocatable :: MG_f2c_eletbl_head(:)
 !
+      integer(kind = kint), allocatable :: ifmt_MG_mesh_file(:)
+      integer(kind = kint), allocatable :: ifmt_MG_table_file(:)
+!
 !------------------------------------------------------------------
 !
        contains
@@ -82,9 +85,14 @@
       allocate( MG_c2f_tbl_head(num_MG_level) )
       allocate( MG_f2c_eletbl_head(num_MG_level) )
 !
+      allocate( ifmt_MG_mesh_file(num_MG_level) )
+      allocate( ifmt_MG_table_file(num_MG_level) )
+!
       iflag_MG_elem_file = 0
       iflag_MG_surf_file = 0
       iflag_MG_edge_file = 0
+      ifmt_MG_mesh_file =  0
+      ifmt_MG_table_file = 0
 !
       end subroutine allocate_MG_mesh_file_heads
 !
@@ -92,18 +100,16 @@
 !
       subroutine deallocate_MG_mesh_file_heads
 !
-      deallocate( iflag_MG_elem_file )
-      deallocate( iflag_MG_surf_file )
+      deallocate( iflag_MG_elem_file, iflag_MG_surf_file )
       deallocate( iflag_MG_edge_file )
 !
       deallocate( MG_mesh_file_head )
-      deallocate( MG_elem_file_head )
-      deallocate( MG_surf_file_head )
+      deallocate( MG_elem_file_head, MG_surf_file_head )
       deallocate( MG_edge_file_head )
 !
-      deallocate( MG_f2c_tbl_head )
-      deallocate( MG_c2f_tbl_head )
+      deallocate( MG_f2c_tbl_head, MG_c2f_tbl_head )
       deallocate( MG_f2c_eletbl_head )
+      deallocate( ifmt_MG_mesh_file, ifmt_MG_table_file )
 !
       end subroutine deallocate_MG_mesh_file_heads
 !

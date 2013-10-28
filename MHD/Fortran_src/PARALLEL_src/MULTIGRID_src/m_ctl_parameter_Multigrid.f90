@@ -29,6 +29,7 @@
 !
       use calypso_mpi
       use m_machine_parameter
+      use m_file_format_switch
       use m_type_AMG_data
       use m_type_AMG_mesh
       use m_ctl_data_4_Multigrid
@@ -109,6 +110,14 @@
         else
           iflag_MG_edge_file(1:num_MG_level) = 0
         end if
+!
+        do i = 1, num_MG_level
+          call choose_file_format(MG_mesh_file_fmt_ctl(i),              &
+     &        i_MG_mesh_file_fmt, ifmt_MG_mesh_file(i))
+          call choose_file_format(MG_table_file_fmt_ctl(i),             &
+     &        i_MG_tbl_file_fmt, ifmt_MG_table_file(i))
+         end do
+!
       end if
 !
 !
@@ -128,10 +137,11 @@
             write(*,*) 'MG_mesh_file_head', MG_vector(i)%nprocs,        &
      &                trim(MG_mesh_file_head(i))
 !
-            write(*,*) 'MG_f2c_tbl_head', trim(MG_f2c_tbl_head(i))
-            write(*,*) 'MG_c2f_tbl_head', trim(MG_c2f_tbl_head(i))
+            write(*,*) 'MG_f2c_tbl_head: ', trim(MG_f2c_tbl_head(i))
+            write(*,*) 'MG_c2f_tbl_head: ', trim(MG_c2f_tbl_head(i))
 !
-            write(*,*) 'MG_f2c_eletbl_head', trim(MG_f2c_eletbl_head(i))
+            write(*,*) 'MG_f2c_eletbl_head: ',                          &
+     &                                   trim(MG_f2c_eletbl_head(i))
 !
             if (iflag_MG_elem_file(i) .gt. 0) write(*,*)                &
      &               'MG_elem_file_head', trim(MG_elem_file_head(i))

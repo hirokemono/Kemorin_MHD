@@ -5,20 +5,20 @@
 !                                    on July 2000 (ver 1.1)
 !     modified by H. Matsui on Aug., 2005
 !
-!      subroutine int_vol_crank_mat_lump_type(mesh, MHD_mesh,           &
-!     &          mk_MHD, djds_tbl_fl, djds_tbl_cd, mat_velo, mat_magne, &
-!     &          mat_temp, mat_d_scalar)
-!      subroutine add_lumped_coriolis_mat_type(node, fld, djds_tbl,     &
-!     &          lump, mat33)
-!        type(mesh_geometry), intent(in) ::          mesh
-!        type(mesh_data_MHD), intent(in) ::          MHD_mesh
-!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
-!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
-!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_cd
-!        type(DJDS_MATRIX),  intent(inout) :: mat_velo
-!        type(DJDS_MATRIX),  intent(inout) :: mat_magne
-!        type(DJDS_MATRIX),  intent(inout) :: mat_temp
-!        type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
+!!      subroutine int_vol_crank_mat_lump_type(mesh, MHD_mesh,          &
+!!     &          mk_MHD, djds_tbl, djds_tbl_fl,                        &
+!!     &          mat_velo, mat_magne, mat_temp, mat_d_scalar)
+!!      subroutine add_lumped_coriolis_mat_type(node, fld, djds_tbl,    &
+!!     &          lump, mat33)
+!!        type(mesh_geometry), intent(in) ::          mesh
+!!        type(mesh_data_MHD), intent(in) ::          MHD_mesh
+!!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
+!!        type(DJDS_ordering_table),  intent(in) :: djds_tbl
+!!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_velo
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_magne
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_temp
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
 !
       module int_vol_lump_crank_type
 !
@@ -37,8 +37,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_crank_mat_lump_type(mesh, MHD_mesh,            &
-     &          mk_MHD, djds_tbl_fl, djds_tbl_cd, mat_velo, mat_magne,  &
-     &          mat_temp, mat_d_scalar)
+     &          mk_MHD, djds_tbl, djds_tbl_fl,                          &
+     &          mat_velo, mat_magne, mat_temp, mat_d_scalar)
 !
       use t_mesh_data
       use t_finite_element_mat_MHD
@@ -49,8 +49,8 @@
       type(mesh_geometry), intent(in) ::          mesh
       type(mesh_data_MHD), intent(in) ::          MHD_mesh
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
-      type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
-      type(DJDS_ordering_table),  intent(in) :: djds_tbl_cd
+      type(DJDS_ordering_table), intent(in) ::  djds_tbl
+      type(DJDS_ordering_table), intent(in) :: djds_tbl_fl
 !
       type(DJDS_MATRIX),  intent(inout) :: mat_velo
       type(DJDS_MATRIX),  intent(inout) :: mat_magne
@@ -74,13 +74,13 @@
       if (iflag_t_evo_4_magne .eq. id_Crank_nicolson                    &
      &     .and. coef_magne .gt. zero) then
         call init_33_mat_type_lump(mesh%node, MHD_mesh%conduct,         &
-     &     djds_tbl_cd, mk_MHD%conduct, mat_magne)
+     &     djds_tbl, mk_MHD%conduct, mat_magne)
       end if
 !
       if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson                   &
      &     .and. coef_magne .gt. zero) then
         call init_33_mat_type_lump(mesh%node, MHD_mesh%conduct,         &
-     &     djds_tbl_cd, mk_MHD%conduct, mat_magne)
+     &     djds_tbl, mk_MHD%conduct, mat_magne)
        end if
 !
       if(iflag_t_evo_4_composit .eq. id_Crank_nicolson                  &

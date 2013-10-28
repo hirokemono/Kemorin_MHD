@@ -112,7 +112,7 @@
 !
 !
       num_dest_domain = 0
-      istack_nod_table_org(0:nprocs_dest) = 0
+      istack_nod_tbl_org(0:nprocs_dest) = 0
       do ip = 1, nprocs_dest
 !
         n_dest_rank = mod(n_org_rank+ip,nprocs_dest)
@@ -125,7 +125,7 @@
         call count_num_interpolation_4_orgin(n_org_rank, n_dest_rank)
 !
       end do
-      ntot_table_org = istack_nod_table_org(num_dest_domain)
+      ntot_table_org = istack_nod_tbl_org(num_dest_domain)
 !
       end subroutine count_interpolate_4_orgin
 !
@@ -142,7 +142,7 @@
       integer(kind = kint) :: ip, n_dest_rank, ierr
 !
       num_dest_domain = 0
-      istack_nod_table_wtype_org(0:4*nprocs_dest) = 0
+      istack_nod_tbl_wtype_org(0:4*nprocs_dest) = 0
       do ip = 1, nprocs_dest
         n_dest_rank = mod(n_org_rank+ip,nprocs_dest)
         table_file_header = work_header

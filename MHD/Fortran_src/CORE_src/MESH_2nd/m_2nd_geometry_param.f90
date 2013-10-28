@@ -21,7 +21,7 @@
 !      subroutine check_smp_size_2nd_surf_edge
 !
 !
-      module   m_2nd_geometry_param
+      module m_2nd_geometry_param
 !
       use m_precision
 !
@@ -232,4 +232,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module   m_2nd_geometry_param
+      end module m_2nd_geometry_param

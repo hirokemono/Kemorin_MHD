@@ -45,7 +45,7 @@
 !
 !
       call copy_stk_itp_wtp_org2dest                                    &
-     &    (num_dest_domain, istack_nod_table_wtype_org,                 &
+     &    (num_dest_domain, istack_nod_tbl_wtype_org,                   &
      &     num_org_domain, istack_nod_table_wtype_dest)
 !
       end subroutine copy_istack_itp_wtype_org2dest

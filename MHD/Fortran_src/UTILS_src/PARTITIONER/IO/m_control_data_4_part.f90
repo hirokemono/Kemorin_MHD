@@ -43,6 +43,7 @@
       character(len=kchara) :: domain_group_file_ctl
       character(len=kchara) :: finer_mesh_head_ctl
       character(len=kchara) :: itp_tbl_head_ctl
+      character(len=kchara) :: itp_tbl_format_ctl
 !
       integer(kind = kint) :: nele_grp_ordering_ctl = 0
       character(len=kchara), allocatable :: ele_grp_ordering_ctl(:)
@@ -120,9 +121,13 @@
      &                      = 'finer_mesh_head_ctl'
       character(len=kchara), parameter :: hd_fine_itp_file              &
      &                      = 'interpolate_tbl_head'
+      character(len=kchara), parameter                                  &
+     &         :: hd_fmt_itp_tbl =    'interpolate_table_format_ctl'
+
       integer (kind=kint) :: i_domain_tbl_file =  0
       integer (kind=kint) :: i_fine_mesh_file =   0
       integer (kind=kint) :: i_fine_itp_file =    0
+      integer (kind=kint) :: i_fmt_itp_tbl =      0
 !
 !
       private :: control_file_name
@@ -136,7 +141,7 @@
       private :: hd_num_rcb, hd_num_es, hd_num_r_layerd, hd_sph_sf_file
       private :: hd_metis_in_file, hd_metis_dom_file
       private :: hd_domain_tbl_file, hd_fine_mesh_file
-      private :: hd_fine_itp_file
+      private :: hd_fine_itp_file, hd_fmt_itp_tbl
 !
       private :: alloc_ele_grp_ordering_ctl
       private :: alloc_ele_grp_layer_ctl
@@ -280,6 +285,8 @@
      &            i_fine_itp_file, itp_tbl_head_ctl)
         call read_character_ctl_item(hd_domain_tbl_file,                &
      &            i_domain_tbl_file, domain_group_file_ctl)
+        call read_character_ctl_item(hd_fmt_itp_tbl,                    &
+     &            i_fmt_itp_tbl, itp_tbl_format_ctl)
       end do
 !
       end subroutine read_ctl_data_4_decomp

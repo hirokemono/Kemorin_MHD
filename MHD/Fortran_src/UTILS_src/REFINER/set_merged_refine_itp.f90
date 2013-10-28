@@ -58,10 +58,10 @@
       call allocate_itp_table_org
 !
 !
-      id_dest_domain =       c2f_mgd%tbl_org%id_dest_domain
-      istack_nod_table_org = c2f_mgd%tbl_org%istack_nod_tbl_org
+      id_dest_domain =     c2f_mgd%tbl_org%id_dest_domain
+      istack_nod_tbl_org = c2f_mgd%tbl_org%istack_nod_tbl_org
 !
-      istack_nod_table_wtype_org(0) = izero
+      istack_nod_tbl_wtype_org(0) = izero
 !
       call set_merged_refine_data_org
 !
@@ -87,14 +87,14 @@
       call allocate_itp_num_org(num_dest_domain)
 !
       id_dest_domain(1) = izero
-      istack_nod_table_wtype_org(0) = izero
-      istack_nod_table_wtype_org(1) = nnod_org
-      istack_nod_table_wtype_org(2) = nnod_org
-      istack_nod_table_wtype_org(3) = nnod_org
-      istack_nod_table_wtype_org(4) = nnod_org
-      istack_nod_table_org(0) = izero
-      istack_nod_table_org(1) = nnod_org
-      ntot_table_org =          nnod_org
+      istack_nod_tbl_wtype_org(0) = izero
+      istack_nod_tbl_wtype_org(1) = nnod_org
+      istack_nod_tbl_wtype_org(2) = nnod_org
+      istack_nod_tbl_wtype_org(3) = nnod_org
+      istack_nod_tbl_wtype_org(4) = nnod_org
+      istack_nod_tbl_org(0) = izero
+      istack_nod_tbl_org(1) = nnod_org
+      ntot_table_org =        nnod_org
 !
       call allocate_itp_table_org
       itype_inter_org(1:ntot_table_org) = -1

@@ -86,13 +86,13 @@
 !
 !
       table_file_header = finer_inter_file_head
-      write(*,*) 'sel_read_interpolate_table', table_file_header
+      write(*,*) 'sel_read_interpolate_table: ',                        &
+     &           trim(table_file_header)
       call sel_read_interpolate_table(my_rank, ierr)
 !
       call copy_itp_table_dest_from_IO(my_rank)
       call copy_itp_table_org_from_IO(my_rank)
 !
-      write(*,*) 's_set_stack_tbl_wtype_org_smp'
       call s_set_stack_tbl_wtype_org_smp
 !
       end subroutine input_interpolate_table_4_part

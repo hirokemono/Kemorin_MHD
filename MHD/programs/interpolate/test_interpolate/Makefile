@@ -13,22 +13,20 @@ MOD_ITP_MESH = \
 main_test_itp_tbl.o \
 analyzer_test_table.o \
 \
-copy_itp_geometry_2_IO.o \
+check_ineterppolated_mesh.o \
 input_control_itp_mesh.o \
 mesh_interpolation.o \
-interpolate_position.o \
-write_interpolated_node.o
+interpolate_position.o
 
 
 MOD_ITP_ELE_MESH = \
 main_test_itp_ele.o \
 analyzer_test_ele_tbl.o \
 \
-copy_itp_geometry_2_IO.o \
+check_ineterppolated_mesh.o \
 input_control_itp_mesh.o \
 mesh_interpolation.o \
-interpolate_position.o \
-write_interpolated_node.o
+interpolate_position.o
 
 #
 #  ------------------------------------------------------------------

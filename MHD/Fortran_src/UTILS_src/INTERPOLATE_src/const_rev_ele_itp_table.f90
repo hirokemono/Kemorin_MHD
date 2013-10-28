@@ -144,12 +144,16 @@
      &      = itp_rev%tbl_org%istack_nod_tbl_org(i)
         end do
 !
-        num = itp_rev%tbl_org%ntot_table_org
-        itp_rev%tbl_org%iele_org_4_org(1:num)                           &
-     &    = itp_tbl%tbl_dest%inod_dest_4_dest(1:num)
-        itp_rev%tbl_org%itype_inter_org(1:num) =    0
-        itp_rev%tbl_org%inod_gl_dest_4_org(1:num) = 0
-        itp_rev%tbl_org%coef_inter_org(1:num,1:3) =     0.0d0
+        do i = 1, itp_rev%tbl_org%ntot_table_org
+          itp_rev%tbl_org%iele_org_4_org(i)                             &
+     &      = itp_tbl%tbl_dest%inod_dest_4_dest(i)
+          itp_rev%tbl_org%inod_itp_send(i) =      i
+          itp_rev%tbl_org%itype_inter_org(i) =    0
+          itp_rev%tbl_org%inod_gl_dest_4_org(i) = 0
+          itp_rev%tbl_org%coef_inter_org(i,1:3) =     0.0d0
+          itp_rev%tbl_org%coef_inter_org(i,1:3) =     0.0d0
+          itp_rev%tbl_org%coef_inter_org(i,1:3) =     0.0d0
+        end do
 !
         call dealloc_type_itp_num_dest(itp_tbl%tbl_dest)
         call dealloc_type_itp_table_dest(itp_tbl%tbl_dest)

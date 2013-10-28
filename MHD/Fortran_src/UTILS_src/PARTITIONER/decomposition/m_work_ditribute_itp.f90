@@ -41,6 +41,7 @@
       integer(kind = kint), allocatable :: ntable_para(:)
       integer(kind = kint), allocatable :: istack_para(:)
       integer(kind = kint), allocatable :: itable_para_order(:)
+      integer(kind = kint), allocatable :: irev_tbl_org(:)
 !
       private :: count_local_nod_ele_2_global
       private :: set_local_nod_ele_2_global
@@ -105,12 +106,14 @@
       allocate(ntable_para(4*nprocs_org*nprocs_dest))
       allocate(istack_para(0:4*nprocs_org*nprocs_dest))
       allocate(itable_para_order(ntot_nod_dest))
+      allocate(irev_tbl_org(ntot_nod_dest))
 !
       ntable_para = 0
       istack_para = 0
       iele_lc_org = 0
       inod_lc_dest = 0
       itable_para_order = 0
+      irev_tbl_org = 0
 !
       end subroutine alloc_work_ditribute_itp
 !
@@ -122,7 +125,7 @@
       deallocate(iele_lc_org, inod_lc_dest)
 !
       deallocate(ntable_para, istack_para)
-      deallocate(itable_para_order)
+      deallocate(itable_para_order, irev_tbl_org)
 !
       end subroutine dealloc_work_ditribute_itp
 !
@@ -260,6 +263,11 @@
           ic = istack_para(k-1) + ntable_para(k)
           itable_para_order(ic) = inod_gl
         end do
+      end do
+!
+      do inum = 1, single_tbl%tbl_org%ntot_table_org
+        inod_gl = single_tbl%tbl_org%inod_gl_dest_4_org(inum)
+        irev_tbl_org(inod_gl) = inum
       end do
 !
       end subroutine set_ordering_4_parallel_itp

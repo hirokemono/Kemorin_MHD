@@ -81,6 +81,7 @@
         c2f_mgd%tbl_org%iele_org_4_org(inod_2nd) =     iele_org
 !
         if(iref_flag_org  .eq. iflag_nothing) then
+          c2f_mgd%tbl_org%inod_itp_send(inod_2nd) = inod_2nd
           c2f_mgd%tbl_org%coef_inter_org(inod_2nd,1:3)                  &
      &                = c2f_2nd%tbl_org%coef_inter_org(inod_2nd,1:3)
           c2f_mgd%tbl_org%itype_inter_org(inod_2nd)                     &
@@ -139,7 +140,7 @@
           call copy_each_merge_itp_tbl_refine(inod_2nd, icou)
         end if
       end do
-      istack_nod_table_wtype_org(1) =  icou
+      istack_nod_tbl_wtype_org(1) =  icou
 !
       do inod_2nd = 1, ntot_table_org
         iflag = c2f_mgd%tbl_org%itype_inter_org(inod_2nd)
@@ -148,7 +149,7 @@
           call copy_each_merge_itp_tbl_refine(inod_2nd, icou)
         end if
       end do
-      istack_nod_table_wtype_org(2) =  icou
+      istack_nod_tbl_wtype_org(2) =  icou
 !
       do inod_2nd = 1, ntot_table_org
         iflag = c2f_mgd%tbl_org%itype_inter_org(inod_2nd)
@@ -157,7 +158,7 @@
           call copy_each_merge_itp_tbl_refine(inod_2nd, icou)
         end if
       end do
-      istack_nod_table_wtype_org(3) =  icou
+      istack_nod_tbl_wtype_org(3) =  icou
 !
       do inod_2nd = 1, ntot_table_org
         iflag = c2f_mgd%tbl_org%itype_inter_org(inod_2nd)
@@ -166,8 +167,8 @@
           call copy_each_merge_itp_tbl_refine(inod_2nd, icou)
         end if
       end do
-      istack_nod_table_wtype_org(4) =  icou
-      istack_nod_table_org(1) =       istack_nod_table_wtype_org(4)
+      istack_nod_tbl_wtype_org(4) =  icou
+      istack_nod_tbl_org(1) =      istack_nod_tbl_wtype_org(4)
 !
 !
       end subroutine sort_merge_itp_table_refine
@@ -182,6 +183,7 @@
       integer(kind = kint), intent(in) :: inod_2nd, icou
 !
 !
+          c2f_mgd%tbl_org%inod_itp_send(inod_2nd) = inod_2nd
           inod_gl_dest_4_org(icou)                                      &
      &         = c2f_mgd%tbl_org%inod_gl_dest_4_org(inod_2nd)
           iele_org_4_org(icou)                                          &

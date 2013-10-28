@@ -1,9 +1,14 @@
 !
 !     module copy_domain_list_4_IO
 !
-      module copy_domain_list_4_IO
-!
 !      Written by H. Matsui on Sep., 2007
+!
+!      subroutine copy_domain_list_from_IO
+!      subroutine copy_domain_list_to_IO
+!
+!      subroutine copy_finer_domain_list_from_IO
+!
+      module copy_domain_list_4_IO
 !
       use m_precision
 !
@@ -12,11 +17,6 @@
       use m_subdomain_table_IO
 !
       implicit none
-!
-!      subroutine copy_domain_list_from_IO
-!      subroutine copy_domain_list_to_IO
-!
-!      subroutine copy_finer_domain_list_from_IO
 !
 !   --------------------------------------------------------------------
 !
@@ -28,14 +28,10 @@
 !
       use m_geometry_parameter
 !
-      if (nnod_group_IO .ne. numnod) then
-        write(*,*) 'check number of node'
-        stop
-      end if
+      if (nnod_group_IO .ne. numnod) stop 'check number of node'
 !
       if (internod_group_IO .ne. internal_node) then
-        write(*,*) 'check number of internal node'
-        stop
+        stop 'check number of internal node'
       end if
 !
       num_domain = nproc_group_IO
@@ -69,14 +65,10 @@
 !
       use m_2nd_geometry_param
 !
-      if (nnod_group_IO .ne. nnod_2nd) then
-        write(*,*) 'check number of node'
-        stop
-      end if
+      if (nnod_group_IO .ne. nnod_2nd) stop 'check number of node'
 !
       if (internod_group_IO .ne. internal_nod_2nd) then
-        write(*,*) 'check number of internal node'
-        stop
+        stop 'check number of internal node'
       end if
 !
       num_domain = nproc_group_IO

@@ -209,6 +209,7 @@
             if(    ipe_nod_local_tgt(inod_tgt).eq.ip_tgt                &
      &       .and. ipe_ele_local_org(iele_org).eq.ip_org) then
                jcou = jcou + 1
+               itp_org_para%inod_itp_send(jcou) = jcou
                itp_org_para%inod_gl_dest_4_org(jcou)                    &
      &             = inod_tgt
                itp_org_para%iele_org_4_org(jcou)                        &

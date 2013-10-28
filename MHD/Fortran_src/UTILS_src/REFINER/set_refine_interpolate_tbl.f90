@@ -46,18 +46,18 @@
       call allocate_itp_num_org(num_dest_domain)
 !
       id_dest_domain(1) =             izero
-      istack_nod_table_wtype_org(0) = izero
-      istack_nod_table_wtype_org(1) =  ntot_nod_refine_nod
-      istack_nod_table_wtype_org(2) =  istack_nod_table_wtype_org(1)    &
+      istack_nod_tbl_wtype_org(0) = izero
+      istack_nod_tbl_wtype_org(1) =  ntot_nod_refine_nod
+      istack_nod_tbl_wtype_org(2) =  istack_nod_tbl_wtype_org(1)        &
      &                               + ntot_nod_refine_edge
-      istack_nod_table_wtype_org(3) =  istack_nod_table_wtype_org(2)    &
+      istack_nod_tbl_wtype_org(3) =  istack_nod_tbl_wtype_org(2)        &
      &                               + ntot_nod_refine_surf
-      istack_nod_table_wtype_org(4) =  istack_nod_table_wtype_org(3)    &
+      istack_nod_tbl_wtype_org(4) =  istack_nod_tbl_wtype_org(3)        &
      &                               + ntot_nod_refine_ele
 !
-      istack_nod_table_org(0) =       izero
-      istack_nod_table_org(1) =       istack_nod_table_wtype_org(4)
-      ntot_table_org = istack_nod_table_org(1)
+      istack_nod_tbl_org(0) = izero
+      istack_nod_tbl_org(1) = istack_nod_tbl_wtype_org(4)
+      ntot_table_org =        istack_nod_tbl_org(1)
 !
       call allocate_itp_table_org
       itype_inter_org(1:ntot_table_org) = -1
@@ -152,9 +152,9 @@
       call allocate_itp_num_dest(num_org_domain)
 !
       id_org_domain(1) =         izero
-      istack_nod_table_dest(0) = izero
-      istack_nod_table_dest(1) = nnod_2nd
-      ntot_table_dest =          nnod_2nd
+      istack_nod_tbl_dest(0) = izero
+      istack_nod_tbl_dest(1) = nnod_2nd
+      ntot_table_dest =        nnod_2nd
 !
       call allocate_itp_table_dest
 !
@@ -180,14 +180,14 @@
       call allocate_itp_num_org(num_dest_domain)
 !
       id_dest_domain(1) = izero
-      istack_nod_table_wtype_org(0) = izero
-      istack_nod_table_wtype_org(1) = ntot_nod_refine_nod
-      istack_nod_table_wtype_org(2) = ntot_nod_refine_nod
-      istack_nod_table_wtype_org(3) = ntot_nod_refine_nod
-      istack_nod_table_wtype_org(4) = ntot_nod_refine_nod
-      istack_nod_table_org(0) = izero
-      istack_nod_table_org(1) = ntot_nod_refine_nod
-      ntot_table_org = istack_nod_table_org(1)
+      istack_nod_tbl_wtype_org(0) = izero
+      istack_nod_tbl_wtype_org(1) = ntot_nod_refine_nod
+      istack_nod_tbl_wtype_org(2) = ntot_nod_refine_nod
+      istack_nod_tbl_wtype_org(3) = ntot_nod_refine_nod
+      istack_nod_tbl_wtype_org(4) = ntot_nod_refine_nod
+      istack_nod_tbl_org(0) = izero
+      istack_nod_tbl_org(1) = ntot_nod_refine_nod
+      ntot_table_org =        istack_nod_tbl_org(1)
 !
       call allocate_itp_table_org
       itype_inter_org(1:ntot_table_org) = -1
@@ -225,9 +225,9 @@
       call allocate_itp_num_dest(num_org_domain)
 !
       id_org_domain(1) =         izero
-      istack_nod_table_dest(0) = izero
-      istack_nod_table_dest(1) = ntot_nod_refine_nod
-      ntot_table_dest =          ntot_nod_refine_nod
+      istack_nod_tbl_dest(0) = izero
+      istack_nod_tbl_dest(1) = ntot_nod_refine_nod
+      ntot_table_dest =        ntot_nod_refine_nod
 !
       call allocate_itp_table_dest
 !

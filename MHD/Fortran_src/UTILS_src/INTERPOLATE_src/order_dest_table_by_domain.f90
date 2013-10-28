@@ -38,15 +38,15 @@
       end do
 !
       num_org_domain = 0
-      istack_nod_table_dest(0) = 0
+      istack_nod_tbl_dest(0) = 0
       do j = 1, nprocs_2nd
         my_rank_2nd = mod(my_rank+j,nprocs_2nd)
 !
         if (numnod_dest(my_rank_2nd+1) .gt. 0) then
           num_org_domain = num_org_domain + 1
           id_org_domain(num_org_domain) = my_rank_2nd
-          istack_nod_table_dest(num_org_domain)                         &
-     &               = istack_nod_table_dest(num_org_domain-1)          &
+          istack_nod_tbl_dest(num_org_domain)                           &
+     &               = istack_nod_tbl_dest(num_org_domain-1)            &
      &                + numnod_dest(my_rank_2nd+1)
         end if
       end do
@@ -54,7 +54,7 @@
 !
       do j = 1, num_org_domain
         jp = id_org_domain(j) + 1
-        icou = istack_nod_table_dest(j-1)
+        icou = istack_nod_tbl_dest(j-1)
 !
         do inod = 1, internal_node
           if (iflag_org_domain(inod) .eq. jp) then

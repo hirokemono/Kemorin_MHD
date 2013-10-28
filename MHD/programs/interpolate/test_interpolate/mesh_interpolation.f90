@@ -26,8 +26,7 @@
       use interpolate_position
       use m_read_mesh_data
 !
-      use copy_itp_geometry_2_IO
-      use write_interpolated_node
+      use check_ineterppolated_mesh
 !
 !     return global node from table
 !
@@ -36,19 +35,16 @@
 !
 !     interpolate 2nd mesh from 1st mesh
 !
-      if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position'
-      call s_interpolate_position
+!     if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position'
+!      call s_interpolate_position
+      if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position_by_N'
+      call s_interpolate_position_by_N
+!      if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position_by_s'
+!      call s_interpolate_position_by_s
 !
 !
-      if (my_rank .lt. ndomain_dest) then
-        if (iflag_debug.gt.0)  write(*,*) 's_copy_itp_geometry_2_IO'
-        call s_copy_itp_geometry_2_IO(my_rank)
-!
-        if (iflag_debug.eq.1)                                           &
-     &        write(*,*) 's_write_interpolate_node_file'
-        call s_write_interpolate_node_file(my_rank)
-!
-      end if
+      if (iflag_debug.gt.0)  write(*,*) 's_check_ineterppolated_mesh'
+      call s_check_ineterppolated_mesh
 !
       end subroutine interpolation_4_mesh_test
 !

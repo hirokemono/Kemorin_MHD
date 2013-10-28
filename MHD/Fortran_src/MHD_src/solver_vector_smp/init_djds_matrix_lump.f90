@@ -1,14 +1,26 @@
+!>@file   init_djds_matrix_lump.f90
+!!@brief  module init_djds_matrix_lump
+!!
+!!@author  H. Matsui
+!!@date Programmed on Aug., 2005
 !
-!      module init_djds_matrix_lump
 !
-!     programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!     modified by H. Matsui on Aug., 2005
-!
-!      subroutine init_11_matrix_lump(numnod, numnod_fld, inod_fld,     &
-!     &          OLDtoNEW, ml_o, num_comp, aiccg)
-!      subroutine init_33_matrix_lump(numnod, numnod_fld, inod_fld,     &
-!     &          OLDtoNEW, ml_o, num_comp, aiccg)
+!> @brief Set lumped mass matrix for Crnak-Nicolson scheme
+!!
+!!@verbatim
+!!      subroutine init_11_matrix_lump(numnod, numnod_fld, inod_fld,    &
+!!     &          OLDtoNEW, ml_o, num_comp, aiccg)
+!!      subroutine init_33_matrix_lump(numnod, numnod_fld, inod_fld,    &
+!!     &          OLDtoNEW, ml_o, num_comp, aiccg)
+!!@endverbatim
+!!
+!!@n @param  numnod      number of node for simulation domain
+!!@n @param  numnod_fld  number of node for mass matrix
+!!@n @param  inod_fld    node ID for field
+!!@n @param  OLDtoNEW    DJDS ordering table
+!!@n @param  ml_o        lumped mass matrix
+!!@n @param  num_comp    Number of components of field
+!!@n @param  aiccg       DJDS compressed array
 !
       module init_djds_matrix_lump
 !

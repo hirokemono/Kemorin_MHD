@@ -116,15 +116,16 @@
      &    djds_const_l, djds_const_fl_l, MG_FEM_mat%fem_wk,             &
      &    mat_press, mat_magp)
 !
-!
       if (iflag_scheme .eq. id_Crank_nicolson) then
         call int_vol_crank_mat_lump_type(femmesh%mesh, MHD_mesh,        &
-     &      mk_MHD, djds_tbl_fl, djds_tbl_cd, mat_velo, mat_magne,      &
-     &      mat_temp, mat_d_scalar)
+     &      mk_MHD, djds_tbl, djds_tbl_fl,                              &
+     &      mat_velo, mat_magne,  mat_temp, mat_d_scalar)
+!
         call int_MHD_crank_matrices_type(femmesh%mesh,                  &
      &      jacobians%jac_3d, rhs_tbl, djds_const, djds_const_fl,       &
      &      djds_const_cd, filter_MHD, ak_AMG, MG_FEM_mat%fem_wk,       &
      &      mat_velo, mat_magne, mat_temp, mat_d_scalar)
+!
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call s_int_crank_mat_consist_type(femmesh%mesh,                 &
      &      jacobians%jac_3d, rhs_tbl, djds_const_fl, djds_const_cd,    &

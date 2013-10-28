@@ -92,6 +92,7 @@
       use m_ctl_data_4_2nd_data
       use m_sphere_bin_4_table
       use m_file_format_switch
+      use itp_table_IO_select_4_zlib
       use set_control_platform_data
 !
 !
@@ -114,6 +115,9 @@
      &    ifmt_org_mesh_file)
       call choose_file_format(new_mesh_file_fmt_ctl,                    &
      &    i_new_mesh_file_fmt, ifmt_itp_mesh_file)
+      call choose_file_format(ifmt_itp_table_file_ctl, i_fmt_itp_tbl,   &
+     &    ifmt_itp_table_file)
+!
 !
       if (iflag_debug.eq.1)  then
         write(*,*) 'np_smp', np_smp, np_smp

@@ -73,7 +73,7 @@
      &    istack_export, item_export, neigh_pe_num_fl,                  &
      &    ntot_export_fl, istack_export_fl, item_export_fl)
 !
-      if (iflag_debug.gt.0) then
+      if (iflag_debug.ge.2) then
         write(*,*)'neigh_pe_num_fl', my_rank, num_neib, neigh_pe_num_fl 
         write(*,*)'ntot_import_fl',  my_rank, ntot_import, ntot_import_fl
         write(*,*)'ntot_export_fl',  my_rank, ntot_export, ntot_export_fl

@@ -199,10 +199,13 @@
       call allocate_itp_table_org_IO
 !
       id_dest_domain_IO(1) =     izero
+      istack_nod_table_org_IO(0) = izero
+      istack_nod_table_org_IO(1) = nele_ref_IO
       istack_table_wtype_org_IO(0) = izero
       istack_table_wtype_org_IO(1:4) = nele_ref_IO
 !
       do iele_neo = 1, nele_ref_IO
+        inod_itp_send_IO(iele_neo) = iele_neo
         inod_gl_dest_4_org_IO(iele_neo) = iele_global_new_IO(iele_neo)
         iele_org_4_org_IO(iele_neo) =     iele_global_new_IO(iele_neo)
         itype_inter_org_IO(iele_neo) =    izero

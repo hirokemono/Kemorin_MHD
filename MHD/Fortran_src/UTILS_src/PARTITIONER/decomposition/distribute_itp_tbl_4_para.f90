@@ -279,7 +279,7 @@
       type(interpolate_table_org), intent(inout) :: para_tbl_org
 !
       integer(kind = kint) :: ip0, ip, i, i4, k, ist, ied, ic, inum
-      integer(kind = kint) :: inod_gl, iele_gl
+      integer(kind = kint) :: inod_gl, iele_gl, irev_gl
 !
 !
       do ip0 = 1, para_tbl_org%num_dest_domain
@@ -293,19 +293,21 @@
           do inum = ist, ied
             ic = ic + 1
             inod_gl = itable_para_order(inum)
-            iele_gl = sgl_tbl_org%iele_org_4_org(inod_gl)
+            irev_gl = irev_tbl_org(inod_gl)
+            iele_gl = sgl_tbl_org%iele_org_4_org(irev_gl)
 !
+            para_tbl_org%inod_itp_send(ic) =      ic
             para_tbl_org%inod_gl_dest_4_org(ic) = inod_gl
             para_tbl_org%iele_org_4_org(ic) = iele_lc_org(iele_gl,1)
             para_tbl_org%itype_inter_org(ic)                            &
-     &               = sgl_tbl_org%itype_inter_org(inod_gl)
+     &               = sgl_tbl_org%itype_inter_org(irev_gl)
 !
             para_tbl_org%coef_inter_org(ic,1)                           &
-     &               = sgl_tbl_org%coef_inter_org(inod_gl,1)
+     &               = sgl_tbl_org%coef_inter_org(irev_gl,1)
             para_tbl_org%coef_inter_org(ic,2)                           &
-     &               = sgl_tbl_org%coef_inter_org(inod_gl,2)
+     &               = sgl_tbl_org%coef_inter_org(irev_gl,2)
             para_tbl_org%coef_inter_org(ic,3)                           &
-     &               = sgl_tbl_org%coef_inter_org(inod_gl,3)
+     &               = sgl_tbl_org%coef_inter_org(irev_gl,3)
           end do
         end do
       end do

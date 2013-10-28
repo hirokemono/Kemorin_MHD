@@ -29,6 +29,7 @@
       use m_subdomain_table_IO
       use m_metis_IO
       use m_file_format_switch
+      use itp_table_IO_select_4_zlib
 !
       integer(kind = kint) :: i
 !
@@ -359,6 +360,8 @@
             write(*,*) 'set reference mesh file name'
             stop
           end if
+          call choose_file_format(itp_tbl_format_ctl, i_fmt_itp_tbl,    &
+     &        ifmt_itp_table_file)
         end if
 !
       else if(NTYP_div .eq. iPART_MeTiS_RSB) then
