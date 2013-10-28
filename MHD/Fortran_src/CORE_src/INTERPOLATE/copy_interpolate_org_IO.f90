@@ -24,7 +24,6 @@
       subroutine copy_itp_table_org_from_IO(my_rank)
 !
       integer(kind = kint), intent(in) :: my_rank
-      integer(kind = kint) :: i
 !
 !
       iflag_self_itp_send = 0
@@ -39,13 +38,13 @@
 !
         id_dest_domain(1:num_dest_domain)                               &
      &          = id_dest_domain_IO(1:num_dest_domain)
-        istack_nod_table_wtype_org(0:4*num_dest_domain)                 &
+        istack_nod_tbl_org(0:num_dest_domain)                           &
+     &          = istack_nod_table_org_IO(0:num_dest_domain)
+        istack_nod_tbl_wtype_org(0:4*num_dest_domain)                   &
      &          = istack_table_wtype_org_IO(0:4*num_dest_domain)
 !
-        do i = 0, num_dest_domain
-          istack_nod_table_org(i) = istack_nod_table_wtype_org(4*i)
-        end do
-!
+        inod_itp_send(1:ntot_table_org)                                 &
+     &          = inod_itp_send_IO(1:ntot_table_org)
         inod_gl_dest_4_org(1:ntot_table_org)                            &
      &          = inod_gl_dest_4_org_IO(1:ntot_table_org)
         iele_org_4_org(1:ntot_table_org)                                &
@@ -73,7 +72,6 @@
 !
 !-----------------------------------------------------------------------
 !
-!
       subroutine copy_itp_table_org_to_IO
 !
 !
@@ -89,11 +87,13 @@
         id_dest_domain_IO(1:num_dest_domain)                            &
      &          = id_dest_domain(1:num_dest_domain)
         istack_nod_table_org_IO(0:num_dest_domain)                      &
-     &          = istack_nod_table_org(0:num_dest_domain)
+     &          = istack_nod_tbl_org(0:num_dest_domain)
         istack_table_wtype_org_IO(0:4*num_dest_domain)                  &
-     &          = istack_nod_table_wtype_org(0:4*num_dest_domain)
+     &          = istack_nod_tbl_wtype_org(0:4*num_dest_domain)
 !
 !
+        inod_itp_send_IO(1:ntot_table_org)                              &
+     &          = inod_itp_send(1:ntot_table_org)
         inod_gl_dest_4_org_IO(1:ntot_table_org)                         &
      &          = inod_gl_dest_4_org(1:ntot_table_org)
         iele_org_4_org_IO(1:ntot_table_org)                             &

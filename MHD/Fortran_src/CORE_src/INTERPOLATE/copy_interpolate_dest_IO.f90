@@ -38,7 +38,7 @@
 !
         id_org_domain(1:num_org_domain)                                 &
      &      = id_org_domain_IO(1:num_org_domain)
-        istack_nod_table_dest(0:num_org_domain)                         &
+        istack_nod_tbl_dest(0:num_org_domain)                           &
      &      = istack_table_dest_IO(0:num_org_domain)
         istack_nod_table_wtype_dest(0:4*num_org_domain)                 &
      &      = istack_table_wtype_dest_IO(0:4*num_org_domain)
@@ -75,7 +75,7 @@
         id_org_domain_IO(1:num_org_domain)                              &
      &      = id_org_domain(1:num_org_domain)
         istack_table_dest_IO(0:num_org_domain)                          &
-     &      = istack_nod_table_dest(0:num_org_domain)
+     &      = istack_nod_tbl_dest(0:num_org_domain)
         istack_table_wtype_dest_IO(0:4*num_org_domain)                  &
      &      = istack_nod_table_wtype_dest(0:4*num_org_domain)
 !

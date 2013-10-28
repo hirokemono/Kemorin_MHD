@@ -67,7 +67,7 @@
         tbl_dest%id_org_domain(1:tbl_dest%num_org_domain)               &
      &      = id_org_domain(1:tbl_dest%num_org_domain)
         tbl_dest%istack_nod_tbl_dest(0:tbl_dest%num_org_domain)         &
-     &      = istack_nod_table_dest(0:tbl_dest%num_org_domain)
+     &      = istack_nod_tbl_dest(0:tbl_dest%num_org_domain)
         tbl_dest%istack_nod_tbl_wtype_dest(0:4*tbl_dest%num_org_domain) &
      &      = istack_nod_table_wtype_dest(0:4*tbl_dest%num_org_domain)
 !
@@ -112,7 +112,7 @@
         tbl_org%id_dest_domain(1:tbl_org%num_dest_domain)               &
      &     = id_dest_domain(1:tbl_org%num_dest_domain)
         tbl_org%istack_nod_tbl_wtype_org(0:4*tbl_org%num_dest_domain)   &
-     &     =   istack_nod_table_wtype_org(0:4*tbl_org%num_dest_domain)
+     &     =   istack_nod_tbl_wtype_org(0:4*tbl_org%num_dest_domain)
 !
         do i = 0, tbl_org%num_dest_domain
           tbl_org%istack_nod_tbl_org(i)                                 &
@@ -120,6 +120,7 @@
         end do
 !
         do i = 1, tbl_org%ntot_table_org
+          tbl_org%inod_itp_send(i) =      inod_itp_send(i)
           tbl_org%inod_gl_dest_4_org(i) = inod_gl_dest_4_org(i)
           tbl_org%iele_org_4_org(i) =     iele_org_4_org(i)
           tbl_org%itype_inter_org(i) =    itype_inter_org(i)

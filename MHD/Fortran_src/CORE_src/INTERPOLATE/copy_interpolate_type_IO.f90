@@ -134,15 +134,13 @@
 !
         tbl_org%id_dest_domain(1:tbl_org%num_dest_domain)               &
      &     = id_dest_domain_IO(1:tbl_org%num_dest_domain)
+        tbl_org%istack_nod_tbl_org(0:num_dest_domain_IO)                &
+     &       = istack_nod_table_org_IO(0:num_dest_domain_IO)
         tbl_org%istack_nod_tbl_wtype_org(0:4*tbl_org%num_dest_domain)   &
      &     =   istack_table_wtype_org_IO(0:4*tbl_org%num_dest_domain)
 !
-        do i = 0, tbl_org%num_dest_domain
-          tbl_org%istack_nod_tbl_org(i)                                 &
-     &       = tbl_org%istack_nod_tbl_wtype_org(4*i)
-        end do
-!
         do i = 1, tbl_org%ntot_table_org
+          tbl_org%inod_itp_send(i) =      inod_itp_send_IO(i)
           tbl_org%inod_gl_dest_4_org(i) = inod_gl_dest_4_org_IO(i)
           tbl_org%iele_org_4_org(i) =     iele_org_4_org_IO(i)
           tbl_org%itype_inter_org(i) =    itype_inter_org_IO(i)
@@ -223,10 +221,14 @@
 !
         id_dest_domain_IO(1:num_dest_domain_IO)                         &
      &       = tbl_org%id_dest_domain(1:num_dest_domain_IO)
+        istack_nod_table_org_IO(0:num_dest_domain_IO)                   &
+     &       = tbl_org%istack_nod_tbl_org(0:num_dest_domain_IO)
         istack_table_wtype_org_IO(0:4*num_dest_domain_IO)               &
      &       = tbl_org%istack_nod_tbl_wtype_org(0:4*num_dest_domain_IO)
 !
 !
+        inod_itp_send_IO(1:ntot_table_org_IO)                           &
+     &          = tbl_org%inod_itp_send(1:ntot_table_org_IO)
         inod_gl_dest_4_org_IO(1:ntot_table_org_IO)                      &
      &          = tbl_org%inod_gl_dest_4_org(1:ntot_table_org_IO)
         iele_org_4_org_IO(1:ntot_table_org_IO)                          &

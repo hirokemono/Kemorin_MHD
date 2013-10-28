@@ -41,6 +41,8 @@
 !
 !>   total number of node to interpolate in original subdomain
         integer(kind = kint) :: ntot_table_org
+!>   export table for interpolation
+        integer(kind = kint), pointer :: inod_itp_send(:)
 !>   global node ID for target domain
         integer(kind = kint), pointer :: inod_gl_dest_4_org(:)
 !>   local element ID to make interpolation
@@ -87,12 +89,14 @@
       type(interpolate_table_org), intent(inout) :: tbl_org
 !
 !
+      allocate( tbl_org%inod_itp_send(tbl_org%ntot_table_org) )
       allocate( tbl_org%inod_gl_dest_4_org(tbl_org%ntot_table_org) )
       allocate( tbl_org%iele_org_4_org(tbl_org%ntot_table_org) )
       allocate( tbl_org%itype_inter_org(tbl_org%ntot_table_org) )
       allocate( tbl_org%coef_inter_org(tbl_org%ntot_table_org,3) )
 !
       if (tbl_org%ntot_table_org .gt. 0) then
+        tbl_org%inod_itp_send =      0
         tbl_org%inod_gl_dest_4_org = 0
         tbl_org%iele_org_4_org =     0
         tbl_org%itype_inter_org =   -1
@@ -151,6 +155,7 @@
 !
       type(interpolate_table_org), intent(inout) :: tbl_org
 !
+      deallocate( tbl_org%inod_itp_send )
       deallocate( tbl_org%inod_gl_dest_4_org )
       deallocate( tbl_org%iele_org_4_org )
       deallocate( tbl_org%itype_inter_org )

@@ -39,8 +39,10 @@
 !
 !>   total number of interpolated node in target subdomain
         integer(kind = kint) :: ntot_table_dest
-!>   local node ID to set interpolated data
+!>   local node ID to set interpolated data (import)
         integer(kind = kint), pointer :: inod_dest_4_dest(:)
+!>   Reverse ID to set interpolated data (import)
+        integer(kind = kint), pointer :: irev_dest_4_dest(:)
 !
       end type interpolate_table_dest
 !
@@ -75,9 +77,11 @@
       type(interpolate_table_dest), intent(inout) :: tbl_dest
 !
 !
-      allocate( tbl_dest%inod_dest_4_dest(tbl_dest%ntot_table_dest) )
+      allocate( tbl_dest%inod_dest_4_dest(tbl_dest%ntot_table_dest)  )
+      allocate( tbl_dest%irev_dest_4_dest(tbl_dest%ntot_table_dest) )
       if (tbl_dest%ntot_table_dest .gt. 0) then
         tbl_dest%inod_dest_4_dest = 0
+        tbl_dest%irev_dest_4_dest = 0
       end if
 !
       end subroutine alloc_type_itp_table_dest
@@ -117,7 +121,7 @@
       type(interpolate_table_dest), intent(inout) :: tbl_dest
 !
 !
-      deallocate( tbl_dest%inod_dest_4_dest )
+      deallocate(tbl_dest%inod_dest_4_dest, tbl_dest%irev_dest_4_dest)
 !
       end subroutine dealloc_type_itp_table_dest
 !
