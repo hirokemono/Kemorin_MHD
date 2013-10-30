@@ -94,10 +94,7 @@
       write(id_file,'(a)') '!'
 !
       if (num_dest_domain_IO .gt. 0) then
-        do i = 1, num_dest_domain_IO
-          write(id_file,'(4i10)')                                       &
-     &                istack_table_wtype_org_IO(4*i-3:4*i)
-        end do
+        write(id_file,'(4i10)') istack_itp_type_org_IO(1:4)
 !
         do inod = 1, ntot_table_org_IO
           write(id_file,'(3i10,1p3e23.12)')                             &
@@ -173,12 +170,8 @@
 !
 !
       if (num_dest_domain_IO .eq. 0) return
-!
       call read_stack_array(character_4_read, id_file,                  &
-     &      ifour, istack_table_wtype_org_IO(0) )
-      do i = 2, num_dest_domain_IO
-        read(id_file,*) istack_table_wtype_org_IO(4*i-3:4*i)
-      end do
+     &      ifour, istack_itp_type_org_IO(0) )
 !
       do i = 1, ntot_table_org_IO
         read(id_file,*) inod_gl_dest_4_org_IO(i),                       &

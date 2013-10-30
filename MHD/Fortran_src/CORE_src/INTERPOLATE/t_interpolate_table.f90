@@ -6,7 +6,7 @@
 !      Written by H.Matsui on Dec., 2008
 !
 !      subroutine unlink_mesh_data_4_itp_type(itp_info)
-!      subroutine alloc_zero_itp_tables(itp_info)
+!      subroutine alloc_zero_itp_tables(inp_smp, tp_info)
 !        type(interpolate_table), intent(inout) :: itp_info
 !
 !
@@ -58,19 +58,19 @@
       call dealloc_type_itp_num_dest(itp_info%tbl_dest)
 !
       call dealloc_type_itp_table_org(itp_info%tbl_org)
-      call dealloc_type_istack_tbl_wtp_smp(itp_info%tbl_org)
       call dealloc_type_itp_num_org(itp_info%tbl_org)
 !
       end subroutine dealloc_interpolate_tbl_type
 !
 !------------------------------------------------------------------
 !
-      subroutine alloc_zero_itp_tables(itp_info)
+      subroutine alloc_zero_itp_tables(np_smp, itp_info)
 !
+      integer(kind = kint), intent(in) :: np_smp
       type(interpolate_table), intent(inout) :: itp_info
 !
 !
-      call alloc_type_zero_itp_tbl_org(itp_info%tbl_org)
+      call alloc_type_zero_itp_tbl_org(np_smp, itp_info%tbl_org)
       call alloc_type_zero_itp_tbl_dest(itp_info%tbl_dest)
 !
       end subroutine alloc_zero_itp_tables

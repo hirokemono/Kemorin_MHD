@@ -6,13 +6,11 @@
 !
 !> @brief Interpolation table for source grid
 !!@verbatim
-!!      subroutine allocate_itp_num_org(num_dest_pe)
+!!      subroutine allocate_itp_num_org(np_smp, num_dest_pe)
 !!      subroutine allocate_itp_table_org
-!!      subroutine allocate_istack_tbl_wtype_smp(np_smp)
 !!
 !!      subroutine deallocate_itp_num_org
 !!      subroutine deallocate_itp_table_org
-!!      subroutine deallocate_istack_tbl_wtype_smp
 !!@endverbatim
 !
       module m_interpolate_table_orgin
@@ -30,10 +28,8 @@
       integer(kind = kint), allocatable :: id_dest_domain(:)
 !>   end address to send interpolated data
       integer(kind = kint), allocatable :: istack_nod_tbl_org(:)
-!
-!>   end address to send interpolated data including interpolate type
-      integer(kind = kint), allocatable                                 &
-     &            :: istack_nod_tbl_wtype_org(:)
+!>   end address for interplation modes
+      integer(kind = kint), allocatable :: istack_itp_type_org(:)
 !
 !>   total number of node to interpolate in original subdomain
       integer(kind = kint) :: ntot_table_org
@@ -60,16 +56,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_itp_num_org(num_dest_pe)
+      subroutine allocate_itp_num_org(np_smp, num_dest_pe)
 !
+      integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: num_dest_pe
 !
       allocate( id_dest_domain(num_dest_pe) )
       allocate( istack_nod_tbl_org(0:num_dest_pe) )
-      allocate( istack_nod_tbl_wtype_org(0:4*num_dest_pe) )
-      id_dest_domain = 0
-      istack_nod_tbl_org = -1
-      istack_nod_tbl_wtype_org = -1
+      allocate( istack_itp_type_org(0:4) )
+!
+      allocate(istack_table_wtype_org_smp(0:4*np_smp*num_dest_domain))
+!
+      if(num_dest_pe .gt. 0) id_dest_domain = 0
+      istack_nod_tbl_org =  0
+      istack_itp_type_org = 0
+      istack_table_wtype_org_smp = 0
 !
       end subroutine allocate_itp_num_org
 !
@@ -94,24 +95,13 @@
       end subroutine allocate_itp_table_org
 !
 !-----------------------------------------------------------------------
-!
-      subroutine allocate_istack_tbl_wtype_smp(np_smp)
-!
-      integer(kind = kint), intent(in) :: np_smp
-!
-      allocate(istack_table_wtype_org_smp(0:4*np_smp*num_dest_domain))
-      istack_table_wtype_org_smp = 0
-!
-      end subroutine allocate_istack_tbl_wtype_smp
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine deallocate_itp_num_org
 !
       deallocate( id_dest_domain )
       deallocate( istack_nod_tbl_org )
-      deallocate( istack_nod_tbl_wtype_org )
+      deallocate(istack_table_wtype_org_smp)
 !
       end subroutine deallocate_itp_num_org
 !
@@ -126,14 +116,6 @@
       deallocate( coef_inter_org )
 !
       end subroutine deallocate_itp_table_org
-!
-!-----------------------------------------------------------------------
-!
-      subroutine deallocate_istack_tbl_wtype_smp
-!
-      deallocate(istack_table_wtype_org_smp)
-!
-      end subroutine deallocate_istack_tbl_wtype_smp
 !
 !-----------------------------------------------------------------------
 !

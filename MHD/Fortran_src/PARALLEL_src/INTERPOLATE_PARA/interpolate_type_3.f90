@@ -31,7 +31,7 @@
       use t_interpolate_table
       use m_work_4_interpolation
 !
-      use interpolate_parallel
+      use interpolate_1pe
       use select_calypso_SR
       use solver_SR_3
 !
@@ -51,10 +51,9 @@
 !    interpolation
 !
       if ( itp_table%tbl_org%num_dest_domain .gt. 0 ) then
-        call s_interporate_vector_para(PEsmpTOT, NP_org,                &
+        call interporate_vector_para(PEsmpTOT, NP_org,                  &
      &      itp_table%ele_org%numele, itp_table%ele_org%nnod_4_ele,     &
      &      itp_table%ele_org%ie, X_org(1),                             &
-     &      itp_table%tbl_org%num_dest_domain,                          &
      &      itp_table%tbl_org%istack_tbl_wtype_org_smp,                 &
      &      itp_table%tbl_org%ntot_table_org,                           &
      &      itp_table%tbl_org%iele_org_4_org,                           &
@@ -100,7 +99,7 @@
       use t_interpolate_table
       use m_work_4_interpolation
 !
-      use interpolate_parallel
+      use interpolate_1pe
       use select_calypso_SR
       use solver_SR_3
 !
@@ -239,6 +238,7 @@
       call s_interpolate_vector_surf4(np_smp, numnod, numele, ie,       &
      &    v_org, istack_wtype_smp(ist), num_points, iele_gauss,         &
      &    itype_gauss, xi_gauss, vect)
+      return
 !
       ist = 3*np_smp
       write(*,*) 's_interpolate_vector_ele8'

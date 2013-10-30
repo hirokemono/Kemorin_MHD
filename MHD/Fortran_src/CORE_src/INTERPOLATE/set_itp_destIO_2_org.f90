@@ -49,6 +49,8 @@
 !
       subroutine set_interpolation_4_orgin(n_org_rank, n_dest_rank)
 !
+      use m_work_const_itp_table
+!
       integer(kind = kint), intent(in) :: n_org_rank, n_dest_rank
       integer(kind = kint) :: i, j, nnod, inum, iorg, idest
 !
@@ -58,8 +60,8 @@
           num_dest_domain = num_dest_domain + 1
 !
           do j = 1, 4
-            istack_nod_tbl_wtype_org(4*(num_dest_domain-1)+j)           &
-     &         = istack_nod_tbl_wtype_org(4*(num_dest_domain-1)+j-1)    &
+            istack_org_para_type(4*(num_dest_domain-1)+j)               &
+     &         = istack_org_para_type(4*(num_dest_domain-1)+j-1)        &
      &            + istack_table_wtype_dest_IO(4*(i-1)+j)               &
      &            - istack_table_wtype_dest_IO(4*(i-1)+j-1)
           end do

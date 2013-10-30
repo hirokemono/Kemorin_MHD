@@ -45,8 +45,8 @@
       allocate(istack_table_dest_IO(0:num_org_domain_IO))
       allocate(istack_table_wtype_dest_IO(0:4*num_org_domain_IO))
       id_org_domain_IO = 0
-      istack_table_dest_IO = -1
-      istack_table_wtype_dest_IO = -1
+      istack_table_dest_IO = 0
+      istack_table_wtype_dest_IO = 0
 !
       end subroutine allocate_itp_num_dst_IO
 !

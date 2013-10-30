@@ -41,6 +41,10 @@
       subroutine const_parallel_itp_tbl(single_tbl, nprocs_table,       &
      &          para_tbl)
 !
+      use m_machine_parameter
+      use m_work_const_itp_table
+      use ordering_itp_org_tbl
+!
       type(interpolate_table), intent(in) :: single_tbl
 !
       integer(kind = kint), intent(in) :: nprocs_table
@@ -56,7 +60,7 @@
         call set_itp_dest_domain_4_para(ip, para_tbl(ip)%tbl_dest)
       end do
       do jp = 1, nprocs_itp_org
-        call alloc_type_itp_num_org(para_tbl(jp)%tbl_org)
+        call alloc_type_itp_num_org(np_smp, para_tbl(jp)%tbl_org)
         call set_itp_org_domain_4_para(jp, para_tbl(jp)%tbl_org)
       end do
 !
@@ -72,16 +76,20 @@
         call set_itp_dest_tbl_4_para(ip, para_tbl(ip)%tbl_dest)
       end do
       do jp = 1, nprocs_itp_org
+        call allocate_istack_org_ptype                                  &
+     &     (para_tbl((jp))%tbl_org%num_dest_domain)
         call alloc_type_itp_table_org(para_tbl(jp)%tbl_org)
         call set_itp_org_tbl_4_para(jp, single_tbl%tbl_org,             &
      &      para_tbl(jp)%tbl_org)
+        call ordering_itp_orgin_tbl_t(para_tbl(jp)%tbl_org)
+        call deallocate_istack_org_ptype
       end do
 !
       do ip = nprocs_itp_dest+1, nprocs_table
         call alloc_type_zero_itp_tbl_dest(para_tbl(ip)%tbl_dest)
       end do
       do jp = nprocs_itp_org+1, nprocs_table
-        call alloc_type_zero_itp_tbl_org(para_tbl(jp)%tbl_org)
+        call alloc_type_zero_itp_tbl_org(np_smp, para_tbl(jp)%tbl_org)
       end do
 !
       end subroutine const_parallel_itp_tbl
@@ -208,22 +216,18 @@
       integer(kind = kint), intent(in) :: jp
       type(interpolate_table_org), intent(inout) :: para_tbl_org
 !
-      integer(kind = kint) :: ip0, ip, i, i4, k4
+      integer(kind = kint) :: ip0, ip, i, kst
 !
 !
       para_tbl_org%istack_nod_tbl_org(0) =       0
-      para_tbl_org%istack_nod_tbl_wtype_org(0) = 0
       do ip0 = 1, para_tbl_org%num_dest_domain
         ip = para_tbl_org%id_dest_domain(ip0) + 1
-        do i = 1, 4
-          i4 = i + 4 * (ip0-1)
-          k4 = i + 4 * (jp-1) + 4*nprocs_itp_org * (ip-1)
-          para_tbl_org%istack_nod_tbl_wtype_org(i4)                     &
-     &     = para_tbl_org%istack_nod_tbl_wtype_org(i4-1)                &
-     &      + ntable_para(k4)
-        end do
+        kst = 4 * (jp-1) + 4*nprocs_itp_org * (ip-1)
+!
         para_tbl_org%istack_nod_tbl_org(ip0)                            &
-     &     = para_tbl_org%istack_nod_tbl_wtype_org(4*ip0)
+     &     = para_tbl_org%istack_nod_tbl_org(ip0-1)                     &
+     &      + ntable_para(kst+1) + ntable_para(kst+2)                   &
+     &      + ntable_para(kst+3) + ntable_para(kst+4)
       end do
       ip0 = para_tbl_org%num_dest_domain
       para_tbl_org%ntot_table_org                                       &
@@ -274,13 +278,26 @@
 !
       subroutine set_itp_org_tbl_4_para(jp, sgl_tbl_org, para_tbl_org)
 !
+      use m_work_const_itp_table
+!
       integer(kind = kint), intent(in) :: jp
       type(interpolate_table_org), intent(in) ::    sgl_tbl_org
       type(interpolate_table_org), intent(inout) :: para_tbl_org
 !
-      integer(kind = kint) :: ip0, ip, i, i4, k, ist, ied, ic, inum
+      integer(kind = kint) :: ip0, ip, i, i4, k, ist, ied, ic, inum, k4
       integer(kind = kint) :: inod_gl, iele_gl, irev_gl
 !
+!
+      istack_org_para_type(0) = 0
+      do ip0 = 1, para_tbl_org%num_dest_domain
+        ip = para_tbl_org%id_dest_domain(ip0) + 1
+        do i = 1, 4
+          i4 = i + 4 * (ip0-1)
+          k4 = i + 4 * (jp-1) + 4*nprocs_itp_org * (ip-1)
+          istack_org_para_type(i4) = istack_org_para_type(i4-1)         &
+     &                              + ntable_para(k4)
+        end do
+      end do
 !
       do ip0 = 1, para_tbl_org%num_dest_domain
         ip = para_tbl_org%id_dest_domain(ip0) + 1
@@ -289,7 +306,7 @@
           k =  i + 4 * (jp-1) + 4*nprocs_itp_org * (ip-1)
           ist = istack_para(k-1) + 1
           ied = istack_para(k)
-          ic =  para_tbl_org%istack_nod_tbl_wtype_org(i4-1)
+          ic =  istack_org_para_type(i4-1)
           do inum = ist, ied
             ic = ic + 1
             inod_gl = itable_para_order(inum)

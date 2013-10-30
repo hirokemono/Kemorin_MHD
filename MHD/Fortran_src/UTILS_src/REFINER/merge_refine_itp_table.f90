@@ -8,6 +8,7 @@
 !
       use m_precision
 !
+      use m_machine_parameter
       use m_constants
       use m_work_merge_refine_itp
 !
@@ -58,15 +59,15 @@
       c2f_mgd%tbl_org%ntot_table_org                                    &
      &     = c2f_2nd%tbl_org%ntot_table_org
 !
-      call alloc_type_itp_num_org(c2f_mgd%tbl_org)
+      call alloc_type_itp_num_org(np_smp, c2f_mgd%tbl_org)
       call alloc_type_itp_table_org(c2f_mgd%tbl_org)
 !
       c2f_mgd%tbl_org%id_dest_domain                                    &
      &     = c2f_2nd%tbl_org%id_dest_domain
       c2f_mgd%tbl_org%istack_nod_tbl_org                                &
      &     = c2f_2nd%tbl_org%istack_nod_tbl_org
-      c2f_mgd%tbl_org%istack_nod_tbl_wtype_org                          &
-     &     = c2f_2nd%tbl_org%istack_nod_tbl_wtype_org
+      c2f_mgd%tbl_org%istack_itp_type_org                               &
+     &     = c2f_2nd%tbl_org%istack_itp_type_org
 !
 !
       do inod_2nd = 1, c2f_mgd%tbl_org%ntot_table_org
@@ -140,7 +141,7 @@
           call copy_each_merge_itp_tbl_refine(inod_2nd, icou)
         end if
       end do
-      istack_nod_tbl_wtype_org(1) =  icou
+      istack_itp_type_org(1) =  icou
 !
       do inod_2nd = 1, ntot_table_org
         iflag = c2f_mgd%tbl_org%itype_inter_org(inod_2nd)
@@ -149,7 +150,7 @@
           call copy_each_merge_itp_tbl_refine(inod_2nd, icou)
         end if
       end do
-      istack_nod_tbl_wtype_org(2) =  icou
+      istack_itp_type_org(2) =  icou
 !
       do inod_2nd = 1, ntot_table_org
         iflag = c2f_mgd%tbl_org%itype_inter_org(inod_2nd)
@@ -158,7 +159,7 @@
           call copy_each_merge_itp_tbl_refine(inod_2nd, icou)
         end if
       end do
-      istack_nod_tbl_wtype_org(3) =  icou
+      istack_itp_type_org(3) =  icou
 !
       do inod_2nd = 1, ntot_table_org
         iflag = c2f_mgd%tbl_org%itype_inter_org(inod_2nd)
@@ -167,8 +168,8 @@
           call copy_each_merge_itp_tbl_refine(inod_2nd, icou)
         end if
       end do
-      istack_nod_tbl_wtype_org(4) =  icou
-      istack_nod_tbl_org(1) =      istack_nod_tbl_wtype_org(4)
+      istack_itp_type_org(4) =  icou
+      istack_nod_tbl_org(1) =   istack_itp_type_org(4)
 !
 !
       end subroutine sort_merge_itp_table_refine

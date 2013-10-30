@@ -112,10 +112,7 @@
       call write_compress_txt(nbuf, textbuf)
 !
       if (num_dest_domain_IO .gt. 0) then
-        do i = 1, num_dest_domain_IO
-          call write_gz_multi_int_8i10(ifour,                           &
-     &        istack_table_wtype_org_IO(4*i-3) )
-        end do
+        call write_gz_multi_int_8i10(ifour, istack_itp_type_org_IO(1) )
 !
         do inod = 1, ntot_table_org_IO
           write(textbuf,'(3i10,1p3e23.12,a1)')                          &
@@ -181,11 +178,8 @@
 !
       if (num_dest_domain_IO .eq. 0) return
 !
-        istack_table_wtype_org_IO(0) = 0
-        do i = 1, num_dest_domain_IO
-          call read_gz_multi_int(ifour,                                 &
-     &        istack_table_wtype_org_IO(4*i-3) )
-        end do
+        istack_itp_type_org_IO(0) = 0
+        call read_gz_multi_int(ifour, istack_itp_type_org_IO(1) )
 !
         do inod = 1, ntot_table_org_IO
           call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)

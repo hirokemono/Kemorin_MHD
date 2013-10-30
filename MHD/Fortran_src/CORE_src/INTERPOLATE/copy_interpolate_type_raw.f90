@@ -1,18 +1,23 @@
-!copy_interpolate_type_raw.f90
-!      module copy_interpolate_type_raw
+!>@file   copy_interpolate_type_raw.f90
+!!@brief  module copy_interpolate_type_raw
+!!
+!!@author H. Matsui
+!!@date Programmed in 2008
 !
-!     Written by H. Matsui on Dec., 2008
-!
-!      subroutine copy_interpolate_types_from_raw(my_rank, itp_table)
+!>@brief  Copy interpolation table to structures
+!!
+!!@verbatim
+!!      subroutine copy_interpolate_types_from_raw(my_rank, itp_table)
+!!
+!!      subroutine copy_itp_tbl_type_dst_from_raw(my_rank, tbl_dest)
+!!      subroutine copy_itp_tbl_type_org_from_raw(my_rank, tbl_org)
+!!@endverbatim
 !
       module copy_interpolate_type_raw
 !
       use m_precision
 !
       implicit none
-!
-      private :: copy_itp_tbl_type_dst_from_raw
-      private :: copy_itp_tbl_type_org_from_raw
 !
 !-----------------------------------------------------------------------
 !
@@ -69,7 +74,7 @@
         tbl_dest%istack_nod_tbl_dest(0:tbl_dest%num_org_domain)         &
      &      = istack_nod_tbl_dest(0:tbl_dest%num_org_domain)
         tbl_dest%istack_nod_tbl_wtype_dest(0:4*tbl_dest%num_org_domain) &
-     &      = istack_nod_table_wtype_dest(0:4*tbl_dest%num_org_domain)
+     &      = istack_nod_tbl_wtype_dest(0:4*tbl_dest%num_org_domain)
 !
         tbl_dest%inod_dest_4_dest(1:tbl_dest%ntot_table_dest)           &
      &      = inod_dest_4_dest(1:tbl_dest%ntot_table_dest)
@@ -91,6 +96,7 @@
       subroutine copy_itp_tbl_type_org_from_raw(my_rank, tbl_org)
 !
       use t_interpolate_tbl_org
+      use m_machine_parameter
       use m_interpolate_table_orgin
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -106,18 +112,14 @@
 !
         tbl_org%ntot_table_org = ntot_table_org
 !
-        call alloc_type_itp_num_org(tbl_org)
+        call alloc_type_itp_num_org(np_smp, tbl_org)
         call alloc_type_itp_table_org(tbl_org)
 !
         tbl_org%id_dest_domain(1:tbl_org%num_dest_domain)               &
      &     = id_dest_domain(1:tbl_org%num_dest_domain)
-        tbl_org%istack_nod_tbl_wtype_org(0:4*tbl_org%num_dest_domain)   &
-     &     =   istack_nod_tbl_wtype_org(0:4*tbl_org%num_dest_domain)
-!
-        do i = 0, tbl_org%num_dest_domain
-          tbl_org%istack_nod_tbl_org(i)                                 &
-     &       = tbl_org%istack_nod_tbl_wtype_org(4*i)
-        end do
+        tbl_org%istack_nod_tbl_org(0:tbl_org%num_dest_domain)           &
+     &     = istack_nod_tbl_org(0:tbl_org%num_dest_domain)
+        tbl_org%istack_itp_type_org(0:4) = istack_itp_type_org(0:4)
 !
         do i = 1, tbl_org%ntot_table_org
           tbl_org%inod_itp_send(i) =      inod_itp_send(i)

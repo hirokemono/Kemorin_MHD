@@ -9,12 +9,10 @@
 !!@verbatim
 !!      subroutine alloc_type_itp_num_org(tbl_org)
 !!      subroutine alloc_type_itp_table_org(tbl_org)
-!!      subroutine alloc_type_istack_tbl_wtp_smp(np_smp, tbl_org)
-!!      subroutine alloc_type_zero_itp_tbl_org(tbl_org)
+!!      subroutine alloc_type_zero_itp_tbl_org(np_smp, tbl_org)
 !!
 !!      subroutine dealloc_type_itp_num_org(tbl_org)
 !!      subroutine dealloc_type_itp_table_org(tbl_org)
-!!      subroutine dealloc_type_istack_tbl_wtp_smp(tbl_org)
 !!@endverbatim
 !
       module t_interpolate_tbl_org
@@ -35,9 +33,8 @@
         integer(kind = kint), pointer :: id_dest_domain(:)
 !>   end address to send interpolated data
         integer(kind = kint), pointer :: istack_nod_tbl_org(:)
-!
-!>   end address to send interpolated data including interpolate type
-        integer(kind = kint), pointer  :: istack_nod_tbl_wtype_org(:)
+!>   end address for interplation modes
+        integer(kind = kint), pointer :: istack_itp_type_org(:)
 !
 !>   total number of node to interpolate in original subdomain
         integer(kind = kint) :: ntot_table_org
@@ -65,8 +62,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_type_itp_num_org(tbl_org)
+      subroutine alloc_type_itp_num_org(np_smp, tbl_org)
 !
+      integer(kind = kint), intent(in) :: np_smp
       type(interpolate_table_org), intent(inout) :: tbl_org
       integer(kind = kint) :: num
 !
@@ -74,11 +72,14 @@
       allocate( tbl_org%istack_nod_tbl_org(0:tbl_org%num_dest_domain) )
 !
       num = 4*tbl_org%num_dest_domain
-      allocate( tbl_org%istack_nod_tbl_wtype_org(0:num) )
+      allocate( tbl_org%istack_itp_type_org(0:4) )
+!
+      allocate(tbl_org%istack_tbl_wtype_org_smp(0:4*np_smp))
 !
       if (tbl_org%num_dest_domain .gt. 0) tbl_org%id_dest_domain = 0
-      tbl_org%istack_nod_tbl_org =       -1
-      tbl_org%istack_nod_tbl_wtype_org = -1
+      tbl_org%istack_nod_tbl_org =       0
+      tbl_org%istack_itp_type_org =      0
+      tbl_org%istack_tbl_wtype_org_smp = 0
 !
       end subroutine alloc_type_itp_num_org
 !
@@ -107,31 +108,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_type_istack_tbl_wtp_smp(np_smp, tbl_org)
-!
-      integer(kind = kint), intent(in) :: np_smp
-      type(interpolate_table_org), intent(inout) :: tbl_org
-      integer(kind = kint) :: num
-!
-      num = 4*np_smp*tbl_org%num_dest_domain
-      allocate(tbl_org%istack_tbl_wtype_org_smp(0:num))
-      tbl_org%istack_tbl_wtype_org_smp = 0
-!
-      end subroutine alloc_type_istack_tbl_wtp_smp
-!
-!-----------------------------------------------------------------------
-!
-      subroutine alloc_type_zero_itp_tbl_org(tbl_org)
+      subroutine alloc_type_zero_itp_tbl_org(np_smp, tbl_org)
 !
       use m_constants
 !
+      integer(kind = kint), intent(in) :: np_smp
       type(interpolate_table_org), intent(inout) :: tbl_org
 !
 !
       tbl_org%num_dest_domain = 0
       tbl_org%ntot_table_org =  0
-      call alloc_type_itp_num_org(tbl_org)
-      call alloc_type_istack_tbl_wtp_smp(izero, tbl_org)
+      call alloc_type_itp_num_org(np_smp, tbl_org)
       call alloc_type_itp_table_org(tbl_org)
 !
       end subroutine alloc_type_zero_itp_tbl_org
@@ -145,7 +132,8 @@
 !
       deallocate( tbl_org%id_dest_domain )
       deallocate( tbl_org%istack_nod_tbl_org )
-      deallocate( tbl_org%istack_nod_tbl_wtype_org )
+      deallocate( tbl_org%istack_itp_type_org )
+      deallocate( tbl_org%istack_tbl_wtype_org_smp )
 !
       end subroutine dealloc_type_itp_num_org
 !
@@ -162,16 +150,6 @@
       deallocate( tbl_org%coef_inter_org )
 !
       end subroutine dealloc_type_itp_table_org
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_type_istack_tbl_wtp_smp(tbl_org)
-!
-      type(interpolate_table_org), intent(inout) :: tbl_org
-!
-      deallocate(tbl_org%istack_tbl_wtype_org_smp)
-!
-      end subroutine dealloc_type_istack_tbl_wtp_smp
 !
 !-----------------------------------------------------------------------
 !

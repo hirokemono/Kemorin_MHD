@@ -33,7 +33,7 @@
       use m_array_for_send_recv
       use m_work_4_interpolation
 !
-      use interpolate_imark_para
+      use interpolate_imark_1pe
       use select_calypso_SR
       use solver_SR_int
 !
@@ -54,8 +54,8 @@
 !
       if (num_dest_domain.gt.0) then
         call s_interporate_imark_para(np_smp, numnod, numele,           &
-     &    nnod_4_ele, ie, ix_vec(1), num_dest_domain,                   &
-     &    istack_table_wtype_org_smp, ntot_table_org, iele_org_4_org,   &
+     &    nnod_4_ele, ie, ix_vec(1), istack_table_wtype_org_smp,        &
+     &    ntot_table_org, iele_org_4_org,                               &
      &    itype_inter_org, i_inter_org(1) )
       end if
 !

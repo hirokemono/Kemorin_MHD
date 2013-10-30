@@ -39,7 +39,7 @@
 !
 !>   end address to receive interpolated data including interpolate type
       integer(kind = kint), allocatable                                 &
-     &            :: istack_nod_table_wtype_dest(:)
+     &            :: istack_nod_tbl_wtype_dest(:)
 !
 !>   total number of interpolated node in target subdomain
       integer(kind = kint) :: ntot_table_dest
@@ -77,11 +77,11 @@
 !
       allocate( id_org_domain(num_org_pe) )
       allocate( istack_nod_tbl_dest(0:num_org_pe) )
-      allocate( istack_nod_table_wtype_dest(0:4*num_org_pe) )
+      allocate( istack_nod_tbl_wtype_dest(0:4*num_org_pe) )
 !
       id_org_domain = 0
       istack_nod_tbl_dest = -1
-      istack_nod_table_wtype_dest = -1
+      istack_nod_tbl_wtype_dest = -1
 !
       end subroutine allocate_itp_num_dest
 !
@@ -137,7 +137,7 @@
 !
       deallocate( id_org_domain )
       deallocate( istack_nod_tbl_dest)
-      deallocate( istack_nod_table_wtype_dest)
+      deallocate( istack_nod_tbl_wtype_dest)
 !
       end subroutine deallocate_itp_num_dest
 !

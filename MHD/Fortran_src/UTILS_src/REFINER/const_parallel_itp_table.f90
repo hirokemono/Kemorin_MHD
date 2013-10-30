@@ -115,7 +115,9 @@
      &          nele_org_1pe, iele_local_org, ipe_ele_local_org,        &
      &          nnod_tgt_1pe, ipe_nod_local_tgt)
 !
+      use m_work_const_itp_table
       use const_parallel_itp_tbl_org
+      use ordering_itp_org_tbl
 !
       integer(kind = kint), intent(in) :: nprocs_tgt
       integer(kind = kint), intent(in) :: nprocs_larger
@@ -138,7 +140,9 @@
      &      nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,              &
      &      ipe_nod_local_tgt, itp_para(ip)%tbl_org%num_dest_domain)
 !
-        call alloc_type_itp_num_org(itp_para(ip)%tbl_org)
+        call alloc_type_itp_num_org(np_smp, itp_para(ip)%tbl_org)
+        call allocate_istack_org_ptype                                  &
+     &     (itp_para(ip)%tbl_org%num_dest_domain)
 !
         call set_id_dest_domain_para_itp(ip, nprocs_tgt, itp_sgl,       &
      &      nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,              &
@@ -153,8 +157,8 @@
      &      nele_org_1pe, iele_local_org, ipe_ele_local_org,            &
      &      nnod_tgt_1pe, ipe_nod_local_tgt, itp_para(ip)%tbl_org)
 !
-        call alloc_type_istack_tbl_wtp_smp(np_smp,                      &
-     &      itp_para(ip)%tbl_org)
+        call ordering_itp_orgin_tbl_t(itp_para(ip)%tbl_org)
+        call deallocate_istack_org_ptype
       end do
 !
       end subroutine s_const_parallel_itp_tbl_org

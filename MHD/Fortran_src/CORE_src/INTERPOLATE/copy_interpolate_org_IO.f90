@@ -10,6 +10,7 @@
 !
       use m_precision
 !
+      use m_machine_parameter
       use m_interpolate_table_orgin
       use m_interpolate_table_org_IO
 !
@@ -33,15 +34,14 @@
 !
         ntot_table_org = ntot_table_org_IO
 !
-        call allocate_itp_num_org(num_dest_domain)
+        call allocate_itp_num_org(np_smp, num_dest_domain)
         call allocate_itp_table_org
 !
         id_dest_domain(1:num_dest_domain)                               &
      &          = id_dest_domain_IO(1:num_dest_domain)
         istack_nod_tbl_org(0:num_dest_domain)                           &
      &          = istack_nod_table_org_IO(0:num_dest_domain)
-        istack_nod_tbl_wtype_org(0:4*num_dest_domain)                   &
-     &          = istack_table_wtype_org_IO(0:4*num_dest_domain)
+        istack_itp_type_org(0:4) = istack_itp_type_org_IO(0:4)
 !
         inod_itp_send(1:ntot_table_org)                                 &
      &          = inod_itp_send_IO(1:ntot_table_org)
@@ -88,8 +88,7 @@
      &          = id_dest_domain(1:num_dest_domain)
         istack_nod_table_org_IO(0:num_dest_domain)                      &
      &          = istack_nod_tbl_org(0:num_dest_domain)
-        istack_table_wtype_org_IO(0:4*num_dest_domain)                  &
-     &          = istack_nod_tbl_wtype_org(0:4*num_dest_domain)
+        istack_itp_type_org_IO(0:4) = istack_itp_type_org(0:4)
 !
 !
         inod_itp_send_IO(1:ntot_table_org)                              &

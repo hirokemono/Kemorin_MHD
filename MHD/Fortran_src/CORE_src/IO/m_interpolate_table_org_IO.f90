@@ -19,8 +19,7 @@
       integer(kind = kint) :: num_dest_domain_IO
       integer(kind = kint), allocatable :: id_dest_domain_IO(:)
       integer(kind = kint), allocatable :: istack_nod_table_org_IO(:)
-      integer(kind = kint), allocatable                                 &
-     &            :: istack_table_wtype_org_IO(:)
+      integer(kind = kint), allocatable :: istack_itp_type_org_IO(:)
 !
       integer(kind = kint) :: ntot_table_org_IO
       integer(kind = kint), allocatable :: inod_itp_send_IO(:)
@@ -39,10 +38,10 @@
 !
       allocate( id_dest_domain_IO(num_dest_domain_IO) )
       allocate( istack_nod_table_org_IO(0:num_dest_domain_IO) )
-      allocate( istack_table_wtype_org_IO(0:4*num_dest_domain_IO) )
+      allocate( istack_itp_type_org_IO(0:4) )
       id_dest_domain_IO = 0
-      istack_nod_table_org_IO = -1
-      istack_table_wtype_org_IO = -1
+      istack_nod_table_org_IO =   0
+      istack_itp_type_org_IO =    0
 !
       end subroutine allocate_itp_num_org_IO
 !
@@ -71,7 +70,7 @@
 !
       deallocate( id_dest_domain_IO )
       deallocate( istack_nod_table_org_IO )
-      deallocate( istack_table_wtype_org_IO )
+      deallocate( istack_itp_type_org_IO )
 !
       end subroutine deallocate_itp_num_org_IO
 !

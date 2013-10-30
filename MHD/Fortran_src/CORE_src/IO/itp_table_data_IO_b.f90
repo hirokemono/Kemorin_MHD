@@ -58,7 +58,7 @@
       integer(kind = kint) :: i
 !
       if (num_dest_domain_IO .eq. 0) return
-        write(id_file) istack_table_wtype_org_IO(0:num_dest_domain_IO)
+        write(id_file) istack_itp_type_org_IO(0:4)
 !
         write(id_file) inod_gl_dest_4_org_IO(1:ntot_table_org_IO)
         write(id_file) iele_org_4_org_IO(1:ntot_table_org_IO)
@@ -123,7 +123,7 @@
 !
 !
       if (num_dest_domain_IO .eq. 0) return
-        read(id_file) istack_table_wtype_org_IO(0:num_dest_domain_IO)
+        read(id_file) istack_itp_type_org_IO(0:4)
 !
         read(id_file) inod_gl_dest_4_org_IO(1:ntot_table_org_IO)
         read(id_file) iele_org_4_org_IO(1:ntot_table_org_IO)

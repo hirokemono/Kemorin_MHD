@@ -46,7 +46,7 @@
 !
         if (my_rank .eq. mod(my_rank_2nd,nprocs) ) then
 !
-          call allocate_itp_num_org(nprocs)
+          call allocate_itp_num_org(np_smp, nprocs)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'count_interpolate_4_orgin', my_rank_2nd, nprocs
@@ -79,7 +79,6 @@
           end if
 !
           call copy_interpolate_types_from_IO(my_rank_2nd, itp_ele_c2f)
-          call dealloc_type_istack_tbl_wtp_smp(itp_ele_c2f%tbl_org)
 !
           call reverse_ele_itp_table_type(itp_ele_c2f, itp_ele_f2c)
           call copy_interpolate_types_to_IO(itp_ele_f2c)
@@ -98,7 +97,6 @@
         num_dest_domain_IO = 0
         ntot_table_org_IO =  0
         call copy_interpolate_types_from_IO(my_rank, itp_ele_c2f)
-        call dealloc_type_istack_tbl_wtp_smp(itp_ele_c2f%tbl_org)
 !
         call reverse_ele_itp_table_type(itp_ele_c2f, itp_ele_f2c)
         call copy_interpolate_types_to_IO(itp_ele_f2c)
@@ -114,6 +112,7 @@
       subroutine reverse_ele_itp_table_type(itp_tbl, itp_rev)
 !
       use t_interpolate_table
+      use m_work_const_itp_table
 !
       type(interpolate_table), intent(inout) :: itp_tbl
       type(interpolate_table), intent(inout) :: itp_rev
@@ -121,10 +120,11 @@
 !
 !
       itp_rev%tbl_org%num_dest_domain = itp_tbl%tbl_dest%num_org_domain
-      itp_rev%tbl_org%ntot_table_org =  itp_tbl%tbl_dest%ntot_table_dest
+      itp_rev%tbl_org%ntot_table_org = itp_tbl%tbl_dest%ntot_table_dest
+      call allocate_istack_org_ptype(itp_rev%tbl_org%num_dest_domain)
 !
       if(itp_rev%tbl_org%num_dest_domain .gt. 0) then
-        call alloc_type_itp_num_org(itp_rev%tbl_org)
+        call alloc_type_itp_num_org(np_smp, itp_rev%tbl_org)
         call alloc_type_itp_table_org(itp_rev%tbl_org)
 !
         num = itp_rev%tbl_org%num_dest_domain
@@ -134,13 +134,13 @@
      &    = itp_tbl%tbl_dest%istack_nod_tbl_dest(0:num)
 !
         do i = 1, num
-          itp_rev%tbl_org%istack_nod_tbl_wtype_org(4*i-3)               &
+          istack_org_para_type(4*i-3)                                   &
      &      = itp_rev%tbl_org%istack_nod_tbl_org(i)
-          itp_rev%tbl_org%istack_nod_tbl_wtype_org(4*i-2)               &
+          istack_org_para_type(4*i-2)                                   &
      &      = itp_rev%tbl_org%istack_nod_tbl_org(i)
-          itp_rev%tbl_org%istack_nod_tbl_wtype_org(4*i-1)               &
+          istack_org_para_type(4*i-1)                                   &
      &      = itp_rev%tbl_org%istack_nod_tbl_org(i)
-          itp_rev%tbl_org%istack_nod_tbl_wtype_org(4*i  )               &
+          istack_org_para_type(4*i  )                                   &
      &      = itp_rev%tbl_org%istack_nod_tbl_org(i)
         end do
 !
@@ -176,7 +176,7 @@
 !
         num = 4*itp_rev%tbl_dest%num_org_domain
         itp_rev%tbl_dest%istack_nod_tbl_wtype_dest(0:num)               &
-     &    = itp_tbl%tbl_org%istack_nod_tbl_wtype_org(0:num)
+     &    = istack_org_para_type(0:num)
 !
 !
         num = itp_rev%tbl_dest%ntot_table_dest
@@ -186,6 +186,8 @@
         call dealloc_type_itp_num_org(itp_tbl%tbl_org)
         call dealloc_type_itp_table_org(itp_tbl%tbl_org)
       end if
+!
+      call deallocate_istack_org_ptype
 !
       end subroutine reverse_ele_itp_table_type
 !

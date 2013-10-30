@@ -44,7 +44,7 @@
       call allocate_itp_table_dest
       call allocate_itp_coef_dest
       call allocate_itp_work_dest(nprocs_2nd)
-      call allocate_work_const_itp_tbl(nprocs_2nd)
+      call allocate_work_const_itp_tbl(nprocs_2nd, numnod)
 !
       if (iflag_debug.eq.1)                                             &
      &     write(*,*)  's_set_bin_id_4_destination'

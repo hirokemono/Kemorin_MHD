@@ -114,6 +114,7 @@
       subroutine copy_itp_tbl_type_org_from_IO(my_rank, tbl_org)
 !
       use t_interpolate_tbl_org
+      use m_machine_parameter
       use m_interpolate_table_org_IO
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -129,15 +130,14 @@
 !
         tbl_org%ntot_table_org = ntot_table_org_IO
 !
-        call alloc_type_itp_num_org(tbl_org)
+        call alloc_type_itp_num_org(np_smp, tbl_org)
         call alloc_type_itp_table_org(tbl_org)
 !
         tbl_org%id_dest_domain(1:tbl_org%num_dest_domain)               &
      &     = id_dest_domain_IO(1:tbl_org%num_dest_domain)
         tbl_org%istack_nod_tbl_org(0:num_dest_domain_IO)                &
      &       = istack_nod_table_org_IO(0:num_dest_domain_IO)
-        tbl_org%istack_nod_tbl_wtype_org(0:4*tbl_org%num_dest_domain)   &
-     &     =   istack_table_wtype_org_IO(0:4*tbl_org%num_dest_domain)
+        tbl_org%istack_itp_type_org(0:4) = istack_itp_type_org_IO(0:4)
 !
         do i = 1, tbl_org%ntot_table_org
           tbl_org%inod_itp_send(i) =      inod_itp_send_IO(i)
@@ -223,8 +223,7 @@
      &       = tbl_org%id_dest_domain(1:num_dest_domain_IO)
         istack_nod_table_org_IO(0:num_dest_domain_IO)                   &
      &       = tbl_org%istack_nod_tbl_org(0:num_dest_domain_IO)
-        istack_table_wtype_org_IO(0:4*num_dest_domain_IO)               &
-     &       = tbl_org%istack_nod_tbl_wtype_org(0:4*num_dest_domain_IO)
+        istack_itp_type_org_IO(0:4) = tbl_org%istack_itp_type_org(0:4)
 !
 !
         inod_itp_send_IO(1:ntot_table_org_IO)                           &

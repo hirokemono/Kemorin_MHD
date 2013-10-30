@@ -1,9 +1,11 @@
 !
 !      module const_interpolate_4_org
 !
-      module const_interpolate_4_org
-!
 !        programmed by H.Matsui on Sep. 2006 (ver 1.2)
+!
+!      subroutine const_interpolate_table_4_orgin
+!
+      module const_interpolate_4_org
 !
       use m_precision
 !
@@ -11,8 +13,6 @@
       use m_machine_parameter
 !
       implicit none
-!
-!      subroutine set_interpolation_4_orgin(n_org_rank)
 !
 !-----------------------------------------------------------------------
 !
@@ -42,7 +42,7 @@
         my_rank_2nd = mod(my_rank+jp-1,nprocs_2nd)
 !
         if (my_rank .eq. mod(my_rank_2nd,nprocs) ) then
-          call allocate_itp_num_org(nprocs)
+          call allocate_itp_num_org(np_smp, nprocs)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'count_interpolate_4_orgin', my_rank_2nd, nprocs
@@ -136,13 +136,16 @@
       use m_interpolate_table_orgin
       use itp_table_IO_select_4_zlib
       use set_itp_destIO_2_org
+      use ordering_itp_org_tbl
+      use m_work_const_itp_table
 !
       integer(kind = kint), intent(in) :: n_org_rank, nprocs_dest
 !
       integer(kind = kint) :: ip, n_dest_rank, ierr
 !
+      call allocate_istack_org_ptype(nprocs_dest)
+!
       num_dest_domain = 0
-      istack_nod_tbl_wtype_org(0:4*nprocs_dest) = 0
       do ip = 1, nprocs_dest
         n_dest_rank = mod(n_org_rank+ip,nprocs_dest)
         table_file_header = work_header
@@ -150,8 +153,10 @@
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
         call set_interpolation_4_orgin(n_org_rank, n_dest_rank)
-!
       end do
+!
+      call ordering_itp_orgin_tbl_m
+      call deallocate_istack_org_ptype
 !
       end subroutine search_interpolate_4_orgin
 !

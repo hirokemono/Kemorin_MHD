@@ -9,6 +9,7 @@
       module input_MG_data
 !
       use m_precision
+      use m_machine_parameter
 !
       use calypso_mpi
       use m_constants
@@ -105,7 +106,7 @@
           call copy_interpolate_types_from_IO(my_rank,                  &
      &        MG_itp(i_level)%f2c )
         else
-          call alloc_zero_itp_tables(MG_itp(i_level)%f2c)
+          call alloc_zero_itp_tables(np_smp, MG_itp(i_level)%f2c)
         end if
 !
       end do
@@ -122,7 +123,7 @@
           call copy_interpolate_types_from_IO(my_rank,                  &
      &        MG_itp(i_level)%c2f )
         else
-          call alloc_zero_itp_tables(MG_itp(i_level)%c2f)
+          call alloc_zero_itp_tables(np_smp, MG_itp(i_level)%c2f)
         end if
 !
       end do
@@ -139,7 +140,7 @@
             call copy_interpolate_types_from_IO(my_rank,                &
      &           MG_c2f_ele_tbl(i_level) )
           else
-            call alloc_zero_itp_tables(MG_c2f_ele_tbl(i_level))
+            call alloc_zero_itp_tables(np_smp, MG_c2f_ele_tbl(i_level))
           end if
 !
         end do

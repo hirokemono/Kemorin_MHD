@@ -21,23 +21,16 @@
       use m_interpolate_table_orgin
       use cal_minmax_and_stacks
 !
-      integer(kind = kint) :: ip, itype, ist, ied, ist_smp, jnum
+      integer(kind = kint) :: itype, ist, ied, ist_smp
 !
 !
-      call allocate_istack_tbl_wtype_smp(np_smp)
-!
-      do ip = 1, num_dest_domain
-        do itype = 1, 4
-          jnum = 4*(ip-1) + itype
-!
-          ist = istack_nod_tbl_wtype_org(jnum-1) + 1
-          ied = istack_nod_tbl_wtype_org(jnum  )
-          ist_smp = np_smp * (jnum-1)
-          call count_number_4_smp( np_smp, ist, ied,                    &
-     &        istack_table_wtype_org_smp(ist_smp),                      &
-     &        imax_table_wtype_org_smp)
-!
-        end do
+      do itype = 1, 4
+        ist = istack_itp_type_org(itype-1) + 1
+        ied = istack_itp_type_org(itype  )
+        ist_smp = np_smp * (itype-1)
+        call count_number_4_smp( np_smp, ist, ied,                      &
+     &     istack_table_wtype_org_smp(ist_smp),                         &
+     &     imax_table_wtype_org_smp)
       end do
 !
       end subroutine s_set_stack_tbl_wtype_org_smp

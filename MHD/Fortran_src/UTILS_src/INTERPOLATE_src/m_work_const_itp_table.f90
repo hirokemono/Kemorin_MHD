@@ -1,9 +1,17 @@
 !m_work_const_itp_table.f90
 !      module m_work_const_itp_table
 !
-      module m_work_const_itp_table
-!
 !     Written by H. Matsui on Aug., 2006
+!
+!!      subroutine allocate_work_const_itp_tbl(num_org_pe, nnod_2nd)
+!!      subroutine deallocate__work_const_itp_tbl
+!!
+!!      subroutine swap_interpolation_table(idest, inod)
+!!      subroutine copy_table_2_order
+!!
+!!      subroutine check_search_ID(id_file)
+!
+      module m_work_const_itp_table
 !
       use m_precision
 !
@@ -13,19 +21,13 @@
       integer(kind = kint), allocatable :: id_search_area(:,:)
       integer(kind = kint), allocatable :: iflag_org_domain(:)
 !
+      integer(kind = kint), allocatable :: istack_org_para_type(:)
+!
       integer(kind = kint), allocatable :: inod_dest_ordered(:)
       integer(kind = kint), allocatable :: iele_orgin_ordered(:)
       real(kind = kreal), allocatable :: coef_inter_ordered(:,:)
       private :: inod_dest_ordered, iele_orgin_ordered
       private :: coef_inter_ordered
-!
-!      subroutine allocate_work_const_itp_tbl(num_org_pe)
-!      subroutine deallocate__work_const_itp_tbl
-!
-!      subroutine swap_interpolation_table(idest, inod)
-!      subroutine copy_table_2_order
-!
-!      subroutine check_search_ID(id_file)
 !
 !-----------------------------------------------------------------------
 !
@@ -33,14 +35,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_work_const_itp_tbl(num_org_pe)
+      subroutine allocate_work_const_itp_tbl(num_org_pe, numnod)
 !
       use m_interpolate_table_dest
 !
-      integer(kind = kint), intent(in) :: num_org_pe
+      integer(kind = kint), intent(in) :: num_org_pe, numnod
 !
       allocate( id_search_area(ntot_table_dest,3) )
-      allocate( iflag_org_domain(ntot_table_dest) )
+      allocate( iflag_org_domain(numnod) )
 !
       iflag_org_domain = 0
       id_search_area = 0
@@ -57,6 +59,18 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine allocate_istack_org_ptype(num_dest_pe)
+!
+      integer(kind = kint), intent(in) :: num_dest_pe
+!
+!
+      allocate( istack_org_para_type(0:4*num_dest_pe) )
+      istack_org_para_type = 0
+!
+      end subroutine allocate_istack_org_ptype
+!
+!-----------------------------------------------------------------------
+!
       subroutine deallocate__work_const_itp_tbl
 !
 !
@@ -67,6 +81,15 @@
       deallocate( iele_orgin_ordered, inod_dest_ordered )
 !
       end subroutine deallocate__work_const_itp_tbl
+!
+!-----------------------------------------------------------------------
+!
+      subroutine deallocate_istack_org_ptype
+!
+!
+      deallocate(istack_org_para_type)
+!
+      end subroutine deallocate_istack_org_ptype
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

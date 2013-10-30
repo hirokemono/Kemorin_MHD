@@ -1,15 +1,20 @@
+!>@file   set_interpolate_type_8.f90
+!!@brief  module set_interpolate_type_8
+!!
+!!@author H. Matsui
+!!@date  Programmed by H. Matsui in Sep., 2006
 !
-!     module order_dest_table_by_type
+!>@brief Sort interpolation table by interpolation type
+!!
+!!@verbatim
+!!      subroutine s_order_dest_table_by_type
+!!@endverbatim
 !
       module order_dest_table_by_type
-!
-!     Written by H. Matsui on Sep., 2006
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine s_order_dest_table_by_type
 !
 !-----------------------------------------------------------------------
 !
@@ -59,18 +64,18 @@
 !
 !
 !      write(*,*) 'stack'
-      istack_nod_table_wtype_dest(0) = 0
+      istack_nod_tbl_wtype_dest(0) = 0
       do i = 1, num_org_domain
         do j = 1, 4
           k = 4*(i-1) + j
-          istack_nod_table_wtype_dest(k)                                &
-     &              = istack_nod_table_wtype_dest(k-1)                  &
+          istack_nod_tbl_wtype_dest(k)                                  &
+     &              = istack_nod_tbl_wtype_dest(k-1)                    &
      &               + nnod_table_wtype_dest(k)
         end do
       end do
 !
 !
-!      write(*,*) 'set', istack_nod_table_wtype_dest
+!      write(*,*) 'set', istack_nod_tbl_wtype_dest
       do i = 1, num_org_domain
 !
         ist = istack_nod_tbl_dest(i-1) + 1
@@ -79,15 +84,15 @@
 !
         if (nnod_4_ele .eq. num_t_linear) then
           call s_order_interpolate_type_8(my_rank, ist, ied,            &
-     &        istack_nod_table_wtype_dest(ist_type),                    &
+     &        istack_nod_tbl_wtype_dest(ist_type),                      &
      &        nnod_table_wtype_dest(ist_type+1) )
         else if (nnod_4_ele .eq. num_t_quad) then
           call s_order_interpolate_type_20(my_rank, ist, ied,           &
-     &        istack_nod_table_wtype_dest(ist_type),                    &
+     &        istack_nod_tbl_wtype_dest(ist_type),                      &
      &        nnod_table_wtype_dest(ist_type+1) )
         else if (nnod_4_ele .eq. num_t_lag) then
           call s_order_interpolate_type_27(my_rank, ist, ied,           &
-     &        istack_nod_table_wtype_dest(ist_type),                    &
+     &        istack_nod_tbl_wtype_dest(ist_type),                      &
      &        nnod_table_wtype_dest(ist_type+1) )
         end if
 !

@@ -1,10 +1,15 @@
+!>@file   interpolate_scalar
+!!@brief  module interpolate_scalar
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep., 2006
 !
-!     module interpolate_scalar
-!
-!     Written by H. Matsui on Sep., 2006
-!
-!      subroutine s_interpolate_scalar(i_dest, i_origin)
-!      subroutine interpolate_by_matrix_1(i_dest, i_origin)
+!>@brief  interpolation for scalar data
+!!
+!!@verbatim
+!!      subroutine s_interpolate_scalar(i_dest, i_origin)
+!!      subroutine interpolate_by_matrix_1(i_dest, i_origin)
+!!@endverbatim
 !
       module interpolate_scalar
 !
@@ -36,7 +41,7 @@
       use m_array_for_send_recv
       use m_work_4_interpolation
 !
-      use interpolate_parallel
+      use interpolate_1pe
       use select_calypso_SR
       use solver_SR
 !
@@ -62,10 +67,10 @@
 !    interpolation
 !
       if (num_dest_domain.gt.0) then
-        call s_interporate_scalar_para(np_smp, numnod, numele,          &
-     &    nnod_4_ele, ie, x_vec(1), num_dest_domain,                    &
-     &    istack_table_wtype_org_smp, ntot_table_org, iele_org_4_org,   &
-     &    itype_inter_org, coef_inter_org, x_inter_org(1) )
+        call interporate_scalar_para(np_smp, numnod, numele,            &
+     &    nnod_4_ele, ie, x_vec(1), istack_table_wtype_org_smp,         &
+     &    ntot_table_org, iele_org_4_org, itype_inter_org,              &
+     &    coef_inter_org, x_inter_org(1) )
       end if
 !
 !

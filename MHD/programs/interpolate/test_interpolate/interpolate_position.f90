@@ -38,7 +38,7 @@
       use m_array_for_send_recv
       use m_work_4_interpolation
 !
-      use interpolate_parallel
+      use interpolate_1pe
       use select_calypso_SR
       use solver_SR_3
 !
@@ -61,10 +61,10 @@
 !    interpolation
 !
       if (num_dest_domain.gt.0) then
-        call s_interporate_vector_para(np_smp, numnod, numele,          &
-     &    nnod_4_ele, ie, x_vec(1), num_dest_domain,                    &
-     &    istack_table_wtype_org_smp, ntot_table_org, iele_org_4_org,   &
-     &    itype_inter_org, coef_inter_org, x_inter_org(1) )
+        call interporate_vector_para(np_smp, numnod, numele,            &
+     &      nnod_4_ele, ie, x_vec(1), istack_table_wtype_org_smp,       &
+     &      ntot_table_org, iele_org_4_org, itype_inter_org,            &
+     &      coef_inter_org, x_inter_org(1) )
       end if
 !
 !     communication
@@ -113,7 +113,7 @@
       use m_array_for_send_recv
       use m_work_4_interpolation
 !
-      use interpolate_parallel
+      use interpolate_1pe
       use select_calypso_SR
       use solver_SR_3
 !
@@ -136,10 +136,10 @@
 !    interpolation
 !
       if (num_dest_domain.gt.0) then
-        call s_interporate_vector_para(np_smp, numnod, numele,          &
-     &    nnod_4_ele, ie, x_vec(1), num_dest_domain,                    &
-     &    istack_table_wtype_org_smp, ntot_table_org, iele_org_4_org,   &
-     &    itype_inter_org, coef_inter_org, x_inter_org(1) )
+        call interporate_vector_para(np_smp, numnod, numele,            &
+     &      nnod_4_ele, ie, x_vec(1), istack_table_wtype_org_smp,       &
+     &      ntot_table_org, iele_org_4_org, itype_inter_org,            &
+     &      coef_inter_org, x_inter_org(1) )
       end if
 !
 !     communication
@@ -188,7 +188,7 @@
       use m_array_for_send_recv
       use m_work_4_interpolation
 !
-      use interpolate_parallel
+      use interpolate_1pe
       use select_calypso_SR
       use solver_SR
 !
@@ -210,10 +210,10 @@
 !    interpolation
 !
         if (num_dest_domain.gt.0) then
-          call s_interporate_scalar_para(np_smp, numnod, numele,        &
-     &      nnod_4_ele, ie, x_vec(1), num_dest_domain,                  &
-     &      istack_table_wtype_org_smp, ntot_table_org, iele_org_4_org, &
-     &      itype_inter_org, coef_inter_org, x_inter_org(1) )
+          call interporate_scalar_para(np_smp, numnod, numele,          &
+     &      nnod_4_ele, ie, x_vec(1), istack_table_wtype_org_smp,       &
+     &      ntot_table_org, iele_org_4_org, itype_inter_org,            &
+     &      coef_inter_org, x_inter_org(1) )
         end if
 !
 !     communication

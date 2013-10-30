@@ -60,7 +60,6 @@
 !
       call deallocate_itp_num_org
       call deallocate_itp_table_org
-      call deallocate_istack_tbl_wtype_smp
 !
       call deallocate_itp_table_dest
       call deallocate_itp_num_dest
@@ -107,12 +106,12 @@
       use m_domain_group_4_partition
       use m_interpolate_table_orgin
       use m_interpolate_table_dest
-      use interpolate_imark_para
+      use interpolate_imark_1pe
 !
 !      transfer interpolate table
 !
       call s_interporate_imark_para(np_smp, nnod_2nd, nele_2nd,         &
-     &    nnod_4_ele_2nd, ie_2nd, IGROUP_FINER(1), num_dest_domain,     &
+     &    nnod_4_ele_2nd, ie_2nd, IGROUP_FINER(1),                      &
      &    istack_table_wtype_org_smp, ntot_table_org, iele_org_4_org,   &
      &    itype_inter_org, IGROUP_nod(1) )
 !

@@ -216,8 +216,8 @@
 !
       ntable_para = 0
       do i = 1, 4
-        ist = single_tbl%tbl_org%istack_nod_tbl_wtype_org(i-1) + 1
-        ied = single_tbl%tbl_org%istack_nod_tbl_wtype_org(i)
+        ist = single_tbl%tbl_org%istack_itp_type_org(i-1) + 1
+        ied = single_tbl%tbl_org%istack_itp_type_org(i)
         do inum  = ist, ied
           inod_gl = single_tbl%tbl_dest%inod_dest_4_dest(inum)
           jele_gl = single_tbl%tbl_org%iele_org_4_org(inum)
@@ -251,8 +251,8 @@
 !
       ntable_para = 0
       do i = 1, 4
-        ist = single_tbl%tbl_org%istack_nod_tbl_wtype_org(i-1) + 1
-        ied = single_tbl%tbl_org%istack_nod_tbl_wtype_org(i)
+        ist = single_tbl%tbl_org%istack_itp_type_org(i-1) + 1
+        ied = single_tbl%tbl_org%istack_itp_type_org(i)
         do inum  = ist, ied
           inod_gl = single_tbl%tbl_dest%inod_dest_4_dest(inum)
           jele_gl = single_tbl%tbl_org%iele_org_4_org(inum)

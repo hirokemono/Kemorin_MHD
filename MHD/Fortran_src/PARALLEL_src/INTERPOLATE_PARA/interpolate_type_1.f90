@@ -31,7 +31,7 @@
       use t_interpolate_table
       use m_work_4_interpolation
 !
-      use interpolate_parallel
+      use interpolate_1pe
       use select_calypso_SR
       use solver_SR
 !
@@ -51,10 +51,9 @@
 !    interpolation
 !
       if ( itp_table%tbl_org%num_dest_domain .gt. 0 ) then
-        call s_interporate_scalar_para(PEsmpTOT, NP_org,                &
+        call interporate_scalar_para(PEsmpTOT, NP_org,                  &
      &      itp_table%ele_org%numele, itp_table%ele_org%nnod_4_ele,     &
      &      itp_table%ele_org%ie, X_org(1),                             &
-     &      itp_table%tbl_org%num_dest_domain,                          &
      &      itp_table%tbl_org%istack_tbl_wtype_org_smp,                 &
      &      itp_table%tbl_org%ntot_table_org,                           &
      &      itp_table%tbl_org%iele_org_4_org,                           &

@@ -1,17 +1,23 @@
+!>@file   set_interpolate_type_8.f90
+!!@brief  module set_interpolate_type_8
+!!
+!!@author H. Matsui
+!!@date  Programmed by H. Matsui in Sep., 2006
 !
-!      module set_interpolate_type_8
+!>@brief Sort interpolation table by interpolation type
+!!       for linear elements
+!!
+!!@verbatim
+!      subroutine s_order_interpolate_type_8(my_rank, ist, ied,         &
+!     &          inod_stack_type, nnod_interpolate_type)
+!!@endverbatim
 !
       module set_interpolate_type_8
-!
-!     Written by H. Matsui on Sep., 2006
 !
       use m_precision
       use m_constants
 !
       implicit none
-!
-!      subroutine s_order_interpolate_type_8(my_rank, ist, ied,         &
-!     &          inod_stack_type, nnod_interpolate_type)
 !
 !-----------------------------------------------------------------------
 !

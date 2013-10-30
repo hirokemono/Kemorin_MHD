@@ -34,15 +34,15 @@
 !>   end address to receive interpolated data
         integer(kind = kint), pointer :: istack_nod_tbl_dest(:)
 !
-!>   end address to receive interpolated data including interpolate type
-        integer(kind = kint), pointer :: istack_nod_tbl_wtype_dest(:)
-!
 !>   total number of interpolated node in target subdomain
         integer(kind = kint) :: ntot_table_dest
 !>   local node ID to set interpolated data (import)
         integer(kind = kint), pointer :: inod_dest_4_dest(:)
 !>   Reverse ID to set interpolated data (import)
         integer(kind = kint), pointer :: irev_dest_4_dest(:)
+!
+!>   end address to receive interpolated data including interpolate type
+        integer(kind = kint), pointer :: istack_nod_tbl_wtype_dest(:)
 !
       end type interpolate_table_dest
 !

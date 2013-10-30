@@ -1,9 +1,29 @@
 !const_parallel_itp_tbl_org.f90
 !      module const_parallel_itp_tbl_org
 !
-      module const_parallel_itp_tbl_org
-!
 !      Written by Kemorin on May, 2010
+!
+!      subroutine count_num_dest_domain_para_itp(ip_org, nprocs_tgt,   &
+!     &        itp_sgl, nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe, &
+!     &        ipe_nod_local_tgt, num_dest_domain)
+!        integer(kind = kint), intent(inout) :: num_dest_domain
+!
+!      subroutine set_id_dest_domain_para_itp(ip_org, nprocs_tgt,      &
+!     &        itp_sgl, nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe, &
+!     &        ipe_nod_local_tgt, itp_org_para)
+!        type(interpolate_table_org), intent(inout) :: itp_org_para
+!
+!      subroutine set_num_nod_tbl_org_para_itp(ip_org, itp_sgl,        &
+!     &          nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,        &
+!     &          ipe_nod_local_tgt, itp_org_para)
+!        type(interpolate_table_org), intent(inout) :: itp_org_para
+!
+!      subroutine set_elem_tbl_org_para_itp(ip_org, itp_sgl,           &
+!     &          nele_org_1pe, iele_local_org, ipe_ele_local_org,      &
+!     &          nnod_tgt_1pe, ipe_nod_local_tgt, itp_org_para)
+!        type(interpolate_table_org), intent(inout) :: itp_org_para
+!
+      module const_parallel_itp_tbl_org
 !
       use m_precision
 !
@@ -12,26 +32,6 @@
       use t_interpolate_tbl_dest
 !
       implicit none
-!
-!      subroutine count_num_dest_domain_para_itp(ip_org, nprocs_tgt,    &
-!     &        itp_sgl, nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,  &
-!     &        ipe_nod_local_tgt, num_dest_domain)
-!        integer(kind = kint), intent(inout) :: num_dest_domain
-!
-!      subroutine set_id_dest_domain_para_itp(ip_org, nprocs_tgt,       &
-!     &        itp_sgl, nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,  &
-!     &        ipe_nod_local_tgt, itp_org_para)
-!        type(interpolate_table_org), intent(inout) :: itp_org_para
-!
-!      subroutine set_num_nod_tbl_org_para_itp(ip_org, itp_sgl,         &
-!     &          nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,         &
-!     &          ipe_nod_local_tgt, itp_org_para)
-!        type(interpolate_table_org), intent(inout) :: itp_org_para
-!
-!      subroutine set_elem_tbl_org_para_itp(ip_org, itp_sgl,            &
-!     &          nele_org_1pe, iele_local_org, ipe_ele_local_org,       &
-!     &          nnod_tgt_1pe, ipe_nod_local_tgt, itp_org_para)
-!        type(interpolate_table_org), intent(inout) :: itp_org_para
 !
 ! -----------------------------------------------------------------------
 !
@@ -123,6 +123,8 @@
      &          nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,          &
      &          ipe_nod_local_tgt, itp_org_para)
 !
+      use m_work_const_itp_table
+!
       type(interpolate_table), intent(in) :: itp_sgl
       integer(kind = kint), intent(in) :: ip_org
       integer(kind = kint), intent(in) :: nele_org_1pe
@@ -138,15 +140,15 @@
       integer(kind = kint) :: i, ist, ied, inum, inod_tgt, iele_org
 !
 !
+      istack_org_para_type(0) = 0
       itp_org_para%istack_nod_tbl_org(0) = 0
-      itp_org_para%istack_nod_tbl_wtype_org(0) = 0
       do jp = 1, itp_org_para%num_dest_domain
         ip_tgt = itp_org_para%id_dest_domain(jp) + 1
 !
         do i = 1, 4
           jnum = 4*(jp-1) + i
-          ist = itp_sgl%tbl_org%istack_nod_tbl_wtype_org(i-1) + 1
-          ied = itp_sgl%tbl_org%istack_nod_tbl_wtype_org(i)
+          ist = itp_sgl%tbl_org%istack_itp_type_org(i-1) + 1
+          ied = itp_sgl%tbl_org%istack_itp_type_org(i)
 !
           ncou = 0
           do inum = ist, ied
@@ -157,12 +159,12 @@
                ncou = ncou + 1
             end if
           end do
-          itp_org_para%istack_nod_tbl_wtype_org(jnum)                   &
-     &      = itp_org_para%istack_nod_tbl_wtype_org(jnum-1) + ncou
+          istack_org_para_type(jnum) = istack_org_para_type(jnum-1)     &
+     &                                + ncou
         end do
 !
         itp_org_para%istack_nod_tbl_org(jp)                             &
-     &       = itp_org_para%istack_nod_tbl_wtype_org(4*jp)
+     &       = istack_org_para_type(4*jp)
       end do
 !
       jp = itp_org_para%num_dest_domain
@@ -176,6 +178,8 @@
       subroutine set_elem_tbl_org_para_itp(ip_org, itp_sgl,             &
      &          nele_org_1pe, iele_local_org, ipe_ele_local_org,        &
      &          nnod_tgt_1pe, ipe_nod_local_tgt, itp_org_para)
+!
+      use m_work_const_itp_table
 !
       type(interpolate_table), intent(in) :: itp_sgl
       integer(kind = kint), intent(in) :: ip_org
@@ -199,10 +203,10 @@
 !
         do i = 1, 4
           jnum = 4*(jp-1) + i
-          ist = itp_sgl%tbl_org%istack_nod_tbl_wtype_org(i-1) + 1
-          ied = itp_sgl%tbl_org%istack_nod_tbl_wtype_org(i)
+          ist = itp_sgl%tbl_org%istack_itp_type_org(i-1) + 1
+          ied = itp_sgl%tbl_org%istack_itp_type_org(i)
 !
-          jcou = itp_org_para%istack_nod_tbl_wtype_org(jnum-1)
+          jcou = istack_org_para_type(jnum-1)
           do inum = ist, ied
             inod_tgt = itp_sgl%tbl_dest%inod_dest_4_dest(inum)
             iele_org = itp_sgl%tbl_org%iele_org_4_org(inum)
