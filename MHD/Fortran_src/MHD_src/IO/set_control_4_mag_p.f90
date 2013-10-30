@@ -62,9 +62,9 @@
 !
 !
         do i = 1, e_potential_nod%num_bc
-          call set_nod_group_types_scalar(bc_mag_p_type_ctl(i),         &
+          call set_bc_group_types_scalar(bc_mag_p_type_ctl(i),          &
      &        e_potential_nod%ibc_type(i))
-          call set_nod_group_types_sgs_scalar(bc_mag_p_type_ctl(i),     &
+          call set_bc_group_types_sgs_scalar(bc_mag_p_type_ctl(i),      &
      &        e_potential_nod%ibc_type(i))
         end do
 !

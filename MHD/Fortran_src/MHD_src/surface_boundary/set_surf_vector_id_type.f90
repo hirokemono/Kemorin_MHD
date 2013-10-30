@@ -82,7 +82,7 @@
            do nd = 1, 3
 !
 ! -----------set boundary from control file
-              if ( ibc_sf_type(j)==(iflag_bc_sgs_commute+nd) ) then
+              if ( ibc_sf_type(j)==(iflag_bc_sgs+nd) ) then
                 isig_s(nd) = 1
               end if
             end do

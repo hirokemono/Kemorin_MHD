@@ -36,12 +36,12 @@ begin spherical_shell_ctl
 !         no_pole:      Gaussian points only
 !         with_pole:    Add pole grids
 !         with_center:  Add center
-!   raidal_grid_type_ctl:   Definition for radial grid   
+!   radial_grid_type_ctl:   Definition for radial grid   
 !         explicit:        Set each radial grid explicitly
 !         Chebyshev:       Set Chebyshev collocation points
 !         equi_distance:   Set equi-diatance grid
 !
-    raidal_grid_type_ctl   explicit
+    radial_grid_type_ctl   explicit
     array r_layer       4
       r_layer    1  0.5384615384615
       r_layer    2  0.5384615384615     ICB
@@ -49,7 +49,7 @@ begin spherical_shell_ctl
       r_layer    4  1.538461538462      CMB
     end array r_layer
 !
-!     raidal_grid_type_ctl   Chebyshev
+!     radial_grid_type_ctl   Chebyshev
 !     num_fluid_grid_ctl     5
 !     fluid_core_size_ctl   1.0
 !     ICB_to_CMB_ratio_ctl  0.35

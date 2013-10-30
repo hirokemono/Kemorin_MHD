@@ -164,6 +164,8 @@
       subroutine choose_para_fld_file_format(file_fmt_ctl, i_file_fmt,  &
      &          id_field_file_format)
 !
+      use skip_comment_f
+!
       integer(kind= kint), intent(in) :: i_file_fmt
       character(len=kchara), intent(in) :: file_fmt_ctl
       integer(kind= kint), intent(inout) :: id_field_file_format
@@ -174,107 +176,90 @@
         return
       end if
 !
-      if(file_fmt_ctl.eq.'single'                                       &
-     &   .or. file_fmt_ctl.eq.'SINGLE'                                  &
-     &   .or. file_fmt_ctl.eq.'merged'                                  &
-     &   .or. file_fmt_ctl.eq.'MERGED'                                  &
-     &   .or. file_fmt_ctl.eq.'single_ascii'                            &
-     &   .or. file_fmt_ctl.eq.'SINGLE_ASCII'                            &
-     &   .or. file_fmt_ctl.eq.'single_udt'                              &
-     &   .or. file_fmt_ctl.eq.'SINGLE_UDT'                              &
-     &   .or. file_fmt_ctl.eq.'single_udt_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'SINGLE_UDT_ASCII'                        &
-     &   .or. file_fmt_ctl.eq.'merged_ascii'                            &
-     &   .or. file_fmt_ctl.eq.'MERGED_ASCII'                            &
-     &   .or. file_fmt_ctl.eq.'merged_udt'                              &
-     &   .or. file_fmt_ctl.eq.'MERGED_UDT'                              &
-     &   .or. file_fmt_ctl.eq.'merged_udt_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'MERGED_UDT_ASCII') then
+      if     (cmp_no_case(file_fmt_ctl, 'merged_UDT_ascii') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'merged_ascii') .gt.     0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'ascii_merged_UDT') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'ascii_merged') .gt.     0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'merged') .gt.           0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_UDT_ascii') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'ascii_single_UDT') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_ascii') .gt.     0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'ascii_single') .gt.     0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single') .gt.     0) then
            id_field_file_format = iflag_sgl_udt
-      else if(file_fmt_ctl.eq.'single_gzip'                             &
-     &   .or. file_fmt_ctl.eq.'SINGLE_GZIP'                             &
-     &   .or. file_fmt_ctl.eq.'single_udt_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'SINGLE_UDT_GZIP'                         &
-     &   .or. file_fmt_ctl.eq.'merged_gzip'                             &
-     &   .or. file_fmt_ctl.eq.'MERGED_GZIP'                             &
-     &   .or. file_fmt_ctl.eq.'merged_udt_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'MERGED_UDT_GZIP'                         &
-     &   .or. file_fmt_ctl.eq.'single_gz'                               &
-     &   .or. file_fmt_ctl.eq.'SINGLE_GZ'                               &
-     &   .or. file_fmt_ctl.eq.'single_udt_gz'                           &
-     &   .or. file_fmt_ctl.eq.'SINGLE_UDT_GZ'                           &
-     &   .or. file_fmt_ctl.eq.'merged_gz'                               &
-     &   .or. file_fmt_ctl.eq.'MERGED_GZ'                               &
-     &   .or. file_fmt_ctl.eq.'merged_udt_gz'                           &
-     &   .or. file_fmt_ctl.eq.'MERGED_UDT_GZ') then
+      else if(cmp_no_case(file_fmt_ctl, 'merged_UDT_gzip') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'merged_UDT_gz') .gt.   0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'merged_gzip') .gt.     0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'merged_gz') .gt.       0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gzip_merged_UDT') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gz_merged_UDT') .gt.   0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gzip_merged') .gt.     0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gz_merged') .gt.       0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_UDT_gzip') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_UDT_gz') .gt.   0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gzip_single_UDT') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gz_single_UDT') .gt.   0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_gzip') .gt.     0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_gz') .gt.       0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gzip_sigle') .gt.      0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gz_single') .gt.       0) then
            id_field_file_format = iflag_sgl_udt + iflag_gzip
 !
-      else if(file_fmt_ctl.eq.'single_ucd'                              &
-     &   .or. file_fmt_ctl.eq.'SINGLE_UCD'                              &
-     &   .or. file_fmt_ctl.eq.'single_ucd_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'SINGLE_UCD_ASCII'                        &
-     &   .or. file_fmt_ctl.eq.'merged_ucd'                              &
-     &   .or. file_fmt_ctl.eq.'MERGED_UCD'                              &
-     &   .or. file_fmt_ctl.eq.'merged_ucd_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'MERGED_UCD_ASCII') then
+      else if(cmp_no_case(file_fmt_ctl, 'merged_UCD_ascii') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'ascii_merged_UCD') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'merged_UCD') .gt.       0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_UCD_ascii') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'ascii_single_UCD') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_UCD') .gt.       0      &
+     &       ) then
            id_field_file_format = iflag_sgl_ucd
-      else if(file_fmt_ctl.eq.'single_ucd_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'SINGLE_UCD_GZIP'                         &
-     &   .or. file_fmt_ctl.eq.'merged_ucd_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'MERGED_UCD_GZIP') then
+      else if(cmp_no_case(file_fmt_ctl, 'merged_UCD_gzip') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'merged_UCD_gz') .gt.   0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gzip_merged_UCD') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gz_merged_UCD') .gt.   0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_UCD_gzip') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_UCD_gz') .gt.   0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gzip_single_UCD') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gz_single_UCD') .gt.   0) then
            id_field_file_format = iflag_sgl_ucd + iflag_gzip
 !
-      else if(file_fmt_ctl.eq.'single_vtd'                              &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTD'                              &
-     &   .or. file_fmt_ctl.eq.'single_vtd_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTD_ASCII'                        &
-     &   .or. file_fmt_ctl.eq.'merged_vtd'                              &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTD'                              &
-     &   .or. file_fmt_ctl.eq.'merged_vtd_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTD_ASCII') then
+      else if(cmp_no_case(file_fmt_ctl, 'merged_VTD_ascii') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'ascii_merged_VTD') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'merged_VTD') .gt.       0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_VTD_ascii') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'ascii_single_VTD') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_VTD') .gt.       0      &
+     &       ) then
            id_field_file_format = iflag_sgl_vtd
-      else if(file_fmt_ctl.eq.'single_vtd_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTD_GZIP'                         &
-     &   .or. file_fmt_ctl.eq.'merged_vtd_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTD_GZIP'                         &
-     &   .or. file_fmt_ctl.eq.'single_vtd_gz'                           &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTD_GZ'                           &
-     &   .or. file_fmt_ctl.eq.'merged_vtd_gz'                           &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTD_GZ') then
+      else if(cmp_no_case(file_fmt_ctl, 'merged_VTD_gzip') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'merged_VTD_gz') .gt.   0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gzip_merged_VTD') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gz_merged_VTD') .gt.   0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_VTD_gzip') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_VTD_gz') .gt.   0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gzip_single_VTD') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gz_single_VTD') .gt.   0) then
            id_field_file_format = iflag_sgl_vtd + iflag_gzip
 !
-      else if(file_fmt_ctl.eq.'single_vtk'                              &
-     &   .or. file_fmt_ctl.eq.'single_VTK'                              &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTK'                              &
-     &   .or. file_fmt_ctl.eq.'single_vtk_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTK_ASCII'                        &
-     &   .or. file_fmt_ctl.eq.'merged_vtk'                              &
-     &   .or. file_fmt_ctl.eq.'merged_VTK'                              &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTK'                              &
-     &   .or. file_fmt_ctl.eq.'merged_vtk_ascii'                        &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTK_ASCII') then
+      else if(cmp_no_case(file_fmt_ctl, 'merged_VTK_ascii') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'ascii_merged_VTK') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'merged_VTK') .gt.       0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_VTK_ascii') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'ascii_single_VTK') .gt. 0      &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_VTK') .gt.       0      &
+     &       ) then
            id_field_file_format = iflag_sgl_vtk
-      else if(file_fmt_ctl.eq.'single_vtk_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'single_VTK_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTK_GZIP'                         &
-     &   .or. file_fmt_ctl.eq.'merged_vtk_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'merged_VTK_gzip'                         &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTK_GZIP'                         &
-     &   .or. file_fmt_ctl.eq.'single_vtk_gz'                           &
-     &   .or. file_fmt_ctl.eq.'single_VTK_gz'                           &
-     &   .or. file_fmt_ctl.eq.'SINGLE_VTK_GZ'                           &
-     &   .or. file_fmt_ctl.eq.'merged_vtk_gz'                           &
-     &   .or. file_fmt_ctl.eq.'merged_VTK_gz'                           &
-     &   .or. file_fmt_ctl.eq.'MERGED_VTK_GZ') then
+      else if(cmp_no_case(file_fmt_ctl, 'merged_VTK_gzip') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'merged_VTK_gz') .gt.   0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gzip_merged_VTK') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gz_merged_VTK') .gt.   0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_VTK_gzip') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_VTK_gz') .gt.   0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gzip_single_VTK') .gt. 0       &
+     &   .or. cmp_no_case(file_fmt_ctl, 'gz_single_VTK') .gt.   0) then
            id_field_file_format = iflag_sgl_vtk + iflag_gzip
-      else if(file_fmt_ctl.eq.'single_hdf5'                             &
-     &   .or. file_fmt_ctl.eq.'single_HDF5'                             &
-     &   .or. file_fmt_ctl.eq.'Single_HDF5'                             &
-     &   .or. file_fmt_ctl.eq.'SINGLE_HDF5'                             &
-     &   .or. file_fmt_ctl.eq.'merged_hdf5'                             &
-     &   .or. file_fmt_ctl.eq.'merged_HDF5'                             &
-     &   .or. file_fmt_ctl.eq.'Merged_HDF5'                             &
-     &   .or. file_fmt_ctl.eq.'MERGED_HDF5') then
+      else if(cmp_no_case(file_fmt_ctl, 'merged_HDF5') .gt. 0           &
+     &   .or. cmp_no_case(file_fmt_ctl, 'single_HDF5') .gt. 0) then
            id_field_file_format = iflag_sgl_hdf5
       else
         call choose_ucd_file_format(file_fmt_ctl, i_file_fmt,           &

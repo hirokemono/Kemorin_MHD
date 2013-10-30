@@ -61,11 +61,11 @@
         current_nod%bc_name =      bc_j_name_ctl
         current_nod%bc_magnitude = bc_j_magnitude_ctl
 !
-        if (iflag_debug.eq.1) write(*,*) 'current_nod%bc_magnitude ',  &
+        if (iflag_debug.eq.1) write(*,*) 'current_nod%bc_magnitude ',   &
      &                                    current_nod%bc_magnitude
 !
         do i = 1, current_nod%num_bc
-         call set_nod_group_types_vector(bc_j_type_ctl(i),             &
+         call set_bc_group_types_vector(bc_j_type_ctl(i),               &
      &       current_nod%ibc_type(i))
         end do
 !

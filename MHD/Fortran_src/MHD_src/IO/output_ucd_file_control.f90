@@ -14,7 +14,7 @@
 !
       implicit none
 !
-      private :: link_global_org_mesh_4_ucd, link_local_org_mesh_4_ucd
+      private :: link_local_org_mesh_4_ucd
 !
 ! ----------------------------------------------------------------------
 !

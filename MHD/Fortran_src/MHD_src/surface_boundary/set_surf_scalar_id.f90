@@ -57,7 +57,7 @@
 !
 ! -----------set boundary using SGS case
 !
-            if (ibc_sf_type(j) .eq. iflag_bc_sgs_commute_s) then
+            if (ibc_sf_type(j) .eq. iflag_bc_sgs_s) then
               isig_s = 1
             end if
 !
@@ -104,7 +104,7 @@
             isig_s = 0
 !
 ! -----------set boundary using SGS case
-            if (ibc_sf_type(j) .eq. iflag_bc_sgs_commute_s) then
+            if (ibc_sf_type(j) .eq. iflag_bc_sgs_s) then
               isig_s = 1
             end if
 !

@@ -63,9 +63,9 @@
         a_potential_nod%bc_magnitude = bc_vp_magnitude_ctl
 !
         do i = 1, a_potential_nod%num_bc
-         call set_nod_group_types_vector(bc_vp_type_ctl(i),             &
+         call set_bc_group_types_vector(bc_vp_type_ctl(i),              &
      &       a_potential_nod%ibc_type(i))
-         call set_nod_group_types_sgs_vect(bc_vp_type_ctl(i),           &
+         call set_bc_group_types_sgs_vect(bc_vp_type_ctl(i),            &
      &       a_potential_nod%ibc_type(i))
 !
           tmpchara = bc_vp_type_ctl(i)
