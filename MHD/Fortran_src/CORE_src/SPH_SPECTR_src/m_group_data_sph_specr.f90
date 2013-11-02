@@ -235,9 +235,7 @@
 !
       subroutine deallocate_rtp_zonal_grp_item
 !
-      write(*,*) 'deallocate item_zonal_grp_rtp'
       deallocate(item_zonal_grp_rtp)
-      write(*,*) 'deallocate istack_zonal_grp_rtp', size(istack_zonal_grp_rtp)
       deallocate(istack_zonal_grp_rtp)
       deallocate(name_zonal_grp_rtp)
 !

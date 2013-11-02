@@ -60,7 +60,7 @@
       use set_sph_exp_free_CMB
 !
       integer(kind = kint) :: inod
-      integer(kind = kint) :: k, j
+!       integer(kind = kint) :: k, j
 !
 !
 !$omp parallel do
@@ -108,7 +108,7 @@
 !
 !      write(my_rank+170,*) 'k, j, vt2, wp2, dwp2'
 !      do j = 1, nidx_rj(2)
-!         j = 3
+!         j = 6
 !        do k = 1, nlayer_CMB
 !            inod = (k-1)*nidx_rj(2) + j
 !            write(my_rank+170,'(2i10,1p8E25.15e3)') k, j,              &

@@ -33,7 +33,9 @@
       integer(kind = kint), parameter :: iflag_bc_file_z = -3
 !
 !>      flag for fixed flux
-      integer(kind = kint), parameter :: iflag_bc_fix_flux = 11
+      integer(kind = kint), parameter :: iflag_bc_fix_flux =   11
+!>      flag for fixed flux by external file
+      integer(kind = kint), parameter :: iflag_bc_file_flux = -11
 !
 !>      base flag for fixed boundary with SGS model
       integer(kind = kint), parameter :: iflag_bc_sgs =            5

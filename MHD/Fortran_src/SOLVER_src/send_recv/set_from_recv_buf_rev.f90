@@ -16,8 +16,7 @@
 !!      subroutine set_from_recv_buf_rev_6(nnod_new,                    &
 !!     &          nnod_recv, irev_import, WR, X_new)
 !!      subroutine set_from_recv_buf_rev_N(NB, nnod_new,                &
-!!     &          npe_recv, nnod_recv, istack_recv, irev_import,        &
-!!     &          WR, X_new)
+!!     &          nnod_recv, irev_import, WR, X_new)
 !!
 !!      subroutine set_from_recv_buf_rev_int(nnod_new,                  &
 !!     &          nnod_recv, irev_import, iWR, iX_new)
@@ -26,10 +25,7 @@
 !!@n @param  NB    Number of components for communication
 !!@n @param  nnod_new    Number of components for destination
 !!@n
-!!@n @param  npe_recv    Number of processses to receive
 !!@n @param  nnod_recv   Number of data points to receive
-!!@n @param  istack_recv(0:npe_send)
-!!                    End points of receive buffer for each process
 !!@n @param  irev_import(nnod_new)
 !!                    import buffer ID for each data point
 !!@n
@@ -165,42 +161,33 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_from_recv_buf_rev_N(NB, nnod_new,                  &
-     &          npe_recv, nnod_recv, istack_recv, irev_import,          &
-     &          WR, X_new)
+     &          nnod_recv, irev_import, WR, X_new)
 !
       integer(kind = kint), intent(in) :: NB
-      integer(kind = kint), intent(in) :: nnod_new
-      integer(kind = kint), intent(in) :: npe_recv, nnod_recv
-      integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
+      integer(kind = kint), intent(in) :: nnod_new, nnod_recv
       integer(kind = kint), intent(in) :: irev_import(nnod_new)
 !
       real (kind=kreal), intent(inout):: WR(NB*(nnod_recv+1))
 !
       real (kind=kreal), intent(inout):: X_new(NB*nnod_new)
 !
-      integer (kind = kint) :: neib, ist, num
-      integer (kind = kint) :: k, nd, jj, kk
+      integer (kind = kint) :: k, kk, jj, nd
 !
 !
+!$omp parallel do
       do k = 1, NB
         WR(NB*nnod_recv+k) = 0.0d0
       end do
+!$omp end parallel do
 !
-!$omp parallel private(nd,neib,ist,num)
-      do neib = 1, npe_recv
-        ist = istack_recv(neib-1)
-        num = istack_recv(neib  ) - istack_recv(neib-1)
-        do nd = 1, NB
-!$omp do private(k,jj,kk)
-          do k = 1, num
-            jj   = nd + NB * (k-1)
-            kk   = irev_import(k+ist) + (nd-1) * num + NB*ist
-            X_new(jj) = WR(kk)
-          end do
-!$omp end do nowait
-        end do
+!$omp parallel do private(k,jj,kk,nd)
+      do kk = 1, NB*nnod_new
+        nd = 1 + mod(kk-1,NB)
+        k =  1 + (kk-nd) / NB
+        jj = NB*(irev_import(k)-1) + nd
+        X_new(kk) = WR(jj)
       end do
-!$omp end parallel
+!$omp end parallel do
 !
       end subroutine set_from_recv_buf_rev_N
 !

@@ -16,6 +16,8 @@
 !!      subroutine set_to_send_buf_6(nnod_org,                          &
 !!     &          nnod_send, inod_export, X_org, WS)
 !!      subroutine set_to_send_buf_N(NB, nnod_org,                      &
+!!     &          nnod_send, inod_export, X_org, WS)
+!!      subroutine set_to_send_buf_N_mod(NB, nnod_org,                  &
 !!     &          npe_send, nnod_send, istack_send, inod_export,        &
 !!     &          X_org, WS)
 !!
@@ -153,6 +155,35 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_to_send_buf_N(NB, nnod_org,                        &
+     &          nnod_send, inod_export, X_org, WS)
+!
+      integer(kind = kint), intent(in) :: NB
+      integer(kind = kint), intent(in) :: nnod_org, nnod_send
+!
+      integer(kind = kint), intent(in) :: inod_export(nnod_send)
+!
+      real (kind=kreal), intent(in)::    X_org(NB*nnod_org)
+!
+      real (kind=kreal), intent(inout):: WS(NB*nnod_send)
+!
+!
+      integer (kind = kint) :: k, nd, jj, kk
+!
+!
+!$omp parallel do private(k,jj,kk,nd)
+      do kk = 1, NB*nnod_send
+        nd = 1 + mod(kk-1,NB)
+        k =  1 + (kk-nd) / NB
+        jj = NB*(inod_export(k)-1) + nd
+        WS(kk) = X_org(jj)
+      end do
+!$omp end parallel do
+!
+      end subroutine set_to_send_buf_N
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_to_send_buf_N_mod(NB, nnod_org,                    &
      &          npe_send, nnod_send, istack_send, inod_export,          &
      &          X_org, WS)
 !
@@ -188,7 +219,7 @@
       end do
 !$omp end parallel
 !
-      end subroutine set_to_send_buf_N
+      end subroutine set_to_send_buf_N_mod
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------

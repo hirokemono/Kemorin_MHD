@@ -39,7 +39,6 @@
 !
 !>      Data communication mode for vector
       integer(kind = kint) :: iflag_sph_SR3 = iflag_import_item
-      private :: iflag_sph_SR3
 !
 ! ----------------------------------------------------------------------
 !

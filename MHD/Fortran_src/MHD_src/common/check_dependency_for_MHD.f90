@@ -616,7 +616,7 @@
       if(iflag_SGS_gravity .gt. id_SGS_none) then
         if(iflag_4_gravity .eq. id_turn_OFF                             &
      &     .and. iflag_4_composit_buo .eq. id_turn_OFF) then
-          call calypso_MPI_abort(100, 'set one of gravity sources')
+          call calypso_MPI_abort(100, 'set one of buoyancy sources')
         end if
         if(iflag_4_gravity .gt. id_turn_OFF) then
           if(iflag_SGS_inertia.eq.id_SGS_none                           &

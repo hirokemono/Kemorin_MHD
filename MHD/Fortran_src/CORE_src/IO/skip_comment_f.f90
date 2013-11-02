@@ -165,7 +165,7 @@
 !
       integer function cmp_no_case(cmp_chara, ref_chara)
 !
-      character*(*), intent(in) :: ref_chara
+      character(len=*), intent(in) :: ref_chara
       character(len=kchara), intent(in) :: cmp_chara
       character(len=kchara)  :: ref_tmp, cmp_tmp
       integer(kind = kint) :: len
@@ -177,8 +177,8 @@
         return
       end if
 !
-      write(ref_tmp,'(a)')  ref_chara
-      write(cmp_tmp,'(a)')  cmp_chara
+      write(ref_tmp,'(a)')  trim(ref_chara)
+      write(cmp_tmp,'(a)')  trim(cmp_chara)
       call change_2_lower_case(ref_tmp)
       call change_2_lower_case(cmp_tmp)
 !

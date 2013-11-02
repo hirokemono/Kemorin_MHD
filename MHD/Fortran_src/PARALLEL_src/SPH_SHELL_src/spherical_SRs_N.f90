@@ -42,7 +42,6 @@
 !
 !>      Data communication mode for arbitrary size data
       integer(kind = kint) :: iflag_sph_SRN = iflag_import_item
-      private :: iflag_sph_SRN
 !
 ! ----------------------------------------------------------------------
 !

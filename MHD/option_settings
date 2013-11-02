@@ -371,12 +371,10 @@ GLUI_INC=
 # Fujitsu (ISAS)
 # -------------------------------------------------------------------------------
 #
-#./configure CC=fccjx FC=f90jx AR=ar RANLIB=ranlib MPICC=fccjx MPIFC=f90jx \
-#  CFLAGS="-O" \
-#  FCFLAGS="-O -Umpi -Uomp" \
-#  PKG_CONFIG_PATH='/usr/lib/pkgconfig:/usr/local/lib/pkgconfig' \
-#  --disable-cocoa --disable-gl --disable-glui --disable-gtk --enable-libpng \
-#  --with-zlib=/usr/lib --without-opengl  --without-pgplot --without-aquaterm --without-hdf5
+#  ./configure CC=fccjx FC=f90jx AR=ar RANLIB=ranlib MPICC=fccjx MPIFC=f90jx  \
+#  CFLAGS="-O"   FCFLAGS="-O -Umpi -Uomp"   \
+#  PKG_CONFIG_PATH='/usr/lib/pkgconfig:/usr/local/lib/pkgconfig' --disable-libpng \
+#   --with-zlib=/usr/lib --without-pgplot
 #
 # -------------------------------------------------------------------------------
 # SX-9 (ISAS)

@@ -35,7 +35,6 @@
 !
 !>      Data communication mode for integer
       integer(kind = kint) :: iflag_sph_SR_int = iflag_import_item
-      private :: iflag_sph_SR_int
 !
 ! ----------------------------------------------------------------------
 !

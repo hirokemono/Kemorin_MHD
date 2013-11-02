@@ -40,7 +40,6 @@
 !
 !>      Data communication mode for soleinoidal vection
       integer(kind = kint) :: iflag_sph_SR2 = iflag_import_item
-      private :: iflag_sph_SR2
 !
 ! ----------------------------------------------------------------------
 !

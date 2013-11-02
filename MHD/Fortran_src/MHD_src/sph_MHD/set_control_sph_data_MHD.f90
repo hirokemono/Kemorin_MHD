@@ -42,6 +42,7 @@
       use m_file_format_switch
 !
       use m_field_data_IO
+      use m_sph_boundary_input_data
 !
       use set_control_sph_data
       use set_phys_name_4_sph_trans
@@ -130,6 +131,10 @@
         end if
       end if
 !
+!
+      if (i_bc_data_file_name .gt. 0) then
+        bc_sph_file_name = bc_data_file_name_ctl
+      end if
 !
       end subroutine s_set_control_sph_data_MHD
 !

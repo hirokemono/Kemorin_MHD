@@ -16,6 +16,8 @@
 !!      subroutine set_to_send_buf_3x6(nnod_org,                        &
 !!     &          nnod_send, inod_export, X1_org, X2_org, X3_org, WS)
 !!      subroutine set_to_send_buf_3xN(NB, nnod_org,                    &
+!!     &          nnod_send, inod_export, X1_org, X2_org, X3_org, WS)
+!!      subroutine set_to_send_buf_3xN_mod(NB, nnod_org,                &
 !!     &          npe_send, nnod_send, istack_send, inod_export,        &
 !!     &          X1_org, X2_org, X3_org, WS)
 !!@endverbatim
@@ -183,6 +185,39 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_to_send_buf_3xN(NB, nnod_org,                      &
+     &          nnod_send, inod_export, X1_org, X2_org, X3_org, WS)
+!
+      integer(kind = kint), intent(in) :: NB
+      integer(kind = kint), intent(in) :: nnod_org, nnod_send
+!
+      integer(kind = kint), intent(in) :: inod_export(nnod_send)
+!
+      real (kind=kreal), intent(in)::    X1_org(NB*nnod_org)
+      real (kind=kreal), intent(in)::    X2_org(NB*nnod_org)
+      real (kind=kreal), intent(in)::    X3_org(NB*nnod_org)
+!
+      real (kind=kreal), intent(inout):: WS(3*NB*nnod_send)
+!
+!
+      integer (kind = kint) :: k, nd, jj, kk
+!
+!
+!$omp parallel do private(k,jj,kk,nd)
+      do kk = 1, NB*nnod_send
+        nd = 1 + mod(kk-1,NB)
+        k =  1 + (kk-nd) / NB
+        jj = NB*(inod_export(k)-1) + nd
+        WS(3*kk-2) = X1_org(jj)
+        WS(3*kk-1) = X2_org(jj)
+        WS(3*kk  ) = X3_org(jj)
+      end do
+!$omp end parallel do
+!
+      end subroutine set_to_send_buf_3xN
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_to_send_buf_3xN_mod(NB, nnod_org,                  &
      &          npe_send, nnod_send, istack_send, inod_export,          &
      &          X1_org, X2_org, X3_org, WS)
 !
@@ -222,7 +257,7 @@
       end do
 !$omp end parallel
 !
-      end subroutine set_to_send_buf_3xN
+      end subroutine set_to_send_buf_3xN_mod
 !
 ! ----------------------------------------------------------------------
 !

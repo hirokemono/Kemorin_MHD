@@ -55,7 +55,6 @@
 !
 !      call cal_sph_bc_2nd_ele_fdm_mat
 !      call s_cal_sph_bc_4th_fdm_matrices
-!      call cal_sph_center_fdm_matrices
 !
       end subroutine s_cal_sph_bc_fdm_4th_mat
 !

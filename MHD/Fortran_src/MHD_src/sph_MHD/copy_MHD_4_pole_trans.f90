@@ -72,7 +72,6 @@
       use copy_pole_field_sph_trans
 !
 !
-      write(*,*) 'i_temp', iphys%i_temp, b_trns%i_temp
       call copy_pole_scl_fld_from_trans(numnod, internal_node, xx,      &
      &    num_tot_nod_phys, nscalar_rj_2_rtp, iphys%i_temp,             &
      &    b_trns%i_temp, d_nod)

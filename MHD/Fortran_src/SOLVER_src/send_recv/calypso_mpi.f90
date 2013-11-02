@@ -99,7 +99,7 @@
       subroutine calypso_MPI_abort(code, message)
 !
       integer,       intent(in)  ::  code
-      character*(*), intent(in)  ::  message
+      character(len=*), intent(in)  ::  message
 !
 !
       write(*,*) ' ///// abnormal termination ///// ', code,            &
@@ -108,7 +108,7 @@
       call  MPI_ABORT(CALYPSO_COMM, ierr_MPI)
 !
       stop
-      end subroutine  calypso_MPI_abort
+      end subroutine calypso_MPI_abort
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

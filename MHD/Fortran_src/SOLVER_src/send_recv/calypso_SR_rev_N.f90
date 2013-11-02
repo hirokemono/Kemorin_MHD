@@ -109,8 +109,8 @@
 !C-- SEND
 !
       s1time = MPI_WTIME()
-      call set_to_send_buf_N(NB, nnod_org, npe_send,                    &
-     &    istack_send(npe_send), istack_send, inod_export, X_org, WS)
+      call set_to_send_buf_N(NB, nnod_org, istack_send(npe_send),       &
+     &    inod_export, X_org, WS)
       elaps3(1) = elaps3(1) + MPI_WTIME() - s1time
 !C
       s1time = MPI_WTIME()
@@ -145,8 +145,8 @@
       end if
 !
       s2time = MPI_WTIME()
-      call set_from_recv_buf_rev_N(NB, nnod_new, npe_recv,              &
-     &    istack_recv(npe_recv), istack_recv, irev_import, WR, X_new)
+      call set_from_recv_buf_rev_N(NB, nnod_new,                        &
+     &    istack_recv(npe_recv), irev_import, WR, X_new)
       elaps3(2) = elaps3(2) + MPI_WTIME() - s2time
 !
       if(ncomm_send .gt. 0) then
@@ -214,15 +214,14 @@
 !C-- SEND
 !
       s1time = MPI_WTIME()
-      call set_to_send_buf_3xN(NB, nnod_org,                            &
-     &    npe_send, istack_send(npe_send), istack_send, inod_export,    &
-     &    X1_org, X2_org, X3_org, WS)
+      call set_to_send_buf_3xN(NB, nnod_org, istack_send(npe_send),     &
+     &    inod_export, X1_org, X2_org, X3_org, WS)
       elaps3(1) = elaps3(1) + MPI_WTIME() - s1time
 !C
       s1time = MPI_WTIME()
       do neib = 1, ncomm_send
-        ist= NB * istack_send(neib-1) + 1
-        num  = NB * (istack_send(neib  ) - istack_send(neib-1))
+        ist = 3*NB * istack_send(neib-1) + 1
+        num = 3*NB * (istack_send(neib  ) - istack_send(neib-1))
         call MPI_ISEND(WS(ist), num, CALYPSO_REAL,                      &
      &      id_pe_send(neib), 0, CALYPSO_COMM, req1(neib), ierr_MPI)
       end do
@@ -230,8 +229,8 @@
 !C-- RECEIVE
       if(ncomm_recv .gt. 0) then
         do neib= 1, ncomm_recv
-          ist= NB * istack_recv(neib-1) + 1
-          num  = NB * (istack_recv(neib  ) - istack_recv(neib-1))
+          ist = 3*NB * istack_recv(neib-1) + 1
+          num = 3*NB * (istack_recv(neib  ) - istack_recv(neib-1))
           call MPI_IRECV(WR(ist), num, CALYPSO_REAL,                    &
      &        id_pe_recv(neib), 0, CALYPSO_COMM, req2(neib), ierr_MPI)
         end do
@@ -254,7 +253,7 @@
 !
       s2time = MPI_WTIME()
       call set_from_recv_buf_rev_3xN(NB, nnod_new,                      &
-     &    npe_recv, istack_recv(npe_recv), istack_recv, irev_import,    &
+     &    istack_recv(npe_recv), irev_import,                           &
      &    WR, X1_new, X2_new, X3_new)
       elaps3(2) = elaps3(2) + MPI_WTIME() - s2time
 !

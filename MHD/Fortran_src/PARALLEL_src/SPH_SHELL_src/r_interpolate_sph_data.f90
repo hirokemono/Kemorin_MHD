@@ -20,9 +20,9 @@
 !
       use m_precision
 !
-      use m_machine_parameter
       use calypso_mpi
       use m_constants
+      use m_machine_parameter
       use m_spheric_parameter
 !
       implicit  none
@@ -184,10 +184,8 @@
      &         .or. phys_name_rj(i_fld) .eq. fhd_light_source           &
      &         .or. phys_name_rj(i_fld) .eq. fhd_entropy_source         &
      &         ) then
-              call r_interpolate_sph_vector(i_fld)
-              if(iflag_debug .gt. 0) write(*,*)                         &
-     &                 'set_org_rj_phys_data_from_IO'
               call set_org_rj_phys_data_from_IO(j_fld)
+              call r_interpolate_sph_vector(i_fld)
               exit
             end if
           end if
@@ -195,7 +193,6 @@
       end do
 !
       if (ipol%i_magne .gt. 0) then
-        if(iflag_debug .gt. 0) write(*,*) 'ext_outside_potential'
         call ext_outside_potential(ipol%i_magne, kr_outside)
         call ext_inside_potential(ipol%i_magne, kr_inside)
       end if

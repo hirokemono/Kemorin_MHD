@@ -201,7 +201,6 @@
           inod = inod + 1
           jnod = i_trns + (idx_gl_rtp_r(kr) - 1) * nvector_trans
           d_nod(inod,i_fld  ) = v_n_pole(jnod)
-          if(i_fld.eq.4) write(*,*) 'north pole', inod, i_fld, d_nod(inod,i_fld  )
         end do
       end if
 !
@@ -213,7 +212,6 @@
           inod = inod + 1
           jnod = i_trns + (idx_gl_rtp_r(kr) - 1) * nvector_trans
           d_nod(inod,i_fld  ) = v_s_pole(jnod)
-          if(i_fld.eq.4) write(*,*) 'south pole', inod, i_fld, d_nod(inod,i_fld  )
         end do
       end if
 !
@@ -222,7 +220,6 @@
 !  copy field for center
       inod = inod + 1
       d_nod(inod,i_fld) = v_center(i_trns)
-          if(i_fld.eq.4) write(*,*) 'center', inod, i_fld, d_nod(inod,i_fld  )
 !
       end subroutine copy_pole_scalar_from_trans
 !

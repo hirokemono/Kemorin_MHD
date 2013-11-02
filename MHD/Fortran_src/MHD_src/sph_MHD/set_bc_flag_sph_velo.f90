@@ -101,6 +101,8 @@
         iflag_icb_velocity = iflag_rotatable_ic
       else if (ibc_type .eq. iflag_sph_2_center) then
         iflag_icb_velocity = iflag_sph_fill_center
+      else if (ibc_type .eq. iflag_sph_clip_center) then
+        iflag_icb_velocity = iflag_sph_fix_center
 !
       else if (ibc_type .eq. (iflag_bc_rot+1)) then
         iflag_icb_velocity = iflag_fixed_velo

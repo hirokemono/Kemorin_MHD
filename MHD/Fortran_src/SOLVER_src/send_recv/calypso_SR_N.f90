@@ -109,14 +109,14 @@
 !C-- SEND
 !
       s1time = MPI_WTIME()
-      call set_to_send_buf_N(NB, nnod_org, npe_send,                    &
+      call set_to_send_buf_N_mod(NB, nnod_org, npe_send,                &
      &    istack_send(npe_send), istack_send, inod_export, X_org, WS)
       elaps3(1) = elaps3(1) + MPI_WTIME() - s1time
 !C
       s1time = MPI_WTIME()
       do neib = 1, ncomm_send
-        ist= NB * istack_send(neib-1) + 1
-        num  = NB * (istack_send(neib  ) - istack_send(neib-1))
+        ist = NB * istack_send(neib-1) + 1
+        num = NB * (istack_send(neib  ) - istack_send(neib-1))
         call MPI_ISEND(WS(ist), num, CALYPSO_REAL,                      &
      &      id_pe_send(neib), 0, CALYPSO_COMM, req1(neib), ierr_MPI)
       end do
@@ -124,8 +124,8 @@
 !C-- RECEIVE
       if(ncomm_recv .gt. 0) then
         do neib= 1, ncomm_recv
-          ist= NB * istack_recv(neib-1) + 1
-          num  = NB * (istack_recv(neib  ) - istack_recv(neib-1))
+          ist = NB * istack_recv(neib-1) + 1
+          num = NB * (istack_recv(neib  ) - istack_recv(neib-1))
           call MPI_IRECV(WR(ist), num, CALYPSO_REAL,                    &
      &        id_pe_recv(neib), 0, CALYPSO_COMM, req2(neib), ierr_MPI)
         end do
@@ -216,15 +216,15 @@
 !C-- SEND
 !
       s1time = MPI_WTIME()
-      call set_to_send_buf_3xN(NB, nnod_org,                            &
+      call set_to_send_buf_3xN_mod(NB, nnod_org,                        &
      &    npe_send, istack_send(npe_send), istack_send, inod_export,    &
      &    X1_org, X2_org, X3_org, WS)
       elaps3(1) = elaps3(1) + MPI_WTIME() - s1time
 !C
       s1time = MPI_WTIME()
       do neib = 1, ncomm_send
-        ist= NB * istack_send(neib-1) + 1
-        num  = NB * (istack_send(neib  ) - istack_send(neib-1))
+        ist = 3*NB * istack_send(neib-1) + 1
+        num = 3*NB * (istack_send(neib  ) - istack_send(neib-1))
         call MPI_ISEND(WS(ist), num, CALYPSO_REAL,                      &
      &      id_pe_send(neib), 0, CALYPSO_COMM, req1(neib), ierr_MPI)
       end do
@@ -232,8 +232,8 @@
 !C-- RECEIVE
       if(ncomm_recv .gt. 0) then
         do neib= 1, ncomm_recv
-          ist= NB * istack_recv(neib-1) + 1
-          num  = NB * (istack_recv(neib  ) - istack_recv(neib-1))
+          ist = 3*NB * istack_recv(neib-1) + 1
+          num = 3*NB * (istack_recv(neib  ) - istack_recv(neib-1))
           call MPI_IRECV(WR(ist), num, CALYPSO_REAL,                    &
      &        id_pe_recv(neib), 0, CALYPSO_COMM, req2(neib), ierr_MPI)
         end do
