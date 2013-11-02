@@ -36,9 +36,11 @@ dir_list:
 		( \
 		echo 'generate diectory list for ' $$dir ; \
 		cd $${dir};  \
-		make dir_list \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKEDIR='$(MAKEDIR)'     \
 		MAKENAME='$(MAKENAME)'   \
+		dir_list; \
 		 ) \
 	done
 	@echo '#' >> $(MAKENAME)
@@ -58,7 +60,8 @@ libtarget:
 lib_archve:
 	@for dir in $(LIBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		lib_archve \
 		) \
@@ -68,7 +71,8 @@ lib_archve:
 mod_list:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		ZLIB_LIB='$(ZLIB_LIB)'       \
 		PNG_LIBS='$(PNG_LIBS)'       \
 		FFTW3_LIBS='$(FFTW3_LIBS)'   \
@@ -82,7 +86,8 @@ module:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		echo 'generate compile commands for ' $$dir ; \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		MAKENAME='$(MAKENAME)' \
 		module \
@@ -93,7 +98,8 @@ includes:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		echo 'generate symbolic link commands for ' $$dir ; \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		includes \
 		) \
@@ -103,7 +109,8 @@ includes:
 clean:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		clean \
 		) \
 	done

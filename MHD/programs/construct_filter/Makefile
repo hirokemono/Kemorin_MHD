@@ -35,7 +35,8 @@ dir_list:
 		( \
 		echo 'generate diectory list for ' $$dir ; \
 		cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		dir_list \
 		) \
@@ -45,7 +46,8 @@ dir_list:
 target_list:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		BUILDDIR='$(BUILDDIR)' \
 		MAKENAME='$(MAKENAME)' \
 		target_list \
@@ -58,7 +60,8 @@ target_task:
 	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		target_task \
 		) \
@@ -75,7 +78,8 @@ lib_name:
 mod_list:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		mod_list \
 		) \
@@ -84,7 +88,8 @@ mod_list:
 module:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		MAKENAME='$(MAKENAME)' \
 		module; \
@@ -95,7 +100,8 @@ module:
 clean:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		clean \
 		) \
 	done

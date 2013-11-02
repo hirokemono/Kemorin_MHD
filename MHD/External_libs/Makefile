@@ -19,9 +19,11 @@ dir_list:
 		( \
 		echo 'generate diectory list for ' $$dir ; \
 		cd $${dir};  \
-		make dir_list \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKEDIR='$(MAKEDIR)'     \
 		MAKENAME='$(MAKENAME)'   \
+		dir_list; \
 		 ) \
 	done
 	@echo '#' >> $(MAKENAME)
@@ -31,9 +33,11 @@ lib_name:
 		( \
 		echo 'generate library list for ' $$dir ; \
 		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
-		make lib_name; \
+		lib_name; \
 		 ) \
 	done
 
@@ -41,10 +45,12 @@ lib_tasks:
 	@for dir in $(SUBDIRS) ; do \
 		( cd $${dir};  \
 		echo 'generate library commands for ' $$dir ; \
-		make lib_tasks  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		OPENGL_LIBS='$(OPENGL_LIBS)' \
 		MAKEDIR='$(MAKEDIR)' \
-		MAKENAME='$(MAKENAME)'; \
+		MAKENAME='$(MAKENAME)' \
+		lib_tasks; \
 		 ) \
 	done
 
@@ -52,7 +58,8 @@ lib_tasks:
 mod_list:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		mod_list \
 		) \
@@ -64,10 +71,12 @@ module:
 		( \
 		echo 'generate compile commands for ' $$dir ; \
 		cd $${dir};  \
-		make module \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
-		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' ;\
+		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
+		module; \
 		) \
 	done
 
@@ -76,8 +85,10 @@ includes:
 		( \
 		echo 'copy C include files for ' $$dir ; \
 		cd $${dir};  \
-		make includes \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		includes; \
 		) \
 	done
 
@@ -85,7 +96,8 @@ includes:
 clean:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		clean \
 		) \
 	done

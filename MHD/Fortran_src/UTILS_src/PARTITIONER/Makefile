@@ -24,7 +24,8 @@ dir_list:
 		( \
 		echo 'generate diectory list for ' $$dir ; \
 		cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		dir_list \
 		) \
@@ -49,7 +50,8 @@ mod_list:
 	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		mod_list; \
 		) \
@@ -66,7 +68,8 @@ libtarget:
 module:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		MAKENAME='$(MAKENAME)' \
 		module; \
@@ -77,7 +80,8 @@ module:
 clean:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		clean \
 		) \
 	done

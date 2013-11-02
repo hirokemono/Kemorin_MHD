@@ -33,7 +33,8 @@ module:
 	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(PLANE_COMMON_DIR)' $(SRC_PLANE_COMMON)
 
 clean:
-	rm -f *.o *~ *.mod; \
+	rm -f *.o *~ *.mod *.a; \
 	cd $(ISPACK_DIR); \
-	rm *.a; \
-	make clean
+	S(GMAKE) \
+	GMAKE='$(GMAKE)' \
+	clean

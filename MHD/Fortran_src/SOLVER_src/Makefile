@@ -26,7 +26,8 @@ dir_list:
 		( \
 		echo 'generate diectory list for ' $$dir ; \
 		cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		dir_list; \
 		) \
@@ -48,7 +49,8 @@ libtarget:
 lib_archve:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		lib_archve; \
 		) \
@@ -63,7 +65,8 @@ mod_list:
 	'$$(MOD_SOLVER_LU)' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		mod_list; \
 		) \
@@ -73,7 +76,8 @@ module:
 	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		MAKENAME='$(MAKENAME)' \
 		module; \
@@ -84,7 +88,8 @@ module:
 clean:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		make \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
 		clean \
 		) \
 	done

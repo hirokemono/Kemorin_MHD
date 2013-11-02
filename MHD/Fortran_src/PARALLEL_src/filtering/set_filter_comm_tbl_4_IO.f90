@@ -27,8 +27,6 @@
 !
       subroutine copy_filter_comm_tbl_from_IO
 !
-      integer(kind = kint) :: i
-!
 !
       num_neib_filter = num_neib_domain_IO
 !
@@ -84,8 +82,6 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_filter_import_from_IO
-!
-      integer(kind = kint) :: i
 !
 !
       num_neib_filter = num_neib_domain_IO
