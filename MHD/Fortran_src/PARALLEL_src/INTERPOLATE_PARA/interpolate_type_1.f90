@@ -54,7 +54,7 @@
         call interporate_scalar_para(PEsmpTOT, NP_org,                  &
      &      itp_table%ele_org%numele, itp_table%ele_org%nnod_4_ele,     &
      &      itp_table%ele_org%ie, X_org(1),                             &
-     &      itp_table%tbl_org%istack_tbl_wtype_org_smp,                 &
+     &      itp_table%tbl_org%istack_tbl_type_org_smp,                  &
      &      itp_table%tbl_org%ntot_table_org,                           &
      &      itp_table%tbl_org%iele_org_4_org,                           &
      &      itp_table%tbl_org%itype_inter_org,                          &

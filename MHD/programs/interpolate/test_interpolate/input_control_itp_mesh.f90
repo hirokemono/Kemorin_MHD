@@ -21,10 +21,13 @@
 !
         use calypso_mpi
         use m_machine_parameter
+        use m_geometry_parameter
+        use m_geometry_data
         use m_2nd_pallalel_vector
         use m_ctl_params_4_gen_table
         use m_ctl_data_gen_table
         use m_read_mesh_data
+        use m_interpolate_matrix
 !
         use set_ctl_interpolation
         use load_mesh_data
@@ -72,7 +75,7 @@
 !
       table_file_header = table_file_head
       if (iflag_debug.gt.0) write(*,*)                                  &
-     &       'sel_read_interpolate_table', trim(table_file_header)
+     &       'sel_read_interpolate_table: ', trim(table_file_header)
       call sel_read_interpolate_table(my_rank, ierr)
 !
 !
@@ -83,6 +86,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_stack_tbl_wtype_org_smp'
       call s_set_stack_tbl_wtype_org_smp
+!
+      if (iflag_debug.eq.1) write(*,*) 'const_interporate_mat'
+      call const_interporate_mat(numele, nnod_4_ele, ie)
 !
       end subroutine s_input_control_itp_mesh
 !

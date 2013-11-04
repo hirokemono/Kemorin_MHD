@@ -142,6 +142,7 @@
 !
       allocate (djo_tbl%INOD_DJO(djo_tbl%NC) )
       allocate (djo_tbl%INM(0:djo_tbl%NC) )
+      allocate (djo_tbl%NUM_SUM(djo_tbl%NUM_NCOMP) )
       allocate (djo_tbl%IEND_SUM(0:djo_tbl%NUM_NCOMP) )
       allocate (djo_tbl%IEND_SUM_smp(0:np_smp*djo_tbl%NUM_NCOMP) )
 !
@@ -149,6 +150,7 @@
       djo_tbl%INM =      0
       djo_tbl%IEND_SUM = 0
       djo_tbl%IEND_SUM_smp = 0
+      djo_tbl%NUM_SUM =      0
 !
       end subroutine alloc_type_djo_num
 !
@@ -268,7 +270,8 @@
       deallocate (djo_tbl%INM)
       deallocate (djo_tbl%IAM)
 !
-      deallocate (djo_tbl%IEND_SUM)
+      deallocate (djo_tbl%IEND_SUM, djo_tbl%IEND_SUM_smp)
+      deallocate (djo_tbl%NUM_SUM)
 !
       end subroutine dealloc_type_connect_4_djo
 !
@@ -300,6 +303,7 @@
       djo_tbl%INOD_DJO => djo_org%INOD_DJO
       djo_tbl%INM =>      djo_org%INM
       djo_tbl%IAM =>      djo_org%IAM
+      djo_tbl%NUM_SUM =>  djo_org%NUM_SUM
       djo_tbl%IEND_SUM => djo_org%IEND_SUM
       djo_tbl%IEND_SUM_smp => djo_org%IEND_SUM_smp
 !

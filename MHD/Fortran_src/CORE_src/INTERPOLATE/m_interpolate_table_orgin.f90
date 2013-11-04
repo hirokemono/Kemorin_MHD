@@ -46,9 +46,9 @@
 !
 !>   end address of table to interpolation at original elements
       integer(kind = kint), allocatable                                 &
-     &            :: istack_table_wtype_org_smp(:)
+     &            :: istack_table_type_org_smp(:)
 !>   maximum number of interpolation at original elements
-      integer(kind = kint) :: imax_table_wtype_org_smp
+      integer(kind = kint) :: imax_table_type_org_smp
 !
 !-----------------------------------------------------------------------
 !
@@ -65,12 +65,12 @@
       allocate( istack_nod_tbl_org(0:num_dest_pe) )
       allocate( istack_itp_type_org(0:4) )
 !
-      allocate(istack_table_wtype_org_smp(0:4*np_smp*num_dest_domain))
+      allocate(istack_table_type_org_smp(0:4*np_smp))
 !
       if(num_dest_pe .gt. 0) id_dest_domain = 0
       istack_nod_tbl_org =  0
       istack_itp_type_org = 0
-      istack_table_wtype_org_smp = 0
+      istack_table_type_org_smp = 0
 !
       end subroutine allocate_itp_num_org
 !
@@ -101,7 +101,7 @@
 !
       deallocate( id_dest_domain )
       deallocate( istack_nod_tbl_org )
-      deallocate(istack_table_wtype_org_smp)
+      deallocate(istack_table_type_org_smp)
 !
       end subroutine deallocate_itp_num_org
 !

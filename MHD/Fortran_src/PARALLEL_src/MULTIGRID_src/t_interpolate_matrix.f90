@@ -3,11 +3,11 @@
 !
 !      Written by H. Matsui on Apr., 2012
 !
-!      subroutine deallocate_itp_mat_type(itp)
-!      subroutine const_interporate_mat_type(ele, tbl_org, itp)
-!        type(element_data), intent(in) :: ele
-!        type(interpolate_table_org), intent(in) :: tbl_org
-!        type(DJORS_ITP_MATRIX), intent(inout) :: itp
+!!      subroutine deallocate_itp_mat_type(itp)
+!!      subroutine const_interporate_mat_type(org_ele, tbl_org, itp)
+!!        type(element_data), intent(in) :: org_ele
+!!        type(interpolate_table_org), intent(in) :: tbl_org
+!!        type(DJORS_ITP_MATRIX), intent(inout) :: itp
 !
       module t_interpolate_matrix
 !
@@ -69,14 +69,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine const_interporate_mat_type(ele, tbl_org, itp)
+      subroutine const_interporate_mat_type(org_ele, tbl_org, itp)
 !
       use m_machine_parameter
       use t_geometry_data
       use t_interpolate_tbl_org
       use interpolate_matrix_para
 !
-      type(element_data), intent(in) :: ele
+      type(element_data), intent(in) :: org_ele
       type(interpolate_table_org), intent(in) :: tbl_org
 !
       type(DJORS_ITP_MATRIX), intent(inout) :: itp
@@ -87,8 +87,8 @@
 !
       call allocate_itp_mat_num(itp)
 !
-      call count_interporate_mat_para(np_smp, ele%nnod_4_ele,           &
-     &    tbl_org%num_dest_domain, tbl_org%istack_tbl_wtype_org_smp,    &
+      call count_interporate_mat_para                                   &
+     &   (np_smp, org_ele%nnod_4_ele, tbl_org%istack_tbl_type_org_smp,  &
      &    itp%itp_tbl%NC, itp%itp_tbl%NUM_NCOMP, itp%itp_tbl%NCM,       &
      &    itp%itp_tbl%INOD_DJO, itp%itp_tbl%INM,                        &
      &    itp%itp_tbl%NUM_SUM, itp%itp_tbl%IEND_SUM,                    &
@@ -96,10 +96,10 @@
 !
       call allocate_itp_mat_item(itp)
 !
-      call set_interporate_mat_para(np_smp, ele%numele, ele%nnod_4_ele, &
-     &    ele%ie, tbl_org%num_dest_domain, tbl_org%iele_org_4_org,      &
-     &    tbl_org%itype_inter_org, tbl_org%coef_inter_org,              &
-     &    itp%itp_tbl%NC, itp%itp_tbl%NCM, itp%itp_tbl%NUM_NCOMP,       &
+      call set_interporate_mat_para(np_smp,                             &
+     &    org_ele%numele, org_ele%nnod_4_ele, org_ele%ie,               &
+     &    tbl_org%iele_org_4_org, tbl_org%itype_inter_org,              &
+     &    tbl_org%coef_inter_org, itp%itp_tbl%NC, itp%itp_tbl%NCM,      &
      &    itp%itp_tbl%INM, itp%itp_tbl%IAM, itp%itp_mat%AM,             &
      &    itp%itp_tbl%IEND_SUM_smp)
 !

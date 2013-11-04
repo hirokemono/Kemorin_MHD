@@ -50,7 +50,7 @@
         real(kind = kreal), pointer :: coef_inter_org(:,:)
 !
 !>   end address of table to interpolation at original elements
-        integer(kind = kint), pointer :: istack_tbl_wtype_org_smp(:)
+        integer(kind = kint), pointer :: istack_tbl_type_org_smp(:)
 !>   maximum number of interpolation at original elements
         integer(kind = kint) :: imax_tbl_wtype_org_smp
 !
@@ -74,12 +74,12 @@
       num = 4*tbl_org%num_dest_domain
       allocate( tbl_org%istack_itp_type_org(0:4) )
 !
-      allocate(tbl_org%istack_tbl_wtype_org_smp(0:4*np_smp))
+      allocate(tbl_org%istack_tbl_type_org_smp(0:4*np_smp))
 !
       if (tbl_org%num_dest_domain .gt. 0) tbl_org%id_dest_domain = 0
-      tbl_org%istack_nod_tbl_org =       0
-      tbl_org%istack_itp_type_org =      0
-      tbl_org%istack_tbl_wtype_org_smp = 0
+      tbl_org%istack_nod_tbl_org =      0
+      tbl_org%istack_itp_type_org =     0
+      tbl_org%istack_tbl_type_org_smp = 0
 !
       end subroutine alloc_type_itp_num_org
 !
@@ -133,7 +133,7 @@
       deallocate( tbl_org%id_dest_domain )
       deallocate( tbl_org%istack_nod_tbl_org )
       deallocate( tbl_org%istack_itp_type_org )
-      deallocate( tbl_org%istack_tbl_wtype_org_smp )
+      deallocate( tbl_org%istack_tbl_type_org_smp )
 !
       end subroutine dealloc_type_itp_num_org
 !

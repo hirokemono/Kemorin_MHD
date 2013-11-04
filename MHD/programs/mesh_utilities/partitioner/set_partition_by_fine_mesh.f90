@@ -112,7 +112,7 @@
 !
       call s_interporate_imark_para(np_smp, nnod_2nd, nele_2nd,         &
      &    nnod_4_ele_2nd, ie_2nd, IGROUP_FINER(1),                      &
-     &    istack_table_wtype_org_smp, ntot_table_org, iele_org_4_org,   &
+     &    istack_table_type_org_smp, ntot_table_org, iele_org_4_org,    &
      &    itype_inter_org, IGROUP_nod(1) )
 !
       end subroutine interpolate_domain_group

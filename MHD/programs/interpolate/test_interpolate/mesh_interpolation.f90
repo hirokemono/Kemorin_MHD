@@ -37,10 +37,10 @@
 !
 !     if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position'
 !      call s_interpolate_position
-      if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position_by_N'
-      call s_interpolate_position_by_N
-!      if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position_by_s'
-!      call s_interpolate_position_by_s
+!      if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position_by_N'
+!      call s_interpolate_position_by_N
+      if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position_by_s'
+      call s_interpolate_position_by_s
 !
 !
       if (iflag_debug.gt.0)  write(*,*) 's_check_ineterppolated_mesh'

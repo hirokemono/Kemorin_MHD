@@ -68,7 +68,7 @@
 !
       if (num_dest_domain.gt.0) then
         call interporate_scalar_para(np_smp, numnod, numele,            &
-     &    nnod_4_ele, ie, x_vec(1), istack_table_wtype_org_smp,         &
+     &    nnod_4_ele, ie, x_vec(1), istack_table_type_org_smp,          &
      &    ntot_table_org, iele_org_4_org, itype_inter_org,              &
      &    coef_inter_org, x_inter_org(1) )
       end if

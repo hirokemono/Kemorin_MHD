@@ -54,7 +54,7 @@
         call interporate_vector_para(PEsmpTOT, NP_org,                  &
      &      itp_table%ele_org%numele, itp_table%ele_org%nnod_4_ele,     &
      &      itp_table%ele_org%ie, X_org(1),                             &
-     &      itp_table%tbl_org%istack_tbl_wtype_org_smp,                 &
+     &      itp_table%tbl_org%istack_tbl_type_org_smp,                  &
      &      itp_table%tbl_org%ntot_table_org,                           &
      &      itp_table%tbl_org%iele_org_4_org,                           &
      &      itp_table%tbl_org%itype_inter_org,                          &
@@ -123,7 +123,7 @@
      &      itp_table%ele_org%numele, itp_table%ele_org%nnod_4_ele,     &
      &      itp_table%ele_org%ie, X_org(1),                             &
      &      itp_table%tbl_org%num_dest_domain,                          &
-     &      itp_table%tbl_org%istack_tbl_wtype_org_smp,                 &
+     &      itp_table%tbl_org%istack_tbl_type_org_smp,                  &
      &      itp_table%tbl_org%ntot_table_org,                           &
      &      itp_table%tbl_org%iele_org_4_org,                           &
      &      itp_table%tbl_org%itype_inter_org,                          &
@@ -201,6 +201,7 @@
      &          ie, v_org, istack_wtype_smp, num_points,                &
      &          iele_gauss, itype_gauss, xi_gauss, vect)
 !
+      use calypso_mpi
       use interpolate_on_node
       use interpolate_vector_edge2
       use interpolate_vector_surf4
@@ -222,31 +223,75 @@
 !
 !
       ist = 0
-      write(*,*) 's_interpolate_vector_node'
-      call s_interpolate_vector_node(np_smp, numnod, numele,            &
-     &    8, ie, v_org, istack_wtype_smp(ist), num_points,     &
+      write(*,*) 's_interpolate_vector_nodex', istack_wtype_smp
+      call s_interpolate_vector_nodex(np_smp, numnod, numele,           &
+     &    8, ie, v_org, istack_wtype_smp(ist), num_points,              &
      &    iele_gauss, itype_gauss, vect)
+      call calypso_MPI_barrier
 !
       ist = np_smp
       write(*,*) 's_interpolate_vector_edge2'
       call s_interpolate_vector_edge2(np_smp, numnod, numele, ie,       &
      &    v_org, istack_wtype_smp(ist), num_points, iele_gauss,         &
      &    itype_gauss, xi_gauss, vect)
+      call calypso_MPI_barrier
 !
       ist = 2*np_smp
       write(*,*) 's_interpolate_vector_surf4'
       call s_interpolate_vector_surf4(np_smp, numnod, numele, ie,       &
      &    v_org, istack_wtype_smp(ist), num_points, iele_gauss,         &
      &    itype_gauss, xi_gauss, vect)
-      return
+      call calypso_MPI_barrier
 !
       ist = 3*np_smp
       write(*,*) 's_interpolate_vector_ele8'
       call s_interpolate_vector_ele8(np_smp, numnod, numele, ie,        &
      &    v_org, istack_wtype_smp(ist), num_points, iele_gauss,         &
      &    xi_gauss, vect)
+      call calypso_MPI_barrier
 !
       end subroutine s_interpolate_vector_8x
+!
+! ----------------------------------------------------------------------
+!
+      subroutine s_interpolate_vector_nodex(np_smp, numnod, numele,     &
+     &          nnod_4_ele, ie, v_org, istack_smp, num_points,          &
+     &          iele_gauss, inod_gauss, vect)
+!
+      integer (kind = kint), intent(in) :: np_smp
+      integer (kind = kint), intent(in) :: numnod, numele, nnod_4_ele
+      integer (kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer (kind = kint), intent(in) :: istack_smp(0:np_smp)
+      integer (kind = kint), intent(in) :: num_points
+      integer (kind = kint), intent(in) :: iele_gauss(num_points)
+      integer (kind = kint), intent(in) :: inod_gauss(num_points)
+      real (kind=kreal), intent(in) :: v_org(3*numnod)
+!
+      real (kind=kreal), intent(inout) :: vect(3*num_points)
+!
+      integer (kind = kint) :: ip, ist, ied
+      integer (kind = kint) :: iele, i1, k1
+      integer (kind = kint) :: ig
+!
+!
+!!$omp parallel do private(ist,ied,ig,iele,k1,i1)
+      do ip = 1, np_smp
+        ist = istack_smp(ip-1) + 1
+        ied = istack_smp(ip)
+        do ig = ist, ied
+          iele =  iele_gauss(ig)
+          k1 = inod_gauss(ig)
+!
+          i1 = ie(iele,k1)
+!
+          vect(3*ig-2) =  v_org(3*i1-2)
+          vect(3*ig-1) =  v_org(3*i1-1)
+          vect(3*ig  ) =  v_org(3*i1  )
+        end do
+      end do
+!!$omp end parallel do
+!
+      end subroutine s_interpolate_vector_nodex
 !
 ! ----------------------------------------------------------------------
 !
