@@ -35,14 +35,14 @@
       subroutine int_vol_velo_poisson_mat(n_int)
 !
       use m_sorted_node_MHD
-      use m_press_matrix
+      use m_velo_matrix
       use int_vol_poisson_mat_1st
 !
       integer(kind = kint), intent(in) :: n_int
 !
 !
       call int_vol_poisson_mat11(n_int, idx_4_fll_mat,                  &
-     &    num_press_comp, aiccg_press)
+     &    Pmat_DJDS%num_non0, Pmat_DJDS%aiccg)
 !
       end subroutine int_vol_velo_poisson_mat
 !
@@ -77,7 +77,7 @@
 !
 !
       call int_vol_crank_mat33(n_int, idx_4_fl_mat, coef_imp_v,         &
-     &    ak_d_velo, num_velo_comp, aiccg_velo)
+     &    ak_d_velo, Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
 !
       end subroutine int_vol_velo_crank_mat
 !

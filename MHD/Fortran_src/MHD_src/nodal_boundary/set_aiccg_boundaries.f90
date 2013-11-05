@@ -44,7 +44,7 @@
 !
       do nd2 = nst, ned
         call correct_matrix33_4_boundary(numnod, itotal_fl_u,           &
-     &      itotal_fl_l, nd2, mat_num, aiccg_velo )
+     &      itotal_fl_l, nd2, mat_num, Vmat_DJDS%aiccg)
       end do
 !
       end subroutine set_bc_4_velo_mat
@@ -73,7 +73,7 @@
       subroutine set_bc_4_press_mat(iele, k1, k2)
 !
       use m_solver_djds_linear_fl
-      use m_press_matrix
+      use m_velo_matrix
 !
       integer (kind = kint), intent(in) :: iele, k1, k2
       integer (kind = kint) :: nod1, nod2, mat_num
@@ -84,7 +84,7 @@
 !
       call set_off_diag_linear_fl( nod1, nod2, mat_num )
       call correct_matrix11_4_boundary                                  &
-     &    (numnod, itotal1_fl_u, itotal1_fl_l, mat_num, aiccg_press )
+     &   (numnod, itotal1_fl_u, itotal1_fl_l, mat_num, Pmat_DJDS%aiccg)
 !
       end subroutine set_bc_4_press_mat
 !

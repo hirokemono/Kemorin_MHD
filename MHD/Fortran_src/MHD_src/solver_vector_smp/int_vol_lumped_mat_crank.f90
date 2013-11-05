@@ -72,7 +72,7 @@
 !
 !
       call init_33_matrix_lump(numnod, numnod_fluid, inod_fluid,        &
-     &    OLDtoNEW, ml_o_fl, num_velo_comp, aiccg_velo)
+     &    OLDtoNEW, ml_o_fl, Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
 !
       end subroutine init_velo_matrix_lump
 !
@@ -141,7 +141,7 @@
 !
       call cal_lumped_coriolis_matrix(numnod, numnod_fluid, inod_fluid, &
      &    OLDtoNEW, coef_cor, angular, ml_o_fl,                         &
-     &    num_velo_comp, aiccg_velo)
+     &    Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
 !
       end subroutine add_lumped_coriolis_matrix
 !

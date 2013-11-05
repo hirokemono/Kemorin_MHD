@@ -37,13 +37,13 @@
       call precond_DJDS33                                               &
      &         (internal_node, numnod, np_smp, inter_smp_stack,         &
      &          OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,                       &
-     &          aiccg_velo(im_velo_d), alug_velo_l, alug_velo_u,        &
+     &          Vmat_DJDS%D, Vmat_DJDS%ALUG_L, Vmat_DJDS%ALUG_U,        &
      &          precond_4_crank, sigma_diag)
 !
 !      call precond_DJDSnn                                              &
 !     &         (internal_node, numnod, n_vector, np_smp,               &
 !     &          inter_smp_stack, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,     &
-!     &          aiccg_velo(im_velo_d), alug_velo_l, alug_velo_u,       &
+!     &          Vmat_DJDS%D, Vmat_DJDS%ALUG_L, Vmat_DJDS%ALUG_U,       &
 !     &          precond_4_crank, sigma_diag)
 !
       end subroutine precond_djds_velo

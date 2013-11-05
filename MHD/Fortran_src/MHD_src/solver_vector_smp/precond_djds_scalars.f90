@@ -32,7 +32,7 @@
       subroutine precond_djds_press
 !
       use m_solver_djds_linear_fl
-      use m_press_matrix
+      use m_velo_matrix
 !
 !C
 !C== PRECONDITIONING
@@ -43,8 +43,8 @@
      &         (internal_node, numnod, NLmax1, itotal1_fl_l, NHYP1,     &
      &          np_smp, inter_smp_stack, STACKmc1, NLmaxHYP1, IVECT1,   &
      &          OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U, LtoU1,              &
-     &          aiccg_press(im_press_d), indexDJDS1_L, itemDJDS1_L,     &
-     &          aiccg_press(im_press_l), alug_press_l, alug_press_u,    &
+     &          Pmat_DJDS%D, indexDJDS1_L, itemDJDS1_L,                 &
+     &          Pmat_DJDS%AL, Pmat_DJDS%ALUG_L, Pmat_DJDS%ALUG_U,       &
      &          precond_4_solver, sigma_diag)
 !
 !

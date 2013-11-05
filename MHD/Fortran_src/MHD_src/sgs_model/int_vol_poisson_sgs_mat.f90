@@ -38,7 +38,7 @@
       use m_sorted_node_MHD
       use m_SGS_model_coefs
       use m_SGS_address
-      use m_press_matrix
+      use m_velo_matrix
       use int_vol_poisson_sgs_matrix
 !
       integer(kind = kint), intent(in) :: n_int
@@ -46,7 +46,7 @@
 !
       call int_vol_poisson_sgs_mat11(n_int, idx_4_fll_mat,              &
      &    ifilter_final, ak_diff(1,iak_diff_v),                         &
-     &    num_press_comp, aiccg_press)
+     &    Pmat_DJDS%num_non0, Pmat_DJDS%aiccg)
 !
       end subroutine int_vol_velo_sgs_poisson_mat
 !
@@ -87,7 +87,7 @@
 !
       call int_vol_crank_sgs_mat33(n_int, idx_4_fl_mat, coef_imp_v,     &
      &    ifilter_final, ak_diff(1,iak_diff_v), ak_d_velo,              &
-     &    num_velo_comp, aiccg_velo)
+     &    Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
 !
       end subroutine int_vol_velo_sgs_crank_mat
 !

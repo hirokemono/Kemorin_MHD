@@ -116,19 +116,7 @@
       type(DJDS_MATRIX), intent(inout) :: mat_velo
 !
 !
-       mat_velo%num_diag =      numnod
-       mat_velo%internal_diag = internal_node
-       mat_velo%istart_diag =   im_velo_d
-       mat_velo%istart_l =      im_velo_l
-       mat_velo%istart_u =      im_velo_u
-       mat_velo%num_non0 =      num_velo_comp
-!
-       mat_velo%aiccg =>  aiccg_velo
-       mat_velo%D =>      aiccg_velo(im_velo_d:im_velo_l-1)
-       mat_velo%AL =>     aiccg_velo(im_velo_l:im_velo_u-1)
-       mat_velo%AU =>     aiccg_velo(im_velo_u:num_velo_comp)
-       mat_velo%ALUG_L => ALUG_velo_L
-       mat_velo%ALUG_U => ALUG_velo_U
+      call link_djds_matrix_structs(Vmat_DJDS, mat_velo)
 !
       end subroutine link_djds_mat_velo_4_MG
 !
@@ -161,24 +149,12 @@
 !
       subroutine link_djds_mat_press_4_MG(mat_press)
 !
-      use m_press_matrix
+      use m_velo_matrix
 !
       type(DJDS_MATRIX), intent(inout) :: mat_press
 !
 !
-       mat_press%num_diag =      numnod
-       mat_press%internal_diag = internal_node
-       mat_press%istart_diag =   im_press_d
-       mat_press%istart_l =      im_press_l
-       mat_press%istart_u =      im_press_u
-       mat_press%num_non0 =      num_press_comp
-!
-       mat_press%aiccg =>  aiccg_press
-       mat_press%D =>      aiccg_press(im_press_d:im_press_l-1)
-       mat_press%AL =>     aiccg_press(im_press_l:im_press_u-1)
-       mat_press%AU =>     aiccg_press(im_press_u:num_press_comp)
-       mat_press%ALUG_L => ALUG_press_l
-       mat_press%ALUG_U => ALUG_press_u
+      call link_djds_matrix_structs(Pmat_DJDS, mat_press)
 !
       end subroutine link_djds_mat_press_4_MG
 !

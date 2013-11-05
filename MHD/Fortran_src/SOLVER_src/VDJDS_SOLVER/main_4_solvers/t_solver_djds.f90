@@ -1,51 +1,55 @@
+!>@file   t_solver_djds.f90
+!!@brief  module t_solver_djds
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2008
+!!@date Modified in Nov., 2013
 !
-!      module t_solver_djds
-!
-!>  Structer for DJDS matrix solver
-!
-!      Written by Hiroaki Matsui on Dec., 2008
-!
-!        (module m_solver_djds)
-!
-!      subroutine link_alloc_type_djds11_mat(numnod, internal_node,     &
-!     &          comm_table, djds_table, solver)
-!      subroutine link_alloc_type_djds33_mat(numnod, internal_node,     &
-!     &          comm_table, djds_table, solver)
-!      subroutine link_alloc_type_djdsNN_mat(numnod, internal_node, NB, &
-!     &          comm_table, djds_table, solver)
-!      subroutine link_alloc_type_zero_mat(comm_table, djds_table,      &
-!     &          solver)
-!
-!       subroutine alloc_type_4_RCM(numnod, djds_tbl)
-!       subroutine alloc_type_number_4_djds(djds_tbl)
-!       subroutine alloc_type_lists_4_DJDS(np_smp, numnod, djds_tbl)
-!       subroutine alloc_type_address_4_DJDS(djds_tbl)
-!       subroutine alloc_type_new_comm_table(ntot_export, djds_tbl)
-!       subroutine alooc_djds_zero_connect_type(djds_tbl)
-!
-!       subroutine alloc_type_djds11_mat(numnod, internal_node,         &
-!      &          djds_tbl, mat11)
-!       subroutine alloc_type_djds33_mat(numnod, internal_node,         &
-!      &          djds_tbl, mat33)
-!       subroutine alloc_type_djdsNN_mat(numnod, internal_node, NB,     &
-!      &          djds_tbl, matNN)
-!       subroutine alloc_type_zero_mat(mat)
-!
-!       subroutine dealloc_type_4_djds_table(djds_tbl)
-!       subroutine dealloc_type_4_RCM(djds_tbl)
-!       subroutine dealloc_type_number_4_djds(djds_tbl)
-!       subroutine dealloc_type_lists_4_DJDS(djds_tbl)
-!       subroutine dealloc_type_address_4_DJDS(djds_tbl)
-!       subroutine dealloc_type_new_comm_table(djds_tbl)
-!
-!       subroutine dealloc_type_djds_mat(mat)
-!
-!       subroutine check_type_DJDS_ordering_info(my_rank, numnod,       &
-!     &           djds_tbl)
-!
-!      subroutine link_djds_connect_structs(djds_org, djds_tbl)
-!      subroutine link_djds_matrix_structs(mat_org, mat)
-!      subroutine unlink_djds_connect_structs(djds_tbl)
+!>@brief  Structer for DJDS matrix solver
+!!@n        (module m_solver_djds)
+!!
+!!@verbatim
+!!      subroutine link_alloc_type_djds11_mat(numnod, internal_node,    &
+!!     &          comm_table, djds_table, solver)
+!!      subroutine link_alloc_type_djds33_mat(numnod, internal_node,    &
+!!     &          comm_table, djds_table, solver)
+!!      subroutine link_alloc_type_djdsNN_mat(numnod, internal_node, NB,&
+!!     &          comm_table, djds_table, solver)
+!!      subroutine link_alloc_type_zero_mat(comm_table, djds_table,     &
+!!     &          solver)
+!!
+!!       subroutine alloc_type_4_RCM(numnod, djds_tbl)
+!!       subroutine alloc_type_number_4_djds(djds_tbl)
+!!       subroutine alloc_type_lists_4_DJDS(np_smp, numnod, djds_tbl)
+!!       subroutine alloc_type_address_4_DJDS(djds_tbl)
+!!       subroutine alloc_type_new_comm_table(ntot_export, djds_tbl)
+!!       subroutine alooc_djds_zero_connect_type(djds_tbl)
+!!
+!!       subroutine alloc_type_djds11_mat(numnod, internal_node,        &
+!!      &          djds_tbl, mat11)
+!!       subroutine alloc_type_djds33_mat(numnod, internal_node,        &
+!!      &          djds_tbl, mat33)
+!!       subroutine alloc_type_djdsNN_mat(numnod, internal_node, NB,    &
+!!      &          djds_tbl, matNN)
+!!       subroutine alloc_type_zero_mat(mat)
+!!
+!!       subroutine dealloc_type_4_djds_table(djds_tbl)
+!!       subroutine dealloc_type_4_RCM(djds_tbl)
+!!       subroutine dealloc_type_number_4_djds(djds_tbl)
+!!       subroutine dealloc_type_lists_4_DJDS(djds_tbl)
+!!       subroutine dealloc_type_address_4_DJDS(djds_tbl)
+!!       subroutine dealloc_type_new_comm_table(djds_tbl)
+!!
+!!       subroutine dealloc_type_djds_mat(mat)
+!!
+!!       subroutine check_type_DJDS_ordering_info(my_rank, numnod,      &
+!!     &           djds_tbl)
+!!
+!!      subroutine link_djds_connect_structs(djds_org, djds_tbl)
+!!      subroutine link_djds_matrix_structs(mat_org, mat)
+!!      subroutine unlink_djds_connect_structs(djds_tbl)
+!!      subroutine unlink_djds_matrix_structs(mat)
+!!@endverbatim
 !
       module t_solver_djds
 !
@@ -608,6 +612,9 @@
       mat%num_non0 =      mat_org%num_non0
 !
       mat%aiccg =>  mat_org%aiccg
+      mat%D =>      mat_org%D
+      mat%AL =>     mat_org%AL
+      mat%AU =>     mat_org%AU
       mat%ALUG_L => mat_org%ALUG_L
       mat%ALUG_U => mat_org%ALUG_U
 !
@@ -640,6 +647,25 @@
       nullify( djds_tbl%NOD_EXPORT_NEW )
 !
       end subroutine unlink_djds_connect_structs
+!
+! ------------------------------------------
+!
+      subroutine unlink_djds_matrix_structs(mat)
+!
+      type(DJDS_MATRIX), intent(inout) :: mat
+!
+!
+      mat%num_diag =      0
+      mat%internal_diag = 0
+      mat%istart_diag =   0
+      mat%istart_l =      0
+      mat%istart_u =      0
+      mat%num_non0 =      0
+!
+      nullify(mat%aiccg, mat%D, mat%AL, mat%AU)
+      nullify(mat%ALUG_L, mat%ALUG_U)
+!
+      end subroutine unlink_djds_matrix_structs
 !
 ! ------------------------------------------
 ! ------------------------------------------

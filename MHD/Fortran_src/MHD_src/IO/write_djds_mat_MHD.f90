@@ -112,10 +112,10 @@
         call write_djds_mat33_comp                                      &
      &     (id_mat_file, internal_node, numnod, NLmax, NUmax,           &
      &     itotal_fl_l, itotal_fl_u, (NLmax*np_smp), (NUmax*np_smp),    &
-     &     NHYP, np_smp, NEWtoOLD, aiccg_velo(im_velo_d),               &
+     &     NHYP, np_smp, NEWtoOLD, Vmat_DJDS%D,                         &
      &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
-     &     aiccg_velo(im_velo_l), aiccg_velo(im_velo_u),                &
-     &     ALUG_velo_L, ALUG_velo_U)
+     &     Vmat_DJDS%AL, Vmat_DJDS%AU,                                  &
+     &     Vmat_DJDS%ALUG_L, Vmat_DJDS%ALUG_U)
         call write_djds_mat_connects                                    &
      &     (id_mat_file, numnod, np_smp, NHYP, inter_smp_stack,         &
      &     STACKmc, NLmaxHYP, NUmaxHYP, IVECT,                          &
@@ -132,7 +132,7 @@
 !
       use m_comm_table_4_MHD
       use m_solver_djds_linear_fl
-      use m_press_matrix
+      use m_velo_matrix
 !
       integer(kind = kint) :: i
 !
@@ -157,10 +157,10 @@
         call write_djds_mat11_comp                                      &
      &    (id_mat_file, internal_node, numnod, NLmax1, NUmax1,          &
      &    itotal1_fl_l, itotal1_fl_u, (NLmax1*np_smp), (NUmax1*np_smp), &
-     &    NHYP1, np_smp, NEWtoOLD1, aiccg_press(im_press_d),            &
+     &    NHYP1, np_smp, NEWtoOLD1, Pmat_DJDS%D,                        &
      &    indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,         &
-     &    aiccg_press(im_press_l), aiccg_press(im_press_u),             &
-     &    ALUG_press_L, ALUG_press_U)
+     &    Pmat_DJDS%AL, Pmat_DJDS%AU,                                   &
+     &    Pmat_DJDS%ALUG_L, Pmat_DJDS%ALUG_U)
         call write_djds_mat_connects                                    &
      &     (id_mat_file, numnod, np_smp, NHYP1, inter_smp_stack,        &
      &     STACKmc1, NLmaxHYP1, NUmaxHYP1, IVECT1,                      &

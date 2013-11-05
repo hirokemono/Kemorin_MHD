@@ -71,7 +71,7 @@
      &          ak_d_velo, sk6)
 !
             call add_skv1_2_MHD_matrix33(idx_4_fl_mat, k2, sk6,         &
-     &          num_velo_comp, aiccg_velo)
+     &          Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
           end if
         end do
       end do
@@ -115,7 +115,7 @@
      &          ak_d_velo, sk6)
 !
             call add_skv1_2_MHD_matrix33(idx_4_fl_mat, k2, sk6,         &
-     &          num_velo_comp, aiccg_velo)
+     &          Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
           end if
         end do
       end do

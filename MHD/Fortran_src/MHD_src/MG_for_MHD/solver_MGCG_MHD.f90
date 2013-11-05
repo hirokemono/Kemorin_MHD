@@ -115,11 +115,11 @@
      &     itotal_fl_l, itotal_fl_u, NHYP, np_smp, inter_smp_stack,     &
      &     STACKmc, NLmaxHYP, NUmaxHYP, IVECT, NEWtoOLD,                &
      &     OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U, LtoU,     &
-     &     aiccg_velo(im_velo_d), b_vec(1), x_vec(1),                   &
+     &     Vmat_DJDS%D, b_vec(1), x_vec(1),                             &
      &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
-     &     aiccg_velo(im_velo_l), aiccg_velo(im_velo_u),                &
-     &     ALUG_velo_L, ALUG_velo_U, eps_4_velo_crank, itr, ierr,       &
-     &     neigh_pe_num_fl, neigh_pe_data_fl,                           &
+     &     Vmat_DJDS%AL, Vmat_DJDS%AU,                                  &
+     &     Vmat_DJDS%ALUG_L, Vmat_DJDS%ALUG_U, eps_4_velo_crank,        &
+     &     itr, ierr, neigh_pe_num_fl, neigh_pe_data_fl,                &
      &     istack_import_fl, item_import_fl,                            &
      &     istack_export_fl, NOD_EXPORT_NEW_fl,                         &
      &     method_4_velo, precond_4_crank, itr_res)
@@ -138,7 +138,7 @@
 !
       use m_comm_table_4_MHD
       use m_solver_djds_linear_fl
-      use m_press_matrix
+      use m_velo_matrix
       use solver_DJDS
       use solver_VMGCG11_DJDS_SMP
 !
@@ -167,10 +167,10 @@
      &     itotal1_fl_l, itotal1_fl_u,  NHYP1, np_smp, inter_smp_stack, &
      &     STACKmc1, NLmaxHYP1, NUmaxHYP1, IVECT1, NEWtoOLD1,           &
      &     OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U, NEWtoOLD_DJDS1_U, LtoU1, &
-     &     aiccg_press(im_press_d), b_vec(1), x_vec(1),                 &
+     &     Pmat_DJDS%D, b_vec(1), x_vec(1),                             &
      &     indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,        &
-     &     aiccg_press(im_press_l), aiccg_press(im_press_u),            &
-     &     ALUG_press_L, ALUG_press_U, eps, itr, ierr,                  &
+     &     Pmat_DJDS%AL, Pmat_DJDS%AU,                                  &
+     &     Pmat_DJDS%ALUG_L, Pmat_DJDS%ALUG_U, eps, itr, ierr,          &
      &     neigh_pe_num_fl, neigh_pe_data_fl,                           &
      &     istack_import_fl, item_import_fl,                            &
      &     istack_export_fl, NOD_EXPORT_NEW_fl1,                        &
