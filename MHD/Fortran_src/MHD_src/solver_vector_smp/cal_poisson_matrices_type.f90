@@ -73,7 +73,7 @@
      &    rhs_tbl%inod_ele_max, rhs_tbl%num_sort_smp,                   &
      &    rhs_tbl%nod_stack_smp, rhs_tbl%iele_sort_smp,                 &
      &    rhs_tbl%iconn_sort_smp, djds_const%idx_4_mat, coef_imp, dt,   &
-     &    ak_d, k2, fem_wk%sk6, mat11%num_comp, mat11%aiccg)
+     &    ak_d, k2, fem_wk%sk6, mat11%num_non0, mat11%aiccg)
 !
       end subroutine cal_scalar_diffuse_mat_type
 !
@@ -103,7 +103,7 @@
      &    rhs_tbl%inod_ele_max, rhs_tbl%num_sort_smp,                   &
      &    rhs_tbl%nod_stack_smp, rhs_tbl%iele_sort_smp,                 &
      &    rhs_tbl%iconn_sort_smp, djds_const%idx_4_mat, coef_imp, dt,   &
-     &    ak_d, k2, fem_wk%sk6, mat33%num_comp, mat33%aiccg)
+     &    ak_d, k2, fem_wk%sk6, mat33%num_non0, mat33%aiccg)
 !
       end subroutine cal_vect_diffuse_mat_type
 !
@@ -133,7 +133,7 @@
      &    rhs_tbl%inod_ele_max, rhs_tbl%num_sort_smp,                   &
      &    rhs_tbl%nod_stack_smp, rhs_tbl%iele_sort_smp,                 &
      &    rhs_tbl%iconn_sort_smp, djds_const%idx_4_mat, k2,             &
-     &    coef_cor, angular, fem_wk%sk6, mat33%num_comp, mat33%aiccg)
+     &    coef_cor, angular, fem_wk%sk6, mat33%num_non0, mat33%aiccg)
 !
       end subroutine cal_consist_coriolis_mat_type
 !

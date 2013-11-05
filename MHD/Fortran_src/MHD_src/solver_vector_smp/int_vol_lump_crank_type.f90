@@ -112,7 +112,7 @@
 !
       call init_11_matrix_lump(node%numnod,                             &
      &    fld%numnod_fld, fld%inod_fld, djds_tbl%OLDtoNEW, lump%ml_o,   &
-     &    mat11%num_comp, mat11%aiccg)
+     &    mat11%num_non0, mat11%aiccg)
 !
       end subroutine init_11_mat_type_lump
 !
@@ -136,7 +136,7 @@
 !
       call init_33_matrix_lump(node%numnod,                             &
      &    fld%numnod_fld, fld%inod_fld, djds_tbl%OLDtoNEW, lump%ml_o,   &
-     &    mat33%num_comp, mat33%aiccg)
+     &    mat33%num_non0, mat33%aiccg)
 !
       end subroutine init_33_mat_type_lump
 !
@@ -161,7 +161,7 @@
 !
       call cal_lumped_coriolis_matrix(node%numnod,                      &
      &    fld%numnod_fld, fld%inod_fld, djds_tbl%OLDtoNEW,              &
-     &    coef_cor, angular, lump%ml_o, mat33%num_comp, mat33%aiccg)
+     &    coef_cor, angular, lump%ml_o, mat33%num_non0, mat33%aiccg)
 !
       end subroutine add_lumped_coriolis_mat_type
 !

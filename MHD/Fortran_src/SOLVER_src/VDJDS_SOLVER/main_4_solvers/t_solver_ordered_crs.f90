@@ -48,7 +48,7 @@
       end type DJORS_CONNECT
 !
       type DJORS_MATRIX
-        integer(kind=kint ) ::  num_comp
+        integer(kind=kint ) ::  num_non0
         real   (kind=kreal), pointer ::  aiccg(:)
         real   (kind=kreal), pointer ::  AM(:)
       end type DJORS_MATRIX
@@ -192,12 +192,12 @@
        type(DJORS_MATRIX), intent(inout) :: mat11
 !
 !
-       mat11%num_comp = djo_tbl%NCM
+       mat11%num_non0 = djo_tbl%NCM
 !
-       allocate(mat11%aiccg(0:mat11%num_comp) )
-       if(mat11%num_comp .gt. 0) mat11%aiccg = 0.0d0
+       allocate(mat11%aiccg(0:mat11%num_non0) )
+       if(mat11%num_non0 .gt. 0) mat11%aiccg = 0.0d0
 !
-       mat11%AM =>  mat11%aiccg(1:mat11%num_comp)
+       mat11%AM =>  mat11%aiccg(1:mat11%num_non0)
 !
        end subroutine alloc_type_djo11_mat
 !
@@ -209,12 +209,12 @@
        type(DJORS_MATRIX), intent(inout) :: mat33
 !
 !
-       mat33%num_comp = 9 * djo_tbl%NCM
+       mat33%num_non0 = 9 * djo_tbl%NCM
 !
-       allocate(mat33%aiccg(-8:mat33%num_comp) )
-       if(mat33%num_comp .gt. 0) mat33%aiccg = 0.0d0
+       allocate(mat33%aiccg(-8:mat33%num_non0) )
+       if(mat33%num_non0 .gt. 0) mat33%aiccg = 0.0d0
 !
-       mat33%AM =>  mat33%aiccg(1:mat33%num_comp)
+       mat33%AM =>  mat33%aiccg(1:mat33%num_non0)
 !
        end subroutine alloc_type_djo33_mat
 !
@@ -229,12 +229,12 @@
 !
 !
        NB2= NB*NB
-       matNN%num_comp = NB2 * djo_tbl%NCM
+       matNN%num_non0 = NB2 * djo_tbl%NCM
 !
-       allocate(matNN%aiccg(-NB2+1:matNN%num_comp) )
-       if(matNN%num_comp .gt. 0) matNN%aiccg = 0.0d0
+       allocate(matNN%aiccg(-NB2+1:matNN%num_non0) )
+       if(matNN%num_non0 .gt. 0) matNN%aiccg = 0.0d0
 !
-       matNN%AM =>  matNN%aiccg(1:matNN%num_comp)
+       matNN%AM =>  matNN%aiccg(1:matNN%num_non0)
 !
        end subroutine alloc_type_djoNN_mat
 !

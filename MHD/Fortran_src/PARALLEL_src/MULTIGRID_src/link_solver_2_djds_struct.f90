@@ -41,38 +41,38 @@
 !      integer(kind=kint ), target, intent(in)                          &
 !     &            :: NOD_EXPORT_NEW(NTOT_EXPORT)
 !
-!      subroutine link_djds_mat11_2_struct(NP, N, num_comp, istart_diag,&
+!      subroutine link_djds_mat11_2_struct(NP, N, num_non0, istart_diag,&
 !     &          istart_l, istart_u, aiccg, ALUG_L, ALUG_U, mat11)
 !
-!        integer(kind=kint), intent(in) :: N, NP, num_comp
+!        integer(kind=kint), intent(in) :: N, NP, num_non0
 !        integer(kind=kint), intent(in) :: istart_diag, istart_l, istart_u
-!      real(kind = kreal), target, intent(in) :: aiccg(-8:9*num_comp)
+!      real(kind = kreal), target, intent(in) :: aiccg(-8:9*num_non0)
 !      real(kind = kreal), target, intent(in) :: ALUG_L(9*N)
 !      real(kind = kreal), target, intent(in) :: ALUG_U(9*N)
 !
 !        type(DJDS_MATRIX), intent(inout) :: mat11
 !
 !
-!      subroutine link_djds_mat33_2_struct(N, NP, num_comp, istart_diag,&
+!      subroutine link_djds_mat33_2_struct(N, NP, num_non0, istart_diag,&
 !     &          istart_l, istart_u, aiccg, ALUG_L, ALUG_U, mat33)
 !
-!        integer(kind=kint), intent(in) :: N, NP, num_comp
+!        integer(kind=kint), intent(in) :: N, NP, num_non0
 !        integer(kind=kint), intent(in) :: istart_diag, istart_l, istart_u
-!      real(kind = kreal), target, intent(in) :: aiccg(-8:9*num_comp)
+!      real(kind = kreal), target, intent(in) :: aiccg(-8:9*num_non0)
 !      real(kind = kreal), target, intent(in) :: ALUG_L(9*N)
 !      real(kind = kreal), target, intent(in) :: ALUG_U(9*N)
 !
 !        type(DJDS_MATRIX), intent(inout) :: mat33
 !
 !
-!      subroutine link_djds_matNN_2_struct(N, NP, NB, num_comp,         &
+!      subroutine link_djds_matNN_2_struct(N, NP, NB, num_non0,         &
 !     &          istart_diag, istart_l, istart_u, aiccg, ALUG_L, ALUG_U,&
 !     &          matNN)
 !
-!        integer(kind=kint), intent(in) :: NP, N, NB, num_comp
+!        integer(kind=kint), intent(in) :: NP, N, NB, num_non0
 !        integer(kind=kint), intent(in) :: istart_diag, istart_l, istart_u
 !      real(kind = kreal), target, intent(in)                           &
-!     &          :: aiccg(-NB*NB+1:NB*NB*num_comp)
+!     &          :: aiccg(-NB*NB+1:NB*NB*num_non0)
 !      real(kind = kreal), target, intent(in) :: ALUG_L(NB*NB**N)
 !      real(kind = kreal), target, intent(in) :: ALUG_U(NB*NB**N)
 !
@@ -161,12 +161,12 @@
 !
 ! ------------------------------------------
 !
-      subroutine link_djds_mat11_2_struct(N, NP, num_comp, istart_diag, &
+      subroutine link_djds_mat11_2_struct(N, NP, num_non0, istart_diag, &
      &          istart_l, istart_u, aiccg, ALUG_L, ALUG_U, mat11)
 !
-      integer(kind=kint), intent(in) :: N, NP, num_comp
+      integer(kind=kint), intent(in) :: N, NP, num_non0
       integer(kind=kint), intent(in) :: istart_diag, istart_l, istart_u
-      real(kind = kreal), target, intent(in) :: aiccg(0:num_comp)
+      real(kind = kreal), target, intent(in) :: aiccg(0:num_non0)
       real(kind = kreal), target, intent(in) :: ALUG_L(N)
       real(kind = kreal), target, intent(in) :: ALUG_U(N)
 !
@@ -178,7 +178,7 @@
       mat11%istart_diag =   istart_diag
       mat11%istart_l =      istart_l
       mat11%istart_u =      istart_u
-      mat11%num_comp =      num_comp
+      mat11%num_non0 =      num_non0
 !
       mat11%aiccg =>  aiccg
       mat11%ALUG_L => ALUG_L
@@ -188,12 +188,12 @@
 !
 ! ------------------------------------------
 !
-      subroutine link_djds_mat33_2_struct(N, NP, num_comp, istart_diag, &
+      subroutine link_djds_mat33_2_struct(N, NP, num_non0, istart_diag, &
      &          istart_l, istart_u, aiccg, ALUG_L, ALUG_U, mat33)
 !
-      integer(kind=kint), intent(in) :: N, NP, num_comp
+      integer(kind=kint), intent(in) :: N, NP, num_non0
       integer(kind=kint), intent(in) :: istart_diag, istart_l, istart_u
-      real(kind = kreal), target, intent(in) :: aiccg(-8:9*num_comp)
+      real(kind = kreal), target, intent(in) :: aiccg(-8:9*num_non0)
       real(kind = kreal), target, intent(in) :: ALUG_L(9*N)
       real(kind = kreal), target, intent(in) :: ALUG_U(9*N)
 !
@@ -204,7 +204,7 @@
        mat33%istart_diag =   istart_diag
        mat33%istart_u =      istart_u
        mat33%istart_l =      istart_l
-       mat33%num_comp =      num_comp
+       mat33%num_non0 =      num_non0
 !
        mat33%aiccg =>  aiccg
        mat33%ALUG_U => ALUG_U
@@ -214,14 +214,14 @@
 !
 ! ------------------------------------------
 !
-      subroutine link_djds_matNN_2_struct(N, NP, NB, num_comp,          &
+      subroutine link_djds_matNN_2_struct(N, NP, NB, num_non0,          &
      &          istart_diag, istart_l, istart_u, aiccg, ALUG_L, ALUG_U, &
      &          matNN)
 !
-      integer(kind=kint), intent(in) :: N, NP, NB, num_comp
+      integer(kind=kint), intent(in) :: N, NP, NB, num_non0
       integer(kind=kint), intent(in) :: istart_diag, istart_l, istart_u
       real(kind = kreal), target, intent(in)                            &
-     &          :: aiccg(-NB*NB+1:NB*NB*num_comp)
+     &          :: aiccg(-NB*NB+1:NB*NB*num_non0)
       real(kind = kreal), target, intent(in) :: ALUG_L(NB*NB**N)
       real(kind = kreal), target, intent(in) :: ALUG_U(NB*NB**N)
 !
@@ -232,7 +232,7 @@
        matNN%istart_diag =   istart_diag
        matNN%istart_u =      istart_u
        matNN%istart_l =      istart_l
-       matNN%num_comp =      num_comp
+       matNN%num_non0 =      num_non0
 !
        matNN%aiccg =>  aiccg
        matNN%ALUG_U => ALUG_U

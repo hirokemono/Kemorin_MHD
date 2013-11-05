@@ -9,7 +9,7 @@
 !       subroutine reset_aiccg_magne
 !       subroutine deallocate_aiccg_magne
 !
-      module   m_magne_matrix
+      module m_magne_matrix
 !
       use m_precision
 !

@@ -121,7 +121,7 @@
        mat_velo%istart_diag =   im_velo_d
        mat_velo%istart_l =      im_velo_l
        mat_velo%istart_u =      im_velo_u
-       mat_velo%num_comp =      num_velo_comp
+       mat_velo%num_non0 =      num_velo_comp
 !
        mat_velo%aiccg =>  aiccg_velo
        mat_velo%D =>      aiccg_velo(im_velo_d:im_velo_l-1)
@@ -146,7 +146,7 @@
        mat_magne%istart_diag =   im_mag_d
        mat_magne%istart_l =      im_mag_l
        mat_magne%istart_u =      im_mag_u
-       mat_magne%num_comp =      num_mag_comp
+       mat_magne%num_non0 =      num_mag_comp
 !
        mat_magne%aiccg =>  aiccg_magne
        mat_magne%D =>      aiccg_magne(im_mag_d:im_mag_l-1)
@@ -171,7 +171,7 @@
        mat_press%istart_diag =   im_press_d
        mat_press%istart_l =      im_press_l
        mat_press%istart_u =      im_press_u
-       mat_press%num_comp =      num_press_comp
+       mat_press%num_non0 =      num_press_comp
 !
        mat_press%aiccg =>  aiccg_press
        mat_press%D =>      aiccg_press(im_press_d:im_press_l-1)
@@ -196,7 +196,7 @@
        mat_magp%istart_diag =   im_mp_d
        mat_magp%istart_l =      im_mp_l
        mat_magp%istart_u =      im_mp_u
-       mat_magp%num_comp =      num_mp_comp
+       mat_magp%num_non0 =      num_mp_comp
 !
        mat_magp%aiccg =>  aiccg_mag_p
        mat_magp%D =>      aiccg_mag_p(im_mp_d:im_mp_l-1)
@@ -221,7 +221,7 @@
        mat_temp%istart_diag =   im_temp_d
        mat_temp%istart_l =      im_temp_l
        mat_temp%istart_u =      im_temp_u
-       mat_temp%num_comp =      num_temp_comp
+       mat_temp%num_non0 =      num_temp_comp
 !
        mat_temp%aiccg =>  aiccg_temp
        mat_temp%D =>      aiccg_temp(im_temp_d:im_temp_l-1)
@@ -246,7 +246,7 @@
        mat_d_scalar%istart_diag =   im_cps_d
        mat_d_scalar%istart_l =      im_cps_l
        mat_d_scalar%istart_u =      im_cps_u
-       mat_d_scalar%num_comp =      num_composit_comp
+       mat_d_scalar%num_non0 =      num_composit_comp
 !
        mat_d_scalar%aiccg =>  aiccg_composit
        mat_d_scalar%D =>    aiccg_composit(im_cps_d:im_cps_l-1)

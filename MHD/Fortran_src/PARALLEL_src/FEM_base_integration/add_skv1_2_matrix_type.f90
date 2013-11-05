@@ -43,7 +43,7 @@
      &    rhs_tbl%inod_ele_max, rhs_tbl%num_sort_smp,                   &
      &    rhs_tbl%nod_stack_smp, rhs_tbl%iele_sort_smp,                 &
      &    rhs_tbl%iconn_sort_smp, mat_tbl%idx_4_mat,                    &
-     &    k2, fem_wk%sk6, mat11%num_comp, mat11%aiccg)
+     &    k2, fem_wk%sk6, mat11%num_non0, mat11%aiccg)
 !
       end subroutine add_skv1_2_matrix11_type
 !
@@ -68,7 +68,7 @@
      &    rhs_tbl%inod_ele_max, rhs_tbl%num_sort_smp,                   &
      &    rhs_tbl%nod_stack_smp, rhs_tbl%iele_sort_smp,                 &
      &    rhs_tbl%iconn_sort_smp, mat_tbl%idx_4_mat,                    &
-     &    k2, fem_wk%sk6, mat33%num_comp, mat33%aiccg)
+     &    k2, fem_wk%sk6, mat33%num_non0, mat33%aiccg)
 !
       end subroutine add_skv1_2_matrix33_type
 !

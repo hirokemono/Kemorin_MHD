@@ -106,8 +106,10 @@
 !>   upper off-diagonal of matrix
         real(kind=kreal), pointer :: AU(:)
 !
-!>   number of diagonal component ind internal
-        integer (kind = kint) :: num_diag, internal_diag
+!>   number of diagonal component
+        integer (kind = kint) :: num_diag
+!>   number of diagonal internal component
+        integer (kind = kint) :: internal_diag
 !
 !>   pointer for diagonal component
         integer (kind = kint) :: istart_diag
@@ -116,7 +118,7 @@
 !>   pointer for lower part of matrix
         integer (kind = kint) :: istart_l
 !>   total number of component
-        integer (kind = kint) :: num_comp
+        integer (kind = kint) :: num_non0
 !
         real(kind=kreal), pointer :: ALUG_L(:)
         real(kind=kreal), pointer :: ALUG_U(:)
@@ -351,18 +353,18 @@
        mat11%istart_l = numnod + 1
        mat11%istart_u = numnod + djds_tbl%itotal_l + 1
 !
-       mat11%num_comp = numnod + djds_tbl%itotal_l + djds_tbl%itotal_u
+       mat11%num_non0 = numnod + djds_tbl%itotal_l + djds_tbl%itotal_u
 !
-       allocate(mat11%aiccg(0:mat11%num_comp) )
+       allocate(mat11%aiccg(0:mat11%num_non0) )
        allocate(mat11%ALUG_U(internal_node)  )
        allocate(mat11%ALUG_L(internal_node)  )
-       if(mat11%num_comp .gt. 0) mat11%aiccg =  0.0d0
+       if(mat11%num_non0 .gt. 0) mat11%aiccg =  0.0d0
        if(internal_node .gt. 0)  mat11%ALUG_U = 0.0d0
        if(internal_node .gt. 0)  mat11%ALUG_L = 0.0d0
 !
        mat11%D =>  mat11%aiccg(mat11%istart_diag:mat11%istart_l-1)
        mat11%AL => mat11%aiccg(mat11%istart_l:mat11%istart_u-1)
-       mat11%AU => mat11%aiccg(mat11%istart_u:mat11%num_comp)
+       mat11%AU => mat11%aiccg(mat11%istart_u:mat11%num_non0)
 !
        end subroutine alloc_type_djds11_mat
 !
@@ -383,19 +385,19 @@
        mat33%istart_l = 9*numnod + 1
        mat33%istart_u = 9*(numnod + djds_tbl%itotal_l) + 1
 !
-       mat33%num_comp = 9 * (numnod + djds_tbl%itotal_l                 &
+       mat33%num_non0 = 9 * (numnod + djds_tbl%itotal_l                 &
      &                              + djds_tbl%itotal_u)
 !
-       allocate(mat33%aiccg(-8:mat33%num_comp) )
+       allocate(mat33%aiccg(-8:mat33%num_non0) )
        allocate(mat33%ALUG_U(9*internal_node)  )
        allocate(mat33%ALUG_L(9*internal_node)  )
-       if(mat33%num_comp .gt. 0) mat33%aiccg = 0.0d0
+       if(mat33%num_non0 .gt. 0) mat33%aiccg = 0.0d0
        if(internal_node .gt. 0)  mat33%ALUG_U = 0.0d0
        if(internal_node .gt. 0)  mat33%ALUG_L = 0.0d0
 !
        mat33%D =>  mat33%aiccg(mat33%istart_diag:mat33%istart_l-1)
        mat33%AL => mat33%aiccg(mat33%istart_l:mat33%istart_u-1)
-       mat33%AU => mat33%aiccg(mat33%istart_u:mat33%num_comp)
+       mat33%AU => mat33%aiccg(mat33%istart_u:mat33%num_non0)
 !
        end subroutine alloc_type_djds33_mat
 !
@@ -418,19 +420,19 @@
        matNN%istart_l = NB2*numnod + 1
        matNN%istart_u = NB2*(numnod + djds_tbl%itotal_l) + 1
 !
-       matNN%num_comp = NB2 * (numnod + djds_tbl%itotal_l               &
+       matNN%num_non0 = NB2 * (numnod + djds_tbl%itotal_l               &
      &                                  + djds_tbl%itotal_u)
 !
-       allocate(matNN%aiccg(-NB2+1:matNN%num_comp) )
+       allocate(matNN%aiccg(-NB2+1:matNN%num_non0) )
        allocate(matNN%ALUG_U(NB2*internal_node)  )
        allocate(matNN%ALUG_L(NB2*internal_node)  )
-       if(matNN%num_comp .gt. 0) matNN%aiccg = 0.0d0
+       if(matNN%num_non0 .gt. 0) matNN%aiccg = 0.0d0
        if(internal_node .gt. 0)  matNN%ALUG_L = 0.0d0
        if(internal_node .gt. 0)  matNN%ALUG_U = 0.0d0
 !
        matNN%D =>  matNN%aiccg(matNN%istart_diag:matNN%istart_l-1)
        matNN%AL => matNN%aiccg(matNN%istart_l:matNN%istart_u-1)
-       matNN%AU => matNN%aiccg(matNN%istart_u:matNN%num_comp)
+       matNN%AU => matNN%aiccg(matNN%istart_u:matNN%num_non0)
 !
        end subroutine alloc_type_djdsNN_mat
 !
@@ -448,7 +450,7 @@
        mat%istart_u =    izero
        mat%istart_l =    izero
 !
-       mat%num_comp = izero
+       mat%num_non0 = izero
 !
        allocate(mat%aiccg(izero:izero) )
        allocate(mat%ALUG_U(izero)  )
@@ -603,7 +605,7 @@
       mat%istart_diag =   mat_org%istart_diag
       mat%istart_l =      mat_org%istart_l
       mat%istart_u =      mat_org%istart_u
-      mat%num_comp =      mat_org%num_comp
+      mat%num_non0 =      mat_org%num_non0
 !
       mat%aiccg =>  mat_org%aiccg
       mat%ALUG_L => mat_org%ALUG_L

@@ -125,7 +125,7 @@
       type(DJDS_MATRIX), intent(inout) :: mat11
 !
 !
-      mat11%aiccg(0:mat11%num_comp) = zero
+      mat11%aiccg(0:mat11%num_non0) = zero
 !
       mat11%ALUG_U(1:node%internal_node) = one
       mat11%ALUG_L(1:node%internal_node) = one
@@ -140,7 +140,7 @@
       type(DJDS_MATRIX), intent(inout) :: mat33
 !
 !
-      mat33%aiccg(0:mat33%num_comp) = zero
+      mat33%aiccg(0:mat33%num_non0) = zero
 !
       mat33%ALUG_U(1:node%internal_node) = one
       mat33%ALUG_L(1:node%internal_node) = one
@@ -161,7 +161,7 @@
       integer(kind = kint) :: inod, iele, in, k1
 !
 !
-      mat11%aiccg(0:mat11%num_comp) =   zero
+      mat11%aiccg(0:mat11%num_non0) =   zero
       mat11%aiccg(1:node%numnod) = one
 !
       do k1 = 1, nnod
@@ -191,7 +191,7 @@
       integer(kind = kint) :: inod, iele, in, k1
 !
 !
-      mat33%aiccg(0:mat33%num_comp) = zero
+      mat33%aiccg(0:mat33%num_non0) = zero
 !
       do inod = 1, node%numnod
          mat33%aiccg(inod*9-8) = one
