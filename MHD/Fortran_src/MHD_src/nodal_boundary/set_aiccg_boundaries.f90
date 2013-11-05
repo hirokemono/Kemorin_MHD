@@ -64,7 +64,7 @@
 !
       call set_off_diag_fluid ( nod1, nod2, mat_num )
       call correct_matrix11_4_boundary                                  &
-     &    (numnod, itotal_fl_u, itotal_fl_l, mat_num, aiccg_temp )
+     &    (numnod, itotal_fl_u, itotal_fl_l, mat_num, Tmat_DJDS%aiccg)
 !
       end subroutine set_bc_4_temp_mat
 !
@@ -196,7 +196,7 @@
 !
       call set_off_diag_fluid ( nod1, nod2, mat_num )
       call correct_matrix11_4_boundary                                  &
-     &    (numnod, itotal_fl_u, itotal_fl_l, mat_num, aiccg_composit)
+     &    (numnod, itotal_fl_u, itotal_fl_l, mat_num, Cmat_DJDS%aiccg)
 !
       end subroutine set_bc_4_d_scalar_mat
 !

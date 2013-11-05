@@ -54,13 +54,13 @@
         if ( iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass            &
      &      .and. coef_temp.gt.0.0d0 ) then
           call add_skv1_2_MHD_matrix11(idx_4_fl_mat, k2, sk6,           &
-     &        num_temp_comp, aiccg_temp)
+     &        Tmat_DJDS%num_non0, Tmat_DJDS%aiccg)
         end if
 !
         if ( iflag_t_evo_4_composit .eq. id_Crank_nicolson_cmass        &
      &      .and. coef_light .gt. 0.0d0) then
           call add_skv1_2_MHD_matrix11(idx_4_fl_mat, k2, sk6,           &
-     &        num_composit_comp, aiccg_composit)
+     &        Cmat_DJDS%num_non0, Cmat_DJDS%aiccg)
         end if
 !
         if ( iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass           &

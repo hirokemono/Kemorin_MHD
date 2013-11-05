@@ -1,35 +1,27 @@
+!>@file   m_temp_matrix.f90
+!!@brief  module m_temp_matrix
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2002
+!!@date Modified in Nov., 2013
 !
-!     module   m_temp_matrix
-!.......................................................................
-!
-!      Written by H. Matsui
+!>     DJDS matrix for temperature
+!!
+!!@verbatim
+!!       subroutine allocate_aiccg_temp
+!!       subroutine reset_aiccg_temp
+!!       subroutine deallocate_aiccg_temp
+!!@endverbatim
 !
       module   m_temp_matrix
 !
       use m_precision
+      use t_solver_djds
 !
       implicit  none
 !
-!
-!
-      real(kind=kreal), allocatable, target :: aiccg_temp(:)
-!   coefficients of matrix
-!
-      integer (kind = kint) :: im_temp_d
-!   pointer for diagonal component
-      integer (kind = kint) :: im_temp_u
-!   pointer for upper part of matrix
-      integer (kind = kint) :: im_temp_l
-!   pointer for lower part of matrix
-      integer (kind = kint) :: num_temp_comp
-!   total number of component
-!
-      real(kind=kreal), allocatable, target :: ALUG_temp_u(:)
-      real(kind=kreal), allocatable, target :: ALUG_temp_l(:)
-!
-!       subroutine allocate_aiccg_temp
-!       subroutine reset_aiccg_temp
-!       subroutine deallocate_aiccg_temp
+!>      Structure of matrix for time evolution of temperature
+      type(DJDS_MATRIX), save :: Tmat_DJDS
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,20 +35,36 @@
        use m_solver_djds_fluid
 !
 !
-       im_temp_d = 1
-       im_temp_l = numnod + 1
-       im_temp_u = numnod + itotal_fl_l + 1
+      Tmat_DJDS%num_diag =      numnod
+      Tmat_DJDS%internal_diag = internal_node
 !
-       num_temp_comp = numnod+itotal_fl_u+itotal_fl_l
+       Tmat_DJDS%istart_diag = 1
+       Tmat_DJDS%istart_l = numnod + 1
+       Tmat_DJDS%istart_u = numnod + itotal_fl_l + 1
 !
-       allocate(aiccg_temp(0:num_temp_comp))
+       Tmat_DJDS%num_non0 = numnod + itotal_fl_u + itotal_fl_l
 !
-       allocate (ALUG_temp_U(internal_node) )
-       allocate (ALUG_temp_L(internal_node) )
+       allocate(Tmat_DJDS%aiccg(0:Tmat_DJDS%num_non0))
+!
+       allocate (Tmat_DJDS%ALUG_U(internal_node) )
+       allocate (Tmat_DJDS%ALUG_L(internal_node) )
+!
+       Tmat_DJDS%D =>  Tmat_DJDS%aiccg(Tmat_DJDS%istart_diag:Tmat_DJDS%istart_l-1)
+       Tmat_DJDS%AL => Tmat_DJDS%aiccg(Tmat_DJDS%istart_l:Tmat_DJDS%istart_u-1)
+       Tmat_DJDS%AU => Tmat_DJDS%aiccg(Tmat_DJDS%istart_u:Tmat_DJDS%num_non0)
 !
        call reset_aiccg_temp
 !
        end subroutine allocate_aiccg_temp
+!
+! ----------------------------------------------------------------------
+!
+       subroutine deallocate_aiccg_temp
+!
+!
+       call dealloc_type_djds_mat(Tmat_DJDS)
+!
+       end subroutine deallocate_aiccg_temp
 !
 ! ----------------------------------------------------------------------
 !
@@ -70,36 +78,24 @@
       integer(kind = kint) :: inod, iele, in, k1
 !
 !
-       aiccg_temp = 0.0d0
+       Tmat_DJDS%aiccg = 0.0d0
 !
        do inod = 1, numnod
-        aiccg_temp(inod) = 1.0d0
+        Tmat_DJDS%aiccg(inod) = 1.0d0
        end do
 !
       do k1 = 1, nnod_4_ele
         do iele = iele_fl_start, iele_fl_end
           inod = ie(iele,k1)
           in = OLDtoNEW(inod)
-          aiccg_temp(in) = 0.0d0
+          Tmat_DJDS%aiccg(in) = 0.0d0
         end do
       end do
 !
-       ALUG_temp_U= 0.d0
-       ALUG_temp_L= 0.d0
+       Tmat_DJDS%ALUG_U= 0.d0
+       Tmat_DJDS%ALUG_L= 0.d0
 !
        end subroutine reset_aiccg_temp
-!
-! ----------------------------------------------------------------------
-!
-       subroutine deallocate_aiccg_temp
-!
-!
-       deallocate(aiccg_temp)
-!
-       deallocate (ALUG_temp_U )
-       deallocate (ALUG_temp_L )
-!
-       end subroutine deallocate_aiccg_temp
 !
 ! ----------------------------------------------------------------------
 !

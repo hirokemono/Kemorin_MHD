@@ -85,7 +85,7 @@
 !
 !
       call init_11_matrix_lump(numnod, numnod_fluid, inod_fluid,        &
-     &    OLDtoNEW, ml_o_fl, num_temp_comp, aiccg_temp)
+     &    OLDtoNEW, ml_o_fl, Tmat_DJDS%num_non0, Tmat_DJDS%aiccg)
 !
       end subroutine init_temp_matrix_lump
 !
@@ -124,7 +124,7 @@
 !
 !
       call init_11_matrix_lump(numnod, numnod_fluid, inod_fluid,        &
-     &    OLDtoNEW, ml_o_fl, num_composit_comp, aiccg_composit)
+     &    OLDtoNEW, ml_o_fl, Cmat_DJDS%num_non0, Cmat_DJDS%aiccg)
 !
       end subroutine init_d_scalar_matrix_lump
 !

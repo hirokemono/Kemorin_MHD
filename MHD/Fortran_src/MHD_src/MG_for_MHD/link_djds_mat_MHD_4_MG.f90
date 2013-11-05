@@ -7,27 +7,19 @@
 !> @brief Connect primary matrix data for MGCG
 !!
 !!@verbatim
-!!      subroutine s_link_djds_mat_MHD_4_MG(mat_velo, mat_magne         &
-!!     &           mat_temp, mat_d_scalar, mat_press, mat_magp)
-!!        type(DJDS_MATRIX),  intent(inout) :: mat_velo
+!!      subroutine s_link_djds_mat_MHD_4_MG(MG0_mat_velo, mat_magne     &
+!!     &          MG0_mat_temp, mat_d_scalar, MG0_mat_press, mat_magp)
+!!        type(DJDS_MATRIX),  intent(inout) :: MG0_mat_velo
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_magne
-!!        type(DJDS_MATRIX),  intent(inout) :: mat_temp
+!!        type(DJDS_MATRIX),  intent(inout) :: MG0_mat_temp
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
-!!        type(DJDS_MATRIX),  intent(inout) :: mat_press
+!!        type(DJDS_MATRIX),  intent(inout) :: MG0_mat_press
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !!
-!!      subroutine link_djds_mat_velo_4_MG(mat_velo)
-!!        type(DJDS_MATRIX), intent(inout) :: mat_velo
 !!      subroutine link_djds_mat_magne_4_MG(mat_magne)
 !!        type(DJDS_MATRIX), intent(inout) :: mat_magne
-!!      subroutine link_djds_mat_press_4_MG(mat_press)
-!!        type(DJDS_MATRIX), intent(inout) :: mat_press
 !!      subroutine link_djds_mat_magp_4_MG(mat_magp)
 !!        type(DJDS_MATRIX), intent(inout) :: mat_magp
-!!      subroutine link_djds_mat_temp_4_MG(mat_temp)
-!!        type(DJDS_MATRIX), intent(inout) :: mat_temp
-!!      subroutine link_djds_mat_dscalar_4_MG(mat_d_scalar)
-!!        type(DJDS_MATRIX), intent(inout) :: mat_d_scalar
 !!@endverbatim
 !
       module link_djds_mat_MHD_4_MG
@@ -40,12 +32,8 @@
 !
       implicit none
 !
-      private :: link_djds_mat_velo_4_MG
       private :: link_djds_mat_magne_4_MG
-      private :: link_djds_mat_press_4_MG
       private :: link_djds_mat_magp_4_MG
-      private :: link_djds_mat_temp_4_MG
-      private :: link_djds_mat_dscalar_4_MG
 !
 !-----------------------------------------------------------------------
 !
@@ -53,39 +41,42 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_link_djds_mat_MHD_4_MG(mat_velo, mat_magne,          &
-     &           mat_temp, mat_d_scalar, mat_press, mat_magp)
+      subroutine s_link_djds_mat_MHD_4_MG(MG0_mat_velo, mat_magne,      &
+     &          MG0_mat_temp, MG0_mat_light, MG0_mat_press, mat_magp)
 !
       use m_control_parameter
+      use m_velo_matrix
+      use m_temp_matrix
+      use m_light_element_matrix
 !
-      type(DJDS_MATRIX),  intent(inout) :: mat_velo
+      type(DJDS_MATRIX),  intent(inout) :: MG0_mat_velo
       type(DJDS_MATRIX),  intent(inout) :: mat_magne
-      type(DJDS_MATRIX),  intent(inout) :: mat_temp
-      type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
-      type(DJDS_MATRIX),  intent(inout) :: mat_press
+      type(DJDS_MATRIX),  intent(inout) :: MG0_mat_temp
+      type(DJDS_MATRIX),  intent(inout) :: MG0_mat_light
+      type(DJDS_MATRIX),  intent(inout) :: MG0_mat_press
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
 !   set boundary conditions for matrix
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*) 'link_djds_mat_press_4_MG'
-        call link_djds_mat_press_4_MG(mat_press)
+        if(iflag_debug .gt. 0) write(*,*) 'link_djds_matrix_structs P'
+        call link_djds_matrix_structs(Pmat_DJDS, MG0_mat_press)
       end if
 !
       if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-        if(iflag_debug .gt. 0) write(*,*) 'link_djds_mat_velo_4_MG'
-        call link_djds_mat_velo_4_MG(mat_velo)
+        if(iflag_debug .gt. 0) write(*,*) 'link_djds_matrix_structs V'
+        call link_djds_matrix_structs(Vmat_DJDS, MG0_mat_velo)
       end if
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-        if(iflag_debug .gt. 0) write(*,*) 'link_djds_mat_temp_4_MG'
-        call link_djds_mat_temp_4_MG(mat_temp)
+        if(iflag_debug .gt. 0) write(*,*) 'link_djds_matrix_structs T'
+        call link_djds_matrix_structs(Tmat_DJDS, MG0_mat_temp)
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        if(iflag_debug .gt. 0) write(*,*) 'link_djds_mat_dscalar_4_MG'
-        call link_djds_mat_dscalar_4_MG(mat_d_scalar)
+        if(iflag_debug .gt. 0) write(*,*) 'link_djds_matrix_structs C'
+        call link_djds_matrix_structs(Cmat_DJDS, MG0_mat_light)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
@@ -106,19 +97,6 @@
 !
 !
       end subroutine s_link_djds_mat_MHD_4_MG
-!
-!-----------------------------------------------------------------------
-!
-      subroutine link_djds_mat_velo_4_MG(mat_velo)
-!
-      use m_velo_matrix
-!
-      type(DJDS_MATRIX), intent(inout) :: mat_velo
-!
-!
-      call link_djds_matrix_structs(Vmat_DJDS, mat_velo)
-!
-      end subroutine link_djds_mat_velo_4_MG
 !
 !-----------------------------------------------------------------------
 !
@@ -147,19 +125,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine link_djds_mat_press_4_MG(mat_press)
-!
-      use m_velo_matrix
-!
-      type(DJDS_MATRIX), intent(inout) :: mat_press
-!
-!
-      call link_djds_matrix_structs(Pmat_DJDS, mat_press)
-!
-      end subroutine link_djds_mat_press_4_MG
-!
-!-----------------------------------------------------------------------
-!
       subroutine link_djds_mat_magp_4_MG(mat_magp)
 !
       use m_mag_potential_matrix
@@ -182,56 +147,6 @@
        mat_magp%ALUG_U => ALUG_mag_p_u
 !
       end subroutine link_djds_mat_magp_4_MG
-!
-!-----------------------------------------------------------------------
-!
-      subroutine link_djds_mat_temp_4_MG(mat_temp)
-!
-      use m_temp_matrix
-!
-      type(DJDS_MATRIX), intent(inout) :: mat_temp
-!
-!
-       mat_temp%num_diag =      numnod
-       mat_temp%internal_diag = internal_node
-       mat_temp%istart_diag =   im_temp_d
-       mat_temp%istart_l =      im_temp_l
-       mat_temp%istart_u =      im_temp_u
-       mat_temp%num_non0 =      num_temp_comp
-!
-       mat_temp%aiccg =>  aiccg_temp
-       mat_temp%D =>      aiccg_temp(im_temp_d:im_temp_l-1)
-       mat_temp%AL =>     aiccg_temp(im_temp_l:im_temp_u-1)
-       mat_temp%AU =>     aiccg_temp(im_temp_u:num_temp_comp)
-       mat_temp%ALUG_L => ALUG_temp_l
-       mat_temp%ALUG_U => ALUG_temp_u
-!
-      end subroutine link_djds_mat_temp_4_MG
-!
-!-----------------------------------------------------------------------
-!
-      subroutine link_djds_mat_dscalar_4_MG(mat_d_scalar)
-!
-      use m_light_element_matrix
-!
-      type(DJDS_MATRIX), intent(inout) :: mat_d_scalar
-!
-!
-       mat_d_scalar%num_diag =      numnod
-       mat_d_scalar%internal_diag = internal_node
-       mat_d_scalar%istart_diag =   im_cps_d
-       mat_d_scalar%istart_l =      im_cps_l
-       mat_d_scalar%istart_u =      im_cps_u
-       mat_d_scalar%num_non0 =      num_composit_comp
-!
-       mat_d_scalar%aiccg =>  aiccg_composit
-       mat_d_scalar%D =>    aiccg_composit(im_cps_d:im_cps_l-1)
-       mat_d_scalar%AL =>   aiccg_composit(im_cps_l:im_cps_u-1)
-       mat_d_scalar%AU =>   aiccg_composit(im_cps_u:num_composit_comp)
-       mat_d_scalar%ALUG_L => ALUG_composit_l
-       mat_d_scalar%ALUG_U => ALUG_composit_u
-!
-      end subroutine link_djds_mat_dscalar_4_MG
 !
 !-----------------------------------------------------------------------
 !

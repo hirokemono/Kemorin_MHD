@@ -1,33 +1,29 @@
+!>@file   m_light_element_matrix.f90
+!!@brief  module m_light_element_matrix
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2002
+!!@date Modified in Nov., 2013
 !
-!     module   m_light_element_matrix
-!.......................................................................
-!
-!       subroutine allocate_aiccg_composit
-!       subroutine reset_aiccg_composit
-!       subroutine deallocate_aiccg_composit
+!>     DJDS matrix for light element
+!!
+!!@verbatim
+!!       subroutine allocate_aiccg_composit
+!!       subroutine reset_aiccg_composit
+!!       subroutine deallocate_aiccg_composit
+!!@endverbatim
 !
       module   m_light_element_matrix
 !
       use m_precision
+      use t_solver_djds
 !
       implicit  none
 !
 !
-      real (kind=kreal), allocatable, target :: aiccg_composit(:)
-!   coefficients of matrix
+!>      Structure of matrix for time evolution of conposition variation
+      type(DJDS_MATRIX), save :: Cmat_DJDS
 !
-      integer (kind = kint) :: im_cps_d
-!   pointer for diagonal component
-      integer (kind = kint) :: im_cps_u
-!   pointer for upper part of matrix
-      integer (kind = kint) :: im_cps_l
-!   pointer for lower part of matrix
-      integer (kind = kint) :: num_composit_comp
-!   total number of component
-!
-      real(kind=kreal), allocatable, target :: ALUG_composit_u(:)
-      real(kind=kreal), allocatable, target :: ALUG_composit_l(:)
-! 
 ! ----------------------------------------------------------------------
 !
       contains
@@ -40,16 +36,23 @@
        use m_geometry_data_MHD
        use m_solver_djds_fluid
 !
-       im_cps_d = 1
-       im_cps_l = numnod + 1
-       im_cps_u = numnod + itotal_fl_l + 1
+      Cmat_DJDS%num_diag =      numnod
+      Cmat_DJDS%internal_diag = internal_node
 !
-       num_composit_comp = numnod + itotal_fl_l + itotal_fl_u
+       Cmat_DJDS%istart_diag = 1
+       Cmat_DJDS%istart_l = numnod + 1
+       Cmat_DJDS%istart_u = numnod + itotal_fl_l + 1
 !
-       allocate(aiccg_composit(0:num_composit_comp))
+       Cmat_DJDS%num_non0 = numnod + itotal_fl_u + itotal_fl_l
 !
-       allocate (ALUG_composit_u(internal_node) )
-       allocate (ALUG_composit_l(internal_node) )
+       allocate(Cmat_DJDS%aiccg(0:Cmat_DJDS%num_non0))
+!
+       allocate (Cmat_DJDS%ALUG_U(internal_node) )
+       allocate (Cmat_DJDS%ALUG_L(internal_node) )
+!
+       Cmat_DJDS%D =>  Cmat_DJDS%aiccg(Cmat_DJDS%istart_diag:Cmat_DJDS%istart_l-1)
+       Cmat_DJDS%AL => Cmat_DJDS%aiccg(Cmat_DJDS%istart_l:Cmat_DJDS%istart_u-1)
+       Cmat_DJDS%AU => Cmat_DJDS%aiccg(Cmat_DJDS%istart_u:Cmat_DJDS%num_non0)
 !
        call reset_aiccg_composit
 !
@@ -66,22 +69,22 @@
 !
       integer(kind = kint) :: inod, iele, in, k1
 !
-      aiccg_composit = 0.0d0
+      Cmat_DJDS%aiccg = 0.0d0
 !
       do inod = 1, numnod
-        aiccg_composit(inod) = 1.0d0
+        Cmat_DJDS%aiccg(inod) = 1.0d0
       end do
 !
       do k1 = 1, nnod_4_ele
         do iele = iele_fl_start, iele_fl_end
           inod = ie(iele,k1)
           in = OLDtoNEW(inod)
-          aiccg_composit(in) = 0.0d0
+          Cmat_DJDS%aiccg(in) = 0.0d0
         end do
       end do
 !
-       ALUG_composit_u= 0.d0
-       ALUG_composit_l= 0.d0
+       Cmat_DJDS%ALUG_U= 0.d0
+       Cmat_DJDS%ALUG_L= 0.d0
 !
        end subroutine reset_aiccg_composit
 !
@@ -90,10 +93,10 @@
        subroutine deallocate_aiccg_composit
 !
 !
-       deallocate(aiccg_composit)
+       deallocate(Cmat_DJDS%aiccg)
 !
-       deallocate (ALUG_composit_u)
-       deallocate (ALUG_composit_l)
+       deallocate (Cmat_DJDS%ALUG_U)
+       deallocate (Cmat_DJDS%ALUG_L)
 !
        end subroutine deallocate_aiccg_composit
 !

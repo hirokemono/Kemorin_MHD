@@ -150,7 +150,7 @@
 !
       call int_vol_crank_sgs_mat11(n_int, idx_4_fl_mat, coef_imp_t,     &
      &    ifilter_final, ak_diff(1,iak_diff_t), ak_d_temp,              &
-     &    num_temp_comp, aiccg_temp)
+     &    Tmat_DJDS%num_non0, Tmat_DJDS%aiccg)
 !
       end subroutine int_vol_temp_sgs_crank_mat
 !
@@ -172,7 +172,7 @@
 !
       call int_vol_crank_sgs_mat11(n_int, idx_4_fl_mat, coef_imp_c,     &
      &    ifilter_final, ak_diff(1,iak_diff_c), ak_d_composit,          &
-     &    num_composit_comp, aiccg_composit)
+     &    Cmat_DJDS%num_non0, Cmat_DJDS%aiccg)
 !
       end subroutine int_vol_composit_sgs_crank_mat
 !

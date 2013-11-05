@@ -325,8 +325,7 @@
 !     &     NHYP, np_smp, inter_smp_stack, STACKmc, NLmaxHYP, NUmaxHYP, &
 !     &     NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U,&
 !     &     LtoU, indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,     &
-!     &     aiccg_temp(im_temp_d), aiccg_temp(im_temp_l),               &
-!     &     aiccg_temp(im_temp_u), my_rank)
+!     &     Tmat_DJDS%D, Tmat_DJDS%AL, Tmat_DJDS%AU, my_rank)
 !      call CG                                                          &
 !     &   ( internal_node, numnod, ntot_l, ntot_u,                      &
 !     &     d_crs, al_crs, istack_l_crs, item_l_crs, au_crs,            &
@@ -353,11 +352,11 @@
      &      itotal_fl_l, itotal_fl_u, NHYP, np_smp, inter_smp_stack,    &
      &      STACKmc, NLmaxHYP, NUmaxHYP, IVECT, NEWtoOLD,               &
      &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U, LtoU,    &
-     &      aiccg_temp(im_temp_d), b_vec(1), x_vec(1),                  &
+     &      Tmat_DJDS%D, b_vec(1), x_vec(1),                            &
      &      indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,           &
-     &      aiccg_temp(im_temp_l), aiccg_temp(im_temp_u),               &
-     &      ALUG_temp_l, ALUG_temp_u, eps_4_temp_crank, itr, ierr,      &
-     &      neigh_pe_num_fl, neigh_pe_data_fl,                          &
+     &      Tmat_DJDS%AL, Tmat_DJDS%AU,                                 &
+     &      Tmat_DJDS%ALUG_L, Tmat_DJDS%ALUG_U, eps_4_temp_crank,       &
+     &      itr, ierr, neigh_pe_num_fl, neigh_pe_data_fl,               &
      &      istack_import_fl, item_import_fl,                           &
      &      istack_export_fl, NOD_EXPORT_NEW_fl,                        &
      &      method_4_solver, precond_4_solver, itr_res)
@@ -410,8 +409,7 @@
 !     &      inter_smp_stack, STACKmc, NLmaxHYP, NUmaxHYP, NEWtoOLD,    &
 !     &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U,         &
 !     &      LtoU, indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,    &
-!     &      aiccg_composit(im_cps_d), aiccg_composit(im_cps_l),        &
-!     &      aiccg_composit(im_cps_u), my_rank)
+!     &      Cmat_DJDS%D, Cmat_DJDS%AL, Cmat_DJDS%AU, my_rank)
 !
       if ( ((method(1:1).eq.'M').or.(method(1:1).eq.'m')) .and.         &
      &     ((method(2:2).eq.'G').or.(method(2:2).eq.'g')) .and.         &
@@ -428,10 +426,10 @@
      &      itotal_fl_l, itotal_fl_u, NHYP, np_smp, inter_smp_stack,    &
      &      STACKmc, NLmaxHYP, NUmaxHYP, IVECT,  NEWtoOLD,              &
      &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U, LtoU,    &
-     &      aiccg_composit(im_cps_d), b_vec(1), x_vec(1),               &
+     &      Cmat_DJDS%D, b_vec(1), x_vec(1),                            &
      &      indexDJDS_L, indexDJDS_U,  itemDJDS_L, itemDJDS_U,          &
-     &      aiccg_composit(im_cps_l), aiccg_composit(im_cps_u),         &
-     &      ALUG_composit_l, ALUG_composit_u, eps_4_d_scalar_crank,     &
+     &      Cmat_DJDS%AL, Cmat_DJDS%AU,                                 &
+     &      Cmat_DJDS%ALUG_L, Cmat_DJDS%ALUG_U, eps_4_d_scalar_crank,   &
      &      itr, ierr, neigh_pe_num_fl, neigh_pe_data_fl,               &
      &      istack_import_fl, item_import_fl,                           &
      &      istack_export_fl, NOD_EXPORT_NEW_fl,                        &

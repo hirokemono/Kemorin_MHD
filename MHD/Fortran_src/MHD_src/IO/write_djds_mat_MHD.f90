@@ -292,10 +292,10 @@
         call write_djds_mat11_comp                                      &
      &     (id_mat_file, internal_node, numnod, NLmax, NUmax,           &
      &     itotal_fl_l, itotal_fl_u, (NLmax*np_smp), (NUmax*np_smp),    &
-     &     NHYP, np_smp, NEWtoOLD, aiccg_temp(im_temp_d),               &
+     &     NHYP, np_smp, NEWtoOLD, Tmat_DJDS%D,                         &
      &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
-     &     aiccg_temp(im_temp_l), aiccg_temp(im_temp_u),                &
-     &     ALUG_temp_l, ALUG_temp_u)
+     &     Tmat_DJDS%AL, Tmat_DJDS%AU,                                  &
+     &     Tmat_DJDS%ALUG_L, Tmat_DJDS%ALUG_U)
         call write_djds_mat_connects                                    &
      &     (id_mat_file, numnod, np_smp, NHYP, inter_smp_stack,         &
      &     STACKmc, NLmaxHYP, NUmaxHYP, IVECT,                          &
@@ -337,10 +337,10 @@
         call write_djds_mat11_comp                                      &
      &     (id_mat_file, internal_node, numnod, NLmax, NUmax,           &
      &     itotal_fl_l, itotal_fl_u, (NLmax*np_smp), (NUmax*np_smp),    &
-     &     NHYP, np_smp,NEWtoOLD, aiccg_composit(im_cps_d),             &
+     &     NHYP, np_smp,NEWtoOLD, Cmat_DJDS%D,                          &
      &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
-     &     aiccg_composit(im_cps_l), aiccg_composit(im_cps_u),          &
-     &     ALUG_composit_l, ALUG_composit_u)
+     &     Cmat_DJDS%AL, Cmat_DJDS%AU,                                  &
+     &     Cmat_DJDS%ALUG_L, Cmat_DJDS%ALUG_U)
         call write_djds_mat_connects                                    &
      &     (id_mat_file, numnod, np_smp, NHYP, inter_smp_stack,         &
      &     STACKmc, NLmaxHYP, NUmaxHYP, IVECT,                          &

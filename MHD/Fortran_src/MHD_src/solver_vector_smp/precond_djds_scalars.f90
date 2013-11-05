@@ -66,8 +66,8 @@
      &         (internal_node, numnod, NLmax, itotal_fl_l, NHYP,        &
      &          np_smp, inter_smp_stack, STACKmc, NLmaxHYP, IVECT,      &
      &          OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, LtoU,                 &
-     &          aiccg_temp(im_temp_d), indexDJDS_l, itemDJDS_L,         &
-     &          aiccg_temp(im_temp_l), alug_temp_l, alug_temp_u,        &
+     &          Tmat_DJDS%D, indexDJDS_l, itemDJDS_L,                   &
+     &          Tmat_DJDS%AL, Tmat_DJDS%ALUG_L, Tmat_DJDS%ALUG_U,       &
      &          precond_4_solver, sigma_diag)
 !
       end subroutine precond_djds_temp
@@ -88,9 +88,9 @@
      &         (internal_node, numnod, NLmax, itotal_fl_l, NHYP,        &
      &          np_smp, inter_smp_stack, STACKmc, NLmaxHYP, IVECT,      &
      &          OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, LtoU,                 &
-     &          aiccg_composit(im_cps_d), indexDJDS_l, itemDJDS_L,      &
-     &          aiccg_composit(im_cps_l), ALUG_composit_l,              &
-     &          ALUG_composit_u, precond_4_solver, sigma_diag)
+     &          Cmat_DJDS%D, indexDJDS_l, itemDJDS_L,                   &
+     &          Cmat_DJDS%AL, Cmat_DJDS%ALUG_L, Cmat_DJDS%ALUG_U,       &
+     &          precond_4_solver, sigma_diag)
 !
       end subroutine precond_djds_d_scalar
 !

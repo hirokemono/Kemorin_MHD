@@ -131,7 +131,7 @@
 !
 !
       call int_vol_crank_mat11(n_int, idx_4_fl_mat, coef_imp_t,         &
-     &    ak_d_temp, num_temp_comp, aiccg_temp)
+     &    ak_d_temp, Tmat_DJDS%num_non0, Tmat_DJDS%aiccg)
 !
       end subroutine int_vol_temp_crank_mat
 !
@@ -150,7 +150,7 @@
 !
 !
       call int_vol_crank_mat11(n_int, idx_4_fl_mat, coef_imp_c,         &
-     &      ak_d_composit, num_composit_comp, aiccg_composit)
+     &      ak_d_composit, Cmat_DJDS%num_non0, Cmat_DJDS%aiccg)
 !
       end subroutine int_vol_composit_crank_mat
 !
