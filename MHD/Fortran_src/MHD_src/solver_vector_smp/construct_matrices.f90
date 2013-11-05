@@ -23,6 +23,8 @@
 !
       subroutine set_data_4_const_matrices
 !
+      use m_geometry_constants
+      use m_geometry_parameter
       use t_solver_djds
       use m_solver_djds_MHD
       use m_solver_djds_fluid
@@ -46,10 +48,12 @@
 !      call deallocate_4_djds_table_cd
 !      call deallocate_4_djds_table_ins
 !
-      call dealloc_type_4_djds_table(DJDS_linear)
-      call deallocate_4_djds_table_fl_l
-!      call deallocate_4_djds_table_cd_l
-!      call deallocate_4_djds_table_ins_l
+      if ( nnod_4_ele .ne. num_t_linear) then
+        call dealloc_type_4_djds_table(DJDS_linear)
+        call deallocate_4_djds_table_fl_l
+!        call deallocate_4_djds_table_cd_l
+!        call deallocate_4_djds_table_ins_l
+      end if
 !
       end subroutine set_data_4_const_matrices
 !
