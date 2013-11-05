@@ -51,14 +51,14 @@
       subroutine int_vol_magne_poisson_mat(n_int)
 !
       use m_sorted_node_MHD
-      use m_mag_potential_matrix
+      use m_magne_matrix
       use int_vol_poisson_mat_1st
 !
       integer(kind = kint), intent(in) :: n_int
 !
 !
       call int_vol_poisson_mat11(n_int, idx_4_l_mat,                    &
-     &    num_mp_comp, aiccg_mag_p)
+     &    Fmat_DJDS%num_non0, Fmat_DJDS%aiccg)
 !
       end subroutine int_vol_magne_poisson_mat
 !
@@ -94,7 +94,7 @@
       integer(kind = kint), intent(in) :: n_int
 !
       call int_vol_crank_mat33(n_int, idx_4_cd_mat_full, coef_imp_b,    &
-     &    ak_d_magne, num_mag_comp, aiccg_magne)
+     &    ak_d_magne, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
 !
       end subroutine int_vol_magne_crank_mat
 !
@@ -112,7 +112,7 @@
 !
 !
       call int_vol_crank_mat33(n_int, idx_4_mat, coef_imp_b,            &
-     &      ak_d_magne, num_mag_comp, aiccg_magne)
+     &      ak_d_magne, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
 !
       end subroutine int_vol_vecp_crank_mat
 !

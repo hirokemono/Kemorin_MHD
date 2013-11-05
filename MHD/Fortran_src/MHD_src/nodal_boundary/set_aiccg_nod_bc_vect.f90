@@ -67,7 +67,7 @@
 !
       use m_bc_data_rotate
 !
-      integer (kind = kint) :: iele, k0, k1, k2, nd
+      integer (kind = kint) :: iele, k0, k1, k2
 !
 !
        do k0 = 1, num_index_ibc_vrot

@@ -57,7 +57,7 @@
       use m_sorted_node_MHD
       use m_SGS_model_coefs
       use m_SGS_address
-      use m_mag_potential_matrix
+      use m_magne_matrix
       use int_vol_poisson_sgs_matrix
 !
       integer(kind = kint), intent(in) :: n_int
@@ -65,7 +65,7 @@
 !
       call int_vol_poisson_sgs_mat11(n_int, idx_4_l_mat,                &
      &    ifilter_final, ak_diff(1,iak_diff_b),                         &
-     &    num_mp_comp, aiccg_mag_p)
+     &    Fmat_DJDS%num_non0, Fmat_DJDS%aiccg)
 !
       end subroutine int_vol_magne_sgs_poisson_mat
 !
@@ -107,7 +107,7 @@
 !
       call int_vol_crank_sgs_mat33(n_int, idx_4_cd_mat_full,            &
      &    coef_imp_b, ifilter_final, ak_diff(1,iak_diff_b),             &
-     &    ak_d_magne, num_mag_comp, aiccg_magne)
+     &    ak_d_magne, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
 !
       end subroutine int_vol_magne_sgs_crank_mat
 !
@@ -128,7 +128,7 @@
 !
       call int_vol_crank_sgs_mat33(n_int, idx_4_mat, coef_imp_b,        &
      &    ifilter_final, ak_diff(1,iak_diff_b), ak_d_magne,             &
-     &    num_mag_comp, aiccg_magne)
+     &    Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
 !
       end subroutine int_vol_vecp_sgs_crank_mat
 !

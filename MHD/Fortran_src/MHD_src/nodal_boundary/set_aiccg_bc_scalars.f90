@@ -98,12 +98,12 @@
 !
           k1 = nod_bc2_composit_id(k0)
           do k2 = 1, nnod_4_ele
-            call set_bc_4_d_scalar_mat(iele, k1, k2)
+            call set_bc_4_composite_mat(iele, k1, k2)
           end do
 !
           k2 = nod_bc2_composit_id(k0)
           do k1 = 1, nnod_4_ele
-            call set_bc_4_d_scalar_mat(iele, k1, k2)
+            call set_bc_4_composite_mat(iele, k1, k2)
           end do
 !
         end do

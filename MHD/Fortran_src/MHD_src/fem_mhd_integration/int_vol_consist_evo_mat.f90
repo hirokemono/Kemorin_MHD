@@ -66,13 +66,13 @@
         if ( iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass           &
      &      .and. coef_magne.gt.0.0d0) then
           call add_skv1_2_MHD_matrix33(idx_4_cd_mat_full, k2, sk6,      &
-     &        num_mag_comp, aiccg_magne)
+     &        Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
         end if
 !
         if ( iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass          &
      &      .and. coef_magne.gt.0.0d0) then
           call add_skv1_2_MHD_matrix33(idx_4_cd_mat_full, k2, sk6,      &
-     &        num_mag_comp, aiccg_magne)
+     &        Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
         end if
       end do
 !

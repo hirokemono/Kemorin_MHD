@@ -56,8 +56,6 @@
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
      &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
         call precond_djds_mag_potential
-!        call precond_djds_mag_p_ins
-!        call precond_djds_mag_p_cd
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &

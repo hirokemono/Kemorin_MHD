@@ -7,8 +7,6 @@
 !      subroutine precond_djds_temp
 !      subroutine precond_djds_d_scalar
 !      subroutine precond_djds_mag_potential
-!      subroutine precond_djds_mag_p_ins
-!      subroutine precond_djds_mag_p_cd
 !
       module precond_djds_scalars
 !
@@ -100,7 +98,7 @@
       subroutine precond_djds_mag_potential
 !
       use m_solver_djds_linear
-      use m_mag_potential_matrix
+      use m_magne_matrix
 !
 !C
 !C== PRECONDITIONING
@@ -110,51 +108,11 @@
      &         (internal_node, numnod, NLmax1, itotal1_l, NHYP1,        &
      &          np_smp, inter_smp_stack, STACKmc1, NLmaxHYP1, IVECT1,   &
      &          OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U, LtoU1,              &
-     &          aiccg_mag_p(im_mp_d), indexDJDS1_L, itemDJDS1_L,        &
-     &          aiccg_mag_p(im_mp_l), alug_mag_p_l, alug_mag_p_u,       &
+     &          Fmat_DJDS%D, indexDJDS1_L, itemDJDS1_L,                 &
+     &          Fmat_DJDS%AL, Fmat_DJDS%ALUG_L, Fmat_DJDS%ALUG_U,       &
      &          precond_4_solver, sigma_diag)
 !
       end subroutine precond_djds_mag_potential
-!
-! ----------------------------------------------------------------------
-!
-!      subroutine precond_djds_mag_p_ins
-!
-!      use m_solver_djds_linear_ins
-!      use m_mag_potential_matrix
-!
-!C
-!C== PRECONDITIONING
-!
-!      call precond_DJDS11                                              &
-!     &         (internal_node, numnod, NLmax1, itotal1_ins_l, NHYP1,   &
-!     &          np_smp, inter_smp_stack, STACKmc1, NLmaxHYP1, IVECT1,  &
-!     &          OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U, LtoU1,             &
-!     &          aiccg_mag_pi(im_mpi_d), indexDJDS1_L, itemDJDS1_L,     &
-!     &          aiccg_mag_pi(im_mpi_l), alug_mag_pi_l, alug_mag_pi_u,  &
-!     &          precond_4_solver, sigma_diag)
-!
-!      end subroutine precond_djds_mag_p_ins
-!
-! ----------------------------------------------------------------------
-!
-!      subroutine precond_djds_mag_p_cd
-!
-!      use m_solver_djds_linear_cd
-!      use m_mag_potential_matrix
-!
-!!C
-!C== PRECONDITIONING
-!
-!      call precond_DJDS11                                              &
-!     &         (internal_node, numnod, NLmax1, itotal1_cd_l, NHYP1,    &
-!     &          np_smp, inter_smp_stack, STACKmc1, NLmaxHYP1, IVECT1,  &
-!     &          OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U, LtoU1,             &
-!     &          aiccg_mag_pc(im_mpc_d), indexDJDS1_L, itemDJDS1_L,     &
-!     &          aiccg_mag_pc(im_mpc_l), alug_mag_pc_l, alug_mag_pc_u,  &
-!     &          precond_4_solver, sigma_diag)
-!
-!      end subroutine precond_djds_mag_p_cd
 !
 ! ----------------------------------------------------------------------
 !

@@ -61,13 +61,13 @@
       call precond_DJDS33                                               &
      &         (internal_node, numnod, np_smp, inter_smp_stack,         &
      &          OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,                       &
-     &          aiccg_magne(im_mag_d), alug_magne_l, alug_magne_u,      &
+     &          Bmat_DJDS%D, Bmat_DJDS%ALUG_L, Bmat_DJDS%ALUG_U,        &
      &          precond_4_crank, sigma_diag)
 !
 !      call precond_DJDSnn                                              &
 !     &         (internal_node, numnod, n_vector, np_smp,               &
 !     &          inter_smp_stack, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,     &
-!     &          aiccg_magne(im_mag_d), alug_magne_l, alug_magne_u,     &
+!     &          Bmat_DJDS%D, Bmat_DJDS%ALUG_L, Bmat_DJDS%ALUG_U,       &
 !     &          precond_4_crank, sigma_diag)
 !
       end subroutine precond_djds_magne

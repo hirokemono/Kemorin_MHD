@@ -14,7 +14,6 @@
       use calypso_mpi
       use m_control_parameter
       use m_magne_matrix
-      use m_mag_potential_matrix
       use m_velo_matrix
       use m_temp_matrix
       use m_light_element_matrix
@@ -48,8 +47,6 @@
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution) then
         call allocate_aiccg_mag_p
-!        call allocate_aiccg_mag_p_ins
-!        call allocate_aiccg_mag_p_cd
         if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
           call allocate_aiccg_magne
         end if
@@ -57,8 +54,6 @@
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call allocate_aiccg_mag_p
-!        call allocate_aiccg_mag_p_ins
-!        call allocate_aiccg_mag_p_cd
         if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
           call allocate_aiccg_magne
         end if
@@ -89,8 +84,6 @@
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution) then
         call reset_aiccg_mag_p
-!        call reset_aiccg_mag_p_ins
-!        call reset_aiccg_mag_p_cd
         if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
           call reset_aiccg_magne
         end if
@@ -98,8 +91,6 @@
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call reset_aiccg_mag_p
-!        call reset_aiccg_mag_p_ins
-!        call reset_aiccg_mag_p_cd
         if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
           call reset_aiccg_magne
         end if

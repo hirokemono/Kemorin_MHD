@@ -202,10 +202,10 @@
         call write_djds_mat33_comp                                      &
      &     (id_mat_file, internal_node, numnod, NLmax, NUmax,           &
      &     itotal_l, itotal_u, (NLmax*np_smp), (NUmax*np_smp),          &
-     &     NHYP, np_smp, NEWtoOLD, aiccg_magne(im_mag_d),               &
+     &     NHYP, np_smp, NEWtoOLD, Bmat_DJDS%D,                         &
      &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
-     &     aiccg_magne(im_mag_l), aiccg_magne(im_mag_u),                &
-     &     ALUG_magne_L, ALUG_magne_U)
+     &     Bmat_DJDS%AL, Bmat_DJDS%AU,                                  &
+     &     Bmat_DJDS%ALUG_L, Bmat_DJDS%ALUG_U)
         call write_djds_mat_connects                                    &
      &     (id_mat_file, numnod, np_smp, NHYP, inter_smp_stack,         &
      &     STACKmc, NLmaxHYP, NUmaxHYP, IVECT,                          &
@@ -222,7 +222,7 @@
 !
       use m_nod_comm_table
       use m_solver_djds_linear
-      use m_mag_potential_matrix
+      use m_magne_matrix
 !
       integer(kind = kint) :: i
 !
@@ -247,10 +247,10 @@
         call write_djds_mat11_comp                                      &
      &     (id_mat_file, internal_node, numnod, NLmax1, NUmax1,         &
      &     itotal1_l, itotal1_u, (NLmax1*np_smp), (NUmax1*np_smp),      &
-     &      NHYP1, np_smp, NEWtoOLD1, aiccg_mag_p(im_mp_d),             &
+     &      NHYP1, np_smp, NEWtoOLD1, Fmat_DJDS%D,                      &
      &     indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,        &
-     &     aiccg_mag_p(im_mp_l), aiccg_mag_p(im_mp_u),                  &
-     &     ALUG_mag_p_L, ALUG_mag_p_U)
+     &     Fmat_DJDS%AL, Fmat_DJDS%AU,                                  &
+     &     Fmat_DJDS%ALUG_L, Fmat_DJDS%ALUG_U)
         call write_djds_mat_connects                                    &
      &     (id_mat_file, numnod, np_smp, NHYP1, inter_smp_stack,        &
      &     STACKmc1, NLmaxHYP1, NUmaxHYP1, IVECT1,                      &

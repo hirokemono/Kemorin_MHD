@@ -98,7 +98,7 @@
 !
 !
       call init_33_matrix_lump(numnod, numnod_conduct, inod_conduct,    &
-     &    OLDtoNEW, ml_o_cd, num_mag_comp, aiccg_magne)
+     &    OLDtoNEW, ml_o_cd, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
 !
       end subroutine init_magne_matrix_lump
 !
@@ -111,7 +111,7 @@
 !
 !
       call init_33_matrix_lump(numnod, numnod_conduct, inod_conduct,    &
-     &    OLDtoNEW, ml_o_cd, num_mag_comp, aiccg_magne)
+     &    OLDtoNEW, ml_o_cd, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
 !
       end subroutine init_vect_p_matrix_lump
 !

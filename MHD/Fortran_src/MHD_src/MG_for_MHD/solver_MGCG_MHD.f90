@@ -219,11 +219,11 @@
      &    (internal_node, numnod, NLmax, NUmax, itotal_l, itotal_u,     &
      &     NHYP, np_smp, inter_smp_stack, STACKmc, NLmaxHYP, NUmaxHYP,  &
      &     IVECT, NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,           &
-     &     NEWtoOLD_DJDS_U, LtoU, aiccg_magne(im_mag_d), b_vec(1),      &
+     &     NEWtoOLD_DJDS_U, LtoU, Bmat_DJDS%D, b_vec(1),                &
      &     x_vec(1), indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,  &
-     &     aiccg_magne(im_mag_l), aiccg_magne(im_mag_u),                &
-     &     ALUG_magne_L, ALUG_magne_U, eps_4_magne_crank, itr, ierr,    &
-     &     num_neib, id_neib, istack_import, item_import,               &
+     &     Bmat_DJDS%AL, Bmat_DJDS%AU,                                  &
+     &     Bmat_DJDS%ALUG_L, Bmat_DJDS%ALUG_U, eps_4_magne_crank,       &
+     &     itr, ierr, num_neib, id_neib, istack_import, item_import,    &
      &     istack_export, NOD_EXPORT_NEW,                               &
      &     method_4_velo, precond_4_crank, itr_res)
       end if
@@ -241,7 +241,7 @@
 !
       use m_nod_comm_table
       use m_solver_djds_linear
-      use m_mag_potential_matrix
+      use m_magne_matrix
       use solver_DJDS
       use solver_VMGCG11_DJDS_SMP
 !
@@ -271,10 +271,10 @@
      &     NHYP1, np_smp, inter_smp_stack, STACKmc1,                    &
      &     NLmaxHYP1, NUmaxHYP1, IVECT1, NEWtoOLD1,                     &
      &     OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U, NEWtoOLD_DJDS1_U,        &
-     &     LtoU1, aiccg_mag_p(im_mp_d), b_vec(1), x_vec(1),             &
+     &     LtoU1, Fmat_DJDS%D, b_vec(1), x_vec(1),                      &
      &     indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,        &
-     &     aiccg_mag_p(im_mp_l), aiccg_mag_p(im_mp_u),                  &
-     &     ALUG_mag_p_L, ALUG_mag_p_U,                                  &
+     &     Fmat_DJDS%AL, Fmat_DJDS%AU,                                  &
+     &     Fmat_DJDS%ALUG_L, Fmat_DJDS%ALUG_U,                          &
      &     eps, itr, ierr, num_neib, id_neib,                           &
      &     istack_import, item_import,                                  &
      &     istack_export, NOD_EXPORT_NEW1,                              &
