@@ -233,9 +233,9 @@
       subroutine solver_MGCG_magne_p
 !
       use m_nod_comm_table
-      use m_solver_djds_linear
+      use m_solver_djds_MHD
       use m_magne_matrix
-      use solver_DJDS
+      use solver_DJDS11_struct
       use solver_VMGCG11_DJDS_SMP
 !
       integer(kind = kint) :: ierr
@@ -259,19 +259,9 @@
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
      &      eps, EPS_MG, precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
       else
-        call solve_DJDS_kemo                                            &
-     &    (internal_node, numnod, NLmax1, NUmax1, itotal1_l, itotal1_u, &
-     &     NHYP1, np_smp, inter_smp_stack, STACKmc1,                    &
-     &     NLmaxHYP1, NUmaxHYP1, IVECT1, NEWtoOLD1,                     &
-     &     OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U, NEWtoOLD_DJDS1_U,        &
-     &     LtoU1, Fmat_DJDS%D, b_vec(1), x_vec(1),                      &
-     &     indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,        &
-     &     Fmat_DJDS%AL, Fmat_DJDS%AU,                                  &
-     &     Fmat_DJDS%ALUG_L, Fmat_DJDS%ALUG_U,                          &
-     &     eps, itr, ierr, num_neib, id_neib,                           &
-     &     istack_import, item_import,                                  &
-     &     istack_export, NOD_EXPORT_NEW1,                              &
-     &     method_4_solver, precond_4_solver, itr_res)
+        call solve_DJDS11_struct(np_smp, DJDS_comm_etr, DJDS_linear,    &
+     &      Fmat_DJDS, numnod, b_vec(1), x_vec(1),                      &
+     &      method_4_solver, precond_4_solver, ierr, eps, itr, itr_res)
       end if
 !
       call end_eleps_time(5)

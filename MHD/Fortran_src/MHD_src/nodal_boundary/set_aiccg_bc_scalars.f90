@@ -117,6 +117,10 @@
 !
       use m_geometry_constants
       use m_bc_data_magne_p
+      use m_solver_djds_MHD
+      use m_magne_matrix
+      use set_aiccg_bc_node_type
+!
 !
       integer (kind = kint) :: iele, k0, k1, k2
 !
@@ -128,12 +132,14 @@
 !
           k1 = nod_bc2_mag_p_id(k0)
           do k2 = 1, num_t_linear
-            call set_bc_4_m_potential_mat(iele, k1, k2)
+            call set_bc_4_scalar_mat_type(ie(iele,k1), ie(iele,k2),     &
+     &          DJDS_linear, Fmat_DJDS)
           end do
 !
           k2 = nod_bc2_mag_p_id(k0)
           do k1 = 1, num_t_linear
-            call set_bc_4_m_potential_mat(iele, k1, k2)
+            call set_bc_4_scalar_mat_type(ie(iele,k1), ie(iele,k2),     &
+     &          DJDS_linear, Fmat_DJDS)
           enddo
 !
         enddo

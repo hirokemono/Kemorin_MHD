@@ -172,8 +172,8 @@
      &    mesh%node%numnod, mesh%node%internal_node,                    &
      &    mesh%node%istack_internal_smp, tbl_crs, djds_tbl)
 !
-      call set_new_comm_table_type(mesh%node%numnod, layer_comm,        &
-     &    djds_tbl)
+      call set_new_comm_table_type(mesh%node%numnod,                    &
+     &    layer_comm, djds_tbl)
 !
       call dealloc_type_crs_connect(tbl_crs)
 !

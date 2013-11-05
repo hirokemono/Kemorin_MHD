@@ -68,20 +68,6 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_new_comm_table_l
-!
-      use m_nod_comm_table
-      use m_solver_djds_linear
-!
-       call allocate_new_comm_table_l
-!
-       call set_new_comm_table(numnod, OLDtoNEW1, num_neib,             &
-                istack_export, item_export, NOD_EXPORT_NEW1)
-!
-      end subroutine set_new_comm_table_l
-!
-!-----------------------------------------------------------------------
-!
       subroutine set_new_comm_table_fl_l
 !
       use m_comm_table_4_MHD

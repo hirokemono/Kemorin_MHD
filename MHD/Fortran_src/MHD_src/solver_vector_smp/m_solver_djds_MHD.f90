@@ -19,6 +19,8 @@
 !
 !>      DJDS ordering structures for entire domain
       type(DJDS_ordering_table), save :: DJDS_entire
+!>      DJDS ordering structures for linear entire domain
+      type(DJDS_ordering_table), save :: DJDS_linear
 !>      Communication table structure for entire domain
       type(communication_table), target :: DJDS_comm_etr
 !

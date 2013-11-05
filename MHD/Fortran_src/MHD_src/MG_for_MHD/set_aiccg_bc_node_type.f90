@@ -48,14 +48,12 @@
       use m_precision
 !
       use m_constants
+      use m_phys_constants
       use t_mesh_data
       use t_solver_djds
       use t_nodal_bc_data
 !
       implicit none
-!
-      integer(kind = kint), parameter, private :: n_vector = 3
-      private :: set_bc_4_scalar_mat_type
 !
 ! -----------------------------------------------------------------------
 !

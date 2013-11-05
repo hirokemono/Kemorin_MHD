@@ -7,12 +7,11 @@
 !      subroutine set_crs_connect_conduct
 !      subroutine set_crs_connect_insulate
 !
-!      subroutine set_crs_connect_linear
 !      subroutine set_crs_connect_linear_fl
 !      subroutine set_crs_connect_linear_cd
 !      subroutine set_crs_connect_linear_ins
 !
-!      subroutine set_crs_connect_part(nnod, iele_start, iele_end)
+!      subroutine set_crs_connect_part(nnod_1ele, iele_start, iele_end)
 !
       module set_crs_connectivities
 !
@@ -64,18 +63,6 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_crs_connect_linear
-!
-      use m_geometry_constants
-!
-      integer(kind = kint), parameter :: ione = 1
-!
-      call set_crs_connect_part(num_t_linear, ione, numele)
-!
-      end subroutine set_crs_connect_linear
-!
-!-----------------------------------------------------------------------
-!
       subroutine set_crs_connect_linear_fl
 !
       use m_geometry_constants
@@ -113,7 +100,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_crs_connect_part(nnod, iele_start, iele_end)
+      subroutine set_crs_connect_part(nnod_1ele, iele_start, iele_end)
 !
        use m_element_id_4_node
        use m_next_node_id_4_node
@@ -121,10 +108,10 @@
        use set_element_id_4_node
        use set_crs_connection
 !
-      integer( kind=kint )  ::  nnod, iele_start, iele_end
+      integer( kind=kint )  ::  nnod_1ele, iele_start, iele_end
 !
 !
-      call set_layerd_ele_id_4_node(nnod, iele_start, iele_end)
+      call set_layerd_ele_id_4_node(nnod_1ele, iele_start, iele_end)
       call const_next_nod_id_4_node
 !
       call s_set_crs_connection

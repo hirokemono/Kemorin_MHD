@@ -49,39 +49,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine allocate_aiccg_mag_p
+      subroutine allocate_aiccg_mag_p
 !
-       use m_geometry_parameter
-       use m_geometry_data
-       use m_geometry_data_MHD
-       use m_solver_djds_linear
+      use m_geometry_parameter
+      use m_geometry_data
+      use m_solver_djds_MHD
 !
 !
-       Fmat_DJDS%num_diag =      numnod
-       Fmat_DJDS%internal_diag = internal_node
+      call alloc_type_djds11_mat(numnod, internal_node,                 &
+     &    DJDS_linear, Fmat_DJDS)
+      call reset_aiccg_mag_p
 !
-       Fmat_DJDS%istart_diag = 1
-       Fmat_DJDS%istart_l = Fmat_DJDS%num_diag + 1
-       Fmat_DJDS%istart_u = Fmat_DJDS%num_diag + itotal1_l + 1
-!
-       Fmat_DJDS%num_non0 = Fmat_DJDS%num_diag + itotal1_u + itotal1_l
-!
-       allocate(Fmat_DJDS%aiccg(0:Fmat_DJDS%num_non0) )
-!
-       allocate (Fmat_DJDS%ALUG_U(internal_node) )
-       allocate (Fmat_DJDS%ALUG_L(internal_node) )
-!
-       Fmat_DJDS%D =>  Fmat_DJDS%aiccg(Fmat_DJDS%istart_diag:Fmat_DJDS%istart_l-1)
-       Fmat_DJDS%AL => Fmat_DJDS%aiccg(Fmat_DJDS%istart_l:Fmat_DJDS%istart_u-1)
-       Fmat_DJDS%AU => Fmat_DJDS%aiccg(Fmat_DJDS%istart_u:Fmat_DJDS%num_non0)
-!
-       call reset_aiccg_mag_p
-!
-       end subroutine allocate_aiccg_mag_p
+      end subroutine allocate_aiccg_mag_p
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine deallocate_aiccg_magne
+      subroutine deallocate_aiccg_magne
 !
 !
       call dealloc_type_djds_mat(Bmat_DJDS)
@@ -90,12 +73,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine deallocate_aiccg_mag_p
+      subroutine deallocate_aiccg_mag_p
 !
 !
-       call dealloc_type_djds_mat(Fmat_DJDS)
+      call dealloc_type_djds_mat(Fmat_DJDS)
 !
-       end subroutine deallocate_aiccg_mag_p
+      end subroutine deallocate_aiccg_mag_p
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -144,7 +127,7 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
-      use m_solver_djds_linear
+      use m_solver_djds_MHD
 !
       integer (kind = kint) :: in, inod, iele, k1
 !
@@ -157,7 +140,7 @@
       do k1 = 1, num_t_linear
         do iele = 1, numele
           inod = ie(iele,k1)
-          in = OLDtoNEW1(inod)
+          in = DJDS_linear%OLDtoNEW(inod)
           Fmat_DJDS%aiccg(in) = 0.0d0
         end do
       end do

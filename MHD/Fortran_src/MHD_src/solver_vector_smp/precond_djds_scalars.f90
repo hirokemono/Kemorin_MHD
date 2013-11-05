@@ -97,20 +97,15 @@
 !
       subroutine precond_djds_mag_potential
 !
-      use m_solver_djds_linear
+      use m_solver_djds_MHD
       use m_magne_matrix
+      use solver_DJDS11_struct
 !
 !C
 !C== PRECONDITIONING
 !
-!
-      call precond_DJDS11                                               &
-     &         (internal_node, numnod, NLmax1, itotal1_l, NHYP1,        &
-     &          np_smp, inter_smp_stack, STACKmc1, NLmaxHYP1, IVECT1,   &
-     &          OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U, LtoU1,              &
-     &          Fmat_DJDS%D, indexDJDS1_L, itemDJDS1_L,                 &
-     &          Fmat_DJDS%AL, Fmat_DJDS%ALUG_L, Fmat_DJDS%ALUG_U,       &
-     &          precond_4_solver, sigma_diag)
+      call precond_DJDS11_struct(np_smp, DJDS_linear, Fmat_DJDS,        &
+     &    precond_4_solver, sigma_diag)
 !
       end subroutine precond_djds_mag_potential
 !

@@ -214,8 +214,9 @@
       subroutine write_djds_mat_mag_p
 !
       use m_nod_comm_table
-      use m_solver_djds_linear
+      use m_solver_djds_MHD
       use m_magne_matrix
+      use write_djds_matrix_struct
 !
       integer(kind = kint) :: i
 !
@@ -237,18 +238,10 @@
       else
         call add_int_suffix(my_rank, fhead_magp_mat, fname)
         open(id_mat_file, file=fname)
-        call write_djds_mat11_comp                                      &
-     &     (id_mat_file, internal_node, numnod, NLmax1, NUmax1,         &
-     &     itotal1_l, itotal1_u, (NLmax1*np_smp), (NUmax1*np_smp),      &
-     &      NHYP1, np_smp, NEWtoOLD1, Fmat_DJDS%D,                      &
-     &     indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,        &
-     &     Fmat_DJDS%AL, Fmat_DJDS%AU,                                  &
-     &     Fmat_DJDS%ALUG_L, Fmat_DJDS%ALUG_U)
-        call write_djds_mat_connects                                    &
-     &     (id_mat_file, numnod, np_smp, NHYP1, inter_smp_stack,        &
-     &     STACKmc1, NLmaxHYP1, NUmaxHYP1, IVECT1,                      &
-     &     OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U, NEWtoOLD_DJDS1_U, LtoU1, &
-     &     num_neib, istack_export, NOD_EXPORT_NEW1)
+        call write_djds_mat11_comp_type(id_mat_file, np_smp,            &
+     &      DJDS_linear, Fmat_DJDS)
+        call write_djds_mat_connect_type(id_mat_file, np_smp,           &
+     &      DJDS_comm_etr, DJDS_linear, Fmat_DJDS)
         close(id_mat_file)
       end if
 !
