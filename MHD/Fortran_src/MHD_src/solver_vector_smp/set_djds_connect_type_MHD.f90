@@ -49,6 +49,7 @@
      &       MG_next_table(i_level), MG_CRS_table(i_level),             &
      &       MG_djds_tbl_fl(i_level) )
 !
+!
 !          call set_djds_layer_connect_type                             &
 !     &      (MG_MHD_mesh(i_level)%conduct%iele_start_fld,              &
 !     &       MG_MHD_mesh(i_level)%conduct%iele_end_fld,                &
@@ -61,10 +62,9 @@
 !     &       MG_MHD_mesh(i_level)%insulate%iele_end_fld,               &
 !     &       MG_mesh(i_level)%mesh,  MG_mesh(i_level)%mesh%nod_comm,   &
 !     &       MG_next_table(i_level), MG_CRS_table(i_level),            &
-!     &       MG_djds_tbl_ins(i_level))
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
-     &       'set_djds_layer_connect_type fluid', i_level
+     &       'empty_djds_connectivity_type fluid', i_level
           call empty_djds_connectivity_type(MG_mesh(i_level)%mesh,      &
      &      MG_djds_tbl_fl(i_level) )
 !
@@ -136,7 +136,6 @@
 !     &         MG_MHD_mesh(i_level)%insulate%iele_end_fld,             &
 !     &         MG_mesh(i_level)%mesh, MG_mesh(i_level)%mesh%nod_comm,  &
 !     &         MG_next_table(i_level), MG_CRS_table(i_level),          &
-!     &         MG_djds_tbl_insl(i_level))
           end if
         else
           call empty_djds_connectivity_type(MG_mesh(i_level)%mesh,      &

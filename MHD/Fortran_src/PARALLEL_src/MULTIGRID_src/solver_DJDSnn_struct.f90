@@ -1,5 +1,5 @@
 !
-!      module solver_DJDSNN_struct
+!      module solver_DJDSnn_struct
 !
 !     Written by H. Matsui on Jan., 2005
 !
@@ -16,7 +16,7 @@
 !      subroutine precond_DJDSnn_struct(NB, PEsmpTOT, djds_tbl, matNN,  &
 !     &          PRECOND, sigma_diag)
 !
-      module solver_DJDSNN_struct
+      module solver_DJDSnn_struct
 !
       use m_precision
 !
@@ -156,4 +156,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module solver_DJDSNN_struct
+      end module solver_DJDSnn_struct

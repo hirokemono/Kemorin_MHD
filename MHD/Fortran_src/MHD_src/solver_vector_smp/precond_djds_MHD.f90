@@ -26,7 +26,7 @@
       use m_geometry_data
       use m_finite_element_matrix
       use m_sorted_node
-      use m_solver_djds
+      use m_solver_djds_MHD
 !
       use precond_djds_vectors
       use precond_djds_scalars

@@ -1,20 +1,27 @@
-!set_idx_4_mat_type.f90
-!      module set_idx_4_mat_type
+!>@file   set_idx_4_mat_type.f90
+!!@brief  module set_idx_4_mat_type
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2009
+!!@date Modified in Nov., 2013
 !
-!      programmed by H.Matsui on March, 2009
-!
-!      subroutine set_idx_4_mat_type_whole(nnod, mesh, rhs_tbl,         &
-!     &          djds_tbl, whole_mat)
-!        integer(kind = kint), intent:(in) :: nnod
-!        type(mesh_geometry), intent(in) :: mesh
-!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!        type(DJDS_ordering_table), intent(in) :: djds_tbl
-!        type(table_mat_const), intent(inout) :: whole_mat
-!      subroutine set_off_diag_type(node, djds_tbl, nod1, nod2, mat_num)
-!        type(node_data), intent(in) :: node
-!        type(DJDS_ordering_table), intent(in) :: djds_tbl
-!        integer (kind = kint), intent(in) :: nod1, nod2
-!        integer (kind = kint), intent(inout) :: mat_num
+!>     Find index of matrix in FEM assemble loop using structure
+!!
+!!@verbatim
+!!      subroutine set_idx_4_mat_type_whole(nnod, mesh, rhs_tbl,        &
+!!     &          djds_tbl, whole_mat)
+!!        integer(kind = kint), intent:(in) :: nnod
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(DJDS_ordering_table), intent(in) :: djds_tbl
+!!        type(table_mat_const), intent(inout) :: whole_mat
+!!      subroutine set_off_diag_type(NP, N, djds_tbl,                   &
+!!     &          nod1, nod2, mat_num)
+!!        integer (kind = kint), intent(in) :: N, NP
+!!        integer (kind = kint), intent(in) :: nod1, nod2
+!!        type(DJDS_ordering_table), intent(in) :: djds_tbl
+!!        integer (kind = kint), intent(inout) :: mat_num
+!!@endverbatim
 !
       module set_idx_4_mat_type
 !
@@ -64,8 +71,9 @@
               nod1 = mesh%ele%ie(iele,iconn)
               nod2 = mesh%ele%ie(iele,k2)
 !
-              call set_off_diag_type(mesh%node, djds_tbl,               &
-     &            nod1, nod2, mat_num )
+              call set_off_diag_type                                    &
+     &           (mesh%node%numnod, mesh%node%internal_node,            &
+     &            djds_tbl, nod1, nod2, mat_num)
               whole_mat%idx_4_mat(in,k2) = mat_num
 !
             end do
@@ -79,20 +87,20 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_off_diag_type(node, djds_tbl, nod1, nod2, mat_num)
+      subroutine set_off_diag_type(NP, N, djds_tbl,                     &
+     &          nod1, nod2, mat_num)
 !
       use t_geometry_data
       use set_DJDS_off_diagonal
 !
-      type(node_data), intent(in) :: node
-      type(DJDS_ordering_table), intent(in) :: djds_tbl
+      integer (kind = kint), intent(in) :: N, NP
       integer (kind = kint), intent(in) :: nod1, nod2
+      type(DJDS_ordering_table), intent(in) :: djds_tbl
 !
       integer (kind = kint), intent(inout) :: mat_num
 !
 !
-      call s_set_DJDS_off_diagonal                                      &
-     &    (node%internal_node, node%numnod, np_smp,                     &
+      call s_set_DJDS_off_diagonal(N, NP, np_smp,                       &
      &     djds_tbl%NLmax, djds_tbl%NUmax,                              &
      &     djds_tbl%itotal_l, djds_tbl%itotal_u,                        &
      &     djds_tbl%npLX1, djds_tbl%npUX1, djds_tbl%NHYP,               &

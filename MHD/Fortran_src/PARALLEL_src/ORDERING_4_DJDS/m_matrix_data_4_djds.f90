@@ -3,14 +3,24 @@
 !
 !    Written by Kemorin
 !
-!       subroutine allocate_matrix_data_4_djds
-!       subroutine allocate_vector_data_4_djds
-!       subroutine deallocate_matrix_data_4_djds
-!       subroutine deallocate_vector_data_4_djds
+!>@file   m_matrix_data_4_djds.f90
+!!@brief  module m_matrix_data_4_djds
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2002
 !
-!      subroutine copy_paramters_4_djds
-!
-!       subroutine check_djds_matrix_components(my_rank)
+!>      DJDS matrix data
+!!
+!!@verbatim
+!!      subroutine allocate_matrix_data_4_djds
+!!      subroutine allocate_vector_data_4_djds
+!!      subroutine deallocate_matrix_data_4_djds
+!!      subroutine deallocate_vector_data_4_djds
+!!
+!!      subroutine copy_paramters_4_djds
+!!
+!!      subroutine check_djds_matrix_components(my_rank)
+!!@endverbatim
 !
       module m_matrix_data_4_djds
 !

@@ -5,8 +5,8 @@
 !
 !      subroutine s_set_djds_connectivity_type(mesh, next_tbl,          &
 !     &          tbl_crs, djds_tbl)
-!        type(mesh_geometry),           intent(in) :: mesh
-!        type(next_nod_ele_table),  intent(inout) :: next_tbl
+!        type(mesh_geometry),       intent(in) :: mesh
+!        type(next_nod_ele_table),  intent(in) :: next_tbl
 !        type(CRS_matrix_connect),  intent(inout) :: tbl_crs
 !        type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
@@ -35,6 +35,7 @@
       module set_djds_connectivity_type
 !
       use m_precision
+      use m_machine_parameter
 !
       use t_mesh_data
       use t_next_node_ele_4_node
@@ -56,9 +57,9 @@
       subroutine s_set_djds_connectivity_type(mesh, next_tbl,           &
      &          tbl_crs, djds_tbl)
 !
-      type(mesh_geometry),           intent(in) :: mesh
+      type(mesh_geometry),      intent(in) :: mesh
+      type(next_nod_ele_table), intent(in) :: next_tbl
 !
-      type(next_nod_ele_table), intent(inout) :: next_tbl
       type(CRS_matrix_connect),  intent(inout) :: tbl_crs
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
@@ -67,25 +68,27 @@
 !C | set connectivity in CRS array |
 !C +-------------------------------+
 !C===
-      call s_set_crs_connect_type(mesh%node, next_tbl%neib_nod,         &
-     &    tbl_crs)
-!
-      call dealloc_iele_belonged_type(next_tbl%neib_ele)
-      call dealloc_inod_next_node_type(next_tbl%neib_nod)
+      call s_set_crs_connect_type(np_smp,                               &
+     &    mesh%node%numnod, mesh%node%istack_nod_smp,                   &
+     &    next_tbl%neib_nod%ntot, next_tbl%neib_nod%istack_next,        &
+     &    next_tbl%neib_nod%inod_next, tbl_crs)
 !
 !C +-----------------+
 !C | DJDS reordering |
 !C +-----------------+
 !C===
 !C
-      call s_reordering_djds_smp_type(mesh%node, tbl_crs, djds_tbl)
+      call s_reordering_djds_smp_type(np_smp,                           &
+     &    mesh%node%numnod, mesh%node%internal_node,                    &
+     &    mesh%node%istack_internal_smp, tbl_crs, djds_tbl)
 !C
 !C +--------------------------------------+
 !C | set new communication table 4 solver |
 !C +--------------------------------------+
 !C===
 !C
-      call set_new_comm_table_type(mesh%node, mesh%nod_comm, djds_tbl)
+      call set_new_comm_table_type(mesh%node%numnod, mesh%nod_comm,     &
+     &    djds_tbl)
 !
       call dealloc_type_crs_connect(tbl_crs)
 !
@@ -114,15 +117,20 @@
       call const_next_nod_id_4_node_type(mesh,                          &
      &    next_tbl%neib_ele, next_tbl%neib_nod)
 !
-      call s_set_crs_connect_type(mesh%node,                            &
-     &    next_tbl%neib_nod, tbl_crs)
+      call s_set_crs_connect_type(np_smp,                               &
+     &    mesh%node%numnod, mesh%node%istack_nod_smp,                   &
+     &    next_tbl%neib_nod%ntot, next_tbl%neib_nod%istack_next,        &
+     &    next_tbl%neib_nod%inod_next, tbl_crs)
 !
       call dealloc_iele_belonged_type(next_tbl%neib_ele)
       call dealloc_inod_next_node_type(next_tbl%neib_nod)
 !
-      call s_reordering_djds_smp_type(mesh%node, tbl_crs, djds_tbl)
+      call s_reordering_djds_smp_type(np_smp,                           &
+     &    mesh%node%numnod, mesh%node%internal_node,                    &
+     &    mesh%node%istack_internal_smp, tbl_crs, djds_tbl)
 !
-      call set_new_comm_table_type(mesh%node, layer_comm, djds_tbl)
+      call set_new_comm_table_type(mesh%node%numnod,                    &
+     &    layer_comm, djds_tbl)
 !
       call dealloc_type_crs_connect(tbl_crs)
 !
@@ -152,15 +160,20 @@
       call const_next_nod_id_4_node_type(mesh,                          &
      &    next_tbl%neib_ele, next_tbl%neib_nod)
 !
-      call s_set_crs_connect_type(mesh%node,                            &
-     &    next_tbl%neib_nod, tbl_crs)
+      call s_set_crs_connect_type(np_smp,                               &
+     &    mesh%node%numnod, mesh%node%istack_nod_smp,                   &
+     &    next_tbl%neib_nod%ntot, next_tbl%neib_nod%istack_next,        &
+     &    next_tbl%neib_nod%inod_next, tbl_crs)
 !
       call dealloc_iele_belonged_type(next_tbl%neib_ele)
       call dealloc_inod_next_node_type(next_tbl%neib_nod)
 !
-      call s_reordering_djds_smp_type(mesh%node, tbl_crs, djds_tbl)
+      call s_reordering_djds_smp_type(np_smp,                           &
+     &    mesh%node%numnod, mesh%node%internal_node,                    &
+     &    mesh%node%istack_internal_smp, tbl_crs, djds_tbl)
 !
-      call set_new_comm_table_type(mesh%node, layer_comm, djds_tbl)
+      call set_new_comm_table_type(mesh%node%numnod, layer_comm,        &
+     &    djds_tbl)
 !
       call dealloc_type_crs_connect(tbl_crs)
 !

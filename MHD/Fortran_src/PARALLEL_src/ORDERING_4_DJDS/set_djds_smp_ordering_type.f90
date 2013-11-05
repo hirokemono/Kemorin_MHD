@@ -1,33 +1,35 @@
-!set_djds_smp_ordering_type.f90
-!     module set_djds_smp_ordering_type
+!>@file   set_djds_smp_ordering_type.f90
+!!@brief  module set_djds_smp_ordering_type
+!!
+!!@author H. Matsui
+!!@author K. Nakajima and H. Matsui
+!!@date        Written by K. Nakajima in 2001
+!!@n      modified by H. Matsui on May. 2002
+!!@n      modified by H. Matsui on June. 2006
+!!@n      modified by H. Matsui on Jan., 2009
+!!@n      modified by H. Matsui on Nov., 2013
 !
-!      Written by K. Nakajima in 2001
-!        modified by H. Matsui on May. 2002
-!        modified by H. Matsui on June. 2006
-!        modified by H. Matsui on Jan., 2009
-!
-!      subroutine count_hyperplane_type(np_smp, nod, djds_tbl)
-!        type(node_data), intent(in) :: nod
-!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
-!      subroutine set_djds_ordering_type(np_smp, nod, djds_tbl)
-!        type(node_data), intent(in) :: nod
-!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
-!      subroutine set_itotal_djds_type(np_smp, nod, djds_tbl)
-!        type(node_data), intent(in) :: nod
-!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
-!      subroutine set_item_djds_type(np_smp, nod, djds_tbl)
-!        type(node_data), intent(in) :: nod
-!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
-!      subroutine set_new_comm_table_type(nod, nod_comm, djds_tbl)
-!        type(node_data),           intent(in) :: nod
-!        type(communication_table), intent(in) :: nod_comm
-!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
+!>     Subroutines to construct DJDS orderd matrix
+!!
+!!@verbatim
+!!      subroutine count_hyperplane_type(np_smp, N, NP, djds_tbl)
+!!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
+!!      subroutine set_djds_ordering_type(np_smp, NP, N, ISTACK_N_smp,  &
+!!     &          djds_tbl)
+!!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
+!!      subroutine set_itotal_djds_type(np_smp, N, djds_tbl)
+!!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
+!!      subroutine set_item_djds_type(np_smp, NP, N, djds_tbl)
+!!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
+!!      subroutine set_new_comm_table_type(NP, nod_comm, djds_tbl)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
+!!@endverbatim
 !
       module set_djds_smp_ordering_type
 !
       use m_precision
 !
-      use t_geometry_data
       use t_solver_djds
 !
       implicit none
@@ -38,16 +40,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_hyperplane_type(np_smp, nod, djds_tbl)
+      subroutine count_hyperplane_type(np_smp, N, NP, djds_tbl)
 !
       use DJDS_hyperplane
 !
       integer(kind = kint), intent(in) :: np_smp
-      type(node_data), intent(in) :: nod
+      integer(kind = kint), intent(in) :: NP, N
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
 !
-      call count_hyperplane(np_smp, nod%numnod, nod%internal_node,      &
+      call count_hyperplane(np_smp, N, NP,                              &
      &                  djds_tbl%NHYP, djds_tbl%IVECT,                  &
      &                  djds_tbl%npLX1, djds_tbl%npUX1,                 &
      &                  djds_tbl%NLmax, djds_tbl%NUmax,                 &
@@ -58,17 +60,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_djds_ordering_type(np_smp, nod, djds_tbl)
+      subroutine set_djds_ordering_type(np_smp, NP, N, ISTACK_N_smp,    &
+     &          djds_tbl)
 !
       use DJDS_ordering
 !
       integer(kind = kint), intent(in) :: np_smp
-      type(node_data), intent(in) :: nod
+      integer(kind = kint), intent(in) :: NP, N
+      integer(kind = kint), intent(in) :: ISTACK_N_smp(0:np_smp)
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
 !
-      call set_djds_ordering(np_smp, nod%numnod, nod%internal_node,     &
-     &    nod%istack_internal_smp, djds_tbl%NHYP, djds_tbl%IVECT,       &
+      call set_djds_ordering(np_smp, NP, N, ISTACK_N_smp,               &
+     &    djds_tbl%NHYP, djds_tbl%IVECT,                                &
      &    djds_tbl%STACKmcG, djds_tbl%STACKmc, djds_tbl%PEon,           &
      &    djds_tbl%npLX1, djds_tbl%npUX1, djds_tbl%NLmax,               &
      &    djds_tbl%NUmax, djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP,         &
@@ -80,16 +84,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_itotal_djds_type(np_smp, nod, djds_tbl)
+      subroutine set_itotal_djds_type(np_smp, N, djds_tbl)
 !
       use DJDS_total_nondiag
 !
       integer(kind = kint), intent(in) :: np_smp
-      type(node_data), intent(in) :: nod
+      integer(kind = kint), intent(in) :: N
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
 !
-      call set_itotal_djds(np_smp, nod%internal_node, djds_tbl%NHYP,    &
+      call set_itotal_djds(np_smp, N, djds_tbl%NHYP,                    &
      &    djds_tbl%npLX1, djds_tbl%npUX1,                               &
      &    djds_tbl%NLmax, djds_tbl%NUmax,                               &
      &    djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP,                         &
@@ -100,16 +104,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_item_djds_type(np_smp, nod, djds_tbl)
+      subroutine set_item_djds_type(np_smp, NP, N, djds_tbl)
 !
       use DJDS_nodiag_item
 !
-      type(node_data), intent(in) :: nod
+      integer(kind = kint), intent(in) :: NP, N
+      integer(kind = kint), intent(in) :: np_smp
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
 !
-      integer(kind = kint), intent(in) :: np_smp
-      call set_item_djds(np_smp, nod%numnod, nod%internal_node,         &
+      call set_item_djds(np_smp, NP, N,                                 &
      &      djds_tbl%NHYP, djds_tbl%IVECT, djds_tbl%COLORon,            &
      &      djds_tbl%STACKmc, djds_tbl%NLmax, djds_tbl%NUmax,           &
      &      djds_tbl%npLX1, djds_tbl%npUX1,                             &
@@ -127,19 +131,19 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_new_comm_table_type(nod, nod_comm, djds_tbl)
+      subroutine set_new_comm_table_type(NP, nod_comm, djds_tbl)
 !
       use t_comm_table
       use DJDS_new_comm_table
 !
-      type(node_data),           intent(in) :: nod
+      integer(kind = kint), intent(in) :: NP
       type(communication_table), intent(in) :: nod_comm
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
 !
       call alloc_type_new_comm_table(nod_comm%ntot_export, djds_tbl)
 !
-      call set_new_comm_table(nod%numnod, djds_tbl%OLDtoNEW,            &
+      call set_new_comm_table(NP, djds_tbl%OLDtoNEW,                    &
      &    nod_comm%num_neib, nod_comm%istack_export,                    &
      &    nod_comm%item_export, djds_tbl%NOD_EXPORT_NEW)
 !

@@ -235,8 +235,9 @@
 !
 !   ------ coefficients for Crank-Nicolson Scheme
 !
-            call set_off_diag_type(mesh%node, djds_tbl, nod1, nod2,     &
-     &          mat_num)
+            call set_off_diag_type                                      &
+     &         (mesh%node%numnod, mesh%node%internal_node,              &
+     &          djds_tbl, nod1, nod2, mat_num)
 !
             mat_v%aiccg(mat_num*9+nd*4-12)                              &
      &        = mat_v%aiccg(mat_num*9+nd*4-12) + fem_wk%sk6(iele,1,kk1)

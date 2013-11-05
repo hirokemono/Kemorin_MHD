@@ -25,20 +25,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_new_comm_table_entire
-!
-      use m_nod_comm_table
-      use m_solver_djds
-!
-       call allocate_new_comm_table(ntot_export)
-!
-       call set_new_comm_table(numnod, OLDtoNEW, num_neib,              &
-                istack_export, item_export, NOD_EXPORT_NEW)
-!
-      end subroutine set_new_comm_table_entire
-!
-!-----------------------------------------------------------------------
-!
       subroutine set_new_comm_table_fl
 !
       use m_comm_table_4_MHD
@@ -53,31 +39,31 @@
 !
 !-----------------------------------------------------------------------
 !
-!      subroutine set_new_comm_table_cd
+      subroutine set_new_comm_table_cd
 !
-!      use m_nod_comm_table
-!      use m_solver_djds_conduct
+      use m_nod_comm_table
+      use m_solver_djds_conduct
 !
-!       call allocate_new_comm_table_cd
+       call allocate_new_comm_table_cd
 !
-!       call set_new_comm_table(numnod, OLDtoNEW, num_neib,              &
-!                istack_export, item_export, NOD_EXPORT_NEW_cd)
+       call set_new_comm_table(numnod, OLDtoNEW, num_neib,              &
+                istack_export, item_export, NOD_EXPORT_NEW_cd)
 !
-!      end subroutine set_new_comm_table_cd
+      end subroutine set_new_comm_table_cd
 !
 !-----------------------------------------------------------------------
 !
-!      subroutine set_new_comm_table_ins
+      subroutine set_new_comm_table_ins
 !
-!      use m_nod_comm_table
-!      use m_solver_djds_insulate
+      use m_nod_comm_table
+      use m_solver_djds_insulate
 !
-!       call allocate_new_comm_table_ins
+       call allocate_new_comm_table_ins
 !
-!       call set_new_comm_table(numnod, OLDtoNEW, num_neib,              &
-!                istack_export, item_export, NOD_EXPORT_NEW_ins)
+       call set_new_comm_table(numnod, OLDtoNEW, num_neib,              &
+                istack_export, item_export, NOD_EXPORT_NEW_ins)
 !
-!      end subroutine set_new_comm_table_ins
+      end subroutine set_new_comm_table_ins
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -110,31 +96,31 @@
 !
 !-----------------------------------------------------------------------
 !
-!      subroutine set_new_comm_table_cd_l
+      subroutine set_new_comm_table_cd_l
 !
-!      use m_nod_comm_table
-!      use m_solver_djds_linear_cd
+      use m_nod_comm_table
+      use m_solver_djds_linear_cd
 !
-!       call allocate_new_comm_table_cd_l
+       call allocate_new_comm_table_cd_l
 !
-!       call set_new_comm_table(numnod, OLDtoNEW1, num_neib,             &
-!                istack_export, item_export, NOD_EXPORT_NEW_cd1)
+       call set_new_comm_table(numnod, OLDtoNEW1, num_neib,             &
+                istack_export, item_export, NOD_EXPORT_NEW_cd1)
 !
-!      end subroutine set_new_comm_table_cd_l
+      end subroutine set_new_comm_table_cd_l
 !
 !-----------------------------------------------------------------------
 !
-!      subroutine set_new_comm_table_ins_l
+      subroutine set_new_comm_table_ins_l
 !
-!      use m_nod_comm_table
-!      use m_solver_djds_linear_ins
+      use m_nod_comm_table
+      use m_solver_djds_linear_ins
 !
-!       call allocate_new_comm_table_ins_l
+       call allocate_new_comm_table_ins_l
 !
-!       call set_new_comm_table(numnod, OLDtoNEW1, num_neib,             &
-!                istack_export, item_export, NOD_EXPORT_NEW_ins1)
+       call set_new_comm_table(numnod, OLDtoNEW1, num_neib,             &
+                istack_export, item_export, NOD_EXPORT_NEW_ins1)
 !
-!      end subroutine set_new_comm_table_ins_l
+      end subroutine set_new_comm_table_ins_l
 !
 !-----------------------------------------------------------------------
 !

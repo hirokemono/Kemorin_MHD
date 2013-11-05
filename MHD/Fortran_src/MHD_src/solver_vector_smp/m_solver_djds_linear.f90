@@ -150,48 +150,54 @@
        subroutine set_djds_4_linear
 !
        use m_geometry_parameter
-       use m_solver_djds
+       use m_solver_djds_MHD
 !
+!
+       itotal1_u = DJDS_entire%itotal_u
+       itotal1_l = DJDS_entire%itotal_l
 !
        call allocate_4_RCM_l
 !
-       OLDtoNEW1= OLDtoNEW
-       NEWtoOLD1= NEWtoOLD
+       OLDtoNEW1= DJDS_entire%OLDtoNEW
+       NEWtoOLD1= DJDS_entire%NEWtoOLD
 !
-       NHYP1 = NHYP
+       NHYP1 = DJDS_entire%NHYP
 !
        call allocate_number_4_djds_l
 !
-       IVECT1   = IVECT
-       NLmaxHYP1= NLmaxHYP
-       NUmaxHYP1= NUmaxHYP
+       IVECT1   = DJDS_entire%IVECT
+       NLmaxHYP1= DJDS_entire%NLmaxHYP
+       NUmaxHYP1= DJDS_entire%NUmaxHYP
 !
-       NLmax1 = NLmax
-       NUmax1 = NUmax
-       npLX1_1 = npLX1
-       npUX1_1 = npUX1
+       NLmax1 = DJDS_entire%NLmax
+       NUmax1 = DJDS_entire%NUmax
+       npLX1_1 = DJDS_entire%npLX1
+       npUX1_1 = DJDS_entire%npUX1
 !
        call allocate_lists_4_DJDS_l
 !
-       indexDJDS1_L= indexDJDS_L
-       indexDJDS1_U= indexDJDS_U
+       indexDJDS1_L= DJDS_entire%indexDJDS_L
+       indexDJDS1_U= DJDS_entire%indexDJDS_U
 !
-       NEWtoOLD_DJDS1_L= NEWtoOLD_DJDS_L
-       NEWtoOLD_DJDS1_U= NEWtoOLD_DJDS_U
-       OLDtoNEW_DJDS1_L= OLDtoNEW_DJDS_L
-       OLDtoNEW_DJDS1_U= OLDtoNEW_DJDS_U
-       LtoU1 = LtoU
+       NEWtoOLD_DJDS1_L= DJDS_entire%NEWtoOLD_DJDS_L
+       NEWtoOLD_DJDS1_U= DJDS_entire%NEWtoOLD_DJDS_U
+       OLDtoNEW_DJDS1_L= DJDS_entire%OLDtoNEW_DJDS_L
+       OLDtoNEW_DJDS1_U= DJDS_entire%OLDtoNEW_DJDS_U
+       LtoU1 = DJDS_entire%LtoU
 !
-       STACKmcG1 = STACKmcG
-       STACKmc1 =  STACKmc
+       STACKmcG1 = DJDS_entire%STACKmcG
+       STACKmc1 =  DJDS_entire%STACKmc
 !
-       PEon1 = PEon
-       COLORon1 = COLORon
+       PEon1 = DJDS_entire%PEon
+       COLORon1 = DJDS_entire%COLORon
 !
        call allocate_address_4_DJDS_l
 !
-       itemDJDS1_L = itemDJDS_L
-       itemDJDS1_U = itemDJDS_U
+       itemDJDS1_L = DJDS_entire%itemDJDS_L
+       itemDJDS1_U = DJDS_entire%itemDJDS_U
+!
+       call allocate_new_comm_table_l
+       NOD_EXPORT_NEW1 = DJDS_entire%NOD_EXPORT_NEW
 !
        end subroutine set_djds_4_linear
 !

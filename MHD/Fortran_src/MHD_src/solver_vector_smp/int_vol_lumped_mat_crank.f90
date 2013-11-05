@@ -20,7 +20,6 @@
       implicit none
 !
       private :: init_velo_matrix_lump, init_temp_matrix_lump
-      private :: init_magne_matrix_lump, init_vect_p_matrix_lump
       private :: init_d_scalar_matrix_lump
 !
 ! ----------------------------------------------------------------------
@@ -33,6 +32,9 @@
 !
       use m_physical_property
       use m_control_parameter
+!
+      use m_solver_djds_MHD
+      use m_magne_matrix
 !
 !$omp parallel
       if (iflag_t_evo_4_velo .eq. id_Crank_nicolson                     &
@@ -47,13 +49,17 @@
 !
       if (iflag_t_evo_4_magne .eq. id_Crank_nicolson                    &
      &     .and. coef_magne .gt. zero) then
-        call init_magne_matrix_lump
+        call init_33_matrix_lump(numnod, numnod_conduct, inod_conduct,  &
+     &    DJDS_entire%OLDtoNEW, ml_o_cd,                                &
+     &    Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
       end if
 !
-       if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson                  &
+      if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson                   &
      &     .and. coef_magne .gt. zero) then
-        call init_vect_p_matrix_lump
-       end if
+        call init_33_matrix_lump(numnod, numnod_conduct, inod_conduct,  &
+     &      DJDS_entire%OLDtoNEW, ml_o_cd,                              &
+     &      Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
+      end if
 !
       if (iflag_t_evo_4_composit .eq. id_Crank_nicolson                 &
      &     .and. coef_light .gt. zero) then
@@ -90,31 +96,6 @@
       end subroutine init_temp_matrix_lump
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine init_magne_matrix_lump
-!
-      use m_solver_djds
-      use m_magne_matrix
-!
-!
-      call init_33_matrix_lump(numnod, numnod_conduct, inod_conduct,    &
-     &    OLDtoNEW, ml_o_cd, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
-!
-      end subroutine init_magne_matrix_lump
-!
-! ----------------------------------------------------------------------
-!
-      subroutine init_vect_p_matrix_lump
-!
-      use m_solver_djds
-      use m_magne_matrix
-!
-!
-      call init_33_matrix_lump(numnod, numnod_conduct, inod_conduct,    &
-     &    OLDtoNEW, ml_o_cd, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
-!
-      end subroutine init_vect_p_matrix_lump
-!
 ! ----------------------------------------------------------------------
 !
       subroutine init_d_scalar_matrix_lump

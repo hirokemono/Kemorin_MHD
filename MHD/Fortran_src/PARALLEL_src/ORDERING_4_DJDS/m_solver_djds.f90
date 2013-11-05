@@ -1,24 +1,29 @@
+!>@file   m_solver_djds.f90
+!!@brief  module m_solver_djds
+!!
+!!@author K. Nakajima and H. Matsui
+!!@date Programmed by Kengo Nakajima in 2001
+!!@n      Modified by Hiroaki Matsui in May, 2007
+!!@n      Modified by Hiroaki Matsui in Apr., 2008
 !
-!      module m_solver_djds
-!
-!      Written by Hiroaki Matsui on ???, 2001
-!      Modified by Hiroaki Matsui on May, 2007
-!      Modified by Hiroaki Matsui on Apr., 2008
-!
-!       subroutine allocate_4_RCM(numnod)
-!       subroutine allocate_number_4_djds
-!       subroutine allocate_lists_4_DJDS(np_smp, numnod)
-!       subroutine allocate_address_4_DJDS
-!       subroutine allocate_new_comm_table(ntot_export)
-!
-!       subroutine deallocate_4_djds_table
-!       subroutine deallocate_4_RCM
-!       subroutine deallocate_number_4_djds
-!       subroutine deallocate_lists_4_DJDS
-!       subroutine deallocate_address_4_DJDS
-!       subroutine deallocate_new_comm_table
-!
-!       subroutine check_DJDS_ordering_info(my_rank, numnod)
+!>      DJDS ordering table
+!!
+!!@verbatim
+!!       subroutine allocate_4_RCM(numnod)
+!!       subroutine allocate_number_4_djds
+!!       subroutine allocate_lists_4_DJDS(np_smp, numnod)
+!!       subroutine allocate_address_4_DJDS
+!!       subroutine allocate_new_comm_table(ntot_export)
+!!
+!!       subroutine deallocate_4_djds_table
+!!       subroutine deallocate_4_RCM
+!!       subroutine deallocate_number_4_djds
+!!       subroutine deallocate_lists_4_DJDS
+!!       subroutine deallocate_address_4_DJDS
+!!       subroutine deallocate_new_comm_table
+!!
+!!       subroutine check_DJDS_ordering_info(my_rank, numnod)
+!!@endverbatim
 !
       module m_solver_djds
 !

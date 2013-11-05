@@ -36,50 +36,64 @@
 !
       subroutine set_connectivity_whole
 !
+      use t_crs_connect
+      use t_solver_djds
+!
+      use m_machine_parameter
       use m_element_id_4_node
       use m_next_node_id_4_node
-      use m_solver_djds
+      use m_solver_djds_MHD
 !
-      use set_crs_connection
-      use DJDS_const_solver_list
+      use set_crs_connect_type
+      use set_geometry_to_types
+      use reordering_djds_smp_type
+      use set_djds_smp_ordering_type
 !
 !C +-------------------------------+
 !C | set connectivity in CRS array |
 !C +-------------------------------+
 !C===
-      call s_set_crs_connection
-!
-      call deallocate_iele_belonged
-      call deallocate_inod_next_node
+      call s_set_crs_connect_type(np_smp, numnod, inod_smp_stack,       &
+     &          ntot_next_nod_4_node, inod_next_stack_4_node,           &
+     &          inod_next_4_node, MHD_CRS)
 !
 !C +-----------------+
 !C | DJDS reordering |
 !C +-----------------+
 !C===
 !C
-      call reordering_djds_smp
+      call s_reordering_djds_smp_type(np_smp, numnod, internal_node,    &
+     &    inter_smp_stack, MHD_CRS, DJDS_entire)
 !C
-!      write(*,*) 'STACKmc', size(STACKmc)
-!      write(*,*) 'NLmaxHYP', size(NLmaxHYP), NHYP
-!      write(*,*) 'NUmaxHYP', size(NUmaxHYP), NHYP
-!      write(*,*) 'OLDtoNEW', size(OLDtoNEW), NP
-!      write(*,*) 'OLDtoNEW_DJDS_L', size(OLDtoNEW_DJDS_L)
-!      write(*,*) 'OLDtoNEW_DJDS_U', size(OLDtoNEW_DJDS_U)
-!      write(*,*) 'indexDJDS_L', size(indexDJDS_L), PEsmpTOT,NLmax,NHYP
-!      write(*,*) 'indexDJDS_U', size(indexDJDS_U), PEsmpTOT,NUmax,NHYP
-!      write(*,*) 'itemDJDS_L', size(itemDJDS_L), itotal_l
-!      write(*,*) 'itemDJDS_U', size(itemDJDS_U), itotal_u
-!      write(*,*) 'PEon', size(PEon)
-!      write(*,*) 'COLORon', size(COLORon)
+!      write(*,*) 'STACKmc', size(DJDS_entire%STACKmc)
+!      write(*,*) 'NLmaxHYP', size(DJDS_entire%NLmaxHYP),               &
+!     &          DJDS_entire%NHYP
+!      write(*,*) 'NUmaxHYP', size(DJDS_entire%NUmaxHYP),               &
+!     &          DJDS_entire%NHYP
+!      write(*,*) 'OLDtoNEW', size(DJDS_entire%OLDtoNEW),               &
+!     &          DJDS_entire%NP
+!      write(*,*) 'OLDtoNEW_DJDS_L', size(DJDS_entire%OLDtoNEW_DJDS_L)
+!      write(*,*) 'OLDtoNEW_DJDS_U', size(DJDS_entire%OLDtoNEW_DJDS_U)
+!      write(*,*) 'indexDJDS_L', size(DJDS_entire%indexDJDS_L),         &
+!     &          DJDS_entire%PEsmpTOT, DJDS_entire%NLmax,NHYP
+!      write(*,*) 'indexDJDS_U', size(DJDS_entire%indexDJDS_U),         &
+!     &          DJDS_entire%PEsmpTOT, DJDS_entire%NUmax,NHYP
+!      write(*,*) 'itemDJDS_L', size(DJDS_entire%itemDJDS_L),           &
+!     &          DJDS_entire%itotal_l
+!      write(*,*) 'itemDJDS_U', size(DJDS_entire%itemDJDS_U),           &
+!     &          DJDS_entire%itotal_u
+!      write(*,*) 'PEon', size(DJDS_entire%PEon)
+!      write(*,*) 'COLORon', size(DJDS_entire%COLORon)
 !
 !C +--------------------------------------+
 !C | set new communication table 4 solver |
 !C +--------------------------------------+
 !C===
 !C
-      call set_new_comm_table_entire
+      call set_nod_comm_tbl_2_type(DJDS_comm_etr)
+      call set_new_comm_table_type(numnod, DJDS_comm_etr, DJDS_entire)
 !
-      call deallocate_crs_connect
+      call dealloc_type_crs_connect(MHD_CRS)
 !
       end subroutine set_connectivity_whole
 !
@@ -102,37 +116,31 @@
 !
 !-----------------------------------------------------------------------
 !
-!      subroutine set_connectivity_conduct
+      subroutine set_connectivity_conduct
 !
-!      use DJDS_const_solver_list_cd
+      use DJDS_const_solver_list_cd
 !
 !
-!      call set_crs_connect_conduct
+      call set_crs_connect_conduct
+      call reordering_djds_smp_cd
+      call set_new_comm_table_cd
+      call deallocate_crs_connect
 !
-!      call reordering_djds_smp_cd
-!
-!      call set_new_comm_table_cd
-!
-!      call deallocate_crs_connect
-!
-!      end subroutine set_connectivity_conduct
+      end subroutine set_connectivity_conduct
 !
 !-----------------------------------------------------------------------
 !
-!      subroutine set_connectivity_insulate
+      subroutine set_connectivity_insulate
 !
-!      use DJDS_const_solver_list_ins
+      use DJDS_const_solver_list_ins
 !
 !
-!      call set_crs_connect_insulate
+      call set_crs_connect_insulate
+      call reordering_djds_smp_ins
+      call set_new_comm_table_ins
+      call deallocate_crs_connect
 !
-!      call reordering_djds_smp_ins
-!
-!      call set_new_comm_table_ins
-!
-!      call deallocate_crs_connect
-!
-!      end subroutine set_connectivity_insulate
+      end subroutine set_connectivity_insulate
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -140,30 +148,19 @@
       subroutine set_connectivity_linear
 !
       use m_geometry_constants
-      use m_solver_djds
+      use m_solver_djds_MHD
       use m_solver_djds_linear
       use DJDS_const_solver_list_1
 !
 !
       if ( nnod_4_ele .ne. num_t_linear) then
-!
         call set_crs_connect_linear
-!
         call reordering_djds_smp_linear
-!
+        call set_new_comm_table_l
         call deallocate_crs_connect
-!
       else
-!
-        call copy_itotal_to_linear(itotal1_u, itotal1_l,                &
-     &     itotal_u, itotal_l)
         call set_djds_4_linear
-!
       end if
-!
-!C set new communication table 4 solver
-!C
-      call set_new_comm_table_l
 !
       end subroutine set_connectivity_linear
 !
@@ -199,64 +196,63 @@
 !
 !-----------------------------------------------------------------------
 !
-!      subroutine set_connectivity_linear_cd
-!
-!      use m_geometry_constants
-!      use m_solver_djds_conduct
-!      use m_solver_djds_linear_cd
-!      use DJDS_const_solver_list_cd1
-!
-!
-!      if ( nnod_4_ele .ne. num_t_linear) then
-!
-!        call set_crs_connect_linear_cd
-!
-!        call reordering_djds_smp_l_cd
-!
-!        call deallocate_crs_connect
-!
-!      else
-!
-!       call copy_itotal_to_linear(itotal1_cd_u, itotal1_cd_l,          &
-!     &     itotal_cd_u, itotal_cd_l)
-!       call set_djds_4_linear_cd
-!
-!      end if
-!
-!      call set_new_comm_table_cd_l
-!
-!      end subroutine set_connectivity_linear_cd
+      subroutine set_connectivity_linear_cd
+
+      use m_geometry_constants
+      use m_solver_djds_conduct
+      use m_solver_djds_linear_cd
+      use DJDS_const_solver_list_cd1
+
+
+      if ( nnod_4_ele .ne. num_t_linear) then
+
+        call set_crs_connect_linear_cd
+
+        call reordering_djds_smp_l_cd
+
+        call deallocate_crs_connect
+
+      else
+
+       call copy_itotal_to_linear(itotal1_cd_u, itotal1_cd_l,          &
+     &     itotal_cd_u, itotal_cd_l)
+       call set_djds_4_linear_cd
+
+      end if
+
+      call set_new_comm_table_cd_l
+
+      end subroutine set_connectivity_linear_cd
 !
 !-----------------------------------------------------------------------
 !
-!      subroutine set_connectivity_linear_ins
+      subroutine set_connectivity_linear_ins
+
+      use m_geometry_constants
+      use m_solver_djds_insulate
+      use m_solver_djds_linear_ins
+      use DJDS_const_solver_list_ins1
+
+
+      if ( nnod_4_ele .ne. num_t_linear) then
+
+        call set_crs_connect_linear_ins
+
+        call reordering_djds_smp_l_ins
+
+        call deallocate_crs_connect
+
+      else
+
+        call copy_itotal_to_linear(itotal1_ins_u, itotal1_ins_l,       &
+     &      itotal_ins_u, itotal_ins_l)
+        call set_djds_4_linear_ins
+
+      end if
 !
-!      use m_geometry_constants
-!      use m_solver_djds_insulate
-!      use m_solver_djds_linear_ins
-!      use DJDS_const_solver_list_ins1
+      call set_new_comm_table_ins_l
 !
-!
-!      if ( nnod_4_ele .ne. num_t_linear) then
-!
-!        call set_crs_connect_linear_ins
-!
-!        call reordering_djds_smp_l_ins
-!
-!        call deallocate_crs_connect
-!
-!      else
-!
-!        call copy_itotal_to_linear(itotal1_ins_u, itotal1_ins_l,       &
-!     &      itotal_ins_u, itotal_ins_l)
-!        call set_djds_4_linear_ins
-!
-!      end if
-!
-!      call set_new_comm_table_ins_l
-!
-!
-!      end subroutine set_connectivity_linear_ins
+      end subroutine set_connectivity_linear_ins
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

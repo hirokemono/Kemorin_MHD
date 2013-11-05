@@ -50,175 +50,174 @@
 !
 ! ------------------------------------------
 !
-!      contains
+      contains
 !
 ! ------------------------------------------
 !
-!       subroutine allocate_4_RCM_ins_l
+       subroutine allocate_4_RCM_ins_l
 !
-!       use m_geometry_parameter
+       use m_geometry_parameter
 !
-!       allocate (OLDtoNEW1(numnod) )
-!       allocate (NEWtoOLD1(numnod) )
+       allocate (OLDtoNEW1(numnod) )
+       allocate (NEWtoOLD1(numnod) )
 !
-!       OLDtoNEW1= 0
-!       NEWtoOLD1= 0
+       OLDtoNEW1= 0
+       NEWtoOLD1= 0
 !
-!       end subroutine allocate_4_RCM_ins_l
-!
-! ------------------------------------------
-!
-!       subroutine allocate_number_4_djds_ins_l
-!
-!       allocate (IVECT1(0:NHYP1))
-!       allocate (NLmaxHYP1(NHYP1))
-!       allocate (NUmaxHYP1(NHYP1))
-!
-!       IVECT1   = 0
-!       NLmaxHYP1= 0
-!       NUmaxHYP1= 0
-!
-!       end subroutine allocate_number_4_djds_ins_l
+       end subroutine allocate_4_RCM_ins_l
 !
 ! ------------------------------------------
 !
-!       subroutine allocate_lists_4_DJDS_ins_l
+       subroutine allocate_number_4_djds_ins_l
 !
-!       use m_geometry_parameter
-!       use m_machine_parameter
+       allocate (IVECT1(0:NHYP1))
+       allocate (NLmaxHYP1(NHYP1))
+       allocate (NUmaxHYP1(NHYP1))
 !
-!       allocate (NEWtoOLD_DJDS1_L(numnod), OLDtoNEW_DJDS1_L(numnod))
-!       allocate (NEWtoOLD_DJDS1_U(numnod), OLDtoNEW_DJDS1_U(numnod))
-!       allocate (LtoU1(numnod))
+       IVECT1   = 0
+       NLmaxHYP1= 0
+       NUmaxHYP1= 0
 !
-!       allocate (indexDJDS1_L(0:np_smp*NLmax1*NHYP1))
-!       allocate (indexDJDS1_U(0:np_smp*NUmax1*NHYP1))
-!
-!       allocate (STACKmcG1 (0:np_smp) )
-!       allocate (STACKmc1 (0:np_smp*NHYP1) )
-!
-!       allocate (PEon1(numnod))
-!       allocate (COLORon1(numnod))
-!
-!       indexDJDS1_L= 0
-!       indexDJDS1_U= 0
-!
-!       NEWtoOLD_DJDS1_L= 0     
-!       NEWtoOLD_DJDS1_U= 0     
-!       OLDtoNEW_DJDS1_L= 0     
-!       OLDtoNEW_DJDS1_U= 0     
-!
-!
-!       end subroutine allocate_lists_4_DJDS_ins_l
+       end subroutine allocate_number_4_djds_ins_l
 !
 ! ------------------------------------------
 !
-!       subroutine allocate_address_4_DJDS_ins_l
+       subroutine allocate_lists_4_DJDS_ins_l
 !
-!       allocate (itemDJDS1_L(itotal1_ins_l))
-!       allocate (itemDJDS1_U(itotal1_ins_u))
+       use m_geometry_parameter
+       use m_machine_parameter
 !
-!       itemDJDS1_L = 0
-!       itemDJDS1_U = 0
+       allocate (NEWtoOLD_DJDS1_L(numnod), OLDtoNEW_DJDS1_L(numnod))
+       allocate (NEWtoOLD_DJDS1_U(numnod), OLDtoNEW_DJDS1_U(numnod))
+       allocate (LtoU1(numnod))
 !
-!       end subroutine allocate_address_4_DJDS_ins_l
+       allocate (indexDJDS1_L(0:np_smp*NLmax1*NHYP1))
+       allocate (indexDJDS1_U(0:np_smp*NUmax1*NHYP1))
 !
-! ------------------------------------------
+       allocate (STACKmcG1 (0:np_smp) )
+       allocate (STACKmc1 (0:np_smp*NHYP1) )
 !
-!       subroutine allocate_new_comm_table_ins_l
+       allocate (PEon1(numnod))
+       allocate (COLORon1(numnod))
 !
-!       use m_nod_comm_table
+       indexDJDS1_L= 0
+       indexDJDS1_U= 0
 !
-!       allocate  ( NOD_EXPORT_NEW_ins1(ntot_export) )
-!       NOD_EXPORT_NEW_ins1 = 0
+       NEWtoOLD_DJDS1_L= 0     
+       NEWtoOLD_DJDS1_U= 0     
+       OLDtoNEW_DJDS1_L= 0     
+       OLDtoNEW_DJDS1_U= 0     
 !
-!       end subroutine allocate_new_comm_table_ins_l
-!
-! ------------------------------------------
-!
-!       subroutine deallocate_4_djds_table_ins_l
-!
-!       deallocate (NEWtoOLD_DJDS1_L)
-!
-!       end subroutine deallocate_4_djds_table_ins_l
-!
-! ------------------------------------------
-!
-!       subroutine set_djds_4_linear_ins
-!
-!       use m_geometry_parameter
-!       use m_solver_djds_insulate
-!
-!
-!       call allocate_4_RCM_ins_l
-!
-!       OLDtoNEW1= OLDtoNEW
-!       NEWtoOLD1= NEWtoOLD
-!
-!       NHYP1 = NHYP
-!
-!       call allocate_number_4_djds_ins_l
-!
-!       IVECT1   = IVECT
-!       NLmaxHYP1= NLmaxHYP
-!       NUmaxHYP1= NUmaxHYP
-!
-!       NLmax1 = NLmax
-!       NUmax1 = NUmax
-!       npLX1_1 = npLX1
-!       npUX1_1 = npUX1
-!
-!       call allocate_lists_4_DJDS_ins_l
-!
-!       indexDJDS1_L= indexDJDS_L
-!       indexDJDS1_U= indexDJDS_U
-!
-!       NEWtoOLD_DJDS1_L= NEWtoOLD_DJDS_L
-!       NEWtoOLD_DJDS1_U= NEWtoOLD_DJDS_U
-!       OLDtoNEW_DJDS1_L= OLDtoNEW_DJDS_L
-!       OLDtoNEW_DJDS1_U= OLDtoNEW_DJDS_U
-!       LtoU1 = LtoU
-!
-!       STACKmcG1 = STACKmcG
-!       STACKmc1 = STACKmc
-!
-!       PEon1 = PEon
-!       COLORon1 = COLORon
-!
-!       call allocate_address_4_DJDS_ins_l
-!
-!       itemDJDS1_L = itemDJDS_L
-!       itemDJDS1_U = itemDJDS_U
-!
-!       end subroutine set_djds_4_linear_ins
+       end subroutine allocate_lists_4_DJDS_ins_l
 !
 ! ------------------------------------------
 !
-!       subroutine check_DJDS_ordering_info_l(my_rank)
+       subroutine allocate_address_4_DJDS_ins_l
 !
-!       use m_geometry_parameter
+       allocate (itemDJDS1_L(itotal1_ins_l))
+       allocate (itemDJDS1_U(itotal1_ins_u))
 !
-!       integer (kind = kint) :: my_rank
-!       integer(kind = kint) :: i
+       itemDJDS1_L = 0
+       itemDJDS1_U = 0
 !
-!      write(50+my_rank,*) 'inod, NEWtoOLD1, OLDtoNEW_DJDS _L, ',       &
-!     &        ' OLDtoNEW_DJDS1_U, LtoU1 4 insulator'
-!      do i = 1, numnod
-!      write(50+my_rank,'(10i8)') i, NEWtoOLD1(i),                      &
-!     &            OLDtoNEW_DJDS1_L(i), OLDtoNEW_DJDS1_U(i), LtoU1(i)
-!      end do
+       end subroutine allocate_address_4_DJDS_ins_l
 !
-!      write(50+my_rank,*) 'indexDJDS1_L 4 insulator'
-!       write(50+my_rank,'(10i8)') indexDJDS1_L
-!      write(50+my_rank,*) 'itemDJDS1_l 4 insulator'
-!      write(50+my_rank,'(10i8)') itemDJDS1_l
-!      write(50+my_rank,*) 'indexDJDS1_U 4 insulator'
-!       write(50+my_rank,'(10i8)') indexDJDS1_U
-!      write(50+my_rank,*) 'itemDJDS1_u 4 insulator'
-!       write(50+my_rank,'(10i8)') itemDJDS1_u
+! ------------------------------------------
+!
+       subroutine allocate_new_comm_table_ins_l
+!
+       use m_nod_comm_table
+!
+       allocate  ( NOD_EXPORT_NEW_ins1(ntot_export) )
+       NOD_EXPORT_NEW_ins1 = 0
+!
+       end subroutine allocate_new_comm_table_ins_l
+!
+! ------------------------------------------
+!
+       subroutine deallocate_4_djds_table_ins_l
+!
+       deallocate (NEWtoOLD_DJDS1_L)
+!
+       end subroutine deallocate_4_djds_table_ins_l
+!
+! ------------------------------------------
+!
+       subroutine set_djds_4_linear_ins
+!
+       use m_geometry_parameter
+       use m_solver_djds_insulate
 !
 !
-!       end subroutine check_DJDS_ordering_info_l
+       call allocate_4_RCM_ins_l
+!
+       OLDtoNEW1= OLDtoNEW
+       NEWtoOLD1= NEWtoOLD
+!
+       NHYP1 = NHYP
+!
+       call allocate_number_4_djds_ins_l
+!
+       IVECT1   = IVECT
+       NLmaxHYP1= NLmaxHYP
+       NUmaxHYP1= NUmaxHYP
+!
+       NLmax1 = NLmax
+       NUmax1 = NUmax
+       npLX1_1 = npLX1
+       npUX1_1 = npUX1
+!
+       call allocate_lists_4_DJDS_ins_l
+!
+       indexDJDS1_L= indexDJDS_L
+       indexDJDS1_U= indexDJDS_U
+
+       NEWtoOLD_DJDS1_L= NEWtoOLD_DJDS_L
+       NEWtoOLD_DJDS1_U= NEWtoOLD_DJDS_U
+       OLDtoNEW_DJDS1_L= OLDtoNEW_DJDS_L
+       OLDtoNEW_DJDS1_U= OLDtoNEW_DJDS_U
+       LtoU1 = LtoU
+!
+       STACKmcG1 = STACKmcG
+       STACKmc1 = STACKmc
+!
+       PEon1 = PEon
+       COLORon1 = COLORon
+!
+       call allocate_address_4_DJDS_ins_l
+!
+       itemDJDS1_L = itemDJDS_L
+       itemDJDS1_U = itemDJDS_U
+!
+       end subroutine set_djds_4_linear_ins
+!
+! ------------------------------------------
+!
+       subroutine check_DJDS_ordering_info_l(my_rank)
+!
+       use m_geometry_parameter
+!
+       integer (kind = kint) :: my_rank
+       integer(kind = kint) :: i
+!
+      write(50+my_rank,*) 'inod, NEWtoOLD1, OLDtoNEW_DJDS _L, ',        &
+     &        ' OLDtoNEW_DJDS1_U, LtoU1 4 insulator'
+      do i = 1, numnod
+        write(50+my_rank,'(10i8)') i, NEWtoOLD1(i),                     &
+     &            OLDtoNEW_DJDS1_L(i), OLDtoNEW_DJDS1_U(i), LtoU1(i)
+      end do
+!
+      write(50+my_rank,*) 'indexDJDS1_L 4 insulator'
+      write(50+my_rank,'(10i8)') indexDJDS1_L
+      write(50+my_rank,*) 'itemDJDS1_l 4 insulator'
+      write(50+my_rank,'(10i8)') itemDJDS1_l
+      write(50+my_rank,*) 'indexDJDS1_U 4 insulator'
+      write(50+my_rank,'(10i8)') indexDJDS1_U
+      write(50+my_rank,*) 'itemDJDS1_u 4 insulator'
+      write(50+my_rank,'(10i8)') itemDJDS1_u
+!
+!
+      end subroutine check_DJDS_ordering_info_l
 !
 ! ------------------------------------------
 !

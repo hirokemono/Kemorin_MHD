@@ -125,7 +125,6 @@
 !
 !
       call set_layerd_ele_id_4_node(nnod, iele_start, iele_end)
-!
       call const_next_nod_id_4_node
 !
       call s_set_crs_connection

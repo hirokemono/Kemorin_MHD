@@ -31,14 +31,16 @@
       subroutine set_index_list_4_mat_etr
 !
       use calypso_mpi
+      use m_solver_djds_MHD
+      use set_idx_4_mat_type
 !
-      integer(kind = kint) :: nod1, nod2, mat_num, k2
+      integer(kind = kint) :: mat_num, k2
       integer(kind = kint) :: iproc, iele, inum, iconn
       integer(kind = kint) :: inn, ist, ied, in
 !
 !
 !$omp parallel private(k2,iproc,inum,inn,ist,ied,                       &
-!$omp&                 in,iele,iconn,nod1,nod2,mat_num)
+!$omp&                 in,iele,iconn,mat_num)
       do k2 = 1, nnod_4_ele
 !
 !$omp do
@@ -50,16 +52,11 @@
             ied = nod_stack_smp(inn)
 !
             do in = ist, ied
-!
               iele = iele_sort_smp(in)
               iconn = iconn_sort_smp(in)
-              nod1 = ie(iele,iconn)
-              nod2 = ie(iele,k2)
-!
-!             write(*,*) my_rank, nod1, nod2
-              call set_off_diag( nod1, nod2, mat_num )
+              call set_off_diag_type(numnod, internal_node,             &
+     &            DJDS_entire, ie(iele,iconn), ie(iele,k2), mat_num)
               idx_4_mat(in,k2) = mat_num
-!
             end do
           end do
         end do
@@ -124,14 +121,16 @@
 !
       use m_geometry_data_MHD
       use m_sorted_node_MHD
+      use m_solver_djds_MHD
+      use set_idx_4_mat_type
 !
-      integer(kind = kint) :: nod1, nod2, mat_num, k2
+      integer(kind = kint) :: mat_num, k2
       integer(kind = kint) :: iproc, iele, inum, iconn
       integer(kind = kint) :: inn, ist, ied, in
 !
 !
 !$omp parallel private(k2,iproc,inum,inn,ist,ied,                       &
-!$omp&                 in,iele,iconn,nod1,nod2,mat_num)
+!$omp&                 in,iele,iconn,mat_num)
       do k2 = 1, nnod_4_ele
 !
 !$omp do
@@ -146,17 +145,14 @@
 !
               iele = iele_sort_smp(in)
               iconn = iconn_sort_smp(in)
-              nod1 = ie(iele,iconn)
-              nod2 = ie(iele,k2)
-!
               if (iele.ge.iele_cd_start .and. iele.le.iele_cd_end) then
-!
-!               call set_off_diag_conduct( nod1, nod2, mat_num )
+!               call set_off_diag_conduct                               &
+!     &             ( ie(iele,iconn), ie(iele,k2), mat_num )
 !               idx_4_cd_mat(in,k2) = mat_num
 !
-                call set_off_diag( nod1, nod2, mat_num ) 
+                call set_off_diag_type(numnod, internal_node,           &
+     &              DJDS_entire, ie(iele,iconn), ie(iele,k2), mat_num)
                 idx_4_cd_mat_full(in,k2) = mat_num
-!
                else
 !                 idx_4_cd_mat(in,k2) = 0
                  idx_4_cd_mat_full(in,k2) = 0

@@ -90,21 +90,15 @@
 !
       subroutine set_bc_4_magne_mat(nst, ned, iele, k1, k2)
 !
-      use m_solver_djds
+      use m_solver_djds_MHD
       use m_magne_matrix
+      use set_aiccg_bc_node_type
 !
       integer (kind = kint), intent(in) :: nst, ned, iele, k1, k2
-      integer (kind = kint) :: nd2, nod1, nod2, mat_num
 !
 !
-      nod1 = ie(iele,k1)
-      nod2 = ie(iele,k2)
-      call set_off_diag ( nod1, nod2, mat_num )
-!
-      do nd2 = nst, ned
-        call correct_matrix33_4_boundary                                &
-     &     (numnod, itotal_u, itotal_l, nd2, mat_num, Bmat_DJDS%aiccg)
-       end do
+      call set_bc_4_vector_mat_type(nst, ned, ie(iele,k1), ie(iele,k2), &
+     &    DJDS_entire, Bmat_DJDS)
 !
       end subroutine set_bc_4_magne_mat
 !

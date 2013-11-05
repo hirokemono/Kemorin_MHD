@@ -1,12 +1,17 @@
+!>@file   transfer_crs_2_djds.f90
+!!@brief  module transfer_crs_2_djds
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2002
+!!@date Modified in Nov., 2013
 !
-!      module transfer_crs_2_djds
-!
-!      Written by H. Matsui on Jan., 2006
-!      Modified by H. Matsui on Apr., 2008
-!
-!      subroutine transfer_crs_2_djds_matrix
-!      subroutine set_smp_data_4_node
-!      subroutine set_new_comm_table_entire
+!>      DJDS matrix connection from CRS matrix
+!!
+!!@verbatim
+!!      subroutine transfer_crs_2_djds_matrix
+!!      subroutine set_smp_data_4_node
+!!      subroutine set_new_comm_table_entire
+!!@endverbatim
 !
       module transfer_crs_2_djds
 !
@@ -26,9 +31,12 @@
       subroutine transfer_crs_2_djds_matrix
 !
       use m_matrix_data_4_djds
+      use m_crs_connect
+      use m_nod_comm_table
+      use m_solver_djds
       use copy_matrix_2_djds_array
       use DJDS_const_solver_list
-      use m_crs_connect
+      use DJDS_new_comm_table
 !
 !
       call copy_paramters_4_djds
@@ -48,7 +56,9 @@
 !C +--------------------------------------+
 !C===
 !C
-      call set_new_comm_table_entire
+      call allocate_new_comm_table(istack_export(num_neib))
+      call set_new_comm_table(numnod, OLDtoNEW, num_neib,               &
+     &    istack_export, item_export, NOD_EXPORT_NEW)
 !
 !C +-------------+
 !C | copy matrix |

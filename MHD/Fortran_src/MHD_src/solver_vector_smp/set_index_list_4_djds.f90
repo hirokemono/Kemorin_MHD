@@ -4,7 +4,7 @@
 !      programmed by H.Matsui and H.Okuda on 2002
 !      Modified by H. Matsui on Oct., 2005
 !
-!      subroutine s_set_index_list_4_djds(np_smp, numnod, internal_node,&
+!      subroutine s_set_index_list_4_djds(numnod, internal_node,        &
 !     &          numele, nnod_4_ele, ie)
 !
       module set_index_list_4_djds
@@ -19,20 +19,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_index_list_4_djds(np_smp, numnod, internal_node, &
+      subroutine s_set_index_list_4_djds(numnod, internal_node,         &
      &          numele, nnod_4_ele, ie)
 !
+      use m_machine_parameter
       use m_sorted_node
-      use m_solver_djds
+      use m_solver_djds_MHD
 !
-      use set_DJDS_off_diagonal
+      use set_idx_4_mat_type
 !
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele, nnod_4_ele)
-      integer(kind = kint), intent(in) :: np_smp
 !
-      integer(kind = kint) :: nod1, nod2, mat_num, k2
+      integer(kind = kint) :: mat_num, k2
       integer(kind = kint) :: iproc, iele, inum, iconn
       integer(kind = kint) :: inn, istart, iend, in
 !
@@ -47,21 +47,13 @@
             iend = nod_stack_smp(inn)
 !
             do in = istart, iend
-!
               iele = iele_sort_smp(in)
               iconn = iconn_sort_smp(in)
-              nod1 = ie(iele,iconn)
-              nod2 = ie(iele,k2)
 !
-              call s_set_DJDS_off_diagonal (internal_node, numnod,  &
-     &            np_smp, NLmax, NUmax, itotal_l, itotal_u,         &
-     &            npLX1, npUX1, NHYP, STACKmc, NLmaxHYP, NUmaxHYP,  &
-     &            OLDtoNEW, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,       &
-     &            indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U, &
-     &            PEon, COLORon, nod1, nod2, mat_num)
+              call set_off_diag_type(numnod, internal_node,             &
+     &            DJDS_entire, ie(iele,iconn), ie(iele,k2), mat_num)
 !
               idx_4_mat(in,k2) = mat_num
-!
             end do
           end do
         end do

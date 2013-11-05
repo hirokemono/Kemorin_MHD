@@ -1,12 +1,18 @@
+!>@file   ordering_MC_RCM_type.f90
+!!@brief  module ordering_MC_RCM_type
+!!
+!!@author K. Nakajima and H. Matsui
+!!@date     Written by K. Nakajima in 2001
+!!@n        modified by H. Matsui in May. 2002
+!!@n        modified by H. Matsui in June. 2006
+!!@n        modified by H. Matsui in Jan., 2009
+!!@n        Modified in Nov., 2013
 !
-!     module ordering_MC_RCM_type
-!
-!      Written by K. Nakajima in 2001
-!        modified by H. Matsui on May. 2002
-!        modified by H. Matsui on June. 2006
-!        modified by H. Matsui on Jan., 2009
-!
-!      subroutine count_rcm_type(nod, tbl_crs, djds_tbl)
+!>      RCM ordering from CRS matrix
+!!
+!!@verbatim
+!!      subroutine count_rcm_type(NP, N, tbl_crs, djds_tbl)
+!!@endverbatim
 !
       module ordering_MC_RCM_type
 !
@@ -20,11 +26,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_rcm_type(nod, tbl_crs, djds_tbl)
+      subroutine count_rcm_type(NP, N, tbl_crs, djds_tbl)
 !
       use calypso_mpi
       use m_machine_parameter
-      use t_geometry_data
       use t_crs_connect
       use t_solver_djds
 !
@@ -35,7 +40,7 @@
       use ordering_MC_RCM
       use MC_Cuthill_McKee
 !
-      type(node_data), intent(in) :: nod
+      integer(kind = kint), intent(in) :: NP, N
       type(CRS_matrix_connect), intent(in) :: tbl_crs
 !
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
@@ -53,8 +58,8 @@
       max_mc_u =  tbl_crs%max_crs_u
       min_mc_u =  tbl_crs%min_crs_u
 !
-      call allocate_IVECT_rcm(nod%numnod)
-      call allocate_mc_stack(nod%numnod)
+      call allocate_IVECT_rcm(NP)
+      call allocate_mc_stack(NP)
       call allocate_mc_connect
 !
 !
@@ -67,13 +72,12 @@
 !
       if(iflag_debug.eq.1) write(*,*) 'iflag_ordering', iflag_ordering
 !
-      call allocate_iW_ordering(nod%numnod)
+      call allocate_iW_ordering(NP)
 !
       if (iflag_ordering .eq. 0 ) then
 !
         if (iflag_debug.eq.1) write(*,*) 'no_MC'
-        call no_MC (nod%numnod,                                         &
-     &      tbl_crs%ntot_crs_l,   tbl_crs%ntot_crs_u,                   &
+        call no_MC(NP, tbl_crs%ntot_crs_l, tbl_crs%ntot_crs_u,          &
      &      tbl_crs%istack_crs_l, tbl_crs%istack_crs_u,                 &
      &      tbl_crs%item_crs_l,   tbl_crs%item_crs_u,                   &
      &      ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,                   &
@@ -83,12 +87,12 @@
 !
         NCOLORtot = 1
 !
-        call allocate_work_4_rcm(nod%numnod, djds_tbl%NHYP)
-        IW(1:nod%numnod) = 0
+        call allocate_work_4_rcm(NP, djds_tbl%NHYP)
+        IW(1:NP) = 0
 !
 !
 !CDIR NOVECTOR
-        do i= 1, nod%numnod
+        do i= 1, NP
           djds_tbl%OLDtoNEW(i)= i
           djds_tbl%NEWtoOLD(i)= i
           OLDtoNEWmc(i)= i
@@ -96,7 +100,7 @@
         enddo
 !
         IVECmc(0) = 0
-        IVECmc(1) = nod%internal_node
+        IVECmc(1) = N
 !
       else
 !C
@@ -108,8 +112,7 @@
 !  -------  RCM ordering
         if ( iflag_ordering .eq. 1 ) then
           if (iflag_debug.eq.1) write(*,*) 'sRCM'
-          call sRCM (nod%numnod, nod%internal_node,                     &
-     &        tbl_crs%ntot_crs_l,   tbl_crs%ntot_crs_u,                 &
+          call sRCM (NP, N, tbl_crs%ntot_crs_l,   tbl_crs%ntot_crs_u,   &
      &        tbl_crs%istack_crs_l, tbl_crs%istack_crs_u,               &
      &        tbl_crs%item_crs_l,   tbl_crs%item_crs_u,                 &
      &        ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,                 &
@@ -120,8 +123,7 @@
 !  -------  MC ordering
         else if ( iflag_ordering .eq. 2 ) then
           if (iflag_debug.eq.1) write(*,*) 'sMC'
-          call sMC (nod%numnod, nod%internal_node,                      &
-     &        tbl_crs%ntot_crs_l,   tbl_crs%ntot_crs_u,                 &
+          call sMC (NP, N, tbl_crs%ntot_crs_l, tbl_crs%ntot_crs_u,      &
      &        tbl_crs%istack_crs_l, tbl_crs%istack_crs_u,               &
      &        tbl_crs%item_crs_l,   tbl_crs%item_crs_u,                 &
      &        ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,                 &
@@ -154,14 +156,14 @@
      &         'PE:',my_rank,'color number: ', NCOLORtot 
         endif
 !
-        call allocate_work_4_rcm(nod%numnod, djds_tbl%NHYP)
+        call allocate_work_4_rcm(NP, djds_tbl%NHYP)
 !
-        call set_color_tbl_RCM_MC(nod%numnod, djds_tbl%NHYP, NCOLORtot, &
+        call set_color_tbl_RCM_MC(NP, djds_tbl%NHYP, NCOLORtot,         &
      &      IVECT_rcm, IVECmc, ICHK, IVnew, IW)
 !
 !C
 !C-- CHECK dependency
-        call check_dependency_RCM_MC(my_rank, nod%numnod,               &
+        call check_dependency_RCM_MC(my_rank, NP,                       &
      &      ntot_mc_l, ntot_mc_u, istack_mc_l, istack_mc_u,             &
      &      item_mc_l, item_mc_u, NCOLORtot, IVECmc, IVnew, IW, IFLAG)
 !
@@ -175,7 +177,7 @@
           goto 999
         endif
 !
-        call set_RCM_MC_table(nod%numnod, nod%internal_node, NCOLORtot, &
+        call set_RCM_MC_table(NP, N, NCOLORtot,                         &
      &      IVnew, djds_tbl%NHYP, OLDtoNEWmc, NEWtoOLDmc)
 !
       end if
@@ -184,12 +186,12 @@
       call deallocate_iW_ordering
       call deallocate_IVECT_rcm
 !
-!        do i = 1, nod%numnod
+!        do i = 1, NP
 !          write(60+my_rank,*) 'istack_mc_l', i, istack_mc_l(i)
 !          write(60+my_rank,'(10i8)')                                   &
 !     &             item_mc_l(istack_mc_l(i-1)+1:istack_mc_l(i))
 !        end do
-!        do i = 1, nod%numnod
+!        do i = 1, NP
 !          write(60+my_rank,*) 'istack_mc_u', i, istack_mc_u(i)
 !          write(60+my_rank,'(10i8)')                                   &
 !     &             item_mc_u(istack_mc_u(i-1)+1:istack_mc_u(i))

@@ -189,9 +189,9 @@
       subroutine solver_MGCG_magne
 !
       use m_nod_comm_table
-      use m_solver_djds
+      use m_solver_djds_MHD
       use m_magne_matrix
-      use solver33_DJDS
+      use solver_DJDS33_struct
       use solver_VMGCG33_DJDS_SMP
 !
       integer(kind = kint) :: ierr
@@ -215,17 +215,10 @@
      &      eps_4_magne_crank, EPS_MG,                                  &
      &      precond_4_crank, METHOD_MG, PRECOND_MG, ierr)
       else
-        call solve33_DJDS_kemo                                          &
-     &    (internal_node, numnod, NLmax, NUmax, itotal_l, itotal_u,     &
-     &     NHYP, np_smp, inter_smp_stack, STACKmc, NLmaxHYP, NUmaxHYP,  &
-     &     IVECT, NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,           &
-     &     NEWtoOLD_DJDS_U, LtoU, Bmat_DJDS%D, b_vec(1),                &
-     &     x_vec(1), indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,  &
-     &     Bmat_DJDS%AL, Bmat_DJDS%AU,                                  &
-     &     Bmat_DJDS%ALUG_L, Bmat_DJDS%ALUG_U, eps_4_magne_crank,       &
-     &     itr, ierr, num_neib, id_neib, istack_import, item_import,    &
-     &     istack_export, NOD_EXPORT_NEW,                               &
-     &     method_4_velo, precond_4_crank, itr_res)
+        call solve33_DJDS_struct(np_smp, DJDS_comm_etr, DJDS_entire,    &
+     &      Bmat_DJDS, numnod, b_vec(1), x_vec(1),                      &
+     &      method_4_velo, precond_4_crank, ierr,                       &
+     &      eps_4_magne_crank, itr, itr_res)
       end if
 !
       call end_eleps_time(5)

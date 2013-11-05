@@ -207,14 +207,14 @@
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'empty_djds_connectivity_type', i_level
-          call dealloc_iele_belonged_type                               &
-     &        ( MG_next_table(i_level)%neib_ele )
-          call dealloc_inod_next_node_type                              &
-     &        ( MG_next_table(i_level)%neib_nod )
-!
           call empty_djds_connectivity_type(MG_mesh(i_level)%mesh,      &
      &        MG_djds_tbl(i_level) )
         end if
+!
+        call dealloc_iele_belonged_type                                 &
+     &        ( MG_next_table(i_level)%neib_ele )
+        call dealloc_inod_next_node_type                                &
+     &        ( MG_next_table(i_level)%neib_nod )
       end do
 !
 !     -----  set DJDS matrix connectivity

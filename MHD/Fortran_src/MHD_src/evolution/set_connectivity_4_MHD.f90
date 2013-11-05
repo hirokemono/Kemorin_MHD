@@ -22,6 +22,8 @@
       subroutine set_connectivity
 !
       use m_machine_parameter
+      use m_element_id_4_node
+      use m_next_node_id_4_node
       use set_MHD_connectivity
       use set_residual_limit
 !
@@ -32,6 +34,8 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_connectivity_whole'
       call set_connectivity_whole
+      call deallocate_iele_belonged
+      call deallocate_inod_next_node
 !
       if (iflag_debug.eq.1)   write(*,*) 'set_connectivity_fluid'
       call set_connectivity_fluid
