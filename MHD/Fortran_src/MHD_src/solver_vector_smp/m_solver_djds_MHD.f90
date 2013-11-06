@@ -31,9 +31,17 @@
 !>      Communication table structure for fluid
       type(communication_table), save :: DJDS_comm_fl
 !
+!>      DJDS ordering structures for conductor region
+      type(DJDS_ordering_table), save :: DJDS_conduct
+!>      DJDS ordering structures for linear conductor region
+      type(DJDS_ordering_table), save :: DJDS_cd_l
 !>      Communication table structure for conductor
       type(communication_table), save :: DJDS_comm_cd
 !
+!>      DJDS ordering structures for conductor region
+      type(DJDS_ordering_table), save :: DJDS_insulator
+!>      DJDS ordering structures for linear conductor region
+      type(DJDS_ordering_table), save :: DJDS_ins_l
 !>      Communication table structure for insulator
       type(communication_table), save :: DJDS_comm_ins
 !

@@ -29,18 +29,15 @@
 !
       subroutine set_off_diag_conduct (nod1, nod2, mat_num)
 !
-      use m_solver_djds_conduct
+      use m_solver_djds_MHD
+      use set_idx_4_mat_type
 !
       integer (kind = kint), intent(in) :: nod1, nod2
       integer (kind = kint), intent(inout) :: mat_num
 !
 !
-      call s_set_DJDS_off_diagonal (internal_node, numnod, np_smp,      &
-     &    NLmax, NUmax, itotal_cd_l, itotal_cd_u,                       &
-     &    npLX1, npUX1, NHYP, STACKmc, NLmaxHYP, NUmaxHYP,              &
-     &    OLDtoNEW, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,                   &
-     &    indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,             &
-     &    PEon, COLORon, nod1, nod2, mat_num)
+      call set_off_diag_type(numnod, internal_node, DJDS_conduct,       &
+     &   nod1, nod2, mat_num)
 !
       end subroutine set_off_diag_conduct
 !
@@ -48,18 +45,15 @@
 !
       subroutine set_off_diag_insulate (nod1, nod2, mat_num)
 !
-      use m_solver_djds_insulate
+      use m_solver_djds_MHD
+      use set_idx_4_mat_type
 !
       integer (kind = kint), intent(in) :: nod1, nod2
       integer (kind = kint), intent(inout) :: mat_num
 !
 !
-      call s_set_DJDS_off_diagonal (internal_node, numnod, np_smp,      &
-     &    NLmax, NUmax, itotal_ins_l, itotal_ins_u,                     &
-     &    npLX1, npUX1, NHYP, STACKmc, NLmaxHYP, NUmaxHYP,              &
-     &    OLDtoNEW, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,                   &
-     &    indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,             &
-     &    PEon, COLORon, nod1, nod2, mat_num)
+      call set_off_diag_type(numnod, internal_node, DJDS_insulator,     &
+     &   nod1, nod2, mat_num)
 !
       end subroutine set_off_diag_insulate
 !
@@ -84,18 +78,15 @@
 !
       subroutine set_off_diag_linear_cd (nod1, nod2, mat_num)
 !
-      use m_solver_djds_linear_cd
+      use m_solver_djds_MHD
+      use set_idx_4_mat_type
 !
       integer (kind = kint), intent(in) :: nod1, nod2
       integer (kind = kint), intent(inout) :: mat_num
 !
 !
-      call s_set_DJDS_off_diagonal (internal_node, numnod, np_smp,      &
-     &    NLmax1, NUmax1, itotal1_cd_l, itotal1_cd_u,                   &
-     &    npLX1_1, npUX1_1, NHYP1, STACKmc1, NLmaxHYP1, NUmaxHYP1,      &
-     &    OLDtoNEW1, OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U,                &
-     &    indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,         &
-     &    PEon1, COLORon1, nod1, nod2, mat_num)
+      call set_off_diag_type(numnod, internal_node, DJDS_cd_l,          &
+     &   nod1, nod2, mat_num)
 !
       end subroutine set_off_diag_linear_cd
 !
@@ -103,18 +94,15 @@
 !
       subroutine set_off_diag_linear_ins (nod1, nod2, mat_num)
 !
-      use m_solver_djds_linear_ins
+      use m_solver_djds_MHD
+      use set_idx_4_mat_type
 !
       integer (kind = kint), intent(in) :: nod1, nod2
       integer (kind = kint), intent(inout) :: mat_num
 !
 !
-      call s_set_DJDS_off_diagonal (internal_node, numnod, np_smp,      &
-     &    NLmax1, NUmax1, itotal1_ins_l, itotal1_ins_u,                 &
-     &    npLX1_1, npUX1_1, NHYP1, STACKmc1, NLmaxHYP1, NUmaxHYP1,      &
-     &    OLDtoNEW1, OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U,                &
-     &    indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,         &
-     &    PEon1, COLORon1, nod1, nod2, mat_num)
+      call set_off_diag_type(numnod, internal_node, DJDS_ins_l,         &
+     &   nod1, nod2, mat_num)
 !
       end subroutine set_off_diag_linear_ins
 !

@@ -28,10 +28,6 @@
       use m_geometry_parameter
       use t_solver_djds
       use m_solver_djds_MHD
-!      use m_solver_djds_conduct
-!      use m_solver_djds_insulate
-!      use m_solver_djds_linear_cd
-!      use m_solver_djds_linear_ins
 !
       use set_index_list_MHD_matrix
 !
@@ -44,14 +40,14 @@
       if (iflag_debug.eq.1) write(*,*) 'deallocation work arrays'
       call dealloc_type_4_djds_table(DJDS_entire)
       call dealloc_type_4_djds_table(DJDS_fluid)
-!      call deallocate_4_djds_table_cd
-!      call deallocate_4_djds_table_ins
+!      call dealloc_type_4_djds_table(DJDS_conduct)
+!      call dealloc_type_4_djds_table(DJDS_insulator)
 !
       if ( nnod_4_ele .ne. num_t_linear) then
         call dealloc_type_4_djds_table(DJDS_linear)
         call dealloc_type_4_djds_table(DJDS_fl_l)
-!        call deallocate_4_djds_table_cd_l
-!        call deallocate_4_djds_table_ins_l
+!        call dealloc_type_4_djds_table(DJDS_cd_l)
+!        call dealloc_type_4_djds_table(DJDS_ins_l)
       end if
 !
       end subroutine set_data_4_const_matrices
