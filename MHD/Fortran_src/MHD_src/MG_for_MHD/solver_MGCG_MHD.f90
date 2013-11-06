@@ -42,8 +42,8 @@
       subroutine init_MGCG_MHD
 !
       use m_control_parameter
-      use solver_DJDS
-      use solver33_DJDS
+      use solver_DJDS11_struct
+      use solver_DJDS33_struct
       use solver_VMGCG11_DJDS_SMP
       use solver_VMGCG33_DJDS_SMP
 !
@@ -58,7 +58,7 @@
         call init_VMGCG11_DJDS_SMP(numnod, np_smp,                      &
             precond_4_solver,  METHOD_MG, PRECOND_MG)
       else
-        call init_solver_DJDS(numnod, np_smp, method,                   &
+        call init_DJDS11_struct(numnod, np_smp, method,                 &
             precond_4_solver, ierr)
       end if
 !
@@ -74,7 +74,7 @@
           call init_VMGCG33_DJDS_SMP(numnod, np_smp,                    &
               precond_4_crank,  METHOD_MG, PRECOND_MG)
         else
-          call init_solver33_DJDS(numnod, np_smp, method,               &
+          call init33_DJDS_struct(numnod, np_smp, method,               &
               precond_4_crank, ierr)
         end if
       end if

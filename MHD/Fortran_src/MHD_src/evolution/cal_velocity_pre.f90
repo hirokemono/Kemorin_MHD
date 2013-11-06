@@ -180,7 +180,6 @@
 !
        call cal_sol_velo_pre_crank
 !
-!
        end subroutine cal_velo_pre_crank
 !
 ! ----------------------------------------------------------------------

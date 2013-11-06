@@ -217,6 +217,7 @@
 !
       else
         call set_djds_4_linear_fl
+        call set_new_comm_table_fl_l
       end if
 !
 !
