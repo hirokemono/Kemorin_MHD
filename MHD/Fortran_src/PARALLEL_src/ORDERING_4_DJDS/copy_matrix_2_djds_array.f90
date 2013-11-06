@@ -4,11 +4,13 @@
 !      Written by H. Matsui
 !
 !      subroutine copy_matrix_2_djds_NN
+!      subroutine s_set_DJDS_off_diag (nod1, nod2, mat_num)
 !
       module copy_matrix_2_djds_array
 !
       use m_precision
 !
+      use m_machine_parameter
       use m_geometry_parameter
       use m_crs_connect
       use m_crs_matrix
@@ -24,9 +26,9 @@
       subroutine copy_matrix_2_djds_NN
 !
       use m_matrix_data_4_djds
-      use set_DJDS_off_diag
 !
       integer(kind = kint) :: inod1, inod2, mat_num, im, i, j1, j2, k
+!
 !
       do inod1 = 1, numnod
         call s_set_DJDS_off_diag(inod1, inod1, mat_num)
@@ -68,6 +70,26 @@
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
+!
+      subroutine s_set_DJDS_off_diag (nod1, nod2, mat_num)
+!
+      use m_solver_djds
+      use set_DJDS_off_diagonal
+!
+      integer (kind = kint), intent(in) :: nod1, nod2
+      integer (kind = kint), intent(inout) :: mat_num
+!
+!
+      call s_set_DJDS_off_diagonal (internal_node, numnod, np_smp,      &
+     &    NLmax, NUmax, itotal_l, itotal_u,                             &
+     &    npLX1, npUX1, NHYP, STACKmc, NLmaxHYP, NUmaxHYP,              &
+     &    OLDtoNEW, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,                   &
+     &    indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,             &
+     &    PEon, COLORon, nod1, nod2, mat_num)
+!
+      end subroutine s_set_DJDS_off_diag
+!
+!-----------------------------------------------------------------------
 !
       subroutine copy_RH_vect_2_crs_nn
 !
