@@ -15,8 +15,9 @@
 !
       use m_precision
 !
+      use m_geometry_constants
       use m_geometry_parameter
-      use set_aiccg_boundaries
+      use m_geometry_data
 !
       implicit none
 !
@@ -28,8 +29,10 @@
 !
       subroutine set_aiccg_bc_press_nod
 !
-      use m_geometry_constants
       use m_bc_data_press
+      use m_solver_djds_MHD
+      use m_velo_matrix
+      use set_aiccg_bc_node_type
 !
       integer (kind = kint) :: iele, k0, k1, k2
 !
@@ -42,12 +45,14 @@
 !
           k1 = nod_bc2_p_id(k0)
           do k2 = 1, num_t_linear
-            call set_bc_4_press_mat(iele, k1, k2)
+            call set_bc_4_scalar_mat_type(ie(iele,k1), ie(iele,k2),     &
+     &          DJDS_fl_l, Pmat_DJDS)
           end do
 !
           k2 = nod_bc2_p_id(k0)
           do k1 = 1, num_t_linear
-            call set_bc_4_press_mat(iele, k1, k2)
+            call set_bc_4_scalar_mat_type(ie(iele,k1), ie(iele,k2),     &
+     &          DJDS_fl_l, Pmat_DJDS)
           end do
 !
         end do
@@ -60,6 +65,9 @@
       subroutine set_aiccg_bc_temp_nod
 !
       use m_bc_data_ene
+      use m_solver_djds_MHD
+      use m_temp_matrix
+      use set_aiccg_bc_node_type
 !
       integer (kind = kint) :: iele, k0, k1, k2
 !
@@ -70,12 +78,14 @@
 !
         k1 = nod_bc2_temp_id(k0)
         do k2 = 1, nnod_4_ele
-          call set_bc_4_temp_mat(iele, k1, k2)
+          call set_bc_4_scalar_mat_type(ie(iele,k1), ie(iele,k2),       &
+     &        DJDS_fluid, Tmat_DJDS)
         end do
 !
         k2 = nod_bc2_temp_id(k0)
         do k1 = 1, nnod_4_ele
-          call set_bc_4_temp_mat(iele, k1, k2)
+          call set_bc_4_scalar_mat_type(ie(iele,k1), ie(iele,k2),       &
+     &        DJDS_fluid, Tmat_DJDS)
         end do
        end do
       end if
@@ -87,6 +97,9 @@
       subroutine set_aiccg_bc_composition_nod
 !
       use m_bc_data_composition
+      use m_solver_djds_MHD
+      use m_light_element_matrix
+      use set_aiccg_bc_node_type
 !
       integer (kind = kint) :: iele, k0, k1, k2
 !
@@ -98,12 +111,14 @@
 !
           k1 = nod_bc2_composit_id(k0)
           do k2 = 1, nnod_4_ele
-            call set_bc_4_composite_mat(iele, k1, k2)
+            call set_bc_4_scalar_mat_type(ie(iele,k1), ie(iele,k2),     &
+     &          DJDS_fluid, Cmat_DJDS)
           end do
 !
           k2 = nod_bc2_composit_id(k0)
           do k1 = 1, nnod_4_ele
-            call set_bc_4_composite_mat(iele, k1, k2)
+            call set_bc_4_scalar_mat_type(ie(iele,k1), ie(iele,k2),     &
+     &          DJDS_fluid, Cmat_DJDS)
           end do
 !
         end do
@@ -115,7 +130,6 @@
 !
       subroutine set_aiccg_bc_mag_p_nod
 !
-      use m_geometry_constants
       use m_bc_data_magne_p
       use m_solver_djds_MHD
       use m_magne_matrix

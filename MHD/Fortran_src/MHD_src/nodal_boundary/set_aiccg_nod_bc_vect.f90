@@ -15,9 +15,10 @@
       use m_precision
 !
       use m_constants
-      use m_phys_constants
+      use m_geometry_constants
       use m_geometry_parameter
-      use set_aiccg_boundaries
+      use m_geometry_data
+      use m_phys_constants
 !
       implicit none
 !
@@ -31,6 +32,9 @@
       subroutine set_aiccg_bc_velo_nod
 !
       use m_bc_data_velo
+      use m_solver_djds_MHD
+      use m_velo_matrix
+      use set_aiccg_bc_node_type
 !
       integer(kind = kint) :: nd
       integer(kind = kint) :: iele, k0, k1, k2
@@ -45,12 +49,14 @@
 !
             k1 = nod_bc2_v_id(k0,nd)
             do k2 = 1, nnod_4_ele
-              call set_bc_4_velo_mat(nd, nd, iele, k1, k2)
+              call set_bc_4_vector_mat_type(nd, nd,                     &
+     &            ie(iele,k1), ie(iele,k2), DJDS_fluid, Vmat_DJDS)
             end do
 !
             k2 = nod_bc2_v_id(k0,nd)
-              do k1 = 1, nnod_4_ele
-              call set_bc_4_velo_mat(nd, nd, iele, k1, k2)
+            do k1 = 1, nnod_4_ele
+              call set_bc_4_vector_mat_type(nd, nd,                     &
+     &            ie(iele,k1), ie(iele,k2), DJDS_fluid, Vmat_DJDS)
             end do
 !
           end do
@@ -66,25 +72,28 @@
       subroutine set_aiccg_bc_velo_rot
 !
       use m_bc_data_rotate
+      use m_solver_djds_MHD
+      use m_velo_matrix
+      use set_aiccg_bc_node_type
 !
       integer (kind = kint) :: iele, k0, k1, k2
 !
 !
-       do k0 = 1, num_index_ibc_vrot
-!
+      do k0 = 1, num_index_ibc_vrot
         iele = ele_bc_vrot_id(k0)
 !
         k1 = nod_bc_vrot_id(k0)
         do k2 = 1, nnod_4_ele
-         call set_bc_4_velo_mat(ione, n_vector, iele, k1, k2)
+          call set_bc_4_vector_mat_type(ione, n_vector,                 &
+     &            ie(iele,k1), ie(iele,k2), DJDS_fluid, Vmat_DJDS)
         end do
 !
         k2 = nod_bc_vrot_id(k0)
         do k1 = 1, nnod_4_ele
-         call set_bc_4_velo_mat(ione, n_vector, iele, k1, k2)
+          call set_bc_4_vector_mat_type(ione, n_vector,                 &
+     &            ie(iele,k1), ie(iele,k2), DJDS_fluid, Vmat_DJDS)
         end do
-!
-       end do
+      end do
 !
       end subroutine set_aiccg_bc_velo_rot
 !
@@ -95,6 +104,9 @@
       subroutine set_aiccg_bc_vecp_nod
 !
       use m_bc_data_vect_p
+      use m_solver_djds_MHD
+      use m_magne_matrix
+      use set_aiccg_bc_node_type
 !
       integer(kind = kint) :: nd
       integer (kind = kint) :: iele, k0, k1, k2
@@ -109,12 +121,14 @@
 !
             k1 = nod_bc2_vp_id(k0,nd)
             do k2 = 1, nnod_4_ele
-              call set_bc_4_magne_mat(nd, nd, iele, k1, k2)
+              call set_bc_4_vector_mat_type(nd, nd,                     &
+     &            ie(iele,k1), ie(iele,k2), DJDS_entire, Bmat_DJDS)
             end do
 !
             k2 = nod_bc2_vp_id(k0,nd)
             do k1 = 1, nnod_4_ele
-              call set_bc_4_magne_mat(nd, nd, iele, k1, k2)
+              call set_bc_4_vector_mat_type(nd, nd,                     &
+     &            ie(iele,k1), ie(iele,k2), DJDS_entire, Bmat_DJDS)
             end do
 !
           end do
@@ -130,6 +144,9 @@
       subroutine set_aiccg_bc_magne_nod
 !
       use m_bc_data_magne
+      use m_solver_djds_MHD
+      use m_magne_matrix
+      use set_aiccg_bc_node_type
 !
       integer(kind = kint) :: nd
       integer (kind = kint) :: iele, k0, k1, k2
@@ -144,12 +161,14 @@
 !
             k1 = nod_bc2_b_id(k0,nd)
             do k2 = 1, nnod_4_ele
-              call set_bc_4_magne_mat(nd, nd, iele, k1, k2)
+              call set_bc_4_vector_mat_type(nd, nd,                     &
+     &            ie(iele,k1), ie(iele,k2), DJDS_entire, Bmat_DJDS)
             end do
 !
             k2 = nod_bc2_b_id(k0,nd)
             do k1 = 1, nnod_4_ele
-              call set_bc_4_magne_mat(nd, nd, iele, k1, k2)
+              call set_bc_4_vector_mat_type(nd, nd,                     &
+     &            ie(iele,k1), ie(iele,k2), DJDS_entire, Bmat_DJDS)
             end do
 !
           end do

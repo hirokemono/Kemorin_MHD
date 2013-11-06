@@ -13,12 +13,11 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
       use m_machine_parameter
+      use m_geometry_constants
+      use m_geometry_parameter
       use m_geometry_data
       use m_sorted_node
-!
-      use set_off_diagonals
 !
       implicit none
 !
@@ -146,9 +145,9 @@
               iele = iele_sort_smp(in)
               iconn = iconn_sort_smp(in)
               if (iele.ge.iele_cd_start .and. iele.le.iele_cd_end) then
-!               call set_off_diag_conduct                               &
-!     &             ( ie(iele,iconn), ie(iele,k2), mat_num )
-!               idx_4_cd_mat(in,k2) = mat_num
+!                call set_off_diag_type(numnod, internal_node,          &
+!     &              DJDS_conduct, nod1, nod2, mat_num)
+!                idx_4_cd_mat(in,k2) = mat_num
 !
                 call set_off_diag_type(numnod, internal_node,           &
      &              DJDS_entire, ie(iele,iconn), ie(iele,k2), mat_num)
@@ -174,6 +173,8 @@
 !
       use m_geometry_data_MHD
       use m_sorted_node_MHD
+      use m_solver_djds_MHD
+      use set_idx_4_mat_type
 !
       integer(kind = kint) :: nod1, nod2, mat_num, k2
       integer(kind = kint) :: iproc, iele, inum, iconn
@@ -202,7 +203,8 @@
               if (iele.ge.iele_ins_start                                &
      &          .and. iele.le.iele_ins_end) then
 
-                call set_off_diag_insulate( nod1, nod2, mat_num )
+                call set_off_diag_type(numnod, internal_node,           &
+     &              DJDS_insulator, nod1, nod2, mat_num)
                 idx_4_ins_mat(in,k2) = mat_num
 
               else
