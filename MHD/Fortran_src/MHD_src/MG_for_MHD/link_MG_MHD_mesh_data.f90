@@ -13,7 +13,7 @@
 !
       implicit none
 !
-      private :: link_first_comm_to_type, link_first_fluid_comm_to_type
+      private :: link_first_comm_to_type
       private :: link_first_ele_connect_type
 !
 !  ---------------------------------------------------------------------
@@ -24,6 +24,7 @@
 !
       subroutine s_link_MG_MHD_mesh_data
 !
+      use m_solver_djds_MHD
       use m_type_AMG_data_4_MHD
       use m_type_AMG_mesh
       use m_type_AMG_data
@@ -34,7 +35,7 @@
 !
 !
       call link_first_comm_to_type(MG_comm(0))
-      call link_first_fluid_comm_to_type(MG_comm_fl(0))
+      call link_comm_tbl_types(DJDS_comm_fl, MG_comm_fl(0))
 !
       call link_comm_tbl_types(MG_mesh(1)%mesh%nod_comm, MG_comm(1) )
       call link_comm_tbl_types(MG_MHD_mesh(1)%nod_fl_comm,              &
@@ -79,29 +80,6 @@
       MG_comm_0%item_export =>   item_export
 !
       end subroutine link_first_comm_to_type
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine link_first_fluid_comm_to_type(MG_comm_fl)
-!
-      use m_comm_table_4_MHD
-!
-      type(communication_table), intent(inout) :: MG_comm_fl
-!
-!
-      MG_comm_fl%num_neib =    neigh_pe_num_fl
-      MG_comm_fl%ntot_import = ntot_import_fl
-      MG_comm_fl%ntot_export = ntot_export_fl
-!
-      MG_comm_fl%id_neib =>       neigh_pe_data_fl
-      MG_comm_fl%num_import =>    num_import_fl
-      MG_comm_fl%istack_import => istack_import_fl
-      MG_comm_fl%item_import =>   item_import_fl
-      MG_comm_fl%num_export =>    num_export_fl
-      MG_comm_fl%istack_export => istack_export_fl
-      MG_comm_fl%item_export =>   item_export_fl
-!
-      end subroutine link_first_fluid_comm_to_type
 !
 !  ---------------------------------------------------------------------
 !

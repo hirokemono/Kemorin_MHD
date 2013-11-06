@@ -30,33 +30,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine allocate_aiccg_composit
+      subroutine allocate_aiccg_composit
 !
-       use m_geometry_parameter
-       use m_geometry_data_MHD
-       use m_solver_djds_fluid
+      use m_geometry_parameter
+      use m_geometry_data_MHD
+      use m_solver_djds_MHD
 !
-      Cmat_DJDS%num_diag =      numnod
-      Cmat_DJDS%internal_diag = internal_node
 !
-       Cmat_DJDS%istart_diag = 1
-       Cmat_DJDS%istart_l = numnod + 1
-       Cmat_DJDS%istart_u = numnod + itotal_fl_l + 1
+      call alloc_type_djds11_mat(numnod, internal_node,                 &
+     &    DJDS_fluid, Cmat_DJDS)
+      call reset_aiccg_composit
 !
-       Cmat_DJDS%num_non0 = numnod + itotal_fl_u + itotal_fl_l
-!
-       allocate(Cmat_DJDS%aiccg(0:Cmat_DJDS%num_non0))
-!
-       allocate (Cmat_DJDS%ALUG_U(internal_node) )
-       allocate (Cmat_DJDS%ALUG_L(internal_node) )
-!
-       Cmat_DJDS%D =>  Cmat_DJDS%aiccg(Cmat_DJDS%istart_diag:Cmat_DJDS%istart_l-1)
-       Cmat_DJDS%AL => Cmat_DJDS%aiccg(Cmat_DJDS%istart_l:Cmat_DJDS%istart_u-1)
-       Cmat_DJDS%AU => Cmat_DJDS%aiccg(Cmat_DJDS%istart_u:Cmat_DJDS%num_non0)
-!
-       call reset_aiccg_composit
-!
-       end subroutine allocate_aiccg_composit
+      end subroutine allocate_aiccg_composit
 !
 ! ----------------------------------------------------------------------
 !
@@ -65,7 +50,7 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
-      use m_solver_djds_fluid
+      use m_solver_djds_MHD
 !
       integer(kind = kint) :: inod, iele, in, k1
 !
@@ -78,7 +63,7 @@
       do k1 = 1, nnod_4_ele
         do iele = iele_fl_start, iele_fl_end
           inod = ie(iele,k1)
-          in = OLDtoNEW(inod)
+          in = DJDS_fluid%OLDtoNEW(inod)
           Cmat_DJDS%aiccg(in) = 0.0d0
         end do
       end do

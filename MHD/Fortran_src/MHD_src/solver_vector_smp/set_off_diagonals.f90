@@ -3,7 +3,6 @@
 !
 !      Written by Hiroaki Matsui on Oct., 2006
 !
-!      subroutine set_off_diag_fluid (nod1, nod2, mat_num)
 !      subroutine set_off_diag_conduct (nod1, nod2, mat_num)
 !      subroutine set_off_diag_insulate (nod1, nod2, mat_num)
 !
@@ -25,25 +24,6 @@
 !-----------------------------------------------------------------------
 !
       contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_off_diag_fluid (nod1, nod2, mat_num)
-!
-      use m_solver_djds_fluid
-!
-      integer (kind = kint), intent(in) :: nod1, nod2
-      integer (kind = kint), intent(inout) :: mat_num
-!
-!
-      call s_set_DJDS_off_diagonal (internal_node, numnod, np_smp,      &
-     &    NLmax, NUmax, itotal_fl_l, itotal_fl_u,                       &
-     &    npLX1, npUX1, NHYP, STACKmc, NLmaxHYP, NUmaxHYP,              &
-     &    OLDtoNEW, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,                   &
-     &    indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,             &
-     &    PEon, COLORon, nod1, nod2, mat_num)
-!
-      end subroutine set_off_diag_fluid
 !
 !-----------------------------------------------------------------------
 !

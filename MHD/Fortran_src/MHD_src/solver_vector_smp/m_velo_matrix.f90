@@ -38,30 +38,15 @@
 !
       subroutine allocate_aiccg_velo
 !
-       use m_geometry_parameter
-       use m_solver_djds_fluid
+      use m_geometry_parameter
+      use m_solver_djds_MHD
 !
 !
-       Vmat_DJDS%num_diag =      numnod
-       Vmat_DJDS%internal_diag = internal_node
+      call alloc_type_djds33_mat(numnod, internal_node,                 &
+     &    DJDS_fluid, Vmat_DJDS)
+      call reset_aiccg_velo
 !
-       Vmat_DJDS%istart_diag = 1
-       Vmat_DJDS%istart_l =    9*numnod + 1
-       Vmat_DJDS%istart_u =    9*(numnod+itotal_fl_l) + 1
-!
-       Vmat_DJDS%num_non0 =    9 * (numnod+itotal_fl_u+itotal_fl_l)
-!
-       allocate(Vmat_DJDS%aiccg(-8:Vmat_DJDS%num_non0) )
-       allocate(Vmat_DJDS%ALUG_U(9*internal_node) )
-       allocate(Vmat_DJDS%ALUG_L(9*internal_node) )
-!
-       Vmat_DJDS%D =>  Vmat_DJDS%aiccg(Vmat_DJDS%istart_diag:Vmat_DJDS%istart_l-1)
-       Vmat_DJDS%AL => Vmat_DJDS%aiccg(Vmat_DJDS%istart_l:Vmat_DJDS%istart_u-1)
-       Vmat_DJDS%AU => Vmat_DJDS%aiccg(Vmat_DJDS%istart_u:Vmat_DJDS%num_non0)
-!
-       call reset_aiccg_velo
-!
-       end subroutine allocate_aiccg_velo
+      end subroutine allocate_aiccg_velo
 !
 ! ----------------------------------------------------------------------
 !
@@ -119,7 +104,7 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
-      use m_solver_djds_fluid
+      use m_solver_djds_MHD
 !
       integer (kind = kint) :: inod, iele, k1, in
 !
@@ -135,7 +120,7 @@
       do k1 = 1, nnod_4_ele
         do iele = iele_fl_start, iele_fl_end
           inod = ie(iele,k1)
-          in = OLDtoNEW(inod)
+          in = DJDS_fluid%OLDtoNEW(inod)
           Vmat_DJDS%aiccg(in*9-8) = 0.0d0
           Vmat_DJDS%aiccg(in*9-4) = 0.0d0
           Vmat_DJDS%aiccg(in*9  ) = 0.0d0

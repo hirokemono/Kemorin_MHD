@@ -1,12 +1,19 @@
+!>@file   const_comm_table_fluid.f90
+!!@brief  module const_comm_table_fluid
+!!
+!!@author H. Matsui
+!!@date     Programmed by H.Matsui in July, 2002
+!!@n     Modified by H. Matsui in Sep., 2007
+!!@n     Modified by H. Matsui in Apr., 2008
+!!@n     Modified by H. Matsui in Dec., 2008
+!!@n     Modified by H. Matsui in Dec., 2008
 !
-!      module const_comm_table_fluid
-!
-!     Programmed by H.Matsui on July, 2002
-!     Modified by H. Matsui on Sep., 2007
-!     Modified by H. Matsui on Apr., 2008
-!     Modified by H. Matsui on Dec., 2008
-!
-!      subroutine s_const_comm_table_fluid
+!>     Construct communication table for fluid region
+!!
+!!@verbatim
+!!      subroutine s_const_comm_table_fluid
+!!      subroutine deallocate_comm_table_fluid
+!!@endverbatim
 !
       module const_comm_table_fluid
 !
@@ -23,13 +30,14 @@
       subroutine s_const_comm_table_fluid
 !
       use calypso_mpi
+      use t_comm_table
       use m_machine_parameter
       use m_control_parameter
       use m_nod_comm_table
-      use m_comm_table_4_MHD
       use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
+      use m_solver_djds_MHD
       use set_comm_table_fluid
       use solver_SR_int
 !
@@ -50,39 +58,48 @@
 !
 !
       call count_reduced_neib_domain(num_neib, id_neib,                 &
-     &    neigh_pe_num_fl)
+     &    DJDS_comm_fl%num_neib)
 !
-      call allocate_comm_stack_fluid
+      call allocate_type_comm_tbl_num(DJDS_comm_fl)
 !
       call set_reduced_neib_domain(num_neib, id_neib,                   &
-     &    neigh_pe_num_fl, neigh_pe_data_fl)
+     &    DJDS_comm_fl%num_neib, DJDS_comm_fl%id_neib)
 !
-      call count_reduced_comm_stack(num_neib, ntot_import, id_neib,     &
-     &    istack_import, item_import, neigh_pe_num_fl, ntot_import_fl, &
-     &    num_import_fl, istack_import_fl)
-      call count_reduced_comm_stack(num_neib, ntot_export, id_neib,     &
-     &    istack_export, item_export, neigh_pe_num_fl, ntot_export_fl,  &
-     &    num_export_fl, istack_export_fl)
+      call count_reduced_comm_stack                                     &
+     &   (num_neib, ntot_import, id_neib, istack_import, item_import,   &
+     &    DJDS_comm_fl%num_neib, DJDS_comm_fl%ntot_import,              &
+     &    DJDS_comm_fl%num_import, DJDS_comm_fl%istack_import)
+      call count_reduced_comm_stack                                     &
+     &   (num_neib, ntot_export, id_neib, istack_export, item_export,   &
+     &    DJDS_comm_fl%num_neib, DJDS_comm_fl%ntot_export,              &
+     &    DJDS_comm_fl%num_export, DJDS_comm_fl%istack_export)
 !
-      call allocate_comm_table_fluid
+      call allocate_type_comm_tbl_item(DJDS_comm_fl)
 !
-      call set_reduced_comm_item(num_neib, ntot_import, id_neib,        &
-     &    istack_import, item_import, neigh_pe_num_fl,                  &
-     &    ntot_import_fl, istack_import_fl, item_import_fl)
-      call set_reduced_comm_item(num_neib, ntot_export, id_neib,        &
-     &    istack_export, item_export, neigh_pe_num_fl,                  &
-     &    ntot_export_fl, istack_export_fl, item_export_fl)
+      call set_reduced_comm_item                                        &
+     &   (num_neib, ntot_import, id_neib, istack_import, item_import,   &
+     &    DJDS_comm_fl%num_neib, DJDS_comm_fl%ntot_import,              &
+     &    DJDS_comm_fl%istack_import, DJDS_comm_fl%item_import)
+      call set_reduced_comm_item                                        &
+     &   (num_neib, ntot_export, id_neib, istack_export, item_export,   &
+     &    DJDS_comm_fl%num_neib, DJDS_comm_fl%ntot_export,              &
+     &    DJDS_comm_fl%istack_export, DJDS_comm_fl%item_export)
 !
       if (iflag_debug.ge.2) then
-        write(*,*)'neigh_pe_num_fl', my_rank, num_neib, neigh_pe_num_fl 
-        write(*,*)'ntot_import_fl',  my_rank, ntot_import, ntot_import_fl
-        write(*,*)'ntot_export_fl',  my_rank, ntot_export, ntot_export_fl
+        write(*,*)'DJDS_comm_fl%num_neib',                              &
+     &       my_rank, num_neib, DJDS_comm_fl%num_neib 
+        write(*,*)'DJDS_comm_fl%ntot_import',                           &
+     &       my_rank, ntot_import, DJDS_comm_fl%ntot_import
+        write(*,*)'DJDS_comm_fl%ntot_export',                           &
+     &       my_rank, ntot_export, DJDS_comm_fl%ntot_export
         write(*,*)'id_neib',  my_rank, id_neib
-        write(*,*)'neigh_pe_data_fl',  my_rank, neigh_pe_data_fl
+        write(*,*)'DJDS_comm_fl%id_neib', my_rank, DJDS_comm_fl%id_neib
         write(*,*)'istack_import',  my_rank, istack_import
-        write(*,*)'istack_import_fl',  my_rank, istack_import_fl
+        write(*,*)'DJDS_comm_fl%istack_import',                         &
+     &       my_rank, DJDS_comm_fl%istack_import
         write(*,*)'istack_export',  my_rank, istack_export
-        write(*,*)'istack_export_fl',  my_rank, istack_export_fl
+        write(*,*)'DJDS_comm_fl%istack_export',                         &
+     &       my_rank, DJDS_comm_fl%istack_export
       end if
 !
 !       write(50+my_rank,*) 'i, globalnodid(i), iflag_nod(i)'
@@ -103,5 +120,17 @@
       end subroutine s_const_comm_table_fluid
 !
 !------------------------------------------------------------------
+!
+      subroutine deallocate_comm_table_fluid
+!
+      use t_comm_table
+      use m_solver_djds_MHD
+!
+!
+      call deallocate_type_comm_tbl(DJDS_comm_fl)
+!
+      end subroutine deallocate_comm_table_fluid
+!
+!  ---------------------------------------------------------------------
 !
       end module const_comm_table_fluid

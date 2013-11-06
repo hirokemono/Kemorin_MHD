@@ -5,7 +5,7 @@
 !
 !      subroutine precond_djds_press
 !      subroutine precond_djds_temp
-!      subroutine precond_djds_d_scalar
+!      subroutine precond_djds_composition
 !      subroutine precond_djds_mag_potential
 !
       module precond_djds_scalars
@@ -16,8 +16,6 @@
       use m_machine_parameter
       use m_geometry_parameter
       use m_iccg_parameter
-!
-      use preconditioning_DJDS11
 !
       implicit none
 !
@@ -32,6 +30,8 @@
       use m_solver_djds_linear_fl
       use m_velo_matrix
 !
+      use preconditioning_DJDS11
+!
 !C
 !C== PRECONDITIONING
 !
@@ -45,52 +45,45 @@
      &          Pmat_DJDS%AL, Pmat_DJDS%ALUG_L, Pmat_DJDS%ALUG_U,       &
      &          precond_4_solver, sigma_diag)
 !
-!
       end subroutine precond_djds_press
 !
 ! ----------------------------------------------------------------------
 !
       subroutine precond_djds_temp
 !
-      use m_solver_djds_fluid
+      use m_solver_djds_MHD
       use m_temp_matrix
+!
+      use solver_DJDS11_struct
 !
 !C
 !C== PRECONDITIONING
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'precond: ', trim(precond_4_solver),' ', sigma_diag
-      call precond_DJDS11                                               &
-     &         (internal_node, numnod, NLmax, itotal_fl_l, NHYP,        &
-     &          np_smp, inter_smp_stack, STACKmc, NLmaxHYP, IVECT,      &
-     &          OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, LtoU,                 &
-     &          Tmat_DJDS%D, indexDJDS_l, itemDJDS_L,                   &
-     &          Tmat_DJDS%AL, Tmat_DJDS%ALUG_L, Tmat_DJDS%ALUG_U,       &
-     &          precond_4_solver, sigma_diag)
+      call precond_DJDS11_struct(np_smp, DJDS_fluid, Tmat_DJDS,         &
+     &    precond_4_solver, sigma_diag)
 !
       end subroutine precond_djds_temp
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine precond_djds_d_scalar
+      subroutine precond_djds_composition
 !
-      use m_solver_djds_fluid
+      use m_solver_djds_MHD
       use m_light_element_matrix
+!
+      use solver_DJDS11_struct
 !
 !C
 !C== PRECONDITIONING
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'precond: ', trim(precond_4_solver),' ', sigma_diag
-      call precond_DJDS11                                               &
-     &         (internal_node, numnod, NLmax, itotal_fl_l, NHYP,        &
-     &          np_smp, inter_smp_stack, STACKmc, NLmaxHYP, IVECT,      &
-     &          OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, LtoU,                 &
-     &          Cmat_DJDS%D, indexDJDS_l, itemDJDS_L,                   &
-     &          Cmat_DJDS%AL, Cmat_DJDS%ALUG_L, Cmat_DJDS%ALUG_U,       &
-     &          precond_4_solver, sigma_diag)
+      call precond_DJDS11_struct(np_smp, DJDS_fluid, Cmat_DJDS,         &
+     &    precond_4_solver, sigma_diag)
 !
-      end subroutine precond_djds_d_scalar
+      end subroutine precond_djds_composition
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -100,6 +93,8 @@
       use m_solver_djds_MHD
       use m_magne_matrix
       use solver_DJDS11_struct
+!
+      use preconditioning_DJDS11
 !
 !C
 !C== PRECONDITIONING

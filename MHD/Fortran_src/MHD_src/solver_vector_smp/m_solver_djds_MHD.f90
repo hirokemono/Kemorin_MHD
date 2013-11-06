@@ -22,7 +22,20 @@
 !>      DJDS ordering structures for linear entire domain
       type(DJDS_ordering_table), save :: DJDS_linear
 !>      Communication table structure for entire domain
-      type(communication_table), target :: DJDS_comm_etr
+      type(communication_table), save :: DJDS_comm_etr
+!
+!>      DJDS ordering structures for fluid region
+      type(DJDS_ordering_table), save :: DJDS_fluid
+!>      DJDS ordering structures for linear fluid region
+      type(DJDS_ordering_table), save :: DJDS_fl_l
+!>      Communication table structure for fluid
+      type(communication_table), save :: DJDS_comm_fl
+!
+!>      Communication table structure for conductor
+      type(communication_table), save :: DJDS_comm_cd
+!
+!>      Communication table structure for insulator
+      type(communication_table), save :: DJDS_comm_ins
 !
 !>      Matrix connectivity with CRS format
       type(CRS_matrix_connect), save :: MHD_CRS

@@ -1,8 +1,3 @@
-!
-!     module m_matrix_data_4_djds
-!
-!    Written by Kemorin
-!
 !>@file   m_matrix_data_4_djds.f90
 !!@brief  module m_matrix_data_4_djds
 !!

@@ -10,7 +10,7 @@
 !      subroutine write_djds_mat_magne
 !      subroutine write_djds_mat_mag_p
 !      subroutine write_djds_mat_temp
-!      subroutine write_djds_mat_d_scalar
+!      subroutine write_djds_mat_composition
 !
       module   write_djds_mat_MHD
 !
@@ -65,7 +65,7 @@
       end if
 !
       if ( iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call write_djds_mat_d_scalar
+        call write_djds_mat_composition
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
@@ -85,8 +85,7 @@
 !
       subroutine write_djds_mat_velo
 !
-      use m_comm_table_4_MHD
-      use m_solver_djds_fluid
+      use m_solver_djds_MHD
       use m_velo_matrix
 !
       integer(kind = kint) :: i
@@ -109,18 +108,10 @@
       else
         call add_int_suffix(my_rank, fhead_velo_mat, fname)
         open(id_mat_file, file=fname)
-        call write_djds_mat33_comp                                      &
-     &     (id_mat_file, internal_node, numnod, NLmax, NUmax,           &
-     &     itotal_fl_l, itotal_fl_u, (NLmax*np_smp), (NUmax*np_smp),    &
-     &     NHYP, np_smp, NEWtoOLD, Vmat_DJDS%D,                         &
-     &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
-     &     Vmat_DJDS%AL, Vmat_DJDS%AU,                                  &
-     &     Vmat_DJDS%ALUG_L, Vmat_DJDS%ALUG_U)
-        call write_djds_mat_connects                                    &
-     &     (id_mat_file, numnod, np_smp, NHYP, inter_smp_stack,         &
-     &     STACKmc, NLmaxHYP, NUmaxHYP, IVECT,                          &
-     &     OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U, LtoU,     &
-     &     neigh_pe_num_fl, istack_export_fl, NOD_EXPORT_NEW_fl)
+        call write_djds_mat33_comp_type(id_mat_file, np_smp,            &
+     &      DJDS_fluid, Vmat_DJDS)
+        call write_djds_mat_connect_type(id_mat_file, np_smp,           &
+     &      DJDS_comm_fl, DJDS_fluid, Vmat_DJDS)
         close(id_mat_file)
       end if
 !
@@ -130,7 +121,7 @@
 !
       subroutine write_djds_mat_press
 !
-      use m_comm_table_4_MHD
+      use m_solver_djds_MHD
       use m_solver_djds_linear_fl
       use m_velo_matrix
 !
@@ -165,7 +156,8 @@
      &     (id_mat_file, numnod, np_smp, NHYP1, inter_smp_stack,        &
      &     STACKmc1, NLmaxHYP1, NUmaxHYP1, IVECT1,                      &
      &     OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U, NEWtoOLD_DJDS1_U, LtoU1, &
-     &     neigh_pe_num_fl, istack_export_fl, NOD_EXPORT_NEW_fl1)
+     &     DJDS_comm_fl%num_neib, DJDS_comm_fl%istack_export,           &
+     &     NOD_EXPORT_NEW_fl1)
         close(id_mat_file)
       end if
 !
@@ -201,7 +193,7 @@
         call add_int_suffix(my_rank, fhead_magne_mat, fname)
         open(id_mat_file, file=fname)
         call write_djds_mat33_comp_type(id_mat_file, np_smp,            &
-&           DJDS_entire, Bmat_DJDS)
+     &      DJDS_entire, Bmat_DJDS)
         call write_djds_mat_connect_type(id_mat_file, np_smp,           &
      &      DJDS_comm_etr, DJDS_entire, Bmat_DJDS)
         close(id_mat_file)
@@ -251,8 +243,7 @@
 !
       subroutine write_djds_mat_temp
 !
-      use m_comm_table_4_MHD
-      use m_solver_djds_fluid
+      use m_solver_djds_MHD
       use m_temp_matrix
 !
       integer(kind = kint) :: i
@@ -275,18 +266,10 @@
       else
         call add_int_suffix(my_rank, fhead_temp_mat, fname)
         open(id_mat_file, file=fname)
-        call write_djds_mat11_comp                                      &
-     &     (id_mat_file, internal_node, numnod, NLmax, NUmax,           &
-     &     itotal_fl_l, itotal_fl_u, (NLmax*np_smp), (NUmax*np_smp),    &
-     &     NHYP, np_smp, NEWtoOLD, Tmat_DJDS%D,                         &
-     &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
-     &     Tmat_DJDS%AL, Tmat_DJDS%AU,                                  &
-     &     Tmat_DJDS%ALUG_L, Tmat_DJDS%ALUG_U)
-        call write_djds_mat_connects                                    &
-     &     (id_mat_file, numnod, np_smp, NHYP, inter_smp_stack,         &
-     &     STACKmc, NLmaxHYP, NUmaxHYP, IVECT,                          &
-     &     OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U, LtoU,     &
-     &     neigh_pe_num_fl, istack_export_fl, NOD_EXPORT_NEW_fl)
+        call write_djds_mat11_comp_type(id_mat_file, np_smp,            &
+     &      DJDS_fluid, Tmat_DJDS)
+        call write_djds_mat_connect_type(id_mat_file, np_smp,           &
+     &      DJDS_comm_fl, DJDS_fluid, Tmat_DJDS)
         close(id_mat_file)
       end if
 !
@@ -294,10 +277,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_djds_mat_d_scalar
+      subroutine write_djds_mat_composition
 !
-      use m_comm_table_4_MHD
-      use m_solver_djds_fluid
+      use m_solver_djds_MHD
       use m_light_element_matrix
 !
       integer(kind = kint) :: i
@@ -320,22 +302,14 @@
       else
         call add_int_suffix(my_rank, fhead_dscalar_mat, fname)
         open(id_mat_file, file=fname)
-        call write_djds_mat11_comp                                      &
-     &     (id_mat_file, internal_node, numnod, NLmax, NUmax,           &
-     &     itotal_fl_l, itotal_fl_u, (NLmax*np_smp), (NUmax*np_smp),    &
-     &     NHYP, np_smp,NEWtoOLD, Cmat_DJDS%D,                          &
-     &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
-     &     Cmat_DJDS%AL, Cmat_DJDS%AU,                                  &
-     &     Cmat_DJDS%ALUG_L, Cmat_DJDS%ALUG_U)
-        call write_djds_mat_connects                                    &
-     &     (id_mat_file, numnod, np_smp, NHYP, inter_smp_stack,         &
-     &     STACKmc, NLmaxHYP, NUmaxHYP, IVECT,                          &
-     &     OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U, LtoU,     &
-     &     neigh_pe_num_fl, istack_export_fl, NOD_EXPORT_NEW_fl)
+        call write_djds_mat11_comp_type(id_mat_file, np_smp,            &
+     &      DJDS_fluid, Cmat_DJDS)
+        call write_djds_mat_connect_type(id_mat_file, np_smp,           &
+     &      DJDS_comm_fl, DJDS_fluid, Cmat_DJDS)
         close(id_mat_file)
       end if
 !
-      end subroutine write_djds_mat_d_scalar
+      end subroutine write_djds_mat_composition
 !
 ! ----------------------------------------------------------------------
 !

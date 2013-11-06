@@ -126,9 +126,9 @@
 !
        subroutine allocate_new_comm_table_fl_l
 !
-       use m_comm_table_4_MHD
+       use m_solver_djds_MHD
 !
-       allocate  ( NOD_EXPORT_NEW_fl1(ntot_export_fl) )
+       allocate  ( NOD_EXPORT_NEW_fl1(DJDS_comm_fl%ntot_export) )
        NOD_EXPORT_NEW_fl1 = 0
 !
        end subroutine allocate_new_comm_table_fl_l
@@ -146,47 +146,51 @@
        subroutine set_djds_4_linear_fl
 !
        use m_geometry_parameter
-       use m_solver_djds_fluid
+       use m_solver_djds_MHD
+!
+!
+       itotal1_fl_u = DJDS_fluid%itotal_u
+       itotal1_fl_l = DJDS_fluid%itotal_l
 !
        call allocate_4_RCM_fl_l
 !
-       OLDtoNEW1= OLDtoNEW
-       NEWtoOLD1= NEWtoOLD
+       OLDtoNEW1= DJDS_fluid%OLDtoNEW
+       NEWtoOLD1= DJDS_fluid%NEWtoOLD
 !
-       NHYP1 = NHYP
+       NHYP1 = DJDS_fluid%NHYP
 !
        call allocate_number_4_djds_fl_l
 !
-       IVECT1   = IVECT
-       NLmaxHYP1= NLmaxHYP
-       NUmaxHYP1= NUmaxHYP
+       IVECT1   = DJDS_fluid%IVECT
+       NLmaxHYP1= DJDS_fluid%NLmaxHYP
+       NUmaxHYP1= DJDS_fluid%NUmaxHYP
 !
-       NLmax1 = NLmax
-       NUmax1 = NUmax
-       npLX1_1 = npLX1
-       npUX1_1 = npUX1
+       NLmax1 = DJDS_fluid%NLmax
+       NUmax1 = DJDS_fluid%NUmax
+       npLX1_1 = DJDS_fluid%npLX1
+       npUX1_1 = DJDS_fluid%npUX1
 !
        call allocate_lists_4_DJDS_fl_l
 !
-       indexDJDS1_L= indexDJDS_L
-       indexDJDS1_U= indexDJDS_U
+       indexDJDS1_L= DJDS_fluid%indexDJDS_L
+       indexDJDS1_U= DJDS_fluid%indexDJDS_U
 !
-       NEWtoOLD_DJDS1_L= NEWtoOLD_DJDS_L
-       NEWtoOLD_DJDS1_U= NEWtoOLD_DJDS_U
-       OLDtoNEW_DJDS1_L= OLDtoNEW_DJDS_L
-       OLDtoNEW_DJDS1_U= OLDtoNEW_DJDS_U
-       LtoU1 = LtoU
+       NEWtoOLD_DJDS1_L= DJDS_fluid%NEWtoOLD_DJDS_L
+       NEWtoOLD_DJDS1_U= DJDS_fluid%NEWtoOLD_DJDS_U
+       OLDtoNEW_DJDS1_L= DJDS_fluid%OLDtoNEW_DJDS_L
+       OLDtoNEW_DJDS1_U= DJDS_fluid%OLDtoNEW_DJDS_U
+       LtoU1 = DJDS_fluid%LtoU
 !
-       STACKmcG1 = STACKmcG
-       STACKmc1 = STACKmc
+       STACKmcG1 = DJDS_fluid%STACKmcG
+       STACKmc1 = DJDS_fluid%STACKmc
 !
-       PEon1 = PEon
-       COLORon1 = COLORon
+       PEon1 = DJDS_fluid%PEon
+       COLORon1 = DJDS_fluid%COLORon
 !
        call allocate_address_4_DJDS_fl_l
 !
-       itemDJDS1_L = itemDJDS_L
-       itemDJDS1_U = itemDJDS_U
+       itemDJDS1_L = DJDS_fluid%itemDJDS_L
+       itemDJDS1_U = DJDS_fluid%itemDJDS_U
 !
        end subroutine set_djds_4_linear_fl
 !

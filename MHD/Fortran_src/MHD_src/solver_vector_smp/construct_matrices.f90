@@ -24,10 +24,10 @@
       subroutine set_data_4_const_matrices
 !
       use m_geometry_constants
+
       use m_geometry_parameter
       use t_solver_djds
       use m_solver_djds_MHD
-      use m_solver_djds_fluid
 !      use m_solver_djds_conduct
 !      use m_solver_djds_insulate
       use m_solver_djds_linear_fl
@@ -44,7 +44,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'deallocation work arrays'
       call dealloc_type_4_djds_table(DJDS_entire)
-      call deallocate_4_djds_table_fl
+      call dealloc_type_4_djds_table(DJDS_fluid)
 !      call deallocate_4_djds_table_cd
 !      call deallocate_4_djds_table_ins
 !

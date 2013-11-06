@@ -3,7 +3,7 @@
 !!
 !!@author H. Matsui
 !!@date Programmed in Dec., 2002
-!!@date Modified in Nov., 2013
+!!@n Modified in Nov., 2013
 !
 !>     DJDS matrix for velocity
 !!

@@ -50,7 +50,7 @@
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call precond_djds_d_scalar
+        call precond_djds_composition
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &

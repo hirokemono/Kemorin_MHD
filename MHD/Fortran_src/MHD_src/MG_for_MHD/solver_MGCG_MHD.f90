@@ -1,16 +1,20 @@
+!>@file   solver_MGCG_MHD.f90
+!!@brief  module solver_MGCG_MHD
+!!
+!!@author H. Matsui
+!!@date Programmed in Apr., 2008
+!!@date Modified in Nov., 2013
 !
-!     module   solver_MGCG_MHD
-!
-!     Written by H. Matsui on Apr., 2008
-!
-!      subroutine init_MGCG_MHD
-!
-!      subroutine solver_MGCG_velo
-!      subroutine solver_MGCG_press
-!      subroutine solver_MGCG_magne
-!      subroutine solver_MGCG_magne_p
-!      subroutine solver_MGCG_temp
-!      subroutine solver_MGCG_d_scalar
+!>@brief  Wrapper for linear solvers for MHD dynmamo
+!!
+!!@verbatim
+!!      subroutine solver_MGCG_velo
+!!      subroutine solver_MGCG_press
+!!      subroutine solver_MGCG_magne
+!!      subroutine solver_MGCG_magne_p
+!!      subroutine solver_MGCG_temp
+!!      subroutine solver_MGCG_d_scalar
+!!@endverbatim
 !
       module   solver_MGCG_MHD
 !
@@ -82,10 +86,9 @@
 !
       subroutine solver_MGCG_velo
 !
-      use m_comm_table_4_MHD
-      use m_solver_djds_fluid
+      use m_solver_djds_MHD
       use m_velo_matrix
-      use solver33_DJDS
+      use solver_DJDS33_struct
       use solver_VMGCG33_DJDS_SMP
 !
       integer(kind = kint) :: ierr
@@ -110,19 +113,10 @@
      &      eps_4_velo_crank, EPS_MG,                                   &
      &      precond_4_crank, METHOD_MG, PRECOND_MG, ierr)
       else
-        call solve33_DJDS_kemo                                          &
-     &     (internal_node, numnod, NLmax, NUmax,                        &
-     &     itotal_fl_l, itotal_fl_u, NHYP, np_smp, inter_smp_stack,     &
-     &     STACKmc, NLmaxHYP, NUmaxHYP, IVECT, NEWtoOLD,                &
-     &     OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U, LtoU,     &
-     &     Vmat_DJDS%D, b_vec(1), x_vec(1),                             &
-     &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
-     &     Vmat_DJDS%AL, Vmat_DJDS%AU,                                  &
-     &     Vmat_DJDS%ALUG_L, Vmat_DJDS%ALUG_U, eps_4_velo_crank,        &
-     &     itr, ierr, neigh_pe_num_fl, neigh_pe_data_fl,                &
-     &     istack_import_fl, item_import_fl,                            &
-     &     istack_export_fl, NOD_EXPORT_NEW_fl,                         &
-     &     method_4_velo, precond_4_crank, itr_res)
+        call solve33_DJDS_struct(np_smp, DJDS_comm_fl, DJDS_fluid,      &
+     &      Vmat_DJDS, numnod, b_vec(1), x_vec(1),                      &
+     &      method_4_velo, precond_4_crank, ierr,                       &
+     &      eps_4_velo_crank, itr, itr_res)
       end if
 !
       call end_eleps_time(5)
@@ -136,7 +130,7 @@
 !
       subroutine solver_MGCG_press
 !
-      use m_comm_table_4_MHD
+      use m_solver_djds_MHD
       use m_solver_djds_linear_fl
       use m_velo_matrix
       use solver_DJDS
@@ -171,9 +165,9 @@
      &     indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,        &
      &     Pmat_DJDS%AL, Pmat_DJDS%AU,                                  &
      &     Pmat_DJDS%ALUG_L, Pmat_DJDS%ALUG_U, eps, itr, ierr,          &
-     &     neigh_pe_num_fl, neigh_pe_data_fl,                           &
-     &     istack_import_fl, item_import_fl,                            &
-     &     istack_export_fl, NOD_EXPORT_NEW_fl1,                        &
+     &     DJDS_comm_fl%num_neib, DJDS_comm_fl%id_neib,                 &
+     &     DJDS_comm_fl%istack_import, DJDS_comm_fl%item_import,        &
+     &     DJDS_comm_fl%istack_export, NOD_EXPORT_NEW_fl1,              &
      &     method_4_solver, precond_4_solver, itr_res)
       end if
 !
@@ -275,12 +269,10 @@
 !
       subroutine solver_MGCG_temp
 !
-      use m_comm_table_4_MHD
-      use m_solver_djds_fluid
+      use m_solver_djds_MHD
       use m_temp_matrix
-      use solver_DJDS
+      use solver_DJDS11_struct
       use solver_VMGCG11_DJDS_SMP
-!      use check_DJDS_ordering
 !      use solver_CG
 !
       integer(kind = kint) :: ierr
@@ -294,30 +286,15 @@
       call start_eleps_time(5)
       ierr = i_debug
 !
-!       call s_check_DJDS_ordering                                      &
-!     &    (internal_node ,numnod, NLmax, NUmax,                        &
-!     &     itotal_fl_l, itotal_fl_u, (NLmax*np_smp), (NUmax*np_smp),   &
-!     &     NHYP, np_smp, inter_smp_stack, STACKmc, NLmaxHYP, NUmaxHYP, &
-!     &     NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U,&
-!     &     LtoU, indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,     &
-!     &     my_rank)
-!     
-!       call reverse_DJDS_matrix                                        &
-!     &    (internal_node, numnod, NLmax, NUmax,                        &
-!     &     itotal_fl_l, itotal_fl_u, (NLmax*np_smp), (NUmax*np_smp),   &
-!     &     NHYP, np_smp, inter_smp_stack, STACKmc, NLmaxHYP, NUmaxHYP, &
-!     &     NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U,&
-!     &     LtoU, indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,     &
-!     &     Tmat_DJDS%D, Tmat_DJDS%AL, Tmat_DJDS%AU, my_rank)
 !      call CG                                                          &
 !     &   ( internal_node, numnod, ntot_l, ntot_u,                      &
 !     &     d_crs, al_crs, istack_l_crs, item_l_crs, au_crs,            &
 !     &     istack_u_crs, item_u_crs, b_vec(1), x_vec(1),               &
 !     &     precond_4_solver,1.0d0, 1.0d0, eps_4_temp_crank,            &
 !     &     itr, ierr, my_rank,                                         &
-!     &     neigh_pe_num_fl, neigh_pe_data_fl,                          &
-!     &     istack_import_fl, item_import_fl,                           &
-!     &     istack_export_fl, item_export_fl, 1)
+!     &     DJDS_comm_fl%num_neib, DJDS_comm_fl%id_neib,                &
+!     &     DJDS_comm_fl%istack_import, DJDS_comm_fl%item_import,       &
+!     &     DJDS_comm_fl%istack_export, DJDS_comm_fl%item_export, 1)
 !       call deallocate_check_djds_array
 !
       if ( ((method(1:1).eq.'M').or.(method(1:1).eq.'m')) .and.         &
@@ -330,19 +307,10 @@
      &      eps_4_temp_crank, EPS_MG, precond_4_solver,                 &
      &      METHOD_MG, PRECOND_MG, ierr)
       else
-        call solve_DJDS_kemo                                            &
-     &     (internal_node, numnod, NLmax, NUmax,                        &
-     &      itotal_fl_l, itotal_fl_u, NHYP, np_smp, inter_smp_stack,    &
-     &      STACKmc, NLmaxHYP, NUmaxHYP, IVECT, NEWtoOLD,               &
-     &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U, LtoU,    &
-     &      Tmat_DJDS%D, b_vec(1), x_vec(1),                            &
-     &      indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,           &
-     &      Tmat_DJDS%AL, Tmat_DJDS%AU,                                 &
-     &      Tmat_DJDS%ALUG_L, Tmat_DJDS%ALUG_U, eps_4_temp_crank,       &
-     &      itr, ierr, neigh_pe_num_fl, neigh_pe_data_fl,               &
-     &      istack_import_fl, item_import_fl,                           &
-     &      istack_export_fl, NOD_EXPORT_NEW_fl,                        &
-     &      method_4_solver, precond_4_solver, itr_res)
+        call solve_DJDS11_struct(np_smp, DJDS_comm_fl, DJDS_fluid,      &
+     &      Tmat_DJDS, numnod, b_vec(1), x_vec(1),                      &
+     &      method_4_solver, precond_4_solver, ierr, eps_4_temp_crank,  &
+     &      itr, itr_res)
       end if
 !
       call end_eleps_time(5)
@@ -356,12 +324,10 @@
 !
       subroutine solver_MGCG_d_scalar
 !
-      use m_comm_table_4_MHD
-      use m_solver_djds_fluid
+      use m_solver_djds_MHD
       use m_light_element_matrix
-      use solver_DJDS
+      use solver_DJDS11_struct
       use solver_VMGCG11_DJDS_SMP
-!      use check_DJDS_ordering
 !
       integer(kind = kint) :: ierr
 !
@@ -379,21 +345,6 @@
 !        write(50+my_rank,*) inod, b_vec(inod), x_vec(inod)
 !       end do
 !
-!       call s_check_DJDS_ordering(internal_node, numnod,               &
-!     &      NLmax, NUmax, itotal_fl_l, itotal_fl_u,                    &
-!     &      (NLmax*np_smp), (NUmax*np_smp), NHYP, np_smp,              &
-!     &      inter_smp_stack, STACKmc, NLmaxHYP, NUmaxHYP, NEWtoOLD,    &
-!     &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U,         &
-!     &      LtoU, indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,    &
-!     &      my_rank)
-!       call reverse_DJDS_matrix(internal_node, numnod,                 &
-!     &      NLmax, NUmax, itotal_fl_l, itotal_fl_u,                    &
-!     &      (NLmax*np_smp), (NUmax*np_smp), NHYP, np_smp,              &
-!     &      inter_smp_stack, STACKmc, NLmaxHYP, NUmaxHYP, NEWtoOLD,    &
-!     &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U,         &
-!     &      LtoU, indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,    &
-!     &      Cmat_DJDS%D, Cmat_DJDS%AL, Cmat_DJDS%AU, my_rank)
-!
       if ( ((method(1:1).eq.'M').or.(method(1:1).eq.'m')) .and.         &
      &     ((method(2:2).eq.'G').or.(method(2:2).eq.'g')) .and.         &
      &     ((method(3:3).eq.'C').or.(method(3:3).eq.'c')) .and.         &
@@ -404,19 +355,10 @@
      &      eps_4_d_scalar_crank, EPS_MG, precond_4_solver,             &
      &      METHOD_MG, PRECOND_MG, ierr)
       else
-        call solve_DJDS_kemo                                            &
-     &     (internal_node, numnod, NLmax, NUmax,                        &
-     &      itotal_fl_l, itotal_fl_u, NHYP, np_smp, inter_smp_stack,    &
-     &      STACKmc, NLmaxHYP, NUmaxHYP, IVECT,  NEWtoOLD,              &
-     &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U, LtoU,    &
-     &      Cmat_DJDS%D, b_vec(1), x_vec(1),                            &
-     &      indexDJDS_L, indexDJDS_U,  itemDJDS_L, itemDJDS_U,          &
-     &      Cmat_DJDS%AL, Cmat_DJDS%AU,                                 &
-     &      Cmat_DJDS%ALUG_L, Cmat_DJDS%ALUG_U, eps_4_d_scalar_crank,   &
-     &      itr, ierr, neigh_pe_num_fl, neigh_pe_data_fl,               &
-     &      istack_import_fl, item_import_fl,                           &
-     &      istack_export_fl, NOD_EXPORT_NEW_fl,                        &
-     &      method_4_solver, precond_4_solver, itr_res)
+        call solve_DJDS11_struct(np_smp, DJDS_comm_fl, DJDS_fluid,      &
+     &      Cmat_DJDS, numnod, b_vec(1), x_vec(1),                      &
+     &      method_4_solver, precond_4_solver, ierr,                    &
+     &      eps_4_d_scalar_crank, itr, itr_res)
       end if
 !
       call end_eleps_time(5)

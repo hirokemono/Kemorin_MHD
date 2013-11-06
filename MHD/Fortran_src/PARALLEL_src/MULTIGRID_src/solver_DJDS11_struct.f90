@@ -95,6 +95,7 @@
 !     &     djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                 &
 !     &     djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                   &
 !     &     mat11%D, mat11%AL, mat11%AU, my_rank)
+!
 !       call deallocate_check_djds_array
 !
       call solve_DJDS_kemo                                              &

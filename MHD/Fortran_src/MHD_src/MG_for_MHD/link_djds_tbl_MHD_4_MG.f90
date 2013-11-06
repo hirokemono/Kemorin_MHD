@@ -14,7 +14,6 @@
 !        type(DJDS_ordering_table),  intent(inout) :: djds_tbl_cdl
 !        type(DJDS_ordering_table),  intent(inout) :: djds_tbl_insl
 !
-!      subroutine  link_first_djds_fl_tbl_4_MG(djds_tbl)
 !      subroutine  link_first_djds_cd_tbl_4_MG(djds_tbl)
 !      subroutine  link_first_djds_ins_tbl_4_MG(djds_tbl)
 !
@@ -33,7 +32,6 @@
 !
       implicit none
 !
-      private ::  link_first_djds_fl_tbl_4_MG
       private ::  link_first_djds_cd_tbl_4_MG
       private ::  link_first_djds_ins_tbl_4_MG
 !
@@ -61,8 +59,8 @@
       write(*,*) 'link_djds_connect_structs entire domain'
       call link_djds_connect_structs(DJDS_entire, djds_tbl)
 !
-      write(*,*) 'link_first_djds_fl_tbl_4_MG'
-      call  link_first_djds_fl_tbl_4_MG(djds_tbl_fl)
+      write(*,*) 'link_djds_connect_structs fluid'
+      call link_djds_connect_structs(DJDS_fluid, djds_tbl_fl)
 !
 !        call  link_first_djds_cd_tbl_4_MG(djds_tbl_cd)
 !        call  link_first_djds_ins_tbl_4_MG(djds_tbl_ins)
@@ -80,49 +78,9 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine  link_first_djds_fl_tbl_4_MG(djds_tbl)
-!
-      use m_comm_table_4_MHD
-      use m_solver_djds_fluid
-!
-       type(DJDS_ordering_table), intent(inout) :: djds_tbl
-!
-!
-      djds_tbl%itotal_l = itotal_fl_l
-      djds_tbl%itotal_u = itotal_fl_u
-      djds_tbl%NHYP =     NHYP
-      djds_tbl%NLmax =    NLmax
-      djds_tbl%NUmax =    NUmax
-      djds_tbl%npLX1 =    NLmax * np_smp
-      djds_tbl%npUX1 =    NUmax * np_smp
-!
-      djds_tbl%IVECT =>           IVECT
-      djds_tbl%NEWtoOLD =>        NEWtoOLD
-      djds_tbl%OLDtoNEW =>        OLDtoNEW
-      djds_tbl%NEWtoOLD_DJDS_U => NEWtoOLD_DJDS_U
-      djds_tbl%OLDtoNEW_DJDS_L => OLDtoNEW_DJDS_L
-      djds_tbl%OLDtoNEW_DJDS_U => OLDtoNEW_DJDS_U
-      djds_tbl%LtoU =>            LtoU
-      djds_tbl%indexDJDS_L =>     indexDJDS_L
-      djds_tbl%indexDJDS_U =>     indexDJDS_U
-      djds_tbl%itemDJDS_L =>      itemDJDS_L
-      djds_tbl%itemDJDS_U =>      itemDJDS_U
-      djds_tbl%NLmaxHYP =>        NLmaxHYP
-      djds_tbl%NUmaxHYP =>        NUmaxHYP
-      djds_tbl%STACKmcG =>        STACKmcG
-      djds_tbl%STACKmc =>         STACKmc
-      djds_tbl%COLORon =>         COLORon
-      djds_tbl%PEon =>            PEon
-      djds_tbl%NOD_EXPORT_NEW =>  NOD_EXPORT_NEW_fl
-!
-      end subroutine  link_first_djds_fl_tbl_4_MG
-!
-!-----------------------------------------------------------------------
-!
       subroutine  link_first_djds_cd_tbl_4_MG(djds_tbl)
 !
       use m_nod_comm_table
-      use m_comm_table_4_MHD
       use m_solver_djds_conduct
 !
        type(DJDS_ordering_table), intent(inout) :: djds_tbl
@@ -162,7 +120,6 @@
       subroutine  link_first_djds_ins_tbl_4_MG(djds_tbl)
 !
       use m_nod_comm_table
-      use m_comm_table_4_MHD
       use m_solver_djds_insulate
 !
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
@@ -202,7 +159,6 @@
 !
       subroutine  link_first_djds_fl_l_tbl_4_MG(djds_tbl)
 !
-      use m_comm_table_4_MHD
       use m_solver_djds_linear_fl
 !
        type(DJDS_ordering_table), intent(inout) :: djds_tbl
@@ -242,7 +198,6 @@
       subroutine  link_first_djds_cd_l_tbl_4_MG(djds_tbl)
 !
       use m_nod_comm_table
-      use m_comm_table_4_MHD
       use m_solver_djds_linear_cd
 !
        type(DJDS_ordering_table), intent(inout) :: djds_tbl
@@ -282,7 +237,6 @@
       subroutine  link_first_djds_ins_l_tbl_4_MG(djds_tbl)
 !
       use m_nod_comm_table
-      use m_comm_table_4_MHD
       use m_solver_djds_linear_ins
 !
        type(DJDS_ordering_table), intent(inout) :: djds_tbl

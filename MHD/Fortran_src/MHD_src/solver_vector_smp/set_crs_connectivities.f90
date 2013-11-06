@@ -3,7 +3,6 @@
 !
 !        programmed by H.Matsui on Oct., 2006
 !
-!      subroutine set_crs_connect_fluid
 !      subroutine set_crs_connect_conduct
 !      subroutine set_crs_connect_insulate
 !
@@ -26,17 +25,6 @@
 !-----------------------------------------------------------------------
 !
       contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_crs_connect_fluid
-!
-      use m_geometry_data_MHD
-!
-      call set_crs_connect_part(nnod_4_ele,                             &
-     &    iele_fl_start, iele_fl_end)
-!
-      end subroutine set_crs_connect_fluid
 !
 !-----------------------------------------------------------------------
 !

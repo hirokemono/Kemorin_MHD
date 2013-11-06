@@ -29,20 +29,15 @@
 !
       subroutine set_bc_4_velo_mat(nst, ned, iele, k1, k2)
 !
-      use m_solver_djds_fluid
+      use m_solver_djds_MHD
       use m_velo_matrix
+      use set_aiccg_bc_node_type
 !
       integer (kind = kint), intent(in) :: nst, ned, iele, k1, k2
-      integer (kind = kint) :: nd2, nod1, nod2, mat_num
 !
-      nod1 = ie(iele,k1)
-      nod2 = ie(iele,k2)
-      call set_off_diag_fluid( nod1, nod2, mat_num )
 !
-      do nd2 = nst, ned
-        call correct_matrix33_4_boundary(numnod, itotal_fl_u,           &
-     &      itotal_fl_l, nd2, mat_num, Vmat_DJDS%aiccg)
-      end do
+      call set_bc_4_vector_mat_type(nst, ned, ie(iele,k1), ie(iele,k2), &
+     &    DJDS_fluid, Vmat_DJDS)
 !
       end subroutine set_bc_4_velo_mat
 !
@@ -50,18 +45,15 @@
 !
       subroutine set_bc_4_temp_mat(iele, k1, k2)
 !
-      use m_solver_djds_fluid
+      use m_solver_djds_MHD
       use m_temp_matrix
+      use set_aiccg_bc_node_type
 !
       integer (kind = kint), intent(in) :: iele, k1, k2
-      integer (kind = kint) :: nod1, nod2, mat_num
 !
-      nod1 = ie(iele,k1)
-      nod2 = ie(iele,k2)
 !
-      call set_off_diag_fluid ( nod1, nod2, mat_num )
-      call correct_matrix11_4_boundary                                  &
-     &    (numnod, itotal_fl_u, itotal_fl_l, mat_num, Tmat_DJDS%aiccg)
+      call set_bc_4_scalar_mat_type(ie(iele,k1), ie(iele,k2),           &
+     &    DJDS_fluid, Tmat_DJDS)
 !
       end subroutine set_bc_4_temp_mat
 !
@@ -105,19 +97,15 @@
 !
       subroutine set_bc_4_composite_mat(iele, k1, k2)
 !
-      use m_solver_djds_fluid
+      use m_solver_djds_MHD
       use m_light_element_matrix
+      use set_aiccg_bc_node_type
 !
       integer (kind = kint), intent(in) :: iele, k1, k2
-      integer (kind = kint) :: nod1, nod2, mat_num
 !
 !
-      nod1 = ie(iele,k1)
-      nod2 = ie(iele,k2)
-!
-      call set_off_diag_fluid ( nod1, nod2, mat_num )
-      call correct_matrix11_4_boundary                                  &
-     &    (numnod, itotal_fl_u, itotal_fl_l, mat_num, Cmat_DJDS%aiccg)
+      call set_bc_4_scalar_mat_type(ie(iele,k1), ie(iele,k2),           &
+     &    DJDS_fluid, Cmat_DJDS)
 !
       end subroutine set_bc_4_composite_mat
 !

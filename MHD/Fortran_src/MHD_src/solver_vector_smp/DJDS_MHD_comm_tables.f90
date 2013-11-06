@@ -25,20 +25,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_new_comm_table_fl
-!
-      use m_comm_table_4_MHD
-      use m_solver_djds_fluid
-!
-       call allocate_new_comm_table_fl
-!
-       call set_new_comm_table(numnod, OLDtoNEW, neigh_pe_num_fl,       &
-                istack_export_fl, item_export_fl, NOD_EXPORT_NEW_fl)
-!
-      end subroutine set_new_comm_table_fl
-!
-!-----------------------------------------------------------------------
-!
       subroutine set_new_comm_table_cd
 !
       use m_nod_comm_table
@@ -70,13 +56,14 @@
 !
       subroutine set_new_comm_table_fl_l
 !
-      use m_comm_table_4_MHD
+      use m_solver_djds_MHD
       use m_solver_djds_linear_fl
 !
-       call allocate_new_comm_table_fl_l
+      call allocate_new_comm_table_fl_l
 !
-       call set_new_comm_table(numnod, OLDtoNEW1, neigh_pe_num_fl,      &
-                istack_export_fl, item_export_fl, NOD_EXPORT_NEW_fl1)
+      call set_new_comm_table(numnod, OLDtoNEW1, DJDS_comm_fl%num_neib, &
+      &   DJDS_comm_fl%istack_export, DJDS_comm_fl%item_export,         &
+      &   NOD_EXPORT_NEW_fl1)
 !
       end subroutine set_new_comm_table_fl_l
 !
