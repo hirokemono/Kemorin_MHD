@@ -16,9 +16,6 @@
       use m_geometry_parameter
       use m_geometry_data
 !
-      use correct_matrix_4_boundary
-      use set_off_diagonals
-!
       implicit none
 !
 ! -----------------------------------------------------------------------
@@ -61,19 +58,15 @@
 !
       subroutine set_bc_4_press_mat(iele, k1, k2)
 !
-      use m_solver_djds_linear_fl
+      use m_solver_djds_MHD
       use m_velo_matrix
+      use set_aiccg_bc_node_type
 !
       integer (kind = kint), intent(in) :: iele, k1, k2
-      integer (kind = kint) :: nod1, nod2, mat_num
 !
 !
-      nod1 = ie(iele,k1)
-      nod2 = ie(iele,k2)
-!
-      call set_off_diag_linear_fl( nod1, nod2, mat_num )
-      call correct_matrix11_4_boundary                                  &
-     &   (numnod, itotal1_fl_u, itotal1_fl_l, mat_num, Pmat_DJDS%aiccg)
+      call set_bc_4_scalar_mat_type(ie(iele,k1), ie(iele,k2),           &
+     &   DJDS_fl_l, Pmat_DJDS)
 !
       end subroutine set_bc_4_press_mat
 !

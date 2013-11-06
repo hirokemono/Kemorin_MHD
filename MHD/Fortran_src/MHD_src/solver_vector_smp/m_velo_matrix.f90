@@ -53,27 +53,11 @@
       subroutine allocate_aiccg_press
 !
       use m_geometry_parameter
-      use m_solver_djds_linear_fl
+      use m_solver_djds_MHD
 !
 !
-      Pmat_DJDS%num_diag =      numnod
-      Pmat_DJDS%internal_diag = internal_node
-!
-      Pmat_DJDS%istart_diag = 1
-      Pmat_DJDS%istart_l = numnod + 1
-      Pmat_DJDS%istart_u = numnod + itotal1_fl_l + 1
-!
-      Pmat_DJDS%num_non0 = numnod + itotal1_fl_u + itotal1_fl_l
-!
-      allocate(Pmat_DJDS%aiccg(0:Pmat_DJDS%num_non0))
-!
-      allocate (Pmat_DJDS%ALUG_U(internal_node) )
-      allocate (Pmat_DJDS%ALUG_L(internal_node) )
-!
-       Pmat_DJDS%D =>  Pmat_DJDS%aiccg(Pmat_DJDS%istart_diag:Pmat_DJDS%istart_l-1)
-       Pmat_DJDS%AL => Pmat_DJDS%aiccg(Pmat_DJDS%istart_l:Pmat_DJDS%istart_u-1)
-       Pmat_DJDS%AU => Pmat_DJDS%aiccg(Pmat_DJDS%istart_u:Pmat_DJDS%num_non0)
-!
+      call alloc_type_djds11_mat(numnod, internal_node,                 &
+     &    DJDS_fl_l, Pmat_DJDS)
       call reset_aiccg_press
 !
       end subroutine allocate_aiccg_press
@@ -140,7 +124,7 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
-      use m_solver_djds_linear_fl
+      use m_solver_djds_MHD
 !
       integer(kind = kint) :: inod, iele, in, k1
 !
@@ -154,7 +138,7 @@
       do k1 = 1, num_t_linear
         do iele = iele_fl_start, iele_fl_end
           inod = ie(iele,k1)
-          in = OLDtoNEW1(inod)
+          in = DJDS_fl_l%OLDtoNEW(inod)
           Pmat_DJDS%aiccg(in) = 0.0d0
         end do
       end do

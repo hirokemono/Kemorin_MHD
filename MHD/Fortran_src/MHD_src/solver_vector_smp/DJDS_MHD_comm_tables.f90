@@ -54,21 +54,6 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_new_comm_table_fl_l
-!
-      use m_solver_djds_MHD
-      use m_solver_djds_linear_fl
-!
-      call allocate_new_comm_table_fl_l
-!
-      call set_new_comm_table(numnod, OLDtoNEW1, DJDS_comm_fl%num_neib, &
-      &   DJDS_comm_fl%istack_export, DJDS_comm_fl%item_export,         &
-      &   NOD_EXPORT_NEW_fl1)
-!
-      end subroutine set_new_comm_table_fl_l
-!
-!-----------------------------------------------------------------------
-!
       subroutine set_new_comm_table_cd_l
 !
       use m_nod_comm_table

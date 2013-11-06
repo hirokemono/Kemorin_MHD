@@ -186,7 +186,7 @@
      &          inod_next_4_node, MHD_CRS)
 !
         call s_reordering_djds_smp_type(np_smp, numnod, internal_node,  &
-     &     inter_smp_stack, MHD_CRS, DJDS_linear)
+     &      inter_smp_stack, MHD_CRS, DJDS_linear)
         call set_new_comm_table_type(numnod,                            &
      &      DJDS_comm_etr, DJDS_linear)
 !
@@ -203,21 +203,34 @@
 !
       subroutine set_connectivity_linear_fl
 !
+      use m_geometry_data_MHD
       use m_solver_djds_MHD
-      use m_solver_djds_linear_fl
-      use DJDS_const_solver_list_fl1
+      use m_element_id_4_node
+      use m_next_node_id_4_node
+      use set_element_id_4_node
+      use set_crs_connect_type
+      use reordering_djds_smp_type
+      use set_djds_smp_ordering_type
 !
 !
       if ( nnod_4_ele .ne. num_t_linear) then
+        call set_layerd_ele_id_4_node(num_t_linear,                     &
+     &      iele_fl_start, iele_fl_end)
+        call const_next_nod_id_4_node
 !
-        call set_crs_connect_linear_fl
-        call reordering_djds_smp_l_fl
-        call deallocate_crs_connect
-        call set_new_comm_table_fl_l
+        call s_set_crs_connect_type(np_smp, numnod, inod_smp_stack,     &
+     &    ntot_next_nod_4_node, inod_next_stack_4_node,                 &
+     &    inod_next_4_node, MHD_CRS)
 !
+        call s_reordering_djds_smp_type(np_smp, numnod, internal_node,  &
+     &      inter_smp_stack, MHD_CRS, DJDS_fl_l)
+        call set_new_comm_table_type(numnod, DJDS_comm_fl, DJDS_fl_l)
+!
+        call dealloc_type_crs_connect(MHD_CRS)
+        call deallocate_iele_belonged
+        call deallocate_inod_next_node
       else
-        call set_djds_4_linear_fl
-        call set_new_comm_table_fl_l
+        call link_djds_connect_structs(DJDS_fluid, DJDS_fl_l)
       end if
 !
 !

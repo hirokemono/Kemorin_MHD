@@ -23,8 +23,6 @@
 !
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
-      use write_djds_matrix_data
-      use write_djds_matrix_struct
       use set_parallel_file_name
 !
       implicit  none
@@ -87,6 +85,7 @@
 !
       use m_solver_djds_MHD
       use m_velo_matrix
+      use write_djds_matrix_struct
 !
       integer(kind = kint) :: i
 !
@@ -122,8 +121,8 @@
       subroutine write_djds_mat_press
 !
       use m_solver_djds_MHD
-      use m_solver_djds_linear_fl
       use m_velo_matrix
+      use write_djds_matrix_struct
 !
       integer(kind = kint) :: i
 !
@@ -145,19 +144,10 @@
       else
         call add_int_suffix(my_rank, fhead_press_mat, fname)
         open(id_mat_file, file=fname)
-        call write_djds_mat11_comp                                      &
-     &    (id_mat_file, internal_node, numnod, NLmax1, NUmax1,          &
-     &    itotal1_fl_l, itotal1_fl_u, (NLmax1*np_smp), (NUmax1*np_smp), &
-     &    NHYP1, np_smp, NEWtoOLD1, Pmat_DJDS%D,                        &
-     &    indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,         &
-     &    Pmat_DJDS%AL, Pmat_DJDS%AU,                                   &
-     &    Pmat_DJDS%ALUG_L, Pmat_DJDS%ALUG_U)
-        call write_djds_mat_connects                                    &
-     &     (id_mat_file, numnod, np_smp, NHYP1, inter_smp_stack,        &
-     &     STACKmc1, NLmaxHYP1, NUmaxHYP1, IVECT1,                      &
-     &     OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U, NEWtoOLD_DJDS1_U, LtoU1, &
-     &     DJDS_comm_fl%num_neib, DJDS_comm_fl%istack_export,           &
-     &     NOD_EXPORT_NEW_fl1)
+        call write_djds_mat11_comp_type(id_mat_file, np_smp,            &
+     &      DJDS_fl_l, Pmat_DJDS)
+        call write_djds_mat_connect_type(id_mat_file, np_smp,           &
+     &      DJDS_comm_fl, DJDS_fl_l, Pmat_DJDS)
         close(id_mat_file)
       end if
 !
@@ -245,6 +235,7 @@
 !
       use m_solver_djds_MHD
       use m_temp_matrix
+      use write_djds_matrix_struct
 !
       integer(kind = kint) :: i
 !
@@ -281,6 +272,7 @@
 !
       use m_solver_djds_MHD
       use m_light_element_matrix
+      use write_djds_matrix_struct
 !
       integer(kind = kint) :: i
 !

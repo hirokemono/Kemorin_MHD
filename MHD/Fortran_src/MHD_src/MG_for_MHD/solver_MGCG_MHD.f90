@@ -131,9 +131,8 @@
       subroutine solver_MGCG_press
 !
       use m_solver_djds_MHD
-      use m_solver_djds_linear_fl
       use m_velo_matrix
-      use solver_DJDS
+      use solver_DJDS11_struct
       use solver_VMGCG11_DJDS_SMP
 !
       integer(kind = kint) :: ierr
@@ -156,19 +155,9 @@
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
      &      eps, EPS_MG, precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
       else
-        call solve_DJDS_kemo                                            &
-     &     (internal_node, numnod, NLmax1, NUmax1,                      &
-     &     itotal1_fl_l, itotal1_fl_u,  NHYP1, np_smp, inter_smp_stack, &
-     &     STACKmc1, NLmaxHYP1, NUmaxHYP1, IVECT1, NEWtoOLD1,           &
-     &     OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U, NEWtoOLD_DJDS1_U, LtoU1, &
-     &     Pmat_DJDS%D, b_vec(1), x_vec(1),                             &
-     &     indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,        &
-     &     Pmat_DJDS%AL, Pmat_DJDS%AU,                                  &
-     &     Pmat_DJDS%ALUG_L, Pmat_DJDS%ALUG_U, eps, itr, ierr,          &
-     &     DJDS_comm_fl%num_neib, DJDS_comm_fl%id_neib,                 &
-     &     DJDS_comm_fl%istack_import, DJDS_comm_fl%item_import,        &
-     &     DJDS_comm_fl%istack_export, NOD_EXPORT_NEW_fl1,              &
-     &     method_4_solver, precond_4_solver, itr_res)
+        call solve_DJDS11_struct(np_smp, DJDS_comm_fl, DJDS_fl_l,       &
+     &      Pmat_DJDS, numnod, b_vec(1), x_vec(1),                      &
+     &      method_4_solver, precond_4_solver, ierr, eps, itr, itr_res)
       end if
 !
       call end_eleps_time(5)

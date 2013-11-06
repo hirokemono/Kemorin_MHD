@@ -68,18 +68,15 @@
 !
       subroutine set_off_diag_linear_fl (nod1, nod2, mat_num)
 !
-      use m_solver_djds_linear_fl
+      use m_solver_djds_MHD
+      use set_idx_4_mat_type
 !
       integer (kind = kint), intent(in) :: nod1, nod2
       integer (kind = kint), intent(inout) :: mat_num
 !
 !
-      call s_set_DJDS_off_diagonal (internal_node, numnod, np_smp,      &
-     &    NLmax1, NUmax1, itotal1_fl_l, itotal1_fl_u,                   &
-     &    npLX1_1, npUX1_1, NHYP1, STACKmc1, NLmaxHYP1, NUmaxHYP1,      &
-     &    OLDtoNEW1, OLDtoNEW_DJDS1_L, OLDtoNEW_DJDS1_U,                &
-     &    indexDJDS1_L, indexDJDS1_U, itemDJDS1_L, itemDJDS1_U,         &
-     &    PEon1, COLORon1, nod1, nod2, mat_num)
+      call set_off_diag_type(numnod, internal_node, DJDS_fl_l,          &
+     &   nod1, nod2, mat_num)
 !
       end subroutine set_off_diag_linear_fl
 !

@@ -6,7 +6,6 @@
 !      subroutine set_crs_connect_conduct
 !      subroutine set_crs_connect_insulate
 !
-!      subroutine set_crs_connect_linear_fl
 !      subroutine set_crs_connect_linear_cd
 !      subroutine set_crs_connect_linear_ins
 !
@@ -49,18 +48,6 @@
       end subroutine set_crs_connect_insulate
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_crs_connect_linear_fl
-!
-      use m_geometry_constants
-      use m_geometry_data_MHD
-!
-      call set_crs_connect_part(num_t_linear,                           &
-     &    iele_fl_start, iele_fl_end)
-!
-      end subroutine set_crs_connect_linear_fl
-!
 !-----------------------------------------------------------------------
 !
       subroutine set_crs_connect_linear_cd

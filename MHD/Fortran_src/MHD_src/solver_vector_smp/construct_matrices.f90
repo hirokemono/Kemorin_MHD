@@ -30,7 +30,6 @@
       use m_solver_djds_MHD
 !      use m_solver_djds_conduct
 !      use m_solver_djds_insulate
-      use m_solver_djds_linear_fl
 !      use m_solver_djds_linear_cd
 !      use m_solver_djds_linear_ins
 !
@@ -50,7 +49,7 @@
 !
       if ( nnod_4_ele .ne. num_t_linear) then
         call dealloc_type_4_djds_table(DJDS_linear)
-        call deallocate_4_djds_table_fl_l
+        call dealloc_type_4_djds_table(DJDS_fl_l)
 !        call deallocate_4_djds_table_cd_l
 !        call deallocate_4_djds_table_ins_l
       end if
