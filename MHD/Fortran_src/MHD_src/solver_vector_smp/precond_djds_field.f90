@@ -1,20 +1,28 @@
+!>@file   precond_djds_field.f90
+!!@brief  module precond_djds_field
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2005
 !
-!     module precond_djds_scalars
+!>     Preconditiong of DJDS solver for MHD dynamo
+!!
+!!@verbatim
+!!      subroutine precond_djds_velo
+!!      subroutine precond_djds_magne
+!!
+!!      subroutine precond_djds_press
+!!      subroutine precond_djds_temp
+!!      subroutine precond_djds_composition
+!!      subroutine precond_djds_mag_potential
+!!@endverbatim
 !
-!     Written by H. Matsui on June, 2005
-!
-!      subroutine precond_djds_press
-!      subroutine precond_djds_temp
-!      subroutine precond_djds_composition
-!      subroutine precond_djds_mag_potential
-!
-      module precond_djds_scalars
+      module precond_djds_field
 !
       use m_precision
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_phys_constants
       use m_iccg_parameter
 !
       implicit none
@@ -23,6 +31,46 @@
 !
        contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine precond_djds_velo
+!
+      use m_solver_djds_MHD
+      use m_velo_matrix
+      use solver_DJDS33_struct
+      use solver_DJDSnn_struct
+!C
+!C== PRECONDITIONING
+!
+      call precond_DJDS33_struct(np_smp, DJDS_fluid, Vmat_DJDS,         &
+     &    precond_4_crank, sigma_diag)
+!
+!      call precond_DJDSnn_struct(n_vector, np_smp,                     &
+!     &    DJDS_fluid, Vmat_DJDS, precond_4_crank, sigma_diag)
+!
+      end subroutine precond_djds_velo
+!
+! ----------------------------------------------------------------------
+!
+      subroutine precond_djds_magne
+!
+      use m_solver_djds_MHD
+      use m_magne_matrix
+      use solver_DJDS33_struct
+      use solver_DJDSnn_struct
+!
+!C
+!C== PRECONDITIONING
+!
+      call precond_DJDS33_struct(np_smp, DJDS_entire, Bmat_DJDS,        &
+     &    precond_4_crank, sigma_diag)
+!
+!      call precond_DJDSnn_struct(n_vector, np_smp,                     &
+!     &    DJDS_entire, Bmat_DJDS, precond_4_crank, sigma_diag)
+!
+      end subroutine precond_djds_magne
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine precond_djds_press
@@ -101,4 +149,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module precond_djds_scalars
+      end module precond_djds_field

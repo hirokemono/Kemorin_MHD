@@ -28,8 +28,7 @@
       use calypso_mpi
       use m_control_parameter
 !
-      use set_aiccg_nod_bc_vect
-      use set_aiccg_bc_scalars
+      use set_aiccg_bc_fixed
 !
 !   set boundary conditions for matrix
 !
@@ -75,7 +74,7 @@
       use m_bc_data_rotate
 !
       use set_aiccg_free_sph
-      use set_aiccg_nod_bc_vect
+      use set_aiccg_bc_fixed
 !
 !
 !      matrix setting for free slip on sphere

@@ -11,7 +11,6 @@
 !
       use m_precision
       use t_comm_table
-      use t_crs_connect
       use t_solver_djds
 !
       implicit none
@@ -44,8 +43,5 @@
       type(DJDS_ordering_table), save :: DJDS_ins_l
 !>      Communication table structure for insulator
       type(communication_table), save :: DJDS_comm_ins
-!
-!>      Matrix connectivity with CRS format
-      type(CRS_matrix_connect), save :: MHD_CRS
 !
       end module m_solver_djds_MHD

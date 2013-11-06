@@ -53,6 +53,7 @@
             do in = ist, ied
               iele = iele_sort_smp(in)
               iconn = iconn_sort_smp(in)
+!
               call set_off_diag_type(numnod, internal_node,             &
      &            DJDS_entire, ie(iele,iconn), ie(iele,k2), mat_num)
               idx_4_mat(in,k2) = mat_num
@@ -141,12 +142,12 @@
             ied = nod_stack_smp(inn)
 !
             do in = ist, ied
-!
               iele = iele_sort_smp(in)
               iconn = iconn_sort_smp(in)
+!
               if (iele.ge.iele_cd_start .and. iele.le.iele_cd_end) then
 !                call set_off_diag_type(numnod, internal_node,          &
-!     &              DJDS_conduct, nod1, nod2, mat_num)
+!     &            DJDS_conduct, ie(iele,iconn), ie(iele,k2), mat_num)
 !                idx_4_cd_mat(in,k2) = mat_num
 !
                 call set_off_diag_type(numnod, internal_node,           &
@@ -176,13 +177,13 @@
       use m_solver_djds_MHD
       use set_idx_4_mat_type
 !
-      integer(kind = kint) :: nod1, nod2, mat_num, k2
+      integer(kind = kint) :: mat_num, k2
       integer(kind = kint) :: iproc, iele, inum, iconn
       integer(kind = kint) :: inn, ist, ied, in
 !
 !
 !$omp parallel private(k2,iproc,inum,inn,ist,ied,                      &
-!$omp&                 in,iele,iconn,nod1,nod2,mat_num)
+!$omp&                 in,iele,iconn,mat_num)
       do k2 = 1, nnod_4_ele
 !
 !$omp do
@@ -194,17 +195,15 @@
             ied = nod_stack_smp(inn)
 
             do in = ist, ied
-
               iele = iele_sort_smp(in)
               iconn = iconn_sort_smp(in)
-              nod1 = ie(iele,iconn)
-              nod2 = ie(iele,k2)
 
               if (iele.ge.iele_ins_start                                &
      &          .and. iele.le.iele_ins_end) then
 
                 call set_off_diag_type(numnod, internal_node,           &
-     &              DJDS_insulator, nod1, nod2, mat_num)
+     &              DJDS_insulator, ie(iele,iconn), ie(iele,k2),        &
+     &              mat_num)
                 idx_4_ins_mat(in,k2) = mat_num
 
               else

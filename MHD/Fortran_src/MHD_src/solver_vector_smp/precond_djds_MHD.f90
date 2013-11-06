@@ -1,14 +1,27 @@
-!precond_djds_MHD.f90
-!     module precond_djds_MHD
+!>@file   precond_djds_MHD.f90
+!!@brief  module precond_djds_MHD
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2005
 !
-!        programmed by H.Matsui and H.Okuda
-!        modified by H. Matsui on Aug., 2007
-!
-!      subroutine matrix_precondition
+!>     Preconditiong of DJDS solver for MHD dynamo
+!!
+!!@verbatim
+!!      subroutine matrix_precondition
+!!
+!!      subroutine precond_djds_velo
+!!      subroutine precond_djds_magne
+!!
+!!      subroutine precond_djds_press
+!!      subroutine precond_djds_temp
+!!      subroutine precond_djds_composition
+!!      subroutine precond_djds_mag_potential
+!!@endverbatim
 !
       module precond_djds_MHD
 !
       use m_precision
+      use calypso_mpi
 !
       implicit none
 !
@@ -20,16 +33,10 @@
 !
       subroutine matrix_precondition
 !
-      use calypso_mpi
       use m_control_parameter
-      use m_geometry_parameter
-      use m_geometry_data
-      use m_finite_element_matrix
-      use m_sorted_node
       use m_solver_djds_MHD
 !
-      use precond_djds_vectors
-      use precond_djds_scalars
+      use precond_djds_field
 !
 !C
 !C +-----------------+

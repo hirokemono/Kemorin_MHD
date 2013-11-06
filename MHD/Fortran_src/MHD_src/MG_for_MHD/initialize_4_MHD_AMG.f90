@@ -202,8 +202,7 @@
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            's_set_djds_connectivity_type', i_level
           call s_set_djds_connectivity_type(MG_mesh(i_level)%mesh,      &
-     &        MG_next_table(i_level), MG_CRS_table(i_level),            &
-     &        MG_djds_tbl(i_level) )
+     &        MG_next_table(i_level), MG_djds_tbl(i_level) )
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'empty_djds_connectivity_type', i_level

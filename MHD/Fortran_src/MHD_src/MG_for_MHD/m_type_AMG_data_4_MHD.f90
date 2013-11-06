@@ -94,8 +94,6 @@
         type(CRS_matrix_connect) :: insulate
       end type CRS_tables_MHD
 !
-      type(CRS_matrix_connect) ::   MG_CRS_table(max_MG_level)
-!   CRS matrix for FEM assemble
       type(CRS_tables_MHD) ::       MG_MHD_CRS_table(max_MG_level)
 !   CRS matrix for FEM assemble
 !
