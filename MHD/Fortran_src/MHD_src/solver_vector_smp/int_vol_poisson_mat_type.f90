@@ -1,15 +1,21 @@
-!int_vol_poisson_mat_type.f90
-!      module int_vol_poisson_mat_type
+!>@file   int_vol_poisson_mat_type.f90
+!!@brief  module int_vol_poisson_mat_type
+!!
+!!@author H. Matsui
+!!@date        Written by H. Matsui on Jan., 2009
+!!@n      modified by H. Matsui on Nov., 2013
 !
-!     Written by H. Matsui on Oct. 2005
-!
-!      subroutine int_vol_poisson_mat11_type(ele, jac_3d_l, rhs_tbl,    &
-!     &          djds_const, fem_wk, n_int, mat11)
-!
-!      subroutine int_vol_diffuse_mat11_type(ele, jac_3d, rhs_tbl,      &
-!     &          djds_const, fem_wk, coef_imp, n_int, ak_d, mat11)
-!      subroutine int_vol_diffuse_mat33_type(ele, jac_3d, rhs_tbl,      &
-!     &          djds_const, fem_wk, coef_imp, n_int, ak_d, mat33)
+!>@brief   Matrix assemble for structure
+!!
+!!@verbatim
+!!      subroutine int_vol_poisson_mat11_type(ele, jac_3d_l, rhs_tbl,   &
+!!     &          djds_const, fem_wk, n_int, mat11)
+!!
+!!      subroutine int_vol_diffuse_mat11_type(ele, jac_3d, rhs_tbl,     &
+!!     &          djds_const, fem_wk, coef_imp, n_int, ak_d, mat11)
+!!      subroutine int_vol_diffuse_mat33_type(ele, jac_3d, rhs_tbl,     &
+!!     &          djds_const, fem_wk, coef_imp, n_int, ak_d, mat33)
+!!@endverbatim
 !
       module int_vol_poisson_mat_type
 !
@@ -53,8 +59,8 @@
         call reset_sk6_type(n_scalar, ele%numele, num_t_linear, fem_wk)
         call fem_skv_poisson_linear_type(ele%istack_ele_smp, n_int, k2, &
      &      ele, jac_3d_l, fem_wk)
-        call add_skv1_2_matrix11_type(ele, rhs_tbl, djds_const,         &
-     &      fem_wk, k2, mat11)
+        call add_skv1_2_matrix11_type(ele, rhs_tbl,                     &
+     &      djds_const%idx_4_mat, fem_wk%sk6, k2, mat11)
       end do
 !
       end subroutine int_vol_poisson_mat11_type

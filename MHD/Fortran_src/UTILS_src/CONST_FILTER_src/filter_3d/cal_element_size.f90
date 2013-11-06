@@ -35,8 +35,7 @@
       use m_filter_dxdxi
       use m_crs_consist_mass_mat
 !
-      use set_element_id_4_node
-      use ordering_4_rhs_assemble
+      use const_RHS_assemble_list
       use cal_diff_elesize_on_ele
       use cal_filter_moms_ele_by_elen
       use int_mass_matrix_gen_filter
@@ -51,14 +50,8 @@
 !      set RHS assemble table
 !  ---------------------------------------------------
 !
-      if (iflag_debug.eq.1)  write(*,*) 'set_ele_id_4_node'
-       call set_ele_id_4_node
-!
-      if (iflag_debug.eq.1)  write(*,*) 'const_next_nod_id_4_node'
-       call const_next_nod_id_4_node
-!
-      if (iflag_debug.eq.1)  write(*,*) 'sort_node_index'
-      call sort_node_index
+      if (iflag_debug.eq.1)  write(*,*) 'set_connect_RHS_assemble'
+       call set_connect_RHS_assemble
 !
 !  ---------------------------------------------------
 !        cal element size for each node

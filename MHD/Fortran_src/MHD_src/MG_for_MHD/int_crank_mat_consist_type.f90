@@ -74,35 +74,35 @@
      &      .and. coef_velo.gt.0.0d0 ) then
           write(*,*) 'init_consist_mat_velo', k2
           call add_skv1_2_matrix33_type(mesh%ele, rhs_tbl,              &
-     &        djds_const_fl, fem_wk, k2, mat_velo)
+     &        djds_const_fl%idx_4_mat, fem_wk%sk6, k2, mat_velo)
         end if
 !
         if ( iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass            &
      &      .and. coef_temp.gt.0.0d0 ) then
           write(*,*) 'init_consist_mat_temp', k2
           call add_skv1_2_matrix11_type(mesh%ele, rhs_tbl,              &
-     &        djds_const_fl, fem_wk, k2, mat_temp)
+     &        djds_const_fl%idx_4_mat, fem_wk%sk6, k2, mat_temp)
         end if
 !
         if ( iflag_t_evo_4_composit .eq. id_Crank_nicolson_cmass        &
      &      .and. coef_light.gt.0.0d0) then
           write(*,*) 'init_consist_mat_d_scalar_type', k2
           call add_skv1_2_matrix11_type(mesh%ele, rhs_tbl,              &
-     &        djds_const_fl, fem_wk, k2, mat_d_scalar)
+     &        djds_const_fl%idx_4_mat, fem_wk%sk6, k2, mat_d_scalar)
         end if
 !
         if ( iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass           &
      &      .and. coef_magne.gt.0.0d0) then
           write(*,*) 'init_consist_mat_magne_type', k2
           call add_skv1_2_matrix33_type(mesh%ele, rhs_tbl,              &
-     &        djds_const_cd, fem_wk, k2, mat_magne)
+     &        djds_const_cd%idx_4_mat, fem_wk%sk6, k2, mat_magne)
         end if
 !
         if ( iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass          &
      &      .and. coef_magne.gt.0.0d0) then
           write(*,*) 'init_consist_mat_vect_p', k2
           call add_skv1_2_matrix33_type(mesh%ele, rhs_tbl,              &
-     &        djds_const_cd, fem_wk, k2, mat_magne)
+     &        djds_const_cd%idx_4_mat, fem_wk%sk6, k2, mat_magne)
         end if
 !
       end do

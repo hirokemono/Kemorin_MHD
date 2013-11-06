@@ -80,9 +80,9 @@
         call reset_sk6_type(n_scalar,                                   &
      &      mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
         call fem_grp_skv_mass_matrix_t(iele_fsmp_stack,                 &
-     &     nele_grp, iele_grp, n_int, k2, mesh%ele, jac_3d, fem_wk)
-        call add_skv1_2_matrix11_type(mesh%ele, rhs_tbl, mat_tbl,       &
-     &      fem_wk, k2, mat11)
+     &      nele_grp, iele_grp, n_int, k2, mesh%ele, jac_3d, fem_wk)
+        call add_skv1_2_matrix11_type(mesh%ele, rhs_tbl,                &
+     &      mat_tbl%idx_4_mat, fem_wk%sk6, k2, mat11)
       end do
 !
       end subroutine int_grp_consist_mass_mat_type

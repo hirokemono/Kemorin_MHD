@@ -1,14 +1,23 @@
+!>@file   add_skv1_2_matrix.f90
+!!@brief  module add_skv1_2_matrix
+!!
+!!@author H. Matsui
+!!@author K. Nakajima and H. Matsui
+!!@date        Written by H. Matsui on Jan., 2009
+!!@n      modified by H. Matsui on Nov., 2013
 !
-!     module add_skv1_2_matrix
-!
-!      subroutine add_skv1_2_matrix11(np_smp, numele, nnod_4_e1,        &
-!     &          inod_ele_max, num_sort_smp, nod_stack_smp,             &
-!     &          iele_sort_smp, iconn_sort_smp, idx_4_mat,              &
-!     &          k2, sk_v, num_mat, aiccg)
-!      subroutine add_skv1_2_matrix33(np_smp, numele, nnod_4_e1,        &
-!     &          inod_ele_max, num_sort_smp, nod_stack_smp,             &
-!     &          iele_sort_smp, iconn_sort_smp, idx_4_mat,              &
-!     &          k2, sk_v, num_mat, aiccg33)
+!>     Matrix assemble
+!!
+!!@verbatim
+!!      subroutine add_skv1_2_matrix11(np_smp, numele, nnod_4_e1,       &
+!!     &          inod_ele_max, num_sort_smp, nod_stack_smp,            &
+!!     &          iele_sort_smp, iconn_sort_smp, idx_4_mat,             &
+!!     &          k2, sk_v, num_mat, aiccg)
+!!      subroutine add_skv1_2_matrix33(np_smp, numele, nnod_4_e1,       &
+!!     &          inod_ele_max, num_sort_smp, nod_stack_smp,            &
+!!     &          iele_sort_smp, iconn_sort_smp, idx_4_mat,             &
+!!     &          k2, sk_v, num_mat, aiccg33)
+!!@endverbatim
 !
       module add_skv1_2_matrix
 !

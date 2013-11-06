@@ -93,8 +93,8 @@
      &      mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
         call fem_skv_mass_matrix_type(iele_fsmp_stack, num_int, k2,     &
      &      mesh%ele, jac_3d, fem_wk)
-        call add_skv1_2_matrix11_type(mesh%ele, rhs_tbl, mat_tbl,       &
-     &      fem_wk, k2, mat11)
+        call add_skv1_2_matrix11_type(mesh%ele, rhs_tbl,                &
+     &      mat_tbl%idx_4_mat, fem_wk%sk6, k2, mat11)
       end do
 !
       end subroutine int_consist_mass_matrix_type

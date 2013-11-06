@@ -7,7 +7,7 @@
 !     Modified by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Oct. 2006
 !
-!      subroutine int_mass_matrices
+!      subroutine int_RHS_mass_matrices
 !
       module int_MHD_mass_matrices
 !
@@ -32,7 +32,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_mass_matrices
+      subroutine int_RHS_mass_matrices
 !
       use m_geometry_constants
       use m_control_parameter
@@ -48,7 +48,7 @@
         call int_mass_matrix_trilinear(num_int)
       end if
 !
-      end subroutine int_mass_matrices
+      end subroutine int_RHS_mass_matrices
 !
 !-----------------------------------------------------------------------
 !

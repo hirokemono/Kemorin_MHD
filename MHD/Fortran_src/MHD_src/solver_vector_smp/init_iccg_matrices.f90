@@ -28,13 +28,17 @@
 !
       subroutine allocate_aiccg_matrices
 !
+      use set_residual_limit
+!
+!
+      call set_residual_4_crank
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-       call allocate_aiccg_press
+        call allocate_aiccg_press
 !
-       if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-        call allocate_aiccg_velo
-       end if
+        if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+          call allocate_aiccg_velo
+        end if
       end if
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then

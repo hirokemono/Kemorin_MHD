@@ -27,10 +27,9 @@
       use ordering_4_rhs_assemble
 !
 !
-!  found surrounding node and element
+!      Search surrounding node and element
 !
       call set_ele_id_4_node
-!
       call const_next_nod_id_4_node
 !
 !      set RHS assemble table
@@ -44,7 +43,7 @@
       subroutine set_connect_for_fieldline
 !
 !
-!  found surrounding node and element
+!      Search surrounding node and element
 !
       call set_ele_id_4_node
 !

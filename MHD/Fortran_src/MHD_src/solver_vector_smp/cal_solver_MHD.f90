@@ -3,13 +3,13 @@
 !
 !        programmed by H.Matsui on June 2010
 !
-!      subroutine cal_sol_velo_pre_crank
-!      subroutine cal_sol_mod_po
-!      subroutine cal_sol_vect_p_pre_crank
-!      subroutine cal_sol_magne_pre_crank
-!      subroutine cal_sol_mag_po
-!      subroutine cal_sol_energy_crank(i_fld)
-!      subroutine cal_sol_d_scalar_crank(i_fld)
+!!      subroutine cal_sol_velo_pre_crank
+!!      subroutine cal_sol_mod_po
+!!      subroutine cal_sol_vect_p_pre_crank
+!!      subroutine cal_sol_magne_pre_crank
+!!      subroutine cal_sol_mag_po
+!!      subroutine cal_sol_energy_crank(i_fld)
+!!      subroutine cal_sol_d_scalar_crank(i_fld)
 !
       module cal_solver_MHD
 !

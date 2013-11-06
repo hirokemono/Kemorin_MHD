@@ -43,8 +43,7 @@
       use cal_mesh_position
       use count_whole_num_element
 !
-      use const_RHS_assemble_list
-      use set_connectivity_4_MHD
+      use set_MHD_connectivity
       use init_iccg_matrices
       use convert_temperatures
       use cal_jacobian
@@ -205,11 +204,10 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_connect_RHS_assemble'
-      call set_connect_RHS_assemble
-!
-      if (iflag_debug.eq.1) write(*,*) 'set_connectivity'
-      call set_connectivity
+      if (iflag_debug.eq.1) write(*,*) 'set_MHD_whole_connectivity'
+      call set_MHD_whole_connectivity
+      if (iflag_debug.eq.1) write(*,*) 'set_MHD_layerd_connectivity'
+      call set_MHD_layerd_connectivity
 !
 !     ---------------------
 !
@@ -232,7 +230,7 @@
 !
 !     ---------------------
 !
-      call int_mass_matrices
+      call int_RHS_mass_matrices
 !
 !     ---------------------
 !

@@ -202,7 +202,7 @@
 !
 !     --------------------- 
 !
-      call int_mass_matrices
+      call int_RHS_mass_matrices
 !
 !
       end subroutine init_analyzer_snap
