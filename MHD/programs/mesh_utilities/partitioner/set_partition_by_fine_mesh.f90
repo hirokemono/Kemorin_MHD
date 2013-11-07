@@ -75,12 +75,12 @@
       subroutine input_interpolate_table_4_part
 !
       use m_ctl_param_partitioner
+      use m_interpolate_table_orgin
       use itp_table_IO_select_4_zlib
       use copy_interpolate_dest_IO
       use copy_interpolate_org_IO
-      use set_stack_tbl_wtype_org_smp
 !
-      integer(kind = kint), parameter :: my_rank = 0, ifile_type = 1
+      integer(kind = kint), parameter :: my_rank = 0
       integer(kind = kint) :: ierr
 !
 !
@@ -92,7 +92,7 @@
       call copy_itp_table_dest_from_IO(my_rank)
       call copy_itp_table_org_from_IO(my_rank)
 !
-      call s_set_stack_tbl_wtype_org_smp
+      call set_stack_tbl_wtype_org_smp
 !
       end subroutine input_interpolate_table_4_part
 !
@@ -112,7 +112,7 @@
 !
       call s_interporate_imark_para(np_smp, nnod_2nd, nele_2nd,         &
      &    nnod_4_ele_2nd, ie_2nd, IGROUP_FINER(1),                      &
-     &    istack_table_type_org_smp, ntot_table_org, iele_org_4_org,    &
+     &    istack_tbl_type_org_smp, ntot_table_org, iele_org_4_org,      &
      &    itype_inter_org, IGROUP_nod(1) )
 !
       end subroutine interpolate_domain_group

@@ -27,7 +27,6 @@
         use m_ctl_params_4_gen_table
         use m_ctl_data_gen_table
         use m_read_mesh_data
-        use m_interpolate_matrix
 !
         use set_ctl_interpolation
         use load_mesh_data
@@ -36,7 +35,7 @@
         use itp_table_IO_select_4_zlib
         use copy_interpolate_dest_IO
         use copy_interpolate_org_IO
-        use set_stack_tbl_wtype_org_smp
+        use interpolate_nodal_field
 !
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -84,11 +83,8 @@
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_table_org_from_IO'
       call copy_itp_table_org_from_IO(my_rank)
 !
-      if (iflag_debug.eq.1) write(*,*) 's_set_stack_tbl_wtype_org_smp'
-      call s_set_stack_tbl_wtype_org_smp
-!
-      if (iflag_debug.eq.1) write(*,*) 'const_interporate_mat'
-      call const_interporate_mat(numele, nnod_4_ele, ie)
+      if (iflag_debug.eq.1) write(*,*) 'init_interpolate_nodal_data'
+      call init_interpolate_nodal_data
 !
       end subroutine s_input_control_itp_mesh
 !

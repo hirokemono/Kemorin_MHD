@@ -58,7 +58,7 @@
 !$omp parallel do
         do inum = 1, num
           INOD_DJO(inum+ist) = inum + ist
-          INM(inum+ist) = INM(ist-1) + inum * NUM_SUM(i)
+          INM(inum+ist) = INM(ist) + inum * NUM_SUM(i)
         end do
 !$omp end parallel do
       end do

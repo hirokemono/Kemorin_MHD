@@ -101,7 +101,7 @@
       call allocate_itp_mat_num
 !
       call count_interporate_mat_para                                   &
-     &   (np_smp, nnod_ele_org, istack_table_type_org_smp,              &
+     &   (np_smp, nnod_ele_org, istack_tbl_type_org_smp,                &
      &    NC_itp, NUM_NCOMP_itp, NCM_itp, INOD_itp_mat, INM_itp,        &
      &    NUM_SUM_itp, IEND_SUM_itp, IEND_SUM_itp_smp)
 !

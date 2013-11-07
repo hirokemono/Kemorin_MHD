@@ -99,7 +99,7 @@
       use m_ctl_params_4_gen_table
       use set_udt_to_2nd_data
       use ucd_IO_select
-      use interpolate_nodal_data
+      use interpolate_nodal_field
       use nod_phys_send_recv
 !
 !
@@ -114,7 +114,7 @@
 !    interpolation
 !
         if (iflag_debug.gt.0) write(*,*) 's_interpolate_nodal_data'
-        call s_interpolate_nodal_data
+        call interpolate_nodal_data
 !
 !    output udt data
 !

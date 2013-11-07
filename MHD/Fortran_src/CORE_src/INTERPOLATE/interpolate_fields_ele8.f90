@@ -1,11 +1,22 @@
+!>@file   interpolate_fields_ele8.f90
+!!@brief  module interpolate_fields_ele8
+!!
+!!@author H. Matsui
+!!@date  Programmed by H. Matsui in July, 2006
+!!@n     Modified by H. Matsui in Nov., 2013
 !
-!     module interpolate_fields_ele8
-!
-!     Written by H. Matsui on July, 2006
-!
-!      subroutine s_interpolate_fields_ele8(np_smp, numnod, numele, ie, &
-!     &          numdir, v_org, istack_smp, num_points, iele_gauss,     &
-!     &          xi_gauss, vect)
+!> @brief Interpolation of arbitorary fields in tri-linear element
+!!
+!!@verbatim
+!!      subroutine itp_matvec_fields_node(np_smp, NP, NB, v_org,        &
+!!     &          NC, NCM, INM, IAM, IEND_SUM_smp, vect)
+!!      subroutine itp_matvec_fields_edge2(np_smp, NP, NB, v_org,       &
+!!     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
+!!      subroutine itp_matvec_fields_surf4(np_smp, NP, NB, v_org,       &
+!!     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
+!!      subroutine itp_matvec_fields_ele8(np_smp, NP, NB, v_org,        &
+!!     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
+!!@endverbatim
 !
       module interpolate_fields_ele8
 !
@@ -19,95 +30,185 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_interpolate_fields_ele8(np_smp, numnod, numele, ie,  &
-     &          numdir, v_org, istack_smp, num_points, iele_gauss,      &
-     &          xi_gauss, vect)
+      subroutine itp_matvec_fields_node(np_smp, NP, NB, v_org,          &
+     &          NC, NCM, INM, IAM, IEND_SUM_smp, vect)
 !
       use m_constants
 !
       integer (kind = kint), intent(in) :: np_smp
-      integer (kind = kint), intent(in) :: numnod, numele, numdir
-      integer (kind = kint), intent(in) :: ie(numele,8)
-      integer (kind = kint), intent(in) :: istack_smp(0:np_smp)
-      integer (kind = kint), intent(in) :: num_points
-      integer (kind = kint), intent(in) :: iele_gauss(num_points)
-      real (kind=kreal), intent(in) :: xi_gauss(num_points,3)
-      real (kind=kreal), intent(in) :: v_org(numdir*numnod)
+      integer (kind = kint), intent(in) :: NP, NB
+      real (kind=kreal), intent(in) :: v_org(NB*NP)
 !
-      real (kind=kreal), intent(inout) :: vect(numdir*num_points)
+      integer(kind = kint), intent(in) :: NC, NCM
+      integer(kind = kint), intent(in) :: IEND_SUM_smp(0:np_smp)
+      integer(kind = kint), intent(in) :: INM(0:NC)
+      integer(kind = kint), intent(in) :: IAM(NCM)
 !
-      real (kind=kreal) :: xi, ei, zi
-      real (kind=kreal) :: xi_nega, ei_nega, zi_nega
-      real (kind=kreal) :: xi_posi, ei_posi, zi_posi
+      real (kind=kreal), intent(inout) :: vect(NB*NC)
 !
-      real (kind=kreal) :: an1, an2, an3, an4, an5, an6, an7, an8
-!
-      integer (kind = kint) :: ip, ist, ied
-      integer (kind = kint) :: iele, i1, i2, i3, i4, i5, i6, i7, i8
-!
-      integer (kind = kint) :: ig, nd
+      integer (kind = kint) :: ip, ist, ist_s, ied_s, ig, i, nd
+      integer (kind = kint) :: i1
 !
 !
-!$omp parallel do private(ist,ied,ig,iele,i1,i2,i3,i4,i5,i6,i7,i8,      &
-!$omp&                    xi,ei,zi, xi_nega, xi_posi, ei_nega, ei_posi, &
-!$omp&                    zi_nega, zi_posi, an1,an2,an3,an4,an5,an6,    &
-!$omp&                    an7,an8,nd)
+!$omp parallel do private(ist_s,ied_s,ig,ist,i1,i,nd)
       do ip = 1, np_smp
-        ist = istack_smp(ip-1) + 1
-        ied = istack_smp(ip)
-        do nd = 1, numdir
-          do ig = ist, ied
+        ist_s = NB*IEND_SUM_smp(ip-1) + 1
+        ied_s = NB*IEND_SUM_smp(ip)
+        do i = ist_s, ied_s
+          nd = mod(i-1,NB) + 1
+          ig = (i - nd) / NB + 1
 !
-            iele = iele_gauss(ig)
+          ist = INM(ig-1)
+          i1 =  nd + NB * (IAM(ist+ 1) - 1)
 !
-            i1 = ie(iele,1)
-            i2 = ie(iele,2)
-            i3 = ie(iele,3)
-            i4 = ie(iele,4)
-            i5 = ie(iele,5)
-            i6 = ie(iele,6)
-            i7 = ie(iele,7)
-            i8 = ie(iele,8)
-!
-            xi = xi_gauss(ig,1)
-            ei = xi_gauss(ig,2)
-            zi = xi_gauss(ig,3)
-!
-            xi_nega = one - xi
-            xi_posi = one + xi
-!
-            ei_nega = one - ei
-            ei_posi = one + ei
-!
-            zi_nega = one - zi
-            zi_posi = one + zi
-!
-            an1  = r125 * xi_nega * ei_nega * zi_nega
-            an2  = r125 * xi_posi * ei_nega * zi_nega
-            an3  = r125 * xi_posi * ei_posi * zi_nega
-            an4  = r125 * xi_nega * ei_posi * zi_nega
-            an5  = r125 * xi_nega * ei_nega * zi_posi
-            an6  = r125 * xi_posi * ei_nega * zi_posi
-            an7  = r125 * xi_posi * ei_posi * zi_posi
-            an8  = r125 * xi_nega * ei_posi * zi_posi
-!
-!
-            vect(numdir*(ig-1)+nd)                                      &
-     &                         =   an1 * v_org( (numdir*( i1-1)+nd) )   &
-     &                          +  an2 * v_org( (numdir*( i2-1)+nd) )   &
-     &                          +  an3 * v_org( (numdir*( i3-1)+nd) )   &
-     &                          +  an4 * v_org( (numdir*( i4-1)+nd) )   &
-     &                          +  an5 * v_org( (numdir*( i5-1)+nd) )   &
-     &                          +  an6 * v_org( (numdir*( i6-1)+nd) )   &
-     &                          +  an7 * v_org( (numdir*( i7-1)+nd) )   &
-     &                          +  an8 * v_org( (numdir*( i8-1)+nd) )
-!
-          end do
+          vect(i) =  v_org(i1 )
         end do
       end do
 !$omp end parallel do
 !
-      end subroutine s_interpolate_fields_ele8
+      end subroutine itp_matvec_fields_node
+!
+! ----------------------------------------------------------------------
+!
+      subroutine itp_matvec_fields_edge2(np_smp, NP, NB, v_org,         &
+     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
+!
+      use m_constants
+!
+      integer (kind = kint), intent(in) :: np_smp
+      integer (kind = kint), intent(in) :: NP, NB
+      real (kind=kreal), intent(in) :: v_org(NB*NP)
+!
+      integer(kind = kint), intent(in) :: NC, NCM
+      integer(kind = kint), intent(in) :: IEND_SUM_smp(0:np_smp)
+      integer(kind = kint), intent(in) :: INM(0:NC)
+      integer(kind = kint), intent(in) :: IAM(NCM)
+      real(kind = kreal), intent(in) :: AM(NCM)
+!
+      real (kind=kreal), intent(inout) :: vect(NB*NC)
+!
+      integer (kind = kint) :: ip, ist, ist_s, ied_s, ig, i, nd
+      integer (kind = kint) :: i1, i2
+!
+!
+!$omp parallel do private(ist_s,ied_s,ig,ist,i1,i2,i,nd)
+      do ip = 1, np_smp
+        ist_s = NB*IEND_SUM_smp(ip-1) + 1
+        ied_s = NB*IEND_SUM_smp(ip)
+        do i = ist_s, ied_s
+          nd = mod(i-1,NB) + 1
+          ig = (i - nd) / NB + 1
+!
+          ist = INM(ig-1)
+!
+          i1 =  nd + NB * (IAM(ist+ 1) - 1)
+          i2 =  nd + NB * (IAM(ist+ 2) - 1)
+!
+          vect(i)  =  AM(ist+ 1) * v_org(i1 ) + AM(ist+ 2) * v_org(i2 )
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine itp_matvec_fields_edge2
+!
+! ----------------------------------------------------------------------
+!
+      subroutine itp_matvec_fields_surf4(np_smp, NP, NB, v_org,         &
+     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
+!
+      use m_constants
+!
+      integer (kind = kint), intent(in) :: np_smp
+      integer (kind = kint), intent(in) :: NP, NB
+      real (kind=kreal), intent(in) :: v_org(NB*NP)
+!
+      integer(kind = kint), intent(in) :: NC, NCM
+      integer(kind = kint), intent(in) :: IEND_SUM_smp(0:np_smp)
+      integer(kind = kint), intent(in) :: INM(0:NC)
+      integer(kind = kint), intent(in) :: IAM(NCM)
+      real(kind = kreal), intent(in) :: AM(NCM)
+!
+      real (kind=kreal), intent(inout) :: vect(NB*NC)
+!
+      integer (kind = kint) :: ip, ist, ist_s, ied_s, ig, i, nd
+      integer (kind = kint) :: i1, i2, i3, i4
+!
+!
+!$omp parallel do private(ist_s,ied_s,ig,ist,i1,i2,i3,i4,i,nd)
+      do ip = 1, np_smp
+        ist_s = NB*IEND_SUM_smp(ip-1) + 1
+        ied_s = NB*IEND_SUM_smp(ip)
+        do i = ist_s, ied_s
+          nd = mod(i-1,NB) + 1
+          ig = (i - nd) / NB + 1
+!
+          ist = INM(ig-1)
+!
+          i1 =  nd + NB * (IAM(ist+ 1) - 1)
+          i2 =  nd + NB * (IAM(ist+ 2) - 1)
+          i3 =  nd + NB * (IAM(ist+ 3) - 1)
+          i4 =  nd + NB * (IAM(ist+ 4) - 1)
+!
+          vect(i) =   AM(ist+ 1) * v_org(i1 ) + AM(ist+ 2) * v_org(i2 ) &
+     &              + AM(ist+ 3) * v_org(i3 ) + AM(ist+ 4) * v_org(i4 )
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine itp_matvec_fields_surf4
+!
+! ----------------------------------------------------------------------
+!
+      subroutine itp_matvec_fields_ele8(np_smp, NP, NB, v_org,          &
+     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
+!
+      use m_constants
+!
+      integer (kind = kint), intent(in) :: np_smp
+      integer (kind = kint), intent(in) :: NP, NB
+      real (kind=kreal), intent(in) :: v_org(NB*NP)
+!
+      integer(kind = kint), intent(in) :: NC, NCM
+      integer(kind = kint), intent(in) :: IEND_SUM_smp(0:np_smp)
+      integer(kind = kint), intent(in) :: INM(0:NC)
+      integer(kind = kint), intent(in) :: IAM(NCM)
+      real(kind = kreal), intent(in) :: AM(NCM)
+!
+      real (kind=kreal), intent(inout) :: vect(NB*NC)
+!
+      integer (kind = kint) :: ip, ist, ist_s, ied_s, ig, i, nd
+      integer (kind = kint) :: i1, i2, i3, i4, i5, i6, i7, i8
+!
+!
+!$omp parallel do private(ist_s,ied_s,ig,ist,i1,i2,i3,i4,i5,i6,i7,i8,   &
+!$omp&                    i,nd)
+      do ip = 1, np_smp
+        ist_s = NB*IEND_SUM_smp(ip-1) + 1
+        ied_s = NB*IEND_SUM_smp(ip)
+        do i = ist_s, ied_s
+          nd = mod(i-1,NB) + 1
+          ig = (i - nd) / NB + 1
+!
+          ist = INM(ig-1)
+!
+          i1 =  nd + NB * (IAM(ist+ 1) - 1)
+          i2 =  nd + NB * (IAM(ist+ 2) - 1)
+          i3 =  nd + NB * (IAM(ist+ 3) - 1)
+          i4 =  nd + NB * (IAM(ist+ 4) - 1)
+          i5 =  nd + NB * (IAM(ist+ 5) - 1)
+          i6 =  nd + NB * (IAM(ist+ 6) - 1)
+          i7 =  nd + NB * (IAM(ist+ 7) - 1)
+          i8 =  nd + NB * (IAM(ist+ 8) - 1)
+!
+          vect(i) =   AM(ist+ 1) * v_org(i1 ) + AM(ist+ 2) * v_org(i2 ) &
+     &              + AM(ist+ 3) * v_org(i3 ) + AM(ist+ 4) * v_org(i4 ) &
+     &              + AM(ist+ 5) * v_org(i5 ) + AM(ist+ 6) * v_org(i6 ) &
+     &              + AM(ist+ 7) * v_org(i7 ) + AM(ist+ 8) * v_org(i8 )
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine itp_matvec_fields_ele8
 !
 ! ----------------------------------------------------------------------
 !

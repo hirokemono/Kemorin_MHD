@@ -29,7 +29,7 @@
 !
       use m_machine_parameter
       use t_interpolate_table
-      use set_stack_tbl_org_smp_type
+      use t_interpolate_tbl_org
 !
       integer(kind = kint), intent(in) :: my_rank
       type(interpolate_table), intent(inout) :: itp_table
@@ -41,7 +41,7 @@
       call copy_itp_tbl_type_org_from_raw(my_rank, itp_table%tbl_org)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_stack_tbl_org_smp_type'
-      call s_set_stack_tbl_org_smp_type(itp_table%tbl_org)
+      call set_stack_tbl_org_smp_type(itp_table%tbl_org)
 !
       end subroutine copy_interpolate_types_from_raw
 !

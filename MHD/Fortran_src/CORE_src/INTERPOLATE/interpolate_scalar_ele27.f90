@@ -1,11 +1,18 @@
+!>@file   interpolate_scalar_ele27.f90
+!!@brief  module interpolate_scalar_ele27
+!!
+!!@author H. Matsui
+!!@date  Programmed by H. Matsui in July, 2006
+!!@n     Modified by H. Matsui in Nov., 2013
 !
-!     module interpolate_scalar_ele27
-!
-!     Written by H. Matsui on July, 2006
-!
-!      subroutine s_interpolate_scalar_ele27(np_smp, numnod, numele, ie,&
-!     &          v_org, istack_smp, num_points, iele_gauss,             &
-!     &          xi_gauss, vect)
+!> @brief Interpolation for scalar in Lagrange element
+!!
+!!@verbatim
+!!      subroutine itp_matvec_scalar_surf9(np_smp, NP, v_org,           &
+!!     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
+!!      subroutine itp_matvec_scalar_ele27(np_smp, NP, v_org,           &
+!!     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
+!!@endverbatim
 !
       module interpolate_scalar_ele27
 !
@@ -168,6 +175,142 @@
 !$omp end parallel do
 !
       end subroutine s_interpolate_scalar_ele27
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine itp_matvec_scalar_surf9(np_smp, NP, v_org,             &
+     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
+!
+      use m_constants
+!
+      integer (kind = kint), intent(in) :: np_smp
+      integer (kind = kint), intent(in) :: NP
+      real (kind=kreal), intent(in) :: v_org(NP)
+!
+      integer(kind = kint), intent(in) :: NC, NCM
+      integer(kind = kint), intent(in) :: IEND_SUM_smp(0:np_smp)
+      integer(kind = kint), intent(in) :: INM(0:NC)
+      integer(kind = kint), intent(in) :: IAM(NCM)
+      real(kind = kreal), intent(in) :: AM(NCM)
+!
+      real (kind=kreal), intent(inout) :: vect(NC)
+!
+      integer (kind = kint) :: ip, ist, ist_s, ied_s, ig
+      integer (kind = kint) :: i1, i2, i3, i4, i5, i6, i7, i8, i9
+!
+!
+!$omp parallel do private(ist_s,ied_s,ig,ist,                           &
+!$omp&                    i1,i2,i3,i4,i5,i6,i7,i8,i9)
+      do ip = 1, np_smp
+        ist_s = IEND_SUM_smp(ip-1) + 1
+        ied_s = IEND_SUM_smp(ip)
+        do ig = ist_s, ied_s
+          ist = INM(ig-1)
+!
+          i1 =  IAM(ist+ 1)
+          i2 =  IAM(ist+ 2)
+          i3 =  IAM(ist+ 3)
+          i4 =  IAM(ist+ 4)
+          i5 =  IAM(ist+ 5)
+          i6 =  IAM(ist+ 6)
+          i7 =  IAM(ist+ 7)
+          i8 =  IAM(ist+ 8)
+          i9 =  IAM(ist+ 9)
+!
+          vect(ig) =  AM(ist+ 1) * v_org(i1 ) + AM(ist+ 2) * v_org(i2 ) &
+     &              + AM(ist+ 3) * v_org(i3 ) + AM(ist+ 4) * v_org(i4 ) &
+     &              + AM(ist+ 5) * v_org(i5 ) + AM(ist+ 6) * v_org(i6 ) &
+     &              + AM(ist+ 7) * v_org(i7 ) + AM(ist+ 8) * v_org(i8 ) &
+     &              + AM(ist+ 9) * v_org(i9 )
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine itp_matvec_scalar_surf9
+!
+! ----------------------------------------------------------------------
+!
+      subroutine itp_matvec_scalar_ele27(np_smp, NP, v_org,             &
+     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
+!
+      use m_constants
+!
+      integer (kind = kint), intent(in) :: np_smp
+      integer (kind = kint), intent(in) :: NP
+      real (kind=kreal), intent(in) :: v_org(NP)
+!
+      integer(kind = kint), intent(in) :: NC, NCM
+      integer(kind = kint), intent(in) :: IEND_SUM_smp(0:np_smp)
+      integer(kind = kint), intent(in) :: INM(0:NC)
+      integer(kind = kint), intent(in) :: IAM(NCM)
+      real(kind = kreal), intent(in) :: AM(NCM)
+!
+      real (kind=kreal), intent(inout) :: vect(NC)
+!
+      integer (kind = kint) :: ip, ist, ist_s, ied_s, ig
+      integer (kind = kint) :: i1, i2, i3, i4, i5, i6, i7, i8
+      integer (kind = kint) :: i9, i10, i11, i12, i13, i14, i15, i16
+      integer (kind = kint) :: i17, i18, i19, i20, i21, i22, i23, i24
+      integer (kind = kint) :: i25, i26, i27
+!
+!
+!$omp parallel do private(ist_s,ied_s,ig,ist,i1,i2,i3,i4,i5,i6,i7,i8,i9,&
+!$omp&                    i10,i11,i12,i13,i14,i15,i16,i17,i18,i19,i20,  &
+!$omp&                    i21,i22,i23,i24,i25,i26,i27)
+      do ip = 1, np_smp
+        ist_s = IEND_SUM_smp(ip-1) + 1
+        ied_s = IEND_SUM_smp(ip)
+        do ig = ist_s, ied_s
+          ist = INM(ig-1)
+!
+          i1 =  IAM(ist+ 1)
+          i2 =  IAM(ist+ 2)
+          i3 =  IAM(ist+ 3)
+          i4 =  IAM(ist+ 4)
+          i5 =  IAM(ist+ 5)
+          i6 =  IAM(ist+ 6)
+          i7 =  IAM(ist+ 7)
+          i8 =  IAM(ist+ 8)
+          i9 =  IAM(ist+ 9)
+          i10 = IAM(ist+10)
+          i11 = IAM(ist+11)
+          i12 = IAM(ist+12)
+          i13 = IAM(ist+13)
+          i14 = IAM(ist+14)
+          i15 = IAM(ist+15)
+          i16 = IAM(ist+16)
+          i17 = IAM(ist+17)
+          i18 = IAM(ist+18)
+          i19 = IAM(ist+19)
+          i20 = IAM(ist+20)
+          i21 = IAM(ist+21)
+          i22 = IAM(ist+22)
+          i23 = IAM(ist+23)
+          i24 = IAM(ist+24)
+          i25 = IAM(ist+25)
+          i26 = IAM(ist+26)
+          i27 = IAM(ist+27)
+!
+          vect(ig) =  AM(ist+ 1) * v_org(i1 ) + AM(ist+ 2) * v_org(i2 ) &
+     &              + AM(ist+ 3) * v_org(i3 ) + AM(ist+ 4) * v_org(i4 ) &
+     &              + AM(ist+ 5) * v_org(i5 ) + AM(ist+ 6) * v_org(i6 ) &
+     &              + AM(ist+ 7) * v_org(i7 ) + AM(ist+ 8) * v_org(i8 ) &
+     &              + AM(ist+ 9) * v_org(i9 ) + AM(ist+10) * v_org(i10) &
+     &              + AM(ist+11) * v_org(i11) + AM(ist+12) * v_org(i12) &
+     &              + AM(ist+13) * v_org(i13) + AM(ist+14) * v_org(i14) &
+     &              + AM(ist+15) * v_org(i15) + AM(ist+16) * v_org(i16) &
+     &              + AM(ist+17) * v_org(i17) + AM(ist+18) * v_org(i18) &
+     &              + AM(ist+19) * v_org(i19) + AM(ist+20) * v_org(i20) &
+     &              + AM(ist+21) * v_org(i21) + AM(ist+22) * v_org(i22) &
+     &              + AM(ist+23) * v_org(i23) + AM(ist+24) * v_org(i24) &
+     &              + AM(ist+25) * v_org(i25) + AM(ist+26) * v_org(i26) &
+     &              + AM(ist+27) * v_org(i27)
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine itp_matvec_scalar_ele27
 !
 ! ----------------------------------------------------------------------
 !

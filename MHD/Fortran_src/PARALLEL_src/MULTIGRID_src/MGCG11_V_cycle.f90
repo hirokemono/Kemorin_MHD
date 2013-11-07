@@ -78,7 +78,7 @@
       use m_constants
       use t_comm_table
       use solver_DJDS11_struct
-      use interpolate_type_1
+      use interpolate_by_type
       use empty_solver_DJDS
 !
       integer(kind = kint), intent(in) :: num_MG_level
@@ -120,7 +120,7 @@
         NP_f = mat11(i  )%num_diag
         NP_c = mat11(i+1)%num_diag
         ierr = IER
-        call s_interpolate_type_1(NP_f, NP_c, MG_comm(i+1),             &
+        call interpolate_type_1(NP_f, NP_c, MG_comm(i+1),               &
      &      MG_itp(i+1)%f2c, MG_vect(i)%b_vec, MG_vect(i+1)%b_vec,      &
      &      PEsmpTOT)
         MG_vect(i+1)%x_vec(1:NP_c) = zero
@@ -155,8 +155,8 @@
 !          write(*,*) j, MG_vect(i)%x_vec(j), MG_vect(i)%b_vec(j)
 !        end do
 !
-        write(*,*) 's_interpolate_type_1 restriction', i
-        call s_interpolate_type_1(NP_f, NP_c, MG_comm(i+1),             &
+        write(*,*) 'interpolate_type_1 restriction', i
+        call interpolate_type_1(NP_f, NP_c, MG_comm(i+1),               &
      &      MG_itp(i+1)%f2c, MG_vect(i)%x_vec, MG_vect(i+1)%x_vec,      &
      &      PEsmpTOT)
       end do
@@ -187,8 +187,8 @@
         NP_f = mat11(i  )%num_diag
         NP_c = mat11(i+1)%num_diag
         ierr = IER
-        write(*,*) 's_interpolate_type_1 interpolation', i
-        call s_interpolate_type_1(NP_c, NP_f, MG_comm(i),               &
+        write(*,*) 'interpolate_type_1 interpolation', i
+        call interpolate_type_1(NP_c, NP_f, MG_comm(i),                 &
      &      MG_itp(i+1)%c2f, MG_vect(i+1)%x_vec, MG_vect(i)%x_vec,      &
      &      PEsmpTOT)
 !

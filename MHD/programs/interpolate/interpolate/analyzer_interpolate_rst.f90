@@ -113,7 +113,7 @@
       use field_IO_select
       use set_parallel_file_name
       use copy_time_steps_4_restart
-      use interpolate_nodal_data
+      use interpolate_nodal_field
       use nod_phys_send_recv
       use set_field_to_restart
       use set_2nd_field_to_restart
@@ -147,7 +147,7 @@
      &      CALYPSO_COMM, ierr_MPI)
 !
         if (iflag_debug.gt.0)  write(*,*) 's_interpolate_nodal_data'
-        call s_interpolate_nodal_data
+        call interpolate_nodal_data
 !
         if (my_rank .lt. ndomain_dest) then
           numgrid_phys_IO = nnod_2nd

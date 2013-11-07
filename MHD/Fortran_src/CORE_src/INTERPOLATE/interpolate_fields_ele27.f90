@@ -1,11 +1,18 @@
+!>@file   interpolate_fields_ele20.f90
+!!@brief  module interpolate_fields_ele20
+!!
+!!@author H. Matsui
+!!@date  Programmed by H. Matsui in July, 2006
+!!@n     Modified by H. Matsui in Nov., 2013
 !
-!     module interpolate_fields_ele27
-!
-!     Written by H. Matsui on July, 2006
-!
-!      subroutine s_interpolate_fields_ele27(np_smp, numnod, numele, ie,&
-!     &          numdir, v_org, istack_smp, num_points, iele_gauss,     &
-!     &          xi_gauss, vect)
+!> @brief Interpolation of arbitorary fields in Lagrandle element
+!!
+!!@verbatim
+!!      subroutine itp_matvec_fields_surf9(np_smp, NP, NB, v_org,       &
+!!     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
+!!      subroutine itp_matvec_fields_ele27(np_smp, NP, NB, v_org,       &
+!!     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
+!!@endverbatim
 !
       module interpolate_fields_ele27
 !
@@ -19,172 +26,144 @@
 !
 ! ----------------------------------------------------------------------
 !
-!
-      subroutine s_interpolate_fields_ele27(np_smp, numnod, numele, ie, &
-     &          numdir, v_org, istack_smp, num_points, iele_gauss,      &
-     &          xi_gauss, vect)
+      subroutine itp_matvec_fields_surf9(np_smp, NP, NB, v_org,         &
+     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
 !
       use m_constants
 !
       integer (kind = kint), intent(in) :: np_smp
-      integer (kind = kint), intent(in) :: numnod, numele, numdir
-      integer (kind = kint), intent(in) :: ie(numele,27)
-      integer (kind = kint), intent(in) :: istack_smp(0:np_smp)
-      integer (kind = kint), intent(in) :: num_points
-      integer (kind = kint), intent(in) :: iele_gauss(num_points)
-      real (kind=kreal), intent(in) :: xi_gauss(num_points,3)
-      real (kind=kreal), intent(in) :: v_org(numdir*numnod)
+      integer (kind = kint), intent(in) :: NP, NB
+      real (kind=kreal), intent(in) :: v_org(NB*NP)
 !
-      real (kind=kreal), intent(inout) :: vect(numdir*num_points)
+      integer(kind = kint), intent(in) :: NC, NCM
+      integer(kind = kint), intent(in) :: IEND_SUM_smp(0:np_smp)
+      integer(kind = kint), intent(in) :: INM(0:NC)
+      integer(kind = kint), intent(in) :: IAM(NCM)
+      real(kind = kreal), intent(in) :: AM(NCM)
 !
-      real (kind=kreal) :: xi, ei, zi
-      real (kind=kreal) :: xi_nega, ei_nega, zi_nega
-      real (kind=kreal) :: xi_posi, ei_posi, zi_posi
-      real (kind=kreal) :: xi_sqre, ei_sqre, zi_sqre
+      real (kind=kreal), intent(inout) :: vect(NB*NC)
 !
-      real (kind=kreal) :: an1, an2, an3, an4, an5, an6, an7, an8
-      real (kind=kreal) :: an9,  an10, an11, an12, an13, an14
-      real (kind=kreal) :: an15, an16, an17, an18, an19, an20
-      real (kind=kreal) :: an21, an22, an23, an24, an25, an26, an27
+      integer (kind = kint) :: ip, ist, ist_s, ied_s, ig, i, nd
+      integer (kind = kint) :: i1, i2, i3, i4, i5, i6, i7, i8, i9
 !
 !
-      integer (kind = kint) :: ip, ist, ied
-      integer (kind = kint) :: iele, i1, i2, i3, i4, i5, i6, i7, i8
-      integer (kind = kint) :: i9, i10, i11, i12, i13, i14, i15, i16
-      integer (kind = kint) :: i17, i18, i19, i20, i21, i22, i23, i24
-      integer (kind = kint) :: i25, i26, i27
-!
-      integer (kind = kint) :: ig, nd
-!
-!
-!$omp parallel do private(ist,ied,ig,iele,i1,i2,i3,i4,i5,i6,i7,i8,i9,   &
-!$omp&                    i10,i11,i12,i13,i14,i15,i16,i17,i18,i19,i20,  &
-!$omp&                    i21,i22,i23,i24,i25,i26,i27,xi,ei,zi,         &
-!$omp&                    xi_nega, xi_posi, ei_nega, ei_posi,           &
-!$omp&                    zi_nega, zi_posi, xi_sqre, ei_sqre, zi_sqre,  &
-!$omp&                    an1,an2,an3,an4,an5,an6,an7,an8,              &
-!$omp&                    an9,an10,an11,an12,an13,an14,an15,an16,       &
-!$omp&                    an17,an18,an19,an20,an21,an22,                &
-!$omp&                    an23,an24,an25,an26,an27,nd)
+!$omp parallel do private(ist_s,ied_s,ig,ist,i1,i2,i3,i4,i5,i6,i7,i8,i9,&
+!$omp&                    i,nd)
       do ip = 1, np_smp
-        ist = istack_smp(ip-1) + 1
-        ied = istack_smp(ip)
-        do nd = 1, numdir
-          do ig = ist, ied
+        ist_s = NB*IEND_SUM_smp(ip-1) + 1
+        ied_s = NB*IEND_SUM_smp(ip)
+        do i = ist_s, ied_s
+          nd = mod(i-1,NB) + 1
+          ig = (i - nd) / NB + 1
 !
-            iele = iele_gauss(ig)
+          ist = INM(ig-1)
 !
-            i1 = ie(iele,1)
-            i2 = ie(iele,2)
-            i3 = ie(iele,3)
-            i4 = ie(iele,4)
-            i5 = ie(iele,5)
-            i6 = ie(iele,6)
-            i7 = ie(iele,7)
-            i8 = ie(iele,8)
-            i9  = ie(iele,9 )
-            i10 = ie(iele,10)
-            i11 = ie(iele,11)
-            i12 = ie(iele,12)
-            i13 = ie(iele,13)
-            i14 = ie(iele,14)
-            i15 = ie(iele,15)
-            i16 = ie(iele,16)
-            i17 = ie(iele,17)
-            i18 = ie(iele,18)
-            i19 = ie(iele,19)
-            i20 = ie(iele,20)
-            i21 = ie(iele,21)
-            i22 = ie(iele,22)
-            i23 = ie(iele,23)
-            i24 = ie(iele,24)
-            i25 = ie(iele,25)
-            i26 = ie(iele,26)
-            i27 = ie(iele,27)
+          i1 =  nd + NB * (IAM(ist+ 1) - 1)
+          i2 =  nd + NB * (IAM(ist+ 2) - 1)
+          i3 =  nd + NB * (IAM(ist+ 3) - 1)
+          i4 =  nd + NB * (IAM(ist+ 4) - 1)
+          i5 =  nd + NB * (IAM(ist+ 5) - 1)
+          i6 =  nd + NB * (IAM(ist+ 6) - 1)
+          i7 =  nd + NB * (IAM(ist+ 7) - 1)
+          i8 =  nd + NB * (IAM(ist+ 8) - 1)
+          i9 =  nd + NB * (IAM(ist+ 9) - 1)
 !
-            xi = xi_gauss(ig,1)
-            ei = xi_gauss(ig,2)
-            zi = xi_gauss(ig,3)
-!
-            xi_nega = one - xi
-            xi_posi = one + xi
-            xi_sqre = one - xi * xi
-!
-            ei_nega = one - ei
-            ei_posi = one + ei
-            ei_sqre = one - ei * ei
-!
-            zi_nega = one - zi
-            zi_posi = one + zi
-            zi_sqre = one - zi * zi
-!
-            an1  = r125 * xi_nega * ei_nega * zi_nega * xi * ei * zi
-            an2  = r125 * xi_posi * ei_nega * zi_nega * xi * ei * zi
-            an3  = r125 * xi_posi * ei_posi * zi_nega * xi * ei * zi
-            an4  = r125 * xi_nega * ei_posi * zi_nega * xi * ei * zi
-            an5  = r125 * xi_nega * ei_nega * zi_posi * xi * ei * zi
-            an6  = r125 * xi_posi * ei_nega * zi_posi * xi * ei * zi
-            an7  = r125 * xi_posi * ei_posi * zi_posi * xi * ei * zi
-            an8  = r125 * xi_nega * ei_posi * zi_posi * xi * ei * zi
-!
-            an9  =  quad * xi_sqre * ei_nega * zi_nega * ei * zi
-            an10 =  quad * xi_posi * ei_sqre * zi_nega * xi * zi
-            an11 =  quad * xi_sqre * ei_posi * zi_nega * ei * zi
-            an12 =  quad * xi_nega * ei_sqre * zi_nega * xi * zi
-!
-            an13 =  quad * xi_sqre * ei_nega * zi_posi * ei * zi
-            an14 =  quad * xi_posi * ei_sqre * zi_posi * xi * zi
-            an15 =  quad * xi_sqre * ei_posi * zi_posi * ei * zi
-            an16 =  quad * xi_nega * ei_sqre * zi_posi * xi * zi
-!
-            an17 =  quad * xi_nega * ei_nega * zi_sqre * xi * ei
-            an18 =  quad * xi_posi * ei_nega * zi_sqre * xi * ei
-            an19 =  quad * xi_posi * ei_posi * zi_sqre * xi * ei
-            an20 =  quad * xi_nega * ei_posi * zi_sqre * xi * ei
-!
-            an21 =   half * xi_nega * ei_sqre * zi_sqre * xi
-            an22 =   half * xi_posi * ei_sqre * zi_sqre * xi
-            an23 =   half * xi_sqre * ei_nega * zi_sqre * ei
-            an24 =   half * xi_sqre * ei_posi * zi_sqre * ei
-            an25 =   half * xi_sqre * ei_sqre * zi_nega * zi
-            an26 =   half * xi_sqre * ei_sqre * zi_posi * zi
-!
-            an27 =        xi_sqre * ei_sqre * zi_sqre
-!
-            vect(numdir*(ig-1)+nd)                                      &
-     &                         =   an1 * v_org( (numdir*( i1-1)+nd) )   &
-     &                          +  an2 * v_org( (numdir*( i2-1)+nd) )   &
-     &                          +  an3 * v_org( (numdir*( i3-1)+nd) )   &
-     &                          +  an4 * v_org( (numdir*( i4-1)+nd) )   &
-     &                          +  an5 * v_org( (numdir*( i5-1)+nd) )   &
-     &                          +  an6 * v_org( (numdir*( i6-1)+nd) )   &
-     &                          +  an7 * v_org( (numdir*( i7-1)+nd) )   &
-     &                          +  an8 * v_org( (numdir*( i8-1)+nd) )   &
-     &                          +  an9 * v_org( (numdir*( i9-1)+nd) )   &
-     &                          + an10 * v_org( (numdir*(i10-1)+nd) )   &
-     &                          + an11 * v_org( (numdir*(i11-1)+nd) )   &
-     &                          + an12 * v_org( (numdir*(i12-1)+nd) )   &
-     &                          + an13 * v_org( (numdir*(i13-1)+nd) )   &
-     &                          + an14 * v_org( (numdir*(i14-1)+nd) )   &
-     &                          + an15 * v_org( (numdir*(i15-1)+nd) )   &
-     &                          + an16 * v_org( (numdir*(i16-1)+nd) )   &
-     &                          + an17 * v_org( (numdir*(i17-1)+nd) )   &
-     &                          + an18 * v_org( (numdir*(i18-1)+nd) )   &
-     &                          + an19 * v_org( (numdir*(i19-1)+nd) )   &
-     &                          + an20 * v_org( (numdir*(i20-1)+nd) )   &
-     &                          + an21 * v_org( (numdir*(i21-1)+nd) )   &
-     &                          + an22 * v_org( (numdir*(i22-1)+nd) )   &
-     &                          + an23 * v_org( (numdir*(i23-1)+nd) )   &
-     &                          + an24 * v_org( (numdir*(i24-1)+nd) )   &
-     &                          + an25 * v_org( (numdir*(i25-1)+nd) )   &
-     &                          + an26 * v_org( (numdir*(i26-1)+nd) )   &
-     &                          + an27 * v_org( (numdir*(i27-1)+nd) )
-          end do
+          vect(i)  =  AM(ist+ 1) * v_org(i1 ) + AM(ist+ 2) * v_org(i2 ) &
+     &              + AM(ist+ 3) * v_org(i3 ) + AM(ist+ 4) * v_org(i4 ) &
+     &              + AM(ist+ 5) * v_org(i5 ) + AM(ist+ 6) * v_org(i6 ) &
+     &              + AM(ist+ 7) * v_org(i7 ) + AM(ist+ 8) * v_org(i8 ) &
+     &              + AM(ist+ 9) * v_org(i9 )
         end do
       end do
 !$omp end parallel do
 !
-      end subroutine s_interpolate_fields_ele27
+      end subroutine itp_matvec_fields_surf9
+!
+! ----------------------------------------------------------------------
+!
+      subroutine itp_matvec_fields_ele27(np_smp, NP, NB, v_org,         &
+     &          NC, NCM, INM, IAM, AM, IEND_SUM_smp, vect)
+!
+      use m_constants
+!
+      integer (kind = kint), intent(in) :: np_smp
+      integer (kind = kint), intent(in) :: NP, NB
+      real (kind=kreal), intent(in) :: v_org(NB*NP)
+!
+      integer(kind = kint), intent(in) :: NC, NCM
+      integer(kind = kint), intent(in) :: IEND_SUM_smp(0:np_smp)
+      integer(kind = kint), intent(in) :: INM(0:NC)
+      integer(kind = kint), intent(in) :: IAM(NCM)
+      real(kind = kreal), intent(in) :: AM(NCM)
+!
+      real (kind=kreal), intent(inout) :: vect(NB*NC)
+!
+      integer (kind = kint) :: ip, ist, ist_s, ied_s, ig, i, nd
+      integer (kind = kint) :: i1, i2, i3, i4, i5, i6, i7, i8
+      integer (kind = kint) :: i9, i10, i11, i12, i13, i14, i15, i16
+      integer (kind = kint) :: i17, i18, i19, i20, i21, i22, i23, i24
+      integer (kind = kint) :: i25, i26, i27
+!
+!
+!$omp parallel do private(ist_s,ied_s,ig,ist,i1,i2,i3,i4,i5,i6,i7,i8,i9,&
+!$omp&                    i10,i11,i12,i13,i14,i15,i16,i17,i18,i19,i20,  &
+!$omp&                    i21,i22,i23,i24,i25,i26,i27,i,nd)
+      do ip = 1, np_smp
+        ist_s = NB*IEND_SUM_smp(ip-1) + 1
+        ied_s = NB*IEND_SUM_smp(ip)
+        do i = ist_s, ied_s
+          nd = mod(i-1,NB) + 1
+          ig = (i - nd) / NB + 1
+!
+          ist = INM(ig-1)
+!
+          i1 =  nd + NB * (IAM(ist+ 1) - 1)
+          i2 =  nd + NB * (IAM(ist+ 2) - 1)
+          i3 =  nd + NB * (IAM(ist+ 3) - 1)
+          i4 =  nd + NB * (IAM(ist+ 4) - 1)
+          i5 =  nd + NB * (IAM(ist+ 5) - 1)
+          i6 =  nd + NB * (IAM(ist+ 6) - 1)
+          i7 =  nd + NB * (IAM(ist+ 7) - 1)
+          i8 =  nd + NB * (IAM(ist+ 8) - 1)
+          i9 =  nd + NB * (IAM(ist+ 9) - 1)
+          i10 = nd + NB * (IAM(ist+10) - 1)
+          i11 = nd + NB * (IAM(ist+11) - 1)
+          i12 = nd + NB * (IAM(ist+12) - 1)
+          i13 = nd + NB * (IAM(ist+13) - 1)
+          i14 = nd + NB * (IAM(ist+14) - 1)
+          i15 = nd + NB * (IAM(ist+15) - 1)
+          i16 = nd + NB * (IAM(ist+16) - 1)
+          i17 = nd + NB * (IAM(ist+17) - 1)
+          i18 = nd + NB * (IAM(ist+18) - 1)
+          i19 = nd + NB * (IAM(ist+19) - 1)
+          i20 = nd + NB * (IAM(ist+20) - 1)
+          i21 = nd + NB * (IAM(ist+21) - 1)
+          i22 = nd + NB * (IAM(ist+22) - 1)
+          i23 = nd + NB * (IAM(ist+23) - 1)
+          i24 = nd + NB * (IAM(ist+24) - 1)
+          i25 = nd + NB * (IAM(ist+25) - 1)
+          i26 = nd + NB * (IAM(ist+26) - 1)
+          i27 = nd + NB * (IAM(ist+27) - 1)
+!
+          vect(i) =   AM(ist+ 1) * v_org(i1 ) + AM(ist+ 2) * v_org(i2 ) &
+     &              + AM(ist+ 3) * v_org(i3 ) + AM(ist+ 4) * v_org(i4 ) &
+     &              + AM(ist+ 5) * v_org(i5 ) + AM(ist+ 6) * v_org(i6 ) &
+     &              + AM(ist+ 7) * v_org(i7 ) + AM(ist+ 8) * v_org(i8 ) &
+     &              + AM(ist+ 9) * v_org(i9 ) + AM(ist+10) * v_org(i10) &
+     &              + AM(ist+11) * v_org(i11) + AM(ist+12) * v_org(i12) &
+     &              + AM(ist+13) * v_org(i13) + AM(ist+14) * v_org(i14) &
+     &              + AM(ist+15) * v_org(i15) + AM(ist+16) * v_org(i16) &
+     &              + AM(ist+17) * v_org(i17) + AM(ist+18) * v_org(i18) &
+     &              + AM(ist+19) * v_org(i19) + AM(ist+20) * v_org(i20) &
+     &              + AM(ist+21) * v_org(i21) + AM(ist+22) * v_org(i22) &
+     &              + AM(ist+23) * v_org(i23) + AM(ist+24) * v_org(i24) &
+     &              + AM(ist+25) * v_org(i25) + AM(ist+26) * v_org(i26) &
+     &              + AM(ist+27) * v_org(i27)
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine itp_matvec_fields_ele27
 !
 ! ----------------------------------------------------------------------
 !

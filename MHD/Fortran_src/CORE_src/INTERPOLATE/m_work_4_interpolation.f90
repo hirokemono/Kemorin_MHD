@@ -100,7 +100,7 @@
       integer(kind = kint), intent(in) :: nsize_itp
 !
       allocate(i_inter_org(nsize_itp) )
-      i_inter_org = 0.0d0
+      i_inter_org = 0
 !
       isize_itp_int_work = nsize_itp
 !

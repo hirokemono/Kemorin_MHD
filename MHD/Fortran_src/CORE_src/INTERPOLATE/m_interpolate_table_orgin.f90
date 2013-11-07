@@ -11,6 +11,8 @@
 !!
 !!      subroutine deallocate_itp_num_org
 !!      subroutine deallocate_itp_table_org
+!!
+!!      subroutine set_stack_tbl_wtype_org_smp
 !!@endverbatim
 !
       module m_interpolate_table_orgin
@@ -46,7 +48,7 @@
 !
 !>   end address of table to interpolation at original elements
       integer(kind = kint), allocatable                                 &
-     &            :: istack_table_type_org_smp(:)
+     &            :: istack_tbl_type_org_smp(:)
 !>   maximum number of interpolation at original elements
       integer(kind = kint) :: imax_table_type_org_smp
 !
@@ -65,12 +67,12 @@
       allocate( istack_nod_tbl_org(0:num_dest_pe) )
       allocate( istack_itp_type_org(0:4) )
 !
-      allocate(istack_table_type_org_smp(0:4*np_smp))
+      allocate(istack_tbl_type_org_smp(0:4*np_smp))
 !
       if(num_dest_pe .gt. 0) id_dest_domain = 0
       istack_nod_tbl_org =  0
       istack_itp_type_org = 0
-      istack_table_type_org_smp = 0
+      istack_tbl_type_org_smp = 0
 !
       end subroutine allocate_itp_num_org
 !
@@ -101,7 +103,7 @@
 !
       deallocate( id_dest_domain )
       deallocate( istack_nod_tbl_org )
-      deallocate(istack_table_type_org_smp)
+      deallocate(istack_tbl_type_org_smp)
 !
       end subroutine deallocate_itp_num_org
 !
@@ -116,6 +118,27 @@
       deallocate( coef_inter_org )
 !
       end subroutine deallocate_itp_table_org
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine set_stack_tbl_wtype_org_smp
+!
+      use m_machine_parameter
+      use cal_minmax_and_stacks
+!
+      integer(kind = kint) :: itype, ist, ied, ist_smp
+!
+!
+      do itype = 1, 4
+        ist = istack_itp_type_org(itype-1) + 1
+        ied = istack_itp_type_org(itype  )
+        ist_smp = np_smp * (itype-1)
+        call count_number_4_smp( np_smp, ist, ied,                      &
+     &     istack_tbl_type_org_smp(ist_smp), imax_table_type_org_smp)
+      end do
+!
+      end subroutine set_stack_tbl_wtype_org_smp
 !
 !-----------------------------------------------------------------------
 !

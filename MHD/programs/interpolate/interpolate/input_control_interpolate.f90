@@ -36,7 +36,7 @@
       use itp_table_IO_select_4_zlib
       use copy_interpolate_dest_IO
       use copy_interpolate_org_IO
-      use set_stack_tbl_wtype_org_smp
+      use interpolate_nodal_field
 !
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -81,8 +81,8 @@
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_table_org_from_IO'
       call copy_itp_table_org_from_IO(my_rank)
 !
-      if (iflag_debug.eq.1) write(*,*) 's_set_stack_tbl_wtype_org_smp'
-      call s_set_stack_tbl_wtype_org_smp
+      if (iflag_debug.eq.1) write(*,*) 'init_interpolate_nodal_data'
+      call init_interpolate_nodal_data
 !
       end subroutine s_input_control_interpolate
 !

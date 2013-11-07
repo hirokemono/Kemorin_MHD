@@ -181,6 +181,7 @@
       subroutine set_interpolate_mat_edge2(np_smp, numele, ie,          &
      &          iele_gauss, iedge_gauss, xi_gauss,                      &
      &          NC, NCM, INM, IAM, AM, IEND_SUM_smp)
+      use calypso_mpi
 !
       integer (kind = kint), intent(in) :: np_smp, numele
       integer (kind = kint), intent(in) :: ie(numele,20)
@@ -267,10 +268,10 @@
         ist_s = IEND_SUM_smp(ip-1) + 1
         ied_s = IEND_SUM_smp(ip  )
         do ig = ist_s, ied_s
+          ist = INM(ig-1)
           iele =  iele_gauss(ig)
           k1 = inod_gauss(ig)
 !
-          ist = INM(ig)
           IAM(ist+1) = ie(iele,k1)
           AM(ist+1) = one
         end do

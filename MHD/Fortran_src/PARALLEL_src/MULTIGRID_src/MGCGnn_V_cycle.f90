@@ -80,7 +80,7 @@
       use m_constants
       use t_comm_table
       use solver_DJDSnn_struct
-      use interpolate_type_N
+      use interpolate_by_type
       use empty_solver_DJDS
 !
       integer(kind = kint), intent(in) :: num_MG_level
@@ -120,7 +120,7 @@
       DO i = 0, num_MG_level-1
         NP_f = matNN(i  )%num_diag
         NP_c = matNN(i+1)%num_diag
-        call s_interpolate_type_N(NP_f, NP_c, NB, MG_comm(i+1),         &
+        call interpolate_type_N(NP_f, NP_c, NB, MG_comm(i+1),           &
      &      MG_itp(i+1)%f2c, MG_vect(i)%b_vec, MG_vect(i+1)%b_vec,      &
      &      PEsmpTOT)
         MG_vect(i+1)%x_vec(1:NP_c) = zero
@@ -148,7 +148,7 @@
      &        METHOD_MG)
          end if
 !
-        call s_interpolate_type_N(NP_f, NP_c, NB, MG_comm(i+1),         &
+        call interpolate_type_N(NP_f, NP_c, NB, MG_comm(i+1),           &
      &      MG_itp(i+1)%f2c, MG_vect(i)%x_vec, MG_vect(i+1)%x_vec,      &
      &      PEsmpTOT)
       end do
@@ -172,7 +172,7 @@
       do i = num_MG_level-1, 0, -1
         NP_f = matNN(i  )%num_diag
         NP_c = matNN(i+1)%num_diag
-        call s_interpolate_type_N(NP_c, NP_f, NB, MG_comm(i),           &
+        call interpolate_type_N(NP_c, NP_f, NB, MG_comm(i),             &
      &       MG_itp(i+1)%c2f, MG_vect(i+1)%x_vec, MG_vect(i)%x_vec,     &
      &       PEsmpTOT)
 !

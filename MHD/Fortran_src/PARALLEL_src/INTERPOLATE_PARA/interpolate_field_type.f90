@@ -14,6 +14,17 @@
 !
       use m_precision
 !
+      use calypso_mpi
+      use m_machine_parameter
+      use m_phys_constants
+      use m_array_for_send_recv
+      use m_2nd_pallalel_vector
+!
+      use t_mesh_data
+      use t_comm_table
+      use t_interpolate_table
+      use t_phys_data
+!
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -25,18 +36,7 @@
       subroutine interpolate_scalar_type(i_origin, i_dest,              &
      &          itp_table, mesh_org, mesh_dst, fld_org, fld_dst)
 !
-      use m_machine_parameter
-      use m_phys_constants
-      use calypso_mpi
-      use m_array_for_send_recv
-      use m_2nd_pallalel_vector
-!
-      use t_mesh_data
-      use t_comm_table
-      use t_interpolate_table
-      use t_phys_data
-!
-      use interpolate_type_1
+      use interpolate_by_type
 !
 !
       integer(kind = kint), intent(in) :: i_origin, i_dest
@@ -63,7 +63,7 @@
 !
 !    interpolation
 !
-      call s_interpolate_type_1                                         &
+      call interpolate_type_1                                           &
      &  (mesh_org%node%numnod, mesh_dst%node%numnod, mesh_dst%nod_comm, &
      &    itp_table, x_vec, xvec_2nd, np_smp)
 !
@@ -80,18 +80,7 @@
       subroutine interpolate_vector_type(i_origin, i_dest,              &
      &          itp_table, mesh_org, mesh_dst, fld_org, fld_dst)
 !
-      use m_machine_parameter
-      use m_phys_constants
-      use calypso_mpi
-      use m_array_for_send_recv
-      use m_2nd_pallalel_vector
-!
-      use t_mesh_data
-      use t_comm_table
-      use t_interpolate_table
-      use t_phys_data
-!
-      use interpolate_type_3
+      use interpolate_by_type
 !
 !
       integer(kind = kint), intent(in) :: i_origin, i_dest
@@ -120,7 +109,7 @@
 !
 !    interpolation
 !
-      call s_interpolate_type_3                                         &
+      call interpolate_type_3                                           &
      &  (mesh_org%node%numnod, mesh_dst%node%numnod, mesh_dst%nod_comm, &
      &    itp_table, x_vec, xvec_2nd, np_smp)
 !
@@ -139,18 +128,7 @@
       subroutine interpolate_tensor_type(i_origin, i_dest,              &
      &          itp_table, mesh_org, mesh_dst, fld_org, fld_dst)
 !
-      use m_machine_parameter
-      use m_phys_constants
-      use calypso_mpi
-      use m_array_for_send_recv
-      use m_2nd_pallalel_vector
-!
-      use t_mesh_data
-      use t_comm_table
-      use t_interpolate_table
-      use t_phys_data
-!
-      use interpolate_type_6
+      use interpolate_by_type
 !
 !
       integer(kind = kint), intent(in) :: i_origin, i_dest
@@ -182,7 +160,7 @@
 !
 !    interpolation
 !
-      call s_interpolate_type_6                                         &
+      call interpolate_type_6                                           &
      &  (mesh_org%node%numnod, mesh_dst%node%numnod, mesh_dst%nod_comm, &
      &    itp_table, x_vec, xvec_2nd, np_smp)
 !

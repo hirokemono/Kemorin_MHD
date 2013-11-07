@@ -3,6 +3,11 @@
 !
 !      Written by H. Matsui on Apr., 2012
 !
+!!      subroutine alloc_crs_smp_num(np_smp, crs_smp)
+!!      subroutine alloc_zero_crs_smp_mat(np_smp, crs_smp)
+!!      subroutine alloc_crs_smp_mat(crs_smp)
+!!      subroutine dealloc_crs_smp_mat(crs_smp)
+!
 !      subroutine link_alloc_type_djo11_mat(comm_table, djo_tbl,        &
 !     &          solver)
 !      subroutine link_alloc_type_djo33_mat(comm_table, djo_tbl,        &
@@ -33,6 +38,21 @@
       use t_comm_table
 !
       implicit none
+!
+      type CRS_SMP_CONNECT_MATRIX
+        integer(kind=kint ) ::  NC
+        integer(kind=kint ) ::  NCM
+        integer(kind=kint ), pointer :: INOD_DJO(:)
+        integer(kind=kint ), pointer :: INM(:)
+        integer(kind=kint ), pointer :: IAM(:)
+!
+        integer(kind=kint ) ::  NUM_NCOMP
+        integer(kind=kint ), pointer :: NUM_SUM(:)
+        integer(kind=kint ), pointer :: IEND_SUM(:)
+        integer(kind=kint ), pointer :: IEND_SUM_smp(:)
+!
+        real   (kind=kreal), pointer ::  AM(:)
+      end type CRS_SMP_CONNECT_MATRIX
 !
       type DJORS_CONNECT
         integer(kind=kint ) ::  NC
@@ -66,6 +86,78 @@
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_crs_smp_num(np_smp, crs_smp)
+!
+      integer(kind = kint), intent(in) :: np_smp
+      type(CRS_SMP_CONNECT_MATRIX), intent(inout) :: crs_smp
+!
+!
+      allocate (crs_smp%INOD_DJO(crs_smp%NC) )
+      allocate (crs_smp%INM(0:crs_smp%NC) )
+      allocate (crs_smp%NUM_SUM(crs_smp%NUM_NCOMP) )
+      allocate (crs_smp%IEND_SUM(0:crs_smp%NUM_NCOMP) )
+      allocate (crs_smp%IEND_SUM_smp(0:np_smp*crs_smp%NUM_NCOMP) )
+!
+      if ( crs_smp%NC .gt. 0) crs_smp%INOD_DJO = 0
+      if ( crs_smp%NUM_NCOMP .gt. 0) crs_smp%NUM_SUM = 0
+      crs_smp%INM =      0
+      crs_smp%IEND_SUM = 0
+      crs_smp%IEND_SUM_smp = 0
+!
+      end subroutine alloc_crs_smp_num
+!
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_crs_smp_mat(crs_smp)
+!
+      type(CRS_SMP_CONNECT_MATRIX), intent(inout) :: crs_smp
+!
+!
+      allocate (crs_smp%IAM(crs_smp%NCM) )
+      allocate (crs_smp%AM(crs_smp%NCM) )
+!
+      if ( crs_smp%NCM .gt. 0) then
+        crs_smp%IAM = 0
+        crs_smp%AM = 0.0d0
+      end if
+!
+      end subroutine alloc_crs_smp_mat
+!
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_zero_crs_smp_mat(np_smp, crs_smp)
+!
+      integer(kind = kint), intent(in) :: np_smp
+      type(CRS_SMP_CONNECT_MATRIX), intent(inout) :: crs_smp
+!
+!
+      crs_smp%NC = 0
+      crs_smp%NUM_NCOMP = 0
+      call alloc_crs_smp_num(np_smp, crs_smp)
+!
+      crs_smp%NCM = 0
+      call alloc_crs_smp_mat(crs_smp)
+!
+      end subroutine alloc_zero_crs_smp_mat
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_crs_smp_mat(crs_smp)
+!
+      type(CRS_SMP_CONNECT_MATRIX), intent(inout) :: crs_smp
+!
+!
+      deallocate(crs_smp%IAM, crs_smp%AM, crs_smp%INM)
+      deallocate(crs_smp%INOD_DJO)
+      deallocate(crs_smp%NUM_SUM, crs_smp%IEND_SUM)
+      deallocate(crs_smp%IEND_SUM_smp)
+!
+      end subroutine dealloc_crs_smp_mat
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine link_alloc_type_djo11_mat(comm_table, djo_tbl,         &

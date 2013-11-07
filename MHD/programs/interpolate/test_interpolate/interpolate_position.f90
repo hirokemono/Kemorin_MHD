@@ -34,11 +34,12 @@
       use m_interpolated_geometry
       use m_interpolate_table_orgin
       use m_interpolate_table_dest
+      use m_interpolate_matrix
 !
       use m_array_for_send_recv
       use m_work_4_interpolation
 !
-      use interpolate_1pe
+      use interpolate_vector_1pe
       use select_calypso_SR
       use solver_SR_3
 !
@@ -61,10 +62,9 @@
 !    interpolation
 !
       if (num_dest_domain.gt.0) then
-        call interporate_vector_para(np_smp, numnod, numele,            &
-     &      nnod_4_ele, ie, x_vec(1), istack_table_type_org_smp,        &
-     &      ntot_table_org, iele_org_4_org, itype_inter_org,            &
-     &      coef_inter_org, x_inter_org(1) )
+        call itp_matvec_vector(np_smp, numnod, x_vec(1),                &
+     &      NC_itp, NCM_itp, INM_itp, IAM_itp, AM_itp,                  &
+     &      NUM_SUM_itp(4), IEND_SUM_itp_smp, x_inter_org(1))
       end if
 !
 !     communication
@@ -112,8 +112,9 @@
 !
       use m_array_for_send_recv
       use m_work_4_interpolation
+      use m_interpolate_matrix
 !
-      use interpolate_1pe
+      use interpolate_fields_1pe
       use select_calypso_SR
       use solver_SR_3
 !
@@ -136,10 +137,9 @@
 !    interpolation
 !
       if (num_dest_domain.gt.0) then
-        call interporate_vector_para(np_smp, numnod, numele,            &
-     &      nnod_4_ele, ie, x_vec(1), istack_table_type_org_smp,        &
-     &      ntot_table_org, iele_org_4_org, itype_inter_org,            &
-     &      coef_inter_org, x_inter_org(1) )
+        call itp_matvec_fields(np_smp, numnod, ithree, x_vec(1),        &
+     &      NC_itp, NCM_itp, INM_itp, IAM_itp, AM_itp,                  &
+     &      NUM_SUM_itp(4), IEND_SUM_itp_smp, x_inter_org(1))
       end if
 !
 !     communication
@@ -188,8 +188,9 @@
 !
       use m_array_for_send_recv
       use m_work_4_interpolation
+      use m_interpolate_matrix
 !
-      use interpolate_1pe
+      use interpolate_scalar_1pe
       use matvec_by_djo
       use select_calypso_SR
       use solver_SR
@@ -212,16 +213,10 @@
 !    interpolation
 !
         if (num_dest_domain.gt.0) then
-          if (iflag_debug.eq.1)  write(*,*) 'interporate_scalar_para'
-          call interporate_scalar_para(np_smp, numnod, numele,         &
-     &      nnod_4_ele, ie, x_vec(1), istack_table_type_org_smp,       &
-     &      ntot_table_org, iele_org_4_org, itype_inter_org,           &
-     &      coef_inter_org, x_inter_org(1) )
-!          if (iflag_debug.eq.1)  write(*,*) 'matvec_djo_11'
-!          call matvec_djo_11(numnod, NC_itp, NCM_itp, INM_itp,         &
-!     &      IAM_itp, AM_itp, x_vec(1), x_inter_org(1),                 &
-!     &      NUM_NCOMP_itp, INOD_itp_mat, NUM_SUM_itp,                  &
-!     &      np_smp, IEND_SUM_itp_smp)
+          if (iflag_debug.eq.1)  write(*,*) 'itp_matvec_scalar'
+            call itp_matvec_scalar(np_smp, numnod, x_vec,               &
+     &          NC_itp, NCM_itp, INM_itp, IAM_itp, AM_itp,              &
+     &          NUM_SUM_itp(4), IEND_SUM_itp_smp, x_inter_org(1))
         end if
 !
 !     communication
