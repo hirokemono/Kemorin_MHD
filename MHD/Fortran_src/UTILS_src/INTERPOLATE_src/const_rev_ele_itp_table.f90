@@ -79,6 +79,7 @@
           end if
 !
           call copy_interpolate_types_from_IO(my_rank_2nd, itp_ele_c2f)
+          call set_stack_tbl_org_smp_type(itp_ele_c2f%tbl_org)
 !
           call reverse_ele_itp_table_type(itp_ele_c2f, itp_ele_f2c)
           call copy_interpolate_types_to_IO(itp_ele_f2c)
@@ -97,6 +98,7 @@
         num_dest_domain_IO = 0
         ntot_table_org_IO =  0
         call copy_interpolate_types_from_IO(my_rank, itp_ele_c2f)
+        call set_stack_tbl_org_smp_type(itp_ele_c2f%tbl_org)
 !
         call reverse_ele_itp_table_type(itp_ele_c2f, itp_ele_f2c)
         call copy_interpolate_types_to_IO(itp_ele_f2c)
@@ -173,11 +175,6 @@
      &    = itp_tbl%tbl_org%id_dest_domain(1:num)
         itp_rev%tbl_dest%istack_nod_tbl_dest(0:num)                     &
      &    = itp_tbl%tbl_org%istack_nod_tbl_org(0:num)
-!
-        num = 4*itp_rev%tbl_dest%num_org_domain
-        itp_rev%tbl_dest%istack_nod_tbl_wtype_dest(0:num)               &
-     &    = istack_org_para_type(0:num)
-!
 !
         num = itp_rev%tbl_dest%ntot_table_dest
         itp_rev%tbl_dest%inod_dest_4_dest(1:num)                        &

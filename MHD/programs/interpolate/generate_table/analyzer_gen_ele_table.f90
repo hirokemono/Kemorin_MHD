@@ -82,6 +82,7 @@
 !
       use calypso_mpi
       use m_ctl_params_4_gen_table
+      use m_interpolate_coefs_dest
       use construct_interpolate_table
       use const_interpolate_4_org
       use const_rev_ele_itp_table

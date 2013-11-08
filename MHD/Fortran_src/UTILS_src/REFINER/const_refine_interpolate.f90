@@ -63,6 +63,7 @@
       subroutine const_single_refine_itp_tbl
 !
       use m_interpolate_table_dest
+      use m_interpolate_coefs_dest
       use m_interpolate_table_dest_IO
       use m_work_merge_refine_itp
       use set_refine_interpolate_tbl
@@ -135,6 +136,7 @@
 !      use copy_interpolate_type_IO
 !
       use m_interpolate_table_dest
+      use m_interpolate_coefs_dest
       use m_interpolate_table_dest_IO
       use set_refine_interpolate_tbl
       use set_merged_refine_itp

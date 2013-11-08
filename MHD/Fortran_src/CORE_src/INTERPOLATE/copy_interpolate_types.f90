@@ -83,8 +83,6 @@
      &      = tbl_dst_in%id_org_domain(1:num)
         tbl_dst_cp%istack_nod_tbl_dest(0:num)                           &
      &      = tbl_dst_in%istack_nod_tbl_dest(0:num)
-        tbl_dst_cp%istack_nod_tbl_wtype_dest(0:4*num)                   &
-     &      = tbl_dst_in%istack_nod_tbl_wtype_dest(0:4*num)
 !
         tbl_dst_cp%inod_dest_4_dest(1:tbl_dst_cp%ntot_table_dest)       &
      &      = tbl_dst_in%inod_dest_4_dest(1:tbl_dst_cp%ntot_table_dest)

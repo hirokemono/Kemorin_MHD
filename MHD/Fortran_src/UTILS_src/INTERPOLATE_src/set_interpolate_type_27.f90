@@ -29,6 +29,7 @@
      &          inod_stack_type, nnod_interpolate_type)
 !
       use m_interpolate_table_dest
+      use m_interpolate_coefs_dest
       use m_work_const_itp_table
 !
       integer(kind = kint), intent(in) :: my_rank, ist, ied

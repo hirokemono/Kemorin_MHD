@@ -30,8 +30,10 @@
       use m_type_AMG_data
       use t_interpolate_table
       use t_geometry_data
+      use interpolate_by_type
 !
       integer(kind = kint) :: i_level
+      type(element_data) :: original_ele
 !
 !
       call link_first_comm_to_type(MG_comm(0))
@@ -40,9 +42,12 @@
       call link_comm_tbl_types(MG_mesh(1)%mesh%nod_comm, MG_comm(1) )
       call link_comm_tbl_types(MG_MHD_mesh(1)%nod_fl_comm,              &
      &    MG_comm_fl(1))
-      call link_first_ele_connect_type(MG_itp(1)%f2c%ele_org)
-      call link_new_ele_connect_type(MG_mesh(1)%mesh%ele,               &
-     &    MG_itp(1)%c2f%ele_org )
+!
+      call link_first_ele_connect_type(original_ele)
+      call init_interpolate_mat_type                                    &
+     &   (original_ele, MG_itp(1)%f2c)
+      call init_interpolate_mat_type                                    &
+     &   (MG_mesh(1)%mesh%ele, MG_itp(1)%c2f)
 !
       do i_level = 2, num_MG_level
         call link_comm_tbl_types(MG_mesh(i_level)%mesh%nod_comm,        &
@@ -50,11 +55,12 @@
         call link_comm_tbl_types(MG_MHD_mesh(i_level)%nod_fl_comm,      &
      &      MG_comm_fl(i_level))
 !
-        call link_new_ele_connect_type(MG_mesh(i_level-1)%mesh%ele,     &
-     &      MG_itp(i_level)%f2c%ele_org )
-        call link_new_ele_connect_type(MG_mesh(i_level)%mesh%ele,       &
-     &      MG_itp(i_level)%c2f%ele_org )
+        call init_interpolate_mat_type                                  &
+     &     (MG_mesh(i_level-1)%mesh%ele, MG_itp(i_level)%f2c)
+        call init_interpolate_mat_type                                  &
+     &     (MG_mesh(i_level)%mesh%ele, MG_itp(i_level)%c2f)
       end do
+!
 !
       end subroutine s_link_MG_MHD_mesh_data
 !

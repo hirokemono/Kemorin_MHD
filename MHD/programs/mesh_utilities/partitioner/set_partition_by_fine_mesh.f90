@@ -76,6 +76,7 @@
 !
       use m_ctl_param_partitioner
       use m_interpolate_table_orgin
+      use m_interpolate_coefs_dest
       use itp_table_IO_select_4_zlib
       use copy_interpolate_dest_IO
       use copy_interpolate_org_IO

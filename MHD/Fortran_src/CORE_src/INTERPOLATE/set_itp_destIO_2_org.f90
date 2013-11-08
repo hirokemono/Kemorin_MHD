@@ -47,11 +47,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_interpolation_4_orgin(n_org_rank, n_dest_rank)
+      subroutine set_interpolation_4_orgin(n_org_rank)
 !
       use m_work_const_itp_table
 !
-      integer(kind = kint), intent(in) :: n_org_rank, n_dest_rank
+      integer(kind = kint), intent(in) :: n_org_rank
       integer(kind = kint) :: i, j, nnod, inum, iorg, idest
 !
 !

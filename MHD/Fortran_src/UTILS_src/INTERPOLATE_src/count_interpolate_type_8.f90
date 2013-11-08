@@ -1,17 +1,17 @@
 !
 !      module count_interpolate_type_8
 !
-      module count_interpolate_type_8
-!
 !     Written by H. Matsui on Sep., 2006
+!
+!      subroutine s_count_interpolate_type_8(ist, ied,                  &
+!     &          nnod_interpolate_type)
+!
+      module count_interpolate_type_8
 !
       use m_precision
       use m_constants
 !
       implicit none
-!
-!      subroutine s_count_interpolate_type_8(ist, ied,                  &
-!     &          nnod_interpolate_type)
 !
 !-----------------------------------------------------------------------
 !
@@ -23,6 +23,7 @@
      &          nnod_interpolate_type)
 !
       use m_interpolate_table_dest
+      use m_interpolate_coefs_dest
 !
       integer(kind = kint), intent(in) :: ist, ied
 !

@@ -162,6 +162,7 @@
 !
       use m_ctl_params_4_gen_table
       use m_interpolate_table_dest
+      use m_interpolate_coefs_dest
       use m_work_const_itp_table
 !
       integer(kind = kint), intent(in) :: n_rank_org, inod, jele
@@ -194,6 +195,7 @@
       use m_constants
       use m_ctl_params_4_gen_table
       use m_interpolate_table_dest
+      use m_interpolate_coefs_dest
 !
       integer(kind = kint), intent(in) :: n_rank_org, inod, jele
       real(kind = kreal), intent(in) ::  differ_res

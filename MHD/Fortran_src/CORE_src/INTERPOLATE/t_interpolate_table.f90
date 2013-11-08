@@ -5,7 +5,6 @@
 !
 !      Written by H.Matsui on Dec., 2008
 !
-!      subroutine unlink_mesh_data_4_itp_type(itp_info)
 !      subroutine alloc_zero_itp_tables(inp_smp, tp_info)
 !        type(interpolate_table), intent(inout) :: itp_info
 !
@@ -34,8 +33,6 @@
         type(CRS_SMP_CONNECT_MATRIX) :: mat
 !> Structure of commnucation table for target grid
         type(communication_table) ::    comm_dest
-!> Structure of element data for original grid
-        type(element_data) ::           ele_org
       end type interpolate_table
 !
 !> Structure of interpolation table for both way
@@ -81,18 +78,6 @@
       call alloc_zero_crs_smp_mat(np_smp, itp_info%mat)
 !
       end subroutine alloc_zero_itp_tables
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine unlink_mesh_data_4_itp_type(itp_info)
-!
-      type(interpolate_table), intent(inout) :: itp_info
-!
-!
-      call unlink_ele_connect_type(itp_info%ele_org)
-!
-      end subroutine unlink_mesh_data_4_itp_type
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

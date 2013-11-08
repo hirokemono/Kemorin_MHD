@@ -29,6 +29,7 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_interpolate_table_dest
+      use m_interpolate_coefs_dest
       use m_work_const_itp_table
 !
       use count_interpolate_type_8
@@ -43,7 +44,6 @@
 !
 !
       do i = 1, num_org_domain
-!
         ist = istack_nod_tbl_dest(i-1) + 1
         ied = istack_nod_tbl_dest(i)
         ist_type = 4*(i-1)
@@ -59,11 +59,10 @@
           call s_count_interpolate_type_27(ist, ied,                    &
      &        nnod_table_wtype_dest(ist_type+1) )
         end if
-!
       end do
 !
 !
-!      write(*,*) 'stack'
+      call allocate_itp_coef_stack(num_org_domain)
       istack_nod_tbl_wtype_dest(0) = 0
       do i = 1, num_org_domain
         do j = 1, 4
@@ -74,10 +73,7 @@
         end do
       end do
 !
-!
-!      write(*,*) 'set', istack_nod_tbl_wtype_dest
       do i = 1, num_org_domain
-!
         ist = istack_nod_tbl_dest(i-1) + 1
         ied = istack_nod_tbl_dest(i)
         ist_type = 4*(i-1)
@@ -95,7 +91,6 @@
      &        istack_nod_tbl_wtype_dest(ist_type),                      &
      &        nnod_table_wtype_dest(ist_type+1) )
         end if
-!
       end do
 !
       call copy_table_2_order

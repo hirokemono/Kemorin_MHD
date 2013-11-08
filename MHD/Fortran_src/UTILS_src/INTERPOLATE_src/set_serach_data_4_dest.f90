@@ -26,9 +26,11 @@
       use m_ctl_params_4_gen_table
       use m_sphere_bin_4_table
       use m_interpolate_table_dest
+      use m_interpolate_coefs_dest
       use m_work_const_itp_table
 !
       use set_bin_id_4_destination
+      use order_dest_table_by_type
 !
 !
       if (iflag_debug.eq.1) write(*,*)  'set_sph_grid_4_bin'
@@ -44,7 +46,7 @@
       call allocate_itp_table_dest
       call allocate_itp_coef_dest
       call allocate_itp_work_dest(nprocs_2nd)
-      call allocate_work_const_itp_tbl(nprocs_2nd, numnod)
+      call allocate_work_const_itp_tbl(numnod)
 !
       if (iflag_debug.eq.1)                                             &
      &     write(*,*)  's_set_bin_id_4_destination'

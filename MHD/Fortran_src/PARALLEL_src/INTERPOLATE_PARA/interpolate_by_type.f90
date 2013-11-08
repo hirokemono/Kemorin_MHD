@@ -7,7 +7,7 @@
 !>@brief  Interpolation by using insterpolation structure
 !!
 !!@verbatim
-!!      subroutine init_interpolate_mat_type(itp_table)
+!!      subroutine init_interpolate_mat_type(ele_org, itp_table)
 !!
 !!      subroutine interpolate_type_1(NP_org, NP_dest,                  &
 !!     &          comm_dest, itp_table, X_org, X_dest, PEsmpTOT)
@@ -44,8 +44,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_interpolate_mat_type(itp_table)
+      subroutine init_interpolate_mat_type(ele_org, itp_table)
 !
+      type(element_data), intent(in) :: ele_org
       type(interpolate_table), intent(inout) :: itp_table
 !
 !
@@ -54,7 +55,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_interporate_mat_type'
       call const_interporate_mat_type                                   &
-     &   (itp_table%ele_org, itp_table%tbl_org, itp_table%mat)
+     &   (ele_org, itp_table%tbl_org, itp_table%mat)
 !
       call verifty_work_4_itp_field                                     &
      &   (isix, itp_table%tbl_org%ntot_table_org)

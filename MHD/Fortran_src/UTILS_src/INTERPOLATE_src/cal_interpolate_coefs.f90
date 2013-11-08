@@ -1,9 +1,16 @@
 !
 !      module cal_interpolate_coefs
 !
-      module cal_interpolate_coefs
-!
 !     Written by H. Matsui on Sep., 2006
+!
+!      subroutine allocate_work_4_interpolate
+!      subroutine deallocate_work_4_interpolate
+!
+!      subroutine s_cal_interpolate_coefs(my_rank_org, inod, jele,      &
+!     &          error_level, iflag_message)
+!      subroutine check_interpolation(id_file, my_rank_org)
+!
+      module cal_interpolate_coefs
 !
       use m_precision
 !
@@ -14,13 +21,6 @@
       real(kind=kreal) :: differ_tmp, differ_res
 !
       private :: coefs_by_tet, x_local_ele, differ_res
-!
-!      subroutine allocate_work_4_interpolate
-!      subroutine deallocate_work_4_interpolate
-!
-!      subroutine s_cal_interpolate_coefs(my_rank_org, inod, jele,      &
-!     &          error_level, iflag_message)
-!      subroutine check_interpolation(id_file, my_rank_org)
 !
 ! ----------------------------------------------------------------------
 !
@@ -153,6 +153,7 @@
       use m_geometry_data
       use m_2nd_geometry_param
       use m_interpolate_table_dest
+      use m_interpolate_coefs_dest
       use m_work_const_itp_table
 !
       use subroutines_4_search_table

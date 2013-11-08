@@ -33,7 +33,6 @@
       use m_control_data_refine_para
       use itp_table_IO_select_4_zlib
       use copy_interpolate_type_IO
-      use copy_num_itp_wtype_org2dst
       use num_nod_ele_merge_by_type
       use merge_domain_local_by_type
 !
@@ -57,17 +56,17 @@
       table_file_header = course_2_fine_head
       call sel_read_interpolate_table(izero, ierr)
       call copy_interpolate_types_from_IO(izero, c2f_single)
-      call copy_stk_type_itp_wtp_org2dest(c2f_single)
+      call set_stack_tbl_org_smp_type(c2f_single%tbl_org)
 !
       table_file_header = fine_2_course_head
       call sel_read_interpolate_table(izero, ierr)
       call copy_interpolate_types_from_IO(izero, f2c_single)
-      call copy_stk_type_itp_wtp_org2dest(f2c_single)
+      call set_stack_tbl_org_smp_type(f2c_single%tbl_org)
 !
       table_file_header = refine_info_head
       call sel_read_interpolate_table(izero, ierr)
       call copy_interpolate_types_from_IO(izero, f2c_ele_single)
-      call copy_stk_type_itp_wtp_org2dest(f2c_ele_single)
+      call set_stack_tbl_org_smp_type(f2c_ele_single%tbl_org)
 !
 !
 !
@@ -95,7 +94,6 @@
       use itp_table_IO_select_4_zlib
 !
       integer(kind = kint) :: ip, my_rank
-!
 !
 !
       call alloc_para_refine_itp_type

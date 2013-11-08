@@ -152,7 +152,7 @@
         call sel_read_itp_coefs_dest(n_dest_rank, ierr)
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
-        call set_interpolation_4_orgin(n_org_rank, n_dest_rank)
+        call set_interpolation_4_orgin(n_org_rank)
       end do
 !
       call ordering_itp_orgin_tbl_m

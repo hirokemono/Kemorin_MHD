@@ -28,7 +28,7 @@ begin spherical_shell_ctl
 !
   begin num_grid_sph
     sph_grid_type_ctl       no_pole
-    truncation_level_ctl     4
+    truncation_level_ctl     7
     ngrid_meridonal_ctl     12
     ngrid_zonal_ctl         24
 !

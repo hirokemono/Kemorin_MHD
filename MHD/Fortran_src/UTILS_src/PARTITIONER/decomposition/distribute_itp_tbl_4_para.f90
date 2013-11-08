@@ -27,6 +27,14 @@
 !
       implicit none
 !
+!> Structure of interpolation table for target grid
+      type itp_stack_dest_wk_para
+!>   end address to receive interpolated data including interpolate type
+        integer(kind = kint), pointer :: istack_tbl_wt_dest(:)
+      end type itp_stack_dest_wk_para
+!
+      private :: alloc_itp_stack_dest_wk_para
+      private ::  dealloc_itp_stack_dest_wk_para
       private :: count_itp_domain_4_para
       private :: set_itp_dest_domain_4_para, set_itp_org_domain_4_para
       private :: count_itp_dest_tbl_4_para,  count_itp_org_tbl_4_para
@@ -36,6 +44,31 @@
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_itp_stack_dest_wk_para(num_org_domain, dest_wk)
+!
+      integer(kind = kint), intent(in) :: num_org_domain
+      type(itp_stack_dest_wk_para), intent(inout) :: dest_wk
+!
+!
+      allocate( dest_wk%istack_tbl_wt_dest(0:4*num_org_domain) )
+      dest_wk%istack_tbl_wt_dest = 0
+!
+      end subroutine alloc_itp_stack_dest_wk_para
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_itp_stack_dest_wk_para(dest_wk)
+!
+      type(itp_stack_dest_wk_para), intent(inout) :: dest_wk
+!
+!
+      deallocate( dest_wk%istack_tbl_wt_dest )
+!
+      end subroutine dealloc_itp_stack_dest_wk_para
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine const_parallel_itp_tbl(single_tbl, nprocs_table,       &
@@ -49,6 +82,8 @@
 !
       integer(kind = kint), intent(in) :: nprocs_table
       type(interpolate_table), intent(inout) :: para_tbl(nprocs_table)
+!
+      type(itp_stack_dest_wk_para), allocatable :: dest_wk(:)
 !
       integer(kind = kint) :: ip, jp
 !
@@ -64,8 +99,13 @@
         call set_itp_org_domain_4_para(jp, para_tbl(jp)%tbl_org)
       end do
 !
+!
+      allocate( dest_wk(nprocs_itp_dest) )
       do ip = 1, nprocs_itp_dest
-        call count_itp_dest_tbl_4_para(ip, para_tbl(ip)%tbl_dest)
+        call alloc_itp_stack_dest_wk_para                               &
+     &     (para_tbl(ip)%tbl_dest%num_org_domain, dest_wk(ip))
+        call count_itp_dest_tbl_4_para(ip, dest_wk(ip),                 &
+            para_tbl(ip)%tbl_dest)
       end do
       do jp = 1, nprocs_itp_org
         call count_itp_org_tbl_4_para(jp, para_tbl(jp)%tbl_org)
@@ -73,8 +113,14 @@
 !
       do ip = 1, nprocs_itp_dest
         call alloc_type_itp_table_dest(para_tbl(ip)%tbl_dest)
-        call set_itp_dest_tbl_4_para(ip, para_tbl(ip)%tbl_dest)
+        call set_itp_dest_tbl_4_para(ip, dest_wk(ip),                   &
+     &      para_tbl(ip)%tbl_dest)
+!
+        call dealloc_itp_stack_dest_wk_para(dest_wk(ip))
       end do
+      deallocate(dest_wk)
+!
+!
       do jp = 1, nprocs_itp_org
         call allocate_istack_org_ptype                                  &
      &     (para_tbl((jp))%tbl_org%num_dest_domain)
@@ -126,16 +172,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_itp_dest_domain_4_para(ip, para_tbl_dest)
+      subroutine set_itp_dest_domain_4_para(ip, itp_dst_para)
 !
       integer(kind = kint), intent(in) :: ip
-      type(interpolate_table_dest), intent(inout) :: para_tbl_dest
+      type(interpolate_table_dest), intent(inout) :: itp_dst_para
 !
       integer(kind = kint) :: jp0, jp, k, ic, num
 !
 !
       ic = 0
-      para_tbl_dest%iflag_self_itp_recv = 0
+      itp_dst_para%iflag_self_itp_recv = 0
       do jp0 = 1, nprocs_itp_org
         jp = mod((ip+jp0-1),nprocs_itp_org) + 1
         k = 4 * (jp-1) + 4*nprocs_itp_org * (ip-1)
@@ -143,8 +189,8 @@
      &         + ntable_para(k+3) + ntable_para(k+4)
         if(num .gt. 0) then
           ic = ic + 1
-          para_tbl_dest%id_org_domain(ic) = jp - 1
-          if(ip .eq. jp)  para_tbl_dest%iflag_self_itp_recv = 1
+          itp_dst_para%id_org_domain(ic) = jp - 1
+          if(ip .eq. jp)  itp_dst_para%iflag_self_itp_recv = 1
         end if
       end do
 !
@@ -179,33 +225,34 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine count_itp_dest_tbl_4_para(ip, para_tbl_dest)
+      subroutine count_itp_dest_tbl_4_para(ip, dest_wk, itp_dst_para)
 !
       integer(kind = kint), intent(in) :: ip
-      type(interpolate_table_dest), intent(inout) :: para_tbl_dest
+      type(interpolate_table_dest), intent(inout) :: itp_dst_para
+      type(itp_stack_dest_wk_para), intent(inout) :: dest_wk
 !
       integer(kind = kint) :: jp0, jp, i, j4, k4
 !
 !
-      para_tbl_dest%istack_nod_tbl_dest(0) =       0
-      para_tbl_dest%istack_nod_tbl_wtype_dest(0) = 0
-      do jp0 = 1, para_tbl_dest%num_org_domain
-        jp = para_tbl_dest%id_org_domain(jp0) + 1
+      dest_wk%istack_tbl_wt_dest(0) = 0
+      do jp0 = 1, itp_dst_para%num_org_domain
+        jp = itp_dst_para%id_org_domain(jp0) + 1
         do i = 1, 4
           j4 = i + 4 * (jp0-1)
           k4 = i + 4 * (jp-1) + 4*nprocs_itp_org * (ip-1)
-          para_tbl_dest%istack_nod_tbl_wtype_dest(j4)                   &
-     &     = para_tbl_dest%istack_nod_tbl_wtype_dest(j4-1)              &
-     &      + ntable_para(k4)
+          dest_wk%istack_tbl_wt_dest(j4)                                &
+     &     = dest_wk%istack_tbl_wt_dest(j4-1) + ntable_para(k4)
         end do
-        para_tbl_dest%istack_nod_tbl_dest(jp0)                          &
-     &     = para_tbl_dest%istack_nod_tbl_wtype_dest(4*jp0)
       end do
-      jp0 = para_tbl_dest%num_org_domain
-      para_tbl_dest%ntot_table_dest                                     &
-     &     = para_tbl_dest%istack_nod_tbl_dest(jp0)
-!      write(*,*) 'para_tbl_dest%ntot_table_dest',                      &
-!     &            ip, para_tbl_dest%ntot_table_dest
+!
+      itp_dst_para%istack_nod_tbl_dest(0) = 0
+      do jp0 = 1, itp_dst_para%num_org_domain
+        itp_dst_para%istack_nod_tbl_dest(jp0)                           &
+     &     = dest_wk%istack_tbl_wt_dest(4*jp0)
+      end do
+      jp0 = itp_dst_para%num_org_domain
+      itp_dst_para%ntot_table_dest                                      &
+     &    = itp_dst_para%istack_nod_tbl_dest(jp0)
 !
       end subroutine count_itp_dest_tbl_4_para
 !
@@ -240,34 +287,35 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_itp_dest_tbl_4_para(ip, para_tbl_dest)
+      subroutine set_itp_dest_tbl_4_para(ip, dest_wk, itp_dst_para)
 !
       integer(kind = kint), intent(in) :: ip
-      type(interpolate_table_dest), intent(inout) :: para_tbl_dest
+      type(itp_stack_dest_wk_para), intent(in) :: dest_wk
+      type(interpolate_table_dest), intent(inout) :: itp_dst_para
 !
       integer(kind = kint) :: jp0, jp, i, j4, k, ist, ied, ic, inum
       integer(kind = kint) :: inod_gl
 !
 !
-      do jp0 = 1, para_tbl_dest%num_org_domain
-        jp = para_tbl_dest%id_org_domain(jp0) + 1
+      do jp0 = 1, itp_dst_para%num_org_domain
+        jp = itp_dst_para%id_org_domain(jp0) + 1
         do i = 1, 4
           j4 = i + 4*(jp0-1)
           k =  i + 4 * (jp-1) + 4*nprocs_itp_org * (ip-1)
           ist = istack_para(k-1) + 1
           ied = istack_para(k)
-          ic =  para_tbl_dest%istack_nod_tbl_wtype_dest(j4-1)
+          ic =  dest_wk%istack_tbl_wt_dest(j4-1)
           do inum = ist, ied
             ic = ic + 1
             inod_gl = itable_para_order(inum)
-            para_tbl_dest%inod_dest_4_dest(ic)                          &
+            itp_dst_para%inod_dest_4_dest(ic)                          &
      &                = inod_lc_dest(inod_gl,1)
           end do
         end do
       end do
 !
-      do ic = 1, para_tbl_dest%ntot_table_dest
-        if(para_tbl_dest%inod_dest_4_dest(ic) .eq. 0) then
+      do ic = 1, itp_dst_para%ntot_table_dest
+        if(itp_dst_para%inod_dest_4_dest(ic) .eq. 0) then
           write(*,*) 'targe node ', ic, ' is missing on domain ', ip
         end if
       end do

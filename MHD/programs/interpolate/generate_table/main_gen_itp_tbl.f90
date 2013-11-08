@@ -2,7 +2,6 @@
 !     program  const_interpolate_table
 
 !-----------------------------------------------------------------------
-! \beginSUBROUTINE
 !    main routine for GeoFEM/Tiger version       on mar. 2000 (ver 1.0)
 !
       program const_interpolate_table
@@ -17,9 +16,8 @@
 !
       call calypso_MPI_init
 !
-      call init_analyzer
-
-      call analyze
+      call init_make_interpolate_table
+      call analyze_make_interpolate_table
 
       call calypso_MPI_finalize
 !

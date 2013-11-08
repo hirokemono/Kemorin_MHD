@@ -4,8 +4,8 @@
 !
 !      modified by H. Matsui on Aug., 2006 
 !
-!      subroutine init_analyzer
-!      subroutine analyze
+!      subroutine init_make_interpolate_table
+!      subroutine analyze_make_interpolate_table
 !
       module analyzer_gen_table
 !
@@ -22,7 +22,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine init_make_interpolate_table
 !
 !
       use m_2nd_pallalel_vector
@@ -67,13 +67,14 @@
       if (iflag_debug.eq.1) write(*,*) 's_set_serach_data_4_dest'
       call s_set_serach_data_4_dest
 !
-      end subroutine init_analyzer
+      end subroutine init_make_interpolate_table
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_make_interpolate_table
 !
       use calypso_mpi
+      use m_interpolate_coefs_dest
       use construct_interpolate_table
       use const_interpolate_4_org
       use order_dest_table_by_domain
@@ -117,9 +118,10 @@
         call delete_parallel_files(ione, nprocs, work_header)
       end if
 !
-      if (iflag_debug.eq.1) write(*,*) 'exit analyze'
+      if (iflag_debug.eq.1)                                             &
+     &       write(*,*) 'exit analyze_make_interpolate_table'
 !
-      end subroutine analyze
+      end subroutine analyze_make_interpolate_table
 !
 ! ----------------------------------------------------------------------
 !
