@@ -154,7 +154,7 @@
 !
       subroutine set_integration_indices_1d_mesh
 !
-      integer(kind = kint) :: nd, ii, j
+      integer(kind = kint) :: ii
 !
 !
       l_int1d(1,1,1) = int_posi_1d_1(1)

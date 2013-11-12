@@ -49,7 +49,7 @@
       real(kind = kreal), intent(inout) :: ff_nl(numnod,3)
 !
       integer(kind = kint) :: iproc, nd, inod
-      integer(kind = kint) :: inod1, iconn1, iproc1
+      integer(kind = kint) :: inod1, iproc1
       integer(kind = kint) :: ist, ied
 !
 !
