@@ -21,7 +21,8 @@
 !
       implicit none
 !
-      private :: SPH_analyze_special_snap, lead_special_fields_4_sph_mhd
+      private :: SPH_analyze_special_snap
+      private :: lead_special_fields_4_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !
@@ -32,7 +33,6 @@
       subroutine evolution_sph_special_snap
 !
       use m_control_parameter
-      use m_control_params_sph_MHD
       use m_t_int_parameter
       use m_t_step_parameter
 !
