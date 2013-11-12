@@ -152,7 +152,6 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp
-!      call check_reference_temp(my_rank)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property
