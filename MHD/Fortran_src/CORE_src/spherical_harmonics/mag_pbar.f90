@@ -1,6 +1,13 @@
 !
 !      module mag_pbar
 !
+!      subroutine alloc_mag_lag(ni, lmax)
+!      subroutine dealloc_mag_lag
+!      subroutine mag_lagendre(ni, lmax)
+!      subroutine mag_gauss_point(l)
+!      subroutine norm_mag_lag(ni, lmax)
+!      subroutine pbar(the,l,m,p)
+!
       module mag_pbar
 !
       use m_precision
@@ -16,6 +23,8 @@
       real(kind = kreal), allocatable :: aleg1(:,:)
       real(kind = kreal), allocatable :: aleg2(:,:)
       real(kind = kreal), allocatable :: aleg3(:,:)
+!
+      private :: pbar
 !
 ! -----------------------------------------------------------------------
 !
@@ -54,46 +63,6 @@
       deallocate( aleg1, aleg2, aleg3, p_mag, dp_mag)
 !
       end subroutine dealloc_mag_lag
-!
-! -----------------------------------------------------------------------
-!
-      subroutine pbar(the,l,m,p)
-!c
-!c  pbar calculates the value of the normalized associated
-!c  legendre function of the first kind, of degree l,
-!c  of order m, for the real argument cos(the), and returns
-!c  it in the variable p
-!c  0 .le. m .le. l
-!c
-!c  called in gquad and prep
-!
-      integer(kind = kint), intent(in) :: l, m
-      real(kind = kreal), intent(in) :: the
-      real(kind = kreal), intent(inout) :: p
-!
-      integer(kind = kint) :: m1, i, j
-      real(kind = kreal) :: s, c, p1, p2
-!
-      s = sin(the)
-      c = cos(the)
-      p = 1.0d0 / sqrt(2.0d0)
-      if(m .eq. 0) go to 22
-      do 20 i=1,m
-        p=sqrt(dble(2*i+1)/dble(2*i))*s*p
-   20 continue
-   22 continue
-      if(l .eq. m) return
-      p1 = 1.0d0
-      m1 = m+1
-      do 30 j = m1,l
-        p2 = p1
-        p1 = p
-        p = 2.0d0 * sqrt((dble(j**2)-0.25d0)/dble(j**2-m**2)) * c * p1  &
-     &     - sqrt(dble((2*j+1)*(j-m-1)*(j+m-1)) /                       &
-     &            dble((2*j-3)*(j-m)*(j+m)))*p2
-   30 continue
-      return
-      end subroutine pbar
 !
 ! -----------------------------------------------------------------------
 !
@@ -213,9 +182,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine gquad(l)
+      subroutine mag_gauss_point(l)
 !c
-!c  gquad (linked with pbar) finds the l roots (in theta)
+!c  mag_gauss_point (linked with pbar) finds the l roots (in theta)
 !c  and gaussian weights associated with
 !c  the legendre polynomial of degree l > 1
 !c
@@ -253,7 +222,7 @@
       p2=p
       if(abs(p) .le. 1.e-10) go to 30
       if(p2 .eq. p1) then
-!c        write(6,*) 'sub gquad: zero = ',p,' at i = ',i
+!c        write(6,*) 'sub mag_gauss_point: zero = ',p,' at i = ',i
          go to 30
       end if
       go to 40
@@ -278,7 +247,47 @@
    50 continue
 !c
       return
-      end subroutine gquad
+      end subroutine mag_gauss_point
+!
+! -----------------------------------------------------------------------
+!
+      subroutine pbar(the,l,m,p)
+!c
+!c  pbar calculates the value of the normalized associated
+!c  legendre function of the first kind, of degree l,
+!c  of order m, for the real argument cos(the), and returns
+!c  it in the variable p
+!c  0 .le. m .le. l
+!c
+!c  called in mag_gauss_point and prep
+!
+      integer(kind = kint), intent(in) :: l, m
+      real(kind = kreal), intent(in) :: the
+      real(kind = kreal), intent(inout) :: p
+!
+      integer(kind = kint) :: m1, i, j
+      real(kind = kreal) :: s, c, p1, p2
+!
+      s = sin(the)
+      c = cos(the)
+      p = 1.0d0 / sqrt(2.0d0)
+      if(m .eq. 0) go to 22
+      do 20 i=1,m
+        p=sqrt(dble(2*i+1)/dble(2*i))*s*p
+   20 continue
+   22 continue
+      if(l .eq. m) return
+      p1 = 1.0d0
+      m1 = m+1
+      do 30 j = m1,l
+        p2 = p1
+        p1 = p
+        p = 2.0d0 * sqrt((dble(j**2)-0.25d0)/dble(j**2-m**2)) * c * p1  &
+     &     - sqrt(dble((2*j+1)*(j-m-1)*(j+m-1)) /                       &
+     &            dble((2*j-3)*(j-m)*(j+m)))*p2
+   30 continue
+      return
+      end subroutine pbar
 !
 ! -----------------------------------------------------------------------
 !

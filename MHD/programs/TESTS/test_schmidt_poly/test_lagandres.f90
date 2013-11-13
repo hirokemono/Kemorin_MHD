@@ -65,7 +65,7 @@
 !
       ntheta = n_point
       call alloc_mag_lag(ntheta, ltr)
-      call gquad(ntheta)
+      call mag_gauss_point(ntheta)
 !
       write(*,*) 'Gauss-Legendre colatitude by MAG'
       do i = 1, ntheta
