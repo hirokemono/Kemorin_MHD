@@ -1,14 +1,15 @@
 !
-!      module mag_pbar
+!      module mag_pbar16
 !
 !      subroutine alloc_mag_lag16(ni, lmax)
 !      subroutine dealloc_mag_lag16
 !      subroutine mag_lagendre16(ni, lmax)
+!      subroutine ordering_mag_lag16(ni, lmax)
 !      subroutine norm_mag_lag16(ni, lmax)
 !      subroutine mag_gauss_point16(l)
 !      subroutine pbar16(the,l,m,p)
 !
-      module mag_pbar
+      module mag_pbar16
 !
       use m_precision
 !
@@ -140,6 +141,36 @@
       deallocate( bleg1, bleg2, bleg3, clm)
 !
       end subroutine mag_lagendre16
+!
+! ----------------------------------------------------------------------
+!
+      subroutine ordering_mag_lag16(ni, lmax)
+!
+      integer(kind = kint), intent(in) :: ni, lmax
+!
+      real(kind = kquad) :: pi, sqrt2pi, cl
+      integer(kind = kint) :: ic, lm, l, m, lc, mc, mcq, mca, j
+!
+      pi = 4.0d0*atan(1.0d0)
+      sqrt2pi=sqrt(2.0d0*pi)
+!
+      lm = 0
+      do mc = 1, lmax+1
+        m = mc-1
+        do lc=mc, lmax+1
+          l = lc-1
+          lm=lm+1
+          j = l*(l+1) + m + 1
+          cl = 2.0d0 / sqrt(dble(2*l+1))
+          do ic = 1, ni
+            p_mag(j,ic) =  aleg1(lm,ni-ic+1)
+            dp_mag(j,ic) = aleg3(lm,ni-ic+1)                            &
+     &                    / sin( colat(ni-ic+1) )
+          end do
+        end do
+      end do
+!
+      end subroutine ordering_mag_lag16
 !
 ! ----------------------------------------------------------------------
 !
@@ -294,4 +325,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module mag_pbar
+      end module mag_pbar16

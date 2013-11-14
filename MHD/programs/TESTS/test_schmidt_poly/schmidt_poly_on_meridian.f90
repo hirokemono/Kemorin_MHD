@@ -12,7 +12,7 @@
       real(kind = kreal), allocatable :: dint_p(:)
 !
 !
-!      subroutine s_cal_schmidt_poly_on_med
+!      subroutine cal_full_legendre_on_med
 !
 ! -----------------------------------------------------------------------
 !
@@ -20,7 +20,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_schmidt_poly_on_med
+      subroutine cal_full_legendre_on_med
 !
       use m_schmidt_poly_on_gauss
       use m_gauss_points
@@ -40,7 +40,6 @@
       call construct_gauss_coefs
 !
       call allocate_gauss_colatitude
-      write(*,*) 'set_gauss_colatitude'
       call set_gauss_colatitude
 !
       g_point_med(1:nth_g) = w_point(1:nth_g)
@@ -64,7 +63,7 @@
 !
       do i = 1, nth_g
         dth = g_colat_med(i)
-        call dschmidt
+        call full_norm_legendre
 !
         do j = 0, jmax_g
           l = idx(j,1)
@@ -88,7 +87,7 @@
       call deallocate_gauss_points
       call deallocate_schmidt_polynomial
 !
-      end subroutine s_cal_schmidt_poly_on_med
+      end subroutine cal_full_legendre_on_med
 !
 ! -----------------------------------------------------------------------
 !

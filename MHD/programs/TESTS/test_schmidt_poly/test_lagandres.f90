@@ -112,7 +112,6 @@
      &             colat(ntheta-i+1), p_mag(j,i), dp_mag(j,i)
             end do
           end do
-!        end do
         close(50)
 !
         go to 88
