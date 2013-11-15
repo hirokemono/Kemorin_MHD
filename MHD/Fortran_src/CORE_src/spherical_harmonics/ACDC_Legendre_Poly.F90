@@ -13,11 +13,11 @@ Module ACDC_Legendre_Poly
       Logical :: parity = .true.
       Real*8 ::      Pi  = 3.1415926535897932384626433832795028841972d+0
       Type, Public :: even_odd_sep
-            Real*8, Allocatable :: even(:)
-            Real*8, Allocatable :: odd(:)
+            Real*8, pointer :: even(:)
+            Real*8, pointer :: odd(:)
       End Type even_odd_sep
       Type, Public :: p_lm_array 
-            Real*8, Allocatable :: data(:,:)
+            Real*8, pointer :: data(:,:)
       End Type p_lm_array
 
       Type(p_lm_array), Allocatable :: p_lm(:), p_lm_odd(:), p_lm_even(:), p_lm_eo(:) 
