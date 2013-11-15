@@ -135,32 +135,35 @@
       use m_boundary_params_sph_MHD
       use set_sph_magne_mat_bc
 !
-      integer(kind = kint) :: kr_in, ip, jst, jed, j
+      integer(kind = kint) :: ip, jst, jed, j
       integer(kind = kint) :: ierr
 !
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
-        kr_in = ione
         call set_magne_center_rmat_sph
       else if(sph_bc_B%iflag_icb .eq. iflag_radial_magne) then
-        kr_in = nlayer_ICB
-        call set_qvacume_magne_icb_rmat_sph
+        call set_qvacume_magne_icb_rmat_sph(nidx_rj(2),                 &
+     &      sph_bc_B%kr_in, sph_bc_B%r_ICB, sph_bc_B%fdm2_fix_dr_ICB)
       else
-        kr_in = nlayer_ICB
-        call set_ins_magne_icb_rmat_sph
+        call set_ins_magne_icb_rmat_sph(nidx_rj(2),                     &
+     &      sph_bc_B%kr_in, sph_bc_B%r_ICB, sph_bc_B%fdm2_fix_dr_ICB)
       end if
 !
       if(sph_bc_B%iflag_cmb .eq. iflag_radial_magne) then
-        call set_qvacume_magne_cmb_rmat_sph
+        call set_qvacume_magne_cmb_rmat_sph(nidx_rj(2),                 &
+     &      sph_bc_B%kr_out, sph_bc_B%r_CMB, sph_bc_B%fdm2_fix_dr_CMB)
       else
-        call set_ins_magne_cmb_rmat_sph
+        call set_ins_magne_cmb_rmat_sph(nidx_rj(2),                     &
+     &      sph_bc_B%kr_out, sph_bc_B%r_CMB, sph_bc_B%fdm2_fix_dr_CMB)
       end if
 !
 !$omp parallel
       call set_radial_vect_evo_mat_sph(nidx_rj(1), nidx_rj(2),          &
-     &    kr_in, nlayer_CMB, coef_imp_b, coef_d_magne, bs_evo_mat)
+     &    sph_bc_B%kr_in, sph_bc_B%kr_out, coef_imp_b, coef_d_magne,    &
+     &    bs_evo_mat)
       call set_radial_vect_evo_mat_sph(nidx_rj(1), nidx_rj(2),          &
-     &    kr_in, nlayer_CMB, coef_imp_b, coef_d_magne, bt_evo_mat)
+     &    sph_bc_B%kr_in, sph_bc_B%kr_out, coef_imp_b, coef_d_magne,    &
+     &    bt_evo_mat)
 !$omp end parallel
 !
 !

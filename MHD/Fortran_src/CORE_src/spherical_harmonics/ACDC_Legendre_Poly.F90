@@ -46,7 +46,7 @@ Subroutine DeAllocate_Plms(depar)
       Logical, Optional, Intent(In) :: depar
       If (allocated(p_lm)) Then
             Do i = 1, n_m
-                  If (allocated(p_lm(i)%data)) Then
+                  If (associated(p_lm(i)%data)) Then
                         DeAllocate(p_lm(i)%data)
                   Endif
             Enddo
@@ -67,7 +67,7 @@ Subroutine DeAllocate_Parity_Plms()
       Integer :: i,m
       If (allocated(p_lm_odd)) Then
             Do i = 1, n_m
-                  If (allocated(p_lm_odd(i)%data)) Then
+                  If (associated(p_lm_odd(i)%data)) Then
                         DeAllocate(p_lm_odd(i)%data)
                   Endif
             Enddo
@@ -75,7 +75,7 @@ Subroutine DeAllocate_Parity_Plms()
       Endif
       If (allocated(p_lm_even)) Then
             Do i = 1, n_m
-                  If (allocated(p_lm_even(i)%data)) Then
+                  If (associated(p_lm_even(i)%data)) Then
                         DeAllocate(p_lm_even(i)%data)
                   Endif
             Enddo
@@ -85,8 +85,8 @@ Subroutine DeAllocate_Parity_Plms()
       If (allocated(n_l_odd)) DeAllocate(n_l_odd)
       If (allocated(lvals)) Then
             Do m = 1, n_m
-                  If (allocated(lvals(m)%even)) DeAllocate(lvals(m)%even)
-                  If (allocated(lvals(m)%odd)) DeAllocate(lvals(m)%odd)
+                  If (associated(lvals(m)%even)) DeAllocate(lvals(m)%even)
+                  If (associated(lvals(m)%odd)) DeAllocate(lvals(m)%odd)
             Enddo
             DeAllocate(lvals)
       Endif

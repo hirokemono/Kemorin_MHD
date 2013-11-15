@@ -13,30 +13,30 @@
 !!      subroutine check_4th_CMB_nonslip_vp_fdm
 !!
 !!   Matrix for poloidal velocity with non-slip boundary at CMB
-!!      d2fdr2 =    coef_fdm_noslip_CMB_4(-2,3) * d_rj(CMB-2)
-!!                + coef_fdm_noslip_CMB_4(-1,3) * d_rj(CMB-1)
-!!                + coef_fdm_noslip_CMB_4( 0,3) * d_rj(CMB  )
-!!      d3fdr3 =    coef_fdm_noslip_CMB_4(-2,4) * d_rj(CMB-2)
-!!                + coef_fdm_noslip_CMB_4(-1,4) * d_rj(CMB-1)
-!!                + coef_fdm_noslip_CMB_4( 0,4) * d_rj(CMB  )
+!!      d2fdr2 =    fdm4_noslip_CMB(-2,3) * d_rj(CMB-2)
+!!                + fdm4_noslip_CMB(-1,3) * d_rj(CMB-1)
+!!                + fdm4_noslip_CMB( 0,3) * d_rj(CMB  )
+!!      d3fdr3 =    fdm4_noslip_CMB(-2,4) * d_rj(CMB-2)
+!!                + fdm4_noslip_CMB(-1,4) * d_rj(CMB-1)
+!!                + fdm4_noslip_CMB( 0,4) * d_rj(CMB  )
 !!
 !!   Matrix for poloidal velocity with non-slip boundary at next of CMB
-!!      dfdr =      coef_fdm_noslip_CMB1_4(-2,2) * d_rj(CMB-3)
-!!                + coef_fdm_noslip_CMB1_4(-1,2) * d_rj(CMB-2)
-!!                + coef_fdm_noslip_CMB1_4( 0,2) * d_rj(CMB-1)
-!!                + coef_fdm_noslip_CMB1_4( 1,2) * d_rj(CMB  )
-!!      d2fdr2 =    coef_fdm_noslip_CMB1_4(-2,3) * d_rj(CMB-3)
-!!                + coef_fdm_noslip_CMB1_4(-1,3) * d_rj(CMB-2)
-!!                + coef_fdm_noslip_CMB1_4( 0,3) * d_rj(CMB-1)
-!!                + coef_fdm_noslip_CMB1_4( 1,3) * d_rj(CMB  )
-!!      d3fdr3 =    coef_fdm_noslip_CMB1_4(-2,4) * d_rj(CMB-3)
-!!                + coef_fdm_noslip_CMB1_4(-1,4) * d_rj(CMB-2)
-!!                + coef_fdm_noslip_CMB1_4( 0,4) * d_rj(CMB-1)
-!!                + coef_fdm_noslip_CMB1_4( 1,4) * d_rj(CMB  )
-!!      d4fdr4 =    coef_fdm_noslip_CMB1_4(-2,5) * d_rj(CMB-3)
-!!                + coef_fdm_noslip_CMB1_4(-1,5) * d_rj(CMB-2)
-!!                + coef_fdm_noslip_CMB1_4( 0,5) * d_rj(CMB-1)
-!!                + coef_fdm_noslip_CMB1_4( 1,5) * d_rj(CMB  )
+!!      dfdr =      fdm4_noslip_CMB1(-2,2) * d_rj(CMB-3)
+!!                + fdm4_noslip_CMB1(-1,2) * d_rj(CMB-2)
+!!                + fdm4_noslip_CMB1( 0,2) * d_rj(CMB-1)
+!!                + fdm4_noslip_CMB1( 1,2) * d_rj(CMB  )
+!!      d2fdr2 =    fdm4_noslip_CMB1(-2,3) * d_rj(CMB-3)
+!!                + fdm4_noslip_CMB1(-1,3) * d_rj(CMB-2)
+!!                + fdm4_noslip_CMB1( 0,3) * d_rj(CMB-1)
+!!                + fdm4_noslip_CMB1( 1,3) * d_rj(CMB  )
+!!      d3fdr3 =    fdm4_noslip_CMB1(-2,4) * d_rj(CMB-3)
+!!                + fdm4_noslip_CMB1(-1,4) * d_rj(CMB-2)
+!!                + fdm4_noslip_CMB1( 0,4) * d_rj(CMB-1)
+!!                + fdm4_noslip_CMB1( 1,4) * d_rj(CMB  )
+!!      d4fdr4 =    fdm4_noslip_CMB1(-2,5) * d_rj(CMB-3)
+!!                + fdm4_noslip_CMB1(-1,5) * d_rj(CMB-2)
+!!                + fdm4_noslip_CMB1( 0,5) * d_rj(CMB-1)
+!!                + fdm4_noslip_CMB1( 1,5) * d_rj(CMB  )
 !!@endverbatim
 !!
 !!@n @param r_from_CMB(-3:0) radius from three next points to CMB
@@ -52,14 +52,14 @@
 !
 !
 !>      Matrix to evaluate radial derivative at CMB with non-slip BC
-      real(kind = kreal) :: coef_fdm_noslip_CMB_4(-2:0,3:4)
+      real(kind = kreal) :: fdm4_noslip_CMB(-2:0,3:4)
 !
 !>      Matrix to evaluate radial derivative at next of CMB
 !!      with non-slip BC
-      real(kind = kreal) :: coef_fdm_noslip_CMB1_4(-2:1,5)
+      real(kind = kreal) :: fdm4_noslip_CMB1(-2:1,5)
 !
 !
-!>      Work matrix to evaluate coef_fdm_noslip_CMB_4
+!>      Work matrix to evaluate fdm4_noslip_CMB
 !!@verbatim
 !!      d2fdr2 =    mat_fdm_noslip_CMB_4(3,4) * d_rj(CMB-2)
 !!                + mat_fdm_noslip_CMB_4(3,3) * d_rj(CMB-1)
@@ -76,7 +76,7 @@
 !!@endverbatim
       real(kind = kreal) :: mat_fdm_noslip_CMB_4(4,4)
 !
-!>      Work matrix to evaluate coef_fdm_noslip_CMB1_4
+!>      Work matrix to evaluate fdm4_noslip_CMB1
 !!@verbatim
 !!      dfdr =      mat_fdm_noslip_CMB1_4(2,5) * d_rj(CMB-3)
 !!                + mat_fdm_noslip_CMB1_4(2,4) * d_rj(CMB-2)
@@ -150,9 +150,9 @@
      &            r_from_CMB(0)
       end if
 !
-      coef_fdm_noslip_CMB_4(-2,3:4) = mat_fdm_noslip_CMB_4(3:4,4)
-      coef_fdm_noslip_CMB_4(-1,3:4) = mat_fdm_noslip_CMB_4(3:4,3)
-      coef_fdm_noslip_CMB_4( 0,3:4) = mat_fdm_noslip_CMB_4(3:4,1)
+      fdm4_noslip_CMB(-2,3:4) = mat_fdm_noslip_CMB_4(3:4,4)
+      fdm4_noslip_CMB(-1,3:4) = mat_fdm_noslip_CMB_4(3:4,3)
+      fdm4_noslip_CMB( 0,3:4) = mat_fdm_noslip_CMB_4(3:4,1)
 !
       end subroutine cal_4th_CMB_nonslip_vp_fdm
 !
@@ -209,10 +209,10 @@
      &             r_from_CMB(0)
       end if
 !
-      coef_fdm_noslip_CMB1_4(-2,2:5) = mat_fdm_noslip_CMB1_4(2:5,5)
-      coef_fdm_noslip_CMB1_4(-1,2:5) = mat_fdm_noslip_CMB1_4(2:5,4)
-      coef_fdm_noslip_CMB1_4( 0,2:5) = mat_fdm_noslip_CMB1_4(2:5,1)
-      coef_fdm_noslip_CMB1_4( 1,2:5) = mat_fdm_noslip_CMB1_4(2:5,3)
+      fdm4_noslip_CMB1(-2,2:5) = mat_fdm_noslip_CMB1_4(2:5,5)
+      fdm4_noslip_CMB1(-1,2:5) = mat_fdm_noslip_CMB1_4(2:5,4)
+      fdm4_noslip_CMB1( 0,2:5) = mat_fdm_noslip_CMB1_4(2:5,1)
+      fdm4_noslip_CMB1( 1,2:5) = mat_fdm_noslip_CMB1_4(2:5,3)
 !
       end subroutine cal_4th_CMB1_nonslip_vp_fdm
 !
@@ -222,21 +222,21 @@
       subroutine check_4th_CMB_nonslip_vp_fdm
 !
 !
-      write(50,*) ' coef_fdm_noslip_CMB_4'
+      write(50,*) ' fdm4_noslip_CMB'
       write(50,*) 'matrix for d2fdr2'
-      write(50,'(1p9E25.15e3)') coef_fdm_noslip_CMB_4(-2:0,3)
+      write(50,'(1p9E25.15e3)') fdm4_noslip_CMB(-2:0,3)
       write(50,*) 'matrix for d3fdr3'
-      write(50,'(1p9E25.15e3)') coef_fdm_noslip_CMB_4(-2:0,4)
+      write(50,'(1p9E25.15e3)') fdm4_noslip_CMB(-2:0,4)
 !
-      write(50,*) ' coef_fdm_noslip_CMB1_4'
+      write(50,*) ' fdm4_noslip_CMB1'
       write(50,*) 'matrix for dfdr'
-      write(50,'(1p9E25.15e3)') coef_fdm_noslip_CMB1_4(-2:1,2)
+      write(50,'(1p9E25.15e3)') fdm4_noslip_CMB1(-2:1,2)
       write(50,*) 'matrix for d2fdr2'
-      write(50,'(1p9E25.15e3)') coef_fdm_noslip_CMB1_4(-2:1,3)
+      write(50,'(1p9E25.15e3)') fdm4_noslip_CMB1(-2:1,3)
       write(50,*) 'matrix for d3fdr3'
-      write(50,'(1p9E25.15e3)') coef_fdm_noslip_CMB1_4(-2:1,4)
+      write(50,'(1p9E25.15e3)') fdm4_noslip_CMB1(-2:1,4)
       write(50,*) 'matrix for d4fdr4'
-      write(50,'(1p9E25.15e3)') coef_fdm_noslip_CMB1_4(-2:1,5)
+      write(50,'(1p9E25.15e3)') fdm4_noslip_CMB1(-2:1,5)
 !
       end subroutine check_4th_CMB_nonslip_vp_fdm
 !

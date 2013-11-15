@@ -13,30 +13,30 @@
 !!      subroutine check_4th_ICB_nonslip_vp_fdm
 !!
 !!   Matrix for poloidal velocity with non-slip boundary at ICB
-!!      d2fdr2 =    coef_fdm_noslip_ICB_4( 2,3) * d_rj(ICB-2)
-!!                + coef_fdm_noslip_ICB_4( 1,3) * d_rj(ICB-1)
-!!                + coef_fdm_noslip_ICB_4( 0,3) * d_rj(ICB  )
-!!      d3fdr3 =    coef_fdm_noslip_ICB_4( 2,4) * d_rj(ICB-2)
-!!                + coef_fdm_noslip_ICB_4( 1,4) * d_rj(ICB-1)
-!!                + coef_fdm_noslip_ICB_4( 0,4) * d_rj(ICB  )
+!!      d2fdr2 =    fdm4_noslip_ICB( 2,3) * d_rj(ICB-2)
+!!                + fdm4_noslip_ICB( 1,3) * d_rj(ICB-1)
+!!                + fdm4_noslip_ICB( 0,3) * d_rj(ICB  )
+!!      d3fdr3 =    fdm4_noslip_ICB( 2,4) * d_rj(ICB-2)
+!!                + fdm4_noslip_ICB( 1,4) * d_rj(ICB-1)
+!!                + fdm4_noslip_ICB( 0,4) * d_rj(ICB  )
 !!
 !!   Matrix for poloidal velocity with non-slip boundary at next of ICB
-!!      dfdr =      coef_fdm_noslip_ICB1_4( 2,2) * d_rj(ICB-3)
-!!                + coef_fdm_noslip_ICB1_4( 1,2) * d_rj(ICB-2)
-!!                + coef_fdm_noslip_ICB1_4( 0,2) * d_rj(ICB-1)
-!!                + coef_fdm_noslip_ICB1_4(-1,2) * d_rj(ICB  )
-!!      d2fdr2 =    coef_fdm_noslip_ICB1_4( 2,3) * d_rj(ICB-3)
-!!                + coef_fdm_noslip_ICB1_4( 1,3) * d_rj(ICB-2)
-!!                + coef_fdm_noslip_ICB1_4( 0,3) * d_rj(ICB-1)
-!!                + coef_fdm_noslip_ICB1_4(-1,3) * d_rj(ICB  )
-!!      d3fdr3 =    coef_fdm_noslip_ICB1_4( 2,4) * d_rj(ICB-3)
-!!                + coef_fdm_noslip_ICB1_4( 1,4) * d_rj(ICB-2)
-!!                + coef_fdm_noslip_ICB1_4( 0,4) * d_rj(ICB-1)
-!!                + coef_fdm_noslip_ICB1_4(-1,4) * d_rj(ICB  )
-!!      d4fdr4 =    coef_fdm_noslip_ICB1_4( 2,5) * d_rj(ICB-3)
-!!                + coef_fdm_noslip_ICB1_4( 1,5) * d_rj(ICB-2)
-!!                + coef_fdm_noslip_ICB1_4( 0,5) * d_rj(ICB-1)
-!!                + coef_fdm_noslip_ICB1_4(-1,5) * d_rj(ICB  )
+!!      dfdr =      fdm4_noslip_ICB1( 2,2) * d_rj(ICB-3)
+!!                + fdm4_noslip_ICB1( 1,2) * d_rj(ICB-2)
+!!                + fdm4_noslip_ICB1( 0,2) * d_rj(ICB-1)
+!!                + fdm4_noslip_ICB1(-1,2) * d_rj(ICB  )
+!!      d2fdr2 =    fdm4_noslip_ICB1( 2,3) * d_rj(ICB-3)
+!!                + fdm4_noslip_ICB1( 1,3) * d_rj(ICB-2)
+!!                + fdm4_noslip_ICB1( 0,3) * d_rj(ICB-1)
+!!                + fdm4_noslip_ICB1(-1,3) * d_rj(ICB  )
+!!      d3fdr3 =    fdm4_noslip_ICB1( 2,4) * d_rj(ICB-3)
+!!                + fdm4_noslip_ICB1( 1,4) * d_rj(ICB-2)
+!!                + fdm4_noslip_ICB1( 0,4) * d_rj(ICB-1)
+!!                + fdm4_noslip_ICB1(-1,4) * d_rj(ICB  )
+!!      d4fdr4 =    fdm4_noslip_ICB1( 2,5) * d_rj(ICB-3)
+!!                + fdm4_noslip_ICB1( 1,5) * d_rj(ICB-2)
+!!                + fdm4_noslip_ICB1( 0,5) * d_rj(ICB-1)
+!!                + fdm4_noslip_ICB1(-1,5) * d_rj(ICB  )
 !!@endverbatim
 !!
 !!@n @param r_from_ICB(0:3) radius to three next points of ICB
@@ -52,14 +52,14 @@
 !
 !
 !>      Matrix to evaluate radial derivative at ICB with non-slip BC
-      real(kind = kreal) :: coef_fdm_noslip_ICB_4(0:2,3:5)
+      real(kind = kreal) :: fdm4_noslip_ICB(0:2,3:5)
 !
 !>      Matrix to evaluate radial derivative at next of ICB
 !!      with non-slip BC
-      real(kind = kreal) :: coef_fdm_noslip_ICB1_4(-1:2,5)
+      real(kind = kreal) :: fdm4_noslip_ICB1(-1:2,5)
 !
 !
-!>      Work matrix to evaluate coef_fdm_noslip_ICB_4
+!>      Work matrix to evaluate fdm4_noslip_ICB
 !!@verbatim
 !!      d2fdr2 =    mat_fdm_noslip_ICB_4(3,4) * d_rj(ICB+2)
 !!                + mat_fdm_noslip_ICB_4(3,3) * d_rj(ICB+1)
@@ -72,7 +72,7 @@
 !!@endverbatim
       real(kind = kreal) :: mat_fdm_noslip_ICB_4(4,4)
 !
-!>      Work matrix to evaluate coef_fdm_noslip_ICB1_4
+!>      Work matrix to evaluate fdm4_noslip_ICB1
 !!@verbatim
 !!      dfdr =      mat_fdm_noslip_ICB1_4(2,5) * d_rj(ICB+3)
 !!                + mat_fdm_noslip_ICB1_4(2,4) * d_rj(ICB+2)
@@ -146,9 +146,9 @@
      &            r_from_ICB(0)
       end if
 !
-      coef_fdm_noslip_ICB_4( 2,3:4) = mat_fdm_noslip_ICB_4(3:4,4)
-      coef_fdm_noslip_ICB_4( 1,3:4) = mat_fdm_noslip_ICB_4(3:4,3)
-      coef_fdm_noslip_ICB_4( 0,3:4) = mat_fdm_noslip_ICB_4(3:4,1)
+      fdm4_noslip_ICB( 2,3:4) = mat_fdm_noslip_ICB_4(3:4,4)
+      fdm4_noslip_ICB( 1,3:4) = mat_fdm_noslip_ICB_4(3:4,3)
+      fdm4_noslip_ICB( 0,3:4) = mat_fdm_noslip_ICB_4(3:4,1)
 !
       end subroutine cal_4th_ICB_nonslip_vp_fdm
 !
@@ -205,10 +205,10 @@
      &            r_from_ICB(0)
       end if
 !
-      coef_fdm_noslip_ICB1_4(-1,2:5) = mat_fdm_noslip_ICB1_4(2:5,3)
-      coef_fdm_noslip_ICB1_4( 0,2:5) = mat_fdm_noslip_ICB1_4(2:5,1)
-      coef_fdm_noslip_ICB1_4( 1,2:5) = mat_fdm_noslip_ICB1_4(2:5,4)
-      coef_fdm_noslip_ICB1_4( 2,2:5) = mat_fdm_noslip_ICB1_4(2:5,5)
+      fdm4_noslip_ICB1(-1,2:5) = mat_fdm_noslip_ICB1_4(2:5,3)
+      fdm4_noslip_ICB1( 0,2:5) = mat_fdm_noslip_ICB1_4(2:5,1)
+      fdm4_noslip_ICB1( 1,2:5) = mat_fdm_noslip_ICB1_4(2:5,4)
+      fdm4_noslip_ICB1( 2,2:5) = mat_fdm_noslip_ICB1_4(2:5,5)
 !
       end subroutine cal_4th_ICB1_nonslip_vp_fdm
 !
@@ -218,21 +218,21 @@
       subroutine check_4th_ICB_nonslip_vp_fdm
 !
 !
-      write(50,*) ' coef_fdm_noslip_ICB_4'
+      write(50,*) ' fdm4_noslip_ICB'
       write(50,*) 'matrix for d2fdr2'
-      write(50,'(1p9E25.15e3)') coef_fdm_noslip_ICB_4(0:2,3)
+      write(50,'(1p9E25.15e3)') fdm4_noslip_ICB(0:2,3)
       write(50,*) 'matrix for d3fdr3'
-      write(50,'(1p9E25.15e3)') coef_fdm_noslip_ICB_4(0:2,4)
+      write(50,'(1p9E25.15e3)') fdm4_noslip_ICB(0:2,4)
 !
-      write(50,*) ' coef_fdm_noslip_ICB1_4'
+      write(50,*) ' fdm4_noslip_ICB1'
       write(50,*) 'matrix for dfdr'
-      write(50,'(1p9E25.15e3)') coef_fdm_noslip_ICB1_4(-1:2,2)
+      write(50,'(1p9E25.15e3)') fdm4_noslip_ICB1(-1:2,2)
       write(50,*) 'matrix for d2fdr2'
-      write(50,'(1p9E25.15e3)') coef_fdm_noslip_ICB1_4(-1:2,3)
+      write(50,'(1p9E25.15e3)') fdm4_noslip_ICB1(-1:2,3)
       write(50,*) 'matrix for d3fdr3'
-      write(50,'(1p9E25.15e3)') coef_fdm_noslip_ICB1_4(-1:2,4)
+      write(50,'(1p9E25.15e3)') fdm4_noslip_ICB1(-1:2,4)
       write(50,*) 'matrix for d4fdr4'
-      write(50,'(1p9E25.15e3)') coef_fdm_noslip_ICB1_4(-1:2,5)
+      write(50,'(1p9E25.15e3)') fdm4_noslip_ICB1(-1:2,5)
 !
       end subroutine check_4th_ICB_nonslip_vp_fdm
 !
