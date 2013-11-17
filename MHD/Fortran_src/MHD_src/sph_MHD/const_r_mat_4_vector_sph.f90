@@ -58,8 +58,12 @@
 !
 !   Boundary condition for ICB
 !
-      call set_icb_wt_sph_evo_mat
-      call set_icb_p_sph_poisson_mat
+      call set_icb_wt_sph_evo_mat(nidx_rj(1), nidx_rj(2),               &
+     &    sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_dr_ICB,     &
+     &    wt_evo_mat)
+      call set_icb_p_sph_poisson_mat(nidx_rj(1), nidx_rj(2),            &
+     &    sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_dr_ICB,     &
+     &    p_poisson_mat)
 !
       if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call set_free_slip_icb_vt_sph_mat
@@ -77,8 +81,12 @@
 !
 !   Boundary condition for CMB
 !
-      call set_cmb_wt_sph_evo_mat
-      call set_cmb_p_sph_poisson_mat
+      call set_cmb_wt_sph_evo_mat(nidx_rj(1), nidx_rj(2),               &
+     &    sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_dr_CMB,    &
+     &    wt_evo_mat)
+      call set_cmb_p_sph_poisson_mat(nidx_rj(1), nidx_rj(2),            &
+     &    sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_dr_CMB,    &
+     &    p_poisson_mat)
 !
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call set_free_slip_cmb_vt_sph_mat
@@ -142,19 +150,23 @@
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call set_magne_center_rmat_sph
       else if(sph_bc_B%iflag_icb .eq. iflag_radial_magne) then
-        call set_qvacume_magne_icb_rmat_sph(nidx_rj(2),                 &
-     &      sph_bc_B%kr_in, sph_bc_B%r_ICB, sph_bc_B%fdm2_fix_dr_ICB)
+        call no_r_poynting_cmb_rmat_sph(nidx_rj(1), nidx_rj(2),         &
+     &      sph_bc_B%kr_in, sph_bc_B%r_ICB, sph_bc_B%fdm2_fix_dr_ICB,   &
+     &      bs_evo_mat, bt_evo_mat)
       else
-        call set_ins_magne_icb_rmat_sph(nidx_rj(2),                     &
-     &      sph_bc_B%kr_in, sph_bc_B%r_ICB, sph_bc_B%fdm2_fix_dr_ICB)
+        call set_ins_magne_icb_rmat_sph(nidx_rj(1), nidx_rj(2),         &
+     &      sph_bc_B%kr_in, sph_bc_B%r_ICB, sph_bc_B%fdm2_fix_dr_ICB,   &
+     &      bs_evo_mat, bt_evo_mat)
       end if
 !
       if(sph_bc_B%iflag_cmb .eq. iflag_radial_magne) then
-        call set_qvacume_magne_cmb_rmat_sph(nidx_rj(2),                 &
-     &      sph_bc_B%kr_out, sph_bc_B%r_CMB, sph_bc_B%fdm2_fix_dr_CMB)
+        call no_r_poynting_cmb_rmat_sph(nidx_rj(1), nidx_rj(2),         &
+     &      sph_bc_B%kr_out, sph_bc_B%r_CMB, sph_bc_B%fdm2_fix_dr_CMB,  &
+     &      bs_evo_mat, bt_evo_mat)
       else
-        call set_ins_magne_cmb_rmat_sph(nidx_rj(2),                     &
-     &      sph_bc_B%kr_out, sph_bc_B%r_CMB, sph_bc_B%fdm2_fix_dr_CMB)
+        call set_ins_magne_cmb_rmat_sph(nidx_rj(1), nidx_rj(2),         &
+     &      sph_bc_B%kr_out, sph_bc_B%r_CMB, sph_bc_B%fdm2_fix_dr_CMB,  &
+     &      bs_evo_mat, bt_evo_mat)
       end if
 !
 !$omp parallel

@@ -3,8 +3,9 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine cal_norm_area_4_psf
-!      subroutine cal_nod_normal_4_psf
+!!      subroutine cal_center_ele_4_psf
+!!      subroutine cal_norm_area_4_psf
+!!      subroutine cal_nod_normal_4_psf
 !
       module take_normals_4_psf
 !
@@ -21,15 +22,43 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine cal_center_ele_4_psf
+!
+      integer(kind = kint) :: iele, i1, i2, i3
+      real(kind = kreal) ::ax(3), bx(3)
+!
+!
+!$omp parallel do private(i1,i2,i3)
+      do iele = 1, numele_psf
+        i1 = ie_psf(iele,1)
+        i2 = ie_psf(iele,2)
+        i3 = ie_psf(iele,3)
+!
+        center_ele_psf(iele,1)                                          &
+     &      = (xx_psf(i2,1) + xx_psf(i2,1) + xx_psf(i2,1)) / 3.0d0
+        center_ele_psf(iele,2)                                          &
+     &      = (xx_psf(i2,2) + xx_psf(i2,2) + xx_psf(i2,2)) / 3.0d0
+        center_ele_psf(iele,3)                                          &
+     &      = (xx_psf(i2,3) + xx_psf(i2,3) + xx_psf(i2,3)) / 3.0d0
+!
+        radius_ele_psf(iele) = sqrt(center_ele_psf(iele,1)**2           &
+     &                            + center_ele_psf(iele,2)**2           &
+     &                            + center_ele_psf(iele,3)**2)
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_center_ele_4_psf
+!
+!-----------------------------------------------------------------------
+!
       subroutine cal_norm_area_4_psf
 !
       integer(kind = kint) :: iele, i1, i2, i3
       real(kind = kreal) ::ax(3), bx(3)
 !
 !
-      area_total_psf = 0.0d0
+!$omp parallel do private(i1,i2,i3,ax,bx)
       do iele = 1, numele_psf
-!
         i1 = ie_psf(iele,1)
         i2 = ie_psf(iele,2)
         i3 = ie_psf(iele,3)
@@ -59,11 +88,12 @@
           norm_ele_psf(iele,2) = norm_ele_psf(iele,2) / area_psf(iele)
           norm_ele_psf(iele,3) = norm_ele_psf(iele,3) / area_psf(iele)
         end if
+      end do
+!$omp end parallel do
 !
-!        write(40,*) iele, norm_ele_psf(iele,1:3), area_psf(iele)
-!
+      area_total_psf = 0.0d0
+      do iele = 1, numele_psf
         area_total_psf = area_total_psf + area_psf(iele)
-!
       end do
 !
       end subroutine cal_norm_area_4_psf

@@ -34,6 +34,7 @@
 !
       integer(kind = kint) :: istep_start, istep_end
       integer(kind = kint) :: istep_int
+      real(kind = kreal) :: rmin, rmax
 !
       integer(kind = kint) :: istep, icou
       integer(kind = kint) :: inod, nd, i
@@ -52,6 +53,9 @@
 !
       write(*,*) 'inputistep_start, istep_end, istep_int'
       read(*,*) istep_start, istep_end, istep_int
+!
+      write(*,*) 'input radius range'
+      read(*,*) rmin, rmax
 !
       call add_int_suffix(istep_start, psf_file_header, fname_tmp)
       write(psf_ave_header, '(a9,a)') 'time_ave_', trim(fname_tmp)
@@ -73,7 +77,10 @@
 !   Evaluate size of patches
 !
       call allocate_norms_4_psf
+      call cal_center_ele_4_psf
       call cal_norm_area_4_psf
+!
+      call set_averaging_range(rmin, rmax)
 !
       call open_psf_ave_rms_data(psf_file_header)
 !
