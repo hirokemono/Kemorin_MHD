@@ -106,7 +106,7 @@
         write(50,'(a)') 'j, l, m, i, r, aleg1, aleg3'
         l = l_check
           do m = 0, l
-            j = l*(l+1)+m+1
+            j = l*(l+1)+m
             do i = 1, ntheta
               write(50,'(4i5,1p3e23.14e3)') j, l, m, i,                 &
      &             colat(ntheta-i+1), p_mag(j,i), dp_mag(j,i)

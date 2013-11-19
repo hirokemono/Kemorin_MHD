@@ -5,12 +5,14 @@
 !
       implicit none
 !
-      integer(kind = 4) :: ltr, ntheta
+      integer(kind = 4) :: ltr, ntheta, lst, led
       integer(kind = 4) :: i, j, l, m, lc, mc, lm
       integer(kind = 4) :: iend, istart, t_rate, t_max
 !
       write(*,*) 'imput number of points'
       read(*,*) ntheta
+      write(*,*) 'input range of point'
+      read(*,*) lst, led
       write(*,*) 'input truncation'
       read(*,*) ltr
 !
@@ -34,8 +36,8 @@
 !      do l = 1, ltr
       l = ltr
         do m = 0, l
-          j = l*(l+1)+m+1
-          do i = 1, ntheta
+          j = l*(l+1)+m
+          do i = lst, led
             write(50,'(4i10,1p3E25.15e3)') j, l, m, i,                  &
      &             colat(ntheta-i+1), p_mag(j,i), dp_mag(j,i)
           end do

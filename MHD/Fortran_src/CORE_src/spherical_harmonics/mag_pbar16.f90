@@ -49,8 +49,8 @@
       allocate( aleg2(lmax*(lmax+5)/2+2,ni) )
       allocate( aleg3(lmax*(lmax+3)/2+1,ni) )
 !
-      allocate( p_mag((lmax+2)**2,ni) )
-      allocate( dp_mag((lmax+2)**2,ni) )
+      allocate( p_mag(0:lmax*(lmax+2),ni) )
+      allocate( dp_mag(0:lmax*(lmax+2),ni) )
       aleg1 = 0.0d0
       aleg2 = 0.0d0
       aleg3 = 0.0d0
@@ -160,7 +160,7 @@
         do lc=mc, lmax+1
           l = lc-1
           lm=lm+1
-          j = l*(l+1) + m + 1
+          j = l*(l+1) + m
           cl = 2.0d0 / sqrt(dble(2*l+1))
           do ic = 1, ni
             p_mag(j,ic) =  aleg1(lm,ni-ic+1)
@@ -190,7 +190,7 @@
         do lc=mc, lmax+1
           l = lc-1
           lm=lm+1
-          j = l*(l+1) + m + 1
+          j = l*(l+1) + m
           cl = 2.0d0 / sqrt(dble(2*l+1))
           do ic = 1, ni
             p_mag(j,ic) =  (-1.0d0)**m * sqrt2pi*cl * aleg1(lm,ni-ic+1)
@@ -205,7 +205,7 @@
       m = 0
       do lc = 1, lmax+1
         l = lc-1
-        j = l*(l+1) + 1
+        j = l*(l+1)
         do ic = 1, ni
           p_mag(j,ic) = p_mag(j,ic) / sqrt(2.0d0)
           dp_mag(j,ic) = dp_mag(j,ic) / sqrt(2.0d0)

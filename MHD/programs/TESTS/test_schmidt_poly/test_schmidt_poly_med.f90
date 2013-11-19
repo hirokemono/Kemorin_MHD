@@ -12,17 +12,20 @@
       implicit none
 !
       integer(kind = kint) :: j, l, m, i, itime
-      integer(kind = 4) :: iend, istart, t_rate, t_max
+      integer(kind = 4) :: iend, istart, t_rate, t_max, lst, led
 !
 !
       write(*,*) 'input num. of points'
       read(*,*) nth_g
 !
+      write(*,*) 'input range of point'
+      read(*,*) lst, led
+!
       write(*,*) 'input truncation'
       read(*,*) ltr_g
 !
       call system_clock(istart)
-      call cal_full_legendre_on_med
+      call cal_full_legendre_on_med(lst, led)
       call system_clock(iend, t_rate, t_max)
       write(*,*) 'Elapsed time:', (iend-istart) / dble(t_rate)
 !
@@ -40,7 +43,7 @@
       l = ltr_g
       do m = 0, l
         j = l*(l+1) + m
-        do i = 1, nth_g
+        do i = lst, led
           write(50,'(4i10,1p3E25.15e3)') j, l, m, i,                    &
      &      g_colat_med(i), P_smdt(i,j), dPdt_smdt(i,j)
         end do

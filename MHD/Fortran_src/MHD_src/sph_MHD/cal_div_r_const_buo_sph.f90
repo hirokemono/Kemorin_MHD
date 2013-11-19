@@ -8,8 +8,11 @@
 !!       for pressure evaluation
 !!
 !!@verbatim
-!!      subroutine cal_div_radial_const_gravity
+!!      subroutine cal_div_radial_const_gravity(sph_bc_U)
 !!@endverbatim
+!!
+!!@param sph_bc_U  Structure for basic velocity
+!!                 boundary condition parameters
 !
       module cal_div_r_const_buo_sph
 !
@@ -34,9 +37,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_radial_const_gravity
+      subroutine cal_div_radial_const_gravity(sph_bc_U)
 !
       use m_machine_parameter
+      use t_boundary_params_sph_MHD
+!
+      type(sph_boundary_type), intent(in) :: sph_bc_U
 !
 !
       if ((iflag_4_gravity*iflag_4_composit_buo) .gt. id_turn_OFF) then
@@ -44,35 +50,46 @@
         if(iflag_4_ref_temp .ne. id_sphere_ref_temp) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*)'cal_div_double_cst_buo_sph', ipol%i_temp
-          call cal_div_double_cst_buo_sph(ipol%i_temp, ipol%i_grad_t)
+          call cal_div_double_cst_buo_sph                               &
+     &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
+     &        coef_buo, ipol%i_temp, ipol%i_grad_t,                     &
+     &        coef_comp_buo, ipol%i_light, ipol%i_grad_composit,        &
+     &        ipol%i_div_buoyancy)
         else
           if (iflag_debug.eq.1)                                         &
      &      write(*,*)'cal_div_double_cst_buo_sph', ipol%i_par_temp
-          call cal_div_double_cst_buo_sph(ipol%i_par_temp,              &
-     &        ipol%i_grad_part_t)
+          call cal_div_double_cst_buo_sph                               &
+     &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
+     &        coef_buo, ipol%i_par_temp, ipol%i_grad_part_t,            &
+     &        coef_comp_buo, ipol%i_light, ipol%i_grad_composit,        &
+     &        ipol%i_div_buoyancy)
         end if
 !
       else if (iflag_4_gravity .gt. id_turn_OFF) then
 !
         if(iflag_4_ref_temp .ne. id_sphere_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
-          call cal_div_cst_buo_sph(coef_buo, ipol%i_temp,               &
-     &        ipol%i_grad_t, ipol%i_div_buoyancy)
+          call cal_div_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,     &
+     &        coef_buo, ipol%i_temp, ipol%i_grad_t,                     &
+     &        ipol%i_div_buoyancy)
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
-          call cal_div_cst_buo_sph(coef_buo,                            &
-     &        ipol%i_par_temp, ipol%i_grad_part_t, ipol%i_div_buoyancy)
+          call cal_div_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,     &
+     &        coef_buo, ipol%i_par_temp, ipol%i_grad_part_t,            &
+     &        ipol%i_div_buoyancy)
         end if
 !
       else if (iflag_4_composit_buo .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
-        call cal_div_cst_buo_sph(coef_comp_buo, ipol%i_light,           &
-     &      ipol%i_grad_composit, ipol%i_div_comp_buo)
+        call cal_div_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
+     &      coef_comp_buo, ipol%i_light, ipol%i_grad_composit,          &
+     &      ipol%i_div_comp_buo)
 !
       else if(iflag_4_filter_gravity .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
-        call cal_div_cst_buo_sph(coef_buo, ipol%i_filter_temp,          &
-     &      ipol%i_grad_filter_temp, ipol%i_div_filter_buo)
+        call cal_div_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
+     &      coef_buo, ipol%i_filter_temp, ipol%i_grad_filter_temp,      &
+     &      ipol%i_div_filter_buo)
       end if
 !
       end subroutine cal_div_radial_const_gravity
@@ -80,25 +97,32 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_double_cst_buo_sph(is_t, ids_t)
+      subroutine cal_div_double_cst_buo_sph(kr_in, kr_out,              &
+     &          coef_t_buo, is_t, ids_t, coef_c_buo, is_c, ids_c,       &
+     &          is_div)
 !
+      integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind= kint), intent(in) :: is_t, ids_t
+      integer(kind= kint), intent(in) :: is_c, ids_c
+      integer(kind= kint), intent(in) :: is_div
+      real(kind = kreal), intent(in) :: coef_t_buo, coef_c_buo
+!
       integer(kind= kint) :: ist, ied, inod, j, k
 !
 !
-        ist = (nlayer_ICB-1)*nidx_rj(2) + 1
-        ied = nlayer_CMB * nidx_rj(2)
+        ist = (kr_in-1)*nidx_rj(2) + 1
+        ied = kr_out * nidx_rj(2)
 !$omp parallel do private (inod,j,k)
         do inod = ist, ied
           j = mod((inod-1),nidx_rj(2)) + 1
           k = 1 + (inod- j) / nidx_rj(2)
 !
-          d_rj(inod,ipol%i_div_buoyancy)                                &
-     &          = two * a_r_1d_rj_r(k) * (coef_buo * d_rj(inod,is_t)    &
-     &                   + coef_comp_buo * d_rj(inod,ipol%i_light))     &
-     &           +  ( coef_buo * d_rj(inod,ids_t)                       &
-     &             + coef_comp_buo * d_rj(inod,ipol%i_grad_composit))   &
-     &              * g_sph_rj(j,3) * a_r_1d_rj_r(k)
+          d_rj(inod,is_div) = two * a_r_1d_rj_r(k)                      &
+     &                       * (coef_t_buo * d_rj(inod,is_t)            &
+     &                        + coef_c_buo * d_rj(inod,is_c))           &
+     &                     +  ( coef_t_buo * d_rj(inod,ids_t)           &
+     &                        + coef_c_buo * d_rj(inod,ids_c))          &
+     &                       * g_sph_rj(j,3) * a_r_1d_rj_r(k)
         end do
 !$omp end parallel do
 !
@@ -106,15 +130,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_cst_buo_sph(coef, is_fld, ids_fld, is_div)
+      subroutine cal_div_cst_buo_sph(kr_in, kr_out, coef,               &
+     &          is_fld, ids_fld, is_div)
 !
+      integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind= kint), intent(in) :: is_fld, ids_fld, is_div
       real(kind = kreal), intent(in) :: coef
       integer(kind= kint) :: ist, ied, inod, j, k
 !
 !
-        ist = (nlayer_ICB-1)*nidx_rj(2) + 1
-        ied = nlayer_CMB * nidx_rj(2)
+        ist = (kr_in-1)*nidx_rj(2) + 1
+        ied = kr_out * nidx_rj(2)
 !$omp parallel do private (inod,j,k)
         do inod = ist, ied
           j = mod((inod-1),nidx_rj(2)) + 1

@@ -7,39 +7,39 @@
 !>@brief Matrix to evaluate radial derivative for free-slip at CMB
 !!
 !!@verbatim
-!!      subroutine cal_4th_CMB_free_vp_fdm(r_from_CMB)
-!!      subroutine cal_4th_CMB1_free_vp_fdm(r_from_CMB)
+!!      subroutine cal_fdm4_CMB0_free_vp(r_from_CMB)
+!!      subroutine cal_fdm4_CMB1_free_vp(r_from_CMB)
 !!
 !!      subroutine check_4th_CMB_free_vp_fdm
 !!
 !!   Matrix for poloidal velocity with free-slip boundary at CMB
-!!      dfdr =      coef_fdm_free_CMB_vp4(-2,2) * d_rj(CMB-2)
-!!                + coef_fdm_free_CMB_vp4(-1,2) * d_rj(CMB-1)
-!!                + coef_fdm_free_CMB_vp4( 0,2) * d_rj(CMB  )
-!!      d2fdr2 =    coef_fdm_free_CMB_vp4(-2,3) * d_rj(CMB-2)
-!!                + coef_fdm_free_CMB_vp4(-1,3) * d_rj(CMB-1)
-!!                + coef_fdm_free_CMB_vp4( 0,3) * d_rj(CMB  )
-!!      d3fdr3 =    coef_fdm_free_CMB_vp4(-2,4) * d_rj(CMB-2)
-!!                + coef_fdm_free_CMB_vp4(-1,4) * d_rj(CMB-1)
-!!                + coef_fdm_free_CMB_vp4( 0,4) * d_rj(CMB  )
+!!      dfdr =      fdm4_free_vp_CMB0(-2,2) * d_rj(CMB-2)
+!!                + fdm4_free_vp_CMB0(-1,2) * d_rj(CMB-1)
+!!                + fdm4_free_vp_CMB0( 0,2) * d_rj(CMB  )
+!!      d2fdr2 =    fdm4_free_vp_CMB0(-2,3) * d_rj(CMB-2)
+!!                + fdm4_free_vp_CMB0(-1,3) * d_rj(CMB-1)
+!!                + fdm4_free_vp_CMB0( 0,3) * d_rj(CMB  )
+!!      d3fdr3 =    fdm4_free_vp_CMB0(-2,4) * d_rj(CMB-2)
+!!                + fdm4_free_vp_CMB0(-1,4) * d_rj(CMB-1)
+!!                + fdm4_free_vp_CMB0( 0,4) * d_rj(CMB  )
 !!
 !!   Matrix for poloidal velocity with free-slip boundary at next of CMB
-!!      dfdr =      coef_fdm_free_CMB1_vp4(-2,2) * d_rj(CMB-3)
-!!                + coef_fdm_free_CMB1_vp4(-1,2) * d_rj(CMB-2)
-!!                + coef_fdm_free_CMB1_vp4( 0,2) * d_rj(CMB-1)
-!!                + coef_fdm_free_CMB1_vp4( 1,2) * d_rj(CMB  )
-!!      d2fdr2 =    coef_fdm_free_CMB1_vp4(-2,3) * d_rj(CMB-3)
-!!                + coef_fdm_free_CMB1_vp4(-1,3) * d_rj(CMB-2)
-!!                + coef_fdm_free_CMB1_vp4( 0,3) * d_rj(CMB-1)
-!!                + coef_fdm_free_CMB1_vp4( 1,3) * d_rj(CMB  )
-!!      d3fdr3 =    coef_fdm_free_CMB1_vp4(-2,4) * d_rj(CMB-3)
-!!                + coef_fdm_free_CMB1_vp4(-1,4) * d_rj(CMB-2)
-!!                + coef_fdm_free_CMB1_vp4( 0,4) * d_rj(CMB-1)
-!!                + coef_fdm_free_CMB1_vp4( 1,4) * d_rj(CMB  )
-!!      d4fdr4 =    coef_fdm_free_CMB1_vp4(-2,5) * d_rj(CMB-3)
-!!                + coef_fdm_free_CMB1_vp4(-1,5) * d_rj(CMB-2)
-!!                + coef_fdm_free_CMB1_vp4( 0,5) * d_rj(CMB-1)
-!!                + coef_fdm_free_CMB1_vp4( 1,5) * d_rj(CMB  )
+!!      dfdr =      fdm4_free_vp_CMB1(-2,2) * d_rj(CMB-3)
+!!                + fdm4_free_vp_CMB1(-1,2) * d_rj(CMB-2)
+!!                + fdm4_free_vp_CMB1( 0,2) * d_rj(CMB-1)
+!!                + fdm4_free_vp_CMB1( 1,2) * d_rj(CMB  )
+!!      d2fdr2 =    fdm4_free_vp_CMB1(-2,3) * d_rj(CMB-3)
+!!                + fdm4_free_vp_CMB1(-1,3) * d_rj(CMB-2)
+!!                + fdm4_free_vp_CMB1( 0,3) * d_rj(CMB-1)
+!!                + fdm4_free_vp_CMB1( 1,3) * d_rj(CMB  )
+!!      d3fdr3 =    fdm4_free_vp_CMB1(-2,4) * d_rj(CMB-3)
+!!                + fdm4_free_vp_CMB1(-1,4) * d_rj(CMB-2)
+!!                + fdm4_free_vp_CMB1( 0,4) * d_rj(CMB-1)
+!!                + fdm4_free_vp_CMB1( 1,4) * d_rj(CMB  )
+!!      d4fdr4 =    fdm4_free_vp_CMB1(-2,5) * d_rj(CMB-3)
+!!                + fdm4_free_vp_CMB1(-1,5) * d_rj(CMB-2)
+!!                + fdm4_free_vp_CMB1( 0,5) * d_rj(CMB-1)
+!!                + fdm4_free_vp_CMB1( 1,5) * d_rj(CMB  )
 !!@endverbatim
 !!
 !!@n @param r_from_CMB(-3:0) radius from three next points of CMB
@@ -55,14 +55,14 @@
 !
 !
 !>      Matrix to evaluate radial derivative at CMB with non-slip BC
-      real(kind = kreal) :: coef_fdm_free_CMB_vp4(-2:0,2:4)
+      real(kind = kreal) :: fdm4_free_vp_CMB0(-2:0,2:4)
 !
 !>      Matrix to evaluate radial derivative at next of CMB
 !!      with non-slip BC
-      real(kind = kreal) :: coef_fdm_free_CMB1_vp4(-2:1,2:5)
+      real(kind = kreal) :: fdm4_free_vp_CMB1(-2:1,2:5)
 !
 !
-!>      Work matrix to evaluate coef_fdm_free_CMB_vp4
+!>      Work matrix to evaluate fdm4_free_vp_CMB0
 !!@verbatim
 !!      dfdr =      mat_fdm4_CMB_free_vp(2,4) * d_rj(CMB-2)
 !!                + mat_fdm4_CMB_free_vp(2,3) * d_rj(CMB-1)
@@ -79,7 +79,7 @@
 !!@endverbatim
       real(kind = kreal) :: mat_fdm4_CMB_free_vp(4,4)
 !
-!>      Work matrix to evaluate coef_fdm_free_CMB1_vp4(-1:1,3)
+!>      Work matrix to evaluate fdm4_free_vp_CMB1(-1:1,3)
 !!@verbatim
 !!      dfdr =      mat_fdm4_CMB1_free_vp(2,5) * d_rj(CMB-3)
 !!                + mat_fdm4_CMB1_free_vp(2,4) * d_rj(CMB-2)
@@ -112,7 +112,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_4th_CMB_free_vp_fdm(r_from_CMB)
+      subroutine cal_fdm4_CMB0_free_vp(r_from_CMB)
 !
       real(kind = kreal) :: r_from_CMB(-3:0)
 !
@@ -149,19 +149,19 @@
      &    mat_fdm4_CMB_free_vp, ierr)
 !
       if(ierr .eq. 1) then
-        write(*,*) 'singular matrix cal_4th_CMB_free_vp_fdm ',          &
+        write(*,*) 'singular matrix cal_fdm4_CMB0_free_vp ',            &
      &            r_from_CMB(0)
       end if
 !
-      coef_fdm_free_CMB_vp4(-2,2:4) = mat_fdm4_CMB_free_vp(2:4,4)
-      coef_fdm_free_CMB_vp4(-1,2:4) = mat_fdm4_CMB_free_vp(2:4,3)
-      coef_fdm_free_CMB_vp4( 0,2:4) = mat_fdm4_CMB_free_vp(2:4,1)
+      fdm4_free_vp_CMB0(-2,2:4) = mat_fdm4_CMB_free_vp(2:4,4)
+      fdm4_free_vp_CMB0(-1,2:4) = mat_fdm4_CMB_free_vp(2:4,3)
+      fdm4_free_vp_CMB0( 0,2:4) = mat_fdm4_CMB_free_vp(2:4,1)
 !
-      end subroutine cal_4th_CMB_free_vp_fdm
+      end subroutine cal_fdm4_CMB0_free_vp
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_4th_CMB1_free_vp_fdm(r_from_CMB)
+      subroutine cal_fdm4_CMB1_free_vp(r_from_CMB)
 !
       real(kind = kreal) :: r_from_CMB(-3:0)
 !
@@ -216,12 +216,12 @@
      &            r_from_CMB(0)
       end if
 !
-      coef_fdm_free_CMB1_vp4(-2,2:5) = mat_fdm4_CMB1_free_vp(2:5,5)
-      coef_fdm_free_CMB1_vp4(-1,2:5) = mat_fdm4_CMB1_free_vp(2:5,4)
-      coef_fdm_free_CMB1_vp4( 0,2:5) = mat_fdm4_CMB1_free_vp(2:5,1)
-      coef_fdm_free_CMB1_vp4( 1,2:5) = mat_fdm4_CMB1_free_vp(2:5,3)
+      fdm4_free_vp_CMB1(-2,2:5) = mat_fdm4_CMB1_free_vp(2:5,5)
+      fdm4_free_vp_CMB1(-1,2:5) = mat_fdm4_CMB1_free_vp(2:5,4)
+      fdm4_free_vp_CMB1( 0,2:5) = mat_fdm4_CMB1_free_vp(2:5,1)
+      fdm4_free_vp_CMB1( 1,2:5) = mat_fdm4_CMB1_free_vp(2:5,3)
 !
-      end subroutine cal_4th_CMB1_free_vp_fdm
+      end subroutine cal_fdm4_CMB1_free_vp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -229,23 +229,23 @@
       subroutine check_4th_CMB_free_vp_fdm
 !
 !
-      write(50,*) ' coef_fdm_free_CMB_vp4'
+      write(50,*) ' fdm4_free_vp_CMB0'
       write(50,*) 'matrix for dfdr'
-      write(50,'(1p9E25.15e3)') coef_fdm_free_CMB_vp4(-2:0,2)
+      write(50,'(1p9E25.15e3)') fdm4_free_vp_CMB0(-2:0,2)
       write(50,*) 'matrix for d2fdr2'
-      write(50,'(1p9E25.15e3)') coef_fdm_free_CMB_vp4(-2:0,3)
+      write(50,'(1p9E25.15e3)') fdm4_free_vp_CMB0(-2:0,3)
       write(50,*) 'matrix for d3fdr3'
-      write(50,'(1p9E25.15e3)') coef_fdm_free_CMB_vp4(-2:0,4)
+      write(50,'(1p9E25.15e3)') fdm4_free_vp_CMB0(-2:0,4)
 !
-      write(50,*) ' coef_fdm_free_CMB1_vp4'
+      write(50,*) ' fdm4_free_vp_CMB1'
       write(50,*) 'matrix for dfdr'
-      write(50,'(1p9E25.15e3)') coef_fdm_free_CMB1_vp4(-2:1,2)
+      write(50,'(1p9E25.15e3)') fdm4_free_vp_CMB1(-2:1,2)
       write(50,*) 'matrix for d2fdr2'
-      write(50,'(1p9E25.15e3)') coef_fdm_free_CMB1_vp4(-2:1,3)
+      write(50,'(1p9E25.15e3)') fdm4_free_vp_CMB1(-2:1,3)
       write(50,*) 'matrix for d3fdr3'
-      write(50,'(1p9E25.15e3)') coef_fdm_free_CMB1_vp4(-2:1,4)
+      write(50,'(1p9E25.15e3)') fdm4_free_vp_CMB1(-2:1,4)
       write(50,*) 'matrix for d4fdr4'
-      write(50,'(1p9E25.15e3)') coef_fdm_free_CMB1_vp4(-2:1,5)
+      write(50,'(1p9E25.15e3)') fdm4_free_vp_CMB1(-2:1,5)
 !
       end subroutine check_4th_CMB_free_vp_fdm
 !

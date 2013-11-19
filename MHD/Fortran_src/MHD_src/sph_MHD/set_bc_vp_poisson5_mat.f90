@@ -7,10 +7,12 @@
 !>@brief  Construct poisson matrix for poloidal elocity at boundaries
 !!
 !!@verbatim
-!!      subroutine set_rgd_icb_vp_poisson5_mat
-!!      subroutine set_rgd_cmb_vp_poisson5_mat
-!!      subroutine set_free_icb_vp_poisson5_mat
-!!      subroutine set_free_cmb_vp_poisson5_mat
+!!      subroutine rigid_icb_vp_poisson5_mat(nri, jmax, kr_in, r_ICB,   &
+!!     &          poisson_mat5)
+!!      subroutine rigid_cmb_vp_poisson5_mat(nri, jmax, kr_out, r_CMB,  &
+!!     &          poisson_mat5)
+!!      subroutine free_icb_vp_poisson5_mat(nri, jmax, kr_in, r_ICB,    &
+!!     &          poisson_mat5)
 !!@endverbatim
 !
       module set_bc_vp_poisson5_mat
@@ -18,11 +20,7 @@
       use m_precision
 !
       use m_constants
-      use m_t_int_parameter
-      use m_physical_property
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
-      use m_radial_matrices_sph
 !
       implicit none
 !
@@ -32,101 +30,67 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rgd_icb_vp_poisson5_mat
+      subroutine rigid_icb_vp_poisson5_mat(nri, jmax, kr_in,            &
+     &           r_ICB, r_ICB1, fdm4_noslip_ICB, fdm4_noslip_ICB1,      &
+     &           poisson_mat5)
 !
-      use m_vp_coef_fdm4_nonslip_ICB
+      integer(kind = kint), intent(in) :: nri, jmax, kr_in
+      real(kind = kreal), intent(in) :: r_ICB(0:2), r_ICB1(0:2)
+      real(kind = kreal), intent(in) :: fdm4_noslip_ICB(0:2,3:5)
+      real(kind = kreal), intent(in) :: fdm4_noslip_ICB1(-1:2,5)
 !
-      integer(kind = kint) :: j
-!
-!
-      do j = 1, nidx_rj(2)
-        vs_poisson_mat(4,nlayer_ICB,  j)= -fdm4_noslip_ICB1(-1,3)
-        vs_poisson_mat(3,nlayer_ICB+1,j) = -fdm4_noslip_ICB1(0,3)       &
-     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_ICB,2)
-        vs_poisson_mat(2,nlayer_ICB+2,j)= -fdm4_noslip_ICB1(1,3)
-        vs_poisson_mat(1,nlayer_ICB+3,j)= -fdm4_noslip_ICB1(2,3)
-!
-        vs_poisson_mat(3,nlayer_ICB,  j)= -fdm4_noslip_ICB(0,3)         &
-     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_ICB,2)
-        vs_poisson_mat(2,nlayer_ICB+1,j)= -fdm4_noslip_ICB(1,3)
-        vs_poisson_mat(1,nlayer_ICB+2,j)= -fdm4_noslip_ICB(2,3)
-      end do
-!
-      end subroutine set_rgd_icb_vp_poisson5_mat
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_rgd_cmb_vp_poisson5_mat
-!
-      use m_vp_coef_fdm4_nonslip_CMB
+      real(kind = kreal), intent(inout) :: poisson_mat5(5,nri,jmax)
 !
       integer(kind = kint) :: j
 !
 !
-      do j = 1, nidx_rj(2)
-        vs_poisson_mat(5,nlayer_CMB-3,j)= -fdm4_noslip_CMB1(-2,3)
-        vs_poisson_mat(4,nlayer_CMB-2,j)= -fdm4_noslip_CMB1(-1,3)
-        vs_poisson_mat(3,nlayer_CMB-1,j)= -fdm4_noslip_CMB1( 0,3)       &
-     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_CMB,2)
-        vs_poisson_mat(2,nlayer_CMB,  j)= -fdm4_noslip_CMB1( 1,3)
+      do j = 1, nri
+        poisson_mat5(4,kr_in,  j) = -fdm4_noslip_ICB1(-1,3)
+        poisson_mat5(3,kr_in+1,j) = -fdm4_noslip_ICB1(0,3)              &
+     &                             + g_sph_rj(j,3)*r_ICB(2)
+        poisson_mat5(2,kr_in+2,j) = -fdm4_noslip_ICB1(1,3)
+        poisson_mat5(1,kr_in+3,j) = -fdm4_noslip_ICB1(2,3)
 !
-        vs_poisson_mat(5,nlayer_CMB-2,j)= -fdm4_noslip_CMB(-2,3)
-        vs_poisson_mat(4,nlayer_CMB-1,j)= -fdm4_noslip_CMB(-1,3)
-        vs_poisson_mat(3,nlayer_CMB,  j)= -fdm4_noslip_CMB( 0,3)        &
-     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_CMB,2)
+        poisson_mat5(3,kr_in,  j) = -fdm4_noslip_ICB(0,3)               &
+     &                             + g_sph_rj(j,3)*r_ICB1(2)
+        poisson_mat5(2,kr_in+1,j) = -fdm4_noslip_ICB(1,3)
+        poisson_mat5(1,kr_in+2,j) = -fdm4_noslip_ICB(2,3)
       end do
 !
-      end subroutine set_rgd_cmb_vp_poisson5_mat
+      end subroutine rigid_icb_vp_poisson5_mat
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
-      subroutine set_free_icb_vp_poisson5_mat
+      subroutine rigid_cmb_vp_poisson5_mat(nri, jmax, kr_out,           &
+     &          r_CMB, r_CMB1, fdm4_noslip_CMB, fdm4_noslip_CMB1,       &
+     &          poisson_mat5)
 !
-      use m_vp_coef_fdm4_free_ICB
+      integer(kind = kint), intent(in) :: nri, jmax, kr_out
+      real(kind = kreal), intent(in) :: r_CMB(0:2), r_CMB1(0:2)
+      real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,3:4)
+      real(kind = kreal), intent(in) :: fdm4_noslip_CMB1(-2:1,5)
+!
+      real(kind = kreal), intent(inout) :: poisson_mat5(5,nri,jmax)
 !
       integer(kind = kint) :: j
 !
 !
-      do j = 1, nidx_rj(2)
-        vs_poisson_mat(3,nlayer_ICB,  j)= -coef_fdm_free_ICB_vp4(0,3)   &
-     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_ICB,2)
-        vs_poisson_mat(2,nlayer_ICB+1,j)= -coef_fdm_free_ICB_vp4(1,3)
-        vs_poisson_mat(1,nlayer_ICB+2,j)= -coef_fdm_free_ICB_vp4(2,3)
+      do j = 1, nri
+        poisson_mat5(5,kr_out-3,j) = -fdm4_noslip_CMB1(-2,3)
+        poisson_mat5(4,kr_out-2,j) = -fdm4_noslip_CMB1(-1,3)
+        poisson_mat5(3,kr_out-1,j) = -fdm4_noslip_CMB1( 0,3)            &
+     &                               + g_sph_rj(j,3)*r_CMB1(2)
+        poisson_mat5(2,kr_out,  j) = -fdm4_noslip_CMB1( 1,3)
 !
-        vs_poisson_mat(4,nlayer_ICB,  j)= -coef_fdm_free_ICB1_vp4(-1,3)
-        vs_poisson_mat(3,nlayer_ICB+1,j)= -coef_fdm_free_ICB1_vp4( 0,3) &
-     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_ICB,2)
-        vs_poisson_mat(2,nlayer_ICB+2,j)= -coef_fdm_free_ICB1_vp4(1,3)
-        vs_poisson_mat(1,nlayer_ICB+3,j)= -coef_fdm_free_ICB1_vp4(2,3)
+        poisson_mat5(5,kr_out-2,j) = -fdm4_noslip_CMB(-2,3)
+        poisson_mat5(4,kr_out-1,j) = -fdm4_noslip_CMB(-1,3)
+        poisson_mat5(3,kr_out,  j) = -fdm4_noslip_CMB( 0,3)             &
+     &                               + g_sph_rj(j,3)*r_CMB(2)
       end do
 !
-      end subroutine set_free_icb_vp_poisson5_mat
+      end subroutine rigid_cmb_vp_poisson5_mat
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine set_free_cmb_vp_poisson5_mat
-!
-      use m_vp_coef_fdm4_free_CMB
-!
-      integer(kind = kint) :: j
-!
-!
-      do j = 1, nidx_rj(2)
-        vs_poisson_mat(5,nlayer_CMB-3,j)= -coef_fdm_free_CMB1_vp4(-2,3)
-        vs_poisson_mat(4,nlayer_CMB-2,j)= -coef_fdm_free_CMB1_vp4(-1,3)
-        vs_poisson_mat(3,nlayer_CMB-1,j)= -coef_fdm_free_CMB1_vp4( 0,3) &
-     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_CMB,2)
-        vs_poisson_mat(2,nlayer_CMB,  j)= -coef_fdm_free_CMB1_vp4( 1,3)
-!
-        vs_poisson_mat(5,nlayer_CMB-2,j)= -coef_fdm_free_CMB_vp4(-2,3)
-        vs_poisson_mat(4,nlayer_CMB-1,j)= -coef_fdm_free_CMB_vp4(-1,3)
-        vs_poisson_mat(3,nlayer_CMB,  j)= -coef_fdm_free_CMB_vp4( 0,3)  &
-     &                    + g_sph_rj(j,3)*ar_1d_rj(nlayer_CMB,2)
-      end do
-!
-      end subroutine set_free_cmb_vp_poisson5_mat
-!
 ! -----------------------------------------------------------------------
 !
       end module set_bc_vp_poisson5_mat

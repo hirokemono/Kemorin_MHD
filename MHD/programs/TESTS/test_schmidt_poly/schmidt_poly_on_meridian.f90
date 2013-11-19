@@ -1,9 +1,11 @@
 !
 !      module schmidt_poly_on_meridian
 !
-      module schmidt_poly_on_meridian
-!
 !      Written by H. Matsui on June, 2007
+!
+!      subroutine cal_full_legendre_on_med(lst, led)
+!
+      module schmidt_poly_on_meridian
 !
       use m_precision
 !
@@ -11,16 +13,13 @@
 !
       real(kind = kreal), allocatable :: dint_p(:)
 !
-!
-!      subroutine cal_full_legendre_on_med
-!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_full_legendre_on_med
+      subroutine cal_full_legendre_on_med(lst, led)
 !
       use m_schmidt_poly_on_gauss
       use m_gauss_points
@@ -28,6 +27,7 @@
       use m_spherical_harmonics
       use spherical_harmonics
 !
+      integer(kind = kint), intent(in) :: lst, led
       integer(kind = kint) :: i, j, m, l
 !
 !
@@ -61,7 +61,7 @@
       allocate(dint_p(0:jmax_g))
       dint_p = 0.0d0
 !
-      do i = 1, nth_g
+      do i = lst, led
         dth = g_colat_med(i)
         call full_norm_legendre
 !

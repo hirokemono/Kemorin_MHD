@@ -7,39 +7,39 @@
 !>@brief Matrix to evaluate radial derivative for free-slip at ICB
 !!
 !!@verbatim
-!!      subroutine cal_4th_ICB_free_vp_fdm(r_from_ICB)
-!!      subroutine cal_4th_ICB1_free_vp_fdm(r_from_ICB)
+!!      subroutine cal_fdm4_ICB0_free_vp(r_from_ICB)
+!!      subroutine cal_fdm4_ICB1_free_vp(r_from_ICB)
 !!
 !!      subroutine check_4th_ICB_free_vp_fdm
 !!
 !!   Matrix for poloidal velocity with free-slip boundary at ICB
-!!      dfdr =      coef_fdm_free_ICB_vp4( 2,2) * d_rj(ICB+2)
-!!                + coef_fdm_free_ICB_vp4( 1,2) * d_rj(ICB+1)
-!!                + coef_fdm_free_ICB_vp4( 0,2) * d_rj(ICB  )
-!!      d2fdr2 =    coef_fdm_free_ICB_vp4( 2,3) * d_rj(ICB+2)
-!!                + coef_fdm_free_ICB_vp4( 1,3) * d_rj(ICB+1)
-!!                + coef_fdm_free_ICB_vp4( 0,3) * d_rj(ICB  )
-!!      d3fdr3 =    coef_fdm_free_ICB_vp4( 2,4) * d_rj(ICB+2)
-!!                + coef_fdm_free_ICB_vp4( 1,4) * d_rj(ICB+1)
-!!                + coef_fdm_free_ICB_vp4( 0,4) * d_rj(ICB  )
+!!      dfdr =      fdm4_free_vp_ICB0( 2,2) * d_rj(ICB+2)
+!!                + fdm4_free_vp_ICB0( 1,2) * d_rj(ICB+1)
+!!                + fdm4_free_vp_ICB0( 0,2) * d_rj(ICB  )
+!!      d2fdr2 =    fdm4_free_vp_ICB0( 2,3) * d_rj(ICB+2)
+!!                + fdm4_free_vp_ICB0( 1,3) * d_rj(ICB+1)
+!!                + fdm4_free_vp_ICB0( 0,3) * d_rj(ICB  )
+!!      d3fdr3 =    fdm4_free_vp_ICB0( 2,4) * d_rj(ICB+2)
+!!                + fdm4_free_vp_ICB0( 1,4) * d_rj(ICB+1)
+!!                + fdm4_free_vp_ICB0( 0,4) * d_rj(ICB  )
 !!
 !!   Matrix for poloidal velocity with free-slip boundary at next of ICB
-!!      dfdr =      coef_fdm_free_ICB1_vp4( 2,2) * d_rj(ICB+3)
-!!                + coef_fdm_free_ICB1_vp4( 1,2) * d_rj(ICB+2)
-!!                + coef_fdm_free_ICB1_vp4( 0,2) * d_rj(ICB+1)
-!!                + coef_fdm_free_ICB1_vp4(-1,2) * d_rj(ICB  )
-!!      d2fdr2 =    coef_fdm_free_ICB1_vp4( 2,3) * d_rj(ICB+3)
-!!                + coef_fdm_free_ICB1_vp4( 1,3) * d_rj(ICB+2)
-!!                + coef_fdm_free_ICB1_vp4( 0,3) * d_rj(ICB+1)
-!!                + coef_fdm_free_ICB1_vp4(-1,3) * d_rj(ICB  )
-!!      d3fdr3 =    coef_fdm_free_ICB1_vp4( 2,4) * d_rj(ICB+3)
-!!                + coef_fdm_free_ICB1_vp4( 1,4) * d_rj(ICB+2)
-!!                + coef_fdm_free_ICB1_vp4( 0,4) * d_rj(ICB+1)
-!!                + coef_fdm_free_ICB1_vp4(-1,4) * d_rj(ICB  )
-!!      d4fdr4 =    coef_fdm_free_ICB1_vp4( 2,5) * d_rj(ICB+3)
-!!                + coef_fdm_free_ICB1_vp4( 1,5) * d_rj(ICB+2)
-!!                + coef_fdm_free_ICB1_vp4( 0,5) * d_rj(ICB+1)
-!!                + coef_fdm_free_ICB1_vp4(-1,5) * d_rj(ICB  )
+!!      dfdr =      fdm4_free_vp_ICB1( 2,2) * d_rj(ICB+3)
+!!                + fdm4_free_vp_ICB1( 1,2) * d_rj(ICB+2)
+!!                + fdm4_free_vp_ICB1( 0,2) * d_rj(ICB+1)
+!!                + fdm4_free_vp_ICB1(-1,2) * d_rj(ICB  )
+!!      d2fdr2 =    fdm4_free_vp_ICB1( 2,3) * d_rj(ICB+3)
+!!                + fdm4_free_vp_ICB1( 1,3) * d_rj(ICB+2)
+!!                + fdm4_free_vp_ICB1( 0,3) * d_rj(ICB+1)
+!!                + fdm4_free_vp_ICB1(-1,3) * d_rj(ICB  )
+!!      d3fdr3 =    fdm4_free_vp_ICB1( 2,4) * d_rj(ICB+3)
+!!                + fdm4_free_vp_ICB1( 1,4) * d_rj(ICB+2)
+!!                + fdm4_free_vp_ICB1( 0,4) * d_rj(ICB+1)
+!!                + fdm4_free_vp_ICB1(-1,4) * d_rj(ICB  )
+!!      d4fdr4 =    fdm4_free_vp_ICB1( 2,5) * d_rj(ICB+3)
+!!                + fdm4_free_vp_ICB1( 1,5) * d_rj(ICB+2)
+!!                + fdm4_free_vp_ICB1( 0,5) * d_rj(ICB+1)
+!!                + fdm4_free_vp_ICB1(-1,5) * d_rj(ICB  )
 !!@endverbatim
 !!
 !!@n @param r_from_ICB(0:3) radius to three next points from ICB
@@ -55,14 +55,14 @@
 !
 !
 !>      Matrix to evaluate radial derivative at ICB with non-slip BC
-      real(kind = kreal) :: coef_fdm_free_ICB_vp4(0:2,4)
+      real(kind = kreal) :: fdm4_free_vp_ICB0(0:2,4)
 !
 !>      Matrix to evaluate radial derivative at next of ICB
 !!      with non-slip BC
-      real(kind = kreal) :: coef_fdm_free_ICB1_vp4(-1:2,5)
+      real(kind = kreal) :: fdm4_free_vp_ICB1(-1:2,5)
 !
 !
-!>      Work matrix to evaluate coef_fdm_free_ICB_vp4(0:2,3)
+!>      Work matrix to evaluate fdm4_free_vp_ICB0(0:2,3)
 !!@verbatim
 !!      dfdr =      mat_fdm4_ICB_free_vp(2,4) * d_rj(ICB+2)
 !!                + mat_fdm4_ICB_free_vp(2,3) * d_rj(ICB+1)
@@ -79,7 +79,7 @@
 !!@endverbatim
       real(kind = kreal) :: mat_fdm4_ICB_free_vp(4,4)
 !
-!>      Work matrix to evaluate coef_fdm_free_ICB1_vp4(-1:1,3)
+!>      Work matrix to evaluate fdm4_free_vp_ICB1(-1:1,3)
 !!@verbatim
 !!      dfdr =      mat_fdm4_ICB1_free_vp(2,5) * d_rj(ICB+3)
 !!                + mat_fdm4_ICB1_free_vp(2,4) * d_rj(ICB+2)
@@ -112,7 +112,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_4th_ICB_free_vp_fdm(r_from_ICB)
+      subroutine cal_fdm4_ICB0_free_vp(r_from_ICB)
 !
       real(kind = kreal), intent(in) :: r_from_ICB(0:2)
 !
@@ -149,28 +149,28 @@
      &    ierr)
 !
       if(ierr .eq. 1) then
-        write(*,*) 'singular matrix cal_4th_ICB_free_vp_fdm ',          &
+        write(*,*) 'singular matrix cal_fdm4_ICB0_free_vp ',            &
      &            r_from_ICB(0)
       end if
 !
-      coef_fdm_free_ICB_vp4(0,1) = one
-      coef_fdm_free_ICB_vp4(1,1) = zero
-      coef_fdm_free_ICB_vp4(2,1) = zero
-      coef_fdm_free_ICB_vp4(0,2) = mat_fdm4_ICB_free_vp(2,1)
-      coef_fdm_free_ICB_vp4(1,2) = mat_fdm4_ICB_free_vp(2,3)
-      coef_fdm_free_ICB_vp4(2,2) = mat_fdm4_ICB_free_vp(2,4)
-      coef_fdm_free_ICB_vp4(0,3) = mat_fdm4_ICB_free_vp(3,1)
-      coef_fdm_free_ICB_vp4(1,3) = mat_fdm4_ICB_free_vp(3,3)
-      coef_fdm_free_ICB_vp4(2,3) = mat_fdm4_ICB_free_vp(3,4)
-      coef_fdm_free_ICB_vp4(0,4) = mat_fdm4_ICB_free_vp(4,1)
-      coef_fdm_free_ICB_vp4(1,4) = mat_fdm4_ICB_free_vp(4,3)
-      coef_fdm_free_ICB_vp4(2,4) = mat_fdm4_ICB_free_vp(4,4)
+      fdm4_free_vp_ICB0(0,1) = one
+      fdm4_free_vp_ICB0(1,1) = zero
+      fdm4_free_vp_ICB0(2,1) = zero
+      fdm4_free_vp_ICB0(0,2) = mat_fdm4_ICB_free_vp(2,1)
+      fdm4_free_vp_ICB0(1,2) = mat_fdm4_ICB_free_vp(2,3)
+      fdm4_free_vp_ICB0(2,2) = mat_fdm4_ICB_free_vp(2,4)
+      fdm4_free_vp_ICB0(0,3) = mat_fdm4_ICB_free_vp(3,1)
+      fdm4_free_vp_ICB0(1,3) = mat_fdm4_ICB_free_vp(3,3)
+      fdm4_free_vp_ICB0(2,3) = mat_fdm4_ICB_free_vp(3,4)
+      fdm4_free_vp_ICB0(0,4) = mat_fdm4_ICB_free_vp(4,1)
+      fdm4_free_vp_ICB0(1,4) = mat_fdm4_ICB_free_vp(4,3)
+      fdm4_free_vp_ICB0(2,4) = mat_fdm4_ICB_free_vp(4,4)
 !
-      end subroutine cal_4th_ICB_free_vp_fdm
+      end subroutine cal_fdm4_ICB0_free_vp
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_4th_ICB1_free_vp_fdm(r_from_ICB)
+      subroutine cal_fdm4_ICB1_free_vp(r_from_ICB)
 !
       real(kind = kreal), intent(in) :: r_from_ICB(0:3)
 !
@@ -221,16 +221,16 @@
      &    mat_fdm4_ICB1_free_vp, ierr)
 !
       if(ierr .eq. 1) then
-        write(*,*) 'singular matrix mat_fdm4_ICB1_free_vp ',            &
+        write(*,*) 'singular matrix cal_fdm4_ICB1_free_vp ',            &
      &            r_from_ICB(0)
       end if
 !
-      coef_fdm_free_ICB1_vp4( 2,2:5) = mat_fdm4_ICB1_free_vp(2:5,5)
-      coef_fdm_free_ICB1_vp4( 1,2:5) = mat_fdm4_ICB1_free_vp(2:5,4)
-      coef_fdm_free_ICB1_vp4( 0,2:5) = mat_fdm4_ICB1_free_vp(2:5,1)
-      coef_fdm_free_ICB1_vp4(-1,2:5) = mat_fdm4_ICB1_free_vp(2:5,3)
+      fdm4_free_vp_ICB1( 2,2:5) = mat_fdm4_ICB1_free_vp(2:5,5)
+      fdm4_free_vp_ICB1( 1,2:5) = mat_fdm4_ICB1_free_vp(2:5,4)
+      fdm4_free_vp_ICB1( 0,2:5) = mat_fdm4_ICB1_free_vp(2:5,1)
+      fdm4_free_vp_ICB1(-1,2:5) = mat_fdm4_ICB1_free_vp(2:5,3)
 !
-      end subroutine cal_4th_ICB1_free_vp_fdm
+      end subroutine cal_fdm4_ICB1_free_vp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -238,23 +238,23 @@
       subroutine check_4th_ICB_free_vp_fdm
 !
 !
-      write(50,*) ' coef_fdm_free_ICB_vp4'
+      write(50,*) ' fdm4_free_vp_ICB0'
       write(50,*) 'matrix for dfdr'
-      write(50,'(1p9E25.15e3)') coef_fdm_free_ICB_vp4(0:2,2)
+      write(50,'(1p9E25.15e3)') fdm4_free_vp_ICB0(0:2,2)
       write(50,*) 'matrix for d2fdr2'
-      write(50,'(1p9E25.15e3)') coef_fdm_free_ICB_vp4(0:2,3)
+      write(50,'(1p9E25.15e3)') fdm4_free_vp_ICB0(0:2,3)
       write(50,*) 'matrix for d3fdr3'
-      write(50,'(1p9E25.15e3)') coef_fdm_free_ICB_vp4(0:2,4)
+      write(50,'(1p9E25.15e3)') fdm4_free_vp_ICB0(0:2,4)
 !
-      write(50,*) ' coef_fdm_free_ICB1_vp4'
+      write(50,*) ' fdm4_free_vp_ICB1'
       write(50,*) 'matrix for dfdr'
-      write(50,'(1p9E25.15e3)') coef_fdm_free_ICB1_vp4(-1:2,2)
+      write(50,'(1p9E25.15e3)') fdm4_free_vp_ICB1(-1:2,2)
       write(50,*) 'matrix for d2fdr2'
-      write(50,'(1p9E25.15e3)') coef_fdm_free_ICB1_vp4(-1:2,3)
+      write(50,'(1p9E25.15e3)') fdm4_free_vp_ICB1(-1:2,3)
       write(50,*) 'matrix for d3fdr3'
-      write(50,'(1p9E25.15e3)') coef_fdm_free_ICB1_vp4(-1:2,4)
+      write(50,'(1p9E25.15e3)') fdm4_free_vp_ICB1(-1:2,4)
       write(50,*) 'matrix for d4fdr4'
-      write(50,'(1p9E25.15e3)') coef_fdm_free_ICB1_vp4(-1:2,5)
+      write(50,'(1p9E25.15e3)') fdm4_free_vp_ICB1(-1:2,5)
 !
       end subroutine check_4th_ICB_free_vp_fdm
 !

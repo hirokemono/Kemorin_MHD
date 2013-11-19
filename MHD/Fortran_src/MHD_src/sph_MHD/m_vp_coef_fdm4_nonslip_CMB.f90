@@ -7,8 +7,8 @@
 !>@brief Matrix to evaluate radial derivative for non-slip at CMB
 !!
 !!@verbatim
-!!      subroutine cal_4th_CMB_nonslip_vp_fdm(r_from_CMB)
-!!      subroutine cal_4th_CMB1_nonslip_vp_fdm(r_from_CMB)
+!!      subroutine cal_fdm4_CMB0_nonslip_vp(r_from_CMB)
+!!      subroutine cal_fdm4_CMB1_nonslip_vp(r_from_CMB)
 !!
 !!      subroutine check_4th_CMB_nonslip_vp_fdm
 !!
@@ -109,7 +109,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_4th_CMB_nonslip_vp_fdm(r_from_CMB)
+      subroutine cal_fdm4_CMB0_nonslip_vp(r_from_CMB)
 !
       real(kind = kreal) :: r_from_CMB(-3:0)
 !
@@ -146,7 +146,7 @@
      &    mat_fdm_noslip_CMB_4, ierr)
 !
       if(ierr .eq. 1) then
-        write(*,*) 'singular matrix cal_4th_CMB_nonslip_vp_fdm ',       &
+        write(*,*) 'singular matrix cal_fdm4_CMB0_nonslip_vp ',         &
      &            r_from_CMB(0)
       end if
 !
@@ -154,11 +154,11 @@
       fdm4_noslip_CMB(-1,3:4) = mat_fdm_noslip_CMB_4(3:4,3)
       fdm4_noslip_CMB( 0,3:4) = mat_fdm_noslip_CMB_4(3:4,1)
 !
-      end subroutine cal_4th_CMB_nonslip_vp_fdm
+      end subroutine cal_fdm4_CMB0_nonslip_vp
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_4th_CMB1_nonslip_vp_fdm(r_from_CMB)
+      subroutine cal_fdm4_CMB1_nonslip_vp(r_from_CMB)
 !
       real(kind = kreal) :: r_from_CMB(-3:0)
 !
@@ -214,7 +214,7 @@
       fdm4_noslip_CMB1( 0,2:5) = mat_fdm_noslip_CMB1_4(2:5,1)
       fdm4_noslip_CMB1( 1,2:5) = mat_fdm_noslip_CMB1_4(2:5,3)
 !
-      end subroutine cal_4th_CMB1_nonslip_vp_fdm
+      end subroutine cal_fdm4_CMB1_nonslip_vp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

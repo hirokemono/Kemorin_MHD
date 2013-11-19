@@ -7,8 +7,11 @@
 !>@brief Evaluate rotation of buoyancy under constant radial gravity
 !!
 !!@verbatim
-!!      subroutine cal_rot_radial_const_gravity
+!!      subroutine cal_rot_radial_const_gravity(sph_bc_U)
 !!@endverbatim
+!!
+!!@param sph_bc_U  Structure for basic velocity
+!!                 boundary condition parameters
 !
       module cal_rot_r_const_buo_sph
 !
@@ -32,32 +35,37 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rot_radial_const_gravity
+      subroutine cal_rot_radial_const_gravity(sph_bc_U)
 !
       use m_machine_parameter
+      use t_boundary_params_sph_MHD
+!
+      type(sph_boundary_type), intent(in) :: sph_bc_U
 !
 !
       if ((iflag_4_gravity*iflag_4_composit_buo) .gt. id_turn_OFF) then
 !
         if (iflag_debug.eq.1)                                           &
      &      write(*,*)'cal_rot_double_cst_buo_sph', ipol%i_temp
-          call cal_rot_double_cst_buo_sph(ipol%i_temp)
+          call cal_rot_double_cst_buo_sph                               &
+     &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo, ipol%i_temp,   &
+     &        coef_comp_buo, ipol%i_light, itor%i_rot_buoyancy)
 !
       else if ( iflag_4_gravity .gt. id_turn_OFF) then
 !
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
-        call cal_rot_cst_buo_sph(coef_buo,                              &
-     &      ipol%i_temp, itor%i_rot_buoyancy)
+        call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
+     &      coef_buo, ipol%i_temp, itor%i_rot_buoyancy)
 !
       else if ( iflag_4_composit_buo .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
-        call cal_rot_cst_buo_sph(coef_comp_buo, ipol%i_light,           &
-     &      itor%i_rot_comp_buo)
+        call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
+     &      coef_comp_buo, ipol%i_light, itor%i_rot_comp_buo)
 !
       else if (iflag_4_filter_gravity .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
-        call cal_rot_cst_buo_sph(coef_buo, ipol%i_filter_temp,          &
-     &      itor%i_rot_filter_buo)
+        call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
+     &      coef_buo, ipol%i_filter_temp, itor%i_rot_filter_buo)
       end if
 !
       end subroutine cal_rot_radial_const_gravity
@@ -65,22 +73,25 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rot_double_cst_buo_sph(is_t)
+      subroutine cal_rot_double_cst_buo_sph(kr_in, kr_out,              &
+     &          coef_t_buo, is_t, coef_c_buo, is_c, it_res)
 !
-      integer(kind= kint), intent(in) :: is_t
+      integer(kind = kint), intent(in) :: kr_in, kr_out
+      integer(kind= kint), intent(in) :: is_t, is_c
+      integer(kind= kint), intent(in) :: it_res
+      real(kind = kreal), intent(in) :: coef_t_buo, coef_c_buo
       integer(kind= kint) :: ist, ied, inod, j, k
 !
 !
-      ist = (nlayer_ICB-1)*nidx_rj(2) + 1
-      ied = nlayer_CMB * nidx_rj(2)
+      ist = (kr_in-1)*nidx_rj(2) + 1
+      ied = kr_out * nidx_rj(2)
 !$omp parallel do private (inod,j,k)
       do inod = ist, ied
         j = mod((inod-1),nidx_rj(2)) + 1
         k = 1 + (inod- j) / nidx_rj(2)
 !
-        d_rj(inod,itor%i_rot_buoyancy)                                  &
-     &          =  ( coef_buo * d_rj(inod,is_t)                         &
-     &             + coef_comp_buo * d_rj(inod,ipol%i_light)  )
+        d_rj(inod,it_res) =  (coef_t_buo * d_rj(inod,is_t)              &
+     &                      + coef_c_buo * d_rj(inod,is_c))
       end do
 !$omp end parallel do
 !
@@ -88,21 +99,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rot_cst_buo_sph(coef, is_fld, it_res)
+      subroutine cal_rot_cst_buo_sph(kr_in, kr_out, coef, is_fld, it_res)
 !
+      integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind= kint), intent(in) :: is_fld, it_res
       real(kind = kreal), intent(in) :: coef
       integer(kind= kint) :: ist, ied, inod, j, k
 !
 !
-      ist = (nlayer_ICB-1)*nidx_rj(2) + 1
-      ied = nlayer_CMB * nidx_rj(2)
+      ist = (kr_in-1)*nidx_rj(2) + 1
+      ied = kr_out * nidx_rj(2)
 !$omp parallel do private (inod,j,k)
       do inod = ist, ied
         j = mod((inod-1),nidx_rj(2)) + 1
         k = 1 + (inod- j) / nidx_rj(2)
-        d_rj(inod,it_res)                                               &
-     &          =  coef * d_rj(inod,is_fld)
+        d_rj(inod,it_res) =  coef * d_rj(inod,is_fld)
       end do
 !$omp end parallel do
 !

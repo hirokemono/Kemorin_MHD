@@ -8,15 +8,21 @@
 !!        using 4-th order FDM for poloidal velocity
 !!
 !!@verbatim
-!!      subroutine cal_sph_cmb_rigid_v_and_w_s4t2(is_fld, is_rot)
-!!      subroutine cal_sph_cmb_rigid_rot_s4t2(is_fld, is_rot)
-!!      subroutine cal_sph_cmb_rigid_diffuse_s4t2(coef_d,               &
-!!     &          is_fld, is_diffuse)
+!!      subroutine cal_sph_cmb_rigid_v_and_w_s4t2(jmax, kr_out,         &
+!!     &          r_CMB, r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,     &
+!!     &          fdm4_noslip_CMB1, Vt_CMB, is_fld, is_rot)
+!!      subroutine cal_sph_cmb_rigid_rot_s4t2(jmax, kr_out,             &
+!!     &          r_CMB, r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,     &
+!!     &          fdm4_noslip_CMB1, is_fld, is_rot)
+!!      subroutine cal_sph_cmb_rigid_diffuse_s4t2(jmax, kr_out,         &
+!!     &          r_CMB, r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,     &
+!!     &          fdm4_noslip_CMB1, coef_d, is_fld, is_diffuse)
 !!@endverbatim
 !!
 !!@n @param jmax  Number of modes for spherical harmonics @f$L*(L+2)@f$
 !!@n @param kr_out       Radial ID for outer boundary
 !!@n @param r_CMB(0:2)   Radius at CMB
+!!@n @param r_CMB1(0:2)   Radius at the next of CMB
 !!
 !!@n @param fdm2_fix_fld_CMB(0:2,3)
 !!         Matrix to evaluate radial derivative at CMB with fiexed field
@@ -49,13 +55,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_cmb_rigid_v_and_w_s4t2(jmax, kr_out, r_CMB,    &
-     &          fdm2_fix_fld_CMB, fdm4_noslip_CMB, fdm4_noslip_CMB1,    &
-     &          Vt_CMB, is_fld, is_rot)
+      subroutine cal_sph_cmb_rigid_v_and_w_s4t2(jmax, kr_out,           &
+     &          r_CMB, r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,       &
+     &          fdm4_noslip_CMB1, Vt_CMB, is_fld, is_rot)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_rot
-      real(kind = kreal), intent(in) :: r_CMB(0:2)
+      real(kind = kreal), intent(in) :: r_CMB(0:2), r_CMB1(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,3:4)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB1(-2:1,5)
@@ -103,7 +109,7 @@
         d_rj(i_n1,is_rot  ) =  d_rj(i_n1,is_fld+2)
         d_rj(i_n1,is_rot+1) =  d1t_dr1
         d_rj(i_n1,is_rot+2) = - ( d2s_dr2 - g_sph_rj(j,3)               &
-     &                         * r_CMB(2)*d_rj(i_n1,is_fld  ) )
+     &                         * r_CMB1(2)*d_rj(i_n1,is_fld  ) )
       end do
 !$omp end parallel do
 !
@@ -111,13 +117,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_cmb_rigid_rot_s4t2(jmax, kr_out, r_CMB,        &
-     &          fdm2_fix_fld_CMB, fdm4_noslip_CMB, fdm4_noslip_CMB1,    &
-     &          is_fld, is_rot)
+      subroutine cal_sph_cmb_rigid_rot_s4t2(jmax, kr_out,               &
+     &          r_CMB, r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,       &
+     &          fdm4_noslip_CMB1, is_fld, is_rot)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_rot
-      real(kind = kreal), intent(in) :: r_CMB(0:2)
+      real(kind = kreal), intent(in) :: r_CMB(0:2), r_CMB1(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,3:4)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB1(-2:1,5)
@@ -155,7 +161,7 @@
         d_rj(i_n1,is_rot  ) =  d_rj(i_n1,is_fld+2)
         d_rj(i_n1,is_rot+1) =  d1t_dr1
         d_rj(i_n1,is_rot+2) = - ( d2s_dr2 - g_sph_rj(j,3)               &
-     &                         * r_CMB(2)*d_rj(i_n1,is_fld  ) )
+     &                         * r_CMB1(2)*d_rj(i_n1,is_fld  ) )
       end do
 !$omp end parallel do
 !
@@ -163,14 +169,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_cmb_rigid_diffuse_s4t2(jmax, kr_out, r_CMB,    &
-     &          fdm2_fix_fld_CMB, fdm4_noslip_CMB, fdm4_noslip_CMB1,    &
-     &          coef_d, is_fld, is_diffuse)
+      subroutine cal_sph_cmb_rigid_diffuse_s4t2(jmax, kr_out,           &
+     &          r_CMB, r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,       &
+     &          fdm4_noslip_CMB1, coef_d, is_fld, is_diffuse)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
       real(kind = kreal), intent(in) :: coef_d
-      real(kind = kreal), intent(in) :: r_CMB(0:2)
+      real(kind = kreal), intent(in) :: r_CMB(0:2), r_CMB1(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,3:4)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB1(-2:1,5)
@@ -206,9 +212,9 @@
      &           + d2nod_mat_fdm_2( 1,kr_out-1) * d_rj(inod,is_fld+2)
 !
         d_rj(i_n1,is_diffuse  ) =  coef_d * (d2s_dr2                    &
-     &               - g_sph_rj(j,3)*r_CMB(2)*d_rj(i_n1,is_fld  ) )
+     &               - g_sph_rj(j,3)*r_CMB1(2)*d_rj(i_n1,is_fld  ) )
         d_rj(i_n1,is_diffuse+2) =  coef_d * (d2t_dr2                    &
-     &               - g_sph_rj(j,3)*r_CMB(2)*d_rj(i_n1,is_fld+2) )
+     &               - g_sph_rj(j,3)*r_CMB1(2)*d_rj(i_n1,is_fld+2) )
       end do
 !$omp end parallel do
 !
