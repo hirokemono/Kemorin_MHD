@@ -150,6 +150,7 @@
       use m_geometry_list_4_psf
       use m_patch_data_psf
       use coordinate_converter
+      use set_node_on_edge_quad_psf
 !
       integer(kind = kint), intent(in) :: numnod, numedge, nnod_4_edge
       integer(kind = kint), intent(in) :: num_surf, ntot_node_sf_grp
@@ -164,7 +165,6 @@
       integer(kind = kint) :: i, ist_smp, ist, num, igrp
 !
       do i = 1, num_psf
-!
         ist_smp = (i-1)*np_smp
 !
         if( id_section_method(i) .gt. 0) then
@@ -185,8 +185,13 @@
      &        coef_on_edge_psf, iflag_n_on_e_psf(1,i),                  &
      &        id_n_on_e_psf(1,i) )
 !
-          call set_nod_on_nod_4_edge_psf(numnod, numedge, &
-     &          nnod_4_edge, ie_edge, nedge_search_psf_tot, &
+          call set_node_on_edge_4_quad_psf(numnod, numedge,             &
+     &        nnod_4_edge, ie_edge, xx, const_psf(1,i),                 &
+     &        nnod_on_edge_psf_tot, istack_n_on_e_psf_smp(ist_smp),     &
+     &        iedge_4_nod_psf, coef_on_edge_psf)
+!
+          call set_nod_on_nod_4_edge_psf(numnod, numedge,               &
+     &          nnod_4_edge, ie_edge, nedge_search_psf_tot,             &
      &        istack_edge_search_psf_s(ist_smp), iedge_search_psf,      &
      &        istack_nod_psf_smp(ist_smp),                              &
      &        istack_n_on_n_psf_smp(ist_smp), id_n_on_n_psf(1,i),       &
