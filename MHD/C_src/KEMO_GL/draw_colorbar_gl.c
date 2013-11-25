@@ -70,8 +70,13 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 	
     xwin = (GLfloat)nx_win;
 	ywin = (GLfloat)ny_win;
-	xbar_min = 0.85 *  xwin;
-	xbar_max = 0.875 * xwin;
+    
+    if( xwin >= 640*(iflag_retina+1) ){
+        xbar_max = xwin * 0.875;
+    } else {
+        xbar_max = xwin - (iflag_retina+1) * 80;
+    }
+	xbar_min = xbar_max - 0.025 * xwin;
 	ybar_min = 0.05 * ywin;
 	ybar_max = 0.25 * ywin;
 	ydelta =  (ybar_max - ybar_min) / ((GLfloat)64);
