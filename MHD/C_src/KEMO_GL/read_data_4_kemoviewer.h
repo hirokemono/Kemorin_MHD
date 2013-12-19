@@ -33,22 +33,20 @@
 /* prototypes */
 
 void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
-			struct mesh_menu_val *mesh_m, struct view_element *view);
+                     struct mesh_menu_val *mesh_m, struct view_element *view);
 
 void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp,
-                       struct psf_menu_val *psf_m, struct ucd_file_menu_val *ucd_m);
+                        struct psf_menu_val *psf_m, struct ucd_file_menu_val *ucd_m);
 int refresh_FLINE_data(struct psf_data *fline_s, struct psf_data *ucd_tmp,
                        struct fline_menu_val *fline_m, struct ucd_file_menu_val *ucd_m);
 
 void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
-			struct mesh_menu_val *mesh_m, struct view_element *view);
+                            struct mesh_menu_val *mesh_m, struct view_element *view);
 
 void set_kemoview_psf_data(struct psf_data *psf_s, struct psf_data *ucd_tmp,
-			struct mesh_menu_val *mesh_m, struct psf_menu_val *psf_m,
-			struct view_element *view);
+                           struct mesh_menu_val *mesh_m, struct psf_menu_val *psf_m);
 
 void set_kemoview_fline_data(struct psf_data *fline_s, struct psf_data *ucd_tmp, 
-							struct mesh_menu_val *mesh_m, struct fline_menu_val *fline_m,
-							 struct view_element *view, int num_loaded);
+                             struct mesh_menu_val *mesh_m, struct fline_menu_val *fline_m);
 
 #endif

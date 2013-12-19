@@ -37,12 +37,13 @@ static void set_kemoviewer_mesh(struct viewer_mesh *mesh_s,
 	set_viewer_mesh(mesh_s);
 	
 	alloc_draw_mesh_flags(mesh_s, mesh_m);
-	modify_object_for_mesh(mesh_m->dist_domains, mesh_s, view);
+	cal_range_4_mesh_c(mesh_s, view);
+	modify_object_multi_viewer_c(mesh_m->dist_domains, mesh_s);
 	return;
 }
 
 void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s, 
-			struct mesh_menu_val *mesh_m, struct view_element *view){
+                     struct mesh_menu_val *mesh_m, struct view_element *view){
 	
     view->iflag_retina = IONE;
     view->iflag_write_ps = OFF;
@@ -62,41 +63,43 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 }
 
 static void set_psf_data_by_UCD(struct psf_data *psf_s, struct psf_data *ucd_tmp) {
-/*	set_viewer_ucd_data(psf_s, ucd_tmp);*/
+    /*	set_viewer_ucd_data(psf_s, ucd_tmp);*/
 	set_ucd_with_mapping(psf_s, ucd_tmp);
-
+    
 	take_normal_psf(psf_s);
 	take_minmax_psf(psf_s);
-	
-	check_psf_ave_rms_c(psf_s);
-	check_psf_min_max_c(psf_s);
+	/*
+     check_psf_ave_rms_c(psf_s);
+     check_psf_min_max_c(psf_s);
+     */
 	return;
 }
 
 static void set_fline_data_by_UCD(struct psf_data *fline_s, struct psf_data *ucd_tmp) {
 	set_viewer_ucd_data(fline_s, ucd_tmp);
-
+    
 	take_length_fline(fline_s);
 	take_minmax_fline(fline_s);
-	
-	check_psf_ave_rms_c(fline_s);
-	check_psf_min_max_c(fline_s);
+	/*
+     check_psf_ave_rms_c(fline_s);
+     check_psf_min_max_c(fline_s);
+     */
 	return;
 }
 
 void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp,
-                       struct psf_menu_val *psf_m, struct ucd_file_menu_val *ucd_m){
+                        struct psf_menu_val *psf_m, struct ucd_file_menu_val *ucd_m){
 	int iflag_datatype;
 	
     strngcopy(ucd_m->ucd_header, psf_m->psf_header);
     ucd_m->ucd_step = psf_m->psf_step;
-
+    
     if(   psf_m->iflag_psf_file == IFLAG_SURF_UDT || psf_m->iflag_psf_file == IFLAG_SURF_UDT_GZ
        || psf_m->iflag_psf_file == IFLAG_SURF_VTD || psf_m->iflag_psf_file == IFLAG_SURF_VTD_GZ){
 		iflag_datatype = check_gzip_psf_grd_first(ucd_m, ucd_tmp);
 		check_gzip_psf_udt_first(ucd_m, ucd_tmp);
 	} else if(psf_m->iflag_psf_file == IFLAG_SURF_UCD || psf_m->iflag_psf_file == IFLAG_SURF_UCD_GZ
-           || psf_m->iflag_psf_file == IFLAG_SURF_VTK || psf_m->iflag_psf_file == IFLAG_SURF_VTK_GZ){
+              || psf_m->iflag_psf_file == IFLAG_SURF_VTK || psf_m->iflag_psf_file == IFLAG_SURF_VTK_GZ){
 		iflag_datatype = check_gzip_kemoview_ucd_first(ucd_m, ucd_tmp);
 	}
     deallc_all_psf_data(psf_s);
@@ -117,7 +120,7 @@ int refresh_FLINE_data(struct psf_data *fline_s, struct psf_data *ucd_tmp,
 		dealloc_psf_mesh_c(ucd_tmp);
 		return iflag_datatype;
 	}
-		
+    
 	deallc_all_fline_data(fline_s);
 	set_fline_data_by_UCD(fline_s, ucd_tmp);
 	return 0;
@@ -125,30 +128,23 @@ int refresh_FLINE_data(struct psf_data *fline_s, struct psf_data *ucd_tmp,
 
 
 void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
-			struct mesh_menu_val *mesh_m, struct view_element *view){
+                            struct mesh_menu_val *mesh_m, struct view_element *view){
 	mesh_m->iflag_draw_mesh = IONE;
 	
 	set_kemoviewer_mesh(mesh_s, mesh_m, view);
-
-	reset_light_by_size_of_domain(view->scale_factor[0]);
+    
+	reset_light_by_size_of_domain(view->iso_scale);
 	reset_to_init_angle(view);
 	return;
 }
 
 void set_kemoview_psf_data(struct psf_data *psf_s,struct psf_data *ucd_tmp,
-			struct mesh_menu_val *mesh_m, struct psf_menu_val *psf_m,
-			struct view_element *view){
+                           struct mesh_menu_val *mesh_m, struct psf_menu_val *psf_m){
 	int i;
 	
 	set_psf_data_by_UCD(psf_s, ucd_tmp);
 	
 	alloc_draw_psf_flags(psf_s, psf_m);
-	
-	if ( mesh_m->iflag_draw_mesh == IZERO ) {
-		cal_range_4_psf_grid_c(psf_s, view);
-		reset_light_by_size_of_domain(view->scale_factor[0]);
-		reset_to_init_angle(view);
-	};
 	
 	mesh_m->iflag_view_type = VIEW_3D;
 	psf_m->draw_psf_solid =   IONE;
@@ -169,23 +165,16 @@ void set_kemoview_psf_data(struct psf_data *psf_s,struct psf_data *ucd_tmp,
 }
 
 void set_kemoview_fline_data(struct psf_data *fline_s, struct psf_data *ucd_tmp, 
-							struct mesh_menu_val *mesh_m, struct fline_menu_val *fline_m,
-							struct view_element *view, int num_loaded){
+                             struct mesh_menu_val *mesh_m, struct fline_menu_val *fline_m){
 	int i;
 	
 	if (fline_m->iflag_draw_fline > 0){
 		dealloc_draw_fline_flags(fline_s, fline_m);
 		deallc_all_fline_data(fline_s);
 	}
-
+    
 	set_fline_data_by_UCD(fline_s, ucd_tmp);
 	alloc_draw_fline_flags(fline_s, fline_m);
-	
-	if ( (mesh_m->iflag_draw_mesh + num_loaded) == IZERO ) {
-		cal_range_4_psf_grid_c(fline_s, view);
-		reset_light_by_size_of_domain(view->scale_factor[0]);
-		reset_to_init_angle(view);
-	};
 	
 	mesh_m->iflag_view_type =   VIEW_3D;
 	fline_m->iflag_draw_fline = IONE;

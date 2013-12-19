@@ -13,17 +13,17 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	int iflag_psf = 0;
 	
     /*
-    glUseProgram(view_s->PhongGl2Program);
-    */
+     glUseProgram(view_s->PhongGl2Program);
+     */
     
 	glDeleteLists(view_s->gl_drawID, 1);
 	glNewList(view_s->gl_drawID, GL_COMPILE_AND_EXECUTE);
 	
-	 /* Draw Solid Objects */
+    /* Draw Solid Objects */
 	
 	glEnable(GL_COLOR_MATERIAL);
 	if(mesh_m->iflag_draw_axis != 0){
-		draw_axis(view_s->nx_window, view_s->nx_window, (GLfloat) mesh_m->dist_domains);
+		draw_axis(view_s, (GLfloat) mesh_m->dist_domains);
 	}
 	
 	if(fline_m->iflag_draw_fline != 0){
@@ -33,7 +33,7 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			draw_fieldlines_c(fline_s, fline_m, gl_buf);
 		};
 	};
-
+    
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag_psf = iflag_psf + psf_a->iflag_loaded[i];
 		if(psf_a->iflag_loaded[i] != 0){
@@ -49,7 +49,7 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 				draw_solid_objects_4_psf(psf_s[i], psf_m[i], gl_buf,
                                          view_s->iflag_retina, view_s->iflag_write_ps);
 			}
-
+            
 			if(psf_m[i]->draw_psf_cbar > 0) {
 				draw_colorbar_gl(view_s->iflag_retina,
                                  view_s->nx_window, view_s->ny_window,
@@ -57,21 +57,21 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			}
 		};
 	};
-
+    
 	
 	if(mesh_m->iflag_draw_mesh != 0){
 		draw_grids_4_domain(mesh_s, mesh_m, gl_buf);
 		draw_nodes_4_domain(mesh_s, mesh_m, gl_buf);
 		draw_patches_4_domain(mesh_s, mesh_m, gl_buf);
 	};
-
+    
 	if(mesh_m->iflag_view_type != VIEW_MAP) {
 		if(mesh_m->iflag_draw_coast != 0)   {draw_coastline(mesh_m->radius_coast, gl_buf);};
 		if(mesh_m->iflag_draw_sph_grid != 0){draw_sph_flame(mesh_m->radius_coast, gl_buf,
                                                             view_s->iflag_write_ps);};
 	};
 	
-	 /* Draw Transparent Objects */
+    /* Draw Transparent Objects */
 	
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		if(psf_a->iflag_loaded[i] != 0 && mesh_m->iflag_view_type != VIEW_MAP){

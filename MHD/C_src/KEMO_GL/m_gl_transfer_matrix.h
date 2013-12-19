@@ -37,9 +37,11 @@ struct view_element{
 	GLdouble x_lookfrom[3];
 	GLdouble x_lookat[3];
 	GLdouble shift[3];
-	GLdouble scale_factor[3];
 	GLdouble rotation[4];
 	GLdouble r_max;
+	GLdouble iso_scale;
+	GLdouble max_point[3];
+	GLdouble min_point[3];
 	
 	GLdouble rotate_dragging[4];
 	GLdouble rotate_animation[4];
@@ -51,18 +53,18 @@ struct view_element{
 	GLdouble aspect; /*camera aspect ratio*/
 	GLdouble near; /*camera near distance*/
 	GLdouble far; /*camera far   distance*/
-
+    
 	GLdouble rotpoint[3];   /*rotation point*/
-
+    
 	GLdouble eye_separation; /*eye separation for streo view*/
 	GLdouble focal_length;   /*focal length for streo view*/
 	GLdouble eye_to_focal;   /*ratio of eye sparation to focal length*/
-
+    
 	/* spin for Animation */
 	GLdouble rRot_animate[3];
 	GLdouble rVel_animate[3];
 	GLdouble rAccel_animate[3];
-
+    
     /* Shader object */
     GLuint PhongGl2Program;
     GLuint GouraudGl2Program;
@@ -88,11 +90,11 @@ void copy_viewmatrix_struct(struct view_element *origin, struct view_element *de
 
 
 void set_position_in_model(struct view_element *view, int nnod,
-			double **xx, double **end_eye);
+                           double **xx, double **end_eye);
 void set_distance_in_model(struct view_element *view, int nnod,
-			double **xx, double *z_eye);
+                           double **xx, double *z_eye);
 void set_3d_position_to_window(int point_screen[2], GLfloat xx[3], 
-			int nx_win, int ny_win, struct view_element *view);
+                               int nx_win, int ny_win, struct view_element *view);
 
 void init_kemoview_perspective(struct view_element *view);
 
@@ -119,8 +121,8 @@ void send_gl_dragging_rotation(struct view_element *view, GLdouble rot_vect[4]);
 void send_gl_animation_rotation(struct view_element *view, GLdouble rot_vect[4]);
 void send_gl_shift_vector(struct view_element *view, GLdouble position[3]);
 void send_gl_lookat_vector(struct view_element *view, GLdouble position[3]);
-void send_scalar_scale_factor(struct view_element *view, GLdouble scale[1]);
-void send_gl_projection_aperture(struct view_element *view, GLdouble *aperture_s);
+GLdouble send_scalar_scale_factor(struct view_element *view);
+GLdouble send_gl_projection_aperture(struct view_element *view);
 void send_gl_projection_parameters(struct view_element *view, GLdouble *aperture_s,
 								   GLdouble *near_s, GLdouble *far_s, GLdouble *aspect_s);
 
@@ -137,9 +139,9 @@ void gl_drag_addToRotationTrackball(struct view_element *view);
 
 
 void gl_mousedolly_struct(struct view_element *view, GLdouble start[2],
-			GLdouble x_dolly, GLdouble y_dolly);
+                          GLdouble x_dolly, GLdouble y_dolly);
 void gl_mousepan_struct(struct view_element *view, GLdouble start[2], 
-			GLdouble x_pan, GLdouble y_pan);
+                        GLdouble x_pan, GLdouble y_pan);
 void gl_zooming_struct(struct view_element *view, GLdouble wheelDelta);
 
 void reset_to_init_angle(struct view_element *view);
@@ -152,8 +154,6 @@ void view_for_xz_plane(struct view_element *view);
 
 
 void set_3d_position_to_window_d(int point_screen[2], GLdouble xx[3], 
-							   int nx_win, int ny_win, struct view_element *view);
+                                 int nx_win, int ny_win, struct view_element *view);
 
 #endif
-
-

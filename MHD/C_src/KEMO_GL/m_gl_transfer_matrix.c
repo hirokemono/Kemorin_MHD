@@ -12,12 +12,12 @@ static void init_center_model(GLdouble shift[3]){
 	glPopMatrix();
 	glPushMatrix();
 	glLoadIdentity();
-
+    
 	/* Shift object againt to the eye point */
 	/*  gluLookAt(-shift[0], -shift[1], -shift[2], -shift[0], -shift[1], 0, 0., 1., 0.); */
-
+    
 	glTranslated(shift[0], shift[1], shift[2]);
-
+    
 	return;
 }
 static void init_left_eye_model(GLdouble shift[3], GLdouble eyeSep){
@@ -25,10 +25,10 @@ static void init_left_eye_model(GLdouble shift[3], GLdouble eyeSep){
 	glPopMatrix();
 	glPushMatrix();
 	glLoadIdentity();
-
+    
 	/* Shift object againt to the eye point */
 	/*  gluLookAt(-shift[0]-eyeSep/3.0, -shift[1], -shift[2], 
-				  -shift[0]-eyeSep/3.0, -shift[1],         0., 0., 1., 0.); */
+     -shift[0]-eyeSep/3.0, -shift[1],         0., 0., 1., 0.); */
 	
 	glTranslated(shift[0]+eyeSep/3.0, shift[1], shift[2]);
 	return;
@@ -38,33 +38,33 @@ static void init_right_eye_model(GLdouble shift[3], GLdouble eyeSep){
 	glPopMatrix();
 	glPushMatrix();
 	glLoadIdentity();
-
+    
 	/* Shift object againt to the eye point */
 	/*  gluLookAt(-shift[0]+eyeSep/3.0, -shift[1], -shift[2], 
-				  -shift[0]+eyeSep/3.0, -shift[1],         0., 0., 1., 0.); */
+     -shift[0]+eyeSep/3.0, -shift[1],         0., 0., 1., 0.); */
 	
 	glTranslated(shift[0]-eyeSep/3.0, shift[1], shift[2]);
 	return;
 }
 
-static void modify_view_kemo(GLdouble x_lookat[3], GLdouble shift[3], GLdouble scale_factor[3],
+static void modify_view_kemo(GLdouble x_lookat[3], GLdouble shift[3], GLdouble iso_scale,
 							 GLdouble rotation[4]){
-
+    
 	/* Rotate object around the lookat point*/
 	glRotated(rotation[0], rotation[1], rotation[2], rotation[3]);
 	/* Change size of object */
-	glScaled(scale_factor[0], scale_factor[1], scale_factor[2]);
+	glScaled(iso_scale, iso_scale, iso_scale);
 	/* Move lookat point to the center of coordinate */
 	glTranslated(-x_lookat[0], -x_lookat[1], -x_lookat[2]);
 	
 	return;
 };
 
-static void rotate_view_kemo(GLdouble x_lookat[3], GLdouble shift[3], GLdouble scale_factor[3],
+static void rotate_view_kemo(GLdouble x_lookat[3], GLdouble shift[3], GLdouble iso_scale,
 							 GLdouble rotation[4], GLdouble rotate_animation[4]){
 	glRotated(rotation[0], rotation[1], rotation[2], rotation[3]);
 	glRotated(rotate_animation[0], rotate_animation[1], rotate_animation[2], rotate_animation[3]);
-	glScaled(scale_factor[0], scale_factor[1], scale_factor[2]);
+	glScaled(iso_scale, iso_scale, iso_scale);
 	glTranslated(-x_lookat[0], -x_lookat[1], -x_lookat[2]);
 	return;
 };
@@ -90,8 +90,8 @@ static void update_projection(GLdouble x_lookfrom[2], GLint nx_window, GLint ny_
 	left  = - aspect * wd2;
 	right =   aspect * wd2;
 	glFrustum (left, right, (-wd2), wd2, near, far);
-
-/*	gluPerspective(aperture, aspect, near, far);*/
+    
+    /*	gluPerspective(aperture, aspect, near, far);*/
 	return;
 }
 
@@ -150,21 +150,21 @@ static void update_projection_right(GLdouble x_lookfrom[2], GLint nx_window, GLi
 
 void modify_view_by_struct(struct view_element *view){
 	init_center_model(view->shift);
-	modify_view_kemo(view->x_lookat, view->shift, view->scale_factor,
-			view->rotation);
+	modify_view_kemo(view->x_lookat, view->shift, view->iso_scale,
+                     view->rotation);
 	glGetDoublev(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
 	return;
 };
 void modify_left_view_by_struct(struct view_element *view){
 	init_left_eye_model(view->shift, view->eye_separation);
-	modify_view_kemo(view->x_lookat, view->shift, view->scale_factor,
+	modify_view_kemo(view->x_lookat, view->shift, view->iso_scale,
 					 view->rotation);
 	glGetDoublev(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
 	return;
 };
 void modify_right_view_by_struct(struct view_element *view){
 	init_right_eye_model(view->shift, view->eye_separation);
-	modify_view_kemo(view->x_lookat, view->shift, view->scale_factor,
+	modify_view_kemo(view->x_lookat, view->shift, view->iso_scale,
 					 view->rotation);
 	glGetDoublev(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
 	return;
@@ -173,7 +173,7 @@ void modify_right_view_by_struct(struct view_element *view){
 
 void rotate_view_by_struct(struct view_element *view){
 	init_center_model(view->shift);
-	rotate_view_kemo(view->x_lookat, view->shift, view->scale_factor,
+	rotate_view_kemo(view->x_lookat, view->shift, view->iso_scale,
 					 view->rotation, view->rotate_animation);
 	
 	glGetDoublev(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
@@ -181,7 +181,7 @@ void rotate_view_by_struct(struct view_element *view){
 };
 void rotate_left_view_by_struct(struct view_element *view){
 	init_left_eye_model(view->shift, view->eye_separation);
-	rotate_view_kemo(view->x_lookat, view->shift, view->scale_factor,
+	rotate_view_kemo(view->x_lookat, view->shift, view->iso_scale,
 					 view->rotation, view->rotate_animation);
 	
 	glGetDoublev(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
@@ -189,9 +189,9 @@ void rotate_left_view_by_struct(struct view_element *view){
 };
 void rotate_right_view_by_struct(struct view_element *view){
 	init_right_eye_model(view->shift, view->eye_separation);
-	rotate_view_kemo(view->x_lookat, view->shift, view->scale_factor,
-			view->rotation, view->rotate_animation);
-
+	rotate_view_kemo(view->x_lookat, view->shift, view->iso_scale,
+                     view->rotation, view->rotate_animation);
+    
 	glGetDoublev(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
 	return;
 };
@@ -199,7 +199,7 @@ void rotate_right_view_by_struct(struct view_element *view){
 
 void update_projection_struct(struct view_element *view){
 	update_projection(view->x_lookfrom, view->nx_window, view->ny_window,
-			view->aperture, view->aspect, view->near, view->far);
+                      view->aperture, view->aspect, view->near, view->far);
 	return;
 }
 void update_left_projection_struct(struct view_element *view){
@@ -229,37 +229,37 @@ void copy_viewmatrix_struct(struct view_element *origin, struct view_element *de
 	int i;
 	for (i=0; i<3; i++) {
 		dest->shift[i] =        origin->shift[i];
-		dest->scale_factor[i] = origin->scale_factor[i];
 		dest->rotation[i] =     origin->rotation[i];
 	}
 	dest->rotation[3] = origin->rotation[3];
+    dest->iso_scale = origin->iso_scale;
 	return;
 }
 
 
 
 void set_position_in_model(struct view_element *view, int nnod,
-			double **xx, double **end_eye){
+                           double **xx, double **end_eye){
 	int i;
 	
 	/* transfer matrix for object */
 	for (i=0;i<nnod;i++){
-			end_eye[i][0] =  (double) view->mat_object_2_eye[   0]*xx[i][0]
-					+ (double) view->mat_object_2_eye[ 4+0]*xx[i][1]
-					+ (double) view->mat_object_2_eye[ 8+0]*xx[i][2]
-					+ (double) view->mat_object_2_eye[12+0] * 1.0;
-			end_eye[i][1] =  (double) view->mat_object_2_eye[   1]*xx[i][0]
-					+ (double) view->mat_object_2_eye[ 4+1]*xx[i][1]
-					+ (double) view->mat_object_2_eye[ 8+1]*xx[i][2]
-					+ (double) view->mat_object_2_eye[12+1] * 1.0;
-			end_eye[i][2] =  (double) view->mat_object_2_eye[   2]*xx[i][0]
-					+ (double) view->mat_object_2_eye[ 4+2]*xx[i][1]
-					+ (double) view->mat_object_2_eye[ 8+2]*xx[i][2]
-					+ (double) view->mat_object_2_eye[12+2] * 1.0;
-			end_eye[i][3] =  (double) view->mat_object_2_eye[   3]*xx[i][0]
-					+ (double) view->mat_object_2_eye[ 4+3]*xx[i][1]
-					+ (double) view->mat_object_2_eye[ 8+3]*xx[i][2]
-					+ (double) view->mat_object_2_eye[12+3] * 1.0;
+        end_eye[i][0] =  (double) view->mat_object_2_eye[   0]*xx[i][0]
+        + (double) view->mat_object_2_eye[ 4+0]*xx[i][1]
+        + (double) view->mat_object_2_eye[ 8+0]*xx[i][2]
+        + (double) view->mat_object_2_eye[12+0] * 1.0;
+        end_eye[i][1] =  (double) view->mat_object_2_eye[   1]*xx[i][0]
+        + (double) view->mat_object_2_eye[ 4+1]*xx[i][1]
+        + (double) view->mat_object_2_eye[ 8+1]*xx[i][2]
+        + (double) view->mat_object_2_eye[12+1] * 1.0;
+        end_eye[i][2] =  (double) view->mat_object_2_eye[   2]*xx[i][0]
+        + (double) view->mat_object_2_eye[ 4+2]*xx[i][1]
+        + (double) view->mat_object_2_eye[ 8+2]*xx[i][2]
+        + (double) view->mat_object_2_eye[12+2] * 1.0;
+        end_eye[i][3] =  (double) view->mat_object_2_eye[   3]*xx[i][0]
+        + (double) view->mat_object_2_eye[ 4+3]*xx[i][1]
+        + (double) view->mat_object_2_eye[ 8+3]*xx[i][2]
+        + (double) view->mat_object_2_eye[12+3] * 1.0;
 	};
 	
 	return;
@@ -267,47 +267,47 @@ void set_position_in_model(struct view_element *view, int nnod,
 
 
 void set_distance_in_model(struct view_element *view, int nnod,
-			double **xx, double *z_eye){
+                           double **xx, double *z_eye){
 	int i;
 	
 	/* transfer matrix for object*/
 	for (i=0;i<nnod;i++){
 		z_eye[i]= (double) view->mat_object_2_eye[   2]*xx[i][0]
-				+ (double) view->mat_object_2_eye[ 4+2]*xx[i][1]
-				+ (double) view->mat_object_2_eye[ 8+2]*xx[i][2]
-				+ (double) view->mat_object_2_eye[12+2] * 1.0;
+        + (double) view->mat_object_2_eye[ 4+2]*xx[i][1]
+        + (double) view->mat_object_2_eye[ 8+2]*xx[i][2]
+        + (double) view->mat_object_2_eye[12+2] * 1.0;
 	}
 	return;
 }
 
 void set_3d_position_to_window(int point_screen[2], GLfloat xx[3], 
-			int nx_win, int ny_win, struct view_element *view){
+                               int nx_win, int ny_win, struct view_element *view){
 	int i;
 	double end_eye[4];
 	double end_clip[4];
 	double end_device[4];
 	
 	/* transfer matrix for object
-	glGetFloatv(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
-	glGetFloatv(GL_PROJECTION_MATRIX, view->mat_eye_2_clip); */
+     glGetFloatv(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
+     glGetFloatv(GL_PROJECTION_MATRIX, view->mat_eye_2_clip); */
 	for (i=0;i<4;i++){
 		end_eye[i] =  view->mat_object_2_eye[   i]*((float) xx[0])
-					+ view->mat_object_2_eye[ 4+i]*((float) xx[1])
-					+ view->mat_object_2_eye[ 8+i]*((float) xx[2])
-					+ view->mat_object_2_eye[12+i]* 1.0;
+        + view->mat_object_2_eye[ 4+i]*((float) xx[1])
+        + view->mat_object_2_eye[ 8+i]*((float) xx[2])
+        + view->mat_object_2_eye[12+i]* 1.0;
 	};
 	for (i=0;i<4;i++){
 		end_clip[i] =  view->mat_eye_2_clip[   i]*end_eye[0]
-					+ view->mat_eye_2_clip[ 4+i]*end_eye[1]
-					+ view->mat_eye_2_clip[ 8+i]*end_eye[2]
-					+ view->mat_eye_2_clip[ 12+i]*end_eye[3];
+        + view->mat_eye_2_clip[ 4+i]*end_eye[1]
+        + view->mat_eye_2_clip[ 8+i]*end_eye[2]
+        + view->mat_eye_2_clip[ 12+i]*end_eye[3];
 	};
 	for (i=0;i<4;i++){
 		end_device[i] =  end_clip[i] / end_clip[3];
 	};
 	point_screen[0] = (int) ( (end_device[0] + 1.0) * ((double) nx_win / 2.0) );
 	point_screen[1] = (int) ( (end_device[1] + ((double) nx_win) / ((double) ny_win) )
-			* ((double) ny_win / 2.0) ) ;
+                             * ((double) ny_win / 2.0) ) ;
 	
 	return;
 }
@@ -394,9 +394,7 @@ void set_gl_shift_vector(struct view_element *view, GLdouble position[3])
 
 void set_gl_scalar_scale_factor(struct view_element *view, GLdouble scale_s)
 {
-	view->scale_factor[0] = scale_s;
-	view->scale_factor[1] = scale_s;
-	view->scale_factor[2] = scale_s;
+	view->iso_scale = scale_s;
 	return;
 };
 
@@ -450,18 +448,10 @@ void send_gl_lookat_vector(struct view_element *view, GLdouble position[3])
 	return;
 }
 
-void send_scalar_scale_factor(struct view_element *view, GLdouble scale[1])
-{
-	scale[0] = (view->scale_factor[0] + view->scale_factor[1]
-			+ view->scale_factor[2]) / 3.0;
-	return;
-};
+GLdouble send_scalar_scale_factor(struct view_element *view){return view->iso_scale;};
 
-void send_gl_projection_aperture(struct view_element *view, GLdouble *aperture_s)
-{
-	*aperture_s = view->aperture;
-	return;
-};
+GLdouble send_gl_projection_aperture(struct view_element *view){return view->aperture;};
+
 void send_gl_projection_parameters(struct view_element *view, GLdouble *aperture_s,
 								   GLdouble *near_s, GLdouble *far_s, GLdouble *aspect_s)
 {
@@ -493,7 +483,7 @@ void gl_rollToTrackball(GLdouble x, GLdouble y, struct view_element *view){
 /* add a GL rotation (dA) to an existing GL rotation (A) */
 void gl_drag_addToRotationTrackball(struct view_element *view){
 	if (view->rotate_dragging[0] != ZERO)
-		addToRotationTrackball_c (view->rotate_dragging, view->rotation);
+    addToRotationTrackball_c (view->rotate_dragging, view->rotation);
 	view->rotate_dragging [0] = ZERO;
 	view->rotate_dragging [1] = ZERO;
 	view->rotate_dragging [2] = ZERO;
@@ -505,10 +495,10 @@ void gl_drag_addToRotationTrackball(struct view_element *view){
 
 
 void gl_mousedolly_struct(struct view_element *view, GLdouble start[2], 
-			GLdouble x_dolly, GLdouble y_dolly){
+                          GLdouble x_dolly, GLdouble y_dolly){
 	GLdouble dolly = (start[1] - y_dolly) * view->shift[2] / 300.0f;
 	view->shift[2] -= dolly;
-	 /* do not let z = 0.0 */
+    /* do not let z = 0.0 */
 	if (view->shift[2] == 0.0) view->shift[2] = -0.0001;
 	view->x_lookfrom[2] = -view->shift[2];
 	start[0] = (int) x_dolly;
@@ -517,7 +507,7 @@ void gl_mousedolly_struct(struct view_element *view, GLdouble start[2],
 }
 
 void gl_mousepan_struct(struct view_element *view, GLdouble start[2], 
-			GLdouble x_pan, GLdouble y_pan){
+                        GLdouble x_pan, GLdouble y_pan){
 	GLdouble panX = (start[0] - x_pan) / (1200.0f / view->shift[2]);
 	GLdouble panY = (start[1] - y_pan) / (1200.0f / view->shift[2]);
 	view->shift[0] += panX;
@@ -568,15 +558,14 @@ void reset_to_init_angle(struct view_element *view){
 }
 
 void reset_all_view_parameter(struct view_element *view){
+    int i;
+    
 	reset_to_init_angle(view);
 	
-	view->scale_factor[0] = ONE;
-	view->scale_factor[1] = ONE;
-	view->scale_factor[2] = ONE;
-	
-	view->x_lookat[0] = ZERO;
-	view->x_lookat[1] = ZERO;
-	view->x_lookat[2] = ZERO;
+    view->iso_scale = ONE;
+	for (i=0;i<3;i++){
+        view->x_lookat[i] = ZERO;
+    };
 	return;
 }
 
@@ -612,7 +601,7 @@ void view_for_xz_plane(struct view_element *view){
 
 
 void set_3d_position_to_window_d(int point_screen[2], GLdouble xx[3], 
-							   int nx_win, int ny_win, struct view_element *view){
+                                 int nx_win, int ny_win, struct view_element *view){
 	int i;
 	double end_eye[4];
 	double end_clip[4];

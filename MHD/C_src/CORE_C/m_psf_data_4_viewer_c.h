@@ -57,6 +57,11 @@ struct psf_data{
 	double **dir_nod;
 	double *length_ele;
 	double length_total;
+    
+    double center_psf[3];
+    double xmin_psf[3];
+    double xmax_psf[3];
+    double rmax_psf;
 	
 	int *iele_viz_far;
 	double *z_ele_viz;

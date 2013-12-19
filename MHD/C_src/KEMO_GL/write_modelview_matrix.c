@@ -83,11 +83,7 @@ void output_GL_modelview_parameters(FILE *fp, struct view_element *view) {
 	fprintf(fp, "    end array\n");
 	fprintf(fp, "!\n");
 	
-	fprintf(fp, "    array scale_factor_vec_ctl  3\n");
-	fprintf(fp, "      scale_factor_vec_ctl      x   %.12e end\n", view->scale_factor[0]);
-	fprintf(fp, "      scale_factor_vec_ctl      y   %.12e end\n", view->scale_factor[1]);
-	fprintf(fp, "      scale_factor_vec_ctl      z   %.12e end\n", view->scale_factor[2]);
-	fprintf(fp, "    end array\n");
+	fprintf(fp, "    scale_factor_ctl      %.12e\n", view->iso_scale);
 	fprintf(fp, "!\n");
 	
 	fprintf(fp, "    array look_at_point_ctl  3\n");
@@ -143,7 +139,7 @@ void input_GL_projection_matrix(FILE *fp, struct view_element *view) {
     long offset;
 	char buf[LENGTHBUF];            /* character buffer for reading line */
 	char ctmp[32], ctmp1[32], ctmp2[32];   /* character buffer for reading line */
-
+    
     offset = skip_comment_c(fp);
 	for (k = 0; k < 12; k++) {
         offset = skip_comment_c(fp);
@@ -164,7 +160,7 @@ void input_stereo_parameter(FILE *fp, struct view_element *view) {
     long offset;
 	char buf[LENGTHBUF];      /* character buffer for reading line */
 	char ctmp[32];            /* character buffer for reading line */
-
+    
     
     offset = skip_comment_c(fp);
     fgets(buf, LENGTHBUF, fp);
@@ -177,7 +173,7 @@ void input_stereo_parameter(FILE *fp, struct view_element *view) {
     view->eye_separation = atof(ctmp);
     fgets(buf, LENGTHBUF, fp);
     sscanf(buf, "%s",  ctmp);
-
+    
 	return;
 }
 
@@ -185,11 +181,11 @@ void input_GL_modelview_parameters(FILE *fp, struct view_element *view) {
 	int i, k;
 	double viewpt_in_view[3];
 	double lookat_in_view[3];
-
+    
     long offset;
 	char buf[LENGTHBUF];      /* character buffer for reading line */
 	char ctmp[32];            /* character buffer for reading line */
-
+    
     offset = skip_comment_c(fp);
     fgets(buf, LENGTHBUF, fp);
     sscanf(buf, "%s",  ctmp);
@@ -213,18 +209,11 @@ void input_GL_modelview_parameters(FILE *fp, struct view_element *view) {
     };
     fgets(buf, LENGTHBUF, fp);
     sscanf(buf, "%s",  ctmp);
-	
-    offset = skip_comment_c(fp);
+    
     fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
-    for (i=0; i<3; i++) {
-        fgets(buf, LENGTHBUF, fp);
-        sscanf(buf, "%s %s %s ", ctmp, ctmp, ctmp);
-        view->scale_factor[i] = atof(ctmp);
-    };
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
-	
+    sscanf(buf, "%s %s ", ctmp, ctmp);
+    view->iso_scale = atof(ctmp);
+    
     offset = skip_comment_c(fp);
     fgets(buf, LENGTHBUF, fp);
     sscanf(buf, "%s",  ctmp);
@@ -275,22 +264,22 @@ void input_GL_modelview_parameters(FILE *fp, struct view_element *view) {
 
 
 void write_GL_modelview_file(const char *file_name, int iflag_view, struct view_element *view){
-		
+    
 	printf("ViewMatrix file name: %s \n",file_name);
 	if ((fp_mat = fopen(file_name, "w")) == NULL) {
 		fprintf(stderr, "Cannot open file!\n");
 		exit (2);                    /* terminate with error message */
 	}
-
+    
 	fprintf(fp_mat, "  begin view_transform_ctl\n");
 	fprintf(fp_mat, "!\n");
-
+    
 	output_GL_modelview_parameters(fp_mat, view);
 	if(iflag_view == VIEW_STEREO) output_stereo_parameter(fp_mat, view);
-
+    
 	fprintf(fp_mat, "  end\n");
 	fprintf(fp_mat, "!\n");
-
+    
 	fclose(fp_mat);
 	return;
 }
@@ -320,5 +309,3 @@ void read_GL_modelview_file(const char *file_name, int iflag_view, struct view_e
 	fclose(fp_mat);
 	return;
 }
-
-

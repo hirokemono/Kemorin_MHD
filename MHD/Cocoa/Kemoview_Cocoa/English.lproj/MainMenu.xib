@@ -4125,7 +4125,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="0.98765432098765427" horizontal="NO" id="2594">
-                                            <rect key="frame" x="139" y="17" width="15" height="111"/>
+                                            <rect key="frame" x="138" y="17" width="16" height="111"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <tableHeaderView key="headerView" id="2597">
@@ -4222,7 +4222,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="0.98765432098765427" horizontal="NO" id="2587">
-                                            <rect key="frame" x="139" y="17" width="15" height="127"/>
+                                            <rect key="frame" x="138" y="17" width="16" height="127"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <tableHeaderView key="headerView" id="2584">

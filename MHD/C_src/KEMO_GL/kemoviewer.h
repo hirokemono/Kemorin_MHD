@@ -14,101 +14,101 @@
 #endif
 
 #ifdef FC_NAME_LOWER_USCORE
-  #define open_wt_gzfile            open_wt_gzfile_
-  #define open_rd_gzfile            open_rd_gzfile_
-  #define close_gzfile              close_gzfile_
-  #define check_gzfile_eof          check_gzfile_eof_
-  #define write_compress_txt        write_compress_txt_
-  #define write_compress_txt_contd  write_compress_txt_contd_
-  #define get_one_line_from_gz      get_one_line_from_gz_
-  #define compress_file             compress_file_
-  #define decompress_file           decompress_file_
-  #define delete_file_c             delete_file_c_
+#define open_wt_gzfile            open_wt_gzfile_
+#define open_rd_gzfile            open_rd_gzfile_
+#define close_gzfile              close_gzfile_
+#define check_gzfile_eof          check_gzfile_eof_
+#define write_compress_txt        write_compress_txt_
+#define write_compress_txt_contd  write_compress_txt_contd_
+#define get_one_line_from_gz      get_one_line_from_gz_
+#define compress_file             compress_file_
+#define decompress_file           decompress_file_
+#define delete_file_c             delete_file_c_
 
-  #define write_png_rgba_c          write_png_rgba_c_
-  #define write_png_rgb_c           write_png_rgb_c_
+#define write_png_rgba_c          write_png_rgba_c_
+#define write_png_rgb_c           write_png_rgb_c_
 
-  #define kemo_fftw_plan_dft_r2c_1d  kemo_fftw_plan_dft_r2c_1d_
-  #define kemo_fftw_plan_dft_c2r_1d  kemo_fftw_plan_dft_c2r_1d_
-  #define kemo_fftw_destroy_plan     kemo_fftw_destroy_plan_
-  #define kemo_fftw_execute_dft_r2c  kemo_fftw_execute_dft_r2c_
-  #define kemo_fftw_execute_dft_c2r  kemo_fftw_execute_dft_c2r_
+#define kemo_fftw_plan_dft_r2c_1d  kemo_fftw_plan_dft_r2c_1d_
+#define kemo_fftw_plan_dft_c2r_1d  kemo_fftw_plan_dft_c2r_1d_
+#define kemo_fftw_destroy_plan     kemo_fftw_destroy_plan_
+#define kemo_fftw_execute_dft_r2c  kemo_fftw_execute_dft_r2c_
+#define kemo_fftw_execute_dft_c2r  kemo_fftw_execute_dft_c2r_
 
-  #define generate_ysfont8x12_c      generate_ysfont8x12_c_
-  #define generate_ysfont16x24_c     generate_ysfont16x24_c_
+#define generate_ysfont8x12_c      generate_ysfont8x12_c_
+#define generate_ysfont16x24_c     generate_ysfont16x24_c_
 #elif FC_NAME_UPPER
-  #define open_wt_gzfile            OPEN_WT_GZFILE
-  #define open_rd_gzfile            OPEN_RD_GZFILE
-  #define close_gzfile              CLOSE_GZFILE
-  #define check_gzfile_eof          CHECK_GZFILE_EOF
-  #define write_compress_txt        WRITE_COMPRESS_TXT
-  #define write_compress_txt_contd  WRITE_COMPRESS_TXT_CONTD
-  #define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
-  #define compress_file             COMPRESS_FILE
-  #define decompress_file           DECOMPRESS_FILE
-  #define delete_file_c             DELETE_FILE_C
+#define open_wt_gzfile            OPEN_WT_GZFILE
+#define open_rd_gzfile            OPEN_RD_GZFILE
+#define close_gzfile              CLOSE_GZFILE
+#define check_gzfile_eof          CHECK_GZFILE_EOF
+#define write_compress_txt        WRITE_COMPRESS_TXT
+#define write_compress_txt_contd  WRITE_COMPRESS_TXT_CONTD
+#define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
+#define compress_file             COMPRESS_FILE
+#define decompress_file           DECOMPRESS_FILE
+#define delete_file_c             DELETE_FILE_C
 
-  #define write_png_rgba_c          WRITE_PNG_RGBA_C
-  #define write_png_rgb_c           WRITE_PNG_RGB_C
+#define write_png_rgba_c          WRITE_PNG_RGBA_C
+#define write_png_rgb_c           WRITE_PNG_RGB_C
 
-  #define kemo_fftw_plan_dft_r2c_1d  KEMO_FFTW_PLAN_DFT_R2C_1D
-  #define kemo_fftw_plan_dft_c2r_1d  KEMO_FFTW_PLAN_DFT_C2R_1D
-  #define kemo_fftw_destroy_plan     KEMO_FFTW_DESTROY_PLAN
-  #define kemo_fftw_execute_dft_r2c  KEMO_FFTW_EXECUTE_DFT_R2C
-  #define kemo_fftw_execute_dft_c2r  KEMO_FFTW_EXECUTE_DFT_C2R
+#define kemo_fftw_plan_dft_r2c_1d  KEMO_FFTW_PLAN_DFT_R2C_1D
+#define kemo_fftw_plan_dft_c2r_1d  KEMO_FFTW_PLAN_DFT_C2R_1D
+#define kemo_fftw_destroy_plan     KEMO_FFTW_DESTROY_PLAN
+#define kemo_fftw_execute_dft_r2c  KEMO_FFTW_EXECUTE_DFT_R2C
+#define kemo_fftw_execute_dft_c2r  KEMO_FFTW_EXECUTE_DFT_C2R
 
-  #define generate_ysfont8x12_c      GENERATE_YSFONT8X12_C
-  #define generate_ysfont16x24_c     GENERATE_YSFONT16X24_C
+#define generate_ysfont8x12_c      GENERATE_YSFONT8X12_C
+#define generate_ysfont16x24_c     GENERATE_YSFONT16X24_C
 #elif FC_NAME_UPPER_STDCALL
-  #define open_wt_gzfile            OPEN_WT_GZFILE
-  #define open_rd_gzfile            OPEN_RD_GZFILE
-  #define close_gzfile              CLOSE_GZFILE
-  #define check_gzfile_eof          CHECK_GZFILE_EOF
-  #define write_compress_txt        WRITE_COMPRESS_TXT
-  #define write_compress_txt_contd  WRITE_COMPRESS_TXT_CONTD
-  #define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
-  #define compress_file             COMPRESS_FILE
-  #define decompress_file           DECOMPRESS_FILE
-  #define delete_file_c             DELETE_FILE_C
+#define open_wt_gzfile            OPEN_WT_GZFILE
+#define open_rd_gzfile            OPEN_RD_GZFILE
+#define close_gzfile              CLOSE_GZFILE
+#define check_gzfile_eof          CHECK_GZFILE_EOF
+#define write_compress_txt        WRITE_COMPRESS_TXT
+#define write_compress_txt_contd  WRITE_COMPRESS_TXT_CONTD
+#define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
+#define compress_file             COMPRESS_FILE
+#define decompress_file           DECOMPRESS_FILE
+#define delete_file_c             DELETE_FILE_C
 
-  #define write_png_rgba_c          WRITE_PNG_RGBA_C
-  #define write_png_rgb_c           WRITE_PNG_RGB_C
+#define write_png_rgba_c          WRITE_PNG_RGBA_C
+#define write_png_rgb_c           WRITE_PNG_RGB_C
 
-  #define read_png_file_c           READ_PNG_FILE_C
-  #define copy_rgb_from_png_c       COPY_RGB_FROM_PNG_C
-  #define copy_rgba_from_png_c      COPY_RGBA_FROM_PNG_C
+#define read_png_file_c           READ_PNG_FILE_C
+#define copy_rgb_from_png_c       COPY_RGB_FROM_PNG_C
+#define copy_rgba_from_png_c      COPY_RGBA_FROM_PNG_C
 
-  #define kemo_fftw_plan_dft_r2c_1d  KEMO_FFTW_PLAN_DFT_R2C_1D
-  #define kemo_fftw_plan_dft_c2r_1d  KEMO_FFTW_PLAN_DFT_C2R_1D
-  #define kemo_fftw_destroy_plan     KEMO_FFTW_DESTROY_PLAN
-  #define kemo_fftw_execute_dft_r2c  KEMO_FFTW_EXECUTE_DFT_R2C
-  #define kemo_fftw_execute_dft_c2r  KEMO_FFTW_EXECUTE_DFT_C2R
+#define kemo_fftw_plan_dft_r2c_1d  KEMO_FFTW_PLAN_DFT_R2C_1D
+#define kemo_fftw_plan_dft_c2r_1d  KEMO_FFTW_PLAN_DFT_C2R_1D
+#define kemo_fftw_destroy_plan     KEMO_FFTW_DESTROY_PLAN
+#define kemo_fftw_execute_dft_r2c  KEMO_FFTW_EXECUTE_DFT_R2C
+#define kemo_fftw_execute_dft_c2r  KEMO_FFTW_EXECUTE_DFT_C2R
 
-  #define generate_ysfont8x12_c      GENERATE_YSFONT8X12_C
-  #define generate_ysfont16x24_c     GENERATE_YSFONT16X24_C
+#define generate_ysfont8x12_c      GENERATE_YSFONT8X12_C
+#define generate_ysfont16x24_c     GENERATE_YSFONT16X24_C
 #else
-  #define open_wt_gzfile            open_wt_gzfile
-  #define open_rd_gzfile            open_rd_gzfile
-  #define close_gzfile              close_gzfile
-  #define check_gzfile_eof          check_gzfile_eof
-  #define write_compress_txt        write_compress_txt
-  #define write_compress_txt_contd  write_compress_txt_contd
-  #define get_one_line_from_gz      get_one_line_from_gz
-  #define compress_file             compress_file
-  #define decompress_file           decompress_file
-  #define delete_file_c             delete_file_c
+#define open_wt_gzfile            open_wt_gzfile
+#define open_rd_gzfile            open_rd_gzfile
+#define close_gzfile              close_gzfile
+#define check_gzfile_eof          check_gzfile_eof
+#define write_compress_txt        write_compress_txt
+#define write_compress_txt_contd  write_compress_txt_contd
+#define get_one_line_from_gz      get_one_line_from_gz
+#define compress_file             compress_file
+#define decompress_file           decompress_file
+#define delete_file_c             delete_file_c
 
-  #define write_png_rgba_c          write_png_rgba_c
-  #define write_png_rgb_c           write_png_rgb_c
+#define write_png_rgba_c          write_png_rgba_c
+#define write_png_rgb_c           write_png_rgb_c
 
-  #define kemo_fftw_plan_dft_r2c_1d  kemo_fftw_plan_dft_r2c_1d
-  #define kemo_fftw_plan_dft_c2r_1d  kemo_fftw_plan_dft_c2r_1d
-  #define kemo_fftw_destroy_plan     kemo_fftw_destroy_plan
-  #define kemo_fftw_execute_dft_r2c  kemo_fftw_execute_dft_r2c
-  #define kemo_fftw_execute_dft_c2r  kemo_fftw_execute_dft_c2r
+#define kemo_fftw_plan_dft_r2c_1d  kemo_fftw_plan_dft_r2c_1d
+#define kemo_fftw_plan_dft_c2r_1d  kemo_fftw_plan_dft_c2r_1d
+#define kemo_fftw_destroy_plan     kemo_fftw_destroy_plan
+#define kemo_fftw_execute_dft_r2c  kemo_fftw_execute_dft_r2c
+#define kemo_fftw_execute_dft_c2r  kemo_fftw_execute_dft_c2r
 
-  #define generate_ysfont8x12_c      generate_ysfont8x12_c
-  #define generate_ysfont16x24_c     generate_ysfont16x24_c
+#define generate_ysfont8x12_c      generate_ysfont8x12_c
+#define generate_ysfont16x24_c     generate_ysfont16x24_c
 #endif
 
 #define LENGTHBUF 4096     /* length of text buffer */
@@ -262,8 +262,8 @@
 #define EPSILON  1.e-9
 
 /*
-  Kemoviewer_t: Structure to run kemoviewer in one window.
-*/
+ Kemoviewer_t: Structure to run kemoviewer in one window.
+ */
 
 struct kemoviewer_type;
 
@@ -272,13 +272,13 @@ struct kemoviewer_type;
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+    
     void allocate_kemoviewer_work();
     void allocate_kemoviwewer_struct(struct kemoviewer_type *kemoviewer_data, int iflag_dmesh);
     void allocate_single_kemoviwewer_struct(int iflag_dmesh);
     void allocate_kemoviwewer_pointers();
     void deallocate_kemoviwewer_pointers();
-
+    
     int send_nlimit_load_psf();
     int add_kemoview_array();
     void close_kemoview_array();
@@ -287,7 +287,7 @@ extern "C" {
     void set_max_loaded_kemoview(int num);
     void set_to_loaded_kemoview_flag(int id_psf, int iflag);
     void set_current_kemoview(int id_psf);
-
+    
     int send_nlimit_load_kemoview();
     int send_num_loaded_kemoview();
     int send_max_loaded_kemoview();
@@ -299,47 +299,47 @@ extern "C" {
     void draw_kemoviewer_c();
     void draw_kemoviewer_to_ps();
     void kemoviewer_initial_lighting();
-
+    
     void init_kemoview_background_color();
     void set_kemoview_background_color(GLfloat color[4]);
     void send_background_color(GLfloat color[4]);
-
+    
     void evolution_viewer(int istep);
-
+    
     void write_modelview_file_glut(const char *file_name);
     void load_modelview_file_glut(const char *file_name);
     int kemoview_open_data_glut(const char *file_name);
-
+    
     void close_mesh_view();
     int close_psf_view();
     void close_fline_view();
-
+    
     void set_to_pick_surface_command(const char *command);
     void send_pick_surface_command(char *command);
-
+    
     void set_viewtype_glut(int sel);
-
-
+    
+    
     void draw_modified_object_distance();
-
+    
     void set_to_coastline_radius(double radius);
     double send_coastline_radius();
-
+    
     void set_object_property_flags(int selected, int iflag);
     int send_object_property_flags(int selected);
     int object_properties_toggle(int selected);
-
+    
     void set_to_mesh_color_mode(int icolor);
     void set_to_num_of_color_loop(int icolor);
-
+    
     void set_to_node_diam(double diam);
     void set_to_dist_domains(double dist);
-
-
+    
+    
     void set_to_domain_surface_opacity(double opacity_in);
     void set_to_ele_surface_opacity(double opacity_in);
     void set_to_surf_surface_opacity(double opacity_in);
-
+    
     void set_domain_color_flag(int selected, int icolor);
     void set_node_grp_color_flag(int icolor);
     void set_ele_grp_color_flag(int selected, int icolor);
@@ -353,98 +353,98 @@ extern "C" {
     double send_domain_surface_opacity();
     double send_ele_surface_opacity();
     double send_surf_surface_opacity();
-
-
+    
+    
     int send_draw_surface_nod();
     int send_draw_surface_grid();
     int send_draw_surface_solid();
-
+    
     void set_kemoview_mesh_draw(int selected, int iflag);
     void kemoview_mesh_draw_toggle(int selected);
-
+    
     void set_to_draw_domain_nod(int iflag, int i);
     void set_to_draw_domain_grid(int iflag, int i);
     void set_to_draw_domain_solid(int iflag, int i);
-
+    
     void set_to_draw_nodgrp_nod(int iflag, int i);
     int send_draw_nodgrp_nod(int i);
-
+    
     void set_to_draw_elegrp_grid(int iflag, int i);
     int send_draw_elegrp_grid(int i);
-
+    
     void set_to_draw_elegrp_nod(int iflag, int i);
     int send_draw_elegrp_nod(int i);
-
+    
     void set_to_draw_elegrp_solid(int iflag, int i);
     int send_draw_elegrp_solid(int i);
-
+    
 	
 	
     void set_to_draw_surfgrp_nod(int iflag, int i);
     int send_draw_surfgrp_nod(int i);
-
+    
     void set_to_draw_surfgrp_grid(int iflag, int i);
     int send_draw_surfgrp_grid(int i);
-
+    
     void set_to_draw_surfgrp_solid(int iflag, int i);
     int send_draw_surfgrp_solid(int i);
-
+    
     void kemoview_nod_grp_toggle(int selected);
-
+    
     void kemoview_ele_grp_toggle(int selected);
     void kemoview_ele_grp_nod_toggle(int selected);
     void kemoview_ele_grp_grid_toggle(int selected);
-
+    
     void kemoview_surf_grp_toggle(int selected);
     void kemoview_surf_grp_nod_toggle(int selected);
     void kemoview_surf_grp_grid_toggle(int selected);
-
+    
     int send_iflag_draw_mesh();
     
     int send_num_pe_sf();
     int send_ngrp_nod_sf();
     int send_ngrp_ele_sf();
     int send_ngrp_surf_sf();
-
+    
     void send_nod_gp_name_sf(char *name, int i);
     void send_ele_gp_name_sf(char *name, int i);
     void send_surf_gp_name_sf(char *name, int i);
-
+    
     
     int send_iflag_draw_type();
     int send_iflag_view_type();
     
     int send_num_of_color_loop();
-
+    
     
     double send_node_diam();
     double send_dist_domains();
-
-
+    
+    
     void get_ext_from_file_name(const char *file_head, char *stripped_fhead, char *stripped_ext);
     void add_ext_to_file_name(const char *file_head, const char *added_ext, char *file_name);
-
+    
     
     void set_to_text_color_code(float c_code[4]);
     void send_text_color_code(float c_code[4]);
-
+    
     int set_image_file_format_id(char *image_fmt);
     void get_kemoviewer_fliped_img(int npixel_x, int npixel_y,
                                    unsigned char *glimage, unsigned char *fliped_img);
     void write_kemoviewer_window_to_file(int iflag_img, const char *fhead);
     void write_kemoviewer_window_step_file(int iflag_img, int istep, const char *fhead);
-
+    
     void modify_view_kemoview();
     void rotate_kemoview();
-
+    
     void reset_kemoviewer_to_init_angle();
-
+    
     void set_kemoview_retinamode(int i_retina);
     void set_kemoview_windowsize(GLint npixel_x, GLint npixel_y);
     void update_projection_by_kemoviewer_size(GLint npixel_x, GLint npixel_y);
-
+    
     void update_kemoviewer_distance();
-
+    
     void set_kemoview_rotation_parameter(GLdouble rot_vect[4]);
     void set_kemoview_dragging_rotation(GLdouble rot_vect[4]);
     void set_kemoview_animation_rot_axis(int iaxis);
@@ -453,38 +453,38 @@ extern "C" {
     void set_kemoview_scale_factor(GLdouble scale_s);
     void set_kemoview_projection_aperture(GLdouble aperture_s);
     void set_kemoview_stereo_parameter(GLdouble focus, GLdouble eye_sep);
-
+    
     void send_kemoview_windowsize(GLint *npixel_x, GLint *npixel_y);
     void send_kemoview_rotation_parameter(GLdouble rot_vect[4]);
     void send_kemoview_shift_vector(GLdouble position[3]);
     void send_kemoview_lookat_vector(GLdouble position[3]);
-    void send_kemoview_scale_factor(GLdouble scale[1]);
-    void send_kemoview_projection_aperture(GLdouble *aperture_s);
+    GLdouble send_kemoview_scale_factor();
+    GLdouble send_kemoview_projection_aperture();
     void send_kemoview_projection_parameters(GLdouble *aperture_s, GLdouble *near_s,
-										 GLdouble *far_s, GLdouble *aspect_s);
+                                             GLdouble *far_s, GLdouble *aspect_s);
     GLdouble send_kemoview_stereo_parameters();
     GLdouble send_kemoview_stereo_eyeseparation();
-
+    
     void kemoviewer_mousedolly(GLdouble start[2], GLdouble x_dolly, GLdouble y_dolly);
     void kemoviewer_mousepan(GLdouble start[2], GLdouble x_pan, GLdouble y_pan);
     void kemoviewer_zooming(GLdouble wheelDelta);
-
+    
     void kemoview_startTrackball(GLdouble x, GLdouble y);
-/* calculated rotation based on current mouse position */
+    /* calculated rotation based on current mouse position */
     void kemoview_rollToTrackball(GLdouble x, GLdouble y);
-/* add a GL rotation (dA) to an existing GL rotation (A) */
+    /* add a GL rotation (dA) to an existing GL rotation (A) */
     void drugging_addToRotationTrackball();
     void add_kemoview_animation_rot(GLdouble dt);
     void reset_kemoviewer_animation();
-
+    
     void set_to_stereo_shutter(int iflag);
     void set_to_iflag_anaglyph(int iflag);
     int send_stereo_shutter();
     int send_iflag_anaglyph();
-
+    
     void draw_menubottun_glut();
     
-/* subroutines for surafces */
+    /* subroutines for surafces */
     void set_num_loaded_PSF(int num);
     void set_max_loaded_PSF(int num);
     void set_to_loaded_PSF_flag(int id_psf, int iflag);
@@ -493,13 +493,13 @@ extern "C" {
     int send_max_loaded_PSF();
     int send_loaded_PSF_flag(int id_psf);
     int send_current_PSF();
-
+    
     int send_current_psf_full_path_header(char *file_head, int *iflag);
     void send_current_psf_file_header(char *file_head);
-
+    
     void set_current_psf_field_flag(int sel);
     void set_current_psf_component_flag(int sel);
-
+    
     int send_nfield_current_psf();
     int send_ncomptot_current_psf();
     int send_ncomp_current_psf(int i);
@@ -527,7 +527,7 @@ extern "C" {
     void set_current_increment_vect(int increment);
     void set_current_scale_vect(double scale);
     void set_current_vector_thick(double size);
-
+    
     int send_current_psf_patch_color();
     int send_current_isoline_color();
     int send_current_num_isoline();
@@ -535,54 +535,54 @@ extern "C" {
     int send_current_increment_vect();
     double send_current_scale_vect();
     double send_current_vector_thick();
-
+    
     int send_kemoview_psf_draw_flags(int selected);
     int kemoview_psf_draw_switch_select(int selected);
-
+    
     void set_current_PSF_color_mode_id(int isel);
-
+    
     double send_current_psf_data_min(int i);
     double send_current_psf_data_max(int i);
     
     void realloc_current_PSF_color_idx_list(int id_cmode, int num);
     void realloc_current_PSF_opacity_idx_list(int num);
-
+    
     void set_current_PSF_linear_colormap(double minvalue, double maxvalue);
     void set_current_PSF_constant_opacity(double opacity);
-
+    
     void set_current_PSF_rgb_from_value(double value, double *red, double *green, double *blue);
     void set_current_PSF_opacity_from_value(double value, double *opacity);
     void set_current_PSF_color_point(int i_point, double value, double color);
     void set_current_PSF_opacity_point(int i_point, double value, double opacity);
-
+    
     double send_current_PSF_color_table_min();
     double send_current_PSF_color_table_max();
     double send_current_PSF_minimum_opacity();
     double send_current_PSF_maximum_opacity();
     int send_current_PSF_color_table_num();
     int send_current_PSF_opacity_table_num();
-
+    
     void send_current_PSF_color_table_items(int i_point, double *value, double *color);
     void send_current_PSF_opacity_table_items(int i_point, double *value, double *opacity);
-
-    void write_current_PSF_colormap_control_file(const char *file_name);
-
     
-/* Subroutines for field lines */
-
+    void write_current_PSF_colormap_control_file(const char *file_name);
+    
+    
+    /* Subroutines for field lines */
+    
     int send_fline_file_header(char *file_head);
     void set_to_fline_file_step(int istep);
     
     void set_fline_color_field_flag(int sel);
     void set_fline_color_comp_flag(int sel);    
-
+    
     int send_nfield_fline();
     int send_ncomptot_fline();
     int send_ncomp_fline(int i);
     int send_istack_comp_fline(int i);
     void send_fline_data_name(char *name, int i);
     
-        
+    
     void set_to_draw_fline(int iflag);
     void set_to_if_draw_fline(int ifield);
     void set_to_ic_draw_fline(int icomp);
@@ -600,10 +600,10 @@ extern "C" {
 	
 	void set_to_fline_thickness(double thick);
 	double send_fline_thickness();
-        
+    
     double send_fline_data_min(int i);
     double send_fline_data_max(int i);
-   
+    
     void input_fline_linear_colormap(double minvalue, double maxvalue);
     void set_fline_constant_opacitymap(double opacity);
     

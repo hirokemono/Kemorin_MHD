@@ -13,10 +13,10 @@
 #include "kemoviewer.h"
 
 @interface PsfController : NSObject {
-
+    
 	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
 	IBOutlet KemoviewerController*  _kemoviewControl;
-
+    
 	RGBAMapController * rgbaMapObject;
 	ColorMapController * colorMapObject;
 	OpacityMapController * opacityMapObject;
@@ -24,13 +24,13 @@
 	NSInteger psfMoreOpenFlag;
 	NSInteger DrawPsfFlag;
 	NSString *PsfOpenDirectory;
-
+    
 	NSString *PsfWindowlabel;
-
+    
 	NSInteger PsfNumberOfdata;
 	NSMutableArray *LoadedPsfID;
 	NSMutableArray *LoadedPsfFileHead;
-
+    
 	
 	NSInteger PsfNumberOfField;
 	NSInteger PsfTotalComponent;
@@ -52,53 +52,53 @@
 	IBOutlet id _currentPsfMenu;
 	IBOutlet id _psfFieldMenu;
 	IBOutlet id _psfComponentMenu;
-
+    
 	IBOutlet id _psfLineColorMenu;
 	IBOutlet id _psfPatchColorMenu;
 	IBOutlet id _psfVectorColorMenu;
-
+    
 	NSInteger currentPSFID;
 	NSInteger currentPSFStep;
 	CGFloat PSFOpacity;
-
+    
 	
 	CGFloat PsfMinimumValue;
 	CGFloat PsfMaximumValue;
 	NSInteger IsolineNumber;
-
+    
     IBOutlet id _PsfSurfSwitchOutlet;
     IBOutlet id _PsfLineSwitchOutlet;
     IBOutlet id _PsfZeroLineSwitchOutlet;
     IBOutlet id _PsfCOlorbarOutlet;
-
+    
     IBOutlet NSMatrix *_psfPatchDirMatrix;
-
+    
 	NSInteger PSFSelectedField;
 	NSInteger PSFSelectedComponent;
-
+    
 	NSInteger PSFSurfaceSwitch;
 	NSInteger PSFIsolineSwitch;
 	NSInteger PSFZerolineSwitch;
 	NSInteger PSFColorbarSwitch;
-
+    
 	NSInteger psfPatchColorTag;
 	NSInteger psfLineColorTag;
 	NSInteger psfVectorColorTag;
-
+    
 	NSInteger psfPatchDirectionTag;
 	NSInteger psfTangentialVectorTag;
-
+    
 	CGFloat PsfMinimumRange;
 	CGFloat PsfMaximumRange;
 	
 	NSInteger EvolutionStartStep;
-
+    
 	IBOutlet id _PSFVectorSwitchOutlet;
 	NSInteger PSFVectorMenuAcrive;
 	NSInteger DrawPSFVectorFlag;
 	NSInteger PSFVectorIncrement;
 	CGFloat ScaleVector;
-
+    
 }
 @property NSInteger psfMoreOpenFlag;
 @property NSInteger EvolutionStartStep;
@@ -154,6 +154,7 @@
 - (void) SetCurrentPsfMenu;
 - (void) SetPsfFieldMenu;
 - (void) UpdateCurrentPsfMenu;
+- (void) ResetCurrentPsfParam;
 - (void) SetPsfComponentMenu:(int)isel;
 - (void) SetPsfRanges;
 - (void) DrawPsfFile:(NSString*) PsfOpenFilehead;

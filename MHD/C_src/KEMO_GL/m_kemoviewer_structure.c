@@ -60,7 +60,7 @@ void allocate_kemoviewer_work(){
 	kemoview_a =  (struct kemo_array_control *) malloc(sizeof(struct kemo_array_control));
 	kemoview_a->nlimit_loaded = 1;
 	init_kemoview_array(kemoview_a->nlimit_loaded, kemoview_a);
-
+    
 	ucd_tmp =    (struct psf_data *)          malloc(sizeof(struct psf_data));
 	ucd_menu =   (struct ucd_file_menu_val *) malloc(sizeof(struct ucd_file_menu_val));
 	return;
@@ -90,11 +90,11 @@ void allocate_single_kemoviwewer_struct(int iflag_dmesh){
 	/*! Initialize mesh data*/
     allocate_kemoviewer_work();
     add_kemoview_array();
-
+    
 	kemo_sgl = (struct kemoviewer_type *)malloc(sizeof(struct kemoviewer_type));
-
+    
 	allocate_kemoviwewer_pointers();
-
+    
 	init_kemoview_array(kemo_sgl->psf_a->nlimit_loaded, kemo_sgl->psf_a);
     
 	init_kemoviewer(iflag_dmesh, kemo_sgl->mesh_d, kemo_sgl->mesh_m, kemo_sgl->view_s);
@@ -117,7 +117,7 @@ void deallocate_kemoviwewer_pointers(struct kemoviewer_type *kemoviewer_data){
 	free(kemoviewer_data->fline_m);
 	free(kemoviewer_data->psf_d);
 	free(kemoviewer_data->psf_m);
-
+    
 	free(kemoviewer_data->gl_buf);
 	free(kemoviewer_data->view_s);
 	
@@ -160,9 +160,9 @@ int send_iflag_current_kemoview(){return kemoview_a->iflag_loaded[kemoview_a->id
 /* Routines for draw by OpenGL */
 
 void draw_kemoviewer_c(){
-/*    printf("Draw objects to %d ID: %d\n", kemoview_a->id_current, kemo_sgl->view_s->gl_drawID);*/
+    /*    printf("Draw objects to %d ID: %d\n", kemoview_a->id_current, kemo_sgl->view_s->gl_drawID);*/
 	draw_objects(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
-			kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, kemo_sgl->gl_buf);
+                 kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, kemo_sgl->gl_buf);
 	return;
 };
 
@@ -198,12 +198,12 @@ int kemoview_open_data_glut(const char *file_name){
                                         kemo_sgl->psf_a, kemo_sgl->psf_d, kemo_sgl->psf_m,
                                         kemo_sgl->fline_d, kemo_sgl->fline_m, ucd_tmp,
                                         ucd_menu,kemo_sgl->view_s);
-
+    
 	if (kemo_sgl->psf_a->id_current >= IZERO) {
 		psf_current_data = kemo_sgl->psf_d[kemo_sgl->psf_a->id_current];
 		psf_current_menu = kemo_sgl->psf_m[kemo_sgl->psf_a->id_current];
 	};
-
+    
 	return iflag_datatype;
 }
 
@@ -220,10 +220,10 @@ int close_psf_view(){
 	deallc_all_psf_data(kemo_sgl->psf_d[kemo_sgl->psf_a->id_current]);
 	
 	set_close_current_kemoview_array(kemo_sgl->psf_a);
-
+    
 	psf_current_data = kemo_sgl->psf_d[kemo_sgl->psf_a->id_current];
 	psf_current_menu = kemo_sgl->psf_m[kemo_sgl->psf_a->id_current];
-
+    
 	return send_num_loaded_PSF();
 }
 
@@ -256,10 +256,10 @@ static void evolution_psf_viewer(){
 	for(id_load=0; id_load<kemo_sgl->psf_a->nmax_loaded; id_load++){
 		if(kemo_sgl->psf_a->iflag_loaded[id_load] > 0){
 			printf("Loaded PSF file %d %d %s\n",id_load, kemo_sgl->psf_m[id_load]->iflag_psf_file,
-					kemo_sgl->psf_m[id_load]->psf_header);
+                   kemo_sgl->psf_m[id_load]->psf_header);
 			kemo_sgl->psf_m[id_load]->psf_step = kemo_sgl->psf_a->istep_sync;
 			evolution_PSF_data(kemo_sgl->psf_d[id_load], ucd_tmp,
-                                      kemo_sgl->psf_m[id_load], ucd_menu);
+                               kemo_sgl->psf_m[id_load], ucd_menu);
 		};
 	}
 	
@@ -285,7 +285,8 @@ void evolution_viewer(int istep){
 
 
 void draw_modified_object_distance(){
-	modify_object_for_mesh(kemo_sgl->mesh_m->dist_domains, kemo_sgl->mesh_d, kemo_sgl->view_s);
+	cal_range_4_mesh_c(kemo_sgl->mesh_d, kemo_sgl->view_s);
+	modify_object_multi_viewer_c(kemo_sgl->mesh_m->dist_domains, kemo_sgl->mesh_d);
 	return;
 }
 
@@ -641,12 +642,12 @@ void send_kemoview_lookat_vector(GLdouble position[3]){
 	send_gl_lookat_vector(kemo_sgl->view_s, position);
 }
 
-void send_kemoview_scale_factor(GLdouble scale[1]){
-    send_scalar_scale_factor(kemo_sgl->view_s, scale);
+GLdouble send_kemoview_scale_factor(){
+    return send_scalar_scale_factor(kemo_sgl->view_s);
 }
 
-void send_kemoview_projection_aperture(GLdouble *aperture_s){
-	send_gl_projection_aperture(kemo_sgl->view_s, aperture_s);
+GLdouble send_kemoview_projection_aperture(){
+	return send_gl_projection_aperture(kemo_sgl->view_s);
 }
 void send_kemoview_projection_parameters(GLdouble *aperture_s, GLdouble *near_s,
 										 GLdouble *far_s, GLdouble *aspect_s){
@@ -790,7 +791,7 @@ void set_current_PSF_color_mode_id(int isel){set_PSF_color_mode_id(psf_current_m
 
 double send_current_psf_data_min(int i){return send_psf_data_min(psf_current_data, i);};
 double send_current_psf_data_max(int i){return send_psf_data_max(psf_current_data, i);};
-                             
+
 
 void realloc_current_PSF_color_idx_list(int id_cmode, int num){
     realloc_PSF_color_index_list(psf_current_menu, id_cmode, num);

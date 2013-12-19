@@ -60,19 +60,19 @@ static void motion(GLint x, GLint y){
 	/*! Determine and apply the button function */
 	
 	if (moving_left == 1) {
-          button_function = left_button_func;
-          begin[0] = begin_left[0];
-          begin[1] = begin_left[1];
+        button_function = left_button_func;
+        begin[0] = begin_left[0];
+        begin[1] = begin_left[1];
 	}
 	else if (moving_middle == 1) {
-          button_function = middle_button_func;
-          begin[0] = begin_middle[0];
-          begin[1] = begin_middle[1];
+        button_function = middle_button_func;
+        begin[0] = begin_middle[0];
+        begin[1] = begin_middle[1];
 	}
 	else if (moving_right == 1) {
-          button_function = right_button_func;
-          begin[0] = begin_right[0];
-          begin[1] = begin_right[1];
+        button_function = right_button_func;
+        begin[0] = begin_right[0];
+        begin[1] = begin_right[1];
 	};
 	
 	if (button_function == ZOOM){
@@ -101,8 +101,8 @@ static void motion(GLint x, GLint y){
 	}
 	else if (button_function == SCALE){
 		GLdouble current_scale;
-        send_kemoview_scale_factor(&current_scale);
-
+        current_scale = send_kemoview_scale_factor();
+        
 		y_dbl = (GLdouble) y;
 		if (y < begin[1]) {
 			factor = ONE + TWO_MILI*(begin[1]-y_dbl);
@@ -116,12 +116,12 @@ static void motion(GLint x, GLint y){
 		current_scale = current_scale * factor;
 		set_kemoview_scale_factor(current_scale);
 	};
-		/* ! update private variables and redisplay */
+    /* ! update private variables and redisplay */
 	
 	if (moving_left) {
 		begin_left[0] = (GLdouble) x;
 		begin_left[1] = (GLdouble) y;
-		}
+    }
 	else if(moving_middle) {
 		begin_middle[0] = (GLdouble) x;
 		begin_middle[1] = (GLdouble) y;
@@ -220,8 +220,8 @@ static void arrows_c(int key, int x, int y){
 	
 	else if (arrow_key_func == SCALE){
 		GLdouble current_scale;
-        send_kemoview_scale_factor(&current_scale);
-
+        current_scale = send_kemoview_scale_factor();
+        
 		if (key == GLUT_KEY_DOWN)
 		factor = ONE/(ONE + TWO_CENT);
 		else if (key == GLUT_KEY_UP){
@@ -299,10 +299,10 @@ int  menu_init(){
 	
 	menuid = glutCreateMenu(menu_handler);
 	/*
-	glutAddSubMenu("LEFT mouse button",button_left);
-	glutAddSubMenu("middle mouse button",button_middle);
-	glutAddSubMenu("arrow keys",arrow_keys);
-	*/
+     glutAddSubMenu("LEFT mouse button",button_left);
+     glutAddSubMenu("middle mouse button",button_middle);
+     glutAddSubMenu("arrow keys",arrow_keys);
+     */
 	
 	return menuid;
 }

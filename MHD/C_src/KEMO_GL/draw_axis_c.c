@@ -9,27 +9,27 @@ static const GLfloat green[4] = {L_GREEN_R, L_GREEN_G, L_GREEN_B, L_GREEN_A};
 
 static struct view_element arrow_view;
 
-static float set_ratio_4_axislabel(int nx_win, int ny_win, 
-			int end_screen[2], int zero_screen[2], GLfloat l_axis){
+static float set_ratio_4_axislabel(struct view_element *view_s, 
+                                   int end_screen[2], int zero_screen[2], GLfloat l_axis){
 	GLfloat ratio;
 	GLfloat ratio_tmp[2];
 	
-	if ( end_screen[0] < nx_win/10 ) { 
-		ratio_tmp[0] = (GLfloat) (nx_win/10 - zero_screen[0])
-				/ (GLfloat) (end_screen[0] - zero_screen[0]);
-	} else if  ( end_screen[0] > nx_win*9/10 ) {
-		ratio_tmp[0] = (GLfloat) (zero_screen[0]-nx_win*9/10)
-				/ (GLfloat) (zero_screen[0] - end_screen[0]);
+	if ( end_screen[0] < view_s->nx_window/10 ) { 
+		ratio_tmp[0] = (GLfloat) (view_s->nx_window/10 - zero_screen[0])
+        / (GLfloat) (end_screen[0] - zero_screen[0]);
+	} else if  ( end_screen[0] > view_s->nx_window*9/10 ) {
+		ratio_tmp[0] = (GLfloat) (zero_screen[0]-view_s->nx_window*9/10)
+        / (GLfloat) (zero_screen[0] - end_screen[0]);
 	} else {
 		ratio_tmp[0] = ONE;
 	};
 	
-	if ( end_screen[1] < ny_win/10 ) { 
-		ratio_tmp[1] = (GLfloat) (ny_win/10 - zero_screen[1])
-				/ (GLfloat) (end_screen[1] - zero_screen[1]);
-	} else if  ( end_screen[1] > ny_win*9/10 ) {
-		ratio_tmp[1] = (GLfloat) (zero_screen[1]-ny_win*9/10)
-				/ (GLfloat) (zero_screen[1] - end_screen[1]);
+	if ( end_screen[1] < view_s->ny_window/10 ) { 
+		ratio_tmp[1] = (GLfloat) (view_s->ny_window/10 - zero_screen[1])
+        / (GLfloat) (end_screen[1] - zero_screen[1]);
+	} else if  ( end_screen[1] > view_s->ny_window*9/10 ) {
+		ratio_tmp[1] = (GLfloat) (zero_screen[1]-view_s->ny_window*9/10)
+        / (GLfloat) (zero_screen[1] - end_screen[1]);
 	} else {
 		ratio_tmp[1] = ONE;
 	};
@@ -41,7 +41,7 @@ static float set_ratio_4_axislabel(int nx_win, int ny_win,
 	return ratio;
 }
 
-static void set_vertexs_for_axis(GLint nx_win, GLint ny_win, GLfloat dist,
+static void set_vertexs_for_axis(struct view_element *view_s, GLfloat dist,
 								 GLfloat x_arrowx[6], GLfloat x_arrowy[6], GLfloat x_arrowz[6], GLfloat w_ratio[3],
 								 GLfloat x_charax[12], GLfloat x_charay[18], GLfloat x_charaz[18]){
 	GLfloat l_axis[3], axis_org[3];
@@ -60,34 +60,38 @@ static void set_vertexs_for_axis(GLint nx_win, GLint ny_win, GLfloat dist,
 	glGetDoublev(GL_MODELVIEW_MATRIX, arrow_view.mat_object_2_eye);
 	glGetDoublev(GL_PROJECTION_MATRIX, arrow_view.mat_eye_2_clip);
 	
-	set_axis_positions((GLfloat) dist, l_axis, axis_org);
+	set_axis_positions(view_s, (GLfloat) dist, l_axis, axis_org);
 	
 	xx_axis[0] = axis_org[0];
 	xx_axis[1] = axis_org[1];
 	xx_axis[2] = axis_org[2];
-	set_3d_position_to_window(zero_screen, xx_axis, nx_win, ny_win, &arrow_view);
+	set_3d_position_to_window(zero_screen, xx_axis, 
+                              view_s->nx_window, view_s->ny_window, &arrow_view);
 	
 	xx_axis[0] = axis_org[0] + l_axis[0];
 	xx_axis[1] = axis_org[1];
 	xx_axis[2] = axis_org[2];
-	set_3d_position_to_window(end_screen, xx_axis, nx_win, ny_win, &arrow_view);
-	label_ratio[0] = set_ratio_4_axislabel(nx_win, ny_win, end_screen, zero_screen, l_axis[0]);
+	set_3d_position_to_window(end_screen, xx_axis, 
+                              view_s->nx_window, view_s->ny_window, &arrow_view);
+	label_ratio[0] = set_ratio_4_axislabel(view_s, end_screen, zero_screen, l_axis[0]);
 	x_label[0] = end_screen[0] / label_ratio[0];
 	x_label[1] = end_screen[1] / label_ratio[0];
 	
 	xx_axis[0] = axis_org[0];
 	xx_axis[1] = axis_org[1] + l_axis[1];
 	xx_axis[2] = axis_org[2];
-	set_3d_position_to_window(end_screen, xx_axis, nx_win, ny_win, &arrow_view);
-	label_ratio[1] = set_ratio_4_axislabel(nx_win, ny_win, end_screen, zero_screen, l_axis[1]);
+	set_3d_position_to_window(end_screen, xx_axis, 
+                              view_s->nx_window, view_s->ny_window, &arrow_view);
+	label_ratio[1] = set_ratio_4_axislabel(view_s, end_screen, zero_screen, l_axis[1]);
 	y_label[0] = end_screen[0] / label_ratio[0];
 	y_label[1] = end_screen[1] / label_ratio[0];
 	
 	xx_axis[0] = axis_org[0];
 	xx_axis[1] = axis_org[1];
 	xx_axis[2] = axis_org[2] + l_axis[2];
-	set_3d_position_to_window(end_screen, xx_axis, nx_win, ny_win, &arrow_view);
-	label_ratio[2] = set_ratio_4_axislabel(nx_win, ny_win, end_screen, zero_screen, l_axis[2]);
+	set_3d_position_to_window(end_screen, xx_axis, 
+                              view_s->nx_window, view_s->ny_window, &arrow_view);
+	label_ratio[2] = set_ratio_4_axislabel(view_s, end_screen, zero_screen, l_axis[2]);
 	z_label[0] = end_screen[0] / label_ratio[0];
 	z_label[1] = end_screen[1] / label_ratio[0];
 	
@@ -118,7 +122,7 @@ static void set_vertexs_for_axis(GLint nx_win, GLint ny_win, GLfloat dist,
 	z_text_x1 = axis_org[0] - label_ratio[2] * ( 0.07 * (1.0 + dist));
 	z_text_x2 = axis_org[0] - label_ratio[2] * ( 0.13 * (1.0 + dist));
 	
-/* Generate vertex array*/
+    /* Generate vertex array*/
 	x_arrowx[ 0] = axis_org[0]; x_arrowx[ 3] = axis_org[0] + label_ratio[0];
 	x_arrowx[ 1] = axis_org[1]; x_arrowx[ 4] = axis_org[1];
 	x_arrowx[ 2] = axis_org[2]; x_arrowx[ 5] = axis_org[2];
@@ -183,7 +187,7 @@ static void set_vertexs_for_axis(GLint nx_win, GLint ny_win, GLfloat dist,
 }
 
 static void draw_axis_gl(GLfloat x_arrowx[6], GLfloat x_arrowy[6], GLfloat x_arrowz[6], GLfloat w_ratio[3],
-				  GLfloat x_charax[12], GLfloat x_charay[18], GLfloat x_charaz[18]){
+                         GLfloat x_charax[12], GLfloat x_charay[18], GLfloat x_charaz[18]){
 	GLfloat xyz_buf[16][3];
 	GLfloat rgba_buf[16][4];
 	int k, nd;
@@ -191,11 +195,11 @@ static void draw_axis_gl(GLfloat x_arrowx[6], GLfloat x_arrowy[6], GLfloat x_arr
 	glPushMatrix();
 	glLoadIdentity();
 	glPopMatrix();
-
+    
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDisable(GL_CULL_FACE);
 	glShadeModel(GL_SMOOTH);
-
+    
 	glColor4fv(red);
 	glDrawArrowf(x_arrowx[0], x_arrowx[1], x_arrowx[2],
 				 x_arrowx[3], x_arrowx[4], x_arrowx[5], w_ratio[0]);
@@ -213,7 +217,7 @@ static void draw_axis_gl(GLfloat x_arrowx[6], GLfloat x_arrowy[6], GLfloat x_arr
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(ITHREE, GL_FLOAT, IZERO, xyz_buf);
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, rgba_buf);
-
+    
 	/*draw 'X" */
 	for (k=0; k<4; k++) {
 		for(nd=0;nd<3;nd++) xyz_buf[k][nd] =  x_charax[3*k+nd];
@@ -230,22 +234,21 @@ static void draw_axis_gl(GLfloat x_arrowx[6], GLfloat x_arrowy[6], GLfloat x_arr
 		for(nd=0;nd<4;nd++) rgba_buf[10+k][nd] = green[nd];
 	}
 	glDrawArrays(GL_LINES, IZERO, (ITWO*8));
-
+    
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);	
-
+    
 	return;
 }
 
 
-void draw_axis(GLint nx_win, GLint ny_win, GLfloat dist){	
+void draw_axis(struct view_element *view_s, GLfloat dist){	
 	GLfloat x_arrowx[6], x_arrowy[6], x_arrowz[6];
 	GLfloat w_ratio[3];
 	GLfloat x_charax[12], x_charay[18], x_charaz[18];
 	
-	set_vertexs_for_axis(nx_win, ny_win, dist,
-						 x_arrowx, x_arrowy, x_arrowz, w_ratio,
-						 x_charax, x_charay, x_charaz);
+	set_vertexs_for_axis(view_s, dist, x_arrowx, x_arrowy, x_arrowz, 
+						 w_ratio, x_charax, x_charay, x_charaz);
 	
 	draw_axis_gl(x_arrowx, x_arrowy, x_arrowz, w_ratio, x_charax, x_charay, x_charaz);
 	return;

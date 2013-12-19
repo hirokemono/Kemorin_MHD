@@ -46,13 +46,13 @@ void init_bg_color_kemoview(struct mesh_menu_val *mesh_m){
 
 void kemo_gl_initial_lighting_c(struct view_element *view_s){
 	int base;
-
+    
     /*
-    if (glslInit()) exit(1);
-	SetGouraudShaderSrc(view_s->GouraudGl2Program);
-	SetPhongShaderSrc(view_s->PhongGl2Program);
-    glUseProgram(view_s->PhongGl2Program);
-    */
+     if (glslInit()) exit(1);
+     SetGouraudShaderSrc(view_s->GouraudGl2Program);
+     SetPhongShaderSrc(view_s->PhongGl2Program);
+     glUseProgram(view_s->PhongGl2Program);
+     */
     
 	init_kemoview_perspective(view_s);
 	
@@ -63,9 +63,9 @@ void kemo_gl_initial_lighting_c(struct view_element *view_s){
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	
-/*   This glClear send error on Cocoa....  Why?*/
+    /*   This glClear send error on Cocoa....  Why?*/
 	glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);
-//    printf("kemo_gl_initial_lighting_c %d\n", glGetError());
+    //    printf("kemo_gl_initial_lighting_c %d\n", glGetError());
 	
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
 	glLightfv(GL_LIGHT0, GL_POSITION, lightposition);
@@ -97,22 +97,22 @@ void reset_light_from_white_sf_c(int surface_color){
 	return;
 }
 
-void reset_light_by_size_of_domain(GLdouble scale_factor){
+void reset_light_by_size_of_domain(GLdouble iso_scale){
 	GLfloat  lightposi[4];
 	
-	lightposi[0] = 1.5 / (GLfloat) scale_factor;
-	lightposi[1] =-0.5 / (GLfloat) scale_factor;
-	lightposi[2] = 2.0 / (GLfloat) scale_factor;
+	lightposi[0] = 1.5 / (GLfloat) iso_scale;
+	lightposi[1] =-0.5 / (GLfloat) iso_scale;
+	lightposi[2] = 2.0 / (GLfloat) iso_scale;
 	lightposi[3] = 0.0;
 	/*
-	glDisable(GL_LIGHT0);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-	glLightfv(GL_LIGHT0, GL_POSITION, lightposi);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
-	glDepthFunc(GL_LEQUAL);
-	glEnable(GL_DEPTH_TEST);
-	*/
+     glDisable(GL_LIGHT0);
+     glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
+     glLightfv(GL_LIGHT0, GL_POSITION, lightposi);
+     glEnable(GL_LIGHTING);
+     glEnable(GL_LIGHT0);
+     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
+     glDepthFunc(GL_LEQUAL);
+     glEnable(GL_DEPTH_TEST);
+     */
 	return;
 }

@@ -16,6 +16,6 @@
 
 
 /* prototypes */
-void draw_axis(GLint nx_win, GLint ny_win, GLfloat dist);
+void draw_axis(struct view_element *view_s, GLfloat dist);
 
 #endif

@@ -81,25 +81,31 @@ struct viewer_mesh {
 	double **normal_domain;
 	double **norm_nod_domain;
 	double **dist_nod_domain;
-
+    
 	double **normal_ele_grp;
 	double **norm_nod_ele_grp;
 	double **dist_nod_ele_grp;
-
+    
 	double **normal_surf_grp;
 	double **norm_nod_surf_grp;
 	double **dist_nod_surf_grp;
-
+    
+    
+	double mesh_center[3];
+	double xx_mesh_min[3];
+	double xx_mesh_max[3];
+	double rmax_mesh;
 	
+    
 	char **subdomain_name_sf;
-
+    
 	char **nod_gp_name_sf;
 	char **ele_gp_name_sf;
 	char **surf_gp_name_sf;
-
+    
 	double *z_ele_view;
 	double *z_center_view;
-
+    
 	double *z_domain_view;
 	double *z_ele_grp_view;
 	double *z_surf_grp_view;
