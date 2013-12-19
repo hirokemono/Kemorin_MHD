@@ -185,7 +185,7 @@
      &        coef_on_edge_psf, iflag_n_on_e_psf(1,i),                  &
      &        id_n_on_e_psf(1,i) )
 !
-          call set_node_on_edge_4_quad_psf(numnod, numedge,             &
+          call node_on_edge_4_quad_psf_smp(numnod, numedge,             &
      &        nnod_4_edge, ie_edge, xx, const_psf(1,i),                 &
      &        nnod_on_edge_psf_tot, istack_n_on_e_psf_smp(ist_smp),     &
      &        iedge_4_nod_psf, coef_on_edge_psf)

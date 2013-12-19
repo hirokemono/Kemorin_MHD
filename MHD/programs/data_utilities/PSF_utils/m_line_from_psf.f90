@@ -51,13 +51,19 @@
 !
       subroutine pick_psf_by_sections(nd, xref, line)
 !
+      use m_geometry_constants
       use m_psf_edge_connect
       use const_section_from_triangle
+      use set_node_on_edge_quad_psf
 !
       integer(kind = kint), intent(in) :: nd
       real(kind = kreal), intent(in) :: xref
       type(ucd_data), intent(inout) :: line
 !
+      real(kind = kreal) :: coef_line(10)
+      integer(kind = kint) :: nline_on_node
+      integer(kind = kint), allocatable :: iedge_4_line(:)
+      real(kind = kreal), allocatable :: coef_on_edge(:,:)
       real(kind = kreal), allocatable :: ref_tri(:)
       integer(kind = kint) :: i1
 !
@@ -65,34 +71,61 @@
 !
       allocate(ref_tri(numnod_psf))
 !
-      do i1 = 1, numnod_psf
-        if(nd.eq.1 .or. nd.eq.2 .or. nd.eq.3) then
+      coef_line(1:10) = zero
+      if(nd.eq.1 .or. nd.eq.2 .or. nd.eq.3) then
+        do i1 = 1, numnod_psf
           ref_tri(i1) = xx_psf(i1,nd)
-        else if(nd .eq. 11) then
+        end do
+        coef_line(nd+6) = one
+        coef_line(10)   = -xref
+      else if(nd .eq. 11) then
+        do i1 = 1, numnod_psf
           ref_tri(i1) = rtp_psf(i1,1)
-        else if(nd .eq. 21) then
+        end do
+        coef_line(1:3) = one
+        coef_line(10)  = -xref*xref
+      else if(nd .eq. 21) then
+        do i1 = 1, numnod_psf
           ref_tri(i1) = ss_psf(i1)
-        else
+        end do
+      else
+        do i1 = 1, numnod_psf
           ref_tri(i1) = rtp_psf(i1,1)
-        end if
-      end do
+        end do
+        coef_line(1:2) = one
+        coef_line(10)  = -xref*xref
+      end if
 !
 !
       call allocate_edge_section_flags(numnod_psf, numedge_psf)
       call count_section_fld_in_triangle(numnod_psf, numedge_psf,       &
      &    nfield_psf, ncomptot_psf, iedge_psf, ref_tri, xref,           &
-     &    line%num_field, line%ntot_comp, line%nnod)
+     &    line%num_field, line%ntot_comp, line%nnod, nline_on_node)
 !
 !
       call allocate_ucd_nodal_data(line)
+      allocate(iedge_4_line(line%nnod))
+      allocate(coef_on_edge(line%nnod,2))
+      if(line%nnod .gt. 0) then
+        iedge_4_line = 0
+        coef_on_edge = 0.0d0
+      end if
+!
+      call set_section_list_in_triangle(numnod_psf, numedge_psf,        &
+     &    line%nnod, nline_on_node, iedge_4_line)
+!
+      call set_node_on_edge_4_quad_psf(numnod_psf, numedge_psf,         &
+     &    num_linear_edge, iedge_psf, xx_psf, coef_line,                &
+     &    line%nnod, nline_on_node, line%nnod, iedge_4_line,            &
+     &    coef_on_edge)
 !
       call set_section_fld_in_triangle(numnod_psf, numedge_psf,         &
      &    nfield_psf, ncomptot_psf, xx_psf, iedge_psf,                  &
-     &    ncomp_psf, psf_data_name, d_nod_psf, ref_tri, xref,           &
-     &    line%nnod, line%inod_global, line%xx,                         &
-     &    line%num_comp, line%phys_name, line%d_ucd)
+     &    ncomp_psf, psf_data_name, d_nod_psf, line%nnod,               &
+     &    nline_on_node, iedge_4_line, coef_on_edge, line%inod_global,  &
+     &    line%xx, line%num_comp, line%phys_name, line%d_ucd)
 !
-      deallocate(ref_tri)
+      deallocate(ref_tri, iedge_4_line, coef_on_edge)
 !
       call count_sections_in_triangle                                   &
      &   (numele_psf, ie_psf, ie_edge_psf, line%nele, line%nnod_4_ele)

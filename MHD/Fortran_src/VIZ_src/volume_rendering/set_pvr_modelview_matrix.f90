@@ -48,7 +48,10 @@
         call set_view_rotation_vect_ctl(i_pvr, mat)
       end if
 !
-      if(mat%num_scale_factor_ctl .ge. 3) then
+      if(mat%i_scale_factor .gt. 0) then
+        scale_factor_pvr(1:3,i_pvr) = mat%scale_factor_ctl
+        iflag_scale_fact_pvr(i_pvr) = 1
+      else if(mat%num_scale_factor_ctl .ge. 3) then
         call set_view_scale_factor_ctl(i_pvr, mat)
       end if
 !
@@ -351,15 +354,15 @@
         if     (mat%scale_factor_dir_ctl(i) .eq. 'x'                    &
      &     .or. mat%scale_factor_dir_ctl(i) .eq. 'X'                    &
      &     .or. mat%scale_factor_dir_ctl(i) .eq. '1') then
-            scale_factor_pvr(1,i_pvr) = mat%scale_factor_pvr_ctl(i)
+            scale_factor_pvr(1,i_pvr) = mat%scale_factor_vec_ctl(i)
         else if(mat%scale_factor_dir_ctl(i) .eq. 'y'                    &
      &     .or. mat%scale_factor_dir_ctl(i) .eq. 'Y'                    &
      &     .or. mat%scale_factor_dir_ctl(i) .eq. '2') then
-          scale_factor_pvr(2,i_pvr) = mat%scale_factor_pvr_ctl(i)
+          scale_factor_pvr(2,i_pvr) = mat%scale_factor_vec_ctl(i)
         else if(mat%scale_factor_dir_ctl(i) .eq. 'z'                    &
      &     .or. mat%scale_factor_dir_ctl(i) .eq. 'Z'                    &
      &     .or. mat%scale_factor_dir_ctl(i) .eq. '3') then
-          scale_factor_pvr(3,i_pvr) = mat%scale_factor_pvr_ctl(i)
+          scale_factor_pvr(3,i_pvr) = mat%scale_factor_vec_ctl(i)
         end if
       end do
       if (mat%num_scale_factor_ctl .ge. 3) then

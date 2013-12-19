@@ -86,8 +86,6 @@
       use m_read_control_elements
       use skip_comment_f
 !
-      integer(kind = kint) :: iflag
-!
 !
       ctl_file_code = grp_ctl_file_code
       open ( ctl_file_code, file=fname_grp_data_ctl)
@@ -108,8 +106,6 @@
       use m_ctl_data_4_time_steps
       use m_read_control_elements
       use skip_comment_f
-!
-      integer(kind = kint) :: iflag
 !
 !
       if(right_begin_flag(hd_udt_ele_grp) .eq. 0) return

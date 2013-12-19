@@ -8,85 +8,89 @@
 !
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!  example
-!  begin view_transform_ctl
-!
-!     begin image_size_ctl
-!       x_pixel_ctl  640
-!       y_pixel_ctl  480
-!     end
-!
-!    array look_at_point_ctl   3
-!      look_at_point_ctl  x      3.0
-!      look_at_point_ctl  y     -8.0
-!      look_at_point_ctl  z      6.0 
-!    end  array look_at_point_ctl
-!
-!    array viewpoint_ctl    3
-!      viewpoint_ctl  x      3.0
-!      viewpoint_ctl  y     -8.0
-!      viewpoint_ctl  z      6.0 
-!    end array viewpoint_ctl
-!
-!    array up_direction_ctl    3
-!      up_direction_ctl  x      0.0
-!      up_direction_ctl  y      0.0
-!      up_direction_ctl  z      1.0
-!    end array up_direction_ctl
-!
-!    array view_rotation_vec_ctl      3
-!      view_rotation_vec_ctl  x      0.0
-!      view_rotation_vec_ctl  y      0.0
-!      view_rotation_vec_ctl  z      1.0
-!    end array view_rotation_vec_ctl
-!
-!    view_rotation_deg_ctl    60.0
-!
-!    array scale_factor_vec_ctl       3
-!      scale_factor_vec_ctl  x      0.0
-!      scale_factor_vec_ctl  y      0.0
-!      scale_factor_vec_ctl  z      1.0
-!    end array scale_factor_vec_ctl
-!
-!    array viewpoint_in_viewer_ctl   3
-!      viewpoint_in_viewer_ctl  x      0.0
-!      viewpoint_in_viewer_ctl  y      0.0
-!      viewpoint_in_viewer_ctl  z      10.0
-!    end array viewpoint_in_viewer_ctl
-!
-!    array  modelview_matrix_ctl  16
-!      modelview_matrix_ctl   1  1  1.0  end
-!      modelview_matrix_ctl   2  1  0.0  end
-!      modelview_matrix_ctl   3  1  0.0  end
-!      modelview_matrix_ctl   4  1  0.0  end
-!
-!      modelview_matrix_ctl   1  2  0.0  end
-!      modelview_matrix_ctl   2  2  1.0  end
-!      modelview_matrix_ctl   3  2  0.0  end
-!      modelview_matrix_ctl   4  2  0.0  end
-!
-!      modelview_matrix_ctl   1  3  0.0  end
-!      modelview_matrix_ctl   2  3  0.0  end
-!      modelview_matrix_ctl   3  3  1.0  end
-!      modelview_matrix_ctl   4  3  0.0  end
-!
-!      modelview_matrix_ctl   1  4  0.0  end
-!      modelview_matrix_ctl   2  4  0.0  end
-!      modelview_matrix_ctl   3  4  0.0  end
-!      modelview_matrix_ctl   4  4  1.0  end
-!    end array modelview_matrix_ctl
-!
-!    Orthogonal view....( perspective_near_ctl = perspective_far_ctl)
-!
-!    begin projection_matrix_ctl
-!      perspective_angle_ctl     10.0
-!      perspective_xy_ratio_ctl   1.0
-!      perspective_near_ctl       0.5
-!      perspective_far_ctl     1000.0
-!    end projection_matrix_ctl
-!  end view_transform_ctl
-!
+!!  example
+!!  begin view_transform_ctl
+!!
+!!     begin image_size_ctl
+!!       x_pixel_ctl  640
+!!       y_pixel_ctl  480
+!!     end
+!!
+!!    array look_at_point_ctl   3
+!!      look_at_point_ctl  x      3.0
+!!      look_at_point_ctl  y     -8.0
+!!      look_at_point_ctl  z      6.0 
+!!    end  array look_at_point_ctl
+!!
+!!    array viewpoint_ctl    3
+!!      viewpoint_ctl  x      3.0
+!!      viewpoint_ctl  y     -8.0
+!!      viewpoint_ctl  z      6.0 
+!!    end array viewpoint_ctl
+!!
+!!    array up_direction_ctl    3
+!!      up_direction_ctl  x      0.0
+!!      up_direction_ctl  y      0.0
+!!      up_direction_ctl  z      1.0
+!!    end array up_direction_ctl
+!!
+!!    array view_rotation_vec_ctl      3
+!!      view_rotation_vec_ctl  x      0.0
+!!      view_rotation_vec_ctl  y      0.0
+!!      view_rotation_vec_ctl  z      1.0
+!!    end array view_rotation_vec_ctl
+!!
+!!    view_rotation_deg_ctl    60.0
+!!
+!!    scale_factor_ctl            1.0
+!!    array scale_factor_vec_ctl       3
+!!      scale_factor_vec_ctl  x      0.0
+!!      scale_factor_vec_ctl  y      0.0
+!!      scale_factor_vec_ctl  z      1.0
+!!    end array scale_factor_vec_ctl
+!!
+!!    array viewpoint_in_viewer_ctl   3
+!!      viewpoint_in_viewer_ctl  x      0.0
+!!      viewpoint_in_viewer_ctl  y      0.0
+!!      viewpoint_in_viewer_ctl  z      10.0
+!!    end array viewpoint_in_viewer_ctl
+!!
+!!    array  modelview_matrix_ctl  16
+!!      modelview_matrix_ctl   1  1  1.0  end
+!!      modelview_matrix_ctl   2  1  0.0  end
+!!      modelview_matrix_ctl   3  1  0.0  end
+!!      modelview_matrix_ctl   4  1  0.0  end
+!!
+!!      modelview_matrix_ctl   1  2  0.0  end
+!!      modelview_matrix_ctl   2  2  1.0  end
+!!      modelview_matrix_ctl   3  2  0.0  end
+!!      modelview_matrix_ctl   4  2  0.0  end
+!!
+!!      modelview_matrix_ctl   1  3  0.0  end
+!!      modelview_matrix_ctl   2  3  0.0  end
+!!      modelview_matrix_ctl   3  3  1.0  end
+!!      modelview_matrix_ctl   4  3  0.0  end
+!!
+!!      modelview_matrix_ctl   1  4  0.0  end
+!!      modelview_matrix_ctl   2  4  0.0  end
+!!      modelview_matrix_ctl   3  4  0.0  end
+!!      modelview_matrix_ctl   4  4  1.0  end
+!!    end array modelview_matrix_ctl
+!!
+!!    Orthogonal view....( perspective_near_ctl = perspective_far_ctl)
+!!
+!!    begin projection_matrix_ctl
+!!      perspective_angle_ctl     10.0
+!!      perspective_xy_ratio_ctl   1.0
+!!      perspective_near_ctl       0.5
+!!      perspective_far_ctl     1000.0
+!!    end projection_matrix_ctl
+!!  end view_transform_ctl
+!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!@endverbatim
+!!
+!
       module m_ctl_data_4_view_transfer
 !
       use m_precision
@@ -132,10 +136,11 @@
         real(kind = kreal) :: view_rotation_vec_ctl(3) = 0.0d0
 !
         real(kind = kreal) :: view_rotation_deg_ctl = 0.0d0
+        real(kind = kreal) :: scale_factor_ctl =      1.0d0
 !
         integer(kind = kint) :: num_scale_factor_ctl
         character(len=kchara) :: scale_factor_dir_ctl(3)
-        real(kind = kreal) :: scale_factor_pvr_ctl(3) = 0.0d0
+        real(kind = kreal) :: scale_factor_vec_ctl(3) = 0.0d0
 !
         integer(kind = kint) :: num_viewpt_in_viewer_ctl
         character(len=kchara) :: viewpoint_in_view_dir_ctl(3)
@@ -157,6 +162,7 @@
         integer (kind=kint) :: i_up_dir =         0
         integer (kind=kint) :: i_view_rot_deg =   0
         integer (kind=kint) :: i_view_rot_dir =   0
+        integer (kind=kint) :: i_scale_factor =   0
         integer (kind=kint) :: i_scale_fac_dir =  0
         integer (kind=kint) :: i_viewpt_in_view = 0
 !
@@ -196,6 +202,8 @@
       character(len=kchara) :: hd_view_rot_dir                          &
      &                        = 'view_rotation_vec_ctl'
 !
+      character(len=kchara) :: hd_scale_factor                          &
+     &                             = 'scale_factor_ctl'
       character(len=kchara) :: hd_scale_fac_dir                         &
      &                        = 'scale_factor_vec_ctl'
       character(len=kchara) :: hd_viewpt_in_view                        &
@@ -343,7 +351,7 @@
 !
           call read_control_array_vect_list(hd_scale_fac_dir,           &
      &        mat%num_scale_factor_ctl, mat%i_scale_fac_dir,            &
-     &        mat%scale_factor_dir_ctl, mat%scale_factor_pvr_ctl)
+     &        mat%scale_factor_dir_ctl, mat%scale_factor_vec_ctl)
         end if
 !
         call find_control_array_flag(hd_viewpt_in_view,                 &
@@ -384,6 +392,8 @@
 !
         call read_real_ctl_item(hd_view_rot_deg,                        &
      &        mat%i_view_rot_deg,  mat%view_rotation_deg_ctl)
+        call read_real_ctl_item(hd_scale_factor,                        &
+     &        mat%i_scale_factor,  mat%scale_factor_ctl)
       end do
 !
       end subroutine read_view_transfer_ctl
@@ -493,7 +503,8 @@
 !
       mat%view_rotation_deg_ctl =      0.0d0
       mat%view_rotation_vec_ctl(1:3) = 0.0d0
-      mat%scale_factor_pvr_ctl(1:3) =  0.0d0
+      mat%scale_factor_vec_ctl(1:3) =  0.0d0
+      mat%scale_factor_ctl =           1.0d0
 !
 !
       mat%i_model_mat =   0
@@ -506,6 +517,9 @@
       mat%i_view_rot_dir =   0
       mat%i_scale_fac_dir =  0
       mat%i_viewpt_in_view = 0
+!
+      mat%i_view_rot_deg = 0
+      mat%i_scale_factor = 0
 !
       mat%i_image_size =  0
       mat%i_stereo_view = 0

@@ -14,6 +14,7 @@
       use m_field_file_format
       use set_parallel_file_name
       use load_psf_data
+      use skip_comment_f
 !
       use m_line_from_psf
       use m_psf_edge_connect
@@ -49,12 +50,11 @@
       write(*,*) 'input position to cut'
       read(*,*) xref
 !
-      if(direction .eq. 'x' .or. direction .eq. 'X') nd = 1
-      if(direction .eq. 'y' .or. direction .eq. 'Y') nd = 2
-      if(direction .eq. 'z' .or. direction .eq. 'Z') nd = 3
-!
-      if(direction .eq. 'r' .or. direction .eq. 'R') nd = 11
-      if(direction .eq. 's' .or. direction .eq. 's') nd = 21
+      if(cmp_no_case(direction, 'X') .gt. 0) nd = 1
+      if(cmp_no_case(direction, 'Y') .gt. 0) nd = 2
+      if(cmp_no_case(direction, 'Z') .gt. 0) nd = 3
+      if(cmp_no_case(direction, 'r') .gt. 0) nd = 11
+      if(cmp_no_case(direction, 's') .gt. 0) nd = 21
 !
       write(*,*) 'input output header'
       read(*,*) line_udt_head
