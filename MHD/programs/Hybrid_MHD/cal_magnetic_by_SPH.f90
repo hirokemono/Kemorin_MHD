@@ -114,11 +114,11 @@
      &    itp_FEM_2_SPH, mesh_fem, mesh_sph, fem_fld, sph_fld)
 !
 !
-      call copy_xyz_vec_t_to_sph_trans(nvect_xyz_2_rj,                  &
-     &    f_trns%i_vp_induct, iphys_sph%i_vp_induct,                    &
+      call copy_xyz_vec_t_to_sph_trans(3*nvect_xyz_2_rj,                &
+     &    3*f_trns%i_vp_induct-2, iphys_sph%i_vp_induct,                    &
      &    mesh_sph%node, sph_fld)
-      call copy_xyz_vec_t_to_sph_trans(nvect_xyz_2_rj,                  &
-     &    f_trns%i_SGS_vp_induct, iphys_sph%i_SGS_vp_induct,            &
+      call copy_xyz_vec_t_to_sph_trans(3*nvect_xyz_2_rj,                &
+     &    3*f_trns%i_SGS_vp_induct-2, iphys_sph%i_SGS_vp_induct,            &
      &    mesh_sph%node, sph_fld)
 !
 !
@@ -147,8 +147,8 @@
      &   (iphys%i_vp_induct, iphys_sph%i_vp_induct,                     &
      &    itp_FEM_2_SPH, mesh_fem, mesh_sph, fem_fld, sph_fld)
 !
-      call copy_xyz_vec_t_to_sph_trans(nvect_xyz_2_rj,                  &
-     &    f_trns%i_vp_induct, iphys_sph%i_vp_induct,                    &
+      call copy_xyz_vec_t_to_sph_trans(3*nvect_xyz_2_rj,                &
+     &    3*f_trns%i_vp_induct-2, iphys_sph%i_vp_induct,                    &
      &    mesh_sph%node, sph_fld)
 !
 !

@@ -19,7 +19,7 @@
 !
 !      subroutine copy_2nd_scl_to_sph_trans(nscalar_trans, i_trns,      &
 !     &          i_field)
-!      subroutine copy_2nd_vec_to_sph_trans(nvector_trans, i_trns,      &
+!      subroutine copy_2nd_vec_to_sph_trans(ncomp_trans, i_trns,        &
 !     &          i_field)
 !      subroutine copy_2nd_tsr_to_sph_trans(ncomp_trans, i_trns,        &
 !     &          i_field)
@@ -164,18 +164,18 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine copy_2nd_vec_to_sph_trans(nvector_trans, i_trns,       &
+      subroutine copy_2nd_vec_to_sph_trans(ncomp_trans, i_trns,         &
      &          i_field)
 !
       use copy_xyz_field_4_sph_trans
 !
-      integer(kind = kint), intent(in) :: nvector_trans
+      integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: i_field, i_trns
 !
 !
       call copy_xyz_vec_to_sph_trans(nnod_2nd, inod_smp_stack_2nd,      &
      &    xx_2nd, radius_2nd, s_cyl_2nd, a_radius_2nd, a_s_cyl_2nd,     &
-     &    nvector_trans, i_trns, i_field, ntot_nod_phys_2nd, d_nod_2nd)
+     &    ncomp_trans, i_trns, i_field, ntot_nod_phys_2nd, d_nod_2nd)
 !
       end subroutine copy_2nd_vec_to_sph_trans
 !

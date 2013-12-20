@@ -201,13 +201,13 @@
 !
 !
 !$omp parallel
-      call copy_vec_fld_to_trans(nvector_snap_rtp_2_rj,                 &
-     &      irtp%i_coriolis, fsnap_trns%i_coriolis)
+      call copy_vec_fld_to_trans(3*nvector_snap_rtp_2_rj,                 &
+     &      irtp%i_coriolis, 3*fsnap_trns%i_coriolis-2)
 !
-      call copy_vec_fld_to_trans(nvector_snap_rtp_2_rj,                 &
-     &      irtp%i_electric, fsnap_trns%i_electric)
-      call copy_vec_fld_to_trans(nvector_snap_rtp_2_rj,                 &
-     &      irtp%i_poynting, fsnap_trns%i_poynting)
+      call copy_vec_fld_to_trans(3*nvector_snap_rtp_2_rj,                 &
+     &      irtp%i_electric, 3*fsnap_trns%i_electric-2)
+      call copy_vec_fld_to_trans(3*nvector_snap_rtp_2_rj,                 &
+     &      irtp%i_poynting, 3*fsnap_trns%i_poynting-2)
 !$omp end parallel
 !
       end  subroutine copy_snap_vec_fld_to_trans

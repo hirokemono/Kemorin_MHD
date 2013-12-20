@@ -95,7 +95,7 @@
         do i = 1, num_nod_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
-            call copy_1st_vec_to_sph_trans(num_vector_rtp, j,           &
+            call copy_1st_vec_to_sph_trans(3*num_vector_rtp, 3*j-2,     &
      &          i_field)
             exit
           end if

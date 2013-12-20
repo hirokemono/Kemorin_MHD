@@ -119,25 +119,25 @@
 !
 !$omp parallel
 !   advection flag
-      call copy_vec_fld_to_trans(nvector_rtp_2_rj,                      &
-     &      irtp%i_m_advect, f_trns%i_m_advect)
+      call copy_vec_fld_to_trans(3*nvector_rtp_2_rj,                      &
+     &      irtp%i_m_advect, 3*f_trns%i_m_advect-2)
 !   Coriolis flag
-      call copy_vec_fld_to_trans(nvector_rtp_2_rj,                      &
-     &      irtp%i_coriolis, f_trns%i_coriolis)
+      call copy_vec_fld_to_trans(3*nvector_rtp_2_rj,                      &
+     &      irtp%i_coriolis, 3*f_trns%i_coriolis-2)
 !   Lorentz flag
-      call copy_vec_fld_to_trans(nvector_rtp_2_rj,                      &
-     &      irtp%i_lorentz, f_trns%i_lorentz)
+      call copy_vec_fld_to_trans(3*nvector_rtp_2_rj,                      &
+     &      irtp%i_lorentz, 3*f_trns%i_lorentz-2)
 !
 !   induction flag
-      call copy_vec_fld_to_trans(nvector_rtp_2_rj,                      &
-     &      irtp%i_vp_induct, f_trns%i_vp_induct)
+      call copy_vec_fld_to_trans(3*nvector_rtp_2_rj,                      &
+     &      irtp%i_vp_induct, 3*f_trns%i_vp_induct-2)
 !   divergence of heat flux flag
-      call copy_vec_fld_to_trans(nvector_rtp_2_rj,                      &
-     &      irtp%i_h_flux, f_trns%i_h_flux)
+      call copy_vec_fld_to_trans(3*nvector_rtp_2_rj,                      &
+     &      irtp%i_h_flux, 3*f_trns%i_h_flux-2)
 !
 !   divergence of composition flux flag
-      call copy_vec_fld_to_trans(nvector_rtp_2_rj,                      &
-     &      irtp%i_c_flux, f_trns%i_c_flux)
+      call copy_vec_fld_to_trans(3*nvector_rtp_2_rj,                      &
+     &      irtp%i_c_flux, 3*f_trns%i_c_flux-2)
 !$omp end parallel
 !
       end  subroutine copy_mhd_vec_fld_to_trans
