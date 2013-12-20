@@ -42,7 +42,7 @@
       call pole_b_trans_vector(ione)
 !
 !$omp parallel
-      call copy_vec_fld_from_trans(ione, irtp_fld, ione)
+      call copy_vec_fld_from_trans(ithree, irtp_fld, ione)
 !$omp end parallel
 !
       end subroutine sph_back_trans_vector_w_pole

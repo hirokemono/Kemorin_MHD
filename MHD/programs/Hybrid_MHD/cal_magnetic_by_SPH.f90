@@ -195,21 +195,21 @@
       call pole_b_trans_vector(nvect_rj_2_xyz)
 !
 !
-      call copy_xyz_vec_t_from_trans_wpole(nvect_rj_2_xyz,              &
-     &    b_trns%i_magne, iphys_sph%i_magne,                            &
+      call copy_xyz_vec_t_from_trans_wpole(3*nvect_rj_2_xyz,              &
+     &    3*b_trns%i_magne-2, iphys_sph%i_magne,                            &
      &    mesh_sph%node, sph_fld)
-      call copy_xyz_vec_t_from_trans_wpole(nvect_rj_2_xyz,              &
-     &    b_trns%i_current, iphys_sph%i_current,                        &
+      call copy_xyz_vec_t_from_trans_wpole(3*nvect_rj_2_xyz,              &
+     &    3*b_trns%i_current-2, iphys_sph%i_current,                        &
      &    mesh_sph%node, sph_fld)
-      call copy_xyz_vec_t_from_trans_wpole(nvect_rj_2_xyz,              &
-     &    b_trns%i_b_diffuse, iphys_sph%i_b_diffuse,                    &
+      call copy_xyz_vec_t_from_trans_wpole(3*nvect_rj_2_xyz,              &
+     &    3*b_trns%i_b_diffuse-2, iphys_sph%i_b_diffuse,                    &
      &    mesh_sph%node, sph_fld)
-      call copy_xyz_vec_t_from_trans_wpole(nvect_rj_2_xyz,              &
-     &    b_trns%i_induction, iphys_sph%i_induction,                    &
+      call copy_xyz_vec_t_from_trans_wpole(3*nvect_rj_2_xyz,              &
+     &    3*b_trns%i_induction-2, iphys_sph%i_induction,                    &
      &    mesh_sph%node, sph_fld)
       if ( iflag_SGS_induction .ne. id_SGS_none) then
-        call copy_xyz_vec_t_from_trans_wpole(nvect_rj_2_xyz,            &
-     &    b_trns%i_SGS_induction, iphys_sph%i_SGS_induction,            &
+        call copy_xyz_vec_t_from_trans_wpole(3*nvect_rj_2_xyz,            &
+     &    3*b_trns%i_SGS_induction-2, iphys_sph%i_SGS_induction,            &
      &    mesh_sph%node, sph_fld)
       end if
 !

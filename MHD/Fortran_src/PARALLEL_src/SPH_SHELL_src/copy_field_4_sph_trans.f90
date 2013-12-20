@@ -6,7 +6,7 @@
 !      subroutine copy_scalar_to_trans(ncomp_trans, i_trns,             &
 !     &          nnod, dnod_sph)
 !
-!      subroutine copy_vector_from_trans(nvector_trans, i_trns,         &
+!      subroutine copy_vector_from_trans(ncomp_trans, i_trns,           &
 !     &          nnod, dnod_sph)
 !      subroutine copy_vector_to_trans(ncomp_trans, i_trns,             &
 !     &          nnod, dnod_sph)
@@ -84,12 +84,12 @@
       end subroutine copy_scalar_to_trans
 !
 !-----------------------------------------------------------------------
-! -------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
-      subroutine copy_vector_from_trans(nvector_trans, i_trns,          &
+      subroutine copy_vector_from_trans(ncomp_trans, i_trns,            &
      &          nnod, dnod_sph)
 !
-      integer(kind = kint), intent(in) :: nvector_trans, i_trns, nnod
+      integer(kind = kint), intent(in) :: ncomp_trans, i_trns, nnod
       real(kind = kreal), intent(inout) :: dnod_sph(nnod,3)
 !
       integer(kind = kint) :: inod, jnod, ist, ied, ip
@@ -100,10 +100,10 @@
         ist = inod_rtp_smp_stack(ip-1) + 1
         ied = inod_rtp_smp_stack(ip)
         do inod = ist, ied
-          jnod = i_trns + (inod-1)*nvector_trans
-          dnod_sph(inod,1) = vr_rtp(3*jnod-2)
-          dnod_sph(inod,2) = vr_rtp(3*jnod-1)
-          dnod_sph(inod,3) = vr_rtp(3*jnod  )
+          jnod = i_trns + (inod-1)*ncomp_trans
+          dnod_sph(inod,1) = vr_rtp(jnod  )
+          dnod_sph(inod,2) = vr_rtp(jnod+1)
+          dnod_sph(inod,3) = vr_rtp(jnod+2)
         end do
       end do
 !$omp end do nowait
