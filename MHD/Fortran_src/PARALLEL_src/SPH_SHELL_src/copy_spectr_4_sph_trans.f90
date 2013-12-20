@@ -12,7 +12,7 @@
 !!      subroutine copy_scalar_spec_from_trans(ncomp_trans,             &
 !!     &          is_spec, i_trns)
 !!
-!!      subroutine copy_vec_spec_to_trans(nvector_trans, is_spec, i_trns)
+!!      subroutine copy_vec_spec_to_trans(ncomp_trans, is_spec, i_trns)
 !!      subroutine copy_vec_spec_from_trans(ncomp_trans, is_spec, i_trns)
 !!
 !!      subroutine copy_tsr_spec_to_trans(ncomp_trans, is_spec, i_trns)
@@ -88,9 +88,9 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine copy_vec_spec_to_trans(nvector_trans, is_spec, i_trns)
+      subroutine copy_vec_spec_to_trans(ncomp_trans, is_spec, i_trns)
 !
-      integer(kind = kint), intent(in) :: nvector_trans
+      integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: is_spec, i_trns
       integer(kind = kint) :: inod, jnod, ist, ied, ip
 !
@@ -102,10 +102,10 @@
         ist = inod_rj_smp_stack(ip-1) + 1
         ied = inod_rj_smp_stack(ip)
         do inod = ist, ied
-          jnod = i_trns + (inod-1)*nvector_trans
-          sp_rj(3*jnod-2) = d_rj(inod,is_spec  )
-          sp_rj(3*jnod-1) = d_rj(inod,is_spec+1)
-          sp_rj(3*jnod  ) = d_rj(inod,is_spec+2)
+          jnod = i_trns + (inod-1)*ncomp_trans
+          sp_rj(jnod  ) = d_rj(inod,is_spec  )
+          sp_rj(jnod+1) = d_rj(inod,is_spec+1)
+          sp_rj(jnod+2) = d_rj(inod,is_spec+2)
         end do
       end do
 !$omp end do nowait

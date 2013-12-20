@@ -89,7 +89,7 @@
           if ( phys_name_rtp(j0) .eq. phys_name_rj(i) ) then
             nd = istack_phys_comp_rj(i-1) + 1
 !$omp parallel
-            call copy_vec_spec_to_trans(num_vector_rtp, nd, j)
+            call copy_vec_spec_to_trans(3*num_vector_rtp, nd, 3*j-2)
 !$omp end parallel
             exit
           end if

@@ -44,14 +44,14 @@
 !
 !
 !$omp parallel
-      call copy_vec_spec_to_trans(nvector_rj_2_rtp,                     &
-     &    ipol%i_velo, b_trns%i_velo)
-      call copy_vec_spec_to_trans(nvector_rj_2_rtp,                     &
-     &    ipol%i_vort, b_trns%i_vort)
-      call copy_vec_spec_to_trans(nvector_rj_2_rtp,                     &
-     &    ipol%i_magne, b_trns%i_magne)
-      call copy_vec_spec_to_trans(nvector_rj_2_rtp,                     &
-     &    ipol%i_current, b_trns%i_current)
+      call copy_vec_spec_to_trans(3*nvector_rj_2_rtp,                     &
+     &    ipol%i_velo, 3*b_trns%i_velo-2)
+      call copy_vec_spec_to_trans(3*nvector_rj_2_rtp,                     &
+     &    ipol%i_vort, 3*b_trns%i_vort-2)
+      call copy_vec_spec_to_trans(3*nvector_rj_2_rtp,                     &
+     &    ipol%i_magne, 3*b_trns%i_magne-2)
+      call copy_vec_spec_to_trans(3*nvector_rj_2_rtp,                     &
+     &    ipol%i_current, 3*b_trns%i_current-2)
 !$omp end parallel
 !
       end subroutine copy_mhd_vec_spec_to_trans

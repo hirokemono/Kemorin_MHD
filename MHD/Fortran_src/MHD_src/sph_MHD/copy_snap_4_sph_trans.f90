@@ -43,44 +43,44 @@
 !
 !
 !$omp parallel
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_velo, bsnap_trns%i_velo)
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_vort, bsnap_trns%i_vort)
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_magne, bsnap_trns%i_magne)
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_current, bsnap_trns%i_current)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_velo, 3*bsnap_trns%i_velo-2)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_vort, 3*bsnap_trns%i_vort-2)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_magne, 3*bsnap_trns%i_magne-2)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_current, 3*bsnap_trns%i_current-2)
 !
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_v_diffuse, bsnap_trns%i_v_diffuse)
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_w_diffuse, bsnap_trns%i_w_diffuse)
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_vp_diffuse, bsnap_trns%i_vp_diffuse)
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_b_diffuse, bsnap_trns%i_b_diffuse)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_v_diffuse, 3*bsnap_trns%i_v_diffuse-2)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_w_diffuse, 3*bsnap_trns%i_w_diffuse-2)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_vp_diffuse, 3*bsnap_trns%i_vp_diffuse-2)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_b_diffuse, 3*bsnap_trns%i_b_diffuse-2)
 !
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_rot_inertia, bsnap_trns%i_rot_inertia)
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_rot_Coriolis, bsnap_trns%i_rot_Coriolis)
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_rot_Lorentz, bsnap_trns%i_rot_Lorentz)
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_rot_buoyancy, bsnap_trns%i_rot_buoyancy)
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_rot_comp_buo, bsnap_trns%i_rot_comp_buo)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_rot_inertia, 3*bsnap_trns%i_rot_inertia-2)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_rot_Coriolis, 3*bsnap_trns%i_rot_Coriolis-2)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_rot_Lorentz, 3*bsnap_trns%i_rot_Lorentz-2)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_rot_buoyancy, 3*bsnap_trns%i_rot_buoyancy-2)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_rot_comp_buo, 3*bsnap_trns%i_rot_comp_buo-2)
 !
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_press_grad, bsnap_trns%i_press_grad)
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_induction, bsnap_trns%i_induction)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_press_grad, 3*bsnap_trns%i_press_grad-2)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_induction, 3*bsnap_trns%i_induction-2)
 !
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_grad_t, bsnap_trns%i_grad_t)
-      call copy_vec_spec_to_trans(nvector_snap_rj_2_rtp,                &
-     &      ipol%i_grad_composit, bsnap_trns%i_grad_composit)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_grad_t, 3*bsnap_trns%i_grad_t-2)
+      call copy_vec_spec_to_trans(3*nvector_snap_rj_2_rtp,                &
+     &      ipol%i_grad_composit, 3*bsnap_trns%i_grad_composit-2)
 !$omp end parallel
 !
       end subroutine copy_snap_vec_spec_to_trans

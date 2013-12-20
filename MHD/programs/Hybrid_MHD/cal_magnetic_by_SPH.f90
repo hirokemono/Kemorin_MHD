@@ -177,17 +177,17 @@
       call update_after_magne_sph
 !
 !
-      call copy_vec_spec_to_trans(nvect_rj_2_xyz,                       &
-     &      ipol%i_magne, b_trns%i_magne)
-      call copy_vec_spec_to_trans(nvect_rj_2_xyz,                       &
-     &      ipol%i_current, b_trns%i_current)
-      call copy_vec_spec_to_trans(nvect_rj_2_xyz,                       &
-     &      ipol%i_b_diffuse, b_trns%i_b_diffuse)
-      call copy_vec_spec_to_trans(nvect_rj_2_xyz,                       &
-     &      ipol%i_induction, b_trns%i_induction)
+      call copy_vec_spec_to_trans(3*nvect_rj_2_xyz,                       &
+     &      ipol%i_magne, 3*b_trns%i_magne-2)
+      call copy_vec_spec_to_trans(3*nvect_rj_2_xyz,                       &
+     &      ipol%i_current, 3*b_trns%i_current-2)
+      call copy_vec_spec_to_trans(3*nvect_rj_2_xyz,                       &
+     &      ipol%i_b_diffuse, 3*b_trns%i_b_diffuse-2)
+      call copy_vec_spec_to_trans(3*nvect_rj_2_xyz,                       &
+     &      ipol%i_induction, 3*b_trns%i_induction-2)
       if (iflag_SGS_induction .ne. id_SGS_none) then
-        call copy_vec_spec_to_trans(nvect_rj_2_xyz,                     &
-     &      ipol%i_SGS_induction, b_trns%i_SGS_induction)
+        call copy_vec_spec_to_trans(3*nvect_rj_2_xyz,                     &
+     &      ipol%i_SGS_induction, 3*b_trns%i_SGS_induction-2)
       end if
 !
 !

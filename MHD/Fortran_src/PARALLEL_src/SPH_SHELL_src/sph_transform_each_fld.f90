@@ -47,7 +47,7 @@
       if( (is_fld*irtp_fld) .gt. 0) return
 !
 !$omp parallel
-      call copy_vec_spec_to_trans(ione, is_fld, ione)
+      call copy_vec_spec_to_trans(ithree, is_fld, ione)
 !$omp end parallel
 !
       call sph_b_trans_vector(ione)
