@@ -104,7 +104,7 @@
       call sph_f_trans_vector(ione)
 !
 !$omp parallel
-      call copy_vec_spec_from_trans(ione, is_fld, ione)
+      call copy_vec_spec_from_trans(ithree, is_fld, ione)
 !$omp end parallel
 !
       end subroutine sph_forward_trans_4_vector

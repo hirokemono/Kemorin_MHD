@@ -125,10 +125,10 @@
       call sph_f_trans_vector(nvect_xyz_2_rj)
 !
 !
-      call copy_vec_spec_from_trans(nvect_xyz_2_rj,                     &
-     &    ipol%i_vp_induct, f_trns%i_vp_induct)
-      call copy_vec_spec_from_trans(nvect_xyz_2_rj,                     &
-     &    ipol%i_SGS_vp_induct, f_trns%i_SGS_vp_induct)
+      call copy_vec_spec_from_trans(3*nvect_xyz_2_rj,                     &
+     &    ipol%i_vp_induct, 3*f_trns%i_vp_induct-2)
+      call copy_vec_spec_from_trans(3*nvect_xyz_2_rj,                     &
+     &    ipol%i_SGS_vp_induct, 3*f_trns%i_SGS_vp_induct-2)
 !
 !
       call const_sph_rotation_uxb(ipol%i_vp_induct, ipol%i_induction)
@@ -155,8 +155,8 @@
       call sph_f_trans_vector(nvect_xyz_2_rj)
 !
 !
-      call copy_vec_spec_from_trans(nvect_xyz_2_rj,                     &
-     &    ipol%i_vp_induct, f_trns%i_vp_induct)
+      call copy_vec_spec_from_trans(3*nvect_xyz_2_rj,                     &
+     &    ipol%i_vp_induct, 3*f_trns%i_vp_induct-2)
 !
       call const_sph_rotation_uxb(ipol%i_vp_induct, ipol%i_induction)
 !
