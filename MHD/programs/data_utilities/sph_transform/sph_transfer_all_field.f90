@@ -62,7 +62,7 @@
 !
         if (iflag_debug.gt.0)                                           &
      &      write(*,*) 'sph_f_trans_vector', num_vector_rtp
-        call sph_f_trans_vector(num_vector_rtp)
+        call sph_f_trans_vector(3*num_vector_rtp)
 !
         if (iflag_debug.gt.0)                                           &
      &      write(*,*) 'set_all_vec_spec_from_sph_t'
@@ -86,8 +86,8 @@
         call set_sph_tensor_to_sph_trans
 !
         if (iflag_debug.gt.0)                                           &
-     &      write(*,*) 'sph_f_trans_tensor', num_tensor_rtp
-        call sph_f_trans_tensor(num_tensor_rtp)
+     &      write(*,*) 'sph_f_trans_scalar', num_tensor_rtp
+        call sph_f_trans_scalar(6*num_tensor_rtp)
 !
         if (iflag_debug.gt.0)                                           &
      &      write(*,*) 'set_all_tensor_spec_from_sph_t'
@@ -144,11 +144,11 @@
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'sph_b_trans_vector', num_vector_rtp
-        call sph_b_trans_vector(num_vector_rtp)
+        call sph_b_trans_vector(3*num_vector_rtp)
 !
         if (iflag_debug.gt.0)                                           &
      &      write(*,*) 'pole_b_trans_vector'
-        call pole_b_trans_vector(num_vector_rtp)
+        call pole_b_trans_vector(3*num_vector_rtp)
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'
@@ -173,12 +173,12 @@
         call set_all_tensor_spec_to_sph_t
 !
         if (iflag_debug.gt.0)                                           &
-     &      write(*,*) 'sph_b_trans_tensor', num_tensor_rtp
-        call sph_b_trans_tensor(num_tensor_rtp)
+     &      write(*,*) 'sph_b_trans_scalar', 6*num_tensor_rtp
+        call sph_b_trans_scalar(6*num_tensor_rtp)
 !
         if (iflag_debug.gt.0)                                           &
      &      write(*,*) 'pole_b_trans_tensor'
-        call pole_b_trans_tensor(num_tensor_rtp)
+        call pole_b_trans_tensor(6*num_tensor_rtp)
 !
         if (iflag_debug.gt.0)                                           &
      &      write(*,*) 'set_sph_tensor_from_sph_trans'

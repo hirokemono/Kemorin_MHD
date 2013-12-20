@@ -122,7 +122,7 @@
      &    mesh_sph%node, sph_fld)
 !
 !
-      call sph_f_trans_vector(nvect_xyz_2_rj)
+      call sph_f_trans_vector(3*nvect_xyz_2_rj)
 !
 !
       call copy_vec_spec_from_trans(3*nvect_xyz_2_rj,                     &
@@ -152,7 +152,7 @@
      &    mesh_sph%node, sph_fld)
 !
 !
-      call sph_f_trans_vector(nvect_xyz_2_rj)
+      call sph_f_trans_vector(3*nvect_xyz_2_rj)
 !
 !
       call copy_vec_spec_from_trans(3*nvect_xyz_2_rj,                     &
@@ -191,8 +191,8 @@
       end if
 !
 !
-      call sph_b_trans_vector(nvect_rj_2_xyz)
-      call pole_b_trans_vector(nvect_rj_2_xyz)
+      call sph_b_trans_vector(3*nvect_rj_2_xyz)
+      call pole_b_trans_vector(3*nvect_rj_2_xyz)
 !
 !
       call copy_xyz_vec_t_from_trans_wpole(3*nvect_rj_2_xyz,              &

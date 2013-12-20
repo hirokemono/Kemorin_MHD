@@ -9,22 +9,15 @@
 !!       and symmetric tensor
 !!
 !!@verbatim
-!!      subroutine sph_b_trans_scalar(nb)
-!!      subroutine sph_f_trans_scalar(nb)
-!!
-!!   input /outpt arrays
-!!      field: vr_rtp(i_rtp)
-!!      spectr: sp_rj(i_rj)
-!!
-!!      subroutine sph_f_trans_tensor(nb)
-!!      subroutine sph_b_trans_tensor(nb)
+!!      subroutine sph_b_trans_scalar(ncomp_trans)
+!!      subroutine sph_f_trans_scalar(ncomp_trans)
 !!
 !!   input /outpt arrays
 !!      field: vr_rtp(i_rtp)
 !!      spectr: sp_rj(i_rj)
 !!@endverbatim
 !!
-!!@n @param  nb  number of fields to be transformed
+!!@param ncomp_trans Number of components for transform
 !
       module sph_trans_scalar
 !
@@ -53,135 +46,106 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_b_trans_scalar(nb)
+      subroutine sph_b_trans_scalar(ncomp_trans)
 !
       use m_work_time
 !
-      integer(kind = kint), intent(in) :: nb
+      integer(kind = kint), intent(in) :: ncomp_trans
 !
       integer(kind = kint) :: Nstacksmp(0:np_smp)
-      integer(kind = kint) :: np, ncomp
+      integer(kind = kint) :: ncomp
 !
 !
-      np =    nidx_rtp(3)
-      ncomp = nb*nidx_rtp(1)*nidx_rtp(2)
-      Nstacksmp(0:np_smp) = nb*irt_rtp_smp_stack(0:np_smp)
-      vr_rtp(1:nb*nnod_rtp) = 0.0d0
+      ncomp = ncomp_trans*nidx_rtp(1)*nidx_rtp(2)
+      Nstacksmp(0:np_smp) = ncomp_trans*irt_rtp_smp_stack(0:np_smp)
+      vr_rtp(1:ncomp_trans*nnod_rtp) = 0.0d0
 !
-!      call check_sp_rj(my_rank, nb)
+!      call check_sp_rj(my_rank, ncomp_trans)
       START_SRtime= MPI_WTIME()
       call start_eleps_time(18)
-      call send_recv_rj_2_rlm_N(nb, sp_rj(1), sp_rlm(1))
+      call send_recv_rj_2_rlm_N(ncomp_trans, sp_rj(1), sp_rlm(1))
       call end_eleps_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
-!      call check_sp_rlm(my_rank, nb)
+!      call check_sp_rlm(my_rank, ncomp_trans)
       call start_eleps_time(22)
       if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        call leg_bwd_trans_scalar_spin(nb)
+        call leg_bwd_trans_scalar_spin(ncomp_trans)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        call leg_bwd_trans_scalar_krin(nb)
+        call leg_bwd_trans_scalar_krin(ncomp_trans)
       else
-        call leg_bwd_trans_scalar_org(nb)
+        call leg_bwd_trans_scalar_org(ncomp_trans)
       end if
       call end_eleps_time(22)
 !
-!      call check_vr_rtm(my_rank, nb)
+!      call check_vr_rtm(my_rank, ncomp_trans)
       START_SRtime= MPI_WTIME()
       call start_eleps_time(19)
-      call send_recv_rtm_2_rtp_N(nb, vr_rtm(1), vr_rtp(1))
+      call send_recv_rtm_2_rtp_N(ncomp_trans, vr_rtm(1), vr_rtp(1))
       call end_eleps_time(19)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
-!      call check_vr_rtp(my_rank, nb)
+!      call check_vr_rtp(my_rank, ncomp_trans)
       call start_eleps_time(24)
-      call backward_FFT_select(np_smp, Nstacksmp, ncomp, np, vr_rtp(1))
+      call backward_FFT_select(np_smp, Nstacksmp, ncomp, nidx_rtp(3),   &
+     &    vr_rtp(1))
       call end_eleps_time(24)
-!      call check_vr_rtp(my_rank, nb)
+!      call check_vr_rtp(my_rank, ncomp_trans)
 !
       end subroutine sph_b_trans_scalar
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_f_trans_scalar(nb)
+      subroutine sph_f_trans_scalar(ncomp_trans)
 !
       use m_work_time
 !
-      integer(kind = kint), intent(in) :: nb
+      integer(kind = kint), intent(in) :: ncomp_trans
 !
 !
       integer(kind = kint) :: Nstacksmp(0:np_smp)
-      integer(kind = kint) :: np, ncomp
+      integer(kind = kint) :: ncomp
 !
 !
-      vr_rtm(1:nb*nnod_rtm) =      0.0d0
-      Nstacksmp(0:np_smp) = nb*irt_rtp_smp_stack(0:np_smp)
+      vr_rtm(1:ncomp_trans*nnod_rtm) =      0.0d0
+      Nstacksmp(0:np_smp) = ncomp_trans*irt_rtp_smp_stack(0:np_smp)
 !
-      np =    nidx_rtp(3)
-      ncomp = nb*nidx_rtp(1)*nidx_rtp(2)
+      ncomp = ncomp_trans*nidx_rtp(1)*nidx_rtp(2)
 !
 !
-!      call check_vr_rtp(my_rank, nb)
+!      call check_vr_rtp(my_rank, ncomp_trans)
       call start_eleps_time(24)
-      call forward_FFT_select(np_smp, Nstacksmp, ncomp, np, vr_rtp(1))
+      call forward_FFT_select(np_smp, Nstacksmp, ncomp, nidx_rtp(3),    &
+     &    vr_rtp(1))
       call end_eleps_time(24)
-!      call check_vr_rtp(my_rank, nb)
+!      call check_vr_rtp(my_rank, ncomp_trans)
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(20)
-      call send_recv_rtp_2_rtm_N(nb, vr_rtp(1), vr_rtm(1))
+      call send_recv_rtp_2_rtm_N(ncomp_trans, vr_rtp(1), vr_rtm(1))
       call end_eleps_time(20)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
-!      call check_vr_rtm(my_rank, nb)
+!      call check_vr_rtm(my_rank, ncomp_trans)
 !
       call start_eleps_time(23)
       if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        call leg_fwd_trans_scalar_spin(nb)
+        call leg_fwd_trans_scalar_spin(ncomp_trans)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        call leg_fwd_trans_scalar_krin(nb)
+        call leg_fwd_trans_scalar_krin(ncomp_trans)
       else
-        call leg_fwd_trans_scalar_org(nb)
+        call leg_fwd_trans_scalar_org(ncomp_trans)
       end if
       call end_eleps_time(23)
-!      call check_sp_rlm(my_rank, nb)
+!      call check_sp_rlm(my_rank, ncomp_trans)
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(21)
-      call send_recv_rlm_2_rj_N(nb, sp_rlm(1), sp_rj(1))
+      call send_recv_rlm_2_rj_N(ncomp_trans, sp_rlm(1), sp_rj(1))
       call end_eleps_time(21)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
-!      call check_sp_rj(my_rank, nb)
+!      call check_sp_rj(my_rank, ncomp_trans)
 !
       end subroutine sph_f_trans_scalar
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine sph_b_trans_tensor(nb)
-!
-      integer(kind = kint), intent(in) :: nb
-!
-      integer(kind = kint) :: num
-!
-!
-      num = n_sym_tensor * nb
-      call sph_b_trans_scalar(num)
-!
-      end subroutine sph_b_trans_tensor
-!
-! -----------------------------------------------------------------------
-!
-      subroutine sph_f_trans_tensor(nb)
-!
-      integer(kind = kint), intent(in) :: nb
-!
-      integer(kind = kint) :: num
-!
-!
-      num = n_sym_tensor * nb
-      call sph_f_trans_scalar(num)
-!
-      end subroutine sph_f_trans_tensor
 !
 ! -----------------------------------------------------------------------
 !

@@ -60,7 +60,7 @@
 !
       if(nvector_rj_2_rtp .gt. 0) then
         call copy_mhd_vec_spec_to_trans
-        call pole_b_trans_vector(nvector_rj_2_rtp)
+        call pole_b_trans_vector(3*nvector_rj_2_rtp)
         call copy_mhd_vec_from_pole_trans
       end if
 !
@@ -84,7 +84,7 @@
 !
 !   transform for vectors
       call copy_snap_vec_spec_to_trans
-      call pole_b_trans_vector(nvector_snap_rj_2_rtp)
+      call pole_b_trans_vector(3*nvector_snap_rj_2_rtp)
       call copy_snap_vec_from_pole_trans
 !
 !   transform for scalars

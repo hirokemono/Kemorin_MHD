@@ -50,7 +50,7 @@
       call copy_vec_spec_to_trans(ithree, is_fld, ione)
 !$omp end parallel
 !
-      call sph_b_trans_vector(ione)
+      call sph_b_trans_vector(ithree)
 !
 !$omp parallel
       call copy_vec_fld_from_trans(ithree, irtp_fld, ione)
@@ -101,7 +101,7 @@
       call copy_vec_fld_to_trans(ithree, irtp_fld, ione)
 !$omp end parallel
 !
-      call sph_f_trans_vector(ione)
+      call sph_f_trans_vector(ithree)
 !
 !$omp parallel
       call copy_vec_spec_from_trans(ithree, is_fld, ione)

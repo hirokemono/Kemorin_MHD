@@ -133,11 +133,11 @@
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'sph_b_trans_vector', num_vector_rtp
-        call sph_b_trans_vector(num_vector_rtp)
+        call sph_b_trans_vector(3*num_vector_rtp)
 !
         if (iflag_debug.gt.0)                                           &
      &      write(*,*) 'pole_b_trans_vector'
-        call pole_b_trans_vector(num_vector_rtp)
+        call pole_b_trans_vector(3*num_vector_rtp)
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'

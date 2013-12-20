@@ -3,21 +3,21 @@
 !
 !      Written by H. Matsui on Nov., 2012
 !
-!      subroutine copy_1st_scl_from_trans_wpole(nscalar_trans, i_trns,  &
+!      subroutine copy_1st_scl_from_trans_wpole(ncomp_trans, i_trns,    &
 !     &          i_field)
 !      subroutine copy_1st_vec_from_trans_wpole(ncomp_trans, i_trns,    &
 !     &          i_field)
 !      subroutine copy_1st_tsr_from_trans_wpole(ncomp_trans, i_trns,    &
 !     &         i_field)
 !
-!      subroutine copy_1st_scl_from_sph_trans(nscalar_trans, i_trns,    &
+!      subroutine copy_1st_scl_from_sph_trans(ncomp_trans, i_trns,      &
 !     &          i_field)
 !      subroutine copy_1st_vec_from_sph_trans(ncomp_trans, i_trns,      &
 !     &          i_field)
 !      subroutine copy_1st_tsr_from_sph_trans(ncomp_trans, i_trns,      &
 !     &          i_field)
 !
-!      subroutine copy_1st_scl_to_sph_trans(nscalar_trans, i_trns,      &
+!      subroutine copy_1st_scl_to_sph_trans(ncomp_trans, i_trns,        &
 !     &          i_field)
 !      subroutine copy_1st_vec_to_sph_trans(ncomp_trans, i_trns,        &
 !     &          i_field)
@@ -44,17 +44,17 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine copy_1st_scl_from_trans_wpole(nscalar_trans, i_trns,   &
+      subroutine copy_1st_scl_from_trans_wpole(ncomp_trans, i_trns,     &
      &          i_field)
 !
       use copy_xyz_field_4_sph_trans
 !
-      integer(kind = kint), intent(in) :: nscalar_trans
+      integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: i_field, i_trns
 !
 !
       call copy_scalar_from_trans_w_pole(numnod, internal_node,         &
-     &    xx, nscalar_trans, i_trns, i_field, num_tot_nod_phys, d_nod)
+     &    xx, ncomp_trans, i_trns, i_field, num_tot_nod_phys, d_nod)
 !
       end subroutine copy_1st_scl_from_trans_wpole
 !
@@ -96,16 +96,16 @@
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      subroutine copy_1st_scl_from_sph_trans(nscalar_trans, i_trns,     &
+      subroutine copy_1st_scl_from_sph_trans(ncomp_trans, i_trns,       &
      &          i_field)
 !
       use copy_xyz_field_4_sph_trans
 !
-      integer(kind = kint), intent(in) :: nscalar_trans
+      integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: i_field, i_trns
 !
 !
-      call copy_scalar_from_sph_trans(numnod, nscalar_trans, i_trns,    &
+      call copy_scalar_from_sph_trans(numnod, ncomp_trans, i_trns,      &
      &    i_field, num_tot_nod_phys, d_nod)
 !
       end subroutine copy_1st_scl_from_sph_trans
@@ -147,16 +147,16 @@
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      subroutine copy_1st_scl_to_sph_trans(nscalar_trans, i_trns,       &
+      subroutine copy_1st_scl_to_sph_trans(ncomp_trans, i_trns,         &
      &          i_field)
 !
       use copy_xyz_field_4_sph_trans
 !
-      integer(kind = kint), intent(in) :: nscalar_trans
+      integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: i_field, i_trns
 !
 !
-      call copy_scalar_to_sph_trans(numnod, nscalar_trans, i_trns,      &
+      call copy_scalar_to_sph_trans(numnod, ncomp_trans, i_trns,        &
      &    i_field, num_tot_nod_phys, d_nod)
 !
       end subroutine copy_1st_scl_to_sph_trans
