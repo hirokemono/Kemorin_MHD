@@ -100,40 +100,40 @@
 !
       call copy_pole_vec_fld_from_trans(numnod, internal_node, xx,      &
      &    num_tot_nod_phys, 3*nvector_snap_rj_2_rtp, iphys%i_velo,        &
-     &    3*bsnap_trns%i_velo-2, d_nod)
+     &    bsnap_trns%i_velo, d_nod)
       call copy_pole_vec_fld_from_trans(numnod, internal_node, xx,      &
      &    num_tot_nod_phys, 3*nvector_snap_rj_2_rtp, iphys%i_vort,        &
-     &    3*bsnap_trns%i_vort-2, d_nod)
+     &    bsnap_trns%i_vort, d_nod)
       call copy_pole_vec_fld_from_trans(numnod, internal_node, xx,      &
      &    num_tot_nod_phys, 3*nvector_snap_rj_2_rtp, iphys%i_magne,       &
-     &    3*bsnap_trns%i_magne-2, d_nod)
+     &    bsnap_trns%i_magne, d_nod)
       call copy_pole_vec_fld_from_trans(numnod, internal_node, xx,      &
      &    num_tot_nod_phys, 3*nvector_snap_rj_2_rtp, iphys%i_current,     &
-     &    3*bsnap_trns%i_current-2, d_nod)
+     &    bsnap_trns%i_current, d_nod)
 !
       call copy_pole_vec_fld_from_trans(numnod, internal_node, xx,      &
      &    num_tot_nod_phys, 3*nvector_snap_rj_2_rtp, iphys%i_v_diffuse,   &
-     &    3*bsnap_trns%i_v_diffuse-2, d_nod)
+     &    bsnap_trns%i_v_diffuse, d_nod)
       call copy_pole_vec_fld_from_trans(numnod, internal_node, xx,      &
      &    num_tot_nod_phys, 3*nvector_snap_rj_2_rtp, iphys%i_w_diffuse,   &
-     &    3*bsnap_trns%i_w_diffuse-2, d_nod)
+     &    bsnap_trns%i_w_diffuse, d_nod)
       call copy_pole_vec_fld_from_trans(numnod, internal_node, xx,      &
      &    num_tot_nod_phys, 3*nvector_snap_rj_2_rtp, iphys%i_vp_diffuse,  &
-     &    3*bsnap_trns%i_vp_diffuse-2, d_nod)
+     &    bsnap_trns%i_vp_diffuse, d_nod)
       call copy_pole_vec_fld_from_trans(numnod, internal_node, xx,      &
      &    num_tot_nod_phys, 3*nvector_snap_rj_2_rtp, iphys%i_b_diffuse,   &
-     &    3*bsnap_trns%i_b_diffuse-2, d_nod)
+     &    bsnap_trns%i_b_diffuse, d_nod)
 !
       call copy_pole_vec_fld_from_trans(numnod, internal_node, xx,      &
      &    num_tot_nod_phys, 3*nvector_snap_rj_2_rtp, iphys%i_induction,   &
-     &    3*bsnap_trns%i_induction-2, d_nod)
+     &    bsnap_trns%i_induction, d_nod)
 !
       call copy_pole_vec_fld_from_trans(numnod, internal_node, xx,      &
      &    num_tot_nod_phys, 3*nvector_snap_rj_2_rtp, iphys%i_grad_t,      &
-     &    3*bsnap_trns%i_grad_t-2, d_nod)
+     &    bsnap_trns%i_grad_t, d_nod)
       call copy_pole_vec_fld_from_trans(numnod, internal_node, xx,      &
      &    num_tot_nod_phys, 3*nvector_snap_rj_2_rtp,                      &
-     &    3*iphys%i_grad_composit-2, bsnap_trns%i_grad_composit, d_nod)
+     &    iphys%i_grad_composit, bsnap_trns%i_grad_composit, d_nod)
 !
       end subroutine copy_snap_vec_from_pole_trans
 !
