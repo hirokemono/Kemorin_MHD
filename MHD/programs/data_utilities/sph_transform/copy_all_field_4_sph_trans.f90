@@ -146,7 +146,7 @@
         do i = 1, num_nod_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
-            call copy_1st_tsr_to_sph_trans(num_tensor_rtp, j,           &
+            call copy_1st_tsr_to_sph_trans(6*num_tensor_rtp, 6*j-5,     &
      &          i_field)
             exit
           end if
@@ -171,7 +171,7 @@
         do i = 1, num_nod_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
-            call copy_1st_tsr_from_trans_wpole(num_tensor_rtp, j,       &
+            call copy_1st_tsr_from_trans_wpole(6*num_tensor_rtp, 6*j-5, &
      &          i_field)
             exit
           end if
