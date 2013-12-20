@@ -72,11 +72,11 @@
 !
 !
       nvector_snap_rtp_2_rj = 0
-      call add_transform_flag(ipol%i_coriolis, irtp%i_coriolis,         &
+      call add_vec_trans_flag(ipol%i_coriolis, irtp%i_coriolis,         &
      &    nvector_snap_rtp_2_rj, fsnap_trns%i_coriolis)
-      call add_transform_flag(ipol%i_electric, irtp%i_electric,         &
+      call add_vec_trans_flag(ipol%i_electric, irtp%i_electric,         &
      &    nvector_snap_rtp_2_rj, fsnap_trns%i_electric)
-      call add_transform_flag(ipol%i_poynting, irtp%i_poynting,         &
+      call add_vec_trans_flag(ipol%i_poynting, irtp%i_poynting,         &
      &    nvector_snap_rtp_2_rj, fsnap_trns%i_poynting)
 !
 !
