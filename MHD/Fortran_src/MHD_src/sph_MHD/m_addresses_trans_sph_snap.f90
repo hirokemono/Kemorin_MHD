@@ -20,14 +20,16 @@
 !
       implicit none
 !
-!>      number of vectors for backward spherical harmonics transform
+!>      number of components
+!!      for backward vector spherical harmonics transform
       integer(kind = kint) :: nvector_snap_rj_2_rtp = 0
 !>      number of scalars for backward spherical harmonics transform
       integer(kind = kint) :: nscalar_snap_rj_2_rtp = 0
 !>      number of tensors for backward spherical harmonics transform
       integer(kind = kint) :: ntensor_snap_rj_2_rtp = 0
 !
-!>      number of vectors for forward spherical harmonics transform
+!>      number of components
+!!      for forward vector spherical harmonics transform
       integer(kind = kint) :: nvector_snap_rtp_2_rj = 0
 !>      number of scalars for forward spherical harmonics transform
       integer(kind = kint) :: nscalar_snap_rtp_2_rj = 0
@@ -312,8 +314,8 @@
 !
 !
       if( (is_fld*irtp_fld) .gt. 0) then
-        num_trans = num_trans + 1
-        itrans = 3*num_trans - 2
+        num_trans = num_trans + 3
+        itrans = num_trans - 2
       end if
 !
       end subroutine add_vec_trans_flag

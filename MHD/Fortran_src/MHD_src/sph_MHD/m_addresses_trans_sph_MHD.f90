@@ -20,11 +20,13 @@
 !
       implicit none
 !
-!>      number of vectors for backward spherical harmonics transform
+!>      number of components
+!!      for backward vector spherical harmonics transform
       integer(kind = kint) :: nvector_rj_2_rtp = 0
 !>      number of scalars for backward spherical harmonics transform
       integer(kind = kint) :: nscalar_rj_2_rtp = 0
-!>      number of vectors for forward spherical harmonics transform
+!>      number of components
+!!      for forward vector spherical harmonics transform
       integer(kind = kint) :: nvector_rtp_2_rj = 0
 !>      number of scalars for forward spherical harmonics transform
       integer(kind = kint) :: nscalar_rtp_2_rj = 0
@@ -55,24 +57,24 @@
 !   velocity flag
       if(iflag_t_evo_4_velo .gt. id_no_evolution                        &
      &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_velo = 3*nvector_rj_2_rtp - 2
+        nvector_rj_2_rtp = nvector_rj_2_rtp + 3
+        b_trns%i_velo = nvector_rj_2_rtp - 2
       end if
 !   vorticity flag
       if(iflag_t_evo_4_velo .gt. id_no_evolution) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_vort = 3*nvector_rj_2_rtp - 2
+        nvector_rj_2_rtp = nvector_rj_2_rtp + 3
+        b_trns%i_vort = nvector_rj_2_rtp - 2
       end if
 !   magnetic field flag
       if(iflag_t_evo_4_magne .gt. id_no_evolution                       &
      &      .or. iflag_4_lorentz .gt. id_turn_OFF) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_magne = 3*nvector_rj_2_rtp - 2
+        nvector_rj_2_rtp = nvector_rj_2_rtp + 3
+        b_trns%i_magne = nvector_rj_2_rtp - 2
       end if
 !   current density flag
       if(iflag_4_lorentz .gt. id_turn_OFF) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_current = 3*nvector_rj_2_rtp - 2
+        nvector_rj_2_rtp = nvector_rj_2_rtp + 3
+        b_trns%i_current = nvector_rj_2_rtp - 2
       end if
 !
 !
@@ -91,36 +93,36 @@
 !
 !   advection flag
       if(iflag_t_evo_4_velo .gt. id_no_evolution) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_m_advect = 3*nvector_rtp_2_rj - 2
+        nvector_rtp_2_rj = nvector_rtp_2_rj + 3
+        f_trns%i_m_advect = nvector_rtp_2_rj - 2
 !   Coriolis flag
         if(iflag_4_coriolis .gt. id_turn_OFF) then
-          nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-          f_trns%i_coriolis = 3*nvector_rtp_2_rj - 2
+          nvector_rtp_2_rj = nvector_rtp_2_rj + 3
+          f_trns%i_coriolis = nvector_rtp_2_rj - 2
         end if
 !   Lorentz flag
         if(iflag_4_lorentz .gt. id_turn_OFF) then
-          nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-          f_trns%i_lorentz = 3*nvector_rtp_2_rj - 2
+          nvector_rtp_2_rj = nvector_rtp_2_rj + 3
+          f_trns%i_lorentz = nvector_rtp_2_rj - 2
         end if
       end if
 !
 !   induction flag
       if(iflag_t_evo_4_magne .gt. id_no_evolution) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_vp_induct =  3*nvector_rtp_2_rj - 2
+        nvector_rtp_2_rj = nvector_rtp_2_rj + 3
+        f_trns%i_vp_induct =  nvector_rtp_2_rj - 2
       end if
 !
 !   divergence of heat flux flag
       if(iflag_t_evo_4_temp .gt. id_no_evolution) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_h_flux = 3*nvector_rtp_2_rj - 2
+        nvector_rtp_2_rj = nvector_rtp_2_rj + 3
+        f_trns%i_h_flux = nvector_rtp_2_rj - 2
       end if
 !
 !   divergence of composition flux flag
       if(iflag_t_evo_4_composit .gt. id_no_evolution) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_c_flux = 3*nvector_rtp_2_rj - 2
+        nvector_rtp_2_rj = nvector_rtp_2_rj + 3
+        f_trns%i_c_flux = nvector_rtp_2_rj - 2
       end if
 !
       nb_sph_trans = nvector_rj_2_rtp

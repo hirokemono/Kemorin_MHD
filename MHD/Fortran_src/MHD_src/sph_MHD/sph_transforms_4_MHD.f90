@@ -74,7 +74,7 @@
 !
       if(nvector_rj_2_rtp .gt. 0) then
         call copy_mhd_vec_spec_to_trans
-        call sph_b_trans_vector(3*nvector_rj_2_rtp)
+        call sph_b_trans_vector(nvector_rj_2_rtp)
         call copy_mhd_vec_fld_from_trans
       end if
 !
@@ -99,7 +99,7 @@
 !
       if(nvector_rtp_2_rj .gt. 0) then
         call copy_mhd_vec_fld_to_trans
-        call sph_f_trans_vector(3*nvector_rtp_2_rj)
+        call sph_f_trans_vector(nvector_rtp_2_rj)
         call copy_mhd_vec_spec_from_trans
       end if
 !
@@ -117,7 +117,7 @@
 !
 !   transform for vectors
       call copy_snap_vec_spec_to_trans
-      call sph_b_trans_vector(3*nvector_snap_rj_2_rtp)
+      call sph_b_trans_vector(nvector_snap_rj_2_rtp)
       call copy_snap_vec_fld_from_trans
 !
 !   transform for scalars
@@ -139,7 +139,7 @@
 !   transform for vectors
       if(nvector_snap_rtp_2_rj .gt. 0) then
         call copy_snap_vec_fld_to_trans
-        call sph_f_trans_vector(3*nvector_snap_rtp_2_rj)
+        call sph_f_trans_vector(nvector_snap_rtp_2_rj)
         call copy_snap_vec_spec_from_trans
       end if
 !
