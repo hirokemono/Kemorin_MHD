@@ -42,13 +42,13 @@
       sph_fld%ntot_phys = 15
 !
       f_trns%i_vp_induct =  1
-      nvect_xyz_2_rj =    f_trns%i_vp_induct
+      nvect_xyz_2_rj =    f_trns%i_vp_induct + 2
 !
       b_trns%i_magne =      1
-      b_trns%i_current =    2
-      b_trns%i_b_diffuse =  3
-      b_trns%i_induction =  4
-      nvect_rj_2_xyz =    b_trns%i_induction
+      b_trns%i_current =    4
+      b_trns%i_b_diffuse =  7
+      b_trns%i_induction = 10
+      nvect_rj_2_xyz =    b_trns%i_induction + 2
 !
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         iphys_sph%i_SGS_vp_induct = 16
@@ -56,11 +56,11 @@
         sph_fld%num_phys =   7
         sph_fld%ntot_phys = 21
 !
-        f_trns%i_SGS_vp_induct = 2
-        nvect_xyz_2_rj = f_trns%i_SGS_vp_induct
+        f_trns%i_SGS_vp_induct = 4
+        nvect_xyz_2_rj = f_trns%i_SGS_vp_induct + 2
 !
-        b_trns%i_SGS_induction = 5
-        nvect_rj_2_xyz = b_trns%i_SGS_induction
+        b_trns%i_SGS_induction = 13
+        nvect_rj_2_xyz = b_trns%i_SGS_induction + 2
       end if
 !
       call s_const_linear_mesh_type(mesh_fem, surf_mesh_fem,            &
@@ -114,21 +114,21 @@
      &    itp_FEM_2_SPH, mesh_fem, mesh_sph, fem_fld, sph_fld)
 !
 !
-      call copy_xyz_vec_t_to_sph_trans(3*nvect_xyz_2_rj,                &
-     &    3*f_trns%i_vp_induct-2, iphys_sph%i_vp_induct,                    &
+      call copy_xyz_vec_t_to_sph_trans(nvect_xyz_2_rj,                  &
+     &    f_trns%i_vp_induct, iphys_sph%i_vp_induct,                    &
      &    mesh_sph%node, sph_fld)
-      call copy_xyz_vec_t_to_sph_trans(3*nvect_xyz_2_rj,                &
-     &    3*f_trns%i_SGS_vp_induct-2, iphys_sph%i_SGS_vp_induct,            &
+      call copy_xyz_vec_t_to_sph_trans(nvect_xyz_2_rj,                  &
+     &    f_trns%i_SGS_vp_induct, iphys_sph%i_SGS_vp_induct,            &
      &    mesh_sph%node, sph_fld)
 !
 !
-      call sph_f_trans_vector(3*nvect_xyz_2_rj)
+      call sph_f_trans_vector(nvect_xyz_2_rj)
 !
 !
-      call copy_vec_spec_from_trans(3*nvect_xyz_2_rj,                     &
-     &    ipol%i_vp_induct, 3*f_trns%i_vp_induct-2)
-      call copy_vec_spec_from_trans(3*nvect_xyz_2_rj,                     &
-     &    ipol%i_SGS_vp_induct, 3*f_trns%i_SGS_vp_induct-2)
+      call copy_vec_spec_from_trans(nvect_xyz_2_rj,                     &
+     &    ipol%i_vp_induct, f_trns%i_vp_induct)
+      call copy_vec_spec_from_trans(nvect_xyz_2_rj,                     &
+     &    ipol%i_SGS_vp_induct, f_trns%i_SGS_vp_induct)
 !
 !
       call const_sph_rotation_uxb(ipol%i_vp_induct, ipol%i_induction)
@@ -147,16 +147,16 @@
      &   (iphys%i_vp_induct, iphys_sph%i_vp_induct,                     &
      &    itp_FEM_2_SPH, mesh_fem, mesh_sph, fem_fld, sph_fld)
 !
-      call copy_xyz_vec_t_to_sph_trans(3*nvect_xyz_2_rj,                &
-     &    3*f_trns%i_vp_induct-2, iphys_sph%i_vp_induct,                    &
+      call copy_xyz_vec_t_to_sph_trans(nvect_xyz_2_rj,                  &
+     &    f_trns%i_vp_induct, iphys_sph%i_vp_induct,                    &
      &    mesh_sph%node, sph_fld)
 !
 !
-      call sph_f_trans_vector(3*nvect_xyz_2_rj)
+      call sph_f_trans_vector(nvect_xyz_2_rj)
 !
 !
-      call copy_vec_spec_from_trans(3*nvect_xyz_2_rj,                     &
-     &    ipol%i_vp_induct, 3*f_trns%i_vp_induct-2)
+      call copy_vec_spec_from_trans(nvect_xyz_2_rj,                     &
+     &    ipol%i_vp_induct, f_trns%i_vp_induct)
 !
       call const_sph_rotation_uxb(ipol%i_vp_induct, ipol%i_induction)
 !
@@ -177,39 +177,39 @@
       call update_after_magne_sph
 !
 !
-      call copy_vec_spec_to_trans(3*nvect_rj_2_xyz,                       &
-     &      ipol%i_magne, 3*b_trns%i_magne-2)
-      call copy_vec_spec_to_trans(3*nvect_rj_2_xyz,                       &
-     &      ipol%i_current, 3*b_trns%i_current-2)
-      call copy_vec_spec_to_trans(3*nvect_rj_2_xyz,                       &
-     &      ipol%i_b_diffuse, 3*b_trns%i_b_diffuse-2)
-      call copy_vec_spec_to_trans(3*nvect_rj_2_xyz,                       &
-     &      ipol%i_induction, 3*b_trns%i_induction-2)
+      call copy_vec_spec_to_trans(nvect_rj_2_xyz,                       &
+     &      ipol%i_magne, b_trns%i_magne)
+      call copy_vec_spec_to_trans(nvect_rj_2_xyz,                       &
+     &      ipol%i_current, b_trns%i_current)
+      call copy_vec_spec_to_trans(nvect_rj_2_xyz,                       &
+     &      ipol%i_b_diffuse, b_trns%i_b_diffuse)
+      call copy_vec_spec_to_trans(nvect_rj_2_xyz,                       &
+     &      ipol%i_induction, b_trns%i_induction)
       if (iflag_SGS_induction .ne. id_SGS_none) then
-        call copy_vec_spec_to_trans(3*nvect_rj_2_xyz,                     &
-     &      ipol%i_SGS_induction, 3*b_trns%i_SGS_induction-2)
+        call copy_vec_spec_to_trans(nvect_rj_2_xyz,                     &
+     &      ipol%i_SGS_induction, b_trns%i_SGS_induction)
       end if
 !
 !
-      call sph_b_trans_vector(3*nvect_rj_2_xyz)
-      call pole_b_trans_vector(3*nvect_rj_2_xyz)
+      call sph_b_trans_vector(nvect_rj_2_xyz)
+      call pole_b_trans_vector(nvect_rj_2_xyz)
 !
 !
-      call copy_xyz_vec_t_from_trans_wpole(3*nvect_rj_2_xyz,              &
-     &    3*b_trns%i_magne-2, iphys_sph%i_magne,                            &
+      call copy_xyz_vec_t_from_trans_wpole(nvect_rj_2_xyz,              &
+     &    b_trns%i_magne, iphys_sph%i_magne,                            &
      &    mesh_sph%node, sph_fld)
-      call copy_xyz_vec_t_from_trans_wpole(3*nvect_rj_2_xyz,              &
-     &    3*b_trns%i_current-2, iphys_sph%i_current,                        &
+      call copy_xyz_vec_t_from_trans_wpole(nvect_rj_2_xyz,              &
+     &    b_trns%i_current, iphys_sph%i_current,                        &
      &    mesh_sph%node, sph_fld)
-      call copy_xyz_vec_t_from_trans_wpole(3*nvect_rj_2_xyz,              &
-     &    3*b_trns%i_b_diffuse-2, iphys_sph%i_b_diffuse,                    &
+      call copy_xyz_vec_t_from_trans_wpole(nvect_rj_2_xyz,              &
+     &    b_trns%i_b_diffuse, iphys_sph%i_b_diffuse,                    &
      &    mesh_sph%node, sph_fld)
-      call copy_xyz_vec_t_from_trans_wpole(3*nvect_rj_2_xyz,              &
-     &    3*b_trns%i_induction-2, iphys_sph%i_induction,                    &
+      call copy_xyz_vec_t_from_trans_wpole(nvect_rj_2_xyz,              &
+     &    b_trns%i_induction, iphys_sph%i_induction,                    &
      &    mesh_sph%node, sph_fld)
       if ( iflag_SGS_induction .ne. id_SGS_none) then
-        call copy_xyz_vec_t_from_trans_wpole(3*nvect_rj_2_xyz,            &
-     &    3*b_trns%i_SGS_induction-2, iphys_sph%i_SGS_induction,            &
+        call copy_xyz_vec_t_from_trans_wpole(nvect_rj_2_xyz,            &
+     &    b_trns%i_SGS_induction, iphys_sph%i_SGS_induction,            &
      &    mesh_sph%node, sph_fld)
       end if
 !

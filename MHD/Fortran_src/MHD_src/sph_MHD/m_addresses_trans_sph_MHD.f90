@@ -72,6 +72,7 @@
         b_trns%i_current = nvector_rj_2_rtp
       end if
 !
+!
 !   temperature flag
       if(iflag_t_evo_4_temp .gt. id_no_evolution) then
         nscalar_rj_2_rtp = nscalar_rj_2_rtp + 1
@@ -88,35 +89,35 @@
 !   advection flag
       if(iflag_t_evo_4_velo .gt. id_no_evolution) then
         nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_m_advect = nvector_rtp_2_rj
+        f_trns%i_m_advect = 3*nvector_rtp_2_rj - 2
 !   Coriolis flag
         if(iflag_4_coriolis .gt. id_turn_OFF) then
           nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-          f_trns%i_coriolis = nvector_rtp_2_rj
+          f_trns%i_coriolis = 3*nvector_rtp_2_rj - 2
         end if
 !   Lorentz flag
         if(iflag_4_lorentz .gt. id_turn_OFF) then
           nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-          f_trns%i_lorentz = nvector_rtp_2_rj
+          f_trns%i_lorentz = 3*nvector_rtp_2_rj - 2
         end if
       end if
 !
 !   induction flag
       if(iflag_t_evo_4_magne .gt. id_no_evolution) then
         nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_vp_induct =  nvector_rtp_2_rj
+        f_trns%i_vp_induct =  3*nvector_rtp_2_rj - 2
       end if
 !
 !   divergence of heat flux flag
       if(iflag_t_evo_4_temp .gt. id_no_evolution) then
         nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_h_flux = nvector_rtp_2_rj
+        f_trns%i_h_flux = 3*nvector_rtp_2_rj - 2
       end if
 !
 !   divergence of composition flux flag
       if(iflag_t_evo_4_composit .gt. id_no_evolution) then
         nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_c_flux = nvector_rtp_2_rj
+        f_trns%i_c_flux = 3*nvector_rtp_2_rj - 2
       end if
 !
       nb_sph_trans = nvector_rj_2_rtp
