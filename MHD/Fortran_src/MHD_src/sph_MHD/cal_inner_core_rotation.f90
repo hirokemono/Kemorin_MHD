@@ -95,6 +95,7 @@
       subroutine cal_icore_coriolis_explicit(kr_in)
 !
       use m_physical_property
+      use m_poloidal_rotation
 !
       integer(kind = kint), intent(in) :: kr_in
 !

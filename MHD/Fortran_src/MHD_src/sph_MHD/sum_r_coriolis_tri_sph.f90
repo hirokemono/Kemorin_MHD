@@ -68,6 +68,7 @@
       use m_machine_parameter
       use m_constants
       use m_spheric_parameter
+      use m_poloidal_rotation
       use m_sph_spectr_data
       use m_sph_phys_address
       use m_integrals_4_sph_coriolis

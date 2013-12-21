@@ -38,7 +38,7 @@
       subroutine s_set_coriolis_tri_sph
 !
       use m_machine_parameter
-      use m_sph_spectr_data
+      use m_poloidal_rotation
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'interact_coriolis'

@@ -13,7 +13,7 @@
 !!     &          fdm4_noslip_ICB, fdm4_noslip_ICB1, Vt_ICB,            &
 !!     &          is_fld, is_rot)
 !!      subroutine cal_sph_icb_rigid_rot_s4t2                           &
-!!     &         (jmax, kr_in, r_ICB, r_ICB1, fdm2_fix_fld_ICB,         &
+!!     &         (jmax, kr_in, r_ICB1, fdm2_fix_fld_ICB,                &
 !!     &          fdm4_noslip_ICB, fdm4_noslip_ICB1, is_fld, is_rot)
 !!      subroutine cal_sph_icb_rigid_diffuse_s4t2                       &
 !!     &         (jmax, kr_in, r_ICB, r_ICB1, fdm2_fix_fld_ICB,         &
@@ -121,12 +121,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_icb_rigid_rot_s4t2                             &
-     &         (jmax, kr_in, r_ICB, r_ICB1, fdm2_fix_fld_ICB,           &
+     &         (jmax, kr_in, r_ICB1, fdm2_fix_fld_ICB,                  &
      &          fdm4_noslip_ICB, fdm4_noslip_ICB1, is_fld, is_rot)
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld, is_rot
-      real(kind = kreal), intent(in) :: r_ICB(0:2), r_ICB1(0:2)
+      real(kind = kreal), intent(in) :: r_ICB1(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
       real(kind = kreal), intent(in) :: fdm4_noslip_ICB(0:2,3:5)
       real(kind = kreal), intent(in) :: fdm4_noslip_ICB1(-1:2,5)

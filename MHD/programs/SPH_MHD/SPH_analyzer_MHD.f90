@@ -68,7 +68,6 @@
 !
       call allocate_phys_rj_data
       call allocate_phys_rtp_data
-      call allocate_rot_rj_data
       call set_sph_sprctr_data_address
       call set_sph_nod_data_address
 !

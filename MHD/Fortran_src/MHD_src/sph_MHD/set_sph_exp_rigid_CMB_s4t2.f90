@@ -12,7 +12,7 @@
 !!     &          r_CMB, r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,     &
 !!     &          fdm4_noslip_CMB1, Vt_CMB, is_fld, is_rot)
 !!      subroutine cal_sph_cmb_rigid_rot_s4t2(jmax, kr_out,             &
-!!     &          r_CMB, r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,     &
+!!     &          r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,            &
 !!     &          fdm4_noslip_CMB1, is_fld, is_rot)
 !!      subroutine cal_sph_cmb_rigid_diffuse_s4t2(jmax, kr_out,         &
 !!     &          r_CMB, r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,     &
@@ -118,12 +118,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_cmb_rigid_rot_s4t2(jmax, kr_out,               &
-     &          r_CMB, r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,       &
+     &          r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,              &
      &          fdm4_noslip_CMB1, is_fld, is_rot)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_rot
-      real(kind = kreal), intent(in) :: r_CMB(0:2), r_CMB1(0:2)
+      real(kind = kreal), intent(in) :: r_CMB1(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,3:4)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB1(-2:1,5)

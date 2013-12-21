@@ -1,5 +1,5 @@
-!>@file   set_poloidal_rotation.f90
-!!@brief  module set_poloidal_rotation
+!>@file   m_poloidal_rotation.f90
+!!@brief  module m_poloidal_rotation
 !!
 !!@author H. Matsui
 !!@date Programmed on June., 1994
@@ -10,6 +10,9 @@
 !
 !!@verbatim
 !!      subroutine set_rot_earth_4_sph(rotate)
+!!
+!!      subroutine deallocate_rot_rlm_data
+!!      subroutine deallocate_rot_rj_data
 !!***********************************************************************
 !!*
 !!*     rot_e(k,j) : rotation of earth  (output)
@@ -35,7 +38,7 @@
 !!
 !!@n @param rotate  rotation vector of system
 !
-      module set_poloidal_rotation
+      module m_poloidal_rotation
 !
       use m_precision
 !
@@ -46,6 +49,30 @@
 !
       implicit none
 !
+!>     rotation spectr in @f$ f(r,l,m) @f$
+!!@verbatim
+!!        omega(kr,0) ... Omaga_z
+!!        omega(kr,1) ... d Omaga_z / dr
+!!        omega(kr,2) ... d^2 Omaga_z / dr^2
+!!@endverbatim
+      real(kind = kreal), allocatable :: omega_rlm(:,:)
+!
+!>     rotation spectr in @f$ f(r,j) @f$
+!!@verbatim
+!!        omega(kr,0,1) ... Omaga_x
+!!        omega(kr,1,1) ... d Omaga_x / dr
+!!        omega(kr,2,1) ... d^2 Omaga_x / dr^2
+!!        omega(kr,0,2) ... Omaga_z
+!!        omega(kr,1,2) ... d Omaga_z / dr
+!!        omega(kr,2,2) ... d^2 Omaga_z / dr^2
+!!        omega(kr,0,3) ... Omaga_y
+!!        omega(kr,1,3) ... d Omaga_y / dr
+!!        omega(kr,2,3) ... d^2 Omaga_y / dr^2
+!!@endverbatim
+      real(kind = kreal), allocatable :: omega_rj(:,:,:)
+!
+!
+      private :: allocate_rot_rlm_data, allocate_rot_rj_data
       private :: set_3dir_rot_earth_4_sph, set_rotatio_spectr
 !
 !  -------------------------------------------------------------------
@@ -54,17 +81,63 @@
 !
 !  -------------------------------------------------------------------
 !
+      subroutine allocate_rot_rlm_data(nri_rlm)
+!
+      integer(kind = kint), intent(in) :: nri_rlm
+!
+!
+      allocate( omega_rlm(nri_rlm,0:2) )
+      omega_rlm = 0.0d0
+!
+      end subroutine allocate_rot_rlm_data
+!
+!  --------------------------------------------------------------------
+!
+      subroutine allocate_rot_rj_data(nri_rj)
+!
+      integer(kind = kint), intent(in) :: nri_rj
+!
+!
+      allocate( omega_rj(nri_rj,0:2,3) )
+      omega_rj =  0.0d0
+!
+      end subroutine allocate_rot_rj_data
+!
+!  --------------------------------------------------------------------
+!  --------------------------------------------------------------------
+!
+      subroutine deallocate_rot_rlm_data
+!
+      deallocate(omega_rlm)
+!
+      end subroutine deallocate_rot_rlm_data
+!
+!  --------------------------------------------------------------------
+!
+      subroutine deallocate_rot_rj_data
+!
+      deallocate(omega_rj)
+!
+      end subroutine deallocate_rot_rj_data
+!
+!  --------------------------------------------------------------------
+!  --------------------------------------------------------------------
+!
       subroutine set_rot_earth_4_sph(rotate)
 !
+      use m_coriolis_terms_rlm
       use m_sph_spectr_data
 !
       real(kind = kreal), intent(in) :: rotate(3)
 !
 !
-      call set_3dir_rot_earth_4_sph(nidx_rj(1), radius_1d_rj_r,         &
-     &    rotate, omega_rj)
-      call set_3dir_rot_earth_4_sph(nidx_rlm(1), radius_1d_rlm_r,       &
-     &    rotate, omega_rlm)
+      call allocate_rot_rlm_data(nidx_rlm(1))
+      call allocate_rot_rj_data(nidx_rj(1))
+!
+      call set_3dir_rot_earth_4_sph(nidx_rj(1), radius_1d_rj_r, rotate, &
+     &    omega_rj)
+      call set_rotatio_spectr(nidx_rlm(1), radius_1d_rlm_r, one,        &
+     &    omega_rlm(1,0), omega_rlm(1,1), omega_rlm(1,2))
 !
       end subroutine set_rot_earth_4_sph
 !
@@ -81,11 +154,11 @@
 !
 !
       call set_rotatio_spectr(nri, r, rotate(2),                        &
-      &         omega(1,0,1), omega(1,1,1), omega(1,2,1))
+     &         omega(1,0,1), omega(1,1,1), omega(1,2,1))
       call set_rotatio_spectr(nri, r, rotate(3),                        &
-      &         omega(1,0,2), omega(1,1,2), omega(1,2,2))
+     &         omega(1,0,2), omega(1,1,2), omega(1,2,2))
       call set_rotatio_spectr(nri, r, rotate(1),                        &
-      &         omega(1,0,3), omega(1,1,3), omega(1,2,3))
+     &         omega(1,0,3), omega(1,1,3), omega(1,2,3))
 !*
       end subroutine set_3dir_rot_earth_4_sph
 !
@@ -115,4 +188,4 @@
 !
 !  -------------------------------------------------------------------
 !
-      end module set_poloidal_rotation
+      end module m_poloidal_rotation

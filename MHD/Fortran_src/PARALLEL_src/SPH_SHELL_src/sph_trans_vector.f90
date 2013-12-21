@@ -100,6 +100,8 @@
       call end_eleps_time(22)
 !      call leg_bwd_trans_vector_org(nb)
 !
+      call const_vect_sph_b_trans(nb, vr_rtm)
+!
 !      call check_vr_rtm(my_rank, ncomp_trans)
 !
       START_SRtime= MPI_WTIME()
@@ -116,8 +118,6 @@
       call end_eleps_time(24)
 !
 !      call check_vr_rtp(my_rank, ncomp_trans)
-!
-      call const_vect_sph_b_trans(nb, vr_rtp)
 !
       end subroutine sph_b_trans_vector
 !
@@ -137,8 +137,6 @@
       ncomp = ncomp_trans*nidx_rtp(1)*nidx_rtp(2)
       Nstacksmp(0:np_smp) = ncomp_trans*irt_rtp_smp_stack(0:np_smp)
 !
-      call prod_r_vect_sph_f_trans(nb, vr_rtp)
-!
 !      call check_vr_rtp(my_rank, ncomp_trans)
       call start_eleps_time(24)
       call forward_FFT_select(np_smp, Nstacksmp, ncomp, nidx_rtp(3),    &
@@ -152,6 +150,8 @@
       call end_eleps_time(20)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !      call check_vr_rtm(my_rank, ncomp_trans)
+!
+      call prod_r_vect_sph_f_trans(nb, vr_rtm)
 !
       call start_eleps_time(23)
       if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
