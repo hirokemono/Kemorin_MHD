@@ -34,7 +34,6 @@
 !
       use m_sph_phys_address
       use m_boundary_params_sph_MHD
-      use cal_vorticity_terms_adams
       use const_coriolis_sph
 !
       use cal_nonlinear_sph_MHD
@@ -54,10 +53,21 @@
 !
 !*  ----  set coriolis term
 !*
-      call start_eleps_time(13)
-      if (iflag_debug.eq.1) write(*,*) 'sum_coriolis_rj_sph'
-      if(iflag_4_coriolis .gt. id_turn_OFF) call sum_coriolis_rj_sph
-      call end_eleps_time(13)
+!      call start_eleps_time(13)
+!      if (iflag_debug.eq.1) write(*,*) 'sum_coriolis_rj_sph'
+!      if(iflag_4_coriolis .gt. id_turn_OFF) call sum_coriolis_rj_sph
+!      call end_eleps_time(13)
+!
+      call sum_forces_by_explicit
+!
+      end subroutine nonlinear
+!*
+!*   ------------------------------------------------------------------
+!
+      subroutine sum_forces_by_explicit
+!
+      use cal_vorticity_terms_adams
+!
 !
 !$omp parallel
       if(      iflag_4_gravity  .ne. id_turn_OFF                        &
@@ -96,8 +106,8 @@
       end if
 !$omp end parallel
 !
-      end subroutine nonlinear
-!*
+      end subroutine sum_forces_by_explicit
+!
 !*   ------------------------------------------------------------------
 !
       subroutine nonlinear_by_pseudo_sph

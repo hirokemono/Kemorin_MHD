@@ -39,6 +39,7 @@
       use m_work_4_sph_trans
       use init_sph_trans
       use const_wz_coriolis_rtp
+      use const_coriolis_sph_rlm
 !
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
@@ -54,6 +55,9 @@
       call initialize_sph_trans
 !
       call set_colatitude_rtp
+      call init_sum_coriolis_rlm
+!
+!      call s_check_gaunt_coriolis_rlm(iflag_sph_coriolis_file)
 !
       if(id_legendre_transfer .ne. iflag_leg_undefined) return
       call select_legendre_transform
@@ -68,13 +72,13 @@
       use m_addresses_trans_sph_MHD
       use copy_MHD_4_sph_trans
 !
-      use sph_trans_vector
+      use sph_trans_w_coriols
       use sph_trans_scalar
 !
 !
       if(nvector_rj_2_rtp .gt. 0) then
         call copy_mhd_vec_spec_to_trans
-        call sph_b_trans_vector(nvector_rj_2_rtp)
+        call sph_b_trans_w_coriolis(nvector_rj_2_rtp)
         call copy_mhd_vec_fld_from_trans
       end if
 !
@@ -93,13 +97,13 @@
       use m_addresses_trans_sph_MHD
       use copy_MHD_4_sph_trans
 !
-      use sph_trans_vector
+      use sph_trans_w_coriols
       use sph_trans_scalar
 !
 !
       if(nvector_rtp_2_rj .gt. 0) then
         call copy_mhd_vec_fld_to_trans
-        call sph_f_trans_vector(nvector_rtp_2_rj)
+        call sph_f_trans_w_coriolis(nvector_rtp_2_rj)
         call copy_mhd_vec_spec_from_trans
       end if
 !

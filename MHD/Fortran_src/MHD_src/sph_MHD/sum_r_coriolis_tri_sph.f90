@@ -37,24 +37,6 @@
 !!
 !!*************************************************
 !!
-!!*************************************************
-!!
-!!     wss(jc,1,j3) = sw(jc,1,j3)
-!!     wss(jc,2,j3) = sw(jc,2,j3)
-!!     wts(jc,j3)   = sw(jc,3,j3)
-!!     wst(jc,1,j3) = tw(jc,1,j3)
-!!     wst(jc,2,j3) = tw(jc,2,j3)
-!!     wtt(jc,1,j3) = tw(jc,3,j3)
-!!     wtt(jc,2,j3) = tw(jc,4,j3)
-!!
-!!     wsd(jc,1,j3) = sd(jc,1,j3)
-!!     wsd(jc,2,j3) = sd(jc,2,j3)
-!!     wtd(jc,j3)   = td(jc,j3)
-!!
-!!     wsr(jc,j3) =   sr(jc,j3)
-!!     wtr(jc,j3) =   tr(jc,j3)
-!!
-!!*************************************************
 !!@endverbatim
 !!
 !!@n @param kr        radial ID
@@ -125,9 +107,9 @@
         i12 = jlc_lcor(j30,1,2) + (kr-1)*nidx_j_cor
 !
         d_rj(inod,is_rot_f)                                             &
-     &       =  sr(1,j30) * omega_rj(kr,1,2) * d_sph_cor(i12,ic_dvp)    &
-     &        + tr(1,j30) * omega_rj(kr,1,2) * d_sph_cor(i11,ic_vt)     &
-     &        + tr(2,j30) * omega_rj(kr,1,2) * d_sph_cor(i21,ic_vt)
+     &       =  sr_rj(1,j30) * omega_rj(kr,1,2) * d_sph_cor(i12,ic_dvp)    &
+     &        + tr_rj(1,j30) * omega_rj(kr,1,2) * d_sph_cor(i11,ic_vt)     &
+     &        + tr_rj(2,j30) * omega_rj(kr,1,2) * d_sph_cor(i21,ic_vt)
       end do
 !
       do j = 1, idx_rj_degree_zero

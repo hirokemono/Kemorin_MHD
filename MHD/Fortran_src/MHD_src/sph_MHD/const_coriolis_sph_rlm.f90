@@ -9,8 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine init_sum_coriolis_rlm
-!!      subroutine sum_coriolis_rlm(ncomp, sp_rlm)
-!!      subroutine copy_coriolis_terms_rlm(ncomp, sp_rlm)
+!!      subroutine sum_coriolis_rlm(ncomp_trans, sp_rlm)
+!!      subroutine copy_coriolis_terms_rlm(ncomp_trans, sp_rlm)
 !!@endverbatim
 !
       module const_coriolis_sph_rlm
@@ -33,8 +33,9 @@
 !
       subroutine init_sum_coriolis_rlm
 !
-      use interact_coriolis_rlm
+      use m_gaunt_coriolis_rlm
       use m_coriolis_terms_rlm
+      use interact_coriolis_rlm
 !
 !
       call alloacte_gaunt_coriolis_rlm(nidx_rlm(2))
@@ -52,41 +53,41 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sum_coriolis_rlm(ncomp, sp_rlm)
+      subroutine sum_coriolis_rlm(ncomp_trans, sp_rlm)
 !
       use m_coriolis_terms_rlm
       use sum_coriolis_terms_rlm
 !
-      integer(kind = kint), intent(in) :: ncomp
-      real(kind = kreal), intent(in) :: sp_rlm(ncomp*nnod_rlm)
+      integer(kind = kint), intent(in) :: ncomp_trans
+      real(kind = kreal), intent(in) :: sp_rlm(ncomp_trans*nnod_rlm)
 !
       if( iflag_4_coriolis .eq. id_turn_OFF) return
 !
 !
-      call sum_rot_coriolis_rlm_10(ncomp, sp_rlm)
-!      call sum_div_coriolis_rlm_10(ncomp, sp_rlm)
-!      call sum_r_coriolis_bc_rlm_10(ncomp, kr_in_U_rlm,                &
+      call sum_rot_coriolis_rlm_10(ncomp_trans, sp_rlm)
+!      call sum_div_coriolis_rlm_10(ncomp_trans, sp_rlm)
+!      call sum_r_coriolis_bc_rlm_10(ncomp_trans, kr_in_U_rlm,          &
 !     &    sp_rlm, d_cor_in_rlm)
-!      call sum_r_coriolis_bc_rlm_10(ncomp, kr_out_U_rlm,               &
+!      call sum_r_coriolis_bc_rlm_10(ncomp_trans, kr_out_U_rlm,         &
 !     &    sp_rlm, d_cor_out_rlm)
 !
       end subroutine sum_coriolis_rlm
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_coriolis_terms_rlm(ncomp, sp_rlm)
+      subroutine copy_coriolis_terms_rlm(ncomp_trans, sp_rlm)
 !
       use m_coriolis_terms_rlm
 !
-      integer(kind = kint), intent(in) :: ncomp
-      real(kind = kreal), intent(inout) :: sp_rlm(ncomp*nnod_rlm)
+      integer(kind = kint), intent(in) :: ncomp_trans
+      real(kind = kreal), intent(inout) :: sp_rlm(ncomp_trans*nnod_rlm)
 !
       if( iflag_4_coriolis .eq. id_turn_OFF) return
 !
 !
-      call copy_rot_coriolis_rlm(ncomp, sp_rlm)
-!      call copy_div_coriolis_rlm(ncomp_rtp_2_rj, sp_rlm)
-!      call copy_r_coriolis_bc_rlm(ncomp_rtp_2_rj, sp_rlm)
+      call copy_rot_coriolis_rlm(ncomp_trans, sp_rlm)
+!      call copy_div_coriolis_rlm(ncomp_trans, sp_rlm)
+!      call copy_r_coriolis_bc_rlm(ncomp_trans, sp_rlm)
 !
       end subroutine copy_coriolis_terms_rlm
 !

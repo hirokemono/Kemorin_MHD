@@ -39,25 +39,6 @@
 !!     (wtr) = wtr(j3)*dw*wtb/r**2
 !!
 !!*************************************************
-!!
-!!*************************************************
-!!
-!!     wss(jc,1,j3) = sw(jc,1,j3)
-!!     wss(jc,2,j3) = sw(jc,2,j3)
-!!     wts(jc,j3)   = sw(jc,3,j3)
-!!     wst(jc,1,j3) = tw(jc,1,j3)
-!!     wst(jc,2,j3) = tw(jc,2,j3)
-!!     wtt(jc,1,j3) = tw(jc,3,j3)
-!!     wtt(jc,2,j3) = tw(jc,4,j3)
-!!
-!!     wsd(jc,1,j3) = sd(jc,1,j3)
-!!     wsd(jc,2,j3) = sd(jc,2,j3)
-!!     wtd(jc,j3)   = td(jc,j3)
-!!
-!!     wsr(jc,j3) =   sr(jc,j3)
-!!     wtr(jc,j3) =   tr(jc,j3)
-!!
-!!*************************************************
 !!@endverbatim
 !!
 !!@param kr_in     Radial ID for inner boundary
@@ -134,13 +115,13 @@
           i12 = jlc_lcor(j30,1,2) + (k-1)*nidx_j_cor
 !
           d_rj(inod,is_div_f)                                           &
-     &       =  td(1,j30) * omega_rj(k,1,2)                             &
+     &       =  td_rj(1,j30) * omega_rj(k,1,2)                             &
      &         * (g_sph_rj(j,3)*ar_1d_rj(k,2) * d_sph_cor(i12,ic_vp)    &
      &           - d_sph_cor(i12,ic_d2vp) )                             &
-     &        + sd(1,1,j30) * half*omega_rj(k,2,2)*d_sph_cor(i11,ic_vt) &
-     &        + sd(2,1,j30) * half*omega_rj(k,2,2)*d_sph_cor(i21,ic_vt) &
-     &        + sd(1,2,j30) * omega_rj(k,1,2) * d_sph_cor(i11,ic_dvt)   &
-     &        + sd(2,2,j30) * omega_rj(k,1,2) * d_sph_cor(i21,ic_dvt)
+     &        + sd_rj(1,1,j30) * half*omega_rj(k,2,2)*d_sph_cor(i11,ic_vt) &
+     &        + sd_rj(2,1,j30) * half*omega_rj(k,2,2)*d_sph_cor(i21,ic_vt) &
+     &        + sd_rj(1,2,j30) * omega_rj(k,1,2) * d_sph_cor(i11,ic_dvt)   &
+     &        + sd_rj(2,2,j30) * omega_rj(k,1,2) * d_sph_cor(i21,ic_dvt)
         end do
 !
         if(idx_rj_degree_zero .gt. 0) then

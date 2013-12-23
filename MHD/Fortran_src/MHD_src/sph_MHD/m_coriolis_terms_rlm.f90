@@ -199,7 +199,7 @@
 !$omp  parallel do private(irlm,irlm_pol_cor)
         do j_rlm = 1, nidx_rlm(2)
           irlm = j_rlm + (kr_in_U_rlm-1)*nidx_rlm(2)
-          irlm_pol_cor = f_trns%i_Coriolis + (irlm-1) * ncomp
+          irlm_pol_cor = f_trns%i_coriolis + (irlm-1) * ncomp
           sp_rlm(irlm_pol_cor) = d_cor_in_rlm(j_rlm)
         end do
 !$omp end parallel do
@@ -209,7 +209,7 @@
 !$omp  parallel do private(irlm,irlm_pol_cor)
         do j_rlm = 1, nidx_rlm(2)
           irlm = j_rlm + (kr_in_U_rlm-1)*nidx_rlm(2)
-          irlm_pol_cor = f_trns%i_Coriolis + (irlm-1) * ncomp
+          irlm_pol_cor = f_trns%i_coriolis + (irlm-1) * ncomp
           sp_rlm(irlm_pol_cor) = d_cor_out_rlm(j_rlm)
         end do
 !$omp end parallel do

@@ -100,6 +100,10 @@
           nvector_rtp_2_rj = nvector_rtp_2_rj + 3
           f_trns%i_coriolis = nvector_rtp_2_rj - 2
         end if
+        if(iflag_4_coriolis .gt. id_turn_OFF) then
+          nvector_rtp_2_rj =      nvector_rtp_2_rj + 3
+          f_trns%i_rot_Coriolis = nvector_rtp_2_rj - 2
+        end if
 !   Lorentz flag
         if(iflag_4_lorentz .gt. id_turn_OFF) then
           nvector_rtp_2_rj = nvector_rtp_2_rj + 3
@@ -113,21 +117,28 @@
         f_trns%i_vp_induct =  nvector_rtp_2_rj - 2
       end if
 !
-!   divergence of heat flux flag
+!   heat flux flag
       if(iflag_t_evo_4_temp .gt. id_no_evolution) then
         nvector_rtp_2_rj = nvector_rtp_2_rj + 3
         f_trns%i_h_flux = nvector_rtp_2_rj - 2
       end if
 !
-!   divergence of composition flux flag
+!   composition flux flag
       if(iflag_t_evo_4_composit .gt. id_no_evolution) then
         nvector_rtp_2_rj = nvector_rtp_2_rj + 3
         f_trns%i_c_flux = nvector_rtp_2_rj - 2
       end if
 !
+!   divergence of Coriolis flux flag
+      if(iflag_4_coriolis .gt. id_turn_OFF) then
+        nscalar_rtp_2_rj = nscalar_rtp_2_rj + 1
+        f_trns%i_div_Coriolis = nscalar_rtp_2_rj
+      end if
+!
       nb_sph_trans = nvector_rj_2_rtp
       nb_sph_trans = max(nb_sph_trans,nscalar_rj_2_rtp)
       nb_sph_trans = max(nb_sph_trans,nvector_rtp_2_rj)
+      nb_sph_trans = max(nb_sph_trans,nscalar_rtp_2_rj)
 !
       end subroutine set_addresses_trans_sph_MHD
 !
@@ -170,6 +181,10 @@
       if(f_trns%i_coriolis .gt. 0) write(*,*) 'f_trns%i_coriolis  ',    &
      &        f_trns%i_coriolis, irtp%i_coriolis, ipol%i_coriolis,      &
      &        itor%i_coriolis, idpdr%i_coriolis
+      if(f_trns%i_rot_Coriolis .gt. 0) write(*,*)                       &
+     &       'f_trns%i_rot_Coriolis  ', f_trns%i_rot_Coriolis,          &
+     &        irtp%i_rot_Coriolis, ipol%i_rot_Coriolis,                 &
+     &        itor%i_rot_Coriolis, idpdr%i_rot_Coriolis
       if(f_trns%i_lorentz .gt. 0) write(*,*) 'f_trns%i_lorentz  ',      &
      &        f_trns%i_lorentz, irtp%i_lorentz, ipol%i_lorentz,         &
      &        itor%i_lorentz, idpdr%i_lorentz
@@ -182,6 +197,12 @@
       if(f_trns%i_c_flux .gt. 0) write(*,*) 'f_trns%i_c_flux',          &
      &        f_trns%i_c_flux, irtp%i_c_flux,                           &
      &        ipol%i_c_flux, itor%i_c_flux, idpdr%i_c_flux
+!
+      write(*,*) 'nscalar_rtp_2_rj  ', nscalar_rtp_2_rj
+      if(f_trns%i_div_Coriolis .gt. 0) write(*,*)                       &
+     &       'f_trns%i_div_Coriolis  ', f_trns%i_div_Coriolis,          &
+     &        irtp%i_div_Coriolis, ipol%i_div_Coriolis,                 &
+     &        itor%i_div_Coriolis, idpdr%i_div_Coriolis
       write(*,*)
 !
       end subroutine check_add_trans_sph_MHD
