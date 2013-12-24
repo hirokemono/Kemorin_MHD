@@ -75,6 +75,22 @@
       implicit none
 !
 !
+!>        local spectr index for ICB and  @f$ m = -1, 0, 1@f$.
+!!        for @f$ f(r,l,m) @f$
+!!@n        If spectr data do not exist in subdomain,
+!!@n        idx_rlm_degree_one(m) = 0.
+      integer(kind = kint) :: idx_rlm_ICB = 0
+!
+!>        local spectr index for @f$ l = m = 0@f$ for @f$ f(r,l,m) @f$
+!!@n        If spectr data do not exist in subdomain,
+!!@n        idx_rlm_degree_one(m) = 0.
+      integer (kind=kint) :: idx_rlm_degree_zero = 0
+!>        local spectr index for @f$ l = 1@f$ and  @f$ m = -1, 0, 1@f$.
+!!        for @f$ f(r,l,m) @f$
+!!@n        If spectr data do not exist in subdomain,
+!!@n        idx_rlm_degree_one(m) = 0.
+      integer (kind=kint) :: idx_rlm_degree_one(-1:1) = (/0,0,0/)
+!
       real(kind = kreal), allocatable :: d_cor_rlm(:)
 !
       real(kind = kreal), allocatable :: d_cor_in_rlm(:)

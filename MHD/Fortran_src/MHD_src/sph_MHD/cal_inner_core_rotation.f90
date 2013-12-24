@@ -11,7 +11,8 @@
 !!      subroutine set_icore_viscous_matrix(kr_in)
 !!      subroutine cal_icore_viscous_drag_explicit(kr_in, coef_d,       &
 !!     &          it_velo, it_viscous)
-!!      subroutine cal_icore_coriolis_explicit(kr_in)
+!!      subroutine copy_icore_rot_to_tor_coriolis(kr_in)
+!!      subroutine inner_core_coriolis_rj(kr_in)
 !!      subroutine int_icore_toroidal_lorentz(kr_in)
 !!@endverbatim
 !!
@@ -92,7 +93,29 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_icore_coriolis_explicit(kr_in)
+      subroutine copy_icore_rot_to_tor_coriolis(kr_in)
+!
+      integer(kind = kint), intent(in) :: kr_in
+!
+      integer(kind = kint) :: i11s, i10c, i11c
+!
+!
+      if(idx_rj_degree_one( 1) .le. 0) return
+!
+!
+      i11s = idx_rj_degree_one(-1) + (kr_in-1)*nidx_rj(2)
+      i10c = idx_rj_degree_one( 0) + (kr_in-1)*nidx_rj(2)
+      i11c = idx_rj_degree_one( 1) + (kr_in-1)*nidx_rj(2)
+!
+      d_rj(i11s,itor%i_coriolis) = d_rj(i11s,ipol%i_rot_Coriolis)
+      d_rj(i11c,itor%i_coriolis) = d_rj(i11c,ipol%i_rot_Coriolis)
+      d_rj(i10c,itor%i_coriolis) = d_rj(i10c,ipol%i_rot_Coriolis)
+!
+      end subroutine copy_icore_rot_to_tor_coriolis
+!
+! ----------------------------------------------------------------------
+!
+      subroutine inner_core_coriolis_rj(kr_in)
 !
       use m_physical_property
       use m_poloidal_rotation
@@ -103,6 +126,7 @@
 !
 !
       if(idx_rj_degree_one( 1) .le. 0) return
+!
 !
       i11s = idx_rj_degree_one(-1) + (kr_in-1)*nidx_rj(2)
       i10c = idx_rj_degree_one( 0) + (kr_in-1)*nidx_rj(2)
@@ -128,11 +152,7 @@
      &       = -two*coef_cor*radius_1d_rj_r(kr_in)                      &
      &        * d_rj(i10c,ipol%i_rot_Coriolis)
 !
-      d_rj(i11s,itor%i_coriolis) = d_rj(i11s,ipol%i_rot_Coriolis)
-      d_rj(i11c,itor%i_coriolis) = d_rj(i11c,ipol%i_rot_Coriolis)
-      d_rj(i10c,itor%i_coriolis) = d_rj(i10c,ipol%i_rot_Coriolis)
-!
-      end subroutine cal_icore_coriolis_explicit
+      end subroutine inner_core_coriolis_rj
 !
 ! ----------------------------------------------------------------------
 !

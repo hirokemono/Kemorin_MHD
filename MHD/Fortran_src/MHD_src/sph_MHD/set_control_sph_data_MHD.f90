@@ -39,7 +39,6 @@
       use m_physical_property
       use m_work_4_sph_trans
       use m_file_format_switch
-      use const_coriolis_sph
 !
       use m_field_data_IO
       use m_sph_boundary_input_data
@@ -117,8 +116,6 @@
       end if
 !
       if (iflag_4_coriolis .gt. id_turn_OFF) then
-        iflag_sph_coriolis_file                                         &
-     &         = max(i_sph_coriolis_file,i_coriolis_tri_int_name)
         if(i_sph_coriolis_file .gt. 0) then
           sph_cor_file_name = sph_cor_file_name_ctl
            call choose_file_format(sph_cor_file_fmt_ctl,                &

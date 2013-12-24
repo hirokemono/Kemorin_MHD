@@ -16,6 +16,8 @@
 !!
 !!      integer function find_local_sph_rlm_address(jmax_rlm,           &
 !!     &       idx_gl_1d_rlm_j, j_gl)
+!!      integer function find_local_radius_rlm_address(nri_rlm,         &
+!!     &       idx_gl_1d_rlm_r, kr_gl)
 !!
 !!*************************************************
 !!*
@@ -234,6 +236,28 @@
       end do
 !
       end function find_local_sph_rlm_address
+!
+!-----------------------------------------------------------------------
+!
+      integer function find_local_radius_rlm_address(nri_rlm,           &
+     &       idx_gl_1d_rlm_r, kr_gl)
+!
+      integer(kind = kint), intent(in) :: nri_rlm
+      integer(kind = kint), intent(in) :: idx_gl_1d_rlm_r(nri_rlm)
+      integer(kind = kint), intent(in) :: kr_gl
+!
+      integer(kind = kint) :: k
+!
+!
+      find_local_radius_rlm_address = 0
+      do k = 1, nri_rlm
+        if (idx_gl_1d_rlm_r(k) .eq. kr_gl) then
+          find_local_radius_rlm_address = k
+          return
+        end if
+      end do
+!
+      end function find_local_radius_rlm_address
 !
 !-----------------------------------------------------------------------
 !

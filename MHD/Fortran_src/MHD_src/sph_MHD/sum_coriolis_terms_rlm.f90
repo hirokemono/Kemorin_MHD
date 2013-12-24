@@ -315,5 +315,46 @@
       end subroutine sum_r_coriolis_bc_rlm_10
 !*
 !*   ------------------------------------------------------------------
+!
+      subroutine inner_core_rot_z_coriolis_rlm(ncomp, sp_rlm)
+!
+      use m_coriolis_terms_rlm
+      use m_addresses_trans_sph_MHD
+!
+      integer(kind = kint), intent(in) :: ncomp
+      real(kind = kreal), intent(in) :: sp_rlm(ncomp*nnod_rlm)
+!
+      integer(kind = kint) :: i11s, i10c, i11c
+      integer(kind = kint) :: iwp_rlm_i11s, iwp_rlm_i11c
+      integer(kind = kint) :: ipol_cor_i11s, ipol_cor_i11c
+      integer(kind = kint) :: ipol_cor_i10c
+!
+!
+      if(idx_rlm_ICB .eq. 0) return
+      if((idx_rlm_degree_one(-1)*idx_rlm_degree_one(1)) .eq. 0) return
+!
+      i11s = idx_rlm_degree_one(-1) + (idx_rlm_ICB-1)*nidx_rlm(2)
+      i10c = idx_rlm_degree_one( 0) + (idx_rlm_ICB-1)*nidx_rlm(2)
+      i11c = idx_rlm_degree_one( 1) + (idx_rlm_ICB-1)*nidx_rlm(2)
+!
+      iwp_rlm_i11s = b_trns%i_vort + (i11s-1)*ncomp
+!      iwp_rlm_i10c = b_trns%i_vort + (i10c-1)*ncomp
+      iwp_rlm_i11c = b_trns%i_vort + (i11c-1)*ncomp
+!
+      ipol_cor_i11s = ip_rlm_rot_cor + ncomp_coriolis_rlm * (i11s-1)
+      ipol_cor_i10c = ip_rlm_rot_cor + ncomp_coriolis_rlm * (i10c-1)
+      ipol_cor_i11c = ip_rlm_rot_cor + ncomp_coriolis_rlm * (i11c-1)
+!
+      d_cor_rlm(ipol_cor_i10c) = zero
+      d_cor_rlm(ipol_cor_i11s)                                          &
+     &       = -two*coef_cor*radius_1d_rj_r(idx_rlm_ICB)                &
+     &        * omega_rlm(idx_rlm_ICB,0)*sp_rlm(iwp_rlm_i11c)
+      d_cor_rlm(ipol_cor_i11c)                                          &
+     &       =  two*coef_cor*radius_1d_rj_r(idx_rlm_ICB)                &
+     &        * omega_rlm(idx_rlm_ICB,0)*sp_rlm(iwp_rlm_i11s)
+!
+      end subroutine inner_core_rot_z_coriolis_rlm
+!
+! ----------------------------------------------------------------------
 !*
       end module sum_coriolis_terms_rlm

@@ -12,6 +12,8 @@
 !!      subroutine sph_back_trans_4_MHD
 !!      subroutine sph_forward_trans_4_MHD
 !!
+!!      subroutine sph_transform_4_licv
+!!
 !!      subroutine sph_back_trans_snapshot_MHD
 !!      subroutine sph_forward_trans_snapshot_MHD
 !!@endverbatim
@@ -56,8 +58,6 @@
 !
       call set_colatitude_rtp
       call init_sum_coriolis_rlm
-!
-!      call s_check_gaunt_coriolis_rlm(iflag_sph_coriolis_file)
 !
       if(id_legendre_transfer .ne. iflag_leg_undefined) return
       call select_legendre_transform
@@ -155,6 +155,29 @@
       end if
 !
       end subroutine sph_forward_trans_snapshot_MHD
+!
+!-----------------------------------------------------------------------
+!
+      subroutine sph_transform_4_licv
+!
+      use m_addresses_trans_sph_MHD
+      use copy_MHD_4_sph_trans
+!
+      use sph_trans_w_coriols
+!
+!
+      if(nvector_rj_2_rtp .gt. 0) then
+        call copy_mhd_vec_spec_to_trans
+        call sph_b_trans_licv(nvector_rj_2_rtp)
+      end if
+!
+!
+      if(nvector_rtp_2_rj .gt. 0) then
+        call sph_f_trans_licv(nvector_rtp_2_rj)
+        call copy_mhd_vec_spec_from_trans
+      end if
+!
+      end subroutine sph_transform_4_licv
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -12,6 +12,9 @@
 !!      subroutine sph_b_trans_w_coriolis(ncomp_trans)
 !!      subroutine sph_f_trans_w_coriolis(ncomp_trans)
 !!
+!!      subroutine sph_b_trans_licv(ncomp_trans)
+!!      subroutine sph_f_trans_licv(ncomp_trans)
+!!
 !!   input /outpt arrays for single field
 !!
 !!      radial component:      vr_rtp(3*i_rtp-2)
@@ -186,6 +189,55 @@
 !      call check_sp_rj(my_rank, ncomp_trans)
 !
       end subroutine sph_f_trans_w_coriolis
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine sph_b_trans_licv(ncomp_trans)
+!
+      use m_work_time
+!
+      integer(kind = kint), intent(in) :: ncomp_trans
+!
+!      call check_sp_rj(my_rank, ncomp_trans)
+!
+      START_SRtime= MPI_WTIME()
+      call start_eleps_time(18)
+      call send_recv_rj_2_rlm_N(ncomp_trans, sp_rj, sp_rlm)
+      call end_eleps_time(18)
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
+!
+!      call check_sp_rlm(my_rank, ncomp_trans)
+!
+      call start_eleps_time(13)
+      if(iflag_debug .gt. 0) write(*,*) 'sum_coriolis_rlm'
+      call sum_coriolis_rlm(ncomp_trans, sp_rlm)
+      call end_eleps_time(13)
+!
+      end subroutine sph_b_trans_licv
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sph_f_trans_licv(ncomp_trans)
+!
+      use m_work_time
+!
+      integer(kind = kint), intent(in) :: ncomp_trans
+!
+!
+      call start_eleps_time(13)
+      if(iflag_debug .gt. 0) write(*,*) 'copy_coriolis_terms_rlm'
+      call copy_coriolis_terms_rlm(ncomp_trans, sp_rlm)
+      call end_eleps_time(24)
+!
+      START_SRtime= MPI_WTIME()
+      call start_eleps_time(21)
+      call send_recv_rlm_2_rj_N(ncomp_trans, sp_rlm, sp_rj)
+      call end_eleps_time(21)
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
+!      call check_sp_rj(my_rank, ncomp_trans)
+!
+      end subroutine sph_f_trans_licv
 !
 ! -----------------------------------------------------------------------
 !

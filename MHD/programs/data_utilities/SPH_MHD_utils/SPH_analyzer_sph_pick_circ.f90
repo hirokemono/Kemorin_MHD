@@ -44,6 +44,7 @@
       use m_sph_phys_address
       use m_rms_4_sph_spectr
       use m_node_id_spherical_IO
+      use m_physical_property
 !
       use set_control_sph_mhd
       use load_data_for_sph_IO
@@ -54,7 +55,6 @@
       use set_radius_func
       use const_radial_mat_4_sph
       use cal_rms_fields_by_sph
-      use const_coriolis_sph
       use cvt_nod_data_to_sph_data
       use r_interpolate_sph_data
       use sph_mhd_rst_IO_control
@@ -89,13 +89,6 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_coefs'
       call const_2nd_fdm_coefs
-!
-!* -----  set integrals for coriolis term -----------------
-!*
-      if(iflag_4_coriolis .gt. id_turn_OFF) then
-        if ( iflag_debug.gt.0 ) write(*,*) 'init_sum_coriolis_sph'
-        call init_sum_coriolis_sph
-      end if
 !
 ! ---------------------------------
 !

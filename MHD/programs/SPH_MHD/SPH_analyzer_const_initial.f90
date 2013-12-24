@@ -41,7 +41,6 @@
       use set_radius_func
       use const_radial_mat_4_sph
       use cal_rms_fields_by_sph
-      use const_coriolis_sph
       use cvt_nod_data_to_sph_data
       use sph_mhd_rms_IO
       use cal_sol_sph_MHD_crank

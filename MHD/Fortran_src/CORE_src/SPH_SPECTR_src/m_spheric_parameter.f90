@@ -66,9 +66,10 @@
 !!@n    idx_rj_degree_zero = 0.
       integer (kind=kint) :: idx_rj_degree_zero =   0
 !
-!>      local spectr index for @f$ l = 1@f$ and  @f$ m = -1, 0, 1@f$.
-!!@n    If spectr data do not exist in subdomain,
-!!@n    idx_rj_degree_one(m) = 0.
+!>        local spectr index for @f$ l = 1@f$ and  @f$ m = -1, 0, 1@f$.
+!!        for @f$ f(r,j) @f$
+!!@n        If spectr data do not exist in subdomain,
+!!@n        idx_rj_degree_one(m) = 0.
       integer (kind=kint) :: idx_rj_degree_one(-1:1) = (/0,0,0/)
 !
 !>      Start address for @f$ m = 0 @f$ for @f$ f(r,\theta,m) @f$

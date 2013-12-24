@@ -23,8 +23,6 @@
       use m_t_int_parameter
       use m_t_step_parameter
 !
-      use const_coriolis_sph
-!
       use FEM_analyzer_sph_MHD
       use sections_for_1st
 !

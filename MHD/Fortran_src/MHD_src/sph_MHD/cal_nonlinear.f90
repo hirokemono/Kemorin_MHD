@@ -34,7 +34,7 @@
 !
       use m_sph_phys_address
       use m_boundary_params_sph_MHD
-      use const_coriolis_sph
+      use cal_inner_core_rotation
 !
       use cal_nonlinear_sph_MHD
 !
@@ -51,12 +51,13 @@
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out)
       end if
 !
-!*  ----  set coriolis term
+!*  ----  copy coriolis term for inner core rotation
 !*
-!      call start_eleps_time(13)
-!      if (iflag_debug.eq.1) write(*,*) 'sum_coriolis_rj_sph'
-!      if(iflag_4_coriolis .gt. id_turn_OFF) call sum_coriolis_rj_sph
-!      call end_eleps_time(13)
+      call start_eleps_time(13)
+      if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
+        call copy_icore_rot_to_tor_coriolis(sph_bc_U%kr_in)
+      end if
+      call end_eleps_time(13)
 !
       call sum_forces_by_explicit
 !
@@ -150,16 +151,16 @@
 !
       use m_sph_phys_address
       use m_boundary_params_sph_MHD
+      use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
       use cal_vorticity_terms_adams
-      use const_coriolis_sph
 !
       integer(kind = kint) :: inod
 !
 !*  ----  copy velocity for coriolis term ------------------
 !*
-      if (iflag_debug.eq.1) write(*,*) 'sum_coriolis_rj_sph'
-      if(iflag_4_coriolis .ne. id_turn_OFF) call sum_coriolis_rj_sph
+      if (iflag_debug.eq.1) write(*,*) 'sph_transform_4_licv'
+      if(iflag_4_coriolis .ne. id_turn_OFF) call sph_transform_4_licv
 !
 !   ----  lead nonlinear terms by phesdo spectrum
 !

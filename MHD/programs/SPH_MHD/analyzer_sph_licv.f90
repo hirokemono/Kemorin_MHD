@@ -20,7 +20,6 @@
       use m_work_time
       use m_control_parameter
 !
-      use const_coriolis_sph
       use SPH_analyzer_licv
 !
       implicit none
