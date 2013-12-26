@@ -97,19 +97,15 @@
 !
       integer(kind = kint), intent(in) :: kr_in
 !
-      integer(kind = kint) :: i11s, i10c, i11c
+      integer(kind = kint) :: m, i1
 !
 !
-      if(idx_rj_degree_one( 1) .le. 0) return
-!
-!
-      i11s = idx_rj_degree_one(-1) + (kr_in-1)*nidx_rj(2)
-      i10c = idx_rj_degree_one( 0) + (kr_in-1)*nidx_rj(2)
-      i11c = idx_rj_degree_one( 1) + (kr_in-1)*nidx_rj(2)
-!
-      d_rj(i11s,itor%i_coriolis) = d_rj(i11s,ipol%i_rot_Coriolis)
-      d_rj(i11c,itor%i_coriolis) = d_rj(i11c,ipol%i_rot_Coriolis)
-      d_rj(i10c,itor%i_coriolis) = d_rj(i10c,ipol%i_rot_Coriolis)
+      do m = -1, 1
+        if(idx_rj_degree_one(m) .gt. 0) then
+          i1 = idx_rj_degree_one(m) + (kr_in-1)*nidx_rj(2)
+          d_rj(i1,itor%i_coriolis) = d_rj(i1,ipol%i_rot_Coriolis)
+        end if
+      end do
 !
       end subroutine copy_icore_rot_to_tor_coriolis
 !

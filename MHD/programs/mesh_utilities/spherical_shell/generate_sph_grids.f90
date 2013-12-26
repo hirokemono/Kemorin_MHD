@@ -17,8 +17,6 @@
 !
       use const_surface_mesh
 !
-      use tri_sph_for_coriolis
-!
       implicit none
 !
 !
@@ -42,15 +40,10 @@
         stop "*** spherical shell mesh done"
       end if
 !
-!  ========= Tri-spectral harmonics integration ===================
-!C===
-      if(iflag_debug .gt. 0) write(*,*) 'gaunt_coriolis'
-      call gaunt_coriolis(l_truncation)
-!
 !  ========= Construct subdomain information for viewer ==============
 !
       call choose_surface_mesh(sph_head)
 !
-      write(*,*) 'program normally terminated'
+      stop 'program is normally terminated'
 !
       end program generate_sph_grids

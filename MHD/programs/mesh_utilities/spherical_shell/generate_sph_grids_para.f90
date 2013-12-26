@@ -17,8 +17,6 @@
       use para_gen_sph_grids_modes
       use const_1d_ele_connect_4_sph
 !
-      use tri_sph_for_coriolis
-!
       implicit none
 !
 !
@@ -27,14 +25,13 @@
 !
 !     --------------------- 
 !
-      num_elapsed = 5
+      num_elapsed = 4
       call allocate_elapsed_times
 !
       elapse_labels(1) = 'Total time                  '
       elapse_labels(2) = 'Generation of spherical transform table'
       elapse_labels(3) = 'Generation of spherical mode and grid'
       elapse_labels(4) = 'Generation of FEM mesh data'
-      elapse_labels(5) = 'Generation of 3j symbol integration'
 !
 !
       call start_eleps_time(1)
@@ -65,11 +62,6 @@
       call para_gen_fem_mesh_for_sph
       call end_eleps_time(4)
 !
-!  ========= Tri-spectral harmonics integration ===================
-!C===
-      call start_eleps_time(5)
-      if(my_rank .eq. 0)  call gaunt_coriolis(l_truncation)
-      call end_eleps_time(5)
       call end_eleps_time(1)
 !
 !  ========= Construct subdomain information for viewer ==============
@@ -77,6 +69,6 @@
       call output_elapsed_times
       call calypso_MPI_finalize
 !
-      write(*,*) 'program normally terminated'
+      write(*,*) 'program is normally terminated'
 !
       end program generate_sph_grids_para
