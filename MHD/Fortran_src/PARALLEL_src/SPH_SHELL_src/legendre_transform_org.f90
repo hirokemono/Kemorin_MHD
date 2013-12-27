@@ -36,16 +36,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine leg_bwd_trans_vector_org(nb)
+      subroutine leg_bwd_trans_vector_org(nvector)
 !
       use legendre_bwd_trans_org
       use clear_schmidt_trans
+      use merge_polidal_toroidal_v
 !
-      integer(kind = kint), intent(in) :: nb
+      integer(kind = kint), intent(in) :: nvector
 !
 !
-      call clear_b_trans_vector(nb)
-      call legendre_b_trans_vector_org(nb)
+      call clear_b_trans_vector(nvector)
+      call legendre_b_trans_vector_org(nvector)
+      call const_vect_sph_b_trans(nvector, vr_rtm)
 !
       end subroutine leg_bwd_trans_vector_org
 !
@@ -71,9 +73,12 @@
 !
       use legendre_fwd_trans_org
       use clear_schmidt_trans
+      use merge_polidal_toroidal_v
 !
       integer(kind = kint), intent(in) :: nb
 !
+!
+      call prod_r_vect_sph_f_trans(nb, vr_rtm)
 !
       call clear_f_trans_vector(nb)
       call legendre_f_trans_vector_org(nb)

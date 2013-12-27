@@ -73,10 +73,10 @@
       integer(kind = kint), intent(in) :: ncomp_trans
 !
       integer(kind = kint) :: Nstacksmp(0:np_smp)
-      integer(kind = kint) :: nb, ncomp
+      integer(kind = kint) :: nvector, ncomp
 !
 !
-      nb = ncomp_trans / 3
+      nvector = ncomp_trans / 3
       ncomp = ncomp_trans*nidx_rtp(1)*nidx_rtp(2)
       Nstacksmp(0:np_smp) = ncomp_trans*irt_rtp_smp_stack(0:np_smp)
 !
@@ -98,18 +98,15 @@
       call start_eleps_time(22)
       if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
         if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_spin'
-        call leg_bwd_trans_vector_spin(nb)
+        call leg_bwd_trans_vector_spin(nvector)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         if(iflag_debug .gt. 0) write(*,*) 'schmidt_b_trans_vector_krin'
-        call leg_bwd_trans_vector_krin(nb)
+        call leg_bwd_trans_vector_krin(ncomp_trans, nvector)
       else
         if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_org'
-        call leg_bwd_trans_vector_org(nb)
+        call leg_bwd_trans_vector_org(nvector)
       end if
       call end_eleps_time(22)
-!      call leg_bwd_trans_vector_org(nb)
-!
-      call const_vect_sph_b_trans(nb, vr_rtm)
 !
 !      call check_vr_rtm(my_rank, ncomp_trans)
 !
@@ -139,17 +136,17 @@
       integer(kind = kint), intent(in) :: ncomp_trans
 !
       integer(kind = kint) :: Nstacksmp(0:np_smp)
-      integer(kind = kint) :: nb, ncomp
+      integer(kind = kint) :: nvector, ncomp_FFT
 !
 !
-      nb = ncomp_trans / 3
-      ncomp = ncomp_trans*nidx_rtp(1)*nidx_rtp(2)
+      nvector = ncomp_trans / 3
+      ncomp_FFT = ncomp_trans*nidx_rtp(1)*nidx_rtp(2)
       Nstacksmp(0:np_smp) = ncomp_trans*irt_rtp_smp_stack(0:np_smp)
 !
 !      call check_vr_rtp(my_rank, ncomp_trans)
       call start_eleps_time(24)
-      call forward_FFT_select(np_smp, Nstacksmp, ncomp, nidx_rtp(3),    &
-     &    vr_rtp)
+      call forward_FFT_select(np_smp, Nstacksmp, ncomp_FFT,             &
+     &    nidx_rtp(3), vr_rtp)
       call end_eleps_time(24)
 !      call check_vr_rtp(my_rank, ncomp_trans)
 !
@@ -160,18 +157,16 @@
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !      call check_vr_rtm(my_rank, ncomp_trans)
 !
-      call prod_r_vect_sph_f_trans(nb, vr_rtm)
-!
       call start_eleps_time(23)
       if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
         if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_spin'
-        call leg_fwd_trans_vector_spin(nb)
+        call leg_fwd_trans_vector_spin(nvector)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         if(iflag_debug .gt. 0) write(*,*) 'schmidt_f_trans_vector_krin'
-        call leg_fwd_trans_vector_krin(nb)
+        call leg_fwd_trans_vector_krin(ncomp_trans, nvector)
       else
         if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_org'
-        call leg_fwd_trans_vector_org(nb)
+        call leg_fwd_trans_vector_org(nvector)
       end if
       call end_eleps_time(23)
 !      call check_sp_rlm(my_rank, ncomp_trans)

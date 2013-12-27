@@ -53,10 +53,10 @@
       integer(kind = kint), intent(in) :: ncomp_trans
 !
       integer(kind = kint) :: Nstacksmp(0:np_smp)
-      integer(kind = kint) :: ncomp
+      integer(kind = kint) :: ncomp_FFT
 !
 !
-      ncomp = ncomp_trans*nidx_rtp(1)*nidx_rtp(2)
+      ncomp_FFT = ncomp_trans*nidx_rtp(1)*nidx_rtp(2)
       Nstacksmp(0:np_smp) = ncomp_trans*irt_rtp_smp_stack(0:np_smp)
       vr_rtp(1:ncomp_trans*nnod_rtp) = 0.0d0
 !
@@ -72,7 +72,7 @@
       if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
         call leg_bwd_trans_scalar_spin(ncomp_trans)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        call leg_bwd_trans_scalar_krin(ncomp_trans)
+        call leg_bwd_trans_scalar_krin(ncomp_trans, izero, ncomp_trans)
       else
         call leg_bwd_trans_scalar_org(ncomp_trans)
       end if
@@ -87,8 +87,8 @@
 !
 !      call check_vr_rtp(my_rank, ncomp_trans)
       call start_eleps_time(24)
-      call backward_FFT_select(np_smp, Nstacksmp, ncomp, nidx_rtp(3),   &
-     &    vr_rtp(1))
+      call backward_FFT_select(np_smp, Nstacksmp, ncomp_FFT,            &
+     &    nidx_rtp(3), vr_rtp(1))
       call end_eleps_time(24)
 !      call check_vr_rtp(my_rank, ncomp_trans)
 !
@@ -104,19 +104,19 @@
 !
 !
       integer(kind = kint) :: Nstacksmp(0:np_smp)
-      integer(kind = kint) :: ncomp
+      integer(kind = kint) :: ncomp_FFT
 !
 !
       vr_rtm(1:ncomp_trans*nnod_rtm) =      0.0d0
       Nstacksmp(0:np_smp) = ncomp_trans*irt_rtp_smp_stack(0:np_smp)
 !
-      ncomp = ncomp_trans*nidx_rtp(1)*nidx_rtp(2)
+      ncomp_FFT = ncomp_trans*nidx_rtp(1)*nidx_rtp(2)
 !
 !
 !      call check_vr_rtp(my_rank, ncomp_trans)
       call start_eleps_time(24)
-      call forward_FFT_select(np_smp, Nstacksmp, ncomp, nidx_rtp(3),    &
-     &    vr_rtp(1))
+      call forward_FFT_select(np_smp, Nstacksmp, ncomp_FFT,             &
+     &    nidx_rtp(3), vr_rtp(1))
       call end_eleps_time(24)
 !      call check_vr_rtp(my_rank, ncomp_trans)
 !
@@ -131,7 +131,7 @@
       if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
         call leg_fwd_trans_scalar_spin(ncomp_trans)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        call leg_fwd_trans_scalar_krin(ncomp_trans)
+        call leg_fwd_trans_scalar_krin(ncomp_trans, izero, ncomp_trans)
       else
         call leg_fwd_trans_scalar_org(ncomp_trans)
       end if

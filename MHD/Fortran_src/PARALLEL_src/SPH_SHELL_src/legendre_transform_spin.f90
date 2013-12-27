@@ -39,20 +39,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine leg_bwd_trans_vector_spin(nb)
+      subroutine leg_bwd_trans_vector_spin(nvector)
 !
       use ordering_schmidt_trans_spin
       use legendre_bwd_trans_spin
+      use merge_polidal_toroidal_v
 !
-      integer(kind = kint), intent(in) :: nb
+      integer(kind = kint), intent(in) :: nvector
 !
 !
-      call order_b_trans_vector_spin(nb)
-      call clear_b_trans_vector_spin(nb)
+      call order_b_trans_vector_spin(nvector)
+      call clear_b_trans_vector_spin(nvector)
 !
-      call legendre_b_trans_vector_spin(nb)
+      call legendre_b_trans_vector_spin(nvector)
 !
-      call back_b_trans_vector_spin(nb)
+      call back_b_trans_vector_spin(nvector)
+      call const_vect_sph_b_trans(nvector, vr_rtm)
 !
       end subroutine leg_bwd_trans_vector_spin
 !
@@ -82,9 +84,12 @@
 !
       use ordering_schmidt_trans_spin
       use legendre_fwd_trans_spin
+      use merge_polidal_toroidal_v
 !
       integer(kind = kint), intent(in) :: nb
 !
+!
+      call prod_r_vect_sph_f_trans(nb, vr_rtm)
 !
       call order_f_trans_vector_spin(nb)
       call clear_f_trans_vector_spin(nb)
