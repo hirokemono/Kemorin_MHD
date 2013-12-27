@@ -95,7 +95,7 @@
         call leg_bwd_trans_vector_krin(ncomp_trans, nvector)
       else
         if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_org'
-        call leg_bwd_trans_vector_org(nvector)
+        call leg_bwd_trans_vector_org(ncomp_trans, nvector)
       end if
       call end_eleps_time(22)
 !
@@ -157,7 +157,7 @@
         call leg_fwd_trans_vector_krin(ncomp_trans, nvector)
       else
         if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_org'
-        call leg_fwd_trans_vector_org(nvector)
+        call leg_fwd_trans_vector_org(ncomp_trans, nvector)
       end if
       call end_eleps_time(23)
 !      call check_sp_rlm(my_rank, ncomp_trans)

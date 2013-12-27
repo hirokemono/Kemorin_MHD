@@ -74,7 +74,7 @@
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         call leg_bwd_trans_scalar_krin(ncomp_trans, izero, ncomp_trans)
       else
-        call leg_bwd_trans_scalar_org(ncomp_trans)
+        call leg_bwd_trans_scalar_org(ncomp_trans, izero, ncomp_trans)
       end if
       call end_eleps_time(22)
 !
@@ -133,7 +133,7 @@
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         call leg_fwd_trans_scalar_krin(ncomp_trans, izero, ncomp_trans)
       else
-        call leg_fwd_trans_scalar_org(ncomp_trans)
+        call leg_fwd_trans_scalar_org(ncomp_trans, izero, ncomp_trans)
       end if
       call end_eleps_time(23)
 !      call check_sp_rlm(my_rank, ncomp_trans)
