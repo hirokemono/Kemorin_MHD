@@ -54,10 +54,12 @@
       use m_ctl_data_4_sph_trans
       use m_ctl_data_4_fields
       use m_ctl_data_4_pickup_sph
+      use skip_comment_f
       use set_control_4_pickup_sph
       use output_parallel_ucd_file
 !
       integer(kind = kint) :: ierr
+      character(len = kchara) :: tmpchara
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)
@@ -90,32 +92,25 @@
 !   setting for spherical transform
 !
       if(i_sph_transform_mode .gt. 0) then
-        if(     Legendre_trans_loop_ctl .eq. 'inner_radial_loop'        &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'Inner_radial_loop'        &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'INNER_RADIAL_LOOP') then
+        tmpchara = Legendre_trans_loop_ctl
+        if(     cmp_no_case(tmpchara,'inner_radial_loop') .gt. 0) then
           id_legendre_transfer = iflag_leg_krloop_inner
-        else if(Legendre_trans_loop_ctl .eq. 'outer_radial_loop'        &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'Outer_radial_loop'        &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'OUTER_RADIAL_LOOP') then
+        else if(cmp_no_case(tmpchara,'outer_radial_loop') .gt. 0) then
           id_legendre_transfer = iflag_leg_krloop_outer
-        else if(Legendre_trans_loop_ctl .eq. 'long_loop'                &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'Long_loop'                &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'LONG_LOOP') then
+        else if(cmp_no_case(tmpchara,'long_loop') .gt. 0) then
+          id_legendre_transfer = iflag_leg_long_loop
+        else if(cmp_no_case(tmpchara,'original_loop') .gt. 0) then
           id_legendre_transfer = iflag_leg_orginal_loop
         end if
       end if
 !
       if(i_FFT_package .gt. 0) then
-        if(     FFT_library_ctl .eq. 'ispack'                           &
-     &    .or.  FFT_library_ctl .eq. 'ISPACK') then
+        if(     cmp_no_case(FFT_library_ctl, 'ispack') .gt. 0) then
           iflag_FFT = iflag_ISPACK
-        else if(FFT_library_ctl .eq. 'fftpack'                          &
-     &    .or.  FFT_library_ctl .eq. 'FFTPACK') then
+        else if(cmp_no_case(FFT_library_ctl, 'fftpack') .gt. 0) then
           iflag_FFT = iflag_FFTPACK
-        else if(FFT_library_ctl .eq. 'fftw'                             &
-     &    .or.  FFT_library_ctl .eq. 'FFTW'                             &
-     &    .or.  FFT_library_ctl .eq. 'fftw3'                            &
-     &    .or.  FFT_library_ctl .eq. 'FFTW3') then
+        else if(cmp_no_case(FFT_library_ctl, 'fftw') .gt. 0             &
+     &     .or. cmp_no_case(FFT_library_ctl, 'fftw3') .gt. 0) then
           iflag_FFT = iflag_FFTW
         end if
       end if

@@ -56,8 +56,11 @@
 !!@n    using longer loop for original array order 
       integer(kind = kint), parameter :: iflag_leg_krloop_inner = 2
 !>      integer flag to perform Legendre transform 
-!@n     with inneromst LEgendre polynomial loop
+!@n     with inneromst Legendre polynomial loop
       integer(kind = kint), parameter :: iflag_leg_krloop_outer = 3
+!>      integer flag to perform Legendre transform 
+!@n     with longest loop
+      integer(kind = kint), parameter :: iflag_leg_long_loop =    4
 !
 !>      Integer flag for Legendre transform
       integer(kind = kint)                                              &

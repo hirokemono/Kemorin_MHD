@@ -54,6 +54,7 @@
       use legendre_transform_org
       use legendre_transform_krin
       use legendre_transform_spin
+      use legendre_transform_lgloop
       use merge_polidal_toroidal_v
       use spherical_SRs_N
       use const_coriolis_sph_rlm
@@ -100,8 +101,11 @@
         if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_spin'
         call leg_bwd_trans_vector_spin(ncomp_trans, nvector)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        if(iflag_debug .gt. 0) write(*,*) 'schmidt_b_trans_vector_krin'
+        if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_krin'
         call leg_bwd_trans_vector_krin(ncomp_trans, nvector)
+      else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
+        if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_long'
+        call leg_bwd_trans_vector_long(ncomp_trans, nvector)
       else
         if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_org'
         call leg_bwd_trans_vector_org(ncomp_trans, nvector)
@@ -162,8 +166,11 @@
         if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_spin'
         call leg_fwd_trans_vector_spin(ncomp_trans, nvector)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        if(iflag_debug .gt. 0) write(*,*) 'schmidt_f_trans_vector_krin'
+        if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_krin'
         call leg_fwd_trans_vector_krin(ncomp_trans, nvector)
+      else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
+        if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_long'
+        call leg_fwd_trans_vector_long(ncomp_trans, nvector)
       else
         if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_org'
         call leg_fwd_trans_vector_org(ncomp_trans, nvector)

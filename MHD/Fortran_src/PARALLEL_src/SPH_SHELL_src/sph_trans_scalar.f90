@@ -34,6 +34,7 @@
       use legendre_transform_org
       use legendre_transform_krin
       use legendre_transform_spin
+      use legendre_transform_lgloop
       use spherical_SRs_N
       use calypso_mpi
       use m_schmidt_poly_on_rtm
@@ -73,6 +74,8 @@
         call leg_bwd_trans_scalar_spin(ncomp_trans, izero, ncomp_trans)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         call leg_bwd_trans_scalar_krin(ncomp_trans, izero, ncomp_trans)
+      else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
+        call leg_bwd_trans_scalar_long(ncomp_trans, izero, ncomp_trans)
       else
         call leg_bwd_trans_scalar_org(ncomp_trans, izero, ncomp_trans)
       end if
@@ -132,6 +135,8 @@
         call leg_fwd_trans_scalar_spin(ncomp_trans, izero, ncomp_trans)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         call leg_fwd_trans_scalar_krin(ncomp_trans, izero, ncomp_trans)
+      else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
+        call leg_fwd_trans_scalar_long(ncomp_trans, izero, ncomp_trans)
       else
         call leg_fwd_trans_scalar_org(ncomp_trans, izero, ncomp_trans)
       end if

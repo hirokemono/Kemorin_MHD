@@ -68,14 +68,11 @@
               vr_rtm_fdout(ip_rtm,3*nd-2) = vr_rtm_fdout(ip_rtm,3*nd-2) &
      &                     + sp_rlm_fdout(i_rlm,3*nd-2) * pg_tmp
 !
-!              vt_rtm(ip_rtm) = vt_rtm(ip_rtm)                          &
               vr_rtm_fdout(ip_rtm,3*nd-1) = vr_rtm_fdout(ip_rtm,3*nd-1) &
      &                     + sp_rlm_fdout(i_rlm,3*nd-1) * dp_tmp
 !
-!              vp_rtm(ip_rtm) = vp_rtm(ip_rtm)                          &
               vr_rtm_fdout(ip_rtm,3*nd  ) = vr_rtm_fdout(ip_rtm,3*nd  ) &
      &                     - sp_rlm_fdout(i_rlm,3*nd  ) * dp_tmp
-!
             end do
 !
             do l_rtm = 1, nidx_rtm(2)
@@ -87,11 +84,9 @@
 !
               i_rlm = j_rlm + (k_rtm-1) * nidx_rlm(2)
 !
-!              vt_rtm(in_rtm) = vt_rtm(in_rtm)                          &
               vr_rtm_fdout(in_rtm,3*nd-1) = vr_rtm_fdout(in_rtm,3*nd-1) &
      &                       + sp_rlm_fdout(i_rlm,3*nd  ) * pg_tmp
 !
-!              vp_rtm(in_rtm) = vp_rtm(in_rtm)                          &
               vr_rtm_fdout(in_rtm,3*nd  ) = vr_rtm_fdout(in_rtm,3*nd  ) &
      &                       + sp_rlm_fdout(i_rlm,3*nd-1) * pg_tmp
 !

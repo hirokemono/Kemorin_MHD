@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!     subroutine s_set_control_sph_data_MHD
-!!      subroutine set_ctl_params_pick_circle
+!!     subroutine set_ctl_params_pick_circle
 !!     subroutine set_ctl_params_dynamobench
 !!     subroutine check_SPH_MHD_dependencies
 !!@endverbatim
@@ -43,6 +43,7 @@
       use m_field_data_IO
       use m_sph_boundary_input_data
 !
+      use skip_comment_f
       use set_control_sph_data
       use set_phys_name_4_sph_trans
       use FFT_selector
@@ -50,6 +51,7 @@
       use add_sph_MHD_fields_2_ctl
 !
       integer(kind = kint) :: ierr
+      character(len = kchara) :: tmpchara
 !
 !   overwrite restart header for magnetic field extension
 !
@@ -85,32 +87,25 @@
 !
 !
       if(i_sph_transform_mode .gt. 0) then
-        if(     Legendre_trans_loop_ctl .eq. 'inner_radial_loop'        &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'Inner_radial_loop'        &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'INNER_RADIAL_LOOP') then
+        tmpchara = Legendre_trans_loop_ctl
+        if(     cmp_no_case(tmpchara,'inner_radial_loop') .gt. 0) then
           id_legendre_transfer = iflag_leg_krloop_inner
-        else if(Legendre_trans_loop_ctl .eq. 'outer_radial_loop'        &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'Outer_radial_loop'        &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'OUTER_RADIAL_LOOP') then
+        else if(cmp_no_case(tmpchara,'outer_radial_loop') .gt. 0) then
           id_legendre_transfer = iflag_leg_krloop_outer
-        else if(Legendre_trans_loop_ctl .eq. 'long_loop'                &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'Long_loop'                &
-     &    .or.  Legendre_trans_loop_ctl .eq. 'LONG_LOOP') then
+        else if(cmp_no_case(tmpchara,'long_loop') .gt. 0) then
+          id_legendre_transfer = iflag_leg_long_loop
+        else if(cmp_no_case(tmpchara,'original_loop') .gt. 0) then
           id_legendre_transfer = iflag_leg_orginal_loop
         end if
       end if
 !
       if(i_FFT_package .gt. 0) then
-        if(     FFT_library_ctl .eq. 'ispack'                           &
-     &    .or.  FFT_library_ctl .eq. 'ISPACK') then
+        if(     cmp_no_case(FFT_library_ctl, 'ispack') .gt. 0) then
           iflag_FFT = iflag_ISPACK
-        else if(FFT_library_ctl .eq. 'fftpack'                          &
-     &    .or.  FFT_library_ctl .eq. 'FFTPACK') then
+        else if(cmp_no_case(FFT_library_ctl, 'fftpack') .gt. 0) then
           iflag_FFT = iflag_FFTPACK
-        else if(FFT_library_ctl .eq. 'fftw'                             &
-     &    .or.  FFT_library_ctl .eq. 'FFTW'                             &
-     &    .or.  FFT_library_ctl .eq. 'fftw3'                            &
-     &    .or.  FFT_library_ctl .eq. 'FFTW3') then
+        else if(cmp_no_case(FFT_library_ctl, 'fftw') .gt. 0             &
+     &     .or. cmp_no_case(FFT_library_ctl, 'fftw3') .gt. 0) then
           iflag_FFT = iflag_FFTW
         end if
       end if
@@ -208,21 +203,18 @@
       use m_circle_transform
       use t_phys_data
       use ordering_field_by_viz
+      use skip_comment_f
 !
 !
       iflag_circle_coord = iflag_circle_sph
       if (i_circle_coord .ne. 0) then
-        if(pick_circle_coord_ctl .eq. 'spherical'                       &
-     &     .or. pick_circle_coord_ctl .eq. 'Spherical'                  &
-     &     .or. pick_circle_coord_ctl .eq. 'SPHERICAL'                  &
-     &     .or. pick_circle_coord_ctl .eq. 'rtp'                        &
-     &     .or. pick_circle_coord_ctl .eq. 'RTP') then
+        if(    cmp_no_case(pick_circle_coord_ctl,'spherical') .gt. 0    &
+     &    .or. cmp_no_case(pick_circle_coord_ctl,'rtp') .gt.       0    &
+         ) then
           iflag_circle_coord = iflag_circle_sph
-        else if(pick_circle_coord_ctl .eq. 'cyrindrical'                &
-     &     .or. pick_circle_coord_ctl .eq. 'Cyrindrical'                &
-     &     .or. pick_circle_coord_ctl .eq. 'CYRINDRICAL'                &
-     &     .or. pick_circle_coord_ctl .eq. 'spz'                        &
-     &     .or. pick_circle_coord_ctl .eq. 'SPZ') then
+        else if(cmp_no_case(pick_circle_coord_ctl,'cyrindrical') .gt. 0 &
+      &    .or. cmp_no_case(pick_circle_coord_ctl,'spz') .gt.         0 &
+         ) then
           iflag_circle_coord = iflag_circle_cyl
         end if
       end if

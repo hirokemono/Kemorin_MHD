@@ -188,8 +188,8 @@
       use m_machine_parameter
       use m_work_4_sph_trans
 !
-      real(kind = kreal) :: stime, etime(1:3), etime_shortest
-      real(kind = kreal) :: etime_trans(1:3)
+      real(kind = kreal) :: stime, etime(1:4), etime_shortest
+      real(kind = kreal) :: etime_trans(1:4)
 !
 !
       id_legendre_transfer = iflag_leg_orginal_loop
@@ -210,6 +210,12 @@
       call sph_forward_trans_4_MHD
       etime(id_legendre_transfer) = MPI_WTIME() - stime
 !
+      id_legendre_transfer = iflag_leg_long_loop
+      stime = MPI_WTIME()
+      call sph_back_trans_4_MHD
+      call sph_forward_trans_4_MHD
+      etime(id_legendre_transfer) = MPI_WTIME() - stime
+!
       call MPI_allREDUCE (etime, etime_trans, ifour,                    &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
@@ -224,25 +230,33 @@
         id_legendre_transfer = iflag_leg_krloop_outer
         etime_shortest =       etime_trans(iflag_leg_krloop_outer)
       end if
+      if(etime_trans(iflag_leg_long_loop) .lt. etime_shortest) then
+        id_legendre_transfer = iflag_leg_long_loop
+        etime_shortest =       etime_trans(iflag_leg_long_loop)
+      end if
 !
       if(my_rank .gt. 0) return
         write(*,'(a,i4)', advance='no')                                 &
      &         'Selected id_legendre_transfer: ', id_legendre_transfer
 !
         if     (id_legendre_transfer .eq. iflag_leg_orginal_loop) then
-          write(*,'(a,a)') ' (LONG_LOOP) '
+          write(*,'(a,a)') ' (ORIGINAL_LOOP) '
         else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
           write(*,'(a,a)') ' (INNER_RADIAL_LOOP) '
         else if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
           write(*,'(a,a)') ' (OUTER_RADIAL_LOOP) '
+        else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
+          write(*,'(a,a)') ' (LONG_LOOP) '
         end if
 !
-        write(*,*) '1: elapsed by original loop: ',                     &
+        write(*,*) '1: elapsed by original loop:     ',                 &
      &            etime_trans(iflag_leg_orginal_loop)
         write(*,*) '2: elapsed by inner radius loop: ',                 &
      &            etime_trans(iflag_leg_krloop_inner)
         write(*,*) '3: elapsed by outer radius loop: ',                 &
      &            etime_trans(iflag_leg_krloop_outer)
+        write(*,*) '4: elapsed by long loop:         ',                 &
+     &            etime_trans(iflag_leg_long_loop)
 !
       end subroutine select_legendre_transform
 !
