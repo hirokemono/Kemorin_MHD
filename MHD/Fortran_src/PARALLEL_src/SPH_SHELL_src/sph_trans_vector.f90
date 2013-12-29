@@ -48,10 +48,7 @@
       use m_spheric_param_smp
       use m_work_4_sph_trans
       use FFT_selector
-      use legendre_transform_org
-      use legendre_transform_krin
-      use legendre_transform_spin
-      use legendre_transform_lgloop
+      use legendre_transform_select
       use merge_polidal_toroidal_v
       use spherical_SRs_N
 !
@@ -88,19 +85,8 @@
 !      call check_sp_rlm(my_rank, ncomp_trans)
 !
       call start_eleps_time(22)
-      if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_spin'
-        call leg_bwd_trans_vector_spin(ncomp_trans, nvector)
-      else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_krin'
-        call leg_bwd_trans_vector_krin(ncomp_trans, nvector)
-      else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
-        if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_long'
-        call leg_bwd_trans_vector_long(ncomp_trans, nvector)
-      else
-        if(iflag_debug .gt. 0) write(*,*) 'leg_bwd_trans_vector_org'
-        call leg_bwd_trans_vector_org(ncomp_trans, nvector)
-      end if
+      if(iflag_debug .gt. 0) write(*,*) 'sel_vector_bwd_legendre_trans'
+      call sel_vector_bwd_legendre_trans(ncomp_trans, nvector)
       call end_eleps_time(22)
 !
 !      call check_vr_rtm(my_rank, ncomp_trans)
@@ -153,19 +139,8 @@
 !      call check_vr_rtm(my_rank, ncomp_trans)
 !
       call start_eleps_time(23)
-      if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_spin'
-        call leg_fwd_trans_vector_spin(ncomp_trans, nvector)
-      else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_krin'
-        call leg_fwd_trans_vector_krin(ncomp_trans, nvector)
-     else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
-        if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_long'
-        call leg_fwd_trans_vector_long(ncomp_trans, nvector)
-     else
-        if(iflag_debug .gt. 0) write(*,*) 'leg_fwd_trans_vector_org'
-        call leg_fwd_trans_vector_org(ncomp_trans, nvector)
-      end if
+      if(iflag_debug .gt. 0) write(*,*) 'sel_vector_fwd_legendre_trans'
+      call sel_vector_fwd_legendre_trans(ncomp_trans, nvector)
       call end_eleps_time(23)
 !      call check_sp_rlm(my_rank, ncomp_trans)
 !

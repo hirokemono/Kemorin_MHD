@@ -1,5 +1,5 @@
-!>@file   m_work_4_sph_trans_fldout.f90
-!!@brief  module m_work_4_sph_trans_fldout
+!>@file   m_work_4_sph_trans_fdout.f90
+!!@brief  module m_work_4_sph_trans_fdout
 !!
 !!@author H. Matsui
 !!@date Programmed in July, 2007
@@ -8,11 +8,11 @@
 !!       (innermost loop is field and radius)
 !!
 !!@verbatim
-!!      subroutine allocate_work_sph_trans_krin(nb_sph_trans)
-!!      subroutine deallocate_work_sph_trans_krin
+!!      subroutine allocate_work_sph_trans_fdout(nb_sph_trans)
+!!      subroutine deallocate_work_sph_trans_fdout
 !!
-!!      subroutine clear_b_trans_field_fldout(nb)
-!!      subroutine clear_f_trans_field_fldout(nb)
+!!      subroutine clear_b_trans_field_fdout(ncomp)
+!!      subroutine clear_f_trans_field_fdout(ncomp)
 !!
 !!    Data for single vector field
 !!      radial component:      vr_rtp(3*i_rtp-2)
@@ -32,9 +32,9 @@
 !!
 !!@n @param  nb_sph_trans
 !!             maximum number of fields for Legendre transform
-!!@n @param  nb  number of fields to be transformed
+!!@n @param  ncomp  number of fields to be transformed
 !
-      module m_work_4_sph_trans_fldout
+      module m_work_4_sph_trans_fdout
 !
       use m_precision
       use m_constants
@@ -58,7 +58,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_work_sph_trans_krin(nb_sph_trans)
+      subroutine allocate_work_sph_trans_fdout(nb_sph_trans)
 !
       use m_spheric_parameter
 !
@@ -71,29 +71,29 @@
       allocate(sp_rlm_fdout(nnod_rlm,3*nb_sph_trans))
       sp_rlm_fdout = 0.0d0
 !
-      end subroutine allocate_work_sph_trans_krin
+      end subroutine allocate_work_sph_trans_fdout
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_work_sph_trans_krin
+      subroutine deallocate_work_sph_trans_fdout
 !
       deallocate(sp_rlm_fdout, vr_rtm_fdout)
 !
-      end subroutine deallocate_work_sph_trans_krin
+      end subroutine deallocate_work_sph_trans_fdout
 !
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine clear_b_trans_field_fldout(nb)
+      subroutine clear_b_trans_field_fdout(ncomp)
 !
       use m_spheric_parameter
 !
-      integer(kind = kint), intent(in) :: nb
+      integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint) :: nd, inod
 !
 !
 !$omp parallel private(nd,inod)
-      do nd = 1, nb
+      do nd = 1, ncomp
 !$omp do
         do inod = 1, nnod_rtm
           vr_rtm_fdout(inod,nd) = zero
@@ -102,21 +102,21 @@
       end do
 !$omp end parallel
 !
-      end subroutine clear_b_trans_field_fldout
+      end subroutine clear_b_trans_field_fdout
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine clear_f_trans_field_fldout(nb)
+      subroutine clear_f_trans_field_fdout(ncomp)
 !
       use m_spheric_parameter
 !
-      integer(kind = kint), intent(in) :: nb
+      integer(kind = kint), intent(in) :: ncomp
 !
       integer(kind = kint) ::  inod, nd
 !
 !$omp parallel private(nd,inod)
-      do nd = 1, nb
+      do nd = 1, ncomp
 !$omp do
         do inod = 1, nnod_rlm
           sp_rlm_fdout(inod,nd) = zero
@@ -125,8 +125,8 @@
       end do
 !$omp end parallel
 !
-      end subroutine clear_f_trans_field_fldout
+      end subroutine clear_f_trans_field_fdout
 !
 ! -----------------------------------------------------------------------
 !
-      end module m_work_4_sph_trans_fldout
+      end module m_work_4_sph_trans_fdout

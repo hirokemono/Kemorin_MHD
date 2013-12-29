@@ -139,11 +139,10 @@
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       k = 0
-     write(*,*) 'field data at pole'
-     do i = 1, nidx_rj(1)
-       do nd = 1, nb
-       k = k+1
-       write(my_rank+50,*) nd, i, v_np_local(k), v_n_pole(k), &
+      do i = 1, nidx_rj(1)
+        do nd = 1, nb
+          k = k+1
+          write(my_rank+50,*) nd, i, v_np_local(k), v_n_pole(k), &
      &                     v_sp_local(k), v_s_pole(k)
         end do
       end do

@@ -206,7 +206,6 @@
       do ip = 1, np_smp
         ist = nvector*inod_rlm_smp_stack(ip-1) + 1
         ied = nvector*inod_rlm_smp_stack(ip)
-!cdir nodep
         do inum = ist, ied
           nd =    1 + mod( (inum-1),nvector)
           inod =  1 + (inum - nd) / nvector
@@ -242,7 +241,6 @@
       do ip = 1, np_smp
         ist = nscalar*inod_rlm_smp_stack(ip-1) + 1
         ied = nscalar*inod_rlm_smp_stack(ip)
-!cdir nodep
         do inum = ist, ied
           nd =    1 + mod( (inum-1),nscalar)
           inod =  1 + (inum - nd) / nscalar

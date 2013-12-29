@@ -48,6 +48,7 @@
       use set_control_platform_data
       use set_fixed_time_step_params
       use FFT_selector
+      use legendre_transform_select
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
@@ -92,16 +93,7 @@
 !   setting for spherical transform
 !
       if(i_sph_transform_mode .gt. 0) then
-        tmpchara = Legendre_trans_loop_ctl
-        if(     cmp_no_case(tmpchara,'inner_radial_loop') .gt. 0) then
-          id_legendre_transfer = iflag_leg_krloop_inner
-        else if(cmp_no_case(tmpchara,'outer_radial_loop') .gt. 0) then
-          id_legendre_transfer = iflag_leg_krloop_outer
-        else if(cmp_no_case(tmpchara,'long_loop') .gt. 0) then
-          id_legendre_transfer = iflag_leg_long_loop
-        else if(cmp_no_case(tmpchara,'original_loop') .gt. 0) then
-          id_legendre_transfer = iflag_leg_orginal_loop
-        end if
+        call set_legendre_trans_mode_ctl(Legendre_trans_loop_ctl)
       end if
 !
       if(i_FFT_package .gt. 0) then

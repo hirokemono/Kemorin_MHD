@@ -94,7 +94,7 @@
           write(*,'(a,a)') ' (ISPACK) '
         end if
 !
-        write(*,*) '1: elapsed by FFTPACK: ',                           &
+        write(*,*)   '1: elapsed by FFTPACK: ',                         &
      &            etime_fft(iflag_FFTPACK)
         if(etime_fft(iflag_FFTW) .gt. zero) then
           write(*,*) '2: elapsed by FFTW3:   ', etime_fft(iflag_FFTW)

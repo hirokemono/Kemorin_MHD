@@ -47,6 +47,7 @@
       use set_control_sph_data
       use set_phys_name_4_sph_trans
       use FFT_selector
+      use legendre_transform_select
       use add_nodal_fields_4_MHD
       use add_sph_MHD_fields_2_ctl
 !
@@ -86,17 +87,9 @@
       end if
 !
 !
+      
       if(i_sph_transform_mode .gt. 0) then
-        tmpchara = Legendre_trans_loop_ctl
-        if(     cmp_no_case(tmpchara,'inner_radial_loop') .gt. 0) then
-          id_legendre_transfer = iflag_leg_krloop_inner
-        else if(cmp_no_case(tmpchara,'outer_radial_loop') .gt. 0) then
-          id_legendre_transfer = iflag_leg_krloop_outer
-        else if(cmp_no_case(tmpchara,'long_loop') .gt. 0) then
-          id_legendre_transfer = iflag_leg_long_loop
-        else if(cmp_no_case(tmpchara,'original_loop') .gt. 0) then
-          id_legendre_transfer = iflag_leg_orginal_loop
-        end if
+        call set_legendre_trans_mode_ctl(Legendre_trans_loop_ctl)
       end if
 !
       if(i_FFT_package .gt. 0) then

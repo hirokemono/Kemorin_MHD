@@ -31,10 +31,7 @@
       use m_spheric_param_smp
       use m_work_4_sph_trans
       use FFT_selector
-      use legendre_transform_org
-      use legendre_transform_krin
-      use legendre_transform_spin
-      use legendre_transform_lgloop
+      use legendre_transform_select
       use spherical_SRs_N
       use calypso_mpi
       use m_schmidt_poly_on_rtm
@@ -70,15 +67,8 @@
 !
 !      call check_sp_rlm(my_rank, ncomp_trans)
       call start_eleps_time(22)
-      if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        call leg_bwd_trans_scalar_spin(ncomp_trans, izero, ncomp_trans)
-      else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        call leg_bwd_trans_scalar_krin(ncomp_trans, izero, ncomp_trans)
-      else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
-        call leg_bwd_trans_scalar_long(ncomp_trans, izero, ncomp_trans)
-      else
-        call leg_bwd_trans_scalar_org(ncomp_trans, izero, ncomp_trans)
-      end if
+      call sel_scalar_bwd_legendre_trans(ncomp_trans, izero,            &
+     &    ncomp_trans)
       call end_eleps_time(22)
 !
 !      call check_vr_rtm(my_rank, ncomp_trans)
@@ -110,9 +100,7 @@
       integer(kind = kint) :: ncomp_FFT
 !
 !
-      vr_rtm(1:ncomp_trans*nnod_rtm) =      0.0d0
       Nstacksmp(0:np_smp) = ncomp_trans*irt_rtp_smp_stack(0:np_smp)
-!
       ncomp_FFT = ncomp_trans*nidx_rtp(1)*nidx_rtp(2)
 !
 !
@@ -131,15 +119,8 @@
 !      call check_vr_rtm(my_rank, ncomp_trans)
 !
       call start_eleps_time(23)
-      if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        call leg_fwd_trans_scalar_spin(ncomp_trans, izero, ncomp_trans)
-      else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        call leg_fwd_trans_scalar_krin(ncomp_trans, izero, ncomp_trans)
-      else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
-        call leg_fwd_trans_scalar_long(ncomp_trans, izero, ncomp_trans)
-      else
-        call leg_fwd_trans_scalar_org(ncomp_trans, izero, ncomp_trans)
-      end if
+      call sel_scalar_fwd_legendre_trans(ncomp_trans, izero,            &
+     &    ncomp_trans)
       call end_eleps_time(23)
 !      call check_sp_rlm(my_rank, ncomp_trans)
 !
