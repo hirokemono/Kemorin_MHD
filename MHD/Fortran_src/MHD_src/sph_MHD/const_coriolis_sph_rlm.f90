@@ -86,6 +86,7 @@
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call inner_core_rot_z_coriolis_rlm(ncomp_trans, sp_rlm)
       end if
+!
 !      call sum_div_coriolis_rlm_10(ncomp_trans, sp_rlm)
 !      call sum_r_coriolis_bc_rlm_10(ncomp_trans, kr_in_U_rlm,          &
 !     &    sp_rlm, d_cor_in_rlm)
