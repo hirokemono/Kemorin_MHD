@@ -250,7 +250,7 @@
         write(*,*) '4: elapsed by long loop:          ',                &
      &            etime_trans(iflag_leg_long_loop)
         write(*,*) '5: elapsed by outmost field loop: ',                &
-     &            etime_trans(iflag_leg_long_loop)
+     &            etime_trans(iflag_lef_fdout_loop)
 !
       end subroutine select_legendre_transform
 !

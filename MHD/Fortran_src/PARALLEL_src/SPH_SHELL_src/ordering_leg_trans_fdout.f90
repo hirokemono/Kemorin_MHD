@@ -127,7 +127,7 @@
 !
 !$omp parallel private(nd)
       do nd = 1, nvector
-!$omp do private(ist,ied,i_rtm_0,k_rtm,l_rtm,inod,lnod,m_rtm)
+!$omp do private(ip,ist,ied,i_rtm_0,k_rtm,l_rtm,inod,lnod,m_rtm)
         do ip = 1, np_smp
           ist = inod_rtm_smp_stack(ip-1) + 1
           ied = inod_rtm_smp_stack(ip)
