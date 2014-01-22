@@ -125,7 +125,6 @@
 !
       subroutine set_rot_earth_4_sph(rotate)
 !
-      use m_coriolis_terms_rlm
       use m_sph_spectr_data
 !
       real(kind = kreal), intent(in) :: rotate(3)

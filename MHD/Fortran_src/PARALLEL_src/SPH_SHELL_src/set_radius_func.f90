@@ -62,6 +62,8 @@
       call set_radius_dat_4_sph_dynamo
 !
 !   Choose radial grid mode
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &      write(*,*) 'set_dr_for_nonequi'
       call set_dr_for_nonequi
 !
       if(iflag_debug .eq. iflag_full_msg) call check_radial_fung_rj

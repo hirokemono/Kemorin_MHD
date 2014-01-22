@@ -105,6 +105,7 @@
 !
       call init_radial_sph_interpolation
 !
+!
 !* -----  set integrals for coriolis -----------------
 !*
       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'

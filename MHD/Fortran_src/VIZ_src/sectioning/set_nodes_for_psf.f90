@@ -1,18 +1,22 @@
-!set_nodes_for_psf.f90
-!      module set_nodes_for_psf
+!>@file   set_nodes_for_psf.f90
+!!@brief  module set_nodes_for_psf
+!!
+!!@date  Programmed by H.Matsui in June, 2006
 !
-!      Written by H. Matsui on June, 2006
-!
-!      subroutine count_nodes_4_psf(numnod, numedge, nnod_4_edge,       &
-!     &          ie_edge, num_surf, inod_stack_sf_grp)
-!      subroutine count_nodes_4_iso(numnod, numedge, nnod_4_edge,       &
-!      &         ie_edge)
-!
-!      subroutine set_nodes_4_psf(numnod, numedge, nnod_4_edge,         &
-!      &         inod_global, xx, ie_edge, num_surf, ntot_node_sf_grp,  &
-!      &         inod_stack_sf_grp, inod_surf_grp)
-!      subroutine set_nodes_4_iso(numnod, numedge, nnod_4_edge,         &
-!     &          inod_global, xx, ie_edge)
+!>@brief Check node positions to generate sections
+!!
+!!@verbatim
+!!      subroutine count_nodes_4_psf(numnod, numedge, nnod_4_edge,      &
+!!     &          ie_edge, num_surf, inod_stack_sf_grp)
+!!      subroutine count_nodes_4_iso(numnod, numedge, nnod_4_edge,      &
+!!      &         ie_edge)
+!!
+!!      subroutine set_nodes_4_psf(numnod, numedge, nnod_4_edge,        &
+!!      &         inod_global, xx, ie_edge, num_surf, ntot_node_sf_grp, &
+!!      &         inod_stack_sf_grp, inod_surf_grp)
+!!      subroutine set_nodes_4_iso(numnod, numedge, nnod_4_edge,        &
+!!     &          inod_global, xx, ie_edge)
+!!@endverbatim
 !
       module set_nodes_for_psf
 !
@@ -185,10 +189,11 @@
      &        coef_on_edge_psf, iflag_n_on_e_psf(1,i),                  &
      &        id_n_on_e_psf(1,i) )
 !
-          call node_on_edge_4_quad_psf_smp(numnod, numedge,             &
+          call set_node_on_edge_4_quad_psf(numnod, numedge,             &
      &        nnod_4_edge, ie_edge, xx, const_psf(1,i),                 &
-     &        nnod_on_edge_psf_tot, istack_n_on_e_psf_smp(ist_smp),     &
-     &        iedge_4_nod_psf, coef_on_edge_psf)
+     &        nnod_on_edge_psf_tot, np_smp,                             &
+     &        istack_n_on_e_psf_smp(ist_smp), iedge_4_nod_psf,          &
+     &        coef_on_edge_psf)
 !
           call set_nod_on_nod_4_edge_psf(numnod, numedge,               &
      &          nnod_4_edge, ie_edge, nedge_search_psf_tot,             &

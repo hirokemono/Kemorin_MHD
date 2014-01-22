@@ -20,13 +20,14 @@
 !!
 !!  ---------------------------------------------------------------------
 !!      Data format
-!!       line 1:  Number of total boundary conditiones to be defedined
+!!       line 1:  Number of total boundary conditions to be defined
 !!
-!!       line 2:     Field name to define a boundary condition
-!!       line 3:     Number of modes for each boundary conditions
-!!       line 4:     Place to define a boundary condision
-!!       line 5...:  Spectrum data for the boundary conditinos
-!!                  degrre i, order, m, harmonics coefficients
+!!       line 2:     Field name to define the first boundary condition
+!!       line 3:     Place to define the first boundary condition
+!!       line 4:     Number of spherical harmonics modes 
+!!                    for each boundary condition
+!!       line 5...:  Spectrum data for the boundary conditions 
+!!                  (degree $l$, order $m$, and harmonics coefficients)
 !!        Return to 2...
 !!  ---------------------------------------------------------------------
 !!@endverbatim
