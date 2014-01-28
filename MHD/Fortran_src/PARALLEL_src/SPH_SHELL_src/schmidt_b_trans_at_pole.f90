@@ -85,7 +85,6 @@
       v_np_local = zero
       v_sp_local = zero
 !
-      write(50+my_rank,*) 'ist_rtm_order_zero', ist_rtm_order_zero
       if(ist_rtm_order_zero .le. 0) return
 !!$omp parallel do private(k_rlm,nd,kr_nd,jst,jed,j_rlm,i_rlm)
       do k_rlm = 1, nidx_rlm(1)
@@ -101,9 +100,6 @@
      &                        + sp_rlm(i_rlm) * P_pole_rtm(1,j_rlm)
             v_sp_local(kr_nd) = v_sp_local(kr_nd)                       &
      &                        + sp_rlm(i_rlm) * P_pole_rtm(2,j_rlm)
-            if(nd.eq.1 .and. idx_gl_1d_rlm_j(j_rlm,1).eq.0)   &
-     &    write(50+my_rank,*) nd,j_rlm, k_rlm,  idx_gl_1d_rtm_r(k_rlm), &
-     &    sp_rlm(i_rlm),  v_np_local(kr_nd),  v_sp_local(kr_nd)
           end do
         end do
       end do

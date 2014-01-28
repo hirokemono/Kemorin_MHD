@@ -236,6 +236,7 @@
       integer(kind = kint) :: igrp, iflag
 !
 !
+      if(iflag_bc_scalar .ne. iflag_undefined_bc) return
       do igrp = 1, num_bc_field_ctl
         iflag = cmp_no_case(bc_ctls(igrp)%bc_field, field_name)         &
      &        * cmp_no_case(bc_ctls(igrp)%bc_group, ref_nod_grp)
@@ -266,6 +267,7 @@
       integer(kind = kint) :: igrp, iflag
 !
 !
+      if(iflag_bc_scalar .ne. iflag_undefined_bc) return
       do igrp = 1, num_bc_field_ctl
         iflag = cmp_no_case(bc_ctls(igrp)%bc_field, field_name)         &
      &        * (cmp_no_case(bc_ctls(igrp)%bc_group, ref_nod_grp)       &
@@ -274,6 +276,7 @@
           iflag_bc_scalar =  iflag_fixed_flux
           call set_bc_for_sph_scalar_by_file                            &
      &                (bc_ctls(igrp), jmax, bc_data)
+          return
         end if
       end do
 !

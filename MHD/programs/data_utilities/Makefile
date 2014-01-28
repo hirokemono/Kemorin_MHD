@@ -9,9 +9,10 @@ PSF_utils \
 FEM_utils \
 SPH_MHD_utils \
 \
-sph_transform \
-sph_spectr    \
-zonal_spectr  \
+sph_transform     \
+sph_spectr        \
+sph_initial_field \
+zonal_spectr      \
 plane_model
 
 
@@ -47,7 +48,7 @@ target_list:
 
 target_task:
 	@echo data_utils: 'assembles psf_utils fem_utils sph_utils' \
-	'zonal_trans sph_trans sph_data_util plane_utils' \
+	'zonal_trans sph_trans sph_data_util sph_initial plane_utils' \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \

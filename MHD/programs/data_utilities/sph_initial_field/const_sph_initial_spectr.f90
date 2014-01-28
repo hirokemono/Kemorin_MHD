@@ -19,6 +19,10 @@
 !!       inod = local_sph_data_address(k, j_lc)
 !!         Return address of sphectrum data
 !!
+!!       nidx_rj(1) :: Number of radial grids
+!!       rr = radius_1d_rj_r(k)
+!!         Return radius at global grid address k
+!!
 !!       Temperature :: d_rj(:,ipol%i_temp)
 !!       Composition :: d_rj(:,ipol%i_light)
 !!

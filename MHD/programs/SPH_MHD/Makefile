@@ -10,9 +10,6 @@ TARGET_SPH_MHD_MINI =   sph_mhd_nosnap
 
 TARGET_SPH_LICV =       sph_licv
 
-TARGET_SPH_INITIAL =   sph_initial_field
-
-
 LIBS_SPH_MHD = \
 '$$(LIB_MHD)'    \
 '$$(LIB_VIZ)'     \
@@ -61,12 +58,6 @@ main_sph_linear_cv.o \
 analyzer_sph_licv.o \
 SPH_analyzer_licv.o
 
-MOD_SPH_INITIAL = \
-main_sph_initial_fld.o \
-analyzer_sph_initial_fld.o \
-SPH_analyzer_const_initial.o \
-const_sph_initial_spectr.o
-
 
 #
 #  -------------------------------------------------------------------------
@@ -80,7 +71,6 @@ target_list:
 	@echo 'TARGET_SPH_LICV =       $$(BUILDDIR)/$(TARGET_SPH_LICV)'      >> $(MAKENAME)
 	@echo 'TARGET_SPH_MHD_MINI =   $$(BUILDDIR)/$(TARGET_SPH_MHD_MINI)'  >> $(MAKENAME)
 	@echo 'TARGET_SPH_MHD =        $$(BUILDDIR)/$(TARGET_SPH_MHD)'       >> $(MAKENAME)
-	@echo 'TARGET_SPH_INITIAL =    $$(BUILDDIR)/$(TARGET_SPH_INITIAL)'   >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
@@ -88,7 +78,6 @@ target_task:
 	 '$$(TARGET_SPH_MHD_FULL)'   \
 	 '$$(TARGET_SPH_LICV)'       \
 	 '$$(TARGET_SPH_MHD)'        \
-	 '$$(TARGET_SPH_INITIAL)'    \
 	 '$$(TARGET_SPH_MHD_MINI)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_MHD_FULL): $$(MOD_SPH_MHD_FULL_MAIN) $$(LIB_FILES_SPH_MHD)' \
@@ -115,12 +104,6 @@ target_task:
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_MHD_MINI)' '$$(MOD_SPH_MINI_MHD_MAIN)' \
 	'-L. $$(LIBS_SPH_MHD)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	
-	@echo '$$(TARGET_SPH_INITIAL):  $$(MOD_SPH_INITIAL)  $$(LIB_FILES_SPH_MHD)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_INITIAL)' '$$(MOD_SPH_INITIAL)' \
-	'-L. $$(LIBS_SPH_MHD)  $$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -140,8 +123,6 @@ mod_list:
 	@echo  $(MOD_SPH_LICV_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_MINI_MHD_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_MINI_MHD_MAIN) >> $(MAKENAME)
-	@echo  MOD_SPH_INITIAL=  \\ >> $(MAKENAME)
-	@echo  $(MOD_SPH_INITIAL) >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 
