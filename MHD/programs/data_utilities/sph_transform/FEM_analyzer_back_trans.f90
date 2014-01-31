@@ -136,7 +136,7 @@
       call set_flag_to_visualization(i_step,                          &
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
-      if(visval .eq. 0) call phys_send_recv_4_viz
+      if(visval .eq. 0) call phys_send_recv_all
 !
 !*  -----------  Output volume data --------------
 !*

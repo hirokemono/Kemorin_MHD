@@ -37,7 +37,7 @@ begin MHD_control
 !
   begin org_data_files_def
     org_field_file_head_ctl     'field_org/out'
-    org_field_files_fmt_ctl     'gzip'
+    org_field_file_fmt_ctl      'gzip'
   end org_data_files_def
 !
   begin model

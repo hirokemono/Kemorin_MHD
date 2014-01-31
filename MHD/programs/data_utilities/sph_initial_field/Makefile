@@ -35,17 +35,18 @@ target_task:
 	@echo sph_initial: \
 	 '$$(TARGET_SPH_INITIAL)'   \
 	 '$$(TARGET_SPH_ADD_INIT)' >> $(MAKENAME)
-	
-	@echo '$$(TARGET_SPH_INITIAL):  $$(MOD_SPH_INITIAL)  $$(LIB_FILES_SPH_UTILS)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_INITIAL)' '$$(MOD_SPH_INITIAL)' \
-	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
-	@echo '$$(TARGET_SPH_ADD_INIT):  $$(MOD_SPH_ADD_INIT)  $$(LIB_FILES_SPH_UTILS)' \
+	@echo '$$(TARGET_SPH_INITIAL):  $$(MOD_SPH_INITIAL)  $$(LIB_FILES_SPH_MHD)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_INITIAL)' '$$(MOD_SPH_INITIAL)' \
+	'-L. $$(LIBS_SPH_MHD)  $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	
+	@echo '$$(TARGET_SPH_ADD_INIT):  $$(MOD_SPH_ADD_INIT)  $$(LIB_FILES_SPH_MHD)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_ADD_INIT)' '$$(MOD_SPH_ADD_INIT)' \
-	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
+	'-L. $$(LIBS_SPH_MHD)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 

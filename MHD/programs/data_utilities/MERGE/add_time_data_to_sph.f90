@@ -80,8 +80,8 @@
         call deallocate_phys_data_name_IO
 !
         call copy_rj_merged_phys_from_IO                                &
-     &      (org_sph_mesh(ip)%sph_mesh%sph_rj%nnod_rj,                  &
-     &       org_sph_mesh(ip)%sph_mesh%sph_rj%inod_global_rj)
+     &      (org_sph_mesh(ip)%sph_mesh%sph_rj%nidx_rj(2),               &
+     &       org_sph_mesh(ip)%sph_mesh%sph_rj%idx_gl_1d_rj_j)
 !
         call deallocate_phys_data_IO
       end do
@@ -102,8 +102,8 @@
         call allocate_phys_data_IO
 !
         call copy_rj_merged_phys_to_IO                                  &
-     &      (new_sph_mesh(ip)%sph_mesh%sph_rj%nnod_rj,                  &
-     &       new_sph_mesh(ip)%sph_mesh%sph_rj%inod_global_rj)
+     &      (new_sph_mesh(ip)%sph_mesh%sph_rj%nidx_rj(2),               &
+     &       new_sph_mesh(ip)%sph_mesh%sph_rj%idx_gl_1d_rj_j)
 !
         call sel_write_step_SPH_field_file(my_rank, istep)
         call deallocate_phys_data_IO

@@ -125,7 +125,8 @@
 !
       integer(kind = kint), intent(in) :: nb
 !
-      integer(kind = kint) :: ncomp, i, nd, k
+      integer(kind = kint) :: ncomp
+!      integer(kind = kint) ::  i, nd, k
 !
 !
 !
