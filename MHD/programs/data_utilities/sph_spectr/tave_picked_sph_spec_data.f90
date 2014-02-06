@@ -37,8 +37,8 @@
       call open_sph_spec_read_monitor(id_pick)
 !
       num = ntot_pick_sph_mode*num_pick_layer
-      allocate( ave_spec(ncomp_pick_sph_coef,num) )
-      allocate( sdev_spec(ncomp_pick_sph_coef,num) )
+      allocate( ave_spec(ntot_comp_pick_sph,num) )
+      allocate( sdev_spec(ntot_comp_pick_sph,num) )
       ave_spec =   0.0d0
       sdev_spec = 0.0d0
 !
@@ -53,8 +53,8 @@
      &     .and. i_step.ge.istep_start) then
 !
           do ipick = 1, num_pick_sph_mode*num_pick_layer
-            do nd = 1, ncomp_pick_sph_coef
-              ave_spec(nd,ipick) = ave_spec(nd,ipick)           &
+            do nd = 1, ntot_comp_pick_sph
+              ave_spec(nd,ipick) = ave_spec(nd,ipick)                   &
      &                                + d_rj_pick_sph_gl(nd,ipick)
             end do
           end do
@@ -69,7 +69,7 @@
 !
       acou = one / dble(icou)
       do ipick = 1, num_pick_sph_mode*num_pick_layer
-        do nd = 1, ncomp_pick_sph_coef
+        do nd = 1, ntot_comp_pick_sph
           ave_spec(nd,ipick) = ave_spec(nd,ipick) * acou
         end do
       end do
@@ -90,7 +90,7 @@
      &     .and. i_step.ge.istep_start) then
 !
           do ipick = 1, num_pick_sph_mode*num_pick_layer
-            do nd = 1, ncomp_pick_sph_coef
+            do nd = 1, ntot_comp_pick_sph
               sdev_spec(nd,ipick) = sdev_spec(nd,ipick)                 &
      &          + (d_rj_pick_sph_gl(nd,ipick) - ave_spec(nd,ipick))**2
             end do
@@ -106,7 +106,7 @@
 !
       acou = one / dble(icou)
       do ipick = 1, num_pick_sph_mode*num_pick_layer
-        do nd = 1, ncomp_pick_sph_coef
+        do nd = 1, ntot_comp_pick_sph
           sdev_spec(nd,ipick) = sqrt(sdev_spec(nd,ipick)) * acou
         end do
       end do
@@ -114,7 +114,7 @@
 !    output time average
 !
       do ipick = 1, num_pick_sph_mode*num_pick_layer
-        do nd = 1, ncomp_pick_sph_coef
+        do nd = 1, ntot_comp_pick_sph
           d_rj_pick_sph_gl(nd,ipick) = ave_spec(nd,ipick)
         end do
       end do
@@ -125,7 +125,7 @@
 !    output standard deviation
 !
       do ipick = 1, num_pick_sph_mode*num_pick_layer
-        do nd = 1, ncomp_pick_sph_coef
+        do nd = 1, ntot_comp_pick_sph
           d_rj_pick_sph_gl(nd,ipick) = sdev_spec(nd,ipick)
         end do
       end do

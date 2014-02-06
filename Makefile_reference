@@ -31,6 +31,7 @@ CXX = g++-mp-4.4
 MPIF90 = $(MPICHBINDIR)/openmpif90
 MPICC =  $(MPICHBINDIR)/openmpicc
 
+GMAKE = make
 AR = ar
 RANLIB = ranlib
 
@@ -96,7 +97,7 @@ MAKE_MOD_DEP= $(BUILDDIR)/make_f90depends
 #
 
 all: mpif.h makemake
-	cd $(MAKEDIR); make
+	cd $(MAKEDIR); $(GMAKE)
 
 
 $(MAKE_MOD_DEP): $(MHDDIR)/module_dependency/make_module_dependency.f90
@@ -112,7 +113,8 @@ $(MAKE_MOD_DEP): $(MHDDIR)/module_dependency/make_module_dependency.f90
 makemake: mpif.h
 	echo "# Construct Makefile"; \
 	cd $(MHDDIR) ; \
-		make \
+		$(GMAKE) \
+		GMAKE="$(GMAKE)" \
 		SRCDIR="$(SRCDIR)" \
 		INSTDIR="$(INSTDIR)" \
 		MAKEDIR="$(MAKEDIR)" \

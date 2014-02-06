@@ -18,6 +18,9 @@ builtin(include,MHD/confdb/ax_mpi.m4)
 dnl Include OpenGL Check related definitions
 builtin(include,MHD/confdb/ax_have_opengl.m4)
 
+dnl Include gmake Check related definitions
+builtin(include,MHD/confdb/check_gnu_make.m4)
+
 builtin(include,MHD/confdb/ax_check_gl.m4)
 builtin(include,MHD/confdb/ax_check_glu.m4)
 builtin(include,MHD/confdb/ax_check_glut.m4)
@@ -52,17 +55,17 @@ AC_ARG_ENABLE(glui,
 AC_ARG_ENABLE(gtk,
 	[  --enable-gtk            Use gtk+ GUI framework],[USE_gtk='yes'],[USE_gtk='no'])
 
-AC_MSG_RESULT(enable_cocoa... "${USE_Cocoa}")
-AC_MSG_RESULT(enable_OpenGL.. "${USE_gl}")
-AC_MSG_RESULT(enable_glui...  "${USE_glui}")
+AC_MSG_RESULT(enable-cocoa... "${USE_Cocoa}")
+AC_MSG_RESULT(enable-OpenGL.. "${USE_gl}")
+AC_MSG_RESULT(enable-glui...  "${USE_glui}")
 
-AC_MSG_RESULT(enable_fftw3... "${USE_fftw3}")
-AC_MSG_RESULT(enable_libpng..."${USE_libpng}")
-AC_MSG_RESULT(enable_gtk...   "${USE_gtk}")
+AC_MSG_RESULT(enable-fftw3... "${USE_fftw3}")
+AC_MSG_RESULT(enable-libpng..."${USE_libpng}")
+AC_MSG_RESULT(enable-gtk...  "${USE_gtk}")
 
-AC_MSG_RESULT(with_zlib...     "${with_zlib}")
-AC_MSG_RESULT(with_aquaterm... "${with_aquaterm}")
-AC_MSG_RESULT(with_pgplot...   "${with_pgplot}")
+AC_MSG_RESULT(with-zlib...     "${with_zlib}")
+AC_MSG_RESULT(with-aquaterm... "${with_aquaterm}")
+AC_MSG_RESULT(with-pgplot...   "${with_pgplot}")
 
 # Checks for programs.
 AC_PROG_CC
@@ -78,6 +81,12 @@ AC_SUBST(ar_bin)
 
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
+
+#GNU make check
+CHECK_GNU_MAKE()
+GMAKE=$_cv_gnu_make_command
+AC_SUBST(GMAKE)
+AC_MSG_RESULT(GNU MAKE... "${GMAKE}")
 
 # libtool check
 PKG_PROG_PKG_CONFIG

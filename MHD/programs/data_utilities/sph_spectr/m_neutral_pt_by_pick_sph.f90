@@ -88,7 +88,7 @@
 !
       integer(kind = kint) :: i
 !
-      do i = 1, ncomp_pick_sph_coef
+      do i = 1, ntot_comp_pick_sph
         if(pick_sph_spec_name(i) .eq. fhd_temp)  icomp_temp =  i
         if(pick_sph_spec_name(i) .eq. fhd_light) icomp_light = i
       end do
@@ -113,6 +113,7 @@
         if(idx_pick_sph_gl(i) .eq. 0) ipick_l0m0 = i
       end do
 !
+      call allocate_dr_rj_noequi
       call set_dr_for_nonequi
       call const_2nd_fdm_matrices
       call const_2nd_fdm_coefs

@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/programs/SPH_MHD/const_sph_initial_spectr.f90
+/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/programs/data_utilities/sph_initial_field/const_sph_initial_spectr.f90

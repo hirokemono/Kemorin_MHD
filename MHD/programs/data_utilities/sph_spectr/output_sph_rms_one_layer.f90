@@ -60,7 +60,7 @@
       do k = 1, num_pick_layer
         kg = id_pick_layer(k)
         write(id_file_rms1,'(i10,1pe23.14e3,i10,1p200e23.14e3)')        &
-     &                   istep, time, kg, rms_sph(1:ntot_rms_rj,kg)
+     &                   istep, time, kg, rms_sph(kg,1:ntot_rms_rj)
       end do
 !
       close(id_file_rms1)
@@ -117,13 +117,13 @@
         do lm = 0, l_truncation
           write(id_file_rms_l,                                          &
      &                  '(i10,1pe23.14e3,2i10,1p200e23.14e3)')          &
-     &           istep, time, kg, lm, rms_sph_l(1:ntot_rms_rj,lm,kg)
+     &           istep, time, kg, lm, rms_sph_l(lm,kg,1:ntot_rms_rj)
           write(id_file_rms_m,                                          &
      &                  '(i10,1pe23.14e3,2i10,1p200e23.14e3)')          &
-     &           istep, time, kg, lm, rms_sph_m(1:ntot_rms_rj,lm,kg)
+     &           istep, time, kg, lm, rms_sph_m(lm,kg,1:ntot_rms_rj)
           write(id_file_rms_lm,                                         &
      &                  '(i10,1pe23.14e3,2i10,1p200e23.14e3)')          &
-     &           istep, time, kg, lm, rms_sph_lm(1:ntot_rms_rj,lm,kg)
+     &           istep, time, kg, lm, rms_sph_lm(lm,kg,1:ntot_rms_rj)
         end do
       end do
 !

@@ -8,15 +8,15 @@
 !!@n      modified by H. Matsui in Apr., 2013
 !!
 !!@verbatim
+!!      subroutine deallocate_dr_rj_cheby
+!!
 !!      subroutine set_dr_for_cheby
 !!      subroutine nod_r_2nd_fdm_coefs_cheby
 !!
 !!**********************************************************************
 !!
 !!    delta r for Chebyshev grid
-!!     dr_1d_rj(k,0)   : (dr/dn)
-!!     dr_1d_rj(k,1)   : (d^2r/dn^2)
-!!     dr_1d_rj(k,2)   : 1 / (dr/dn)
+!!     dr_1d_rj(k)   : (dr/dn)
 !!
 !!     drdn_rj(k,1)   : (dr/dn)
 !!     drdn_rj(k,2)   : (d^2r/dn^2)
@@ -40,8 +40,14 @@
       use m_constants
       use m_spheric_parameter
 !
+!>      1d @f$ \Delta r @f$ for @f$ f(r,j) @f$
+!!@n@see  set_radius_func_cheby or set_radius_func_cheby
+      real(kind = kreal), allocatable :: dr_1d_rj(:)
+!
+!>      1d @f$ \frac{\partial r}{\partial n} @f$ for @f$ f(r,j) @f$
       real(kind = kreal), allocatable :: drdn_rj(:,:)
 !
+      private :: dr_1d_rj
       private :: nod_r_2nd_fdm_coef_cheby, nod_r_4th_fdm_coef_cheby
 !
 !  -------------------------------------------------------------------
@@ -50,17 +56,28 @@
 !
 !  -------------------------------------------------------------------
 !
+      subroutine deallocate_dr_rj_cheby
+!
+!
+      deallocate(dr_1d_rj, drdn_rj)
+!
+      end subroutine deallocate_dr_rj_cheby
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
       subroutine set_dr_for_cheby
 !
       use m_machine_parameter
-      use boundary_radius_func
 !
       real(kind = kreal) ::  pi
       real(kind = kreal) ::  shell
       integer(kind = kint) :: k, kst, ked, kr, nri
 !
 !
+      allocate(dr_1d_rj(nidx_rj(1)))
       allocate(drdn_rj(nidx_rj(1),4))
+      dr_1d_rj = 0.0d0
       drdn_rj = 0.0d0
 !
       nri = nlayer_CMB - nlayer_ICB
@@ -69,7 +86,7 @@
 !
 !* ----------  center  --------
 !*
-      if (nlayer_ICB .gt. 1) call set_non_equi_dr_center
+      dr_1d_rj(1) = radius_1d_rj_r(2) - radius_1d_rj_r(1)
 !*
 !* ----------  inner core --------
 !*
@@ -85,14 +102,13 @@
         drdn_rj(kr,4) =   (half*shell*pi**4/ dble(nri**4))              &
      &                  * ( cos( pi*dble(k)/dble(nri) ) )
 !
-        dr_1d_rj(kr,0) = drdn_rj(kr,1)
-        dr_1d_rj(kr,1) = drdn_rj(kr,2)
-        dr_1d_rj(kr,2) = one / drdn_rj(kr,1)
+        dr_1d_rj(k) = radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr)
       end do
 !
 !* ----------  inner core boundary --------
 !*
-      call set_equi_dr_ICB
+      dr_1d_rj(nlayer_ICB) = radius_1d_rj_r(nlayer_ICB+1)               &
+     &                      - radius_1d_rj_r(nlayer_ICB)
 !
 !* ----------  outer core --------
 !*
@@ -108,19 +124,19 @@
         drdn_rj(kr,4) =   (half*shell*pi**4/ dble(nri**4))              &
      &                  * (-cos( pi*dble(k)/dble(nri) ) )
 !
-        dr_1d_rj(kr,0) = drdn_rj(kr,1)
-        dr_1d_rj(kr,1) = drdn_rj(kr,2)
-        dr_1d_rj(kr,2) = one / drdn_rj(kr,1)
+        dr_1d_rj(k) = radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr)
       end do
 !*
 !* ----------  core mantle boundary --------
 !*
-      call set_equi_dr_CMB
+      dr_1d_rj(nlayer_CMB) =  radius_1d_rj_r(nlayer_CMB)                &
+     &                        - radius_1d_rj_r(nlayer_CMB-1)
       if (nlayer_CMB .eq. nidx_rj(1)) go to 10
 !
 !* ---------- outer boundary of domain --------
 !*
-      call set_equi_dr_outside
+      kr = nidx_rj(1)
+      dr_1d_rj(kr) = radius_1d_rj_r(kr) - radius_1d_rj_r(kr-1)
 !*
 !* ----------  external of shell --------
 !*
@@ -138,27 +154,19 @@
         drdn_rj(kr,4) =   (half*shell*pi**4/ dble(nri**4))              &
      &                  * (-cos( pi*dble(k)/dble(nri) ) )
 !
-        dr_1d_rj(kr,0) = drdn_rj(kr,1)
-        dr_1d_rj(kr,1) = drdn_rj(kr,2)
-        dr_1d_rj(kr,2) = one / drdn_rj(kr,1)
+        dr_1d_rj(k) = radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr)
       end do
       if (ked .gt. nidx_rj(1)-1) go to 10
 !*
 !
       kst = nlayer_CMB + (nlayer_CMB - nlayer_ICB)/2
       ked = nidx_rj(1) - 1
-      do k = kst, ked
-        dr_1d_rj(k,0) = radius_1d_rj_r(k+1) - radius_1d_rj_r(k)
-        dr_1d_rj(k,1) = radius_1d_rj_r(k) - radius_1d_rj_r(k-1)
-        dr_1d_rj(k,2) =  (radius_1d_rj_r(k+1)-radius_1d_rj_r(k))        &
-     &                 * (radius_1d_rj_r(k)-radius_1d_rj_r(k-1))        &
-     &                 * (radius_1d_rj_r(k+1)-radius_1d_rj_r(k-1))
-        dr_1d_rj(k,2) = one /dr_1d_rj(k,2)
+      do kr = kst, ked
+        dr_1d_rj(kr) = radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr)
       end do
 !
  10   continue
 !
-      return
       end subroutine set_dr_for_cheby
 !
 !  -------------------------------------------------------------------
@@ -173,7 +181,7 @@
 !
 !
       if(nlayer_ICB .gt. 1) then
-        call nod_r_2nd_fdm_coef_noequi(ione, dr_1d_rj(1,0),             &
+        call nod_r_2nd_fdm_coef_noequi(ione, dr_1d_rj(1),               &
      &      radius_1d_rj_r(1), mat_fdm_2(1,1,1))
       end if
 !
@@ -182,7 +190,7 @@
       end do
 !
       call nod_r_2nd_fdm_coef_noequi(nlayer_ICB,                        &
-     &    dr_1d_rj(nlayer_ICB,0), dr_1d_rj(nlayer_ICB,0),               &
+     &    dr_1d_rj(nlayer_ICB), dr_1d_rj(nlayer_ICB),                   &
      &    mat_fdm_2(1,1,nlayer_ICB) )
 !*
 !* ----------  outer core --------
@@ -194,15 +202,15 @@
 !* ----------  core mantle boundary --------
 !*
       call nod_r_2nd_fdm_coef_noequi(nlayer_CMB,                        &
-     &    dr_1d_rj(nlayer_CMB,0), dr_1d_rj(nlayer_CMB,0),               &
+     &    dr_1d_rj(nlayer_CMB), dr_1d_rj(nlayer_CMB),                   &
      &    mat_fdm_2(1,1,nlayer_CMB) )
       if (nlayer_CMB .eq. nidx_rj(1)) return
 !
 !* ---------- outer boundary of domains --------
 !
       kr = nidx_rj(1)
-      call nod_r_2nd_fdm_coef_noequi(nidx_rj(1), dr_1d_rj(kr,0),        &
-     &    dr_1d_rj(kr,0), mat_fdm_2(1,1,kr))
+      call nod_r_2nd_fdm_coef_noequi(nidx_rj(1), dr_1d_rj(kr),          &
+     &    dr_1d_rj(kr), mat_fdm_2(1,1,kr))
 !
 !* ----------  external of shell --------
 !*
@@ -218,7 +226,7 @@
       ked = nidx_rj(1) - 1
       do kr = kst, ked
         call nod_r_2nd_fdm_coef_noequi                                  &
-     &     (kr, dr_1d_rj(kr,0), dr_1d_rj(kr,1), mat_fdm_2(1,1,kr) )
+     &     (kr, dr_1d_rj(kr), dr_1d_rj(kr-1), mat_fdm_2(1,1,kr) )
       end do
 !
       end subroutine nod_r_2nd_fdm_coefs_cheby
