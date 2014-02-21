@@ -85,21 +85,21 @@
       use nod_phys_send_recv
       use ucd_IO_select
 !
-      integer(kind = kint) :: i_step
+      integer(kind = kint) :: istep, istep_ucd
 !
 !
 !
       call link_global_mesh_4_ucd_out
 !
-      do i_step = i_step_init, i_step_number
-        if ( mod(i_step,i_step_output_ucd) .eq. 0) then
+      do istep = i_step_init, i_step_number
+        if ( mod(istep,i_step_output_ucd) .eq. 0) then
 !
-          ucd_step = i_step / i_step_output_ucd
+          istep_ucd = istep / i_step_output_ucd
 !
-          call set_data_by_read_ucd_once(my_rank, ucd_step,             &
+          call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
      &        ifmt_org_ucd, ref_udt_file_head)
 !
-          call subtract_by_ucd_data(my_rank, ucd_step,                  &
+          call subtract_by_ucd_data(my_rank, istep_ucd,                 &
      &        ifmt_org_ucd, tgt_udt_file_head)
 !
           call s_divide_phys_by_delta_t
@@ -107,7 +107,7 @@
           call phys_send_recv_all
 !
 !    output udt data
-          call link_output_ucd_file_once(my_rank, ucd_step,             &
+          call link_output_ucd_file_once(my_rank, istep_ucd,            &
      &        ifmt_diff_udt_file, diff_udt_file_head)
         end if
       end do

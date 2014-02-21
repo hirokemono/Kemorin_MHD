@@ -10,7 +10,7 @@
 !!      subroutine allocate_work_4_lscale
 !!      subroutine deallocate_work_4_lscale
 !!
-!!      subroutine const_MHD_length_scales(ucd_step)
+!!      subroutine const_MHD_length_scales(istep_ucd)
 !!      subroutine find_field_address_4_lscale
 !!@endverbatim
 !!
@@ -59,7 +59,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine const_MHD_length_scales(ucd_step)
+      subroutine const_MHD_length_scales(istep_ucd)
 !
       use calypso_mpi
       use m_geometry_parameter
@@ -72,7 +72,7 @@
 !
       use ucd_IO_select
 !
-      integer(kind = kint), intent(in) :: ucd_step
+      integer(kind = kint), intent(in) :: istep_ucd
       integer(kind = kint) :: icou
 !
 !
@@ -117,7 +117,7 @@
       end if
 !
       call set_ucd_file_prefix(result_udt_file_head)
-      call sel_write_udt_file(my_rank, ucd_step, fem_ucd)
+      call sel_write_udt_file(my_rank, istep_ucd, fem_ucd)
       call deallocate_ucd_data(fem_ucd)
 !
       end subroutine const_MHD_length_scales

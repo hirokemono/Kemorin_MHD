@@ -101,17 +101,17 @@
       use m_node_phys_data
       use FEM_MHD_length_scale
 !
-      integer(kind=kint ) :: i_step
+      integer(kind=kint ) :: istep, istep_ucd
 !
 !
-      do i_step = i_step_init, i_step_number
-        if ( mod(i_step,i_step_output_ucd) .eq. 0) then
-          ucd_step = i_step / i_step_output_ucd
+      do istep = i_step_init, i_step_number
+        if ( mod(istep,i_step_output_ucd) .eq. 0) then
+          istep_ucd = istep / i_step_output_ucd
 !
-          call set_data_by_read_ucd_once(my_rank, ucd_step,             &
+          call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
      &        ifmt_org_ucd, ref_udt_file_head)
 !
-          call const_MHD_length_scales(ucd_step)
+          call const_MHD_length_scales(istep_ucd)
         end if
       end do
 !

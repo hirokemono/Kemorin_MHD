@@ -137,7 +137,7 @@
       use second_fields_send_recv
       use correlation_all_layerd_data
 !
-      integer(kind=kint) :: i_step
+      integer(kind=kint) :: istep, istep_ucd
 !
 !
       call link_fem_num_field_2_ucd_out
@@ -155,15 +155,15 @@
 !
 !     ---------------------
 !
-      do i_step = i_step_init, i_step_number
-        if ( mod(i_step,i_step_output_ucd) .eq. 0) then
+      do istep = i_step_init, i_step_number
+        if ( mod(istep,i_step_output_ucd) .eq. 0) then
 !
-          ucd_step = i_step / i_step_output_ucd
+          istep_ucd = istep / i_step_output_ucd
 !
-          call set_data_by_read_ucd_once(my_rank, ucd_step,             &
+          call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
      &        ifmt_org_ucd, ref_udt_file_head)
 !
-          call set_2nd_data_by_udt_once(my_rank, ucd_step,              &
+          call set_2nd_data_by_udt_once(my_rank, istep_ucd,             &
      &        ifmt_org_ucd, tgt_udt_file_head)
 !
           call phys_send_recv_all
@@ -179,8 +179,8 @@
           call s_correlation_all_layerd_data
 !
           if (iflag_debug .gt. 0) write(*,*)                            &
-     &          ' write_layerd_correlate_data', ucd_step
-          call write_layerd_correlate_data(my_rank, ucd_step)
+     &          ' write_layerd_correlate_data', istep_ucd
+          call write_layerd_correlate_data(my_rank, istep_ucd)
 !
         end if
       end do

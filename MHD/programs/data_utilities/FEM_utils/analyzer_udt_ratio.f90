@@ -94,17 +94,18 @@
       use product_udt_fields
       use ucd_IO_select
 !
-      integer(kind=kint ) :: i_step
+      integer(kind=kint ) :: istep, istep_ucd
 !
 !
-      do i_step = i_step_init, i_step_number
-        if ( mod(i_step,i_step_output_ucd) .eq. 0) then
-          call set_data_for_product(i_step)
+      do istep = i_step_init, i_step_number
+        if ( mod(istep,i_step_output_ucd) .eq. 0) then
+          istep_ucd = istep / i_step_output_ucd
+          call set_data_for_product(istep_ucd)
           call cal_rev_of_2nd_field
           call cal_products_of_fields
 !
 !    output udt data
-          call link_output_ucd_file_once(my_rank, ucd_step,             &
+          call link_output_ucd_file_once(my_rank, istep_ucd,            &
      &        ifmt_result_udt_file, result_udt_file_head)
 !
         end if

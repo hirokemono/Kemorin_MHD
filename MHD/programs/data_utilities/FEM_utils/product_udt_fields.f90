@@ -9,7 +9,7 @@
 !
 !      subroutine set_field_id_4_product
 !
-!      subroutine set_data_for_product(i_step)
+!      subroutine set_data_for_product(istep_ucd)
 !      subroutine cal_products_of_fields
 !
       module product_udt_fields
@@ -87,14 +87,16 @@
       use m_t_step_parameter
       use ucd_IO_select
 !
+      integer(kind = kint) :: istep_ucd
+!
 !
       write(*,*) 'i_step_init', i_step_init, i_step_output_ucd
-      ucd_step = i_step_init / i_step_output_ucd
-      call find_field_id_in_read_ucd(my_rank, ucd_step,                 &
+      istep_ucd = i_step_init / i_step_output_ucd
+      call find_field_id_in_read_ucd(my_rank, istep_ucd,                &
      &   ifmt_result_udt_file, prod_udt_file1_head,                     &
      &product_field_1_name, i_field_product1, ncomp_4_product1)
 !
-      call find_field_id_in_read_ucd(my_rank, ucd_step,                 &
+      call find_field_id_in_read_ucd(my_rank, istep_ucd,                &
      &   ifmt_result_udt_file, prod_udt_file2_head,                     &
      &   product_field_2_name, i_field_product2, ncomp_4_product2)
 !
@@ -145,26 +147,23 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_data_for_product(i_step)
+      subroutine set_data_for_product(istep_ucd)
 !
       use calypso_mpi
       use m_geometry_parameter
       use m_geometry_data
-      use m_t_step_parameter
       use m_ctl_params_4_prod_udt
       use m_ucd_data
       use m_ucd_input_data
 !
-      integer(kind = kint), intent(in) :: i_step
+      integer(kind = kint), intent(in) :: istep_ucd
 !
 !
-      ucd_step = i_step / i_step_output_ucd
-!
-      call set_one_field_by_read_ucd_once(my_rank, ucd_step,            &
+      call set_one_field_by_read_ucd_once(my_rank, istep_ucd,           &
      &    ifmt_result_udt_file, prod_udt_file1_head,                    &
      &    i_field_product1, ncomp_4_product1, numnod, d_prod1)
 !
-      call set_one_field_by_read_ucd_once(my_rank, ucd_step,            &
+      call set_one_field_by_read_ucd_once(my_rank, istep_ucd,           &
      &    ifmt_result_udt_file, prod_udt_file2_head,                    &
      &    i_field_product2, ncomp_4_product2, numnod, d_prod2)
 !
