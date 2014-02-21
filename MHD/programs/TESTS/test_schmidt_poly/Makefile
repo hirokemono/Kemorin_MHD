@@ -17,13 +17,13 @@ test_schmidt_poly_med.o \
 schmidt_poly_on_meridian.o
 
 MOD_MAG_SMDT = \
-test_lags_by_MAG.o
+test_legendre_by_MAG.o
 
 MOD_MAG16_SMDT = \
-test_lags_by_MAG16.o
+test_legendre_by_MAG16.o
 
 MOD_ACDC_SMDT = \
-test_lags_by_ACDC.o
+test_legendre_by_ACDC.o
 
 MOD_SPH_TRIINT = \
 giroop.o
