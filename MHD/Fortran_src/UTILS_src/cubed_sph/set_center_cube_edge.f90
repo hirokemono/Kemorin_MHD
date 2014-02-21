@@ -123,7 +123,6 @@
       integer(kind = kint), intent(inout) :: inod
 !
       integer(kind = kint) :: ix, iy
-      integer(kind = kint) :: inum, inum1, inum2
 !
 !
       do iy = 1, num_h-1

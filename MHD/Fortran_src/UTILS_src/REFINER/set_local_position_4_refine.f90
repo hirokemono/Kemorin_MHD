@@ -30,7 +30,7 @@
 !
       use m_geometry_parameter
 !
-      integer(kind = kint) :: iele, isurf, iedge, ist, i
+      integer(kind = kint) :: iele, isurf, iedge, ist
 !
 !
       do iedge = 1, numedge

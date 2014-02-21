@@ -78,8 +78,8 @@
 !
       real(kind = kreal), intent(out) :: opacity_local
 !
-      integer(kind = kint) :: i, j, min_type
-      real(kind = kreal) ::  mint, t, grad_norm
+      integer(kind = kint) :: i, min_type
+      real(kind = kreal) ::  mint, t
 !
 !
       opacity_local = zero
@@ -148,7 +148,7 @@
 !
       real(kind = kreal), intent(inout) :: accum_rgba(4)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: j
       real(kind = kreal) :: cosalpha, costheta
       real(kind = kreal) :: lp(3), vp(3), hp(3)
       real(kind = kreal) :: lp_norm, vp_norm, hp_norm, norm

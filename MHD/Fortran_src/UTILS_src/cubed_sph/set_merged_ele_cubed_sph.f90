@@ -157,10 +157,10 @@
 !
       integer(kind = kint), intent(in) :: is_level, ifile
 !
-      integer(kind = kint) :: i, j, k, k0, kk
-      integer(kind = kint) :: iele0, jele0, kele0, kele1
-      integer(kind = kint) :: iele, jele, kele, jele_m
-      integer(kind = kint) :: iele_sf, inod0, jnum
+      integer(kind = kint) :: j, k, k0, kk
+      integer(kind = kint) :: jele0, kele0, kele1
+      integer(kind = kint) :: jele, jele_m
+      integer(kind = kint) :: iele_sf, jnum
 !
 !
       do k = 1, nr_c

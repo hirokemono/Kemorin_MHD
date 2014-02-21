@@ -88,7 +88,7 @@
       integer(kind = kint), intent(in) :: numnod, num_h
 !
       integer(kind = kint), intent(inout) :: iele
-      integer(kind = kint) :: numedge_cube, num_v, inod0
+      integer(kind = kint) :: numedge_cube, inod0
       integer(kind = kint) :: ie20(20)
 !
 !
@@ -125,7 +125,7 @@
       integer(kind = kint), intent(in) :: numnod, num_h
 !
       integer(kind = kint), intent(inout) :: iele
-      integer(kind = kint) :: numedge_cube, num_v, inod0
+      integer(kind = kint) :: numedge_cube, inod0
       integer(kind = kint) :: ie20(20)
 !
 !
@@ -160,7 +160,7 @@
       integer(kind = kint), intent(in) :: numnod, num_h
 !
       integer(kind = kint), intent(inout) :: iele
-      integer(kind = kint) :: numedge_cube, num_v, inod0
+      integer(kind = kint) :: numedge_cube, inod0
       integer(kind = kint) :: ie20(20)
 !
 !
@@ -197,7 +197,7 @@
       integer(kind = kint), intent(in) :: numnod, num_h
 !
       integer(kind = kint), intent(inout) :: iele
-      integer(kind = kint) :: numedge_cube, num_v, inod0
+      integer(kind = kint) :: numedge_cube, inod0
       integer(kind = kint) :: ie20(20)
 !
 !
@@ -350,7 +350,7 @@
       integer(kind = kint), intent(in) :: ix
 !
       integer(kind = kint), intent(inout) :: iele
-      integer(kind = kint) :: numedge_cube, num_v, inod0
+      integer(kind = kint) :: numedge_cube, inod0
       integer(kind = kint) :: ie20(20)
 !
 !

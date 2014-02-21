@@ -1,6 +1,14 @@
 !
 !      module  draw_pvr_colorbar_nums
 !
+!      subroutine gen_cbar_label(iscale, color_bar_style,               &
+!     &       color_mapping_style, interval_point, interval_mapping_num,&
+!     &       num_of_scale, d_minmax, npix_img, isleeve_bar, ntot_pix,  &
+!     &       dimage)
+!      subroutine gen_zero_label(iscale, color_bar_style,               &
+!     &       color_mapping_style, interval_point, interval_mapping_num,&
+!     &       d_minmax, npix_img, isleeve_bar, ntot_pix, dimage)
+!
       module  draw_pvr_colorbar_nums
 !
       use m_precision
@@ -11,14 +19,6 @@
       implicit none
 !
       integer(kind = kint), parameter, private :: BAR_WIDTH = iten
-!
-!      subroutine gen_cbar_label(iscale, color_bar_style,               &
-!     &       color_mapping_style, interval_point, interval_mapping_num,&
-!     &       num_of_scale, d_minmax, npix_img, isleeve_bar, ntot_pix,  &
-!     &       dimage)
-!      subroutine gen_zero_label(iscale, color_bar_style,               &
-!     &       color_mapping_style, interval_point, interval_mapping_num,&
-!     &       d_minmax, npix_img, isleeve_bar, ntot_pix, dimage)
 !
 !  ---------------------------------------------------------------------
 !
@@ -36,7 +36,7 @@
       integer(kind = kint), intent(in) :: ntot_pix
       real(kind = kreal), intent(inout) :: dimage(4,ntot_pix)
 !
-      real(kind = kreal) :: value,value_rgb
+      real(kind = kreal) :: value
       integer(kind = kint) :: i, j, k
       integer(kind = kint) :: ist, jst, ied, jed
       integer(kind = kint) :: start_px(2)
@@ -79,8 +79,8 @@
       integer(kind = kint), intent(in) :: ntot_pix
       real(kind = kreal), intent(inout) :: dimage(4,ntot_pix)
 !
-      real(kind = kreal) :: zero_rgb, v1, v1_rgb, v2_rgb
-      integer(kind = kint) :: i, j, k
+      real(kind = kreal) :: zero_rgb
+      integer(kind = kint) :: i, k
       integer(kind = kint) :: ist, jst, ied, jed
       integer(kind = kint) :: start_px(2)
       character(len=9) :: numeric

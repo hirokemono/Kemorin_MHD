@@ -171,7 +171,6 @@
       integer(kind = kint), intent(inout) :: inod
 !
       integer(kind = kint) :: k, inod0, iedge0, num
-      real(kind = kreal) :: elat_mid
       real(kind = kreal) :: ratio
 !
 !
@@ -213,7 +212,7 @@
       integer(kind = kint), intent(inout) :: inod
 !
       integer(kind = kint) :: k, inod0, iedge0, num
-      real(kind = kreal) :: elat_mid, ratio1, ratio2
+      real(kind = kreal) :: ratio1, ratio2
 !
       real(kind = kreal) :: ratio
 !

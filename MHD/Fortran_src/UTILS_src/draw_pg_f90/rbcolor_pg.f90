@@ -35,8 +35,6 @@
 !
       integer :: idx_color
       real(kind = kreal) :: scalar_normed
-      real(kind = kreal) ::  dr, dg, db
-      real r, g, b
 !
 !
       call normalize_by_linear(xmin, xmax, scalar, scalar_normed)
