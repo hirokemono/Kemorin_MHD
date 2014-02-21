@@ -8,8 +8,7 @@
 !     &          nnod_l, nele_l, nsurf_l, nedge_l, ie_l, ie_surf_l,     &
 !     &          ie_edge_l, interior_ele_l, interior_surf_l,            &
 !     &          interior_edge_l)
-!      subroutine set_internal_list_4_linear_27(numnod, internal_node,  &
-!     &          numele, numsurf, interior_ele, interior_surf,          &
+!      subroutine set_internal_list_4_linear_27(internal_node,          &
 !     &          nnod_l, nele_l, nsurf_l, nedge_l, ie_l, ie_surf_l,     &
 !     &          ie_edge_l, interior_ele_l, interior_surf_l,            &
 !     &          interior_edge_l)
@@ -80,19 +79,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_internal_list_4_linear_27(numnod, internal_node,   &
-     &          numele, numsurf, interior_ele, interior_surf,           &
+      subroutine set_internal_list_4_linear_27(internal_node,           &
      &          nnod_l, nele_l, nsurf_l, nedge_l, ie_l, ie_surf_l,      &
      &          ie_edge_l, interior_ele_l, interior_surf_l,             &
      &          interior_edge_l)
 !
       use m_geometry_constants
 !
-      integer(kind = kint), intent(in) :: numnod, internal_node
-      integer(kind = kint), intent(in) :: numele, numsurf
-!
-      integer(kind = kint), intent(in) :: interior_ele(numele)
-      integer(kind = kint), intent(in) :: interior_surf(numsurf)
+      integer(kind = kint), intent(in) :: internal_node
 !
       integer(kind = kint), intent(in) :: nnod_l, nele_l
       integer(kind = kint), intent(in) :: nsurf_l, nedge_l

@@ -197,11 +197,10 @@
       call s_count_all_smp_size_4_2nd
 !
 !
-      call set_internal_list_4_linear_27(numnod, internal_node,         &
-     &          numele, numsurf, interior_ele, interior_surf,           &
-     &          nnod_2nd, nele_2nd, nsurf_2nd, nedge_2nd,               &
-     &          ie_2nd, ie_surf_2nd, ie_edge_2nd,                       &
-     &          interior_ele_2nd, interior_surf_2nd, interior_edge_2nd)
+      call set_internal_list_4_linear_27(internal_node,                 &
+     &    nnod_2nd, nele_2nd, nsurf_2nd, nedge_2nd,                     &
+     &    ie_2nd, ie_surf_2nd, ie_edge_2nd,                             &
+     &    interior_ele_2nd, interior_surf_2nd, interior_edge_2nd)
 !
       if ( iflag_debug.eq.1 ) then
         call check_smp_size_2nd(my_rank)

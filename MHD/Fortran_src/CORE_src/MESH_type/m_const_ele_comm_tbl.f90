@@ -69,8 +69,6 @@
 !
       subroutine dealloc_const_ele_comm_tbl
 !
-      integer(kind = kint) :: ip
-!
 !
       deallocate(ele_comm_work, ele_comm_tmp)
 !
