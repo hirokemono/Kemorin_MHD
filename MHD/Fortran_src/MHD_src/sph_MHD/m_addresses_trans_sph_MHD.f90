@@ -201,8 +201,7 @@
       write(*,*) 'nscalar_rtp_2_rj  ', nscalar_rtp_2_rj
       if(f_trns%i_div_Coriolis .gt. 0) write(*,*)                       &
      &       'f_trns%i_div_Coriolis  ', f_trns%i_div_Coriolis,          &
-     &        irtp%i_div_Coriolis, ipol%i_div_Coriolis,                 &
-     &        itor%i_div_Coriolis, idpdr%i_div_Coriolis
+     &        irtp%i_div_Coriolis, ipol%i_div_Coriolis
       write(*,*)
 !
       end subroutine check_add_trans_sph_MHD

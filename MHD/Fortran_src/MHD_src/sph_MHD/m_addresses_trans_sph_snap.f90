@@ -198,6 +198,9 @@
      &            'bsnap_trns%i_b_diffuse', bsnap_trns%i_b_diffuse,     &
      &            ipol%i_b_diffuse, irtp%i_b_diffuse
 !
+      if(bsnap_trns%i_rot_inertia .gt. 0) write(*,*)                    &
+     &         'bsnap_trns%i_rot_inertia', bsnap_trns%i_rot_inertia,    &
+     &          ipol%i_rot_inertia, irtp%i_rot_inertia
       if(bsnap_trns%i_rot_Coriolis .gt. 0) write(*,*)                   &
      &         'bsnap_trns%i_rot_Coriolis', bsnap_trns%i_rot_Coriolis,  &
      &          ipol%i_rot_Coriolis, irtp%i_rot_Coriolis
