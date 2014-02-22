@@ -24,8 +24,7 @@
       use m_cubed_sph_grp_param
       use m_control_data_cubed_sph
 !
-      integer(kind = kint) :: i, j, k, jst, jed, kst, ked
-      integer(kind = kint) :: if_CMB, if_ICB, if_EXT
+      integer(kind = kint) :: j, jst, jed
 !
 !
 !      if     (domain_shape_ctl .eq. 'sphere'                           &

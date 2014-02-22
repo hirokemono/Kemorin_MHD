@@ -28,14 +28,13 @@
       use m_control_params_2nd_files
 !
       integer(kind = kint), intent(in) :: i_step
+      integer(kind = kint) :: istep_ucd
 !
 !
-      ucd_step = i_step / i_step_output_ucd
-!
-      if (mod(i_step,i_step_output_ucd) .eq. 0) then
-        call set_data_by_read_ucd_once(my_rank, ucd_step,               &
+      if (mod(i_step,i_step_output_ucd) .ne. 0) return
+      istep_ucd = i_step / i_step_output_ucd
+      call set_data_by_read_ucd_once(my_rank, istep_ucd,                &
     &       ifmt_org_ucd, org_ucd_header)
-      end if
 !
       end subroutine read_udt_4_snap
 !

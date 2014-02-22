@@ -102,10 +102,12 @@
       use interpolate_nodal_field
       use nod_phys_send_recv
 !
+      integer(kind = kint) :: istep
 !
-      do ucd_step = i_step_init, i_step_number, i_step_output_ucd
+!
+      do istep = i_step_init, i_step_number, i_step_output_ucd
         if (my_rank .lt. ndomain_org) then
-          call set_data_by_read_ucd_once(my_rank, ucd_step,             &
+          call set_data_by_read_ucd_once(my_rank, istep,                &
    &          itype_org_udt_file, org_udt_file_head)
 !
           call phys_send_recv_all
@@ -123,7 +125,7 @@
 !
           call set_ucd_file_format(itype_itp_udt_file)
           call set_ucd_file_prefix(itp_udt_file_head)
-          call sel_write_udt_file(my_rank, ucd_step, fem_ucd)
+          call sel_write_udt_file(my_rank, istep, fem_ucd)
           call disconnect_ucd_data(fem_ucd)
           call disconnect_ucd_node(fem_ucd)
         end if

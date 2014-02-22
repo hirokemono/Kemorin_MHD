@@ -136,18 +136,6 @@
       use m_boundary_params_sph_MHD
       use set_reference_sph_mhd
 !
-      integer(kind = kint) :: k, inod, icmb, j
-!
-!
-!      j = find_local_sph_mode_address(14, -9)
-!      if (j .gt.0 ) then
-!        write(171,*) 'k, l=14,m=-9, inod, div_v'
-!        do k = 1, sph_bc_U%kr_out
-!            inod = (k-1)*nidx_rj(2) + j
-!            write(171,'(2i10,1p9E25.15e3)') k,                         &
-!     &              j, d_rj(inod,ipol%i_press)
-!        end do
-!      end if
 !
       call lubksb_3band_mul(np_smp, idx_rj_smp_stack(0,2),              &
      &    nidx_rj(2), nidx_rj(1), p_poisson_lu, i_p_pivot,              &
@@ -155,15 +143,6 @@
 !
       call adjust_by_ave_pressure_on_CMB                                &
      &   (sph_bc_U%kr_in, sph_bc_U%kr_out)
-!
-!      if (idx_rj_degree_zero .gt. 0) then
-!        icmb = (sph_bc_U%kr_out-1)*nidx_rj(2) + idx_rj_degree_zero
-!        do k = 1, sph_bc_U%kr_out
-!          inod = (k-1)*nidx_rj(2) + idx_rj_degree_zero
-!          d_rj(inod,ipol%i_press) = d_rj(inod,ipol%i_press)            &
-!     &                         - d_rj(icmb,ipol%i_press)
-!        end do
-!      end if
 !
       end subroutine cal_sol_pressure_by_div_v
 !

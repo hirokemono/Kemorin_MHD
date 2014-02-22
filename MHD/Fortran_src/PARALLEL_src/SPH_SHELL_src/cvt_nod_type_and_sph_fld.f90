@@ -76,7 +76,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cvt_sph_vec_to_nod_vec(node%numnod,                          &
+      call cvt_sph_vec_to_nod_vec(node%numnod, node%internal_node,      &
      &    np_smp, node%istack_nod_smp, node%theta, node%phi,            &
      &    i_rtp, nnod_rtp, ntot_phys_rtp, d_rtp,                        &
      &    i_field, nod_fld%ntot_phys, nod_fld%d_fld, d_nod_rtp)
@@ -117,8 +117,8 @@
 !
 !
       call cvt_sph_tsr_to_nod_tsr                                       &
-     &   (node%numnod, np_smp, node%istack_nod_smp, node%xx,            &
-     &    node%rr, node%ss, node%a_r, node%a_s,                         &
+     &   (node%numnod, node%internal_node, np_smp, node%istack_nod_smp, &
+     &    node%xx, node%rr, node%ss, node%a_r, node%a_s,                &
      &    i_rtp, nnod_rtp, ntot_phys_rtp, d_rtp,                        &
      &    i_field, nod_fld%ntot_phys, nod_fld%d_fld, d_nod_rtp)
 !

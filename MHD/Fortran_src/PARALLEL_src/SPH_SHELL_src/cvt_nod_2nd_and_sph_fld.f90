@@ -63,8 +63,8 @@
       integer(kind = kint), intent(in) :: i_rtp, i_field
 !
 !
-      call cvt_sph_vec_to_nod_vec                                       &
-     &   (nnod_2nd, np_smp, inod_smp_stack_2nd, theta_2nd, phi_2nd,     &
+      call cvt_sph_vec_to_nod_vec(nnod_2nd, internal_nod_2nd, np_smp,   &
+     &    inod_smp_stack_2nd, theta_2nd, phi_2nd,                       &
      &    i_rtp, nnod_rtp, ntot_phys_rtp, d_rtp,                        &
      &    i_field, ntot_nod_phys_2nd, d_nod_2nd, d_nod_rtp)
 !
@@ -96,7 +96,8 @@
       integer(kind = kint), intent(in) :: i_rtp, i_field
 !
 !
-      call cvt_sph_tsr_to_nod_tsr(nnod_2nd, np_smp, inod_smp_stack_2nd, &
+      call cvt_sph_tsr_to_nod_tsr                                       &
+     &   (nnod_2nd, internal_nod_2nd, np_smp, inod_smp_stack_2nd,       &
      &    xx_2nd, radius_2nd, s_cyl_2nd, a_radius_2nd, a_s_cyl_2nd,     &
      &    i_rtp, nnod_rtp, ntot_phys_rtp, d_rtp,                        &
      &    i_field, ntot_nod_phys_2nd, d_nod_2nd, d_nod_rtp)
