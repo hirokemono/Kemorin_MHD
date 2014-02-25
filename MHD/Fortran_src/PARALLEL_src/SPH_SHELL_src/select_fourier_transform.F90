@@ -128,7 +128,7 @@
      &    vr_rtp)
       etime = MPI_WTIME() - stime
 !
-      call finalize_FFT_select(np_smp)
+      call finalize_FFT_select(np_smp, Nstacksmp)
 !
       call MPI_allREDUCE (etime, etime_fft, ione,                       &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)

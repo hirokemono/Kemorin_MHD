@@ -287,6 +287,21 @@ module swap mvapich2 impi/4.1.1.036
   --without-pgplot --without-aquaterm
 #
 #
+# -------------------------------------------------------------------------------
+# Intel XEON cluster (NCAR yellowstone)
+# -------------------------------------------------------------------------------
+#
+#   compile with Intel MPI   (no HDF5 support)
+#
+#module load fftw3
+#module load hdf5-mpi
+# setenv PKG_CONFIG_PATH '/usr/lib64/pkgconfig:/glade/apps/opt/fftw/3.3.2/intel/12.1.4/lib/pkgconfig'
+#./configure --prefix='/glade/u/home/emheien/matsui/src_kemo' \
+#CC=icc FC=ifort CXX=icc AR=xiar MPICC=mpiicc MPIFC=mpiifort \
+#CFLAGS='-O3  -Wall -g -xhost' FCFLAGS='-O3 -warn all -g -xhost' \
+#PKG_CONFIG='/usr/bin/pkg-config' --enable-glui --enable-libpng \
+#--enable-fftw3 --with-hdf5 --with-zlib=/usr/lib64 --without-pgplot \
+#--without-aquaterm
 #
 # -------------------------------------------------------------------------------
 # SR16000 (NIPR:sr1)

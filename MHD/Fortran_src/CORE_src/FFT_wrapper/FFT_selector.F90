@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine initialize_FFT_select(my_rank, Nsmp, Nstacksmp, Nfft)
-!!      subroutine finalize_FFT_select(Nsmp)
+!!      subroutine finalize_FFT_select(Nsmp, Nstacksmp)
 !!      subroutine verify_FFT_select(Nsmp, Nstacksmp, Nfft)
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT for ISPACK
@@ -100,10 +100,10 @@
 #ifdef FFTW3
 !      else if(iflag_FFT .eq. iflag_FFTW) then
 !        if(my_rank .eq. 0) write(*,*) 'Use FFTW by kemo_wrapper'
-!        call init_4_FFTW_kemo(Nsmp, Nstacksmp, Nfft)
+!        call init_4_FFTW_kemo(Nstacksmp(Nsmp), Nfft)
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(my_rank .eq. 0) write(*,*) 'Use FFTW'
-        call init_4_FFTW(Nsmp, Nstacksmp, Nfft)
+        call init_4_FFTW(Nstacksmp(Nsmp), Nfft)
 #endif
       else
         if(my_rank .eq. 0) write(*,*) 'Use FFTPACK'
@@ -115,9 +115,9 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_FFT_select(Nsmp)
+      subroutine finalize_FFT_select(Nsmp, Nstacksmp)
 !
-      integer(kind = kint), intent(in) ::  Nsmp
+      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !
 !
       if(iflag_FFT .eq. iflag_ISPACK) then
@@ -126,10 +126,10 @@
 #ifdef FFTW3
 !      else if(iflag_FFT .eq. iflag_FFTW) then
 !        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW by kemo_wrapper'
-!        call finalize_4_FFTW_kemo(Nsmp)
+!        call finalize_4_FFTW_kemo(Nstacksmp(Nsmp))
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
-        call finalize_4_FFTW(Nsmp)
+        call finalize_4_FFTW(Nstacksmp(Nsmp))
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
@@ -152,10 +152,10 @@
 #ifdef FFTW3
 !      else if(iflag_FFT .eq. iflag_FFTW) then
 !        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW by kemo_wrapper'
-!        call verify_work_4_FFTW_kemo(Nsmp, Nstacksmp, Nfft)
+!        call verify_work_4_FFTW_kemo(Nstacksmp(Nsmp), Nfft)
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
-        call verify_work_4_FFTW(Nsmp, Nstacksmp, Nfft)
+        call verify_work_4_FFTW(Nstacksmp(Nsmp), Nfft)
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'

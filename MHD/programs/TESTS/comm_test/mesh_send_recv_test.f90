@@ -346,7 +346,6 @@
 !$omp end parallel
       call end_eleps_time(8)
       
-  10 continue
       call output_elapsed_times
 !
       deallocate(xx4)
