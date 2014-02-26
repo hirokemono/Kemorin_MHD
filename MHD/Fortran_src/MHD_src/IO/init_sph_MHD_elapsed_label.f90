@@ -27,7 +27,7 @@
       use m_work_time
 !
 !
-      num_elapsed = 33
+      num_elapsed = 36
       call allocate_elapsed_times
 !
       elapse_labels(1) = 'Total time                 '
@@ -66,6 +66,10 @@
       elapse_labels(30) = 'clear_f_trans_vector_spin  '
       elapse_labels(31) = 'legendre_f_trans_vector_spin '
       elapse_labels(32) = 'back_f_trans_vector_spin'
+!
+      elapse_labels(33) = 'copy_FFT_real       '
+      elapse_labels(34) = 'dfftw_execute       '
+      elapse_labels(35) = 'copy_FFT_complex    '
 !
       elapse_labels(num_elapsed) = 'Communication time        '
 !

@@ -39,7 +39,7 @@
 !
       integer(kind = kint) :: iflag_seelcted
       real(kind = kreal) :: etime_shortest
-      real(kind = kreal) :: etime_fft(1:3)
+      real(kind = kreal) :: etime_fft(1:4)
 !
 !
       if(iflag_FFT .ne.  iflag_UNDEFINED_FFT) then
@@ -50,31 +50,40 @@
 !
       iflag_FFT = iflag_FFTPACK
       call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
-     &    etime_fft(iflag_FFTPACK) )
+     &    etime_fft(iflag_FFT) )
 !
-      iflag_seelcted = iflag_FFTPACK
-      etime_shortest = etime_fft(iflag_FFTPACK)
+      iflag_seelcted = iflag_FFT
+      etime_shortest = etime_fft(iflag_FFT)
 !
 !
 #ifdef FFTW3
       iflag_FFT = iflag_FFTW
       call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
-     &    etime_fft(iflag_FFTW))
+     &    etime_fft(iflag_FFT))
 !
-      if(etime_fft(iflag_FFTW) .lt. etime_shortest) then
-        iflag_seelcted = iflag_FFTW
-        etime_shortest = etime_fft(iflag_FFTW)
+      if(etime_fft(iflag_FFT) .lt. etime_shortest) then
+        iflag_seelcted = iflag_FFT
+        etime_shortest = etime_fft(iflag_FFT)
+      end if
+!
+      iflag_FFT = iflag_FFTW_SINGLE
+      call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
+     &    etime_fft(iflag_FFT))
+!
+      if(etime_fft(iflag_FFT) .lt. etime_shortest) then
+        iflag_seelcted = iflag_FFT
+        etime_shortest = etime_fft(iflag_FFT)
       end if
 #endif
 !
 !
       iflag_FFT = iflag_ISPACK
       call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
-     &    etime_fft(iflag_ISPACK))
+     &    etime_fft(iflag_FFT))
 !
-      if(etime_fft(iflag_ISPACK) .lt. etime_shortest) then
-        iflag_seelcted = iflag_ISPACK
-        etime_shortest = etime_fft(iflag_ISPACK)
+      if(etime_fft(iflag_FFT) .lt. etime_shortest) then
+        iflag_seelcted = iflag_FFT
+        etime_shortest = etime_fft(iflag_FFT)
       end if
 !
       iflag_FFT = iflag_seelcted
@@ -92,6 +101,8 @@
           write(*,'(a,a)') ' (FFTW) '
         else if(iflag_FFT .eq. iflag_ISPACK) then
           write(*,'(a,a)') ' (ISPACK) '
+        else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
+          write(*,'(a,a)') ' (FFTW_SINGLE) '
         end if
 !
         write(*,*)   '1: elapsed by FFTPACK: ',                         &
@@ -99,8 +110,13 @@
         if(etime_fft(iflag_FFTW) .gt. zero) then
           write(*,*) '2: elapsed by FFTW3:   ', etime_fft(iflag_FFTW)
         end if
+        if(etime_fft(iflag_FFTW_SINGLE) .gt. zero) then
+          write(*,*) '3: elapsed by single FFTW3:   ',                  &
+     &            etime_fft(iflag_FFTW_SINGLE)
+        end if
         if(etime_fft(iflag_ISPACK) .gt. zero) then
-          write(*,*) '3: elapsed by ISPACK:  ', etime_fft(iflag_ISPACK)
+          write(*,*) '4: elapsed by ISPACK:         ',                  &
+     &            etime_fft(iflag_ISPACK)
         end if
 !
       end subroutine s_select_fourier_transform

@@ -51,7 +51,7 @@
 !
       if( (irtp%i_lorentz*iflag_4_lorentz) .gt. 0) then
         call cal_cross_prod_w_coef_smp(np_smp, nnod_rtp,                &
-     &    inod_rtp_smp_stack, coef_velo, d_rtp(1,irtp%i_current),       &
+     &    inod_rtp_smp_stack, coef_lor, d_rtp(1,irtp%i_current),        &
      &    d_rtp(1,irtp%i_magne), d_rtp(1,irtp%i_lorentz) )
       end if
 !
@@ -72,7 +72,7 @@
 !
       if( (irtp%i_c_flux*iflag_t_evo_4_composit) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp(np_smp, nnod_rtp,           &
-     &    inod_rtp_smp_stack, coef_temp, d_rtp(1,irtp%i_velo),          &
+     &    inod_rtp_smp_stack, coef_light, d_rtp(1,irtp%i_velo),         &
      &    d_rtp(1,irtp%i_light), d_rtp(1,irtp%i_c_flux) )
       end if
 !

@@ -28,11 +28,14 @@
 #define write_png_rgba_c          write_png_rgba_c_
 #define write_png_rgb_c           write_png_rgb_c_
 
-#define kemo_fftw_plan_dft_r2c_1d  kemo_fftw_plan_dft_r2c_1d_
-#define kemo_fftw_plan_dft_c2r_1d  kemo_fftw_plan_dft_c2r_1d_
-#define kemo_fftw_destroy_plan     kemo_fftw_destroy_plan_
-#define kemo_fftw_execute_dft_r2c  kemo_fftw_execute_dft_r2c_
-#define kemo_fftw_execute_dft_c2r  kemo_fftw_execute_dft_c2r_
+#define kemo_fftw_plan_dft_r2c_1d    kemo_fftw_plan_dft_r2c_1d_
+#define kemo_fftw_plan_dft_c2r_1d    kemo_fftw_plan_dft_c2r_1d_
+#define kemo_fftw_plan_many_dft_r2c  kemo_fftw_plan_many_dft_r2c_
+#define kemo_fftw_plan_many_dft_c2r  kemo_fftw_plan_many_dft_c2r_
+#define kemo_fftw_destroy_plan       kemo_fftw_destroy_plan_
+#define kemo_fftw_execute            kemo_fftw_execute_
+#define kemo_fftw_execute_dft_r2c    kemo_fftw_execute_dft_r2c_
+#define kemo_fftw_execute_dft_c2r    kemo_fftw_execute_dft_c2r_
 
 #define generate_ysfont8x12_c      generate_ysfont8x12_c_
 #define generate_ysfont16x24_c     generate_ysfont16x24_c_
@@ -51,11 +54,14 @@
 #define write_png_rgba_c          WRITE_PNG_RGBA_C
 #define write_png_rgb_c           WRITE_PNG_RGB_C
 
-#define kemo_fftw_plan_dft_r2c_1d  KEMO_FFTW_PLAN_DFT_R2C_1D
-#define kemo_fftw_plan_dft_c2r_1d  KEMO_FFTW_PLAN_DFT_C2R_1D
-#define kemo_fftw_destroy_plan     KEMO_FFTW_DESTROY_PLAN
-#define kemo_fftw_execute_dft_r2c  KEMO_FFTW_EXECUTE_DFT_R2C
-#define kemo_fftw_execute_dft_c2r  KEMO_FFTW_EXECUTE_DFT_C2R
+#define kemo_fftw_plan_dft_r2c_1d    KEMO_FFTW_PLAN_DFT_R2C_1D
+#define kemo_fftw_plan_dft_c2r_1d    KEMO_FFTW_PLAN_DFT_C2R_1D
+#define kemo_fftw_plan_many_dft_r2c  KEMO_FFTW_PLAN_MANY_DFT_R2C
+#define kemo_fftw_plan_many_dft_c2r  KEMO_FFTW_PLAN_MANY_DFT_C2R
+#define kemo_fftw_destroy_plan       KEMO_FFTW_DESTROY_PLAN
+#define kemo_fftw_execute            KEMO_FFTW_EXECUTE
+#define kemo_fftw_execute_dft_r2c    KEMO_FFTW_EXECUTE_DFT_R2C
+#define kemo_fftw_execute_dft_c2r    KEMO_FFTW_EXECUTE_DFT_C2R
 
 #define generate_ysfont8x12_c      GENERATE_YSFONT8X12_C
 #define generate_ysfont16x24_c     GENERATE_YSFONT16X24_C
@@ -78,11 +84,14 @@
 #define copy_rgb_from_png_c       COPY_RGB_FROM_PNG_C
 #define copy_rgba_from_png_c      COPY_RGBA_FROM_PNG_C
 
-#define kemo_fftw_plan_dft_r2c_1d  KEMO_FFTW_PLAN_DFT_R2C_1D
-#define kemo_fftw_plan_dft_c2r_1d  KEMO_FFTW_PLAN_DFT_C2R_1D
-#define kemo_fftw_destroy_plan     KEMO_FFTW_DESTROY_PLAN
-#define kemo_fftw_execute_dft_r2c  KEMO_FFTW_EXECUTE_DFT_R2C
-#define kemo_fftw_execute_dft_c2r  KEMO_FFTW_EXECUTE_DFT_C2R
+#define kemo_fftw_plan_dft_r2c_1d    KEMO_FFTW_PLAN_DFT_R2C_1D
+#define kemo_fftw_plan_dft_c2r_1d    KEMO_FFTW_PLAN_DFT_C2R_1D
+#define kemo_fftw_plan_many_dft_r2c  KEMO_FFTW_PLAN_MANY_DFT_R2C
+#define kemo_fftw_plan_many_dft_c2r  KEMO_FFTW_PLAN_MANY_DFT_C2R
+#define kemo_fftw_destroy_plan       KEMO_FFTW_DESTROY_PLAN
+#define kemo_fftw_execute            KEMO_FFTW_EXECUTE
+#define kemo_fftw_execute_dft_r2c    KEMO_FFTW_EXECUTE_DFT_R2C
+#define kemo_fftw_execute_dft_c2r    KEMO_FFTW_EXECUTE_DFT_C2R
 
 #define generate_ysfont8x12_c      GENERATE_YSFONT8X12_C
 #define generate_ysfont16x24_c     GENERATE_YSFONT16X24_C
@@ -101,11 +110,14 @@
 #define write_png_rgba_c          write_png_rgba_c
 #define write_png_rgb_c           write_png_rgb_c
 
-#define kemo_fftw_plan_dft_r2c_1d  kemo_fftw_plan_dft_r2c_1d
-#define kemo_fftw_plan_dft_c2r_1d  kemo_fftw_plan_dft_c2r_1d
-#define kemo_fftw_destroy_plan     kemo_fftw_destroy_plan
-#define kemo_fftw_execute_dft_r2c  kemo_fftw_execute_dft_r2c
-#define kemo_fftw_execute_dft_c2r  kemo_fftw_execute_dft_c2r
+#define kemo_fftw_plan_dft_r2c_1d    kemo_fftw_plan_dft_r2c_1d
+#define kemo_fftw_plan_dft_c2r_1d    kemo_fftw_plan_dft_c2r_1d
+#define kemo_fftw_plan_many_dft_r2c  kemo_fftw_plan_many_dft_r2c
+#define kemo_fftw_plan_many_dft_c2r  kemo_fftw_plan_many_dft_c2r
+#define kemo_fftw_destroy_plan       kemo_fftw_destroy_plan
+#define kemo_fftw_execute            kemo_fftw_execute
+#define kemo_fftw_execute_dft_r2c    kemo_fftw_execute_dft_r2c
+#define kemo_fftw_execute_dft_c2r    kemo_fftw_execute_dft_c2r
 
 #define generate_ysfont8x12_c      generate_ysfont8x12_c
 #define generate_ysfont16x24_c     generate_ysfont16x24_c
