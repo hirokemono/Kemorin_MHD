@@ -44,13 +44,13 @@
 !
 !
 !>     field data for Legendre transform
-!!@n       original layout: vr_rtm_spin(l_rtm,m_rtm,k_rtm,i_fld,nb)
-!!@n       size: vr_rtm_spin(nidx_rtm(2),nidx_rtm(3),nidx_rtm(1)*nb)
+!!@n       original layout: vr_rtm_spin(l_rtm,m_rtm,k_rtm,icomp)
+!!@n       size: vr_rtm_spin(nidx_rtm(2),nidx_rtm(3),nidx_rtm(1)*ncomp)
       real(kind = kreal), allocatable :: vr_rtm_spin(:,:,:)
 !
 !>     spectr data for Legendre transform
-!!@n      original layout: sp_rlm_spin(j_rlm,k_rtm,i_fld,nb,3)
-!!@n        size: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*nb,3)
+!!@n      original layout: sp_rlm_spin(j_rlm,k_rtm,icomp)
+!!@n        size: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
       real(kind = kreal), allocatable :: sp_rlm_spin(:,:)
 !
 ! ----------------------------------------------------------------------

@@ -50,7 +50,7 @@
 !
 !
       call order_b_trans_vector_krin(ncomp, nvector)
-      call clear_b_trans_vector_krin(nvector)
+      call clear_b_trans_krin(ione, 3*nvector)
 !
       call legendre_b_trans_vector_krin(nvector)
 !
@@ -69,7 +69,7 @@
 !
 !
       call order_b_trans_scalar_krin(ncomp, nvector, nscalar)
-      call clear_b_trans_scalar_krin(nscalar)
+      call clear_b_trans_krin(3*nvector+1,3*nvector+nscalar)
 !
       call legendre_b_trans_scalar_krin(nscalar)
 !
@@ -89,7 +89,7 @@
 !
 !
       call order_f_trans_vector_krin(ncomp, nvector)
-      call clear_f_trans_vector_krin(nvector)
+      call clear_f_trans_krin(ione, 3*nvector)
 !
       call legendre_f_trans_vector_krin(nvector)
 !
@@ -108,7 +108,7 @@
 !
 !
       call order_f_trans_scalar_krin(ncomp, nvector, nscalar)
-      call clear_f_trans_scalar_krin(nscalar)
+      call clear_f_trans_krin(3*nvector+1, 3*nvector+nscalar)
 !
       call legendre_f_trans_scalar_krin(nscalar)
 !
