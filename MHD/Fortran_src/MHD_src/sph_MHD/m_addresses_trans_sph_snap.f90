@@ -56,6 +56,8 @@
       use m_sph_phys_address
       use m_addresses_trans_sph_MHD
 !
+      integer(kind = kint) :: ncomp_fwd, ncomp_bwd
+!
 !
       nscalar_snap_rtp_2_rj = 0
       call add_transform_flag(ipol%i_me_gen, irtp%i_me_gen,             &
@@ -159,6 +161,10 @@
       nb_sph_trans = max(nb_sph_trans,nvector_snap_rtp_2_rj)
       nb_sph_trans = max(nb_sph_trans,nscalar_snap_rj_2_rtp)
       nb_sph_trans = max(nb_sph_trans,nvector_snap_rj_2_rtp)
+!
+      ncomp_bwd = 3*nvector_snap_rj_2_rtp + nscalar_snap_rj_2_rtp
+      ncomp_fwd = 3*nvector_snap_rtp_2_rj + nscalar_snap_rtp_2_rj
+      ncomp_sph_trans = max(ncomp_bwd,ncomp_fwd)
 !
       end subroutine set_addresses_snapshot_trans
 !

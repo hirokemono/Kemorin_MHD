@@ -70,7 +70,7 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'sel_alloc_legendre_trans'
-      call sel_alloc_legendre_trans(nb_sph_trans)
+      call sel_alloc_legendre_trans(nb_sph_trans, ncomp_sph_trans)
 !
       end subroutine init_sph_transform_MHD
 !
@@ -207,7 +207,7 @@
 !
       do iloop_type = 1, 5
         id_legendre_transfer = iloop_type
-        call sel_alloc_legendre_trans(nb_sph_trans)
+        call sel_alloc_legendre_trans(nb_sph_trans, ncomp_sph_trans)
 !
         stime = MPI_WTIME()
         call sph_back_trans_4_MHD

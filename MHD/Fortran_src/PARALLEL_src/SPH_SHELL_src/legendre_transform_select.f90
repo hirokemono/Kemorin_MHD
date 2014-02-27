@@ -11,7 +11,7 @@
 !!@verbatim
 !!      subroutine set_legendre_trans_mode_ctl(tranx_loop_ctl)
 !!
-!!      subroutine sel_alloc_legendre_trans(nfield)
+!!      subroutine sel_alloc_legendre_trans(nfield, ncomp)
 !!      subroutine sel_dealloc_legendre_trans
 !!
 !!    Backward transforms
@@ -102,13 +102,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_alloc_legendre_trans(nfield)
+      subroutine sel_alloc_legendre_trans(nfield, ncomp)
 !
-      integer(kind = kint), intent(in) :: nfield
+      integer(kind = kint), intent(in) :: nfield, ncomp
 !
 !
       if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        call allocate_work_sph_trans_spin(nfield)
+        call allocate_work_sph_trans_spin(ncomp)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         call allocate_work_sph_trans_krin(nfield)
       else if(id_legendre_transfer .eq. iflag_lef_fdout_loop) then
