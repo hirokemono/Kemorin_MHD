@@ -45,13 +45,13 @@
 !
 !>     field data for Legendre transform
 !!@n       original layout: vr_rtm_krin(i_fld,k_rtm,l_rtm,m_rtm,nd)
-!!@n       size: vr_rtm_krin(nb*nidx_rtm(1),nidx_rtm(2)*nidx_rtm(3),3)
-      real(kind = kreal), allocatable :: vr_rtm_krin(:,:,:)
+!!@n       size: vr_rtm_krin(nidx_rtm(1)*nidx_rtm(2)*nidx_rtm(3),nb)
+      real(kind = kreal), allocatable :: vr_rtm_krin(:,:)
 !
 !>     spectr data for Legendre transform
 !!@n      original layout: sp_rlm_krin(k_rtm,j_rlm,i_fld)
-!!@n      size: sp_rlm_krin(nidx_rtm(1),nidx_rlm(2),nb)
-      real(kind = kreal), allocatable :: sp_rlm_krin(:,:,:)
+!!@n      size: sp_rlm_krin(nidx_rlm(1)*nidx_rlm(2),nb)
+      real(kind = kreal), allocatable :: sp_rlm_krin(:,:)
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,14 +64,11 @@
       use m_spheric_parameter
 !
       integer(kind = kint), intent(in) :: nb_sph_trans
-      integer(kind = kint) :: num1
 !
 !
-      allocate(sp_rlm_krin(nidx_rlm(1),nidx_rlm(2),3*nb_sph_trans))
+      allocate(sp_rlm_krin(nnod_rlm,3*nb_sph_trans))
+      allocate(vr_rtm_krin(nnod_rtm,3*nb_sph_trans))
       sp_rlm_krin = 0.0d0
-!
-      num1 = nidx_rtm(2)*nidx_rtm(3)
-      allocate(vr_rtm_krin(nidx_rtm(1),num1,3*nb_sph_trans))
       vr_rtm_krin = 0.0d0
 !
       end subroutine allocate_work_sph_trans_krin
@@ -92,19 +89,14 @@
       use m_spheric_parameter
 !
       integer(kind = kint), intent(in) :: icomp_st, icomp_ed
-      integer(kind = kint) :: k_rtm, l_rtm, m_rtm, i_rtm_1, nd
+      integer(kind = kint) :: i_rtm, nd
 !
 !
 !$omp parallel
       do nd = icomp_st, icomp_ed
-!$omp do private(k_rtm,l_rtm,i_rtm_1)
-        do m_rtm = 1, nidx_rtm(3)
-          do l_rtm = 1, nidx_rtm(2)
-            do k_rtm = 1, nidx_rtm(1)
-              i_rtm_1 = l_rtm + (m_rtm-1) * nidx_rtm(2)
-              vr_rtm_krin(k_rtm,i_rtm_1,nd) = zero
-            end do
-          end do
+!$omp do private(i_rtm)
+        do i_rtm = 1, nnod_rtm
+          vr_rtm_krin(i_rtm,nd) = zero
         end do
 !$omp end do nowait
       end do
@@ -121,16 +113,14 @@
 !
       integer(kind = kint), intent(in) :: icomp_st, icomp_ed
 !
-      integer(kind = kint) :: j_rlm, k_rlm, nd
+      integer(kind = kint) :: i_rlm, nd
 !
 !
 !$omp parallel
       do nd = icomp_st, icomp_ed
-!$omp do private(k_rlm,j_rlm)
-        do k_rlm = 1, nidx_rtm(1)
-          do j_rlm = 1, nidx_rlm(2)
-            sp_rlm_krin(k_rlm,j_rlm,nd) = zero
-          end do
+!$omp do private(i_rlm)
+        do i_rlm = 1, nnod_rlm
+          sp_rlm_krin(i_rlm,nd) = zero
         end do
 !$omp end do nowait
       end do

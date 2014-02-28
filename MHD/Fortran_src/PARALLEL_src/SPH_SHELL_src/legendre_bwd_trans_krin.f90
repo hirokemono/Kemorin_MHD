@@ -9,10 +9,10 @@
 !!       (innermost loop is field and radius)
 !!
 !!@verbatim
-!!      subroutine legendre_b_trans_vector_krin(nvector)
-!!        Input:  vr_rtm_krin   (Order: radius,theta,phi)
-!!        Output: sp_rlm_krin   (Order: poloidal,diff_poloidal,toroidal)
-!!      subroutine legendre_b_trans_scalar_krin(nscalar)
+!!      subroutine legendre_b_trans_vector_krin(nvector,                &
+!!     &          sp_rlm_krin, vr_rtm_krin)
+!!      subroutine legendre_b_trans_scalar_krin(nscalar,                &
+!!     &          sp_rlm_krin, vr_rtm_krin)
 !!        Input:  vr_rtm_krin
 !!        Output: sp_rlm_krin
 !!@endverbatim
@@ -29,7 +29,6 @@
       use m_spheric_param_smp
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
-      use m_work_4_sph_trans_krin
 !
       implicit none
 !
@@ -39,42 +38,43 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_b_trans_vector_krin(nvector)
+      subroutine legendre_b_trans_vector_krin(nvector,                  &
+     &          sp_rlm_krin, vr_rtm_krin)
 !
       integer(kind = kint), intent(in) :: nvector
+      real(kind = kreal), intent(in)                                    &
+     &      :: sp_rlm_krin(nnod_rlm,3*nvector)
+      real(kind = kreal), intent(inout)                                 &
+     &      :: vr_rtm_krin(nnod_rtm,3*nvector)
 !
       integer(kind = kint) :: j_rlm, mp_rlm, mn_rlm
       integer(kind = kint) :: l_rtm, mst, med
-      integer(kind = kint) :: ip_rtm_1, in_rtm_1
-      integer(kind = kint) :: nb_nri, k_rtm, nd
-      real(kind = kreal) :: pg_tmp, dp_tmp
+      integer(kind = kint) :: k_rtm, nd, kr_j, kr_l, i_rtm
 !
 !
-      nb_nri = nvector*nidx_rtm(1)
-!$omp parallel do private(mp_rlm,j_rlm,ip_rtm_1,mst,med,                &
-!$omp&                    in_rtm_1,pg_tmp,dp_tmp,l_rtm,k_rtm,nd)
+!$omp parallel do private(mp_rlm,j_rlm,kr_l,mst,med,l_rtm,k_rtm,        &
+!$omp&                    nd,kr_j,i_rtm)
       do mp_rlm = 1, nidx_rtm(3)
         mst = lstack_rlm(mp_rlm-1)+1
         med = lstack_rlm(mp_rlm)
         do nd = 1, nvector
           do j_rlm = mst, med
 !
-            do l_rtm = 1, nidx_rtm(2)
-              ip_rtm_1 = l_rtm + (mp_rlm-1) * nidx_rtm(2)
+            do kr_l = 1, nidx_rtm(1)*nidx_rtm(2)
+              i_rtm = kr_l + (mp_rlm-1)*nidx_rtm(1)*nidx_rtm(2)
+              k_rtm = 1 + mod(kr_l-1,nidx_rtm(1))
+              l_rtm = 1 + (kr_l - k_rtm) / nidx_rtm(1)
+              kr_j = k_rtm + (j_rlm-1)*nidx_rtm(1)
 !
-              pg_tmp = P_rtm(l_rtm,j_rlm) * g_sph_rlm(j_rlm,3)
-              dp_tmp = dPdt_rtm(l_rtm,j_rlm)
-              do k_rtm = 1, nidx_rtm(1)
-                vr_rtm_krin(k_rtm,ip_rtm_1,3*nd-2)                      &
-     &                    = vr_rtm_krin(k_rtm,ip_rtm_1,3*nd-2)          &
-     &                     + sp_rlm_krin(k_rtm,j_rlm,3*nd-2) * pg_tmp
-                vr_rtm_krin(k_rtm,ip_rtm_1,3*nd-1)                      &
-     &                    = vr_rtm_krin(k_rtm,ip_rtm_1,3*nd-1)          &
-     &                     + sp_rlm_krin(k_rtm,j_rlm,3*nd-1) * dp_tmp
-                vr_rtm_krin(k_rtm,ip_rtm_1,3*nd  )                      &
-     &                    = vr_rtm_krin(k_rtm,ip_rtm_1,3*nd  )          &
-     &                     - sp_rlm_krin(k_rtm,j_rlm,3*nd  ) * dp_tmp
-              end do
+              vr_rtm_krin(i_rtm,3*nd-2) = vr_rtm_krin(i_rtm,3*nd-2)     &
+     &                     + sp_rlm_krin(kr_j,3*nd-2)                   &
+     &                      * P_rtm(l_rtm,j_rlm) * g_sph_rlm(j_rlm,3)
+              vr_rtm_krin(i_rtm,3*nd-1) = vr_rtm_krin(i_rtm,3*nd-1)     &
+     &                     + sp_rlm_krin(kr_j,3*nd-1)                   &
+     &                      * dPdt_rtm(l_rtm,j_rlm)
+              vr_rtm_krin(i_rtm,3*nd  ) = vr_rtm_krin(i_rtm,3*nd  )     &
+     &                     - sp_rlm_krin(kr_j,3*nd  )                   &
+     &                      * dPdt_rtm(l_rtm,j_rlm)
             end do
           end do
 !
@@ -82,8 +82,8 @@
       end do
 !$omp end parallel do
 !
-!$omp parallel do private(mp_rlm,mn_rlm,j_rlm,ip_rtm_1,mst,med,         &
-!$omp&                    in_rtm_1,pg_tmp,l_rtm,k_rtm,nd)
+!$omp parallel do private(mp_rlm,mn_rlm,j_rlm,mst,med,                  &
+!$omp&                    kr_l,l_rtm,k_rtm,nd,kr_j,i_rtm)
       do mp_rlm = 1, nidx_rtm(3)
         mn_rlm = nidx_rtm(3) - mp_rlm + 1
         mst = lstack_rlm(mp_rlm-1)+1
@@ -91,19 +91,22 @@
         do nd = 1, nvector
           do j_rlm = mst, med
 !
-            do l_rtm = 1, nidx_rtm(2)
-              in_rtm_1 = l_rtm + (mn_rlm-1) * nidx_rtm(2)
-              pg_tmp = P_rtm(l_rtm,j_rlm) * asin_theta_1d_rtm(l_rtm)    &
-     &              * dble( -idx_gl_1d_rlm_j(j_rlm,3) )
+            do kr_l = 1, nidx_rtm(1)*nidx_rtm(2)
+              i_rtm = kr_l + (mn_rlm-1)*nidx_rtm(1)*nidx_rtm(2)
+              k_rtm = 1 + mod(kr_l-1,nidx_rtm(1))
+              l_rtm = 1 + (kr_l - k_rtm) / nidx_rtm(1)
+              kr_j = k_rtm + (j_rlm-1)*nidx_rtm(1)
 !
-              do k_rtm = 1, nidx_rtm(1)
-                vr_rtm_krin(k_rtm,in_rtm_1,3*nd-1)                      &
-     &                      = vr_rtm_krin(k_rtm,in_rtm_1,3*nd-1)        &
-     &                       + sp_rlm_krin(k_rtm,j_rlm,3*nd  ) * pg_tmp
-                vr_rtm_krin(k_rtm,in_rtm_1,3*nd  )                      &
-     &                      = vr_rtm_krin(k_rtm,in_rtm_1,3*nd  )        &
-     &                       + sp_rlm_krin(k_rtm,j_rlm,3*nd-1) * pg_tmp
-              end do
+              vr_rtm_krin(i_rtm,3*nd-1) = vr_rtm_krin(i_rtm,3*nd-1)     &
+     &                       + sp_rlm_krin(kr_j,3*nd  )                 &
+     &                        * P_rtm(l_rtm,j_rlm)                      &
+     &                        * asin_theta_1d_rtm(l_rtm)                &
+     &                        * dble( -idx_gl_1d_rlm_j(j_rlm,3) )
+              vr_rtm_krin(i_rtm,3*nd  ) = vr_rtm_krin(i_rtm,3*nd  )     &
+     &                       + sp_rlm_krin(kr_j,3*nd-1)                 &
+     &                        * P_rtm(l_rtm,j_rlm)                      &
+     &                        * asin_theta_1d_rtm(l_rtm)                &
+     &                        * dble( -idx_gl_1d_rlm_j(j_rlm,3) )
             end do
           end do
 !
@@ -115,30 +118,34 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_b_trans_scalar_krin(nscalar)
+      subroutine legendre_b_trans_scalar_krin(nscalar,                  &
+     &          sp_rlm_krin, vr_rtm_krin)
 !
       integer(kind = kint), intent(in) :: nscalar
+      real(kind = kreal), intent(in)                                    &
+     &      :: sp_rlm_krin(nnod_rlm,nscalar)
+      real(kind = kreal), intent(inout)                                 &
+     &      :: vr_rtm_krin(nnod_rtm,nscalar)
 !
       integer(kind = kint) :: j_rlm, l_rtm, mst, med, mp_rlm
-      integer(kind = kint) :: ip_rtm_1
-      integer(kind = kint) :: nb_nri, k_rtm, nd
+      integer(kind = kint) :: k_rtm, nd, kr_j, kr_l, i_rtm
 !
 !
-      nb_nri = nscalar*nidx_rtm(1)
-!$omp parallel do private(j_rlm,k_rtm,nd,ip_rtm_1,mst,med,l_rtm)
+!$omp parallel do private(j_rlm,k_rtm,nd,mst,med,l_rtm,kr_j,i_rtm)
       do mp_rlm = 1, nidx_rtm(3)
         mst = lstack_rlm(mp_rlm-1)+1
         med = lstack_rlm(mp_rlm)
         do nd = 1, nscalar
           do j_rlm = mst, med
 !
-            do l_rtm = 1, nidx_rtm(2)
-              ip_rtm_1 = l_rtm + (mp_rlm-1) * nidx_rtm(2)
-              do k_rtm = 1, nidx_rtm(1)
-                vr_rtm_krin(k_rtm,ip_rtm_1,nd)                          &
-     &             = vr_rtm_krin(k_rtm,ip_rtm_1,nd)                     &
-     &              + sp_rlm_krin(k_rtm,j_rlm,nd) * P_rtm(l_rtm,j_rlm)
-              end do
+            do kr_l = 1, nidx_rtm(1)*nidx_rtm(2)
+              i_rtm = kr_l + (mp_rlm-1)*nidx_rtm(1)*nidx_rtm(2)
+              k_rtm = 1 + mod(kr_l-1,nidx_rtm(1))
+              l_rtm = 1 + (kr_l - k_rtm) / nidx_rtm(1)
+              kr_j = k_rtm + (j_rlm-1)*nidx_rtm(1)
+!
+              vr_rtm_krin(i_rtm,nd) = vr_rtm_krin(i_rtm,nd)             &
+     &              + sp_rlm_krin(kr_j,nd) * P_rtm(l_rtm,j_rlm)
             end do
           end do
 !
