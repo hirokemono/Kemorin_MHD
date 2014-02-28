@@ -44,9 +44,9 @@
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
       real(kind = kreal), intent(in)                                    &
-     &    :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
+     &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
       real(kind = kreal), intent(inout)                                 &
-     &   :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(3),nidx_rtm(1)*3*nvector)
+     &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(3),nidx_rtm(1)*ncomp)
 !
       integer(kind = kint) :: j_rlm, mp_rlm, mn_rlm, mst, med, l_rtm
       integer(kind = kint) :: nb_nri, kr_nd
@@ -114,7 +114,7 @@
       real(kind = kreal), intent(in)                                    &
      &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
       real(kind = kreal), intent(inout)                                 &
-     &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(3),nidx_rtm(1)*nscalar)
+     &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(3),nidx_rtm(1)*ncomp)
 !
       integer(kind = kint) :: j_rlm, l_rtm, mp_rlm, mst, med
       integer(kind = kint) :: kr_nd, kst, ked
@@ -150,4 +150,3 @@
 ! -----------------------------------------------------------------------
 !
       end module legendre_bwd_trans_spin
-
