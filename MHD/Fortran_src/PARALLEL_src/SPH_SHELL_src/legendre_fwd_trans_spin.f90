@@ -122,19 +122,17 @@
       real(kind = kreal), intent(in)                                    &
      &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(3),nidx_rtm(1)*ncomp)
       real(kind = kreal), intent(inout)                                 &
-     &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
+     &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*nscalar)
 !
       integer(kind = kint) :: j_rlm, l_rtm, mp_rlm, mst, med
-      integer(kind = kint) :: kr_nd, kst, ked
+      integer(kind = kint) :: kr_nd
       real(kind = kreal) :: pwt_tmp
 !
 !
-      kst = 1 + 3*nvector * nidx_rtm(1)
-      ked = (nscalar + 3*nvector) * nidx_rtm(1)
 !$omp parallel do private(j_rlm,l_rtm,pwt_tmp,mp_rlm,mst,med)
 !cdir nodep
-      do kr_nd = kst, ked
-!      do nd = nvector+1, nvector+nscalar
+      do kr_nd = 1, nscalar*nidx_rlm(1)
+!      do nd = 1, nscalar
 !        do k_rlm = 1, nidx_rlm(1)
 !          kr_nd = k_rlm + (nd-1) * nidx_rlm(1)
 !
@@ -154,8 +152,8 @@
 !$omp end parallel do
 !
 !$omp parallel do private(j_rlm)
-      do kr_nd = kst, ked
-!      do nd = nvector+1, nvector+nscalar
+      do kr_nd = 1, nscalar*nidx_rlm(1)
+!      do nd = 1, nscalar
 !        do k_rlm = 1, nidx_rlm(1)
 !          kr_nd = k_rlm + (nd-1) * nidx_rlm(1)
 !

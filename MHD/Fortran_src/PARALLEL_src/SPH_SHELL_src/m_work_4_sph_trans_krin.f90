@@ -8,7 +8,7 @@
 !!       (innermost loop is field and radius)
 !!
 !!@verbatim
-!!      subroutine allocate_work_sph_trans_krin(nb_sph_trans)
+!!      subroutine allocate_work_sph_trans_krin(ncomp)
 !!      subroutine deallocate_work_sph_trans_krin
 !!
 !!      subroutine clear_b_trans_krin(icomp_st, icomp_ed)
@@ -59,15 +59,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_work_sph_trans_krin(nb_sph_trans)
+      subroutine allocate_work_sph_trans_krin(ncomp)
 !
       use m_spheric_parameter
 !
-      integer(kind = kint), intent(in) :: nb_sph_trans
+      integer(kind = kint), intent(in) :: ncomp
 !
 !
-      allocate(sp_rlm_krin(nnod_rlm,3*nb_sph_trans))
-      allocate(vr_rtm_krin(nnod_rtm,3*nb_sph_trans))
+      allocate(sp_rlm_krin(nnod_rlm,ncomp))
+      allocate(vr_rtm_krin(nnod_rtm,ncomp))
       sp_rlm_krin = 0.0d0
       vr_rtm_krin = 0.0d0
 !
