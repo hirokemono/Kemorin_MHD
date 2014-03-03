@@ -102,7 +102,7 @@
         return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(my_rank .eq. 0) write(*,*) 'Use single FFTW transforms'
-        call init_4_FFTW(Nstacksmp(Nsmp), Nfft)
+        call init_4_FFTW(Nsmp, Nstacksmp, Nfft)
         return
       end if
 #endif
@@ -124,8 +124,8 @@
         call finalize_FFTW_mul(Nsmp)
         return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        if(my_rank .eq. 0) write(*,*) 'Finalize single FFTW transforms'
-        call finalize_4_FFTW(Nstacksmp(Nsmp))
+        if(iflag_debug .eq. 0) write(*,*) 'Finalize single FFTW'
+        call finalize_4_FFTW(Nsmp, Nstacksmp)
         return
       end if
 #endif
@@ -149,8 +149,8 @@
         call verify_work_FFTW_mul(Nsmp, Nstacksmp, Nfft)
         return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        if(my_rank .eq. 0) write(*,*) 'Use single FFTW transforms'
-        call verify_work_4_FFTW(Nstacksmp(Nsmp), Nfft)
+        if(iflag_debug .eq. 0) write(*,*) 'Use single FFTW transforms'
+        call verify_work_4_FFTW(Nsmp, Nstacksmp, Nfft)
         return
       end if
 #endif

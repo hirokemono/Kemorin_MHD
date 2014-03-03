@@ -45,8 +45,8 @@
 !
 !>     field data for Legendre transform
 !!@n       original layout: vr_rtm_spin(l_rtm,m_rtm,k_rtm,icomp)
-!!@n       size: vr_rtm_spin(nidx_rtm(2),nidx_rtm(3),nidx_rtm(1)*ncomp)
-      real(kind = kreal), allocatable :: vr_rtm_spin(:,:,:)
+!!@n       size: vr_rtm_spin(nidx_rtm(2),nidx_rtm(3)*nidx_rtm(1),ncomp)
+      real(kind = kreal), allocatable :: vr_rtm_spin(:,:)
 !
 !>     spectr data for Legendre transform
 !!@n      original layout: sp_rlm_spin(j_rlm,k_rtm,icomp)
@@ -64,12 +64,10 @@
       use m_spheric_parameter
 !
       integer(kind = kint), intent(in) :: ncomp
-      integer(kind = kint) :: num1
 !
 !
-      num1 = ncomp*nidx_rlm(1)
-      allocate(sp_rlm_spin(nidx_rlm(2),num1))
-      allocate(vr_rtm_spin(nidx_rtm(2),nidx_rtm(3),num1))
+      allocate(sp_rlm_spin(nnod_rlm,ncomp))
+      allocate(vr_rtm_spin(nnod_rtm,ncomp))
 !
       sp_rlm_spin = 0.0d0
       vr_rtm_spin = 0.0d0
@@ -92,20 +90,18 @@
       use m_spheric_parameter
 !
       integer(kind = kint), intent(in) :: icomp_st, icomp_ed
-      integer(kind = kint) :: k_rtm, l_rtm, m_rtm, kst, ked
+      integer(kind = kint) :: nd, inod
 !
 !
-      kst = (icomp_st-1) * nidx_rtm(1) + 1
-      ked = icomp_ed * nidx_rtm(1)
-!$omp parallel do private(m_rtm,k_rtm,l_rtm)
-      do k_rtm = kst, ked
-        do m_rtm = 1, nidx_rtm(3)
-          do l_rtm = 1, nidx_rtm(2)
-            vr_rtm_spin(l_rtm,m_rtm,k_rtm) = zero
-          end do
+!$omp parallel private(nd)
+      do nd = icomp_st, icomp_ed
+!$omp do private(inod)
+        do inod = 1, nnod_rtm
+          vr_rtm_spin(inod,nd) = zero
         end do
+!$omp end do nowait
       end do
-!$omp end parallel do
+!$omp end parallel
 !
       end subroutine clear_b_trans_spin
 !
@@ -117,18 +113,18 @@
       use m_spheric_parameter
 !
       integer(kind = kint), intent(in) :: icomp_st, icomp_ed
-      integer(kind = kint) :: j_rlm, k_rtm, kst, ked
+      integer(kind = kint) :: nd, inod
 !
 !
-      kst = (icomp_st-1) * nidx_rtm(1) + 1
-      ked = icomp_ed * nidx_rtm(1)
-!$omp parallel do private(k_rtm,j_rlm)
-      do k_rtm = kst, ked
-          do j_rlm = 1, nidx_rlm(2)
-            sp_rlm_spin(j_rlm,k_rtm) = zero
+!$omp parallel private(nd)
+      do nd = icomp_st, icomp_ed
+!$omp do private(inod)
+        do inod = 1, nnod_rlm
+          sp_rlm_spin(inod,nd) = zero
         end do
+!$omp end do nowait
       end do
-!$omp end parallel do
+!$omp end parallel
 !
       end subroutine clear_f_trans_spin
 !
