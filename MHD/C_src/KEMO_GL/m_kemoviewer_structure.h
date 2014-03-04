@@ -21,6 +21,7 @@
 #include "rotate_animation.h"
 #include "set_each_psf_parameters.h"
 #include "gl_buffer_2_bmp.h"
+#include "numbers_to_bin_c.h"
 
 
 #include "kemoviewer.h"

@@ -641,6 +641,7 @@ extern "C" {
     
     void write_fline_colormap_control_file(const char *file_name);
     
+    double round_to_3digit(double value);
     
 #ifdef __cplusplus
 }

@@ -947,3 +947,4 @@ void write_fline_colormap_control_file(const char *file_name){
 	write_colormap_control_file_s(file_name, kemo_sgl->fline_m->cmap_fline);
 }
 
+double round_to_3digit(double value){return round_2_3digit(value);};

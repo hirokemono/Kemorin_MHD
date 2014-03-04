@@ -346,8 +346,8 @@
 		
         
 		iplotted = send_draw_component_current_psf();
-		self.PsfMinimumValue =   send_current_psf_data_min(iplotted);
-		self.PsfMaximumValue =   send_current_psf_data_max(iplotted);
+		self.PsfMinimumValue = round_to_3digit(send_current_psf_data_min(iplotted));
+		self.PsfMaximumValue = round_to_3digit(send_current_psf_data_max(iplotted));
 	}
 	
 	return;
@@ -358,8 +358,8 @@
     
 	iplotted = send_draw_component_current_psf();
     
- 	self.PsfMinimumValue = send_current_psf_data_min(iplotted);
-	self.PsfMaximumValue = send_current_psf_data_max(iplotted);
+ 	self.PsfMinimumValue = round_to_3digit(send_current_psf_data_min(iplotted));
+	self.PsfMaximumValue = round_to_3digit(send_current_psf_data_max(iplotted));
 	self.PsfMinimumRange = send_current_PSF_color_table_min();
 	self.PsfMaximumRange = send_current_PSF_color_table_max();
     
