@@ -109,6 +109,7 @@ static void read_psf_vtk_field_data(struct psf_data *viz_s){
     fgets(buf, LENGTHBUF, fp);     /* POINT_DATA  nnod_viz */
 	sscanf(buf, "%10s %d", tmpchara, &viz_s->nnod_viz);
 	
+    vtk_tmp = (struct psf_data *) malloc(sizeof(struct psf_data));
     viz_s->nfield = 0;
     viz_s->ncomptot = 0;
     vtk_tmp->nnod_viz = viz_s->nnod_viz;
@@ -211,6 +212,7 @@ static void read_psf_vtk_field_data(struct psf_data *viz_s){
         
     }
     alloc_psf_data_s(viz_s);
+    free(vtk_tmp);
     
 	return;
 };
