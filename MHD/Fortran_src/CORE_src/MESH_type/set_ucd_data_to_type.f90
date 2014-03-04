@@ -172,7 +172,8 @@
 !
       call sel_read_udt_file(my_rank, istep_ucd, ucd)
       call set_field_by_udt_data(node%numnod, phys_nod%num_phys,        &
-     &    phys_nod%ntot_phys, phys_nod%phys_name, phys_nod%d_fld, ucd)
+     &    phys_nod%ntot_phys, phys_nod%istack_component,                &
+     &    phys_nod%phys_name, phys_nod%d_fld, ucd)
 !
       end subroutine set_ucd_data_type_from_IO
 !
@@ -195,7 +196,8 @@
       ucd%nnod = numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, ucd)
       call set_field_by_udt_data(numnod, phys_nod%num_phys,             &
-     &    phys_nod%ntot_phys, phys_nod%phys_name, phys_nod%d_fld, ucd)
+     &    phys_nod%ntot_phys, phys_nod%istack_component,                &
+     &    phys_nod%phys_name, phys_nod%d_fld, ucd)
       call deallocate_ucd_data(ucd)
 !
       end subroutine set_ucd_data_type_from_IO_once
@@ -219,7 +221,8 @@
       ucd%nnod = numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, ucd)
       call add_field_by_udt_data(numnod, phys_nod%num_phys,             &
-     &    phys_nod%ntot_phys, phys_nod%phys_name, phys_nod%d_fld, ucd)
+     &    phys_nod%ntot_phys, phys_nod%istack_component,                &
+     &    phys_nod%phys_name, phys_nod%d_fld, ucd)
       call deallocate_ucd_data(ucd)
 !
       end subroutine add_by_ucd_data_type
@@ -243,7 +246,8 @@
       ucd%nnod = numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, ucd)
       call subtract_field_by_udt_data(numnod, phys_nod%num_phys,        &
-     &    phys_nod%ntot_phys, phys_nod%phys_name, phys_nod%d_fld, ucd)
+     &    phys_nod%ntot_phys, phys_nod%istack_component,                &
+     &    phys_nod%phys_name, phys_nod%d_fld, ucd)
       call deallocate_ucd_data(ucd)
 !
       end subroutine subtract_by_ucd_data_type

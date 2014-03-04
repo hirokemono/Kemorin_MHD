@@ -98,6 +98,8 @@
 !
 !
       call init_read_ucd_data(my_rank, istep_ucd)
+      num_nod_phys = input_ucd%num_field
+!
       call allocate_phys_name
 !
       num_nod_component(1:num_nod_phys)                                 &
@@ -128,7 +130,8 @@
 !
       call sel_read_udt_file(my_rank, istep_ucd, input_ucd)
       call set_field_by_udt_data(numnod, num_nod_phys,                  &
-     &    num_tot_nod_phys, phys_nod_name, d_nod, input_ucd)
+     &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
+     &    d_nod, input_ucd)
 !
       end subroutine set_data_by_read_ucd
 !
@@ -157,7 +160,8 @@
       local_ucd%nnod =      numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
       call set_field_by_udt_data(numnod, num_nod_phys,                  &
-     &    num_tot_nod_phys, phys_nod_name, d_nod, local_ucd)
+     &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
+     &    d_nod, local_ucd)
       call deallocate_ucd_data(local_ucd)
 !
       end subroutine set_data_by_read_ucd_once
@@ -186,7 +190,8 @@
       local_ucd%nnod =      numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
       call add_field_by_udt_data(numnod, num_nod_phys,                  &
-     &    num_tot_nod_phys, phys_nod_name, d_nod, local_ucd)
+     &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
+     &    d_nod, local_ucd)
       call deallocate_ucd_data(local_ucd)
 !
       end subroutine add_ucd_to_data
@@ -215,7 +220,8 @@
       local_ucd%nnod = numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
       call subtract_field_by_udt_data(numnod, num_nod_phys,             &
-     &    num_tot_nod_phys, phys_nod_name, d_nod, local_ucd)
+     &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
+     &    d_nod, local_ucd)
       call deallocate_ucd_data(local_ucd)
 !
       end subroutine subtract_by_ucd_data

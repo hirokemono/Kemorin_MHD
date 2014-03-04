@@ -21,7 +21,7 @@
       subroutine set_control_params_4_viz(my_rank, ierr)
 !
       use m_read_mesh_data
-      use m_ucd_data
+      use m_ucd_input_data
       use m_control_params_2nd_files
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
@@ -37,6 +37,7 @@
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
+      call set_control_input_ucd_file_def
       call set_control_org_fld_file_def
 !
       call s_set_fixed_time_step_params(ierr, e_message)
