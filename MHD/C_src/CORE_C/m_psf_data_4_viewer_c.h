@@ -72,6 +72,23 @@ struct psf_data{
 	double **coef_4_map_itp;
 };
 
+typedef struct vtk_fields_list vtk_fields_t;
+
+struct vtk_fields_list{
+	char field_name[255];
+    int  nnod_fld;
+    int  ncomp_vtk;
+    double **d_vtk;
+    
+    vtk_fields_t *next_fld;
+};
+
+struct vtk_field{
+    int nnod_vtk;
+    int nfld_vtk;
+    struct vtk_fields_list *vtk_fields;
+};
+
 /* prototypes */
 
 void alloc_viz_node_s(struct psf_data *viz_s);
@@ -92,9 +109,18 @@ void dealloc_psf_cutting_4_map(struct psf_data *viz_s);
 void deallc_all_psf_data(struct psf_data *viz_s);
 void deallc_all_fline_data(struct psf_data *viz_s);
 
+void alloc_vtk_fields_list_c(struct vtk_field *vtk_list);
+void alloc_vtk_field_data_c(vtk_fields_t *vtk_s);
+void dealloc_vtk_field_data_c(vtk_fields_t *vtk_s);
+void dealloc_vtk_fields_list_c(struct vtk_field *vtk_list);
+
+
 void copy_viewer_udt_node(struct psf_data *viz_copied, struct psf_data *viz_org);
 void copy_viewer_udt_connect(struct psf_data *viz_copied, struct psf_data *viz_org);
 void copy_viewer_udt_field_name(struct psf_data *viz_copied, struct psf_data *viz_org);
 void copy_viewer_udt_data(struct psf_data *viz_copied, struct psf_data *viz_org);
+
+void copy_vtk_list_2_udt_name(struct psf_data *viz_copied, struct vtk_field *vtk_list);
+void copy_vtk_list_2_udt_data(struct psf_data *viz_copied, struct vtk_field *vtk_list);
 
 #endif

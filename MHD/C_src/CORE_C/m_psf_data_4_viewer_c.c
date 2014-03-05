@@ -252,6 +252,41 @@ void deallc_all_fline_data(struct psf_data *viz_s){
 };
 
 
+void alloc_vtk_fields_list_c(struct vtk_field *vtk_list){
+	vtk_list = (struct vtk_field *)malloc(sizeof(struct vtk_field));
+}
+
+void alloc_vtk_field_data_c(vtk_fields_t *vtk_s){
+	int i;
+	/* allocate memory  d_nod[node #][component]*/
+	vtk_s->d_vtk = (double **)calloc(vtk_s->nnod_fld,sizeof(double *));
+	for (i = 0; i < vtk_s->nnod_fld; i++){
+		vtk_s->d_vtk[i] = (double *)calloc(vtk_s->ncomp_vtk,sizeof(double));
+	};
+};
+
+void dealloc_vtk_field_data_c(vtk_fields_t *vtk_s){
+	int i;
+    
+	for (i = 0; i < vtk_s->nnod_fld; i++) free(vtk_s->d_vtk[i]);
+	free(vtk_s->d_vtk);
+};
+
+void dealloc_vtk_fields_list_c(struct vtk_field *vtk_list){
+    vtk_fields_t *last_fld;
+    vtk_fields_t *del_fld;
+    int ifld;
+
+    del_fld = vtk_list->vtk_fields;
+    for (ifld=0; ifld<vtk_list->nfld_vtk; ifld++) {
+        last_fld = del_fld->next_fld;
+        dealloc_vtk_field_data_c(del_fld);
+        free(del_fld);
+        del_fld = last_fld;
+    };
+}
+
+
 void copy_viewer_udt_node(struct psf_data *viz_copied, struct psf_data *viz_org){
 	int i, j;
 	
@@ -307,3 +342,37 @@ void copy_viewer_udt_data(struct psf_data *viz_copied, struct psf_data *viz_org)
 	return;
 }
 
+void copy_vtk_list_2_udt_name(struct psf_data *viz_copied, struct vtk_field *vtk_list){
+    vtk_fields_t *last_fld;
+    int i;
+    
+    last_fld = vtk_list->vtk_fields;
+    for (i=0; i<viz_copied->nfield; i++) {
+        strngcopy(viz_copied->data_name[i], last_fld->field_name);
+        viz_copied->id_coord[i] = set_field_coordinate_flag(viz_copied->data_name[i]);
+        viz_copied->ncomp[i] = last_fld->ncomp_vtk;
+        viz_copied->istack_comp[i+1] = viz_copied->istack_comp[i] + viz_copied->ncomp[i];
+        last_fld = last_fld->next_fld;
+    }
+    viz_copied->ncomptot = viz_copied->istack_comp[viz_copied->nfield];
+
+	return;
+}
+
+
+void copy_vtk_list_2_udt_data(struct psf_data *viz_copied, struct vtk_field *vtk_list){
+    vtk_fields_t *last_fld;
+    int i, inod, nd, ist;
+    
+    last_fld = vtk_list->vtk_fields;
+    for (i=0; i<viz_copied->nfield; i++) {
+        ist = viz_copied->istack_comp[i];
+        for (inod=0; inod<viz_copied->nnod_viz; inod++) {
+            for (nd=0; nd<viz_copied->ncomp[i]; nd++) {
+                viz_copied->d_nod[inod][nd+ist] = last_fld->d_vtk[inod][nd];
+            };
+        };
+        last_fld = last_fld->next_fld;
+    };
+	return;
+}

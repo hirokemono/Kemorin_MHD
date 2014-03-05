@@ -99,8 +99,8 @@ double round_2_3digit(double value){
     double rounded_3;
     int i_log10, i_round3;
     
-    i_log10 = (int) log10(abs(value));
-    i_round3 = (int) (value * pow(10.0,(-i_log10+2)) + 0.5);
-    rounded_3 = ((double) i_round3) * pow(10.0,i_log10);
+    i_log10 = (int) log10(fabs(value)) - 3;
+    i_round3 = (int) (value * pow(10.0,(-i_log10)) + 0.5);
+    rounded_3 =  ((double) i_round3) * pow(10.0,(double) i_log10);
     return rounded_3;
 }

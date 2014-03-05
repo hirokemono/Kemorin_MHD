@@ -42,6 +42,26 @@ int count_comps_by_comma_c(FILE *fp){
 	return num_comps;
 };
 
+int set_field_coordinate_flag(const char *data_name){
+	int iflag_coord;
+	int len;
+	
+    len = strlen(data_name);
+/*	printf("%d %s \n",len, data_name);*/
+	
+	if (data_name[len-4] == '_' && data_name[len-3] == 's'
+		&& data_name[len-2] == 'p' && data_name[len-1] == 'h') {
+		iflag_coord = 1;
+	} else if (data_name[len-4] == '_' && data_name[len-3] == 'c'
+			   && data_name[len-2] == 'y' && data_name[len-1] == 'l') {
+		iflag_coord = 2;
+	} else {
+		iflag_coord = 0;
+	}
+	
+	return iflag_coord;
+};
+
 int read_field_name_from_buffer(int len_buf, char *buf, char *data_name){
 	int iflag_coord;
 	int j, k;
@@ -63,17 +83,7 @@ int read_field_name_from_buffer(int len_buf, char *buf, char *data_name){
 	};
 	data_name[k] = '\0';
 	/*printf("%s \n",data_name);*/
-	
-	if (data_name[k-4] == '_' && data_name[k-3] == 's'
-		&& data_name[k-2] == 'p' && data_name[k-1] == 'h') {
-		iflag_coord = 1;
-	} else if (data_name[k-4] == '_' && data_name[k-3] == 'c'
-			   && data_name[k-2] == 'y' && data_name[k-1] == 'l') {
-		iflag_coord = 2;
-	} else {
-		iflag_coord = 0;
-	}
-	
+	iflag_coord = set_field_coordinate_flag(data_name);
 	return iflag_coord;
 };
 

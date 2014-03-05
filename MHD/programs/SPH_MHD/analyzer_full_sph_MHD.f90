@@ -63,16 +63,15 @@
       call end_eleps_time(4)
       call start_eleps_time(2)
 !
-!     ---------------------
+!        Initialize FEM mesh data for field data IO
+!
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize'
+      call FEM_initialize
 !
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
       call SPH_initialize_MHD
-!
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize'
-      call FEM_initialize
-!
       if(iflag_debug .gt. 0) write(*,*) 'SPH_to_FEM_init_MHD'
       call SPH_to_FEM_init_MHD
 !
@@ -82,6 +81,7 @@
       call init_visualize_surface
 !
       call calypso_MPI_barrier
+!
       call end_eleps_time(2)
 !
       end subroutine initialize_full_sph_mhd
@@ -90,7 +90,6 @@
 !
       subroutine evolution_full_sph_mhd
 !
-      use FFTW_wrapper
       integer(kind = kint) :: visval, iflag_finish
       integer(kind = kint) :: istep_psf, istep_iso
       integer(kind = kint) :: istep_pvr, istep_fline
@@ -156,7 +155,6 @@
       call copy_COMM_TIME_to_eleps(num_elapsed)
       call end_eleps_time(1)
 !
-      elapsed(33:35) = elapsed_fftw(1:3)
       call output_elapsed_times
 !
       call calypso_MPI_barrier

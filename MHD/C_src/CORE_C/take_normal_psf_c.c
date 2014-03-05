@@ -333,6 +333,11 @@ static void take_minmax_psf_fields(struct psf_data *viz_s){
 				viz_s->d_max[icomp] = viz_s->d_nod[n][icomp];
 			};
 		};
+        
+        if (viz_s->d_min[icomp] >= viz_s->d_max[icomp]) {
+            viz_s->d_min[icomp] = ZERO;
+            viz_s->d_max[icomp] = ONE;
+        }
 	}
 	
 	for (ifld = 0; ifld < viz_s->nfield; ifld++){
