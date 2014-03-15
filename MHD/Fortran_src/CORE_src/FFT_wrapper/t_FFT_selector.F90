@@ -143,7 +143,7 @@
 !     &      'Finalize FFTW by kemo_wrapper'
 !        call finalize_FFTW_mul_kemo_t(Nsmp, WKS%WK_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        if(iflag_debug .gt. 0) write(*,*) 'Finalize single  FFTW'
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTW'
         call finalize_FFTW_type(Nstacksmp(Nsmp), WKS%WK_FFTW)
 !        if(iflag_debug .gt. 0) write(*,*)                              &
 !     &      'Finalize FFTW by kemo_wrapper'

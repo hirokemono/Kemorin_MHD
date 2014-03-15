@@ -5,7 +5,7 @@
 REFINE_MAINDIR =   $$(MESHER_DIR)/refiner
 
 TARGET_REFINE =       refiner_kemo
-TARGET_REF_PARA_TBL = refine_interpolate_para_tbl
+TARGET_REF_PARA_TBL = refine_interpolate_table
 
 SOURCES = $(shell ls *.f90)
 
@@ -30,6 +30,9 @@ target_list:
 	@echo >> $(MAKENAME)
 
 target_task:
+	@echo refineres: \
+	'$$(TARGET_REFINE)    $$(TARGET_REF_PARA_TBL)' \
+	>> $(MAKENAME)
 	@echo '$$(TARGET_REFINE)': '$$(MOD_REFINER)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)

@@ -4,9 +4,9 @@
 
 MHD_OUT_DIR =       $$(PROG_DIR)/FEM_MHD
 
-TARGET = mhd
+TARGET = fem_mhd
 
-TARGET_SNAP=    snapshot
+TARGET_SNAP=    fem_snapshot
 TARGET_FILTER=  filtered_snap
 TARGET_VOL_AVE= volume_average
 TARGET_MHD_MAT= check_mhd_matrix

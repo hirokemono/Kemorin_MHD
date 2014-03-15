@@ -50,7 +50,7 @@
 !
       iflag_FFT = iflag_FFTPACK
       call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
-     &    etime_fft(iflag_FFT) )
+     &    etime_fft(iflag_FFT))
 !
       iflag_seelcted = iflag_FFT
       etime_shortest = etime_fft(iflag_FFT)

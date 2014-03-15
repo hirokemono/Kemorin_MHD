@@ -65,8 +65,13 @@
       use m_machine_parameter
       use m_FFTPACK5_wrapper
       use m_ispack_FFT_wrapper
+!
+#ifdef FFTW3
       use m_FFTW_wrapper
-!      use m_FFTW_kemo_wrapper
+#endif
+#ifdef FFTW3_C
+      use m_FFTW_kemo_wrapper
+#endif
 !
       implicit none
 !
@@ -102,13 +107,15 @@
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(my_rank .eq. 0) write(*,*) 'Use FFTW'
         call init_FFTW_mul(Nsmp, Nstacksmp, Nfft)
-!        if(my_rank .eq. 0) write(*,*) 'Use FFTW by kemo_wrapper'
-!        call init_FFTW_mul_kemo(Nstacksmp(Nsmp), Nfft)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(my_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
         call init_4_FFTW(Nsmp, Nstacksmp, Nfft)
-!        if(my_rank .eq. 0) write(*,*) 'Use single FFTW by kemo_wrapper'
-!        call init_4_FFTW_kemo(Nstacksmp(Nsmp), Nfft)
+#endif
+#ifdef FFTW3_C
+        if(my_rank .eq. 0) write(*,*) 'Use FFTW by kemo_wrapper'
+        call init_FFTW_mul_kemo(Nstacksmp(Nsmp), Nfft)
+        if(my_rank .eq. 0) write(*,*) 'Use single FFTW by kemo_wrapper'
+        call init_4_FFTW_kemo(Nstacksmp(Nsmp), Nfft)
 #endif
       else
         if(my_rank .eq. 0) write(*,*) 'Use FFTPACK'
@@ -132,13 +139,17 @@
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
         call finalize_FFTW_mul(Nsmp)
-!        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW by kemo_wrapper'
-!        call finalize_FFTW_mul_kemo(Nsmp)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        if(iflag_debug .gt. 0) write(*,*) 'Finalize single  FFTW'
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTW'
         call finalize_4_FFTW(Nsmp, Nstacksmp)
-!        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW by kemo_wrapper'
-!        call finalize_4_FFTW_kemo(Nstacksmp(Nsmp))
+#endif
+#ifdef FFTW3_C
+      else if(iflag_FFT .eq. iflag_FFTW) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW by kemo_wrapper'
+        call finalize_FFTW_mul_kemo(Nsmp)
+      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW by kemo_wrapper'
+        call finalize_4_FFTW_kemo(Nstacksmp(Nsmp))
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
@@ -162,13 +173,17 @@
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
         call verify_work_FFTW_mul(Nsmp, Nstacksmp, Nfft)
-!        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW by kemo_wrapper'
-!        call verify_work_FFTW_mul_kemo(Nsmp, Nstacksmp, Nfft)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single transforms in FFTW'
         call verify_work_4_FFTW(Nsmp, Nstacksmp, Nfft)
-!        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW by kemo_wrapper'
-!        call verify_work_4_FFTW_kemo(Nstacksmp(Nsmp), Nfft)
+#endif
+#ifdef FFTW3_C
+      else if(iflag_FFT .eq. iflag_FFTW) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW by kemo_wrapper'
+        call verify_work_FFTW_mul_kemo(Nsmp, Nstacksmp, Nfft)
+      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW by kemo_wrapper'
+        call verify_work_4_FFTW_kemo(Nstacksmp(Nsmp), Nfft)
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
@@ -193,10 +208,14 @@
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         call FFTW_mul_forward(Nsmp, Nstacksmp, M, Nfft, X)
-!        call FFTW_mul_forward_kemo(Nsmp, Nstacksmp, M, Nfft, X)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call FFTW_forward(Nsmp, Nstacksmp, M, Nfft, X)
-!        call FFTW_forward_kemo(Nsmp, Nstacksmp, M, Nfft, X)
+#endif
+#ifdef FFTW3_C
+      else if(iflag_FFT .eq. iflag_FFTW) then
+        call FFTW_mul_forward_kemo(Nsmp, Nstacksmp, M, Nfft, X)
+      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
+        call FFTW_forward_kemo(Nsmp, Nstacksmp, M, Nfft, X)
 #endif
       else
         call CALYPSO_RFFTMF(Nsmp, Nstacksmp, M, Nfft, X)
@@ -219,10 +238,14 @@
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         call FFTW_mul_backward(Nsmp, Nstacksmp, M, Nfft, X)
-!        call FFTW_mul_backward_kemo(Nsmp, Nstacksmp, M, Nfft, X)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call FFTW_backward(Nsmp, Nstacksmp, M, Nfft, X)
-!        call FFTW_backward_kemo(Nsmp, Nstacksmp, M, Nfft, X)
+#endif
+#ifdef FFTW3_C
+      else if(iflag_FFT .eq. iflag_FFTW) then
+        call FFTW_mul_forward_kemo(Nsmp, Nstacksmp, M, Nfft, X)
+      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
+        call FFTW_forward_kemo(Nsmp, Nstacksmp, M, Nfft, X)
 #endif
       else
         call CALYPSO_RFFTMB(Nsmp, Nstacksmp, M, Nfft, X)

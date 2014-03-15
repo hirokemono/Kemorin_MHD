@@ -5,7 +5,6 @@ begin spherical_shell_ctl
     sph_file_prefix      'in'
 !
     sph_file_fmt_ctl           'gzip'
-    coriolis_int_file_name     'coriolis_int.dat'
 !
     memory_conservation_ctl     'YES'
   end data_files_def

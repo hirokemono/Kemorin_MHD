@@ -78,7 +78,7 @@
       time   =     time_init
 !
 !  Set initial velocity if velocity is exist
-      if(ipol%i_velo .gt. izero) call  set_initial_velocity
+!      if(ipol%i_velo .gt. izero) call  set_initial_velocity
 !
 !  Set initial temperature if temperature is exist
 !      if(ipol%i_temp .gt. izero) call  set_initial_temperature
@@ -90,9 +90,9 @@
 !      if(ipol%i_magne .gt. izero) call set_initial_magne_sph
 !
 !  Set heat source if  heat source is exist
-!      if(ipol%i_heat_source .gt. izero) then
-!        call set_initial_heat_source_sph
-!      end if
+      if(ipol%i_heat_source .gt. izero) then
+        call set_initial_heat_source_sph
+      end if
 !  Set light element source if light element is exist
 !      if(ipol%i_light_source .gt. izero) then
 !        call set_initial_light_source_sph
@@ -329,11 +329,12 @@
       jj =  find_local_sph_mode_address(izero, izero)
 !
       if (jj .gt. 0) then
-        do k = nlayer_ICB, nlayer_CMB
+        do k = 1, nlayer_ICB
           ii = local_sph_data_address(k,jj)
           rr = radius_1d_rj_r(k)
 !   Substitute initial heat source
-          d_rj(ii,ipol%i_heat_source) = two / rr
+          d_rj(ii,ipol%i_heat_source) = 0.35 * four*r_CMB**2            &
+     &                                 / (four * r_ICB**3 / three)
         end do
       end if
 !

@@ -48,10 +48,16 @@ target_list:
 	done
 
 target_task:
-	@echo 'parallels: fem_mhd  sph_mhd visualizer'      \
-	' const_filteres itp_tools'     >> $(MAKENAME)
+	@echo 'parallels: '            \
+	'fem_mhd  sph_mhd visualizer'  \
+	'const_filteres itp_tools'     >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo 'utilities: data_utils mesh_utils' >> $(MAKENAME)
+	@echo 'utilities: '            \
+	'data_utils mesh_utils'        >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo 'FEM_minimum: '          \
+	'fem_mhd cubed_sph_utils '     \
+	'partitioners refineres'       >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
