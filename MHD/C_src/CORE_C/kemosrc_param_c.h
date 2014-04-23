@@ -123,6 +123,7 @@
   #define kemo_fftw_plan_many_dft_r2c  kemo_fftw_plan_many_dft_r2c
   #define kemo_fftw_plan_many_dft_c2r  kemo_fftw_plan_many_dft_c2r
   #define kemo_fftw_destroy_plan       kemo_fftw_destroy_plan
+  #define kemo_fftw_cleanup            kemo_fftw_cleanup
   #define kemo_fftw_execute            kemo_fftw_execute
   #define kemo_fftw_execute_dft_r2c    kemo_fftw_execute_dft_r2c
   #define kemo_fftw_execute_dft_c2r    kemo_fftw_execute_dft_c2r

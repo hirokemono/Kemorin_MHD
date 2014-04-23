@@ -51,12 +51,12 @@
 !!@n @param r_CMB(0:2)    Radius at CMB
 !!@n @param r_CTR1(0:2)   Radius at innermost point
 !!@n @param fdm2_fix_fld_ICB(0:2,3)
-!!         Matrix to evaluate radial derivative at ICB with fiexed field
+!!         Matrix to evaluate radial derivative at ICB with fixed field
 !!@n @param fdm2_fix_fld_CMB(0:2,3)
-!!         Matrix to evaluate radial derivative at CMB with fiexed field
+!!         Matrix to evaluate radial derivative at CMB with fixed field
 !!@n @param fdm2_fix_fld_center(-1:1,3)
 !!         Matrix to evaluate radial derivative
-!!         for center with fiexed field
+!!         for center with fixed field
 !!
 !!@n @param fix_ICB(jmax) Spectr data for fixed fixed scalar at ICB
 !!@n @param fix_CMB(jmax) Spectr data for fixed fixed scalar at CMB

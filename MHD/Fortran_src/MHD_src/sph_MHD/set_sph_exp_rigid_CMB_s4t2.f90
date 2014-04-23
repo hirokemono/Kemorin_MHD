@@ -25,7 +25,7 @@
 !!@n @param r_CMB1(0:2)   Radius at the next of CMB
 !!
 !!@n @param fdm2_fix_fld_CMB(0:2,3)
-!!         Matrix to evaluate radial derivative at CMB with fiexed field
+!!         Matrix to evaluate radial derivative at CMB with fixed field
 !!@n @param  fdm4_noslip_CMB(-2:0,3:4)
 !!         Matrix for poloidal velocity with non-slip boundary at CMB
 !!@n @param  fdm4_noslip_CMB1(-2:1,5)

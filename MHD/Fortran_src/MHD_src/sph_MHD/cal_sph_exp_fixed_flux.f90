@@ -44,12 +44,12 @@
 !!@n @param flux_ICB(jamx)  Spectrum of fixed flux at ICB
 !!@n @param flux_CMB(jamx)  Spectrum of fixed flux at CMB
 !!@n @param fdm2_fix_dr_ICB(-1:1,3)
-!!         Matrix to evaluate field at ICB with fiexed radial derivative
+!!         Matrix to evaluate field at ICB with fixed radial derivative
 !!@n @param fdm2_fix_dr_CMB(-1:1,3)
-!!         Matrix to evaluate field at CMB with fiexed radial derivative
+!!         Matrix to evaluate field at CMB with fixed radial derivative
 !!@n @param fdm2_fix_dr_center(-1:1,3)
 !!         Matrix to evaluate field at center
-!!         with fiexed radial derivative
+!!         with fixed radial derivative
 !!
 !!@n @param coef_d        Coefficient for diffusion term
 !!

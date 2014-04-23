@@ -13,6 +13,7 @@
       module const_r_mat_4_scalar_sph
 !
       use m_precision
+      use calypso_mpi
 !
       use m_constants
       use m_machine_parameter
@@ -76,7 +77,7 @@
 !
       integer(kind = kint), intent(in) :: nri, jmax
       type(sph_boundary_type), intent(in) :: sph_bc
-      real(kind = kreal) :: coef_imp, coef_f, coef_d
+      real(kind = kreal), intent(in) :: coef_imp, coef_f, coef_d
       real(kind = kreal), intent(inout) :: evo_mat3(3,nri,jmax)
       real(kind = kreal), intent(inout) :: evo_lu(5,nri,jmax)
       real(kind = kreal), intent(inout) :: evo_det(nri,jmax)

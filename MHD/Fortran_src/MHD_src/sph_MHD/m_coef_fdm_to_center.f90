@@ -43,9 +43,9 @@
       implicit none
 !
 !
-!>      Matrix to evaluate radial derivative at ICB with fiexed field
+!>      Matrix to evaluate radial derivative at ICB with fixed field
       real(kind = kreal) :: fdm2_fix_fld_center(-1:1,3)
-!>      Matrix to evaluate field at ICB with fiexed radial derivative
+!>      Matrix to evaluate field at ICB with fixed radial derivative
       real(kind = kreal) :: fdm2_fix_dr_center(-1:1,3)
 !
 !

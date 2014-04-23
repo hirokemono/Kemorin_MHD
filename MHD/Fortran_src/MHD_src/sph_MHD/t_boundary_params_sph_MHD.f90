@@ -87,19 +87,19 @@
 !>        Fixed composition flux spectrum for CMB
         real(kind= kreal), pointer :: CMB_flux(:)
 !
-!>        Matrix to evaluate radial derivative at ICB with fiexed field
+!>        Matrix to evaluate radial derivative at ICB with fixed field
         real(kind = kreal) :: fdm2_fix_fld_ICB(0:2,3)
-!>        Matrix to evaluate field at ICB with fiexed radial derivative
+!>        Matrix to evaluate field at ICB with fixed radial derivative
         real(kind = kreal) :: fdm2_fix_dr_ICB(-1:1,3)
-!>        Matrix to evaluate radial derivative at CMB with fiexed field
+!>        Matrix to evaluate radial derivative at CMB with fixed field
         real(kind = kreal) :: fdm2_fix_fld_CMB(0:2,3)
-!>        Matrix to evaluate field at CMB with fiexed radial derivative
+!>        Matrix to evaluate field at CMB with fixed radial derivative
         real(kind = kreal) :: fdm2_fix_dr_CMB(-1:1,3)
 !
-!>        Matrix to evaluate radial derivative at ICB with fiexed field
+!>        Matrix to evaluate radial derivative at ICB with fixed field
 !!        with first order accuracy
         real(kind = kreal) :: fdm1_fix_fld_ICB(0:1,2)
-!>        Matrix to evaluate radial derivative at CMB with fiexed field
+!>        Matrix to evaluate radial derivative at CMB with fixed field
 !!        with first order accuracy
         real(kind = kreal) :: fdm1_fix_fld_CMB(0:1,2)
       end type sph_boundary_type
