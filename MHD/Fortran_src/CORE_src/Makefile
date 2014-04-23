@@ -14,6 +14,9 @@ MESH_1st             \
 MESH_2nd             \
 MESH_type            \
 IO                   \
+IO_BINARY            \
+IO_ZLIB              \
+CONTROLS             \
 \
 INTERPOLATE          \
 spherical_harmonics  \
@@ -65,16 +68,19 @@ lib_archve:
 mod_list:
 	@echo  MOD_CORE= \\ >> $(MAKENAME)
 	@echo  \
-	'$$(MOD_BASE)'     \
-	'$$(MOD_IO)'       \
-	'$$(MOD_MESH)'     \
-	'$$(MOD_MESH1)'    \
-	'$$(MOD_MESH2)'    \
-	'$$(MOD_MESH_T)'   \
-	'$$(MOD_GAUSS)'    \
-	'$$(MOD_JACOBI)'   \
-	'$$(MOD_SPH)'      \
-	'$$(MOD_FFT_WRAP)' \
+	'$$(MOD_BASE)'       \
+	'$$(MOD_CTL)'        \
+	'$$(MOD_IO)'         \
+	'$$(MOD_BINARY_IO)'  \
+	'$$(MOD_ZLIB_IO)'    \
+	'$$(MOD_MESH)'       \
+	'$$(MOD_MESH1)'      \
+	'$$(MOD_MESH2)'      \
+	'$$(MOD_MESH_T)'     \
+	'$$(MOD_GAUSS)'      \
+	'$$(MOD_JACOBI)'     \
+	'$$(MOD_SPH)'        \
+	'$$(MOD_FFT_WRAP)'   \
 	'$$(MOD_SPH_SPECTR)' \
 	'$$(MOD_ITP)'     >> $(MAKENAME)
 	@echo   >> $(MAKENAME)

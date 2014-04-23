@@ -18,6 +18,7 @@ surface_boundary \
 fem_mhd_integration \
 rhs_bc_vector \
 sgs_model \
+sgs_dynamic \
 sgs_model_bc \
 MG_for_MHD   \
 \
@@ -64,19 +65,20 @@ lib_archve:
 
 mod_list:
 	@echo MOD_MHD= \\ >> $(MAKENAME)
-	@echo '$$(MOD_COMMON)'     \\  >> $(MAKENAME)
-	@echo '$$(MOD_KEMO)'       \\  >> $(MAKENAME)
-	@echo '$$(MOD_MHD_IO)'     \\  >> $(MAKENAME)
-	@echo '$$(MOD_RHS)'        \\  >> $(MAKENAME)
-	@echo '$$(MOD_NOD_BD)'     \\  >> $(MAKENAME)
-	@echo '$$(MOD_SF_BD)'      \\  >> $(MAKENAME)
-	@echo '$$(MOD_RHS_BC)'     \\  >> $(MAKENAME)
-	@echo '$$(MOD_SGS)'        \\  >> $(MAKENAME)
-	@echo '$$(MOD_SGS_BC)'     \\  >> $(MAKENAME)
-	@echo '$$(MOD_EVOLVE)'     \\  >> $(MAKENAME)
-	@echo '$$(MOD_MHD_SOLVE)'  \\  >> $(MAKENAME)
-	@echo '$$(MOD_MG_4_MHD)'   \\  >> $(MAKENAME)
-	@echo '$$(MOD_SPH_MHD)'        >> $(MAKENAME)
+	@echo '$$(MOD_COMMON)'      \\  >> $(MAKENAME)
+	@echo '$$(MOD_KEMO)'        \\  >> $(MAKENAME)
+	@echo '$$(MOD_MHD_IO)'      \\  >> $(MAKENAME)
+	@echo '$$(MOD_RHS)'         \\  >> $(MAKENAME)
+	@echo '$$(MOD_NOD_BD)'      \\  >> $(MAKENAME)
+	@echo '$$(MOD_SF_BD)'       \\  >> $(MAKENAME)
+	@echo '$$(MOD_RHS_BC)'      \\  >> $(MAKENAME)
+	@echo '$$(MOD_SGS)'         \\  >> $(MAKENAME)
+	@echo '$$(MOD_SGS_DYNAMIC)' \\  >> $(MAKENAME)
+	@echo '$$(MOD_SGS_BC)'      \\  >> $(MAKENAME)
+	@echo '$$(MOD_EVOLVE)'      \\  >> $(MAKENAME)
+	@echo '$$(MOD_MHD_SOLVE)'   \\  >> $(MAKENAME)
+	@echo '$$(MOD_MG_4_MHD)'    \\  >> $(MAKENAME)
+	@echo '$$(MOD_SPH_MHD)'         >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	
 	@for dir in $(SUBDIRS); do \
