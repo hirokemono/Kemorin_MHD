@@ -73,6 +73,7 @@
       use cal_momentum_terms
       use cal_magnetic_terms
       use cal_induction_terms
+      use cal_gradient
 !
 !
       if (iphys%i_h_advect .gt. izero) then
@@ -206,6 +207,29 @@
         call cal_magnetic_diffusion
       end if
 !
+!
+      if(iphys%i_grad_vx .gt. 0) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead gradient of V_x'
+        call cal_gradent_in_fluid(iflag_velo_supg,                      &
+     &      iphys%i_grad_vx, iphys%i_velo)
+      end if
+!
+      if(iphys%i_grad_vy .gt. 0) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead gradient of V_y'
+        call cal_gradent_in_fluid(iflag_velo_supg,                      &
+     &      iphys%i_grad_vy, (iphys%i_velo+1))
+      end if
+!
+      if(iphys%i_grad_vz .gt. 0) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead gradient of V_z'
+        call cal_gradent_in_fluid(iflag_velo_supg,                      &
+     &      iphys%i_grad_vz, (iphys%i_velo+2))
+      end if
+!
+!
       end subroutine cal_forces_4_monitor
 !
 !-----------------------------------------------------------------------
@@ -314,10 +338,20 @@
      &      iphys%i_m_tension_wk)
       end if
 !
+      if (iphys%i_mag_stretch .gt. izero) then
+        call cal_phys_dot_product(iphys%i_grad_vx, iphys%i_magne,       &
+     &      iphys%i_mag_stretch    )
+        call cal_phys_dot_product(iphys%i_grad_vy, iphys%i_magne,       &
+     &     (iphys%i_mag_stretch+1) )
+        call cal_phys_dot_product(iphys%i_grad_vz, iphys%i_magne,       &
+     &     (iphys%i_mag_stretch+2) )
+      end if
+!
       if (iphys%i_poynting .gt. izero) then
         call cal_nod_poynting_flux_smp
       end if
 !$omp end parallel
+!
 !
       end subroutine cal_work_4_forces
 !

@@ -205,6 +205,7 @@
      &       .or. phys_nod_name(i) .eq. fhd_mag_induct                  &
      &       .or. phys_nod_name(i) .eq. fhd_vp_induct                   &
      &       .or. phys_nod_name(i) .eq. fhd_press_grad                  &
+     &       .or. phys_nod_name(i) .eq. fhd_mag_stretch                 &
      &       .or. phys_nod_name(i) .eq. fhd_Lorentz                     &
      &       .or. phys_nod_name(i) .eq. fhd_Coriolis                    &
      &       .or. phys_nod_name(i) .eq. fhd_buoyancy                    &
@@ -215,6 +216,9 @@
      &       .or. phys_nod_name(i) .eq. fhd_c_flux                      &
      &       .or. phys_nod_name(i) .eq. fhd_e_field                     &
      &       .or. phys_nod_name(i) .eq. fhd_poynting                    &
+     &       .or. phys_nod_name(i) .eq. fhd_grad_v_1                    &
+     &       .or. phys_nod_name(i) .eq. fhd_grad_v_2                    &
+     &       .or. phys_nod_name(i) .eq. fhd_grad_v_3                    &
      &      ) then
          i0 = i0 + 1
          j0 = j0 + 3
@@ -415,6 +419,16 @@
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_filter_comp, j_ave%i_filter_comp)
 !
+          else if ( phys_nod_name(i) .eq. fhd_grad_v_1 ) then
+            call set_rms_address(num_nod_component(i), i0, j0,          &
+     &          i_rms%i_grad_vx, j_ave%i_grad_vx)
+          else if ( phys_nod_name(i) .eq. fhd_grad_v_2 ) then
+            call set_rms_address(num_nod_component(i), i0, j0,          &
+     &          i_rms%i_grad_vy, j_ave%i_grad_vy)
+          else if ( phys_nod_name(i) .eq. fhd_grad_v_3 ) then
+            call set_rms_address(num_nod_component(i), i0, j0,          &
+     &          i_rms%i_grad_vz, j_ave%i_grad_vz)
+!
           else if ( phys_nod_name(i) .eq. fhd_mom_flux ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_m_flux, j_ave%i_m_flux)
@@ -442,6 +456,9 @@
           else if ( phys_nod_name(i) .eq. fhd_vp_induct ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_vp_induct, j_ave%i_vp_induct)
+          else if ( phys_nod_name(i) .eq. fhd_mag_stretch ) then
+            call set_rms_address(num_nod_component(i), i0, j0,          &
+     &          i_rms%i_mag_stretch, j_ave%i_mag_stretch)
           else if ( phys_nod_name(i) .eq. fhd_Lorentz ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_lorentz, j_ave%i_lorentz)
