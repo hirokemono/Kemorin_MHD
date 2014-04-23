@@ -100,7 +100,7 @@
             i6 =  ie(iele, 6)
             i7 =  ie(iele, 7)
             i8 =  ie(iele, 8)
-            i8 =  ie(iele, 9)
+            i9 =  ie(iele, 9)
             i10 = ie(iele,10)
             i11 = ie(iele,11)
             i12 = ie(iele,12)

@@ -90,6 +90,7 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_div_m_flux         )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_div_maxwell_t      )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_div_induct_t       )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_mag_stretch        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_mag_induct         )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_vp_induct          )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_press_grad         )           &

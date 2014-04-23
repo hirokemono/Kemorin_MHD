@@ -303,8 +303,6 @@
 !
       subroutine find_field_id_in_ucd(ucd, field_name, i_field, ncomp)
 !
-      use calypso_mpi
-!
       character(len = kchara), intent(in) :: field_name
       integer(kind = kint), intent(inout) :: i_field, ncomp
       integer(kind = kint) :: i, istack
