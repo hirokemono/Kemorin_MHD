@@ -42,8 +42,6 @@
 !>    addresses for forces to forward transform
       type(phys_address), save :: fsnap_trns
 !
-      private :: add_transform_flag
-!
 !-----------------------------------------------------------------------
 !
       contains
@@ -82,6 +80,8 @@
      &    nvector_snap_rtp_2_rj, fsnap_trns%i_electric)
       call add_vec_trans_flag(ipol%i_poynting, irtp%i_poynting,         &
      &    nvector_snap_rtp_2_rj, fsnap_trns%i_poynting)
+      call add_vec_trans_flag(ipol%i_mag_stretch, irtp%i_mag_stretch,   &
+     &    nvector_snap_rtp_2_rj, fsnap_trns%i_mag_stretch)
 !
 !
       nscalar_snap_rj_2_rtp = 0
@@ -270,6 +270,11 @@
       if(fsnap_trns%i_poynting .gt. 0) write(*,*)                       &
      &            'fsnap_trns%i_poynting',  fsnap_trns%i_poynting,      &
      &            ipol%i_poynting, irtp%i_poynting
+!
+      if(fsnap_trns%i_mag_stretch .gt. 0) write(*,*)                    &
+     &            'fsnap_trns%i_mag_stretch',                           &
+     &            fsnap_trns%i_mag_stretch,  ipol%i_mag_stretch,        &
+     &            irtp%i_mag_stretch
       write(*,*)
 !
       write(*,*) 'nscalar_snap_rtp_2_rj', nscalar_snap_rtp_2_rj

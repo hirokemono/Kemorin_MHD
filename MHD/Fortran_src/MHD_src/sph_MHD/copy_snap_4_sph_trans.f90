@@ -209,6 +209,9 @@
      &      irtp%i_electric, fsnap_trns%i_electric)
       call copy_vec_fld_to_trans(nvector_snap_rtp_2_rj,                 &
      &      irtp%i_poynting, fsnap_trns%i_poynting)
+!
+      call copy_vec_fld_to_trans(nvector_snap_rtp_2_rj,                 &
+     &      irtp%i_mag_stretch, fsnap_trns%i_mag_stretch)
 !$omp end parallel
 !
       end  subroutine copy_snap_vec_fld_to_trans
@@ -252,6 +255,9 @@
      &    ipol%i_electric, fsnap_trns%i_electric)
       call copy_vec_spec_from_trans(nvector_snap_rtp_2_rj,              &
      &    ipol%i_poynting, fsnap_trns%i_poynting)
+!
+      call copy_vec_spec_from_trans(nvector_snap_rtp_2_rj,              &
+     &    ipol%i_mag_stretch, fsnap_trns%i_mag_stretch)
 !$omp end parallel
 !
       end  subroutine copy_snap_vec_spec_from_trans

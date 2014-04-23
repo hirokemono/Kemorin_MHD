@@ -249,6 +249,9 @@
       call int_all_4_vector( iele_cd_smp_stack, intg_point_t_evo,       &
      &    i_rms%i_vp_induct, j_ave%i_vp_induct, iphys%i_vp_induct)
       call int_all_4_vector( iele_fl_smp_stack, intg_point_t_evo,       &
+     &    i_rms%i_mag_stretch, j_ave%i_mag_stretch,                     &
+     &    iphys%i_mag_stretch)
+      call int_all_4_vector( iele_fl_smp_stack, intg_point_t_evo,       &
      &    i_rms%i_lorentz, j_ave%i_lorentz, iphys%i_lorentz)
       call int_all_4_vector( iele_fl_smp_stack, intg_point_t_evo,       &
      &    i_rms%i_coriolis, j_ave%i_coriolis, iphys%i_coriolis)
@@ -266,6 +269,13 @@
      &    i_rms%i_vp_diffuse, j_ave%i_vp_diffuse, iphys%i_vp_diffuse)
       call int_all_4_vector( iele_cd_smp_stack, intg_point_t_evo,       &
      &    i_rms%i_b_diffuse, j_ave%i_b_diffuse, iphys%i_b_diffuse)
+!
+      call int_all_4_vector( iele_fl_smp_stack, intg_point_t_evo,       &
+     &    i_rms%i_grad_vx, j_ave%i_grad_vx, iphys%i_grad_vx)
+      call int_all_4_vector( iele_fl_smp_stack, intg_point_t_evo,       &
+     &    i_rms%i_grad_vy, j_ave%i_grad_vy, iphys%i_grad_vy)
+      call int_all_4_vector( iele_fl_smp_stack, intg_point_t_evo,       &
+     &    i_rms%i_grad_vz, j_ave%i_grad_vz, iphys%i_grad_vz)
 !
       call int_all_4_vector( iele_fl_smp_stack, intg_point_t_evo,       &
      &    i_rms%i_SGS_h_flux, j_ave%i_SGS_h_flux, iphys%i_SGS_h_flux)
