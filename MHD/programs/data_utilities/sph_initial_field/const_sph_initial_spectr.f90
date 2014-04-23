@@ -333,8 +333,8 @@
           ii = local_sph_data_address(k,jj)
           rr = radius_1d_rj_r(k)
 !   Substitute initial heat source
-          d_rj(ii,ipol%i_heat_source) = 0.35 * four*r_CMB**2            &
-     &                                 / (four * r_ICB**3 / three)
+          d_rj(ii,ipol%i_heat_source)                                   &
+     &         = 0.35 * four*r_CMB**2 / (four * r_ICB**3 / three)
         end do
       end if
 !
@@ -344,6 +344,7 @@
 !
       subroutine set_initial_light_source_sph
 !
+      use calypso_mpi
       use m_sph_spectr_data
 !
 !      real (kind = kreal) :: rr
@@ -364,7 +365,7 @@
         do k = nlayer_ICB, nlayer_CMB
           ii = local_sph_data_address(k,jj)
 !          rr = radius_1d_rj_r(k)
-!   Substitute initial heat source
+!    Substitute initial heat source
           d_rj(ii,ipol%i_light_source) = one
         end do
       end if

@@ -21,7 +21,6 @@
       use count_shell_configration
       use check_coarsing_level
       use count_coarse_shell_config
-      use const_cube_sphere_data
 !
       implicit none
 !

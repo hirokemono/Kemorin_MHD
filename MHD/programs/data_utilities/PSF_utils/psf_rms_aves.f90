@@ -51,7 +51,7 @@
       write(*,*) 'input psf file name'
       read(*,*) psf_file_header
 !
-      write(*,*) 'inputistep_start, istep_end, istep_int'
+      write(*,*) 'input istep_start, istep_end, istep_int'
       read(*,*) istep_start, istep_end, istep_int
 !
       write(*,*) 'input radius range'
@@ -115,7 +115,7 @@
           end do
         end do
 !
-        call write_psf_ave_rms_data(istep)
+        call write_psf_ave_rms_data(istep, area_total_psf)
       end do
       write(*,*)
       call close_psf_ave_rms_data

@@ -51,6 +51,7 @@
 !
       real(kind = kreal), allocatable :: ave_psf(:), rms_psf(:)
       real(kind = kreal), allocatable :: xmin_psf(:), xmax_psf(:)
+      real(kind = kreal), allocatable :: sdev_psf(:)
 !
       character(len=kchara) :: flag_psf
       integer(kind = kint) :: iflag_psf
@@ -111,13 +112,15 @@
       allocate ( xmax_psf(ncomptot_psf) )
       allocate ( ave_psf(ncomptot_psf) )
       allocate ( rms_psf(ncomptot_psf) )
+      allocate ( sdev_psf(ncomptot_psf) )
 !
       d_nod_psf = 0.0d0
 !
       xmin_psf = 1.0d30
       xmax_psf = 0.0d0
-      ave_psf = 0.0d0
-      rms_psf = 0.0d0
+      ave_psf =  0.0d0
+      rms_psf =  0.0d0
+      sdev_psf = 0.0d0
 !
       end subroutine allocate_psf_field_data
 !
@@ -152,8 +155,7 @@
 !
       deallocate ( xmin_psf )
       deallocate ( xmax_psf )
-      deallocate ( ave_psf )
-      deallocate ( rms_psf )
+      deallocate ( ave_psf, rms_psf, sdev_psf )
 !
       end subroutine deallocate_psf_results
 !

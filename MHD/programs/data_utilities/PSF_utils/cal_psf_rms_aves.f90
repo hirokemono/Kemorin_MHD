@@ -14,20 +14,23 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter :: id_ave_psf = 21
-      integer(kind = kint), parameter :: id_rms_psf = 22
-      integer(kind = kint), parameter :: id_min_psf = 23
-      integer(kind = kint), parameter :: id_max_psf = 24
+      integer(kind = kint), parameter :: id_ave_psf =  21
+      integer(kind = kint), parameter :: id_rms_psf =  22
+      integer(kind = kint), parameter :: id_sdev_psf = 25
+      integer(kind = kint), parameter :: id_min_psf =  23
+      integer(kind = kint), parameter :: id_max_psf =  24
 !
-      character(len=kchara) :: fname_ave_psf = 'psf_ave.dat'
-      character(len=kchara) :: fname_rms_psf = 'psf_rms.dat'
-      character(len=kchara) :: fname_min_psf = 'psf_min.dat'
-      character(len=kchara) :: fname_max_psf = 'psf_max.dat'
+      character(len=kchara) :: fname_ave_psf =  'psf_ave.dat'
+      character(len=kchara) :: fname_rms_psf =  'psf_rms.dat'
+      character(len=kchara) :: fname_sdev_psf = 'psf_sdev.dat'
+      character(len=kchara) :: fname_min_psf =  'psf_min.dat'
+      character(len=kchara) :: fname_max_psf =  'psf_max.dat'
 !
-      private :: id_ave_psf, fname_ave_psf
-      private :: id_rms_psf, fname_rms_psf
-      private :: id_min_psf, fname_min_psf
-      private :: id_max_psf, fname_max_psf
+      private :: id_ave_psf,  fname_ave_psf
+      private :: id_rms_psf,  fname_rms_psf
+      private :: id_sdev_psf, fname_sdev_psf
+      private :: id_min_psf,  fname_min_psf
+      private :: id_max_psf,  fname_max_psf
 !
 !-----------------------------------------------------------------------
 !
@@ -51,6 +54,10 @@
       call add_dat_extension(fname_tmp, fname_rms_psf)
       call open_psf_int_data(id_rms_psf, fname_rms_psf, ione)
 !
+      write(fname_tmp,'(a10,a)') 'area_sdev_', trim(file_prefix)
+      call add_dat_extension(fname_tmp, fname_sdev_psf)
+      call open_psf_int_data(id_sdev_psf, fname_sdev_psf, ione)
+!
       end subroutine open_psf_ave_rms_data
 !
 !-----------------------------------------------------------------------
@@ -58,7 +65,6 @@
       subroutine open_psf_range_data(file_prefix)
 !
       use m_norms_4_psf
-      use take_normals_4_psf
       use set_parallel_file_name
 !
       character(len=kchara), intent(in) :: file_prefix
@@ -104,6 +110,7 @@
 !
       close(id_ave_psf)
       close(id_rms_psf)
+      close(id_sdev_psf)
 !
       end subroutine close_psf_ave_rms_data
 !
@@ -119,18 +126,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_psf_ave_rms_data(istep)
+      subroutine write_psf_ave_rms_data(istep, area)
 !
       use m_psf_results
       use m_norms_4_psf
 !
       integer(kind = kint), intent(in) :: istep
+      real(kind = kreal), intent(in) :: area
 !
 !
       write(id_ave_psf,'(i10,1p255E25.15e3)') istep,                    &
-               ave_psf(1:ncomptot_psf), area_total_psf
+               ave_psf(1:ncomptot_psf), area
       write(id_rms_psf,'(i10,1p255E25.15e3)') istep,                    &
-                rms_psf(1:ncomptot_psf), area_total_psf
+                rms_psf(1:ncomptot_psf), area
+      write(id_sdev_psf,'(i10,1p255E25.15e3)') istep,                   &
+                sdev_psf(1:ncomptot_psf), area
 !
       end subroutine write_psf_ave_rms_data
 !
