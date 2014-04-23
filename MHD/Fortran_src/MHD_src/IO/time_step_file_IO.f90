@@ -98,6 +98,7 @@
 !
       integer (kind=kint), intent(in) :: my_rank
       integer (kind=kint) :: i
+      character(len=kchara) :: vector_lavel(3)
 !
 !
 !
@@ -257,11 +258,29 @@
               call write_one_label(rms_data_code,       fhd_filter_comp)
               call write_one_label(time_step_data_code, fhd_filter_comp)
 !
+            else if ( phys_nod_name(i) .eq. fhd_grad_v_1 ) then
+              call set_vector_label(fhd_grad_v_1,  vector_lavel)
+              call write_one_label(rms_data_code,       fhd_grad_v_1)
+              call write_vector_label(time_step_data_code,               &
+     &            vector_lavel)
+!
+            else if ( phys_nod_name(i) .eq. fhd_grad_v_2 ) then
+              call set_vector_label(fhd_grad_v_2,  vector_lavel)
+              call write_one_label(rms_data_code,       fhd_grad_v_2)
+              call write_vector_label(time_step_data_code,               &
+     &            vector_lavel)
+!
+            else if ( phys_nod_name(i) .eq. fhd_grad_v_3 ) then
+              call set_vector_label(fhd_grad_v_3,  vector_lavel)
+              call write_one_label(rms_data_code,       fhd_grad_v_3)
+              call write_vector_label(time_step_data_code,               &
+     &            vector_lavel)
+
 !
             else if ( phys_nod_name(i) .eq. fhd_press_grad ) then
               call write_one_label(rms_data_code, fhd_press_grad)
               call write_vector_label(time_step_data_code,              &
-      &            e_hd_press_grad_v)
+     &            e_hd_press_grad_v)
 !
             else if ( phys_nod_name(i) .eq. fhd_mag_tension ) then
               call write_one_label(rms_data_code, e_hd_mag_tension)
@@ -294,14 +313,22 @@
      &            e_hd_mag_induct_v)
 !
             else if ( phys_nod_name(i) .eq. fhd_vp_induct ) then
-              call write_one_label(rms_data_code, e_hd_vp_induct)
+              call set_vector_label(fhd_vp_induct,  vector_lavel)
+              call write_one_label(rms_data_code, fhd_vp_induct)
               call write_vector_label(time_step_data_code,              &
-     &            e_hd_vp_induct_v)
+     &            vector_lavel)
+!
+            else if ( phys_nod_name(i) .eq. fhd_mag_stretch ) then
+              call set_vector_label(fhd_mag_stretch, vector_lavel)
+              call write_one_label(rms_data_code, fhd_mag_stretch)
+              call write_vector_label(time_step_data_code,              &
+     &            vector_lavel)
 !
             else if ( phys_nod_name(i) .eq. fhd_vecp_diffuse ) then
-              call write_one_label(rms_data_code, e_hd_vp_diffuse)
+              call set_vector_label(fhd_vecp_diffuse,  vector_lavel)
+              call write_one_label(rms_data_code, fhd_vecp_diffuse)
               call write_vector_label(time_step_data_code,              &
-     &            e_hd_vp_diffuse_v)
+     &            vector_lavel)
 !
             else if ( phys_nod_name(i) .eq. fhd_mag_diffuse ) then
               call write_one_label(rms_data_code, e_hd_mag_diffuse)
@@ -533,21 +560,27 @@
      &            fhd_SGS_div_h_flux_true)
             else if ( phys_nod_name(i) .eq. fhd_SGS_div_m_flux_true )   &
      &             then
+              call set_vector_label(fhd_SGS_div_m_flux_true,            &
+     &            vector_lavel)
               call write_one_label(rms_data_code,                       &
      &            fhd_SGS_div_m_flux_true)
               call write_vector_label(time_step_data_code,              &
-     &            e_hd_SGS_div_mf_true_v)
+     &            vector_lavel)
             else if ( phys_nod_name(i) .eq. fhd_SGS_Lorentz_true ) then
+              call set_vector_label(fhd_SGS_Lorentz_true,               &
+     &            vector_lavel)
               call write_one_label(rms_data_code,                       &
      &            fhd_SGS_Lorentz_true)
               call write_vector_label(time_step_data_code,              &
-     &            e_hd_SGS_Lorentz_true_v)
+     &            vector_lavel)
             else if ( phys_nod_name(i) .eq. fhd_SGS_mag_induct_true )   &
      &             then
+              call set_vector_label(fhd_SGS_mag_induct_true,            &
+     &            vector_lavel)
               call write_one_label(rms_data_code,                       &
      &            fhd_SGS_mag_induct_true)
               call write_vector_label(time_step_data_code,              &
-     &            e_hd_SGS_m_induct_true_v)
+     &            vector_lavel)
 !
             else if ( phys_nod_name(i) .eq. fhd_SGS_Lorentz_wk_true )   &
      &             then

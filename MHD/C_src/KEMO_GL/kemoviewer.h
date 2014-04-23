@@ -33,6 +33,7 @@
 #define kemo_fftw_plan_many_dft_r2c  kemo_fftw_plan_many_dft_r2c_
 #define kemo_fftw_plan_many_dft_c2r  kemo_fftw_plan_many_dft_c2r_
 #define kemo_fftw_destroy_plan       kemo_fftw_destroy_plan_
+#define kemo_fftw_cleanup            kemo_fftw_cleanup_
 #define kemo_fftw_execute            kemo_fftw_execute_
 #define kemo_fftw_execute_dft_r2c    kemo_fftw_execute_dft_r2c_
 #define kemo_fftw_execute_dft_c2r    kemo_fftw_execute_dft_c2r_
@@ -59,6 +60,7 @@
 #define kemo_fftw_plan_many_dft_r2c  KEMO_FFTW_PLAN_MANY_DFT_R2C
 #define kemo_fftw_plan_many_dft_c2r  KEMO_FFTW_PLAN_MANY_DFT_C2R
 #define kemo_fftw_destroy_plan       KEMO_FFTW_DESTROY_PLAN
+#define kemo_fftw_cleanup            KEMO_FFTW_CLEANUP
 #define kemo_fftw_execute            KEMO_FFTW_EXECUTE
 #define kemo_fftw_execute_dft_r2c    KEMO_FFTW_EXECUTE_DFT_R2C
 #define kemo_fftw_execute_dft_c2r    KEMO_FFTW_EXECUTE_DFT_C2R
@@ -89,6 +91,7 @@
 #define kemo_fftw_plan_many_dft_r2c  KEMO_FFTW_PLAN_MANY_DFT_R2C
 #define kemo_fftw_plan_many_dft_c2r  KEMO_FFTW_PLAN_MANY_DFT_C2R
 #define kemo_fftw_destroy_plan       KEMO_FFTW_DESTROY_PLAN
+#define kemo_fftw_cleanup            KEMO_FFTW_CLEANUP
 #define kemo_fftw_execute            KEMO_FFTW_EXECUTE
 #define kemo_fftw_execute_dft_r2c    KEMO_FFTW_EXECUTE_DFT_R2C
 #define kemo_fftw_execute_dft_c2r    KEMO_FFTW_EXECUTE_DFT_C2R
@@ -115,6 +118,7 @@
 #define kemo_fftw_plan_many_dft_r2c  kemo_fftw_plan_many_dft_r2c
 #define kemo_fftw_plan_many_dft_c2r  kemo_fftw_plan_many_dft_c2r
 #define kemo_fftw_destroy_plan       kemo_fftw_destroy_plan
+#define kemo_fftw_cleanup            kemo_fftw_cleanup
 #define kemo_fftw_execute            kemo_fftw_execute
 #define kemo_fftw_execute_dft_r2c    kemo_fftw_execute_dft_r2c
 #define kemo_fftw_execute_dft_c2r    kemo_fftw_execute_dft_c2r

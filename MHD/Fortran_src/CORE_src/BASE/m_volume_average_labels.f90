@@ -124,14 +124,6 @@
       character(len=kchara) :: e_hd_mag_induct_v(3)
 !
       character(len=kchara), parameter                                  &
-     &                      :: e_hd_vp_induct =   'vp_induct'
-      character(len=kchara) :: e_hd_vp_induct_v(3)
-!
-      character(len=kchara), parameter                                  &
-     &                      :: e_hd_vp_diffuse =   'vecp_diffuse'
-      character(len=kchara) :: e_hd_vp_diffuse_v(3)
-!
-      character(len=kchara), parameter                                  &
      &                      :: e_hd_mag_diffuse =   'mag_diffuse'
       character(len=kchara) :: e_hd_mag_diffuse_v(3)
 !
@@ -203,16 +195,6 @@
       character(len=kchara), parameter :: e_hd_SGS_m_ene_gen            &
      &                                   = 'SGS_ME_gen'
 !
-      character(len=kchara), parameter :: e_hd_SGS_div_mf_true_v(3)     &
-     &            = (/'SGS_div_mf_true_x', 'SGS_div_mf_true_y',         &
-     &                'SGS_div_mf_true_z'/)
-!
-      character(len=kchara) :: e_hd_SGS_Lorentz_true_v(3)
-!
-      character(len=kchara), parameter :: e_hd_SGS_m_induct_true_v(3)   &
-     &            = (/'SGS_m_induct_true_x', 'SGS_m_induct_true_y',     &
-     &                'SGS_m_induct_true_z'/)
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -229,9 +211,7 @@
       call set_vector_label(e_hd_div_maxwell, e_hd_div_maxwell_v)
 !
       call set_vector_label(e_hd_mag_induct, e_hd_mag_induct_v)
-      call set_vector_label(e_hd_vp_induct,  e_hd_vp_induct_v)
 !
-      call set_vector_label(e_hd_vp_diffuse,  e_hd_vp_diffuse_v)
       call set_vector_label(e_hd_mag_diffuse, e_hd_mag_diffuse_v)
       call set_vector_label(e_hd_vis_diffuse, e_hd_vis_diffuse_v)
 !
@@ -255,9 +235,6 @@
       call set_vector_label(e_hd_SGS_vp_induct, e_hd_SGS_vp_induct_v)
       call set_vector_label(fhd_SGS_buoyancy,   e_hd_SGS_buoyancy_v)
       call set_vector_label(fhd_SGS_comp_buo,   e_hd_SGS_comp_buo_v)
-!
-      call set_vector_label(fhd_SGS_Lorentz_true,                       &
-     &    e_hd_SGS_Lorentz_true_v)
 !
       end subroutine set_vector_vol_average_labels
 !
