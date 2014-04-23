@@ -21,6 +21,8 @@ TARGET_T_AVE_GAUSS_COEFS =   t_ave_gauss_coefs
 TARGET_T_AVE_PICK_SPH_SPEC = t_ave_picked_sph_spec
 TARGET_T_AVE_PICK_SPH_ENE =  t_ave_picked_ene_sph
 
+TARGET_MAX_SPH_ENE =      sph_pwr_max_mode
+
 LIBS_SPH_UTIL = \
 '$$(LIB_VIZ)'    \
 '$$(LIB_PARA)'   \
@@ -111,8 +113,15 @@ m_neutral_pt_by_pick_sph.o
 
 MOD_TAVE_SPH_ENE_SPEC = \
 t_average_sph_ene_spec.o \
+m_sph_ene_spectra.o \
 m_tave_sph_ene_spectr.o \
 cal_tave_sph_ene_spectr.o
+
+MOD_MAX_SPH_ENE = \
+maxmode_sph_ene_spec.o \
+m_sph_ene_spectra.o \
+m_max_sph_ene_spectr.o
+
 
 MOD_T_AVE_GAUSS_COEFS = \
 tave_picked_gauss_coefs.o
@@ -157,6 +166,8 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_T_AVE_PICK_SPH_ENE = $$(BUILDDIR)/$(TARGET_T_AVE_PICK_SPH_ENE)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_MAX_SPH_ENE = $$(BUILDDIR)/$(TARGET_MAX_SPH_ENE)' \
+	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
@@ -167,7 +178,8 @@ target_task:
 	'$$(TARGET_ZM_SPH_SPEC)        $$(TARGET_T_AVE_SPEC)'      \
 	'$$(TARGET_SPH_NEUTRAL)        $$(TARGET_TAVE_SPH_ENE_SPEC)' \
 	'$$(TARGET_PICK_GAUSS_COEF)    $$(TARGET_T_AVE_PICK_SPH_SPEC)' \
-	'$$(TARGET_T_AVE_GAUSS_COEFS)  $$(TARGET_T_AVE_PICK_SPH_ENE)' >> $(MAKENAME)
+	'$$(TARGET_T_AVE_GAUSS_COEFS)  $$(TARGET_T_AVE_PICK_SPH_ENE)' \
+	'$$(TARGET_MAX_SPH_ENE)  '    >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_SPEC)': '$$(MOD_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
@@ -272,6 +284,14 @@ target_task:
 	'-L. $$(LIB_MESH)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_MAX_SPH_ENE)': '$$(MOD_MAX_SPH_ENE)' \
+	'$$(LIB_MESH_FILE)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MAX_SPH_ENE)' \
+	'$$(MOD_MAX_SPH_ENE)' \
+	'-L. $$(LIB_MESH)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -308,6 +328,8 @@ mod_list:
 	@echo  $(MOD_T_AVE_PICK_SPH)       >> $(MAKENAME)
 	@echo  MOD_T_AVE_PICK_SPH_ENE=  \\ >> $(MAKENAME)
 	@echo  $(MOD_T_AVE_PICK_SPH_ENE)   >> $(MAKENAME)
+	@echo  MOD_MAX_SPH_ENE=  \\        >> $(MAKENAME)
+	@echo  $(MOD_MAX_SPH_ENE)          >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 module:

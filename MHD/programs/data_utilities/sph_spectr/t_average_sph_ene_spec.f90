@@ -1,5 +1,5 @@
 !>@file   t_average_sph_ene_spec.f90
-!!        module t_average_sph_ene_spec
+!!        program t_average_sph_ene_spec
 !!
 !! @author H. Matsui
 !! @date   Programmed in  Nov., 2007
@@ -18,15 +18,16 @@
       implicit none
 !
 !
-      integer(kind = kint) :: ist, ied, ierr
+      integer(kind = kint) :: ierr
       integer(kind = kint) :: icou, istep
+      real(kind = kreal) :: start_time, end_time
 !
 !
       call select_sph_ene_spec_data_file
       call set_org_ene_spec_file_name
 !
       write(*,*) 'imput start and end step number'
-      read(*,*) ist, ied
+      read(*,*) start_time, end_time
 !
       if(iflag_sph_ene_file .eq. 1) then
         call count_degree_on_volume_data
@@ -35,6 +36,7 @@
       else
         call count_degree_one_layer_data
       end if
+      call allocate_sph_espec_data
       call allocate_tave_sph_espec_data
 !
 !    Evaluate time average
@@ -51,7 +53,7 @@
         end if
         if(ierr.gt.0) go to 99
 !
-        if (istep .ge. ist) then
+        if (time_sph .ge. start_time) then
           if (ist_true .eq. -1) then
             ist_true = istep
           end if
@@ -59,16 +61,20 @@
           ied_true = istep
 !
           call sum_average_ene_sph
+          if (icou .eq. 1) then
+            time_ini = time_sph
+            call reset_tave_sph_espec_data
+          end if
         end if
 !
-        if (istep .ge. ied) exit
+        if (time_sph .ge. end_time) exit
 !
-        write(*,*) 'step', istep, 'averagind finished. Count: ', icou
+        write(*,*) 'step', istep, 'averaging finished. Count: ', icou
       end do
    99 continue
       call close_ene_spec_data
 !
-      call divide_average_ene_sph(icou)
+      call divide_average_ene_sph
       call output_tave_ene_sph_data
 !
       call close_ene_spec_data
@@ -87,7 +93,7 @@
         end if
         if(ierr.gt.0) go to 98
 !
-        if (istep .ge. ist) then
+        if (time_sph .ge. start_time) then
           if (ist_true .eq. -1) then
             ist_true = istep
           end if
@@ -95,9 +101,13 @@
           ied_true = istep
 !
           call sum_deviation_ene_sph
+          if (icou .eq. 1) then
+            time_ini = time_sph
+            call reset_tsigma_sph_espec_data
+          end if
         end if
 !
-        if (istep .ge. ied) exit
+        if (time_sph .ge. end_time) exit
 !
         write(*,*) 'step', istep, 'deviation finished. Count: ', icou
 !
@@ -105,7 +115,7 @@
    98 continue
       call close_ene_spec_data
 !
-      call divide_deviation_ene_sph(icou)
+      call divide_deviation_ene_sph
       call output_tsigma_ene_sph_data
 
 !
