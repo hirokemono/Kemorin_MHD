@@ -31,6 +31,7 @@ void kemo_fftw_plan_many_dft_c2r(fftw_plan *plan, int rank,
 
 
 void kemo_fftw_destroy_plan(fftw_plan *plan);
+void kemo_fftw_cleanup();
 
 void kemo_fftw_execute(fftw_plan *plan);
 void kemo_fftw_execute_dft_r2c(fftw_plan *plan, double *dble_in, fftw_complex *cplx_out);

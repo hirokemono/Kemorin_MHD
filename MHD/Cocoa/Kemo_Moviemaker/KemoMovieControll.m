@@ -102,7 +102,7 @@
 		 self.evolutionCurrentStep++) {
 		if( ((self.evolutionCurrentStep-self.evolutionStartStep)%self.evolutionIncrement) == 0) {
 			imageFileHead =  [imageFileHeadExStep stringByAppendingPathExtension:
-							[NSString stringWithFormat:@"%d",self.evolutionCurrentStep]];
+							[NSString stringWithFormat:@"%d",(int) self.evolutionCurrentStep]];
 			imageFileName =  [imageFileHead stringByAppendingPathExtension:imageFileExt];
 			[self ImageToQTMovie];
 			[progreessBar incrementBy:(double)self.evolutionIncrement];
@@ -116,10 +116,10 @@
 }
 
 - (IBAction)SetEvolutionSteps:(id)pSender{
-	NSLog(@"start: %d", self.evolutionStartStep);
-	NSLog(@"end: %d", self.evolutionEndStep);
-	NSLog(@"increment: %d", self.evolutionIncrement);
-	NSLog(@"FPS: %d", self.evolutionFPS);
+	NSLog(@"start: %d", (int) self.evolutionStartStep);
+	NSLog(@"end: %d", (int) self.evolutionEndStep);
+	NSLog(@"increment: %d", (int) self.evolutionIncrement);
+	NSLog(@"FPS: %d", (int) self.evolutionFPS);
 }
 
 @end

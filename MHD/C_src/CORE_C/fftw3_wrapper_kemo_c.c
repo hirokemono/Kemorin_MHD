@@ -46,6 +46,10 @@ void kemo_fftw_destroy_plan(fftw_plan *plan){
 	return;
 }
 
+void kemo_fftw_cleanup(){
+	fftw_cleanup();
+	return;
+}
 
 void kemo_fftw_execute(fftw_plan *plan){
 	fftw_execute(*plan);
