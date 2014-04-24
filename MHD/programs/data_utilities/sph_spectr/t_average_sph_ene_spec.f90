@@ -26,7 +26,7 @@
       call select_sph_ene_spec_data_file
       call set_org_ene_spec_file_name
 !
-      write(*,*) 'imput start and end step number'
+      write(*,*) 'Input start and end time'
       read(*,*) start_time, end_time
 !
       if(iflag_sph_ene_file .eq. 1) then

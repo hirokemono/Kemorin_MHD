@@ -15,10 +15,10 @@ TARGET_PICK_GAUSS_COEF =   pick_gauss_coefs
 TARGET_ZM_SPH_SPEC =       zonal_mean_sph
 TARGET_T_AVE_SPEC =        t_ave_sph_spec
 TARGET_SPH_NEUTRAL =       sph_neutral_points
-TARGET_TAVE_SPH_ENE_SPEC = t_ave_from_sph_evolution
+TARGET_TAVE_SPH_ENE_SPEC = t_ave_sph_mean_square
 
 TARGET_T_AVE_GAUSS_COEFS =   t_ave_gauss_coefs
-TARGET_T_AVE_PICK_SPH_SPEC = t_ave_picked_sph_spec
+TARGET_T_AVE_PICK_SPH_SPEC = t_ave_picked_sph_coefs
 TARGET_T_AVE_PICK_SPH_ENE =  t_ave_picked_ene_sph
 
 TARGET_MAX_SPH_ENE =      sph_pwr_max_mode
