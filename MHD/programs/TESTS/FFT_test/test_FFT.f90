@@ -24,9 +24,10 @@
       np_smp = 2
 !
       write(*,*) 'select FFT library'
-      write(*,*) '0: ISPACK'
       write(*,*) '1: FFTPACK5'
       write(*,*) '2: FFTW3 (if avaiable)'
+      write(*,*) '3: SINGLE FFTW3 (if avaiable)'
+      write(*,*) '4: ISPACK'
       read(*,*) iflag_FFT
 !
       pi = four*atan(one)

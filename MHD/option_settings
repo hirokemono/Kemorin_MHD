@@ -431,11 +431,118 @@ CXXFLAGS =
 #
 # setenv PKG_CONFIG_PATH /Users/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig:/usr/local/lib/pkgconfig
 #
-#./configure --prefix='/home/hrmatsui/local' CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' \
-#  --enable-fftw3 --enable-gl --enable-glui --enable-gtk \
-#  --enable-libpng  --with-zlib=/Users/matsui/local \
-#  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/usr/local 
+./configure --prefix='/home/hrmatsui/local' CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' \
+  --enable-fftw3 --enable-gl --enable-glui --enable-gtk \
+  --enable-libpng  --with-zlib=/Users/matsui/local \
+  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/usr/local 
 #
+#
+# -------------------------------------------------------------------------------
+# Cray XC30 with cray compiler
+# -------------------------------------------------------------------------------
+#
+./configure --prefix='/home/matsui/local' --enable-fftw3 --enable-libpng --enable-gl  --enable-gtk \
+--with-hdf5=no --with-zlib --without-pgplot CC=cc FC=ftn MPICC=cc MPIF90=ftn \
+CFLAGS='-O3' FCFLAGS='-O3 -homp -hvector3 -hfp3' \
+PKG_CONFIG_PATH="$PKG_CONFIG_PATH":/opt/fftw/3.3.0.4/sandybridge/lib/pkgconfig
+#
+#  Makefile for Kemo's Dynamo toolkit
+#    Written by H. Matsui
+#
+SHELL           = /bin/sh
+#
+#  directories of Kemo's Dynamo toolkit
+#
+SRCDIR = /home/matsui/src_kemo
+INSTDIR= /home/matsui/local
+#
+MHDDIR = $(SRCDIR)/MHD
+MAKEDIR= $(SRCDIR)/work
+BUILDDIR= $(SRCDIR)/bin
+#
+# MPI settings
+#
+MPICHDIR =    
+MPICHLIBDIR = $(MPICHDIR)/lib
+MPICHBINDIR = $(MPICHDIR)/bin
+MPICHINCDIR = 
+MPILIBS =      
+#
+#    compilers
+#
+F90 = ftn
+CC =  cc
+CXX = 
+
+F90_LOCAL = $(F90)
+
+MPIF90 = ftn
+MPICC =  cc
+
+GMAKE = make
+AR = ar
+RANLIB = ranlib
+
+#
+# OPENMP_FCFLAGS OprnMP option for fortran compiler
+# FC_NAME_MANGLE definition for Fortran-C connection
+#    C routtine name mangle flag for Fortran connection
+#     -DFC_NAME_LOWER_USCORE, -DFC_NAME_UPPER, or -DFC_NAME_LOWER
+# FC_NAME_MANGLE -DWITH_FLAG is defined to use cocoa Framework
+#
+OPENMP_FCFLAGS = -homp
+FC_NAME_MANGLE = -DFC_NAME_LOWER_USCORE
+COCOA_FLAG =     
+
+#
+#  optimization
+#
+F90OPTFLAGS= -g -O3 -homp -hvector3 -hscalar3 -hfp3   
+OPTFLAGS =   -g -O3    
+CXXFLAGS =     
+#
+#   libpng and zlib settings
+#
+ZLIB_CFLAGS =  -I/usr/include
+ZLIB_LIB =     -L/usr/lib -lz 
+PNG_CFLAGS =  -I/usr/include/libpng12  
+PNG_LIBS =    -lpng12  
+#
+#    FFTW3 settings
+#
+FFTW3_CFLAGS= -I/opt/fftw/3.3.0.4/sandybridge/include  
+FFTW3_LIBS=   -L/opt/fftw/3.3.0.4/sandybridge/lib -lfftw3 -lcray_memcpy  
+#
+#    HDF5 fortran wrapper settings
+#
+HDF5_FFLAGS=    
+HDF5_LDFLAGS=   
+HDF5_FLIBS=     
+#
+#   GLUT settings (Requirement: OpenGL, GLUT, libpng)
+#
+OPENGL_INC =  -I/usr/X11/include
+OPENGL_LIBS= 
+#
+#   PGPLOT settings (Requirement: pgplot, libpng)
+#
+PGPLOT_LIBS= 
+#
+#   GTK+ settings (Requirement: OpenGL, GLUT, libpng)
+GTK2_CFLAGS= -I/usr/include/gtk-2.0 -I/usr/lib64/gtk-2.0/include -I/usr/include/
+atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I
+/usr/lib64/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/
+usr/include/libpng12  
+GTK2_LIBS= -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lgdk_
+pixbuf-2.0 -lpangocairo-1.0 -lcairo -lpango-1.0 -lfreetype -lz -lfontconfig -lgo
+bject-2.0 -lgmodule-2.0 -lglib-2.0  
+#
+#
+# -------------------------------------------------------------------------------
+# Cray XC30 with cray compiler
+# -------------------------------------------------------------------------------
+#
+
 
 # -------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------
@@ -490,3 +597,5 @@ RANLIB = true
 F90OPTFLAGS= -Popenmp -pi line=200 nest=3 -R5 -Wf,'-pvctl loopcont=4000000' -ftrace
 OPTFLAGS = -h multi,vector
 CXXFLAGS =
+
+
