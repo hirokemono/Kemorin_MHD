@@ -12,6 +12,9 @@
 !!     &          coef_d, current, uxb, e_field)
 !!      subroutine cal_poynting_flux_smp(np_smp, nnod, inod_smp_stack,  &
 !!     &          coef_d, current, uxb, b_field, poynting)
+!!      subroutine cal_rtp_magnetic_streach(nnod, nidx_rtp,             &
+!!     &          a_r_1d_rtp_r, cot_theta_1d_rtp, b_field, u_field,     &
+!!     &          grad_ux, grad_uy, grad_uz, magne_streach)
 !!@endverbatim
 !!
 !!@n @param  np_smp   Number of SMP processes
@@ -98,6 +101,58 @@
 !$omp end do nowait
 !
       end subroutine cal_poynting_flux_smp
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine cal_rtp_magnetic_streach(nnod, nidx_rtp,               &
+     &          a_r_1d_rtp_r, cot_theta_1d_rtp, b_field, u_field,       &
+     &          grad_ux, grad_uy, grad_uz, magne_streach)
+!
+      integer (kind=kint), intent(in) :: nnod
+      integer (kind=kint), intent(in) :: nidx_rtp(3)
+      real (kind=kreal), intent(in) :: a_r_1d_rtp_r(nnod)
+      real (kind=kreal), intent(in) :: cot_theta_1d_rtp(nidx_rtp(2))
+      real (kind=kreal), intent(in) :: grad_ux(nnod,3), grad_uy(nnod,3)
+      real (kind=kreal), intent(in) :: grad_uz(nnod,3)
+      real (kind=kreal), intent(in) :: u_field(nnod,3), b_field(nnod,3)
+      real (kind=kreal), intent(inout) :: magne_streach(nnod,3)
+!
+      integer(kind = kint) :: mp, lt, kr, inod
+!
+!$omp parallel do private(kr,lt,inod)
+      do mp = 1, nidx_rtp(3)
+        do lt = 1, nidx_rtp(2)
+          do kr = 1, nidx_rtp(1)
+            inod = kr + (lt-1) * nidx_rtp(1)                            &
+     &                + (mp-1) * nidx_rtp(1)*nidx_rtp(2)
+!
+            magne_streach(inod,1) =  grad_ux(inod,1)*b_field(inod,1)    &
+     &                             + grad_ux(inod,2)*b_field(inod,2)    &
+     &                             + grad_ux(inod,3)*b_field(inod,3)    &
+     &                           - (b_field(inod,2)*u_field(inod,2)     &
+     &                            + b_field(inod,3)*u_field(inod,3))    &
+     &                           * a_r_1d_rtp_r(inod)
+            magne_streach(inod,2) =  grad_uy(inod,1)*b_field(inod,1)    &
+     &                             + grad_uy(inod,2)*b_field(inod,2)    &
+     &                             + grad_uy(inod,3)*b_field(inod,3)    &
+     &                           - (b_field(inod,3)*u_field(inod,3)     &
+     &                            * cot_theta_1d_rtp(lt)                &
+     &                            - b_field(inod,2)*u_field(inod,1))    &
+     &                           * a_r_1d_rtp_r(inod)
+            magne_streach(inod,3) =  grad_uz(inod,1)*b_field(inod,1)    &
+     &                             + grad_uz(inod,2)*b_field(inod,2)    &
+     &                             + grad_uz(inod,3)*b_field(inod,3)    &
+     &                           + (b_field(inod,3)*u_field(inod,1)     &
+     &                            + b_field(inod,3)*u_field(inod,2)     &
+     &                            * cot_theta_1d_rtp(lt) )              &
+     &                           * a_r_1d_rtp_r(inod)
+          end do
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_rtp_magnetic_streach
 !
 ! -----------------------------------------------------------------------
 !
