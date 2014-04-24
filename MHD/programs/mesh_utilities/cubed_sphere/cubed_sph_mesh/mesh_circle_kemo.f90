@@ -19,7 +19,6 @@
       use set_cubed_sph_control
 !
       use count_square_circle_config
-      use const_cube_sphere_data
 !
       implicit none
 !

@@ -85,7 +85,6 @@
 !
       subroutine open_psf_int_data(id_file, file_name, iflag_area)
 !
-      use take_normals_4_psf
       use set_parallel_file_name
 !
       integer(kind=kint), intent(in) :: id_file, iflag_area

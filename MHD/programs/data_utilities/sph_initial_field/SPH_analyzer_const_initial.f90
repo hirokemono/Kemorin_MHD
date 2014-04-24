@@ -24,9 +24,6 @@
       use m_t_int_parameter
       use m_t_step_parameter
 !
-!
-      use SPH_analyzer_MHD
-!
       implicit none
 !
       private :: SPH_const_initial_field

@@ -201,15 +201,16 @@
         ipick_degree(l) = l-1
       end do
 !
-      call pick_degree_sph_spectr(ltr_half, ipick_degree,               &
-     &    ithree, ipol%i_velo)
-      call pick_degree_sph_spectr(ltr_half, ipick_degree,               &
-     &    ithree, ipol%i_magne)
-      deallocate(ipick_degree)
+!      call pick_degree_sph_spectr(ltr_half, ipick_degree,               &
+!     &    ithree, ipol%i_velo)
+!      call pick_degree_sph_spectr(ltr_half, ipick_degree,               &
+!     &    ithree, ipol%i_magne)
+!      deallocate(ipick_degree)
 
 !      call take_zonal_mean_rj_field(ithree, ipol%i_velo)
-!      if (my_rank.eq.0) write(*,*) 'Take zonam mean temperature'
-!      call take_zonal_mean_rj_field(ione, ipol%i_temp)
+      if (my_rank.eq.0) write(*,*) 'delete zonam mean magnetic'
+      call delete_zonal_mean_rj_field(ithree, ipol%i_velo)
+      call delete_zonal_mean_rj_field(ithree, ipol%i_vort)
 !
       end subroutine set_special_rj_fields
 !
