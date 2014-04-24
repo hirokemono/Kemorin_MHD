@@ -30,8 +30,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_interpolate_mat_1pe(np_smp, istack_wtype_smp,   &
-     &      NC, NUM_NCOMP, NCM, NUM_SUM, INOD_DJO, INM,               &
+      subroutine count_interpolate_mat_1pe(np_smp, istack_wtype_smp,    &
+     &      NC, NUM_NCOMP, NCM, NUM_SUM, INOD_DJO, INM,                 &
      &      IEND_SUM, IEND_SUM_smp)
 !
       integer(kind = kint), intent(in) :: np_smp

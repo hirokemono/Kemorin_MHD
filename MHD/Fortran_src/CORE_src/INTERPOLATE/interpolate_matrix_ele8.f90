@@ -181,10 +181,9 @@
       subroutine set_interpolate_mat_edge2(np_smp, numele, ie,          &
      &          iele_gauss, iedge_gauss, xi_gauss,                      &
      &          NC, NCM, INM, IAM, AM, IEND_SUM_smp)
-      use calypso_mpi
 !
       integer (kind = kint), intent(in) :: np_smp, numele
-      integer (kind = kint), intent(in) :: ie(numele,20)
+      integer (kind = kint), intent(in) :: ie(numele,8)
       integer (kind = kint), intent(in) :: iele_gauss(NC)
       integer (kind = kint), intent(in) :: iedge_gauss(NC)
       real (kind=kreal), intent(in) :: xi_gauss(NC,3)
