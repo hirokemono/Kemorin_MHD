@@ -46,9 +46,9 @@
 !!                   for poloidal velocity
 !!@param is_vort     Spherical hermonics data address
 !!                   for poloidal vorticity
-!!@param is_magne    Spherical hermonics data address
+!!@param is_velo     Spherical hermonics data address
 !!                   for poloidal magnetic field
-!!@param is_current  Spherical hermonics data address
+!!@param is_vort     Spherical hermonics data address
 !!                   for poloidal current density
 !!@param is_press    Spherical hermonics data address
 !!                   for pressure
@@ -83,6 +83,7 @@
       call cal_sph_nod_gradient_2(sph_bc%kr_in, sph_bc%kr_out,          &
      &     d_rj(1,is_fld), d_rj(1,is_grad) )
       call sel_bc_radial_grad_scalar(sph_bc, is_fld, is_grad)
+      call normalize_sph_average_grad(d_rj(1,is_grad))
 !
       end subroutine const_radial_grad_scalar
 !
@@ -193,6 +194,7 @@
 !
       call cal_sph_nod_gradient_2(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
      &    d_rj(1,is_press), d_rj(1,is_grad) )
+      call normalize_sph_average_grad(d_rj(1,is_grad))
 !
       call delete_bc_rj_vector(nidx_rj(2), sph_bc_U%kr_in,  is_grad)
       call delete_bc_rj_vector(nidx_rj(2), sph_bc_U%kr_out, is_grad)

@@ -11,8 +11,11 @@
 !!      subroutine allocate_max_sph_espec_data
 !!      subroutine deallocate_max_sph_espec_data
 !!
-!!      subroutine open_max_ene_spec_data
 !!      subroutine open_maxmode_spec_data
+!!      subroutine close_maxmode_spec_data
+!!      subroutine output_dominant_scale_sph(istep)
+!!
+!!      subroutine find_dominant_scale_sph
 !!@endverbatim
 !
       module m_max_sph_ene_spectr
@@ -42,6 +45,7 @@
       integer(kind = kint), parameter :: id_max_rms_lm =   133
 !
       private :: write_maxmode_ene_sph_head
+      private :: write_max_vol_sph_data, write_max_layer_sph_data
 !
 !   --------------------------------------------------------------------
 !
@@ -92,32 +96,6 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine open_max_ene_spec_data
-!
-      use m_sph_ene_spectra
-!
-      character(len = kchara) :: fname_max_rms_l
-      character(len = kchara) :: fname_max_rms_m
-      character(len = kchara) :: fname_max_rms_lm
-!
-!
-      write(fname_max_rms_l, '(a4,a)')                                  &
-     &        'max_', trim(fname_org_rms_l)
-      write(fname_max_rms_m, '(a4,a)')                                  &
-     &        'max_', trim(fname_org_rms_m)
-      write(fname_max_rms_lm,'(a4,a)')                                  &
-     &        'max_', trim(fname_org_rms_lm)
-!
-      open(id_max_rms_l, file=fname_max_rms_l)
-      open(id_max_rms_m, file=fname_max_rms_m)
-      open(id_max_rms_lm,file=fname_max_rms_lm)
-!
-      call write_maxmode_ene_sph_head
-!
-      end subroutine open_max_ene_spec_data
-!
-!   --------------------------------------------------------------------
-!
       subroutine open_maxmode_spec_data
 !
       use m_sph_ene_spectra
@@ -156,17 +134,19 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine output_dominant_scale_sph
+      subroutine output_dominant_scale_sph(istep)
 !
       use m_sph_ene_spectra
+!
+      integer(kind = kint), intent(in) :: istep
 !
 !
       if(iflag_sph_ene_file .eq. 1) then
         call write_max_vol_sph_data(nri_sph, ncomp_sph_spec,            &
-     &      max_degree, max_order, max_diff_lm)
+     &      max_degree, max_order, max_diff_lm, istep)
       else
         call write_max_layer_sph_data(nri_sph,                          &
-     &      ncomp_sph_spec, max_degree, max_order, max_diff_lm)
+     &      ncomp_sph_spec, max_degree, max_order, max_diff_lm, istep)
       end if
 !
       end subroutine output_dominant_scale_sph
@@ -202,33 +182,33 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_max_vol_sph_data(nri, ncomp,                     &
-     &          spec_l, spec_m, spec_lm)
+     &          spec_l, spec_m, spec_lm, istep)
 !
       use m_sph_ene_spectra
 !
-      integer(kind = kint), intent(in) :: nri, ncomp
+      integer(kind = kint), intent(in) :: nri, ncomp, istep
       real(kind = kreal), intent(inout) :: spec_l(ncomp,nri)
       real(kind = kreal), intent(inout) :: spec_m(ncomp,nri)
       real(kind = kreal), intent(inout) :: spec_lm(ncomp,nri)
 !
 !
       write(id_max_rms_l,'(i10,1pE25.15e3,i10,1p255E25.15e3)')          &
-     &         istep_read, time_sph, izero, spec_l(1:ncomp,1)
+     &         istep, time_sph, izero, spec_l(1:ncomp,1)
       write(id_max_rms_m,'(i10,1pE25.15e3,i10,1p255E25.15e3)')          &
-     &         istep_read, time_sph, izero, spec_m(1:ncomp,1)
+     &         istep, time_sph, izero, spec_m(1:ncomp,1)
       write(id_max_rms_lm,'(i10,1pE25.15e3,i10,1p255E25.15e3)')         &
-     &         istep_read, time_sph, izero, spec_lm(1:ncomp,1)
+     &         istep, time_sph, izero, spec_lm(1:ncomp,1)
 !
       end subroutine write_max_vol_sph_data
 !
 !   --------------------------------------------------------------------
 !
       subroutine write_max_layer_sph_data(nri, ncomp,                   &
-     &          spec_l, spec_m, spec_lm)
+     &          spec_l, spec_m, spec_lm, istep)
 !
       use m_sph_ene_spectra
 !
-      integer(kind = kint), intent(in) :: nri, ncomp
+      integer(kind = kint), intent(in) :: nri, ncomp, istep
       real(kind = kreal), intent(inout) :: spec_l(ncomp,nri)
       real(kind = kreal), intent(inout) :: spec_m(ncomp,nri)
       real(kind = kreal), intent(inout) :: spec_lm(ncomp,nri)
@@ -238,11 +218,11 @@
 !
       do kr = 1, nri
         write(id_max_rms_l,'(i10,1pE25.15e3,2i10,1p255E25.15e3)')       &
-     &     istep_read, time_sph, kr_sph(kr), izero, spec_l(1:ncomp,kr)
+     &     istep, time_sph, kr_sph(kr), izero, spec_l(1:ncomp,kr)
         write(id_max_rms_m,'(i10,1pE25.15e3,2i10,1p255E25.15e3)')       &
-     &     istep_read, time_sph, kr_sph(kr), izero, spec_m(1:ncomp,kr)
+     &     istep, time_sph, kr_sph(kr), izero, spec_m(1:ncomp,kr)
         write(id_max_rms_lm,'(i10,1pE25.15e3,2i10,1p255E25.15e3)')      &
-     &     istep_read, time_sph, kr_sph(kr), izero, spec_lm(1:ncomp,kr)
+     &     istep, time_sph, kr_sph(kr), izero, spec_lm(1:ncomp,kr)
       end do
 !
       end subroutine write_max_layer_sph_data

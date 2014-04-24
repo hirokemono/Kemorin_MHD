@@ -21,7 +21,8 @@ TARGET_T_AVE_GAUSS_COEFS =   t_ave_gauss_coefs
 TARGET_T_AVE_PICK_SPH_SPEC = t_ave_picked_sph_coefs
 TARGET_T_AVE_PICK_SPH_ENE =  t_ave_picked_ene_sph
 
-TARGET_MAX_SPH_ENE =      sph_pwr_max_mode
+TARGET_MAX_SPH_ENE =         sph_pwr_max_mode
+TARGET_SPH_ULI_LSCALE =      sph_uli_lengscale
 
 LIBS_SPH_UTIL = \
 '$$(LIB_VIZ)'    \
@@ -122,6 +123,11 @@ maxmode_sph_ene_spec.o \
 m_sph_ene_spectra.o \
 m_max_sph_ene_spectr.o
 
+MOD_SPH_ULI_LSCALE = \
+sph_uli_lengh_scale.o \
+m_sph_ene_spectra.o \
+m_uli_sph_lscale.o
+
 
 MOD_T_AVE_GAUSS_COEFS = \
 tave_picked_gauss_coefs.o
@@ -168,6 +174,8 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_MAX_SPH_ENE = $$(BUILDDIR)/$(TARGET_MAX_SPH_ENE)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_SPH_ULI_LSCALE = $$(BUILDDIR)/$(TARGET_SPH_ULI_LSCALE)' \
+	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
@@ -179,7 +187,7 @@ target_task:
 	'$$(TARGET_SPH_NEUTRAL)        $$(TARGET_TAVE_SPH_ENE_SPEC)' \
 	'$$(TARGET_PICK_GAUSS_COEF)    $$(TARGET_T_AVE_PICK_SPH_SPEC)' \
 	'$$(TARGET_T_AVE_GAUSS_COEFS)  $$(TARGET_T_AVE_PICK_SPH_ENE)' \
-	'$$(TARGET_MAX_SPH_ENE)  '    >> $(MAKENAME)
+	'$$(TARGET_MAX_SPH_ENE)        $$(TARGET_SPH_ULI_LSCALE)'    >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_SPEC)': '$$(MOD_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
@@ -292,6 +300,14 @@ target_task:
 	'-L. $$(LIB_MESH)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_SPH_ULI_LSCALE)': '$$(MOD_SPH_ULI_LSCALE)' \
+	'$$(LIB_MESH_FILE)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_ULI_LSCALE)' \
+	'$$(MOD_SPH_ULI_LSCALE)' \
+	'-L. $$(LIB_MESH)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -330,6 +346,8 @@ mod_list:
 	@echo  $(MOD_T_AVE_PICK_SPH_ENE)   >> $(MAKENAME)
 	@echo  MOD_MAX_SPH_ENE=  \\        >> $(MAKENAME)
 	@echo  $(MOD_MAX_SPH_ENE)          >> $(MAKENAME)
+	@echo  MOD_SPH_ULI_LSCALE=  \\     >> $(MAKENAME)
+	@echo  $(MOD_SPH_ULI_LSCALE)       >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 module:
