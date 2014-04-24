@@ -8,6 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine s_select_fourier_transform(ncomp, Nstacksmp)
+!!
+!!       Current problem
+!!      FFTW crashes when both single and multi transforms are 
+!!      comparaed
 !!@endverbatim
 !
       module select_fourier_transform
@@ -37,59 +41,65 @@
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: Nstacksmp(0:np_smp)
 !
-      integer(kind = kint) :: iflag_seelcted
+      integer(kind = kint) :: iflag_chosen
       real(kind = kreal) :: etime_shortest
       real(kind = kreal) :: etime_fft(1:4)
 !
-!
-      if(iflag_FFT .ne.  iflag_UNDEFINED_FFT) then
-        call initialize_FFT_select(my_rank, np_smp, Nstacksmp,          &
-     &      nidx_rtp(3))
-        return
-      end if
 !
       iflag_FFT = iflag_FFTPACK
       call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
      &    etime_fft(iflag_FFT))
 !
-      iflag_seelcted = iflag_FFT
+      iflag_chosen = iflag_FFT
       etime_shortest = etime_fft(iflag_FFT)
 !
 !
 #ifdef FFTW3
       iflag_FFT = iflag_FFTW
       call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
-     &    etime_fft(iflag_FFT))
+     &    etime_fft(iflag_FFTW))
 !
-      if(etime_fft(iflag_FFT) .lt. etime_shortest) then
-        iflag_seelcted = iflag_FFT
-        etime_shortest = etime_fft(iflag_FFT)
+      if(etime_fft(iflag_FFTW) .lt. etime_shortest) then
+        iflag_FFT = iflag_chosen
+        call finalize_FFT_select(np_smp, Nstacksmp)
+!
+        iflag_chosen = iflag_FFTW
+        etime_shortest = etime_fft(iflag_FFTW)
+      else
+        call finalize_FFT_select(np_smp, Nstacksmp)
       end if
 !
-      iflag_FFT = iflag_FFTW_SINGLE
-      call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
-     &    etime_fft(iflag_FFT))
 !
-      if(etime_fft(iflag_FFT) .lt. etime_shortest) then
-        iflag_seelcted = iflag_FFT
-        etime_shortest = etime_fft(iflag_FFT)
-      end if
+!      iflag_FFT = iflag_FFTW_SINGLE
+!      call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
+!     &    etime_fft(iflag_FFTW_SINGLE))
+!
+!      if(etime_fft(iflag_FFTW_SINGLE) .lt. etime_shortest) then
+!        iflag_FFT = iflag_chosen
+!        call finalize_FFT_select(np_smp, Nstacksmp)
+!
+!        iflag_chosen = iflag_FFTW_SINGLE
+!        etime_shortest = etime_fft(iflag_FFTW_SINGLE)
+!      else
+!        call finalize_FFT_select(np_smp, Nstacksmp)
+!      end if
 #endif
-!
 !
       iflag_FFT = iflag_ISPACK
       call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
-     &    etime_fft(iflag_FFT))
+     &    etime_fft(iflag_ISPACK))
 !
-      if(etime_fft(iflag_FFT) .lt. etime_shortest) then
-        iflag_seelcted = iflag_FFT
-        etime_shortest = etime_fft(iflag_FFT)
+      if(etime_fft(iflag_ISPACK) .lt. etime_shortest) then
+        iflag_FFT = iflag_chosen
+        call finalize_FFT_select(np_smp, Nstacksmp)
+!
+        iflag_chosen = iflag_ISPACK
+        etime_shortest = etime_fft(iflag_ISPACK)
+      else
+        call finalize_FFT_select(np_smp, Nstacksmp)
       end if
 !
-      iflag_FFT = iflag_seelcted
-      call initialize_FFT_select(my_rank, np_smp, Nstacksmp,            &
-     &    nidx_rtp(3))
-!
+      iflag_FFT = iflag_chosen
 !
       if(my_rank .gt. 0) return
         write(*,'(a,i4)', advance='no') 'Selected Fourier transform: ', &
@@ -110,10 +120,10 @@
         if(etime_fft(iflag_FFTW) .gt. zero) then
           write(*,*) '2: elapsed by FFTW3:   ', etime_fft(iflag_FFTW)
         end if
-        if(etime_fft(iflag_FFTW_SINGLE) .gt. zero) then
-          write(*,*) '3: elapsed by single FFTW3:   ',                  &
-     &            etime_fft(iflag_FFTW_SINGLE)
-        end if
+!        if(etime_fft(iflag_FFTW_SINGLE) .gt. zero) then
+!          write(*,*) '3: elapsed by single FFTW3:   ',                 &
+!     &            etime_fft(iflag_FFTW_SINGLE)
+!        end if
         if(etime_fft(iflag_ISPACK) .gt. zero) then
           write(*,*) '4: elapsed by ISPACK:         ',                  &
      &            etime_fft(iflag_ISPACK)
@@ -143,8 +153,6 @@
       call forward_FFT_select(np_smp, Nstacksmp, ncomp, nidx_rtp(3),    &
      &    vr_rtp)
       etime = MPI_WTIME() - stime
-!
-      call finalize_FFT_select(np_smp, Nstacksmp)
 !
       call MPI_allREDUCE (etime, etime_fft, ione,                       &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)

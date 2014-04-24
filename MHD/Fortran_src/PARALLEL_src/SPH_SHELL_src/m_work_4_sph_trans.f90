@@ -80,6 +80,8 @@
       real(kind = kreal), allocatable :: sin_theta_1d_rtp(:)
 !>      @f$ \cos \theta @f$ in sapherical grid (one-dimentional)
       real(kind = kreal), allocatable :: cos_theta_1d_rtp(:)
+!>      @f$ \cot \theta @f$ in sapherical grid (one-dimentional)
+      real(kind = kreal), allocatable :: cot_theta_1d_rtp(:)
 !
 !
 !>      End address of spherical harmonics order for SMP parallelization
@@ -127,6 +129,7 @@
 !
       allocate(cos_theta_1d_rtp(nidx_rtp(2)))
       allocate(sin_theta_1d_rtp(nidx_rtp(2)))
+      allocate(cot_theta_1d_rtp(nidx_rtp(2)))
 !
       lstack_rlm = 0
       mdx_p_rlm_rtm = 0
@@ -135,6 +138,7 @@
 !
       cos_theta_1d_rtp = 0.0d0
       sin_theta_1d_rtp = 0.0d0
+      cot_theta_1d_rtp = 0.0d0
 !
       sp_rj =  0.0d0
       vr_rtp = 0.0d0
@@ -153,7 +157,8 @@
 !
       deallocate(lstack_rlm)
       deallocate(mdx_p_rlm_rtm, mdx_n_rlm_rtm)
-      deallocate(asin_theta_1d_rtm, sin_theta_1d_rtp, cos_theta_1d_rtp)
+      deallocate(asin_theta_1d_rtm, cot_theta_1d_rtp)
+      deallocate(sin_theta_1d_rtp, cos_theta_1d_rtp)
 !
       deallocate(sp_rj, vr_rtp)
       deallocate(sp_rlm, vr_rtm)
