@@ -20,6 +20,7 @@ TARGET_TAVE_SPH_ENE_SPEC = t_ave_sph_mean_square
 TARGET_T_AVE_GAUSS_COEFS =   t_ave_gauss_coefs
 TARGET_T_AVE_PICK_SPH_SPEC = t_ave_picked_sph_coefs
 TARGET_T_AVE_PICK_SPH_ENE =  t_ave_picked_ene_sph
+TARGET_T_AVE_NUSSELT =       t_ave_nusselt
 
 TARGET_MAX_SPH_ENE =         sph_pwr_max_mode
 TARGET_SPH_ULI_LSCALE =      sph_uli_lengscale
@@ -138,6 +139,9 @@ tave_picked_sph_spec_data.o
 MOD_T_AVE_PICK_SPH_ENE = \
 tave_picked_sph_rms_data.o
 
+MOD_T_AVE_NUSSELT = \
+t_average_nusselt.o
+
 #
 #  ------------------------------------------------------------------
 #
@@ -172,6 +176,8 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_T_AVE_PICK_SPH_ENE = $$(BUILDDIR)/$(TARGET_T_AVE_PICK_SPH_ENE)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_T_AVE_NUSSELT = $$(BUILDDIR)/$(TARGET_T_AVE_NUSSELT)' \
+	>> $(MAKENAME)
 	@echo 'TARGET_MAX_SPH_ENE = $$(BUILDDIR)/$(TARGET_MAX_SPH_ENE)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_SPH_ULI_LSCALE = $$(BUILDDIR)/$(TARGET_SPH_ULI_LSCALE)' \
@@ -187,7 +193,8 @@ target_task:
 	'$$(TARGET_SPH_NEUTRAL)        $$(TARGET_TAVE_SPH_ENE_SPEC)' \
 	'$$(TARGET_PICK_GAUSS_COEF)    $$(TARGET_T_AVE_PICK_SPH_SPEC)' \
 	'$$(TARGET_T_AVE_GAUSS_COEFS)  $$(TARGET_T_AVE_PICK_SPH_ENE)' \
-	'$$(TARGET_MAX_SPH_ENE)        $$(TARGET_SPH_ULI_LSCALE)'    >> $(MAKENAME)
+	'$$(TARGET_MAX_SPH_ENE)        $$(TARGET_SPH_ULI_LSCALE)'     \
+	'$$(TARGET_T_AVE_NUSSELT)  '   >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_SPEC)': '$$(MOD_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
@@ -292,6 +299,14 @@ target_task:
 	'-L. $$(LIB_MESH)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_T_AVE_NUSSELT)': '$$(MOD_T_AVE_NUSSELT)' \
+	'$$(LIB_MESH_FILE)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_T_AVE_NUSSELT)' \
+	'$$(MOD_T_AVE_NUSSELT)' \
+	'-L. $$(LIB_MESH)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MAX_SPH_ENE)': '$$(MOD_MAX_SPH_ENE)' \
 	'$$(LIB_MESH_FILE)' \
 	>> $(MAKENAME)
@@ -348,6 +363,8 @@ mod_list:
 	@echo  $(MOD_MAX_SPH_ENE)          >> $(MAKENAME)
 	@echo  MOD_SPH_ULI_LSCALE=  \\     >> $(MAKENAME)
 	@echo  $(MOD_SPH_ULI_LSCALE)       >> $(MAKENAME)
+	@echo  MOD_T_AVE_NUSSELT=  \\      >> $(MAKENAME)
+	@echo  $(MOD_T_AVE_NUSSELT)        >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 module:

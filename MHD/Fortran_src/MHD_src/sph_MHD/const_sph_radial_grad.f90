@@ -46,9 +46,9 @@
 !!                   for poloidal velocity
 !!@param is_vort     Spherical hermonics data address
 !!                   for poloidal vorticity
-!!@param is_velo     Spherical hermonics data address
+!!@param is_magne    Spherical hermonics data address
 !!                   for poloidal magnetic field
-!!@param is_vort     Spherical hermonics data address
+!!@param is_current  Spherical hermonics data address
 !!                   for poloidal current density
 !!@param is_press    Spherical hermonics data address
 !!                   for pressure
