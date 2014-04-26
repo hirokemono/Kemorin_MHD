@@ -84,7 +84,7 @@
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call add_scalar_poisson_mat_filled(idx_rj_degree_zero,          &
      &      nidx_rj(1), nidx_rj(2),  sph_bc_U%r_ICB,                    &
-     &      fdm2_fix_fld_ctr1, fdm2_fix_dr_center,                      &
+     &      fdm2_fix_fld_ctr1, fdm2_fix_dr_ctr1,                        &
      &      coef_p, p_poisson_mat)
         call add_vector_poisson_mat_center(nidx_rj(1), nidx_rj(2),      &
      &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, coef_dvt, vt_evo_mat)

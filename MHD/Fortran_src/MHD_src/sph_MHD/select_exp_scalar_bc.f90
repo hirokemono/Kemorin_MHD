@@ -65,12 +65,12 @@
         call dsdr_sph_fixed_ctr_2(nidx_rj(2), sph_bc%r_ICB,             &
      &      fdm2_fix_fld_ctr1, is_fld, is_grad)
         call dsdr_sph_lm0_filled_ctr_2(idx_rj_degree_zero, nidx_rj(2),  &
-     &       sph_bc%r_ICB, fdm2_fix_dr_center, is_fld, is_grad)
+     &       sph_bc%r_ICB, fdm2_fix_dr_ctr1, is_fld, is_grad)
       else if(sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
         call dsdr_sph_fixed_ctr_2(nidx_rj(2), sph_bc%r_ICB,             &
      &      fdm2_fix_fld_ctr1, is_fld, is_grad)
         call dsdr_sph_lm0_fixed_ctr_2(idx_rj_degree_zero, nidx_rj(2),   &
-     &      sph_bc%r_ICB, fdm2_fix_fld_ctr1, sph_bc%ICB_fld,          &
+     &      sph_bc%r_ICB, fdm2_fix_fld_ctr1, sph_bc%ICB_fld,            &
      &      is_fld, is_grad)
       else if(sph_bc%iflag_icb .eq. iflag_fixed_flux) then
         call dsdr_sph_in_fix_flux_2(nidx_rj(2),                         &
@@ -127,7 +127,7 @@
      &     sph_bc%r_ICB, fdm2_fix_fld_ctr1, sph_bc%ICB_fld,             &
      &     coef_diffuse, is_fld, is_diffuse)
         call cal_sph_filled_center_diffuse2(nidx_rj(2),                 &
-     &      idx_rj_degree_zero, sph_bc%r_ICB, fdm2_fix_dr_center,       &
+     &      idx_rj_degree_zero, sph_bc%r_ICB, fdm2_fix_dr_ctr1,         &
      &      coef_diffuse, is_fld, is_diffuse)
       else if(sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
         call cal_sph_fixed_center_diffuse2(nidx_rj(2),                  &
@@ -173,7 +173,7 @@
      &      sph_bc%r_ICB, fdm2_fix_fld_ctr1, sph_bc%ICB_fld,            &
      &      is_flux, is_advect)
         call cal_sph_div_flux_4_fill_ctr(nidx_rj(2),                    &
-     &      idx_rj_degree_zero,  sph_bc%r_ICB, fdm2_fix_dr_center,      &
+     &      idx_rj_degree_zero,  sph_bc%r_ICB, fdm2_fix_dr_ctr1,        &
      &      is_flux, is_advect)
       else if(sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
         call cal_sph_div_flux_4_fix_ctr(nidx_rj(2),                     &
