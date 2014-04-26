@@ -35,9 +35,6 @@
 !!         Matrix to evaluate field at ICB with fixed radial derivative
 !!@n @param fdm2_fix_dr_CMB(-1:1,3)
 !!         Matrix to evaluate field at CMB with fixed radial derivative
-!!@n @param fdm2_fix_fld_center(-1:1,3)
-!!         Matrix to evaluate radial derivative
-!!         for center with fixed field
 !!@n @param fdm2_fix_dr_center(-1:1,3)
 !!         Matrix to evaluate field at center
 !!         with fixed radial derivative

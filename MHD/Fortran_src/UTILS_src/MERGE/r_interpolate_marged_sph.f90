@@ -185,9 +185,9 @@
       integer(kind = kint) :: inod_gl, inod_in, inod_out
 !
 !
-!$omp parallel private(nd)
+!!$omp parallel private(nd)
       do nd = 1, ntot_phys_rj
-!$omp do private(j,j_gl,kr,inod_in,inod_out,inod_gl)
+!!$omp do private(j,j_gl,kr,inod_in,inod_out,inod_gl)
         do j = 1, jmax_org
           j_gl = idx_gl_1d_j_org(j,1)
 !
@@ -203,9 +203,9 @@
             end do
           end if
         end do
-!$omp end do
+!!$omp end do
       end do
-!$omp end parallel
+!!$omp end parallel
 !
       end subroutine itp_rj_merged_phys_from_IO
 !
