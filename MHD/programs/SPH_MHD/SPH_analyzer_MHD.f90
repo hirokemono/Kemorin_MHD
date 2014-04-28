@@ -132,8 +132,6 @@
        call open_sph_vol_rms_file_mhd
        call end_eleps_time(4)
 !
-!       call calypso_MPI_barrier
-!       call calypso_MPI_abort(1,'aho')
       end subroutine SPH_initialize_MHD
 !
 ! ----------------------------------------------------------------------

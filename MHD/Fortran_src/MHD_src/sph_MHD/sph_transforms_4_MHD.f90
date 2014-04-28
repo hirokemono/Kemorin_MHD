@@ -39,6 +39,7 @@
       use calypso_mpi
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
+      use m_addresses_trans_sph_tmp
       use m_work_4_sph_trans
       use init_sph_trans
       use const_wz_coriolis_rtp
@@ -50,10 +51,12 @@
      &                     'set_addresses_trans_sph_MHD'
       call set_addresses_trans_sph_MHD
       call set_addresses_snapshot_trans
+      call set_addresses_temporal_trans
 !
       if(iflag_debug .ge. iflag_routine_msg) then
         call check_add_trans_sph_MHD
         call check_addresses_snapshot_trans
+        call check_addresses_temporal_trans
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_sph_trans'
