@@ -417,7 +417,7 @@
       do i = 1, bc_surf%num_bc
         if(icou .ge. 2) exit
         do j = 1, num_radial_grp_rj
-          if(bc_surf%bc_name(i) .eq. sf_grp_name) then
+          if(bc_surf%bc_name(i) .eq. name_radial_grp_rj(j)) then
             num = istack_radial_grp_rj(j) - istack_radial_grp_rj(j-1)
             if(num .ne. 1) go to 10
 !

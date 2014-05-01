@@ -150,8 +150,8 @@
 !
       integer(kind = kint), intent(in) :: kr_ICB, kr_CMB
       real(kind = kreal), intent(in) :: r_in, r_out
-      real(kind = kreal) :: temp_ICB, dTdr_ICB
-      real(kind = kreal) :: temp_CMB, dTdr_CMB
+      real(kind = kreal) :: temp_ICB, temp_CMB
+!      real(kind = kreal) :: dTdr_ICB, dTdr_CMB
 !
       real(kind = kreal) :: c1, c2
 !      real(kind = kreal) :: dTdr_diff_ICB, dTdr_diff_CMB

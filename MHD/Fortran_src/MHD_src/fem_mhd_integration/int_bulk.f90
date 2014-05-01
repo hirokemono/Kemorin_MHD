@@ -117,6 +117,8 @@
       call int_all_4_scalar (iele_fl_smp_stack, intg_point_t_evo,       &
      &    i_rms%i_t_diffuse, j_ave%i_t_diffuse, iphys%i_t_diffuse)
       call int_all_4_scalar (iele_fl_smp_stack, intg_point_t_evo,       &
+     &    i_rms%i_c_diffuse, j_ave%i_c_diffuse, iphys%i_c_diffuse)
+      call int_all_4_scalar (iele_fl_smp_stack, intg_point_t_evo,       &
      &    i_rms%i_h_flux_div, j_ave%i_h_flux_div, iphys%i_h_flux_div)
       call int_all_4_scalar (iele_fl_smp_stack, intg_point_t_evo,       &
      &    i_rms%i_ph_flux_div, j_ave%i_ph_flux_div,                     &

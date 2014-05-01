@@ -186,6 +186,7 @@
      &       .or. phys_nod_name(i) .eq. fhd_Reynolds_work               &
      &       .or. phys_nod_name(i) .eq. fhd_SGS_buo_flux                &
      &       .or. phys_nod_name(i) .eq. fhd_SGS_comp_buo_flux           &
+     &       .or. phys_nod_name(i) .eq. fhd_c_diffuse                   &
      &       .or. phys_nod_name(i) .eq. fhd_thermal_diffusion           &
      &       .or. phys_nod_name(i) .eq. fhd_vis_ene_diffuse             &
      &       .or. phys_nod_name(i) .eq. fhd_mag_ene_diffuse             &
@@ -487,6 +488,9 @@
           else if ( phys_nod_name(i) .eq. fhd_thermal_diffusion ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_t_diffuse, j_ave%i_t_diffuse)
+          else if ( phys_nod_name(i) .eq. fhd_c_diffuse) then
+            call set_rms_address(num_nod_component(i), i0, j0,          &
+     &          i_rms%i_c_diffuse, j_ave%i_c_diffuse)
 !
           else if ( phys_nod_name(i) .eq. fhd_SGS_m_flux ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
