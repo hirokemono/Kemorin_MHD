@@ -3,8 +3,6 @@
 !
 !        programmed by H.Matsui on June, 2009
 !
-!      subroutine set_vector_vol_average_labels
-!
       module m_volume_average_labels
 !
       use m_precision
@@ -101,144 +99,27 @@
      &                      :: e_hd_fil_div_a =    'div_filter_A'
 !
 !
-      character(len=kchara) :: e_hd_press_grad_v(3)
-!
-      character(len=kchara), parameter                                  &
-     &                      :: e_hd_mag_tension = 'mag_tension'
-      character(len=kchara) :: e_hd_mag_tension_v(3)
-!
-      character(len=kchara) :: e_hd_inertia_v(3)
-      character(len=kchara) :: e_hd_div_m_flux_v(3)
-!
-      character(len=kchara), parameter                                  &
-     &                      :: e_hd_div_maxwell = 'div_maxwell'
-      character(len=kchara) :: e_hd_div_maxwell_v(3)
-!
-      character(len=kchara), parameter                                  &
-     &                      :: e_hd_div_induct_t = fhd_div_induct_t
-      character(len=kchara), parameter :: e_hd_div_induct_v(3)          &
-     &            = (/'div_induct_x', 'div_induct_y', 'div_induct_z'/)
-!
-      character(len=kchara), parameter                                  &
-     &                      :: e_hd_mag_induct =   'mag_induct'
-      character(len=kchara) :: e_hd_mag_induct_v(3)
-!
-      character(len=kchara), parameter                                  &
-     &                      :: e_hd_mag_diffuse =   'mag_diffuse'
-      character(len=kchara) :: e_hd_mag_diffuse_v(3)
-!
-      character(len=kchara), parameter                                  &
-     &                      :: e_hd_vis_diffuse =   'vis_diffuse'
-      character(len=kchara) :: e_hd_vis_diffuse_v(3)
-!
-!
-      character(len=kchara), parameter :: e_hd_Lorentz =   'Lorentz'
-      character(len=kchara) :: e_hd_Lorentz_v(3)
-!
-      character(len=kchara), parameter :: e_hd_Coriolis =   'Coriolis'
-      character(len=kchara) :: e_hd_Coriolis_v(3)
-!
-      character(len=kchara) :: e_hd_buoyancy_v(3)
-      character(len=kchara) :: e_hd_comp_buo_v(3)
-      character(len=kchara) :: e_hd_filter_buo_v(3)
-!
-!
-      character(len=kchara) :: e_hd_ph_flux_v(3)
-      character(len=kchara) :: e_hd_h_flux_v(3)
-!
-      character(len=kchara) :: e_hd_c_flux_v(3)
-!
-      character(len=kchara), parameter :: e_hd_m_flux_st(6)             &
-     &            = (/'m_flux_xx', 'm_flux_xy', 'm_flux_xz',            &
-     &                'm_flux_yy', 'm_flux_yz', 'm_flux_zz'/)
-      character(len=kchara), parameter :: e_hd_maxwell_st(6)            &
-     &            = (/'maxwell_xx', 'maxwell_xy', 'maxwell_xz',         &
-     &                'maxwell_yy', 'maxwell_yz', 'maxwell_zz'/)
       character(len=kchara), parameter :: e_hd_induct_at(3)             &
      &            = (/'induct_t_xy', 'induct_t_xz', 'induct_t_yz'/)
 !
 !
-      character(len=kchara) :: e_hd_SGS_hf_v(3)
-      character(len=kchara) :: e_hd_SGS_cf_v(3)
-!
-      character(len=kchara), parameter :: e_hd_SGS_mf_st(6)             &
-     &    = (/'SGS_mom_flux_xx', 'SGS_mom_flux_xy', 'SGS_mom_flux_xz',  &
-     &        'SGS_mom_flux_yy', 'SGS_mom_flux_yz', 'SGS_mom_flux_zz'/)
-      character(len=kchara), parameter :: e_hd_SGS_mxwl_st(6)           &
-     &       = (/'SGS_maxwell_xx', 'SGS_maxwell_xy', 'SGS_maxwell_xz',  &
-     &           'SGS_maxwell_yy', 'SGS_maxwell_yz', 'SGS_maxwell_zz'/)
       character(len=kchara), parameter :: e_hd_SGS_idct_at(3)           &
      &            = (/'SGS_induct_t_xy', 'SGS_induct_t_xz',             &
      &                'SGS_induct_t_yz'/)
 !
 !
-      character(len=kchara), parameter :: e_hd_SGS_inertia              &
-     &                                   = 'SGS_inertia'
-      character(len=kchara) :: e_hd_SGS_inertia_v(3)
-      character(len=kchara) :: e_hd_SGS_Lorentz_v(3)
-!
       character(len=kchara), parameter :: e_hd_SGS_induct               &
      &                                   = 'SGS_induct'
-      character(len=kchara) :: e_hd_SGS_induct_v(3)
 !
       character(len=kchara), parameter :: e_hd_SGS_vp_induct            &
      &                                   = 'SGS_vp_induct'
-      character(len=kchara) :: e_hd_SGS_vp_induct_v(3)
-      character(len=kchara) :: e_hd_SGS_buoyancy_v(3)
-      character(len=kchara) :: e_hd_SGS_comp_buo_v(3)
-!
       character(len=kchara), parameter :: e_hd_ME_generate              &
      &                                   = 'ME_generate'
-!
-      character(len=kchara), parameter :: e_hd_temp_gen = 'temp_gen'
-!
-      character(len=kchara), parameter :: e_hd_SGS_m_ene_gen            &
-     &                                   = 'SGS_ME_gen'
 !
 ! ----------------------------------------------------------------------
 !
       contains
 !
-! ----------------------------------------------------------------------
-!
-      subroutine set_vector_vol_average_labels
-!
-!
-      call set_vector_label(e_hd_mag_tension, e_hd_press_grad_v)
-      call set_vector_label(e_hd_mag_tension, e_hd_mag_tension_v)
-      call set_vector_label(fhd_inertia,     e_hd_inertia_v)
-      call set_vector_label(fhd_div_m_flux, e_hd_div_m_flux_v)
-      call set_vector_label(e_hd_div_maxwell, e_hd_div_maxwell_v)
-!
-      call set_vector_label(e_hd_mag_induct, e_hd_mag_induct_v)
-!
-      call set_vector_label(e_hd_mag_diffuse, e_hd_mag_diffuse_v)
-      call set_vector_label(e_hd_vis_diffuse, e_hd_vis_diffuse_v)
-!
-      call set_vector_label(e_hd_Lorentz,   e_hd_Lorentz_v)
-      call set_vector_label(e_hd_Coriolis,  e_hd_Coriolis_v)
-      call set_vector_label(fhd_buoyancy,   e_hd_buoyancy_v)
-      call set_vector_label(fhd_comp_buo,   e_hd_comp_buo_v)
-      call set_vector_label(fhd_filter_buo, e_hd_filter_buo_v)
-!
-      call set_vector_label(fhd_ph_flux, e_hd_ph_flux_v)
-      call set_vector_label(fhd_h_flux,  e_hd_h_flux_v)
-!
-      call set_vector_label(fhd_c_flux,  e_hd_c_flux_v)
-!
-      call set_vector_label(fhd_SGS_h_flux,  e_hd_SGS_hf_v)
-      call set_vector_label(fhd_SGS_c_flux,  e_hd_SGS_cf_v)
-!
-      call set_vector_label(e_hd_SGS_inertia,   e_hd_SGS_inertia_v)
-      call set_vector_label(fhd_SGS_Lorentz,    e_hd_SGS_Lorentz_v)
-      call set_vector_label(e_hd_SGS_induct,    e_hd_SGS_induct_v)
-      call set_vector_label(e_hd_SGS_vp_induct, e_hd_SGS_vp_induct_v)
-      call set_vector_label(fhd_SGS_buoyancy,   e_hd_SGS_buoyancy_v)
-      call set_vector_label(fhd_SGS_comp_buo,   e_hd_SGS_comp_buo_v)
-!
-      end subroutine set_vector_vol_average_labels
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine set_vector_label(fid_label, label_v)

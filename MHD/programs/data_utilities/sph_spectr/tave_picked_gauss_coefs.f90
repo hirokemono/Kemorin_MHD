@@ -12,7 +12,7 @@
       implicit  none
 !
       real(kind = kreal), allocatable :: ave_gauss(:)
-      character(len=kchara) :: tave_pick_gauss_fname
+      character(len=kchara) :: tave_pick_gauss_head
       integer(kind = kint), parameter :: id_pick = 15
 !
       integer(kind = kint) :: istep_start, istep_end, istep_inc
@@ -20,14 +20,11 @@
       real(kind = kreal) :: acou, time
 !
 !
-      write(*,*) 'input picked gauss coefficients file name'
-      read(5,*) gauss_coefs_file_name
-      write(*,*) 'input time averaged file name'
-      read(5,*) tave_pick_gauss_fname
-      if(tave_pick_gauss_fname .eq. gauss_coefs_file_name) then
-        write(*,*) 'set different file header for averaged data'
-        stop
-      end if
+      write(*,*) 'input picked gauss coefficients file prefix'
+      read(5,*) gauss_coefs_file_head
+!
+      write(tave_pick_gauss_head,'(a6,a)')                              &
+        't_ave_', trim(gauss_coefs_file_head)
 !
       write(*,*) 'input start, end, increment steps'
       read(5,*) istep_start, istep_end, istep_inc
@@ -64,7 +61,7 @@
 !
       deallocate(ave_gauss)
 !
-      gauss_coefs_file_name = tave_pick_gauss_fname
+      gauss_coefs_file_head = tave_pick_gauss_head
       call write_gauss_coefs_4_monitor(izero, i_step, time)
 !
       write(*,*) '***** program finished *****'

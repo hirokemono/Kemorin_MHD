@@ -69,11 +69,11 @@
           end if
         end if
 !
-        if (time_sph .ge. end_time) exit
-!
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
      &       'step= ', istep,   ' averaging finished. Count=   ', icou
+        if (time_sph .ge. end_time) exit
       end do
+!
    99 continue
       write(*,*)
       call close_ene_spec_data
@@ -113,10 +113,9 @@
           end if
         end if
 !
-        if (time_sph .ge. end_time) exit
-!
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
      &       'step= ', istep,   ' deviation finished. Count=   ', icou
+        if (time_sph .ge. end_time) exit
       end do
    98 continue
       write(*,*)

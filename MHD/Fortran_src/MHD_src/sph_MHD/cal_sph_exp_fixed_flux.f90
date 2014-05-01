@@ -26,11 +26,11 @@
 !!     &          fdm2_fix_dr_CMB, flux_OUT, coef_d, is_fld, is_diffuse)
 !!
 !!      subroutine dsdr_sph_lm0_filled_ctr_2(idx_rj_degree_zero, jmax,  &
-!!     &          r_CTR1, fdm2_fix_dr_center, is_fld, is_grd)
+!!     &          r_CTR1, fdm2_fix_dr_ctr1, is_fld, is_grd)
 !!      subroutine cal_sph_div_flux_4_fill_ctr(jmax, j0, r_CTR1,        &
-!!     &          fdm2_fix_dr_center, is_fld, is_div)
+!!     &          fdm2_fix_dr_ctr1, is_fld, is_div)
 !!      subroutine cal_sph_filled_center_diffuse2(jmax, j0, r_CTR1,     &
-!!     &          fdm2_fix_dr_center, coef_d, is_fld, is_diffuse)
+!!     &          fdm2_fix_dr_ctr1, coef_d, is_fld, is_diffuse)
 !!@endverbatim
 !!
 !!@n @param idx_rj_degree_zero    Local address for degree 0
@@ -47,7 +47,7 @@
 !!         Matrix to evaluate field at ICB with fixed radial derivative
 !!@n @param fdm2_fix_dr_CMB(-1:1,3)
 !!         Matrix to evaluate field at CMB with fixed radial derivative
-!!@n @param fdm2_fix_dr_center(-1:1,3)
+!!@n @param fdm2_fix_dr_ctr1(-1:1,3)
 !!         Matrix to evaluate field at center
 !!         with fixed radial derivative
 !!
@@ -282,13 +282,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine dsdr_sph_lm0_filled_ctr_2(idx_rj_degree_zero, jmax,    &
-     &          r_CTR1, fdm2_fix_dr_center, is_fld, is_grd)
+     &          r_CTR1, fdm2_fix_dr_ctr1, is_fld, is_grd)
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: is_fld, is_grd
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
-      real(kind = kreal), intent(in) :: fdm2_fix_dr_center(-1:1,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_dr_ctr1(-1:1,3)
 !
       integer(kind = kint) :: inod, i_p1
       real(kind = kreal) :: d1sdr
@@ -299,8 +299,8 @@
       inod = idx_rj_degree_zero
       i_p1 = inod + jmax
 !
-      d1sdr =    fdm2_fix_dr_center( 0,2) * d_rj(inod,is_fld)           &
-     &         + fdm2_fix_dr_center( 1,2) * d_rj(i_p1,is_fld)
+      d1sdr =    fdm2_fix_dr_ctr1( 0,2) * d_rj(inod,is_fld)             &
+     &         + fdm2_fix_dr_ctr1( 1,2) * d_rj(i_p1,is_fld)
 !
       d_rj(inod,is_grd) = d1sdr * r_CTR1(0)**2
 !
@@ -309,12 +309,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_div_flux_4_fill_ctr(jmax, j0, r_CTR1,          &
-     &          fdm2_fix_dr_center, is_fld, is_div)
+     &          fdm2_fix_dr_ctr1, is_fld, is_div)
 !
       integer(kind = kint), intent(in) :: jmax, j0
       integer(kind = kint), intent(in) :: is_fld, is_div
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
-      real(kind = kreal), intent(in) :: fdm2_fix_dr_center(-1:1,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_dr_ctr1(-1:1,3)
 !
       real(kind = kreal) :: d1s_dr1
       integer(kind = kint) :: i_p1
@@ -323,8 +323,8 @@
       if(j0 .eq. 0) return
 !
       i_p1 = j0 + jmax
-      d1s_dr1 =  fdm2_fix_dr_center( 0,2) * d_rj(j0,is_fld)             &
-     &         + fdm2_fix_dr_center( 1,2) * d_rj(i_p1,is_fld)
+      d1s_dr1 =  fdm2_fix_dr_ctr1( 0,2) * d_rj(j0,is_fld)               &
+     &         + fdm2_fix_dr_ctr1( 1,2) * d_rj(i_p1,is_fld)
 !
       d_rj(j0,is_div) =  (d1s_dr1 - d_rj(j0,is_fld+1) )                 &
      &                   * max(g_sph_rj(j0,3),half) * r_CTR1(2)
@@ -334,13 +334,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_filled_center_diffuse2(jmax, j0, r_CTR1,       &
-     &          fdm2_fix_dr_center, coef_d, is_fld, is_diffuse)
+     &          fdm2_fix_dr_ctr1, coef_d, is_fld, is_diffuse)
 !
       integer(kind = kint), intent(in) :: jmax, j0
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
-      real(kind = kreal), intent(in) :: fdm2_fix_dr_center(-1:1,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_dr_ctr1(-1:1,3)
 !
       real(kind = kreal) :: d2t_dr2
       integer(kind = kint) :: i_p1
@@ -349,8 +349,8 @@
       if(j0 .eq. 0) return
       i_p1 = j0 + jmax
 !
-      d2t_dr2 =  fdm2_fix_dr_center( 0,3) * d_rj(j0,   is_fld)          &
-     &           + fdm2_fix_dr_center( 1,3) * d_rj(i_p1,is_fld)
+      d2t_dr2 =  fdm2_fix_dr_ctr1( 0,3) * d_rj(j0,   is_fld)            &
+     &           + fdm2_fix_dr_ctr1( 1,3) * d_rj(i_p1,is_fld)
       d_rj(j0,is_diffuse) = coef_d * (d2t_dr2                           &
      &                 - g_sph_rj(j0,3)*r_CTR1(2) * d_rj(j0,is_fld))
 !

@@ -84,14 +84,14 @@
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call add_scalar_poisson_mat_filled(idx_rj_degree_zero,          &
      &      nidx_rj(1), nidx_rj(2),  sph_bc_U%r_ICB,                    &
-     &      fdm2_fix_fld_center, fdm2_fix_dr_center,                    &
+     &      fdm2_fix_fld_ctr1, fdm2_fix_dr_ctr1,                        &
      &      coef_p, p_poisson_mat)
         call add_vector_poisson_mat_center(nidx_rj(1), nidx_rj(2),      &
-     &      sph_bc_U%r_ICB, fdm2_fix_fld_center, coef_dvt, vt_evo_mat)
+     &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, coef_dvt, vt_evo_mat)
         call add_vector_poisson_mat_center(nidx_rj(1), nidx_rj(2),      &
-     &      sph_bc_U%r_ICB, fdm2_fix_fld_center, coef_dvt, wt_evo_mat)
+     &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, coef_dvt, wt_evo_mat)
         call add_vector_poisson_mat_center(nidx_rj(1), nidx_rj(2),      &
-     &      sph_bc_U%r_ICB, fdm2_fix_fld_center, one, vs_poisson_mat)
+     &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, one, vs_poisson_mat)
       else
         call add_fix_flux_icb_poisson_mat(nidx_rj(1), nidx_rj(2),       &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_dr_ICB,   &
@@ -224,9 +224,9 @@
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call add_vector_poisson_mat_center(nidx_rj(1), nidx_rj(2),      &
-     &      sph_bc_B%r_ICB, fdm2_fix_fld_center, coef_dbt, bs_evo_mat)
+     &      sph_bc_B%r_ICB, fdm2_fix_fld_ctr1, coef_dbt, bs_evo_mat)
         call add_vector_poisson_mat_center(nidx_rj(1), nidx_rj(2),      &
-     &      sph_bc_B%r_ICB, fdm2_fix_fld_center, coef_dbt, bt_evo_mat)
+     &      sph_bc_B%r_ICB, fdm2_fix_fld_ctr1, coef_dbt, bt_evo_mat)
       else if(sph_bc_B%iflag_icb .eq. iflag_radial_magne) then
         call add_fix_flux_icb_poisson_mat(nidx_rj(1), nidx_rj(2),       &
      &      sph_bc_B%kr_in, sph_bc_B%r_ICB, sph_bc_B%fdm2_fix_dr_ICB,   &

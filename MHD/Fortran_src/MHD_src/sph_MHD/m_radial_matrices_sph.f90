@@ -29,53 +29,93 @@
 !
       implicit none
 !
+!>     Band matrix for time evolution of poloidal velocity
       real(kind = kreal), allocatable :: vp_evo_mat(:,:,:)
+!>     LU decompositted matrix for time evolution of poloidal velocity
       real(kind = kreal), allocatable :: vp_evo_lu(:,:,:)
+!>     Source of detarminant for time evolution of poloidal velocity
       real(kind = kreal), allocatable :: vp_evo_det(:,:)
+!>     Pivot table for time evolution of poloidal velocity
       integer(kind = kint), allocatable :: i_vp_pivot(:,:)
 !
+!>     Band matrix for time evolution of toroidal velocity
       real(kind = kreal), allocatable :: vt_evo_mat(:,:,:)
+!>     LU decompositted matrix for time evolution of toroidal velocity
       real(kind = kreal), allocatable :: vt_evo_lu(:,:,:)
+!>     Source of detarminant for time evolution of toroidal velocity
       real(kind = kreal), allocatable :: vt_evo_det(:,:)
+!>     Pivot table for time evolution of toroidal velocity
       integer(kind = kint), allocatable :: i_vt_pivot(:,:)
 !
+!>     Band matrix for time evolution of toroidal vorticity
       real(kind = kreal), allocatable :: wt_evo_mat(:,:,:)
+!>     LU decompositted matrix for time evolution of toroidal vorticity
       real(kind = kreal), allocatable :: wt_evo_lu(:,:,:)
+!>     Source of detarminant for time evolution of toroidal vorticity
       real(kind = kreal), allocatable :: wt_evo_det(:,:)
+!>     Pivot table for time evolution of toroidal vorticity
       integer(kind = kint), allocatable :: i_wt_pivot(:,:)
 !
 !
+!>     Band matrix for Poisson equation of pressure
       real(kind = kreal), allocatable :: p_poisson_mat(:,:,:)
+!>     LU decompositted matrix for Poisson equation of pressure
       real(kind = kreal), allocatable :: p_poisson_lu(:,:,:)
+!>     Source of detarminant for Poisson equation of pressure
       real(kind = kreal), allocatable :: p_poisson_det(:,:)
+!>     Pivot table for Poisson equation of pressure
       integer(kind = kint), allocatable :: i_p_pivot(:,:)
 !
+!>     Band matrix for Poisson equation of toroidal vorticity
       real(kind = kreal), allocatable :: vs_poisson_mat(:,:,:)
+!>     LU decompositted matrix for Poisson equation of toroidal vorticity
       real(kind = kreal), allocatable :: vs_poisson_lu(:,:,:)
+!>     Source of detarminant for Poisson equation of toroidal vorticity
       real(kind = kreal), allocatable :: vs_poisson_det(:,:)
+!>     Pivot table for Poisson equation of toroidal vorticity
       integer(kind = kint), allocatable :: i_vs_pivot(:,:)
 !
 !
+!>     Band matrix for time evolution of poloidal magnetic field
       real(kind = kreal), allocatable :: bs_evo_mat(:,:,:)
+!>     LU decompositted matrix for time evolution
+!!     of poloidal magnetic field
       real(kind = kreal), allocatable :: bs_evo_lu(:,:,:)
+!>     Source of detarminant for time evolution
+!!     of poloidal magnetic field
       real(kind = kreal), allocatable :: bs_evo_det(:,:)
+!>     Pivot table for time evolution of poloidal vorticity
       integer(kind = kint), allocatable :: i_bs_pivot(:,:)
 !
+!>     Band matrix for time evolution of toroidal magnetic field
       real(kind = kreal), allocatable :: bt_evo_mat(:,:,:)
+!>     LU decompositted matrix for time evolution
+!!     of toroidal magnetic field
       real(kind = kreal), allocatable :: bt_evo_lu(:,:,:)
+!>     Source of detarminant for time evolution
+!!     of toroidal magnetic field
       real(kind = kreal), allocatable :: bt_evo_det(:,:)
+!>     Pivot table for time evolution of toroidal vorticity
       integer(kind = kint), allocatable :: i_bt_pivot(:,:)
 !
 !
+!>     Band matrix for time evolution of temperature
       real(kind = kreal), allocatable :: temp_evo_mat(:,:,:)
+!>     LU decompositted matrix for time evolution of temperature
       real(kind = kreal), allocatable :: temp_evo_lu(:,:,:)
+!>     Source of detarminant for time evolution of temperature
       real(kind = kreal), allocatable :: temp_evo_det(:,:)
+!>     Pivot table for time evolution of temperature
       integer(kind = kint), allocatable :: i_temp_pivot(:,:)
 !
 !
+!>     Band matrix for time evolution of composition
       real(kind = kreal), allocatable :: composit_evo_mat(:,:,:)
+!>     LU decompositted matrix for time evolution of composition
       real(kind = kreal), allocatable :: composit_evo_lu(:,:,:)
+!>     Source of detarminant for time evolution of composition
       real(kind = kreal), allocatable :: composit_evo_det(:,:)
+!>     Pivot table for time evolution of composition
       integer(kind = kint), allocatable :: i_composit_pivot(:,:)
 !
 ! -----------------------------------------------------------------------
@@ -302,11 +342,11 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      write(50+my_rank,'(a)') 'evalution matrix for toroidal velocity'
+      write(50+my_rank,'(a)') 'evolution matrix for toroidal velocity'
       call check_radial_3band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
      &    idx_gl_1d_rj_j, radius_1d_rj_r, vt_evo_mat)
 !
-      write(50+my_rank,'(a)') 'evalution matrix for toroidal vorticity'
+      write(50+my_rank,'(a)') 'evolution matrix for toroidal vorticity'
       call check_radial_3band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
      &    idx_gl_1d_rj_j, radius_1d_rj_r, wt_evo_mat)
 !
@@ -314,7 +354,7 @@
       call check_radial_3band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
      &    idx_gl_1d_rj_j, radius_1d_rj_r, p_poisson_mat)
 !
-      write(50+my_rank,'(a)') 'evalution matrix for poloidal velocity'
+      write(50+my_rank,'(a)') 'evolution matrix for poloidal velocity'
       call check_radial_5band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
      &    idx_gl_1d_rj_j, radius_1d_rj_r, vp_evo_mat)
 !
@@ -330,11 +370,11 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      write(50+my_rank,'(a)') 'evalution matrix for poloidal magne'
+      write(50+my_rank,'(a)') 'evolution matrix for poloidal magne'
       call check_radial_3band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
      &    idx_gl_1d_rj_j, radius_1d_rj_r, bs_evo_mat)
 !
-      write(50+my_rank,'(a)') 'evalution matrix for toroidal magne'
+      write(50+my_rank,'(a)') 'evolution matrix for toroidal magne'
       call check_radial_3band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
      &    idx_gl_1d_rj_j, radius_1d_rj_r, bt_evo_mat)
 !
@@ -350,7 +390,7 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      write(50+my_rank,'(a)') 'evalution matrix for temperature'
+      write(50+my_rank,'(a)') 'evolution matrix for temperature'
       call check_radial_3band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
      &    idx_gl_1d_rj_j, radius_1d_rj_r, temp_evo_mat)
 !
@@ -366,7 +406,7 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      write(50+my_rank,'(a)') 'evalution matrix for dummy scalar'
+      write(50+my_rank,'(a)') 'evolution matrix for composition'
       call check_radial_3band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
      &    idx_gl_1d_rj_j, radius_1d_rj_r, composit_evo_mat)
 !

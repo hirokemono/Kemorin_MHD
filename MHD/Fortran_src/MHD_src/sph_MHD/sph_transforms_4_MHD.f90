@@ -12,10 +12,13 @@
 !!      subroutine sph_back_trans_4_MHD
 !!      subroutine sph_forward_trans_4_MHD
 !!
-!!      subroutine sph_transform_4_licv
-!!
 !!      subroutine sph_back_trans_snapshot_MHD
 !!      subroutine sph_forward_trans_snapshot_MHD
+!!
+!!      subroutine sph_back_trans_tmp_snap_MHD
+!!      subroutine sph_forward_trans_tmp_snap_MHD
+!!
+!!      subroutine sph_transform_4_licv
 !!@endverbatim
 !!
       module sph_transforms_4_MHD
@@ -39,6 +42,7 @@
       use calypso_mpi
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
+      use m_addresses_trans_sph_tmp
       use m_work_4_sph_trans
       use init_sph_trans
       use const_wz_coriolis_rtp
@@ -50,10 +54,12 @@
      &                     'set_addresses_trans_sph_MHD'
       call set_addresses_trans_sph_MHD
       call set_addresses_snapshot_trans
+      call set_addresses_temporal_trans
 !
       if(iflag_debug .ge. iflag_routine_msg) then
         call check_add_trans_sph_MHD
         call check_addresses_snapshot_trans
+        call check_addresses_temporal_trans
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_sph_trans'
@@ -124,20 +130,25 @@
 !
       subroutine sph_back_trans_snapshot_MHD
 !
+      use m_addresses_trans_sph_snap
       use sph_trans_scalar
       use sph_trans_vector
       use copy_snap_4_sph_trans
 !
 !
 !   transform for vectors
-      call copy_snap_vec_spec_to_trans
-      call sph_b_trans_vector(nvector_snap_rj_2_rtp)
-      call copy_snap_vec_fld_from_trans
+      if(nvector_snap_rj_2_rtp .gt. 0) then
+        call copy_snap_vec_spec_to_trans
+        call sph_b_trans_vector(nvector_snap_rj_2_rtp)
+        call copy_snap_vec_fld_from_trans
+      end if
 !
 !   transform for scalars
-      call copy_snap_scl_spec_to_trans
-      call sph_b_trans_scalar(nscalar_snap_rj_2_rtp)
-      call copy_snap_scl_fld_from_trans
+      if(nscalar_snap_rj_2_rtp .gt. 0) then
+        call copy_snap_scl_spec_to_trans
+        call sph_b_trans_scalar(nscalar_snap_rj_2_rtp)
+        call copy_snap_scl_fld_from_trans
+      end if
 !
       end subroutine sph_back_trans_snapshot_MHD
 !
@@ -145,6 +156,7 @@
 !
       subroutine sph_forward_trans_snapshot_MHD
 !
+      use m_addresses_trans_sph_snap
       use sph_trans_scalar
       use sph_trans_vector
       use copy_snap_4_sph_trans
@@ -165,6 +177,59 @@
       end if
 !
       end subroutine sph_forward_trans_snapshot_MHD
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine sph_back_trans_tmp_snap_MHD
+!
+      use m_addresses_trans_sph_tmp
+      use sph_trans_scalar
+      use sph_trans_vector
+      use copy_temporal_4_sph_trans
+!
+!
+!   transform for vectors
+      if(nvector_tmp_rj_2_rtp .gt. 0) then
+        call copy_tmp_vec_spec_to_trans
+        call sph_b_trans_vector(nvector_tmp_rj_2_rtp)
+        call copy_tmp_vec_fld_from_trans
+      end if
+!
+!   transform for scalars
+!      if(nscalar_tmp_rj_2_rtp .gt. 0) then
+!        call copy_tmp_scl_spec_to_trans
+!        call sph_b_trans_scalar(nscalar_tmp_rj_2_rtp)
+!        call copy_tmp_scl_fld_from_trans
+!      end if
+!
+      end subroutine sph_back_trans_tmp_snap_MHD
+!
+!-----------------------------------------------------------------------
+!
+      subroutine sph_forward_trans_tmp_snap_MHD
+!
+      use m_addresses_trans_sph_tmp
+      use sph_trans_scalar
+      use sph_trans_vector
+      use copy_temporal_4_sph_trans
+!
+!
+!   transform for vectors
+!      if(nvector_tmp_rtp_2_rj .gt. 0) then
+!        call copy_tmp_vec_fld_to_trans
+!        call sph_f_trans_vector(nvector_tmp_rtp_2_rj)
+!        call copy_tmp_vec_spec_from_trans
+!      end if
+!
+!   transform for scalars
+      if(nscalar_tmp_rtp_2_rj .gt. 0) then
+        call copy_tmp_scl_fld_to_trans
+        call sph_f_trans_scalar(nscalar_tmp_rtp_2_rj)
+        call copy_tmp_scl_spec_from_trans
+      end if
+!
+      end subroutine sph_forward_trans_tmp_snap_MHD
 !
 !-----------------------------------------------------------------------
 !

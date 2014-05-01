@@ -33,13 +33,13 @@
 !!     &          fdm2_fix_fld_CMB, fix_CMB, is_fld, is_div)
 !!
 !!      subroutine dsdr_sph_fixed_ctr_2(jmax, r_CTR1,                   &
-!!     &          fdm2_fix_fld_center, is_fld, is_grd)
+!!     &          fdm2_fix_fld_ctr1, is_fld, is_grd)
 !!      subroutine dsdr_sph_lm0_fixed_ctr_2(idx_rj_degree_zero, jmax,   &
-!!     &          r_CTR1, fdm2_fix_fld_center, fix_CTR, is_fld, is_grd)
+!!     &          r_CTR1, fdm2_fix_fld_ctr1, fix_CTR, is_fld, is_grd)
 !!      subroutine cal_sph_div_flux_4_fix_ctr(jmax, r_CTR1, fix_CTR,    &
-!!     &          fdm2_fix_fld_center, is_fld, is_div)
+!!     &          fdm2_fix_fld_ctr1, is_fld, is_div)
 !!      subroutine cal_sph_fixed_center_diffuse2(jmax, r_CTR1,          &
-!!     &          fdm2_fix_fld_center, fix_CTR, coef_d,                 &
+!!     &          fdm2_fix_fld_ctr1, fix_CTR, coef_d,                   &
 !!     &          is_fld, is_diffuse)
 !!@endverbatim
 !!
@@ -54,7 +54,7 @@
 !!         Matrix to evaluate radial derivative at ICB with fixed field
 !!@n @param fdm2_fix_fld_CMB(0:2,3)
 !!         Matrix to evaluate radial derivative at CMB with fixed field
-!!@n @param fdm2_fix_fld_center(-1:1,3)
+!!@n @param fdm2_fix_fld_ctr1(-1:1,3)
 !!         Matrix to evaluate radial derivative
 !!         for center with fixed field
 !!
@@ -412,12 +412,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine dsdr_sph_fixed_ctr_2(jmax, r_CTR1,                     &
-     &          fdm2_fix_fld_center, is_fld, is_grd)
+     &          fdm2_fix_fld_ctr1, is_fld, is_grd)
 !
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: is_fld, is_grd
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_center(-1:1,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_ctr1(-1:1,3)
 !
       integer(kind = kint) :: inod, i_p1
       real(kind = kreal) :: d1sdr
@@ -427,8 +427,8 @@
       do inod = 1, jmax
         i_p1 = inod + jmax
 !
-        d1sdr =  fdm2_fix_fld_center( 0,2) * d_rj(inod,is_fld)          &
-     &         + fdm2_fix_fld_center( 1,2) * d_rj(i_p1,is_fld)
+        d1sdr =  fdm2_fix_fld_ctr1( 0,2) * d_rj(inod,is_fld)            &
+     &         + fdm2_fix_fld_ctr1( 1,2) * d_rj(i_p1,is_fld)
 !
         d_rj(inod,is_grd  ) = d1sdr * g_sph_rj(inod,13) * r_CTR1(0)**2
         d_rj(inod,is_grd+1) = d_rj(inod,is_fld)
@@ -441,14 +441,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine dsdr_sph_lm0_fixed_ctr_2(idx_rj_degree_zero, jmax,     &
-     &          r_CTR1, fdm2_fix_fld_center, fix_CTR, is_fld, is_grd)
+     &          r_CTR1, fdm2_fix_fld_ctr1, fix_CTR, is_fld, is_grd)
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: is_fld, is_grd
       real(kind = kreal), intent(in) :: fix_CTR(jmax)
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_center(-1:1,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_ctr1(-1:1,3)
 !
       integer(kind = kint) :: inod, i_p1
       real(kind = kreal) :: d1sdr
@@ -459,9 +459,9 @@
       inod = idx_rj_degree_zero
       i_p1 = inod + jmax
 !
-      d1sdr =  fdm2_fix_fld_center(-1,2) * fix_CTR(inod)                &
-     &         + fdm2_fix_fld_center( 0,2) * d_rj(inod,is_fld)          &
-     &         + fdm2_fix_fld_center( 1,2) * d_rj(i_p1,is_fld)
+      d1sdr =  fdm2_fix_fld_ctr1(-1,2) * fix_CTR(inod)                  &
+     &         + fdm2_fix_fld_ctr1( 0,2) * d_rj(inod,is_fld)            &
+     &         + fdm2_fix_fld_ctr1( 1,2) * d_rj(i_p1,is_fld)
 !
       d_rj(inod,is_grd) = d1sdr * r_CTR1(0)**2
 !
@@ -470,13 +470,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_div_flux_4_fix_ctr(jmax, r_CTR1, fix_CTR,      &
-     &          fdm2_fix_fld_center, is_fld, is_div)
+     &          fdm2_fix_fld_ctr1, is_fld, is_div)
 !
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: is_fld, is_div
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
       real(kind = kreal), intent(in) :: fix_CTR(jmax)
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_center(-1:1,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_ctr1(-1:1,3)
 !
       real(kind = kreal) :: d1s_dr1
       integer(kind = kint) :: i_p1, j
@@ -487,9 +487,9 @@
       do j = 1, jmax
         i_p1 = j + jmax
 !
-        d1s_dr1 =  fdm2_fix_fld_center(-1,2) * fix_CTR(j)               &
-     &           + fdm2_fix_fld_center( 0,2) * d_rj(j,is_fld)           &
-     &           + fdm2_fix_fld_center( 1,2) * d_rj(i_p1,is_fld)
+        d1s_dr1 =  fdm2_fix_fld_ctr1(-1,2) * fix_CTR(j)                 &
+     &           + fdm2_fix_fld_ctr1( 0,2) * d_rj(j,is_fld)             &
+     &           + fdm2_fix_fld_ctr1( 1,2) * d_rj(i_p1,is_fld)
 !
         d_rj(j,is_div) =  (d1s_dr1 - d_rj(j,is_fld+1) )                 &
      &                   * max(g_sph_rj(j,3),half) * r_CTR1(2)
@@ -501,14 +501,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_fixed_center_diffuse2(jmax, r_CTR1,            &
-     &          fdm2_fix_fld_center, fix_CTR, coef_d,                   &
+     &          fdm2_fix_fld_ctr1, fix_CTR, coef_d,                     &
      &          is_fld, is_diffuse)
 !
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
       integer(kind = kint), intent(in) :: jmax
       real(kind = kreal), intent(in) :: fix_CTR(jmax)
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_center(-1:1,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_fld_ctr1(-1:1,3)
       real(kind = kreal), intent(in) :: coef_d
 !
       real(kind = kreal) :: d1t_dr1, d2t_dr2
@@ -520,12 +520,12 @@
         i_p1 = j +    jmax
         i_p2 = i_p1 + jmax
 !
-        d1t_dr1 =  fdm2_fix_fld_center(-1,2) * fix_CTR(j)               &
-     &           + fdm2_fix_fld_center( 0,2) * d_rj(i_p1,is_fld)        &
-     &           + fdm2_fix_fld_center( 1,2) * d_rj(i_p2,is_fld)
-        d2t_dr2 =  fdm2_fix_fld_center(-1,3) * fix_CTR(j)               &
-     &           + fdm2_fix_fld_center( 0,3) * d_rj(i_p1,is_fld)        &
-     &           + fdm2_fix_fld_center( 1,3) * d_rj(i_p2,is_fld)
+        d1t_dr1 =  fdm2_fix_fld_ctr1(-1,2) * fix_CTR(j)                 &
+     &           + fdm2_fix_fld_ctr1( 0,2) * d_rj(i_p1,is_fld)          &
+     &           + fdm2_fix_fld_ctr1( 1,2) * d_rj(i_p2,is_fld)
+        d2t_dr2 =  fdm2_fix_fld_ctr1(-1,3) * fix_CTR(j)                 &
+     &           + fdm2_fix_fld_ctr1( 0,3) * d_rj(i_p1,is_fld)          &
+     &           + fdm2_fix_fld_ctr1( 1,3) * d_rj(i_p2,is_fld)
 !
         d_rj(j,is_diffuse)                                              &
      &         = coef_d * (d2t_dr2 + two*r_CTR1(1)*d1t_dr1              &

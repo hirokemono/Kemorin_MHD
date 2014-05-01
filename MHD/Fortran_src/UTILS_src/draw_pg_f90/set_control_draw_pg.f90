@@ -32,8 +32,9 @@
       use m_field_file_format
       use m_psf_results
       use set_components_flags
+      use skip_comment_f
 !
-      integer(kind= kint) :: iint, i, j
+      integer(kind= kint) :: i, j
 !
 !
       if(i_time_init .gt. 0) then
@@ -74,43 +75,26 @@
       end if
 !
 !
-      if     (contour_type_ctl.eq.'both'                                &
-     &   .or. contour_type_ctl.eq.'Both'                                &
-     &   .or. contour_type_ctl.eq.'BOTH'                                &
-     &   .or. contour_type_ctl.eq.'line_and_fill'                       &
-     &   .or. contour_type_ctl.eq.'Line_and_Fill'                       &
-     &   .or. contour_type_ctl.eq.'LINE_and_FILL'                       &
-     &   .or. contour_type_ctl.eq.'LINE_AND_FILL') then
+      if     (cmp_no_case(contour_type_ctl, 'Both') .gt.          0     &
+     &   .or. cmp_no_case(contour_type_ctl, 'Line_and_Fill') .gt. 0     &
+     &   ) then
         idisp_mode = 3
-      else if(contour_type_ctl.eq.'fill'                                &
-     &   .or. contour_type_ctl.eq.'Fill'                                &
-     &   .or. contour_type_ctl.eq.'FILL'                                &
-     &   .or. contour_type_ctl.eq.'filled'                              &
-     &   .or. contour_type_ctl.eq.'Filled'                              &
-     &   .or. contour_type_ctl.eq.'FILLED') then
+      else if(cmp_no_case(contour_type_ctl, 'Fill') .gt.   0            &
+     &   .or. cmp_no_case(contour_type_ctl, 'Filled') .gt. 0) then
         idisp_mode = 2
       else
         idisp_mode = 1
       end if
 !
 !
-      if     (color_mode_ctl.eq.'rainbow'                               &
-     &   .or. color_mode_ctl.eq.'Rainbow'                               &
-     &   .or. color_mode_ctl.eq.'RAINBOW'                               &
-     &   .or. color_mode_ctl.eq.'color'                                 &
-     &   .or. color_mode_ctl.eq.'Color'                                 &
-     &   .or. color_mode_ctl.eq.'COLOR') then
+      if     (cmp_no_case(contour_type_ctl, 'Rainbow') .gt. 0           &
+     &   .or. cmp_no_case(contour_type_ctl, 'Color') .gt.   0) then
         icolor_mode = 1
-      else if(color_mode_ctl.eq.'yellow_green'                          &
-     &   .or. color_mode_ctl.eq.'Yellow_Green'                          &
-     &   .or. color_mode_ctl.eq.'yellow_green') then
+      else if(cmp_no_case(contour_type_ctl, 'Yellow_Green') .gt. 0      &
+     &     ) then
         icolor_mode = -1
-      else if(color_mode_ctl.eq.'grayscale'                             &
-     &   .or. color_mode_ctl.eq.'Grayscale'                             &
-     &   .or. color_mode_ctl.eq.'GRAYSCALE'                             &
-     &   .or. color_mode_ctl.eq.'gray'                                  &
-     &   .or. color_mode_ctl.eq.'Gray'                                  &
-     &   .or. color_mode_ctl.eq.'GRAY') then
+      else if(cmp_no_case(contour_type_ctl, 'Grayscale') .gt. 0         &
+     &   .or. cmp_no_case(contour_type_ctl, 'Gray') .gt.      0) then
         icolor_mode = 0
       else
         icolor_mode = 1

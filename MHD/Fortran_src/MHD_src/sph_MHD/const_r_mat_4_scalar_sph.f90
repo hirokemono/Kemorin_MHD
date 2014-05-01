@@ -104,10 +104,10 @@
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center) then
         call add_scalar_poisson_mat_filled                              &
      &     (idx_rj_degree_zero, nri, jmax, sph_bc%r_ICB,                &
-     &      fdm2_fix_fld_center, fdm2_fix_dr_center, coef, evo_mat3)
+     &      fdm2_fix_fld_ctr1, fdm2_fix_dr_ctr1, coef, evo_mat3)
       else if(sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
         call add_scalar_poisson_mat_center(nri, jmax,                   &
-     &      sph_bc%r_ICB, fdm2_fix_fld_center, coef, evo_mat3)
+     &      sph_bc%r_ICB, fdm2_fix_fld_ctr1, coef, evo_mat3)
       else if (sph_bc%iflag_icb .eq. iflag_fixed_flux) then
         call add_fix_flux_icb_poisson_mat(nri, jmax, sph_bc%kr_in,      &
      &      sph_bc%r_ICB, sph_bc%fdm2_fix_dr_ICB, coef, evo_mat3)

@@ -207,10 +207,13 @@
 !     &    ithree, ipol%i_magne)
 !      deallocate(ipick_degree)
 
-!      call take_zonal_mean_rj_field(ithree, ipol%i_velo)
-      if (my_rank.eq.0) write(*,*) 'delete zonam mean magnetic'
-      call delete_zonal_mean_rj_field(ithree, ipol%i_velo)
-      call delete_zonal_mean_rj_field(ithree, ipol%i_vort)
+      if (my_rank.eq.0) write(*,*) 'delete zonam mean velocity'
+      call take_zonal_mean_rj_field(ithree, ipol%i_velo)
+      call take_zonal_mean_rj_field(ithree, ipol%i_vort)
+      if (my_rank.eq.0) write(*,*) 'delete zonam mean toroidal'
+      call delete_zonal_mean_rj_field(ione, ipol%i_velo)
+      call delete_zonal_mean_rj_field(ione, idpdr%i_velo)
+      call delete_zonal_mean_rj_field(ione, itor%i_vort)
 !
       end subroutine set_special_rj_fields
 !

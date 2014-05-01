@@ -10,6 +10,8 @@
 !!@verbatim
 !!      subroutine set_ctl_params_pick_sph
 !!      subroutine set_ctl_params_pick_gauss
+!!
+!!      subroutine set_ctl_params_no_heat_Nu
 !!@endverbatim
 !!
       module set_control_4_pickup_sph
@@ -168,6 +170,43 @@
       if(num_pick_gauss_m .gt. 0) call deallocate_pick_gauss_m_ctl
 !
       end subroutine set_ctl_params_pick_gauss
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_ctl_params_no_heat_Nu
+!
+      use m_ctl_data_4_pickup_sph
+      use m_sph_spectr_data
+      use m_phys_labels
+      use m_no_heat_Nusselt_num
+!
+      integer(kind = kint) :: i
+!
+!    Turn On Nusselt number if temperature gradient is there
+      iflag_no_source_Nu = 0
+      do i = 1, num_phys_rj
+        if(phys_name_rj(i) .eq. fhd_grad_temp) then
+          iflag_no_source_Nu = 1
+          exit
+        end if
+      end do
+!
+      if(i_Nusselt_file_head .gt. 0) then
+        iflag_no_source_Nu = 1
+        Nusselt_file_head = Nusselt_file_prefix
+      else
+        iflag_no_source_Nu = 0
+      end if
+!
+!    Turn Off Nusselt number if heat source is there
+      do i = 1, num_phys_rj
+        if(phys_name_rj(i) .eq. fhd_heat_source) then
+          iflag_no_source_Nu = 0
+          exit
+        end if
+      end do
+!
+      end subroutine set_ctl_params_no_heat_Nu
 !
 ! -----------------------------------------------------------------------
 !
