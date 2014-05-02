@@ -240,11 +240,11 @@
 !
 ! ----  Take zonal mean
 !
-!      if (my_rank.eq.0) write(*,*) 'zonal_mean_all_sph_spectr'
-!      call zonal_mean_all_sph_spectr
+      if (my_rank.eq.0) write(*,*) 'zonal_mean_all_sph_spectr'
+      call zonal_mean_all_sph_spectr
 !
-!      if (my_rank.eq.0) write(*,*) 'zonal_mean_all_rtp_field'
-!      call zonal_mean_all_rtp_field
+      if (my_rank.eq.0) write(*,*) 'zonal_mean_all_rtp_field'
+      call zonal_mean_all_rtp_field
 !
       end subroutine lead_special_fields_4_sph_mhd
 !

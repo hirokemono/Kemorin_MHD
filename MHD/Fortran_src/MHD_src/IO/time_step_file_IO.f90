@@ -394,6 +394,7 @@
 !
       subroutine vector_label_4_step(phys_name, vector_name)
 !
+      use m_volume_average_labels
       use write_field_labels
 !
       character(len=kchara), intent(in) :: phys_name, vector_name
@@ -412,6 +413,7 @@
 !
       subroutine scalar_label_4_step(phys_name, scalar_name)
 !
+      use m_volume_average_labels
       use write_field_labels
 !
       character(len=kchara), intent(in) :: phys_name, scalar_name
@@ -428,6 +430,7 @@
 !
       subroutine sym_tensor_label_4_step(phys_name, tensor_name)
 !
+      use m_volume_average_labels
       use write_field_labels
 !
       character(len=kchara), intent(in) :: phys_name, tensor_name
