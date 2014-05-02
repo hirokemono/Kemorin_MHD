@@ -60,6 +60,10 @@
 !!@n    igrid_euqidistance = 0 :: equi-distance
       integer (kind=kint) :: iflag_radial_grid = igrid_non_euqidist
 !
+!>      local spectr index for @f$ l = m = 0 @f$ at center
+!!@n    if center does not exist in subdomain, inod_rj_center = 0.
+      integer (kind=kint) :: inod_rj_center =   0
+!
 !>      local spectr index for @f$ l = m = 0 @f$
 !!@n    If @f$ l = m = 0 @f$ mode does not exist in subdomain, 
 !!@n    idx_rj_degree_zero = 0.

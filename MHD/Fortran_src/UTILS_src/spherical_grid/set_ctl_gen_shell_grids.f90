@@ -88,6 +88,9 @@
       else
         iflag_shell_mode = iflag_MESH_same
       end if
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'iflag_shell_mode', iflag_shell_mode
+      end if
 !
 !
       nidx_global_rtp(1) = 2

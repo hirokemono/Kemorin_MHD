@@ -262,6 +262,9 @@
 !
 !>  Structure of grid and spectr data for spherical spectr method
       type sph_grids
+!>        local spectr index for @f$ l = m = 0 @f$ at center
+!!@n      if center does not exist in subdomain, inod_rj_center = 0.
+        integer (kind=kint) :: inod_rj_center =   0
 !>        integer flag for FEM mesh type
 !!@n      iflag_MESH_same:     same grid point as Gauss-Legendre points
 !!@n      iflag_MESH_w_pole:   Gauss-Legendre points with poles
