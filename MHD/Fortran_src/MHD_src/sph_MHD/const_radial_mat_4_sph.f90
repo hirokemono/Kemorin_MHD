@@ -17,9 +17,11 @@
       use m_constants
       use m_machine_parameter
       use calypso_mpi
-      use m_radial_matrices_sph
 !
       implicit none
+!
+      private :: const_radial_matrices_sph
+      private :: const_radial_mat_sph_w_center
 !
 ! -----------------------------------------------------------------------
 !
@@ -29,7 +31,22 @@
 !
       subroutine s_const_radial_mat_4_sph
 !
+      use m_spheric_parameter
+!
+!
+      call const_radial_matrices_sph
+!
+      if(inod_rj_center .eq. 0) return
+      call const_radial_mat_sph_w_center
+!
+      end subroutine s_const_radial_mat_4_sph
+!
+! -----------------------------------------------------------------------
+!
+      subroutine const_radial_matrices_sph
+!
       use m_control_parameter
+      use m_radial_matrices_sph
       use const_r_mat_4_scalar_sph
       use const_r_mat_4_vector_sph
 !
@@ -47,8 +64,6 @@
      &          write(*,*) 'const_radial_mat_4_temp_sph'
         call allocate_temp_mat_sph
         call const_radial_mat_4_temp_sph
-        if(i_debug .eq. iflag_full_msg)                                 &
-     &     call check_temp_matrices_sph(my_rank)
       end if
 !
       if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
@@ -56,8 +71,6 @@
      &          write(*,*) 'const_radial_mat_4_magne_sph'
         call allocate_magne_mat_sph
         call const_radial_mat_4_magne_sph
-        if(i_debug .eq. iflag_full_msg)                                 &
-     &     call check_magne_matrices_sph(my_rank)
       end if
 !
       if(iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
@@ -65,11 +78,39 @@
      &          write(*,*) 'const_radial_mat_4_composit_sph'
         call allocate_composit_mat_sph
         call const_radial_mat_4_composit_sph
-        if(i_debug .eq. iflag_full_msg)                                 &
-     &       call check_composit_matrix_sph(my_rank)
       end if
 !
-      end subroutine s_const_radial_mat_4_sph
+      end subroutine const_radial_matrices_sph
+!
+! -----------------------------------------------------------------------
+!
+      subroutine const_radial_mat_sph_w_center
+!
+      use m_control_parameter
+      use m_radial_mat_sph_w_center
+      use const_r_mat_w_center_sph
+!
+!
+      if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+        call allocate_press00_mat_sph
+!
+        if(i_debug .gt. 0) write(*,*) 'const_radial_mat_press00_sph'
+        call const_radial_mat_press00_sph
+      end if
+!
+      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
+          if(i_debug .gt. 0) write(*,*) 'const_radial_mat_temp00_sph'
+        call allocate_temp00_mat_sph
+        call const_radial_mat_temp00_sph
+      end if
+!
+      if(iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+          if(i_debug .gt. 0) write(*,*) 'const_radial_mat_comp00_sph'
+        call allocate_comp00_mat_sph
+        call const_radial_mat_comp00_sph
+      end if
+!
+      end subroutine const_radial_mat_sph_w_center
 !
 ! -----------------------------------------------------------------------
 !

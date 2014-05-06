@@ -38,9 +38,6 @@
 !!     &          r_CTR1, fdm2_fix_fld_ctr1, fix_CTR, is_fld, is_grd)
 !!      subroutine cal_sph_div_flux_4_fix_ctr(jmax, r_CTR1, fix_CTR,    &
 !!     &          fdm2_fix_fld_ctr1, is_fld, is_div)
-!!      subroutine cal_sph_fixed_center_diffuse2(jmax, r_CTR1,          &
-!!     &          fdm2_fix_fld_ctr1, fix_CTR, coef_d,                   &
-!!     &          is_fld, is_diffuse)
 !!@endverbatim
 !!
 !!@n @param idx_rj_degree_zero    Local address for degree 0
@@ -497,44 +494,6 @@
 !$omp end parallel do
 !
       end subroutine cal_sph_div_flux_4_fix_ctr
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_sph_fixed_center_diffuse2(jmax, r_CTR1,            &
-     &          fdm2_fix_fld_ctr1, fix_CTR, coef_d,                     &
-     &          is_fld, is_diffuse)
-!
-      integer(kind = kint), intent(in) :: is_fld, is_diffuse
-      integer(kind = kint), intent(in) :: jmax
-      real(kind = kreal), intent(in) :: fix_CTR(jmax)
-      real(kind = kreal), intent(in) :: r_CTR1(0:2)
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_ctr1(-1:1,3)
-      real(kind = kreal), intent(in) :: coef_d
-!
-      real(kind = kreal) :: d1t_dr1, d2t_dr2
-      integer(kind = kint) :: i_p1, i_p2, j
-!
-!
-!$omp parallel do private(i_p1,i_p2,d1t_dr1,d2t_dr2)
-      do j = 1, jmax
-        i_p1 = j +    jmax
-        i_p2 = i_p1 + jmax
-!
-        d1t_dr1 =  fdm2_fix_fld_ctr1(-1,2) * fix_CTR(j)                 &
-     &           + fdm2_fix_fld_ctr1( 0,2) * d_rj(i_p1,is_fld)          &
-     &           + fdm2_fix_fld_ctr1( 1,2) * d_rj(i_p2,is_fld)
-        d2t_dr2 =  fdm2_fix_fld_ctr1(-1,3) * fix_CTR(j)                 &
-     &           + fdm2_fix_fld_ctr1( 0,3) * d_rj(i_p1,is_fld)          &
-     &           + fdm2_fix_fld_ctr1( 1,3) * d_rj(i_p2,is_fld)
-!
-        d_rj(j,is_diffuse)                                              &
-     &         = coef_d * (d2t_dr2 + two*r_CTR1(1)*d1t_dr1              &
-     &          - g_sph_rj(j,3)*r_CTR1(2) * d_rj(j,is_fld) )
-!
-      end do
-!$omp end parallel do
-!
-      end subroutine cal_sph_fixed_center_diffuse2
 !
 ! -----------------------------------------------------------------------
 !

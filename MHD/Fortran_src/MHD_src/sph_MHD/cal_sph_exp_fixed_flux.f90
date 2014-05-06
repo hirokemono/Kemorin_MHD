@@ -24,13 +24,6 @@
 !!     &          flux_CMB, is_fld, is_div)
 !!      subroutine cal_sph_out_fix_flux_diffuse2(jmax, kr_out, r_CMB,   &
 !!     &          fdm2_fix_dr_CMB, flux_OUT, coef_d, is_fld, is_diffuse)
-!!
-!!      subroutine dsdr_sph_lm0_filled_ctr_2(idx_rj_degree_zero, jmax,  &
-!!     &          r_CTR1, fdm2_fix_dr_ctr1, is_fld, is_grd)
-!!      subroutine cal_sph_div_flux_4_fill_ctr(jmax, j0, r_CTR1,        &
-!!     &          fdm2_fix_dr_ctr1, is_fld, is_div)
-!!      subroutine cal_sph_filled_center_diffuse2(jmax, j0, r_CTR1,     &
-!!     &          fdm2_fix_dr_ctr1, coef_d, is_fld, is_diffuse)
 !!@endverbatim
 !!
 !!@n @param idx_rj_degree_zero    Local address for degree 0
@@ -47,9 +40,6 @@
 !!         Matrix to evaluate field at ICB with fixed radial derivative
 !!@n @param fdm2_fix_dr_CMB(-1:1,3)
 !!         Matrix to evaluate field at CMB with fixed radial derivative
-!!@n @param fdm2_fix_dr_ctr1(-1:1,3)
-!!         Matrix to evaluate field at center
-!!         with fixed radial derivative
 !!
 !!@n @param coef_d        Coefficient for diffusion term
 !!
@@ -116,6 +106,8 @@
       if(idx_rj_degree_zero .eq. 0) return
       inod = idx_rj_degree_zero + (kr_in-1) * jmax
       d_rj(inod,is_grd  ) = flux_ICB(idx_rj_degree_zero)*r_ICB(0)**2
+      d_rj(inod,is_grd+1) = zero
+      d_rj(inod,is_grd+2) = zero
 !
       end subroutine dsdr_sph_lm0_in_fix_flux_2
 !
@@ -218,6 +210,8 @@
       if(idx_rj_degree_zero .eq. 0) return
       inod = idx_rj_degree_zero + (kr_out-1) * jmax
       d_rj(inod,is_grd  ) = flux_CMB(idx_rj_degree_zero) * r_CMB(0)**2
+      d_rj(inod,is_grd+1) = zero
+      d_rj(inod,is_grd+2) = zero
 !
       end subroutine dsdr_sph_lm0_out_fix_flux_2
 !
@@ -333,7 +327,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_filled_center_diffuse2(jmax, j0, r_CTR1,       &
+      subroutine cal_sph_filled_center1_diffuse2(jmax, j0, r_CTR1,      &
      &          fdm2_fix_dr_ctr1, coef_d, is_fld, is_diffuse)
 !
       integer(kind = kint), intent(in) :: jmax, j0
@@ -354,7 +348,7 @@
       d_rj(j0,is_diffuse) = coef_d * (d2t_dr2                           &
      &                 - g_sph_rj(j0,3)*r_CTR1(2) * d_rj(j0,is_fld))
 !
-      end subroutine cal_sph_filled_center_diffuse2
+      end subroutine cal_sph_filled_center1_diffuse2
 !
 ! -----------------------------------------------------------------------
 !

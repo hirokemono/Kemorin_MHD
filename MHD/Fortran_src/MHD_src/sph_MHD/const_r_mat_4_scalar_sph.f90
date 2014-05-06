@@ -41,6 +41,9 @@
      &    sph_bc_T, coef_imp_t, coef_temp, coef_d_temp, temp_evo_mat,   &
      &    temp_evo_lu, temp_evo_det, i_temp_pivot)
 !
+      if(i_debug .eq. iflag_full_msg)                                   &
+     &     call check_temp_matrices_sph(my_rank)
+!
       end subroutine const_radial_mat_4_temp_sph
 !
 ! -----------------------------------------------------------------------
@@ -57,6 +60,9 @@
      &    sph_bc_C, coef_imp_c, coef_light, coef_d_light,               &
      &    composit_evo_mat, composit_evo_lu, composit_evo_det,          &
      &    i_composit_pivot)
+!
+      if(i_debug .eq. iflag_full_msg)                                   &
+     &       call check_composit_matrix_sph(my_rank)
 !
       end subroutine const_radial_mat_4_composit_sph
 !
@@ -101,12 +107,9 @@
       call add_scalar_poisson_mat_sph                                   &
      &   (nri, jmax, sph_bc%kr_in, sph_bc%kr_out, coef, evo_mat3)
 !
-      if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center) then
-        call add_scalar_poisson_mat_filled                              &
-     &     (idx_rj_degree_zero, nri, jmax, sph_bc%r_ICB,                &
-     &      fdm2_fix_fld_ctr1, fdm2_fix_dr_ctr1, coef, evo_mat3)
-      else if(sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
-        call add_scalar_poisson_mat_center(nri, jmax,                   &
+      if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center               &
+     &   .or. sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
+        call add_scalar_poisson_mat_ctr1(nri, jmax,                     &
      &      sph_bc%r_ICB, fdm2_fix_fld_ctr1, coef, evo_mat3)
       else if (sph_bc%iflag_icb .eq. iflag_fixed_flux) then
         call add_fix_flux_icb_poisson_mat(nri, jmax, sph_bc%kr_in,      &

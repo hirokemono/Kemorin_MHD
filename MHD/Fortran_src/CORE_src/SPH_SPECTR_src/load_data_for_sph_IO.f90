@@ -62,6 +62,7 @@
      &    idx_rj_degree_one,  ist_rtm_order_zero,                       &
      &    ist_rtm_order_1s, ist_rtm_order_1c)
 !
+      call set_sph_rj_center_flag(nnod_rj, nidx_rj, inod_rj_center)
 !
       end subroutine input_sph_trans_grids
 !

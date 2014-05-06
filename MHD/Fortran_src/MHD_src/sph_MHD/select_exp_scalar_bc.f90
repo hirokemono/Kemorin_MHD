@@ -116,6 +116,7 @@
       use m_coef_fdm_to_center
       use cal_sph_exp_fixed_scalar
       use cal_sph_exp_fixed_flux
+      use cal_sph_exp_center
 !
       type(sph_boundary_type), intent(in) :: sph_bc
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
@@ -123,14 +124,14 @@
 !
 !
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center) then
-        call cal_sph_fixed_center_diffuse2(nidx_rj(2),                  &
+        call cal_sph_fixed_center1_diffuse2(nidx_rj(2),                 &
      &     sph_bc%r_ICB, fdm2_fix_fld_ctr1, sph_bc%ICB_fld,             &
      &     coef_diffuse, is_fld, is_diffuse)
-        call cal_sph_filled_center_diffuse2(nidx_rj(2),                 &
+        call cal_sph_filled_center1_diffuse2(nidx_rj(2),                &
      &      idx_rj_degree_zero, sph_bc%r_ICB, fdm2_fix_dr_ctr1,         &
      &      coef_diffuse, is_fld, is_diffuse)
       else if(sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
-        call cal_sph_fixed_center_diffuse2(nidx_rj(2),                  &
+        call cal_sph_fixed_center1_diffuse2(nidx_rj(2),                 &
      &     sph_bc%r_ICB, fdm2_fix_fld_ctr1, sph_bc%ICB_fld,             &
      &     coef_diffuse, is_fld, is_diffuse)
       else if(sph_bc%iflag_icb .eq. iflag_fixed_flux) then
