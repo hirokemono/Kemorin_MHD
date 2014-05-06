@@ -4,7 +4,7 @@
 !     written by H. Matsui on Dec., 2008
 !
 !
-!      subroutine s_const_bc_infty_surf_type(group)
+!      subroutine s_const_bc_infty_surf_type(iflag_surf_infty, group)
 !      subroutine empty_infty_surf_type(group)
 !        type(mesh_groups), intent(inout) :: group
 !
@@ -20,20 +20,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_const_bc_infty_surf_type(group)
+      subroutine s_const_bc_infty_surf_type(iflag_surf_infty, group)
 !
       use t_mesh_data
       use const_bc_infinity_surf
 !
+      integer(kind=kint), intent(in) :: iflag_surf_infty
       type(mesh_groups), intent(inout) :: group
 !
 !
-      call count_num_bc_infinity(group%surf_grp%num_grp,                &
-     &    group%surf_grp%grp_name, group%infty_grp%ngrp_sf)
+      call count_num_bc_infinity(iflag_surf_infty,                      &
+     &    group%surf_grp%num_grp, group%surf_grp%grp_name,              &
+     &    group%infty_grp%ngrp_sf)
 !
       call alloc_scalar_surf_BC(group%infty_grp)
 !
-      call set_bc_infty_id(group%surf_grp%num_grp,                      &
+      call set_bc_infty_id(iflag_surf_infty, group%surf_grp%num_grp,    &
      &    group%surf_grp%grp_name, group%infty_grp%ngrp_sf,             &
      &    group%infty_grp%igrp_sf)
 !

@@ -34,6 +34,7 @@
       use m_jacobians
       use m_work_4_dynamic_model
       use m_work_layer_correlate
+      use m_boundary_condition_IDs
 !
       use m_check_subroutines
 !
@@ -160,7 +161,7 @@
 !
 !     ---------------------
 !
-      call const_bc_infinity_surf_grp
+      call const_bc_infinity_surf_grp(iflag_surf_infty)
 !
 !     --------------------- 
 !
