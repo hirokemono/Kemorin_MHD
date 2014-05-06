@@ -55,7 +55,6 @@
         iflag_shell_mode = iflag_MESH_same
       end if
 !
-!
       nidx_global_rtp(1) = 2
       nidx_global_rtp(2) = 1
       nidx_global_rtp(3) = 4

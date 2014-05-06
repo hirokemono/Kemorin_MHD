@@ -141,6 +141,8 @@
         l_gl = idx_gl_1d_rtp_t(l_rtp)
         cos_theta_1d_rtp(l_rtp) = cos(g_colat_rtm(l_gl))
         sin_theta_1d_rtp(l_rtp) = sin(g_colat_rtm(l_gl))
+        cot_theta_1d_rtp(l_rtp) = cos_theta_1d_rtp(l_rtp)               &
+     &                           / sin_theta_1d_rtp(l_rtp)
       end do
 !
       end subroutine set_sin_theta_rtp

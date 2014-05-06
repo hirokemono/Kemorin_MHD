@@ -3,6 +3,9 @@
 !
 !        programmed by H.Matsui on June, 2009
 !
+!      subroutine set_vector_label(fid_label, label_v)
+!      subroutine set_sym_tensor_label(fid_label, label_st)
+!
       module m_volume_average_labels
 !
       use m_precision
@@ -53,23 +56,6 @@
      &            = (/'Jx_cd', 'Jy_cd', 'Jz_cd'/)
 !
 !
-      character(len=kchara), parameter :: e_hd_rms_e = 'RMS_E'
-      character(len=kchara), parameter :: e_hd_evec(3)                  &
-     &            = (/'Ex', 'Ey', 'Ez'/)
-!
-!
-      character(len=kchara), parameter                                  &
-     &                      :: e_hd_rms_pflux = 'RMS_poynting_f'
-      character(len=kchara), parameter :: e_hd_pflux_v(3)               &
-     &            = (/'poynting_x', 'poynting_y', 'poynting_z'/)
-!
-!
-      character(len=kchara), parameter :: e_hd_temp      = 'Temp'
-      character(len=kchara), parameter :: e_hd_part_temp = 'per_temp'
-      character(len=kchara), parameter :: e_hd_press = 'Press'
-      character(len=kchara), parameter :: e_hd_mag_p = 'mag_potential'
-!
-!
       character(len=kchara), parameter                                  &
      &                      :: e_hd_fil_k_ene = 'filter_K_ene'
       character(len=kchara), parameter                                  &
@@ -113,8 +99,6 @@
 !
       character(len=kchara), parameter :: e_hd_SGS_vp_induct            &
      &                                   = 'SGS_vp_induct'
-      character(len=kchara), parameter :: e_hd_ME_generate              &
-     &                                   = 'ME_generate'
 !
 ! ----------------------------------------------------------------------
 !
