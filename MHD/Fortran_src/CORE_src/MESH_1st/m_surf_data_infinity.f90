@@ -6,7 +6,7 @@
 !
 !      subroutine allocate_infty_surf_ctl
 !      subroutine deallocate_infty_surf_ctl
-!      subroutine const_bc_infinity_surf_grp
+!      subroutine const_bc_infinity_surf_grp(iflag_surf_infty)
 !
       module m_surf_data_infinity
 !
@@ -50,17 +50,20 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine const_bc_infinity_surf_grp
+      subroutine const_bc_infinity_surf_grp(iflag_surf_infty)
 !
       use m_surface_group
       use const_bc_infinity_surf
 !
+      integer(kind=kint), intent(in) :: iflag_surf_infty
 !
-      call count_num_bc_infinity(num_surf, surf_name, ngrp_sf_infty)
+!
+      call count_num_bc_infinity(iflag_surf_infty,                      &
+     &    num_surf, surf_name, ngrp_sf_infty)
 !
       call allocate_surf_infinity
 !
-      call set_bc_infty_id(num_surf, surf_name,                         &
+      call set_bc_infty_id(iflag_surf_infty, num_surf, surf_name,       &
      &    ngrp_sf_infty, id_grp_sf_infty)
 !
       end subroutine const_bc_infinity_surf_grp

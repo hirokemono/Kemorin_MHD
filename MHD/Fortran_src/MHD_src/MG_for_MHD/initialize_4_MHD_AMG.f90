@@ -29,6 +29,7 @@
       use t_edge_data
       use t_surface_data
       use m_geometry_parameter
+      use m_boundary_condition_IDs
       use set_layers_4_MHD_AMG
       use const_mesh_types_info
       use allocate_MHD_AMG_array
@@ -124,7 +125,8 @@
         if(my_rank .lt. MG_vector(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            's_const_bc_infty_surf_type', i_level
-          call s_const_bc_infty_surf_type(MG_mesh(i_level)%group)
+          call s_const_bc_infty_surf_type                               &
+     &       (iflag_surf_infty, MG_mesh(i_level)%group)
         else
           call empty_infty_surf_type(MG_mesh(i_level)%group)
         end if

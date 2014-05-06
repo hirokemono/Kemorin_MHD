@@ -6,10 +6,10 @@
 !       subroutine allocate_surf_infinity
 !       subroutine deallocate_surf_infinity
 !
-!      subroutine count_num_bc_infinity(num_surf, surf_name,            &
-!     &          ngrp_sf_infty)
-!      subroutine set_bc_infty_id(num_surf, surf_name,                  &
-!     &          ngrp_sf_infty, id_grp_sf_infty)
+!      subroutine count_num_bc_infinity(iflag_surf_infty,               &
+!     &          num_surf, surf_name, ngrp_sf_infty)
+!      subroutine set_bc_infty_id(iflag_surf_infty, num_surf,           &
+!     &          surf_name, ngrp_sf_infty, id_grp_sf_infty)
 !
       module const_bc_infinity_surf
 !
@@ -54,12 +54,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine count_num_bc_infinity(num_surf, surf_name,             &
-     &          ngrp_sf_infty)
+      subroutine count_num_bc_infinity(iflag_surf_infty,                &
+     &          num_surf, surf_name, ngrp_sf_infty)
 !
-      use m_surf_data_list
-      use m_boundary_condition_IDs
-!
+      integer(kind=kint), intent(in) :: iflag_surf_infty
       integer(kind=kint), intent(in) :: num_surf
       character(len=kchara), intent(in) :: surf_name(num_surf)
 !
@@ -85,12 +83,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_bc_infty_id(num_surf, surf_name,                   &
-     &          ngrp_sf_infty, id_grp_sf_infty)
+      subroutine set_bc_infty_id(iflag_surf_infty, num_surf,            &
+     &          surf_name, ngrp_sf_infty, id_grp_sf_infty)
 !
-      use m_surf_data_list
-      use m_boundary_condition_IDs
-!
+      integer(kind=kint), intent(in) :: iflag_surf_infty
       integer(kind=kint), intent(in) :: num_surf
       character(len=kchara), intent(in) :: surf_name(num_surf)
       integer (kind=kint), intent(in) :: ngrp_sf_infty
