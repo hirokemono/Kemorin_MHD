@@ -23,7 +23,7 @@
 !!     &          is_fld, is_diffuse)
 !!      subroutine cal_sph_filled_center_diffuse2                       &
 !!     &          (inod_rj_center, idx_rj_degree_zero,                  &
-!!     &          fdm2_fix_dr_ctr1, coef_d, is_fld, is_diffuse)
+!!     &          fdm2_fix_dr_center, coef_d, is_fld, is_diffuse)
 !!      subroutine cal_sph_fixed_center_diffuse2                        &
 !!     &          (inod_rj_center, idx_rj_degree_zero, is_diffuse)
 !!@endverbatim
@@ -240,12 +240,12 @@
 !
       subroutine cal_sph_filled_center_diffuse2                         &
      &          (inod_rj_center, idx_rj_degree_zero,                    &
-     &          fdm2_fix_dr_ctr1, coef_d, is_fld, is_diffuse)
+     &          fdm2_fix_dr_center, coef_d, is_fld, is_diffuse)
 !
       integer(kind = kint), intent(in) :: inod_rj_center
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
-      real(kind = kreal), intent(in) :: fdm2_fix_dr_ctr1(-1:1,3)
+      real(kind = kreal), intent(in) :: fdm2_fix_dr_center(-1:1,3)
       real(kind = kreal), intent(in) :: coef_d
 !
       real(kind = kreal) :: d2s_dr2
@@ -255,8 +255,8 @@
       if(inod_rj_center .eq. 0) return
       inod = inod_rj_center
       i_p1 = idx_rj_degree_zero
-      d2s_dr2 =  fdm2_fix_dr_ctr1( 0,3) * d_rj(inod,is_fld  )           &
-     &         + fdm2_fix_dr_ctr1( 1,3) * d_rj(i_p1,is_fld  )
+      d2s_dr2 =  fdm2_fix_dr_center( 0,3) * d_rj(inod,is_fld  )         &
+     &         + fdm2_fix_dr_center( 1,3) * d_rj(i_p1,is_fld  )
 !
       d_rj(inod,is_diffuse) = coef_d * d2s_dr2
 !
