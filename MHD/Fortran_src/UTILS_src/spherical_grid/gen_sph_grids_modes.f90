@@ -185,7 +185,6 @@
       use set_local_index_table_sph
 !
       integer(kind = kint), intent(in) :: ip_rank
-      integer(kind = kint) :: iflag_center_rj
 !
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
