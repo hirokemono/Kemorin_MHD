@@ -13,6 +13,7 @@
       module const_r_mat_4_vector_sph
 !
       use m_precision
+      use calypso_mpi
 !
       use m_constants
       use m_machine_parameter
@@ -49,16 +50,15 @@
       real(kind = kreal) :: coef_dvt, coef_p
 !
 !
+      coef_p = - coef_press
       if(coef_d_velo .eq. zero) then
         coef_dvt = one
-        coef_p = - coef_press
         call set_unit_mat_4_poisson(nidx_rj(1), nidx_rj(2),             &
      &      sph_bc_U%kr_in, sph_bc_U%kr_out, vt_evo_mat)
         call set_unit_mat_4_poisson(nidx_rj(1), nidx_rj(2),             &
      &      sph_bc_U%kr_in, sph_bc_U%kr_out, wt_evo_mat)
       else
         coef_dvt = coef_imp_v * coef_d_velo * dt
-        coef_p = - coef_press
         call set_unit_mat_4_time_evo(nidx_rj(1), nidx_rj(2),            &
      &      vt_evo_mat)
         call set_unit_mat_4_time_evo(nidx_rj(1), nidx_rj(2),            &
@@ -82,10 +82,8 @@
 !   Boundary condition for ICB
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
-        call add_scalar_poisson_mat_filled(idx_rj_degree_zero,          &
-     &      nidx_rj(1), nidx_rj(2),  sph_bc_U%r_ICB,                    &
-     &      fdm2_fix_fld_ctr1, fdm2_fix_dr_ctr1,                        &
-     &      coef_p, p_poisson_mat)
+        call add_scalar_poisson_mat_ctr1(nidx_rj(1), nidx_rj(2),        &
+     &       sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, coef_p, p_poisson_mat)
         call add_vector_poisson_mat_center(nidx_rj(1), nidx_rj(2),      &
      &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, coef_dvt, vt_evo_mat)
         call add_vector_poisson_mat_center(nidx_rj(1), nidx_rj(2),      &
@@ -269,6 +267,9 @@
         end do
       end do
 !$omp end parallel do
+!
+        if(i_debug .eq. iflag_full_msg)                                 &
+     &     call check_magne_matrices_sph(my_rank)
 !
       end subroutine const_radial_mat_4_magne_sph
 !
