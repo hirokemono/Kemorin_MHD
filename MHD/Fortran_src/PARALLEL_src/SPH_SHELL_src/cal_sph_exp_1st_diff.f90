@@ -91,7 +91,7 @@
         dnod_dr(inod,1) = two * dnod_dr(inod,1)
         dnod_dr(inod,2) = zero
         dnod_dr(inod,3) = zero
-     end do
+      end do
 !$omp end parallel do
 !
       end subroutine normalize_sph_average_grad
