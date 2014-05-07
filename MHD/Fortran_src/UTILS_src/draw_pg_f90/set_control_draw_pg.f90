@@ -225,27 +225,23 @@
 !
       subroutine set_control_draw_map
 !
+      use m_spheric_constants
       use m_ctl_data_plot_pg
+      use skip_comment_f
 !
 !
       if(i_sph_grid_type .gt. 0) then
-        if      (sph_grid_type_ctl .eq. 'no_pole'                       &
-     &      .or. sph_grid_type_ctl .eq. 'No_pole'                       &
-     &      .or. sph_grid_type_ctl .eq. 'NO_POLE') then
-          id_shell_mode_pg = 1
-        else if (sph_grid_type_ctl .eq. 'with_pole'                     &
-     &      .or. sph_grid_type_ctl .eq. 'With_pole'                     &
-     &      .or. sph_grid_type_ctl .eq. 'WITH_POLE') then
-          id_shell_mode_pg = 2
-        else if (sph_grid_type_ctl .eq. 'with_center'                   &
-     &      .or. sph_grid_type_ctl .eq. 'With_center'                   &
-     &      .or. sph_grid_type_ctl .eq. 'WITH_CENTER') then
-          id_shell_mode_pg = 3
+        if     (cmp_no_case(sph_grid_type_ctl, 'No_pole'   ).gt.0) then
+          id_shell_mode_pg = iflag_MESH_same
+        else if(cmp_no_case(sph_grid_type_ctl, 'With_pole' ).gt.0) then
+          id_shell_mode_pg = iflag_MESH_w_pole
+        else if(cmp_no_case(sph_grid_type_ctl,'With_center').gt.0) then
+          id_shell_mode_pg = iflag_MESH_w_center
         else
-          id_shell_mode_pg = 1
+          id_shell_mode_pg = iflag_MESH_same
         end if
       else
-          id_shell_mode_pg = 1
+          id_shell_mode_pg = iflag_MESH_same
       end if
 !
 !

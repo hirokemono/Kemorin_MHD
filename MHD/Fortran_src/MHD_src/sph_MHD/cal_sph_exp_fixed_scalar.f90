@@ -132,6 +132,8 @@
      &          + fdm2_fix_fld_ICB( 2,2) * d_rj(i_p2,is_fld)
 !
         d_rj(inod,is_grd  ) = d1t_dr1 * r_ICB(0)**2
+        d_rj(inod,is_grd+1) = zero
+        d_rj(inod,is_grd+2) = zero
 !
       end subroutine dsdr_sph_lm0_fix_scalar_in_2
 !
@@ -263,6 +265,8 @@
      &          + fdm2_fix_fld_CMB(0,2) * fix_CMB(idx_rj_degree_zero)
 !
       d_rj(inod,is_grd  ) = d1t_dr1 * r_CMB(0)**2
+      d_rj(inod,is_grd+1) = zero
+      d_rj(inod,is_grd+2) = zero
 !
       end subroutine dsdr_sph_lm0_fix_scalar_out_2
 !

@@ -78,7 +78,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_2nd_to_center_fixed_fdm'
       call cal_2nd_to_center_fixed_fdm(radius_1d_rj_r(1))
-      call cal_2nd_to_center_fix_df_fdm(radius_1d_rj_r(1))
+      call cal_2nd_center_fix_df_fdm(radius_1d_rj_r(1))
+      call cal_2nd_center_fixed_fdm(radius_1d_rj_r(1))
 !
 !      Set reference temperature and adjust boundary conditions
 !
@@ -89,7 +90,7 @@
 !
 !      Check data
 !
-      if(i_debug .gt. 1) then
+      if(iflag_debug .gt. 1) then
         write(*,*) 'sph_bc_U%iflag_icb', sph_bc_U%kr_in,                &
      &          sph_bc_U%iflag_icb
         write(*,*) 'sph_bc_U%iflag_cmb', sph_bc_U%kr_out,               &
