@@ -1,12 +1,19 @@
+!>@file   set_local_sphere_param.f90
+!!@brief  module set_local_sphere_param
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007
 !
-!      module set_local_sphere_param
-!
-!     Written by H. Matsui on July, 2007
-!
-!      subroutine set_global_sph_rtp_id
-!      subroutine set_global_sph_rj_id
-!      subroutine set_global_sph_4_rtm
-!      subroutine set_global_sph_4_rlm
+!>@brief  Copy number of global spherical harmonics indices
+!!        to local data
+!!
+!!
+!!@verbatim
+!!      subroutine set_global_sph_rtp_id
+!!      subroutine set_global_sph_rj_id
+!!      subroutine set_global_sph_4_rtm
+!!      subroutine set_global_sph_4_rlm
+!!@endverbatim
 !
       module set_local_sphere_param
 !

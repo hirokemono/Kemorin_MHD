@@ -126,7 +126,7 @@ target_task:
 	 >> $(MAKENAME)
 	@echo '	''$$(CC)' '$$(OPTFLAGS)' -o '$$(TARGET_C_PNG_TEST)' \
 	'$$(MOD_C_PNG_TEST)' \
-	'$$(PNG_LIBS)' >> $(MAKENAME)
+	'$$(PNG_LIBS) $$(ZLIB_LIB)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_CGL_EPS_TEST)': '$$(MOD_CGL_EPS_TEST)' \
 	 >> $(MAKENAME)
@@ -233,7 +233,7 @@ module:
 	'$$(GRAPHIC_TEST_DIR)'/test_wt_png_c.c \
 	write_image_2_png.o \
 	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE)' \
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE)' \
 	'$$(GRAPHIC_TEST_DIR)'/test_wt_png_c.c \
 	>> $(MAKENAME)
 	
