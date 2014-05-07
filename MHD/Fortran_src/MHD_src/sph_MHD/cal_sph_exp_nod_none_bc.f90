@@ -42,7 +42,7 @@
 !!
 !!@n @param is_fld       Field address of input field
 !!@n @param is_grad      Field address for gradient of field
-!!@n @param is_grad      Field address for divergence of field
+!!@n @param is_div       Field address for divergence of field
 !!@n @param is_rot       Field address for curl of field
 !!@n @param is_diffuse   Field address for diffusion of field
 !
