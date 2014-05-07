@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/IO/set_control_platform_data.F90
+/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/CONTROLS/set_control_platform_data.F90

@@ -66,7 +66,11 @@
       use m_precision
       use m_machine_parameter
       use m_FFTPACK5_wrapper
+!
+#ifdef FFTW3
       use m_FFTW_wrapper
+      use m_multi_FFTW_wrapper
+#endif
 !
       implicit none
 !
