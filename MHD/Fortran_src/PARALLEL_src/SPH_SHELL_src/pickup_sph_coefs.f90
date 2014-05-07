@@ -23,7 +23,8 @@
 !
       implicit  none
 !
-      private :: count_sph_labels_4_monitor, set_sph_labels_4_monitor
+      private :: count_sph_labels_4_monitor, set_sph_fld_id_4_monitor
+      private :: set_sph_labels_4_monitor
 !
 ! -----------------------------------------------------------------------
 !
@@ -32,6 +33,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_sph_spec_4_monitor
+!
+      use calypso_mpi
 !
       integer(kind = kint) :: k, knum
 !
@@ -71,6 +74,9 @@
       call deallocate_iflag_pick_sph
       call deallocate_pick_sph_mode
 !
+      call set_sph_fld_id_4_monitor
+!
+      if(my_rank .ne. 0) return
       call set_sph_labels_4_monitor
 !
       end subroutine init_sph_spec_4_monitor
@@ -155,12 +161,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_labels_4_monitor
+      subroutine set_sph_fld_id_4_monitor
 !
-      use m_phys_labels
-      use add_direction_labels
-!
-      integer(kind = kint) :: i_fld, j_fld, jcou
+      integer(kind = kint) :: i_fld, j_fld
 !
 !
       j_fld = 0
@@ -168,23 +171,39 @@
       do i_fld = 1, num_phys_rj
         if(iflag_monitor_rj(i_fld) .gt. 0) then
           j_fld = j_fld + 1
-          jcou = istack_comp_pick_sph(j_fld-1)
-          istack_comp_pick_sph(j_fld) = jcou + num_phys_comp_rj(i_fld)
+          istack_comp_pick_sph(j_fld) = istack_comp_pick_sph(j_fld-1)   &
+     &                                 + num_phys_comp_rj(i_fld)
           ifield_monitor_rj(j_fld) = i_fld
+        end if
+      end do
 !
-          if(num_phys_comp_rj(i_fld) .eq. 1) then
-            write(pick_sph_spec_name(jcou+1),'(a)')                     &
+      end subroutine set_sph_fld_id_4_monitor
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_sph_labels_4_monitor
+!
+      use add_direction_labels
+!
+      integer(kind = kint) :: i_fld, j_fld, jcou
+!
+!
+      istack_comp_pick_sph(0) = 0
+      do j_fld = 1, num_fld_pick_sph
+        i_fld = ifield_monitor_rj(j_fld)
+        jcou = istack_comp_pick_sph(j_fld-1)
+        if(num_phys_comp_rj(i_fld) .eq. 1) then
+          write(pick_sph_spec_name(jcou+1),'(a)')                       &
      &                      trim(phys_name_rj(i_fld))
-          else if(num_phys_comp_rj(i_fld) .eq. 3) then
-            call add_vector_sph_spectr_label(phys_name_rj(i_fld),       &
+        else if(num_phys_comp_rj(i_fld) .eq. 3) then
+          call add_vector_sph_spectr_label(phys_name_rj(i_fld),         &
      &          pick_sph_spec_name(jcou+1), pick_sph_spec_name(jcou+2), &
      &          pick_sph_spec_name(jcou+3))
-          else if(num_phys_comp_rj(i_fld) .eq. 6) then
-            call add_tensor_direction_label_rtp(phys_name_rj(i_fld),    &
+        else if(num_phys_comp_rj(i_fld) .eq. 6) then
+          call add_tensor_direction_label_rtp(phys_name_rj(i_fld),      &
      &          pick_sph_spec_name(jcou+1), pick_sph_spec_name(jcou+2), &
      &          pick_sph_spec_name(jcou+3), pick_sph_spec_name(jcou+4), &
      &          pick_sph_spec_name(jcou+5), pick_sph_spec_name(jcou+6))
-          end if
         end if
       end do
 !
