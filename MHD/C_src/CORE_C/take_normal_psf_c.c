@@ -60,9 +60,54 @@ static void take_normal_ele_psf(struct psf_data *viz_s){
 	return;
 };
 
+static void easy_normal_nod_psf(struct psf_data *viz_s){
+	int i, i1, k;
+	double d;
+    int *nele_for_nod;
+    
+	nele_for_nod = (int *)calloc(viz_s->nnod_viz, sizeof(int *));
+
+	for (i = 0; i < viz_s->nnod_viz; i++){
+        nele_for_nod[i] = 0;
+        viz_s->norm_nod[i][0] = 0.0;
+        viz_s->norm_nod[i][1] = 0.0;
+        viz_s->norm_nod[i][2] = 0.0;
+    };
+
+    for (i = 0; i < viz_s->nele_viz; i++){
+        for (k=0; k<3; k++){
+            i1 = viz_s->ie_viz[i][k] - 1;
+            nele_for_nod[i1] = nele_for_nod[i1] + 1;
+            
+            viz_s->norm_nod[i1][0] = viz_s->norm_nod[i1][0]
+            + viz_s->norm_ele[i][0];
+            viz_s->norm_nod[i1][1] = viz_s->norm_nod[i1][1]
+            + viz_s->norm_ele[i][1];
+            viz_s->norm_nod[i1][2] = viz_s->norm_nod[i1][2]
+            + viz_s->norm_ele[i][2];
+        };
+    };
+    
+	for (i = 0; i < viz_s->nnod_viz; i++){
+ 		if(nele_for_nod[i] == 0){
+			viz_s->norm_nod[i][0] = 0.0;
+			viz_s->norm_nod[i][1] = 0.0;
+			viz_s->norm_nod[i][2] = 0.0;
+        } else {
+            d = (double) ONE / nele_for_nod[i];
+            viz_s->norm_nod[i][0] = viz_s->norm_nod[i][0] * d;
+            viz_s->norm_nod[i][1] = viz_s->norm_nod[i][1] * d;
+            viz_s->norm_nod[i][2] = viz_s->norm_nod[i][2] * d;
+        };
+    };
+    
+    free(nele_for_nod);
+	
+	return;
+};
 
 static void take_normal_nod_psf(struct psf_data *viz_s){
-	int n, i, i1, i2, i3, k, ist, ied;
+	int n, i, i1, i2, i3, k, ist, ied, l;
 	double d, xe[3], d2h[3];
     int *nele_for_nod;
     int *istack_ele_for_nod;
@@ -140,17 +185,17 @@ static void take_normal_nod_psf(struct psf_data *viz_s){
         viz_s->norm_nod[i][2] = 0.0;
     };
     for (i = 0; i < viz_s->nele_viz; i++){
-        for (i1=0; i1<3; i1++){
-            i1 = viz_s->ie_viz[i][i1] - 1;
-            k = istack_ele_for_nod[i1] + nele_for_nod[i1];
+        for (k=0; k<3; k++){
+            i1 = viz_s->ie_viz[i][k] - 1;
+            l = istack_ele_for_nod[i1] + nele_for_nod[i1];
             nele_for_nod[i1] = nele_for_nod[i1] + 1;
             
             viz_s->norm_nod[i1][0] = viz_s->norm_nod[i1][0]
-            + dist_to_ele[k] * viz_s->norm_ele[i][0];
+            + dist_to_ele[l] * viz_s->norm_ele[i][0];
             viz_s->norm_nod[i1][1] = viz_s->norm_nod[i1][1]
-            + dist_to_ele[k] * viz_s->norm_ele[i][1];
+            + dist_to_ele[l] * viz_s->norm_ele[i][1];
             viz_s->norm_nod[i1][2] = viz_s->norm_nod[i1][2]
-            + dist_to_ele[k] * viz_s->norm_ele[i][2];
+            + dist_to_ele[l] * viz_s->norm_ele[i][2];
         };
     };
     
