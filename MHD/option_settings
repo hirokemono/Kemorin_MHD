@@ -539,9 +539,13 @@ bject-2.0 -lgmodule-2.0 -lglib-2.0
 #
 #
 # -------------------------------------------------------------------------------
-# Cray XC30 with cray compiler
+# IBM Blue Zene/Q
 # -------------------------------------------------------------------------------
 #
+./configure --prefix='/home/matsui/local' --enable-fftw3 --enable-libpng --disable-gl  --disable-gtk \
+--with-hdf5=no --with-zlib --without-pgplot CC=bgxlc FC=bgxlf MPICC=mpixlc MPIF90=mpixlf90 \
+CFLAGS='-O3 -q64' FCFLAGS='-O3 -q64' \
+PKG_CONFIG_PATH="$PKG_CONFIG_PATH":/home/matsui/local/lib/pkgconfig
 
 
 # -------------------------------------------------------------------------------

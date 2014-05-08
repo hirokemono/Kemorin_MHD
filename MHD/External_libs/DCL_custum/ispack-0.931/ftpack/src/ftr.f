@@ -1,23 +1,23 @@
-************************************************************************
-* ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
-* Copyright (C) 1998--2011 Keiichi Ishioka <ishioka@gfd-dennou.org>
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-* 
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-* 02110-1301 USA.
-************************************************************************
-************************************************************************
+!************************************************************************
+!* ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
+!* Copyright (C) 1998--2011 Keiichi Ishioka <ishioka@gfd-dennou.org>
+!*
+!* This library is free software; you can redistribute it and/or
+!* modify it under the terms of the GNU Lesser General Public
+!* License as published by the Free Software Foundation; either
+!* version 2.1 of the License, or (at your option) any later version.
+!*
+!* This library is distributed in the hope that it will be useful,
+!* but WITHOUT ANY WARRANTY; without even the implied warranty of
+!* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+!* Lesser General Public License for more details.
+!* 
+!* You should have received a copy of the GNU Lesser General Public
+!* License along with this library; if not, write to the Free Software
+!* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+!* 02110-1301 USA.
+!************************************************************************
+!************************************************************************
       SUBROUTINE FTTRUI(N,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
@@ -38,7 +38,7 @@
    10 CONTINUE
 
       END
-************************************************************************
+!************************************************************************
       SUBROUTINE FTTRUF(M,N,X,Y,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
@@ -66,17 +66,17 @@
 
       DO 50 J=1,L-1
         DO 40 I=1,M
-          X(I,1,J)=S*(        (Y(I,L-J,1)+Y(I,J,1))
-     &                +T(J,3)*(Y(I,L-J,2)+Y(I,J,2))
+          X(I,1,J)=S*(        (Y(I,L-J,1)+Y(I,J,1))                     &
+     &                +T(J,3)*(Y(I,L-J,2)+Y(I,J,2))                     &
      &                -T(J,4)*(Y(I,L-J,1)-Y(I,J,1)))
-          X(I,2,J)=S*(        (Y(I,L-J,2)-Y(I,J,2))
-     &                -T(J,3)*(Y(I,L-J,1)-Y(I,J,1))
+          X(I,2,J)=S*(        (Y(I,L-J,2)-Y(I,J,2))                     &
+     &                -T(J,3)*(Y(I,L-J,1)-Y(I,J,1))                     &
      &                -T(J,4)*(Y(I,L-J,2)+Y(I,J,2)))
    40   CONTINUE
    50 CONTINUE
 
       END
-************************************************************************
+!************************************************************************
       SUBROUTINE FTTRUB(M,N,X,Y,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
@@ -92,11 +92,11 @@
 
       DO 30 J=1,L-1
         DO 20 I=1,M
-          Y(I,J,1)=        (X(I,1,L-J)+X(I,1,J))
-     &             -T(J,3)*(X(I,2,L-J)+X(I,2,J))
+          Y(I,J,1)=        (X(I,1,L-J)+X(I,1,J))                        &
+     &             -T(J,3)*(X(I,2,L-J)+X(I,2,J))                        &
      &             +T(J,4)*(X(I,1,L-J)-X(I,1,J))
-          Y(I,J,2)=       -(X(I,2,L-J)-X(I,2,J))
-     &             -T(J,3)*(X(I,1,L-J)-X(I,1,J))
+          Y(I,J,2)=       -(X(I,2,L-J)-X(I,2,J))                        &
+     &             -T(J,3)*(X(I,1,L-J)-X(I,1,J))                        &
      &             -T(J,4)*(X(I,2,L-J)+X(I,2,J))
    20   CONTINUE
    30 CONTINUE
