@@ -49,12 +49,6 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 				draw_solid_objects_4_psf(psf_s[i], psf_m[i], gl_buf,
                                          view_s->iflag_retina, view_s->iflag_write_ps);
 			}
-            
-			if(psf_m[i]->draw_psf_cbar > 0) {
-				draw_colorbar_gl(view_s->iflag_retina,
-                                 view_s->nx_window, view_s->ny_window,
-                                 mesh_m->text_color, psf_m[i]->cmap_psf);
-			}
 		};
 	};
     
@@ -83,6 +77,18 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	};
 	
 	if(mesh_m->iflag_draw_mesh != 0) draw_transparent_4_domain(mesh_s, mesh_m, view_s, gl_buf);
+	
+    /* Draw Color bar */
+	for(i=0; i<psf_a->nmax_loaded; i++){
+		iflag_psf = iflag_psf + psf_a->iflag_loaded[i];
+		if(psf_a->iflag_loaded[i] != 0){
+			if(psf_m[i]->draw_psf_cbar > 0) {
+				draw_colorbar_gl(view_s->iflag_retina,
+                                 view_s->nx_window, view_s->ny_window,
+                                 mesh_m->text_color, mesh_m->bg_color, psf_m[i]->cmap_psf);
+			};
+		};
+	};
 	
 	glEnable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

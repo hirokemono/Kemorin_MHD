@@ -54,8 +54,8 @@ void init_colorbar_fonts(){
 }
 
 void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
-			GLfloat text_color[4], struct colormap_params *cmap_s){
-	int i, inum;
+			GLfloat text_color[4], GLfloat bg_color[4], struct colormap_params *cmap_s){
+	int i, inum, nd;
     
 	GLfloat xwin, ywin;
 	GLfloat xbar_min, xbar_max;
@@ -63,7 +63,7 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 	GLfloat xy_buf[384][2];
 	GLfloat rgba_buf[384][4];
 
-	int iflag_zero, nd;
+	int iflag_zero;
 	double psf_min, psf_max;
 	double psf_value, f_color[4], l_color[4];
 	char minlabel[20], maxlabel[20], zerolabel[20];
@@ -123,11 +123,22 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 	glColorMaterial(GL_FRONT_AND_BACK,GL_EMISSION);
 
 	set_rainbow_color_code(cmap_s, psf_min, l_color);
+    for (nd=0; nd<3; nd++) {
+        l_color[nd] = l_color[nd] * l_color[3]
+        + bg_color[nd] * (ONE - l_color[3]);
+    };
+    l_color[3] = ONE;        
 
 	for(i=0;i<64;i++){
 		y1 = ybar_min + ydelta * (GLfloat)i;
 		psf_value = psf_min + (psf_max-psf_min) * (double)(i+1) / (double)64;
 		set_rainbow_color_code(cmap_s, psf_value, f_color);
+        
+        for (nd=0; nd<3; nd++) {
+            f_color[nd] = f_color[nd] * f_color[3]
+                        + bg_color[nd] * (ONE - f_color[3]);
+        };
+        f_color[3] = ONE;        
 		
 		xy_buf[6*i  ][0] = xbar_min;
 		xy_buf[6*i+1][0] = xbar_max;
