@@ -1,23 +1,23 @@
-************************************************************************
-* ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
-* Copyright (C) 1998--2011 Keiichi Ishioka <ishioka@gfd-dennou.org>
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-* 
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-* 02110-1301 USA.
-************************************************************************
-************************************************************************
+!************************************************************************
+!* ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
+!* Copyright (C) 1998--2011 Keiichi Ishioka <ishioka@gfd-dennou.org>
+!*
+!* This library is free software; you can redistribute it and/or
+!* modify it under the terms of the GNU Lesser General Public
+!* License as published by the Free Software Foundation; either
+!* version 2.1 of the License, or (at your option) any later version.
+!*
+!* This library is distributed in the hope that it will be useful,
+!* but WITHOUT ANY WARRANTY; without even the implied warranty of
+!* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+!* Lesser General Public License for more details.
+!* 
+!* You should have received a copy of the GNU Lesser General Public
+!* License along with this library; if not, write to the Free Software
+!* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+!* 02110-1301 USA.
+!************************************************************************
+!************************************************************************
       SUBROUTINE FTTZUI(N,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
@@ -26,7 +26,7 @@
       CALL FTTZLI(N,IT,T)
 
       END
-************************************************************************
+!************************************************************************
       SUBROUTINE FTTZUF(M,N,X,Y,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
@@ -45,7 +45,7 @@
       END DO
 
       END
-************************************************************************
+!************************************************************************
       SUBROUTINE FTTZUB(M,N,X,Y,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
@@ -55,7 +55,7 @@
       CALL FTTZLM(M,N,X,Y,IT,T)
 
       END
-************************************************************************
+!************************************************************************
       SUBROUTINE FTTZLI(N,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
@@ -96,7 +96,7 @@
    30 CONTINUE
 
       END
-************************************************************************
+!************************************************************************
       SUBROUTINE FTTZLM(M,N,X,Y,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
@@ -137,9 +137,9 @@
    50 CONTINUE
 
       END
-************************************************************************
-*     FT BY FACTOR 1
-*-----------------------------------------------------------------------
+!************************************************************************
+!*     FT BY FACTOR 1
+!*-----------------------------------------------------------------------
       SUBROUTINE FTTZL1(M,N,X,Y)
 
       IMPLICIT REAL*8(A-H,O-Z)
@@ -150,9 +150,9 @@
    10 CONTINUE
 
       END
-************************************************************************
-*     FT BY FACTOR 2
-*-----------------------------------------------------------------------
+!************************************************************************
+!*     FT BY FACTOR 2
+!*-----------------------------------------------------------------------
       SUBROUTINE FTTZL2(M,K,L,A,B,C,D,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
@@ -164,9 +164,9 @@
         DO 10 I=1,M*L
           C(I,0,J)=A(I,J,0)+A(I,J,1)
           D(I,0,J)=B(I,J,0)+B(I,J,1)
-          C(I,1,J)= T(0,1*J,1)*(A(I,J,0)-A(I,J,1))
+          C(I,1,J)= T(0,1*J,1)*(A(I,J,0)-A(I,J,1))                      &
      &             -T(0,1*J,2)*(B(I,J,0)-B(I,J,1))
-          D(I,1,J)= T(0,1*J,1)*(B(I,J,0)-B(I,J,1))
+          D(I,1,J)= T(0,1*J,1)*(B(I,J,0)-B(I,J,1))                      &
      &             +T(0,1*J,2)*(A(I,J,0)-A(I,J,1))
    10   CONTINUE
    20 CONTINUE
@@ -175,11 +175,11 @@
       L=L*2
 
       END
-************************************************************************
-*     FT BY FACTOR 3
-*-----------------------------------------------------------------------
-*     C1 = COS(PI/3), S1 = SIN(PI/3)
-*-----------------------------------------------------------------------
+!************************************************************************
+!*     FT BY FACTOR 3
+!*-----------------------------------------------------------------------
+!*     C1 = COS(PI/3), S1 = SIN(PI/3)
+!*-----------------------------------------------------------------------
       SUBROUTINE FTTZL3(M,K,L,A,B,C,D,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
@@ -192,25 +192,25 @@
         DO 10 I=1,M*L
           C(I,0,J)=A(I,J,0)+(A(I,J,1)+A(I,J,2))
           D(I,0,J)=B(I,J,0)+(B(I,J,1)+B(I,J,2))
-          C(I,1,J)=
-     &      T(0,1*J,1)*(
-     &        (A(I,J,0)-C1*(A(I,J,1)+A(I,J,2)))-S1*(B(I,J,1)-B(I,J,2)))
-     &     -T(0,1*J,2)*(
+          C(I,1,J)=                                                     &
+     &      T(0,1*J,1)*(                                                &
+     &        (A(I,J,0)-C1*(A(I,J,1)+A(I,J,2)))-S1*(B(I,J,1)-B(I,J,2))) &
+     &     -T(0,1*J,2)*(                                                &
      &        (B(I,J,0)-C1*(B(I,J,1)+B(I,J,2)))+S1*(A(I,J,1)-A(I,J,2)))
-          D(I,1,J)=
-     &      T(0,1*J,1)*(
-     &        (B(I,J,0)-C1*(B(I,J,1)+B(I,J,2)))+S1*(A(I,J,1)-A(I,J,2)))
-     &     +T(0,1*J,2)*(
+          D(I,1,J)=                                                     &
+     &      T(0,1*J,1)*(                                                &
+     &        (B(I,J,0)-C1*(B(I,J,1)+B(I,J,2)))+S1*(A(I,J,1)-A(I,J,2))) &
+     &     +T(0,1*J,2)*(                                                &
      &        (A(I,J,0)-C1*(A(I,J,1)+A(I,J,2)))-S1*(B(I,J,1)-B(I,J,2)))
-          C(I,2,J)=
-     &      T(0,2*J,1)*(
-     &        (A(I,J,0)-C1*(A(I,J,1)+A(I,J,2)))+S1*(B(I,J,1)-B(I,J,2)))
-     &     -T(0,2*J,2)*(
+          C(I,2,J)=                                                     &
+     &      T(0,2*J,1)*(                                                &
+     &        (A(I,J,0)-C1*(A(I,J,1)+A(I,J,2)))+S1*(B(I,J,1)-B(I,J,2))) &
+     &     -T(0,2*J,2)*(                                                &
      &        (B(I,J,0)-C1*(B(I,J,1)+B(I,J,2)))-S1*(A(I,J,1)-A(I,J,2)))
-          D(I,2,J)=
-     &      T(0,2*J,1)*(
-     &        (B(I,J,0)-C1*(B(I,J,1)+B(I,J,2)))-S1*(A(I,J,1)-A(I,J,2)))
-     &     +T(0,2*J,2)*(
+          D(I,2,J)=                                                     &
+     &      T(0,2*J,1)*(                                                &
+     &        (B(I,J,0)-C1*(B(I,J,1)+B(I,J,2)))-S1*(A(I,J,1)-A(I,J,2))) &
+     &     +T(0,2*J,2)*(                                                &
      &        (A(I,J,0)-C1*(A(I,J,1)+A(I,J,2)))+S1*(B(I,J,1)-B(I,J,2)))
    10   CONTINUE
    20 CONTINUE
@@ -219,9 +219,9 @@
       L=L*3
 
       END
-************************************************************************
-*     FT BY FACTOR 4
-*-----------------------------------------------------------------------
+!************************************************************************
+!*     FT BY FACTOR 4
+!*-----------------------------------------------------------------------
       SUBROUTINE FTTZL4(M,K,L,A,B,C,D,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
@@ -233,23 +233,23 @@
         DO 10 I=1,M*L
           C(I,0,J)=(A(I,J,0)+A(I,J,2))+(A(I,J,1)+A(I,J,3))
           D(I,0,J)=(B(I,J,0)+B(I,J,2))+(B(I,J,1)+B(I,J,3))
-          C(I,2,J)=
-     &        T(0,2*J,1)*((A(I,J,0)+A(I,J,2))-(A(I,J,1)+A(I,J,3)))
+          C(I,2,J)=                                                     &
+     &        T(0,2*J,1)*((A(I,J,0)+A(I,J,2))-(A(I,J,1)+A(I,J,3)))      &
      &       -T(0,2*J,2)*((B(I,J,0)+B(I,J,2))-(B(I,J,1)+B(I,J,3)))
-          D(I,2,J)=
-     &        T(0,2*J,1)*((B(I,J,0)+B(I,J,2))-(B(I,J,1)+B(I,J,3)))
+          D(I,2,J)=                                                     &
+     &        T(0,2*J,1)*((B(I,J,0)+B(I,J,2))-(B(I,J,1)+B(I,J,3)))      &
      &       +T(0,2*J,2)*((A(I,J,0)+A(I,J,2))-(A(I,J,1)+A(I,J,3)))
-          C(I,1,J)=
-     &        T(0,1*J,1)*((A(I,J,0)-A(I,J,2))-(B(I,J,1)-B(I,J,3)))
+          C(I,1,J)=                                                     &
+     &        T(0,1*J,1)*((A(I,J,0)-A(I,J,2))-(B(I,J,1)-B(I,J,3)))      &
      &       -T(0,1*J,2)*((B(I,J,0)-B(I,J,2))+(A(I,J,1)-A(I,J,3)))
-          D(I,1,J)=
-     &        T(0,1*J,1)*((B(I,J,0)-B(I,J,2))+(A(I,J,1)-A(I,J,3)))
+          D(I,1,J)=                                                     &
+     &        T(0,1*J,1)*((B(I,J,0)-B(I,J,2))+(A(I,J,1)-A(I,J,3)))      &
      &       +T(0,1*J,2)*((A(I,J,0)-A(I,J,2))-(B(I,J,1)-B(I,J,3)))
-          C(I,3,J)=
-     &        T(0,3*J,1)*((A(I,J,0)-A(I,J,2))+(B(I,J,1)-B(I,J,3)))
+          C(I,3,J)=                                                     &
+     &        T(0,3*J,1)*((A(I,J,0)-A(I,J,2))+(B(I,J,1)-B(I,J,3)))      &
      &       -T(0,3*J,2)*((B(I,J,0)-B(I,J,2))-(A(I,J,1)-A(I,J,3)))
-          D(I,3,J)=
-     &        T(0,3*J,1)*((B(I,J,0)-B(I,J,2))-(A(I,J,1)-A(I,J,3)))
+          D(I,3,J)=                                                     &
+     &        T(0,3*J,1)*((B(I,J,0)-B(I,J,2))-(A(I,J,1)-A(I,J,3)))      &
      &       +T(0,3*J,2)*((A(I,J,0)-A(I,J,2))+(B(I,J,1)-B(I,J,3)))
    10   CONTINUE
    20 CONTINUE
@@ -258,11 +258,11 @@
       L=L*4
 
       END
-************************************************************************
-*     FT BY FACTOR 5
-*-----------------------------------------------------------------------
-*     C1 = COS(PI/5), S1 = SIN(PI/5), C2 = COS(2*PI/5), S2 = SIN(2*PI/5)
-*-----------------------------------------------------------------------
+!************************************************************************
+!*     FT BY FACTOR 5
+!*-----------------------------------------------------------------------
+!*     C1 = COS(PI/5), S1 = SIN(PI/5), C2 = COS(2*PI/5), S2 = SIN(2*PI/5)
+!*-----------------------------------------------------------------------
       SUBROUTINE FTTZL5(M,K,L,A,B,C,D,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
@@ -276,61 +276,61 @@
         DO 10 I=1,M*L
           C(I,0,J)=A(I,J,0)+(A(I,J,1)+A(I,J,4))+(A(I,J,2)+A(I,J,3))
           D(I,0,J)=B(I,J,0)+(B(I,J,1)+B(I,J,4))+(B(I,J,2)+B(I,J,3))
-          C(I,1,J)=
-     &      T(0,1*J,1)*(
-     &       (A(I,J,0)+(C2*(A(I,J,1)+A(I,J,4))-C1*(A(I,J,2)+A(I,J,3)))
-     &                -(S2*(B(I,J,1)-B(I,J,4))+S1*(B(I,J,2)-B(I,J,3)))))
-     &     -T(0,1*J,2)*(
-     &       (B(I,J,0)+(C2*(B(I,J,1)+B(I,J,4))-C1*(B(I,J,2)+B(I,J,3)))
+          C(I,1,J)=                                                     &
+     &      T(0,1*J,1)*(                                                &
+     &       (A(I,J,0)+(C2*(A(I,J,1)+A(I,J,4))-C1*(A(I,J,2)+A(I,J,3)))  &
+     &                -(S2*(B(I,J,1)-B(I,J,4))+S1*(B(I,J,2)-B(I,J,3)))))&
+     &     -T(0,1*J,2)*(                                                &
+     &       (B(I,J,0)+(C2*(B(I,J,1)+B(I,J,4))-C1*(B(I,J,2)+B(I,J,3)))  &
      &                +(S2*(A(I,J,1)-A(I,J,4))+S1*(A(I,J,2)-A(I,J,3)))))
-          D(I,1,J)=
-     &      T(0,1*J,1)*(
-     &       (B(I,J,0)+(C2*(B(I,J,1)+B(I,J,4))-C1*(B(I,J,2)+B(I,J,3)))
-     &                +(S2*(A(I,J,1)-A(I,J,4))+S1*(A(I,J,2)-A(I,J,3)))))
-     &     +T(0,1*J,2)*(
-     &       (A(I,J,0)+(C2*(A(I,J,1)+A(I,J,4))-C1*(A(I,J,2)+A(I,J,3)))
+          D(I,1,J)=                                                     &
+     &      T(0,1*J,1)*(                                                &
+     &       (B(I,J,0)+(C2*(B(I,J,1)+B(I,J,4))-C1*(B(I,J,2)+B(I,J,3)))  &
+     &                +(S2*(A(I,J,1)-A(I,J,4))+S1*(A(I,J,2)-A(I,J,3)))))&
+     &     +T(0,1*J,2)*(                                                &
+     &       (A(I,J,0)+(C2*(A(I,J,1)+A(I,J,4))-C1*(A(I,J,2)+A(I,J,3)))  &
      &                -(S2*(B(I,J,1)-B(I,J,4))+S1*(B(I,J,2)-B(I,J,3)))))
-          C(I,4,J)=
-     &      T(0,4*J,1)*(
-     &       (A(I,J,0)+(C2*(A(I,J,1)+A(I,J,4))-C1*(A(I,J,2)+A(I,J,3)))
-     &                +(S2*(B(I,J,1)-B(I,J,4))+S1*(B(I,J,2)-B(I,J,3)))))
-     &     -T(0,4*J,2)*(
-     &       (B(I,J,0)+(C2*(B(I,J,1)+B(I,J,4))-C1*(B(I,J,2)+B(I,J,3)))
+          C(I,4,J)=                                                     &
+     &      T(0,4*J,1)*(                                                &
+     &       (A(I,J,0)+(C2*(A(I,J,1)+A(I,J,4))-C1*(A(I,J,2)+A(I,J,3)))  &
+     &                +(S2*(B(I,J,1)-B(I,J,4))+S1*(B(I,J,2)-B(I,J,3)))))&
+     &     -T(0,4*J,2)*(                                                &
+     &       (B(I,J,0)+(C2*(B(I,J,1)+B(I,J,4))-C1*(B(I,J,2)+B(I,J,3)))  &
      &                -(S2*(A(I,J,1)-A(I,J,4))+S1*(A(I,J,2)-A(I,J,3)))))
-          D(I,4,J)=
-     &      T(0,4*J,1)*(
-     &       (B(I,J,0)+(C2*(B(I,J,1)+B(I,J,4))-C1*(B(I,J,2)+B(I,J,3)))
-     &                -(S2*(A(I,J,1)-A(I,J,4))+S1*(A(I,J,2)-A(I,J,3)))))
-     &     +T(0,4*J,2)*(
-     &       (A(I,J,0)+(C2*(A(I,J,1)+A(I,J,4))-C1*(A(I,J,2)+A(I,J,3)))
+          D(I,4,J)=                                                     &
+     &      T(0,4*J,1)*(                                                &
+     &       (B(I,J,0)+(C2*(B(I,J,1)+B(I,J,4))-C1*(B(I,J,2)+B(I,J,3)))  &
+     &                -(S2*(A(I,J,1)-A(I,J,4))+S1*(A(I,J,2)-A(I,J,3)))))&
+     &     +T(0,4*J,2)*(                                                &
+     &       (A(I,J,0)+(C2*(A(I,J,1)+A(I,J,4))-C1*(A(I,J,2)+A(I,J,3)))  &
      &                +(S2*(B(I,J,1)-B(I,J,4))+S1*(B(I,J,2)-B(I,J,3)))))
-          C(I,2,J)=
-     &      T(0,2*J,1)*(
-     &       (A(I,J,0)-(C1*(A(I,J,1)+A(I,J,4))-C2*(A(I,J,2)+A(I,J,3)))
-     &                -(S1*(B(I,J,1)-B(I,J,4))-S2*(B(I,J,2)-B(I,J,3)))))
-     &     -T(0,2*J,2)*(
-     &       (B(I,J,0)-(C1*(B(I,J,1)+B(I,J,4))-C2*(B(I,J,2)+B(I,J,3)))
+          C(I,2,J)=                                                     &
+     &      T(0,2*J,1)*(                                                &
+     &       (A(I,J,0)-(C1*(A(I,J,1)+A(I,J,4))-C2*(A(I,J,2)+A(I,J,3)))  &
+     &                -(S1*(B(I,J,1)-B(I,J,4))-S2*(B(I,J,2)-B(I,J,3)))))&
+     &     -T(0,2*J,2)*(                                                &
+     &       (B(I,J,0)-(C1*(B(I,J,1)+B(I,J,4))-C2*(B(I,J,2)+B(I,J,3)))  &
      &                +(S1*(A(I,J,1)-A(I,J,4))-S2*(A(I,J,2)-A(I,J,3)))))
-          D(I,2,J)=
-     &      T(0,2*J,1)*(
-     &       (B(I,J,0)-(C1*(B(I,J,1)+B(I,J,4))-C2*(B(I,J,2)+B(I,J,3)))
-     &                +(S1*(A(I,J,1)-A(I,J,4))-S2*(A(I,J,2)-A(I,J,3)))))
-     &     +T(0,2*J,2)*(
-     &       (A(I,J,0)-(C1*(A(I,J,1)+A(I,J,4))-C2*(A(I,J,2)+A(I,J,3)))
+          D(I,2,J)=                                                     &
+     &      T(0,2*J,1)*(                                                &
+     &       (B(I,J,0)-(C1*(B(I,J,1)+B(I,J,4))-C2*(B(I,J,2)+B(I,J,3)))  &
+     &                +(S1*(A(I,J,1)-A(I,J,4))-S2*(A(I,J,2)-A(I,J,3)))))&
+     &     +T(0,2*J,2)*(                                                &
+     &       (A(I,J,0)-(C1*(A(I,J,1)+A(I,J,4))-C2*(A(I,J,2)+A(I,J,3)))  &
      &                -(S1*(B(I,J,1)-B(I,J,4))-S2*(B(I,J,2)-B(I,J,3)))))
-          C(I,3,J)=
-     &      T(0,3*J,1)*(
-     &       (A(I,J,0)-(C1*(A(I,J,1)+A(I,J,4))-C2*(A(I,J,2)+A(I,J,3)))
-     &                +(S1*(B(I,J,1)-B(I,J,4))-S2*(B(I,J,2)-B(I,J,3)))))
-     &     -T(0,3*J,2)*(
-     &       (B(I,J,0)-(C1*(B(I,J,1)+B(I,J,4))-C2*(B(I,J,2)+B(I,J,3)))
+          C(I,3,J)=                                                     &
+     &      T(0,3*J,1)*(                                                &
+     &       (A(I,J,0)-(C1*(A(I,J,1)+A(I,J,4))-C2*(A(I,J,2)+A(I,J,3)))  &
+     &                +(S1*(B(I,J,1)-B(I,J,4))-S2*(B(I,J,2)-B(I,J,3)))))&
+     &     -T(0,3*J,2)*(                                                &
+     &       (B(I,J,0)-(C1*(B(I,J,1)+B(I,J,4))-C2*(B(I,J,2)+B(I,J,3)))  &
      &                -(S1*(A(I,J,1)-A(I,J,4))-S2*(A(I,J,2)-A(I,J,3)))))
-          D(I,3,J)=
-     &      T(0,3*J,1)*(
-     &       (B(I,J,0)-(C1*(B(I,J,1)+B(I,J,4))-C2*(B(I,J,2)+B(I,J,3)))
-     &                -(S1*(A(I,J,1)-A(I,J,4))-S2*(A(I,J,2)-A(I,J,3)))))
-     &     +T(0,3*J,2)*(
-     &       (A(I,J,0)-(C1*(A(I,J,1)+A(I,J,4))-C2*(A(I,J,2)+A(I,J,3)))
+          D(I,3,J)=                                                     &
+     &      T(0,3*J,1)*(                                                &
+     &       (B(I,J,0)-(C1*(B(I,J,1)+B(I,J,4))-C2*(B(I,J,2)+B(I,J,3)))  &
+     &                -(S1*(A(I,J,1)-A(I,J,4))-S2*(A(I,J,2)-A(I,J,3)))))&
+     &     +T(0,3*J,2)*(                                                &
+     &       (A(I,J,0)-(C1*(A(I,J,1)+A(I,J,4))-C2*(A(I,J,2)+A(I,J,3)))  &
      &                +(S1*(B(I,J,1)-B(I,J,4))-S2*(B(I,J,2)-B(I,J,3)))))
    10   CONTINUE
    20 CONTINUE

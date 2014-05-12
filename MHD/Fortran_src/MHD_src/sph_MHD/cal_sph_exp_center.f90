@@ -38,7 +38,7 @@
 !!@n @param fdm2_fixed_center(0:2,3)
 !!         Matrix to evaluate radial derivative
 !!         for center with fixed field
-!!@n @param fix_CTR(jmax) Spectr data for fixed fixed scalar at center
+!!@n @param fix_CTR(jmax) Spectr data for fixed scalar at center
 !!@n @param coef_d        Coefficient for diffusion term
 !!
 !!@n @param is_fld       Field address of input field

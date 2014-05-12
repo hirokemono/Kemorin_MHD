@@ -16,7 +16,7 @@ char colorbar_text[60];
 
 void init_colorbar_fonts();
 void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
-			GLfloat text_color[4], struct colormap_params *cmap_s);
+			GLfloat text_color[4], GLfloat bg_color[4], struct colormap_params *cmap_s);
 
 #endif
 

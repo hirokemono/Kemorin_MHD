@@ -1,26 +1,26 @@
-************************************************************************
-* ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
-* Copyright (C) 1998--2011 Keiichi Ishioka <ishioka@gfd-dennou.org>
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-* 
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-* 02110-1301 USA.
-************************************************************************
-*************************************************************************
-*     SINE TRANSFORM (MID-POINT)                     2000/09/19 K.Ishioka      
-*************************************************************************
-************************************************************************
+!************************************************************************
+!* ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
+!* Copyright (C) 1998--2011 Keiichi Ishioka <ishioka@gfd-dennou.org>
+!*
+!* This library is free software; you can redistribute it and/or
+!* modify it under the terms of the GNU Lesser General Public
+!* License as published by the Free Software Foundation; either
+!* version 2.1 of the License, or (at your option) any later version.
+!*
+!* This library is distributed in the hope that it will be useful,
+!* but WITHOUT ANY WARRANTY; without even the implied warranty of
+!* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+!* Lesser General Public License for more details.
+!* 
+!* You should have received a copy of the GNU Lesser General Public
+!* License along with this library; if not, write to the Free Software
+!* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+!* 02110-1301 USA.
+!************************************************************************
+!*************************************************************************
+!*     SINE TRANSFORM (MID-POINT)                     2000/09/19 K.Ishioka      
+!*************************************************************************
+!************************************************************************
       SUBROUTINE FTTSMI(N,IT,T)
  
       IMPLICIT REAL*8(A-H,O-Z)
@@ -43,7 +43,7 @@
       END DO
  
       END
-************************************************************************
+!************************************************************************
       SUBROUTINE FTTSMF(M,N,X,Y,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
@@ -76,7 +76,7 @@
       END DO
 
       END
-************************************************************************
+!************************************************************************
       SUBROUTINE FTTSMB(M,N,X,Y,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
@@ -99,9 +99,9 @@
 
       DO J=0,N/2-1
         DO I=1,M
-          X(I,2*J  )=-0.25D0*(Y(I,2*J)-Y(I,2*(N/2-1-J)+1))
+          X(I,2*J  )=-0.25D0*(Y(I,2*J)-Y(I,2*(N/2-1-J)+1))              &
      &      +0.125D0*(Y(I,2*J)+Y(I,2*(N/2-1-J)+1))*T(J,11)
-          X(I,2*J+1)=-0.25D0*(Y(I,2*J+1)-Y(I,2*(N/2-1-J)))
+          X(I,2*J+1)=-0.25D0*(Y(I,2*J+1)-Y(I,2*(N/2-1-J)))              &
      &      +0.125D0*(Y(I,2*J+1)+Y(I,2*(N/2-1-J)))*T(J,12)
         END DO
       END DO

@@ -48,6 +48,7 @@
 !
 !
       if(my_rank .ne. 0) return
+      if(ntot_rms_rj .eq. 0) return
 !
       call add_int_suffix(id_pick_layer(1), fhead_rms_layer, fname_tmp1)
       call add_int_suffix(id_pick_layer(num_pick_layer), fname_tmp1,    &
@@ -84,6 +85,7 @@
 !
 !
       if(my_rank .ne. 0) return
+      if(ntot_rms_rj .eq. 0) return
 !
       write(fname_rms, '(a,a2)') trim(fhead_rms_layer), '_l'
       call add_int_suffix(id_pick_layer(1), fname_rms, fname_tmp1)
