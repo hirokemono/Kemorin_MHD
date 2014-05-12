@@ -67,8 +67,7 @@
       if(irtp%i_mag_stretch .eq. 0) return
 !
 !$omp parallel
-        call cal_rtp_magnetic_streach_tmp(np_smp, nnod_rtp,             &
-!       call cal_rtp_magnetic_streach(np_smp, nnod_rtp,                   &
+      call cal_rtp_magnetic_streach(np_smp, nnod_rtp,                   &
      &   inod_rtp_smp_stack, nidx_rtp(1), nidx_rtp(2), a_r_1d_rtp_r,    &
      &   cot_theta_1d_rtp, d_rtp(1,irtp%i_magne), d_rtp(1,irtp%i_velo), &
      &   d_rtp(1,irtp%i_grad_vx), d_rtp(1,irtp%i_grad_vy),              &
