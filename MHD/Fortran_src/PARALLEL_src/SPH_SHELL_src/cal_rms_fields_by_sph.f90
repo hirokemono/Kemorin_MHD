@@ -18,6 +18,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
 !
       implicit none
 !
@@ -69,9 +70,11 @@
       subroutine cal_rms_sph_spec_rms_whole
 !
       use m_spheric_parameter
+      use m_rms_4_sph_spectr
       use sum_sph_rms_data
 !
 !
+      if(ntot_rms_rj .eq. 0) return
       call cal_rms_sph_spec_local
 !
       call r_int_sph_rms_data(ione, nidx_rj(1))
@@ -84,8 +87,10 @@
       subroutine cal_rms_sph_inner_core
 !
       use m_spheric_parameter
+      use m_rms_4_sph_spectr
 !
 !
+      if(ntot_rms_rj .eq. 0) return
       call cal_rms_sph_spec_local
 !
       call r_int_sph_rms_data(izero, nlayer_ICB)
@@ -98,11 +103,15 @@
       subroutine cal_rms_sph_outer_core
 !
       use m_spheric_parameter
+      use m_rms_4_sph_spectr
 !
 !
+      if(ntot_rms_rj .eq. 0) return
       call cal_rms_sph_spec_local
 !
+      if(iflag_debug.gt.0)  write(*,*) 'r_int_sph_rms_data'
       call r_int_sph_rms_data(nlayer_ICB, nlayer_CMB)
+      if(iflag_debug.gt.0)  write(*,*) 'cal_average_for_sph_rms'
       call cal_average_for_sph_rms(nlayer_ICB, nlayer_CMB)
 !
       end subroutine cal_rms_sph_outer_core
@@ -225,7 +234,9 @@ integer(kind = kint) :: ltr1
      &                - radius_1d_rj_r(kg_st)**3 )
       end if
 !
+      if(iflag_debug.gt.0)  write(*,*) 'surf_ave_4_each_sph_rms'
       call surf_ave_4_each_sph_rms
+      if(iflag_debug.gt.0)  write(*,*) 'vol_ave_4_each_sph_rms'
       call vol_ave_4_each_sph_rms(avol)
 !
       if(my_rank .gt. 0) return

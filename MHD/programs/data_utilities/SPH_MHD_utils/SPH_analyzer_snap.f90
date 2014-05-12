@@ -168,6 +168,7 @@
 !
 !*  -----------  Output spectr data --------------
 !*
+      if(iflag_debug.gt.0)  write(*,*) 'output_spectr_4_snap'
       call output_spectr_4_snap(i_step)
 !
       end subroutine SPH_analyze_snap
