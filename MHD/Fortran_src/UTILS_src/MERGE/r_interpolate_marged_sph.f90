@@ -191,14 +191,12 @@
         do j = 1, jmax_org
           j_gl = idx_gl_1d_j_org(j,1)
 !
-          write(*,*) j, j_gl, nidx_rj(2)
           if(j_gl .lt. nidx_rj(2)) then
 !
             do kr = kr_inner_domain, kr_outer_domain
               inod_gl = 1 + j_gl + (kr - 1) * nidx_rj(2)
               inod_in =  j + (k_old2new_in(kr) - 1) *  jmax_org
               inod_out = j + (k_old2new_out(kr) - 1) * jmax_org
-              write(*,*) 'kr', kr, inod_gl, inod_in, inod_out, size(d_rj_IO,1)
               d_rj(inod_gl,nd)                                          &
      &           = coef_old2new_in(kr) * d_rj_IO(inod_in,nd)            &
      &          + (1.0d0 - coef_old2new_in(kr)) * d_rj_IO(inod_out,nd)
