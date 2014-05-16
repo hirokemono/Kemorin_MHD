@@ -52,7 +52,7 @@
       allocate( istack_nod_tbl_dest(0:num_org_pe) )
 !
       id_org_domain = 0
-      istack_nod_tbl_dest = -1
+      istack_nod_tbl_dest = 0
 !
       end subroutine allocate_itp_num_dest
 !

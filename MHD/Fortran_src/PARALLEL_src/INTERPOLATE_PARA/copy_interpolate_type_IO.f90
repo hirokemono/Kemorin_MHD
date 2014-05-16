@@ -77,7 +77,6 @@
       tbl_dest%iflag_self_itp_recv = 0
 !
       if (tbl_dest%num_org_domain .gt. 0) then
-!
         tbl_dest%ntot_table_dest = ntot_table_dest_IO
 !
         call alloc_type_itp_num_dest(tbl_dest)
@@ -98,7 +97,10 @@
         if (tbl_dest%id_org_domain(ilast_domain) .eq. my_rank) then
           tbl_dest%iflag_self_itp_recv = 1
         end if
-!
+      else
+        tbl_dest%ntot_table_dest = 0
+        call alloc_type_itp_num_dest(tbl_dest)
+        call alloc_type_itp_table_dest(tbl_dest)
       end if
 !
       end subroutine copy_itp_tbl_type_dest_from_IO
@@ -121,7 +123,6 @@
       tbl_org%num_dest_domain = num_dest_domain_IO
 !
       if (tbl_org%num_dest_domain .gt. 0) then
-!
         tbl_org%ntot_table_org = ntot_table_org_IO
 !
         call alloc_type_itp_num_org(np_smp, tbl_org)
@@ -151,7 +152,10 @@
         if ( tbl_org%id_dest_domain(ilast_domain) .eq. my_rank) then
           tbl_org%iflag_self_itp_send = 1
         end if
-!
+      else
+        tbl_org%ntot_table_org = 0
+        call alloc_type_itp_num_org(np_smp, tbl_org)
+        call alloc_type_itp_table_org(tbl_org)
       end if
 !
       end subroutine copy_itp_tbl_type_org_from_IO
@@ -170,7 +174,6 @@
       num_org_domain_IO = tbl_dest%num_org_domain
 !
       if (num_org_domain_IO .gt. 0) then
-!
         ntot_table_dest_IO = tbl_dest%ntot_table_dest
 !
         call allocate_itp_num_dst_IO
@@ -184,11 +187,10 @@
 !
         inod_dest_IO(1:ntot_table_dest_IO)                              &
      &      = tbl_dest%inod_dest_4_dest(1:ntot_table_dest_IO)
-!
-        call dealloc_type_itp_table_dest(tbl_dest)
-        call dealloc_type_itp_num_dest(tbl_dest)
-!
       end if
+!
+      call dealloc_type_itp_table_dest(tbl_dest)
+      call dealloc_type_itp_num_dest(tbl_dest)
 !
       end subroutine copy_itp_tbl_type_dest_to_IO
 !

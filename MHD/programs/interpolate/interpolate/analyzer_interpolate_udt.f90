@@ -26,7 +26,6 @@
       subroutine initialize_itp_udt
 !
       use m_ctl_params_4_gen_table
-      use m_array_for_send_recv
       use m_t_step_parameter
       use m_geometry_parameter
       use m_node_phys_address
@@ -82,9 +81,7 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, numnod)
-!
+      if (iflag_debug.eq.1) write(*,*) 'init_send_recv'
       call init_send_recv
 !
       end subroutine initialize_itp_udt

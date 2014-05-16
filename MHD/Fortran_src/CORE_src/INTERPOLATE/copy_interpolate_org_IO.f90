@@ -65,7 +65,10 @@
         if ( id_dest_domain(num_dest_domain) .eq. my_rank) then
           iflag_self_itp_send = 1
         end if
-!
+      else
+        ntot_table_org = 0
+        call allocate_itp_num_org(np_smp, num_dest_domain)
+        call allocate_itp_table_org
       end if
 !
       end subroutine copy_itp_table_org_from_IO

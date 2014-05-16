@@ -50,7 +50,10 @@
         if ( id_org_domain(num_org_domain) .eq. my_rank) then
           iflag_self_itp_recv = 1
         end if
-!
+      else
+        ntot_table_dest = 0
+        call allocate_itp_num_dest(num_org_domain)
+        call allocate_itp_table_dest
       end if
 !
       end subroutine copy_itp_table_dest_from_IO

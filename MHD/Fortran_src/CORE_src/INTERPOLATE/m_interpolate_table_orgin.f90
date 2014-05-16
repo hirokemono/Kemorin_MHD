@@ -102,7 +102,7 @@
       subroutine deallocate_itp_num_org
 !
       deallocate( id_dest_domain )
-      deallocate( istack_nod_tbl_org )
+      deallocate( istack_nod_tbl_org, istack_itp_type_org)
       deallocate(istack_tbl_type_org_smp)
 !
       end subroutine deallocate_itp_num_org

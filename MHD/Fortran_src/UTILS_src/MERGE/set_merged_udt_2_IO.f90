@@ -75,7 +75,7 @@
 !
       fem_ucd%ifmt_file = ifile_format
       fem_ucd%file_prefix = ucd_prefix
-      call sel_write_ucd_file(izero, istep, fem_ucd)
+      call sel_write_ucd_file(-1, istep, fem_ucd)
       call disconnect_ucd_data(fem_ucd)
 !
       end subroutine link_write_merged_udt

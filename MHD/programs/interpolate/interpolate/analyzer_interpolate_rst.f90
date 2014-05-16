@@ -26,7 +26,6 @@
       subroutine initialize_itp_rst
 !
       use m_ctl_params_4_gen_table
-      use m_array_for_send_recv
       use m_geometry_parameter
       use m_node_phys_address
       use m_2nd_geometry_param
@@ -92,9 +91,6 @@
       call allocate_2nd_data_arrays
 !
 !     --------------------- 
-!
-      if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, numnod)
 !
       call init_send_recv
 !
