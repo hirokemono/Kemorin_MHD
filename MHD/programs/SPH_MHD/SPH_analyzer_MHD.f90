@@ -155,6 +155,7 @@
 !
 !*  ----------  add time evolution -----------------
 !*
+!
       if(i_step .eq. 1) then
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_euler'
         call cal_expricit_sph_euler(i_step)

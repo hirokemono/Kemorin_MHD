@@ -209,7 +209,7 @@
 !
       call cal_sol_scalar_sph_crank(nidx_rj(1), nidx_rj(2),             &
      &    idx_rj_smp_stack, sph_bc_T, coef_temp, coef_d_temp,           &
-     &    coef_imp_t, temp_evo_lu, i_temp_pivot,                        &
+     &    coef_imp_t, temp_evo_mat, temp_evo_lu, i_temp_pivot,          &
 !     &    t00_evo_lu, i_t00_pivot, t00_solution,
      &    ipol%i_temp)
 !
@@ -229,7 +229,7 @@
 !
       call cal_sol_scalar_sph_crank(nidx_rj(1), nidx_rj(2),             &
      &    idx_rj_smp_stack, sph_bc_C, coef_light, coef_d_light,         &
-     &    coef_imp_c, composit_evo_lu, i_composit_pivot,                &
+     &    coef_imp_c, composit_evo_mat, composit_evo_lu, i_composit_pivot, &
 !     &    c00_evo_lu, i_c00_pivot, c00_solution,
      &    ipol%i_light)
 !
@@ -237,8 +237,50 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine check_temperature(l, m, is_field)
+!
+      integer(kind = kint), intent(in) :: l, m, is_field
+!
+      integer(kind = kint) :: j,k,inod
+!
+!
+      j = find_local_sph_mode_address(l, m)
+      if(j .eq. 0) return
+!
+      write(*,*) 'field ID, l, m: ', is_field, l, m
+      do k = 1, nidx_rj(1)
+        inod = j + (k-1)*nidx_rj(2)
+        write(*,*) k, d_rj(inod,is_field)
+      end do
+!
+      end subroutine check_temperature
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_NaN_temperature(is_field)
+!
+      integer(kind = kint), intent(in) :: is_field
+!
+      integer(kind = kint) :: inod, j, k, l, m
+!
+!
+      do inod = 1, nnod_rj
+        if(d_rj(inod,is_field) .ne. d_rj(inod,is_field)) then
+          j = idx_global_rj(inod,2)
+          k = idx_global_rj(inod,1)
+          l = aint(sqrt(real(j)))
+          m = j - l*(l+1)
+          write(50+my_rank,*) 'Broken', inod, k, j, l, m,  &
+     &              d_rj(inod,is_field)
+        end if
+      end do
+!
+end subroutine check_NaN_temperature
+!
+! -----------------------------------------------------------------------
+!
       subroutine cal_sol_scalar_sph_crank(nri, jmax, idx_rj_smp_stack,  &
-     &          sph_bc, coef_f, coef_d, coef_imp, evo_lu, i_pivot,      &
+     &          sph_bc, coef_f, coef_d, coef_imp, evo_mat, evo_lu, i_pivot, &
 !     &          s00_evo_lu, i_s00_pivot, sol_00, is_field)
      &          is_field)
 !
@@ -251,6 +293,7 @@
       integer(kind = kint), intent(in) :: idx_rj_smp_stack(0:np_smp,2)
       type(sph_boundary_type), intent(in) :: sph_bc
       real(kind = kreal), intent(in) :: coef_imp, coef_f, coef_d
+      real(kind = kreal), intent(in) :: evo_mat(3,nri,jmax)
       real(kind = kreal), intent(in) :: evo_lu(5,nri,jmax)
       integer(kind = kint), intent(in) :: i_pivot(nri,jmax)
 !      real(kind = kreal), intent(in) :: s00_evo_lu(5,0:nri)
@@ -294,8 +337,20 @@
 !     &      inod_rj_center, idx_rj_degree_zero, is_field, sol_00)
 !      end if
 !
+!      j = find_local_sph_mode_address(30,-23)
+!      if(j.gt.0) then
+!        write(*,*) 'matrix'
+!        call check_single_radial_3band_mat(my_rank, nri,                &
+!     &      radius_1d_rj_r, evo_mat(1,1,j))
+!      end if
+!
       call lubksb_3band_mul(np_smp, idx_rj_smp_stack(0,2),              &
      &    jmax, nri, evo_lu, i_pivot, d_rj(1,is_field) )
+!
+!       write(*,*) 'solution'
+!       call check_temperature(30,-23, is_field)
+!       write(*,*) 'check_NaN_temperature'
+!       call check_NaN_temperature(is_field)
 !
 !   Solve l=m=0 including center
 !      if(inod_rj_center .eq. 0) return

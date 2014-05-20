@@ -15,7 +15,7 @@
 !!     &          idx_rj_degree_zero, r_CTR1, d_center,                 &
 !!     &          fdm2_fix_fld_ctr1, fdm2_fixed_center, is_fld, is_grd)
 !!
-!!      subroutine cal_sph_div_flux_4_fix_ctr(jmax, r_CTR1, fix_CTR,    &
+!!      subroutine cal_sph_div_flux_4_fix_ctr(jmax, r_CTR1, fix_ICB,    &
 !!     &          fdm2_fix_fld_ctr1, is_fld, is_div)
 !!
 !!      subroutine cal_sph_fixed_center1_diffuse2(jmax, r_CTR1,         &
@@ -168,13 +168,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_div_flux_4_fix_ctr(jmax, r_CTR1, fix_CTR,      &
+      subroutine cal_sph_div_flux_4_fix_ctr(jmax, r_CTR1, fix_ICB,      &
      &          fdm2_fix_fld_ctr1, is_fld, is_div)
 !
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: is_fld, is_div
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
-      real(kind = kreal), intent(in) :: fix_CTR(jmax)
+      real(kind = kreal), intent(in) :: fix_ICB(jmax)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ctr1(-1:1,3)
 !
       real(kind = kreal) :: d1s_dr1
@@ -182,11 +182,10 @@
 !
 !
 !$omp parallel do private(i_p1,j,d1s_dr1)
-!cdir nodep
       do j = 1, jmax
         i_p1 = j + jmax
 !
-        d1s_dr1 =  fdm2_fix_fld_ctr1(-1,2) * fix_CTR(j)                 &
+        d1s_dr1 =  fdm2_fix_fld_ctr1(-1,2) * fix_ICB(j)                 &
      &           + fdm2_fix_fld_ctr1( 0,2) * d_rj(j,is_fld)             &
      &           + fdm2_fix_fld_ctr1( 1,2) * d_rj(i_p1,is_fld)
 !
