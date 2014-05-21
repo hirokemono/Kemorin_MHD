@@ -210,8 +210,7 @@
       call cal_sol_scalar_sph_crank(nidx_rj(1), nidx_rj(2),             &
      &    idx_rj_smp_stack, sph_bc_T, coef_temp, coef_d_temp,           &
      &    coef_imp_t, temp_evo_mat, temp_evo_lu, i_temp_pivot,          &
-!     &    t00_evo_lu, i_t00_pivot, t00_solution,
-     &    ipol%i_temp)
+     &    t00_evo_lu, i_t00_pivot, t00_solution, ipol%i_temp)
 !
       end subroutine cal_sol_temperature_sph_crank
 !
@@ -229,8 +228,8 @@
 !
       call cal_sol_scalar_sph_crank(nidx_rj(1), nidx_rj(2),             &
      &    idx_rj_smp_stack, sph_bc_C, coef_light, coef_d_light,         &
-     &    coef_imp_c, composit_evo_mat, composit_evo_lu, i_composit_pivot, &
-!     &    c00_evo_lu, i_c00_pivot, c00_solution,
+     &    coef_imp_c, composit_evo_mat, composit_evo_lu,                &
+     &    i_composit_pivot, c00_evo_lu, i_c00_pivot, c00_solution,      &
      &    ipol%i_light)
 !
       end subroutine cal_sol_composition_sph_crank
@@ -281,12 +280,12 @@ end subroutine check_NaN_temperature
 !
       subroutine cal_sol_scalar_sph_crank(nri, jmax, idx_rj_smp_stack,  &
      &          sph_bc, coef_f, coef_d, coef_imp, evo_mat, evo_lu, i_pivot, &
-!     &          s00_evo_lu, i_s00_pivot, sol_00, is_field)
-     &          is_field)
+     &          s00_evo_lu, i_s00_pivot, sol_00, is_field)
 !
       use m_t_int_parameter
       use t_boundary_params_sph_MHD
       use set_scalar_boundary_sph
+      use cal_sph_exp_center
       use lubksb_357band
 !
       integer(kind = kint), intent(in) :: nri, jmax
@@ -296,11 +295,11 @@ end subroutine check_NaN_temperature
       real(kind = kreal), intent(in) :: evo_mat(3,nri,jmax)
       real(kind = kreal), intent(in) :: evo_lu(5,nri,jmax)
       integer(kind = kint), intent(in) :: i_pivot(nri,jmax)
-!      real(kind = kreal), intent(in) :: s00_evo_lu(5,0:nri)
-!      integer(kind = kint), intent(in) :: i_s00_pivot(0:nri)
+      real(kind = kreal), intent(in) :: s00_evo_lu(5,0:nri)
+      integer(kind = kint), intent(in) :: i_s00_pivot(0:nri)
 !
       integer(kind = kint), intent(in) :: is_field
-!      real(kind = kreal), intent(inout) :: sol_00(0:nri)
+      real(kind = kreal), intent(inout) :: sol_00(0:nri)
 !
 !
 !   Set RHS vector for CMB
@@ -321,6 +320,9 @@ end subroutine check_NaN_temperature
       if (sph_bc%iflag_icb .eq. iflag_fixed_field) then
         call set_fixed_scalar_sph(jmax, ione, sph_bc%kr_in,             &
      &      is_field, sph_bc%ICB_fld)
+      else if (sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
+        call cal_sph_fixed_center(inod_rj_center, sph_bc%CTR_fld,       &
+     &      is_field)
       else if(sph_bc%iflag_icb .eq. iflag_fixed_flux                    &
      &     .and. coef_f .ne. 0.0d0) then
         call adjust_in_fixed_flux_sph(jmax,                             &
@@ -332,10 +334,10 @@ end subroutine check_NaN_temperature
      &      sph_bc%ICB_flux, is_field)
       end if
 !
-!      if(inod_rj_center .gt. 0) then
-!        call copy_degree0_comps_to_sol(nri, jmax,                       &
-!     &      inod_rj_center, idx_rj_degree_zero, is_field, sol_00)
-!      end if
+      if(inod_rj_center .gt. 0) then
+        call copy_degree0_comps_to_sol(nri, jmax,                       &
+     &      inod_rj_center, idx_rj_degree_zero, is_field, sol_00)
+      end if
 !
 !      j = find_local_sph_mode_address(30,-23)
 !      if(j.gt.0) then
@@ -353,10 +355,10 @@ end subroutine check_NaN_temperature
 !       call check_NaN_temperature(is_field)
 !
 !   Solve l=m=0 including center
-!      if(inod_rj_center .eq. 0) return
-!      call lubksb_3band(nri+1, s00_evo_lu, i_s00_pivot, sol_00)
-!      call copy_degree0_comps_from_sol(nri, jmax,                      &
-!     &    inod_rj_center, idx_rj_degree_zero, sol_00, is_field)
+      if(inod_rj_center .eq. 0) return
+      call lubksb_3band(nri+1, s00_evo_lu, i_s00_pivot, sol_00)
+      call copy_degree0_comps_from_sol(nri, jmax,                       &
+     &    inod_rj_center, idx_rj_degree_zero, sol_00, is_field)
 !
       end subroutine cal_sol_scalar_sph_crank
 !
@@ -381,10 +383,11 @@ end subroutine check_NaN_temperature
 !$omp end parallel do
       sol_00(0) = d_rj(inod_rj_center,is_field)
 !
-!         write(*,*) 'kr, RHS'
-!      do kr = 0, nri
+!       write(*,*) 'kr, Average RHS'
+!       do kr = 0, nri
 !         write(*,*) kr, sol_00(kr)
 !      end do
+
       end subroutine copy_degree0_comps_to_sol
 !
 ! -----------------------------------------------------------------------
@@ -408,8 +411,8 @@ end subroutine check_NaN_temperature
 !$omp end parallel do
       d_rj(inod_rj_center,is_field) = sol_00(0)
 !
-!         write(*,*) 'kr, Solution'
-!      do kr = 0, nri
+!       write(*,*) 'kr, average Solution'
+!       do kr = 0, nri
 !         write(*,*) kr, sol_00(kr)
 !      end do
 !

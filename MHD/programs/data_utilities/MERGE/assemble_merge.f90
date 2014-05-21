@@ -33,7 +33,7 @@
 !  ===========
 ! . for local 
 !  ===========
-      integer(kind=kint ) :: istep
+      integer(kind=kint ) :: istep, i, k
 !
 ! ==============================================                                                                                                            
 ! * get number of  nodes,elements for whole PES
@@ -65,17 +65,28 @@
 !
 !   output grid data
 !
-      call link_write_merged_grd_2_ucd(itype_assembled_data, &
-     &     merged_data_head)
+      call link_merged_node_2_ucd_IO
+      call link_merged_ele_2_ucd_IO
+!
+      fem_ucd%ifmt_file = itype_assembled_data
+      fem_ucd%file_prefix = merged_data_head
+      call sel_write_grd_file(izero, fem_ucd)
+!
+      if(    mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_vtd/10            &
+     &  .or. mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_udt/10) then
+        call deallocate_ucd_ele(fem_ucd)
+      end if
 !
 !   loop for snap shots
 !
       do istep = istep_start, istep_end, increment_step
         call read_ucd_data_4_merge(istep)
+        call link_merged_field_2_udt_IO
 !
-        call link_write_merged_udt(istep, itype_assembled_data,         &
-     &      merged_data_head)
-!
+        fem_ucd%ifmt_file = itype_assembled_data
+        fem_ucd%file_prefix = merged_data_head
+        call sel_write_ucd_file(-1, istep, fem_ucd)
+        call deallocate_ucd_data(fem_ucd)
       write(*,*) 'step', istep, 'finish '
       end do
 !

@@ -7,6 +7,7 @@
 !>@brief  Set center fields by explicit method
 !!
 !!@verbatim
+!!      subroutine cal_sph_fixed_center(inod_rj_center, CTR_fld, is_fld)
 !!      subroutine cal_sph_center1_grad22(jmax, r_CTR1,                 &
 !!     &          fdm2_fix_fld_ctr1, is_fld, is_grd)
 !!      subroutine sph0_scalar_fill_ctr_grad2(jmax, inod_rj_center,     &
@@ -58,6 +59,20 @@
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_sph_fixed_center(inod_rj_center, CTR_fld, is_fld)
+!
+      integer(kind = kint), intent(in) :: inod_rj_center
+      integer(kind = kint), intent(in) :: is_fld
+      real(kind = kreal), intent(in) :: CTR_fld
+!
+!
+      if(inod_rj_center .eq. 0) return
+      d_rj(inod_rj_center,is_fld) = CTR_fld
+!
+      end subroutine cal_sph_fixed_center
 !
 ! -----------------------------------------------------------------------
 !

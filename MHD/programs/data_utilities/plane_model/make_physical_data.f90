@@ -298,7 +298,12 @@
 !
 !    output data
 !
-        call link_write_merged_ucd(iflag_udt, istep)
+        call link_merged_node_2_ucd_IO
+        call link_merged_field_2_udt_IO
+!
+        fem_ucd%ifmt_file = iflag_udt
+        call sel_write_ucd_file(izero, istep, fem_ucd)
+        call disconnect_ucd_data(fem_ucd)
       end do
 !
       end program make_physical_data

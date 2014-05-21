@@ -87,14 +87,7 @@
         call allocate_ucd_node(fem_ucd)
         call copy_node_posi_from_global(ip, fem_ucd)
 !
-        call count_udt_elements                                         &
-     &     (subdomains_2(ip)%node%internal_node,                        &
-     &      subdomains_2(ip)%ele%numele,                                &
-     &      subdomains_2(ip)%ele%nnod_4_ele, subdomains_2(ip)%ele%ie,   &
-     &      fem_ucd)
-        call allocate_ucd_ele(fem_ucd)
-!
-        call set_udt_global_connect                                     &
+        call const_udt_global_connect                                   &
      &     (subdomains_2(ip)%node%internal_node,                        &
      &      subdomains_2(ip)%ele%numele,                                &
      &      subdomains_2(ip)%ele%nnod_4_ele,                            &

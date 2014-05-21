@@ -145,8 +145,6 @@
       call copy_to_band3_mat_w_center(nri, coef_f,                      &
       &   evo_mat_j0(1,1), evo00_mat(1,0))
 !
-      write(*,*) 'sph_bc%iflag_icb', sph_bc%iflag_icb,  &
-     &          iflag_sph_fill_center, iflag_sph_fix_center
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center) then
         call add_scalar_poisson_mat_fill_ctr(nri, sph_bc%r_ICB,         &
      &      fdm2_fix_dr_center, fdm2_fix_fld_ctr1, coef, evo00_mat)
