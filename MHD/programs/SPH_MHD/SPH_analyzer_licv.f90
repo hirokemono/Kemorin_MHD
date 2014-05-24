@@ -112,8 +112,8 @@
 !
 !  -------------------------------
 !
-      if(iflag_debug.gt.0) write(*,*)' s_const_radial_mat_4_sph'
-      call s_const_radial_mat_4_sph
+      if(iflag_debug.gt.0) write(*,*)' const_radial_mat_sph_mhd'
+      call const_radial_mat_sph_mhd
 !*
 !* obtain linear terms for starting
 !*

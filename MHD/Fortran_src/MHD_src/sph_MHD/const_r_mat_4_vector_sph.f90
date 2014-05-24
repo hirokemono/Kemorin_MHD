@@ -47,10 +47,9 @@
 !
       integer(kind = kint) :: ip, jst, jed, j
       integer(kind = kint) :: ierr
-      real(kind = kreal) :: coef_dvt, coef_p
+      real(kind = kreal) :: coef_dvt
 !
 !
-      coef_p = - coef_press
       if(coef_d_velo .eq. zero) then
         coef_dvt = one
         call set_unit_mat_4_poisson(nidx_rj(1), nidx_rj(2),             &
@@ -67,8 +66,6 @@
 !
       call set_unit_mat_4_poisson(nidx_rj(1), nidx_rj(2),               &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, vs_poisson_mat)
-      call set_unit_mat_4_poisson(nidx_rj(1), nidx_rj(2),               &
-     &    sph_bc_U%kr_in, sph_bc_U%kr_out, p_poisson_mat)
 !
       call add_vector_poisson_mat_sph(nidx_rj(1), nidx_rj(2),           &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, coef_dvt, vt_evo_mat)
@@ -76,14 +73,10 @@
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, coef_dvt, wt_evo_mat)
       call add_vector_poisson_mat_sph(nidx_rj(1), nidx_rj(2),           &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, one, vs_poisson_mat)
-      call add_scalar_poisson_mat_sph(nidx_rj(1), nidx_rj(2),           &
-     &    sph_bc_U%kr_in, sph_bc_U%kr_out, coef_p, p_poisson_mat)
 !
 !   Boundary condition for ICB
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
-        call add_scalar_poisson_mat_ctr1(nidx_rj(1), nidx_rj(2),        &
-     &       sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, coef_p, p_poisson_mat)
         call add_vector_poisson_mat_center(nidx_rj(1), nidx_rj(2),      &
      &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, coef_dvt, vt_evo_mat)
         call add_vector_poisson_mat_center(nidx_rj(1), nidx_rj(2),      &
@@ -94,9 +87,6 @@
         call add_fix_flux_icb_poisson_mat(nidx_rj(1), nidx_rj(2),       &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_dr_ICB,   &
      &      coef_dvt, wt_evo_mat)
-        call add_icb_scalar_poisson_mat(nidx_rj(1), nidx_rj(2),         &
-     &      sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_dr_ICB,   &
-     &      coef_p, p_poisson_mat)
 !
         if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
           call add_fix_flux_icb_poisson_mat(nidx_rj(1), nidx_rj(2),     &
@@ -126,9 +116,6 @@
       call add_fix_flux_cmb_poisson_mat(nidx_rj(1), nidx_rj(2),         &
      &    sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_dr_CMB,    &
      &    coef_dvt, wt_evo_mat)
-      call add_cmb_scalar_poisson_mat(nidx_rj(1), nidx_rj(2),           &
-     &    sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_dr_CMB,    &
-     &    coef_p, p_poisson_mat)
 !
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call add_fix_flux_cmb_poisson_mat(nidx_rj(1), nidx_rj(2),       &
@@ -167,9 +154,6 @@
           call ludcmp_3band(nidx_rj(1), vs_poisson_mat(1,1,j),          &
      &        i_vs_pivot(1,j), ierr, vs_poisson_lu(1,1,j),              &
      &        vs_poisson_det(1,j) )
-          call ludcmp_3band(nidx_rj(1), p_poisson_mat(1,1,j),           &
-     &        i_p_pivot(1,j), ierr, p_poisson_lu(1,1,j),                &
-     &        p_poisson_det(1,j) )
         end do
       end do
 !$omp end parallel do

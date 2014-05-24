@@ -8,8 +8,8 @@
 !!        of poloidal velocity and pressure
 !!
 !!@verbatim
-!!      subroutine allocate_velo_mat_sph
-!!      subroutine deallocate_velo_mat_sph
+!!      subroutine allocate_press_vpol_mat_sph
+!!      subroutine deallocate_press_vpol_mat_sph
 !!      subroutine check_velocity_matrices_sph(my_rank)
 !!@endverbatim
 !

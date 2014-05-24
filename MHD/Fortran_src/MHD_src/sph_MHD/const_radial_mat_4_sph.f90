@@ -7,7 +7,8 @@
 !>@brief Construct 1D matrices for MHD dynamo simulaiton
 !!
 !!@verbatim
-!!      subroutine s_const_radial_mat_4_sph
+!!      subroutine const_radial_mat_sph_mhd
+!!      subroutine const_radial_mat_sph_snap
 !!@endverbatim
 !
       module const_radial_mat_4_sph
@@ -29,7 +30,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_const_radial_mat_4_sph
+      subroutine const_radial_mat_sph_mhd
 !
       use m_spheric_parameter
 !
@@ -39,8 +40,36 @@
       if(inod_rj_center .eq. 0) return
       call const_radial_mat_sph_w_center
 !
-      end subroutine s_const_radial_mat_4_sph
+      end subroutine const_radial_mat_sph_mhd
 !
+! -----------------------------------------------------------------------
+!
+      subroutine const_radial_mat_sph_snap
+!
+      use m_control_parameter
+      use m_spheric_parameter
+      use m_radial_matrices_sph
+      use m_radial_mat_sph_w_center
+      use const_r_mat_4_scalar_sph
+      use const_r_mat_w_center_sph
+!
+!
+      if (iflag_t_evo_4_velo .lt. id_Crank_nicolson) return
+      call allocate_press_mat_sph
+!
+      if(iflag_debug .gt. 0)                                            &
+     &          write(*,*) 'const_radial_mat_4_press_sph'
+      call const_radial_mat_4_press_sph
+!
+      if(inod_rj_center .eq. 0) return
+      call allocate_press00_mat_sph
+!
+      if(i_debug .gt. 0) write(*,*) 'const_radial_mat_press00_sph'
+      call const_radial_mat_press00_sph
+!
+      end subroutine const_radial_mat_sph_snap
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_matrices_sph
@@ -53,10 +82,12 @@
 !
       if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
         call allocate_velo_mat_sph
+        call allocate_press_mat_sph
 !
         if(iflag_debug .gt. 0)                                          &
      &          write(*,*) 'const_radial_mat_vort_2step'
         call const_radial_mat_vort_2step
+        call const_radial_mat_4_press_sph
       end if
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
