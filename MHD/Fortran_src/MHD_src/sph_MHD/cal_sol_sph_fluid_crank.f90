@@ -386,7 +386,7 @@ end subroutine check_NaN_temperature
 !       write(*,*) 'kr, Average RHS'
 !       do kr = 0, nri
 !         write(*,*) kr, sol_00(kr)
-!      end do
+!       end do
 
       end subroutine copy_degree0_comps_to_sol
 !

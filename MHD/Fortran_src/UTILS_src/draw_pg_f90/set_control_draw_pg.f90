@@ -138,26 +138,30 @@
       end do
 !
 !
-        write(*,*) 'ntot_range_ctl', ntot_range_ctl, num_line_ctl
-      if(ntot_range_ctl .gt. 0) then
-        do i = 1, ntot_range_ctl
-          j = id_4_contour_ctl(i)
-          num_line_pg(j) =  num_line_ctl(i)
-          range_pg(1:2,j) = contour_range_ctl(i,1:2)
+      if(contour_range_ctl%num .gt. 0) then
+        do i = 1, contour_range_ctl%num
+          j = contour_range_ctl%int1(i)
+          num_line_pg(j) =  contour_range_ctl%int2(i)
+          range_pg(1,j) =   contour_range_ctl%vec1(i)
+          range_pg(2,j) =   contour_range_ctl%vec2(i)
         end do
+!
+        do i = 1, contour_range_ctl%num
+          nmax_line = max(contour_range_ctl%int2(i),nmax_line)
+        end do
+        call dealloc_control_array_i2_r2(contour_range_ctl)
       end if
 !
-      do i = 1, ntot_range_ctl
-        nmax_line = max(num_line_ctl(i),nmax_line)
-      end do
       call allocate_data_4_isoline
 !
-      if(ntot_scale_ctl .gt. 0) then
-        do i = 1, ntot_scale_ctl
-          j = id_4_vector_ctl(i)
-          nskip_vect_pg(j) =  nskip_vect_ctl(i)
-          scale_pg(j) = vector_scale_ctl(i)
+      if(vector_scale_ctl%num .gt. 0) then
+        do i = 1, vector_scale_ctl%num
+          j = vector_scale_ctl%int1(i)
+          nskip_vect_pg(j) =  vector_scale_ctl%int2(i)
+          scale_pg(j) = vector_scale_ctl%vect(i)
         end do
+!
+        call dealloc_control_array_i2_r(vector_scale_ctl)
       end if
 !
       if (iflag_debug .gt. 0) then
@@ -181,7 +185,7 @@
      &               ncomp_org_4_plot(i)
           write(*,*)
         end do
-        do i = 1, ntot_scale_ctl
+        do i = 1, vector_scale_ctl%num
           write(*,*) 'interval, scale', i, nskip_vect_pg(i), scale_pg(i)
         end do
       end if

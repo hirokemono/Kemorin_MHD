@@ -64,7 +64,6 @@
      &      num_nod_phys, phys_nod_name)
         if(iflag_debug .gt. 0) write(*,*) 'deallocate_cont_dat_pvr',i
         call deallocate_cont_dat_pvr(pvr_ctl_struct(i))
-        if(iflag_debug .gt. 0) write(*,*) 'deallocate_cont_dat_pvr end'
      end do
 !
       call allocate_loght_posi_in_view

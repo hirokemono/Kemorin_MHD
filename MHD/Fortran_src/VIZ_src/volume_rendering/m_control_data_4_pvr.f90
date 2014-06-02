@@ -160,11 +160,12 @@
       module m_control_data_4_pvr
 !
       use m_precision
+      use calypso_mpi
 !
       use m_machine_parameter
-      use calypso_mpi
       use m_read_control_elements
       use m_ctl_data_4_view_transfer
+      use t_read_control_arrays
       use skip_comment_f
 !
       implicit  none
@@ -187,8 +188,12 @@
         real(kind = kreal) :: ambient_coef_ctl
         real(kind = kreal) :: diffuse_coef_ctl
         real(kind = kreal) :: specular_coef_ctl
-        integer(kind = kint) :: num_of_lights_ctl = 0
-        real(kind = kreal), pointer :: xyz_light_ctl(:,:)
+!
+!!      Structure for light positions
+!!@n      light_position_ctl%vec1:  X-component of light position
+!!@n      light_position_ctl%vec2:  Y-component of light position
+!!@n      light_position_ctl%vec3:  Z-component of light position
+        type(ctl_array_r3) :: light_position_ctl
 !
         character(len=kchara) :: rotation_axis_ctl
         integer (kind=kint) ::   num_frames_ctl = 0
@@ -207,14 +212,16 @@
         real(kind = kreal) :: pvr_range_min_ctl, pvr_range_max_ctl
         real(kind = kreal) :: constant_opacity_ctl
 !
-        integer (kind=kint) :: num_pvr_datamap_pnt_ctl = 0
-        real(kind = kreal), pointer :: pvr_datamap_data_ctl(:)
-        real(kind = kreal), pointer :: pvr_datamap_color_ctl(:)
+!!      Structure for color map controls
+!!@n      opacity_ctl%vec1:  field data value
+!!@n      opacity_ctl%vec2:  color map value
+        type(ctl_array_r2) :: colortbl_ctl
 !
-        integer (kind=kint) :: num_opacity_def_ctl = 0
-        real(kind = kreal), pointer :: opacity_dat_low_ctl(:)
-        real(kind = kreal), pointer :: opacity_dat_high_ctl(:)
-        real(kind = kreal), pointer :: opacity_value_ctl(:)
+!!      Structure for opacity controls
+!!@n      opacity_ctl%vec1:  Minimum value for one opacity
+!!@n      opacity_ctl%vec2:  Maximum value for one opacity
+!!@n      opacity_ctl%vec3:  Opacity for each level
+        type(ctl_array_r3) :: opacity_ctl
 !
 !
 !     Top level
@@ -240,14 +247,12 @@
         integer (kind=kint) :: i_opacity_style =         0
         integer (kind=kint) :: i_pvr_range_min =         0
         integer (kind=kint) :: i_pvr_range_max =         0
-        integer (kind=kint) :: i_num_opacity_def_point = 0
         integer (kind=kint) :: i_constant_opacity =      0
 !
 !     3rd level for lighting
         integer (kind=kint) :: i_ambient =  0
         integer (kind=kint) :: i_diffuse =  0
         integer (kind=kint) :: i_specular = 0
-        integer (kind=kint) :: i_nlights =  0
 !
 !     3rd level for colorbar
         integer (kind=kint) :: i_colorbar_switch =  0
@@ -298,7 +303,7 @@
       character(len=kchara) :: hd_ambient =  'ambient_coef_ctl'
       character(len=kchara) :: hd_diffuse =  'diffuse_coef_ctl'
       character(len=kchara) :: hd_specular = 'specular_coef_ctl'
-      character(len=kchara) :: hd_nlights =  'position_of_lights'
+      character(len=kchara) :: hd_light_param =  'position_of_lights'
 !
 !     3rd level for colormap
 !
@@ -306,13 +311,11 @@
       character(len=kchara) :: hd_data_mapping = 'data_mapping_ctl'
       character(len=kchara) :: hd_pvr_range_min = 'range_min_ctl'
       character(len=kchara) :: hd_pvr_range_max = 'range_max_ctl'
-      character(len=kchara) :: hd_num_data_mapping                      &
-     &                        = 'color_table_ctl'
+      character(len=kchara) :: hd_colortable = 'color_table_ctl'
       character(len=kchara) :: hd_opacity_style = 'opacity_style_ctl'
       character(len=kchara) :: hd_constant_opacity                      &
      &                        = 'constant_opacity_ctl'
-      character(len=kchara) :: hd_num_opacity_def_point                 &
-     &                        = 'opacity_table_ctl'
+      character(len=kchara) :: hd_opacity_def = 'opacity_table_ctl'
 !
 !     3rd level for colorbar
 !
@@ -334,19 +337,18 @@
       private :: hd_plot_area, hd_output_comp_def
       private :: hd_plot_grp
       private :: hd_pvr_lighting, hd_ambient, hd_diffuse, hd_specular
-      private :: hd_nlights, hd_pvr_colorbar, hd_pvr_rotation
+      private :: hd_light_param, hd_pvr_colorbar, hd_pvr_rotation
       private :: hd_pvr_colordef, hd_colormap, hd_data_mapping
       private :: hd_pvr_numgrid_cbar, hd_zeromarker_flag
       private :: hd_pvr_range_min, hd_pvr_range_max
-      private :: hd_num_data_mapping, hd_opacity_style
-      private :: hd_constant_opacity, hd_num_opacity_def_point
+      private :: hd_colortable, hd_opacity_style
+      private :: hd_constant_opacity, hd_opacity_def
 !
       private :: allocate_area_grp_vr_psf
       private :: read_plot_area_ctl
       private :: read_lighting_ctl
-      private :: allocate_pvr_lighting_ctl, read_pvr_rotation_ctl
+      private :: read_pvr_rotation_ctl
       private :: read_pvr_colorbar_ctl, read_pvr_colordef_ctl
-      private :: allocate_pvr_colormap_ctl, allocate_pvr_opacity_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -364,70 +366,23 @@
       end subroutine allocate_area_grp_vr_psf
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine allocate_pvr_lighting_ctl(pvr)
-!
-      type(pvr_ctl), intent(inout) :: pvr
-!
-      allocate( pvr%xyz_light_ctl(pvr%num_of_lights_ctl,3) )
-      if(pvr%num_of_lights_ctl .gt. 0) pvr%xyz_light_ctl = 0.0d0
-!
-      end subroutine allocate_pvr_lighting_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_pvr_colormap_ctl(pvr)
-!
-      type(pvr_ctl), intent(inout) :: pvr
-!
-!
-      allocate( pvr%pvr_datamap_data_ctl(pvr%num_pvr_datamap_pnt_ctl))
-      allocate( pvr%pvr_datamap_color_ctl(pvr%num_pvr_datamap_pnt_ctl))
-!
-      if(pvr%num_pvr_datamap_pnt_ctl .gt. 0) then
-        pvr%pvr_datamap_data_ctl  = 0.0d0
-        pvr%pvr_datamap_color_ctl = 0.0d0
-      end if
-!
-      end subroutine allocate_pvr_colormap_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_pvr_opacity_ctl(pvr)
-!
-      type(pvr_ctl), intent(inout) :: pvr
-!
-!
-      allocate(pvr%opacity_dat_low_ctl(pvr%num_opacity_def_ctl))
-      allocate(pvr%opacity_dat_high_ctl(pvr%num_opacity_def_ctl) )
-      allocate(pvr%opacity_value_ctl(pvr%num_opacity_def_ctl))
-!
-      if(pvr%num_opacity_def_ctl .gt. 0) then
-        pvr%opacity_dat_low_ctl =  0.0d0
-        pvr%opacity_dat_high_ctl = 0.0d0
-        pvr%opacity_value_ctl =  0.0d0
-      end if
-!
-      end subroutine allocate_pvr_opacity_ctl
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine deallocate_cont_dat_pvr(pvr)
 !
       type(pvr_ctl), intent(inout) :: pvr
 !
-      if(pvr%num_opacity_def_ctl .gt. 0) then
-        deallocate( pvr%opacity_dat_low_ctl )
-        deallocate( pvr%opacity_dat_high_ctl )
-        deallocate( pvr%opacity_value_ctl )
+!
+      if(pvr%opacity_ctl%num .gt. 0) then
+        call dealloc_control_array_r3(pvr%opacity_ctl)
       end if
-
-      if(pvr%num_pvr_datamap_pnt_ctl .gt. 0) then
-        deallocate(pvr%pvr_datamap_data_ctl )
-        deallocate(pvr%pvr_datamap_color_ctl )
+      if(pvr%light_position_ctl%num .gt. 0) then
+        call dealloc_control_array_r3(pvr%light_position_ctl)
       end if
-      if(pvr%i_nlights .gt. 0) deallocate(pvr%xyz_light_ctl)
+!
+      if(pvr%colortbl_ctl%num .gt. 0) then
+        call dealloc_control_array_r2(pvr%colortbl_ctl)
+      end if
 !
       deallocate(pvr%pvr_area_ele_grp_ctl)
 !
@@ -525,7 +480,6 @@
       subroutine read_lighting_ctl(pvr)
 !
       type(pvr_ctl), intent(inout) :: pvr
-      integer(kind = kint) :: num
 !
 !
       if(right_begin_flag(hd_pvr_lighting) .eq. 0) return
@@ -536,15 +490,8 @@
         call find_control_end_flag(hd_pvr_lighting, pvr%i_pvr_lighting)
         if(pvr%i_pvr_lighting .gt. 0) exit
 !
-        call find_control_array_flag(hd_nlights, pvr%num_of_lights_ctl)
-        if(pvr%num_of_lights_ctl.gt.0 .and. pvr%i_nlights.eq.0) then
-          call allocate_pvr_lighting_ctl(pvr)
-          num = pvr%num_of_lights_ctl
-          call read_control_array_real3_list(hd_nlights,                &
-     &        pvr%num_of_lights_ctl, pvr%i_nlights,                     &
-     &        pvr%xyz_light_ctl(1:num,1), pvr%xyz_light_ctl(1:num,2),   &
-     &        pvr%xyz_light_ctl(1:num,3) )
-        end if
+        call read_control_array_r3                                      &
+     &     (hd_light_param, pvr%light_position_ctl)
 !
         call read_real_ctl_item(hd_ambient,                             &
      &          pvr%i_ambient, pvr%ambient_coef_ctl )
@@ -572,26 +519,9 @@
         if(pvr%i_pvr_colordef .gt. 0) exit
 !
 !
-        call find_control_array_flag(hd_num_data_mapping,               &
-     &      pvr%num_pvr_datamap_pnt_ctl)
-        if(pvr%num_pvr_datamap_pnt_ctl.gt.0                             &
-     &       .and. pvr%i_num_data_mapping.eq.0) then
-          call allocate_pvr_colormap_ctl(pvr)
-          call read_control_array_real2_list(hd_num_data_mapping,       &
-     &        pvr%num_pvr_datamap_pnt_ctl, pvr%i_num_data_mapping,      &
-     &        pvr%pvr_datamap_data_ctl, pvr%pvr_datamap_color_ctl)
-        end if
+        call read_control_array_r2(hd_colortable, pvr%colortbl_ctl)
 !
-        call find_control_array_flag(hd_num_opacity_def_point,          &
-     &      pvr%num_opacity_def_ctl)
-        if(pvr%num_opacity_def_ctl.gt.0                                 &
-     &       .and. pvr%i_num_opacity_def_point.eq.0) then
-          call allocate_pvr_opacity_ctl(pvr)
-          call read_control_array_real3_list(hd_num_opacity_def_point,  &
-     &        pvr%num_opacity_def_ctl, pvr%i_num_opacity_def_point,     &
-     &        pvr%opacity_dat_low_ctl, pvr%opacity_dat_high_ctl,        &
-     &        pvr%opacity_value_ctl)
-        end if
+        call read_control_array_r3(hd_opacity_def, pvr%opacity_ctl)
 !
 !
         call read_character_ctl_item(hd_colormap,                       &
@@ -680,9 +610,9 @@
 !
 !
       pvr%num_pvr_area_grp_ctl = 0
-      pvr%num_of_lights_ctl = 0
-      pvr%num_pvr_datamap_pnt_ctl = 0
-      pvr%num_opacity_def_ctl = 0
+      pvr%light_position_ctl%num = 0
+      pvr%colortbl_ctl%num =       0
+      pvr%opacity_ctl%num =        0
 !
       pvr%i_pvr_file_head =       0
       pvr%i_pvr_out_type =        0
@@ -692,7 +622,7 @@
       pvr%i_ambient =  0
       pvr%i_diffuse =  0
       pvr%i_specular = 0
-      pvr%i_nlights =  0
+      pvr%light_position_ctl%icou =  0
       pvr%i_movie_rot_frame = 0
       pvr%i_movie_rot_axis =  0
 !
@@ -719,8 +649,8 @@
       pvr%i_pvr_colorbar = 0
 !
       pvr%i_pvr_colordef = 0
-      pvr%i_num_data_mapping =      0
-      pvr%i_num_opacity_def_point = 0
+      pvr%colortbl_ctl%icou = 0
+      pvr%opacity_ctl%icou =  0
 !
       call reset_view_transfer_ctl(pvr%mat)
 !

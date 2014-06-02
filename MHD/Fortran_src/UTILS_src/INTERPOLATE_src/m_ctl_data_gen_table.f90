@@ -16,6 +16,7 @@
 !
       use m_machine_parameter
       use m_read_control_elements
+      use t_read_control_arrays
       use skip_comment_f
 !
       implicit  none
@@ -40,10 +41,12 @@
       character(len = kchara) :: single_itp_tbl_head_ctl = "single_itp"
 !
       character(len = kchara) :: ele_hash_type_ctl = "sphere"
-      integer(kind = kint) :: num_r_divide_ctl = 0
-      real(kind = kreal), allocatable :: r_divide_ctl(:)
       integer(kind = kint) :: num_theta_divide_ctl = 0
       integer(kind = kint) :: num_phi_divide_ctl = 0
+!
+!!      Structure for element grouping in meridional direction
+!!@n      r_ele_grouping_ctl%vect:  Radius data for searching
+      type(ctl_array_real) :: radial_divide_ctl
 !
       integer(kind = kint) :: num_search_times_ctl = 0
       integer(kind = kint), allocatable :: i_search_sleeve_ctl(:)
@@ -107,14 +110,13 @@
       character(len=kchara), parameter                                  &
      &         ::  hd_hash_type =       'hash_type_name'
       character(len=kchara), parameter                                  &
-     &         ::  hd_num_hash_radial = 'radius_ctl'
+     &         ::  hd_search_radius = 'radius_ctl'
       character(len=kchara), parameter                                  &
      &         ::  hd_num_hash_elev =   'num_elevation_ctl'
       character(len=kchara), parameter                                  &
      &         ::  hd_num_hash_azim =   'num_azimuth_ctl'
 !
       integer (kind=kint) :: i_hash_type =       0
-      integer (kind=kint) :: i_num_hash_radial = 0
       integer (kind=kint) :: i_num_hash_elev =   0
       integer (kind=kint) :: i_num_hash_azim =   0
 !
@@ -134,7 +136,7 @@
       private :: table_ctl_file_code, fname_table_ctl, fname_itp_ctl
       private :: hd_table_control, i_table_control
       private :: hd_itp_files, hd_itp_model, i_itp_files, i_itp_model
-      private :: hd_iteration_ctl, i_iteration_ctl
+      private :: hd_iteration_ctl, i_iteration_ctl, hd_search_radius
       private :: hd_element_hash, i_element_hash, hd_fmt_itp_tbl
       private :: hd_table_head_ctl, hd_itp_node_head_ctl
       private :: hd_reverse_ele_tbl, hd_single_itp_tbl
@@ -149,15 +151,6 @@
 !   --------------------------------------------------------------------
 !
       contains
-!
-!   --------------------------------------------------------------------
-!
-      subroutine allocate_r_divide_ctl
-!
-      allocate(r_divide_ctl(num_r_divide_ctl) )
-      r_divide_ctl = 0.0d0
-!
-      end subroutine allocate_r_divide_ctl
 !
 !   --------------------------------------------------------------------
 !
@@ -371,13 +364,8 @@
         call find_control_end_flag(hd_element_hash, i_element_hash)
         if(i_element_hash .gt. 0) exit
 !
-        call find_control_array_flag(hd_num_hash_radial,                &
-     &      num_r_divide_ctl)
-        if(num_r_divide_ctl.gt.0 .and. i_num_hash_radial.eq.0) then
-          allocate( r_divide_ctl(num_r_divide_ctl) )
-          call read_control_array_real_list(hd_num_hash_radial,         &
-     &        num_r_divide_ctl, i_num_hash_radial, r_divide_ctl)
-        end if
+        call read_control_array_real                                    &
+     &     (hd_search_radius, radial_divide_ctl)
 !
 !
         call read_character_ctl_item(hd_hash_type,                      &

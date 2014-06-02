@@ -11,6 +11,7 @@
       module m_ctl_data_plot_pg
 !
       use m_precision
+      use t_read_control_arrays
 !
       implicit none
 !
@@ -55,15 +56,18 @@
       character(len=kchara), allocatable :: plot_comp_ctl(:)
       character(len=kchara), allocatable :: plot_label_ctl(:)
 !
-      integer(kind = kint) :: ntot_range_ctl
-      integer(kind = kint), allocatable :: id_4_contour_ctl(:)
-      integer(kind = kint), allocatable :: num_line_ctl(:)
-      real(kind = kreal), allocatable :: contour_range_ctl(:,:)
+!!      Structure for range data input
+!!@n      contour_range_ctl%int1: Component ID for plot
+!!@n      contour_range_ctl%int2: Number of Contour lines
+!!@n      contour_range_ctl%vec1: Minimum value
+!!@n      contour_range_ctl%vec2: Maximum value
+      type(ctl_array_i2r2) :: contour_range_ctl
 !
-      integer(kind = kint) :: ntot_scale_ctl
-      integer(kind = kint), allocatable :: id_4_vector_ctl(:)
-      integer(kind = kint), allocatable :: nskip_vect_ctl(:)
-      real(kind = kreal), allocatable :: vector_scale_ctl(:)
+!!      Structure for range data input
+!!@n      vector_scale_ctl%int1: Component ID for plot
+!!@n      vector_scale_ctl%int2: Incrememnt for vedctor data to draw
+!!@n      vector_scale_ctl%vect: Scale factor for vectror
+      type(ctl_array_i2r) :: vector_scale_ctl
 !
 !    parameter for grouping plots
 !
@@ -128,9 +132,9 @@
       character(len=kchara), parameter                                  &
      &                    :: hd_ntot_plotting_ctl = 'plot_field_ctl'
       character(len=kchara), parameter                                  &
-     &                    :: hd_ntot_range_ctl =    'contour_range_ctl'
+     &                    :: hd_ctr_range_ctl =    'contour_range_ctl'
       character(len=kchara), parameter                                  &
-     &                    :: hd_ntot_scale_ctl =    'vector_scale_ctl'
+     &                    :: hd_vec_scale_ctl =    'vector_scale_ctl'
       integer(kind= kint) :: i_psf_data_fmt_ctl =  0
       integer(kind= kint) :: i_psf_data_ctl =      0
       integer(kind= kint) :: i_map_grid_file =     0
@@ -194,8 +198,8 @@
       private :: hd_contour_type_ctl, hd_color_mode_ctl
       private :: hd_num_panels_ctl
       private :: hd_psf_data_fmt_ctl, hd_map_grid_file
-      private :: hd_psf_data_ctl, hd_ntot_scale_ctl
-      private :: hd_ntot_range_ctl,   hd_ntot_plotting_ctl
+      private :: hd_psf_data_ctl, hd_vec_scale_ctl
+      private :: hd_ctr_range_ctl,   hd_ntot_plotting_ctl
       private :: hd_outer_radius_ctl, hd_ro_ri_ratio_ctl
       private :: hd_plane_size_ctl
       private :: hd_radial_ID_ctl, hd_sph_grid_type
@@ -210,7 +214,6 @@
       private :: read_ctl_data_4_drmd_grp
 !
       private :: allocate_plot_ctl_data
-      private :: allocate_contour_plot_ctl, allocate_vect_plot_ctl
 !
 !-----------------------------------------------------------------------
 !
@@ -366,23 +369,11 @@
      &        plot_field_ctl, plot_comp_ctl, plot_label_ctl)
         end if
 !
-        call find_control_array_flag(hd_ntot_range_ctl, ntot_range_ctl)
-        if(ntot_range_ctl.gt.0 .and. i_ntot_range_ctl.eq.0) then
-          call allocate_contour_plot_ctl
-          call read_control_array_i2_r2_list(hd_ntot_range_ctl,         &
-     &        ntot_range_ctl, i_ntot_range_ctl,                         &
-     &          id_4_contour_ctl, num_line_ctl,                         &
-     &          contour_range_ctl(1,1), contour_range_ctl(1,2) )
-        end if
+        call read_control_array_i2_r2                                   &
+     &     (hd_ctr_range_ctl, contour_range_ctl)
 !
-        call find_control_array_flag(hd_ntot_scale_ctl,ntot_scale_ctl)
-        if(ntot_scale_ctl.gt.0 .and. i_ntot_scale_ctl.eq.0) then
-          call allocate_vect_plot_ctl
-          call read_control_array_i2_r_list(hd_ntot_scale_ctl,          &
-     &        ntot_scale_ctl, i_ntot_scale_ctl,                         &
-     &        id_4_vector_ctl, nskip_vect_ctl, vector_scale_ctl)
-        end if
-!
+        call read_control_array_i2_r                                    &
+     &     (hd_vec_scale_ctl, vector_scale_ctl)
 !
         call read_character_ctl_item(hd_psf_data_fmt_ctl,               &
      &          i_psf_data_fmt_ctl, psf_data_fmt_ctl)
@@ -500,36 +491,6 @@
       end subroutine allocate_plot_ctl_data
 !
 !-----------------------------------------------------------------------
-!
-      subroutine allocate_contour_plot_ctl
-!
-!
-      allocate( id_4_contour_ctl(ntot_range_ctl) )
-      allocate( num_line_ctl(ntot_range_ctl) )
-      allocate( contour_range_ctl(ntot_range_ctl,2) )
-!
-      id_4_contour_ctl = 0
-      num_line_ctl =     0
-      contour_range_ctl = 0.0d0
-!
-      end subroutine allocate_contour_plot_ctl
-!
-!-----------------------------------------------------------------------
-!
-      subroutine allocate_vect_plot_ctl
-!
-!
-      allocate( id_4_vector_ctl(ntot_scale_ctl) )
-      allocate( nskip_vect_ctl(ntot_scale_ctl) )
-      allocate( vector_scale_ctl(ntot_scale_ctl) )
-!
-      id_4_vector_ctl = 0
-      nskip_vect_ctl =  0
-      vector_scale_ctl = 0.0d0
-!
-      end subroutine allocate_vect_plot_ctl
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine deallocate_plot_ctl_data
@@ -540,14 +501,6 @@
       deallocate( plot_field_ctl )
       deallocate( plot_comp_ctl )
       deallocate( plot_label_ctl )
-!
-      deallocate( id_4_contour_ctl )
-      deallocate( id_4_vector_ctl )
-      deallocate( num_line_ctl )
-      deallocate( nskip_vect_ctl )
-!
-      deallocate( contour_range_ctl )
-      deallocate( vector_scale_ctl )
 !
       end subroutine deallocate_plot_ctl_data
 !

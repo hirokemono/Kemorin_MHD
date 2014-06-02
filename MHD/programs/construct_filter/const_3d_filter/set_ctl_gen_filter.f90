@@ -27,11 +27,11 @@
       subroutine set_ctl_params_gen_filter
 !
       use calypso_mpi
-      use calypso_mpi
       use m_ctl_data_4_solvers
       use m_ctl_data_org_filter_name
       use m_filter_elength
       use m_reference_moments
+      use skip_comment_f
 !
       integer(kind = kint) :: i
 !
@@ -113,15 +113,17 @@
 !
       end if
 !
-      num_moments_order = num_moments_order_ctl
+      num_moments_order = ref_filter_mom_ctl%num
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'num_moments_order', num_moments_order
 !
       if (num_moments_order .gt. 0) then
         call allocate_moment_parameter
 !
-        mom_order = mom_order_ctl
-        mom_value = mom_value_ctl
+        do i = 1, num_moments_order
+          mom_order(i) = ref_filter_mom_ctl%ivec(i)
+          mom_value(i) = ref_filter_mom_ctl%vect(i)
+        end do
 !
         max_num_order_1d = mom_order(1)
         do i = 2, num_moments_order
@@ -132,16 +134,15 @@
         num_order_1d = num_moments_order
 !
         do i = 1, num_moments_order
-          if   (ref_mom_type_ctl(i) .eq. 'refered'                      &
-     &     .or. ref_mom_type_ctl(i) .eq. 'Refered'                      &
-     &     .or. ref_mom_type_ctl(i) .eq. 'REFERED' ) then
+          if(cmp_no_case(ref_filter_mom_ctl%c_tbl(i), 'refered') .gt. 0 &
+      &      ) then
             iref_mom_type(i) = 1
           else
             iref_mom_type(i) = 0
           end if
         end do
 !
-        call deallocate_mom_param_ctl
+        call dealloc_control_array_i_c_r(ref_filter_mom_ctl)
 !
       if (iflag_debug.gt.0)  then
           write(*,*) 'mom_order', mom_order

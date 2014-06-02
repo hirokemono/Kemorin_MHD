@@ -1,9 +1,9 @@
 !
 !      module m_ctl_params_4_gen_filter
 !
-      module m_ctl_params_4_gen_filter
-!
 !     Written by H. Matsui on July, 2006
+!
+      module m_ctl_params_4_gen_filter
 !
       use m_precision
 !
@@ -72,9 +72,6 @@
 !
       integer (kind=kint) :: INTARRAY(2)
       real (kind=kreal) ::   REALARRAY(3)
-!
-!      subroutine allocate_mom_param_ctl
-!      subroutine deallocate_mom_param_ctl
 !
 !  ---------------------------------------------------------------------
 !

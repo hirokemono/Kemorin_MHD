@@ -174,8 +174,8 @@
       end if
 !
 !
-      if(pvr%i_nlights .gt. 0) then
-        num_pvr_lights(i_pvr) = pvr%num_of_lights_ctl
+      if(pvr%light_position_ctl%num .gt. 0) then
+        num_pvr_lights(i_pvr) = pvr%light_position_ctl%num
       else
         num_pvr_lights(i_pvr) = 1
       end if
@@ -197,11 +197,11 @@
       end do
       deallocate( pvr_param_tmp )
 !
-      if(pvr%i_nlights .gt. 0) then
+      if(pvr%light_position_ctl%num .gt. 0) then
         do i = 1, num_pvr_lights(i_pvr)
-          xyz_pvr_lights(1,ist+i) = pvr%xyz_light_ctl(i,1)
-          xyz_pvr_lights(2,ist+i) = pvr%xyz_light_ctl(i,2)
-          xyz_pvr_lights(3,ist+i) = pvr%xyz_light_ctl(i,3)
+          xyz_pvr_lights(1,ist+i) = pvr%light_position_ctl%vec1(i)
+          xyz_pvr_lights(2,ist+i) = pvr%light_position_ctl%vec2(i)
+          xyz_pvr_lights(3,ist+i) = pvr%light_position_ctl%vec3(i)
         end do
         iflag_pvr_lights(i_pvr) = 1
       else
@@ -264,9 +264,9 @@
      &      .or. pvr%pvr_data_mapping_ctl .eq. 'colormap_list'          &
      &      .or. pvr%pvr_data_mapping_ctl .eq. 'Colormap_list'          &
      &      .or. pvr%pvr_data_mapping_ctl .eq. 'COLORMAP_LIST' ) then
-          if(pvr%num_pvr_datamap_pnt_ctl .gt. 0) then
+          if(pvr%colortbl_ctl%num .gt. 0) then
             id_pvr_color(2,i_pvr) = 3
-            num_pvr_datamap_pnt(i_pvr) = pvr%num_pvr_datamap_pnt_ctl
+            num_pvr_datamap_pnt(i_pvr) = pvr%colortbl_ctl%num
           end if
         else if( pvr%pvr_data_mapping_ctl .eq. 'linear'                 &
      &      .or. pvr%pvr_data_mapping_ctl .eq. 'Linear'                 &
@@ -306,8 +306,8 @@
 !
       else if(id_pvr_color(2,i_pvr) .eq. 3) then
         do i = 1, num_pvr_datamap_pnt(i_pvr)
-          pvr_datamap_param(1,ist+i) = pvr%pvr_datamap_data_ctl(i)
-          pvr_datamap_param(2,ist+i) = pvr%pvr_datamap_color_ctl(i)
+          pvr_datamap_param(1,ist+i) = pvr%colortbl_ctl%vec1(i)
+          pvr_datamap_param(2,ist+i) = pvr%colortbl_ctl%vec2(i)
         end do
 !
       else
@@ -333,9 +333,9 @@
      &      .or. pvr%opacity_style_ctl .eq. 'Point_Delta'               &
      &      .or. pvr%opacity_style_ctl .eq. 'POINT_DELTA' ) then
 !
-          if( pvr%num_opacity_def_ctl .gt. 0) then
+          if( pvr%opacity_ctl%num .gt. 0) then
             id_pvr_color(3,i_pvr) = 3
-            num_opacity_pnt(i_pvr) = pvr%num_opacity_def_ctl
+            num_opacity_pnt(i_pvr) = pvr%opacity_ctl%num
           end if
 !
         else if( pvr%opacity_style_ctl .eq. 'point_ranges'              &
@@ -343,9 +343,9 @@
      &      .or. pvr%opacity_style_ctl .eq. 'Point_Ranges'              &
      &      .or. pvr%opacity_style_ctl .eq. 'POINT_RANGES' ) then
 !
-          if( pvr%num_opacity_def_ctl .gt. 0) then
+          if( pvr%opacity_ctl%num .gt. 0) then
             id_pvr_color(3,i_pvr) = 4
-            num_opacity_pnt(i_pvr) = pvr%num_opacity_def_ctl
+            num_opacity_pnt(i_pvr) = pvr%opacity_ctl%num
           end if
 !
         else if( pvr%opacity_style_ctl .eq. 'point_linear'              &
@@ -353,9 +353,9 @@
      &      .or. pvr%opacity_style_ctl .eq. 'Point_Linear'              &
      &      .or. pvr%opacity_style_ctl .eq. 'POINT_LINEAR' ) then
 !
-          if( pvr%num_opacity_def_ctl .gt. 0) then
+          if( pvr%opacity_ctl%num .gt. 0) then
             id_pvr_color(3,i_pvr) = 5
-            num_opacity_pnt(i_pvr) = pvr%num_opacity_def_ctl
+            num_opacity_pnt(i_pvr) = pvr%opacity_ctl%num
           end if
         end if
       end if
@@ -381,18 +381,18 @@
       if    (id_pvr_color(3,i_pvr) .eq. 3                               &
      &  .or. id_pvr_color(3,i_pvr) .eq. 4) then
         do i = 1, num_opacity_pnt(i_pvr)
-          pvr_opacity_param(1,ist+i) = pvr%opacity_dat_low_ctl(i)
-          pvr_opacity_param(2,ist+i) = pvr%opacity_dat_high_ctl(i)
-          pvr_opacity_param(3,ist+i) = pvr%opacity_value_ctl(i)
+          pvr_opacity_param(1,ist+i) = pvr%opacity_ctl%vec1(i)
+          pvr_opacity_param(2,ist+i) = pvr%opacity_ctl%vec2(i)
+          pvr_opacity_param(3,ist+i) = pvr%opacity_ctl%vec3(i)
           pvr_max_opacity(i_pvr)                                        &
      &       = max(pvr_max_opacity(i_pvr),pvr_opacity_param(3,ist+i))
         end do
 !
       else if(id_pvr_color(3,i_pvr) .eq. 5 ) then
         do i = 1, num_opacity_pnt(i_pvr)
-          pvr_opacity_param(1,ist+i) = pvr%opacity_dat_low_ctl(i)
-          pvr_opacity_param(2,ist+i) = pvr%opacity_dat_low_ctl(i)
-          pvr_opacity_param(3,ist+i) = pvr%opacity_value_ctl(i)
+          pvr_opacity_param(1,ist+i) = pvr%opacity_ctl%vec1(i)
+          pvr_opacity_param(2,ist+i) = pvr%opacity_ctl%vec1(i)
+          pvr_opacity_param(3,ist+i) = pvr%opacity_ctl%vec3(i)
           pvr_max_opacity(i_pvr)                                        &
      &       = max(pvr_max_opacity(i_pvr),pvr_opacity_param(3,ist+i))
         end do

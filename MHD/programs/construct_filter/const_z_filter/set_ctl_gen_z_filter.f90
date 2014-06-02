@@ -164,14 +164,15 @@
       end if
 !
 !
-      ncomp_norm = num_moments_order_ctl
+      ncomp_norm = ref_filter_mom_ctl%num
       call allocate_z_filter_mom_params
 !
       if (ncomp_norm.gt.0) then
-        kcomp_norm(1:ncomp_norm) = mom_order_ctl(1:ncomp_norm)
-        f_mom(1:ncomp_norm) =      mom_value_ctl(1:ncomp_norm)
+        kcomp_norm(1:ncomp_norm)                                        &
+     &                      = ref_filter_mom_ctl%ivec(1:ncomp_norm)
+        f_mom(1:ncomp_norm) = ref_filter_mom_ctl%vect(1:ncomp_norm)
         filter_moment_type(1:ncomp_norm)                                &
-     &          = ref_mom_type_ctl(1:ncomp_norm)
+     &                      = ref_filter_mom_ctl%c_tbl(1:ncomp_norm)
         write(*,*) 'kcomp_norm(i), f_mom(i), filter_moment_type(i)'
         do i = 1, ncomp_norm
           write(*,*) i, kcomp_norm(i), f_mom(i),                        &

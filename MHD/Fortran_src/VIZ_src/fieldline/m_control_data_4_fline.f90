@@ -58,6 +58,7 @@
 !
       use m_machine_parameter
       use m_read_control_elements
+      use t_read_control_arrays
       use skip_comment_f
       use calypso_mpi
 !
@@ -86,8 +87,11 @@
         integer(kind = kint) :: num_fieldline_ctl = 3
         integer(kind = kint) :: max_line_stepping_ctl = 1000
 !
-        integer (kind=kint) :: num_start_point_ctl = 0
-        real(kind = kreal), pointer :: xx_start_point_ctl(:,:)
+!!      Structure for light positions
+!!@n      light_position_ctl%vec1:  X-component of seed points
+!!@n      light_position_ctl%vec2:  Y-component of seed points
+!!@n      light_position_ctl%vec3:  Z-component of seed points
+        type(ctl_array_r3) :: seed_point_ctl
 !
         integer (kind=kint) :: num_start_gl_surf_ctl = 0
         integer(kind = kint), pointer :: id_start_gl_surf_ctl(:,:)
@@ -114,7 +118,6 @@
         integer (kind=kint) :: i_num_fieldline =     0
         integer (kind=kint) :: i_max_line_stepping = 0
 !
-        integer (kind=kint) :: i_xx_start_point =    0
         integer (kind=kint) :: i_num_start_gl_surf = 0
       end type fline_ctl
 !
@@ -156,7 +159,7 @@
       private :: hd_vr_fline_ctl
 !
       private :: allocate_area_grp_vr_psf
-      private :: allocate_start_point_ctl, allocate_start_gl_surf_ctl
+      private :: allocate_start_gl_surf_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -172,18 +175,6 @@
       allocate(fln%fline_area_ele_grp_ctl(fln%num_fline_area_grp_ctl) )
 !
       end subroutine allocate_area_grp_vr_psf
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_start_point_ctl(fln)
-!
-      type(fline_ctl), intent(inout) :: fln
-!
-!
-      allocate( fln%xx_start_point_ctl(fln%num_start_point_ctl,3))
-      if(fln%num_start_point_ctl .gt. 0) fln%xx_start_point_ctl = 0.0d0
-!
-      end subroutine allocate_start_point_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -208,8 +199,8 @@
       if(fln%num_start_gl_surf_ctl .gt. 0) then
         deallocate( fln%id_start_gl_surf_ctl )
       end if
-      if(fln%num_start_point_ctl .gt. 0) then
-        deallocate(fln%xx_start_point_ctl )
+      if(fln%seed_point_ctl%num .gt. 0) then
+        call dealloc_control_array_r3(fln%seed_point_ctl)
       end if
 !
       deallocate(fln%fline_area_ele_grp_ctl)
@@ -256,17 +247,8 @@
      &        fln%fline_area_ele_grp_ctl )
         end if
 !
-        call find_control_array_flag(hd_xx_start_point,                 &
-     &      fln%num_start_point_ctl)
-        if(fln%num_start_point_ctl.gt.0                                 &
-     &       .and. fln%i_xx_start_point.eq.0) then
-          call allocate_start_point_ctl(fln)
-          call read_control_array_real3_list(hd_xx_start_point,         &
-     &        fln%num_start_point_ctl, fln%i_xx_start_point,            &
-     &        fln%xx_start_point_ctl(1:fln%num_start_point_ctl,1),      &
-     &        fln%xx_start_point_ctl(1:fln%num_start_point_ctl,2),      &
-     &        fln%xx_start_point_ctl(1:fln%num_start_point_ctl,3) )
-        end if
+        call read_control_array_r3                                      &
+     &     (hd_xx_start_point, fln%seed_point_ctl)
 !
         call find_control_array_flag(hd_num_start_gl_surf,              &
      &      fln%num_start_gl_surf_ctl)
@@ -318,7 +300,7 @@
 !
 !
       fln%num_fline_area_grp_ctl = 0
-      fln%num_start_point_ctl =    0
+      fln%seed_point_ctl%num =    0
       fln%num_start_gl_surf_ctl =  0
 !
       fln%i_fline_file_head = 0
@@ -333,7 +315,7 @@
       fln%i_vr_fline_ctl = 0
       fln%i_fline_grp =    0
 !
-      fln%i_xx_start_point =    0
+      fln%seed_point_ctl%icou = 0
       fln%i_num_start_gl_surf = 0
 !
       fln%i_coloring_field =   0

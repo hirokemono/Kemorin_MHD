@@ -3,7 +3,6 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine allocate_mom_param_ctl
 !      subroutine allocate_ref_filter_ctl
 !      subroutine allocate_horiz_filter_ctl
 !
@@ -20,6 +19,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_ctl_data_4_solvers
+      use t_read_control_arrays
 !
       implicit  none
 !
@@ -53,10 +53,11 @@
       character(len = kchara), allocatable :: horiz_filter_type_ctl(:)
       real(kind = kreal), allocatable :: horiz_filter_width_ctl(:)
 !
-      integer(kind = kint) :: num_moments_order_ctl = 0
-      integer(kind = kint), allocatable :: mom_order_ctl(:)
-      real(kind = kreal), allocatable :: mom_value_ctl(:)
-      character(len = kchara), allocatable :: ref_mom_type_ctl(:)
+!!      Structure for reference moments for filter
+!!@n      ref_filter_mom_ctl%ivec:  Order of reference filter moments
+!!@n      ref_filter_mom_ctl%c_tbl: Type of reference filter moments
+!!@n      ref_filter_mom_ctl%vect:  Value of filter moments
+      type(ctl_array_icr) :: ref_filter_mom_ctl
 !
       character(len=kchara) :: solver_type_ctl = 'CRS'
 !
@@ -125,7 +126,6 @@
       integer (kind=kint) :: i_minimum_det =        0
       integer (kind=kint) :: i_maximum_rms =        0
       integer (kind=kint) :: i_nele_filtering =     0
-      integer (kind=kint) :: i_order_moments =      0
       integer (kind=kint) :: i_num_ref_filter =     0
       integer (kind=kint) :: i_maximum_neighbour =  0
       integer (kind=kint) :: i_tgt_filter_type =    0
@@ -142,19 +142,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_mom_param_ctl
-!
-      allocate(mom_order_ctl(num_moments_order_ctl))
-      allocate(mom_value_ctl(num_moments_order_ctl))
-      allocate(ref_mom_type_ctl(num_moments_order_ctl))
-!
-      mom_order_ctl = 0
-      mom_value_ctl = 0.0d0
-!
-      end subroutine allocate_mom_param_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -179,16 +166,6 @@
       end subroutine allocate_horiz_filter_ctl
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_mom_param_ctl
-!
-      deallocate(mom_order_ctl)
-      deallocate(mom_value_ctl)
-      deallocate(ref_mom_type_ctl)
-!
-      end subroutine deallocate_mom_param_ctl
-!
 !  ---------------------------------------------------------------------
 !
       subroutine deallocate_ref_filter_ctl
@@ -234,14 +211,8 @@
         call read_DJDS_solver_param_ctl
 !
 !
-        call find_control_array_flag(hd_order_moments,                  &
-     &      num_moments_order_ctl)
-        if(num_moments_order_ctl.gt.0 .and. i_order_moments.eq.0) then
-          call allocate_mom_param_ctl
-          call read_control_array_i_c_r_list(hd_order_moments,          &
-     &        num_moments_order_ctl, i_order_moments,                   &
-     &        mom_order_ctl, ref_mom_type_ctl, mom_value_ctl)
-        end if
+        call read_control_array_i_c_r                                   &
+     &     (hd_order_moments, ref_filter_mom_ctl)
 !
         call find_control_array_flag(hd_num_ref_filter,                 &
      &      num_ref_filter_ctl)

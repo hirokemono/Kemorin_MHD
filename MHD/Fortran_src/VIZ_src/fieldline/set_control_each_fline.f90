@@ -153,8 +153,8 @@
           num_each_field_line(i_fln) = fln%num_start_gl_surf_ctl
         end if
       else if(id_fline_start_type(i_fln) .eq.  2) then
-        if(fln%num_start_point_ctl .gt. 0) then
-          num_each_field_line(i_fln) = fln%num_start_point_ctl
+        if(fln%seed_point_ctl%num .gt. 0) then
+          num_each_field_line(i_fln) = fln%seed_point_ctl%num
         end if
       end if
       istack_each_field_line(i_fln) = istack_each_field_line(i_fln-1)   &
@@ -230,9 +230,9 @@
         end do
       else if(id_fline_start_type(i_fln) .eq.  2) then
         do i = 1, num_each_field_line(i_fln)
-          xx_surf_start_fline(1,i+ist) = fln%xx_start_point_ctl(i,1)
-          xx_surf_start_fline(2,i+ist) = fln%xx_start_point_ctl(i,2)
-          xx_surf_start_fline(3,i+ist) = fln%xx_start_point_ctl(i,3)
+          xx_surf_start_fline(1,i+ist) = fln%seed_point_ctl%vec1(i)
+          xx_surf_start_fline(2,i+ist) = fln%seed_point_ctl%vec2(i)
+          xx_surf_start_fline(3,i+ist) = fln%seed_point_ctl%vec3(i)
         end do
       end if
 !

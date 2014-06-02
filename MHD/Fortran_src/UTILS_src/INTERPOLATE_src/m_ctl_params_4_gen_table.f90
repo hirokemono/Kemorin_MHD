@@ -168,7 +168,7 @@
 !
       if (id_ele_hash_type .eq. 1) then
 !
-        num_sph_grid(1) = num_r_divide_ctl
+        num_sph_grid(1) = radial_divide_ctl%num
         num_sph_grid(2) = num_theta_divide_ctl
         num_sph_grid(3) = num_phi_divide_ctl
 !
@@ -179,7 +179,9 @@
         call allocate_sphere_divide_points
 !
         if (num_sph_grid(1) .gt. 0) then
-          r_divide(1:num_sph_grid(1)) = r_divide_ctl(1:num_sph_grid(1))
+          r_divide(1:num_sph_grid(1))                                   &
+     &          = radial_divide_ctl%vect(1:num_sph_grid(1))
+          call dealloc_control_array_real(radial_divide_ctl)
         end if
 !
         if (iflag_debug.eq.1) then

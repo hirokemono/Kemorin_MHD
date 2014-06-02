@@ -87,80 +87,66 @@
         call calypso_MPI_abort(1, 'set correct grouping mode')
       end if
 !
-      if (i_num_r_ele_grping .gt. 0) then
-        num_r_ele_grp = num_r_ele_grouping_ctl
+      if (r_ele_grouping_ctl%icou .gt. 0) then
+        num_r_ele_grp = r_ele_grouping_ctl%num
         call allocate_add_r_ele_grping
 !
         r_ele_grp_name(1:num_r_ele_grp)                                 &
-     &        = r_ele_grping_name_ctl(1:num_r_ele_grp)
+     &        = r_ele_grouping_ctl%c_tbl(1:num_r_ele_grp)
         minmax_r_ele_grping(1:num_r_ele_grp,1)                          &
-     &        = min_r_ele_grping_ctl(1:num_r_ele_grp)
+     &        = r_ele_grouping_ctl%vec1(1:num_r_ele_grp)
         minmax_r_ele_grping(1:num_r_ele_grp,2)                          &
-     &        = max_r_ele_grping_ctl(1:num_r_ele_grp)
-        deallocate( r_ele_grping_name_ctl )
-        deallocate( min_r_ele_grping_ctl  )
-        deallocate( max_r_ele_grping_ctl  )
+     &        = r_ele_grouping_ctl%vec2(1:num_r_ele_grp)
+        call dealloc_control_array_c_r2(r_ele_grouping_ctl)
       end if
 !
 !
-      if (i_num_s_ele_grping .gt. 0) then
-        num_s_ele_grp = num_s_ele_grouping_ctl
+      if (s_ele_grouping_ctl%icou .gt. 0) then
+        num_s_ele_grp = s_ele_grouping_ctl%num
         call allocate_add_s_ele_grping
 !
         s_ele_grp_name(1:num_s_ele_grp)                                 &
-     &        = s_ele_grping_name_ctl(1:num_s_ele_grp)
+     &        = s_ele_grouping_ctl%c_tbl(1:num_s_ele_grp)
         minmax_s_ele_grping(1:num_s_ele_grp,1)                          &
-     &        = min_s_ele_grping_ctl(1:num_s_ele_grp)
+     &        = s_ele_grouping_ctl%vec1(1:num_s_ele_grp)
         minmax_s_ele_grping(1:num_s_ele_grp,2)                          &
-     &        = max_s_ele_grping_ctl(1:num_s_ele_grp)
-        deallocate( s_ele_grping_name_ctl )
-        deallocate( min_s_ele_grping_ctl  )
-        deallocate( max_s_ele_grping_ctl  )
+     &        = s_ele_grouping_ctl%vec2(1:num_s_ele_grp)
+        call dealloc_control_array_c_r2(s_ele_grouping_ctl)
       end if
 !
 !
-      if (i_num_t_ele_grping .gt. 0) then
-        num_t_ele_grp = num_t_ele_grouping_ctl
+      if (t_ele_grouping_ctl%icou .gt. 0) then
+        num_t_ele_grp = t_ele_grouping_ctl%num
         call allocate_add_t_ele_grping
 !
         t_ele_grp_name(1:num_t_ele_grp)                                 &
-     &        = t_ele_grping_name_ctl(1:num_t_ele_grp)
+     &        = t_ele_grouping_ctl%c_tbl(1:num_t_ele_grp)
         minmax_t_ele_grping(1:num_t_ele_grp,1)                          &
-     &        = min_t_ele_grping_ctl(1:num_t_ele_grp)
+     &        = t_ele_grouping_ctl%vec1(1:num_t_ele_grp)
         minmax_t_ele_grping(1:num_t_ele_grp,2)                          &
-     &        = max_t_ele_grping_ctl(1:num_t_ele_grp)
-        deallocate( t_ele_grping_name_ctl )
-        deallocate( min_t_ele_grping_ctl  )
-        deallocate( max_t_ele_grping_ctl  )
+     &        = t_ele_grouping_ctl%vec2(1:num_t_ele_grp)
+        call dealloc_control_array_c_r2(t_ele_grouping_ctl)
       end if
 !
 !
-      if (i_num_z_ele_grping .gt. 0) then
-        num_z_ele_grp = num_z_ele_grouping_ctl
+      if (z_ele_grouping_ctl%icou .gt. 0) then
+        num_z_ele_grp = z_ele_grouping_ctl%num
         call allocate_add_z_ele_grping
 !
         z_ele_grp_name(1:num_z_ele_grp)                                 &
-     &        = z_ele_grping_name_ctl(1:num_z_ele_grp)
+     &        = z_ele_grouping_ctl%c_tbl(1:num_z_ele_grp)
         minmax_z_ele_grping(1:num_z_ele_grp,1)                          &
-     &        = min_z_ele_grping_ctl(1:num_z_ele_grp)
+     &        = z_ele_grouping_ctl%vec1(1:num_z_ele_grp)
         minmax_z_ele_grping(1:num_z_ele_grp,2)                          &
-     &        = max_z_ele_grping_ctl(1:num_z_ele_grp)
-        deallocate( z_ele_grping_name_ctl )
-        deallocate( min_z_ele_grping_ctl  )
-        deallocate( max_z_ele_grping_ctl  )
-!
-        if(iflag_debug .gt. 0) then
-          write(*,*) 'z_ele_grp_name'
-          write(*,*) 'minmax_z_ele_grping'
-          write(*,*) 'minmax_z_ele_grping'
-        end if
+     &        = z_ele_grouping_ctl%vec2(1:num_z_ele_grp)
+        call dealloc_control_array_c_r2(z_ele_grouping_ctl)
       end if
 !
 !
       if (iflag_grping_direction .eq. 0                                 &
      &    .or. iflag_grping_direction .eq. 3) then
 !
-        if (i_num_t_ele_grping .gt. 0) then
+        if (num_t_ele_grp .gt. 0) then
           pi = four * atan(one)
           minmax_t_ele_grping(1:num_t_ele_grp,1)                        &
      &        = minmax_t_ele_grping(1:num_t_ele_grp,1) * pi
