@@ -7,9 +7,6 @@
 !>@brief  control data for resolutions of spherical shell
 !!
 !!@verbatim
-!!      subroutine deallocate_r_layers
-!!      subroutine deallocate_boundary_layers
-!!
 !!      subroutine read_ctl_4_shell_define
 !!
 !! =======================================================
@@ -60,6 +57,7 @@
       module m_ctl_data_4_sphere_model
 !
       use m_precision
+      use t_read_control_arrays
 !
       implicit  none
 !
@@ -70,26 +68,20 @@
 !>      Type of spherical grids
       character(len = kchara) :: sph_grid_type_ctl
 !
-!>      Number of radial grids
-      integer(kind = kint) :: numlayer_shell_ctl
 !>      Number of grids in meridional direction
       integer(kind = kint) :: ngrid_elevation_ctl
 !>      Number of grids in longitudinal direction
       integer(kind = kint) :: ngrid_azimuth_ctl
 !
-!>      Manually defined radius
-      real(kind = kreal), allocatable :: radius_layer_ctl(:)
-!>      Manually defined radial ID
-      integer(kind = kint), allocatable :: kr_layer_ctl(:)
+!!      Structure for radial point data
+!!@n      light_position_ctl%ivec:  radial ID
+!!@n      light_position_ctl%vect:  Radius
+        type(ctl_array_ir) :: radius_ctl
 !
-!      boundaries
-!
-!>      Number of boundary sphere to be defined
-      integer(kind = kint) :: numlayer_bc_ctl
-!>      Radial ID of boundary sphere to be defined
-      integer(kind = kint), allocatable :: kr_boundary_ctl(:)
-!>      Name of boundary sphere to be defined
-      character(len = kchara), allocatable :: bc_bondary_name_ctl(:)
+!!      Structure for radial grouping data for boundaries
+!!@n      light_position_ctl%c_tble:  Group name
+!!@n      light_position_ctl%ivec:    radial ID
+        type(ctl_array_ci) :: radial_grp_ctl
 !
 !>      Grid spacing type
       character(len = kchara) :: radial_grid_type_ctl
@@ -150,8 +142,6 @@
       character(len=kchara), parameter                                  &
      &      ::  hd_bc_sph = 'boundaries_ctl'
 !
-      integer (kind=kint) :: i_numlayer_shell = 0
-!
       integer (kind=kint) :: i_ntheta_shell = 0
       integer (kind=kint) :: i_nphi_shell =   0
       integer (kind=kint) :: i_sph_truncate = 0
@@ -166,8 +156,6 @@
       integer (kind=kint) :: i_shell_size =   0
       integer (kind=kint) :: i_shell_ratio =  0
 !
-      integer(kind = kint) :: i_bc_sph =      0
-!
 !   3rd level for boundary define
 !
       private :: hd_shell_def, i_shell_def
@@ -177,53 +165,11 @@
       private :: hd_ICB_radius, hd_CMB_radius, hd_Max_radius
       private :: hd_shell_size, hd_shell_ratio, hd_bc_sph
 !
-      private :: allocate_r_layers
-      private :: allocate_boundary_layers
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine allocate_r_layers
-!
-      allocate( kr_layer_ctl(numlayer_shell_ctl) )
-      allocate( radius_layer_ctl(numlayer_shell_ctl) )
-      radius_layer_ctl = 0.0d0
-      kr_layer_ctl = 0
-!
-      end subroutine allocate_r_layers
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_boundary_layers
-!
-      allocate( kr_boundary_ctl(numlayer_bc_ctl) )
-      allocate( bc_bondary_name_ctl(numlayer_bc_ctl) )
-      kr_boundary_ctl = 0
-!
-      end subroutine allocate_boundary_layers
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_r_layers
-!
-      deallocate( kr_layer_ctl, radius_layer_ctl )
-!
-      end subroutine deallocate_r_layers
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_boundary_layers
-!
-      deallocate( kr_boundary_ctl, bc_bondary_name_ctl )
-!
-      end subroutine deallocate_boundary_layers
-!
-!  ---------------------------------------------------------------------
-!   --------------------------------------------------------------------
 !
       subroutine read_ctl_4_shell_define
 !
@@ -241,23 +187,9 @@
         if(i_shell_def .gt. 0) exit
 !
 !
-        call find_control_array_flag(hd_numlayer_shell,                 &
-     &      numlayer_shell_ctl)
-        if(numlayer_shell_ctl.gt.0  .and. i_numlayer_shell.eq.0) then
-          call allocate_r_layers
-          call read_control_array_int_r_list(hd_numlayer_shell,         &
-     &        numlayer_shell_ctl, i_numlayer_shell,                     &
-     &        kr_layer_ctl, radius_layer_ctl)
-        end if
+        call read_control_array_i_r(hd_numlayer_shell, radius_ctl)
 !
-!
-        call find_control_array_flag(hd_bc_sph, numlayer_bc_ctl)
-        if(numlayer_bc_ctl.gt.0  .and. i_bc_sph.eq.0) then
-          call allocate_boundary_layers
-          call read_control_array_int_v_list(hd_bc_sph,                &
-     &        numlayer_bc_ctl, i_bc_sph, bc_bondary_name_ctl,          &
-     &        kr_boundary_ctl)
-        end if
+        call read_control_array_c_i(hd_bc_sph, radial_grp_ctl)
 !
 !
         call read_character_ctl_item(hd_sph_g_type,                     &

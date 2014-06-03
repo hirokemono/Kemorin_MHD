@@ -11,6 +11,7 @@
 !!      subroutine dealloc_control_array_r2(array_r2)
 !!      subroutine dealloc_control_array_r3(array_r3)
 !!      subroutine dealloc_control_array_c_r(array_cr)
+!!      subroutine dealloc_control_array_c_i(array_ci)
 !!      subroutine dealloc_control_array_c_r2(array_cr2)
 !!      subroutine dealloc_control_array_c2_r(array_c2r)
 !!      subroutine dealloc_control_array_i_c_r(array_icr)
@@ -22,6 +23,7 @@
 !!      subroutine read_control_array_r2(label, array_r2)
 !!      subroutine read_control_array_r3(label, array_r3)
 !!      subroutine read_control_array_c_r(label, array_cr)
+!!      subroutine read_control_array_c_i(label, array_ci)
 !!      subroutine read_control_array_c_r2(label, array_cr2)
 !!      subroutine read_control_array_c2_r(label, array_c2r)
 !!      subroutine read_control_array_i_c_r(label, array_icr)
@@ -98,7 +100,7 @@
         real(kind = kreal), pointer :: vec2(:)
       end type ctl_array_cr2
 !
-!>  Structure for two charactors and real control array 
+!>  Structure for charactor and real control array 
       type ctl_array_cr
 !>     number of array items
         integer(kind=kint) :: num
@@ -109,6 +111,18 @@
 !>     array for 1st real
         real(kind = kreal), pointer :: vect(:)
       end type ctl_array_cr
+!
+!>  Structure for charactor and integer control array 
+      type ctl_array_ci
+!>     number of array items
+        integer(kind=kint) :: num
+!>     array counter
+        integer(kind=kint) :: icou
+!>     array for 1st character
+        character(len=kchara), pointer :: c_tbl(:)
+!>     array for 1st real
+        integer(kind = kint), pointer :: ivec(:)
+      end type ctl_array_ci
 !
 !>  Structure for two charactors and real control array 
       type ctl_array_c2r
@@ -183,8 +197,8 @@
       private :: alloc_control_array_real
       private :: alloc_control_array_r2, alloc_control_array_r3
       private :: alloc_control_array_c_r2
-      private :: alloc_control_array_c_r, alloc_control_array_c2_r
-      private :: alloc_control_array_i_c_r
+      private :: alloc_control_array_c_r, alloc_control_array_c_i
+      private :: alloc_control_array_c2_r, alloc_control_array_i_c_r
       private :: alloc_control_array_i_r, alloc_control_array_i2_r
       private :: alloc_control_array_i2_r2
 !
@@ -254,6 +268,21 @@
       array_cr%vect = 0.0d0
 !
       end subroutine alloc_control_array_c_r
+!
+!   --------------------------------------------------------------------
+!
+      subroutine alloc_control_array_c_i(array_ci)
+!
+      type(ctl_array_ci), intent(inout) :: array_ci
+!
+!
+      allocate( array_ci%c_tbl(array_ci%num) )
+      allocate( array_ci%ivec(array_ci%num) )
+!
+      if(array_ci%num .eq. 0) return
+      array_ci%ivec = 0
+!
+      end subroutine alloc_control_array_c_i
 !
 !   --------------------------------------------------------------------
 !
@@ -406,6 +435,17 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine dealloc_control_array_c_i(array_ci)
+!
+      type(ctl_array_ci), intent(inout) :: array_ci
+!
+!
+      deallocate( array_ci%c_tbl, array_ci%ivec)
+!
+      end subroutine dealloc_control_array_c_i
+!
+!   --------------------------------------------------------------------
+!
       subroutine dealloc_control_array_c_r2(array_cr2)
 !
       type(ctl_array_cr2), intent(inout) :: array_cr2
@@ -542,11 +582,30 @@
       call find_control_array_flag(label, array_cr%num)
       if(array_cr%num.gt.0 .and. array_cr%icou.eq.0) then
         call alloc_control_array_c_r(array_cr)
-        call read_control_array_vect_list(label, array_cr%num,         &
+        call read_control_array_vect_list(label, array_cr%num,          &
      &      array_cr%icou, array_cr%c_tbl, array_cr%vect)
       end if
 !
       end subroutine read_control_array_c_r
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_control_array_c_i(label, array_ci)
+!
+      use m_read_control_elements
+!
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_ci), intent(inout) :: array_ci
+!
+!
+      call find_control_array_flag(label, array_ci%num)
+      if(array_ci%num.gt.0 .and. array_ci%icou.eq.0) then
+        call alloc_control_array_c_i(array_ci)
+        call read_control_array_int_v_list(label, array_ci%num,         &
+     &      array_ci%icou, array_ci%c_tbl, array_ci%ivec)
+      end if
+!
+      end subroutine read_control_array_c_i
 !
 !   --------------------------------------------------------------------
 !
