@@ -104,22 +104,10 @@
         call find_control_end_flag(hd_cubed_sph_def, i_cubed_sph_def)
         if(i_cubed_sph_def .gt. 0) exit
 !
-        call find_control_array_flag(hd_numlayer_shell,                 &
-     &        numlayer_shell_ctl)
-        if(numlayer_shell_ctl.gt.0 .and. i_numlayer_shell.eq.0) then
-          call allocate_layers
-          call read_control_array_vect_list(hd_numlayer_shell,          &
-     &       numlayer_shell_ctl, i_numlayer_shell, name_layer, r_layer)
-        end if
-!
-        call find_control_array_flag(hd_edge_latitude,                  &
-     &        num_edge_latitude_ctl)
-        if(num_edge_latitude_ctl.gt.0 .and. i_edge_latitude.eq.0) then
-          call allocate_edge_latitude_ctl
-          call read_control_array_int_r_list(hd_edge_latitude,          &
-     &        num_edge_latitude_ctl, i_edge_latitude,                   &
-     &        kr_edge_latitude_ctl, edge_latitude_ctl)
-        end if
+        call read_control_array_i_r                                     &
+       &   (hd_cubed_sph_radius, radial_pnt_ctl)
+        call read_control_array_i_r                                     &
+       &   (hd_edge_latitude, edge_latitude_ctl)
 !
 !
         call read_character_ctl_item(hd_domain_shape,                   &

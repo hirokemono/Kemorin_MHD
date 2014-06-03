@@ -1,11 +1,27 @@
 !
 !      module m_control_data_cubed_sph
 !
-      module m_control_data_cubed_sph
-!
 !      Written by H. Matsui on Apr., 2006
 !
+!      subroutine allocate_coarse_level_ctl
+!
+!      subroutine deallocate_coarse_level_ctl
+!
+!      subroutine deallocate_nod_grp_name_ctl
+!      subroutine deallocate_nod_grp_layer_ctl
+!      subroutine deallocate_ele_grp_name_ctl
+!      subroutine deallocate_ele_grp_layer_ctl
+!      subroutine deallocate_surf_grp_name_ctl
+!      subroutine deallocate_surf_grp_layer_ctl
+!
+!      subroutine allocate_nod_grp_name_ctl
+!      subroutine allocate_ele_grp_name_ctl
+!      subroutine allocate_surf_grp_name_ctl
+!
+      module m_control_data_cubed_sph
+!
       use m_precision
+      use t_read_control_arrays
 !
       implicit none
 !
@@ -18,9 +34,11 @@
       integer(kind = kint) :: numele_4_vertical_ctl
       integer(kind = kint) :: nend_adjust_ctl
       integer(kind = kint) :: nstart_cube_ctl
-      integer(kind = kint) :: numlayer_shell_ctl
-      real(kind = kreal), allocatable :: r_layer(:)
-      character(len = kchara), allocatable :: name_layer(:)
+!
+!!      Structure for radial points
+!!@n      radial_pnt_ctl%ivec:  radial address
+!!@n      radial_pnt_ctl%vect:  radius
+        type(ctl_array_ir) :: radial_pnt_ctl
 !
 !
       integer(kind = kint) :: num_node_grp_ctl
@@ -50,9 +68,11 @@
       integer(kind = kint), allocatable :: sp_r_coarse_ratio(:,:)
 !
 !
-      integer(kind = kint) :: num_edge_latitude_ctl = 0
-      integer(kind = kint), allocatable :: kr_edge_latitude_ctl(:)
-      real(kind = kreal), allocatable :: edge_latitude_ctl(:)
+!!      Structure for radial points
+!!@n      radial_pnt_ctl%ivec:  radial address
+!!@n      radial_pnt_ctl%vect:  radius
+        type(ctl_array_ir) :: edge_latitude_ctl
+!
 !
 !   Top level
 !
@@ -76,7 +96,7 @@
       character(len=kchara), parameter                             &
      &             :: hd_nstart_cube =    'nstart_square_ctl'
       character(len=kchara), parameter                             &
-     &             :: hd_numlayer_shell = 'r_layer'
+     &             :: hd_cubed_sph_radius = 'r_layer'
       character(len=kchara), parameter                             &
      &             :: hd_edge_latitude =  'edge_latitude_ctl'
       integer (kind=kint) :: i_domain_shape =   0
@@ -86,8 +106,6 @@
       integer (kind=kint) :: i_numele_4_vert =  0
       integer (kind=kint) :: i_nend_adjust =    0
       integer (kind=kint) :: i_nstart_cube =    0
-      integer (kind=kint) :: i_numlayer_shell = 0
-      integer (kind=kint) :: i_edge_latitude =  0
 !
 !   3rd level for boundary define
 !
@@ -132,49 +150,9 @@
      &             :: hd_num_level_coarse ='sp_r_coarse_ratio'
       integer (kind=kint) :: i_num_level_coarse = 0
 !
-!      subroutine allocate_layers
-!      subroutine allocate_edge_latitude_ctl
-!      subroutine allocate_coarse_level_ctl
-!
-!      subroutine deallocate_layers
-!      subroutine deallocate_edge_latitude_ctl
-!      subroutine deallocate_coarse_level_ctl
-!
-!      subroutine deallocate_nod_grp_name_ctl
-!      subroutine deallocate_nod_grp_layer_ctl
-!      subroutine deallocate_ele_grp_name_ctl
-!      subroutine deallocate_ele_grp_layer_ctl
-!      subroutine deallocate_surf_grp_name_ctl
-!      subroutine deallocate_surf_grp_layer_ctl
-!
-!      subroutine allocate_nod_grp_name_ctl
-!      subroutine allocate_ele_grp_name_ctl
-!      subroutine allocate_surf_grp_name_ctl
-!
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_layers
-!
-      allocate( name_layer(numlayer_shell_ctl) )
-      allocate( r_layer(numlayer_shell_ctl) )
-      r_layer = 0.0d0
-!
-      end subroutine allocate_layers
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_edge_latitude_ctl
-!
-      allocate( kr_edge_latitude_ctl(num_edge_latitude_ctl) )
-      allocate( edge_latitude_ctl(num_edge_latitude_ctl) )
-      kr_edge_latitude_ctl = 0
-      edge_latitude_ctl = 0.0d0
-!
-      end subroutine allocate_edge_latitude_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -186,24 +164,6 @@
       end subroutine allocate_coarse_level_ctl
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_layers
-!
-      deallocate( name_layer )
-      deallocate( r_layer    )
-!
-      end subroutine deallocate_layers
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_edge_latitude_ctl
-!
-      deallocate( kr_edge_latitude_ctl)
-      deallocate( edge_latitude_ctl )
-!
-      end subroutine deallocate_edge_latitude_ctl
-!
 !  ---------------------------------------------------------------------
 !
       subroutine deallocate_coarse_level_ctl

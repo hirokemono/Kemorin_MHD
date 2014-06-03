@@ -3,7 +3,6 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine deallocate_search_param_ctl
 !      subroutine read_control_4_gen_itp_table
 !      subroutine read_control_4_interpolate
 !      subroutine read_control_4_distribute_itp
@@ -45,12 +44,13 @@
       integer(kind = kint) :: num_phi_divide_ctl = 0
 !
 !!      Structure for element grouping in meridional direction
-!!@n      r_ele_grouping_ctl%vect:  Radius data for searching
+!!@n      radial_divide_ctl%vect:  Radius data for searching
       type(ctl_array_real) :: radial_divide_ctl
 !
-      integer(kind = kint) :: num_search_times_ctl = 0
-      integer(kind = kint), allocatable :: i_search_sleeve_ctl(:)
-      real(kind = kreal), allocatable :: search_error_level_ctl(:)
+!!      Structure for error torrance for refine interpolation
+!!@n      eps_4_itp_ctl%ivec:  level for interpolation
+!!@n      eps_4_itp_ctl%vect:  Error torrance for interpolation
+      type(ctl_array_ir) :: eps_4_itp_ctl
 !
       integer (kind=kint) :: itr_refine_ctl = 20000
       real (kind=kreal) :: eps_refine_ctl = 1.0d-15
@@ -123,13 +123,12 @@
 !     3rd level for iteration  control
 !
       character(len=kchara), parameter                                  &
-     &         ::  hd_num_search = 'search_level_ctl'
+     &         ::  hd_eps_4_itp = 'search_level_ctl'
       character(len=kchara), parameter                                  &
      &         ::  hd_itr =        'maxiter'
       character(len=kchara), parameter                                  &
      &         ::  hd_eps =        'eps_4_refine'
 !
-      integer (kind=kint) :: i_num_search = 0
       integer (kind=kint) :: i_itr =        0
       integer (kind=kint) :: i_eps =        0
 !
@@ -140,9 +139,8 @@
       private :: hd_element_hash, i_element_hash, hd_fmt_itp_tbl
       private :: hd_table_head_ctl, hd_itp_node_head_ctl
       private :: hd_reverse_ele_tbl, hd_single_itp_tbl
-      private :: hd_num_search, hd_itr, hd_eps
+      private :: hd_eps_4_itp, hd_itr, hd_eps
 !
-      private :: allocate_search_param_ctl
       private :: read_const_itp_tbl_ctl_data
       private :: read_control_dist_itp_data
       private :: read_itp_files_ctl, read_element_hash_ctl
@@ -152,27 +150,6 @@
 !
       contains
 !
-!   --------------------------------------------------------------------
-!
-      subroutine allocate_search_param_ctl
-!
-      allocate(i_search_sleeve_ctl(num_search_times_ctl) )
-      allocate(search_error_level_ctl(num_search_times_ctl) )
-      i_search_sleeve_ctl = 0
-      search_error_level_ctl = 0.0d0
-!
-      end subroutine allocate_search_param_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine deallocate_search_param_ctl
-!
-      deallocate(i_search_sleeve_ctl)
-      deallocate(search_error_level_ctl)
-!
-      end subroutine deallocate_search_param_ctl
-!
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine read_control_4_gen_itp_table
@@ -335,14 +312,7 @@
         call find_control_end_flag(hd_iteration_ctl, i_iteration_ctl)
         if(i_iteration_ctl .gt. 0) exit
 !
-        call find_control_array_flag(hd_num_search,                     &
-     &      num_search_times_ctl)
-        if(num_search_times_ctl.gt.0 .and. i_num_search.eq.0) then
-          call allocate_search_param_ctl
-          call read_control_array_int_r_list(hd_num_search,             &
-     &        num_search_times_ctl, i_num_search,                       &
-     &        i_search_sleeve_ctl, search_error_level_ctl)
-        end if
+        call read_control_array_i_r(hd_eps_4_itp, eps_4_itp_ctl)
 !
         call read_integer_ctl_item(hd_itr, i_itr, itr_refine_ctl)
 !

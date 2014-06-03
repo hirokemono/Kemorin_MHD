@@ -133,7 +133,7 @@
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
-      type(pvr_ctl), intent(in) :: pvr
+      type(pvr_ctl), intent(inout) :: pvr
       integer(kind = kint), intent(in) :: i_pvr
 !
       integer(kind = kint) :: ist, i, icheck_ncomp(1)

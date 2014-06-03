@@ -202,16 +202,16 @@
         write(*,*) 'eps_iter ', eps_iter
       end if
 !
-      num_search_times = num_search_times_ctl
+      num_search_times = eps_4_itp_ctl%num
       call allocate_search_param
 !
       if (num_search_times .gt. 0) then
         i_search_sleeve(1:num_search_times)                             &
-     &      = i_search_sleeve_ctl(1:num_search_times)
+     &      = eps_4_itp_ctl%ivec(1:num_search_times)
         search_error_level(1:num_search_times)                          &
-     &      = search_error_level_ctl(1:num_search_times)
+     &      = eps_4_itp_ctl%vect(1:num_search_times)
 !
-        call deallocate_search_param_ctl
+        call dealloc_control_array_i_r(eps_4_itp_ctl)
       end if
 !
 !

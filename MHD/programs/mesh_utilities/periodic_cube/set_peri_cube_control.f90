@@ -24,7 +24,7 @@
       use m_cubed_sph_grp_param
       use m_control_data_cubed_sph
 !
-      integer(kind = kint) :: j, jst, jed
+      integer(kind = kint) :: i, j, jst, jed
 !
 !
 !      if     (domain_shape_ctl .eq. 'sphere'                           &
@@ -76,7 +76,7 @@
       num_hemi =       numele_4_90deg
       ncube_vertical = num_hemi
 !
-      n_shell = numlayer_shell_ctl
+      n_shell = radial_pnt_ctl%num
       nr_adj =  nend_adjust_ctl
       if(i_nstart_cube .gt. 0) then
          nr_back = nstart_cube_ctl
@@ -94,7 +94,11 @@
 !
       call allocate_shell_radius
 !
-      r_nod(1:n_shell) = r_layer(1:n_shell)
+      do i = 1, n_shell
+        j = radial_pnt_ctl%ivec(i)
+        r_nod(j) = radial_pnt_ctl%vect(i)
+      end do
+      call dealloc_control_array_i_r(radial_pnt_ctl)
 !
 !   set ICB and CMB address
 !

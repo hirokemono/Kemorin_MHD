@@ -98,6 +98,7 @@
       use m_constants
       use m_machine_parameter
       use m_read_control_elements
+      use t_read_control_arrays
       use skip_comment_f
 !
       implicit  none
@@ -106,9 +107,11 @@
       type modeview_ctl
         integer(kind = kint) :: num_pixel_ctl(2)
 !
-        integer(kind = kint) :: num_modelview_mat_ctl
-        character(len=kchara) :: modelview_dir_ctl(16,2)
-        real(kind = kreal) :: modelview_mat_ctl(16)
+!!      Structure for opacity controls
+!!@n      opacity_ctl%c1_tbl:  1st component name for matrix
+!!@n      opacity_ctl%c2_tbl:  2nd component name for matrix
+!!@n      opacity_ctl%vect:    Modelview matrix
+        type(ctl_array_c2r) :: modelview_mat_ctl
 !
         real(kind = kreal) :: perspective_angle_ctl
         real(kind = kreal) :: perspective_xy_ratio_ctl
@@ -119,32 +122,38 @@
         real(kind = kreal) :: eye_separation_ctl
 !
 !
-        integer(kind = kint) :: num_lookpoint_ctl
-        character(len=kchara) :: lookpoint_dir_ctl(3)
-        real(kind = kreal) :: lookpoint_ctl(3) = 0.0d0
+!!      Structure for look at  controls
+!!@n      lookpoint_ctl%c_tbl:   component of lookpoint
+!!@n      lookpoint_ctl%vect:    Position of lookpoint
+        type(ctl_array_cr) :: lookpoint_ctl
 !
-        integer(kind = kint) :: num_viewpoint_ctl
-        character(len=kchara) :: viewpoint_dir_ctl(3)
-        real(kind = kreal) :: viewpoint_ctl(3) = 0.0d0
+!!      Structure for viewpoint controls
+!!@n      viewpoint_ctl%c_tbl:   Direction of viewpoint
+!!@n      viewpoint_ctl%vect:    Position of viewpoint
+        type(ctl_array_cr) :: viewpoint_ctl
 !
-        integer(kind = kint) :: num_up_direction_ctl
-        character(len=kchara) :: up_direction_dir_ctl(3)
-        real(kind = kreal) :: up_direction_ctl(3) = 0.0d0
+!!      Structure for Up-directions controls
+!!@n      up_dir_ctl%c_tbl:   Direction of  Up-directions
+!!@n      up_dir_ctl%vect:    Position of  Up-directions
+        type(ctl_array_cr) :: up_dir_ctl
 !
-        integer(kind = kint) :: num_view_rot_dir_ctl
-        character(len=kchara) :: view_rotation_dir_ctl(3)
-        real(kind = kreal) :: view_rotation_vec_ctl(3) = 0.0d0
+!!      Structure for rotation of object
+!!@n      view_rot_vec_ctl%c_tbl:   Direction of rotatin vector
+!!@n      view_rot_vec_ctl%vect:    rotation vector
+        type(ctl_array_cr) :: view_rot_vec_ctl
 !
         real(kind = kreal) :: view_rotation_deg_ctl = 0.0d0
         real(kind = kreal) :: scale_factor_ctl =      1.0d0
 !
-        integer(kind = kint) :: num_scale_factor_ctl
-        character(len=kchara) :: scale_factor_dir_ctl(3)
-        real(kind = kreal) :: scale_factor_vec_ctl(3) = 0.0d0
+!!      Structure for scale factor controls
+!!@n      scale_vector_ctl%c_tbl:   Direction of scale factor
+!!@n      scale_vector_ctl%vect:    Position of scale factor
+        type(ctl_array_cr) :: scale_vector_ctl
 !
-        integer(kind = kint) :: num_viewpt_in_viewer_ctl
-        character(len=kchara) :: viewpoint_in_view_dir_ctl(3)
-        real(kind = kreal) :: viewpoint_in_viewer_ctl(3)
+!!      Structure for viewpoint in viewer controls
+!!@n      viewpt_in_viewer_ctl%c_tbl:   Direction of viewpoint in viewer
+!!@n      viewpt_in_viewer_ctl%vect:    Position of viewpoint in viewer
+        type(ctl_array_cr) :: viewpt_in_viewer_ctl
 !
 !
 !   entry label for this block
@@ -152,19 +161,13 @@
 !
 !     3rd level for view_transform_define
         integer (kind=kint) :: i_image_size =  0
-        integer (kind=kint) :: i_model_mat =   0
         integer (kind=kint) :: i_project_mat = 0
 !
         integer (kind=kint) :: i_stereo_view = 0
 !
-        integer (kind=kint) :: i_look_point =     0
         integer (kind=kint) :: i_view_point =     0
-        integer (kind=kint) :: i_up_dir =         0
         integer (kind=kint) :: i_view_rot_deg =   0
-        integer (kind=kint) :: i_view_rot_dir =   0
         integer (kind=kint) :: i_scale_factor =   0
-        integer (kind=kint) :: i_scale_fac_dir =  0
-        integer (kind=kint) :: i_viewpt_in_view = 0
 !
 !     4th level for projection_matrix
         integer (kind=kint) :: i_perspect_angle =  0
@@ -272,123 +275,19 @@
         call read_stereo_view_ctl(mat)
 !
 !
-        call find_control_array_flag(hd_look_point,                     &
-     &      mat%num_lookpoint_ctl)
-        if(mat%num_lookpoint_ctl.gt.0 .and. mat%i_look_point.eq.0) then
+        call read_control_array_c_r(hd_look_point, mat%lookpoint_ctl)
+        call read_control_array_c_r(hd_view_point, mat%viewpoint_ctl)
+        call read_control_array_c_r(hd_up_dir, mat%up_dir_ctl)
 !
-          if(mat%num_lookpoint_ctl .ne. 3) then
-            ierr = 10
-            write(e_message,'(a)')                                      &
-     &          'lookpoint vector should have 3 components'
-            return
-          end if
+        call read_control_array_c_r                                     &
+     &     (hd_view_rot_dir, mat%view_rot_vec_ctl)
+        call read_control_array_c_r                                     &
+     &     (hd_scale_fac_dir, mat%scale_vector_ctl)
+        call read_control_array_c_r                                     &
+     &     (hd_viewpt_in_view, mat%viewpt_in_viewer_ctl)
 !
-          call read_control_array_vect_list(hd_look_point,              &
-     &        mat%num_lookpoint_ctl, mat%i_look_point,                  &
-     &        mat%lookpoint_dir_ctl, mat%lookpoint_ctl)
-        end if
-!
-        call find_control_array_flag(hd_view_point,                     &
-     &      mat%num_viewpoint_ctl)
-        if(mat%num_viewpoint_ctl.gt.0 .and. mat%i_view_point.eq.0) then
-!
-          if(mat%num_viewpoint_ctl .ne. 3) then
-            ierr = 10
-            write(e_message,'(a)')                                      &
-     &          'viewpoint vector should have 3 components'
-            return
-          end if
-!
-          call read_control_array_vect_list(hd_view_point,              &
-     &        mat%num_viewpoint_ctl, mat%i_view_point,                  &
-     &        mat%viewpoint_dir_ctl, mat%viewpoint_ctl)
-        end if
-!
-        call find_control_array_flag(hd_up_dir,                         &
-     &      mat%num_up_direction_ctl)
-        if(mat%num_up_direction_ctl.gt.0 .and. mat%i_up_dir.eq.0) then
-!
-          if(mat%num_up_direction_ctl .ne. 3) then
-            ierr = 10
-            write(e_message,'(a)')                                      &
-     &          'up-direction vector should have 3 components'
-            return
-          end if
-!
-          call read_control_array_vect_list(hd_up_dir,                  &
-     &        mat%num_up_direction_ctl, mat%i_up_dir,                   &
-     &        mat%up_direction_dir_ctl, mat%up_direction_ctl)
-        end if
-!
-        call find_control_array_flag(hd_view_rot_dir,                   &
-     &      mat%num_view_rot_dir_ctl)
-        if(mat%num_view_rot_dir_ctl.gt.0                                &
-     &      .and. mat%i_view_rot_dir.eq.0) then
-!
-          if(mat%num_view_rot_dir_ctl .ne. 3) then
-            ierr = 10
-            write(e_message,'(a)')                                      &
-     &          'Rotation vector should have 3 components'
-            return
-          end if
-!
-          call read_control_array_vect_list(hd_view_rot_dir,            &
-     &        mat%num_view_rot_dir_ctl, mat%i_view_rot_dir,             &
-     &        mat%view_rotation_dir_ctl, mat%view_rotation_vec_ctl)
-        end if
-!
-        call find_control_array_flag(hd_scale_fac_dir,                  &
-     &       mat%num_scale_factor_ctl)
-        if(mat%num_scale_factor_ctl.gt.0                                &
-     &      .and. mat%i_scale_fac_dir.eq.0) then
-!
-          if(mat%num_scale_factor_ctl .ne. 3) then
-            ierr = 10
-            write(e_message,'(a)')                                      &
-     &          'Scale factor should be 3 components'
-            return
-          end if
-!
-          call read_control_array_vect_list(hd_scale_fac_dir,           &
-     &        mat%num_scale_factor_ctl, mat%i_scale_fac_dir,            &
-     &        mat%scale_factor_dir_ctl, mat%scale_factor_vec_ctl)
-        end if
-!
-        call find_control_array_flag(hd_viewpt_in_view,                 &
-     &      mat%num_viewpt_in_viewer_ctl)
-        if(mat%num_viewpt_in_viewer_ctl.gt.0                            &
-     &      .and. mat%i_viewpt_in_view.eq.0) then
-!
-          if(mat%num_viewpt_in_viewer_ctl .ne. 3) then
-            ierr = 10
-            write(e_message,'(a)')                                      &
-     &          'Viewpoint vector should be 3 components'
-            return
-          end if
-!
-          call read_control_array_vect_list(hd_viewpt_in_view,          &
-     &        mat%num_viewpt_in_viewer_ctl, mat%i_viewpt_in_view,       &
-     &        mat%viewpoint_in_view_dir_ctl,                            &
-     &        mat%viewpoint_in_viewer_ctl)
-        end if
-!
-        call find_control_array_flag(hd_model_mat,                      &
-     &      mat%num_modelview_mat_ctl)
-        if(mat%num_modelview_mat_ctl.gt.0                               &
-     &      .and. mat%i_model_mat.eq.0) then
-!
-          if(mat%num_modelview_mat_ctl .ne. 16) then
-            ierr = 10
-            write(e_message,'(a)')                                      &
-     &          'Modelview  Matrix should be 16 components'
-            return
-          end if
-!
-          call read_control_array_c2_r_list(hd_model_mat,               &
-     &        mat%num_modelview_mat_ctl, mat%i_model_mat,               &
-     &        mat%modelview_dir_ctl(1:16,1),                            &
-     &        mat%modelview_dir_ctl(1:16,2), mat%modelview_mat_ctl)
-        end if
+        call read_control_array_c2_r                                    &
+     &     (hd_model_mat, mat%modelview_mat_ctl)
 !
         call read_real_ctl_item(hd_view_rot_deg,                        &
      &        mat%i_view_rot_deg,  mat%view_rotation_deg_ctl)
@@ -482,41 +381,33 @@
 !
       mat%i_view_transform = 0
 !
-      mat%num_modelview_mat_ctl = 0
-      mat%num_lookpoint_ctl = 0
-      mat%num_viewpoint_ctl = 0
-      mat%num_up_direction_ctl = 0
-      mat%num_view_rot_dir_ctl = 0
-      mat%num_scale_factor_ctl = 0
-      mat%num_viewpt_in_viewer_ctl = 0
-!
-      mat%modelview_mat_ctl(1:16) = 0.0d0
+      mat%modelview_mat_ctl%num =    0
+      mat%lookpoint_ctl%num =        0
+      mat%viewpoint_ctl%num =        0
+      mat%up_dir_ctl%num =           0
+      mat%view_rot_vec_ctl%num =     0
+      mat%scale_vector_ctl%num =     0
+      mat%viewpt_in_viewer_ctl%num = 0
 !
       mat%perspective_angle_ctl =    0.0d0
       mat%perspective_xy_ratio_ctl = 0.0d0
       mat%perspective_near_ctl =     0.0d0
       mat%perspective_far_ctl =      0.0d0
 !
-      mat%lookpoint_ctl(1:3) =    0.0d0
-      mat%viewpoint_ctl(1:3) =    0.0d0
-      mat%up_direction_ctl(1:3) = 0.0d0
-!
       mat%view_rotation_deg_ctl =      0.0d0
-      mat%view_rotation_vec_ctl(1:3) = 0.0d0
-      mat%scale_factor_vec_ctl(1:3) =  0.0d0
       mat%scale_factor_ctl =           1.0d0
 !
 !
-      mat%i_model_mat =   0
+      mat%modelview_mat_ctl%icou =   0
       mat%i_project_mat = 0
 !
-      mat%i_look_point =  0
-      mat%i_view_point =  0
-      mat%i_up_dir =      0
+      mat%lookpoint_ctl%icou =  0
+      mat%viewpoint_ctl%icou =  0
+      mat%up_dir_ctl%icou =     0
 !
-      mat%i_view_rot_dir =   0
-      mat%i_scale_fac_dir =  0
-      mat%i_viewpt_in_view = 0
+      mat%view_rot_vec_ctl%icou =     0
+      mat%scale_vector_ctl%icou =     0
+      mat%viewpt_in_viewer_ctl%icou = 0
 !
       mat%i_view_rot_deg = 0
       mat%i_scale_factor = 0

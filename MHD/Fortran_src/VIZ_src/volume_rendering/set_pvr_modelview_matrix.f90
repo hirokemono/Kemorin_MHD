@@ -2,9 +2,12 @@
 !set_pvr_modelview_matrix.f90
 !      module set_pvr_modelview_matrix
 !
-      module set_pvr_modelview_matrix
-!
 !        programmed by H.Matsui on May. 2009
+!
+!      subroutine set_pvr_projection_matrix(i_pvr, mat)
+!      subroutine s_set_pvr_modelview_matrix(i_pvr, mat)
+!
+      module set_pvr_modelview_matrix
 !
       use m_precision
 !
@@ -19,8 +22,7 @@
       private :: set_view_rotation_vect_ctl, set_view_scale_factor_ctl
       private :: set_viewpnt_in_viewer_ctl
 !
-!      subroutine set_pvr_projection_matrix(i_pvr, mat)
-!      subroutine s_set_pvr_modelview_matrix(i_pvr, mat)
+      private :: set_4direction_flag, set_3direction_flag
 !
 ! -----------------------------------------------------------------------
 !
@@ -30,33 +32,40 @@
 !
       subroutine s_set_pvr_modelview_matrix(i_pvr, mat)
 !
-      type(modeview_ctl), intent(in) :: mat
+      type(modeview_ctl), intent(inout) :: mat
       integer(kind = kint), intent(in) :: i_pvr
 !
 !
       call copy_pvr_image_size(i_pvr, mat)
       call copy_pvr_perspective_matrix(i_pvr, mat)
 !
-      if (mat%num_modelview_mat_ctl .eq. 16) then
+      if (mat%modelview_mat_ctl%num .gt. 0) then
         call copy_pvr_modelview_matrix(i_pvr, mat)
+        call dealloc_control_array_c2_r(mat%modelview_mat_ctl)
       else
         call set_viewpoint_vector_ctl(i_pvr, mat)
+        call dealloc_control_array_c_r(mat%lookpoint_ctl)
+        call dealloc_control_array_c_r(mat%viewpoint_ctl)
+        call dealloc_control_array_c_r(mat%up_dir_ctl)
       end if
 !
       if(mat%i_view_rot_deg.gt.0                                        &
-     &    .and. mat%num_view_rot_dir_ctl.ge.3) then
+     &    .and. mat%view_rot_vec_ctl%num.ge.3) then
         call set_view_rotation_vect_ctl(i_pvr, mat)
+        call dealloc_control_array_c_r(mat%view_rot_vec_ctl)
       end if
 !
       if(mat%i_scale_factor .gt. 0) then
         scale_factor_pvr(1:3,i_pvr) = mat%scale_factor_ctl
         iflag_scale_fact_pvr(i_pvr) = 1
-      else if(mat%num_scale_factor_ctl .ge. 3) then
+      else if(mat%scale_vector_ctl%num .ge. 3) then
         call set_view_scale_factor_ctl(i_pvr, mat)
+        call dealloc_control_array_c_r(mat%scale_vector_ctl)
       end if
 !
-      if(mat%num_viewpt_in_viewer_ctl .ge. 3) then
+      if(mat%viewpt_in_viewer_ctl%num .ge. 3) then
         call set_viewpnt_in_viewer_ctl(i_pvr, mat)
+        call dealloc_control_array_c_r(mat%viewpt_in_viewer_ctl)
       end if
 !
       end subroutine s_set_pvr_modelview_matrix
@@ -141,98 +150,31 @@
 !
       subroutine copy_pvr_modelview_matrix(i_pvr, mat)
 !
+      use calypso_mpi
+      use skip_comment_f
+!
       type(modeview_ctl), intent(in) :: mat
       integer(kind = kint), intent(in) :: i_pvr
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, nd1, nd2, j
 !
 !
-        do i = 1, mat%num_modelview_mat_ctl
+      if(mat%modelview_mat_ctl%num .ne. 16) then
+        write(e_message,'(a)')                                          &
+     &     'Modelview  Matrix should be 16 components'
+        call calypso_MPI_abort(10, e_message)
+      end if
 !
-          if     (mat%modelview_dir_ctl(i,1) .eq. 'x'                   &
-     &       .or. mat%modelview_dir_ctl(i,1) .eq. 'X'                   &
-     &       .or. mat%modelview_dir_ctl(i,1) .eq. '1') then
-            if     (mat%modelview_dir_ctl(i,2) .eq. 'x'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'X'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. '1') then
-              modelview_mat(1,i_pvr) = mat%modelview_mat_ctl(i)
-            else if(mat%modelview_dir_ctl(i,2) .eq. 'y'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'Y'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. '2') then
-              modelview_mat(2,i_pvr) = mat%modelview_mat_ctl(i)
-            else if(mat%modelview_dir_ctl(i,2) .eq. 'z'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'z'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. '3') then
-              modelview_mat(3,i_pvr) = mat%modelview_mat_ctl(i)
-            else if(mat%modelview_dir_ctl(i,2) .eq. 'w'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'W'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. '4') then
-              modelview_mat(4,i_pvr) = mat%modelview_mat_ctl(i)
-            end if
-          else if(mat%modelview_dir_ctl(i,1) .eq. 'y'                   &
-     &       .or. mat%modelview_dir_ctl(i,1) .eq. 'Y'                   &
-     &       .or. mat%modelview_dir_ctl(i,1) .eq. '2') then
-            if     (mat%modelview_dir_ctl(i,2) .eq. 'x'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'X'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. '1') then
-              modelview_mat(5,i_pvr) = mat%modelview_mat_ctl(i)
-            else if(mat%modelview_dir_ctl(i,2) .eq. 'y'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'Y'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. '2') then
-              modelview_mat(6,i_pvr) = mat%modelview_mat_ctl(i)
-            else if(mat%modelview_dir_ctl(i,2) .eq. 'z'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'z'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. '3') then
-              modelview_mat(7,i_pvr) = mat%modelview_mat_ctl(i)
-            else if(mat%modelview_dir_ctl(i,2) .eq. 'w'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'W'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. '4') then
-              modelview_mat(8,i_pvr) = mat%modelview_mat_ctl(i)
-            end if
-          else if(mat%modelview_dir_ctl(i,1) .eq. 'z'                   &
-     &       .or. mat%modelview_dir_ctl(i,1) .eq. 'Z'                   &
-     &       .or. mat%modelview_dir_ctl(i,1) .eq. '3') then
-            if     (mat%modelview_dir_ctl(i,2) .eq. 'x'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'X'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. '1') then
-              modelview_mat(9, i_pvr) = mat%modelview_mat_ctl(i)
-            else if(mat%modelview_dir_ctl(i,2) .eq. 'y'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'Y'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. '2') then
-              modelview_mat(10,i_pvr) = mat%modelview_mat_ctl(i)
-            else if(mat%modelview_dir_ctl(i,2) .eq. 'z'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'z'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. '3') then
-              modelview_mat(11,i_pvr) = mat%modelview_mat_ctl(i)
-            else if(mat%modelview_dir_ctl(i,2) .eq. 'w'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'W'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. '4') then
-              modelview_mat(12,i_pvr) = mat%modelview_mat_ctl(i)
-            end if
-          else if(mat%modelview_dir_ctl(i,1) .eq. 'w'                   &
-     &       .or. mat%modelview_dir_ctl(i,1) .eq. 'Z'                   &
-     &       .or. mat%modelview_dir_ctl(i,1) .eq. '4') then
-            if     (mat%modelview_dir_ctl(i,2) .eq. 'x'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'X'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. '1') then
-              modelview_mat(13,i_pvr) = mat%modelview_mat_ctl(i)
-            else if(mat%modelview_dir_ctl(i,2) .eq. 'y'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'Y'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. '2') then
-              modelview_mat(14,i_pvr) = mat%modelview_mat_ctl(i)
-            else if(mat%modelview_dir_ctl(i,2) .eq. 'z'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'z'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. '3') then
-              modelview_mat(15,i_pvr) = mat%modelview_mat_ctl(i)
-            else if(mat%modelview_dir_ctl(i,2) .eq. 'w'                 &
-     &         .or. mat%modelview_dir_ctl(i,2) .eq. 'W'                 &
-     &         .or. mat%modelview_dir_ctl(2,i) .eq. '4') then
-              modelview_mat(16,i_pvr) = mat%modelview_mat_ctl(i)
-            end if
-          end if
+      do i = 1, mat%modelview_mat_ctl%num
+        nd1 = set_4direction_flag(mat%modelview_mat_ctl%c1_tbl(i))
+        nd2 = set_4direction_flag(mat%modelview_mat_ctl%c2_tbl(i))
 !
-        end do
+        if(nd1*nd2 .gt. 0) then
+          j = nd2 + 4*(nd1-1)
+          modelview_mat(j,i_pvr) = mat%modelview_mat_ctl%vect(i)
+        end if
+      end do
 !
-        iflag_modelview_mat(i_pvr) = 1
+      iflag_modelview_mat(i_pvr) = 1
 !
       end subroutine copy_pvr_modelview_matrix
 !
@@ -240,61 +182,49 @@
 !
       subroutine set_viewpoint_vector_ctl(i_pvr, mat)
 !
+      use calypso_mpi
+!
       type(modeview_ctl), intent(in) :: mat
       integer(kind = kint), intent(in) :: i_pvr
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, nd
 !
 !
-        do i = 1, mat%num_lookpoint_ctl
-          if     (mat%lookpoint_dir_ctl(i) .eq. 'x'                     &
-     &       .or. mat%lookpoint_dir_ctl(i) .eq. 'X'                     &
-     &       .or. mat%lookpoint_dir_ctl(i) .eq. '1') then
-            lookat_vec(1,i_pvr) = mat%lookpoint_ctl(i)
-          else if(mat%lookpoint_dir_ctl(i) .eq. 'y'                     &
-     &       .or. mat%lookpoint_dir_ctl(i) .eq. 'Y'                     &
-     &       .or. mat%lookpoint_dir_ctl(i) .eq. '2') then
-            lookat_vec(2,i_pvr) = mat%lookpoint_ctl(i)
-          else if(mat%lookpoint_dir_ctl(i) .eq. 'z'                     &
-     &       .or. mat%lookpoint_dir_ctl(i) .eq. 'Z'                     &
-     &       .or. mat%lookpoint_dir_ctl(i) .eq. '3') then
-            lookat_vec(3,i_pvr) = mat%lookpoint_ctl(i)
-          end if
-        end do
-        if(mat%num_lookpoint_ctl .ge. 3) iflag_lookpoint_vec(i_pvr) = 1
+      if(mat%lookpoint_ctl%num .ne. 3) then
+        write(e_message,'(a)')                                          &
+     &     'Lookatpoint vector should be 3 components'
+        call calypso_MPI_abort(10, e_message)
+      end if
+      if(mat%viewpoint_ctl%num .ne. 3) then
+        write(e_message,'(a)')                                          &
+     &     'Viewpoint vector should be 3 components'
+        call calypso_MPI_abort(10, e_message)
+      end if
+      if(mat%up_dir_ctl%num .ne. 3) then
+        write(e_message,'(a)')                                          &
+     &     'Up-direction vector should be 3 components'
+        call calypso_MPI_abort(10, e_message)
+      end if
 !
-        do i = 1, mat%num_viewpoint_ctl
-          if     (mat%viewpoint_dir_ctl(i) .eq. 'x'                     &
-     &       .or. mat%viewpoint_dir_ctl(i) .eq. 'X'                     &
-     &       .or. mat%viewpoint_dir_ctl(i) .eq. '1') then
-            viewpoint_vec(1,i_pvr) = mat%viewpoint_ctl(i)
-          else if(mat%viewpoint_dir_ctl(i) .eq. 'y'                     &
-     &       .or. mat%viewpoint_dir_ctl(i) .eq. 'Y'                     &
-     &       .or. mat%viewpoint_dir_ctl(i) .eq. '2') then
-            viewpoint_vec(2,i_pvr) = mat%viewpoint_ctl(i)
-          else if(mat%viewpoint_dir_ctl(i) .eq. 'z'                     &
-     &       .or. mat%viewpoint_dir_ctl(i) .eq. 'Z'                     &
-     &       .or. mat%viewpoint_dir_ctl(i) .eq. '3') then
-            viewpoint_vec(3,i_pvr) = mat%viewpoint_ctl(i)
-          end if
-        end do
-        if(mat%num_viewpoint_ctl .ge. 3) iflag_viewpoint_vec(i_pvr) = 1
+      do i = 1, mat%lookpoint_ctl%num
+        nd = set_3direction_flag(mat%lookpoint_ctl%c_tbl(i))
+        if(nd .eq. 0) cycle
+        lookat_vec(nd,i_pvr) = mat%lookpoint_ctl%vect(i)
+      end do
+      if(mat%lookpoint_ctl%num .ge. 3) iflag_lookpoint_vec(i_pvr) = 1
 !
-        do i = 1, mat%num_up_direction_ctl
-          if     (mat%up_direction_dir_ctl(i) .eq. 'x'                  &
-     &       .or. mat%up_direction_dir_ctl(i) .eq. 'X'                  &
-     &       .or. mat%up_direction_dir_ctl(i) .eq. '1') then
-            up_direction_vec(1,i_pvr) = mat%up_direction_ctl(i)
-          else if(mat%up_direction_dir_ctl(i) .eq. 'y'                  &
-     &       .or. mat%up_direction_dir_ctl(i) .eq. 'Y'                  &
-     &       .or. mat%up_direction_dir_ctl(i) .eq. '2') then
-            up_direction_vec(2,i_pvr) = mat%up_direction_ctl(i)
-          else if(mat%up_direction_dir_ctl(i) .eq. 'z'                  &
-     &       .or. mat%up_direction_dir_ctl(i) .eq. 'Z'                  &
-     &       .or. mat%up_direction_dir_ctl(i) .eq. '3') then
-            up_direction_vec(3,i_pvr) = mat%up_direction_ctl(i)
-          end if
-        end do
-        if (mat%num_up_direction_ctl .ge. 3) iflag_updir_vec(i_pvr) = 1
+      do i = 1, mat%viewpoint_ctl%num
+        nd = set_3direction_flag(mat%viewpoint_ctl%c_tbl(i))
+        if(nd .eq. 0) cycle
+        viewpoint_vec(nd,i_pvr) = mat%viewpoint_ctl%vect(i)
+      end do
+      if(mat%viewpoint_ctl%num .ge. 3) iflag_viewpoint_vec(i_pvr) = 1
+!
+      do i = 1, mat%up_dir_ctl%num
+        nd = set_3direction_flag(mat%up_dir_ctl%c_tbl(i))
+        if(nd .eq. 0) cycle
+        up_direction_vec(nd,i_pvr) = mat%up_dir_ctl%vect(i)
+      end do
+      if (mat%up_dir_ctl%num .ge. 3) iflag_updir_vec(i_pvr) = 1
 !
       if (iflag_debug .gt. 0) then
         write(*,*) 'iflag_lookpoint_vec', iflag_lookpoint_vec(i_pvr)
@@ -311,10 +241,18 @@
 !
       subroutine set_view_rotation_vect_ctl(i_pvr, mat)
 !
+      use calypso_mpi
+!
       type(modeview_ctl), intent(in) :: mat
       integer(kind = kint), intent(in) :: i_pvr
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, nd
 !
+!
+      if(mat%view_rot_vec_ctl%num .ne. 3) then
+        write(e_message,'(a)')                                          &
+     &     'Rotaion of viewpoint vector should be 3 components'
+        call calypso_MPI_abort(10, e_message)
+      end if
 !
       if (mat%i_view_rot_deg .gt. 0) then
         rotation_pvr(1,i_pvr) = mat%view_rotation_deg_ctl
@@ -322,22 +260,12 @@
         rotation_pvr(1,i_pvr) = 0.0d0
       end if
 !
-      do i = 1, mat%num_view_rot_dir_ctl
-        if     (mat%view_rotation_dir_ctl(i) .eq. 'x'                   &
-     &     .or. mat%view_rotation_dir_ctl(i) .eq. 'X'                   &
-     &     .or. mat%view_rotation_dir_ctl(i) .eq. '1') then
-            rotation_pvr(2,i_pvr) = mat%view_rotation_vec_ctl(i)
-        else if(mat%view_rotation_dir_ctl(i) .eq. 'y'                   &
-     &     .or. mat%view_rotation_dir_ctl(i) .eq. 'Y'                   &
-     &     .or. mat%view_rotation_dir_ctl(i) .eq. '2') then
-            rotation_pvr(3,i_pvr) = mat%view_rotation_vec_ctl(i)
-        else if(mat%view_rotation_dir_ctl(i) .eq. 'z'                   &
-     &     .or. mat%view_rotation_dir_ctl(i) .eq. 'Z'                   &
-     &     .or. mat%view_rotation_dir_ctl(i) .eq. '3') then
-          rotation_pvr(4,i_pvr) = mat%view_rotation_vec_ctl(i)
-        end if
+      do i = 1, mat%view_rot_vec_ctl%num
+        nd = set_3direction_flag(mat%view_rot_vec_ctl%c_tbl(i))
+        if(nd .eq. 0) cycle
+        rotation_pvr(nd+1,i_pvr) = mat%view_rot_vec_ctl%vect(i)
       end do
-      if(mat%num_view_rot_dir_ctl .ge. 3) iflag_rotation_pvr(i_pvr) = 1
+      if(mat%view_rot_vec_ctl%num .ge. 3) iflag_rotation_pvr(i_pvr) = 1
 !
       end subroutine set_view_rotation_vect_ctl
 !
@@ -345,27 +273,25 @@
 !
       subroutine set_view_scale_factor_ctl(i_pvr, mat)
 !
+      use calypso_mpi
+!
       type(modeview_ctl), intent(in) :: mat
       integer(kind = kint), intent(in) :: i_pvr
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, nd
 !
 !
-      do i = 1, mat%num_scale_factor_ctl
-        if     (mat%scale_factor_dir_ctl(i) .eq. 'x'                    &
-     &     .or. mat%scale_factor_dir_ctl(i) .eq. 'X'                    &
-     &     .or. mat%scale_factor_dir_ctl(i) .eq. '1') then
-            scale_factor_pvr(1,i_pvr) = mat%scale_factor_vec_ctl(i)
-        else if(mat%scale_factor_dir_ctl(i) .eq. 'y'                    &
-     &     .or. mat%scale_factor_dir_ctl(i) .eq. 'Y'                    &
-     &     .or. mat%scale_factor_dir_ctl(i) .eq. '2') then
-          scale_factor_pvr(2,i_pvr) = mat%scale_factor_vec_ctl(i)
-        else if(mat%scale_factor_dir_ctl(i) .eq. 'z'                    &
-     &     .or. mat%scale_factor_dir_ctl(i) .eq. 'Z'                    &
-     &     .or. mat%scale_factor_dir_ctl(i) .eq. '3') then
-          scale_factor_pvr(3,i_pvr) = mat%scale_factor_vec_ctl(i)
-        end if
+      if(mat%scale_vector_ctl%num .ne. 3) then
+        write(e_message,'(a)')                                          &
+     &     'Scale factor vector should be 3 components'
+        call calypso_MPI_abort(10, e_message)
+      end if
+!
+      do i = 1, mat%scale_vector_ctl%num
+        nd = set_3direction_flag(mat%scale_vector_ctl%c_tbl(i))
+        if(nd .eq. 0) cycle
+        scale_factor_pvr(nd,i_pvr) = mat%scale_vector_ctl%vect(i)
       end do
-      if (mat%num_scale_factor_ctl .ge. 3) then
+      if (mat%scale_vector_ctl%num .ge. 3) then
         iflag_scale_fact_pvr(i_pvr) = 1
       end if
 !
@@ -375,33 +301,69 @@
 !
       subroutine set_viewpnt_in_viewer_ctl(i_pvr, mat)
 !
+      use calypso_mpi
+      use skip_comment_f
+!
       type(modeview_ctl), intent(in) :: mat
       integer(kind = kint), intent(in) :: i_pvr
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, nd
 !
 !
-      do i = 1, mat%num_viewpt_in_viewer_ctl
-       if     (mat%viewpoint_in_view_dir_ctl(i) .eq. 'x'                &
-     &    .or. mat%viewpoint_in_view_dir_ctl(i) .eq. 'X'                &
-     &    .or. mat%viewpoint_in_view_dir_ctl(i) .eq. '1') then
-         viewpt_in_viewer_pvr(1,i_pvr) = mat%viewpoint_in_viewer_ctl(i)
-       else if(mat%viewpoint_in_view_dir_ctl(i) .eq. 'y'                &
-     &    .or. mat%viewpoint_in_view_dir_ctl(i) .eq. 'Y'                &
-     &    .or. mat%viewpoint_in_view_dir_ctl(i) .eq. '2') then
-         viewpt_in_viewer_pvr(2,i_pvr) = mat%viewpoint_in_viewer_ctl(i)
-       else if(mat%viewpoint_in_view_dir_ctl(i) .eq. 'z'                &
-     &    .or. mat%viewpoint_in_view_dir_ctl(i) .eq. 'Z'                &
-     &    .or. mat%viewpoint_in_view_dir_ctl(i) .eq. '3') then
-         viewpt_in_viewer_pvr(3,i_pvr) = mat%viewpoint_in_viewer_ctl(i)
-       end if
+      if(mat%viewpt_in_viewer_ctl%num .ne. 3) then
+        write(e_message,'(a)')                                          &
+     &     'Viewpoint in viewer should be 3 components'
+        call calypso_MPI_abort(10, e_message)
+      end if
+!
+      do i = 1, mat%viewpt_in_viewer_ctl%num
+        nd = set_3direction_flag(mat%viewpt_in_viewer_ctl%c_tbl(i))
+        if(nd .eq. 0) cycle
+        viewpt_in_viewer_pvr(nd,i_pvr)                                  &
+     &      = mat%viewpt_in_viewer_ctl%vect(i)
       end do
-      if (mat%num_viewpt_in_viewer_ctl .ge. 3)                          &
+      if (mat%viewpt_in_viewer_ctl%num .ge. 3)                          &
      &        iflag_viewpt_in_view_pvr(i_pvr) = 1
 !
       lookat_vec(1:2,i_pvr) = lookat_vec(1:2,i_pvr)                     &
      &                       - viewpt_in_viewer_pvr(1:2,i_pvr)
 !
       end subroutine set_viewpnt_in_viewer_ctl
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      integer function set_4direction_flag(dir_ctl)
+!
+      use skip_comment_f
+!
+      character(len = kchara), intent(in) :: dir_ctl
+!
+!
+      if     (cmp_no_case(dir_ctl,'x').gt.0 .or. dir_ctl.eq.'1') then
+        set_4direction_flag = 1
+      else if(cmp_no_case(dir_ctl,'y').gt.0 .or. dir_ctl.eq.'2') then
+        set_4direction_flag = 2
+      else if(cmp_no_case(dir_ctl,'z').gt.0 .or. dir_ctl.eq.'3') then
+        set_4direction_flag = 3
+      else if(cmp_no_case(dir_ctl,'w').gt.0 .or. dir_ctl.eq.'4') then
+        set_4direction_flag = 4
+      else
+        set_4direction_flag = 0
+      end if
+!
+      end function set_4direction_flag
+!
+! -----------------------------------------------------------------------
+!
+      integer function set_3direction_flag(dir_ctl)
+!
+      character(len = kchara), intent(in) :: dir_ctl
+!
+!
+      set_3direction_flag = set_4direction_flag(dir_ctl)
+      if(set_4direction_flag(dir_ctl) .eq. 4) set_3direction_flag = 0
+!
+      end function set_3direction_flag
 !
 ! -----------------------------------------------------------------------
 !

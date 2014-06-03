@@ -77,7 +77,7 @@
       num_hemi =       numele_4_90deg
       ncube_vertical = num_hemi
 !
-      n_shell = numlayer_shell_ctl
+      n_shell = radial_pnt_ctl%num
       nr_adj =  nend_adjust_ctl
       if(i_nstart_cube .gt. 0) then
          nr_back = nstart_cube_ctl
@@ -95,7 +95,11 @@
 !
       call allocate_shell_radius
 !
-      r_nod(1:n_shell) = r_layer(1:n_shell)
+      do i = 1, n_shell
+        j = radial_pnt_ctl%ivec(i)
+        r_nod(j) = radial_pnt_ctl%vect(i)
+      end do
+      call dealloc_control_array_i_r(radial_pnt_ctl)
 !
 !   set ICB and CMB address
 !
@@ -389,16 +393,16 @@
       end do
 !
 !
-      num_edge_latitude_ref = num_edge_latitude_ctl
+      num_edge_latitude_ref = edge_latitude_ctl%num
       write(*,*) 'num_edge_latitude_ref', num_edge_latitude_ref
       call allocate_ref_edge_latitude
 !
-      if(num_edge_latitude_ctl .gt. 0) then
+      if(num_edge_latitude_ref .gt. 0) then
         do j = 1, num_edge_latitude_ref
-          kr_edge_latitude_ref(j) =  kr_edge_latitude_ctl(j)
-          edge_latitude_ref(j) =     edge_latitude_ctl(j)
+          kr_edge_latitude_ref(j) =  edge_latitude_ctl%ivec(j)
+          edge_latitude_ref(j) =     edge_latitude_ctl%vect(j)
         end do
-        call deallocate_edge_latitude_ctl
+        call dealloc_control_array_i_r(edge_latitude_ctl)
       end if
 !
       max_coarse_level = num_level_coarse
