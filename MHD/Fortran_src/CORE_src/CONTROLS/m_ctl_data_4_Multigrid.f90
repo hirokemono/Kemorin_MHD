@@ -3,7 +3,6 @@
 !
 !        programmed by H.Matsui on July, 2007
 !
-!      subroutine deallocate_MG_control_data
 !      subroutine read_ctl_data_4_Multigrid(ierr, e_message)
 !
 !      Example of this block
@@ -109,28 +108,49 @@
       module m_ctl_data_4_Multigrid
 !
       use m_precision
+      use t_read_control_arrays
 !
       implicit  none
 !
 !
       integer(kind = kint) ::  num_multigrid_level_ctl = 0
 !
-      integer(kind = kint) ::  num_multigrid_level_tmp = 0
-      integer(kind = kint), allocatable ::  num_MG_subdomain_ctl(:)
+!!      Structure for number of subdomains for MG
+!!@n      num_MG_subdomain_ctl%ivec:  number of subdomains for MG
+      type(ctl_array_int) :: num_MG_subdomain_ctl
 !
-      character(len=kchara), allocatable ::  MG_mesh_file_head_ctl(:)
+!!      Structure for mesh file prefix for MG
+!!@n      MG_mesh_prefix_ctl%c_tbl:  mesh file prefix for MG
+      type(ctl_array_chara) :: MG_mesh_prefix_ctl
 !
-      character(len=kchara), allocatable  :: MG_elem_file_head_ctl(:)
-      character(len=kchara), allocatable  :: MG_surf_file_head_ctl(:)
-      character(len=kchara), allocatable  :: MG_edge_file_head_ctl(:)
+!!      Structure for element mesh file prefix for MG
+!!@n      MG_elem_prefix_ctl%c_tbl: element mesh file prefix for MG
+      type(ctl_array_chara) :: MG_elem_prefix_ctl
+!!      Structure for surface mesh file prefix for MG
+!!@n      MG_mesh_prefix_ctl%c_tbl: surface mesh file prefix for MG
+      type(ctl_array_chara) :: MG_surf_prefix_ctl
+!!      Structure for edge mesh file prefix for MG
+!!@n      MG_edge_prefix_ctl%c_tbl: edge mesh file prefix for MG
+      type(ctl_array_chara) :: MG_edge_prefix_ctl
 !
-      character(len=kchara), allocatable  :: MG_fine_2_coarse_tbl_ctl(:)
-      character(len=kchara), allocatable  :: MG_coarse_2_fine_tbl_ctl(:)
+!!      Structure for interpolation table from fine to course grid
+!!@n      MG_fine_2_coarse_tbl_ctl%c_tbl: file prefix for table data
+      type(ctl_array_chara) :: MG_fine_2_coarse_tbl_ctl
+!!      Structure for interpolation table from course to fine grid
+!!@n      MG_coarse_2_fine_tbl_ctl%c_tbl: file prefix for table data
+      type(ctl_array_chara) :: MG_coarse_2_fine_tbl_ctl
 !
-      character(len=kchara), allocatable  :: MG_f2c_ele_tbl_ctl(:)
+!!      Structure for interpolation table from fine to cource elements
+!!@n      MG_f2c_ele_tbl_ctl%c_tbl: file prefix for table data
+      type(ctl_array_chara) :: MG_f2c_ele_tbl_ctl
 !
-      character(len=kchara), allocatable  :: MG_mesh_file_fmt_ctl(:)
-      character(len=kchara), allocatable  :: MG_table_file_fmt_ctl(:)
+!!      Structure for mesh file format for MG
+!!@n      MG_mesh_fmt_ctl%c_tbl:mesh file format for MG
+      type(ctl_array_chara) :: MG_mesh_fmt_ctl
+!
+!!      Structure for interpolation table file format for MG
+!!@n      MG_table_fmt_ctl%c_tbl:interpolation table file format for MG
+      type(ctl_array_chara) :: MG_table_fmt_ctl
 !
       character(len=kchara) :: MG_METHOD_ctl =  'CG'
       character(len=kchara) :: MG_PRECOND_ctl = 'DIAG'
@@ -185,19 +205,6 @@
 !
 !
       integer(kind = kint) :: i_num_MG_level =     0
-      integer(kind = kint) :: i_MG_num_subdomain = 0
-!
-      integer(kind = kint) :: i_MG_mesh_header =   0
-      integer(kind = kint) :: i_MG_elem_header =   0
-      integer(kind = kint) :: i_MG_surf_header =   0
-      integer(kind = kint) :: i_MG_edge_header =   0
-!
-      integer(kind = kint) :: i_MG_fine_2_coarse_tbl = 0
-      integer(kind = kint) :: i_MG_coarse_2_fine_tbl = 0
-      integer(kind = kint) :: i_MG_f2c_ele_tbl = 0
-!
-      integer(kind = kint) :: i_MG_mesh_file_fmt = 0
-      integer(kind = kint) :: i_MG_tbl_file_fmt =  0
 !
       integer(kind = kint) :: i_MG_METHOD = 0
       integer(kind = kint) :: i_MG_PRECOND = 0
@@ -205,24 +212,6 @@
       integer(kind = kint) :: i_maxiter_coarsest = 0
       integer(kind = kint) :: i_MG_residual = 0
 !
-!
-      integer(kind = kint) ::  num_array_MG_domain_ctl =   0
-      integer(kind = kint) ::  num_array_MG_mseh_ctl =     0
-      integer(kind = kint) ::  num_array_MG_elem_ctl =     0
-      integer(kind = kint) ::  num_array_MG_surf_ctl =     0
-      integer(kind = kint) ::  num_array_MG_edge_ctl =     0
-      integer(kind = kint) ::  num_array_MG_f2c_ctl =      0
-      integer(kind = kint) ::  num_array_MG_c2f_ctl =      0
-      integer(kind = kint) ::  num_array_MG_f2ce_ctl =     0
-      integer(kind = kint) ::  num_array_MG_mesh_fmt_ctl = 0
-      integer(kind = kint) ::  num_array_MG_tbl_fmt_ctl =  0
-!
-      private :: num_array_MG_domain_ctl
-      private :: num_array_MG_mseh_ctl, num_array_MG_elem_ctl
-      private :: num_array_MG_surf_ctl, num_array_MG_edge_ctl
-      private :: num_array_MG_f2c_ctl, num_array_MG_c2f_ctl
-      private :: num_array_MG_f2ce_ctl
-      private :: num_array_MG_mesh_fmt_ctl, num_array_MG_tbl_fmt_ctl
 !
       private :: hd_Multigrid_params, i_Multigrid_params
       private :: hd_num_MG_level, hd_num_MG_subdomain
@@ -233,124 +222,11 @@
       private :: hd_MG_f2c_ele_tbl
       private :: hd_MG_METHOD, hd_MG_PRECOND, hd_MG_residual
       private :: hd_maxiter_mid, hd_maxiter_coarsest
-      private :: allocate_MG_num_domain, allocate_MG_mesh_header
-      private :: allocate_MG_elem_header, allocate_MG_surf_header
-      private :: allocate_MG_f2c_tbl, allocate_MG_c2f_tbl
-      private :: allocate_MG_edge_header, allocate_MG_f2c_ele_tbl
-      private :: allocate_MG_mesh_fmt, allocate_MG_tbl_file_fmt
 !
 !  ---------------------------------------------------------------------
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_MG_num_domain
-!
-!
-      allocate( num_MG_subdomain_ctl(num_multigrid_level_ctl) )
-      if(num_multigrid_level_ctl .gt. 0) num_MG_subdomain_ctl = 0
-!
-      end subroutine allocate_MG_num_domain
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_MG_mesh_header
-!
-!
-      allocate( MG_mesh_file_head_ctl(num_multigrid_level_ctl) )
-!
-      end subroutine allocate_MG_mesh_header
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_MG_elem_header
-!
-!
-      allocate( MG_elem_file_head_ctl(num_multigrid_level_ctl) )
-!
-      end subroutine allocate_MG_elem_header
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_MG_surf_header
-!
-!
-      allocate( MG_surf_file_head_ctl(num_multigrid_level_ctl) )
-!
-      end subroutine allocate_MG_surf_header
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_MG_edge_header
-!
-!
-      allocate( MG_edge_file_head_ctl(num_multigrid_level_ctl) )
-!
-      end subroutine allocate_MG_edge_header
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_MG_c2f_tbl
-!
-!
-      allocate( MG_coarse_2_fine_tbl_ctl(num_multigrid_level_ctl) )
-!
-      end subroutine allocate_MG_c2f_tbl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_MG_f2c_tbl
-!
-!
-      allocate( MG_fine_2_coarse_tbl_ctl(num_multigrid_level_ctl) )
-!
-      end subroutine allocate_MG_f2c_tbl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_MG_f2c_ele_tbl
-!
-!
-      allocate( MG_f2c_ele_tbl_ctl(num_multigrid_level_ctl) )
-!
-      end subroutine allocate_MG_f2c_ele_tbl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_MG_mesh_fmt
-!
-!
-      allocate( MG_mesh_file_fmt_ctl(num_multigrid_level_ctl) )
-      if(num_multigrid_level_ctl .gt. 0) MG_mesh_file_fmt_ctl= 'ascii'
-!
-      end subroutine allocate_MG_mesh_fmt
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_MG_tbl_file_fmt
-!
-!
-      allocate( MG_table_file_fmt_ctl(num_multigrid_level_ctl) )
-      if(num_multigrid_level_ctl .gt. 0) MG_table_file_fmt_ctl = 'ascii'
-!
-      end subroutine allocate_MG_tbl_file_fmt
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_MG_control_data
-!
-!
-      deallocate(MG_mesh_file_fmt_ctl, MG_table_file_fmt_ctl)
-      deallocate(MG_f2c_ele_tbl_ctl)
-      deallocate(MG_coarse_2_fine_tbl_ctl, MG_fine_2_coarse_tbl_ctl)
-      deallocate(MG_surf_file_head_ctl, MG_edge_file_head_ctl)
-      deallocate(MG_mesh_file_head_ctl, MG_elem_file_head_ctl)
-      deallocate(num_MG_subdomain_ctl)
-!
-      end subroutine deallocate_MG_control_data
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine read_ctl_data_4_Multigrid(ierr)
@@ -390,174 +266,29 @@
      &        i_num_MG_level, num_multigrid_level_ctl)
 !
 !
-        call find_control_array_flag(hd_num_MG_subdomain,               &
-     &      num_array_MG_domain_ctl)
-        if(num_array_MG_domain_ctl.gt.0                                 &
-     &       .and. i_MG_num_subdomain.eq.0) then
-          if(num_array_MG_domain_ctl .ne. num_multigrid_level_ctl) then
-            write(e_message,'(a)')                                      &
-     &            'set correct level for MG subdomains'
-            ierr = 10
-            return
-          end if
+        call read_control_array_int                                     &
+     &     (hd_num_MG_subdomain, num_MG_subdomain_ctl)
 !
-          call allocate_MG_num_domain
-          call read_control_array_int_list(hd_num_MG_subdomain,         &
-     &        num_multigrid_level_ctl, i_MG_num_subdomain,              &
-     &        num_MG_subdomain_ctl)
-        end if
+        call read_control_array_chara                                   &
+     &     (hd_MG_mesh_header, MG_mesh_prefix_ctl)
+        call read_control_array_chara                                   &
+     &     (hd_MG_elem_header, MG_elem_prefix_ctl)
+        call read_control_array_chara                                   &
+     &     (hd_MG_surf_header, MG_surf_prefix_ctl)
+        call read_control_array_chara                                   &
+     &     (hd_MG_edge_header, MG_edge_prefix_ctl)
 !
-        call find_control_array_flag(hd_MG_mesh_header,                 &
-     &      num_array_MG_mseh_ctl)
-        if(num_array_MG_mseh_ctl.gt.0 .and. i_MG_mesh_header.eq.0) then
-          if(num_array_MG_mseh_ctl .ne. num_multigrid_level_ctl) then
-            write(e_message,'(a)')                                      &
-     &            'set correct level for MG subdomains'
-            ierr = 10
-            return
-          end if
+        call read_control_array_chara                                   &
+     &     (hd_MG_fine_2_coarse_tbl, MG_fine_2_coarse_tbl_ctl)
+        call read_control_array_chara                                   &
+     &     (hd_MG_coarse_2_fine_tbl, MG_coarse_2_fine_tbl_ctl)
+        call read_control_array_chara                                   &
+     &     (hd_MG_f2c_ele_tbl, MG_f2c_ele_tbl_ctl)
 !
-          call allocate_MG_mesh_header
-          call read_control_array_chara_list(hd_MG_mesh_header,         &
-     &        num_multigrid_level_ctl, i_MG_mesh_header,                &
-     &        MG_mesh_file_head_ctl)
-        end if
-!
-        call find_control_array_flag(hd_MG_elem_header,                 &
-     &      num_array_MG_elem_ctl)
-        if(num_array_MG_elem_ctl.gt.0 .and. i_MG_elem_header.eq.0) then
-          if(num_array_MG_elem_ctl .ne. num_multigrid_level_ctl) then
-            write(e_message,'(a)')                                      &
-     &            'set correct level for MG subdomains'
-            ierr = 10
-            return
-          end if
-!
-          call allocate_MG_elem_header
-          call read_control_array_chara_list(hd_MG_elem_header,         &
-     &        num_multigrid_level_ctl, i_MG_elem_header,                &
-     &        MG_elem_file_head_ctl)
-        end if
-!
-        call find_control_array_flag(hd_MG_surf_header,                 &
-     &      num_array_MG_surf_ctl)
-        if(num_array_MG_surf_ctl.gt.0 .and. i_MG_surf_header.eq.0) then
-          if(num_array_MG_elem_ctl .ne. num_multigrid_level_ctl) then
-            write(e_message,'(a)')                                      &
-     &            'set correct level for MG subdomains'
-            ierr = 10
-            return
-          end if
-!
-          call allocate_MG_surf_header
-          call read_control_array_chara_list(hd_MG_surf_header,         &
-     &        num_multigrid_level_ctl, i_MG_surf_header,                &
-     &        MG_surf_file_head_ctl)
-        end if
-!
-        call find_control_array_flag(hd_MG_edge_header,                 &
-     &      num_array_MG_edge_ctl)
-        if(num_array_MG_edge_ctl.gt.0 .and. i_MG_edge_header.eq.0) then
-          if(num_array_MG_edge_ctl .ne. num_multigrid_level_ctl) then
-            write(e_message,'(a)')                                      &
-     &            'set correct level for MG subdomains'
-            ierr = 10
-            return
-          end if
-!
-          call allocate_MG_edge_header
-          call read_control_array_chara_list(hd_MG_edge_header,         &
-     &        num_multigrid_level_ctl, i_MG_edge_header,                &
-     &        MG_edge_file_head_ctl)
-        end if
-!
-!
-        call find_control_array_flag(hd_MG_fine_2_coarse_tbl,           &
-     &      num_array_MG_f2c_ctl)
-        if(num_array_MG_f2c_ctl.gt.0                                    &
-     &       .and. i_MG_fine_2_coarse_tbl.eq.0) then
-          if(num_array_MG_f2c_ctl .ne. num_multigrid_level_ctl) then
-            write(e_message,'(a)')                                      &
-     &            'set correct level for MG subdomains'
-            ierr = 10
-            return
-          end if
-!
-          call allocate_MG_f2c_tbl
-          call read_control_array_chara_list(hd_MG_fine_2_coarse_tbl,   &
-     &        num_multigrid_level_ctl, i_MG_fine_2_coarse_tbl,          &
-     &        MG_fine_2_coarse_tbl_ctl)
-        end if
-!
-        call find_control_array_flag(hd_MG_coarse_2_fine_tbl,           &
-     &      num_array_MG_c2f_ctl)
-        if(num_array_MG_c2f_ctl.gt.0                                    &
-     &       .and. i_MG_coarse_2_fine_tbl.eq.0) then
-          if(num_array_MG_c2f_ctl .ne. num_multigrid_level_ctl) then
-            write(e_message,'(a)')                                      &
-     &            'set correct level for MG subdomains'
-            ierr = 10
-            return
-          end if
-!
-          call allocate_MG_c2f_tbl
-          call read_control_array_chara_list(hd_MG_coarse_2_fine_tbl,   &
-     &        num_multigrid_level_ctl, i_MG_coarse_2_fine_tbl,          &
-     &        MG_coarse_2_fine_tbl_ctl)
-        end if
-!
-        call find_control_array_flag(hd_MG_f2c_ele_tbl,                 &
-     &      num_array_MG_f2ce_ctl)
-        if(num_array_MG_f2ce_ctl.gt.0 .and. i_MG_f2c_ele_tbl.eq.0) then
-          if(num_array_MG_f2ce_ctl .ne. num_multigrid_level_ctl) then
-            write(e_message,'(a)')                                      &
-     &            'set correct level for MG subdomains'
-            ierr = 10
-            return
-          end if
-!
-          call allocate_MG_f2c_ele_tbl
-          call read_control_array_chara_list(hd_MG_f2c_ele_tbl,         &
-     &        num_multigrid_level_ctl, i_MG_f2c_ele_tbl,                &
-     &        MG_f2c_ele_tbl_ctl)
-        end if
-!
-!
-        call find_control_array_flag(hd_MG_mesh_file_fmt,               &
-     &      num_array_MG_mesh_fmt_ctl)
-        if(num_array_MG_mesh_fmt_ctl.gt.0                               &
-     &      .and. i_MG_mesh_file_fmt.eq.0) then
-          if(num_array_MG_mesh_fmt_ctl .ne. num_multigrid_level_ctl)    &
-     &         then
-            write(e_message,'(a)')                                      &
-     &            'set correct level for MG subdomains'
-            ierr = 10
-            return
-          end if
-!
-          call allocate_MG_mesh_fmt
-          call read_control_array_chara_list(hd_MG_mesh_file_fmt,       &
-     &        num_multigrid_level_ctl, i_MG_mesh_file_fmt,              &
-     &        MG_mesh_file_fmt_ctl)
-        end if
-!
-        call find_control_array_flag(hd_MG_tbl_file_fmt,                &
-     &      num_array_MG_tbl_fmt_ctl)
-        if(num_array_MG_tbl_fmt_ctl.gt.0                                &
-     &      .and. i_MG_tbl_file_fmt.eq.0) then
-          if(num_array_MG_tbl_fmt_ctl .ne. num_multigrid_level_ctl)     &
-     &           then
-            write(e_message,'(a)')                                      &
-     &            'set correct level for MG subdomains'
-            ierr = 10
-            return
-          end if
-!
-          call allocate_MG_tbl_file_fmt
-          call read_control_array_chara_list(hd_MG_tbl_file_fmt,        &
-     &        num_multigrid_level_ctl, i_MG_tbl_file_fmt,               &
-     &        MG_table_file_fmt_ctl)
-        end if
+        call read_control_array_chara                                   &
+     &     (hd_MG_mesh_file_fmt, MG_mesh_fmt_ctl)
+        call read_control_array_chara                                   &
+     &     (hd_MG_tbl_file_fmt, MG_table_fmt_ctl)
       end do
 !
       end subroutine read_ctl_data_4_Multigrid

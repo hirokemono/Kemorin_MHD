@@ -10,6 +10,8 @@
 !!      subroutine dealloc_control_array_real(array_real)
 !!      subroutine dealloc_control_array_r2(array_r2)
 !!      subroutine dealloc_control_array_r3(array_r3)
+!!      subroutine dealloc_control_array_int(array_int)
+!!      subroutine dealloc_control_array_chara(array_chara)
 !!      subroutine dealloc_control_array_c_r(array_cr)
 !!      subroutine dealloc_control_array_c_i(array_ci)
 !!      subroutine dealloc_control_array_c_r2(array_cr2)
@@ -22,6 +24,8 @@
 !!      subroutine read_control_array_real(label, array_real)
 !!      subroutine read_control_array_r2(label, array_r2)
 !!      subroutine read_control_array_r3(label, array_r3)
+!!      subroutine read_control_array_int(label, array_int)
+!!      subroutine read_control_array_chara(label, array_chara)
 !!      subroutine read_control_array_c_r(label, array_cr)
 !!      subroutine read_control_array_c_i(label, array_ci)
 !!      subroutine read_control_array_c_r2(label, array_cr2)
@@ -36,6 +40,9 @@
 !!@n @param  array_real      structures for array
 !!@n @param  array_r2        structures for array
 !!@n @param  array_r3        structures for array
+!!@n @param  array_int       structures for array
+!!@n @param  array_chara     structures for array
+!!@n @param  array_ci        structures for array
 !!@n @param  array_cr        structures for array
 !!@n @param  array_cr2       structures for array
 !!@n @param  array_c2r       structures for array
@@ -85,6 +92,26 @@
 !>     array for 3rd real
         real(kind = kreal), pointer :: vec3(:)
       end type ctl_array_r3
+!
+!>  Structure for integer control array 
+      type ctl_array_int
+!>     number of array items
+        integer(kind=kint) :: num
+!>     array counter
+        integer(kind=kint) :: icou
+!>     array for 1st real
+        integer(kind = kint), pointer :: ivec(:)
+      end type ctl_array_int
+!
+!>  Structure for character control array 
+      type ctl_array_chara
+!>     number of array items
+        integer(kind=kint) :: num
+!>     array counter
+        integer(kind=kint) :: icou
+!>     array for 1st character
+        character(len=kchara), pointer :: c_tbl(:)
+      end type ctl_array_chara
 !
 !>  Structure for charactor and two reals control array 
       type ctl_array_cr2
@@ -196,8 +223,9 @@
 !
       private :: alloc_control_array_real
       private :: alloc_control_array_r2, alloc_control_array_r3
-      private :: alloc_control_array_c_r2
-      private :: alloc_control_array_c_r, alloc_control_array_c_i
+      private :: alloc_control_array_int, alloc_control_array_chara
+      private :: alloc_control_array_c_i
+      private :: alloc_control_array_c_r, alloc_control_array_c_r2
       private :: alloc_control_array_c2_r, alloc_control_array_i_c_r
       private :: alloc_control_array_i_r, alloc_control_array_i2_r
       private :: alloc_control_array_i2_r2
@@ -253,6 +281,31 @@
       array_r3%vec3 = 0.0d0
 !
       end subroutine alloc_control_array_r3
+!
+!   --------------------------------------------------------------------
+!
+      subroutine alloc_control_array_int(array_int)
+!
+      type(ctl_array_int), intent(inout) :: array_int
+!
+!
+      allocate( array_int%ivec(array_int%num) )
+!
+      if(array_int%num .eq. 0) return
+      array_int%ivec = 0
+!
+      end subroutine alloc_control_array_int
+!
+!   --------------------------------------------------------------------
+!
+      subroutine alloc_control_array_chara(array_chara)
+!
+      type(ctl_array_chara), intent(inout) :: array_chara
+!
+!
+      allocate( array_chara%c_tbl(array_chara%num) )
+!
+      end subroutine alloc_control_array_chara
 !
 !   --------------------------------------------------------------------
 !
@@ -424,6 +477,28 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine dealloc_control_array_int(array_int)
+!
+      type(ctl_array_int), intent(inout) :: array_int
+!
+!
+      deallocate(array_int%ivec)
+!
+      end subroutine dealloc_control_array_int
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_control_array_chara(array_chara)
+!
+      type(ctl_array_chara), intent(inout) :: array_chara
+!
+!
+      deallocate(array_chara%c_tbl)
+!
+      end subroutine dealloc_control_array_chara
+!
+!   --------------------------------------------------------------------
+!
       subroutine dealloc_control_array_c_r(array_cr)
 !
       type(ctl_array_cr), intent(inout) :: array_cr
@@ -568,6 +643,44 @@
       end if
 !
       end subroutine read_control_array_r3
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_control_array_int(label, array_int)
+!
+      use m_read_control_elements
+!
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_int), intent(inout) :: array_int
+!
+!
+      call find_control_array_flag(label, array_int%num)
+      if(array_int%num.gt.0 .and. array_int%icou.eq.0) then
+        call alloc_control_array_int(array_int)
+        call read_control_array_int_list(label, array_int%num,          &
+     &      array_int%icou, array_int%ivec)
+      end if
+!
+      end subroutine read_control_array_int
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_control_array_chara(label, array_chara)
+!
+      use m_read_control_elements
+!
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_chara), intent(inout) :: array_chara
+!
+!
+      call find_control_array_flag(label, array_chara%num)
+      if(array_chara%num.gt.0 .and. array_chara%icou.eq.0) then
+        call alloc_control_array_chara(array_chara)
+        call read_control_array_chara_list(label, array_chara%num,      &
+     &      array_chara%icou, array_chara%c_tbl)
+      end if
+!
+      end subroutine read_control_array_chara
 !
 !   --------------------------------------------------------------------
 !

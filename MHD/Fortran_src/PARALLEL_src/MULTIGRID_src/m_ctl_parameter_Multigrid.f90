@@ -46,78 +46,106 @@
 !
       call allocate_MG_mesh_file_heads
 !
-      if ( num_MG_level .gt. max_MG_level) then
+      if (num_MG_level .gt. max_MG_level) then
           write(e_message,*)                                            &
      &           'Resize maximum MG level to ', num_MG_level
           call calypso_MPI_abort(999, e_message)
       end if
 !
       if (num_MG_level .gt. 0) then
-        MG_vector(1:num_MG_level)%nprocs                                &
-    &         = num_MG_subdomain_ctl(1:num_MG_level)
+        if(num_MG_subdomain_ctl%num .ne. num_MG_level) then
+          write(e_message,'(a)')                                        &
+     &            'set correct level for MG subdomains'
+          call calypso_MPI_abort(999, e_message)
+        end if
 !
-        if (i_MG_mesh_header .eq. num_MG_level) then
+        MG_vector(1:num_MG_level)%nprocs                                &
+     &         = num_MG_subdomain_ctl%ivec(1:num_MG_level)
+        call dealloc_control_array_int(num_MG_subdomain_ctl)
+!
+        if (MG_mesh_prefix_ctl%num .eq. num_MG_level) then
           MG_mesh_file_head(1:num_MG_level)                             &
-     &              = MG_mesh_file_head_ctl(1:num_MG_level)
+     &              = MG_mesh_prefix_ctl%c_tbl(1:num_MG_level)
+          call dealloc_control_array_chara(MG_mesh_prefix_ctl)
         else
           e_message = 'Set coarse mesh header'
           call calypso_MPI_abort(1000, e_message)
         end if
 !
-        if (i_MG_fine_2_coarse_tbl .eq. num_MG_level) then
+        if (MG_fine_2_coarse_tbl_ctl%icou .eq. num_MG_level) then
           MG_f2c_tbl_head(1:num_MG_level)                               &
-     &              = MG_fine_2_coarse_tbl_ctl(1:num_MG_level)
+     &              = MG_fine_2_coarse_tbl_ctl%c_tbl(1:num_MG_level)
+          call dealloc_control_array_chara(MG_fine_2_coarse_tbl_ctl)
         else
           e_message = 'Set restriction table header'
           call calypso_MPI_abort(1001, e_message)
         end if
 !
-        if (i_MG_coarse_2_fine_tbl .eq. num_MG_level) then
+        if (MG_coarse_2_fine_tbl_ctl%icou .eq. num_MG_level) then
           MG_c2f_tbl_head(1:num_MG_level)                               &
-     &              = MG_coarse_2_fine_tbl_ctl(1:num_MG_level)
+     &              = MG_coarse_2_fine_tbl_ctl%c_tbl(1:num_MG_level)
+          call dealloc_control_array_chara(MG_coarse_2_fine_tbl_ctl)
         else
           e_message = 'Set prolongation table header'
           call calypso_MPI_abort(1002, e_message)
         end if
 !
-        if (i_MG_f2c_ele_tbl .eq. num_MG_level) then
+        if (MG_f2c_ele_tbl_ctl%icou .eq. num_MG_level) then
           MG_f2c_eletbl_head(1:num_MG_level)                            &
-     &              = MG_f2c_ele_tbl_ctl(1:num_MG_level)
+     &              = MG_f2c_ele_tbl_ctl%c_tbl(1:num_MG_level)
+          call dealloc_control_array_chara(MG_f2c_ele_tbl_ctl)
           iflag_MG_commute_by_ele = 1
         end if
 !
 !
-        if (i_MG_elem_header .eq. num_MG_level) then
+        if (MG_elem_prefix_ctl%icou .eq. num_MG_level) then
           iflag_MG_elem_file(1:num_MG_level) = 1
           MG_elem_file_head(1:num_MG_level)                             &
-     &              = MG_elem_file_head_ctl(1:num_MG_level)
+     &              = MG_elem_prefix_ctl%c_tbl(1:num_MG_level)
+          call dealloc_control_array_chara(MG_elem_prefix_ctl)
         else
           iflag_MG_elem_file(1:num_MG_level) = 0
         end if
 !
-        if (i_MG_surf_header .eq. num_MG_level) then
+        if (MG_surf_prefix_ctl%icou .eq. num_MG_level) then
           iflag_MG_surf_file(1:num_MG_level) = 1
           MG_surf_file_head(1:num_MG_level)                             &
-     &              = MG_surf_file_head_ctl(1:num_MG_level)
+     &              = MG_surf_prefix_ctl%c_tbl(1:num_MG_level)
+          call dealloc_control_array_chara(MG_surf_prefix_ctl)
         else
           iflag_MG_surf_file(1:num_MG_level) = 0
         end if
 !
-        if (i_MG_edge_header .eq. num_MG_level) then
+        if (MG_edge_prefix_ctl%icou .eq. num_MG_level) then
           iflag_MG_edge_file(1:num_MG_level) = 1
           MG_edge_file_head(1:num_MG_level)                             &
-     &              = MG_edge_file_head_ctl(1:num_MG_level)
+     &              = MG_edge_prefix_ctl%c_tbl(1:num_MG_level)
+          call dealloc_control_array_chara(MG_edge_prefix_ctl)
         else
           iflag_MG_edge_file(1:num_MG_level) = 0
         end if
 !
-        do i = 1, num_MG_level
-          call choose_file_format(MG_mesh_file_fmt_ctl(i),              &
-     &        i_MG_mesh_file_fmt, ifmt_MG_mesh_file(i))
-          call choose_file_format(MG_table_file_fmt_ctl(i),             &
-     &        i_MG_tbl_file_fmt, ifmt_MG_table_file(i))
-         end do
+        if (MG_mesh_fmt_ctl%icou .eq. num_MG_level) then
+          do i = 1, num_MG_level
+            call choose_file_format(MG_mesh_fmt_ctl%c_tbl(i),           &
+     &          MG_mesh_fmt_ctl%icou, ifmt_MG_mesh_file(i))
+          end do
+          call dealloc_control_array_chara(MG_mesh_fmt_ctl)
+        else
+          e_message = 'Set mesh file formats for MG'
+          call calypso_MPI_abort(1003, e_message)
+        end if
 !
+        if(MG_table_fmt_ctl%icou .eq. num_MG_level) then
+          do i = 1, num_MG_level
+            call choose_file_format(MG_table_fmt_ctl%c_tbl(i),          &
+     &        MG_table_fmt_ctl%icou, ifmt_MG_table_file(i))
+          end do
+          call dealloc_control_array_chara(MG_table_fmt_ctl)
+        else
+          e_message = 'Set interpolation table file formats for MG'
+          call calypso_MPI_abort(1004, e_message)
+        end if
       end if
 !
 !
