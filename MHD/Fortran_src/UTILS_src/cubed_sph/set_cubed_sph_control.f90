@@ -23,6 +23,7 @@
       use m_cubed_sph_radius
       use m_cubed_sph_grp_param
       use m_control_data_cubed_sph
+      use skip_comment_f
 !
       integer(kind = kint) :: i, j, k, jst, jed, kst, ked
       integer(kind = kint) :: if_CMB, if_ICB, if_EXT
@@ -122,31 +123,30 @@
       if_CMB = 1
       if_ICB = 1
       if_EXT = 1
-      if (i_num_nod_grp .gt. 0) then
+      if (node_grp_name_ctl%icou .gt. 0) then
 !
-        do j = 1, num_node_grp_ctl
-          if(nod_grp_name_ctl(j).eq.'CMB'                               &
-     &     .or. nod_grp_name_ctl(j).eq.'cmb') then
+        do j = 1, node_grp_name_ctl%num
+          if(cmp_no_case(node_grp_name_ctl%c_tbl(j),'CMB') .gt. 0) then
             if_CMB = 0
             k = istack_nod_grp_layer_csp(j-1) + 1
-            nlayer_CMB = id_nod_grp_layer_ctl(k)
+            nlayer_CMB = node_grp_layer_ctl%ivec(k)
           end if
-          if(nod_grp_name_ctl(j).eq.'ICB'                               &
-     &     .or. nod_grp_name_ctl(j).eq.'icb') then
+          if(cmp_no_case(node_grp_name_ctl%c_tbl(j),'ICB') .gt. 0) then
             if_ICB = 0
             k = istack_nod_grp_layer_csp(j-1) + 1
-            nlayer_ICB = id_nod_grp_layer_ctl(k)
+            nlayer_ICB = node_grp_layer_ctl%ivec(k)
           end if
-          if(nod_grp_name_ctl(j).eq.'INFINITY'                          &
-     &     .or. nod_grp_name_ctl(j).eq.'Infinity'                       &
-     &     .or. nod_grp_name_ctl(j).eq.'infinity') then
+          if(cmp_no_case(node_grp_name_ctl%c_tbl(j),'infinity') .gt. 0) &
+     &       then
             if_EXT = 0
             k = istack_nod_grp_layer_csp(j-1) + 1
-            nlayer_EXT = id_nod_grp_layer_ctl(k)
+            nlayer_EXT = node_grp_layer_ctl%ivec(k)
           end if
         end do
-        num_node_grp_csp =  num_node_grp_ctl +  if_CMB+if_ICB+if_EXT
-        num_nod_layer_csp = num_nod_layer_ctl + if_CMB+if_ICB+if_EXT
+        num_node_grp_csp =  node_grp_name_ctl%num                       &
+     &                     + if_CMB+if_ICB+if_EXT
+        num_nod_layer_csp = node_grp_layer_ctl%num                      &
+     &                     + if_CMB+if_ICB+if_EXT
       else
         num_node_grp_csp =  if_CMB+if_ICB+if_EXT
         num_nod_layer_csp = if_CMB+if_ICB+if_EXT
@@ -176,20 +176,25 @@
         id_nod_grp_layer_csp(j) = nlayer_EXT
       end if
 !
-      if (i_num_nod_grp .gt. 0) then
-        do j = 1, num_node_grp_ctl
+      if (node_grp_name_ctl%icou .gt. 0) then
+        k = 1 + if_CMB+if_ICB+if_EXT
+        istack_nod_grp_layer_csp(k) = istack_nod_grp_layer_csp(k-1)     &
+     &                                 + node_grp_name_ctl%ivec(1)
+        nod_grp_name_csp(k) = node_grp_name_ctl%c_tbl(1)
+        do j = 2, node_grp_name_ctl%num
           k = j + if_CMB+if_ICB+if_EXT
           istack_nod_grp_layer_csp(k) = istack_nod_grp_layer_csp(k-1)   &
-     &                                 + istack_nod_grp_layer_ctl(j)    &
-     &                                 - istack_nod_grp_layer_ctl(j-1)
-          nod_grp_name_csp(k) = nod_grp_name_ctl(j)
+     &                                 + node_grp_name_ctl%ivec(j)      &
+     &                                 - node_grp_name_ctl%ivec(j-1)
+          nod_grp_name_csp(k) = node_grp_name_ctl%c_tbl(j)
         end do
-        do j = 1, num_nod_layer_ctl
+        do j = 1, node_grp_layer_ctl%num
           k = j + istack_nod_grp_layer_csp(if_CMB+if_ICB+if_EXT)
-          id_nod_grp_layer_csp(k) = id_nod_grp_layer_ctl(j)
+          id_nod_grp_layer_csp(k) = node_grp_layer_ctl%ivec(j)
         end do
 !
-        call deallocate_nod_grp_name_ctl
+        call dealloc_control_array_int(node_grp_layer_ctl)
+        call dealloc_control_array_c_i(node_grp_name_ctl)
       end if
 !
       do j = 1, num_node_grp_csp
@@ -205,25 +210,19 @@
       if_CMB = 1
       if_ICB = 1
       if_EXT = 1
-      if (i_num_ele_grp .gt. 0) then
-        do j = 1, num_ele_grp_ctl
-          if(ele_grp_name_ctl(j).eq.'outer_core'                        &
-     &     .or. ele_grp_name_ctl(j).eq.'OUTER_CORE') then
-            if_CMB = 0
-          end if
-          if(ele_grp_name_ctl(j).eq.'inner_core'                        &
-     &     .or. ele_grp_name_ctl(j).eq.'INNER_CORE') then
-            if_ICB = 0
-          end if
-          if(ele_grp_name_ctl(j).eq.'external'                          &
-     &     .or. ele_grp_name_ctl(j).eq.'EXTERNAL') then
-            if_EXT = 0
-          end if
+      if (elem_grp_name_ctl%icou .gt. 0) then
+        do j = 1, elem_grp_name_ctl%num
+          if(cmp_no_case(elem_grp_name_ctl%c_tbl(j), 'outer_core')      &
+     &       .gt. 0)  if_CMB = 0
+          if(cmp_no_case(elem_grp_name_ctl%c_tbl(j), 'inner_core')      &
+     &       .gt. 0)  if_ICB = 0
+          if(cmp_no_case(elem_grp_name_ctl%c_tbl(j), 'external')        &
+     &       .gt. 0)  if_EXT = 0
         end do
 !
-        num_ele_grp_csp =   num_ele_grp_ctl + if_CMB+if_ICB+if_EXT
+        num_ele_grp_csp = elem_grp_name_ctl%num + if_CMB+if_ICB+if_EXT
       else
-        num_ele_grp_csp =   if_CMB+if_ICB+if_EXT
+        num_ele_grp_csp = if_CMB+if_ICB+if_EXT
       end if
 !
       call allocate_ele_grp_name_csp
@@ -249,7 +248,7 @@
         ele_grp_name_csp(j) = 'external'
       end if
 !
-      num_ele_layer_csp = num_ele_layer_ctl                             &
+      num_ele_layer_csp = elem_grp_layer_ctl%num                        &
      &                    + istack_ele_grp_layer_csp(j)
       call allocate_ele_grp_layer_csp
 !
@@ -277,21 +276,25 @@
       end if
 !
 !
-      if (i_num_ele_grp .gt. 0) then
-!
-        do j = 1, num_ele_grp_ctl
+      if (elem_grp_name_ctl%icou .gt. 0) then
+        k = 1 + if_CMB+if_ICB+if_EXT
+        istack_ele_grp_layer_csp(k) = istack_ele_grp_layer_csp(k-1)     &
+     &                                 + elem_grp_name_ctl%ivec(1)
+        ele_grp_name_csp(k) = elem_grp_name_ctl%c_tbl(1)
+        do j = 2, elem_grp_name_ctl%num
           k = j + if_CMB+if_ICB+if_EXT
           istack_ele_grp_layer_csp(k) = istack_ele_grp_layer_csp(k-1)   &
-     &                                 + istack_ele_grp_layer_ctl(j)    &
-     &                                 - istack_ele_grp_layer_ctl(j-1)
-          ele_grp_name_csp(k) = ele_grp_name_ctl(j)
+     &                                 + elem_grp_name_ctl%ivec(j)      &
+     &                                 - elem_grp_name_ctl%ivec(j-1)
+          ele_grp_name_csp(k) = elem_grp_name_ctl%c_tbl(j)
         end do
-        do j = 1, num_ele_layer_ctl
+        do j = 1, elem_grp_layer_ctl%num
           k = j + istack_ele_grp_layer_csp(if_CMB+if_ICB+if_EXT)
-          id_ele_grp_layer_csp(k) = id_ele_grp_layer_ctl(j)
+          id_ele_grp_layer_csp(k) = elem_grp_layer_ctl%ivec(j)
         end do
 !
-        call deallocate_ele_grp_name_ctl
+        call dealloc_control_array_int(elem_grp_layer_ctl)
+        call dealloc_control_array_c_i(elem_grp_name_ctl)
       end if
 !
       do j = 1, num_ele_grp_csp
@@ -307,24 +310,24 @@
       if_CMB = 1
       if_ICB = 1
       if_EXT = 1
-      if (i_num_sf_grp .gt. 0) then
-        do j = 1, num_surf_grp_ctl
-          if(surf_grp_name_ctl(j).eq.'CMB_surf'                         &
-     &     .or. surf_grp_name_ctl(j).eq.'CMB_SURF') then
-            if_CMB = 0
-          end if
-          if(surf_grp_name_ctl(j).eq.'ICB_surf'                         &
-     &     .or. surf_grp_name_ctl(j).eq.'ICB_SURF') then
-            if_ICB = 0
-          end if
-          if(surf_grp_name_ctl(j).eq.'external_surf'                     &
-     &     .or. surf_grp_name_ctl(j).eq.'EXTERNAL_SURF') then
-            if_EXT = 0
-          end if
+      if (surf_grp_name_ctl%icou .gt. 0) then
+        do j = 1, surf_grp_name_ctl%num
+          if(cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'CMB_surf') .gt. 0 &
+     &     .or. cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'CMB') .gt. 0   &
+     &     )  if_CMB = 0
+          if(cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'ICB_surf') .gt. 0 &
+     &     .or. cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'ICB') .gt. 0   &
+     &     )  if_ICB = 0
+          if(cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'external_surf')   &
+     &      .gt. 0                                                      &
+     &      .or. cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'external')    &
+     &      .gt. 0 )  if_EXT = 0
         end do
 !
-        num_surf_grp_csp =   num_surf_grp_ctl + if_CMB+if_ICB+if_EXT
-        num_surf_layer_csp = num_surf_layer_ctl + if_CMB+if_ICB+if_EXT
+        num_surf_grp_csp                                                &
+     &                  = surf_grp_name_ctl%num + if_CMB+if_ICB+if_EXT
+        num_surf_layer_csp                                              &
+     &                  = surf_grp_layer_ctl%num + if_CMB+if_ICB+if_EXT
       else
         num_surf_grp_csp =   if_CMB+if_ICB+if_EXT
         num_surf_layer_csp = if_CMB+if_ICB+if_EXT
@@ -357,30 +360,30 @@
         id_surf_grp_layer_csp(2,j) = 6
       end if
 !
-      if (i_num_sf_grp .gt. 0) then
-        do j = 1, num_surf_grp_ctl
+      if (surf_grp_name_ctl%icou .gt. 0) then
+        k = 1 + if_CMB+if_ICB+if_EXT
+        istack_surf_grp_layer_csp(k) = istack_surf_grp_layer_csp(k-1)   &
+     &                                 + surf_grp_name_ctl%ivec(1)
+        surf_grp_name_csp(k) = surf_grp_name_ctl%c_tbl(1)
+        do j = 2, surf_grp_name_ctl%num
           k = j + if_CMB+if_ICB+if_EXT
           istack_surf_grp_layer_csp(k) = istack_surf_grp_layer_csp(k-1) &
-     &                                 + istack_surf_grp_layer_ctl(j)   &
-     &                                 - istack_surf_grp_layer_ctl(j-1)
-          surf_grp_name_csp(k) = surf_grp_name_ctl(j)
+     &                                 + surf_grp_name_ctl%ivec(j)      &
+     &                                 - surf_grp_name_ctl%ivec(j-1)
+          surf_grp_name_csp(k) = surf_grp_name_ctl%c_tbl(j)
         end do
-        do j = 1, num_surf_layer_ctl
+        do j = 1, surf_grp_layer_ctl%num
           k = j + istack_surf_grp_layer_csp(if_CMB+if_ICB+if_EXT)
-          id_surf_grp_layer_csp(1,k) = id_surf_grp_layer_ctl(j)
+          id_surf_grp_layer_csp(1,k) = surf_grp_layer_ctl%ivec(j)
 !
-          if (   surf_grp_layer_type_ctl(j) .eq. 'in'                   &
-     &      .or. surf_grp_layer_type_ctl(j) .eq. 'In'                   &
-     &      .or. surf_grp_layer_type_ctl(j) .eq. 'IN') then
-            id_surf_grp_layer_csp(2,k) = 5
-          else if (surf_grp_layer_type_ctl(j) .eq. 'out'                &
-     &        .or. surf_grp_layer_type_ctl(j) .eq. 'Out'                &
-     &        .or. surf_grp_layer_type_ctl(j) .eq. 'OUT') then
-            id_surf_grp_layer_csp(2,k) = 6
-          end if
+          if (   cmp_no_case(surf_grp_layer_ctl%c_tbl(j), 'in')         &
+     &       .gt. 0) id_surf_grp_layer_csp(2,k) = 5
+          if (   cmp_no_case(surf_grp_layer_ctl%c_tbl(j), 'out')        &
+     &       .gt. 0) id_surf_grp_layer_csp(2,k) = 6
         end do
 !
-        if(num_surf_grp_ctl.gt.0) call deallocate_surf_grp_name_ctl
+        call dealloc_control_array_c_i(surf_grp_layer_ctl)
+        call dealloc_control_array_c_i(surf_grp_name_ctl)
       end if
 !
       do j = 1, num_surf_grp_csp
@@ -405,14 +408,16 @@
         call dealloc_control_array_i_r(edge_latitude_ctl)
       end if
 !
-      max_coarse_level = num_level_coarse
+      max_coarse_level = sph_coarsing_ctl%num
       write(*,*) 'max_coarse_level', max_coarse_level
       call allocate_coarsing_parameter
 !
       icoarse_level(1:max_coarse_level,1)                               &
-     &      = sp_r_coarse_ratio(1:max_coarse_level,1)
+     &      = sph_coarsing_ctl%int1(1:max_coarse_level)
       icoarse_level(1:max_coarse_level,2)                               &
-     &      = sp_r_coarse_ratio(1:max_coarse_level,2)
+     &      = sph_coarsing_ctl%int2(1:max_coarse_level)
+!
+      call dealloc_control_array_i2(sph_coarsing_ctl)
 !
 !
       write(*,*) 'num_edge_latitude_ref', num_edge_latitude_ref

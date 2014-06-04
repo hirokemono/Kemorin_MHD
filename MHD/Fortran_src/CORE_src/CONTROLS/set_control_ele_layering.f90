@@ -49,20 +49,21 @@
 !
       if (iflag_layering_type .eq. 0) then
 !
-        ntotal_layer_grp = ntotal_layer_grp_ctl
-        num_layer_grp = num_layer_grp_ctl
+        ntotal_layer_grp = igrp_stack_layer_ctl%num
+        num_layer_grp = igrp_stack_layer_ctl%num
         call allocate_layering_ele_grp
 !
         if(num_layer_grp.gt. 0) then
           igrp_stack_each_layer(1:num_layer_grp)                        &
-     &        = igrp_stack_each_layer_ctl(1:num_layer_grp)
+     &        = igrp_stack_layer_ctl%ivec(1:num_layer_grp)
         end if
         if(ntotal_layer_grp .gt. 0) then
           dynamic_layer_grp_name(1:ntotal_layer_grp)                    &
-     &        = layer_grp_name_ctl(1:ntotal_layer_grp)
+     &        = layer_grp_name_ctl%c_tbl(1:ntotal_layer_grp)
         end if
 !
-        call deallocate_layer_grp_ctl
+        call dealloc_control_array_int(igrp_stack_layer_ctl)
+        call dealloc_control_array_chara(layer_grp_name_ctl)
 !
       else if (iflag_layering_type .eq. 2) then
         num_layering_grp =              num_layering_grp_ctl

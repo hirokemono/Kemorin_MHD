@@ -595,7 +595,6 @@ begin MHD_control
 !                      start_end... indicate start and end element ID by group
 !                      explicit...  set elements by element groups explicitly
 !                      ele_group_list...  set elements by element group list
-!    ntotal_layer_grp_ctl:  total number of layers in element group
 !    num_layer_grp_ctl:    num. of group for layering
 !        grp_stack_each_layer_ctl:  end layer group for each coefs
 !

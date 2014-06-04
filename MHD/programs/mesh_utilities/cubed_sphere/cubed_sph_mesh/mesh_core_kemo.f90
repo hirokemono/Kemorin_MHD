@@ -15,7 +15,6 @@
       use const_cube_sphere_surface
       use const_cube_sphere_data
 !
-      use read_control_cubed_sph
       use set_cubed_sph_control
 !
       use count_shell_configration

@@ -4,11 +4,6 @@
 !        programmed by H.Matsui on Mov., 2006
 !
 !
-!      subroutine allocate_layer_grp_name_ctl
-!      subroutine allocate_layer_grp_stack_ctl
-!
-!      subroutine deallocate_layer_grp_ctl
-!
 !      subroutine read_ele_layers_grp_ctl
 !
 ! -- example of parameters -----------------------------------------
@@ -57,15 +52,20 @@
       module m_ctl_data_ele_layering
 !
       use m_precision
+      use t_read_control_arrays
 !
       implicit  none
 !
       character (len=kchara) :: layering_grp_type_ctl
 !
-      integer (kind=kint)   :: ntotal_layer_grp_ctl
-      integer (kind=kint)   :: num_layer_grp_ctl
-      integer (kind=kint), allocatable :: igrp_stack_each_layer_ctl(:)
-      character (len=kchara), allocatable :: layer_grp_name_ctl(:)
+!!      Structure for layering group names
+!!@n      layer_grp_name_ctl%num:   Number of layering group
+!!@n      layer_grp_name_ctl%c_tbl: layering group names
+        type(ctl_array_chara) :: layer_grp_name_ctl
+!
+!!      Structure for layering stacks
+!!@n      igrp_stack_layer_ctl%ivec: layering stack array
+        type(ctl_array_int) :: igrp_stack_layer_ctl
 !
       integer (kind=kint) :: num_layering_grp_ctl
       integer (kind=kint) :: num_fl_layer_grp_ctl
@@ -102,8 +102,6 @@
      &                        = 'ngrp_SGS_on_sphere_ctl'
 !
       integer (kind=kint) :: i_layering_data_ctl =    0
-      integer (kind=kint) :: i_ntotal_layer_grp_ctl = 0
-      integer (kind=kint) :: i_num_layer_grp_ctl =    0
 !
       integer (kind=kint) :: i_num_SGS_ele_grp =          0
       integer (kind=kint) :: i_start_SGS_ele_grp_name =   0
@@ -119,41 +117,10 @@
       private :: hd_num_SGS_fluid_grp, hd_start_SGS_fluid_grp_name
       private :: hd_ngrp_SGS_on_sphere
 !
-      private :: allocate_layer_grp_name_ctl
-      private :: allocate_layer_grp_stack_ctl
-!
 ! -----------------------------------------------------------------------
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_layer_grp_name_ctl
-!
-      allocate(layer_grp_name_ctl(ntotal_layer_grp_ctl))
-!
-      end subroutine allocate_layer_grp_name_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_layer_grp_stack_ctl
-!
-      allocate(igrp_stack_each_layer_ctl(0:num_layer_grp_ctl))
-      igrp_stack_each_layer_ctl = 0
-!
-      end subroutine allocate_layer_grp_stack_ctl
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_layer_grp_ctl
-!
-      deallocate(layer_grp_name_ctl)
-      deallocate(igrp_stack_each_layer_ctl)
-!
-      end subroutine deallocate_layer_grp_ctl
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine read_ele_layers_grp_ctl
@@ -172,24 +139,11 @@
         if(i_dynamic_layers .gt. 0) exit
 !
 !
-        call find_control_array_flag(hd_ntotal_layer_grp_ctl,           &
-     &      ntotal_layer_grp_ctl)
-        if(ntotal_layer_grp_ctl.gt.0                                    &
-     &       .and. i_ntotal_layer_grp_ctl.eq.0) then
-          call allocate_layer_grp_name_ctl
-          call read_control_array_chara_list(hd_ntotal_layer_grp_ctl,   &
-     &        ntotal_layer_grp_ctl, i_ntotal_layer_grp_ctl,             &
-     &        layer_grp_name_ctl)
-        end if
+        call read_control_array_chara                                   &
+     &     (hd_ntotal_layer_grp_ctl, layer_grp_name_ctl)
 !
-        call find_control_array_flag(hd_num_layer_grp_ctl,              &
-     &      num_layer_grp_ctl)
-        if(num_layer_grp_ctl.gt.0 .and. i_num_layer_grp_ctl.eq.0) then
-          call allocate_layer_grp_stack_ctl
-          call read_control_array_int_list(hd_num_layer_grp_ctl,        &
-     &        num_layer_grp_ctl, i_num_layer_grp_ctl,                   &
-     &        igrp_stack_each_layer_ctl(1) )
-        end if
+        call read_control_array_int                                     &
+     &     (hd_num_layer_grp_ctl, igrp_stack_layer_ctl)
 !
 !
         call read_integer_ctl_item(hd_num_SGS_ele_grp,                  &

@@ -147,13 +147,15 @@
 !
 !
 !
-      max_coarse_level = num_level_coarse
+      max_coarse_level = sph_coarsing_ctl%num
       call allocate_coarsing_parameter
 !
       icoarse_level(1:max_coarse_level,1)                               &
-     &      = sp_r_coarse_ratio(1:max_coarse_level,1)
+     &      = sph_coarsing_ctl%int1(1:max_coarse_level)
       icoarse_level(1:max_coarse_level,2)                               &
-     &      = sp_r_coarse_ratio(1:max_coarse_level,2)
+     &      = sph_coarsing_ctl%int2(1:max_coarse_level)
+!
+      call dealloc_control_array_i2(sph_coarsing_ctl)
 !
       end subroutine set_peri_cube_paramteres
 !

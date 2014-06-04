@@ -31,7 +31,7 @@
       use set_control_platform_data
       use skip_comment_f
 !
-      integer(kind = kint) :: i, ip, kr
+      integer(kind = kint) :: i, kr
 !
 !
       call turn_off_debug_flag_by_ctl(izero)

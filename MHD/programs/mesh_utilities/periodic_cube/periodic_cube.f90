@@ -15,7 +15,6 @@
       use const_peri_cube_surface
       use const_peri_cube_data
 !
-      use read_control_cubed_sph
       use set_peri_cube_control
 !
       use count_shell_configration

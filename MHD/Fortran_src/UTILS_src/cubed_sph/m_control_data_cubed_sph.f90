@@ -3,24 +3,11 @@
 !
 !      Written by H. Matsui on Apr., 2006
 !
-!      subroutine allocate_coarse_level_ctl
-!
-!      subroutine deallocate_coarse_level_ctl
-!
-!      subroutine deallocate_nod_grp_name_ctl
-!      subroutine deallocate_nod_grp_layer_ctl
-!      subroutine deallocate_ele_grp_name_ctl
-!      subroutine deallocate_ele_grp_layer_ctl
-!      subroutine deallocate_surf_grp_name_ctl
-!      subroutine deallocate_surf_grp_layer_ctl
-!
-!      subroutine allocate_nod_grp_name_ctl
-!      subroutine allocate_ele_grp_name_ctl
-!      subroutine allocate_surf_grp_name_ctl
-!
       module m_control_data_cubed_sph
 !
       use m_precision
+      use m_read_control_elements
+      use skip_comment_f
       use t_read_control_arrays
 !
       implicit none
@@ -38,41 +25,54 @@
 !!      Structure for radial points
 !!@n      radial_pnt_ctl%ivec:  radial address
 !!@n      radial_pnt_ctl%vect:  radius
-        type(ctl_array_ir) :: radial_pnt_ctl
-!
-!
-      integer(kind = kint) :: num_node_grp_ctl
-      integer(kind = kint) :: num_nod_layer_ctl
-      character(len = kchara), allocatable :: nod_grp_name_ctl(:)
-      integer(kind = kint), allocatable :: istack_nod_grp_layer_ctl(:)
-      integer(kind = kint), allocatable :: id_nod_grp_layer_ctl(:)
-!
-      integer(kind = kint) :: num_ele_grp_ctl
-      integer(kind = kint) :: num_ele_layer_ctl
-      character(len = kchara), allocatable :: ele_grp_name_ctl(:)
-      integer(kind = kint), allocatable :: istack_ele_grp_layer_ctl(:)
-      integer(kind = kint), allocatable :: id_ele_grp_layer_ctl(:)
-!
-      integer(kind = kint) :: num_surf_grp_ctl
-      integer(kind = kint) :: num_surf_layer_ctl
-      character(len = kchara), allocatable :: surf_grp_name_ctl(:)
-      integer(kind = kint), allocatable :: istack_surf_grp_layer_ctl(:)
-      integer(kind = kint), allocatable :: id_surf_grp_layer_ctl(:)
-      character(len = kchara), allocatable :: surf_grp_layer_type_ctl(:)
+      type(ctl_array_ir) :: radial_pnt_ctl
 !
 !
       integer(kind = kint) :: nlayer_ICB_ctl = 0
       integer(kind = kint) :: nlayer_CMB_ctl = 0
 !
-      integer(kind = kint) :: num_level_coarse = 0
-      integer(kind = kint), allocatable :: sp_r_coarse_ratio(:,:)
+!!      Structure for node group name and stack
+!!@n      node_grp_name_ctl%num:    Number of node group
+!!@n      node_grp_name_ctl%c_tbl:  Node group name
+!!@n      node_grp_name_ctl%ivec:   Stack for each node group
+      type(ctl_array_ci) :: node_grp_name_ctl
+!!      Structure for node group name and stack
+!!@n      node_grp_layer_ctl%num:  Number of total layers for node group
+!!@n      node_grp_layer_ctl%ivec: List of radial layer
+      type(ctl_array_int) :: node_grp_layer_ctl
 !
+!!      Structure for element group name and stack
+!!@n      elem_grp_name_ctl%num:    Number of element group
+!!@n      elem_grp_name_ctl%c_tbl:  element group name
+!!@n      elem_grp_name_ctl%ivec:   Stack for each element group
+      type(ctl_array_ci) :: elem_grp_name_ctl
+!!      Structure for node group name and stack
+!!@n      elem_grp_layer_ctl%num:  Number of total layers
+!!                                for element group
+!!@n      elem_grp_layer_ctl%ivec: List of radial layer
+      type(ctl_array_int) :: elem_grp_layer_ctl
+!
+!!      Structure for surface group name and stack
+!!@n      surf_grp_name_ctl%num:    Number of surface group
+!!@n      surf_grp_name_ctl%c_tbl:  surface group name
+!!@n      surf_grp_name_ctl%ivec:   Stack for each surface group
+      type(ctl_array_ci) :: surf_grp_name_ctl
+!!      Structure for node group name and stack
+!!@n      surf_grp_layer_ctl%num:  Number of total layers
+!!                                for element group
+!!@n      surf_grp_layer_ctl%c_tbl: List of surface type name
+!!@n      surf_grp_layer_ctl%ivec: List of radial layer
+      type(ctl_array_ci) :: surf_grp_layer_ctl
 !
 !!      Structure for radial points
-!!@n      radial_pnt_ctl%ivec:  radial address
-!!@n      radial_pnt_ctl%vect:  radius
-        type(ctl_array_ir) :: edge_latitude_ctl
+!!@n      edge_latitude_ctl%ivec:  radial address
+!!@n      edge_latitude_ctl%vect:  radius
+      type(ctl_array_ir) :: edge_latitude_ctl
 !
+!!      Structure for coarsing level
+!!@n      sph_coarsing_ctl%int1: Coarsing level for radial direction
+!!@n      sph_coarsing_ctl%int2: Coarsing level on sphere
+      type(ctl_array_i2) :: sph_coarsing_ctl
 !
 !   Top level
 !
@@ -117,152 +117,259 @@
       integer (kind=kint) :: i_nlayer_ICB =     0
       integer (kind=kint) :: i_nlayer_CMB =     0
 !
+!   3rd level for coarse grid
+!
+      character(len=kchara), parameter                                  &
+     &             :: hd_num_level_coarse ='sp_r_coarse_ratio'
+!
+!   2nd level for make_shell
+!
+      character(len=kchara), parameter                                  &
+     &             :: hd_cubed_sph_def = 'cubed_sphere_def'
+      character(len=kchara), parameter                                  &
+     &             :: hd_boundaries =   'boundaries_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_coarse_shell = 'coarse_shell_ctl'
+      integer (kind=kint) :: i_cubed_sph_def = 0
+      integer (kind=kint) :: i_boundaries =   0
+      integer (kind=kint) :: i_coarse_shell = 0
+!
+!   3rd level for boundary define
+!
+      character(len=kchara), parameter                                  &
+     &             :: hd_node_grp_def = 'node_group_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_ele_grp_def =  'element_group_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_surf_grp_def = 'surface_group_ctl'
+      integer (kind=kint) :: i_node_grp_def = 0
+      integer (kind=kint) :: i_ele_grp_def =  0
+      integer (kind=kint) :: i_surf_grp_def = 0
+!
 !   4th level for node group def
 !
-      character(len=kchara), parameter                             &
+      character(len=kchara), parameter                                  &
      &             :: hd_num_nod_grp =   'nod_grp_name_ctl'
-      character(len=kchara), parameter                             &
+      character(len=kchara), parameter                                  &
      &             :: hd_num_nod_layer = 'nod_layer_id_ctl'
-      integer (kind=kint) :: i_num_nod_grp =   0
-      integer (kind=kint) :: i_num_nod_layer = 0
 !
 !   4th level for element group def
 !
-      character(len=kchara), parameter                             &
+      character(len=kchara), parameter                                  &
      &             :: hd_num_ele_grp =   'ele_grp_name_ctl'
-      character(len=kchara), parameter                             &
+      character(len=kchara), parameter                                  &
      &             :: hd_num_ele_layer = 'ele_layer_id_ctl'
-      integer (kind=kint) :: i_num_ele_grp =   0
-      integer (kind=kint) :: i_num_ele_layer = 0
 !
 !   4th level for surface group def
 !
-      character(len=kchara), parameter                             &
+      character(len=kchara), parameter                                  &
      &             :: hd_num_sf_grp =   'surf_grp_name_ctl'
-      character(len=kchara), parameter                             &
+      character(len=kchara), parameter                                  &
      &             :: hd_num_sf_layer = 'surf_layer_id_ctl'
-      integer (kind=kint) :: i_num_sf_grp =   0
-      integer (kind=kint) :: i_num_sf_layer = 0
 !
-!   3rd level for coarse grid
+      private :: hd_shell_ctl, hd_domain_shape
+      private :: hd_divide_def, hd_high_ele_type, hd_numele_4_90deg
+      private :: hd_numele_4_vert, hd_nend_adjust, hd_nstart_cube
+      private :: hd_cubed_sph_radius, hd_edge_latitude
+      private :: hd_nlayer_ICB, hd_nlayer_CMB
+      private :: hd_num_level_coarse
 !
-      character(len=kchara), parameter                             &
-     &             :: hd_num_level_coarse ='sp_r_coarse_ratio'
-      integer (kind=kint) :: i_num_level_coarse = 0
+      private :: hd_cubed_sph_def, i_cubed_sph_def
+      private :: hd_boundaries,    i_boundaries
+      private :: hd_coarse_shell,  i_coarse_shell
 !
-!  ---------------------------------------------------------------------
+      private :: hd_node_grp_def, i_node_grp_def
+      private :: hd_ele_grp_def,  i_ele_grp_def
+      private :: hd_surf_grp_def, i_surf_grp_def
+!
+      private :: hd_num_nod_grp, hd_num_ele_grp, hd_num_sf_grp
+      private :: hd_num_nod_layer, hd_num_ele_layer, hd_num_sf_layer
+!
+      private :: read_control_data_4_shell
+      private :: read_ctl_4_shell_def, read_ctl_shell_boundary
+      private :: read_ctl_4_coarse_shell
+      private :: read_ctl_nod_bc_4_shell, read_ctl_ele_bc_4_shell
+      private :: read_ctl_surf_bc_4_shell
+!
+!   --------------------------------------------------------------------
 !
       contains
 !
-!  ---------------------------------------------------------------------
+!   --------------------------------------------------------------------
 !
-      subroutine allocate_coarse_level_ctl
+      subroutine read_control_4_shell
 !
-      allocate( sp_r_coarse_ratio(num_level_coarse,2) )
-      sp_r_coarse_ratio = 0
+      open (ctl_file_code, file=name_ctl_shell)
 !
-      end subroutine allocate_coarse_level_ctl
+      call read_control_data_4_shell
 !
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
+      close(ctl_file_code)
 !
-      subroutine deallocate_coarse_level_ctl
+      end subroutine read_control_4_shell
 !
-      deallocate( sp_r_coarse_ratio )
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
 !
-      end subroutine deallocate_coarse_level_ctl
+      subroutine read_control_data_4_shell
 !
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
-      subroutine allocate_nod_grp_name_ctl
+      do
+        call load_ctl_label_and_line
 !
-      allocate( nod_grp_name_ctl(num_node_grp_ctl) )
-      allocate( istack_nod_grp_layer_ctl(0:num_node_grp_ctl) )
-      istack_nod_grp_layer_ctl = 0
+        call find_control_end_flag(hd_shell_ctl, i_shell_ctl)
+        if(i_shell_ctl .gt. 0) exit
 !
-      end subroutine allocate_nod_grp_name_ctl
+        call read_ctl_4_shell_def
+        call read_ctl_shell_boundary
+        call read_ctl_4_coarse_shell
+      end do
 !
-!  ---------------------------------------------------------------------
+      end subroutine read_control_data_4_shell
 !
-      subroutine allocate_nod_grp_layer_ctl
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
 !
-      allocate( id_nod_grp_layer_ctl(num_nod_layer_ctl) )
-      id_nod_grp_layer_ctl = 0
+      subroutine read_ctl_4_shell_def
 !
-      end subroutine allocate_nod_grp_layer_ctl
 !
-!  ---------------------------------------------------------------------
+      if(right_begin_flag(hd_cubed_sph_def) .eq. 0) return
+      if (i_cubed_sph_def .gt. 0) return
+      do
+        call load_ctl_label_and_line
 !
-      subroutine allocate_ele_grp_name_ctl
+        call find_control_end_flag(hd_cubed_sph_def, i_cubed_sph_def)
+        if(i_cubed_sph_def .gt. 0) exit
 !
-      allocate( ele_grp_name_ctl(num_ele_grp_ctl) )
-      allocate( istack_ele_grp_layer_ctl(0:num_ele_grp_ctl) )
-      istack_ele_grp_layer_ctl = 0
+        call read_control_array_i_r                                     &
+       &   (hd_cubed_sph_radius, radial_pnt_ctl)
+        call read_control_array_i_r                                     &
+       &   (hd_edge_latitude, edge_latitude_ctl)
 !
-      end subroutine allocate_ele_grp_name_ctl
 !
-!  ---------------------------------------------------------------------
+        call read_character_ctl_item(hd_domain_shape,                   &
+     &        i_domain_shape, domain_shape_ctl)
+        call read_character_ctl_item(hd_divide_def,                     &
+     &        i_divide_def, divide_type_ctl)
+        call read_character_ctl_item(hd_high_ele_type,                  &
+     &        i_high_ele_type, high_ele_type_ctl)
 !
-      subroutine allocate_ele_grp_layer_ctl
+        call read_integer_ctl_item(hd_numele_4_90deg,                   &
+     &        i_numele_4_90deg, numele_4_90deg)
+        call read_integer_ctl_item(hd_numele_4_vert,                    &
+     &        i_numele_4_vert, numele_4_vertical_ctl)
+        call read_integer_ctl_item(hd_nend_adjust,                      &
+     &        i_nend_adjust, nend_adjust_ctl)
+        call read_integer_ctl_item(hd_nstart_cube,                      &
+     &        i_nstart_cube, nstart_cube_ctl)
+      end do
 !
-      allocate( id_ele_grp_layer_ctl(num_ele_layer_ctl) )
-      id_ele_grp_layer_ctl = 0
+      end subroutine read_ctl_4_shell_def
 !
-      end subroutine allocate_ele_grp_layer_ctl
+!   --------------------------------------------------------------------
 !
-!  ---------------------------------------------------------------------
+      subroutine read_ctl_shell_boundary
 !
-      subroutine allocate_surf_grp_name_ctl
 !
-      allocate( surf_grp_name_ctl(num_surf_grp_ctl) )
-      allocate( istack_surf_grp_layer_ctl(0:num_surf_grp_ctl) )
-      istack_surf_grp_layer_ctl = 0
+      if(right_begin_flag(hd_boundaries) .eq. 0) return
+      if (i_boundaries .gt. 0) return
+      do
+        call load_ctl_label_and_line
 !
-      end subroutine allocate_surf_grp_name_ctl
+        call find_control_end_flag(hd_boundaries, i_boundaries)
+        if(i_boundaries .gt. 0) exit
 !
-!  ---------------------------------------------------------------------
+        call read_ctl_nod_bc_4_shell
+        call read_ctl_ele_bc_4_shell
+        call read_ctl_surf_bc_4_shell
 !
-      subroutine allocate_surf_grp_layer_ctl
 !
-      allocate( id_surf_grp_layer_ctl(num_surf_layer_ctl) )
-      allocate( surf_grp_layer_type_ctl(num_surf_layer_ctl) )
-      id_surf_grp_layer_ctl = 0
+        call read_integer_ctl_item(hd_nlayer_ICB,                       &
+     &        i_nlayer_ICB, nlayer_ICB_ctl)
+        call read_integer_ctl_item(hd_nlayer_CMB,                       &
+     &        i_nlayer_CMB, nlayer_CMB_ctl)
+      end do
 !
-      end subroutine allocate_surf_grp_layer_ctl
+      end subroutine read_ctl_shell_boundary
 !
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
+!   --------------------------------------------------------------------
 !
-      subroutine deallocate_nod_grp_name_ctl
+      subroutine read_ctl_nod_bc_4_shell
 !
-      deallocate( nod_grp_name_ctl )
-      deallocate( istack_nod_grp_layer_ctl )
-      deallocate( id_nod_grp_layer_ctl )
 !
-      end subroutine deallocate_nod_grp_name_ctl
+      if(right_begin_flag(hd_node_grp_def) .eq. 0) return
+      if (i_node_grp_def .gt. 0) return
+      do
+        call load_ctl_label_and_line
 !
-!  ---------------------------------------------------------------------
+        call find_control_end_flag(hd_node_grp_def, i_node_grp_def)
+        if(i_node_grp_def .gt. 0) exit
 !
-      subroutine deallocate_ele_grp_name_ctl
+        call read_control_array_c_i(hd_num_nod_grp, node_grp_name_ctl)
+        call read_control_array_int                                     &
+     &     (hd_num_nod_layer, node_grp_layer_ctl)
+      end do
 !
-      deallocate( ele_grp_name_ctl )
-      deallocate( istack_ele_grp_layer_ctl )
-      deallocate( id_ele_grp_layer_ctl )
+      end subroutine read_ctl_nod_bc_4_shell
 !
-      end subroutine deallocate_ele_grp_name_ctl
+!   --------------------------------------------------------------------
 !
-!  ---------------------------------------------------------------------
+      subroutine read_ctl_ele_bc_4_shell
 !
-      subroutine deallocate_surf_grp_name_ctl
 !
-      deallocate( surf_grp_name_ctl )
-      deallocate( istack_surf_grp_layer_ctl )
-      deallocate( id_surf_grp_layer_ctl )
-      deallocate( surf_grp_layer_type_ctl )
+      if(right_begin_flag(hd_ele_grp_def) .eq. 0) return
+      if (i_ele_grp_def .gt. 0) return
+      do
+        call load_ctl_label_and_line
 !
-      end subroutine deallocate_surf_grp_name_ctl
+        call find_control_end_flag(hd_ele_grp_def, i_ele_grp_def)
+        if(i_ele_grp_def .gt. 0) exit
 !
-!  ---------------------------------------------------------------------
+        call read_control_array_c_i(hd_num_ele_grp, elem_grp_name_ctl)
+        call read_control_array_int                                     &
+     &     (hd_num_ele_layer, elem_grp_layer_ctl)
+      end do
+!
+      end subroutine read_ctl_ele_bc_4_shell
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_ctl_surf_bc_4_shell
+!
+!
+      if(right_begin_flag(hd_surf_grp_def) .eq. 0) return
+      if (i_surf_grp_def .gt. 0) return
+      do
+        call load_ctl_label_and_line
+!
+        call find_control_end_flag(hd_surf_grp_def, i_surf_grp_def)
+        if(i_surf_grp_def .gt. 0) exit
+!
+        call read_control_array_c_i(hd_num_sf_grp, surf_grp_name_ctl)
+        call read_control_array_c_i                                     &
+     &     (hd_num_sf_layer, surf_grp_layer_ctl)
+      end do
+!
+      end subroutine read_ctl_surf_bc_4_shell
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_ctl_4_coarse_shell
+!
+!
+      if(right_begin_flag(hd_coarse_shell) .eq. 0) return
+      if (i_coarse_shell .gt. 0) return
+      do
+        call load_ctl_label_and_line
+!
+        call find_control_end_flag(hd_coarse_shell, i_coarse_shell)
+        if(i_coarse_shell .gt. 0) exit
+!
+        call read_control_array_i2                                      &
+     &     (hd_num_level_coarse, sph_coarsing_ctl)
+      end do
+!
+      end subroutine read_ctl_4_coarse_shell
+!
+!   --------------------------------------------------------------------
 !
       end module m_control_data_cubed_sph

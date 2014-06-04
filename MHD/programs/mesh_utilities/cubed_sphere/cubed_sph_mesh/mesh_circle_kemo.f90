@@ -15,7 +15,6 @@
       use const_squre_circle_edge
       use construct_circle_data
 !
-      use read_control_cubed_sph
       use set_cubed_sph_control
 !
       use count_square_circle_config
