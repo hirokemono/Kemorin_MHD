@@ -75,7 +75,7 @@
       end if
 !
       call count_area_4_viz(num_mat, mat_name,                          &
-     &    fln%num_fline_area_grp_ctl, fln%fline_area_ele_grp_ctl,       &
+     &    fln%fline_area_grp_ctl%num, fln%fline_area_grp_ctl%c_tbl,     &
      &     nele_grp_area_fline(i_fln) )
       istack_grp_area_fline(i_fln) = istack_grp_area_fline(i_fln-1)     &
      &                              + nele_grp_area_fline(i_fln)
@@ -149,8 +149,8 @@
      &          num_surf, num_surf_bc, surf_istack, surf_item)
 !
       else if(id_fline_start_type(i_fln) .eq.  1) then
-        if(fln%num_start_gl_surf_ctl .gt. 0) then
-          num_each_field_line(i_fln) = fln%num_start_gl_surf_ctl
+        if(fln%seed_surface_ctl%num .gt. 0) then
+          num_each_field_line(i_fln) = fln%seed_surface_ctl%num
         end if
       else if(id_fline_start_type(i_fln) .eq.  2) then
         if(fln%seed_point_ctl%num .gt. 0) then
@@ -213,7 +213,7 @@
 !
       ist = istack_grp_area_fline(i_fln-1) + 1
       call s_set_area_4_viz(num_mat, mat_name,                          &
-     &    fln%num_fline_area_grp_ctl, fln%fline_area_ele_grp_ctl,       &
+     &    fln%fline_area_grp_ctl%num, fln%fline_area_grp_ctl%c_tbl,     &
      &    istack_grp_area_fline(i_fln), id_ele_grp_area_fline(ist) )
 !
 !
@@ -224,9 +224,9 @@
       else if(id_fline_start_type(i_fln) .eq.  1) then
         do i = 1, num_each_field_line(i_fln)
           id_gl_surf_start_fline(1,i+ist)                               &
-     &          = fln%id_start_gl_surf_ctl(i,1)
+     &          = fln%seed_surface_ctl%int1(i)
           id_gl_surf_start_fline(2,i+ist)                               &
-     &          = fln%id_start_gl_surf_ctl(i,2)
+     &          = fln%seed_surface_ctl%int2(i)
         end do
       else if(id_fline_start_type(i_fln) .eq.  2) then
         do i = 1, num_each_field_line(i_fln)

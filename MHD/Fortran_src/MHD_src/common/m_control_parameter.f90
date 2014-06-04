@@ -11,10 +11,14 @@
 !!      subroutine allocate_fluid_ele_grp_name
 !!      subroutine allocate_conduct_ele_grp_name
 !!      subroutine allocate_icore_ele_grp_name
+!!      subroutine allocate_whole_filter_groups
+!!      subroutine allocate_fluid_filter_groups
 !!
 !!      subroutine deallocate_fluid_ele_grp_name
 !!      subroutine deallocate_conduct_ele_grp_name
 !!      subroutine deallocate_icore_ele_grp_name
+!!      subroutine deallocate_whole_filter_groups
+!!      subroutine deallocate_fluid_filter_groups
 !!@endverbatim
 !
       module   m_control_parameter
@@ -342,6 +346,34 @@
       end subroutine allocate_icore_ele_grp_name
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine allocate_whole_filter_groups
+!
+!
+      allocate(whole_filter_grp(num_whole_filter_grp))
+      allocate(id_whole_filter_grp(num_whole_filter_grp))
+      allocate(whole_w_filter_grp(num_whole_w_filter_grp))
+      allocate(id_whole_w_filter_grp(num_whole_w_filter_grp))
+      id_whole_filter_grp =   0
+      id_whole_w_filter_grp = 0
+!
+      end subroutine allocate_whole_filter_groups
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine allocate_fluid_filter_groups
+!
+!
+      allocate(fluid_filter_grp(num_fluid_filter_grp))
+      allocate(id_fluid_filter_grp(num_fluid_filter_grp))
+      allocate(fluid_w_filter_grp(num_fluid_w_filter_grp))
+      allocate(id_fluid_w_filter_grp(num_fluid_w_filter_grp))
+      id_fluid_filter_grp =   0
+      id_fluid_w_filter_grp = 0
+!
+      end subroutine allocate_fluid_filter_groups
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine deallocate_fluid_ele_grp_name
@@ -365,6 +397,26 @@
       deallocate(in_core_ele_grp_name)
 !
       end subroutine deallocate_icore_ele_grp_name
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_whole_filter_groups
+!
+!
+      deallocate(whole_filter_grp,   id_whole_filter_grp)
+      deallocate(whole_w_filter_grp, id_whole_w_filter_grp)
+!
+      end subroutine deallocate_whole_filter_groups
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_fluid_filter_groups
+!
+!
+      deallocate(fluid_filter_grp,   id_fluid_filter_grp)
+      deallocate(fluid_w_filter_grp, id_fluid_w_filter_grp)
+!
+      end subroutine deallocate_fluid_filter_groups
 !
 !  ---------------------------------------------------------------------
 !

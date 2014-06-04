@@ -222,52 +222,56 @@
       iflag_SGS_gravity =   id_SGS_none
 !
       if (iflag_SGS_model .ne. id_SGS_none) then
-        if (i_n_SGS_terms.eq.0) then
+        if (SGS_terms_ctl%icou .eq. izero) then
             e_message = 'Set equations to apply SGS model'
             call calypso_MPI_abort(90, e_message)
         else
 !
-          do i = 1, num_SGS_term_ctl
-            if ( SGS_term_name_ctl(i) .eq. thd_heat_flux) then
+          do i = 1, SGS_terms_ctl%num
+            if(     SGS_terms_ctl%c_tbl(i) .eq. thd_heat_flux) then
               iflag_SGS_heat =      iflag_SGS_model
-            else if ( SGS_term_name_ctl(i) .eq. thd_advection) then
+            else if(SGS_terms_ctl%c_tbl(i) .eq. thd_advection) then
               iflag_SGS_inertia =   iflag_SGS_model
-            else if ( SGS_term_name_ctl(i) .eq. thd_lorentz) then
+            else if(SGS_terms_ctl%c_tbl(i) .eq. thd_lorentz) then
               iflag_SGS_lorentz =   iflag_SGS_model
-            else if ( SGS_term_name_ctl(i) .eq. thd_induction) then
+            else if(SGS_terms_ctl%c_tbl(i) .eq. thd_induction) then
               iflag_SGS_induction = iflag_SGS_model
-            else if ( SGS_term_name_ctl(i) .eq. thd_gravity) then
+            else if(SGS_terms_ctl%c_tbl(i) .eq. thd_gravity) then
               iflag_SGS_gravity = iflag_SGS_model
             end if
           end do
+!
+          call dealloc_control_array_chara(SGS_terms_ctl)
         end if
 !
 !
-        if (i_commutation_fld .gt. 0) then
-          do i = 1, num_commutation_fld_ctl
-            if ( commutation_fld_ctl(i) .eq. fhd_temp) then
+        if (commutate_fld_ctl%icou .gt. 0) then
+          do i = 1, commutate_fld_ctl%num
+            if(     commutate_fld_ctl%c_tbl(i) .eq. fhd_temp) then
               iflag_commute_temp =      id_SGS_commute_ON
-            else if ( commutation_fld_ctl(i) .eq. fhd_velo) then
+            else if(commutate_fld_ctl%c_tbl(i) .eq. fhd_velo) then
               iflag_commute_velo =      id_SGS_commute_ON
-            else if ( commutation_fld_ctl(i) .eq. fhd_magne) then
+            else if(commutate_fld_ctl%c_tbl(i) .eq. fhd_magne) then
               iflag_commute_magne =     id_SGS_commute_ON
-            else if ( commutation_fld_ctl(i) .eq. fhd_vecp) then
+            else if(commutate_fld_ctl%c_tbl(i) .eq. fhd_vecp) then
               iflag_commute_magne =     id_SGS_commute_ON
-            else if ( commutation_fld_ctl(i) .eq. fhd_light) then
+            else if(commutate_fld_ctl%c_tbl(i) .eq. fhd_light) then
               iflag_commute_c_flux =    id_SGS_commute_ON
 !
-            else if ( commutation_fld_ctl(i) .eq. thd_heat_flux) then
+            else if(commutate_fld_ctl%c_tbl(i) .eq. thd_heat_flux) then
               iflag_commute_heat =      id_SGS_commute_ON
-            else if ( commutation_fld_ctl(i) .eq. thd_advection) then
+            else if(commutate_fld_ctl%c_tbl(i) .eq. thd_advection) then
               iflag_commute_inertia =   id_SGS_commute_ON
-            else if ( commutation_fld_ctl(i) .eq. thd_lorentz) then
+            else if(commutate_fld_ctl%c_tbl(i) .eq. thd_lorentz) then
               iflag_commute_lorentz =   id_SGS_commute_ON
-            else if ( commutation_fld_ctl(i) .eq. thd_induction) then
+            else if(commutate_fld_ctl%c_tbl(i) .eq. thd_induction) then
               iflag_commute_induction = id_SGS_commute_ON
-            else if ( commutation_fld_ctl(i) .eq. thd_comp_flux) then
+            else if(commutate_fld_ctl%c_tbl(i) .eq. thd_comp_flux) then
               iflag_commute_composit =  id_SGS_commute_ON
             end if
           end do
+!
+          call dealloc_control_array_chara(commutate_fld_ctl)
 !
           iflag_commute_linear                                          &
      &        =  iflag_commute_temp +  iflag_commute_velo               &

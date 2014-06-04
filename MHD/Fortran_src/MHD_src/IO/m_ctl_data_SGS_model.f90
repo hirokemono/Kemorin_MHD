@@ -2,10 +2,6 @@
 !      module m_ctl_data_SGS_model
 !
 !        programmed by H.Matsui on March. 2006
-!      subroutine dealloc_SGS_term_name_ctl
-!      subroutine dealloc_whole_filter_grp_ctl
-!      subroutine dealloc_fluid_filter_grp_ctl
-!      subroutine dealloc_commutation_fld_ctl
 !
 !      subroutine read_sgs_ctl
 !!
@@ -168,6 +164,7 @@
       use m_machine_parameter
       use m_read_control_elements
       use skip_comment_f
+      use t_read_control_arrays
 !
       implicit  none
 !
@@ -200,22 +197,26 @@
       real(kind = kreal) :: SGS_mxwl_factor_ctl
       real(kind = kreal) :: SGS_uxb_factor_ctl
 !
-      integer (kind=kint)   :: num_SGS_term_ctl
       integer (kind=kint)   :: num_SGS_bc_neighbour_ctl
 ! 
-      character (len=kchara), allocatable :: SGS_term_name_ctl(:)
+!!      Structure for field list of SGS terms
+!!@n      SGS_terms_ctl%c_tbl: name of SGS terms
+      type(ctl_array_chara) :: SGS_terms_ctl
+!!      Structure for field list of commutaion error correction
+!!@n      commutate_fld_ctl%c_tbl: field name
+!!                                  for commutaion error correction
+      type(ctl_array_chara) :: commutate_fld_ctl
 !
-      integer (kind=kint)   :: num_whole_filter_grp_ctl
-      integer (kind=kint)   :: num_fluid_filter_grp_ctl
-      character (len=kchara), allocatable :: whole_filter_grp_ctl(:)
-      character (len=kchara), allocatable :: fluid_filter_grp_ctl(:)
+!!      Structure for group list for filtering for whole area
+!!@n      whole_filter_grp_ctl%c_tbl: element group name
+      type(ctl_array_chara) :: whole_filter_grp_ctl
+!!      Structure forfield list for filtering in fluid
+!!@n      fluid_filter_grp_ctl%c_tbl: element group name
+      type(ctl_array_chara) :: fluid_filter_grp_ctl
 !
       character (len=kchara)   :: momentum_filter_ctl
       character (len=kchara)   :: heat_filter_ctl
       character (len=kchara)   :: induction_filter_ctl
-!
-      integer (kind=kint)   :: num_commutation_fld_ctl
-      character (len=kchara), allocatable :: commutation_fld_ctl(:)
 !
 !    label for entry of group
 !
@@ -294,24 +295,20 @@
       integer (kind=kint) :: i_SGS_perturbation_ctl = 0
       integer (kind=kint) :: i_model_coef_type_ctl =  0
       integer (kind=kint) :: i_model_coef_coord_ctl = 0
-      integer (kind=kint) :: i_commutation_fld =      0
 !
       integer (kind=kint) :: i_hf_csim_type_ctl =   0
       integer (kind=kint) :: i_mf_csim_type_ctl =   0
       integer (kind=kint) :: i_mxwl_csim_type_ctl = 0
       integer (kind=kint) :: i_uxb_csim_type_ctl =  0
 !
-      character(len=kchara) :: hd_n_SGS_terms =  'SGS_terms_ctl'
-      integer (kind=kint) :: i_n_SGS_terms = 0
+      character(len=kchara) :: hd_SGS_terms =  'SGS_terms_ctl'
 !
 !    5th level for 3d filtering
 !
-      character(len=kchara) :: hd_num_whole_filter_grp                  &
+      character(len=kchara) :: hd_whole_filter_grp                      &
      &                        = 'whole_filtering_grp_ctl'
-      character(len=kchara) :: hd_num_fluid_filter_grp                  &
+      character(len=kchara) :: hd_fluid_filter_grp                      &
      &                        = 'fluid_filtering_grp_ctl'
-      integer (kind=kint) :: i_num_fluid_filter_grp = 0
-      integer (kind=kint) :: i_num_whole_filter_grp = 0
 !
       character(len=kchara) :: hd_momentum_filter_ctl                   &
      &                        = 'momentum_filter_ctl'
@@ -331,90 +328,20 @@
       private :: hd_SGS_marging, hd_DIFF_coefs, hd_3d_filtering
       private :: hd_min_step_dynamic, hd_max_step_dynamic
       private :: hd_delta_shrink_dynamic, hd_delta_extend_dynamic
-      private :: hd_n_SGS_terms, hd_SGS_perturbation_ctl
+      private :: hd_SGS_terms, hd_SGS_perturbation_ctl
       private :: hd_model_coef_type_ctl, hd_model_coef_coord_ctl
-      private :: hd_num_whole_filter_grp, hd_num_fluid_filter_grp
+      private :: hd_whole_filter_grp, hd_fluid_filter_grp
       private :: hd_momentum_filter_ctl, hd_heat_filter_ctl
       private :: hd_induction_filter_ctl, hd_commutation_fld
       private :: hd_hf_csim_type_ctl, hd_mf_csim_type_ctl
       private :: hd_mxwl_csim_type_ctl, hd_uxb_csim_type_ctl
 !
-      private :: alloc_SGS_term_name_ctl, alloc_whole_filter_grp_ctl
-      private :: alloc_fluid_filter_grp_ctl, read_3d_filtering_ctl
-      private :: alloc_commutation_fld_ctl
-
-!
+      private :: read_3d_filtering_ctl
 !
 !   --------------------------------------------------------------------
 !
       contains
 !
-!   --------------------------------------------------------------------
-!
-      subroutine alloc_SGS_term_name_ctl
-!
-      allocate(SGS_term_name_ctl(num_SGS_term_ctl))
-!
-      end subroutine alloc_SGS_term_name_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine alloc_whole_filter_grp_ctl
-!
-      allocate(whole_filter_grp_ctl(num_whole_filter_grp_ctl))
-!
-      end subroutine alloc_whole_filter_grp_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine alloc_fluid_filter_grp_ctl
-!
-      allocate(fluid_filter_grp_ctl(num_fluid_filter_grp_ctl))
-!
-      end subroutine alloc_fluid_filter_grp_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine alloc_commutation_fld_ctl
-!
-      allocate(commutation_fld_ctl(num_commutation_fld_ctl))
-!
-      end subroutine alloc_commutation_fld_ctl
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine dealloc_SGS_term_name_ctl
-!
-      deallocate(SGS_term_name_ctl)
-!
-      end subroutine dealloc_SGS_term_name_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine dealloc_whole_filter_grp_ctl
-!
-      deallocate(whole_filter_grp_ctl)
-!
-      end subroutine dealloc_whole_filter_grp_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine dealloc_fluid_filter_grp_ctl
-!
-      deallocate(fluid_filter_grp_ctl)
-!
-      end subroutine dealloc_fluid_filter_grp_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine dealloc_commutation_fld_ctl
-!
-      deallocate(commutation_fld_ctl)
-!
-      end subroutine dealloc_commutation_fld_ctl
-!
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine read_sgs_ctl
@@ -437,22 +364,9 @@
         call read_ele_layers_grp_ctl
 !
 !
-        call find_control_array_flag(hd_n_SGS_terms, num_SGS_term_ctl)
-        if(num_SGS_term_ctl.gt.0 .and. i_n_SGS_terms.eq.0) then
-          call alloc_SGS_term_name_ctl
-          call read_control_array_chara_list(hd_n_SGS_terms,            &
-     &        num_SGS_term_ctl, i_n_SGS_terms, SGS_term_name_ctl)
-        end if
-!
-        call find_control_array_flag(hd_commutation_fld,                &
-     &      num_commutation_fld_ctl)
-        if(num_commutation_fld_ctl.gt.0                                 &
-     &       .and. i_commutation_fld.eq.0) then
-          call alloc_commutation_fld_ctl
-          call read_control_array_chara_list(hd_commutation_fld,        &
-     &        num_commutation_fld_ctl, i_commutation_fld,               &
-     &        commutation_fld_ctl)
-        end if
+        call read_control_array_chara(hd_SGS_terms, SGS_terms_ctl)
+        call read_control_array_chara                                   &
+     &     (hd_commutation_fld, commutate_fld_ctl)
 !
 !
         call read_character_ctl_item(hd_SGS_model,                      &
@@ -523,26 +437,10 @@
         if(i_3d_filtering .gt. 0) exit
 !
 !
-        call find_control_array_flag(hd_num_whole_filter_grp,           &
-     &      num_whole_filter_grp_ctl)
-        if(num_whole_filter_grp_ctl.gt.0                                &
-     &       .and. i_num_whole_filter_grp.eq.0) then
-          allocate(whole_filter_grp_ctl(num_whole_filter_grp_ctl))
-          call read_control_array_chara_list(hd_num_whole_filter_grp,   &
-     &        num_whole_filter_grp_ctl, i_num_whole_filter_grp,         &
-     &        whole_filter_grp_ctl)
-        end if
-!
-        call find_control_array_flag(hd_num_fluid_filter_grp,           &
-     &      num_fluid_filter_grp_ctl)
-        if(num_fluid_filter_grp_ctl.gt.0                                &
-     &       .and. i_num_fluid_filter_grp.eq.0) then
-          call alloc_fluid_filter_grp_ctl
-          call read_control_array_chara_list(hd_num_fluid_filter_grp,   &
-     &        num_fluid_filter_grp_ctl, i_num_fluid_filter_grp,         &
-     &        fluid_filter_grp_ctl)
-        end if
-!
+        call read_control_array_chara                                   &
+     &     (hd_whole_filter_grp, whole_filter_grp_ctl)
+        call read_control_array_chara                                   &
+     &     (hd_fluid_filter_grp, fluid_filter_grp_ctl)
 !
         call read_character_ctl_item(hd_momentum_filter_ctl,            &
      &        i_momentum_filter_ctl, momentum_filter_ctl)

@@ -37,48 +37,32 @@
       use m_ctl_data_filter_files
       use sgs_ini_model_coefs_IO
       use set_control_ele_layering
+      use skip_comment_f
 !
       integer(kind = kint) :: i
 !
 !
       if (i_SGS_filter .gt. 0) then
-        if   (SGS_filter_name_ctl .eq. '3d'                             &
-     &   .or. SGS_filter_name_ctl .eq. '3D'                             &
-     &   .or. SGS_filter_name_ctl .eq. '3-D'                            &
-     &   .or. SGS_filter_name_ctl .eq. '3-d'                            &
-     &   .or. SGS_filter_name_ctl .eq. '3-dimensional'                  &
-     &   .or. SGS_filter_name_ctl .eq. '3-Dimensional'                  &
-     &   .or. SGS_filter_name_ctl .eq. '3-DIMENSIONAL'                  &
+        if   (cmp_no_case(SGS_filter_name_ctl, '3D') .gt. 0             &
+     &   .or. cmp_no_case(SGS_filter_name_ctl, '3-D') .gt. 0            &
+     &   .or. cmp_no_case(SGS_filter_name_ctl, '3-Dimensional') .gt. 0  &
      &  )  iflag_SGS_filter = id_SGS_3D_FILTERING
 !
-        if   (SGS_filter_name_ctl .eq. 'line'                           &
-     &   .or. SGS_filter_name_ctl .eq. 'Line'                           &
-     &   .or. SGS_filter_name_ctl .eq. 'LINE'                           &
+        if   (cmp_no_case(SGS_filter_name_ctl, 'Line') .gt. 0           &
      &  )  iflag_SGS_filter = id_SGS_LINE_FILTERING
 !
-        if   (SGS_filter_name_ctl .eq. 'plane'                          &
-     &   .or. SGS_filter_name_ctl .eq. 'Plane'                          &
-     &   .or. SGS_filter_name_ctl .eq. 'PLANE'                          &
+        if   (cmp_no_case(SGS_filter_name_ctl, 'Plane') .gt. 0          &
      &  )  iflag_SGS_filter = id_SGS_PLANE_FILTERING
 !
-        if   (SGS_filter_name_ctl .eq. '3d_easy'                        &
-     &   .or. SGS_filter_name_ctl .eq. '3D_easy'                        &
-     &   .or. SGS_filter_name_ctl .eq. '3D_EASY'                        &
+        if   (cmp_no_case(SGS_filter_name_ctl, '3D_easy') .gt. 0        &
      &  )  iflag_SGS_filter = id_SGS_3D_EZ_FILTERING
 !
-        if   (SGS_filter_name_ctl .eq. '3d-smp'                         &
-     &   .or. SGS_filter_name_ctl .eq. '3D-smp'                         &
-     &   .or. SGS_filter_name_ctl .eq. '3D-SMP'                         &
-     &   .or. SGS_filter_name_ctl .eq. '3-D-smp'                        &
-     &   .or. SGS_filter_name_ctl .eq. '3-d-smp'                        &
-     &   .or. SGS_filter_name_ctl .eq. '3-dimensional-smp'              &
-     &   .or. SGS_filter_name_ctl .eq. '3-Dimensional-smp'              &
-     &   .or. SGS_filter_name_ctl .eq. '3-DIMENSIONAL-SMP'              &
-     &  )  iflag_SGS_filter = id_SGS_3D_SMP_FILTERING
+        if   (cmp_no_case(SGS_filter_name_ctl, '3D_smp') .gt. 0         &
+     &   .or. cmp_no_case(SGS_filter_name_ctl, '3-D_smp') .gt. 0        &
+     &   .or. cmp_no_case(SGS_filter_name_ctl, '3-Dimensional_smp')     &
+     &      .gt. 0)  iflag_SGS_filter = id_SGS_3D_SMP_FILTERING
 !
-        if   (SGS_filter_name_ctl .eq. '3d_easy_smp'                    &
-     &   .or. SGS_filter_name_ctl .eq. '3D_easy_smp'                    &
-     &   .or. SGS_filter_name_ctl .eq. '3D_EASY_SMP'                    &
+        if   (cmp_no_case(SGS_filter_name_ctl, '3D_easy_sm') .gt. 0     &
      &  )  iflag_SGS_filter = id_SGS_3D_EZ_SMP_FILTERING
 !
         if (iflag_debug .gt. 0)  write(*,*)                             &
@@ -99,23 +83,18 @@
      &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING              &
      &   .or. iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING             &
      &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING ) then
-        if (i_num_whole_filter_grp .gt. 0) then
-          num_whole_filter_grp =   num_whole_filter_grp_ctl
+        if (whole_filter_grp_ctl%icou .gt. 0) then
+          num_whole_filter_grp =   whole_filter_grp_ctl%num
         else
           num_whole_filter_grp =   1
         end if
         num_whole_w_filter_grp = num_whole_filter_grp
 !
-        allocate(whole_filter_grp(num_whole_filter_grp))
-        allocate(id_whole_filter_grp(num_whole_filter_grp))
-        allocate(whole_w_filter_grp(num_whole_w_filter_grp))
-        allocate(id_whole_w_filter_grp(num_whole_w_filter_grp))
-        id_whole_filter_grp =   0
-        id_whole_w_filter_grp = 0
+        call allocate_whole_filter_groups
 !
-        if (i_num_whole_filter_grp .gt. 0) then
+        if (whole_filter_grp_ctl%icou .gt. 0) then
           whole_filter_grp(1:num_whole_filter_grp)                      &
-     &         = whole_filter_grp_ctl(1:num_whole_filter_grp)
+     &         = whole_filter_grp_ctl%c_tbl(1:num_whole_filter_grp)
         else
           whole_filter_grp(1) =   'all'
           whole_w_filter_grp(1) = 'all'
@@ -123,71 +102,51 @@
         whole_w_filter_grp(1:num_whole_filter_grp)                      &
      &         = whole_filter_grp(1:num_whole_filter_grp)
 !
+        call dealloc_control_array_chara(whole_filter_grp_ctl)
 !
-        if (i_num_fluid_filter_grp .gt. 0) then
-          num_fluid_filter_grp = num_fluid_filter_grp_ctl
+        if (fluid_filter_grp_ctl%icou .gt. 0) then
+          num_fluid_filter_grp = fluid_filter_grp_ctl%num
         else
           num_fluid_filter_grp = 1
         end if
         num_fluid_w_filter_grp = num_fluid_filter_grp
 !
-        allocate(fluid_filter_grp(num_fluid_filter_grp))
-        allocate(id_fluid_filter_grp(num_fluid_filter_grp))
-        allocate(fluid_w_filter_grp(num_fluid_w_filter_grp))
-        allocate(id_fluid_w_filter_grp(num_fluid_w_filter_grp))
-        id_fluid_filter_grp =   0
-        id_fluid_w_filter_grp = 0
+        call allocate_fluid_filter_groups
 !
-        if (i_num_fluid_filter_grp .gt. 0) then
+        if (fluid_filter_grp_ctl%icou .gt. 0) then
           fluid_filter_grp(1:num_fluid_filter_grp)                      &
-     &         = fluid_filter_grp_ctl(1:num_fluid_filter_grp)
+     &         = fluid_filter_grp_ctl%c_tbl(1:num_fluid_filter_grp)
         else
           fluid_filter_grp(1) = 'all'
         end if
         fluid_w_filter_grp(1:num_fluid_filter_grp)                      &
      &         = fluid_filter_grp(1:num_fluid_filter_grp)
 !
+        call dealloc_control_array_chara(fluid_filter_grp_ctl)
+!
         if (iflag_t_evo_4_temp .gt. id_no_evolution) then
-          if (     heat_filter_ctl .eq. 'whole_filtering'               &
-     &      .or.   heat_filter_ctl .eq. 'Whole_filtering'               &
-     &      .or.   heat_filter_ctl .eq. 'WHOLE_FILTERING') then
-            iflag_heat_filtering = 0
-          else if (heat_filter_ctl .eq. 'fluid_filtering'               &
-     &      .or.   heat_filter_ctl .eq. 'Fluid_filtering'               &
-     &      .or.   heat_filter_ctl .eq. 'FLUID_FILTERING') then
-            iflag_heat_filtering = 1
-          else
-            iflag_heat_filtering = 0
-          end if
+          iflag_heat_filtering = 0
+          if (cmp_no_case(heat_filter_ctl, 'Whole_filtering')           &
+     &       .gt. 0) iflag_heat_filtering = 0
+          if (cmp_no_case(heat_filter_ctl, 'Fluid_filtering')           &
+     &       .gt. 0) iflag_heat_filtering = 1
         end if
 !
         if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
-          if (     momentum_filter_ctl .eq. 'whole_filtering'           &
-     &      .or.   momentum_filter_ctl .eq. 'Whole_filtering'           &
-     &      .or.   momentum_filter_ctl .eq. 'WHOLE_FILTERING') then
-            iflag_momentum_filtering = 0
-          else if (momentum_filter_ctl .eq. 'fluid_filtering'           &
-     &      .or.   momentum_filter_ctl .eq. 'Fluid_filtering'           &
-     &      .or.   momentum_filter_ctl .eq. 'FLUID_FILTERING') then
-            iflag_momentum_filtering = 1
-          else
-            iflag_momentum_filtering = 0
-          end if
+          iflag_momentum_filtering = 0
+          if (cmp_no_case(momentum_filter_ctl, 'Whole_filtering')       &
+     &       .gt. 0) iflag_momentum_filtering = 0
+          if (cmp_no_case(momentum_filter_ctl, 'Fluid_filtering')       &
+     &       .gt. 0) iflag_momentum_filtering = 1
         end if
 !
         if (iflag_t_evo_4_magne .gt. id_no_evolution                    &
      &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-          if (     induction_filter_ctl .eq. 'whole_filtering'          &
-     &      .or.   induction_filter_ctl .eq. 'Whole_filtering'          &
-     &      .or.   induction_filter_ctl .eq. 'WHOLE_FILTERING') then
-            iflag_induction_filtering = 0
-          else if (induction_filter_ctl .eq. 'fluid_filtering'          &
-     &      .or.   induction_filter_ctl .eq. 'Fluid_filtering'          &
-     &      .or.   induction_filter_ctl .eq. 'FLUID_FILTERING') then
-            iflag_induction_filtering = 1
-          else
-            iflag_induction_filtering = 0
-          end if
+          iflag_induction_filtering = 0
+          if (cmp_no_case(induction_filter_ctl, 'Whole_filtering')      &
+     &       .gt. 0) iflag_induction_filtering = 0
+          if (cmp_no_case(induction_filter_ctl, 'Fluid_filtering')      &
+     &       .gt. 0) iflag_induction_filtering = 1
         end if
 !
         if (iflag_debug.eq.1) then

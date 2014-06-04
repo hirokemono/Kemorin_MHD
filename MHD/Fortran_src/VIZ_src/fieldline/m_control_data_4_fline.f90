@@ -75,8 +75,9 @@
         character(len=kchara) :: fline_color_field_ctl(1)
         character(len=kchara) :: fline_color_comp_ctl(1)
 !
-        integer(kind = kint) :: num_fline_area_grp_ctl = 0
-        character(len=kchara), pointer :: fline_area_ele_grp_ctl(:)
+!!      Structure for element group to draw field line
+!!@n      fline_area_grp_ctl%c_tbl:  element group to draw field line
+        type(ctl_array_chara) :: fline_area_grp_ctl
 !
 !
         character(len=kchara) :: starting_type_ctl
@@ -87,22 +88,22 @@
         integer(kind = kint) :: num_fieldline_ctl = 3
         integer(kind = kint) :: max_line_stepping_ctl = 1000
 !
-!!      Structure for light positions
-!!@n      light_position_ctl%vec1:  X-component of seed points
-!!@n      light_position_ctl%vec2:  Y-component of seed points
-!!@n      light_position_ctl%vec3:  Z-component of seed points
+!!      Structure for seed points
+!!@n      seed_point_ctl%vec1:  X-component of seed points
+!!@n      seed_point_ctl%vec2:  Y-component of seed points
+!!@n      seed_point_ctl%vec3:  Z-component of seed points
         type(ctl_array_r3) :: seed_point_ctl
 !
-        integer (kind=kint) :: num_start_gl_surf_ctl = 0
-        integer(kind = kint), pointer :: id_start_gl_surf_ctl(:,:)
+!!      Structure for seed points on center of the surfaces
+!!@n      seed_surface_ctl%int1:  element ID for seed points
+!!@n      seed_surface_ctl%int2:  Surface ID for seed points
+        type(ctl_array_i2) :: seed_surface_ctl
 !
 !     Top level
 !
         integer (kind=kint) :: i_vr_fline_ctl = 0
 !
 !     2nd level for surface_rendering
-!
-        integer (kind=kint) :: i_fline_grp = 0
 !
         integer (kind=kint) :: i_field_line_field = 0
         integer (kind=kint) :: i_coloring_field =   0
@@ -117,8 +118,6 @@
         integer (kind=kint) :: i_start_surf_grp = 0
         integer (kind=kint) :: i_num_fieldline =     0
         integer (kind=kint) :: i_max_line_stepping = 0
-!
-        integer (kind=kint) :: i_num_start_gl_surf = 0
       end type fline_ctl
 !
 !
@@ -143,7 +142,7 @@
       character(len=kchara) :: hd_start_surf_grp = 'start_surf_grp_ctl'
       character(len=kchara) :: hd_xx_start_point = 'starting_point_ctl'
       character(len=kchara) :: hd_selection_type = 'selection_type_ctl'
-      character(len=kchara) :: hd_num_start_gl_surf                     &
+      character(len=kchara) :: hd_start_global_surf                     &
      &                        = 'starting_gl_surface_id'
       character(len=kchara) :: hd_num_fieldline = 'num_fieldline_ctl'
       character(len=kchara) :: hd_max_line_stepping                     &
@@ -155,11 +154,8 @@
       private :: hd_max_line_stepping, hd_num_fieldline
       private :: hd_starting_type, hd_start_surf_grp
       private :: hd_xx_start_point, hd_selection_type
-      private :: hd_num_start_gl_surf
+      private :: hd_start_global_surf
       private :: hd_vr_fline_ctl
-!
-      private :: allocate_area_grp_vr_psf
-      private :: allocate_start_gl_surf_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -167,43 +163,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_area_grp_vr_psf(fln)
-!
-      type(fline_ctl), intent(inout) :: fln
-!
-!
-      allocate(fln%fline_area_ele_grp_ctl(fln%num_fline_area_grp_ctl) )
-!
-      end subroutine allocate_area_grp_vr_psf
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_start_gl_surf_ctl(fln)
-!
-      type(fline_ctl), intent(inout) :: fln
-!
-!
-      allocate(fln%id_start_gl_surf_ctl(fln%num_start_gl_surf_ctl,2))
-!
-      if(fln%num_start_gl_surf_ctl .gt. 0) fln%id_start_gl_surf_ctl=0
-!
-      end subroutine allocate_start_gl_surf_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine deallocate_cont_dat_fline(fln)
 !
       type(fline_ctl), intent(inout) :: fln
 !
-      if(fln%num_start_gl_surf_ctl .gt. 0) then
-        deallocate( fln%id_start_gl_surf_ctl )
-      end if
-      if(fln%seed_point_ctl%num .gt. 0) then
-        call dealloc_control_array_r3(fln%seed_point_ctl)
-      end if
-!
-      deallocate(fln%fline_area_ele_grp_ctl)
+      if(fln%seed_surface_ctl%num .gt. 0)                               &
+     &      call dealloc_control_array_i2(fln%seed_surface_ctl)
+      if(fln%seed_point_ctl%num .gt. 0)                                 &
+     &      call dealloc_control_array_r3(fln%seed_point_ctl)
+      if(fln%fline_area_grp_ctl%num .gt. 0)                             &
+     &      call dealloc_control_array_chara(fln%fline_area_grp_ctl)
 !
       end subroutine deallocate_cont_dat_fline
 !
@@ -237,29 +206,13 @@
         if(fln%i_vr_fline_ctl .gt. 0) exit
 !
 !
-        call find_control_array_flag(hd_fline_grp,                      &
-     &      fln%num_fline_area_grp_ctl)
-        if(fln%num_fline_area_grp_ctl.gt.0                              &
-     &      .and. fln%i_fline_grp.eq.0) then
-          call allocate_area_grp_vr_psf(fln)
-          call read_control_array_chara_list(hd_fline_grp,              &
-     &        fln%num_fline_area_grp_ctl, fln%i_fline_grp,              &
-     &        fln%fline_area_ele_grp_ctl )
-        end if
+        call read_control_array_chara(hd_fline_grp,                     &
+     &      fln%fline_area_grp_ctl)
 !
         call read_control_array_r3                                      &
      &     (hd_xx_start_point, fln%seed_point_ctl)
-!
-        call find_control_array_flag(hd_num_start_gl_surf,              &
-     &      fln%num_start_gl_surf_ctl)
-        if(fln%num_start_gl_surf_ctl.gt.0                               &
-     &       .and. fln%i_num_start_gl_surf.eq.0) then
-          call allocate_start_gl_surf_ctl(fln)
-          call read_control_array_int2_list(hd_num_start_gl_surf,       &
-     &        fln%num_start_gl_surf_ctl, fln%i_num_start_gl_surf,       &
-     &        fln%id_start_gl_surf_ctl(1:fln%num_start_gl_surf_ctl,1),  &
-     &        fln%id_start_gl_surf_ctl(1:fln%num_start_gl_surf_ctl,2) )
-        end if
+        call read_control_array_i2                                      &
+     &     (hd_start_global_surf, fln%seed_surface_ctl)
 !
 !
         call read_character_ctl_item(hd_fline_file_head,                &
@@ -299,9 +252,9 @@
       type(fline_ctl), intent(inout) :: fln
 !
 !
-      fln%num_fline_area_grp_ctl = 0
-      fln%seed_point_ctl%num =    0
-      fln%num_start_gl_surf_ctl =  0
+      fln%fline_area_grp_ctl%num = 0
+      fln%seed_point_ctl%num =     0
+      fln%seed_surface_ctl%num =   0
 !
       fln%i_fline_file_head = 0
       fln%i_fline_file_head = 0
@@ -313,10 +266,10 @@
       fln%i_start_surf_grp = 0
 !
       fln%i_vr_fline_ctl = 0
-      fln%i_fline_grp =    0
 !
-      fln%seed_point_ctl%icou = 0
-      fln%i_num_start_gl_surf = 0
+      fln%fline_area_grp_ctl%icou = 0
+      fln%seed_point_ctl%icou =     0
+      fln%seed_surface_ctl%icou =   0
 !
       fln%i_coloring_field =   0
       fln%i_coloring_comp =    0

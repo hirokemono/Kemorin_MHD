@@ -37,7 +37,7 @@
       use edge_IO_select
       use set_mesh_types
 !
-      integer(kind = kint) :: i_level, ierr
+      integer(kind = kint) :: i_level
 !
       do i_level = 1, num_MG_level
         iflag_mesh_file_fmt = ifmt_MG_mesh_file(i_level)
