@@ -214,16 +214,16 @@
       end if
 !
       ndomain_rtp(1:3) = 1
-      if (ndir_domain_sph_grid .gt. 0) then
-        do i = 1, ndir_domain_sph_grid
-          iflag_r = cmp_no_case(dir_domain_sph_grid_ctl(i), 'r')        &
-     &           + cmp_no_case(dir_domain_sph_grid_ctl(i), 'radial')
-          iflag_t = cmp_no_case(dir_domain_sph_grid_ctl(i), 'theta')    &
-     &       + cmp_no_case(dir_domain_sph_grid_ctl(i), 'meridional')
+      if (ndomain_sph_grid_ctl%num .gt. 0) then
+        do i = 1, ndomain_sph_grid_ctl%num
+          iflag_r = cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'r')     &
+     &           + cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'radial')
+          iflag_t = cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'theta') &
+     &       + cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'meridional')
           if     (iflag_r .gt. 0) then
-            ndomain_rtp(1) = num_domain_sph_grid_ctl(i)
+            ndomain_rtp(1) = ndomain_sph_grid_ctl%ivec(i)
           else if (iflag_t .gt. 0) then
-            ndomain_rtp(2) = num_domain_sph_grid_ctl(i)
+            ndomain_rtp(2) = ndomain_sph_grid_ctl%ivec(i)
           end if
         end do
 !
@@ -231,16 +231,16 @@
       end if
 !
       ndomain_rtm(1:3) = 1
-      if (ndir_domain_sph_grid .gt. 0) then
-        do i = 1, ndir_domain_legendre
-          iflag_r = cmp_no_case(dir_domain_legendre_ctl(i), 'r')        &
-     &           + cmp_no_case(dir_domain_legendre_ctl(i), 'radial')
-          iflag_p = cmp_no_case(dir_domain_legendre_ctl(i), 'phi')      &
-     &           + cmp_no_case(dir_domain_legendre_ctl(i), 'zonal')
+      if (ndomain_legendre_ctl%num .gt. 0) then
+        do i = 1, ndomain_legendre_ctl%num
+          iflag_r = cmp_no_case(ndomain_legendre_ctl%c_tbl(i), 'r')     &
+     &           + cmp_no_case(ndomain_legendre_ctl%c_tbl(i), 'radial')
+          iflag_p = cmp_no_case(ndomain_legendre_ctl%c_tbl(i), 'phi')   &
+     &           + cmp_no_case(ndomain_legendre_ctl%c_tbl(i), 'zonal')
           if     (iflag_r .gt. 0) then
-            ndomain_rtm(1) = num_domain_legendre_ctl(i)
+            ndomain_rtm(1) = ndomain_legendre_ctl%ivec(i)
           else if (iflag_p .gt. 0) then
-            ndomain_rtm(3) = num_domain_legendre_ctl(i)
+            ndomain_rtm(3) = ndomain_legendre_ctl%ivec(i)
            end if
         end do
 !
@@ -251,11 +251,11 @@
       ndomain_rlm(2) = ndomain_rtm(3)
 !
       ndomain_rj(1:2) = 1
-      if (ndir_domain_sph_grid .gt. 0) then
-        do i = 1, ndir_domain_spectr
-          iflag_t = cmp_no_case(dir_domain_spectr_ctl(i), 'modes')      &
-     &       + cmp_no_case(dir_domain_spectr_ctl(i), 'degree_order')
-          if (iflag_t .gt. 0) ndomain_rj(2) = num_domain_spectr_ctl(i)
+      if (ndomain_spectr_ctl%num .gt. 0) then
+        do i = 1, ndomain_spectr_ctl%num
+          iflag_t = cmp_no_case(ndomain_spectr_ctl%c_tbl(i), 'modes')   &
+     &       + cmp_no_case(ndomain_spectr_ctl%c_tbl(i), 'degree_order')
+          if(iflag_t .gt. 0) ndomain_rj(2) = ndomain_spectr_ctl%ivec(i)
         end do
 !
         call deallocate_ndomain_rj_ctl

@@ -30,8 +30,9 @@
       use m_metis_IO
       use m_file_format_switch
       use itp_table_IO_select_4_zlib
+      use skip_comment_f
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, iflag
 !
 !
       if (i_mesh_header .gt. 0) then
@@ -59,14 +60,9 @@
 !
 !
       if(i_mem_conserve .gt. 0) then
-        if(      memory_conservation_ctl .eq. 'no'                      &
-     &      .or. memory_conservation_ctl .eq. 'No'                      &
-     &      .or. memory_conservation_ctl .eq. 'NO'                      &
-     &      .or. memory_conservation_ctl .eq. 'off'                     &
-     &      .or. memory_conservation_ctl .eq. 'Off'                     &
-     &      .or. memory_conservation_ctl .eq. 'OFF') then
-          iflag_memory_conserve = 0
-        end if
+        iflag =  cmp_no_case(memory_conservation_ctl, 'no')             &
+     &         + cmp_no_case(memory_conservation_ctl, 'off')
+        if(iflag .gt. 0) iflag_memory_conserve = 0
       end if
 !
       write(*,*) 'iflag_memory_conserve', iflag_memory_conserve
@@ -82,69 +78,52 @@
       write(*,*) 'i_part_method', i_part_method
 !
       nele_grp_ordering = 0
-      if (i_nele_grp_ordering .eq. 1) then
-        nele_grp_ordering = nele_grp_ordering_ctl
+      if (ele_grp_ordering_ctl%icou .eq. 1) then
+        nele_grp_ordering = ele_grp_ordering_ctl%num
 !
         allocate(ele_grp_ordering(nele_grp_ordering))
         allocate(igrp_ele_ordering(nele_grp_ordering))
         ele_grp_ordering(1:nele_grp_ordering)                           &
-     &      = ele_grp_ordering_ctl(1:nele_grp_ordering)
+     &      = ele_grp_ordering_ctl%c_tbl(1:nele_grp_ordering)
+!
+        call dealloc_ele_grp_ordering_ctl
       end if
 !
       if (i_part_method .gt. 0) then
-        if      ( part_method_ctl .eq. 'RCB'                            &
-     &       .or. part_method_ctl .eq. 'rcb'                            &
-     &       .or. part_method_ctl .eq. 'RCB_xyz'                        &
-     &       .or. part_method_ctl .eq. 'rcb_xyz') then
-          NTYP_div = iPART_RCB_XYZ
-        else if ( part_method_ctl .eq. 'RCB_sph'                        &
-     &       .or. part_method_ctl .eq. 'rcb_sph') then
-          NTYP_div = iPART_RCB_SPH
+        iflag =  cmp_no_case(part_method_ctl, 'RCB')                    &
+     &         + cmp_no_case(part_method_ctl, 'RCB_xyz')
+        if(iflag .gt. 0) NTYP_div = iPART_RCB_XYZ
 !
-        else if ( part_method_ctl .eq. 'ES'                             &
-     &       .or. part_method_ctl .eq. 'es'                             &
-     &       .or. part_method_ctl .eq. 'ES_xyz'                         &
-     &       .or. part_method_ctl .eq. 'es_xyz') then
-          NTYP_div = iPART_EQ_XYZ
-        else if ( part_method_ctl .eq. 'ES_sph'                         &
-     &       .or. part_method_ctl .eq. 'es_sph') then
-          NTYP_div = iPART_EQ_SPH
-        else if ( part_method_ctl .eq. 'ES_layered_sph'                 &
-     &       .or. part_method_ctl .eq. 'es_layered_sph') then
-          NTYP_div = iPART_LAYER_SPH
+        iflag =  cmp_no_case(part_method_ctl, 'RCB_sph')
+        if(iflag .gt. 0) NTYP_div = iPART_RCB_SPH
 !
-        else if ( part_method_ctl .eq. 'MeTiS_input'                    &
-     &       .or. part_method_ctl .eq. 'METIS_INPUT'                    &
-     &       .or. part_method_ctl .eq. 'Metis_input'                    &
-     &       .or. part_method_ctl .eq. 'metis_input') then
-          NTYP_div = iPART_GEN_MeTiS
-        else if ( part_method_ctl .eq. 'MeTiS_RSB'                      &
-     &       .or. part_method_ctl .eq. 'METIS_RSB'                      &
-     &       .or. part_method_ctl .eq. 'Metis_rsb'                      &
-     &       .or. part_method_ctl .eq. 'metis_rsb') then
-          NTYP_div = iPART_MeTiS_RSB
+        iflag =  cmp_no_case(part_method_ctl, 'ES')                     &
+     &         + cmp_no_case(part_method_ctl, 'ES_xyz')
+        if(iflag .gt. 0) NTYP_div = iPART_EQ_XYZ
 !
-        else if ( part_method_ctl .eq. 'cubed_sphere'                   &
-     &       .or. part_method_ctl .eq. 'Cubed_sphere'                   &
-     &       .or. part_method_ctl .eq. 'cubed_sph'                      &
-     &       .or. part_method_ctl .eq. 'Cubed_sph'                      &
-     &       .or. part_method_ctl .eq. 'CUBED_SPH') then
-          NTYP_div = iPART_CUBED_SPHERE
+        iflag =  cmp_no_case(part_method_ctl, 'ES_sph')
+        if(iflag .gt. 0) NTYP_div = iPART_EQ_SPH
 !
-        else if ( part_method_ctl .eq. 'finer_mesh'                     &
-     &       .or. part_method_ctl .eq. 'divide_by_finer_mesh'           &
-     &       .or. part_method_ctl .eq. 'Divide_by_finer_mesh'           &
-     &       .or. part_method_ctl .eq. 'Finer_mesh'                     &
-     &       .or. part_method_ctl .eq. 'FINER_MESH') then
-          NTYP_div = iPART_FINE_MESH_TBL
+        iflag =  cmp_no_case(part_method_ctl, 'ES_layered_sph')
+        if(iflag .gt. 0) NTYP_div = iPART_LAYER_SPH
 !
-        else if ( part_method_ctl .eq. 'decomp_data'                    &
-     &       .or. part_method_ctl .eq. 'decomposit_data'                &
-     &       .or. part_method_ctl .eq. 'Decomposit_data'                &
-     &       .or. part_method_ctl .eq. 'Decomp_data'                    &
-     &       .or. part_method_ctl .eq. 'DECOMP_DATA') then
-          NTYP_div = iPART_DECMP_MESH_TBL
-        end if
+        iflag =  cmp_no_case(part_method_ctl, 'MeTiS_input')
+        if(iflag .gt. 0) NTYP_div = iPART_GEN_MeTiS
+!
+        iflag =  cmp_no_case(part_method_ctl, 'MeTiS_RSB')
+        if(iflag .gt. 0) NTYP_div = iPART_MeTiS_RSB
+!
+        iflag =  cmp_no_case(part_method_ctl, 'Cubed_sphere')           &
+     &         + cmp_no_case(part_method_ctl, 'Cubed_sph')
+        if(iflag .gt. 0) NTYP_div = iPART_CUBED_SPHERE
+!
+        iflag =  cmp_no_case(part_method_ctl, 'finer_mesh')             &
+     &         + cmp_no_case(part_method_ctl, 'Divide_by_finer_mesh')
+        if(iflag .gt. 0) NTYP_div = iPART_FINE_MESH_TBL
+!
+        iflag =  cmp_no_case(part_method_ctl, 'Decomp_data')            &
+     &         + cmp_no_case(part_method_ctl, 'decomposit_data')
+        if(iflag .gt. 0) NTYP_div = iPART_FINE_MESH_TBL
 !
         write (*,'(/," *********************************")')
         write (*,'(  " ||                             ||")')
@@ -179,9 +158,7 @@
       write(*,*) 'sleeve level :', n_overlap
 !
       if (i_ele_overlap .gt. 0 .and. n_overlap .eq. 1) then
-        if      ( element_overlap_ctl .eq. 'on'                         &
-     &       .or. element_overlap_ctl .eq. 'On'                         &
-     &       .or. element_overlap_ctl .eq. 'ON') then
+        if(cmp_no_case(element_overlap_ctl, 'On') .gt. 0) then
           i_sleeve_ele = 1
           n_overlap =    2
         else
@@ -192,75 +169,67 @@
 !
 !
       if (NTYP_div .eq. iPART_RCB_XYZ) then
-        NPOWER_rcb = num_RCB_level_ctl
+        NPOWER_rcb = RCB_dir_ctl%num
         num_domain = 2**NPOWER_rcb
         allocate( idir_rcb(NPOWER_rcb) )
 !
         NPOWER_rcb = 0
-        do i = 1, num_RCB_level_ctl
-          if      (RCB_dir_ctl(i) .eq. 'x'                              &
-     &        .or. RCB_dir_ctl(i) .eq. 'X') then
+        do i = 1, RCB_dir_ctl%num
+          if     (cmp_no_case(RCB_dir_ctl%c_tbl(i), 'X') .gt. 0) then
             NPOWER_rcb = NPOWER_rcb + 1
             idir_rcb(NPOWER_rcb) = 1
-          else if (RCB_dir_ctl(i) .eq. 'y'                              &
-     &        .or. RCB_dir_ctl(i) .eq. 'Y') then
+          else if(cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Y') .gt. 0) then
             NPOWER_rcb = NPOWER_rcb + 1
             idir_rcb(NPOWER_rcb) = 2
-          else if (RCB_dir_ctl(i) .eq. 'z'                              &
-     &        .or. RCB_dir_ctl(i) .eq. 'Z') then
+          else if(cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Z') .gt. 0) then
             NPOWER_rcb = NPOWER_rcb + 1
             idir_rcb(NPOWER_rcb) = 3
           end if
         end do
-        if (NPOWER_rcb .lt. num_RCB_level_ctl) then
+        if (NPOWER_rcb .lt. RCB_dir_ctl%num) then
           write(*,*) 'Set correct direction'
           stop
         end if
 !
-        deallocate(RCB_dir_ctl)
-!
+        call dealloc_num_bisection_ctl
 !
       else if( NTYP_div .eq. iPART_RCB_SPH) then
-        NPOWER_rcb = num_RCB_level_ctl
+        NPOWER_rcb = RCB_dir_ctl%num
         num_domain = 2**NPOWER_rcb
         allocate( idir_rcb(NPOWER_rcb) )
 !
         NPOWER_rcb = 0
-        do i = 1, num_RCB_level_ctl
-          if      (RCB_dir_ctl(i) .eq. 'r'                              &
-     &        .or. RCB_dir_ctl(i) .eq. 'R'                              &
-     &        .or. RCB_dir_ctl(i) .eq. 'radius'                         &
-     &        .or. RCB_dir_ctl(i) .eq. 'Radius'                         &
-     &        .or. RCB_dir_ctl(i) .eq. 'RADIUS'                         &
-     &        .or. RCB_dir_ctl(i) .eq. 'radial'                         &
-     &        .or. RCB_dir_ctl(i) .eq. 'Radial'                         &
-     &        .or. RCB_dir_ctl(i) .eq. 'RADIAL') then
+        do i = 1, RCB_dir_ctl%num
+          iflag =  cmp_no_case(RCB_dir_ctl%c_tbl(i), 'R')               &
+     &           + cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Radius')          &
+     &           + cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Radial')
+          if(iflag .gt. 0) then
             NPOWER_rcb = NPOWER_rcb + 1
             idir_rcb(NPOWER_rcb) = 1
-          else if (RCB_dir_ctl(i) .eq. 'theta'                          &
-     &        .or. RCB_dir_ctl(i) .eq. 'Theta'                          &
-     &        .or. RCB_dir_ctl(i) .eq. 'THETA'                          &
-     &        .or. RCB_dir_ctl(i) .eq. 'elevation'                      &
-     &        .or. RCB_dir_ctl(i) .eq. 'Elevation'                      &
-     &        .or. RCB_dir_ctl(i) .eq. 'ELEVATION') then
+          end if
+!
+          iflag =  cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Meridional')      &
+     &           + cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Theta')           &
+     &           + cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Elevation')
+          if(iflag .gt. 0) then
             NPOWER_rcb = NPOWER_rcb + 1
             idir_rcb(NPOWER_rcb) = 2
-          else if (RCB_dir_ctl(i) .eq. 'phi'                            &
-     &        .or. RCB_dir_ctl(i) .eq. 'Phi'                            &
-     &        .or. RCB_dir_ctl(i) .eq. 'PHI'                            &
-     &        .or. RCB_dir_ctl(i) .eq. 'azimuth'                        &
-     &        .or. RCB_dir_ctl(i) .eq. 'Azimuth'                        &
-     &        .or. RCB_dir_ctl(i) .eq. 'AZIMUTH') then
+          end if
+!
+          iflag =  cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Longitudinal')    &
+     &           + cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Phi')             &
+     &           + cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Azimuth')
+          if(iflag .gt. 0) then
             NPOWER_rcb = NPOWER_rcb + 1
             idir_rcb(NPOWER_rcb) = 3
           end if
         end do
-        if (NPOWER_rcb .lt. num_RCB_level_ctl) then
+        if (NPOWER_rcb .lt. RCB_dir_ctl%num) then
           write(*,*) 'Set correct direction'
           stop
         end if
 !
-        deallocate(RCB_dir_ctl)
+        call dealloc_num_bisection_ctl
 !
         write(*,'(/,"### Spherical RECURSIVE COORDINATE BiSECTION")')
         write (*,*)  "number of level: ", NPOWER_rcb
@@ -269,61 +238,58 @@
 !
 !
       else if (NTYP_div .eq. iPART_EQ_XYZ) then
+        if(ndomain_section_ctl%num .ne. 3)                              &
+     &         stop 'number of subdomain should be 3 directions'
+!
         ndivide_eb(1:3) = 1
-        do i = 1, i_num_es
-          if      (es_dir_ctl(i) .eq. 'x'                               &
-     &        .or. es_dir_ctl(i) .eq. 'X') then
-            ndivide_eb(1) = num_section_ctl(i)
-          else if (es_dir_ctl(i) .eq. 'y'                               &
-     &        .or. es_dir_ctl(i) .eq. 'Y') then
-            ndivide_eb(2) = num_section_ctl(i)
-          else if (es_dir_ctl(i) .eq. 'z'                               &
-     &        .or. es_dir_ctl(i) .eq. 'Z') then
-            ndivide_eb(3) = num_section_ctl(i)
-          end if
+        do i = 1, ndomain_section_ctl%num
+          if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'X')             &
+     &          .gt. 0) ndivide_eb(1) = ndomain_section_ctl%ivec(i)
+          if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Y')             &
+     &          .gt. 0) ndivide_eb(2) = ndomain_section_ctl%ivec(i)
+          if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Z')             &
+     &          .gt. 0) ndivide_eb(3) = ndomain_section_ctl%ivec(i)
         end do
         num_domain = ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)
+!
+        call dealloc_num_subdomains_ctl
 !
       else if (NTYP_div.eq.iPART_CUBED_SPHERE                           &
      &    .or. NTYP_div.eq.iPART_EQ_SPH                                 &
      &    .or. NTYP_div.eq.iPART_LAYER_SPH) then
+        if(ndomain_section_ctl%num .ne. 3)                              &
+     &         stop 'number of subdomain should be 3 directions'
+!
         ndivide_eb(1:3) = 1
-        do i = 1, i_num_es
-          if (es_dir_ctl(i) .eq. 'r'                                    &
-     &        .or. es_dir_ctl(i) .eq. 'R'                               &
-     &        .or. es_dir_ctl(i) .eq. 'radius'                          &
-     &        .or. es_dir_ctl(i) .eq. 'Radius'                          &
-     &        .or. es_dir_ctl(i) .eq. 'RADIUS'                          &
-     &        .or. es_dir_ctl(i) .eq. 'radial'                          &
-     &        .or. es_dir_ctl(i) .eq. 'Radial'                          &
-     &        .or. es_dir_ctl(i) .eq. 'RADIAL') then
-            ndivide_eb(1) = num_section_ctl(i)
-          else if (es_dir_ctl(i) .eq. 'theta'                           &
-     &        .or. es_dir_ctl(i) .eq. 'Theta'                           &
-     &        .or. es_dir_ctl(i) .eq. 'THETA'                           &
-     &        .or. es_dir_ctl(i) .eq. 'elevation'                       &
-     &        .or. es_dir_ctl(i) .eq. 'Elevation'                       &
-     &        .or. es_dir_ctl(i) .eq. 'ELEVATION') then
-            ndivide_eb(2) = num_section_ctl(i)
-          else if (es_dir_ctl(i) .eq. 'phi'                             &
-     &        .or. es_dir_ctl(i) .eq. 'Phi'                             &
-     &        .or. es_dir_ctl(i) .eq. 'PHI'                             &
-     &        .or. es_dir_ctl(i) .eq. 'azimuth'                         &
-     &        .or. es_dir_ctl(i) .eq. 'Azimuth'                         &
-     &        .or. es_dir_ctl(i) .eq. 'AZIMUTH') then
-            ndivide_eb(3) = num_section_ctl(i)
-          end if
+        do i = 1, ndomain_section_ctl%num
+          iflag =  cmp_no_case(ndomain_section_ctl%c_tbl(i), 'R')       &
+     &           + cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Radius')  &
+     &           + cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Radial')
+          if(iflag .gt. 0) ndivide_eb(1) = ndomain_section_ctl%ivec(i)
+!
+          iflag =  cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Theta')   &
+     &      + cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Meridional')   &
+     &      + cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Elevation')
+          if(iflag .gt. 0) ndivide_eb(2) = ndomain_section_ctl%ivec(i)
+!
+          iflag =  cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Phi')     &
+     &      + cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Longitudinal') &
+     &      + cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Azimuth')
+          if(iflag .gt. 0) ndivide_eb(3) = ndomain_section_ctl%ivec(i)
         end do
         num_domain = ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)
 !
+        call dealloc_num_subdomains_ctl
+!
         if(NTYP_div .eq. iPART_LAYER_SPH) then
-          num_egrp_layer = num_radial_layering_ctl
+          num_egrp_layer = ele_grp_layering_ctl%num
           allocate(grp_layer_name(num_egrp_layer))
 !
           if (num_egrp_layer .gt. 0) then
             grp_layer_name(1:num_egrp_layer)                            &
-     &          = ele_grp_layer_ctl(1:num_egrp_layer)
+     &          = ele_grp_layering_ctl%c_tbl(1:num_egrp_layer)
           end if
+          call dealloc_ele_grp_layer_ctl
 !
         else if ( NTYP_div .eq. iPART_CUBED_SPHERE) then
           if (i_sph_sf_file .eq. 1) then

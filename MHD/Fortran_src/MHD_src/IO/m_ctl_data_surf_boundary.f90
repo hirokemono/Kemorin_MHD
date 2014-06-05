@@ -110,63 +110,63 @@
       implicit  none
 !
 !
-!!      Structure of surface boudary conditions for heat flux
+!!      Structure of surface boundary conditions for heat flux
 !!@n      surf_bc_HF_ctl%c1_tbl:  Type of boundary conditions
 !!@n      surf_bc_HF_ctl%c2_tbl:  Surface group name for boundary
-!!@n      surf_bc_HF_ctl%vect:    Boudary condition value
+!!@n      surf_bc_HF_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: surf_bc_HF_ctl
 !
-!!      Structure of surface boudary conditions for stress
+!!      Structure of surface boundary conditions for stress
 !!@n      surf_bc_ST_ctl%c1_tbl:  Type of boundary conditions
 !!@n      surf_bc_ST_ctl%c2_tbl:  Surface group name for boundary
-!!@n      surf_bc_ST_ctl%vect:    Boudary condition value
+!!@n      surf_bc_ST_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: surf_bc_ST_ctl
 !
-!!      Structure of surface boudary conditions for pressure gradient
+!!      Structure of surface boundary conditions for pressure gradient
 !!@n      surf_bc_PN_ctl%c1_tbl:  Type of boundary conditions
 !!@n      surf_bc_PN_ctl%c2_tbl:  Surface group name for boundary
-!!@n      surf_bc_PN_ctl%vect:    Boudary condition value
+!!@n      surf_bc_PN_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: surf_bc_PN_ctl
 !
-!!      Structure of surface boudary conditions
+!!      Structure of surface boundary conditions
 !!           for grad of magnetic field
 !!@n      surf_bc_BN_ctl%c1_tbl:  Type of boundary conditions
 !!@n      surf_bc_BN_ctl%c2_tbl:  Surface group name for boundary
-!!@n      surf_bc_BN_ctl%vect:    Boudary condition value
+!!@n      surf_bc_BN_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: surf_bc_BN_ctl
 !
-!!      Structure of surface boudary conditions
+!!      Structure of surface boundary conditions
 !!           for grad of current density
 !!@n      surf_bc_JN_ctl%c1_tbl:  Type of boundary conditions
 !!@n      surf_bc_JN_ctl%c2_tbl:  Surface group name for boundary
-!!@n      surf_bc_JN_ctl%vect:    Boudary condition value
+!!@n      surf_bc_JN_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: surf_bc_JN_ctl
 !
-!!      Structure of surface boudary conditions
+!!      Structure of surface boundary conditions
 !!          for grad of magnetic vector potential
 !!@n      surf_bc_AN_ctl%c1_tbl:  Type of boundary conditions
 !!@n      surf_bc_AN_ctl%c2_tbl:  Surface group name for boundary
-!!@n      surf_bc_AN_ctl%vect:    Boudary condition value
+!!@n      surf_bc_AN_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: surf_bc_AN_ctl
 !
-!!      Structure of surface boudary conditions
+!!      Structure of surface boundary conditions
 !!          for grad of magnetic scalar potential
 !!@n      surf_bc_MPN_ctl%c1_tbl:  Type of boundary conditions
 !!@n      surf_bc_MPN_ctl%c2_tbl:  Surface group name for boundary
-!!@n      surf_bc_MPN_ctl%vect:    Boudary condition value
+!!@n      surf_bc_MPN_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: surf_bc_MPN_ctl
 !
-!!      Structure of surface boudary conditions for compositional flux
+!!      Structure of surface boundary conditions for compositional flux
 !!@n      surf_bc_CF_ctl%c1_tbl:  Type of boundary conditions
 !!@n      surf_bc_CF_ctl%c2_tbl:  Surface group name for boundary
-!!@n      surf_bc_CF_ctl%vect:    Boudary condition value
+!!@n      surf_bc_CF_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: surf_bc_CF_ctl
 !
 !
-!!      Structure of surface boudary conditions for infinity
+!!      Structure of surface boundary conditions for infinity
 !!@n      surf_bc_INF_ctl%c1_tbl:  Type of boundary conditions
 !!@n      surf_bc_INF_ctl%c2_tbl:  Surface group name for boundary
-!!@n      surf_bc_INF_ctl%vect:    Boudary condition value
+!!@n      surf_bc_INF_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: surf_bc_INF_ctl
 !
 !   entry label

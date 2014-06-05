@@ -3,6 +3,8 @@
 !
 !      Written by Kemorin on Sep. 2007
 !
+!      subroutine dealloc_num_bisection_ctl
+!      subroutine dealloc_num_subdomains_ctl
 !      subroutine dealloc_ele_grp_ordering_ctl
 !      subroutine dealloc_ele_grp_layer_ctl
 !       subroutine read_control_data_4_part
@@ -13,6 +15,7 @@
 !
       use m_read_control_elements
       use skip_comment_f
+      use t_read_control_arrays
 !
       implicit    none
 !
@@ -27,15 +30,18 @@
       character (len = kchara) :: element_overlap_ctl
       integer(kind = kint) :: sleeve_level_ctl = 0
 !
-      integer(kind = kint) :: num_RCB_level_ctl = 0
-      character(len=kchara), allocatable :: RCB_dir_ctl(:)
+!!      Structure of list of bisection
+!!@n      ele_grp_ordering_ctl%c_tbl: Direction of bisectioning
+      type(ctl_array_chara) :: RCB_dir_ctl
 !
-      integer(kind = kint) :: n_section_ctl = 0
-      integer(kind = kint) :: num_section_ctl(3) = 0
-      character(len=kchara) :: es_dir_ctl(3)
+!!      Structure of number of subdomains
+!!@n      ndomain_section_ctl%c_tbl:  Direction of sectioning
+!!@n      ndomain_section_ctl%ivect:  Number of domains
+      type(ctl_array_ci) :: ndomain_section_ctl
 !
-      integer(kind = kint) :: num_radial_layering_ctl = 0
-      character(len=kchara), allocatable :: ele_grp_layer_ctl(:)
+!!      Structure of element group list for layering
+!!@n      ele_grp_ordering_ctl%c_tbl:  list of element group
+      type(ctl_array_chara) :: ele_grp_layering_ctl
 !
       character(len=kchara) :: sphere_file_name_ctl
       character(len=kchara) :: metis_input_file_ctl
@@ -45,8 +51,9 @@
       character(len=kchara) :: itp_tbl_head_ctl
       character(len=kchara) :: itp_tbl_format_ctl
 !
-      integer(kind = kint) :: nele_grp_ordering_ctl = 0
-      character(len=kchara), allocatable :: ele_grp_ordering_ctl(:)
+!!      Structure of element group list for ordering
+!!@n      ele_grp_ordering_ctl%c_tbl:  list of element group
+      type(ctl_array_chara) :: ele_grp_ordering_ctl
 !
 !   Top level
 !
@@ -71,7 +78,6 @@
 !
       character(len=kchara), parameter :: hd_nele_grp_ordering          &
      &                      = 'ordering_ele_grp_ctl'
-      integer (kind=kint) :: i_nele_grp_ordering =  0
 !
 !   3rd level for decompose_ctl
 !
@@ -88,16 +94,13 @@
 !
 !     RCB
       character(len=kchara), parameter :: hd_num_rcb = 'RCB_dir_ctl'
-      integer (kind=kint) :: i_num_rcb =  0
 !
 !     ES
       character(len=kchara), parameter :: hd_num_es = 'dir_domain_ctl'
-      integer (kind=kint) :: i_num_es =  0
 !
 !     layered_ES_ctl
       character(len=kchara), parameter :: hd_num_r_layerd               &
      &                      = 'radial_layering_grp_ctl'
-      integer (kind=kint) :: i_num_r_layerd =  0
 !
 !     cubed sphere
       character(len=kchara), parameter :: hd_sph_sf_file                &
@@ -143,8 +146,6 @@
       private :: hd_domain_tbl_file, hd_fine_mesh_file
       private :: hd_fine_itp_file, hd_fmt_itp_tbl
 !
-      private :: alloc_ele_grp_ordering_ctl
-      private :: alloc_ele_grp_layer_ctl
       private :: read_part_control_data
       private :: read_ctl_data_4_decomp, read_ctl_data_4_ele_ordeirng
 !
@@ -154,25 +155,25 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_ele_grp_ordering_ctl
+      subroutine dealloc_num_bisection_ctl
 !
-      allocate(ele_grp_ordering_ctl(nele_grp_ordering_ctl) )
+      call dealloc_control_array_chara(RCB_dir_ctl)
 !
-      end subroutine alloc_ele_grp_ordering_ctl
+      end subroutine dealloc_num_bisection_ctl
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_ele_grp_layer_ctl
+      subroutine dealloc_num_subdomains_ctl
 !
-     allocate( ele_grp_layer_ctl(num_radial_layering_ctl) )
+      call dealloc_control_array_c_i(ndomain_section_ctl)
 !
-      end subroutine alloc_ele_grp_layer_ctl
+      end subroutine dealloc_num_subdomains_ctl
 !
 ! -----------------------------------------------------------------------
 !
       subroutine dealloc_ele_grp_ordering_ctl
 !
-      deallocate(ele_grp_ordering_ctl)
+      call dealloc_control_array_chara(ele_grp_ordering_ctl)
 !
       end subroutine dealloc_ele_grp_ordering_ctl
 !
@@ -180,7 +181,7 @@
 !
       subroutine dealloc_ele_grp_layer_ctl
 !
-      deallocate( ele_grp_layer_ctl )
+      call dealloc_control_array_chara(ele_grp_layering_ctl)
 !
       end subroutine dealloc_ele_grp_layer_ctl
 !
@@ -241,29 +242,10 @@
         if(i_decomp_ctl .gt. 0) exit
 !
 !
-        call find_control_array_flag(hd_num_rcb, num_RCB_level_ctl)
-        if(num_RCB_level_ctl.gt.0 .and. i_num_rcb.eq.0) then
-          allocate( RCB_dir_ctl(num_RCB_level_ctl) )
-          call read_control_array_chara_list(hd_num_rcb,                &
-     &        num_RCB_level_ctl, i_num_rcb, RCB_dir_ctl)
-        end if
-!
-        call find_control_array_flag(hd_num_r_layerd,                   &
-     &      num_radial_layering_ctl)
-        if(num_radial_layering_ctl.gt.0 .and. i_num_r_layerd.eq.0) then
-          call alloc_ele_grp_layer_ctl
-          call read_control_array_chara_list(hd_num_r_layerd,           &
-     &        num_radial_layering_ctl, i_num_r_layerd,                  &
-     &        ele_grp_layer_ctl)
-        end if
-!
-        call find_control_array_flag(hd_num_es, n_section_ctl)
-        if(n_section_ctl.gt.0 .and. i_num_es.eq.0) then
-          if(n_section_ctl .ne. 3)                                      &
-     &         stop 'number of subdomain should be 3 directions'
-          call read_control_array_int_v_list(hd_num_es,                 &
-     &        n_section_ctl, i_num_es, es_dir_ctl, num_section_ctl)
-        end if
+        call read_control_array_chara(hd_num_rcb, RCB_dir_ctl)
+        call read_control_array_c_i(hd_num_es, ndomain_section_ctl)
+        call read_control_array_chara                                   &
+     &     (hd_num_r_layerd, ele_grp_layering_ctl)
 !
 !
         call read_integer_ctl_item(hd_sleeve_level,                     &
@@ -304,15 +286,8 @@
      &     i_ele_ordering_ctl)
         if(i_ele_ordering_ctl .gt. 0) exit
 !
-        call find_control_array_flag(hd_nele_grp_ordering,              &
-     &      nele_grp_ordering_ctl)
-        if(nele_grp_ordering_ctl.gt.0                                   &
-     &      .and. i_nele_grp_ordering.eq.0) then
-          call alloc_ele_grp_ordering_ctl
-          call read_control_array_chara_list(hd_nele_grp_ordering,      &
-     &        nele_grp_ordering_ctl, i_nele_grp_ordering,               &
-     &        ele_grp_ordering_ctl)
-        end if
+        call read_control_array_chara                                   &
+     &     (hd_nele_grp_ordering, ele_grp_ordering_ctl)
       end do
 !
       end subroutine read_ctl_data_4_ele_ordeirng
