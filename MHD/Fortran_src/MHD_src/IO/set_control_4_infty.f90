@@ -41,7 +41,7 @@
       if (num_bc_infty .lt. 0) then
         num_bc_infty = 0
       else
-        num_bc_infty = num_bc_infinity_ctl
+        num_bc_infty = surf_bc_INF_ctl%num
       end if
 !
 !
@@ -49,14 +49,17 @@
 !
         call allocate_infty_surf_ctl
 !
-        bc_infty_name     =  bc_infinity_name_ctl
-        bc_infty_magnitude = bc_infinity_magnitude_ctl
+        bc_infty_name(1:num_bc_infty)                                   &
+     &        =  surf_bc_INF_ctl%c2_tbl(1:num_bc_infty)
+        bc_infty_magnitude(1:num_bc_infty)                              &
+     &        = surf_bc_INF_ctl%vect(1:num_bc_infty)
 !
         do i = 1, num_bc_infty
-         call set_surf_infty_group_types(bc_infinity_type_ctl(i),       &
+         call set_surf_infty_group_types(surf_bc_INF_ctl%c1_tbl(i),     &
      &       ibc_infty_type(i))
         end do
 !
+        call deallocate_sf_infty_ctl
       end if
 !
       end subroutine s_set_control_4_infty

@@ -46,7 +46,7 @@ begin fluid_control
 !   velocity, temperature, pressure, vorticity
 !   vector_potential, magnetic_field, current_density, magnetic_potential
 !   electric_field, poynting_flux
-!   dummy_scalar, perturbation_temp
+!   composition, perturbation_temp
 !
 !   filter_velo, filter_temp, filter_part_temp
 !   filter_vecp, filter_magne
@@ -111,13 +111,12 @@ begin fluid_control
         nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
         nod_value_ctl  current_density     Viz_On   Monitor_Off   end
         nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off   end
-!        nod_value_ctl  dummy_scalar        Viz_Off  Monitor_Off   end
       end array
     end
 !
 !!!!!  physical values for time evolution !!!!!!!!!!!!!!!!!!
 ! aviable valuables: velocity, temperature, magnetic_field
-!                    vector_potential, dummy_scalar
+!                    vector_potential, composition
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin time_evolution_ctl
       array time_evo_ctl   3
@@ -177,9 +176,9 @@ begin fluid_control
 !!!!!  boundary condition for dummy scalar  !!!!!!!!!!!!!!!!!!!!!!!
 !  available type:  fixed, file
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      array bc_dummy_scalar  1
-        bc_dummy_scalar fixed  Press  0.000  end
-      end array
+      array bc_composition  1
+        bc_composition fixed  Press  0.000  end
+      end array bc_composition
 !!!!!  boundary condition for magnetic field  !!!!!!!!!!!!!!!!!!!!!
 !  available type
 !     fix_x,  fix_y,  fix_z
@@ -249,14 +248,14 @@ begin fluid_control
        array velocity_surf     0 
 !        velocity_surf  free_shell_in inner_surf   0.000  end
 !        velocity_surf  free_shell_out  outer_surf   0.000  end
-!      end array
+!      end array velocity_surf
 !!!!!  boundary condition for pressure gradiend !!!!!!!!!!!!!!!!!!!
 !  available type:  inner_shell, outer_shell
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         array pressure_surf  0 
 !         pressure_surf   inner_shell inner_surf 0.000  end
 !         pressure_surf   outer_shell outer_surf 0.000  end
-!      end array
+!      end array pressure_surf
 !!!!!  boundary condition for gradientof magnetic field  !!!!!!!!!!
 !     fix_x,  fix_y,  fix_z
 !     insulate_in, insulate_out (not recommended)
@@ -266,14 +265,14 @@ begin fluid_control
 !          magnetic_field_surf  insulate_in  ICB_surf  0.000 end
 !          magnetic_field_surf  insulate_out CMB_surf  0.000 end
 !          magnetic_field_surf  far_away infinity_surf  0.000 end
-!      end array
+!      end array magnetic_field_surf
 !!!!!  boundary condition for gradientof magnetic field  !!!!!!!!!!
 !     fix_x,  fix_y,  fix_z
 !     insulate_in, insulate_out (not recommended)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !      array vector_potential_surf  0
 !          vector_potential_surf  insulate_out CMB_surf  0.000 end
-!      end array
+!      end array vector_potential_surf
 !!!!!  boundary condition for current density on surface  !!!!!!!!!!
 !     fix_x,  fix_y,  fix_z
 !     insulate_in,insulate_out (not recommended)
@@ -283,7 +282,7 @@ begin fluid_control
 !          current_surf  insulate_in  ICB_surf  0.000 end
 !          current_surf  insulate_out CMB_surf  0.000 end
 !          current_surf  far_away infinity_surf  0.000 end
-!      end array
+!      end array current_surf
 !!!!!  boundary condition for magnetic potential !!!!!!!!!!!!!!!!!
 !  available type:  fixed (not used), file (not used)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -291,22 +290,22 @@ begin fluid_control
 !          electric_potential_surf  insulate_in  ICB_surf  0.000 end
 !          electric_potential_surf  insulate_out CMB_surf  0.000 end
 !          electric_potential_surf  far_away infinity_surf  0.000 end
-!      end array
+!      end array electric_potential_surf
 !!!!!  boundary condition for dummy scalar !!!!!!!!!!!!!!!!!
 !  available type:  fixed_grad (not used), file_grad (not used)
 !                   fixed_field
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        array dummy_scalar_surf  0
-!          dummy_scalar_surf  insulate_in  ICB_surf  0.000 end
-!          dummy_scalar_surf  insulate_out CMB_surf  0.000 end
-!          dummy_scalar_surf  far_away infinity_surf  0.000 end
-!      end array
+        array composition_flux_surf  0
+!          composition_flux_surf  insulate_in  ICB_surf  0.000 end
+!          composition_flux_surf  insulate_out CMB_surf  0.000 end
+!          composition_flux_surf  far_away infinity_surf  0.000 end
+!      end array composition_flux_surf
 !!!!!  boundary condition for infinity (obsolute) !!!!!!!!!!!!!!!!!
 !  available type:  fixed (not used), file (not used)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       array infinity_surf 0
 !        infinity_surf  fixed infinity_surf  0.000  end
-!      end array
+!      end array infinity_surf
     end
 !
 !!!!!  define of forces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

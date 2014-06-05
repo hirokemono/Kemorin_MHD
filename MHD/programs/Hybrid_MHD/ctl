@@ -328,11 +328,11 @@ begin MHD_control
 !  available type:  fixed_grad (not used), file_grad (not used)
 !                   fixed_field
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-       array composition_surf  0
-!          composition_surf  insulate_in  ICB_surf  0.000
-!          composition_surf  insulate_out CMB_surf  0.000
-!          composition_surf  far_away infinity_surf  0.000
-!      end array composition_surf
+       array composition_flux_surf  0
+!          composition_flux_surf  insulate_in  ICB_surf  0.000
+!          composition_flux_surf  insulate_out CMB_surf  0.000
+!          composition_flux_surf  far_away infinity_surf  0.000
+!      end array composition_flux_surf
 !!!!!  boundary condition for infinity (obsolute) !!!!!!!!!!!!!!!!!
 !  available type:  fixed (not used), file (not used)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

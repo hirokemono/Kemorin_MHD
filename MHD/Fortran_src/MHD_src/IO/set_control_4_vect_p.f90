@@ -37,8 +37,8 @@
       use m_surf_data_list
       use set_node_group_types
       use set_surface_group_types
+      use skip_comment_f
 !
-      character(len=kchara) :: tmpchara
       integer (kind = kint) :: i
 !
 !
@@ -46,8 +46,8 @@
         a_potential_nod%num_bc =  0
         a_potential_surf%num_bc = 0
       else
-        a_potential_nod%num_bc =  num_bc_vp_ctl
-        a_potential_surf%num_bc = num_bc_vps_ctl
+        a_potential_nod%num_bc =  node_bc_A_ctl%num
+        a_potential_surf%num_bc = surf_bc_AN_ctl%num
       end if
 !
 !   set boundary_conditons for magnetic field
@@ -59,21 +59,21 @@
 !
         call allocate_nod_bc_list_vecp
 !
-        a_potential_nod%bc_name =      bc_vp_name_ctl
-        a_potential_nod%bc_magnitude = bc_vp_magnitude_ctl
+        a_potential_nod%bc_name(1:a_potential_nod%num_bc)               &
+     &     = node_bc_A_ctl%c2_tbl(1:a_potential_nod%num_bc)
+        a_potential_nod%bc_magnitude(1:a_potential_nod%num_bc)          &
+     &     = node_bc_A_ctl%vect(1:a_potential_nod%num_bc)
 !
         do i = 1, a_potential_nod%num_bc
-         call set_bc_group_types_vector(bc_vp_type_ctl(i),              &
+         call set_bc_group_types_vector(node_bc_A_ctl%c1_tbl(i),        &
      &       a_potential_nod%ibc_type(i))
-         call set_bc_group_types_sgs_vect(bc_vp_type_ctl(i),            &
+         call set_bc_group_types_sgs_vect(node_bc_A_ctl%c1_tbl(i),      &
      &       a_potential_nod%ibc_type(i))
 !
-          tmpchara = bc_vp_type_ctl(i)
-          if ( tmpchara .eq. 'insulate_shell' ) then
-            a_potential_nod%ibc_type(i) = iflag_insulator
-!          else if ( tmpchara .eq. 'sph' ) then
-!            a_potential_nod%ibc_type(i) = 999
-          end if
+          if(cmp_no_case(node_bc_A_ctl%c1_tbl(i), 'insulate_shell' )    &
+     &       .gt. 0) a_potential_nod%ibc_type(i) = iflag_insulator
+!          if (cmp_no_case(node_bc_A_ctl%c1_tbl(i), 'sph'               &
+!     &      .gt. 0)  a_potential_nod%ibc_type(i) = 999
         end do
 !
         if (iflag_debug .eq. iflag_full_msg) then
@@ -84,6 +84,8 @@
      &                  trim(a_potential_nod%bc_name(i))
           end do
         end if
+!
+        call deallocate_bc_vect_p_ctl
       end if
 !
 !
@@ -93,13 +95,15 @@
 !
         call allocate_vect_p_surf_ctl
 !
-        a_potential_surf%bc_name =      bc_vps_name_ctl
-        a_potential_surf%bc_magnitude = bc_vps_magnitude_ctl
+        a_potential_surf%bc_name(1:a_potential_surf%num_bc)             &
+     &          = surf_bc_AN_ctl%c2_tbl(1:a_potential_surf%num_bc)
+        a_potential_surf%bc_magnitude(1:a_potential_surf%num_bc)        &
+     &          = surf_bc_AN_ctl%vect(1:a_potential_surf%num_bc)
 !
         do i = 1, a_potential_surf%num_bc
-          call set_surf_group_types_vector(bc_vps_type_ctl(i),          &
+          call set_surf_group_types_vector(surf_bc_AN_ctl%c1_tbl(i),    &
      &        a_potential_surf%ibc_type(i))
-          call set_pseudo_vacuum_group_types(bc_vps_type_ctl(i),        &
+          call set_pseudo_vacuum_group_types(surf_bc_AN_ctl%c1_tbl(i),  &
      &        a_potential_surf%ibc_type(i))
         end do
 !
@@ -111,6 +115,8 @@
      &                     trim(a_potential_surf%bc_name(i))
           end do
         end if
+!
+        call deallocate_bc_vecp_sf_ctl
       end if
 !
       end subroutine s_set_control_4_vect_p

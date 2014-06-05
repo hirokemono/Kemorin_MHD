@@ -37,7 +37,6 @@
       use set_node_group_types
       use set_surface_group_types
 !
-      character(len=kchara) :: tmpchara
       integer (kind = kint) :: i
 !
 !
@@ -46,8 +45,8 @@
         current_nod%num_bc =  0
         current_surf%num_bc = 0
       else
-        current_nod%num_bc =  num_bc_j_ctl
-        current_surf%num_bc = num_bc_grad_j_ctl
+        current_nod%num_bc =  node_bc_J_ctl%num
+        current_surf%num_bc = surf_bc_JN_ctl%num
       end if
 !
 !   set boundary_conditons for magnetic field
@@ -58,14 +57,16 @@
 !
         call allocate_nod_bc_list_j
 !
-        current_nod%bc_name =      bc_j_name_ctl
-        current_nod%bc_magnitude = bc_j_magnitude_ctl
+        current_nod%bc_name(1:current_nod%num_bc)                       &
+     &             = node_bc_J_ctl%c2_tbl(1:current_nod%num_bc)
+        current_nod%bc_magnitude(1:current_nod%num_bc)                  &
+     &             = node_bc_J_ctl%vect(1:current_nod%num_bc)
 !
         if (iflag_debug.eq.1) write(*,*) 'current_nod%bc_magnitude ',   &
      &                                    current_nod%bc_magnitude
 !
         do i = 1, current_nod%num_bc
-         call set_bc_group_types_vector(bc_j_type_ctl(i),               &
+         call set_bc_group_types_vector(node_bc_J_ctl%c1_tbl(i),        &
      &       current_nod%ibc_type(i))
         end do
 !
@@ -77,6 +78,8 @@
      &                 trim(current_nod%bc_name(i))
           end do
         end if
+!
+        call deallocate_bc_current_ctl
       end if
 !
 !
@@ -86,11 +89,13 @@
 !
         call allocate_current_surf_ctl
 !
-        current_surf%bc_name     =   bc_grad_j_name_ctl
-        current_surf%bc_magnitude =  bc_grad_j_magnitude_ctl
+        current_surf%bc_name(1:current_surf%num_bc)                     &
+     &      = surf_bc_JN_ctl%c2_tbl(1:current_surf%num_bc)
+        current_surf%bc_magnitude(1:current_surf%num_bc)                &
+     &      = surf_bc_JN_ctl%vect(1:current_surf%num_bc)
 !
         do i = 1, current_surf%num_bc
-          call set_surf_group_types_vector(bc_grad_j_type_ctl(i),       &
+          call set_surf_group_types_vector(surf_bc_JN_ctl%c1_tbl(i),    &
      &        current_surf%ibc_type(i))
         end do
 !
@@ -102,6 +107,8 @@
      &                trim(current_surf%bc_name(i))
           end do
         end if
+!
+        call deallocate_bc_current_sf_ctl
       end if
 !
       end subroutine s_set_control_4_current

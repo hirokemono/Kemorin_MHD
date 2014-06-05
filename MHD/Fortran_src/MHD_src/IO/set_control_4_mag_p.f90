@@ -48,8 +48,8 @@
         e_potential_nod%num_bc =  0
         e_potential_surf%num_bc = 0
       else
-        e_potential_nod%num_bc =  num_bc_mag_p_ctl
-        e_potential_surf%num_bc = num_bc_grad_magp_ctl
+        e_potential_nod%num_bc =  node_bc_MP_ctl%num
+        e_potential_surf%num_bc = surf_bc_MPN_ctl%num
       end if
 !
 !
@@ -57,17 +57,20 @@
 !
         call allocate_nod_bc_list_mag_p
 !
-        e_potential_nod%bc_name =      bc_mag_p_name_ctl
-        e_potential_nod%bc_magnitude = bc_mag_p_magnitude_ctl
+        e_potential_nod%bc_name(1:e_potential_nod%num_bc)               &
+     &      = node_bc_MP_ctl%c2_tbl(1:e_potential_nod%num_bc)
+        e_potential_nod%bc_magnitude(1:e_potential_nod%num_bc)          &
+     &      = node_bc_MP_ctl%vect(1:e_potential_nod%num_bc)
 !
 !
         do i = 1, e_potential_nod%num_bc
-          call set_bc_group_types_scalar(bc_mag_p_type_ctl(i),          &
+          call set_bc_group_types_scalar(node_bc_MP_ctl%c1_tbl(i),      &
      &        e_potential_nod%ibc_type(i))
-          call set_bc_group_types_sgs_scalar(bc_mag_p_type_ctl(i),      &
+          call set_bc_group_types_sgs_scalar(node_bc_MP_ctl%c1_tbl(i),  &
      &        e_potential_nod%ibc_type(i))
         end do
 !
+        call deallocate_bc_magne_p_ctl
       end if
 !
 !   set boundary_conditons for magnetic potential
@@ -76,18 +79,21 @@
 !
         call allocate_magp_surf_ctl
 !
-        e_potential_surf%bc_name =      bc_grad_magp_name_ctl
-        e_potential_surf%bc_magnitude = bc_grad_magp_magnitude_ctl
-        e_potential_surf%ibc_type=      0
+        e_potential_surf%bc_name(1:e_potential_surf%num_bc)             &
+     &       = surf_bc_MPN_ctl%c2_tbl(1:e_potential_surf%num_bc)
+        e_potential_surf%bc_magnitude(1:e_potential_surf%num_bc)        &
+     &       = surf_bc_MPN_ctl%vect(1:e_potential_surf%num_bc)
+        e_potential_surf%ibc_type(1:e_potential_surf%num_bc) = 0
 !
 !
         do i = 1, e_potential_surf%num_bc
-          call set_surf_group_types_scalar(bc_grad_magp_type_ctl(i),    &
+          call set_surf_group_types_scalar(surf_bc_MPN_ctl%c1_tbl(i),   &
      &        e_potential_surf%ibc_type(i) )
-          call set_surf_wall_group_types(bc_grad_magp_type_ctl(i),      &
+          call set_surf_wall_group_types(surf_bc_MPN_ctl%c1_tbl(i),     &
      &        e_potential_surf%ibc_type(i) )
         end do
 !
+        call deallocate_bc_mag_p_sf_ctl
       end if
 !
       end subroutine s_set_control_4_mag_p

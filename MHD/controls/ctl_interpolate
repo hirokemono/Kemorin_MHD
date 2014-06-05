@@ -43,7 +43,6 @@ begin construct_table
         nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
         nod_value_ctl  current_density     Viz_On   Monitor_Off   end
         nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off   end
-!        nod_value_ctl  dummy_scalar        Viz_Off  Monitor_Off   end
       end array
     end
 !

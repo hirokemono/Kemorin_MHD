@@ -63,9 +63,9 @@
 !>  Structure for real control array 
       type ctl_array_real
 !>     number of array items
-        integer(kind=kint) :: num
+        integer(kind=kint) :: num = 0
 !>     array counter
-        integer(kind=kint) :: icou
+        integer(kind=kint) :: icou = 0
 !>     array for 1st real
         real(kind = kreal), pointer :: vect(:)
       end type ctl_array_real
@@ -73,9 +73,9 @@
 !>  Structure for two reals control array 
       type ctl_array_r2
 !>     number of array items
-        integer(kind=kint) :: num
+        integer(kind=kint) :: num = 0
 !>     array counter
-        integer(kind=kint) :: icou
+        integer(kind=kint) :: icou = 0
 !>     array for 1st real
         real(kind = kreal), pointer :: vec1(:)
 !>     array for 2nd real
@@ -85,9 +85,9 @@
 !>  Structure for three reals control array 
       type ctl_array_r3
 !>     number of array items
-        integer(kind=kint) :: num
+        integer(kind=kint) :: num = 0
 !>     array counter
-        integer(kind=kint) :: icou
+        integer(kind=kint) :: icou = 0
 !>     array for 1st real
         real(kind = kreal), pointer :: vec1(:)
 !>     array for 2nd real
@@ -99,9 +99,9 @@
 !>  Structure for integer control array 
       type ctl_array_int
 !>     number of array items
-        integer(kind=kint) :: num
+        integer(kind=kint) :: num = 0
 !>     array counter
-        integer(kind=kint) :: icou
+        integer(kind=kint) :: icou = 0
 !>     array for 1st real
         integer(kind = kint), pointer :: ivec(:)
       end type ctl_array_int
@@ -109,9 +109,9 @@
 !>  Structure for 2 integers control array 
       type ctl_array_i2
 !>     number of array items
-        integer(kind=kint) :: num
+        integer(kind=kint) :: num = 0
 !>     array counter
-        integer(kind=kint) :: icou
+        integer(kind=kint) :: icou = 0
 !>     array for 1st integer
         integer(kind=kint), pointer :: int1(:)
 !>     array for 2nd integer
@@ -121,9 +121,9 @@
 !>  Structure for character control array 
       type ctl_array_chara
 !>     number of array items
-        integer(kind=kint) :: num
+        integer(kind=kint) :: num = 0
 !>     array counter
-        integer(kind=kint) :: icou
+        integer(kind=kint) :: icou = 0
 !>     array for 1st character
         character(len=kchara), pointer :: c_tbl(:)
       end type ctl_array_chara
@@ -131,9 +131,9 @@
 !>  Structure for charactor and two reals control array 
       type ctl_array_cr2
 !>     number of array items
-        integer(kind=kint) :: num
+        integer(kind=kint) :: num = 0
 !>     array counter
-        integer(kind=kint) :: icou
+        integer(kind=kint) :: icou = 0
 !>     array for character
         character(len=kchara), pointer :: c_tbl(:)
 !>     array for 1st real
@@ -145,9 +145,9 @@
 !>  Structure for charactor and real control array 
       type ctl_array_cr
 !>     number of array items
-        integer(kind=kint) :: num
+        integer(kind=kint) :: num = 0
 !>     array counter
-        integer(kind=kint) :: icou
+        integer(kind=kint) :: icou = 0
 !>     array for 1st character
         character(len=kchara), pointer :: c_tbl(:)
 !>     array for 1st real
@@ -157,9 +157,9 @@
 !>  Structure for charactor and integer control array 
       type ctl_array_ci
 !>     number of array items
-        integer(kind=kint) :: num
+        integer(kind=kint) :: num = 0
 !>     array counter
-        integer(kind=kint) :: icou
+        integer(kind=kint) :: icou = 0
 !>     array for 1st character
         character(len=kchara), pointer :: c_tbl(:)
 !>     array for 1st real
@@ -169,9 +169,9 @@
 !>  Structure for two charactors and real control array 
       type ctl_array_c2r
 !>     number of array items
-        integer(kind=kint) :: num
+        integer(kind=kint) :: num = 0
 !>     array counter
-        integer(kind=kint) :: icou
+        integer(kind=kint) :: icou = 0
 !>     array for 1st character
         character(len=kchara), pointer :: c1_tbl(:)
 !>     array for 2nd character
@@ -183,9 +183,9 @@
 !>  Structure for real, charactor, and integere control array 
       type ctl_array_icr
 !>     number of array items
-        integer(kind=kint) :: num
+        integer(kind=kint) :: num = 0
 !>     array counter
-        integer(kind=kint) :: icou
+        integer(kind=kint) :: icou = 0
 !>     array for 1st integer
         integer(kind=kint), pointer :: ivec(:)
 !>     array for character
@@ -197,9 +197,9 @@
 !>  Structure for real and integer control array 
       type ctl_array_ir
 !>     number of array items
-        integer(kind=kint) :: num
+        integer(kind=kint) :: num = 0
 !>     array counter
-        integer(kind=kint) :: icou
+        integer(kind=kint) :: icou = 0
 !>     array for 1st integer
         integer(kind=kint), pointer :: ivec(:)
 !>     array for 1st real
@@ -209,9 +209,9 @@
 !>  Structure for 1 real and 2 integers control array 
       type ctl_array_i2r
 !>     number of array items
-        integer(kind=kint) :: num
+        integer(kind=kint) :: num = 0
 !>     array counter
-        integer(kind=kint) :: icou
+        integer(kind=kint) :: icou = 0
 !>     array for 1st integer
         integer(kind=kint), pointer :: int1(:)
 !>     array for 2nd integer
@@ -223,9 +223,9 @@
 !>  Structure for 2 reals and 2 integeres control array 
       type ctl_array_i2r2
 !>     number of array items
-        integer(kind=kint) :: num
+        integer(kind=kint) :: num = 0
 !>     array counter
-        integer(kind=kint) :: icou
+        integer(kind=kint) :: icou = 0
 !>     array for 1st integer
         integer(kind=kint), pointer :: int1(:)
 !>     array for 2nd integer
