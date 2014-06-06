@@ -480,6 +480,7 @@
       type(ctl_array_real), intent(inout) :: array_real
 !
 !
+      if(array_real%num .le. 0) return
       deallocate(array_real%vect)
 !
       end subroutine dealloc_control_array_real
@@ -491,6 +492,7 @@
       type(ctl_array_r2), intent(inout) :: array_r2
 !
 !
+      if(array_r2%num .le. 0) return
       deallocate(array_r2%vec1, array_r2%vec2)
 !
       end subroutine dealloc_control_array_r2
@@ -502,6 +504,7 @@
       type(ctl_array_r3), intent(inout) :: array_r3
 !
 !
+      if(array_r3%num .le. 0) return
       deallocate(array_r3%vec1, array_r3%vec2, array_r3%vec3)
 !
       end subroutine dealloc_control_array_r3
@@ -513,6 +516,7 @@
       type(ctl_array_int), intent(inout) :: array_int
 !
 !
+      if(array_int%num .le. 0) return
       deallocate(array_int%ivec)
 !
       end subroutine dealloc_control_array_int
@@ -524,6 +528,7 @@
       type(ctl_array_i2), intent(inout) :: array_i2
 !
 !
+      if(array_i2%num .le. 0) return
       deallocate(array_i2%int1, array_i2%int2)
 !
       end subroutine dealloc_control_array_i2
@@ -535,6 +540,7 @@
       type(ctl_array_chara), intent(inout) :: array_chara
 !
 !
+      if(array_chara%num .le. 0) return
       deallocate(array_chara%c_tbl)
 !
       end subroutine dealloc_control_array_chara
@@ -546,6 +552,7 @@
       type(ctl_array_cr), intent(inout) :: array_cr
 !
 !
+      if(array_cr%num .le. 0) return
       deallocate( array_cr%c_tbl, array_cr%vect)
 !
       end subroutine dealloc_control_array_c_r
@@ -557,6 +564,7 @@
       type(ctl_array_ci), intent(inout) :: array_ci
 !
 !
+      if(array_ci%num .le. 0) return
       deallocate( array_ci%c_tbl, array_ci%ivec)
 !
       end subroutine dealloc_control_array_c_i
@@ -568,6 +576,7 @@
       type(ctl_array_cr2), intent(inout) :: array_cr2
 !
 !
+      if(array_cr2%num .le. 0) return
       deallocate(array_cr2%c_tbl, array_cr2%vec1, array_cr2%vec2)
 !
       end subroutine dealloc_control_array_c_r2
@@ -579,6 +588,7 @@
       type(ctl_array_c2r), intent(inout) :: array_c2r
 !
 !
+      if(array_c2r%num .le. 0) return
       deallocate( array_c2r%c1_tbl, array_c2r%c2_tbl, array_c2r%vect)
 !
       end subroutine dealloc_control_array_c2_r
@@ -590,6 +600,7 @@
       type(ctl_array_icr), intent(inout) :: array_icr
 !
 !
+      if(array_icr%num .le. 0) return
       deallocate( array_icr%ivec, array_icr%c_tbl, array_icr%vect)
 !
       end subroutine dealloc_control_array_i_c_r
@@ -601,6 +612,7 @@
       type(ctl_array_ir), intent(inout) :: array_ir
 !
 !
+      if(array_ir%num .le. 0) return
       deallocate( array_ir%ivec, array_ir%vect)
 !
       end subroutine dealloc_control_array_i_r
@@ -612,6 +624,7 @@
       type(ctl_array_i2r), intent(inout) :: array_i2r
 !
 !
+      if(array_i2r%num .le. 0) return
       deallocate( array_i2r%int1, array_i2r%int2, array_i2r%vect)
 !
       end subroutine dealloc_control_array_i2_r
@@ -623,6 +636,7 @@
       type(ctl_array_i2r2), intent(inout) :: array_i2r2
 !
 !
+      if(array_i2r2%num .le. 0) return
       deallocate( array_i2r2%int1, array_i2r2%int2)
       deallocate( array_i2r2%vec1, array_i2r2%vec2)
 !

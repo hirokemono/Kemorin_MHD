@@ -8,12 +8,14 @@
 !> @brief control flags for MHD dynamo model
 !!
 !!@verbatim
+!!      subroutine allocate_dimensionless_nums
 !!      subroutine allocate_fluid_ele_grp_name
 !!      subroutine allocate_conduct_ele_grp_name
 !!      subroutine allocate_icore_ele_grp_name
 !!      subroutine allocate_whole_filter_groups
 !!      subroutine allocate_fluid_filter_groups
 !!
+!!      subroutine deallocate_dimensionless_nums
 !!      subroutine deallocate_fluid_ele_grp_name
 !!      subroutine deallocate_conduct_ele_grp_name
 !!      subroutine deallocate_icore_ele_grp_name
@@ -323,6 +325,16 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine allocate_dimensionless_nums
+!
+      allocate(name_dimless(num_dimless))
+      allocate(dimless(num_dimless))
+      if(num_dimless .gt. 0) dimless = 0.0d0
+!
+      end subroutine allocate_dimensionless_nums
+!
+!  ---------------------------------------------------------------------
+!
       subroutine allocate_fluid_ele_grp_name
 !
       allocate(fl_ele_grp_name(num_fl_ele_grp))
@@ -374,6 +386,14 @@
       end subroutine allocate_fluid_filter_groups
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_dimensionless_nums
+!
+      deallocate(name_dimless, dimless)
+!
+      end subroutine deallocate_dimensionless_nums
+!
 !  ---------------------------------------------------------------------
 !
       subroutine deallocate_fluid_ele_grp_name
