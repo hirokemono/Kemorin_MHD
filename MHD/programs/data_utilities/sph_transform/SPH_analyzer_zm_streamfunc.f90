@@ -87,31 +87,31 @@
 !
       iflag_velo =  0
       iflag_magne = 0
-      do ifld = 1, num_nod_phys_ctl
-        if(phys_nod_name_ctl(ifld) .eq. fhd_velo)  iflag_velo =  2
-        if(phys_nod_name_ctl(ifld) .eq. fhd_magne) iflag_magne = 2
+      do ifld = 1, field_ctl%num
+        if(field_ctl%c1_tbl(ifld) .eq. fhd_velo)  iflag_velo =  2
+        if(field_ctl%c1_tbl(ifld) .eq. fhd_magne) iflag_magne = 2
       end do
 !
       call deallocate_phys_control
 !
-      num_nod_phys_ctl = iflag_velo + iflag_magne
-      call allocate_phys_control
+      field_ctl%num = iflag_velo + iflag_magne
+      call alloc_control_array_c3(field_ctl)
 !
       ifld = 0
       if(iflag_velo .gt. 0) then
-        phys_nod_name_ctl(ifld+1) = fhd_velo
-        phys_nod_name_ctl(ifld+2) = fhd_vort
+        field_ctl%c1_tbl(ifld+1) = fhd_velo
+        field_ctl%c1_tbl(ifld+2) = fhd_vort
         ifld = ifld+2
       end if
       if(iflag_magne .gt. 0) then
-        phys_nod_name_ctl(ifld+1) = fhd_magne
-        phys_nod_name_ctl(ifld+2) = fhd_current
+        field_ctl%c1_tbl(ifld+1) = fhd_magne
+        field_ctl%c1_tbl(ifld+2) = fhd_current
         ifld = ifld+2
       end if
 !
-      do ifld = 1, num_nod_phys_ctl
-        visualize_ctl(ifld) =  'Viz_On'
-        monitor_ctl(ifld) =    'Monitor_Off'
+      do ifld = 1, field_ctl%num
+        field_ctl%c2_tbl(ifld) = 'Viz_On'
+        field_ctl%c3_tbl(ifld) = 'Monitor_Off'
       end do
 !
       end subroutine set_ctl_data_4_zm_streamline

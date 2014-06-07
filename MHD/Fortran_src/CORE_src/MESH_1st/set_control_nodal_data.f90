@@ -32,11 +32,11 @@
 !   set physical values
 !
       ierr = 0
-      if(i_num_nod_phys.le.0) then
+      if(field_ctl%icou .le. 0) then
         e_message = 'Set field for simulation'
         ierr = 90
       else
-        num_nod_phys = num_nod_phys_ctl
+        num_nod_phys = field_ctl%num
       end if
 !
 !    set nodal data

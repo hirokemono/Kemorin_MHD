@@ -69,32 +69,32 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
      &      .or. iflag_SGS_model.eq.id_SGS_similarity) then
-        do i = 1, num_nod_phys_ctl
-          if(      phys_nod_name_ctl(i) .eq. fhd_velo) then
+        do i = 1, field_ctl%num
+          if(      field_ctl%c1_tbl(i) .eq. fhd_velo) then
             call add_phys_name_tmp(fhd_grad_v_1)
             call add_phys_name_tmp(fhd_grad_v_2)
             call add_phys_name_tmp(fhd_grad_v_3)
-!          if(      phys_nod_name_ctl(i) .eq. fhd_vort) then
+!          if(      field_ctl%c1_tbl(i) .eq. fhd_vort) then
 !            call add_phys_name_tmp(fhd_grad_w_1)
 !            call add_phys_name_tmp(fhd_grad_w_2)
 !            call add_phys_name_tmp(fhd_grad_w_3)
-!          else if( phys_nod_name_ctl(i) .eq. fhd_vecp) then
+!          else if( field_ctl%c1_tbl(i) .eq. fhd_vecp) then
 !            call add_phys_name_tmp(fhd_grad_a_1)
 !            call add_phys_name_tmp(fhd_grad_a_2)
 !            call add_phys_name_tmp(fhd_grad_a_3)
-          else if(phys_nod_name_ctl(i) .eq. fhd_magne) then
+          else if(field_ctl%c1_tbl(i) .eq. fhd_magne) then
             call add_phys_name_tmp(fhd_grad_b_1)
             call add_phys_name_tmp(fhd_grad_b_2)
             call add_phys_name_tmp(fhd_grad_b_3)
-!          else if( phys_nod_name_ctl(i) .eq. fhd_current) then
+!          else if( field_ctl%c1_tbl(i) .eq. fhd_current) then
 !            call add_phys_name_tmp(fhd_grad_j_1)
 !            call add_phys_name_tmp(fhd_grad_j_2)
 !            call add_phys_name_tmp(fhd_grad_j_3)
-          else if(phys_nod_name_ctl(i) .eq. fhd_temp) then
+          else if(field_ctl%c1_tbl(i) .eq. fhd_temp) then
             call add_phys_name_tmp(fhd_grad_temp)
-          else if(phys_nod_name_ctl(i) .eq. fhd_ref_temp) then
+          else if(field_ctl%c1_tbl(i) .eq. fhd_ref_temp) then
             call add_phys_name_tmp(fhd_grad_par_temp)
-          else if(phys_nod_name_ctl(i) .eq. fhd_light) then
+          else if(field_ctl%c1_tbl(i) .eq. fhd_light) then
             call add_phys_name_tmp(fhd_grad_composit)
           end if
         end do
@@ -104,16 +104,16 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
      &     .or. iflag_SGS_model.eq.id_SGS_similarity) then
-        do i = 1, num_nod_phys_ctl
-          if(      phys_nod_name_ctl(i) .eq. fhd_velo) then
+        do i = 1, field_ctl%num
+          if(      field_ctl%c1_tbl(i) .eq. fhd_velo) then
             call add_phys_name_tmp(fhd_filter_v)
-          else if( phys_nod_name_ctl(i) .eq. fhd_vecp) then
+          else if( field_ctl%c1_tbl(i) .eq. fhd_vecp) then
             call add_phys_name_tmp(fhd_filter_a)
-          else if( phys_nod_name_ctl(i) .eq. fhd_magne) then
+          else if( field_ctl%c1_tbl(i) .eq. fhd_magne) then
             call add_phys_name_tmp(fhd_filter_b)
-          else if( phys_nod_name_ctl(i) .eq. fhd_temp) then
+          else if( field_ctl%c1_tbl(i) .eq. fhd_temp) then
             call add_phys_name_tmp(fhd_filter_temp)
-          else if( phys_nod_name_ctl(i) .eq. fhd_light) then
+          else if( field_ctl%c1_tbl(i) .eq. fhd_light) then
             call add_phys_name_tmp(fhd_filter_comp)
           end if
         end do
@@ -123,14 +123,14 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
      &       .and. iflag_SGS_model.eq.id_SGS_similarity) then
-        do i = 1, num_nod_phys_ctl
-          if(      phys_nod_name_ctl(i) .eq. fhd_filter_v) then
+        do i = 1, field_ctl%num
+          if(      field_ctl%c1_tbl(i) .eq. fhd_filter_v) then
             call add_phys_name_tmp(fhd_w_filter_velo)
-          else if( phys_nod_name_ctl(i) .eq. fhd_filter_a) then
+          else if( field_ctl%c1_tbl(i) .eq. fhd_filter_a) then
             call add_phys_name_tmp(fhd_w_filter_vecp)
-          else if( phys_nod_name_ctl(i) .eq. fhd_filter_b) then
+          else if( field_ctl%c1_tbl(i) .eq. fhd_filter_b) then
             call add_phys_name_tmp(fhd_w_filter_magne)
-          else if( phys_nod_name_ctl(i) .eq. fhd_filter_temp) then
+          else if( field_ctl%c1_tbl(i) .eq. fhd_filter_temp) then
             call add_phys_name_tmp(fhd_w_filter_temp)
           end if
         end do

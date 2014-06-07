@@ -36,11 +36,11 @@
 !
 !   set physical values
 !
-      if(i_num_nod_phys.le.0) then
+      if(field_ctl%icou .le. 0) then
         error_message = 'Set field for simulation'
         ierr = 90
       else
-        fld%num_phys = num_nod_phys_ctl
+        fld%num_phys = field_ctl%num
         ierr = 0
       end if
 !

@@ -41,22 +41,22 @@
 !
 !   set physical values
 !
-      if(i_num_nod_phys.le.0) then
+      if(field_ctl%icou .le. 0) then
         e_message = 'Set field for simulation'
         call calypso_MPI_abort(90, e_message)
       end if
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)               &
-     &    'original num_nod_phys_ctl ', num_nod_phys_ctl
+     &    'original field_ctl%num ', field_ctl%num
 !
 !
-      if (num_nod_phys_ctl .gt. 0) then
+      if (field_ctl%num .gt. 0) then
 !
 !     add terms for MHD
 !
         call add_field_name_4_mhd
         call add_field_name_4_fem_mhd
         if (iflag_debug .ge. iflag_routine_msg) write(*,*)              &
-     &    'num_nod_phys after modified ', num_nod_phys_ctl
+     &    'num_nod_phys after modified ', field_ctl%num
 !
 !    set nodal data
 !

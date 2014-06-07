@@ -87,26 +87,26 @@
       integer(kind = kint) :: ifld, iflag_velo
 !
       iflag_velo =  0
-      do ifld = 1, num_nod_phys_ctl
-        if(phys_nod_name_ctl(ifld) .eq. fhd_velo)  iflag_velo =  2
+      do ifld = 1, field_ctl%num
+        if(field_ctl%c1_tbl(ifld) .eq. fhd_velo)  iflag_velo =  2
       end do
 !
       call deallocate_phys_control
 !
-      num_nod_phys_ctl = iflag_velo
-      call allocate_phys_control
+      field_ctl%num = iflag_velo
+      call alloc_control_array_c3(field_ctl)
 !
       ifld = 0
       if(iflag_velo .gt. 0) then
         ifld = ifld+1
-        phys_nod_name_ctl(ifld) = fhd_velo
-        visualize_ctl(ifld) =  'Viz_On'
-        monitor_ctl(ifld) =    'Monitor_Off'
+        field_ctl%c1_tbl(ifld) = fhd_velo
+        field_ctl%c2_tbl(ifld) = 'Viz_On'
+        field_ctl%c3_tbl(ifld) = 'Monitor_Off'
 !
         ifld = ifld+1
-        phys_nod_name_ctl(ifld) = fhd_press
-        visualize_ctl(ifld) =  'Viz_On'
-        monitor_ctl(ifld) =    'Monitor_Off'
+        field_ctl%c1_tbl(ifld) = fhd_press
+        field_ctl%c2_tbl(ifld) = 'Viz_On'
+        field_ctl%c3_tbl(ifld) = 'Monitor_Off'
       end if
 !
       end subroutine set_ctl_data_4_zm_energies

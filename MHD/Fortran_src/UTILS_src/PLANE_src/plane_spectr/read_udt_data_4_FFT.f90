@@ -81,15 +81,16 @@
 !
       use m_spectr_4_ispack
       use m_ctl_data_4_fields
+      use skip_comment_f
 !
       integer (kind = kint) :: i, j, ii, jj, icomp
 !
 !
       num_fft = 0
       do i = 1, plane_phys%num_phys
-        do j = 1, num_nod_phys_ctl
-          if ( visualize_ctl(j) .eq. 'Viz_On' ) then
-            if (phys_nod_name_ctl(j) .eq. plane_phys%phys_name(i)) then
+        do j = 1, field_ctl%num
+          if (cmp_no_case(field_ctl%c2_tbl(j), 'Viz_On') .gt. 0) then
+            if (field_ctl%c1_tbl(j) .eq. plane_phys%phys_name(i)) then
               if ( plane_phys%num_component(i) .eq. 1) then
                 num_fft = num_fft + 1
               else if ( plane_phys%num_component(i) .eq. 3) then
@@ -107,13 +108,12 @@
       icomp = 1
       ii = 1
       do i = 1, plane_phys%num_phys
-        do j = 1, num_nod_phys_ctl
-!
-          if ( visualize_ctl(j) .eq. 'Viz_On' ) then
-            if (phys_nod_name_ctl(j) .eq. plane_phys%phys_name(i)) then
+        do j = 1, field_ctl%num
+          if (cmp_no_case(field_ctl%c2_tbl(j), 'Viz_On') .gt. 0) then
+            if (field_ctl%c1_tbl(j) .eq. plane_phys%phys_name(i)) then
 !
               do jj = 1, plane_phys%num_component(i)
-                fft_name(ii+jj-1) =   phys_nod_name_ctl(j)
+                fft_name(ii+jj-1) =   field_ctl%c1_tbl(j)
                 ifield_fft(ii+jj-1) = icomp
                 icomp_fft(ii+jj-1) = jj-1
               end do
@@ -122,7 +122,7 @@
                 fft_comp(ii) = 'scalar'
                 ii = ii + 1
               else if ( plane_phys%num_component(i) .eq. 3) then
-                fft_name(ii+3) = phys_nod_name_ctl(j)
+                fft_name(ii+3) = field_ctl%c1_tbl(j)
                 ifield_fft(ii+3) = icomp
                 fft_comp(ii  ) = 'x'
                 fft_comp(ii+1) = 'y'
@@ -131,7 +131,7 @@
                 icomp_fft(ii+3) =-1
                 ii = ii + 4
               else if ( plane_phys%num_component(i) .eq. 6) then
-                fft_name(ii+6) = phys_nod_name_ctl(j)
+                fft_name(ii+6) = field_ctl%c1_tbl(j)
                 ifield_fft(ii+6) = icomp
                 fft_comp(ii  ) = 'xx'
                 fft_comp(ii+1) = 'xy'

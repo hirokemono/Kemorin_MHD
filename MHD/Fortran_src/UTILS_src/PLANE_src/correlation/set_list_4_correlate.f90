@@ -47,20 +47,23 @@
       use m_ctl_data_4_fields
 !
       use t_phys_data
+      use skip_comment_f
 !
       type(phys_data), intent(inout) :: cor_phys
       type(phys_data), intent(inout) :: ref_phys
 !
-      integer (kind = kint) :: i, j, k, ii, jj, icomp, icomp2
+      integer (kind = kint) :: i, j, k, ii, jj, icomp, icomp2, iflag
 !
 !
       num_crt = 0
       do i = 1, cor_phys%num_phys
         do k = 1, ref_phys%num_phys
           if ( cor_phys%phys_name(i) .eq. ref_phys%phys_name(k) ) then
-            do j = 1, num_nod_phys_ctl
-              if (    phys_nod_name_ctl(j) .eq. cor_phys%phys_name(i)   &
-     &          .and. visualize_ctl(j) .eq. 'Viz_On' ) then
+            do j = 1, field_ctl%num
+              iflag = cmp_no_case(field_ctl%c1_tbl(j),                  &
+     &                            cor_phys%phys_name(i))                &
+     &              + cmp_no_case(field_ctl%c2_tbl(j), 'Viz_On')
+              if(iflag .gt. 0) then
                 num_crt = num_crt + cor_phys%num_component(i)
                 exit
               end if
@@ -78,12 +81,13 @@
         icomp2 = 1
         do k = 1, ref_phys%num_phys
           if ( cor_phys%phys_name(i) .eq. ref_phys%phys_name(k) ) then
-            do j = 1, num_nod_phys_ctl
-              if (    phys_nod_name_ctl(j) .eq. cor_phys%phys_name(i)   &
-     &          .and. visualize_ctl(j) .eq. 'Viz_On' ) then
-!
+            do j = 1, field_ctl%num
+              iflag = cmp_no_case(field_ctl%c1_tbl(j),                  &
+     &                            cor_phys%phys_name(i))                &
+     &              + cmp_no_case(field_ctl%c2_tbl(j), 'Viz_On')
+              if(iflag .gt. 0) then
                 do jj = 1, cor_phys%num_component(i)
-                  crt_name(ii+jj-1) =   phys_nod_name_ctl(j)
+                  crt_name(ii+jj-1) =   field_ctl%c1_tbl(j)
                   ifield_crt(ii+jj-1) = icomp
                   ifield_crt2(ii+jj-1) = icomp2
                   icomp_crt(ii+jj-1) = jj-1

@@ -40,15 +40,15 @@
       if(nnod_4_ele .eq. num_t_quad) then
 !
         do i = 1, num_nod_phys
-          do j = 1, num_quad_field_ctl
-            if (phys_nod_name(i) .eq. quad_phys_name_ctl(j)) then
+          do j = 1, quad_phys_ctl%num
+            if (phys_nod_name(i) .eq. quad_phys_ctl%c_tbl(j)) then
               iorder_nod_phys(i) = num_t_quad
               exit
             end if
           end do
 !
-          do j = 1, num_linear_field_ctl
-            if (phys_nod_name(i) .eq. linear_phys_name_ctl(j)) then
+          do j = 1, linear_phys_ctl%num
+            if (phys_nod_name(i) .eq. linear_phys_ctl%c_tbl(j)) then
               iorder_nod_phys(i) = num_t_linear
               exit
             end if

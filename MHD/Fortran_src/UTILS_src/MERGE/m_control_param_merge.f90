@@ -158,8 +158,8 @@
 !
 !
        num_nod_phys = 0
-       do i = 1, num_nod_phys_ctl
-         if (visualize_ctl(i) .eq. 'Viz_On') then
+       do i = 1, field_ctl%num
+         if (cmp_no_case(field_ctl%c2_tbl(i),'Viz_On').gt.0) then
            num_nod_phys = num_nod_phys + 1
          end if
        end do
@@ -167,10 +167,10 @@
        call allocate_control_4_merge
 !
        icou = 0
-       do i = 1, num_nod_phys_ctl
-         if ( visualize_ctl(i) .eq. 'Viz_On' ) then
+       do i = 1, field_ctl%num
+         if (cmp_no_case(field_ctl%c2_tbl(i),'Viz_On').gt.0) then
            icou = icou + 1
-           ucd_on_label(icou) = phys_nod_name_ctl(i)
+           ucd_on_label(icou) = field_ctl%c1_tbl(i)
          end if
        end do
 !
