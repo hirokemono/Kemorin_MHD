@@ -58,12 +58,12 @@
 !
       character (len=kchara) :: layering_grp_type_ctl
 !
-!!      Structure for layering group names
+!>      Structure for layering group names
 !!@n      layer_grp_name_ctl%num:   Number of layering group
 !!@n      layer_grp_name_ctl%c_tbl: layering group names
         type(ctl_array_chara) :: layer_grp_name_ctl
 !
-!!      Structure for layering stacks
+!>      Structure for layering stacks
 !!@n      igrp_stack_layer_ctl%ivec: layering stack array
         type(ctl_array_int) :: igrp_stack_layer_ctl
 !

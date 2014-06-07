@@ -107,7 +107,7 @@
       type modeview_ctl
         integer(kind = kint) :: num_pixel_ctl(2)
 !
-!!      Structure for opacity controls
+!>      Structure for opacity controls
 !!@n      opacity_ctl%c1_tbl:  1st component name for matrix
 !!@n      opacity_ctl%c2_tbl:  2nd component name for matrix
 !!@n      opacity_ctl%vect:    Modelview matrix
@@ -122,22 +122,22 @@
         real(kind = kreal) :: eye_separation_ctl
 !
 !
-!!      Structure for look at  controls
+!>      Structure for look at  controls
 !!@n      lookpoint_ctl%c_tbl:   component of lookpoint
 !!@n      lookpoint_ctl%vect:    Position of lookpoint
         type(ctl_array_cr) :: lookpoint_ctl
 !
-!!      Structure for viewpoint controls
+!>      Structure for viewpoint controls
 !!@n      viewpoint_ctl%c_tbl:   Direction of viewpoint
 !!@n      viewpoint_ctl%vect:    Position of viewpoint
         type(ctl_array_cr) :: viewpoint_ctl
 !
-!!      Structure for Up-directions controls
+!>      Structure for Up-directions controls
 !!@n      up_dir_ctl%c_tbl:   Direction of  Up-directions
 !!@n      up_dir_ctl%vect:    Position of  Up-directions
         type(ctl_array_cr) :: up_dir_ctl
 !
-!!      Structure for rotation of object
+!>      Structure for rotation of object
 !!@n      view_rot_vec_ctl%c_tbl:   Direction of rotatin vector
 !!@n      view_rot_vec_ctl%vect:    rotation vector
         type(ctl_array_cr) :: view_rot_vec_ctl
@@ -145,12 +145,12 @@
         real(kind = kreal) :: view_rotation_deg_ctl = 0.0d0
         real(kind = kreal) :: scale_factor_ctl =      1.0d0
 !
-!!      Structure for scale factor controls
+!>      Structure for scale factor controls
 !!@n      scale_vector_ctl%c_tbl:   Direction of scale factor
 !!@n      scale_vector_ctl%vect:    Position of scale factor
         type(ctl_array_cr) :: scale_vector_ctl
 !
-!!      Structure for viewpoint in viewer controls
+!>      Structure for viewpoint in viewer controls
 !!@n      viewpt_in_viewer_ctl%c_tbl:   Direction of viewpoint in viewer
 !!@n      viewpt_in_viewer_ctl%vect:    Position of viewpoint in viewer
         type(ctl_array_cr) :: viewpt_in_viewer_ctl

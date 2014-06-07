@@ -56,14 +56,14 @@
       character(len=kchara), allocatable :: plot_comp_ctl(:)
       character(len=kchara), allocatable :: plot_label_ctl(:)
 !
-!!      Structure for range data input
+!>      Structure for range data input
 !!@n      contour_range_ctl%int1: Component ID for plot
 !!@n      contour_range_ctl%int2: Number of Contour lines
 !!@n      contour_range_ctl%vec1: Minimum value
 !!@n      contour_range_ctl%vec2: Maximum value
       type(ctl_array_i2r2) :: contour_range_ctl
 !
-!!      Structure for range data input
+!>      Structure for range data input
 !!@n      vector_scale_ctl%int1: Component ID for plot
 !!@n      vector_scale_ctl%int2: Incrememnt for vedctor data to draw
 !!@n      vector_scale_ctl%vect: Scale factor for vectror

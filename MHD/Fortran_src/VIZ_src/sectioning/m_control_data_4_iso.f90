@@ -86,12 +86,12 @@
 !
         character(len=kchara) :: iso_result_type_ctl
 !
-!!      Structure for list of output field
+!>      Structure for list of output field
 !!@n      iso_out_field_ctl%c1_tbl: Name of field
 !!@n      iso_out_field_ctl%c2_tbl: Name of component
         type(ctl_array_c2) :: iso_out_field_ctl
 !
-!!      Structure for element group list for isosurfacing
+!>      Structure for element group list for isosurfacing
 !!@n      iso_area_ctl%c_tbl: Name of element group
         type(ctl_array_chara) :: iso_area_ctl
 !

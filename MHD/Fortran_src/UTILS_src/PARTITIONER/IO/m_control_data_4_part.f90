@@ -30,16 +30,16 @@
       character (len = kchara) :: element_overlap_ctl
       integer(kind = kint) :: sleeve_level_ctl = 0
 !
-!!      Structure of list of bisection
+!>      Structure for list of bisection
 !!@n      ele_grp_ordering_ctl%c_tbl: Direction of bisectioning
       type(ctl_array_chara) :: RCB_dir_ctl
 !
-!!      Structure of number of subdomains
+!>      Structure for number of subdomains
 !!@n      ndomain_section_ctl%c_tbl:  Direction of sectioning
 !!@n      ndomain_section_ctl%ivect:  Number of domains
       type(ctl_array_ci) :: ndomain_section_ctl
 !
-!!      Structure of element group list for layering
+!>      Structure for element group list for layering
 !!@n      ele_grp_ordering_ctl%c_tbl:  list of element group
       type(ctl_array_chara) :: ele_grp_layering_ctl
 !
@@ -51,7 +51,7 @@
       character(len=kchara) :: itp_tbl_head_ctl
       character(len=kchara) :: itp_tbl_format_ctl
 !
-!!      Structure of element group list for ordering
+!>      Structure for element group list for ordering
 !!@n      ele_grp_ordering_ctl%c_tbl:  list of element group
       type(ctl_array_chara) :: ele_grp_ordering_ctl
 !

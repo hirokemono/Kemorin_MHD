@@ -75,7 +75,7 @@
         character(len=kchara) :: fline_color_field_ctl(1)
         character(len=kchara) :: fline_color_comp_ctl(1)
 !
-!!      Structure for element group to draw field line
+!>      Structure for element group to draw field line
 !!@n      fline_area_grp_ctl%c_tbl:  element group to draw field line
         type(ctl_array_chara) :: fline_area_grp_ctl
 !
@@ -88,13 +88,13 @@
         integer(kind = kint) :: num_fieldline_ctl = 3
         integer(kind = kint) :: max_line_stepping_ctl = 1000
 !
-!!      Structure for seed points
+!>      Structure for seed points
 !!@n      seed_point_ctl%vec1:  X-component of seed points
 !!@n      seed_point_ctl%vec2:  Y-component of seed points
 !!@n      seed_point_ctl%vec3:  Z-component of seed points
         type(ctl_array_r3) :: seed_point_ctl
 !
-!!      Structure for seed points on center of the surfaces
+!>      Structure for seed points on center of the surfaces
 !!@n      seed_surface_ctl%int1:  element ID for seed points
 !!@n      seed_surface_ctl%int2:  Surface ID for seed points
         type(ctl_array_i2) :: seed_surface_ctl

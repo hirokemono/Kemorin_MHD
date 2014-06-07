@@ -43,15 +43,15 @@
       implicit  none
 !
 !
-!!      Structure of domain decompostion for spherical grid
+!>      Structure for domain decompostion for spherical grid
 !!@n      ndomain_sph_grid_ctl%c_tbl:  Direction of decomposition
 !!@n      ndomain_sph_grid_ctl%ivec:   Number of subdomains
       type(ctl_array_ci) :: ndomain_sph_grid_ctl
-!!      Structure of domain decompostion for LEgendre transform
+!>      Structure for domain decompostion for LEgendre transform
 !!@n      ndomain_legendre_ctl%c_tbl:  Direction of decomposition
 !!@n      ndomain_legendre_ctl%ivec:   Number of subdomains
       type(ctl_array_ci) :: ndomain_legendre_ctl
-!!      Structure of domain decompostion for spherical harmonics
+!>      Structure for domain decompostion for spherical harmonics
 !!@n      ndomain_spectr_ctl%c_tbl:  Direction of decomposition
 !!@n      ndomain_spectr_ctl%ivec:   Number of subdomains
       type(ctl_array_ci) :: ndomain_spectr_ctl

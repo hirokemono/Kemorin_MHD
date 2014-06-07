@@ -115,40 +115,40 @@
 !
       integer(kind = kint) ::  num_multigrid_level_ctl = 0
 !
-!!      Structure for number of subdomains for MG
+!>      Structure for number of subdomains for MG
 !!@n      num_MG_subdomain_ctl%ivec:  number of subdomains for MG
       type(ctl_array_int) :: num_MG_subdomain_ctl
 !
-!!      Structure for mesh file prefix for MG
+!>      Structure for mesh file prefix for MG
 !!@n      MG_mesh_prefix_ctl%c_tbl:  mesh file prefix for MG
       type(ctl_array_chara) :: MG_mesh_prefix_ctl
 !
-!!      Structure for element mesh file prefix for MG
+!>      Structure for element mesh file prefix for MG
 !!@n      MG_elem_prefix_ctl%c_tbl: element mesh file prefix for MG
       type(ctl_array_chara) :: MG_elem_prefix_ctl
-!!      Structure for surface mesh file prefix for MG
+!>      Structure for surface mesh file prefix for MG
 !!@n      MG_mesh_prefix_ctl%c_tbl: surface mesh file prefix for MG
       type(ctl_array_chara) :: MG_surf_prefix_ctl
-!!      Structure for edge mesh file prefix for MG
+!>      Structure for edge mesh file prefix for MG
 !!@n      MG_edge_prefix_ctl%c_tbl: edge mesh file prefix for MG
       type(ctl_array_chara) :: MG_edge_prefix_ctl
 !
-!!      Structure for interpolation table from fine to course grid
+!>      Structure for interpolation table from fine to course grid
 !!@n      MG_fine_2_coarse_tbl_ctl%c_tbl: file prefix for table data
       type(ctl_array_chara) :: MG_fine_2_coarse_tbl_ctl
-!!      Structure for interpolation table from course to fine grid
+!>      Structure for interpolation table from course to fine grid
 !!@n      MG_coarse_2_fine_tbl_ctl%c_tbl: file prefix for table data
       type(ctl_array_chara) :: MG_coarse_2_fine_tbl_ctl
 !
-!!      Structure for interpolation table from fine to cource elements
+!>      Structure for interpolation table from fine to cource elements
 !!@n      MG_f2c_ele_tbl_ctl%c_tbl: file prefix for table data
       type(ctl_array_chara) :: MG_f2c_ele_tbl_ctl
 !
-!!      Structure for mesh file format for MG
+!>      Structure for mesh file format for MG
 !!@n      MG_mesh_fmt_ctl%c_tbl:mesh file format for MG
       type(ctl_array_chara) :: MG_mesh_fmt_ctl
 !
-!!      Structure for interpolation table file format for MG
+!>      Structure for interpolation table file format for MG
 !!@n      MG_table_fmt_ctl%c_tbl:interpolation table file format for MG
       type(ctl_array_chara) :: MG_table_fmt_ctl
 !

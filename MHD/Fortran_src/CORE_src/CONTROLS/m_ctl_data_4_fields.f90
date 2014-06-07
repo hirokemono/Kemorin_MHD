@@ -61,6 +61,7 @@
       module m_ctl_data_4_fields
 !
       use m_precision
+      use t_read_control_arrays
 !
       implicit  none
 !

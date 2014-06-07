@@ -178,7 +178,7 @@
         character(len=kchara) :: pvr_output_type_ctl
         character(len=kchara) :: pvr_transparent_ctl
 !
-!!      Structure for element group list for PVR
+!>      Structure for element group list for PVR
 !!@n      group_4_monitor_ctl%c_tbl: Name of element group for PVR
         type(ctl_array_chara) :: pvr_area_ctl
 !
@@ -190,7 +190,7 @@
         real(kind = kreal) :: diffuse_coef_ctl
         real(kind = kreal) :: specular_coef_ctl
 !
-!!      Structure for light positions
+!>      Structure for light positions
 !!@n      light_position_ctl%vec1:  X-component of light position
 !!@n      light_position_ctl%vec2:  Y-component of light position
 !!@n      light_position_ctl%vec3:  Z-component of light position
@@ -213,12 +213,12 @@
         real(kind = kreal) :: pvr_range_min_ctl, pvr_range_max_ctl
         real(kind = kreal) :: constant_opacity_ctl
 !
-!!      Structure for color map controls
+!>      Structure for color map controls
 !!@n      opacity_ctl%vec1:  field data value
 !!@n      opacity_ctl%vec2:  color map value
         type(ctl_array_r2) :: colortbl_ctl
 !
-!!      Structure for opacity controls
+!>      Structure for opacity controls
 !!@n      opacity_ctl%vec1:  Minimum value for one opacity
 !!@n      opacity_ctl%vec2:  Maximum value for one opacity
 !!@n      opacity_ctl%vec3:  Opacity for each level

@@ -26,7 +26,7 @@
       character(len = kchara), parameter                                &
      &                        :: fname_sort_flt_ctl = "ctl_sort_filter"
 !
-!!      Structure for filtering groups
+!>      Structure for filtering groups
 !!@n      filter_area_ctl%c_tbl: Name of force
       type(ctl_array_chara) :: filter_area_ctl
 !

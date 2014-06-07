@@ -19,24 +19,24 @@
 !
       character (len = kchara) :: sph_grp_direction_ctl
 !
-!!      Structure for element grouping in radial direction
+!>      Structure for element grouping in radial direction
 !!@n      r_ele_grouping_ctl%c_tbl: Name of each grouping
 !!@n      r_ele_grouping_ctl%vec1:  Minimum radius for each grouping
 !!@n      r_ele_grouping_ctl%vec2:  Maximum radius for each grouping
       type(ctl_array_cr2) :: r_ele_grouping_ctl
-!!      Structure for element grouping in meridional direction
+!>      Structure for element grouping in meridional direction
 !!@n      t_ele_grouping_ctl%c_tbl: Name of each grouping
 !!@n      t_ele_grouping_ctl%vec1:  Minimum colatitude for each grouping
 !!@n      t_ele_grouping_ctl%vec2:  Maximum colatitude for each grouping
       type(ctl_array_cr2) :: t_ele_grouping_ctl
-!!      Structure for element grouping in cylindrical direction
+!>      Structure for element grouping in cylindrical direction
 !!@n      s_ele_grouping_ctl%c_tbl: Name of each grouping
 !!@n      s_ele_grouping_ctl%vec1:  Minimum cylindorical radius
 !!                                  for each grouping
 !!@n      s_ele_grouping_ctl%vec2:  Maximum cylindorical radius
 !!                                  for each grouping
       type(ctl_array_cr2) :: s_ele_grouping_ctl
-!!      Structure for element grouping in z direction
+!>      Structure for element grouping in z direction
 !!@n      z_ele_grouping_ctl%c_tbl: Name of each grouping
 !!@n      z_ele_grouping_ctl%vec1:  Minimum z for each grouping
 !!@n      z_ele_grouping_ctl%vec2:  Maximum z for each grouping

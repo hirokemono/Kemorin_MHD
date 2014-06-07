@@ -114,51 +114,51 @@
 !
       implicit  none
 !
-!!      Structure of nodal boundary conditions for temperature
+!>      Structure for nodal boundary conditions for temperature
 !!@n      node_bc_T_ctl%c1_tbl:  Type of boundary conditions
 !!@n      node_bc_T_ctl%c2_tbl:  Node (radial) group name for boundary
 !!@n      node_bc_T_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: node_bc_T_ctl
 !
-!!      Structure of nodal boundary conditions for velocity
+!>      Structure for nodal boundary conditions for velocity
 !!@n      node_bc_U_ctl%c1_tbl:  Type of boundary conditions
 !!@n      node_bc_U_ctl%c2_tbl:  Node (radial) group name for boundary
 !!@n      node_bc_U_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: node_bc_U_ctl
 !
-!!      Structure of nodal boundary conditions for pressure
+!>      Structure for nodal boundary conditions for pressure
 !!@n      node_bc_P_ctl%c1_tbl:  Type of boundary conditions
 !!@n      node_bc_P_ctl%c2_tbl:  Node (radial) group name for boundary
 !!@n      node_bc_P_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: node_bc_P_ctl
 !
-!!      Structure of nodal boundary conditions for composition variation
+!>      Structure for nodal boundary conditions for composition variation
 !!@n      node_bc_C_ctl%c1_tbl:  Type of boundary conditions
 !!@n      node_bc_C_ctl%c2_tbl:  Node (radial) group name for boundary
 !!@n      node_bc_C_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: node_bc_C_ctl
 !
-!!      Structure of nodal boundary conditions for magnetic field
+!>      Structure for nodal boundary conditions for magnetic field
 !!@n      node_bc_B_ctl%c1_tbl:  Type of boundary conditions
 !!@n      node_bc_B_ctl%c2_tbl:  Node (radial) group name for boundary
 !!@n      node_bc_B_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: node_bc_B_ctl
 !
-!!      Structure of nodal boundary conditions
+!>      Structure for nodal boundary conditions
 !!                           for magnetic scalar potential
 !!@n      node_bc_MP_ctl%c1_tbl:  Type of boundary conditions
 !!@n      node_bc_MP_ctl%c2_tbl:  Node (radial) group name for boundary
 !!@n      node_bc_MP_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: node_bc_MP_ctl
 !
-!!      Structure of nodal boundary conditions
+!>      Structure for nodal boundary conditions
 !!                           for magnetic vector potential
 !!@n      node_bc_A_ctl%c1_tbl:  Type of boundary conditions
 !!@n      node_bc_A_ctl%c2_tbl:  Node (radial) group name for boundary
 !!@n      node_bc_A_ctl%vect:    boundary condition value
       type(ctl_array_c2r) :: node_bc_A_ctl
 !
-!!      Structure of nodal boundary conditions for current density
+!>      Structure for nodal boundary conditions for current density
 !!@n      node_bc_J_ctl%c1_tbl:  Type of boundary conditions
 !!@n      node_bc_J_ctl%c2_tbl:  Node (radial) group name for boundary
 !!@n      node_bc_J_ctl%vect:    boundary condition value

@@ -42,17 +42,17 @@
       integer(kind = kint) :: ist_num_free_ctl =  -1
       integer(kind = kint) :: ied_num_free_ctl =  -1
 !
-!!      Structure of list of reference filter mode
+!>      Structure for list of reference filter mode
 !!@n      reference_filter_ctl%c_tbl: list of filter type
 !!@n      reference_filter_ctl%vect:  list of filter width
       type(ctl_array_cr) :: reference_filter_ctl
 !
-!!      Structure of list of horizontal filter mode
+!>      Structure for list of horizontal filter mode
 !!@n      horizontal_filter_ctl%c_tbl: list of filter type
 !!@n      horizontal_filter_ctl%vect:  list of filter width
       type(ctl_array_cr) :: horizontal_filter_ctl
 !
-!!      Structure for reference moments for filter
+!>      Structure for reference moments for filter
 !!@n      ref_filter_mom_ctl%ivec:  Order of reference filter moments
 !!@n      ref_filter_mom_ctl%c_tbl: Type of reference filter moments
 !!@n      ref_filter_mom_ctl%vect:  Value of filter moments

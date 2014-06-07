@@ -22,7 +22,7 @@
       integer(kind = kint) :: nend_adjust_ctl
       integer(kind = kint) :: nstart_cube_ctl
 !
-!!      Structure for radial points
+!>      Structure for radial points
 !!@n      radial_pnt_ctl%ivec:  radial address
 !!@n      radial_pnt_ctl%vect:  radius
       type(ctl_array_ir) :: radial_pnt_ctl
@@ -31,45 +31,45 @@
       integer(kind = kint) :: nlayer_ICB_ctl = 0
       integer(kind = kint) :: nlayer_CMB_ctl = 0
 !
-!!      Structure for node group name and stack
+!>      Structure for node group name and stack
 !!@n      node_grp_name_ctl%num:    Number of node group
 !!@n      node_grp_name_ctl%c_tbl:  Node group name
 !!@n      node_grp_name_ctl%ivec:   Stack for each node group
       type(ctl_array_ci) :: node_grp_name_ctl
-!!      Structure for node group name and stack
+!>      Structure for node group name and stack
 !!@n      node_grp_layer_ctl%num:  Number of total layers for node group
 !!@n      node_grp_layer_ctl%ivec: List of radial layer
       type(ctl_array_int) :: node_grp_layer_ctl
 !
-!!      Structure for element group name and stack
+!>      Structure for element group name and stack
 !!@n      elem_grp_name_ctl%num:    Number of element group
 !!@n      elem_grp_name_ctl%c_tbl:  element group name
 !!@n      elem_grp_name_ctl%ivec:   Stack for each element group
       type(ctl_array_ci) :: elem_grp_name_ctl
-!!      Structure for node group name and stack
+!>      Structure for node group name and stack
 !!@n      elem_grp_layer_ctl%num:  Number of total layers
 !!                                for element group
 !!@n      elem_grp_layer_ctl%ivec: List of radial layer
       type(ctl_array_int) :: elem_grp_layer_ctl
 !
-!!      Structure for surface group name and stack
+!>      Structure for surface group name and stack
 !!@n      surf_grp_name_ctl%num:    Number of surface group
 !!@n      surf_grp_name_ctl%c_tbl:  surface group name
 !!@n      surf_grp_name_ctl%ivec:   Stack for each surface group
       type(ctl_array_ci) :: surf_grp_name_ctl
-!!      Structure for node group name and stack
+!>      Structure for node group name and stack
 !!@n      surf_grp_layer_ctl%num:  Number of total layers
 !!                                for element group
 !!@n      surf_grp_layer_ctl%c_tbl: List of surface type name
 !!@n      surf_grp_layer_ctl%ivec: List of radial layer
       type(ctl_array_ci) :: surf_grp_layer_ctl
 !
-!!      Structure for radial points
+!>      Structure for radial points
 !!@n      edge_latitude_ctl%ivec:  radial address
 !!@n      edge_latitude_ctl%vect:  radius
       type(ctl_array_ir) :: edge_latitude_ctl
 !
-!!      Structure for coarsing level
+!>      Structure for coarsing level
 !!@n      sph_coarsing_ctl%int1: Coarsing level for radial direction
 !!@n      sph_coarsing_ctl%int2: Coarsing level on sphere
       type(ctl_array_i2) :: sph_coarsing_ctl

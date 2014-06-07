@@ -81,13 +81,13 @@
       implicit  none
 !
 !
-!!      Structure of constant force list
+!>      Structure for constant force list
 !!@n      force_names_ctl%c_tbl: Name of force
       type(ctl_array_chara) :: force_names_ctl
 !
       character(len=kchara) :: gravity_ctl
 !
-!!      Structure of constant gravity vector
+!>      Structure for constant gravity vector
 !!@n      gravity_vector_ctl%c_tbl:  Direction of gravity vector
 !!@n      gravity_vector_ctl%vect:   Amplitude of gravity vector
       type(ctl_array_cr) :: gravity_vector_ctl
@@ -95,14 +95,14 @@
       character (len=kchara) :: sph_cor_file_name_ctl
       character (len=kchara) :: sph_cor_file_fmt_ctl
 !
-!!      Structure of rotation of system
+!>      Structure for rotation of system
 !!@n      system_rotation_ctl%c_tbl:  Direction of rotation vector
 !!@n      system_rotation_ctl%vect:   Amplitude of rotation vector
       type(ctl_array_cr) :: system_rotation_ctl
 !
       character(len=kchara) :: magneto_cv_ctl
 !
-!!      Structure of external magnetic field control
+!>      Structure for external magnetic field control
 !!@n      ext_magne_ctl%c_tbl:  Direction of external magnetic field
 !!@n      ext_magne_ctl%vect:   Amplitude of external magnetic field
       type(ctl_array_cr) :: ext_magne_ctl

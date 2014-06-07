@@ -42,17 +42,17 @@
       implicit  none
 !
 !
-!!      Structure of number and power to construct heat flux
+!>      Structure for number and power to construct heat flux
 !!@n      coef_4_heat_flux_ctl%c_tbl:  Name of number 
 !!@n      coef_4_heat_flux_ctl%vect:   Power of the number
       type(ctl_array_cr) :: coef_4_heat_flux_ctl
 !
-!!      Structure of number and power to construct thermal diffusion
+!>      Structure for number and power to construct thermal diffusion
 !!@n      coef_4_t_diffuse_ctl%c_tbl:  Name of number 
 !!@n      coef_4_t_diffuse_ctl%vect:   Power of the number
       type(ctl_array_cr) :: coef_4_t_diffuse_ctl
 !
-!!      Structure of number and power to construct heat source
+!>      Structure for number and power to construct heat source
 !!@n      coef_4_heat_src_ctl%c_tbl:  Name of number 
 !!@n      coef_4_heat_src_ctl%vect:   Power of the number
       type(ctl_array_cr) :: coef_4_heat_src_ctl

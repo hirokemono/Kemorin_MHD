@@ -42,18 +42,18 @@
       implicit  none
 !
 !
-!!      Structure of number and power to construct composiitonal flux
+!>      Structure for number and power to construct composiitonal flux
 !!@n      coef_4_comp_flux_ctl%c_tbl:  Name of number 
 !!@n      coef_4_comp_flux_ctl%vect:   Power of the number
       type(ctl_array_cr) :: coef_4_comp_flux_ctl
 !
-!!      Structure of number and power
+!>      Structure for number and power
 !!            to construct composiitonal diffusion
 !!@n      coef_4_c_diffuse_ctl%c_tbl:  Name of number 
 !!@n      coef_4_c_diffuse_ctl%vect:   Power of the number
       type(ctl_array_cr) :: coef_4_c_diffuse_ctl
 !
-!!      Structure of number and power to construct compositional source
+!>      Structure for number and power to construct compositional source
 !!@n      coef_4_comp_src_ctl%c_tbl:  Name of number 
 !!@n      coef_4_comp_src_ctl%vect:   Power of the number
       type(ctl_array_cr) :: coef_4_comp_src_ctl

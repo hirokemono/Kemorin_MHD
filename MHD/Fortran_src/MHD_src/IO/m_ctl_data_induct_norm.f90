@@ -35,25 +35,25 @@
       implicit  none
 !
 !
-!!      Structure of number and power to construct
+!>      Structure for number and power to construct
 !!               evolution of magnetic field term
 !!@n      coef_4_magne_evo_ctl%c_tbl:  Name of number 
 !!@n      coef_4_magne_evo_ctl%vect:   Power of the number
       type(ctl_array_cr) :: coef_4_magne_evo_ctl
 !
-!!      Structure of number and power to construct
+!>      Structure for number and power to construct
 !!               magnetic diffusion term
 !!@n      coef_4_mag_diffuse_ctl%c_tbl:  Name of number 
 !!@n      coef_4_mag_diffuse_ctl%vect:   Power of the number
       type(ctl_array_cr) :: coef_4_mag_diffuse_ctl
 !
-!!      Structure of number and power to construct
+!>      Structure for number and power to construct
 !!               gradient of potenrial
 !!@n      coef_4_mag_potential_ctl%c_tbl:  Name of number 
 !!@n      coef_4_mag_potential_ctl%vect:   Power of the number
       type(ctl_array_cr) :: coef_4_mag_potential_ctl
 !
-!!      Structure of number and power to construct magnetic induction
+!>      Structure for number and power to construct magnetic induction
 !!@n      coef_4_induction_ctl%c_tbl:  Name of number 
 !!@n      coef_4_induction_ctl%vect:   Power of the number
       type(ctl_array_cr) :: coef_4_induction_ctl
