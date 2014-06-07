@@ -8,6 +8,7 @@
 !> @brief control flags for MHD dynamo model
 !!
 !!@verbatim
+!!      subroutine allocate_force_list
 !!      subroutine allocate_dimensionless_nums
 !!      subroutine allocate_fluid_ele_grp_name
 !!      subroutine allocate_conduct_ele_grp_name
@@ -15,6 +16,7 @@
 !!      subroutine allocate_whole_filter_groups
 !!      subroutine allocate_fluid_filter_groups
 !!
+!!      subroutine deallocate_force_list
 !!      subroutine deallocate_dimensionless_nums
 !!      subroutine deallocate_fluid_ele_grp_name
 !!      subroutine deallocate_conduct_ele_grp_name
@@ -325,6 +327,14 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine allocate_force_list
+!
+      allocate(name_force(num_force))
+!
+      end subroutine allocate_force_list
+!
+!  ---------------------------------------------------------------------
+!
       subroutine allocate_dimensionless_nums
 !
       allocate(name_dimless(num_dimless))
@@ -386,6 +396,14 @@
       end subroutine allocate_fluid_filter_groups
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_force_list
+!
+      deallocate(name_force)
+!
+      end subroutine deallocate_force_list
+!
 !  ---------------------------------------------------------------------
 !
       subroutine deallocate_dimensionless_nums

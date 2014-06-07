@@ -45,8 +45,6 @@
 !!     &          c1_tbl, c2_tbl)
 !!      subroutine read_control_array_chara3_list(label, num, icou,     &
 !!     &          c1_tbl, c2_tbl, c3_tbl)
-!!      subroutine read_control_array_char_r_list(label, num, icou,     &
-!!     &          c_tbl, vec1)
 !!      subroutine read_control_array_c_r2_list(label, num, icou, c_tbl,&
 !!     &          vec1, vec2)
 !!      subroutine read_control_array_c2_r_list(label, num, icou,       &
@@ -106,7 +104,6 @@
       private :: read_control_array_real,  read_control_array_chara
       private :: read_control_array_real2, read_control_array_chara2
       private :: read_control_array_real3, read_control_array_chara3
-      private :: read_control_array_chara_real
       private :: read_control_array_chara_real2
       private :: read_control_array_chara2_real
       private :: read_control_array_int_ch_re
@@ -558,22 +555,6 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_array_chara_real(num, icou, c_tbl, vec1)
-!
-      integer (kind = kint), intent(in) :: num
-      integer (kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: c_tbl(num)
-      real (kind=kreal), intent(inout) :: vec1(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara, c_tbl(icou), vec1(icou)
-!
-      end subroutine read_control_array_chara_real
-!
-!   --------------------------------------------------------------------
-!
       subroutine read_control_array_chara_real2(num, icou, c_tbl,       &
      &          vec1, vec2)
 !
@@ -912,30 +893,6 @@
       end do
 !
       end subroutine read_control_array_chara3_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_char_r_list(label, num, icou,       &
-     &          c_tbl, vec1)
-!
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: c_tbl(num)
-      real (kind=kreal), intent(inout) :: vec1(num)
-!
-      if (icou .gt. 0) return
-      do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(label, num, icou)
-        if(icou .eq. num) exit
-!
-        if(header_chara.eq.label) then
-          call read_control_array_chara_real(num, icou, c_tbl, vec1)
-        end if
-      end do
-!
-      end subroutine read_control_array_char_r_list
 !
 !   --------------------------------------------------------------------
 !

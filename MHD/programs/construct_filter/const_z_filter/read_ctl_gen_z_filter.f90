@@ -25,8 +25,6 @@
 !
       subroutine read_control_4_z_filter
 !
-      integer(kind = kint) :: iflag
-!
 !
       ctl_file_code = filter_ctl_file_code
 !
@@ -47,8 +45,6 @@
       use m_machine_parameter
       use m_ctl_data_4_plane_model
       use m_ctl_data_gen_filter
-!
-      integer(kind = kint) :: iflag
 !
 !
       if(right_begin_flag(hd_filter_control) .eq. 0) return

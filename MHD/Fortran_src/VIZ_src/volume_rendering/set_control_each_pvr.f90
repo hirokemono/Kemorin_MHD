@@ -21,11 +21,6 @@
 !
       implicit  none
 !
-      character(len=kchara), parameter :: center_name_psf_ctl(3)        &
-     &                      = (/'x', 'y', 'z'/)
-      real(kind = kreal), parameter :: center_psf_ctl(3)                &
-     &                      = (/zero, zero, zero/)
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -95,11 +90,10 @@
 !
 !
       call count_area_4_viz(num_mat, mat_name,                          &
-     &    pvr%num_pvr_area_grp_ctl, pvr%pvr_area_ele_grp_ctl,           &
+     &    pvr%pvr_area_ctl%num, pvr%pvr_area_ctl%c_tbl,                 &
      &    nele_grp_area_pvr(i_pvr) )
       istack_grp_area_pvr(i_pvr) = istack_grp_area_pvr(i_pvr-1)         &
      &                          + nele_grp_area_pvr(i_pvr)
-!
 !
       if ( nele_grp_area_pvr(i_pvr) .eq. 0)                             &
      &     call calypso_MPI_abort(100, 'set correct element group')
@@ -148,7 +142,7 @@
 !
       ist = istack_grp_area_pvr(i_pvr-1) + 1
       call s_set_area_4_viz(num_mat, mat_name,                          &
-     &    pvr%num_pvr_area_grp_ctl, pvr%pvr_area_ele_grp_ctl,           &
+     &    pvr%pvr_area_ctl%num, pvr%pvr_area_ctl%c_tbl,                 &
      &    nele_grp_area_pvr(i_pvr), id_ele_grp_area_pvr(ist) )
 !
       if (icheck_ncomp(1) .gt. 1)                                       &

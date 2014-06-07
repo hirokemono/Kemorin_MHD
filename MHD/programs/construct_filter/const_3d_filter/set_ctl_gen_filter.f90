@@ -46,12 +46,12 @@
 !
       minimum_comp = minimum_comp_ctl
 !
-      num_filtering_grp = num_filtering_grp_ctl
+      num_filtering_grp = filter_area_ctl%num
       if (iflag_debug.gt.0) then
         write(*,*) 'np_smp', np_smp
         write(*,*) 'num_int_points', num_int_points
         write(*,*) 'minimum_comp', minimum_comp
-        write(*,*) 'num_filtering_grp_ctl', num_filtering_grp_ctl
+        write(*,*) 'num_filtering_grp', num_filtering_grp
       end if
 !
 !
@@ -62,7 +62,7 @@
       else if ( num_filtering_grp .gt. 0) then
         call allocate_ref_filter_area
         filter_area_name(1:num_filtering_grp)                           &
-     &        = filter_area_name_ctl(1:num_filtering_grp)
+     &        = filter_area_ctl%c_tbl(1:num_filtering_grp)
         call deallocate_filtering_area_ctl
       end if
 !
@@ -72,7 +72,7 @@
      &   write(*,*) 'filter_area_name ', filter_area_name
 !
 !
-      num_ref_filter = num_ref_filter_ctl
+      num_ref_filter = reference_filter_ctl%num
       nf_type = num_ref_filter
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'num_ref_filter', num_ref_filter
@@ -82,26 +82,18 @@
         call allocate_ref_1d_moment
         
         do i = 1, num_ref_filter
-          if (      ref_filter_type_ctl(i) .eq. 'gaussian'              &
-     &         .or. ref_filter_type_ctl(i) .eq. 'Gaussian'              &
-     &         .or. ref_filter_type_ctl(i) .eq. 'GAUSSIAN' ) then
-            iref_filter_type(i) = 2
-          else if(  ref_filter_type_ctl(i) .eq. 'linear'                &
-     &         .or. ref_filter_type_ctl(i) .eq. 'Linear'                &
-     &         .or. ref_filter_type_ctl(i) .eq. 'LINEAR' ) then
-            iref_filter_type(i) = 1
-          else if(  ref_filter_type_ctl(i) .eq. 'tophat'                &
-     &         .or. ref_filter_type_ctl(i) .eq. 'Tophat'                &
-     &         .or. ref_filter_type_ctl(i) .eq. 'TOPHAT' ) then
-            iref_filter_type(i) = 0
-          else
-            iref_filter_type(i) = 0
-          end if
+          iref_filter_type(i) = iflag_tophat_filter
+          if(cmp_no_case(reference_filter_ctl%c_tbl(i), 'Gaussian')     &
+     &          .gt. 0) iref_filter_type(i) = iflag_gaussian_filter
+          if(cmp_no_case(reference_filter_ctl%c_tbl(i), 'Linear')       &
+     &          .gt. 0) iref_filter_type(i) = iflag_linear_filter
+          if(cmp_no_case(reference_filter_ctl%c_tbl(i), 'Tophat')       &
+     &          .gt. 0) iref_filter_type(i) = iflag_tophat_filter
 !
-          filter_type(i) = ref_filter_type_ctl(i)
+          filter_type(i) = reference_filter_ctl%c_tbl(i)
 !
-          ref_filter_width(i) = ref_filter_width_ctl(i)
-          f_width(i) = ref_filter_width_ctl(i)
+          ref_filter_width(i) = reference_filter_ctl%vect(i)
+          f_width(i) =          ref_filter_width(i)
         end do
 !
         call deallocate_ref_filter_ctl

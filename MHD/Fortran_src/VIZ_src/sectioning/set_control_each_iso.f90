@@ -52,7 +52,7 @@
       call choose_ucd_file_format(iso%iso_output_type_ctl,              &
      &    iso%i_iso_out_type, itype_iso_file(i_iso) )
 !
-      if(iso%num_iso_result_ctl .gt. 0) then
+      if(iso%iso_out_field_ctl%num .gt. 0) then
         id_iso_result_type(i_iso) = ione
       end if
 !
@@ -61,14 +61,14 @@
         istack_iso_output(i_iso) = istack_iso_output(i_iso-1) + ione
       else if ( id_iso_result_type(i_iso) .eq. ione) then
         call check_field_4_viz(num_nod_phys, phys_nod_name,             &
-     &      iso%num_iso_result_ctl, iso%iso_result_field_ctl,           &
+     &      iso%iso_out_field_ctl%num, iso%iso_out_field_ctl%c1_tbl,    &
      &      num_iso_output(i_iso) )
       end if
       istack_iso_output(i_iso) = istack_iso_output(i_iso-1)             &
      &                            + num_iso_output(i_iso)
 !
       call count_area_4_viz(num_mat, mat_name,                          &
-     &    iso%num_iso_area_grp_ctl, iso%iso_area_ele_grp_ctl,           &
+     &    iso%iso_area_ctl%num, iso%iso_area_ctl%c_tbl,                 &
      &    nele_grp_area_iso(i_iso))
       istack_grp_area_iso(i_iso) = istack_grp_area_iso(i_iso-1)         &
      &                            + nele_grp_area_iso(i_iso)
@@ -112,8 +112,8 @@
         name_iso_output(ist) = 'color'
       else if (id_iso_result_type(i_iso) .eq. ione) then
         call set_components_4_viz(num_nod_phys, phys_nod_name,          &
-     &      iso%num_iso_result_ctl, iso%iso_result_field_ctl,           &
-     &      iso%iso_result_comp_ctl, num_iso_output(i_iso),             &
+     &      iso%iso_out_field_ctl%num, iso%iso_out_field_ctl%c1_tbl,    &
+     &      iso%iso_out_field_ctl%c2_tbl, num_iso_output(i_iso),        &
      &      id_iso_output(ist), icomp_iso_output(ist),                  &
      &      ncomp_iso_output(ist), ncomp_iso_org(ist),                  &
      &      name_iso_output(ist)  )
@@ -121,7 +121,7 @@
 !
       ist = istack_grp_area_iso(i_iso-1) + 1
       call s_set_area_4_viz(num_mat, mat_name,                          &
-     &     iso%num_iso_area_grp_ctl, iso%iso_area_ele_grp_ctl,          &
+     &     iso%iso_area_ctl%num, iso%iso_area_ctl%c_tbl,                &
      &     nele_grp_area_iso(i_iso), id_ele_grp_area_iso(ist) )
 !
       end subroutine set_control_4_iso

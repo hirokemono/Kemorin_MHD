@@ -70,6 +70,7 @@
       use m_machine_parameter
       use m_read_control_elements
       use skip_comment_f
+      use t_read_control_arrays
 !
       implicit  none
 !
@@ -85,12 +86,14 @@
 !
         character(len=kchara) :: iso_result_type_ctl
 !
-        integer(kind = kint) :: num_iso_result_ctl = 0
-        character(len=kchara), pointer :: iso_result_field_ctl(:)
-        character(len=kchara), pointer :: iso_result_comp_ctl(:)
+!!      Structure for list of output field
+!!@n      iso_out_field_ctl%c1_tbl: Name of field
+!!@n      iso_out_field_ctl%c2_tbl: Name of component
+        type(ctl_array_c2) :: iso_out_field_ctl
 !
-        integer(kind = kint) :: num_iso_area_grp_ctl = 0
-        character(len=kchara), pointer :: iso_area_ele_grp_ctl(:)
+!!      Structure for element group list for isosurfacing
+!!@n      iso_area_ctl%c_tbl: Name of element group
+        type(ctl_array_chara) :: iso_area_ctl
 !
 !     Top level
         integer (kind=kint) :: i_iso_ctl = 0
@@ -104,11 +107,8 @@
         integer (kind=kint) :: i_iso_comp =      0
         integer (kind=kint) :: i_iso_value =     0
         integer (kind=kint) :: i_iso_plot_area = 0
-!     4th level for plot_area_ctl
-        integer (kind=kint) :: i_iso_plot_grp = 0
 !     3rd level for isosurf_result_define
         integer (kind=kint) :: i_result_type =     0
-        integer (kind=kint) :: i_num_iso_result_comp = 0
         integer (kind=kint) :: i_result_value =    0
 !
       end type iso_ctl
@@ -133,15 +133,15 @@
 !
 !     3rd level for isosurf_result_define
       character(len=kchara) :: hd_result_type =       'result_type'
-      character(len=kchara) :: hd_n_iso_result_comp = 'output_field'
+      character(len=kchara) :: hd_iso_result_field = 'output_field'
       character(len=kchara) :: hd_result_value =      'result_value'
 !
       private :: hd_iso_plot_grp, hd_result_type, hd_iso_ctl
       private :: hd_result_value, hd_iso_plot_area, hd_iso_value
       private :: hd_iso_comp, hd_iso_field, hd_iso_result
       private :: hd_iso_define, hd_iso_out_type, hd_iso_file_head
+      private :: hd_iso_result_field
 !
-      private :: allocate_cont_dat_4_iso, allocate_area_grp_4_iso
       private :: read_iso_define_data, read_iso_control_data
       private :: read_iso_result_control, read_iso_plot_area_ctl
 !
@@ -151,41 +151,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_cont_dat_4_iso(iso)
-!
-      type(iso_ctl), intent(inout) :: iso
-!
-!
-      allocate( iso%iso_result_field_ctl(iso%num_iso_result_ctl) )
-      allocate( iso%iso_result_comp_ctl(iso%num_iso_result_ctl) )
-!
-      end subroutine allocate_cont_dat_4_iso
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_area_grp_4_iso(iso)
-!
-      type(iso_ctl), intent(inout) :: iso
-!
-!
-      allocate( iso%iso_area_ele_grp_ctl(iso%num_iso_area_grp_ctl) )
-!
-      end subroutine allocate_area_grp_4_iso
-!
-!  ---------------------------------------------------------------------
-!
       subroutine deallocate_cont_dat_4_iso(iso)
 !
       type(iso_ctl), intent(inout) :: iso
 !
-      if(iso%num_iso_result_ctl .gt. 0                                  &
-     &   .and. iso%i_num_iso_result_comp .gt. 0) then
-        deallocate( iso%iso_result_field_ctl )
-        deallocate( iso%iso_result_comp_ctl )
-        iso%num_iso_result_ctl = 0
-      end if
 !
-      deallocate( iso%iso_area_ele_grp_ctl )
+      call dealloc_control_array_c2(iso%iso_out_field_ctl)
+      iso%iso_out_field_ctl%num =  0
+      iso%iso_out_field_ctl%icou = 0
+!
+      call dealloc_control_array_chara(iso%iso_area_ctl)
+      iso%iso_area_ctl%num =  0
+      iso%iso_area_ctl%icou = 0
 !
       end subroutine deallocate_cont_dat_4_iso
 !
@@ -274,15 +251,8 @@
         call find_control_end_flag(hd_iso_result, iso%i_iso_result)
         if(iso%i_iso_result .gt. 0) exit
 !
-        call find_control_array_flag(hd_n_iso_result_comp,             &
-     &        iso%num_iso_result_ctl)
-        if(iso%num_iso_result_ctl.gt.0                                  &
-     &       .and. iso%i_num_iso_result_comp.eq.0) then
-          call allocate_cont_dat_4_iso(iso)
-          call read_control_array_chara2_list(hd_n_iso_result_comp,     &
-     &        iso%num_iso_result_ctl, iso%i_num_iso_result_comp,        &
-     &        iso%iso_result_field_ctl, iso%iso_result_comp_ctl)
-        end if
+        call read_control_array_c2                                      &
+     &     (hd_iso_result_field, iso%iso_out_field_ctl)
 !
         call read_character_ctl_item(hd_result_type,                    &
      &        iso%i_result_type, iso%iso_result_type_ctl)
@@ -309,15 +279,8 @@
      &      iso%i_iso_plot_area)
         if(iso%i_iso_plot_area .gt. 0) exit
 !
-        call find_control_array_flag(hd_iso_plot_grp,                   &
-     &        iso%num_iso_area_grp_ctl)
-        if(iso%num_iso_area_grp_ctl.gt.0                                &
-     &       .and. iso%i_iso_plot_grp.eq.0) then
-          call allocate_area_grp_4_iso(iso)
-          call read_control_array_chara_list(hd_iso_plot_grp,           &
-     &            iso%num_iso_area_grp_ctl, iso%i_iso_plot_grp,         &
-     &            iso%iso_area_ele_grp_ctl)
-        end if
+        call read_control_array_chara                                   &
+     &     (hd_iso_plot_grp, iso%iso_area_ctl)
       end do
 !
       end subroutine read_iso_plot_area_ctl

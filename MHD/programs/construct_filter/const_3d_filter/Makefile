@@ -19,7 +19,6 @@ single_sorting_3dfilter.o \
 analyzer_sorting_3dfilter.o \
 m_ctl_data_gen_3d_filter.o \
 \
-read_ctl_gen_filter.o \
 set_ctl_gen_filter.o
 
 MOD_GEN_FILTER3D_FX= \
@@ -29,7 +28,6 @@ m_ctl_data_gen_3d_filter.o \
 \
 input_control_gen_filter.o \
 \
-read_ctl_gen_filter.o \
 set_ctl_gen_filter.o
 
 

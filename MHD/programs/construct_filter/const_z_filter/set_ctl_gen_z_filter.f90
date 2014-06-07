@@ -107,21 +107,21 @@
 !
 !   set filter types
 !
-      if (i_num_ref_filter .ne. 0) then
-        num_filter_z = num_ref_filter_ctl
+      if (reference_filter_ctl%icou .ne. 0) then
+        num_filter_z = reference_filter_ctl%num
       else
         num_filter_z = 1
       end if
-      if (i_num_horiz_filter .ne. 0) then
-        num_filter_h = num_horiz_filter_ctl
+      if (horizontal_filter_ctl%icou .ne. 0) then
+        num_filter_h = horizontal_filter_ctl%num
       else
         num_filter_h = 1
       end if
 !
-      type_filter_z = ref_filter_type_ctl(1)
-      type_filter_h = horiz_filter_type_ctl(1)
-      f_width =   ref_filter_width_ctl(1)
-      f_width_h = horiz_filter_width_ctl(1)
+      type_filter_z = reference_filter_ctl%c_tbl(1)
+      type_filter_h = horizontal_filter_ctl%c_tbl(1)
+      f_width =   reference_filter_ctl%vect(1)
+      f_width_h = horizontal_filter_ctl%vect(1)
 !
       call deallocate_ref_filter_ctl
       call deallocate_horiz_filter_ctl

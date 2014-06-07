@@ -178,8 +178,9 @@
         character(len=kchara) :: pvr_output_type_ctl
         character(len=kchara) :: pvr_transparent_ctl
 !
-        integer(kind = kint) :: num_pvr_area_grp_ctl = 0
-        character(len=kchara), pointer :: pvr_area_ele_grp_ctl(:)
+!!      Structure for element group list for PVR
+!!@n      group_4_monitor_ctl%c_tbl: Name of element group for PVR
+        type(ctl_array_chara) :: pvr_area_ctl
 !
         character(len=kchara) :: pvr_field_ctl(1)
         character(len=kchara) :: pvr_comp_ctl(1)
@@ -234,12 +235,12 @@
         integer (kind=kint) :: i_pvr_rgba_type =       0
         integer (kind=kint) :: i_output_field_def =    0
         integer (kind=kint) :: i_output_comp_def =     0
+        integer (kind=kint) :: i_plot_area =           0
 !
         integer (kind=kint) :: i_pvr_lighting =        0
         integer (kind=kint) :: i_pvr_colordef =        0
         integer (kind=kint) :: i_pvr_colorbar =        0
         integer (kind=kint) :: i_pvr_rotation =        0
-        integer (kind=kint) :: i_plot_area =           0
 !
 !     3rd level for colormap
         integer (kind=kint) :: i_colormap =              0
@@ -266,10 +267,6 @@
 !     3rd level for rotation
         integer (kind=kint) :: i_movie_rot_axis =  0
         integer (kind=kint) :: i_movie_rot_frame =  0
-!
-!     4th level for plot_area
-!
-        integer (kind=kint) :: i_plot_grp = 0
       end type pvr_ctl
 !
 !
@@ -344,7 +341,6 @@
       private :: hd_colortable, hd_opacity_style
       private :: hd_constant_opacity, hd_opacity_def
 !
-      private :: allocate_area_grp_vr_psf
       private :: read_plot_area_ctl
       private :: read_lighting_ctl
       private :: read_pvr_rotation_ctl
@@ -354,18 +350,6 @@
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_area_grp_vr_psf(pvr)
-!
-      type(pvr_ctl), intent(inout) :: pvr
-!
-!
-      allocate(pvr%pvr_area_ele_grp_ctl(pvr%num_pvr_area_grp_ctl) )
-!
-      end subroutine allocate_area_grp_vr_psf
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine deallocate_cont_dat_pvr(pvr)
@@ -384,7 +368,7 @@
         call dealloc_control_array_r2(pvr%colortbl_ctl)
       end if
 !
-      deallocate(pvr%pvr_area_ele_grp_ctl)
+      call dealloc_control_array_chara(pvr%pvr_area_ctl)
 !
       end subroutine deallocate_cont_dat_pvr
 !
@@ -462,15 +446,7 @@
         call find_control_end_flag(hd_plot_area, pvr%i_plot_area)
         if(pvr%i_plot_area .gt. 0) exit
 !
-        call find_control_array_flag(hd_plot_grp,                       &
-     &      pvr%num_pvr_area_grp_ctl)
-        if(pvr%num_pvr_area_grp_ctl.gt.0                                &
-     &       .and. pvr%i_plot_grp.eq.0) then
-          call allocate_area_grp_vr_psf(pvr)
-          call read_control_array_chara_list(hd_plot_grp,               &
-     &        pvr%num_pvr_area_grp_ctl, pvr%i_plot_grp,                 &
-     &        pvr%pvr_area_ele_grp_ctl )
-        end if
+        call read_control_array_chara(hd_plot_grp, pvr%pvr_area_ctl)
       end do
 !
       end subroutine read_plot_area_ctl
@@ -609,7 +585,7 @@
       type(pvr_ctl), intent(inout) :: pvr
 !
 !
-      pvr%num_pvr_area_grp_ctl = 0
+      pvr%pvr_area_ctl%num =       0
       pvr%light_position_ctl%num = 0
       pvr%colortbl_ctl%num =       0
       pvr%opacity_ctl%num =        0
@@ -641,7 +617,7 @@
 !
       pvr%i_pvr_ctl = 0
       pvr%i_plot_area =   0
-      pvr%i_plot_grp = 0
+      pvr%pvr_area_ctl%icou = 0
 !
       pvr%i_pvr_lighting = 0
 !

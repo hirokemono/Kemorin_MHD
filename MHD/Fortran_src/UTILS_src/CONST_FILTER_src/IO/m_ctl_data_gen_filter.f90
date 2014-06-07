@@ -3,9 +3,6 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine allocate_ref_filter_ctl
-!      subroutine allocate_horiz_filter_ctl
-!
 !      subroutine deallocate_mom_param_ctl
 !      subroutine deallocate_ref_filter_ctl
 !      subroutine deallocate_horiz_filter_ctl
@@ -45,13 +42,15 @@
       integer(kind = kint) :: ist_num_free_ctl =  -1
       integer(kind = kint) :: ied_num_free_ctl =  -1
 !
-      integer(kind = kint) :: num_ref_filter_ctl
-      character(len = kchara), allocatable :: ref_filter_type_ctl(:)
-      real(kind = kreal), allocatable :: ref_filter_width_ctl(:)
+!!      Structure of list of reference filter mode
+!!@n      reference_filter_ctl%c_tbl: list of filter type
+!!@n      reference_filter_ctl%vect:  list of filter width
+      type(ctl_array_cr) :: reference_filter_ctl
 !
-      integer(kind = kint) :: num_horiz_filter_ctl
-      character(len = kchara), allocatable :: horiz_filter_type_ctl(:)
-      real(kind = kreal), allocatable :: horiz_filter_width_ctl(:)
+!!      Structure of list of horizontal filter mode
+!!@n      horizontal_filter_ctl%c_tbl: list of filter type
+!!@n      horizontal_filter_ctl%vect:  list of filter width
+      type(ctl_array_cr) :: horizontal_filter_ctl
 !
 !!      Structure for reference moments for filter
 !!@n      ref_filter_mom_ctl%ivec:  Order of reference filter moments
@@ -95,7 +94,7 @@
       character(len=kchara), parameter                                  &
      &         :: hd_order_moments =     'moments_ctl'
       character(len=kchara), parameter                                  &
-     &         :: hd_num_ref_filter =    'ref_filter_ctl'
+     &         :: hd_ref_filter =        'ref_filter_ctl'
       character(len=kchara), parameter                                  &
      &         :: hd_maximum_neighbour = 'maximum_neighbour'
       character(len=kchara), parameter                                  &
@@ -111,7 +110,7 @@
       character(len=kchara), parameter                                  &
      &         :: hd_momentum_type =     'momentum_type'
       character(len=kchara), parameter                                  &
-     &         :: hd_num_horiz_filter =  'num_horiz_filter'
+     &         :: hd_horiz_filter =  'num_horiz_filter'
       character(len=kchara), parameter                                  &
      &         :: hd_solver_type =       'solver_type'
 !
@@ -126,7 +125,6 @@
       integer (kind=kint) :: i_minimum_det =        0
       integer (kind=kint) :: i_maximum_rms =        0
       integer (kind=kint) :: i_nele_filtering =     0
-      integer (kind=kint) :: i_num_ref_filter =     0
       integer (kind=kint) :: i_maximum_neighbour =  0
       integer (kind=kint) :: i_tgt_filter_type =    0
       integer (kind=kint) :: i_filter_corection =   0
@@ -134,7 +132,6 @@
       integer (kind=kint) :: i_filter_negative_center = 0
       integer (kind=kint) :: i_err_level_commute =  0
       integer (kind=kint) :: i_momentum_type =      0
-      integer (kind=kint) :: i_num_horiz_filter =   0
       integer (kind=kint) :: i_solver_type =        0
 !
       private :: hd_filter_param_ctl, i_filter_param_ctl
@@ -145,33 +142,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_ref_filter_ctl
-!
-      allocate(ref_filter_type_ctl(num_ref_filter_ctl))
-      allocate(ref_filter_width_ctl(num_ref_filter_ctl))
-!
-      ref_filter_width_ctl = 0.0d0
-!
-      end subroutine allocate_ref_filter_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_horiz_filter_ctl
-!
-      allocate(horiz_filter_type_ctl(num_horiz_filter_ctl))
-      allocate(horiz_filter_width_ctl(num_horiz_filter_ctl))
-!
-      horiz_filter_width_ctl = 0.0d0
-!
-      end subroutine allocate_horiz_filter_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine deallocate_ref_filter_ctl
 !
-      deallocate(ref_filter_type_ctl)
-      deallocate(ref_filter_width_ctl)
+      call dealloc_control_array_c_r(reference_filter_ctl)
 !
       end subroutine deallocate_ref_filter_ctl
 !
@@ -179,8 +152,7 @@
 !
       subroutine deallocate_horiz_filter_ctl
 !
-      deallocate(horiz_filter_type_ctl)
-      deallocate(horiz_filter_width_ctl)
+      call dealloc_control_array_c_r(horizontal_filter_ctl)
 !
       end subroutine deallocate_horiz_filter_ctl
 !
@@ -214,24 +186,10 @@
         call read_control_array_i_c_r                                   &
      &     (hd_order_moments, ref_filter_mom_ctl)
 !
-        call find_control_array_flag(hd_num_ref_filter,                 &
-     &      num_ref_filter_ctl)
-        if(num_ref_filter_ctl.gt.0 .and. i_num_ref_filter.eq.0) then
-          call allocate_ref_filter_ctl
-          call read_control_array_vect_list(hd_num_ref_filter,          &
-     &        num_ref_filter_ctl, i_num_ref_filter,                     &
-     &        ref_filter_type_ctl, ref_filter_width_ctl)
-        end if
-!
-        call find_control_array_flag(hd_num_horiz_filter,               &
-     &      num_horiz_filter_ctl)
-        if(num_horiz_filter_ctl.gt.0                                    &
-     &       .and. i_num_horiz_filter.eq.0) then
-          call allocate_horiz_filter_ctl
-          call read_control_array_vect_list(hd_num_horiz_filter,        &
-     &        num_horiz_filter_ctl, i_num_horiz_filter,                 &
-     &        horiz_filter_type_ctl, horiz_filter_width_ctl)
-        end if
+        call read_control_array_c_r                                     &
+     &     (hd_ref_filter, reference_filter_ctl)
+        call read_control_array_c_r                                     &
+     &     (hd_horiz_filter, horizontal_filter_ctl)
 !
 !
         call read_character_ctl_item(hd_solver_type,                    &

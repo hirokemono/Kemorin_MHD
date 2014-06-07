@@ -30,65 +30,63 @@
       subroutine set_coefs_4_psf(num_const, c_name_psf, const_psf_ctl,  &
      &          c_surf)
 !
+      use skip_comment_f
+!
       integer(kind = kint), intent(in) :: num_const
       character(len=kchara), intent(in) :: c_name_psf(num_const)
       real(kind = kreal), intent(in) :: const_psf_ctl(num_const)
 !
       real(kind = kreal), intent(inout) :: c_surf(10)
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, iflag
 !
 !
       do i = 1, num_const
+        iflag =  cmp_no_case(c_name_psf(i), 'XX')                       &
+     &         + cmp_no_case(c_name_psf(i), 'X2')                       &
+     &         + cmp_no_case(c_name_psf(i), 'X^2')
+        if(iflag .gt. 0) c_surf(1) = const_psf_ctl(i)
 !
-        if      (c_name_psf(i).eq."x2" .or. c_name_psf(i).eq."X^2"      &
-     &      .or. c_name_psf(i).eq.'x2' .or.  c_name_psf(i).eq.'X2'      &
-     &      .or. c_name_psf(i).eq.'xx' .or.  c_name_psf(i).eq.'XX'      &
-     &         ) then
-          c_surf(1) = const_psf_ctl(i)
-        else if (c_name_psf(i).eq.'y^2' .or. c_name_psf(i).eq.'Y^2'     &
-     &      .or. c_name_psf(i).eq.'y2' .or.  c_name_psf(i).eq.'Y2'      &
-     &      .or. c_name_psf(i).eq.'yy' .or.  c_name_psf(i).eq.'YY'      &
-     &         ) then
-          c_surf(2) = const_psf_ctl(i)
-        else if (c_name_psf(i).eq.'z^2' .or. c_name_psf(i).eq.'Z^2'     &
-     &      .or. c_name_psf(i).eq.'z2' .or.  c_name_psf(i).eq.'Z2'      &
-     &      .or. c_name_psf(i).eq.'zz' .or.  c_name_psf(i).eq.'ZZ'      &
-     &         ) then
-          c_surf(3) = const_psf_ctl(i)
+        iflag =  cmp_no_case(c_name_psf(i), 'YY')                       &
+     &         + cmp_no_case(c_name_psf(i), 'Y2')                       &
+     &         + cmp_no_case(c_name_psf(i), 'Y^2')
+        if(iflag .gt. 0) c_surf(2) = const_psf_ctl(i)
 !
-        else if (c_name_psf(i).eq.'xy' .or. c_name_psf(i).eq.'XY'       &
-     &      .or. c_name_psf(i).eq.'yx' .or. c_name_psf(i).eq.'YX') then
-          c_surf(4) = const_psf_ctl(i)
-        else if (c_name_psf(i).eq.'yz' .or. c_name_psf(i).eq.'YZ'       &
-     &      .or. c_name_psf(i).eq.'zy' .or. c_name_psf(i).eq.'ZY') then
-          c_surf(5) = const_psf_ctl(i)
-        else if (c_name_psf(i).eq.'zx' .or. c_name_psf(i).eq.'ZX'       &
-     &      .or. c_name_psf(i).eq.'xz' .or. c_name_psf(i).eq.'xz') then
-          c_surf(6) = const_psf_ctl(i)
+        iflag =  cmp_no_case(c_name_psf(i), 'ZZ')                       &
+     &         + cmp_no_case(c_name_psf(i), 'Z2')                       &
+     &         + cmp_no_case(c_name_psf(i), 'Z^2')
+        if(iflag .gt. 0) c_surf(3) = const_psf_ctl(i)
 !
-        else if (c_name_psf(i).eq.'x^1' .or. c_name_psf(i).eq.'X^1'     &
-     &      .or. c_name_psf(i).eq.'x1' .or.  c_name_psf(i).eq.'X1'      &
-     &      .or. c_name_psf(i).eq.'x' .or.   c_name_psf(i).eq.'X'       &
-     &         ) then
-          c_surf(7) = const_psf_ctl(i)
-        else if (c_name_psf(i).eq.'y^1' .or. c_name_psf(i).eq.'Y^1'     &
-     &      .or. c_name_psf(i).eq.'y1' .or.  c_name_psf(i).eq.'Y1'      &
-     &      .or. c_name_psf(i).eq.'y' .or.  c_name_psf(i).eq.'Y'        &
-     &         ) then
-          c_surf(8) = const_psf_ctl(i)
-        else if (c_name_psf(i).eq.'z^1' .or. c_name_psf(i).eq.'Z^1'     &
-     &      .or. c_name_psf(i).eq.'z1' .or.  c_name_psf(i).eq.'Z1'      &
-     &      .or. c_name_psf(i).eq.'z' .or.  c_name_psf(i).eq.'Z'        &
-     &         ) then
-          c_surf(9) = const_psf_ctl(i)
+        iflag =  cmp_no_case(c_name_psf(i), 'XY')                       &
+     &         + cmp_no_case(c_name_psf(i), 'YZ')
+        if(iflag .gt. 0) c_surf(4) = const_psf_ctl(i)
 !
-        else if (c_name_psf(i).eq.'const' .or. c_name_psf(i).eq.'Const' &
-     &      .or. c_name_psf(i).eq.'CONST' .or. c_name_psf(i).eq.'c'     &
-     &      .or. c_name_psf(i).eq.'C' ) then
-          c_surf(10) = const_psf_ctl(i)
+        iflag =  cmp_no_case(c_name_psf(i), 'YZ')                       &
+     &         + cmp_no_case(c_name_psf(i), 'ZY')
+        if(iflag .gt. 0) c_surf(5) = const_psf_ctl(i)
 !
-        end if
+        iflag =  cmp_no_case(c_name_psf(i), 'ZX')                       &
+     &         + cmp_no_case(c_name_psf(i), 'XZ')
+        if(iflag .gt. 0) c_surf(6) = const_psf_ctl(i)
+!
+        iflag =  cmp_no_case(c_name_psf(i), 'X')                        &
+     &         + cmp_no_case(c_name_psf(i), 'X1')                       &
+     &         + cmp_no_case(c_name_psf(i), 'X^1')
+        if(iflag .gt. 0) c_surf(7) = const_psf_ctl(i)
+!
+        iflag =  cmp_no_case(c_name_psf(i), 'Y')                        &
+     &         + cmp_no_case(c_name_psf(i), 'Y1')                       &
+     &         + cmp_no_case(c_name_psf(i), 'Y^1')
+        if(iflag .gt. 0) c_surf(8) = const_psf_ctl(i)
+!
+        iflag =  cmp_no_case(c_name_psf(i), 'Z')                        &
+     &         + cmp_no_case(c_name_psf(i), 'Z1')                       &
+     &         + cmp_no_case(c_name_psf(i), 'Z^1')
+        if(iflag .gt. 0) c_surf(9) = const_psf_ctl(i)
+!
+        iflag =  cmp_no_case(c_name_psf(i), 'Const')                    &
+     &         + cmp_no_case(c_name_psf(i), 'C')
+        if(iflag .gt. 0) c_surf(10) = const_psf_ctl(i)
       end do
 !
       end subroutine set_coefs_4_psf
@@ -103,8 +101,8 @@
       real(kind = kreal) :: xc(3)
 !
 !
-      call set_parameter_2_vectors(psf%num_center_psf_ctl,              &
-     &    psf%center_name_psf_ctl, psf%center_psf_ctl, xc)
+      call set_parameter_2_vectors(psf%psf_center_ctl%num,              &
+     &    psf%psf_center_ctl%c_tbl, psf%psf_center_ctl%vect, xc)
 !
       c_surf( 1) =  one
       c_surf( 2) =  one
@@ -130,10 +128,10 @@
       real(kind = kreal) :: xc(3), axc(3)
 !
 !
-      call set_parameter_2_vectors(psf%num_center_psf_ctl,              &
-     &    psf%center_name_psf_ctl, psf%center_psf_ctl, xc)
-      call set_parameter_2_vectors(psf%num_axis_psf_ctl,                &
-     &    psf%axis_name_psf_ctl, psf%axis_psf_ctl, axc)
+      call set_parameter_2_vectors(psf%psf_center_ctl%num,              &
+     &    psf%psf_center_ctl%c_tbl, psf%psf_center_ctl%vect, xc)
+      call set_parameter_2_vectors(psf%psf_axis_ctl%num,                &
+     &    psf%psf_axis_ctl%c_tbl, psf%psf_axis_ctl%vect, axc)
 !
       c_surf( 1) =  one / (axc(1)*axc(1))
       c_surf( 2) =  one / (axc(2)*axc(2))
@@ -161,10 +159,10 @@
       real(kind = kreal) :: xc(3), axc(3)
 !
 !
-      call set_parameter_2_vectors(psf%num_center_psf_ctl,              &
-     &    psf%center_name_psf_ctl, psf%center_psf_ctl, xc)
-      call set_parameter_2_vectors(psf%num_axis_psf_ctl,                &
-     &    psf%axis_name_psf_ctl, psf%axis_psf_ctl, axc)
+      call set_parameter_2_vectors(psf%psf_center_ctl%num,              &
+     &    psf%psf_center_ctl%c_tbl, psf%psf_center_ctl%vect, xc)
+      call set_parameter_2_vectors(psf%psf_axis_ctl%num,                &
+     &    psf%psf_axis_ctl%c_tbl, psf%psf_axis_ctl%vect, axc)
 !
       c_surf( 1) =  one / (axc(1)*axc(1))
       c_surf( 2) =  one / (axc(2)*axc(2))
@@ -192,10 +190,10 @@
       real(kind = kreal) :: xc(3), axc(3)
 !
 !
-      call set_parameter_2_vectors(psf%num_center_psf_ctl,              &
-     &    psf%center_name_psf_ctl, psf%center_psf_ctl, xc)
-      call set_parameter_2_vectors(psf%num_axis_psf_ctl,                &
-     &    psf%axis_name_psf_ctl, psf%axis_psf_ctl, axc)
+      call set_parameter_2_vectors(psf%psf_center_ctl%num,              &
+     &    psf%psf_center_ctl%c_tbl, psf%psf_center_ctl%vect, xc)
+      call set_parameter_2_vectors(psf%psf_axis_ctl%num,                &
+     &    psf%psf_axis_ctl%c_tbl, psf%psf_axis_ctl%vect, axc)
 !
       c_surf( 1) =  one / (axc(1)*axc(1))
       c_surf( 2) = -one / (axc(2)*axc(2))

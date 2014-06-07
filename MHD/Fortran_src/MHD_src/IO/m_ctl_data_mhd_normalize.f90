@@ -140,7 +140,6 @@
         call find_control_end_flag(hd_dimless_ctl, i_dimless_ctl)
         if(i_dimless_ctl .gt. 0) exit
 !
-!
         call read_control_array_c_r(hd_dimless, coef_4_dimless_ctl)
       end do
 !

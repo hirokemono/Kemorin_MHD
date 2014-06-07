@@ -37,6 +37,11 @@
       integer(kind = kint), allocatable :: id_filter_area_grp(:)
       character(len = kchara), allocatable :: filter_area_name(:)
 !
+!
+      integer(kind = kint), parameter :: iflag_tophat_filter =   0
+      integer(kind = kint), parameter :: iflag_linear_filter =   1
+      integer(kind = kint), parameter :: iflag_gaussian_filter = 2
+!
       integer(kind = kint) :: num_ref_filter
       integer(kind = kint), allocatable :: iref_filter_type(:)
       real(kind = kreal), allocatable :: ref_filter_width(:)
@@ -98,7 +103,7 @@
       allocate(iref_filter_type(num_ref_filter))
       allocate(ref_filter_width(num_ref_filter))
 !
-      iref_filter_type = 0
+      iref_filter_type = iflag_tophat_filter
       ref_filter_width = 0.0d0
 !
       end subroutine allocate_ref_filter_type

@@ -23,7 +23,7 @@
 !
       use m_ctl_params_4_gen_filter
 !
-      use read_ctl_gen_filter
+      use m_ctl_data_gen_3d_filter
       use set_ctl_gen_filter
 !
 !

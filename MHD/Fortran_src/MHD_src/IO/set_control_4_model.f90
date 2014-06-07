@@ -221,18 +221,19 @@
            write(*,*) 'stratified_outer_r ', stratified_outer_r
         end if
 !
-        if (i_monitor_grp.eq.0) then
+        if (group_4_monitor_ctl%icou .eq. 0) then
           num_monitor = 0
         else
-          num_monitor = num_monitor_ctl
+          num_monitor = group_4_monitor_ctl%num
         end if
 !
       if (num_monitor .ne. 0) then
         call allocate_monitor_group
 !
         do i = 1, num_monitor
-          monitor_grp(i) = monitor_grp_ctl(i)
+          monitor_grp(i) = group_4_monitor_ctl%c_tbl(i)
         end do
+        call dealloc_monitor_grp_ctl
 !
         if (iflag_debug .ge. iflag_routine_msg) then
           do i = 1, num_monitor

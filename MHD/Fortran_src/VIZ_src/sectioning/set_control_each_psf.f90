@@ -54,13 +54,13 @@
      &    psf%i_psf_out_type, itype_psf_file(i_psf) )
 !
       call check_field_4_viz(num_nod_phys, phys_nod_name,               &
-     &    psf%num_psf_output_ctl, psf%psf_out_field_ctl,                &
-     &    num_psf_output(i_psf) )
+     &   psf%psf_out_field_ctl%num, psf%psf_out_field_ctl%c1_tbl,       &
+     &   num_psf_output(i_psf) )
       istack_psf_output(i_psf) = istack_psf_output(i_psf-1)             &
      &                          + num_psf_output(i_psf)
 !
       call count_area_4_viz(num_mat, mat_name,                          &
-     &    psf%num_psf_area_grp_ctl, psf%psf_area_ele_grp_ctl,           &
+     &    psf%psf_area_ctl%num, psf%psf_area_ctl%c_tbl,                 &
      &    nele_grp_area_psf(i_psf) )
       istack_grp_area_psf(i_psf) = istack_grp_area_psf(i_psf-1)         &
      &                          + nele_grp_area_psf(i_psf)
@@ -95,8 +95,8 @@
 !
       if     (psf%section_method_ctl.eq. 'equation') then
         id_section_method(i_psf) = 1
-        call set_coefs_4_psf(psf%num_const_psf_ctl,                     &
-     &      psf%coef_name_psf_ctl,  psf%const_psf_ctl,                  &
+        call set_coefs_4_psf(psf%psf_coefs_ctl%num,                     &
+     &      psf%psf_coefs_ctl%c_tbl,  psf%psf_coefs_ctl%vect,           &
      &      const_psf(1,i_psf) )
         call deallocate_psf_coefs_ctl(psf)
 !
@@ -133,8 +133,8 @@
       if ( num_psf_output(i_psf) .gt. 0 ) then
         ist = istack_psf_output(i_psf-1) + 1
         call set_components_4_viz(num_nod_phys, phys_nod_name,          &
-     &      psf%num_psf_output_ctl, psf%psf_out_field_ctl,              &
-     &      psf%psf_out_comp_ctl, num_psf_output(i_psf),                &
+     &      psf%psf_out_field_ctl%num, psf%psf_out_field_ctl%c1_tbl,    &
+     &      psf%psf_out_field_ctl%c2_tbl, num_psf_output(i_psf),        &
      &      id_psf_output(ist), icomp_psf_output(ist),                  &
      &      ncomp_psf_output(ist), ncomp_psf_org(ist),                  &
      &      name_psf_output(ist) )
@@ -142,9 +142,8 @@
 !
       ist = istack_grp_area_psf(i_psf-1) + 1
       call s_set_area_4_viz(num_mat, mat_name,                          &
-     &    psf%num_psf_area_grp_ctl, psf%psf_area_ele_grp_ctl,           &
+     &    psf%psf_area_ctl%num, psf%psf_area_ctl%c_tbl,                 &
      &    nele_grp_area_psf(i_psf), id_ele_grp_area_psf(ist) )
-!
 !
       end subroutine set_control_4_psf
 !

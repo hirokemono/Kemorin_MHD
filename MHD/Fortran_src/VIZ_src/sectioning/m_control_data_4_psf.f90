@@ -117,6 +117,7 @@
       use m_machine_parameter
       use m_read_control_elements
       use skip_comment_f
+      use t_read_control_arrays
 !
       implicit  none
 !
@@ -128,28 +129,33 @@
         character(len=kchara) :: section_method_ctl
 !
 !
-        integer(kind = kint) :: num_const_psf_ctl = 0
-        character(len=kchara), pointer :: coef_name_psf_ctl(:)
-        real(kind = kreal), pointer :: const_psf_ctl(:)
+!!      Structure for coefficients for sueface equation
+!!@n      psf_coefs_ctl%c_tbl: 
+!!@n      psf_coefs_ctl%vect:  coefficients
+        type(ctl_array_cr) :: psf_coefs_ctl
 !
-        integer(kind = kint) :: num_center_psf_ctl = 0
-        character(len=kchara), pointer :: center_name_psf_ctl(:)
-        real(kind = kreal), pointer :: center_psf_ctl(:)
+!!      Structure for definition of center
+!!@n      psf_axis_ctl%c_tbl: direction of axis
+!!@n      psf_axis_ctl%vect:  position
+        type(ctl_array_cr) :: psf_center_ctl
 !
-        integer(kind = kint) :: num_axis_psf_ctl = 0
-        character(len=kchara), pointer :: axis_name_psf_ctl(:)
-        real(kind = kreal), pointer :: axis_psf_ctl(:)
+!!      Structure for definition of elipsoid
+!!@n      psf_axis_ctl%c_tbl: direction of axis
+!!@n      psf_axis_ctl%vect:  vector component
+        type(ctl_array_cr) :: psf_axis_ctl
 !
         real(kind = kreal) :: radius_psf_ctl
 !
         character(len=kchara) :: psf_group_name_ctl
 !
-        integer(kind = kint) :: num_psf_output_ctl = 0
-        character(len=kchara), pointer :: psf_out_field_ctl(:)
-        character(len=kchara), pointer :: psf_out_comp_ctl(:)
+!!      Structure for list of output field
+!!@n      psf_out_field_ctl%c1_tbl: Name of field
+!!@n      psf_out_field_ctl%c2_tbl: Name of component
+        type(ctl_array_c2) :: psf_out_field_ctl
 !
-        integer(kind = kint) :: num_psf_area_grp_ctl = 0
-        character(len=kchara), pointer :: psf_area_ele_grp_ctl(:)
+!!      Structure for element group list for Parallel Sectioning
+!!@n      psf_area_ctl%c_tbl: Name of element group
+        type(ctl_array_chara) :: psf_area_ctl
 !
 !     Top level
         integer (kind=kint) :: i_psf_ctl = 0
@@ -162,18 +168,7 @@
         integer (kind=kint) :: i_section_method =  0
         integer (kind=kint) :: i_radius =          0
         integer (kind=kint) :: i_plot_area =       0
-        integer (kind=kint) :: i_group_name =  0
-!     4th level for center_position
-        integer (kind=kint) :: i_center_ctl =  0
-!     4th level for axial_length
-        integer (kind=kint) :: i_axis_ctl =    0
-!     4th level for coefficients
-        integer (kind=kint) :: i_coefs_ctl =   0
-!     4th level for plot_area
-        integer (kind=kint) :: i_plot_grp =    0
-!     3rd level for output_field_define
-        integer (kind=kint) :: i_num_psf_result_comp = 0
-!
+        integer (kind=kint) :: i_group_name =      0
       end type psf_ctl
 !
 !
@@ -205,7 +200,7 @@
       character(len=kchara) :: hd_plot_grp = 'chosen_ele_grp_ctl'
 !
 !     3rd level for output_field_define
-      character(len=kchara) :: hd_n_psf_result_comp = 'output_field'
+      character(len=kchara) :: hd_psf_result_field = 'output_field'
 !
 !
       private :: hd_psf_file_head
@@ -213,10 +208,8 @@
       private :: hd_section_method
       private :: hd_radius, hd_plot_area
       private :: hd_group_name, hd_center_ctl, hd_axis_ctl
-      private :: hd_coefs_ctl, hd_plot_grp, hd_n_psf_result_comp
+      private :: hd_coefs_ctl, hd_plot_grp, hd_psf_result_field
 !
-      private :: allocate_cont_dat_4_psf, allocate_area_grp_4_psf
-      private :: allocate_psf_coefs_ctl
       private :: read_psf_output_ctl
       private :: read_psf_plot_area_ctl, read_section_def_control
 !
@@ -226,81 +219,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_cont_dat_4_psf(psf)
-!
-      type(psf_ctl), intent(inout) :: psf
-!
-!
-      allocate( psf%psf_out_field_ctl(psf%num_psf_output_ctl) )
-      allocate( psf%psf_out_comp_ctl(psf%num_psf_output_ctl) )
-!
-      end subroutine allocate_cont_dat_4_psf
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_area_grp_4_psf(psf)
-!
-      type(psf_ctl), intent(inout) :: psf
-!
-!
-      allocate( psf%psf_area_ele_grp_ctl(psf%num_psf_area_grp_ctl) )
-!
-      end subroutine allocate_area_grp_4_psf
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_psf_coefs_ctl(psf)
-!
-      type(psf_ctl), intent(inout) :: psf
-!
-!
-      allocate( psf%coef_name_psf_ctl(psf%num_const_psf_ctl))
-      allocate( psf%const_psf_ctl(psf%num_const_psf_ctl))
-      if(psf%num_const_psf_ctl .gt. 0) psf%const_psf_ctl = 0.0d0
-!
-      end subroutine allocate_psf_coefs_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_psf_center_ctl(psf)
-!
-      type(psf_ctl), intent(inout) :: psf
-!
-!
-      allocate( psf%center_name_psf_ctl(psf%num_center_psf_ctl))
-      allocate( psf%center_psf_ctl(psf%num_center_psf_ctl))
-      if(psf%num_center_psf_ctl .gt. 0) psf%center_psf_ctl = 0.0d0
-!
-      end subroutine allocate_psf_center_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_psf_axis_ctl(psf)
-!
-      type(psf_ctl), intent(inout) :: psf
-!
-!
-      allocate( psf%axis_name_psf_ctl(psf%num_axis_psf_ctl))
-      allocate( psf%axis_psf_ctl(psf%num_axis_psf_ctl))
-      if(psf%num_axis_psf_ctl .gt. 0) psf%axis_psf_ctl = 0.0d0
-!
-      end subroutine allocate_psf_axis_ctl
-!
-!  ---------------------------------------------------------------------
-!
       subroutine deallocate_cont_dat_4_psf(psf)
 !
       type(psf_ctl), intent(inout) :: psf
 !
 !
-      if (psf%num_psf_output_ctl .gt. 0) then
-        deallocate( psf%psf_out_field_ctl )
-        deallocate( psf%psf_out_comp_ctl )
-      end if
+      call dealloc_control_array_c2(psf%psf_out_field_ctl)
+      psf%psf_out_field_ctl%num =  0
+      psf%psf_out_field_ctl%icou = 0
 !
-      if (psf%num_psf_area_grp_ctl .gt. 0) then
-        deallocate( psf%psf_area_ele_grp_ctl )
-      end if
+      call dealloc_control_array_chara(psf%psf_area_ctl)
+      psf%psf_area_ctl%num =  0
+      psf%psf_area_ctl%icou = 0
 !
       end subroutine deallocate_cont_dat_4_psf
 !
@@ -311,8 +241,7 @@
       type(psf_ctl), intent(inout) :: psf
 !
 !
-      deallocate( psf%coef_name_psf_ctl)
-      deallocate( psf%const_psf_ctl)
+      call dealloc_control_array_c_r(psf%psf_coefs_ctl)
 !
       end subroutine deallocate_psf_coefs_ctl
 !
@@ -323,8 +252,7 @@
       type(psf_ctl), intent(inout) :: psf
 !
 !
-      deallocate( psf%center_name_psf_ctl)
-      deallocate( psf%center_psf_ctl)
+      call dealloc_control_array_c_r(psf%psf_center_ctl)
 !
       end subroutine deallocate_psf_center_ctl
 !
@@ -334,9 +262,7 @@
 !
       type(psf_ctl), intent(inout) :: psf
 !
-!
-      deallocate( psf%axis_name_psf_ctl)
-      deallocate( psf%axis_psf_ctl)
+      call dealloc_control_array_c_r(psf%psf_axis_ctl)
 !
       end subroutine deallocate_psf_axis_ctl
 !
@@ -398,32 +324,9 @@
         if(psf%i_surface_define .gt. 0) exit
 !
 !
-        call find_control_array_flag(hd_coefs_ctl,                      &
-     &        psf%num_const_psf_ctl)
-        if(psf%num_const_psf_ctl.gt.0 .and. psf%i_coefs_ctl.eq.0) then
-          call allocate_psf_coefs_ctl(psf)
-          call read_control_array_char_r_list(hd_coefs_ctl,             &
-     &        psf%num_const_psf_ctl, psf%i_coefs_ctl,                   &
-     &        psf%coef_name_psf_ctl, psf%const_psf_ctl )
-        end if
-!
-        call find_control_array_flag(hd_center_ctl,                     &
-     &        psf%num_center_psf_ctl)
-        if(psf%num_center_psf_ctl.gt.0                                  &
-     &      .and. psf%i_center_ctl.eq.0) then
-          call allocate_psf_center_ctl(psf)
-          call read_control_array_char_r_list(hd_center_ctl,            &
-     &        psf%num_center_psf_ctl, psf%i_center_ctl,                 &
-     &        psf%center_name_psf_ctl, psf%center_psf_ctl )
-        end if
-!
-        call find_control_array_flag(hd_axis_ctl, psf%num_axis_psf_ctl)
-        if(psf%num_axis_psf_ctl.gt.0 .and. psf%i_axis_ctl.eq.0) then
-          call allocate_psf_axis_ctl(psf)
-          call read_control_array_char_r_list(hd_axis_ctl,              &
-     &        psf%num_axis_psf_ctl, psf%i_axis_ctl,                     &
-     &        psf%axis_name_psf_ctl, psf%axis_psf_ctl )
-        end if
+        call read_control_array_c_r(hd_coefs_ctl, psf%psf_coefs_ctl)
+        call read_control_array_c_r(hd_center_ctl, psf%psf_center_ctl)
+        call read_control_array_c_r(hd_axis_ctl, psf%psf_axis_ctl)
 !
         call read_psf_plot_area_ctl(psf)
 !
@@ -455,15 +358,8 @@
         call find_control_end_flag(hd_output_field, psf%i_output_field)
         if(psf%i_output_field .gt. 0) exit
 !
-        call find_control_array_flag(hd_n_psf_result_comp,              &
-     &        psf%num_psf_output_ctl)
-        if(psf%num_psf_output_ctl.gt.0                                  &
-     &      .and. psf%i_num_psf_result_comp.eq.0) then
-          call allocate_cont_dat_4_psf(psf)
-          call read_control_array_chara2_list(hd_n_psf_result_comp,     &
-     &        psf%num_psf_output_ctl, psf%i_num_psf_result_comp,        &
-     &        psf%psf_out_field_ctl, psf%psf_out_comp_ctl)
-        end if
+        call read_control_array_c2                                      &
+     &     (hd_psf_result_field, psf%psf_out_field_ctl)
       end do
 !
       end subroutine read_psf_output_ctl
@@ -483,15 +379,7 @@
         call find_control_end_flag(hd_plot_area, psf%i_plot_area)
         if(psf%i_plot_area .gt. 0) exit
 !
-        call find_control_array_flag(hd_plot_grp,                       &
-     &        psf%num_psf_area_grp_ctl)
-        if(psf%num_psf_area_grp_ctl.gt.0                                &
-     &      .and. psf%i_plot_grp.eq.0) then
-          call allocate_area_grp_4_psf(psf)
-          call read_control_array_chara_list(hd_plot_grp,               &
-     &        psf%num_psf_area_grp_ctl, psf%i_plot_grp,                 &
-     &        psf%psf_area_ele_grp_ctl )
-        end if
+        call read_control_array_chara(hd_plot_grp, psf%psf_area_ctl)
       end do
 !
       end subroutine read_psf_plot_area_ctl
