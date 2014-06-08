@@ -78,11 +78,11 @@
 !
 !   set control for time evolution
 !
-        if (i_num_time_evo .eq. 0) then
+        if (t_evo_field_ctl%icou .eq. 0) then
           e_message = 'Set field for time integration'
           call calypso_MPI_abort(91, e_message)
         else
-          num_field_to_evolve = num_t_evo_control_ctl
+          num_field_to_evolve = t_evo_field_ctl%num
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &    write(*,*) 'num_field_to_evolve ',num_field_to_evolve
         end if
@@ -90,7 +90,9 @@
         if ( num_field_to_evolve .ne. 0 ) then
           allocate( t_evo_name(num_field_to_evolve) )
 !
-          t_evo_name  = t_evo_name_ctl
+          for i = 1, num_field_to_evolve
+            t_evo_name(i)  = t_evo_field_ctl%c_tbl(i)
+          end if
 !
           call dealloc_t_evo_name_ctl
 !

@@ -74,15 +74,15 @@
       use m_ctl_data_mhd_evolution
 !
 !
-      if (i_fluid_grp.eq.0) then
+      if (evo_fluid_group_ctl%icou .eq. 0) then
         num_fl_ele_grp = 1
         call allocate_fluid_ele_grp_name
         fl_ele_grp_name = 'all'
       else
-        num_fl_ele_grp =  num_ele_fl_grp_ctl
+        num_fl_ele_grp =  evo_fluid_group_ctl%num
         if (num_fl_ele_grp .ne. 0 ) then
           call allocate_fluid_ele_grp_name
-          fl_ele_grp_name =  ele_fl_grp_ctl
+          fl_ele_grp_name =  evo_fluid_group_ctl%c_tbl
           call dealloc_ele_fl_grp_ctl
         end if
       end if
@@ -96,15 +96,15 @@
       use m_ctl_data_mhd_evolution
 !
 !
-      if (i_conduct_grp.eq.0) then
+      if (evo_conduct_group_ctl%icou .eq. 0) then
         num_cd_ele_grp = 1
         call allocate_conduct_ele_grp_name
         cd_ele_grp_name =  'all'
       else
-        num_cd_ele_grp =  num_ele_cd_grp_ctl
+        num_cd_ele_grp =  evo_conduct_group_ctl%num
         if (num_cd_ele_grp .ne. 0 ) then
           call allocate_conduct_ele_grp_name
-          cd_ele_grp_name =  ele_cd_grp_ctl
+          cd_ele_grp_name =  evo_conduct_group_ctl%c_tbl
           call dealloc_ele_cd_grp_ctl
         end if
       end if

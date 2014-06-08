@@ -45,16 +45,16 @@
       integer(kind = kint) :: radial_ID_ctl
       character(len=kchara) :: sph_grid_type_ctl = 'no_pole'
 !
-      integer(kind = kint) :: ntot_plotting_ctl
 !
       character(len=kchara) :: psf_data_fmt_ctl =   'ucd'
       character(len=kchara) :: psf_file_head_ctl
       character(len=kchara) :: map_grid_file_ctl
-      character(len=kchara), allocatable :: image_datahead_ctl(:)
 !
-      character(len=kchara), allocatable :: plot_field_ctl(:)
-      character(len=kchara), allocatable :: plot_comp_ctl(:)
-      character(len=kchara), allocatable :: plot_label_ctl(:)
+!>      Structure for list of field
+!!@n      plot_field_ctl%c1_tbl: Name of field
+!!@n      plot_field_ctl%c2_tbl: component to plot
+!!@n      plot_field_ctl%c3_tbl: label for plot
+        type(ctl_array_c3) :: plot_field_ctl
 !
 !>      Structure for range data input
 !!@n      contour_range_ctl%int1: Component ID for plot
@@ -130,7 +130,7 @@
       character(len=kchara), parameter                                  &
      &                    :: hd_map_grid_file =     'map_grid_file_ctl'
       character(len=kchara), parameter                                  &
-     &                    :: hd_ntot_plotting_ctl = 'plot_field_ctl'
+     &                    :: hd_field_2_plot =      'plot_field_ctl'
       character(len=kchara), parameter                                  &
      &                    :: hd_ctr_range_ctl =    'contour_range_ctl'
       character(len=kchara), parameter                                  &
@@ -138,7 +138,6 @@
       integer(kind= kint) :: i_psf_data_fmt_ctl =  0
       integer(kind= kint) :: i_psf_data_ctl =      0
       integer(kind= kint) :: i_map_grid_file =     0
-      integer(kind= kint) :: i_ntot_plotting_ctl = 0
       integer(kind= kint) :: i_ntot_range_ctl =    0
       integer(kind= kint) :: i_ntot_scale_ctl =    0
 !
@@ -199,7 +198,7 @@
       private :: hd_num_panels_ctl
       private :: hd_psf_data_fmt_ctl, hd_map_grid_file
       private :: hd_psf_data_ctl, hd_vec_scale_ctl
-      private :: hd_ctr_range_ctl,   hd_ntot_plotting_ctl
+      private :: hd_ctr_range_ctl,   hd_field_2_plot
       private :: hd_outer_radius_ctl, hd_ro_ri_ratio_ctl
       private :: hd_plane_size_ctl
       private :: hd_radial_ID_ctl, hd_sph_grid_type
@@ -212,8 +211,6 @@
       private :: read_ctl_data_4_surf_plot
       private :: read_ctl_data_4_zplane_plot, read_ctl_data_4_sph_map
       private :: read_ctl_data_4_drmd_grp
-!
-      private :: allocate_plot_ctl_data
 !
 !-----------------------------------------------------------------------
 !
@@ -360,14 +357,7 @@
         if(i_sf_plotting .gt. 0) exit
 !
 !
-        call find_control_array_flag(hd_ntot_plotting_ctl,              &
-     &      ntot_plotting_ctl)
-        if(ntot_plotting_ctl.gt.0 .and. i_ntot_plotting_ctl.eq.0) then
-          call allocate_plot_ctl_data
-          call read_control_array_chara3_list(hd_ntot_plotting_ctl,     &
-     &        ntot_plotting_ctl, i_ntot_plotting_ctl,                   &
-     &        plot_field_ctl, plot_comp_ctl, plot_label_ctl)
-        end if
+        call read_control_array_c3(hd_field_2_plot, plot_field_ctl)
 !
         call read_control_array_i2_r2                                   &
      &     (hd_ctr_range_ctl, contour_range_ctl)
@@ -479,28 +469,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_plot_ctl_data
-!
-!
-      allocate( image_datahead_ctl(ntot_plotting_ctl) )
-!
-      allocate( plot_field_ctl(ntot_plotting_ctl) )
-      allocate( plot_comp_ctl(ntot_plotting_ctl) )
-      allocate( plot_label_ctl(ntot_plotting_ctl) )
-!
-      end subroutine allocate_plot_ctl_data
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
       subroutine deallocate_plot_ctl_data
 !
-!
-      deallocate( image_datahead_ctl )
-!
-      deallocate( plot_field_ctl )
-      deallocate( plot_comp_ctl )
-      deallocate( plot_label_ctl )
+      call dealloc_control_array_c3(plot_field_ctl)
 !
       end subroutine deallocate_plot_ctl_data
 !

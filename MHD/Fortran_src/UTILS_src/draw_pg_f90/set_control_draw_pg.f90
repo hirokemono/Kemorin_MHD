@@ -114,8 +114,8 @@
         fhead_map_grid =  map_grid_file_ctl
       end if
 !
-      if(i_ntot_plotting_ctl .gt. 0) then
-        ntot_plot_pg = ntot_plotting_ctl
+      if(plot_field_ctl%icou .gt. 0) then
+        ntot_plot_pg = plot_field_ctl%num
       else
         write(*,*) 'set number of component to plot'
         stop
@@ -124,11 +124,11 @@
       call allocate_plot_param_pg
 !
         field_name_4_plot(1:ntot_plot_pg)                               &
-     &       = plot_field_ctl(1:ntot_plot_pg)
+     &       = plot_field_ctl%c1_tbl(1:ntot_plot_pg)
         comp_name_4_plot(1:ntot_plot_pg)                                &
-     &       = plot_comp_ctl(1:ntot_plot_pg)
+     &       = plot_field_ctl%c2_tbl(1:ntot_plot_pg)
         field_label_4_plot(1:ntot_plot_pg)                              &
-     &       = plot_label_ctl(1:ntot_plot_pg)
+     &       = plot_field_ctl%c3_tbl(1:ntot_plot_pg)
 !
       do i = 1, ntot_plot_pg
         call s_set_components_flags( comp_name_4_plot(i),               &
