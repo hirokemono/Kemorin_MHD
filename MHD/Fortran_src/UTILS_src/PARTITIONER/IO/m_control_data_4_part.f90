@@ -242,9 +242,9 @@
         if(i_decomp_ctl .gt. 0) exit
 !
 !
-        call read_control_array_chara(hd_num_rcb, RCB_dir_ctl)
+        call read_control_array_c1(hd_num_rcb, RCB_dir_ctl)
         call read_control_array_c_i(hd_num_es, ndomain_section_ctl)
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &     (hd_num_r_layerd, ele_grp_layering_ctl)
 !
 !
@@ -273,7 +273,8 @@
 !
       end subroutine read_ctl_data_4_decomp
 !
-! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------
+!
       subroutine read_ctl_data_4_ele_ordeirng
 !
 !
@@ -286,7 +287,7 @@
      &     i_ele_ordering_ctl)
         if(i_ele_ordering_ctl .gt. 0) exit
 !
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &     (hd_nele_grp_ordering, ele_grp_ordering_ctl)
       end do
 !

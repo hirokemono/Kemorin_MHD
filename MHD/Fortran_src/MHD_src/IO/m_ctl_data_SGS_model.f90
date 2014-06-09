@@ -364,8 +364,8 @@
         call read_ele_layers_grp_ctl
 !
 !
-        call read_control_array_chara(hd_SGS_terms, SGS_terms_ctl)
-        call read_control_array_chara                                   &
+        call read_control_array_c1(hd_SGS_terms, SGS_terms_ctl)
+        call read_control_array_c1                                      &
      &     (hd_commutation_fld, commutate_fld_ctl)
 !
 !
@@ -437,9 +437,9 @@
         if(i_3d_filtering .gt. 0) exit
 !
 !
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &     (hd_whole_filter_grp, whole_filter_grp_ctl)
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &     (hd_fluid_filter_grp, fluid_filter_grp_ctl)
 !
         call read_character_ctl_item(hd_momentum_filter_ctl,            &

@@ -266,28 +266,28 @@
      &        i_num_MG_level, num_multigrid_level_ctl)
 !
 !
-        call read_control_array_int                                     &
+        call read_control_array_i1                                      &
      &     (hd_num_MG_subdomain, num_MG_subdomain_ctl)
 !
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &     (hd_MG_mesh_header, MG_mesh_prefix_ctl)
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &     (hd_MG_elem_header, MG_elem_prefix_ctl)
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &     (hd_MG_surf_header, MG_surf_prefix_ctl)
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &     (hd_MG_edge_header, MG_edge_prefix_ctl)
 !
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &     (hd_MG_fine_2_coarse_tbl, MG_fine_2_coarse_tbl_ctl)
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &     (hd_MG_coarse_2_fine_tbl, MG_coarse_2_fine_tbl_ctl)
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &     (hd_MG_f2c_ele_tbl, MG_f2c_ele_tbl_ctl)
 !
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &     (hd_MG_mesh_file_fmt, MG_mesh_fmt_ctl)
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &     (hd_MG_tbl_file_fmt, MG_table_fmt_ctl)
       end do
 !

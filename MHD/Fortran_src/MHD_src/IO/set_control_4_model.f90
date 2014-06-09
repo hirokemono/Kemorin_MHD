@@ -90,9 +90,9 @@
         if ( num_field_to_evolve .ne. 0 ) then
           allocate( t_evo_name(num_field_to_evolve) )
 !
-          for i = 1, num_field_to_evolve
+          do i = 1, num_field_to_evolve
             t_evo_name(i)  = t_evo_field_ctl%c_tbl(i)
-          end if
+          end do
 !
           call dealloc_t_evo_name_ctl
 !

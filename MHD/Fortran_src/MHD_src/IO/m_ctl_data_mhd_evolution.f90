@@ -144,7 +144,7 @@
         call find_control_end_flag(hd_time_evo, i_time_evo)
         if(i_time_evo .gt. 0) exit
 !
-        call read_control_array_chara(hd_t_evo_field, t_evo_field_ctl)
+        call read_control_array_c1(hd_t_evo_field, t_evo_field_ctl)
       end do
 !
       end subroutine read_mhd_time_evo_ctl
@@ -162,9 +162,9 @@
         call find_control_end_flag(hd_layers_ctl, i_layers_ctl)
         if(i_layers_ctl .gt. 0) exit
 !
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &      (hd_fluid_grp, evo_fluid_group_ctl)
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &      (hd_conduct_grp, evo_conduct_group_ctl)
       end do
 !

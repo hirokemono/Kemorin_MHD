@@ -279,8 +279,7 @@
      &      iso%i_iso_plot_area)
         if(iso%i_iso_plot_area .gt. 0) exit
 !
-        call read_control_array_chara                                   &
-     &     (hd_iso_plot_grp, iso%iso_area_ctl)
+        call read_control_array_c1(hd_iso_plot_grp, iso%iso_area_ctl)
       end do
 !
       end subroutine read_iso_plot_area_ctl

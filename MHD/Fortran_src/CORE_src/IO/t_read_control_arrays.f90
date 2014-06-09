@@ -26,12 +26,12 @@
 !!      subroutine dealloc_control_array_i2_r(array_i2r)
 !!      subroutine dealloc_control_array_i2_r2(array_i2r2)
 !!
-!!      subroutine read_control_array_real(label, array_real)
+!!      subroutine read_control_array_r1(label, array_real)
 !!      subroutine read_control_array_r2(label, array_r2)
 !!      subroutine read_control_array_r3(label, array_r3)
-!!      subroutine read_control_array_int(label, array_int)
+!!      subroutine read_control_array_i1(label, array_int)
 !!      subroutine read_control_array_i2(label, array_i2)
-!!      subroutine read_control_array_chara(label, array_chara)
+!!      subroutine read_control_array_c1(label, array_chara)
 !!      subroutine read_control_array_c2(label, array_c2)
 !!      subroutine read_control_array_c3(label, array_c3)
 !!      subroutine read_control_array_c_r(label, array_cr)
@@ -729,7 +729,7 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_array_real(label, array_real)
+      subroutine read_control_array_r1(label, array_real)
 !
       use m_read_control_elements
 !
@@ -744,7 +744,7 @@
      &      array_real%icou, array_real%vect)
       end if
 !
-      end subroutine read_control_array_real
+      end subroutine read_control_array_r1
 !
 !   --------------------------------------------------------------------
 !
@@ -786,7 +786,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_array_int(label, array_int)
+      subroutine read_control_array_i1(label, array_int)
 !
       use m_read_control_elements
 !
@@ -801,7 +801,7 @@
      &      array_int%icou, array_int%ivec)
       end if
 !
-      end subroutine read_control_array_int
+      end subroutine read_control_array_i1
 !
 !   --------------------------------------------------------------------
 !
@@ -824,7 +824,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_array_chara(label, array_chara)
+      subroutine read_control_array_c1(label, array_chara)
 !
       use m_read_control_elements
 !
@@ -839,7 +839,7 @@
      &      array_chara%icou, array_chara%c_tbl)
       end if
 !
-      end subroutine read_control_array_chara
+      end subroutine read_control_array_c1
 !
 !   --------------------------------------------------------------------
 !

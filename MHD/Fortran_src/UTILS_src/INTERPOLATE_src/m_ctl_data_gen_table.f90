@@ -334,8 +334,7 @@
         call find_control_end_flag(hd_element_hash, i_element_hash)
         if(i_element_hash .gt. 0) exit
 !
-        call read_control_array_real                                    &
-     &     (hd_search_radius, radial_divide_ctl)
+        call read_control_array_r1(hd_search_radius, radial_divide_ctl)
 !
 !
         call read_character_ctl_item(hd_hash_type,                      &

@@ -190,7 +190,7 @@
      &      i_filter_area_ctl)
         if(i_filter_area_ctl .gt. 0) exit
 !
-        call read_control_array_chara(hd_filter_area, filter_area_ctl)
+        call read_control_array_c1(hd_filter_area, filter_area_ctl)
       end do
 !
       end subroutine read_filter_area_ctl

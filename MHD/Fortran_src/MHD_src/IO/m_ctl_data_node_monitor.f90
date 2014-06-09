@@ -72,7 +72,7 @@
         call find_control_end_flag(hd_monitor_data, i_monitor_data)
         if(i_monitor_data .gt. 0) exit
 !
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &     (hd_monitor_grp, group_4_monitor_ctl)
       end do
 !

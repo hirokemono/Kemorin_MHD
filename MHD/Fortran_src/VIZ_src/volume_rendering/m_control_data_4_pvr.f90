@@ -446,7 +446,7 @@
         call find_control_end_flag(hd_plot_area, pvr%i_plot_area)
         if(pvr%i_plot_area .gt. 0) exit
 !
-        call read_control_array_chara(hd_plot_grp, pvr%pvr_area_ctl)
+        call read_control_array_c1(hd_plot_grp, pvr%pvr_area_ctl)
       end do
 !
       end subroutine read_plot_area_ctl

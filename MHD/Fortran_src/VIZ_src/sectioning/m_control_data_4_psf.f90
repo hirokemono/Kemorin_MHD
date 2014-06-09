@@ -379,7 +379,7 @@
         call find_control_end_flag(hd_plot_area, psf%i_plot_area)
         if(psf%i_plot_area .gt. 0) exit
 !
-        call read_control_array_chara(hd_plot_grp, psf%psf_area_ctl)
+        call read_control_array_c1(hd_plot_grp, psf%psf_area_ctl)
       end do
 !
       end subroutine read_psf_plot_area_ctl

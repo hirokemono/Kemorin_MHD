@@ -139,10 +139,10 @@
         if(i_dynamic_layers .gt. 0) exit
 !
 !
-        call read_control_array_chara                                   &
+        call read_control_array_c1                                      &
      &     (hd_ntotal_layer_grp_ctl, layer_grp_name_ctl)
 !
-        call read_control_array_int                                     &
+        call read_control_array_i1                                      &
      &     (hd_num_layer_grp_ctl, igrp_stack_layer_ctl)
 !
 !

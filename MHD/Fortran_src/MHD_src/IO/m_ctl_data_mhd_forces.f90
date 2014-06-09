@@ -192,7 +192,7 @@
         call find_control_end_flag(hd_forces_ctl, i_forces_ctl)
         if(i_forces_ctl .gt. 0) exit
 !
-        call read_control_array_chara(hd_num_forces, force_names_ctl)
+        call read_control_array_c1(hd_num_forces, force_names_ctl)
       end do
 !
       end subroutine read_forces_ctl

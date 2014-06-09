@@ -305,7 +305,7 @@
         if(i_node_grp_def .gt. 0) exit
 !
         call read_control_array_c_i(hd_num_nod_grp, node_grp_name_ctl)
-        call read_control_array_int                                     &
+        call read_control_array_i1                                      &
      &     (hd_num_nod_layer, node_grp_layer_ctl)
       end do
 !
@@ -325,7 +325,7 @@
         if(i_ele_grp_def .gt. 0) exit
 !
         call read_control_array_c_i(hd_num_ele_grp, elem_grp_name_ctl)
-        call read_control_array_int                                     &
+        call read_control_array_i1                                      &
      &     (hd_num_ele_layer, elem_grp_layer_ctl)
       end do
 !

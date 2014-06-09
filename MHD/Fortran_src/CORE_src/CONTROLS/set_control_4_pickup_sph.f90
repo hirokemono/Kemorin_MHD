@@ -68,41 +68,41 @@
 !
 !   set pickup mode
 !
-      num_pick_sph = num_pick_sph_mode_ctl
+      num_pick_sph = idx_pick_sph_ctl%num
       call allocate_pick_sph_mode
 !
       do inum = 1, num_pick_sph
-        l = idx_pick_sph_mode_ctl(inum,1)
-        m = idx_pick_sph_mode_ctl(inum,2)
+        l = idx_pick_sph_ctl%int1(inum)
+        m = idx_pick_sph_ctl%int2(inum)
         idx_pick_sph_mode(inum) = l*(l+1) + m
       end do
-      if(num_pick_sph .gt. 0) call deallocate_pick_sph_ctl
+      call deallocate_pick_sph_ctl
 !
-      num_pick_sph_l = num_pick_sph_l_ctl
+      num_pick_sph_l = idx_pick_sph_l_ctl%num
       call allocate_pick_sph_l
 !
       do inum = 1, num_pick_sph_l
-        idx_pick_sph_l(inum) = idx_pick_sph_l_ctl(inum)
+        idx_pick_sph_l(inum) = idx_pick_sph_l_ctl%ivec(inum)
       end do
-      if(num_pick_sph_l .gt. 0) call deallocate_pick_sph_l_ctl
+      call deallocate_pick_sph_l_ctl
 !
-      num_pick_sph_m = num_pick_sph_m_ctl
+      num_pick_sph_m = idx_pick_sph_m_ctl%num
       call allocate_pick_sph_m
 !
       do inum = 1, num_pick_sph_m
-        idx_pick_sph_m(inum) = idx_pick_sph_m_ctl(inum)
+        idx_pick_sph_m(inum) = idx_pick_sph_m_ctl%ivec(inum)
       end do
-      if(num_pick_sph_m .gt. 0) call deallocate_pick_sph_m_ctl
+      call deallocate_pick_sph_m_ctl
 !
 !   set pickup layer
 !
-      if (i_num_pick_layer .gt. 0) then
-        if(num_pick_layer_ctl .gt. 0) then
-          num_pick_layer = num_pick_layer_ctl
+      if (idx_pick_layer_ctl%icou .gt. 0) then
+        if(idx_pick_layer_ctl%num .gt. 0) then
+          num_pick_layer = idx_pick_layer_ctl%num
           call allocate_num_pick_layer
 !
           id_pick_layer(1:num_pick_layer)                               &
-     &      = id_pick_layer_ctl(1:num_pick_layer)
+     &      = idx_pick_layer_ctl%ivec(1:num_pick_layer)
 !
           call deallocate_num_pick_layer_ctl
         else
@@ -142,32 +142,32 @@
         r_4_gauss_coefs = gauss_coefs_radius_ctl
       end if
 !
-      num_pick_gauss_coefs = num_pick_gauss_coefs_ctl
+      num_pick_gauss_coefs = idx_gauss_ctl%num
       call allocate_pick_gauss
 !
       do inum = 1, num_pick_gauss_coefs
-        l = idx_pick_gauss_mode_ctl(inum,1)
-        m = idx_pick_gauss_mode_ctl(inum,2)
+        l = idx_gauss_ctl%int1(inum)
+        m = idx_gauss_ctl%int2(inum)
         idx_pick_gauss_mode(inum) = l*(l+1) + m
       end do
 !
       if(num_pick_gauss_coefs .gt. 0) call deallocate_pick_gauss_ctl
 !
-      num_pick_gauss_l = num_pick_gauss_l_ctl
+      num_pick_gauss_l = idx_gauss_l_ctl%num
       call allocate_pick_gauss_l
 !
       do inum = 1, num_pick_gauss_l
-        idx_pick_gauss_l(inum) = idx_pick_gauss_l_ctl(inum)
+        idx_pick_gauss_l(inum) = idx_gauss_l_ctl%ivec(inum)
       end do
-      if(num_pick_gauss_l .gt. 0) call deallocate_pick_gauss_l_ctl
+      call deallocate_pick_gauss_l_ctl
 !
-      num_pick_gauss_m = num_pick_gauss_m_ctl
+      num_pick_gauss_m = idx_gauss_m_ctl%num
       call allocate_pick_gauss_m
 !
       do inum = 1, num_pick_gauss_m
-        idx_pick_gauss_m(inum) = idx_pick_gauss_m_ctl(inum)
+        idx_pick_gauss_m(inum) = idx_gauss_m_ctl%ivec(inum)
       end do
-      if(num_pick_gauss_m .gt. 0) call deallocate_pick_gauss_m_ctl
+      call deallocate_pick_gauss_m_ctl
 !
       end subroutine set_ctl_params_pick_gauss
 !

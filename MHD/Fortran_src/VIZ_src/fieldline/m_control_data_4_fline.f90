@@ -206,7 +206,7 @@
         if(fln%i_vr_fline_ctl .gt. 0) exit
 !
 !
-        call read_control_array_chara(hd_fline_grp,                     &
+        call read_control_array_c1(hd_fline_grp,                        &
      &      fln%fline_area_grp_ctl)
 !
         call read_control_array_r3                                      &

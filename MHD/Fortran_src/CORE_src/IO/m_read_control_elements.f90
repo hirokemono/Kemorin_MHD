@@ -27,32 +27,32 @@
 !!
 !!      subroutine read_file_names_from_ctl_line(num, icou, fname)
 !!
-!!      subroutine read_control_array_int_list(label, num, icou, ivect)
-!!      subroutine read_control_array_int_r_list(label, num, icou,      &
-!!     &          ivect, vect)
-!!      subroutine read_control_array_vect_list(label, num, icou,       &
-!!     &          c_tbl, vect)
-!!      subroutine read_control_array_int_v_list(label, num, icou,      &
-!!     &          c_tbl, ivect)
 !!      subroutine read_control_array_real_list(label, num, icou,       &
 !!     &          vec1)
 !!      subroutine read_control_array_real2_list(label, num, icou,      &
 !!     &          vec1, vec2)
 !!      subroutine read_control_array_real3_list(label, num, icou,      &
 !!     &          vec1, vec2, vec3)
+!!      subroutine read_control_array_int_list(label, num, icou, ivect)
+!!      subroutine read_control_array_int2_list(label, num, icou, int1, &
+!!     &          int2)
 !!      subroutine read_control_array_chara_list(label, num, icou, c_tbl)
 !!      subroutine read_control_array_chara2_list(label, num, icou,     &
 !!     &          c1_tbl, c2_tbl)
 !!      subroutine read_control_array_chara3_list(label, num, icou,     &
 !!     &          c1_tbl, c2_tbl, c3_tbl)
+!!      subroutine read_control_array_vect_list(label, num, icou,       &
+!!     &          c_tbl, vect)
+!!      subroutine read_control_array_int_v_list(label, num, icou,      &
+!!     &          c_tbl, ivect)
 !!      subroutine read_control_array_c_r2_list(label, num, icou, c_tbl,&
 !!     &          vec1, vec2)
 !!      subroutine read_control_array_c2_r_list(label, num, icou,       &
 !!     &          c1_tbl, c2_tbl, vect)
 !!      subroutine read_control_array_i_c_r_list(label, num, icou,      &
 !!     &          ivect, c_tbl, vect)
-!!      subroutine read_control_array_int2_list(label, num, icou, int1, &
-!!     &          int2)
+!!      subroutine read_control_array_int_r_list(label, num, icou,      &
+!!     &          ivect, vect)
 !!      subroutine read_control_array_i2_r_list(label, num, icou, int1, &
 !!     &          int2, vect)
 !!      subroutine read_control_array_i2_r2_list(label, num, icou, int1,&

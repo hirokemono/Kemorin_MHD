@@ -157,8 +157,8 @@
 !
         call read_control_array_c3(hd_field_list, field_ctl)
 !
-        call read_control_array_chara(hd_quad_field, quad_phys_ctl)
-        call read_control_array_chara(hd_linear_field, linear_phys_ctl)
+        call read_control_array_c1(hd_quad_field, quad_phys_ctl)
+        call read_control_array_c1(hd_linear_field, linear_phys_ctl)
       end do
 !
       end subroutine read_phys_values
