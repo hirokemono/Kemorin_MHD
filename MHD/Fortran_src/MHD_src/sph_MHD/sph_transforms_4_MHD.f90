@@ -308,7 +308,7 @@
           write(*,'(a,a)') ' (OUTER_RADIAL_LOOP) '
         else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
           write(*,'(a,a)') ' (LONG_LOOP) '
-        else if(id_legendre_transfer .eq. iflag_lef_fdout_loop) then
+        else if(id_legendre_transfer .eq. iflag_leg_fdout_loop) then
           write(*,'(a,a)') ' (OUTER_FIELD_LOOP) '
         end if
 !
@@ -321,7 +321,7 @@
         write(*,*) '4: elapsed by long loop:          ',                &
      &            etime_trans(iflag_leg_long_loop)
         write(*,*) '5: elapsed by outmost field loop: ',                &
-     &            etime_trans(iflag_lef_fdout_loop)
+     &            etime_trans(iflag_leg_fdout_loop)
 !
       end subroutine select_legendre_transform
 !
