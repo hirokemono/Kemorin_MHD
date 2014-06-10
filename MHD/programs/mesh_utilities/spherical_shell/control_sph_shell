@@ -7,6 +7,7 @@ begin spherical_shell_ctl
     sph_file_fmt_ctl           'gzip'
 !
     memory_conservation_ctl     'YES'
+    excluding_FEM_mesh_ctl      'YES'
   end data_files_def
 !
   begin num_domain_ctl

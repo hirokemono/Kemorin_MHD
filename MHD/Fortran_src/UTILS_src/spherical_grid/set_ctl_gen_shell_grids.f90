@@ -41,6 +41,7 @@
 !
       use const_sph_radial_grid
       use set_control_platform_data
+      use gen_sph_grids_modes
       use skip_comment_f
 !
       integer(kind = kint) :: nprocs_ctl
@@ -61,7 +62,7 @@
       call choose_file_format(coriolis_file_fmt_ctl,                    &
      &    i_coriolis_file_fmt, ifmt_cor_int_file)
 !
-      iflag_memory_conserve_sph = 1
+      iflag_memory_conserve_sph = 0
       if(i_mem_conserve .gt. 0) then
         iflag_no =  cmp_no_case(memory_conservation_ctl, 'no')          &
      &         + cmp_no_case(memory_conservation_ctl, 'off')
@@ -71,6 +72,19 @@
           iflag_memory_conserve_sph = 0
         else if(iflag_yes .gt. 0) then
           iflag_memory_conserve_sph = 1
+        end if
+      end if
+!
+      iflag_excluding_FEM_mesh = 0
+      if(i_mem_conserve .gt. 0) then
+        iflag_no =  cmp_no_case(excluding_FEM_mesh_ctl, 'no')           &
+     &         + cmp_no_case(excluding_FEM_mesh_ctl, 'off')
+        iflag_yes = cmp_no_case(excluding_FEM_mesh_ctl, 'yes')          &
+     &         + cmp_no_case(excluding_FEM_mesh_ctl, 'on')
+        if(iflag_no .gt. 0) then
+          iflag_excluding_FEM_mesh = 0
+        else if(iflag_yes .gt. 0) then
+          iflag_excluding_FEM_mesh = 1
         end if
       end if
 !

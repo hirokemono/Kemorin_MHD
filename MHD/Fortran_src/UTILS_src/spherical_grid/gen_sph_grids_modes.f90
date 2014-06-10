@@ -26,6 +26,9 @@
 !
       implicit none
 !
+!>      Integer flag to excluding FEM mesh
+      integer(kind = kint) :: iflag_excluding_FEM_mesh = 0
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -96,6 +99,8 @@
 !
       integer(kind = kint) :: ip_rank
 !
+!
+      if(iflag_excluding_FEM_mesh .gt. 0) return
 !
       n_point = nidx_global_rtp(2)
       call allocate_gauss_points

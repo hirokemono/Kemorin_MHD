@@ -133,6 +133,8 @@
       integer(kind = kint) :: ip_rank
 !
 !
+      if(iflag_excluding_FEM_mesh .gt. 0) return
+!
       n_point = nidx_global_rtp(2)
       call allocate_gauss_points
       call allocate_gauss_colatitude
