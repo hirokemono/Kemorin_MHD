@@ -20,6 +20,8 @@
 !
       implicit none
 !
+!>      number of components for backward spherical harmonics transform
+      integer(kind = kint) :: ncomp_snap_rj_2_rtp = 0
 !>      number of components
 !!      for backward vector spherical harmonics transform
       integer(kind = kint) :: nvector_snap_rj_2_rtp = 0
@@ -28,6 +30,8 @@
 !>      number of tensors for backward spherical harmonics transform
       integer(kind = kint) :: ntensor_snap_rj_2_rtp = 0
 !
+!>      number of components for forward spherical harmonics transform
+      integer(kind = kint) :: ncomp_snap_rtp_2_rj = 0
 !>      number of components
 !!      for forward vector spherical harmonics transform
       integer(kind = kint) :: nvector_snap_rtp_2_rj = 0
@@ -54,8 +58,17 @@
       use m_sph_phys_address
       use m_addresses_trans_sph_MHD
 !
-      integer(kind = kint) :: ncomp_fwd, ncomp_bwd
 !
+      nvector_snap_rtp_2_rj = 0
+      call add_vec_trans_flag(ipol%i_coriolis, irtp%i_coriolis,         &
+     &    nvector_snap_rtp_2_rj, fsnap_trns%i_coriolis)
+      call add_vec_trans_flag(ipol%i_electric, irtp%i_electric,         &
+     &    nvector_snap_rtp_2_rj, fsnap_trns%i_electric)
+      call add_vec_trans_flag(ipol%i_poynting, irtp%i_poynting,         &
+     &    nvector_snap_rtp_2_rj, fsnap_trns%i_poynting)
+      call add_vec_trans_flag(ipol%i_mag_stretch, irtp%i_mag_stretch,   &
+     &    nvector_snap_rtp_2_rj, fsnap_trns%i_mag_stretch)
+      ncomp_snap_rtp_2_rj = nvector_snap_rtp_2_rj
 !
       nscalar_snap_rtp_2_rj = 0
       call add_transform_flag(ipol%i_me_gen, irtp%i_me_gen,             &
@@ -71,40 +84,8 @@
      &    nscalar_snap_rtp_2_rj, fsnap_trns%i_c_buo_gen)
       call add_transform_flag(ipol%i_f_buo_gen, irtp%i_f_buo_gen,       &
      &    nscalar_snap_rtp_2_rj, fsnap_trns%i_f_buo_gen)
+      ncomp_snap_rtp_2_rj = ncomp_snap_rtp_2_rj + nscalar_snap_rtp_2_rj
 !
-!
-      nvector_snap_rtp_2_rj = 0
-      call add_vec_trans_flag(ipol%i_coriolis, irtp%i_coriolis,         &
-     &    nvector_snap_rtp_2_rj, fsnap_trns%i_coriolis)
-      call add_vec_trans_flag(ipol%i_electric, irtp%i_electric,         &
-     &    nvector_snap_rtp_2_rj, fsnap_trns%i_electric)
-      call add_vec_trans_flag(ipol%i_poynting, irtp%i_poynting,         &
-     &    nvector_snap_rtp_2_rj, fsnap_trns%i_poynting)
-      call add_vec_trans_flag(ipol%i_mag_stretch, irtp%i_mag_stretch,   &
-     &    nvector_snap_rtp_2_rj, fsnap_trns%i_mag_stretch)
-!
-!
-      nscalar_snap_rj_2_rtp = 0
-      if(b_trns%i_temp.eq.0 .or. ipol%i_par_temp.gt.0) then
-        call add_transform_flag(ipol%i_temp, irtp%i_temp,               &
-     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_temp)
-      end if
-      if(b_trns%i_light .eq. 0) then
-        call add_transform_flag(ipol%i_light, irtp%i_light,             &
-     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_light)
-      end if
-!
-      call add_transform_flag(ipol%i_press, irtp%i_press,               &
-     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_press)
-      call add_transform_flag(ipol%i_par_temp, irtp%i_par_temp,         &
-     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_par_temp)
-      call add_transform_flag(ipol%i_t_diffuse, irtp%i_t_diffuse,       &
-     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_t_diffuse)
-      call add_transform_flag(ipol%i_c_diffuse, irtp%i_c_diffuse,       &
-     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_c_diffuse)
-!
-      call add_transform_flag(ipol%i_div_Coriolis, irtp%i_div_Coriolis, &
-     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_div_Coriolis)
 !
 !
       nvector_snap_rj_2_rtp = 0
@@ -155,6 +136,31 @@
       call add_vec_trans_flag(ipol%i_grad_composit,                     &
      &    irtp%i_grad_composit, nvector_snap_rj_2_rtp,                  &
      &    bsnap_trns%i_grad_composit)
+      ncomp_snap_rj_2_rtp = nvector_snap_rj_2_rtp
+!
+!
+      nscalar_snap_rj_2_rtp = 0
+      if(b_trns%i_temp.eq.0 .or. ipol%i_par_temp.gt.0) then
+        call add_transform_flag(ipol%i_temp, irtp%i_temp,               &
+     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_temp)
+      end if
+      if(b_trns%i_light .eq. 0) then
+        call add_transform_flag(ipol%i_light, irtp%i_light,             &
+     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_light)
+      end if
+!
+      call add_transform_flag(ipol%i_press, irtp%i_press,               &
+     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_press)
+      call add_transform_flag(ipol%i_par_temp, irtp%i_par_temp,         &
+     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_par_temp)
+      call add_transform_flag(ipol%i_t_diffuse, irtp%i_t_diffuse,       &
+     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_t_diffuse)
+      call add_transform_flag(ipol%i_c_diffuse, irtp%i_c_diffuse,       &
+     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_c_diffuse)
+!
+      call add_transform_flag(ipol%i_div_Coriolis, irtp%i_div_Coriolis, &
+     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_div_Coriolis)
+      ncomp_snap_rj_2_rtp = ncomp_snap_rj_2_rtp + nscalar_snap_rj_2_rtp
 !
 !
       nb_sph_trans = max(nb_sph_trans,nscalar_snap_rtp_2_rj)
@@ -162,10 +168,8 @@
       nb_sph_trans = max(nb_sph_trans,nscalar_snap_rj_2_rtp)
       nb_sph_trans = max(nb_sph_trans,nvector_snap_rj_2_rtp)
 !
-      ncomp_bwd = 3*nvector_snap_rj_2_rtp + nscalar_snap_rj_2_rtp
-      ncomp_fwd = 3*nvector_snap_rtp_2_rj + nscalar_snap_rtp_2_rj
-      ncomp_sph_trans = max(ncomp_sph_trans, ncomp_fwd)
-      ncomp_sph_trans = max(ncomp_sph_trans, ncomp_bwd)
+      ncomp_sph_trans = max(ncomp_sph_trans, ncomp_snap_rtp_2_rj)
+      ncomp_sph_trans = max(ncomp_sph_trans, ncomp_snap_rj_2_rtp)
 !
       end subroutine set_addresses_snapshot_trans
 !
@@ -177,6 +181,9 @@
       use m_sph_phys_address
       use m_addresses_trans_sph_MHD
 !
+!
+      write(*,*) 'ncomp_snap_rj_2_rtp', ncomp_snap_rj_2_rtp
+      write(*,*) 'ncomp_snap_rtp_2_rj', ncomp_snap_rtp_2_rj
 !
       write(*,*) 'nvector_snap_rj_2_rtp', nvector_snap_rj_2_rtp
       if(bsnap_trns%i_velo .gt. 0) write(*,*)                           &
@@ -257,6 +264,10 @@
       if(bsnap_trns%i_c_diffuse .gt. 0) write(*,*)                      &
      &            'bsnap_trns%i_c_diffuse', bsnap_trns%i_c_diffuse,     &
      &            ipol%i_c_diffuse, irtp%i_c_diffuse
+!
+      if(bsnap_trns%i_div_Coriolis .gt. 0) write(*,*)                   &
+     &          'bsnap_trns%i_div_Coriolis', bsnap_trns%i_div_Coriolis, &
+     &          ipol%i_div_Coriolis, irtp%i_div_Coriolis
       write(*,*)
 !
 !
