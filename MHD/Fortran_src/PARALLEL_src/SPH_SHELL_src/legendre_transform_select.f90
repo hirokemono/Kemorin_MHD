@@ -162,9 +162,7 @@
 !
 !
       if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        if(nvector.le.0) call leg_bwd_trans_vector_spin(ncomp, nvector)
-        if(nscalar.le.0) call leg_bwd_trans_scalar_spin                 &
-     &                      (ncomp, nvector, nscalar)
+        call leg_backward_trans_spin(ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         if(nvector.le.0) call leg_bwd_trans_vector_krin(ncomp, nvector)
         if(nscalar.le.0) call leg_bwd_trans_scalar_krin                 &
@@ -192,9 +190,7 @@
 !
       if(ncomp .le. 0) return
       if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        if(nvector.le.0) call leg_fwd_trans_vector_spin(ncomp, nvector)
-        if(nscalar.le.0) call leg_fwd_trans_scalar_spin                 &
-     &                      (ncomp, nvector, nscalar)
+        call leg_forward_trans_spin(ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         if(nvector.le.0) call leg_fwd_trans_vector_krin(ncomp, nvector)
         if(nscalar.le.0) call leg_fwd_trans_scalar_krin                 &

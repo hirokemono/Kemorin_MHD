@@ -9,19 +9,14 @@
 !!       (innermost loop is spherical harmonics)
 !!
 !!@verbatim
-!!      subroutine order_b_trans_vector_spin(ncomp, nvector, sp_rlm_spin)
-!!      subroutine order_b_trans_scalar_spin(ncomp, nvector, nscalar,   &
+!!      subroutine order_b_trans_fields_spin(ncomp, nvector, nscalar,   &
 !!     &          sp_rlm_spin)
-!!      subroutine order_f_trans_vector_spin(ncomp, nvector, vr_rtm_spin)
-!!      subroutine order_f_trans_scalar_spin(ncomp, nvector, nscalar,   &
+!!      subroutine order_f_trans_fields_spin(ncomp, nvector, nscalar,   &
 !!     &          vr_rtm_spin)
 !!
-!!      subroutine back_f_trans_vector_spin(ncomp, nvector, sp_rlm_spin)
-!!      subroutine back_f_trans_scalar_spin(ncomp, nvector, nscalar,    &
+!!      subroutine back_f_trans_fields_spin(ncomp, nvector, nscalar,    &
 !!     &          sp_rlm_spin)
-!!      subroutine back_b_trans_vector_spin(ncomp, nvector, vr_rtm_spin)
-!!      subroutine back_b_trans_scalar_spin(ncomp, nvector, nscalar,    &
-!!     &          vr_rtm_spin)
+!!      subroutine back_b_trans_fields_spin(ncomp, nvector, vr_rtm_spin)
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -48,11 +43,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine order_b_trans_vector_spin(ncomp, nvector, sp_rlm_spin)
+      subroutine order_b_trans_fields_spin(ncomp, nvector, nscalar,     &
+     &          sp_rlm_spin)
 !
-      integer(kind = kint), intent(in) :: ncomp, nvector
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sp_rlm_spin(nnod_rlm,nvector,3)
+      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      real(kind = kreal), intent(inout) :: sp_rlm_spin(nnod_rlm,ncomp)
 !
       integer(kind = kint) :: ip, ist, ied, inum, inod, nd, i_rlm_0
 !
@@ -68,28 +63,11 @@
 !
           i_rlm_0 = 3*nd + (inod-1) * ncomp
 !
-          sp_rlm_spin(inod,nd,1) = sp_rlm(i_rlm_0-2)
-          sp_rlm_spin(inod,nd,2) = sp_rlm(i_rlm_0-1)
-          sp_rlm_spin(inod,nd,3) = sp_rlm(i_rlm_0  )
+          sp_rlm_spin(inod,nd          ) = sp_rlm(i_rlm_0-2)
+          sp_rlm_spin(inod,nd+nvector  ) = sp_rlm(i_rlm_0-1)
+          sp_rlm_spin(inod,nd+2*nvector) = sp_rlm(i_rlm_0  )
         end do
-      end do
-!$omp end parallel do
 !
-      end subroutine order_b_trans_vector_spin
-!
-! -----------------------------------------------------------------------
-!
-      subroutine order_b_trans_scalar_spin(ncomp, nvector, nscalar,     &
-     &          sp_rlm_spin)
-!
-      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      real(kind = kreal), intent(inout) :: sp_rlm_spin(nnod_rlm,ncomp)
-!
-      integer(kind = kint) :: ip, ist, ied, inum, inod, nd, i_rlm_0
-!
-!
-!$omp  parallel do  private(ip,ist,ied,inum,inod,nd,i_rlm_0)
-      do ip = 1, np_smp
         ist = nscalar*inod_rlm_smp_stack(ip-1) + 1
         ied = nscalar*inod_rlm_smp_stack(ip)
 !cdir nodep
@@ -104,15 +82,16 @@
       end do
 !$omp end parallel do
 !
-      end subroutine order_b_trans_scalar_spin
+      end subroutine order_b_trans_fields_spin
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine order_f_trans_vector_spin(ncomp, nvector, vr_rtm_spin)
+      subroutine order_f_trans_fields_spin(ncomp, nvector, nscalar,     &
+     &          vr_rtm_spin)
 !
-      integer(kind = kint), intent(in) :: ncomp, nvector
+      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       real(kind = kreal), intent(inout)                                 &
-     &                   :: vr_rtm_spin(nnod_rtm,nvector,3)
+     &                   :: vr_rtm_spin(nnod_rtm,ncomp)
 !
       integer(kind = kint) :: ip, ist, ied, inum, inod
       integer(kind = kint) :: i_rtm_0, k_rtm, l_rtm, m_rtm
@@ -138,34 +117,14 @@
      &                   + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
           i_rtm_spin = 1 + mod((inum-1),nnod_rtm)
 !
-          vr_rtm_spin(i_rtm_spin,nd,1  ) = vr_rtm(i_rtm_0-2)            &
+          vr_rtm_spin(i_rtm_spin,nd          ) = vr_rtm(i_rtm_0-2)      &
      &                 * radius_1d_rlm_r(k_rtm)*radius_1d_rlm_r(k_rtm)
-          vr_rtm_spin(i_rtm_spin,nd,2  ) = vr_rtm(i_rtm_0-1)            &
+          vr_rtm_spin(i_rtm_spin,nd+nvector  ) = vr_rtm(i_rtm_0-1)      &
      &                 * radius_1d_rlm_r(k_rtm)
-          vr_rtm_spin(i_rtm_spin,nd,3) = vr_rtm(i_rtm_0  )              &
+          vr_rtm_spin(i_rtm_spin,nd+2*nvector) = vr_rtm(i_rtm_0  )      &
      &                 * radius_1d_rlm_r(k_rtm)
         end do
-      end do
-!$omp end parallel do
 !
-      end subroutine order_f_trans_vector_spin
-!
-! -----------------------------------------------------------------------
-!
-      subroutine order_f_trans_scalar_spin(ncomp, nvector, nscalar,     &
-     &          vr_rtm_spin)
-!
-      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      real(kind = kreal), intent(inout) :: vr_rtm_spin(nnod_rtm,ncomp)
-!
-      integer(kind = kint) :: ip, ist, ied, inum, inod
-      integer(kind = kint) :: i_rtm_0, k_rtm, l_rtm, m_rtm
-      integer(kind = kint) :: nd, kr_nd, i_rtm_spin
-!
-!
-!$omp  parallel do private(ip,ist,ied,inum,inod,i_rtm_0,nd,kr_nd,       &
-!$omp&                     k_rtm,l_rtm,m_rtm,i_rtm_spin)
-      do ip = 1, np_smp
         ist = nscalar*inod_rtm_smp_stack(ip-1) + 1
         ied = nscalar*inod_rtm_smp_stack(ip)
 !cdir nodep
@@ -187,16 +146,17 @@
       end do
 !$omp end parallel do
 !
-      end subroutine order_f_trans_scalar_spin
+      end subroutine order_f_trans_fields_spin
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine back_f_trans_vector_spin(ncomp, nvector, sp_rlm_spin)
+      subroutine back_f_trans_fields_spin(ncomp, nvector, nscalar,      &
+     &          sp_rlm_spin)
 !
-      integer(kind = kint), intent(in) :: ncomp, nvector
-      real(kind = kreal), intent(in) :: sp_rlm_spin(nnod_rlm,nvector,3)
+      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      real(kind = kreal), intent(in) :: sp_rlm_spin(nnod_rlm,ncomp)
 !
       integer(kind = kint) :: ip, ist, ied, inum, inod
       integer(kind = kint) :: i_rlm_0, nd
@@ -214,29 +174,11 @@
 !
           i_rlm_0 = 3*nd + (inod-1) * ncomp
 !
-          sp_rlm(i_rlm_0-2) = sp_rlm_spin(inod,nd,1)
-          sp_rlm(i_rlm_0-1) = sp_rlm_spin(inod,nd,2)
-          sp_rlm(i_rlm_0  ) = sp_rlm_spin(inod,nd,3)
+          sp_rlm(i_rlm_0-2) = sp_rlm_spin(inod,nd          )
+          sp_rlm(i_rlm_0-1) = sp_rlm_spin(inod,nd+nvector  )
+          sp_rlm(i_rlm_0  ) = sp_rlm_spin(inod,nd+2*nvector)
         end do
-      end do
-!$omp end parallel do
 !
-      end subroutine back_f_trans_vector_spin
-!
-! -----------------------------------------------------------------------
-!
-      subroutine back_f_trans_scalar_spin(ncomp, nvector, nscalar,      &
-     &          sp_rlm_spin)
-!
-      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      real(kind = kreal), intent(in) :: sp_rlm_spin(nnod_rlm,ncomp)
-!
-      integer(kind = kint) :: ip, ist, ied, inum, inod
-      integer(kind = kint) :: i_rlm_0, nd
-!
-!
-!$omp  parallel do private(ip,ist,ied,inum,inod,nd,i_rlm_0)
-      do ip = 1, np_smp
         ist = nscalar*inod_rlm_smp_stack(ip-1) + 1
         ied = nscalar*inod_rlm_smp_stack(ip)
         do inum = ist, ied
@@ -250,15 +192,17 @@
       end do
 !$omp end parallel do
 !
-      end subroutine back_f_trans_scalar_spin
+!
+      end subroutine back_f_trans_fields_spin
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine back_b_trans_vector_spin(ncomp, nvector, vr_rtm_spin)
+      subroutine back_b_trans_fields_spin(ncomp, nvector, nscalar,      &
+     &          vr_rtm_spin)
 !
-      integer(kind = kint), intent(in) :: ncomp, nvector
-      real(kind = kreal), intent(in) :: vr_rtm_spin(nnod_rtm,nvector,3)
+      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      real(kind = kreal), intent(in) :: vr_rtm_spin(nnod_rtm,ncomp)
 !
       integer(kind = kint) :: ip, ist, ied, inum, inod, lnod
       integer(kind = kint) :: i_rtm_0, k_rtm, l_rtm, m_rtm, i_rtm_spin
@@ -283,33 +227,14 @@
           i_rtm_spin = l_rtm + (m_rtm-1) * nidx_rtm(2)                  &
      &                       + (k_rtm-1) * nidx_rtm(2)*nidx_rtm(3)
 !
-          vr_rtm(i_rtm_0-2) = vr_rtm_spin(i_rtm_spin,nd,1)              &
+          vr_rtm(i_rtm_0-2) = vr_rtm_spin(i_rtm_spin,nd          )      &
      &                       * a_r_1d_rlm_r(k_rtm)*a_r_1d_rlm_r(k_rtm)
-          vr_rtm(i_rtm_0-1) = vr_rtm_spin(i_rtm_spin,nd,2)              &
+          vr_rtm(i_rtm_0-1) = vr_rtm_spin(i_rtm_spin,nd+nvector  )      &
      &                       * a_r_1d_rlm_r(k_rtm)
-          vr_rtm(i_rtm_0  ) = vr_rtm_spin(i_rtm_spin,nd,3)              &
+          vr_rtm(i_rtm_0  ) = vr_rtm_spin(i_rtm_spin,nd+2*nvector)      &
      &                       * a_r_1d_rlm_r(k_rtm)
         end do
-      end do
-!$omp end parallel do
 !
-      end subroutine back_b_trans_vector_spin
-!
-! -----------------------------------------------------------------------
-!
-      subroutine back_b_trans_scalar_spin(ncomp, nvector, nscalar,      &
-     &          vr_rtm_spin)
-!
-      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      real(kind = kreal), intent(in) :: vr_rtm_spin(nnod_rtm, ncomp)
-!
-      integer(kind = kint) :: ip, ist, ied, inum, inod, lnod, nd
-      integer(kind = kint) :: i_rtm_0, k_rtm, l_rtm, m_rtm, i_rtm_spin
-!
-!
-!$omp parallel do private(ip,ist,ied,i_rtm_0,k_rtm,l_rtm,nd,inod,lnod,  &
-!$omp&                    m_rtm,inum,i_rtm_spin)
-      do ip = 1, np_smp
         ist = nscalar*inod_rtm_smp_stack(ip-1) + 1
         ied = nscalar*inod_rtm_smp_stack(ip)
 !cdir nodep
@@ -330,7 +255,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine back_b_trans_scalar_spin
+      end subroutine back_b_trans_fields_spin
 !
 ! -----------------------------------------------------------------------
 !
