@@ -83,6 +83,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
+      call copy_sph_trans_nums_from_rtp
       call initialize_sph_trans
 !
 !      call check_schmidt_poly_rtm(my_rank+40)

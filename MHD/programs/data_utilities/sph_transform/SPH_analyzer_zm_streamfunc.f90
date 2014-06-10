@@ -120,9 +120,9 @@
 !
       subroutine sph_b_trans_streamline
 !
-      use sph_trans_vector
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
+      use sph_transforms
       use pole_sph_transform
 !
 !
@@ -131,13 +131,14 @@
      &        write(*,*) 'set_all_vec_spec_to_sph_t'
         call set_all_vec_spec_to_sph_t
 !
-        if (iflag_debug.gt.0)                                           &
-     &        write(*,*) 'sph_b_trans_vector', num_vector_rtp
-        call sph_b_trans_vector(3*num_vector_rtp)
+      if (iflag_debug.gt.0) write(*,*) 'sph_forward_transforms',        &
+     &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
+      call sph_backward_transforms(ncomp_sph_trans, num_vector_rtp,     &
+     &    num_scalar_rtp, num_tensor_rtp)
 !
-        if (iflag_debug.gt.0)                                           &
-     &      write(*,*) 'pole_b_trans_vector'
-        call pole_b_trans_vector(3*num_vector_rtp)
+      if (iflag_debug.gt.0) write(*,*) 'pole_backward_transforms'
+      call pole_backward_transforms(ncomp_sph_trans, num_vector_rtp,    &
+     &    num_scalar_rtp, num_tensor_rtp)
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'
@@ -216,7 +217,7 @@
               do k = 1, nidx_rtp(1)
                 inod = k + (l-1)*nidx_rtp(1)                            &
      &                   + (m-1)*nidx_rtp(1)*nidx_rtp(2)
-                jnod = j + (inod-1)*num_vector_rtp
+                jnod = j + (inod-1)*ncomp_sph_trans
                 vr_rtp(3*jnod-2) =  zero
                 vr_rtp(3*jnod-1) =  zero
                 vr_rtp(3*jnod  ) = -vr_rtp(3*jnod  )                    &

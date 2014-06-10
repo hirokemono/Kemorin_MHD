@@ -15,14 +15,12 @@
 !!      subroutine sel_dealloc_legendre_trans
 !!
 !!    Backward transforms
-!!      subroutine sel_vector_bwd_legendre_trans(ncomp, nvector)
-!!      subroutine sel_scalar_bwd_legendre_trans(ncomp, nvector, nscalar)
+!!      subroutine sel_backward_legendre_trans(ncomp, nvector, nscalar)
 !!        Input:  sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!        Output: vr_rtm   (Order: radius,theta,phi)
 !!
 !!    Forward transforms
-!!      subroutine sel_vector_fwd_legendre_trans(ncomp, nvector)
-!!      subroutine sel_scalar_fwd_legendre_trans(ncomp, nvector,nscalar)
+!!      subroutine sel_forward_legendre_trans(ncomp, nvector, nscalar)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!@endverbatim
@@ -158,88 +156,62 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_vector_bwd_legendre_trans(ncomp, nvector)
-!
-      integer(kind = kint), intent(in) :: ncomp, nvector
-!
-!
-      if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        call leg_bwd_trans_vector_spin(ncomp, nvector)
-      else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        call leg_bwd_trans_vector_krin(ncomp, nvector)
-      else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
-        call leg_bwd_trans_vector_long(ncomp, nvector)
-      else if(id_legendre_transfer .eq. iflag_leg_fdout_loop) then
-        call leg_bwd_trans_vector_fdout(ncomp, nvector)
-      else
-        call leg_bwd_trans_vector_org(ncomp, nvector)
-      end if
-!
-      end subroutine sel_vector_bwd_legendre_trans
-!
-! -----------------------------------------------------------------------
-!
-      subroutine sel_scalar_bwd_legendre_trans(ncomp, nvector, nscalar)
+      subroutine sel_backward_legendre_trans(ncomp, nvector, nscalar)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
 !
 !
       if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        call leg_bwd_trans_scalar_spin(ncomp, nvector, nscalar)
+        if(nvector.le.0) call leg_bwd_trans_vector_spin(ncomp, nvector)
+        if(nscalar.le.0) call leg_bwd_trans_scalar_spin                 &
+     &                      (ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        call leg_bwd_trans_scalar_krin(ncomp, nvector, nscalar)
+        if(nvector.le.0) call leg_bwd_trans_vector_krin(ncomp, nvector)
+        if(nscalar.le.0) call leg_bwd_trans_scalar_krin                 &
+     &                      (ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
-        call leg_bwd_trans_scalar_long(ncomp, nvector, nscalar)
+        if(nvector.le.0) call leg_bwd_trans_vector_long(ncomp, nvector)
+        if(nscalar.le.0) call leg_bwd_trans_scalar_long                 &
+     &                      (ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_fdout_loop) then
-        call leg_bwd_trans_scalar_fdout(ncomp, nvector, nscalar)
+        if(nvector.le.0) call leg_bwd_trans_vector_fdout(ncomp, nvector)
+        if(nscalar.le.0) call leg_bwd_trans_scalar_fdout                &
+     &                      (ncomp, nvector, nscalar)
       else
-        call leg_bwd_trans_scalar_org(ncomp, nvector, nscalar)
+        call leg_backward_trans_org(ncomp, nvector, nscalar)
       end if
 !
-      end subroutine sel_scalar_bwd_legendre_trans
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine sel_vector_fwd_legendre_trans(ncomp, nvector)
-!
-      integer(kind = kint), intent(in) :: ncomp, nvector
-!
-!
-      if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        call leg_fwd_trans_vector_spin(ncomp, nvector)
-      else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        call leg_fwd_trans_vector_krin(ncomp, nvector)
-      else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
-        call leg_fwd_trans_vector_long(ncomp, nvector)
-      else if(id_legendre_transfer .eq. iflag_leg_fdout_loop) then
-        call leg_fwd_trans_vector_fdout(ncomp, nvector)
-      else
-        call leg_fwd_trans_vector_org(ncomp, nvector)
-      end if
-!
-      end subroutine sel_vector_fwd_legendre_trans
+      end subroutine sel_backward_legendre_trans
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_scalar_fwd_legendre_trans(ncomp, nvector, nscalar)
+      subroutine sel_forward_legendre_trans(ncomp, nvector, nscalar)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
 !
 !
+      if(ncomp .le. 0) return
       if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        call leg_fwd_trans_scalar_spin(ncomp, nvector, nscalar)
+        if(nvector.le.0) call leg_fwd_trans_vector_spin(ncomp, nvector)
+        if(nscalar.le.0) call leg_fwd_trans_scalar_spin                 &
+     &                      (ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        call leg_fwd_trans_scalar_krin(ncomp, nvector, nscalar)
+        if(nvector.le.0) call leg_fwd_trans_vector_krin(ncomp, nvector)
+        if(nscalar.le.0) call leg_fwd_trans_scalar_krin                 &
+     &                      (ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
-        call leg_fwd_trans_scalar_long(ncomp, nvector, nscalar)
+        if(nvector.le.0) call leg_fwd_trans_vector_long(ncomp, nvector)
+        if(nscalar.le.0) call leg_fwd_trans_scalar_long                 &
+     &                      (ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_fdout_loop) then
-        call leg_fwd_trans_scalar_fdout(ncomp, nvector, nscalar)
+        if(nvector.le.0) call leg_fwd_trans_vector_fdout(ncomp, nvector)
+        if(nscalar.le.0) call leg_fwd_trans_scalar_fdout                &
+     &                      (ncomp, nvector, nscalar)
       else
-        call leg_fwd_trans_scalar_org(ncomp, nvector, nscalar)
+        call leg_forwawd_trans_org(ncomp, nvector, nscalar)
       end if
 !
-      end subroutine sel_scalar_fwd_legendre_trans
+      end subroutine sel_forward_legendre_trans
 !
 ! -----------------------------------------------------------------------
 !

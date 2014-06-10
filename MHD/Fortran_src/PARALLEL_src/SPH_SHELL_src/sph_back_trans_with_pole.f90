@@ -25,7 +25,7 @@
       subroutine sph_back_trans_vector_w_pole(is_fld, irtp_fld)
 !
       use copy_spectr_4_sph_trans
-      use sph_trans_vector
+      use sph_transforms
       use pole_sph_transform
       use copy_sph_field_4_sph_trans
 !
@@ -38,8 +38,8 @@
       call copy_vec_spec_to_trans(ithree, is_fld, ione)
 !$omp end parallel
 !
-      call sph_b_trans_vector(ithree)
-      call pole_b_trans_vector(ithree)
+      call sph_backward_transforms(ithree, ione, izero, izero)
+      call pole_backward_transforms(ithree, ione, izero, izero)
 !
 !$omp parallel
       call copy_vec_fld_from_trans(ithree, irtp_fld, ione)
@@ -52,7 +52,7 @@
       subroutine sph_back_trans_scalar_w_pole(is_fld, irtp_fld)
 !
       use copy_spectr_4_sph_trans
-      use sph_trans_scalar
+      use sph_transforms
       use pole_sph_transform
       use copy_sph_field_4_sph_trans
 !
@@ -65,8 +65,8 @@
       call copy_scalar_spec_to_trans(ione, is_fld, ione)
 !$omp end parallel
 !
-      call sph_b_trans_scalar(ione)
-      call pole_b_trans_scalar(ione)
+      call sph_backward_transforms(ione, izero, ione, izero)
+      call pole_backward_transforms(ione, izero, ione, izero)
 !
 !$omp parallel
       call copy_scalar_fld_from_trans(ione, irtp_fld, ione)

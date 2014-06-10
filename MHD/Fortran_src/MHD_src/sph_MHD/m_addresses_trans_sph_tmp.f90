@@ -20,6 +20,8 @@
 !
       implicit none
 !
+!>      number of components for backward spherical harmonics transform
+      integer(kind = kint) :: ncomp_tmp_rj_2_rtp = 0
 !>      number of components
 !!      for backward vector spherical harmonics transform
       integer(kind = kint) :: nvector_tmp_rj_2_rtp = 0
@@ -28,6 +30,8 @@
 !>      number of tensors for backward spherical harmonics transform
       integer(kind = kint) :: ntensor_tmp_rj_2_rtp = 0
 !
+!>      number of components for forward spherical harmonics transform
+      integer(kind = kint) :: ncomp_tmp_rtp_2_rj = 0
 !>      number of components
 !!      for forward vector spherical harmonics transform
       integer(kind = kint) :: nvector_tmp_rtp_2_rj = 0
@@ -55,26 +59,23 @@
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
 !
-      integer(kind = kint) :: ncomp_fwd, ncomp_bwd
-!
-!
-      nscalar_tmp_rtp_2_rj = 0
-      call add_transform_flag(ipol%i_grad_vx, irtp%i_grad_vx,           &
-     &    nscalar_tmp_rtp_2_rj, ftmp_trns%i_grad_vx)
-      call add_transform_flag(ipol%i_grad_vy, irtp%i_grad_vy,           &
-     &    nscalar_tmp_rtp_2_rj, ftmp_trns%i_grad_vy)
-      call add_transform_flag(ipol%i_grad_vz, irtp%i_grad_vz,           &
-     &    nscalar_tmp_rtp_2_rj, ftmp_trns%i_grad_vz)
-!
 !
       nvector_tmp_rtp_2_rj = 0
 !      call add_vec_trans_flag(ipol%i_coriolis, irtp%i_coriolis,        &
 !     &    nvector_tmp_rtp_2_rj, fsnap_trns%i_coriolis)
+      ncomp_tmp_rtp_2_rj = 3*nvector_tmp_rtp_2_rj
 !
-!
-      nscalar_tmp_rj_2_rtp = 0
-!      call add_transform_flag(ipol%i_temp, irtp%i_temp,                &
-!     &    nscalar_tmp_rj_2_rtp, bsnap_trns%i_temp)
+      nscalar_tmp_rtp_2_rj = 0
+      call add_scalar_trans_flag(ipol%i_grad_vx, irtp%i_grad_vx,        &
+     &    ncomp_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                     &
+     &    ftmp_trns%i_grad_vx)
+      call add_scalar_trans_flag(ipol%i_grad_vy, irtp%i_grad_vy,        &
+     &    ncomp_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                     &
+     &    ftmp_trns%i_grad_vy)
+      call add_scalar_trans_flag(ipol%i_grad_vz, irtp%i_grad_vz,        &
+     &    ncomp_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                     &
+     &    ftmp_trns%i_grad_vz)
+      ncomp_tmp_rtp_2_rj = ncomp_tmp_rtp_2_rj + nscalar_tmp_rtp_2_rj
 !
 !
       nvector_tmp_rj_2_rtp = 0
@@ -84,17 +85,16 @@
      &    nvector_tmp_rj_2_rtp, btmp_trns%i_grad_vy)
       call add_vec_trans_flag(ipol%i_grad_vz, irtp%i_grad_vz,           &
      &    nvector_tmp_rj_2_rtp, btmp_trns%i_grad_vz)
+      ncomp_tmp_rj_2_rtp = 3*nvector_tmp_rj_2_rtp
+!
+      nscalar_tmp_rj_2_rtp = 0
+!      call add_transform_flag(ipol%i_temp, irtp%i_temp,                &
+!     &    ncomp_tmp_rj_2_rtp, nscalar_tmp_rj_2_rtp, bsnap_trns%i_temp)
+      ncomp_tmp_rj_2_rtp = ncomp_tmp_rj_2_rtp + nscalar_tmp_rj_2_rtp
 !
 !
-      nb_sph_trans = max(nb_sph_trans,nscalar_tmp_rtp_2_rj)
-      nb_sph_trans = max(nb_sph_trans,nvector_tmp_rtp_2_rj)
-      nb_sph_trans = max(nb_sph_trans,nscalar_tmp_rj_2_rtp)
-      nb_sph_trans = max(nb_sph_trans,nvector_tmp_rj_2_rtp)
-!
-      ncomp_bwd = 3*nvector_tmp_rj_2_rtp + nscalar_tmp_rj_2_rtp
-      ncomp_fwd = 3*nvector_tmp_rtp_2_rj + nscalar_tmp_rtp_2_rj
-      ncomp_sph_trans = max(ncomp_sph_trans, ncomp_fwd)
-      ncomp_sph_trans = max(ncomp_sph_trans, ncomp_bwd)
+      ncomp_sph_trans = max(ncomp_sph_trans, ncomp_tmp_rtp_2_rj)
+      ncomp_sph_trans = max(ncomp_sph_trans, ncomp_tmp_rj_2_rtp)
 !
       end subroutine set_addresses_temporal_trans
 !
@@ -106,6 +106,9 @@
       use m_sph_phys_address
       use m_addresses_trans_sph_MHD
 !
+!
+      write(*,*) 'ncomp_tmp_rj_2_rtp', ncomp_tmp_rj_2_rtp
+      write(*,*) 'ncomp_tmp_rtp_2_rj', ncomp_tmp_rtp_2_rj
 !
       write(*,*) 'nvector_tmp_rj_2_rtp', nvector_tmp_rj_2_rtp
       if(btmp_trns%i_grad_vx .gt. 0) write(*,*)                         &

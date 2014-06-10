@@ -36,16 +36,18 @@
       use copy_1st_nodal_4_sph_trans
 !
       integer(kind = kint) :: j, j0
-      integer(kind = kint) :: i, i_field
+      integer(kind = kint) :: i, i_field, itrans
 !
 !
       do j = 1, num_scalar_rtp
         j0 = istart_scalar_rtp + j - 1
+        itrans = j + 3*num_vector_rtp
 !
         do i = 1, num_nod_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
-            call copy_1st_scl_to_sph_trans(num_scalar_rtp, j, i_field)
+            call copy_1st_scl_to_sph_trans(ncomp_sph_trans,             &
+     &          itrans, i_field)
             exit
           end if
         end do
@@ -60,16 +62,17 @@
       use copy_1st_nodal_4_sph_trans
 !
       integer(kind = kint) :: j, j0
-      integer(kind = kint) :: i, i_field
+      integer(kind = kint) :: i, i_field, itrans
 !
 !
       do j = 1, num_scalar_rtp
         j0 = istart_scalar_rtp + j - 1
+        itrans = j + 3*num_vector_rtp
 !
         do i = 1, num_nod_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
-            call copy_1st_scl_from_sph_trans(num_scalar_rtp, j,         &
+            call copy_1st_scl_from_sph_trans(ncomp_sph_trans, itrans,   &
      &          i_field)
             exit
           end if
@@ -86,16 +89,17 @@
       use copy_1st_nodal_4_sph_trans
 !
       integer(kind = kint) :: j, j0
-      integer(kind = kint) :: i, i_field
+      integer(kind = kint) :: i, i_field, itrans
 !
 !
       do j = 1, num_vector_rtp
         j0 = istart_vector_rtp + j - 1
+        itrans = 3*j - 2
 !
         do i = 1, num_nod_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
-            call copy_1st_vec_to_sph_trans(3*num_vector_rtp, 3*j-2,     &
+            call copy_1st_vec_to_sph_trans(ncomp_sph_trans, itrans,     &
      &          i_field)
             exit
           end if
@@ -111,17 +115,18 @@
       use copy_1st_nodal_4_sph_trans
 !
       integer(kind = kint) :: j, j0
-      integer(kind = kint) :: i, i_field
+      integer(kind = kint) :: i, i_field, itrans
 !
 !
       do j = 1, num_vector_rtp
         j0 = istart_vector_rtp + j - 1
+        itrans = 3*j - 2
 !
         do i = 1, num_nod_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
-            call copy_1st_vec_from_trans_wpole(3*num_vector_rtp, 3*j-2, &
-     &          i_field)
+            call copy_1st_vec_from_trans_wpole(ncomp_sph_trans,         &
+     &          itrans, i_field)
             exit
           end if
         end do
@@ -137,16 +142,17 @@
       use copy_1st_nodal_4_sph_trans
 !
       integer(kind = kint) :: j, j0
-      integer(kind = kint) :: i, i_field
+      integer(kind = kint) :: i, i_field, itrans
 !
 !
       do j = 1, num_tensor_rtp
         j0 = istart_tensor_rtp + j - 1
+        itrans = 1 + 6*(j-1) + num_scalar_rtp + 3*num_vector_rtp
 !
         do i = 1, num_nod_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
-            call copy_1st_tsr_to_sph_trans(6*num_tensor_rtp, 6*j-5,     &
+            call copy_1st_tsr_to_sph_trans(ncomp_sph_trans, itrans,     &
      &          i_field)
             exit
           end if
@@ -162,16 +168,17 @@
       use copy_1st_nodal_4_sph_trans
 !
       integer(kind = kint) :: j, j0
-      integer(kind = kint) :: i, i_field
+      integer(kind = kint) :: i, i_field, itrans
 !
 !
       do j = 1, num_tensor_rtp
         j0 = istart_tensor_rtp + j - 1
+        itrans = 1 + 6*(j-1) + num_scalar_rtp + 3*num_vector_rtp
 !
         do i = 1, num_nod_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
-            call copy_1st_tsr_from_trans_wpole(6*num_tensor_rtp, 6*j-5, &
+            call copy_1st_tsr_from_trans_wpole(ncomp_sph_trans, itrans, &
      &          i_field)
             exit
           end if

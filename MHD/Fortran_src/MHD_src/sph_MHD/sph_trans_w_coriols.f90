@@ -9,8 +9,8 @@
 !!       including Coriolis terms
 !!
 !!@verbatim
-!!      subroutine sph_b_trans_w_coriolis(ncomp_trans)
-!!      subroutine sph_f_trans_w_coriolis(ncomp_trans)
+!!      subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar)
+!!      subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar)
 !!
 !!      subroutine sph_b_trans_licv(ncomp_trans)
 !!      subroutine sph_f_trans_licv(ncomp_trans)
@@ -39,6 +39,8 @@
 !!@endverbatim
 !!
 !!@param ncomp_trans Number of components for transform
+!!@param nvector     Number of vectors for transform
+!!@param nscalar     Number of scalars for transform
 !
       module sph_trans_w_coriols
 !
@@ -64,17 +66,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_b_trans_w_coriolis(ncomp_trans)
+      subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar)
 !
       use m_work_time
 !
       integer(kind = kint), intent(in) :: ncomp_trans
+      integer(kind = kint), intent(in) :: nvector, nscalar
 !
       integer(kind = kint) :: Nstacksmp(0:np_smp)
-      integer(kind = kint) :: nvector, ncomp_FFT
+      integer(kind = kint) :: ncomp_FFT
 !
 !
-      nvector = ncomp_trans / 3
       ncomp_FFT = ncomp_trans*nidx_rtp(1)*nidx_rtp(2)
       Nstacksmp(0:np_smp) = ncomp_trans*irt_rtp_smp_stack(0:np_smp)
 !
@@ -94,8 +96,9 @@
       call end_eleps_time(13)
 !
       call start_eleps_time(22)
-      if(iflag_debug .gt. 0) write(*,*) 'sel_vector_bwd_legendre_trans'
-      call sel_vector_bwd_legendre_trans(ncomp_trans, nvector)
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &    'sel_backward_legendre_trans', ncomp_trans, nvector, nscalar
+      call sel_backward_legendre_trans(ncomp_trans, nvector, nscalar)
       call end_eleps_time(22)
 !
 !      call check_vr_rtm(my_rank, ncomp_trans)
@@ -119,17 +122,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_f_trans_w_coriolis(ncomp_trans)
+      subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar)
 !
       use m_work_time
 !
       integer(kind = kint), intent(in) :: ncomp_trans
+      integer(kind = kint), intent(in) :: nvector, nscalar
 !
       integer(kind = kint) :: Nstacksmp(0:np_smp)
-      integer(kind = kint) :: nvector, ncomp_FFT
+      integer(kind = kint) :: ncomp_FFT
 !
 !
-      nvector = ncomp_trans / 3
       ncomp_FFT = ncomp_trans*nidx_rtp(1)*nidx_rtp(2)
       Nstacksmp(0:np_smp) = ncomp_trans*irt_rtp_smp_stack(0:np_smp)
 !
@@ -148,8 +151,8 @@
 !      call check_vr_rtm(my_rank, ncomp_trans)
 !
       call start_eleps_time(23)
-      if(iflag_debug .gt. 0) write(*,*) 'sel_vector_fwd_legendre_trans'
-      call sel_vector_fwd_legendre_trans(ncomp_trans, nvector)
+      if(iflag_debug .gt. 0) write(*,*) 'sel_forward_legendre_trans'
+      call sel_forward_legendre_trans(ncomp_trans, nvector, nscalar)
       call end_eleps_time(23)
 !      call check_sp_rlm(my_rank, ncomp_trans)
 !

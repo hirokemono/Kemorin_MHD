@@ -69,7 +69,7 @@
         call set_rj_phys_for_convective_kene
 !
 !  spherical transform for vector
-        call sph_b_trans_all_vector
+        call sph_b_trans_all_field
         call cal_zm_energy_to_pressure
 !
       end if

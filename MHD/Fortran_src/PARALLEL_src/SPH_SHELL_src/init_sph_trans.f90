@@ -7,6 +7,7 @@
 !>@brief  Initialize spherical harmonics transform
 !!
 !!@verbatim
+!!      subroutine copy_sph_trans_nums_from_rtp
 !!      subroutine initialize_sph_trans
 !!@endverbatim
 !
@@ -23,6 +24,26 @@
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine copy_sph_trans_nums_from_rtp
+!
+      use m_machine_parameter
+      use m_phys_constants
+      use m_sph_spectr_data
+      use m_work_4_sph_trans
+!
+!
+      ncomp_sph_trans =  num_tensor_rtp * n_sym_tensor                  &
+     &                 + num_vector_rtp * n_vector                      &
+     &                 + num_scalar_rtp * n_scalar
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'ncomp_sph_trans', ncomp_sph_trans
+      end if
+!
+      end subroutine copy_sph_trans_nums_from_rtp
 !
 ! -----------------------------------------------------------------------
 !
@@ -55,11 +76,11 @@
       call set_sin_theta_rtp
 !
 !
-      ncomp = 3*nb_sph_trans*nidx_rtp(1)*nidx_rtp(2)
-      Nstacksmp(0:np_smp) = 3*nb_sph_trans*irt_rtp_smp_stack(0:np_smp)
+      ncomp = ncomp_sph_trans*nidx_rtp(1)*nidx_rtp(2)
+      Nstacksmp(0:np_smp) = ncomp_sph_trans*irt_rtp_smp_stack(0:np_smp)
       call s_select_fourier_transform(ncomp, Nstacksmp)
 !
-      ncomp = 3*nb_sph_trans
+      ncomp = ncomp_sph_trans
       call init_sph_send_recv_N(ncomp, vr_rtp, vr_rtm, sp_rlm, sp_rj)
 !
       end subroutine initialize_sph_trans

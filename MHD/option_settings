@@ -542,10 +542,25 @@ bject-2.0 -lgmodule-2.0 -lglib-2.0
 # IBM Blue Zene/Q
 # -------------------------------------------------------------------------------
 #
+#    OpenMP flag for fortran should be fixed!!
+#    Prepocessor options should be fixed!!
+#
+# ANL Vesta
+#
 ./configure --prefix='/home/matsui/local' --enable-fftw3 --enable-libpng --disable-gl \
 --with-hdf5=no --with-zlib=/home/matsui/local --without-pgplot \
 CC=bgxlc FC=bgxlf MPICC=mpixlc MPIF90=mpixlf90 \
 CFLAGS='-O3 -q64' FCFLAGS='-O3 -q64' \
+PKG_CONFIG_PATH="$PKG_CONFIG_PATH":/home/matsui/local/lib/pkgconfig
+#
+# ANL Mira
+#
+./configure --prefix='/home/matsui/local' --enable-fftw3 --enable-libpng --disable-gl \
+--with-hdf5=no --with-zlib=/soft/libraries/alcf/current/xl/ZLIB --without-pgplot \
+CC=bgxlc FC=bgxlf MPICC=mpixlc MPIF90=mpixlf90 \
+CFLAGS='-O3 -q64' FCFLAGS='-O3 -q64' \
+FFTW3_CFLAGS='-I/soft/libraries/alcf/current/xl/FFTW3/include' \
+FFTW3_LIBS='-L/soft/libraries/alcf/current/xl/FFTW3/lib -lfftw3' \
 PKG_CONFIG_PATH="$PKG_CONFIG_PATH":/home/matsui/local/lib/pkgconfig
 
 
