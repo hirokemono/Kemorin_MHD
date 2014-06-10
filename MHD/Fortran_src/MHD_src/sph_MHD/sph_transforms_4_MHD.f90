@@ -247,11 +247,13 @@
       use m_machine_parameter
       use m_work_4_sph_trans
       use legendre_transform_select
+      use skip_comment_f
 !
       real(kind = kreal) :: stime, etime_shortest
       real(kind = kreal) :: etime(5), etime_trans(5)
 !
       integer(kind = kint) :: iloop_type
+      character(len=kchara) :: tmpchara
 !
 !
       do iloop_type = 1, 5
@@ -281,20 +283,22 @@
       end do
 !
       if(my_rank .gt. 0) return
+        if     (id_legendre_transfer .eq. iflag_leg_orginal_loop) then
+          write(tmpchara,'(a)') trim(leg_orginal_loop)
+        else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
+          write(tmpchara,'(a)') trim(leg_krloop_inner)
+        else if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
+          write(tmpchara,'(a)') trim(leg_krloop_outer)
+        else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
+          write(tmpchara,'(a)') trim(leg_long_loop)
+        else if(id_legendre_transfer .eq. iflag_leg_fdout_loop) then
+          write(tmpchara,'(a)') trim(leg_fdout_loop)
+        end if
+        call change_2_upper_case(tmpchara)
+!
         write(*,'(a,i4)', advance='no')                                 &
      &         'Selected id_legendre_transfer: ', id_legendre_transfer
-!
-        if     (id_legendre_transfer .eq. iflag_leg_orginal_loop) then
-          write(*,'(a,a)') ' (ORIGINAL_LOOP) '
-        else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-          write(*,'(a,a)') ' (INNER_RADIAL_LOOP) '
-        else if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-          write(*,'(a,a)') ' (OUTER_RADIAL_LOOP) '
-        else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
-          write(*,'(a,a)') ' (LONG_LOOP) '
-        else if(id_legendre_transfer .eq. iflag_leg_fdout_loop) then
-          write(*,'(a,a)') ' (OUTER_FIELD_LOOP) '
-        end if
+        write(*,'(a,a,a)') ' (', trim(tmpchara), ') '
 !
         write(*,*) '1: elapsed by original loop:      ',                &
      &            etime_trans(iflag_leg_orginal_loop)

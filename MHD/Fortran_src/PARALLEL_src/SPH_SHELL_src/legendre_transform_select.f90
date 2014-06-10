@@ -90,9 +90,6 @@
       integer(kind = kint)                                              &
      &              :: id_legendre_transfer = iflag_leg_undefined
 !
-      private :: leg_krloop_inner, leg_krloop_outer, leg_long_loop
-      private :: leg_fdout_loop, leg_orginal_loop
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -164,9 +161,7 @@
       if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
         call leg_backward_trans_spin(ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        if(nvector.le.0) call leg_bwd_trans_vector_krin(ncomp, nvector)
-        if(nscalar.le.0) call leg_bwd_trans_scalar_krin                 &
-     &                      (ncomp, nvector, nscalar)
+        call leg_bwd_trans_fields_krin(ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
         if(nvector.le.0) call leg_bwd_trans_vector_long(ncomp, nvector)
         if(nscalar.le.0) call leg_bwd_trans_scalar_long                 &
@@ -192,9 +187,7 @@
       if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
         call leg_forward_trans_spin(ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        if(nvector.le.0) call leg_fwd_trans_vector_krin(ncomp, nvector)
-        if(nscalar.le.0) call leg_fwd_trans_scalar_krin                 &
-     &                      (ncomp, nvector, nscalar)
+        call leg_fwd_trans_fields_krin(ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
         if(nvector.le.0) call leg_fwd_trans_vector_long(ncomp, nvector)
         if(nscalar.le.0) call leg_fwd_trans_scalar_long                 &
