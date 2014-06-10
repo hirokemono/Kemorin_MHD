@@ -40,8 +40,8 @@
 !
       if(my_rank .eq. 0) then
         call check_global_spheric_parameter
+        call output_set_radial_grid
       end if
-      call output_set_radial_grid
 !
 !  ========= Generate spherical harmonics table ========================
 !
