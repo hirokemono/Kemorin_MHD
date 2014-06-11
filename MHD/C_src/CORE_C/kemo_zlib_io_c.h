@@ -16,11 +16,13 @@
 
 #define Z_DEFAULT_MEMLEVEL  8
 #define GZ_WT_MODE "wb6f"
+#define GZ_AD_MODE "ab6f"
 #define GZ_RD_MODE "rb6f"
 
 /* prototypes */
 
 void open_wt_gzfile(const char *gz_file_name);
+void open_ad_gzfile(const char *gz_file_name);
 void open_rd_gzfile(const char *gz_file_name);
 void close_gzfile();
 
