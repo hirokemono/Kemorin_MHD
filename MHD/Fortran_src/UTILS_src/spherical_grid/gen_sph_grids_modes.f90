@@ -43,9 +43,7 @@
       integer(kind = kint) :: ip_rank
 !
 !
-      if(iflag_memory_conserve_sph .eq. 0) then 
-        call alloc_parallel_sph_grids(ndomain_sph)
-      end if
+      call alloc_parallel_sph_grids(ndomain_sph)
 !
       do ip_rank = 0, ndomain_sph-1
         call const_transform_grids_modes(ip_rank)
@@ -165,14 +163,12 @@
      &          'const_comm_table_4_rtm', ip_rank
       call const_comm_table_4_rtm(ip_rank, nnod_rtm)
 !
-      if(iflag_memory_conserve_sph .eq. 0) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
+      if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'copy_sph_rlm_grid_to_mem', ip_rank
-        call copy_sph_rlm_grid_to_mem(ip)
-        if(iflag_debug .gt. 0) write(*,*)                               &
+      call copy_sph_rlm_grid_to_mem(ip)
+      if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'copy_sph_rtm_grid_to_mem', ip_rank
-        call copy_sph_rtm_grid_to_mem(ip)
-      end if
+      call copy_sph_rtm_grid_to_mem(ip)
 !
       end subroutine const_transform_grids_modes
 !
