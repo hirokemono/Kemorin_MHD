@@ -38,11 +38,11 @@
 !
       integer(kind = kint) :: num_psf_ctl = 0
       character(len = kchara), allocatable :: fname_psf_ctl(:)
-      type(psf_ctl), pointer :: psf_ctl_struct(:)
+      type(psf_ctl), pointer, save :: psf_ctl_struct(:)
 !
       integer(kind = kint) :: num_iso_ctl = 0
       character(len = kchara), allocatable :: fname_iso_ctl(:)
-      type(iso_ctl), pointer :: iso_ctl_struct(:)
+      type(iso_ctl), pointer, save :: iso_ctl_struct(:)
 !
 !   entry label
 !

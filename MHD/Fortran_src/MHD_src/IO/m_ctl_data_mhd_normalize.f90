@@ -95,7 +95,7 @@
 !>      Structure for list of dimensionless numbers
 !!@n      coef_4_dimless_ctl%c_tbl:  Name of each number 
 !!@n      coef_4_dimless_ctl%vect:   valus of each number
-      type(ctl_array_cr) :: coef_4_dimless_ctl
+      type(ctl_array_cr), save :: coef_4_dimless_ctl
 !
 !   entry label
 !

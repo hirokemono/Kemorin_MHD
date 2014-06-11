@@ -132,17 +132,17 @@
 !>      Structure for coefficients for sueface equation
 !!@n      psf_coefs_ctl%c_tbl: 
 !!@n      psf_coefs_ctl%vect:  coefficients
-        type(ctl_array_cr) :: psf_coefs_ctl
+        type(ctl_array_cr), save :: psf_coefs_ctl
 !
 !>      Structure for definition of center
 !!@n      psf_axis_ctl%c_tbl: direction of axis
 !!@n      psf_axis_ctl%vect:  position
-        type(ctl_array_cr) :: psf_center_ctl
+        type(ctl_array_cr), save :: psf_center_ctl
 !
 !>      Structure for definition of elipsoid
 !!@n      psf_axis_ctl%c_tbl: direction of axis
 !!@n      psf_axis_ctl%vect:  vector component
-        type(ctl_array_cr) :: psf_axis_ctl
+        type(ctl_array_cr), save :: psf_axis_ctl
 !
         real(kind = kreal) :: radius_psf_ctl
 !
@@ -151,11 +151,11 @@
 !>      Structure for list of output field
 !!@n      psf_out_field_ctl%c1_tbl: Name of field
 !!@n      psf_out_field_ctl%c2_tbl: Name of component
-        type(ctl_array_c2) :: psf_out_field_ctl
+        type(ctl_array_c2), save :: psf_out_field_ctl
 !
 !>      Structure for element group list for Parallel Sectioning
 !!@n      psf_area_ctl%c_tbl: Name of element group
-        type(ctl_array_chara) :: psf_area_ctl
+        type(ctl_array_chara), save :: psf_area_ctl
 !
 !     Top level
         integer (kind=kint) :: i_psf_ctl = 0

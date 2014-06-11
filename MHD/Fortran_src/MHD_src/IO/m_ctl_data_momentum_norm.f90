@@ -59,34 +59,34 @@
 !>      Structure for number and power to construct viscousity term
 !!@n      coef_4_viscous_ctl%c_tbl:  Name of number 
 !!@n      coef_4_viscous_ctl%vect:   Power of the number
-      type(ctl_array_cr) :: coef_4_viscous_ctl
+      type(ctl_array_cr), save :: coef_4_viscous_ctl
 !
 !>      Structure for number and power to construct intertia term
 !!@n      coef_4_intertia_ctl%c_tbl:  Name of number 
 !!@n      coef_4_intertia_ctl%vect:   Power of the number
-      type(ctl_array_cr) :: coef_4_intertia_ctl
+      type(ctl_array_cr), save :: coef_4_intertia_ctl
 !>      Structure for number and power to construct pressure gradient
 !!@n      coef_4_grad_p_ctl%c_tbl:  Name of number 
 !!@n      coef_4_grad_p_ctl%vect:   Power of the number
-      type(ctl_array_cr) :: coef_4_grad_p_ctl
+      type(ctl_array_cr), save :: coef_4_grad_p_ctl
 !
 !
 !>      Structure for number and power to construct termal buoyancy
 !!@n      coef_4_termal_buo_ctl%c_tbl:  Name of number 
 !!@n      coef_4_termal_buo_ctl%vect:   Power of the number
-      type(ctl_array_cr) :: coef_4_termal_buo_ctl
+      type(ctl_array_cr), save :: coef_4_termal_buo_ctl
 !>      Structure for number and power to construct compositional buoyancy
 !!@n      coef_4_comp_buo_ctl%c_tbl:  Name of number 
 !!@n      coef_4_comp_buo_ctl%vect:   Power of the number
-      type(ctl_array_cr) :: coef_4_comp_buo_ctl
+      type(ctl_array_cr), save :: coef_4_comp_buo_ctl
 !>      Structure for number and power to construct Coriolis force
 !!@n      coef_4_Coriolis_ctl%c_tbl:  Name of number 
 !!@n      coef_4_Coriolis_ctl%vect:   Power of the number
-      type(ctl_array_cr) :: coef_4_Coriolis_ctl
+      type(ctl_array_cr), save :: coef_4_Coriolis_ctl
 !>      Structure for number and power to construct Lorentz force
 !!@n      coef_4_Loreantz_ctl%c_tbl:  Name of number 
 !!@n      coef_4_Loreantz_ctl%vect:   Power of the number
-      type(ctl_array_cr) :: coef_4_Loreantz_ctl
+      type(ctl_array_cr), save :: coef_4_Loreantz_ctl
 !
 !   entry label
 !

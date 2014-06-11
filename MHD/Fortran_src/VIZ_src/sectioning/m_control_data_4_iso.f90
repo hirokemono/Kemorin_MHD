@@ -89,11 +89,11 @@
 !>      Structure for list of output field
 !!@n      iso_out_field_ctl%c1_tbl: Name of field
 !!@n      iso_out_field_ctl%c2_tbl: Name of component
-        type(ctl_array_c2) :: iso_out_field_ctl
+        type(ctl_array_c2), save :: iso_out_field_ctl
 !
 !>      Structure for element group list for isosurfacing
 !!@n      iso_area_ctl%c_tbl: Name of element group
-        type(ctl_array_chara) :: iso_area_ctl
+        type(ctl_array_chara), save :: iso_area_ctl
 !
 !     Top level
         integer (kind=kint) :: i_iso_ctl = 0

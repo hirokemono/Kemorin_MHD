@@ -77,7 +77,7 @@
 !
 !>      Structure for element group to draw field line
 !!@n      fline_area_grp_ctl%c_tbl:  element group to draw field line
-        type(ctl_array_chara) :: fline_area_grp_ctl
+        type(ctl_array_chara), save :: fline_area_grp_ctl
 !
 !
         character(len=kchara) :: starting_type_ctl
@@ -92,12 +92,12 @@
 !!@n      seed_point_ctl%vec1:  X-component of seed points
 !!@n      seed_point_ctl%vec2:  Y-component of seed points
 !!@n      seed_point_ctl%vec3:  Z-component of seed points
-        type(ctl_array_r3) :: seed_point_ctl
+        type(ctl_array_r3), save :: seed_point_ctl
 !
 !>      Structure for seed points on center of the surfaces
 !!@n      seed_surface_ctl%int1:  element ID for seed points
 !!@n      seed_surface_ctl%int2:  Surface ID for seed points
-        type(ctl_array_i2) :: seed_surface_ctl
+        type(ctl_array_i2), save :: seed_surface_ctl
 !
 !     Top level
 !

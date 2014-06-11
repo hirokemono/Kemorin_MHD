@@ -180,7 +180,7 @@
 !
 !>      Structure for element group list for PVR
 !!@n      group_4_monitor_ctl%c_tbl: Name of element group for PVR
-        type(ctl_array_chara) :: pvr_area_ctl
+        type(ctl_array_chara), save :: pvr_area_ctl
 !
         character(len=kchara) :: pvr_field_ctl(1)
         character(len=kchara) :: pvr_comp_ctl(1)
@@ -194,7 +194,7 @@
 !!@n      light_position_ctl%vec1:  X-component of light position
 !!@n      light_position_ctl%vec2:  Y-component of light position
 !!@n      light_position_ctl%vec3:  Z-component of light position
-        type(ctl_array_r3) :: light_position_ctl
+        type(ctl_array_r3), save :: light_position_ctl
 !
         character(len=kchara) :: rotation_axis_ctl
         integer (kind=kint) ::   num_frames_ctl = 0
@@ -216,13 +216,13 @@
 !>      Structure for color map controls
 !!@n      opacity_ctl%vec1:  field data value
 !!@n      opacity_ctl%vec2:  color map value
-        type(ctl_array_r2) :: colortbl_ctl
+        type(ctl_array_r2), save :: colortbl_ctl
 !
 !>      Structure for opacity controls
 !!@n      opacity_ctl%vec1:  Minimum value for one opacity
 !!@n      opacity_ctl%vec2:  Maximum value for one opacity
 !!@n      opacity_ctl%vec3:  Opacity for each level
-        type(ctl_array_r3) :: opacity_ctl
+        type(ctl_array_r3), save :: opacity_ctl
 !
 !
 !     Top level

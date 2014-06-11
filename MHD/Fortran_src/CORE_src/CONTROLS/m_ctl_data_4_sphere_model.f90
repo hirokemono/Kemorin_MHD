@@ -76,12 +76,12 @@
 !>      Structure for radial point data
 !!@n      light_position_ctl%ivec:  radial ID
 !!@n      light_position_ctl%vect:  Radius
-        type(ctl_array_ir) :: radius_ctl
+      type(ctl_array_ir), save :: radius_ctl
 !
 !>      Structure for radial grouping data for boundaries
 !!@n      light_position_ctl%c_tble:  Group name
 !!@n      light_position_ctl%ivec:    radial ID
-        type(ctl_array_ci) :: radial_grp_ctl
+      type(ctl_array_ci), save :: radial_grp_ctl
 !
 !>      Grid spacing type
       character(len = kchara) :: radial_grid_type_ctl

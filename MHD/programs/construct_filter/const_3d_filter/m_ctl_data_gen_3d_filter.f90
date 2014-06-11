@@ -28,7 +28,7 @@
 !
 !>      Structure for filtering groups
 !!@n      filter_area_ctl%c_tbl: Name of force
-      type(ctl_array_chara) :: filter_area_ctl
+      type(ctl_array_chara), save :: filter_area_ctl
 !
       character(len=kchara) :: mass_matrix_type_ctl =  'CONSIST'
       character(len=kchara) :: method_esize_ctl =      'GPBiCG'

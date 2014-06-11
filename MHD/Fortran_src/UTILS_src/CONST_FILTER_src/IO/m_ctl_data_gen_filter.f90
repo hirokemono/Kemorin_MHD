@@ -45,18 +45,18 @@
 !>      Structure for list of reference filter mode
 !!@n      reference_filter_ctl%c_tbl: list of filter type
 !!@n      reference_filter_ctl%vect:  list of filter width
-      type(ctl_array_cr) :: reference_filter_ctl
+      type(ctl_array_cr), save  :: reference_filter_ctl
 !
 !>      Structure for list of horizontal filter mode
 !!@n      horizontal_filter_ctl%c_tbl: list of filter type
 !!@n      horizontal_filter_ctl%vect:  list of filter width
-      type(ctl_array_cr) :: horizontal_filter_ctl
+      type(ctl_array_cr), save  :: horizontal_filter_ctl
 !
 !>      Structure for reference moments for filter
 !!@n      ref_filter_mom_ctl%ivec:  Order of reference filter moments
 !!@n      ref_filter_mom_ctl%c_tbl: Type of reference filter moments
 !!@n      ref_filter_mom_ctl%vect:  Value of filter moments
-      type(ctl_array_icr) :: ref_filter_mom_ctl
+      type(ctl_array_icr), save :: ref_filter_mom_ctl
 !
       character(len=kchara) :: solver_type_ctl = 'CRS'
 !

@@ -201,18 +201,18 @@
 ! 
 !>      Structure for field list of SGS terms
 !!@n      SGS_terms_ctl%c_tbl: name of SGS terms
-      type(ctl_array_chara) :: SGS_terms_ctl
+      type(ctl_array_chara), save :: SGS_terms_ctl
 !>      Structure for field list of commutaion error correction
 !!@n      commutate_fld_ctl%c_tbl: field name
 !!                                  for commutaion error correction
-      type(ctl_array_chara) :: commutate_fld_ctl
+      type(ctl_array_chara), save :: commutate_fld_ctl
 !
 !>      Structure for group list for filtering for whole area
 !!@n      whole_filter_grp_ctl%c_tbl: element group name
-      type(ctl_array_chara) :: whole_filter_grp_ctl
+      type(ctl_array_chara), save :: whole_filter_grp_ctl
 !>      Structure for field list for filtering in fluid
 !!@n      fluid_filter_grp_ctl%c_tbl: element group name
-      type(ctl_array_chara) :: fluid_filter_grp_ctl
+      type(ctl_array_chara), save :: fluid_filter_grp_ctl
 !
       character (len=kchara)   :: momentum_filter_ctl
       character (len=kchara)   :: heat_filter_ctl

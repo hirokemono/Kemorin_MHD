@@ -61,19 +61,19 @@
 !!@n      t_evo_field_ctl%icou:  Read flag for 'time_evolution_ctl'
 !!@n      t_evo_field_ctl%num:   Number of field
 !!@n      t_evo_field_ctl%c_tbl: Name list of field
-      type(ctl_array_chara) :: t_evo_field_ctl
+      type(ctl_array_chara), save :: t_evo_field_ctl
 ! 
 !
 !>      Structure for list of element group for time evolution in fluid
 !!@n      evo_fluid_group_ctl%num:   Number of groups
 !!@n      evo_fluid_group_ctl%c_tbl: Name list of groups
-      type(ctl_array_chara) :: evo_fluid_group_ctl
+      type(ctl_array_chara), save :: evo_fluid_group_ctl
 !
 !>      Structure for list of element group for time evolution
 !!              of magnettic field
 !!@n      evo_conduct_group_ctl%num:   Number of groups
 !!@n      evo_conduct_group_ctl%c_tbl: Name list of groups
-      type(ctl_array_chara) :: evo_conduct_group_ctl
+      type(ctl_array_chara), save :: evo_conduct_group_ctl
 !
 !
 !   entry label

@@ -61,11 +61,11 @@
 !>      Structure for layering group names
 !!@n      layer_grp_name_ctl%num:   Number of layering group
 !!@n      layer_grp_name_ctl%c_tbl: layering group names
-        type(ctl_array_chara) :: layer_grp_name_ctl
+        type(ctl_array_chara), save :: layer_grp_name_ctl
 !
 !>      Structure for layering stacks
 !!@n      igrp_stack_layer_ctl%ivec: layering stack array
-        type(ctl_array_int) :: igrp_stack_layer_ctl
+        type(ctl_array_int), save :: igrp_stack_layer_ctl
 !
       integer (kind=kint) :: num_layering_grp_ctl
       integer (kind=kint) :: num_fl_layer_grp_ctl
