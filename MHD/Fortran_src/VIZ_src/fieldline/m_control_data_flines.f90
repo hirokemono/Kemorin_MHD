@@ -26,7 +26,7 @@
 !
       integer(kind = kint) :: num_fline_ctl = 0
       character(len = kchara), allocatable :: fname_fline_ctl(:)
-      type(fline_ctl), pointer :: fline_ctl_struct(:)
+      type(fline_ctl), pointer, save :: fline_ctl_struct(:)
 !
 !      fieldline flag
 !
