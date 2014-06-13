@@ -104,40 +104,40 @@
 !>      Structure for list of radial grid of spectr data output
 !!@n      idx_pick_layer_ctl%num:   Number of grid
 !!@n      idx_pick_layer_ctl%ivec: list of radial ID of spectr data
-      type(ctl_array_int) :: idx_pick_layer_ctl
+      type(ctl_array_int), save :: idx_pick_layer_ctl
 !
 !>      Structure for list of mode of spectr data output
 !!@n      idx_pick_sph_l_ctl%num:   Number of mode
 !!@n      idx_pick_sph_l_ctl%int1: list of degree of spectr data
 !!@n      idx_pick_sph_l_ctl%int2: list of order of spectr data
-      type(ctl_array_i2) :: idx_pick_sph_ctl
+      type(ctl_array_i2), save :: idx_pick_sph_ctl
 !
 !>      Structure for list of degree of spectr data output
 !!@n      idx_pick_sph_l_ctl%num:   Number of degree
 !!@n      idx_pick_sph_l_ctl%ivec: list of degree of spectr data
-      type(ctl_array_int) :: idx_pick_sph_l_ctl
+      type(ctl_array_int), save :: idx_pick_sph_l_ctl
 !
 !>      Structure for list of order of spectr data output
 !!@n      idx_pick_sph_m_ctl%num:   Number of order
 !!@n      idx_pick_sph_m_ctl%ivec: list of order of spectr data
-      type(ctl_array_int) :: idx_pick_sph_m_ctl
+      type(ctl_array_int), save :: idx_pick_sph_m_ctl
 !
 !
 !>      Structure for list of mode of Gauss coefficients output
 !!@n      idx_gauss_ctl%num:   Number of mode
 !!@n      idx_gauss_ctl%int1: list of degree of Gauss coefficients
 !!@n      idx_gauss_ctl%int2: list of order of Gauss coefficients
-      type(ctl_array_i2) :: idx_gauss_ctl
+      type(ctl_array_i2), save :: idx_gauss_ctl
 !
 !>      Structure for list of degree of Gauss coefficient output
 !!@n      idx_gauss_l_ctl%num:   Number of degree
 !!@n      idx_gauss_l_ctl%ivec: list of degree of gauss coefficient
-      type(ctl_array_int) :: idx_gauss_l_ctl
+      type(ctl_array_int), save :: idx_gauss_l_ctl
 !
 !>      Structure for list of order of Gauss coefficient output
 !!@n      idx_gauss_m_ctl%num:   Number of order
 !!@n      idx_gauss_m_ctl%ivec: list of order of gauss coefficient
-      type(ctl_array_int) :: idx_gauss_m_ctl
+      type(ctl_array_int), save :: idx_gauss_m_ctl
 !
       character(len = kchara) :: pick_circle_coord_ctl = 'spherical'
       integer(kind = kint) :: nphi_mid_eq_ctl

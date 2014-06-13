@@ -45,12 +45,12 @@
 !
 !>      Structure for element grouping in meridional direction
 !!@n      radial_divide_ctl%vect:  Radius data for searching
-      type(ctl_array_real) :: radial_divide_ctl
+      type(ctl_array_real), save :: radial_divide_ctl
 !
 !>      Structure for error torrance for refine interpolation
 !!@n      eps_4_itp_ctl%ivec:  level for interpolation
 !!@n      eps_4_itp_ctl%vect:  Error torrance for interpolation
-      type(ctl_array_ir) :: eps_4_itp_ctl
+      type(ctl_array_ir), save :: eps_4_itp_ctl
 !
       integer (kind=kint) :: itr_refine_ctl = 20000
       real (kind=kreal) :: eps_refine_ctl = 1.0d-15

@@ -46,15 +46,15 @@
 !>      Structure for domain decompostion for spherical grid
 !!@n      ndomain_sph_grid_ctl%c_tbl:  Direction of decomposition
 !!@n      ndomain_sph_grid_ctl%ivec:   Number of subdomains
-      type(ctl_array_ci) :: ndomain_sph_grid_ctl
+      type(ctl_array_ci), save :: ndomain_sph_grid_ctl
 !>      Structure for domain decompostion for LEgendre transform
 !!@n      ndomain_legendre_ctl%c_tbl:  Direction of decomposition
 !!@n      ndomain_legendre_ctl%ivec:   Number of subdomains
-      type(ctl_array_ci) :: ndomain_legendre_ctl
+      type(ctl_array_ci), save :: ndomain_legendre_ctl
 !>      Structure for domain decompostion for spherical harmonics
 !!@n      ndomain_spectr_ctl%c_tbl:  Direction of decomposition
 !!@n      ndomain_spectr_ctl%ivec:   Number of subdomains
-      type(ctl_array_ci) :: ndomain_spectr_ctl
+      type(ctl_array_ci), save :: ndomain_spectr_ctl
 !
 !    label for group entry
 !

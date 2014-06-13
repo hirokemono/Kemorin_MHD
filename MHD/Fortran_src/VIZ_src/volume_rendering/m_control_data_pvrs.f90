@@ -28,7 +28,7 @@
 !
       integer(kind = kint) :: num_pvr_ctl = 0
       character(len = kchara), allocatable :: fname_pvr_ctl(:)
-      type(pvr_ctl), pointer :: pvr_ctl_struct(:)
+      type(pvr_ctl), pointer, save :: pvr_ctl_struct(:)
 !
 !     label for entry
 !

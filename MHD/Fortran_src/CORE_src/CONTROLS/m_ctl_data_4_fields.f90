@@ -71,19 +71,19 @@
 !!@n      field_ctl%c1_tbl: Name of field
 !!@n      field_ctl%c2_tbl: flag for visualization output
 !!@n      field_ctl%c3_tbl: flag for time series output
-        type(ctl_array_c3) :: field_ctl
+      type(ctl_array_c3), save :: field_ctl
 !
 !>      Structure for list of field on quadrature elements
 !!@n      quad_phys_ctl%icou:  Read flag for 'quad_field_name_ctl'
 !!@n      quad_phys_ctl%num:   Number of field
 !!@n      quad_phys_ctl%c_tbl: Name list of field
-      type(ctl_array_chara) :: quad_phys_ctl
+      type(ctl_array_chara), save :: quad_phys_ctl
 !
 !>      Structure for list of field on linear elements
 !!@n      linear_phys_ctl%icou:  Read flag for 'linear_field_name_ctl'
 !!@n      linear_phys_ctl%num:   Number of field
 !!@n      linear_phys_ctl%c_tbl: Name list of field
-      type(ctl_array_chara) :: linear_phys_ctl
+      type(ctl_array_chara), save :: linear_phys_ctl
 !
 !   label for entry of group
 !

@@ -32,16 +32,16 @@
 !
 !>      Structure for list of bisection
 !!@n      ele_grp_ordering_ctl%c_tbl: Direction of bisectioning
-      type(ctl_array_chara) :: RCB_dir_ctl
+      type(ctl_array_chara), save :: RCB_dir_ctl
 !
 !>      Structure for number of subdomains
 !!@n      ndomain_section_ctl%c_tbl:  Direction of sectioning
 !!@n      ndomain_section_ctl%ivect:  Number of domains
-      type(ctl_array_ci) :: ndomain_section_ctl
+      type(ctl_array_ci), save :: ndomain_section_ctl
 !
 !>      Structure for element group list for layering
 !!@n      ele_grp_ordering_ctl%c_tbl:  list of element group
-      type(ctl_array_chara) :: ele_grp_layering_ctl
+      type(ctl_array_chara), save :: ele_grp_layering_ctl
 !
       character(len=kchara) :: sphere_file_name_ctl
       character(len=kchara) :: metis_input_file_ctl
@@ -53,7 +53,7 @@
 !
 !>      Structure for element group list for ordering
 !!@n      ele_grp_ordering_ctl%c_tbl:  list of element group
-      type(ctl_array_chara) :: ele_grp_ordering_ctl
+      type(ctl_array_chara), save :: ele_grp_ordering_ctl
 !
 !   Top level
 !

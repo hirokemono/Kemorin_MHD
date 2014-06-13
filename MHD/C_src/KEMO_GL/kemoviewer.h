@@ -15,6 +15,7 @@
 
 #ifdef FC_NAME_LOWER_USCORE
 #define open_wt_gzfile            open_wt_gzfile_
+#define open_ad_gzfile            open_ad_gzfile_
 #define open_rd_gzfile            open_rd_gzfile_
 #define close_gzfile              close_gzfile_
 #define check_gzfile_eof          check_gzfile_eof_
@@ -42,6 +43,7 @@
 #define generate_ysfont16x24_c     generate_ysfont16x24_c_
 #elif FC_NAME_UPPER
 #define open_wt_gzfile            OPEN_WT_GZFILE
+#define open_ad_gzfile            OPEN_AD_GZFILE
 #define open_rd_gzfile            OPEN_RD_GZFILE
 #define close_gzfile              CLOSE_GZFILE
 #define check_gzfile_eof          CHECK_GZFILE_EOF
@@ -69,6 +71,7 @@
 #define generate_ysfont16x24_c     GENERATE_YSFONT16X24_C
 #elif FC_NAME_UPPER_STDCALL
 #define open_wt_gzfile            OPEN_WT_GZFILE
+#define open_ad_gzfile            OPEN_AD_GZFILE
 #define open_rd_gzfile            OPEN_RD_GZFILE
 #define close_gzfile              CLOSE_GZFILE
 #define check_gzfile_eof          CHECK_GZFILE_EOF
@@ -100,6 +103,7 @@
 #define generate_ysfont16x24_c     GENERATE_YSFONT16X24_C
 #else
 #define open_wt_gzfile            open_wt_gzfile
+#define open_ad_gzfile            open_ad_gzfile
 #define open_rd_gzfile            open_rd_gzfile
 #define close_gzfile              close_gzfile
 #define check_gzfile_eof          check_gzfile_eof

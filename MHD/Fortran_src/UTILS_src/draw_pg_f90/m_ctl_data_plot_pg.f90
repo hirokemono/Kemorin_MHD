@@ -54,20 +54,20 @@
 !!@n      plot_field_ctl%c1_tbl: Name of field
 !!@n      plot_field_ctl%c2_tbl: component to plot
 !!@n      plot_field_ctl%c3_tbl: label for plot
-        type(ctl_array_c3) :: plot_field_ctl
+      type(ctl_array_c3), save :: plot_field_ctl
 !
 !>      Structure for range data input
 !!@n      contour_range_ctl%int1: Component ID for plot
 !!@n      contour_range_ctl%int2: Number of Contour lines
 !!@n      contour_range_ctl%vec1: Minimum value
 !!@n      contour_range_ctl%vec2: Maximum value
-      type(ctl_array_i2r2) :: contour_range_ctl
+      type(ctl_array_i2r2), save :: contour_range_ctl
 !
 !>      Structure for range data input
 !!@n      vector_scale_ctl%int1: Component ID for plot
 !!@n      vector_scale_ctl%int2: Incrememnt for vedctor data to draw
 !!@n      vector_scale_ctl%vect: Scale factor for vectror
-      type(ctl_array_i2r) :: vector_scale_ctl
+      type(ctl_array_i2r), save :: vector_scale_ctl
 !
 !    parameter for grouping plots
 !

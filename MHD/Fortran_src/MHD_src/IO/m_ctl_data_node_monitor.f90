@@ -28,7 +28,7 @@
 !
 !>      Structure for monitoring plave list
 !!@n      group_4_monitor_ctl%c_tbl: Name of node group to monitor field
-      type(ctl_array_chara) :: group_4_monitor_ctl
+      type(ctl_array_chara), save :: group_4_monitor_ctl
 !
 !   entry label
 !

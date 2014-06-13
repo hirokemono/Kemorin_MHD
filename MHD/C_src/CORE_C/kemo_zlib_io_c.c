@@ -17,6 +17,14 @@ void open_wt_gzfile(const char *gz_file_name){
 	return;
 }
 
+void open_ad_gzfile(const char *gz_file_name){
+	file_gz = gzopen(gz_file_name, GZ_AD_MODE);
+	if (file_gz == NULL){
+		fprintf(stderr, "failed to gzopen\n");
+		exit(1);
+	}
+	return;
+}
 void open_rd_gzfile(const char *gz_file_name){
 	file_gz = gzopen(gz_file_name, GZ_RD_MODE);
 	if (file_gz == NULL){
