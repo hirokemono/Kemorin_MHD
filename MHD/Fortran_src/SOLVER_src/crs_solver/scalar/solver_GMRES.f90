@@ -50,6 +50,7 @@
       real   (kind=kreal),                   intent(in   )::  SIGMA
       integer(kind=kint ),                   intent(inout)::  ITER
       integer(kind=kint ),                   intent(inout)::  ERROR
+      integer(kind=kint )                  , intent(in)   ::  NREST
 
       integer(kind=kint )                  , intent(in)   :: NSET
 
@@ -69,6 +70,8 @@
       integer(kind=kint ), dimension(  NPL)  , intent(in) ::  IAL
       character(len=kchara)                  , intent(in) :: PRECOND
 
+      integer(kind=kint ), intent(in) :: NEIBPETOT
+! \beginARG       neighboring pe id                        (i-th pe)
       integer(kind=kint ), dimension(NEIBPETOT)   :: NEIBPE
 ! \beginARG       neighboring pe id                        (i-th pe)
       integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_IMPORT
@@ -90,7 +93,9 @@
 
       integer(kind=kint ) :: MAXIT, IFLAG, MONITORFLAG
       integer(kind=kint ) :: AV, CS, SN, R, S, V, W, Y
-      real   (kind=kreal) :: TOL, WVAL, BB
+!
+      integer(kind = kint) :: LDW, INFO, NRK, LDH, I, IROW, K, JJ, KK
+      real   (kind = kreal) :: TOL, BB
 
       data IFLAG/0/
 

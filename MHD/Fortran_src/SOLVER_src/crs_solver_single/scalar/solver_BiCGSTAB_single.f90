@@ -35,6 +35,11 @@
 
       implicit REAL*8(A-H,O-Z)
 
+      integer(kind=kint ),                   intent(in   )::  N
+      integer(kind=kint ),                   intent(in   )::  NP
+      integer(kind=kint ),                   intent(in   )::  NPL
+      integer(kind=kint ),                   intent(in   )::  NPU
+!
       real   (kind=kreal),                   intent(inout)::  RESID
       real   (kind=kreal),                   intent(in   )::  SIGMA_DIAG
       real   (kind=kreal),                   intent(in   )::  SIGMA
@@ -64,7 +69,8 @@
 
       integer(kind=kint ) :: IFLAG, MONITORFLAG
       integer(kind=kint ) :: R, RT, P, PT, S, ST, T, V, MAXIT
-      real   (kind=kreal) :: TOL, W, SS
+      integer(kind=kint ) :: isL, isU, ieL, ieU, i, j, k, inod, id, kk
+      real   (kind=kreal) :: TOL, W, SS, BETA, RHO, RHO1, ALPHA, OMEGA
       data IFLAG/0/
 
 !C

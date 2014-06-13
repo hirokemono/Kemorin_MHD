@@ -43,7 +43,7 @@
 !
 !
       integer(kind=kint ), intent(in):: N, NP, NPU, NPL
-      integer(kind=kint ), intent(in):: NEIBPETOT, iterPREmax
+      integer(kind=kint ), intent(in):: iterPREmax
       integer(kind=kint ), intent(in):: NSET
       real   (kind=kreal), intent(in):: SIGMA, SIGMA_DIAG
 
@@ -60,17 +60,19 @@
       integer(kind=kint ), dimension(  NPU),intent(in) :: IAU
       character(len=kchara),                intent(in) :: PRECOND
 
-      integer(kind=kint ), dimension(NEIBPETOT)   :: NEIBPE
+      integer(kind=kint ), intent(in)   :: NEIBPETOT
 ! \beginARG       neighboring pe id                        (i-th pe)
-      integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_IMPORT
+      integer(kind=kint ), intent(in)   :: NEIBPE(NEIBPETOT)
+! \beginARG       neighboring pe id                        (i-th pe)
+      integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
 ! \beginARG       imported node count for each neighbor pe (i-th pe)
-      integer(kind=kint ), dimension(STACK_IMPORT(NEIBPETOT))           &
-     &       :: NOD_IMPORT
+      integer(kind=kint ), intent(in)                                   &
+     &       :: NOD_IMPORT(STACK_IMPORT(NEIBPETOT))
 ! \beginARG       imported degree of freedom               (i-th node)
-      integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_EXPORT
+      integer(kind=kint ), intent(in) :: STACK_EXPORT(0:NEIBPETOT)
 ! \beginARG       exported node count for each neighbor pe (i-th pe)
-      integer(kind=kint ), dimension(STACK_EXPORT(NEIBPETOT))           &
-     &       :: NOD_EXPORT
+      integer(kind=kint ), intent(in)                                   &
+     &       :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT))
 ! \beginARG       exported node                            (i-th node)
 
       real(kind=kreal), dimension(:,:),  allocatable       :: WW
@@ -78,9 +80,11 @@
 
       real   (kind=kreal), dimension(2)                :: C0, CG
 
+      integer(kind=kint ), parameter :: NB = 3
       integer(kind=kint ) :: R, RT, P, PT, S, ST, T, V, MAXIT
+      integer(kind=kint ) :: I, K, IP, J, isL, isU, ieL, ieU
       integer(kind=kint ) :: IFLAG
-      real   (kind=kreal) :: TOL, W, SS
+      real   (kind=kreal) :: TOL, BETA, RHO, RHO1, ALPHA, OMEGA
       data IFLAG/0/
 
 !C

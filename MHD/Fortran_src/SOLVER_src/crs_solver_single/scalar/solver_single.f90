@@ -82,7 +82,7 @@
 ! \beginARG       solution vector
       integer(kind=kint )                  , intent(in)   ::  PRESET
 ! \beginARG       preconditioning RESET flag (n:0, y:1)
-      integer                              , intent(in)   :: my_rank
+      integer(kind=kint )                  , intent(in)   :: my_rank
 ! \beginARG       process ID for mpi
       integer(kind=kint )                  , intent(out)  :: ITERactual
 ! \beginARG       actual iteration number
@@ -101,7 +101,8 @@
 ! \endSUBROUTINE
 
       integer(kind=kint) :: ITER, FLAGmethod, FLAGprecond, MONITORFLAG
-
+      integer(kind=kint) :: NREST
+      integer(kind=kint) :: i
 
 !C
 !C +-------+

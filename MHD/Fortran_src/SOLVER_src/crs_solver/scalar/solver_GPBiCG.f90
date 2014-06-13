@@ -47,6 +47,7 @@
 
       use calypso_mpi
 !
+      use m_constants
       use m_work_4_GPBiCG11
       use solver_SR
       use crs_matrix_calcs_11
@@ -99,7 +100,7 @@
 
 !C
 !C-- INIT.
-      call allocate_work_GPBiCG_11(NP, 1)
+      call allocate_work_GPBiCG_11(NP, ione)
 
       MAXIT = ITER
       TOL   = EPS

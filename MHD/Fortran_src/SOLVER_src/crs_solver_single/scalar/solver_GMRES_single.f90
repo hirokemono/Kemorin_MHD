@@ -35,6 +35,11 @@
 
       implicit REAL*8(A-H,O-Z)
 
+      integer(kind=kint ),                   intent(in   )::  N
+      integer(kind=kint ),                   intent(in   )::  NP
+      integer(kind=kint ),                   intent(in   )::  NPL
+      integer(kind=kint ),                   intent(in   )::  NPU
+!
       real   (kind=kreal),                   intent(inout)::  RESID
       real   (kind=kreal),                   intent(in   )::  SIGMA_DIAG
       real   (kind=kreal),                   intent(in   )::  SIGMA
@@ -43,6 +48,7 @@
       integer(kind=kint ),                   intent(in   )::  my_rank
 
       integer(kind=kint )                  , intent(in)   :: NSET
+      integer(kind=kint )                  , intent(in)   :: NREST
 
       real   (kind=kreal), dimension(NP )  , intent(inout)::  D
       real   (kind=kreal), dimension(NP )  , intent(inout)::  B
@@ -63,8 +69,10 @@
       real   (kind=kreal), dimension(:),   allocatable :: SS
       real   (kind=kreal), dimension(:,:), allocatable :: H
 
-      integer(kind=kint ) :: IFLAG, MONITORFLAG
-      integer(kind=kint ) :: AV, CS, SN, R, S, V, W, Y, MAXIT
+      integer(kind=kint ) :: IFLAG, MONITORFLAG, LDW, INFO, NRK, LDH
+      integer(kind=kint ) :: AV, CS, SN, R, S, V, W, Y, MAXIT, IROW
+      integer(kind=kint ) :: isL, isU, ieL, ieU, inod, ik, id, kk
+      integer(kind=kint ) :: i, j, k, jj
       real   (kind=kreal) :: TOL, WVAL, BB
 
       real   (kind=kreal)   ZERO, ONE
