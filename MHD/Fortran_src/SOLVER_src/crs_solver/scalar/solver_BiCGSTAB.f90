@@ -42,6 +42,7 @@
      &                  STACK_EXPORT, NOD_EXPORT, NSET)
 !
       use calypso_mpi
+      use m_constants
 !
       use m_work_4_BiCGSTAB11
       use solver_SR
@@ -93,7 +94,7 @@
 
 !C
 !C-- INIT.
-      call allocate_work_BiCGSTAB_11(NP,1)
+      call allocate_work_BiCGSTAB_11(NP, ione)
 
       MONITORFLAG = ERROR
       ERROR= 0

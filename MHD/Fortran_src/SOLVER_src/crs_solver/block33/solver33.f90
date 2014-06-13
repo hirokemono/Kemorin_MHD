@@ -119,7 +119,8 @@
 ! \beginARG       solver parameters
 ! \endSUBROUTINE
 
-      integer(kind=kint) :: ITER, FLAGmethod, FLAGprecond
+      integer(kind=kint) :: ITER, FLAGmethod, FLAGprecond, NREST, I
+      integer(kind=kint) :: iterPREmax
 
 !C
 !C +-------+

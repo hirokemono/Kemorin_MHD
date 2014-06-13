@@ -55,6 +55,8 @@
 
 
 ! ......................................................................
+      integer(kind=kint )                  , intent(in)   ::  NB
+! \beginARG       number of block size
       integer(kind=kint )                  , intent(in)   ::  N
 ! \beginARG       number of internal nodes (exclude external node)
       integer(kind=kint )                  , intent(in)   ::  NP
@@ -113,8 +115,8 @@
 ! \beginARG       solver parameters
 ! \endSUBROUTINE
 
-      integer(kind=kint) :: ITER, FLAGmethod, FLAGprecond
-
+      integer(kind=kint) :: ITER, FLAGmethod, FLAGprecond, NREST
+      integer(kind=kint) :: i, j, k, jj
 !C
 !C +-------+
 !C | INIT. |

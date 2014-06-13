@@ -96,9 +96,9 @@
         IFLAG= 1
         SCALE(1:NP)= 1.d0
 !
-        call allocate_work_CG_11(NP, 1)
+        call allocate_work_CG_11(NP, ione)
       else
-        call verify_work_CG_11(NP, 1)
+        call verify_work_CG_11(NP, ione)
       end if
 
       MAXIT  = ITER

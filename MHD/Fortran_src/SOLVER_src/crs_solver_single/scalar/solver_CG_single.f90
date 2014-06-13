@@ -18,6 +18,7 @@
       module solver_CG_single
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -43,7 +44,10 @@
       use calcs_4_crs_CG11
       use crs_norm_products_11
 !
-      integer(kind=kint ), intent(in   )::  N, NPL, NPU
+      integer(kind=kint ),                   intent(in   )::  N
+      integer(kind=kint ),                   intent(in   )::  NPL
+      integer(kind=kint ),                   intent(in   )::  NPU
+!
       real   (kind=kreal),                   intent(inout)::  EPS
       real   (kind=kreal),                   intent(in   )::  SIGMA_DIAG
       real   (kind=kreal),                   intent(in   )::  SIGMA
@@ -85,9 +89,9 @@
         IFLAG= 1
         SCALE(1:N)= 1.d0
 !
-        call allocate_work_CG_11(N, 1)
+        call allocate_work_CG_11(N, ione)
       else
-        call verify_work_CG_11(N, 1)
+        call verify_work_CG_11(N, ione)
       end if
 
       MAXIT  = ITER

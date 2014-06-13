@@ -69,9 +69,11 @@
       integer(kind=kint ), dimension(  NPU),intent(in) :: IAU
       character(len=kchara),                intent(in) :: PRECOND
 
-      integer(kind=kint ), dimension(NEIBPETOT)   :: NEIBPE
+      integer(kind=kint ), intent(in)   :: NEIBPETOT
+!
+      integer(kind=kint ), intent(in)   :: NEIBPE(NEIBPETOT)
 ! \beginARG       neighboring pe id                        (i-th pe)
-      integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_IMPORT
+      integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
 ! \beginARG       imported node count for each neighbor pe (i-th pe)
       integer(kind=kint ), dimension(STACK_IMPORT(NEIBPETOT))           &
      &       :: NOD_IMPORT
@@ -86,8 +88,10 @@
       real(kind=kreal), dimension(:,:),  allocatable       ::  WW
       real(kind=kreal), dimension(:,:,:),allocatable, save :: ALU
 
-      integer(kind=kint ) :: P, Q, R, Z, MAXIT, IFLAG
-      real   (kind=kreal) :: TOL, W, SS
+      integer(kind=kint ) :: P, Q, R, Z, MAXIT, IFLAG, I, ip
+      integer(kind=kint ) :: isL, isU, ieL, ieU, inod, in, j, k, l
+      integer(kind=kint ) :: ip1, ip2, ip3, iq1, iq2, iq3
+      real   (kind=kreal) :: TOL
       real   (kind=kreal), dimension(3)                    :: PW
       data IFLAG/0/
 

@@ -35,6 +35,11 @@
 
       implicit REAL*8(A-H,O-Z)
 
+      integer(kind=kint ),                   intent(in   )::  N
+      integer(kind=kint ),                   intent(in   )::  NP
+      integer(kind=kint ),                   intent(in   )::  NPL
+      integer(kind=kint ),                   intent(in   )::  NPU
+!
       real   (kind=kreal),                   intent(inout)::  RESID
       real   (kind=kreal),                   intent(in   )::  SIGMA_DIAG
       real   (kind=kreal),                   intent(in   )::  SIGMA
@@ -64,7 +69,8 @@
 
       integer(kind=kint ) :: IFLAG, MONITORFLAG, R, RT, T, T0, TT, P, PT
       integer(kind=kint ) ::  U, W1, Y, Z, WK, W2, MAXIT
-      real   (kind=kreal) :: TOL, W, SS
+      integer(kind=kint ) :: isL, isU, ieL, ieU, i, inod, id, kk, k, j
+      real   (kind=kreal) :: TOL, W, SS, BETA, ALPHA, RHO, RHO1
       data IFLAG/0/
 
 !      open (12,file='test.lis',status='unknown')
