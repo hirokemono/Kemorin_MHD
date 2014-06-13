@@ -87,6 +87,8 @@
         call sum_back_trans_at_center(ncomp_trans)
       end if
 !
+      call finish_send_recv_rj_2_rlm
+!
       end subroutine pole_backward_transforms
 !
 ! -----------------------------------------------------------------------

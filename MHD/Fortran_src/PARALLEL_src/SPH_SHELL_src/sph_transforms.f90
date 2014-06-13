@@ -96,6 +96,8 @@
 !
 !      call check_vr_rtm(my_rank, ncomp_trans)
 !
+      call finish_send_recv_rj_2_rlm
+!
       START_SRtime= MPI_WTIME()
       call start_eleps_time(19)
       call send_recv_rtm_2_rtp_N(ncomp_trans, vr_rtm, vr_rtp)
@@ -108,6 +110,8 @@
       call backward_FFT_select(np_smp, Nstacksmp, ncomp_FFT,            &
      &    nidx_rtp(3), vr_rtp)
       call end_eleps_time(24)
+!
+      call finish_send_recv_rtm_2_rtp
 !
 !      call check_vr_rtp(my_rank, ncomp_trans)
 !
@@ -153,9 +157,13 @@
       call end_eleps_time(23)
 !      call check_sp_rlm(my_rank, ncomp_trans)
 !
+      call finish_send_recv_rtp_2_rtm
+!
       START_SRtime= MPI_WTIME()
       call start_eleps_time(21)
       call send_recv_rlm_2_rj_N(ncomp_trans, sp_rlm, sp_rj)
+      call finish_send_recv_rlm_2_rj
+!
       call end_eleps_time(21)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !      call check_sp_rj(my_rank, ncomp_trans)

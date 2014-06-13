@@ -14,6 +14,11 @@
 !!      subroutine send_recv_rtm_2_rtp_N(NB, X_rtm, X_rtp)
 !!      subroutine send_recv_rj_2_rlm_N(NB, X_rj, X_rlm)
 !!      subroutine send_recv_rlm_2_rj_N(NB, X_rlm, X_rj)
+!!
+!!      subroutine finish_send_recv_rtp_2_rtm
+!!      subroutine finish_send_recv_rtm_2_rtp
+!!      subroutine finish_send_recv_rj_2_rlm
+!!      subroutine finish_send_recv_rlm_2_rj
 !!@endverbatim
 !!
 !!
@@ -134,6 +139,7 @@
       end subroutine init_sph_send_recv_N
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       subroutine send_recv_rtp_2_rtm_N(NB, X_rtp, X_rtm)
 !
@@ -220,6 +226,47 @@
      &              irev_sr_rj, X_rlm, X_rj)
 !
       end subroutine send_recv_rlm_2_rj_N
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine finish_send_recv_rtp_2_rtm
+!
+      use m_sph_trans_comm_table
+!
+      call finish_calypso_send_recv(nneib_domain_rtp, iflag_self_rtp)
+!
+      end subroutine finish_send_recv_rtp_2_rtm
+!
+! ----------------------------------------------------------------------
+!
+      subroutine finish_send_recv_rtm_2_rtp
+!
+      use m_sph_trans_comm_table
+!
+      call finish_calypso_send_recv(nneib_domain_rtm, iflag_self_rtm)
+!
+      end subroutine finish_send_recv_rtm_2_rtp
+!
+! ----------------------------------------------------------------------
+!
+      subroutine finish_send_recv_rj_2_rlm
+!
+      use m_sph_trans_comm_table
+!
+      call finish_calypso_send_recv(nneib_domain_rj, iflag_self_rj)
+!
+      end subroutine finish_send_recv_rj_2_rlm
+!
+! ----------------------------------------------------------------------
+!
+      subroutine finish_send_recv_rlm_2_rj
+!
+      use m_sph_trans_comm_table
+!
+      call finish_calypso_send_recv(nneib_domain_rlm, iflag_self_rlm)
+!
+      end subroutine finish_send_recv_rlm_2_rj
 !
 ! ----------------------------------------------------------------------
 !

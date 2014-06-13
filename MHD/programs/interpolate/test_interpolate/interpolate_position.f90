@@ -154,6 +154,8 @@
      &           inod_dest_4_dest, irev_dest_4_dest,                    &
      &           x_inter_org(1), xvec_2nd(1) )
 !
+      call finish_calypso_send_recv                                     &
+     &   (num_dest_domain, iflag_self_itp_send)
 !
 !
       if (num_neib_2.gt.0) then

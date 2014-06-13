@@ -67,15 +67,11 @@
       end do
 !$omp end parallel do
 !
-!$omp parallel do private(j_rlm,l_rtm,nd,ip_rtm,in_rtm,i_rlm,           &
-!$omp&               pg_tmp,dp_tmp)
+!$omp parallel do private(j_rlm,l_rtm,nd,ip_rtm,in_rtm,i_rlm)
       do k_rtm = 1,  nidx_rtm(1)
         do j_rlm = 1, nidx_rlm(2)
 !
           do l_rtm = 1, nidx_rtm(2)
-            pg_tmp = P_rtm(l_rtm,j_rlm) * g_sph_rlm(j_rlm,3)
-            dp_tmp = dPdt_rtm(l_rtm,j_rlm)
-!cdir nodep
             do nd = 1, nvector
               ip_rtm = 3*nd + (l_rtm-1) * ncomp                         &
      &                      + (k_rtm-1) * ncomp*nidx_rtm(2)             &
@@ -86,20 +82,17 @@
      &                     + (k_rtm-1) * ncomp * nidx_rlm(2)
 !
               vr_rtm(ip_rtm-2) = vr_rtm(ip_rtm-2)                       &
-     &                     + sp_rlm(i_rlm-2) * pg_tmp
+     &                     + sp_rlm(i_rlm-2) * Pg3_lj(l_rtm,j_rlm)
 !
               vr_rtm(ip_rtm-1) = vr_rtm(ip_rtm-1)                       &
-     &                     + sp_rlm(i_rlm-1) * dp_tmp
+     &                     + sp_rlm(i_rlm-1) * dPdt_rtm(l_rtm,j_rlm)
 !
               vr_rtm(ip_rtm  ) = vr_rtm(ip_rtm  )                       &
-     &                     - sp_rlm(i_rlm  ) * dp_tmp
+     &                     - sp_rlm(i_rlm  ) * dPdt_rtm(l_rtm,j_rlm)
             end do
           end do
 !
           do l_rtm = 1, nidx_rtm(2)
-            pg_tmp = P_rtm(l_rtm,j_rlm) * asin_theta_1d_rtm(l_rtm)      &
-     &              * dble( -idx_gl_1d_rlm_j(j_rlm,3) )
-!cdir nodep
             do nd = 1, nvector
               in_rtm = 3*nd + (l_rtm-1) * ncomp                         &
      &                      + (k_rtm-1) * ncomp*nidx_rtm(2)             &
@@ -110,10 +103,10 @@
      &                     + (k_rtm-1) * ncomp * nidx_rlm(2)
 !
               vr_rtm(in_rtm-1) = vr_rtm(in_rtm-1)                       &
-     &                       + sp_rlm(i_rlm  ) * pg_tmp
+     &                       + sp_rlm(i_rlm  ) * Pws_lj(l_rtm,j_rlm)
 !
               vr_rtm(in_rtm  ) = vr_rtm(in_rtm  )                       &
-     &                       + sp_rlm(i_rlm-1) * pg_tmp
+     &                       + sp_rlm(i_rlm-1) * Pws_lj(l_rtm,j_rlm)
             end do
           end do
 !

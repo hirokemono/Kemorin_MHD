@@ -49,26 +49,17 @@
 !
       integer(kind = kint) :: j_rlm, mp_rlm, mn_rlm, l_rtm
       integer(kind = kint) :: ip_rtm, in_rtm
-      integer(kind = kint) :: k_rtm, nd, mst, med, kr_j, kr_l
-      real(kind = kreal) :: pwt_tmp, dpwt_tmp, pgwt_tmp
+      integer(kind = kint) :: k_rtm, nd, kr_j, kr_l
 !
 !
-!$omp parallel do private(j_rlm,l_rtm,kr_j,kr_l,mst,med,ip_rtm,in_rtm,  &
-!$omp&               pwt_tmp,dpwt_tmp,pgwt_tmp,mn_rlm,k_rtm,nd)
-      do mp_rlm = 1, nidx_rtm(3)
-        mn_rlm = nidx_rtm(3) - mp_rlm + 1
-        mst = lstack_rlm(mp_rlm-1)+1
-        med = lstack_rlm(mp_rlm)
-        do nd = 1, nvector
+!$omp parallel do private(j_rlm,l_rtm,kr_j,kr_l,ip_rtm,in_rtm,          &
+!$omp&                    mp_rlm,mn_rlm,k_rtm,nd)
+        do j_rlm = 1, nidx_rlm(2)
+          mp_rlm = mdx_p_rlm_rtm(j_rlm)
+          mn_rlm = mdx_n_rlm_rtm(j_rlm)
+!
           do l_rtm = 1, nidx_rtm(2)
-!
-            do j_rlm = mst, med
-              pwt_tmp = P_rtm(l_rtm,j_rlm) * weight_rtm(l_rtm)
-              dpwt_tmp = dPdt_rtm(l_rtm,j_rlm) * weight_rtm(l_rtm)
-              pgwt_tmp = P_rtm(l_rtm,j_rlm) * weight_rtm(l_rtm)         &
-     &                 * dble( idx_gl_1d_rlm_j(j_rlm,3) )               &
-     &                 * asin_theta_1d_rtm(l_rtm)
-!
+            do nd = 1, nvector
               do k_rtm = 1, nidx_rtm(1)
                 kr_j = k_rtm + (j_rlm-1)*nidx_rtm(1)
                 kr_l = k_rtm + (l_rtm-1)*nidx_rtm(1)
@@ -76,30 +67,26 @@
                 in_rtm = kr_l + (mn_rlm-1)*nidx_rtm(1)*nidx_rtm(2)
 !
                 sp_rlm_krin(kr_j,3*nd-2) = sp_rlm_krin(kr_j,3*nd-2)     &
-     &                 + vr_rtm_krin(ip_rtm,3*nd-2) * pwt_tmp
+     &              + vr_rtm_krin(ip_rtm,3*nd-2) * Pvw_lj(l_rtm,j_rlm)
                 sp_rlm_krin(kr_j,3*nd-1) = sp_rlm_krin(kr_j,3*nd-1)     &
-     &               + ( vr_rtm_krin(ip_rtm,3*nd-1) * dpwt_tmp          &
-     &                 - vr_rtm_krin(in_rtm,3*nd  ) * pgwt_tmp)
+     &           + ( vr_rtm_krin(ip_rtm,3*nd-1) * dPvw_lj(l_rtm,j_rlm)  &
+     &             - vr_rtm_krin(in_rtm,3*nd  ) * Pgvw_lj(l_rtm,j_rlm))
                 sp_rlm_krin(kr_j,3*nd  ) = sp_rlm_krin(kr_j,3*nd  )     &
-     &               - ( vr_rtm_krin(in_rtm,3*nd-1) * pgwt_tmp          &
-     &                 + vr_rtm_krin(ip_rtm,3*nd  ) * dpwt_tmp)
+     &           - ( vr_rtm_krin(in_rtm,3*nd-1) * Pgvw_lj(l_rtm,j_rlm)  &
+     &             + vr_rtm_krin(ip_rtm,3*nd  ) * dPvw_lj(l_rtm,j_rlm))
               end do
             end do
           end do
 !
-          do j_rlm = mst, med
-            do k_rtm = 1, nidx_rtm(1)
-              kr_j = k_rtm + (j_rlm-1)*nidx_rtm(1)
-              sp_rlm_krin(kr_j,3*nd-2)                                  &
-     &           = sp_rlm_krin(kr_j,3*nd-2) * g_sph_rlm(j_rlm,7)        &
+        do nd = 1, nvector
+          do k_rtm = 1, nidx_rtm(1)
+            kr_j = k_rtm + (j_rlm-1)*nidx_rtm(1)
+            sp_rlm_krin(kr_j,3*nd-2) = sp_rlm_krin(kr_j,3*nd-2)         &
      &            * radius_1d_rlm_r(k_rtm)*radius_1d_rlm_r(k_rtm)
-              sp_rlm_krin(kr_j,3*nd-1)                                  &
-     &           = sp_rlm_krin(kr_j,3*nd-1) * g_sph_rlm(j_rlm,7)        &
+            sp_rlm_krin(kr_j,3*nd-1) = sp_rlm_krin(kr_j,3*nd-1)         &
      &            * radius_1d_rlm_r(k_rtm)
-              sp_rlm_krin(kr_j,3*nd  )                                  &
-     &           = sp_rlm_krin(kr_j,3*nd  ) * g_sph_rlm(j_rlm,7)        &
+            sp_rlm_krin(kr_j,3*nd  ) = sp_rlm_krin(kr_j,3*nd  )         &
      &            * radius_1d_rlm_r(k_rtm)
-            end do
           end do
         end do
       end do
@@ -118,39 +105,26 @@
       real(kind = kreal), intent(inout)                                 &
      &      :: sp_rlm_krin(nnod_rlm,nscalar)
 !
-      integer(kind = kint) :: j_rlm, l_rtm, mst, med, mp_rlm, ip_rtm
+      integer(kind = kint) :: j_rlm, l_rtm, mp_rlm, ip_rtm
       integer(kind = kint) :: k_rtm, nd, kr_j, kr_l
-      real(kind = kreal) :: pwt_tmp
 !
 !
-!$omp parallel do private(j_rlm,k_rtm,kr_j,nd,kr_l,mst,med,l_rtm,       &
-!$omp&                   ip_rtm,pwt_tmp)
-      do mp_rlm = 1, nidx_rtm(3)
-        mst = lstack_rlm(mp_rlm-1)+1
-        med = lstack_rlm(mp_rlm)
-        do nd = 1, nscalar
-          do l_rtm = 1, nidx_rtm(2)
-            do j_rlm = mst, med
-              pwt_tmp = P_rtm(l_rtm,j_rlm) * weight_rtm(l_rtm)
+!$omp parallel do private(j_rlm,k_rtm,kr_j,nd,kr_l,l_rtm,ip_rtm,mp_rlm)
+      do j_rlm = 1, nidx_rlm(2)
+        mp_rlm = mdx_p_rlm_rtm(j_rlm)
+        do l_rtm = 1, nidx_rtm(2)
 !
-              do k_rtm = 1, nidx_rtm(1)
-                kr_j = k_rtm + (j_rlm-1)*nidx_rtm(1)
-                kr_l = k_rtm + (l_rtm-1)*nidx_rtm(1)
-                ip_rtm = kr_l + (mp_rlm-1)*nidx_rtm(1)*nidx_rtm(2)
-!
-                sp_rlm_krin(kr_j,nd) = sp_rlm_krin(kr_j,nd)             &
-     &                    + vr_rtm_krin(ip_rtm,nd) * pwt_tmp
-              end do
-            end do
-          end do
-!
-          do j_rlm = mst, med
+          do nd = 1, nscalar
             do k_rtm = 1, nidx_rtm(1)
               kr_j = k_rtm + (j_rlm-1)*nidx_rtm(1)
-              sp_rlm_krin(kr_j,nd) = sp_rlm_krin(kr_j,nd)               &
-     &                               * g_sph_rlm(j_rlm,6)
+              kr_l = k_rtm + (l_rtm-1)*nidx_rtm(1)
+              ip_rtm = kr_l + (mp_rlm-1)*nidx_rtm(1)*nidx_rtm(2)
+!
+              sp_rlm_krin(kr_j,nd) = sp_rlm_krin(kr_j,nd)             &
+     &               + vr_rtm_krin(ip_rtm,nd) * Pws_lj(l_rtm,j_rlm)
             end do
           end do
+!
         end do
       end do
 !$omp end parallel do

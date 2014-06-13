@@ -53,8 +53,8 @@
 !
 !$omp parallel do private(l_rtm,j_rlm,k_rlm,nd,i_rlm,ip_rtm,in_rtm,     &
 !$omp&               pwt_tmp,dpwt_tmp,pgwt_tmp)
-      do j_rlm = 1, nidx_rlm(2)
-        do k_rlm = 1, nidx_rlm(1)
+      do k_rlm = 1, nidx_rlm(1)
+        do j_rlm = 1, nidx_rlm(2)
           do nd = 1, nvector
             i_rlm = 3*nd + (j_rlm-1) * ncomp                            &
      &                 + (k_rlm-1) * ncomp*nidx_rlm(2)
@@ -114,9 +114,9 @@
 !
 !
 !$omp parallel do private(j_rlm,k_rlm,nd,i_rlm,ip_rtm,l_rtm,pwt_tmp)
-      do j_rlm = 1, nidx_rlm(2)
+      do k_rlm = 1, nidx_rlm(1)
+        do j_rlm = 1, nidx_rlm(2)
 !
-        do k_rlm = 1, nidx_rlm(1)
           do nd = 1, nscalar
             i_rlm = nd + 3*nvector + (j_rlm-1) * ncomp                  &
      &                             + (k_rlm-1) * ncomp*nidx_rlm(2)

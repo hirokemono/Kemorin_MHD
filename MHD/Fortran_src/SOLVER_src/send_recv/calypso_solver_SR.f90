@@ -164,6 +164,8 @@
      &    NEIBPETOT, izero, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
      &    REV_IMPORT, X(1), X(NB*N+NB))
 !
+      call finish_calypso_send_recv(NEIBPETOT, izero)
+!
       end subroutine solver_send_recv_N
 !
 !-----------------------------------------------------------------------
