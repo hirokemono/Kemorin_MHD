@@ -49,7 +49,7 @@
      &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
 !
       integer(kind = kint) :: j_rlm, mp_rlm, mn_rlm, mst, med, l_rtm
-      integer(kind = kint) :: nb_nri, kr_nd
+      integer(kind = kint) :: nb_nri, kr_nd, k_rlm
       real(kind = kreal) :: pwt_tmp, dpwt_tmp, pgwt_tmp
 !
 !
@@ -94,19 +94,21 @@
       end do
 !$omp end parallel do
 !
-!$omp parallel do private(j_rlm)
+!$omp parallel do private(j_rlm,k_rlm)
       do kr_nd = 1, nb_nri
-!      do nd = 1, nvector
-!        do k_rlm = 1, nidx_rlm(1)
-!          kr_nd = k_rlm + (nd-1) * nidx_rlm(1)
+        k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
+!        nd =  1 + (kr_nd - k_rlm) / nidx_rlm(1)
 !
           do j_rlm = 1, nidx_rlm(2)
             sp_rlm_spin(j_rlm,kr_nd         )                           &
-     &        = sp_rlm_spin(j_rlm,kr_nd         ) * g_sph_rlm(j_rlm,7)
+     &        = sp_rlm_spin(j_rlm,kr_nd         ) * g_sph_rlm(j_rlm,7)  &
+     &         * radius_1d_rlm_r(k_rlm)*radius_1d_rlm_r(k_rlm)
             sp_rlm_spin(j_rlm,kr_nd+nb_nri  )                           &
-     &        = sp_rlm_spin(j_rlm,kr_nd+nb_nri  ) * g_sph_rlm(j_rlm,7)
+     &        = sp_rlm_spin(j_rlm,kr_nd+nb_nri  ) * g_sph_rlm(j_rlm,7)  &
+     &         * radius_1d_rlm_r(k_rlm)
             sp_rlm_spin(j_rlm,kr_nd+2*nb_nri)                           &
-     &        = sp_rlm_spin(j_rlm,kr_nd+2*nb_nri) * g_sph_rlm(j_rlm,7)
+     &        = sp_rlm_spin(j_rlm,kr_nd+2*nb_nri) * g_sph_rlm(j_rlm,7)  &
+     &         * radius_1d_rlm_r(k_rlm)
           end do
       end do
 !$omp end parallel do

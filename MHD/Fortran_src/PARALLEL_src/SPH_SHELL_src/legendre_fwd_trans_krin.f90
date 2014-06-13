@@ -91,11 +91,14 @@
             do k_rtm = 1, nidx_rtm(1)
               kr_j = k_rtm + (j_rlm-1)*nidx_rtm(1)
               sp_rlm_krin(kr_j,3*nd-2)                                  &
-     &           = sp_rlm_krin(kr_j,3*nd-2) * g_sph_rlm(j_rlm,7)
+     &           = sp_rlm_krin(kr_j,3*nd-2) * g_sph_rlm(j_rlm,7)        &
+     &            * radius_1d_rlm_r(k_rtm)*radius_1d_rlm_r(k_rtm)
               sp_rlm_krin(kr_j,3*nd-1)                                  &
-     &           = sp_rlm_krin(kr_j,3*nd-1) * g_sph_rlm(j_rlm,7)
+     &           = sp_rlm_krin(kr_j,3*nd-1) * g_sph_rlm(j_rlm,7)        &
+     &            * radius_1d_rlm_r(k_rtm)
               sp_rlm_krin(kr_j,3*nd  )                                  &
-     &           = sp_rlm_krin(kr_j,3*nd  ) * g_sph_rlm(j_rlm,7)
+     &           = sp_rlm_krin(kr_j,3*nd  ) * g_sph_rlm(j_rlm,7)        &
+     &            * radius_1d_rlm_r(k_rtm)
             end do
           end do
         end do

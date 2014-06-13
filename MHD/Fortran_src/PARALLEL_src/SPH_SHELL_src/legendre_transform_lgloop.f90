@@ -49,7 +49,7 @@
       call legendre_b_trans_vector_long(ncomp, nvector)
       call legendre_b_trans_scalar_long(ncomp, nvector, nscalar)
 !
-      call const_vect_sph_b_trans(ncomp, nvector)
+!      call const_vect_sph_b_trans(ncomp, nvector)
 !
       end subroutine leg_backward_trans_long
 !
@@ -63,7 +63,7 @@
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
 !
 !
-      call prod_r_vect_sph_f_trans(ncomp, nvector)
+!      call prod_r_vect_sph_f_trans(ncomp, nvector)
 !
       call clear_fwd_legendre_trans(ncomp)
 !

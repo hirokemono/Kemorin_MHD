@@ -57,8 +57,7 @@
       call legendre_b_trans_scalar_krin(nscalar,                        &
      &    sp_rlm_krin(1,ist_fld), vr_rtm_krin(1,ist_fld))
 !
-      call back_b_trans_fields_krin(ncomp, nvector, nscalar,            &
-     &    vr_rtm_krin(1,1))
+      call back_b_trans_fields_krin(ncomp, vr_rtm_krin(1,1))
 !
       end subroutine leg_bwd_trans_fields_krin
 !
@@ -74,8 +73,7 @@
       integer(kind = kint) :: ist_fld
 !
 !
-      call order_f_trans_fields_krin(ncomp, nvector, nscalar,           &
-     &    vr_rtm_krin(1,1))
+      call order_f_trans_fields_krin(ncomp, vr_rtm_krin(1,1))
       call clear_f_trans_krin(ione, ncomp)
 !
       ist_fld = 3*nvector+1

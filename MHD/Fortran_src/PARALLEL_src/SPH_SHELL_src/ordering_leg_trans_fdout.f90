@@ -10,12 +10,10 @@
 !!
 !!@verbatim
 !!      subroutine order_b_trans_fields_fdout(ncomp, sp_rlm_fdout)
-!!      subroutine order_f_trans_fields_fdout(ncomp, nvector, nscalar,  &
-!!     &          vr_rtm_fdout)
+!!      subroutine order_f_trans_fields_fdout(ncomp, vr_rtm_fdout)
 !!
 !!      subroutine back_f_trans_fields_fdout(ncomp, sp_rlm_fdout)
-!!      subroutine back_b_trans_fields_fdout(ncomp, nvector, nscalar,   &
-!!     &          vr_rtm_fdout)
+!!      subroutine back_b_trans_fields_fdout(ncomp, vr_rtm_fdout)
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -78,10 +76,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine order_f_trans_fields_fdout(ncomp, nvector, nscalar,    &
-     &          vr_rtm_fdout)
+      subroutine order_f_trans_fields_fdout(ncomp, vr_rtm_fdout)
 !
-      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: ncomp
       real(kind = kreal), intent(inout) :: vr_rtm_fdout(nnod_rtm,ncomp)
 !
       integer(kind = kint) :: ip, ist, ied, inod, lnod
@@ -90,33 +87,7 @@
 !
 !
 !$omp parallel private(nd)
-      do nd = 1, nvector
-!$omp do private(ip,ist,ied,i_rtm_0,k_rtm,l_rtm,inod,lnod,m_rtm)
-        do ip = 1, np_smp
-          ist = inod_rtm_smp_stack(ip-1) + 1
-          ied = inod_rtm_smp_stack(ip)
-          do inod = ist, ied
-            l_rtm = 1 + mod((inod-1),nidx_rtm(2))
-            lnod =  1 + (inod - l_rtm) / nidx_rtm(2)
-            k_rtm = 1 + mod((lnod-1),nidx_rtm(1))
-            m_rtm = 1 + (lnod - k_rtm) / nidx_rtm(1)
-!
-            i_rtm_0 = 3*nd + (l_rtm-1) * ncomp                          &
-     &                     + (k_rtm-1) * ncomp*nidx_rtm(2)              &
-     &                     + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-!
-              vr_rtm_fdout(inod,3*nd-2) = vr_rtm(i_rtm_0-2)             &
-     &                 * radius_1d_rlm_r(k_rtm)*radius_1d_rlm_r(k_rtm)
-              vr_rtm_fdout(inod,3*nd-1) = vr_rtm(i_rtm_0-1)             &
-     &                 * radius_1d_rlm_r(k_rtm)
-              vr_rtm_fdout(inod,3*nd  ) = vr_rtm(i_rtm_0  )             &
-     &                 * radius_1d_rlm_r(k_rtm)
-          end do
-        end do
-!$omp end do nowait
-      end do
-!
-      do nd = 1, nscalar
+      do nd = 1, ncomp
 !$omp do private(ist,ied,i_rtm_0,k_rtm,l_rtm,inod,lnod,m_rtm)
         do ip = 1, np_smp
           ist = inod_rtm_smp_stack(ip-1) + 1
@@ -127,11 +98,11 @@
             k_rtm = 1 + mod((lnod-1),nidx_rtm(1))
             m_rtm = 1 + (lnod - k_rtm) / nidx_rtm(1)
 !
-            i_rtm_0 = nd + 3*nvector + (l_rtm-1) * ncomp                &
+            i_rtm_0 = nd + (l_rtm-1) * ncomp                            &
      &                   + (k_rtm-1) * ncomp*nidx_rtm(2)                &
      &                   + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
 !
-            vr_rtm_fdout(inod,nd+3*nvector) = vr_rtm(i_rtm_0)
+            vr_rtm_fdout(inod,nd) = vr_rtm(i_rtm_0)
           end do
         end do
 !$omp end do nowait
@@ -177,10 +148,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine back_b_trans_fields_fdout(ncomp, nvector, nscalar,     &
-     &          vr_rtm_fdout)
+      subroutine back_b_trans_fields_fdout(ncomp, vr_rtm_fdout)
 !
-      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: ncomp
       real(kind = kreal), intent(in) :: vr_rtm_fdout(nnod_rtm,ncomp)
 !
       integer(kind = kint) :: ip, ist, ied, inum, inod, lnod
@@ -191,45 +161,22 @@
 !$omp parallel do private(ip,ist,ied,i_rtm_0,k_rtm,l_rtm,nd,inod,lnod,  &
 !$omp&                    m_rtm,inum)
       do ip = 1, np_smp
-        ist = nvector*inod_rtm_smp_stack(ip-1) + 1
-        ied = nvector*inod_rtm_smp_stack(ip)
+        ist = ncomp*inod_rtm_smp_stack(ip-1) + 1
+        ied = ncomp*inod_rtm_smp_stack(ip)
 !cdir nodep
         do inum = ist, ied
-          nd = 1 + mod(inum-1,nvector)
-          inod = 1 + (inum - nd) / nvector
-          l_rtm = 1 + mod((inod-1),nidx_rtm(2))
-          lnod = 1 + (inod - l_rtm) / nidx_rtm(2)
-          k_rtm = 1 + mod((lnod-1),nidx_rtm(1))
-          m_rtm = 1 + (lnod - k_rtm) / nidx_rtm(1)
-!
-          i_rtm_0 = 3*nd + (l_rtm-1) * ncomp                            &
-     &                   + (k_rtm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-!
-          vr_rtm(i_rtm_0-2)  = vr_rtm_fdout(inod,3*nd-2)                &
-     &                       * a_r_1d_rlm_r(k_rtm)*a_r_1d_rlm_r(k_rtm)
-          vr_rtm(i_rtm_0-1)  = vr_rtm_fdout(inod,3*nd-1)                &
-     &                       * a_r_1d_rlm_r(k_rtm)
-          vr_rtm(i_rtm_0  )  = vr_rtm_fdout(inod,3*nd  )                &
-     &                       * a_r_1d_rlm_r(k_rtm)
-        end do
-!
-        ist = nscalar*inod_rtm_smp_stack(ip-1) + 1
-        ied = nscalar*inod_rtm_smp_stack(ip)
-!cdir nodep
-        do inum = ist, ied
-          nd = 1 + mod(inum-1,nscalar)
-          inod = 1 + (inum - nd) / nscalar
+          nd = 1 + mod(inum-1,ncomp)
+          inod = 1 + (inum - nd) / ncomp
           l_rtm = 1 + mod((inod-1),nidx_rtm(2))
           lnod =  1 + (inod - l_rtm) / nidx_rtm(2)
           k_rtm = 1 + mod((lnod-1),nidx_rtm(1))
           m_rtm = 1 + (lnod - k_rtm) / nidx_rtm(1)
 !
-          i_rtm_0 = nd + 3*nvector + (l_rtm-1) * ncomp                  &
-     &                   + (k_rtm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+          i_rtm_0 = nd + (l_rtm-1) * ncomp                              &
+     &                 + (k_rtm-1) * ncomp*nidx_rtm(2)                  &
+     &                 + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
 !
-          vr_rtm(i_rtm_0)  = vr_rtm_fdout(inod,nd+3*nvector)
+          vr_rtm(i_rtm_0)  = vr_rtm_fdout(inod,nd)
         end do
       end do
 !$omp end parallel do

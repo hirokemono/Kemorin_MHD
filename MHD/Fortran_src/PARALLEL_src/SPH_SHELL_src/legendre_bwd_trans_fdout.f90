@@ -43,7 +43,7 @@
      &          sp_rlm_fdout, vr_rtm_fdout)
 !
       integer(kind = kint), intent(in) :: nvector
-      real(kind = kreal), intent(in)                                    &
+      real(kind = kreal), intent(inout)                                 &
      &      :: sp_rlm_fdout(nnod_rlm,3*nvector)
       real(kind = kreal), intent(inout)                                 &
      &      :: vr_rtm_fdout(nnod_rtm,3*nvector)
@@ -57,14 +57,31 @@
 !
 !$omp parallel
       do nd = 1, nvector
+!
+!$omp do private(inum,j_rlm,k_rlm,i_rlm)
+        do inum = 1, nnod_rlm
+          k_rlm = 1 + mod( (inum-1),nidx_rlm(1))
+          j_rlm = 1 + (inum - k_rlm) / nidx_rlm(1)
+!
+          i_rlm = j_rlm + (k_rlm-1) * nidx_rlm(2)
+!
+          sp_rlm_fdout(i_rlm,3*nd-2) = sp_rlm_fdout(i_rlm,3*nd-2)       &
+     &                       * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
+          sp_rlm_fdout(i_rlm,3*nd-1) = sp_rlm_fdout(i_rlm,3*nd-1)       &
+     &                       * a_r_1d_rlm_r(k_rlm)
+          sp_rlm_fdout(i_rlm,3*nd  ) = sp_rlm_fdout(i_rlm,3*nd  )       &
+     &                       * a_r_1d_rlm_r(k_rlm)
+        end do
+!$omp end do nowait
+!
 !$omp do private(inum,j_rlm,k_rlm,l_rtm,ip_rtm,in_rtm,i_rlm,            &
 !$omp&           pg_tmp,dp_tmp)
-        do l_rtm = 1, nidx_rtm(2)
-          do inum = 1, nnod_rlm
-            k_rlm = 1 + mod( (inum-1),nidx_rlm(1))
-            j_rlm = 1 + (inum - k_rlm) / nidx_rlm(1)
+        do inum = 1, nnod_rlm
+          k_rlm = 1 + mod( (inum-1),nidx_rlm(1))
+          j_rlm = 1 + (inum - k_rlm) / nidx_rlm(1)
 !
-            i_rlm = j_rlm + (k_rlm-1) * nidx_rlm(2)
+          i_rlm = j_rlm + (k_rlm-1) * nidx_rlm(2)
+          do l_rtm = 1, nidx_rtm(2)
 !
             pg_tmp = P_rtm(l_rtm,j_rlm) * g_sph_rlm(j_rlm,3)
             dp_tmp = dPdt_rtm(l_rtm,j_rlm)

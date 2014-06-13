@@ -9,12 +9,10 @@
 !!
 !!@verbatim
 !!      subroutine order_b_trans_fields_krin(ncomp, sp_rlm_krin)
-!!      subroutine order_f_trans_fields_krin(ncomp, nvector, nscalar,   &
-!!     &          vr_rtm_krin)
+!!      subroutine order_f_trans_fields_krin(ncomp, vr_rtm_krin)
 !!
 !!      subroutine back_f_trans_fields_krin(ncomp, sp_rlm_krin)
-!!      subroutine back_b_trans_fields_krin(ncomp, nvector, nscalar,    &
-!!     &          vr_rtm_krin)
+!!      subroutine back_b_trans_fields_krin(ncomp, vr_rtm_krin)
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -77,10 +75,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine order_f_trans_fields_krin(ncomp, nvector, nscalar,     &
-     &          vr_rtm_krin)
+      subroutine order_f_trans_fields_krin(ncomp, vr_rtm_krin)
 !
-      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: ncomp
       real(kind = kreal), intent(inout)                                 &
      &           :: vr_rtm_krin(nnod_rtm,ncomp)
 !
@@ -93,51 +90,25 @@
 !$omp  parallel do private(ip,ist,ied,i_rtm_0,k_rtm,l_rtm,nd,kr_nd,     &
 !$omp&                     i_rtm_1,m_rtm,inum,ip_rtm)
       do ip = 1, np_smp
-        ist = nvector*inod_rtm_smp_stack(ip-1) + 1
-        ied = nvector*inod_rtm_smp_stack(ip)
+        ist = ncomp*inod_rtm_smp_stack(ip-1) + 1
+        ied = ncomp*inod_rtm_smp_stack(ip)
 !cdir nodep
         do inum = ist, ied
-          nd =      1 + mod( (inum-1),nvector)
-          kr_nd =   1 + mod( (inum-1),(nvector*nidx_rtm(1)) )
-          i_rtm_1 = 1 + (inum - kr_nd) / (nvector*nidx_rtm(1))
+          nd =    1 + mod( (inum-1),ncomp)
+          kr_nd = 1 + mod( (inum-1),(ncomp*nidx_rtm(1)) )
+          i_rtm_1 = 1 + (inum - kr_nd) / (ncomp*nidx_rtm(1))
 !
-          k_rtm = 1 + (kr_nd - nd) / nvector
+          k_rtm = 1 + (kr_nd - nd) / ncomp
           l_rtm = 1 + mod((i_rtm_1-1),nidx_rtm(2))
           m_rtm = 1 + (i_rtm_1 - l_rtm) / nidx_rtm(2)
 !
-          i_rtm_0 = 3*nd + (l_rtm-1) * ncomp                            &
+          i_rtm_0 =   nd + (l_rtm-1) * ncomp                            &
      &                   + (k_rtm-1) * ncomp*nidx_rtm(2)                &
      &                   + (i_rtm_1 - l_rtm) * ncomp*nidx_rtm(1)
           ip_rtm =  k_rtm + (l_rtm-1)*nidx_rtm(1)                       &
      &                    + (m_rtm-1)*nidx_rtm(1)*nidx_rtm(2)
 !
-          vr_rtm_krin(ip_rtm,3*nd-2) = vr_rtm(i_rtm_0-2)                &
-     &                 * radius_1d_rlm_r(k_rtm)*radius_1d_rlm_r(k_rtm)
-          vr_rtm_krin(ip_rtm,3*nd-1) = vr_rtm(i_rtm_0-1)                &
-     &                 * radius_1d_rlm_r(k_rtm)
-          vr_rtm_krin(ip_rtm,3*nd  ) = vr_rtm(i_rtm_0  )                &
-     &                 * radius_1d_rlm_r(k_rtm)
-        end do
-!
-        ist = nscalar*inod_rtm_smp_stack(ip-1) + 1
-        ied = nscalar*inod_rtm_smp_stack(ip)
-!cdir nodep
-        do inum = ist, ied
-          nd =    1 + mod( (inum-1),nscalar)
-          kr_nd = 1 + mod( (inum-1),(nscalar*nidx_rtm(1)) )
-          i_rtm_1 = 1 + (inum - kr_nd) / (nscalar*nidx_rtm(1))
-!
-          k_rtm = 1 + (kr_nd - nd) / nscalar
-          l_rtm = 1 + mod((i_rtm_1-1),nidx_rtm(2))
-          m_rtm = 1 + (i_rtm_1 - l_rtm) / nidx_rtm(2)
-!
-          i_rtm_0 =   nd + 3*nvector + (l_rtm-1) * ncomp                &
-     &                   + (k_rtm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (i_rtm_1 - l_rtm) * ncomp*nidx_rtm(1)
-          ip_rtm =  k_rtm + (l_rtm-1)*nidx_rtm(1)                       &
-     &                    + (m_rtm-1)*nidx_rtm(1)*nidx_rtm(2)
-!
-          vr_rtm_krin(ip_rtm,nd+3*nvector) = vr_rtm(i_rtm_0  )
+          vr_rtm_krin(ip_rtm,nd) = vr_rtm(i_rtm_0  )
         end do
       end do
 !$omp end parallel do
@@ -183,10 +154,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine back_b_trans_fields_krin(ncomp, nvector, nscalar,      &
-     &          vr_rtm_krin)
+      subroutine back_b_trans_fields_krin(ncomp, vr_rtm_krin)
 !
-      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: ncomp
       real(kind = kreal), intent(in) :: vr_rtm_krin(nnod_rtm,ncomp)
 !
       integer(kind = kint) :: ip, ist, ied, inum
@@ -198,49 +168,23 @@
 !$omp parallel do private(ip,ist,ied,i_rtm_0,k_rtm,l_rtm,nd,inod,lnod,  &
 !$omp&                    ip_rtm,m_rtm,inum)
       do ip = 1, np_smp
-        ist = nvector*inod_rtm_smp_stack(ip-1) + 1
-        ied = nvector*inod_rtm_smp_stack(ip)
-!cdir nodep
+        ist = ncomp*inod_rtm_smp_stack(ip-1) + 1
+        ied = ncomp*inod_rtm_smp_stack(ip)
         do inum = ist, ied
-          nd = 1 + mod(inum-1,nvector)
-          inod = 1 + (inum - nd) / nvector
+          nd = 1 + mod(inum-1,ncomp)
+          inod = 1 + (inum - nd) / ncomp
           l_rtm = 1 + mod((inod-1),nidx_rtm(2))
           lnod = 1 + (inod - l_rtm) / nidx_rtm(2)
           k_rtm = 1 + mod((lnod-1),nidx_rtm(1))
           m_rtm = 1 + (lnod - k_rtm) / nidx_rtm(1)
 !
-          i_rtm_0 = 3*nd + (l_rtm-1) * ncomp                            &
-     &                   + (k_rtm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+          i_rtm_0 = nd + (l_rtm-1) * ncomp                              &
+     &                 + (k_rtm-1) * ncomp*nidx_rtm(2)                  &
+     &                 + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
           ip_rtm =  k_rtm + (l_rtm-1)*nidx_rtm(1)                       &
      &                    + (m_rtm-1)*nidx_rtm(1)*nidx_rtm(2)
 !
-          vr_rtm(i_rtm_0-2) = vr_rtm_krin(ip_rtm,3*nd-2)                &
-     &                       * a_r_1d_rlm_r(k_rtm)*a_r_1d_rlm_r(k_rtm)
-          vr_rtm(i_rtm_0-1) = vr_rtm_krin(ip_rtm,3*nd-1)                &
-     &                       * a_r_1d_rlm_r(k_rtm)
-          vr_rtm(i_rtm_0  ) = vr_rtm_krin(ip_rtm,3*nd  )                &
-     &                       * a_r_1d_rlm_r(k_rtm)
-        end do
-!
-        ist = nscalar*inod_rtm_smp_stack(ip-1) + 1
-        ied = nscalar*inod_rtm_smp_stack(ip)
-!cdir nodep
-        do inum = ist, ied
-          nd = 1 + mod(inum-1,nscalar)
-          inod = 1 + (inum - nd) / nscalar
-          l_rtm = 1 + mod((inod-1),nidx_rtm(2))
-          lnod = 1 + (inod - l_rtm) / nidx_rtm(2)
-          k_rtm = 1 + mod((lnod-1),nidx_rtm(1))
-          m_rtm = 1 + (lnod - k_rtm) / nidx_rtm(1)
-!
-          i_rtm_0 = nd + 3*nvector + (l_rtm-1) * ncomp                  &
-     &                   + (k_rtm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-          ip_rtm =  k_rtm + (l_rtm-1)*nidx_rtm(1)                       &
-     &                    + (m_rtm-1)*nidx_rtm(1)*nidx_rtm(2)
-!
-          vr_rtm(i_rtm_0  ) = vr_rtm_krin(ip_rtm,nd+3*nvector)
+          vr_rtm(i_rtm_0  ) = vr_rtm_krin(ip_rtm,nd)
         end do
       end do
 !$omp end parallel do

@@ -51,6 +51,23 @@
       real(kind = kreal) :: pg_tmp, dp_tmp
 !
 !
+!$omp  parallel do private(inum,k_rlm,j_rlm,nd,kr_nd,i_rlm)
+      do inum = 1, nvector*nnod_rlm
+        nd =    1 + mod( (inum-1),nvector)
+        kr_nd = 1 + mod( (inum-1),(nvector*nidx_rlm(1)))
+        k_rlm = 1 + (kr_nd - nd) / nvector
+        j_rlm = 1 + (inum - kr_nd) / (nvector*nidx_rlm(1))
+!
+        i_rlm = 3*nd + (j_rlm-1) * ncomp                                &
+     &               + (k_rlm-1) * ncomp * nidx_rlm(2)
+!
+        sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2)                               &
+     &                   * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
+        sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1) * a_r_1d_rlm_r(k_rlm)
+        sp_rlm(i_rlm  ) = sp_rlm(i_rlm  ) * a_r_1d_rlm_r(k_rlm)
+      end do
+!$omp end parallel do
+!
 !$omp  parallel do private(inum,k_rlm,j_rlm,nd,kr_nd,                   &
 !$omp&                     i_rlm,l_rtm,ip_rtm,in_rtm,pg_tmp,dp_tmp)
       do l_rtm = 1, nidx_rtm(2)
@@ -79,7 +96,6 @@
 !
           vr_rtm(ip_rtm  ) = vr_rtm(ip_rtm  )                           &
      &                     - sp_rlm(i_rlm  ) * dp_tmp
-!
         end do
 !
         do inum = 1, nvector*nnod_rlm

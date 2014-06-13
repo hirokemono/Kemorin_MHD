@@ -43,23 +43,33 @@
      &          sp_rlm_spin, vr_rtm_spin)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
-      real(kind = kreal), intent(in)                                    &
+      real(kind = kreal), intent(inout)                                 &
      &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
       real(kind = kreal), intent(inout)                                 &
      &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(3),nidx_rtm(1)*ncomp)
 !
       integer(kind = kint) :: j_rlm, mp_rlm, mn_rlm, mst, med, l_rtm
-      integer(kind = kint) :: nb_nri, kr_nd
+      integer(kind = kint) :: nb_nri, kr_nd, k_rlm
       real(kind = kreal) :: pg_tmp, dp_tmp
 !
 !
       nb_nri = nvector*nidx_rtm(1)
-!$omp parallel do private(kr_nd,j_rlm,l_rtm,mp_rlm,mn_rlm,              &
+!$omp parallel do private(kr_nd,j_rlm,l_rtm,mp_rlm,mn_rlm,k_rlm,        &
 !$omp&               mst,med,pg_tmp,dp_tmp)
       do kr_nd = 1, nb_nri
-!      do nd = 1, nvector
-!        do k_rtm = 1,  nidx_rtm(1)
-!          kr_nd = k_rlm + (nd-1) * nidx_rlm(1)
+        k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
+!        nd =  1 + (kr_nd - k_rlm) / nidx_rlm(1)
+        do j_rlm = 1, nidx_rlm(2)
+          sp_rlm_spin(j_rlm,kr_nd         )                             &
+     &                      = sp_rlm_spin(j_rlm,kr_nd         )         &
+     &                       * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
+          sp_rlm_spin(j_rlm,kr_nd+nb_nri  )                             &
+     &                      = sp_rlm_spin(j_rlm,kr_nd+nb_nri  )         &
+     &                       * a_r_1d_rlm_r(k_rlm)
+          sp_rlm_spin(j_rlm,kr_nd+2*nb_nri)                             &
+     &                      = sp_rlm_spin(j_rlm,kr_nd+2*nb_nri)         &
+     &                       * a_r_1d_rlm_r(k_rlm)
+        end do
 !
         do mp_rlm = 1, nidx_rtm(3)
           mn_rlm = nidx_rtm(3) - mp_rlm + 1
@@ -132,7 +142,6 @@
           mst = lstack_rlm(mp_rlm-1)+1
           med = lstack_rlm(mp_rlm)
           do j_rlm = mst, med
-!cdir nodep
             do l_rtm = 1, nidx_rtm(2)
               vr_rtm_spin(l_rtm,mp_rlm,kr_nd)                           &
      &              = vr_rtm_spin(l_rtm,mp_rlm,kr_nd)                   &

@@ -54,7 +54,7 @@
         call legendre_b_trans_scalar_org(ncomp, nvector, nscalar)
       end if
 !
-      call const_vect_sph_b_trans(ncomp, nvector)
+!      call const_vect_sph_b_trans(ncomp, nvector)
 !
       end subroutine leg_backward_trans_org
 !
@@ -68,8 +68,6 @@
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
 !
-!
-      call prod_r_vect_sph_f_trans(ncomp, nvector)
 !
       call clear_fwd_legendre_trans(ncomp)
 !

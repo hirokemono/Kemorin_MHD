@@ -58,8 +58,7 @@
       call legendre_b_trans_scalar_fdout(nscalar,                       &
      &    sp_rlm_fdout(1,ist_fld), vr_rtm_fdout(1,ist_fld))
 !
-      call back_b_trans_fields_fdout(ncomp, nvector, nscalar,           &
-     &    vr_rtm_fdout(1,1))
+      call back_b_trans_fields_fdout(ncomp, vr_rtm_fdout(1,1))
 !
       end subroutine leg_backward_trans_fdout
 !
@@ -76,8 +75,7 @@
 !
 !
 !
-      call order_f_trans_fields_fdout(ncomp, nvector, nscalar,          &
-     &    vr_rtm_fdout(1,1))
+      call order_f_trans_fields_fdout(ncomp, vr_rtm_fdout(1,1))
       call clear_f_trans_field_fdout(ione, ncomp)
 !
       ist_fld = 3*nvector+1

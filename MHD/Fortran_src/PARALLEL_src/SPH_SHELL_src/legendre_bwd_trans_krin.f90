@@ -42,7 +42,7 @@
      &          sp_rlm_krin, vr_rtm_krin)
 !
       integer(kind = kint), intent(in) :: nvector
-      real(kind = kreal), intent(in)                                    &
+      real(kind = kreal), intent(inout)                                 &
      &      :: sp_rlm_krin(nnod_rlm,3*nvector)
       real(kind = kreal), intent(inout)                                 &
      &      :: vr_rtm_krin(nnod_rtm,3*nvector)
@@ -51,6 +51,29 @@
       integer(kind = kint) :: l_rtm, mst, med
       integer(kind = kint) :: k_rtm, nd, kr_j, kr_l, i_rtm
 !
+!
+!$omp parallel do private(mp_rlm,j_rlm,mst,med,k_rtm,nd,kr_j)
+      do mp_rlm = 1, nidx_rtm(3)
+        mst = lstack_rlm(mp_rlm-1)+1
+        med = lstack_rlm(mp_rlm)
+        do nd = 1, nvector
+          do j_rlm = mst, med
+!
+            do k_rtm = 1, nidx_rtm(1)
+              kr_j = k_rtm + (j_rlm-1)*nidx_rtm(1)
+!
+              sp_rlm_krin(kr_j,3*nd-2) = sp_rlm_krin(kr_j,3*nd-2)       &
+     &                       * a_r_1d_rlm_r(k_rtm)*a_r_1d_rlm_r(k_rtm)
+              sp_rlm_krin(kr_j,3*nd-1) = sp_rlm_krin(kr_j,3*nd-1)       &
+     &                       * a_r_1d_rlm_r(k_rtm)
+              sp_rlm_krin(kr_j,3*nd  ) = sp_rlm_krin(kr_j,3*nd  )       &
+     &                       * a_r_1d_rlm_r(k_rtm)
+            end do
+          end do
+!
+        end do
+      end do
+!$omp end parallel do
 !
 !$omp parallel do private(mp_rlm,j_rlm,kr_l,mst,med,l_rtm,k_rtm,        &
 !$omp&                    nd,kr_j,i_rtm)

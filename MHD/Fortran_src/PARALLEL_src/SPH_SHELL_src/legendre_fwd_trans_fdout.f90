@@ -88,11 +88,12 @@
             end do
 !
             sp_rlm_fdout(i_rlm,3*nd-2) = sp_rlm_fdout(i_rlm,3*nd-2)     &
-     &                       * g_sph_rlm(j_rlm,7)
+     &            * radius_1d_rlm_r(k_rlm)*radius_1d_rlm_r(k_rlm)       &
+     &            * g_sph_rlm(j_rlm,7)
             sp_rlm_fdout(i_rlm,3*nd-1) = sp_rlm_fdout(i_rlm,3*nd-1)     &
-     &                       * g_sph_rlm(j_rlm,7)
+     &            * radius_1d_rlm_r(k_rlm) * g_sph_rlm(j_rlm,7)
             sp_rlm_fdout(i_rlm,3*nd  ) = sp_rlm_fdout(i_rlm,3*nd  )     &
-     &                       * g_sph_rlm(j_rlm,7)
+     &            * radius_1d_rlm_r(k_rlm) * g_sph_rlm(j_rlm,7)
           end do
         end do
 !$omp end do nowait

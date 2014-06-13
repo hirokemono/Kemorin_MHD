@@ -94,9 +94,12 @@
      &                   + vr_rtm(ip_rtm  ) * dpwt_tmp )
           end do
 !
-          sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) * g_sph_rlm(j_rlm,7)
-          sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1) * g_sph_rlm(j_rlm,7)
-          sp_rlm(i_rlm  ) = sp_rlm(i_rlm  ) * g_sph_rlm(j_rlm,7)
+          sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) * g_sph_rlm(j_rlm,7)        &
+     &               * radius_1d_rlm_r(k_rlm)*radius_1d_rlm_r(k_rlm)
+          sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1) * g_sph_rlm(j_rlm,7)        &
+     &               * radius_1d_rlm_r(k_rlm)
+          sp_rlm(i_rlm  ) = sp_rlm(i_rlm  ) * g_sph_rlm(j_rlm,7)        &
+     &               * radius_1d_rlm_r(k_rlm)
         end do
       end do
 !$omp end parallel do

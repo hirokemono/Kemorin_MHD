@@ -117,12 +117,9 @@
      &                   + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
           i_rtm_spin = 1 + mod((inum-1),nnod_rtm)
 !
-          vr_rtm_spin(i_rtm_spin,nd          ) = vr_rtm(i_rtm_0-2)      &
-     &                 * radius_1d_rlm_r(k_rtm)*radius_1d_rlm_r(k_rtm)
-          vr_rtm_spin(i_rtm_spin,nd+nvector  ) = vr_rtm(i_rtm_0-1)      &
-     &                 * radius_1d_rlm_r(k_rtm)
-          vr_rtm_spin(i_rtm_spin,nd+2*nvector) = vr_rtm(i_rtm_0  )      &
-     &                 * radius_1d_rlm_r(k_rtm)
+          vr_rtm_spin(i_rtm_spin,nd          ) = vr_rtm(i_rtm_0-2)
+          vr_rtm_spin(i_rtm_spin,nd+nvector  ) = vr_rtm(i_rtm_0-1)
+          vr_rtm_spin(i_rtm_spin,nd+2*nvector) = vr_rtm(i_rtm_0  )
         end do
 !
         ist = nscalar*inod_rtm_smp_stack(ip-1) + 1
@@ -227,12 +224,9 @@
           i_rtm_spin = l_rtm + (m_rtm-1) * nidx_rtm(2)                  &
      &                       + (k_rtm-1) * nidx_rtm(2)*nidx_rtm(3)
 !
-          vr_rtm(i_rtm_0-2) = vr_rtm_spin(i_rtm_spin,nd          )      &
-     &                       * a_r_1d_rlm_r(k_rtm)*a_r_1d_rlm_r(k_rtm)
-          vr_rtm(i_rtm_0-1) = vr_rtm_spin(i_rtm_spin,nd+nvector  )      &
-     &                       * a_r_1d_rlm_r(k_rtm)
-          vr_rtm(i_rtm_0  ) = vr_rtm_spin(i_rtm_spin,nd+2*nvector)      &
-     &                       * a_r_1d_rlm_r(k_rtm)
+          vr_rtm(i_rtm_0-2) = vr_rtm_spin(i_rtm_spin,nd          )
+          vr_rtm(i_rtm_0-1) = vr_rtm_spin(i_rtm_spin,nd+nvector  )
+          vr_rtm(i_rtm_0  ) = vr_rtm_spin(i_rtm_spin,nd+2*nvector)
         end do
 !
         ist = nscalar*inod_rtm_smp_stack(ip-1) + 1
