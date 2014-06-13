@@ -48,18 +48,18 @@
       integer(kind = kint) :: k_rtm, l_rtm
       integer(kind = kint) :: ip_rtm, in_rtm
       integer(kind = kint) :: nd
-      real(kind = kreal) :: pg_tmp, dp_tmp
+      real(kind = kreal) :: a2r_1d_rlm_r
 !
 !
-!$omp parallel do private(j_rlm,l_rtm,nd,i_rlm)
+!$omp parallel do private(j_rlm,l_rtm,nd,i_rlm,a2r_1d_rlm_r)
       do k_rtm = 1,  nidx_rtm(1)
+        a2r_1d_rlm_r = a_r_1d_rlm_r(k_rtm)*a_r_1d_rlm_r(k_rtm)
         do j_rlm = 1, nidx_rlm(2)
           do nd = 1, nvector
             i_rlm = 3*nd + (j_rlm-1) * ncomp                            &
      &                   + (k_rtm-1) * ncomp * nidx_rlm(2)
 !
-            sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2)                           &
-     &                   * a_r_1d_rlm_r(k_rtm)*a_r_1d_rlm_r(k_rtm)
+            sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) * a2r_1d_rlm_r
             sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1) * a_r_1d_rlm_r(k_rtm)
             sp_rlm(i_rlm  ) = sp_rlm(i_rlm  ) * a_r_1d_rlm_r(k_rtm)
           end do
@@ -103,10 +103,10 @@
      &                     + (k_rtm-1) * ncomp * nidx_rlm(2)
 !
               vr_rtm(in_rtm-1) = vr_rtm(in_rtm-1)                       &
-     &                       + sp_rlm(i_rlm  ) * Pws_lj(l_rtm,j_rlm)
+     &                       + sp_rlm(i_rlm  ) * Pgv_lj(l_rtm,j_rlm)
 !
               vr_rtm(in_rtm  ) = vr_rtm(in_rtm  )                       &
-     &                       + sp_rlm(i_rlm-1) * Pws_lj(l_rtm,j_rlm)
+     &                       + sp_rlm(i_rlm-1) * Pgv_lj(l_rtm,j_rlm)
             end do
           end do
 !
@@ -143,10 +143,8 @@
               i_rlm = nd + 3*nvector + (j_rlm-1) * ncomp                &
      &                               + (k_rtm-1) * ncomp * nidx_rlm(2)
 !
-!              vr_rtm(ip_rtm) = vr_rtm(ip_rtm)                          &
               vr_rtm(ip_rtm) = vr_rtm(ip_rtm)                           &
      &                        + sp_rlm(i_rlm) * P_rtm(l_rtm,j_rlm)
-!
             end do
           end do
 !

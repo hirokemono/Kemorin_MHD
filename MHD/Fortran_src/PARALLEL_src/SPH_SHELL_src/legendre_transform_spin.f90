@@ -58,9 +58,8 @@
       call end_eleps_time(26)
 !
       call start_eleps_time(27)
-      if(nvector .gt. 0) call legendre_b_trans_vector_spin              &
-     &                      (ncomp, nvector, sp_rlm_spin(1,1),          &
-     &                       vr_rtm_spin(1,1))
+      if(nvector .gt. 0) call legendre_b_trans_vector_spin(nvector,     &
+     &                       sp_rlm_spin(1,1), vr_rtm_spin(1,1))
       if(nscalar .gt. 0) call legendre_b_trans_scalar_spin              &
      &                      (ncomp, nscalar, nvector,                   &
      &                       sp_rlm_spin(1,1), vr_rtm_spin(1,1))
