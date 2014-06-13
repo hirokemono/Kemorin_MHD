@@ -17,28 +17,12 @@
       module m_2nd_phys_data
 !
       use m_precision
+      use t_phys_data
 !
       implicit  none
-! 
-      integer (kind=kint) :: num_nod_phys_2nd
-!    number of physical data
-      integer (kind=kint) :: ntot_nod_phys_2nd
 !
-      integer (kind=kint), pointer :: ncomps_nod_2nd(:)
-! 
-      integer (kind=kint), pointer :: istack_nod_comps_2nd(:)
 !
-      integer (kind=kint), pointer :: iorder_nod_phys_2nd(:)
-!
-      character (len=kchara), pointer :: phys_nod_name_2nd(:)
-! 
-      real (kind=kreal), pointer :: d_nod_2nd(:,:)
-!!
-!     paraamaters to visualizer
-!
-      integer (kind=kint) :: num_nod_phys_2nd_vis
-!    number of physical data to visualizer
-      integer (kind=kint) :: ntot_nod_phys_2nd_vis
+      type(phys_data), save :: phys_2nd
 !
 ! -------------------------------------------------------------------
 !
@@ -48,64 +32,77 @@
 !
        subroutine allocate_2nd_phys_name
 !
-          allocate( phys_nod_name_2nd(num_nod_phys_2nd) )
-          allocate( iorder_nod_phys_2nd(num_nod_phys_2nd) )
-          allocate( ncomps_nod_2nd(num_nod_phys_2nd) )
-          allocate( istack_nod_comps_2nd(0:num_nod_phys_2nd) )
 !
-          phys_nod_name_2nd = ''
-          ncomps_nod_2nd =    0
-          istack_nod_comps_2nd = 0
-          iorder_nod_phys_2nd = 1
+      call alloc_phys_name_type(phys_2nd)
 !
        end subroutine allocate_2nd_phys_name
 !
 !  --------------------------------------------------------------------
 !
-       subroutine allocate_2nd_data_arrays
+      subroutine allocate_2nd_data_arrays
 !
-       use m_2nd_geometry_param
+      use m_2nd_geometry_param
 !
-       allocate( d_nod_2nd(nnod_2nd,ntot_nod_phys_2nd) )
-       d_nod_2nd = 0.0d0
+      call alloc_phys_data_type(nnod_2nd, phys_2nd)
 !
-       end subroutine allocate_2nd_data_arrays
+      end subroutine allocate_2nd_data_arrays
 !
-!  --------------------------------------------------------------------
+! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-       subroutine deallocate_2nd_phys_name
+      subroutine deallocate_2nd_phys_name
 !
-       deallocate( phys_nod_name_2nd, iorder_nod_phys_2nd )
-       deallocate( ncomps_nod_2nd, istack_nod_comps_2nd )
+      call dealloc_phys_name_type(phys_2nd)
 !
-       end subroutine deallocate_2nd_phys_name
-!
-!  --------------------------------------------------------------------
-!
-       subroutine deallocate_2nd_data_arrays
-!
-       deallocate( d_nod_2nd )
-!
-       end subroutine deallocate_2nd_data_arrays
+      end subroutine deallocate_2nd_phys_name
 !
 !  --------------------------------------------------------------------
 !
-       subroutine disconnect_2nd_phys_name
+      subroutine deallocate_2nd_data_arrays
 !
-       nullify( phys_nod_name_2nd, iorder_nod_phys_2nd )
-       nullify( ncomps_nod_2nd, istack_nod_comps_2nd )
+      call dealloc_phys_data_type(phys_2nd)
 !
-       end subroutine disconnect_2nd_phys_name
+      end subroutine deallocate_2nd_data_arrays
+!
+!  --------------------------------------------------------------------
+!
+      subroutine disconnect_2nd_phys_name
+!
+      call disconnect_phys_name_type(phys_2nd)
+!
+      end subroutine disconnect_2nd_phys_name
 !
 !  --------------------------------------------------------------------
 !
        subroutine disconnect_2nd_data_arrays
 !
-       nullify( d_nod_2nd )
+       call disconnect_phys_data_type(phys_2nd)
 !
        end subroutine disconnect_2nd_data_arrays
 !
 !  --------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine link_nodal_field_names
+!
+      use link_data_type_to_1st_mesh
+!
+!
+      call link_nodal_fld_type_names(phys_2nd)
+!
+      end subroutine link_nodal_field_names
+!
+! -------------------------------------------------------------------
+!
+      subroutine link_nodal_field_data
+!
+      use link_data_type_to_1st_mesh
+!
+!
+      call link_nodal_fld_type(phys_2nd)
+!
+      end subroutine link_nodal_field_data
+!
+! -------------------------------------------------------------------
 !
       end module m_2nd_phys_data

@@ -91,11 +91,13 @@
 !
 !
       if     (iflag_correlate_coord .eq. iflag_spherical) then
-        call transfer_nod_fld_to_sph(nnod_2nd, num_nod_phys_2nd,        &
-     &      ntot_nod_phys_2nd, istack_nod_comps_2nd, d_nod_2nd)
+        call transfer_nod_fld_to_sph(nnod_2nd, phys_2nd%num_phys,       &
+     &      phys_2nd%ntot_phys, phys_2nd%istack_component,              &
+     &      phys_2nd%d_fld)
       else if(iflag_correlate_coord .eq. iflag_cylindrical) then
-        call transfer_nod_fld_to_cyl(nnod_2nd, num_nod_phys_2nd,        &
-     &      ntot_nod_phys_2nd, istack_nod_comps_2nd, d_nod_2nd)
+        call transfer_nod_fld_to_cyl(nnod_2nd, phys_2nd%num_phys,       &
+     &      phys_2nd%ntot_phys, phys_2nd%istack_component,              &
+     &      phys_2nd%d_fld)
       end if
 !
       end subroutine coord_transfer_4_2nd_field
@@ -114,10 +116,10 @@
 !
 !
 !$omp parallel private(nd)
-      do nd = 1, ntot_nod_phys_2nd
+      do nd = 1, phys_2nd%ntot_phys
 !$omp do 
         do inod = 1, numnod
-          d_nod_2nd(inod,nd) = d_nod(inod,icomp_4_correlate)
+          phys_2nd%d_fld(inod,nd) = d_nod(inod,icomp_4_correlate)
         end do
 !$omp end do nowait
       end do

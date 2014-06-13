@@ -143,8 +143,6 @@
 !
       use m_2nd_phys_data
 !
-      use link_data_to_1st_mesh
-!
 !
       call link_nodal_field_names
       call allocate_2nd_data_arrays
@@ -164,7 +162,7 @@
 !
 !
       call copy_original_data(numnod, num_tot_nod_phys,                 &
-     &    d_nod, nnod_2nd, d_nod_2nd)
+     &    d_nod, nnod_2nd, phys_2nd%d_fld)
 !
       end subroutine copy_2nd_data_on_vertex
 !
@@ -183,7 +181,7 @@
 !
 !
       call set_fields_on_surf(numnod, numsurf, numele,                  &
-     &    ie, ie_surf, num_tot_nod_phys, nnod_2nd, d_nod_2nd)
+     &    ie, ie_surf, num_tot_nod_phys, nnod_2nd, phys_2nd%d_fld)
 !
       end subroutine generate_2nd_data_on_surf
 !

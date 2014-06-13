@@ -34,7 +34,6 @@
       use input_control_interpolate
       use const_mesh_info
       use set_smp_size_4_2nd
-      use link_data_to_1st_mesh
       use nodal_vector_send_recv
       use set_field_to_restart
       use field_IO_select

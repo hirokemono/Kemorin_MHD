@@ -55,7 +55,7 @@
 !
       call copy_scalar_from_trans_w_pole(nnod_2nd, internal_nod_2nd,    &
      &    xx_2nd, ncomp_trans, i_trns, i_field,                         &
-     &    ntot_nod_phys_2nd, d_nod_2nd)
+     &    phys_2nd%ntot_phys, phys_2nd%d_fld)
 !
       end subroutine copy_2nd_scl_from_trans_wpole
 !
@@ -72,7 +72,8 @@
 !
       call copy_xyz_vec_from_trans_w_pole(nnod_2nd, internal_nod_2nd,   &
      &    inod_smp_stack_2nd, xx_2nd, theta_2nd, phi_2nd,               &
-     &    ncomp_trans, i_trns, i_field, ntot_nod_phys_2nd, d_nod_2nd)
+     &    ncomp_trans, i_trns, i_field, phys_2nd%ntot_phys,             &
+     &    phys_2nd%d_fld)
 !
       end subroutine copy_2nd_vec_from_trans_wpole
 !
@@ -90,7 +91,7 @@
       call copy_xyz_tsr_from_trans_w_pole(nnod_2nd, internal_nod_2nd,   &
      &    inod_smp_stack_2nd, xx_2nd, radius_2nd, s_cyl_2nd,            &
      &    a_radius_2nd, a_s_cyl_2nd, ncomp_trans, i_trns, i_field,      &
-     &    ntot_nod_phys_2nd, d_nod_2nd)
+     &    phys_2nd%ntot_phys, phys_2nd%d_fld)
 !
       end subroutine copy_2nd_tsr_from_trans_wpole
 !
@@ -107,7 +108,7 @@
 !
 !
       call copy_scalar_from_sph_trans(nnod_2nd, ncomp_trans, i_trns,    &
-     &    i_field, ntot_nod_phys_2nd, d_nod_2nd)
+     &    i_field, phys_2nd%ntot_phys, phys_2nd%d_fld)
 !
       end subroutine copy_2nd_scl_from_sph_trans
 !
@@ -124,7 +125,7 @@
 !
       call copy_xyz_vec_from_sph_trans(nnod_2nd, inod_smp_stack_2nd,    &
      &    theta_2nd, phi_2nd, ncomp_trans, i_trns, i_field,             &
-     &    ntot_nod_phys_2nd, d_nod_2nd)
+     &    phys_2nd%ntot_phys, phys_2nd%d_fld)
 !
       end subroutine copy_2nd_vec_from_sph_trans
 !
@@ -141,7 +142,8 @@
 !
       call copy_xyz_tsr_from_sph_trans(nnod_2nd, inod_smp_stack_2nd,    &
      &    xx_2nd, radius_2nd, s_cyl_2nd, a_radius_2nd, a_s_cyl_2nd,     &
-     &    ncomp_trans, i_trns, i_field, ntot_nod_phys_2nd, d_nod_2nd)
+     &    ncomp_trans, i_trns, i_field, phys_2nd%ntot_phys,             &
+     &    phys_2nd%d_fld)
 !
       end subroutine copy_2nd_tsr_from_sph_trans
 !
@@ -158,7 +160,7 @@
 !
 !
       call copy_scalar_to_sph_trans(nnod_2nd, ncomp_trans, i_trns,      &
-     &    i_field, ntot_nod_phys_2nd, d_nod_2nd)
+     &    i_field, phys_2nd%ntot_phys, phys_2nd%d_fld)
 !
       end subroutine copy_2nd_scl_to_sph_trans
 !
@@ -175,7 +177,8 @@
 !
       call copy_xyz_vec_to_sph_trans(nnod_2nd, inod_smp_stack_2nd,      &
      &    xx_2nd, radius_2nd, s_cyl_2nd, a_radius_2nd, a_s_cyl_2nd,     &
-     &    ncomp_trans, i_trns, i_field, ntot_nod_phys_2nd, d_nod_2nd)
+     &    ncomp_trans, i_trns, i_field, phys_2nd%ntot_phys,             &
+     &    phys_2nd%d_fld)
 !
       end subroutine copy_2nd_vec_to_sph_trans
 !
@@ -192,7 +195,8 @@
 !
       call copy_xyz_tsr_to_sph_trans(nnod_2nd, inod_smp_stack_2nd,      &
      &    xx_2nd, radius_2nd, s_cyl_2nd, a_radius_2nd, a_s_cyl_2nd,     &
-     &    ncomp_trans, i_trns, i_field, ntot_nod_phys_2nd, d_nod_2nd)
+     &    ncomp_trans, i_trns, i_field, phys_2nd%ntot_phys,             &
+     &    phys_2nd%d_fld)
 !
       end subroutine copy_2nd_tsr_to_sph_trans
 !

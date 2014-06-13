@@ -97,7 +97,7 @@
 !
       do icomp = 1, num_tot_nod_phys
         icomp_2 = icomp+num_tot_nod_phys
-        d_nod_trans2(1:nnod_2nd,1) = d_nod_2nd(1:nnod_2nd,icomp)
+        d_nod_trans2(1:nnod_2nd,1) = phys_2nd%d_fld(1:nnod_2nd,icomp)
 !
         call int_vol_2rms_ave_ele_grps_1st(max_int_point,               &
      &      n_layer_d, n_item_layer_d, layer_stack, item_layer,         &
@@ -124,7 +124,7 @@
 !
       do icomp = 1, num_tot_nod_phys
         icomp_2 = icomp+num_tot_nod_phys
-        d_nod_trans2(1:numnod,1) = d_nod_2nd(1:numnod,icomp)
+        d_nod_trans2(1:numnod,1) = phys_2nd%d_fld(1:numnod,icomp)
         call int_vol_dev_cor_ele_grps_1st(max_int_point,                &
      &      n_layer_d, n_item_layer_d, layer_stack, item_layer,         &
      &      d_nod(1,icomp), d_nod_trans2(1,1),                          &

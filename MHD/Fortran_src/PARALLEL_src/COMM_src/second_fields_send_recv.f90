@@ -39,25 +39,25 @@
       integer (kind=kint) :: i, ist
 !
 !
-      do i = 1, num_nod_phys_2nd
-        ist = istack_nod_comps_2nd(i-1) + 1
+      do i = 1, phys_2nd%num_phys
+        ist = phys_2nd%istack_component(i-1) + 1
 !
-        if (ncomps_nod_2nd(i) .eq. n_vector) then
+        if (phys_2nd%num_component(i) .eq. n_vector) then
 !
           if (iflag_debug .gt.0)                                        &
-     &     write(*,*) 'comm. 2nd vect: ', trim(phys_nod_name_2nd(i))
+     &     write(*,*) 'comm. 2nd vect: ', trim(phys_2nd%phys_name(i))
           call vector_2nd_send_recv(ist)
 !
-        else if (ncomps_nod_2nd(i) .eq. n_scalar) then
+        else if (phys_2nd%num_component(i) .eq. n_scalar) then
 !
          if (iflag_debug .gt.0)                                         &
-     &     write(*,*) 'comm. 2nd scalar: ', trim(phys_nod_name_2nd(i))
+     &     write(*,*) 'comm. 2nd scalar: ', trim(phys_2nd%phys_name(i))
           call scalar_2nd_send_recv(ist)
 !
-        else if (ncomps_nod_2nd(i) .eq. n_sym_tensor) then
+        else if (phys_2nd%num_component(i) .eq. n_sym_tensor) then
 !
          if (iflag_debug .gt.0)                                         &
-     &     write(*,*) 'comm. 2nd tensor: ', trim(phys_nod_name_2nd(i))
+     &     write(*,*) 'comm. 2nd tensor: ', trim(phys_2nd%phys_name(i))
           call sym_tensor_2nd_send_recv(ist)
         end if
       end do
@@ -77,7 +77,7 @@
 !
 !$omp parallel do
       do inod=1, nnod_2nd
-        xvec_2nd(inod) = d_nod_2nd(inod,id_phys)
+        xvec_2nd(inod) = phys_2nd%d_fld(inod,id_phys)
       end do
 !$omp end parallel do
 !
@@ -90,7 +90,7 @@
 !
 !$omp parallel do
       do inod=1, nnod_2nd
-        d_nod_2nd(inod,id_phys) = xvec_2nd(inod)
+        phys_2nd%d_fld(inod,id_phys) = xvec_2nd(inod)
       end do
 !$omp end parallel do
 !
@@ -108,9 +108,9 @@
 !
 !$omp parallel do
       do inod=1, nnod_2nd
-        xvec_2nd(3*inod-2) = d_nod_2nd(inod,id_phys  )
-        xvec_2nd(3*inod-1) = d_nod_2nd(inod,id_phys+1)
-        xvec_2nd(3*inod  ) = d_nod_2nd(inod,id_phys+2)
+        xvec_2nd(3*inod-2) = phys_2nd%d_fld(inod,id_phys  )
+        xvec_2nd(3*inod-1) = phys_2nd%d_fld(inod,id_phys+1)
+        xvec_2nd(3*inod  ) = phys_2nd%d_fld(inod,id_phys+2)
       end do
 !$omp end parallel do
 !
@@ -123,9 +123,9 @@
 !
 !$omp parallel do
       do inod=1, nnod_2nd
-        d_nod_2nd(inod,id_phys  ) = xvec_2nd(3*inod-2)
-        d_nod_2nd(inod,id_phys+1) = xvec_2nd(3*inod-1)
-        d_nod_2nd(inod,id_phys+2) = xvec_2nd(3*inod  )
+        phys_2nd%d_fld(inod,id_phys  ) = xvec_2nd(3*inod-2)
+        phys_2nd%d_fld(inod,id_phys+1) = xvec_2nd(3*inod-1)
+        phys_2nd%d_fld(inod,id_phys+2) = xvec_2nd(3*inod  )
       end do
 !$omp end parallel do
 !
@@ -143,12 +143,12 @@
 !
 !$omp parallel do
       do inod=1, nnod_2nd
-        xvec_2nd(6*inod-5) = d_nod_2nd(inod,id_phys  )
-        xvec_2nd(6*inod-4) = d_nod_2nd(inod,id_phys+1)
-        xvec_2nd(6*inod-3) = d_nod_2nd(inod,id_phys+2)
-        xvec_2nd(6*inod-2) = d_nod_2nd(inod,id_phys+3)
-        xvec_2nd(6*inod-1) = d_nod_2nd(inod,id_phys+4)
-        xvec_2nd(6*inod  ) = d_nod_2nd(inod,id_phys+5)
+        xvec_2nd(6*inod-5) = phys_2nd%d_fld(inod,id_phys  )
+        xvec_2nd(6*inod-4) = phys_2nd%d_fld(inod,id_phys+1)
+        xvec_2nd(6*inod-3) = phys_2nd%d_fld(inod,id_phys+2)
+        xvec_2nd(6*inod-2) = phys_2nd%d_fld(inod,id_phys+3)
+        xvec_2nd(6*inod-1) = phys_2nd%d_fld(inod,id_phys+4)
+        xvec_2nd(6*inod  ) = phys_2nd%d_fld(inod,id_phys+5)
       end do
 !$omp end parallel do
 !
@@ -161,12 +161,12 @@
 !
 !$omp parallel do
       do inod=1, nnod_2nd
-        d_nod_2nd(inod,id_phys  ) = xvec_2nd(6*inod-5)
-        d_nod_2nd(inod,id_phys+1) = xvec_2nd(6*inod-4)
-        d_nod_2nd(inod,id_phys+2) = xvec_2nd(6*inod-3)
-        d_nod_2nd(inod,id_phys+3) = xvec_2nd(6*inod-2)
-        d_nod_2nd(inod,id_phys+4) = xvec_2nd(6*inod-1)
-        d_nod_2nd(inod,id_phys+5) = xvec_2nd(6*inod  )
+        phys_2nd%d_fld(inod,id_phys  ) = xvec_2nd(6*inod-5)
+        phys_2nd%d_fld(inod,id_phys+1) = xvec_2nd(6*inod-4)
+        phys_2nd%d_fld(inod,id_phys+2) = xvec_2nd(6*inod-3)
+        phys_2nd%d_fld(inod,id_phys+3) = xvec_2nd(6*inod-2)
+        phys_2nd%d_fld(inod,id_phys+4) = xvec_2nd(6*inod-1)
+        phys_2nd%d_fld(inod,id_phys+5) = xvec_2nd(6*inod  )
       end do
 !$omp end parallel do
 !

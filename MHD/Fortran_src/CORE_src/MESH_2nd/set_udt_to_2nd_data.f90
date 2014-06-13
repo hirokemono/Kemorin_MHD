@@ -39,9 +39,9 @@
 !
       ucd%nnod = nnod_2nd
       call sel_read_alloc_udt_file(my_rank, istep_ucd, ucd)
-      call set_field_by_udt_data(nnod_2nd, num_nod_phys_2nd,            &
-     &    ntot_nod_phys_2nd, istack_nod_comps_2nd, phys_nod_name_2nd,   &
-     &    d_nod_2nd, ucd)
+      call set_field_by_udt_data(nnod_2nd, phys_2nd%num_phys,           &
+     &    phys_2nd%ntot_phys, phys_2nd%istack_component,                &
+     &    phys_2nd%phys_name, phys_2nd%d_fld, ucd)
       call deallocate_ucd_data(ucd)
 !
       end subroutine set_2nd_data_by_udt_once

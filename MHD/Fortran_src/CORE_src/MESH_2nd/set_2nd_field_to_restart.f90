@@ -28,8 +28,8 @@
       subroutine count_2nd_field_num_to_rst
 !
 !
-      call count_field_num_to_rst_IO(num_nod_phys_2nd,                  &
-     &    phys_nod_name_2nd, num_phys_data_IO)
+      call count_field_num_to_rst_IO(phys_2nd%num_phys,                 &
+     &    phys_2nd%phys_name, num_phys_data_IO)
 !
       end subroutine count_2nd_field_num_to_rst
 !
@@ -38,8 +38,8 @@
       subroutine copy_2nd_field_name_to_rst
 !
 !
-      call copy_field_name_to_rst_IO(nnod_2nd, num_nod_phys_2nd,        &
-     &    istack_nod_comps_2nd, phys_nod_name_2nd,                      &
+      call copy_field_name_to_rst_IO(nnod_2nd, phys_2nd%num_phys,       &
+     &    phys_2nd%istack_component, phys_2nd%phys_name,                      &
      &    num_phys_data_IO, ntot_phys_data_IO, num_phys_comp_IO,        &
      &    istack_phys_comp_IO, phys_data_name_IO, numgrid_phys_IO)
 !
@@ -51,8 +51,8 @@
 !
 !
       call copy_field_data_to_rst_IO                                    &
-     &   (nnod_2nd, num_nod_phys_2nd, ntot_nod_phys_2nd,                &
-     &    istack_nod_comps_2nd, phys_nod_name_2nd, d_nod_2nd,           &
+     &   (nnod_2nd, phys_2nd%num_phys, phys_2nd%ntot_phys,              &
+     &    phys_2nd%istack_component, phys_2nd%phys_name, phys_2nd%d_fld,           &
      &    num_phys_data_IO, ntot_phys_data_IO, istack_phys_comp_IO,     &
      &    phys_data_name_IO, numgrid_phys_IO, phys_data_IO)
 !
@@ -64,10 +64,10 @@
 !
 !
       call copy_field_data_from_rst_IO                                  &
-     &   (nnod_2nd, num_nod_phys_2nd, ntot_nod_phys_2nd,                &
-     &    istack_nod_comps_2nd, phys_nod_name_2nd, d_nod_2nd,           &
-     &    num_phys_data_IO, ntot_phys_data_IO, istack_phys_comp_IO,     &
-     &    phys_data_name_IO, numgrid_phys_IO, phys_data_IO)
+     &   (nnod_2nd, phys_2nd%num_phys, phys_2nd%ntot_phys,              &
+     &    phys_2nd%istack_component, phys_2nd%phys_name,                &
+     &    phys_2nd%d_fld, num_phys_data_IO, ntot_phys_data_IO,          &
+     &    istack_phys_comp_IO, phys_data_name_IO, numgrid_phys_IO, phys_data_IO)
 !
       end subroutine copy_2nd_field_data_from_rst
 !

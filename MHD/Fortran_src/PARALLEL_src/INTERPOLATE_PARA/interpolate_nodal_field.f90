@@ -66,7 +66,7 @@
 !
       do i = 1, num_nod_phys
         i_origin = istack_nod_component(i-1) + 1
-        i_dest =   istack_nod_comps_2nd(i-1) + 1
+        i_dest =   phys_2nd%istack_component(i-1) + 1
         if      (num_nod_component(i) .eq. n_scalar) then
           if (my_rank.eq.0) write(*,*) ' interpolate scalar: ',         &
      &            trim(phys_nod_name(i)), '  ', i_dest, i_origin
@@ -111,7 +111,7 @@
 !
 !$omp parallel do
       do inod = 1, nnod_2nd
-        d_nod_2nd(inod,i_dest) = xvec_2nd(inod)
+        phys_2nd%d_fld(inod,i_dest) = xvec_2nd(inod)
       end do
 !$omp end parallel do
 !
@@ -148,9 +148,9 @@
 !
 !$omp parallel do
       do inod = 1, nnod_2nd
-        d_nod_2nd(inod,i_dest  ) = xvec_2nd(3*inod-2)
-        d_nod_2nd(inod,i_dest+1) = xvec_2nd(3*inod-1)
-        d_nod_2nd(inod,i_dest+2) = xvec_2nd(3*inod  )
+        phys_2nd%d_fld(inod,i_dest  ) = xvec_2nd(3*inod-2)
+        phys_2nd%d_fld(inod,i_dest+1) = xvec_2nd(3*inod-1)
+        phys_2nd%d_fld(inod,i_dest+2) = xvec_2nd(3*inod  )
       end do
 !$omp end parallel do
 !
@@ -190,12 +190,12 @@
 !
 !$omp parallel do
       do inod = 1, nnod_2nd
-        d_nod_2nd(inod,i_dest  ) = xvec_2nd(6*inod-5)
-        d_nod_2nd(inod,i_dest+1) = xvec_2nd(6*inod-4)
-        d_nod_2nd(inod,i_dest+2) = xvec_2nd(6*inod-3)
-        d_nod_2nd(inod,i_dest+3) = xvec_2nd(6*inod-2)
-        d_nod_2nd(inod,i_dest+4) = xvec_2nd(6*inod-1)
-        d_nod_2nd(inod,i_dest+5) = xvec_2nd(6*inod  )
+        phys_2nd%d_fld(inod,i_dest  ) = xvec_2nd(6*inod-5)
+        phys_2nd%d_fld(inod,i_dest+1) = xvec_2nd(6*inod-4)
+        phys_2nd%d_fld(inod,i_dest+2) = xvec_2nd(6*inod-3)
+        phys_2nd%d_fld(inod,i_dest+3) = xvec_2nd(6*inod-2)
+        phys_2nd%d_fld(inod,i_dest+4) = xvec_2nd(6*inod-1)
+        phys_2nd%d_fld(inod,i_dest+5) = xvec_2nd(6*inod  )
       end do
 !$omp end parallel do
 !
@@ -237,7 +237,7 @@
       do nd = 1, numdir
 !$omp do
         do inod = 1, nnod_2nd
-          d_nod_2nd(inod,i_dest+nd-1) = xvec_2nd(numdir*(inod-1)+nd)
+          phys_2nd%d_fld(inod,i_dest+nd-1) = xvec_2nd(numdir*(inod-1)+nd)
         end do
 !$omp end do nowait
       end do

@@ -40,7 +40,6 @@
       use copy_comm_tables_to_2nd
       use link_geometry_to_1st_mesh
       use link_group_to_1st_mesh
-      use link_data_to_1st_mesh
       use const_ele_layering_table
       use int_volume_of_domain
       use correlation_all_layerd_data

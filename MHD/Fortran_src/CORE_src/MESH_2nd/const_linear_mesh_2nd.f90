@@ -71,7 +71,7 @@
 !
       use link_geometry_to_1st_mesh
       use link_group_to_1st_mesh
-      use link_data_to_1st_mesh
+      use m_2nd_phys_data
 !
 !
       call link_single_ele_list
@@ -174,7 +174,7 @@
       use cvt_quad_2_linear_2nd_mesh
       use const_2nd_edge_and_surface
       use set_smp_size_4_2nd
-      use link_data_to_1st_mesh
+      use m_2nd_phys_data
 !
       integer(kind = kint), intent(in)  :: my_rank
 !

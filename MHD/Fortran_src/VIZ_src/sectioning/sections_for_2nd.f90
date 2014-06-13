@@ -100,7 +100,7 @@
      &   num_mat_bc_2nd,  mat_name_2nd, mat_istack_2nd,  mat_item_2nd,  &
      &   num_surf_2nd, num_surf_bc_2nd, surf_name_2nd, surf_istack_2nd, &
      &   surf_item_2nd, ntot_node_sf_grp_2nd, inod_stack_sf_grp_2nd,    &
-     &   inod_surf_grp_2nd, num_nod_phys_2nd, phys_nod_name_2nd)
+     &   inod_surf_grp_2nd, phys_2nd%num_phys, phys_2nd%phys_name)
 !
       end subroutine cross_section_init_2nd
 !
@@ -121,7 +121,7 @@
      &   inod_smp_stack_2nd, iele_smp_stack_2nd,                        &
      &   isurf_smp_stack_2nd, iedge_smp_stack_2nd, num_mat_2nd,         &
      &    num_mat_bc_2nd,  mat_name_2nd, mat_istack_2nd,  mat_item_2nd, &
-     &   num_nod_phys_2nd, phys_nod_name_2nd)
+     &   phys_2nd%num_phys, phys_2nd%phys_name)
 !
       end subroutine isosurface_init_2nd
 !
@@ -140,8 +140,9 @@
 !
 !
       call cross_section_main(istep_psf, nnod_2nd, nedge_2nd,           &
-     &    nnod_4_edge_2nd, ie_edge_2nd, num_nod_phys_2nd,               &
-     &    ntot_nod_phys_2nd, istack_nod_comps_2nd, d_nod_2nd)
+     &    nnod_4_edge_2nd, ie_edge_2nd, phys_2nd%num_phys,              &
+     &    phys_2nd%ntot_phys, phys_2nd%istack_component,                &
+     &    phys_2nd%d_fld)
 !
       end subroutine cross_section_main_2nd
 !
@@ -161,8 +162,9 @@
      &    nnod_2nd, nele_2nd, nedge_2nd, nnod_4_ele_2nd,                &
      &    nnod_4_edge_2nd, ie_2nd, ie_edge_2nd, iedge_4_ele_2nd,        &
      &    globalnodid_2nd, xx_2nd, radius_2nd, a_radius_2nd,            &
-     &    s_cyl_2nd, a_s_cyl_2nd, inod_smp_stack_2nd, num_nod_phys_2nd, &
-     &    ntot_nod_phys_2nd, istack_nod_comps_2nd, d_nod_2nd )
+     &    s_cyl_2nd, a_s_cyl_2nd, inod_smp_stack_2nd,                   &
+     &    phys_2nd%num_phys, phys_2nd%ntot_phys,                        &
+     &    phys_2nd%istack_component, phys_2nd%d_fld)
 !
       end subroutine isosurface_main_2nd
 !

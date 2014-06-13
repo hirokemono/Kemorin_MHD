@@ -49,7 +49,7 @@
 !
       call cvt_nod_vec_to_sph_vec(nnod_2nd, np_smp, inod_smp_stack_2nd, &
      &    xx_2nd, radius_2nd, s_cyl_2nd, a_radius_2nd, a_s_cyl_2nd,     &
-     &    i_field, ntot_nod_phys_2nd, d_nod_2nd,                        &
+     &    i_field, phys_2nd%ntot_phys, phys_2nd%d_fld,                  &
      &    i_rtp, nnod_rtp, ntot_phys_rtp, d_rtp, d_nod_rtp)
 !
       end subroutine cvt_vec_2nd_to_sph_vec
@@ -66,7 +66,7 @@
       call cvt_sph_vec_to_nod_vec(nnod_2nd, internal_nod_2nd, np_smp,   &
      &    inod_smp_stack_2nd, theta_2nd, phi_2nd,                       &
      &    i_rtp, nnod_rtp, ntot_phys_rtp, d_rtp,                        &
-     &    i_field, ntot_nod_phys_2nd, d_nod_2nd, d_nod_rtp)
+     &    i_field, phys_2nd%ntot_phys, phys_2nd%d_fld, d_nod_rtp)
 !
       end subroutine cvt_sph_vec_to_vec_2nd
 !
@@ -82,7 +82,7 @@
 !
       call cvt_nod_tsr_to_sph_tsr(nnod_2nd, np_smp, inod_smp_stack_2nd, &
      &    xx_2nd, radius_2nd, s_cyl_2nd, a_radius_2nd, a_s_cyl_2nd,     &
-     &    i_field, ntot_nod_phys_2nd, d_nod_2nd,                        &
+     &    i_field, phys_2nd%ntot_phys, phys_2nd%d_fld,                  &
      &    i_rtp, nnod_rtp, ntot_phys_rtp, d_rtp, d_nod_rtp)
 !
       end subroutine cvt_tsr_2nd_to_sph_tsr
@@ -100,7 +100,7 @@
      &   (nnod_2nd, internal_nod_2nd, np_smp, inod_smp_stack_2nd,       &
      &    xx_2nd, radius_2nd, s_cyl_2nd, a_radius_2nd, a_s_cyl_2nd,     &
      &    i_rtp, nnod_rtp, ntot_phys_rtp, d_rtp,                        &
-     &    i_field, ntot_nod_phys_2nd, d_nod_2nd, d_nod_rtp)
+     &    i_field, phys_2nd%ntot_phys, phys_2nd%d_fld, d_nod_rtp)
 !
       end subroutine cvt_sph_tsr_to_tsr_2nd
 !
@@ -116,7 +116,7 @@
 !
       call copy_scalar_2_scalar_fld                                     &
      &   (i_rtp, nnod_rtp, ntot_phys_rtp, d_rtp,                        &
-     &    i_field, nnod_2nd, ntot_nod_phys_2nd, d_nod_2nd)
+     &    i_field, nnod_2nd, phys_2nd%ntot_phys, phys_2nd%d_fld)
 !
       end subroutine copy_sph_scalar_2_scl_2nd
 !
@@ -131,7 +131,7 @@
 !
       call copy_vector_2_vector_fld                                     &
      &   (i_rtp, nnod_rtp, ntot_phys_rtp, d_rtp,                        &
-     &    i_field, nnod_2nd, ntot_nod_phys_2nd, d_nod_2nd)
+     &    i_field, nnod_2nd, phys_2nd%ntot_phys, phys_2nd%d_fld)
 !
       end subroutine copy_sph_vector_2_vec_2nd
 !
@@ -146,7 +146,7 @@
 !
       call copy_tensor_2_tensor_fld                                     &
      &   (i_rtp, nnod_rtp, ntot_phys_rtp, d_rtp,                        &
-     &    i_field, nnod_2nd, ntot_nod_phys_2nd, d_nod_2nd)
+     &    i_field, nnod_2nd, phys_2nd%ntot_phys, phys_2nd%d_fld)
 !
       end subroutine copy_sph_tensor_2_tsr_2nd
 !
@@ -161,7 +161,7 @@
 !
 !
       call copy_scalar_2_scalar_fld                                     &
-     &   (i_field, nnod_2nd, ntot_nod_phys_2nd, d_nod_2nd,              &
+     &   (i_field, nnod_2nd, phys_2nd%ntot_phys, phys_2nd%d_fld,        &
      &    i_rtp, nnod_rtp, ntot_phys_rtp, d_rtp)
 !
       end subroutine copy_scl_2nd_2_sph_vector
@@ -176,7 +176,7 @@
 !
 !
       call copy_vector_2_vector_fld                                     &
-     &   (i_field, nnod_2nd, ntot_nod_phys_2nd, d_nod_2nd,              &
+     &   (i_field, nnod_2nd, phys_2nd%ntot_phys, phys_2nd%d_fld,        &
      &    i_rtp, nnod_rtp, ntot_phys_rtp, d_rtp)
 !
       end subroutine copy_vct_2nd_2_sph_vector
@@ -191,7 +191,7 @@
 !
 !
       call copy_tensor_2_tensor_fld                                     &
-     &   (i_field, nnod_2nd, ntot_nod_phys_2nd, d_nod_2nd,              &
+     &   (i_field, nnod_2nd, phys_2nd%ntot_phys, phys_2nd%d_fld,        &
      &    i_rtp, nnod_rtp, ntot_phys_rtp, d_rtp)
 !
       end subroutine copy_tsr_2nd_2_sph_tensor

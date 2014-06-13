@@ -35,7 +35,6 @@
       use input_control_interpolate
       use const_mesh_info
       use set_smp_size_4_2nd
-      use link_data_to_1st_mesh
       use nodal_vector_send_recv
 !
       integer(kind = kint) :: ierr
@@ -138,6 +137,7 @@
       use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_2nd_phys_data
+      use set_ucd_data_to_type
       use set_ucd_data
 !
       use t_ucd_data
@@ -147,10 +147,7 @@
 !
       call link_node_data_2_output(nnod_2nd, globalnodid_2nd, xx_2nd,   &
      &    ucd)
-      call link_field_data_2_output(nnod_2nd, num_nod_phys_2nd,         &
-     &    ntot_nod_phys_2nd, num_nod_phys_2nd_vis,                      &
-     &    ntot_nod_phys_2nd_vis, ncomps_nod_2nd, phys_nod_name_2nd,     &
-     &    d_nod_2nd, ucd)
+      call link_field_data_type_2_output(nnod_2nd, phys_2nd, ucd)
 !
       end subroutine link_2nd_field_data_2_output
 !
