@@ -41,8 +41,8 @@
        node_on_sf_2nd =>   surf%node_on_sf
        node_on_sf_n_2nd => surf%node_on_sf_n
 !
-       node_on_edge_2nd =>    edge%node_on_edge
-       node_on_edge_sf_2nd => edge%node_on_edge_sf
+       edge_2nd%node_on_edge =>    edge%node_on_edge
+       edge_2nd%node_on_edge_sf => edge%node_on_edge_sf
 !
        end subroutine link_2nd_1ele_list_type
 !
@@ -133,18 +133,18 @@
        type(edge_data), intent(in) :: edge
 !
 !
-       nedge_2nd =         edge%numedge
-       nnod_4_edge_2nd =   edge%nnod_4_edge
-       internal_edge_2nd = edge%internal_edge
+       edge_2nd%numedge =    edge%numedge
+       edge_2nd%nnod_4_edge = edge%nnod_4_edge
+       edge_2nd%internal_edge =    edge%internal_edge
 !
-       maxedge_4_smp_2nd =    edge%max_edge_smp
-       iedge_smp_stack_2nd => edge%istack_edge_smp
+       edge_2nd%max_edge_smp =    edge%max_edge_smp
+       edge_2nd%istack_edge_smp => edge%istack_edge_smp
 !
-       globaledgeid_2nd =>  edge%iedge_global
-       ie_edge_2nd =>       edge%ie_edge
-       iedge_4_sf_2nd =>    edge%iedge_4_sf
-       iedge_4_ele_2nd =>   edge%iedge_4_ele
-       interior_edge_2nd => edge%interior_edge
+       edge_2nd%iedge_global =>  edge%iedge_global
+       edge_2nd%ie_edge =>       edge%ie_edge
+       edge_2nd%iedge_4_sf =>    edge%iedge_4_sf
+       edge_2nd%iedge_4_ele =>   edge%iedge_4_ele
+       edge_2nd%interior_edge => edge%interior_edge
 !
        end subroutine link_2nd_edge_connect_type
 !

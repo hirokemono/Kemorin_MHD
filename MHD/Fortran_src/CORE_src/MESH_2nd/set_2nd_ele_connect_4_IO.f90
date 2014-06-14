@@ -52,15 +52,15 @@
       if (first_ele_type_2nd .eq. 332) then
         nnod_4_ele_2nd =  num_t_quad
         nnod_4_surf_2nd = num_quad_sf
-        nnod_4_edge_2nd = num_quad_edge
+        edge_2nd%nnod_4_edge = num_quad_edge
       else if (first_ele_type_2nd .eq. 331) then
         nnod_4_ele_2nd =  num_t_linear
         nnod_4_surf_2nd = num_linear_sf
-        nnod_4_edge_2nd = num_linear_edge
+        edge_2nd%nnod_4_edge = num_linear_edge
       else if (first_ele_type_2nd .eq. 333) then
         nnod_4_ele_2nd =  num_t_lag
         nnod_4_surf_2nd = num_lag_sf
-        nnod_4_edge_2nd = num_quad_edge
+        edge_2nd%nnod_4_edge = num_quad_edge
       end if
 !
       call allocate_2nd_element_connect

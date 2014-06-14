@@ -103,7 +103,7 @@
         iele = globalelmid_2nd(inum)
         do k1 = 1, nedge_4_ele
           iedge = abs(iedge_4_ele(iele,k1))
-          iedge_4_ele_2nd(inum,k1) = iedge_local_part(iedge)            &
+          edge_2nd%iedge_4_ele(inum,k1) = iedge_local_part(iedge)       &
      &                                * (iedge_4_ele(iele,k1) / iedge)
         end do
       end do
@@ -141,7 +141,7 @@
         isurf = globalsurfid_2nd(inum)
         do k1 = 1, nedge_4_surf
           iedge = abs(iedge_4_sf(isurf,k1))
-          iedge_4_sf_2nd(inum,k1) = iedge_local_part(iedge)             &
+          edge_2nd%iedge_4_sf(inum,k1) = iedge_local_part(iedge)        &
      &                               * (iedge_4_sf(isurf,k1) / iedge)
         end do
       end do
@@ -156,11 +156,11 @@
       integer(kind = kint) :: inum, iedge, inod_g, k1
 !
 !
-      do inum = 1, nedge_2nd
-        iedge = globaledgeid_2nd(inum)
+      do inum = 1, edge_2nd%numedge
+        iedge = edge_2nd%iedge_global(inum)
         do k1 = 1, nnod_4_edge
           inod_g = ie_edge(iedge,k1)
-          ie_edge_2nd(inum,k1) = inod_local_part(inod_g)
+          edge_2nd%ie_edge(inum,k1) = inod_local_part(inod_g)
         end do
       end do
 !

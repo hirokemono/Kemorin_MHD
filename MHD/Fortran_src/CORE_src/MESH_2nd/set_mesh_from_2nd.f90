@@ -131,7 +131,7 @@
 !
       nnod_4_ele =  nnod_4_ele_2nd
       nnod_4_surf = nnod_4_surf_2nd
-      nnod_4_edge = nnod_4_edge_2nd
+      nnod_4_edge = edge_2nd%nnod_4_edge
 !
       call allocate_element_connection
 !

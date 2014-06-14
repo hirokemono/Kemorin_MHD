@@ -11,8 +11,6 @@
 !      subroutine allocate_2nd_node_position
 !      subroutine allocate_2nd_element_connect
 !      subroutine allocate_2nd_element_data
-!      subroutine allocate_2nd_edge_4_ele
-!      subroutine allocate_2nd_edge_connect
 !      subroutine allocate_2nd_surface_connect
 !
 !       subroutine unlink_2nd_geometry_data
@@ -20,9 +18,12 @@
 !       subroutine unlink_2nd_element_connect
 !       subroutine unlink_2nd_element_data
 !
+!      subroutine check_smp_size_2nd_surf_edge
+!
       module   m_2nd_geometry_data
 !
       use m_precision
+      use t_edge_data
 !
       implicit  none
 !
@@ -49,10 +50,6 @@
 !>          ...i:element ID, j:surface ID
 !>@n          0: normal direction  1-4: rotation flag for reverse surface
       integer(kind=kint), pointer :: isf_rot_ele_2nd(:,:)
-!>   edge ID for each surface
-      integer(kind=kint), pointer :: iedge_4_sf_2nd(:,:)
-!>   edge ID for each element
-      integer(kind=kint), pointer :: iedge_4_ele_2nd(:,:)
 !
 !
 
@@ -66,8 +63,6 @@
 !     global element id (where i:element id)
       integer(kind=kint), pointer ::  globalsurfid_2nd(:)
 !     global surface id (where i:surface id)
-      integer(kind=kint), pointer ::  globaledgeid_2nd(:)
-!     global edge id (where i:edge id)
 !
       real(kind=kreal), pointer :: radius_2nd(:)
 !   distance from the centre
@@ -89,8 +84,9 @@
 !
       integer(kind = kint), pointer :: interior_surf_2nd(:)
 !   flag for interior surface
-      integer(kind = kint), pointer :: interior_edge_2nd(:)
-!   flag for interior edge
+!
+!>      Strucure for second edge data
+      type(edge_data), save :: edge_2nd
 !
 !------------------------------------------------------------------
 !
@@ -197,37 +193,6 @@
       end subroutine allocate_2nd_surface_connect
 !
 ! ------------------------------------------------------
-!
-      subroutine allocate_2nd_edge_connect
-!
-      use m_geometry_constants
-      use m_2nd_geometry_param
-!
-      allocate( iedge_4_sf_2nd(nsurf_2nd,nedge_4_surf) )
-      allocate( ie_edge_2nd(nedge_2nd,nnod_4_edge_2nd) )
-      allocate( interior_edge_2nd(nedge_2nd) )
-      allocate( globaledgeid_2nd(nedge_2nd) )
-!
-      iedge_4_sf_2nd =    0
-      ie_edge_2nd =       0
-      interior_edge_2nd = 0
-      globaledgeid_2nd =  0
-!
-      end subroutine allocate_2nd_edge_connect
-!
-! ------------------------------------------------------
-!
-      subroutine allocate_2nd_edge_4_ele
-!
-      use m_geometry_constants
-      use m_2nd_geometry_param
-!
-      allocate( iedge_4_ele_2nd(nele_2nd,nedge_4_ele) )
-      iedge_4_ele_2nd = 0
-!
-      end subroutine allocate_2nd_edge_4_ele
-!
-! ------------------------------------------------------
 !------------------------------------------------------------------
 !
        subroutine deallocate_2nd_geometry_data
@@ -291,25 +256,6 @@
       end subroutine deallocate_2nd_surface_connect
 !
 ! ------------------------------------------------------
-!
-      subroutine deallocate_2nd_edge_connect
-!
-      deallocate( iedge_4_sf_2nd )
-      deallocate( ie_edge_2nd )
-      deallocate( interior_edge_2nd )
-      deallocate( globaledgeid_2nd )
-!
-      end subroutine deallocate_2nd_edge_connect
-!
-! ------------------------------------------------------
-!
-      subroutine deallocate_2nd_edge_4_ele
-!
-      deallocate( iedge_4_ele_2nd)
-!
-      end subroutine deallocate_2nd_edge_4_ele
-!
-! ------------------------------------------------------
 ! ------------------------------------------------------
 !
        subroutine unlink_2nd_geometry_data
@@ -362,5 +308,17 @@
        end subroutine unlink_2nd_element_data
 !
 ! ------------------------------------------------------
+! ------------------------------------------------------
+!
+      subroutine check_smp_size_2nd_surf_edge
+!
+      use m_2nd_geometry_param
+!
+      write(*,*) 'isurf_smp_stack_2nd ', isurf_smp_stack_2nd
+      write(*,*) 'edge_2nd%istack_edge_smp ', edge_2nd%istack_edge_smp
+!
+      end subroutine check_smp_size_2nd_surf_edge
+!
+!-----------------------------------------------------------------------
 !
       end module m_2nd_geometry_data

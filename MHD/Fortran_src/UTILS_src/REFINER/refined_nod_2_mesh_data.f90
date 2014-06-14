@@ -96,15 +96,15 @@
       if (nnod_4_ele_2nd .eq. num_t_lag) then
         elmtyp_2 = 333
         nnod_4_surf_2nd = num_lag_sf
-        nnod_4_edge_2nd = num_quad_edge
+        edge_2nd%nnod_4_edge = num_quad_edge
       else if (nnod_4_ele_2nd .eq. num_t_quad) then
         elmtyp_2 = 332
         nnod_4_surf_2nd = num_quad_sf
-        nnod_4_edge_2nd = num_quad_edge
+        edge_2nd%nnod_4_edge = num_quad_edge
       else
         elmtyp_2 = 331
         nnod_4_surf_2nd = num_linear_sf
-        nnod_4_edge_2nd = num_linear_edge
+        edge_2nd%nnod_4_edge = num_linear_edge
       end if
 !
       call allocate_2nd_element_connect

@@ -97,7 +97,7 @@
       ist = istack_numedge_sub(ip-1)
       do inum = 1, numedge_4_subdomain(ip)
         iedge = iedge_4_subdomain(inum+ist)
-        globaledgeid_2nd(inum) = iedge
+        edge_2nd%iedge_global(inum) = iedge
 !
         iedge_local_part(iedge)= inum 
       end do

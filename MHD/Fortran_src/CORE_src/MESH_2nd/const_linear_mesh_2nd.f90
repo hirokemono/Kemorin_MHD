@@ -28,13 +28,14 @@
       use m_geometry_constants
       use m_geometry_parameter
       use m_2nd_geometry_param
+      use m_2nd_geometry_data
 !
       integer(kind = kint), intent(in)  :: my_rank
 !
 !
       nnod_4_ele_2nd =   num_t_linear
       nnod_4_surf_2nd =  num_linear_sf
-      nnod_4_edge_2nd =  num_linear_edge
+      edge_2nd%nnod_4_edge =  num_linear_edge
 !
       if      (nnod_4_ele .eq. num_t_linear) then
         call link_data_4_linear_grid
@@ -100,6 +101,7 @@
       subroutine set_2nd_local_element_info
 !
       use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use set_local_id_table_4_1ele
 !
 !
@@ -107,9 +109,9 @@
       call set_inod_in_surf(nnod_4_surf_2nd,                            &
      &    node_on_sf_2nd, node_on_sf_n_2nd)
 !
-      call allocate_inod_in_edge_2nd
-      call copy_inod_in_edge(nnod_4_edge_2nd, node_on_edge_2nd,         &
-     &    node_on_edge_sf_2nd)
+      call allocate_inod_in_edge_type(edge_2nd)
+      call copy_inod_in_edge(edge_2nd%nnod_4_edge,                      &
+     &    edge_2nd%node_on_edge, edge_2nd%node_on_edge_sf)
 !
       end subroutine set_2nd_local_element_info
 !
@@ -121,6 +123,7 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use link_group_to_1st_mesh
       use cvt_quad_2_linear_2nd_mesh
       use const_2nd_edge_and_surface
@@ -154,9 +157,9 @@
 !
       call set_internal_list_4_linear_20(numnod, internal_node,         &
      &          numele, numsurf, interior_ele, interior_surf,           &
-     &          nnod_2nd, nele_2nd, nsurf_2nd, nedge_2nd,               &
-     &          ie_2nd, ie_surf_2nd, ie_edge_2nd,                       &
-     &          interior_ele_2nd, interior_surf_2nd, interior_edge_2nd)
+     &          nnod_2nd, nele_2nd, nsurf_2nd, edge_2nd%numedge,        &
+     &          ie_2nd, ie_surf_2nd, edge_2nd%ie_edge,                  &
+     &          interior_ele_2nd, interior_surf_2nd, edge_2nd%interior_edge)
 !
       call init_2nd_data_on_surf
 !
@@ -170,6 +173,7 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use link_geometry_to_1st_mesh
       use cvt_quad_2_linear_2nd_mesh
       use const_2nd_edge_and_surface
@@ -198,9 +202,9 @@
 !
 !
       call set_internal_list_4_linear_27(internal_node,                 &
-     &    nnod_2nd, nele_2nd, nsurf_2nd, nedge_2nd,                     &
-     &    ie_2nd, ie_surf_2nd, ie_edge_2nd,                             &
-     &    interior_ele_2nd, interior_surf_2nd, interior_edge_2nd)
+     &    nnod_2nd, nele_2nd, nsurf_2nd, edge_2nd%numedge,              &
+     &    ie_2nd, ie_surf_2nd, edge_2nd%ie_edge,                        &
+     &    interior_ele_2nd, interior_surf_2nd, edge_2nd%interior_edge)
 !
       if ( iflag_debug.eq.1 ) then
         call check_smp_size_2nd(my_rank)

@@ -91,12 +91,12 @@
       use cross_section
 !
 !
-      call cross_section_init(nnod_2nd, nele_2nd, nsurf_2nd, nedge_2nd, &
-     &   nnod_4_ele_2nd, nnod_4_edge_2nd, ie_2nd, ie_edge_2nd,          &
-     &   isf_4_ele_2nd, iedge_4_sf_2nd, iedge_4_ele_2nd,                &
+      call cross_section_init(nnod_2nd, nele_2nd, nsurf_2nd,            &
+     &   edge_2nd%numedge, nnod_4_ele_2nd, edge_2nd%nnod_4_edge, ie_2nd, edge_2nd%ie_edge,     &
+     &   isf_4_ele_2nd, edge_2nd%iedge_4_sf, edge_2nd%iedge_4_ele,                &
      &   interior_ele_2nd, globalnodid_2nd, xx_2nd,                     &
      &   inod_smp_stack_2nd, iele_smp_stack_2nd,                        &
-     &   isurf_smp_stack_2nd, iedge_smp_stack_2nd, num_mat_2nd,         &
+     &   isurf_smp_stack_2nd, edge_2nd%istack_edge_smp, num_mat_2nd,    &
      &   num_mat_bc_2nd,  mat_name_2nd, mat_istack_2nd,  mat_item_2nd,  &
      &   num_surf_2nd, num_surf_bc_2nd, surf_name_2nd, surf_istack_2nd, &
      &   surf_item_2nd, ntot_node_sf_grp_2nd, inod_stack_sf_grp_2nd,    &
@@ -115,11 +115,11 @@
 !
       use isosurface
 !
-      call isosurface_init                                              &
-     &   (nnod_2nd, nele_2nd, nsurf_2nd, nedge_2nd, nnod_4_edge_2nd,    &
-     &    ie_edge_2nd, isf_4_ele_2nd, iedge_4_sf_2nd, interior_ele_2nd, &
+      call isosurface_init(nnod_2nd, nele_2nd,                          &
+     &   nsurf_2nd, edge_2nd%numedge, edge_2nd%nnod_4_edge,             &
+     &    edge_2nd%ie_edge, isf_4_ele_2nd, edge_2nd%iedge_4_sf, interior_ele_2nd, &
      &   inod_smp_stack_2nd, iele_smp_stack_2nd,                        &
-     &   isurf_smp_stack_2nd, iedge_smp_stack_2nd, num_mat_2nd,         &
+     &   isurf_smp_stack_2nd, edge_2nd%istack_edge_smp, num_mat_2nd,    &
      &    num_mat_bc_2nd,  mat_name_2nd, mat_istack_2nd,  mat_item_2nd, &
      &   phys_2nd%num_phys, phys_2nd%phys_name)
 !
@@ -139,8 +139,8 @@
       integer(kind = kint), intent(in) :: istep_psf
 !
 !
-      call cross_section_main(istep_psf, nnod_2nd, nedge_2nd,           &
-     &    nnod_4_edge_2nd, ie_edge_2nd, phys_2nd%num_phys,              &
+      call cross_section_main(istep_psf, nnod_2nd, edge_2nd%numedge,    &
+     &    edge_2nd%nnod_4_edge, edge_2nd%ie_edge, phys_2nd%num_phys,         &
      &    phys_2nd%ntot_phys, phys_2nd%istack_component,                &
      &    phys_2nd%d_fld)
 !
@@ -159,8 +159,8 @@
       integer(kind = kint), intent(in) :: istep_iso
 !
       call isosurface_main(istep_iso,                                   &
-     &    nnod_2nd, nele_2nd, nedge_2nd, nnod_4_ele_2nd,                &
-     &    nnod_4_edge_2nd, ie_2nd, ie_edge_2nd, iedge_4_ele_2nd,        &
+     &    nnod_2nd, nele_2nd, edge_2nd%numedge, nnod_4_ele_2nd,         &
+     &    edge_2nd%nnod_4_edge, ie_2nd, edge_2nd%ie_edge, edge_2nd%iedge_4_ele,   &
      &    globalnodid_2nd, xx_2nd, radius_2nd, a_radius_2nd,            &
      &    s_cyl_2nd, a_s_cyl_2nd, inod_smp_stack_2nd,                   &
      &    phys_2nd%num_phys, phys_2nd%ntot_phys,                        &

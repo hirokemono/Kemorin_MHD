@@ -4,9 +4,6 @@
 !
 !     Written by H. Matsui
 !
-!       subroutine allocate_2nd_phys_name
-!       subroutine allocate_2nd_data_arrays
-!
 !       subroutine deallocate_2nd_phys_name
 !       subroutine deallocate_2nd_data_arrays
 !
@@ -28,26 +25,6 @@
 !
       contains
 !
-! -------------------------------------------------------------------
-!
-       subroutine allocate_2nd_phys_name
-!
-!
-      call alloc_phys_name_type(phys_2nd)
-!
-       end subroutine allocate_2nd_phys_name
-!
-!  --------------------------------------------------------------------
-!
-      subroutine allocate_2nd_data_arrays
-!
-      use m_2nd_geometry_param
-!
-      call alloc_phys_data_type(nnod_2nd, phys_2nd)
-!
-      end subroutine allocate_2nd_data_arrays
-!
-! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
       subroutine deallocate_2nd_phys_name

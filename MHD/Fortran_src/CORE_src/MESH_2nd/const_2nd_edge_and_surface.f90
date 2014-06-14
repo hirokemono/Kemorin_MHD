@@ -72,11 +72,11 @@
       use set_edge_data
 !
 !
-      call allocate_edge_hash(nnod_2nd, nsurf_2nd, nnod_4_edge_2nd)
+      call allocate_edge_hash(nnod_2nd, nsurf_2nd, edge_2nd%nnod_4_edge)
 !
 !       if (iflag_debug.eq.1) write(*,*) 'count_edge_hash_4_sf'
       call count_edge_hash_4_sf(nnod_2nd, nsurf_2nd, nnod_4_surf_2nd,   &
-     &          nnod_4_edge_2nd, ie_surf_2nd)
+     &          edge_2nd%nnod_4_edge, ie_surf_2nd)
 !
 !       if (iflag_debug.eq.1) write(*,*) 'set_edge_hash_4_sf'
       call set_edge_hash_4_sf(nsurf_2nd, nnod_4_surf_2nd, ie_surf_2nd)
@@ -87,22 +87,22 @@
 !
 !
 !       if (iflag_debug.eq.1) write(*,*) 'count_num_edges'
-      call count_num_edges(nedge_2nd)
+      call count_num_edges(edge_2nd%numedge)
 !
-      call allocate_2nd_edge_connect
+      call allocate_edge_connect_type(edge_2nd, nsurf_2nd)
 !
 !       if (iflag_debug.eq.1) write(*,*) 'set_edges_connection'
-      call set_edges_connection(nsurf_2nd, nedge_2nd, nnod_4_surf_2nd,  &
-     &    nnod_4_edge_2nd, ie_surf_2nd, ie_edge_2nd, iedge_4_sf_2nd,    &
-     &    node_on_edge_2nd)
+      call set_edges_connection(nsurf_2nd, edge_2nd%numedge,  &
+     &    nnod_4_surf_2nd, edge_2nd%nnod_4_edge, ie_surf_2nd,              &
+     &    edge_2nd%ie_edge, edge_2nd%iedge_4_sf, edge_2nd%node_on_edge)
 !
 !
-      call allocate_2nd_edge_4_ele
+      call allocate_edge_4_ele_type(edge_2nd, nele_2nd)
 !
 !       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_4_ele'
-      call set_edges_connect_4_ele(nele_2nd, nsurf_2nd, nedge_2nd,      &
-     &    nnod_4_ele_2nd, nnod_4_edge_2nd, ie_2nd, iedge_4_sf_2nd,      &
-     &    ie_edge_2nd, iedge_4_ele_2nd)
+      call set_edges_connect_4_ele(nele_2nd, nsurf_2nd, edge_2nd%numedge,      &
+     &    nnod_4_ele_2nd, edge_2nd%nnod_4_edge, ie_2nd, edge_2nd%iedge_4_sf, &
+     &    edge_2nd%ie_edge, edge_2nd%iedge_4_ele)
 !
       call deallocate_edge_hash
 !

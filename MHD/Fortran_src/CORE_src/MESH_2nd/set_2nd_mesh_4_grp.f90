@@ -72,19 +72,19 @@
       use m_2nd_ele_group_data
 !
 !
-      call allocate_imark_4_grp(nedge_2nd)
+      call allocate_imark_4_grp(edge_2nd%numedge)
       call allocate_eg_stack_4_ele_g_2nd
 !
-      call count_nod_4_ele_grp(nedge_2nd, nele_2nd, nedge_4_ele,        &
-     &    iedge_4_ele_2nd, num_mat_2nd, num_mat_bc_2nd,                 &
+      call count_nod_4_ele_grp(edge_2nd%numedge, nele_2nd, nedge_4_ele, &
+     &    edge_2nd%iedge_4_ele, num_mat_2nd, num_mat_bc_2nd,            &
      &    mat_istack_2nd, mat_item_2nd,                                 &
      &    ntot_edge_ele_grp_2nd, nedge_ele_grp_2nd,                     &
      &    iedge_stack_ele_grp_2nd, imark_4_grp)
 !
       call allocate_eg_id_4_ele_g_2nd
 !
-      call set_nod_4_ele_grp(nedge_2nd, nele_2nd, nedge_4_ele,          &
-     &    iedge_4_ele_2nd, num_mat_2nd, num_mat_bc_2nd,                 &
+      call set_nod_4_ele_grp(edge_2nd%numedge, nele_2nd, nedge_4_ele,   &
+     &    edge_2nd%iedge_4_ele, num_mat_2nd, num_mat_bc_2nd,            &
      &    mat_istack_2nd, mat_item_2nd,                                 &
      &    ntot_edge_ele_grp_2nd, nedge_ele_grp_2nd,                     &
      &    iedge_stack_ele_grp_2nd, iedge_ele_grp_2nd,                   &
@@ -132,11 +132,11 @@
       use m_2nd_surf_group_data
 !
 !
-      call allocate_imark_4_grp(nedge_2nd)
+      call allocate_imark_4_grp(edge_2nd%numedge)
       call allocate_eg_stack_4_sf_g_2nd
 !
-      call count_nod_4_ele_grp(nedge_2nd, nsurf_2nd, nedge_4_surf,      &
-     &    iedge_4_sf_2nd, num_surf_2nd, num_surf_bc_2nd,                &
+      call count_nod_4_ele_grp(edge_2nd%numedge, nsurf_2nd,             &
+     &    nedge_4_surf, edge_2nd%iedge_4_sf, num_surf_2nd, num_surf_bc_2nd,  &
      &    surf_istack_2nd, isurf_grp_2nd, ntot_edge_sf_grp_2nd,         &
      &    nedge_sf_grp_2nd, iedge_stack_sf_grp_2nd,                     &
      &    imark_4_grp)
@@ -144,8 +144,8 @@
 !
       call allocate_eg_id_4_sf_g_2nd
 !
-      call set_nod_4_ele_grp(nedge_2nd, nsurf_2nd, nedge_4_surf,        &
-     &    iedge_4_sf_2nd, num_surf_2nd, num_surf_bc_2nd,                &
+      call set_nod_4_ele_grp(edge_2nd%numedge, nsurf_2nd, nedge_4_surf, &
+     &    edge_2nd%iedge_4_sf, num_surf_2nd, num_surf_bc_2nd,           &
      &    surf_istack_2nd, isurf_grp_2nd, ntot_edge_sf_grp_2nd,         &
      &    nedge_sf_grp_2nd, iedge_stack_sf_grp_2nd,                     &
      &    iedge_surf_grp_2nd, imark_4_grp)

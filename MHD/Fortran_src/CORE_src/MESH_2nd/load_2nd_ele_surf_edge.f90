@@ -142,8 +142,8 @@
       call deallocate_2nd_edge_export
       call deallocate_2nd_edge_import
       call deallocate_2nd_edge_neib_id
-      call deallocate_2nd_edge_connect
-      call deallocate_2nd_edge_4_ele
+      call deallocate_edge_connect_type(edge_2nd)
+      call deallocate_edge_4_ele_type(edge_2nd)
 !
       end subroutine deallocate_2nd_edge_data
 !

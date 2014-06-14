@@ -87,7 +87,7 @@
       call link_surface_group
 !
       call link_nodal_field_names
-      call allocate_2nd_data_arrays
+      call alloc_phys_data_type(nnod_2nd, phys_2nd)
       call allocate_vec_transfer
 !
       call set_component_add_4_correlate

@@ -141,11 +141,12 @@
 !
       subroutine init_2nd_data_on_surf
 !
+      use m_2nd_geometry_param
       use m_2nd_phys_data
 !
 !
       call link_nodal_field_names
-      call allocate_2nd_data_arrays
+      call alloc_phys_data_type(nnod_2nd, phys_2nd)
 !
       end subroutine init_2nd_data_on_surf
 !

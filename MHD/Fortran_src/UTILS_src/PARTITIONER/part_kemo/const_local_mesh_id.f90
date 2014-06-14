@@ -110,10 +110,10 @@
       integer(kind = kint), intent(in) :: ip
 !
 !
-      nedge_2nd =        numedge_4_subdomain(ip)
-      nnod_4_edge_2nd = nnod_4_edge
-      call allocate_2nd_edge_connect
-      call allocate_2nd_edge_4_ele
+      edge_2nd%numedge = numedge_4_subdomain(ip)
+      edge_2nd%nnod_4_edge = nnod_4_edge
+      call allocate_edge_connect_type(edge_2nd, nsurf_2nd)
+      call allocate_edge_4_ele_type(edge_2nd, nele_2nd)
 !
       call set_local_edge(ip)
 !

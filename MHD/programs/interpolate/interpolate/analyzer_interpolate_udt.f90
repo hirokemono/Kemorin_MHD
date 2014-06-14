@@ -75,8 +75,8 @@
       if (iflag_debug.eq.1) write(*,*) 'link_nodal_field_names'
       call link_nodal_field_names
 !
-      if (iflag_debug.eq.1) write(*,*) 'allocate_2nd_data_arrays'
-      call allocate_2nd_data_arrays
+      if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data_type'
+      call alloc_phys_data_type(nnod_2nd, phys_2nd)
 !
 !     --------------------- 
 !
