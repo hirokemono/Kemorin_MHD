@@ -95,8 +95,8 @@
       integer(kind = kint), intent(in) :: ip
 !
 !
-      nsurf_2nd =       numsurf_4_subdomain(ip)
-      nnod_4_surf_2nd = nnod_4_surf
+      surf_2nd%numsurf =       numsurf_4_subdomain(ip)
+      surf_2nd%nnod_4_surf = nnod_4_surf
       call allocate_2nd_surface_connect
 !
       call set_local_surface(ip)
@@ -112,7 +112,7 @@
 !
       edge_2nd%numedge = numedge_4_subdomain(ip)
       edge_2nd%nnod_4_edge = nnod_4_edge
-      call allocate_edge_connect_type(edge_2nd, nsurf_2nd)
+      call allocate_edge_connect_type(edge_2nd, surf_2nd%numsurf)
       call allocate_edge_4_ele_type(edge_2nd, nele_2nd)
 !
       call set_local_edge(ip)

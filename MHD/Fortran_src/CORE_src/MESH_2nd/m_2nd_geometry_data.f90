@@ -23,6 +23,7 @@
       module   m_2nd_geometry_data
 !
       use m_precision
+      use t_surface_data
       use t_edge_data
 !
       implicit  none
@@ -36,23 +37,6 @@
       integer(kind=kint) ::  first_ele_type_2nd
 !
 !
-!>   surface connectivity ie_surf(i:surface ID,j:surface index)
-      integer(kind=kint), pointer  :: ie_surf_2nd(:,:)
-!>   edge connectivity ie_edge(i:edge ID,j:surface index)
-      integer(kind=kint), pointer  :: ie_edge_2nd(:,:)
-!
-!
-!>   surface ID for element surface isf_4_ele(:,:)
-!>          ...i:element ID, j:surface ID
-!>@n          Positive: normal direction negative: reverse direction
-      integer(kind=kint), pointer :: isf_4_ele_2nd(:,:)
-!>   rotation ID for element surface isf_rot_ele(:,:)
-!>          ...i:element ID, j:surface ID
-!>@n          0: normal direction  1-4: rotation flag for reverse surface
-      integer(kind=kint), pointer :: isf_rot_ele_2nd(:,:)
-!
-!
-
       integer(kind=kint), pointer ::  elmtyp_2nd(:)
 !     element type id   (where i:element id)
       integer(kind=kint), pointer ::  nodelm_2nd(:)
@@ -61,8 +45,6 @@
 !     global node    id (where i:node id)
       integer(kind=kint), pointer ::  globalelmid_2nd(:)
 !     global element id (where i:element id)
-      integer(kind=kint), pointer ::  globalsurfid_2nd(:)
-!     global surface id (where i:surface id)
 !
       real(kind=kreal), pointer :: radius_2nd(:)
 !   distance from the centre
@@ -82,9 +64,8 @@
       real(kind=kreal)  , pointer  :: e_multi_2nd(:)
 !   parameter for overlap
 !
-      integer(kind = kint), pointer :: interior_surf_2nd(:)
-!   flag for interior surface
-!
+!>      surface information for 2nd mesh
+      type(surface_data), save :: surf_2nd
 !>      Strucure for second edge data
       type(edge_data), save :: edge_2nd
 !
@@ -175,20 +156,10 @@
 !
       subroutine allocate_2nd_surface_connect
 !
-      use m_geometry_constants
       use m_2nd_geometry_param
 !
-      allocate( isf_4_ele_2nd(nele_2nd,nsurf_4_ele) )
-      allocate( isf_rot_ele_2nd(nele_2nd,nsurf_4_ele) )
-      allocate( ie_surf_2nd(nsurf_2nd,nnod_4_surf_2nd) )
-      allocate( interior_surf_2nd(nsurf_2nd) )
-      allocate( globalsurfid_2nd(nsurf_2nd) )
 !
-      isf_4_ele_2nd =     0
-      isf_rot_ele_2nd =   0
-      ie_surf_2nd =       0
-      interior_surf_2nd = 0
-      globalsurfid_2nd =  0
+      call allocate_surface_connect_type(surf_2nd, nele_2nd)
 !
       end subroutine allocate_2nd_surface_connect
 !
@@ -248,10 +219,7 @@
 !
       subroutine deallocate_2nd_surface_connect
 !
-      deallocate( isf_4_ele_2nd, isf_rot_ele_2nd)
-      deallocate( ie_surf_2nd )
-      deallocate( interior_surf_2nd )
-      deallocate( globalsurfid_2nd )
+      call deallocate_surface_connect_type(surf_2nd)
 !
       end subroutine deallocate_2nd_surface_connect
 !
@@ -314,7 +282,7 @@
 !
       use m_2nd_geometry_param
 !
-      write(*,*) 'isurf_smp_stack_2nd ', isurf_smp_stack_2nd
+      write(*,*) 'surf_2nd%istack_surf_smp ', surf_2nd%istack_surf_smp
       write(*,*) 'edge_2nd%istack_edge_smp ', edge_2nd%istack_edge_smp
 !
       end subroutine check_smp_size_2nd_surf_edge

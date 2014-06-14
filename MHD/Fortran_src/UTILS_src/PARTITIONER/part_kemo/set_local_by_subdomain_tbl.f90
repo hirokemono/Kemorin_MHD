@@ -79,7 +79,7 @@
       ist = istack_numsurf_sub(ip-1)
       do inum = 1, numsurf_4_subdomain(ip)
         isurf = isurf_4_subdomain(inum+ist)
-        globalsurfid_2nd(inum) = isurf
+        surf_2nd%isurf_global(inum) = isurf
 !
         isurf_local_part(isurf)= inum 
       end do

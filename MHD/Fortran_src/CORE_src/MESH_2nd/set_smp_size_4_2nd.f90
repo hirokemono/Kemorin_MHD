@@ -61,11 +61,11 @@
       use m_2nd_geometry_data
 !
 !
-      call allocate_2nd_surf_param_smp
+      call allocate_surf_param_smp_type(surf_2nd)
       call allocate_edge_param_smp_type(edge_2nd)
 !
-      call count_number_4_smp( np_smp, ione, nsurf_2nd,                 &
-     &       isurf_smp_stack_2nd, maxsurf_4_smp_2nd )
+      call count_number_4_smp( np_smp, ione, surf_2nd%numsurf,                 &
+     &       surf_2nd%istack_surf_smp, surf_2nd%max_surf_smp )
       call count_number_4_smp( np_smp, ione, edge_2nd%numedge,          &
      &       edge_2nd%istack_edge_smp, edge_2nd%max_edge_smp )
 !

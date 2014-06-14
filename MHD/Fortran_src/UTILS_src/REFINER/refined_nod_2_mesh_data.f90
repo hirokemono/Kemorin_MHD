@@ -95,15 +95,15 @@
       nnod_4_ele_2nd =   nnod_4_ele_refined
       if (nnod_4_ele_2nd .eq. num_t_lag) then
         elmtyp_2 = 333
-        nnod_4_surf_2nd = num_lag_sf
+        surf_2nd%nnod_4_surf = num_lag_sf
         edge_2nd%nnod_4_edge = num_quad_edge
       else if (nnod_4_ele_2nd .eq. num_t_quad) then
         elmtyp_2 = 332
-        nnod_4_surf_2nd = num_quad_sf
+        surf_2nd%nnod_4_surf = num_quad_sf
         edge_2nd%nnod_4_edge = num_quad_edge
       else
         elmtyp_2 = 331
-        nnod_4_surf_2nd = num_linear_sf
+        surf_2nd%nnod_4_surf = num_linear_sf
         edge_2nd%nnod_4_edge = num_linear_edge
       end if
 !

@@ -34,7 +34,7 @@
       subroutine copy_2nd_edge_connect_to_IO
 !
 !
-      call copy_edge_conn_type_to_IO(edge_2nd, nele_2nd, nsurf_2nd)
+      call copy_edge_conn_type_to_IO(edge_2nd, nele_2nd, surf_2nd%numsurf)
 !
       end subroutine copy_2nd_edge_connect_to_IO
 !
@@ -68,7 +68,7 @@
 !
       subroutine copy_2nd_edge_connect_from_IO
 !
-      call copy_edge_conn_type_from_IO(edge_2nd, nele_2nd, nsurf_2nd)
+      call copy_edge_conn_type_from_IO(edge_2nd, nele_2nd, surf_2nd%numsurf)
 !
       end subroutine copy_2nd_edge_connect_from_IO
 !

@@ -5,13 +5,8 @@
 !
 !   Written by H. Matsui on Aug., 2006
 !
-!      subroutine allocate_inod_in_surf_2nd
 !      subroutine allocate_2nd_geomet_param_smp
-!      subroutine allocate_2nd_surf_param_smp
-!
-!      subroutine deallocate_inod_in_surf_2nd
 !      subroutine deallocate_2nd_geomet_param_smp
-!      subroutine deallocate_2nd_surf_param_smp
 !
 !      subroutine check_smp_size_2nd(my_rank)
 !
@@ -30,21 +25,9 @@
       integer( kind=kint )  ::  nele_2nd
 !>     number of internal element on local PE
       integer( kind=kint )  ::  internal_ele_2nd
-!>     number of surface on local PE
-      integer( kind=kint )  ::  nsurf_2nd
-!>     number of internal surface on local PE
-      integer( kind=kint )  ::  internal_surf_2nd
 !
 !>   number of nodes in each element
       integer(kind=kint) :: nnod_4_ele_2nd =   8
-!>   number of nodes in each surface
-      integer(kind=kint) :: nnod_4_surf_2nd =  4
-!
-!
-!>   local index for surface on each element
-      integer (kind=kint), pointer :: node_on_sf_2nd(:,:)
-!>   local index for opposite surface on each element
-      integer (kind=kint), pointer :: node_on_sf_n_2nd(:,:)
 !
 !
 !>     smp stack for total node on  local PE
@@ -61,32 +44,11 @@
 !>     maximum number of smp element on local PE
       integer( kind=kint )  ::  maxele_4_smp_2nd = 0
 !
-!>     smp stack for surface on  local PE
-      integer( kind=kint ), pointer :: isurf_smp_stack_2nd(:)
-!     number of surf on this PE
-!>     maximum number of smp surface on local PE
-      integer( kind=kint )  ::  maxsurf_4_smp_2nd = 0
-!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
-!
-       subroutine allocate_inod_in_surf_2nd
-!
-       use m_geometry_constants
-!
-!
-       allocate ( node_on_sf_2nd  (nnod_4_surf_2nd,nsurf_4_ele) )
-       allocate ( node_on_sf_n_2nd(nnod_4_surf_2nd,nsurf_4_ele) )
-!
-       node_on_sf_2nd =   0
-       node_on_sf_n_2nd = 0
-!
-       end subroutine allocate_inod_in_surf_2nd
-!
-!  ---------------------------------------------------------------------
 !
        subroutine allocate_2nd_geomet_param_smp
 !
@@ -103,26 +65,6 @@
        end subroutine allocate_2nd_geomet_param_smp
 !
 !-----------------------------------------------------------------------
-!
-       subroutine allocate_2nd_surf_param_smp
-!
-       use m_machine_parameter
-!
-       allocate( isurf_smp_stack_2nd(0:np_smp))
-       isurf_smp_stack_2nd = 0
-!
-       end subroutine allocate_2nd_surf_param_smp
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-       subroutine deallocate_inod_in_surf_2nd
-!
-!
-       deallocate (node_on_sf_2nd, node_on_sf_n_2nd)
-!
-       end subroutine deallocate_inod_in_surf_2nd
-!
 !-----------------------------------------------------------------------
 !
        subroutine deallocate_2nd_geomet_param_smp
@@ -132,14 +74,6 @@
        deallocate( inter_smp_stack_2nd)
 !
        end subroutine deallocate_2nd_geomet_param_smp
-!
-!-----------------------------------------------------------------------
-!
-       subroutine deallocate_2nd_surf_param_smp
-!
-       deallocate( isurf_smp_stack_2nd)
-!
-       end subroutine deallocate_2nd_surf_param_smp
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

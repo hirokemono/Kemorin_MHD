@@ -64,7 +64,7 @@
 !
       subroutine count_new_nod_group
 !
-      integer(kind = kint) :: i, inod, inum, icou
+      integer(kind = kint) :: i, inod, inum
 !
       bc_name_2nd(1:num_bc) = bc_name(1:num_bc)
 !
@@ -109,7 +109,7 @@
       use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
-      integer(kind = kint) :: inod, icou
+      integer(kind = kint) :: inod
 !
 !
       bc_name_2nd(num_bc_2nd) = 'equator'

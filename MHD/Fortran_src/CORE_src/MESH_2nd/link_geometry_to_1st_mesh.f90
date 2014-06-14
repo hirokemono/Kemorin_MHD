@@ -27,16 +27,11 @@
 !
       subroutine link_single_ele_list
 !
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
-      use m_geometry_parameter
+      use link_data_type_to_1st_mesh
 !
-      node_on_sf_2nd =>   node_on_sf
-      node_on_sf_n_2nd => node_on_sf_n
-!
-      edge_2nd%node_on_edge =>    node_on_edge
-      edge_2nd%node_on_edge_sf => node_on_edge_sf
-!
+      call link_single_ele_list_type(surf_2nd, edge_2nd)
+!    
       end subroutine link_single_ele_list
 !
 !  ---------------------------------------------------------------------
@@ -89,17 +84,10 @@
 !
       subroutine link_surface_data
 !
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
-      use m_geometry_parameter
-      use m_geometry_data
+      use link_data_type_to_1st_mesh
 !
-      nsurf_2nd =       numsurf
-      nnod_4_surf_2nd = nnod_4_surf
-!
-      ie_surf_2nd =>       ie_surf
-      isf_4_ele_2nd =>     isf_4_ele
-      interior_surf_2nd => interior_surf
+      call link_surface_data_type(surf_2nd)
 !
       end subroutine link_surface_data
 !
@@ -107,18 +95,10 @@
 !
       subroutine link_edge_data
 !
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
-      use m_geometry_parameter
-      use m_geometry_data
+      use link_data_type_to_1st_mesh
 !
-      edge_2nd%numedge =       numedge
-      edge_2nd%nnod_4_edge = nnod_4_edge
-!
-      edge_2nd%ie_edge =>  ie_edge
-      edge_2nd%iedge_4_sf =>    iedge_4_sf
-      edge_2nd%iedge_4_ele =>   iedge_4_ele
-      edge_2nd%interior_edge => interior_edge
+      call link_edge_data_type(edge_2nd)
 !
       end subroutine link_edge_data
 !
@@ -161,13 +141,13 @@
       inod_smp_stack_2nd =>  inod_smp_stack
       inter_smp_stack_2nd => inter_smp_stack
       iele_smp_stack_2nd =>  iele_smp_stack
-      isurf_smp_stack_2nd => isurf_smp_stack
+      surf_2nd%istack_surf_smp => isurf_smp_stack
       edge_2nd%istack_edge_smp => iedge_smp_stack
 !
       maxnod_4_smp_2nd =     maxnod_4_smp
       max_in_nod_4_smp_2nd = max_in_nod_4_smp
       maxele_4_smp_2nd =     maxele_4_smp
-      maxsurf_4_smp_2nd =    maxsurf_4_smp
+      surf_2nd%max_surf_smp =    maxsurf_4_smp
       edge_2nd%max_edge_smp =    maxedge_4_smp
 !
       end subroutine link_mesh_parameter_4_smp

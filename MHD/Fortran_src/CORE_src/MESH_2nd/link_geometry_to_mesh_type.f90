@@ -38,8 +38,8 @@
        type(surface_data), intent(in) :: surf
        type(edge_data), intent(in) :: edge
 !
-       node_on_sf_2nd =>   surf%node_on_sf
-       node_on_sf_n_2nd => surf%node_on_sf_n
+       surf_2nd%node_on_sf =>   surf%node_on_sf
+       surf_2nd%node_on_sf_n => surf%node_on_sf_n
 !
        edge_2nd%node_on_edge =>    edge%node_on_edge
        edge_2nd%node_on_edge_sf => edge%node_on_edge_sf
@@ -110,17 +110,17 @@
        type(surface_data), intent(in) :: surf
 !
 !
-       nsurf_2nd =         surf%numsurf
-       nnod_4_surf_2nd =   surf%nnod_4_surf
-       internal_surf_2nd = surf%internal_surf
+       surf_2nd%numsurf =       surf%numsurf
+       surf_2nd%nnod_4_surf =   surf%nnod_4_surf
+       surf_2nd%internal_surf = surf%internal_surf
 !
-       maxsurf_4_smp_2nd =    surf%max_surf_smp
-       isurf_smp_stack_2nd => surf%istack_surf_smp
+       surf_2nd%max_surf_smp =    surf%max_surf_smp
+       surf_2nd%istack_surf_smp => surf%istack_surf_smp
 !
-       globalsurfid_2nd =>  surf%isurf_global
-       ie_surf_2nd =>       surf%ie_surf
-       isf_4_ele_2nd =>     surf%isf_4_ele
-       interior_surf_2nd => surf%interior_surf
+       surf_2nd%isurf_global =>  surf%isurf_global
+       surf_2nd%ie_surf =>       surf%ie_surf
+       surf_2nd%isf_4_ele =>     surf%isf_4_ele
+       surf_2nd%interior_surf => surf%interior_surf
 !
        end subroutine link_2nd_surf_connect_type
 !

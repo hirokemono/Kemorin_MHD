@@ -34,7 +34,7 @@
 !
 !
       nnod_4_ele_2nd =   num_t_linear
-      nnod_4_surf_2nd =  num_linear_sf
+      surf_2nd%nnod_4_surf =  num_linear_sf
       edge_2nd%nnod_4_edge =  num_linear_edge
 !
       if      (nnod_4_ele .eq. num_t_linear) then
@@ -105,9 +105,9 @@
       use set_local_id_table_4_1ele
 !
 !
-      call allocate_inod_in_surf_2nd
-      call set_inod_in_surf(nnod_4_surf_2nd,                            &
-     &    node_on_sf_2nd, node_on_sf_n_2nd)
+      call allocate_inod_in_surf_type(surf_2nd)
+      call set_inod_in_surf(surf_2nd%nnod_4_surf,                            &
+     &    surf_2nd%node_on_sf, surf_2nd%node_on_sf_n)
 !
       call allocate_inod_in_edge_type(edge_2nd)
       call copy_inod_in_edge(edge_2nd%nnod_4_edge,                      &
@@ -157,9 +157,10 @@
 !
       call set_internal_list_4_linear_20(numnod, internal_node,         &
      &          numele, numsurf, interior_ele, interior_surf,           &
-     &          nnod_2nd, nele_2nd, nsurf_2nd, edge_2nd%numedge,        &
-     &          ie_2nd, ie_surf_2nd, edge_2nd%ie_edge,                  &
-     &          interior_ele_2nd, interior_surf_2nd, edge_2nd%interior_edge)
+     &          nnod_2nd, nele_2nd, surf_2nd%numsurf, edge_2nd%numedge, &
+     &          ie_2nd, surf_2nd%ie_surf, edge_2nd%ie_edge,             &
+     &          interior_ele_2nd, surf_2nd%interior_surf, &
+     &          edge_2nd%interior_edge)
 !
       call init_2nd_data_on_surf
 !
@@ -202,9 +203,10 @@
 !
 !
       call set_internal_list_4_linear_27(internal_node,                 &
-     &    nnod_2nd, nele_2nd, nsurf_2nd, edge_2nd%numedge,              &
-     &    ie_2nd, ie_surf_2nd, edge_2nd%ie_edge,                        &
-     &    interior_ele_2nd, interior_surf_2nd, edge_2nd%interior_edge)
+     &    nnod_2nd, nele_2nd, surf_2nd%numsurf, edge_2nd%numedge,       &
+     &    ie_2nd, surf_2nd%ie_surf, edge_2nd%ie_edge,                   &
+     &    interior_ele_2nd,                                   &
+     &    surf_2nd%interior_surf, edge_2nd%interior_edge)
 !
       if ( iflag_debug.eq.1 ) then
         call check_smp_size_2nd(my_rank)
