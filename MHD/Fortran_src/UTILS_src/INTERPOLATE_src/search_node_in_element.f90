@@ -90,7 +90,7 @@
       subroutine search_node_in_element_2nd(my_rank, i_sleeve,          &
      &          error_level)
 !
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
 !
       integer(kind = kint), intent(in) :: my_rank, i_sleeve
       real(kind = kreal), intent(in) :: error_level

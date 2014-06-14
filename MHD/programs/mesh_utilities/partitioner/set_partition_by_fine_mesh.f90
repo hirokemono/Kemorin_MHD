@@ -65,7 +65,7 @@
       call deallocate_itp_num_dest
 !
       call deallocate_ele_connect_type(ele_2nd)
-      call deallocate_2nd_node_position
+      call deallocate_node_geometry_type(node_2nd)
 !
       end subroutine s_set_partition_by_fine_mesh
 !
@@ -102,7 +102,6 @@
       subroutine interpolate_domain_group
 !
       use m_machine_parameter
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_domain_group_4_partition
       use m_interpolate_table_orgin
@@ -111,10 +110,10 @@
 !
 !      transfer interpolate table
 !
-      call s_interporate_imark_para(np_smp, nnod_2nd, ele_2nd%numele,   &
-     &    ele_2nd%nnod_4_ele, ele_2nd%ie, IGROUP_FINER(1),              &
-     &    istack_tbl_type_org_smp, ntot_table_org, iele_org_4_org,      &
-     &    itype_inter_org, IGROUP_nod(1) )
+      call s_interporate_imark_para(np_smp, node_2nd%numnod,            &
+     &    ele_2nd%numele, ele_2nd%nnod_4_ele, ele_2nd%ie,               &
+     &    IGROUP_FINER(1), istack_tbl_type_org_smp, ntot_table_org,     &
+     &    iele_org_4_org, itype_inter_org, IGROUP_nod(1) )
 !
       end subroutine interpolate_domain_group
 !

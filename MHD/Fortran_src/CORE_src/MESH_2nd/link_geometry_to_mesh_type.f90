@@ -19,7 +19,6 @@
 !
       use m_precision
 !
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
       implicit none
@@ -55,23 +54,7 @@
        type(node_data), intent(in) :: node
 !
 !
-       nnod_2nd =         node%numnod
-       internal_nod_2nd = node%internal_node
-!
-       maxnod_4_smp_2nd =     node%max_nod_smp
-       max_in_nod_4_smp_2nd = node%max_internal_nod_smp
-       inod_smp_stack_2nd =>  node%istack_nod_smp
-       inter_smp_stack_2nd => node%istack_internal_smp
-!
-       globalnodid_2nd => node%inod_global
-       xx_2nd =>          node%xx
-!
-       radius_2nd =>   node%rr
-       a_radius_2nd => node%a_r
-       theta_2nd =>    node%theta
-       phi_2nd =>      node%phi
-       s_cyl_2nd =>    node%ss
-       a_s_cyl_2nd =>  node%a_s
+       call link_new_nod_geometry_type(node, node_2nd)
 !
        end subroutine link_2nd_node_type
 !

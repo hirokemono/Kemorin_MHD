@@ -19,7 +19,7 @@
       use m_work_time
 !
       use m_2nd_pallalel_vector
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_2nd_nod_comm_table
       use m_2nd_phys_data
 !
@@ -76,20 +76,20 @@
 !
 !
 !$omp parallel do
-      do inod=1, nnod_2nd
+      do inod=1, node_2nd%numnod
         xvec_2nd(inod) = phys_2nd%d_fld(inod,id_phys)
       end do
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV(nnod_2nd, num_neib_2, id_neib_2,            &
+      call SOLVER_SEND_RECV(node_2nd%numnod, num_neib_2, id_neib_2,     &
      &                      istack_import_2, item_import_2,             &
      &                      istack_export_2, item_export_2,             &
      &                      xvec_2nd(1) )
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
-      do inod=1, nnod_2nd
+      do inod=1, node_2nd%numnod
         phys_2nd%d_fld(inod,id_phys) = xvec_2nd(inod)
       end do
 !$omp end parallel do
@@ -107,7 +107,7 @@
 !
 !
 !$omp parallel do
-      do inod=1, nnod_2nd
+      do inod=1, node_2nd%numnod
         xvec_2nd(3*inod-2) = phys_2nd%d_fld(inod,id_phys  )
         xvec_2nd(3*inod-1) = phys_2nd%d_fld(inod,id_phys+1)
         xvec_2nd(3*inod  ) = phys_2nd%d_fld(inod,id_phys+2)
@@ -115,14 +115,14 @@
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_3(nnod_2nd, num_neib_2, id_neib_2,          &
+      call SOLVER_SEND_RECV_3(node_2nd%numnod, num_neib_2, id_neib_2,   &
      &                        istack_import_2, item_import_2,           &
      &                        istack_export_2, item_export_2,           &
      &                        xvec_2nd(1) )
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
-      do inod=1, nnod_2nd
+      do inod=1, node_2nd%numnod
         phys_2nd%d_fld(inod,id_phys  ) = xvec_2nd(3*inod-2)
         phys_2nd%d_fld(inod,id_phys+1) = xvec_2nd(3*inod-1)
         phys_2nd%d_fld(inod,id_phys+2) = xvec_2nd(3*inod  )
@@ -142,7 +142,7 @@
 !
 !
 !$omp parallel do
-      do inod=1, nnod_2nd
+      do inod=1, node_2nd%numnod
         xvec_2nd(6*inod-5) = phys_2nd%d_fld(inod,id_phys  )
         xvec_2nd(6*inod-4) = phys_2nd%d_fld(inod,id_phys+1)
         xvec_2nd(6*inod-3) = phys_2nd%d_fld(inod,id_phys+2)
@@ -154,13 +154,13 @@
 !
       START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_6                                           &
-     &      (nnod_2nd, num_neib_2, id_neib_2,                           &
+     &      (node_2nd%numnod, num_neib_2, id_neib_2,                    &
      &       istack_import_2, item_import_2,                            &
      &       istack_export_2, item_export_2, xvec_2nd(1) )
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
-      do inod=1, nnod_2nd
+      do inod=1, node_2nd%numnod
         phys_2nd%d_fld(inod,id_phys  ) = xvec_2nd(6*inod-5)
         phys_2nd%d_fld(inod,id_phys+1) = xvec_2nd(6*inod-4)
         phys_2nd%d_fld(inod,id_phys+2) = xvec_2nd(6*inod-3)

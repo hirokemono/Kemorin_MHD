@@ -69,7 +69,7 @@
       subroutine link_2nd_geometry_4_itp_tbl(my_rank)
 !
       use set_2nd_mesh_from_struct
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_geometry_constants
       use link_geometry_to_mesh_type
 !
@@ -104,7 +104,8 @@
       call deallocate_hex_2_tetra
 !
       call disconnect_2nd_groups
-      call unlink_2nd_geometry_data
+      call unlink_node_geometry_type(node_2nd)
+      call unlink_ele_connect_type(ele_2nd)
 !
       call unlink_2nd_nod_comm_tbl
 !

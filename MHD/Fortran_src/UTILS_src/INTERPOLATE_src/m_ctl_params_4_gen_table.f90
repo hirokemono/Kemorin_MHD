@@ -84,7 +84,7 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_2nd_pallalel_vector
       use m_read_mesh_data
       use m_ctl_data_gen_table

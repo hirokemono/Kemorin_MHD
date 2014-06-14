@@ -18,7 +18,6 @@
       use m_precision
 !
       use m_geometry_parameter
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
       use set_edge_geom_type_IO

@@ -34,7 +34,7 @@
       use const_mesh_info
       use nodal_vector_send_recv
 !
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_2nd_pallalel_vector
       use m_2nd_phys_data
       use copy_comm_tables_to_2nd
@@ -88,14 +88,14 @@
       call link_surface_group
 !
       call link_nodal_field_names
-      call alloc_phys_data_type(nnod_2nd, phys_2nd)
+      call alloc_phys_data_type(node_2nd%numnod, phys_2nd)
       call allocate_vec_transfer
 !
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(isix,    numnod)
-      call allocate_2nd_iccg_matrix(isix, nnod_2nd)
+      call allocate_2nd_iccg_matrix(isix, node_2nd%numnod)
 !
       call init_send_recv
 !

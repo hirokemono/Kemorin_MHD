@@ -40,7 +40,6 @@
       use calypso_mpi
       use m_ctl_param_newdom_filter
       use m_2nd_nod_comm_table
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_nod_filter_comm_table
       use m_filter_file_names

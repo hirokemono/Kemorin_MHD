@@ -27,9 +27,9 @@
 !
       subroutine allocate_mark_refine_sf_grp
 !
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
 !
-      allocate(inod_mark_2(nnod_2nd))
+      allocate(inod_mark_2(node_2nd%numnod))
       inod_mark_2 = 0
 !
       end subroutine allocate_mark_refine_sf_grp

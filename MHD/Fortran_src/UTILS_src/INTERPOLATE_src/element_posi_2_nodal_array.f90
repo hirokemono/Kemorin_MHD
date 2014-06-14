@@ -70,55 +70,54 @@
       subroutine s_2nd_ele_posi_2_nodal_array
 !
       use m_machine_parameter
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use cal_minmax_and_stacks
-      use set_smp_size_4_2nd
-      use cal_2nd_mesh_infos
+      use set_size_4_smp_types
+      use cal_mesh_position_type
 !
 !
       integer(kind = kint) :: inod
 !
 !
-      call s_count_smp_size_4_2nd
-      call set_2nd_spherical_position
+      call count_size_4_smp_mesh_type(node_2nd, ele_2nd)
+      call set_spherical_position_type(node_2nd)
 !
       call allocate_ele_geometry_type(ele_2nd)
-      call set_2nd_center_of_element
+      call set_center_of_ele_type(node_2nd, ele_2nd)
 !
 !
-      call deallocate_2nd_node_position
+      call deallocate_node_geometry_type(node_2nd)
 !
 !
-      nnod_2nd =         ele_2nd%numele
-      internal_nod_2nd = ele_2nd%numele
+      node_2nd%numnod =         ele_2nd%numele
+      node_2nd%internal_node = ele_2nd%numele
 !
-      call allocate_2nd_node_position
+      call allocate_node_geometry_type(node_2nd)
 !
 !$omp parallel do
-      do inod = 1, nnod_2nd
+      do inod = 1, node_2nd%numnod
 !
-        globalnodid_2nd(inod) = ele_2nd%iele_global(inod)
-        xx_2nd(inod,1) =       ele_2nd%x_ele(inod,1)
-        xx_2nd(inod,2) =       ele_2nd%x_ele(inod,2)
-        xx_2nd(inod,3) =       ele_2nd%x_ele(inod,3)
+        node_2nd%inod_global(inod) = ele_2nd%iele_global(inod)
+        node_2nd%xx(inod,1) = ele_2nd%x_ele(inod,1)
+        node_2nd%xx(inod,2) = ele_2nd%x_ele(inod,2)
+        node_2nd%xx(inod,3) = ele_2nd%x_ele(inod,3)
 !
-        radius_2nd(inod) =   ele_2nd%r_ele(inod)
-        a_radius_2nd(inod) = ele_2nd%ar_ele(inod)
-        s_cyl_2nd(inod) =    ele_2nd%s_ele(inod)
-        a_s_cyl_2nd(inod) =  ele_2nd%as_ele(inod)
-        phi_2nd(inod) =      ele_2nd%phi_ele(inod)
-        theta_2nd(inod) =    ele_2nd%theta_ele(inod)
+        node_2nd%rr(inod) =   ele_2nd%r_ele(inod)
+        node_2nd%a_r(inod) = ele_2nd%ar_ele(inod)
+        node_2nd%ss(inod) =    ele_2nd%s_ele(inod)
+        node_2nd%a_s(inod) =  ele_2nd%as_ele(inod)
+        node_2nd%phi(inod) =  ele_2nd%phi_ele(inod)
+        node_2nd%theta(inod) = ele_2nd%theta_ele(inod)
 !
       end do
 !$omp end parallel do
 !
 !
-       call count_number_4_smp( np_smp, ione, nnod_2nd,                 &
-     &       inod_smp_stack_2nd, maxnod_4_smp_2nd )
+       call count_number_4_smp( np_smp, ione, node_2nd%numnod,          &
+     &       node_2nd%istack_nod_smp, node_2nd%max_nod_smp)
 !
-       call count_number_4_smp( np_smp, ione, internal_nod_2nd,         &
-     &       inter_smp_stack_2nd, max_in_nod_4_smp_2nd )
+       call count_number_4_smp( np_smp, ione, node_2nd%internal_node,   &
+     &       node_2nd%istack_nod_smp, node_2nd%max_internal_nod_smp)
 !
 !
       end subroutine s_2nd_ele_posi_2_nodal_array

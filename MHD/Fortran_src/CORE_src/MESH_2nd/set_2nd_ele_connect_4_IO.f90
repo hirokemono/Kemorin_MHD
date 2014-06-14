@@ -11,7 +11,6 @@
       use m_precision
 !
       use m_geometry_parameter
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
       use m_read_mesh_data

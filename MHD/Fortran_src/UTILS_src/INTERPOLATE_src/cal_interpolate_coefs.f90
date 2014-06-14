@@ -30,7 +30,6 @@
 !
       subroutine allocate_work_4_interpolate
 !
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
       allocate( coefs_by_tet(ele_2nd%nnod_4_ele) )
@@ -57,7 +56,6 @@
 !
       use m_ctl_params_4_gen_table
       use calypso_mpi
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_connect_hexa_2_tetra
       use subroutines_4_search_table
@@ -153,7 +151,6 @@
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_interpolate_table_dest
       use m_interpolate_coefs_dest

@@ -86,7 +86,7 @@
 !
       use m_geometry_parameter
       use m_node_phys_data
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_2nd_phys_data
       use m_fem_gauss_int_coefs
       use int_rms_ave_ele_grps_1st
@@ -97,7 +97,8 @@
 !
       do icomp = 1, num_tot_nod_phys
         icomp_2 = icomp+num_tot_nod_phys
-        d_nod_trans2(1:nnod_2nd,1) = phys_2nd%d_fld(1:nnod_2nd,icomp)
+        d_nod_trans2(1:node_2nd%numnod,1)                              &
+     &     = phys_2nd%d_fld(1:node_2nd%numnod,icomp)
 !
         call int_vol_2rms_ave_ele_grps_1st(max_int_point,               &
      &      n_layer_d, n_item_layer_d, layer_stack, item_layer,         &
@@ -113,7 +114,7 @@
 !
       use m_geometry_parameter
       use m_node_phys_data
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_2nd_phys_data
       use m_fem_gauss_int_coefs
       use int_rms_ave_ele_grps_1st

@@ -10,8 +10,6 @@
 !        type(communication_table), intent(inout) :: nod_comm
 !      subroutine set_nod_geometry_2_type(nod)
 !        type(node_data), intent(inout) :: nod
-!      subroutine set_ele_geometry_2_type(ele)
-!        type(element_data), intent(inout) :: ele
 !
 !
       module set_geometry_to_types
@@ -29,12 +27,15 @@
       subroutine set_mesh_data_2_type(femmesh)
 !
       use t_mesh_data
+      use link_data_type_to_1st_mesh
 !
       type(mesh_data), intent(inout) :: femmesh
 !
       call set_nod_comm_tbl_2_type(femmesh%mesh%nod_comm)
       call set_nod_geometry_2_type(femmesh%mesh%node)
-      call set_ele_geometry_2_type(femmesh%mesh%ele)
+!
+      call link_element_data_type(femmesh%mesh%ele)
+      call link_ele_geometry_type(femmesh%mesh%ele)
 !
       end subroutine set_mesh_data_2_type
 !
@@ -69,73 +70,19 @@
       use t_geometry_data
       use m_geometry_parameter
       use m_geometry_data
+      use link_data_type_to_1st_mesh
 !
       type(node_data), intent(inout) :: nod
 !
 !
-      nod%numnod =        numnod
-      nod%internal_node = internal_node
-!
+      call link_node_data_type(nod)
       nod%max_nod_smp =          maxnod_4_smp
       nod%max_internal_nod_smp = max_in_nod_4_smp
 !
       nod%istack_nod_smp =>      inod_smp_stack
       nod%istack_internal_smp => inter_smp_stack
 !
-!
-      nod%inod_global => globalnodid
-      nod%xx => xx
-!
-      nod%rr =>    radius
-      nod%a_r =>   a_radius
-      nod%phi =>   longitude
-      nod%theta => colatitude
-      nod%ss =>    s_cylinder
-      nod%a_s =>   a_s_cylinder
-!
       end subroutine set_nod_geometry_2_type
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_ele_geometry_2_type(ele)
-!
-      use t_geometry_data
-      use m_geometry_parameter
-      use m_geometry_data
-!
-      type(element_data), intent(inout) :: ele
-!
-!
-      ele%numele =     numele
-      ele%nnod_4_ele = nnod_4_ele
-!
-      ele%max_ele_smp =     maxele_4_smp
-!
-      ele%istack_ele_smp => iele_smp_stack
-!
-      ele%iele_global => globalelmid
-      ele%ie =>          ie
-      ele%elmtyp =>      elmtyp
-      ele%nodelm =>      nodelm
-!
-      ele%interior_ele => interior_ele
-      ele%e_multi =>      e_multi
-!
-      ele%x_ele =>     x_ele
-      ele%r_ele =>     r_ele
-      ele%ar_ele =>    ar_ele
-      ele%phi_ele =>   phi_ele
-      ele%theta_ele => theta_ele
-      ele%s_ele =>     s_ele
-      ele%as_ele =>    as_ele
-!
-      ele%volume_ele => volume_ele
-      ele%a_vol_ele =>  a_vol_ele
-!
-      ele%volume =       volume
-      ele%a_vol =        a_vol
-!
-      end subroutine set_ele_geometry_2_type
 !
 !  ---------------------------------------------------------------------
 !

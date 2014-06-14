@@ -21,7 +21,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_data_4_interpolate_org
 !
@@ -39,11 +38,11 @@
         do k1 = 2, ele_2nd%nnod_4_ele
           do iele = ist, ied
             inod = ele_2nd%ie(iele,k1)
-            if (     xx_2nd(inod,1) .ge. 0.0d0                          &
-     &         .and. xx_2nd(inod,2) .ge. 0.0d0) then
+            if (     node_2nd%xx(inod,1) .ge. 0.0d0                     &
+     &         .and. node_2nd%xx(inod,2) .ge. 0.0d0) then
               iflag_meridian_x(iele) = iflag_meridian_x(iele) + 1
-            else if (xx_2nd(inod,1) .ge. 0.0d0                          &
-     &         .and. xx_2nd(inod,2) .lt. 0.0d0) then
+            else if (node_2nd%xx(inod,1) .ge. 0.0d0                     &
+     &         .and. node_2nd%xx(inod,2) .lt. 0.0d0) then
               iflag_meridian_x(iele) = iflag_meridian_x(iele) + 100
             end if
           end do
@@ -67,12 +66,12 @@
 !
         do iele = ist, ied
           inod = ele_2nd%ie(iele,1)
-          min_sph_each_ele(iele,1) = radius_2nd(inod)
-          max_sph_each_ele(iele,1) = radius_2nd(inod)
-          min_sph_each_ele(iele,2) = theta_2nd(inod)
-          max_sph_each_ele(iele,2) = theta_2nd(inod)
-          min_sph_each_ele(iele,3) = phi_2nd(inod)
-          max_sph_each_ele(iele,3) = phi_2nd(inod)
+          min_sph_each_ele(iele,1) = node_2nd%rr(inod)
+          max_sph_each_ele(iele,1) = node_2nd%rr(inod)
+          min_sph_each_ele(iele,2) = node_2nd%theta(inod)
+          max_sph_each_ele(iele,2) = node_2nd%theta(inod)
+          min_sph_each_ele(iele,3) = node_2nd%phi(inod)
+          max_sph_each_ele(iele,3) = node_2nd%phi(inod)
         end do
 !
 !
@@ -80,17 +79,17 @@
           do iele = ist, ied
             inod = ele_2nd%ie(iele,k1)
             min_sph_each_ele(iele,1)                                    &
-     &         = min(min_sph_each_ele(iele,1),radius_2nd(inod) )
+     &         = min(min_sph_each_ele(iele,1),node_2nd%rr(inod) )
             max_sph_each_ele(iele,1)                                    &
-     &         = max(max_sph_each_ele(iele,1),radius_2nd(inod) )
+     &         = max(max_sph_each_ele(iele,1),node_2nd%rr(inod) )
             min_sph_each_ele(iele,2)                                    &
-     &         = min(min_sph_each_ele(iele,2),theta_2nd(inod) )
+     &         = min(min_sph_each_ele(iele,2),node_2nd%theta(inod) )
             max_sph_each_ele(iele,2)                                    &
-     &         = max(max_sph_each_ele(iele,2),theta_2nd(inod) )
+     &         = max(max_sph_each_ele(iele,2),node_2nd%theta(inod) )
             min_sph_each_ele(iele,3)                                    &
-     &         = min(min_sph_each_ele(iele,3),phi_2nd(inod) )
+     &         = min(min_sph_each_ele(iele,3),node_2nd%phi(inod) )
             max_sph_each_ele(iele,3)                                    &
-     &         = max(max_sph_each_ele(iele,3),phi_2nd(inod) )
+     &         = max(max_sph_each_ele(iele,3),node_2nd%phi(inod) )
           end do
         end do
 !

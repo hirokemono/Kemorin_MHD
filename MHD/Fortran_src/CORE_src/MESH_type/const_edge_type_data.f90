@@ -23,7 +23,7 @@
 !
       implicit none
 !
-      private :: construct_all_edge, construct_bc_edge
+      private :: construct_all_edge_type, construct_bc_edge
 !
 !------------------------------------------------------------------
 !
@@ -44,7 +44,7 @@
       call allocate_edge_hash(nod%numnod, surf%numsurf,                 &
      &    edge%nnod_4_edge)
 !
-      call construct_all_edge(nod, ele, surf, edge)
+      call construct_all_edge_type(nod, ele, surf, edge)
 !
 !      call construct_bc_edge(nod, surf, edge)
 !
@@ -122,7 +122,7 @@
 ! ----------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine construct_all_edge(nod, ele, surf, edge)
+      subroutine construct_all_edge_type(nod, ele, surf, edge)
 !
       use m_machine_parameter
       use set_edge_hash
@@ -169,7 +169,7 @@
      &    edge%numedge, ele%nnod_4_ele, edge%nnod_4_edge,               &
      &    ele%ie, edge%iedge_4_sf, edge%ie_edge, edge%iedge_4_ele)
 !
-      end subroutine construct_all_edge
+      end subroutine construct_all_edge_type
 !
 !------------------------------------------------------------------
 !

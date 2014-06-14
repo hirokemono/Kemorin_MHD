@@ -15,7 +15,7 @@
 !
       implicit none
 !
-      private :: link_2nd_field_data_2_output
+      private :: link_field_data_type_2_IO
 !
 ! ----------------------------------------------------------------------
 !
@@ -29,13 +29,12 @@
       use m_t_step_parameter
       use m_geometry_parameter
       use m_node_phys_address
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_2nd_phys_data
 !
       use input_control_interpolate
       use const_mesh_info
-      use set_smp_size_4_2nd
+      use set_size_4_smp_types
       use nodal_vector_send_recv
 !
       integer(kind = kint) :: ierr
@@ -64,7 +63,7 @@
 !     --------------------- 
 !
       if (my_rank .lt. ndomain_dest) then
-        call s_count_smp_size_4_2nd
+        call count_size_4_smp_mesh_type(node_2nd, ele_2nd)
         if (i_debug.eq.iflag_full_msg) call check_smp_size_2nd(my_rank)
       end if
 !
@@ -77,7 +76,7 @@
       call link_nodal_field_names
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data_type'
-      call alloc_phys_data_type(nnod_2nd, phys_2nd)
+      call alloc_phys_data_type(node_2nd%numnod, phys_2nd)
 !
 !     --------------------- 
 !
@@ -118,7 +117,7 @@
 !    output udt data
 !
         if (my_rank .lt. ndomain_dest) then
-          call link_2nd_field_data_2_output(fem_ucd)
+          call link_field_data_type_2_IO(node_2nd, phys_2nd, fem_ucd)
 !
           call set_ucd_file_format(itype_itp_udt_file)
           call set_ucd_file_prefix(itp_udt_file_head)
@@ -133,24 +132,24 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine link_2nd_field_data_2_output(ucd)
+      subroutine link_field_data_type_2_IO(node, nod_fld, ucd)
 !
-      use m_2nd_geometry_param
-      use m_2nd_geometry_data
-      use m_2nd_phys_data
-      use set_ucd_data_to_type
-      use set_ucd_data
-!
+      use t_geometry_data
+      use t_phys_data
       use t_ucd_data
+!
+      use set_ucd_data_to_type
+!
+      type(node_data), intent(in) :: node
+      type(phys_data), intent(in) :: nod_fld
 !
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      call link_node_data_2_output(nnod_2nd, globalnodid_2nd, xx_2nd,   &
-     &    ucd)
-      call link_field_data_type_2_output(nnod_2nd, phys_2nd, ucd)
+      call link_node_data_type_2_output(node, ucd)
+      call link_field_data_type_2_output(node%numnod, nod_fld, ucd)
 !
-      end subroutine link_2nd_field_data_2_output
+      end subroutine link_field_data_type_2_IO
 !
 !-----------------------------------------------------------------------
 !

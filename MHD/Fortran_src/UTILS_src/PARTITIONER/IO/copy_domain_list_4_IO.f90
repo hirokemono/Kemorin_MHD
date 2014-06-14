@@ -63,19 +63,20 @@
 !
       subroutine copy_finer_domain_list_from_IO
 !
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
 !
-      if (nnod_group_IO .ne. nnod_2nd) stop 'check number of node'
+      if(nnod_group_IO .ne. node_2nd%numnod) stop 'check number of node'
 !
-      if (internod_group_IO .ne. internal_nod_2nd) then
+      if(internod_group_IO .ne. node_2nd%internal_node) then
         stop 'check number of internal node'
       end if
 !
       num_domain = nproc_group_IO
-      nnod_group_finer = nnod_2nd
+      nnod_group_finer = node_2nd%numnod
       call allocate_finer_domain_group
 !
-      IGROUP_FINER(1:internal_nod_2nd) = IGROUP_IO(1:internal_nod_2nd)
+      IGROUP_FINER(1:node_2nd%internal_node)                            &
+     &      = IGROUP_IO(1:node_2nd%internal_node)
 !
       call deallocate_domain_group_IO
 !

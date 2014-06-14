@@ -9,6 +9,9 @@
 !      subroutine link_element_data_type(ele)
 !      subroutine link_surface_data_type(surf)
 !      subroutine link_edge_data_type(edge)
+!
+!      subroutine link_ele_geometry_type(ele)
+!
 !      subroutine link_smp_param_type(node, ele, surf, edge)
 !
 !      subroutine link_nodal_fld_type_names(nod_fld)
@@ -135,6 +138,37 @@
       end subroutine link_edge_data_type
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine link_ele_geometry_type(ele)
+!
+      use t_geometry_data
+      use m_geometry_parameter
+      use m_geometry_data
+!
+      type(element_data), intent(inout) :: ele
+!
+
+      ele%max_ele_smp =     maxele_4_smp
+      ele%istack_ele_smp => iele_smp_stack
+!
+      ele%x_ele =>     x_ele
+      ele%r_ele =>     r_ele
+      ele%ar_ele =>    ar_ele
+      ele%phi_ele =>   phi_ele
+      ele%theta_ele => theta_ele
+      ele%s_ele =>     s_ele
+      ele%as_ele =>    as_ele
+!
+      ele%volume_ele => volume_ele
+      ele%a_vol_ele =>  a_vol_ele
+!
+      ele%volume =       volume
+      ele%a_vol =        a_vol
+!
+      end subroutine link_ele_geometry_type
+!
+!  ---------------------------------------------------------------------
 !
       subroutine link_smp_param_type(node, ele, surf, edge)
 !

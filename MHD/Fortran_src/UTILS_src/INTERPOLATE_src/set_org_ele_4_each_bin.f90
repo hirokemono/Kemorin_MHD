@@ -24,7 +24,6 @@
 !
       subroutine s_count_num_org_ele_4_each_bin
 !
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
       use m_sphere_bin_4_table
@@ -44,7 +43,7 @@
         ied = ele_2nd%istack_ele_smp(ip)
         do iele = ist, ied
 !
-          if (ele_2nd%ie(iele,1) .le. internal_nod_2nd) then
+          if (ele_2nd%ie(iele,1) .le. node_2nd%internal_node) then
 !
             x_min(1:3) = min_sph_each_ele(iele,1:3)
             x_max(1:3) = max_sph_each_ele(iele,1:3)
@@ -75,7 +74,6 @@
 !
       subroutine s_set_org_ele_4_each_bin
 !
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
       use m_sphere_bin_4_table
@@ -97,7 +95,7 @@
         ied = ele_2nd%istack_ele_smp(ip)
         do iele = ist, ied
 !
-          if (ele_2nd%ie(iele,1) .le. internal_nod_2nd) then
+          if (ele_2nd%ie(iele,1) .le. node_2nd%internal_node) then
 !
             x_min(1:3) = min_sph_each_ele(iele,1:3)
             x_max(1:3) = max_sph_each_ele(iele,1:3)
@@ -133,7 +131,7 @@
 !
       subroutine s_set_bin_stack_4_org_ele
 !
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_sphere_bin_4_table
       use m_data_4_interpolate_org
 !

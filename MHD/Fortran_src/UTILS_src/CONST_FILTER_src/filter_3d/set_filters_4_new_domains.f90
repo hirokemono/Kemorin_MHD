@@ -141,7 +141,6 @@
       subroutine set_num_globalnod_4_newdomain(ip2)
 !
       use m_nod_filter_comm_table
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_internal_4_partitioner
 !
@@ -153,7 +152,7 @@
       do inod_g = 1,     nnod_s_domin
         nnod_filtering = nnod_filtering + imark_whole_nod(inod_g)
       end do
-      inter_nod_3dfilter = internal_nod_2nd
+      inter_nod_3dfilter = node_2nd%internal_node
 !
       num_intnod_sub(ip2) =     inter_nod_3dfilter
       numnod_4_subdomain(ip2) = nnod_filtering
@@ -205,7 +204,6 @@
 !
       subroutine set_globalnod_4_newdomain(ip2)
 !
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_internal_4_partitioner
 !
@@ -214,9 +212,9 @@
 !
 !   set internal nodes
 !
-      do inod = 1, internal_nod_2nd
+      do inod = 1, node_2nd%internal_node
         icou = istack_numnod_sub(ip2-1) + inod
-        inod_g = globalnodid_2nd(inod)
+        inod_g = node_2nd%inod_global(inod)
         inod_4_subdomain(icou) = inod_g
         imark_whole_nod(inod_g) = 0
       end do

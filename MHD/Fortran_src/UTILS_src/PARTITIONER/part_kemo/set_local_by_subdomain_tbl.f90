@@ -8,7 +8,6 @@
       use m_precision
 !
       use m_geometry_data
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_internal_4_partitioner
       use m_domain_group_4_partition
@@ -40,8 +39,8 @@
       ist = istack_numnod_sub(ip-1)
       do inum = 1, numnod_4_subdomain(ip)
         inod = inod_4_subdomain(inum+ist)
-        globalnodid_2nd(inum) = inod
-        xx_2nd(inum,1:3) = xx(inod,1:3)
+        node_2nd%inod_global(inum) = inod
+        node_2nd%xx(inum,1:3) = xx(inod,1:3)
 !
         inod_local_part(inod)= inum
       end do

@@ -22,7 +22,6 @@
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_2nd_nod_comm_table
       use m_refined_node_id
@@ -32,44 +31,44 @@
 !
       num_neib_2 = 0
 !
-      nnod_2nd = ntot_nod_refine_nod + ntot_nod_refine_edge             &
+      node_2nd%numnod = ntot_nod_refine_nod + ntot_nod_refine_edge      &
      &          + ntot_nod_refine_surf + ntot_nod_refine_ele
-      internal_nod_2nd = nnod_2nd
+      node_2nd%internal_node = node_2nd%numnod
 !
-      call allocate_2nd_node_position
+      call allocate_node_geometry_type(node_2nd)
 !
 !
-      do inod = 1, nnod_2nd
-        globalnodid_2nd(inod) = inod
+      do inod = 1, node_2nd%numnod
+        node_2nd%inod_global(inod) = inod
       end do
 !
-      xx_2nd(1:numnod,1) = xx(1:numnod,1)
-      xx_2nd(1:numnod,2) = xx(1:numnod,2)
-      xx_2nd(1:numnod,3) = xx(1:numnod,3)
+      node_2nd%xx(1:numnod,1) = xx(1:numnod,1)
+      node_2nd%xx(1:numnod,2) = xx(1:numnod,2)
+      node_2nd%xx(1:numnod,3) = xx(1:numnod,3)
 !
       icou = ntot_nod_refine_nod
       do inod = 1, ntot_nod_refine_edge
         icou = icou + 1
-        xx_2nd(icou,1) =  x_refine_edge(inod,1)
-        xx_2nd(icou,2) =  x_refine_edge(inod,2)
-        xx_2nd(icou,3) =  x_refine_edge(inod,3)
+        node_2nd%xx(icou,1) =  x_refine_edge(inod,1)
+        node_2nd%xx(icou,2) =  x_refine_edge(inod,2)
+        node_2nd%xx(icou,3) =  x_refine_edge(inod,3)
       end do
 !
       icou = ntot_nod_refine_nod + ntot_nod_refine_edge
       do inod = 1, ntot_nod_refine_surf
         icou = icou + 1
-        xx_2nd(icou,1) =  x_refine_surf(inod,1)
-        xx_2nd(icou,2) =  x_refine_surf(inod,2)
-        xx_2nd(icou,3) =  x_refine_surf(inod,3)
+        node_2nd%xx(icou,1) =  x_refine_surf(inod,1)
+        node_2nd%xx(icou,2) =  x_refine_surf(inod,2)
+        node_2nd%xx(icou,3) =  x_refine_surf(inod,3)
       end do
 !
       icou = ntot_nod_refine_nod + ntot_nod_refine_edge                 &
      &      + ntot_nod_refine_surf
       do inod = 1, ntot_nod_refine_ele
         icou = icou + 1
-        xx_2nd(icou,1) =  x_refine_ele(inod,1)
-        xx_2nd(icou,2) =  x_refine_ele(inod,2)
-        xx_2nd(icou,3) =  x_refine_ele(inod,3)
+        node_2nd%xx(icou,1) =  x_refine_ele(inod,1)
+        node_2nd%xx(icou,2) =  x_refine_ele(inod,2)
+        node_2nd%xx(icou,3) =  x_refine_ele(inod,3)
       end do
 !
       call deallocate_refined_xyz
@@ -82,7 +81,6 @@
 !
       use m_geometry_constants
       use m_geometry_parameter
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_refined_element_data
 !

@@ -75,13 +75,13 @@
 !
       subroutine set_2nd_mesh_data
 !
-      use set_2nd_node_geometry_4_IO
       use set_2nd_ele_connect_4_IO
       use set_2nd_nod_comm_tbl_4_IO
       use set_2nd_group_data_from_IO
+      use set_node_types_4_IO
 !
 !
-      call copy_2nd_node_geometry_from_IO
+      call copy_node_type_from_IO(node_2nd)
       call copy_2nd_ele_connect_from_IO
 !
       call copy_2nd_node_comm_tbl_from_IO
@@ -96,12 +96,12 @@
 !
       use m_comm_data_IO
       use m_read_boundary_data
-      use set_2nd_node_geometry_4_IO
       use set_2nd_ele_connect_4_IO
       use set_2nd_nod_comm_tbl_4_IO
+      use set_node_types_4_IO
 !
 !
-      call copy_2nd_node_geometry_from_IO
+      call copy_node_type_from_IO(node_2nd)
       call copy_2nd_ele_connect_from_IO
 !
       call deallocate_boundary_arrays
@@ -114,15 +114,15 @@
       subroutine set_2nd_mesh_to_IO(my_rank)
 !
       use set_2nd_nod_comm_tbl_4_IO
-      use set_2nd_node_geometry_4_IO
       use set_2nd_ele_connect_4_IO
       use set_2nd_group_data_to_IO
+      use set_node_types_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank
 !
 !
       call copy_2nd_node_comm_tbl_to_IO(my_rank)
-      call copy_2nd_node_geometry_to_IO
+      call copy_node_type_to_IO(node_2nd)
       call copy_2nd_ele_connect_to_IO
       call s_set_2nd_group_data_to_IO
 !
@@ -141,7 +141,7 @@
       call deallocate_2nd_surface_group
 !
       call deallocate_ele_connect_type(ele_2nd)
-      call deallocate_2nd_node_position
+      call deallocate_node_geometry_type(node_2nd)
       call deallocate_2nd_nod_export
       call deallocate_2nd_nod_import
 !

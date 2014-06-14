@@ -106,7 +106,6 @@
 !
       subroutine count_equator_nod_group
 !
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
       integer(kind = kint) :: inod
@@ -115,8 +114,8 @@
       bc_name_2nd(num_bc_2nd) = 'equator'
 !
       bc_istack_2nd(num_bc_2nd) = bc_istack_2nd(num_bc)
-      do inod = 1, nnod_2nd
-        if ( abs(xx_2nd(inod,3)) .le. 1.0d-11 ) then
+      do inod = 1, node_2nd%numnod
+        if ( abs(node_2nd%xx(inod,3)) .le. 1.0d-11 ) then
           bc_istack_2nd(num_bc_2nd) = bc_istack_2nd(num_bc_2nd) + 1
         end if
       end do
@@ -128,14 +127,13 @@
 !
       subroutine set_equator_nod_group
 !
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
       integer(kind = kint) :: inod, icou
 !
       icou = bc_istack_2nd(num_bc)
-      do inod = 1, nnod_2nd
-        if ( abs(xx_2nd(inod,3)) .le. 1.0d-11 ) then
+      do inod = 1, node_2nd%numnod
+        if ( abs(node_2nd%xx(inod,3)) .le. 1.0d-11 ) then
           icou = icou + 1
           bc_item_2nd(icou) = inod
         end if

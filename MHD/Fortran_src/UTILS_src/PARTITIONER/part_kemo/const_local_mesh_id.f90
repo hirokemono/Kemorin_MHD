@@ -16,7 +16,6 @@
       use m_precision
 !
       use m_geometry_parameter
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_internal_4_partitioner
       use set_local_by_subdomain_tbl
@@ -66,9 +65,9 @@
       integer(kind = kint), intent(in) :: ip
 !
 !
-      nnod_2nd =         numnod_4_subdomain(ip)
-      internal_nod_2nd = num_intnod_sub(ip)
-      call allocate_2nd_node_position
+      node_2nd%numnod = numnod_4_subdomain(ip)
+      node_2nd%internal_node = num_intnod_sub(ip)
+      call allocate_node_geometry_type(node_2nd)
       call set_local_node(ip)
 !
       end subroutine const_local_node_position

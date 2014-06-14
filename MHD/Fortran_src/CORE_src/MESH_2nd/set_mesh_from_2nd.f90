@@ -89,27 +89,26 @@
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
       integer(kind = kint) :: inod
 !
 !
-      numnod =        nnod_2nd
-      internal_node = internal_nod_2nd
+      numnod =        node_2nd%numnod
+      internal_node = node_2nd%internal_node
 !
       call allocate_node_geometry
 !
 !$omp parallel do
       do inod = 1, numnod
-        globalnodid(inod) = globalnodid_2nd(inod)
-        xx(inod,1) = xx_2nd(inod,1)
-        xx(inod,2) = xx_2nd(inod,2)
-        xx(inod,3) = xx_2nd(inod,3)
+        globalnodid(inod) = node_2nd%inod_global(inod)
+        xx(inod,1) = node_2nd%xx(inod,1)
+        xx(inod,2) = node_2nd%xx(inod,2)
+        xx(inod,3) = node_2nd%xx(inod,3)
       end do
 !$omp end parallel do
 !
-      call deallocate_2nd_node_position
+      call deallocate_node_geometry_type(node_2nd)
 !
       end subroutine copy_node_geometry_from_2nd
 !
@@ -119,7 +118,6 @@
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
 !

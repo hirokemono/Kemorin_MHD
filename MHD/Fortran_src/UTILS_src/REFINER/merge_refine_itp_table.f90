@@ -34,7 +34,6 @@
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_refine_flag_parameters
       use t_interpolate_tbl_org
@@ -89,7 +88,7 @@
      &                = c2f_2nd%tbl_org%itype_inter_org(inod_2nd)
 !
         else
-          x_target(1:3) = xx_2nd(inod_2nd,1:3)
+          x_target(1:3) = node_2nd%xx(inod_2nd,1:3)
           do k1 = 1, nnod_4_ele
             inod_org = ie_org(iele_org,k1)
             x_local_ele(k1,1:3) = xx_org(inod_org,1:3)

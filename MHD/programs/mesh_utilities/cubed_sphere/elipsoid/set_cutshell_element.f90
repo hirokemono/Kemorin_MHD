@@ -9,7 +9,6 @@
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_cutshell_nod_ele_flag
 !

@@ -23,7 +23,7 @@
       use m_machine_parameter
       use m_ctl_params_4_gen_table
       use m_geometry_parameter
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_2nd_pallalel_vector
       use m_read_mesh_data
       use m_work_const_itp_table

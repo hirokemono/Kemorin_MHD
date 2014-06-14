@@ -142,7 +142,7 @@
 !
       subroutine set_itp_course_to_fine_dest
 !
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
 !
       integer(kind = kint) :: inod
 !
@@ -154,12 +154,12 @@
 !
       id_org_domain(1) =         izero
       istack_nod_tbl_dest(0) = izero
-      istack_nod_tbl_dest(1) = nnod_2nd
-      ntot_table_dest =        nnod_2nd
+      istack_nod_tbl_dest(1) = node_2nd%numnod
+      ntot_table_dest =        node_2nd%numnod
 !
       call allocate_itp_table_dest
 !
-      do inod = 1, nnod_2nd
+      do inod = 1, node_2nd%numnod
         inod_dest_4_dest(inod) = inod
       end do
 !

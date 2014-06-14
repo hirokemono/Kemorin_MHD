@@ -50,7 +50,6 @@
 !
       subroutine set_iele_table_4_newfilter
 !
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
       integer(kind = kint) :: iele, iele_gl
@@ -71,7 +70,7 @@
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_2nd_filter_ele_length
       use m_filter_elength
 !
@@ -80,7 +79,7 @@
 !
       do iele = 1, numele
         iele_gl = globalelmid(iele)
-        if (ie(iele,1) .le. internal_nod_2nd                            &
+        if (ie(iele,1) .le. node_2nd%internal_node                      &
      &      .and. iele_gl .le. max_gl_ele_newdomain                     &
      &      .and. iele_local_2nd(iele_gl) .gt. 0) then
 !
@@ -132,7 +131,7 @@
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_2nd_filter_moments
       use m_filter_moments
 !
@@ -141,7 +140,7 @@
 !
       do iele = 1, numele
         iele_gl = globalelmid(iele)
-        if (ie(iele,1) .le. internal_nod_2nd                            &
+        if (ie(iele,1) .le. node_2nd%internal_node                      &
      &      .and. iele_gl .le. max_gl_ele_newdomain                     &
      &      .and. iele_local_2nd(iele_gl) .gt. 0) then
 !

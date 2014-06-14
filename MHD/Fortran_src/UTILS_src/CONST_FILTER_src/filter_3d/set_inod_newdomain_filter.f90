@@ -13,7 +13,6 @@
       use m_internal_4_partitioner
       use set_parallel_file_name
       use mesh_IO_select
-      use set_2nd_node_geometry_4_IO
       use const_newdomain_filter
       use set_filters_4_new_domains
 !
@@ -32,6 +31,7 @@
       use m_internal_4_partitioner
       use m_filter_file_names
       use m_field_file_format
+      use set_node_types_4_IO
 !
       integer(kind = kint) :: ip2, my_rank2
 !
@@ -40,7 +40,7 @@
 !
         mesh_file_head = target_mesh_head
         call sel_read_geometry_size(my_rank2)
-        call copy_2nd_node_geometry_from_IO
+        call copy_node_type_from_IO(node_2nd)
 !
         call deallocate_neib_domain_IO
 !
@@ -48,8 +48,7 @@
 !
         call set_num_globalnod_4_newdomain(ip2)
 !
-        call deallocate_2nd_node_position
-!
+        call deallocate_node_geometry_type(node_2nd)
       end do
 !
       end subroutine set_inod_4_newdomain_filter

@@ -23,7 +23,7 @@
       use m_machine_parameter
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_2nd_nod_comm_table
       use m_interpolate_table_orgin
       use m_interpolate_table_dest
@@ -64,7 +64,7 @@
 !
 !   communication
       call sel_calypso_send_recv                                        &
-     &          (iflag_import_item, ntot_table_org, nnod_2nd,           &
+     &          (iflag_import_item, ntot_table_org, node_2nd%numnod,    &
      &           num_dest_domain, iflag_self_itp_send,                  &
      &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
      &           num_org_domain, iflag_self_itp_recv,                   &
@@ -74,7 +74,7 @@
 !
       if (num_neib_2 .gt. 0) then
         call SOLVER_SEND_RECV                                           &
-     &                (nnod_2nd, num_neib_2, id_neib_2,                 &
+     &                (node_2nd%numnod, num_neib_2, id_neib_2,     &
      &                 istack_import_2, item_import_2,                  &
      &                 istack_export_2, item_export_2, X_dest(1) )
       end if
@@ -109,7 +109,7 @@
 !     communication
 !
       call sel_calypso_send_recv_3                                      &
-     &          (iflag_import_item, ntot_table_org, nnod_2nd,           &
+     &          (iflag_import_item, ntot_table_org, node_2nd%numnod,  &
      &           num_dest_domain, iflag_self_itp_send,                  &
      &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
      &           num_org_domain, iflag_self_itp_recv,                   &
@@ -120,7 +120,7 @@
 !
       if (num_neib_2.gt.0) then
         call SOLVER_SEND_RECV_3                                         &
-     &                (nnod_2nd, num_neib_2, id_neib_2,                 &
+     &                (node_2nd%numnod, num_neib_2, id_neib_2,  &
      &                 istack_import_2, item_import_2,                  &
      &                 istack_export_2, item_export_2, X_dest(1))
       end if
@@ -152,7 +152,7 @@
       end if
 !
       call sel_calypso_send_recv_6                                      &
-     &          (iflag_import_item, ntot_table_org, nnod_2nd,           &
+     &          (iflag_import_item, ntot_table_org, node_2nd%numnod,  &
      &           num_dest_domain, iflag_self_itp_send,                  &
      &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
      &           num_org_domain, iflag_self_itp_recv,                   &
@@ -162,7 +162,7 @@
 !
       if (num_neib_2.gt.0) then
         call SOLVER_SEND_RECV_6                                         &
-     &                (nnod_2nd, num_neib_2, id_neib_2,                 &
+     &                (node_2nd%numnod, num_neib_2, id_neib_2,  &
      &                 istack_import_2, item_import_2,                  &
      &                 istack_export_2, item_export_2, X_dest(1) )
       end if
@@ -193,7 +193,7 @@
       end if
 !
       call sel_calypso_send_recv_N                                      &
-     &          (iflag_import_item, NB, ntot_table_org, nnod_2nd,       &
+     &          (iflag_import_item, NB, ntot_table_org, node_2nd%numnod, &
      &           num_dest_domain, iflag_self_itp_send,                  &
      &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
      &           num_org_domain, iflag_self_itp_recv,                   &
@@ -203,7 +203,7 @@
 !
       if (num_neib_2.gt.0) then
         call SOLVER_SEND_RECV_N                                         &
-     &                (nnod_2nd, NB, num_neib_2, id_neib_2,             &
+     &                (node_2nd%numnod, NB, num_neib_2, id_neib_2, &
      &                 istack_import_2, item_import_2,                  &
      &                 istack_export_2, item_export_2, X_dest(1) )
       end if

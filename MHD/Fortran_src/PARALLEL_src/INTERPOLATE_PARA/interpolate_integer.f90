@@ -26,7 +26,7 @@
       use m_geometry_data
       use m_2nd_pallalel_vector
       use m_2nd_nod_comm_table
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_interpolate_table_orgin
       use m_interpolate_table_dest
 !
@@ -39,11 +39,11 @@
 !
 !
       integer(kind = kint), intent(in) :: i_vector_org(numnod)
-      integer(kind = kint), intent(inout) :: i_vector_dest(nnod_2nd)
+      integer(kind = kint), intent(inout) :: i_vector_dest(node_2nd%numnod)
 !
 !     initialize
 !
-      call verify_2nd_iccg_int_mat(nnod_2nd)
+      call verify_2nd_iccg_int_mat(node_2nd%numnod)
 !
       call verifty_work_4_itp_int(ntot_table_org)
 !
@@ -63,7 +63,7 @@
 !     communication
 !
       call sel_calypso_send_recv_int                                    &
-     &          (iflag_import_item, ntot_table_org, nnod_2nd,           &
+     &          (iflag_import_item, ntot_table_org, node_2nd%numnod, &
      &           num_dest_domain, iflag_self_itp_send,                  &
      &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
      &           num_org_domain, iflag_self_itp_recv,                   &
@@ -74,13 +74,13 @@
 !
       if (num_neib_2.gt.0) then
         call solver_send_recv_i                                         &
-     &                (nnod_2nd, num_neib_2, id_neib_2,                 &
+     &                (node_2nd%numnod, num_neib_2, id_neib_2,  &
      &                 istack_import_2, item_import_2,                  &
      &                 istack_export_2, item_export_2,                  &
      &                 ivec_2nd(1) )
       end if
 !
-      i_vector_dest(1:nnod_2nd) = ivec_2nd(1:nnod_2nd)
+      i_vector_dest(1:node_2nd%numnod) = ivec_2nd(1:node_2nd%numnod)
 !
       end subroutine s_interpolate_integer
 !

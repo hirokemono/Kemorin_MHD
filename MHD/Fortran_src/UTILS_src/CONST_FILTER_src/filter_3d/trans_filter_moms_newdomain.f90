@@ -152,8 +152,8 @@
       call deallocate_node_data_dummy
       call deallocate_comm_item_IO
 !
-      nnod_2nd = numnod_dummy
-      internal_nod_2nd = internal_node_dummy
+      node_2nd%numnod = numnod_dummy
+      node_2nd%internal_node = internal_node_dummy
       call copy_2nd_ele_connect_from_IO
 !
 !    construct new filter table

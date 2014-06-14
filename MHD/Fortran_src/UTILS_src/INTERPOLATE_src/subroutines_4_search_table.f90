@@ -44,7 +44,6 @@
 !
       subroutine copy_position_2_2nd_local_ele(iele, x_local)
 !
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
       integer(kind = kint), intent(in) :: iele
@@ -56,7 +55,7 @@
 !
        do i = 1, ele_2nd%nnod_4_ele
          inod = ele_2nd%ie(iele,i)
-         x_local(i,1:3) = xx_2nd(inod,1:3)
+         x_local(i,1:3) = node_2nd%xx(inod,1:3)
        end do
 !
       end subroutine copy_position_2_2nd_local_ele
@@ -66,7 +65,6 @@
       subroutine cal_3vector_4_tet_2nd(itet, v_target, v_tetra,         &
      &          x_target, x_local)
 !
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_connect_hexa_2_tetra
 !
@@ -100,7 +98,6 @@
       subroutine init_coefs_on_tet(itet, coefs_by_tet, s)
 !
       use m_constants
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_connect_hexa_2_tetra
 !

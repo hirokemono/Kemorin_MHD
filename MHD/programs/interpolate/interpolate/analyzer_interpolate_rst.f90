@@ -28,13 +28,12 @@
       use m_ctl_params_4_gen_table
       use m_geometry_parameter
       use m_node_phys_address
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_2nd_phys_data
 !
       use input_control_interpolate
       use const_mesh_info
-      use set_smp_size_4_2nd
+      use set_size_4_smp_types
       use nodal_vector_send_recv
       use set_field_to_restart
       use field_IO_select
@@ -66,7 +65,7 @@
 !     --------------------- 
 !
       if (my_rank .lt. ndomain_dest) then
-        call s_count_smp_size_4_2nd
+        call count_size_4_smp_mesh_type(node_2nd, ele_2nd)
         if (i_debug.eq.iflag_full_msg) call check_smp_size_2nd(my_rank)
       end if
 !
@@ -88,7 +87,7 @@
       call link_nodal_field_names
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data_type'
-      call alloc_phys_data_type(nnod_2nd, phys_2nd)
+      call alloc_phys_data_type(node_2nd%numnod, phys_2nd)
 !
 !     --------------------- 
 !
@@ -146,9 +145,9 @@
         call interpolate_nodal_data
 !
         if (my_rank .lt. ndomain_dest) then
-          numgrid_phys_IO = nnod_2nd
+          numgrid_phys_IO = node_2nd%numnod
           call allocate_phys_data_IO
-          call copy_2nd_field_data_to_rst
+          call copy_field_type_to_rst(node_2nd, phys_2nd)
           call copy_time_steps_to_restart
 !
           iflag_field_data_fmt = ifmt_itp_rst_file

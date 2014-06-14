@@ -252,11 +252,11 @@
 !
       type(node_data), intent(inout) :: node
 !
-       allocate( node%istack_nod_smp(0:np_smp))
-       allocate( node%istack_internal_smp(0:np_smp))
+      allocate( node%istack_nod_smp(0:np_smp))
+      allocate( node%istack_internal_smp(0:np_smp))
 !
-       node%istack_nod_smp =      0
-       node%istack_internal_smp = 0
+      node%istack_nod_smp =      0
+      node%istack_internal_smp = 0
 !
       end subroutine allocate_node_param_smp_type
 !

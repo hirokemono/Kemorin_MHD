@@ -23,7 +23,6 @@
 !
       subroutine copy_elength_ele_from_2nd
 !
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_2nd_filter_ele_length
       use m_filter_elength
@@ -31,7 +30,7 @@
       integer(kind = kint) :: iele, nd
 !
 !
-      nnod_filter_mom = nnod_2nd
+      nnod_filter_mom = node_2nd%numnod
       nele_filter_mom = ele_2nd%numele
       call allocate_ele_length
 !
@@ -70,7 +69,6 @@
 !
       subroutine copy_filter_moments_from_2nd
 !
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
       use m_2nd_filter_moments
       use m_filter_moments
@@ -78,7 +76,7 @@
       integer(kind = kint) :: iele, ifil, nd
 !
 !
-      nnod_fmom = nnod_2nd
+      nnod_fmom = node_2nd%numnod
       call allocate_filter_moms_ele(ele_2nd%numele)
 !
       do ifil = 1, num_filter_moms

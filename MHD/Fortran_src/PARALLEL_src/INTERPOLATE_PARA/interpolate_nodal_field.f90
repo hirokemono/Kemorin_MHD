@@ -23,7 +23,7 @@
       use m_phys_constants
       use m_geometry_parameter
       use m_node_phys_data
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_2nd_phys_data
 !
       implicit none
@@ -50,7 +50,7 @@
       call const_interporate_mat(numele, nnod_4_ele, ie)
 !
       call verify_vector_for_solver(n_sym_tensor, numnod)
-      call verify_2nd_iccg_matrix(n_sym_tensor, nnod_2nd)
+      call verify_2nd_iccg_matrix(n_sym_tensor, node_2nd%numnod)
 !
       end subroutine init_interpolate_nodal_data
 !
@@ -104,13 +104,13 @@
       integer(kind = kint) :: inod
 !
 !
-      call verify_2nd_iccg_matrix(n_scalar, nnod_2nd)
+      call verify_2nd_iccg_matrix(n_scalar, node_2nd%numnod)
 !
-      call interpolate_mod_1(numnod, nnod_2nd,                          &
+      call interpolate_mod_1(numnod, node_2nd%numnod,    &
      &    d_nod(1,i_origin), xvec_2nd(1))
 !
 !$omp parallel do
-      do inod = 1, nnod_2nd
+      do inod = 1, node_2nd%numnod
         phys_2nd%d_fld(inod,i_dest) = xvec_2nd(inod)
       end do
 !$omp end parallel do
@@ -132,7 +132,7 @@
 !
 !     initialize
       call verify_vector_for_solver(n_vector, numnod)
-      call verify_2nd_iccg_matrix(n_vector, nnod_2nd)
+      call verify_2nd_iccg_matrix(n_vector, node_2nd%numnod)
 !
 !$omp parallel do
       do inod = 1, numnod
@@ -144,10 +144,10 @@
 !
 !    interpolation
 !
-      call interpolate_mod_3(numnod, nnod_2nd, x_vec(1), xvec_2nd(1))
+      call interpolate_mod_3(numnod, node_2nd%numnod, x_vec(1), xvec_2nd(1))
 !
 !$omp parallel do
-      do inod = 1, nnod_2nd
+      do inod = 1, node_2nd%numnod
         phys_2nd%d_fld(inod,i_dest  ) = xvec_2nd(3*inod-2)
         phys_2nd%d_fld(inod,i_dest+1) = xvec_2nd(3*inod-1)
         phys_2nd%d_fld(inod,i_dest+2) = xvec_2nd(3*inod  )
@@ -171,7 +171,7 @@
 !     initialize
 !
       call verify_vector_for_solver(n_sym_tensor, numnod)
-      call verify_2nd_iccg_matrix(n_sym_tensor, nnod_2nd)
+      call verify_2nd_iccg_matrix(n_sym_tensor, node_2nd%numnod)
 !
 !
 !$omp parallel do
@@ -186,10 +186,10 @@
 !$omp end parallel do
 !
 !    interpolation
-      call interpolate_mod_6(numnod, nnod_2nd, x_vec(1), xvec_2nd(1))
+      call interpolate_mod_6(numnod, node_2nd%numnod, x_vec(1), xvec_2nd(1))
 !
 !$omp parallel do
-      do inod = 1, nnod_2nd
+      do inod = 1, node_2nd%numnod
         phys_2nd%d_fld(inod,i_dest  ) = xvec_2nd(6*inod-5)
         phys_2nd%d_fld(inod,i_dest+1) = xvec_2nd(6*inod-4)
         phys_2nd%d_fld(inod,i_dest+2) = xvec_2nd(6*inod-3)
@@ -217,7 +217,7 @@
 !     initialize
 !
       call verify_vector_for_solver(numdir, numnod)
-      call verify_2nd_iccg_matrix(numdir, nnod_2nd)
+      call verify_2nd_iccg_matrix(numdir, node_2nd%numnod)
 !
 !$omp parallel private(inod)
       do nd = 1, numdir
@@ -230,13 +230,13 @@
 !$omp end parallel
 !
 !    interpolation
-      call interpolate_mod_N(numdir, nnod_2nd, numdir,                  &
+      call interpolate_mod_N(numdir, node_2nd%numnod, numdir,   &
      &                       x_vec(1), xvec_2nd(1))
 !
 !$omp parallel private(inod)
       do nd = 1, numdir
 !$omp do
-        do inod = 1, nnod_2nd
+        do inod = 1, node_2nd%numnod
           phys_2nd%d_fld(inod,i_dest+nd-1) = xvec_2nd(numdir*(inod-1)+nd)
         end do
 !$omp end do nowait

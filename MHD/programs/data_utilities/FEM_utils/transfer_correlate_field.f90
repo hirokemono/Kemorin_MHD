@@ -86,16 +86,16 @@
       subroutine coord_transfer_4_2nd_field
 !
       use m_ctl_params_4_diff_udt
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_2nd_phys_data
 !
 !
       if     (iflag_correlate_coord .eq. iflag_spherical) then
-        call transfer_nod_fld_to_sph(nnod_2nd, phys_2nd%num_phys,       &
+        call transfer_nod_fld_to_sph(node_2nd%numnod, phys_2nd%num_phys, &
      &      phys_2nd%ntot_phys, phys_2nd%istack_component,              &
      &      phys_2nd%d_fld)
       else if(iflag_correlate_coord .eq. iflag_cylindrical) then
-        call transfer_nod_fld_to_cyl(nnod_2nd, phys_2nd%num_phys,       &
+        call transfer_nod_fld_to_cyl(node_2nd%numnod, phys_2nd%num_phys,  &
      &      phys_2nd%ntot_phys, phys_2nd%istack_component,              &
      &      phys_2nd%d_fld)
       end if
@@ -109,7 +109,7 @@
 !
       use m_ctl_params_4_diff_udt
       use m_node_phys_data
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_2nd_phys_data
 !
       integer(kind = kint) :: inod, nd

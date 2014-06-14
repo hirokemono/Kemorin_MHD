@@ -109,7 +109,6 @@
 !
       use m_geometry_constants
       use m_geometry_parameter
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
       integer(kind = kint) :: iele, inum, i, k, inod, isig
@@ -124,7 +123,7 @@
           do i = 1, num_linear_sf
             k = node_on_sf_4(i,inum)
             inod = ele_2nd%ie(iele,k)
-            if ( xx_2nd(inod,3) .gt. 1.0d-11 ) isig = 0
+            if ( node_2nd%xx(inod,3) .gt. 1.0d-11 ) isig = 0
           end do
           if (isig .eq. 1) then
             surf_istack_2nd(num_surf_2nd)                               &
@@ -142,7 +141,6 @@
 !
       use m_geometry_constants
       use m_geometry_parameter
-      use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
       integer(kind = kint) :: iele, inum, i, k, inod, icou, isig
@@ -155,7 +153,7 @@
           do i = 1, num_linear_sf
             k = node_on_sf_4(i,inum)
             inod = ele_2nd%ie(iele,k)
-            if ( xx_2nd(inod,3) .gt. 1.0d-11 ) isig = 0
+            if ( node_2nd%xx(inod,3) .gt. 1.0d-11 ) isig = 0
           end do
           if (isig .eq. 1) then
             icou = icou + 1

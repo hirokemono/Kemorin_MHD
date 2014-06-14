@@ -22,7 +22,7 @@
       subroutine set_2nd_data_by_udt_once(my_rank, istep_ucd,           &
      &          ifile_format, ucd_prefix)
 !
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_2nd_phys_data
       use ucd_IO_select
       use set_and_cal_udt_data
@@ -37,9 +37,9 @@
       ucd%ifmt_file = ifile_format
       ucd%file_prefix = ucd_prefix
 !
-      ucd%nnod = nnod_2nd
+      ucd%nnod = node_2nd%numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, ucd)
-      call set_field_by_udt_data(nnod_2nd, phys_2nd%num_phys,           &
+      call set_field_by_udt_data(node_2nd%numnod, phys_2nd%num_phys,    &
      &    phys_2nd%ntot_phys, phys_2nd%istack_component,                &
      &    phys_2nd%phys_name, phys_2nd%d_fld, ucd)
       call deallocate_ucd_data(ucd)
