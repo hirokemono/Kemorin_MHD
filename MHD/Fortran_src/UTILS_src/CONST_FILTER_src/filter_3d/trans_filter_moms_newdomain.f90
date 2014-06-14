@@ -159,7 +159,7 @@
 !    construct new filter table
 !
       if (iflag_set_filter_elen .gt. 0) then
-        call allocate_2nd_ele_length(nele_2nd)
+        call allocate_2nd_ele_length(ele_2nd%numele)
       end if
 !
       if (iflag_set_filter_moms .gt. 0) then
@@ -168,7 +168,7 @@
         call sel_read_num_filter_mom_file(izero)
 !
         num_filter_moms_2nd = num_filter_moms
-        call allocate_2nd_filter_moms_ele(nele_2nd, num_filter_moms)
+        call allocate_2nd_filter_moms_ele(ele_2nd%numele, num_filter_moms)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'set_iele_table_4_newfilter'
@@ -198,7 +198,7 @@
       end if
 !
       call deallocate_ref_1d_moment
-      call deallocate_2nd_element_connect
+      call deallocate_ele_connect_type(ele_2nd)
 !
       end subroutine trans_filter_moms_each_domain
 !

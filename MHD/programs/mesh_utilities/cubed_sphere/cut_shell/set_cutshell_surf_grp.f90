@@ -118,12 +118,12 @@
       surf_name_2nd(num_surf_2nd) = 'equator_surf'
 !
       surf_istack_2nd(num_surf_2nd) = surf_istack_2nd(num_surf)
-      do iele = 1, nele_2nd
+      do iele = 1, ele_2nd%numele
         do inum = 1, nsurf_4_ele
           isig = 1
           do i = 1, num_linear_sf
             k = node_on_sf_4(i,inum)
-            inod = ie_2nd(iele,k)
+            inod = ele_2nd%ie(iele,k)
             if ( xx_2nd(inod,3) .gt. 1.0d-11 ) isig = 0
           end do
           if (isig .eq. 1) then
@@ -149,12 +149,12 @@
 !
 !
       icou = surf_istack_2nd(num_surf)
-      do iele = 1, nele_2nd
+      do iele = 1, ele_2nd%numele
         do inum = 1, nsurf_4_ele
           isig = 1
           do i = 1, num_linear_sf
             k = node_on_sf_4(i,inum)
-            inod = ie_2nd(iele,k)
+            inod = ele_2nd%ie(iele,k)
             if ( xx_2nd(inod,3) .gt. 1.0d-11 ) isig = 0
           end do
           if (isig .eq. 1) then

@@ -23,7 +23,6 @@
       use m_machine_parameter
       use m_2nd_geometry_param
       use m_2nd_geometry_data
-      use m_2nd_element_geometry_data
       use m_data_4_interpolate_org
 !
       integer(kind = kint) :: ip, ist, ied, iele, inod, k1
@@ -35,11 +34,11 @@
 !
 !$omp parallel do private(ist,ied,iele,inod,k1,rtmp)
       do ip = 1, np_smp
-        ist = iele_smp_stack_2nd(ip-1) + 1
-        ied = iele_smp_stack_2nd(ip)
-        do k1 = 2, nnod_4_ele_2nd
+        ist = ele_2nd%istack_ele_smp(ip-1) + 1
+        ied = ele_2nd%istack_ele_smp(ip)
+        do k1 = 2, ele_2nd%nnod_4_ele
           do iele = ist, ied
-            inod = ie_2nd(iele,k1)
+            inod = ele_2nd%ie(iele,k1)
             if (     xx_2nd(inod,1) .ge. 0.0d0                          &
      &         .and. xx_2nd(inod,2) .ge. 0.0d0) then
               iflag_meridian_x(iele) = iflag_meridian_x(iele) + 1
@@ -63,11 +62,11 @@
 !
 !$omp parallel do private(ist,ied,iele,inod,k1,rtmp)
       do ip = 1, np_smp
-        ist = iele_smp_stack_2nd(ip-1) + 1
-        ied = iele_smp_stack_2nd(ip)
+        ist = ele_2nd%istack_ele_smp(ip-1) + 1
+        ied = ele_2nd%istack_ele_smp(ip)
 !
         do iele = ist, ied
-          inod = ie_2nd(iele,1)
+          inod = ele_2nd%ie(iele,1)
           min_sph_each_ele(iele,1) = radius_2nd(inod)
           max_sph_each_ele(iele,1) = radius_2nd(inod)
           min_sph_each_ele(iele,2) = theta_2nd(inod)
@@ -77,9 +76,9 @@
         end do
 !
 !
-        do k1 = 2, nnod_4_ele_2nd
+        do k1 = 2, ele_2nd%nnod_4_ele
           do iele = ist, ied
-            inod = ie_2nd(iele,k1)
+            inod = ele_2nd%ie(iele,k1)
             min_sph_each_ele(iele,1)                                    &
      &         = min(min_sph_each_ele(iele,1),radius_2nd(inod) )
             max_sph_each_ele(iele,1)                                    &
@@ -96,12 +95,12 @@
         end do
 !
         do iele = ist, ied
-          if (theta_ele_2nd(iele) .lt. min_sph_each_ele(iele,2)) then
+          if(ele_2nd%theta_ele(iele).lt.min_sph_each_ele(iele,2)) then
             min_sph_each_ele(iele,2) = 0.0d0
             min_sph_each_ele(iele,3) = 0.0d0
             max_sph_each_ele(iele,3) = two * pi
           else if                                                       &
-     &       (theta_ele_2nd(iele) .gt. max_sph_each_ele(iele,2)) then
+     &       (ele_2nd%theta_ele(iele).gt.max_sph_each_ele(iele,2)) then
             max_sph_each_ele(iele,2) = pi
             min_sph_each_ele(iele,3) = 0.0d0
             max_sph_each_ele(iele,3) = two * pi

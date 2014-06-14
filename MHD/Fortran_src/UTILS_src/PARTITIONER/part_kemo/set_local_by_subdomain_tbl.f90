@@ -59,9 +59,9 @@
       ist = istack_numele_sub(ip-1)
       do inum = 1, numele_4_subdomain(ip)
         iele = iele_4_subdomain(inum+ist)
-        globalelmid_2nd(inum) = iele
-        nodelm_2nd(inum) = nodelm(iele)
-        elmtyp_2nd(inum) = elmtyp(iele)
+        ele_2nd%iele_global(inum) = iele
+        ele_2nd%nodelm(inum) = nodelm(iele)
+        ele_2nd%elmtyp(inum) = elmtyp(iele)
 !
         iele_local_part(iele)= inum 
       end do

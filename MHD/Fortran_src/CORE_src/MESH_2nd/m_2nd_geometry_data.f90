@@ -4,25 +4,23 @@
 !     written by H. Matsui on Aug., 2006
 !
 !      subroutine allocate_2nd_geometry_data
+!      subroutine allocate_2nd_geomet_param_smp
 !
+!      subroutine deallocate_2nd_geomet_param_smp
 !       subroutine deallocate_2nd_node_position
-!       subroutine deallocate_2nd_element_connect
 !
 !      subroutine allocate_2nd_node_position
-!      subroutine allocate_2nd_element_connect
-!      subroutine allocate_2nd_element_data
-!      subroutine allocate_2nd_surface_connect
 !
 !       subroutine unlink_2nd_geometry_data
 !       subroutine unlink_2nd_node_position
-!       subroutine unlink_2nd_element_connect
-!       subroutine unlink_2nd_element_data
 !
+!      subroutine check_smp_size_2nd(my_rank)
 !      subroutine check_smp_size_2nd_surf_edge
 !
       module   m_2nd_geometry_data
 !
       use m_precision
+      use t_geometry_data
       use t_surface_data
       use t_edge_data
 !
@@ -31,20 +29,10 @@
 !
 !>   position of nodes (i:direction, j:node ID)
       real(kind=kreal)  , pointer  :: xx_2nd(:,:)
-!>   element connectivity ie(i:element ID,j:element index)
-      integer(kind=kint), pointer  :: ie_2nd(:,:)
-!>   element type defined by the first element
-      integer(kind=kint) ::  first_ele_type_2nd
 !
 !
-      integer(kind=kint), pointer ::  elmtyp_2nd(:)
-!     element type id   (where i:element id)
-      integer(kind=kint), pointer ::  nodelm_2nd(:)
-!     element type id   (where i:element id)
       integer(kind=kint), pointer ::  globalnodid_2nd(:)
 !     global node    id (where i:node id)
-      integer(kind=kint), pointer ::  globalelmid_2nd(:)
-!     global element id (where i:element id)
 !
       real(kind=kreal), pointer :: radius_2nd(:)
 !   distance from the centre
@@ -59,10 +47,13 @@
       real(kind=kreal), pointer :: a_s_cyl_2nd(:)
 !   1 / a_s_cylinder
 !
-      integer(kind = kint), pointer :: interior_ele_2nd(:)
-!   flag for interior element
-      real(kind=kreal)  , pointer  :: e_multi_2nd(:)
 !   parameter for overlap
+!
+!
+!
+!>      element information for 2nd mesh
+      type(element_data), save :: ele_2nd
+!ele_2nd%ie
 !
 !>      surface information for 2nd mesh
       type(surface_data), save :: surf_2nd
@@ -82,13 +73,28 @@
 !
       call allocate_2nd_node_position
 !
-      call allocate_2nd_element_connect
-!
-      call allocate_2nd_element_data
+      call allocate_ele_connect_type(ele_2nd)
+      call allocate_overlaped_ele_type(ele_2nd)
 !
       end subroutine allocate_2nd_geometry_data
 !
 ! ------------------------------------------------------
+!
+      subroutine allocate_2nd_geomet_param_smp
+!
+      use m_2nd_geometry_param
+      use m_machine_parameter
+!
+      call allocate_ele_param_smp_type(ele_2nd)
+      allocate( inod_smp_stack_2nd(0:np_smp))
+      allocate( inter_smp_stack_2nd(0:np_smp))
+!
+      inod_smp_stack_2nd = 0
+      inter_smp_stack_2nd = 0
+!
+      end subroutine allocate_2nd_geomet_param_smp
+!
+!-----------------------------------------------------------------------
 !
       subroutine allocate_2nd_node_position
 !
@@ -118,63 +124,29 @@
       end subroutine allocate_2nd_node_position
 !
 ! ------------------------------------------------------
-!
-      subroutine allocate_2nd_element_connect
-!
-      use m_2nd_geometry_param
-!
-!
-      allocate(globalelmid_2nd(nele_2nd))
-      allocate(elmtyp_2nd(nele_2nd))
-      allocate(nodelm_2nd(nele_2nd))
-!
-      allocate(ie_2nd(nele_2nd,nnod_4_ele_2nd))
-!
-      globalelmid_2nd = 0
-      elmtyp_2nd = 0
-      nodelm_2nd = 0
-!
-      ie_2nd = 0
-!
-      end subroutine allocate_2nd_element_connect
-!
-! ------------------------------------------------------
-!
-      subroutine allocate_2nd_element_data
-!
-      use m_2nd_geometry_param
-!
-      allocate ( interior_ele_2nd(nele_2nd) )
-      allocate ( e_multi_2nd(nele_2nd) )
-!
-      interior_ele_2nd = 1
-      e_multi_2nd = 1.0d0
-!
-      end subroutine allocate_2nd_element_data
-!
-! ------------------------------------------------------
-!
-      subroutine allocate_2nd_surface_connect
-!
-      use m_2nd_geometry_param
-!
-!
-      call allocate_surface_connect_type(surf_2nd, nele_2nd)
-!
-      end subroutine allocate_2nd_surface_connect
-!
-! ------------------------------------------------------
 !------------------------------------------------------------------
 !
-       subroutine deallocate_2nd_geometry_data
+      subroutine deallocate_2nd_geomet_param_smp
+!
+      use m_2nd_geometry_param
+!
+      call deallocate_ele_param_smp_type(ele_2nd)
+      deallocate( inod_smp_stack_2nd)
+      deallocate( inter_smp_stack_2nd)
+!
+      end subroutine deallocate_2nd_geomet_param_smp
+!
+!-----------------------------------------------------------------------
+!
+      subroutine deallocate_2nd_geometry_data
 !
 !
-       call deallocate_2nd_node_position
-       call deallocate_2nd_element_connect
+      call deallocate_2nd_node_position
+      call deallocate_ele_connect_type(ele_2nd)
 !
-       call deallocate_2nd_element_data
+      call deallocate_overlaped_ele_type(ele_2nd)
 !
-       end subroutine deallocate_2nd_geometry_data
+      end subroutine deallocate_2nd_geometry_data
 !
 ! ------------------------------------------------------
 !
@@ -194,45 +166,13 @@
        end subroutine deallocate_2nd_node_position
 !
 ! ------------------------------------------------------
-!
-       subroutine deallocate_2nd_element_connect
-!
-!
-        deallocate(globalelmid_2nd)
-        deallocate(elmtyp_2nd)
-        deallocate(nodelm_2nd)
-!
-        deallocate(ie_2nd)
-!
-       end subroutine deallocate_2nd_element_connect
-!
-! ------------------------------------------------------
-!
-       subroutine deallocate_2nd_element_data
-!
-        deallocate ( interior_ele_2nd )
-        deallocate ( e_multi_2nd )
-!
-       end subroutine deallocate_2nd_element_data
-!
-! ------------------------------------------------------
-!
-      subroutine deallocate_2nd_surface_connect
-!
-      call deallocate_surface_connect_type(surf_2nd)
-!
-      end subroutine deallocate_2nd_surface_connect
-!
-! ------------------------------------------------------
 ! ------------------------------------------------------
 !
        subroutine unlink_2nd_geometry_data
 !
 !
        call unlink_2nd_node_position
-       call unlink_2nd_element_connect
-!
-       call unlink_2nd_element_data
+       call unlink_ele_connect_type(ele_2nd)
 !
        end subroutine unlink_2nd_geometry_data
 !
@@ -253,30 +193,25 @@
 !
        end subroutine unlink_2nd_node_position
 !
-! ------------------------------------------------------
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
-       subroutine unlink_2nd_element_connect
+      subroutine check_smp_size_2nd(my_rank)
 !
+      use m_2nd_geometry_param
 !
-        nullify(globalelmid_2nd)
-        nullify(elmtyp_2nd)
-        nullify(nodelm_2nd)
+      integer(kind = kint), intent(in) :: my_rank
 !
-        nullify(ie_2nd)
+       write(*,*) 'PE: ', my_rank,                                      &
+     &           'inod_smp_stack_2nd ', inod_smp_stack_2nd
+       write(*,*) 'PE: ', my_rank,                                      &
+     &           'inter_smp_stack_2nd ', inter_smp_stack_2nd
+       write(*,*) 'PE: ', my_rank,                                      &
+     &           'ele_2nd%istack_ele_smp ', ele_2nd%istack_ele_smp
 !
-       end subroutine unlink_2nd_element_connect
+      end subroutine check_smp_size_2nd
 !
-! ------------------------------------------------------
-!
-       subroutine unlink_2nd_element_data
-!
-        nullify ( interior_ele_2nd )
-        nullify ( e_multi_2nd )
-!
-       end subroutine unlink_2nd_element_data
-!
-! ------------------------------------------------------
-! ------------------------------------------------------
+!-----------------------------------------------------------------------
 !
       subroutine check_smp_size_2nd_surf_edge
 !

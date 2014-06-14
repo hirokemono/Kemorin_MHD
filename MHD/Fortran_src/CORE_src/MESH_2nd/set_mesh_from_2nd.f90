@@ -126,10 +126,10 @@
       integer(kind = kint) :: iele, k1
 !
 !
-      numele =            nele_2nd
-      first_ele_type = first_ele_type_2nd
+      numele =            ele_2nd%numele
+      first_ele_type = ele_2nd%first_ele_type
 !
-      nnod_4_ele =  nnod_4_ele_2nd
+      nnod_4_ele =  ele_2nd%nnod_4_ele
       nnod_4_surf = surf_2nd%nnod_4_surf
       nnod_4_edge = edge_2nd%nnod_4_edge
 !
@@ -139,21 +139,21 @@
       do k1 = 1, nnod_4_ele
 !$omp do private(iele)
         do iele = 1, numele
-          ie(iele,k1) = ie_2nd(iele,k1)
+          ie(iele,k1) = ele_2nd%ie(iele,k1)
         end do
 !$omp end do nowait
       end do
 !
 !$omp do
       do iele = 1, numele
-        globalelmid(iele) = globalelmid_2nd(iele)
-        elmtyp(iele) =      elmtyp_2nd(iele)
-        nodelm(iele) =      nodelm_2nd(iele)
+        globalelmid(iele) = ele_2nd%iele_global(iele)
+        elmtyp(iele) =      ele_2nd%elmtyp(iele)
+        nodelm(iele) =      ele_2nd%nodelm(iele)
       end do
 !$omp end do
 !$omp end parallel
 !
-      call deallocate_2nd_element_connect
+      call deallocate_ele_connect_type(ele_2nd)
 !
       end subroutine copy_element_connect_from_2nd
 !

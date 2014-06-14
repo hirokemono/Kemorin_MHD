@@ -25,6 +25,7 @@
       use m_2nd_ele_comm_table
       use m_2nd_surf_comm_table
       use m_2nd_edge_comm_table
+      use m_2nd_geometry_data
       use m_partitioner_comm_table
       use m_ctl_param_partitioner
       use m_read_mesh_data
@@ -80,7 +81,7 @@
         end do
 
         call const_local_mesh_sf_ele(ip)
-        call s_set_local_connectivities
+        call s_set_local_connectivities(ele_2nd, surf_2nd, edge_2nd)
         call s_const_local_groups
 !C
 !C +-------------------------+

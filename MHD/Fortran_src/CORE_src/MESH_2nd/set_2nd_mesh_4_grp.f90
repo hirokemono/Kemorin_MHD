@@ -45,7 +45,7 @@
       call allocate_imark_4_grp(surf_2nd%numsurf)
       call allocate_sf_stack_4_ele_g_2nd
 !
-      call count_nod_4_ele_grp(surf_2nd%numsurf, nele_2nd, nsurf_4_ele,        &
+      call count_nod_4_ele_grp(surf_2nd%numsurf, ele_2nd%numele, nsurf_4_ele, &
      &    surf_2nd%isf_4_ele, num_mat_2nd, num_mat_bc_2nd,              &
      &    mat_istack_2nd, mat_item_2nd,                                 &
      &    ntot_surf_ele_grp_2nd, nsurf_ele_grp_2nd,                     &
@@ -53,7 +53,7 @@
 !
       call allocate_sf_id_4_ele_g_2nd
 !
-      call set_nod_4_ele_grp(surf_2nd%numsurf, nele_2nd, nsurf_4_ele,          &
+      call set_nod_4_ele_grp(surf_2nd%numsurf, ele_2nd%numele, nsurf_4_ele, &
      &    surf_2nd%isf_4_ele, num_mat_2nd, num_mat_bc_2nd,              &
      &    mat_istack_2nd, mat_item_2nd,                                 &
      &    ntot_surf_ele_grp_2nd, nsurf_ele_grp_2nd,                     &
@@ -75,7 +75,7 @@
       call allocate_imark_4_grp(edge_2nd%numedge)
       call allocate_eg_stack_4_ele_g_2nd
 !
-      call count_nod_4_ele_grp(edge_2nd%numedge, nele_2nd, nedge_4_ele, &
+      call count_nod_4_ele_grp(edge_2nd%numedge, ele_2nd%numele, nedge_4_ele, &
      &    edge_2nd%iedge_4_ele, num_mat_2nd, num_mat_bc_2nd,            &
      &    mat_istack_2nd, mat_item_2nd,                                 &
      &    ntot_edge_ele_grp_2nd, nedge_ele_grp_2nd,                     &
@@ -83,7 +83,7 @@
 !
       call allocate_eg_id_4_ele_g_2nd
 !
-      call set_nod_4_ele_grp(edge_2nd%numedge, nele_2nd, nedge_4_ele,   &
+      call set_nod_4_ele_grp(edge_2nd%numedge, ele_2nd%numele, nedge_4_ele,   &
      &    edge_2nd%iedge_4_ele, num_mat_2nd, num_mat_bc_2nd,            &
      &    mat_istack_2nd, mat_item_2nd,                                 &
      &    ntot_edge_ele_grp_2nd, nedge_ele_grp_2nd,                     &
@@ -104,16 +104,16 @@
       call allocate_imark_4_grp(nnod_2nd)
       call allocate_nd_stack_4_ele_g_2nd
 !
-      call count_nod_4_ele_grp(nnod_2nd, nele_2nd, nnod_4_ele_2nd,      &
-     &    ie_2nd, num_mat_2nd, num_mat_bc_2nd,                          &
+      call count_nod_4_ele_grp(nnod_2nd, ele_2nd%numele,  &
+     &    ele_2nd%nnod_4_ele, ele_2nd%ie, num_mat_2nd, num_mat_bc_2nd,  &
      &    mat_istack_2nd, mat_item_2nd,                                 &
      &    ntot_node_ele_grp_2nd, nnod_ele_grp_2nd,                      &
      &    inod_stack_ele_grp_2nd, imark_4_grp)
 !
       call allocate_nd_id_4_ele_g_2nd
 !
-      call set_nod_4_ele_grp(nnod_2nd, nele_2nd, nnod_4_ele_2nd,        &
-     &    ie_2nd, num_mat_2nd, num_mat_bc_2nd,                          &
+      call set_nod_4_ele_grp(nnod_2nd, ele_2nd%numele, ele_2nd%nnod_4_ele, &
+     &    ele_2nd%ie, num_mat_2nd, num_mat_bc_2nd,                          &
      &    mat_istack_2nd, mat_item_2nd,                                 &
      &    ntot_node_ele_grp_2nd, nnod_ele_grp_2nd,                      &
      &    inod_stack_ele_grp_2nd, inod_ele_grp_2nd,                     &
@@ -191,7 +191,7 @@
       use set_surface_id_4_surf_grp
 !
 !
-      call set_surface_id_4_surf_group(nele_2nd, surf_2nd%isf_4_ele,    &
+      call set_surface_id_4_surf_group(ele_2nd%numele, surf_2nd%isf_4_ele,    &
      &    num_surf_2nd, num_surf_bc_2nd, surf_istack_2nd,               &
      &    surf_item_2nd, isurf_grp_2nd, isurf_grp_n_2nd)
 !

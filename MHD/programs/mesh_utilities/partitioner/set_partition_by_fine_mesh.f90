@@ -64,7 +64,7 @@
       call deallocate_itp_table_dest
       call deallocate_itp_num_dest
 !
-      call deallocate_2nd_element_connect
+      call deallocate_ele_connect_type(ele_2nd)
       call deallocate_2nd_node_position
 !
       end subroutine s_set_partition_by_fine_mesh
@@ -111,8 +111,8 @@
 !
 !      transfer interpolate table
 !
-      call s_interporate_imark_para(np_smp, nnod_2nd, nele_2nd,         &
-     &    nnod_4_ele_2nd, ie_2nd, IGROUP_FINER(1),                      &
+      call s_interporate_imark_para(np_smp, nnod_2nd, ele_2nd%numele,   &
+     &    ele_2nd%nnod_4_ele, ele_2nd%ie, IGROUP_FINER(1),              &
      &    istack_tbl_type_org_smp, ntot_table_org, iele_org_4_org,      &
      &    itype_inter_org, IGROUP_nod(1) )
 !

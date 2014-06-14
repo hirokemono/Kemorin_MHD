@@ -64,10 +64,10 @@
       use m_27quad_2_8x8linear
 !
 !
-       nele_2nd = 8*numele
+       ele_2nd%numele = 8*numele
 !
-      call allocate_2nd_element_connect
-      call allocate_2nd_element_data
+      call allocate_ele_connect_type(ele_2nd)
+      call allocate_overlaped_ele_type(ele_2nd)
       allocate(ie_4_333(numele,27) )
 !
       call init_27quad_2_8x8linear
@@ -75,7 +75,7 @@
      &    isf_4_ele, ie_4_333)
 !
       call set_27quad_2_8x8linear(numele, ie_4_333,                     &
-     &    nnod_2nd, ie_2nd)
+     &    nnod_2nd, ele_2nd%ie)
 !
       deallocate(ie_4_333)
 !
@@ -93,13 +93,13 @@
       use m_27quad_2_8x8linear
 !
 !
-       nele_2nd = 8*numele
+       ele_2nd%numele = 8*numele
 !
-      call allocate_2nd_element_connect
-      call allocate_2nd_element_data
+      call allocate_ele_connect_type(ele_2nd)
+      call allocate_overlaped_ele_type(ele_2nd)
 !
       call init_27quad_2_8x8linear
-      call set_27quad_2_8x8linear(numele, ie, nnod_2nd, ie_2nd)
+      call set_27quad_2_8x8linear(numele, ie, nnod_2nd, ele_2nd%ie)
 !
       end subroutine connect_lag_4_sim_2_linear_2nd
 !

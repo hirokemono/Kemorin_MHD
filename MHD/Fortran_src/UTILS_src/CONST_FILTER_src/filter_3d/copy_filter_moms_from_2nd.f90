@@ -24,6 +24,7 @@
       subroutine copy_elength_ele_from_2nd
 !
       use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_2nd_filter_ele_length
       use m_filter_elength
 !
@@ -31,10 +32,10 @@
 !
 !
       nnod_filter_mom = nnod_2nd
-      nele_filter_mom = nele_2nd
+      nele_filter_mom = ele_2nd%numele
       call allocate_ele_length
 !
-      do iele = 1, nele_2nd
+      do iele = 1, ele_2nd%numele
         elen_dx2_ele(iele) = elen_dx2_ele_2nd(iele)
         elen_dy2_ele(iele) = elen_dy2_ele_2nd(iele)
         elen_dz2_ele(iele) = elen_dz2_ele_2nd(iele)
@@ -44,7 +45,7 @@
       end do
 !
       do nd = 1, n_vector
-        do iele = 1, nele_2nd
+        do iele = 1, ele_2nd%numele
           elen_dx2_ele_dx(iele,nd) =  elen_dx2_ele_dx_2nd(iele,nd)
           elen_dy2_ele_dx(iele,nd) =  elen_dy2_ele_dx_2nd(iele,nd)
           elen_dz2_ele_dx(iele,nd) =  elen_dz2_ele_dx_2nd(iele,nd)
@@ -70,6 +71,7 @@
       subroutine copy_filter_moments_from_2nd
 !
       use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_2nd_filter_moments
       use m_filter_moments
 !
@@ -77,10 +79,10 @@
 !
 !
       nnod_fmom = nnod_2nd
-      call allocate_filter_moms_ele(nele_2nd)
+      call allocate_filter_moms_ele(ele_2nd%numele)
 !
       do ifil = 1, num_filter_moms
-        do iele = 1, nele_2nd
+        do iele = 1, ele_2nd%numele
           filter_x2_ele(iele,ifil) = filter_x2_ele_2nd(iele,ifil)
           filter_y2_ele(iele,ifil) = filter_y2_ele_2nd(iele,ifil)
           filter_z2_ele(iele,ifil) = filter_z2_ele_2nd(iele,ifil)
@@ -95,7 +97,7 @@
 !
       do ifil = 1, num_filter_moms
         do nd = 1, n_vector
-          do iele = 1, nele_2nd
+          do iele = 1, ele_2nd%numele
             filter_x2_ele_dx(iele,nd,ifil)                              &
      &          = filter_x2_ele_dx_2nd(iele,nd,ifil)
             filter_y2_ele_dx(iele,nd,ifil)                              &

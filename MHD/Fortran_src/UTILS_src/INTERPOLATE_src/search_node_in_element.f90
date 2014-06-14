@@ -155,7 +155,7 @@
 !
       subroutine search_node_in_all_element(my_rank_2nd, error_level)
 !
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
 !
       integer(kind = kint), intent(in) :: my_rank_2nd
       real(kind = kreal), intent(in) :: error_level
@@ -175,7 +175,7 @@
 !
             differ_tmp = 1.0d20
             iflag_org_tmp = 0
-            do jele = 1, nele_2nd
+            do jele = 1, ele_2nd%numele
 !
               call s_cal_interpolate_coefs(my_rank_2nd, inod, jele,     &
      &            error_level, iflag_message, iflag_org_tmp)
@@ -194,7 +194,7 @@
 !
       subroutine giveup_to_search_element(my_rank_2nd, error_level)
 !
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
 !
       integer(kind = kint), intent(in) :: my_rank_2nd
       real(kind = kreal), intent(in) :: error_level
@@ -214,7 +214,7 @@
 !
             differ_tmp = 1.0d20
             iflag_org_tmp = 0
-            do jele = 1, nele_2nd
+            do jele = 1, ele_2nd%numele
 !
               call s_cal_interpolate_coefs(my_rank_2nd, inod, jele,     &
      &            error_level, iflag_message, iflag_org_tmp)

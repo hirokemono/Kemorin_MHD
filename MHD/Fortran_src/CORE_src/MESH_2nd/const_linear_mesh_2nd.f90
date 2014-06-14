@@ -33,7 +33,7 @@
       integer(kind = kint), intent(in)  :: my_rank
 !
 !
-      nnod_4_ele_2nd =   num_t_linear
+      ele_2nd%nnod_4_ele =    num_t_linear
       surf_2nd%nnod_4_surf =  num_linear_sf
       edge_2nd%nnod_4_edge =  num_linear_edge
 !
@@ -157,9 +157,9 @@
 !
       call set_internal_list_4_linear_20(numnod, internal_node,         &
      &          numele, numsurf, interior_ele, interior_surf,           &
-     &          nnod_2nd, nele_2nd, surf_2nd%numsurf, edge_2nd%numedge, &
-     &          ie_2nd, surf_2nd%ie_surf, edge_2nd%ie_edge,             &
-     &          interior_ele_2nd, surf_2nd%interior_surf, &
+     &          nnod_2nd, ele_2nd%numele, surf_2nd%numsurf, edge_2nd%numedge, &
+     &          ele_2nd%ie, surf_2nd%ie_surf, edge_2nd%ie_edge,             &
+     &          ele_2nd%interior_ele, surf_2nd%interior_surf, &
      &          edge_2nd%interior_edge)
 !
       call init_2nd_data_on_surf
@@ -203,9 +203,9 @@
 !
 !
       call set_internal_list_4_linear_27(internal_node,                 &
-     &    nnod_2nd, nele_2nd, surf_2nd%numsurf, edge_2nd%numedge,       &
-     &    ie_2nd, surf_2nd%ie_surf, edge_2nd%ie_edge,                   &
-     &    interior_ele_2nd,                                   &
+     &    nnod_2nd, ele_2nd%numele, surf_2nd%numsurf, edge_2nd%numedge, &
+     &    ele_2nd%ie, surf_2nd%ie_surf, edge_2nd%ie_edge,                &
+     &    ele_2nd%interior_ele,                                   &
      &    surf_2nd%interior_surf, edge_2nd%interior_edge)
 !
       if ( iflag_debug.eq.1 ) then

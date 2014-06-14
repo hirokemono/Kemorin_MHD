@@ -60,6 +60,7 @@
       use m_ctl_param_newdom_filter
       use m_2nd_pallalel_vector
       use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_nod_filter_comm_table
       use m_filter_func_4_sorting
       use m_new_filter_func_4_sorting
@@ -93,7 +94,7 @@
 !
         internal_nod_2nd = internal_node_dummy
         nnod_2nd = numnod_dummy
-        nele_2nd = numele_dummy
+        ele_2nd%numele = numele_dummy
 !
 !
         call add_int_suffix(my_rank2, new_filter_coef_head,             &
@@ -134,7 +135,7 @@
 !        write(*,*) 'reorder_filter_new_domain'
         call reorder_filter_new_domain
 !
-        call allocate_nod_ele_near_1nod(nnod_2nd, nele_2nd)
+        call allocate_nod_ele_near_1nod(nnod_2nd, ele_2nd%numele)
 !
         call write_new_whole_filter_coef
         call write_new_fluid_filter_coef

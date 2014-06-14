@@ -26,7 +26,6 @@
 !
       use m_2nd_geometry_param
       use m_2nd_geometry_data
-      use m_2nd_element_geometry_data
 !
       use m_sphere_bin_4_table
       use m_data_4_interpolate_org
@@ -41,11 +40,11 @@
 !$omp&  private(ist,ied,iele,ihash,jr_bin,jt_bin,jp_bin,                &
 !$omp&         isph_st,isph_ed,itmp,x_min,x_max)
       do ip = 1, np_smp
-        ist = iele_smp_stack_2nd(ip-1) + 1
-        ied = iele_smp_stack_2nd(ip)
+        ist = ele_2nd%istack_ele_smp(ip-1) + 1
+        ied = ele_2nd%istack_ele_smp(ip)
         do iele = ist, ied
 !
-          if (ie_2nd(iele,1) .le. internal_nod_2nd) then
+          if (ele_2nd%ie(iele,1) .le. internal_nod_2nd) then
 !
             x_min(1:3) = min_sph_each_ele(iele,1:3)
             x_max(1:3) = max_sph_each_ele(iele,1:3)
@@ -78,7 +77,6 @@
 !
       use m_2nd_geometry_param
       use m_2nd_geometry_data
-      use m_2nd_element_geometry_data
 !
       use m_sphere_bin_4_table
       use m_data_4_interpolate_org
@@ -95,11 +93,11 @@
 !$omp&  private(ist,ied,iele,ihash,jr_bin,jt_bin,jp_bin,                &
 !$omp&         isph_st,isph_ed,x_min,x_max,i,j,itmp)
       do ip = 1, np_smp
-        ist = iele_smp_stack_2nd(ip-1) + 1
-        ied = iele_smp_stack_2nd(ip)
+        ist = ele_2nd%istack_ele_smp(ip-1) + 1
+        ied = ele_2nd%istack_ele_smp(ip)
         do iele = ist, ied
 !
-          if (ie_2nd(iele,1) .le. internal_nod_2nd) then
+          if (ele_2nd%ie(iele,1) .le. internal_nod_2nd) then
 !
             x_min(1:3) = min_sph_each_ele(iele,1:3)
             x_max(1:3) = max_sph_each_ele(iele,1:3)

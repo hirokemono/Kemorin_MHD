@@ -57,8 +57,8 @@
 !
 !
       iele_local_2nd(1:max_gl_ele_newdomain) = 0
-      do iele = 1, nele_2nd
-        iele_gl = globalelmid_2nd(iele)
+      do iele = 1, ele_2nd%numele
+        iele_gl = ele_2nd%iele_global(iele)
         iele_local_2nd(iele_gl) = iele
       end do
 !

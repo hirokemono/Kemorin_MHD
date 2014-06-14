@@ -72,7 +72,6 @@
       use m_machine_parameter
       use m_2nd_geometry_param
       use m_2nd_geometry_data
-      use m_2nd_element_geometry_data
       use cal_minmax_and_stacks
       use set_smp_size_4_2nd
       use cal_2nd_mesh_infos
@@ -84,32 +83,32 @@
       call s_count_smp_size_4_2nd
       call set_2nd_spherical_position
 !
-      call allocate_2nd_ele_geometry
+      call allocate_ele_geometry_type(ele_2nd)
       call set_2nd_center_of_element
 !
 !
       call deallocate_2nd_node_position
 !
 !
-      nnod_2nd =         nele_2nd
-      internal_nod_2nd = nele_2nd
+      nnod_2nd =         ele_2nd%numele
+      internal_nod_2nd = ele_2nd%numele
 !
       call allocate_2nd_node_position
 !
 !$omp parallel do
       do inod = 1, nnod_2nd
 !
-        globalnodid_2nd(inod) = globalelmid_2nd(inod)
-        xx_2nd(inod,1) =       x_ele_2nd(inod,1)
-        xx_2nd(inod,2) =       x_ele_2nd(inod,2)
-        xx_2nd(inod,3) =       x_ele_2nd(inod,3)
+        globalnodid_2nd(inod) = ele_2nd%iele_global(inod)
+        xx_2nd(inod,1) =       ele_2nd%x_ele(inod,1)
+        xx_2nd(inod,2) =       ele_2nd%x_ele(inod,2)
+        xx_2nd(inod,3) =       ele_2nd%x_ele(inod,3)
 !
-        radius_2nd(inod) =   r_ele_2nd(inod)
-        a_radius_2nd(inod) = ar_ele_2nd(inod)
-        s_cyl_2nd(inod) =    s_ele_2nd(inod)
-        a_s_cyl_2nd(inod) =  as_ele_2nd(inod)
-        phi_2nd(inod) =      phi_ele_2nd(inod)
-        theta_2nd(inod) =    theta_ele_2nd(inod)
+        radius_2nd(inod) =   ele_2nd%r_ele(inod)
+        a_radius_2nd(inod) = ele_2nd%ar_ele(inod)
+        s_cyl_2nd(inod) =    ele_2nd%s_ele(inod)
+        a_s_cyl_2nd(inod) =  ele_2nd%as_ele(inod)
+        phi_2nd(inod) =      ele_2nd%phi_ele(inod)
+        theta_2nd(inod) =    ele_2nd%theta_ele(inod)
 !
       end do
 !$omp end parallel do

@@ -33,7 +33,7 @@
 !
       subroutine copy_2nd_surf_connect_to_IO
 !
-      call copy_surf_conn_type_to_IO(surf_2nd, nele_2nd)
+      call copy_surf_conn_type_to_IO(surf_2nd, ele_2nd%numele)
 !
       end subroutine copy_2nd_surf_connect_to_IO
 !
@@ -66,7 +66,7 @@
 !
       subroutine copy_2nd_surf_connect_from_IO
 !
-      call copy_surf_conn_type_from_IO(surf_2nd, nele_2nd)
+      call copy_surf_conn_type_from_IO(surf_2nd, ele_2nd%numele)
 !
       end subroutine copy_2nd_surf_connect_from_IO
 !

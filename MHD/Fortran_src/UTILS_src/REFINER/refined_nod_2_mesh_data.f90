@@ -90,14 +90,14 @@
       integer(kind = kint) :: iele, k1
 !
 !
-      nele_2nd =         ntot_ele_refined
-      internal_ele_2nd = nele_2nd
-      nnod_4_ele_2nd =   nnod_4_ele_refined
-      if (nnod_4_ele_2nd .eq. num_t_lag) then
+      ele_2nd%numele =       ntot_ele_refined
+      ele_2nd%internal_ele = ele_2nd%numele
+      ele_2nd%nnod_4_ele =   nnod_4_ele_refined
+      if (ele_2nd%nnod_4_ele .eq. num_t_lag) then
         elmtyp_2 = 333
         surf_2nd%nnod_4_surf = num_lag_sf
         edge_2nd%nnod_4_edge = num_quad_edge
-      else if (nnod_4_ele_2nd .eq. num_t_quad) then
+      else if (ele_2nd%nnod_4_ele .eq. num_t_quad) then
         elmtyp_2 = 332
         surf_2nd%nnod_4_surf = num_quad_sf
         edge_2nd%nnod_4_edge = num_quad_edge
@@ -107,16 +107,16 @@
         edge_2nd%nnod_4_edge = num_linear_edge
       end if
 !
-      call allocate_2nd_element_connect
+      call allocate_ele_connect_type(ele_2nd)
 !
       do iele = 1, ntot_ele_refined
-        globalelmid_2nd(iele) = iele
-        nodelm_2nd(iele) = nnod_4_ele_2nd
-        elmtyp_2nd(iele) = elmtyp_2
+        ele_2nd%iele_global(iele) = iele
+        ele_2nd%nodelm(iele) = ele_2nd%nnod_4_ele
+        ele_2nd%elmtyp(iele) = elmtyp_2
       end do
 !
-      do k1 = 1, nnod_4_ele_2nd
-        ie_2nd(1:ntot_ele_refined,k1)                                   &
+      do k1 = 1, ele_2nd%nnod_4_ele
+        ele_2nd%ie(1:ntot_ele_refined,k1)                               &
      &          = ie_refined(1:ntot_ele_refined,k1)
       end do
 !

@@ -22,6 +22,7 @@
 !
       use m_constants
       use m_2nd_nod_comm_table
+      use m_2nd_geometry_data
       use m_partitioner_comm_table
       use m_ctl_param_partitioner
       use m_read_mesh_data
@@ -67,7 +68,7 @@
         end do
 
         call s_const_local_meshes(ip)
-        call set_local_connectivity_4_ele
+        call set_local_connectivity_4_ele(ele_2nd)
         call s_const_local_groups
 !C
 !C +-------------------------+

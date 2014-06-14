@@ -29,6 +29,7 @@
 !
       use m_ctl_params_4_gen_table
       use m_2nd_geometry_param
+      use m_2nd_geometry_data
 !
       use input_control_itp_mesh
       use const_mesh_info

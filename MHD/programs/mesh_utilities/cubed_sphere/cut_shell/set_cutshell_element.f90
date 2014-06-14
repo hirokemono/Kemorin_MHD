@@ -31,7 +31,7 @@
 !
       call count_new_connect
 !
-      call allocate_2nd_element_connect
+      call allocate_ele_connect_type(ele_2nd)
 !
       call set_new_connect
 !
@@ -44,8 +44,8 @@
       integer(kind = kint) :: inod, iele, i, isig
 !
 !
-       nnod_4_ele_2nd = nnod_4_ele
-       nele_2nd = 0
+       ele_2nd%nnod_4_ele = nnod_4_ele
+       ele_2nd%numele = 0
        do iele = 1, numele
 !
          isig = 1
@@ -57,8 +57,7 @@
            end if
          end do
 !
-         if ( isig .ne. 0 ) nele_2nd = nele_2nd + 1
-!
+         if ( isig .ne. 0 ) ele_2nd%numele = ele_2nd%numele + 1
        end do
 !
       end subroutine count_new_connect
@@ -84,12 +83,12 @@
 ! 
          if ( isig .ne. 0 ) then
            icou = icou + 1
-           globalelmid_2nd(icou) = icou
-           elmtyp_2nd(icou) = elmtyp(iele)
-           nodelm_2nd(icou) = nodelm(iele)
+           ele_2nd%iele_global(icou) = icou
+           ele_2nd%elmtyp(icou) = elmtyp(iele)
+           ele_2nd%nodelm(icou) = nodelm(iele)
            do i = 1, nodelm(iele)
              inod = ie(iele,i)
-             ie_2nd(icou,i) = mark_new_node(inod)
+             ele_2nd%ie(icou,i) = mark_new_node(inod)
            end do
 !
            mark_new_ele(iele) = icou

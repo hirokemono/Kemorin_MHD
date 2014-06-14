@@ -11,7 +11,7 @@
       use t_mesh_data
       use m_2nd_pallalel_vector
       use m_2nd_nod_comm_table
-      use m_2nd_element_geometry_data
+      use m_2nd_geometry_data
       use m_connect_hexa_2_tetra
 !
       implicit none
@@ -81,11 +81,11 @@
       call s_set_2nd_mesh_from_struct(origin_mesh(jp))
       call link_2nd_ele_geom_to_type(origin_mesh(jp)%mesh%ele)
 !
-      if (nnod_4_ele_2nd .eq. num_t_linear) then
+      if (ele_2nd%nnod_4_ele .eq. num_t_linear) then
         call set_1_hexa_2_5_tetra
-      else if (nnod_4_ele_2nd .eq. num_t_quad) then
+      else if (ele_2nd%nnod_4_ele .eq. num_t_quad) then
         call set_1_hexa_2_21_tetra
-      else if (nnod_4_ele_2nd .eq. num_t_lag) then
+      else if (ele_2nd%nnod_4_ele .eq. num_t_lag) then
         call set_1_hexa_2_40_tetra
       end if
 !
@@ -100,7 +100,7 @@
       use m_2nd_group_data
 !
 !
-      call unlink_2nd_ele_geometry
+      call unlink_ele_geometry_type(ele_2nd)
       call deallocate_hex_2_tetra
 !
       call disconnect_2nd_groups

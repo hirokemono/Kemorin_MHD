@@ -105,8 +105,8 @@
 !
 !
           call s_modify_local_positions(maxitr, eps_iter, xi_res,       &
-     &        x_target, nnod_4_ele_2nd, x_local_ele, izero, differ_res, &
-     &        ierr_modify)
+     &        x_target, ele_2nd%nnod_4_ele, x_local_ele, izero,         &
+     &        differ_res, ierr_modify)
 !
           call set_interpolate_flag_by_xi(xi_res,                       &
      &              c2f_mgd%tbl_org%itype_inter_org(inod_2nd))

@@ -49,13 +49,13 @@
 !
       integer(kind = kint), intent(in) :: iele
 !
-      real(kind = kreal), intent(inout) :: x_local(nnod_4_ele_2nd,3)
+      real(kind = kreal), intent(inout) :: x_local(ele_2nd%nnod_4_ele,3)
 !
       integer(kind = kint) :: i, inod
 !
 !
-       do i = 1, nnod_4_ele_2nd
-         inod = ie_2nd(iele,i)
+       do i = 1, ele_2nd%nnod_4_ele
+         inod = ele_2nd%ie(iele,i)
          x_local(i,1:3) = xx_2nd(inod,1:3)
        end do
 !
@@ -72,7 +72,7 @@
 !
       integer(kind = kint), intent(in) :: itet
       real(kind = kreal), intent(in) :: x_target(3)
-      real(kind = kreal), intent(in) :: x_local(nnod_4_ele_2nd,3)
+      real(kind = kreal), intent(in) :: x_local(ele_2nd%nnod_4_ele,3)
 !
       real(kind = kreal), intent(inout) :: v_target(3)
       real(kind = kreal), intent(inout) :: v_tetra(3,3)
@@ -101,16 +101,17 @@
 !
       use m_constants
       use m_2nd_geometry_param
+      use m_2nd_geometry_data
       use m_connect_hexa_2_tetra
 !
       integer(kind = kint), intent(in) :: itet
       real(kind = kreal), intent(in) ::    s(3)
-      real(kind = kreal), intent(inout) :: coefs_by_tet(nnod_4_ele_2nd)
+      real(kind = kreal), intent(inout) :: coefs_by_tet(ele_2nd%nnod_4_ele)
 !
       integer(kind = kint) :: i1, i2, i3, i4
 !
 !
-        coefs_by_tet(1:nnod_4_ele_2nd) = zero
+        coefs_by_tet(1:ele_2nd%nnod_4_ele) = zero
 !
         i1 = ie_tetra(1,itet)
         i2 = ie_tetra(2,itet)

@@ -35,26 +35,24 @@
       use m_2nd_geometry_param
       use m_2nd_geometry_data
 !
-      use m_2nd_element_geometry_data
-!
       use set_element_position
       use coordinate_converter
 !
 !
-      if (nnod_4_ele_2nd .eq. num_t_quad) then
-        call set_quad_ele_position(nnod_2nd, nele_2nd, ie_2nd,          &
-     &      xx_2nd, x_ele_2nd)
-      else if (nnod_4_ele_2nd .eq. num_t_linear) then
-        call set_linear_ele_position(nnod_2nd, nele_2nd, ie_2nd,        &
-     &      xx_2nd, x_ele_2nd)
-      else if (nnod_4_ele_2nd .eq. num_t_lag) then
-        call set_lag_ele_position(nnod_2nd, nele_2nd, ie_2nd,           &
-     &      xx_2nd, x_ele_2nd)
+      if (ele_2nd%nnod_4_ele .eq. num_t_quad) then
+        call set_quad_ele_position(nnod_2nd, ele_2nd%numele, ele_2nd%ie,          &
+     &      xx_2nd, ele_2nd%x_ele)
+      else if (ele_2nd%nnod_4_ele .eq. num_t_linear) then
+        call set_linear_ele_position(nnod_2nd, ele_2nd%numele, ele_2nd%ie,        &
+     &      xx_2nd, ele_2nd%x_ele)
+      else if (ele_2nd%nnod_4_ele .eq. num_t_lag) then
+        call set_lag_ele_position(nnod_2nd, ele_2nd%numele, ele_2nd%ie,           &
+     &      xx_2nd, ele_2nd%x_ele)
       end if
 !
-      call position_2_sph( nele_2nd, x_ele_2nd, r_ele_2nd,              &
-     &    theta_ele_2nd, phi_ele_2nd, ar_ele_2nd, s_ele_2nd,            &
-     &    as_ele_2nd)
+      call position_2_sph( ele_2nd%numele, ele_2nd%x_ele, ele_2nd%r_ele,      &
+     &    ele_2nd%theta_ele, ele_2nd%phi_ele, ele_2nd%ar_ele,           &
+     &    ele_2nd%s_ele, ele_2nd%as_ele)
 !
       end subroutine set_2nd_center_of_element
 !

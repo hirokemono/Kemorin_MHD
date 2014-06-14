@@ -31,30 +31,30 @@
       use set_surface_data
 !
 !
-      call allocate_surface_hash(nnod_2nd, nele_2nd, surf_2nd%nnod_4_surf)
+      call allocate_surface_hash(nnod_2nd, ele_2nd%numele, surf_2nd%nnod_4_surf)
 !
 !       if (iflag_debug.eq.1) write(*,*) 'count_surface_hash'
-      call count_surface_hash(nnod_2nd, nele_2nd, nnod_4_ele_2nd,       &
-     &          surf_2nd%nnod_4_surf, ie_2nd)
+      call count_surface_hash(nnod_2nd, ele_2nd%numele, ele_2nd%nnod_4_ele,   &
+     &          surf_2nd%nnod_4_surf, ele_2nd%ie)
 !
 !       if (iflag_debug.eq.1) write(*,*) 'set_surf_hash'
-      call set_surf_hash(nele_2nd, nnod_4_ele_2nd, ie_2nd)
+      call set_surf_hash(ele_2nd%numele, ele_2nd%nnod_4_ele, ele_2nd%ie)
 !
 !   mark for all surfaces
 !
 !       if (iflag_debug.eq.1) write(*,*) 'mark_all_surfaces'
-      call mark_all_surfaces(nele_2nd, nnod_4_ele_2nd, ie_2nd)
+      call mark_all_surfaces(ele_2nd%numele, ele_2nd%nnod_4_ele, ele_2nd%ie)
 !
 !   set surface data
 !
 !       if (iflag_debug.eq.1) write(*,*) 'count_all_surfaces'
-      call count_all_surfaces(nele_2nd, surf_2nd%numsurf)
+      call count_all_surfaces(ele_2nd%numele, surf_2nd%numsurf)
 !
-      call allocate_2nd_surface_connect
+      call allocate_surface_connect_type(surf_2nd, ele_2nd%numele)
 !
 !       if (iflag_debug.eq.1) write(*,*) 'set_all_surfaces'
-      call set_all_surfaces(nele_2nd, surf_2nd%numsurf, nnod_4_ele_2nd,        &
-     &    surf_2nd%nnod_4_surf, ie_2nd, surf_2nd%node_on_sf, surf_2nd%ie_surf,         &
+      call set_all_surfaces(ele_2nd%numele, surf_2nd%numsurf, ele_2nd%nnod_4_ele,        &
+     &    surf_2nd%nnod_4_surf, ele_2nd%ie, surf_2nd%node_on_sf, surf_2nd%ie_surf,         &
      &     surf_2nd%isf_4_ele)
 !
       call deallocate_surface_hash
@@ -97,11 +97,11 @@
      &    edge_2nd%ie_edge, edge_2nd%iedge_4_sf, edge_2nd%node_on_edge)
 !
 !
-      call allocate_edge_4_ele_type(edge_2nd, nele_2nd)
+      call allocate_edge_4_ele_type(edge_2nd, ele_2nd%numele)
 !
 !       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_4_ele'
-      call set_edges_connect_4_ele(nele_2nd, surf_2nd%numsurf, edge_2nd%numedge,      &
-     &    nnod_4_ele_2nd, edge_2nd%nnod_4_edge, ie_2nd, edge_2nd%iedge_4_sf, &
+      call set_edges_connect_4_ele(ele_2nd%numele, surf_2nd%numsurf, edge_2nd%numedge,      &
+     &    ele_2nd%nnod_4_ele, edge_2nd%nnod_4_edge, ele_2nd%ie, edge_2nd%iedge_4_sf, &
      &    edge_2nd%ie_edge, edge_2nd%iedge_4_ele)
 !
       call deallocate_edge_hash

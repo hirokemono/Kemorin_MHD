@@ -37,7 +37,7 @@
       call sel_read_mesh(my_rank)
       call set_2nd_mesh_data
 !
-      call allocate_2nd_element_data
+      call allocate_overlaped_ele_type(ele_2nd)
 !
       end subroutine input_2nd_mesh
 !
@@ -140,7 +140,7 @@
       call deallocate_2nd_element_group
       call deallocate_2nd_surface_group
 !
-      call deallocate_2nd_element_connect
+      call deallocate_ele_connect_type(ele_2nd)
       call deallocate_2nd_node_position
       call deallocate_2nd_nod_export
       call deallocate_2nd_nod_import

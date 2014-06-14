@@ -103,6 +103,7 @@
 !
        subroutine write_spectr_data(istep)
 !
+       use m_constants
        use set_spectr_file_name
 !
        integer (kind = kint) :: istep
@@ -110,9 +111,6 @@
        integer (kind = kint) :: j
        integer (kind = kint) :: ix, iy, iz
        integer (kind = kint) :: ii1, ii2, ii3 , ii4
-!
-       real(kind = kreal), parameter  :: zero = 0.0d0
-       character (len=kchara) :: tmpchara
 !
 !
        call s_set_spectr_file_name(istep,spectr_data_name)

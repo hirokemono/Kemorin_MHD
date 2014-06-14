@@ -29,8 +29,12 @@
 !
       subroutine s_count_all_smp_size_4_2nd
 !
+      use m_2nd_geometry_data
+      use set_size_4_smp_types
+!
       call s_count_smp_size_4_2nd
-      call s_count_smp_size_2nd_surf_edge
+      call count_surf_size_smp_type(surf_2nd)
+      call count_edge_size_smp_type(edge_2nd)
 !
       end subroutine s_count_all_smp_size_4_2nd
 !
@@ -39,6 +43,7 @@
 !
       subroutine s_count_smp_size_4_2nd
 !
+      use m_2nd_geometry_data
 !
       call allocate_2nd_geomet_param_smp
 !
@@ -49,27 +54,10 @@
        call count_number_4_smp( np_smp, ione, internal_nod_2nd,         &
      &       inter_smp_stack_2nd, max_in_nod_4_smp_2nd )
 !
-       call count_number_4_smp( np_smp, ione, nele_2nd,                 &
-     &       iele_smp_stack_2nd, maxele_4_smp_2nd )
+       call count_number_4_smp( np_smp, ione, ele_2nd%numele,           &
+     &       ele_2nd%istack_ele_smp, ele_2nd%max_ele_smp)
 !
       end subroutine s_count_smp_size_4_2nd
-!
-!-----------------------------------------------------------------------
-!
-      subroutine s_count_smp_size_2nd_surf_edge
-!
-      use m_2nd_geometry_data
-!
-!
-      call allocate_surf_param_smp_type(surf_2nd)
-      call allocate_edge_param_smp_type(edge_2nd)
-!
-      call count_number_4_smp( np_smp, ione, surf_2nd%numsurf,                 &
-     &       surf_2nd%istack_surf_smp, surf_2nd%max_surf_smp )
-      call count_number_4_smp( np_smp, ione, edge_2nd%numedge,          &
-     &       edge_2nd%istack_edge_smp, edge_2nd%max_edge_smp )
-!
-      end subroutine s_count_smp_size_2nd_surf_edge
 !
 !-----------------------------------------------------------------------
 !

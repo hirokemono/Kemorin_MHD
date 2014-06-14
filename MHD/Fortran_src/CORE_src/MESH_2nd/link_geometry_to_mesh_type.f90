@@ -77,27 +77,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine link_2nd_ele_connect_type(ele)
+      subroutine link_2nd_ele_connect_type(ele)
 !
-       use t_geometry_data
+      use t_geometry_data
 !
-       type(element_data), intent(in) :: ele
+      type(element_data), intent(in) :: ele
 !
 !
-       nele_2nd =            ele%numele
-       nnod_4_ele_2nd =      ele%nnod_4_ele
-       internal_ele_2nd =    ele%internal_ele
-!
-       maxele_4_smp_2nd =    ele%max_ele_smp
-       iele_smp_stack_2nd => ele%istack_ele_smp
-!
-       ie_2nd =>             ele%ie
-       interior_ele_2nd =>   ele%interior_ele
-       e_multi_2nd =>        ele%e_multi
-!
-       globalelmid_2nd =>    ele%iele_global
-       elmtyp_2nd =>         ele%elmtyp
-       nodelm_2nd =>         ele%nodelm
+      call link_new_ele_connect_type(ele, ele_2nd)
+      call link_new_ele_connect_type(ele, ele_2nd)
 !
        end subroutine link_2nd_ele_connect_type
 !
@@ -153,27 +141,12 @@
 !
        subroutine link_2nd_ele_geom_to_type(ele)
 !
-       use m_2nd_element_geometry_data
-!
        use t_geometry_data
 !
        type(element_data), intent(in) :: ele
 !
 !
-       nele_2nd =    ele%numele
-       x_ele_2nd =>  ele%x_ele
-!
-       r_ele_2nd =>     ele%r_ele
-       ar_ele_2nd =>    ele%ar_ele
-       phi_ele_2nd =>   ele%phi_ele
-       theta_ele_2nd => ele%theta_ele
-       s_ele_2nd =>     ele%s_ele
-       as_ele_2nd =>    ele%as_ele
-!
-       volume_ele_2nd => ele%volume_ele
-       a_vol_ele_2nd =>  ele%a_vol_ele
-!
-       volume_2nd =      ele%volume
+       call link_new_ele_geometry_type(ele, ele_2nd)
 !
        end subroutine link_2nd_ele_geom_to_type
 !

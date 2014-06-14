@@ -127,7 +127,7 @@
       call deallocate_2nd_surf_export
       call deallocate_2nd_surf_import
       call deallocate_2nd_surf_neib_id
-      call deallocate_2nd_surface_connect
+      call deallocate_surface_connect_type(surf_2nd)
 !
       end subroutine deallocate_2nd_surf_data
 !

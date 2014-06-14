@@ -38,12 +38,12 @@
 !
       subroutine allocate_minmax_4_inter_org
 !
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
 !
 !
-      allocate(iflag_meridian_x(nele_2nd))
-      allocate(min_sph_each_ele(nele_2nd,3))
-      allocate(max_sph_each_ele(nele_2nd,3))
+      allocate(iflag_meridian_x(ele_2nd%numele))
+      allocate(min_sph_each_ele(ele_2nd%numele,3))
+      allocate(max_sph_each_ele(ele_2nd%numele,3))
 !
       iflag_meridian_x = 0
 !
@@ -108,7 +108,7 @@
 !
       subroutine check_minmax_sph_org(id_file)
 !
-      use m_2nd_geometry_param
+      use m_2nd_geometry_data
 !
 !
       integer(kind = kint), intent(in) :: id_file
@@ -118,8 +118,8 @@
       write(id_file,*) '#  min. and max. for radial'
       write(id_file,*) '#'
 !
-      write(id_file,'(i10)') nele_2nd
-      do iele = 1, nele_2nd
+      write(id_file,'(i10)') ele_2nd%numele
+      do iele = 1, ele_2nd%numele
         write(id_file,'(i10,1p2e23.12)') iele,                          &
      &      min_sph_each_ele(iele,1), max_sph_each_ele(iele,1)
       end do
@@ -128,8 +128,8 @@
       write(id_file,*) '#  min. and max. for elevation'
       write(id_file,*) '#'
 !
-      write(id_file,'(i10)') nele_2nd
-      do iele = 1, nele_2nd
+      write(id_file,'(i10)') ele_2nd%numele
+      do iele = 1, ele_2nd%numele
         write(id_file,'(i10,1p2e23.12)') iele,                          &
      &      min_sph_each_ele(iele,2), max_sph_each_ele(iele,2)
       end do
@@ -138,8 +138,8 @@
       write(id_file,*) '#  min. and max. for azumuth'
       write(id_file,*) '#'
 !
-      write(id_file,'(i10)') nele_2nd
-      do iele = 1, nele_2nd
+      write(id_file,'(i10)') ele_2nd%numele
+      do iele = 1, ele_2nd%numele
         write(id_file,'(i10,1p2e23.12)') iele,                          &
      &      min_sph_each_ele(iele,3), max_sph_each_ele(iele,3)
       end do
