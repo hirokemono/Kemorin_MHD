@@ -4,7 +4,6 @@
 !      Written by H. Matsui on Sep., 2005
 !
 !      subroutine count_num_2nd_groups_4_smp
-!      subroutine count_num_2nd_surf_grp_nod_smp
 !
       module set_smp_4_2nd_groups
 !
@@ -76,20 +75,6 @@
      &    isurf_grp_2nd_smp_stack, max_sf_grp_2nd_4_smp)
 !
       end subroutine count_num_2nd_surf_grp_smp
-!
-!-----------------------------------------------------------------------
-!
-      subroutine count_num_2nd_surf_grp_nod_smp
-!
-      use m_2nd_surf_group_data
-!
-      call allocate_2nd_sf_nod_grp_smp(num_surf_2nd_smp)
-!
-      call set_group_size_4_smp(np_smp, num_surf_2nd,                   &
-     &    inod_stack_sf_grp_2nd, isurf_nod_2nd_smp_stack,               &
-     &    max_sf_nod_2nd_4_smp)
-!
-      end subroutine count_num_2nd_surf_grp_nod_smp
 !
 !-----------------------------------------------------------------------
 !

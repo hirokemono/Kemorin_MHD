@@ -84,7 +84,6 @@
 !
       use m_2nd_geometry_data
       use m_2nd_group_data
-      use m_2nd_surf_group_data
       use m_2nd_phys_data
 !
       use cross_section
@@ -99,8 +98,8 @@
      &   surf_2nd%istack_surf_smp, edge_2nd%istack_edge_smp, num_mat_2nd,    &
      &   num_mat_bc_2nd,  mat_name_2nd, mat_istack_2nd,  mat_item_2nd,  &
      &   num_surf_2nd, num_surf_bc_2nd, surf_name_2nd, surf_istack_2nd, &
-     &   surf_item_2nd, ntot_node_sf_grp_2nd, inod_stack_sf_grp_2nd,    &
-     &   inod_surf_grp_2nd, phys_2nd%num_phys, phys_2nd%phys_name)
+     &   surf_item_2nd, sf_grp_tbl_2nd%node%ntot_e_grp, sf_grp_tbl_2nd%node%istack_e_grp,    &
+     &   sf_grp_tbl_2nd%node%item_e_grp, phys_2nd%num_phys, phys_2nd%phys_name)
 !
       end subroutine cross_section_init_2nd
 !

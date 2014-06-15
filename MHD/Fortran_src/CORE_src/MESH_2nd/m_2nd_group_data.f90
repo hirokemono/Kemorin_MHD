@@ -36,6 +36,8 @@
       module m_2nd_group_data
 !
       use m_precision
+      use t_group_data
+      use t_group_connects
 !
       implicit none
 !
@@ -91,6 +93,14 @@
 !     number of element on this PE
       integer( kind=kint )  ::  max_sf_grp_2nd_4_smp
 !     number of element on whole processes
+!
+!
+      type(element_group_table), save :: ele_grp_tbl_2nd
+!
+!
+      type(element_group_table), save :: ele_grp_tbl_2nd
+!
+      type(surface_group_table), save :: sf_grp_tbl_2nd
 !
 !  ---------------------------------------------------------------------
 !

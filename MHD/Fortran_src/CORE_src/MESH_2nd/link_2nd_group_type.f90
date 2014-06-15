@@ -105,25 +105,11 @@
       subroutine link_2nd_ele_grp_tbl_type(ele_grp_tbl)
 !
       use t_group_connects
-      use m_2nd_ele_group_data
+      use m_2nd_group_data
 !
       type(element_group_table), intent(in) :: ele_grp_tbl
 !
-      ntot_surf_ele_grp_2nd = ele_grp_tbl%surf%ntot_e_grp
-      ntot_edge_ele_grp_2nd = ele_grp_tbl%edge%ntot_e_grp
-      ntot_node_ele_grp_2nd = ele_grp_tbl%node%ntot_e_grp
-!
-      nsurf_ele_grp_2nd =>       ele_grp_tbl%surf%nitem_e_grp
-      isurf_stack_ele_grp_2nd => ele_grp_tbl%surf%istack_e_grp
-      isurf_ele_grp_2nd =>       ele_grp_tbl%surf%item_e_grp
-!
-      nedge_ele_grp_2nd =>       ele_grp_tbl%edge%nitem_e_grp
-      iedge_stack_ele_grp_2nd => ele_grp_tbl%edge%istack_e_grp
-      iedge_ele_grp_2nd =>       ele_grp_tbl%edge%item_e_grp
-!
-      nnod_ele_grp_2nd =>        ele_grp_tbl%node%nitem_e_grp
-      inod_stack_ele_grp_2nd =>  ele_grp_tbl%node%istack_e_grp
-      inod_ele_grp_2nd =>        ele_grp_tbl%node%item_e_grp
+      call link_ele_grp_connect_type(ele_grp_tbl, ele_grp_tbl_2nd)
 !
       end subroutine link_2nd_ele_grp_tbl_type
 !
@@ -132,24 +118,12 @@
       subroutine link_2nd_surf_grp_tbl_type(surf_grp_tbl)
 !
       use t_group_connects
-      use m_2nd_surf_group_data
+      use m_2nd_group_data
 !
       type(surface_group_table), intent(in) :: surf_grp_tbl
 !
 !
-      ntot_edge_sf_grp_2nd = surf_grp_tbl%edge%ntot_e_grp
-      ntot_node_sf_grp_2nd = surf_grp_tbl%node%ntot_e_grp
-!
-      isurf_grp_2nd =>          surf_grp_tbl%isurf_grp
-      isurf_grp_n_2nd =>        surf_grp_tbl%isurf_grp_n
-!
-      nedge_sf_grp_2nd =>       surf_grp_tbl%edge%nitem_e_grp
-      iedge_stack_sf_grp_2nd => surf_grp_tbl%edge%istack_e_grp
-      iedge_surf_grp_2nd =>     surf_grp_tbl%edge%item_e_grp
-!
-      nnod_sf_grp_2nd =>        surf_grp_tbl%node%nitem_e_grp
-      inod_stack_sf_grp_2nd =>  surf_grp_tbl%node%istack_e_grp
-      inod_surf_grp_2nd =>      surf_grp_tbl%node%item_e_grp
+      call link_surf_grp_connect_type(surf_grp_tbl, sf_grp_tbl_2nd)
 !
       end subroutine link_2nd_surf_grp_tbl_type
 !

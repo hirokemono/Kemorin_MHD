@@ -74,24 +74,11 @@
 !
       subroutine link_element_group_data
 !
-      use m_element_group_connect
-      use m_2nd_ele_group_data
+      use m_2nd_group_data
+      use link_group_type_2_1st_mesh
 !
-      ntot_surf_ele_grp_2nd = ntot_surf_ele_grp
-      ntot_edge_ele_grp_2nd = ntot_edge_ele_grp
-      ntot_node_ele_grp_2nd = ntot_node_ele_grp
 !
-      nsurf_ele_grp_2nd =>       nsurf_ele_grp
-      isurf_stack_ele_grp_2nd => isurf_stack_ele_grp
-      isurf_ele_grp_2nd =>       isurf_ele_grp
-!
-      nedge_ele_grp_2nd =>       nedge_ele_grp
-      iedge_stack_ele_grp_2nd => iedge_stack_ele_grp
-      iedge_ele_grp_2nd =>       iedge_ele_grp
-!
-      nnod_ele_grp_2nd =>        nnod_ele_grp
-      inod_stack_ele_grp_2nd =>  inod_stack_ele_grp
-      inod_ele_grp_2nd =>        inod_ele_grp
+      call link_1st_ele_grp_connect_type(ele_grp_tbl_2nd)
 !
       end subroutine link_element_group_data
 !
@@ -99,22 +86,11 @@
 !
       subroutine link_surface_group_data
 !
-      use m_surface_group_connect
-      use m_2nd_surf_group_data
+      use m_2nd_group_data
+      use link_group_type_2_1st_mesh
 !
-      ntot_edge_sf_grp_2nd = ntot_edge_sf_grp
-      ntot_node_sf_grp_2nd = ntot_node_sf_grp
 !
-      isurf_grp_2nd =>          isurf_grp
-      isurf_grp_n_2nd =>        isurf_grp_n
-!
-      nedge_sf_grp_2nd =>       nedge_sf_grp
-      iedge_stack_sf_grp_2nd => iedge_stack_sf_grp
-      iedge_surf_grp_2nd =>     iedge_surf_grp
-!
-      nnod_sf_grp_2nd =>        nnod_sf_grp
-      inod_stack_sf_grp_2nd =>  inod_stack_sf_grp
-      inod_surf_grp_2nd =>      inod_surf_grp
+      call link_1st_surf_grp_conn_type(sf_grp_tbl_2nd)
 !
       end subroutine link_surface_group_data
 !
