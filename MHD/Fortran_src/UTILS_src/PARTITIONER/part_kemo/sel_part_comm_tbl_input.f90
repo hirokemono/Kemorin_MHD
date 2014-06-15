@@ -51,7 +51,6 @@
       subroutine save_all_import_4_part(ip, work_f_head)
 !
       use m_2nd_nod_comm_table
-      use m_2nd_ele_comm_table
       use m_2nd_geometry_data
       use work_comm_table_IO
       use copy_partitioner_comm_table
@@ -80,9 +79,9 @@
       call deallocate_type_neib_id(edge_comm_2nd)
       call deallocate_type_import(surf_comm_2nd)
       call deallocate_type_neib_id(surf_comm_2nd)
-      call deallocate_2nd_ele_import
+      call deallocate_type_import(ele_comm_2nd)
+      call deallocate_type_neib_id(ele_comm_2nd)
       call deallocate_2nd_nod_import
-      call deallocate_2nd_ele_neib_id
       call deallocate_2nd_neib_id
 !
       end subroutine save_all_import_4_part
@@ -92,7 +91,6 @@
       subroutine save_all_export_4_part(ip, work_f_head)
 !
       use m_2nd_nod_comm_table
-      use m_2nd_ele_comm_table
       use m_2nd_geometry_data
       use work_comm_table_IO
       use copy_partitioner_comm_table
@@ -118,14 +116,12 @@
         close(id_work_file)
       end if
 !
-      call deallocate_2nd_ele_import
       call deallocate_2nd_nod_import
-      call deallocate_2nd_ele_neib_id
       call deallocate_2nd_neib_id
 !
       call deallocate_type_comm_tbl(edge_comm_2nd)
       call deallocate_type_comm_tbl(surf_comm_2nd)
-      call deallocate_2nd_ele_export
+      call deallocate_type_comm_tbl(ele_comm_2nd)
       call deallocate_2nd_nod_export
 !
       end subroutine save_all_export_4_part
@@ -136,7 +132,6 @@
       subroutine load_all_import_4_part(ip, work_f_head)
 !
       use m_2nd_nod_comm_table
-      use m_2nd_ele_comm_table
       use m_2nd_geometry_data
       use work_comm_table_IO
       use copy_partitioner_comm_table

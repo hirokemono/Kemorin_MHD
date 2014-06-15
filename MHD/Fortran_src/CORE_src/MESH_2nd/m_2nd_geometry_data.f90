@@ -28,6 +28,8 @@
       type(edge_data), save :: edge_2nd
 !
 !
+!>     element communication table for second mesh
+      type(communication_table), save :: ele_comm_2nd
 !>     Surface communication table for second mesh
       type(communication_table), save :: surf_comm_2nd
 !>     Edge communication table for second mesh

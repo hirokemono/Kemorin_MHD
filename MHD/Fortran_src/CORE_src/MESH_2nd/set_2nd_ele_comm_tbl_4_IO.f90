@@ -13,7 +13,7 @@
 !
       use m_precision
 !
-      use m_2nd_ele_comm_table
+      use m_2nd_geometry_data
       use m_comm_data_IO
       use copy_communication_table
 !
@@ -30,25 +30,23 @@
       integer(kind = kint) :: i
 !
 !
-      num_neib_ele_2 = num_neib_domain_IO
+      ele_comm_2nd%num_neib = num_neib_domain_IO
 !
-      call allocate_2nd_ele_neib_id
-      call allocate_2nd_ele_import_num
-      call allocate_2nd_ele_export_num
+      call allocate_type_neib_id(ele_comm_2nd)
 !
-      call copy_num_communication(num_neib_ele_2, id_neib_ele_2,        &
-     &    istack_import_ele_2, istack_export_ele_2,                     &
-     &    ntot_import_ele_2, ntot_export_ele_2,                         &
+      call copy_num_communication(ele_comm_2nd%num_neib, ele_comm_2nd%id_neib,        &
+     &    ele_comm_2nd%num_import, ele_comm_2nd%istack_export,      &
+     &    ele_comm_2nd%ntot_import, ele_comm_2nd%ntot_export,                  &
      &    id_neib_domain_IO, istack_import_IO, istack_export_IO)
-      call copy_num_import_export(num_neib_ele_2,                       &
-     &    num_import_ele_2, num_export_ele_2,                           &
-     &    istack_import_ele_2, istack_export_ele_2)
+      call copy_num_import_export(ele_comm_2nd%num_neib,                       &
+     &    ele_comm_2nd%num_import, ele_comm_2nd%num_export,                    &
+     &    ele_comm_2nd%num_import, ele_comm_2nd%istack_export)
 !
-      call allocate_2nd_ele_import_item
-      call allocate_2nd_ele_export_item
+      call allocate_type_import_item(ele_comm_2nd)
+      call allocate_type_export_item(ele_comm_2nd)
 !
-      call copy_communication_item(ntot_import_ele_2,                   &
-     &    ntot_export_ele_2, item_import_ele_2, item_export_ele_2,      &
+      call copy_communication_item(ele_comm_2nd%ntot_import,                   &
+     &    ele_comm_2nd%ntot_export, ele_comm_2nd%item_import, ele_comm_2nd%item_export,      &
      &    item_import_IO, item_export_IO)
 !
       call deallocate_comm_item_IO
@@ -63,20 +61,20 @@
 !
 !
       my_rank_IO = my_rank
-      num_neib_domain_IO = num_neib_ele_2
+      num_neib_domain_IO = ele_comm_2nd%num_neib
 !
       call allocate_neib_comm_stack_IO
 !
       call copy_num_communication(num_neib_domain_IO,                   &
      &    id_neib_domain_IO, istack_import_IO, istack_export_IO,        &
      &    ntot_import_IO, ntot_export_IO,                               &
-     &    id_neib_ele_2, istack_import_ele_2, istack_export_ele_2)
+     &    ele_comm_2nd%id_neib, ele_comm_2nd%num_import, ele_comm_2nd%istack_export)
 !
       call allocate_comm_item_IO
 !
       call copy_communication_item(ntot_import_IO, ntot_export_IO,      &
      &    item_import_IO, item_export_IO,                               &
-     &    item_import_ele_2, item_export_ele_2)
+     &    ele_comm_2nd%item_import, ele_comm_2nd%item_export)
 !
       end subroutine copy_2nd_ele_comm_tbl_to_IO
 !
@@ -88,25 +86,23 @@
       integer(kind = kint) :: i
 !
 !
-      num_neib_ele_2 = num_neib_domain_IO
+      ele_comm_2nd%num_neib = num_neib_domain_IO
 !
-      call allocate_2nd_ele_neib_id
-      call allocate_2nd_ele_import_num
-      call allocate_2nd_ele_export_num
+      call allocate_type_comm_tbl_num(ele_comm_2nd)
 !
-      call copy_num_import(num_neib_ele_2, id_neib_ele_2,               &
-     &    istack_import_ele_2, istack_export_ele_2,                     &
-     &    ntot_import_ele_2, ntot_export_ele_2,                         &
+      call copy_num_import(ele_comm_2nd%num_neib, ele_comm_2nd%id_neib,               &
+     &    ele_comm_2nd%num_import, ele_comm_2nd%istack_export,    &
+     &    ele_comm_2nd%ntot_import, ele_comm_2nd%ntot_export,                         &
      &    id_neib_domain_IO, istack_import_IO)
-      call copy_num_import_export(num_neib_ele_2,                       &
-     &    num_import_ele_2, num_export_ele_2,                           &
-     &    istack_import_ele_2, istack_export_ele_2)
+      call copy_num_import_export(ele_comm_2nd%num_neib,                       &
+     &    ele_comm_2nd%num_import, ele_comm_2nd%num_export,                    &
+     &    ele_comm_2nd%num_import, ele_comm_2nd%istack_export)
 !
-      call allocate_2nd_ele_import_item
-      call allocate_2nd_ele_export_item
+      call allocate_type_import_item(ele_comm_2nd)
+      call allocate_type_export_item(ele_comm_2nd)
 !
-      call copy_communication_item(ntot_import_ele_2,                   &
-     &    ntot_export_ele_2, item_import_ele_2, item_export_ele_2,      &
+      call copy_communication_item(ele_comm_2nd%ntot_import,                   &
+     &    ele_comm_2nd%ntot_export, ele_comm_2nd%item_import, ele_comm_2nd%item_export,      &
      &    item_import_IO, item_export_IO)
 !
       call deallocate_comm_item_IO
@@ -122,20 +118,20 @@
 !
 !
       my_rank_IO = my_rank
-      num_neib_domain_IO = num_neib_ele_2
+      num_neib_domain_IO = ele_comm_2nd%num_neib
 !
       call allocate_neib_comm_stack_IO
 !
       call copy_num_import(num_neib_domain_IO, id_neib_domain_IO,       &
      &    istack_import_IO, istack_export_IO,                           &
      &    ntot_import_IO, ntot_export_IO,                               &
-     &    id_neib_ele_2, istack_import_ele_2)
+     &    ele_comm_2nd%id_neib, ele_comm_2nd%num_import)
 !
       call allocate_comm_item_IO
 !
       call copy_communication_item(ntot_import_IO, ntot_export_IO,      &
      &    item_import_IO, item_export_IO,                               &
-     &    item_import_ele_2, item_export_ele_2)
+     &    ele_comm_2nd%item_import, ele_comm_2nd%item_export)
 !
 !
       end subroutine copy_2nd_ele_import_to_IO

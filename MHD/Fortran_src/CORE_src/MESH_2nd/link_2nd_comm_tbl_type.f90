@@ -53,24 +53,24 @@
 !
       subroutine link_2nd_ele_comm_tbl_type(ele_comm)
 !
-      use m_2nd_ele_comm_table
+      use m_2nd_geometry_data
 !
       type(communication_table), intent(in) :: ele_comm
 !
 !
-      num_neib_ele_2 =    ele_comm%num_neib
-      ntot_import_ele_2 = ele_comm%ntot_import
-      ntot_export_ele_2 = ele_comm%ntot_export
+      ele_comm_2nd%num_neib =    ele_comm%num_neib
+      ele_comm_2nd%ntot_import = ele_comm%ntot_import
+      ele_comm_2nd%ntot_export = ele_comm%ntot_export
 !
-      id_neib_ele_2 =>    ele_comm%id_neib
+      ele_comm_2nd%id_neib =>    ele_comm%id_neib
 !
-      num_import_ele_2 =>    ele_comm%num_import
-      istack_import_ele_2 => ele_comm%istack_import
-      item_import_ele_2 =>   ele_comm%item_import
+      ele_comm_2nd%num_import =>    ele_comm%num_import
+      ele_comm_2nd%istack_import => ele_comm%istack_import
+      ele_comm_2nd%item_import =>   ele_comm%item_import
 !
-      num_export_ele_2 =>    ele_comm%num_export
-      istack_export_ele_2 => ele_comm%istack_export
-      item_export_ele_2 =>   ele_comm%item_export
+      ele_comm_2nd%num_export =>    ele_comm%num_export
+      ele_comm_2nd%istack_export => ele_comm%istack_export
+      ele_comm_2nd%item_export =>   ele_comm%item_export
 !
       end subroutine link_2nd_ele_comm_tbl_type
 !

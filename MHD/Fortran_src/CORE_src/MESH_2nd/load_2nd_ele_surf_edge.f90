@@ -107,12 +107,10 @@
 !
       subroutine deallocate_2nd_ele_comm_table
 !
-      use m_2nd_ele_comm_table
+      use m_2nd_geometry_data
 !
 !
-      call deallocate_2nd_ele_export
-      call deallocate_2nd_ele_import
-      call deallocate_2nd_ele_neib_id
+      call deallocate_type_comm_tbl(ele_comm_2nd)
 !
       end subroutine deallocate_2nd_ele_comm_table
 !
