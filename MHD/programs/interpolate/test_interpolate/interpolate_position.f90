@@ -29,7 +29,6 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_2nd_pallalel_vector
-      use m_2nd_nod_comm_table
       use m_2nd_geometry_data
       use m_interpolated_geometry
       use m_interpolate_table_orgin
@@ -81,11 +80,12 @@
 !
 !
 !
-      if (num_neib_2.gt.0) then
+      if (comm_2nd%num_neib.gt.0) then
         call SOLVER_SEND_RECV_3                                         &
-     &                (node_2nd%numnod, num_neib_2, id_neib_2,          &
-     &                 istack_import_2, item_import_2,                  &
-     &                 istack_export_2, item_export_2, xvec_2nd(1) )
+     &           (node_2nd%numnod, comm_2nd%num_neib, comm_2nd%id_neib, &
+     &            comm_2nd%istack_import, comm_2nd%item_import,         &
+     &            comm_2nd%istack_export, comm_2nd%item_export,         &
+     &            xvec_2nd(1) )
       end if
 !
       do inod = 1, node_2nd%numnod
@@ -104,7 +104,6 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_2nd_pallalel_vector
-      use m_2nd_nod_comm_table
       use m_2nd_geometry_data
       use m_interpolated_geometry
       use m_interpolate_table_orgin
@@ -156,11 +155,12 @@
 !
 !
 !
-      if (num_neib_2.gt.0) then
+      if (comm_2nd%num_neib.gt.0) then
         call SOLVER_SEND_RECV_3                                         &
-     &                (node_2nd%numnod, num_neib_2, id_neib_2,          &
-     &                 istack_import_2, item_import_2,                  &
-     &                 istack_export_2, item_export_2, xvec_2nd(1) )
+     &           (node_2nd%numnod, comm_2nd%num_neib, comm_2nd%id_neib, &
+     &            comm_2nd%istack_import, comm_2nd%item_import,   &
+     &            comm_2nd%istack_export, comm_2nd%item_export,   &
+     &            xvec_2nd(1) )
       end if
 !
       do inod = 1, node_2nd%numnod
@@ -179,7 +179,6 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_2nd_pallalel_vector
-      use m_2nd_nod_comm_table
       use m_2nd_geometry_data
       use m_interpolated_geometry
       use m_interpolate_table_orgin
@@ -233,11 +232,12 @@
 !
 !
 !
-        if (num_neib_2.gt.0) then
+        if (comm_2nd%num_neib.gt.0) then
           call SOLVER_SEND_RECV                                         &
-     &                (node_2nd%numnod, num_neib_2, id_neib_2,          &
-     &                 istack_import_2, item_import_2,                  &
-     &                 istack_export_2, item_export_2, xvec_2nd(1) )
+     &                (node_2nd%numnod, comm_2nd%num_neib, comm_2nd%id_neib, &
+     &                 comm_2nd%istack_import, comm_2nd%item_import,  &
+     &                 comm_2nd%istack_export, comm_2nd%item_export, &
+     &              xvec_2nd(1) )
         end if
 !
         do inod = 1, node_2nd%numnod
@@ -256,7 +256,6 @@
 !
       use m_interpolated_geometry
       use m_2nd_pallalel_vector
-      use m_2nd_nod_comm_table
       use m_2nd_geometry_data
 !
       use select_calypso_SR
@@ -282,11 +281,11 @@
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'solver_send_recv_i'
-      if (num_neib_2.gt.0) then
+      if (comm_2nd%num_neib.gt.0) then
         call solver_send_recv_i                                         &
-     &                (node_2nd%numnod, num_neib_2, id_neib_2,          &
-     &                 istack_import_2, item_import_2,                  &
-     &                 istack_export_2, item_export_2,                  &
+     &                (node_2nd%numnod, comm_2nd%num_neib, comm_2nd%id_neib, &
+     &                 comm_2nd%istack_import, comm_2nd%item_import,      &
+     &                 comm_2nd%istack_export, comm_2nd%item_export,    &
      &                 ivec_2nd(1))
       end if
 !

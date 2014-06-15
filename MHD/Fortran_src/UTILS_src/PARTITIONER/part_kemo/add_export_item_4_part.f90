@@ -34,7 +34,6 @@
 !
       subroutine add_all_export_item_4_part(nprocs, ip, work_f_head)
 !
-      use m_2nd_nod_comm_table
       use m_2nd_geometry_data
       use m_partitioner_comm_table
       use sel_part_comm_tbl_input
@@ -48,8 +47,8 @@
       allocate( iflag_neib(nprocs) )
       iflag_neib(1:nprocs) = 1
 !
-      do j = 1, num_neib_2
-        jp = id_neib_2(j)
+      do j = 1, comm_2nd%num_neib
+        jp = comm_2nd%id_neib(j)
         iflag_neib(jp) = 0
       end do
 !
@@ -60,36 +59,32 @@
           ISTACK_NOD_TMP(0) = 0
           do jg = 1, NP_TMP
             if (NEIB_TMP(jg) .eq. ip) then
-              allocate ( id_neib_copy(num_neib_2) )
+              allocate ( id_neib_copy(comm_2nd%num_neib) )
 !
-              allocate ( num_import_copy(num_neib_2) )
-              allocate ( istack_import_copy(0:num_neib_2) )
-              allocate ( num_export_copy(num_neib_2) )
+              allocate ( num_import_copy(comm_2nd%num_neib) )
+              allocate ( istack_import_copy(0:comm_2nd%num_neib) )
+              allocate ( num_export_copy(comm_2nd%num_neib) )
 !
-              nneib2_old = num_neib_2
-              num_neib_2 = num_neib_2 + 1
+              nneib2_old = comm_2nd%num_neib
+              comm_2nd%num_neib = comm_2nd%num_neib + 1
 !
-              id_neib_copy(1:nneib2_old) = id_neib_2(1:nneib2_old)
+              id_neib_copy(1:nneib2_old) = comm_2nd%id_neib(1:nneib2_old)
               num_import_copy(1:nneib2_old)                             &
-     &              = num_import_2(1:nneib2_old)
+     &              = comm_2nd%num_import(1:nneib2_old)
               istack_import_copy(0:nneib2_old)                          &
-     &              = istack_import_2(0:nneib2_old)
+     &              = comm_2nd%istack_import(0:nneib2_old)
               num_export_copy(1:nneib2_old)                             &
-     &              = num_export_2(1:nneib2_old)
+     &              = comm_2nd%num_export(1:nneib2_old)
 !
-              call deallocate_2nd_nod_export_num
-              call deallocate_2nd_nod_import_num
-              call deallocate_2nd_neib_id
+              call deallocate_type_comm_tbl(comm_2nd)
 !
-              call allocate_2nd_neib_id
-              call allocate_2nd_nod_import_num
-              call allocate_2nd_nod_export_num
+              call allocate_type_comm_tbl_num(comm_2nd)
 !
-              num_import_2(1:nneib2_old)                                &
+              comm_2nd%num_import(1:nneib2_old)                         &
      &              = num_import_copy(1:nneib2_old)
-              istack_import_2(0:nneib2_old)                             &
+              comm_2nd%istack_import(0:nneib2_old)                      &
      &              = istack_import_copy(0:nneib2_old)
-              num_export_2(1:nneib2_old)                                &
+              comm_2nd%num_export(1:nneib2_old)                         &
      &              = num_export_copy(1:nneib2_old)
 !
 !
@@ -162,19 +157,20 @@
 !
 !
 !
-              id_neib_2(num_neib_2) =   jp
-              num_import_2(num_neib_2) = 0
-              ele_comm_2nd%num_import(num_neib_2) = 0
-              istack_import_2(num_neib_2) = istack_import_2(nneib2_old)
-              ele_comm_2nd%num_import(num_neib_2)                       &
+              comm_2nd%id_neib(comm_2nd%num_neib) =   jp
+              comm_2nd%num_import(comm_2nd%num_neib) = 0
+              ele_comm_2nd%num_import(comm_2nd%num_neib) = 0
+              comm_2nd%istack_import(comm_2nd%num_neib)        &
+     &              = comm_2nd%istack_import(nneib2_old)
+              ele_comm_2nd%num_import(comm_2nd%num_neib)       &
      &              = ele_comm_2nd%num_import(nneib2_old)
-              num_export_2(num_neib_2) = ISTACK_NOD_TMP(jg)             &
+              comm_2nd%num_export(comm_2nd%num_neib) = ISTACK_NOD_TMP(jg) &
      &                                  - ISTACK_NOD_TMP(jg-1)
-              ele_comm_2nd%num_export(num_neib_2) =  ISTACK_ELE_TMP(jg)  &
+              ele_comm_2nd%num_export(comm_2nd%num_neib) =  ISTACK_ELE_TMP(jg)  &
      &                                      - ISTACK_ELE_TMP(jg-1)
-              surf_comm_2nd%num_export(num_neib_2) = ISTACK_SURF_TMP(jg) &
+              surf_comm_2nd%num_export(comm_2nd%num_neib) = ISTACK_SURF_TMP(jg) &
      &                                      - ISTACK_SURF_TMP(jg-1)
-              edge_comm_2nd%num_export(num_neib_2) = ISTACK_EDGE_TMP(jg) &
+              edge_comm_2nd%num_export(comm_2nd%num_neib) = ISTACK_EDGE_TMP(jg) &
      &                                      - ISTACK_EDGE_TMP(jg-1)
               exit
             end if

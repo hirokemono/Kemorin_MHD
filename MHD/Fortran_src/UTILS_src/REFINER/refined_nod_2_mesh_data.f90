@@ -23,13 +23,12 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_2nd_geometry_data
-      use m_2nd_nod_comm_table
       use m_refined_node_id
 !
       integer(kind = kint) :: inod, icou
 !
 !
-      num_neib_2 = 0
+      comm_2nd%num_neib = 0
 !
       node_2nd%numnod = ntot_nod_refine_nod + ntot_nod_refine_edge      &
      &          + ntot_nod_refine_surf + ntot_nod_refine_ele

@@ -23,16 +23,14 @@
 !
       use t_mesh_data
       use m_2nd_geometry_data
-      use link_2nd_comm_tbl_type
       use link_2nd_group_type
-      use link_geometry_to_mesh_type
 !
       type(mesh_data), intent(in) :: mesh_info
 !
 !
-      call link_2nd_nod_comm_tbl_type(mesh_info%mesh%nod_comm)
-      call link_2nd_node_type(mesh_info%mesh%node)
-      call link_2nd_ele_connect_type(mesh_info%mesh%ele)
+      call link_comm_tbl_types(mesh_info%mesh%nod_comm, comm_2nd)
+      call link_new_nod_geometry_type(mesh_info%mesh%node, node_2nd)
+      call link_new_ele_connect_type(mesh_info%mesh%ele, ele_2nd)
       call s_link_2nd_group_type(mesh_info%group)
 !
       end subroutine s_set_2nd_mesh_from_struct

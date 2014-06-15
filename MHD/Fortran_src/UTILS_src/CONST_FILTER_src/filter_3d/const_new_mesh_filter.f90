@@ -39,7 +39,6 @@
 !
       use calypso_mpi
       use m_ctl_param_newdom_filter
-      use m_2nd_nod_comm_table
       use m_2nd_geometry_data
       use m_nod_filter_comm_table
       use m_filter_file_names
@@ -49,10 +48,10 @@
       use set_parallel_file_name
       use filter_geometry_IO
       use work_comm_table_IO
-      use set_2nd_nod_comm_tbl_4_IO
       use set_filter_geometry_4_IO
       use set_filters_4_new_domains
       use sel_part_nod_comm_input
+      use set_comm_tbl_type_4_IO
 !
       character(len=kchara), intent(in) :: work_f_head
       integer(kind = kint), intent(in) :: my_rank2
@@ -71,7 +70,7 @@
 !C | LOCAL NUMBERING |
 !C +-----------------+
 !C===
-      id_neib_2(1:num_neib_2) = id_neib_2(1:num_neib_2) - 1
+      comm_2nd%id_neib(1:comm_2nd%num_neib) = comm_2nd%id_neib(1:comm_2nd%num_neib) - 1
 !
       nnod_filtering =     numnod_4_subdomain(ip2)
       inter_nod_3dfilter = num_intnod_sub(ip2)
@@ -79,11 +78,9 @@
 !          write(*,*) 'set_newdomain_filtering_nod'
       call set_newdomain_filtering_nod(ip2)
 !
-!          write(*,*) 'copy_2nd_node_comm_tbl_to_IO'
-      call copy_2nd_node_comm_tbl_to_IO(my_rank2)
-      call deallocate_2nd_nod_export
-      call deallocate_2nd_nod_import
-      call deallocate_2nd_neib_id
+!          write(*,*) 'copy_comm_tbl_type_to_IO(my_rank, comm_2nd)'
+      call copy_comm_tbl_type_to_IO(my_rank, comm_2nd)
+      call deallocate_type_comm_tbl(comm_2nd)
 !
 !          write(*,*) 'copy_filtering_geometry_to_IO'
       call copy_filtering_geometry_to_IO

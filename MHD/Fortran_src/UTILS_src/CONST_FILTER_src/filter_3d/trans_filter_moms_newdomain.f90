@@ -136,7 +136,7 @@
       use m_filter_elength
       use filter_moment_IO_select
       use set_filter_moms_2_new_mesh
-      use set_2nd_ele_connect_4_IO
+      use set_element_types_4_IO
       use set_filter_moms_2_new_mesh
       use copy_filter_moms_from_2nd
 !
@@ -154,7 +154,8 @@
 !
       node_2nd%numnod = numnod_dummy
       node_2nd%internal_node = internal_node_dummy
-      call copy_2nd_ele_connect_from_IO
+      call copy_ele_connect_type_from_IO(ele_2nd)
+      call set_num_nod_4_each_elements_2
 !
 !    construct new filter table
 !

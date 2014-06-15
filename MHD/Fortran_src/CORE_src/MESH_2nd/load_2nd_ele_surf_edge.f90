@@ -55,13 +55,14 @@
 !
       subroutine output_2nd_element_connect(my_rank)
 !
-      use set_2nd_ele_comm_tbl_4_IO
+      use m_2nd_geometry_data
+      use set_comm_tbl_type_4_IO
       use element_IO_select
 !
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call copy_2nd_ele_comm_tbl_to_IO(my_rank)
+      call copy_comm_tbl_type_to_IO(my_rank, ele_comm_2nd)
       call sel_output_ele_comm_table(my_rank)
 !
       end subroutine output_2nd_element_connect
@@ -70,15 +71,16 @@
 !
       subroutine output_2nd_surface_mesh(my_rank)
 !
-      use set_2nd_surf_comm_tbl_4_IO
-      use set_2nd_surf_geometry_4_IO
+      use m_2nd_geometry_data
+      use set_comm_tbl_type_4_IO
+      use set_surface_geom_type_IO
       use surface_IO_select
 !
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call copy_2nd_surf_comm_tbl_to_IO(my_rank)
-      call copy_2nd_surf_connect_to_IO
+      call copy_comm_tbl_type_to_IO(my_rank, surf_comm_2nd)
+      call copy_surf_conn_type_to_IO(surf_2nd, ele_2nd%numele)
 !
       call sel_output_surface_connect(my_rank)
 !
@@ -88,15 +90,17 @@
 !
       subroutine output_2nd_edge_mesh(my_rank)
 !
-      use set_2nd_edge_comm_tbl_4_IO
-      use set_2nd_edge_geometry_4_IO
+      use m_2nd_geometry_data
+      use set_comm_tbl_type_4_IO
+      use set_edge_geom_type_IO
       use edge_IO_select
 !
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call copy_2nd_edge_comm_tbl_to_IO(my_rank)
-      call copy_2nd_edge_connect_to_IO
+      call copy_comm_tbl_type_to_IO(my_rank, edge_comm_2nd)
+      call copy_edge_conn_type_to_IO                                    &
+     &   (edge_2nd, ele_2nd%numele, surf_2nd%numsurf)
 !
       call sel_output_edge_connect(my_rank)
 !

@@ -28,6 +28,9 @@
       type(edge_data), save :: edge_2nd
 !
 !
+!>     Node communication table for second mesh
+      type(communication_table), save :: comm_2nd
+!
 !>     element communication table for second mesh
       type(communication_table), save :: ele_comm_2nd
 !>     Surface communication table for second mesh
@@ -38,6 +41,26 @@
 !------------------------------------------------------------------
 !
       contains
+!
+!------------------------------------------------------------------
+!
+      subroutine set_num_nod_4_each_elements_2
+!
+      use m_geometry_constants
+!
+!
+      if (ele_2nd%nnod_4_ele .eq. num_t_quad) then
+        surf_2nd%nnod_4_surf = num_quad_sf
+        edge_2nd%nnod_4_edge = num_quad_edge
+      else if (ele_2nd%nnod_4_ele .eq. num_t_linear) then
+        surf_2nd%nnod_4_surf = num_linear_sf
+        edge_2nd%nnod_4_edge = num_linear_edge
+      else if (ele_2nd%nnod_4_ele .eq. num_t_lag) then
+        surf_2nd%nnod_4_surf = num_lag_sf
+        edge_2nd%nnod_4_edge = num_quad_edge
+      end if
+!
+      end subroutine set_num_nod_4_each_elements_2
 !
 !------------------------------------------------------------------
 !

@@ -10,7 +10,6 @@
       use m_machine_parameter
       use t_mesh_data
       use m_2nd_pallalel_vector
-      use m_2nd_nod_comm_table
       use m_2nd_geometry_data
       use m_connect_hexa_2_tetra
 !
@@ -71,7 +70,6 @@
       use set_2nd_mesh_from_struct
       use m_2nd_geometry_data
       use m_geometry_constants
-      use link_geometry_to_mesh_type
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint) :: jp
@@ -79,7 +77,8 @@
 !
       jp = my_rank + 1
       call s_set_2nd_mesh_from_struct(origin_mesh(jp))
-      call link_2nd_ele_geom_to_type(origin_mesh(jp)%mesh%ele)
+      call link_new_ele_geometry_type                                   &
+     &   (origin_mesh(jp)%mesh%ele, ele_2nd)
 !
       if (ele_2nd%nnod_4_ele .eq. num_t_linear) then
         call set_1_hexa_2_5_tetra
@@ -95,8 +94,6 @@
 !
       subroutine unlink_2nd_geometry_4_table
 !
-      use m_2nd_nod_comm_table
-      use m_2nd_geometry_data
       use m_2nd_group_data
 !
 !
@@ -107,7 +104,7 @@
       call unlink_node_geometry_type(node_2nd)
       call unlink_ele_connect_type(ele_2nd)
 !
-      call unlink_2nd_nod_comm_tbl
+      call unlink_dest_comm_tbl_type(comm_2nd)
 !
       end subroutine unlink_2nd_geometry_4_table
 !

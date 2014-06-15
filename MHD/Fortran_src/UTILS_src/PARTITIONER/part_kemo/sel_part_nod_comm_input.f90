@@ -47,7 +47,7 @@
 !
       subroutine save_node_import_4_part(ip, work_f_head)
 !
-      use m_2nd_nod_comm_table
+      use m_2nd_geometry_data
       use work_nod_comm_table_IO
       use copy_part_nod_comm_tbl
       use set_parallel_file_name
@@ -71,8 +71,8 @@
         close(id_work_file)
       end if
 !
-      call deallocate_2nd_nod_import
-      call deallocate_2nd_neib_id
+      call deallocate_type_import(comm_2nd)
+      call deallocate_type_neib_id(comm_2nd)
 !
       end subroutine save_node_import_4_part
 !
@@ -80,7 +80,7 @@
 !
       subroutine save_node_export_4_part(ip, work_f_head)
 !
-      use m_2nd_nod_comm_table
+      use m_2nd_geometry_data
       use work_nod_comm_table_IO
       use copy_part_nod_comm_tbl
       use set_parallel_file_name
@@ -106,9 +106,7 @@
         close(id_work_file)
       end if
 !
-      call deallocate_2nd_nod_import
-      call deallocate_2nd_neib_id
-      call deallocate_2nd_nod_export
+      call deallocate_type_comm_tbl(comm_2nd)
 !
       end subroutine save_node_export_4_part
 !

@@ -37,7 +37,7 @@
       use m_2nd_pallalel_vector
       use m_2nd_geometry_data
       use m_2nd_phys_data
-      use copy_comm_tables_to_2nd
+      use copy_nod_comm_tbl_4_type
       use link_geometry_to_1st_mesh
       use link_group_to_1st_mesh
       use const_ele_layering_table
@@ -77,7 +77,7 @@
 !     --------------------- 
 !
       call copy_num_processes_to_2nd
-      call copy_nod_comm_table_2_2nd
+      call copy_node_comm_tbl_to_type(comm_2nd)
       call link_node_data
       call link_element_data
       call link_mesh_parameter_4_smp

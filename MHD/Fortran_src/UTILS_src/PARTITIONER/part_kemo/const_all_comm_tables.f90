@@ -131,7 +131,6 @@
 !
       subroutine count_all_export_item_4_part(ip, work_f_head)
 !
-      use m_2nd_nod_comm_table
       use m_2nd_geometry_data
       use m_partitioner_comm_table
       use m_domain_group_4_partition
@@ -143,15 +142,15 @@
 !
       integer(kind = kint) :: j, jp, jg
 !
-      do j = 1, num_neib_2
-        jp = id_neib_2(j)
+      do j = 1, comm_2nd%num_neib
+        jp = comm_2nd%id_neib(j)
 !
         call load_all_import_num_tmp(jp, work_f_head)
 !
         ISTACK_NOD_TMP(0) = 0
         do jg = 1, NP_TMP
           if (NEIB_TMP(jg) .eq. ip) then
-            num_export_2(j) = ISTACK_NOD_TMP(jg) - ISTACK_NOD_TMP(jg-1)
+            comm_2nd%num_export(j) = ISTACK_NOD_TMP(jg) - ISTACK_NOD_TMP(jg-1)
             ele_comm_2nd%num_export(j) =  ISTACK_ELE_TMP(jg)            &
      &                            - ISTACK_ELE_TMP(jg-1)
             surf_comm_2nd%num_export(j) = ISTACK_SURF_TMP(jg)           &
@@ -171,7 +170,6 @@
 !
       subroutine set_all_export_item_4_part(ip, work_f_head)
 !
-      use m_2nd_nod_comm_table
       use m_2nd_geometry_data
       use m_partitioner_comm_table
       use m_domain_group_4_partition
@@ -192,8 +190,8 @@
       integer(kind = kint) :: isurf, isurf_org
       integer(kind = kint) :: iedge, iedge_org
 !
-      do j = 1, num_neib_2
-        jp = id_neib_2(j)
+      do j = 1, comm_2nd%num_neib
+        jp = comm_2nd%id_neib(j)
         call load_all_import_item_tmp(jp, work_f_head)
 !
         ISTACK_NOD_TMP(0) =  0
@@ -215,13 +213,13 @@
         end do
 !
         jst = istack_numnod_sub(jp-1)
-        icou = istack_export_2(j-1)
+        icou = comm_2nd%istack_export(j-1)
         do jnum = jst_nod_im+1, jed_nod_im
           icou = icou + 1
           jnod = IMPORT_NOD_TMP(jnum)
           inod = inod_4_subdomain(jst+jnod)
           inod_org = id_glnode_org(inod)
-          item_export_2(icou) = inod_local_part(inod_org)
+          comm_2nd%item_export(icou) = inod_local_part(inod_org)
         end do
 !
         jst = istack_numele_sub(jp-1)

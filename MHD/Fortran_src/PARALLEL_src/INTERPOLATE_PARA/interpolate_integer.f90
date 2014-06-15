@@ -25,7 +25,6 @@
       use m_machine_parameter
       use m_geometry_data
       use m_2nd_pallalel_vector
-      use m_2nd_nod_comm_table
       use m_2nd_geometry_data
       use m_interpolate_table_orgin
       use m_interpolate_table_dest
@@ -72,11 +71,11 @@
      &           i_inter_org(1), ivec_2nd(1) )
 !
 !
-      if (num_neib_2.gt.0) then
+      if (comm_2nd%num_neib.gt.0) then
         call solver_send_recv_i                                         &
-     &                (node_2nd%numnod, num_neib_2, id_neib_2,  &
-     &                 istack_import_2, item_import_2,                  &
-     &                 istack_export_2, item_export_2,                  &
+     &                (node_2nd%numnod, comm_2nd%num_neib, comm_2nd%id_neib,  &
+     &                 comm_2nd%istack_import, comm_2nd%item_import,   &
+     &                 comm_2nd%istack_export, comm_2nd%item_export,    &
      &                 ivec_2nd(1) )
       end if
 !

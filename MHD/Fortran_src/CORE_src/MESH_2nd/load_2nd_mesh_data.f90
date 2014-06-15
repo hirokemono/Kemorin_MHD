@@ -75,16 +75,18 @@
 !
       subroutine set_2nd_mesh_data
 !
-      use set_2nd_ele_connect_4_IO
-      use set_2nd_nod_comm_tbl_4_IO
+      use m_2nd_geometry_data
+      use set_comm_tbl_type_4_IO
+      use set_element_types_4_IO
       use set_2nd_group_data_from_IO
       use set_node_types_4_IO
 !
 !
       call copy_node_type_from_IO(node_2nd)
-      call copy_2nd_ele_connect_from_IO
+      call copy_ele_connect_type_from_IO(ele_2nd)
+      call set_num_nod_4_each_elements_2
 !
-      call copy_2nd_node_comm_tbl_from_IO
+      call copy_comm_tbl_type_from_IO(comm_2nd)
 !
       call s_set_2nd_group_data_from_IO
 !
@@ -94,15 +96,17 @@
 !
       subroutine set_2nd_mesh_geometry
 !
+      use m_2nd_geometry_data
       use m_comm_data_IO
       use m_read_boundary_data
-      use set_2nd_ele_connect_4_IO
+      use set_element_types_4_IO
       use set_2nd_nod_comm_tbl_4_IO
       use set_node_types_4_IO
 !
 !
       call copy_node_type_from_IO(node_2nd)
-      call copy_2nd_ele_connect_from_IO
+      call copy_ele_connect_type_from_IO(ele_2nd)
+      call set_num_nod_4_each_elements_2
 !
       call deallocate_boundary_arrays
       call deallocate_comm_item_IO
@@ -113,17 +117,18 @@
 !
       subroutine set_2nd_mesh_to_IO(my_rank)
 !
-      use set_2nd_nod_comm_tbl_4_IO
-      use set_2nd_ele_connect_4_IO
+      use m_2nd_geometry_data
+      use set_comm_tbl_type_4_IO
+      use set_element_types_4_IO
       use set_2nd_group_data_to_IO
       use set_node_types_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call copy_2nd_node_comm_tbl_to_IO(my_rank)
+      call copy_comm_tbl_type_to_IO(my_rank, comm_2nd)
       call copy_node_type_to_IO(node_2nd)
-      call copy_2nd_ele_connect_to_IO
+      call copy_ele_connect_type_to_IO(ele_2nd)
       call s_set_2nd_group_data_to_IO
 !
       end subroutine set_2nd_mesh_to_IO
@@ -133,7 +138,6 @@
       subroutine deallocate_2nd_mesh
 !
       use m_2nd_geometry_data
-      use m_2nd_nod_comm_table
       use m_2nd_group_data
 !
       call deallocate_2nd_node_group
@@ -142,10 +146,7 @@
 !
       call deallocate_ele_connect_type(ele_2nd)
       call deallocate_node_geometry_type(node_2nd)
-      call deallocate_2nd_nod_export
-      call deallocate_2nd_nod_import
-!
-      call deallocate_2nd_neib_id
+      call deallocate_type_comm_tbl(comm_2nd)
 !
       end subroutine deallocate_2nd_mesh
 !

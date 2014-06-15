@@ -76,13 +76,13 @@
 !
       subroutine write_neighboring_pes(ip)
 !
-      use m_2nd_nod_comm_table
+      use m_2nd_geometry_data
 !
       integer(kind = kint), intent(in) :: ip
 !
 !
-      write (*,'(i6,i10,255i6)') ip, num_neib_2,                        &
-     &     id_neib_2(1:num_neib_2)
+      write (*,'(i6,i10,255i6)') ip, comm_2nd%num_neib,                 &
+     &     comm_2nd%id_neib(1:comm_2nd%num_neib)
 !
       end subroutine write_neighboring_pes
 !

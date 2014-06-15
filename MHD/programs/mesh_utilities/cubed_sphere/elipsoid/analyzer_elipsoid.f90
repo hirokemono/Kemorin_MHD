@@ -60,7 +60,7 @@
 !
       subroutine analyze(errno)
 !
-      use m_2nd_nod_comm_table
+      use m_2nd_geometry_data
       use m_read_mesh_data
       use const_cutshell_mesh
       use load_2nd_mesh_data
@@ -70,12 +70,9 @@
 !
       call s_const_reduced_geometry
 !
-      num_neib_2 = 0
-      call allocate_2nd_neib_id
-      call allocate_2nd_nod_import_num
-      call allocate_2nd_nod_export_num
-      call allocate_2nd_nod_import_item
-      call allocate_2nd_nod_export_item
+      comm_2nd%num_neib = 0
+      call allocate_type_comm_tbl_num(comm_2nd)
+      call allocate_type_comm_tbl_item(comm_2nd)
 !
       iflag_mesh_file_fmt = ifile_type
       mesh_file_head = modified_mesh_head

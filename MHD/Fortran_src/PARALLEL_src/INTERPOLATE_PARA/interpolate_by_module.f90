@@ -24,7 +24,6 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_2nd_geometry_data
-      use m_2nd_nod_comm_table
       use m_interpolate_table_orgin
       use m_interpolate_table_dest
 !
@@ -72,11 +71,11 @@
      &           inod_dest_4_dest, irev_dest_4_dest,                    &
      &           x_inter_org(1), X_dest(1) )
 !
-      if (num_neib_2 .gt. 0) then
+      if (comm_2nd%num_neib .gt. 0) then
         call SOLVER_SEND_RECV                                           &
-     &                (node_2nd%numnod, num_neib_2, id_neib_2,     &
-     &                 istack_import_2, item_import_2,                  &
-     &                 istack_export_2, item_export_2, X_dest(1) )
+     &                (node_2nd%numnod, comm_2nd%num_neib, comm_2nd%id_neib,     &
+     &                 comm_2nd%istack_import, comm_2nd%item_import,   &
+     &                 comm_2nd%istack_export, comm_2nd%item_export, X_dest(1) )
       end if
 !
       end subroutine interpolate_mod_1
@@ -118,11 +117,11 @@
      &           x_inter_org(1), X_dest(1) )
 !
 !
-      if (num_neib_2.gt.0) then
+      if (comm_2nd%num_neib.gt.0) then
         call SOLVER_SEND_RECV_3                                         &
-     &                (node_2nd%numnod, num_neib_2, id_neib_2,  &
-     &                 istack_import_2, item_import_2,                  &
-     &                 istack_export_2, item_export_2, X_dest(1))
+     &                (node_2nd%numnod, comm_2nd%num_neib, comm_2nd%id_neib,  &
+     &                 comm_2nd%istack_import, comm_2nd%item_import,  &
+     &                 comm_2nd%istack_export, comm_2nd%item_export, X_dest(1))
       end if
 !
       end subroutine interpolate_mod_3
@@ -160,11 +159,11 @@
      &           inod_dest_4_dest, irev_dest_4_dest,                    &
      &           x_inter_org(1), X_dest(1) )
 !
-      if (num_neib_2.gt.0) then
+      if (comm_2nd%num_neib.gt.0) then
         call SOLVER_SEND_RECV_6                                         &
-     &                (node_2nd%numnod, num_neib_2, id_neib_2,  &
-     &                 istack_import_2, item_import_2,                  &
-     &                 istack_export_2, item_export_2, X_dest(1) )
+     &                (node_2nd%numnod, comm_2nd%num_neib, comm_2nd%id_neib,  &
+     &                 comm_2nd%istack_import, comm_2nd%item_import,   &
+     &                 comm_2nd%istack_export, comm_2nd%item_export, X_dest(1) )
       end if
 !
       end subroutine interpolate_mod_6
@@ -201,11 +200,11 @@
      &           inod_dest_4_dest, irev_dest_4_dest,                    &
      &           x_inter_org(1), X_dest(1) )
 !
-      if (num_neib_2.gt.0) then
+      if (comm_2nd%num_neib.gt.0) then
         call SOLVER_SEND_RECV_N                                         &
-     &                (node_2nd%numnod, NB, num_neib_2, id_neib_2, &
-     &                 istack_import_2, item_import_2,                  &
-     &                 istack_export_2, item_export_2, X_dest(1) )
+     &                (node_2nd%numnod, NB, comm_2nd%num_neib, comm_2nd%id_neib, &
+     &                 comm_2nd%istack_import, comm_2nd%item_import,   &
+     &                 comm_2nd%istack_export, comm_2nd%item_export, X_dest(1) )
       end if
 !
       end subroutine interpolate_mod_N

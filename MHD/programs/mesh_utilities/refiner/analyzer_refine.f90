@@ -74,7 +74,7 @@
       use m_geometry_constants
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_nod_comm_table
+      use m_2nd_geometry_data
       use m_refined_node_id
       use m_refined_element_data
 !      use m_machine_parameter
@@ -141,12 +141,9 @@
 !
 !      call check_refine_items
 !
-        num_neib_2 = num_neib
-        call allocate_2nd_neib_id
-        call allocate_2nd_nod_import_num
-        call allocate_2nd_nod_export_num
-        call allocate_2nd_nod_import_item
-        call allocate_2nd_nod_export_item
+        comm_2nd%num_neib = num_neib
+        call allocate_type_comm_tbl_num(comm_2nd)
+        call allocate_type_comm_tbl_item(comm_2nd)
 !
         write(*,*) 's_set_refined_position'
         call s_set_refined_position

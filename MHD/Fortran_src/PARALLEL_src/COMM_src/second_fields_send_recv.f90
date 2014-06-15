@@ -20,7 +20,6 @@
 !
       use m_2nd_pallalel_vector
       use m_2nd_geometry_data
-      use m_2nd_nod_comm_table
       use m_2nd_phys_data
 !
       implicit none
@@ -82,9 +81,9 @@
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV(node_2nd%numnod, num_neib_2, id_neib_2,     &
-     &                      istack_import_2, item_import_2,             &
-     &                      istack_export_2, item_export_2,             &
+      call SOLVER_SEND_RECV(node_2nd%numnod, comm_2nd%num_neib, comm_2nd%id_neib, &
+     &                      comm_2nd%istack_import, comm_2nd%item_import, &
+     &                      comm_2nd%istack_export, comm_2nd%item_export, &
      &                      xvec_2nd(1) )
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
@@ -115,9 +114,9 @@
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_3(node_2nd%numnod, num_neib_2, id_neib_2,   &
-     &                        istack_import_2, item_import_2,           &
-     &                        istack_export_2, item_export_2,           &
+      call SOLVER_SEND_RECV_3(node_2nd%numnod, comm_2nd%num_neib, comm_2nd%id_neib,   &
+     &                        comm_2nd%istack_import, comm_2nd%item_import, &
+     &                        comm_2nd%istack_export, comm_2nd%item_export, &
      &                        xvec_2nd(1) )
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
@@ -154,9 +153,9 @@
 !
       START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_6                                           &
-     &      (node_2nd%numnod, num_neib_2, id_neib_2,                    &
-     &       istack_import_2, item_import_2,                            &
-     &       istack_export_2, item_export_2, xvec_2nd(1) )
+     &      (node_2nd%numnod, comm_2nd%num_neib, comm_2nd%id_neib,      &
+     &       comm_2nd%istack_import, comm_2nd%item_import,   &
+     &       comm_2nd%istack_export, comm_2nd%item_export, xvec_2nd(1) )
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do

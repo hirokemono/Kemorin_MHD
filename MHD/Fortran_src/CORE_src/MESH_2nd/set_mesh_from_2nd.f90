@@ -55,11 +55,11 @@
       subroutine copy_node_comm_tbl_from_2nd
 !
       use m_nod_comm_table
-      use m_2nd_nod_comm_table
+      use m_2nd_geometry_data
       use copy_communication_table
 !
 !
-      num_neib = num_neib_2
+      num_neib = comm_2nd%num_neib
 !
       call allocate_neib_id
       call allocate_nod_import_num
@@ -67,7 +67,7 @@
 !
       call copy_num_communication(num_neib, id_neib,                    &
      &    istack_import, istack_export, ntot_import, ntot_export,       &
-     &    id_neib_2, istack_import_2, istack_export_2)
+     &    comm_2nd%id_neib, comm_2nd%istack_import, comm_2nd%istack_export)
       call copy_num_import_export(num_neib, num_import, num_export,     &
      &    istack_import, istack_export)
 !
@@ -75,11 +75,10 @@
       call allocate_nod_export_item
 !
       call copy_communication_item(ntot_import, ntot_export,            &
-     &    item_import, item_export, item_import_2, item_export_2)
+     &    item_import, item_export,   &
+     &    comm_2nd%item_import, comm_2nd%item_export)
 !
-      call deallocate_2nd_nod_export
-      call deallocate_2nd_nod_import
-      call deallocate_2nd_neib_id
+      call deallocate_type_comm_tbl(comm_2nd)
 !
       end subroutine copy_node_comm_tbl_from_2nd
 !

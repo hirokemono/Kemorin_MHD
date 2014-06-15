@@ -21,7 +21,6 @@
       subroutine local_fem_mesh(my_rank, nprocs, work_f_head)
 !
       use m_constants
-      use m_2nd_nod_comm_table
       use m_2nd_geometry_data
       use m_partitioner_comm_table
       use m_ctl_param_partitioner
@@ -63,8 +62,8 @@
 !C | LOCAL NUMBERING |
 !C +-----------------+
 !C===
-        do i = 1, num_neib_2
-          id_neib_2(i) = id_neib_2(i) - 1
+        do i = 1, comm_2nd%num_neib
+          comm_2nd%id_neib(i) = comm_2nd%id_neib(i) - 1
         end do
 
         call s_const_local_meshes(ip)
