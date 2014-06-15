@@ -135,13 +135,10 @@
 !
       subroutine deallocate_2nd_edge_data
 !
-      use m_2nd_edge_comm_table
       use m_2nd_geometry_data
 !
 !
-      call deallocate_2nd_edge_export
-      call deallocate_2nd_edge_import
-      call deallocate_2nd_edge_neib_id
+      call deallocate_type_comm_tbl(edge_comm_2nd)
       call deallocate_edge_connect_type(edge_2nd)
       call deallocate_edge_4_ele_type(edge_2nd)
 !

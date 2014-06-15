@@ -59,7 +59,7 @@
         call dealloc_ie_gl_import( ele_comm_work(ip) )
 !
         call deallocate_type_neib_id( ele_comm_tmp(ip) )
-        call deallocate_type_import_item( ele_comm_tmp(ip) )
+        call deallocate_type_import( ele_comm_tmp(ip) )
       end do
       call dealloc_const_ele_comm_tbl
 !

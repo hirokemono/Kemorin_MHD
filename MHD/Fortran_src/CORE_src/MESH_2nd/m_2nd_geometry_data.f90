@@ -12,11 +12,11 @@
       use t_geometry_data
       use t_surface_data
       use t_edge_data
+      use t_comm_table
 !
       implicit  none
 !
 !
-!node_2nd%numnod
 !>      node information for 2nd mesh
       type(node_data), save :: node_2nd
 !>      element information for 2nd mesh
@@ -26,6 +26,10 @@
       type(surface_data), save :: surf_2nd
 !>      Strucure for second edge data
       type(edge_data), save :: edge_2nd
+!
+!
+!>     Edge communication table for second mesh
+      type(communication_table) :: edge_comm_2nd
 !
 !------------------------------------------------------------------
 !

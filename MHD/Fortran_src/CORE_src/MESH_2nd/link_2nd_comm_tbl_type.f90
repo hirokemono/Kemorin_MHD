@@ -103,24 +103,24 @@
 !
       subroutine link_2nd_edge_comm_tbl_type(edge_comm)
 !
-      use m_2nd_edge_comm_table
+      use m_2nd_geometry_data
 !
       type(communication_table), intent(in) :: edge_comm
 !
 !
-      num_neib_edge_2 =    edge_comm%num_neib
-      ntot_import_edge_2 = edge_comm%ntot_import
-      ntot_export_edge_2 = edge_comm%ntot_export
+      edge_comm_2nd%num_neib =    edge_comm%num_neib
+      edge_comm_2nd%ntot_import = edge_comm%ntot_import
+      edge_comm_2nd%ntot_export = edge_comm%ntot_export
 !
-      id_neib_edge_2 =>    edge_comm%id_neib
+      edge_comm_2nd%id_neib =>    edge_comm%id_neib
 !
-      num_import_edge_2 =>    edge_comm%num_import
-      istack_import_edge_2 => edge_comm%istack_import
-      item_import_edge_2 =>   edge_comm%item_import
+      edge_comm_2nd%num_import =>    edge_comm%num_import
+      edge_comm_2nd%istack_import => edge_comm%istack_import
+      edge_comm_2nd%item_import =>   edge_comm%item_import
 !
-      num_export_edge_2 =>    edge_comm%num_export
-      istack_export_edge_2 => edge_comm%istack_export
-      item_export_edge_2 =>   edge_comm%item_export
+      edge_comm_2nd%num_export =>    edge_comm%num_export
+      edge_comm_2nd%istack_export => edge_comm%istack_export
+      edge_comm_2nd%item_export =>   edge_comm%item_export
 !
       end subroutine link_2nd_edge_comm_tbl_type
 !

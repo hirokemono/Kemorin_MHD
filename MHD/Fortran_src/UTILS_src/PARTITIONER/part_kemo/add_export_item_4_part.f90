@@ -37,7 +37,7 @@
       use m_2nd_nod_comm_table
       use m_2nd_ele_comm_table
       use m_2nd_surf_comm_table
-      use m_2nd_edge_comm_table
+      use m_2nd_geometry_data
       use m_partitioner_comm_table
       use sel_part_comm_tbl_input
 !
@@ -138,23 +138,23 @@
 !
 !
               num_import_copy(1:nneib2_old)                             &
-     &              = num_import_edge_2(1:nneib2_old)
+     &              = edge_comm_2nd%num_import(1:nneib2_old)
               istack_import_copy(0:nneib2_old)                          &
-     &              = istack_import_edge_2(0:nneib2_old)
+     &              = edge_comm_2nd%istack_import(0:nneib2_old)
               num_export_copy(1:nneib2_old)                             &
-     &              = num_export_edge_2(1:nneib2_old)
+     &              = edge_comm_2nd%num_export(1:nneib2_old)
 !
-              call deallocate_2nd_edge_export_num
-              call deallocate_2nd_edge_import_num
+              call deallocate_type_export_num(edge_comm_2nd)
+              call deallocate_type_import_num(edge_comm_2nd)
 !
-              call allocate_2nd_edge_import_num
-              call allocate_2nd_edge_export_num
+              call allocate_type_import_num(edge_comm_2nd)
+              call allocate_type_export_num(edge_comm_2nd)
 !
-              num_import_edge_2(1:nneib2_old)                          &
+              edge_comm_2nd%num_import(1:nneib2_old)                          &
      &              = num_import_copy(1:nneib2_old)
-              istack_import_edge_2(0:nneib2_old)                       &
+              edge_comm_2nd%istack_import(0:nneib2_old)                 &
      &              = istack_import_copy(0:nneib2_old)
-              num_export_edge_2(1:nneib2_old)                          &
+              edge_comm_2nd%num_export(1:nneib2_old)                   &
      &              = num_export_copy(1:nneib2_old)
 !
               deallocate ( id_neib_copy )
@@ -176,7 +176,7 @@
      &                                      - ISTACK_ELE_TMP(jg-1)
               num_export_surf_2(num_neib_2) = ISTACK_SURF_TMP(jg)       &
      &                                      - ISTACK_SURF_TMP(jg-1)
-              num_export_edge_2(num_neib_2) = ISTACK_EDGE_TMP(jg)       &
+              edge_comm_2nd%num_export(num_neib_2) = ISTACK_EDGE_TMP(jg) &
      &                                      - ISTACK_EDGE_TMP(jg-1)
               exit
             end if

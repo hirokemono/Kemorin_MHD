@@ -19,6 +19,7 @@
       module m_2nd_ele_comm_table
 !
       use m_precision
+      use t_comm_table
 !
       implicit  none
 !
@@ -34,6 +35,7 @@
       integer(kind = kint), pointer :: num_export_ele_2(:)
       integer(kind = kint), pointer :: istack_export_ele_2(:)
       integer(kind = kint), pointer :: item_export_ele_2(:)
+!
 !
 !------------------------------------------------------------------
 !

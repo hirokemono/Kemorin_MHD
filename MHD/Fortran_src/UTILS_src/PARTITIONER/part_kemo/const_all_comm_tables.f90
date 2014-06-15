@@ -100,25 +100,26 @@
 !
       use m_internal_4_partitioner
       use m_domain_group_4_partition
-      use m_2nd_edge_comm_table
+      use m_2nd_geometry_data
       use set_import_items
 !
       integer(kind = kint), intent(in) :: ip, nproc
 !
 !
-      call allocate_2nd_edge_import_num
+      call allocate_type_import_num(edge_comm_2nd)
 !
       call count_ele_import_item(ip, nproc, ntot_numedge_sub,           &
      &    istack_numedge_sub, iedge_4_subdomain, nedge_s_domin,         &
-     &    id_gledge_org, IGROUP_edge, num_neib_edge_2, id_neib_edge_2,  &
-     &    ntot_import_edge_2, istack_import_edge_2)
+     &    id_gledge_org, IGROUP_edge, edge_comm_2nd%num_neib, edge_comm_2nd%id_neib,  &
+     &    edge_comm_2nd%ntot_import, edge_comm_2nd%istack_import)
 !
-      call allocate_2nd_edge_import_item
+      call allocate_type_import_item(edge_comm_2nd)
 !
       call set_ele_import_item(ip, nproc, ntot_numedge_sub,             &
      &    istack_numedge_sub, iedge_4_subdomain, nedge_s_domin,         &
-     &    id_gledge_org, IGROUP_edge, num_neib_edge_2, id_neib_edge_2,  &
-     &    ntot_import_edge_2, istack_import_edge_2, item_import_edge_2)
+     &    id_gledge_org, IGROUP_edge, edge_comm_2nd%num_neib, edge_comm_2nd%id_neib,  &
+     &    edge_comm_2nd%ntot_import, edge_comm_2nd%istack_import,  &
+     &    edge_comm_2nd%item_import)
 !
 !
       end subroutine const_edge_import_tbl_4_part
@@ -131,7 +132,7 @@
       use m_2nd_nod_comm_table
       use m_2nd_ele_comm_table
       use m_2nd_surf_comm_table
-      use m_2nd_edge_comm_table
+      use m_2nd_geometry_data
       use m_partitioner_comm_table
       use m_domain_group_4_partition
       use m_internal_4_partitioner
@@ -155,7 +156,7 @@
      &                            - ISTACK_ELE_TMP(jg-1)
             num_export_surf_2(j) = ISTACK_SURF_TMP(jg)                  &
      &                            - ISTACK_SURF_TMP(jg-1)
-            num_export_edge_2(j) = ISTACK_EDGE_TMP(jg)                  &
+            edge_comm_2nd%num_export(j) = ISTACK_EDGE_TMP(jg)           &
      &                            - ISTACK_EDGE_TMP(jg-1)
             exit
           end if
@@ -173,7 +174,7 @@
       use m_2nd_nod_comm_table
       use m_2nd_ele_comm_table
       use m_2nd_surf_comm_table
-      use m_2nd_edge_comm_table
+      use m_2nd_geometry_data
       use m_partitioner_comm_table
       use m_domain_group_4_partition
       use m_internal_4_partitioner
@@ -246,13 +247,13 @@
         end do
 !
         jst = istack_numedge_sub(jp-1)
-        icou = istack_export_edge_2(j-1)
+        icou = edge_comm_2nd%istack_export(j-1)
         do jnum = jst_edge_im+1, jed_edge_im
           icou = icou + 1
           jedge = IMPORT_EDGE_TMP(jnum)
           iedge = iedge_4_subdomain(jst+jedge)
           iedge_org = id_gledge_org(iedge)
-          item_export_edge_2(icou) = iedge_local_part(iedge_org)
+          edge_comm_2nd%item_export(icou) = iedge_local_part(iedge_org)
         end do
 !
         call deallocate_all_import_tmp
