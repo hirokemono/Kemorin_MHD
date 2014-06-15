@@ -60,12 +60,12 @@
 !
 !
       do i = 1, num_surf
-        surf_name_2nd(i) = surf_name(i)
+        sf_grp_2nd%grp_name(i) = surf_name(i)
       end do
 !
-      surf_istack_2nd(0) = 0
+      sf_grp_2nd%istack_grp(0) = 0
       do i = 1, num_surf
-        surf_istack_2nd(i) = surf_istack_2nd(i-1)
+        sf_grp_2nd%istack_grp(i) = sf_grp_2nd%istack_grp(i-1)
 !
         ist = surf_istack(i-1) + 1
         ied = surf_istack(i)
@@ -88,7 +88,7 @@
               end do
 !
               if (iflag .eq. 1) then
-                surf_istack_2nd(i) = surf_istack_2nd(i) + 1
+                sf_grp_2nd%istack_grp(i) = sf_grp_2nd%istack_grp(i) + 1
               end if
 !
             end do
@@ -98,7 +98,7 @@
 !
         end do
       end do
-      num_surf_bc_2nd = surf_istack_2nd(num_surf)
+      sf_grp_2nd%num_item = sf_grp_2nd%istack_grp(num_surf)
 !
       end subroutine count_refined_surf_group
 !
@@ -120,7 +120,7 @@
 !
 !
       do i = 1, num_surf
-        icou = surf_istack_2nd(i-1)
+        icou = sf_grp_2nd%istack_grp(i-1)
 !
         ist = surf_istack(i-1) + 1
         ied = surf_istack(i)
@@ -144,8 +144,8 @@
 !
               if (iflag .eq. 1) then
                 icou = icou + 1
-                surf_item_2nd(1,icou) = jele
-                surf_item_2nd(2,icou) = k1
+                sf_grp_2nd%item_sf_grp(1,icou) = jele
+                sf_grp_2nd%item_sf_grp(2,icou) = k1
               end if
 !
             end do

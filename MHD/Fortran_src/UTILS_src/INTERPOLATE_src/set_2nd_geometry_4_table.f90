@@ -100,7 +100,9 @@
       call unlink_ele_geometry_type(ele_2nd)
       call deallocate_hex_2_tetra
 !
-      call disconnect_2nd_groups
+      call unlink_surf_group_type(sf_grp_2nd)
+      call unlink_group_type(ele_grp_2nd)
+      call unlink_group_type(nod_grp_2nd)
       call unlink_node_geometry_type(node_2nd)
       call unlink_ele_connect_type(ele_2nd)
 !

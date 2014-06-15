@@ -13,9 +13,9 @@
 !
       implicit  none
 !
-      private :: set_node_grp_type_to_IO
-      private :: set_ele_grp_type_to_IO
-      private :: set_surface_grp_type_to_IO
+!      private :: set_node_grp_type_to_IO
+!      private :: set_ele_grp_type_to_IO
+!      private :: set_surface_grp_type_to_IO
 !
 !-----------------------------------------------------------------------
 !
@@ -48,6 +48,15 @@
       call set_node_grp_type_to_IO(group%nod_grp)
       call set_ele_grp_type_to_IO(group%ele_grp)
       call set_surface_grp_type_to_IO(group%surf_grp)
+!
+      call deallocate_grp_type_item(group%nod_grp)
+      call deallocate_grp_type_num(group%nod_grp)
+!
+      call deallocate_grp_type_item(group%ele_grp)
+      call deallocate_grp_type_num(group%ele_grp)
+!
+      call deallocate_sf_grp_type_item(group%surf_grp)
+      call deallocate_sf_grp_type_num(group%surf_grp)
 !
       end subroutine set_grp_data_type_to_IO
 !
@@ -179,9 +188,6 @@
       bc_item_dummy(1:nod_grp%num_item)                                 &
      &    = nod_grp%item_grp(1:nod_grp%num_item)
 !
-      call deallocate_grp_type_item(nod_grp)
-      call deallocate_grp_type_num(nod_grp)
-!
       end subroutine set_node_grp_type_to_IO
 !
 !-----------------------------------------------------------------------
@@ -208,9 +214,6 @@
       call allocate_bc_ele_item_dummy
       mat_item_dummy(1:ele_grp%num_item)                                &
      &        = ele_grp%item_grp(1:ele_grp%num_item)
-!
-      call deallocate_grp_type_item(ele_grp)
-      call deallocate_grp_type_num(ele_grp)
 !
       end subroutine set_ele_grp_type_to_IO
 !
@@ -240,9 +243,6 @@
      &      = sf_grp%item_sf_grp(1,1:sf_grp%num_item)
       surf_item_dummy(1:sf_grp%num_item,2)                              &
      &      = sf_grp%item_sf_grp(2,1:sf_grp%num_item)
-!
-      call deallocate_sf_grp_type_item(sf_grp)
-      call deallocate_sf_grp_type_num(sf_grp)
 !
       end subroutine set_surface_grp_type_to_IO
 !

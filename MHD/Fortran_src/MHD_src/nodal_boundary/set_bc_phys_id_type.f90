@@ -116,11 +116,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_current_id_type(mesh, nod_grp, nodal_bc)
+      subroutine set_bc_current_id_type(nod_grp, nodal_bc)
 !
       use set_bc_type_vectors
 !
-      type(mesh_geometry),       intent(in) :: mesh
       type(group_data),          intent(in) :: nod_grp
       type(nodal_boundarty_conditions), intent(inout) :: nodal_bc
 !

@@ -95,10 +95,10 @@
      &   surf_2nd%isf_4_ele, edge_2nd%iedge_4_sf, edge_2nd%iedge_4_ele, &
      &   ele_2nd%interior_ele, node_2nd%inod_global, node_2nd%xx,    &
      &   node_2nd%istack_nod_smp, ele_2nd%istack_ele_smp,                        &
-     &   surf_2nd%istack_surf_smp, edge_2nd%istack_edge_smp, num_mat_2nd,    &
-     &   num_mat_bc_2nd,  mat_name_2nd, mat_istack_2nd,  mat_item_2nd,  &
-     &   num_surf_2nd, num_surf_bc_2nd, surf_name_2nd, surf_istack_2nd, &
-     &   surf_item_2nd, sf_grp_tbl_2nd%node%ntot_e_grp, sf_grp_tbl_2nd%node%istack_e_grp,    &
+     &   surf_2nd%istack_surf_smp, edge_2nd%istack_edge_smp, ele_grp_2nd%num_grp,    &
+     &   ele_grp_2nd%num_item,  ele_grp_2nd%grp_name, ele_grp_2nd%istack_grp,  ele_grp_2nd%item_grp,  &
+     &   sf_grp_2nd%num_grp, sf_grp_2nd%num_item, sf_grp_2nd%grp_name, sf_grp_2nd%istack_grp, &
+     &   sf_grp_2nd%item_sf_grp, sf_grp_tbl_2nd%node%ntot_e_grp, sf_grp_tbl_2nd%node%istack_e_grp,    &
      &   sf_grp_tbl_2nd%node%item_e_grp, phys_2nd%num_phys, phys_2nd%phys_name)
 !
       end subroutine cross_section_init_2nd
@@ -117,8 +117,8 @@
      &   surf_2nd%numsurf, edge_2nd%numedge, edge_2nd%nnod_4_edge,      &
      &    edge_2nd%ie_edge, surf_2nd%isf_4_ele, edge_2nd%iedge_4_sf, &
      &   ele_2nd%interior_ele, node_2nd%istack_nod_smp, ele_2nd%istack_ele_smp,  &
-     &   surf_2nd%istack_surf_smp, edge_2nd%istack_edge_smp, num_mat_2nd,    &
-     &    num_mat_bc_2nd,  mat_name_2nd, mat_istack_2nd,  mat_item_2nd, &
+     &   surf_2nd%istack_surf_smp, edge_2nd%istack_edge_smp, ele_grp_2nd%num_grp,    &
+     &    ele_grp_2nd%num_item, ele_grp_2nd%grp_name, ele_grp_2nd%istack_grp,  ele_grp_2nd%item_grp, &
      &   phys_2nd%num_phys, phys_2nd%phys_name)
 !
       end subroutine isosurface_init_2nd

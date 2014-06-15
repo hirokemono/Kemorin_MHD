@@ -37,6 +37,7 @@
       use nodal_vector_send_recv
       use set_field_to_restart
       use field_IO_select
+      use link_data_type_to_1st_mesh
 !
       use m_node_phys_data
 !
@@ -83,8 +84,8 @@
       if (iflag_debug.eq.1) write(*,*) 'initialize_nod_field_data'
       call initialize_nod_field_data
 !
-      if (iflag_debug.eq.1) write(*,*) 'link_nodal_field_names'
-      call link_nodal_field_names
+      if (iflag_debug.eq.1) write(*,*) 'link_nodal_fld_type_names'
+      call link_nodal_fld_type_names(phys_2nd)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data_type'
       call alloc_phys_data_type(node_2nd%numnod, phys_2nd)
@@ -111,7 +112,7 @@
       use interpolate_nodal_field
       use nod_phys_send_recv
       use set_field_to_restart
-      use set_2nd_field_to_restart
+      use set_field_type_for_restart
 !
       integer(kind = kint) :: i_step
 !

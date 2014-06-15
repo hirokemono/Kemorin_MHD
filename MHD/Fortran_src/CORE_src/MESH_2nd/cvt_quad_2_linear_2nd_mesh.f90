@@ -110,26 +110,29 @@
       use m_2nd_group_data
 !
       use convert_group_2_linear
-      use link_group_to_1st_mesh
+      use link_group_type_2_1st_mesh
 !
 !
-      call link_node_group
+      call link_node_group_to_type(nod_grp_2nd)
 !
-      num_mat_2nd = num_mat
-      num_mat_bc_2nd = 8*num_mat_bc
-      call allocate_2nd_element_group
+      ele_grp_2nd%num_grp = num_mat
+      ele_grp_2nd%num_item = 8*num_mat_bc
+      call allocate_grp_type_num(ele_grp_2nd)
+      call allocate_grp_type_item(ele_grp_2nd)
 !
       call convert_ele_group_2_linear(num_mat, num_mat_bc,              &
-     &          mat_name, mat_istack, mat_item, num_mat_bc_2nd,         &
-     &          mat_name_2nd, mat_istack_2nd, mat_item_2nd)
+     &          mat_name, mat_istack, mat_item, ele_grp_2nd%num_item,   &
+     &          ele_grp_2nd%grp_name, ele_grp_2nd%istack_grp, ele_grp_2nd%item_grp)
 !
-      num_surf_2nd = num_surf
-      num_surf_bc_2nd = 4*num_surf_bc
-      call allocate_2nd_surface_group
+      sf_grp_2nd%num_grp = num_surf
+      sf_grp_2nd%num_item = 4*num_surf_bc
+      call allocate_sf_grp_type_num(sf_grp_2nd)
+      call allocate_sf_grp_type_item(sf_grp_2nd)
 !
       call convert_surf_group_2_linear(num_surf, num_surf_bc,           &
-     &          surf_name, surf_istack, surf_item, num_surf_bc_2nd,     &
-     &          surf_name_2nd, surf_istack_2nd, surf_item_2nd)
+     &          surf_name, surf_istack, surf_item, sf_grp_2nd%num_item, &
+     &          sf_grp_2nd%grp_name, sf_grp_2nd%istack_grp, &
+     &          sf_grp_2nd%item_sf_grp)
 !
       end subroutine generate_2nd_linear_group
 !
@@ -142,7 +145,7 @@
       use m_2nd_phys_data
 !
 !
-      call link_nodal_field_names
+      call link_nodal_fld_type_names(phys_2nd)
       call alloc_phys_data_type(node_2nd%numnod, phys_2nd)
 !
       end subroutine init_2nd_data_on_surf

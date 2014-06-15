@@ -76,10 +76,11 @@
       subroutine set_2nd_mesh_data
 !
       use m_2nd_geometry_data
+      use m_2nd_group_data
       use set_comm_tbl_type_4_IO
       use set_element_types_4_IO
-      use set_2nd_group_data_from_IO
       use set_node_types_4_IO
+      use set_group_types_4_IO
 !
 !
       call copy_node_type_from_IO(node_2nd)
@@ -88,7 +89,9 @@
 !
       call copy_comm_tbl_type_from_IO(comm_2nd)
 !
-      call s_set_2nd_group_data_from_IO
+      call set_nod_grp_type_from_IO(nod_grp_2nd)
+      call set_ele_grp_type_from_IO(ele_grp_2nd)
+      call set_surf_grp_type_from_IO(sf_grp_2nd)
 !
       end subroutine set_2nd_mesh_data
 !
@@ -118,9 +121,10 @@
       subroutine set_2nd_mesh_to_IO(my_rank)
 !
       use m_2nd_geometry_data
+      use m_2nd_group_data
       use set_comm_tbl_type_4_IO
       use set_element_types_4_IO
-      use set_2nd_group_data_to_IO
+      use set_group_types_4_IO
       use set_node_types_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -129,7 +133,10 @@
       call copy_comm_tbl_type_to_IO(my_rank, comm_2nd)
       call copy_node_type_to_IO(node_2nd)
       call copy_ele_connect_type_to_IO(ele_2nd)
-      call s_set_2nd_group_data_to_IO
+!
+      call set_node_grp_type_to_IO(nod_grp_2nd)
+      call set_ele_grp_type_to_IO(ele_grp_2nd)
+      call set_surface_grp_type_to_IO(sf_grp_2nd)
 !
       end subroutine set_2nd_mesh_to_IO
 !
@@ -140,9 +147,16 @@
       use m_2nd_geometry_data
       use m_2nd_group_data
 !
-      call deallocate_2nd_node_group
-      call deallocate_2nd_element_group
-      call deallocate_2nd_surface_group
+!
+      call deallocate_sf_grp_type_num(sf_grp_2nd)
+      call deallocate_sf_grp_type_item(sf_grp_2nd)
+!
+      call deallocate_grp_type_num(ele_grp_2nd)
+      call deallocate_grp_type_item(ele_grp_2nd)
+!
+      call deallocate_grp_type_num(nod_grp_2nd)
+      call deallocate_grp_type_item(nod_grp_2nd)
+!
 !
       call deallocate_ele_connect_type(ele_2nd)
       call deallocate_node_geometry_type(node_2nd)

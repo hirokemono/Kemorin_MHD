@@ -27,9 +27,16 @@
       call set_element_group_from_2nd
       call set_surface_group_from_2nd
 !
-      call deallocate_2nd_node_group
-      call deallocate_2nd_element_group
-      call deallocate_2nd_surface_group
+!
+      call deallocate_sf_grp_type_num(sf_grp_2nd)
+      call deallocate_sf_grp_type_item(sf_grp_2nd)
+!
+      call deallocate_grp_type_num(ele_grp_2nd)
+      call deallocate_grp_type_item(ele_grp_2nd)
+!
+      call deallocate_grp_type_num(nod_grp_2nd)
+      call deallocate_grp_type_item(nod_grp_2nd)
+!
 !
       end subroutine s_set_group_data_from_2nd
 !
@@ -42,14 +49,14 @@
 !
 !   set node group
 !
-      num_bc = num_bc_2nd
+      num_bc = nod_grp_2nd%num_grp
       if (num_bc .gt. 0) then
-        num_nod_bc = num_nod_bc_2nd
+        num_nod_bc = nod_grp_2nd%num_item
         call allocate_boundary_data
 !
-        bc_name(1:num_bc) =     bc_name_2nd(1:num_bc)
-        bc_istack(0:num_bc) =   bc_istack_2nd(0:num_bc)
-        bc_item(1:num_nod_bc) = bc_item_2nd(1:num_nod_bc)
+        bc_name(1:num_bc) =     nod_grp_2nd%grp_name(1:num_bc)
+        bc_istack(0:num_bc) =   nod_grp_2nd%istack_grp(0:num_bc)
+        bc_item(1:num_nod_bc) = nod_grp_2nd%item_grp(1:num_nod_bc)
       end if
 !
       end subroutine set_node_group_from_2nd
@@ -62,14 +69,14 @@
 !
 !    set element group
 !
-      num_mat =     num_mat_2nd
+      num_mat =     ele_grp_2nd%num_grp
       if (num_mat .gt. 0) then
-        num_mat_bc = num_mat_bc_2nd
+        num_mat_bc = ele_grp_2nd%num_item
         call allocate_material_data
 !
-        mat_name(1:num_mat) =    mat_name_2nd(1:num_mat)
-        mat_istack(0:num_mat) =  mat_istack_2nd(0:num_mat)
-        mat_item(1:num_mat_bc) = mat_item_2nd(1:num_mat_bc)
+        mat_name(1:num_mat) =    ele_grp_2nd%grp_name(1:num_mat)
+        mat_istack(0:num_mat) =  ele_grp_2nd%istack_grp(0:num_mat)
+        mat_item(1:num_mat_bc) = ele_grp_2nd%item_grp(1:num_mat_bc)
       end if
 !
       end subroutine set_element_group_from_2nd
@@ -82,15 +89,15 @@
 !
 !   set surface group
 !
-      num_surf = num_surf_2nd
+      num_surf = sf_grp_2nd%num_grp
       if (num_surf .gt. 0) then
-        num_surf_bc = num_surf_bc_2nd
+        num_surf_bc = sf_grp_2nd%num_item
         call allocate_surface_data
 !
-        surf_name(1:num_surf) =    surf_name_2nd(1:num_surf)
-        surf_istack(0:num_surf) =  surf_istack_2nd(0:num_surf)
-        surf_item(1,1:num_surf_bc) = surf_item_2nd(1,1:num_surf_bc)
-        surf_item(2,1:num_surf_bc) = surf_item_2nd(2,1:num_surf_bc)
+        surf_name(1:num_surf) =    sf_grp_2nd%grp_name(1:num_surf)
+        surf_istack(0:num_surf) =  sf_grp_2nd%istack_grp(0:num_surf)
+        surf_item(1,1:num_surf_bc) = sf_grp_2nd%item_sf_grp(1,1:num_surf_bc)
+        surf_item(2,1:num_surf_bc) = sf_grp_2nd%item_sf_grp(2,1:num_surf_bc)
       end if
 !
       end subroutine set_surface_group_from_2nd

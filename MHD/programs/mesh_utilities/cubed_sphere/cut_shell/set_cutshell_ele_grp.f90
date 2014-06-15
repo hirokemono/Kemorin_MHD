@@ -27,11 +27,11 @@
 !
        write(*,*) 'choose element_group'
 !
-      num_mat_2nd =  num_mat
-      call allocate_2nd_ele_grp_num
+      ele_grp_2nd%num_grp =  num_mat
+      call allocate_grp_type_num(ele_grp_2nd)
 !
       call count_new_ele_group
-      call allocate_2nd_ele_grp_item
+      call allocate_grp_type_item(ele_grp_2nd)
 !
       call set_new_ele_group
 !
@@ -44,19 +44,19 @@
       integer(kind = kint) :: i, iele, inum
 !
 !
-      mat_name_2nd(1:num_mat) = mat_name(1:num_mat)
+      ele_grp_2nd%grp_name(1:num_mat) = mat_name(1:num_mat)
 !
-      mat_istack_2nd(0) = 0
+      ele_grp_2nd%istack_grp(0) = 0
       do i = 1, num_mat
-         mat_istack_2nd(i) = mat_istack_2nd(i-1)
+         ele_grp_2nd%istack_grp(i) = ele_grp_2nd%istack_grp(i-1)
          do inum = mat_istack(i-1)+1, mat_istack(i)
            iele = mat_item(inum)
            if ( mark_new_ele(iele) .ne. 0 ) then
-             mat_istack_2nd(i) = mat_istack_2nd(i) + 1
+             ele_grp_2nd%istack_grp(i) = ele_grp_2nd%istack_grp(i) + 1
            end if
          end do
       end do
-      num_mat_bc_2nd = mat_istack_2nd(num_mat_2nd)
+      ele_grp_2nd%num_item = ele_grp_2nd%istack_grp(ele_grp_2nd%num_grp)
 !
       end subroutine count_new_ele_group
 !
@@ -72,7 +72,7 @@
            iele = mat_item(inum)
            if ( mark_new_ele(iele) .ne. 0 ) then
              icou = icou + 1
-             mat_item_2nd(icou) = mark_new_ele(iele)
+             ele_grp_2nd%item_grp(icou) = mark_new_ele(iele)
            end if
          end do
       end do

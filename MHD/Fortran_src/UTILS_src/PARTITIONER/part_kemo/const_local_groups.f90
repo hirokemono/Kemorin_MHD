@@ -39,11 +39,11 @@
       use m_node_group
       use m_2nd_group_data
 !
-      num_bc_2nd = num_bc
-      call allocate_2nd_node_grp_num
+      nod_grp_2nd%num_grp = num_bc
+      call allocate_grp_type_num(nod_grp_2nd)
       call count_local_node_group
 !
-      call allocate_2nd_node_grp_item
+      call allocate_grp_type_item(nod_grp_2nd)
       call set_local_node_group
 !
       end subroutine const_local_nod_group
@@ -55,11 +55,11 @@
       use m_element_group
       use m_2nd_group_data
 !
-      num_mat_2nd = num_mat
-      call allocate_2nd_ele_grp_num
+      ele_grp_2nd%num_grp = num_mat
+      call allocate_grp_type_num(ele_grp_2nd)
       call count_local_ele_group
 !
-      call allocate_2nd_ele_grp_item
+      call allocate_grp_type_item(ele_grp_2nd)
       call set_local_ele_group
 !
       end subroutine const_local_ele_group
@@ -71,11 +71,11 @@
       use m_surface_group
       use m_2nd_group_data
 !
-      num_surf_2nd = num_surf
-      call allocate_2nd_surf_grp_num
+      sf_grp_2nd%num_grp = num_surf
+      call allocate_sf_grp_type_num(sf_grp_2nd)
       call count_local_surf_group
 !
-      call allocate_2nd_surf_grp_item
+      call allocate_sf_grp_type_item(sf_grp_2nd)
       call set_local_surf_group
 !
       end subroutine const_local_surf_group

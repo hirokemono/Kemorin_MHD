@@ -30,6 +30,8 @@
 !
       subroutine output_2nd_ele_surf_edge_mesh(my_rank)
 !
+      use m_2nd_geometry_data
+!
       integer(kind = kint), intent(in) :: my_rank
 !
 !
@@ -43,10 +45,17 @@
 !
       subroutine dealloc_2nd_ele_surf_edge_mesh
 !
+      use m_2nd_geometry_data
 !
-      call deallocate_2nd_ele_comm_table
-      call deallocate_2nd_surf_data
-      call deallocate_2nd_edge_data
+!
+      call deallocate_type_comm_tbl(ele_comm_2nd)
+!
+      call deallocate_type_comm_tbl(surf_comm_2nd)
+      call deallocate_surface_connect_type(surf_2nd)
+!
+      call deallocate_type_comm_tbl(edge_comm_2nd)
+      call deallocate_edge_connect_type(edge_2nd)
+      call deallocate_edge_4_ele_type(edge_2nd)
 !
       end subroutine  dealloc_2nd_ele_surf_edge_mesh
 !
@@ -105,43 +114,6 @@
       call sel_output_edge_connect(my_rank)
 !
       end subroutine output_2nd_edge_mesh
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine deallocate_2nd_ele_comm_table
-!
-      use m_2nd_geometry_data
-!
-!
-      call deallocate_type_comm_tbl(ele_comm_2nd)
-!
-      end subroutine deallocate_2nd_ele_comm_table
-!
-!   --------------------------------------------------------------------
-!
-      subroutine deallocate_2nd_surf_data
-!
-      use m_2nd_geometry_data
-!
-!
-      call deallocate_type_comm_tbl(surf_comm_2nd)
-      call deallocate_surface_connect_type(surf_2nd)
-!
-      end subroutine deallocate_2nd_surf_data
-!
-!   --------------------------------------------------------------------
-!
-      subroutine deallocate_2nd_edge_data
-!
-      use m_2nd_geometry_data
-!
-!
-      call deallocate_type_comm_tbl(edge_comm_2nd)
-      call deallocate_edge_connect_type(edge_2nd)
-      call deallocate_edge_4_ele_type(edge_2nd)
-!
-      end subroutine deallocate_2nd_edge_data
 !
 !   --------------------------------------------------------------------
 !

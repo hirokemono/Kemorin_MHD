@@ -43,13 +43,13 @@
 !
       call allocate_mark_refine_nod_grp
 !
-      num_bc_2nd = num_bc
+      nod_grp_2nd%num_grp = num_bc
       call add_hanging_node_group_num
-      call allocate_2nd_node_grp_num
+      call allocate_grp_type_num(nod_grp_2nd)
 !
       call count_refined_node_group
       call add_hanging_node_group_name
-      call allocate_2nd_node_grp_item
+      call allocate_grp_type_item(nod_grp_2nd)
 !
       write(*,*) 's_set_refined_node_group'
       call s_set_refined_node_group
@@ -67,11 +67,11 @@
       use set_refined_ele_group
 !
 !
-      num_mat_2nd = num_mat
-      call allocate_2nd_ele_grp_num
+      ele_grp_2nd%num_grp = num_mat
+      call allocate_grp_type_num(ele_grp_2nd)
 !
       call count_refined_ele_group
-      call allocate_2nd_ele_grp_item
+      call allocate_grp_type_item(ele_grp_2nd)
 !
       write(*,*) 's_set_refined_ele_group'
       call s_set_refined_ele_group
@@ -89,11 +89,11 @@
 !
       call allocate_mark_refine_sf_grp
 !
-      num_surf_2nd = num_surf
-      call allocate_2nd_surf_grp_num
+      sf_grp_2nd%num_grp = num_surf
+      call allocate_sf_grp_type_num(sf_grp_2nd)
 !
       call count_refined_surf_group
-      call allocate_2nd_surf_grp_item
+      call allocate_sf_grp_type_item(sf_grp_2nd)
 !
       write(*,*) 's_set_refined_surf_group'
       call s_set_refined_surf_group

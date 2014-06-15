@@ -34,22 +34,22 @@
       integer(kind = kint) :: ig, ist, ied, inum, inod
 !
 !
-      bc_name_2nd(1:num_bc) = bc_name(1:num_bc)
+      nod_grp_2nd%grp_name(1:num_bc) = bc_name(1:num_bc)
 !
-      bc_istack_2nd(0) = 0
+      nod_grp_2nd%istack_grp(0) = 0
       do ig = 1, num_bc
-        bc_istack_2nd(ig) = bc_istack_2nd(ig-1)
+        nod_grp_2nd%istack_grp(ig) = nod_grp_2nd%istack_grp(ig-1)
         ist = bc_istack(ig-1) + 1
         ied = bc_istack(ig)
         do inum = ist, ied
           inod = bc_item(inum)
 !
           if (inod_local_part(inod) .gt. 0) then
-            bc_istack_2nd(ig) = bc_istack_2nd(ig) + 1
+            nod_grp_2nd%istack_grp(ig) = nod_grp_2nd%istack_grp(ig) + 1
           end if
         end do
       end do
-      num_nod_bc_2nd = bc_istack_2nd(num_bc)
+      nod_grp_2nd%num_item = nod_grp_2nd%istack_grp(num_bc)
 !
       end subroutine count_local_node_group
 !
@@ -73,7 +73,7 @@
 !
           if (inod_local_part(inod) .gt. 0) then
             icou = icou + 1
-            bc_item_2nd(icou) = inod_local_part(inod)
+            nod_grp_2nd%item_grp(icou) = inod_local_part(inod)
           end if
         end do
       end do
@@ -92,22 +92,22 @@
       integer(kind = kint) :: ig, ist, ied, inum, iele
 !
 !
-      mat_name_2nd(1:num_mat) = mat_name(1:num_mat)
+      ele_grp_2nd%grp_name(1:num_mat) = mat_name(1:num_mat)
 !
-      mat_istack_2nd(0) = 0
+      ele_grp_2nd%istack_grp(0) = 0
       do ig = 1, num_mat
-        mat_istack_2nd(ig) = mat_istack_2nd(ig-1)
+        ele_grp_2nd%istack_grp(ig) = ele_grp_2nd%istack_grp(ig-1)
         ist = mat_istack(ig-1) + 1
         ied = mat_istack(ig)
         do inum = ist, ied
           iele = mat_item(inum)
 !
           if (iele_local_part(iele) .gt. 0) then
-            mat_istack_2nd(ig) = mat_istack_2nd(ig) + 1
+            ele_grp_2nd%istack_grp(ig) = ele_grp_2nd%istack_grp(ig) + 1
           end if
         end do
       end do
-      num_mat_bc_2nd = mat_istack_2nd(num_mat)
+      ele_grp_2nd%num_item = ele_grp_2nd%istack_grp(num_mat)
 !
       end subroutine count_local_ele_group
 !
@@ -131,7 +131,7 @@
 !
           if (iele_local_part(iele) .gt. 0) then
             icou = icou + 1
-            mat_item_2nd(icou) = iele_local_part(iele)
+            ele_grp_2nd%item_grp(icou) = iele_local_part(iele)
           end if
         end do
       end do
@@ -150,21 +150,21 @@
       integer(kind = kint) :: ig, ist, ied, inum, iele
 !
 !
-      surf_name_2nd(1:num_surf) = surf_name(1:num_surf)
+      sf_grp_2nd%grp_name(1:num_surf) = surf_name(1:num_surf)
 !
-      surf_istack_2nd(0) = 0
+      sf_grp_2nd%istack_grp(0) = 0
       do ig = 1, num_surf
-        surf_istack_2nd(ig) = surf_istack_2nd(ig-1)
+        sf_grp_2nd%istack_grp(ig) = sf_grp_2nd%istack_grp(ig-1)
         ist = surf_istack(ig-1) + 1
         ied = surf_istack(ig)
         do inum = ist, ied
           iele = surf_item(1,inum)
           if (iele_local_part(iele) .gt. 0) then
-            surf_istack_2nd(ig) = surf_istack_2nd(ig) + 1
+            sf_grp_2nd%istack_grp(ig) = sf_grp_2nd%istack_grp(ig) + 1
           end if
         end do
       end do
-      num_surf_bc_2nd = surf_istack_2nd(num_surf)
+      sf_grp_2nd%num_item = sf_grp_2nd%istack_grp(num_surf)
 !
       end subroutine count_local_surf_group
 !
@@ -181,7 +181,7 @@
 !
       icou = 0
       do ig = 1, num_surf
-        icou = surf_istack_2nd(ig-1)
+        icou = sf_grp_2nd%istack_grp(ig-1)
         ist = surf_istack(ig-1) + 1
         ied = surf_istack(ig)
         do inum = ist, ied
@@ -189,8 +189,8 @@
 !
           if (iele_local_part(iele) .gt. 0) then
             icou = icou + 1
-            surf_item_2nd(1,icou) = iele_local_part(iele)
-            surf_item_2nd(2,icou) = surf_item(2,inum)
+            sf_grp_2nd%item_sf_grp(1,icou) = iele_local_part(iele)
+            sf_grp_2nd%item_sf_grp(2,icou) = surf_item(2,inum)
           end if
         end do
       end do

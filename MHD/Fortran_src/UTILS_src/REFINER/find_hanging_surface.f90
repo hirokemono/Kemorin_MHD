@@ -184,8 +184,8 @@
       use m_2nd_group_data
 !
 !
-      if(nnod_hang_4 .gt. 0) num_bc_2nd = num_bc_2nd + 2
-      if(nnod_hang_2 .gt. 0) num_bc_2nd = num_bc_2nd + 2
+      if(nnod_hang_4 .gt. 0) nod_grp_2nd%num_grp = nod_grp_2nd%num_grp + 2
+      if(nnod_hang_2 .gt. 0) nod_grp_2nd%num_grp = nod_grp_2nd%num_grp + 2
 !
       end subroutine add_hanging_node_group_num
 !
@@ -201,24 +201,24 @@
       icou = num_bc
       if(nnod_hang_4 .gt. 0) then
         icou = icou+1
-        bc_name_2nd(icou) = 'HANGING_NODE_SURF'
-        bc_istack_2nd(icou) = bc_istack_2nd(icou-1) + nnod_hang_4
+        nod_grp_2nd%grp_name(icou) = 'HANGING_NODE_SURF'
+        nod_grp_2nd%istack_grp(icou) = nod_grp_2nd%istack_grp(icou-1) + nnod_hang_4
         icou = icou+1
-        bc_name_2nd(icou) = 'HANGING_SOURCE_SURF'
-        bc_istack_2nd(icou) = bc_istack_2nd(icou-1) + 4 * nnod_hang_4
+        nod_grp_2nd%grp_name(icou) = 'HANGING_SOURCE_SURF'
+        nod_grp_2nd%istack_grp(icou) = nod_grp_2nd%istack_grp(icou-1) + 4 * nnod_hang_4
 !
-        num_nod_bc_2nd = bc_istack_2nd(icou)
+        nod_grp_2nd%num_item = nod_grp_2nd%istack_grp(icou)
       end if
 !
       if(nnod_hang_2 .gt. 0) then
         icou = icou+1
-        bc_name_2nd(icou) = 'HANGING_NODE_EDGE'
-        bc_istack_2nd(icou) = bc_istack_2nd(icou-1) + nnod_hang_2
+        nod_grp_2nd%grp_name(icou) = 'HANGING_NODE_EDGE'
+        nod_grp_2nd%istack_grp(icou) = nod_grp_2nd%istack_grp(icou-1) + nnod_hang_2
         icou = icou+1
-        bc_name_2nd(icou) = 'HANGING_SOURCE_EDGE'
-        bc_istack_2nd(icou) = bc_istack_2nd(icou-1) + 2 * nnod_hang_2
+        nod_grp_2nd%grp_name(icou) = 'HANGING_SOURCE_EDGE'
+        nod_grp_2nd%istack_grp(icou) = nod_grp_2nd%istack_grp(icou-1) + 2 * nnod_hang_2
 !
-        num_nod_bc_2nd = bc_istack_2nd(icou)
+        nod_grp_2nd%num_item = nod_grp_2nd%istack_grp(icou)
       end if
 !
       end subroutine add_hanging_node_group_name
@@ -234,33 +234,33 @@
 !
       icou = num_bc
       if(nnod_hang_4 .gt. 0) then
-        ist =  bc_istack_2nd(icou)
+        ist =  nod_grp_2nd%istack_grp(icou)
         do inum = 1, nnod_hang_4
-          bc_item_2nd(ist+inum) = inod_hang_4(1,inum)
+          nod_grp_2nd%item_grp(ist+inum) = inod_hang_4(1,inum)
         end do
         icou = icou + 1
 !
-        ist =  bc_istack_2nd(icou)
+        ist =  nod_grp_2nd%istack_grp(icou)
         do inum = 1, nnod_hang_4
-          bc_item_2nd(ist+4*inum-3) = inod_hang_4(2,inum)
-          bc_item_2nd(ist+4*inum-2) = inod_hang_4(3,inum)
-          bc_item_2nd(ist+4*inum-1) = inod_hang_4(4,inum)
-          bc_item_2nd(ist+4*inum  ) = inod_hang_4(5,inum)
+          nod_grp_2nd%item_grp(ist+4*inum-3) = inod_hang_4(2,inum)
+          nod_grp_2nd%item_grp(ist+4*inum-2) = inod_hang_4(3,inum)
+          nod_grp_2nd%item_grp(ist+4*inum-1) = inod_hang_4(4,inum)
+          nod_grp_2nd%item_grp(ist+4*inum  ) = inod_hang_4(5,inum)
         end do
         icou = icou + 1
       end if
 !
       if(nnod_hang_2 .gt. 0) then
-        ist =  bc_istack_2nd(icou)
+        ist =  nod_grp_2nd%istack_grp(icou)
         do inum = 1, nnod_hang_2
-          bc_item_2nd(ist+inum) = inod_hang_2(1,inum)
+          nod_grp_2nd%item_grp(ist+inum) = inod_hang_2(1,inum)
         end do
         icou = icou + 1
 !
-        ist =  bc_istack_2nd(icou)
+        ist =  nod_grp_2nd%istack_grp(icou)
         do inum = 1, nnod_hang_2
-          bc_item_2nd(ist+2*inum-1) = inod_hang_2(2,inum)
-          bc_item_2nd(ist+2*inum  ) = inod_hang_2(3,inum)
+          nod_grp_2nd%item_grp(ist+2*inum-1) = inod_hang_2(2,inum)
+          nod_grp_2nd%item_grp(ist+2*inum  ) = inod_hang_2(3,inum)
         end do
         icou = icou + 1
       end if

@@ -36,10 +36,11 @@
 !
       use m_2nd_pallalel_vector
       use m_2nd_geometry_data
+      use m_2nd_group_data
       use m_2nd_phys_data
       use copy_nod_comm_tbl_4_type
-      use link_geometry_to_1st_mesh
-      use link_group_to_1st_mesh
+      use link_data_type_to_1st_mesh
+      use link_group_type_2_1st_mesh
       use const_ele_layering_table
       use int_volume_of_domain
       use correlation_all_layerd_data
@@ -78,15 +79,15 @@
 !
       call copy_num_processes_to_2nd
       call copy_node_comm_tbl_to_type(comm_2nd)
-      call link_node_data
-      call link_element_data
-      call link_mesh_parameter_4_smp
+      call link_node_data_type(node_2nd)
+      call link_element_data_type(ele_2nd)
+      call link_smp_param_type(node_2nd, ele_2nd, surf_2nd, edge_2nd)
 !
-      call link_node_group
-      call link_element_group
-      call link_surface_group
+      call link_node_group_to_type(nod_grp_2nd)
+      call link_element_group_to_type(ele_grp_2nd)
+      call link_surface_group_to_type(sf_grp_2nd)
 !
-      call link_nodal_field_names
+      call link_nodal_fld_type_names(phys_2nd)
       call alloc_phys_data_type(node_2nd%numnod, phys_2nd)
       call allocate_vec_transfer
 !
@@ -133,7 +134,6 @@
       use ucd_IO_select
       use nod_phys_send_recv
 !
-      use set_udt_to_2nd_data
       use second_fields_send_recv
       use correlation_all_layerd_data
 !

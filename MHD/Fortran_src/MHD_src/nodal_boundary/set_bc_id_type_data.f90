@@ -180,7 +180,7 @@
         call set_bc_m_potential_id_type(mesh, MHD_mesh, group%nod_grp,  &
      &      nodal_bc)
         if (iflag_debug .eq. 1) write(*,*)  'set boundary ID 4 current'
-        call set_bc_current_id_type(mesh, group%nod_grp, nodal_bc)
+        call set_bc_current_id_type(group%nod_grp, nodal_bc)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
@@ -192,7 +192,7 @@
         call set_bc_m_potential_id_type(mesh, MHD_mesh, group%nod_grp,  &
      &      nodal_bc)
         if (iflag_debug .eq. 1) write(*,*)  'set boundary ID 4 current'
-        call set_bc_current_id_type(mesh, group%nod_grp, nodal_bc)
+        call set_bc_current_id_type(group%nod_grp, nodal_bc)
       end if
 !
       end subroutine set_nodal_boundary_types

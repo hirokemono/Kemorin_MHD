@@ -28,14 +28,14 @@
       subroutine s_set_new_surface_grp_4_hemi
 !
 !
-      num_surf_2nd =  num_surf + 1
-      call allocate_2nd_surf_grp_num
+      sf_grp_2nd%num_grp =  num_surf + 1
+      call allocate_sf_grp_type_num(sf_grp_2nd)
 !
       call count_new_surf_group
       call count_equator_surface
 !
 !
-      call allocate_2nd_surf_grp_item
+      call allocate_sf_grp_type_item(sf_grp_2nd)
 !
       call set_new_surf_group
 !
@@ -48,13 +48,12 @@
       subroutine s_set_new_surface_grp
 !
 !
-      num_surf_2nd =  num_surf
-      call allocate_2nd_surf_grp_num
+      sf_grp_2nd%num_grp =  num_surf
+      call allocate_sf_grp_type_num(sf_grp_2nd)
 !
       call count_new_surf_group
 !
-      call allocate_2nd_surf_grp_item
-!
+      call allocate_sf_grp_type_item(sf_grp_2nd)
       call set_new_surf_group
 !
       end subroutine s_set_new_surface_grp
@@ -67,18 +66,18 @@
       integer(kind = kint) :: i, iele, inum, icou
 !
 !
-      surf_name_2nd(1:num_surf) = surf_name(1:num_surf)
+      sf_grp_2nd%grp_name(1:num_surf) = surf_name(1:num_surf)
 !
       do i = 1, num_surf
-         surf_istack_2nd(i) = surf_istack_2nd(i-1)
+         sf_grp_2nd%istack_grp(i) = sf_grp_2nd%istack_grp(i-1)
          do inum = surf_istack(i-1)+1, surf_istack(i)
            iele = surf_item(1,inum)
            if ( mark_new_ele(iele) .ne. 0 ) then
-             surf_istack_2nd(i) = surf_istack_2nd(i) + 1
+             sf_grp_2nd%istack_grp(i) = sf_grp_2nd%istack_grp(i) + 1
            end if
          end do
       end do
-      num_surf_bc_2nd = surf_istack_2nd(num_surf)
+      sf_grp_2nd%num_item = sf_grp_2nd%istack_grp(num_surf)
 !
       end subroutine count_new_surf_group
 !
@@ -94,8 +93,8 @@
            iele = surf_item(1,inum)
            if ( mark_new_ele(iele) .ne. 0 ) then
              icou = icou + 1
-             surf_item_2nd(1,icou) = mark_new_ele(iele)
-             surf_item_2nd(2,icou) = surf_item(2,inum)
+             sf_grp_2nd%item_sf_grp(1,icou) = mark_new_ele(iele)
+             sf_grp_2nd%item_sf_grp(2,icou) = surf_item(2,inum)
            end if
          end do
       end do
@@ -114,9 +113,9 @@
       integer(kind = kint) :: iele, inum, i, k, inod, isig
 !
 !
-      surf_name_2nd(num_surf_2nd) = 'equator_surf'
+      sf_grp_2nd%grp_name(sf_grp_2nd%num_grp) = 'equator_surf'
 !
-      surf_istack_2nd(num_surf_2nd) = surf_istack_2nd(num_surf)
+      sf_grp_2nd%istack_grp(sf_grp_2nd%num_grp) = sf_grp_2nd%istack_grp(num_surf)
       do iele = 1, ele_2nd%numele
         do inum = 1, nsurf_4_ele
           isig = 1
@@ -126,12 +125,12 @@
             if ( node_2nd%xx(inod,3) .gt. 1.0d-11 ) isig = 0
           end do
           if (isig .eq. 1) then
-            surf_istack_2nd(num_surf_2nd)                               &
-     &            = surf_istack_2nd(num_surf_2nd) + 1
+            sf_grp_2nd%istack_grp(sf_grp_2nd%num_grp)                   &
+     &            = sf_grp_2nd%istack_grp(sf_grp_2nd%num_grp) + 1
           end if
         end do
       end do
-      num_surf_bc_2nd = surf_istack_2nd(num_surf_2nd)
+      sf_grp_2nd%num_item = sf_grp_2nd%istack_grp(sf_grp_2nd%num_grp)
 !
       end subroutine count_equator_surface
 !
@@ -146,7 +145,7 @@
       integer(kind = kint) :: iele, inum, i, k, inod, icou, isig
 !
 !
-      icou = surf_istack_2nd(num_surf)
+      icou = sf_grp_2nd%istack_grp(num_surf)
       do iele = 1, ele_2nd%numele
         do inum = 1, nsurf_4_ele
           isig = 1
@@ -157,8 +156,8 @@
           end do
           if (isig .eq. 1) then
             icou = icou + 1
-            surf_item_2nd(1,icou) = iele
-            surf_item_2nd(2,icou) = inum
+            sf_grp_2nd%item_sf_grp(1,icou) = iele
+            sf_grp_2nd%item_sf_grp(2,icou) = inum
           end if
         end do
       end do

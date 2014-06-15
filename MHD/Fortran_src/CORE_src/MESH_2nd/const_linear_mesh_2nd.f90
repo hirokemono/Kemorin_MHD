@@ -70,29 +70,31 @@
 !
       subroutine link_data_4_linear_grid
 !
-      use link_geometry_to_1st_mesh
-      use link_group_to_1st_mesh
+      use m_2nd_geometry_data
+      use m_2nd_group_data
       use m_2nd_phys_data
+      use link_group_type_2_1st_mesh
+      use link_data_type_to_1st_mesh
 !
 !
-      call link_single_ele_list
+      call link_single_ele_list_type(surf_2nd, edge_2nd)
 !
-      call link_node_data
-      call link_element_data
+      call link_node_data_type(node_2nd)
+      call link_element_data_type(ele_2nd)
 !
-      call link_node_group
-      call link_element_group
-      call link_surface_group
+      call link_node_group_to_type(nod_grp_2nd)
+      call link_element_group_to_type(ele_grp_2nd)
+      call link_surface_group_to_type(sf_grp_2nd)
 !
-      call link_surface_data
-      call link_edge_data
+      call link_surface_data_type(surf_2nd)
+      call link_edge_data_type(edge_2nd)
 !
-      call link_element_group_data
-      call link_surface_group_data
+      call link_1st_ele_grp_connect_type(ele_grp_tbl_2nd)
+      call link_1st_surf_grp_conn_type(sf_grp_tbl_2nd)
 !
-      call link_mesh_parameter_4_smp
+      call link_smp_param_type(node_2nd, ele_2nd, surf_2nd, edge_2nd)
 !
-      call link_nodal_field_data
+      call link_nodal_fld_type(phys_2nd)
 !
       end subroutine link_data_4_linear_grid
 !
@@ -104,7 +106,7 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_2nd_geometry_data
-      use link_group_to_1st_mesh
+      use link_group_type_2_1st_mesh
       use cvt_quad_2_linear_2nd_mesh
       use const_surface_type_data
       use const_edge_type_data
@@ -157,7 +159,8 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_2nd_geometry_data
-      use link_geometry_to_1st_mesh
+      use m_2nd_group_data
+      use link_data_type_to_1st_mesh
       use cvt_quad_2_linear_2nd_mesh
       use const_surface_type_data
       use const_edge_type_data
@@ -167,7 +170,7 @@
       integer(kind = kint), intent(in)  :: my_rank
 !
 !
-      call link_node_data
+      call link_node_data_type(node_2nd)
 !
       if (iflag_debug.eq.1) write(*,*) 'connect_lag_4_sim_2_linear_2nd'
       call connect_lag_4_sim_2_linear_2nd
@@ -198,7 +201,7 @@
         call check_smp_size_2nd_surf_edge
       end if
 !
-      call link_nodal_field_data
+      call link_nodal_fld_type(phys_2nd)
 !
       end subroutine set_linear_data_by_lag_data
 !
@@ -208,27 +211,35 @@
       subroutine const_2nd_group_info
 !
       use m_machine_parameter
-      use set_2nd_mesh_4_grp
+      use m_2nd_geometry_data
+      use m_2nd_group_data
+      use set_tables_4_ele_grp_type
 !
 !
-       if (iflag_debug.eq.1) write(*,*) 'set_surf_4_ele_grp_2nd'
-      call set_surf_4_ele_grp_2nd
+       if (iflag_debug.eq.1) write(*,*) 'set_surf_4_ele_grp_type'
+      call set_surf_4_ele_grp_type(ele_2nd, surf_2nd, ele_grp_2nd,      &
+     &    ele_grp_tbl_2nd)
 !
-       if (iflag_debug.eq.1) write(*,*) 'set_edge_4_ele_grp_2nd'
-      call set_edge_4_ele_grp_2nd
+       if (iflag_debug.eq.1) write(*,*) 'set_edge_4_ele_grp_type'
+      call set_edge_4_ele_grp_type(ele_2nd, edge_2nd, ele_grp_2nd,      &
+     &    ele_grp_tbl_2nd)
 !
-       if (iflag_debug.eq.1) write(*,*) 'set_node_4_ele_grp_2nd'
-      call set_node_4_ele_grp_2nd
+       if (iflag_debug.eq.1) write(*,*) 'set_nod_4_ele_grp_type'
+      call set_nod_4_ele_grp_type(ele_2nd, node_2nd, ele_grp_2nd,       &
+     &    ele_grp_tbl_2nd)
 !
 !
-       if (iflag_debug.eq.1) write(*,*) 'set_surf_id_4_surf_grp_2nd'
-      call set_surf_id_4_surf_grp_2nd
+       if (iflag_debug.eq.1) write(*,*) 'set_surf_id_4_surf_grp_type'
+      call set_surf_id_4_surf_grp_type(ele_2nd, surf_2nd, sf_grp_2nd,   &
+     &    sf_grp_tbl_2nd)
 !
-       if (iflag_debug.eq.1) write(*,*) 'set_edge_4_surf_grp_2nd'
-      call set_edge_4_surf_grp_2nd
+       if (iflag_debug.eq.1) write(*,*) 'set_edge_4_surf_grp_type'
+      call set_edge_4_surf_grp_type(surf_2nd, edge_2nd, sf_grp_2nd,     &
+     &   sf_grp_tbl_2nd)
 !
-       if (iflag_debug.eq.1) write(*,*) 'set_node_4_surf_grp_2nd'
-      call set_node_4_surf_grp_2nd
+       if (iflag_debug.eq.1) write(*,*) 'set_node_4_surf_grp_type'
+      call set_node_4_surf_grp_type(surf_2nd, node_2nd, sf_grp_2nd,     &
+     &    sf_grp_tbl_2nd)
 !
       end subroutine const_2nd_group_info
 !

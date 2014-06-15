@@ -29,15 +29,14 @@
 !
        write(*,*) 'choose node group'
 !
-      num_bc_2nd =  num_bc + 1
-      call allocate_2nd_node_grp_num
+      nod_grp_2nd%num_grp =  num_bc + 1
+      call allocate_sf_grp_type_num(nod_grp_2nd)
 !
       call count_new_nod_group
       call count_equator_nod_group
 !
 !
-      call allocate_2nd_node_grp_item
-!
+      call allocate_grp_type_item(nod_grp_2nd)
       call set_new_nod_group
       call set_equator_nod_group
 !
@@ -49,12 +48,12 @@
 !
        write(*,*) 'choose node group'
 !
-      num_bc_2nd =  num_bc
-      call allocate_2nd_node_grp_num
+      nod_grp_2nd%num_grp =  num_bc
+      call allocate_sf_grp_type_num(nod_grp_2nd)
 !
       call count_new_nod_group
 !
-      call allocate_2nd_node_grp_item
+      call allocate_grp_type_item(nod_grp_2nd)
       call set_new_nod_group
 !
       end subroutine s_set_new_node_grp
@@ -66,19 +65,19 @@
 !
       integer(kind = kint) :: i, inod, inum, icou
 !
-      bc_name_2nd(1:num_bc) = bc_name(1:num_bc)
+      nod_grp_2nd%grp_name(1:num_bc) = bc_name(1:num_bc)
 !
-      bc_istack_2nd(0) = 0
+      nod_grp_2nd%istack_grp(0) = 0
       do i = 1, num_bc
-         bc_istack_2nd(i) = bc_istack_2nd(i-1)
+         nod_grp_2nd%istack_grp(i) = nod_grp_2nd%istack_grp(i-1)
          do inum = bc_istack(i-1)+1, bc_istack(i)
            inod = bc_item(inum)
            if ( mark_new_node(inod) .ne. 0 ) then
-             bc_istack_2nd(i) = bc_istack_2nd(i) + 1
+             nod_grp_2nd%istack_grp(i) = nod_grp_2nd%istack_grp(i) + 1
            end if
          end do
       end do
-      num_nod_bc_2nd = bc_istack_2nd(num_bc)
+      nod_grp_2nd%num_item = nod_grp_2nd%istack_grp(num_bc)
 !
       end subroutine count_new_nod_group
 !
@@ -94,7 +93,7 @@
            inod = bc_item(inum)
            if ( mark_new_node(inod) .ne. 0 ) then
              icou = icou + 1
-             bc_item_2nd(icou) = mark_new_node(inod)
+             nod_grp_2nd%item_grp(icou) = mark_new_node(inod)
            end if
          end do
       end do
@@ -111,15 +110,16 @@
       integer(kind = kint) :: inod, icou
 !
 !
-      bc_name_2nd(num_bc_2nd) = 'equator'
+      nod_grp_2nd%grp_name(nod_grp_2nd%num_grp) = 'equator'
 !
-      bc_istack_2nd(num_bc_2nd) = bc_istack_2nd(num_bc)
+      nod_grp_2nd%istack_grp(nod_grp_2nd%num_grp) = nod_grp_2nd%istack_grp(num_bc)
       do inod = 1, node_2nd%numnod
         if ( abs(node_2nd%xx(inod,3)) .le. 1.0d-11 ) then
-          bc_istack_2nd(num_bc_2nd) = bc_istack_2nd(num_bc_2nd) + 1
+          nod_grp_2nd%istack_grp(nod_grp_2nd%num_grp) &
+     &     = nod_grp_2nd%istack_grp(nod_grp_2nd%num_grp) + 1
         end if
       end do
-      num_nod_bc_2nd = bc_istack_2nd(num_bc_2nd)
+      nod_grp_2nd%num_item = nod_grp_2nd%istack_grp(nod_grp_2nd%num_grp)
 !
       end subroutine count_equator_nod_group
 !
@@ -131,11 +131,11 @@
 !
       integer(kind = kint) :: inod, icou
 !
-      icou = bc_istack_2nd(num_bc)
+      icou = nod_grp_2nd%istack_grp(num_bc)
       do inod = 1, node_2nd%numnod
         if ( abs(node_2nd%xx(inod,3)) .le. 1.0d-11 ) then
           icou = icou + 1
-          bc_item_2nd(icou) = inod
+          nod_grp_2nd%item_grp(icou) = inod
         end if
       end do
 !

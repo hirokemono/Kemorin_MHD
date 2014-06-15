@@ -36,6 +36,7 @@
       use const_mesh_info
       use set_size_4_smp_types
       use nodal_vector_send_recv
+      use link_data_type_to_1st_mesh
 !
       integer(kind = kint) :: ierr
 !
@@ -72,8 +73,8 @@
       if (iflag_debug.eq.1) write(*,*) 'initialize_nod_field_data'
       call initialize_nod_field_data
 !
-      if (iflag_debug.eq.1) write(*,*) 'link_nodal_field_names'
-      call link_nodal_field_names
+      if (iflag_debug.eq.1) write(*,*) 'link_nodal_fld_type_names'
+      call link_nodal_fld_type_names(phys_2nd)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data_type'
       call alloc_phys_data_type(node_2nd%numnod, phys_2nd)
@@ -93,7 +94,6 @@
       use m_ucd_data
       use m_ucd_input_data
       use m_ctl_params_4_gen_table
-      use set_udt_to_2nd_data
       use ucd_IO_select
       use interpolate_nodal_field
       use nod_phys_send_recv
