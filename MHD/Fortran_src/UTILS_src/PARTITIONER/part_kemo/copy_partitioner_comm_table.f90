@@ -31,7 +31,6 @@
 !
       use m_2nd_nod_comm_table
       use m_2nd_ele_comm_table
-      use m_2nd_surf_comm_table
       use m_2nd_geometry_data
       use copy_part_nod_comm_tbl
 !
@@ -42,7 +41,7 @@
       ele_comm_tbl_part(ip)%ntot_import = ntot_import_ele_2
 !
       surf_comm_tbl_part(ip)%num_neib = num_neib_2
-      surf_comm_tbl_part(ip)%ntot_import = ntot_import_surf_2
+      surf_comm_tbl_part(ip)%ntot_import = surf_comm_2nd%ntot_import
 !
       edge_comm_tbl_part(ip)%num_neib = num_neib_2
       edge_comm_tbl_part(ip)%ntot_import = edge_comm_2nd%ntot_import
@@ -64,7 +63,7 @@
       surf_comm_tbl_part(ip)%id_neib(1:num_neib_2)                      &
      &       = id_neib_2(1:num_neib_2)
       surf_comm_tbl_part(ip)%istack_import(0:num_neib_2)                &
-     &       = istack_import_surf_2(0:num_neib_2)
+     &       = surf_comm_2nd%istack_import(0:num_neib_2)
 !
       edge_comm_tbl_part(ip)%id_neib(1:num_neib_2)                      &
      &       = id_neib_2(1:num_neib_2)
@@ -77,9 +76,9 @@
 !
       ele_comm_tbl_part(ip)%item_import(1:ntot_import_ele_2)            &
      &       = item_import_ele_2(1:ntot_import_ele_2)
-      surf_comm_tbl_part(ip)%item_import(1:ntot_import_surf_2)          &
-     &       = item_import_surf_2(1:ntot_import_surf_2)
-      edge_comm_tbl_part(ip)%item_import(1:edge_comm_2nd%ntot_import) &
+      surf_comm_tbl_part(ip)%item_import(1:surf_comm_2nd%ntot_import)   &
+     &       = surf_comm_2nd%item_import(1:surf_comm_2nd%ntot_import)
+      edge_comm_tbl_part(ip)%item_import(1:edge_comm_2nd%ntot_import)   &
      &       = edge_comm_2nd%item_import(1:edge_comm_2nd%ntot_import)
 !
       call copy_node_import_to_mem(ip)
@@ -92,7 +91,6 @@
 !
       use m_2nd_nod_comm_table
       use m_2nd_ele_comm_table
-      use m_2nd_surf_comm_table
       use m_2nd_geometry_data
       use copy_part_nod_comm_tbl
 !
@@ -103,19 +101,19 @@
       call copy_node_import_from_mem(ip)
 !
       num_neib_ele_2 =  num_neib_2
-      num_neib_surf_2 = num_neib_2
+      surf_comm_2nd%num_neib = num_neib_2
       edge_comm_2nd%num_neib = num_neib_2
 !
       ntot_import_ele_2 =  ele_comm_tbl_part(ip)%ntot_import
-      ntot_import_surf_2 = surf_comm_tbl_part(ip)%ntot_import
+      surf_comm_2nd%ntot_import = surf_comm_tbl_part(ip)%ntot_import
       edge_comm_2nd%ntot_import = edge_comm_tbl_part(ip)%ntot_import
 !
       call allocate_2nd_ele_neib_id
-      call allocate_2nd_surf_neib_id
+      call allocate_type_neib_id(surf_comm_2nd)
       call allocate_type_neib_id(edge_comm_2nd)
 !
       call allocate_2nd_ele_import_num
-      call allocate_2nd_surf_import_num
+      call allocate_type_import_num(surf_comm_2nd)
       call allocate_type_import_num(edge_comm_2nd)
 !
       id_neib_ele_2(1:num_neib_2)                                       &
@@ -123,9 +121,9 @@
       istack_import_ele_2(0:num_neib_2)                                 &
      &       = ele_comm_tbl_part(ip)%istack_import(0:num_neib_2)
 !
-      id_neib_surf_2(1:num_neib_2)                                      &
+      surf_comm_2nd%id_neib(1:num_neib_2)                               &
      &       = surf_comm_tbl_part(ip)%id_neib(1:num_neib_2)
-      istack_import_surf_2(0:num_neib_2)                                &
+      surf_comm_2nd%istack_import(0:num_neib_2)                         &
      &       = surf_comm_tbl_part(ip)%istack_import(0:num_neib_2)
 !
       edge_comm_2nd%id_neib(1:num_neib_2)                               &
@@ -136,20 +134,20 @@
       do i = 1, num_neib_2
           num_import_ele_2(i) = istack_import_ele_2(i)                  &
      &                          - istack_import_ele_2(i-1)
-          num_import_surf_2(i) = istack_import_surf_2(i)                &
-     &                          - istack_import_surf_2(i-1)
-          edge_comm_2nd%num_import(i) = edge_comm_2nd%istack_import(i)   &
+          surf_comm_2nd%num_import(i) = surf_comm_2nd%istack_import(i)  &
+     &                          - surf_comm_2nd%istack_import(i-1)
+          edge_comm_2nd%num_import(i) = edge_comm_2nd%istack_import(i)  &
      &                          - edge_comm_2nd%istack_import(i-1)
       end do
 !
       call allocate_2nd_ele_import_item
-      call allocate_2nd_surf_import_item
+      call allocate_type_import_item(surf_comm_2nd)
       call allocate_type_import_item(edge_comm_2nd)
 !
       item_import_ele_2(1:ntot_import_ele_2)                            &
      &       = ele_comm_tbl_part(ip)%item_import(1:ntot_import_ele_2)
-      item_import_surf_2(1:ntot_import_surf_2)                          &
-     &       = surf_comm_tbl_part(ip)%item_import(1:ntot_import_surf_2)
+      surf_comm_2nd%item_import(1:surf_comm_2nd%ntot_import)            &
+     &       = surf_comm_tbl_part(ip)%item_import(1:surf_comm_2nd%ntot_import)
       edge_comm_2nd%item_import(1:edge_comm_2nd%ntot_import)   &
      &       = edge_comm_tbl_part(ip)%item_import(1:edge_comm_2nd%ntot_import)
 !
@@ -162,7 +160,6 @@
 !
       use m_2nd_nod_comm_table
       use m_2nd_ele_comm_table
-      use m_2nd_surf_comm_table
       use m_2nd_geometry_data
       use copy_part_nod_comm_tbl
 !
@@ -170,7 +167,7 @@
 !
 !
       ele_comm_tbl_part(ip)%ntot_export =  ntot_export_ele_2
-      surf_comm_tbl_part(ip)%ntot_export = ntot_export_surf_2
+      surf_comm_tbl_part(ip)%ntot_export = surf_comm_2nd%ntot_export
       edge_comm_tbl_part(ip)%ntot_export = edge_comm_2nd%ntot_export
 !
       call allocate_type_export_num( ele_comm_tbl_part(ip) )
@@ -180,7 +177,7 @@
       ele_comm_tbl_part(ip)%istack_export(0:num_neib_2)                 &
      &       = istack_export_ele_2(0:num_neib_2)
       surf_comm_tbl_part(ip)%istack_export(0:num_neib_2)                &
-     &       = istack_export_surf_2(0:num_neib_2)
+     &       = surf_comm_2nd%istack_export(0:num_neib_2)
       edge_comm_tbl_part(ip)%istack_export(0:num_neib_2)                &
      &       = edge_comm_2nd%istack_export(0:num_neib_2)
 !
@@ -190,8 +187,8 @@
 !
       ele_comm_tbl_part(ip)%item_export(1:ntot_export_ele_2)            &
      &       = item_export_ele_2(1:ntot_export_ele_2)
-      surf_comm_tbl_part(ip)%item_export(1:ntot_export_surf_2)          &
-     &       = item_export_surf_2(1:ntot_export_surf_2)
+      surf_comm_tbl_part(ip)%item_export(1:surf_comm_2nd%ntot_export)   &
+     &       = surf_comm_2nd%item_export(1:surf_comm_2nd%ntot_export)
       edge_comm_tbl_part(ip)%item_export(1:edge_comm_2nd%ntot_export)   &
      &       = edge_comm_2nd%item_export(1:edge_comm_2nd%ntot_export)
 !
@@ -205,7 +202,6 @@
 !
       use m_2nd_nod_comm_table
       use m_2nd_ele_comm_table
-      use m_2nd_surf_comm_table
       use m_2nd_geometry_data
       use copy_part_nod_comm_tbl
 !
@@ -216,16 +212,16 @@
       call copy_node_export_from_mem(ip)
 !
       ntot_export_ele_2 =  ele_comm_tbl_part(ip)%ntot_export
-      ntot_export_surf_2 = surf_comm_tbl_part(ip)%ntot_export
+      surf_comm_2nd%ntot_export = surf_comm_tbl_part(ip)%ntot_export
       edge_comm_2nd%ntot_export = edge_comm_tbl_part(ip)%ntot_export
 !
       call allocate_2nd_ele_export_num
-      call allocate_2nd_surf_export_num
+      call allocate_type_export_num(surf_comm_2nd)
       call allocate_type_export_num(edge_comm_2nd)
 !
       istack_export_ele_2(0:num_neib_2)                                 &
      &       = ele_comm_tbl_part(ip)%istack_export(0:num_neib_2)
-      istack_export_surf_2(0:num_neib_2)                                &
+      surf_comm_2nd%istack_export(0:num_neib_2)                         &
      &       = surf_comm_tbl_part(ip)%istack_export(0:num_neib_2)
       edge_comm_2nd%istack_export(0:num_neib_2)                         &
      &       = edge_comm_tbl_part(ip)%istack_export(0:num_neib_2)
@@ -233,20 +229,20 @@
       do i = 1, num_neib_2
           num_export_ele_2(i) = istack_export_ele_2(i)                  &
      &                          - istack_export_ele_2(i-1)
-          num_export_surf_2(i) = istack_export_surf_2(i)                &
-     &                          - istack_export_surf_2(i-1)
+          surf_comm_2nd%num_export(i) = surf_comm_2nd%istack_export(i)  &
+     &                          - surf_comm_2nd%istack_export(i-1)
           edge_comm_2nd%num_export(i) = edge_comm_2nd%istack_export(i)  &
      &                          - edge_comm_2nd%istack_export(i-1)
       end do
 !
       call allocate_2nd_ele_export_item
-      call allocate_2nd_surf_export_item
+      call allocate_type_export_item(surf_comm_2nd)
       call allocate_type_export_item(edge_comm_2nd)
 !
       item_export_ele_2(1:ntot_export_ele_2)                            &
      &       = ele_comm_tbl_part(ip)%item_export(1:ntot_export_ele_2)
-      item_export_surf_2(1:ntot_export_surf_2)                          &
-     &       = surf_comm_tbl_part(ip)%item_export(1:ntot_export_surf_2)
+      surf_comm_2nd%item_export(1:surf_comm_2nd%ntot_export)            &
+     &       = surf_comm_tbl_part(ip)%item_export(1:surf_comm_2nd%ntot_export)
       edge_comm_2nd%item_export(1:edge_comm_2nd%ntot_export)            &
      &       = edge_comm_tbl_part(ip)%item_export(1:edge_comm_2nd%ntot_export)
 !

@@ -72,25 +72,27 @@
 !
       use m_internal_4_partitioner
       use m_domain_group_4_partition
-      use m_2nd_surf_comm_table
+      use m_2nd_geometry_data
       use set_import_items
 !
       integer(kind = kint), intent(in) :: ip, nproc
 !
 !
-      call allocate_2nd_surf_import_num
+      call allocate_type_import_num(surf_comm_2nd)
 !
       call count_ele_import_item(ip, nproc, ntot_numsurf_sub,           &
      &    istack_numsurf_sub, isurf_4_subdomain, nsurf_s_domin,         &
-     &    id_glsurf_org, IGROUP_surf, num_neib_surf_2, id_neib_surf_2,  &
-     &    ntot_import_surf_2, istack_import_surf_2)
+     &    id_glsurf_org, IGROUP_surf, surf_comm_2nd%num_neib,   &
+     &    surf_comm_2nd%id_neib, surf_comm_2nd%ntot_import,     &
+     &    surf_comm_2nd%istack_import)
 !
-      call allocate_2nd_surf_import_item
+      call allocate_type_import_item(surf_comm_2nd)
 !
       call set_ele_import_item(ip, nproc, ntot_numsurf_sub,             &
      &    istack_numsurf_sub, isurf_4_subdomain, nsurf_s_domin,         &
-     &    id_glsurf_org, IGROUP_surf, num_neib_surf_2, id_neib_surf_2,  &
-     &    ntot_import_surf_2, istack_import_surf_2, item_import_surf_2)
+     &    id_glsurf_org, IGROUP_surf, surf_comm_2nd%num_neib,      &
+     &    surf_comm_2nd%id_neib, surf_comm_2nd%ntot_import,  &
+     &    surf_comm_2nd%istack_import, surf_comm_2nd%item_import)
 !
       end subroutine const_surf_import_tbl_4_part
 !
@@ -131,7 +133,6 @@
 !
       use m_2nd_nod_comm_table
       use m_2nd_ele_comm_table
-      use m_2nd_surf_comm_table
       use m_2nd_geometry_data
       use m_partitioner_comm_table
       use m_domain_group_4_partition
@@ -154,7 +155,7 @@
             num_export_2(j) = ISTACK_NOD_TMP(jg) - ISTACK_NOD_TMP(jg-1)
             num_export_ele_2(j) =  ISTACK_ELE_TMP(jg)                   &
      &                            - ISTACK_ELE_TMP(jg-1)
-            num_export_surf_2(j) = ISTACK_SURF_TMP(jg)                  &
+            surf_comm_2nd%num_export(j) = ISTACK_SURF_TMP(jg)           &
      &                            - ISTACK_SURF_TMP(jg-1)
             edge_comm_2nd%num_export(j) = ISTACK_EDGE_TMP(jg)           &
      &                            - ISTACK_EDGE_TMP(jg-1)
@@ -173,7 +174,6 @@
 !
       use m_2nd_nod_comm_table
       use m_2nd_ele_comm_table
-      use m_2nd_surf_comm_table
       use m_2nd_geometry_data
       use m_partitioner_comm_table
       use m_domain_group_4_partition
@@ -237,13 +237,13 @@
         end do
 !
         jst = istack_numsurf_sub(jp-1)
-        icou = istack_export_surf_2(j-1)
+        icou = surf_comm_2nd%istack_export(j-1)
         do jnum = jst_surf_im+1, jed_surf_im
           icou = icou + 1
           jsurf = IMPORT_SURF_TMP(jnum)
           isurf = isurf_4_subdomain(jst+jsurf)
           isurf_org = id_glsurf_org(isurf)
-          item_export_surf_2(icou) = isurf_local_part(isurf_org)
+          surf_comm_2nd%item_export(icou) = isurf_local_part(isurf_org)
         end do
 !
         jst = istack_numedge_sub(jp-1)

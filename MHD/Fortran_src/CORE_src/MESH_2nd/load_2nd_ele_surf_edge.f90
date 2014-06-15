@@ -120,13 +120,10 @@
 !
       subroutine deallocate_2nd_surf_data
 !
-      use m_2nd_surf_comm_table
       use m_2nd_geometry_data
 !
 !
-      call deallocate_2nd_surf_export
-      call deallocate_2nd_surf_import
-      call deallocate_2nd_surf_neib_id
+      call deallocate_type_comm_tbl(surf_comm_2nd)
       call deallocate_surface_connect_type(surf_2nd)
 !
       end subroutine deallocate_2nd_surf_data

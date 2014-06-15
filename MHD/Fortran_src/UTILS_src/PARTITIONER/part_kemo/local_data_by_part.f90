@@ -23,7 +23,6 @@
       use m_constants
       use m_2nd_nod_comm_table
       use m_2nd_ele_comm_table
-      use m_2nd_surf_comm_table
       use m_2nd_geometry_data
       use m_partitioner_comm_table
       use m_ctl_param_partitioner
@@ -72,8 +71,8 @@
         do i = 1, num_neib_ele_2
           id_neib_ele_2(i) = id_neib_ele_2(i) - 1
         end do
-        do i = 1, num_neib_surf_2
-          id_neib_surf_2(i) = id_neib_surf_2(i) - 1
+        do i = 1, surf_comm_2nd%num_neib
+          surf_comm_2nd%id_neib(i) = surf_comm_2nd%id_neib(i) - 1
         end do
         do i = 1, edge_comm_2nd%num_neib
           edge_comm_2nd%id_neib(i) = edge_comm_2nd%id_neib(i) - 1

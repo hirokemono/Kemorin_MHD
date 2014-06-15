@@ -26,7 +26,6 @@
 !
       use m_2nd_nod_comm_table
       use m_2nd_ele_comm_table
-      use m_2nd_surf_comm_table
       use m_2nd_geometry_data
       use m_partitioner_comm_table
       use set_parallel_file_name
@@ -55,15 +54,15 @@
         call set_neib_domain_by_node(ip, nprocs, num_neib_2, id_neib_2)
 !
         num_neib_ele_2 = num_neib_2
-        num_neib_surf_2 = num_neib_2
+        surf_comm_2nd%num_neib = num_neib_2
         edge_comm_2nd%num_neib = num_neib_2
 !
         call allocate_2nd_ele_neib_id
-        call allocate_2nd_surf_neib_id
+        call allocate_type_neib_id(surf_comm_2nd)
         call allocate_type_neib_id(edge_comm_2nd)
 !
         id_neib_ele_2(1:num_neib_2) =  id_neib_2(1:num_neib_2)
-        id_neib_surf_2(1:num_neib_2) = id_neib_2(1:num_neib_2)
+        surf_comm_2nd%id_neib(1:num_neib_2) = id_neib_2(1:num_neib_2)
         edge_comm_2nd%id_neib(1:num_neib_2) = id_neib_2(1:num_neib_2)
 !
         call write_neighboring_pes(ip)
@@ -85,7 +84,6 @@
 !
       use m_2nd_nod_comm_table
       use m_2nd_ele_comm_table
-      use m_2nd_surf_comm_table
       use m_2nd_geometry_data
       use m_partitioner_comm_table
       use set_parallel_file_name
@@ -116,7 +114,7 @@
 !
         call allocate_2nd_nod_export_num
         call allocate_2nd_ele_export_num
-        call allocate_2nd_surf_export_num
+        call allocate_type_export_num(surf_comm_2nd)
         call allocate_type_export_num(edge_comm_2nd)
 !
         call count_all_export_item_4_part(ip, work_f_head)
@@ -126,14 +124,15 @@
      &      izero, istack_export_2, ntot_export_2)
         call s_cal_total_and_stacks(num_neib_ele_2, num_export_ele_2,   &
      &      izero, istack_export_ele_2, ntot_export_ele_2)
-        call s_cal_total_and_stacks(num_neib_surf_2, num_export_surf_2, &
-     &      izero, istack_export_surf_2, ntot_export_surf_2)
+        call s_cal_total_and_stacks                                     &
+     &     (surf_comm_2nd%num_neib, surf_comm_2nd%num_export,           &
+     &      izero, surf_comm_2nd%istack_export, surf_comm_2nd%ntot_export)
         call s_cal_total_and_stacks(num_neib_2, edge_comm_2nd%num_export, &
      &      izero, edge_comm_2nd%istack_export, edge_comm_2nd%ntot_export)
 !
         call allocate_2nd_nod_export_item
         call allocate_2nd_ele_export_item
-        call allocate_2nd_surf_export_item
+        call allocate_type_export_item(surf_comm_2nd)
         call allocate_type_export_item(edge_comm_2nd)
 !
         call set_all_export_item_4_part(ip, work_f_head)

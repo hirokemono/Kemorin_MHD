@@ -78,24 +78,24 @@
 !
       subroutine link_2nd_surf_comm_tbl_type(surf_comm)
 !
-      use m_2nd_surf_comm_table
+      use m_2nd_geometry_data
 !
       type(communication_table), intent(in) :: surf_comm
 !
 !
-      num_neib_surf_2 =    surf_comm%num_neib
-      ntot_import_surf_2 = surf_comm%ntot_import
-      ntot_export_surf_2 = surf_comm%ntot_export
+      surf_comm_2nd%num_neib =    surf_comm%num_neib
+      surf_comm_2nd%ntot_import = surf_comm%ntot_import
+      surf_comm_2nd%ntot_export = surf_comm%ntot_export
 !
-      id_neib_surf_2 =>    surf_comm%id_neib
+      surf_comm_2nd%id_neib =>    surf_comm%id_neib
 !
-      num_import_surf_2 =>    surf_comm%num_import
-      istack_import_surf_2 => surf_comm%istack_import
-      item_import_surf_2 =>   surf_comm%item_import
+      surf_comm_2nd%num_import =>    surf_comm%num_import
+      surf_comm_2nd%istack_import => surf_comm%istack_import
+      surf_comm_2nd%item_import =>   surf_comm%item_import
 !
-      num_export_surf_2 =>    surf_comm%num_export
-      istack_export_surf_2 => surf_comm%istack_export
-      item_export_surf_2 =>   surf_comm%item_export
+      surf_comm_2nd%num_export =>    surf_comm%num_export
+      surf_comm_2nd%istack_export => surf_comm%istack_export
+      surf_comm_2nd%item_export =>   surf_comm%item_export
 !
       end subroutine link_2nd_surf_comm_tbl_type
 !
