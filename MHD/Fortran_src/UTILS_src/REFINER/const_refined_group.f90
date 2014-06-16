@@ -3,7 +3,7 @@
 !
 !      Writen by H. Matsui on Oct., 2007
 !
-!      subroutine s_set_refined_group_data
+!      subroutine s_const_refined_group(newmesh, newgroup)
 !
       module const_refined_group
 !
@@ -11,7 +11,8 @@
 !
       implicit none
 !
-      private :: const_refined_node_group
+      private :: const_refined_node_group, const_refined_ele_group
+      private :: const_refined_surf_group
 !
 !  ---------------------------------------------------------------------
 !
@@ -19,84 +20,96 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_const_refined_group
+      subroutine s_const_refined_group(newmesh, newgroup)
+!
+      use t_mesh_data
+!
+      type(mesh_geometry), intent(inout) :: newmesh
+      type(mesh_groups), intent(inout) :: newgroup
 !
 !
-      call const_refined_node_group
+      call const_refined_node_group(newgroup%nod_grp)
 !
-      call const_refined_ele_group
+      call const_refined_ele_group(newgroup%ele_grp)
 !
-      call const_refined_surf_group
+      call const_refined_surf_group                                     &
+     &   (newmesh%node%numnod, newgroup%surf_grp)
 !
       end subroutine s_const_refined_group
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine const_refined_node_group
+      subroutine const_refined_node_group(new_nod_grp)
 !
       use m_node_group
-      use m_2nd_group_data
       use set_refined_node_group
       use find_hanging_surface
+      use t_group_data
+!
+      type(group_data), intent(inout) :: new_nod_grp
 !
 !
       call allocate_mark_refine_nod_grp
 !
-      nod_grp_2nd%num_grp = num_bc
-      call add_hanging_node_group_num
-      call allocate_grp_type_num(nod_grp_2nd)
+      new_nod_grp%num_grp = num_bc
+      call add_hanging_node_group_num(new_nod_grp)
+      call allocate_grp_type_num(new_nod_grp)
 !
-      call count_refined_node_group
-      call add_hanging_node_group_name
-      call allocate_grp_type_item(nod_grp_2nd)
+      call count_refined_node_group(new_nod_grp)
+      call add_hanging_node_group_name(new_nod_grp)
+      call allocate_grp_type_item(new_nod_grp)
 !
-      write(*,*) 's_set_refined_node_group'
-      call s_set_refined_node_group
-      call add_hanging_node_group_item
+      call s_set_refined_node_group(new_nod_grp)
+      call add_hanging_node_group_item(new_nod_grp)
       call deallocate_mark_refine_nod_grp
 !
       end subroutine const_refined_node_group
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_refined_ele_group
+      subroutine const_refined_ele_group(new_ele_grp)
 !
       use m_element_group
-      use m_2nd_group_data
+      use t_group_data
       use set_refined_ele_group
 !
+      type(group_data), intent(inout) :: new_ele_grp
 !
-      ele_grp_2nd%num_grp = num_mat
-      call allocate_grp_type_num(ele_grp_2nd)
 !
-      call count_refined_ele_group
-      call allocate_grp_type_item(ele_grp_2nd)
+      new_ele_grp%num_grp = num_mat
+      call allocate_grp_type_num(new_ele_grp)
+!
+      call count_refined_ele_group(new_ele_grp)
+      call allocate_grp_type_item(new_ele_grp)
 !
       write(*,*) 's_set_refined_ele_group'
-      call s_set_refined_ele_group
+      call s_set_refined_ele_group(new_ele_grp)
 !
       end subroutine const_refined_ele_group
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_refined_surf_group
+      subroutine const_refined_surf_group(nnod_2nd, new_sf_grp)
 !
       use m_surface_group
-      use m_2nd_group_data
+      use t_group_data
       use set_refined_surf_group
 !
+      integer(kind = kint), intent(in) :: nnod_2nd
+      type(surface_group_data), intent(inout) :: new_sf_grp
 !
-      call allocate_mark_refine_sf_grp
 !
-      sf_grp_2nd%num_grp = num_surf
-      call allocate_sf_grp_type_num(sf_grp_2nd)
+      call allocate_mark_refine_sf_grp(nnod_2nd)
 !
-      call count_refined_surf_group
-      call allocate_sf_grp_type_item(sf_grp_2nd)
+      new_sf_grp%num_grp = num_surf
+      call allocate_sf_grp_type_num(new_sf_grp)
+!
+      call count_refined_surf_group(new_sf_grp)
+      call allocate_sf_grp_type_item(new_sf_grp)
 !
       write(*,*) 's_set_refined_surf_group'
-      call s_set_refined_surf_group
+      call s_set_refined_surf_group(new_sf_grp)
       call deallocate_mark_refine_sf_grp
 !
       end subroutine const_refined_surf_group

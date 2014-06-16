@@ -3,14 +3,20 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine s_set_partition_by_fine_mesh
+!      subroutine s_set_partition_by_fine_mesh(new_node, new_ele)
 !
       module set_partition_by_fine_mesh
 !
       use m_precision
       use m_constants
 !
+      use t_mesh_data
+!
       implicit none
+!
+      type(mesh_geometry), save :: finermesh
+      type(surface_geometry), save :: finer_surfmesh
+      type(edge_geometry), save ::  finer_edgemesh
 !
 !
       private :: input_interpolate_table_4_part
@@ -27,7 +33,6 @@
       use m_ctl_param_partitioner
       use m_subdomain_table_IO
       use m_read_mesh_data
-      use m_2nd_geometry_data
       use m_interpolate_table_orgin
       use m_interpolate_table_dest
       use m_domain_group_4_partition
@@ -35,11 +40,13 @@
       use load_2nd_mesh_data
       use copy_domain_list_4_IO
 !
+!
 !     read finer mesh
 !
       iflag_mesh_file_fmt = iflag_para_mesh_file_fmt
       mesh_file_head = finer_mesh_file_head
-      call input_2nd_mesh_geometry(izero)
+      call input_2nd_mesh_geometry(izero, finermesh,                    &
+     &    finer_surfmesh, finer_edgemesh)
 !
 !     read interpolate table
 !
@@ -48,11 +55,11 @@
 !     read interpolate table
 !
       call read_group_4_partition
-      call copy_finer_domain_list_from_IO
+      call copy_finer_domain_list_from_IO(finermesh%node)
 !
 !     construct group table
 !
-      call interpolate_domain_group
+      call interpolate_domain_group(finermesh%node, finermesh%ele)
 !
 !     deallocate arrays
 !
@@ -64,8 +71,9 @@
       call deallocate_itp_table_dest
       call deallocate_itp_num_dest
 !
-      call deallocate_ele_connect_type(ele_2nd)
-      call deallocate_node_geometry_type(node_2nd)
+      call deallocate_ele_connect_type(finermesh%ele)
+      call deallocate_node_geometry_type(finermesh%node)
+      call deallocate_type_comm_tbl(finermesh%nod_comm)
 !
       end subroutine s_set_partition_by_fine_mesh
 !
@@ -99,19 +107,23 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine interpolate_domain_group
+      subroutine interpolate_domain_group(new_node, new_ele)
+!
+      use t_geometry_data
 !
       use m_machine_parameter
-      use m_2nd_geometry_data
       use m_domain_group_4_partition
       use m_interpolate_table_orgin
       use m_interpolate_table_dest
       use interpolate_imark_1pe
 !
+      type(node_data), intent(inout) :: new_node
+      type(element_data), intent(inout) :: new_ele
+!
 !      transfer interpolate table
 !
-      call s_interporate_imark_para(np_smp, node_2nd%numnod,            &
-     &    ele_2nd%numele, ele_2nd%nnod_4_ele, ele_2nd%ie,               &
+      call s_interporate_imark_para(np_smp, new_node%numnod,            &
+     &    new_ele%numele, new_ele%nnod_4_ele, new_ele%ie,               &
      &    IGROUP_FINER(1), istack_tbl_type_org_smp, ntot_table_org,     &
      &    iele_org_4_org, itype_inter_org, IGROUP_nod(1) )
 !

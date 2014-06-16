@@ -1,9 +1,15 @@
 !set_refined_node_group.f90
 !      module set_refined_node_group
 !
-      module set_refined_node_group
-!
 !      Writen by H. Matsui on Oct., 2007
+!
+!      subroutine allocate_mark_refine_nod_grp
+!      subroutine deallocate_mark_refine_nod_grp
+!
+!      subroutine count_refined_node_group(new_nod_grp)
+!      subroutine s_set_refined_node_group(new_nod_grp)
+!
+      module set_refined_node_group
 !
       use m_precision
 !
@@ -11,12 +17,6 @@
 !
       integer(kind = kint), allocatable, private :: inod_mark(:)
       private :: check_element_in_nod_group, set_new_nod_grp_item
-!
-!      subroutine allocate_mark_refine_nod_grp
-!      subroutine deallocate_mark_refine_nod_grp
-!
-!      subroutine count_refined_node_group
-!      subroutine s_set_refined_node_group
 !
 !  ---------------------------------------------------------------------
 !
@@ -43,23 +43,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_refined_node_group
+      subroutine count_refined_node_group(new_nod_grp)
 !
       use m_geometry_parameter
       use m_geometry_data
       use m_node_group
-      use m_2nd_group_data
       use m_refined_node_id
+      use t_group_data
+!
+      type(group_data), intent(inout) :: new_nod_grp
 !
       integer(kind= kint) :: i, ist, ied, inum, iflag
       integer(kind= kint) :: inod, iele, iedge, isurf
 !
 !
       do i = 1, num_bc
-        nod_grp_2nd%grp_name(i) = bc_name(i)
+        new_nod_grp%grp_name(i) = bc_name(i)
       end do
 !
-      nod_grp_2nd%istack_grp(0) = 0
+      new_nod_grp%istack_grp(0) = 0
       do i = 1, num_bc
         inod_mark(1:numnod) = 0
 !
@@ -70,7 +72,7 @@
           inod_mark(inod) = 1
         end do
 !
-        nod_grp_2nd%istack_grp(i) = nod_grp_2nd%istack_grp(i-1)                           &
+        new_nod_grp%istack_grp(i) = new_nod_grp%istack_grp(i-1)         &
      &                    + bc_istack(i) - bc_istack(i-1)
 !
         do iedge = 1, numedge
@@ -78,7 +80,7 @@
      &          ie_edge, iflag)
 !
           if(iflag .eq. 1) then
-            nod_grp_2nd%istack_grp(i) = nod_grp_2nd%istack_grp(i)                         &
+            new_nod_grp%istack_grp(i) = new_nod_grp%istack_grp(i)       &
      &                        + num_nod_refine_edge(iedge)
           end if
         end do
@@ -89,7 +91,7 @@
      &          ie_surf, iflag)
 !
           if(iflag .eq. 1) then
-            nod_grp_2nd%istack_grp(i) = nod_grp_2nd%istack_grp(i)                         &
+            new_nod_grp%istack_grp(i) = new_nod_grp%istack_grp(i)       &
      &                        + num_nod_refine_surf(isurf)
           end if
         end do
@@ -100,25 +102,27 @@
      &          ie, iflag)
 !
           if(iflag .eq. 1) then
-            nod_grp_2nd%istack_grp(i) = nod_grp_2nd%istack_grp(i)                         &
+            new_nod_grp%istack_grp(i) = new_nod_grp%istack_grp(i)       &
      &                        + num_nod_refine_ele(iele)
           end if
         end do
 !
       end do
-      nod_grp_2nd%num_item = nod_grp_2nd%istack_grp(num_bc)
+      new_nod_grp%num_item = new_nod_grp%istack_grp(num_bc)
 !
       end subroutine count_refined_node_group
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_refined_node_group
+      subroutine s_set_refined_node_group(new_nod_grp)
 !
       use m_geometry_parameter
       use m_geometry_data
       use m_node_group
-      use m_2nd_group_data
       use m_refined_node_id
+      use t_group_data
+!
+      type(group_data), intent(inout) :: new_nod_grp
 !
       integer(kind = kint) :: i, icou, ist, ied, inum, iflag
       integer(kind = kint) :: inod, iedge, isurf, iele
@@ -127,7 +131,7 @@
       do i = 1, num_bc
         inod_mark(1:numnod) = 0
 !
-        icou = nod_grp_2nd%istack_grp(i-1)
+        icou = new_nod_grp%istack_grp(i-1)
 !
         ist = bc_istack(i-1) + 1
         ied = bc_istack(i)
@@ -135,7 +139,7 @@
           icou = icou + 1
           inod = bc_item(inum)
           inod_mark(inod) = 1
-          nod_grp_2nd%item_grp(icou) = inod
+          new_nod_grp%item_grp(icou) = inod
         end do
 !
         do iedge = 1, numedge
@@ -145,7 +149,7 @@
           if(iflag .eq. 1) then
             call set_new_nod_grp_item(icou, ntot_nod_refine_edge,       &
      &          istack_nod_refine_edge(iedge-1), inod_refine_edge,      &
-     &          nod_grp_2nd%num_item, nod_grp_2nd%item_grp)
+     &          new_nod_grp%num_item, new_nod_grp%item_grp)
           end if
         end do
 !
@@ -157,7 +161,7 @@
           if(iflag .eq. 1) then
             call set_new_nod_grp_item(icou, ntot_nod_refine_surf,       &
      &          istack_nod_refine_surf(isurf-1), inod_refine_surf,      &
-     &          nod_grp_2nd%num_item, nod_grp_2nd%item_grp)
+     &          new_nod_grp%num_item, new_nod_grp%item_grp)
           end if
         end do
 !
@@ -169,7 +173,7 @@
           if(iflag .eq. 1) then
             call set_new_nod_grp_item(icou, ntot_nod_refine_ele,        &
      &          istack_nod_refine_ele(iele-1), inod_refine_ele,         &
-     &          nod_grp_2nd%num_item, nod_grp_2nd%item_grp)
+     &          new_nod_grp%num_item, new_nod_grp%item_grp)
           end if
         end do
 !

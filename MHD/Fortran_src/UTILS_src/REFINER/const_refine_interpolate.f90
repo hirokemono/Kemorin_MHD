@@ -1,7 +1,7 @@
 !const_refine_interpolate.f90
 !     Written by H. Matsui on Oct., 2007
 !
-!      subroutine s_const_refine_interpolate_tbl
+!      subroutine s_const_refine_interpolate_tbl(newmesh)
 !
       module  const_refine_interpolate
 !
@@ -28,16 +28,20 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine s_const_refine_interpolate_tbl
+      subroutine s_const_refine_interpolate_tbl(newmesh)
+!
+      use t_mesh_data
 !
       use m_refined_element_data
       use m_work_merge_refine_itp
       use refinment_info_IO
 !
+      type(mesh_geometry), intent(in) :: newmesh
+!
 !
       if(iflag_tmp_tri_refine .eq. 0 .and. iflag_merge .eq. 0) then
         write(*,*) 'const_single_refine_itp_tbl'
-        call const_single_refine_itp_tbl
+        call const_single_refine_itp_tbl(newmesh%node%numnod)
         call write_refinement_table(ione)
       else if(iflag_tmp_tri_refine .gt. 0 .or. iflag_merge .eq. 0) then
         write(*,*) 'copy_original_mesh_conn_refine'
@@ -47,9 +51,10 @@
 !
       else if(iflag_merge .gt. 0) then
         write(*,*) 'const_second_refine_itp_tbl'
-        call const_second_refine_itp_tbl
+        call const_second_refine_itp_tbl(newmesh%node%numnod)
         write(*,*) 'const_merged_refine_itp_tbl'
-        call const_merged_refine_itp_tbl
+        call const_merged_refine_itp_tbl(newmesh%node%numnod, &
+     &      newmesh%ele%nnod_4_ele, newmesh%node%xx)
 !
         write(*,*) 'write_merged_refinement_tbl'
         call write_merged_refinement_tbl
@@ -60,7 +65,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_single_refine_itp_tbl
+      subroutine const_single_refine_itp_tbl(nnod_2)
 !
       use m_interpolate_table_dest
       use m_interpolate_coefs_dest
@@ -71,11 +76,15 @@
       use copy_interpolate_org_IO
       use copy_interpolate_type_raw
 !
+      use t_geometry_data
+!
+      integer(kind = kint), intent(in) :: nnod_2
+!
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_origin'
       call set_itp_course_to_fine_origin
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_dest'
-      call set_itp_course_to_fine_dest
+      call set_itp_course_to_fine_dest(nnod_2)
 !
       call allocate_itp_coef_dest
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_table_org_to_IO'
@@ -111,16 +120,18 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_second_refine_itp_tbl
+      subroutine const_second_refine_itp_tbl(nnod_2)
 !
       use m_work_merge_refine_itp
       use set_refine_interpolate_tbl
       use copy_interpolate_type_raw
 !
+      integer(kind = kint), intent(in) :: nnod_2
+!
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_origin'
       call set_itp_course_to_fine_origin
-      call set_itp_course_to_fine_dest
+      call set_itp_course_to_fine_dest(nnod_2)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                       'copy_interpolate_types_from_raw c2f_2nd'
@@ -130,7 +141,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_merged_refine_itp_tbl
+      subroutine const_merged_refine_itp_tbl                            &
+     &          (nnod_2, nnod_4_ele_2, xx_2)
 !
       use m_work_merge_refine_itp
 !      use copy_interpolate_type_IO
@@ -143,11 +155,14 @@
       use copy_interpolate_dest_IO
       use copy_interpolate_org_IO
 !
+      integer(kind = kint), intent(in) :: nnod_2, nnod_4_ele_2
+      real(kind = kreal), intent(in) :: xx_2(nnod_2,3)
+!
 !
       if(iflag_merge .eq. 0) return
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_merged_itp_course_to_fine'
-      call set_merged_itp_course_to_fine
+      call set_merged_itp_course_to_fine(nnod_2, nnod_4_ele_2, xx_2)
 !
       call allocate_itp_coef_dest
       call copy_itp_table_org_to_IO

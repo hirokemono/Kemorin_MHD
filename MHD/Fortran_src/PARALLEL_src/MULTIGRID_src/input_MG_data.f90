@@ -60,7 +60,7 @@
      &          MG_mesh(i_level)%mesh )
           else
             call set_nnod_surf_by_eletype(MG_surf_mesh(i_level),        &
-     &          MG_mesh(i_level)%mesh )
+     &          MG_mesh(i_level)%mesh%ele%nnod_4_ele)
           end if
 !
           if (iflag_MG_edge_file(i_level) .gt. 0) then
@@ -70,7 +70,7 @@
      &          MG_surf_mesh(i_level), MG_mesh(i_level)%mesh )
           else
             call set_nnod_edge_by_eletype(MG_edge_mesh(i_level),        &
-     &          MG_mesh(i_level)%mesh )
+     &          MG_mesh(i_level)%mesh%ele%nnod_4_ele)
           end if
 !
         else
@@ -175,8 +175,8 @@
       mesh_info%mesh%ele%first_ele_type = izero
       call allocate_ele_connect_type(mesh_info%mesh%ele)
 !
-      call set_nnod_surf_by_eletype(surf_mesh, mesh_info%mesh )
-      call set_nnod_edge_by_eletype(edge_mesh, mesh_info%mesh )
+      call set_nnod_surf_edge_for_type(surf_mesh, edge_mesh,            &
+     &    mesh_info%mesh%ele%nnod_4_ele)
 !
       end subroutine alloc_zero_mesh_data
 !

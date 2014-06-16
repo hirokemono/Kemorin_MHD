@@ -1,7 +1,7 @@
 !merge_refine_itp_table.f90
 !      module merge_refine_itp_table
 !
-!      subroutine set_merged_refine_data_org
+!      subroutine set_merged_refine_data_org(nnod_2, nnod_4_ele_2, xx_2)
 !      subroutine sort_merge_itp_table_refine
 !
       module merge_refine_itp_table
@@ -30,15 +30,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_merged_refine_data_org
+      subroutine set_merged_refine_data_org(nnod_2, nnod_4_ele_2, xx_2)
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_data
       use m_refine_flag_parameters
       use t_interpolate_tbl_org
       use copy_local_position_2_ele
       use modify_local_positions
+!
+      integer(kind = kint), intent(in) :: nnod_2, nnod_4_ele_2
+      real(kind = kreal), intent(in) :: xx_2(nnod_2,3)
 !
       integer(kind = kint) :: iele_org, inod_org, k1
       integer(kind = kint) :: iele_1st
@@ -88,7 +90,7 @@
      &                = c2f_2nd%tbl_org%itype_inter_org(inod_2nd)
 !
         else
-          x_target(1:3) = node_2nd%xx(inod_2nd,1:3)
+          x_target(1:3) = xx_2(inod_2nd,1:3)
           do k1 = 1, nnod_4_ele
             inod_org = ie_org(iele_org,k1)
             x_local_ele(k1,1:3) = xx_org(inod_org,1:3)
@@ -104,7 +106,7 @@
 !
 !
           call s_modify_local_positions(maxitr, eps_iter, xi_res,       &
-     &        x_target, ele_2nd%nnod_4_ele, x_local_ele, izero,         &
+     &        x_target, nnod_4_ele_2, x_local_ele, izero,               &
      &        differ_res, ierr_modify)
 !
           call set_interpolate_flag_by_xi(xi_res,                       &

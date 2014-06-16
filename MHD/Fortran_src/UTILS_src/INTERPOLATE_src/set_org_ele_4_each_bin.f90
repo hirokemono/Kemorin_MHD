@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!      subroutine s_count_num_org_ele_4_each_bin
-!      subroutine s_set_org_ele_4_each_bin
+!      subroutine s_count_num_org_ele_4_each_bin(new_node, new_ele)
+!      subroutine s_set_org_ele_4_each_bin(new_node, new_ele)
 !      subroutine s_set_bin_stack_4_org_ele
 !
       module set_org_ele_4_each_bin
@@ -22,12 +22,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_count_num_org_ele_4_each_bin
+      subroutine s_count_num_org_ele_4_each_bin(new_node, new_ele)
 !
-      use m_2nd_geometry_data
+      use t_geometry_data
 !
       use m_sphere_bin_4_table
       use m_data_4_interpolate_org
+!
+      type(node_data), intent(in) :: new_node
+      type(element_data), intent(in) :: new_ele
 !
       integer(kind = kint) :: ip, ist, ied, iele, itmp, ihash
       integer(kind = kint) :: jr_bin, jt_bin, jp_bin
@@ -39,11 +42,11 @@
 !$omp&  private(ist,ied,iele,ihash,jr_bin,jt_bin,jp_bin,                &
 !$omp&         isph_st,isph_ed,itmp,x_min,x_max)
       do ip = 1, np_smp
-        ist = ele_2nd%istack_ele_smp(ip-1) + 1
-        ied = ele_2nd%istack_ele_smp(ip)
+        ist = new_ele%istack_ele_smp(ip-1) + 1
+        ied = new_ele%istack_ele_smp(ip)
         do iele = ist, ied
 !
-          if (ele_2nd%ie(iele,1) .le. node_2nd%internal_node) then
+          if (new_ele%ie(iele,1) .le. new_node%internal_node) then
 !
             x_min(1:3) = min_sph_each_ele(iele,1:3)
             x_max(1:3) = max_sph_each_ele(iele,1:3)
@@ -72,12 +75,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_org_ele_4_each_bin
+      subroutine s_set_org_ele_4_each_bin(new_node, new_ele)
 !
-      use m_2nd_geometry_data
+      use t_geometry_data
 !
       use m_sphere_bin_4_table
       use m_data_4_interpolate_org
+!
+      type(node_data), intent(in) :: new_node
+      type(element_data), intent(in) :: new_ele
 !
       integer(kind = kint) :: ip, ist, ied, iele, i, j, ihash
       integer(kind = kint) :: jr_bin, jt_bin, jp_bin, itmp
@@ -91,11 +97,11 @@
 !$omp&  private(ist,ied,iele,ihash,jr_bin,jt_bin,jp_bin,                &
 !$omp&         isph_st,isph_ed,x_min,x_max,i,j,itmp)
       do ip = 1, np_smp
-        ist = ele_2nd%istack_ele_smp(ip-1) + 1
-        ied = ele_2nd%istack_ele_smp(ip)
+        ist = new_ele%istack_ele_smp(ip-1) + 1
+        ied = new_ele%istack_ele_smp(ip)
         do iele = ist, ied
 !
-          if (ele_2nd%ie(iele,1) .le. node_2nd%internal_node) then
+          if (new_ele%ie(iele,1) .le. new_node%internal_node) then
 !
             x_min(1:3) = min_sph_each_ele(iele,1:3)
             x_max(1:3) = max_sph_each_ele(iele,1:3)
@@ -131,7 +137,6 @@
 !
       subroutine s_set_bin_stack_4_org_ele
 !
-      use m_2nd_geometry_data
       use m_sphere_bin_4_table
       use m_data_4_interpolate_org
 !

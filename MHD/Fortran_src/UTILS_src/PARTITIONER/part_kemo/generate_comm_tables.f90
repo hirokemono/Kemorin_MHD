@@ -3,8 +3,10 @@
 !
 !     Written by H. Matsui on Sep., 2007
 !
-!      subroutine gen_all_import_tables(nprocs, work_f_head)
-!      subroutine gen_all_export_tables(nprocs, work_f_head)
+!      subroutine gen_all_import_tables(nprocs, work_f_head,            &
+!     &          new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
+!      subroutine gen_all_export_tables(nprocs, work_f_head,            &
+!     &          new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
 !
       module generate_comm_tables
 !
@@ -22,9 +24,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine gen_all_import_tables(nprocs, work_f_head)
+      subroutine gen_all_import_tables(nprocs, work_f_head,             &
+     &          new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
 !
-      use m_2nd_geometry_data
+      use t_comm_table
       use m_partitioner_comm_table
       use set_parallel_file_name
       use const_neighbour_domain
@@ -34,6 +37,10 @@
 !
       integer(kind = kint), intent(in) :: nprocs
       character(len=kchara), intent(in) :: work_f_head
+      type(communication_table), intent(inout) :: new_comm
+      type(communication_table), intent(inout) :: new_ele_comm
+      type(communication_table), intent(inout) :: new_surf_comm
+      type(communication_table), intent(inout) :: new_edge_comm
       integer(kind = kint) :: ip, my_rank
 !
 !
@@ -46,29 +53,35 @@
       do ip = 1, nprocs
         my_rank = ip - 1
 !
-        call count_neib_domain_by_node(ip, nprocs, comm_2nd%num_neib)
+        call count_neib_domain_by_node(ip, nprocs, new_comm%num_neib)
 !
-        call allocate_type_neib_id(comm_2nd)
-        call set_neib_domain_by_node(ip, nprocs, comm_2nd%num_neib, comm_2nd%id_neib)
+        call allocate_type_neib_id(new_comm)
+        call set_neib_domain_by_node                                    &
+     &      (ip, nprocs, new_comm%num_neib, new_comm%id_neib)
 !
-        ele_comm_2nd%num_neib = comm_2nd%num_neib
-        surf_comm_2nd%num_neib = comm_2nd%num_neib
-        edge_comm_2nd%num_neib = comm_2nd%num_neib
+        new_ele_comm%num_neib = new_comm%num_neib
+        new_surf_comm%num_neib = new_comm%num_neib
+        new_edge_comm%num_neib = new_comm%num_neib
 !
-        call allocate_type_neib_id(ele_comm_2nd)
-        call allocate_type_neib_id(surf_comm_2nd)
-        call allocate_type_neib_id(edge_comm_2nd)
+        call allocate_type_neib_id(new_ele_comm)
+        call allocate_type_neib_id(new_surf_comm)
+        call allocate_type_neib_id(new_edge_comm)
 !
-        ele_comm_2nd%id_neib(1:comm_2nd%num_neib) =  comm_2nd%id_neib(1:comm_2nd%num_neib)
-        surf_comm_2nd%id_neib(1:comm_2nd%num_neib) = comm_2nd%id_neib(1:comm_2nd%num_neib)
-        edge_comm_2nd%id_neib(1:comm_2nd%num_neib) = comm_2nd%id_neib(1:comm_2nd%num_neib)
+        new_ele_comm%id_neib(1:new_comm%num_neib)                       &
+     &        =  new_comm%id_neib(1:new_comm%num_neib)
+        new_surf_comm%id_neib(1:new_comm%num_neib)                      &
+     &        = new_comm%id_neib(1:new_comm%num_neib)
+        new_edge_comm%id_neib(1:new_comm%num_neib)                      &
+     &        = new_comm%id_neib(1:new_comm%num_neib)
 !
-        call write_neighboring_pes(ip)
+        call write_neighboring_pes(ip, new_comm)
 !C
 !C-- ASSEMBLE IMPORT pointers
 
-        call const_all_import_tbl_part(ip, nprocs)
-        call save_all_import_4_part(ip, work_f_head)
+        call const_all_import_tbl_part(ip, nprocs,                      &
+     &      new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
+        call save_all_import_4_part(ip, work_f_head,                    &
+     &      new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
 !
       end do
 !
@@ -78,9 +91,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine gen_all_export_tables(nprocs, work_f_head)
+      subroutine gen_all_export_tables(nprocs, work_f_head,             &
+     &          new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
 !
-      use m_2nd_geometry_data
+      use t_comm_table
       use m_partitioner_comm_table
       use set_parallel_file_name
       use set_local_by_subdomain_tbl
@@ -90,6 +104,11 @@
 !
       integer(kind = kint), intent(in) :: nprocs
       character(len=kchara), intent(in) :: work_f_head
+      type(communication_table), intent(inout) :: new_comm
+      type(communication_table), intent(inout) :: new_ele_comm
+      type(communication_table), intent(inout) :: new_surf_comm
+      type(communication_table), intent(inout) :: new_edge_comm
+!
       integer(kind = kint) :: ip
 !
 !C
@@ -106,34 +125,43 @@
         call set_local_surface_4_export(ip)
         call set_local_edge_4_export(ip)
 !
-        call load_all_import_4_part(ip, work_f_head)
+        call load_all_import_4_part(ip, work_f_head,                    &
+     &      new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
 !
-        call allocate_type_export_num(comm_2nd)
-        call allocate_type_export_num(ele_comm_2nd)
-        call allocate_type_export_num(surf_comm_2nd)
-        call allocate_type_export_num(edge_comm_2nd)
+        call allocate_type_export_num(new_comm)
+        call allocate_type_export_num(new_ele_comm)
+        call allocate_type_export_num(new_surf_comm)
+        call allocate_type_export_num(new_edge_comm)
 !
-        call count_all_export_item_4_part(ip, work_f_head)
-        call add_all_export_item_4_part(nprocs, ip, work_f_head)
+        call count_all_export_item_4_part(ip, work_f_head,              &
+     &          new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
+        call add_all_export_item_4_part(nprocs, ip, work_f_head,        &
+     &          new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
 !
-        call s_cal_total_and_stacks(comm_2nd%num_neib, comm_2nd%num_export,           &
-     &      izero, comm_2nd%istack_export, comm_2nd%ntot_export)
-        call s_cal_total_and_stacks(ele_comm_2nd%num_neib, ele_comm_2nd%num_export,   &
-     &      izero, ele_comm_2nd%istack_export, ele_comm_2nd%ntot_export)
         call s_cal_total_and_stacks                                     &
-     &     (surf_comm_2nd%num_neib, surf_comm_2nd%num_export,           &
-     &      izero, surf_comm_2nd%istack_export, surf_comm_2nd%ntot_export)
-        call s_cal_total_and_stacks(comm_2nd%num_neib, edge_comm_2nd%num_export, &
-     &      izero, edge_comm_2nd%istack_export, edge_comm_2nd%ntot_export)
+     &     (new_comm%num_neib, new_comm%num_export,                     &
+     &       izero, new_comm%istack_export, new_comm%ntot_export)
+        call s_cal_total_and_stacks                                     &
+     &     (new_ele_comm%num_neib, new_ele_comm%num_export, izero,      &
+     &      new_ele_comm%istack_export, new_ele_comm%ntot_export)
+        call s_cal_total_and_stacks                                     &
+     &     (new_surf_comm%num_neib, new_surf_comm%num_export,           &
+     &      izero, new_surf_comm%istack_export,                         &
+     &      new_surf_comm%ntot_export)
+        call s_cal_total_and_stacks                                     &
+     &     (new_comm%num_neib, new_edge_comm%num_export, izero,         &
+     &      new_edge_comm%istack_export, new_edge_comm%ntot_export)
 !
-        call allocate_type_export_item(comm_2nd)
-        call allocate_type_export_item(ele_comm_2nd)
-        call allocate_type_export_item(surf_comm_2nd)
-        call allocate_type_export_item(edge_comm_2nd)
+        call allocate_type_export_item(new_comm)
+        call allocate_type_export_item(new_ele_comm)
+        call allocate_type_export_item(new_surf_comm)
+        call allocate_type_export_item(new_edge_comm)
 !
-        call set_all_export_item_4_part(ip, work_f_head)
+        call set_all_export_item_4_part(ip, work_f_head,                &
+     &      new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
 !
-        call save_all_export_4_part(ip, work_f_head)
+        call save_all_export_4_part(ip, work_f_head,                    &
+     &      new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
       end do
 !
       end subroutine gen_all_export_tables

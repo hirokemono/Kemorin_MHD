@@ -3,11 +3,11 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!      subroutine write_node_import_to_work(id_file)
-!      subroutine write_node_export_to_work(id_file)
+!      subroutine write_node_import_to_work(id_file, new_comm)
+!      subroutine write_node_export_to_work(id_file, new_comm)
 !
-!      subroutine read_node_import_from_work(id_file)
-!      subroutine read_node_export_from_work(id_file)
+!      subroutine read_node_import_from_work(id_file, new_comm)
+!      subroutine read_node_export_from_work(id_file, new_comm)
 !
 !      subroutine read_node_import_num_tmp(id_file)
 !      subroutine read_node_import_item_tmp(id_file)
@@ -24,88 +24,95 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_node_import_to_work(id_file)
+      subroutine write_node_import_to_work(id_file, new_comm)
 !
-      use m_2nd_geometry_data
+      use t_comm_table
       use m_partitioner_comm_table
 !
       integer(kind = kint), intent(in) :: id_file
+      type(communication_table), intent(in) :: new_comm
 !
       rewind (id_file)
-      write (id_file) comm_2nd%num_neib
-      write (id_file) comm_2nd%id_neib(1:comm_2nd%num_neib)
-      write (id_file) comm_2nd%istack_import(1:comm_2nd%num_neib)
-      write (id_file) comm_2nd%item_import(1:comm_2nd%ntot_import)
+      write (id_file) new_comm%num_neib
+      write (id_file) new_comm%id_neib(1:new_comm%num_neib)
+      write (id_file) new_comm%istack_import(1:new_comm%num_neib)
+      write (id_file) new_comm%item_import(1:new_comm%ntot_import)
 !
       end subroutine write_node_import_to_work
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_node_export_to_work(id_file)
+      subroutine write_node_export_to_work(id_file, new_comm)
 !
-      use m_2nd_geometry_data
+      use t_comm_table
       use m_partitioner_comm_table
 !
       integer(kind = kint), intent(in) :: id_file
+      type(communication_table), intent(in) :: new_comm
 !
-      write (id_file) comm_2nd%istack_export(1:comm_2nd%num_neib)
-      write (id_file) comm_2nd%item_export(1:comm_2nd%ntot_export)
+      write (id_file) new_comm%istack_export(1:new_comm%num_neib)
+      write (id_file) new_comm%item_export(1:new_comm%ntot_export)
 !
       end subroutine write_node_export_to_work
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_node_import_from_work(id_file)
+      subroutine read_node_import_from_work(id_file, new_comm)
 !
-      use m_2nd_geometry_data
+      use t_comm_table
       use m_partitioner_comm_table
 !
       integer(kind = kint), intent(in) :: id_file
+      type(communication_table), intent(inout) :: new_comm
       integer(kind = kint) :: i
 !
       rewind (id_file)
-      read (id_file) comm_2nd%num_neib
+      read (id_file) new_comm%num_neib
 !
-      call allocate_type_neib_id(comm_2nd)
-      call allocate_type_import_num(comm_2nd)
+      call allocate_type_neib_id(new_comm)
+      call allocate_type_import_num(new_comm)
 !
-      read (id_file) comm_2nd%id_neib(1:comm_2nd%num_neib)
-      read (id_file) comm_2nd%istack_import(1:comm_2nd%num_neib)
+      read (id_file) new_comm%id_neib(1:new_comm%num_neib)
+      read (id_file) new_comm%istack_import(1:new_comm%num_neib)
 !
-      comm_2nd%ntot_import =      comm_2nd%istack_import(comm_2nd%num_neib)
-      call allocate_type_import_item(comm_2nd)
+      new_comm%ntot_import = new_comm%istack_import(new_comm%num_neib)
+      call allocate_type_import_item(new_comm)
 !
-      read (id_file) comm_2nd%item_import(1:comm_2nd%ntot_import)
+      read (id_file) new_comm%item_import(1:new_comm%ntot_import)
 !
-      do i = 1, comm_2nd%num_neib
-        comm_2nd%num_import(i) = comm_2nd%istack_import(i)    &
-     &                          - comm_2nd%istack_import(i-1)
+      do i = 1, new_comm%num_neib
+        new_comm%num_import(i)                                          &
+     &       = new_comm%istack_import(i) - new_comm%istack_import(i-1)
       end do
 !
       end subroutine read_node_import_from_work
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_node_export_from_work(id_file)
+      subroutine read_node_export_from_work(id_file, new_comm)
 !
-      use m_2nd_geometry_data
+      use t_comm_table
+!
       use m_partitioner_comm_table
+!
+      integer(kind = kint), intent(in) :: id_file
+      type(communication_table), intent(inout) :: new_comm
 !
       integer(kind = kint) :: i
 !
-      integer(kind = kint), intent(in) :: id_file
 !
-      call allocate_type_export_num(comm_2nd)
-      read (id_file) comm_2nd%istack_export(1:comm_2nd%num_neib)
+      call allocate_type_export_num(new_comm)
+      read (id_file) new_comm%istack_export(1:new_comm%num_neib)
 !
-      comm_2nd%ntot_export =      comm_2nd%istack_export(comm_2nd%num_neib)
-      call allocate_type_export_item(comm_2nd)
+      new_comm%ntot_export = new_comm%istack_export(new_comm%num_neib)
+      call allocate_type_export_item(new_comm)
 !
-      read (id_file) comm_2nd%item_export(1:comm_2nd%ntot_export)
+      read (id_file) new_comm%item_export(1:new_comm%ntot_export)
 !
-        do i = 1, comm_2nd%num_neib
-          comm_2nd%num_export(i) = comm_2nd%istack_export(i) - comm_2nd%istack_export(i-1)
+        do i = 1, new_comm%num_neib
+          new_comm%num_export(i)                                        &
+     &       = new_comm%istack_export(i) - new_comm%istack_export(i-1)
         end do
 !
       end subroutine read_node_export_from_work

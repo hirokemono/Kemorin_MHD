@@ -15,7 +15,17 @@
       use m_machine_parameter
       use m_t_step_parameter
 !
+      use t_mesh_data
+      use t_phys_data
+!
       implicit none
+!
+      type(mesh_data), save :: new_femmesh
+      type(surface_geometry), save :: new_surf_mesh
+      type(edge_geometry), save ::  new_edge_mesh
+!
+      type(phys_data), save :: new_phys
+!
 !
 ! ----------------------------------------------------------------------
 !
@@ -28,8 +38,6 @@
       use m_ctl_params_4_gen_table
       use m_geometry_parameter
       use m_node_phys_address
-      use m_2nd_geometry_data
-      use m_2nd_phys_data
 !
       use input_control_interpolate
       use const_mesh_info
@@ -49,7 +57,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
-      call s_input_control_interpolate(ierr)
+      call s_input_control_interpolate(new_femmesh,                     &
+     &    new_surf_mesh, new_edge_mesh, ierr)
 !
 !     --------------------- 
 !
@@ -66,8 +75,11 @@
 !     --------------------- 
 !
       if (my_rank .lt. ndomain_dest) then
-        call count_size_4_smp_mesh_type(node_2nd, ele_2nd)
-        if (i_debug.eq.iflag_full_msg) call check_smp_size_2nd(my_rank)
+        call count_size_4_smp_mesh_type                                 &
+     &     (new_femmesh%mesh%node, new_femmesh%mesh%ele)
+        if (i_debug.eq.iflag_full_msg) then
+          call check_smp_size_type(my_rank, new_femmesh%mesh)
+        end if
       end if
 !
 !     --------------------- 
@@ -85,10 +97,10 @@
       call initialize_nod_field_data
 !
       if (iflag_debug.eq.1) write(*,*) 'link_nodal_fld_type_names'
-      call link_nodal_fld_type_names(phys_2nd)
+      call link_nodal_fld_type_names(new_phys)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data_type'
-      call alloc_phys_data_type(node_2nd%numnod, phys_2nd)
+      call alloc_phys_data_type(new_femmesh%mesh%node%numnod, new_phys)
 !
 !     --------------------- 
 !
@@ -109,10 +121,10 @@
       use field_IO_select
       use set_parallel_file_name
       use copy_time_steps_4_restart
-      use interpolate_nodal_field
       use nod_phys_send_recv
       use set_field_to_restart
-      use set_field_type_for_restart
+      use set_field_type_to_restart
+      use interpolate_nod_field_2_type
 !
       integer(kind = kint) :: i_step
 !
@@ -143,12 +155,13 @@
      &      CALYPSO_COMM, ierr_MPI)
 !
         if (iflag_debug.gt.0)  write(*,*) 's_interpolate_nodal_data'
-        call interpolate_nodal_data
+        call interpolate_nodal_data(new_femmesh%mesh%nod_comm,          &
+     &      new_femmesh%mesh%node, new_phys)
 !
         if (my_rank .lt. ndomain_dest) then
-          numgrid_phys_IO = node_2nd%numnod
+          numgrid_phys_IO = new_femmesh%mesh%node%numnod
           call allocate_phys_data_IO
-          call copy_field_type_to_rst(node_2nd, phys_2nd)
+          call copy_field_type_to_rst(new_femmesh%mesh%node, new_phys)
           call copy_time_steps_to_restart
 !
           iflag_field_data_fmt = ifmt_itp_rst_file

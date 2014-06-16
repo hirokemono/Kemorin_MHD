@@ -3,12 +3,13 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!      subroutine local_fem_mesh(my_rank, nprocs,                       &
-!     &          num_domain, work_f_head)
+!      subroutine local_fem_mesh                                        &
+!     &         (my_rank, nprocs, work_f_head, new_fem)
 !
       module local_mesh_by_part
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -18,10 +19,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine local_fem_mesh(my_rank, nprocs, work_f_head)
+      subroutine local_fem_mesh                                         &
+     &         (my_rank, nprocs, work_f_head, new_fem)
 !
-      use m_constants
-      use m_2nd_geometry_data
+      use t_mesh_data
       use m_partitioner_comm_table
       use m_ctl_param_partitioner
       use m_read_mesh_data
@@ -41,6 +42,8 @@
       integer(kind = kint), intent(in) :: my_rank, nprocs
       character(len=kchara), intent(in) :: work_f_head
 !
+      type(mesh_data), intent(inout) :: new_fem
+!
       integer(kind=kint) :: ip, i
       integer(kind=kint) :: irank_subdomain
 
@@ -56,25 +59,27 @@
 !C | load communication table |
 !C +--------------------------+
 !C===
-        call load_node_comm_tbl_4_part(ip, work_f_head)
+        call load_node_comm_tbl_4_part                                  &
+     &     (ip, work_f_head, new_fem%mesh%nod_comm)
 !C
 !C +-----------------+
 !C | LOCAL NUMBERING |
 !C +-----------------+
 !C===
-        do i = 1, comm_2nd%num_neib
-          comm_2nd%id_neib(i) = comm_2nd%id_neib(i) - 1
+        do i = 1, new_fem%mesh%nod_comm%num_neib
+          new_fem%mesh%nod_comm%id_neib(i)                              &
+     &        = new_fem%mesh%nod_comm%id_neib(i) - 1
         end do
 
-        call s_const_local_meshes(ip)
-        call set_local_connectivity_4_ele(ele_2nd)
-        call s_const_local_groups
+        call s_const_local_meshes(ip, new_fem%mesh)
+        call set_local_connectivity_4_ele(new_fem%mesh%ele)
+        call s_const_local_groups(new_fem%group)
 !C
 !C +-------------------------+
 !C | write FINAL LOCAL files |
 !C +-------------------------+
 !C===
-        call output_local_mesh(irank_subdomain)
+        call output_local_mesh(irank_subdomain, new_fem)
       end do
 !
 !C===

@@ -8,6 +8,8 @@
 !      subroutine count_size_4_smp_mesh_type(nod, ele)
 !        type(node_data),    intent(inout) :: nod
 !        type(element_data), intent(inout) :: ele
+!      subroutine count_ele_4_smp_mesh_type(ele)
+!        type(element_data), intent(inout) :: ele
 !      subroutine count_surf_size_smp_type(surf)
 !        type(surface_data), intent(inout) :: surf
 !      subroutine count_edge_size_smp_type(edge)
@@ -55,7 +57,6 @@
 !
 !
       call allocate_node_param_smp_type(nod)
-      call allocate_ele_param_smp_type(ele)
 !
       call count_number_4_smp( np_smp, ione, nod%numnod,                &
      &    nod%istack_nod_smp, nod%max_nod_smp )
@@ -63,10 +64,26 @@
       call count_number_4_smp( np_smp, ione, nod%internal_node,         &
      &    nod%istack_internal_smp, nod%max_internal_nod_smp )
 !
+      call count_ele_4_smp_mesh_type(ele)
+!
+      end subroutine count_size_4_smp_mesh_type
+!
+!-----------------------------------------------------------------------
+!
+      subroutine count_ele_4_smp_mesh_type(ele)
+!
+      use t_geometry_data
+      use cal_minmax_and_stacks
+!
+      type(element_data), intent(inout) :: ele
+!
+!
+      call allocate_ele_param_smp_type(ele)
+!
       call count_number_4_smp( np_smp, ione, ele%numele,                &
      &    ele%istack_ele_smp, ele%max_ele_smp )
 !
-      end subroutine count_size_4_smp_mesh_type
+      end subroutine count_ele_4_smp_mesh_type
 !
 !-----------------------------------------------------------------------
 !

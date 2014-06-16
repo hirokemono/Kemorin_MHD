@@ -1,9 +1,13 @@
 !
 !      module const_cutshell_mesh
 !
+!       subroutine s_const_reduced_geometry
+!
       module const_cutshell_mesh
 !
       use m_precision
+!
+      use t_mesh_data
 !
       use m_cutshell_nod_ele_flag
       use set_cutshell_node_data
@@ -23,27 +27,28 @@
       private :: select_northern_hemisphere, select_cut_shell
       private :: select_spherical_shell, select_hemispherical_shell
 !
-!       subroutine s_const_reduced_geometry
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_const_reduced_geometry
+      subroutine s_const_reduced_geometry(newmesh, new_group)
+!
+      type(mesh_geometry), intent(inout) :: newmesh
+      type(mesh_groups), intent(inout) :: new_group
 !
 !
       call allocate_trans_table
 !
       if      (iflag_reduce_type .eq. 1) then
-         call select_northern_hemisphere
+         call select_northern_hemisphere(newmesh, new_group)
       else if (iflag_reduce_type .eq. 2) then
-         call select_cut_shell
+         call select_cut_shell(newmesh, new_group)
       else if (iflag_reduce_type .eq. 3) then
-         call select_spherical_shell
+         call select_spherical_shell(newmesh, new_group)
       else if (iflag_reduce_type .eq. 4) then
-         call select_hemispherical_shell
+         call select_hemispherical_shell(newmesh, new_group)
       end if
 !
 !      call check_trans_table
@@ -55,62 +60,74 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-       subroutine select_northern_hemisphere
+       subroutine select_northern_hemisphere(newmesh, new_group)
+!
+      type(mesh_geometry), intent(inout) :: newmesh
+      type(mesh_groups), intent(inout) :: new_group
 !
 !
-      call set_new_node_4_hemi
+      call set_new_node_4_hemi(newmesh%node)
 !
-      call s_set_new_elements
+      call s_set_new_elements(newmesh%ele)
 !
-      call s_set_new_node_grp_4_hemi
-      call s_set_new_element_grp
-      call s_set_new_surface_grp_4_hemi
+      call s_set_new_node_grp_4_hemi(newmesh%node, new_group%nod_grp)
+      call s_set_new_element_grp(new_group%ele_grp)
+      call s_set_new_surface_grp_4_hemi(newmesh, new_group%surf_grp)
 !
       end subroutine select_northern_hemisphere
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine select_cut_shell
+       subroutine select_cut_shell(newmesh, new_group)
+!
+      type(mesh_geometry), intent(inout) :: newmesh
+      type(mesh_groups), intent(inout) :: new_group
 !
 !
-      call set_new_node_4_cut_shell
+      call set_new_node_4_cut_shell(newmesh%node)
 !
-      call s_set_new_elements
+      call s_set_new_elements(newmesh%ele)
 !
-      call s_set_new_node_grp
-      call s_set_new_element_grp
-      call s_set_new_surface_grp
+      call s_set_new_node_grp(new_group%nod_grp)
+      call s_set_new_element_grp(new_group%ele_grp)
+      call s_set_new_surface_grp(new_group%surf_grp)
 !
       end subroutine select_cut_shell
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-       subroutine select_spherical_shell
+       subroutine select_spherical_shell(newmesh, new_group)
+!
+      type(mesh_geometry), intent(inout) :: newmesh
+      type(mesh_groups), intent(inout) :: new_group
 !
 !
-      call set_new_node_outer_core
+      call set_new_node_outer_core(newmesh%node)
 !
-      call s_set_new_elements
+      call s_set_new_elements(newmesh%ele)
 !
-      call s_set_new_node_grp
-      call s_set_new_element_grp
-      call s_set_new_surface_grp
+      call s_set_new_node_grp(new_group%nod_grp)
+      call s_set_new_element_grp(new_group%ele_grp)
+      call s_set_new_surface_grp(new_group%surf_grp)
 !
       end subroutine select_spherical_shell
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine select_hemispherical_shell
+       subroutine select_hemispherical_shell(newmesh, new_group)
+!
+      type(mesh_geometry), intent(inout) :: newmesh
+      type(mesh_groups), intent(inout) :: new_group
 !
 !
-      call set_new_node_hemi_o_core
+      call set_new_node_hemi_o_core(newmesh%node)
 !
-      call s_set_new_elements
+      call s_set_new_elements(newmesh%ele)
 !
-      call s_set_new_node_grp_4_hemi
-      call s_set_new_element_grp
-      call s_set_new_surface_grp_4_hemi
+      call s_set_new_node_grp_4_hemi(newmesh%node, new_group%nod_grp)
+      call s_set_new_element_grp(new_group%ele_grp)
+      call s_set_new_surface_grp_4_hemi(newmesh, new_group%surf_grp)
 !
       end subroutine select_hemispherical_shell
 !

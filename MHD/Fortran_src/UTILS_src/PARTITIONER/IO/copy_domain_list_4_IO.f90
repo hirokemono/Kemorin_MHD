@@ -61,22 +61,25 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine copy_finer_domain_list_from_IO
+      subroutine copy_finer_domain_list_from_IO(new_node)
 !
-      use m_2nd_geometry_data
+      use t_geometry_data
 !
-      if(nnod_group_IO .ne. node_2nd%numnod) stop 'check number of node'
+      type(node_data), intent(inout) :: new_node
 !
-      if(internod_group_IO .ne. node_2nd%internal_node) then
+!
+      if(nnod_group_IO .ne. new_node%numnod) stop 'check number of node'
+!
+      if(internod_group_IO .ne. new_node%internal_node) then
         stop 'check number of internal node'
       end if
 !
       num_domain = nproc_group_IO
-      nnod_group_finer = node_2nd%numnod
+      nnod_group_finer = new_node%numnod
       call allocate_finer_domain_group
 !
-      IGROUP_FINER(1:node_2nd%internal_node)                            &
-     &      = IGROUP_IO(1:node_2nd%internal_node)
+      IGROUP_FINER(1:new_node%internal_node)                            &
+     &      = IGROUP_IO(1:new_node%internal_node)
 !
       call deallocate_domain_group_IO
 !

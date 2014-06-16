@@ -83,19 +83,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine coord_transfer_4_2nd_field
+      subroutine coord_transfer_4_2nd_field(nnod_2, phys_2nd)
 !
       use m_ctl_params_4_diff_udt
-      use m_2nd_geometry_data
-      use m_2nd_phys_data
+      use t_phys_data
+!
+      integer(kind = kint), intent(in) :: nnod_2
+      type(phys_data), intent(in) :: phys_2nd
 !
 !
       if     (iflag_correlate_coord .eq. iflag_spherical) then
-        call transfer_nod_fld_to_sph(node_2nd%numnod, phys_2nd%num_phys, &
+        call transfer_nod_fld_to_sph(nnod_2, phys_2nd%num_phys,         &
      &      phys_2nd%ntot_phys, phys_2nd%istack_component,              &
      &      phys_2nd%d_fld)
       else if(iflag_correlate_coord .eq. iflag_cylindrical) then
-        call transfer_nod_fld_to_cyl(node_2nd%numnod, phys_2nd%num_phys,  &
+        call transfer_nod_fld_to_cyl(nnod_2, phys_2nd%num_phys,         &
      &      phys_2nd%ntot_phys, phys_2nd%istack_component,              &
      &      phys_2nd%d_fld)
       end if
@@ -105,13 +107,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_ref_component_to_2nd_fld
+      subroutine copy_ref_component_to_2nd_fld(phys_2nd)
 !
       use m_ctl_params_4_diff_udt
       use m_node_phys_data
-      use m_2nd_geometry_data
-      use m_2nd_phys_data
+      use t_phys_data
 !
+      type(phys_data), intent(in) :: phys_2nd
       integer(kind = kint) :: inod, nd
 !
 !

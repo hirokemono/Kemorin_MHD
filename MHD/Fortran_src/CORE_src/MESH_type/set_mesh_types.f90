@@ -10,7 +10,7 @@
 !       type(mesh_geometry), intent(inout) :: mesh
 !
 !      subroutine set_ele_comm_tbl_type_data(ele_mesh)
-!        type(elemens_comms) :: ele_mesh
+!        type(element_comms) :: ele_mesh
 !      subroutine set_surf_connect_type_data(surf_mesh, mesh)
 !        type(mesh_geometry), intent(in) ::    mesh
 !        type(surface_geometry), intent(inout) :: surf_mesh
@@ -19,11 +19,13 @@
 !        type(surface_geometry), intent(in) ::  surf_mesh
 !        type(edge_geometry), intent(inout) ::  edge_mesh
 !
-!      subroutine set_nnod_surf_by_eletype(surf_mesh, mesh)
-!        type(mesh_geometry), intent(in) ::    mesh
+!      subroutine set_nnod_surf_edge_for_type(surf_mesh, edge_mesh,     &
+!     &          nnod_4_ele)
+!      subroutine set_nnod_surf_by_eletype(surf_mesh, nnod_4_ele)
+!        integer(kind = kint), intent(in) :: nnod_4_ele
 !        type(surface_geometry), intent(inout) :: surf_mesh
-!      subroutine set_nnod_edge_by_eletype(edge_mesh, mesh)
-!        type(mesh_geometry), intent(in) :: mesh
+!      subroutine set_nnod_edge_by_eletype(edge_mesh, nnod_4_ele)
+!        integer(kind = kint), intent(in) :: nnod_4_ele
 !        type(edge_geometry), intent(inout) ::  edge_mesh
 !
       module set_mesh_types
@@ -33,8 +35,6 @@
       use t_mesh_data
 !
       implicit none
-!
-      private :: set_geometry_types_data
 !
 !  ---------------------------------------------------------------------
 !
@@ -80,7 +80,7 @@
 !
       use set_comm_tbl_type_4_IO
 !
-      type(elemens_comms) :: ele_mesh
+      type(element_comms) :: ele_mesh
 !
       call copy_comm_tbl_type_from_IO(ele_mesh%ele_comm)
 !
@@ -127,21 +127,40 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_nnod_surf_by_eletype(surf_mesh, mesh)
+      subroutine set_nnod_surf_edge_for_type(surf_mesh, edge_mesh,      &
+     &          nnod_4_ele)
+!
+      use t_surface_data
+      use t_edge_data
+!
+!
+      integer(kind = kint), intent(in) :: nnod_4_ele
+      type(surface_geometry), intent(inout) :: surf_mesh
+      type(edge_geometry), intent(inout) ::  edge_mesh
+!
+!
+      call set_nnod_surf_by_eletype(surf_mesh, nnod_4_ele)
+      call set_nnod_edge_by_eletype(edge_mesh, nnod_4_ele)
+!
+      end subroutine set_nnod_surf_edge_for_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_nnod_surf_by_eletype(surf_mesh, nnod_4_ele)
 !
       use t_surface_data
       use m_geometry_constants
 !
 !
-      type(mesh_geometry), intent(in) ::    mesh
+      integer(kind = kint), intent(in) :: nnod_4_ele
       type(surface_geometry), intent(inout) :: surf_mesh
 !
 !
-      if      (mesh%ele%nnod_4_ele .eq. num_t_quad) then
+      if      (nnod_4_ele .eq. num_t_quad) then
         surf_mesh%surf%nnod_4_surf = num_quad_sf
-      else if (mesh%ele%nnod_4_ele .eq. num_t_linear) then
+      else if (nnod_4_ele .eq. num_t_linear) then
         surf_mesh%surf%nnod_4_surf = num_linear_sf
-      else if (mesh%ele%nnod_4_ele .eq. num_t_lag) then
+      else if (nnod_4_ele .eq. num_t_lag) then
         surf_mesh%surf%nnod_4_surf = num_lag_sf
       end if
 !
@@ -149,20 +168,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_nnod_edge_by_eletype(edge_mesh, mesh)
+      subroutine set_nnod_edge_by_eletype(edge_mesh, nnod_4_ele)
 !
       use t_edge_data
       use m_geometry_constants
 !
-      type(mesh_geometry), intent(in) :: mesh
+      integer(kind = kint), intent(in) :: nnod_4_ele
       type(edge_geometry), intent(inout) ::  edge_mesh
 !
 !
-      if      (mesh%ele%nnod_4_ele .eq. num_t_quad) then
+      if      (nnod_4_ele .eq. num_t_quad) then
         edge_mesh%edge%nnod_4_edge = num_quad_edge
-      else if (mesh%ele%nnod_4_ele .eq. num_t_linear) then
+      else if (nnod_4_ele .eq. num_t_linear) then
         edge_mesh%edge%nnod_4_edge = num_linear_edge
-      else if (mesh%ele%nnod_4_ele .eq. num_t_lag) then
+      else if (nnod_4_ele .eq. num_t_lag) then
         edge_mesh%edge%nnod_4_edge = num_quad_edge
       end if
 !

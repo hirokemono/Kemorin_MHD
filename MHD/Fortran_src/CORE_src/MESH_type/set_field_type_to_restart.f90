@@ -1,5 +1,5 @@
-!set_field_type_for_restart.f90
-!     module set_field_type_for_restart
+!set_field_type_to_restart.f90
+!     module set_field_type_to_restart
 !
 !      subroutine count_field_type_num_to_rst(phys)
 !      subroutine copy_field_type_name_to_rst(node, phys)
@@ -7,7 +7,7 @@
 !      subroutine copy_field_type_from_rst(node, phys)
 !
 !
-      module set_field_type_for_restart
+      module set_field_type_to_restart
 !
       use m_precision
 !
@@ -84,4 +84,4 @@
 !
 !------------------------------------------------------------------
 !
-      end module set_field_type_for_restart
+      end module set_field_type_to_restart

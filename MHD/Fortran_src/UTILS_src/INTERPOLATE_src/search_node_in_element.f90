@@ -3,11 +3,13 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!      subroutine search_node_in_element_1st(my_rank, ilevel)
+!      subroutine search_node_in_element_1st(my_rank, new_node, new_ele)
 !      subroutine search_node_in_element_2nd(my_rank, i_sleeve,         &
-!     &          error_level)
-!      subroutine search_node_in_all_element(my_rank_2nd, error_level)
-!      subroutine giveup_to_search_element(my_rank_2nd, error_level)
+!     &          error_level, new_node, new_ele)
+!      subroutine search_node_in_all_element(my_rank_2nd, error_level   &
+!     &          new_node, new_ele)
+!      subroutine giveup_to_search_element(my_rank_2nd, error_level,    &
+!     &          new_node, new_ele)
 !
       module search_node_in_element
 !
@@ -23,6 +25,8 @@
       use m_data_4_interpolate_org
       use cal_interpolate_coefs
 !
+      use t_geometry_data
+!
       implicit none
 !
       integer(kind = kint) :: iflag_org_tmp
@@ -34,9 +38,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine search_node_in_element_1st(my_rank)
+      subroutine search_node_in_element_1st(my_rank, new_node, new_ele)
 !
       integer(kind = kint), intent(in) :: my_rank
+!
+      type(node_data), intent(in) :: new_node
+      type(element_data), intent(in) :: new_ele
+!
       integer(kind = kint) :: ip, ist, ied, inod, iflag
       integer(kind = kint) :: ihash, jst, jed, jnum, jele
       integer(kind = kint), parameter :: iflag_nomessage = 0
@@ -71,7 +79,8 @@
      &         .and. longitude(inod)  .le. max_sph_each_ele(jele,3)     &
      &              ) then
 !
-                 call s_cal_interpolate_coefs(my_rank, inod, jele,   &
+                 call s_cal_interpolate_coefs                           &
+     &              (new_node, new_ele, my_rank, inod, jele,            &
      &               zero, iflag_nomessage, iflag_org_tmp)
                  if ( iflag_org_domain(inod) .gt. 0) go to 10
                end if
@@ -88,12 +97,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine search_node_in_element_2nd(my_rank, i_sleeve,          &
-     &          error_level)
-!
-      use m_2nd_geometry_data
+     &          error_level, new_node, new_ele)
 !
       integer(kind = kint), intent(in) :: my_rank, i_sleeve
       real(kind = kreal), intent(in) :: error_level
+!
+      type(node_data), intent(in) :: new_node
+      type(element_data), intent(in) :: new_ele
+!
       integer(kind = kint) :: ip, ist, ied, inod
       integer(kind = kint) :: ihash, ihash_r, ihash_t, ihash_p
       integer(kind = kint) :: jst, jed, jnum, jele
@@ -132,7 +143,8 @@
                     do jnum = jst, jed
 !
                       jele = iele_in_bin(jnum)
-                      call s_cal_interpolate_coefs(my_rank,             &
+                      call s_cal_interpolate_coefs                      &
+     &                   (new_node, new_ele, my_rank,                   &
      &                    inod, jele, error_level, iflag_nomessage,     &
      &                    iflag_org_tmp)
                       if ( iflag_org_domain(inod) .gt. 0) go to 10
@@ -153,12 +165,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine search_node_in_all_element(my_rank_2nd, error_level)
-!
-      use m_2nd_geometry_data
+      subroutine search_node_in_all_element(my_rank_2nd, error_level,   &
+     &          new_node, new_ele)
 !
       integer(kind = kint), intent(in) :: my_rank_2nd
       real(kind = kreal), intent(in) :: error_level
+!
+      type(node_data), intent(in) :: new_node
+      type(element_data), intent(in) :: new_ele
 !
       integer(kind = kint) :: ip, ist, ied, inod, jele
       integer(kind = kint), parameter :: iflag_message = 1
@@ -175,9 +189,10 @@
 !
             differ_tmp = 1.0d20
             iflag_org_tmp = 0
-            do jele = 1, ele_2nd%numele
+            do jele = 1, new_ele%numele
 !
-              call s_cal_interpolate_coefs(my_rank_2nd, inod, jele,     &
+              call s_cal_interpolate_coefs                              &
+     &           (new_node, new_ele, my_rank_2nd, inod, jele,           &
      &            error_level, iflag_message, iflag_org_tmp)
               if ( iflag_org_domain(inod) .gt. 0) go to  10
             end do
@@ -192,12 +207,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine giveup_to_search_element(my_rank_2nd, error_level)
-!
-      use m_2nd_geometry_data
+      subroutine giveup_to_search_element(my_rank_2nd, error_level,     &
+     &          new_node, new_ele)
 !
       integer(kind = kint), intent(in) :: my_rank_2nd
       real(kind = kreal), intent(in) :: error_level
+!
+      type(node_data), intent(in) :: new_node
+      type(element_data), intent(in) :: new_ele
 !
       integer(kind = kint) :: ip, ist, ied, inod, jele
       integer(kind = kint), parameter :: iflag_message = 1
@@ -214,9 +231,10 @@
 !
             differ_tmp = 1.0d20
             iflag_org_tmp = 0
-            do jele = 1, ele_2nd%numele
+            do jele = 1, new_ele%numele
 !
-              call s_cal_interpolate_coefs(my_rank_2nd, inod, jele,     &
+              call s_cal_interpolate_coefs                              &
+      &          (new_node, new_ele, my_rank_2nd, inod, jele,           &
      &            error_level, iflag_message, iflag_org_tmp)
               if ( iflag_org_domain(inod) .gt. 0) go to  10
             end do

@@ -1,7 +1,8 @@
 !set_merged_refine_itp.f90
 !      module set_merged_refine_itp
 !
-!      subroutine set_merged_itp_course_to_fine
+!      subroutine set_merged_itp_course_to_fine                         &
+!     &          (nnod_2, nnod_4_ele_2, xx_2)
 !      subroutine set_merged_itp_fine_to_course
 !
       module set_merged_refine_itp
@@ -22,20 +23,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_merged_itp_course_to_fine
+      subroutine set_merged_itp_course_to_fine                          &
+     &          (nnod_2, nnod_4_ele_2, xx_2)
 !
       use t_interpolate_tbl_org
       use set_refine_interpolate_tbl
       use merge_refine_itp_table
 !
+      integer(kind = kint), intent(in) :: nnod_2, nnod_4_ele_2
+      real(kind = kreal), intent(in) :: xx_2(nnod_2,3)
+!
 !
       write(*,*) 'set_merged_refine_data_org'
-      call set_merged_refine_data_org
+      call set_merged_refine_data_org(nnod_2, nnod_4_ele_2, xx_2)
       write(*,*) 'set_itp_course_to_fine_dest'
-      call set_itp_course_to_fine_dest
+      call set_itp_course_to_fine_dest(nnod_2)
 !
       write(*,*) 'copy_merge_itp_table_refine'
-      call copy_merge_itp_table_refine
+      call copy_merge_itp_table_refine(nnod_2, nnod_4_ele_2, xx_2)
 !
       call dealloc_type_itp_table_org(c2f_mgd%tbl_org)
       call dealloc_type_itp_num_org(c2f_mgd%tbl_org)
@@ -44,10 +49,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_merge_itp_table_refine
+      subroutine copy_merge_itp_table_refine                            &
+     &         (nnod_2, nnod_4_ele_2, xx_2)
 !
       use m_interpolate_table_orgin
       use merge_refine_itp_table
+!
+      integer(kind = kint), intent(in) :: nnod_2, nnod_4_ele_2
+      real(kind = kreal), intent(in) :: xx_2(nnod_2,3)
 !
 !
       num_dest_domain =     c2f_mgd%tbl_org%num_dest_domain
@@ -64,7 +73,7 @@
 !
       istack_itp_type_org(0) = izero
 !
-      call set_merged_refine_data_org
+      call set_merged_refine_data_org(nnod_2, nnod_4_ele_2, xx_2)
 !
       end subroutine copy_merge_itp_table_refine
 !

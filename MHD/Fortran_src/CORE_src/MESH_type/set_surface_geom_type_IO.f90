@@ -35,7 +35,7 @@
       use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: nele
-      type(surface_data), intent(inout) :: surf
+      type(surface_data), intent(in) :: surf
       integer(kind = kint) :: isurf, iele
 !
 !

@@ -4,13 +4,9 @@
 !      Written by H. Matsui on Apr., 2006
 !
 !      subroutine generate_linear_nod_by_quad_t(mesh_q, surf_q, mesh_l)
-!        Substitution of  generate_2nd_nod_on_surf
 !      subroutine connect_quad_type_2_linear_t(mesh_q, surf_q, mesh_l)
-!        Substitution of connect_quad_4_sim_2_linear_2nd
 !      subroutine connect_lag_type_2_linear_t(mesh_q, mesh_l)
-!        Substitution of connect_lag_4_sim_2_linear_2nd
 !      subroutine gen_linear_grp_type_by_t(group_q, group_l)
-!        Substitution of generate_2nd_linear_group
 !
 !      subroutine set_internal_list_4_ltype_20t(mesh_q, surf_q,         &
 !     &          mesh_l, surf_l, edge_l)
@@ -18,13 +14,10 @@
 !     &          mesh_l, surf_l, edge_l)
 !
 !      subroutine init_linear_phys_type(mesh_l, nod_fld_q, nod_fld_l)
-!        Substitution of init_2nd_data_on_surf
 !      subroutine copy_nod_phys_t_2_linear_t(mesh_q, nod_fld_q,         &
 !     &          mesh_l, nod_fld_l)
-!        Substitution of copy_2nd_data_on_vertex
 !      subroutine generate_phys_t_on_sf_t(mesh_q, surf_q,               &
 !     &          mesh_l, nod_fld_l)
-!        Substitution of generate_2nd_data_on_surf
 !
       module cvt_quad_t_2_linear_t
 !

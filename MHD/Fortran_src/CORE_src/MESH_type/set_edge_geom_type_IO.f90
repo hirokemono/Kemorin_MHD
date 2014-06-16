@@ -32,7 +32,7 @@
       use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: nele, nsurf
-      type(edge_data), intent(inout) :: edge
+      type(edge_data), intent(in) :: edge
 !
       integer(kind = kint) :: iele, isurf, iedge
 !

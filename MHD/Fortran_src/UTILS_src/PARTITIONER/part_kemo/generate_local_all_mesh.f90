@@ -3,7 +3,8 @@
 !
 !      Written by H. Matsui on Aug., 2007
 !
-!      subroutine const_communication_table
+!      subroutine const_communication_table(new_fem,                    &
+!     &          new_ele_mesh, new_surf_mesh, new_edge_mesh)
 !
       module generate_local_all_mesh
 !
@@ -17,8 +18,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_communication_table
+      subroutine const_communication_table(new_fem,                     &
+     &          new_ele_mesh, new_surf_mesh, new_edge_mesh)
 !
+      use t_mesh_data
       use m_constants
       use m_geometry_parameter
       use m_geometry_data
@@ -33,6 +36,12 @@
       use generate_comm_tables
       use local_data_by_part
       use const_mesh_info
+!
+      type(mesh_data), intent(inout) :: new_fem
+!
+      type(element_comms), intent(inout) ::    new_ele_mesh
+      type(surface_geometry), intent(inout) :: new_surf_mesh
+      type(edge_geometry), intent(inout) ::    new_edge_mesh
 !
       character(len=kchara), parameter :: work_file_header = 'work'
 !C
@@ -63,16 +72,23 @@
 !C +---------------------------------------+
 !C===
 !
-      call gen_all_import_tables(num_domain, work_file_header)
+      call gen_all_import_tables(num_domain, work_file_header,          &
+     &    new_fem%mesh%nod_comm, new_ele_mesh%ele_comm,                 &
+     &    new_surf_mesh%surf_comm, new_edge_mesh%edge_comm)
 !C
 !C +-------------------------------+
 !C | update FILE : EXPORT pointers |
 !C +-------------------------------+
 !C===
-      call gen_all_export_tables(num_domain, work_file_header)
+      call gen_all_export_tables(num_domain, work_file_header,          &
+     &    new_fem%mesh%nod_comm, new_ele_mesh%ele_comm,                 &
+     &    new_surf_mesh%surf_comm, new_edge_mesh%edge_comm)
 !C
 !C-- distributed Local DATA
-      call local_mesh_surf_edge(izero, ione, work_file_header)
+      call local_mesh_surf_edge                                         &
+     &    (izero, ione, work_file_header, new_fem,                      &
+     &     new_ele_mesh, new_surf_mesh, new_edge_mesh)
+!
 !C
 !C-- Finalize
 !

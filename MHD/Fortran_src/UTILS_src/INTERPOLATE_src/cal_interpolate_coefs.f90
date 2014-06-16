@@ -3,12 +3,14 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!      subroutine allocate_work_4_interpolate
+!      subroutine allocate_work_4_interpolate(nnod_4_ele_2)
 !      subroutine deallocate_work_4_interpolate
 !
-!      subroutine s_cal_interpolate_coefs(my_rank_org, inod, jele,      &
-!     &          error_level, iflag_message)
-!      subroutine check_interpolation(id_file, my_rank_org)
+!      subroutine s_cal_interpolate_coefs(new_node, new_ele,            &
+!     &          my_rank_org, inod, jele, error_level, iflag_message,   &
+!     &          iflag_org_tmp)
+!      subroutine check_interpolation                                   &
+!     &         (new_node, new_ele, id_file, my_rank_org)
 !
       module cal_interpolate_coefs
 !
@@ -28,12 +30,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_work_4_interpolate
+      subroutine allocate_work_4_interpolate(nnod_4_ele_2)
 !
-      use m_2nd_geometry_data
+      integer(kind = kint), intent(in) :: nnod_4_ele_2
 !
-      allocate( coefs_by_tet(ele_2nd%nnod_4_ele) )
-      allocate( x_local_ele(ele_2nd%nnod_4_ele,3) )
+      allocate( coefs_by_tet(nnod_4_ele_2) )
+      allocate( x_local_ele(nnod_4_ele_2,3) )
 !
       coefs_by_tet = 0.0d0
       x_local_ele = 0.0d0
@@ -51,18 +53,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_interpolate_coefs(my_rank_org, inod, jele,       &
-     &          error_level, iflag_message, iflag_org_tmp)
+      subroutine s_cal_interpolate_coefs(new_node, new_ele,             &
+     &          my_rank_org, inod, jele, error_level, iflag_message,    &
+     &          iflag_org_tmp)
 !
       use m_ctl_params_4_gen_table
       use calypso_mpi
-      use m_2nd_geometry_data
       use m_connect_hexa_2_tetra
       use subroutines_4_search_table
       use cal_local_position_by_tetra
       use modify_local_positions
       use solver_33_array
 !
+      use t_geometry_data
+!
+      type(node_data), intent(in) :: new_node
+      type(element_data), intent(in) :: new_ele
 !
       integer (kind = kint), intent(in) :: my_rank_org, inod, jele
       integer (kind = kint), intent(in) :: iflag_message
@@ -82,11 +88,12 @@
       ierr_inter = 1
 !
       call copy_target_local_vector(inod, x_target)
-      call copy_position_2_2nd_local_ele(jele, x_local_ele)
+      call copy_position_2_2nd_local_ele(new_node, new_ele,             &
+     &    jele, x_local_ele)
 !
       do itet = 1, num_tetra
-        call cal_3vector_4_tet_2nd(itet, v_target, v_tetra,             &
-     &      x_target, x_local_ele)
+        call cal_3vector_4_tet_2nd(new_ele%nnod_4_ele, itet,            &
+     &      v_target, v_tetra, x_target, x_local_ele)
 !
 !   solve equations
 !
@@ -100,14 +107,15 @@
 !
         if ( abs(ref_error) .le. error_level) then
 !
-          call init_coefs_on_tet(itet, coefs_by_tet, s_coef)
+          call init_coefs_on_tet                                        &
+     &        (new_ele%nnod_4_ele, itet, coefs_by_tet, s_coef)
 !
-          call s_cal_local_position_by_tetra(ele_2nd%nnod_4_ele, xi,    &
+          call s_cal_local_position_by_tetra(new_ele%nnod_4_ele, xi,    &
      &       coefs_by_tet)
 !
           if (iflag_message .eq. 1) then
             write(my_rank+60,*) inod, x_target(1:3)
-            do i = 1, ele_2nd%nnod_4_ele
+            do i = 1, new_ele%nnod_4_ele
               write(my_rank+60,*) i, jele, x_local_ele(i,1:3)
             end do
 !            write(my_rank+60,*) 'coefs_by_tet', coefs_by_tet
@@ -117,7 +125,7 @@
 !     improve solution
 !
           call s_modify_local_positions(maxitr, eps_iter, xi, x_target, &
-     &        ele_2nd%nnod_4_ele, x_local_ele, iflag_message,           &
+     &        new_ele%nnod_4_ele, x_local_ele, iflag_message,           &
      &        differ_res, ierr_inter)
 !
 !     finish improvement
@@ -147,17 +155,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_interpolation(id_file, my_rank_org)
+      subroutine check_interpolation                                    &
+     &         (new_node, new_ele, id_file, my_rank_org)
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_data
       use m_interpolate_table_dest
       use m_interpolate_coefs_dest
       use m_work_const_itp_table
 !
       use subroutines_4_search_table
       use cal_position_and_grad
+!
+      use t_geometry_data
+!
+      type(node_data), intent(in) :: new_node
+      type(element_data), intent(in) :: new_ele
 !
       integer(kind = kint), intent(in) :: id_file, my_rank_org
 !
@@ -174,10 +187,10 @@
         if( iflag_org_domain(inod) .eq. my_rank_org) then
 !
           xi(1:3) = coef_inter_dest(inod,1:3)
-          call copy_position_2_2nd_local_ele(iele_org_4_dest(inod),     &
-     &        x_local_ele)
+          call copy_position_2_2nd_local_ele(new_node, new_ele,         &
+     &        iele_org_4_dest(inod), x_local_ele)
 !
-          call cal_position_and_gradient(ele_2nd%nnod_4_ele, xx_z,      &
+          call cal_position_and_gradient(new_ele%nnod_4_ele, xx_z,      &
      &        dnxi, dnei, dnzi, x_local_ele, xi)
 !
           diff(1:3) = xx_z(1:3) - xx(inod,1:3)

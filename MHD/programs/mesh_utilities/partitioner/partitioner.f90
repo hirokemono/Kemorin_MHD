@@ -4,6 +4,8 @@
       use m_precision
       use m_constants
 !
+      use t_mesh_data
+!
       use m_control_data_4_part
       use m_ctl_param_partitioner
       use m_read_mesh_data
@@ -19,6 +21,12 @@
       use const_surface_mesh
 !
       implicit none
+!
+      type(mesh_data), save :: partitioned_fem
+!
+      type(element_comms), save ::    part_ele
+      type(surface_geometry), save :: part_surf
+      type(edge_geometry), save ::    part_edge
 !
       integer(kind = kint), parameter :: my_rank = izero
 !
@@ -50,7 +58,8 @@
 !
 !C===
 !C-- create subdomain mesh
-      call const_communication_table
+      call const_communication_table(partitioned_fem,                   &
+     &    part_ele, part_surf, part_edge)
 !
 !  ========= Construct subdomain information for viewer ==============
 !

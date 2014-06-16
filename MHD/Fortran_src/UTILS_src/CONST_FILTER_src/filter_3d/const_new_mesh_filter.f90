@@ -1,16 +1,17 @@
 !const_new_mesh_filter.f90
 !      module const_new_mesh_filter
 !
-      module const_new_mesh_filter
-!
 !     Written by H. Matsui on May., 2008
+!
+!      subroutine const_mesh_newdomain_filter(work_f_head, new_comm)
+!      subroutine const_mesh_each_filter_domain(work_f_head, my_rank2,  &
+!     &          new_comm)
+!
+      module const_new_mesh_filter
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine const_mesh_newdomain_filter(work_f_head)
-!      subroutine const_mesh_each_filter_domain(work_f_head, my_rank2)
 !
 !   --------------------------------------------------------------------
 !
@@ -18,28 +19,31 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_mesh_newdomain_filter(work_f_head)
+      subroutine const_mesh_newdomain_filter(work_f_head, new_comm)
 !
       use m_2nd_pallalel_vector
+      use t_comm_table
 !
       character(len=kchara), intent(in) :: work_f_head
+      type(communication_table), intent(inout) :: new_comm
       integer(kind = kint) :: my_rank2
 !
 !     output node data with communication table
 !
       do my_rank2 = 0, nprocs_2nd-1
-        call const_mesh_each_filter_domain(work_f_head, my_rank2)
+        call const_mesh_each_filter_domain(work_f_head, my_rank2,       &
+     &      new_comm)
       end do
 !
       end subroutine const_mesh_newdomain_filter
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_mesh_each_filter_domain(work_f_head, my_rank2)
+      subroutine const_mesh_each_filter_domain(work_f_head, my_rank2,   &
+     &          new_comm)
 !
       use calypso_mpi
       use m_ctl_param_newdom_filter
-      use m_2nd_geometry_data
       use m_nod_filter_comm_table
       use m_filter_file_names
       use m_file_format_switch
@@ -53,8 +57,11 @@
       use sel_part_nod_comm_input
       use set_comm_tbl_type_4_IO
 !
+      use t_comm_table
+!
       character(len=kchara), intent(in) :: work_f_head
       integer(kind = kint), intent(in) :: my_rank2
+      type(communication_table), intent(inout) :: new_comm
       integer(kind = kint) :: ip2
 !
 !
@@ -64,13 +71,14 @@
 !C | read INITIAL LOCAL files |
 !C +--------------------------+
 !C===
-      call load_node_comm_tbl_4_part(ip2, work_f_head)
+      call load_node_comm_tbl_4_part(ip2, work_f_head, new_comm)
 !C
 !C +-----------------+
 !C | LOCAL NUMBERING |
 !C +-----------------+
 !C===
-      comm_2nd%id_neib(1:comm_2nd%num_neib) = comm_2nd%id_neib(1:comm_2nd%num_neib) - 1
+      new_comm%id_neib(1:new_comm%num_neib)                             &
+     &        = new_comm%id_neib(1:new_comm%num_neib) - 1
 !
       nnod_filtering =     numnod_4_subdomain(ip2)
       inter_nod_3dfilter = num_intnod_sub(ip2)
@@ -78,9 +86,9 @@
 !          write(*,*) 'set_newdomain_filtering_nod'
       call set_newdomain_filtering_nod(ip2)
 !
-!          write(*,*) 'copy_comm_tbl_type_to_IO(my_rank, comm_2nd)'
-      call copy_comm_tbl_type_to_IO(my_rank, comm_2nd)
-      call deallocate_type_comm_tbl(comm_2nd)
+!          write(*,*) 'copy_comm_tbl_type_to_IO(my_rank, new_comm)'
+      call copy_comm_tbl_type_to_IO(my_rank, new_comm)
+      call deallocate_type_comm_tbl(new_comm)
 !
 !          write(*,*) 'copy_filtering_geometry_to_IO'
       call copy_filtering_geometry_to_IO

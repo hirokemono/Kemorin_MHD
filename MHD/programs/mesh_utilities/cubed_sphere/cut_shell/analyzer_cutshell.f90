@@ -1,19 +1,23 @@
-
-
-      module  analyzer_cutshell
-!
+!analyzer_cutshell.f90
 !     Written by H. Matsui on Oct., 2007
+!
+!      subroutine initialize_cutshell
+!      subroutine analyze_cutshell
+!
+      module  analyzer_cutshell
 !
       use m_precision
       use m_constants
       use m_machine_parameter
 !
+      use t_mesh_data
+      use t_phys_data
+!
       implicit none
 !
       integer(kind = kint), parameter, private :: my_rank = izero
 !
-!      subroutine initialize_cutshell
-!      subroutine analyze_cutshell
+      type(mesh_data), save :: cutted_fem
 !
 !   --------------------------------------------------------------------
 !
@@ -55,20 +59,19 @@
       subroutine analyze_cutshell
 !
       use m_read_mesh_data
-      use m_2nd_geometry_data
       use const_cutshell_mesh
       use load_2nd_mesh_data
 !
 !
-      call s_const_reduced_geometry
+      call s_const_reduced_geometry(cutted_fem%mesh, cutted_fem%group)
 !
-      comm_2nd%num_neib = 0
-      call allocate_type_comm_tbl_num(comm_2nd)
-      call allocate_type_comm_tbl_item(comm_2nd)
+      cutted_fem%mesh%nod_comm%num_neib = 0
+      call allocate_type_comm_tbl_num(cutted_fem%mesh%nod_comm)
+      call allocate_type_comm_tbl_item(cutted_fem%mesh%nod_comm)
 !
       mesh_file_head = modified_mesh_head
-      call output_2nd_mesh(my_rank)
-      call deallocate_2nd_mesh
+      call output_2nd_mesh(my_rank, cutted_fem%mesh, cutted_fem%group)
+      call deallocate_new_mesh(cutted_fem%mesh, cutted_fem%group)
 !
       end subroutine analyze_cutshell
 !

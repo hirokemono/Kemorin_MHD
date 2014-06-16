@@ -12,8 +12,6 @@
 !
 !      subroutine link_ele_geometry_type(ele)
 !
-!      subroutine link_smp_param_type(node, ele, surf, edge)
-!
 !      subroutine link_nodal_fld_type_names(nod_fld)
 !      subroutine link_nodal_fld_type(nod_fld)
 !
@@ -70,6 +68,12 @@
       node%ss =>    s_cylinder
       node%a_s =>   a_s_cylinder
 !
+      node%max_nod_smp =          maxnod_4_smp
+      node%max_internal_nod_smp = max_in_nod_4_smp
+!
+      node%istack_nod_smp =>      inod_smp_stack
+      node%istack_internal_smp => inter_smp_stack
+!
       end subroutine link_node_data_type
 !
 !  ---------------------------------------------------------------------
@@ -94,6 +98,9 @@
       ele%elmtyp => elmtyp
       ele%nodelm => nodelm
 !
+      ele%istack_ele_smp =>  iele_smp_stack
+      ele%max_ele_smp =     maxele_4_smp
+!
       end subroutine link_element_data_type
 !
 !  ---------------------------------------------------------------------
@@ -113,6 +120,9 @@
       surf%ie_surf =>       ie_surf
       surf%isf_4_ele =>     isf_4_ele
       surf%interior_surf => interior_surf
+!
+      surf%istack_surf_smp => isurf_smp_stack
+      surf%max_surf_smp =    maxsurf_4_smp
 !
       end subroutine link_surface_data_type
 !
@@ -134,6 +144,9 @@
       edge%iedge_4_sf =>    iedge_4_sf
       edge%iedge_4_ele =>   iedge_4_ele
       edge%interior_edge => interior_edge
+!
+      edge%istack_edge_smp => iedge_smp_stack
+      edge%max_edge_smp =    maxedge_4_smp
 !
       end subroutine link_edge_data_type
 !
@@ -169,35 +182,6 @@
       end subroutine link_ele_geometry_type
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine link_smp_param_type(node, ele, surf, edge)
-!
-      use t_geometry_data
-      use t_surface_data
-      use t_edge_data
-      use m_geometry_parameter
-!
-      type(node_data), intent(inout) :: node
-      type(element_data), intent(inout) :: ele
-      type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
-!
-!
-      node%istack_nod_smp =>  inod_smp_stack
-      node%istack_internal_smp => inter_smp_stack
-      ele%istack_ele_smp =>  iele_smp_stack
-      surf%istack_surf_smp => isurf_smp_stack
-      edge%istack_edge_smp => iedge_smp_stack
-!
-      node%max_nod_smp =     maxnod_4_smp
-      node%max_internal_nod_smp = max_in_nod_4_smp
-      ele%max_ele_smp =     maxele_4_smp
-      surf%max_surf_smp =    maxsurf_4_smp
-      edge%max_edge_smp =    maxedge_4_smp
-!
-      end subroutine link_smp_param_type
-!
-! -------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine link_nodal_fld_type_names(nod_fld)

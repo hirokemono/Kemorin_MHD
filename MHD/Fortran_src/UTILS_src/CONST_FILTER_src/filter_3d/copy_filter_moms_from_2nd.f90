@@ -1,9 +1,12 @@
 !copy_filter_moms_from_2nd.f90
 !      module copy_filter_moms_from_2nd
 !
-      module copy_filter_moms_from_2nd
-!
 !     Written by H. Matsui on Nov., 2008
+!
+!      subroutine copy_elength_ele_from_2nd(new_node, new_ele)
+!      subroutine copy_filter_moments_from_2nd(new_node, new_ele)
+!
+      module copy_filter_moms_from_2nd
 !
       use m_precision
 !
@@ -12,29 +15,29 @@
       integer(kind = kint), parameter :: n_vector = 3
       private :: n_vector
 !
-!      subroutine copy_elength_ele_from_2nd
-!      subroutine copy_filter_moments_from_2nd
-!
 !   --------------------------------------------------------------------
 !
       contains
 !
 !   --------------------------------------------------------------------
 !
-      subroutine copy_elength_ele_from_2nd
+      subroutine copy_elength_ele_from_2nd(new_node, new_ele)
 !
-      use m_2nd_geometry_data
+      use t_geometry_data
       use m_2nd_filter_ele_length
       use m_filter_elength
+!
+      type(node_data), intent(in) :: new_node
+      type(element_data), intent(in) :: new_ele
 !
       integer(kind = kint) :: iele, nd
 !
 !
-      nnod_filter_mom = node_2nd%numnod
-      nele_filter_mom = ele_2nd%numele
+      nnod_filter_mom = new_node%numnod
+      nele_filter_mom = new_ele%numele
       call allocate_ele_length
 !
-      do iele = 1, ele_2nd%numele
+      do iele = 1, new_ele%numele
         elen_dx2_ele(iele) = elen_dx2_ele_2nd(iele)
         elen_dy2_ele(iele) = elen_dy2_ele_2nd(iele)
         elen_dz2_ele(iele) = elen_dz2_ele_2nd(iele)
@@ -44,7 +47,7 @@
       end do
 !
       do nd = 1, n_vector
-        do iele = 1, ele_2nd%numele
+        do iele = 1, new_ele%numele
           elen_dx2_ele_dx(iele,nd) =  elen_dx2_ele_dx_2nd(iele,nd)
           elen_dy2_ele_dx(iele,nd) =  elen_dy2_ele_dx_2nd(iele,nd)
           elen_dz2_ele_dx(iele,nd) =  elen_dz2_ele_dx_2nd(iele,nd)
@@ -67,20 +70,23 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine copy_filter_moments_from_2nd
+      subroutine copy_filter_moments_from_2nd(new_node, new_ele)
 !
-      use m_2nd_geometry_data
+      use t_geometry_data
       use m_2nd_filter_moments
       use m_filter_moments
+!
+      type(node_data), intent(in) :: new_node
+      type(element_data), intent(in) :: new_ele
 !
       integer(kind = kint) :: iele, ifil, nd
 !
 !
-      nnod_fmom = node_2nd%numnod
-      call allocate_filter_moms_ele(ele_2nd%numele)
+      nnod_fmom = new_node%numnod
+      call allocate_filter_moms_ele(new_ele%numele)
 !
       do ifil = 1, num_filter_moms
-        do iele = 1, ele_2nd%numele
+        do iele = 1, new_ele%numele
           filter_x2_ele(iele,ifil) = filter_x2_ele_2nd(iele,ifil)
           filter_y2_ele(iele,ifil) = filter_y2_ele_2nd(iele,ifil)
           filter_z2_ele(iele,ifil) = filter_z2_ele_2nd(iele,ifil)
@@ -95,7 +101,7 @@
 !
       do ifil = 1, num_filter_moms
         do nd = 1, n_vector
-          do iele = 1, ele_2nd%numele
+          do iele = 1, new_ele%numele
             filter_x2_ele_dx(iele,nd,ifil)                              &
      &          = filter_x2_ele_dx_2nd(iele,nd,ifil)
             filter_y2_ele_dx(iele,nd,ifil)                              &

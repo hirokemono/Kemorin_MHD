@@ -4,10 +4,11 @@
 !     Written by H. Matsui on Aug., 2006
 !
 !      subroutine copy_target_local_vector(inod, x_target)
-!      subroutine copy_position_2_2nd_local_ele(iele, x_local)
-!      subroutine cal_3vector_4_tet_2nd(itet, v_target, v_tetra,        &
-!     &          x_target, x_local)
-!      subroutine init_coefs_on_tet(itet, coefs_by_tet, s)
+!      subroutine copy_position_2_2nd_local_ele(new_node, new_ele,      &
+!     &          iele, x_local)
+!      subroutine cal_3vector_4_tet_2nd(nnod_4_ele_2, itet,             &
+!     &          v_target, v_tetra, x_target, x_local)
+!      subroutine init_coefs_on_tet(nnod_4_ele_2, itet, coefs_by_tet, s)
 !      subroutine check_solution_in_tet(ref_error, s_coef)
 !      subroutine set_results_2_array(n_rank_org, inod, jele, xi)
 !      subroutine set_results_2_array_fin(inod, jele, xi,               &
@@ -42,35 +43,38 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_position_2_2nd_local_ele(iele, x_local)
+      subroutine copy_position_2_2nd_local_ele(new_node, new_ele,       &
+     &          iele, x_local)
 !
-      use m_2nd_geometry_data
+      use t_geometry_data
 !
       integer(kind = kint), intent(in) :: iele
+      type(node_data), intent(in) :: new_node
+      type(element_data), intent(in) :: new_ele
 !
-      real(kind = kreal), intent(inout) :: x_local(ele_2nd%nnod_4_ele,3)
+      real(kind = kreal), intent(inout)                                 &
+     &       :: x_local(new_ele%nnod_4_ele,3)
 !
       integer(kind = kint) :: i, inod
 !
 !
-       do i = 1, ele_2nd%nnod_4_ele
-         inod = ele_2nd%ie(iele,i)
-         x_local(i,1:3) = node_2nd%xx(inod,1:3)
+       do i = 1, new_ele%nnod_4_ele
+         inod = new_ele%ie(iele,i)
+         x_local(i,1:3) = new_node%xx(inod,1:3)
        end do
 !
       end subroutine copy_position_2_2nd_local_ele
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_3vector_4_tet_2nd(itet, v_target, v_tetra,         &
-     &          x_target, x_local)
+      subroutine cal_3vector_4_tet_2nd(nnod_4_ele_2, itet,              &
+     &          v_target, v_tetra, x_target, x_local)
 !
-      use m_2nd_geometry_data
       use m_connect_hexa_2_tetra
 !
-      integer(kind = kint), intent(in) :: itet
+      integer(kind = kint), intent(in) :: itet, nnod_4_ele_2
       real(kind = kreal), intent(in) :: x_target(3)
-      real(kind = kreal), intent(in) :: x_local(ele_2nd%nnod_4_ele,3)
+      real(kind = kreal), intent(in) :: x_local(nnod_4_ele_2,3)
 !
       real(kind = kreal), intent(inout) :: v_target(3)
       real(kind = kreal), intent(inout) :: v_tetra(3,3)
@@ -95,20 +99,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_coefs_on_tet(itet, coefs_by_tet, s)
+      subroutine init_coefs_on_tet(nnod_4_ele_2, itet, coefs_by_tet, s)
 !
       use m_constants
-      use m_2nd_geometry_data
       use m_connect_hexa_2_tetra
 !
-      integer(kind = kint), intent(in) :: itet
+      integer(kind = kint), intent(in) :: itet, nnod_4_ele_2
       real(kind = kreal), intent(in) ::    s(3)
-      real(kind = kreal), intent(inout) :: coefs_by_tet(ele_2nd%nnod_4_ele)
+      real(kind = kreal), intent(inout) :: coefs_by_tet(nnod_4_ele_2)
 !
       integer(kind = kint) :: i1, i2, i3, i4
 !
 !
-        coefs_by_tet(1:ele_2nd%nnod_4_ele) = zero
+        coefs_by_tet(1:nnod_4_ele_2) = zero
 !
         i1 = ie_tetra(1,itet)
         i2 = ie_tetra(2,itet)

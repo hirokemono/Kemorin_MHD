@@ -11,8 +11,13 @@
 !
       use m_precision
       use m_machine_parameter
+      use t_mesh_data
 !
       implicit none
+!
+      type(mesh_geometry), save ::    newmesh
+      type(surface_geometry), save :: new_surf_mesh
+      type(edge_geometry), save ::    new_edge_mesh
 !
 ! ----------------------------------------------------------------------
 !
@@ -66,17 +71,18 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'local_newdomain_filter_sngl'
-      call local_newdomain_filter_sngl
+      call local_newdomain_filter_sngl(newmesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_sgl'
       if (iflag_set_filter_elen .gt. 0                                  &
      &  .or. iflag_set_filter_moms.gt.0) then
-        call trans_filter_moms_newmesh_sgl
+        call trans_filter_moms_newmesh_sgl(newmesh,                     &
+     &      new_surf_mesh, new_edge_mesh)
       end if
 !
       if (iflag_set_filter_coef .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'filters_4_newdomains_single'
-        call filters_4_newdomains_single
+        call filters_4_newdomains_single(newmesh)
       end if
 !
 !

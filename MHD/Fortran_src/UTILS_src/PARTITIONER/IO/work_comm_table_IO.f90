@@ -3,11 +3,15 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!      subroutine write_all_import_to_work(id_file)
-!      subroutine write_all_export_to_work(id_file)
+!      subroutine write_all_import_to_work(id_file,                     &
+!     &          new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
+!      subroutine write_all_export_to_work(id_file,                     &
+!     &          new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
 !
-!      subroutine read_all_import_from_work(id_file)
-!      subroutine read_all_export_from_work(id_file)
+!      subroutine read_all_import_from_work(id_file                     &
+!     &          new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
+!      subroutine read_all_export_from_work(id_file                     &
+!     &          new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
 !
 !      subroutine read_all_import_num_tmp(id_file)
 !      subroutine read_all_import_item_tmp(id_file)
@@ -24,178 +28,233 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_all_import_to_work(id_file)
+      subroutine write_all_import_to_work(id_file,                      &
+     &          new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
 !
-      use m_2nd_geometry_data
+      use t_comm_table
 !
       use m_partitioner_comm_table
 !
       integer(kind = kint), intent(in) :: id_file
+      type(communication_table), intent(in) :: new_comm
+      type(communication_table), intent(in) :: new_ele_comm
+      type(communication_table), intent(in) :: new_surf_comm
+      type(communication_table), intent(in) :: new_edge_comm
 !
 !
       rewind (id_file)
-      write (id_file) comm_2nd%num_neib
-      write (id_file) comm_2nd%id_neib(1:comm_2nd%num_neib)
-      write (id_file) comm_2nd%istack_import(1:comm_2nd%num_neib)
-      write (id_file) ele_comm_2nd%num_import(1:ele_comm_2nd%num_neib)
-      write (id_file) surf_comm_2nd%istack_import(1:surf_comm_2nd%num_neib)
-      write (id_file) edge_comm_2nd%istack_import(1:edge_comm_2nd%num_neib)
-      write (id_file) comm_2nd%item_import(1:comm_2nd%ntot_import)
-      write (id_file) ele_comm_2nd%item_import(1:ele_comm_2nd%ntot_import)
-      write (id_file) surf_comm_2nd%item_import(1:surf_comm_2nd%ntot_import)
-      write (id_file) edge_comm_2nd%item_import(1:edge_comm_2nd%ntot_import)
+      write (id_file) new_comm%num_neib
+      write (id_file) new_comm%id_neib(1:new_comm%num_neib)
+      write (id_file) new_comm%istack_import(1:new_comm%num_neib)
+      write (id_file) new_ele_comm%num_import(1:new_ele_comm%num_neib)
+      write (id_file)                                                   &
+     &     new_surf_comm%istack_import(1:new_surf_comm%num_neib)
+      write (id_file)                                                   &
+     &     new_edge_comm%istack_import(1:new_edge_comm%num_neib)
+      write (id_file) new_comm%item_import(1:new_comm%ntot_import)
+      write (id_file)                                                   &
+     &     new_ele_comm%item_import(1:new_ele_comm%ntot_import)
+      write (id_file)                                                   &
+     &     new_surf_comm%item_import(1:new_surf_comm%ntot_import)
+      write (id_file)                                                   &
+     &     new_edge_comm%item_import(1:new_edge_comm%ntot_import)
 !
       end subroutine write_all_import_to_work
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_all_export_to_work(id_file)
+      subroutine write_all_export_to_work(id_file,                      &
+     &          new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
 !
-      use m_2nd_geometry_data
+      use t_comm_table
       use m_partitioner_comm_table
 !
       integer(kind = kint), intent(in) :: id_file
+      type(communication_table), intent(in) :: new_comm
+      type(communication_table), intent(in) :: new_ele_comm
+      type(communication_table), intent(in) :: new_surf_comm
+      type(communication_table), intent(in) :: new_edge_comm
 !
-      write (id_file) comm_2nd%istack_export(1:comm_2nd%num_neib)
-      write (id_file) ele_comm_2nd%istack_export(1:ele_comm_2nd%num_neib)
-      write (id_file) surf_comm_2nd%istack_export(1:surf_comm_2nd%num_neib)
-      write (id_file) edge_comm_2nd%istack_export(1:edge_comm_2nd%num_neib)
-      write (id_file) comm_2nd%item_export(1:comm_2nd%ntot_export)
-      write (id_file) ele_comm_2nd%item_export(1:ele_comm_2nd%ntot_export)
-      write (id_file) surf_comm_2nd%item_export(1:surf_comm_2nd%ntot_export)
-      write (id_file) edge_comm_2nd%item_export(1:edge_comm_2nd%ntot_export)
+!
+      write (id_file) new_comm%istack_export(1:new_comm%num_neib)
+      write (id_file) new_ele_comm%istack_export(1:new_ele_comm%num_neib)
+      write (id_file)                                                   &
+     &     new_surf_comm%istack_export(1:new_surf_comm%num_neib)
+      write (id_file)                                                   &
+     &     new_edge_comm%istack_export(1:new_edge_comm%num_neib)
+      write (id_file) new_comm%item_export(1:new_comm%ntot_export)
+      write (id_file)                                                   &
+     &     new_ele_comm%item_export(1:new_ele_comm%ntot_export)
+      write (id_file)                                                   &
+     &     new_surf_comm%item_export(1:new_surf_comm%ntot_export)
+      write (id_file)                                                   &
+     &     new_edge_comm%item_export(1:new_edge_comm%ntot_export)
 !
       end subroutine write_all_export_to_work
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_all_import_from_work(id_file)
+      subroutine read_all_import_from_work(id_file,                     &
+     &          new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
 !
-      use m_2nd_geometry_data
+      use t_comm_table
       use m_partitioner_comm_table
 !
       integer(kind = kint), intent(in) :: id_file
+      type(communication_table), intent(inout) :: new_comm
+      type(communication_table), intent(inout) :: new_ele_comm
+      type(communication_table), intent(inout) :: new_surf_comm
+      type(communication_table), intent(inout) :: new_edge_comm
+!
       integer(kind = kint) :: i
 !
       rewind (id_file)
-      read (id_file) comm_2nd%num_neib
+      read (id_file) new_comm%num_neib
 !
-      ele_comm_2nd%num_neib =  comm_2nd%num_neib
-      surf_comm_2nd%num_neib = comm_2nd%num_neib
-      edge_comm_2nd%num_neib = comm_2nd%num_neib
+      new_ele_comm%num_neib =  new_comm%num_neib
+      new_surf_comm%num_neib = new_comm%num_neib
+      new_edge_comm%num_neib = new_comm%num_neib
 !
-      call allocate_type_neib_id(comm_2nd)
-      call allocate_type_import_num(comm_2nd)
+      call allocate_type_neib_id(new_comm)
+      call allocate_type_import_num(new_comm)
 !
-      call allocate_type_neib_id(ele_comm_2nd)
-      call allocate_type_import_num(ele_comm_2nd)
+      call allocate_type_neib_id(new_ele_comm)
+      call allocate_type_import_num(new_ele_comm)
 !
-      call allocate_type_neib_id(surf_comm_2nd)
-      call allocate_type_import_num(surf_comm_2nd)
+      call allocate_type_neib_id(new_surf_comm)
+      call allocate_type_import_num(new_surf_comm)
 !
-      call allocate_type_neib_id(edge_comm_2nd)
-      call allocate_type_import_num(edge_comm_2nd)
+      call allocate_type_neib_id(new_edge_comm)
+      call allocate_type_import_num(new_edge_comm)
 !
-      read (id_file) comm_2nd%id_neib(1:comm_2nd%num_neib)
-      read (id_file) comm_2nd%istack_import(1:comm_2nd%num_neib)
-      read (id_file) ele_comm_2nd%num_import(1:ele_comm_2nd%num_neib)
-      read (id_file) surf_comm_2nd%istack_import(1:surf_comm_2nd%num_neib)
-      read (id_file) edge_comm_2nd%istack_import(1:edge_comm_2nd%num_neib)
+      read (id_file) new_comm%id_neib(1:new_comm%num_neib)
+      read (id_file) new_comm%istack_import(1:new_comm%num_neib)
+      read (id_file) new_ele_comm%num_import(1:new_ele_comm%num_neib)
+      read (id_file)                                                   &
+     &      new_surf_comm%istack_import(1:new_surf_comm%num_neib)
+      read (id_file)                                                   &
+     &      new_edge_comm%istack_import(1:new_edge_comm%num_neib)
 !
-      ele_comm_2nd%id_neib(1:comm_2nd%num_neib) =  comm_2nd%id_neib(1:comm_2nd%num_neib)
-      surf_comm_2nd%id_neib(1:comm_2nd%num_neib) = comm_2nd%id_neib(1:comm_2nd%num_neib)
-      edge_comm_2nd%id_neib(1:comm_2nd%num_neib) = comm_2nd%id_neib(1:comm_2nd%num_neib)
+      new_ele_comm%id_neib(1:new_comm%num_neib)                         &
+     &      =  new_comm%id_neib(1:new_comm%num_neib)
+      new_surf_comm%id_neib(1:new_comm%num_neib)                        &
+     &      = new_comm%id_neib(1:new_comm%num_neib)
+      new_edge_comm%id_neib(1:new_comm%num_neib)                        &
+     &      = new_comm%id_neib(1:new_comm%num_neib)
 !
-      comm_2nd%ntot_import =      comm_2nd%istack_import(comm_2nd%num_neib)
-      ele_comm_2nd%ntot_import =  ele_comm_2nd%num_import(ele_comm_2nd%num_neib)
-      surf_comm_2nd%ntot_import = surf_comm_2nd%istack_import(surf_comm_2nd%num_neib)
-      edge_comm_2nd%ntot_import = edge_comm_2nd%istack_import(edge_comm_2nd%num_neib)
+      new_comm%ntot_import = new_comm%istack_import(new_comm%num_neib)
+      new_ele_comm%ntot_import                                          &
+     &      =  new_ele_comm%num_import(new_ele_comm%num_neib)
+      new_surf_comm%ntot_import                                         &
+     &      = new_surf_comm%istack_import(new_surf_comm%num_neib)
+      new_edge_comm%ntot_import                                         &
+     &      = new_edge_comm%istack_import(new_edge_comm%num_neib)
 !
-      call allocate_type_import_item(comm_2nd)
-      call allocate_type_import_item(ele_comm_2nd)
-      call allocate_type_import_item(surf_comm_2nd)
-      call allocate_type_import_item(edge_comm_2nd)
+      call allocate_type_import_item(new_comm)
+      call allocate_type_import_item(new_ele_comm)
+      call allocate_type_import_item(new_surf_comm)
+      call allocate_type_import_item(new_edge_comm)
 !
-      read (id_file) comm_2nd%item_import(1:comm_2nd%ntot_import)
-      read (id_file) ele_comm_2nd%item_import(1:ele_comm_2nd%ntot_import)
-      read (id_file) surf_comm_2nd%item_import(1:surf_comm_2nd%ntot_import)
-      read (id_file) edge_comm_2nd%item_import(1:edge_comm_2nd%ntot_import)
+      read (id_file) new_comm%item_import(1:new_comm%ntot_import)
+      read (id_file)                                                    &
+     &     new_ele_comm%item_import(1:new_ele_comm%ntot_import)
+      read (id_file)                                                    &
+     &     new_surf_comm%item_import(1:new_surf_comm%ntot_import)
+      read (id_file)                                                    &
+     &     new_edge_comm%item_import(1:new_edge_comm%ntot_import)
 !
-        do i = 1, comm_2nd%num_neib
-          comm_2nd%num_import(i) = comm_2nd%istack_import(i)   &
-     &                            - comm_2nd%istack_import(i-1)
+        do i = 1, new_comm%num_neib
+          new_comm%num_import(i) = new_comm%istack_import(i)            &
+     &                            - new_comm%istack_import(i-1)
         end do
 !
-        do i = 1, ele_comm_2nd%num_neib
-          ele_comm_2nd%num_import(i) = ele_comm_2nd%istack_import(i)      &
-     &                          - ele_comm_2nd%istack_import(i-1)
+        do i = 1, new_ele_comm%num_neib
+          new_ele_comm%num_import(i) = new_ele_comm%istack_import(i)    &
+     &                          - new_ele_comm%istack_import(i-1)
         end do
 !
-        do i = 1, surf_comm_2nd%num_neib
-          surf_comm_2nd%num_import(i) = surf_comm_2nd%istack_import(i)  &
-     &                          - surf_comm_2nd%istack_import(i-1)
+        do i = 1, new_surf_comm%num_neib
+          new_surf_comm%num_import(i) = new_surf_comm%istack_import(i)  &
+     &                          - new_surf_comm%istack_import(i-1)
         end do
 !
-        do i = 1, edge_comm_2nd%num_neib
-          edge_comm_2nd%num_import(i) = edge_comm_2nd%istack_import(i)  &
-     &                          - edge_comm_2nd%istack_import(i-1)
+        do i = 1, new_edge_comm%num_neib
+          new_edge_comm%num_import(i) = new_edge_comm%istack_import(i)  &
+     &                          - new_edge_comm%istack_import(i-1)
         end do
 !
       end subroutine read_all_import_from_work
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_all_export_from_work(id_file)
+      subroutine read_all_export_from_work(id_file,                     &
+     &          new_comm, new_ele_comm, new_surf_comm, new_edge_comm)
 !
-      use m_2nd_geometry_data
+      use t_comm_table
       use m_partitioner_comm_table
 !
       integer(kind = kint), intent(in) :: id_file
+      type(communication_table), intent(inout) :: new_comm
+      type(communication_table), intent(inout) :: new_ele_comm
+      type(communication_table), intent(inout) :: new_surf_comm
+      type(communication_table), intent(inout) :: new_edge_comm
+!
       integer(kind = kint) :: i
 !
-      call allocate_type_export_num(comm_2nd)
-      call allocate_type_export_num(ele_comm_2nd)
-      call allocate_type_export_num(surf_comm_2nd)
-      call allocate_type_export_num(edge_comm_2nd)
+      call allocate_type_export_num(new_comm)
+      call allocate_type_export_num(new_ele_comm)
+      call allocate_type_export_num(new_surf_comm)
+      call allocate_type_export_num(new_edge_comm)
 !
-      read (id_file) comm_2nd%istack_export(1:comm_2nd%num_neib)
-      read (id_file) ele_comm_2nd%istack_export(1:ele_comm_2nd%num_neib)
-      read (id_file) surf_comm_2nd%istack_export(1:surf_comm_2nd%num_neib)
-      read (id_file) edge_comm_2nd%istack_export(1:edge_comm_2nd%num_neib)
+      read (id_file) new_comm%istack_export(1:new_comm%num_neib)
+      read (id_file)                                                    &
+     &      new_ele_comm%istack_export(1:new_ele_comm%num_neib)
+      read (id_file)                                                    &
+     &      new_surf_comm%istack_export(1:new_surf_comm%num_neib)
+      read (id_file)                                                    &
+     &      new_edge_comm%istack_export(1:new_edge_comm%num_neib)
 !
-      comm_2nd%ntot_export =      comm_2nd%istack_export(comm_2nd%num_neib)
-      ele_comm_2nd%ntot_export =  ele_comm_2nd%istack_export(ele_comm_2nd%num_neib)
-      surf_comm_2nd%ntot_export = surf_comm_2nd%istack_export(surf_comm_2nd%num_neib)
-      edge_comm_2nd%ntot_export = edge_comm_2nd%istack_export(edge_comm_2nd%num_neib)
+      new_comm%ntot_export =                                            &
+     &           new_comm%istack_export(new_comm%num_neib)
+      new_ele_comm%ntot_export                                          &
+     &      =  new_ele_comm%istack_export(new_ele_comm%num_neib)
+      new_surf_comm%ntot_export                                         &
+     &      = new_surf_comm%istack_export(new_surf_comm%num_neib)
+      new_edge_comm%ntot_export                                         &
+     &      = new_edge_comm%istack_export(new_edge_comm%num_neib)
 !
-      call allocate_type_export_item(comm_2nd)
-      call allocate_type_export_item(ele_comm_2nd)
-      call allocate_type_export_item(surf_comm_2nd)
-      call allocate_type_export_item(edge_comm_2nd)
+      call allocate_type_export_item(new_comm)
+      call allocate_type_export_item(new_ele_comm)
+      call allocate_type_export_item(new_surf_comm)
+      call allocate_type_export_item(new_edge_comm)
 !
-      read (id_file) comm_2nd%item_export(1:comm_2nd%ntot_export)
-      read (id_file) ele_comm_2nd%item_export(1:ele_comm_2nd%ntot_export)
-      read (id_file) surf_comm_2nd%item_export(1:surf_comm_2nd%ntot_export)
-      read (id_file) edge_comm_2nd%item_export(1:edge_comm_2nd%ntot_export)
+      read (id_file) new_comm%item_export(1:new_comm%ntot_export)
+      read (id_file)                                                    &
+     &     new_ele_comm%item_export(1:new_ele_comm%ntot_export)
+      read (id_file)                                                    &
+     &     new_surf_comm%item_export(1:new_surf_comm%ntot_export)
+      read (id_file)                                                    &
+     &     new_edge_comm%item_export(1:new_edge_comm%ntot_export)
 !
-        do i = 1, comm_2nd%num_neib
-          comm_2nd%num_export(i) = comm_2nd%istack_export(i) - comm_2nd%istack_export(i-1)
+        do i = 1, new_comm%num_neib
+          new_comm%num_export(i) = new_comm%istack_export(i)            &
+     &                          - new_comm%istack_export(i-1)
         end do
 !
-        do i = 1, ele_comm_2nd%num_neib
-          ele_comm_2nd%num_export(i) = ele_comm_2nd%istack_export(i)    &
-     &                          - ele_comm_2nd%istack_export(i-1)
+        do i = 1, new_ele_comm%num_neib
+          new_ele_comm%num_export(i) = new_ele_comm%istack_export(i)    &
+     &                          - new_ele_comm%istack_export(i-1)
         end do
 !
-        do i = 1, surf_comm_2nd%num_neib
-          surf_comm_2nd%num_export(i) = surf_comm_2nd%istack_export(i)  &
-     &                          - surf_comm_2nd%istack_export(i-1)
+        do i = 1, new_surf_comm%num_neib
+          new_surf_comm%num_export(i) = new_surf_comm%istack_export(i)  &
+     &                          - new_surf_comm%istack_export(i-1)
         end do
 !
-        do i = 1, edge_comm_2nd%num_neib
-          edge_comm_2nd%num_export(i) = edge_comm_2nd%istack_export(i)  &
-     &                          - edge_comm_2nd%istack_export(i-1)
+        do i = 1, new_edge_comm%num_neib
+          new_edge_comm%num_export(i) = new_edge_comm%istack_export(i)  &
+     &                          - new_edge_comm%istack_export(i-1)
         end do
 !
       end subroutine read_all_export_from_work

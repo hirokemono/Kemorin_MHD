@@ -19,25 +19,30 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_2nd_mesh_from_struct(mesh_info)
+      subroutine set_new_mesh_type(mesh_info, newmesh, newgroup)
 !
       use t_mesh_data
-      use t_group_data
-      use m_2nd_geometry_data
-      use m_2nd_group_data
 !
       type(mesh_data), intent(in) :: mesh_info
+      type(mesh_geometry), intent(inout) :: newmesh
+      type(mesh_groups), intent(inout) :: newgroup
 !
 !
-      call link_comm_tbl_types(mesh_info%mesh%nod_comm, comm_2nd)
-      call link_new_nod_geometry_type(mesh_info%mesh%node, node_2nd)
-      call link_new_ele_connect_type(mesh_info%mesh%ele, ele_2nd)
+      call link_comm_tbl_types                                          &
+     &   (mesh_info%mesh%nod_comm, newmesh%nod_comm)
+      call link_new_nod_geometry_type                                   &
+     &   (mesh_info%mesh%node, newmesh%node)
+      call link_new_ele_connect_type                                    &
+     &   (mesh_info%mesh%ele, newmesh%ele)
 !
-      call link_group_type(mesh_info%group%nod_grp, nod_grp_2nd)
-      call link_group_type(mesh_info%group%ele_grp, ele_grp_2nd)
-      call link_surf_group_type(mesh_info%group%surf_grp, sf_grp_2nd)
+      call link_group_type                                              &
+     &   (mesh_info%group%nod_grp, newgroup%nod_grp)
+      call link_group_type                                              &
+     &   (mesh_info%group%ele_grp, newgroup%ele_grp)
+      call link_surf_group_type                                         &
+     &   (mesh_info%group%surf_grp, newgroup%surf_grp)
 !
-      end subroutine s_set_2nd_mesh_from_struct
+      end subroutine set_new_mesh_type
 !
 !  ---------------------------------------------------------------------
 !

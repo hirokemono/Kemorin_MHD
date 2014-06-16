@@ -14,7 +14,12 @@
       use calypso_mpi
       use m_machine_parameter
 !
+      use t_mesh_data
+!
       implicit none
+!
+      type(mesh_geometry), save :: newmesh
+      type(mesh_groups), save ::   newgroup
 !
 ! ----------------------------------------------------------------------
 !
@@ -96,7 +101,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_construct_interpolate_table'
-      call s_construct_interpolate_table(ierr_missing)
+      call s_construct_interpolate_table(newmesh, newgroup, ierr_missing)
 !
 !   ordering destination table by domain
 !

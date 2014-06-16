@@ -103,7 +103,7 @@
       integer(kind = kint), intent(in) :: istep_psf, istep_iso
 !
 !
-!      call set_linear_phy_data_type(fem, fld_nod)
+!      call set_linear_phys_data_type(fem, fld_nod)
 !
       if (num_psf.gt.0 .and. istep_psf.gt.0) then
         call cross_section_main_type(istep_psf, fem,                    &

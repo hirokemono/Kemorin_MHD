@@ -1,9 +1,12 @@
 !
 !      module  analyzer_refine
 !
-      module  analyzer_refine
-!
 !     Written by H. Matsui on Oct., 2007
+!
+!      subroutine initialize_refine
+!      subroutine analyze_refine
+!
+      module  analyzer_refine
 !
       use m_precision
 !
@@ -11,13 +14,16 @@
       use m_control_param_4_refiner
       use m_read_mesh_data
 !
+      use t_mesh_data
+!
       implicit none
 !
       integer(kind = kint), parameter, private :: my_rank = 0
       integer(kind = kint), parameter, private :: ifile_type = 0
 !
-!      subroutine initialize_refine
-!      subroutine analyze_refine
+      type(mesh_data), save :: refined_fem
+      type(surface_geometry), save :: finer_surfmesh
+      type(edge_geometry), save ::  finer_edgemesh
 !
 !   --------------------------------------------------------------------
 !
@@ -74,11 +80,8 @@
       use m_geometry_constants
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_data
       use m_refined_node_id
       use m_refined_element_data
-!      use m_machine_parameter
-!      use m_refined_element_data
       use m_work_merge_refine_itp
       use const_mesh_info
       use set_element_refine_flag
@@ -95,6 +98,7 @@
       use set_mesh_from_2nd
       use find_hanging_surface
       use load_2nd_mesh_data
+      use set_mesh_types
 !
       character(len=kchara), parameter :: tmp_mesh_head = 'work'
 !
@@ -141,27 +145,31 @@
 !
 !      call check_refine_items
 !
-        comm_2nd%num_neib = num_neib
-        call allocate_type_comm_tbl_num(comm_2nd)
-        call allocate_type_comm_tbl_item(comm_2nd)
+         refined_fem%mesh%nod_comm%num_neib = num_neib
+        call allocate_type_comm_tbl_num(refined_fem%mesh%nod_comm)
+        call allocate_type_comm_tbl_item(refined_fem%mesh%nod_comm)
 !
         write(*,*) 's_set_refined_position'
         call s_set_refined_position
 !
+        refined_fem%mesh%nod_comm%num_neib = 0
+!
         write(*,*) 's_refined_nod_2_mesh_data'
-        call s_refined_nod_2_mesh_data
+        call s_refined_nod_2_mesh_data(refined_fem%mesh%node)
 !
 !
         call s_const_refined_connectivity
 !
-        call s_refined_ele_2_mesh_data
+        call s_refined_ele_2_mesh_data(refined_fem%mesh%ele)
+        call set_nnod_surf_edge_for_type(finer_surfmesh,                &
+     &      finer_edgemesh, refined_fem%mesh%ele%nnod_4_ele)
 !
         call set_hanging_nodes
 !
-        call s_const_refined_group
+        call s_const_refined_group(refined_fem%mesh, refined_fem%group)
 !
         write(*,*) 's_const_refine_interpolate_tbl'
-        call s_const_refine_interpolate_tbl
+        call s_const_refine_interpolate_tbl(refined_fem%mesh)
 !
         call deallocate_refine_flags
         call deallocate_refined_local_posi
@@ -175,15 +183,18 @@
         call deallocate_mesh_infomations
 !
         write(*,*) 's_set_mesh_from_2nd'
-        call s_set_mesh_from_2nd
+        call s_set_mesh_from_2nd(refined_fem%mesh, refined_fem%group)
+!
+        nnod_4_surf = finer_surfmesh%surf%nnod_4_surf
+        nnod_4_edge = finer_edgemesh%edge%nnod_4_edge
       end do
 !
       iflag_mesh_file_fmt = ifile_type
       mesh_file_head = refined_mesh_head
       write(*,'(2a)') 'mesh file header: ', trim(refined_mesh_head)
-      call output_2nd_mesh(izero)
+      call output_2nd_mesh(izero, refined_fem%mesh, refined_fem%group)
 !
-      call deallocate_2nd_mesh
+      call deallocate_new_mesh(refined_fem%mesh, refined_fem%group)
 !
       end subroutine analyze_refine
 !

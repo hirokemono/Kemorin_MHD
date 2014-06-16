@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Nov., 2009
 !
-!      subroutine s_correlation_all_layerd_data
+!      subroutine s_correlation_all_layerd_data(nnod_2, phys_2nd)
 !
       module correlation_all_layerd_data
 !
@@ -48,13 +48,17 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine s_correlation_all_layerd_data
+      subroutine s_correlation_all_layerd_data(nnod_2, phys_2nd)
 !
       use m_node_phys_data
       use cal_layerd_ave_correlate
+      use t_phys_data
+!
+      integer(kind = kint), intent(in) :: nnod_2
+      type(phys_data), intent(in) :: phys_2nd
 !
 !
-      call int_vol_rms_ave_all_layer
+      call int_vol_rms_ave_all_layer(nnod_2, phys_2nd)
       call sum_layerd_averages
 !
       if(iflag_debug .gt. 0) write(*,*) 'divide_layers_ave_by_vol'
@@ -66,7 +70,7 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'int_vol_dev_cor_all_layer'
-      call int_vol_dev_cor_all_layer
+      call int_vol_dev_cor_all_layer(phys_2nd)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_layerd_correlation'
       call sum_layerd_correlation
@@ -82,23 +86,24 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine  int_vol_rms_ave_all_layer
+      subroutine  int_vol_rms_ave_all_layer(nnod_2, phys_2nd)
 !
       use m_geometry_parameter
       use m_node_phys_data
-      use m_2nd_geometry_data
-      use m_2nd_phys_data
       use m_fem_gauss_int_coefs
       use int_rms_ave_ele_grps_1st
       use transfer_correlate_field
+      use t_phys_data
+!
+      integer(kind = kint), intent(in) :: nnod_2
+      type(phys_data), intent(in) :: phys_2nd
 !
       integer(kind = kint) :: icomp, icomp_2
 !
 !
       do icomp = 1, num_tot_nod_phys
         icomp_2 = icomp+num_tot_nod_phys
-        d_nod_trans2(1:node_2nd%numnod,1)                              &
-     &     = phys_2nd%d_fld(1:node_2nd%numnod,icomp)
+        d_nod_trans2(1:nnod_2,1) = phys_2nd%d_fld(1:nnod_2,icomp)
 !
         call int_vol_2rms_ave_ele_grps_1st(max_int_point,               &
      &      n_layer_d, n_item_layer_d, layer_stack, item_layer,         &
@@ -110,16 +115,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine  int_vol_dev_cor_all_layer
+      subroutine  int_vol_dev_cor_all_layer(phys_2nd)
 !
       use m_geometry_parameter
       use m_node_phys_data
-      use m_2nd_geometry_data
-      use m_2nd_phys_data
       use m_fem_gauss_int_coefs
       use int_rms_ave_ele_grps_1st
       use transfer_correlate_field
+      use t_phys_data
 !
+      type(phys_data), intent(in) :: phys_2nd
       integer(kind = kint) :: icomp, icomp_2
 !
 !

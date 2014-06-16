@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui on May, 2008
 !
-!      subroutine  local_newdomain_filter_para
-!      subroutine  local_newdomain_filter_sngl
+!      subroutine  local_newdomain_filter_para(newmesh)
+!      subroutine  local_newdomain_filter_sngl(newmesh)
 !
       module local_newdomain_filter
 !
@@ -26,13 +26,17 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine  local_newdomain_filter_para
+      subroutine  local_newdomain_filter_para(newmesh)
+!
+      use t_mesh_data
 !
       use m_2nd_pallalel_vector
 !
       use set_inod_newdomain_filter
       use generate_node_comm_table
       use bcast_nodes_for_trans
+!
+      type(mesh_geometry), intent(inout) :: newmesh
 !
 !
       call allocate_num_internod_4_part(nprocs_2nd)
@@ -45,12 +49,14 @@
         call allocate_inod_4_subdomain
 !
         write(*,*) 'set_inod_4_newdomain_filter'
-        call set_inod_4_newdomain_filter
+        call set_inod_4_newdomain_filter(newmesh%node)
 !
 !    construct communication table
 !
-        call gen_node_import_tables(nprocs_2nd, work_file_header)
-        call gen_node_export_tables(nprocs_2nd, work_file_header)
+        call gen_node_import_tables                                     &
+     &     (nprocs_2nd, work_file_header, newmesh%nod_comm)
+        call gen_node_export_tables                                     &
+     &      (nprocs_2nd, work_file_header, newmesh%nod_comm)
       end if
 !
       call bcast_num_filter_part_table(nprocs_2nd)
@@ -61,7 +67,8 @@
       call bcast_xx_whole_nod(nnod_s_domin)
 !
       write(*,*) 'const_mesh_newdomain_filter', my_rank
-      call const_mesh_each_filter_domain(work_file_header, my_rank)
+      call const_mesh_each_filter_domain(work_file_header, my_rank,     &
+     &    newmesh%nod_comm)
 !
       call deallocate_internod_4_part
       call deallocate_nodes_4_subdomain
@@ -73,10 +80,14 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine  local_newdomain_filter_sngl
+      subroutine  local_newdomain_filter_sngl(newmesh)
+!
+      use t_mesh_data
 !
       use set_inod_newdomain_filter
       use generate_node_comm_table
+!
+      type(mesh_geometry), intent(inout) :: newmesh
 !
 !
       call allocate_num_internod_4_part(nprocs_2nd)
@@ -86,17 +97,20 @@
       call allocate_inod_4_subdomain
 !
 !      write(*,*) 'set_inod_4_newdomain_filter'
-      call set_inod_4_newdomain_filter
+      call set_inod_4_newdomain_filter(newmesh%node)
 !
 !     construct communication table
 !
-      call gen_node_import_tables(nprocs_2nd, work_file_header)
-      call gen_node_export_tables(nprocs_2nd, work_file_header)
+      call gen_node_import_tables                                       &
+    &     (nprocs_2nd, work_file_header, newmesh%nod_comm)
+      call gen_node_export_tables                                       &
+    &     (nprocs_2nd, work_file_header, newmesh%nod_comm)
 !
       call allocate_internod_4_part
 !
       write(*,*) 'const_mesh_newdomain_filter'
-      call const_mesh_newdomain_filter(work_file_header)
+      call const_mesh_newdomain_filter                                  &
+     &   (work_file_header, newmesh%nod_comm)
 !
       call deallocate_internod_4_part
       call deallocate_nodes_4_subdomain

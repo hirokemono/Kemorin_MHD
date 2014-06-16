@@ -22,7 +22,7 @@
 !
 !
       type(mesh_data), target :: MG_mesh(max_MG_level)
-      type(elemens_comms) ::    MG_ele_mesh(max_MG_level)
+      type(element_comms) ::    MG_ele_mesh(max_MG_level)
       type(surface_geometry) :: MG_surf_mesh(max_MG_level)
       type(edge_geometry) ::    MG_edge_mesh(max_MG_level)
 !   mesh data structure

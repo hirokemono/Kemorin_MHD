@@ -3,7 +3,8 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!     subroutine s_input_control_itp_mesh(ierr)
+!      subroutine s_input_control_itp_mesh(new_femmesh,                 &
+!     &          new_surf_mesh, new_edge_mesh, ierr)
 !
       module input_control_itp_mesh
 !
@@ -17,26 +18,32 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_itp_mesh(ierr)
+      subroutine s_input_control_itp_mesh(new_femmesh,                  &
+     &          new_surf_mesh, new_edge_mesh, ierr)
 !
-        use calypso_mpi
-        use m_machine_parameter
-        use m_geometry_parameter
-        use m_geometry_data
-        use m_2nd_pallalel_vector
-        use m_ctl_params_4_gen_table
-        use m_ctl_data_gen_table
-        use m_read_mesh_data
+      use t_mesh_data
 !
-        use set_ctl_interpolation
-        use load_mesh_data
-        use load_2nd_mesh_data
+      use calypso_mpi
+      use m_machine_parameter
+      use m_geometry_parameter
+      use m_geometry_data
+      use m_2nd_pallalel_vector
+      use m_ctl_params_4_gen_table
+      use m_ctl_data_gen_table
+      use m_read_mesh_data
 !
-        use itp_table_IO_select_4_zlib
-        use copy_interpolate_dest_IO
-        use copy_interpolate_org_IO
-        use interpolate_nodal_field
+      use set_ctl_interpolation
+      use load_mesh_data
+      use load_2nd_mesh_data
 !
+      use itp_table_IO_select_4_zlib
+      use copy_interpolate_dest_IO
+      use copy_interpolate_org_IO
+      use interpolate_nod_field_2_type
+!
+      type(mesh_data), intent(inout) :: new_femmesh
+      type(surface_geometry), intent(inout) :: new_surf_mesh
+      type(edge_geometry), intent(inout) ::  new_edge_mesh
       integer(kind = kint), intent(inout) :: ierr
 !
 !  ----------------------------------------
@@ -67,8 +74,9 @@
          iflag_mesh_file_fmt = ifmt_itp_mesh_file
          if (iflag_debug.gt.0) write(*,*)                               &
      &      'read mesh for interpolated mesh ', trim(mesh_file_head)
-         call input_2nd_mesh(my_rank)
-      end if
+         call input_2nd_mesh(my_rank, new_femmesh,                      &
+     &       new_surf_mesh, new_edge_mesh)
+       end if
 !
 !  --  read interpolate table
 !
@@ -84,7 +92,7 @@
       call copy_itp_table_org_from_IO(my_rank)
 !
       if (iflag_debug.eq.1) write(*,*) 'init_interpolate_nodal_data'
-      call init_interpolate_nodal_data
+      call init_interpolate_nodal_data(new_femmesh%mesh%node)
 !
       end subroutine s_input_control_itp_mesh
 !

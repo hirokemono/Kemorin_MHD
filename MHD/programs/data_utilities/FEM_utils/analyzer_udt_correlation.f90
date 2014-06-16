@@ -6,6 +6,8 @@
 !
 !..................................................
 !
+!      modified by H. Matsui on Nov., 2006 
+!
       module analyzer_udt_correlation
 !
       use m_precision
@@ -13,11 +15,16 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use t_mesh_data
+      use t_phys_data
+!
       use transfer_correlate_field
 !
-!      modified by H. Matsui on Nov., 2006 
-!
       implicit none
+!
+      type(mesh_geometry), save :: mesh_ref
+      type(mesh_groups), save :: group_ref
+      type(phys_data), save :: phys_ref
 !
 ! ----------------------------------------------------------------------
 !
@@ -34,10 +41,7 @@
       use const_mesh_info
       use nodal_vector_send_recv
 !
-      use m_2nd_geometry_data
       use m_2nd_pallalel_vector
-      use m_2nd_group_data
-      use m_2nd_phys_data
       use copy_nod_comm_tbl_4_type
       use link_data_type_to_1st_mesh
       use link_group_type_2_1st_mesh
@@ -79,24 +83,23 @@
 !     --------------------- 
 !
       call copy_num_processes_to_2nd
-      call copy_node_comm_tbl_to_type(comm_2nd)
-      call link_node_data_type(node_2nd)
-      call link_element_data_type(ele_2nd)
-      call link_smp_param_type(node_2nd, ele_2nd, surf_2nd, edge_2nd)
+      call copy_node_comm_tbl_to_type(mesh_ref%nod_comm)
+      call link_node_data_type(mesh_ref%node)
+      call link_element_data_type(mesh_ref%ele)
 !
-      call link_node_group_to_type(nod_grp_2nd)
-      call link_element_group_to_type(ele_grp_2nd)
-      call link_surface_group_to_type(sf_grp_2nd)
+      call link_node_group_to_type(group_ref%nod_grp)
+      call link_element_group_to_type(group_ref%ele_grp)
+      call link_surface_group_to_type(group_ref%surf_grp)
 !
-      call link_nodal_fld_type_names(phys_2nd)
-      call alloc_phys_data_type(node_2nd%numnod, phys_2nd)
+      call link_nodal_fld_type_names(phys_ref)
+      call alloc_phys_data_type(mesh_ref%node%numnod, phys_ref)
       call allocate_vec_transfer
 !
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(isix,    numnod)
-      call allocate_2nd_iccg_matrix(isix, node_2nd%numnod)
+      call allocate_2nd_iccg_matrix(isix, mesh_ref%node%numnod)
 !
       call init_send_recv
 !
@@ -128,16 +131,13 @@
       use m_ctl_params_4_diff_udt
       use m_ucd_data
       use m_ucd_input_data
-      use m_2nd_geometry_data
-      use m_2nd_group_data
-      use m_2nd_phys_data
       use set_ucd_data_to_type
       use set_ucd_data
       use m_work_layer_correlate
       use ucd_IO_select
       use nod_phys_send_recv
 !
-      use second_fields_send_recv
+      use fields_type_send_recv
       use correlation_all_layerd_data
 !
       integer(kind=kint) :: istep, istep_ucd
@@ -169,20 +169,23 @@
           fem_ucd%ifmt_file = ifmt_org_ucd
           fem_ucd%file_prefix = tgt_udt_file_head
           call set_ucd_data_type_from_IO_once(my_rank, istep_ucd,       &
-     &        node_2nd%numnod, fem_ucd, phys_2nd)
-          fem_ucd%nnod = node_2nd%numnod
+     &        mesh_ref%node%numnod, fem_ucd, phys_ref)
+          fem_ucd%nnod = mesh_ref%node%numnod
 !
           call phys_send_recv_all
-          call phys_2nd_send_recv_all
+          call phys_type_send_recv_all(mesh_ref, phys_ref)
 !
 !    output udt data
 !
           call coord_transfer_4_1st_field
-          call coord_transfer_4_2nd_field
+          call coord_transfer_4_2nd_field(mesh_ref%node%numnod,         &
+     &        phys_ref)
+
 !
           if (iflag_debug .gt. 0) write(*,*)                            &
      &          's_correlation_all_layerd_data'
-          call s_correlation_all_layerd_data
+          call s_correlation_all_layerd_data(mesh_ref%node%numnod,      &
+     &        phys_ref)
 !
           if (iflag_debug .gt. 0) write(*,*)                            &
      &          ' write_layerd_correlate_data', istep_ucd

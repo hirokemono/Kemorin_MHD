@@ -23,7 +23,6 @@
       subroutine set_ctl_params_interpolation
 !
       use m_machine_parameter
-      use m_2nd_geometry_data
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
       use m_read_mesh_data

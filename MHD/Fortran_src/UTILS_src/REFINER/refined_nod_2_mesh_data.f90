@@ -1,16 +1,18 @@
 !refined_nod_2_mesh_data.f90
 !      module refined_nod_2_mesh_data
 !
-      module refined_nod_2_mesh_data
-!
 !     Written by H. Matsui on Oct., 2007
+!
+!      subroutine s_refined_nod_2_mesh_data(new_node)
+!      subroutine s_refined_ele_2_mesh_data
+!
+      module refined_nod_2_mesh_data
 !
       use m_precision
 !
-      implicit none
+      use t_geometry_data
 !
-!      subroutine s_refined_nod_2_mesh_data
-!      subroutine s_refined_ele_2_mesh_data
+      implicit none
 !
 !  ---------------------------------------------------------------------
 !
@@ -18,56 +20,55 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_refined_nod_2_mesh_data
+      subroutine s_refined_nod_2_mesh_data(new_node)
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_data
       use m_refined_node_id
+!
+      type(node_data), intent(inout) :: new_node
 !
       integer(kind = kint) :: inod, icou
 !
 !
-      comm_2nd%num_neib = 0
-!
-      node_2nd%numnod = ntot_nod_refine_nod + ntot_nod_refine_edge      &
+      new_node%numnod = ntot_nod_refine_nod + ntot_nod_refine_edge      &
      &          + ntot_nod_refine_surf + ntot_nod_refine_ele
-      node_2nd%internal_node = node_2nd%numnod
+      new_node%internal_node = new_node%numnod
 !
-      call allocate_node_geometry_type(node_2nd)
+      call allocate_node_geometry_type(new_node)
 !
 !
-      do inod = 1, node_2nd%numnod
-        node_2nd%inod_global(inod) = inod
+      do inod = 1, new_node%numnod
+        new_node%inod_global(inod) = inod
       end do
 !
-      node_2nd%xx(1:numnod,1) = xx(1:numnod,1)
-      node_2nd%xx(1:numnod,2) = xx(1:numnod,2)
-      node_2nd%xx(1:numnod,3) = xx(1:numnod,3)
+      new_node%xx(1:numnod,1) = xx(1:numnod,1)
+      new_node%xx(1:numnod,2) = xx(1:numnod,2)
+      new_node%xx(1:numnod,3) = xx(1:numnod,3)
 !
       icou = ntot_nod_refine_nod
       do inod = 1, ntot_nod_refine_edge
         icou = icou + 1
-        node_2nd%xx(icou,1) =  x_refine_edge(inod,1)
-        node_2nd%xx(icou,2) =  x_refine_edge(inod,2)
-        node_2nd%xx(icou,3) =  x_refine_edge(inod,3)
+        new_node%xx(icou,1) =  x_refine_edge(inod,1)
+        new_node%xx(icou,2) =  x_refine_edge(inod,2)
+        new_node%xx(icou,3) =  x_refine_edge(inod,3)
       end do
 !
       icou = ntot_nod_refine_nod + ntot_nod_refine_edge
       do inod = 1, ntot_nod_refine_surf
         icou = icou + 1
-        node_2nd%xx(icou,1) =  x_refine_surf(inod,1)
-        node_2nd%xx(icou,2) =  x_refine_surf(inod,2)
-        node_2nd%xx(icou,3) =  x_refine_surf(inod,3)
+        new_node%xx(icou,1) =  x_refine_surf(inod,1)
+        new_node%xx(icou,2) =  x_refine_surf(inod,2)
+        new_node%xx(icou,3) =  x_refine_surf(inod,3)
       end do
 !
       icou = ntot_nod_refine_nod + ntot_nod_refine_edge                 &
      &      + ntot_nod_refine_surf
       do inod = 1, ntot_nod_refine_ele
         icou = icou + 1
-        node_2nd%xx(icou,1) =  x_refine_ele(inod,1)
-        node_2nd%xx(icou,2) =  x_refine_ele(inod,2)
-        node_2nd%xx(icou,3) =  x_refine_ele(inod,3)
+        new_node%xx(icou,1) =  x_refine_ele(inod,1)
+        new_node%xx(icou,2) =  x_refine_ele(inod,2)
+        new_node%xx(icou,3) =  x_refine_ele(inod,3)
       end do
 !
       call deallocate_refined_xyz
@@ -76,44 +77,39 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_refined_ele_2_mesh_data
+      subroutine s_refined_ele_2_mesh_data(new_ele)
 !
       use m_geometry_constants
       use m_geometry_parameter
-      use m_2nd_geometry_data
       use m_refined_element_data
+!
+      type(element_data), intent(inout) :: new_ele
 !
       integer(kind = kint) :: elmtyp_2
       integer(kind = kint) :: iele, k1
 !
 !
-      ele_2nd%numele =       ntot_ele_refined
-      ele_2nd%internal_ele = ele_2nd%numele
-      ele_2nd%nnod_4_ele =   nnod_4_ele_refined
-      if (ele_2nd%nnod_4_ele .eq. num_t_lag) then
+      new_ele%numele =       ntot_ele_refined
+      new_ele%internal_ele = new_ele%numele
+      new_ele%nnod_4_ele =   nnod_4_ele_refined
+      if (new_ele%nnod_4_ele .eq. num_t_lag) then
         elmtyp_2 = 333
-        surf_2nd%nnod_4_surf = num_lag_sf
-        edge_2nd%nnod_4_edge = num_quad_edge
-      else if (ele_2nd%nnod_4_ele .eq. num_t_quad) then
+      else if (new_ele%nnod_4_ele .eq. num_t_quad) then
         elmtyp_2 = 332
-        surf_2nd%nnod_4_surf = num_quad_sf
-        edge_2nd%nnod_4_edge = num_quad_edge
       else
         elmtyp_2 = 331
-        surf_2nd%nnod_4_surf = num_linear_sf
-        edge_2nd%nnod_4_edge = num_linear_edge
       end if
 !
-      call allocate_ele_connect_type(ele_2nd)
+      call allocate_ele_connect_type(new_ele)
 !
       do iele = 1, ntot_ele_refined
-        ele_2nd%iele_global(iele) = iele
-        ele_2nd%nodelm(iele) = ele_2nd%nnod_4_ele
-        ele_2nd%elmtyp(iele) = elmtyp_2
+        new_ele%iele_global(iele) = iele
+        new_ele%nodelm(iele) = new_ele%nnod_4_ele
+        new_ele%elmtyp(iele) = elmtyp_2
       end do
 !
-      do k1 = 1, ele_2nd%nnod_4_ele
-        ele_2nd%ie(1:ntot_ele_refined,k1)                               &
+      do k1 = 1, new_ele%nnod_4_ele
+        new_ele%ie(1:ntot_ele_refined,k1)                               &
      &          = ie_refined(1:ntot_ele_refined,k1)
       end do
 !

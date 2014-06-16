@@ -1,9 +1,18 @@
 !
 !     module m_data_4_interpolate_org
 !
-      module m_data_4_interpolate_org
-!
 !     Written by H. Matsui on Aug., 2006
+!
+!      subroutine allocate_minmax_4_inter_org(nele_2)
+!      subroutine allocate_nele_in_search_bin
+!      subroutine allocate_iele_in_search_bin
+!      subroutine deallocate_minmax_4_inter_org
+!      subroutine deallocate_iele_in_search_bin
+!
+!      subroutine check_minmax_sph_org(id_file, nele_2)
+!      subroutine check_iele_in_search_bin(id_file)
+!
+      module m_data_4_interpolate_org
 !
       use m_precision
 !
@@ -21,30 +30,22 @@
 !
       integer(kind = kint), allocatable :: iele_in_bin(:)
 !
-!      subroutine allocate_minmax_4_inter_org
-!      subroutine allocate_nele_in_search_bin
-!      subroutine allocate_iele_in_search_bin
-!      subroutine deallocate_minmax_4_inter_org
-!      subroutine deallocate_iele_in_search_bin
-!
-!      subroutine check_minmax_sph_org(id_file)
-!      subroutine check_iele_in_search_bin(id_file)
-!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_minmax_4_inter_org
+      subroutine allocate_minmax_4_inter_org(nele_2)
 !
-      use m_2nd_geometry_data
+      integer(kind = kint), intent(in) :: nele_2
 !
 !
-      allocate(iflag_meridian_x(ele_2nd%numele))
-      allocate(min_sph_each_ele(ele_2nd%numele,3))
-      allocate(max_sph_each_ele(ele_2nd%numele,3))
+      allocate(iflag_meridian_x(nele_2))
+      allocate(min_sph_each_ele(nele_2,3))
+      allocate(max_sph_each_ele(nele_2,3))
 !
+      if(nele_2 .le. 0) return
       iflag_meridian_x = 0
 !
       min_sph_each_ele = 0.0d0
@@ -106,11 +107,9 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine check_minmax_sph_org(id_file)
+      subroutine check_minmax_sph_org(id_file, nele_2)
 !
-      use m_2nd_geometry_data
-!
-!
+      integer(kind = kint), intent(in) :: nele_2
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint) :: iele
 !
@@ -118,8 +117,8 @@
       write(id_file,*) '#  min. and max. for radial'
       write(id_file,*) '#'
 !
-      write(id_file,'(i10)') ele_2nd%numele
-      do iele = 1, ele_2nd%numele
+      write(id_file,'(i10)') nele_2
+      do iele = 1, nele_2
         write(id_file,'(i10,1p2e23.12)') iele,                          &
      &      min_sph_each_ele(iele,1), max_sph_each_ele(iele,1)
       end do
@@ -128,8 +127,8 @@
       write(id_file,*) '#  min. and max. for elevation'
       write(id_file,*) '#'
 !
-      write(id_file,'(i10)') ele_2nd%numele
-      do iele = 1, ele_2nd%numele
+      write(id_file,'(i10)') nele_2
+      do iele = 1, nele_2
         write(id_file,'(i10,1p2e23.12)') iele,                          &
      &      min_sph_each_ele(iele,2), max_sph_each_ele(iele,2)
       end do
@@ -138,8 +137,8 @@
       write(id_file,*) '#  min. and max. for azumuth'
       write(id_file,*) '#'
 !
-      write(id_file,'(i10)') ele_2nd%numele
-      do iele = 1, ele_2nd%numele
+      write(id_file,'(i10)') nele_2
+      do iele = 1, nele_2
         write(id_file,'(i10,1p2e23.12)') iele,                          &
      &      min_sph_each_ele(iele,3), max_sph_each_ele(iele,3)
       end do
@@ -154,7 +153,6 @@
 !
 !
       integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint) :: ihash
 !
       write(id_file,*) '#'
       write(id_file,*) '#  stack for original elment in search bin'

@@ -1,6 +1,18 @@
 !find_hanging_surface.f90
 !      module find_hanging_surface
 !
+!
+!      subroutine allocate_iflag_hangings
+!      subroutine deallocate_iflag_hangings
+!
+!      subroutine check_hanging_surface
+!      subroutine set_hanging_nodes
+!
+!      subroutine add_hanging_node_group_num(new_nod_grp)
+!      subroutine add_hanging_node_group_name(new_nod_grp)
+!      subroutine add_hanging_node_group_item(new_nod_grp)
+!
+!
       module find_hanging_surface
 !
       use m_precision
@@ -178,89 +190,103 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_hanging_node_group_num
+      subroutine add_hanging_node_group_num(new_nod_grp)
 !
       use m_node_group
-      use m_2nd_group_data
+      use t_group_data
+!
+      type(group_data), intent(inout) :: new_nod_grp
 !
 !
-      if(nnod_hang_4 .gt. 0) nod_grp_2nd%num_grp = nod_grp_2nd%num_grp + 2
-      if(nnod_hang_2 .gt. 0) nod_grp_2nd%num_grp = nod_grp_2nd%num_grp + 2
+      if(nnod_hang_4 .gt. 0) then
+        new_nod_grp%num_grp = new_nod_grp%num_grp + 2
+      end if
+      if(nnod_hang_2 .gt. 0) then
+        new_nod_grp%num_grp = new_nod_grp%num_grp + 2
+      end if
 !
       end subroutine add_hanging_node_group_num
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_hanging_node_group_name
+      subroutine add_hanging_node_group_name(new_nod_grp)
 !
       use m_node_group
-      use m_2nd_group_data
+      use t_group_data
+!
+      type(group_data), intent(inout) :: new_nod_grp
 !
       integer(kind = kint) :: icou
 !
       icou = num_bc
       if(nnod_hang_4 .gt. 0) then
         icou = icou+1
-        nod_grp_2nd%grp_name(icou) = 'HANGING_NODE_SURF'
-        nod_grp_2nd%istack_grp(icou) = nod_grp_2nd%istack_grp(icou-1) + nnod_hang_4
+        new_nod_grp%grp_name(icou) = 'HANGING_NODE_SURF'
+        new_nod_grp%istack_grp(icou)                                    &
+     &         = new_nod_grp%istack_grp(icou-1) + nnod_hang_4
         icou = icou+1
-        nod_grp_2nd%grp_name(icou) = 'HANGING_SOURCE_SURF'
-        nod_grp_2nd%istack_grp(icou) = nod_grp_2nd%istack_grp(icou-1) + 4 * nnod_hang_4
+        new_nod_grp%grp_name(icou) = 'HANGING_SOURCE_SURF'
+        new_nod_grp%istack_grp(icou)                                    &
+     &         = new_nod_grp%istack_grp(icou-1) + 4 * nnod_hang_4
 !
-        nod_grp_2nd%num_item = nod_grp_2nd%istack_grp(icou)
+        new_nod_grp%num_item = new_nod_grp%istack_grp(icou)
       end if
 !
       if(nnod_hang_2 .gt. 0) then
         icou = icou+1
-        nod_grp_2nd%grp_name(icou) = 'HANGING_NODE_EDGE'
-        nod_grp_2nd%istack_grp(icou) = nod_grp_2nd%istack_grp(icou-1) + nnod_hang_2
+        new_nod_grp%grp_name(icou) = 'HANGING_NODE_EDGE'
+        new_nod_grp%istack_grp(icou)                                    &
+     &          = new_nod_grp%istack_grp(icou-1) + nnod_hang_2
         icou = icou+1
-        nod_grp_2nd%grp_name(icou) = 'HANGING_SOURCE_EDGE'
-        nod_grp_2nd%istack_grp(icou) = nod_grp_2nd%istack_grp(icou-1) + 2 * nnod_hang_2
+        new_nod_grp%grp_name(icou) = 'HANGING_SOURCE_EDGE'
+        new_nod_grp%istack_grp(icou)                                    &
+     &          = new_nod_grp%istack_grp(icou-1) + 2 * nnod_hang_2
 !
-        nod_grp_2nd%num_item = nod_grp_2nd%istack_grp(icou)
+        new_nod_grp%num_item = new_nod_grp%istack_grp(icou)
       end if
 !
       end subroutine add_hanging_node_group_name
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_hanging_node_group_item
+      subroutine add_hanging_node_group_item(new_nod_grp)
 !
       use m_node_group
-      use m_2nd_group_data
+      use t_group_data
+!
+      type(group_data), intent(inout) :: new_nod_grp
 !
       integer(kind = kint) :: icou, inum, ist
 !
       icou = num_bc
       if(nnod_hang_4 .gt. 0) then
-        ist =  nod_grp_2nd%istack_grp(icou)
+        ist =  new_nod_grp%istack_grp(icou)
         do inum = 1, nnod_hang_4
-          nod_grp_2nd%item_grp(ist+inum) = inod_hang_4(1,inum)
+          new_nod_grp%item_grp(ist+inum) = inod_hang_4(1,inum)
         end do
         icou = icou + 1
 !
-        ist =  nod_grp_2nd%istack_grp(icou)
+        ist =  new_nod_grp%istack_grp(icou)
         do inum = 1, nnod_hang_4
-          nod_grp_2nd%item_grp(ist+4*inum-3) = inod_hang_4(2,inum)
-          nod_grp_2nd%item_grp(ist+4*inum-2) = inod_hang_4(3,inum)
-          nod_grp_2nd%item_grp(ist+4*inum-1) = inod_hang_4(4,inum)
-          nod_grp_2nd%item_grp(ist+4*inum  ) = inod_hang_4(5,inum)
+          new_nod_grp%item_grp(ist+4*inum-3) = inod_hang_4(2,inum)
+          new_nod_grp%item_grp(ist+4*inum-2) = inod_hang_4(3,inum)
+          new_nod_grp%item_grp(ist+4*inum-1) = inod_hang_4(4,inum)
+          new_nod_grp%item_grp(ist+4*inum  ) = inod_hang_4(5,inum)
         end do
         icou = icou + 1
       end if
 !
       if(nnod_hang_2 .gt. 0) then
-        ist =  nod_grp_2nd%istack_grp(icou)
+        ist =  new_nod_grp%istack_grp(icou)
         do inum = 1, nnod_hang_2
-          nod_grp_2nd%item_grp(ist+inum) = inod_hang_2(1,inum)
+          new_nod_grp%item_grp(ist+inum) = inod_hang_2(1,inum)
         end do
         icou = icou + 1
 !
-        ist =  nod_grp_2nd%istack_grp(icou)
+        ist =  new_nod_grp%istack_grp(icou)
         do inum = 1, nnod_hang_2
-          nod_grp_2nd%item_grp(ist+2*inum-1) = inod_hang_2(2,inum)
-          nod_grp_2nd%item_grp(ist+2*inum  ) = inod_hang_2(3,inum)
+          new_nod_grp%item_grp(ist+2*inum-1) = inod_hang_2(2,inum)
+          new_nod_grp%item_grp(ist+2*inum  ) = inod_hang_2(3,inum)
         end do
         icou = icou + 1
       end if

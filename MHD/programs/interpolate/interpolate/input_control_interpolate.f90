@@ -3,7 +3,8 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine s_input_control_interpolate(ierr)
+!      subroutine s_input_control_interpolate(new_femmesh,              &
+!     &          new_surf_mesh, new_edge_mesh, ierr)
 !      subroutine set_ctl_interpolate_udt
 !
       module input_control_interpolate
@@ -21,7 +22,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_interpolate(ierr)
+      subroutine s_input_control_interpolate(new_femmesh,               &
+     &          new_surf_mesh, new_edge_mesh, ierr)
+!
+      use t_mesh_data
 !
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
@@ -36,8 +40,11 @@
       use itp_table_IO_select_4_zlib
       use copy_interpolate_dest_IO
       use copy_interpolate_org_IO
-      use interpolate_nodal_field
+      use interpolate_nod_field_2_type
 !
+      type(mesh_data), intent(inout) :: new_femmesh
+      type(surface_geometry), intent(inout) :: new_surf_mesh
+      type(edge_geometry), intent(inout) ::  new_edge_mesh
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -65,7 +72,8 @@
       if (my_rank .lt. ndomain_dest) then
         mesh_file_head = dest_mesh_head
         iflag_mesh_file_fmt = ifmt_itp_mesh_file
-        call input_2nd_mesh(my_rank)
+        call input_2nd_mesh(my_rank, new_femmesh,                       &
+     &      new_surf_mesh, new_edge_mesh)
       end if
 !
 !  --  read interpolate table
@@ -82,7 +90,7 @@
       call copy_itp_table_org_from_IO(my_rank)
 !
       if (iflag_debug.eq.1) write(*,*) 'init_interpolate_nodal_data'
-      call init_interpolate_nodal_data
+      call init_interpolate_nodal_data(new_femmesh%mesh%node)
 !
       end subroutine s_input_control_interpolate
 !

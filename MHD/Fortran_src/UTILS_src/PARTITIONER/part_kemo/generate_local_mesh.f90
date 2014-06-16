@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on Aug., 2007
 !
-!      subroutine PROC_LOCAL_MESH
+!      subroutine PROC_LOCAL_MESH(new_fem)
 !
       module generate_local_mesh
 !
@@ -17,8 +17,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine PROC_LOCAL_MESH
+      subroutine PROC_LOCAL_MESH(new_fem)
 !
+      use t_mesh_data
       use m_constants
       use m_geometry_parameter
       use m_geometry_data
@@ -33,6 +34,8 @@
       use generate_node_comm_table
       use local_mesh_by_part
       use const_mesh_info
+!
+      type(mesh_data), intent(inout) :: new_fem
 !
       character(len=kchara), parameter :: work_file_header = 'work'
 !C
@@ -60,16 +63,19 @@
 !C +---------------------------------------+
 !C===
 !
-      call gen_node_import_tables(num_domain, work_file_header)
+      call gen_node_import_tables                                       &
+     &    (num_domain, work_file_header, new_fem%mesh%nod_comm)
 !C
 !C +-------------------------------+
 !C | update FILE : EXPORT pointers |
 !C +-------------------------------+
 !C===
-      call gen_node_export_tables(num_domain, work_file_header)
+      call gen_node_export_tables                                       &
+     &    (num_domain, work_file_header, new_fem%mesh%nod_comm)
 !C
 !C-- distributed Local DATA
-      call local_fem_mesh(izero, ione, work_file_header)
+      call local_fem_mesh                                               &
+     &    (izero, ione, work_file_header, new_fem)
 !C
 !C-- Finalize
 !

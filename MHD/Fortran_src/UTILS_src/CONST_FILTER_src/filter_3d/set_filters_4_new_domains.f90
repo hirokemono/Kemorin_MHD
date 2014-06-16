@@ -1,9 +1,21 @@
 !set_filters_4_new_domains.f90
 !     module set_filters_4_new_domains
 !
-      module set_filters_4_new_domains
-!
 !     Writteg by H.Matsui on Apr., 2008
+!
+!      subroutine allocate_imark_whole_nod(nnod_global)
+!      subroutine deallocate_imark_whole_nod
+!      subroutine clear_imark_whole_nod
+!
+!      subroutine nod_marking_by_filtering_data(ip2)
+!      subroutine set_global_nodid_4_newfilter
+!
+!      subroutine set_num_globalnod_4_newdomain(ip2, new_node)
+!      subroutine set_newdomain_filtering_nod(ip2)
+!
+!      subroutine set_filter_for_new_each_domain(ip2,icou_st)
+!
+      module set_filters_4_new_domains
 !
       use m_precision
 !
@@ -38,18 +50,6 @@
       private :: deallocate_newdomian_ftr_tmp
       private :: count_num_ftr_new_each_domain
       private :: copy_filter_new_each_domain
-!
-!      subroutine allocate_imark_whole_nod(nnod_global)
-!      subroutine deallocate_imark_whole_nod
-!      subroutine clear_imark_whole_nod
-!
-!      subroutine nod_marking_by_filtering_data(ip2)
-!      subroutine set_global_nodid_4_newfilter
-!
-!      subroutine set_num_globalnod_4_newdomain(ip2)
-!      subroutine set_newdomain_filtering_nod(ip2)
-!
-!      subroutine set_filter_for_new_each_domain(ip2,icou_st)
 !
 !   --------------------------------------------------------------------
 !
@@ -138,13 +138,15 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_num_globalnod_4_newdomain(ip2)
+      subroutine set_num_globalnod_4_newdomain(ip2, new_node)
 !
+      use t_geometry_data
       use m_nod_filter_comm_table
-      use m_2nd_geometry_data
       use m_internal_4_partitioner
 !
       integer(kind = kint), intent(in) :: ip2
+      type(node_data), intent(inout) :: new_node
+!
       integer(kind = kint) :: inod, icou, inod_g, ntot_tmp
 !
 !
@@ -152,7 +154,7 @@
       do inod_g = 1,     nnod_s_domin
         nnod_filtering = nnod_filtering + imark_whole_nod(inod_g)
       end do
-      inter_nod_3dfilter = node_2nd%internal_node
+      inter_nod_3dfilter = new_node%internal_node
 !
       num_intnod_sub(ip2) =     inter_nod_3dfilter
       numnod_4_subdomain(ip2) = nnod_filtering
@@ -195,26 +197,28 @@
 !
 !   set internal nodes
 !
-      call set_globalnod_4_newdomain(ip2)
+      call set_globalnod_4_newdomain(ip2, new_node)
 !
       end subroutine set_num_globalnod_4_newdomain
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_globalnod_4_newdomain(ip2)
+      subroutine set_globalnod_4_newdomain(ip2, new_node)
 !
-      use m_2nd_geometry_data
+      use t_geometry_data
       use m_internal_4_partitioner
 !
       integer(kind = kint), intent(in) :: ip2
+      type(node_data), intent(inout) :: new_node
+!
       integer(kind = kint) :: inod, icou, inod_g
 !
 !   set internal nodes
 !
-      do inod = 1, node_2nd%internal_node
+      do inod = 1, new_node%internal_node
         icou = istack_numnod_sub(ip2-1) + inod
-        inod_g = node_2nd%inod_global(inod)
+        inod_g = new_node%inod_global(inod)
         inod_4_subdomain(icou) = inod_g
         imark_whole_nod(inod_g) = 0
       end do

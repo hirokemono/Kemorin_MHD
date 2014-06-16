@@ -13,7 +13,16 @@
       use calypso_mpi
       use m_machine_parameter
 !
+      use t_mesh_data
+      use t_phys_data
+!
       implicit none
+!
+      type(mesh_data), save :: new_femmesh
+      type(surface_geometry), save :: new_surf_mesh
+      type(edge_geometry), save ::  new_edge_mesh
+!
+      type(phys_data), save :: new_phys
 !
       private :: link_field_data_type_2_IO
 !
@@ -29,8 +38,6 @@
       use m_t_step_parameter
       use m_geometry_parameter
       use m_node_phys_address
-      use m_2nd_geometry_data
-      use m_2nd_phys_data
 !
       use input_control_interpolate
       use const_mesh_info
@@ -46,7 +53,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
-      call s_input_control_interpolate(ierr)
+      call s_input_control_interpolate(new_femmesh,                     &
+     &    new_surf_mesh, new_edge_mesh, ierr)
       call set_ctl_interpolate_udt
 !
 !     --------------------- 
@@ -64,8 +72,11 @@
 !     --------------------- 
 !
       if (my_rank .lt. ndomain_dest) then
-        call count_size_4_smp_mesh_type(node_2nd, ele_2nd)
-        if (i_debug.eq.iflag_full_msg) call check_smp_size_2nd(my_rank)
+        call count_size_4_smp_mesh_type                                 &
+     &     (new_femmesh%mesh%node, new_femmesh%mesh%ele)
+        if (i_debug.eq.iflag_full_msg) then
+          call check_smp_size_type(my_rank, new_femmesh%mesh)
+        end if
       end if
 !
 !     --------------------- 
@@ -74,10 +85,10 @@
       call initialize_nod_field_data
 !
       if (iflag_debug.eq.1) write(*,*) 'link_nodal_fld_type_names'
-      call link_nodal_fld_type_names(phys_2nd)
+      call link_nodal_fld_type_names(new_phys)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data_type'
-      call alloc_phys_data_type(node_2nd%numnod, phys_2nd)
+      call alloc_phys_data_type(new_femmesh%mesh%node%numnod, new_phys)
 !
 !     --------------------- 
 !
@@ -95,8 +106,8 @@
       use m_ucd_input_data
       use m_ctl_params_4_gen_table
       use ucd_IO_select
-      use interpolate_nodal_field
       use nod_phys_send_recv
+      use interpolate_nod_field_2_type
 !
       integer(kind = kint) :: istep
 !
@@ -112,12 +123,14 @@
 !    interpolation
 !
         if (iflag_debug.gt.0) write(*,*) 's_interpolate_nodal_data'
-        call interpolate_nodal_data
+        call interpolate_nodal_data(new_femmesh%mesh%nod_comm,          &
+     &      new_femmesh%mesh%node, new_phys)
 !
 !    output udt data
 !
         if (my_rank .lt. ndomain_dest) then
-          call link_field_data_type_2_IO(node_2nd, phys_2nd, fem_ucd)
+          call link_field_data_type_2_IO(new_femmesh%mesh%node,         &
+     &        new_phys, fem_ucd)
 !
           call set_ucd_file_format(itype_itp_udt_file)
           call set_ucd_file_prefix(itp_udt_file_head)

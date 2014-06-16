@@ -19,10 +19,10 @@
 !      subroutine allocate_iele_local_newfilter
 !      subroutine deallocate_iele_local_newfilter
 !
-!      subroutine set_iele_table_4_newfilter
+!      subroutine set_iele_table_4_newfilter(new_ele)
 !
-!      subroutine set_new_elength_ele
-!      subroutine set_new_filter_moms_ele
+!      subroutine set_new_elength_ele(new_node)
+!      subroutine set_new_filter_moms_ele(new_node)
 !
 !   --------------------------------------------------------------------
 !
@@ -48,16 +48,18 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_iele_table_4_newfilter
+      subroutine set_iele_table_4_newfilter(new_ele)
 !
-      use m_2nd_geometry_data
+      use t_geometry_data
+!
+      type(element_data), intent(in) :: new_ele
 !
       integer(kind = kint) :: iele, iele_gl
 !
 !
       iele_local_2nd(1:max_gl_ele_newdomain) = 0
-      do iele = 1, ele_2nd%numele
-        iele_gl = ele_2nd%iele_global(iele)
+      do iele = 1, new_ele%numele
+        iele_gl = new_ele%iele_global(iele)
         iele_local_2nd(iele_gl) = iele
       end do
 !
@@ -66,20 +68,23 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_new_elength_ele
+      subroutine set_new_elength_ele(new_node)
+!
+      use t_geometry_data
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_data
       use m_2nd_filter_ele_length
       use m_filter_elength
+!
+      type(node_data), intent(in) :: new_node
 !
       integer(kind = kint) :: iele, iele_gl, iele_2nd, nd
 !
 !
       do iele = 1, numele
         iele_gl = globalelmid(iele)
-        if (ie(iele,1) .le. node_2nd%internal_node                      &
+        if (ie(iele,1) .le. new_node%internal_node                      &
      &      .and. iele_gl .le. max_gl_ele_newdomain                     &
      &      .and. iele_local_2nd(iele_gl) .gt. 0) then
 !
@@ -127,20 +132,22 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_new_filter_moms_ele
+      subroutine set_new_filter_moms_ele(new_node)
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_data
+      use t_geometry_data
       use m_2nd_filter_moments
       use m_filter_moments
+!
+      type(node_data), intent(in) :: new_node
 !
       integer(kind = kint) :: iele, iele_gl, iele_2nd, nd, ifil
 !
 !
       do iele = 1, numele
         iele_gl = globalelmid(iele)
-        if (ie(iele,1) .le. node_2nd%internal_node                      &
+        if (ie(iele,1) .le. new_node%internal_node                      &
      &      .and. iele_gl .le. max_gl_ele_newdomain                     &
      &      .and. iele_local_2nd(iele_gl) .gt. 0) then
 !

@@ -76,10 +76,10 @@
 !
 !
 !>     Structure for element data (communication)
-      type elemens_comms
+      type element_comms
         type(communication_table) :: ele_comm
 !<     Structure for element communication
-      end type elemens_comms
+      end type element_comms
 !
 !>     Structure for surface data
 !>        (position, connectivity, and communication)
@@ -132,5 +132,38 @@
       end subroutine dealloc_base_mesh_type_info
 !
 !------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine check_smp_size_type(my_rank, mesh)
+!
+      type(mesh_geometry) :: mesh
+!
+      integer(kind = kint), intent(in) :: my_rank
+!
+       write(*,*) 'PE: ', my_rank,                                      &
+     &        'mesh%node%istack_nod_smp: ', mesh%node%istack_nod_smp
+       write(*,*) 'PE: ', my_rank,                                      &
+     &        'mesh%node%istack_nod_smp: ', mesh%node%istack_nod_smp
+       write(*,*) 'PE: ', my_rank,                                      &
+     &        'mesh%ele%istack_ele_smp: ', mesh%ele%istack_ele_smp
+!
+      end subroutine check_smp_size_type
+!
+!-----------------------------------------------------------------------
+!
+      subroutine check_smp_size_surf_edge_type(surf_mesh, edge_mesh)
+!
+      type(surface_geometry), intent(inout) :: surf_mesh
+      type(edge_geometry), intent(inout) ::  edge_mesh
+!
+!
+      write(*,*) 'surf_mesh%surfistack_surf_smp ',                      &
+     &           surf_mesh%surf%istack_surf_smp
+      write(*,*) 'edge_mesh%edge%istack_edge_smp ',                     &
+     &           edge_mesh%edge%istack_edge_smp
+!
+      end subroutine check_smp_size_surf_edge_type
+!
+!-----------------------------------------------------------------------
 !
       end module t_mesh_data

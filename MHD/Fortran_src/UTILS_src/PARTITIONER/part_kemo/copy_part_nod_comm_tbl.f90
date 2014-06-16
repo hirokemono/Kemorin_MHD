@@ -3,11 +3,11 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!      subroutine copy_node_import_to_mem(ip)
-!      subroutine copy_node_import_from_mem(ip)
+!      subroutine copy_node_import_to_mem(ip, new_comm)
+!      subroutine copy_node_import_from_mem(ip, new_comm)
 !
-!      subroutine copy_node_export_to_mem(ip)
-!      subroutine copy_node_export_from_mem(ip)
+!      subroutine copy_node_export_to_mem(ip, new_comm)
+!      subroutine copy_node_export_from_mem(ip, new_comm)
 !
 !      subroutine copy_node_import_num_tmp(ip)
 !      subroutine copy_node_import_item_tmp(ip)
@@ -27,114 +27,111 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_node_import_to_mem(ip)
-!
-      use m_2nd_geometry_data
+      subroutine copy_node_import_to_mem(ip, new_comm)
 !
       integer(kind = kint),  intent(in) :: ip 
+      type(communication_table), intent(in) :: new_comm
 !
 !
-      nod_comm_tbl_part(ip)%num_neib = comm_2nd%num_neib
-      nod_comm_tbl_part(ip)%ntot_import = comm_2nd%ntot_import
+      nod_comm_tbl_part(ip)%num_neib = new_comm%num_neib
+      nod_comm_tbl_part(ip)%ntot_import = new_comm%ntot_import
 !
       call allocate_type_neib_id( nod_comm_tbl_part(ip) )
       call allocate_type_import_num( nod_comm_tbl_part(ip) )
 !
-      nod_comm_tbl_part(ip)%id_neib(1:comm_2nd%num_neib)  &
-     &       = comm_2nd%id_neib(1:comm_2nd%num_neib)
-      nod_comm_tbl_part(ip)%istack_import(0:comm_2nd%num_neib)   &
-     &       = comm_2nd%istack_import(0:comm_2nd%num_neib)
+      nod_comm_tbl_part(ip)%id_neib(1:new_comm%num_neib)                &
+     &       = new_comm%id_neib(1:new_comm%num_neib)
+      nod_comm_tbl_part(ip)%istack_import(0:new_comm%num_neib)          &
+     &       = new_comm%istack_import(0:new_comm%num_neib)
 !
       call allocate_type_import_item( nod_comm_tbl_part(ip) )
 !
-      nod_comm_tbl_part(ip)%item_import(1:comm_2nd%ntot_import)   &
-     &       = comm_2nd%item_import(1:comm_2nd%ntot_import)
+      nod_comm_tbl_part(ip)%item_import(1:new_comm%ntot_import)         &
+     &       = new_comm%item_import(1:new_comm%ntot_import)
 !
       end subroutine copy_node_import_to_mem
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_node_import_from_mem(ip)
-!
-      use m_2nd_geometry_data
+      subroutine copy_node_import_from_mem(ip, new_comm)
 !
       integer(kind = kint),  intent(in) :: ip
+      type(communication_table), intent(inout) :: new_comm
       integer(kind = kint) :: i
 !
 !
-      comm_2nd%num_neib = nod_comm_tbl_part(ip)%num_neib
-      comm_2nd%ntot_import = nod_comm_tbl_part(ip)%ntot_import
+      new_comm%num_neib = nod_comm_tbl_part(ip)%num_neib
+      new_comm%ntot_import = nod_comm_tbl_part(ip)%ntot_import
 !
-      call allocate_type_neib_id(comm_2nd)
-      call allocate_type_import_num(comm_2nd)
+      call allocate_type_neib_id(new_comm)
+      call allocate_type_import_num(new_comm)
 !
-      comm_2nd%id_neib(1:comm_2nd%num_neib)                     &
-     &       = nod_comm_tbl_part(ip)%id_neib(1:comm_2nd%num_neib)
-      comm_2nd%istack_import(0:comm_2nd%num_neib)                              &
-     &       = nod_comm_tbl_part(ip)%istack_import(0:comm_2nd%num_neib)
+      new_comm%id_neib(1:new_comm%num_neib)                             &
+     &       = nod_comm_tbl_part(ip)%id_neib(1:new_comm%num_neib)
+      new_comm%istack_import(0:new_comm%num_neib)                       &
+     &       = nod_comm_tbl_part(ip)%istack_import(0:new_comm%num_neib)
 !
-      do i = 1, comm_2nd%num_neib
-        comm_2nd%num_import(i) = comm_2nd%istack_import(i)  &
-     &                          - comm_2nd%istack_import(i-1)
+      do i = 1, new_comm%num_neib
+        new_comm%num_import(i) = new_comm%istack_import(i)              &
+     &                          - new_comm%istack_import(i-1)
       end do
 !
-      call allocate_type_import_item(comm_2nd)
+      call allocate_type_import_item(new_comm)
 !
-      comm_2nd%item_import(1:comm_2nd%ntot_import)                             &
-     &       = nod_comm_tbl_part(ip)%item_import(1:comm_2nd%ntot_import)
+      new_comm%item_import(1:new_comm%ntot_import)                      &
+     &   = nod_comm_tbl_part(ip)%item_import(1:new_comm%ntot_import)
 !
       end subroutine copy_node_import_from_mem
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine copy_node_export_to_mem(ip)
-!
-      use m_2nd_geometry_data
+      subroutine copy_node_export_to_mem(ip, new_comm)
 !
       integer(kind = kint),  intent(in) :: ip 
+      type(communication_table), intent(in) :: new_comm
 !
 !
-      nod_comm_tbl_part(ip)%ntot_export = comm_2nd%ntot_export
+      nod_comm_tbl_part(ip)%ntot_export = new_comm%ntot_export
 !
       call allocate_type_export_num( nod_comm_tbl_part(ip) )
 !
-      nod_comm_tbl_part(ip)%istack_export(0:comm_2nd%num_neib)          &
-     &       = comm_2nd%istack_export(0:comm_2nd%num_neib)
+      nod_comm_tbl_part(ip)%istack_export(0:new_comm%num_neib)          &
+     &       = new_comm%istack_export(0:new_comm%num_neib)
 !
       call allocate_type_export_item( nod_comm_tbl_part(ip) )
 !
-      nod_comm_tbl_part(ip)%item_export(1:comm_2nd%ntot_export)         &
-     &       = comm_2nd%item_export(1:comm_2nd%ntot_export)
+      nod_comm_tbl_part(ip)%item_export(1:new_comm%ntot_export)         &
+     &       = new_comm%item_export(1:new_comm%ntot_export)
 !
       end subroutine copy_node_export_to_mem
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_node_export_from_mem(ip)
-!
-      use m_2nd_geometry_data
+      subroutine copy_node_export_from_mem(ip, new_comm)
 !
       integer(kind = kint),  intent(in) :: ip
+      type(communication_table), intent(inout) :: new_comm
+!
       integer(kind = kint) :: i
 !
 !
-      comm_2nd%ntot_export = nod_comm_tbl_part(ip)%ntot_export
+      new_comm%ntot_export = nod_comm_tbl_part(ip)%ntot_export
 !
-      call allocate_type_export_num(comm_2nd)
+      call allocate_type_export_num(new_comm)
 !
-      comm_2nd%istack_export(0:comm_2nd%num_neib)                       &
-     &       = nod_comm_tbl_part(ip)%istack_export(0:comm_2nd%num_neib)
+      new_comm%istack_export(0:new_comm%num_neib)                       &
+     &       = nod_comm_tbl_part(ip)%istack_export(0:new_comm%num_neib)
 !
-      do i = 1, comm_2nd%num_neib
-        comm_2nd%num_export(i) = comm_2nd%istack_export(i)   &
-     &                          - comm_2nd%istack_export(i-1)
+      do i = 1, new_comm%num_neib
+        new_comm%num_export(i) = new_comm%istack_export(i)              &
+     &                          - new_comm%istack_export(i-1)
       end do
 !
-      call allocate_type_export_item(comm_2nd)
+      call allocate_type_export_item(new_comm)
 !
-      comm_2nd%item_export(1:comm_2nd%ntot_export)                             &
-     &       = nod_comm_tbl_part(ip)%item_export(1:comm_2nd%ntot_export)
+      new_comm%item_export(1:new_comm%ntot_export)                      &
+     &   = nod_comm_tbl_part(ip)%item_export(1:new_comm%ntot_export)
 !
       end subroutine copy_node_export_from_mem
 !

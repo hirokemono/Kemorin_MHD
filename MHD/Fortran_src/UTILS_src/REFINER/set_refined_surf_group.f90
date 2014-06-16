@@ -1,9 +1,15 @@
 !set_refined_surf_group.f90
 !      module set_refined_surf_group
 !
-      module set_refined_surf_group
-!
 !      Writen by H. Matsui on Oct., 2007
+!
+!      subroutine allocate_mark_refine_sf_grp(nnod_2nd)
+!      subroutine deallocate_mark_refine_sf_grp
+!
+!      subroutine count_refined_surf_group
+!      subroutine s_set_refined_surf_group
+!
+      module set_refined_surf_group
 !
       use m_precision
       use m_constants
@@ -13,24 +19,19 @@
       integer(kind = kint), allocatable, private :: inod_mark_2(:)
       private :: mark_refined_node_4_surf_grp
 !
-!      subroutine allocate_mark_refine_sf_grp
-!      subroutine deallocate_mark_refine_sf_grp
-!
-!      subroutine count_refined_surf_group
-!      subroutine s_set_refined_surf_group
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_mark_refine_sf_grp
+      subroutine allocate_mark_refine_sf_grp(nnod_2nd)
 !
-      use m_2nd_geometry_data
+      integer(kind = kint), intent(in) :: nnod_2nd
 !
-      allocate(inod_mark_2(node_2nd%numnod))
-      inod_mark_2 = 0
+!
+      allocate(inod_mark_2(nnod_2nd))
+      if(nnod_2nd .gt. 0) inod_mark_2 = 0
 !
       end subroutine allocate_mark_refine_sf_grp
 !
@@ -44,28 +45,30 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_refined_surf_group
+      subroutine count_refined_surf_group(new_sf_grp)
 !
       use m_geometry_constants
       use m_geometry_parameter
       use m_surface_group
-      use m_2nd_group_data
+      use t_group_data
       use m_refined_element_data
 !
-      integer(kind = kint) :: i, icou, ist, ied, inum
-      integer(kind = kint) :: inod, iele, isf
+      type(surface_group_data), intent(inout) :: new_sf_grp
+!
+      integer(kind = kint) :: i, ist, ied, inum
+      integer(kind = kint) :: iele, isf
       integer(kind = kint) :: jst, jed, jele, jnod
       integer(kind = kint) :: k1, k2, k
       integer(kind = kint) :: iflag
 !
 !
       do i = 1, num_surf
-        sf_grp_2nd%grp_name(i) = surf_name(i)
+        new_sf_grp%grp_name(i) = surf_name(i)
       end do
 !
-      sf_grp_2nd%istack_grp(0) = 0
+      new_sf_grp%istack_grp(0) = 0
       do i = 1, num_surf
-        sf_grp_2nd%istack_grp(i) = sf_grp_2nd%istack_grp(i-1)
+        new_sf_grp%istack_grp(i) = new_sf_grp%istack_grp(i-1)
 !
         ist = surf_istack(i-1) + 1
         ied = surf_istack(i)
@@ -88,7 +91,7 @@
               end do
 !
               if (iflag .eq. 1) then
-                sf_grp_2nd%istack_grp(i) = sf_grp_2nd%istack_grp(i) + 1
+                new_sf_grp%istack_grp(i) = new_sf_grp%istack_grp(i) + 1
               end if
 !
             end do
@@ -98,29 +101,31 @@
 !
         end do
       end do
-      sf_grp_2nd%num_item = sf_grp_2nd%istack_grp(num_surf)
+      new_sf_grp%num_item = new_sf_grp%istack_grp(num_surf)
 !
       end subroutine count_refined_surf_group
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_refined_surf_group
+      subroutine s_set_refined_surf_group(new_sf_grp)
 !
       use m_geometry_constants
       use m_geometry_parameter
       use m_surface_group
-      use m_2nd_group_data
+      use t_group_data
       use m_refined_element_data
 !
+      type(surface_group_data), intent(inout) :: new_sf_grp
+!
       integer(kind = kint) :: i, icou, ist, ied, inum
-      integer(kind = kint) :: inod, iele, isf
+      integer(kind = kint) :: iele, isf
       integer(kind = kint) :: jst, jed, jele, jnod
       integer(kind = kint) :: k1, k2, k
       integer(kind = kint) :: iflag
 !
 !
       do i = 1, num_surf
-        icou = sf_grp_2nd%istack_grp(i-1)
+        icou = new_sf_grp%istack_grp(i-1)
 !
         ist = surf_istack(i-1) + 1
         ied = surf_istack(i)
@@ -144,8 +149,8 @@
 !
               if (iflag .eq. 1) then
                 icou = icou + 1
-                sf_grp_2nd%item_sf_grp(1,icou) = jele
-                sf_grp_2nd%item_sf_grp(2,icou) = k1
+                new_sf_grp%item_sf_grp(1,icou) = jele
+                new_sf_grp%item_sf_grp(2,icou) = k1
               end if
 !
             end do

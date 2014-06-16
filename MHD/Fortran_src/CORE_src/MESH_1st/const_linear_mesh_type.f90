@@ -5,7 +5,7 @@
 !
 !      subroutine s_const_linear_mesh_type(femmesh_l, surf_mesh_l,      &
 !     &          edge_mesh_l, nod_fld_l)
-!      subroutine set_linear_phy_data_type(femmesh_l, nod_fld_l)
+!      subroutine set_linear_phys_data_type(femmesh_l, nod_fld_l)
 !
       module const_linear_mesh_type
 !
@@ -57,24 +57,23 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_linear_phy_data_type(femmesh_l, nod_fld_l)
+      subroutine set_linear_phys_data_type(femmesh_l, nod_fld_l)
 !
       use m_geometry_constants
       use m_geometry_parameter
       use t_mesh_data
       use t_phys_data
-      use cvt_quad_2_linear_mesh_t
 !
       type(mesh_data), intent(inout) :: femmesh_l
       type(phys_data), intent(inout) :: nod_fld_l
 !
 !
       if (nnod_4_ele .eq. num_t_quad) then
-        call copy_2nd_data_on_vertex
+        call copy_nod_phys_2_linear_t(femmesh_l%mesh, nod_fld_l)
         call generate_phys_on_surf_t(femmesh_l%mesh, nod_fld_l)
       end if
 !
-      end subroutine set_linear_phy_data_type
+      end subroutine set_linear_phys_data_type
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -108,9 +107,6 @@
 !
       call link_1st_ele_grp_connect_type(femmesh_l%group%tbls_ele_grp)
       call link_1st_surf_grp_conn_type(femmesh_l%group%tbls_surf_grp)
-!
-      call link_smp_param_type(femmesh_l%mesh%node, femmesh_l%mesh%ele, &
-     &    surf_mesh_l%surf, edge_mesh_l%edge)
 !
       call link_nodal_fld_type(nod_fld_l)
 !
@@ -159,8 +155,7 @@
       call s_const_group_type_info(femmesh_l%mesh, surf_mesh_l,         &
      &    edge_mesh_l, femmesh_l%group)
 !
-      call count_size_4_smp_mesh_type(femmesh_l%mesh%node,              &
-     &    femmesh_l%mesh%ele)
+      call count_ele_4_smp_mesh_type(femmesh_l%mesh%ele)
       call count_surf_size_smp_type(surf_mesh_l%surf)
       call count_edge_size_smp_type(edge_mesh_l%edge)
 !

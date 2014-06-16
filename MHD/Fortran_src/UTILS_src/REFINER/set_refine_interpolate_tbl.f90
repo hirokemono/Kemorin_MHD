@@ -1,9 +1,15 @@
 !set_refine_interpolate_tbl.f90
 !      module set_refine_interpolate_tbl
 !
-      module set_refine_interpolate_tbl
-!
 !     Written by H. Matsui on Apr., 2010
+!
+!      subroutine set_itp_course_to_fine_origin
+!      subroutine set_itp_course_to_fine_dest(nnod_2)
+!
+!      subroutine set_itp_fine_to_course_origin
+!      subroutine set_itp_fine_to_course_dest
+!
+      module set_refine_interpolate_tbl
 !
       use m_precision
       use m_machine_parameter
@@ -20,12 +26,6 @@
       use copy_local_position_2_ele
 !
       implicit none
-!
-!      subroutine set_itp_course_to_fine_origin
-!      subroutine set_itp_course_to_fine_dest
-!
-!      subroutine set_itp_fine_to_course_origin
-!      subroutine set_itp_fine_to_course_dest
 !
 ! ----------------------------------------------------------------------
 !
@@ -140,9 +140,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_itp_course_to_fine_dest
+      subroutine set_itp_course_to_fine_dest(nnod_2)
 !
-      use m_2nd_geometry_data
+      integer(kind = kint), intent(in) :: nnod_2
 !
       integer(kind = kint) :: inod
 !
@@ -154,12 +154,12 @@
 !
       id_org_domain(1) =         izero
       istack_nod_tbl_dest(0) = izero
-      istack_nod_tbl_dest(1) = node_2nd%numnod
-      ntot_table_dest =        node_2nd%numnod
+      istack_nod_tbl_dest(1) = nnod_2
+      ntot_table_dest =        nnod_2
 !
       call allocate_itp_table_dest
 !
-      do inod = 1, node_2nd%numnod
+      do inod = 1, nnod_2
         inod_dest_4_dest(inod) = inod
       end do
 !

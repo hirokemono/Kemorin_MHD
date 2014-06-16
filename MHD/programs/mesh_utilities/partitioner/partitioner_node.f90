@@ -4,6 +4,8 @@
       use m_precision
       use m_constants
 !
+      use t_mesh_data
+!
       use m_control_data_4_part
       use m_ctl_param_partitioner
       use m_read_mesh_data
@@ -18,6 +20,8 @@
       use const_surface_mesh
 !
       implicit none
+!
+      type(mesh_data), save :: partitioned_fem
 !
       integer(kind = kint), parameter :: my_rank = izero
 !
@@ -39,7 +43,7 @@
 !
 !C===
 !C-- create subdomain mesh
-      call PROC_LOCAL_MESH
+      call PROC_LOCAL_MESH(partitioned_fem)
 !
 !  ========= Construct subdomain information for viewer ==============
 !

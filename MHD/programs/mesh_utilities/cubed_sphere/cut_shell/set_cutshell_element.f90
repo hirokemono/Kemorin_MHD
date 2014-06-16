@@ -1,23 +1,23 @@
 !
 !      module set_cutshell_element
 !
-      module set_cutshell_element
-!
 !     Written by H. Matsui
+!
+!      subroutine s_set_new_elements(new_ele)
+!
+      module set_cutshell_element
 !
       use m_precision
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_geometry_data
       use m_cutshell_nod_ele_flag
+      use t_geometry_data
 !
 !
       implicit none
 !
       private :: count_new_connect, set_new_connect
-!
-!      subroutine s_set_new_elements
 !
 !  ---------------------------------------------------------------------
 !
@@ -25,26 +25,30 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_new_elements
+      subroutine s_set_new_elements(new_ele)
+!
+      type(element_data), intent(inout) :: new_ele
 !
 !
-      call count_new_connect
+      call count_new_connect(new_ele)
 !
-      call allocate_ele_connect_type(ele_2nd)
+      call allocate_ele_connect_type(new_ele)
 !
-      call set_new_connect
+      call set_new_connect(new_ele)
 !
       end subroutine s_set_new_elements
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_new_connect
+      subroutine count_new_connect(new_ele)
+!
+      type(element_data), intent(inout) :: new_ele
 !
       integer(kind = kint) :: inod, iele, i, isig
 !
 !
-       ele_2nd%nnod_4_ele = nnod_4_ele
-       ele_2nd%numele = 0
+       new_ele%nnod_4_ele = nnod_4_ele
+       new_ele%numele = 0
        do iele = 1, numele
 !
          isig = 1
@@ -56,14 +60,16 @@
            end if
          end do
 !
-         if ( isig .ne. 0 ) ele_2nd%numele = ele_2nd%numele + 1
+         if ( isig .ne. 0 ) new_ele%numele = new_ele%numele + 1
        end do
 !
       end subroutine count_new_connect
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_connect
+      subroutine set_new_connect(new_ele)
+!
+      type(element_data), intent(inout) :: new_ele
 !
       integer(kind = kint) :: inod, iele, i, icou, isig
 !
@@ -82,12 +88,12 @@
 ! 
          if ( isig .ne. 0 ) then
            icou = icou + 1
-           ele_2nd%iele_global(icou) = icou
-           ele_2nd%elmtyp(icou) = elmtyp(iele)
-           ele_2nd%nodelm(icou) = nodelm(iele)
+           new_ele%iele_global(icou) = icou
+           new_ele%elmtyp(icou) = elmtyp(iele)
+           new_ele%nodelm(icou) = nodelm(iele)
            do i = 1, nodelm(iele)
              inod = ie(iele,i)
-             ele_2nd%ie(icou,i) = mark_new_node(inod)
+             new_ele%ie(icou,i) = mark_new_node(inod)
            end do
 !
            mark_new_ele(iele) = icou

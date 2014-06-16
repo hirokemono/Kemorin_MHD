@@ -14,8 +14,13 @@
       use calypso_mpi
       use m_2nd_pallalel_vector
       use filters_for_newdomains
+      use t_mesh_data
 !
       implicit none
+!
+      type(mesh_geometry), save ::    newmesh
+      type(surface_geometry), save :: new_surf_mesh
+      type(edge_geometry), save ::    new_edge_mesh
 !
 ! ----------------------------------------------------------------------
 !
@@ -72,17 +77,18 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'local_newdomain_filter_para'
-      call local_newdomain_filter_para
+      call local_newdomain_filter_para(newmesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_para'
       if (iflag_set_filter_elen .gt. 0                                  &
      &  .or. iflag_set_filter_moms.gt.0) then
-        call trans_filter_moms_newmesh_para
+        call trans_filter_moms_newmesh_para(newmesh,                    &
+     &      new_surf_mesh, new_edge_mesh)
       end if
 !
       if (iflag_set_filter_coef .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'filters_4_newdomains_para'
-        call filters_4_newdomains_para
+        call filters_4_newdomains_para(newmesh)
       end if
 !
       end subroutine analyze

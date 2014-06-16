@@ -3,14 +3,15 @@
 !
 !      Written by H. Matsui on Aug., 2007
 !
-!      subroutine const_nod_import_table_4_part(ip)
+!      subroutine const_nod_import_table_4_part(ip, new_comm)
 !
-!      subroutine count_nod_export_item_4_part(ip, work_f_head)
-!      subroutine set_nod_export_item_4_part(ip, work_f_head)
+!      subroutine count_nod_export_item_4_part(ip, work_f_head, new_comm)
+!      subroutine set_nod_export_item_4_part(ip, work_f_head, new_comm)
 !
       module const_node_comm_table
 !
       use m_precision
+      use t_comm_table
 !
       implicit none
 !
@@ -20,32 +21,33 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_nod_import_table_4_part(ip)
+      subroutine const_nod_import_table_4_part(ip, new_comm)
 !
-      use m_2nd_geometry_data
       use set_import_items
 !
       integer(kind = kint), intent(in) :: ip
+      type(communication_table), intent(inout) :: new_comm
 !
-      call allocate_type_import_num(comm_2nd)
 !
-      call count_node_import_item(ip, comm_2nd%num_neib, comm_2nd%id_neib, &
-     &      comm_2nd%ntot_import, comm_2nd%istack_import)
+      call allocate_type_import_num(new_comm)
 !
-      call allocate_type_import_item(comm_2nd)
+      call count_node_import_item(ip, new_comm%num_neib,                &
+     &    new_comm%id_neib,  new_comm%ntot_import,                      &
+     &    new_comm%istack_import)
 !
-      call set_node_import_item(ip, comm_2nd%num_neib, comm_2nd%id_neib, &
-     &      comm_2nd%ntot_import, comm_2nd%istack_import, comm_2nd%item_import)
+      call allocate_type_import_item(new_comm)
 !
+      call set_node_import_item(ip, new_comm%num_neib,                  &
+     &    new_comm%id_neib, new_comm%ntot_import,                       &
+     &    new_comm%istack_import, new_comm%item_import)
 !
       end subroutine const_nod_import_table_4_part
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_nod_export_item_4_part(ip, work_f_head)
+      subroutine count_nod_export_item_4_part(ip, work_f_head, new_comm)
 !
-      use m_2nd_geometry_data
       use m_partitioner_comm_table
       use m_domain_group_4_partition
       use m_internal_4_partitioner
@@ -53,18 +55,20 @@
 !
       integer(kind = kint), intent(in) :: ip
       character(len=kchara), intent(in) :: work_f_head
+      type(communication_table), intent(inout) :: new_comm
 !
       integer(kind = kint) :: j, jp, jg
 !
-      do j = 1, comm_2nd%num_neib
-        jp = comm_2nd%id_neib(j)
+      do j = 1, new_comm%num_neib
+        jp = new_comm%id_neib(j)
 !
         call load_node_import_num_tmp(jp, work_f_head)
 !
         ISTACK_NOD_TMP(0) = 0
         do jg = 1, NP_TMP
           if (NEIB_TMP(jg) .eq. ip) then
-            comm_2nd%num_export(j) = ISTACK_NOD_TMP(jg) - ISTACK_NOD_TMP(jg-1)
+            new_comm%num_export(j) = ISTACK_NOD_TMP(jg)                 &
+     &                              - ISTACK_NOD_TMP(jg-1)
             exit
           end if
         end do
@@ -76,9 +80,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_nod_export_item_4_part(ip, work_f_head)
+      subroutine set_nod_export_item_4_part(ip, work_f_head, new_comm)
 !
-      use m_2nd_geometry_data
       use m_partitioner_comm_table
       use m_domain_group_4_partition
       use m_internal_4_partitioner
@@ -86,13 +89,14 @@
 !
       integer(kind = kint), intent(in) :: ip
       character(len=kchara), intent(in) :: work_f_head
+      type(communication_table), intent(inout) :: new_comm
 !
       integer(kind = kint) :: j, jp, jg, jst, jnum, icou
       integer(kind = kint) :: jst_im, jed_im, jnod
       integer(kind = kint) :: inod, inod_org
 !
-      do j = 1, comm_2nd%num_neib
-        jp = comm_2nd%id_neib(j)
+      do j = 1, new_comm%num_neib
+        jp = new_comm%id_neib(j)
 !
         call load_node_import_item_tmp(jp, work_f_head)
 !
@@ -106,13 +110,13 @@
         end do
 !
         jst = istack_numnod_sub(jp-1)
-        icou = comm_2nd%istack_export(j-1)
+        icou = new_comm%istack_export(j-1)
         do jnum = jst_im+1, jed_im
           icou = icou + 1
           jnod = IMPORT_NOD_TMP(jnum)
           inod = inod_4_subdomain(jst+jnod)
           inod_org = id_glnode_org(inod)
-          comm_2nd%item_export(icou) = inod_local_part(inod_org)
+          new_comm%item_export(icou) = inod_local_part(inod_org)
         end do
 !
         call deallocate_nod_import_tmp
