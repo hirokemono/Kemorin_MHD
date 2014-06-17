@@ -49,6 +49,7 @@
       call verify_vector_for_solver(ithree, numnod)
       call verify_2nd_iccg_matrix(ithree, NP_dest)
 !
+!
       do inod = 1, numnod
         x_vec(3*inod-2) = xx(inod,1)
         x_vec(3*inod-1) = xx(inod,2)
@@ -128,6 +129,7 @@
       use m_interpolate_matrix
 !
       use interpolate_by_module
+      use matvec_by_djo
 !
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest
@@ -138,6 +140,7 @@
 !
       call verify_vector_for_solver(ione, numnod)
       call verify_2nd_iccg_matrix(ione, NP_dest)
+!
 !
       do nd = 1, 3
         do inod = 1, numnod
@@ -163,6 +166,7 @@
 !
       use m_interpolated_geometry
       use m_2nd_pallalel_vector
+      use m_2nd_nod_comm_table
 !
       use select_calypso_SR
       use solver_SR_int

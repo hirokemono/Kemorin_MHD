@@ -215,6 +215,9 @@
      &           inod_dest_4_dest, irev_dest_4_dest,                    &
      &           x_inter_org(1), X_dest(1) )
 !
+      call finish_calypso_send_recv                                     &
+     &   (num_dest_domain, iflag_self_itp_send)
+!
       if (comm_dest%num_neib.gt.0) then
         call SOLVER_SEND_RECV_N                                         &
      &     (NP_dest, NB, comm_dest%num_neib, comm_dest%id_neib,         &
