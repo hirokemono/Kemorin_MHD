@@ -334,6 +334,6 @@
       enddo
 !
 
-      stop ' //// program normally terminated //// '
+      stop ' //// program normally finished //// '
 !
       end program  cubmesh311

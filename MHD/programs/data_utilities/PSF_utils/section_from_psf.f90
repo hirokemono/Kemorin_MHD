@@ -70,6 +70,6 @@
         call write_psf_line_data(iflag_ucd, line_udt_head, istep, line)
       end do
 !
-      stop ' //// program normally terminated //// '
+      stop ' //// program normally finished //// '
 !
       end program section_from_psf

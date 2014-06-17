@@ -38,7 +38,7 @@
 !
       call  s_write_merged_mesh
 !
-      stop ' //// program normally terminated //// '
+      stop ' //// program normally finished //// '
 !
 !
       end program assemble_mesh

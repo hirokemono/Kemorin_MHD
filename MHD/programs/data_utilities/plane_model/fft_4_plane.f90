@@ -121,6 +121,6 @@
       write(*,*) 'step', istep, 'finish '
       end do
 
-      stop ' //// program normally terminated //// '
+      stop ' //// program normally finished //// '
 !
       end program fft_4_plane 

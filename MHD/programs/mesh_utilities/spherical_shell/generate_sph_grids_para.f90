@@ -69,6 +69,6 @@
       call output_elapsed_times
       call calypso_MPI_finalize
 !
-      write(*,*) 'program is normally terminated'
+      write(*,*) 'program is normally finished'
 !
       end program generate_sph_grids_para

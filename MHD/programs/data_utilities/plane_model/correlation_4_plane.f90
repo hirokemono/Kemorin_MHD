@@ -124,7 +124,7 @@
 
       call close_results_4_correlate
 !
-      stop ' //// program normally terminated //// '
+      stop ' //// program normally finished //// '
 
 !
 !

@@ -35,12 +35,12 @@
       write(*,*) 'will you draw mesh? (y/n)'
       read(*,*) chara_flag
       if (chara_flag.eq.'n' .or. chara_flag.eq.'N')  then
-        stop ' //// program normally terminated //// '
+        stop ' //// program normally finished //// '
       end if
 !
       call draw_mesh_kemo(%VAL(0), %VAL(iflag_draw_mesh))
 !
-      stop ' //// program normally terminated //// '
+      stop ' //// program normally finished //// '
 !
 !
       end program kemoviewer_f

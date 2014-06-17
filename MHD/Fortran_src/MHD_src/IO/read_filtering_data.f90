@@ -65,11 +65,11 @@
         if (ierr.eq.500) then
           write(*,*) 'Check num. of node in mesh and filter file for',  &
      &              my_rank
-          call calypso_MPI_abort(ierr, 'terminated ')
+          call calypso_MPI_abort(ierr, 'finished ')
         else if (ierr.eq.501) then
           write(*,*) 'Check num. of element in mesh and filter for',    &
      &              my_rank
-          call calypso_MPI_abort(ierr, 'terminated ')
+          call calypso_MPI_abort(ierr, 'finished ')
         end if
       end if
 !
@@ -166,11 +166,11 @@
         if (ierr.eq.500) then
           write(*,*) 'Check num. of node in mesh and filter file for',  &
      &              my_rank
-          call calypso_MPI_abort(ierr, 'terminated ')
+          call calypso_MPI_abort(ierr, 'finished ')
         else if (ierr.eq.501) then
           write(*,*) 'Check num. of element in mesh and filter for',    &
      &              my_rank
-          call calypso_MPI_abort(ierr, 'terminated ')
+          call calypso_MPI_abort(ierr, 'finished ')
         end if
 !
 !

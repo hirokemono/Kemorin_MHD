@@ -54,7 +54,7 @@
       call deallocate_spheric_param_rj
 !
 !
-      stop ' //// program normally terminated //// '
+      stop ' //// program normally finished //// '
 !
 ! -------------------------------------------------------------------
 !

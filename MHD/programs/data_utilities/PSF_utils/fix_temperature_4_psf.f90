@@ -115,6 +115,6 @@
       end do
       write(*,*)
 !
-      stop ' //// program normally terminated //// '
+      stop ' //// program normally finished //// '
 !
       end program fix_temperature_4_psf

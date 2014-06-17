@@ -28,6 +28,6 @@
 !
       call choose_surface_mesh(file_head)
 !
-      stop ' //// program normally terminated //// '
+      stop ' //// program normally finished //// '
 !
       end program pick_surface 

@@ -90,6 +90,6 @@
       write(*,*) 'step', istep, 'finish '
       end do
 !
-      stop ' //// program normally terminated //// '
+      stop ' //// program normally finished //// '
 !
       end program assemble_merge

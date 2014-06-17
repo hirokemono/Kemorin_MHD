@@ -118,6 +118,6 @@
       write(*,*)
       call close_psf_ave_rms_data
 !
-      stop ' //// program normally terminated //// '
+      stop ' //// program normally finished //// '
 !
       end program psf_range_rms_aves

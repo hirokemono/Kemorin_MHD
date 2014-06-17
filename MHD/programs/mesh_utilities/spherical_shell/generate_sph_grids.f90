@@ -46,6 +46,6 @@
         call choose_surface_mesh(sph_head)
       end if
 !
-      stop 'program is normally terminated'
+      stop 'program is normally finished'
 !
       end program generate_sph_grids

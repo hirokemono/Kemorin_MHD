@@ -89,6 +89,6 @@
 !
   99  continue
       close(id_rms)
-      stop ' //// program normally terminated //// '
+      stop ' //// program normally finished //// '
 !
       end program psf_dynamobench

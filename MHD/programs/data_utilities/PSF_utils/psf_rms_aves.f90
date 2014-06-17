@@ -184,6 +184,6 @@
       psf_ucd%file_prefix = psf_sdev_header
       call sel_write_udt_file(-1, istep_end, psf_ucd)
 !
-      stop ' //// program normally terminated //// '
+      stop ' //// program normally finished //// '
 !
       end program psf_rms_aves

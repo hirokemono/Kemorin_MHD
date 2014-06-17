@@ -80,6 +80,6 @@
       end if
 !
 !
-      stop ' //// program normally terminated //// '
+      stop ' //// program normally finished //// '
 !
       end program update_restart 
