@@ -39,9 +39,7 @@
       use m_array_for_send_recv
       use m_work_4_interpolation
 !
-      use interpolate_vector_1pe
-      use select_calypso_SR
-      use solver_SR_3
+      use interpolate_by_module
 !
       integer(kind = kint) :: inod
 !
@@ -50,8 +48,6 @@
       call verify_vector_for_solver(ithree, numnod)
       call verify_2nd_iccg_matrix(ithree, nnod_2nd)
 !
-      call verifty_work_4_itp_field(ithree,ntot_table_org)
-!
 !
       do inod = 1, numnod
         x_vec(3*inod-2) = xx(inod,1)
@@ -59,34 +55,7 @@
         x_vec(3*inod  ) = xx(inod,3)
       end do
 !
-!    interpolation
-!
-      if (num_dest_domain.gt.0) then
-        call itp_matvec_vector(np_smp, numnod, x_vec(1),                &
-     &      NC_itp, NCM_itp, INM_itp, IAM_itp, AM_itp,                  &
-     &      NUM_SUM_itp(4), IEND_SUM_itp_smp, x_inter_org(1))
-      end if
-!
-!     communication
-!
-      if (iflag_debug.eq.1)  write(*,*) 'sel_calypso_send_recv_3'
-      call sel_calypso_send_recv_3                                      &
-     &          (iflag_import_item, ntot_table_org, nnod_2nd,           &
-     &           num_dest_domain, iflag_self_itp_send,                  &
-     &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
-     &           num_org_domain, iflag_self_itp_recv,                   &
-     &           id_org_domain, istack_nod_tbl_dest,                    &
-     &           inod_dest_4_dest, irev_dest_4_dest,                    &
-     &           x_inter_org(1), xvec_2nd(1) )
-!
-!
-!
-      if (num_neib_2.gt.0) then
-        call SOLVER_SEND_RECV_3                                         &
-     &                (nnod_2nd, num_neib_2, id_neib_2,                 &
-     &                 istack_import_2, item_import_2,                  &
-     &                 istack_export_2, item_export_2, xvec_2nd(1) )
-      end if
+      call interpolate_mod_3(numnod, nnod_2nd, x_vec, xvec_2nd)
 !
       do inod = 1, nnod_2nd
         xx_interpolate(inod,1) = xvec_2nd(3*inod-2)
@@ -114,9 +83,7 @@
       use m_work_4_interpolation
       use m_interpolate_matrix
 !
-      use interpolate_fields_1pe
-      use select_calypso_SR
-      use solver_SR_3
+      use interpolate_by_module
 !
       integer(kind = kint) :: inod
 !
@@ -125,8 +92,6 @@
       call verify_vector_for_solver(ithree, numnod)
       call verify_2nd_iccg_matrix(ithree, nnod_2nd)
 !
-      call verifty_work_4_itp_field(ithree,ntot_table_org)
-!
 !
       do inod = 1, numnod
         x_vec(3*inod-2) = xx(inod,1)
@@ -134,36 +99,7 @@
         x_vec(3*inod  ) = xx(inod,3)
       end do
 !
-!    interpolation
-!
-      if (num_dest_domain.gt.0) then
-        call itp_matvec_fields(np_smp, numnod, ithree, x_vec(1),        &
-     &      NC_itp, NCM_itp, INM_itp, IAM_itp, AM_itp,                  &
-     &      NUM_SUM_itp(4), IEND_SUM_itp_smp, x_inter_org(1))
-      end if
-!
-!     communication
-!
-      if (iflag_debug.eq.1)  write(*,*) 'sel_calypso_send_recv_N'
-      call sel_calypso_send_recv_N                                      &
-     &          (iflag_import_item, ithree, ntot_table_org, nnod_2nd,   &
-     &           num_dest_domain, iflag_self_itp_send,                  &
-     &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
-     &           num_org_domain, iflag_self_itp_recv,                   &
-     &           id_org_domain, istack_nod_tbl_dest,                    &
-     &           inod_dest_4_dest, irev_dest_4_dest,                    &
-     &           x_inter_org(1), xvec_2nd(1) )
-!
-      call finish_calypso_send_recv                                     &
-     &   (num_dest_domain, iflag_self_itp_send)
-!
-!
-      if (num_neib_2.gt.0) then
-        call SOLVER_SEND_RECV_3                                         &
-     &                (nnod_2nd, num_neib_2, id_neib_2,                 &
-     &                 istack_import_2, item_import_2,                  &
-     &                 istack_export_2, item_export_2, xvec_2nd(1) )
-      end if
+      call interpolate_mod_N(numnod, nnod_2nd, ithree, x_vec, xvec_2nd)
 !
       do inod = 1, nnod_2nd
         xx_interpolate(inod,1) = xvec_2nd(3*inod-2)
@@ -192,10 +128,8 @@
       use m_work_4_interpolation
       use m_interpolate_matrix
 !
-      use interpolate_scalar_1pe
+      use interpolate_by_module
       use matvec_by_djo
-      use select_calypso_SR
-      use solver_SR
 !
       integer(kind = kint) :: inod, nd
 !
@@ -204,43 +138,13 @@
       call verify_vector_for_solver(ione, numnod)
       call verify_2nd_iccg_matrix(ione, nnod_2nd)
 !
-      call verifty_work_4_itp_field(ione,ntot_table_org)
-!
 !
       do nd = 1, 3
         do inod = 1, numnod
           x_vec(inod  ) = xx(inod,nd)
         end do
 !
-!    interpolation
-!
-        if (num_dest_domain.gt.0) then
-          if (iflag_debug.eq.1)  write(*,*) 'itp_matvec_scalar'
-            call itp_matvec_scalar(np_smp, numnod, x_vec,               &
-     &          NC_itp, NCM_itp, INM_itp, IAM_itp, AM_itp,              &
-     &          NUM_SUM_itp(4), IEND_SUM_itp_smp, x_inter_org(1))
-        end if
-!
-!     communication
-!
-        if (iflag_debug.eq.1)  write(*,*) 'sel_calypso_send_recv'
-        call sel_calypso_send_recv                                      &
-     &          (iflag_import_item, ntot_table_org, nnod_2nd,           &
-     &           num_dest_domain, iflag_self_itp_send,                  &
-     &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
-     &           num_org_domain, iflag_self_itp_recv,                   &
-     &           id_org_domain, istack_nod_tbl_dest,                    &
-     &           inod_dest_4_dest, irev_dest_4_dest,                    &
-     &           x_inter_org(1), xvec_2nd(1) )
-!
-!
-!
-        if (num_neib_2.gt.0) then
-          call SOLVER_SEND_RECV                                         &
-     &                (nnod_2nd, num_neib_2, id_neib_2,                 &
-     &                 istack_import_2, item_import_2,                  &
-     &                 istack_export_2, item_export_2, xvec_2nd(1) )
-        end if
+        call interpolate_mod_1(numnod, nnod_2nd, x_vec, xvec_2nd)
 !
         do inod = 1, nnod_2nd
           xx_interpolate(inod,nd) = xvec_2nd(inod  )
@@ -251,7 +155,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_interpolate_global_node
+      subroutine s_interpolate_global_node(NP_dest)
 !
       use m_interpolate_table_orgin
       use m_interpolate_table_dest
@@ -259,22 +163,20 @@
       use m_interpolated_geometry
       use m_2nd_pallalel_vector
       use m_2nd_nod_comm_table
-      use m_2nd_geometry_param
 !
       use select_calypso_SR
       use solver_SR_int
 !
-!     initialize
+      integer(kind = kint), intent(in) :: NP_dest
 !
-!
-      call verify_2nd_iccg_int_mat(nnod_2nd)
+      call verify_2nd_iccg_int_mat(NP_dest)
 !
 !     communication
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'sel_calypso_send_recv_int'
       call sel_calypso_send_recv_int                                    &
-     &          (iflag_import_item, ntot_table_org, nnod_2nd,           &
+     &          (iflag_import_item, ntot_table_org, NP_dest,            &
      &           num_dest_domain, iflag_self_itp_send,                  &
      &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
      &           num_org_domain, iflag_self_itp_recv,                   &
@@ -286,13 +188,13 @@
       if (iflag_debug.eq.1)  write(*,*) 'solver_send_recv_i'
       if (num_neib_2.gt.0) then
         call solver_send_recv_i                                         &
-     &                (nnod_2nd, num_neib_2, id_neib_2,                 &
+     &                (NP_dest, num_neib_2, id_neib_2,                  &
      &                 istack_import_2, item_import_2,                  &
      &                 istack_export_2, item_export_2,                  &
      &                 ivec_2nd(1))
       end if
 !
-      inod_global_itp(1:nnod_2nd) = ivec_2nd(1:nnod_2nd)
+      inod_global_itp(1:NP_dest) = ivec_2nd(1:NP_dest)
 !
       end subroutine s_interpolate_global_node
 !

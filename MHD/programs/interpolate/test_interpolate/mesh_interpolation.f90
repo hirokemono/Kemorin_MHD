@@ -31,7 +31,7 @@
 !     return global node from table
 !
       if (iflag_debug.eq.1)   write(*,*) 's_interpolate_global_node'
-      call s_interpolate_global_node
+      call s_interpolate_global_node(nnod_2nd)
 !
 !     interpolate 2nd mesh from 1st mesh
 !
