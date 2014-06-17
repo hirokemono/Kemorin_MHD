@@ -36,12 +36,11 @@
 !        type(mesh_geometry), intent(in) :: mesh
 !        type(vect_fixed_nod_bc_type), intent(inout) :: vector_bc
 !      subroutine set_ele_4_scalar_nodal_bc_type(np_smp, num_t,         &
-!     &          mesh, scaler_bc)
+!     &          scaler_bc)
 !        integer (kind= kint), intent(in) :: np_smp, num_t
 !        type(mesh_geometry),    intent(in) :: mesh
 !        type(scaler_fixed_nod_bc_type), intent(inout) :: scaler_bc
-!      subroutine set_ele_4_rotate_nodal_bc_type(np_smp, num_t,         &
-!     &          mesh, rotate)
+!      subroutine set_ele_4_rotate_nodal_bc_type(np_smp, num_t, rotate)
 !        integer (kind= kint), intent(in) :: np_smp, num_t
 !        type(mesh_geometry),    intent(in) :: mesh
 !        type(scaler_rotaion_nod_bc_type), intent(inout) :: rotate
@@ -259,12 +258,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_ele_4_scalar_nodal_bc_type(np_smp, num_t,          &
-     &          mesh, scaler_bc)
+     &          scaler_bc)
 !
       use ordering_ele_4_fix_bd
 !
       integer (kind= kint), intent(in) :: np_smp, num_t
-      type(mesh_geometry),    intent(in) :: mesh
       type(scaler_fixed_nod_bc_type), intent(inout) :: scaler_bc
 !
 !
@@ -277,13 +275,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_ele_4_rotate_nodal_bc_type(np_smp, num_t,          &
-     &          mesh, rotate)
+      subroutine set_ele_4_rotate_nodal_bc_type(np_smp, num_t, rotate)
 !
       use ordering_ele_4_fix_bd
 !
       integer (kind= kint), intent(in) :: np_smp, num_t
-      type(mesh_geometry),    intent(in) :: mesh
       type(scaler_rotaion_nod_bc_type), intent(inout) :: rotate
 !
 !

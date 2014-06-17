@@ -11,7 +11,6 @@ SUBDIRS = \
 BASE                 \
 MESH                 \
 MESH_1st             \
-MESH_2nd             \
 MESH_type            \
 IO                   \
 IO_BINARY            \

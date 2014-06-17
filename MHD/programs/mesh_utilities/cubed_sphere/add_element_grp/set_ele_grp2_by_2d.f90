@@ -86,8 +86,7 @@
      &    new_elegrp)
 !
       call ordering_each_added_egrp(new_elegrp)
-      call deallocate_grp_type_item(new_elegrp)
-      call deallocate_grp_type_num(new_elegrp)
+      call deallocate_grp_type(new_elegrp)
 !
       end subroutine const_ele_grp_item_by_2d
 !

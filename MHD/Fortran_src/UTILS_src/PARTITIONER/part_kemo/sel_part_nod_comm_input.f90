@@ -3,8 +3,6 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!      subroutine output_local_mesh(my_rank, femmesh)
-!
 !      subroutine save_node_import_4_part(ip, work_f_head, new_comm)
 !      subroutine save_node_export_4_part(ip, work_f_head, new_comm)
 !
@@ -23,26 +21,6 @@
 !   --------------------------------------------------------------------
 !
       contains
-!
-!   --------------------------------------------------------------------
-!
-      subroutine output_local_mesh(my_rank, femmesh)
-!
-      use t_mesh_data
-      use m_read_mesh_data
-      use m_ctl_param_partitioner
-      use load_2nd_mesh_data
-!
-      integer(kind= kint), intent(in) :: my_rank
-      type(mesh_data), intent(inout) :: femmesh
-!
-      iflag_mesh_file_fmt = iflag_para_mesh_file_fmt
-      mesh_file_head = local_file_header
-      call output_2nd_mesh(my_rank, femmesh%mesh, femmesh%group)
-!
-      call deallocate_new_mesh(femmesh%mesh, femmesh%group)
-!
-      end subroutine output_local_mesh
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

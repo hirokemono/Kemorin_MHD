@@ -60,7 +60,7 @@
 !
       use m_read_mesh_data
       use const_cutshell_mesh
-      use load_2nd_mesh_data
+      use load_mesh_type_data
 !
 !
       call s_const_reduced_geometry(cutted_fem%mesh, cutted_fem%group)
@@ -70,8 +70,7 @@
       call allocate_type_comm_tbl_item(cutted_fem%mesh%nod_comm)
 !
       mesh_file_head = modified_mesh_head
-      call output_2nd_mesh(my_rank, cutted_fem%mesh, cutted_fem%group)
-      call deallocate_new_mesh(cutted_fem%mesh, cutted_fem%group)
+      call output_mesh_type(my_rank, cutted_fem)
 !
       end subroutine analyze_cutshell
 !

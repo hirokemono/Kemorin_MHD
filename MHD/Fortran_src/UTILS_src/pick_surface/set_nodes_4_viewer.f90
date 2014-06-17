@@ -56,7 +56,7 @@
      &           'deallocate_nod_cvt_table_viewer'
       call deallocate_nod_cvt_table_viewer
 !
-      call dealloc_merged_node_group
+      call deallocate_grp_type(merged_grp%nod_grp)
 !
       end subroutine s_set_nodes_4_viewer
 !

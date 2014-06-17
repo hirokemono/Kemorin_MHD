@@ -95,9 +95,9 @@
       use const_refined_group
       use set_refine_flags_4_tri
       use const_refine_interpolate
-      use set_mesh_from_2nd
+      use copy_mesh_from_type
       use find_hanging_surface
-      use load_2nd_mesh_data
+      use load_mesh_type_data
       use set_mesh_types
 !
       character(len=kchara), parameter :: tmp_mesh_head = 'work'
@@ -182,8 +182,8 @@
         write(*,*) 'deallocate_mesh_infomations'
         call deallocate_mesh_infomations
 !
-        write(*,*) 's_set_mesh_from_2nd'
-        call s_set_mesh_from_2nd(refined_fem%mesh, refined_fem%group)
+        write(*,*) 'set_mesh_from_type'
+        call set_mesh_from_type(refined_fem%mesh, refined_fem%group)
 !
         nnod_4_surf = finer_surfmesh%surf%nnod_4_surf
         nnod_4_edge = finer_edgemesh%edge%nnod_4_edge
@@ -192,9 +192,7 @@
       iflag_mesh_file_fmt = ifile_type
       mesh_file_head = refined_mesh_head
       write(*,'(2a)') 'mesh file header: ', trim(refined_mesh_head)
-      call output_2nd_mesh(izero, refined_fem%mesh, refined_fem%group)
-!
-      call deallocate_new_mesh(refined_fem%mesh, refined_fem%group)
+      call output_mesh_type(izero, refined_fem)
 !
       end subroutine analyze_refine
 !

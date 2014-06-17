@@ -68,7 +68,6 @@
       subroutine link_2nd_geometry_4_itp_tbl(my_rank,                   &
      &          newmesh, newgroup)
 !
-      use set_2nd_mesh_from_struct
       use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -78,7 +77,9 @@
 !
 !
       jp = my_rank + 1
-      call set_new_mesh_type(origin_mesh(jp), newmesh, newgroup)
+      call link_mesh_data_type(origin_mesh(jp)%mesh, newmesh)
+      call link_groups_type(origin_mesh(jp)%group, newgroup)
+!
       call link_new_ele_geometry_type                                   &
      &   (origin_mesh(jp)%mesh%ele, newmesh%ele)
 !

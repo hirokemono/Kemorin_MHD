@@ -117,12 +117,7 @@
       call link_new_ele_connect_type(femmesh_q%mesh%ele,                &
      &    femmesh_l%mesh%ele)
 !
-      call link_group_type(femmesh_q%group%nod_grp,                     &
-     &    femmesh_l%group%nod_grp)
-      call link_group_type(femmesh_q%group%ele_grp,                     &
-     &    femmesh_l%group%ele_grp)
-      call link_surf_group_type(femmesh_q%group%surf_grp,               &
-     &    femmesh_l%group%surf_grp)
+      call link_groups_type(femmesh_q%group, femmesh_l%group)
 !
       call link_new_surf_connect_type(surf_mesh_q%surf,                 &
      &    surf_mesh_l%surf)

@@ -36,7 +36,7 @@
       use t_mesh_data
       use m_read_mesh_data
       use m_ctl_param_partitioner
-      use load_2nd_ele_surf_edge
+      use load_mesh_type_data
 !
       type(mesh_geometry), intent(inout) :: newmesh
       type(element_comms), intent(inout) ::    new_ele_mesh
@@ -52,8 +52,14 @@
 !
       iflag_mesh_file_fmt =  iflag_para_mesh_file_fmt
 !
-      call output_ele_surf_edge_type(my_rank, newmesh%ele,              &
-     &    new_ele_mesh, new_surf_mesh, new_edge_mesh)
+      call output_element_connect_type(my_rank, new_ele_mesh)
+      call output_surface_mesh_type                                     &
+     &   (my_rank, newmesh%ele%numele, new_surf_mesh)
+      call output_edge_mesh_type(my_rank,                               &
+     &   newmesh%ele%numele, new_surf_mesh%surf%numsurf, new_edge_mesh)
+!
+      call dealloc_ele_surf_edge_type                                   &
+     &   (new_ele_mesh, new_surf_mesh, new_edge_mesh)
 !
       end subroutine output_local_ele_surf_mesh
 !

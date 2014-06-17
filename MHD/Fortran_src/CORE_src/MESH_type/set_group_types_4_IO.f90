@@ -49,15 +49,6 @@
       call set_ele_grp_type_to_IO(group%ele_grp)
       call set_surface_grp_type_to_IO(group%surf_grp)
 !
-      call deallocate_grp_type_item(group%nod_grp)
-      call deallocate_grp_type_num(group%nod_grp)
-!
-      call deallocate_grp_type_item(group%ele_grp)
-      call deallocate_grp_type_num(group%ele_grp)
-!
-      call deallocate_sf_grp_type_item(group%surf_grp)
-      call deallocate_sf_grp_type_num(group%surf_grp)
-!
       end subroutine set_grp_data_type_to_IO
 !
 !-----------------------------------------------------------------------

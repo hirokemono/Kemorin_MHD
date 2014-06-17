@@ -15,9 +15,6 @@
       implicit none
 !
       type(mesh_geometry), save :: finermesh
-      type(surface_geometry), save :: finer_surfmesh
-      type(edge_geometry), save ::  finer_edgemesh
-!
 !
       private :: input_interpolate_table_4_part
       private :: interpolate_domain_group
@@ -37,7 +34,7 @@
       use m_interpolate_table_dest
       use m_domain_group_4_partition
 !
-      use load_2nd_mesh_data
+      use load_mesh_type_data
       use copy_domain_list_4_IO
 !
 !
@@ -45,8 +42,7 @@
 !
       iflag_mesh_file_fmt = iflag_para_mesh_file_fmt
       mesh_file_head = finer_mesh_file_head
-      call input_2nd_mesh_geometry(izero, finermesh,                    &
-     &    finer_surfmesh, finer_edgemesh)
+      call input_mesh_geometry_type(izero, finermesh)
 !
 !     read interpolate table
 !

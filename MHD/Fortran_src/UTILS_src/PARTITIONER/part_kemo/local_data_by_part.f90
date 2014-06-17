@@ -5,7 +5,7 @@
 !
 !
 !      subroutine local_mesh_surf_edge                                  &
-!     &         (my_rank, nprocs, work_f_head, new_fem,                 &
+!     &         (my_rank, nprocs, work_f_head, para_fem,                &
 !     &          new_ele_mesh, new_surf_mesh, new_edge_mesh)
 !
       module local_data_by_part
@@ -22,7 +22,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine local_mesh_surf_edge                                   &
-     &         (my_rank, nprocs, work_f_head, new_fem,                  &
+     &         (my_rank, nprocs, work_f_head, para_fem,                 &
      &          new_ele_mesh, new_surf_mesh, new_edge_mesh)
 !
       use t_mesh_data
@@ -39,14 +39,14 @@
       use sel_part_comm_tbl_input
       use sel_part_nod_comm_input
       use delete_data_files
-      use load_2nd_mesh_data
+      use load_mesh_type_data
 !
       implicit none
 !
       integer(kind = kint), intent(in) :: my_rank, nprocs
       character(len=kchara), intent(in) :: work_f_head
 !
-      type(mesh_data), intent(inout) :: new_fem
+      type(mesh_data), intent(inout) :: para_fem
 !
       type(element_comms), intent(inout) ::    new_ele_mesh
       type(surface_geometry), intent(inout) :: new_surf_mesh
@@ -68,16 +68,16 @@
 !C +--------------------------+
 !C===
         call load_all_comm_tbl_4_part(ip, work_f_head,                  &
-     &      new_fem%mesh%nod_comm, new_ele_mesh%ele_comm,               &
+     &      para_fem%mesh%nod_comm, new_ele_mesh%ele_comm,              &
      &      new_surf_mesh%surf_comm, new_edge_mesh%edge_comm)
 !C
 !C +-----------------+
 !C | LOCAL NUMBERING |
 !C +-----------------+
 !C===
-        do i = 1, new_fem%mesh%nod_comm%num_neib
-          new_fem%mesh%nod_comm%id_neib(i)                              &
-     &         = new_fem%mesh%nod_comm%id_neib(i) - 1
+        do i = 1, para_fem%mesh%nod_comm%num_neib
+          para_fem%mesh%nod_comm%id_neib(i)                             &
+     &         = para_fem%mesh%nod_comm%id_neib(i) - 1
         end do
         do i = 1, new_ele_mesh%ele_comm%num_neib
           new_ele_mesh%ele_comm%id_neib(i)                              &
@@ -93,19 +93,21 @@
         end do
 
         call const_local_mesh_sf_ele                                    &
-     &     (ip, new_fem%mesh, new_surf_mesh%surf, new_edge_mesh%edge)
-        call s_set_local_connectivities(new_fem%mesh%ele,               &
+     &     (ip, para_fem%mesh, new_surf_mesh%surf, new_edge_mesh%edge)
+        call s_set_local_connectivities(para_fem%mesh%ele,              &
      &      new_surf_mesh%surf, new_edge_mesh%edge)
-        call s_const_local_groups(new_fem%group)
+        call s_const_local_groups(para_fem%group)
 !C
 !C +-------------------------+
 !C | write FINAL LOCAL files |
 !C +-------------------------+
 !C===
-        call output_local_ele_surf_mesh(irank_subdomain, new_fem%mesh,  &
+        call output_local_ele_surf_mesh(irank_subdomain, para_fem%mesh, &
      &      new_ele_mesh, new_surf_mesh, new_edge_mesh)
 !
-        call output_local_mesh(irank_subdomain, new_fem)
+        iflag_mesh_file_fmt = iflag_para_mesh_file_fmt
+        mesh_file_head = local_file_header
+        call output_mesh_type(irank_subdomain, para_fem)
       end do
 !
 !C===

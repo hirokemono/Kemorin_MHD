@@ -52,8 +52,8 @@
        write(*,*) 'deallocate_sf_cvt_table_viewer'
       call deallocate_sf_cvt_table_viewer
 !
-      call dealloc_merged_surf_group
-      call dealloc_merged_ele_group
+      call deallocate_sf_grp_type(merged_grp%surf_grp)
+      call deallocate_grp_type(merged_grp%ele_grp)
 !
       call deallocate_iso_surf_merge
       call deallocate_surf_connect_merge

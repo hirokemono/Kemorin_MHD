@@ -126,7 +126,7 @@
      &   fluid, rotate)
 !
       call set_ele_4_rotate_nodal_bc_type(np_smp, mesh%ele%nnod_4_ele,  &
-     &    mesh, rotate)
+     &    rotate)
 !
       call dealloc_rotate_ibc_type(rotate)
 !
@@ -151,7 +151,7 @@
      &     layer, scaler_bc)
 !
       call set_ele_4_scalar_nodal_bc_type(np_smp, mesh%ele%nnod_4_ele,  &
-     &    mesh, scaler_bc)
+     &    scaler_bc)
 !
       call dealloc_scalar_ibc_type(scaler_bc)
 !
@@ -176,7 +176,7 @@
 !
       call s_set_bc_element_type(num_t_linear, mesh, scaler_bc)
 !
-      call set_ele_4_scalar_nodal_bc_type(np_smp, num_t_linear, mesh,   &
+      call set_ele_4_scalar_nodal_bc_type(np_smp, num_t_linear,         &
      &    scaler_bc)
 !
       call dealloc_scalar_ibc_type(scaler_bc)
@@ -202,7 +202,7 @@
 !
       call set_bc_ele_type_layer(num_t_linear, mesh, layer, scaler_bc)
 !
-      call set_ele_4_scalar_nodal_bc_type(np_smp,  num_t_linear, mesh,  &
+      call set_ele_4_scalar_nodal_bc_type(np_smp,  num_t_linear,        &
      &    scaler_bc)
 !
       call dealloc_scalar_ibc_type(scaler_bc)

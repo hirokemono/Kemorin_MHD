@@ -34,7 +34,8 @@
 !
       use set_ctl_interpolation
       use load_mesh_data
-      use load_2nd_mesh_data
+      use load_mesh_type_data
+      use set_mesh_types
 !
       use itp_table_IO_select_4_zlib
       use copy_interpolate_dest_IO
@@ -74,8 +75,9 @@
          iflag_mesh_file_fmt = ifmt_itp_mesh_file
          if (iflag_debug.gt.0) write(*,*)                               &
      &      'read mesh for interpolated mesh ', trim(mesh_file_head)
-         call input_2nd_mesh(my_rank, new_femmesh,                      &
-     &       new_surf_mesh, new_edge_mesh)
+         call input_mesh_data_type(my_rank, new_femmesh)
+         call set_nnod_surf_edge_for_type(new_surf_mesh, new_edge_mesh,  &
+     &      new_femmesh%mesh%ele%nnod_4_ele)
        end if
 !
 !  --  read interpolate table

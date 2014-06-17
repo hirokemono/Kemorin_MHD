@@ -25,13 +25,6 @@
 !      subroutine deallocate_geom_ex_glnod
 !
 !      subroutine dealloc_subdomain_groups
-!      subroutine dealloc_merged_node_group
-!      subroutine dealloc_merged_ele_group
-!      subroutine dealloc_merged_surf_group
-!
-!      subroutine dealloc_subdomain_node_grp
-!      subroutine dealloc_subdomain_ele_grp
-!      subroutine dealloc_subdomain_surf_grp
 !
 !      subroutine deallocate_subdomain_grp_stack
 !
@@ -255,80 +248,16 @@
 !
       subroutine dealloc_subdomain_groups
 !
+      integer(kind = kint) :: ip
 !
-      call dealloc_subdomain_node_grp
-      call dealloc_subdomain_ele_grp
-      call dealloc_subdomain_surf_grp
+!
+      do ip = 1, num_pe
+        call deallocate_grp_type( sub_nod_grp(ip) )
+        call deallocate_grp_type( sub_ele_grp(ip) )
+        call deallocate_sf_grp_type( sub_surf_grp(ip) )
+      end do
 !
       end subroutine dealloc_subdomain_groups
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_merged_node_group
-!
-      call deallocate_grp_type_item(merged_grp%nod_grp)
-      call deallocate_grp_type_num(merged_grp%nod_grp)
-!
-      end subroutine dealloc_merged_node_group
-!
-!------------------------------------------------------------------
-!
-      subroutine dealloc_merged_ele_group
-!
-      call deallocate_grp_type_item(merged_grp%ele_grp)
-      call deallocate_grp_type_num(merged_grp%ele_grp)
-!
-      end subroutine dealloc_merged_ele_group
-!
-!------------------------------------------------------------------
-!
-      subroutine dealloc_merged_surf_group
-!
-      call deallocate_sf_grp_type_item(merged_grp%surf_grp)
-      call deallocate_sf_grp_type_num(merged_grp%surf_grp)
-!
-      end subroutine dealloc_merged_surf_group
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_subdomain_node_grp
-!
-      integer(kind = kint) :: ip
-!
-      do ip = 1, num_pe
-        call deallocate_grp_type_item( sub_nod_grp(ip) )
-        call deallocate_grp_type_num( sub_nod_grp(ip) )
-      end do
-!
-      end subroutine dealloc_subdomain_node_grp
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_subdomain_ele_grp
-!
-      integer(kind = kint) :: ip
-!
-      do ip = 1, num_pe
-        call deallocate_grp_type_item( sub_ele_grp(ip) )
-        call deallocate_grp_type_num( sub_ele_grp(ip) )
-      end do
-!
-      end subroutine dealloc_subdomain_ele_grp
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_subdomain_surf_grp
-!
-      integer(kind = kint) :: ip
-!
-      do ip = 1, num_pe
-        call deallocate_sf_grp_type_item( sub_surf_grp(ip) )
-        call deallocate_sf_grp_type_num( sub_surf_grp(ip) )
-      end do
-!
-      end subroutine dealloc_subdomain_surf_grp
 !
 !-----------------------------------------------------------------------
 !------------------------------------------------------------------
