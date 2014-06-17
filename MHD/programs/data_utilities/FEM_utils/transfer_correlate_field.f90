@@ -89,7 +89,7 @@
       use t_phys_data
 !
       integer(kind = kint), intent(in) :: nnod_2
-      type(phys_data), intent(in) :: phys_2nd
+      type(phys_data), intent(inout) :: phys_2nd
 !
 !
       if     (iflag_correlate_coord .eq. iflag_spherical) then
