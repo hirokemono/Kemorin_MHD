@@ -57,6 +57,7 @@
       jmax_g = jmax_tri_sph
 !
       call allocate_schmidt_poly_med
+      call allocate_legendre_med
 !
       allocate(dint_p(0:jmax_g))
       dint_p = 0.0d0
@@ -72,6 +73,12 @@
           dPdt_smdt(i,j) = dp(m,l)
         end do
 !
+        call dlad
+        do j = 0, jmax_g
+          l = idx(j,1)
+          m = abs( idx(j,2) )
+          P_org(i,j) = dplm(m,l)
+        end do
       end do
 !
       dint_p = 0.0d0

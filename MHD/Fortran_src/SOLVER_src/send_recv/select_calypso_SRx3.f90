@@ -163,6 +163,8 @@
      &                       X1_new, X2_new, X3_new)
       end if
 !
+      call finish_calypso_send_recv(npe_send, isend_self)
+!
       end subroutine sel_calypso_send_recv_3xN
 !
 !-----------------------------------------------------------------------
@@ -223,6 +225,8 @@
      &                       X1_org, X2_org, X3_org,                    &
      &                       X1_new, X2_new, X3_new)
       end if
+!
+      call finish_calypso_send_recv(npe_send, isend_self)
 !
       end subroutine sel_calypso_send_recv_3x6
 !
@@ -285,6 +289,8 @@
      &                       X1_new, X2_new, X3_new)
       end if
 !
+      call finish_calypso_send_recv(npe_send, isend_self)
+!
       end subroutine sel_calypso_send_recv_3x3
 !
 !-----------------------------------------------------------------------
@@ -346,6 +352,8 @@
      &                       X1_new, X2_new, X3_new)
       end if
 !
+      call finish_calypso_send_recv(npe_send, isend_self)
+!
       end subroutine sel_calypso_send_recv_3x2
 !
 ! ----------------------------------------------------------------------
@@ -406,6 +414,8 @@
      &                       X1_org, X2_org, X3_org,                    &
      &                       X1_new, X2_new, X3_new)
       end if
+!
+      call finish_calypso_send_recv(npe_send, isend_self)
 !
       end subroutine sel_calypso_send_recv_3x1
 !

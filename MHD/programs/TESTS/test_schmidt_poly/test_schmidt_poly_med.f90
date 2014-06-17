@@ -44,8 +44,8 @@
       do m = 0, l
         j = l*(l+1) + m
         do i = lst, led
-          write(50,'(4i10,1p3E25.15e3)') j, l, m, i,                    &
-     &      g_colat_med(i), P_smdt(i,j), dPdt_smdt(i,j)
+          write(50,'(4i10,1p4E25.15e3)') j, l, m, i,                    &
+     &      g_colat_med(i), P_org(i,j), P_smdt(i,j), dPdt_smdt(i,j)
         end do
       end do
       close(50)

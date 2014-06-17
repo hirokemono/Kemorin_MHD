@@ -20,7 +20,6 @@
 !!     &                           id_pe_recv, istack_recv, inod_import,&
 !!     &                           X1_org, X2_org, X3_org,              &
 !!     &                           X1_new, X2_new, X3_new)
-!!      subroutine calypso_SR_finish(npe_send, isend_self)
 !!@endverbatim
 !!
 !!@n @param  nnod_org    Number of data points for origin
@@ -139,10 +138,6 @@
       call set_from_recv_buf_1(nnod_new,                                &
      &    istack_recv(npe_recv), inod_import, WR, X_new)
 !
-      if(ncomm_send .gt. 0) then
-        call MPI_WAITALL (ncomm_send, req1, sta1, ierr_MPI)
-      end if
-!
       end subroutine calypso_send_recv
 !
 ! ----------------------------------------------------------------------
@@ -233,31 +228,7 @@
       call set_from_recv_buf_3x1(nnod_new, istack_recv(npe_recv),       &
      &    inod_import, WR, X1_new, X2_new, X3_new)
 !
-      if(ncomm_send .gt. 0) then
-        call MPI_WAITALL (ncomm_send, req1, sta1, ierr_MPI)
-      end if
-!
       end subroutine calypso_send_recv_3x1
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine calypso_SR_finish(npe_send, isend_self)
-!
-      use calypso_mpi
-      use m_solver_SR
-!
-      integer(kind = kint), intent(in) :: npe_send, isend_self
-!
-      integer (kind = kint) :: ncomm_send
-!
-!
-      ncomm_send = npe_send - isend_self
-!
-      if(ncomm_send .le. 0) return
-      call MPI_WAITALL (ncomm_send, req1, sta1, ierr_MPI)
-!
-      end subroutine calypso_SR_finish
 !
 ! ----------------------------------------------------------------------
 !
