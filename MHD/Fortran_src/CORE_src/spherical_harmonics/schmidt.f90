@@ -72,7 +72,6 @@
       p(0,1) = cos(theta)
 !*
       do l = 2, nth
-        write(*,*) 'first loop (l,m) =', 0, l
         p(0,l) =  p(0,l-1) * dble(2*l-1)/dble(l) * cos(theta)           &
      &          - p(0,l-2) * dble(l-1)/dble(l)
       end do
@@ -99,7 +98,6 @@
         end if
 !*
         do l = m, nth
-         write(*,*) 'substitute (l,m) =', l, m, 'using (l,m) =', l
           p(m,l) =  df(l)
           do m1 = 1, m
             p(m,l) =  p(m,l) * sin(theta)
