@@ -42,13 +42,13 @@
       sph_fld%ntot_phys = 15
 !
       f_trns%i_vp_induct =  1
-      nvect_xyz_2_rj =    f_trns%i_vp_induct + 2
+      nvect_xyz_2_rj = f_trns%i_vp_induct + 2
 !
       b_trns%i_magne =      1
       b_trns%i_current =    4
       b_trns%i_b_diffuse =  7
       b_trns%i_induction = 10
-      nvect_rj_2_xyz =    b_trns%i_induction + 2
+      nvect_rj_2_xyz =  4
 !
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         iphys_sph%i_SGS_vp_induct = 16
@@ -60,8 +60,10 @@
         nvect_xyz_2_rj = f_trns%i_SGS_vp_induct + 2
 !
         b_trns%i_SGS_induction = 13
-        nvect_rj_2_xyz = b_trns%i_SGS_induction + 2
+        nvect_rj_2_xyz = 5
       end if
+      ncomp_xyz_2_rj = nvect_xyz_2_rj
+      ncomp_rj_2_xyz = 3*nvect_rj_2_xyz
 !
       call s_const_linear_mesh_type(mesh_fem, surf_mesh_fem,            &
      &    edge_mesh_fem, fem_fld)
@@ -122,13 +124,14 @@
      &    mesh_sph%node, sph_fld)
 !
 !
-      call sph_f_trans_vector(nvect_xyz_2_rj)
+      call sph_forward_transforms(ncomp_xyz_2_rj, nvect_xyz_2_rj,       &
+     &    izero, izero)
 !
 !
-      call copy_vec_spec_from_trans(nvect_xyz_2_rj,                     &
-     &    ipol%i_vp_induct, f_trns%i_vp_induct)
-      call copy_vec_spec_from_trans(nvect_xyz_2_rj,                     &
-     &    ipol%i_SGS_vp_induct, f_trns%i_SGS_vp_induct)
+      call copy_vec_spec_from_trans                                     &
+     &   (ipol%i_vp_induct, f_trns%i_vp_induct)
+      call copy_vec_spec_from_trans                                     &
+     &   (ipol%i_SGS_vp_induct, f_trns%i_SGS_vp_induct)
 !
 !
       call const_sph_rotation_uxb(ipol%i_vp_induct, ipol%i_induction)
@@ -152,11 +155,12 @@
      &    mesh_sph%node, sph_fld)
 !
 !
-      call sph_f_trans_vector(nvect_xyz_2_rj)
+      call sph_forward_transforms(ncomp_xyz_2_rj, nvect_xyz_2_rj,       &
+     &    izero, izero)
 !
 !
-      call copy_vec_spec_from_trans(nvect_xyz_2_rj,                     &
-     &    ipol%i_vp_induct, f_trns%i_vp_induct)
+      call copy_vec_spec_from_trans                                     &
+     &   (ipol%i_vp_induct, f_trns%i_vp_induct)
 !
       call const_sph_rotation_uxb(ipol%i_vp_induct, ipol%i_induction)
 !
@@ -177,22 +181,24 @@
       call update_after_magne_sph
 !
 !
-      call copy_vec_spec_to_trans(nvect_rj_2_xyz,                       &
-     &      ipol%i_magne, b_trns%i_magne)
-      call copy_vec_spec_to_trans(nvect_rj_2_xyz,                       &
-     &      ipol%i_current, b_trns%i_current)
-      call copy_vec_spec_to_trans(nvect_rj_2_xyz,                       &
-     &      ipol%i_b_diffuse, b_trns%i_b_diffuse)
-      call copy_vec_spec_to_trans(nvect_rj_2_xyz,                       &
-     &      ipol%i_induction, b_trns%i_induction)
+      call copy_vec_spec_to_trans(ncomp_rj_2_xyz,                       &
+     &    ipol%i_magne, b_trns%i_magne)
+      call copy_vec_spec_to_trans(ncomp_rj_2_xyz,                       &
+     &    ipol%i_current, b_trns%i_current)
+      call copy_vec_spec_to_trans(ncomp_rj_2_xyz,                       &
+     &    ipol%i_b_diffuse, b_trns%i_b_diffuse)
+      call copy_vec_spec_to_trans(ncomp_rj_2_xyz,                       &
+     &    ipol%i_induction, b_trns%i_induction)
       if (iflag_SGS_induction .ne. id_SGS_none) then
-        call copy_vec_spec_to_trans(nvect_rj_2_xyz,                     &
+        call copy_vec_spec_to_trans(ncomp_rj_2_xyz,                     &
      &      ipol%i_SGS_induction, b_trns%i_SGS_induction)
       end if
 !
 !
-      call sph_b_trans_vector(nvect_rj_2_xyz)
-      call pole_b_trans_vector(nvect_rj_2_xyz)
+      call sph_backward_transforms(ncomp_rj_2_xyz, nvect_rj_2_xyz,      &
+     &    izero, izero)
+      call pole_backward_transforms(ncomp_rj_2_xyz, nvect_rj_2_xyz,     &
+     &    izero, izero)
 !
 !
       call copy_xyz_vec_t_from_trans_wpole(nvect_rj_2_xyz,              &

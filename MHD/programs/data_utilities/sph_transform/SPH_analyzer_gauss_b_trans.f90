@@ -59,6 +59,7 @@
 !  ---- initialize spherical harmonics transform
 !
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
+      call copy_sph_trans_nums_from_rtp
       call initialize_sph_trans
       call init_pole_transform
 !
@@ -108,15 +109,8 @@
         call deallocate_gauss_global_coefs
 !
 !        call check_rj_spectr_data(my_rank)
-!
-!  spherical transform for scalar
-        call sph_b_trans_all_scalar
-!
 !  spherical transform for vector
-        call sph_b_trans_all_vector
-!
-!  spherical transform for tensor
-        call sph_b_trans_all_tensor
+        call sph_b_trans_all_field
       end if
 !
       end subroutine SPH_analyze_gauss_back_trans

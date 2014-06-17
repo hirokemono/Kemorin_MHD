@@ -59,6 +59,7 @@
       use m_addresses_trans_sph_MHD
 !
 !
+!
       nvector_snap_rtp_2_rj = 0
       call add_vec_trans_flag(ipol%i_coriolis, irtp%i_coriolis,         &
      &    nvector_snap_rtp_2_rj, fsnap_trns%i_coriolis)
@@ -68,24 +69,28 @@
      &    nvector_snap_rtp_2_rj, fsnap_trns%i_poynting)
       call add_vec_trans_flag(ipol%i_mag_stretch, irtp%i_mag_stretch,   &
      &    nvector_snap_rtp_2_rj, fsnap_trns%i_mag_stretch)
-      ncomp_snap_rtp_2_rj = nvector_snap_rtp_2_rj
+      ncomp_snap_rtp_2_rj = 3*nvector_snap_rtp_2_rj
 !
       nscalar_snap_rtp_2_rj = 0
-      call add_transform_flag(ipol%i_me_gen, irtp%i_me_gen,             &
-     &    nscalar_snap_rtp_2_rj, fsnap_trns%i_me_gen)
-      call add_transform_flag(ipol%i_ujb, irtp%i_ujb,                   &
-     &    nscalar_snap_rtp_2_rj, fsnap_trns%i_ujb)
-      call add_transform_flag(ipol%i_nega_ujb, irtp%i_nega_ujb,         &
-     &    nscalar_snap_rtp_2_rj, fsnap_trns%i_nega_ujb)
+      call add_scalar_trans_flag(ipol%i_me_gen, irtp%i_me_gen,          &
+     &    ncomp_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                   &
+     &    fsnap_trns%i_me_gen)
+      call add_scalar_trans_flag(ipol%i_ujb, irtp%i_ujb,                &
+     &    ncomp_snap_rtp_2_rj, nscalar_snap_rtp_2_rj, fsnap_trns%i_ujb)
+      call add_scalar_trans_flag(ipol%i_nega_ujb, irtp%i_nega_ujb,      &
+     &    ncomp_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                   &
+     &    fsnap_trns%i_nega_ujb)
 !
-      call add_transform_flag(ipol%i_buo_gen, irtp%i_buo_gen,           &
-     &    nscalar_snap_rtp_2_rj, fsnap_trns%i_buo_gen)
-      call add_transform_flag(ipol%i_c_buo_gen, irtp%i_c_buo_gen,       &
-     &    nscalar_snap_rtp_2_rj, fsnap_trns%i_c_buo_gen)
-      call add_transform_flag(ipol%i_f_buo_gen, irtp%i_f_buo_gen,       &
-     &    nscalar_snap_rtp_2_rj, fsnap_trns%i_f_buo_gen)
+      call add_scalar_trans_flag(ipol%i_buo_gen, irtp%i_buo_gen,        &
+     &    ncomp_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                   &
+     &    fsnap_trns%i_buo_gen)
+      call add_scalar_trans_flag(ipol%i_c_buo_gen, irtp%i_c_buo_gen,    &
+     &    ncomp_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                   &
+     &    fsnap_trns%i_c_buo_gen)
+      call add_scalar_trans_flag(ipol%i_f_buo_gen, irtp%i_f_buo_gen,    &
+     &    ncomp_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                   &
+     &    fsnap_trns%i_f_buo_gen)
       ncomp_snap_rtp_2_rj = ncomp_snap_rtp_2_rj + nscalar_snap_rtp_2_rj
-!
 !
 !
       nvector_snap_rj_2_rtp = 0
@@ -136,37 +141,39 @@
       call add_vec_trans_flag(ipol%i_grad_composit,                     &
      &    irtp%i_grad_composit, nvector_snap_rj_2_rtp,                  &
      &    bsnap_trns%i_grad_composit)
-      ncomp_snap_rj_2_rtp = nvector_snap_rj_2_rtp
+      ncomp_snap_rj_2_rtp = 3*nvector_snap_rj_2_rtp
 !
 !
       nscalar_snap_rj_2_rtp = 0
       if(b_trns%i_temp.eq.0 .or. ipol%i_par_temp.gt.0) then
-        call add_transform_flag(ipol%i_temp, irtp%i_temp,               &
-     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_temp)
+        call add_scalar_trans_flag(ipol%i_temp, irtp%i_temp,            &
+     &    ncomp_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                   &
+     &    bsnap_trns%i_temp)
       end if
       if(b_trns%i_light .eq. 0) then
-        call add_transform_flag(ipol%i_light, irtp%i_light,             &
-     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_light)
+        call add_scalar_trans_flag(ipol%i_light, irtp%i_light,          &
+     &    ncomp_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                   &
+     &    bsnap_trns%i_light)
       end if
 !
-      call add_transform_flag(ipol%i_press, irtp%i_press,               &
-     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_press)
-      call add_transform_flag(ipol%i_par_temp, irtp%i_par_temp,         &
-     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_par_temp)
-      call add_transform_flag(ipol%i_t_diffuse, irtp%i_t_diffuse,       &
-     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_t_diffuse)
-      call add_transform_flag(ipol%i_c_diffuse, irtp%i_c_diffuse,       &
-     &    nscalar_snap_rj_2_rtp, bsnap_trns%i_c_diffuse)
+      call add_scalar_trans_flag(ipol%i_press, irtp%i_press,            &
+     &    ncomp_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                   &
+     &    bsnap_trns%i_press)
+      call add_scalar_trans_flag(ipol%i_par_temp, irtp%i_par_temp,      &
+     &    ncomp_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                   &
+     &    bsnap_trns%i_par_temp)
+      call add_scalar_trans_flag(ipol%i_t_diffuse, irtp%i_t_diffuse,    &
+     &    ncomp_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                   &
+     &    bsnap_trns%i_t_diffuse)
+      call add_scalar_trans_flag(ipol%i_c_diffuse, irtp%i_c_diffuse,    &
+     &    ncomp_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                   &
+     &    bsnap_trns%i_c_diffuse)
 !
-      call add_transform_flag(ipol%i_div_Coriolis, irtp%i_div_Coriolis, &
+      call add_scalar_trans_flag(ipol%i_div_Coriolis,                   &
+     &    irtp%i_div_Coriolis, ncomp_snap_rj_2_rtp,                     &
      &    nscalar_snap_rj_2_rtp, bsnap_trns%i_div_Coriolis)
       ncomp_snap_rj_2_rtp = ncomp_snap_rj_2_rtp + nscalar_snap_rj_2_rtp
 !
-!
-      nb_sph_trans = max(nb_sph_trans,nscalar_snap_rtp_2_rj)
-      nb_sph_trans = max(nb_sph_trans,nvector_snap_rtp_2_rj)
-      nb_sph_trans = max(nb_sph_trans,nscalar_snap_rj_2_rtp)
-      nb_sph_trans = max(nb_sph_trans,nvector_snap_rj_2_rtp)
 !
       ncomp_sph_trans = max(ncomp_sph_trans, ncomp_snap_rtp_2_rj)
       ncomp_sph_trans = max(ncomp_sph_trans, ncomp_snap_rj_2_rtp)
@@ -316,19 +323,19 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine add_transform_flag(is_fld, irtp_fld,                   &
-     &          num_trans, itrans)
+      subroutine add_scalar_trans_flag(is_fld, irtp_fld,                &
+     &          ncomp_vec, num_trans, itrans)
 !
-      integer(kind = kint), intent(in) :: is_fld, irtp_fld
+      integer(kind = kint), intent(in) :: is_fld, irtp_fld, ncomp_vec
       integer(kind = kint), intent(inout) :: num_trans, itrans
 !
 !
       if( (is_fld*irtp_fld) .gt. 0) then
         num_trans = num_trans + 1
-        itrans = num_trans
+        itrans = num_trans + ncomp_vec
       end if
 !
-      end subroutine add_transform_flag
+      end subroutine add_scalar_trans_flag
 !
 !-----------------------------------------------------------------------
 !
@@ -340,8 +347,8 @@
 !
 !
       if( (is_fld*irtp_fld) .gt. 0) then
-        num_trans = num_trans + 3
-        itrans = num_trans - 2
+        num_trans = num_trans + 1
+        itrans = 3*num_trans - 2
       end if
 !
       end subroutine add_vec_trans_flag

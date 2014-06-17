@@ -52,6 +52,7 @@
 !  ---- initialize spherical harmonics transform
 !
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
+      call copy_sph_trans_nums_from_rtp
       call initialize_sph_trans
 !
       end subroutine SPH_initialize_sph_trans
@@ -75,15 +76,8 @@
       integer(kind = kint), intent(in) :: i_step
 !
 !
-!
-!  spherical transform for scalar
-       call sph_f_trans_all_scalar
-!
 !  spherical transform for vector
-       call sph_f_trans_all_vector
-!
-!  spherical transform for tensor
-       call sph_f_trans_all_tensor
+       call sph_f_trans_all_field
 !
 !      call check_rj_spectr_data(my_rank)
 !
@@ -120,14 +114,8 @@
       integer(kind = kint), intent(in) :: i_step
 !
 !
-!  spherical transform for scalar
-       call sph_f_trans_all_scalar
-!
 !  spherical transform for vector
-       call sph_f_trans_all_vector
-!
-!  spherical transform for tensor
-       call sph_f_trans_all_tensor
+       call sph_f_trans_all_field
 !
 !      call check_rj_spectr_data(my_rank)
 !
