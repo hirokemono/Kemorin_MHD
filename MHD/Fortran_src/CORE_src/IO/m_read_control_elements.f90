@@ -99,17 +99,6 @@
 !>   temporal character for reading line
        character(len=255), private :: character_4_read
 !
-      private :: read_integers_from_line, read_int_reals_from_line
-      private :: read_vector_from_line, read_int_vect_from_line
-      private :: read_control_array_real,  read_control_array_chara
-      private :: read_control_array_real2, read_control_array_chara2
-      private :: read_control_array_real3, read_control_array_chara3
-      private :: read_control_array_chara_real2
-      private :: read_control_array_chara2_real
-      private :: read_control_array_int_ch_re
-      private :: read_control_array_int2, read_control_array_int2_real
-      private :: read_control_array_int2_real2
-!
 !   --------------------------------------------------------------------
 !
       contains
@@ -395,271 +384,6 @@
        end subroutine read_file_names_from_ctl_line
 !
 !   --------------------------------------------------------------------
-!
-      subroutine read_integers_from_line(num, icou, ivect)
-!
-      integer (kind=kint), intent(in) :: num
-      integer (kind=kint), intent(inout) :: icou
-      integer (kind=kint), intent(inout) :: ivect(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara, ivect(icou)
-!
-      end subroutine read_integers_from_line
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_int_reals_from_line(num, icou, ivect, vect)
-!
-      integer (kind=kint), intent(in) :: num
-      integer (kind=kint), intent(inout) :: icou
-      integer (kind=kint), intent(inout) :: ivect(num)
-      real (kind=kreal), intent(inout) :: vect(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara, ivect(icou), vect(icou)
-!
-      end subroutine read_int_reals_from_line
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_vector_from_line(num, icou, c_tbl, vect)
-!
-      integer (kind=kint), intent(in) :: num
-      integer (kind=kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: c_tbl(num)
-      real (kind=kreal), intent(inout) :: vect(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara, c_tbl(icou), vect(icou)
-!
-      end subroutine read_vector_from_line
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_int_vect_from_line(num, icou, c_tbl, ivect)
-!
-      integer (kind=kint), intent(in) :: num
-      integer (kind=kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: c_tbl(num)
-      integer (kind=kint), intent(inout) :: ivect(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara, c_tbl(icou), ivect(icou)
-!
-      end subroutine read_int_vect_from_line
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_real(num, icou, vec1)
-!
-      integer (kind = kint), intent(in) :: num
-      integer (kind = kint), intent(inout) :: icou
-      real (kind=kreal), intent(inout) :: vec1(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara, vec1(icou)
-!
-      end subroutine read_control_array_real
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_real2(num, icou, vec1, vec2)
-!
-      integer (kind = kint), intent(in) :: num
-      integer (kind = kint), intent(inout) :: icou
-      real (kind=kreal), intent(inout) :: vec1(num), vec2(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara, vec1(icou), vec2(icou)
-!
-      end subroutine read_control_array_real2
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_real3(num, icou, vec1, vec2, vec3)
-!
-      integer (kind = kint), intent(in) :: num
-      integer (kind = kint), intent(inout) :: icou
-      real (kind=kreal), intent(inout) :: vec1(num), vec2(num)
-      real (kind=kreal), intent(inout) :: vec3(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara,                            &
-     &                          vec1(icou), vec2(icou), vec3(icou)
-!
-      end subroutine read_control_array_real3
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_chara(num, icou, c_tbl)
-!
-      integer (kind = kint), intent(in) :: num
-      integer (kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: c_tbl(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara, c_tbl(icou)
-!
-      end subroutine read_control_array_chara
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_chara2(num, icou, chara1, chara2)
-!
-      integer (kind = kint), intent(in) :: num
-      integer (kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: chara1(num), chara2(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara,                            &
-     &                           chara1(icou), chara2(icou)
-!
-      end subroutine read_control_array_chara2
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_chara3(num, icou, chara1, chara2,   &
-     &          chara3)
-!
-      integer (kind = kint), intent(in) :: num
-      integer (kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: chara1(num), chara2(num)
-      character(len=kchara), intent(inout) :: chara3(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara, chara1(icou),              &
-     &                           chara2(icou), chara3(icou)
-!
-      end subroutine read_control_array_chara3
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_chara_real2(num, icou, c_tbl,       &
-     &          vec1, vec2)
-!
-      integer (kind = kint), intent(in) :: num
-      integer (kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: c_tbl(num)
-      real (kind=kreal), intent(inout) :: vec1(num), vec2(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara, c_tbl(icou),               &
-     &                           vec1(icou), vec2(icou)
-!
-      end subroutine read_control_array_chara_real2
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_chara2_real(num, icou,              &
-     &          chara1, chara2, vect)
-!
-      integer (kind = kint), intent(in) :: num
-      integer (kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: chara1(num), chara2(num)
-      real (kind=kreal), intent(inout) :: vect(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara,                            &
-     &                         chara1(icou), chara2(icou), vect(icou)
-!
-      end subroutine read_control_array_chara2_real
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_int_ch_re(num, icou,                &
-     &          ivect, c_tbl, vect)
-!
-      integer (kind = kint), intent(in) :: num
-      integer (kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: c_tbl(num)
-      integer (kind = kint), intent(inout) :: ivect(num)
-      real (kind=kreal), intent(inout) :: vect(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara,                            &
-     &                         ivect(icou), c_tbl(icou), vect(icou)
-!
-      end subroutine read_control_array_int_ch_re
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_int2(num, icou, int1, int2)
-!
-      integer (kind = kint), intent(in) :: num
-      integer (kind = kint), intent(inout) :: icou
-      integer(kind = kint), intent(inout) :: int1(num), int2(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara, int1(icou), int2(icou)
-!
-      end subroutine read_control_array_int2
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_int2_real(num, icou, int1, int2,    &
-     &          vect)
-!
-      integer (kind = kint), intent(in) :: num
-      integer (kind = kint), intent(inout) :: icou
-      integer(kind = kint), intent(inout) :: int1(num), int2(num)
-      real (kind=kreal), intent(inout) :: vect(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara, int1(icou), int2(icou),    &
-     &                          vect(icou)
-!
-       end subroutine read_control_array_int2_real
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_int2_real2(num, icou, int1, int2,   &
-     &        vec1, vec2)
-!
-      integer (kind = kint), intent(in) :: num
-      integer (kind = kint), intent(inout) :: icou
-      integer(kind = kint), intent(inout) :: int1(num), int2(num)
-      real (kind=kreal), intent(inout) :: vec1(num), vec2(num)
-!
-!
-      if(icou .ge. num) return
-      icou = icou + 1
-      read(character_4_read,*) header_chara, int1(icou), int2(icou),    &
-     &                          vec1(icou), vec2(icou)
-!
-       end subroutine read_control_array_int2_real2
-!
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_int_list(label, num, icou, ivect)
@@ -673,11 +397,12 @@
       do
         call load_ctl_label_and_line
         call find_control_end_array_flag(label, num, icou)
-        if(icou .eq. num) exit
+        if(icou .ge. num) exit
 !
         if(header_chara.eq.label) then
-          call read_integers_from_line(num, icou, ivect)
-        end if
+          icou = icou + 1
+          read(character_4_read,*) header_chara, ivect(icou)
+       end if
       end do
 !
       end subroutine read_control_array_int_list
@@ -697,10 +422,12 @@
       do
         call load_ctl_label_and_line
         call find_control_end_array_flag(label, num, icou)
-        if(icou .eq. num) exit
+        if(icou .ge. num) exit
 !
         if(header_chara.eq.label) then
-          call read_int_reals_from_line(num, icou, ivect, vect)
+          icou = icou + 1
+          read(character_4_read,*) header_chara,                        &
+     &                            ivect(icou), vect(icou)
         end if
       end do
 !
@@ -721,10 +448,12 @@
       do
         call load_ctl_label_and_line
         call find_control_end_array_flag(label, num, icou)
-        if(icou .eq. num) exit
+        if(icou .ge. num) exit
 !
         if(header_chara.eq.label) then
-          call read_vector_from_line(num, icou, c_tbl, vect)
+          icou = icou + 1
+          read(character_4_read,*) header_chara,                        &
+     &           c_tbl(icou), vect(icou)
         end if
       end do
 !
@@ -745,10 +474,12 @@
       do
         call load_ctl_label_and_line
         call find_control_end_array_flag(label, num, icou)
-        if(icou .eq. num) exit
+        if(icou .ge. num) exit
 !
         if(header_chara.eq.label) then
-          call read_int_vect_from_line(num, icou, c_tbl, ivect)
+          icou = icou + 1
+          read(character_4_read,*) header_chara,                        &
+     &                            c_tbl(icou), ivect(icou)
         end if
       end do
 !
@@ -768,10 +499,11 @@
       do
         call load_ctl_label_and_line
         call find_control_end_array_flag(label, num, icou)
-        if(icou .eq. num) exit
+        if(icou .ge. num) exit
 !
         if(header_chara.eq.label) then
-          call read_control_array_real(num, icou, vec1)
+          icou = icou + 1
+          read(character_4_read,*) header_chara, vec1(icou)
         end if
       end do
 !
@@ -791,10 +523,11 @@
       do
         call load_ctl_label_and_line
         call find_control_end_array_flag(label, num, icou)
-        if(icou .eq. num) exit
+        if(icou .ge. num) exit
 !
         if(header_chara.eq.label) then
-          call read_control_array_real2(num, icou, vec1, vec2)
+          icou = icou + 1
+          read(character_4_read,*) header_chara, vec1(icou), vec2(icou)
         end if
       end do
 !
@@ -815,10 +548,12 @@
       do
         call load_ctl_label_and_line
         call find_control_end_array_flag(label, num, icou)
-        if(icou .eq. num) exit
+        if(icou .ge. num) exit
 !
         if(header_chara.eq.label) then
-          call read_control_array_real3(num, icou, vec1, vec2, vec3)
+          icou = icou + 1
+          read(character_4_read,*) header_chara,                        &
+     &                          vec1(icou), vec2(icou), vec3(icou)
         end if
       end do
 !
@@ -840,7 +575,8 @@
         if(icou .eq. num) exit
 !
         if(header_chara.eq.label) then
-          call read_control_array_chara(num, icou, c_tbl)
+          icou = icou + 1
+          read(character_4_read,*) header_chara, c_tbl(icou)
         end if
       end do
 !
@@ -860,10 +596,12 @@
       do
         call load_ctl_label_and_line
         call find_control_end_array_flag(label, num, icou)
-        if(icou .eq. num) exit
+        if(icou .ge. num) exit
 !
         if(header_chara.eq.label) then
-          call read_control_array_chara2(num, icou, c1_tbl, c2_tbl)
+          icou = icou + 1
+          read(character_4_read,*) header_chara,                        &
+     &                           c1_tbl(icou), c2_tbl(icou)
         end if
       end do
 !
@@ -884,11 +622,12 @@
       do
         call load_ctl_label_and_line
         call find_control_end_array_flag(label, num, icou)
-        if(icou .eq. num) exit
+        if(icou .ge. num) exit
 !
         if(header_chara.eq.label) then
-          call read_control_array_chara3(num, icou, c1_tbl, c2_tbl,     &
-     &        c3_tbl)
+          icou = icou + 1
+          read(character_4_read,*) header_chara, c1_tbl(icou),          &
+     &                           c2_tbl(icou), c3_tbl(icou)
         end if
       end do
 !
@@ -909,11 +648,12 @@
       do
         call load_ctl_label_and_line
         call find_control_end_array_flag(label, num, icou)
-        if(icou .eq. num) exit
+        if(icou .ge. num) exit
 !
         if(header_chara.eq.label) then
-          call read_control_array_chara_real2(num, icou, c_tbl,         &
-     &          vec1, vec2)
+          icou = icou + 1
+          read(character_4_read,*) header_chara, c_tbl(icou),           &
+     &                           vec1(icou), vec2(icou)
         end if
       end do
 !
@@ -937,8 +677,9 @@
         if(icou .eq. num) exit
 !
         if(header_chara.eq.label) then
-          call read_control_array_chara2_real(num, icou,                &
-     &        c1_tbl, c2_tbl, vect)
+          icou = icou + 1
+          read(character_4_read,*) header_chara,                        &
+     &                         c1_tbl(icou), c2_tbl(icou), vect(icou)
         end if
       end do
 !
@@ -960,11 +701,12 @@
       do
         call load_ctl_label_and_line
         call find_control_end_array_flag(label, num, icou)
-        if(icou .eq. num) exit
+        if(icou .ge. num) exit
 !
         if(header_chara.eq.label) then
-          call read_control_array_int_ch_re(num, icou,                  &
-     &        ivect, c_tbl, vect)
+          icou = icou + 1
+          read(character_4_read,*) header_chara,                        &
+     &                         ivect(icou), c_tbl(icou), vect(icou)
         end if
       end do
 !
@@ -987,7 +729,8 @@
         if(icou .eq. num) exit
 !
         if(header_chara.eq.label) then
-          call read_control_array_int2(num, icou, int1, int2)
+          icou = icou + 1
+          read(character_4_read,*) header_chara, int1(icou), int2(icou)
         end if
       end do
 !
@@ -1011,8 +754,9 @@
         if(icou .eq. num) exit
 !
         if(header_chara.eq.label) then
-          call read_control_array_int2_real(num, icou, int1, int2,      &
-     &        vect)
+          icou = icou + 1
+          read(character_4_read,*) header_chara, int1(icou),            &
+     &                            int2(icou), vect(icou)
         end if
       end do
 !
@@ -1036,8 +780,9 @@
         if(icou .eq. num) exit
 !
         if(header_chara.eq.label) then
-          call read_control_array_int2_real2(num, icou, int1, int2,     &
-     &        vec1, vec2)
+          icou = icou + 1
+          read(character_4_read,*) header_chara, int1(icou),            &
+     &                          int2(icou), vec1(icou), vec2(icou)
         end if
       end do
 !
