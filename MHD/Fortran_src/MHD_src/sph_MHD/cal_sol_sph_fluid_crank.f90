@@ -279,8 +279,8 @@ end subroutine check_NaN_temperature
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_scalar_sph_crank(nri, jmax, idx_rj_smp_stack,  &
-     &          sph_bc, coef_f, coef_d, coef_imp, evo_mat, evo_lu, i_pivot, &
-     &          s00_evo_lu, i_s00_pivot, sol_00, is_field)
+     &          sph_bc, coef_f, coef_d, coef_imp, evo_mat, evo_lu,      &
+     &          i_pivot, s00_evo_lu, i_s00_pivot, sol_00, is_field)
 !
       use m_t_int_parameter
       use t_boundary_params_sph_MHD
