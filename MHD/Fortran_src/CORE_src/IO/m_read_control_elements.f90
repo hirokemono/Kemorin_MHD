@@ -93,11 +93,22 @@
 !>   control file id
       integer (kind=kint) :: ctl_file_code = 11
 !
+!>   Label to start a control block
+       character(len=kchara), parameter  :: hd_begin = 'Begin'
+!>   Label to end a control block
+       character(len=kchara), parameter  :: hd_end = 'End'
+!>   Label for an array control block
+       character(len=kchara), parameter  :: hd_array = 'Array'
+!>   Label for an array control block
+       character(len=kchara), parameter  :: hd_file = 'File'
+!
 !>   character for read label
        character(len=kchara), private  :: header_chara
 !
 !>   temporal character for reading line
        character(len=255), private :: character_4_read
+!
+      private :: hd_begin, hd_end, hd_array, hd_file
 !
 !   --------------------------------------------------------------------
 !
@@ -120,13 +131,14 @@
 !
       integer function right_begin_flag(ctl_name)
 !
+      use skip_comment_f
+!
       character(len=kchara), intent(in) :: ctl_name
       character(len=kchara)  :: tmpchara, item_name
 !
 !
       right_begin_flag = 0
-      if (   header_chara.eq.'begin' .or. header_chara.eq.'Begin'       &
-     &  .or. header_chara.eq.'BEGIN') then
+      if (cmp_no_case(header_chara, hd_begin) .gt. 0) then
         read(character_4_read,*) tmpchara, item_name
         if(item_name .eq. ctl_name) right_begin_flag = 1
       end if
@@ -140,13 +152,14 @@
 !
       integer function right_file_flag(ctl_name)
 !
+      use skip_comment_f
+!
       character(len=kchara), intent(in) :: ctl_name
       character(len=kchara)  :: tmpchara, item_name
 !
 !
       right_file_flag = 0
-      if (   header_chara.eq.'file' .or. header_chara.eq.'File'         &
-     &  .or. header_chara.eq.'FILE') then
+      if (cmp_no_case(header_chara, hd_file) .gt. 0) then
         read(character_4_read,*) tmpchara, item_name
         if(item_name .eq. ctl_name) right_file_flag = 1
       end if
@@ -157,14 +170,15 @@
 !
       subroutine find_control_end_flag(ctl_name, iflag_end)
 !
+      use skip_comment_f
+!
       character(len=kchara), intent(in) :: ctl_name
       integer(kind = kint), intent(inout) :: iflag_end
 !
       character(len=kchara)  :: tmpchara, item_name
 !
 !
-      if(    header_chara.eq.'end' .or. header_chara.eq.'End'           &
-     &  .or. header_chara.eq.'END') then
+      if (cmp_no_case(header_chara, hd_end) .gt. 0) then
         read(character_4_read,*) tmpchara, item_name
         if(item_name .eq. ctl_name) iflag_end = 1
       end if 
@@ -175,6 +189,8 @@
 !
       subroutine find_control_array_flag(ctl_name, num_array)
 !
+      use skip_comment_f
+!
       character(len=kchara), intent(in) :: ctl_name
       integer(kind = kint), intent(inout) :: num_array
 !
@@ -184,8 +200,7 @@
 !      write(*,*) 'header_chara: ', num_array, trim(header_chara)
       if(num_array .gt. 0) return
 !
-      if(    header_chara.eq.'array' .or. header_chara.eq.'Array'       &
-     &  .or. header_chara.eq.'ARRAY') then
+      if (cmp_no_case(header_chara, hd_array) .gt. 0) then
         read(character_4_read,*) tmpchara, item_name
 !        write(*,*) trim(item_name),': ', trim(ctl_name)
         if(item_name .ne. ctl_name) return
@@ -200,6 +215,8 @@
 !
       subroutine find_control_end_array_flag(ctl_name, num, iflag_end)
 !
+      use skip_comment_f
+!
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(in) :: ctl_name
       integer(kind = kint), intent(inout) :: iflag_end
@@ -209,11 +226,9 @@
 !
 !
       iflag = 0
-      if(    header_chara.eq.'end' .or. header_chara.eq.'End'           &
-     &  .or. header_chara.eq.'END') then
+      if (cmp_no_case(header_chara, hd_end) .gt. 0) then
         read(character_4_read,*) tmpchara, array_name
-        if(    array_name.eq.'array' .or. array_name.eq.'Array'         &
-     &    .or. array_name.eq.'ARRAY') then
+        if (cmp_no_case(array_name, hd_array) .gt. 0) then
           read(character_4_read,*) tmpchara, array_name, item_name
           if(item_name .eq. ctl_name) iflag = 1
         end if
