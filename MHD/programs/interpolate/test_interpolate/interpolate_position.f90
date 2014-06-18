@@ -166,7 +166,6 @@
 !
       use m_interpolated_geometry
       use m_2nd_pallalel_vector
-      use m_2nd_nod_comm_table
 !
       use select_calypso_SR
       use solver_SR_int

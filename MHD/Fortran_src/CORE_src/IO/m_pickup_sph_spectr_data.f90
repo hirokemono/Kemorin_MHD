@@ -44,7 +44,7 @@
 !>      Number of modes of monitoring spectrum to be evaluated
       integer(kind = kint) :: num_pick_sph = 0
 !>      Degree and Order ID of  monitoring spectrum to be evaluated
-      integer(kind = kint), allocatable :: idx_pick_sph_mode(:)
+      integer(kind = kint), allocatable :: idx_pick_sph_mode(:,:)
 !>      Number of degrees of  monitoring spectrum to be evaluated
       integer(kind = kint) :: num_pick_sph_l = 0
 !>      Degree ID of  monitoring spectrum to be evaluated
@@ -56,6 +56,8 @@
 !
 !>      Number of radial layer for monitoring spectrum
       integer(kind = kint) :: num_pick_layer = 0
+!>      Integer flag for center point (All processes have the same)
+      integer(kind = kint) :: icenter_pick_layer = 0
 !>      Radial ID for monitoring spectrum
       integer(kind = kint), allocatable :: id_pick_layer(:)
 !>      Radius for monitoring spectrum
@@ -112,7 +114,7 @@
 !
       subroutine allocate_pick_sph_mode
 !
-      allocate( idx_pick_sph_mode(num_pick_sph) )
+      allocate( idx_pick_sph_mode(num_pick_sph,2) )
       if(num_pick_sph .gt. 0) idx_pick_sph_mode = 0
 !
       end subroutine allocate_pick_sph_mode

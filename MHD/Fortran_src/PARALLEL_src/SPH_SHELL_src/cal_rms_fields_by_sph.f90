@@ -181,7 +181,7 @@
       use sum_sph_rms_data
 !
       integer(kind = kint), intent(in) :: kg_st, kg_ed
-integer(kind = kint) :: ltr1
+      integer(kind = kint) :: ltr1
 !
 !
       call radial_integration(nidx_rj(2), nidx_rj(1), kg_st, kg_ed,     &

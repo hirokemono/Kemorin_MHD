@@ -32,7 +32,7 @@
       use m_pickup_sph_spectr_data
       use m_rms_4_sph_spectr
 !
-      integer(kind = kint) :: inum, l, m
+      integer(kind = kint) :: inum
 !
 !
       iflag_layer_rms_spec =  i_layer_rms_head
@@ -72,9 +72,8 @@
       call allocate_pick_sph_mode
 !
       do inum = 1, num_pick_sph
-        l = idx_pick_sph_ctl%int1(inum)
-        m = idx_pick_sph_ctl%int2(inum)
-        idx_pick_sph_mode(inum) = l*(l+1) + m
+        idx_pick_sph_mode(inum,1) = idx_pick_sph_ctl%int1(inum)
+        idx_pick_sph_mode(inum,2) = idx_pick_sph_ctl%int2(inum)
       end do
       call deallocate_pick_sph_ctl
 !
@@ -96,20 +95,16 @@
 !
 !   set pickup layer
 !
-      if (idx_pick_layer_ctl%icou .gt. 0) then
-        if(idx_pick_layer_ctl%num .gt. 0) then
-          num_pick_layer = idx_pick_layer_ctl%num
-          call allocate_num_pick_layer
+      num_pick_layer = 0
+      if(idx_pick_layer_ctl%num .gt. 0) then
+        num_pick_layer = idx_pick_layer_ctl%num
+        call allocate_num_pick_layer
 !
-          id_pick_layer(1:num_pick_layer)                               &
-     &      = idx_pick_layer_ctl%ivec(1:num_pick_layer)
+        do inum = 1, num_pick_layer
+          id_pick_layer(inum) = idx_pick_layer_ctl%ivec(inum)
+        end do
 !
-          call deallocate_num_pick_layer_ctl
-        else
-          num_pick_layer = 0
-        end if
-      else
-        num_pick_layer = 0
+        call deallocate_num_pick_layer_ctl
       end if
 !
       end subroutine set_ctl_params_pick_sph
@@ -121,7 +116,7 @@
       use m_ctl_data_4_pickup_sph
       use m_gauss_coefs_monitor_data
 !
-      integer(kind = kint) :: inum, l, m
+      integer(kind = kint) :: inum
 !
 !
 !   set pickup gauss coefficients
@@ -146,9 +141,8 @@
       call allocate_pick_gauss
 !
       do inum = 1, num_pick_gauss_coefs
-        l = idx_gauss_ctl%int1(inum)
-        m = idx_gauss_ctl%int2(inum)
-        idx_pick_gauss_mode(inum) = l*(l+1) + m
+        idx_pick_gauss_mode(inum,1) = idx_gauss_ctl%int1(inum)
+        idx_pick_gauss_mode(inum,2) = idx_gauss_ctl%int2(inum)
       end do
 !
       if(num_pick_gauss_coefs .gt. 0) call deallocate_pick_gauss_ctl

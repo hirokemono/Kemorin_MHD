@@ -47,16 +47,16 @@
         num_pick_rms_layer = num_pick_layer
       end if
 !
-      call count_picked_sph_adrress(l_truncation,                       &
-     &    num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
-     &    idx_pick_sph_l, idx_pick_sph_m, ntot_pick_sph_rms_mode)
+      call count_picked_sph_adrress                                     &
+     &   (num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
+     &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
+     &    ntot_pick_sph_rms_mode)
 !
       call allocate_pick_sph_rms
       call allocate_iflag_pick_sph(l_truncation)
 !
       call set_picked_sph_address                                       &
-     &   (l_truncation, nidx_rj(2), idx_gl_1d_rj_j(1,1),                &
-     &    num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
+     &   (num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
      &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
      &    ntot_pick_sph_rms_mode, num_pick_sph_rms_mode,                &
      &    idx_pick_sph_rms_gl, idx_pick_sph_rms_lc)
