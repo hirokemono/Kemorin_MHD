@@ -75,9 +75,9 @@ main_ene_sph_layer.o
 MOD_PICK_SPH_VOL_ENE = \
 m_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
-m_pickup_sph_rms_data.o \
 \
-allocate_pick_sph_rms.o \
+m_pickup_sph_rms_data.o \
+pickup_sph_rms_spectr.o \
 analyzer_pick_rms_vol.o \
 main_pick_rms_vol.o
 
@@ -85,6 +85,8 @@ MOD_PICK_SPH_ENE = \
 m_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
 \
+m_pickup_sph_rms_data.o \
+pickup_sph_rms_spectr.o \
 analyzer_pick_rms_sph.o \
 main_pick_rms_sph.o
 

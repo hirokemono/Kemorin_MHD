@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine surf_ave_4_each_sph_rms
+!!      subroutine averaging_4_sph_ave_int(avol)
 !!      subroutine vol_ave_4_each_sph_rms(avol)
 !!      subroutine vol_ave_4_rms_sph(avol)
 !!@endverbatim
@@ -81,6 +82,25 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
+      subroutine averaging_4_sph_ave_int(avol)
+!
+      real(kind = kreal), intent(in) :: avol
+      integer(kind = kint) :: lm, kg, icou
+!
+!
+!$omp parallel do private(kg,lm,icou)
+      do icou = 1, ntot_rms_rj
+        do kg = 1, nidx_rj(1)
+          ave_sph(kg,icou) = ave_sph(kg,icou) * a_r_1d_rj_r(kg)**2
+        end do
+        ave_sph_vol(icou) = avol * ave_sph_vol(icou)
+      end do
+!$omp end parallel do
+!
+      end subroutine averaging_4_sph_ave_int
+!
+! -----------------------------------------------------------------------
+!
       subroutine surf_ave_4_sph_rms_int
 !
       integer(kind = kint) :: lm, kg, icou
@@ -98,7 +118,6 @@
      &                              * a_r_1d_rj_r(kg)**2
           end do
 !
-          ave_sph(kg,icou) = ave_sph(kg,icou) * a_r_1d_rj_r(kg)**2
           rms_sph(kg,icou) = rms_sph(kg,icou) * a_r_1d_rj_r(kg)**2
         end do
       end do
@@ -117,7 +136,6 @@
 !$omp parallel do private(icou)
       do icou = 1, ntot_rms_rj
         rms_sph_vol(icou) = avol * rms_sph_vol(icou)
-        ave_sph_vol(icou) = avol * ave_sph_vol(icou)
       end do
 !$omp end parallel do
 !

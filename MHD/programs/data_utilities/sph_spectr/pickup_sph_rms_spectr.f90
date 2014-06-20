@@ -37,8 +37,6 @@
 !
       use m_pickup_sph_spectr_data
 !
-      integer(kind = kint) :: k
-!
 !
       pickup_sph_rms_head = pickup_sph_head
 !

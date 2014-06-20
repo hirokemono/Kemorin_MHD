@@ -7,29 +7,27 @@
 !>@brief  Evaluate mean square data for each spherical harmonics mode
 !!
 !!@verbatim
-!!      subroutine cal_rms_each_scalar_sph_spec(icomp, jcomp)
-!!      subroutine cal_rms_each_vector_sph_spec(icomp, jcomp)
+!!      subroutine cal_rms_each_scalar_sph_spec(d_rj, rms_sph_dat)
+!!      subroutine cal_rms_each_vector_sph_spec(d_rj, rms_sph_dat)
 !!        (1/4\pi) \int (\bf{u}_{l}^{m})^2 sin \theta d\theta d\phi
 !!          = r^{-2} [ l(l+1) / (2l+1) 
 !!           ( l(l+1)/r^2 (S_{l}^{m})^2 + (dS_{l}^{m}/dr)^2)
 !!            + (T_{l}^{m})^2 ) ]
-!!      subroutine set_sph_energies_by_rms(jcomp)
+!!      subroutine set_sph_energies_by_rms(rms_sph_dat)
 !!
-!!      subroutine cal_ave_scalar_sph_spectr(icomp, jcomp)
-!!      subroutine cal_ave_vector_sph_spectr(jcomp)
+!!      subroutine cal_ave_scalar_sph_spectr(nri_0, d_rj, ave_sph_lc)
+!!      subroutine cal_ave_vector_sph_spectr(nri_0, d_rj, ave_sph_lc)
 !!@endverbatim
 !!
-!!@n @param  icomp   Address of spectrum data
-!!@n @param  jcomp   Address of mean square data
+!!@n @param  d_rj          spectrum data
+!!@n @param  rms_sph_dat   mean square data
 !
       module cal_rms_by_sph_spectr
 !
       use m_precision
 !
       use m_constants
-      use m_rms_4_sph_spectr
       use m_spheric_parameter
-      use m_sph_spectr_data
       use m_schmidt_poly_on_rtm
 !
       implicit none
@@ -40,18 +38,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_rms_each_scalar_sph_spec(icomp, jcomp)
+      subroutine cal_rms_each_scalar_sph_spec(d_rj, rms_sph_dat)
 !
-      integer(kind = kint), intent(in) :: icomp, jcomp
-      integer(kind = kint) :: k, j, idx
+      real(kind = kreal), intent(in) :: d_rj(nnod_rj)
+      real(kind = kreal), intent(inout) :: rms_sph_dat(nnod_rj)
+!
+      integer(kind = kint) :: k, j, inod
 !
 !
-!$omp parallel do private(k,j,idx)
+!$omp parallel do private(k,j,inod)
       do k = 1, nidx_rj(1)
         do j = 1, nidx_rj(2)
-          idx = j + (k-1) * nidx_rj(2)
-          rms_sph_dat(j,k,jcomp)                                        &
-     &        = d_rj(idx,icomp)*d_rj(idx,icomp)*g_sph_rj(j,11)          &
+          inod = j + (k-1) * nidx_rj(2)
+          rms_sph_dat(inod) = d_rj(inod)*d_rj(inod)*g_sph_rj(j,11)      &
      &         * radius_1d_rj_r(k) * radius_1d_rj_r(k)
         end do
       end do
@@ -61,25 +60,27 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_rms_each_vector_sph_spec(icomp, jcomp)
+      subroutine cal_rms_each_vector_sph_spec(d_rj, rms_sph_dat)
 !
-      integer(kind = kint), intent(in) :: icomp, jcomp
-      integer(kind = kint) :: k, j, idx
+      real(kind = kreal), intent(in) :: d_rj(nnod_rj,3)
+      real(kind = kreal), intent(inout) :: rms_sph_dat(nnod_rj,3)
+!
+      integer(kind = kint) :: k, j, inod
 !
 !
-!$omp parallel do private(k,j,idx)
+!$omp parallel do private(k,j,inod)
       do k = 1, nidx_rj(1)
         do j = 1, nidx_rj(2)
-          idx = j + (k-1) * nidx_rj(2)
-          rms_sph_dat(j,k,  jcomp) = g_sph_rj(j,12)                     &
+          inod = j + (k-1) * nidx_rj(2)
+          rms_sph_dat(inod,1) = g_sph_rj(j,12)                          &
      &                        * ( g_sph_rj(j,3)                         &
      &                          * a_r_1d_rj_r(k)*a_r_1d_rj_r(k)         &
-     &                          * d_rj(idx,icomp  )*d_rj(idx,icomp  )   &
-     &                         +  d_rj(idx,icomp+1)*d_rj(idx,icomp+1))
-          rms_sph_dat(j,k,jcomp+1) = g_sph_rj(j,12)                     &
-     &                          * d_rj(idx,icomp+2)*d_rj(idx,icomp+2)
-          rms_sph_dat(j,k,jcomp+2) =  rms_sph_dat(j,k,jcomp  )          &
-     &                              + rms_sph_dat(j,k,jcomp+1)
+     &                          * d_rj(inod,1)*d_rj(inod,1)             &
+     &                         +  d_rj(inod,2)*d_rj(inod,2))
+          rms_sph_dat(inod,2) = g_sph_rj(j,12)                          &
+     &                          * d_rj(inod,3)*d_rj(inod,3)
+          rms_sph_dat(inod,3) =  rms_sph_dat(inod,1)                    &
+     &                         + rms_sph_dat(inod,2)
         end do
       end do
 !$omp end parallel do
@@ -88,30 +89,29 @@
 !
       j = idx_rj_degree_zero
       do k = 1, nidx_rj(1)
-        idx = idx_rj_degree_zero + (k-1) * nidx_rj(2)
-        rms_sph_dat(j,k,jcomp  ) = (half * d_rj(idx,icomp))**2          &
+        inod = idx_rj_degree_zero + (k-1) * nidx_rj(2)
+        rms_sph_dat(inod,1) = (half * d_rj(inod,1))**2                  &
      &                            * a_r_1d_rj_r(k)*a_r_1d_rj_r(k)
-        rms_sph_dat(j,k,jcomp+1) = zero
-        rms_sph_dat(j,k,jcomp+2) = rms_sph_dat(j,k,jcomp  )
+        rms_sph_dat(inod,2) = zero
+        rms_sph_dat(inod,3) = rms_sph_dat(inod,1)
       end do
 !
       end subroutine cal_rms_each_vector_sph_spec
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_energies_by_rms(jcomp)
+      subroutine set_sph_energies_by_rms(rms_sph_dat)
 !
-      integer(kind = kint), intent(in) :: jcomp
-      integer(kind = kint) :: j, k
+      real(kind = kreal), intent(inout) :: rms_sph_dat(nnod_rj,3)
+!
+      integer(kind = kint) :: inod
 !
 !
-!$omp parallel do private(k,j)
-      do k = 1, nidx_rj(1)
-        do j = 1, nidx_rj(2)
-          rms_sph_dat(j,k,jcomp  ) = half * rms_sph_dat(j,k,jcomp  )
-          rms_sph_dat(j,k,jcomp+1) = half * rms_sph_dat(j,k,jcomp+1)
-          rms_sph_dat(j,k,jcomp+2) = half * rms_sph_dat(j,k,jcomp+2)
-        end do
+!$omp parallel do
+      do inod = 1, nnod_rj
+        rms_sph_dat(inod,1) = half * rms_sph_dat(inod,1)
+        rms_sph_dat(inod,2) = half * rms_sph_dat(inod,2)
+        rms_sph_dat(inod,3) = half * rms_sph_dat(inod,3)
       end do
 !$omp end parallel do
 !
@@ -120,23 +120,23 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_ave_scalar_sph_spectr(icomp, jcomp)
+      subroutine cal_ave_scalar_sph_spectr(nri_0, d_rj, ave_sph_lc)
 !
-      integer(kind = kint), intent(in) :: icomp, jcomp
-      integer(kind = kint) :: k, kg, inod
+      integer(kind = kint), intent(in) :: nri_0
+      real(kind = kreal), intent(in) :: d_rj(nnod_rj)
+      real(kind = kreal), intent(inout) :: ave_sph_lc(nri_0)
+!
+      integer(kind = kint) :: k, inod
 !
 !
       if(idx_rj_degree_zero .eq. izero) then
         do k = 1, nidx_rj(1)
-          kg = idx_gl_1d_rj_r(k)
-          ave_sph_lc(kg,jcomp) = zero
+          ave_sph_lc(k) = zero
         end do
       else
         do k = 1, nidx_rj(1)
-          kg = idx_gl_1d_rj_r(k)
           inod = idx_rj_degree_zero + (k-1) * nidx_rj(2)
-          ave_sph_lc(kg,jcomp) = d_rj(inod,icomp)                       &
-     &         * radius_1d_rj_r(kg) * radius_1d_rj_r(kg)
+          ave_sph_lc(k) = d_rj(inod) * radius_1d_rj_r(k)**2
         end do
       end if
 !
@@ -144,26 +144,27 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_ave_vector_sph_spectr(icomp, jcomp)
+      subroutine cal_ave_vector_sph_spectr(nri_0, d_rj, ave_sph_lc)
 !
-      integer(kind = kint), intent(in) :: icomp, jcomp
-      integer(kind = kint) :: k, kg, inod
+      integer(kind = kint), intent(in) :: nri_0
+      real(kind = kreal), intent(in) :: d_rj(nnod_rj,3)
+      real(kind = kreal), intent(inout) :: ave_sph_lc(nri_0,3)
+!
+      integer(kind = kint) :: k, inod
 !
 !
       if(idx_rj_degree_zero .eq. izero) then
         do k = 1, nidx_rj(1)
-          kg = idx_gl_1d_rj_r(k)
-          ave_sph_lc(kg,jcomp  ) = zero
-          ave_sph_lc(kg,jcomp+1) = zero
-          ave_sph_lc(kg,jcomp+2) = zero
+          ave_sph_lc(k,1) = zero
+          ave_sph_lc(k,2) = zero
+          ave_sph_lc(k,3) = zero
         end do
       else
         do k = 1, nidx_rj(1)
-          kg = idx_gl_1d_rj_r(k)
           inod = idx_rj_degree_zero + (k-1) * nidx_rj(2)
-          ave_sph_lc(kg,jcomp  ) = half * d_rj(inod,icomp)
-          ave_sph_lc(kg,jcomp+1) = zero
-          ave_sph_lc(kg,jcomp+2) = ave_sph_lc(kg,jcomp  )
+          ave_sph_lc(k,1) = half * d_rj(inod,1)
+          ave_sph_lc(k,2) = zero
+          ave_sph_lc(k,3) = ave_sph_lc(k,1)
         end do
       end if
 !

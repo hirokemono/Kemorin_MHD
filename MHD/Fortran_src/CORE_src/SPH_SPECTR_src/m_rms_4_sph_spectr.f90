@@ -8,6 +8,7 @@
 !!      subroutine deallocate_rms_4_sph_spectr
 !!
 !!      subroutine clear_rms_sph_spectr
+!!      subroutine clear_ave_sph_spectr
 !
       module m_rms_4_sph_spectr
 !
@@ -83,7 +84,7 @@
       integer(kind = kint) :: nri, jmax
 !
 !
-      write(*,*) 'inod_rj_center', inod_rj_center
+      write(*,*) 'inod_rj_center aho', inod_rj_center, iflag_shell_mode
 !
       nri =  nidx_rj(1)
       jmax = nidx_rj(2)
@@ -150,11 +151,18 @@
       rms_sph_vol_lm = 0.0d0
       rms_sph_vol =    0.0d0
 !
+      end subroutine clear_rms_sph_spectr
+!
+! -----------------------------------------------------------------------
+!
+      subroutine clear_ave_sph_spectr
+!
+!
       ave_sph_lc =    0.0d0
       ave_sph =       0.0d0
       ave_sph_vol =   0.0d0
 !
-      end subroutine clear_rms_sph_spectr
+      end subroutine clear_ave_sph_spectr
 !
 ! -----------------------------------------------------------------------
 !
