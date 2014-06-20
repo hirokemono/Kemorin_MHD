@@ -8,7 +8,6 @@
 !!
 !!@verbatim
 !!      subroutine surf_ave_4_each_sph_rms
-!!      subroutine vol_ave_4_each_sph_rms(avol)
 !!      subroutine vol_ave_4_rms_sph(avol)
 !!@endverbatim
 !!@f$ 
@@ -59,24 +58,6 @@
 !$omp end parallel
 !
       end subroutine surf_ave_4_each_sph_rms
-!
-! -----------------------------------------------------------------------
-!
-      subroutine vol_ave_4_each_sph_rms(avol)
-!
-      real(kind = kreal), intent(in) :: avol
-      integer(kind = kint) :: j, icou
-!
-!
-!$omp parallel do private(j,icou)
-      do icou = 1, ntot_rms_rj
-        do j = 1, nidx_rj(2)
-          rms_sph_vol_dat(j,icou) = avol * rms_sph_vol_dat(j,icou)
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine vol_ave_4_each_sph_rms
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

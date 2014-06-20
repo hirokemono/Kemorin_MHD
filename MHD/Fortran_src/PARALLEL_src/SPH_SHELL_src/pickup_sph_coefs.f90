@@ -37,8 +37,6 @@
       use calypso_mpi
       use quicksort
 !
-      integer(kind = kint) :: k, knum
-!
 !
       call init_sph_radial_monitor_list
 !

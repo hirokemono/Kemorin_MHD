@@ -150,30 +150,17 @@
       use cal_ave_4_rms_vector_sph
       use sum_sph_rms_data
 !
-      integer(kind = kint) :: i_fld, j_fld, icomp_st, jcomp_st
+      integer(kind = kint) :: i_fld, j_fld, icomp_rj, jcomp_st
 !
 !
       call clear_rms_sph_spectr
 !
       do j_fld = 1, num_rms_rj
         i_fld = ifield_rms_rj(j_fld)
-        icomp_st = istack_phys_comp_rj(i_fld-1) + 1
+        icomp_rj = istack_phys_comp_rj(i_fld-1) + 1
         jcomp_st = istack_rms_comp_rj(j_fld-1) +  1
-        if (num_phys_comp_rj(i_fld) .eq. n_scalar) then
-          call cal_rms_each_scalar_sph_spec                             &
-     &       (d_rj(1,icomp_st), rms_sph_dat(1,1,jcomp_st))
-        else if (num_phys_comp_rj(i_fld) .eq. n_vector) then
-          call cal_rms_each_vector_sph_spec                             &
-     &       (d_rj(1,icomp_st), rms_sph_dat(1,1,jcomp_st))
-!
-          if (   icomp_st .eq. ipol%i_velo                              &
-     &      .or. icomp_st .eq. ipol%i_magne                             &
-     &      .or. icomp_st .eq. ipol%i_filter_velo                       &
-     &      .or. icomp_st .eq. ipol%i_filter_magne) then
-            call set_sph_energies_by_rms(rms_sph_dat(1,1,jcomp_st) )
-          end if
-!
-        end if
+        call cal_rms_sph_spec_one_field(num_rms_comp_rj(j_fld),         &
+     &      icomp_rj, rms_sph_dat(1,1,jcomp_st))
       end do
 !
       call sum_sph_layerd_rms
@@ -197,9 +184,6 @@
       integer(kind = kint), intent(in) :: kg_st, kg_ed
       integer(kind = kint) :: ltr1
 !
-!
-      call radial_integration_old(nidx_rj(2), nidx_rj(1), kg_st, kg_ed,     &
-     &    radius_1d_rj_r, ntot_rms_rj, rms_sph_dat, rms_sph_vol_dat)
 !
       ltr1 = l_truncation + 1
       call radial_integration_old(ltr1, nidx_rj(1), kg_st, kg_ed,           &
@@ -236,8 +220,6 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'surf_ave_4_each_sph_rms'
       call surf_ave_4_each_sph_rms
-      if(iflag_debug.gt.0)  write(*,*) 'vol_ave_4_each_sph_rms'
-      call vol_ave_4_each_sph_rms(avol)
 !
       if(my_rank .gt. 0) return
 !

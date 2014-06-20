@@ -7,6 +7,8 @@
 !>@brief  Evaluate mean square data for each spherical harmonics mode
 !!
 !!@verbatim
+!!      subroutine cal_rms_sph_spec_one_field(ncomp_rj, icomp_rj,       &
+!!     &          rms_sph_dat)
 !!      subroutine cal_rms_each_scalar_sph_spec(d_rj, rms_sph_dat)
 !!      subroutine cal_rms_each_vector_sph_spec(d_rj, rms_sph_dat)
 !!        (1/4\pi) \int (\bf{u}_{l}^{m})^2 sin \theta d\theta d\phi
@@ -29,10 +31,45 @@
 !
       implicit none
 !
+      private :: cal_rms_each_scalar_sph_spec
+      private :: cal_rms_each_vector_sph_spec
+      private :: set_sph_energies_by_rms
+!
 ! -----------------------------------------------------------------------
 !
       contains
 !
+! -----------------------------------------------------------------------
+!
+      subroutine cal_rms_sph_spec_one_field(ncomp_rj, icomp_rj,         &
+     &          rms_sph_dat)
+!
+      use m_phys_constants
+      use m_sph_spectr_data
+      use m_sph_phys_address
+!
+      integer(kind = kint), intent(in) :: ncomp_rj, icomp_rj
+      real(kind = kreal), intent(inout) :: rms_sph_dat(1,ncomp_rj)
+!
+!
+      if     (ncomp_rj .eq. n_scalar) then
+          call cal_rms_each_scalar_sph_spec                             &
+     &       (d_rj(1,icomp_rj), rms_sph_dat(1,1))
+      else if(ncomp_rj .eq. n_vector) then
+        call cal_rms_each_vector_sph_spec                               &
+     &       (d_rj(1,icomp_rj), rms_sph_dat(1,1))
+!
+        if (   icomp_rj .eq. ipol%i_velo                                &
+     &      .or. icomp_rj .eq. ipol%i_magne                             &
+     &      .or. icomp_rj .eq. ipol%i_filter_velo                       &
+     &      .or. icomp_rj .eq. ipol%i_filter_magne) then
+          call set_sph_energies_by_rms(rms_sph_dat(1,1) )
+        end if
+      end if
+!
+      end subroutine cal_rms_sph_spec_one_field
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine cal_rms_each_scalar_sph_spec(d_rj, rms_sph_dat)
@@ -52,6 +89,9 @@
         end do
       end do
 !$omp end parallel do
+!
+      if(inod_rj_center .eq. 0) return
+      rms_sph_dat(inod_rj_center) = d_rj(inod)*d_rj(inod)
 !
       end subroutine cal_rms_each_scalar_sph_spec
 !
@@ -84,7 +124,6 @@
 !
       if(idx_rj_degree_zero .eq. izero) return
 !
-      j = idx_rj_degree_zero
       do k = 1, nidx_rj(1)
         inod = idx_rj_degree_zero + (k-1) * nidx_rj(2)
         rms_sph_dat(inod,1) = (half * d_rj(inod,1))**2                  &
@@ -92,6 +131,11 @@
         rms_sph_dat(inod,2) = zero
         rms_sph_dat(inod,3) = rms_sph_dat(inod,1)
       end do
+!
+      if(inod_rj_center .eq. 0) return
+      rms_sph_dat(inod_rj_center,1) = (half*d_rj(inod_rj_center,1))**2
+      rms_sph_dat(inod_rj_center,2) = zero
+      rms_sph_dat(inod_rj_center,3) = rms_sph_dat(inod_rj_center,1)
 !
       end subroutine cal_rms_each_vector_sph_spec
 !

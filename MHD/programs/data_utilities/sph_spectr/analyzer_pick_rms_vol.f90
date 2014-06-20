@@ -15,8 +15,8 @@
       use m_schmidt_poly_on_rtm
       use calypso_mpi
 !
-      use cal_rms_fields_by_sph
       use field_IO_select
+      use pickup_sph_rms_spectr 
 !
       implicit none
 !
@@ -90,6 +90,8 @@
 !
 !      call check_schmidt_poly_rtm(my_rank+40)
 !
+      call allocate_work_pick_rms_sph
+!
       end subroutine initialyze_pick_rms_vol
 !
 ! ----------------------------------------------------------------------
@@ -105,7 +107,6 @@
       use m_pickup_sph_spectr_data
       use m_pickup_sph_rms_data
       use copy_rj_phys_data_4_IO
-      use pickup_sph_rms_spectr 
 !
 !
       integer(kind = kint) :: i_step
@@ -124,10 +125,8 @@
 !
 !  evaluate energies
 !
-        if (iflag_debug.gt.0) write(*,*) 'cal_rms_sph_spec_rms_whole'
-        call cal_rms_sph_spec_rms_whole
         if (iflag_debug.gt.0) write(*,*) 'pickup_sph_rms_vol_monitor'
-        call pickup_sph_rms_vol_monitor
+        call pickup_sph_rms_vol_monitor(ione, nidx_rj(1))
 !
         num_pick_layer = 1
         if (iflag_debug.gt.0) write(*,*) 'write_sph_rms_4_monitor'

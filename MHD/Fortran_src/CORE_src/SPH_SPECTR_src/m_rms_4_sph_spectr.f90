@@ -24,7 +24,6 @@
       character (len=kchara), allocatable :: rms_name_rj(:)
 !
       real(kind = kreal), allocatable :: rms_sph_dat(:,:,:)
-      real(kind = kreal), allocatable :: rms_sph_vol_dat(:,:)
 !
       real(kind = kreal), allocatable :: rms_sph_l(:,:,:)
       real(kind = kreal), allocatable :: rms_sph_m(:,:,:)
@@ -86,7 +85,6 @@
       nri =  nidx_rj(1)
       jmax = nidx_rj(2)
       allocate( rms_sph_dat(jmax,nri,ntot_rms_rj) )
-      allocate( rms_sph_vol_dat(jmax,ntot_rms_rj) )
 !
       allocate( rms_sph_l(0:l_truncation,nri,ntot_rms_rj) )
       allocate( rms_sph_m(0:l_truncation,nri,ntot_rms_rj) )
@@ -111,7 +109,6 @@
 !
 !
       deallocate( rms_sph_dat )
-      deallocate( rms_sph_vol_dat )
 !
       deallocate( rms_sph_l, rms_sph_m, rms_sph_lm)
       deallocate( rms_sph )
@@ -132,7 +129,6 @@
       subroutine clear_rms_sph_spectr
 !
       rms_sph_dat =  0.0d0
-      rms_sph_vol_dat =  0.0d0
 !
       rms_sph_l =  0.0d0
       rms_sph_m =  0.0d0
