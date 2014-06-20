@@ -83,6 +83,8 @@
       integer(kind = kint) :: nri, jmax
 !
 !
+      write(*,*) 'inod_rj_center', inod_rj_center
+!
       nri =  nidx_rj(1)
       jmax = nidx_rj(2)
       allocate( rms_sph_dat(jmax,nri,ntot_rms_rj) )

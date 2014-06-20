@@ -31,15 +31,12 @@
       use m_precision
       use m_constants
 !
+      use m_pickup_sph_spectr_data
+!
       implicit  none
 !
 !
-      integer(kind = kint), parameter :: id_each_ms =   22
       character(len = kchara) :: pickup_sph_rms_head =  'picked_ene_spec'
-!
-      integer(kind = kint) :: num_pick_rms_layer = 0
-      integer(kind = kint), allocatable :: id_pick_rms_layer(:)
-      real(kind = kreal), allocatable :: r_pick_rms_layer(:)
 !
       integer(kind = kint) :: ntot_pick_sph_rms_mode = 0
       integer(kind = kint) :: num_pick_sph_rms_mode =  0
@@ -66,10 +63,7 @@
       integer(kind = kint) :: num
 !
 !
-      num = ntot_pick_sph_rms_mode*num_pick_rms_layer
-!
-      allocate( id_pick_rms_layer(num_pick_rms_layer) )
-      allocate( r_pick_rms_layer(num_pick_rms_layer) )
+      num = ntot_pick_sph_rms_mode*num_pick_layer
 !
       allocate( idx_pick_sph_rms_gl(ntot_pick_sph_rms_mode) )
       allocate( idx_pick_sph_rms_lc(ntot_pick_sph_rms_mode) )
@@ -77,7 +71,6 @@
       allocate( d_rms_pick_sph_gl(ncomp_pick_sph_rms,num) )
       allocate( rms_pick_sph_name(ncomp_pick_sph_rms) )
 !
-      if(num_pick_rms_layer .gt. 0) id_pick_rms_layer = 0
       if(num .gt. 0) then
         idx_pick_sph_rms_gl = -1
         idx_pick_sph_rms_lc =  0
@@ -93,7 +86,6 @@
       subroutine deallocate_pick_sph_rms
 !
 !
-      deallocate(id_pick_rms_layer, r_pick_rms_layer)
       deallocate(idx_pick_sph_rms_gl, d_rms_pick_sph_gl)
       deallocate(idx_pick_sph_rms_lc, d_rms_pick_sph_lc)
 !
@@ -111,29 +103,29 @@
 !
 !
       call add_dat_extension(pickup_sph_rms_head, pick_sph_rms_name)
-      open(id_each_ms, file = pick_sph_rms_name,                        &
+      open(id_pick_mode, file = pick_sph_rms_name,                      &
      &    form='formatted', status='old', position='append', err = 99)
       return
 !
    99 continue
-      open(id_each_ms, file = pick_sph_rms_name,                        &
+      open(id_pick_mode, file = pick_sph_rms_name,                      &
      &    form='formatted', status='replace')
 !
-      write(id_each_ms,'(a)')
-      write(id_each_ms,'(a)')    '# num_layers, num_spectr'
-      write(id_each_ms,'(2i10)')                                        &
-     &        num_pick_rms_layer, num_pick_sph_rms_mode
-      write(id_each_ms,'(a)')    '# number of component'
-      write(id_each_ms,'(i10)') ncomp_pick_sph_rms
+      write(id_pick_mode,'(a)')
+      write(id_pick_mode,'(a)')    '# num_layers, num_spectr'
+      write(id_pick_mode,'(2i10)')                                      &
+     &        num_pick_layer, num_pick_sph_rms_mode
+      write(id_pick_mode,'(a)')    '# number of component'
+      write(id_pick_mode,'(i10)') ncomp_pick_sph_rms
 !
 !
-      write(id_each_ms,'(a)',advance='NO')    't_step    time    '
-      write(id_each_ms,'(a)',advance='NO')    'radius_ID    radius    '
-      write(id_each_ms,'(a)',advance='NO')    'degree    order    '
+      write(id_pick_mode,'(a)',advance='NO') 't_step    time    '
+      write(id_pick_mode,'(a)',advance='NO') 'radius_ID    radius    '
+      write(id_pick_mode,'(a)',advance='NO') 'degree    order    '
 !
-      call write_multi_labels(id_each_ms, ncomp_pick_sph_rms,           &
+      call write_multi_labels(id_pick_mode, ncomp_pick_sph_rms,         &
      &    rms_pick_sph_name)
-      write(id_each_ms,'(a)') ''
+      write(id_pick_mode,'(a)') ''
 !
       end subroutine open_sph_rms_4_monitor
 !
@@ -157,21 +149,21 @@
         j = idx_pick_sph_rms_gl(inum)
         l = int( aint(sqrt(dble(j))) )
         m = j - l*(l+1)
-        do knum = 1, num_pick_rms_layer
-          ipick = knum + (inum-1) * num_pick_rms_layer
-          write(id_each_ms,'(i10,1pe23.14e3)', advance='NO')            &
+        do knum = 1, num_pick_layer
+          ipick = knum + (inum-1) * num_pick_layer
+          write(id_pick_mode,'(i10,1pe23.14e3)', advance='NO')          &
      &           i_step, time
-          write(id_each_ms,'(i10,1pe23.14e3,2i10)', advance='NO')       &
-     &          id_pick_rms_layer(knum), r_pick_rms_layer(knum), l, m
+          write(id_pick_mode,'(i10,1pe23.14e3,2i10)', advance='NO')     &
+     &          id_pick_layer(knum), r_pick_layer(knum), l, m
           do i_fld = 1, ncomp_pick_sph_rms
-            write(id_each_ms,'(1pe23.14e3)', advance='NO')              &
+            write(id_pick_mode,'(1pe23.14e3)', advance='NO')            &
      &              d_rms_pick_sph_gl(i_fld,ipick)
           end do
-          write(id_each_ms,'(a)') ''
+          write(id_pick_mode,'(a)') ''
         end do
       end do
 !
-      close(id_each_ms)
+      close(id_pick_mode)
 !
       end subroutine write_sph_rms_4_monitor
 !
@@ -195,7 +187,7 @@
 !
 !
       call skip_comment(tmpchara,id_pick)
-      read(tmpchara,*) num_pick_rms_layer, num_pick_sph_rms_mode
+      read(tmpchara,*) num_pick_layer, num_pick_sph_rms_mode
       call skip_comment(tmpchara,id_pick)
       read(tmpchara,*) ncomp_pick_sph_rms
 !
@@ -220,10 +212,10 @@
 !
       ierr = 0
       do inum = 1, num_pick_sph_rms_mode
-        do knum = 1, num_pick_rms_layer
-          ipick = knum + (inum-1) * num_pick_rms_layer
+        do knum = 1, num_pick_layer
+          ipick = knum + (inum-1) * num_pick_layer
           read(id_pick,*,err=99,end=99) i_step, time,                   &
-     &          id_pick_rms_layer(knum), r_pick_rms_layer(knum), l, m,  &
+     &          id_pick_layer(knum), r_pick_layer(knum), l, m,          &
      &          d_rms_pick_sph_gl(1:ncomp_pick_sph_rms,ipick)
           idx_pick_sph_rms_gl(inum) = l*(l+1) + m
         end do

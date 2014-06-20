@@ -8,6 +8,7 @@
       use m_precision
       use m_constants
 !
+      use m_pickup_sph_spectr_data
       use m_pickup_sph_rms_data
 !
       implicit  none
@@ -35,7 +36,7 @@
 !
       call open_sph_rms_read_monitor(id_pick)
 !
-      num = ntot_pick_sph_rms_mode*num_pick_rms_layer
+      num = ntot_pick_sph_rms_mode*num_pick_layer
       allocate( ave_rms_pick_sph(ncomp_pick_sph_rms,num) )
       ave_rms_pick_sph = 0.0d0
 !
@@ -48,7 +49,7 @@
         if(mod((i_step-istep_start),istep_inc) .eq. 0                   &
      &     .and. i_step.ge.istep_start) then
 !
-          do ipick = 1, ntot_pick_sph_rms_mode*num_pick_rms_layer
+          do ipick = 1, ntot_pick_sph_rms_mode*num_pick_layer
             do nd = 1, ncomp_pick_sph_rms
               ave_rms_pick_sph(nd,ipick) = ave_rms_pick_sph(nd,ipick)   &
      &                                    + d_rms_pick_sph_gl(nd,ipick)
@@ -63,7 +64,7 @@
       close(id_pick)
 !
       acou = one / dble(icou)
-      do ipick = 1, ntot_pick_sph_rms_mode*num_pick_rms_layer
+      do ipick = 1, ntot_pick_sph_rms_mode*num_pick_layer
         do nd = 1, ncomp_pick_sph_rms
           d_rms_pick_sph_gl(nd,ipick) = ave_rms_pick_sph(nd,ipick)      &
      &                                 * acou

@@ -102,9 +102,10 @@
       use m_ctl_params_sph_utils
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
+      use m_pickup_sph_spectr_data
       use m_pickup_sph_rms_data
       use copy_rj_phys_data_4_IO
-      use pickup_sph_rms_spectr
+      use pickup_sph_rms_spectr 
 !
 !
       integer(kind = kint) :: i_step
@@ -128,7 +129,7 @@
         if (iflag_debug.gt.0) write(*,*) 'pickup_sph_rms_vol_monitor'
         call pickup_sph_rms_vol_monitor
 !
-        num_pick_rms_layer = 1
+        num_pick_layer = 1
         if (iflag_debug.gt.0) write(*,*) 'write_sph_rms_4_monitor'
         call write_sph_rms_4_monitor(my_rank, i_step, time)
       end do

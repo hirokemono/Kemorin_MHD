@@ -40,6 +40,46 @@
       integer(kind = kint) :: k, knum
 !
 !
+      call init_sph_radial_monitor_list
+!
+      if( (num_pick_sph+num_pick_sph_l+num_pick_sph_m) .eq. 0) return
+!
+      call count_sph_labels_4_monitor
+      call count_picked_sph_adrress                                     &
+     &   (num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
+     &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
+     &    ntot_pick_sph_mode)
+!
+      call allocate_pick_sph_monitor
+      call allocate_iflag_pick_sph(l_truncation)
+!
+      call set_picked_sph_address                                       &
+     &   (num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
+     &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
+     &    ntot_pick_sph_mode, num_pick_sph_mode, idx_pick_sph_gl,       &
+     &    idx_pick_sph_lc)
+      call set_scale_4_vect_l0                                          &
+     &   (num_pick_sph_mode, idx_pick_sph_gl(1), scale_for_zelo(1))
+      call deallocate_iflag_pick_sph
+      call deallocate_pick_sph_mode
+!
+      call set_sph_fld_id_4_monitor
+!
+      if(my_rank .ne. 0) return
+      call set_sph_labels_4_monitor
+!
+      end subroutine init_sph_spec_4_monitor
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_sph_radial_monitor_list
+!
+      use calypso_mpi
+      use quicksort
+!
+      integer(kind = kint) :: k, knum
+!
+!
       if( (num_pick_sph+num_pick_sph_l+num_pick_sph_m) .eq. 0) return
 !
       icenter_pick_layer = 0
@@ -69,31 +109,7 @@
         end if
       end do
 !
-      call count_sph_labels_4_monitor
-      call count_picked_sph_adrress                                     &
-     &   (num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
-     &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
-     &    ntot_pick_sph_mode)
-!
-      call allocate_pick_sph_monitor
-      call allocate_iflag_pick_sph(l_truncation)
-!
-      call set_picked_sph_address                                       &
-     &   (num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
-     &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
-     &    ntot_pick_sph_mode, num_pick_sph_mode, idx_pick_sph_gl,       &
-     &    idx_pick_sph_lc)
-      call set_scale_4_vect_l0                                          &
-     &   (num_pick_sph_mode, idx_pick_sph_gl(1), scale_for_zelo(1))
-      call deallocate_iflag_pick_sph
-      call deallocate_pick_sph_mode
-!
-      call set_sph_fld_id_4_monitor
-!
-      if(my_rank .ne. 0) return
-      call set_sph_labels_4_monitor
-!
-      end subroutine init_sph_spec_4_monitor
+      end subroutine init_sph_radial_monitor_list
 !
 ! -----------------------------------------------------------------------
 !

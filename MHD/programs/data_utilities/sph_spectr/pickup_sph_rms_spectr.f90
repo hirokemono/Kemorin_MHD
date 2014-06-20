@@ -41,11 +41,6 @@
 !
 !
       pickup_sph_rms_head = pickup_sph_head
-      if(num_pick_layer .le. 0) then
-        num_pick_rms_layer = nidx_rj(1)
-      else
-        num_pick_rms_layer = num_pick_layer
-      end if
 !
       call count_picked_sph_adrress                                     &
      &   (num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
@@ -61,18 +56,6 @@
      &    ntot_pick_sph_rms_mode, num_pick_sph_rms_mode,                &
      &    idx_pick_sph_rms_gl, idx_pick_sph_rms_lc)
 !
-      if(num_pick_layer .le. 0) then
-        do k = 1, num_pick_rms_layer
-          id_pick_rms_layer(k) = k
-          r_pick_rms_layer(k) =  radius_1d_rj_r(k)
-        end do
-      else
-        do k = 1, num_pick_rms_layer
-          id_pick_rms_layer(k) = id_pick_layer(k)
-          r_pick_rms_layer(k) =  r_pick_layer(k)
-        end do
-      end if
-!
       call deallocate_iflag_pick_sph
       call deallocate_pick_sph_mode
 !
@@ -86,13 +69,14 @@
       subroutine pickup_sph_rms_4_monitor
 !
       use calypso_mpi
+      use m_pickup_sph_spectr_data
 !
       integer(kind = kint) :: inum, knum, j, k, nd
       integer(kind = kint) :: ipick, num
 !
 !
 !$omp parallel do
-      do inum = 1, num_pick_sph_rms_mode*num_pick_rms_layer
+      do inum = 1, num_pick_sph_rms_mode*num_pick_layer
         d_rms_pick_sph_lc(1:ntot_rms_rj,inum) = zero
       end do
 !$omp end parallel do
@@ -102,9 +86,9 @@
         j = idx_pick_sph_rms_lc(inum)
         if(j .gt. izero) then
 !$omp do private(knum,k,ipick,nd)
-          do knum = 1, num_pick_rms_layer
-            k = id_pick_rms_layer(knum)
-            ipick = knum + (inum-1) * num_pick_rms_layer
+          do knum = 1, num_pick_layer
+            k = id_pick_layer(knum)
+            ipick = knum + (inum-1) * num_pick_layer
             do nd = 1, ntot_rms_rj
               d_rms_pick_sph_lc(nd,ipick) = rms_sph_dat(j,k,nd)
             end do
@@ -114,7 +98,7 @@
       end do
 !$omp end parallel
 !
-      num = ntot_rms_rj*num_pick_rms_layer*num_pick_sph_rms_mode
+      num = ntot_rms_rj*num_pick_layer*num_pick_sph_rms_mode
       call MPI_allREDUCE(d_rms_pick_sph_lc(1,1),                        &
      &    d_rms_pick_sph_gl(1,1), num, CALYPSO_REAL, MPI_SUM,           &
      &    CALYPSO_COMM, ierr_MPI)
