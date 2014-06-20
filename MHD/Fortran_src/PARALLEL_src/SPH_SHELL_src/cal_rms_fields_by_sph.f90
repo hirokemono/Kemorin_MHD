@@ -23,6 +23,7 @@
       implicit none
 !
       private :: r_int_sph_rms_data, cal_average_for_sph_rms
+      private :: cal_one_over_volume
 !
 ! -----------------------------------------------------------------------
 !
@@ -32,9 +33,11 @@
 !
       subroutine init_rms_4_sph_spectr
 !
+      use m_spheric_parameter
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use sum_sph_rms_data
+      use volume_average_4_sph
 !
       integer(kind = kint) :: i_fld, j_fld
 !
@@ -60,6 +63,7 @@
       ntot_rms_rj = istack_rms_comp_rj(num_rms_rj)
 !
       call allocate_rms_4_sph_spectr
+      call allocate_ave_4_sph_spectr(ntot_rms_rj)
       call set_sum_table_4_sph_spectr
 !
       end subroutine init_rms_4_sph_spectr
@@ -72,14 +76,18 @@
       use m_spheric_parameter
       use m_rms_4_sph_spectr
       use sum_sph_rms_data
+      use volume_average_4_sph
+!
+      real(kind = kreal) :: avol
 !
 !
       if(ntot_rms_rj .eq. 0) return
-      call cal_average_sph_spectr(ione, nidx_rj(1))
+      call cal_one_over_volume(ione, nidx_rj(1), avol)
+      call cal_volume_average_sph(ione, nidx_rj(1), avol)
       call cal_rms_sph_spec_local
 !
       call r_int_sph_rms_data(ione, nidx_rj(1))
-      call cal_average_for_sph_rms(ione, nidx_rj(1))
+      call cal_average_for_sph_rms(avol)
 !
       end subroutine cal_rms_sph_spec_rms_whole
 !
@@ -89,14 +97,18 @@
 !
       use m_spheric_parameter
       use m_rms_4_sph_spectr
+      use volume_average_4_sph
+!
+      real(kind = kreal) :: avol
 !
 !
       if(ntot_rms_rj .eq. 0) return
-      call cal_average_sph_spectr(izero, nidx_rj(1))
+      call cal_one_over_volume(izero, nidx_rj(1), avol)
+      call cal_volume_average_sph(izero, nidx_rj(1), avol)
       call cal_rms_sph_spec_local
 !
       call r_int_sph_rms_data(izero, nlayer_ICB)
-      call cal_average_for_sph_rms(izero, nlayer_ICB)
+      call cal_average_for_sph_rms(avol)
 !
       end subroutine cal_rms_sph_inner_core
 !
@@ -106,78 +118,25 @@
 !
       use m_spheric_parameter
       use m_rms_4_sph_spectr
+      use volume_average_4_sph
+!
+      real(kind = kreal) :: avol
 !
 !
       if(ntot_rms_rj .eq. 0) return
-      call cal_average_sph_spectr(nlayer_ICB, nlayer_CMB)
+      call cal_one_over_volume(nlayer_ICB, nlayer_CMB, avol)
+      call cal_volume_average_sph(nlayer_ICB, nlayer_CMB, avol)
       call cal_rms_sph_spec_local
 !
       if(iflag_debug.gt.0)  write(*,*) 'r_int_sph_rms_data'
       call r_int_sph_rms_data(nlayer_ICB, nlayer_CMB)
       if(iflag_debug.gt.0)  write(*,*) 'cal_average_for_sph_rms'
-      call cal_average_for_sph_rms(nlayer_ICB, nlayer_CMB)
+      call cal_average_for_sph_rms(avol)
 !
       end subroutine cal_rms_sph_outer_core
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-!
-      subroutine cal_average_sph_spectr(kg_st, kg_ed)
-!
-      use calypso_mpi
-      use m_spheric_parameter
-      use m_phys_constants
-      use m_sph_spectr_data
-      use m_rms_4_sph_spectr
-      use m_sph_phys_address
-      use cal_rms_by_sph_spectr
-      use cal_ave_4_rms_vector_sph
-      use radial_int_for_sph_spec
-!
-      integer(kind = kint), intent(in) :: kg_st, kg_ed
-!
-      integer(kind = kint) :: i_fld, j_fld, icomp_st, jcomp_st
-      integer(kind = kint) :: num
-!
-      real(kind = kreal) :: avol
-!
-!
-      call clear_ave_sph_spectr
-!
-      do j_fld = 1, num_rms_rj
-        i_fld = ifield_rms_rj(j_fld)
-        icomp_st = istack_phys_comp_rj(i_fld-1) + 1
-        jcomp_st = istack_rms_comp_rj(j_fld-1) +  1
-        if (num_phys_comp_rj(i_fld) .eq. n_scalar) then
-          call cal_ave_scalar_sph_spectr(nidx_rj(1), d_rj(1,icomp_st),  &
-     &        ave_sph_lc(1,jcomp_st))
-        else if (num_phys_comp_rj(i_fld) .eq. n_vector) then
-          call cal_ave_vector_sph_spectr(nidx_rj(1), d_rj(1,icomp_st),  &
-     &        ave_sph_lc(1,jcomp_st))
-        end if
-      end do
-!
-      num = ntot_rms_rj * nidx_rj(1)
-      call MPI_allREDUCE (ave_sph_lc(1,1), ave_sph(1,1), num,           &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-!
-      if(my_rank .gt. 0) return
-!
-      if(kg_st .eq. 0) then
-        avol = three / (radius_1d_rj_r(kg_ed)**3)
-      else
-        avol = three / (radius_1d_rj_r(kg_ed)**3                        &
-     &                - radius_1d_rj_r(kg_st)**3 )
-      end if
-!
-      call radial_integration(ione, nidx_rj(1), kg_st, kg_ed,           &
-     &    radius_1d_rj_r, ntot_rms_rj, ave_sph(1,1), ave_sph_vol(1) )
-!
-      call averaging_4_sph_ave_int(avol)
-!
-      end subroutine cal_average_sph_spectr
-!
-! -----------------------------------------------------------------------
 !
       subroutine cal_rms_sph_spec_local
 !
@@ -192,7 +151,6 @@
       use sum_sph_rms_data
 !
       integer(kind = kint) :: i_fld, j_fld, icomp_st, jcomp_st
-      integer(kind = kint) :: num
 !
 !
       call clear_rms_sph_spectr
@@ -233,24 +191,24 @@
       use m_rms_4_sph_spectr
       use m_sph_phys_address
       use cal_rms_by_sph_spectr
-      use radial_int_for_sph_spec
+      use radial_int_for_sph_spec_old
       use sum_sph_rms_data
 !
       integer(kind = kint), intent(in) :: kg_st, kg_ed
       integer(kind = kint) :: ltr1
 !
 !
-      call radial_integration(nidx_rj(2), nidx_rj(1), kg_st, kg_ed,     &
+      call radial_integration_old(nidx_rj(2), nidx_rj(1), kg_st, kg_ed,     &
      &    radius_1d_rj_r, ntot_rms_rj, rms_sph_dat, rms_sph_vol_dat)
 !
       ltr1 = l_truncation + 1
-      call radial_integration(ltr1, nidx_rj(1), kg_st, kg_ed,           &
+      call radial_integration_old(ltr1, nidx_rj(1), kg_st, kg_ed,           &
      &    radius_1d_rj_r, ntot_rms_rj, rms_sph_l(0,1,1),                &
      &    rms_sph_vol_l(0,1) )
-      call radial_integration(ltr1, nidx_rj(1), kg_st, kg_ed,           &
+      call radial_integration_old(ltr1, nidx_rj(1), kg_st, kg_ed,           &
      &    radius_1d_rj_r, ntot_rms_rj, rms_sph_m(0,1,1),                &
      &    rms_sph_vol_m(0,1) )
-      call radial_integration(ltr1, nidx_rj(1), kg_st, kg_ed,           &
+      call radial_integration_old(ltr1, nidx_rj(1), kg_st, kg_ed,           &
      &    radius_1d_rj_r, ntot_rms_rj, rms_sph_lm(0,1,1),               &
      &    rms_sph_vol_lm(0,1) )
 !
@@ -262,7 +220,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_average_for_sph_rms(kg_st, kg_ed)
+      subroutine cal_average_for_sph_rms(avol)
 !
       use calypso_mpi
       use m_spheric_parameter
@@ -273,17 +231,8 @@
       use cal_rms_by_sph_spectr
       use cal_ave_4_rms_vector_sph
 !
-      integer(kind = kint), intent(in) :: kg_st, kg_ed
+      real(kind = kreal), intent(in) :: avol
 !
-      real(kind = kreal) :: avol
-!
-!
-      if(kg_st .eq. 0) then
-        avol = three / (radius_1d_rj_r(kg_ed)**3)
-      else
-        avol = three / (radius_1d_rj_r(kg_ed)**3                        &
-     &                - radius_1d_rj_r(kg_st)**3 )
-      end if
 !
       if(iflag_debug.gt.0)  write(*,*) 'surf_ave_4_each_sph_rms'
       call surf_ave_4_each_sph_rms
@@ -299,5 +248,23 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine cal_one_over_volume(kg_st, kg_ed, avol)
+!
+      use m_spheric_parameter
+!
+      integer(kind = kint), intent(in) :: kg_st, kg_ed
+      real(kind = kreal), intent(inout) :: avol
+!
+!
+      if(kg_st .eq. 0) then
+        avol = three / (radius_1d_rj_r(kg_ed)**3)
+      else
+        avol = three / (radius_1d_rj_r(kg_ed)**3                        &
+     &                - radius_1d_rj_r(kg_st)**3 )
+      end if
+!
+      end subroutine cal_one_over_volume
+!
+! -----------------------------------------------------------------------
 !
       end module cal_rms_fields_by_sph

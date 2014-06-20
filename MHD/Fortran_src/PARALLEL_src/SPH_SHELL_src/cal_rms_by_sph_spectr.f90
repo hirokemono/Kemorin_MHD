@@ -14,9 +14,6 @@
 !!           ( l(l+1)/r^2 (S_{l}^{m})^2 + (dS_{l}^{m}/dr)^2)
 !!            + (T_{l}^{m})^2 ) ]
 !!      subroutine set_sph_energies_by_rms(rms_sph_dat)
-!!
-!!      subroutine cal_ave_scalar_sph_spectr(nri_0, d_rj, ave_sph_lc)
-!!      subroutine cal_ave_vector_sph_spectr(nri_0, d_rj, ave_sph_lc)
 !!@endverbatim
 !!
 !!@n @param  d_rj          spectrum data
@@ -116,59 +113,6 @@
 !$omp end parallel do
 !
       end subroutine set_sph_energies_by_rms
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine cal_ave_scalar_sph_spectr(nri_0, d_rj, ave_sph_lc)
-!
-      integer(kind = kint), intent(in) :: nri_0
-      real(kind = kreal), intent(in) :: d_rj(nnod_rj)
-      real(kind = kreal), intent(inout) :: ave_sph_lc(nri_0)
-!
-      integer(kind = kint) :: k, inod
-!
-!
-      if(idx_rj_degree_zero .eq. izero) then
-        do k = 1, nidx_rj(1)
-          ave_sph_lc(k) = zero
-        end do
-      else
-        do k = 1, nidx_rj(1)
-          inod = idx_rj_degree_zero + (k-1) * nidx_rj(2)
-          ave_sph_lc(k) = d_rj(inod) * radius_1d_rj_r(k)**2
-        end do
-      end if
-!
-      end subroutine cal_ave_scalar_sph_spectr
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_ave_vector_sph_spectr(nri_0, d_rj, ave_sph_lc)
-!
-      integer(kind = kint), intent(in) :: nri_0
-      real(kind = kreal), intent(in) :: d_rj(nnod_rj,3)
-      real(kind = kreal), intent(inout) :: ave_sph_lc(nri_0,3)
-!
-      integer(kind = kint) :: k, inod
-!
-!
-      if(idx_rj_degree_zero .eq. izero) then
-        do k = 1, nidx_rj(1)
-          ave_sph_lc(k,1) = zero
-          ave_sph_lc(k,2) = zero
-          ave_sph_lc(k,3) = zero
-        end do
-      else
-        do k = 1, nidx_rj(1)
-          inod = idx_rj_degree_zero + (k-1) * nidx_rj(2)
-          ave_sph_lc(k,1) = half * d_rj(inod,1)
-          ave_sph_lc(k,2) = zero
-          ave_sph_lc(k,3) = ave_sph_lc(k,1)
-        end do
-      end if
-!
-      end subroutine cal_ave_vector_sph_spectr
 !
 ! -----------------------------------------------------------------------
 !

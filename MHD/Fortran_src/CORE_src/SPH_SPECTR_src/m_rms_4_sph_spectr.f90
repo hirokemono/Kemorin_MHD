@@ -8,7 +8,6 @@
 !!      subroutine deallocate_rms_4_sph_spectr
 !!
 !!      subroutine clear_rms_sph_spectr
-!!      subroutine clear_ave_sph_spectr
 !
       module m_rms_4_sph_spectr
 !
@@ -38,8 +37,6 @@
       real(kind = kreal), allocatable :: rms_sph_vol(:)
 !
 !
-      real(kind = kreal), allocatable :: ave_sph_lc(:,:)
-      real(kind = kreal), allocatable :: ave_sph(:,:)
       real(kind = kreal), allocatable :: ave_sph_vol(:)
 !
 !    output flag
@@ -84,7 +81,7 @@
       integer(kind = kint) :: nri, jmax
 !
 !
-      write(*,*) 'inod_rj_center aho', inod_rj_center, iflag_shell_mode
+      write(*,*) 'inod_rj_center aho', inod_rj_center
 !
       nri =  nidx_rj(1)
       jmax = nidx_rj(2)
@@ -95,9 +92,6 @@
       allocate( rms_sph_m(0:l_truncation,nri,ntot_rms_rj) )
       allocate( rms_sph_lm(0:l_truncation,nri,ntot_rms_rj) )
       allocate( rms_sph(nri,ntot_rms_rj) )
-!
-      allocate( ave_sph(nri,ntot_rms_rj) )
-      allocate( ave_sph_lc(nri,ntot_rms_rj) )
 !
       allocate( rms_sph_vol_l(0:l_truncation,ntot_rms_rj) )
       allocate( rms_sph_vol_m(0:l_truncation,ntot_rms_rj) )
@@ -125,7 +119,6 @@
       deallocate( rms_sph_vol_l, rms_sph_vol_m, rms_sph_vol_lm )
       deallocate( rms_sph_vol )
 !
-      deallocate( ave_sph, ave_sph_lc )
       deallocate( ave_sph_vol )
 !
       deallocate(num_rms_comp_rj, istack_rms_comp_rj)
@@ -152,17 +145,6 @@
       rms_sph_vol =    0.0d0
 !
       end subroutine clear_rms_sph_spectr
-!
-! -----------------------------------------------------------------------
-!
-      subroutine clear_ave_sph_spectr
-!
-!
-      ave_sph_lc =    0.0d0
-      ave_sph =       0.0d0
-      ave_sph_vol =   0.0d0
-!
-      end subroutine clear_ave_sph_spectr
 !
 ! -----------------------------------------------------------------------
 !
