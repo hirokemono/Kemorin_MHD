@@ -7,8 +7,8 @@
 !>@brief  Evaluate radial integration
 !!
 !!@verbatim
-!!    subroutine radial_integration(nri, kg_st, kg_ed, radius,          &
-!!     &          ntot_comp, f_org, f_int)
+!!      subroutine radial_integration(kg_st, kg_ed, nri, radius,        &
+!!     &         , ntot_comp, f_org, f_int)
 !!  Evaluate radial integration f_int =  \int f_org r^{2} dr
 !!@endverbatim
 !!
@@ -29,13 +29,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine radial_integration(nri, kg_st, kg_ed, radius,          &
+      subroutine radial_integration(kg_st, kg_ed, nri, radius,          &
      &          ntot_comp, f_org, f_int)
 !
       integer(kind = kint),  intent(in) :: nri, kg_st, kg_ed
       real(kind = kreal), intent(in) :: radius(nri)
       integer(kind = kint),  intent(in) :: ntot_comp
-      real(kind = kreal), intent(in) :: f_org(nri,ntot_comp)
+      real(kind = kreal), intent(in) :: f_org(0:nri,ntot_comp)
 !
       real(kind = kreal), intent(inout) :: f_int(ntot_comp)
 !
@@ -46,14 +46,14 @@
 !!$omp parallel do private(icomp)
 !        do icomp = 1, ntot_comp
 !          call radial_int_by_simpson(nri, kg_st, kg_ed, radius,        &
-!     &          f_org(1,icomp), f_int(1,icomp) )
+!     &          f_org(1,icomp), f_org(0,icomp), f_int(1,icomp) )
 !        end do
 !!$omp end parallel do
 !      else
 !$omp parallel do private(icomp)
         do icomp = 1, ntot_comp
           call radial_int_by_trapezoid(nri, kg_st, kg_ed, radius,       &
-     &        f_org(1,icomp), f_int(icomp) )
+     &        f_org(1,icomp), f_org(0,icomp), f_int(icomp) )
         end do
 !$omp end parallel do
 !      end if
@@ -64,11 +64,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine radial_int_by_trapezoid(nri, kg_st, kg_ed, radius,     &
-     &          f_org, f_int)
+     &          f_org, f_ctr, f_int)
 !
       integer(kind = kint),  intent(in) :: nri, kg_st, kg_ed
       real(kind = kreal), intent(in) :: radius(nri)
       real(kind = kreal), intent(in) :: f_org(nri)
+      real(kind = kreal), intent(in) :: f_ctr
 !
       real(kind = kreal), intent(inout) :: f_int
 !
@@ -79,7 +80,7 @@
       if(kg_st .eq. 0) then
         kst = 1
         dr1 = radius(1)
-        f_int = half * dr1 * (f_org(nri) + f_org(1))
+        f_int = half * dr1 * (f_ctr + f_org(1))
       else
         kst = kg_st
         f_int = zero
@@ -95,11 +96,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine radial_int_by_simpson(nri, kg_st, kg_ed, radius,       &
-     &          f_org, f_int)
+     &          f_org, f_ctr, f_int)
 !
       integer(kind = kint),  intent(in) :: nri, kg_st, kg_ed
       real(kind = kreal), intent(in) :: radius(nri)
       real(kind = kreal), intent(in) :: f_org(nri)
+      real(kind = kreal), intent(in) :: f_ctr
 !
       real(kind = kreal), intent(inout) :: f_int
 !
@@ -113,9 +115,9 @@
         dr2 = radius(2) - radius(1)
         drs = radius(2)
         coef = drs*drs / (6.0d0*dr1*dr2)
-        f_int = half*drs * (f_org(nri) + f_org(2))                      &
+        f_int = half*drs * (f_ctr + f_org(2))                           &
      &                 + coef * (f_org(1)*drs                           &
-     &                 - (f_org(2)*dr1 + f_org(nri)*dr2))
+     &                 - (f_org(2)*dr1 + f_ctr*dr2))
       else
         kst = kg_st
         f_int = zero

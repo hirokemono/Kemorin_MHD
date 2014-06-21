@@ -200,7 +200,7 @@
       real(kind = kreal), intent(in) :: time
 !
       character(len=kchara) :: fname_rms, mode_label
-      integer(kind = kint) :: kg, lm
+      integer(kind = kint) :: kg, lm, kst
 !
 !
       if(my_rank .ne. 0)  return
@@ -232,14 +232,17 @@
       write(mode_label,'(a)') 'radial_id    diff_deg_order'
       call open_sph_vol_rms_file(id_file_rms_lm, fname_rms, mode_label)
 !
+      kst = 1
+      if(iflag_shell_mode .eq. iflag_MESH_same) kst = 0
+!
       do kg = 1, nidx_rj(1)
         do lm = 0, l_truncation
           write(id_file_rms_l,'(i10,1pe23.14e3,2i10,1p200e23.14e3)')    &
-     &           istep, time, kg, lm, rms_sph_l(lm,kg,1:ntot_rms_rj)
+     &           istep, time, kg, lm, rms_sph_l(kg,lm,1:ntot_rms_rj)
           write(id_file_rms_m,'(i10,1pe23.14e3,2i10,1p200e23.14e3)')    &
-     &           istep, time, kg, lm, rms_sph_m(lm,kg,1:ntot_rms_rj)
+     &           istep, time, kg, lm, rms_sph_m(kg,lm,1:ntot_rms_rj)
           write(id_file_rms_lm,'(i10,1pe23.14e3,2i10,1p200e23.14e3)')   &
-     &           istep, time, kg, lm, rms_sph_lm(lm,kg,1:ntot_rms_rj)
+     &           istep, time, kg, lm, rms_sph_lm(kg,lm,1:ntot_rms_rj)
          end do
       end do
 !
@@ -279,15 +282,18 @@
 !
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara), intent(in) :: mode_label
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, nri
 !
       character(len=kchara) :: label_pol, label_tor, label_dpol
       character(len=kchara) :: label_rr,  label_rt,  label_rp
       character(len=kchara) :: label_tt,  label_tp,  label_pp
 !
 !
+      nri = nidx_rj(1)
+      if(iflag_shell_mode .eq. iflag_MESH_same) nri = nri + 1
+!
       write(id_file,'(a)')    'radial_layers, truncation'
-      write(id_file,'(3i10)') nidx_rj(1), l_truncation
+      write(id_file,'(3i10)') nri, l_truncation
       write(id_file,'(a)')    'ICB_id, CMB_id'
       write(id_file,'(3i10)') nlayer_ICB, nlayer_CMB
 !

@@ -23,8 +23,7 @@
       integer (kind=kint), allocatable :: istack_rms_comp_rj(:)
       character (len=kchara), allocatable :: rms_name_rj(:)
 !
-      real(kind = kreal), allocatable :: rms_sph_dat(:,:,:)
-!
+      integer (kind=kint) :: nri_rms
       real(kind = kreal), allocatable :: rms_sph_l(:,:,:)
       real(kind = kreal), allocatable :: rms_sph_m(:,:,:)
       real(kind = kreal), allocatable :: rms_sph_lm(:,:,:)
@@ -77,19 +76,12 @@
 !
       use m_spheric_parameter
 !
-      integer(kind = kint) :: nri, jmax
 !
-!
-      write(*,*) 'inod_rj_center aho', inod_rj_center
-!
-      nri =  nidx_rj(1)
-      jmax = nidx_rj(2)
-      allocate( rms_sph_dat(jmax,nri,ntot_rms_rj) )
-!
-      allocate( rms_sph_l(0:l_truncation,nri,ntot_rms_rj) )
-      allocate( rms_sph_m(0:l_truncation,nri,ntot_rms_rj) )
-      allocate( rms_sph_lm(0:l_truncation,nri,ntot_rms_rj) )
-      allocate( rms_sph(nri,ntot_rms_rj) )
+      nri_rms =  nidx_rj(1) 
+      allocate( rms_sph_l(0:nri_rms,0:l_truncation,ntot_rms_rj) )
+      allocate( rms_sph_m(0:nri_rms,0:l_truncation,ntot_rms_rj) )
+      allocate( rms_sph_lm(0:nri_rms,0:l_truncation,ntot_rms_rj) )
+      allocate( rms_sph(0:nri_rms,ntot_rms_rj) )
 !
       allocate( rms_sph_vol_l(0:l_truncation,ntot_rms_rj) )
       allocate( rms_sph_vol_m(0:l_truncation,ntot_rms_rj) )
@@ -97,7 +89,6 @@
 !
       allocate( rms_sph_vol(ntot_rms_rj) )
       allocate( ave_sph_vol(ntot_rms_rj) )
-!
 !
       call clear_rms_sph_spectr
 !
@@ -107,8 +98,6 @@
 !
       subroutine deallocate_rms_4_sph_spectr
 !
-!
-      deallocate( rms_sph_dat )
 !
       deallocate( rms_sph_l, rms_sph_m, rms_sph_lm)
       deallocate( rms_sph )
@@ -127,8 +116,6 @@
 ! -----------------------------------------------------------------------
 !
       subroutine clear_rms_sph_spectr
-!
-      rms_sph_dat =  0.0d0
 !
       rms_sph_l =  0.0d0
       rms_sph_m =  0.0d0

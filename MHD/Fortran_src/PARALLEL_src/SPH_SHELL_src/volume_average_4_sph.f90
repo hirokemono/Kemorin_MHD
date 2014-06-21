@@ -43,10 +43,9 @@
 !
       if(idx_rj_degree_zero .eq. izero) return
 !
-      nri_ave = nidx_rj(1) + 1
-      if(inod_rj_center .gt. 0) nri_ave = nidx_rj(1) + 1
+      nri_ave = nidx_rj(1)
 !
-      allocate(ave_sph(nri_ave,ntot_rms))
+      allocate(ave_sph(0:nri_ave,ntot_rms))
 !
       if(nri_ave*ntot_rms .gt. 0)  ave_sph=     0.0d0
 !
@@ -82,8 +81,8 @@
       if(idx_rj_degree_zero .gt. izero) then
         call cal_sphere_average_sph
 !
-        call radial_integration(nri_ave, kg_st, kg_ed, radius_1d_rj_r,  &
-     &      ntot_rms_rj, ave_sph(1,1), ave_vol_lc(1))
+        call radial_integration(kg_st, kg_ed, nidx_rj(1),               &
+     &      radius_1d_rj_r, ntot_rms_rj, ave_sph(0,1),  ave_vol_lc(1))
         call averaging_4_sph_ave_int(avol)
       else
         ave_vol_lc = 0.0d0
@@ -135,9 +134,6 @@
 !
 !$omp parallel do private(k,icou)
       do icou = 1, ntot_rms_rj
-!        do k = 1, nidx_rj(1)
-!          ave_sph(k,icou) = ave_sph(k,icou) * a_r_1d_rj_r(k)**2
-!        end do
         ave_vol_lc(icou) = avol * ave_vol_lc(icou)
       end do
 !$omp end parallel do
@@ -162,7 +158,7 @@
       end do
 !
       if(inod_rj_center .eq. 0) return
-      ave_sph(k,jcomp) = d_rj(inod_rj_center,icomp)
+      ave_sph(0,jcomp) = d_rj(inod_rj_center,icomp)
 !
       end subroutine cal_ave_scalar_sph_spectr
 !
@@ -184,9 +180,9 @@
       end do
 !
       if(inod_rj_center .eq. 0) return
-      ave_sph(nri_ave,jcomp  ) = d_rj(inod_rj_center,icomp)
-      ave_sph(nri_ave,jcomp+1) = zero
-      ave_sph(nri_ave,jcomp+2) = ave_sph(nri_ave,jcomp  )
+      ave_sph(0,jcomp  ) = d_rj(inod_rj_center,icomp)
+      ave_sph(0,jcomp+1) = zero
+      ave_sph(0,jcomp+2) = ave_sph(0,jcomp  )
 !
       end subroutine cal_ave_vector_sph_spectr
 !

@@ -114,18 +114,19 @@
       call open_sph_vol_rms_file                                        &
      &    (id_file_rms_lm, fname_rms, mode_label)
 !
+!
       do k = 1, num_pick_layer
         kg = id_pick_layer(k)
         do lm = 0, l_truncation
           write(id_file_rms_l,                                          &
      &                  '(i10,1pe23.14e3,2i10,1p200e23.14e3)')          &
-     &           istep, time, kg, lm, rms_sph_l(lm,kg,1:ntot_rms_rj)
+     &           istep, time, kg, lm, rms_sph_l(kg,lm,1:ntot_rms_rj)
           write(id_file_rms_m,                                          &
      &                  '(i10,1pe23.14e3,2i10,1p200e23.14e3)')          &
-     &           istep, time, kg, lm, rms_sph_m(lm,kg,1:ntot_rms_rj)
+     &           istep, time, kg, lm, rms_sph_m(kg,lm,1:ntot_rms_rj)
           write(id_file_rms_lm,                                         &
      &                  '(i10,1pe23.14e3,2i10,1p200e23.14e3)')          &
-     &           istep, time, kg, lm, rms_sph_lm(lm,kg,1:ntot_rms_rj)
+     &           istep, time, kg, lm, rms_sph_lm(kg,lm,1:ntot_rms_rj)
         end do
       end do
 !

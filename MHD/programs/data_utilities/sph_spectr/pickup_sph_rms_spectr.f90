@@ -49,7 +49,7 @@
       nri = nidx_rj(1)
       jmax = nidx_rj(2)
       allocate( rms_sph_rj(nnod_rj,3) )
-      allocate( rms_sph_int(nri,jmax) )
+      allocate( rms_sph_int(0:nri,jmax) )
       allocate( rms_sph_v(jmax) )
 !
       rms_sph_rj =  0.0d0
@@ -138,7 +138,7 @@
               inod = j + (kr-1) * nidx_rj(2)
               do icomp = 1, ncomp
                 d_rms_pick_sph_lc(jst_rms+icomp,ipick)                  &
-     &                 = rms_sph_rj(inod,icomp)
+     &                 = rms_sph_rj(inod,icomp) * a_r_1d_rj_r(kr)**2
               end do
             end do
           end if
@@ -190,14 +190,18 @@
         do icomp = 1, ncomp
 !
           do j = 1, nidx_rj(2)
+            rms_sph_int(0,j) = zero
             do kr = 1, nidx_rj(1)
               inod = j + (kr-1) * nidx_rj(2)
               rms_sph_int(kr,j) = rms_sph_rj(inod,icomp)
             end do
           end do
+          if(inod_rj_center .gt. 0) then
+            rms_sph_int(0,0) = rms_sph_rj(inod_rj_center,icomp)
+          end if
 !
-          call radial_integration(nidx_rj(1), kg_st, kg_ed,             &
-     &          radius_1d_rj_r, nidx_rj(2), rms_sph_int, rms_sph_v)
+          call radial_integration(kg_st, kg_ed, nidx_rj(1),             &
+     &        radius_1d_rj_r, nidx_rj(2), rms_sph_int, rms_sph_v)
 !
           do inum = 1, num_pick_sph_rms_mode
             j = idx_pick_sph_rms_lc(inum)
