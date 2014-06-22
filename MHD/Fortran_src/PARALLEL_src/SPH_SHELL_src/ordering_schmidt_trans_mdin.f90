@@ -1,5 +1,5 @@
-!>@file   ordering_schmidt_trans_spin.f90
-!!@brief  module ordering_schmidt_trans_spin
+!>@file   ordering_schmidt_trans_mdin.f90
+!!@brief  module ordering_schmidt_trans_mdin
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2007
@@ -9,14 +9,14 @@
 !!       (innermost loop is spherical harmonics)
 !!
 !!@verbatim
-!!      subroutine order_b_trans_fields_spin(ncomp, nvector, nscalar,   &
+!!      subroutine order_b_trans_fields_mdin(ncomp, nvector, nscalar,   &
 !!     &          sp_rlm_spin)
 !!      subroutine order_f_trans_fields_spin(ncomp, nvector, nscalar,   &
 !!     &          vr_rtm_spin)
 !!
 !!      subroutine back_f_trans_fields_spin(ncomp, nvector, nscalar,    &
 !!     &          sp_rlm_spin)
-!!      subroutine back_b_trans_fields_spin(ncomp, nvector, vr_rtm_spin)
+!!      subroutine back_b_trans_fields_mdin(ncomp, nvector, vr_rtm_spin)
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -24,7 +24,7 @@
 !!@param   nscalar  Number of scalar (including tensor components)
 !!                  for spherical transform
 !
-      module ordering_schmidt_trans_spin
+      module ordering_schmidt_trans_mdin
 !
       use m_precision
 !
@@ -43,7 +43,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine order_b_trans_fields_spin(ncomp, nvector, nscalar,     &
+      subroutine order_b_trans_fields_mdin(ncomp, nvector, nscalar,     &
      &          sp_rlm_spin)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
@@ -82,7 +82,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine order_b_trans_fields_spin
+      end subroutine order_b_trans_fields_mdin
 !
 ! -----------------------------------------------------------------------
 !
@@ -195,24 +195,23 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine back_b_trans_fields_spin(ncomp, nvector, nscalar,      &
+      subroutine back_b_trans_fields_mdin(ncomp, nvector, nscalar,      &
      &          vr_rtm_spin)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      real(kind = kreal), intent(in)                                    &
-     &      :: vr_rtm_spin(nidx_rtm(1)*ncomp,nidx_rtm(3),nidx_rtm(2))
+      real(kind = kreal), intent(in) :: vr_rtm_spin(nnod_rtm,ncomp)
 !
       integer(kind = kint) :: ip, ist, ied, inum, inod, lnod
-      integer(kind = kint) :: i_rtm_0, k_rtm, l_rtm, m_rtm
-      integer(kind = kint) :: nd, nb_nri, kr_nd
+      integer(kind = kint) :: i_rtm_0, k_rtm, l_rtm, m_rtm, i_rtm_spin
+      integer(kind = kint) :: nd
 !
 !
-      nb_nri = nvector*nidx_rtm(1)
 !$omp parallel do private(ip,ist,ied,i_rtm_0,k_rtm,l_rtm,nd,inod,lnod,  &
-!$omp&                    m_rtm,inum,kr_nd)
+!$omp&                    m_rtm,inum,i_rtm_spin)
       do ip = 1, np_smp
         ist = nvector*inod_rtm_smp_stack(ip-1) + 1
         ied = nvector*inod_rtm_smp_stack(ip)
+!cdir nodep
         do inum = ist, ied
           nd = 1 + mod(inum-1,nvector)
           inod = 1 + (inum - nd) / nvector
@@ -222,16 +221,17 @@
           m_rtm = 1 + (lnod - k_rtm) / nidx_rtm(1)
 !
           i_rtm_0 = 3*nd + (inod-1) * ncomp
+          i_rtm_spin = l_rtm + (m_rtm-1) * nidx_rtm(2)                  &
+     &                       + (k_rtm-1) * nidx_rtm(2)*nidx_rtm(3)
 !
-          kr_nd = k_rtm + (nd-1) * nidx_rtm(1)
-!
-          vr_rtm(i_rtm_0-2) = vr_rtm_spin(kr_nd,         m_rtm,l_rtm)
-          vr_rtm(i_rtm_0-1) = vr_rtm_spin(kr_nd+nb_nri,  m_rtm,l_rtm)
-          vr_rtm(i_rtm_0  ) = vr_rtm_spin(kr_nd+2*nb_nri,m_rtm,l_rtm)
+          vr_rtm(i_rtm_0-2) = vr_rtm_spin(i_rtm_spin,nd          )
+          vr_rtm(i_rtm_0-1) = vr_rtm_spin(i_rtm_spin,nd+nvector  )
+          vr_rtm(i_rtm_0  ) = vr_rtm_spin(i_rtm_spin,nd+2*nvector)
         end do
 !
         ist = nscalar*inod_rtm_smp_stack(ip-1) + 1
         ied = nscalar*inod_rtm_smp_stack(ip)
+!cdir nodep
         do inum = ist, ied
           nd = 1 + mod(inum-1,nscalar)
           inod = 1 + (inum - nd) / nscalar
@@ -241,17 +241,17 @@
           m_rtm = 1 + (lnod - k_rtm) / nidx_rtm(1)
 !
           i_rtm_0 = nd + 3*nvector + (inod-1) * ncomp
+          i_rtm_spin = l_rtm + (m_rtm-1) * nidx_rtm(2)                  &
+     &                       + (k_rtm-1) * nidx_rtm(2)*nidx_rtm(3)
 !
-          kr_nd = k_rtm + (nd-1 + 3*nvector) * nidx_rtm(1)
-!
-          vr_rtm(i_rtm_0  ) = vr_rtm_spin(kr_nd,m_rtm,l_rtm)
+          vr_rtm(i_rtm_0  ) = vr_rtm_spin(i_rtm_spin,nd+3*nvector)
         end do
       end do
 !$omp end parallel do
 !
-      end subroutine back_b_trans_fields_spin
+      end subroutine back_b_trans_fields_mdin
 !
 ! -----------------------------------------------------------------------
 !
-      end module ordering_schmidt_trans_spin
+      end module ordering_schmidt_trans_mdin
 

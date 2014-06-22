@@ -47,7 +47,7 @@
 !!@n      ndomain_sph_grid_ctl%c_tbl:  Direction of decomposition
 !!@n      ndomain_sph_grid_ctl%ivec:   Number of subdomains
       type(ctl_array_ci), save :: ndomain_sph_grid_ctl
-!>      Structure for domain decompostion for LEgendre transform
+!>      Structure for domain decompostion for Legendre transform
 !!@n      ndomain_legendre_ctl%c_tbl:  Direction of decomposition
 !!@n      ndomain_legendre_ctl%ivec:   Number of subdomains
       type(ctl_array_ci), save :: ndomain_legendre_ctl

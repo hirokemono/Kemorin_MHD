@@ -1,5 +1,5 @@
-!>@file   legendre_fwd_trans_spin.f90
-!!@brief  module legendre_fwd_trans_spin
+!>@file   legendre_fwd_trans_mdin.f90
+!!@brief  module legendre_fwd_trans_mdin
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2007
@@ -9,9 +9,9 @@
 !!       (innermost loop is spherical harmonics)
 !!
 !!@verbatim
-!!      subroutine legendre_f_trans_vector_spin(ncomp, nvector,         &
+!!      subroutine legendre_f_trans_vector_mdin(ncomp, nvector,         &
 !!     &          vr_rtm_spin, sp_rlm_spin)
-!!      subroutine legendre_f_trans_scalar_spin(ncomp, nscalar, nvector,&
+!!      subroutine legendre_f_trans_scalar_mdin(ncomp, nscalar, nvector,&
 !!     &          vr_rtm_spin, sp_rlm_spin)
 !!        Input:  vr_rtm_spin
 !!        Output: sp_rlm_spin
@@ -21,7 +21,7 @@
 !!@n @param  nvector  number of vector to be transformed
 !!@n @param  nscalar  number of fields to be transformed
 !
-      module legendre_fwd_trans_spin
+      module legendre_fwd_trans_mdin
 !
       use m_precision
 !
@@ -39,14 +39,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_f_trans_vector_spin(ncomp, nvector,           &
+      subroutine legendre_f_trans_vector_mdin(ncomp, nvector,           &
      &          vr_rtm_spin, sp_rlm_spin)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
       real(kind = kreal), intent(in)                                    &
      &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(3),nidx_rtm(1)*ncomp)
       real(kind = kreal), intent(inout)                                 &
-     &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*)
+     &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
 !
       integer(kind = kint) :: j_rlm, mp_rlm, mn_rlm, l_rtm
       integer(kind = kint) :: nb_nri, kr_nd, k_rlm
@@ -109,11 +109,11 @@
       end do
 !$omp end parallel
 !
-      end subroutine legendre_f_trans_vector_spin
+      end subroutine legendre_f_trans_vector_mdin
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_f_trans_scalar_spin(ncomp, nscalar, nvector,  &
+      subroutine legendre_f_trans_scalar_mdin(ncomp, nscalar, nvector,  &
      &          vr_rtm_spin, sp_rlm_spin)
 !
       integer(kind = kint), intent(in) :: ncomp, nscalar, nvector
@@ -148,9 +148,9 @@
       end do
 !$omp end parallel do
 !
-      end subroutine legendre_f_trans_scalar_spin
+      end subroutine legendre_f_trans_scalar_mdin
 !
 ! -----------------------------------------------------------------------
 !
-      end module legendre_fwd_trans_spin
+      end module legendre_fwd_trans_mdin
 

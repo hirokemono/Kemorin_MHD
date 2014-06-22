@@ -58,7 +58,8 @@
       call end_eleps_time(26)
 !
       call start_eleps_time(27)
-      if(nvector .gt. 0) call legendre_b_trans_vector_spin(nvector,     &
+      if(nvector .gt. 0) call legendre_b_trans_vector_spin              &
+     &                      (ncomp, nvector,                            &
      &                       sp_rlm_spin(1,1), vr_rtm_spin(1,1))
       if(nscalar .gt. 0) call legendre_b_trans_scalar_spin              &
      &                      (ncomp, nscalar, nvector,                   &
@@ -87,9 +88,6 @@
       call order_f_trans_fields_spin(ncomp, nvector, nscalar,           &
      &    vr_rtm_spin(1,1))
       call end_eleps_time(29)
-      call start_eleps_time(30)
-      call clear_f_trans_spin(ione, ncomp)
-      call end_eleps_time(30)
 !
       call start_eleps_time(31)
       if(nvector .gt. 0) call legendre_f_trans_vector_spin              &
