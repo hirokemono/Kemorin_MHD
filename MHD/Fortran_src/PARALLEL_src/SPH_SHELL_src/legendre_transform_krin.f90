@@ -29,7 +29,7 @@
       module legendre_transform_krin
 !
       use m_precision
-      use m_work_4_sph_trans_krin
+      use m_work_4_sph_trans_spin
 !
       implicit none
 !
@@ -49,16 +49,15 @@
 !
 !
       call order_b_trans_fields_krin(ncomp, nvector, nscalar,           &
-     &    sp_rlm_krin(1,1))
-!      call clear_b_trans_krin(ione, ncomp)
+     &    sp_rlm(1), sp_rlm_wk(1))
 !
       call legendre_b_trans_vector_krin(ncomp, nvector,                 &
-     &    sp_rlm_krin(1,1), vr_rtm_krin(1,1))
+     &    sp_rlm_wk(1), vr_rtm_wk(1))
       call legendre_b_trans_scalar_krin(ncomp, nvector, nscalar,        &
-     &    sp_rlm_krin(1,1), vr_rtm_krin(1,1))
+     &    sp_rlm_wk(1), vr_rtm_wk(1))
 !
       call back_b_trans_fields_spin(ncomp, nvector, nscalar,            &
-     &    vr_rtm_krin(1,1))
+     &    vr_rtm_wk(1), vr_rtm(1))
 !
       end subroutine leg_bwd_trans_fields_krin
 !
@@ -75,15 +74,15 @@
 !
 !
       call order_f_trans_fields_krin(ncomp, nvector, nscalar,           &
-      &   vr_rtm_krin(1,1))
+      &   vr_rtm(1), vr_rtm_wk(1))
 !
       call legendre_f_trans_vector_krin(ncomp, nvector,                 &
-     &    vr_rtm_krin(1,1), sp_rlm_krin(1,1))
+     &    vr_rtm_wk(1), sp_rlm_wk(1))
       call legendre_f_trans_scalar_krin(ncomp, nvector, nscalar,        &
-     &    vr_rtm_krin(1,1), sp_rlm_krin(1,1))
+     &    vr_rtm_wk(1), sp_rlm_wk(1))
 !
       call back_f_trans_fields_spin(ncomp, nvector, nscalar,            &
-      &   sp_rlm_krin(1,1))
+      &   sp_rlm_wk(1), sp_rlm(1))
 !
       end subroutine leg_fwd_trans_fields_krin
 !

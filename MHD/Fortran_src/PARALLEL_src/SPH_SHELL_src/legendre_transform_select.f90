@@ -34,9 +34,7 @@
 !
       use m_precision
 !
-      use m_work_4_sph_trans_krin
       use m_work_4_sph_trans_spin
-      use m_work_4_sph_trans_fdout
 !
       use legendre_transform_org
       use legendre_transform_krin
@@ -125,12 +123,10 @@
       integer(kind = kint), intent(in) :: ncomp
 !
 !
-      if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        call allocate_work_sph_trans_spin(ncomp)
-      else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        call allocate_work_sph_trans_krin(ncomp)
-      else if(id_legendre_transfer .eq. iflag_leg_fdout_loop) then
-        call allocate_work_sph_trans_fdout(ncomp)
+      if    (id_legendre_transfer .eq. iflag_leg_krloop_outer           &
+     &  .or. id_legendre_transfer .eq. iflag_leg_krloop_inner           &
+     &  .or. id_legendre_transfer .eq. iflag_leg_fdout_loop) then
+        call allocate_work_sph_trans(ncomp)
       end if
 !
       end subroutine sel_alloc_legendre_trans
@@ -140,12 +136,10 @@
       subroutine sel_dealloc_legendre_trans
 !
 !
-      if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        call deallocate_work_sph_trans_spin
-      else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-        call deallocate_work_sph_trans_krin
-      else if(id_legendre_transfer .eq. iflag_leg_fdout_loop) then
-        call deallocate_work_sph_trans_fdout
+      if    (id_legendre_transfer .eq. iflag_leg_krloop_outer           &
+     &  .or. id_legendre_transfer .eq. iflag_leg_krloop_inner           &
+     &  .or. id_legendre_transfer .eq. iflag_leg_fdout_loop) then
+        call deallocate_work_sph_trans
       end if
 !
       end subroutine sel_dealloc_legendre_trans

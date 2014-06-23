@@ -15,6 +15,16 @@
 !!     &          vr_rtm_krin, sp_rlm_spin)
 !!        Input:  vr_rtm_krin
 !!        Output: sp_rlm_spin
+!!
+!!     field data for Legendre transform
+!!         original layout: vr_rtm_krin(i_fld,k_rtm,l_rtm,m_rtm,nd)
+!!         size: vr_rtm_krin(nidx_rtm(1)*nidx_rtm(2)*nidx_rtm(3),nb)
+!!      real(kind = kreal), allocatable :: vr_rtm_krin(:,:)
+!!
+!!     spectr data for Legendre transform
+!!        original layout: sp_rlm_krin(k_rtm,j_rlm,i_fld)
+!!        size: sp_rlm_krin(nidx_rlm(1)*nidx_rlm(2),nb)
+!!      real(kind = kreal), allocatable :: sp_rlm_krin(:,:)
 !!@endverbatim
 !!
 !!@n @param  ncomp    number of components to be transformed

@@ -9,11 +9,13 @@
 !!       (innermost loop is spherical harmonics)
 !!
 !!@verbatim
-!!      subroutine order_b_trans_fields_fdout(ncomp, sp_rlm_fdout)
-!!      subroutine order_f_trans_fields_fdout(ncomp, vr_rtm_fdout)
+!!      subroutine order_b_trans_fields_fdout(ncomp,                    &
+!!     &          sp_rlm, sp_rlm_fdout)
+!!      subroutine order_f_trans_fields_fdout(ncomp,                    &
+!!     &          vr_rtm, vr_rtm_fdout)
 !!
-!!      subroutine back_f_trans_fields_fdout(ncomp, sp_rlm_fdout)
-!!      subroutine back_b_trans_fields_fdout(ncomp, vr_rtm_fdout)
+!!      subroutine back_f_trans_fields_fdout(ncomp, sp_rlm_fdout,sp_rlm)
+!!      subroutine back_b_trans_fields_fdout(ncomp, vr_rtm_fdout, vr_rtm)
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -29,8 +31,6 @@
       use m_machine_parameter
       use m_spheric_parameter
       use m_spheric_param_smp
-      use m_schmidt_poly_on_rtm
-      use m_work_4_sph_trans
 !
       implicit none
 !
@@ -40,9 +40,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine order_b_trans_fields_fdout(ncomp, sp_rlm_fdout)
+      subroutine order_b_trans_fields_fdout(ncomp,                      &
+     &          sp_rlm, sp_rlm_fdout)
 !
       integer(kind = kint), intent(in) :: ncomp
+      real(kind = kreal), intent(in) :: sp_rlm(ncomp*nnod_rlm)
       real(kind = kreal), intent(inout) :: sp_rlm_fdout(nnod_rlm,ncomp)
 !
       integer(kind = kint) :: ip, ist, ied, inod
@@ -76,9 +78,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine order_f_trans_fields_fdout(ncomp, vr_rtm_fdout)
+      subroutine order_f_trans_fields_fdout(ncomp,                      &
+     &          vr_rtm, vr_rtm_fdout)
 !
       integer(kind = kint), intent(in) :: ncomp
+      real(kind = kreal), intent(in) :: vr_rtm(ncomp*nnod_rtm)
       real(kind = kreal), intent(inout) :: vr_rtm_fdout(nnod_rtm,ncomp)
 !
       integer(kind = kint) :: ip, ist, ied, inod, lnod
@@ -115,10 +119,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine back_f_trans_fields_fdout(ncomp, sp_rlm_fdout)
+      subroutine back_f_trans_fields_fdout(ncomp, sp_rlm_fdout,sp_rlm)
 !
       integer(kind = kint), intent(in) :: ncomp
       real(kind = kreal), intent(in) :: sp_rlm_fdout(nnod_rlm,ncomp)
+      real(kind = kreal), intent(inout) :: sp_rlm(ncomp*nnod_rlm)
 !
       integer(kind = kint) :: ip, ist, ied, inum, inod
       integer(kind = kint) :: k_rlm, j_rlm, i_rlm_0
@@ -148,10 +153,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine back_b_trans_fields_fdout(ncomp, vr_rtm_fdout)
+      subroutine back_b_trans_fields_fdout(ncomp, vr_rtm_fdout, vr_rtm)
 !
       integer(kind = kint), intent(in) :: ncomp
       real(kind = kreal), intent(in) :: vr_rtm_fdout(nnod_rtm,ncomp)
+      real(kind = kreal), intent(inout) :: vr_rtm(ncomp*nnod_rtm)
 !
       integer(kind = kint) :: ip, ist, ied, inum, inod, lnod
       integer(kind = kint) :: i_rtm_0, k_rtm, l_rtm, m_rtm

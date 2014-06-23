@@ -15,6 +15,16 @@
 !!     &          vr_rtm_fdout, sp_rlm_fdout)
 !!        Input:  vr_rtm_fdout
 !!        Output: sp_rlm_fdout
+!!
+!!      field data for Legendre transform  @f$ f(r,\theta,m) @f$ 
+!!       Order: vr_rtm_fdout(l_rtm,k_rtm,m_rtm,i_comp,i_fld)
+!!       size:  vr_rtm_fdout(nidx_rtm(2)*nidx_rtm(1)*nidx_rtm(3),3*nb)
+!!      real(kind = kreal), allocatable :: vr_rtm_fdout(:,:)
+!!
+!!      Spectr data for Legendre transform  @f$ f(r,l,m) @f$ 
+!!        Order: sp_rlm(i_comp,i_fld,j_rlm,k_rtm)
+!!        size: sp_rlm(nidx_rlm(2)*nidx_rtm(1),3*nb)
+!!      real(kind = kreal), allocatable :: sp_rlm_fdout(:,:)
 !!@endverbatim
 !!
 !!@param   nvector  Number of vector for spherical transform

@@ -1,4 +1,5 @@
-!!@brief  module ordering_schmidt_trans_krin
+!>@file   copy_SR_4_leg_trans_krin.f90
+!!@brief  module copy_SR_4_leg_trans_krin
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2007
@@ -8,10 +9,10 @@
 !!       (innermost loop is radial ID)
 !!
 !!@verbatim
-!!      subroutine order_b_trans_fields_krin(ncomp, nvector, nscalar,   &
-!!     &          sp_rlm, sp_rlm_spin)
-!!      subroutine order_f_trans_fields_krin(ncomp, nvector, nscalar,   &
-!!     &          vr_rtm, vr_rtm_spin)
+!!      subroutine get_rlm_from_recv_krin(ncomp, nvector, nscalar,      &
+!!     &          WRecv, sp_rlm_spin)
+!!      subroutine get_rtm_from_recv_krin(ncomp, nvector, nscalar,      &
+!!     &          WRecv, vr_rtm_spin)
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -19,7 +20,7 @@
 !!@param   nscalar  Number of scalar (including tensor components)
 !!                  for spherical transform
 !
-      module ordering_schmidt_trans_krin
+      module copy_SR_4_leg_trans_krin
 !
       use m_precision
 !
@@ -27,6 +28,7 @@
       use m_machine_parameter
       use m_spheric_parameter
       use m_spheric_param_smp
+      use m_sph_trans_comm_tbl_1D
 !
       implicit none
 !
@@ -36,11 +38,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine order_b_trans_fields_krin(ncomp, nvector, nscalar,     &
-     &          sp_rlm, sp_rlm_krin)
+      subroutine get_rlm_from_recv_krin(ncomp, nvector, nscalar,        &
+     &          WRecv, sp_rlm_krin)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      real(kind = kreal), intent(in) :: sp_rlm(ncomp*nnod_rlm)
+      real(kind = kreal), intent(in) :: WRecv(ncomp*nnod_rlm)
       real(kind = kreal), intent(inout)                                 &
      &    :: sp_rlm_krin(nidx_rlm(1),ncomp,nidx_rlm(2))
 !
@@ -59,12 +61,11 @@
           j_rlm = 1 + (inod - k_rlm) / nidx_rlm(1)
           nd =   1 + (inum - inod) / nnod_rlm
 !
-          i_rlm_0 = 3*nd + (j_rlm-1) * ncomp                            &
-     &                   + (k_rlm-1) * ncomp * nidx_rlm(2)
+          i_rlm_0 = 3*nd + (irev_rlm_1D(j_rlm,k_rlm) - 1) * ncomp
 !
-          sp_rlm_krin(k_rlm,nd,          j_rlm) = sp_rlm(i_rlm_0-2)
-          sp_rlm_krin(k_rlm,nd+nvector,  j_rlm) = sp_rlm(i_rlm_0-1)
-          sp_rlm_krin(k_rlm,nd+2*nvector,j_rlm) = sp_rlm(i_rlm_0  )
+          sp_rlm_krin(k_rlm,nd,          j_rlm) = WRecv(i_rlm_0-2)
+          sp_rlm_krin(k_rlm,nd+nvector,  j_rlm) = WRecv(i_rlm_0-1)
+          sp_rlm_krin(k_rlm,nd+2*nvector,j_rlm) = WRecv(i_rlm_0  )
         end do
 !
         ist = nscalar*inod_rlm_smp_stack(ip-1) + 1
@@ -76,23 +77,23 @@
           j_rlm = 1 + (inod - k_rlm) / nidx_rlm(1)
           nd =   1 + (inum - inod) / nnod_rlm
 !
-          i_rlm_0 = nd + 3*nvector + (j_rlm-1) * ncomp                  &
-     &                 + (k_rlm-1) * ncomp * nidx_rlm(2)
+          i_rlm_0 = nd + 3*nvector                                      &
+     &                 + (irev_rlm_1D(j_rlm,k_rlm) - 1) * ncomp
 !
-          sp_rlm_krin(k_rlm,nd+3*nvector,j_rlm) = sp_rlm(i_rlm_0)
+          sp_rlm_krin(k_rlm,nd+3*nvector,j_rlm) = WRecv(i_rlm_0)
         end do
       end do
 !$omp end parallel do
 !
-      end subroutine order_b_trans_fields_krin
+      end subroutine get_rlm_from_recv_krin
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine order_f_trans_fields_krin(ncomp, nvector, nscalar,     &
-     &          vr_rtm, vr_rtm_spin)
+      subroutine get_rtm_from_recv_krin(ncomp, nvector, nscalar,        &
+     &          WRecv, vr_rtm_spin)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      real(kind = kreal), intent(in) :: vr_rtm(ncomp*nnod_rtm)
+      real(kind = kreal), intent(in) :: WRecv(ncomp*nnod_rtm)
       real(kind = kreal), intent(inout)                                 &
      &      :: vr_rtm_spin(nidx_rtm(1),ncomp,nidx_rtm(2),nidx_rtm(3))
 !
@@ -119,11 +120,11 @@
      &                   + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
 !
           vr_rtm_spin(k_rtm,nd,          l_rtm,m_rtm)                   &
-     &            = vr_rtm(i_rtm_0-2)
+     &            = WRecv(i_rtm_0-2)
           vr_rtm_spin(k_rtm,nd+nvector,  l_rtm,m_rtm)                   &
-     &            = vr_rtm(i_rtm_0-1)
+     &            = WRecv(i_rtm_0-1)
           vr_rtm_spin(k_rtm,nd+2*nvector,l_rtm,m_rtm)                   &
-     &            = vr_rtm(i_rtm_0  )
+     &            = WRecv(i_rtm_0  )
         end do
 !
         ist = nscalar*inod_rtm_smp_stack(ip-1) + 1
@@ -137,18 +138,17 @@
           k_rtm = 1 + mod( (kr_nd-1),nidx_rtm(1))
           nd =    1 + (kr_nd-k_rtm) / nidx_rtm(1)
 !
-          i_rtm_0 = nd + 3*nvector + (l_rtm-1) * ncomp                  &
-     &                   + (k_rtm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+          i_rtm_0 = 3*nd + 3*nvector                                    &
+     &             + (irev_rtm_1D(l_rtm,k_rtm,m_rtm) - 1) * ncomp
 !
           vr_rtm_spin(k_rtm,nd+3*nvector,l_rtm,m_rtm)                   &
-     &            = vr_rtm(i_rtm_0  )
+     &            = WRecv(i_rtm_0  )
         end do
       end do
 !$omp end parallel do
 !
-      end subroutine order_f_trans_fields_krin
+      end subroutine get_rtm_from_recv_krin
 !
 ! -----------------------------------------------------------------------
 !
-      end module ordering_schmidt_trans_krin
+      end module copy_SR_4_leg_trans_krin

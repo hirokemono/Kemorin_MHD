@@ -85,8 +85,8 @@
 !
             do nd = 1, nvector
               ip_rtm = 3*nd + (l_rtm-1) * ncomp                         &
-     &                      + (k_rtm-1) * ncomp*nidx_rtm(2)             &
-     &                      + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+     &                     + (k_rtm-1) * ncomp*nidx_rtm(2)              &
+     &                     + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
               vr1 = 0.0d0
               vr2 = 0.0d0
               vr3 = 0.0d0
@@ -123,9 +123,8 @@
 !
             do nd = 1, nvector
               in_rtm = 3*nd + (l_rtm-1) * ncomp                         &
-     &                      + (k_rtm-1) * ncomp*nidx_rtm(2)             &
-     &                      + (mn_rlm-1) * ncomp          &
-     &                       * nidx_rtm(1)*nidx_rtm(2)
+     &                     + (k_rtm-1) * ncomp*nidx_rtm(2)             &
+     &                     + (mn_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
 !
               vr2 = 0.0d0
               vr3 = 0.0d0

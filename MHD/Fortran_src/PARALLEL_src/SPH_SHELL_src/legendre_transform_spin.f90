@@ -50,25 +50,21 @@
 !
       call start_eleps_time(25)
       call order_b_trans_fields_spin(ncomp, nvector, nscalar,           &
-     &    sp_rlm_spin(1,1))
+     &    sp_rlm(1), sp_rlm_wk(1))
       call end_eleps_time(25)
-!
-      call start_eleps_time(26)
-      call clear_b_trans_spin(ione, ncomp)
-      call end_eleps_time(26)
 !
       call start_eleps_time(27)
       if(nvector .gt. 0) call legendre_b_trans_vector_spin              &
      &                      (ncomp, nvector,                            &
-     &                       sp_rlm_spin(1,1), vr_rtm_spin(1,1))
+     &                       sp_rlm_wk(1), vr_rtm_wk(1))
       if(nscalar .gt. 0) call legendre_b_trans_scalar_spin              &
      &                      (ncomp, nvector, nscalar,                   &
-     &                       sp_rlm_spin(1,1), vr_rtm_spin(1,1))
+     &                       sp_rlm_wk(1), vr_rtm_wk(1))
       call end_eleps_time(27)
 !
       call start_eleps_time(28)
       call back_b_trans_fields_spin(ncomp, nvector, nscalar,            &
-     &   vr_rtm_spin(1,1))
+     &    vr_rtm_wk(1), vr_rtm(1))
       call end_eleps_time(28)
 !
       end subroutine leg_backward_trans_spin
@@ -86,21 +82,21 @@
 !
       call start_eleps_time(29)
       call order_f_trans_fields_spin(ncomp, nvector, nscalar,           &
-     &    vr_rtm_spin(1,1))
+     &    vr_rtm(1), vr_rtm_wk(1))
       call end_eleps_time(29)
 !
       call start_eleps_time(31)
       if(nvector .gt. 0) call legendre_f_trans_vector_spin              &
-     &                      (ncomp, nvector,  vr_rtm_spin(1,1),         &
-     &                       sp_rlm_spin(1,1))
+     &                      (ncomp, nvector,  vr_rtm_wk(1),             &
+     &                       sp_rlm_wk(1))
       if(nscalar .gt. 0) call legendre_f_trans_scalar_spin              &
-     &                      (ncomp, nvector, nscalar, vr_rtm_spin(1,1), &
-     &                       sp_rlm_spin(1,1))
+     &                      (ncomp, nvector, nscalar, vr_rtm_wk(1),     &
+     &                       sp_rlm_wk(1))
       call end_eleps_time(31)
 !
       call start_eleps_time(32)
       call back_f_trans_fields_spin(ncomp, nvector, nscalar,            &
-     &     sp_rlm_spin(1,1))
+     &     sp_rlm_wk(1), sp_rlm(1))
       call end_eleps_time(32)
 !
       end subroutine leg_forward_trans_spin

@@ -29,7 +29,7 @@
       module legendre_transform_fdout
 !
       use m_precision
-      use m_work_4_sph_trans_fdout
+      use m_work_4_sph_trans_spin
 !
       implicit none
 !
@@ -45,20 +45,21 @@
       use legendre_bwd_trans_fdout
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      integer(kind = kint) :: ist_fld
+      integer(kind = kint) :: ist_sp_rlm, ist_vr_rtm
 !
 !
-      call order_b_trans_fields_fdout(ncomp, sp_rlm_fdout(1,1))
-      call clear_b_trans_field_fdout(ione, ncomp)
+      ist_vr_rtm = 1 + 3*nvector*nnod_rtm
+      ist_sp_rlm = 1 + 3*nvector*nnod_rlm
 !
-      ist_fld = 3*nvector+1
+      call order_b_trans_fields_fdout(ncomp,                            &
+     &    sp_rlm(1), sp_rlm_wk(1))
 !
       call legendre_b_trans_vector_fdout(nvector,                       &
-     &    sp_rlm_fdout(1,1), vr_rtm_fdout(1,1))
+     &    sp_rlm_wk(1), vr_rtm_wk(1))
       call legendre_b_trans_scalar_fdout(nscalar,                       &
-     &    sp_rlm_fdout(1,ist_fld), vr_rtm_fdout(1,ist_fld))
+     &    sp_rlm_wk(ist_sp_rlm), vr_rtm_wk(ist_vr_rtm))
 !
-      call back_b_trans_fields_fdout(ncomp, vr_rtm_fdout(1,1))
+      call back_b_trans_fields_fdout(ncomp, vr_rtm_wk(1), vr_rtm(1))
 !
       end subroutine leg_backward_trans_fdout
 !
@@ -71,20 +72,22 @@
       use legendre_fwd_trans_fdout
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      integer(kind = kint) :: ist_fld
+      integer(kind = kint) :: ist_sp_rlm, ist_vr_rtm
 !
 !
 !
-      call order_f_trans_fields_fdout(ncomp, vr_rtm_fdout(1,1))
-      call clear_f_trans_field_fdout(ione, ncomp)
+      ist_vr_rtm = 1 + 3*nvector*nnod_rtm
+      ist_sp_rlm = 1 + 3*nvector*nnod_rlm
 !
-      ist_fld = 3*nvector+1
+      call order_f_trans_fields_fdout(ncomp, vr_rtm(1), vr_rtm_wk(1))
+!
       call legendre_f_trans_vector_fdout(nvector,                       &
-     &    vr_rtm_fdout(1,1), sp_rlm_fdout(1,1))
+     &    vr_rtm_wk(1), sp_rlm_wk(1))
       call legendre_f_trans_scalar_fdout(nscalar,                       &
-     &    vr_rtm_fdout(1,ist_fld), sp_rlm_fdout(1,ist_fld))
+     &    vr_rtm_wk(ist_vr_rtm), sp_rlm_wk(ist_sp_rlm))
 !
-      call back_f_trans_fields_fdout(ncomp, sp_rlm_fdout(1,1))
+      call back_f_trans_fields_fdout(ncomp,                             &
+     &    sp_rlm_wk(1), sp_rlm(1))
 !
       end subroutine leg_forward_trans_fdout
 !
