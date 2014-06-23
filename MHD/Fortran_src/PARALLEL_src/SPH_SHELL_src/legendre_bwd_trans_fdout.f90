@@ -52,6 +52,9 @@
       integer(kind = kint) :: k_rlm, l_rtm
       integer(kind = kint) :: ip_rtm, in_rtm
       integer(kind = kint) :: inum, nd
+      real(kind = kreal) :: Pg3_l(nidx_rtm(2))
+      real(kind = kreal) :: dPdt_l(nidx_rtm(2))
+      real(kind = kreal) :: Pgv_l(nidx_rtm(2))
 !
 !
 !$omp parallel
@@ -73,24 +76,32 @@
         end do
 !$omp end do nowait
 !
-!$omp do private(inum,j_rlm,k_rlm,l_rtm,ip_rtm,in_rtm,i_rlm)
+!$omp do private(inum,j_rlm,k_rlm,l_rtm,ip_rtm,in_rtm,i_rlm,            &
+!$omp&           Pg3_l,dPdt_l,Pgv_l)
         do inum = 1, nnod_rlm
           k_rlm = 1 + mod( (inum-1),nidx_rlm(1))
           j_rlm = 1 + (inum - k_rlm) / nidx_rlm(1)
 !
           i_rlm = j_rlm + (k_rlm-1) * nidx_rlm(2)
+!
+          do l_rtm = 1, nidx_rtm(2)
+            Pg3_l(l_rtm) = P_rtm(l_rtm,j_rlm) * g_sph_rlm(j_rlm,3)
+            dPdt_l(l_rtm) = dPdt_rtm(l_rtm,j_rlm)
+            Pgv_l(l_rtm) = -P_rtm(l_rtm,j_rlm)                          &
+     &        * dble(idx_gl_1d_rlm_j(j_rlm,3))*asin_theta_1d_rtm(l_rtm)
+          end do
+!
           do l_rtm = 1, nidx_rtm(2)
             ip_rtm = l_rtm + (k_rlm-1) * nidx_rtm(2)                    &
      &                       + (mdx_p_rlm_rtm(j_rlm)-1)                 &
      &                       * nidx_rtm(1)*nidx_rtm(2)
 !
-!
             vr_rtm_fdout(ip_rtm,3*nd-2) = vr_rtm_fdout(ip_rtm,3*nd-2)   &
-     &            + sp_rlm_fdout(i_rlm,3*nd-2) * Pg3_lj(l_rtm,j_rlm)
+     &            + sp_rlm_fdout(i_rlm,3*nd-2) * Pg3_l(l_rtm)
             vr_rtm_fdout(ip_rtm,3*nd-1) = vr_rtm_fdout(ip_rtm,3*nd-1)   &
-     &            + sp_rlm_fdout(i_rlm,3*nd-1) * dPdt_rtm(l_rtm,j_rlm)
+     &            + sp_rlm_fdout(i_rlm,3*nd-1) * dPdt_l(l_rtm)
             vr_rtm_fdout(ip_rtm,3*nd  ) = vr_rtm_fdout(ip_rtm,3*nd  )   &
-     &            - sp_rlm_fdout(i_rlm,3*nd  ) * dPdt_rtm(l_rtm,j_rlm)
+     &            - sp_rlm_fdout(i_rlm,3*nd  ) * dPdt_l(l_rtm)
 !
 !
             in_rtm = l_rtm + (k_rlm-1) * nidx_rtm(2)                    &
@@ -98,9 +109,9 @@
      &                       * nidx_rtm(1)*nidx_rtm(2)
 !
             vr_rtm_fdout(in_rtm,3*nd-1) = vr_rtm_fdout(in_rtm,3*nd-1)   &
-     &            + sp_rlm_fdout(i_rlm,3*nd  ) * Pgv_lj(l_rtm,j_rlm)
+     &            + sp_rlm_fdout(i_rlm,3*nd  ) * Pgv_l(l_rtm)
             vr_rtm_fdout(in_rtm,3*nd  ) = vr_rtm_fdout(in_rtm,3*nd  )   &
-     &            + sp_rlm_fdout(i_rlm,3*nd-1) * Pgv_lj(l_rtm,j_rlm)
+     &            + sp_rlm_fdout(i_rlm,3*nd-1) * Pgv_l(l_rtm)
           end do
         end do
 !$omp end do nowait

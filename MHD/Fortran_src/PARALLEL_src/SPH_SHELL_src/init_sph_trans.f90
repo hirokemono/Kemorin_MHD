@@ -20,6 +20,7 @@
 !
       private :: set_mdx_rlm_rtm, set_sin_theta_rtm, set_sin_theta_rtp
       private :: radial_4_sph_trans, cal_legendre_trans_coefs
+      private :: set_trans_legendre_rtm
 !
 ! -----------------------------------------------------------------------
 !
@@ -53,6 +54,7 @@
       use m_machine_parameter
       use m_spheric_parameter
       use m_spheric_param_smp
+      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
       use m_work_pole_sph_trans
       use schmidt_poly_on_rtm_grid
@@ -75,7 +77,11 @@
       call set_sin_theta_rtm
       call set_sin_theta_rtp
 !
-      call cal_legendre_trans_coefs
+      call allocate_trans_schmidt_rtm
+      call set_trans_legendre_rtm
+!
+!      call allocate_legendre_trans_mat
+!      call cal_legendre_trans_coefs
 !
 !
       ncomp = ncomp_sph_trans*nidx_rtp(1)*nidx_rtp(2)
@@ -190,6 +196,28 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
+      subroutine set_trans_legendre_rtm
+!
+      use m_spheric_parameter
+      use m_schmidt_poly_on_rtm
+      use m_work_4_sph_trans
+!
+      integer(kind = kint) :: l_rtm, j_rlm
+!
+!
+!$omp parallel do private(j_rlm,l_rtm)
+      do j_rlm = 1, nidx_rlm(2)
+        do l_rtm = 1, nidx_rtm(2)
+          P_jl(j_rlm,l_rtm) =     P_rtm(l_rtm,j_rlm)
+          dPdt_jl(j_rlm,l_rtm) =  dPdt_rtm(l_rtm,j_rlm)
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine set_trans_legendre_rtm
+!
+! -----------------------------------------------------------------------
+!
       subroutine cal_legendre_trans_coefs
 !
       use m_spheric_parameter
@@ -220,18 +248,21 @@
      &        * dble(idx_gl_1d_rlm_j(j_rlm,3))*asin_theta_1d_rtm(l_rtm)
 !
 !
-          P_jl(j_rlm,l_rtm) =     P_rtm(l_rtm,j_rlm)
-          dPdt_jl(j_rlm,l_rtm) =  dPdt_rtm(l_rtm,j_rlm)
+          Pvw_jl(j_rlm,l_rtm) =  P_jl(j_rlm,l_rtm)                      &
+     &        * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
+          dPvw_jl(j_rlm,l_rtm) = dPdt_jl(j_rlm,l_rtm)                   &
+     &        * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
+          Pgvw_jl(j_rlm,l_rtm) = P_jl(j_rlm,l_rtm)                      &
+     &        * dble(idx_gl_1d_rlm_j(j_rlm,3))*asin_theta_1d_rtm(l_rtm) &
+     &        * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
 !
-          Pvw_jl(j_rlm,l_rtm) =  Pvw_lj(l_rtm,j_rlm)
-          dPvw_jl(j_rlm,l_rtm) = dPvw_lj(l_rtm,j_rlm)
-          Pgvw_jl(j_rlm,l_rtm) = Pgvw_lj(l_rtm,j_rlm)
-!
-          Pws_jl(j_rlm,l_rtm) =  Pws_lj(l_rtm,j_rlm)
+          Pws_jl(j_rlm,l_rtm) = P_jl(j_rlm,l_rtm)                       &
+     &        * g_sph_rlm(j_rlm,6)*weight_rtm(l_rtm)
 !
 !
-          Pg3_jl(j_rlm,l_rtm) =  Pg3_lj(l_rtm,j_rlm)
-          Pgv_jl(j_rlm,l_rtm) =  Pgv_lj(l_rtm,j_rlm)
+          Pg3_jl(j_rlm,l_rtm) = P_jl(j_rlm,l_rtm) * g_sph_rlm(j_rlm,3)
+          Pgv_jl(j_rlm,l_rtm) = -P_jl(j_rlm,l_rtm)                      &
+     &        * dble(idx_gl_1d_rlm_j(j_rlm,3))*asin_theta_1d_rtm(l_rtm)
         end do
       end do
 !$omp end parallel do

@@ -78,8 +78,11 @@
         jed = lstack_rlm(mp_rlm)
         do k_rtm = 1,  nidx_rtm(1)
           do l_rtm = 1, nidx_rtm(2)
-            Pg3_j(jst:jed) =  Pg3_jl(jst:jed,l_rtm)
-            dPdt_j(jst:jed) = dPdt_jl(jst:jed,l_rtm)
+            do j_rlm = jst, jed
+              Pg3_j(j_rlm) = P_jl(j_rlm,l_rtm) * g_sph_rlm(j_rlm,3)
+              dPdt_j(j_rlm) = dPdt_jl(j_rlm,l_rtm)
+            end do
+!
             do nd = 1, nvector
               ip_rtm = 3*nd + (l_rtm-1) * ncomp                         &
      &                      + (k_rtm-1) * ncomp*nidx_rtm(2)             &
@@ -112,7 +115,12 @@
         jed = lstack_rlm(mp_rlm)
         do k_rtm = 1,  nidx_rtm(1)
           do l_rtm = 1, nidx_rtm(2)
-            Pgv_j(jst:jed) = Pgv_jl(jst:jed,l_rtm)
+            do j_rlm = jst, jed
+              Pgv_j(j_rlm) = -P_jl(j_rlm,l_rtm)                         &
+     &                      * dble(idx_gl_1d_rlm_j(j_rlm,3))            &
+     &                       *asin_theta_1d_rtm(l_rtm)
+            end do
+!
             do nd = 1, nvector
               in_rtm = 3*nd + (l_rtm-1) * ncomp                         &
      &                      + (k_rtm-1) * ncomp*nidx_rtm(2)             &

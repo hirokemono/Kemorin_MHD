@@ -64,9 +64,17 @@
       do j_rlm = 1, nidx_rlm(2)
         mp_rlm = mdx_p_rlm_rtm(j_rlm)
         mn_rlm = mdx_n_rlm_rtm(j_rlm)
-        Pvw_l(1:nidx_rtm(2)) =  Pvw_lj(1:nidx_rtm(2),j_rlm)
-        dPvw_l(1:nidx_rtm(2)) = dPvw_lj(1:nidx_rtm(2),j_rlm)
-        Pgvw_l(1:nidx_rtm(2)) = Pgvw_lj(1:nidx_rtm(2),j_rlm)
+!
+        do l_rtm = 1, nidx_rtm(2)
+          Pvw_l(l_rtm) = P_rtm(l_rtm,j_rlm)                             &
+     &                   * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
+          dPvw_l(l_rtm) = dPdt_rtm(l_rtm,j_rlm)                         &
+     &                   * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
+          Pgvw_l(l_rtm) = P_rtm(l_rtm,j_rlm)                            &
+     &                   * dble(idx_gl_1d_rlm_j(j_rlm,3))               &
+     &                    * asin_theta_1d_rtm(l_rtm)                    &
+     &                    * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
+        end do
 !
         sp1(1:nb_nri) = 0.0d0
         sp2(1:nb_nri) = 0.0d0
@@ -123,7 +131,12 @@
 !$omp parallel do private(j_rlm,l_rtm,mp_rlm,Pws_l,sp1)
       do j_rlm = 1, nidx_rlm(2)
         mp_rlm = mdx_p_rlm_rtm(j_rlm)
-        Pws_l(1:nidx_rtm(2)) =  Pws_lj(1:nidx_rtm(2),j_rlm)
+!
+        do l_rtm = 1, nidx_rtm(2)
+          Pws_l(l_rtm) = P_rtm(l_rtm,j_rlm)                             &
+     &                 * g_sph_rlm(j_rlm,6)*weight_rtm(l_rtm)
+        end do
+!
         do l_rtm = 1, nidx_rtm(2)
           sp1(1:nscalar*nidx_rtm(1)) = 0.0d0
 !

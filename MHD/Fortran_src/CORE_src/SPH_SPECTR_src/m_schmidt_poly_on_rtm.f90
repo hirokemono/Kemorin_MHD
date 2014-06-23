@@ -1,19 +1,28 @@
+!>@file   m_schmidt_poly_on_rtm.f90
+!!@brief  module m_schmidt_poly_on_rtm
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!      module m_schmidt_poly_on_rtm
-!
-!     Written by H. Matsui on Aug., 2007
-!
-!      subroutine allocate_gauss_colat_rtm
-!      subroutine allocate_schmidt_poly_rtm
-!      subroutine allocate_schmidt_p_rtm_pole
-!
-!      subroutine deallocate_gauss_colat_rtm
-!      subroutine deallocate_schmidt_poly_rtm
-!      subroutine deallocate_schmidt_p_rtm_pole
-!
-!      subroutine check_gauss_colat_rtm(my_rank)
-!      subroutine check_schmidt_poly_rtm(my_rank)
-!      subroutine check_schmidt_p_rtm_pole(my_rank)
+!>@brief Parameters for LEgendre transforms
+!!
+!!@verbatim
+!!      subroutine allocate_gauss_colat_rtm
+!!      subroutine allocate_schmidt_poly_rtm
+!!      subroutine allocate_trans_schmidt_rtm
+!!      subroutine allocate_legendre_trans_mat
+!!      subroutine allocate_schmidt_p_rtm_pole
+!!
+!!      subroutine deallocate_gauss_colat_rtm
+!!      subroutine deallocate_schmidt_poly_rtm
+!!      subroutine deallocate_trans_schmidt_rtm
+!!      subroutine deallocate_legendre_trans_mat
+!!      subroutine deallocate_schmidt_p_rtm_pole
+!!
+!!      subroutine check_gauss_colat_rtm(my_rank)
+!!      subroutine check_schmidt_poly_rtm(my_rank)
+!!      subroutine check_schmidt_p_rtm_pole(my_rank)
+!!@endverbatim
 !
       module m_schmidt_poly_on_rtm
 !
@@ -104,6 +113,34 @@
       allocate( g_sph_rlm(nidx_rlm(2),17) )
       allocate( g_sph_rj(nidx_rj(2),13) )
 !
+      P_rtm = 0.0d0
+      dPdt_rtm = 0.0d0
+!
+      g_sph_rlm = 0.0d0
+      g_sph_rj =  0.0d0
+!
+      end subroutine allocate_schmidt_poly_rtm
+!
+! -----------------------------------------------------------------------
+!
+      subroutine allocate_trans_schmidt_rtm
+!
+      use m_spheric_parameter
+!
+      allocate( P_jl(nidx_rlm(2),nidx_rtm(2)) )
+      allocate( dPdt_jl(nidx_rlm(2),nidx_rtm(2)) )
+!
+      P_jl =  0.0d0
+      dPdt_jl =  0.0d0
+!
+      end subroutine allocate_trans_schmidt_rtm
+!
+! -----------------------------------------------------------------------
+!
+      subroutine allocate_legendre_trans_mat
+!
+      use m_spheric_parameter
+!
       allocate( Pvw_lj(nidx_rtm(2),nidx_rlm(2)) )
       allocate( dPvw_lj(nidx_rtm(2),nidx_rlm(2)) )
       allocate( Pgvw_lj(nidx_rtm(2),nidx_rlm(2)) )
@@ -117,15 +154,6 @@
       allocate( Pws_jl(nidx_rlm(2),nidx_rtm(2)) )
       allocate( Pg3_jl(nidx_rlm(2),nidx_rtm(2)) )
       allocate( Pgv_jl(nidx_rlm(2),nidx_rtm(2)) )
-!
-      allocate( P_jl(nidx_rlm(2),nidx_rtm(2)) )
-      allocate( dPdt_jl(nidx_rlm(2),nidx_rtm(2)) )
-!
-      P_rtm = 0.0d0
-      dPdt_rtm = 0.0d0
-!
-      g_sph_rlm = 0.0d0
-      g_sph_rj =  0.0d0
 !
       Pvw_lj =  0.0d0
       dPvw_lj = 0.0d0
@@ -141,10 +169,7 @@
       Pg3_jl =  0.0d0
       Pgv_jl =  0.0d0
 !
-      P_jl =  0.0d0
-      dPdt_jl =  0.0d0
-!
-      end subroutine allocate_schmidt_poly_rtm
+      end subroutine allocate_legendre_trans_mat
 !
 ! -----------------------------------------------------------------------
 !
@@ -178,12 +203,27 @@
       deallocate( P_rtm, dPdt_rtm)
       deallocate( g_sph_rlm, g_sph_rj)
 !
+      end subroutine deallocate_schmidt_poly_rtm
+!
+! -----------------------------------------------------------------------
+!
+      subroutine deallocate_trans_schmidt_rtm
+!
+      deallocate( P_jl, dPdt_jl)
+!
+      end subroutine deallocate_trans_schmidt_rtm
+!
+! -----------------------------------------------------------------------
+!
+      subroutine deallocate_legendre_trans_mat
+!
+!
       deallocate( Pvw_lj, dPvw_lj, Pgvw_lj)
       deallocate( Pws_lj, Pg3_lj,  Pgv_lj)
       deallocate( Pvw_jl, dPvw_jl, Pgvw_jl)
       deallocate( Pws_jl, Pg3_jl,  Pgv_jl)
 !
-      end subroutine deallocate_schmidt_poly_rtm
+      end subroutine deallocate_legendre_trans_mat
 !
 ! -----------------------------------------------------------------------
 !
