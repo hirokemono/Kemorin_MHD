@@ -65,8 +65,6 @@
 !
 !      call prod_r_vect_sph_f_trans(ncomp, nvector)
 !
-      call clear_fwd_legendre_trans(ncomp)
-!
       call legendre_f_trans_vector_long(ncomp, nvector)
       call legendre_f_trans_scalar_long(ncomp, nvector, nscalar)
 !
