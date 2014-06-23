@@ -44,7 +44,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
       real(kind = kreal), intent(inout)                                 &
-     &    :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
+     &    :: sp_rlm_spin(nidx_rlm(2),nidx_rlm(1)*ncomp)
       real(kind = kreal), intent(inout)                                 &
      &    :: vr_rtm_spin(nidx_rtm(1)*ncomp,nidx_rtm(3),nidx_rtm(2))
 !
@@ -142,7 +142,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp, nscalar, nvector
       real(kind = kreal), intent(in)                                    &
-     &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
+     &      :: sp_rlm_spin(nidx_rlm(2),nidx_rlm(1)*ncomp)
       real(kind = kreal), intent(inout)                                 &
      &      :: vr_rtm_spin(nidx_rtm(1)*ncomp,nidx_rtm(3),nidx_rtm(2))
 !

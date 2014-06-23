@@ -48,7 +48,7 @@
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
 !
 !
-      call order_b_trans_fields_spin(ncomp, nvector, nscalar,           &
+      call order_b_trans_fields_krin(ncomp, nvector, nscalar,           &
      &    sp_rlm_krin(1,1))
 !      call clear_b_trans_krin(ione, ncomp)
 !
