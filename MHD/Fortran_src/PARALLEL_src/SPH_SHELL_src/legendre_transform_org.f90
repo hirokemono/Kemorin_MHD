@@ -45,8 +45,6 @@
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
 !
 !
-      call clear_bwd_legendre_trans(ncomp)
-!
       if(nvector .gt. 0) then
         call legendre_b_trans_vector_org(ncomp, nvector)
       end if
