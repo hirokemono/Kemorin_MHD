@@ -51,14 +51,14 @@
 !
       integer(kind = kint) :: j_rlm, mp_rlm, mn_rlm, l_rtm
       integer(kind = kint) :: nb_nri, kr_nd, k_rlm
-      real(kind = kreal) :: sp1, sp2, sp3
+      real(kind = kreal) :: sp1, sp2, sp3, r2_1d_rlm_r
       real(kind = kreal) :: Pvw_l(nidx_rtm(2))
       real(kind = kreal) :: dPvw_l(nidx_rtm(2))
       real(kind = kreal) :: Pgvw_l(nidx_rtm(2))
 !
 !
       nb_nri = nvector*nidx_rlm(1)
-!$omp parallel do private(j_rlm,kr_nd,l_rtm,mp_rlm,mn_rlm,              &
+!$omp parallel do private(j_rlm,kr_nd,l_rtm,mp_rlm,mn_rlm,r2_1d_rlm_r,  &
 !$omp&                    sp1,sp2,sp3,Pvw_l,dPvw_l,Pgvw_l,k_rlm)
       do j_rlm = 1, nidx_rlm(2)
         mp_rlm = mdx_p_rlm_rtm(j_rlm)
@@ -68,6 +68,7 @@
         Pgvw_l(1:nidx_rtm(2)) = Pgvw_lj(1:nidx_rtm(2),j_rlm)
         do kr_nd = 1, nb_nri
           k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
+          r2_1d_rlm_r = radius_1d_rlm_r(k_rlm)*radius_1d_rlm_r(k_rlm)
           sp1 = 0.0d0
           sp2 = 0.0d0
           sp3 = 0.0d0
@@ -85,7 +86,7 @@
           end do
 !
           sp_rlm_spin(kr_nd,         j_rlm)                             &
-     &        = sp1 * radius_1d_rlm_r(k_rlm)*radius_1d_rlm_r(k_rlm)
+     &        = sp1 * r2_1d_rlm_r
           sp_rlm_spin(kr_nd+nb_nri,  j_rlm)                             &
      &        = sp2 * radius_1d_rlm_r(k_rlm)
           sp_rlm_spin(kr_nd+2*nb_nri,j_rlm)                             &
