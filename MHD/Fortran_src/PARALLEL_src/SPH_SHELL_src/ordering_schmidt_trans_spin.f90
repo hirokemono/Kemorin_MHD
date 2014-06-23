@@ -32,7 +32,6 @@
       use m_machine_parameter
       use m_spheric_parameter
       use m_spheric_param_smp
-      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
 !
       implicit none
@@ -91,15 +90,16 @@
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       real(kind = kreal), intent(inout)                                 &
-     &                   :: vr_rtm_spin(nnod_rtm,ncomp)
+     &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(1)*ncomp,nidx_rtm(3))
 !
       integer(kind = kint) :: ip, ist, ied, inum, inod
       integer(kind = kint) :: i_rtm_0, k_rtm, l_rtm, m_rtm
-      integer(kind = kint) :: nd, kr_nd, i_rtm_spin
+      integer(kind = kint) :: nd, kr_nd, nb_nri
 !
 !
+      nb_nri = nvector*nidx_rtm(1)
 !$omp  parallel do private(ip,ist,ied,inum,inod,i_rtm_0,nd,kr_nd,       &
-!$omp&                     k_rtm,l_rtm,m_rtm,i_rtm_spin)
+!$omp&                     k_rtm,l_rtm,m_rtm)
       do ip = 1, np_smp
         ist = nvector*inod_rtm_smp_stack(ip-1) + 1
         ied = nvector*inod_rtm_smp_stack(ip)
@@ -115,11 +115,10 @@
           i_rtm_0 = 3*nd + (l_rtm-1) * ncomp                            &
      &                   + (k_rtm-1) * ncomp*nidx_rtm(2)                &
      &                   + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-          i_rtm_spin = 1 + mod((inum-1),nnod_rtm)
 !
-          vr_rtm_spin(i_rtm_spin,nd          ) = vr_rtm(i_rtm_0-2)
-          vr_rtm_spin(i_rtm_spin,nd+nvector  ) = vr_rtm(i_rtm_0-1)
-          vr_rtm_spin(i_rtm_spin,nd+2*nvector) = vr_rtm(i_rtm_0  )
+          vr_rtm_spin(l_rtm,kr_nd,         m_rtm) = vr_rtm(i_rtm_0-2)
+          vr_rtm_spin(l_rtm,kr_nd+nb_nri,  m_rtm) = vr_rtm(i_rtm_0-1)
+          vr_rtm_spin(l_rtm,kr_nd+2*nb_nri,m_rtm) = vr_rtm(i_rtm_0  )
         end do
 !
         ist = nscalar*inod_rtm_smp_stack(ip-1) + 1
@@ -136,9 +135,9 @@
           i_rtm_0 = nd + 3*nvector + (l_rtm-1) * ncomp                  &
      &                   + (k_rtm-1) * ncomp*nidx_rtm(2)                &
      &                   + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-          i_rtm_spin = 1 + mod((inum-1),nnod_rtm)
 !
-          vr_rtm_spin(i_rtm_spin,nd+3*nvector) = vr_rtm(i_rtm_0  )
+          vr_rtm_spin(l_rtm,kr_nd+3*nvector*nb_nri,m_rtm)               &
+     &            = vr_rtm(i_rtm_0  )
         end do
       end do
 !$omp end parallel do
@@ -153,27 +152,28 @@
      &          sp_rlm_spin)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      real(kind = kreal), intent(in) :: sp_rlm_spin(nnod_rlm,ncomp)
+      real(kind = kreal), intent(in)                                    &
+     &      :: sp_rlm_spin(nidx_rtm(1),ncomp,nidx_rlm(2))
 !
       integer(kind = kint) :: ip, ist, ied, inum, inod
-      integer(kind = kint) :: i_rlm_0, nd
+      integer(kind = kint) :: i_rlm_0, nd, j_rlm, k_rlm
 !
 !
-!$omp  parallel do private(ip,ist,ied,inum,inod,nd,i_rlm_0)
+!$omp  parallel do private(ip,ist,ied,inum,inod,nd,i_rlm_0,j_rlm,k_rlm)
       do ip = 1, np_smp
         ist = nvector*inod_rlm_smp_stack(ip-1) + 1
         ied = nvector*inod_rlm_smp_stack(ip)
         do inum = ist, ied
           nd =    1 + mod( (inum-1),nvector)
           inod =  1 + (inum - nd) / nvector
-!          j_rlm = 1 + mod((inod-1),nidx_rlm(2))
-!          k_rlm = 1 + (inod - j_rlm) / nidx_rlm(2)
+          j_rlm = 1 + mod((inod-1),nidx_rlm(2))
+          k_rlm = 1 + (inod - j_rlm) / nidx_rlm(2)
 !
           i_rlm_0 = 3*nd + (inod-1) * ncomp
 !
-          sp_rlm(i_rlm_0-2) = sp_rlm_spin(inod,nd          )
-          sp_rlm(i_rlm_0-1) = sp_rlm_spin(inod,nd+nvector  )
-          sp_rlm(i_rlm_0  ) = sp_rlm_spin(inod,nd+2*nvector)
+          sp_rlm(i_rlm_0-2) = sp_rlm_spin(k_rlm,nd,          j_rlm)
+          sp_rlm(i_rlm_0-1) = sp_rlm_spin(k_rlm,nd+nvector,  j_rlm)
+          sp_rlm(i_rlm_0  ) = sp_rlm_spin(k_rlm,nd+2*nvector,j_rlm)
         end do
 !
         ist = nscalar*inod_rlm_smp_stack(ip-1) + 1
@@ -181,10 +181,12 @@
         do inum = ist, ied
           nd =    1 + mod( (inum-1),nscalar)
           inod =  1 + (inum - nd) / nscalar
+          j_rlm = 1 + mod((inod-1),nidx_rlm(2))
+          k_rlm = 1 + (inod - j_rlm) / nidx_rlm(2)
 !
           i_rlm_0 = nd + 3*nvector + (inod-1) * ncomp
 !
-          sp_rlm(i_rlm_0  ) = sp_rlm_spin(inod,nd+3*nvector)
+          sp_rlm(i_rlm_0  ) = sp_rlm_spin(k_rlm,nd+3*nvector,j_rlm)
         end do
       end do
 !$omp end parallel do

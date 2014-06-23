@@ -67,6 +67,11 @@
 !>        @$f -m P_{l}{m} / \sin \theta @$f with A(j,theta)
       real(kind = kreal), allocatable :: Pgv_jl(:,:)
 !
+!>        @$f P_{l}{m} @$f with A(j,theta)
+      real(kind = kreal), allocatable :: P_jl(:,:)
+!>        @$f dP_{l}{m}/d\theta @$f with A(j,theta)
+      real(kind = kreal), allocatable :: dPdt_jl(:,:)
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -113,6 +118,9 @@
       allocate( Pg3_jl(nidx_rlm(2),nidx_rtm(2)) )
       allocate( Pgv_jl(nidx_rlm(2),nidx_rtm(2)) )
 !
+      allocate( P_jl(nidx_rlm(2),nidx_rtm(2)) )
+      allocate( dPdt_jl(nidx_rlm(2),nidx_rtm(2)) )
+!
       P_rtm = 0.0d0
       dPdt_rtm = 0.0d0
 !
@@ -132,6 +140,9 @@
       Pws_jl =  0.0d0
       Pg3_jl =  0.0d0
       Pgv_jl =  0.0d0
+!
+      P_jl =  0.0d0
+      dPdt_jl =  0.0d0
 !
       end subroutine allocate_schmidt_poly_rtm
 !

@@ -220,6 +220,9 @@
      &        * dble(idx_gl_1d_rlm_j(j_rlm,3))*asin_theta_1d_rtm(l_rtm)
 !
 !
+          P_jl(j_rlm,l_rtm) =     P_rtm(l_rtm,j_rlm)
+          dPdt_jl(j_rlm,l_rtm) =  dPdt_rtm(l_rtm,j_rlm)
+!
           Pvw_jl(j_rlm,l_rtm) =  Pvw_lj(l_rtm,j_rlm)
           dPvw_jl(j_rlm,l_rtm) = dPvw_lj(l_rtm,j_rlm)
           Pgvw_jl(j_rlm,l_rtm) = Pgvw_lj(l_rtm,j_rlm)

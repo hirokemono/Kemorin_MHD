@@ -25,6 +25,7 @@
 !
       use m_precision
 !
+      use m_constants
       use m_machine_parameter
       use m_spheric_parameter
       use m_spheric_param_smp
@@ -44,9 +45,9 @@
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
       real(kind = kreal), intent(in)                                    &
-     &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(3),nidx_rtm(1)*ncomp)
+     &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(1)*ncomp,nidx_rtm(3))
       real(kind = kreal), intent(inout)                                 &
-     &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*)
+     &      :: sp_rlm_spin(nidx_rtm(1)*ncomp,nidx_rlm(2))
 !
       integer(kind = kint) :: j_rlm, mp_rlm, mn_rlm, l_rtm
       integer(kind = kint) :: nb_nri, kr_nd, k_rlm
@@ -58,7 +59,7 @@
 !
       nb_nri = nvector*nidx_rlm(1)
 !$omp parallel do private(j_rlm,kr_nd,l_rtm,mp_rlm,mn_rlm,              &
-!$omp&                    sp1,sp2,sp3,Pvw_l,dPvw_l,Pgvw_l)
+!$omp&                    sp1,sp2,sp3,Pvw_l,dPvw_l,Pgvw_l,k_rlm)
       do j_rlm = 1, nidx_rlm(2)
         mp_rlm = mdx_p_rlm_rtm(j_rlm)
         mn_rlm = mdx_n_rlm_rtm(j_rlm)
@@ -66,48 +67,32 @@
         dPvw_l(1:nidx_rtm(2)) = dPvw_lj(1:nidx_rtm(2),j_rlm)
         Pgvw_l(1:nidx_rtm(2)) = Pgvw_lj(1:nidx_rtm(2),j_rlm)
         do kr_nd = 1, nb_nri
+          k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
           sp1 = 0.0d0
           sp2 = 0.0d0
           sp3 = 0.0d0
           do l_rtm = 1, nidx_rtm(2)
             sp1 = sp1                                                   &
-     &       +  vr_rtm_spin(l_rtm,mp_rlm,kr_nd         )*Pvw_l(l_rtm)
+     &       +  vr_rtm_spin(l_rtm,kr_nd,         mp_rlm)*Pvw_l(l_rtm)
 !
             sp2 = sp2                                                   &
-     &       + (vr_rtm_spin(l_rtm,mp_rlm,kr_nd+nb_nri  )*dPvw_l(l_rtm)  &
-     &        - vr_rtm_spin(l_rtm,mn_rlm,kr_nd+2*nb_nri)*Pgvw_l(l_rtm))
+     &       + (vr_rtm_spin(l_rtm,kr_nd+nb_nri,  mp_rlm)*dPvw_l(l_rtm)  &
+     &        - vr_rtm_spin(l_rtm,kr_nd+2*nb_nri,mn_rlm)*Pgvw_l(l_rtm))
 !
             sp3 = sp3                                                   &
-     &       - (vr_rtm_spin(l_rtm,mn_rlm,kr_nd+nb_nri  )*Pgvw_l(l_rtm)  &
-     &        + vr_rtm_spin(l_rtm,mp_rlm,kr_nd+2*nb_nri)*dPvw_l(l_rtm))
+     &       - (vr_rtm_spin(l_rtm,kr_nd+nb_nri,  mn_rlm)*Pgvw_l(l_rtm)  &
+     &        + vr_rtm_spin(l_rtm,kr_nd+2*nb_nri,mp_rlm)*dPvw_l(l_rtm))
           end do
-          sp_rlm_spin(j_rlm,kr_nd         ) = sp1
-          sp_rlm_spin(j_rlm,kr_nd+nb_nri  ) = sp2
-          sp_rlm_spin(j_rlm,kr_nd+2*nb_nri) = sp3
+!
+          sp_rlm_spin(kr_nd,         j_rlm)                             &
+     &        = sp1 * radius_1d_rlm_r(k_rlm)*radius_1d_rlm_r(k_rlm)
+          sp_rlm_spin(kr_nd+nb_nri,  j_rlm)                             &
+     &        = sp2 * radius_1d_rlm_r(k_rlm)
+          sp_rlm_spin(kr_nd+2*nb_nri,j_rlm)                             &
+     &        = sp3 * radius_1d_rlm_r(k_rlm)
         end do
       end do
 !$omp end parallel do
-!
-!
-!$omp parallel private(kr_nd,k_rlm)
-      do kr_nd = 1, nb_nri
-        k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-!        nd =  1 + (kr_nd - k_rlm) / nidx_rlm(1)
-!$omp do private(j_rlm)
-        do j_rlm = 1, nidx_rlm(2)
-          sp_rlm_spin(j_rlm,kr_nd         )                             &
-     &        = sp_rlm_spin(j_rlm,kr_nd         )                       &
-     &         * radius_1d_rlm_r(k_rlm)*radius_1d_rlm_r(k_rlm)
-          sp_rlm_spin(j_rlm,kr_nd+nb_nri  )                             &
-     &        = sp_rlm_spin(j_rlm,kr_nd+nb_nri  )                       &
-     &         * radius_1d_rlm_r(k_rlm)
-          sp_rlm_spin(j_rlm,kr_nd+2*nb_nri)                             &
-     &        = sp_rlm_spin(j_rlm,kr_nd+2*nb_nri)                       &
-     &         * radius_1d_rlm_r(k_rlm)
-        end do
-!$omp end do nowait
-      end do
-!$omp end parallel
 !
       end subroutine legendre_f_trans_vector_spin
 !
@@ -118,9 +103,9 @@
 !
       integer(kind = kint), intent(in) :: ncomp, nscalar, nvector
       real(kind = kreal), intent(in)                                    &
-     &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(3),nidx_rtm(1)*ncomp)
+     &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(1)*ncomp,nidx_rtm(3))
       real(kind = kreal), intent(inout)                                 &
-     &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
+     &      :: sp_rlm_spin(nidx_rtm(1)*ncomp,nidx_rlm(2))
 !
       integer(kind = kint) :: j_rlm, l_rtm, mp_rlm
       integer(kind = kint) :: kr_nd, kst, ked
@@ -141,9 +126,9 @@
 !
           sp1 = 0.0d0
           do l_rtm = 1, nidx_rtm(2)
-            sp1 = sp1 + vr_rtm_spin(l_rtm,mp_rlm,kr_nd) * Pws_l(l_rtm)
+            sp1 = sp1 + vr_rtm_spin(l_rtm,kr_nd,mp_rlm) * Pws_l(l_rtm)
           end do
-          sp_rlm_spin(j_rlm,kr_nd) = sp1
+          sp_rlm_spin(kr_nd,j_rlm) = sp1
         end do
       end do
 !$omp end parallel do

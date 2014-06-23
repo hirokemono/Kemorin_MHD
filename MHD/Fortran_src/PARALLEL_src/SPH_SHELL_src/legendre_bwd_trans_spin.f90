@@ -79,8 +79,8 @@
 !$omp parallel do private(j_rlm,kr_nd,l_rtm,mp_rlm,jst,jed,             &
 !$omp&                    vr1,vr2,vr3,Pg3_j,dPdt_j)
       do l_rtm = 1, nidx_rtm(2)
-        Pg3_j(1:nidx_rlm(2)) =  Pg3_lj(l_rtm,1:nidx_rlm(2))
-        dPdt_j(1:nidx_rlm(2)) = dPdt_rtm(l_rtm,1:nidx_rlm(2))
+        Pg3_j(1:nidx_rlm(2)) =  Pg3_jl(1:nidx_rlm(2),l_rtm)
+        dPdt_j(1:nidx_rlm(2)) = dPdt_jl(1:nidx_rlm(2),l_rtm)
         do mp_rlm = 1, nidx_rtm(3)
           jst = lstack_rlm(mp_rlm-1) + 1
           jed = lstack_rlm(mp_rlm)
@@ -109,7 +109,7 @@
 !$omp parallel do private(j_rlm,kr_nd,l_rtm,mp_rlm,mn_rlm,jst,jed,      &
 !$omp&                    vr2,vr3,Pgv_j)
       do l_rtm = 1, nidx_rtm(2)
-        Pgv_j(1:nidx_rlm(2)) =  Pgv_lj(l_rtm,1:nidx_rlm(2))
+        Pgv_j(1:nidx_rlm(2)) =  Pgv_jl(1:nidx_rlm(2),l_rtm)
         do mp_rlm = 1, nidx_rtm(3)
           mn_rlm = 1 + nidx_rtm(3) - mp_rlm
           jst = lstack_rlm(mp_rlm-1) + 1
@@ -156,7 +156,7 @@
       ked = (nscalar + 3*nvector) * nidx_rtm(1)
 !$omp parallel do private(j_rlm,kr_nd,l_rtm,mp_rlm,jst,jed,vr1,P_j)
       do l_rtm = 1, nidx_rtm(2)
-        P_j(1:nidx_rlm(2)) =  P_rtm(l_rtm,1:nidx_rlm(2))
+        P_j(1:nidx_rlm(2)) =  P_jl(1:nidx_rlm(2),l_rtm)
         do mp_rlm = 1, nidx_rtm(3)
           jst = lstack_rlm(mp_rlm-1) + 1
           jed = lstack_rlm(mp_rlm)
