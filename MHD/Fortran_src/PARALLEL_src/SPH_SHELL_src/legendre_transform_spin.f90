@@ -62,7 +62,7 @@
      &                      (ncomp, nvector,                            &
      &                       sp_rlm_spin(1,1), vr_rtm_spin(1,1))
       if(nscalar .gt. 0) call legendre_b_trans_scalar_spin              &
-     &                      (ncomp, nscalar, nvector,                   &
+     &                      (ncomp, nvector, nscalar,                   &
      &                       sp_rlm_spin(1,1), vr_rtm_spin(1,1))
       call end_eleps_time(27)
 !
@@ -94,7 +94,7 @@
      &                      (ncomp, nvector,  vr_rtm_spin(1,1),         &
      &                       sp_rlm_spin(1,1))
       if(nscalar .gt. 0) call legendre_f_trans_scalar_spin              &
-     &                      (ncomp, nscalar, nvector, vr_rtm_spin(1,1), &
+     &                      (ncomp, nvector, nscalar, vr_rtm_spin(1,1), &
      &                       sp_rlm_spin(1,1))
       call end_eleps_time(31)
 !

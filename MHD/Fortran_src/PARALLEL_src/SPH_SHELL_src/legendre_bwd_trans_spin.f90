@@ -11,7 +11,7 @@
 !!@verbatim
 !!      subroutine legendre_b_trans_vector_spin(ncomp, nvector,         &
 !!     &          sp_rlm_spin, vr_rtm_spin)
-!!      subroutine legendre_b_trans_scalar_spin(ncomp, nscalar, nvector,&
+!!      subroutine legendre_b_trans_scalar_spin(ncomp, nvector, nscalar,&
 !!     &          sp_rlm_spin, vr_rtm_spin)
 !!        Input:  vr_rtm_spin
 !!        Output: sp_rlm_spin
@@ -137,7 +137,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_b_trans_scalar_spin(ncomp, nscalar, nvector,  &
+      subroutine legendre_b_trans_scalar_spin(ncomp, nvector, nscalar,  &
      &          sp_rlm_spin, vr_rtm_spin)
 !
       integer(kind = kint), intent(in) :: ncomp, nscalar, nvector

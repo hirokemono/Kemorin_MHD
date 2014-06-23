@@ -16,7 +16,8 @@
 !!
 !!      subroutine back_f_trans_fields_spin(ncomp, nvector, nscalar,    &
 !!     &          sp_rlm_spin)
-!!      subroutine back_b_trans_fields_spin(ncomp, nvector, vr_rtm_spin)
+!!      subroutine back_b_trans_fields_spin(ncomp, nvector, nscalar,    &
+!!     &          vr_rtm_spin)
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform

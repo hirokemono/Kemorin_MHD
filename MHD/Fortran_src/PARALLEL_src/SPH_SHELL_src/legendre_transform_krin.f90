@@ -43,21 +43,22 @@
 !
       use legendre_bwd_trans_krin
       use ordering_schmidt_trans_krin
+      use ordering_schmidt_trans_spin
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      integer(kind = kint) :: ist_fld
 !
 !
-      call order_b_trans_fields_krin(ncomp, sp_rlm_krin(1,1))
-      call clear_b_trans_krin(ione, ncomp)
+      call order_b_trans_fields_spin(ncomp, nvector, nscalar,           &
+     &    sp_rlm_krin(1,1))
+!      call clear_b_trans_krin(ione, ncomp)
 !
-      ist_fld = 3*nvector+1
-      call legendre_b_trans_vector_krin(nvector,                        &
+      call legendre_b_trans_vector_krin(ncomp, nvector,                 &
      &    sp_rlm_krin(1,1), vr_rtm_krin(1,1))
-      call legendre_b_trans_scalar_krin(nscalar,                        &
-     &    sp_rlm_krin(1,ist_fld), vr_rtm_krin(1,ist_fld))
+      call legendre_b_trans_scalar_krin(ncomp, nvector, nscalar,        &
+     &    sp_rlm_krin(1,1), vr_rtm_krin(1,1))
 !
-      call back_b_trans_fields_krin(ncomp, vr_rtm_krin(1,1))
+      call back_b_trans_fields_spin(ncomp, nvector, nscalar,            &
+     &    vr_rtm_krin(1,1))
 !
       end subroutine leg_bwd_trans_fields_krin
 !
