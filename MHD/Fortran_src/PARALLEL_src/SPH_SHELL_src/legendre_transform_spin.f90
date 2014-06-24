@@ -43,6 +43,7 @@
       subroutine leg_backward_trans_spin(ncomp, nvector, nscalar)
 !
       use ordering_schmidt_trans_spin
+      use ordering_schmidt_trans_krin
       use legendre_bwd_trans_spin
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
@@ -63,7 +64,7 @@
       call end_eleps_time(27)
 !
       call start_eleps_time(28)
-      call back_b_trans_fields_spin(ncomp, nvector, nscalar,            &
+      call back_b_trans_fields_krin(ncomp, nvector, nscalar,            &
      &    vr_rtm_wk(1), vr_rtm(1))
       call end_eleps_time(28)
 !
@@ -75,6 +76,7 @@
       subroutine leg_forward_trans_spin(ncomp, nvector, nscalar)
 !
       use ordering_schmidt_trans_spin
+      use ordering_schmidt_trans_krin
       use legendre_fwd_trans_spin
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
@@ -95,8 +97,8 @@
       call end_eleps_time(31)
 !
       call start_eleps_time(32)
-      call back_f_trans_fields_spin(ncomp, nvector, nscalar,            &
-     &     sp_rlm_wk(1), sp_rlm(1))
+      call back_f_trans_fields_krin(ncomp, nvector, nscalar,            &
+     &    sp_rlm_wk(1), sp_rlm(1))
       call end_eleps_time(32)
 !
       end subroutine leg_forward_trans_spin

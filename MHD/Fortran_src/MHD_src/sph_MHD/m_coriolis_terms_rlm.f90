@@ -13,10 +13,6 @@
 !!      subroutine allocate_d_coriolis_rlm
 !!      subroutine deallocate_d_coriolis_rlm
 !!
-!!      subroutine copy_rot_coriolis_rlm(ncomp, sp_rlm)
-!!      subroutine copy_div_coriolis_rlm(ncomp, sp_rlm)
-!!      subroutine copy_r_coriolis_bc_rlm(ncomp, sp_rlm)
-!!
 !!************************************************
 !!
 !!  Rotation of the Coriolos term
@@ -146,85 +142,5 @@
       end subroutine deallocate_d_coriolis_rlm
 !
 !   ------------------------------------------------------------------
-!   ------------------------------------------------------------------
-!*
-      subroutine copy_rot_coriolis_rlm(ncomp, sp_rlm)
 !
-      use m_spheric_parameter
-      use m_addresses_trans_sph_MHD
-!
-      integer(kind = kint), intent(in) :: ncomp
-      real(kind = kreal), intent(inout) :: sp_rlm(ncomp,nnod_rlm)
-!
-      integer(kind = kint) :: i_rlm
-!
-!
-!$omp  parallel do private(i_rlm)
-      do i_rlm = 1, nnod_rlm
-        sp_rlm(f_trns%i_rot_Coriolis,  i_rlm)                           &
-     &             = d_cor_rlm(ip_rlm_rot_cor,i_rlm)
-        sp_rlm(f_trns%i_rot_Coriolis+2,i_rlm)                           &
-     &             = d_cor_rlm(it_rlm_rot_cor,i_rlm)
-      end do
-!$omp end parallel do
-!
-      end subroutine copy_rot_coriolis_rlm
-!*
-!*   ------------------------------------------------------------------
-!*
-      subroutine copy_div_coriolis_rlm(ncomp, sp_rlm)
-!
-      use m_spheric_parameter
-      use m_addresses_trans_sph_MHD
-!
-      integer(kind = kint), intent(in) :: ncomp
-      real(kind = kreal), intent(inout) :: sp_rlm(ncomp,nnod_rlm)
-!
-      integer(kind = kint) :: i_rlm
-!
-!
-!$omp  parallel do private(i_rlm)
-      do i_rlm = 1, nnod_rlm
-        sp_rlm(f_trns%i_div_Coriolis,i_rlm)                             &
-     &               = d_cor_rlm(ip_rlm_div_cor,i_rlm)
-      end do
-!$omp end parallel do
-!
-      end subroutine copy_div_coriolis_rlm
-!*
-!*   ------------------------------------------------------------------
-!*
-      subroutine copy_r_coriolis_bc_rlm(ncomp, sp_rlm)
-!
-      use m_spheric_parameter
-      use m_addresses_trans_sph_MHD
-!
-      integer(kind = kint), intent(in) :: ncomp
-      real(kind = kreal), intent(inout) :: sp_rlm(ncomp,nnod_rlm)
-!
-      integer(kind = kint) :: j_rlm, i_rlm
-!
-!
-      if(kr_in_U_rlm .gt. 0) then
-!$omp  parallel do private(j_rlm,i_rlm)
-        do j_rlm = 1, nidx_rlm(2)
-          i_rlm = j_rlm + (kr_in_U_rlm-1)*nidx_rlm(2)
-          sp_rlm(f_trns%i_coriolis,i_rlm) = d_cor_in_rlm(j_rlm)
-        end do
-!$omp end parallel do
-      end if
-!
-      if(kr_out_U_rlm .gt. 0) then
-!$omp  parallel do private(j_rlm,i_rlm)
-        do j_rlm = 1, nidx_rlm(2)
-          i_rlm = j_rlm + (kr_in_U_rlm-1)*nidx_rlm(2)
-          sp_rlm(f_trns%i_coriolis,i_rlm) = d_cor_out_rlm(j_rlm)
-        end do
-!$omp end parallel do
-      end if
-!
-      end subroutine copy_r_coriolis_bc_rlm
-!*
-!*   ------------------------------------------------------------------
-!*
       end module m_coriolis_terms_rlm

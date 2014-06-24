@@ -100,6 +100,7 @@
       subroutine copy_coriolis_terms_rlm(ncomp_trans, sp_rlm)
 !
       use m_coriolis_terms_rlm
+      use sum_coriolis_terms_rlm
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       real(kind = kreal), intent(inout) :: sp_rlm(ncomp_trans*nnod_rlm)
