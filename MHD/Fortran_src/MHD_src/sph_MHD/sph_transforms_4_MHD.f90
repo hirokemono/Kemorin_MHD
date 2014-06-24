@@ -48,6 +48,9 @@
       use const_wz_coriolis_rtp
       use const_coriolis_sph_rlm
       use legendre_transform_select
+      use skip_comment_f
+!
+      character(len=kchara) :: tmpchara
 !
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
@@ -77,6 +80,25 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'sel_alloc_legendre_trans'
       call sel_alloc_legendre_trans(ncomp_sph_trans)
+!
+!
+      if(my_rank .ne. 0) return
+        if     (id_legendre_transfer .eq. iflag_leg_orginal_loop) then
+          write(tmpchara,'(a)') trim(leg_orginal_loop)
+        else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
+          write(tmpchara,'(a)') trim(leg_krloop_inner)
+        else if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
+          write(tmpchara,'(a)') trim(leg_krloop_outer)
+        else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
+          write(tmpchara,'(a)') trim(leg_long_loop)
+        else if(id_legendre_transfer .eq. iflag_leg_fdout_loop) then
+          write(tmpchara,'(a)') trim(leg_fdout_loop)
+        end if
+        call change_2_upper_case(tmpchara)
+!
+        write(*,'(a,i4)', advance='no')                                 &
+     &         'Selected id_legendre_transfer: ', id_legendre_transfer
+        write(*,'(a,a,a)') ' (', trim(tmpchara), ') '
 !
       end subroutine init_sph_transform_MHD
 !
@@ -247,13 +269,11 @@
       use m_machine_parameter
       use m_work_4_sph_trans
       use legendre_transform_select
-      use skip_comment_f
 !
       real(kind = kreal) :: stime, etime_shortest
       real(kind = kreal) :: etime(5), etime_trans(5)
 !
       integer(kind = kint) :: iloop_type
-      character(len=kchara) :: tmpchara
 !
 !
       do iloop_type = 1, 5
@@ -283,23 +303,6 @@
       end do
 !
       if(my_rank .gt. 0) return
-        if     (id_legendre_transfer .eq. iflag_leg_orginal_loop) then
-          write(tmpchara,'(a)') trim(leg_orginal_loop)
-        else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-          write(tmpchara,'(a)') trim(leg_krloop_inner)
-        else if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-          write(tmpchara,'(a)') trim(leg_krloop_outer)
-        else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
-          write(tmpchara,'(a)') trim(leg_long_loop)
-        else if(id_legendre_transfer .eq. iflag_leg_fdout_loop) then
-          write(tmpchara,'(a)') trim(leg_fdout_loop)
-        end if
-        call change_2_upper_case(tmpchara)
-!
-        write(*,'(a,i4)', advance='no')                                 &
-     &         'Selected id_legendre_transfer: ', id_legendre_transfer
-        write(*,'(a,a,a)') ' (', trim(tmpchara), ') '
-!
         write(*,*) '1: elapsed by original loop:      ',                &
      &            etime_trans(iflag_leg_orginal_loop)
         write(*,*) '2: elapsed by inner radius loop:  ',                &

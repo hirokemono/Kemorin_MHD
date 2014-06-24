@@ -332,13 +332,13 @@
       jj =  find_local_sph_mode_address(izero, izero)
 !
       if (jj .gt. 0) then
-        do k = 1, nlayer_CMB
+        do k = 1, nlayer_ICB
           ii = local_sph_data_address(k,jj)
           rr = radius_1d_rj_r(k)
 !   Substitute initial heat source
           d_rj(ii,ipol%i_heat_source)                                   &
-!     &         = 0.35 * four*r_CMB**2 / (four * r_ICB**3 / three)
-     &         = 1.0
+     &         = 0.35 * four*r_CMB**2 / (four * r_ICB**3 / three)
+!     &         = 1.0
         end do
       end if
 !

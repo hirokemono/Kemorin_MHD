@@ -177,7 +177,7 @@
         r = r_ICB - half * shell * (one - cos( pi*dble(k)/dble(nri)) )
         dr =   half * shell * ( cos( pi*dble(k-1)/dble(nri))            &
      &                        - cos( pi*dble(k  )/dble(nri)) )
-        write(*,*) k, r, dr
+!        write(*,*) k, r, dr
       end do
 !
 !

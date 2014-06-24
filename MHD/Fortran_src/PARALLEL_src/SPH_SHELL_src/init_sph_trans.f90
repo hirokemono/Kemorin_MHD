@@ -86,7 +86,7 @@
 !
       ncomp = ncomp_sph_trans*nidx_rtp(1)*nidx_rtp(2)
       Nstacksmp(0:np_smp) = ncomp_sph_trans*irt_rtp_smp_stack(0:np_smp)
-      call s_select_fourier_transform(ncomp, Nstacksmp)
+      call sel_fourier_transform_4_sph(ncomp, Nstacksmp)
 !
       ncomp = ncomp_sph_trans
       call init_sph_send_recv_N(ncomp, vr_rtp, vr_rtm, sp_rlm, sp_rj)
