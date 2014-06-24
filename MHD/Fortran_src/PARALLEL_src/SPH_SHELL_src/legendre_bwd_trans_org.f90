@@ -154,14 +154,14 @@
 !
       integer(kind = kint) :: i_rlm, j_rlm
       integer(kind = kint) :: k_rtm, l_rtm
-      integer(kind = kint) :: ip_rtm, in_rtm, nd
+      integer(kind = kint) :: ip_rtm, nd
       integer(kind = kint) :: mp_rlm, jst, jed
       real(kind = kreal) :: vr1
       real(kind = kreal) :: P_j(nidx_rlm(2))
 !
 !
-!$omp parallel do private(j_rlm,l_rtm,nd,ip_rtm,in_rtm,i_rlm,mp_rlm,    &
-!$omp&                    jst,jed,vr1,P_j)
+!$omp parallel do private(j_rlm,l_rtm,nd,ip_rtm,i_rlm,mp_rlm,jst,jed,   &
+!$omp&                    vr1,P_j)
       do mp_rlm = 1, nidx_rtm(3)
         jst = lstack_rlm(mp_rlm-1) + 1
         jed = lstack_rlm(mp_rlm)

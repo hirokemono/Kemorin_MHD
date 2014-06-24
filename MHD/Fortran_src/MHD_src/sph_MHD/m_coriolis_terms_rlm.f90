@@ -91,7 +91,7 @@
 !!@n        idx_rlm_degree_one(m) = 0.
       integer (kind=kint) :: idx_rlm_degree_one(-1:1) = (/0,0,0/)
 !
-      real(kind = kreal), allocatable :: d_cor_rlm(:)
+      real(kind = kreal), allocatable :: d_cor_rlm(:,:)
 !
       real(kind = kreal), allocatable :: d_cor_in_rlm(:)
       real(kind = kreal), allocatable :: d_cor_out_rlm(:)
@@ -123,7 +123,7 @@
       ip_rlm_div_cor = 3
 !
       ncomp_coriolis_rlm = 3
-      allocate( d_cor_rlm(ncomp_coriolis_rlm*nnod_rlm) )
+      allocate( d_cor_rlm(ncomp_coriolis_rlm,nnod_rlm) )
 !
       num = nidx_rlm(2)
       allocate( d_cor_in_rlm(num) )
@@ -154,20 +154,17 @@
       use m_addresses_trans_sph_MHD
 !
       integer(kind = kint), intent(in) :: ncomp
-      real(kind = kreal), intent(inout) :: sp_rlm(ncomp*nnod_rlm)
+      real(kind = kreal), intent(inout) :: sp_rlm(ncomp,nnod_rlm)
 !
-      integer(kind = kint) :: irlm, irlm_rot_cor
-      integer(kind = kint) :: irlm_pol_cor, irlm_tor_cor
+      integer(kind = kint) :: i_rlm
 !
 !
-!$omp  parallel do private(irlm_pol_cor,irlm_tor_cor,irlm_rot_cor)
-      do irlm = 1, nnod_rlm
-        irlm_pol_cor = ip_rlm_rot_cor + ncomp_coriolis_rlm * (irlm-1)
-        irlm_tor_cor = it_rlm_rot_cor + ncomp_coriolis_rlm * (irlm-1)
-        irlm_rot_cor = f_trns%i_rot_Coriolis + (irlm-1) * ncomp
-!
-        sp_rlm(irlm_rot_cor  ) = d_cor_rlm(irlm_pol_cor)
-        sp_rlm(irlm_rot_cor+2) = d_cor_rlm(irlm_tor_cor)
+!$omp  parallel do private(i_rlm)
+      do i_rlm = 1, nnod_rlm
+        sp_rlm(f_trns%i_rot_Coriolis,  i_rlm)                           &
+     &             = d_cor_rlm(ip_rlm_rot_cor,i_rlm)
+        sp_rlm(f_trns%i_rot_Coriolis+2,i_rlm)                           &
+     &             = d_cor_rlm(it_rlm_rot_cor,i_rlm)
       end do
 !$omp end parallel do
 !
@@ -181,18 +178,15 @@
       use m_addresses_trans_sph_MHD
 !
       integer(kind = kint), intent(in) :: ncomp
-      real(kind = kreal), intent(inout) :: sp_rlm(ncomp*nnod_rlm)
+      real(kind = kreal), intent(inout) :: sp_rlm(ncomp,nnod_rlm)
 !
-      integer(kind = kint) :: irlm, irlm_rot_cor
-      integer(kind = kint) :: irlm_div_cor
+      integer(kind = kint) :: i_rlm
 !
 !
-!$omp  parallel do private(irlm_div_cor,irlm_rot_cor)
-      do irlm = 1, nnod_rlm
-        irlm_div_cor = ip_rlm_div_cor + ncomp_coriolis_rlm * (irlm-1)
-        irlm_rot_cor = f_trns%i_div_Coriolis + (irlm-1) * ncomp
-!
-        sp_rlm(irlm_rot_cor  ) = d_cor_rlm(irlm_div_cor)
+!$omp  parallel do private(i_rlm)
+      do i_rlm = 1, nnod_rlm
+        sp_rlm(f_trns%i_div_Coriolis,i_rlm)                             &
+     &               = d_cor_rlm(ip_rlm_div_cor,i_rlm)
       end do
 !$omp end parallel do
 !
@@ -206,27 +200,25 @@
       use m_addresses_trans_sph_MHD
 !
       integer(kind = kint), intent(in) :: ncomp
-      real(kind = kreal), intent(inout) :: sp_rlm(ncomp*nnod_rlm)
+      real(kind = kreal), intent(inout) :: sp_rlm(ncomp,nnod_rlm)
 !
-      integer(kind = kint) :: j_rlm, irlm, irlm_pol_cor
+      integer(kind = kint) :: j_rlm, i_rlm
 !
 !
       if(kr_in_U_rlm .gt. 0) then
-!$omp  parallel do private(irlm,irlm_pol_cor)
+!$omp  parallel do private(j_rlm,i_rlm)
         do j_rlm = 1, nidx_rlm(2)
-          irlm = j_rlm + (kr_in_U_rlm-1)*nidx_rlm(2)
-          irlm_pol_cor = f_trns%i_coriolis + (irlm-1) * ncomp
-          sp_rlm(irlm_pol_cor) = d_cor_in_rlm(j_rlm)
+          i_rlm = j_rlm + (kr_in_U_rlm-1)*nidx_rlm(2)
+          sp_rlm(f_trns%i_coriolis,i_rlm) = d_cor_in_rlm(j_rlm)
         end do
 !$omp end parallel do
       end if
 !
       if(kr_out_U_rlm .gt. 0) then
-!$omp  parallel do private(irlm,irlm_pol_cor)
+!$omp  parallel do private(j_rlm,i_rlm)
         do j_rlm = 1, nidx_rlm(2)
-          irlm = j_rlm + (kr_in_U_rlm-1)*nidx_rlm(2)
-          irlm_pol_cor = f_trns%i_coriolis + (irlm-1) * ncomp
-          sp_rlm(irlm_pol_cor) = d_cor_out_rlm(j_rlm)
+          i_rlm = j_rlm + (kr_in_U_rlm-1)*nidx_rlm(2)
+          sp_rlm(f_trns%i_coriolis,i_rlm) = d_cor_out_rlm(j_rlm)
         end do
 !$omp end parallel do
       end if
