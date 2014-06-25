@@ -28,10 +28,10 @@
 !
       implicit none
 !
-      real(kind = kreal) :: etime_shortest
-      integer(kind = kint) :: iflag_chosen
+      real(kind = kreal) :: etime_shortest = -1.0e10
+      integer(kind = kint) :: iflag_seelcted
 !
-      private :: etime_shortest, iflag_chosen
+      private :: etime_shortest, iflag_seelcted
       private :: s_select_fourier_transform, test_fourier_trans_vector
 !
 ! -----------------------------------------------------------------------
@@ -48,7 +48,7 @@
 !
       if(iflag_FFT .eq. iflag_UNDEFINED_FFT) then
         call s_select_fourier_transform(ncomp, Nstacksmp)
-        iflag_FFT = iflag_chosen
+        iflag_FFT = iflag_seelcted
       end if
 !
       call initialize_FFT_select(my_rank, np_smp, Nstacksmp,            &
@@ -59,13 +59,13 @@
      &                          iflag_FFT
 !
       if     (iflag_FFT .eq. iflag_FFTPACK) then
-        write(*,'(a,a)') ' (FFTPACK) '
+        write(*,'(a)') ' (FFTPACK) '
       else if(iflag_FFT .eq. iflag_FFTW) then
-        write(*,'(a,a)') ' (FFTW) '
+        write(*,'(a)') ' (FFTW) '
       else if(iflag_FFT .eq. iflag_ISPACK) then
-        write(*,'(a,a)') ' (ISPACK) '
+        write(*,'(a)') ' (ISPACK) '
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        write(*,'(a,a)') ' (FFTW_SINGLE) '
+        write(*,'(a)') ' (FFTW_SINGLE) '
       end if
 !
       end subroutine sel_fourier_transform_4_sph
@@ -83,9 +83,6 @@
       iflag_FFT = iflag_FFTPACK
       call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
      &    etime_fft(iflag_FFT))
-!
-      iflag_chosen = iflag_FFT
-      etime_shortest = etime_fft(iflag_FFT)
 !
 !
 #ifdef FFTW3
@@ -151,7 +148,7 @@
 !
       if(etime_fft .lt. etime_shortest                                  &
       &        .or. etime_shortest.lt.0.0d0) then
-        iflag_chosen = iflag_FFTW
+        iflag_seelcted = iflag_FFTW
         etime_shortest = etime_fft
       end if
 !

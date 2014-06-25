@@ -130,11 +130,11 @@
         iflag_sph_SRN = iflag_import_rev
       end if
 !
-      if(my_rank .eq. 0) then
-        write(*,*) 'Comm. mode for sph. trans.: ', iflag_sph_SRN
+      if(my_rank .gt. 0) return
         write(*,*) '0: Time by reg. import list: ', etime_item_import
         write(*,*) '1: Time by rev. import list: ', etime_irev_import
-      end if
+        write(*,*) 'Communication mode for sph. transform: ',           &
+     &            iflag_sph_SRN
 !
       end subroutine init_sph_send_recv_N
 !
