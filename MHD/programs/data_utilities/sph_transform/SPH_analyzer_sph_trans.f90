@@ -31,15 +31,15 @@
       use m_field_data_IO
       use m_sph_spectr_data
 !
-      use load_data_for_sph_IO
+      use parallel_load_data_4_sph
       use count_num_sph_smp
       use set_phys_name_4_sph_trans
       use init_sph_trans
 !
 !  ------    set spectr grids
 !
-      if (iflag_debug.gt.0) write(*,*) 'input_sph_trans_grids'
-      call input_sph_trans_grids(my_rank)
+      if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
+      call load_para_sph_mesh
 !
 !  ---- allocate spectr data
 !

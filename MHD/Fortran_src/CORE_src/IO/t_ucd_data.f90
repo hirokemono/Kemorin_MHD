@@ -359,11 +359,11 @@
       character(len = kchara), intent(in) :: file_head
       integer(kind = kint), intent(in) :: i_fmt
 !
-      type(merged_ucd_data), intent(inout) :: ucd
+      type(ucd_data), intent(inout) :: ucd
 !
 !
       ucd%ifmt_file = i_fmt
-      write(ucd%file_prefix,'(a)') trim:(file_head)
+      write(ucd%file_prefix,'(a)') trim(file_head)
 !
       end subroutine set_ucd_file_format_prefix
 !

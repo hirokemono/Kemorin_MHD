@@ -20,6 +20,7 @@
       module copy_sph_1d_global_index
 !
       use m_precision
+      use m_constants
 !
       use m_spheric_parameter
       use m_sph_1d_global_index
@@ -147,11 +148,12 @@
 !
 !
       inod_rj_center = 0
-      if(iflag_shell_mode .ne. iflag_MESH_w_center) return
+      if(iflag_rj_center .eq. izero) return
 !
       do i = 1, nidx_rj(2)
         j = i - 1 + ist_rj(2)
         if(idx_global_rj_j(j,1) .eq. 0) then
+          write(*,*) 'Add center mode!!'
           nnod_rj = nnod_rj + 1
           inod_rj_center = 1
           exit

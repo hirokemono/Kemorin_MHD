@@ -13,10 +13,17 @@
 !!    example of control section
 !!
 !!  begin num_grid_sph
-!!   sph_grid_type_ctl:  grid type for mesh data
-!!         no_pole:      Gaussian points only
-!!         with_pole:    Add pole grids
-!!         with_center:  Add center
+!!! ----------------------------------------------------------------
+!!!   sph_coef_type_ctl:  grid type for spherical harmonics data
+!!!         no_pole:      Coefficients on spherical shell only
+!!!         with_center:  Add center
+!!!   sph_grid_type_ctl:  grid type for mesh data
+!!!         no_pole:      Gaussian points only
+!!!         with_pole:    Add pole grids
+!!!         with_center:  Add center
+!!! ----------------------------------------------------------------
+!!
+!!    sph_coef_type_ctl       no_pole
 !!    sph_grid_type_ctl       no_pole
 !!    truncation_level_ctl     4
 !!    ngrid_meridonal_ctl     12
@@ -67,6 +74,8 @@
       integer(kind = kint) :: ltr_ctl
 !>      Type of spherical grids
       character(len = kchara) :: sph_grid_type_ctl
+!>      Type of spherical coefficients
+      character(len = kchara) :: sph_coef_type_ctl
 !
 !>      Number of grids in meridional direction
       integer(kind = kint) :: ngrid_elevation_ctl
@@ -120,6 +129,8 @@
       character(len=kchara), parameter                                  &
      &      ::  hd_sph_truncate = 'truncation_level_ctl'
       character(len=kchara), parameter                                  &
+     &      ::  hd_sph_c_type =   'sph_coef_type_ctl'
+      character(len=kchara), parameter                                  &
      &      ::  hd_sph_g_type =   'sph_grid_type_ctl'
 !
       character(len=kchara), parameter                                  &
@@ -145,6 +156,7 @@
       integer (kind=kint) :: i_ntheta_shell = 0
       integer (kind=kint) :: i_nphi_shell =   0
       integer (kind=kint) :: i_sph_truncate = 0
+      integer (kind=kint) :: i_sph_c_type =   0
       integer (kind=kint) :: i_sph_g_type =   0
 !
       integer (kind=kint) :: i_r_grid_type =  0
@@ -159,7 +171,7 @@
 !   3rd level for boundary define
 !
       private :: hd_shell_def, i_shell_def
-      private :: hd_numlayer_shell
+      private :: hd_numlayer_shell, hd_sph_c_type
       private :: hd_ntheta_shell, hd_nphi_shell, hd_sph_truncate
       private :: hd_r_grid_type, hd_n_fluid_grid, hd_Min_radius
       private :: hd_ICB_radius, hd_CMB_radius, hd_Max_radius
@@ -192,6 +204,8 @@
         call read_control_array_c_i(hd_bc_sph, radial_grp_ctl)
 !
 !
+        call read_character_ctl_item(hd_sph_c_type,                     &
+     &        i_sph_c_type, sph_coef_type_ctl)
         call read_character_ctl_item(hd_sph_g_type,                     &
      &        i_sph_g_type, sph_grid_type_ctl)
         call read_character_ctl_item(hd_r_grid_type,                    &

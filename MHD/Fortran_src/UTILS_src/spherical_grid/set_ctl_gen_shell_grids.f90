@@ -165,7 +165,14 @@
       end do
 !
 !   Set radial grid explicitly
+      iflag_rj_center = 0
       if(iflag_radial_grid .eq. igrid_non_euqidist) then
+        if(i_sph_c_type .gt. 0) then
+          if(cmp_no_case(sph_coef_type_ctl, 'with_center').gt.0) then
+             iflag_rj_center = 1
+          end if
+        end if
+!
         if (radius_ctl%icou .gt. 0) then
           nidx_global_rtp(1) = radius_ctl%num
         end if
@@ -222,6 +229,8 @@
 !
         if(i_Min_radius .eq. 0) Min_radius_ctl = r_ICB
         if(i_Max_radius .eq. 0) Max_radius_ctl = r_CMB
+!
+        if(Min_radius_ctl .eq. zero) iflag_rj_center = 1
 !
         call count_set_radial_grid(num_fluid_grid_ctl,                  &
      &      Min_radius_ctl, Max_radius_ctl)

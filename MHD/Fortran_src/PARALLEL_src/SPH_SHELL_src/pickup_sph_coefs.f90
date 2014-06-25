@@ -80,18 +80,13 @@
 !
       if( (num_pick_sph+num_pick_sph_l+num_pick_sph_m) .eq. 0) return
 !
-      icenter_pick_layer = 0
-      call MPI_allREDUCE(inod_rj_center, icenter_pick_layer, ione,      &
-     &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      if(icenter_pick_layer .gt. 0) icenter_pick_layer = 1
-!
       if(num_pick_layer .le. 0) then
-        num_pick_layer = nidx_rj(1) + icenter_pick_layer
+        num_pick_layer = nidx_rj(1) + iflag_rj_center
 !
         call allocate_num_pick_layer
 !
         do k = 1, num_pick_layer
-          id_pick_layer(k) = k - icenter_pick_layer
+          id_pick_layer(k) = k - iflag_rj_center
         end do
       end if
       call quicksort_int(num_pick_layer, id_pick_layer,                 &
@@ -128,8 +123,8 @@
 !$omp end parallel do
 !
 !   Set field at center
-      if(idx_pick_sph_gl(1).eq.0 .and. icenter_pick_layer.gt.0         &
-     &   .and. icenter_pick_layer.gt.0) then
+      if(idx_pick_sph_gl(1).eq.0 .and. iflag_rj_center.gt.0             &
+     &   .and. iflag_rj_center.gt.0) then
         inod = inod_rj_center
 !
         do j_fld = 1, num_fld_pick_sph
@@ -154,7 +149,7 @@
         j = idx_pick_sph_lc(inum)
         if(j .gt. izero) then
 !!$omp do private(knum,k,inod,ipick,j_fld,i_fld,icou,jcou,nd)
-          do knum = 1+icenter_pick_layer, num_pick_layer
+          do knum = 1+iflag_rj_center, num_pick_layer
             k = id_pick_layer(knum)
             inod =  j +    (k-1) * nidx_rj(2)
             ipick = knum + (inum-1) * num_pick_layer

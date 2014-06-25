@@ -54,6 +54,11 @@
 !!@n    iflag_MESH_w_pole:   Gauss-Legendre points with poles
 !!@n    iflag_MESH_w_center: Gauss-Legendre points with center and poles
       integer (kind=kint) :: iflag_shell_mode =  iflag_MESH_same
+!>      integer flag for center point in spectr data
+!!@n    This flag should have same value for all processes
+!!@n    0: No center point
+!!@n    1: Center point is there
+      integer (kind=kint) :: iflag_rj_center =  0
 !>      radial grid type flag
 !!@n    igrid_Chebyshev =    2 :: Chebyshev collocation points
 !!@n    igrid_non_euqidist = 1 :: non-equi-distance

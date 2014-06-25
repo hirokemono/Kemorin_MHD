@@ -30,8 +30,6 @@
       call s_set_sph_grid_for_equator
       call output_geom_rtp_sph_trans(izero)
 !
-!       from s_const_global_sphere_mesh
-!
       num_neib = 0
       call set_sph_node_position_no_pole
       call set_sph_ele_connect_no_pole
