@@ -465,8 +465,6 @@
 !
       type(element_data), intent(inout) :: ele
 !
-      call unlink_overlaped_ele_type(ele)
-!
       nullify(ele%iele_global)
       nullify(ele%elmtyp, ele%nodelm)
       nullify(ele%ie)

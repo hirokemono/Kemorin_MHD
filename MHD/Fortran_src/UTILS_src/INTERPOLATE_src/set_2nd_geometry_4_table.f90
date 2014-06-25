@@ -108,6 +108,7 @@
       call unlink_group_type(newgroup%ele_grp)
       call unlink_group_type(newgroup%nod_grp)
       call unlink_node_geometry_type(newmesh%node)
+    
       call unlink_ele_connect_type(newmesh%ele)
 !
       call unlink_dest_comm_tbl_type(newmesh%nod_comm)

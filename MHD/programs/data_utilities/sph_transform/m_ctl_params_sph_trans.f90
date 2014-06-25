@@ -60,7 +60,6 @@
       use output_parallel_ucd_file
 !
       integer(kind = kint) :: ierr
-      character(len = kchara) :: tmpchara
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)

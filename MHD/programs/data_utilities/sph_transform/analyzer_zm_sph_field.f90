@@ -4,8 +4,8 @@
 !
 !      modified by H. Matsui on Jan., 2008
 !
-!      subroutine initialize
-!      subroutine analyze
+!      subroutine init_zm_sph_field
+!      subroutine analyze_zm_sph_field
 !
       module analyzer_zm_sph_field
 !
@@ -67,7 +67,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_zm_sph_field
 !
       use m_ucd_data
       use m_ucd_input_data
@@ -112,7 +112,7 @@
 !
       call FEM_finalize_sph_trans
 !
-        end subroutine analyze
+        end subroutine analyze_zm_sph_field
 !
 ! ----------------------------------------------------------------------
 !

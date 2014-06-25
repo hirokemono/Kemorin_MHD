@@ -16,8 +16,8 @@
 
       call calypso_MPI_init
 !
-      call init_analyzer
-      call analyze
+      call initialize_sph_transform
+      call analyze_sph_transform
 
       call calypso_MPI_finalize
 !

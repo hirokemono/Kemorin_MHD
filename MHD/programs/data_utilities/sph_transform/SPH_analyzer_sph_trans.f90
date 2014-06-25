@@ -90,6 +90,8 @@
       i_time_step_IO = 0
       time_IO = zero
       delta_t_IO = zero
+      phys_file_head = spectr_file_head
+      iflag_field_data_fmt = iflag_sph_spectr_fmt
       call sel_write_step_SPH_field_file(my_rank, i_step)
 !
       end subroutine SPH_analyze_sph_trans

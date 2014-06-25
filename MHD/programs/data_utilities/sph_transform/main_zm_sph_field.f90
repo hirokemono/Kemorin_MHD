@@ -15,8 +15,8 @@
 !
       call calypso_MPI_init
 !
-      call initialize
-      call analyze
+      call init_zm_sph_field
+      call analyze_zm_sph_field
 
       call calypso_MPI_finalize
 !

@@ -68,6 +68,8 @@
 !
 !  ------  initialize spectr data
 !
+      phys_file_head = spectr_file_head
+      iflag_field_data_fmt = iflag_sph_spectr_fmt
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_SPH_file'
       call sel_read_alloc_step_SPH_file(my_rank, i_step_init)
 !
@@ -109,6 +111,8 @@
       integer(kind = kint) :: i_step
 !
 !
+      phys_file_head = spectr_file_head
+      iflag_field_data_fmt = iflag_sph_spectr_fmt
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
 !   Input spectr data

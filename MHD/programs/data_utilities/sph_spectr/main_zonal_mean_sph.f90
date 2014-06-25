@@ -16,8 +16,8 @@
 !
       call calypso_MPI_init
 !
-      call init_analyzer
-      call analyze
+      call init_zonal_mean_sph
+      call analyze_zonal_mean_sph
 !
       call  calypso_MPI_finalize
 !

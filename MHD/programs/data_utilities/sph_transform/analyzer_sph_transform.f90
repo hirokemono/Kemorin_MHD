@@ -1,6 +1,9 @@
 !analyzer_sph_transform.f90
 !      module analyzer_sph_transform
 !
+!      subroutine initialize_sph_transform
+!      subroutine analyze_sph_transform
+!
 !      modified by H. Matsui on Jan., 2008
 !
       module analyzer_sph_transform
@@ -22,7 +25,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine initialize_sph_transform
 !
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
@@ -52,11 +55,11 @@
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_sph_trans'
       call SPH_to_FEM_bridge_sph_trans
 !
-      end subroutine init_analyzer
+      end subroutine initialize_sph_transform
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_sph_transform
 !
       use m_t_step_parameter
 !
@@ -74,7 +77,7 @@
 !
       call FEM_finalize_sph_trans
 !
-        end subroutine analyze
+        end subroutine analyze_sph_transform
 !
 ! ----------------------------------------------------------------------
 !

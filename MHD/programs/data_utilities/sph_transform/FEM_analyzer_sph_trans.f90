@@ -23,10 +23,12 @@
 !
       subroutine FEM_initialize_sph_trans
 !
+      use m_control_params_2nd_files
       use m_array_for_send_recv
       use m_edge_geometry_data
       use m_jacobians
       use m_t_step_parameter
+      use m_ucd_input_data
 !
       use nodal_vector_send_recv
       use load_mesh_data
@@ -72,6 +74,10 @@
 !
 !  -------------------------------
 !
+      input_ucd%ifmt_file = ifmt_org_ucd
+      input_ucd%file_prefix = org_ucd_header
+      write(*,*) 'fem_ucd%file_prefix', trim(org_ucd_header)
+      call calypso_MPI_barrier
       call init_read_ucd_data(my_rank, i_step_init)
 !
       end subroutine FEM_initialize_sph_trans

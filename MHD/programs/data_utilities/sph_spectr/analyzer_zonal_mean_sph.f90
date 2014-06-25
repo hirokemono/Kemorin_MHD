@@ -4,8 +4,8 @@
 !
 !      modified by H. Matsui on Jan., 2008
 !
-!      subroutine init_analyzer
-!      subroutine analyze
+!      subroutine init_zonal_mean_sph
+!      subroutine analyze_zonal_mean_sph
 !
       module analyzer_zonal_mean_sph
 !
@@ -25,7 +25,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine init_zonal_mean_sph
 !
       use m_t_step_parameter
       use m_ctl_data_4_sph_utils
@@ -66,11 +66,11 @@
 !
       call calypso_MPI_barrier
 !
-      end subroutine init_analyzer
+      end subroutine init_zonal_mean_sph
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_zonal_mean_sph
 !
       use m_t_step_parameter
       use m_spheric_parameter
@@ -105,9 +105,9 @@
         call sel_write_step_SPH_field_file(my_rank, i_step)
       end do
 !
-      if (iflag_debug.eq.1) write(*,*) 'exit analyze'
+      if (iflag_debug.eq.1) write(*,*) 'exit analyze_zonal_mean_sph'
 !
-        end subroutine analyze
+        end subroutine analyze_zonal_mean_sph
 !
 ! ----------------------------------------------------------------------
 !
