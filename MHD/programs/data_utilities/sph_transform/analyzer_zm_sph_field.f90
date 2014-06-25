@@ -27,7 +27,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialize
+      subroutine init_zm_sph_field
 !
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
@@ -63,7 +63,7 @@
 !
       call init_visualize(ierr)
 !
-      end subroutine initialize
+      end subroutine init_zm_sph_field
 !
 ! ----------------------------------------------------------------------
 !
