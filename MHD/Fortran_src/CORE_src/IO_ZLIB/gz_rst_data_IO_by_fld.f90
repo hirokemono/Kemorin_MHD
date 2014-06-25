@@ -1,10 +1,18 @@
 !gz_rst_data_IO_by_fld.f90
 !     module gz_rst_data_IO_by_fld
 !
-!      subroutine read_gz_rst_file(my_rank)
-!      subroutine read_gz_rst_comps(my_rank)
+!> @file  gz_rst_data_IO_by_fld.f90
+!!      module gz_rst_data_IO_by_fld
+!!
+!! @author  H. Matsui
+!! @date Programmed in Nov., 2008
 !
-!      Written by H.Matsui on Nov., 2008
+!> @brief read gzipped restart file
+!!
+!!@verbatim
+!!      subroutine read_gz_rst_file(my_rank, file_name)
+!!      subroutine read_gz_rst_comps(my_rank, file_name)
+!!@endverbatim
 !
       module gz_rst_data_IO_by_fld
 !
@@ -27,13 +35,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_gz_rst_file(my_rank)
+      subroutine read_gz_rst_file(my_rank, file_name)
 !
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara) :: gzip_name
 !
 !
-      call add_gzip_extension(phys_file_name, gzip_name)
+      call add_gzip_extension(file_name, gzip_name)
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read gzipped restart file: ', trim(gzip_name)
@@ -52,13 +61,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_gz_rst_comps(my_rank)
+      subroutine read_gz_rst_comps(my_rank, file_name)
 !
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara) :: gzip_name
 !
 !
-      call add_gzip_extension(phys_file_name, gzip_name)
+      call add_gzip_extension(file_name, gzip_name)
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read gzipped restart file: ', trim(gzip_name)
@@ -84,7 +94,6 @@
 !
       use set_restart_data
 !
-      character(len = 1) :: chara_flag
       integer(kind=kint)  :: i, inod, nchara
 !
 !

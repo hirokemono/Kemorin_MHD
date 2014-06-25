@@ -5,7 +5,7 @@
 !! @date Programmed in June, 2005
 !! @n    Modified in Oct., 2007
 !
-!> @brief Data for dield data IO
+!> @brief Data for field data IO
 !!
 !!@verbatim
 !!      subroutine allocate_phys_data_name_IO
@@ -27,8 +27,6 @@
 !
 !>      file ID for field data IO
       integer(kind = kint), parameter :: id_phys_file = 15
-!>      file name for field data
-      character(len=kchara) :: phys_file_name
 !
 !>      file header for field data
       character(len=kchara) :: phys_file_head = "rst"
@@ -83,7 +81,7 @@
       subroutine allocate_phys_data_IO
 !
       allocate( phys_data_IO(numgrid_phys_IO, ntot_phys_data_IO) )
-      phys_data_IO = 0.0d0
+      if(numgrid_phys_IO .gt. 0) phys_data_IO = 0.0d0
 !
       end subroutine allocate_phys_data_IO
 !

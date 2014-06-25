@@ -1,13 +1,18 @@
-!rst_data_IO_by_fld.f90
-!     module rst_data_IO_by_fld
+!> @file  rst_data_IO_by_fld.f90
+!!      module rst_data_IO_by_fld
+!!
+!! @author  H. Matsui
+!! @date Programmed in Nov., 2008
 !
-!      subroutine read_rst_file(my_rank)
-!      subroutine read_rst_file_b(my_rank)
-!
-!      subroutine read_rst_data_comps(my_rank)
-!      subroutine read_rst_data_comps_b(my_rank)
-!
-!      Written by H.Matsui on Nov., 2008
+!> @brief read restart file
+!!
+!!@verbatim
+!!      subroutine read_rst_file(my_rank, file_name)
+!!      subroutine read_rst_file_b(my_rank, file_name)
+!!
+!!      subroutine read_rst_data_comps(my_rank, file_name)
+!!      subroutine read_rst_data_comps_b(my_rank, file_name)
+!!@endverbatim
 !
       module rst_data_IO_by_fld
 !
@@ -27,19 +32,20 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_rst_file(my_rank)
+      subroutine read_rst_file(my_rank, file_name)
 !
       use set_parallel_file_name
       use field_data_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: my_rank
+      character(len=kchara), intent(in) :: file_name
       character(len=kchara) :: character_4_read
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &    'Read ascii restart file: ', trim(phys_file_name)
-      open (id_phys_file, file = phys_file_name, form='formatted')
+     &    'Read ascii restart file: ', trim(file_name)
+      open (id_phys_file, file = file_name, form='formatted')
 !
       call read_step_data(id_phys_file)
 !
@@ -55,17 +61,18 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_rst_file_b(my_rank)
+      subroutine read_rst_file_b(my_rank, file_name)
 !
       use set_parallel_file_name
       use field_data_IO
 !
       integer(kind = kint), intent(in) :: my_rank
+      character(len=kchara), intent(in) :: file_name
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &    'Read binary restart file: ', trim(phys_file_name)
-      open (id_phys_file, file = phys_file_name, form='unformatted')
+     &    'Read binary restart file: ', trim(file_name)
+      open (id_phys_file, file = file_name, form='unformatted')
       call read_step_data_b(id_phys_file)
 !
       read(id_phys_file) num_phys_data_IO
@@ -79,19 +86,20 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_rst_data_comps(my_rank)
+      subroutine read_rst_data_comps(my_rank, file_name)
 !
       use set_parallel_file_name
       use field_data_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: my_rank
+      character(len=kchara), intent(in) :: file_name
       character(len=kchara) :: character_4_read
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &     'Read ascii restart file: ', trim(phys_file_name)
-      open (id_phys_file, file = phys_file_name, form='formatted')
+     &     'Read ascii restart file: ', trim(file_name)
+      open (id_phys_file, file = file_name, form='formatted')
 !
       call read_step_data(id_phys_file)
 !
@@ -109,17 +117,18 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_rst_data_comps_b(my_rank)
+      subroutine read_rst_data_comps_b(my_rank, file_name)
 !
       use set_parallel_file_name
       use field_data_IO
 !
       integer(kind = kint), intent(in) :: my_rank
+      character(len=kchara), intent(in) :: file_name
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &    'Read binary restart file: ', trim(phys_file_name)
-      open (id_phys_file, file = phys_file_name, form='unformatted')
+     &    'Read binary restart file: ', trim(file_name)
+      open (id_phys_file, file = file_name, form='unformatted')
       call read_step_data_b(id_phys_file)
 !
       read(id_phys_file) num_phys_data_IO

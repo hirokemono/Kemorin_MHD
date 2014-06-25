@@ -1,0 +1,140 @@
+!> @file  t_field_data_IO.f90
+!!      module t_field_data_IO
+!!
+!! @author  H. Matsui
+!! @date Programmed in June, 2013
+!
+!> @brief Structure for field data IO
+!!
+!!@verbatim
+!!      subroutine alloc_phys_name_IO(fld_IO)
+!!      subroutine alloc_phys_data_IO(fld_IO)
+!!
+!!      subroutine dealloc_phys_name_IO(fld_IO)
+!!      subroutine dealloc_phys_data_IO(fld_IO)
+!!
+!!      subroutine cal_istack_comp_IO(fld_IO)
+!!@endverbatim
+!!
+!
+      module t_field_data_IO
+!
+      use m_precision
+!
+      implicit none
+!
+!
+!>      file ID for field data IO
+      integer(kind = kint), parameter :: id_phys_file = 15
+!
+      integer (kind=kint) :: iflag_org_rst_head
+      character(len=kchara) :: org_rst_header =   "rst_org/rst"
+!
+      character(len=kchara) :: spectr_file_head
+      character(len=kchara) :: org_sph_spec_head
+      integer(kind = kint) ::  iflag_sph_spectr_fmt =     0
+      integer(kind = kint) ::  iflag_sph_spec_head =      0
+      integer(kind = kint) ::  iflag_org_sph_spec_head =  0
+!
+      type field_IO
+!>        file header for field data
+        character(len=kchara) :: file_prefix = "rst"
+!>        file format flag for field data
+        integer(kind = kint) :: iflag_file_fmt =  0
+!>        file format flag for field data
+        integer(kind = kint) :: iflag_phys_header_def = 0
+!>        number of field for IO (num_phys_data_IO)
+        integer(kind = kint) :: num_field_IO
+!>        total number of component for IO (ntot_phys_data_IO)
+        integer(kind = kint) :: ntot_comp_IO
+!>        number of component for each field (num_comp_IO)
+        integer(kind = kint), allocatable :: num_comp_IO(:)
+!>        end address of component for each field (istack_phys_comp_IO)
+        integer(kind = kint), allocatable :: istack_comp_IO(:)
+!
+!>        field name (phys_data_name_IO)
+        character(len=kchara), allocatable :: fld_name(:)
+!
+!>        number of data points (numgrid_phys_IO)
+        integer(kind = kint) :: nnod_IO
+!
+!>        field data for IO  (d_IO(:,:))
+        real(kind = kreal), allocatable :: d_IO(:,:)
+      end type field_IO
+!
+! -------------------------------------------------------------------
+!
+      contains
+!
+! -------------------------------------------------------------------
+!
+      subroutine alloc_phys_name_IO(fld_IO)
+!
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      allocate( fld_IO%num_comp_IO(fld_IO%num_field_IO) )
+      allocate( fld_IO%istack_comp_IO(0:fld_IO%num_field_IO) )
+      allocate( fld_IO%fld_name(fld_IO%num_field_IO) )
+      if(fld_IO%num_field_IO .gt. 0) fld_IO%num_comp_IO = 0
+      fld_IO%istack_comp_IO = -1
+!
+      end subroutine alloc_phys_name_IO
+!
+! -------------------------------------------------------------------
+!
+      subroutine alloc_phys_data_IO(fld_IO)
+!
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      allocate( fld_IO%d_IO(fld_IO%nnod_IO, fld_IO%ntot_comp_IO) )
+      if(fld_IO%nnod_IO .gt. 0) fld_IO%d_IO = 0.0d0
+!
+      end subroutine alloc_phys_data_IO
+!
+! -------------------------------------------------------------------
+! -------------------------------------------------------------------
+!
+      subroutine dealloc_phys_name_IO(fld_IO)
+!
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      deallocate( fld_IO%num_comp_IO )
+      deallocate( fld_IO%istack_comp_IO )
+      deallocate( fld_IO%fld_name )
+!
+      end subroutine dealloc_phys_name_IO
+!
+! -------------------------------------------------------------------
+!
+      subroutine dealloc_phys_data_IO(fld_IO)
+!
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      deallocate( fld_IO%d_IO )
+!
+      end subroutine dealloc_phys_data_IO
+!
+! -------------------------------------------------------------------
+! -------------------------------------------------------------------
+!
+      subroutine cal_istack_comp_IO(fld_IO)
+!
+      use m_constants
+      use cal_minmax_and_stacks
+!
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      call s_cal_total_and_stacks                                       &
+     &   (fld_IO%num_field_IO, fld_IO%num_comp_IO, izero,               &
+     &    fld_IO%istack_comp_IO, fld_IO%ntot_comp_IO)
+!
+      end subroutine cal_istack_comp_IO
+!
+! -------------------------------------------------------------------
+!
+      end module t_field_data_IO

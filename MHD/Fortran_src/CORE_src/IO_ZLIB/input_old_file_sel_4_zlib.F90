@@ -66,7 +66,7 @@
       use set_parallel_file_name
 !
       integer(kind=kint), intent(in) :: my_rank, istep_fld
-      character(len=kchara) :: fname_tmp
+      character(len=kchara) :: file_name, fname_tmp
 !
 !
       if(istep_fld .lt. 0) then
@@ -74,19 +74,19 @@
       else
         call add_int_suffix(istep_fld, phys_file_head, fname_tmp)
       end if
-      call add_int_suffix(my_rank, fname_tmp, phys_file_name)
+      call add_int_suffix(my_rank, fname_tmp, file_name)
 !
 !
       if(iflag_field_data_fmt .eq. id_binary_file_fmt) then
-        call read_rst_file_b(my_rank)
+        call read_rst_file_b(my_rank, file_name)
 !
 #ifdef ZLIB_IO
       else if(iflag_field_data_fmt .eq. id_gzip_txt_file_fmt) then
-        call read_gz_rst_file(my_rank)
+        call read_gz_rst_file(my_rank, file_name)
 #endif
 !
       else
-        call read_rst_file(my_rank)
+        call read_rst_file(my_rank, file_name)
       end if
 !
 !
@@ -101,7 +101,7 @@
       use set_parallel_file_name
 !
       integer(kind=kint), intent(in) :: my_rank, istep_fld
-      character(len=kchara) :: fname_tmp
+      character(len=kchara) :: file_name, fname_tmp
 !
 !
       if(istep_fld .lt. 0) then
@@ -109,18 +109,18 @@
       else
         call add_int_suffix(istep_fld, phys_file_head, fname_tmp)
       end if
-      call add_int_suffix(my_rank, fname_tmp, phys_file_name)
+      call add_int_suffix(my_rank, fname_tmp, file_name)
 !
       if(iflag_field_data_fmt .eq. id_binary_file_fmt) then
-        call read_rst_data_comps_b(my_rank)
+        call read_rst_data_comps_b(my_rank, file_name)
 !
 #ifdef ZLIB_IO
       else if(iflag_field_data_fmt .eq. id_gzip_txt_file_fmt) then
-        call read_gz_rst_comps(my_rank)
+        call read_gz_rst_comps(my_rank, file_name)
 #endif
 !
       else
-        call read_rst_data_comps(my_rank)
+        call read_rst_data_comps(my_rank, file_name)
       end if
 !
       end subroutine sel_read_rst_comps
