@@ -35,28 +35,20 @@
       subroutine turn_off_debug_flag_by_ctl(my_rank)
 !
       use m_machine_parameter
+      use skip_comment_f
 !
       integer(kind = kint), intent(in) :: my_rank
 !
 !
       if(i_debug_flag_ctl .gt. 0) then
-        if     (debug_flag_ctl .eq. 'OFF'                               &
-     &     .or. debug_flag_ctl .eq. 'Off'                               &
-     &     .or. debug_flag_ctl .eq. 'off'                               &
-     &     .or. debug_flag_ctl .eq. '0') then
+        if     (cmp_no_case(debug_flag_ctl,'Off') .gt. 0                &
+     &     .or. cmp_no_case(debug_flag_ctl,'0') .gt. 0) then
           i_debug =     iflag_minimum_msg
-        else if(debug_flag_ctl .eq. 'ON'                                &
-     &     .or. debug_flag_ctl .eq. 'On'                                &
-     &     .or. debug_flag_ctl .eq. 'on'                                &
-     &     .or. debug_flag_ctl .eq. 'SHORT'                             &
-     &     .or. debug_flag_ctl .eq. 'Short'                             &
-     &     .or. debug_flag_ctl .eq. 'short'                             &
-     &     .or. debug_flag_ctl .eq. '1') then
+        else if(cmp_no_case(debug_flag_ctl,'On') .gt. 0                 &
+     &     .or. cmp_no_case(debug_flag_ctl,'1') .gt. 0) then
           i_debug =     iflag_routine_msg
-        else if(debug_flag_ctl .eq. 'FULL'                              &
-     &     .or. debug_flag_ctl .eq. 'Full'                              &
-     &     .or. debug_flag_ctl .eq. 'full'                              &
-     &     .or. debug_flag_ctl .eq. '2') then
+        else if(cmp_no_case(debug_flag_ctl,'Full') .gt. 0               &
+     &     .or. cmp_no_case(debug_flag_ctl,'2') .gt. 0) then
           i_debug =     iflag_full_msg
         end if
       end if
@@ -97,13 +89,12 @@
 !
       use m_read_mesh_data
       use m_file_format_switch
+      use skip_comment_f
 !
 !
       if(i_mesh_extension .gt. 0) then
-        if    (mesh_extension_flags_ctl .eq. 'off'                      &
-     &    .or. mesh_extension_flags_ctl .eq. 'Off'                      &
-     &    .or. mesh_extension_flags_ctl .eq. 'OFF'                      &
-     &    .or. mesh_extension_flags_ctl .eq. '0') then
+        if     (cmp_no_case(mesh_extension_flags_ctl,'Off') .gt. 0      &
+     &     .or. cmp_no_case(mesh_extension_flags_ctl,'0') .gt. 0) then
           iflag_mesh_file_ext = 0
         end if
       end if
@@ -126,6 +117,7 @@
       subroutine set_control_sph_mesh
 !
       use m_read_mesh_data
+      use m_control_params_sph_data
       use m_node_id_spherical_IO
       use m_field_data_IO
       use m_file_format_switch
@@ -140,14 +132,14 @@
 !   set file header at once
 !
       if(i_sph_files_header .gt. 0) then
-        sph_head =       sph_file_prefix
+        sph_file_head =  sph_file_prefix
         mesh_file_head = sph_file_prefix
         iflag_mesh_file_ext = 1
         iflag_mesh_file_fmt = iflag_sph_file_fmt
       end if
 !
-      iflag_sph_spec_head = i_spectr_header
-      if(iflag_sph_spec_head .gt. 0) then
+      iflag_sph_spec_output = i_spectr_header
+      if(iflag_sph_spec_output .gt. 0) then
         spectr_file_head = spectr_file_head_ctl
       end if
 !

@@ -57,6 +57,8 @@
 !  ------  initialize spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_SPH_file'
+      call set_field_file_fmt_prefix                                    &
+     &     (iflag_org_sph_file_fmt, org_sph_file_head)
       call sel_read_alloc_step_SPH_file(my_rank, i_step_init)
 !
 !  -------------------------------
@@ -86,8 +88,9 @@
 !
 !   Input spectr data
 !
-        phys_file_head = org_sph_file_head
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
+        call set_field_file_fmt_prefix                                  &
+     &     (iflag_org_sph_file_fmt, org_sph_file_head)
         call sel_read_step_SPH_field_file(my_rank, i_step)
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'

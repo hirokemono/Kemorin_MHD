@@ -27,6 +27,7 @@
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_field_data_IO
+      use m_control_params_2nd_files
       use m_node_id_spherical_IO
 !
       use field_IO_select

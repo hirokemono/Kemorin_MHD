@@ -277,7 +277,7 @@
       call deallocate_node_geometry_type(mesh%node)
       call deallocate_type_comm_tbl(mesh%nod_comm)
 !
-      mesh_file_head = sph_head
+      mesh_file_head = sph_file_head
       call sel_write_mesh_file(ip_rank)
 !
       write(*,'(a,i6,a)')                                               &

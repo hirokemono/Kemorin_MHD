@@ -6,6 +6,12 @@
 !
 !      modified by H. Matsui on Jan., 2008
 !
+!      Input indexing data prefix:: sph_file_prefix
+!
+!      Input field  data prefix:: field_file_prefix
+!      Input spectr data prefix:: restart_file_prefix
+!
+!
       module analyzer_sph_transform
 !
       use m_precision
@@ -40,8 +46,8 @@
       if (iflag_debug.gt.0) write(*,*) 'read_control_data_sph_trans'
       call read_control_data_sph_trans
 !
-      if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
-      call s_set_ctl_data_4_sph_trans
+      if (iflag_debug.gt.0) write(*,*) 'set_control_4_sph_transform'
+      call set_control_4_sph_transform
 !
 !    Initialize FEM grid
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_sph_trans'

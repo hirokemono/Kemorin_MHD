@@ -85,8 +85,8 @@
 !     --------------------- 
 !
       istep_rst_start = int(i_step_init /   i_step_output_rst)
-      iflag_field_data_fmt = ifmt_org_rst_file
-      phys_file_head =       org_rst_file_head
+      call set_field_file_fmt_prefix                                    &
+     &   (ifmt_org_rst_file, org_rst_file_head)
       call sel_read_alloc_step_FEM_file(izero, istep_rst_start)
       if (iflag_debug.eq.1) write(*,*) 'init_field_name_by_restart'
       call init_field_name_by_restart
@@ -137,8 +137,8 @@
           numgrid_phys_IO = numnod
           call allocate_phys_data_IO
 !
-          iflag_field_data_fmt = ifmt_org_rst_file
-          phys_file_head =       org_rst_file_head
+          call set_field_file_fmt_prefix                                &
+     &       (ifmt_org_rst_file, org_rst_file_head)
           call sel_read_step_FEM_field_file(my_rank, i_step)
 !
           call copy_field_data_from_restart
@@ -164,8 +164,8 @@
           call copy_field_type_to_rst(new_femmesh%mesh%node, new_phys)
           call copy_time_steps_to_restart
 !
-          iflag_field_data_fmt = ifmt_itp_rst_file
-          phys_file_head =       itp_rst_file_head
+          call set_field_file_fmt_prefix                                &
+     &       (ifmt_itp_rst_file, itp_rst_file_head)
           call sel_write_step_FEM_field_file(my_rank, i_step)
           call deallocate_phys_data_IO
         end if

@@ -63,6 +63,7 @@
 !
       use m_sph_spectr_data
       use m_t_step_parameter
+      use m_control_params_sph_data
       use m_time_data_IO
       use m_field_data_IO
       use m_node_id_spherical_IO
@@ -90,8 +91,7 @@
       i_time_step_IO = 0
       time_IO = zero
       delta_t_IO = zero
-      phys_file_head = spectr_file_head
-      iflag_field_data_fmt = iflag_sph_spectr_fmt
+      call set_spectr_prefix_fmt_2_fld_IO
       call sel_write_step_SPH_field_file(my_rank, i_step)
 !
       end subroutine SPH_analyze_sph_trans

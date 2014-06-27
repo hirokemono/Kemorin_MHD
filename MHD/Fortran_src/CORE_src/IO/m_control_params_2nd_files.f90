@@ -14,10 +14,24 @@
 !
       implicit  none
 !
+!>      file header for original spectrum indexing data
+      character(len=kchara) :: org_sph_rj_head =      "sph_org/in_rj"
+!>      file header for original spectrum indexing data
+      integer(kind = kint) :: ifmt_org_sph_rj_head = 0
+!>      file header for original spectrum indexing data
+      integer(kind = kint) :: iflag_org_sph_rj_head = 0
+!
 !>      file header for original field data
       character(len=kchara) :: org_ucd_header =  "field_org/out"
 !>      file header for original field data
       integer(kind=kint) :: ifmt_org_ucd
+!
+!>      file header for original restart data
+      character(len=kchara) :: org_rst_header =   "rst_org/rst"
+!>      file header for original restart data
+      integer (kind=kint) :: ifmt_org_rst
+!>      file header for original restart data
+      integer (kind=kint) :: iflag_org_rst
 !
 ! ----------------------------------------------------------------------
 !
@@ -39,10 +53,8 @@
         org_sph_rj_head =       org_sph_mode_head_ctl
       end if
 !
-      iflag_org_sph_spec_head = i_org_spectr_head
-      if(iflag_org_sph_spec_head .gt. 0) then
-        org_sph_spec_head =    org_spectr_file_head_ctl
-      end if
+      call choose_file_format(org_sph_file_fmt_ctl,                     &
+     &    i_org_sph_files_fmt, ifmt_org_sph_rj_head)
 !
       end subroutine set_control_org_sph_mesh
 !
@@ -57,8 +69,8 @@
       use m_file_format_switch
 !
 !
-      iflag_org_rst_head = i_org_rst_head
-      if (iflag_org_rst_head .gt. 0) then
+      iflag_org_rst = i_org_rst_head
+      if (iflag_org_rst .gt. 0) then
         org_rst_header = orginal_restart_prefix
       end if
 !
@@ -66,6 +78,8 @@
         org_ucd_header = org_udt_head_ctl
       end if
 !
+      call choose_ucd_file_format(restart_file_fmt_ctl,                 &
+     &    i_rst_files_fmt, ifmt_org_rst)
       call choose_ucd_file_format(udt_file_fmt_ctl,                     &
      &    i_udt_files_fmt, ifmt_org_ucd)
 !

@@ -70,8 +70,7 @@
       ip = 1
       my_rank = 0
 !
-      phys_file_head = org_rst_f_header
-      iflag_field_data_fmt = izero
+      call set_field_file_fmt_prefix(izero, org_rst_f_header)
       call sel_read_alloc_FEM_fld_head(izero, istep)
 !
       num_rst_org = num_phys_data_IO
@@ -120,8 +119,7 @@
         num_phys_data_IO =  num_rst_org
         ntot_phys_data_IO = ntot_rst_org
 !
-        phys_file_head = org_rst_f_header
-        iflag_field_data_fmt = izero
+        call set_field_file_fmt_prefix(izero, org_rst_f_header)
         call sel_read_step_FEM_field_file(my_rank, istep)
 !
         do np = 1, ntot_rst_org

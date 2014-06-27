@@ -140,12 +140,16 @@
 !
       subroutine input_old_rj_sph_trans(my_rank)
 !
+      use m_node_id_spherical_IO
+      use m_control_params_2nd_files
       use sph_file_IO_select
 !
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call sel_read_org_spectr_rj_file(my_rank)
+      call set_sph_mesh_file_fmt_prefix                                 &
+     &   (ifmt_org_sph_rj_head, org_sph_rj_head)
+      call sel_read_spectr_modes_rj_file(my_rank)
       call copy_original_sph_rj_from_IO
 !
       call const_radial_itp_table

@@ -43,7 +43,7 @@
 !  ========= Construct subdomain information for viewer ==============
 !
       if(iflag_excluding_FEM_mesh .eq. 0) then
-        call choose_surface_mesh(sph_head)
+        call choose_surface_mesh(sph_file_head)
       end if
 !
       stop 'program is normally finished'

@@ -12,6 +12,7 @@
       implicit  none
 !
 !
+      integer(kind = kint) :: iflag_org_sph_file_fmt = 0
       character(len = kchara) :: org_sph_file_head = 'spectral'
       character(len = kchara) :: zm_sph_file_head = 'zm_spectral'
 !
@@ -55,8 +56,8 @@
       use m_ctl_data_4_sph_utils
       use m_ctl_data_4_fields
       use m_ctl_data_4_pickup_sph
+      use m_ctl_data_4_org_data
 !
-      integer (kind = kint) :: i
       integer(kind = kint) :: ierr
 !
 !
@@ -69,17 +70,21 @@
       call set_control_org_sph_mesh
       call set_control_org_fld_file_def
 !
+!      stepping parameter
+!
+      call s_set_fixed_time_step_params(ierr, e_message)
+!
 !    file header for field data
 !
       if(i_spectr_header .gt. 0) then
         org_sph_file_head = spectr_file_head_ctl
         phys_file_head =    spectr_file_head_ctl
-        iflag_phys_header_def = 1
+        call choose_file_format(org_sph_file_fmt_ctl,                   &
+     &      i_org_sph_files_fmt, iflag_org_sph_file_fmt)
       end if
 !
       if(i_zm_sph_spec_file .gt. 0) then
         zm_sph_file_head = zm_spec_file_head_ctl
-        iflag_phys_header_def = 1
       end if
 !
 !   using rstart data for spherical dynamo
@@ -87,13 +92,15 @@
       if(i_rst_header .gt. 0) then
         org_sph_file_head = phys_file_head
         phys_file_head =    phys_file_head
-        iflag_phys_header_def = 2
+        i_step_output_ucd =   i_step_output_rst
       end if
 !
-      if( (iflag_org_sph_rj_head*iflag_org_rst_head) .gt. 0) then
+      if( (iflag_org_sph_rj_head) .gt. 0) then
         org_sph_file_head = org_rst_header
         phys_file_head =    org_rst_header
-        iflag_phys_header_def = 2
+        i_step_output_ucd =   i_step_output_rst
+        call choose_file_format(org_sph_file_fmt_ctl,                   &
+     &      i_org_sph_files_fmt, iflag_org_sph_file_fmt)
       end if
 !
 !     file header for reduced data
@@ -105,15 +112,6 @@
       if(i_vol_ene_spec_head .gt. 0) then
         vol_ene_spec_head = vol_ene_spec_head_ctl
       end if
-!
-!      stepping parameter
-!
-      call s_set_fixed_time_step_params(ierr, e_message)
-!
-      if (iflag_phys_header_def .eq. 2) then
-        i_step_output_ucd =   i_step_output_rst
-      end if
-!
 !   set pickup mode
 !
       call set_ctl_params_pick_sph

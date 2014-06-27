@@ -31,6 +31,7 @@
       use m_t_step_parameter
       use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
+      use m_control_params_sph_data
       use m_node_phys_address
       use m_sph_spectr_data
       use m_sph_phys_address
@@ -68,9 +69,8 @@
 !
 !  ------  initialize spectr data
 !
-      phys_file_head = spectr_file_head
-      iflag_field_data_fmt = iflag_sph_spectr_fmt
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_SPH_file'
+      call set_spectr_prefix_fmt_2_fld_IO
       call sel_read_alloc_step_SPH_file(my_rank, i_step_init)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
@@ -102,6 +102,7 @@
       use m_spheric_parameter
       use m_spheric_param_smp
       use m_ctl_params_sph_utils
+      use m_control_params_sph_data
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use copy_rj_phys_data_4_IO
@@ -111,8 +112,8 @@
       integer(kind = kint) :: i_step
 !
 !
-      phys_file_head = spectr_file_head
-      iflag_field_data_fmt = iflag_sph_spectr_fmt
+      call set_spectr_prefix_fmt_2_fld_IO
+!
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
 !   Input spectr data

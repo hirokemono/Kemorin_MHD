@@ -13,6 +13,8 @@
 !!      subroutine dealloc_phys_name_IO(fld_IO)
 !!      subroutine dealloc_phys_data_IO(fld_IO)
 !!
+!!      subroutine set_field_t_file_fmt_prefix                          &
+!!     &         (iflag_fmt, file_head, fld_IO)
 !!      subroutine cal_istack_comp_IO(fld_IO)
 !!@endverbatim
 !!
@@ -27,39 +29,28 @@
 !>      file ID for field data IO
       integer(kind = kint), parameter :: id_phys_file = 15
 !
-      integer (kind=kint) :: iflag_org_rst_head
-      character(len=kchara) :: org_rst_header =   "rst_org/rst"
-!
-      character(len=kchara) :: spectr_file_head
-      character(len=kchara) :: org_sph_spec_head
-      integer(kind = kint) ::  iflag_sph_spectr_fmt =     0
-      integer(kind = kint) ::  iflag_sph_spec_head =      0
-      integer(kind = kint) ::  iflag_org_sph_spec_head =  0
-!
       type field_IO
 !>        file header for field data
         character(len=kchara) :: file_prefix = "rst"
 !>        file format flag for field data
         integer(kind = kint) :: iflag_file_fmt =  0
-!>        file format flag for field data
-        integer(kind = kint) :: iflag_phys_header_def = 0
 !>        number of field for IO (num_phys_data_IO)
         integer(kind = kint) :: num_field_IO
 !>        total number of component for IO (ntot_phys_data_IO)
         integer(kind = kint) :: ntot_comp_IO
 !>        number of component for each field (num_comp_IO)
-        integer(kind = kint), allocatable :: num_comp_IO(:)
+        integer(kind = kint), pointer :: num_comp_IO(:)
 !>        end address of component for each field (istack_phys_comp_IO)
-        integer(kind = kint), allocatable :: istack_comp_IO(:)
+        integer(kind = kint), pointer :: istack_comp_IO(:)
 !
 !>        field name (phys_data_name_IO)
-        character(len=kchara), allocatable :: fld_name(:)
+        character(len=kchara), pointer :: fld_name(:)
 !
 !>        number of data points (numgrid_phys_IO)
         integer(kind = kint) :: nnod_IO
 !
 !>        field data for IO  (d_IO(:,:))
-        real(kind = kreal), allocatable :: d_IO(:,:)
+        real(kind = kreal), pointer :: d_IO(:,:)
       end type field_IO
 !
 ! -------------------------------------------------------------------
@@ -119,6 +110,20 @@
       end subroutine dealloc_phys_data_IO
 !
 ! -------------------------------------------------------------------
+! -------------------------------------------------------------------
+!
+      subroutine set_field_t_file_fmt_prefix                            &
+     &         (iflag_fmt, file_head, fld_IO)
+!
+      integer(kind = kint), intent(in) :: iflag_fmt
+      character(len=kchara), intent(in) :: file_head
+      type(field_IO), intent(inout) :: fld_IO
+!
+      fld_IO%iflag_file_fmt = iflag_fmt
+      write(fld_IO%file_prefix,'(a)') trim(file_head)
+!
+      end subroutine set_field_t_file_fmt_prefix
+!
 ! -------------------------------------------------------------------
 !
       subroutine cal_istack_comp_IO(fld_IO)

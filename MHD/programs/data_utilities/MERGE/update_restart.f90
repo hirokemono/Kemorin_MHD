@@ -57,9 +57,8 @@
 !
 !  allocate restart data
 !
-      phys_file_head =       org_rst_head
-      iflag_field_data_fmt = iorg_rst_file_fmt
       numgrid_phys_IO = subdomain(ione)%node%numnod
+      call set_field_file_fmt_prefix(iorg_rst_file_fmt, org_rst_head)
       call sel_read_rst_comps(izero, istep_start)
       call count_restart_data_fields
 !

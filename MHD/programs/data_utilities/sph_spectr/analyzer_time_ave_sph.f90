@@ -93,7 +93,8 @@
 !
 !   Input spectr data
 !
-        phys_file_head = org_sph_file_head
+      call set_field_file_fmt_prefix                                    &
+     &   (iflag_org_sph_file_fmt, org_sph_file_head)
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
         call sel_read_step_SPH_field_file(my_rank, i_step)
 !

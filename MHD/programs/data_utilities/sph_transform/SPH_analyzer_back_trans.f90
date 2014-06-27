@@ -28,6 +28,7 @@
       use m_field_data_IO
       use m_sph_spectr_data
       use m_sph_phys_address
+      use m_control_params_2nd_files
 !
       use parallel_load_data_4_sph
       use r_interpolate_sph_data
@@ -45,6 +46,8 @@
 !  ------  initialize spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_fld_file'
+      call set_field_file_fmt_prefix(ifmt_org_rst, org_rst_header)
+      write(*,*) 'ifmt_org_rst', ifmt_org_rst
       call sel_read_alloc_step_SPH_file(my_rank, i_step_init)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
@@ -88,6 +91,7 @@
       use m_t_step_parameter
       use m_field_data_IO
       use m_node_id_spherical_IO
+      use m_control_params_2nd_files
 !      use m_schmidt_poly_on_rtm
 !
       use field_IO_select
@@ -106,6 +110,8 @@
 !
       call set_output_flag(i_udt, i_step, i_step_output_ucd)
       call set_output_flag_4_viz(i_step, visval)
+      call set_field_file_fmt_prefix(ifmt_org_rst, org_rst_header)
+      write(*,*) 'ifmt_org_rst', ifmt_org_rst
       visval = visval * i_udt
 !
       if(visval .eq. 0) then

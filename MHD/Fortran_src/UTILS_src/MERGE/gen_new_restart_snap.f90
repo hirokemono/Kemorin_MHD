@@ -55,8 +55,8 @@
       integer (kind = kint) :: ip, my_rank
 !
 !
-      phys_file_head = org_rst_head
-      iflag_field_data_fmt = iorg_rst_file_fmt
+      call set_field_file_fmt_prefix(iorg_rst_file_fmt, org_rst_head)
+!
       do ip = 1, num_pe
         my_rank = ip - 1
 !
@@ -74,7 +74,7 @@
 !
 !   output new restart data
 !
-      phys_file_head = new_rst_head
+      call set_field_file_fmt_prefix(inew_rst_file_fmt, new_rst_head)
       do ip = 1, num_pe2
         my_rank = ip - 1
 !
@@ -82,7 +82,6 @@
         call allocate_phys_data_IO
         call set_new_restart_data(ip)
 !
-        iflag_field_data_fmt = inew_rst_file_fmt
         call sel_write_step_FEM_field_file(my_rank, istep)
         call deallocate_phys_data_IO
       end do
@@ -103,8 +102,8 @@
       integer (kind = kint) :: ip, my_rank
 !
 !
-      phys_file_head = org_rst_head
-      iflag_field_data_fmt = iorg_rst_file_fmt
+      call set_field_file_fmt_prefix(iorg_rst_file_fmt, org_rst_head)
+!
       do ip = 1, num_pe
         my_rank = ip - 1
 !
@@ -124,7 +123,7 @@
 !
 !   output new restart data
 !
-      phys_file_head = new_rst_head
+      call set_field_file_fmt_prefix(inew_rst_file_fmt, new_rst_head)
       do ip = 1, num_pe2
         my_rank = ip - 1
 !
@@ -133,7 +132,6 @@
 !
         call set_new_restart_data(ip)
 !
-        iflag_field_data_fmt = inew_rst_file_fmt
         call sel_write_step_FEM_field_file(my_rank, istep)
         call deallocate_phys_data_IO
       end do

@@ -34,6 +34,7 @@
       use m_ctl_data_4_fields
       use m_ctl_data_mhd_forces
       use m_ctl_data_mhd_evo_scheme
+      use m_control_params_2nd_files
       use m_int_4_sph_coriolis_IO
       use m_node_id_spherical_IO
       use m_physical_property
@@ -55,7 +56,7 @@
 !
 !   overwrite restart header for magnetic field extension
 !
-      if( (iflag_org_sph_rj_head*iflag_org_rst_head) .gt. 0) then
+      if( (iflag_org_sph_rj_head*iflag_org_rst) .gt. 0) then
         phys_file_head = org_rst_header
       end if
 !
@@ -92,18 +93,7 @@
       end if
 !
       if(i_FFT_package .gt. 0) then
-        if(     cmp_no_case(FFT_library_ctl, 'ispack') .gt. 0) then
-          iflag_FFT = iflag_ISPACK
-        else if(cmp_no_case(FFT_library_ctl, 'fftpack') .gt. 0) then
-          iflag_FFT = iflag_FFTPACK
-        else if(cmp_no_case(FFT_library_ctl, 'fftw') .gt. 0             &
-     &     .or. cmp_no_case(FFT_library_ctl, 'fftw3') .gt. 0) then
-          iflag_FFT = iflag_FFTW
-        else if(cmp_no_case(FFT_library_ctl, 'fftw_single') .gt. 0      &
-     &     .or. cmp_no_case(FFT_library_ctl, 'fftw3_single') .gt. 0)    &
-     &     then
-          iflag_FFT = iflag_FFTW_SINGLE
-        end if
+        call set_fft_library_ctl(FFT_library_ctl)
       end if
 !
       if (iflag_4_coriolis .gt. id_turn_OFF) then

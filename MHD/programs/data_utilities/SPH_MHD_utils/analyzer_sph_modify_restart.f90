@@ -94,6 +94,7 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
       use m_field_data_IO
+      use m_control_params_2nd_files
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank

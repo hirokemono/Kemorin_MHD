@@ -7,6 +7,8 @@
 !>@brief  Selector of Fourier transform
 !!
 !!@verbatim
+!!      subroutine set_fft_library_ctl(FFT_library_ctl)
+!!
 !!      subroutine initialize_FFT_select(my_rank, Nsmp, Nstacksmp, Nfft)
 !!      subroutine finalize_FFT_select(Nsmp, Nstacksmp)
 !!      subroutine verify_FFT_select(Nsmp, Nstacksmp, Nfft)
@@ -73,6 +75,19 @@
 !
       implicit none
 !
+!>      Character flag to use FFTPACK5
+      character(len = kchara), parameter :: hd_FFTPACK = 'fftpack'
+!>      Character flag to use FFTW3
+      character(len = kchara), parameter :: hd_FFTW =     'fftw'
+!>      Character flag to use FFTW3
+      character(len = kchara), parameter :: hd_FFTW3 =    'fftw3'
+!>      Character flag to use single transforms in FFTW3
+      character(len = kchara), parameter :: hd_FFTW_S =  'fftw_single'
+!>      Character flag to use single transforms in FFTW3
+      character(len = kchara), parameter :: hd_FFTW3_S = 'fftw3_single'
+!>      Character flag to use ISPACK
+      character(len = kchara), parameter :: hd_ISPACK =  'ispack'
+!
 !>      integer flag for undefined
       integer(kind = kint), parameter :: iflag_UNDEFINED_FFT =   0
 !>      integer flag to use FFTPACK5
@@ -86,9 +101,36 @@
 !
       integer(kind = kint) :: iflag_FFT = iflag_UNDEFINED_FFT
 !
+      private :: hd_FFTPACK, hd_FFTW, hd_FFTW3, hd_FFTW3_S
+      private :: hd_ISPACK
+!
 ! ------------------------------------------------------------------
 !
       contains
+!
+! ------------------------------------------------------------------
+!
+      subroutine set_fft_library_ctl(FFT_library_ctl)
+!
+      use skip_comment_f
+!
+      character(len = kchara), intent(in) :: FFT_library_ctl
+!
+!
+      if     (cmp_no_case(FFT_library_ctl, hd_FFTPACK) .gt. 0) then
+        iflag_FFT = iflag_FFTPACK
+      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK) .gt. 0) then
+        iflag_FFT = iflag_ISPACK
+      else if(cmp_no_case(FFT_library_ctl, hd_FFTW) .gt. 0              &
+     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3) .gt. 0) then
+        iflag_FFT = iflag_FFTW
+      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_S) .gt. 0            &
+     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_S) .gt. 0)        &
+     &   then
+        iflag_FFT = iflag_FFTW_SINGLE
+      end if
+!
+      end subroutine set_fft_library_ctl
 !
 ! ------------------------------------------------------------------
 !
