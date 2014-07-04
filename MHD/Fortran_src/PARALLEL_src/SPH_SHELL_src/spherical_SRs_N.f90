@@ -19,6 +19,8 @@
 !!      subroutine finish_send_recv_rtm_2_rtp
 !!      subroutine finish_send_recv_rj_2_rlm
 !!      subroutine finish_send_recv_rlm_2_rj
+!!
+!!      subroutine check_spherical_SRs_N(NB)
 !!@endverbatim
 !!
 !!
@@ -40,6 +42,7 @@
       use m_constants
       use m_spheric_parameter
       use m_sph_trans_comm_table
+      use m_solver_SR
 !
       use select_calypso_SR
 !
@@ -47,6 +50,8 @@
 !
 !>      Data communication mode for arbitrary size data
       integer(kind = kint) :: iflag_sph_SRN = iflag_import_item
+!
+      private ::  check_spherical_SRs_N
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,8 +65,6 @@
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
-!
-      use m_solver_SR
 !
       integer (kind=kint), intent(in) :: NB
       real (kind=kreal), intent(inout) :: X_rtp(NB*nnod_rtp)
@@ -100,12 +103,13 @@
      &    ntot_item_sr_rtp, ntot_item_sr_rtm)
 !
 !
+      call check_spherical_SRs_N(NB)
 !
+      if(my_rank .eq. 0) write(*,*) 'test  send_recv with reg. import'
       iflag_sph_SRN = iflag_import_item
       stime = MPI_WTIME()
       call send_recv_rtp_2_rtm_N(NB, X_rtp, X_rtm)
       call send_recv_rtm_2_rtp_N(NB, X_rtm, X_rtp)
-
       call send_recv_rj_2_rlm_N(NB, X_rj, X_rlm)
       call send_recv_rlm_2_rj_N(NB, X_rlm, X_rj)
 !
@@ -114,6 +118,7 @@
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       etime_item_import = etime_item_import / dble(nprocs)
 !
+      if(my_rank .eq. 0) write(*,*) 'test  send_recv with rev. import'
       iflag_sph_SRN = iflag_import_rev
       stime = MPI_WTIME()
       call send_recv_rtp_2_rtm_N(NB, X_rtp, X_rtm)
@@ -267,6 +272,48 @@
       call finish_calypso_send_recv(nneib_domain_rlm, iflag_self_rlm)
 !
       end subroutine finish_send_recv_rlm_2_rj
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine check_spherical_SRs_N(NB)
+!
+      use calypso_mpi
+      use m_spheric_parameter
+!
+      integer (kind=kint), intent(in) :: NB
+!
+!
+      call calypso_MPI_Barrier
+      if(my_rank .eq. 0) write(*,*) 'check rtp -> rtm'
+      call check_calypso_send_recv_N                                    &
+     &         (NB, nneib_domain_rtp, iflag_self_rtp,                   &
+     &              id_domain_rtp, istack_sr_rtp,                       &
+     &              nneib_domain_rtm, iflag_self_rtm,                   &
+     &              id_domain_rtm, istack_sr_rtm)
+      call calypso_MPI_Barrier
+      if(my_rank .eq. 0) write(*,*) 'check rtm -> rtp'
+      call check_calypso_send_recv_N                                    &
+     &         (NB, nneib_domain_rtm, iflag_self_rtm,                   &
+     &              id_domain_rtm, istack_sr_rtm,                       &
+     &              nneib_domain_rtp, iflag_self_rtp,                   &
+     &              id_domain_rtp, istack_sr_rtp)
+      call calypso_MPI_Barrier
+      if(my_rank .eq. 0) write(*,*) 'check rj -> rlm'
+      call check_calypso_send_recv_N                                    &
+     &         (NB, nneib_domain_rj, iflag_self_rj,                     &
+     &              id_domain_rj, istack_sr_rj,                         &
+     &              nneib_domain_rlm, iflag_self_rlm,                   &
+     &              id_domain_rlm, istack_sr_rlm)
+      call calypso_MPI_Barrier
+      if(my_rank .eq. 0) write(*,*) 'check rlm -> rj'
+      call check_calypso_send_recv_N                                    &
+     &         (NB, nneib_domain_rlm, iflag_self_rlm,                   &
+     &              id_domain_rlm, istack_sr_rlm,                       &
+     &              nneib_domain_rj, iflag_self_rj,                     &
+     &              id_domain_rj, istack_sr_rj)
+!
+      end subroutine check_spherical_SRs_N
 !
 ! ----------------------------------------------------------------------
 !

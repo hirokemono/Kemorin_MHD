@@ -28,8 +28,9 @@
       use m_constants
       use m_spheric_parameter
       use m_sph_trans_comm_table
+      use m_solver_SR
 !
-      use select_calypso_SR
+      use calypso_SR_int
 !
       implicit none
 !
@@ -48,8 +49,6 @@
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
-!
-      use m_solver_SR
 !
       integer (kind=kint), intent(inout):: iX_rtp(nnod_rtp)
       integer (kind=kint), intent(inout):: iX_rtm(nnod_rtm)
@@ -135,7 +134,7 @@
       integer (kind=kint), intent(inout):: iX_rtm(nnod_rtm)
 !
 !
-      call sel_calypso_send_recv_int                                    &
+      call calypso_send_recv_int                                        &
      &             (iflag_sph_SR_int, nnod_rtp, nnod_rtm,               &
      &              nneib_domain_rtp, iflag_self_rtp,                   &
      &              id_domain_rtp, istack_sr_rtp, item_sr_rtp,          &
@@ -156,7 +155,7 @@
       integer (kind=kint), intent(inout):: iX_rtp(nnod_rtp)
 !
 !
-      call sel_calypso_send_recv_int                                    &
+      call calypso_send_recv_int                                        &
      &             (iflag_sph_SR_int, nnod_rtm, nnod_rtp,               &
      &              nneib_domain_rtm, iflag_self_rtm,                   &
      &              id_domain_rtm, istack_sr_rtm, item_sr_rtm,          &
@@ -177,7 +176,7 @@
       integer (kind=kint), intent(inout):: iX_rlm(nnod_rlm)
 !
 !
-      call sel_calypso_send_recv_int                                    &
+      call calypso_send_recv_int                                        &
      &             (iflag_sph_SR_int, nnod_rj, nnod_rlm,                &
      &              nneib_domain_rj, iflag_self_rj,                     &
      &              id_domain_rj, istack_sr_rj, item_sr_rj,             &
@@ -198,7 +197,7 @@
       integer (kind=kint), intent(inout):: iX_rj(nnod_rj)
 !
 !
-      call sel_calypso_send_recv_int                                    &
+      call calypso_send_recv_int                                        &
      &             (iflag_sph_SR_int, nnod_rlm, nnod_rj,                &
      &              nneib_domain_rlm, iflag_self_rlm,                   &
      &              id_domain_rlm, istack_sr_rlm, item_sr_rlm,          &

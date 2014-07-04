@@ -53,6 +53,7 @@
 !
       subroutine analyze
 !
+      use m_solver_SR
       use cmp_trans_sph_indices
       use set_parallel_file_name
       use cmp_trans_sph_tests

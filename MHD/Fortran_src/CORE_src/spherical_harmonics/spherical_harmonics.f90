@@ -104,42 +104,37 @@
           g(j,4) = dble( (l-1)*l)
           g(j,5) = dble( (l+1)*(l+2) )
 !
-          if ( m .eq. 0 ) then
-            g(j,6) = dble(2*l+1) / two
-          else
-            g(j,6) = dble(2*l+1) / four
-          end if
-!
-          if ( j .eq. 0 ) then
-            g(j,7) = one
-          else if ( m .eq. 0 ) then
-            g(j,7) = dble(2*l+1) / dble( 2*l*(l+1) )
-          else
-            g(j,7) = dble(2*l+1) / dble( 4*l*(l+1) )
-          end if
-!
           g(j,8) =  four*pi * dble( l*(l+1) ) / dble(2*l+1)
-!
-          if ( j .eq. 0 ) then
-            g(j,9) = one / (four*pi)
-            g(j,13) = one
-          else
-            g(j,9) = dble(2*l+1) / (four*pi*dble( l*(l+1) ))
-            g(j,13) = one / dble( l*(l+1) )
-          end if
 !
           g(j,10) = four*pi / dble(2*l+1)
           g(j,11) = one / dble(2*l+1)
           g(j,12) = dble( l*(l+1) ) / dble(2*l+1)
 !
           g(j,16) = dble(2*l+1) / four
+        end do
+      end do
 !
-          if ( j .eq. 0 ) then
-            g(j,17) = zero
+!   l = m = 0
+      g(0,6) = one / two
+      g(0,7) = one
+      g(0,9) = one / (four*pi)
+      g(0,13) = one
+      g(0,17) = zero
+!
+      do l = 1, ltr_tri_sph
+        do m = -l, l
+          j = l*(l+1) + m
+          if ( m .eq. 0 ) then
+            g(j,6) = dble(2*l+1) / two
+            g(j,7) = dble(2*l+1) / dble( 2*l*(l+1) )
           else
-            g(j,17) = dble(2*l+1) / dble( 4*l*(l+1) )
+            g(j,6) = dble(2*l+1) / four
+            g(j,7) = dble(2*l+1) / dble( 4*l*(l+1) )
           end if
 !
+          g(j,9) =  dble(2*l+1) / (four*pi*dble( l*(l+1) ))
+          g(j,13) = one / dble( l*(l+1) )
+          g(j,17) = dble(2*l+1) / dble( 4*l*(l+1) )
         end do
       end do
 !*

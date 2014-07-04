@@ -226,6 +226,40 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine make_module_dependency_f(dirname, filename)
+!
+      character(len=255), intent(in) :: filename
+      character(len=255), intent(in) :: dirname
+!
+      character(len=255) :: objfile
+      character(len=255) :: filehead
+      character(len=255) :: fileext
+!
+      integer :: lobj
+!
+!
+      lobj = len(trim(filename))
+      write(filehead,'(a)') filename(1:lobj-2)
+      write(fileext,'(a)')  filename(lobj:lobj)
+      write(objfile,'(a,a2)') trim(filehead), '.o'
+!
+!      write(*,*) 'lobj: ',  lobj
+!      write(*,*) 'objfile: ',  trim(objfile)
+!      write(*,*) 'filehead: ', trim(filehead)
+!      write(*,*) 'filename: ', trim(filename)
+!      write(*,*) 'fileext: ', trim(fileext)
+      call const_module_list(filename)
+!
+      if(fileext .eq. 'F90') then
+        call write_module_list(objfile, filename, dirname, 1)
+      else
+        call write_module_list(objfile, filename, dirname, 0)
+      end if
+!
+      end subroutine make_module_dependency_f
+!
+!   --------------------------------------------------------------------
+!
       end module module_dependency
 !
 !   --------------------------------------------------------------------

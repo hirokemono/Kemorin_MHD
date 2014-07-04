@@ -67,8 +67,9 @@
       subroutine interpolate_type_1(NP_org, NP_dest,                    &
      &          comm_dest, itp_table, X_org, X_dest, PEsmpTOT)
 !
+      use m_solver_SR
       use interpolate_scalar_1pe
-      use select_calypso_SR
+      use calypso_SR
       use solver_SR
 !
       type(communication_table), intent(in) :: comm_dest
@@ -96,7 +97,7 @@
 !
 !     communication
 !
-      call sel_calypso_send_recv(iflag_import_item,                     &
+      call calypso_send_recv(iflag_import_item,                         &
      &           itp_table%tbl_org%ntot_table_org, NP_dest,             &
      &           itp_table%tbl_org%num_dest_domain,                     &
      &           itp_table%tbl_org%iflag_self_itp_send,                 &
@@ -126,8 +127,9 @@
       subroutine interpolate_type_3(NP_org, NP_dest,                    &
      &          comm_dest, itp_table, X_org, X_dest, PEsmpTOT)
 !
+      use m_solver_SR
       use interpolate_vector_1pe
-      use select_calypso_SR
+      use calypso_SR_3
       use solver_SR_3
 !
       type(communication_table), intent(in) :: comm_dest
@@ -155,7 +157,7 @@
 !
 !     communication
 !
-      call sel_calypso_send_recv_3(iflag_import_item,                   &
+      call calypso_send_recv_3(iflag_import_item,                       &
      &           itp_table%tbl_org%ntot_table_org, NP_dest,             &
      &           itp_table%tbl_org%num_dest_domain,                     &
      &           itp_table%tbl_org%iflag_self_itp_send,                 &
@@ -185,8 +187,9 @@
       subroutine interpolate_type_6(NP_org, NP_dest,                    &
      &          comm_dest, itp_table, X_org, X_dest, PEsmpTOT)
 !
+      use m_solver_SR
       use interpolate_tensor_1pe
-      use select_calypso_SR
+      use calypso_SR_6
       use solver_SR_6
 !
       type(communication_table), intent(in) :: comm_dest
@@ -214,7 +217,7 @@
 !
 !     communication
 !
-      call sel_calypso_send_recv_6(iflag_import_item,                   &
+      call calypso_send_recv_6(iflag_import_item,                       &
      &           itp_table%tbl_org%ntot_table_org, NP_dest,             &
      &           itp_table%tbl_org%num_dest_domain,                     &
      &           itp_table%tbl_org%iflag_self_itp_send,                 &
@@ -244,6 +247,7 @@
       subroutine interpolate_type_N(NP_org, NP_dest, NB,                &
      &          comm_dest, itp_table, X_org, X_dest, PEsmpTOT)
 !
+      use m_solver_SR
       use interpolate_fields_1pe
       use select_calypso_SR
       use solver_SR_N

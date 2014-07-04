@@ -47,9 +47,10 @@
       subroutine interpolate_mod_1(comm_dest, NP_org, NP_dest,          &
      &          X_org, X_dest)
 !
+      use m_solver_SR
       use m_interpolate_matrix
       use interpolate_scalar_1pe
-      use select_calypso_SR
+      use calypso_SR
       use solver_SR
 !
 !
@@ -71,7 +72,7 @@
       end if
 !
 !   communication
-      call sel_calypso_send_recv                                        &
+      call calypso_send_recv                                            &
      &          (iflag_import_item, ntot_table_org, NP_dest,            &
      &           num_dest_domain, iflag_self_itp_send,                  &
      &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
@@ -94,9 +95,10 @@
       subroutine interpolate_mod_3(comm_dest, NP_org, NP_dest,          &
      &          X_org, X_dest)
 !
+      use m_solver_SR
       use m_interpolate_matrix
       use interpolate_vector_1pe
-      use select_calypso_SR
+      use calypso_SR_3
       use solver_SR_3
 !
       type(communication_table), intent(in) :: comm_dest
@@ -118,7 +120,7 @@
 !
 !     communication
 !
-      call sel_calypso_send_recv_3                                      &
+      call calypso_send_recv_3                                          &
      &          (iflag_import_item, ntot_table_org, NP_dest,            &
      &           num_dest_domain, iflag_self_itp_send,                  &
      &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
@@ -142,9 +144,10 @@
       subroutine interpolate_mod_6(comm_dest, NP_org, NP_dest,          &
      &          X_org, X_dest)
 !
+      use m_solver_SR
       use m_interpolate_matrix
       use interpolate_tensor_1pe
-      use select_calypso_SR
+      use calypso_SR_6
       use solver_SR_6
 !
       type(communication_table), intent(in) :: comm_dest
@@ -163,7 +166,7 @@
      &      NUM_SUM_itp(4), IEND_SUM_itp_smp, x_inter_org(1))
       end if
 !
-      call sel_calypso_send_recv_6                                      &
+      call calypso_send_recv_6                                          &
      &          (iflag_import_item, ntot_table_org, NP_dest,            &
      &           num_dest_domain, iflag_self_itp_send,                  &
      &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
@@ -186,6 +189,7 @@
       subroutine interpolate_mod_N(comm_dest, NP_org, NP_dest, NB,      &
      &          X_org, X_dest)
 !
+      use m_solver_SR
       use m_interpolate_matrix
       use interpolate_fields_1pe
       use select_calypso_SR
@@ -232,11 +236,12 @@
       subroutine s_interpolate_integer(comm_dest, NP_org, NP_dest,      &
      &          i_vector_dest, i_vector_org)
 !
+      use m_solver_SR
       use m_2nd_pallalel_vector
       use m_array_for_send_recv
 !
       use interpolate_imark_1pe
-      use select_calypso_SR
+      use calypso_SR_int
       use solver_SR_int
 !
       type(communication_table), intent(in) :: comm_dest
@@ -265,7 +270,7 @@
 !
 !     communication
 !
-      call sel_calypso_send_recv_int                                    &
+      call calypso_send_recv_int                                        &
      &          (iflag_import_item, ntot_table_org, NP_dest,            &
      &           num_dest_domain, iflag_self_itp_send,                  &
      &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &

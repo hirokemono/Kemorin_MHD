@@ -15,6 +15,7 @@
 !!      subroutine write_sph_layer_ms_file(my_rank, istep, time)
 !!
 !!      subroutine open_sph_vol_rms_file(id_file, fname_rms, mode_label)
+!!      subroutine set_sph_rms_labels(num_rms_comp, rms_name, labels)
 !!@endverbatim
 !!
 !!@n @param my_rank       Process ID
@@ -277,16 +278,13 @@
       subroutine write_sph_rms_header(id_file, mode_label)
 !
       use m_phys_labels
-      use add_direction_labels
       use write_field_labels
 !
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara), intent(in) :: mode_label
       integer(kind = kint) :: i, nri
 !
-      character(len=kchara) :: label_pol, label_tor, label_dpol
-      character(len=kchara) :: label_rr,  label_rt,  label_rp
-      character(len=kchara) :: label_tt,  label_tp,  label_pp
+      character(len=kchara) :: labels(6)
 !
 !
       nri = nidx_rj(1)
@@ -308,53 +306,57 @@
       end if
 !
       do i = 1, num_rms_rj
-          if ( rms_name_rj(i) .eq. fhd_velo) then
-            write(label_pol,'(a)')   'K_ene_pol'
-            write(label_tor,'(a)')   'K_ene_tor'
-            write(label_dpol,'(a)')  'K_ene'
-            call write_three_labels(id_file,                            &
-     &          label_pol, label_tor, label_dpol)
-!
-          else if (rms_name_rj(i) .eq. fhd_magne) then
-            write(label_pol,'(a)')   'M_ene_pol'
-            write(label_tor,'(a)')   'M_ene_tor'
-            write(label_dpol,'(a)')  'M_ene'
-            call write_three_labels(id_file,                            &
-     &          label_pol, label_tor, label_dpol)
-!
-          else if (rms_name_rj(i) .eq. fhd_filter_v) then
-            write(label_pol,'(a)')   'filter_KE_pol'
-            write(label_tor,'(a)')   'filter_KE_tor'
-            write(label_dpol,'(a)')  'filter_KE'
-            call write_three_labels(id_file,                            &
-     &          label_pol, label_tor, label_dpol)
-!
-          else if (rms_name_rj(i) .eq. fhd_filter_b) then
-            write(label_pol,'(a)')   'filter_ME_pol'
-            write(label_tor,'(a)')   'filter_ME_tor'
-            write(label_dpol,'(a)')  'filter_ME'
-            call write_three_labels(id_file,                            &
-     &          label_pol, label_tor, label_dpol)
-!
-          else if (num_rms_comp_rj(i) .eq. 1) then
-            call write_one_label(id_file, rms_name_rj(i))
-!
-          else if (num_rms_comp_rj(i) .eq. 3) then
-            call add_vector_power_sph_label(rms_name_rj(i),             &
-     &          label_pol, label_tor, label_dpol)
-            call write_three_labels(id_file,                            &
-     &          label_pol, label_tor, label_dpol)
-          else if (num_rms_comp_rj(i) .eq. 6) then
-            call add_tensor_direction_label_rtp(rms_name_rj(i),         &
-     &          label_rr, label_rt, label_rp, label_tt, label_tp,       &
-     &          label_pp)
-            call write_six_labels(id_file, label_rr, label_rt,          &
-     &          label_rp, label_tt, label_tp, label_pp)
-          end if
+        call set_sph_rms_labels(num_rms_comp_rj(i), rms_name_rj(i),     &
+     &      labels(1))
+        call write_multi_labels(id_file, num_rms_comp_rj(i), labels(1))
       end do
       write(id_file,*)
 !
       end subroutine write_sph_rms_header
+!
+!  --------------------------------------------------------------------
+!
+      subroutine set_sph_rms_labels(num_rms_comp, rms_name, labels)
+!
+      use m_phys_labels
+      use add_direction_labels
+!
+      integer(kind = kint), intent(in) :: num_rms_comp
+      character(len = kchara), intent(in) :: rms_name
+!
+      character(len = kchara), intent(inout) :: labels(num_rms_comp)
+!
+!
+      if ( rms_name .eq. fhd_velo) then
+        write(labels(1),'(a)')   'K_ene_pol'
+        write(labels(2),'(a)')   'K_ene_tor'
+        write(labels(3),'(a)')   'K_ene'
+!
+      else if (rms_name .eq. fhd_magne) then
+        write(labels(1),'(a)')   'M_ene_pol'
+        write(labels(2),'(a)')   'M_ene_tor'
+        write(labels(3),'(a)')   'M_ene'
+!
+      else if (rms_name .eq. fhd_filter_v) then
+        write(labels(1),'(a)')   'filter_KE_pol'
+        write(labels(2),'(a)')   'filter_KE_tor'
+        write(labels(3),'(a)')   'filter_KE'
+!
+      else if (rms_name .eq. fhd_filter_b) then
+        write(labels(1),'(a)')   'filter_ME_pol'
+        write(labels(2),'(a)')   'filter_ME_tor'
+        write(labels(3),'(a)')   'filter_ME'
+!
+      else if (num_rms_comp .eq. 3) then
+        call add_vector_power_sph_label(rms_name,                       &
+     &          labels(1), labels(2), labels(3))
+      else if (num_rms_comp .eq. 6) then
+        call add_tensor_direction_label_rtp(rms_name,                   &
+     &          labels(1), labels(2), labels(3), labels(4), labels(5),  &
+     &          labels(6))
+      end if
+!
+      end subroutine set_sph_rms_labels
 !
 !  --------------------------------------------------------------------
 !

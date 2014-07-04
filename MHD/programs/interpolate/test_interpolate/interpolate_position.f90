@@ -161,13 +161,14 @@
 !
       subroutine s_interpolate_global_node(NP_dest, comm_dest)
 !
+      use m_solver_SR
       use m_interpolate_table_orgin
       use m_interpolate_table_dest
 !
       use m_interpolated_geometry
       use m_2nd_pallalel_vector
 !
-      use select_calypso_SR
+      use calypso_SR_int
       use solver_SR_int
 !
       integer(kind = kint), intent(in) :: NP_dest
@@ -178,8 +179,8 @@
 !     communication
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'sel_calypso_send_recv_int'
-      call sel_calypso_send_recv_int                                    &
+      if (iflag_debug.eq.1) write(*,*) 'calypso_send_recv_int'
+      call calypso_send_recv_int                                        &
      &          (iflag_import_item, ntot_table_org, NP_dest,            &
      &           num_dest_domain, iflag_self_itp_send,                  &
      &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &

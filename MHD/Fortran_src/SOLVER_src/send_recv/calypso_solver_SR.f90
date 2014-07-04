@@ -174,7 +174,7 @@
      &                 NEIBPE, STACK_IMPORT, NOD_IMPORT, REV_IMPORT,    &
      &                         STACK_EXPORT, NOD_EXPORT, X)
 !
-      use select_calypso_SR
+      use calypso_SR_6
 !
       integer(kind = kint), intent(in) :: iflag_SR
 !
@@ -197,7 +197,7 @@
 !
       N_ext = NP - N
       if(N_ext .le. 0) return
-      call sel_calypso_send_recv_6(iflag_SR, N, N_ext,                  &
+      call calypso_send_recv_6(iflag_SR, N, N_ext,                      &
      &    NEIBPETOT, izero, NEIBPE, STACK_EXPORT, NOD_EXPORT,           &
      &    NEIBPETOT, izero, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
      &    REV_IMPORT,  X(1), X(6*N+6))
@@ -210,7 +210,7 @@
      &                 NEIBPE, STACK_IMPORT, NOD_IMPORT, REV_IMPORT,    &
      &                         STACK_EXPORT, NOD_EXPORT, X)
 !
-      use select_calypso_SR
+      use calypso_SR_3
 !
       integer(kind = kint), intent(in) :: iflag_SR
 !
@@ -233,7 +233,7 @@
 !
       N_ext = NP - N
       if(N_ext .le. 0) return
-      call sel_calypso_send_recv_3(iflag_SR, N, N_ext,                  &
+      call calypso_send_recv_3(iflag_SR, N, N_ext,                      &
      &    NEIBPETOT, izero, NEIBPE, STACK_EXPORT, NOD_EXPORT,           &
      &    NEIBPETOT, izero, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
      &    REV_IMPORT,  X(1), X(3*N+3))
@@ -246,7 +246,7 @@
      &                 NEIBPE, STACK_IMPORT, NOD_IMPORT, REV_IMPORT,    &
      &                         STACK_EXPORT, NOD_EXPORT, X)
 !
-      use select_calypso_SR
+      use calypso_SR_2
 !
       integer(kind = kint), intent(in) :: iflag_SR
 !
@@ -269,7 +269,7 @@
 !
       N_ext = NP - N
       if(N_ext .le. 0) return
-      call sel_calypso_send_recv_2(iflag_SR, N, N_ext,                  &
+      call calypso_send_recv_2(iflag_SR, N, N_ext,                      &
      &    NEIBPETOT, izero, NEIBPE, STACK_EXPORT, NOD_EXPORT,           &
      &    NEIBPETOT, izero, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
      &    REV_IMPORT, X(1), X(2*N+2))
@@ -282,7 +282,7 @@
      &                 NEIBPE, STACK_IMPORT, NOD_IMPORT, REV_IMPORT,    &
      &                         STACK_EXPORT, NOD_EXPORT, X)
 !
-      use select_calypso_SR
+      use calypso_SR
 !
       integer(kind = kint), intent(in) :: iflag_SR
 !
@@ -305,7 +305,7 @@
 !
       N_ext = NP - N
       if(N_ext .le. 0) return
-      call sel_calypso_send_recv(iflag_SR, N, N_ext,                    &
+      call calypso_send_recv(iflag_SR, N, N_ext,                        &
      &    NEIBPETOT, izero, NEIBPE, STACK_EXPORT, NOD_EXPORT,           &
      &    NEIBPETOT, izero, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
      &    REV_IMPORT, X(1), X(N+1))
@@ -319,7 +319,7 @@
      &                 NEIBPE, STACK_IMPORT, NOD_IMPORT, REV_IMPORT,    &
      &                         STACK_EXPORT, NOD_EXPORT, iX)
 !
-      use select_calypso_SR
+      use calypso_SR_int
 !
       integer(kind = kint), intent(in) :: iflag_SR
 !
@@ -342,7 +342,7 @@
 !
       N_ext = NP - N
       if(N_ext .le. 0) return
-      call sel_calypso_send_recv_int(iflag_SR, N, N_ext,                &
+      call calypso_send_recv_int(iflag_SR, N, N_ext,                    &
      &    NEIBPETOT, izero, NEIBPE, STACK_EXPORT, NOD_EXPORT,           &
      &    NEIBPETOT, izero, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
      &    REV_IMPORT, iX(1), iX(N+1))

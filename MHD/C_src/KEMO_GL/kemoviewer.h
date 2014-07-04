@@ -20,7 +20,7 @@
 #define close_gzfile              close_gzfile_
 #define check_gzfile_eof          check_gzfile_eof_
 #define write_compress_txt        write_compress_txt_
-#define write_compress_txt_contd  write_compress_txt_contd_
+#define write_compress_txt_nolf   write_compress_txt_nolf_
 #define get_one_line_from_gz      get_one_line_from_gz_
 #define compress_file             compress_file_
 #define decompress_file           decompress_file_
@@ -48,7 +48,7 @@
 #define close_gzfile              CLOSE_GZFILE
 #define check_gzfile_eof          CHECK_GZFILE_EOF
 #define write_compress_txt        WRITE_COMPRESS_TXT
-#define write_compress_txt_contd  WRITE_COMPRESS_TXT_CONTD
+#define write_compress_txt_nolf   WRITE_COMPRESS_TXT_NOLF
 #define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
 #define compress_file             COMPRESS_FILE
 #define decompress_file           DECOMPRESS_FILE
@@ -76,7 +76,7 @@
 #define close_gzfile              CLOSE_GZFILE
 #define check_gzfile_eof          CHECK_GZFILE_EOF
 #define write_compress_txt        WRITE_COMPRESS_TXT
-#define write_compress_txt_contd  WRITE_COMPRESS_TXT_CONTD
+#define write_compress_txt_nolf   WRITE_COMPRESS_TXT_NOLF
 #define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
 #define compress_file             COMPRESS_FILE
 #define decompress_file           DECOMPRESS_FILE
@@ -108,7 +108,7 @@
 #define close_gzfile              close_gzfile
 #define check_gzfile_eof          check_gzfile_eof
 #define write_compress_txt        write_compress_txt
-#define write_compress_txt_contd  write_compress_txt_contd
+#define write_compress_txt_nolf   write_compress_txt_nolf
 #define get_one_line_from_gz      get_one_line_from_gz
 #define compress_file             compress_file
 #define decompress_file           decompress_file

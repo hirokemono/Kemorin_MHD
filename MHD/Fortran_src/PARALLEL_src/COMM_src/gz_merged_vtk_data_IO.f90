@@ -6,7 +6,8 @@
 !      subroutine write_merged_gz_vtk_fields(nnod, num_field,           &
 !     &          ntot_comp, ncomp_field, field_name, d_nod,             &
 !     &          istack_numnod, istack_intnod)
-!      subroutine write_merged_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie,&     !     &          istack_numnod, istack_intnod, istack_numele)
+!      subroutine write_merged_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie,&
+!     &          istack_numnod, istack_intnod, istack_numele)
 !
       module gz_merged_vtk_data_IO
 !
