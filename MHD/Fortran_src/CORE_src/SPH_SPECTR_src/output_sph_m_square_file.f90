@@ -164,10 +164,27 @@
       call open_sph_vol_rms_file                                        &
      &      (id_file_rms_l, fname_rms, mode_label)
 !
+      do lm = 0, l_truncation
+        write(id_file_rms_l,'(i10,1pe23.14e3,i10,1p200e23.14e3)')       &
+     &            istep, time, lm, rms_sph_vol_l(lm,1:ntot_rms_rj)
+        write(id_file_rms_m,'(i10,1pe23.14e3,i10,1p200e23.14e3)')       &
+     &            istep, time, lm, rms_sph_vol_m(lm,1:ntot_rms_rj)
+      end do
+!
+      close(id_file_rms_l)
+!
+!
       write(fname_rms, '(a,a6)') trim(fhead_rms_vol), '_m.dat'
       write(mode_label,'(a)') 'order'
       call open_sph_vol_rms_file                                        &
      &      (id_file_rms_m, fname_rms, mode_label)
+!
+      do lm = 0, l_truncation
+        write(id_file_rms_m,'(i10,1pe23.14e3,i10,1p200e23.14e3)')       &
+     &            istep, time, lm, rms_sph_vol_m(lm,1:ntot_rms_rj)
+      end do
+      close(id_file_rms_m)
+!
 !
       write(fname_rms,'(a,a7)') trim(fhead_rms_vol), '_lm.dat'
       write(mode_label,'(a)') 'diff_deg_order'
@@ -175,16 +192,9 @@
      &      (id_file_rms_lm, fname_rms, mode_label)
 !
       do lm = 0, l_truncation
-        write(id_file_rms_l,'(i10,1pe23.14e3,i10,1p200e23.14e3)')       &
-     &            istep, time, lm, rms_sph_vol_l(lm,1:ntot_rms_rj)
-        write(id_file_rms_m,'(i10,1pe23.14e3,i10,1p200e23.14e3)')       &
-     &            istep, time, lm, rms_sph_vol_m(lm,1:ntot_rms_rj)
         write(id_file_rms_lm,'(i10,1pe23.14e3,i10,1p200e23.14e3)')      &
      &            istep, time, lm, rms_sph_vol_lm(lm,1:ntot_rms_rj)
       end do
-!
-      close(id_file_rms_l)
-      close(id_file_rms_m)
       close(id_file_rms_lm)
 !
       end subroutine write_sph_vol_ms_spectr_file
@@ -208,6 +218,9 @@
       if(iflag_layer_rms_spec .eq. 0)  return
       if(ntot_rms_rj .eq. 0)  return
 !
+      kst = 1
+      if(iflag_shell_mode .eq. iflag_MESH_same) kst = 0
+!
       write(fname_rms,   '(a,a4)') trim(fhead_rms_layer), '.dat'
       write(mode_label,'(a)') 'radial_id'
       call open_sph_vol_rms_file(id_file_rms, fname_rms, mode_label)
@@ -225,30 +238,38 @@
       write(mode_label,'(a)') 'radial_id    degree'
       call open_sph_vol_rms_file(id_file_rms_l, fname_rms, mode_label)
 !
+      do kg = 1, nidx_rj(1)
+        do lm = 0, l_truncation
+          write(id_file_rms_l,'(i10,1pe23.14e3,2i10,1p200e23.14e3)')    &
+     &           istep, time, kg, lm, rms_sph_l(kg,lm,1:ntot_rms_rj)
+         end do
+      end do
+      close(id_file_rms_l)
+!
+!
       write(fname_rms, '(a,a6)') trim(fhead_rms_layer), '_m.dat'
       write(mode_label,'(a)') 'radial_id    order'
       call open_sph_vol_rms_file(id_file_rms_m, fname_rms, mode_label)
+!
+      do kg = 1, nidx_rj(1)
+        do lm = 0, l_truncation
+          write(id_file_rms_m,'(i10,1pe23.14e3,2i10,1p200e23.14e3)')    &
+     &           istep, time, kg, lm, rms_sph_m(kg,lm,1:ntot_rms_rj)
+         end do
+      end do
+      close(id_file_rms_m)
+!
 !
       write(fname_rms,'(a,a7)') trim(fhead_rms_layer), '_lm.dat'
       write(mode_label,'(a)') 'radial_id    diff_deg_order'
       call open_sph_vol_rms_file(id_file_rms_lm, fname_rms, mode_label)
 !
-      kst = 1
-      if(iflag_shell_mode .eq. iflag_MESH_same) kst = 0
-!
       do kg = 1, nidx_rj(1)
         do lm = 0, l_truncation
-          write(id_file_rms_l,'(i10,1pe23.14e3,2i10,1p200e23.14e3)')    &
-     &           istep, time, kg, lm, rms_sph_l(kg,lm,1:ntot_rms_rj)
-          write(id_file_rms_m,'(i10,1pe23.14e3,2i10,1p200e23.14e3)')    &
-     &           istep, time, kg, lm, rms_sph_m(kg,lm,1:ntot_rms_rj)
           write(id_file_rms_lm,'(i10,1pe23.14e3,2i10,1p200e23.14e3)')   &
      &           istep, time, kg, lm, rms_sph_lm(kg,lm,1:ntot_rms_rj)
          end do
       end do
-!
-      close(id_file_rms_l)
-      close(id_file_rms_m)
       close(id_file_rms_lm)
 !
       end subroutine write_sph_layer_ms_file
