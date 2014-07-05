@@ -123,6 +123,7 @@
       do inum = 1, num_pick_sph
         l = idx_pick_sph(inum,1)
         m = idx_pick_sph(inum,2)
+        j = l*(l+1) + m
         if(l .le. l_truncation) then
           icou = icou + 1
           idx_pick_gl(icou) = l*(l+1) + m
@@ -163,8 +164,8 @@
       end do
       num_pickup = icou
 !
-      call quicksort_w_index(num_pickup, idx_pick_gl,                   &
-     &    ione, num_pickup, idx_pick_lc)
+      call quicksort_w_index(num_pickup, idx_pick_gl(1),                &
+     &    ione, num_pickup, idx_pick_lc(1))
 !
       end subroutine set_picked_sph_address
 !

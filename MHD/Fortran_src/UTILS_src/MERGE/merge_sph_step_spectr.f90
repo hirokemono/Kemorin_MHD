@@ -104,8 +104,6 @@
       call clear_merged_spectr
 !
       phys_file_head = org_sph_fst_head
-!
-
       do ip = 1, np_sph_org
         my_rank = ip - 1
         call sel_read_alloc_step_SPH_file(my_rank, istep)
