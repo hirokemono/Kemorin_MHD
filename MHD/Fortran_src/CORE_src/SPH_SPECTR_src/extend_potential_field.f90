@@ -289,7 +289,7 @@
           d_rj(inod,is_fld  ) = - al1 * w_gauss(j_gl) * ratio**(l_gl+1) &
      &                         * r_gauss
           d_rj(inod,is_fld+1) = - w_gauss(j_gl) * ratio**l_gl
-          d_rj(inod,is_fld+1) = zero
+          d_rj(inod,is_fld+2) = zero
         end do
       end do
 !$omp end parallel do
