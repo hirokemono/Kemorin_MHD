@@ -4,6 +4,7 @@
 !     Written by H. Matsui on Feb., 2011
 !
 !      subroutine alloc_sph_mesh_4_merge
+!      subroutine alloc_sph_mesh_parallel_merge
 !      subroutine dealloc_sph_mesh_4_merge
 !
 !      subroutine set_local_rj_mesh_4_merge(my_rank, sph_mesh)
@@ -18,14 +19,18 @@
 !
       use m_precision
       use t_spheric_mesh
+      use t_sph_spectr_data
 !
       implicit none
 !
 !
       integer(kind = kint) :: np_sph_org
-      type(sph_mesh_data), pointer :: org_sph_mesh(:)
+      type(sph_mesh_data), pointer, save :: org_sph_mesh(:)
+      type(phys_data), pointer, save ::     org_sph_phys(:)
+!
       integer(kind = kint) :: np_sph_new
-      type(sph_mesh_data), pointer :: new_sph_mesh(:)
+      type(sph_mesh_data), pointer, save :: new_sph_mesh(:)
+      type(phys_data), pointer, save ::     new_sph_phys(:)
 !
 ! -----------------------------------------------------------------------
 !
@@ -37,16 +42,31 @@
 !
 !
       allocate( org_sph_mesh(np_sph_org) )
+      allocate( org_sph_phys(np_sph_org) )
       allocate( new_sph_mesh(np_sph_new) )
+      allocate( new_sph_phys(np_sph_new) )
 !
       end subroutine alloc_sph_mesh_4_merge
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_sph_mesh_parallel_merge
+!
+!
+      allocate( org_sph_mesh(np_sph_org) )
+      allocate( org_sph_phys(np_sph_org) )
+      allocate( new_sph_mesh(1) )
+      allocate( new_sph_phys(1) )
+!
+      end subroutine alloc_sph_mesh_parallel_merge
 !
 ! -----------------------------------------------------------------------
 !
       subroutine dealloc_sph_mesh_4_merge
 !
 !
-      deallocate(org_sph_mesh, new_sph_mesh)
+      deallocate(org_sph_mesh, org_sph_phys)
+      deallocate(new_sph_mesh, new_sph_phys)
 !
       end subroutine dealloc_sph_mesh_4_merge
 !

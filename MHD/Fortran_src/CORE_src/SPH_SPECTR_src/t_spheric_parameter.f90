@@ -74,6 +74,10 @@
 !!      subroutine check_type_spheric_param_rj(my_rank, rj)
 !!        integer(kind = kint), intent(in) :: my_rank
 !!        type(sph_rj_grid), intent(in) :: rj
+!!
+!!      integer function find_local_sph_mode_address_t(rj, l, m)
+!!      integer function local_sph_data_address_t(rj, kr, j_lc)
+!!        type(sph_rj_grid), intent(in) :: rj
 !!@endverbatim
 !!
 !!@n @param  my_rank     Running rank ID
@@ -744,5 +748,39 @@
       end subroutine check_type_spheric_param_rj
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      integer function find_local_sph_mode_address_t(rj, l, m)
+!
+      type(sph_rj_grid), intent(in) :: rj
+      integer(kind = kint), intent(in) :: l, m
+!
+      integer(kind = kint) :: j
+!
+!
+      find_local_sph_mode_address_t = 0
+      do j = 1, rj%nidx_rj(2)
+        if (   rj%idx_gl_1d_rj_j(j,2) .eq. l                            &
+     &   .and. rj%idx_gl_1d_rj_j(j,3) .eq. m) then
+          find_local_sph_mode_address_t = j
+          return
+        end if
+      end do
+!
+      end function find_local_sph_mode_address_t
+!
+!-----------------------------------------------------------------------
+!
+      integer function local_sph_data_address_t(rj, kr, j_lc)
+!
+      type(sph_rj_grid), intent(in) :: rj
+      integer(kind = kint), intent(in) :: kr, j_lc
+!
+!
+      local_sph_data_address_t = j_lc + (kr-1)*rj%nidx_rj(2)
+!
+      end function local_sph_data_address_t
+!
+!-----------------------------------------------------------------------
 !
       end module t_spheric_parameter

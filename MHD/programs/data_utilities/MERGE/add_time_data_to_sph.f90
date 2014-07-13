@@ -14,6 +14,7 @@
       use m_control_data_4_merge
       use m_control_param_newsph
       use m_merge_spheric_mesh
+      use m_field_data_IO
       use merge_sph_step_spectr
       use set_field_file_names
 !
@@ -81,13 +82,15 @@
 !
         call copy_rj_merged_phys_from_IO                                &
      &      (org_sph_mesh(ip)%sph_mesh%sph_rj%nidx_rj(2),               &
-     &       org_sph_mesh(ip)%sph_mesh%sph_rj%idx_gl_1d_rj_j)
+     &       org_sph_mesh(ip)%sph_mesh%sph_rj%idx_gl_1d_rj_j,           &
+     &       org_sph_mesh(ip)%sph_mesh%sph_rj%nnod_rj, phys_data_IO)
 !
         call deallocate_phys_data_IO
       end do
 !
       if(b_sph_ratio.ne.0.0d0 .or. b_sph_ratio.ne.1.0d0) then
-        call mul_sph_magne
+        call mul_sph_magne(nnod_rj, num_phys_rj, ntot_phys_rj,          &
+     &          istack_phys_comp_rj, phys_name_rj, d_rj)
       end if
 !
 !  set new spectr data

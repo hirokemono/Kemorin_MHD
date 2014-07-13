@@ -71,8 +71,6 @@
 !
 !>      Radius to evaluate Gauss coefficients (Default: 6400km/2200km)
       real(kind = kreal) :: r_4_gauss_coefs = 2.91
-!>      Radius RAtio between CMB and point to be evaluated
-      real(kind = kreal) :: rcmb_to_Re = 3.5d3 / 6.4d3
 !
       private :: open_gauss_coefs_4_monitor
 !

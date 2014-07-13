@@ -197,8 +197,8 @@
       end do
 !
       if (ipol%i_magne .gt. 0) then
-        call ext_outside_potential(ipol%i_magne, kr_outside)
-        call ext_inside_potential(ipol%i_magne, kr_inside)
+        call ext_outside_potential(kr_outside, d_rj(1,ipol%i_magne))
+        call ext_inside_potential(kr_inside, d_rj(1,ipol%i_magne))
       end if
 !
       end subroutine r_interpolate_sph_rst_from_IO
@@ -226,8 +226,8 @@
       end do
 !
       if (ipol%i_magne .gt. 0) then
-        call ext_outside_potential(ipol%i_magne, kr_outside)
-        call ext_inside_potential(ipol%i_magne, kr_inside)
+        call ext_outside_potential(kr_outside, d_rj(1,ipol%i_magne))
+        call ext_inside_potential(kr_inside, d_rj(1,ipol%i_magne))
       end if
 !
       end subroutine r_interpolate_sph_fld_from_IO
@@ -245,10 +245,10 @@
 !
       write(*,*) ' ipol%i_magne', ipol%i_magne, kr_outside, kr_inside
       if (ipol%i_magne .gt. 0) then
-        call gauss_to_poloidal_out(ipol%i_magne, kr_outside,            &
-     &      ltr_w, r_gauss, w_gauss, index_w)
-        call gauss_to_poloidal_in(ipol%i_magne,  kr_inside,             &
-     &      ltr_w, r_gauss, w_gauss, index_w)
+        call gauss_to_poloidal_out(kr_outside, ltr_w, r_gauss,          &
+     &      w_gauss, index_w, d_rj(1,ipol%i_magne))
+        call gauss_to_poloidal_in(kr_inside, ltr_w, r_gauss,            &
+     &      w_gauss, index_w, d_rj(1,ipol%i_magne))
       end if
 !
       end subroutine set_poloidal_b_by_gauss_coefs

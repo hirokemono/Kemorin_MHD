@@ -167,8 +167,6 @@
       do lm = 0, l_truncation
         write(id_file_rms_l,'(i10,1pe23.14e3,i10,1p200e23.14e3)')       &
      &            istep, time, lm, rms_sph_vol_l(lm,1:ntot_rms_rj)
-        write(id_file_rms_m,'(i10,1pe23.14e3,i10,1p200e23.14e3)')       &
-     &            istep, time, lm, rms_sph_vol_m(lm,1:ntot_rms_rj)
       end do
 !
       close(id_file_rms_l)
@@ -368,6 +366,8 @@
         write(labels(2),'(a)')   'filter_ME_tor'
         write(labels(3),'(a)')   'filter_ME'
 !
+      else if (num_rms_comp .eq. 1) then
+        write(labels(1),'(a)')   trim(rms_name)
       else if (num_rms_comp .eq. 3) then
         call add_vector_power_sph_label(rms_name,                       &
      &          labels(1), labels(2), labels(3))

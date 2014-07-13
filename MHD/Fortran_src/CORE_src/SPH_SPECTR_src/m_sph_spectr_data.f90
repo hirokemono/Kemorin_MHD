@@ -81,8 +81,6 @@
       integer (kind=kint) :: istart_scalar_rtp
 !>      Start field address of vector fields @f$ f(r,\theta,\phi) @f$
       integer (kind=kint) :: istart_vector_rtp
-!>      Start field address of gradient @f$ f(r,\theta,\phi) @f$
-      integer (kind=kint) :: istart_grad_v_rtp
 !>      Start field address of tensor fields @f$ f(r,\theta,\phi) @f$
       integer (kind=kint) :: istart_tensor_rtp
 !
@@ -90,8 +88,6 @@
       integer (kind=kint) :: num_scalar_rtp
 !>      Number of fields of vector fields @f$ f(r,\theta,\phi) @f$
       integer (kind=kint) :: num_vector_rtp
-!>      Number of fields of gradient @f$ f(r,\theta,\phi) @f$
-      integer (kind=kint) :: num_grad_v_rtp
 !>      Number of fields of tensor fields @f$ f(r,\theta,\phi) @f$
       integer (kind=kint) :: num_tensor_rtp
 !
