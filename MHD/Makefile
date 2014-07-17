@@ -143,7 +143,7 @@ makemake:
 	@echo OPTFLAGS =    $(OPTFLAGS) $(FC_NAME_MANGLE) $(COCOA_FLAG) >> $(MAKENAME)
 	@echo CXXFLAGS =    $(CXXFLAGS) $(COCOA_FLAG)                   >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo 'F90FLAGS =     $$(F90OPTFLAGS)' \''$(FORTRAN_C_CONNECT)'\' >> $(MAKENAME)
+	@echo 'F90FLAGS =     $$(F90OPTFLAGS)' '$(FORTRAN_C_CONNECT)' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# Libralies and includes settting' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
