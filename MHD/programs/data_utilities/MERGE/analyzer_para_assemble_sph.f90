@@ -22,10 +22,21 @@
       use m_control_param_newsph
       use parallel_assemble_sph
       use copy_rj_phys_type_4_IO
+      use r_interpolate_marged_sph
 !
       implicit none
 !
+      type(sph_mesh_data), allocatable, save :: org_sph_mesh(:)
+      type(phys_data), allocatable, save ::     org_sph_phys(:)
+!
+      type(sph_mesh_data), allocatable, save :: new_sph_mesh(:)
+      type(phys_data), allocatable, save ::     new_sph_phys(:)
+!
+!
+      type(sph_radial_itp_data), save :: r_itp
       type(rj_assemble_tbl), allocatable, save :: j_table(:)
+      integer(kind = kint) :: nlayer_ICB_org, nlayer_CMB_org
+      integer(kind = kint) :: nlayer_ICB_new, nlayer_CMB_new
 !
 ! ----------------------------------------------------------------------
 !
@@ -38,9 +49,7 @@
       use m_control_data_4_merge
 !
       use m_node_id_spherical_IO
-      use merge_sph_step_spectr
       use field_IO_select
-      use r_interpolate_marged_sph
 !
       integer(kind = kint) :: ip, irank_org, j
 !
@@ -55,7 +64,10 @@
      &      'num. of process has to be the number of target processes')
       end if
 !
-      call alloc_sph_mesh_parallel_merge
+      allocate( org_sph_mesh(np_sph_org) )
+      allocate( org_sph_phys(np_sph_org) )
+      allocate( new_sph_mesh(1) )
+      allocate( new_sph_phys(1) )
 !
 !  set original spectr data
 !
@@ -143,38 +155,58 @@
      &     (org_sph_mesh(1)%sph_mesh%sph_rj%nidx_rj(1),                 &
      &      org_sph_mesh(1)%sph_mesh%sph_rj%radius_1d_rj_r,             &
      &      new_sph_mesh(1)%sph_mesh%sph_rj%nidx_rj(1),                 &
-     &      new_sph_mesh(1)%sph_mesh%sph_rj%radius_1d_rj_r)
+     &      new_sph_mesh(1)%sph_mesh%sph_rj%radius_1d_rj_r, r_itp)
        end if
 !
-      call MPI_Bcast(iflag_same_rgrid, ione, CALYPSO_INTEGER, izero,    &
-     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(r_itp%iflag_same_rgrid, ione, CALYPSO_INTEGER,     &
+     &    izero, CALYPSO_COMM, ierr_MPI)
 !
-      if(iflag_same_rgrid .eq. 0) then
+      if(r_itp%iflag_same_rgrid .eq. 0) then
         if(my_rank .ne. 0)  call allocate_radial_itp_tbl                &
-     &                     (new_sph_mesh(1)%sph_mesh%sph_rj%nidx_rj(1))
+     &             (new_sph_mesh(1)%sph_mesh%sph_rj%nidx_rj(1), r_itp)
 !
-        call MPI_Bcast(kr_inner_domain, ione, CALYPSO_INTEGER,          &
+        call MPI_Bcast(r_itp%kr_inner_domain, ione, CALYPSO_INTEGER,    &
      &      izero, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(kr_outer_domain, ione, CALYPSO_INTEGER,          &
+        call MPI_Bcast(r_itp%kr_outer_domain, ione, CALYPSO_INTEGER,    &
      &      izero, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(k_old2new_in, nri_old2new, CALYPSO_INTEGER,      &
-     &      izero, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(k_old2new_out, nri_old2new, CALYPSO_INTEGER,     &
-     &      izero, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(coef_old2new_in, nri_old2new, CALYPSO_REAL,      &
-     &      izero, CALYPSO_COMM, ierr_MPI)
+        call MPI_Bcast(r_itp%k_old2new_in, r_itp%nri_old2new,           &
+     &      CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+        call MPI_Bcast(r_itp%k_old2new_out, r_itp%nri_old2new,          &
+     &      CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+        call MPI_Bcast(r_itp%coef_old2new_in, r_itp%nri_old2new,        &
+     &      CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
       end if
 !
 !      Construct field list from spectr file
 !
       if(my_rank .eq. 0) then
-        phys_file_head = org_sph_fst_head
-        call sel_read_alloc_step_SPH_file(izero, istep_start)
-        call copy_rj_phys_name_t_from_IO                                &
-     &     (new_sph_mesh(1)%sph_mesh%sph_rj%nnod_rj, new_sph_phys(1))
-        call deallocate_phys_data_IO
-        call deallocate_phys_data_name_IO
+        call load_field_name_assemble_sph                               &
+     &     (istep_start, org_sph_fst_head, np_sph_org,                  &
+     &      new_sph_mesh(1)%sph_mesh, org_sph_phys(1), new_sph_phys(1))
       end if
+!
+      do ip = 1, np_sph_org
+        call MPI_Bcast(org_sph_phys(ip)%num_phys, ione,                 &
+     &      CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+        call MPI_Bcast(org_sph_phys(ip)%ntot_phys, ione,                &
+     &      CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
+        if(my_rank .ne. 0) call alloc_phys_name_type(org_sph_phys(ip))
+!
+        call MPI_Bcast(org_sph_phys(ip)%num_component,                  &
+     &      org_sph_phys(ip)%num_phys, CALYPSO_INTEGER,                 &
+     &      izero, CALYPSO_COMM, ierr_MPI)
+        call MPI_Bcast(org_sph_phys(ip)%istack_component,               &
+     &      (org_sph_phys(ip)%num_phys+1),                              &
+     &      CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+        call MPI_Bcast(org_sph_phys(ip)%iflag_monitor,                  &
+     &      org_sph_phys(ip)%num_phys, CALYPSO_INTEGER,                 &
+     &      izero, CALYPSO_COMM, ierr_MPI)
+        call MPI_Bcast(org_sph_phys(ip)%phys_name,                      &
+     &     (org_sph_phys(ip)%num_phys*kchara),                          &
+     &      CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+      end do
+!
 !
       call MPI_Bcast(new_sph_phys(1)%num_phys, ione, CALYPSO_INTEGER,   &
      &    izero, CALYPSO_COMM, ierr_MPI)
@@ -200,19 +232,6 @@
      &   (new_sph_phys(1)%num_phys*kchara),                             &
      &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      do ip = 1, np_sph_org
-        org_sph_phys(ip)%num_phys =  new_sph_phys(1)%num_phys
-        org_sph_phys(ip)%ntot_phys = new_sph_phys(1)%ntot_phys
-        call alloc_phys_name_type(org_sph_phys(ip))
-!
-        org_sph_phys(ip)%num_component                                 &
-     &       = new_sph_phys(1)%num_component
-        org_sph_phys(ip)%istack_component                              &
-     &       = new_sph_phys(1)%istack_component
-        org_sph_phys(ip)%phys_name = new_sph_phys(1)%phys_name
-      end do
-!
-!
 !      do ip = 1, np_sph_org
 !        do j = 1, org_sph_mesh(1)%sph_mesh%sph_rj%nidx_rj(2)
 !          if(j_table(ip)%j_org_to_new(j).gt. 0)                        &
@@ -230,13 +249,13 @@
       use m_sph_spectr_data
       use m_field_data_IO
       use m_t_step_parameter
-      use merge_sph_step_spectr
       use field_IO_select
       use r_interpolate_marged_sph
       use copy_time_steps_4_restart
+      use set_field_file_names
 !
-      integer(kind = kint) :: istep
-      integer(kind = kint) :: ip, irank_org, num, k, j , inod, nd
+      integer(kind = kint) :: istep, icou
+      integer(kind = kint) :: ip, irank_org, num, j
 !
 !
 !     ---------------------
@@ -260,6 +279,8 @@
           call deallocate_phys_data_IO
           call deallocate_phys_data_name_IO
         end do
+        time = time_init
+        i_step_MHD = i_step_init
 !
         call MPI_Bcast(i_step_init, ione, CALYPSO_INTEGER,              &
      &        izero, CALYPSO_COMM, ierr_MPI)
@@ -267,8 +288,6 @@
      &        izero, CALYPSO_COMM, ierr_MPI)
         call MPI_Bcast(dt, ione, CALYPSO_REAL,                          &
      &        izero, CALYPSO_COMM, ierr_MPI)
-        time = time_init
-        i_step_MHD = i_step_init
 !
 !     Bloadcast original spectr data
         do ip = 1, np_sph_org
@@ -285,67 +304,15 @@
           call MPI_Bcast(org_sph_phys(ip)%d_fld, num, CALYPSO_REAL,     &
      &        irank_org, CALYPSO_COMM, ierr_MPI)
 !
-!
 !     Copy spectr data to temporal array
-          if(iflag_same_rgrid .eq. 0) then
-            call r_itp_field_data_sph_assemble                          &
-     &       (org_sph_mesh(ip)%sph_mesh, new_sph_mesh(1)%sph_mesh,      &
-     &        j_table(ip), k_old2new_in, k_old2new_out,                 &
-     &        coef_old2new_in, kr_inner_domain, kr_outer_domain,        &
-     &        new_sph_phys(1)%ntot_phys, org_sph_phys(ip)%d_fld,        &
-     &        new_sph_phys(1)%d_fld)
-          else
-            call copy_field_data_sph_assemble&
-     &       (org_sph_mesh(ip)%sph_mesh, new_sph_mesh(1)%sph_mesh,      &
-     &        j_table(ip), new_sph_phys(1)%ntot_phys,                   &
-     &        org_sph_phys(ip)%d_fld, new_sph_phys(1)%d_fld)
-          end if
-!
-          call copy_field_data_sph_center                               &
-     &        (org_sph_mesh(ip)%sph_mesh, new_sph_mesh(1)%sph_mesh,     &
-     &         j_table(ip), new_sph_phys(1)%ntot_phys,                  &
-     &         org_sph_phys(ip)%d_fld, new_sph_phys(1)%d_fld)
-!
+          call set_assembled_sph_data(org_sph_mesh(ip)%sph_mesh,        &
+     &          new_sph_mesh(1)%sph_mesh, j_table(ip), r_itp,           &
+     &          org_sph_phys(ip), new_sph_phys(1))
           call dealloc_phys_data_type(org_sph_phys(ip))
         end do
 !
-        if(iflag_same_rgrid .eq. 0) then
-!          write(*,*) 'extend_potential_magne'
-          call extend_potential_magne_t                                 &
-     &       (new_sph_mesh(1)%sph_mesh, new_sph_phys(1))
-!          write(*,*) 'extend_inner_core_temp'
-          call extend_inner_core_scalar_t(fhd_temp,                     &
-     &        new_sph_mesh(1)%sph_mesh, new_sph_phys(1))
-!          write(*,*) 'extend_inner_core_light'
-          call extend_inner_core_scalar_t(fhd_light,                    &
-     &        new_sph_mesh(1)%sph_mesh, new_sph_phys(1))
-        end if
-!
-!
-        if(b_sph_ratio.ne.0.0d0 .or. b_sph_ratio.ne.1.0d0) then
-          call mul_sph_magne(new_sph_mesh(1)%sph_mesh%sph_rj%nnod_rj,   &
-     &        new_sph_phys(1)%num_phys, new_sph_phys(1)%ntot_phys,      &
-     &        new_sph_phys(1)%istack_component,                         &
-     &        new_sph_phys(1)%phys_name, new_sph_phys(1)%d_fld)
-        end if
-!
-!
-        call copy_time_steps_to_restart
-        call copy_rj_all_phys_name_t_to_IO                              &
-     &     (new_sph_mesh(1)%sph_mesh%sph_rj%nnod_rj, new_sph_phys(1))
-!
-        phys_file_head = new_sph_fst_head
-        numgrid_phys_IO = new_sph_mesh(1)%sph_mesh%sph_rj%nnod_rj
-        call allocate_phys_data_IO
-!
-        call copy_rj_all_phys_type_to_IO                                &
-     &     (new_sph_mesh(1)%sph_mesh%sph_rj%nnod_rj, new_sph_phys(1))
-!
-        call sel_write_step_SPH_field_file(my_rank, istep)
-        call deallocate_phys_data_IO
-        call deallocate_phys_data_name_IO
-!
-        if(my_rank .eq. 0) write(*,*) 'step', istep, 'finish '
+        call const_assembled_sph_data(my_rank, istep,                   &
+     &        new_sph_mesh(1)%sph_mesh, r_itp, new_sph_phys(1))
       end do
 !
       do ip = 1, np_sph_org
@@ -353,11 +320,24 @@
       end do
       deallocate(j_table)
 !
-      call dealloc_sph_mesh_4_merge
+      deallocate(org_sph_mesh, org_sph_phys)
+      deallocate(new_sph_mesh, new_sph_phys)
+!
+      call calypso_MPI_barrier
+!
+      if(iflag_delete_org_sph .gt. 0) then
+        icou = 0
+        phys_file_head = org_sph_fst_head
+        do istep = istep_start, istep_end, increment_step
+          icou = icou + 1
+          if(mod(icou,nprocs) .ne. my_rank) cycle
+          call delete_SPH_fld_file(iflag_field_data_fmt,                &
+     &        np_sph_org, istep)
+        end do
+      end if
 !
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
-!
 !
       end subroutine analyze_para_assemble_sph
 !
