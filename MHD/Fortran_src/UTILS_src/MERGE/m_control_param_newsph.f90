@@ -12,6 +12,9 @@
       implicit    none
 !
 !
+      integer(kind = kint) :: np_sph_org
+      integer(kind = kint) :: np_sph_new
+!
       character(len=kchara) :: org_sph_fst_head = "restart/rst"
       character(len=kchara) :: new_sph_fst_head = "rst_new/rst"
 !
@@ -38,7 +41,6 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
       use m_ctl_data_4_time_steps
-      use m_merge_spheric_mesh
       use m_node_id_spherical_IO
       use m_field_data_IO
       use m_file_format_switch

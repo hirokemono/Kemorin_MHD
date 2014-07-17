@@ -13,14 +13,13 @@
 !!      subroutine set_mode_table_4_assemble(org_sph, new_sph, j_table)
 !!      subroutine copy_field_data_sph_assemble(org_sph, new_sph,       &
 !!     &          j_table, ntot_phys_rj, d_rj_org, d_rj_tmp)
+!!      subroutine r_itp_field_data_sph_assemble(org_sph, new_sph,      &
+!!     &          r_itp, j_table, ntot_phys_rj, d_rj_org, d_rj_new)
 !!      subroutine copy_field_data_sph_center(org_sph, new_sph, j_table,&
 !!     &          ntot_phys_rj, d_rj_org, d_rj)
-!!
-!!      subroutine set_sph_rj_mesh_4_merge
-!!      subroutine s_assenble_sph_step_spectr(istep)
-!!
-!!      subroutine copy_rj_merged_phys_from_IO(jmax_org,                &
-!!     &          idx_gl_1d_j_org, numgrid_phys_IO, phys_data_IO)
+!!      subroutine mul_sph_magne(b_sph_ratio, nnod_rj,                  &
+!!     &          num_phys_rj, ntot_phys_rj, istack_phys_comp_rj,       &
+!!     &          phys_name_rj, d_rj)
 !!@endverbatim
 !!
 !!@param   istep  TIme step number
@@ -183,25 +182,16 @@
 ! -------------------------------------------------------------------
 !
       subroutine r_itp_field_data_sph_assemble(org_sph, new_sph,        &
-     &          j_table, k_old2new_in, k_old2new_out, coef_old2new_in,  &
-     &          kr_inner_domain, kr_outer_domain, ntot_phys_rj,         &
-     &          d_rj_org, d_rj_new)
+     &          r_itp, j_table, ntot_phys_rj, d_rj_org, d_rj_new)
 !
       use t_spheric_parameter
+      use r_interpolate_marged_sph
 !
       integer(kind = kint), intent(in) :: ntot_phys_rj
       type(sph_grids), intent(in) :: org_sph
       type(sph_grids), intent(in) :: new_sph
       type(rj_assemble_tbl), intent(in) :: j_table
-!
-      integer(kind = kint), intent(in) :: kr_inner_domain
-      integer(kind = kint), intent(in) :: kr_outer_domain
-      integer(kind = kint), intent(in)                                  &
-     &                 :: k_old2new_in(new_sph%sph_rj%nidx_rj(1))
-      integer(kind = kint), intent(in)                                  &
-     &                 :: k_old2new_out(new_sph%sph_rj%nidx_rj(1))
-      real(kind = kreal), intent(in)                                    &
-     &                 :: coef_old2new_in(new_sph%sph_rj%nidx_rj(1))
+      type(sph_radial_itp_data), intent(in) :: r_itp
 !
       real(kind = kreal), intent(in)                                    &
      &                :: d_rj_org(org_sph%sph_rj%nnod_rj,ntot_phys_rj)
@@ -213,30 +203,66 @@
       integer(kind = kint) :: nd, j_org, j_new, kr, kr_in, kr_out
       integer(kind = kint) :: inod_in, inod_out, inod_new
 !
-!!$omp parallel private(nd)
+!$omp parallel private(nd)
       do nd = 1, ntot_phys_rj
-!!$omp do private(j_org,j_new,kr,kr_in,kr_out,inod_in,inod_out,inod_new)
+!$omp do private(j_org,j_new,kr,kr_in,kr_out,inod_in,inod_out,inod_new)
         do j_org = 1, org_sph%sph_rj%nidx_rj(2)
           j_new = j_table%j_org_to_new(j_org)
           if(j_new .le. 0) cycle
 !
-          do kr = kr_inner_domain, kr_outer_domain
-            kr_in =  k_old2new_in(kr)
-            kr_out = k_old2new_out(kr)
+          do kr = r_itp%kr_inner_domain, r_itp%kr_outer_domain
+            kr_in =  r_itp%k_old2new_in(kr)
+            kr_out = r_itp%k_old2new_out(kr)
             inod_in =  j_org + (kr_in -  1) * org_sph%sph_rj%nidx_rj(2)
             inod_out = j_org + (kr_out - 1) * org_sph%sph_rj%nidx_rj(2)
             inod_new = j_new + (kr - 1) * new_sph%sph_rj%nidx_rj(2)
             d_rj_new(inod_new,nd)                                       &
-     &           = coef_old2new_in(kr) * d_rj_org(inod_in,nd)           &
-     &          + (1.0d0 - coef_old2new_in(kr)) * d_rj_org(inod_out,nd)
+     &           = r_itp%coef_old2new_in(kr) * d_rj_org(inod_in,nd)     &
+     &            + (1.0d0 - r_itp%coef_old2new_in(kr))                 &
+     &             * d_rj_org(inod_out,nd)
           end do
         end do
-!!$omp end do
+!$omp end do
       end do
-!!$omp end parallel
+!$omp end parallel
 !
       end subroutine r_itp_field_data_sph_assemble
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine mul_sph_magne(b_sph_ratio, nnod_rj,                    &
+     &          num_phys_rj, ntot_phys_rj, istack_phys_comp_rj,         &
+     &          phys_name_rj, d_rj)
+!
+      use m_phys_labels
+!
+      real(kind = kreal), intent(in) :: b_sph_ratio
+      integer(kind = kint), intent(in) :: nnod_rj
+      integer(kind = kint), intent(in) :: num_phys_rj, ntot_phys_rj
+      integer(kind = kint), intent(in)                                  &
+     &      :: istack_phys_comp_rj(0:num_phys_rj)
+      character(len=kchara) :: phys_name_rj(num_phys_rj)
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj, ntot_phys_rj)
+!
+      integer(kind = kint) :: nd, i, ist, ied, inod
+!
+!
+      do i = 1, num_phys_rj
+        if(    phys_name_rj(i) .eq. fhd_magne                           &
+     &    .or. phys_name_rj(i) .eq. fhd_mag_potential                   &
+     &    .or. phys_name_rj(i) .eq. fhd_pre_uxb) then
+          ist = istack_phys_comp_rj(i-1)
+          ied = istack_phys_comp_rj(i  )
+          do nd = ist+1, ied
+            do inod = 1, nnod_rj
+              d_rj(inod,nd) = b_sph_ratio * d_rj(inod,nd)
+            end do
+          end do
+        end if
+      end do
+!
+      end subroutine mul_sph_magne
+!
+! -------------------------------------------------------------------
 !
       end module parallel_assemble_sph
