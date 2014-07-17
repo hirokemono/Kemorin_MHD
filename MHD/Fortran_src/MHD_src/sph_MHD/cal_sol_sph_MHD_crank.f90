@@ -110,14 +110,16 @@
       use cal_rot_buoyancies_sph_MHD
 !
 !
-      if(ipol%i_velo*ipol%i_vort .gt. 0) then
-        call const_grad_vp_and_vorticity(ipol%i_velo, ipol%i_vort)
-      end if
+      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+        if(ipol%i_velo*ipol%i_vort .gt. 0) then
+          call const_grad_vp_and_vorticity(ipol%i_velo, ipol%i_vort)
+        end if
 !
-      if(iflag_debug.gt.0) write(*,*) 'update_after_vorticity_sph'
-      call update_after_vorticity_sph
-      if(iflag_debug.gt.0) write(*,*) 'cal_rot_radial_self_gravity'
-      call cal_rot_radial_self_gravity(sph_bc_U)
+        if(iflag_debug.gt.0) write(*,*) 'update_after_vorticity_sph'
+        call update_after_vorticity_sph
+        if(iflag_debug.gt.0) write(*,*) 'cal_rot_radial_self_gravity'
+        call cal_rot_radial_self_gravity(sph_bc_U)
+      end if
 !
       if(iflag_debug.gt.0) write(*,*) 'update_after_heat_sph'
       call update_after_heat_sph
