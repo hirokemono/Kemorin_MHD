@@ -37,8 +37,19 @@
       use m_sph_phys_address
       use m_gauss_coefs_monitor_data
 !
+      integer(kind = kint) :: l
+!
 !
       if (ipol%i_magne .gt. 0) then
+!
+        if(num_pick_gauss_l .eq. -9999) then
+          num_pick_gauss_l = l_truncation+1
+          call allocate_pick_gauss_l
+          do l = 0, l_truncation
+            idx_pick_gauss_l(l+1) = l
+          end do
+        end if
+!
         call count_picked_sph_adrress                                   &
      &     (num_pick_gauss_coefs, num_pick_gauss_l, num_pick_gauss_m,   &
      &      idx_pick_gauss_mode, idx_pick_gauss_l, idx_pick_gauss_m,    &
