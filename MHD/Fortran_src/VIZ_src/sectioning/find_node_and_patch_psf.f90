@@ -67,7 +67,7 @@
      &    num_surf, inod_stack_sf_grp)
 !
       call allocate_inod_psf(num_psf)
-      call allocate_position_psf(num_psf)
+      call allocate_position_psf
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_nodes_4_psf'
       call set_nodes_4_psf(numnod, numedge, nnod_4_edge, inod_global,   &

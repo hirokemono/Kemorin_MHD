@@ -1,9 +1,19 @@
 !
 !      module m_patch_data_psf
 !
-      module m_patch_data_psf
-!
 !      Written by H. Matsui on June, 2006
+!
+!      subroutine allocate_position_psf
+!      subroutine allocate_dat_on_patch_psf(max_ncomp_psf)
+!      subroutine allocate_num_patch_psf(np_smp, num_psf)
+!      subroutine allocate_patch_data_psf
+!
+!      subroutine deallocate_position_psf
+!      subroutine deallocate_dat_on_patch_psf
+!      subroutine deallocate_num_patch_psf
+!      subroutine deallocate_patch_data_psf
+!
+      module m_patch_data_psf
 !
       use m_precision
 !
@@ -29,25 +39,14 @@
 !
       real(kind = kreal), allocatable :: tmp_psf(:,:)
 !
-!      subroutine allocate_position_psf(num_psf)
-!      subroutine allocate_dat_on_patch_psf(max_ncomp_psf)
-!      subroutine allocate_num_patch_psf(np_smp, num_psf)
-!      subroutine allocate_patch_data_psf
-!
-!      subroutine deallocate_position_psf
-!      subroutine deallocate_dat_on_patch_psf
-!      subroutine deallocate_num_patch_psf
-!      subroutine deallocate_patch_data_psf
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_position_psf(num_psf)
+      subroutine allocate_position_psf
 !
-      integer(kind= kint), intent(in) :: num_psf
 !
       allocate(inod_hash_psf(nnod_psf_tot))
       allocate(xyz_psf(nnod_psf_tot,3))
