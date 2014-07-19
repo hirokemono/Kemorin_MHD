@@ -8,11 +8,9 @@
 !      subroutine mark_element_list_4_psf(numele, interior_ele,         &
 !     &        num_ele_grp, ntot_ele_grp, istack_ele_grp, item_ele_grp, &
 !     &        ngrp_area, id_ele_grp_psf)
-!      subroutine count_element_list_4_psf(iele_smp_stack,              &
-!     &          istack_e_search_s)
 !
-!      subroutine set_element_list_4_psf(iele_smp_stack, nele_search,   &
-!     &          istack_e_search_s, iele_search)
+!!      subroutine count_element_list_4_psf(iele_smp_stack, ele_search)
+!!      subroutine set_element_list_4_psf(iele_smp_stack, ele_search)
 !
 !
       module set_element_list_for_psf
@@ -108,13 +106,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_element_list_4_psf(iele_smp_stack,               &
-     &          istack_e_search_s)
+      subroutine count_element_list_4_psf(iele_smp_stack, ele_search)
 !
       use m_machine_parameter
+      use t_psf_geometry_list
 !
       integer(kind=kint), intent(in) :: iele_smp_stack(0:np_smp)
-      integer(kind=kint), intent(inout) :: istack_e_search_s(0:np_smp)
+      type(sect_search_list), intent(inout) :: ele_search
       integer(kind=kint) :: ip, ist, ied, iele
 !
 !
@@ -130,35 +128,34 @@
 !$omp end parallel do
 !
       do ip = 1, np_smp
-        istack_e_search_s(ip) = istack_e_search_s(ip-1)                 &
-     &                           + nele_search_smp(ip)
+        ele_search%istack_search_smp(ip)                                &
+     &       = ele_search%istack_search_smp(ip-1) + nele_search_smp(ip)
       end do
+      ele_search%num_search = ele_search%istack_search_smp(np_smp)
 !
       end subroutine count_element_list_4_psf
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_element_list_4_psf(iele_smp_stack, nele_search,    &
-     &          istack_e_search_s, iele_search)
+      subroutine set_element_list_4_psf(iele_smp_stack, ele_search)
 !
       use m_machine_parameter
+      use t_psf_geometry_list
 !
       integer(kind=kint), intent(in) :: iele_smp_stack(0:np_smp)
-      integer(kind = kint), intent(in) :: nele_search
-      integer(kind = kint), intent(in) :: istack_e_search_s(0:np_smp)
-      integer(kind = kint), intent(inout) :: iele_search(nele_search)
+      type(sect_search_list), intent(inout) :: ele_search
 !
       integer(kind = kint) :: ip, iele, ist, ied, icou
 !
 !$omp parallel do private(iele,ist,ied,icou)
       do ip = 1, np_smp
-        icou = istack_e_search_s(ip-1)
+        icou = ele_search%istack_search_smp(ip-1)
         ist = iele_smp_stack(ip-1) + 1
         ied = iele_smp_stack(ip)
         do iele = ist, ied
           if (imark_ele(iele) .gt. 0) then
             icou = icou + 1
-            iele_search(icou) = iele
+            ele_search%id_search(icou) = iele
           end if
         end do
       end do

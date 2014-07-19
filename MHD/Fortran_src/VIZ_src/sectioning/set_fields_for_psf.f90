@@ -28,8 +28,8 @@
      &          num_phys, ntot_phys, istack_ncomp,  d_nod)
 !
       use m_control_params_4_psf
-      use m_geometry_list_4_psf
       use m_patch_data_psf
+      use m_psf_data
 !
       integer(kind = kint), intent(in) :: numnod, numedge, nnod_4_edge
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
@@ -45,16 +45,12 @@
         ist_smp = (i-1)*np_smp
         ist_field = istack_psf_output(i-1) + 1
         call set_field_on_psf(numnod, numedge, nnod_4_edge, ie_edge,    &
-     &      nnod_psf_tot, istack_nod_psf_smp(ist_smp),                  &
-     &      nnod_on_nod_psf_tot, istack_n_on_n_psf_smp(ist_smp),        &
-     &      inod_4_nod_psf, nnod_on_edge_psf_tot,                       &
-     &      istack_n_on_e_psf_smp(ist_smp), iedge_4_nod_psf,            &
-     &      coef_on_edge_psf, xyz_psf, sph_psf, cyl_psf,                &
-     &      num_psf_output(i), max_ncomp_psf_out,                       &
+     &      nnod_psf_tot, istack_nod_psf_smp(ist_smp), xyz_psf,         &
+     &      sph_psf, cyl_psf, num_psf_output(i), max_ncomp_psf_out,     &
      &      id_psf_output(ist_field), ncomp_psf_output(ist_field),      &
      &      ncomp_psf_org(ist_field), icomp_psf_output(ist_field),      &
-     &      num_phys, ntot_phys, istack_ncomp,  &
-     &      d_nod, dat_psf, tmp_psf)
+     &      num_phys, ntot_phys, istack_ncomp,                          &
+     &      d_nod, dat_psf, tmp_psf, psf_list(i))
 !
       end do
 !
@@ -66,8 +62,8 @@
      &  num_phys, ntot_phys, istack_ncomp, d_nod)
 !
       use m_control_params_4_iso
-      use m_geometry_list_4_iso
       use m_patch_data_iso
+      use m_iso_data
 !
       use set_nodal_field_for_psf
 !
@@ -87,23 +83,17 @@
 !
         if (id_iso_output(ist_field) .eq. iflag_constant_iso) then
           call set_const_on_psf(nnod_iso_tot,                           &
-     &        istack_nod_iso_smp(ist_smp),                              &
-     &        istack_n_on_n_iso_smp(ist_smp),                           &
-     &        istack_n_on_e_iso_smp(ist_smp),                           &
-     &        result_value_iso(i), dat_iso)
+     &        istack_nod_iso_smp(ist_smp), result_value_iso(i),         &
+     &        dat_iso, iso_list(i))
 !
         else
           call set_field_on_psf(numnod, numedge, nnod_4_edge, ie_edge,  &
-     &      nnod_iso_tot, istack_nod_iso_smp(ist_smp),                  &
-     &      nnod_on_nod_iso_tot, istack_n_on_n_iso_smp(ist_smp),        &
-     &      inod_4_nod_iso, nnod_on_edge_iso_tot,                       &
-     &      istack_n_on_e_iso_smp(ist_smp), iedge_4_nod_iso,            &
-     &      coef_on_edge_iso, xyz_iso, sph_iso,  cyl_iso,               &
-     &      num_iso_output(i), max_ncomp_iso_out,                       &
+     &      nnod_iso_tot, istack_nod_iso_smp(ist_smp), xyz_iso,         &
+     &      sph_iso, cyl_iso, num_iso_output(i), max_ncomp_iso_out,     &
      &      id_iso_output(ist_field), ncomp_iso_output(ist_field),      &
      &      ncomp_iso_org(ist_field), icomp_iso_output(ist_field),      &
-     &      num_phys, ntot_phys, istack_ncomp,  &
-     &      d_nod, dat_iso, tmp_iso)
+     &      num_phys, ntot_phys, istack_ncomp,                          &
+     &      d_nod, dat_iso, tmp_iso, iso_list(i))
         end if
 !
       end do
@@ -114,13 +104,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_field_on_psf(numnod, numedge, nnod_4_edge,         &
-     &      ie_edge, nnod_patch, istack_n_smp,                          &
-     &      nnod_on_nod, istack_n_on_n_smp, inod_4_nod, nnod_on_edge,   &
-     &      istack_n_on_e_smp, iedge_4_nod, coef_on_edge, xyz_psf,      &
+     &      ie_edge, nnod_patch, istack_n_smp, xyz_psf,                 &
      &      sph_psf, cyl_psf, nfield_psf, max_ncomp_psf, ifield_psf,    &
      &      ncomp_psf, ncomp_org, icomp_psf, num_phys, ntot_phys,       &
-     &      istack_ncomp, d_nod,  dat_psf, dat_tmp)
+     &      istack_ncomp, d_nod, dat_psf, dat_tmp, psf_list)
 !
+      use t_psf_geometry_list
       use m_geometry_constants
 !
       use set_components_flags
@@ -131,13 +120,7 @@
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
 !
       integer(kind = kint), intent(in) :: nnod_patch
-      integer(kind = kint), intent(in) :: nnod_on_nod, nnod_on_edge
       integer(kind = kint), intent(in) :: istack_n_smp(0:np_smp)
-      integer(kind = kint), intent(in) :: istack_n_on_n_smp(0:np_smp)
-      integer(kind = kint), intent(in) :: istack_n_on_e_smp(0:np_smp)
-      integer(kind = kint), intent(in) :: inod_4_nod(nnod_on_nod)
-      integer(kind = kint), intent(in) :: iedge_4_nod(nnod_on_edge)
-      real(kind = kreal), intent(in) :: coef_on_edge(nnod_on_edge,2)
       real(kind = kreal), intent(in) :: xyz_psf(nnod_patch,3)
       real(kind = kreal), intent(in) :: sph_psf(nnod_patch,4)
       real(kind = kreal), intent(in) :: cyl_psf(nnod_patch,2)
@@ -146,6 +129,8 @@
       integer(kind = kint), intent(in) :: ncomp_psf(nfield_psf)
       integer(kind = kint), intent(in) :: ncomp_org(nfield_psf)
       integer(kind = kint), intent(in) :: icomp_psf(nfield_psf)
+!
+      type(sectiong_list), intent(in) :: psf_list
 !
       integer(kind = kint), intent(in) :: num_phys, ntot_phys
       integer(kind = kint), intent(in) :: istack_ncomp(0:num_phys)
@@ -166,10 +151,8 @@
 !
         call set_field_on_psf_xyz(numnod, numedge, nnod_4_edge,         &
      &          ie_edge, nnod_patch, istack_n_smp,                      &
-     &          nnod_on_nod, istack_n_on_n_smp, nnod_on_edge,           &
-     &          istack_n_on_e_smp, inod_4_nod, iedge_4_nod,             &
-     &          coef_on_edge, num_phys, ntot_phys, istack_ncomp, d_nod, &
-     &          ifield_psf(i), ncomp_org(i), dat_tmp)
+     &          num_phys, ntot_phys, istack_ncomp, d_nod,               &
+     &          ifield_psf(i), ncomp_org(i), dat_tmp, psf_list)
 !
         call convert_comps_4_viz(nnod_patch, istack_n_smp, xyz_psf,     &
      &      sph_psf(1,1), sph_psf(1,4), cyl_psf(1,1), cyl_psf(1,2),     &

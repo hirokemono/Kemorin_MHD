@@ -3,16 +3,13 @@
 !
 !      Written by H. Matsui on June, 2006
 !
-!      subroutine set_psf_type_id(numnod, numele, nnod_4_ele, ie,       &
-!     &          nele_search, istack_e_search_s, iele_search,           &
-!     &          c_ref, mark_ele)
-!      subroutine count_num_patch_4_psf(numele, numedge, iedge_4_ele,   &
-!     &          nele_search, istack_e_search_s, iele_search,           &
-!     &          id_n_on_e, mark_ele, istack_patch_smp)
-!      subroutine set_patch_4_psf(numele, numedge, iedge_4_ele,         &
-!     &          nele_search, istack_e_search_s,                        &
-!     &          iele_search, id_n_on_e, mark_ele, npatch_tot,          &
-!     &          istack_patch_smp, ie_patch)
+!!      subroutine set_psf_type_id(numnod, numele, nnod_4_ele, ie,      &
+!!     &          ele_search, mark_ele, c_ref)
+!!      subroutine count_num_patch_4_psf(numele, numedge, iedge_4_ele,  &
+!!     &          ele_search, mark_ele, id_n_on_e, istack_patch_smp)
+!!      subroutine set_patch_4_psf(numele, numedge, iedge_4_ele,        &
+!!     &          ele_search, mark_ele, id_n_on_e, npatch_tot,          &
+!!     &          istack_patch_smp, ie_patch)
 !
 !      subroutine renumber_patch_id_psf(npatch_tot, istack_nod_smp,     &
 !     &          istack_patch_smp, ie_patch)
@@ -20,6 +17,7 @@
       module patch_4_psf
 !
       use m_precision
+      use m_constants
 !
       use m_machine_parameter
       use m_psf_case_table
@@ -33,18 +31,17 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_psf_type_id(numnod, numele, nnod_4_ele, ie,        &
-     &          nele_search, istack_e_search_s, iele_search,            &
-     &          c_ref, mark_ele)
+     &          ele_search, mark_ele, c_ref)
+!
+      use t_psf_geometry_list
 !
       integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele, nnod_4_ele)
-      integer(kind = kint), intent(in) :: nele_search
-      integer(kind = kint), intent(in)                                  &
-     &              :: istack_e_search_s(0:np_smp)
-      integer(kind = kint), intent(in) :: iele_search(nele_search)
       real(kind= kreal), intent(in) :: c_ref(numnod)
+      type(sect_search_list), intent(in) :: ele_search
 !
-      integer(kind = kint), intent(inout) :: mark_ele(nele_search)
+      integer(kind = kint), intent(inout)                               &
+     &       :: mark_ele(ele_search%num_search)
 !
       integer(kind = kint) :: ip, iele, ist, ied, inum
       integer(kind = kint) ::  i1,  i2,  i3,  i4,  i5,  i6,  i7,  i8
@@ -57,10 +54,10 @@
 !$omp parallel do private(iele,ist,ied,inum, i1,i2,i3,i4,               &
 !$omp&                    i5,i6,i7,i8,mk1,mk2,mk3,mk4,mk5,mk6,mk7,mk8)
       do ip = 1, np_smp
-        ist = istack_e_search_s(ip-1) + 1
-        ied = istack_e_search_s(ip)
+        ist = ele_search%istack_search_smp(ip-1) + 1
+        ied = ele_search%istack_search_smp(ip)
         do inum = ist, ied
-          iele = iele_search(inum)
+          iele = ele_search%id_search(inum)
           i1 = ie(iele,1)
           i2 = ie(iele,2)
           i3 = ie(iele,3)
@@ -92,20 +89,18 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_num_patch_4_psf(numele, numedge, iedge_4_ele,    &
-     &          nele_search, istack_e_search_s, iele_search,            &
-     &          id_n_on_e, mark_ele, istack_patch_smp)
+     &          ele_search, mark_ele, id_n_on_e, istack_patch_smp)
 !
       use m_geometry_constants
+      use t_psf_geometry_list
 !
+      type(sect_search_list), intent(in) :: ele_search
       integer(kind = kint), intent(in) :: numele, numedge
       integer(kind = kint), intent(in)                                  &
      &              :: iedge_4_ele(numele,nedge_4_ele)
-      integer(kind = kint), intent(in) :: nele_search
-      integer(kind = kint), intent(in)                                  &
-     &              :: istack_e_search_s(0:np_smp)
-      integer(kind = kint), intent(in) :: iele_search(nele_search)
       integer(kind = kint), intent(in) :: id_n_on_e(numedge)
-      integer(kind = kint), intent(in) :: mark_ele(nele_search)
+      integer(kind = kint), intent(in)                                  &
+     &              :: mark_ele(ele_search%num_search)
 !
       integer(kind = kint), intent(inout)                               &
      &              :: istack_patch_smp(0:np_smp)
@@ -114,7 +109,6 @@
       integer(kind = kint) :: ip, iele, ist, ied, inum, np, icou, n
       integer(kind = kint) :: ie1, ie2, ie3, iedge1, iedge2, iedge3
       integer(kind = kint) :: mark
-      integer(kind = kint), parameter :: ione = 1, itwo = 2
 !
 !
       npatch_smp(1:np_smp) = 0
@@ -122,10 +116,10 @@
 !$omp parallel do private(iele,ist,ied,inum,mark,np,icou,n,ie1,ie2,ie3, &
 !$omp&         iedge1,iedge2,iedge3)
       do ip = 1, np_smp
-        ist = istack_e_search_s(ip-1) + 1
-        ied = istack_e_search_s(ip)
+        ist = ele_search%istack_search_smp(ip-1) + 1
+        ied = ele_search%istack_search_smp(ip)
         do inum = ist, ied
-          iele = iele_search(inum)
+          iele = ele_search%id_search(inum)
           mark = mark_ele(inum)
           np = num_patch(mark)
 !
@@ -158,22 +152,20 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_patch_4_psf(numele, numedge, iedge_4_ele,          &
-     &          nele_search, istack_e_search_s,                         &
-     &          iele_search, id_n_on_e, mark_ele, npatch_tot,           &
+     &          ele_search, mark_ele, id_n_on_e, npatch_tot,            &
      &          istack_patch_smp, ie_patch)
 !
       use m_geometry_constants
+      use t_psf_geometry_list
 !
       integer(kind = kint), intent(in) :: numele, numedge
       integer(kind = kint), intent(in)                                  &
      &              :: iedge_4_ele(numele,nedge_4_ele)
 !
-      integer(kind = kint), intent(in) :: nele_search
-      integer(kind = kint), intent(in)                                  &
-     &                    :: istack_e_search_s(0:np_smp)
-      integer(kind = kint), intent(in) :: iele_search(nele_search)
+      type(sect_search_list), intent(in) :: ele_search
       integer(kind = kint), intent(in) :: id_n_on_e(numedge)
-      integer(kind = kint), intent(in) :: mark_ele(nele_search)
+      integer(kind = kint), intent(in)                                  &
+     &              :: mark_ele(ele_search%num_search)
       integer(kind = kint), intent(in) :: npatch_tot
       integer(kind = kint), intent(in)                                  &
      &                    :: istack_patch_smp(0:np_smp)
@@ -190,10 +182,10 @@
 !$omp&         iedge1,iedge2,iedge3)
       do ip = 1, np_smp
         icou = istack_patch_smp(ip-1)
-        ist = istack_e_search_s(ip-1) + 1
-        ied = istack_e_search_s(ip)
+        ist = ele_search%istack_search_smp(ip-1) + 1
+        ied = ele_search%istack_search_smp(ip)
         do inum = ist, ied
-          iele = iele_search(inum)
+          iele = ele_search%id_search(inum)
           mark = mark_ele(inum)
           np = num_patch(mark)
 !

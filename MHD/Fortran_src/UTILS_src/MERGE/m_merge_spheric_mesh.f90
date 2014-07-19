@@ -1,18 +1,23 @@
-!m_merge_spheric_mesh.f90
-!      module m_merge_spheric_mesh
+!>@file   m_merge_spheric_mesh.f90
+!!@brief  module m_merge_spheric_mesh
+!!
+!!@author H. Matsui
+!!@date Programmed in Feb., 2011
 !
-!     Written by H. Matsui on Feb., 2011
-!
-!      subroutine alloc_sph_mesh_parallel_merge
-!      subroutine dealloc_sph_mesh_4_merge
-!
-!      subroutine set_local_rj_mesh_4_merge(my_rank, sph_mesh)
-!        integer(kind = kint), intent(in) :: my_rank
-!        type(sph_mesh_data), intent(inout) :: sph_mesh
-!      subroutine set_sph_boundary_4_merge(sph_grps,                    &
-!     &          nlayer_ICB, nlayer_CMB)
-!        type(sph_group_data), intent(in) ::  sph_grps
-!        integer(kind = kint), intent(inout) :: nlayer_ICB, nlayer_CMB
+!>@brief Construct spectrum data for new spectrum domain
+!!
+!!@verbatim
+!!      subroutine alloc_sph_mesh_parallel_merge
+!!      subroutine dealloc_sph_mesh_4_merge
+!!
+!!      subroutine set_local_rj_mesh_4_merge(my_rank, sph_mesh)
+!!        integer(kind = kint), intent(in) :: my_rank
+!!        type(sph_mesh_data), intent(inout) :: sph_mesh
+!!      subroutine set_sph_boundary_4_merge(sph_grps,                   &
+!!     &          nlayer_ICB, nlayer_CMB)
+!!        type(sph_group_data), intent(in) ::  sph_grps
+!!        integer(kind = kint), intent(inout) :: nlayer_ICB, nlayer_CMB
+!!@endverbatim
 !
       module m_merge_spheric_mesh
 !

@@ -3,12 +3,11 @@
 !
 !      Written by H. Matsui on June, 2006
 !
-!      subroutine count_node_at_node_on_grp(num_item, istack_n_on_n_smp)
-!      subroutine set_node_at_node_on_grp(numnod, nitem_surf,           &
-!     &          inod_surf_grp, nnod_on_nod,  istack_n_on_n_smp,        &
-!     &          inod_4_nod, coef_on_nod, iflag_n_on_n, id_n_on_n)
-!
-!      subroutine count_node_on_edge_on_grp(istack_n_on_e_smp)
+!!      subroutine count_node_at_node_on_grp(num_item, istack_n_on_n_smp)
+!!      subroutine set_node_at_node_on_grp                              &
+!!     &          (nitem_surf, inod_surf_grp, psf_list)
+!!
+!!      subroutine count_node_on_edge_on_grp(istack_n_on_e_smp)
 !
       module set_psf_nodes_4_by_surf_grp
 !
@@ -43,34 +42,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_node_at_node_on_grp(numnod, nitem_surf,            &
-     &          inod_surf_grp, nnod_on_nod,  istack_n_on_n_smp,         &
-     &          inod_4_nod, coef_on_nod, iflag_n_on_n, id_n_on_n)
+      subroutine set_node_at_node_on_grp                                &
+     &          (nitem_surf, inod_surf_grp, psf_list)
 !
       use m_constants
+      use t_psf_geometry_list
 !
-      integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: nitem_surf
       integer(kind = kint), intent(in) :: inod_surf_grp(nitem_surf)
 !
-      integer(kind = kint), intent(in) :: nnod_on_nod
-      integer(kind = kint), intent(in) :: istack_n_on_n_smp(0:np_smp)
-!
-      integer(kind = kint), intent(inout) :: inod_4_nod(nnod_on_nod)
-      integer(kind = kint), intent(inout) :: iflag_n_on_n(numnod)
-      integer(kind = kint), intent(inout) :: id_n_on_n(numnod)
-      real(kind= kreal), intent(inout) :: coef_on_nod(nnod_on_nod)
+      type(sectiong_list), intent(inout) :: psf_list
 !
       integer(kind = kint) :: i, icou, inod
 !
 !
       do i = 1, nitem_surf
-        icou = istack_n_on_n_smp(0) + i
+        icou = psf_list%istack_n_on_n_smp(0) + i
         inod = inod_surf_grp(i)
-        inod_4_nod(icou) = inod
-        coef_on_nod(icou) = one
-        iflag_n_on_n(inod) = ione
-        id_n_on_n(inod) = icou
+        psf_list%inod_4_nod(icou) = inod
+        psf_list%id_n_on_n(inod) = icou
       end do
 !
       end subroutine set_node_at_node_on_grp

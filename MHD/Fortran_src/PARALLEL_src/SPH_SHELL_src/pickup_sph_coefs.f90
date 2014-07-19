@@ -44,7 +44,6 @@
 !
       if( (num_pick_sph+num_pick_sph_l+num_pick_sph_m) .eq. 0) return
 !
-    write(*,*) 'num_pick_sph_l', num_pick_sph_l
       if(num_pick_sph_l .eq. -9999) then
         num_pick_sph_l = l_truncation+1
         call allocate_pick_sph_l

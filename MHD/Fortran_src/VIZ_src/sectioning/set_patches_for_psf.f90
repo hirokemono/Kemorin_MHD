@@ -32,8 +32,7 @@
 !
       use m_geometry_constants
       use m_control_params_4_psf
-      use m_search_list_4_psf
-      use m_geometry_list_4_psf
+      use m_psf_data
       use m_patch_data_psf
 !
       use set_psf_patch_4_by_surf_grp
@@ -54,22 +53,21 @@
 !
       istack_patch_psf_smp(0) = 0
       do i = 1, num_psf
+        call alloc_mark_ele_psf(psf_search(i))
 !
         ist_smp = (i-1)*np_smp
         if( id_section_method(i) .gt. 0) then
-!
           call set_psf_type_id(numnod, numele, nnod_4_ele, ie,          &
-     &        nele_search_psf_tot, istack_ele_search_psf_s(ist_smp),    &
-     &        iele_search_psf, c_ref_psf(1,i), mark_ele_psf )
+     &        psf_search(i)%elem_list, psf_search(i)%mark_e,            &
+     &        psf_list(i)%ref_fld)
 !
           call count_num_patch_4_psf(numele, numedge, iedge_4_ele,      &
-     &        nele_search_psf_tot, istack_ele_search_psf_s(ist_smp),    &
-     &        iele_search_psf, id_n_on_e_psf(1,i), mark_ele_psf,        &
-     &        istack_patch_psf_smp(ist_smp) )
+     &        psf_search(i)%elem_list, psf_search(i)%mark_e,            &
+     &        psf_list(i)%id_n_on_e, istack_patch_psf_smp(ist_smp) )
 !
         else if( id_section_method(i) .eq. 0) then
           call count_num_patch_4_grp(num_surf_grp, istack_surf_grp,     &
-     &        id_psf_group(i),  istack_patch_psf_smp(ist_smp) )
+     &        id_psf_group(i), istack_patch_psf_smp(ist_smp) )
 !
         end if
 !
@@ -85,8 +83,7 @@
 !
       use m_geometry_constants
       use m_control_params_4_iso
-      use m_geometry_list_4_iso
-      use m_search_list_4_iso
+      use m_iso_data
       use m_patch_data_iso
 !
       use patch_4_psf
@@ -101,16 +98,16 @@
 !
       istack_patch_iso_smp(0) = 0
       do i = 1, num_iso
+        call alloc_mark_ele_psf(iso_search(i))
 !
         ist_smp = (i-1)*np_smp
         call set_psf_type_id(numnod, numele, nnod_4_ele, ie,            &
-     &      nele_search_iso_tot, istack_ele_search_iso_s(ist_smp),      &
-     &      iele_search_iso, c_ref_iso(1,i), mark_ele_iso )
+     &      iso_search(i)%elem_list, iso_search(i)%mark_e,              &
+     &      iso_list(i)%ref_fld)
 !
         call count_num_patch_4_psf(numele, numedge, iedge_4_ele,        &
-     &      nele_search_iso_tot, istack_ele_search_iso_s(ist_smp),      &
-     &      iele_search_iso, id_n_on_e_iso(1,i), mark_ele_iso,          &
-     &      istack_patch_iso_smp(ist_smp) )
+     &    iso_search(i)%elem_list, iso_search(i)%mark_e,                &
+     &    iso_list(i)%id_n_on_e, istack_patch_iso_smp(ist_smp))
       end do
       npatch_tot_iso_smp = istack_patch_iso_smp(num_iso*np_smp)
 !
@@ -125,8 +122,7 @@
 !
       use m_geometry_constants
       use m_control_params_4_psf
-      use m_search_list_4_psf
-      use m_geometry_list_4_psf
+      use m_psf_data
       use m_patch_data_psf
 !
       use set_psf_patch_4_by_surf_grp
@@ -146,20 +142,18 @@
       integer(kind = kint) :: i, ist_smp
 !
       do i = 1, num_psf
-!
         ist_smp = (i-1)*np_smp
         if( id_section_method(i) .gt. 0) then
 !
           call set_patch_4_psf(numele, numedge, iedge_4_ele,            &
-     &        nele_search_psf_tot, istack_ele_search_psf_s(ist_smp),    &
-     &        iele_search_psf, id_n_on_e_psf(1,i), mark_ele_psf,        &
-     &        npatch_tot_psf_smp, istack_patch_psf_smp(ist_smp),        &
-     &        ie_patch_psf)
+     &        psf_search(i)%elem_list, psf_search(i)%mark_e,            &
+     &        psf_list(i)%id_n_on_e, npatch_tot_psf_smp,                &
+     &        istack_patch_psf_smp(ist_smp), ie_patch_psf)
 !
         else if( id_section_method(i) .eq. 0) then
           call set_patch_4_grp(numele, numele, nnod_4_ele, ie,          &
      &        num_surf_grp, ntot_surf_grp, istack_surf_grp,             &
-     &        item_surf_grp, id_psf_group(i), id_n_on_n_psf(1,i),       &
+     &        item_surf_grp, id_psf_group(i), psf_list(i)%id_n_on_n,    &
      &        npatch_tot_psf_smp,  istack_patch_psf_smp(ist_smp),       &
      &        ie_patch_psf)
 !
@@ -179,8 +173,7 @@
 !
       use m_geometry_constants
       use m_control_params_4_iso
-      use m_search_list_4_iso
-      use m_geometry_list_4_iso
+      use m_iso_data
       use m_patch_data_iso
 !
       use patch_4_psf
@@ -194,10 +187,9 @@
 !
         ist_smp = (i-1)*np_smp
         call set_patch_4_psf(numele, numedge, iedge_4_ele,              &
-     &      nele_search_iso_tot, istack_ele_search_iso_s(ist_smp),      &
-     &      iele_search_iso, id_n_on_e_iso(1,i), mark_ele_iso,          &
-     &      npatch_tot_iso_smp, istack_patch_iso_smp(ist_smp),          &
-     &      ie_patch_iso)
+     &      iso_search(i)%elem_list, iso_search(i)%mark_e,              &
+     &      iso_list(i)%id_n_on_e, npatch_tot_iso_smp,                  &
+     &      istack_patch_iso_smp(ist_smp), ie_patch_iso)
 !
         call renumber_patch_id_psf(npatch_tot_iso_smp,                  &
      &      istack_nod_iso_smp(ist_smp), istack_patch_iso_smp(ist_smp), &

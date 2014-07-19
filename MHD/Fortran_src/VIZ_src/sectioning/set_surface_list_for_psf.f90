@@ -7,12 +7,10 @@
 !      subroutine deallocate_work_4_mark_surf_psf
 !
 !      subroutine mark_surface_list_4_psf(numele, numsurf, isf_4_ele,   &
-!     &          nele_search, istack_e_search_s, iele_search)
+!     &          ele_search)
 !
-!      subroutine count_surf_list_4_psf(isurf_smp_stack,                &
-!     &          istack_s_search_s)
-!      subroutine set_surface_list_4_psf(isurf_smp_stack, nsurf_search, &
-!     &          istack_s_search_s, isurf_search)
+!      subroutine count_surf_list_4_psf(isurf_smp_stack, surf_search)
+!      subroutine set_surface_list_4_psf(isurf_smp_stack, surf_search)
 !
       module set_surface_list_for_psf
 !
@@ -63,16 +61,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine mark_surface_list_4_psf(numele, numsurf, isf_4_ele,    &
-     &          nele_search, istack_e_search_s, iele_search)
+     &          ele_search)
 !
       use m_machine_parameter
       use m_geometry_constants
+      use t_psf_geometry_list
 !
       integer(kind = kint), intent(in) :: numele, numsurf
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      integer(kind = kint), intent(in) :: nele_search
-      integer(kind = kint), intent(in) :: istack_e_search_s(0:np_smp)
-      integer(kind = kint), intent(in) :: iele_search(nele_search)
+      type(sect_search_list), intent(inout) :: ele_search
 !
       integer(kind = kint) :: ip, inum, iele, is, isurf, ist, ied
 !
@@ -91,10 +88,10 @@
 !
 !$omp parallel do private(inum,iele,is,isurf,ist,ied)
       do ip = 1, np_smp
-        ist = istack_e_search_s(ip-1) + 1
-        ied = istack_e_search_s(ip)
+        ist = ele_search%istack_search_smp(ip-1) + 1
+        ied = ele_search%istack_search_smp(ip)
         do inum = ist, ied
-          iele = iele_search(inum)
+          iele = ele_search%id_search(inum)
           do is = 1, nsurf_4_ele
             isurf = abs(isf_4_ele(iele,is))
             imark_surf_smp(isurf,ip) = 0
@@ -122,13 +119,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_surf_list_4_psf(isurf_smp_stack,                 &
-     &          istack_s_search_s)
+      subroutine count_surf_list_4_psf(isurf_smp_stack, surf_search)
 !
       use m_machine_parameter
+      use t_psf_geometry_list
 !
       integer(kind=kint), intent(in) :: isurf_smp_stack(0:np_smp)
-      integer(kind=kint), intent(inout) :: istack_s_search_s(0:np_smp)
+      type(sect_search_list), intent(inout) :: surf_search
 !
       integer(kind=kint) :: ip, isurf, ist, ied
 !
@@ -146,35 +143,34 @@
 !$omp end parallel do
 !
       do ip = 1, np_smp
-        istack_s_search_s(ip) = istack_s_search_s(ip-1)                 &
-     &                            + nsurf_search_smp(ip)
+        surf_search%istack_search_smp(ip)                               &
+     &     = surf_search%istack_search_smp(ip-1) + nsurf_search_smp(ip)
       end do
+      surf_search%num_search = surf_search%istack_search_smp(np_smp)
 !
       end subroutine count_surf_list_4_psf
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_surface_list_4_psf(isurf_smp_stack, nsurf_search,  &
-     &          istack_s_search_s, isurf_search)
+      subroutine set_surface_list_4_psf(isurf_smp_stack, surf_search)
 !
       use m_machine_parameter
+      use t_psf_geometry_list
 !
       integer(kind = kint), intent(in) :: isurf_smp_stack(0:np_smp)
-      integer(kind = kint), intent(in) :: nsurf_search
-      integer(kind = kint), intent(in) :: istack_s_search_s(0:np_smp)
-      integer(kind = kint), intent(inout) :: isurf_search(nsurf_search)
+      type(sect_search_list), intent(inout) :: surf_search
 !
       integer(kind = kint) :: ip, isurf, ist, ied, icou
 !
 !$omp parallel do private(isurf,ist,ied,icou)
       do ip = 1, np_smp
-        icou = istack_s_search_s(ip-1)
+        icou = surf_search%istack_search_smp(ip-1)
         ist = isurf_smp_stack(ip-1) + 1
         ied = isurf_smp_stack(ip)
         do isurf = ist, ied
           if (imark_surf(isurf) .gt. 0) then
             icou = icou + 1
-            isurf_search(icou) = isurf
+            surf_search%id_search(icou) = isurf
           end if
         end do
       end do

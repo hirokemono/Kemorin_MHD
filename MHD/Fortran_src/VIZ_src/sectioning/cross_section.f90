@@ -48,9 +48,9 @@
 !
 !
       use m_geometry_constants
-      use m_geometry_list_4_psf
       use m_patch_data_psf
       use m_psf_outputs
+      use m_psf_data
 !
       use set_psf_iso_control
       use search_ele_list_for_psf
@@ -93,6 +93,8 @@
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
+      integer(kind = kint) :: i_psf
+!
 !
       call set_psf_control(num_mat, mat_name, num_surf, surf_name,      &
      &    num_nod_phys, phys_nod_name)
@@ -105,9 +107,10 @@
      &        num_mat, num_mat_bc, mat_istack, mat_item)
 !
 !
-      call allocate_constant_4_ref_psf(num_psf, numnod,                 &
-     &    nele_search_psf_tot)
-      call allocate_nnod_psf(np_smp, num_psf, numnod, numedge)
+      do i_psf = 1, num_psf
+        call alloc_ref_field_4_psf(numnod, psf_list(i_psf))
+        call alloc_nnod_psf(np_smp, numnod, numedge, psf_list(i_psf))
+      end do
       call allocate_num_patch_psf(np_smp, num_psf)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_crossections'

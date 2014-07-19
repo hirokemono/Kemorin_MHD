@@ -44,9 +44,9 @@
 !
       use m_geometry_constants
       use m_control_params_4_iso
-      use m_geometry_list_4_iso
       use m_patch_data_iso
       use m_iso_outputs
+      use m_iso_data
 !
       use set_psf_iso_control
       use search_ele_list_for_iso
@@ -72,6 +72,8 @@
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
+      integer(kind = kint) :: i_iso
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'set_iso_control'
       call set_iso_control(num_mat, mat_name,                           &
@@ -83,11 +85,10 @@
      &    inod_smp_stack, iele_smp_stack, isurf_smp_stack,              &
      &    iedge_smp_stack, num_mat, num_mat_bc,  mat_istack, mat_item)
 !
-      if (iflag_debug.eq.1) write(*,*) 'allocate_constant_4_ref_iso'
-      call allocate_constant_4_ref_iso(num_iso, numnod,               &
-     &    nele_search_iso_tot)
-      if (iflag_debug.eq.1) write(*,*) 'allocate_nnod_iso'
-      call allocate_nnod_iso(np_smp, num_iso, numnod, numedge)
+      do i_iso = 1, num_iso
+        call alloc_ref_field_4_psf(numnod, iso_list(i_iso))
+        call alloc_nnod_psf(np_smp, numnod, numedge, iso_list(i_iso))
+      end do
       if (iflag_debug.eq.1) write(*,*) 'allocate_num_patch_iso'
       call allocate_num_patch_iso(np_smp, num_iso)
 !
@@ -108,9 +109,9 @@
 !
       use m_geometry_constants
       use m_control_params_4_iso
-      use m_geometry_list_4_iso
       use m_patch_data_iso
       use m_iso_outputs
+      use m_iso_data
 !
       use set_const_4_sections
       use find_node_and_patch_psf
@@ -141,6 +142,8 @@
      &                     :: istack_nod_component(0:num_nod_phys)
       real(kind = kreal), intent(in)  :: d_nod(numnod,num_tot_nod_phys)
 !
+      integer(kind = kint) :: i_iso
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_isosurfaces'
       call set_const_4_isosurfaces(numnod, inod_smp_stack,              &
@@ -156,8 +159,9 @@
       call set_field_4_iso(numnod, numedge, nnod_4_edge, ie_edge,       &
      &    num_nod_phys, num_tot_nod_phys, istack_nod_component, d_nod)
 !
-      call deallocate_inod_iso
-!
+      do i_iso = 1, num_iso
+        call dealloc_inod_psf(iso_list(i_iso))
+      end do
 !
       if (iflag_debug.eq.1) write(*,*) 'collect_numbers_4_iso'
       call collect_numbers_4_iso

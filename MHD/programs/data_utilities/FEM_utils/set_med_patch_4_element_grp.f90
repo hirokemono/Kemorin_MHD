@@ -62,10 +62,13 @@
       use set_psf_case_table
       use patch_4_psf
 !
+      use t_psf_geometry_list
+!
       character(len=kchara), intent(in) :: file_head
 !
-      integer(kind = kint) :: igrp
+      integer(kind = kint) :: ip, igrp, inum
       integer(kind = kint) :: ist_smp, ied_smp
+      type(sect_search_list) :: ele_search
 !
 !
       call init_ele_grp_med_patch(file_head, num_mat, num_mat_bc)
@@ -73,11 +76,25 @@
       call set_sectioning_case_table
 !
       do igrp = 1, num_mat
-        ist_smp = np_smp*(igrp-1)
-        ied_smp = np_smp*igrp
+        call alloc_num_psf_search_list(np_smp, ele_search)
+!
+        do ip = 1, np_smp
+          ele_search%istack_search_smp(ip)                              &
+     &            = imat_smp_stack(ip+(igrp-1)*np_smp)                  &
+     &             - imat_smp_stack((igrp-1)*np_smp)
+        end do
+        ele_search%num_search = mat_istack(igrp) - mat_istack(igrp-1)
+!
+        call alloc_psf_search_list(ele_search)
+        do inum = 1, ele_search%num_search
+          ele_search%id_search(inum)                                    &
+     &               = mat_item(inum+mat_istack(igrp-1))
+        end do
+        call dealloc_psf_search_list(ele_search)
+        call dealloc_num_psf_search_list(ele_search)
+!
         call set_psf_type_id(numnod, numele, nnod_4_ele, ie,            &
-     &      num_mat_bc, imat_smp_stack(ist_smp:ied_smp), mat_item,      &
-     &      xx(1,2), mark_elegrp)
+     &      ele_search, mark_elegrp, xx(1,2))
 !
         call count_med_grp_patch(igrp, npatch_grp)
         allocate(xyz_med(3,3*npatch_grp+3))

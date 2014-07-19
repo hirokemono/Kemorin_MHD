@@ -34,9 +34,8 @@
       use m_geometry_constants
       use m_machine_parameter
       use m_control_params_4_psf
-      use m_search_list_4_psf
-      use m_geometry_list_4_psf
       use m_patch_data_psf
+      use m_psf_data
 !
       use set_nodes_for_psf
       use set_patches_for_psf
@@ -61,12 +60,16 @@
       integer(kind = kint), intent(in)                                  &
      &                     :: inod_surf_grp(ntot_node_sf_grp)
 !
+      integer(kind = kint) :: i_psf
+!
 !
       if (iflag_debug.eq.1)  write(*,*) 'count_nodes_4_psf'
-      call count_nodes_4_psf(numnod, numedge, nnod_4_edge, ie_edge,     &
+      call count_nodes_4_psf(numedge, nnod_4_edge, ie_edge,             &
      &    num_surf, inod_stack_sf_grp)
 !
-      call allocate_inod_psf(num_psf)
+      do i_psf = 1, num_psf
+        call alloc_inod_psf(psf_list(i_psf))
+      end do
       call allocate_position_psf
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_nodes_4_psf'
@@ -98,9 +101,8 @@
 !
       use m_geometry_constants
       use m_control_params_4_iso
-      use m_search_list_4_iso
-      use m_geometry_list_4_iso
       use m_patch_data_iso
+      use m_iso_data
 !
       use set_nodes_for_psf
       use set_patches_for_psf
@@ -119,10 +121,14 @@
       integer(kind = kint), intent(in) :: istack_ncomp(0:num_phys)
       real(kind = kreal), intent(in)  :: d_nod(numnod,ntot_phys)
 !
+      integer(kind = kint) :: i_iso
 !
-      call count_nodes_4_iso(numnod, numedge, nnod_4_edge, ie_edge)
 !
-      call allocate_inod_iso(num_iso)
+      call count_nodes_4_iso(numedge, nnod_4_edge, ie_edge)
+!
+      do i_iso = 1, num_iso
+        call alloc_inod_psf(iso_list(i_iso))
+      end do
       call allocate_position_iso
 !
       call set_nodes_4_iso(numnod, numedge, nnod_4_edge,                &

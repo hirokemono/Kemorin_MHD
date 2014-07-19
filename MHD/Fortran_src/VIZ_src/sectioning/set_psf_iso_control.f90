@@ -29,6 +29,7 @@
       use m_control_data_sections
       use m_control_data_4_psf
       use m_control_params_4_psf
+      use m_psf_data
       use m_read_control_elements
 !
       use set_control_each_psf
@@ -50,6 +51,7 @@
 !
       call allocate_control_params_4_psf
       call allocate_psf_ctl_stract
+      call alloc_psf_field_type(num_psf)
 !
       do i_psf = 1, num_psf
         call read_control_4_psf(i_psf)
@@ -85,6 +87,7 @@
       use m_control_data_sections
       use m_control_data_4_iso
       use m_control_params_4_iso
+      use m_iso_data
       use m_read_control_elements
 !
       use set_control_each_iso
@@ -103,6 +106,7 @@
 !
       call allocate_control_params_4_iso
       call allocate_iso_ctl_stract
+      call alloc_iso_field_type(num_iso)
 !
       do i = 1, num_iso
         call read_control_4_iso(i)

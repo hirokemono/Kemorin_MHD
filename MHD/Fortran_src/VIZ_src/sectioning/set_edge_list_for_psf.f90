@@ -7,12 +7,10 @@
 !      subroutine deallocate_work_4_mark_edge_psf
 !
 !      subroutine mark_edge_list_4_psf(numsurf, numedge, iedge_4_sf,    &
-!     &          nsurf_search, istack_s_search_s, isurf_search)
+!     &          surf_search)
 !
-!      subroutine count_edge_list_4_psf(iedge_smp_stack,                &
-!     &          istack_e_search_s)
-!      subroutine set_edge_list_4_psf(iedge_smp_stack, nedge_search,    &
-!     &          istack_e_search_s, iedge_search)
+!      subroutine count_edge_list_4_psf(iedge_smp_stack, edge_search)
+!      subroutine set_edge_list_4_psf(iedge_smp_stack, edge_search)
 !
       module set_edge_list_for_psf
 !
@@ -63,17 +61,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine mark_edge_list_4_psf(numsurf, numedge, iedge_4_sf,     &
-     &          nsurf_search, istack_s_search_s, isurf_search)
+     &          surf_search)
 !
       use m_machine_parameter
       use m_geometry_constants
+      use t_psf_geometry_list
 !
       integer(kind = kint), intent(in) :: numsurf, numedge
       integer(kind = kint), intent(in)                                  &
      &                     :: iedge_4_sf(numsurf,nedge_4_surf)
-      integer(kind = kint), intent(in) :: nsurf_search
-      integer(kind = kint), intent(in) :: istack_s_search_s(0:np_smp)
-      integer(kind = kint), intent(in) :: isurf_search(nsurf_search)
+      type(sect_search_list), intent(in) :: surf_search
 !
       integer(kind = kint) :: ip, inum, isurf, ist, ied
       integer(kind = kint) :: iedge, iedge1, iedge2, iedge3, iedge4
@@ -92,10 +89,10 @@
 !
 !$omp parallel do private(inum,isurf,iedge1,iedge,iedge3,iedge4,ist,ied)
       do ip = 1, np_smp
-        ist = istack_s_search_s(ip-1) + 1
-        ied = istack_s_search_s(ip)
+        ist = surf_search%istack_search_smp(ip-1) + 1
+        ied = surf_search%istack_search_smp(ip)
         do inum = ist, ied
-          isurf = isurf_search(inum)
+          isurf = surf_search%id_search(inum)
             iedge1 = abs( iedge_4_sf(isurf,1) )
             iedge2 = abs( iedge_4_sf(isurf,2) )
             iedge3 = abs( iedge_4_sf(isurf,3) )
@@ -127,13 +124,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_edge_list_4_psf(iedge_smp_stack,                 &
-     &          istack_e_search_s)
+      subroutine count_edge_list_4_psf(iedge_smp_stack, edge_search)
 !
       use m_machine_parameter
+      use t_psf_geometry_list
 !
       integer(kind=kint), intent(in) :: iedge_smp_stack(0:np_smp)
-      integer(kind=kint), intent(inout) :: istack_e_search_s(0:np_smp)
+      type(sect_search_list), intent(inout) :: edge_search
 !
       integer(kind=kint) :: ip, iedge, ist, ied
 !
@@ -151,35 +148,34 @@
 !$omp end parallel do
 !
       do ip = 1, np_smp
-        istack_e_search_s(ip) = istack_e_search_s(ip-1)                 &
-     &                            + nedge_search_smp(ip)
+        edge_search%istack_search_smp(ip)                               &
+     &     = edge_search%istack_search_smp(ip-1) + nedge_search_smp(ip)
       end do
+      edge_search%num_search = edge_search%istack_search_smp(np_smp)
 !
       end subroutine count_edge_list_4_psf
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_edge_list_4_psf(iedge_smp_stack, nedge_search,     &
-     &          istack_e_search_s, iedge_search)
+      subroutine set_edge_list_4_psf(iedge_smp_stack, edge_search)
 !
       use m_machine_parameter
+      use t_psf_geometry_list
 !
       integer(kind = kint), intent(in) :: iedge_smp_stack(0:np_smp)
-      integer(kind = kint), intent(in) :: nedge_search
-      integer(kind = kint), intent(in) :: istack_e_search_s(0:np_smp)
-      integer(kind = kint), intent(inout) :: iedge_search(nedge_search)
+      type(sect_search_list), intent(inout) :: edge_search
 !
       integer(kind = kint) :: ip, iedge, ist, ied, icou
 !
 !$omp parallel do private(iedge,ist,ied,icou)
       do ip = 1, np_smp
-        icou = istack_e_search_s(ip-1)
+        icou = edge_search%istack_search_smp(ip-1)
         ist = iedge_smp_stack(ip-1) + 1
         ied = iedge_smp_stack(ip)
         do iedge = ist, ied
           if( imark_edge(iedge) .gt. 0) then
             icou = icou + 1
-            iedge_search(icou) = iedge
+            edge_search%id_search(icou) = iedge
           end if
         end do
       end do
