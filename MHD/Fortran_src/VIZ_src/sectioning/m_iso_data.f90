@@ -21,18 +21,18 @@
 !
 !>      Structure for isosurface mesh
 !!        iso_mesh(i_iso)%node%numnod = 
-!!        iso_mesh(i_iso)%node%istack_nod_smp(ip) = istack_nod_psf_smp
-!!        iso_mesh(i_iso)%node%xx = xyz_psf
-!!        iso_mesh(i_iso)%node%rr =    sph_psf(:,1)
-!!        iso_mesh(i_iso)%node%theta = sph_psf(:,2)
-!!        iso_mesh(i_iso)%node%phi =   sph_psf(:,3)
-!!        iso_mesh(i_iso)%node%a_r =   sph_psf(:,1)
-!!        iso_mesh(i_iso)%node%ss =    cyl_psf(:,1)
-!!        iso_mesh(i_iso)%node%a_s =   cyl_psf(:,2)
+!!        iso_mesh(i_iso)%node%istack_nod_smp(ip) = istack_nod_iso_smp
+!!        iso_mesh(i_iso)%node%xx = xyz_iso
+!!        iso_mesh(i_iso)%node%rr =    sph_iso(:,1)
+!!        iso_mesh(i_iso)%node%theta = sph_iso(:,2)
+!!        iso_mesh(i_iso)%node%phi =   sph_iso(:,3)
+!!        iso_mesh(i_iso)%node%a_r =   sph_iso(:,1)
+!!        iso_mesh(i_iso)%node%ss =    cyl_iso(:,1)
+!!        iso_mesh(i_iso)%node%a_s =   cyl_iso(:,2)
 !!
 !!        iso_mesh(i_iso)%ele%nnod_4_ele = 3
-!!        iso_mesh(i_iso)%ele%istack_ele_smp = istack_patch_psf_smp
-!!        iso_mesh(i_iso)%ele%ie = ie_patch_psf
+!!        iso_mesh(i_iso)%ele%istack_ele_smp = istack_patch_iso_smp
+!!        iso_mesh(i_iso)%ele%ie = ie_patch_iso
       type(mesh_geometry), allocatable, save :: iso_mesh(:)
 !
 !>      Structure for isosurface field
@@ -49,6 +49,15 @@
 !
 !>      Structure for search table for sections
       type(psf_search_lists), allocatable, save :: iso_search(:)
+!
+      type(psf_patch_data), save :: iso_pat
+!
+!>      End point of node list for each isosurfaces
+      integer(kind = kint), allocatable :: istack_nod_iso(:)
+      integer(kind = kint), allocatable :: istack_nod_iso_smp(:)
+!
+      integer(kind = kint), allocatable :: istack_patch_iso(:)
+      integer(kind = kint), allocatable :: istack_patch_iso_smp(:)
 !
 !  ---------------------------------------------------------------------
 !
@@ -76,6 +85,34 @@
       deallocate(iso_mesh, iso_fld, iso_list, iso_search)
 !
       end subroutine dealloc_iso_field_type
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine allocate_num_patch_iso(np_smp, num_iso)
+!
+      integer(kind= kint), intent(in) :: np_smp, num_iso
+!
+      allocate(istack_nod_iso(0:num_iso))
+      allocate(istack_patch_iso(0:num_iso))
+      allocate(istack_nod_iso_smp(0:np_smp*num_iso))
+      allocate(istack_patch_iso_smp(0:np_smp*num_iso))
+!
+      istack_nod_iso = 0
+      istack_patch_iso = 0
+      istack_nod_iso_smp = 0
+      istack_patch_iso_smp = 0
+!
+      end subroutine allocate_num_patch_iso
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_num_patch_iso
+!
+      deallocate(istack_nod_iso,   istack_nod_iso_smp)
+      deallocate(istack_patch_iso, istack_patch_iso_smp)
+!
+      end subroutine deallocate_num_patch_iso
 !
 !  ---------------------------------------------------------------------
 !

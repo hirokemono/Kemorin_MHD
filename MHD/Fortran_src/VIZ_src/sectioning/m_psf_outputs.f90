@@ -11,7 +11,7 @@
 !!      subroutine allocate_psf_outputs_num(nprocs, my_rank, num_psf)
 !!      subroutine allocate_psf_outputs_data(my_rank, num_psf)
 !!      subroutine allocate_SR_array_psf(my_rank, max_ncomp_psf_out,    &
-!!     &          nnod_psf_tot, npatch_tot_psf_smp)
+!!     &          nnod_psf_tot, npatch_tot)
 !!
 !!      subroutine deallocate_psf_outputs_num
 !!      subroutine deallocate_psf_outputs_data(my_rank, num_psf)
@@ -23,7 +23,7 @@
 !!@param num_psf       number of sections
 !!@param max_ncomp_psf_out    maximum number of components for sections
 !!@param nnod_psf_tot         total number of node for sections
-!!@param npatch_tot_psf_smp   total number of elements for sections
+!!@param npatch_tot   total number of elements for sections
 !
       module m_psf_outputs
 !
@@ -135,12 +135,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine allocate_SR_array_psf(my_rank, max_ncomp_psf_out,      &
-     &          nnod_psf_tot, npatch_tot_psf_smp)
+     &          nnod_psf_tot, npatch_tot)
 !
       integer(kind=kint ) , intent(in)   ::  my_rank
       integer(kind=kint ) , intent(in)   ::  max_ncomp_psf_out
       integer(kind=kint ) , intent(in)   ::  nnod_psf_tot
-      integer(kind=kint ) , intent(in)   ::  npatch_tot_psf_smp
+      integer(kind=kint ) , intent(in)   ::  npatch_tot
 !
       integer(kind = kint) :: nmax_comp, nmax_int
 !
@@ -149,7 +149,7 @@
       allocate (send_psf(nmax_comp*nnod_psf_tot))
       if(nmax_comp*nnod_psf_tot .gt. 0) send_psf = 0.0d0
 !
-      nmax_int = max(num_triangle*npatch_tot_psf_smp,nnod_psf_tot)
+      nmax_int = max(num_triangle*npatch_tot,nnod_psf_tot)
       allocate (isend_psf(nmax_int))
       if(nmax_int .gt. 0) isend_psf = 0
 !

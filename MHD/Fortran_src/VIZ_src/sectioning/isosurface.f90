@@ -44,7 +44,6 @@
 !
       use m_geometry_constants
       use m_control_params_4_iso
-      use m_patch_data_iso
       use m_iso_outputs
       use m_iso_data
 !
@@ -109,7 +108,6 @@
 !
       use m_geometry_constants
       use m_control_params_4_iso
-      use m_patch_data_iso
       use m_iso_outputs
       use m_iso_data
 !
@@ -169,7 +167,7 @@
 !
       call allocate_iso_outputs_data(my_rank,num_iso)
       call allocate_SR_array_iso(my_rank, nprocs,                       &
-     &    nnod_iso_tot, npatch_tot_iso_smp)
+     &    iso_pat%nnod_psf_tot, iso_pat%npatch_tot)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'collect_data_4_iso'
@@ -181,9 +179,9 @@
 !
       call deallocate_SR_array_iso(my_rank)
       call deallocate_iso_outputs_data(my_rank, num_iso)
-      call deallocate_dat_on_patch_iso
-      call deallocate_patch_data_iso
-      call deallocate_position_iso
+      call dealloc_dat_on_patch_psf(iso_pat)
+      call dealloc_position_psf(iso_pat)
+      call dealloc_patch_data_psf(iso_pat)
 !
       end subroutine isosurface_main
 !

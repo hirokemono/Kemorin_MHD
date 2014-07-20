@@ -6,7 +6,7 @@
 !!      subroutine allocate_iso_outputs_num(nprocs, my_rank, num_iso)
 !!      subroutine allocate_iso_outputs_data(my_rank, num_iso)
 !!      subroutine allocate_SR_array_iso(my_rank, max_ncomp_iso_out,    &
-!!     &          nnod_iso_tot, npatch_tot_iso_smp)
+!!     &          nnod_iso_tot, npatch_tot)
 !!
 !!      subroutine deallocate_iso_outputs_num
 !!      subroutine deallocate_iso_outputs_data(my_rank, num_iso)
@@ -123,12 +123,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine allocate_SR_array_iso(my_rank, max_ncomp_iso_out,      &
-     &          nnod_iso_tot, npatch_tot_iso_smp)
+     &          nnod_iso_tot, npatch_tot)
 !
       integer(kind=kint ) , intent(in) ::  my_rank
       integer(kind=kint ) , intent(in) ::  max_ncomp_iso_out
       integer(kind = kint), intent(in) :: nnod_iso_tot
-      integer(kind = kint), intent(in) :: npatch_tot_iso_smp
+      integer(kind = kint), intent(in) :: npatch_tot
 !
       integer(kind = kint) :: nmax_comp, nmax_int
 !
@@ -137,8 +137,8 @@
       allocate (send_iso(nmax_comp*nnod_iso_tot))
       if(nmax_comp*nnod_iso_tot .gt. 0) send_iso = 0.0d0
 !
-      nmax_int = max(num_triangle*npatch_tot_iso_smp, nnod_iso_tot)
-      allocate (isend_iso(num_triangle*npatch_tot_iso_smp))
+      nmax_int = max(num_triangle*npatch_tot, nnod_iso_tot)
+      allocate (isend_iso(num_triangle*npatch_tot))
       if(nmax_int .gt. 0) isend_iso = 0
 !
       if (my_rank.eq.0) then

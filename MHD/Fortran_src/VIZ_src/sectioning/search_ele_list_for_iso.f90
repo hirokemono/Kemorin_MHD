@@ -90,7 +90,7 @@
       integer(kind = kint), intent(in) :: istack_ele_grp(0:num_ele_grp)
       integer(kind = kint), intent(in) :: item_ele_grp(ntot_ele_grp)
 !
-      integer(kind = kint) :: i, ist, ist_smp
+      integer(kind = kint) :: i, ist
 !
 !
       call allocate_work_4_mark_psf(numele)
@@ -131,7 +131,7 @@
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       integer(kind = kint), intent(in) :: isurf_smp_stack(0:np_smp)
 !
-      integer(kind = kint) :: i, ist_smp
+      integer(kind = kint) :: i
 !
 !
       call allocate_work_4_mark_surf_psf(numsurf)
@@ -139,7 +139,6 @@
       do i = 1, num_iso
         call alloc_num_psf_search_list(np_smp, iso_search(i)%surf_list)
 !
-        ist_smp = (i-1)*np_smp
         call mark_surface_list_4_psf(numele, numsurf, isf_4_ele,        &
      &      iso_search(i)%elem_list)
         call count_surf_list_4_psf                                      &

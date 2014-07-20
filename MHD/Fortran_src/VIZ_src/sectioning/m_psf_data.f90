@@ -49,6 +49,16 @@
 !>      Structure for search table for sections
       type(psf_search_lists), allocatable, save :: psf_search(:)
 !
+!
+      type(psf_patch_data), save :: psf_pat
+!
+!
+      integer(kind = kint), allocatable :: istack_nod_psf(:)
+      integer(kind = kint), allocatable :: istack_nod_psf_smp(:)
+!
+      integer(kind = kint), allocatable :: istack_patch_psf(:)
+      integer(kind = kint), allocatable :: istack_patch_psf_smp(:)
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -75,6 +85,34 @@
       deallocate(psf_mesh, psf_fld, psf_list, psf_search)
 !
       end subroutine dealloc_psf_field_type
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine allocate_num_patch_psf(np_smp, num_psf)
+!
+      integer(kind= kint), intent(in) :: np_smp, num_psf
+!
+      allocate(istack_nod_psf(0:num_psf))
+      allocate(istack_patch_psf(0:num_psf))
+      allocate(istack_nod_psf_smp(0:np_smp*num_psf))
+      allocate(istack_patch_psf_smp(0:np_smp*num_psf))
+!
+      istack_nod_psf = 0
+      istack_patch_psf = 0
+      istack_nod_psf_smp = 0
+      istack_patch_psf_smp = 0
+!
+      end subroutine allocate_num_patch_psf
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_num_patch_psf
+!
+      deallocate(istack_nod_psf, istack_nod_psf_smp)
+      deallocate(istack_patch_psf, istack_patch_psf_smp)
+!
+      end subroutine deallocate_num_patch_psf
 !
 !  ---------------------------------------------------------------------
 !

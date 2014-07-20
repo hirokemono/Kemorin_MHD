@@ -48,7 +48,6 @@
 !
 !
       use m_geometry_constants
-      use m_patch_data_psf
       use m_psf_outputs
       use m_psf_data
 !
@@ -129,7 +128,7 @@
 !
       call allocate_psf_outputs_data(my_rank, num_psf)
       call allocate_SR_array_psf(my_rank, max_ncomp_psf_out,            &
-     &    nnod_psf_tot, npatch_tot_psf_smp)
+     &    psf_pat%nnod_psf_tot, psf_pat%npatch_tot)
 !
       if (iflag_debug.eq.1) write(*,*) 'collect_mesh_4_psf'
       call collect_mesh_4_psf

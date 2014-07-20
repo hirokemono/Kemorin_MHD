@@ -29,7 +29,7 @@
 !
       use m_geometry_constants
       use m_control_params_4_psf
-      use m_patch_data_psf
+      use m_psf_data
       use m_psf_outputs
       use count_numbers_collected_psf
 !
@@ -77,26 +77,27 @@
       subroutine collect_mesh_4_psf
 !
       use m_control_params_4_psf
-      use m_patch_data_psf
+      use m_psf_data
       use m_psf_outputs
 !
       use psf_send_recv
       use reconnect_psf_overlap_nod
 !
-      call psf_grids_send_recv(num_psf, nnod_psf_tot,                   &
+      call psf_grids_send_recv(num_psf, psf_pat%nnod_psf_tot,           &
      &    ntot_nod_output_psf, istack_nod_para_psf,                     &
-     &    istack_nod_recv_psf, xyz_psf, send_psf, recv_psf, psf_out)
+     &    istack_nod_recv_psf, psf_pat%xyz_psf, send_psf,               &
+     &    recv_psf, psf_out)
 !
-      call psf_hash_send_recv(num_psf, nnod_psf_tot,                    &
+      call psf_hash_send_recv(num_psf, psf_pat%nnod_psf_tot,            &
      &    ntot_nod_output_psf, istack_nod_para_psf,                     &
-     &    istack_nod_recv_psf, inod_hash_psf,                           &
+     &    istack_nod_recv_psf, psf_pat%inod_hash_psf,                   &
      &    isend_psf(1), irecv_psf(1), ihash_output_psf)
 !
       call set_global_psf_node_id(num_psf, psf_out)
 !
-      call psf_connect_send_recv(num_psf, npatch_tot_psf_smp,           &
+      call psf_connect_send_recv(num_psf, psf_pat%npatch_tot,           &
      &    ntot_ele_output_psf, istack_nod_para_psf,                     &
-     &    istack_ele_para_psf, istack_ele_recv_psf, ie_patch_psf,       &
+     &    istack_ele_para_psf, istack_ele_recv_psf, psf_pat%ie_tri,     &
      &    isend_psf(1), irecv_psf(1), psf_out)
 !
       call s_reconnect_psf_overlap_nod(num_psf, ntot_nod_output_psf,    &
@@ -109,14 +110,14 @@
       subroutine collect_field_4_psf
 !
       use m_control_params_4_psf
-      use m_patch_data_psf
+      use m_psf_data
       use m_psf_outputs
 !
       use psf_send_recv
 !
-      call psf_results_send_recv(num_psf, nnod_psf_tot,                 &
+      call psf_results_send_recv(num_psf, psf_pat%nnod_psf_tot,         &
      &    ntot_nod_output_psf, istack_nod_para_psf,                     &
-     &    istack_nod_recv_psf, max_ncomp_psf_out, dat_psf,              &
+     &    istack_nod_recv_psf, max_ncomp_psf_out, psf_pat%dat_psf,      &
      &    send_psf, recv_psf, psf_out)
 !
       end subroutine collect_field_4_psf
@@ -128,7 +129,7 @@
 !
       use m_geometry_constants
       use m_control_params_4_iso
-      use m_patch_data_iso
+      use m_iso_data
       use m_iso_outputs
       use count_numbers_collected_psf
 !
@@ -174,35 +175,36 @@
       subroutine collect_data_4_iso
 !
       use m_control_params_4_iso
-      use m_patch_data_iso
+      use m_iso_data
       use m_iso_outputs
 !
       use psf_send_recv
       use reconnect_psf_overlap_nod
 !
 !
-      call psf_grids_send_recv(num_iso, nnod_iso_tot,                   &
+      call psf_grids_send_recv(num_iso, iso_pat%nnod_psf_tot,           &
      &    ntot_nod_output_iso, istack_nod_para_iso,                     &
-     &    istack_nod_recv_iso, xyz_iso, send_iso, recv_iso, iso_out)
+     &    istack_nod_recv_iso, iso_pat%xyz_psf,                         &
+     &    send_iso, recv_iso, iso_out)
 !
-      call psf_hash_send_recv(num_iso, nnod_iso_tot,                    &
+      call psf_hash_send_recv(num_iso, iso_pat%nnod_psf_tot,            &
      &    ntot_nod_output_iso, istack_nod_para_iso,                     &
-     &    istack_nod_recv_iso, inod_hash_iso,                           &
+     &    istack_nod_recv_iso, iso_pat%inod_hash_psf,                   &
      &    isend_iso(1), irecv_iso(1), ihash_output_iso)
 !
       call set_global_psf_node_id(num_iso, iso_out)
 !
-      call psf_connect_send_recv(num_iso, npatch_tot_iso_smp,           &
+      call psf_connect_send_recv(num_iso, iso_pat%npatch_tot,           &
      &    ntot_ele_output_iso, istack_nod_para_iso,                     &
-     &    istack_ele_para_iso, istack_ele_recv_iso, ie_patch_iso,       &
+     &    istack_ele_para_iso, istack_ele_recv_iso, iso_pat%ie_tri,     &
      &    isend_iso(1), irecv_iso(1), iso_out)
 !
       call s_reconnect_psf_overlap_nod(num_iso, ntot_nod_output_iso,    &
      &    istack_nod_output_iso, ihash_output_iso, iso_out)
 !
-      call psf_results_send_recv(num_iso, nnod_iso_tot,                 &
+      call psf_results_send_recv(num_iso, iso_pat%nnod_psf_tot,         &
      &    ntot_nod_output_iso, istack_nod_para_iso,                     &
-     &    istack_nod_recv_iso, max_ncomp_iso_out, dat_iso,              &
+     &    istack_nod_recv_iso, max_ncomp_iso_out, iso_pat%dat_psf,      &
      &    send_iso, recv_iso, iso_out)
 !
       end subroutine collect_data_4_iso

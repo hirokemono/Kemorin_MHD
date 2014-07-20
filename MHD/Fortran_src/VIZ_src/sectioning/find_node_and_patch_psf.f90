@@ -34,7 +34,6 @@
       use m_geometry_constants
       use m_machine_parameter
       use m_control_params_4_psf
-      use m_patch_data_psf
       use m_psf_data
 !
       use set_nodes_for_psf
@@ -70,7 +69,7 @@
       do i_psf = 1, num_psf
         call alloc_inod_psf(psf_list(i_psf))
       end do
-      call allocate_position_psf
+      call alloc_position_psf(psf_pat)
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_nodes_4_psf'
       call set_nodes_4_psf(numnod, numedge, nnod_4_edge, inod_global,   &
@@ -81,14 +80,14 @@
       call count_psf_patches(numnod, numele, numedge, nnod_4_ele,       &
      &    ie, iedge_4_ele, num_surf, surf_istack)
 !
-      call allocate_patch_data_psf
+      call alloc_patch_data_psf(psf_pat)
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_psf_patches'
       call set_psf_patches(numele, numedge, nnod_4_ele, ie,             &
      &    iedge_4_ele, num_surf, num_surf_bc, surf_istack, surf_item)
 !
 !
-      call allocate_dat_on_patch_psf(max_ncomp_psf_out)
+      call alloc_dat_on_patch_psf(max_ncomp_psf_out, psf_pat)
 !
       end subroutine set_node_and_patch_psf
 !
@@ -101,7 +100,6 @@
 !
       use m_geometry_constants
       use m_control_params_4_iso
-      use m_patch_data_iso
       use m_iso_data
 !
       use set_nodes_for_psf
@@ -129,7 +127,7 @@
       do i_iso = 1, num_iso
         call alloc_inod_psf(iso_list(i_iso))
       end do
-      call allocate_position_iso
+      call alloc_position_psf(iso_pat)
 !
       call set_nodes_4_iso(numnod, numedge, nnod_4_edge,                &
      &    inod_global, xx, ie_edge)
@@ -138,12 +136,12 @@
       call count_iso_patches(numnod, numele, numedge, nnod_4_ele,       &
      &    ie, iedge_4_ele)
 !
-      call allocate_patch_data_iso
+      call alloc_patch_data_psf(iso_pat)
 !
       call set_iso_patches(numele, numedge, iedge_4_ele)
 !
 !
-      call allocate_dat_on_patch_iso(max_ncomp_iso_out)
+      call alloc_dat_on_patch_psf(max_ncomp_iso_out, iso_pat)
 !
       call set_field_4_iso(numnod, numedge, nnod_4_edge, ie_edge,       &
      &     num_phys, ntot_phys, istack_ncomp, d_nod)
