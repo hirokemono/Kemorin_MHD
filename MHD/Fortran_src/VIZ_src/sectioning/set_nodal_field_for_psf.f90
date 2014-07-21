@@ -223,7 +223,6 @@
           inum  = ist + num_n + i
           dat_psf(inum) = const
         end do
-!
       end do
 !$omp end parallel do
 !

@@ -76,15 +76,13 @@
       integer(kind = kint) :: i, ist_smp, ist_field
 !
       do i = 1, num_iso
-!
         ist_field = istack_iso_output(i-1) + 1
         ist_smp = (i-1)*np_smp
 !
-        if (id_iso_output(ist_field) .eq. iflag_constant_iso) then
+        if(id_iso_result_type(ist_field) .eq. iflag_constant_iso) then
           call set_const_on_psf(iso_pat%nnod_psf_tot,                   &
      &        istack_nod_iso_smp(ist_smp), result_value_iso(i),         &
      &        iso_pat%dat_psf, iso_list(i))
-!
         else
           call set_field_on_psf(numnod, numedge, nnod_4_edge, ie_edge,  &
      &      iso_pat%nnod_psf_tot, istack_nod_iso_smp(ist_smp),          &

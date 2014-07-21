@@ -52,14 +52,16 @@
       call choose_ucd_file_format(iso%iso_output_type_ctl,              &
      &    iso%i_iso_out_type, itype_iso_file(i_iso) )
 !
-      if(iso%iso_out_field_ctl%num .gt. 0) then
-        id_iso_result_type(i_iso) = ione
+      if(iso%iso_out_field_ctl%num .eq. 0) then
+        id_iso_result_type(i_iso) = iflag_constant_iso
+      else
+        id_iso_result_type(i_iso) = iflag_field_iso
       end if
 !
-      if      ( id_iso_result_type(i_iso) .eq. izero) then
+      if      (id_iso_result_type(i_iso) .eq. iflag_constant_iso) then
         num_iso_output(i_iso) = ione
         istack_iso_output(i_iso) = istack_iso_output(i_iso-1) + ione
-      else if ( id_iso_result_type(i_iso) .eq. ione) then
+      else if ( id_iso_result_type(i_iso) .eq. iflag_field_iso) then
         call check_field_4_viz(num_nod_phys, phys_nod_name,             &
      &      iso%iso_out_field_ctl%num, iso%iso_out_field_ctl%c1_tbl,    &
      &      num_iso_output(i_iso) )
@@ -104,13 +106,13 @@
       isosurf_value(i_iso) = iso%isosurf_value_ctl
 !
       ist = istack_iso_output(i_iso-1) + 1
-      if (id_iso_result_type(i_iso) .eq. izero) then
+      if (id_iso_result_type(i_iso) .eq. iflag_constant_iso) then
         result_value_iso(i_iso) = iso%result_value_iso_ctl
         id_iso_output(ist) = iflag_constant_iso
         icomp_iso_output(ist) = 0
         ncomp_iso_output(ist) = 1
         name_iso_output(ist) = 'color'
-      else if (id_iso_result_type(i_iso) .eq. ione) then
+      else if (id_iso_result_type(i_iso) .eq. iflag_field_iso) then
         call set_components_4_viz(num_nod_phys, phys_nod_name,          &
      &      iso%iso_out_field_ctl%num, iso%iso_out_field_ctl%c1_tbl,    &
      &      iso%iso_out_field_ctl%c2_tbl, num_iso_output(i_iso),        &

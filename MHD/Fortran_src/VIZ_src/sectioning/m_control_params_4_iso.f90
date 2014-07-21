@@ -43,6 +43,7 @@
 !  number and stack of component for each surfaces
 !
       integer(kind = kint), parameter :: iflag_constant_iso = -1
+      integer(kind = kint), parameter :: iflag_field_iso =     1
 !
 !      subroutine allocate_control_params_4_iso
 !      subroutine allocate_output_comps_4_iso
