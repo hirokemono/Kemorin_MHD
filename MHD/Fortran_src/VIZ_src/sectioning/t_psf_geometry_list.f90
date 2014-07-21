@@ -108,9 +108,8 @@
         integer(kind = kint), pointer :: istack_patch_psf_smp(:)
         integer(kind = kint), pointer :: ie_tri(:,:)
 !
-!
+        integer(kind = kint) :: max_ncomp_psf
         real(kind = kreal), pointer :: dat_psf(:,:)
-!
         real(kind = kreal), pointer :: tmp_psf(:,:)
       end type psf_patch_data
 !
@@ -340,12 +339,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_dat_on_patch_psf(max_ncomp_psf, pat)
+      subroutine alloc_dat_on_patch_psf(pat)
 !
-      integer(kind = kint), intent(in) :: max_ncomp_psf
       type(psf_patch_data), intent(inout) :: pat
 !
-      allocate(pat%dat_psf(pat%nnod_psf_tot,max_ncomp_psf))
+      allocate(pat%dat_psf(pat%nnod_psf_tot,pat%max_ncomp_psf))
       allocate(pat%tmp_psf(pat%nnod_psf_tot,6))
 !
       if(pat%nnod_psf_tot .gt. 0) then

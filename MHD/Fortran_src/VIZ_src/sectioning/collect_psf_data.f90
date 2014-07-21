@@ -6,12 +6,9 @@
 !!      subroutine collect_numbers_4_psf(num_psf, psf_prefix, ifmt_psf, &
 !!     &     istack_nod_psf_smp, istack_patch_psf_smp,                  &
 !!     &     psf_fld, collect, psf_ucd)
-!
-!      subroutine collect_mesh_4_psf
-!      subroutine collect_field_4_psf
-!
-!      subroutine collect_numbers_4_iso
-!      subroutine collect_data_4_iso
+!!      subroutine collect_mesh_4_psf(num_psf, patch, collect, psf_ucd)
+!!      subroutine collect_field_4_psf(num_psf, patch, collect, psf_ucd)
+!!      subroutine deallocate_psf_outputs_data(my_rank, num_psf, psf_ucd)
 !
       module collect_psf_data
 !
@@ -141,15 +138,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine collect_field_4_psf(patch, collect, psf_ucd)
+      subroutine collect_field_4_psf(num_psf, patch, collect, psf_ucd)
 !
-      use m_control_params_4_psf
       use t_psf_geometry_list
       use t_psf_outputs
       use t_ucd_data
 !
       use psf_send_recv
 !
+      integer(kind = kint), intent(in) :: num_psf
       type(psf_patch_data), intent(in) ::   patch
       type(psf_collect_type), intent(in) :: collect
       type(ucd_data), intent(inout) :: psf_ucd(num_psf)
@@ -157,90 +154,29 @@
 !
       call psf_results_send_recv(num_psf, patch%nnod_psf_tot,           &
      &    collect%ntot_nod_output_psf, collect%istack_nod_para_psf,     &
-     &    collect%istack_nod_recv_psf, max_ncomp_psf_out,               &
+     &    collect%istack_nod_recv_psf, patch%max_ncomp_psf,             &
      &    patch%dat_psf, collect%send_psf, collect%recv_psf, psf_ucd)
 !
       end subroutine collect_field_4_psf
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_psf_outputs_data(my_rank, num_psf)
+      subroutine deallocate_psf_outputs_data(my_rank, num_psf, psf_ucd)
 !
-      use m_psf_data
+      use t_ucd_data
 !
       integer(kind = kint), intent(in) :: my_rank, num_psf
+      type(ucd_data), intent(inout) :: psf_ucd(num_psf)
+!
       integer(kind = kint) :: i_psf
 !
 !
       if(my_rank .ne. 0) return
       do i_psf = 1, num_psf
-        call deallocate_ucd_mesh(psf_out(i_psf))
+        call deallocate_ucd_mesh(psf_ucd(i_psf))
       end do
 !
       end subroutine deallocate_psf_outputs_data
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine collect_data_4_iso(patch, collect, psf_ucd)
-!
-      use m_control_params_4_iso
-      use t_psf_geometry_list
-      use t_psf_outputs
-      use t_ucd_data
-!
-      use psf_send_recv
-      use reconnect_psf_overlap_nod
-!
-      type(psf_patch_data), intent(in) ::   patch
-      type(psf_collect_type), intent(in) :: collect
-      type(ucd_data), intent(inout) :: psf_ucd(num_iso)
-!
-!
-      call psf_grids_send_recv(num_iso, patch%nnod_psf_tot,           &
-     &    collect%ntot_nod_output_psf, collect%istack_nod_para_psf,             &
-     &    collect%istack_nod_recv_psf, patch%xyz_psf,                         &
-     &    collect%send_psf, collect%recv_psf, psf_ucd)
-!
-      call psf_hash_send_recv(num_iso, patch%nnod_psf_tot,            &
-     &    collect%ntot_nod_output_psf, collect%istack_nod_para_psf,             &
-     &    collect%istack_nod_recv_psf, patch%inod_hash_psf,                   &
-     &    collect%isend_psf, collect%irecv_psf,                         &
-     &    collect%ihash_output_psf)
-!
-      call set_global_psf_node_id(num_iso, psf_ucd)
-!
-      call psf_connect_send_recv(num_iso, patch%npatch_tot,           &
-     &    collect%ntot_ele_output_psf, collect%istack_nod_para_psf,             &
-     &    collect%istack_ele_para_psf, collect%istack_ele_recv_psf, patch%ie_tri,     &
-     &    collect%isend_psf, collect%irecv_psf, psf_ucd)
-!
-      call s_reconnect_psf_overlap_nod(num_iso, collect%ntot_nod_output_psf,    &
-     &    collect%istack_nod_output_psf, collect%ihash_output_psf, psf_ucd)
-!
-      call psf_results_send_recv(num_iso, patch%nnod_psf_tot,         &
-     &    collect%ntot_nod_output_psf, collect%istack_nod_para_psf,             &
-     &    collect%istack_nod_recv_psf, max_ncomp_iso_out, patch%dat_psf,      &
-     &    collect%send_psf, collect%recv_psf, psf_ucd)
-!
-      end subroutine collect_data_4_iso
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_iso_outputs_data(my_rank, num_iso)
-!
-      use m_iso_data
-!
-      integer(kind = kint), intent(in) :: my_rank, num_iso
-      integer(kind = kint) :: i_iso
-!
-!
-      if(my_rank .ne. 0) return
-      do i_iso = 1, num_iso
-        call deallocate_ucd_mesh(iso_out(i_iso))
-      end do
-!
-      end subroutine deallocate_iso_outputs_data
 !
 ! ----------------------------------------------------------------------
 !

@@ -3,20 +3,20 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine cross_section_init(numnod, numele, numsurf, numedge,  &
-!     &          nnod_4_ele, nnod_4_edge, ie, ie_edge,                  &
-!     &          isf_4_ele, iedge_4_sf, iedge_4_ele,                    &
-!     &          interior_ele, globalnodid, xx,                         &
-!     &          inod_smp_stack, iele_smp_stack,                        &
-!     &          isurf_smp_stack, iedge_smp_stack,                      &
-!     &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,   &
-!     &          num_surf, num_surf_bc, surf_name, surf_istack,         &
-!     &          surf_item, ntot_node_sf_grp, inod_stack_sf_grp,        &
-!     &          inod_surf_grp, num_nod_phys, phys_nod_name)
-!
-!      subroutine cross_section_main(istep_psf, numnod, numedge,        &
-!     &          nnod_4_edge, ie_edge, num_nod_phys, num_tot_nod_phys,  &
-!     &          istack_nod_component, d_nod)
+!!      subroutine cross_section_init(numnod, numele, numsurf, numedge, &
+!!     &          nnod_4_ele, nnod_4_edge, ie, ie_edge,                 &
+!!     &          isf_4_ele, iedge_4_sf, iedge_4_ele,                   &
+!!     &          interior_ele, globalnodid, xx,                        &
+!!     &          inod_smp_stack, iele_smp_stack,                       &
+!!     &          isurf_smp_stack, iedge_smp_stack,                     &
+!!     &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,  &
+!!     &          num_surf, num_surf_bc, surf_name, surf_istack,        &
+!!     &          surf_item, ntot_node_sf_grp, inod_stack_sf_grp,       &
+!!     &          inod_surf_grp, num_nod_phys, phys_nod_name)
+!!
+!!      subroutine cross_section_main(istep_psf, numnod, numedge,       &
+!!     &          nnod_4_edge, ie_edge, num_nod_phys, num_tot_nod_phys, &
+!!     &          istack_nod_component, d_nod)
 !
 !
       module cross_section
@@ -120,7 +120,8 @@
      &    num_surf, num_surf_bc, surf_istack, surf_item,                &
      &    ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp)
 !
-      call alloc_dat_on_patch_psf(max_ncomp_psf_out, psf_pat)
+      psf_pat%max_ncomp_psf = max_ncomp_psf_out
+      call alloc_dat_on_patch_psf(psf_pat)
       call alloc_psf_outputs_num(nprocs, num_psf, psf_col)
 !
       if (iflag_debug.eq.1) write(*,*) 'collect_numbers_4_psf'
@@ -129,7 +130,7 @@
      &    psf_fld, psf_col, psf_out)
 !
       call alloc_psf_outputs_data(psf_col)
-      call alloc_SR_array_psf(my_rank, max_ncomp_psf_out,               &
+      call alloc_SR_array_psf(my_rank, psf_pat%max_ncomp_psf,           &
      &    psf_pat%nnod_psf_tot, psf_pat%npatch_tot, psf_col)
 !
       if (iflag_debug.eq.1) write(*,*) 'collect_mesh_4_psf'
@@ -146,6 +147,7 @@
      &          nnod_4_edge, ie_edge, num_nod_phys, num_tot_nod_phys,   &
      &          istack_nod_component, d_nod)
 !
+      use m_control_params_4_psf
       use m_psf_data
       use set_fields_for_psf
       use collect_psf_data
@@ -171,7 +173,7 @@
 !
 !      call start_eleps_time(21)
       if (iflag_debug.eq.1) write(*,*) 'collect_field_4_psf'
-      call collect_field_4_psf(psf_pat, psf_col, psf_out)
+      call collect_field_4_psf(num_psf, psf_pat, psf_col, psf_out)
 !      call end_eleps_time(21)
 !
 !      call start_eleps_time(22)

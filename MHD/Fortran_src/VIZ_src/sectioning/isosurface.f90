@@ -3,20 +3,20 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine isosurface_init                                       &
-!     &         (numnod, numele, numsurf, numedge, nnod_4_edge,         &
-!     &          ie_edge, isf_4_ele, iedge_4_sf, interior_ele,          &
-!     &          inod_smp_stack, iele_smp_stack,                        &
-!     &          isurf_smp_stack, iedge_smp_stack,                      &
-!     &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,   &
-!     &          num_nod_phys, phys_nod_name)
-!
-!      subroutine isosurface_main(istep_iso,                            &
-!     &          numnod, numele, numedge, nnod_4_ele, nnod_4_edge,      &
-!     &          ie, ie_edge, iedge_4_ele, globalnodid,                 &
-!     &          xx, radius, a_radius, s_cylinder, a_s_cylinder,        &
-!     &          inod_smp_stack, num_nod_phys, num_tot_nod_phys,        &
-!     &          istack_nod_component, d_nod)
+!!      subroutine isosurface_init                                      &
+!!     &         (numnod, numele, numsurf, numedge, nnod_4_edge,        &
+!!     &          ie_edge, isf_4_ele, iedge_4_sf, interior_ele,         &
+!!     &          inod_smp_stack, iele_smp_stack,                       &
+!!     &          isurf_smp_stack, iedge_smp_stack,                     &
+!!     &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,  &
+!!     &          num_nod_phys, phys_nod_name)
+!!
+!!      subroutine isosurface_main(istep_iso,                           &
+!!     &          numnod, numele, numedge, nnod_4_ele, nnod_4_edge,     &
+!!     &          ie, ie_edge, iedge_4_ele, globalnodid,                &
+!!     &          xx, radius, a_radius, s_cylinder, a_s_cylinder,       &
+!!     &          inod_smp_stack, num_nod_phys, num_tot_nod_phys,       &
+!!     &          istack_nod_component, d_nod)
 !
       module isosurface
 !
@@ -150,7 +150,8 @@
       call set_node_and_patch_iso(numnod, numele, numedge, nnod_4_ele,  &
      &    nnod_4_edge, globalnodid, xx, ie, ie_edge, iedge_4_ele)
 !
-      call alloc_dat_on_patch_psf(max_ncomp_iso_out, iso_pat)
+      iso_pat%max_ncomp_psf = max_ncomp_iso_out
+      call alloc_dat_on_patch_psf(iso_pat)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_4_iso'
       call set_field_4_iso(numnod, numedge, nnod_4_edge, ie_edge,       &
@@ -172,7 +173,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'collect_data_4_iso'
-      call collect_data_4_iso(iso_pat, iso_col, iso_out)
+      call collect_mesh_4_psf(num_iso, iso_pat, iso_col, iso_out)
+      call collect_field_4_psf(num_iso, iso_pat, iso_col, iso_out)
 !
       if (iflag_debug.eq.1) write(*,*) 'output_iso_ucds'
       call output_iso_ucds(istep_iso)

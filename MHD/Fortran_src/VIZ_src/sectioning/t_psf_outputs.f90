@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine alloc_psf_outputs_num(nprocs, num_psf, psf_out)
 !!      subroutine alloc_psf_outputs_data(psf_out)
-!!      subroutine alloc_SR_array_psf(my_rank, max_ncomp_psf_out,    &
+!!      subroutine alloc_SR_array_psf(my_rank, max_ncomp_psf,           &
 !!     &          nnod_psf_tot, npatch_tot)
 !!
 !!      subroutine dealloc_psf_outputs_num
@@ -21,7 +21,7 @@
 !!@param my_rank       subdomain ID
 !!@param nprocs        number of total processes
 !!@param num_psf       number of sections
-!!@param max_ncomp_psf_out    maximum number of components for sections
+!!@param max_ncomp_psf    maximum number of components for sections
 !!@param nnod_psf_tot         total number of node for sections
 !!@param npatch_tot   total number of elements for sections
 !
@@ -97,11 +97,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_SR_array_psf(my_rank, max_ncomp_psf_out,         &
+      subroutine alloc_SR_array_psf(my_rank, max_ncomp_psf,             &
      &          nnod_psf_tot, npatch_tot, psf_out)
 !
       integer(kind=kint ) , intent(in)   ::  my_rank
-      integer(kind=kint ) , intent(in)   ::  max_ncomp_psf_out
+      integer(kind=kint ) , intent(in)   ::  max_ncomp_psf
       integer(kind=kint ) , intent(in)   ::  nnod_psf_tot
       integer(kind=kint ) , intent(in)   ::  npatch_tot
       type(psf_collect_type), intent(inout) :: psf_out
@@ -109,7 +109,7 @@
       integer(kind = kint) :: nmax_comp, nmax_int, num
 !
 !
-      nmax_comp = max(max_ncomp_psf_out,num_triangle)
+      nmax_comp = max(max_ncomp_psf,num_triangle)
       allocate (psf_out%send_psf(nmax_comp*nnod_psf_tot))
       if(nmax_comp*nnod_psf_tot .gt. 0) psf_out%send_psf = 0.0d0
 !

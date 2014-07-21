@@ -46,7 +46,7 @@
         call set_field_on_psf(numnod, numedge, nnod_4_edge, ie_edge,    &
      &      psf_pat%nnod_psf_tot, istack_nod_psf_smp(ist_smp),          &
      &      psf_pat%xyz_psf, psf_pat%rr, psf_pat%ar, psf_pat%ss,        &
-     &      psf_pat%as, psf_fld(i)%num_phys, max_ncomp_psf_out,         &
+     &      psf_pat%as, psf_fld(i)%num_phys, psf_pat%max_ncomp_psf,     &
      &      id_psf_output(ist_field), psf_fld(i)%num_component,         &
      &      ncomp_psf_org(ist_field), icomp_psf_output(ist_field),      &
      &      num_phys, ntot_phys, istack_ncomp,                          &
@@ -87,7 +87,7 @@
           call set_field_on_psf(numnod, numedge, nnod_4_edge, ie_edge,  &
      &      iso_pat%nnod_psf_tot, istack_nod_iso_smp(ist_smp),          &
      &      iso_pat%xyz_psf, iso_pat%rr, iso_pat%ar, iso_pat%ss,        &
-     &      iso_pat%as, iso_fld(i)%num_phys, max_ncomp_iso_out,         &
+     &      iso_pat%as, iso_fld(i)%num_phys, iso_pat%max_ncomp_psf,     &
      &      id_iso_output(ist_field), iso_fld(i)%num_component,         &
      &      ncomp_iso_org(ist_field), icomp_iso_output(ist_field),      &
      &      num_phys, ntot_phys, istack_ncomp,                          &
