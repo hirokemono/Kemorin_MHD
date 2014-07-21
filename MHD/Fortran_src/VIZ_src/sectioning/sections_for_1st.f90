@@ -30,8 +30,8 @@
       subroutine init_visualize_surface
 !
       use m_control_data_sections
-      use m_psf_data
-      use m_iso_data
+      use m_cross_section
+      use m_isosurface
 !
       use set_psf_case_table
 !
@@ -53,8 +53,8 @@
 !
       subroutine visualize_surface(istep_psf, istep_iso)
 !
-      use m_psf_data
-      use m_iso_data
+      use m_cross_section
+      use m_isosurface
 !
       integer(kind = kint), intent(in) :: istep_psf, istep_iso
 !
@@ -79,8 +79,7 @@
       use m_surface_group
       use m_surface_group_connect
       use m_node_phys_data
-!
-      use cross_section
+      use m_cross_section
 !
 !
       call cross_section_init(numnod, numele, numsurf, numedge,         &
@@ -104,8 +103,7 @@
       use m_geometry_data
       use m_element_group
       use m_node_phys_data
-!
-      use isosurface
+      use m_isosurface
 !
 !
       call isosurface_init                                              &
@@ -126,8 +124,7 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_node_phys_data
-!
-      use cross_section
+      use m_cross_section
 !
       integer(kind = kint), intent(in) :: istep_psf
 !
@@ -145,8 +142,7 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_node_phys_data
-!
-      use isosurface
+      use m_isosurface
 !
       integer(kind = kint), intent(in) :: istep_iso
 !

@@ -50,8 +50,8 @@
      &         (fem, sf_mesh_psf, eg_mesh_psf, fld_nod)
 !
       use m_control_data_sections
-      use m_psf_data
-      use m_iso_data
+      use m_cross_section
+      use m_isosurface
 !
       use m_quad_2_triangle
 !
@@ -91,8 +91,8 @@
       subroutine sectioning_type(istep_psf, istep_iso,                  &
      &          fem, eg_mesh_psf, fld_nod)
 !
-      use m_psf_data
-      use m_iso_data
+      use m_cross_section
+      use m_isosurface
 !
       use const_linear_mesh_type
 !
@@ -123,8 +123,7 @@
 !
       use t_surface_data
       use t_edge_data
-!
-      use cross_section
+      use m_cross_section
 !
       type(mesh_data), intent(in) :: fem
       type(surface_data), intent(in) :: surf
@@ -159,8 +158,7 @@
 !
       use t_surface_data
       use t_edge_data
-!
-      use isosurface
+      use m_isosurface
 !
       type(mesh_data), intent(in) :: fem
       type(surface_data), intent(in) :: surf
@@ -188,8 +186,7 @@
      &          fld_nod)
 !
       use t_edge_data
-!
-      use cross_section
+      use m_cross_section
 !
       integer(kind = kint), intent(in) :: istep_psf
       type(mesh_data), intent(in) :: fem
@@ -209,8 +206,7 @@
       subroutine isosurface_main_type(istep_iso, fem, edge, fld_nod)
 !
       use t_edge_data
-!
-      use isosurface
+      use m_isosurface
 !
       integer(kind = kint), intent(in) :: istep_iso
       type(mesh_data), intent(in) :: fem

@@ -1,8 +1,13 @@
+!>@file   m_cross_section.f90
+!!@brief  module m_cross_section
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2006
+!!@n    modified in July, 2014
 !
-!      module cross_section
-!
-!      Written by H. Matsui on July, 2006
-!
+!>@brief Structure for cross sectioning
+!!
+!!@verbatim
 !!      subroutine cross_section_init(numnod, numele, numsurf, numedge, &
 !!     &          nnod_4_ele, nnod_4_edge, ie, ie_edge,                 &
 !!     &          isf_4_ele, iedge_4_sf, iedge_4_ele,                   &
@@ -17,9 +22,13 @@
 !!      subroutine cross_section_main(istep_psf, numnod, numedge,       &
 !!     &          nnod_4_edge, ie_edge, num_nod_phys, num_tot_nod_phys, &
 !!     &          istack_nod_component, d_nod)
+!!
+!!      subroutine dealloc_psf_field_type
+!!      subroutine deallocate_num_patch_psf
+!!@endverbatim
 !
 !
-      module cross_section
+      module m_cross_section
 !
       use m_precision
 !
@@ -27,7 +36,46 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use t_mesh_data
+      use t_phys_data
+      use t_psf_geometry_list
+      use t_psf_patch_data
+      use t_psf_outputs
+      use t_ucd_data
+!
       implicit  none
+!
+!>      Number of sections
+      integer(kind = kint) :: num_psf
+!
+!>      Structure for isosurface mesh
+      type(mesh_geometry), allocatable, save :: psf_mesh(:)
+!
+!>      Structure for sectioned field
+      type(phys_data), allocatable, save :: psf_fld(:)
+!
+!>      Structure for table for sections
+      type(sectiong_list), allocatable, save :: psf_list(:)
+!
+!>      Structure for search table for sections
+      type(psf_search_lists), allocatable, save :: psf_search(:)
+!
+      type(psf_parameters), allocatable, save :: psf_param(:)
+!
+      type(psf_patch_data), save :: psf_pat
+      type(psf_collect_type), save :: psf_col
+!
+!>      Structure for cross sectioning output (used by master process)
+      type(ucd_data), allocatable, save :: psf_out(:)
+!
+!
+      integer(kind = kint), allocatable :: istack_nod_psf(:)
+      integer(kind = kint), allocatable :: istack_nod_psf_smp(:)
+!
+      integer(kind = kint), allocatable :: istack_patch_psf(:)
+      integer(kind = kint), allocatable :: istack_patch_psf_smp(:)
+!
+      private :: alloc_psf_field_type, allocate_num_patch_psf
 !
 !  ---------------------------------------------------------------------
 !
@@ -49,7 +97,6 @@
 !
       use m_geometry_constants
       use m_control_params_4_psf
-      use m_psf_data
 !
       use set_psf_iso_control
       use search_ele_list_for_psf
@@ -155,7 +202,6 @@
      &          istack_nod_component, d_nod)
 !
       use m_control_params_4_psf
-      use m_psf_data
       use set_fields_for_psf
       use collect_psf_data
 !
@@ -192,5 +238,65 @@
       end subroutine cross_section_main
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
-      end module cross_section
+      subroutine alloc_psf_field_type(my_rank)
+!
+      integer(kind = kint), intent(in) :: my_rank
+!
+!
+      allocate(psf_mesh(num_psf))
+      allocate(psf_fld(num_psf))
+      allocate(psf_list(num_psf))
+      allocate(psf_search(num_psf))
+      allocate(psf_param(num_psf))
+!
+      if(my_rank .eq. 0) then
+        allocate( psf_out(num_psf) )
+      else
+        allocate( psf_out(0) )
+      end if
+!
+      end subroutine alloc_psf_field_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_psf_field_type
+!
+!
+      deallocate(psf_mesh, psf_fld, psf_list)
+      deallocate(psf_search, psf_out, psf_param)
+!
+      end subroutine dealloc_psf_field_type
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_num_patch_psf
+!
+      deallocate(istack_nod_psf, istack_nod_psf_smp)
+      deallocate(istack_patch_psf, istack_patch_psf_smp)
+!
+      end subroutine deallocate_num_patch_psf
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine allocate_num_patch_psf(np_smp)
+!
+      integer(kind= kint), intent(in) :: np_smp
+!
+      allocate(istack_nod_psf(0:num_psf))
+      allocate(istack_patch_psf(0:num_psf))
+      allocate(istack_nod_psf_smp(0:np_smp*num_psf))
+      allocate(istack_patch_psf_smp(0:np_smp*num_psf))
+!
+      istack_nod_psf = 0
+      istack_patch_psf = 0
+      istack_nod_psf_smp = 0
+      istack_patch_psf_smp = 0
+!
+      end subroutine allocate_num_patch_psf
+!
+!  ---------------------------------------------------------------------
+!
+      end module m_cross_section

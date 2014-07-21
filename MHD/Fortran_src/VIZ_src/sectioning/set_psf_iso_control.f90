@@ -17,6 +17,10 @@
 !
       implicit none
 !
+      integer(kind = kint), parameter :: psf_ctl_file_code = 11
+      integer(kind = kint), parameter :: iso_ctl_file_code = 11
+!
+      private :: psf_ctl_file_code, iso_ctl_file_code
       private :: read_control_4_psf, read_control_4_iso
 !
 !  ---------------------------------------------------------------------
@@ -103,7 +107,6 @@
       use t_phys_data
       use t_psf_patch_data
 !
-      use set_control_each_iso
       use set_field_comp_for_viz
 !
       integer(kind= kint), intent(in) :: num_iso

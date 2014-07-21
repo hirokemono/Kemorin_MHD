@@ -6,6 +6,9 @@
 !!      subroutine allocate_control_params_4_psf(num_psf)
 !!      subroutine count_control_4_psf(i_psf, psf, num_mat, mat_name,   &
 !!     &          num_nod_phys, phys_nod_name, psf_fld, psf_param, ierr)
+!!      subroutine set_control_4_psf(i_psf, psf, num_mat, mat_name,     &
+!!     &          num_surf, surf_name, num_nod_phys, phys_nod_name,     &
+!!     &          psf_fld, psf_param)
 !
       module m_control_params_4_psf
 !
@@ -14,8 +17,6 @@
       implicit  none
 !
 !
-      integer(kind = kint), parameter :: psf_ctl_file_code = 11
-!
       character(len = kchara), target, allocatable :: psf_header(:)
       integer(kind = kint), target, allocatable :: itype_psf_file(:)
 !
@@ -23,7 +24,6 @@
 !
 !
       real(kind = kreal), allocatable :: const_psf(:,:)
-!   coefficients for surface equation
 !
       integer(kind = kint), allocatable :: id_psf_group(:)
 !

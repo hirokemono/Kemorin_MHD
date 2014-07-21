@@ -1,8 +1,13 @@
+!>@file   m_isosurface.f90
+!!@brief  module m_isosurface
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2006
+!!@n    modified in July, 2014
 !
-!      module isosurface
-!
-!      Written by H. Matsui on July, 2006
-!
+!>@brief Structure for isosurfacing
+!!
+!!@verbatim
 !!      subroutine isosurface_init                                      &
 !!     &         (numnod, numele, numsurf, numedge, nnod_4_edge,        &
 !!     &          ie_edge, isf_4_ele, iedge_4_sf, interior_ele,         &
@@ -17,16 +22,61 @@
 !!     &          xx, radius, a_radius, s_cylinder, a_s_cylinder,       &
 !!     &          inod_smp_stack, num_nod_phys, num_tot_nod_phys,       &
 !!     &          istack_nod_component, d_nod)
+!!
+!!      subroutine dealloc_iso_field_type
+!!      subroutine deallocate_num_patch_iso
+!!@endverbatim
 !
-      module isosurface
+      module m_isosurface
 !
       use m_precision
+      use t_mesh_data
+      use t_phys_data
+      use t_psf_geometry_list
+      use t_psf_patch_data
+      use t_psf_outputs
+      use t_ucd_data
+!
 !
       use m_constants
       use m_machine_parameter
       use calypso_mpi
 !
       implicit  none
+!
+!>      Number of isosurfaces
+      integer(kind = kint) :: num_iso
+!
+!>      Structure for isosurface mesh
+      type(mesh_geometry), allocatable, save :: iso_mesh(:)
+!
+!>      Structure for isosurface field
+      type(phys_data), allocatable, save :: iso_fld(:)
+!
+!>      Structure for table for sections
+      type(sectiong_list), allocatable, save :: iso_list(:)
+!
+!>      Structure for search table for sections
+      type(psf_search_lists), allocatable, save :: iso_search(:)
+!
+      type(psf_parameters), allocatable, save :: iso_param(:)
+!
+!
+      type(psf_patch_data), save :: iso_pat
+      type(psf_collect_type), save :: iso_col
+!
+!>      Structure for isosurface output (used by master process)
+      type(ucd_data), allocatable, save :: iso_out(:)
+!
+!
+!>      End point of node list for each isosurfaces
+      integer(kind = kint), allocatable :: istack_nod_iso(:)
+      integer(kind = kint), allocatable :: istack_nod_iso_smp(:)
+!
+      integer(kind = kint), allocatable :: istack_patch_iso(:)
+      integer(kind = kint), allocatable :: istack_patch_iso_smp(:)
+!
+      private :: alloc_iso_field_type, allocate_num_patch_iso
 !
 !  ---------------------------------------------------------------------
 !
@@ -44,7 +94,6 @@
 !
       use m_geometry_constants
       use m_control_params_4_iso
-      use m_iso_data
 !
       use set_psf_iso_control
       use search_ele_list_for_psf
@@ -111,7 +160,6 @@
 !
       use m_geometry_constants
       use m_control_params_4_iso
-      use m_iso_data
 !
       use set_const_4_sections
       use find_node_and_patch_psf
@@ -199,5 +247,65 @@
       end subroutine isosurface_main
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
-      end module isosurface
+      subroutine dealloc_iso_field_type
+!
+!
+      deallocate(iso_mesh, iso_fld, iso_list)
+      deallocate( iso_search, iso_out, iso_param)
+!
+      end subroutine dealloc_iso_field_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_num_patch_iso
+!
+      deallocate(istack_nod_iso,   istack_nod_iso_smp)
+      deallocate(istack_patch_iso, istack_patch_iso_smp)
+!
+      end subroutine deallocate_num_patch_iso
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_iso_field_type(my_rank)
+!
+      integer(kind = kint), intent(in) :: my_rank
+!
+!
+      allocate(iso_mesh(num_iso))
+      allocate(iso_fld(num_iso))
+      allocate(iso_list(num_iso))
+      allocate(iso_search(num_iso))
+      allocate(iso_param(num_iso))
+!
+      if(my_rank .eq. 0) then
+        allocate( iso_out(num_iso) )
+      else
+        allocate( iso_out(0) )
+      end if
+!
+      end subroutine alloc_iso_field_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine allocate_num_patch_iso(np_smp)
+!
+      integer(kind= kint), intent(in) :: np_smp
+!
+      allocate(istack_nod_iso(0:num_iso))
+      allocate(istack_patch_iso(0:num_iso))
+      allocate(istack_nod_iso_smp(0:np_smp*num_iso))
+      allocate(istack_patch_iso_smp(0:np_smp*num_iso))
+!
+      istack_nod_iso = 0
+      istack_patch_iso = 0
+      istack_nod_iso_smp = 0
+      istack_patch_iso_smp = 0
+!
+      end subroutine allocate_num_patch_iso
+!
+!  ---------------------------------------------------------------------
+!
+      end module m_isosurface
