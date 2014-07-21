@@ -90,7 +90,7 @@
       integer(kind = kint), intent(in) :: istack_ele_grp(0:num_ele_grp)
       integer(kind = kint), intent(in) :: item_ele_grp(ntot_ele_grp)
 !
-      integer(kind = kint) :: i, ist
+      integer(kind = kint) :: i
 !
 !
       call allocate_work_4_mark_psf(numele)
@@ -98,10 +98,9 @@
       do i = 1, num_psf
         call alloc_num_psf_search_list(np_smp, psf_search(i)%elem_list)
 !
-        ist = istack_grp_area_psf(i-1) + 1
         call mark_element_list_4_psf(numele, interior_ele,              &
      &      num_ele_grp, ntot_ele_grp, istack_ele_grp, item_ele_grp,    &
-     &      nele_grp_area_psf(i), id_ele_grp_area_psf(ist) )
+     &      psf_param(i)%nele_grp_area, psf_param(i)%id_ele_grp_area)
         call count_element_list_4_psf                                   &
      &     (iele_smp_stack, psf_search(i)%elem_list)
 !

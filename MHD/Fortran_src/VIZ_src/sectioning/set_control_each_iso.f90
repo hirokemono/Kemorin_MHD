@@ -26,11 +26,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_control_4_iso(i_iso, iso, num_mat, mat_name,     &
-     &          num_nod_phys, phys_nod_name, iso_fld)
+     &          num_nod_phys, phys_nod_name, iso_fld, iso_param)
 !
       use m_field_file_format
       use m_file_format_switch
       use t_phys_data
+      use t_psf_patch_data
 !
       use set_area_4_viz
 !
@@ -43,6 +44,7 @@
       integer(kind = kint), intent(in) :: i_iso
       type(iso_ctl), intent(in) :: iso
       type(phys_data), intent(inout) :: iso_fld
+      type(psf_parameters), intent(inout) :: iso_param
 !
 !
       if(iso%i_iso_file_head .gt. 0) then
@@ -62,20 +64,15 @@
 !
       if      (id_iso_result_type(i_iso) .eq. iflag_constant_iso) then
         iso_fld%num_phys = ione
-        istack_iso_output(i_iso) = istack_iso_output(i_iso-1) + ione
       else if ( id_iso_result_type(i_iso) .eq. iflag_field_iso) then
         call check_field_4_viz(num_nod_phys, phys_nod_name,             &
      &      iso%iso_out_field_ctl%num, iso%iso_out_field_ctl%c1_tbl,    &
      &      iso_fld%num_phys)
       end if
-      istack_iso_output(i_iso) = istack_iso_output(i_iso-1)             &
-     &                          + iso_fld%num_phys
 !
       call count_area_4_viz(num_mat, mat_name,                          &
      &    iso%iso_area_ctl%num, iso%iso_area_ctl%c_tbl,                 &
-     &    nele_grp_area_iso(i_iso))
-      istack_grp_area_iso(i_iso) = istack_grp_area_iso(i_iso-1)         &
-     &                            + nele_grp_area_iso(i_iso)
+     &    iso_param%nele_grp_area)
 !
       end subroutine count_control_4_iso
 !
@@ -99,7 +96,7 @@
       type(phys_data), intent(inout) :: iso_fld
       type(psf_parameters), intent(inout) :: iso_param
 !
-      integer(kind = kint) :: ist, ncomp(1), ncomp_org(1)
+      integer(kind = kint) :: ncomp(1), ncomp_org(1)
       character(len=kchara) :: tmpchara(1)
 !
 !
@@ -128,10 +125,10 @@
      &      iso_fld%phys_name)
       end if
 !
-      ist = istack_grp_area_iso(i_iso-1) + 1
+      call alloc_area_group_psf(iso_param)
       call s_set_area_4_viz(num_mat, mat_name,                          &
      &     iso%iso_area_ctl%num, iso%iso_area_ctl%c_tbl,                &
-     &     nele_grp_area_iso(i_iso), id_ele_grp_area_iso(ist) )
+     &     iso_param%nele_grp_area, iso_param%id_ele_grp_area)
 !
       end subroutine set_control_4_iso
 !

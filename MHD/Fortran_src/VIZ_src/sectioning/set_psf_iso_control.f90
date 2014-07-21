@@ -61,10 +61,8 @@
       do i_psf = 1, num_psf
         call count_control_4_psf(i_psf, psf_ctl_struct(i_psf),          &
      &      num_mat, mat_name, num_nod_phys, phys_nod_name,             &
-     &      psf_fld(i_psf))
+     &      psf_fld(i_psf), psf_param(i_psf))
       end do
-!
-      call allocate_output_comps_4_psf
 !
       do i_psf = 1, num_psf
         call alloc_phys_name_type(psf_fld(i_psf))
@@ -77,8 +75,7 @@
 !
       call deallocate_psf_file_header_ctl
 !
-      call count_total_comps_4_viz(num_psf, istack_psf_output, psf_fld, &
-     &    max_ncomp_psf_out)
+      call count_total_comps_4_viz(num_psf, psf_fld, max_ncomp_psf_out)
 !
       end subroutine set_psf_control
 !
@@ -118,10 +115,9 @@
 !
       do i = 1, num_iso
         call count_control_4_iso(i, iso_ctl_struct(i),                  &
-     &      num_mat, mat_name, num_nod_phys, phys_nod_name, iso_fld(i))
+     &      num_mat, mat_name, num_nod_phys, phys_nod_name,             &
+     &      iso_fld(i), iso_param(i))
       end do
-!
-      call allocate_output_comps_4_iso
 !
       do i = 1, num_iso
         call alloc_phys_name_type(iso_fld(i))
@@ -133,8 +129,7 @@
 !
       call deallocate_iso_file_header_ctl
 !
-      call count_total_comps_4_viz(num_iso, istack_iso_output, iso_fld, &
-     &    max_ncomp_iso_out)
+      call count_total_comps_4_viz(num_iso, iso_fld, max_ncomp_iso_out)
 !
       if(iflag_debug .gt. 0) then
         do i = 1, num_iso

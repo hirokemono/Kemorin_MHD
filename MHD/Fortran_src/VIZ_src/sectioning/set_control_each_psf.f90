@@ -28,12 +28,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_control_4_psf(i_psf, psf, num_mat, mat_name,     &
-     &          num_nod_phys, phys_nod_name, psf_fld)
+     &          num_nod_phys, phys_nod_name, psf_fld, psf_param)
 !
       use m_field_file_format
       use m_file_format_switch
       use set_area_4_viz
       use t_phys_data
+      use t_psf_patch_data
 !
       integer(kind = kint), intent(in) :: num_mat
       character(len=kchara), intent(in) :: mat_name(num_mat)
@@ -44,6 +45,7 @@
       integer(kind = kint), intent(in) :: i_psf
       type(psf_ctl), intent(in) :: psf
       type(phys_data), intent(inout) :: psf_fld
+      type(psf_parameters), intent(inout) :: psf_param
 !
 !
       if(psf%i_psf_file_head .gt. 0) then
@@ -58,16 +60,12 @@
       call check_field_4_viz(num_nod_phys, phys_nod_name,               &
      &   psf%psf_out_field_ctl%num, psf%psf_out_field_ctl%c1_tbl,       &
      &   psf_fld%num_phys)
-      istack_psf_output(i_psf) = istack_psf_output(i_psf-1)             &
-     &                          + psf_fld%num_phys
 !
       call count_area_4_viz(num_mat, mat_name,                          &
      &    psf%psf_area_ctl%num, psf%psf_area_ctl%c_tbl,                 &
-     &    nele_grp_area_psf(i_psf) )
-      istack_grp_area_psf(i_psf) = istack_grp_area_psf(i_psf-1)         &
-     &                          + nele_grp_area_psf(i_psf)
+     &    psf_param%nele_grp_area)
 !
-      if ( nele_grp_area_psf(i_psf) .eq. 0)                             &
+      if (psf_param%nele_grp_area .eq. 0)                               &
      &  call calypso_MPI_abort(100, 'set correct element group')
 !
       end subroutine count_control_4_psf
@@ -96,8 +94,6 @@
       type(psf_ctl), intent(inout) :: psf
       type(phys_data), intent(inout) :: psf_fld
       type(psf_parameters), intent(inout) :: psf_param
-!
-      integer(kind = kint) :: ist
 !
 !
       if     (psf%section_method_ctl.eq. 'equation') then
@@ -133,7 +129,6 @@
         id_section_method(i_psf) = 0
         call set_surf_grp_id_4_viz(num_surf, surf_name,                 &
      &      psf%psf_group_name_ctl, id_psf_group(i_psf) )
-!
       end if
 !
 !
@@ -147,10 +142,10 @@
      &      psf_fld%phys_name)
       end if
 !
-      ist = istack_grp_area_psf(i_psf-1) + 1
+      call alloc_area_group_psf(psf_param)
       call s_set_area_4_viz(num_mat, mat_name,                          &
      &    psf%psf_area_ctl%num, psf%psf_area_ctl%c_tbl,                 &
-     &    nele_grp_area_psf(i_psf), id_ele_grp_area_psf(ist) )
+     &    psf_param%nele_grp_area, psf_param%id_ele_grp_area)
 !
       end subroutine set_control_4_psf
 !

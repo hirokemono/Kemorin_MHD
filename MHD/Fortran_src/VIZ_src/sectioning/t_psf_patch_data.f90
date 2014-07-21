@@ -8,7 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine alloc_output_comps_psf(num_phys, params)
+!!      subroutine alloc_area_group_psf(params)
 !!      subroutine dealloc_output_comps_psf(params)
+!!      subroutine dealloc_area_group_psf(params)
 !!
 !!      subroutine alloc_num_patch_psf(np_smp, num_psf, pat)
 !!      subroutine alloc_position_psf(pat)
@@ -29,6 +31,9 @@
 !
 !
       type psf_parameters
+        integer(kind = kint) :: nele_grp_area
+        integer(kind = kint), allocatable :: id_ele_grp_area(:)
+!
         integer(kind = kint), pointer :: id_output(:)
         integer(kind = kint), pointer :: icomp_output(:)
         integer(kind = kint), pointer :: ncomp_org(:)
@@ -85,6 +90,18 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine alloc_area_group_psf(params)
+!
+      type(psf_parameters), intent(inout) :: params
+!
+!
+      allocate(params%id_ele_grp_area(params%nele_grp_area))
+      if(params%nele_grp_area .le. 0)   params%id_ele_grp_area = 0
+!
+      end subroutine alloc_area_group_psf
+!
+!  ---------------------------------------------------------------------
+!
       subroutine dealloc_output_comps_psf(params)
 !
       type(psf_parameters), intent(inout) :: params
@@ -93,6 +110,17 @@
       deallocate(params%ncomp_org)
 !
       end subroutine dealloc_output_comps_psf
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_area_group_psf(params)
+!
+      type(psf_parameters), intent(inout) :: params
+!
+!
+      deallocate(params%id_ele_grp_area)
+!
+      end subroutine dealloc_area_group_psf
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

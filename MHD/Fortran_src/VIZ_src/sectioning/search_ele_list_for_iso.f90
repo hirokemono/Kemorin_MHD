@@ -79,8 +79,8 @@
      &          iele_smp_stack, num_ele_grp, ntot_ele_grp,              &
      &          istack_ele_grp, item_ele_grp)
 !
-      use set_element_list_for_psf
       use m_iso_data
+      use set_element_list_for_psf
 !
       integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: interior_ele(numele)
@@ -90,7 +90,7 @@
       integer(kind = kint), intent(in) :: istack_ele_grp(0:num_ele_grp)
       integer(kind = kint), intent(in) :: item_ele_grp(ntot_ele_grp)
 !
-      integer(kind = kint) :: i, ist
+      integer(kind = kint) :: i
 !
 !
       call allocate_work_4_mark_psf(numele)
@@ -98,10 +98,9 @@
       do i = 1, num_iso
         call alloc_num_psf_search_list(np_smp, iso_search(i)%elem_list)
 !
-        ist = istack_grp_area_iso(i-1) + 1
         call mark_element_list_4_psf(numele, interior_ele,              &
      &      num_ele_grp, ntot_ele_grp, istack_ele_grp, item_ele_grp,    &
-     &      nele_grp_area_iso(i), id_ele_grp_area_iso(ist) )
+     &      iso_param(i)%nele_grp_area, iso_param(i)%id_ele_grp_area)
         call count_element_list_4_psf                                   &
      &     (iele_smp_stack, iso_search(i)%elem_list)
 !
@@ -109,7 +108,7 @@
 !
         call mark_element_list_4_psf(numele, interior_ele,              &
      &      num_ele_grp, ntot_ele_grp, istack_ele_grp, item_ele_grp,    &
-     &      nele_grp_area_iso(i), id_ele_grp_area_iso(ist) )
+     &      iso_param(i)%nele_grp_area, iso_param(i)%id_ele_grp_area)
         call set_element_list_4_psf                                     &
      &     (iele_smp_stack, iso_search(i)%elem_list)
       end do

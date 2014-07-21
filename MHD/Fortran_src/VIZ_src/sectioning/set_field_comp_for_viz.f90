@@ -3,14 +3,13 @@
 !
 !        programmed by H.Matsui on May. 2006
 !
-!      subroutine check_field_4_viz(num_nod_phys, phys_nod_name,        &
-!     &          n_field_ctl, field_name, num_field)
-!      subroutine set_components_4_viz(num_nod_phys, phys_nod_name,     &
-!     &          n_field_ctl, field_name, comp_name, num_field,         &
-!     &          ifield, icomp, ncomp, ncomp_org, rst_name)
-!
-!      subroutine count_total_comps_4_viz(num, num_total, istack_out,   &
-!     &      ncomp_out, ncomp_total_out, num_out_comp, istack_out_comp)
+!!      subroutine check_field_4_viz(num_nod_phys, phys_nod_name,      &
+!!     &          n_field_ctl, field_name, num_field)
+!!      subroutine set_components_4_viz(num_nod_phys, phys_nod_name,   &
+!!     &          n_field_ctl, field_name, comp_name, num_field,       &
+!!     &          ifield, icomp, ncomp, ncomp_org, rst_name)
+!!
+!!      subroutine count_total_comps_4_viz(num, psf_fld, max_ncomp_out)
 !
       module set_field_comp_for_viz
 !
@@ -94,26 +93,23 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_total_comps_4_viz(num, istack_out, psf_fld,      &
-     &          max_ncomp_out)
+      subroutine count_total_comps_4_viz(num, psf_fld, max_ncomp_out)
 !
       use t_phys_data
 !
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: istack_out(0:num)
 !
       type(phys_data), intent(inout) :: psf_fld(num)
       integer(kind = kint), intent(inout) :: max_ncomp_out
 !
 !
-      integer(kind = kint) :: i, j, n_fld
+      integer(kind = kint) :: i, j
 !
 !
       max_ncomp_out = 1
       do i = 1, num
         psf_fld(i)%ntot_phys = 0
-        n_fld = istack_out(i) - istack_out(i-1)
-        do j = 1, n_fld
+        do j = 1, psf_fld(i)%num_phys
           psf_fld(i)%ntot_phys = psf_fld(i)%ntot_phys                   &
      &                          + psf_fld(i)%num_component(j)
         end do
