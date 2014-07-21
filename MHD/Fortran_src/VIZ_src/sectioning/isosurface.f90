@@ -155,7 +155,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_4_iso'
       call set_field_4_iso(numnod, numedge, nnod_4_edge, ie_edge,       &
-     &    num_nod_phys, num_tot_nod_phys, istack_nod_component, d_nod)
+     &    istack_nod_iso_smp, num_nod_phys, num_tot_nod_phys,           &
+     &    istack_nod_component, d_nod, iso_param, iso_fld, iso_list,    &
+     &    iso_pat)
 !
       do i_iso = 1, num_iso
         call dealloc_inod_psf(iso_list(i_iso))
@@ -182,7 +184,7 @@
 !
       call dealloc_SR_array_psf(my_rank,iso_col)
       call dealloc_psf_outputs_data(iso_col)
-      call deallocate_iso_outputs_data(my_rank, num_iso)
+      call deallocate_psf_outputs_data(my_rank, num_iso, iso_out)
       call dealloc_dat_on_patch_psf(iso_pat)
       call dealloc_position_psf(iso_pat)
       call dealloc_patch_data_psf(iso_pat)

@@ -197,7 +197,7 @@
       integer(kind = kint), intent(in) :: nnod_patch
       integer(kind = kint), intent(in) :: istack_n_smp(0:np_smp)
       real(kind = kreal), intent(in) :: const
-      type(sectiong_list), intent(inout) :: psf_list
+      type(sectiong_list), intent(in) :: psf_list
 !
       real(kind = kreal), intent(inout) :: dat_psf(nnod_patch)
 !

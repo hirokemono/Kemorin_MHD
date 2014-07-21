@@ -167,8 +167,10 @@
 !
 !      call start_eleps_time(20)
       if (iflag_debug.eq.1) write(*,*) 'set_field_4_psf'
-      call set_field_4_psf(numnod, numedge, nnod_4_edge, ie_edge,       &
-     &    num_nod_phys, num_tot_nod_phys, istack_nod_component, d_nod)
+      call set_field_4_psf(num_psf, numnod, numedge, nnod_4_edge,       &
+     &    ie_edge, istack_nod_psf_smp, num_nod_phys, num_tot_nod_phys,  &
+     &    istack_nod_component, d_nod, psf_param, psf_fld, psf_list,    &
+     &    psf_pat)
 !      call end_eleps_time(20)
 !
 !      call start_eleps_time(21)

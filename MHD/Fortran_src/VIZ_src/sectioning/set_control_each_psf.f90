@@ -76,11 +76,12 @@
 !
       subroutine set_control_4_psf(i_psf, psf, num_mat, mat_name,       &
      &          num_surf, surf_name, num_nod_phys, phys_nod_name,       &
-     &          psf_fld)
+     &          psf_fld, psf_param)
 !
       use set_cross_section_coefs
       use set_area_4_viz
       use t_phys_data
+      use t_psf_patch_data
 !
       integer(kind = kint), intent(in) :: num_mat
       character(len=kchara), intent(in) :: mat_name(num_mat)
@@ -94,6 +95,7 @@
       integer(kind = kint), intent(in) :: i_psf
       type(psf_ctl), intent(inout) :: psf
       type(phys_data), intent(inout) :: psf_fld
+      type(psf_parameters), intent(inout) :: psf_param
 !
       integer(kind = kint) :: ist
 !
@@ -135,13 +137,13 @@
       end if
 !
 !
+      call alloc_output_comps_psf(psf_fld%num_phys, psf_param)
       if ( psf_fld%num_phys .gt. 0 ) then
-        ist = istack_psf_output(i_psf-1) + 1
         call set_components_4_viz(num_nod_phys, phys_nod_name,          &
      &      psf%psf_out_field_ctl%num, psf%psf_out_field_ctl%c1_tbl,    &
      &      psf%psf_out_field_ctl%c2_tbl, psf_fld%num_phys,             &
-     &      id_psf_output(ist), icomp_psf_output(ist),                  &
-     &      psf_fld%num_component, ncomp_psf_org(ist),                  &
+     &      psf_param%id_output, psf_param%icomp_output,                &
+     &      psf_fld%num_component, psf_param%ncomp_org,                 &
      &      psf_fld%phys_name)
       end if
 !

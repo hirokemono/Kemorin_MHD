@@ -71,7 +71,7 @@
         call set_control_4_psf                                          &
      &     (i_psf, psf_ctl_struct(i_psf), num_mat, mat_name,            &
      &      num_surf, surf_name, num_nod_phys, phys_nod_name,           &
-     &      psf_fld(i_psf))
+     &      psf_fld(i_psf), psf_param(i_psf))
         call deallocate_cont_dat_4_psf(psf_ctl_struct(i_psf))
       end do
 !
@@ -126,7 +126,8 @@
       do i = 1, num_iso
         call alloc_phys_name_type(iso_fld(i))
         call set_control_4_iso(i, iso_ctl_struct(i),                    &
-     &      num_mat, mat_name, num_nod_phys, phys_nod_name, iso_fld(i))
+     &      num_mat, mat_name, num_nod_phys, phys_nod_name,             &
+     &      iso_fld(i), iso_param(i))
         call deallocate_cont_dat_4_iso(iso_ctl_struct(i))
       end do
 !

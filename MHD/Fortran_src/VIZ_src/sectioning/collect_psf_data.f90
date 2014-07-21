@@ -99,7 +99,7 @@
 !
       subroutine collect_mesh_4_psf(num_psf, patch, collect, psf_ucd)
 !
-      use t_psf_geometry_list
+      use t_psf_patch_data
       use t_psf_outputs
       use t_ucd_data
 !
@@ -140,7 +140,7 @@
 !
       subroutine collect_field_4_psf(num_psf, patch, collect, psf_ucd)
 !
-      use t_psf_geometry_list
+      use t_psf_patch_data
       use t_psf_outputs
       use t_ucd_data
 !

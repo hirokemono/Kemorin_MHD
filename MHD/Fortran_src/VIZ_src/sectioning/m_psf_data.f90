@@ -15,6 +15,7 @@
       use t_mesh_data
       use t_phys_data
       use t_psf_geometry_list
+      use t_psf_patch_data
       use t_psf_outputs
       use t_ucd_data
 !
@@ -51,6 +52,7 @@
 !>      Structure for search table for sections
       type(psf_search_lists), allocatable, save :: psf_search(:)
 !
+      type(psf_parameters), allocatable, save :: psf_param(:)
 !
       type(psf_patch_data), save :: psf_pat
       type(psf_collect_type), save :: psf_col
@@ -80,6 +82,7 @@
       allocate(psf_fld(num_psf))
       allocate(psf_list(num_psf))
       allocate(psf_search(num_psf))
+      allocate(psf_param(num_psf))
 !
       if(my_rank .eq. 0) then
         allocate( psf_out(num_psf) )
@@ -94,7 +97,8 @@
       subroutine dealloc_psf_field_type
 !
 !
-      deallocate(psf_mesh, psf_fld, psf_list, psf_search, psf_out)
+      deallocate(psf_mesh, psf_fld, psf_list)
+      deallocate(psf_search, psf_out, psf_param)
 !
       end subroutine dealloc_psf_field_type
 !

@@ -3,15 +3,18 @@
 !
 !      Written by H. Matsui on June, 2006
 !
-!      subroutine set_field_4_psf(numnod, numedge, nnod_4_edge, ie_edge,&
-!     &          num_phys, ntot_phys, istack_ncomp,  d_nod)
-!      subroutine set_field_4_iso(numnod, numedge, nnod_4_edge, ie_edge,&
-!     &  num_phys, ntot_phys, istack_ncomp, d_nod)
+!!      subroutine set_field_4_psf                                      &
+!!     &         (num_psf, numnod, numedge, nnod_4_edge, ie_edge,       &
+!!     &          istack_nod_psf_smp, num_phys, ntot_phys, istack_ncomp,&
+!!     &          d_nod, psf_param, psf_fld, psf_list, psf_pat)
+!!      subroutine set_field_4_iso                                      &
+!!     &         (numnod, numedge, nnod_4_edge, ie_edge,                &
+!!     &          istack_nod_psf_smp, num_phys, ntot_phys, istack_ncomp,&
+!!     &          d_nod, iso_param, iso_fld, iso_list, iso_pat)
 !
       module set_fields_for_psf
 !
       use m_precision
-!
       use m_machine_parameter
 !
       implicit none
@@ -24,31 +27,42 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_field_4_psf(numnod, numedge, nnod_4_edge, ie_edge, &
-     &          num_phys, ntot_phys, istack_ncomp,  d_nod)
+      subroutine set_field_4_psf                                        &
+     &         (num_psf, numnod, numedge, nnod_4_edge, ie_edge,         &
+     &          istack_nod_psf_smp, num_phys, ntot_phys, istack_ncomp,  &
+     &          d_nod, psf_param, psf_fld, psf_list, psf_pat)
 !
-      use m_control_params_4_psf
-      use m_psf_data
+      use t_phys_data
+      use t_psf_geometry_list
+      use t_psf_patch_data
 !
+      integer(kind = kint), intent(in) :: num_psf
       integer(kind = kint), intent(in) :: numnod, numedge, nnod_4_edge
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
+      integer(kind = kint), intent(in)                                  &
+     &              :: istack_nod_psf_smp(0:num_psf*np_smp)
 !
       integer(kind = kint), intent(in) :: num_phys, ntot_phys
       integer(kind = kint), intent(in) :: istack_ncomp(0:num_phys)
       real(kind = kreal), intent(in)  :: d_nod(numnod,ntot_phys)
 !
-      integer(kind = kint) :: i, ist_smp, ist_field
+      type(psf_parameters), intent(in) :: psf_param(num_psf)
+      type(phys_data), intent(in) :: psf_fld(num_psf)
+      type(sectiong_list), intent(in):: psf_list(num_psf)
+!
+      type(psf_patch_data), intent(inout) :: psf_pat
+!
+      integer(kind = kint) :: i, ist_smp
 !
       do i = 1, num_psf
 !
         ist_smp = (i-1)*np_smp
-        ist_field = istack_psf_output(i-1) + 1
         call set_field_on_psf(numnod, numedge, nnod_4_edge, ie_edge,    &
      &      psf_pat%nnod_psf_tot, istack_nod_psf_smp(ist_smp),          &
      &      psf_pat%xyz_psf, psf_pat%rr, psf_pat%ar, psf_pat%ss,        &
      &      psf_pat%as, psf_fld(i)%num_phys, psf_pat%max_ncomp_psf,     &
-     &      id_psf_output(ist_field), psf_fld(i)%num_component,         &
-     &      ncomp_psf_org(ist_field), icomp_psf_output(ist_field),      &
+     &      psf_param(i)%id_output, psf_fld(i)%num_component,           &
+     &      psf_param(i)%ncomp_org, psf_param(i)%icomp_output,          &
      &      num_phys, ntot_phys, istack_ncomp,                          &
      &      d_nod, psf_pat%dat_psf, psf_pat%tmp_psf, psf_list(i))
 !
@@ -58,42 +72,52 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_field_4_iso(numnod, numedge, nnod_4_edge, ie_edge, &
-     &  num_phys, ntot_phys, istack_ncomp, d_nod)
+      subroutine set_field_4_iso                                        &
+     &         (numnod, numedge, nnod_4_edge, ie_edge,                  &
+     &          istack_nod_psf_smp, num_phys, ntot_phys, istack_ncomp,  &
+     &          d_nod, iso_param, iso_fld, iso_list, iso_pat)
 !
       use m_control_params_4_iso
-      use m_iso_data
+      use t_phys_data
+      use t_psf_geometry_list
+      use t_psf_patch_data
 !
       use set_nodal_field_for_psf
 !
       integer(kind = kint), intent(in) :: numnod, numedge, nnod_4_edge
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
+      integer(kind = kint), intent(in)                                  &
+     &              :: istack_nod_psf_smp(0:num_iso*np_smp)
 !
       integer(kind = kint), intent(in) :: num_phys, ntot_phys
       integer(kind = kint), intent(in) :: istack_ncomp(0:num_phys)
       real(kind = kreal), intent(in)  :: d_nod(numnod,ntot_phys)
 !
-      integer(kind = kint) :: i, ist_smp, ist_field
+      type(psf_parameters), intent(in) :: iso_param(num_iso)
+      type(phys_data), intent(in) :: iso_fld(num_iso)
+      type(sectiong_list), intent(in):: iso_list(num_iso)
+!
+      type(psf_patch_data), intent(inout) :: iso_pat
+!
+      integer(kind = kint) :: i, ist_smp
 !
       do i = 1, num_iso
-        ist_field = istack_iso_output(i-1) + 1
         ist_smp = (i-1)*np_smp
 !
-        if(id_iso_result_type(ist_field) .eq. iflag_constant_iso) then
+        if(id_iso_result_type(i) .eq. iflag_constant_iso) then
           call set_const_on_psf(iso_pat%nnod_psf_tot,                   &
-     &        istack_nod_iso_smp(ist_smp), result_value_iso(i),         &
+     &        istack_nod_psf_smp(ist_smp), result_value_iso(i),         &
      &        iso_pat%dat_psf, iso_list(i))
         else
           call set_field_on_psf(numnod, numedge, nnod_4_edge, ie_edge,  &
-     &      iso_pat%nnod_psf_tot, istack_nod_iso_smp(ist_smp),          &
+     &      iso_pat%nnod_psf_tot, istack_nod_psf_smp(ist_smp),          &
      &      iso_pat%xyz_psf, iso_pat%rr, iso_pat%ar, iso_pat%ss,        &
      &      iso_pat%as, iso_fld(i)%num_phys, iso_pat%max_ncomp_psf,     &
-     &      id_iso_output(ist_field), iso_fld(i)%num_component,         &
-     &      ncomp_iso_org(ist_field), icomp_iso_output(ist_field),      &
+     &      iso_param(i)%id_output, iso_fld(i)%num_component,           &
+     &      iso_param(i)%ncomp_org, iso_param(i)%icomp_output,          &
      &      num_phys, ntot_phys, istack_ncomp,                          &
      &      d_nod, iso_pat%dat_psf, iso_pat%tmp_psf, iso_list(i))
         end if
-!
       end do
 !
       end subroutine set_field_4_iso

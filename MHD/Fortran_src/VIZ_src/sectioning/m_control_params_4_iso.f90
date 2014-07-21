@@ -34,9 +34,6 @@
       integer(kind = kint) :: max_ncomp_iso_out
       integer(kind = kint), allocatable, target :: num_iso_output(:)
       integer(kind = kint), allocatable, target :: istack_iso_output(:)
-      integer(kind = kint), allocatable :: id_iso_output(:)
-      integer(kind = kint), allocatable :: icomp_iso_output(:)
-      integer(kind = kint), allocatable :: ncomp_iso_org(:)
 !  number and stack of component for each surfaces
 !
       integer(kind = kint), parameter :: iflag_constant_iso = -1
@@ -94,16 +91,7 @@
       num_iso_total_out = istack_iso_output(num_iso)
       nele_grp_area_iso_tot = istack_grp_area_iso(num_iso)
 !
-      allocate(id_iso_output(num_iso_total_out))
-      allocate(icomp_iso_output(num_iso_total_out))
-      allocate(ncomp_iso_org(num_iso_total_out))
-!
       allocate(id_ele_grp_area_iso(nele_grp_area_iso_tot))
-!
-      id_iso_output =    0
-      icomp_iso_output = 0
-      ncomp_iso_org =    0
-!
       id_ele_grp_area_iso = 0
 !
       end subroutine allocate_output_comps_4_iso

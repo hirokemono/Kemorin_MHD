@@ -15,6 +15,7 @@
       use t_mesh_data
       use t_phys_data
       use t_psf_geometry_list
+      use t_psf_patch_data
       use t_psf_outputs
       use t_ucd_data
 !
@@ -52,6 +53,9 @@
 !>      Structure for search table for sections
       type(psf_search_lists), allocatable, save :: iso_search(:)
 !
+      type(psf_parameters), allocatable, save :: iso_param(:)
+!
+!
       type(psf_patch_data), save :: iso_pat
       type(psf_collect_type), save :: iso_col
 !
@@ -81,6 +85,7 @@
       allocate(iso_fld(num_iso))
       allocate(iso_list(num_iso))
       allocate(iso_search(num_iso))
+      allocate(iso_param(num_iso))
 !
       if(my_rank .eq. 0) then
         allocate( iso_out(num_iso) )
@@ -95,7 +100,8 @@
       subroutine dealloc_iso_field_type
 !
 !
-      deallocate(iso_mesh, iso_fld, iso_list, iso_search, iso_out)
+      deallocate(iso_mesh, iso_fld, iso_list)
+      deallocate( iso_search, iso_out, iso_param)
 !
       end subroutine dealloc_iso_field_type
 !
