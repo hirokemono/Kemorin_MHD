@@ -118,7 +118,9 @@
       call set_node_and_patch_psf(numnod, numele, numedge, nnod_4_ele,  &
      &    nnod_4_edge, globalnodid, xx, ie, ie_edge, iedge_4_ele,       &
      &    num_surf, num_surf_bc, surf_istack, surf_item,                &
-     &    ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp)
+     &    ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp,           &
+     &    istack_nod_psf_smp, istack_patch_psf_smp, psf_search,         &
+     &    psf_list, psf_pat)
 !
       psf_pat%max_ncomp_psf = max_ncomp_psf_out
       call alloc_dat_on_patch_psf(psf_pat)

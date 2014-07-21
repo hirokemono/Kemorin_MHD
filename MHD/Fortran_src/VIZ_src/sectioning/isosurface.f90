@@ -148,7 +148,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_iso'
       call set_node_and_patch_iso(numnod, numele, numedge, nnod_4_ele,  &
-     &    nnod_4_edge, globalnodid, xx, ie, ie_edge, iedge_4_ele)
+     &    nnod_4_edge, globalnodid, xx, ie, ie_edge, iedge_4_ele,       &
+     &    istack_nod_iso_smp, istack_patch_iso_smp,                     &
+     &    iso_search, iso_list, iso_pat)
 !
       iso_pat%max_ncomp_psf = max_ncomp_iso_out
       call alloc_dat_on_patch_psf(iso_pat)

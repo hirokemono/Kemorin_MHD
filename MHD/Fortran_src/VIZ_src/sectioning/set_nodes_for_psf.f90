@@ -7,14 +7,18 @@
 !!
 !!@verbatim
 !!      subroutine count_nodes_4_psf(numedge, nnod_4_edge,              &
-!!     &          ie_edge, num_surf, inod_stack_sf_grp)
-!!      subroutine count_nodes_4_iso(numedge, nnod_4_edge, ie_edge)
+!!     &          ie_edge, num_surf, inod_stack_sf_grp,                 &
+!!     &          istack_nod_psf_smp, psf_search, psf_list)
+!!      subroutine count_nodes_4_iso(numedge, nnod_4_edge, ie_edge,     &
+!!     &          istack_nod_iso_smp, iso_search, iso_list)
 !!
 !!      subroutine set_nodes_4_psf(numnod, numedge, nnod_4_edge,        &
 !!      &         inod_global, xx, ie_edge, num_surf, ntot_node_sf_grp, &
-!!      &         inod_stack_sf_grp, inod_surf_grp)
+!!      &         inod_stack_sf_grp, inod_surf_grp, istack_nod_psf_smp, &
+!!      &         psf_search, psf_list, psf_pat)
 !!      subroutine set_nodes_4_iso(numnod, numedge, nnod_4_edge,        &
-!!     &          inod_global, xx, ie_edge)
+!!     &          inod_global, xx, ie_edge, istack_nod_iso_smp,         &
+!!     &          iso_search, iso_list, iso_pat)
 !!@endverbatim
 !
       module set_nodes_for_psf
@@ -35,16 +39,22 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_nodes_4_psf(numedge, nnod_4_edge,                &
-     &          ie_edge, num_surf, inod_stack_sf_grp)
+     &          ie_edge, num_surf, inod_stack_sf_grp,                   &
+     &          istack_nod_psf_smp, psf_search, psf_list)
 !
       use m_control_params_4_psf
-      use m_psf_data
+      use t_psf_geometry_list
 !
       integer(kind = kint), intent(in) :: numedge, nnod_4_edge
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
 !
       integer(kind = kint), intent(in) :: num_surf
       integer(kind = kint), intent(in) :: inod_stack_sf_grp(0:num_surf)
+!
+      integer(kind = kint), intent(inout)                               &
+     &      :: istack_nod_psf_smp(0:np_smp*num_psf)
+      type(psf_search_lists), intent(inout) :: psf_search(num_psf)
+      type(sectiong_list), intent(inout) :: psf_list(num_psf)
 !
       integer(kind = kint) :: i, ist_smp, igrp, num
 !
@@ -89,20 +99,24 @@
 !        write(*,*) 'istack_n_on_n_smp',i,psf_list(i)%istack_n_on_n_smp
 !        write(*,*) 'istack_n_on_e_smp',i,psf_list(i)%istack_n_on_e_smp
       end do
-      psf_pat%nnod_psf_tot = istack_nod_psf_smp(num_psf*np_smp)
-!          write(*,*) 'istack_nod_psf_smp', istack_nod_psf_smp
 !
       end subroutine count_nodes_4_psf
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_nodes_4_iso(numedge, nnod_4_edge, ie_edge)
+      subroutine count_nodes_4_iso(numedge, nnod_4_edge, ie_edge,       &
+     &          istack_nod_iso_smp, iso_search, iso_list)
 !
       use m_control_params_4_iso
-      use m_iso_data
+      use t_psf_geometry_list
 !
       integer(kind = kint), intent(in) :: numedge, nnod_4_edge
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
+!
+      integer(kind = kint), intent(inout)                               &
+     &      :: istack_nod_iso_smp(0:np_smp*num_iso)
+      type(psf_search_lists), intent(inout) :: iso_search(num_iso)
+      type(sectiong_list), intent(inout) :: iso_list(num_iso)
 !
       integer(kind = kint) :: i, ist_smp
 !
@@ -126,7 +140,6 @@
         iso_list(i)%nnod_on_nod = iso_list(i)%istack_n_on_n_smp(np_smp)
         iso_list(i)%nnod_on_edge= iso_list(i)%istack_n_on_e_smp(np_smp)
       end do
-      iso_pat%nnod_psf_tot = istack_nod_iso_smp(num_iso*np_smp)
 !
       end subroutine count_nodes_4_iso
 !
@@ -135,10 +148,12 @@
 !
       subroutine set_nodes_4_psf(numnod, numedge, nnod_4_edge,          &
       &         inod_global, xx, ie_edge, num_surf, ntot_node_sf_grp,   &
-      &         inod_stack_sf_grp, inod_surf_grp)
+      &         inod_stack_sf_grp, inod_surf_grp, istack_nod_psf_smp,   &
+      &         psf_search, psf_list, psf_pat)
 !
       use m_control_params_4_psf
-      use m_psf_data
+      use t_psf_geometry_list
+      use t_psf_patch_data
       use coordinate_converter
       use set_node_on_edge_quad_psf
 !
@@ -151,6 +166,13 @@
       integer(kind = kint), intent(in) :: inod_global(numnod)
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
       real(kind = kreal), intent(in) :: xx(numnod,3)
+!
+      integer(kind = kint), intent(in)                                  &
+     &      :: istack_nod_psf_smp(0:np_smp*num_psf)
+!
+      type(psf_search_lists), intent(in) :: psf_search(num_psf)
+      type(sectiong_list), intent(inout) :: psf_list(num_psf)
+      type(psf_patch_data), intent(inout) :: psf_pat
 !
       integer(kind = kint) :: i, ist_smp, ist, num, igrp
 !
@@ -201,16 +223,25 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_nodes_4_iso(numnod, numedge, nnod_4_edge,          &
-     &          inod_global, xx, ie_edge)
+     &          inod_global, xx, ie_edge, istack_nod_iso_smp,           &
+     &          iso_search, iso_list, iso_pat)
 !
       use m_control_params_4_iso
-      use m_iso_data
+      use t_psf_geometry_list
+      use t_psf_patch_data
       use coordinate_converter
 !
       integer(kind = kint), intent(in) :: numnod, numedge, nnod_4_edge
       integer(kind = kint), intent(in) :: inod_global(numnod)
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
       real(kind = kreal), intent(in) :: xx(numnod,3)
+!
+      integer(kind = kint), intent(in)                                  &
+     &      :: istack_nod_iso_smp(0:np_smp*num_iso)
+!
+      type(psf_search_lists), intent(in) :: iso_search(num_iso)
+      type(sectiong_list), intent(inout) :: iso_list(num_iso)
+      type(psf_patch_data), intent(inout) :: iso_pat
 !
       integer(kind = kint) :: i, ist_smp
 !

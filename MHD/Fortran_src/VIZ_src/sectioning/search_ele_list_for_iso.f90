@@ -79,8 +79,8 @@
      &          iele_smp_stack, num_ele_grp, ntot_ele_grp,              &
      &          istack_ele_grp, item_ele_grp)
 !
-      use m_iso_data
       use set_element_list_for_psf
+      use m_iso_data
 !
       integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: interior_ele(numele)
