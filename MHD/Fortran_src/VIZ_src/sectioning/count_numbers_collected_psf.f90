@@ -3,10 +3,9 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine count_numbers_4_psf_out(num_psf, istack_smp,          &
-!     &          ntot_out_psf, nmax_para_psf, num_para_psf,             &
-!     &          istack_para_psf, num_recv_psf, istack_recv_psf,        &
-!     &          istack_out_psf)
+!!      subroutine count_numbers_4_psf_out(num_psf, istack_smp,         &
+!!     &          ntot_out_psf, nmax_para_psf, istack_para_psf,         &
+!!     &          istack_recv_psf,istack_out_psf)
 !
       module count_numbers_collected_psf
 !
@@ -21,9 +20,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine count_numbers_4_psf_out(num_psf, istack_smp,           &
-     &          ntot_out_psf, nmax_para_psf, num_para_psf,              &
-     &          istack_para_psf, num_recv_psf, istack_recv_psf,         &
-     &          istack_out_psf)
+     &          ntot_out_psf, nmax_para_psf, istack_para_psf,           &
+     &          istack_recv_psf,istack_out_psf)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -37,16 +35,14 @@
       integer(kind = kint), intent(inout) :: ntot_out_psf
       integer(kind = kint), intent(inout) :: nmax_para_psf
       integer(kind = kint), intent(inout)                               &
-     &                   :: num_para_psf(num_psf*nprocs)
-      integer(kind = kint), intent(inout)                               &
      &                   :: istack_para_psf(0:num_psf*nprocs)
-      integer(kind = kint), intent(inout)                               &
-     &                   :: num_recv_psf(num_psf*nprocs)
       integer(kind = kint), intent(inout)                               &
      &                   :: istack_recv_psf(0:num_psf*nprocs)
       integer(kind = kint), intent(inout) :: istack_out_psf(0:num_psf)
 !
       integer(kind = kint) :: isend(num_psf), irecv(num_psf,nprocs)
+      integer(kind = kint) :: num_para_psf(num_psf*nprocs)
+      integer(kind = kint) :: num_recv_psf(num_psf*nprocs)
 !
       integer(kind = kint) :: i, j, k, ip, ip_sent
       integer(kind = kint) :: ist, istack_begin

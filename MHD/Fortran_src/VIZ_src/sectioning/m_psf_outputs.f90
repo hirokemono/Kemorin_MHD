@@ -41,24 +41,15 @@
       integer(kind = kint), allocatable, target                         &
      &              :: istack_nod_output_psf(:)
 !
-      integer(kind = kint) :: nmax_nod_para_psf = 0
-      integer(kind = kint), allocatable :: nnod_para_psf(:)
       integer(kind = kint), allocatable :: istack_nod_para_psf(:)
-!
-      integer(kind = kint), allocatable :: nnod_recv_psf(:)
       integer(kind = kint), allocatable :: istack_nod_recv_psf(:)
 !
       integer(kind = kint) :: ntot_ele_output_psf = 0
       integer(kind = kint), allocatable, target                         &
      &              :: istack_ele_output_psf(:)
 !
-      integer(kind = kint) :: nmax_ele_para_psf = 0
-      integer(kind = kint), allocatable :: nele_para_psf(:)
       integer(kind = kint), allocatable :: istack_ele_para_psf(:)
-!
-      integer(kind = kint), allocatable :: nele_recv_psf(:)
       integer(kind = kint), allocatable :: istack_ele_recv_psf(:)
-!
       integer(kind = kint), allocatable :: ihash_output_psf(:)
 !
 !
@@ -85,25 +76,17 @@
       end if
 !
       allocate( istack_nod_output_psf(0:num_psf) )
-      allocate( nnod_para_psf(num_psf*nprocs) )
       allocate( istack_nod_para_psf(0:num_psf*nprocs) )
-      allocate( nnod_recv_psf(num_psf*nprocs) )
       allocate( istack_nod_recv_psf(0:num_psf*nprocs) )
 !
       allocate( istack_ele_output_psf(0:num_psf) )
-      allocate( nele_para_psf(num_psf*nprocs) )
       allocate( istack_ele_para_psf(0:num_psf*nprocs) )
-      allocate( nele_recv_psf(num_psf*nprocs) )
       allocate( istack_ele_recv_psf(0:num_psf*nprocs) )
 !
-      nnod_para_psf = 0
-      nnod_recv_psf = 0
       istack_nod_output_psf = 0
       istack_nod_para_psf = 0
       istack_nod_recv_psf = 0
 !
-      nele_para_psf = 0
-      nele_recv_psf = 0
       istack_ele_output_psf = 0
       istack_ele_para_psf = 0
       istack_ele_recv_psf = 0
@@ -171,11 +154,9 @@
       subroutine deallocate_psf_outputs_num
 !
       deallocate( istack_nod_output_psf)
-      deallocate( nnod_para_psf)
       deallocate( istack_nod_para_psf)
 !
       deallocate( istack_ele_output_psf)
-      deallocate( nele_para_psf)
       deallocate( istack_ele_para_psf)
 !
       deallocate( psf_out )

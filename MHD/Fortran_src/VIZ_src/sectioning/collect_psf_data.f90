@@ -33,17 +33,17 @@
       use m_psf_outputs
       use count_numbers_collected_psf
 !
-      integer(kind = kint) :: i_psf, i_fld, ist
+      integer(kind = kint) :: i_psf, i_fld, ist, nmax
 !
 !
       call count_numbers_4_psf_out(num_psf, istack_nod_psf_smp,         &
-     &    ntot_nod_output_psf, nmax_nod_para_psf, nnod_para_psf,        &
-     &    istack_nod_para_psf, nnod_recv_psf, istack_nod_recv_psf,      &
+     &    ntot_nod_output_psf, nmax,        &
+     &    istack_nod_para_psf, istack_nod_recv_psf,      &
      &    istack_nod_output_psf)
 !
       call count_numbers_4_psf_out(num_psf, istack_patch_psf_smp,       &
-     &    ntot_ele_output_psf, nmax_ele_para_psf, nele_para_psf,        &
-     &    istack_ele_para_psf, nele_recv_psf, istack_ele_recv_psf,      &
+     &    ntot_ele_output_psf, nmax,        &
+     &    istack_ele_para_psf, istack_ele_recv_psf,      &
      &    istack_ele_output_psf)
 !
       if(my_rank .gt. 0) return
@@ -133,17 +133,17 @@
       use m_iso_outputs
       use count_numbers_collected_psf
 !
-      integer(kind = kint) :: i_iso, i_fld, ist
+      integer(kind = kint) :: i_iso, i_fld, ist, nmax
 !
 !
       call count_numbers_4_psf_out(num_iso, istack_nod_iso_smp,         &
-     &    ntot_nod_output_iso, nmax_nod_para_iso, nnod_para_iso,        &
-     &    istack_nod_para_iso, nnod_recv_iso, istack_nod_recv_iso,      &
+     &    ntot_nod_output_iso, nmax,        &
+     &    istack_nod_para_iso, istack_nod_recv_iso,      &
      &    istack_nod_output_iso)
 !
       call count_numbers_4_psf_out(num_iso, istack_patch_iso_smp,       &
-     &    ntot_ele_output_iso, nmax_ele_para_iso, nele_para_iso,        &
-     &    istack_ele_para_iso, nele_recv_iso, istack_ele_recv_iso,      &
+     &    ntot_ele_output_iso, nmax,        &
+     &    istack_ele_para_iso, istack_ele_recv_iso,      &
      &    istack_ele_output_iso)
 !
       if(my_rank .gt. 0) return

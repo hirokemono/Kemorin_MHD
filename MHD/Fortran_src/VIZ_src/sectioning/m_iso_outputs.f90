@@ -29,24 +29,15 @@
       integer(kind = kint), allocatable, target                         &
      &              :: istack_nod_output_iso(:)
 !
-      integer(kind = kint) :: nmax_nod_para_iso = 0
-      integer(kind = kint), allocatable :: nnod_para_iso(:)
       integer(kind = kint), allocatable :: istack_nod_para_iso(:)
-!
-      integer(kind = kint), allocatable :: nnod_recv_iso(:)
       integer(kind = kint), allocatable :: istack_nod_recv_iso(:)
 !
       integer(kind = kint) :: ntot_ele_output_iso = 0
       integer(kind = kint), allocatable, target                         &
      &              :: istack_ele_output_iso(:)
 !
-      integer(kind = kint) :: nmax_ele_para_iso = 0
-      integer(kind = kint), allocatable :: nele_para_iso(:)
       integer(kind = kint), allocatable :: istack_ele_para_iso(:)
-!
-      integer(kind = kint), allocatable :: nele_recv_iso(:)
       integer(kind = kint), allocatable :: istack_ele_recv_iso(:)
-!
       integer(kind = kint), allocatable :: ihash_output_iso(:)
 !
 !
@@ -73,25 +64,17 @@
       end if
 !
       allocate( istack_nod_output_iso(0:num_iso) )
-      allocate( nnod_para_iso(num_iso*nprocs) )
       allocate( istack_nod_para_iso(0:num_iso*nprocs) )
-      allocate( nnod_recv_iso(num_iso*nprocs) )
       allocate( istack_nod_recv_iso(0:num_iso*nprocs) )
 !
       allocate( istack_ele_output_iso(0:num_iso) )
-      allocate( nele_para_iso(num_iso*nprocs) )
       allocate( istack_ele_para_iso(0:num_iso*nprocs) )
-      allocate( nele_recv_iso(num_iso*nprocs) )
       allocate( istack_ele_recv_iso(0:num_iso*nprocs) )
 !
-      nnod_para_iso = 0
-      nnod_recv_iso = 0
       istack_nod_output_iso = 0
       istack_nod_para_iso = 0
       istack_nod_recv_iso = 0
 !
-      nele_para_iso = 0
-      nele_recv_iso = 0
       istack_ele_output_iso = 0
       istack_ele_para_iso = 0
       istack_ele_recv_iso = 0
@@ -159,11 +142,9 @@
       subroutine deallocate_iso_outputs_num
 !
       deallocate( istack_nod_output_iso)
-      deallocate( nnod_para_iso)
       deallocate( istack_nod_para_iso)
 !
       deallocate( istack_ele_output_iso)
-      deallocate( nele_para_iso)
       deallocate( istack_ele_para_iso)
 !
       deallocate( iso_out )
