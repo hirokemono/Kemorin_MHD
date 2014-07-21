@@ -29,7 +29,7 @@
       subroutine output_psf_grids
 !
       use m_control_params_4_psf
-      use m_psf_outputs
+      use m_psf_data
 !
       integer(kind = kint) :: i_psf
 !
@@ -46,7 +46,7 @@
       subroutine output_psf_fields(istep_psf)
 !
       use m_control_params_4_psf
-      use m_psf_outputs
+      use m_psf_data
 !
       integer(kind = kint), intent(in) :: istep_psf
       integer(kind = kint) :: i_psf
@@ -66,7 +66,7 @@
       subroutine output_iso_ucds(istep_iso)
 !
       use m_control_params_4_iso
-      use m_iso_outputs
+      use m_iso_data
 !
       integer(kind = kint), intent(in) :: istep_iso
       integer(kind = kint) :: i_iso

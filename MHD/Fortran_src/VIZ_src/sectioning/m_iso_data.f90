@@ -15,6 +15,8 @@
       use t_mesh_data
       use t_phys_data
       use t_psf_geometry_list
+      use t_psf_outputs
+      use t_ucd_data
 !
       implicit none
 !
@@ -51,6 +53,11 @@
       type(psf_search_lists), allocatable, save :: iso_search(:)
 !
       type(psf_patch_data), save :: iso_pat
+      type(psf_collect_type), save :: iso_col
+!
+!>      Structure for isosurface output (used by master process)
+      type(ucd_data), allocatable, save :: iso_out(:)
+!
 !
 !>      End point of node list for each isosurfaces
       integer(kind = kint), allocatable :: istack_nod_iso(:)
@@ -65,15 +72,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_iso_field_type(num_iso)
+      subroutine alloc_iso_field_type(my_rank, num_iso)
 !
-      integer(kind = kint), intent(in) :: num_iso
+      integer(kind = kint), intent(in) :: my_rank, num_iso
 !
 !
       allocate(iso_mesh(num_iso))
       allocate(iso_fld(num_iso))
       allocate(iso_list(num_iso))
       allocate(iso_search(num_iso))
+!
+      if(my_rank .eq. 0) then
+        allocate( iso_out(num_iso) )
+      else
+        allocate( iso_out(0) )
+      end if
 !
       end subroutine alloc_iso_field_type
 !
@@ -82,7 +95,7 @@
       subroutine dealloc_iso_field_type
 !
 !
-      deallocate(iso_mesh, iso_fld, iso_list, iso_search)
+      deallocate(iso_mesh, iso_fld, iso_list, iso_search, iso_out)
 !
       end subroutine dealloc_iso_field_type
 !

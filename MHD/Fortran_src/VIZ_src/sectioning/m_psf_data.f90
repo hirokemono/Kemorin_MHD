@@ -15,6 +15,8 @@
       use t_mesh_data
       use t_phys_data
       use t_psf_geometry_list
+      use t_psf_outputs
+      use t_ucd_data
 !
       implicit none
 !
@@ -51,6 +53,10 @@
 !
 !
       type(psf_patch_data), save :: psf_pat
+      type(psf_collect_type), save :: psf_col
+!
+!>      Structure for cross sectioning output (used by master process)
+      type(ucd_data), allocatable, save :: psf_out(:)
 !
 !
       integer(kind = kint), allocatable :: istack_nod_psf(:)
@@ -65,15 +71,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_psf_field_type(num_psf)
+      subroutine alloc_psf_field_type(my_rank, num_psf)
 !
-      integer(kind = kint), intent(in) :: num_psf
+      integer(kind = kint), intent(in) :: my_rank, num_psf
 !
 !
       allocate(psf_mesh(num_psf))
       allocate(psf_fld(num_psf))
       allocate(psf_list(num_psf))
       allocate(psf_search(num_psf))
+!
+      if(my_rank .eq. 0) then
+        allocate( psf_out(num_psf) )
+      else
+        allocate( psf_out(0) )
+      end if
 !
       end subroutine alloc_psf_field_type
 !
@@ -82,7 +94,7 @@
       subroutine dealloc_psf_field_type
 !
 !
-      deallocate(psf_mesh, psf_fld, psf_list, psf_search)
+      deallocate(psf_mesh, psf_fld, psf_list, psf_search, psf_out)
 !
       end subroutine dealloc_psf_field_type
 !

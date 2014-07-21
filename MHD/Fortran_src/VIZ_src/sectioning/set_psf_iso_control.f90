@@ -26,6 +26,7 @@
       subroutine set_psf_control(num_mat, mat_name,                     &
      &          num_surf, surf_name, num_nod_phys, phys_nod_name)
 !
+      use calypso_mpi
       use m_control_data_sections
       use m_control_data_4_psf
       use m_control_params_4_psf
@@ -51,7 +52,7 @@
 !
       call allocate_control_params_4_psf
       call allocate_psf_ctl_stract
-      call alloc_psf_field_type(num_psf)
+      call alloc_psf_field_type(my_rank, num_psf)
 !
       do i_psf = 1, num_psf
         call read_control_4_psf(i_psf)
@@ -84,6 +85,7 @@
       subroutine set_iso_control(num_mat, mat_name,                     &
      &          num_nod_phys, phys_nod_name)
 !
+      use calypso_mpi
       use m_control_data_sections
       use m_control_data_4_iso
       use m_control_params_4_iso
@@ -106,7 +108,7 @@
 !
       call allocate_control_params_4_iso
       call allocate_iso_ctl_stract
-      call alloc_iso_field_type(num_iso)
+      call alloc_iso_field_type(my_rank, num_iso)
 !
       do i = 1, num_iso
         call read_control_4_iso(i)

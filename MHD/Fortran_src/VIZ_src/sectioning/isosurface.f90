@@ -44,7 +44,6 @@
 !
       use m_geometry_constants
       use m_control_params_4_iso
-      use m_iso_outputs
       use m_iso_data
 !
       use set_psf_iso_control
@@ -91,7 +90,7 @@
       if (iflag_debug.eq.1) write(*,*) 'allocate_num_patch_iso'
       call allocate_num_patch_iso(np_smp, num_iso)
 !
-      call allocate_iso_outputs_num(nprocs, my_rank, num_iso)
+      call alloc_psf_outputs_num(nprocs, num_iso, iso_col)
 !
       end subroutine isosurface_init
 !
@@ -108,7 +107,6 @@
 !
       use m_geometry_constants
       use m_control_params_4_iso
-      use m_iso_outputs
       use m_iso_data
 !
       use set_const_4_sections
@@ -165,9 +163,9 @@
       call collect_numbers_4_iso
 !
 !
-      call allocate_iso_outputs_data(my_rank,num_iso)
-      call allocate_SR_array_iso(my_rank, nprocs,                       &
-     &    iso_pat%nnod_psf_tot, iso_pat%npatch_tot)
+      call alloc_psf_outputs_data(iso_col)
+      call alloc_SR_array_psf(my_rank, nprocs,                          &
+     &    iso_pat%nnod_psf_tot, iso_pat%npatch_tot, iso_col)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'collect_data_4_iso'
@@ -177,7 +175,8 @@
       call output_iso_ucds(istep_iso)
 !
 !
-      call deallocate_SR_array_iso(my_rank)
+      call dealloc_SR_array_psf(my_rank,iso_col)
+      call dealloc_psf_outputs_data(iso_col)
       call deallocate_iso_outputs_data(my_rank, num_iso)
       call dealloc_dat_on_patch_psf(iso_pat)
       call dealloc_position_psf(iso_pat)

@@ -48,7 +48,6 @@
 !
 !
       use m_geometry_constants
-      use m_psf_outputs
       use m_psf_data
 !
       use set_psf_iso_control
@@ -121,14 +120,14 @@
      &    num_surf, num_surf_bc, surf_istack, surf_item,                &
      &    ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp)
 !
-      call allocate_psf_outputs_num(nprocs, my_rank, num_psf)
+      call alloc_psf_outputs_num(nprocs, num_psf, psf_col)
 !
       if (iflag_debug.eq.1) write(*,*) 'collect_numbers_4_psf'
       call collect_numbers_4_psf
 !
-      call allocate_psf_outputs_data(my_rank, num_psf)
-      call allocate_SR_array_psf(my_rank, max_ncomp_psf_out,            &
-     &    psf_pat%nnod_psf_tot, psf_pat%npatch_tot)
+      call alloc_psf_outputs_data(psf_col)
+      call alloc_SR_array_psf(my_rank, max_ncomp_psf_out,               &
+     &    psf_pat%nnod_psf_tot, psf_pat%npatch_tot, psf_col)
 !
       if (iflag_debug.eq.1) write(*,*) 'collect_mesh_4_psf'
       call collect_mesh_4_psf
