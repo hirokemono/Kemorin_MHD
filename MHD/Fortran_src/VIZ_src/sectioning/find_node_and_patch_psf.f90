@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui on June, 2006
 !
-!!      subroutine set_node_and_patch_psf(numnod, numele, numedge,      &
-!!     &          nnod_4_ele, nnod_4_edge, inod_global, xx,             &
+!!      subroutine set_node_and_patch_psf(num_psf, numnod, numele,      &
+!!     &          numedge, nnod_4_ele, nnod_4_edge, inod_global, xx,    &
 !!     &          ie, ie_edge, iedge_4_ele, num_surf, num_surf_bc,      &
 !!     &          surf_istack, surf_item, ntot_node_sf_grp,             &
 !!     &          inod_stack_sf_grp, inod_surf_grp, istack_nod_psf_smp, &
@@ -27,8 +27,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_node_and_patch_psf(numnod, numele, numedge,        &
-     &          nnod_4_ele, nnod_4_edge, inod_global, xx,               &
+      subroutine set_node_and_patch_psf(num_psf, numnod, numele,        &
+     &          numedge, nnod_4_ele, nnod_4_edge, inod_global, xx,      &
      &          ie, ie_edge, iedge_4_ele, num_surf, num_surf_bc,        &
      &          surf_istack, surf_item, ntot_node_sf_grp,               &
      &          inod_stack_sf_grp, inod_surf_grp, istack_nod_psf_smp,   &
@@ -43,6 +43,7 @@
       use set_nodes_for_psf
       use set_patches_for_psf
 !
+      integer(kind = kint), intent(in) :: num_psf
       integer(kind = kint), intent(in) :: numnod, numele, numedge
       integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_edge
       integer(kind = kint), intent(in) :: inod_global(numnod)
@@ -76,7 +77,7 @@
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'count_nodes_4_psf'
-      call count_nodes_4_psf(numedge, nnod_4_edge, ie_edge,             &
+      call count_nodes_4_psf(num_psf, numedge, nnod_4_edge, ie_edge,    &
      &    num_surf, inod_stack_sf_grp, istack_nod_psf_smp,              &
      &    psf_search, psf_list)
 !
@@ -87,21 +88,23 @@
       call alloc_position_psf(psf_pat)
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_nodes_4_psf'
-      call set_nodes_4_psf(numnod, numedge, nnod_4_edge, inod_global,   &
+      call set_nodes_4_psf                                              &
+     &   (num_psf, numnod, numedge, nnod_4_edge, inod_global,           &
      &    xx, ie_edge, num_surf, ntot_node_sf_grp, inod_stack_sf_grp,   &
      &    inod_surf_grp, istack_nod_psf_smp, psf_search,                &
      &    psf_list, psf_pat)
 !
       if (iflag_debug.eq.1)  write(*,*) 'count_psf_patches'
-      call count_psf_patches(numnod, numele, numedge, nnod_4_ele,       &
-     &    ie, iedge_4_ele, num_surf, surf_istack, istack_patch_psf_smp, &
+      call count_psf_patches                                            &
+     &   (num_psf, numnod, numele, numedge, nnod_4_ele, ie,             &
+     &    iedge_4_ele, num_surf, surf_istack, istack_patch_psf_smp,     &
      &    psf_search, psf_list)
 !
       psf_pat%npatch_tot = istack_patch_psf_smp(num_psf*np_smp)
       call alloc_patch_data_psf(psf_pat)
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_psf_patches'
-      call set_psf_patches(numele, numedge, nnod_4_ele, ie,             &
+      call set_psf_patches(num_psf, numele, numedge, nnod_4_ele, ie,    &
      &    iedge_4_ele, num_surf, num_surf_bc, surf_istack, surf_item,   &
      &    istack_nod_psf_smp, istack_patch_psf_smp, psf_search,         &
      &    psf_list, psf_pat)
@@ -111,7 +114,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_node_and_patch_iso(numnod, numele,                 &
+      subroutine set_node_and_patch_iso(num_iso, numnod, numele,        &
      &          numedge, nnod_4_ele, nnod_4_edge, inod_global,          &
      &          xx, ie, ie_edge, iedge_4_ele,                           &
      &          istack_nod_iso_smp, istack_patch_iso_smp,               &
@@ -126,6 +129,7 @@
       use set_patches_for_psf
       use set_fields_for_psf
 !
+      integer(kind = kint), intent(in) :: num_iso
       integer(kind = kint), intent(in) :: numnod, numele, numedge
       integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_edge
       integer(kind = kint), intent(in) :: inod_global(numnod)
@@ -148,7 +152,7 @@
       integer(kind = kint) :: i_iso
 !
 !
-      call count_nodes_4_iso(numedge, nnod_4_edge, ie_edge,             &
+      call count_nodes_4_iso(num_iso, numedge, nnod_4_edge, ie_edge,    &
      &    istack_nod_iso_smp, iso_search, iso_list)
 !
       do i_iso = 1, num_iso
@@ -157,18 +161,19 @@
       iso_pat%nnod_psf_tot = istack_nod_iso_smp(num_iso*np_smp)
       call alloc_position_psf(iso_pat)
 !
-      call set_nodes_4_iso(numnod, numedge, nnod_4_edge,                &
+      call set_nodes_4_iso(num_iso, numnod, numedge, nnod_4_edge,       &
      &    inod_global, xx, ie_edge, istack_nod_iso_smp,                 &
      &    iso_search, iso_list, iso_pat)
 !
 !
-      call count_iso_patches(numnod, numele, numedge, nnod_4_ele,       &
+      call count_iso_patches                                            &
+     &   (num_iso, numnod, numele, numedge, nnod_4_ele,                 &
      &    ie, iedge_4_ele, istack_patch_iso_smp, iso_search, iso_list)
 !
       iso_pat%npatch_tot = istack_patch_iso_smp(num_iso*np_smp)
       call alloc_patch_data_psf(iso_pat)
 !
-      call set_iso_patches(numele, numedge, iedge_4_ele,                &
+      call set_iso_patches(num_iso, numele, numedge, iedge_4_ele,       &
      &    istack_nod_iso_smp, istack_patch_iso_smp,                     &
      &    iso_search, iso_list, iso_pat)
 !

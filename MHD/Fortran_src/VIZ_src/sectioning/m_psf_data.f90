@@ -21,6 +21,9 @@
 !
       implicit none
 !
+!>      Number of sections
+      integer(kind = kint) :: num_psf
+!
 !>      Structure for isosurface mesh
 !!        psf_mesh(i_psf)%node%numnod = 
 !!        psf_mesh(i_psf)%node%istack_nod_smp(ip) = istack_nod_psf_smp
@@ -73,9 +76,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_psf_field_type(my_rank, num_psf)
+      subroutine alloc_psf_field_type(my_rank)
 !
-      integer(kind = kint), intent(in) :: my_rank, num_psf
+      integer(kind = kint), intent(in) :: my_rank
 !
 !
       allocate(psf_mesh(num_psf))
@@ -105,9 +108,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_num_patch_psf(np_smp, num_psf)
+      subroutine allocate_num_patch_psf(np_smp)
 !
-      integer(kind= kint), intent(in) :: np_smp, num_psf
+      integer(kind= kint), intent(in) :: np_smp
 !
       allocate(istack_nod_psf(0:num_psf))
       allocate(istack_patch_psf(0:num_psf))

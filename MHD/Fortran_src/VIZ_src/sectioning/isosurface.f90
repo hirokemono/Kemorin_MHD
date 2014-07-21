@@ -47,7 +47,7 @@
       use m_iso_data
 !
       use set_psf_iso_control
-      use search_ele_list_for_iso
+      use search_ele_list_for_psf
 !
       integer(kind=kint), intent(in) :: numnod, numele
       integer(kind=kint), intent(in) :: numsurf, numedge
@@ -73,22 +73,26 @@
       integer(kind = kint) :: i_iso
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_iso_control'
-      call set_iso_control(num_mat, mat_name,                           &
-     &    num_nod_phys, phys_nod_name)
+      call alloc_iso_field_type(my_rank)
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_searched_element_list_4_iso'
-      call set_search_mesh_list_4_iso(numnod, numele, numsurf, numedge, &
-     &    nnod_4_edge, ie_edge, isf_4_ele, iedge_4_sf, interior_ele,    &
-     &    inod_smp_stack, iele_smp_stack, isurf_smp_stack,              &
-     &    iedge_smp_stack, num_mat, num_mat_bc,  mat_istack, mat_item)
+      if (iflag_debug.eq.1) write(*,*) 'set_iso_control'
+      call set_iso_control(num_iso, num_mat, mat_name,                  &
+     &    num_nod_phys, phys_nod_name, iso_param, iso_fld, iso_pat)
+!
+      if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
+      call set_search_mesh_list_4_psf(num_iso,                          &
+     &        numnod, numele, numsurf, numedge, nnod_4_edge, ie_edge,   &
+     &        isf_4_ele, iedge_4_sf, interior_ele, inod_smp_stack,      &
+     &        iele_smp_stack, isurf_smp_stack, iedge_smp_stack,         &
+     &        num_mat, num_mat_bc, mat_istack, mat_item,                &
+     &        iso_param, iso_search)
 !
       do i_iso = 1, num_iso
         call alloc_ref_field_4_psf(numnod, iso_list(i_iso))
         call alloc_nnod_psf(np_smp, numnod, numedge, iso_list(i_iso))
       end do
       if (iflag_debug.eq.1) write(*,*) 'allocate_num_patch_iso'
-      call allocate_num_patch_iso(np_smp, num_iso)
+      call allocate_num_patch_iso(np_smp)
 !
       call alloc_psf_outputs_num(nprocs, num_iso, iso_col)
 !
@@ -112,7 +116,6 @@
       use set_const_4_sections
       use find_node_and_patch_psf
       use set_fields_for_psf
-      use output_section_files
       use collect_psf_data
 !
       integer(kind = kint), intent(in) :: istep_iso
@@ -142,21 +145,23 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_isosurfaces'
-      call set_const_4_isosurfaces(numnod, inod_smp_stack,              &
+      call set_const_4_isosurfaces(num_iso, numnod, inod_smp_stack,     &
      &    xx, radius, a_radius, s_cylinder, a_s_cylinder,               &
-     &    num_nod_phys, num_tot_nod_phys, istack_nod_component, d_nod)
+     &    num_nod_phys, num_tot_nod_phys, istack_nod_component,         &
+     &    d_nod, iso_list)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_iso'
-      call set_node_and_patch_iso(numnod, numele, numedge, nnod_4_ele,  &
+      call set_node_and_patch_iso                                       &
+     &   (num_iso, numnod, numele, numedge, nnod_4_ele,                 &
      &    nnod_4_edge, globalnodid, xx, ie, ie_edge, iedge_4_ele,       &
      &    istack_nod_iso_smp, istack_patch_iso_smp,                     &
      &    iso_search, iso_list, iso_pat)
 !
-      iso_pat%max_ncomp_psf = max_ncomp_iso_out
       call alloc_dat_on_patch_psf(iso_pat)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_4_iso'
-      call set_field_4_iso(numnod, numedge, nnod_4_edge, ie_edge,       &
+      call set_field_4_iso                                              &
+     &   (num_iso, numnod, numedge, nnod_4_edge, ie_edge,               &
      &    istack_nod_iso_smp, num_nod_phys, num_tot_nod_phys,           &
      &    istack_nod_component, d_nod, iso_param, iso_fld, iso_list,    &
      &    iso_pat)
@@ -181,7 +186,7 @@
       call collect_field_4_psf(num_iso, iso_pat, iso_col, iso_out)
 !
       if (iflag_debug.eq.1) write(*,*) 'output_iso_ucds'
-      call output_iso_ucds(istep_iso)
+      call output_iso_ucds(num_iso, istep_iso, iso_out)
 !
 !
       call dealloc_SR_array_psf(my_rank,iso_col)

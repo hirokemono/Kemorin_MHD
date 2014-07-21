@@ -27,7 +27,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_convert_psf_file(iflag_convert)
+      subroutine s_convert_psf_file(num_psf, iflag_convert)
 !
       use m_control_params_4_psf
       use m_geometry_constants
@@ -47,7 +47,7 @@
       use vtk_file_IO
       use cal_psf_rms_aves
 !
-      integer(kind = kint), intent(in) :: iflag_convert
+      integer(kind = kint), intent(in) :: num_psf, iflag_convert
 !
       integer(kind = kint) :: istep, i_psf
       character(len=kchara) :: file_name

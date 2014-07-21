@@ -24,6 +24,7 @@
 !  ===========
 
       integer(kind=kint), parameter :: iflag_convert = 0
+      integer(kind = kint) :: num_psf
       integer(kind = kint) :: ierr
 !
 !
@@ -36,9 +37,7 @@
       end if
 !
       num_psf = num_psf_ctl
-      num_iso = num_iso_ctl
-!
-      call s_convert_psf_file(iflag_convert)
+      call s_convert_psf_file(num_psf, iflag_convert)
 !
       stop
       end program psf_2_vtk

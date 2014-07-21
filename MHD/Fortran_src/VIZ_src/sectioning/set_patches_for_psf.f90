@@ -3,20 +3,21 @@
 !
 !      Written by H. Matsui on June, 2006
 !
-!!      subroutine count_psf_patches(numnod, numele, numedge,           &
+!!      subroutine count_psf_patches(num_psf, numnod, numele, numedge,  &
 !!     &          nnod_4_ele, ie, iedge_4_ele, num_surf_grp,            &
 !!     &          istack_surf_grp, istack_patch_psf_smp,                &
 !!     &          psf_search, psf_list)
-!!      subroutine count_iso_patches(numnod, numele, numedge,           &
+!!      subroutine count_iso_patches(num_iso, numnod, numele, numedge,  &
 !!     &          nnod_4_ele, ie, iedge_4_ele, istack_patch_iso_smp,    &
 !!     &          iso_search, iso_list)
 !!
-!!      subroutine set_psf_patches(numele, numedge, nnod_4_ele, ie,     &
+!!      subroutine set_psf_patches                                      &
+!!     &         (num_psf, numele, numedge, nnod_4_ele, ie,             &
 !!     &          iedge_4_ele, num_surf_grp, ntot_surf_grp,             &
 !!     &          istack_surf_grp, item_surf_grp, istack_nod_psf_smp,   &
 !!     &          istack_patch_psf_smp, psf_search, psf_list, psf_pat)
-!!      subroutine set_iso_patches(numele, numedge, iedge_4_ele,        &
-!!     &          istack_nod_iso_smp, istack_patch_iso_smp,             &
+!!      subroutine set_iso_patches(num_iso, numele, numedge,            &
+!!     &          iedge_4_ele, istack_nod_iso_smp, istack_patch_iso_smp,&
 !!     &          iso_search, iso_list, iso_pat)
 !
       module set_patches_for_psf
@@ -33,7 +34,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_psf_patches(numnod, numele, numedge,             &
+      subroutine count_psf_patches(num_psf, numnod, numele, numedge,    &
      &          nnod_4_ele, ie, iedge_4_ele, num_surf_grp,              &
      &          istack_surf_grp, istack_patch_psf_smp,                  &
      &          psf_search, psf_list)
@@ -45,6 +46,7 @@
       use set_psf_patch_4_by_surf_grp
       use patch_4_psf
 !
+      integer(kind = kint), intent(in) :: num_psf
       integer(kind = kint), intent(in) :: numnod, numele, numedge
       integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
@@ -88,7 +90,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_iso_patches(numnod, numele, numedge,             &
+      subroutine count_iso_patches(num_iso, numnod, numele, numedge,    &
      &          nnod_4_ele, ie, iedge_4_ele, istack_patch_iso_smp,      &
      &          iso_search, iso_list)
 !
@@ -98,6 +100,7 @@
 !
       use patch_4_psf
 !
+      integer(kind = kint), intent(in) :: num_iso
       integer(kind = kint), intent(in) :: numnod, numele, numedge
       integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
@@ -130,7 +133,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_psf_patches(numele, numedge, nnod_4_ele, ie,       &
+      subroutine set_psf_patches                                        &
+     &         (num_psf, numele, numedge, nnod_4_ele, ie,               &
      &          iedge_4_ele, num_surf_grp, ntot_surf_grp,               &
      &          istack_surf_grp, item_surf_grp, istack_nod_psf_smp,     &
      &          istack_patch_psf_smp, psf_search, psf_list, psf_pat)
@@ -143,6 +147,7 @@
       use set_psf_patch_4_by_surf_grp
       use patch_4_psf
 !
+      integer(kind = kint), intent(in) :: num_psf
       integer(kind = kint), intent(in) :: numele, numedge
       integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
@@ -192,7 +197,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_iso_patches(numele, numedge, iedge_4_ele,          &
+      subroutine set_iso_patches(num_iso, numele, numedge, iedge_4_ele, &
      &          istack_nod_iso_smp, istack_patch_iso_smp,               &
      &          iso_search, iso_list, iso_pat)
 !
@@ -203,6 +208,7 @@
 !
       use patch_4_psf
 !
+      integer(kind = kint), intent(in) :: num_iso
       integer(kind = kint), intent(in) :: numele, numedge
       integer(kind = kint), intent(in)                                  &
      &     :: iedge_4_ele(numele,nedge_4_ele)

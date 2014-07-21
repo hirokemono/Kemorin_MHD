@@ -3,7 +3,7 @@
 !
 !        programmed by H.Matsui on May. 2006
 !
-!      subroutine allocate_control_params_4_iso
+!!      subroutine allocate_control_params_4_iso(num_iso)
 !
       module m_control_params_4_iso
 !
@@ -12,9 +12,11 @@
       implicit  none
 !
 !
+      integer(kind = kint), parameter :: iflag_constant_iso = -1
+      integer(kind = kint), parameter :: iflag_field_iso =     1
+!
       integer(kind = kint), parameter :: iso_ctl_file_code = 11
 !
-      integer(kind = kint) :: num_iso
       character(len = kchara), target, allocatable :: iso_header(:)
       integer(kind = kint), target, allocatable :: itype_iso_file(:)
 !
@@ -26,11 +28,6 @@
 !
       integer(kind = kint), allocatable :: id_iso_result_type(:)
 !
-      integer(kind = kint) :: max_ncomp_iso_out
-!  number and stack of component for each surfaces
-!
-      integer(kind = kint), parameter :: iflag_constant_iso = -1
-      integer(kind = kint), parameter :: iflag_field_iso =     1
 !
 !  ---------------------------------------------------------------------
 !
@@ -38,9 +35,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_control_params_4_iso
+      subroutine allocate_control_params_4_iso(num_iso)
 !
       use m_field_file_format
+!
+      integer(kind= kint), intent(in) :: num_iso
+!
 !
       allocate(iso_header(num_iso))
       allocate(itype_iso_file(num_iso))

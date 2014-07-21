@@ -3,10 +3,12 @@
 !
 !     Written by H. Matsui on May., 2006
 !
-!      subroutine set_psf_control(num_mat, mat_name,                    &
-!     &          num_surf, surf_name, num_nod_phys, phys_nod_name)
-!      subroutine set_iso_control(num_mat, mat_name,                    &
-!     &          num_nod_phys, phys_nod_name)
+!!      subroutine set_psf_control(num_psf, num_mat, mat_name,          &
+!!     &          num_surf, surf_name, num_nod_phys, phys_nod_name,     &
+!!     &          psf_param, psf_fld, psf_pat)
+!!      subroutine set_iso_control                                      &
+!!     &         (num_iso, num_mat, mat_name, num_nod_phys,             &
+!!     &          phys_nod_name, iso_param, iso_fld, iso_pat)
 !
       module set_psf_iso_control
 !
@@ -23,19 +25,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_psf_control(num_mat, mat_name,                     &
-     &          num_surf, surf_name, num_nod_phys, phys_nod_name)
+      subroutine set_psf_control(num_psf, num_mat, mat_name,            &
+     &          num_surf, surf_name, num_nod_phys, phys_nod_name,       &
+     &          psf_param, psf_fld, psf_pat)
 !
       use calypso_mpi
       use m_control_data_sections
       use m_control_data_4_psf
       use m_control_params_4_psf
-      use m_psf_data
       use m_read_control_elements
+      use t_phys_data
+      use t_psf_patch_data
 !
-      use set_control_each_psf
       use set_field_comp_for_viz
 !
+      integer(kind= kint), intent(in) :: num_psf
       integer(kind = kint), intent(in) :: num_mat
       character(len=kchara), intent(in) :: mat_name(num_mat)
 !
@@ -45,14 +49,17 @@
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
+      type(psf_parameters), intent(inout) :: psf_param(num_psf)
+      type(phys_data), intent(inout) :: psf_fld(num_psf)
+      type(psf_patch_data), intent(inout) :: psf_pat
+!
       integer(kind = kint) :: i_psf
 !
 !
       ctl_file_code = psf_ctl_file_code
 !
-      call allocate_control_params_4_psf
+      call allocate_control_params_4_psf(num_psf)
       call allocate_psf_ctl_stract
-      call alloc_psf_field_type(my_rank, num_psf)
 !
       do i_psf = 1, num_psf
         call read_control_4_psf(i_psf)
@@ -61,7 +68,9 @@
       do i_psf = 1, num_psf
         call count_control_4_psf(i_psf, psf_ctl_struct(i_psf),          &
      &      num_mat, mat_name, num_nod_phys, phys_nod_name,             &
-     &      psf_fld(i_psf), psf_param(i_psf))
+     &      psf_fld(i_psf), psf_param(i_psf), ierr_MPI)
+        if(ierr_MPI.gt.0) call calypso_MPI_abort                        &
+     &                   (ierr_MPI, 'set correct element group')
       end do
 !
       do i_psf = 1, num_psf
@@ -75,39 +84,46 @@
 !
       call deallocate_psf_file_header_ctl
 !
-      call count_total_comps_4_viz(num_psf, psf_fld, max_ncomp_psf_out)
+      call count_total_comps_4_viz                                      &
+     &   (num_psf, psf_fld, psf_pat%max_ncomp_psf)
 !
       end subroutine set_psf_control
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_iso_control(num_mat, mat_name,                     &
-     &          num_nod_phys, phys_nod_name)
+      subroutine set_iso_control                                        &
+     &         (num_iso, num_mat, mat_name, num_nod_phys,               &
+     &          phys_nod_name, iso_param, iso_fld, iso_pat)
 !
       use calypso_mpi
       use m_control_data_sections
       use m_control_data_4_iso
       use m_control_params_4_iso
-      use m_iso_data
       use m_read_control_elements
+      use t_phys_data
+      use t_psf_patch_data
 !
       use set_control_each_iso
       use set_field_comp_for_viz
 !
+      integer(kind= kint), intent(in) :: num_iso
       integer(kind = kint), intent(in) :: num_mat
       character(len=kchara), intent(in) :: mat_name(num_mat)
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
+      type(psf_parameters), intent(inout) :: iso_param(num_iso)
+      type(phys_data), intent(inout) :: iso_fld(num_iso)
+      type(psf_patch_data), intent(inout) :: iso_pat
+!
       integer(kind = kint) :: i
 !
 !
       ctl_file_code = iso_ctl_file_code
 !
-      call allocate_control_params_4_iso
+      call allocate_control_params_4_iso(num_iso)
       call allocate_iso_ctl_stract
-      call alloc_iso_field_type(my_rank, num_iso)
 !
       do i = 1, num_iso
         call read_control_4_iso(i)
@@ -129,7 +145,8 @@
 !
       call deallocate_iso_file_header_ctl
 !
-      call count_total_comps_4_viz(num_iso, iso_fld, max_ncomp_iso_out)
+      call count_total_comps_4_viz                                      &
+     &   (num_iso, iso_fld, iso_pat%max_ncomp_psf)
 !
       if(iflag_debug .gt. 0) then
         do i = 1, num_iso

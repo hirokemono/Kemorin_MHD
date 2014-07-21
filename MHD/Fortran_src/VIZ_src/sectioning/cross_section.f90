@@ -48,6 +48,7 @@
 !
 !
       use m_geometry_constants
+      use m_control_params_4_psf
       use m_psf_data
 !
       use set_psf_iso_control
@@ -55,7 +56,6 @@
       use set_const_4_sections
       use find_node_and_patch_psf
       use collect_psf_data
-      use output_section_files
 !
       integer(kind=kint), intent(in) :: numnod, numele
       integer(kind=kint), intent(in) :: numsurf, numedge
@@ -94,35 +94,40 @@
       integer(kind = kint) :: i_psf
 !
 !
-      call set_psf_control(num_mat, mat_name, num_surf, surf_name,      &
-     &    num_nod_phys, phys_nod_name)
+      call alloc_psf_field_type(my_rank)
+!
+      call set_psf_control                                              &
+     &   (num_psf, num_mat, mat_name, num_surf, surf_name,              &
+     &    num_nod_phys, phys_nod_name, psf_param, psf_fld, psf_pat)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
-      call set_search_mesh_list_4_psf                                   &
-     &       (numnod, numele, numsurf, numedge, nnod_4_edge, ie_edge,   &
+      call set_search_mesh_list_4_psf(num_psf,                          &
+     &        numnod, numele, numsurf, numedge, nnod_4_edge, ie_edge,   &
      &        isf_4_ele, iedge_4_sf, interior_ele, inod_smp_stack,      &
      &        iele_smp_stack, isurf_smp_stack, iedge_smp_stack,         &
-     &        num_mat, num_mat_bc, mat_istack, mat_item)
+     &        num_mat, num_mat_bc, mat_istack, mat_item,                &
+     &        psf_param, psf_search)
 !
 !
       do i_psf = 1, num_psf
         call alloc_ref_field_4_psf(numnod, psf_list(i_psf))
         call alloc_nnod_psf(np_smp, numnod, numedge, psf_list(i_psf))
       end do
-      call allocate_num_patch_psf(np_smp, num_psf)
+      call allocate_num_patch_psf(np_smp)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_crossections'
-      call set_const_4_crossections(numnod, inod_smp_stack, xx)
+      call set_const_4_crossections                                     &
+     &   (num_psf, numnod, inod_smp_stack, xx, psf_list)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_psf'
-      call set_node_and_patch_psf(numnod, numele, numedge, nnod_4_ele,  &
+      call set_node_and_patch_psf                                       &
+     &   (num_psf, numnod, numele, numedge, nnod_4_ele,                 &
      &    nnod_4_edge, globalnodid, xx, ie, ie_edge, iedge_4_ele,       &
      &    num_surf, num_surf_bc, surf_istack, surf_item,                &
      &    ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp,           &
      &    istack_nod_psf_smp, istack_patch_psf_smp, psf_search,         &
      &    psf_list, psf_pat)
 !
-      psf_pat%max_ncomp_psf = max_ncomp_psf_out
       call alloc_dat_on_patch_psf(psf_pat)
       call alloc_psf_outputs_num(nprocs, num_psf, psf_col)
 !
@@ -139,7 +144,7 @@
       call collect_mesh_4_psf(num_psf, psf_pat, psf_col, psf_out)
 !
       if (iflag_debug.eq.1) write(*,*) 'output_psf_grids'
-      call output_psf_grids
+      call output_psf_grids(num_psf, psf_out)
 !
       end subroutine cross_section_init
 !
@@ -153,7 +158,6 @@
       use m_psf_data
       use set_fields_for_psf
       use collect_psf_data
-      use output_section_files
 !
       integer(kind = kint), intent(in) :: istep_psf
 !
@@ -182,7 +186,7 @@
 !
 !      call start_eleps_time(22)
       if (iflag_debug.eq.1) write(*,*) 'output_psf_fields'
-      call output_psf_fields(istep_psf)
+      call output_psf_fields(num_psf, istep_psf, psf_out)
 !      call end_eleps_time(22)
 !
       end subroutine cross_section_main

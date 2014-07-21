@@ -8,7 +8,7 @@
 !!     &          istack_nod_psf_smp, num_phys, ntot_phys, istack_ncomp,&
 !!     &          d_nod, psf_param, psf_fld, psf_list, psf_pat)
 !!      subroutine set_field_4_iso                                      &
-!!     &         (numnod, numedge, nnod_4_edge, ie_edge,                &
+!!     &         (num_iso, numnod, numedge, nnod_4_edge, ie_edge,       &
 !!     &          istack_nod_psf_smp, num_phys, ntot_phys, istack_ncomp,&
 !!     &          d_nod, iso_param, iso_fld, iso_list, iso_pat)
 !
@@ -73,7 +73,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_field_4_iso                                        &
-     &         (numnod, numedge, nnod_4_edge, ie_edge,                  &
+     &         (num_iso, numnod, numedge, nnod_4_edge, ie_edge,         &
      &          istack_nod_psf_smp, num_phys, ntot_phys, istack_ncomp,  &
      &          d_nod, iso_param, iso_fld, iso_list, iso_pat)
 !
@@ -84,6 +84,7 @@
 !
       use set_nodal_field_for_psf
 !
+      integer(kind = kint), intent(in) :: num_iso
       integer(kind = kint), intent(in) :: numnod, numedge, nnod_4_edge
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
       integer(kind = kint), intent(in)                                  &

@@ -22,6 +22,9 @@
       implicit none
 !
 !
+!>      Number of isosurfaces
+      integer(kind = kint) :: num_iso
+!
 !>      Structure for isosurface mesh
 !!        iso_mesh(i_iso)%node%numnod = 
 !!        iso_mesh(i_iso)%node%istack_nod_smp(ip) = istack_nod_iso_smp
@@ -76,9 +79,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_iso_field_type(my_rank, num_iso)
+      subroutine alloc_iso_field_type(my_rank)
 !
-      integer(kind = kint), intent(in) :: my_rank, num_iso
+      integer(kind = kint), intent(in) :: my_rank
 !
 !
       allocate(iso_mesh(num_iso))
@@ -108,9 +111,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_num_patch_iso(np_smp, num_iso)
+      subroutine allocate_num_patch_iso(np_smp)
 !
-      integer(kind= kint), intent(in) :: np_smp, num_iso
+      integer(kind= kint), intent(in) :: np_smp
 !
       allocate(istack_nod_iso(0:num_iso))
       allocate(istack_patch_iso(0:num_iso))

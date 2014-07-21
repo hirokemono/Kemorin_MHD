@@ -30,8 +30,8 @@
       subroutine init_visualize_surface
 !
       use m_control_data_sections
-      use m_control_params_4_psf
-      use m_control_params_4_iso
+      use m_psf_data
+      use m_iso_data
 !
       use set_psf_case_table
 !
@@ -53,8 +53,8 @@
 !
       subroutine visualize_surface(istep_psf, istep_iso)
 !
-      use m_control_params_4_psf
-      use m_control_params_4_iso
+      use m_psf_data
+      use m_iso_data
 !
       integer(kind = kint), intent(in) :: istep_psf, istep_iso
 !

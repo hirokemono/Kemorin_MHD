@@ -3,10 +3,11 @@
 !
 !      Written by H. Matsui on June, 2006
 !
-!      subroutine set_const_4_crossections(numnod, inod_smp_stack, xx)
-!      subroutine set_const_4_isosurfaces(numnod, inod_smp_stack,       &
-!     &          xx, radius, a_r, s_cyl, as_cyl, num_phys, ntot_phys,   &
-!     &          istack_ncomp, d_nod)
+!!      subroutine set_const_4_crossections                             &
+!!     &          (num_psf, numnod, inod_smp_stack, xx, psf_list)
+!!      subroutine set_const_4_isosurfaces(num_iso, numnod,             &
+!!     &          inod_smp_stack, xx, radius, a_r, s_cyl, as_cyl,       &
+!!     &          num_phys, ntot_phys, istack_ncomp, d_nod, iso_list)
 !
       module set_const_4_sections
 !
@@ -25,14 +26,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_const_4_crossections(numnod, inod_smp_stack, xx)
+      subroutine set_const_4_crossections                               &
+     &          (num_psf, numnod, inod_smp_stack, xx, psf_list)
 !
       use m_control_params_4_psf
-      use m_psf_data
+      use t_psf_geometry_list
 !
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: num_psf, numnod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: xx(numnod,3)
+!
+      type(sectiong_list), intent(inout):: psf_list(num_psf)
 !
       integer(kind = kint) :: i_psf
 !
@@ -48,14 +52,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_const_4_isosurfaces(numnod, inod_smp_stack,        &
-     &          xx, radius, a_r, s_cyl, as_cyl, num_phys, ntot_phys,    &
-     &          istack_ncomp, d_nod)
+      subroutine set_const_4_isosurfaces(num_iso, numnod,               &
+     &          inod_smp_stack, xx, radius, a_r, s_cyl, as_cyl,         &
+     &          num_phys, ntot_phys, istack_ncomp, d_nod, iso_list)
 !
       use m_control_params_4_iso
-      use m_iso_data
+      use t_psf_geometry_list
 !
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: num_iso, numnod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind = kreal), intent(in)  :: xx(numnod,3)
       real(kind = kreal), intent(in)  :: radius(numnod)
@@ -66,6 +70,8 @@
       integer(kind = kint), intent(in) :: num_phys, ntot_phys
       integer(kind = kint), intent(in) :: istack_ncomp(0:num_phys)
       real(kind = kreal), intent(in)  :: d_nod(numnod,ntot_phys)
+!
+      type(sectiong_list), intent(inout):: iso_list(num_iso)
 !
       integer(kind = kint) :: i_iso
 !

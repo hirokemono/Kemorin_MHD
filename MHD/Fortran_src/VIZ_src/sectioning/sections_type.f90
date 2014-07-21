@@ -50,8 +50,8 @@
      &         (fem, sf_mesh_psf, eg_mesh_psf, fld_nod)
 !
       use m_control_data_sections
-      use m_control_params_4_psf
-      use m_control_params_4_iso
+      use m_psf_data
+      use m_iso_data
 !
       use m_quad_2_triangle
 !
@@ -91,8 +91,8 @@
       subroutine sectioning_type(istep_psf, istep_iso,                  &
      &          fem, eg_mesh_psf, fld_nod)
 !
-      use m_control_params_4_psf
-      use m_control_params_4_iso
+      use m_psf_data
+      use m_iso_data
 !
       use const_linear_mesh_type
 !

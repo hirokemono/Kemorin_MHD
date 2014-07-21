@@ -8,6 +8,11 @@
 !!     &     psf_fld, collect, psf_ucd)
 !!      subroutine collect_mesh_4_psf(num_psf, patch, collect, psf_ucd)
 !!      subroutine collect_field_4_psf(num_psf, patch, collect, psf_ucd)
+!!
+!!      subroutine output_psf_grids(num_psf, psf_ucd)
+!!      subroutine output_psf_fields(num_psf, istep_psf, psf_ucd)
+!!      subroutine output_iso_ucds(num_iso, istep_iso、iso_out)
+!!
 !!      subroutine deallocate_psf_outputs_data(my_rank, num_psf, psf_ucd)
 !
       module collect_psf_data
@@ -19,6 +24,9 @@
       use m_machine_parameter
 !
       implicit  none
+!
+      integer(kind = kint), parameter, private :: rank0 = 0
+      integer(kind = kint), parameter, private :: delete_process = -1
 !
 !  ---------------------------------------------------------------------
 !
@@ -159,6 +167,70 @@
 !
       end subroutine collect_field_4_psf
 !
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine output_psf_grids(num_psf, psf_ucd)
+!
+      use t_ucd_data
+      use calypso_mpi
+      use ucd_IO_select
+!
+      integer(kind = kint), intent(in) :: num_psf
+      type(ucd_data), intent(in) :: psf_ucd(num_psf)
+      integer(kind = kint) :: i_psf
+!
+      if (my_rank .ne. rank0) return
+!
+      do i_psf = 1, num_psf
+        call sel_write_grd_file(delete_process, psf_ucd(i_psf))
+      end do
+!
+      end subroutine output_psf_grids
+!
+! ----------------------------------------------------------------------
+!
+      subroutine output_psf_fields(num_psf, istep_psf, psf_ucd)
+!
+      use t_ucd_data
+      use calypso_mpi
+      use ucd_IO_select
+!
+      integer(kind = kint), intent(in) :: num_psf, istep_psf
+      type(ucd_data), intent(in) :: psf_ucd(num_psf)
+      integer(kind = kint) :: i_psf
+!
+!
+      if (my_rank .ne. rank0) return
+      do i_psf = 1, num_psf
+        call sel_write_udt_file(delete_process, istep_psf,              &
+     &      psf_ucd(i_psf))
+      end do
+!
+      end subroutine output_psf_fields
+!
+! ----------------------------------------------------------------------
+!
+      subroutine output_iso_ucds(num_iso, istep_iso, iso_out)
+!
+      use t_ucd_data
+      use calypso_mpi
+      use ucd_IO_select
+!
+      integer(kind = kint), intent(in) :: num_iso, istep_iso
+      type(ucd_data), intent(in) :: iso_out(num_iso)
+      integer(kind = kint) :: i_iso
+!
+!
+      if (my_rank .ne. rank0) return
+      do i_iso = 1, num_iso
+        call sel_write_ucd_file(delete_process, istep_iso,              &
+    &       iso_out(i_iso))
+      end do
+!
+      end subroutine output_iso_ucds
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine deallocate_psf_outputs_data(my_rank, num_psf, psf_ucd)
