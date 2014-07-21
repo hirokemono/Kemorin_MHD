@@ -3,7 +3,10 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine collect_numbers_4_psf
+!!      subroutine collect_numbers_4_psf(num_psf, psf_prefix, ifmt_psf, &
+!!     &     istack_nod_psf_smp, istack_patch_psf_smp,                  &
+!!     &     psf_fld, collect, psf_ucd)
+!
 !      subroutine collect_mesh_4_psf
 !      subroutine collect_field_4_psf
 !
@@ -16,6 +19,7 @@
 !
       use m_constants
       use calypso_mpi
+      use m_machine_parameter
 !
       implicit  none
 !
@@ -25,51 +29,69 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine collect_numbers_4_psf
+      subroutine collect_numbers_4_psf(num_psf, psf_prefix, ifmt_psf,   &
+     &     istack_nod_psf_smp, istack_patch_psf_smp,                    &
+     &     psf_fld, collect, psf_ucd)
 !
       use m_geometry_constants
-      use m_control_params_4_psf
-      use m_psf_data
+      use t_psf_outputs
+      use t_phys_data
+      use t_ucd_data
+!
       use count_numbers_collected_psf
 !
-      integer(kind = kint) :: i_psf, i_fld, ist, nmax
+      integer(kind = kint), intent(in) :: num_psf
+      integer(kind = kint), intent(in) :: ifmt_psf(num_psf)
+      character(len = kchara), intent(in) :: psf_prefix(num_psf)
+!
+      integer(kind = kint), intent(in)                                  &
+     &      :: istack_nod_psf_smp(0:np_smp*num_psf)
+      integer(kind = kint), intent(in)                                  &
+     &      :: istack_patch_psf_smp(0:np_smp*num_psf)
+!
+      type(phys_data), intent(in) :: psf_fld(num_psf)
+      type(psf_collect_type), intent(inout) :: collect
+      type(ucd_data), intent(inout) :: psf_ucd(num_psf)
+!
+      integer(kind = kint) :: i_psf, i_fld, nmax
 !
 !
       call count_numbers_4_psf_out(num_psf, istack_nod_psf_smp,         &
-     &    psf_col%ntot_nod_output_psf, nmax,        &
-     &    psf_col%istack_nod_para_psf, psf_col%istack_nod_recv_psf,      &
-     &    psf_col%istack_nod_output_psf)
+     &    collect%ntot_nod_output_psf, nmax,                            &
+     &    collect%istack_nod_para_psf, collect%istack_nod_recv_psf,     &
+     &    collect%istack_nod_output_psf)
 !
       call count_numbers_4_psf_out(num_psf, istack_patch_psf_smp,       &
-     &    psf_col%ntot_ele_output_psf, nmax,        &
-     &    psf_col%istack_ele_para_psf, psf_col%istack_ele_recv_psf,      &
-     &    psf_col%istack_ele_output_psf)
+     &    collect%ntot_ele_output_psf, nmax,                            &
+     &    collect%istack_ele_para_psf, collect%istack_ele_recv_psf,     &
+     &    collect%istack_ele_output_psf)
 !
       if(my_rank .gt. 0) return
 !
-      psf_out(1:num_psf)%file_prefix = psf_header(1:num_psf)
-      psf_out(1:num_psf)%ifmt_file = itype_psf_file(1:num_psf)
-      psf_out(1:num_psf)%nnod_4_ele = num_triangle
+      psf_ucd(1:num_psf)%file_prefix = psf_prefix(1:num_psf)
+      psf_ucd(1:num_psf)%ifmt_file = ifmt_psf(1:num_psf)
+      psf_ucd(1:num_psf)%nnod_4_ele = num_triangle
 !
       do i_psf = 1, num_psf
-        psf_out(i_psf)%nnod = psf_col%istack_nod_output_psf(i_psf)              &
-     &                       - psf_col%istack_nod_output_psf(i_psf-1)
-        psf_out(i_psf)%nele = psf_col%istack_ele_output_psf(i_psf)      &
-     &                       - psf_col%istack_ele_output_psf(i_psf-1)
-        psf_out(i_psf)%num_field = num_psf_output(i_psf)
-        psf_out(i_psf)%ntot_comp = num_psf_out_comp(i_psf)
+        psf_ucd(i_psf)%nnod = collect%istack_nod_output_psf(i_psf)      &
+     &                       - collect%istack_nod_output_psf(i_psf-1)
+        psf_ucd(i_psf)%nele = collect%istack_ele_output_psf(i_psf)      &
+     &                       - collect%istack_ele_output_psf(i_psf-1)
+        psf_ucd(i_psf)%num_field = psf_fld(i_psf)%num_phys
+        psf_ucd(i_psf)%ntot_comp = psf_fld(i_psf)%ntot_phys
 !
-        call allocate_ucd_phys_name( psf_out(i_psf) )
-        ist = istack_psf_output(i_psf-1)
+        call allocate_ucd_phys_name( psf_ucd(i_psf) )
 !
-        do i_fld = 1, psf_out(i_psf)%num_field
-          psf_out(i_psf)%phys_name(i_fld) = name_psf_output(ist+i_fld)
-          psf_out(i_psf)%num_comp(i_fld) =  ncomp_psf_output(ist+i_fld)
+        do i_fld = 1, psf_ucd(i_psf)%num_field
+          psf_ucd(i_psf)%phys_name(i_fld)                               &
+     &         =  psf_fld(i_psf)%phys_name(i_fld)
+          psf_ucd(i_psf)%num_comp(i_fld)                                &
+     &         =  psf_fld(i_psf)%num_component(i_fld)
         end do
 !
-        call allocate_ucd_node(psf_out(i_psf))
-        call allocate_ucd_ele(psf_out(i_psf))
-        call allocate_ucd_phys_data(psf_out(i_psf))
+        call allocate_ucd_node(psf_ucd(i_psf))
+        call allocate_ucd_ele(psf_ucd(i_psf))
+        call allocate_ucd_phys_data(psf_ucd(i_psf))
       end do
 !
 !
@@ -78,50 +100,65 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine collect_mesh_4_psf
+      subroutine collect_mesh_4_psf(num_psf, patch, collect, psf_ucd)
 !
-      use m_control_params_4_psf
-      use m_psf_data
+      use t_psf_geometry_list
+      use t_psf_outputs
+      use t_ucd_data
 !
       use psf_send_recv
       use reconnect_psf_overlap_nod
 !
-      call psf_grids_send_recv(num_psf, psf_pat%nnod_psf_tot,           &
-     &    psf_col%ntot_nod_output_psf, psf_col%istack_nod_para_psf,             &
-     &    psf_col%istack_nod_recv_psf, psf_pat%xyz_psf, psf_col%send_psf,       &
-     &    psf_col%recv_psf, psf_out)
+      integer(kind = kint), intent(in) :: num_psf
+      type(psf_patch_data), intent(in) ::   patch
+      type(psf_collect_type), intent(in) :: collect
+      type(ucd_data), intent(inout) :: psf_ucd(num_psf)
 !
-      call psf_hash_send_recv(num_psf, psf_pat%nnod_psf_tot,            &
-     &    psf_col%ntot_nod_output_psf, psf_col%istack_nod_para_psf,             &
-     &    psf_col%istack_nod_recv_psf, psf_pat%inod_hash_psf,                   &
-     &    psf_col%isend_psf, psf_col%irecv_psf, psf_col%ihash_output_psf)
 !
-      call set_global_psf_node_id(num_psf, psf_out)
+      call psf_grids_send_recv(num_psf, patch%nnod_psf_tot,             &
+     &    collect%ntot_nod_output_psf, collect%istack_nod_para_psf,     &
+     &    collect%istack_nod_recv_psf, patch%xyz_psf, collect%send_psf, &
+     &    collect%recv_psf, psf_ucd)
 !
-      call psf_connect_send_recv(num_psf, psf_pat%npatch_tot,           &
-     &    psf_col%ntot_ele_output_psf, psf_col%istack_nod_para_psf,  &
-     &    psf_col%istack_ele_para_psf, psf_col%istack_ele_recv_psf, psf_pat%ie_tri,     &
-     &    psf_col%isend_psf, psf_col%irecv_psf, psf_out)
+      call psf_hash_send_recv(num_psf, patch%nnod_psf_tot,              &
+     &    collect%ntot_nod_output_psf, collect%istack_nod_para_psf,     &
+     &    collect%istack_nod_recv_psf, patch%inod_hash_psf,             &
+     &    collect%isend_psf, collect%irecv_psf,                         &
+     &    collect%ihash_output_psf)
 !
-      call s_reconnect_psf_overlap_nod                                 & 
-     &   (num_psf, psf_col%ntot_nod_output_psf,                         &
-     &    psf_col%istack_nod_output_psf, psf_col%ihash_output_psf, psf_out)
+      call set_global_psf_node_id(num_psf, psf_ucd)
+!
+      call psf_connect_send_recv(num_psf, patch%npatch_tot,             &
+     &    collect%ntot_ele_output_psf, collect%istack_nod_para_psf,     &
+     &    collect%istack_ele_para_psf, collect%istack_ele_recv_psf,     &
+     &    patch%ie_tri, collect%isend_psf, collect%irecv_psf, psf_ucd)
+!
+      call s_reconnect_psf_overlap_nod(num_psf,                         &
+     &    collect%ntot_nod_output_psf, collect%istack_nod_output_psf,   &
+     &    collect%ihash_output_psf, psf_ucd)
 !
       end subroutine collect_mesh_4_psf
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine collect_field_4_psf
+      subroutine collect_field_4_psf(patch, collect, psf_ucd)
 !
       use m_control_params_4_psf
-      use m_psf_data
+      use t_psf_geometry_list
+      use t_psf_outputs
+      use t_ucd_data
 !
       use psf_send_recv
 !
-      call psf_results_send_recv(num_psf, psf_pat%nnod_psf_tot,         &
-     &    psf_col%ntot_nod_output_psf, psf_col%istack_nod_para_psf,             &
-     &    psf_col%istack_nod_recv_psf, max_ncomp_psf_out, psf_pat%dat_psf,      &
-     &    psf_col%send_psf, psf_col%recv_psf, psf_out)
+      type(psf_patch_data), intent(in) ::   patch
+      type(psf_collect_type), intent(in) :: collect
+      type(ucd_data), intent(inout) :: psf_ucd(num_psf)
+!
+!
+      call psf_results_send_recv(num_psf, patch%nnod_psf_tot,           &
+     &    collect%ntot_nod_output_psf, collect%istack_nod_para_psf,     &
+     &    collect%istack_nod_recv_psf, max_ncomp_psf_out,               &
+     &    patch%dat_psf, collect%send_psf, collect%recv_psf, psf_ucd)
 !
       end subroutine collect_field_4_psf
 !
@@ -145,91 +182,46 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine collect_numbers_4_iso
-!
-      use m_geometry_constants
-      use m_control_params_4_iso
-      use m_iso_data
-      use count_numbers_collected_psf
-!
-      integer(kind = kint) :: i_iso, i_fld, ist, nmax
-!
-!
-      call count_numbers_4_psf_out(num_iso, istack_nod_iso_smp,         &
-     &    iso_col%ntot_nod_output_psf, nmax,        &
-     &    iso_col%istack_nod_para_psf, iso_col%istack_nod_recv_psf,      &
-     &    iso_col%istack_nod_output_psf)
-!
-      call count_numbers_4_psf_out(num_iso, istack_patch_iso_smp,       &
-     &    iso_col%ntot_ele_output_psf, nmax,        &
-     &    iso_col%istack_ele_para_psf, iso_col%istack_ele_recv_psf,      &
-     &    iso_col%istack_ele_output_psf)
-!
-      if(my_rank .gt. 0) return
-!
-      iso_out(1:num_iso)%file_prefix = iso_header(1:num_iso)
-      iso_out(1:num_iso)%ifmt_file = itype_iso_file(1:num_iso)
-      iso_out(1:num_iso)%nnod_4_ele = num_triangle
-!
-      do i_iso = 1, num_iso
-        iso_out(i_iso)%nnod = iso_col%istack_nod_output_psf(i_iso)              &
-     &                       - iso_col%istack_nod_output_psf(i_iso-1)
-        iso_out(i_iso)%nele = iso_col%istack_ele_output_psf(i_iso)      &
-     &                       - iso_col%istack_ele_output_psf(i_iso-1)
-        iso_out(i_iso)%num_field = num_iso_output(i_iso)
-        iso_out(i_iso)%ntot_comp = num_iso_out_comp(i_iso)
-!
-        call allocate_ucd_phys_name( iso_out(i_iso) )
-!
-        ist = istack_iso_output(i_iso-1)
-        do i_fld = 1, iso_out(i_iso)%num_field
-          iso_out(i_iso)%phys_name(i_fld) = name_iso_output(ist+i_fld)
-          iso_out(i_iso)%num_comp(i_fld) =  ncomp_iso_output(ist+i_fld)
-        end do
-!
-        call allocate_ucd_node(iso_out(i_iso))
-        call allocate_ucd_ele(iso_out(i_iso))
-        call allocate_ucd_phys_data(iso_out(i_iso))
-      end do
-!
-      end subroutine collect_numbers_4_iso
-!
-! ----------------------------------------------------------------------
-!
-      subroutine collect_data_4_iso
+      subroutine collect_data_4_iso(patch, collect, psf_ucd)
 !
       use m_control_params_4_iso
-      use m_iso_data
+      use t_psf_geometry_list
+      use t_psf_outputs
+      use t_ucd_data
 !
       use psf_send_recv
       use reconnect_psf_overlap_nod
 !
+      type(psf_patch_data), intent(in) ::   patch
+      type(psf_collect_type), intent(in) :: collect
+      type(ucd_data), intent(inout) :: psf_ucd(num_iso)
 !
-      call psf_grids_send_recv(num_iso, iso_pat%nnod_psf_tot,           &
-     &    iso_col%ntot_nod_output_psf, iso_col%istack_nod_para_psf,             &
-     &    iso_col%istack_nod_recv_psf, iso_pat%xyz_psf,                         &
-     &    iso_col%send_psf, iso_col%recv_psf, iso_out)
 !
-      call psf_hash_send_recv(num_iso, iso_pat%nnod_psf_tot,            &
-     &    iso_col%ntot_nod_output_psf, iso_col%istack_nod_para_psf,             &
-     &    iso_col%istack_nod_recv_psf, iso_pat%inod_hash_psf,                   &
-     &    iso_col%isend_psf, iso_col%irecv_psf,                         &
-     &    iso_col%ihash_output_psf)
+      call psf_grids_send_recv(num_iso, patch%nnod_psf_tot,           &
+     &    collect%ntot_nod_output_psf, collect%istack_nod_para_psf,             &
+     &    collect%istack_nod_recv_psf, patch%xyz_psf,                         &
+     &    collect%send_psf, collect%recv_psf, psf_ucd)
 !
-      call set_global_psf_node_id(num_iso, iso_out)
+      call psf_hash_send_recv(num_iso, patch%nnod_psf_tot,            &
+     &    collect%ntot_nod_output_psf, collect%istack_nod_para_psf,             &
+     &    collect%istack_nod_recv_psf, patch%inod_hash_psf,                   &
+     &    collect%isend_psf, collect%irecv_psf,                         &
+     &    collect%ihash_output_psf)
 !
-      call psf_connect_send_recv(num_iso, iso_pat%npatch_tot,           &
-     &    iso_col%ntot_ele_output_psf, iso_col%istack_nod_para_psf,             &
-     &    iso_col%istack_ele_para_psf, iso_col%istack_ele_recv_psf, iso_pat%ie_tri,     &
-     &    iso_col%isend_psf, iso_col%irecv_psf, iso_out)
+      call set_global_psf_node_id(num_iso, psf_ucd)
 !
-      call s_reconnect_psf_overlap_nod(num_iso, iso_col%ntot_nod_output_psf,    &
-     &    iso_col%istack_nod_output_psf, iso_col%ihash_output_psf, iso_out)
+      call psf_connect_send_recv(num_iso, patch%npatch_tot,           &
+     &    collect%ntot_ele_output_psf, collect%istack_nod_para_psf,             &
+     &    collect%istack_ele_para_psf, collect%istack_ele_recv_psf, patch%ie_tri,     &
+     &    collect%isend_psf, collect%irecv_psf, psf_ucd)
 !
-      call psf_results_send_recv(num_iso, iso_pat%nnod_psf_tot,         &
-     &    iso_col%ntot_nod_output_psf, iso_col%istack_nod_para_psf,             &
-     &    iso_col%istack_nod_recv_psf, max_ncomp_iso_out, iso_pat%dat_psf,      &
-     &    iso_col%send_psf, iso_col%recv_psf, iso_out)
+      call s_reconnect_psf_overlap_nod(num_iso, collect%ntot_nod_output_psf,    &
+     &    collect%istack_nod_output_psf, collect%ihash_output_psf, psf_ucd)
+!
+      call psf_results_send_recv(num_iso, patch%nnod_psf_tot,         &
+     &    collect%ntot_nod_output_psf, collect%istack_nod_para_psf,             &
+     &    collect%istack_nod_recv_psf, max_ncomp_iso_out, patch%dat_psf,      &
+     &    collect%send_psf, collect%recv_psf, psf_ucd)
 !
       end subroutine collect_data_4_iso
 !

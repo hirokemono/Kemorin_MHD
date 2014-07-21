@@ -94,26 +94,30 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_total_comps_4_viz(num, num_total, istack_out,    &
-     &      ncomp_out, max_ncomp_out, num_out_comp)
+      subroutine count_total_comps_4_viz(num, istack_out, psf_fld,      &
+     &          max_ncomp_out)
 !
-      integer(kind = kint), intent(in) :: num, num_total
+      use t_phys_data
+!
+      integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: istack_out(0:num)
-      integer(kind = kint), intent(in) :: ncomp_out(num_total)
 !
+      type(phys_data), intent(inout) :: psf_fld(num)
       integer(kind = kint), intent(inout) :: max_ncomp_out
-      integer(kind = kint), intent(inout) :: num_out_comp(num)
-!
-      integer(kind = kint) :: i, j
 !
 !
-      num_out_comp = 0
-      max_ncomp_out = 3
+      integer(kind = kint) :: i, j, n_fld
+!
+!
+      max_ncomp_out = 1
       do i = 1, num
-        do j = istack_out(i-1)+1, istack_out(i)
-          num_out_comp(i) = num_out_comp(i) + ncomp_out(j)
+        psf_fld(i)%ntot_phys = 0
+        n_fld = istack_out(i) - istack_out(i-1)
+        do j = 1, n_fld
+          psf_fld(i)%ntot_phys = psf_fld(i)%ntot_phys                   &
+     &                          + psf_fld(i)%num_component(j)
         end do
-        max_ncomp_out = max(max_ncomp_out,num_out_comp(i))
+        max_ncomp_out = max(max_ncomp_out,psf_fld(i)%ntot_phys)
       end do
 !
       end subroutine count_total_comps_4_viz

@@ -30,15 +30,11 @@
 !
       integer(kind = kint) :: num_psf_total_out
       integer(kind = kint) :: max_ncomp_psf_out
-      integer(kind = kint), allocatable, target :: num_psf_output(:)
       integer(kind = kint), allocatable, target :: istack_psf_output(:)
       integer(kind = kint), allocatable :: id_psf_output(:)
       integer(kind = kint), allocatable :: icomp_psf_output(:)
-      integer(kind = kint), allocatable, target :: ncomp_psf_output(:)
       integer(kind = kint), allocatable :: ncomp_psf_org(:)
-      integer(kind = kint), allocatable, target :: num_psf_out_comp(:)
       integer(kind = kint), allocatable :: istack_psf_out_comp(:)
-      character(len = kchara), allocatable, target :: name_psf_output(:)
 !  number and stack of component for each surfaces
 !
 !      subroutine allocate_control_params_4_psf
@@ -64,10 +60,7 @@
 !
       allocate(id_psf_group(num_psf))
 !
-      allocate(num_psf_output(num_psf))
       allocate(istack_psf_output(0:num_psf))
-!
-      allocate(num_psf_out_comp(num_psf))
 !
       allocate(nele_grp_area_psf(num_psf))
       allocate(istack_grp_area_psf(0:num_psf))
@@ -76,9 +69,7 @@
       id_section_method =  0
       id_psf_group =       0
 !
-      num_psf_output =      0
       istack_psf_output =   0
-      num_psf_out_comp =    0
       nele_grp_area_psf =   0
       istack_grp_area_psf = 0
 !
@@ -95,15 +86,12 @@
 !
       allocate(id_psf_output(num_psf_total_out)    )
       allocate(icomp_psf_output(num_psf_total_out) )
-      allocate(ncomp_psf_output(num_psf_total_out) )
       allocate(ncomp_psf_org(num_psf_total_out)    )
-      allocate(name_psf_output(num_psf_total_out)  )
 !
       allocate(id_ele_grp_area_psf(nele_grp_area_psf_tot))
 !
       id_psf_output =     0
       icomp_psf_output =  0
-      ncomp_psf_output =  0
       ncomp_psf_org =  0
 !
       id_ele_grp_area_psf = 0

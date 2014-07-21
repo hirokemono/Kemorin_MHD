@@ -120,17 +120,20 @@
      &    num_surf, num_surf_bc, surf_istack, surf_item,                &
      &    ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp)
 !
+      call alloc_dat_on_patch_psf(max_ncomp_psf_out, psf_pat)
       call alloc_psf_outputs_num(nprocs, num_psf, psf_col)
 !
       if (iflag_debug.eq.1) write(*,*) 'collect_numbers_4_psf'
-      call collect_numbers_4_psf
+      call collect_numbers_4_psf(num_psf, psf_header, itype_psf_file,   &
+     &    istack_nod_psf_smp, istack_patch_psf_smp,                     &
+     &    psf_fld, psf_col, psf_out)
 !
       call alloc_psf_outputs_data(psf_col)
       call alloc_SR_array_psf(my_rank, max_ncomp_psf_out,               &
      &    psf_pat%nnod_psf_tot, psf_pat%npatch_tot, psf_col)
 !
       if (iflag_debug.eq.1) write(*,*) 'collect_mesh_4_psf'
-      call collect_mesh_4_psf
+      call collect_mesh_4_psf(num_psf, psf_pat, psf_col, psf_out)
 !
       if (iflag_debug.eq.1) write(*,*) 'output_psf_grids'
       call output_psf_grids
@@ -143,7 +146,7 @@
      &          nnod_4_edge, ie_edge, num_nod_phys, num_tot_nod_phys,   &
      &          istack_nod_component, d_nod)
 !
-!      use m_work_time
+      use m_psf_data
       use set_fields_for_psf
       use collect_psf_data
       use output_section_files
@@ -168,7 +171,7 @@
 !
 !      call start_eleps_time(21)
       if (iflag_debug.eq.1) write(*,*) 'collect_field_4_psf'
-      call collect_field_4_psf
+      call collect_field_4_psf(psf_pat, psf_col, psf_out)
 !      call end_eleps_time(21)
 !
 !      call start_eleps_time(22)

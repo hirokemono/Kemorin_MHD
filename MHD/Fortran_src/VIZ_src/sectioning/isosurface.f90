@@ -148,8 +148,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_iso'
       call set_node_and_patch_iso(numnod, numele, numedge, nnod_4_ele,  &
-     &    nnod_4_edge, globalnodid, xx, ie, ie_edge, iedge_4_ele,       &
-     &    num_nod_phys, num_tot_nod_phys, istack_nod_component, d_nod)
+     &    nnod_4_edge, globalnodid, xx, ie, ie_edge, iedge_4_ele)
+!
+      call alloc_dat_on_patch_psf(max_ncomp_iso_out, iso_pat)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_4_iso'
       call set_field_4_iso(numnod, numedge, nnod_4_edge, ie_edge,       &
@@ -159,8 +160,10 @@
         call dealloc_inod_psf(iso_list(i_iso))
       end do
 !
-      if (iflag_debug.eq.1) write(*,*) 'collect_numbers_4_iso'
-      call collect_numbers_4_iso
+      if (iflag_debug.eq.1) write(*,*) 'collect_numbers_4_psf'
+      call collect_numbers_4_psf(num_iso, iso_header, itype_iso_file,   &
+     &    istack_nod_iso_smp, istack_patch_iso_smp,                     &
+     &    iso_fld, iso_col, iso_out)
 !
 !
       call alloc_psf_outputs_data(iso_col)
@@ -169,7 +172,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'collect_data_4_iso'
-      call collect_data_4_iso
+      call collect_data_4_iso(iso_pat, iso_col, iso_out)
 !
       if (iflag_debug.eq.1) write(*,*) 'output_iso_ucds'
       call output_iso_ucds(istep_iso)

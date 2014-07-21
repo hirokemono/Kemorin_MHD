@@ -47,7 +47,6 @@
 !
         integer(kind = kint), pointer :: ihash_output_psf(:)
 !
-!
         real(kind = kreal), pointer :: send_psf(:)
         real(kind = kreal), pointer :: recv_psf(:)
         integer(kind = kint), pointer :: isend_psf(:)

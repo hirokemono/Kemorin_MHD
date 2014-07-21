@@ -25,11 +25,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_control_4_iso(i_iso, iso,                        &
-     &          num_mat, mat_name, num_nod_phys, phys_nod_name)
+      subroutine count_control_4_iso(i_iso, iso, num_mat, mat_name,     &
+     &          num_nod_phys, phys_nod_name, iso_fld)
 !
       use m_field_file_format
       use m_file_format_switch
+      use t_phys_data
 !
       use set_area_4_viz
 !
@@ -41,6 +42,7 @@
 !
       integer(kind = kint), intent(in) :: i_iso
       type(iso_ctl), intent(in) :: iso
+      type(phys_data), intent(inout) :: iso_fld
 !
 !
       if(iso%i_iso_file_head .gt. 0) then
@@ -59,15 +61,15 @@
       end if
 !
       if      (id_iso_result_type(i_iso) .eq. iflag_constant_iso) then
-        num_iso_output(i_iso) = ione
+        iso_fld%num_phys = ione
         istack_iso_output(i_iso) = istack_iso_output(i_iso-1) + ione
       else if ( id_iso_result_type(i_iso) .eq. iflag_field_iso) then
         call check_field_4_viz(num_nod_phys, phys_nod_name,             &
      &      iso%iso_out_field_ctl%num, iso%iso_out_field_ctl%c1_tbl,    &
-     &      num_iso_output(i_iso) )
+     &      iso_fld%num_phys)
       end if
       istack_iso_output(i_iso) = istack_iso_output(i_iso-1)             &
-     &                            + num_iso_output(i_iso)
+     &                          + iso_fld%num_phys
 !
       call count_area_4_viz(num_mat, mat_name,                          &
      &    iso%iso_area_ctl%num, iso%iso_area_ctl%c_tbl,                 &
@@ -80,9 +82,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_4_iso(i_iso, iso, num_mat, mat_name,       &
-     &          num_nod_phys, phys_nod_name)
+     &          num_nod_phys, phys_nod_name, iso_fld)
 !
       use set_area_4_viz
+      use t_phys_data
 !
       integer(kind = kint), intent(in) :: num_mat
       character(len=kchara), intent(in) :: mat_name(num_mat)
@@ -92,6 +95,7 @@
 !
       integer(kind = kint), intent(in) :: i_iso
       type(iso_ctl), intent(in) :: iso
+      type(phys_data), intent(inout) :: iso_fld
 !
       integer(kind = kint) :: ist, ncomp(1), ncomp_org(1)
       character(len=kchara) :: tmpchara(1)
@@ -110,15 +114,16 @@
         result_value_iso(i_iso) = iso%result_value_iso_ctl
         id_iso_output(ist) = iflag_constant_iso
         icomp_iso_output(ist) = 0
-        ncomp_iso_output(ist) = 1
-        name_iso_output(ist) = 'color'
+        iso_fld%num_component(1) = 1
+        iso_fld%phys_name(1) =     'color'
+!
       else if (id_iso_result_type(i_iso) .eq. iflag_field_iso) then
         call set_components_4_viz(num_nod_phys, phys_nod_name,          &
      &      iso%iso_out_field_ctl%num, iso%iso_out_field_ctl%c1_tbl,    &
-     &      iso%iso_out_field_ctl%c2_tbl, num_iso_output(i_iso),        &
+     &      iso%iso_out_field_ctl%c2_tbl, iso_fld%num_phys,             &
      &      id_iso_output(ist), icomp_iso_output(ist),                  &
-     &      ncomp_iso_output(ist), ncomp_iso_org(ist),                  &
-     &      name_iso_output(ist)  )
+     &      iso_fld%num_component, ncomp_iso_org(ist),                  &
+     &      iso_fld%phys_name)
       end if
 !
       ist = istack_grp_area_iso(i_iso-1) + 1

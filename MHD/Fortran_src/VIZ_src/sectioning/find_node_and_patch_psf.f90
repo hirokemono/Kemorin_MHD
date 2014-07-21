@@ -87,16 +87,13 @@
      &    iedge_4_ele, num_surf, num_surf_bc, surf_istack, surf_item)
 !
 !
-      call alloc_dat_on_patch_psf(max_ncomp_psf_out, psf_pat)
-!
       end subroutine set_node_and_patch_psf
 !
 !  ---------------------------------------------------------------------
 !
       subroutine set_node_and_patch_iso(numnod, numele, numedge,        &
      &           nnod_4_ele, nnod_4_edge, inod_global, xx,              &
-     &           ie, ie_edge, iedge_4_ele,                              &
-     &           num_phys, ntot_phys, istack_ncomp, d_nod)
+     &           ie, ie_edge, iedge_4_ele)
 !
       use m_geometry_constants
       use m_control_params_4_iso
@@ -114,10 +111,6 @@
       integer(kind = kint), intent(in)                                  &
      &                      :: iedge_4_ele(numele,nedge_4_ele)
       real(kind = kreal), intent(in) :: xx(numnod,3)
-!
-      integer(kind = kint), intent(in) :: num_phys, ntot_phys
-      integer(kind = kint), intent(in) :: istack_ncomp(0:num_phys)
-      real(kind = kreal), intent(in)  :: d_nod(numnod,ntot_phys)
 !
       integer(kind = kint) :: i_iso
 !
@@ -139,12 +132,6 @@
       call alloc_patch_data_psf(iso_pat)
 !
       call set_iso_patches(numele, numedge, iedge_4_ele)
-!
-!
-      call alloc_dat_on_patch_psf(max_ncomp_iso_out, iso_pat)
-!
-      call set_field_4_iso(numnod, numedge, nnod_4_edge, ie_edge,       &
-     &     num_phys, ntot_phys, istack_ncomp, d_nod)
 !
       end subroutine set_node_and_patch_iso
 !
