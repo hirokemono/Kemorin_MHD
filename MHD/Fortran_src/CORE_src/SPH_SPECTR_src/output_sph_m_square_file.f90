@@ -307,7 +307,7 @@
 !
 !
       nri = nidx_rj(1)
-      if(iflag_shell_mode .eq. iflag_MESH_same) nri = nri + 1
+      if(iflag_rj_center .gt. 0) nri = nri + 1
 !
       write(id_file,'(a)')    'radial_layers, truncation'
       write(id_file,'(3i10)') nri, l_truncation
