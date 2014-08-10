@@ -145,6 +145,7 @@ m_pickup_sph_rms_data.o \
 tave_picked_sph_rms_data.o
 
 MOD_T_AVE_NUSSELT = \
+m_sph_ene_spectra.o \
 t_average_nusselt.o
 
 #

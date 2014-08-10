@@ -29,8 +29,8 @@
 !!      subroutine finish_calypso_send_recv(npe_send, isend_self)
 !!
 !!      subroutine check_calypso_send_recv_N                            &
-!!     &         (NB, npe_send, isend_self, id_pe_send, istack_send,    &
-!!     &              npe_recv, irecv_self, id_pe_recv, istack_recv)
+!!     &         (NB, npe_send, isend_self, istack_send,                &
+!!     &              npe_recv, irecv_self, istack_recv)
 !!@endverbatim
 !!
 !!@n @param  NB    Number of components for communication
@@ -260,8 +260,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine check_calypso_send_recv_N                              &
-     &         (NB, npe_send, isend_self, id_pe_send, istack_send,      &
-     &              npe_recv, irecv_self, id_pe_recv, istack_recv)
+     &         (NB, npe_send, isend_self, istack_send,                  &
+     &              npe_recv, irecv_self, istack_recv)
 !
       use m_solver_SR
       use calypso_SR_core
@@ -269,11 +269,9 @@
       integer(kind = kint), intent(in) :: NB
 !
       integer(kind = kint), intent(in) :: npe_send, isend_self
-      integer(kind = kint), intent(in) :: id_pe_send(npe_send)
       integer(kind = kint), intent(in) :: istack_send(0:npe_send)
 !
       integer(kind = kint), intent(in) :: npe_recv, irecv_self
-      integer(kind = kint), intent(in) :: id_pe_recv(npe_recv)
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
 !
 !
@@ -281,8 +279,8 @@
      &    istack_send(npe_send), istack_recv(npe_recv))
 !
       call calypso_send_recv_check                                      &
-     &         (NB, npe_send, isend_self, id_pe_send, istack_send,      &
-     &              npe_recv, irecv_self, id_pe_recv, istack_recv)
+     &         (NB, npe_send, isend_self, istack_send,                  &
+     &              npe_recv, irecv_self, istack_recv)
 !
       end subroutine check_calypso_send_recv_N
 !

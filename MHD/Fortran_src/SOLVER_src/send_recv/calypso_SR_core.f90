@@ -18,8 +18,8 @@
 !!      subroutine calypso_send_recv_fin(npe_send, isend_self)
 !!
 !!      subroutine calypso_send_recv_check                              &
-!!     &         (NB, npe_send, isend_self, id_pe_send, istack_send,    &
-!!     &              npe_recv, irecv_self, id_pe_recv, istack_recv)
+!!     &         (NB, npe_send, isend_self, istack_send,                &
+!!     &              npe_recv, irecv_self, istack_recv)
 !!@endverbatim
 !!
 !!@n @param  NB    Number of components for communication
@@ -41,9 +41,6 @@
 !!                    End points of receive buffer for each process
 !!@n @param  irev_import(nnod_new)
 !!                    import buffer ID for each data point
-!!@n
-!!@n @param  X_org(NB*nnod_org)   Send data
-!!@n @param  X_new(NB*nnod_new)   Received data
 !
       module calypso_SR_core
 !
@@ -192,8 +189,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine calypso_send_recv_check                                &
-     &         (NB, npe_send, isend_self, id_pe_send, istack_send,      &
-     &              npe_recv, irecv_self, id_pe_recv, istack_recv)
+     &         (NB, npe_send, isend_self, istack_send,                  &
+     &              npe_recv, irecv_self, istack_recv)
 !
       use calypso_mpi
       use m_solver_SR
@@ -201,11 +198,9 @@
       integer(kind = kint), intent(in) :: NB
 !
       integer(kind = kint), intent(in) :: npe_send, isend_self
-      integer(kind = kint), intent(in) :: id_pe_send(npe_send)
       integer(kind = kint), intent(in) :: istack_send(0:npe_send)
 !
       integer(kind = kint), intent(in) :: npe_recv, irecv_self
-      integer(kind = kint), intent(in) :: id_pe_recv(npe_recv)
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
 !
       integer (kind = kint) :: neib, ist, num

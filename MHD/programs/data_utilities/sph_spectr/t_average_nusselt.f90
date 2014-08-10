@@ -9,6 +9,7 @@
       use m_constants
 !
       use m_no_heat_Nusselt_num
+      use m_sph_ene_spectra
 !
       implicit  none
 !
@@ -53,6 +54,7 @@
 !
           if(icou .eq. 0) then
             true_start = time
+            pre_time = time_sph
           else
             ave_Nu(1) = ave_Nu(1)                                       &
      &             + half*(Nu_ICB + prev_Nu(1)) * (time - prev_time)
@@ -91,6 +93,7 @@
 !
           if(icou .eq. 0) then
             true_start = time
+            pre_time = time_sph
           else
             sdev_Nu(1) = sdev_Nu(1)                                     &
      &             + half*( (Nu_ICB - ave_Nu(1))**2 + prev_Nu(1))       &

@@ -70,11 +70,6 @@
 !
       implicit none
 !
-!>      Integer flag to use import table
-      integer(kind = kint), parameter :: iflag_import_item = 0
-!>      Integer flag to use reversed import table for data points
-      integer(kind = kint), parameter :: iflag_import_rev =  1
-!
 !-----------------------------------------------------------------------
 !
       contains

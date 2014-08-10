@@ -92,23 +92,16 @@
 !
       real (kind=kreal), intent(inout):: X_new(NB*nnod_new)
 !
-      real (kind=kreal) :: elaps3(3)
-!
-      real(kind = kreal) :: s1time, s2time
-      integer (kind = kint) :: neib, ist, num
-!
 !
 !C-- SEND
-      s1time = MPI_WTIME()
       call set_to_send_buf_N_mod(NB, nnod_org, npe_send,                &
      &    istack_send(npe_send), istack_send, inod_export, X_org, WS)
-      elaps3(1) = elaps3(1) + MPI_WTIME() - s1time
 !C
       call calypso_send_recv_core                                       &
      &         (NB, npe_send, isend_self, id_pe_send, istack_send,      &
      &              npe_recv, irecv_self, id_pe_recv, istack_recv)
 !
-      call set_from_recv_buf_N(NB, nnod_new, npe_recv,                  &
+      call set_from_recv_buf_N_mod(NB, nnod_new, npe_recv,              &
      &    istack_recv(npe_recv), istack_recv, inod_import, WR, X_new)
 !
       end subroutine calypso_send_recv_N
@@ -158,7 +151,6 @@
       real (kind=kreal) :: elaps3(3)
 !
       real(kind = kreal) :: s1time, s2time
-      integer (kind = kint) :: neib, ist, num
 !
 !
 !C-- SEND

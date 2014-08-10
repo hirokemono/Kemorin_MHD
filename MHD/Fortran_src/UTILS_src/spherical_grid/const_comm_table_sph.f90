@@ -3,11 +3,11 @@
 !
 !     Written by H. Matsui on July, 2007
 !
-!      subroutine const_comm_table_4_rlm(ip_rank, nnod_rlm)
-!      subroutine const_comm_table_4_rtm(ip_rank, nnod_rtm)
-!
-!      subroutine const_comm_table_4_rj(ip_rank, nnod_rj)
-!      subroutine const_comm_table_4_rtp(ip_rank, nnod_rtp)
+!!      subroutine const_comm_table_4_rlm(ip_rank, nnod_rlm)
+!!      subroutine const_comm_table_4_rtm(ip_rank, nnod_rtm)
+!!
+!!      subroutine const_comm_table_4_rj(ip_rank, nnod_rj)
+!!      subroutine const_comm_table_4_rtp(ip_rank, nnod_rtp)
 !
       module const_comm_table_sph
 !
@@ -33,19 +33,19 @@
 !
       call allocate_ncomm
 !
-      call count_comm_table_4_rlm(ip_rank)
+      call count_comm_table_4_rlm
 !
       call count_num_domain_rtm_rlm(nneib_domain_rlm)
 !
       call allocate_sph_comm_stack_rlm
 !
-      call set_comm_stack_rtm_rlm(ip_rank, nneib_domain_rlm,            &
-     &    id_domain_rlm, istack_sr_rlm, ntot_item_sr_rlm)
+      call set_comm_stack_rtm_rlm(nneib_domain_rlm, id_domain_rlm,      &
+     &    istack_sr_rlm, ntot_item_sr_rlm)
 !
       call deallocate_ncomm
       call allocate_sph_comm_item_rlm(nnod_rlm)
 !
-      call set_comm_table_4_rlm(ip_rank)
+      call set_comm_table_4_rlm
 !
 !      call allocate_idx_gl_rlm_out
 !      call set_global_id_4_comm_rlm
@@ -74,8 +74,8 @@
       call allocate_sph_comm_stack_rtm
 !
 !      write(*,*) 'set_comm_stack_rtm_rlm'
-      call set_comm_stack_rtm_rlm(ip_rank, nneib_domain_rtm,            &
-     &    id_domain_rtm, istack_sr_rtm, ntot_item_sr_rtm)
+      call set_comm_stack_rtm_rlm(nneib_domain_rtm, id_domain_rtm,      &
+     &    istack_sr_rtm, ntot_item_sr_rtm)
 !
       call deallocate_ncomm
       call allocate_sph_comm_item_rtm(nnod_rtm)

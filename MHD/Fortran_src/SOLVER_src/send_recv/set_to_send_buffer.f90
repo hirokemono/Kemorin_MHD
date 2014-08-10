@@ -21,6 +21,9 @@
 !!     &          npe_send, nnod_send, istack_send, inod_export,        &
 !!     &          X_org, WS)
 !!
+!!      subroutine set_to_all2all_buf_N(NB, nnod_org, nitem_SR,         &
+!!     &          npe_send, istack_send, inod_export, X_org, WS)
+!
 !!      subroutine set_to_send_buf_int(nnod_org,                        &
 !!     &          nnod_send, inod_export, iX_org, iWS)
 !!@endverbatim
@@ -212,7 +215,7 @@
           do k = 1, num
             jj = nd + (inod_export(k+ist) - 1) * NB
             kk = k + (nd-1)*num + NB*ist
-            WS(kk         ) = X_org(jj)
+            WS(kk) = X_org(jj)
           end do
 !$omp end do nowait
         end do
@@ -220,6 +223,46 @@
 !$omp end parallel
 !
       end subroutine set_to_send_buf_N_mod
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_to_all2all_buf_N(NB, nnod_org, nitem_SR,           &
+     &          npe_send, istack_send, inod_export, X_org, WS)
+!
+      integer(kind = kint), intent(in) :: NB
+      integer(kind = kint), intent(in) :: nnod_org
+      integer(kind = kint), intent(in) :: npe_send, nitem_SR
+!
+      integer(kind = kint), intent(in) :: istack_send(0:npe_send)
+      integer(kind = kint), intent(in)                                  &
+     &      :: inod_export(istack_send(npe_send))
+!
+      real (kind=kreal), intent(in)::    X_org(NB*nnod_org)
+!
+      real (kind=kreal), intent(inout):: WS(NB*npe_send*nitem_SR)
+!
+!
+      integer (kind = kint) :: neib, ist, num
+      integer (kind = kint) :: k, nd, jj, kk
+!
+!
+!$omp parallel private(nd,neib,ist,num)
+      do neib = 1, npe_send
+        ist = istack_send(neib-1)
+        num = istack_send(neib  ) - istack_send(neib-1)
+        do nd = 1, NB
+!$omp do private(k,jj,kk)
+          do k = 1, num
+            jj = nd + (inod_export(k+ist) - 1) * NB
+            kk = k + (nd-1)*num + NB*(neib-1)*nitem_SR
+            WS(kk) = X_org(jj)
+          end do
+!$omp end do nowait
+        end do
+      end do
+!$omp end parallel
+!
+      end subroutine set_to_all2all_buf_N
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------

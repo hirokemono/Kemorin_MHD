@@ -54,6 +54,10 @@
 !!   Legendre_trans_loop_ctl: Legendre_transform loop type
 !!                   ('inner_radial_loop' 'outer_radial_loop' 'long_loop')
 !!   FFT_library_ctl:  Selection of FFT librarry  ('FFTW3' or 'FFTPACK')
+!!   import_table_mode_ctl:   Selection of import mode
+!!                     ('regular_table' or 'reversed_table')
+!!   send_recv_routine_ctl:    Selection of send_recv_routines
+!!                     ('SEND_RECV', 'AllToAllv', or 'AllToAll')
 !!
 !! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -117,6 +121,8 @@
 ! 
       character(len = kchara) :: Legendre_trans_loop_ctl
       character(len = kchara) :: FFT_library_ctl
+      character(len = kchara) :: import_mode_ctl
+      character(len = kchara) :: SR_routine_ctl
 !
 !     label for entry
 !
@@ -176,6 +182,10 @@
      &      :: hd_sph_transform_mode =  'Legendre_trans_loop_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_FFT_package =  'FFT_library_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_import_mode =  'import_table_mode_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_SR_routine =   'send_recv_routine_ctl'
 !
       integer (kind=kint) :: i_iflag_supg =         0
       integer (kind=kint) :: i_iflag_v_supg =       0
@@ -198,6 +208,8 @@
       integer (kind=kint) :: i_precond_4_crank =    0
       integer (kind=kint) :: i_sph_transform_mode = 0
       integer (kind=kint) :: i_FFT_package =        0
+      integer (kind=kint) :: i_import_mode =        0
+      integer (kind=kint) :: i_SR_routine =         0
 !
       private :: hd_restart_file, hd_rst_flag, i_restart_file
       private :: hd_time_loop, i_time_loop
@@ -209,6 +221,7 @@
       private :: hd_coef_imp_b, hd_coef_imp_c, hd_eps_crank
       private :: hd_method_4_velo, hd_precond_4_crank
       private :: hd_sph_transform_mode
+      private :: hd_FFT_package, hd_import_mode, hd_SR_routine
 !
 !   --------------------------------------------------------------------
 !
@@ -265,6 +278,10 @@
      &          i_sph_transform_mode, Legendre_trans_loop_ctl)
         call read_character_ctl_item(hd_FFT_package,                    &
      &          i_FFT_package, FFT_library_ctl)
+        call read_character_ctl_item(hd_import_mode,                    &
+     &          i_import_mode, import_mode_ctl)
+        call read_character_ctl_item(hd_SR_routine,                     &
+     &          i_SR_routine, SR_routine_ctl)
 !
         call read_real_ctl_item(hd_eps_4_velo, i_eps_4_velo,            &
      &        eps_4_velo_ctl)

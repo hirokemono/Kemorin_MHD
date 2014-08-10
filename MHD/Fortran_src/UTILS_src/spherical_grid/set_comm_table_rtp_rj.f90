@@ -1,18 +1,24 @@
+!>@file   set_comm_table_rtp_rj.f90
+!!@brief  module set_comm_table_rtp_rj
+!!
+!!@author  H. Matsui
+!!@date Programmed on July, 2007
 !
-!      module set_comm_table_rtp_rj
 !
-!     Written by H. Matsui on July, 2007
-!
-!      subroutine allocate_domain_sr_tmp
-!      subroutine deallocate_domain_sr_tmp
-!
-!      subroutine count_comm_table_4_rj(ip_rank)
-!      subroutine set_comm_table_4_rj(ip_rank, icou)
-!      subroutine count_comm_table_4_rtp(ip_rank)
-!      subroutine set_comm_table_4_rtp(ip_rank, icou)
-!
-!      subroutine set_comm_stack_rtp_rj(nneib_domain, id_domain,        &
-!     &          istack_sr, ntot_item_sr)
+!> @brief Construct communication table for rj and rtp grid
+!!
+!!@verbatim
+!!      subroutine allocate_domain_sr_tmp
+!!      subroutine deallocate_domain_sr_tmp
+!!
+!!      subroutine count_comm_table_4_rj(ip_rank)
+!!      subroutine set_comm_table_4_rj(ip_rank, icou)
+!!      subroutine count_comm_table_4_rtp(ip_rank)
+!!      subroutine set_comm_table_4_rtp(ip_rank, icou)
+!!
+!!      subroutine set_comm_stack_rtp_rj(nneib_domain, id_domain,       &
+!!     &          istack_sr, ntot_item_sr)
+!!@endverbatim
 !
       module set_comm_table_rtp_rj
 !
@@ -60,17 +66,16 @@
 !
       integer(kind = kint), intent(in) :: ip_rank
 !
-      integer(kind = kint) :: ip1, jp, id_org_rank, ip_org
+      integer(kind = kint) :: ip1, jp, id_org_rank
       integer(kind = kint) :: iflag_jp
 !
 !
       do ip1 = 1, ndomain_sph
-        id_org_rank = mod((ip_rank+ip1),ndomain_sph)
-        ip_org = id_org_rank + 1
+        id_org_rank = ip1 - 1
 !
         iflag_jp = 0
-        do jp = 1, sph_para(ip_org)%sph_comms%comm_rlm%nneib_domain
-          if(sph_para(ip_org)%sph_comms%comm_rlm%id_domain(jp)          &
+        do jp = 1, sph_para(ip1)%sph_comms%comm_rlm%nneib_domain
+          if(sph_para(ip1)%sph_comms%comm_rlm%id_domain(jp)             &
      &       .eq. ip_rank) then
             iflag_jp = jp
             exit
@@ -81,8 +86,8 @@
         nneib_domain_rj = nneib_domain_rj + 1
         id_domain_tmp(nneib_domain_rj) = id_org_rank
         nnod_sr_tmp(nneib_domain_rj)                                    &
-     &     =  sph_para(ip_org)%sph_comms%comm_rlm%istack_sr(iflag_jp)   &
-     &      - sph_para(ip_org)%sph_comms%comm_rlm%istack_sr(iflag_jp-1)
+     &     =  sph_para(ip1)%sph_comms%comm_rlm%istack_sr(iflag_jp)      &
+     &      - sph_para(ip1)%sph_comms%comm_rlm%istack_sr(iflag_jp-1)
       end do
 !
       end subroutine count_comm_table_4_rj
@@ -101,7 +106,7 @@
       integer(kind = kint), intent(inout) :: icou
 !
       integer(kind = kint) :: jst, jed, j, jnod, k_tmp, j_tmp
-      integer(kind = kint) :: k_glb, j_glb, ip_org
+      integer(kind = kint) :: k_glb, j_glb
       integer(kind = kint) :: ip1, jp, id_org_rank
       integer(kind = kint) :: iflag_jp
 !
@@ -109,12 +114,11 @@
       call set_local_idx_table_rj
 !
       do ip1 = 1, ndomain_sph
-        id_org_rank = mod((ip_rank+ip1),ndomain_sph)
-        ip_org = id_org_rank + 1
+        id_org_rank = ip1 - 1
 !
         iflag_jp = 0
-        do jp = 1, sph_para(ip_org)%sph_comms%comm_rlm%nneib_domain
-          if(sph_para(ip_org)%sph_comms%comm_rlm%id_domain(jp)          &
+        do jp = 1, sph_para(ip1)%sph_comms%comm_rlm%nneib_domain
+          if(sph_para(ip1)%sph_comms%comm_rlm%id_domain(jp)             &
      &         .eq. ip_rank) then
             iflag_jp = jp
             exit
@@ -125,8 +129,8 @@
         if(iflag_memory_conserve_sph .gt. 0) then
           call input_modes_rlm_sph_trans(id_org_rank)
         else
-!          write(*,*) 'copy_sph_rlm_grid_from_mem', ip_org
-          call copy_sph_rlm_grid_from_mem(ip_org)
+!          write(*,*) 'copy_sph_rlm_grid_from_mem', ip1
+          call copy_sph_rlm_grid_from_mem(ip1)
         end if
 !
         jst = istack_sr_rlm(iflag_jp-1)+1
@@ -159,17 +163,16 @@
 !
       integer(kind = kint), intent(in) :: ip_rank
 !
-      integer(kind = kint) :: ip1, jp, id_org_rank, ip_org
+      integer(kind = kint) :: ip1, jp, id_org_rank
       integer(kind = kint) :: iflag_jp
 !
 !
       do ip1 = 1, ndomain_sph
-        id_org_rank = mod((ip_rank+ip1),ndomain_sph)
-        ip_org = id_org_rank + 1
+        id_org_rank = ip1 - 1
 !
         iflag_jp = 0
-        do jp = 1, sph_para(ip_org)%sph_comms%comm_rtm%nneib_domain
-          if(sph_para(ip_org)%sph_comms%comm_rtm%id_domain(jp)          &
+        do jp = 1, sph_para(ip1)%sph_comms%comm_rtm%nneib_domain
+          if(sph_para(ip1)%sph_comms%comm_rtm%id_domain(jp)             &
      &        .eq. ip_rank) then
             iflag_jp = jp
             exit
@@ -180,8 +183,8 @@
         nneib_domain_rtp = nneib_domain_rtp + 1
         id_domain_tmp(nneib_domain_rtp) = id_org_rank
         nnod_sr_tmp(nneib_domain_rtp)                                   &
-     &     =  sph_para(ip_org)%sph_comms%comm_rtm%istack_sr(iflag_jp)   &
-     &      - sph_para(ip_org)%sph_comms%comm_rtm%istack_sr(iflag_jp-1)
+     &     =  sph_para(ip1)%sph_comms%comm_rtm%istack_sr(iflag_jp)      &
+     &      - sph_para(ip1)%sph_comms%comm_rtm%istack_sr(iflag_jp-1)
       end do
 !
       end subroutine count_comm_table_4_rtp
@@ -201,18 +204,17 @@
 !
       integer(kind = kint) :: jst, jed, j, jnod
       integer(kind = kint) :: k_tmp, l_tmp, m_tmp, k_glb, l_glb, m_glb
-      integer(kind = kint) :: ip1, jp, id_org_rank, ip_org, iflag_jp
+      integer(kind = kint) :: ip1, jp, id_org_rank, iflag_jp
 !
 !
       call set_local_idx_table_rtp
 !
       do ip1 = 1, ndomain_sph
-        id_org_rank = mod((ip_rank+ip1),ndomain_sph)
-        ip_org = id_org_rank + 1
+        id_org_rank = ip1 - 1
 !
         iflag_jp = 0
-        do jp = 1, sph_para(ip_org)%sph_comms%comm_rtm%nneib_domain
-          if(sph_para(ip_org)%sph_comms%comm_rtm%id_domain(jp)          &
+        do jp = 1, sph_para(ip1)%sph_comms%comm_rtm%nneib_domain
+          if(sph_para(ip1)%sph_comms%comm_rtm%id_domain(jp)             &
      &        .eq. ip_rank) then
             iflag_jp = jp
             exit
@@ -223,7 +225,7 @@
         if(iflag_memory_conserve_sph .gt. 0) then
           call input_geom_rtm_sph_trans(id_org_rank)
         else
-          call copy_sph_rtm_grid_from_mem(ip_org)
+          call copy_sph_rtm_grid_from_mem(ip1)
         end if
 !
         jst = istack_sr_rtm(iflag_jp-1)+1

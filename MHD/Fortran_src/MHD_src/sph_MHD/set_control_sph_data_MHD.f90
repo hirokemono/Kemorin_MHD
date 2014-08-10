@@ -43,6 +43,7 @@
 !
       use m_field_data_IO
       use m_sph_boundary_input_data
+      use m_sel_spherical_SRs
 !
       use skip_comment_f
       use set_control_sph_data
@@ -94,6 +95,12 @@
 !
       if(i_FFT_package .gt. 0) then
         call set_fft_library_ctl(FFT_library_ctl)
+      end if
+      if(i_import_mode .gt. 0) then
+        call set_import_table_ctl(import_mode_ctl)
+      end if
+      if(i_SR_routine .gt. 0) then
+        call set_sph_comm_routine_ctl(SR_routine_ctl)
       end if
 !
       if (iflag_4_coriolis .gt. id_turn_OFF) then

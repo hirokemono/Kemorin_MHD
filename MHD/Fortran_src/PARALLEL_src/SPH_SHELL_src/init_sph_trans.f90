@@ -54,12 +54,14 @@
       use m_machine_parameter
       use m_spheric_parameter
       use m_spheric_param_smp
+      use m_sph_trans_comm_table
       use m_schmidt_poly_on_rtm
+      use m_sph_communicators
       use m_work_4_sph_trans
       use m_work_pole_sph_trans
       use schmidt_poly_on_rtm_grid
       use FFT_selector
-      use spherical_SRs_N
+      use init_spherical_SRs
       use select_fourier_transform
 !
       integer(kind = kint) :: ncomp
@@ -88,7 +90,10 @@
       Nstacksmp(0:np_smp) = ncomp_sph_trans*irt_rtp_smp_stack(0:np_smp)
       call sel_fourier_transform_4_sph(ncomp, Nstacksmp)
 !
+!
       ncomp = ncomp_sph_trans
+      call split_rtp_comms(nneib_domain_rtp, id_domain_rtp,             &
+     &          nneib_domain_rj) 
       call init_sph_send_recv_N(ncomp, vr_rtp, vr_rtm, sp_rlm, sp_rj)
 !
       end subroutine initialize_sph_trans
