@@ -32,7 +32,7 @@
 !
       type psf_parameters
         integer(kind = kint) :: nele_grp_area
-        integer(kind = kint), allocatable :: id_ele_grp_area(:)
+        integer(kind = kint), pointer :: id_ele_grp_area(:)
 !
         integer(kind = kint), pointer :: id_output(:)
         integer(kind = kint), pointer :: icomp_output(:)

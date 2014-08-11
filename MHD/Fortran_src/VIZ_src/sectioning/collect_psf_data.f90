@@ -116,7 +116,7 @@
 !
       integer(kind = kint), intent(in) :: num_psf
       type(psf_patch_data), intent(in) ::   patch
-      type(psf_collect_type), intent(in) :: collect
+      type(psf_collect_type), intent(inout) :: collect
       type(ucd_data), intent(inout) :: psf_ucd(num_psf)
 !
 !
@@ -156,7 +156,7 @@
 !
       integer(kind = kint), intent(in) :: num_psf
       type(psf_patch_data), intent(in) ::   patch
-      type(psf_collect_type), intent(in) :: collect
+      type(psf_collect_type), intent(inout) :: collect
       type(ucd_data), intent(inout) :: psf_ucd(num_psf)
 !
 !
