@@ -153,6 +153,8 @@
       integer(kind = kint), intent(in) :: i_step
       integer(kind = kint), intent(inout) :: iflag_finish
 !
+      real(kind = kreal) :: total_max
+!
 !*  ----------  add time evolution -----------------
 !*
 !
@@ -193,8 +195,10 @@
       call output_sph_restart_control
 !
       total_time = MPI_WTIME() - total_start
+      call MPI_allREDUCE (total_time, total_max, ione, CALYPSO_REAL,    &
+     &    MPI_MAX, CALYPSO_COMM, ierr_MPI)
       if      (istep_rst_end .eq. -1                                    &
-     &   .and. total_time.gt.elapsed_time) then
+     &   .and. total_max.gt.elapsed_time) then
         call output_sph_rst_by_elaps
         iflag_finish = 1
       end if

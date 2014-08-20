@@ -161,6 +161,8 @@
 !
       integer(kind=kint ), intent(inout) :: retval
 !
+      real(kind = kreal) :: total_max
+!
 !
 !     ---- step to next time!! --- 
 !
@@ -266,12 +268,14 @@
 !     ----
 !
       total_time = MPI_WTIME() - total_start
+      call MPI_allREDUCE (total_time, total_max, ione, CALYPSO_REAL,    &
+     &    MPI_MAX, CALYPSO_COMM, ierr_MPI)
       if(iflag_debug.gt.0) write(*,*) 'total_time',                     &
      &                       total_time, elapsed_time
 !
       if     (iflag_flexible_step .eq. iflag_flex_step) then
         if      (istep_rst_end.eq.-1                                    &
-     &       .and. total_time.gt.elapsed_time) then
+     &       .and. total_max.gt.elapsed_time) then
           call start_eleps_time(4)
           call elspased_MHD_restart_ctl
           call end_eleps_time(4)
@@ -285,7 +289,7 @@
      &      istep_pvr, istep_fline, visval)
       else
         if      (i_step_number.eq.-1                                    &
-     &       .and. total_time.gt.elapsed_time) then
+     &       .and. total_max.gt.elapsed_time) then
           call start_eleps_time(4)
           call elspased_MHD_restart_ctl
           call end_eleps_time(4)
