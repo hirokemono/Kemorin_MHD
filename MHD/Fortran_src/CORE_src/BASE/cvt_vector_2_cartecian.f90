@@ -1,34 +1,39 @@
-!cvt_vector_2_cartecian.f90
-!      module cvt_vector_2_cartecian
+!>@file   cvt_vector_2_cartecian.f90
+!!@brief  module cvt_vector_2_cartecian
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2005
 !
-!      Written by H. Matsui on June, 2005
-!      Modified by H. Matsui on Oct., 2007
-!
-!*********************************************************************
-!*
-!*   convert vector from spherical coordinate to certecian coordinate
-!*      vx =  vr*sin(th)*cos(phi) + vt*cos(th)*cos(phi) - vp*sin(phi)
-!*      vy =  vr*sin(th)*sin(phi) + vt*cos(th)*sin(phi) + vp*cos(phi)
-!*      vz =  vr*cos(th) - vt*sin(th)
-!*
-!*********************************************************************
-!
-!      subroutine cvt_vector_2_cart(numnod, vect, v_sph, theta, phi)
-!      subroutine cal_x_component(numnod, v_x, v_sph, theta, phi)
-!      subroutine cal_y_component(numnod, v_y, v_sph, theta, phi)
-!      subroutine cal_z_component(numnod, v_z, v_sph, theta)
-!         numnod :: number of node
-!         theta :: colatitude ( 0 to phi)
-!         phi :: longitude ( 0 to 2\pi)
-!         v_sph :: vector on spherical coordinate
-!         vect :: obtained vector in certecian coorcinate
-!         v_x :: obtained x component
-!         v_y :: obtained y component
-!         v_z :: obtained z component
-!
-!      subroutine cvt_one_vector_2_cart(vect, v_sph, theta, phi)
-!
-!*********************************************************************
+!>@brief Convert vector from spherical coordinate
+!!       to Cartesian coordinate
+!!
+!!@verbatim
+!!*********************************************************************
+!!*
+!!*   convert vector from spherical coordinate to certecian coordinate
+!!*      vx =  vr*sin(th)*cos(phi) + vt*cos(th)*cos(phi) - vp*sin(phi)
+!!*      vy =  vr*sin(th)*sin(phi) + vt*cos(th)*sin(phi) + vp*cos(phi)
+!!*      vz =  vr*cos(th) - vt*sin(th)
+!!*
+!!*********************************************************************
+!!
+!!      subroutine cvt_vector_2_cart(numnod, vect, v_sph, theta, phi)
+!!      subroutine cal_x_component(numnod, v_x, v_sph, theta, phi)
+!!      subroutine cal_y_component(numnod, v_y, v_sph, theta, phi)
+!!      subroutine cal_z_component(numnod, v_z, v_sph, theta)
+!!         numnod :: number of node
+!!         theta :: colatitude ( 0 to phi)
+!!         phi :: longitude ( 0 to 2\pi)
+!!         v_sph :: vector on spherical coordinate
+!!         vect :: obtained vector in certecian coorcinate
+!!         v_x :: obtained x component
+!!         v_y :: obtained y component
+!!         v_z :: obtained z component
+!!
+!!      subroutine cvt_one_vector_2_cart(vect, v_sph, theta, phi)
+!!
+!!*********************************************************************
+!!@endverbatim
 !
       module cvt_vector_2_cartecian
 !

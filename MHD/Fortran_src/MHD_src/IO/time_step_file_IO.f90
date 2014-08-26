@@ -1,12 +1,16 @@
+!>@file  time_step_file_IO.f90
+!!       module time_step_file_IO
+!!
+!!@author H. Matsui and H.Okuda
+!!@date   Programmed in July 2000 (ver 1.1)
+!!@n      Modified in Aug., 2007
 !
-!      module time_step_file_IO
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!      Modified by H. Matsui on Aug, 2007
-!
-!      subroutine output_monitor_file(my_rank)
-!      subroutine skip_time_step_data(my_rank)
+!> @brief Labels of fields
+!!
+!!@verbatim
+!!      subroutine output_monitor_file(my_rank)
+!!      subroutine skip_time_step_data(my_rank)
+!!@endverbatim
 !
       module time_step_file_IO
 !
@@ -14,11 +18,15 @@
 !
       implicit none
 !
+!>        File ID for average data
       integer(kind=kint), parameter :: time_step_data_code = 41
+!>        File ID for mean square data
       integer(kind=kint), parameter :: rms_data_code =       43
 ! 
+!>        File name for average data
       character(len=kchara), parameter                                  &
      &       :: volume_ave_file_name =     'time_step_data.dat'
+!>        File name for mean square data
       character(len=kchara), parameter                                  &
      &       :: volume_rms_file_name =     'time_rms_data.dat'
 !
@@ -98,6 +106,7 @@
       use write_field_labels
 !
       integer (kind=kint), intent(in) :: my_rank
+      character(len=kchara) :: vector_label(3)
       integer (kind=kint) :: i
 !
 !
@@ -114,278 +123,272 @@
 !
 !   If data files does not exist, create new data file
 !
-   98   continue
-        close(time_step_data_code)
-   99   continue
+   98 continue
+      close(time_step_data_code)
+   99 continue
 !
-        open (time_step_data_code,file = volume_ave_file_name,          &
+      open (time_step_data_code,file = volume_ave_file_name,            &
      &      status='replace')
-        open (rms_data_code,file = volume_rms_file_name,                &
+      open (rms_data_code,file = volume_rms_file_name,                  &
      &      status='replace')
 !
 !
-        call write_one_label(rms_data_code,       fhd_t_step)
-        call write_one_label(time_step_data_code, fhd_t_step)
-        call write_one_label(rms_data_code,       fhd_time)
-        call write_one_label(time_step_data_code, fhd_time)
+      call write_one_label(rms_data_code,       fhd_t_step)
+      call write_one_label(time_step_data_code, fhd_t_step)
+      call write_one_label(rms_data_code,       fhd_time)
+      call write_one_label(time_step_data_code, fhd_time)
 !
-        do i = 1, num_nod_phys
-          if (iflag_nod_fld_monitor(i) .eq. 1) then
-            if ( phys_nod_name(i) .eq. fhd_velo ) then
-              call write_two_labels(rms_data_code,                      &
-     &            e_hd_k_ene, e_hd_div_v)
-              call write_seven_labels(time_step_data_code,              &
-     &            e_hd_vvec(1), e_hd_vvec(2), e_hd_vvec(3), e_hd_div_v, &
-     &            e_hd_lvec(1), e_hd_lvec(2), e_hd_lvec(3) )
+      do i = 1, num_nod_phys
+        if (iflag_nod_fld_monitor(i) .eq. 1) then
+          if ( phys_nod_name(i) .eq. fhd_velo ) then
+            call write_one_label(rms_data_code, e_hd_k_ene)
+            call write_one_label(rms_data_code, e_hd_div_v)
 !
-            else if ( phys_nod_name(i) .eq. fhd_magne) then
-              call write_three_labels(rms_data_code,                    &
+            call set_vector_label(fhd_velo, vector_label)
+            call write_vector_label(time_step_data_code, vector_label)
+            call write_one_label(time_step_data_code, e_hd_div_v)
+            call write_vector_label(time_step_data_code, e_hd_lvec)
+!
+          else if ( phys_nod_name(i) .eq. fhd_magne) then
+            call write_three_labels(rms_data_code,                      &
      &            e_hd_m_ene, e_hd_m_ene_cd, e_hd_div_b)
-              call write_seven_labels(time_step_data_code,              &
-     &            e_hd_bvec(1),    e_hd_bvec(2),    e_hd_bvec(3),       &
-     &            e_hd_bvec_cd(1), e_hd_bvec_cd(2), e_hd_bvec_cd(3),    &
-     &            e_hd_div_b )
 !
-            else if ( phys_nod_name(i) .eq. fhd_vecp) then
-              call write_one_label(rms_data_code,       e_hd_div_a)
-              call write_one_label(time_step_data_code, e_hd_div_a)
+            call set_vector_label(fhd_magne, vector_label)
+            call write_vector_label(time_step_data_code, vector_label)
+            call write_vector_label(time_step_data_code, e_hd_bvec_cd)
+            call write_one_label(time_step_data_code, e_hd_div_b)
 !
-            else if ( phys_nod_name(i) .eq. fhd_vort) then
-              call write_two_labels(rms_data_code,                      &
-     &            e_hd_sq_w, e_hd_rms_w)
-              call write_vector_label(time_step_data_code, e_hd_wvec)
+          else if ( phys_nod_name(i) .eq. fhd_vecp) then
+            call write_one_label(rms_data_code,       e_hd_div_a)
+            call write_one_label(time_step_data_code, e_hd_div_a)
 !
-            else if ( phys_nod_name(i) .eq. fhd_current) then
-              call write_four_labels(rms_data_code,                     &
-     &            e_hd_sq_j, e_hd_sq_j_cd, e_hd_rms_j, e_hd_rms_j_cd)
-              call write_six_labels(time_step_data_code,                &
-     &            e_hd_jvec(1),    e_hd_jvec(2),    e_hd_jvec(3),       &
-     &            e_hd_jvec_cd(1), e_hd_jvec_cd(2), e_hd_jvec_cd(3) )
+          else if ( phys_nod_name(i) .eq. fhd_vort) then
+            call vector_label_4_step(phys_nod_name(i), fhd_vort)
+            call write_one_label(rms_data_code, e_hd_rms_w)
 !
-            else if ( phys_nod_name(i) .eq. fhd_filter_v ) then
-              call write_two_labels(rms_data_code,                      &
-     &            e_hd_fil_k_ene, e_hd_fil_div_v)
-              call write_seven_labels(time_step_data_code,              &
-     &            e_hd_fil_vvec(1), e_hd_fil_vvec(2), e_hd_fil_vvec(3), &
-     &            e_hd_fil_div_v, e_hd_fil_lvec(1),                     &
-     &            e_hd_fil_lvec(2), e_hd_fil_lvec(3) )
+          else if ( phys_nod_name(i) .eq. fhd_current) then
+            call vector_label_4_step(phys_nod_name(i), fhd_current)
+            call vector_label_4_step(e_hd_sq_j_cd, e_hd_sq_j_cd)
+            call write_one_label(rms_data_code, e_hd_rms_j)
+            call write_one_label(rms_data_code, e_hd_rms_j_cd)
 !
-            else if ( phys_nod_name(i) .eq. fhd_filter_b ) then
-              call write_three_labels(rms_data_code,                    &
+          else if ( phys_nod_name(i) .eq. fhd_filter_v ) then
+            call write_one_label(rms_data_code, e_hd_fil_k_ene)
+            call write_one_label(rms_data_code, e_hd_fil_div_v)
+!
+            call set_vector_label(fhd_filter_v, vector_label)
+            call write_vector_label(time_step_data_code, vector_label)
+            call write_one_label(time_step_data_code, e_hd_fil_div_v)
+            call write_vector_label(time_step_data_code, e_hd_fil_lvec)
+!
+          else if ( phys_nod_name(i) .eq. fhd_filter_b ) then
+            call write_three_labels(rms_data_code,                      &
      &            e_hd_fil_m_ene, e_hd_fil_m_ene_cd, e_hd_fil_div_b)
-              call write_seven_labels(time_step_data_code,              &
-     &            e_hd_fil_bvec(1), e_hd_fil_bvec(2), e_hd_fil_bvec(3), &
-     &            e_hd_fil_bvec_cd(1), e_hd_fil_bvec_cd(2),             &
-     &            e_hd_fil_bvec_cd(3), e_hd_fil_div_b)
 !
-            else if ( phys_nod_name(i) .eq. fhd_filter_a ) then
-              call write_one_label(rms_data_code,       e_hd_fil_div_a)
-              call write_one_label(time_step_data_code, e_hd_fil_div_a)
+            call set_vector_label(fhd_filter_b, vector_label)
+            call write_vector_label(time_step_data_code, vector_label)
+            call write_vector_label(time_step_data_code,                &
+     &          e_hd_fil_bvec_cd)
+            call write_one_label(time_step_data_code, e_hd_fil_div_b)
 !
-            else if ( phys_nod_name(i) .eq. fhd_induct_t ) then
-              call write_one_label(rms_data_code, fhd_induct_t)
-              call write_vector_label(time_step_data_code,              &
-     &            e_hd_induct_at)
+          else if ( phys_nod_name(i) .eq. fhd_filter_a ) then
+            call write_one_label(rms_data_code,       e_hd_fil_div_a)
+            call write_one_label(time_step_data_code, e_hd_fil_div_a)
 !
-            else if ( phys_nod_name(i) .eq. fhd_SGS_induct_t ) then
-              call write_one_label(rms_data_code, fhd_SGS_induct_t)
-              call write_vector_label(time_step_data_code,              &
-     &            e_hd_SGS_idct_at)
+          else if ( phys_nod_name(i) .eq. fhd_induct_t ) then
+            call write_one_label(rms_data_code, fhd_induct_t)
+            call set_asym_tensor_label(fhd_induct_t, vector_label)
+            call write_vector_label(time_step_data_code, vector_label)
+!
+          else if ( phys_nod_name(i) .eq. fhd_SGS_induct_t ) then
+            call write_one_label(rms_data_code, fhd_SGS_induct_t)
+            call set_asym_tensor_label(fhd_SGS_induct_t, vector_label)
+            call write_vector_label(time_step_data_code, vector_label)
 !
 !    Old field label... Shold be deleted...
-            else if ( phys_nod_name(i) .eq. fhd_buoyancy_work ) then
-              call write_one_label(rms_data_code, fhd_buoyancy_work)
-              call write_one_label(time_step_data_code,                 &
+          else if ( phys_nod_name(i) .eq. fhd_buoyancy_work ) then
+            call write_one_label(rms_data_code, fhd_buoyancy_work)
+            call write_one_label(time_step_data_code,                   &
      &            fhd_buoyancy_work)
-            end if
+          end if
 !
 !
-            call scalar_label_4_step(phys_nod_name(i), fhd_temp)
-            call scalar_label_4_step(phys_nod_name(i), fhd_part_temp)
-            call scalar_label_4_step(phys_nod_name(i), fhd_light)
-            call scalar_label_4_step(phys_nod_name(i), fhd_part_light)
-            call scalar_label_4_step(phys_nod_name(i), fhd_press)
-            call scalar_label_4_step(phys_nod_name(i),                  &
+          call scalar_label_4_step(phys_nod_name(i), fhd_temp)
+          call scalar_label_4_step(phys_nod_name(i), fhd_part_temp)
+          call scalar_label_4_step(phys_nod_name(i), fhd_light)
+          call scalar_label_4_step(phys_nod_name(i), fhd_part_light)
+          call scalar_label_4_step(phys_nod_name(i), fhd_press)
+          call scalar_label_4_step(phys_nod_name(i),                    &
      &          fhd_mag_potential)
 !
-            call scalar_label_4_step(phys_nod_name(i), fhd_entropy)
-            call scalar_label_4_step(phys_nod_name(i), fhd_per_entropy)
-            call scalar_label_4_step(phys_nod_name(i), fhd_density)
-            call scalar_label_4_step(phys_nod_name(i), fhd_per_density)
+          call scalar_label_4_step(phys_nod_name(i), fhd_entropy)
+          call scalar_label_4_step(phys_nod_name(i), fhd_per_entropy)
+          call scalar_label_4_step(phys_nod_name(i), fhd_density)
+          call scalar_label_4_step(phys_nod_name(i), fhd_per_density)
 !
-            call scalar_label_4_step(phys_nod_name(i), fhd_heat_source)
-            call scalar_label_4_step(phys_nod_name(i),                  &
+          call scalar_label_4_step(phys_nod_name(i), fhd_heat_source)
+          call scalar_label_4_step(phys_nod_name(i),                    &
      &          fhd_light_source)
-            call scalar_label_4_step(phys_nod_name(i),                  &
+          call scalar_label_4_step(phys_nod_name(i),                    &
      &          fhd_entropy_source)
 !
-            call vector_label_4_step(phys_nod_name(i), fhd_e_field)
-            call vector_label_4_step(phys_nod_name(i), fhd_poynting)
+          call vector_label_4_step(phys_nod_name(i), fhd_e_field)
+          call vector_label_4_step(phys_nod_name(i), fhd_poynting)
 !
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_buoyancy_flux)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_comp_buo_flux)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_filter_buo_flux)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_Lorentz_work)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_work_agst_Lorentz)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_mag_tension_work)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_mag_ene_gen)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_buoyancy_flux)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_comp_buo_flux)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_filter_buo_flux)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_Lorentz_work)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_work_agst_Lorentz)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_mag_tension_work)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_mag_ene_gen)
 !
-            call vector_label_4_step(phys_nod_name(i), fhd_grad_v_1)
-            call vector_label_4_step(phys_nod_name(i), fhd_grad_v_2)
-            call vector_label_4_step(phys_nod_name(i), fhd_grad_v_3)
+          call vector_label_4_step(phys_nod_name(i), fhd_grad_v_1)
+          call vector_label_4_step(phys_nod_name(i), fhd_grad_v_2)
+          call vector_label_4_step(phys_nod_name(i), fhd_grad_v_3)
 !
-            call vector_label_4_step(phys_nod_name(i), fhd_press_grad)
+          call vector_label_4_step(phys_nod_name(i), fhd_press_grad)
 !
-            call vector_label_4_step(phys_nod_name(i), fhd_mag_tension)
+          call vector_label_4_step(phys_nod_name(i), fhd_mag_tension)
 !
-            call vector_label_4_step(phys_nod_name(i), fhd_inertia)
-            call vector_label_4_step(phys_nod_name(i), fhd_div_m_flux)
-            call vector_label_4_step(phys_nod_name(i),                  &
-     &          fhd_div_maxwell_t)
-            call vector_label_4_step(phys_nod_name(i),                  &
-     &          fhd_div_induct_t)
+          call vector_label_4_step(phys_nod_name(i), fhd_inertia)
+          call vector_label_4_step(phys_nod_name(i), fhd_div_m_flux)
+          call vector_label_4_step(phys_nod_name(i),                    &
+     &        fhd_div_maxwell_t)
+          call vector_label_4_step(phys_nod_name(i),                    &
+     &        fhd_div_induct_t)
 !
-            call vector_label_4_step(phys_nod_name(i), fhd_vp_induct)
-            call vector_label_4_step(phys_nod_name(i), fhd_mag_stretch)
+          call vector_label_4_step(phys_nod_name(i), fhd_vp_induct)
+          call vector_label_4_step(phys_nod_name(i), fhd_mag_stretch)
 !
-            call vector_label_4_step(phys_nod_name(i),                  &
-     &          fhd_vecp_diffuse)
-            call vector_label_4_step(phys_nod_name(i), fhd_mag_diffuse)
-            call vector_label_4_step(phys_nod_name(i), fhd_viscous)
+          call vector_label_4_step(phys_nod_name(i), fhd_vecp_diffuse)
+          call vector_label_4_step(phys_nod_name(i), fhd_mag_diffuse)
+          call vector_label_4_step(phys_nod_name(i), fhd_viscous)
 !
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_vis_ene_diffuse)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_mag_ene_diffuse)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_thermal_diffusion)
-            call scalar_label_4_step(phys_nod_name(i), fhd_c_diffuse)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_vis_ene_diffuse)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_mag_ene_diffuse)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_thermal_diffusion)
+          call scalar_label_4_step(phys_nod_name(i), fhd_c_diffuse)
 !
-            call vector_label_4_step(phys_nod_name(i), fhd_Lorentz)
-            call vector_label_4_step(phys_nod_name(i), fhd_Coriolis)
-            call vector_label_4_step(phys_nod_name(i), fhd_buoyancy)
-            call vector_label_4_step(phys_nod_name(i), fhd_comp_buo)
-            call vector_label_4_step(phys_nod_name(i), fhd_filter_buo)
+          call vector_label_4_step(phys_nod_name(i), fhd_Lorentz)
+          call vector_label_4_step(phys_nod_name(i), fhd_Coriolis)
+          call vector_label_4_step(phys_nod_name(i), fhd_buoyancy)
+          call vector_label_4_step(phys_nod_name(i), fhd_comp_buo)
+          call vector_label_4_step(phys_nod_name(i), fhd_filter_buo)
 !
-            call sym_tensor_label_4_step(phys_nod_name(i),              &
-     &          fhd_mom_flux)
-            call sym_tensor_label_4_step(phys_nod_name(i),              &
-     &          fhd_maxwell_t)
-            call vector_label_4_step(phys_nod_name(i), fhd_ph_flux)
-            call vector_label_4_step(phys_nod_name(i), fhd_h_flux)
-            call vector_label_4_step(phys_nod_name(i), fhd_c_flux)
+          call sym_tensor_label_4_step(phys_nod_name(i), fhd_mom_flux)
+          call sym_tensor_label_4_step(phys_nod_name(i), fhd_maxwell_t)
+          call vector_label_4_step(phys_nod_name(i), fhd_ph_flux)
+          call vector_label_4_step(phys_nod_name(i), fhd_h_flux)
+          call vector_label_4_step(phys_nod_name(i), fhd_c_flux)
 !
 !
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_heat_advect)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_part_h_advect)
-            call scalar_label_4_step(phys_nod_name(i), fhd_div_h_flux)
-            call scalar_label_4_step(phys_nod_name(i), fhd_div_ph_flux)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_temp_generation)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_part_temp_gen)
+          call scalar_label_4_step(phys_nod_name(i), fhd_heat_advect)
+          call scalar_label_4_step(phys_nod_name(i), fhd_part_h_advect)
+          call scalar_label_4_step(phys_nod_name(i), fhd_div_h_flux)
+          call scalar_label_4_step(phys_nod_name(i), fhd_div_ph_flux)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_temp_generation)
+          call scalar_label_4_step(phys_nod_name(i), fhd_part_temp_gen)
 !
 !
-            call scalar_label_4_step(phys_nod_name(i), fhd_filter_temp)
-            call scalar_label_4_step(phys_nod_name(i), fhd_filter_temp)
-            call scalar_label_4_step(phys_nod_name(i), fhd_filter_comp)
+          call scalar_label_4_step(phys_nod_name(i), fhd_filter_temp)
+          call scalar_label_4_step(phys_nod_name(i), fhd_filter_temp)
+          call scalar_label_4_step(phys_nod_name(i), fhd_filter_comp)
 !
-            call sym_tensor_label_4_step(phys_nod_name(i),              &
-     &          fhd_SGS_m_flux)
-            call sym_tensor_label_4_step(phys_nod_name(i),              &
-     &          fhd_SGS_maxwell_t)
-            call vector_label_4_step(phys_nod_name(i), fhd_SGS_h_flux)
-            call vector_label_4_step(phys_nod_name(i), fhd_SGS_c_flux)
-            call vector_label_4_step(phys_nod_name(i), fhd_c_flux)
+          call sym_tensor_label_4_step(phys_nod_name(i),                &
+     &        fhd_SGS_m_flux)
+          call sym_tensor_label_4_step(phys_nod_name(i),                &
+     &        fhd_SGS_maxwell_t)
+          call vector_label_4_step(phys_nod_name(i), fhd_SGS_h_flux)
+          call vector_label_4_step(phys_nod_name(i), fhd_SGS_c_flux)
+          call vector_label_4_step(phys_nod_name(i), fhd_c_flux)
 !
-            call vector_label_4_step(phys_nod_name(i),                  &
-     &          fhd_div_SGS_m_flux)
-            call vector_label_4_step(phys_nod_name(i), fhd_SGS_Lorentz)
-            call vector_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_induction)
-            call vector_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_vp_induct)
-            call vector_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_buoyancy)
-            call vector_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_comp_buo)
+          call vector_label_4_step(phys_nod_name(i),                    &
+     &        fhd_div_SGS_m_flux)
+          call vector_label_4_step(phys_nod_name(i), fhd_SGS_Lorentz)
+          call vector_label_4_step(phys_nod_name(i), fhd_SGS_induction)
+          call vector_label_4_step(phys_nod_name(i), fhd_SGS_vp_induct)
+          call vector_label_4_step(phys_nod_name(i), fhd_SGS_buoyancy)
+          call vector_label_4_step(phys_nod_name(i), fhd_SGS_comp_buo)
 !
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_div_SGS_h_flux)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_temp_gen)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_m_ene_gen)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_Lorentz_work)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_Reynolds_work)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_buo_flux)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_comp_buo_flux)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_div_SGS_h_flux)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_SGS_temp_gen)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_SGS_m_ene_gen)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_SGS_Lorentz_work)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_Reynolds_work)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_SGS_buo_flux)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_SGS_comp_buo_flux)
 !
 !
-            call vector_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_div_m_flux_true)
-            call vector_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_Lorentz_true)
-            call vector_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_mag_induct_true)
+          call vector_label_4_step(phys_nod_name(i),                    &
+     &        fhd_SGS_div_m_flux_true)
+          call vector_label_4_step(phys_nod_name(i),                    &
+     &        fhd_SGS_Lorentz_true)
+          call vector_label_4_step(phys_nod_name(i),                    &
+     &        fhd_SGS_mag_induct_true)
 !
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_div_h_flux_true)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_Lorentz_wk_true)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_Reynolds_work_true)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_temp_gen_true)
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_SGS_m_ene_gen_true)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_SGS_div_h_flux_true)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_SGS_Lorentz_wk_true)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_Reynolds_work_true)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_SGS_temp_gen_true)
+          call scalar_label_4_step(phys_nod_name(i),                    &
+     &        fhd_SGS_m_ene_gen_true)
 !
-          else
+        else
 !
-            if ( phys_nod_name(i) .eq. fhd_velo) then
-              call write_one_label(rms_data_code,       e_hd_div_v)
-              call write_one_label(time_step_data_code, e_hd_div_v)
-            else if ( phys_nod_name(i) .eq. fhd_magne) then
-              call write_one_label(rms_data_code,       e_hd_div_b)
-              call write_one_label(time_step_data_code, e_hd_div_b)
-            else if ( phys_nod_name(i) .eq. fhd_vecp) then
-              call write_one_label(rms_data_code,       e_hd_div_a)
-              call write_one_label(time_step_data_code, e_hd_div_a)
+          if ( phys_nod_name(i) .eq. fhd_velo) then
+            call write_one_label(rms_data_code,       e_hd_div_v)
+            call write_one_label(time_step_data_code, e_hd_div_v)
+          else if ( phys_nod_name(i) .eq. fhd_magne) then
+            call write_one_label(rms_data_code,       e_hd_div_b)
+            call write_one_label(time_step_data_code, e_hd_div_b)
+          else if ( phys_nod_name(i) .eq. fhd_vecp) then
+            call write_one_label(rms_data_code,       e_hd_div_a)
+            call write_one_label(time_step_data_code, e_hd_div_a)
 !
-            else if ( phys_nod_name(i) .eq. fhd_filter_v) then
-              call write_one_label(rms_data_code,       e_hd_fil_div_v)
-              call write_one_label(time_step_data_code, e_hd_fil_div_v)
-            else if ( phys_nod_name(i) .eq. fhd_filter_a) then
-              call write_one_label(rms_data_code,       e_hd_fil_div_a)
-              call write_one_label(time_step_data_code, e_hd_fil_div_a)
-            else if ( phys_nod_name(i) .eq. fhd_filter_b) then
-              call write_one_label(rms_data_code,       e_hd_fil_div_b)
-              call write_one_label(time_step_data_code, e_hd_fil_div_b)
-            end if
-!
-            call scalar_label_4_step(phys_nod_name(i),                  &
-     &          fhd_mag_potential)
-!
+          else if ( phys_nod_name(i) .eq. fhd_filter_v) then
+            call write_one_label(rms_data_code,       e_hd_fil_div_v)
+            call write_one_label(time_step_data_code, e_hd_fil_div_v)
+          else if ( phys_nod_name(i) .eq. fhd_filter_a) then
+            call write_one_label(rms_data_code,       e_hd_fil_div_a)
+            call write_one_label(time_step_data_code, e_hd_fil_div_a)
+          else if ( phys_nod_name(i) .eq. fhd_filter_b) then
+            call write_one_label(rms_data_code,       e_hd_fil_div_b)
+            call write_one_label(time_step_data_code, e_hd_fil_div_b)
           end if
-        end do
 !
-        call write_one_label(rms_data_code, e_hd_volume)
+          call scalar_label_4_step(phys_nod_name(i),                  &
+     &        fhd_mag_potential)
 !
-        write(rms_data_code,*)      
-        write(time_step_data_code,*)
+        end if
+      end do
+!
+      call write_one_label(rms_data_code, e_hd_volume)
+!
+      write(rms_data_code,*)      
+      write(time_step_data_code,*)
 !
       end subroutine open_monitor_file
 !

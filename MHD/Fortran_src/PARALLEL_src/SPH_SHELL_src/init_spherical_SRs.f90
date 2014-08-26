@@ -108,7 +108,7 @@
       real (kind=kreal), intent(inout) :: X_rlm(NB*nnod_rlm)
       real (kind=kreal), intent(inout)::  X_rj(NB*nnod_rj)
 !
-      real(kind = kreal) :: stime, etime(0:2)
+      real(kind = kreal) :: starttime, endtime(0:2)
       real(kind = kreal) :: etime_item_import(0:1) = 0.0d0
       real(kind = kreal) :: etime_shortest
 !
@@ -119,18 +119,18 @@
 !
       if(my_rank .eq. 0) write(*,*) 'test  send_recv with reg. import'
       iflag_sph_SRN = iflag_import_item
-      stime = MPI_WTIME()
+      starttime = MPI_WTIME()
       call all_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
-      etime(0) = MPI_WTIME() - stime
+      endtime(0) = MPI_WTIME() - starttime
 !
       if(my_rank .eq. 0) write(*,*) 'test  send_recv with rev. import'
       iflag_sph_SRN = iflag_import_rev
-      stime = MPI_WTIME()
+      starttime = MPI_WTIME()
       call all_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
-      etime(1) = MPI_WTIME() - stime
+      endtime(1) = MPI_WTIME() - starttime
 !
-      etime(1) = MPI_WTIME() - stime
-      call MPI_allREDUCE (etime(0), etime_item_import(0), itwo,         &
+      endtime(1) = MPI_WTIME() - starttime
+      call MPI_allREDUCE (endtime(0), etime_item_import(0), itwo,       &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       etime_item_import(0:1) = etime_item_import(0:1) / dble(nprocs)
 !
@@ -158,7 +158,7 @@
       real (kind=kreal), intent(inout) :: X_rlm(NB*nnod_rlm)
       real (kind=kreal), intent(inout)::  X_rj(NB*nnod_rj)
 !
-      real(kind = kreal) :: stime, etime(0:2)
+      real(kind = kreal) :: starttime, endtime(0:2)
       real(kind = kreal) :: etime_send_recv(0:2) =   0.0d0
       real(kind = kreal) :: etime_shortest
 !
@@ -167,23 +167,23 @@
 !
       if(iflag_sph_commN .ne. iflag_SR_UNDEFINED) return
 !
-      etime(0:2) = 0.0d0
+      endtime(0:2) = 0.0d0
       iflag_sph_commN = iflag_alltoall
-      stime = MPI_WTIME()
+      starttime = MPI_WTIME()
       call all_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
-      etime(2) = MPI_WTIME() - stime
+      endtime(2) = MPI_WTIME() - starttime
 !
       iflag_sph_commN = iflag_send_recv
-      stime = MPI_WTIME()
+      starttime = MPI_WTIME()
       call all_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
-      etime(0) = MPI_WTIME() - stime
+      endtime(0) = MPI_WTIME() - starttime
 !
       iflag_sph_commN = iflag_alltoallv
-      stime = MPI_WTIME()
+      starttime = MPI_WTIME()
       call all_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
-      etime(1) = MPI_WTIME() - stime
+      endtime(1) = MPI_WTIME() - starttime
 !
-      call MPI_allREDUCE (etime(0), etime_send_recv(0), ithree,         &
+      call MPI_allREDUCE (endtime(0), etime_send_recv(0), ithree,       &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       etime_shortest = etime_send_recv(0)
@@ -192,7 +192,7 @@
         if(etime_send_recv(i) .le. etime_shortest                       &
      &          .and. etime_send_recv(i) .gt. 0.0) then
           etime_shortest = etime_send_recv(i)
-          iflag_sph_commN = iflag_alltoallv
+          iflag_sph_commN = i
         end if
       end do
 !

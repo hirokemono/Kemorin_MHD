@@ -103,10 +103,13 @@
 !
 !      call check_vr_rtm(my_rank, ncomp_trans)
 !
+      if(iflag_debug .gt. 0) write(*,*) 'finish_send_recv_rj_2_rlm'
       call finish_send_recv_rj_2_rlm
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(19)
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &    'send_recv_rtm_2_rtp_N', ncomp_trans, nvector, nscalar
       call send_recv_rtm_2_rtp_N(ncomp_trans, vr_rtm, vr_rtp)
       call end_eleps_time(19)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
@@ -114,10 +117,13 @@
 !      call check_vr_rtp(my_rank, ncomp_trans)
 !
       call start_eleps_time(24)
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &    'backward_FFT_select', ncomp_trans, nvector, nscalar
       call backward_FFT_select(np_smp, Nstacksmp, ncomp_FFT,            &
      &    nidx_rtp(3), vr_rtp)
       call end_eleps_time(24)
 !
+      if(iflag_debug .gt. 0) write(*,*) 'finish_send_recv_rtm_2_rtp'
       call finish_send_recv_rtm_2_rtp
 !
 !      call check_vr_rtp(my_rank, ncomp_trans)

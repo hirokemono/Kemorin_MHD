@@ -1,32 +1,38 @@
-!cvt_cyl_vect_2_cartecian.f90
-!      module cvt_cyl_vect_2_cartecian
+!>@file   cvt_cyl_vect_2_cartecian.f90
+!!@brief  module cvt_cyl_vect_2_cartecian
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep., 2011
 !
-!      Written by H. Matsui on Sep., 2011
-!
-!*********************************************************************
-!*
-!*   convert vector from spherical coordinate to certecian coordinate
-!*      vx =  vr*sin(th)*cos(phi) + vt*cos(th)*cos(phi) - vp*sin(phi)
-!*      vy =  vr*sin(th)*sin(phi) + vt*cos(th)*sin(phi) + vp*cos(phi)
-!*      vz =  vr*cos(th) - vt*sin(th)
-!*
-!*********************************************************************
-!
-!      subroutine cal_cyl_vect_2_cartecian(numnod, vect, v_cyl, phi)
-!      subroutine cal_cyl_vect_2_x_comp(numnod, v_x, v_cyl, phi)
-!      subroutine cal_cyl_vect_2_y_comp(numnod, v_y, v_cyl, phi)
-!      subroutine cal_cyl_vect_2_z_comp(numnod, v_z, v_cyl)
-!         numnod :: number of node
-!         phi :: longitude ( 0 to 2\pi)
-!         v_cyl :: vector on cyrindrical coordinate
-!         vect :: obtained vector in certecian coorcinate
-!         v_x :: obtained x component
-!         v_y :: obtained y component
-!         v_z :: obtained z component
-!
-!      subroutine cvt_one_cyl_vect_2_cart(vect, v_cyl, phi)
-!
-!*********************************************************************
+!>@brief Convert vector from cylindrical coordinate
+!!       to Cartesian coordinate
+!!
+!!@verbatim
+!!*********************************************************************
+!!*
+!!*   convert vector from spherical coordinate to certecian coordinate
+!!*      vx =  vr*sin(th)*cos(phi) + vt*cos(th)*cos(phi) - vp*sin(phi)
+!!*      vy =  vr*sin(th)*sin(phi) + vt*cos(th)*sin(phi) + vp*cos(phi)
+!!*      vz =  vr*cos(th) - vt*sin(th)
+!!*
+!!*********************************************************************
+!!
+!!      subroutine cal_cyl_vect_2_cartecian(numnod, vect, v_cyl, phi)
+!!      subroutine cal_cyl_vect_2_x_comp(numnod, v_x, v_cyl, phi)
+!!      subroutine cal_cyl_vect_2_y_comp(numnod, v_y, v_cyl, phi)
+!!      subroutine cal_cyl_vect_2_z_comp(numnod, v_z, v_cyl)
+!!         numnod :: number of node
+!!         phi :: longitude ( 0 to 2\pi)
+!!         v_cyl :: vector on cyrindrical coordinate
+!!         vect :: obtained vector in certecian coorcinate
+!!         v_x :: obtained x component
+!!         v_y :: obtained y component
+!!         v_z :: obtained z component
+!!
+!!      subroutine cvt_one_cyl_vect_2_cart(vect, v_cyl, phi)
+!!
+!!*********************************************************************
+!!@endverbatim
 !
       module cvt_cyl_vect_2_cartecian
 !

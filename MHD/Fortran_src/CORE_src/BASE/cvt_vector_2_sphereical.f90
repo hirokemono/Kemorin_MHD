@@ -1,43 +1,50 @@
-!cvt_vector_2_sphereical.f90
-!      module cvt_vector_2_sphereical
+!>@file   cvt_vector_2_sphereical.f90
+!!@brief  module cvt_vector_2_sphereical
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2005
 !
-!      Written by H. Matsui on June, 2005
-!
-!***********************************************************************
-!*
-!*   convert vector from certecian coordinate to spherical coordinate
-!*      vr =  vx*sin(th)*cos(phi) + vy*sin(th)*sin(phi) + vz*cos(phi)
-!*      vt =  vx*cos(th)*cos(phi) + vy*cos(th)*sin(phi) - vz*sin(phi)
-!*      vp = -vx*sin(phi) + vy*cos(phi)
-!*
-!*   convert vector from certecian coordinate to cylindrical coordinate
-!*      vs =  vx*cos(phi) + vy*sin(phi)
-!*
-!***********************************************************************
-!
-!      subroutine cvt_vector_2_spherical(numnod, vect, v_sph, xx, r, rs,&
-!     &          a_r, a_rs)
-!      subroutine cal_radial_component(numnod, vect, v_r, xx, r, a_r)
-!      subroutine cal_theta_component(numnod, vect, v_theta, xx, r, rs, &
-!     &          a_r, a_rs)
-!      subroutine cal_phi_component(numnod, vect, v_phi, xx, rs, a_rs)
-!
-!      subroutine cvt_vector_2_cylindrical(numnod, vect, v_cyl, xx,     &
-!     &          rs, a_rs)
-!      subroutine cal_cylinder_r_component(numnod, vect, v_s, xx,       &
-!     &          rs, a_rs)
-!
-!         numnod :: number of node
-!         vect :: vector in certecian coorcinate
-!
-!         v_sph :: obtained vector on spherical coordinate
-!         v_r :: obtained radial component
-!         v_theta :: obtained meridional component
-!         v_phi :: obtained zonal component
-!         v_s ::   obtained radial component for cylinder
-!
-!         xx :: position vector
-!         r :: radious
+!>@brief Convert vector from spherical coordinate
+!!       to Cartesian coordinate
+!!
+!!@verbatim
+!!***********************************************************************
+!!*
+!!*   convert vector from certecian coordinate to spherical coordinate
+!!*      vr =  vx*sin(th)*cos(phi) + vy*sin(th)*sin(phi) + vz*cos(phi)
+!!*      vt =  vx*cos(th)*cos(phi) + vy*cos(th)*sin(phi) - vz*sin(phi)
+!!*      vp = -vx*sin(phi) + vy*cos(phi)
+!!*
+!!*   convert vector from certecian coordinate to cylindrical coordinate
+!!*      vs =  vx*cos(phi) + vy*sin(phi)
+!!*
+!!***********************************************************************
+!!
+!!      subroutine cvt_vector_2_spherical(numnod, vect, v_sph, xx, r,rs,&
+!!     &          a_r, a_rs)
+!!      subroutine cal_radial_component(numnod, vect, v_r, xx, r, a_r)
+!!      subroutine cal_theta_component(numnod, vect, v_theta, xx, r, rs,&
+!!     &          a_r, a_rs)
+!!      subroutine cal_phi_component(numnod, vect, v_phi, xx, rs, a_rs)
+!!
+!!      subroutine cvt_vector_2_cylindrical(numnod, vect, v_cyl, xx,    &
+!!     &          rs, a_rs)
+!!      subroutine cal_cylinder_r_component(numnod, vect, v_s, xx,      &
+!!     &          rs, a_rs)
+!!
+!!         numnod :: number of node
+!!         vect :: vector in certecian coorcinate
+!!
+!!         v_sph :: obtained vector on spherical coordinate
+!!         v_r :: obtained radial component
+!!         v_theta :: obtained meridional component
+!!         v_phi :: obtained zonal component
+!!         v_s ::   obtained radial component for cylinder
+!!
+!!         xx :: position vector
+!!         r :: radious
+!!***********************************************************************
+!!@endverbatim
 !
       module cvt_vector_2_sphereical
 !

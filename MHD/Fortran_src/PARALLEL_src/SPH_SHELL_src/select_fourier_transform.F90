@@ -127,20 +127,20 @@
       integer(kind = kint), intent(in) :: Nstacksmp(0:np_smp)
       real(kind = kreal), intent(inout) :: etime_fft
 !
-      real(kind = kreal) :: stime, etime
+      real(kind = kreal) :: starttime, endtime
 !
 !
       call initialize_FFT_select(my_rank, np_smp, Nstacksmp,            &
      &    nidx_rtp(3))
 !
-      stime = MPI_WTIME()
+      starttime = MPI_WTIME()
       call backward_FFT_select(np_smp, Nstacksmp, ncomp, nidx_rtp(3),   &
      &    vr_rtp)
       call forward_FFT_select(np_smp, Nstacksmp, ncomp, nidx_rtp(3),    &
      &    vr_rtp)
-      etime = MPI_WTIME() - stime
+      endtime = MPI_WTIME() - starttime
 !
-      call MPI_allREDUCE (etime, etime_fft, ione,                       &
+      call MPI_allREDUCE (endtime, etime_fft, ione,                     &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       etime_fft = etime_fft / dble(nprocs)
 !

@@ -1,10 +1,17 @@
-!m_volume_average_labels.f90
-!      module m_volume_average_labels
+!>@file   m_volume_average_labels.f90
+!!@brief  module m_volume_average_labels
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2009
 !
-!        programmed by H.Matsui on June, 2009
+!>@brief  Set control parameters for spherical harmonics dynamo from IO
+!!
+!!@verbatim
+!!      subroutine set_vector_label(fid_label, label_v)
+!!      subroutine set_sym_tensor_label(fid_label, label_st)
+!!      subroutine set_asym_tensor_label(fid_label, label_ast)
+!!@endverbatim
 !
-!      subroutine set_vector_label(fid_label, label_v)
-!      subroutine set_sym_tensor_label(fid_label, label_st)
 !
       module m_volume_average_labels
 !
@@ -15,90 +22,76 @@
       implicit none
 !
 !
+!>        Field label for volumw
       character(len=kchara), parameter :: e_hd_volume = 'Volume'
 !
 !
+!>        Field label for kinetic enegy
       character(len=kchara), parameter :: e_hd_k_ene = 'K_ene'
+!>        Field label for divergence of velocity
       character(len=kchara), parameter :: e_hd_div_v = 'div_v'
 !
-      character(len=kchara), parameter :: e_hd_vvec(3)                  &
-     &            = (/'vx', 'vy', 'vz'/)
+!>        Field label for angular momentum
       character(len=kchara), parameter :: e_hd_lvec(3)                  &
      &            = (/'L_x', 'L_y', 'L_z'/)
 !
 !
+!>        Field label for magnetic enegy
       character(len=kchara), parameter :: e_hd_m_ene =    'M_ene'
+!>        Field label for magnetic enegy in conductor
       character(len=kchara), parameter :: e_hd_m_ene_cd = 'M_ene_cd'
+!>        Field label for divergence of magnetic field
       character(len=kchara), parameter :: e_hd_div_b =    'div_B'
 !
-      character(len=kchara), parameter :: e_hd_bvec(3)                  &
-     &            = (/'Bx', 'By', 'Bz'/)
-!
+!>        Field label for magnetic field in conductor
       character(len=kchara), parameter :: e_hd_bvec_cd(3)               &
      &            = (/'Bx_cd', 'By_cd', 'Bz_cd'/)
 !
+!>        Field label for divergence of vector potential
       character(len=kchara), parameter :: e_hd_div_a =    'div_A'
 !
 !
-      character(len=kchara), parameter :: e_hd_sq_w =  'sq_w'
+!>        Field label for root mean square of vorticity
       character(len=kchara), parameter :: e_hd_rms_w = 'RMS_omega'
-      character(len=kchara), parameter :: e_hd_wvec(3)                  &
-     &            = (/'wx', 'wy', 'wz'/)
 !
-      character(len=kchara), parameter :: e_hd_sq_j =     'sq_J'
-      character(len=kchara), parameter :: e_hd_sq_j_cd =  'sq_J_cd'
+!>        Field label for current density in conductor
+      character(len=kchara), parameter :: e_hd_sq_j_cd =  'J_cd'
+!>        Field label for root mean square of current dencity
       character(len=kchara), parameter :: e_hd_rms_j =    'RMS_J'
+!>        Field label for RMS of current density in conductor
       character(len=kchara), parameter :: e_hd_rms_j_cd = 'RMS_J_cd'
 !
-      character(len=kchara), parameter :: e_hd_jvec(3)                  &
-     &            = (/'Jx', 'Jy', 'Jz'/)
-      character(len=kchara), parameter :: e_hd_jvec_cd(3)               &
-     &            = (/'Jx_cd', 'Jy_cd', 'Jz_cd'/)
 !
-!
+!>        Field label for filtered kinetic enegy
       character(len=kchara), parameter                                  &
      &                      :: e_hd_fil_k_ene = 'filter_K_ene'
+!>        Field label for divergence of filtered velocity
       character(len=kchara), parameter                                  &
      &                      :: e_hd_fil_div_v = 'div_filter_v'
 !
-      character(len=kchara), parameter :: e_hd_fil_vvec(3)              &
-     &            = (/'filter_vx', 'filter_vy', 'filter_vz'/)
+!>        Field label for filtered angular momentum
       character(len=kchara), parameter :: e_hd_fil_lvec(3)              &
      &            = (/'filter_L_x', 'filter_L_y', 'filter_L_z'/)
 !
 !
+!>        Field label for filtered magnetic enegy
       character(len=kchara), parameter                                  &
      &                      :: e_hd_fil_m_ene =    'filter_M_ene'
+!>        Field label for filtered magnetic enegy in conductor
       character(len=kchara), parameter                                  &
      &                      :: e_hd_fil_m_ene_cd = 'filter_M_ene_cd'
+!>        Field label for divergence of filtered magnetic field
       character(len=kchara), parameter                                  &
      &                      :: e_hd_fil_div_b =    'div_filter_B'
 !
-      character(len=kchara), parameter :: e_hd_fil_bvec(3)              &
-     &            = (/'filter_Bx', 'filter_By', 'filter_Bz'/)
-!
+!>        Field label for filtered magnetic field in conductor
       character(len=kchara), parameter :: e_hd_fil_bvec_cd(3)           &
      &            = (/'filter_Bx_cd','filter_By_cd','filter_Bz_cd'/)
 !
 !
+!>        Field label for divergence of filtered vector potential
       character(len=kchara), parameter                                  &
      &                      :: e_hd_fil_div_a =    'div_filter_A'
-!
-!
-      character(len=kchara), parameter :: e_hd_induct_at(3)             &
-     &            = (/'induct_t_xy', 'induct_t_xz', 'induct_t_yz'/)
-!
-!
-      character(len=kchara), parameter :: e_hd_SGS_idct_at(3)           &
-     &            = (/'SGS_induct_t_xy', 'SGS_induct_t_xz',             &
-     &                'SGS_induct_t_yz'/)
-!
-!
-      character(len=kchara), parameter :: e_hd_SGS_induct               &
-     &                                   = 'SGS_induct'
-!
-      character(len=kchara), parameter :: e_hd_SGS_vp_induct            &
-     &                                   = 'SGS_vp_induct'
 !
 ! ----------------------------------------------------------------------
 !
@@ -132,6 +125,20 @@
      &    label_st(4), label_st(5), label_st(6)  )
 !
       end subroutine set_sym_tensor_label
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_asym_tensor_label(fid_label, label_ast)
+!
+      use add_direction_labels
+!
+      character(len=kchara), intent(in) :: fid_label
+      character(len=kchara), intent(inout) :: label_ast(3)
+!
+      call add_asym_tensor_dir_label_xyz(fid_label,                     &
+     &    label_ast(1), label_ast(2), label_ast(3) )
+!
+      end subroutine set_asym_tensor_label
 !
 ! ----------------------------------------------------------------------
 !

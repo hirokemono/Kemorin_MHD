@@ -113,13 +113,17 @@
 !
 !
       if(ncomp_rj_2_rtp .eq. 0) return
+      if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_vec_spec_to_trans'
       call copy_mhd_vec_spec_to_trans
+      if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_scl_spec_to_trans'
       call copy_mhd_scl_spec_to_trans
 !
       call sph_b_trans_w_coriolis(ncomp_rj_2_rtp,                       &
      &    nvector_rj_2_rtp, nscalar_rj_2_rtp)
 !
+      if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_vec_fld_from_trans'
       call copy_mhd_vec_fld_from_trans
+      if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_scl_fld_from_trans'
       call copy_mhd_scl_fld_from_trans
 !
       end subroutine sph_back_trans_4_MHD
@@ -270,8 +274,8 @@
       use m_work_4_sph_trans
       use legendre_transform_select
 !
-      real(kind = kreal) :: stime, etime_shortest
-      real(kind = kreal) :: etime(5), etime_trans(5)
+      real(kind = kreal) :: starttime, etime_shortest
+      real(kind = kreal) :: endtime(5), etime_trans(5)
 !
       integer(kind = kint) :: iloop_type
 !
@@ -280,15 +284,17 @@
         id_legendre_transfer = iloop_type
         call sel_alloc_legendre_trans(ncomp_sph_trans)
 !
-        stime = MPI_WTIME()
+        starttime = MPI_WTIME()
+        if(iflag_debug .gt. 0) write(*,*) 'sph_back_trans_4_MHD'
         call sph_back_trans_4_MHD
+        if(iflag_debug .gt. 0) write(*,*) 'sph_forward_trans_4_MHD'
         call sph_forward_trans_4_MHD
-        etime(id_legendre_transfer) = MPI_WTIME() - stime
+        endtime(id_legendre_transfer) = MPI_WTIME() - starttime
 !
         call sel_dealloc_legendre_trans
       end do
 !
-      call MPI_allREDUCE (etime, etime_trans, ifive,                    &
+      call MPI_allREDUCE (endtime, etime_trans, ifive,                  &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       etime_trans(1:5) = etime_trans(1:5) / dble(nprocs)
 !

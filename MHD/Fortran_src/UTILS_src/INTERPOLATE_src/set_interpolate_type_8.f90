@@ -8,8 +8,8 @@
 !!       for linear elements
 !!
 !!@verbatim
-!      subroutine s_order_interpolate_type_8(my_rank, ist, ied,         &
-!     &          inod_stack_type, nnod_interpolate_type)
+!!      subroutine s_order_interpolate_type_8(my_rank, ist, ied,        &
+!!     &          inod_stack_type, nnod_interpolate_type)
 !!@endverbatim
 !
       module set_interpolate_type_8

@@ -61,7 +61,7 @@
       integer (kind=kint) :: nneib_max_send, nneib_max_recv
       integer (kind=kint) :: nnod_max_send,  nnod_max_recv
 !
-      real(kind = kreal) :: stime, etime
+      real(kind = kreal) :: starttime, endtime
       real(kind = kreal) :: etime_item_import, etime_irev_import
 !
 !
@@ -91,25 +91,25 @@
 !
 !
       iflag_sph_SR6 = iflag_import_item
-      stime = MPI_WTIME()
+      starttime = MPI_WTIME()
       call send_recv_rtp_2_rtm_6(X_rtp, X_rtm)
       call send_recv_rtm_2_rtp_6(X_rtm, X_rtp)
       call send_recv_rj_2_rlm_6(X_rj, X_rlm)
       call send_recv_rlm_2_rj_6(X_rlm, X_rj)
 !
-      etime = MPI_WTIME() - stime
-      call MPI_allREDUCE (etime, etime_item_import, ione,               &
+      endtime = MPI_WTIME() - starttime
+      call MPI_allREDUCE (endtime, etime_item_import, ione,             &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       iflag_sph_SR6 = iflag_import_rev
-      stime = MPI_WTIME()
+      starttime = MPI_WTIME()
       call send_recv_rtp_2_rtm_6(X_rtp, X_rtm)
       call send_recv_rtm_2_rtp_6(X_rtm, X_rtp)
       call send_recv_rj_2_rlm_6(X_rj, X_rlm)
       call send_recv_rlm_2_rj_6(X_rlm, X_rj)
 !
-      etime = MPI_WTIME() - stime
-      call MPI_allREDUCE (etime, etime_irev_import, ione,               &
+      endtime = MPI_WTIME() - starttime
+      call MPI_allREDUCE (endtime, etime_irev_import, ione,             &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       if(etime_irev_import .le. etime_item_import) then

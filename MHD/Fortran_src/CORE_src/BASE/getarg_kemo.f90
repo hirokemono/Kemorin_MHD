@@ -1,8 +1,15 @@
+!>@file   getarg_kemo.f90
+!!@brief  module getarg_kemo
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2010
 !
-!      module getarg_kemo
-!
-!      subroutine getarg_k(i, argc)
-!      integer function iargc_kemo() result(oresult)
+!>@brief  Subroutines to get text from command line
+!!
+!!@verbatim
+!!      subroutine getarg_k(i, argc)
+!!      integer function iargc_kemo() result(oresult)
+!!@endverbatim
 !
       module getarg_kemo
 !

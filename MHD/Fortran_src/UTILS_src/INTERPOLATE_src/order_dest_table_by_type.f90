@@ -1,5 +1,5 @@
-!>@file   set_interpolate_type_8.f90
-!!@brief  module set_interpolate_type_8
+!>@file   order_dest_table_by_type.f90
+!!@brief  module order_dest_table_by_type
 !!
 !!@author H. Matsui
 !!@date  Programmed by H. Matsui in Sep., 2006

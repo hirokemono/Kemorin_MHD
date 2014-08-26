@@ -146,7 +146,7 @@
       do k = nlayer_ICB, nlayer_CMB
       inod = local_sph_data_address(k,jj)
       xr = two * radius_1d_rj_r(k) - one * (r_CMB+r_ICB) / shell
-      d_rj(inod,itor%i_velo) = (one-three*xr**2+three*xr**4-xr**6) &
+      d_rj(inod,itor%i_velo) = (one-three*xr**2+three*xr**4-xr**6)      &
     &                            * A_light * three / (sqrt(two*pi))
       end do
       end if
