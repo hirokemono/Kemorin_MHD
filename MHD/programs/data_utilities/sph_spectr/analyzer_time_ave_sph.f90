@@ -37,6 +37,8 @@
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
 !
+      integer(kind = kint) :: ierr
+!
 !     --------------------- 
 !
 !     read controls
@@ -53,7 +55,8 @@
       call input_modes_rj_sph_trans(my_rank)
 !
       if (iflag_debug.gt.0) write(*,*) 's_count_num_sph_smp'
-      call s_count_num_sph_smp
+      call s_count_num_sph_smp(ierr)
+      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
 !
 !  ------  initialize spectr data
 !

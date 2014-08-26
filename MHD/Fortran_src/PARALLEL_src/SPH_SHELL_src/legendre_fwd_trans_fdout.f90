@@ -61,59 +61,62 @@
       integer(kind = kint) :: i_rlm, k_rlm, j_rlm
       integer(kind = kint) :: l_rtm
       integer(kind = kint) :: ip_rtm, in_rtm
-      integer(kind = kint) :: nd
+      integer(kind = kint) :: nd, ip, kst, ked
       real(kind = kreal) :: sp1, sp2, sp3
       real(kind = kreal) :: Pvw_l(nidx_rtm(2))
       real(kind = kreal) :: dPvw_l(nidx_rtm(2))
       real(kind = kreal) :: Pgvw_l(nidx_rtm(2))
 !
 !
-!$omp parallel private(nd)
-      do nd = 1, nvector
-!$omp do private(l_rtm,j_rlm,k_rlm,i_rlm,ip_rtm,in_rtm,                 &
-!$omp&           sp1,sp2,sp3,Pvw_l,dPvw_l,Pgvw_l)
-        do j_rlm = 1, nidx_rlm(2)
-          do l_rtm = 1, nidx_rtm(2)
-            Pvw_l(l_rtm) = P_rtm(l_rtm,j_rlm)                           &
+!$omp parallel do schedule(static)                                      &
+!$omp&            private(ip,kst,ked,nd,l_rtm,j_rlm,k_rlm,i_rlm,        &
+!$omp&           ip_rtm,in_rtm,sp1,sp2,sp3,Pvw_l,dPvw_l,Pgvw_l)
+      do ip = 1, np_smp
+        kst = idx_rlm_smp_stack(ip-1,1) + 1
+        ked = idx_rlm_smp_stack(ip,  1)
+        do nd = 1, nvector
+          do j_rlm = 1, nidx_rlm(2)
+            do l_rtm = 1, nidx_rtm(2)
+              Pvw_l(l_rtm) = P_rtm(l_rtm,j_rlm)                         &
      &                   * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
-            dPvw_l(l_rtm) = dPdt_rtm(l_rtm,j_rlm)                       &
+              dPvw_l(l_rtm) = dPdt_rtm(l_rtm,j_rlm)                     &
      &                   * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
-            Pgvw_l(l_rtm) = P_rtm(l_rtm,j_rlm)                          &
+              Pgvw_l(l_rtm) = P_rtm(l_rtm,j_rlm)                        &
      &                   * dble(idx_gl_1d_rlm_j(j_rlm,3))               &
      &                    * asin_theta_1d_rtm(l_rtm)                    &
      &                    * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
-          end do
-!
-          do k_rlm = 1, nidx_rlm(1)
-            i_rlm = j_rlm + (k_rlm-1) * nidx_rlm(2)
-!
-            sp1 = 0.0d0
-            sp2 = 0.0d0
-            sp3 = 0.0d0
-            do l_rtm = 1, nidx_rtm(2)
-              ip_rtm = l_rtm + (k_rlm-1) * nidx_rtm(2)                  &
-     &                       + (mdx_p_rlm_rtm(j_rlm)-1)                 &
-     &                        * nidx_rtm(1) * nidx_rtm(2)
-              in_rtm = l_rtm + (k_rlm-1) * nidx_rtm(2)                  &
-     &                       + (mdx_n_rlm_rtm(j_rlm)-1)                 &
-     &                        * nidx_rtm(1) * nidx_rtm(2)
-!
-              sp1 = sp1 + vr_rtm_fdout(ip_rtm,3*nd-2) * Pvw_l(l_rtm)
-              sp2 = sp2 + (vr_rtm_fdout(ip_rtm,3*nd-1) * dPvw_l(l_rtm)  &
-     &                   - vr_rtm_fdout(in_rtm,3*nd  ) * Pgvw_l(l_rtm))
-              sp3 = sp3 - (vr_rtm_fdout(in_rtm,3*nd-1) * Pgvw_l(l_rtm)  &
-     &                   + vr_rtm_fdout(ip_rtm,3*nd  ) * dPvw_l(l_rtm))
             end do
 !
-            sp_rlm_fdout(i_rlm,3*nd-2) = sp1 * radius_1d_rlm_r(k_rlm)   &
-     &                                        *radius_1d_rlm_r(k_rlm)
-            sp_rlm_fdout(i_rlm,3*nd-1) = sp2 * radius_1d_rlm_r(k_rlm)
-            sp_rlm_fdout(i_rlm,3*nd  ) = sp3 * radius_1d_rlm_r(k_rlm)
+            do k_rlm = kst, ked
+              i_rlm = j_rlm + (k_rlm-1) * nidx_rlm(2)
+!
+              sp1 = 0.0d0
+              sp2 = 0.0d0
+              sp3 = 0.0d0
+              do l_rtm = 1, nidx_rtm(2)
+                ip_rtm = l_rtm + (k_rlm-1) * nidx_rtm(2)                &
+     &                         + (mdx_p_rlm_rtm(j_rlm)-1)               &
+     &                          * nidx_rtm(1) * nidx_rtm(2)
+                in_rtm = l_rtm + (k_rlm-1) * nidx_rtm(2)                &
+     &                         + (mdx_n_rlm_rtm(j_rlm)-1)               &
+     &                          * nidx_rtm(1) * nidx_rtm(2)
+!
+                sp1 = sp1 + vr_rtm_fdout(ip_rtm,3*nd-2) * Pvw_l(l_rtm)
+                sp2 = sp2 + (vr_rtm_fdout(ip_rtm,3*nd-1)* dPvw_l(l_rtm) &
+     &                   - vr_rtm_fdout(in_rtm,3*nd  ) * Pgvw_l(l_rtm))
+                sp3 = sp3 - (vr_rtm_fdout(in_rtm,3*nd-1)* Pgvw_l(l_rtm) &
+     &                   + vr_rtm_fdout(ip_rtm,3*nd  ) * dPvw_l(l_rtm))
+              end do
+!
+              sp_rlm_fdout(i_rlm,3*nd-2) = sp1 * radius_1d_rlm_r(k_rlm) &
+     &                                          *radius_1d_rlm_r(k_rlm)
+              sp_rlm_fdout(i_rlm,3*nd-1) = sp2 * radius_1d_rlm_r(k_rlm)
+              sp_rlm_fdout(i_rlm,3*nd  ) = sp3 * radius_1d_rlm_r(k_rlm)
+            end do
           end do
         end do
-!$omp end do nowait
       end do
-!$omp end parallel
+!$omp end parallel do
 !
       end subroutine legendre_f_trans_vector_fdout
 !
@@ -131,37 +134,41 @@
       integer(kind = kint) :: i_rlm, k_rlm, j_rlm
       integer(kind = kint) :: l_rtm
       integer(kind = kint) :: ip_rtm
-      integer(kind = kint) :: nd
+      integer(kind = kint) :: nd, ip, kst, ked
       real(kind = kreal) :: sp1
       real(kind = kreal) :: Pws_l(nidx_rtm(2))
 !
 !
-!$omp parallel private(nd)
-      do nd = 1, nscalar
-!$omp do private(j_rlm,k_rlm,i_rlm,l_rtm,ip_rtm,sp1,Pws_l)
-        do j_rlm = 1, nidx_rlm(2)
-          do l_rtm = 1, nidx_rtm(2)
-            Pws_l(l_rtm) = P_rtm(l_rtm,j_rlm)                           &
-     &                 * g_sph_rlm(j_rlm,6)*weight_rtm(l_rtm)
-          end do
-!
-          do k_rlm = 1, nidx_rlm(1)
-            i_rlm = j_rlm + (k_rlm-1) * nidx_rlm(2)
-!
-            sp1 = 0.0d0
+!$omp parallel do schedule(static)                                      &
+!$omp&            private(nd,ip,kst,ked,j_rlm,k_rlm,i_rlm,l_rtm,        &
+!$omp&                    ip_rtm,sp1,Pws_l)
+      do ip = 1, np_smp
+        kst = idx_rlm_smp_stack(ip-1,1) + 1
+        ked = idx_rlm_smp_stack(ip,  1)
+        do nd = 1, nscalar
+          do j_rlm = 1, nidx_rlm(2)
             do l_rtm = 1, nidx_rtm(2)
-              ip_rtm = l_rtm + (k_rlm-1) * nidx_rtm(2)                  &
-     &                 + (mdx_p_rlm_rtm(j_rlm)-1)                       &
-     &                  * nidx_rtm(1) * nidx_rtm(2)
-!
-              sp1 = sp1 + vr_rtm_fdout(ip_rtm,nd) * Pws_l(l_rtm)
+              Pws_l(l_rtm) = P_rtm(l_rtm,j_rlm)                         &
+     &                 * g_sph_rlm(j_rlm,6)*weight_rtm(l_rtm)
             end do
-            sp_rlm_fdout(i_rlm,nd) = sp1
+!
+            do k_rlm = kst, ked
+              i_rlm = j_rlm + (k_rlm-1) * nidx_rlm(2)
+!
+              sp1 = 0.0d0
+              do l_rtm = 1, nidx_rtm(2)
+                ip_rtm = l_rtm + (k_rlm-1) * nidx_rtm(2)                &
+     &                  + (mdx_p_rlm_rtm(j_rlm)-1)                      &
+     &                   * nidx_rtm(1) * nidx_rtm(2)
+!
+                sp1 = sp1 + vr_rtm_fdout(ip_rtm,nd) * Pws_l(l_rtm)
+              end do
+              sp_rlm_fdout(i_rlm,nd) = sp1
+            end do
           end do
         end do
-!$omp end do nowait
       end do
-!$omp end parallel
+!$omp end parallel do
 !
       end subroutine legendre_f_trans_scalar_fdout
 !

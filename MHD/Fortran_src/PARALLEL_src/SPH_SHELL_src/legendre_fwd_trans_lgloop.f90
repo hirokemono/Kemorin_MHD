@@ -53,7 +53,8 @@
       real(kind = kreal) :: Pgvw_l(nidx_rtm(2))
 !
 !
-!$omp  parallel do private(ip,ist,ied,inum,k_rlm,j_rlm,nd,inod,i_rlm,   &
+!$omp parallel do schedule(static)                                      &
+!$omp&             private(ip,ist,ied,inum,k_rlm,j_rlm,nd,inod,i_rlm,   &
 !$omp&            l_rtm,ip_rtm,in_rtm,sp1,sp2,sp3,Pvw_l,dPvw_l,Pgvw_l)
       do ip = 1, np_smp
         ist = nvector*inod_rlm_smp_stack(ip-1) + 1
@@ -124,7 +125,8 @@
       real(kind = kreal) :: Pws_l(nidx_rtm(2))
 !
 !
-!$omp  parallel do private(ip,ist,ied,inum,k_rlm,j_rlm,nd,inod,         &
+!$omp parallel do schedule(static)                                      &
+!$omp&             private(ip,ist,ied,inum,k_rlm,j_rlm,nd,inod,         &
 !$omp&                     i_rlm,l_rtm,ip_rtm,sp1,Pws_l)
       do ip = 1, np_smp
         ist = nscalar*inod_rlm_smp_stack(ip-1) + 1

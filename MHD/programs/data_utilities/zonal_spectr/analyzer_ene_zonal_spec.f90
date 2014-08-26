@@ -34,6 +34,8 @@
       use m_sph_zonal_ene_spectr
       use cal_zonal_ene_spec
 !
+      integer(kind = kint) :: ierr
+!
 !     --------------------- 
 !
       call read_control_data_zonal_fft
@@ -49,7 +51,8 @@
       call copy_sph_node_rtp_from_IO
 !
       if (iflag_debug.gt.0) write(*,*) 's_count_num_sph_smp'
-      call s_count_num_sph_smp
+      call s_count_num_sph_smp(ierr)
+      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
 !
 !     --------------------- 
 !

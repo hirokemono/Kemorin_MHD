@@ -32,6 +32,7 @@
       use count_num_sph_smp
       use set_special_sph_lm_flags
 !
+      integer(kind = kint) :: ierr
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtp_sph_trans'
@@ -47,7 +48,8 @@
       call input_modes_rlm_sph_trans(my_rank)
 !
       if (iflag_debug.gt.0) write(*,*) 's_count_num_sph_smp'
-      call s_count_num_sph_smp
+      call s_count_num_sph_smp(ierr)
+      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
 !
 !
       call set_special_degree_order_flags(nidx_rj(2), nidx_rlm(2),      &

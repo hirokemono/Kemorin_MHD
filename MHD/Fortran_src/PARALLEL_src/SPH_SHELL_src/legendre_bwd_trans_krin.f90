@@ -58,6 +58,7 @@
       real(kind = kreal), intent(inout)                                 &
      &    :: vr_rtm_spin(nidx_rtm(1)*ncomp,nidx_rtm(3),nidx_rtm(2))
 !
+      integer(kind = kint) :: ip, kst, ked
       integer(kind = kint) :: j_rlm, mp_rlm, mn_rlm, l_rtm
       integer(kind = kint) :: nb_nri, kr_nd, k_rlm, jst, jed
       real(kind = kreal) :: a2r_1d_rlm_r
@@ -70,87 +71,84 @@
 !
 !
       nb_nri = nvector*nidx_rtm(1)
-!$omp parallel private(kr_nd,k_rlm,a2r_1d_rlm_r)
-      do kr_nd = 1, nb_nri
-        k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-        a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
-!        nd =  1 + (kr_nd - k_rlm) / nidx_rlm(1)
-!$omp do private(j_rlm)
-        do j_rlm = 1, nidx_rlm(2)
-          sp_rlm_krin(kr_nd,         j_rlm)                             &
+!$omp parallel do schedule(static)                                      &
+!$omp&            private(ip,kst,ked,j_rlm,kr_nd,l_rtm,jst,jed,k_rlm,   &
+!$omp&                    mp_rlm,mn_rlm,vr1,vr2,vr3,Pg3_j,dPdt_j,Pgv_j, &
+!$omp&                    a2r_1d_rlm_r)
+      do ip = 1, np_smp
+        kst = nvector*idx_rtm_smp_stack(ip-1,1) + 1
+        ked = nvector*idx_rtm_smp_stack(ip,  1)
+!        lst = idx_rtm_smp_stack(ip-1,2) + 1
+!        led = idx_rtm_smp_stack(ip,  2)
+!
+        do kr_nd = kst, ked
+          k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
+          a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
+!          nd =  1 + (kr_nd - k_rlm) / nidx_rlm(1)
+          do j_rlm = 1, nidx_rlm(2)
+            sp_rlm_krin(kr_nd,         j_rlm)                           &
      &        = sp_rlm_krin(kr_nd,         j_rlm) * a2r_1d_rlm_r
-          sp_rlm_krin(kr_nd+nb_nri,  j_rlm)                             &
+            sp_rlm_krin(kr_nd+nb_nri,  j_rlm)                           &
      &        = sp_rlm_krin(kr_nd+nb_nri,  j_rlm) * a_r_1d_rlm_r(k_rlm)
-          sp_rlm_krin(kr_nd+2*nb_nri,j_rlm)                             &
+            sp_rlm_krin(kr_nd+2*nb_nri,j_rlm)                           &
      &        = sp_rlm_krin(kr_nd+2*nb_nri,j_rlm) * a_r_1d_rlm_r(k_rlm)
-        end do
-!$omp end do
-      end do
-!$omp end parallel
-!
-!$omp parallel do private(j_rlm,kr_nd,l_rtm,mp_rlm,jst,jed,             &
-!$omp&                    vr1,vr2,vr3,Pg3_j,dPdt_j)
-      do l_rtm = 1, nidx_rtm(2)
-        do j_rlm = 1, nidx_rlm(2)
-          Pg3_j(j_rlm) = P_jl(j_rlm,l_rtm) * g_sph_rlm(j_rlm,3)
-          dPdt_j(j_rlm) = dPdt_jl(j_rlm,l_rtm)
+          end do
         end do
 !
-        do mp_rlm = 1, nidx_rtm(3)
-          jst = lstack_rlm(mp_rlm-1) + 1
-          jed = lstack_rlm(mp_rlm)
-          vr1(1:nb_nri) = 0.0d0
-          vr2(1:nb_nri) = 0.0d0
-          vr3(1:nb_nri) = 0.0d0
-          do j_rlm = jst, jed
-            do kr_nd = 1, nb_nri
-              vr1(kr_nd) = vr1(kr_nd)                                   &
-     &         + sp_rlm_krin(kr_nd,         j_rlm)*Pg3_j(j_rlm)
+        do l_rtm = 1, nidx_rtm(2)
+          do j_rlm = 1, nidx_rlm(2)
+            Pg3_j(j_rlm) = P_jl(j_rlm,l_rtm) * g_sph_rlm(j_rlm,3)
+            dPdt_j(j_rlm) = dPdt_jl(j_rlm,l_rtm)
+            Pgv_j(j_rlm) = -P_jl(j_rlm,l_rtm)                           &
+     &        * dble(idx_gl_1d_rlm_j(j_rlm,3))*asin_theta_1d_rtm(l_rtm)
+          end do
 !
-              vr2(kr_nd) = vr2(kr_nd)                                   &
-     &         + sp_rlm_krin(kr_nd+nb_nri,  j_rlm)*dPdt_j(j_rlm)
+          do mp_rlm = 1, nidx_rtm(3)
+            jst = lstack_rlm(mp_rlm-1) + 1
+            jed = lstack_rlm(mp_rlm)
+            vr1(1:nb_nri) = 0.0d0
+            vr2(1:nb_nri) = 0.0d0
+            vr3(1:nb_nri) = 0.0d0
+            do j_rlm = jst, jed
+              do kr_nd = kst, ked
+                vr1(kr_nd) = vr1(kr_nd)                                 &
+     &                + sp_rlm_krin(kr_nd,         j_rlm)*Pg3_j(j_rlm)
 !
-              vr3(kr_nd) = vr3(kr_nd)                                   &
-     &         - sp_rlm_krin(kr_nd+2*nb_nri,j_rlm)*dPdt_j(j_rlm)
+                vr2(kr_nd) = vr2(kr_nd)                                 &
+     &                + sp_rlm_krin(kr_nd+nb_nri,  j_rlm)*dPdt_j(j_rlm)
+!
+                vr3(kr_nd) = vr3(kr_nd)                                 &
+     &                - sp_rlm_krin(kr_nd+2*nb_nri,j_rlm)*dPdt_j(j_rlm)
+              end do
+            end do
+            do kr_nd = kst, ked
+              vr_rtm_spin(kr_nd,         mp_rlm,l_rtm) = vr1(kr_nd)
+              vr_rtm_spin(kr_nd+nb_nri,  mp_rlm,l_rtm) = vr2(kr_nd)
+              vr_rtm_spin(kr_nd+2*nb_nri,mp_rlm,l_rtm) = vr3(kr_nd)
             end do
           end do
-          do kr_nd = 1, nb_nri
-            vr_rtm_spin(kr_nd,         mp_rlm,l_rtm) = vr1(kr_nd)
-            vr_rtm_spin(kr_nd+nb_nri,  mp_rlm,l_rtm) = vr2(kr_nd)
-            vr_rtm_spin(kr_nd+2*nb_nri,mp_rlm,l_rtm) = vr3(kr_nd)
-          end do
-        end do
-      end do
-!$omp end parallel do
 !
-!$omp parallel do private(j_rlm,kr_nd,l_rtm,mp_rlm,mn_rlm,jst,jed,      &
-!$omp&                    vr2,vr3,Pgv_j)
-      do l_rtm = 1, nidx_rtm(2)
-        do j_rlm = 1, nidx_rlm(2)
-          Pgv_j(j_rlm) = -P_jl(j_rlm,l_rtm)                             &
-     &        * dble(idx_gl_1d_rlm_j(j_rlm,3))*asin_theta_1d_rtm(l_rtm)
-        end do
-!
-        do mp_rlm = 1, nidx_rtm(3)
-          mn_rlm = 1 + nidx_rtm(3) - mp_rlm
-          jst = lstack_rlm(mp_rlm-1) + 1
-          jed = lstack_rlm(mp_rlm)
-          vr2(1:nb_nri) = 0.0d0
-          vr3(1:nb_nri) = 0.0d0
-          do j_rlm = jst, jed
-            do kr_nd = 1, nb_nri
-              vr2(kr_nd) = vr2(kr_nd)                                   &
+          do mp_rlm = 1, nidx_rtm(3)
+            mn_rlm = 1 + nidx_rtm(3) - mp_rlm
+            jst = lstack_rlm(mp_rlm-1) + 1
+            jed = lstack_rlm(mp_rlm)
+            vr2(1:nb_nri) = 0.0d0
+            vr3(1:nb_nri) = 0.0d0
+            do j_rlm = jst, jed
+              do kr_nd = kst, ked
+                vr2(kr_nd) = vr2(kr_nd)                                 &
      &            + sp_rlm_krin(kr_nd+2*nb_nri,j_rlm)*Pgv_j(j_rlm)
 !
-              vr3(kr_nd) = vr3(kr_nd)                                   &
+                vr3(kr_nd) = vr3(kr_nd)                                 &
      &            + sp_rlm_krin(kr_nd+nb_nri,  j_rlm)*Pgv_j(j_rlm)
+              end do
             end do
-          end do
-          do kr_nd = 1, nb_nri
-            vr_rtm_spin(kr_nd+nb_nri,  mn_rlm,l_rtm)                    &
+            do kr_nd = kst, ked
+              vr_rtm_spin(kr_nd+nb_nri,  mn_rlm,l_rtm)                  &
      &          = vr_rtm_spin(kr_nd+nb_nri,  mn_rlm,l_rtm) + vr2(kr_nd)
-            vr_rtm_spin(kr_nd+2*nb_nri,mn_rlm,l_rtm)                    &
+              vr_rtm_spin(kr_nd+2*nb_nri,mn_rlm,l_rtm)                  &
      &          = vr_rtm_spin(kr_nd+2*nb_nri,mn_rlm,l_rtm) + vr3(kr_nd)
+            end do
           end do
         end do
       end do
@@ -169,32 +167,38 @@
       real(kind = kreal), intent(inout)                                 &
      &      :: vr_rtm_spin(nidx_rtm(1)*ncomp,nidx_rtm(3),nidx_rtm(2))
 !
+      integer(kind = kint) :: ip, kst, ked
       integer(kind = kint) :: j_rlm, l_rtm, mp_rlm
-      integer(kind = kint) :: kr_nd, nb_nri, kst, jst, jed
+      integer(kind = kint) :: kr_nd, kvec, jst, jed
       real(kind = kreal) :: vr1(nscalar*nidx_rtm(1))
       real(kind = kreal) :: P_j(nidx_rlm(2))
 !
 !
-      kst = 3*nvector * nidx_rtm(1)
-      nb_nri = nscalar*nidx_rtm(1)
-!$omp parallel do private(j_rlm,kr_nd,l_rtm,mp_rlm,jst,jed,vr1,P_j)
-      do l_rtm = 1, nidx_rtm(2)
-        P_j(1:nidx_rlm(2)) =  P_jl(1:nidx_rlm(2),l_rtm)
-        do mp_rlm = 1, nidx_rtm(3)
-          jst = lstack_rlm(mp_rlm-1) + 1
-          jed = lstack_rlm(mp_rlm)
-          vr1(1:nb_nri) = 0.0d0
-          do j_rlm = jst, jed
-            do kr_nd = 1, nb_nri
-!            do nd = 1, nscalar
-!              do k_rtm = 1,  nidx_rtm(1)
-!              kr_nd = k_rlm + (nd-1) * nidx_rlm(1)
-              vr1(kr_nd) = vr1(kr_nd)                                   &
-     &                    + sp_rlm_krin(kr_nd+kst,j_rlm)*P_j(j_rlm)
+      kvec = 3*nvector * nidx_rtm(1)
+!$omp parallel do schedule(static)                                      &
+!$omp&            private(ip,kst,ked,j_rlm,kr_nd,l_rtm,mp_rlm,          &
+!$omp&                    jst,jed,vr1,P_j)
+      do ip = 1, np_smp
+        kst = nscalar*idx_rlm_smp_stack(ip-1,1) + 1
+        ked = nscalar*idx_rlm_smp_stack(ip,  1)
+        do l_rtm = 1, nidx_rtm(2)
+          P_j(1:nidx_rlm(2)) =  P_jl(1:nidx_rlm(2),l_rtm)
+          do mp_rlm = 1, nidx_rtm(3)
+            jst = lstack_rlm(mp_rlm-1) + 1
+            jed = lstack_rlm(mp_rlm)
+            vr1(1:nscalar*nidx_rtm(1)) = 0.0d0
+            do j_rlm = jst, jed
+              do kr_nd = kst, ked
+!              do nd = 1, nscalar
+!                do k_rtm = 1,  nidx_rtm(1)
+!                kr_nd = k_rlm + (nd-1) * nidx_rlm(1)
+                vr1(kr_nd) = vr1(kr_nd)                                 &
+     &                      + sp_rlm_krin(kr_nd+kvec,j_rlm)*P_j(j_rlm)
+              end do
             end do
-          end do
-          do kr_nd = 1, nb_nri
-            vr_rtm_spin(kr_nd+kst,mp_rlm,l_rtm) = vr1(kr_nd)
+            do kr_nd = kst, ked
+              vr_rtm_spin(kr_nd+kvec,mp_rlm,l_rtm) = vr1(kr_nd)
+            end do
           end do
         end do
       end do
