@@ -58,7 +58,7 @@
       real(kind = kreal), intent(inout)                                 &
      &      :: sp_rlm_spin(nidx_rtm(1)*ncomp,nidx_rlm(2))
 !
-      integer(kind = kint) :: ip, kst, ked
+      integer(kind = kint) :: ip, jst, jed
       integer(kind = kint) :: j_rlm, mp_rlm, mn_rlm, l_rtm
       integer(kind = kint) :: kr_nd, k_rlm, nb_nri
       real(kind = kreal) :: sp1(nvector*nidx_rlm(1))
@@ -71,12 +71,12 @@
 !
       nb_nri = nvector*nidx_rlm(1)
 !$omp parallel do schedule(static)                                      &
-!$omp&            private(ip,kst,ked,j_rlm,l_rtm,mp_rlm,mn_rlm,kr_nd,   &
+!$omp&            private(ip,jst,jed,j_rlm,l_rtm,mp_rlm,mn_rlm,kr_nd,   &
 !$omp&                    k_rlm,Pvw_l,dPvw_l,Pgvw_l,sp1,sp2,sp3)
       do ip = 1, np_smp
-        kst = nvector*idx_rlm_smp_stack(ip-1,1) + 1
-        ked = nvector*idx_rlm_smp_stack(ip,  1)
-        do j_rlm = 1, nidx_rlm(2)
+        jst = idx_rlm_smp_stack(ip-1,2) + 1
+        jed = idx_rlm_smp_stack(ip,  2)
+        do j_rlm = jst, jed
           mp_rlm = mdx_p_rlm_rtm(j_rlm)
           mn_rlm = mdx_n_rlm_rtm(j_rlm)
 !
@@ -95,7 +95,7 @@
           sp2(1:nb_nri) = 0.0d0
           sp3(1:nb_nri) = 0.0d0
           do l_rtm = 1, nidx_rtm(2)
-            do kr_nd = kst, ked
+            do kr_nd = 1, nb_nri
               sp1(kr_nd) = sp1(kr_nd)                                   &
      &       +  vr_rtm_krin(kr_nd,         l_rtm,mp_rlm)*Pvw_l(l_rtm)
 !
@@ -109,7 +109,7 @@
             end do
           end do
 !
-          do kr_nd = kst, ked
+          do kr_nd = 1, nb_nri
             k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
             sp_rlm_spin(kr_nd,         j_rlm)                           &
      &        = sp1(kr_nd) * radius_1d_rlm_r(k_rlm)                     &
@@ -136,19 +136,21 @@
       real(kind = kreal), intent(inout)                                 &
      &      :: sp_rlm_spin(nidx_rtm(1)*ncomp,nidx_rlm(2))
 !
-      integer(kind = kint) :: ip, kst, ked, kvec, kr_nd
+      integer(kind = kint) :: ip, jst, jed
       integer(kind = kint) :: j_rlm, l_rtm, mp_rlm
+      integer(kind = kint) :: kst, nb_nri, kr_nd
       real(kind = kreal) :: Pws_l(nidx_rtm(2))
       real(kind = kreal) :: sp1(nscalar*nidx_rlm(1))
 !
 !
-      kvec = 3*nvector * nidx_rlm(1)
+      kst = 3*nvector * nidx_rlm(1)
+      nb_nri = nscalar*nidx_rlm(1)
 !$omp parallel do schedule(static)                                      &
-!$omp&            private(ip,kst,ked,j_rlm,l_rtm,mp_rlm,Pws_l,sp1)
+!$omp&            private(ip,jst,jed,j_rlm,l_rtm,mp_rlm,Pws_l,sp1)
       do ip = 1, np_smp
-        kst = nscalar*idx_rlm_smp_stack(ip-1,1) + 1
-        ked = nscalar*idx_rlm_smp_stack(ip,  1)
-        do j_rlm = 1, nidx_rlm(2)
+        jst = idx_rlm_smp_stack(ip-1,2) + 1
+        jed = idx_rlm_smp_stack(ip,  2)
+        do j_rlm = jst, jed
           mp_rlm = mdx_p_rlm_rtm(j_rlm)
 !
           do l_rtm = 1, nidx_rtm(2)
@@ -159,14 +161,14 @@
           do l_rtm = 1, nidx_rtm(2)
             sp1(1:nscalar*nidx_rtm(1)) = 0.0d0
 !
-            do kr_nd = kst, ked
+            do kr_nd = 1, nb_nri
               sp1(kr_nd) = sp1(kr_nd)                                   &
-     &            + vr_rtm_krin(kr_nd+kvec,l_rtm,mp_rlm) * Pws_l(l_rtm)
+     &            + vr_rtm_krin(kr_nd+kst,l_rtm,mp_rlm) * Pws_l(l_rtm)
             end do
           end do
 !
-          do kr_nd = kst, ked
-            sp_rlm_spin(kr_nd+kvec,j_rlm) = sp1(kr_nd)
+          do kr_nd = 1, nb_nri
+            sp_rlm_spin(kr_nd+kst,j_rlm) = sp1(kr_nd)
           end do
         end do
       end do
