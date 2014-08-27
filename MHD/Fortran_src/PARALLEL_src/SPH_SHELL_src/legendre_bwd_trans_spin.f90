@@ -69,6 +69,7 @@
 !
 !
       nb_nri = nvector*nidx_rtm(1)
+!
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,kst,ked,j_rlm,kr_nd,l_rtm,jst,jed,k_rlm,   &
 !$omp&                    mp_rlm,mn_rlm,vr1,vr2,vr3,Pg3_j,dPdt_j,Pgv_j, &

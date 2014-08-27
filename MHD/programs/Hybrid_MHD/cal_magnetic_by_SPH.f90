@@ -95,6 +95,8 @@
       call init_interpolate_mat_type(mesh_fem%ele, itp_FEM_2_SPH)
       call init_interpolate_mat_type(mesh_sph%ele, itp_SPH_2_FEM)
 !
+      if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
+     &            id_legendre_transfer = iflag_leg_orginal_loop
       call initialize_sph_trans
       call init_pole_transform
 !

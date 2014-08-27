@@ -11,7 +11,10 @@
 !!      subroutine resize_work_4_sph_trans
 !!
 !!      subroutine allocate_work_4_sph_trans
+!!      subroutine allocate_l_rtm_block
+!!
 !!      subroutine deallocate_work_4_sph_trans
+!!      subroutine deallocate_l_rtm_block
 !!
 !!      subroutine allocate_work_4_zonal_fft
 !!      subroutine deallocate_work_4_zonal_fft
@@ -82,6 +85,14 @@
       real(kind = kreal), allocatable :: cot_theta_1d_rtp(:)
 !
 !
+!>      Number of block for grid in @f$ \theta @f$-direction
+      integer(kind = kint) :: nblock_l_rtm = 8
+!>      End point of each block for grid in @f$ \theta @f$-direction
+      integer(kind = kint), allocatable :: lstack_block_rtm(:)
+!>      Maximum point of each block for grid in @f$ \theta @f$-direction
+      integer(kind = kint) :: lmax_block_rtm
+!
+!
 !>      End address of spherical harmonics order for SMP parallelization
       integer(kind = kint), allocatable :: lstack_rlm(:)
 !
@@ -150,6 +161,17 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine allocate_l_rtm_block
+!
+!
+      allocate(lstack_block_rtm(0:nblock_l_rtm))
+      lstack_block_rtm = 0
+      lmax_block_rtm = 0
+!
+      end subroutine allocate_l_rtm_block
+!
+! ----------------------------------------------------------------------
+!
       subroutine deallocate_work_4_sph_trans
 !
 !
@@ -164,6 +186,16 @@
       iflag_sph_trans = 0
 !
       end subroutine deallocate_work_4_sph_trans
+!
+! ----------------------------------------------------------------------
+!
+      subroutine deallocate_l_rtm_block
+!
+!
+      deallocate(lstack_block_rtm)
+      lmax_block_rtm = 0
+!
+      end subroutine deallocate_l_rtm_block
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

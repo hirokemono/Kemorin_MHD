@@ -489,6 +489,7 @@ begin MHD_control
       coef_imp_b_ctl          5.0e-1
       coef_imp_c_ctl          5.0e-1
       FFT_library_ctl          'ISPACK'
+      Legendre_vector_length_ctl    2
     end time_loop_ctl
   end control
 !

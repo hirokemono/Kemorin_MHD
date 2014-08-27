@@ -18,6 +18,7 @@
 !
       character(len = kchara) :: Legendre_trans_loop_ctl
       character(len = kchara) :: FFT_library_ctl
+      integer(kind = kint) :: legendre_vector_len_ctl
 !
       character(len = kchara) :: zm_spec_file_head_ctl
       character(len = kchara) :: zonal_udt_head_ctl
@@ -46,6 +47,8 @@
      &                        =  'Legendre_trans_loop_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_FFT_package =  'FFT_library_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_legendre_vect_len = 'Legendre_vector_length_ctl'
 !
       character(len=kchara), parameter :: hd_zm_sph_spec_file           &
      &                        =  'zm_spectr_head_ctl'
@@ -61,6 +64,7 @@
 !
       integer (kind=kint) :: i_sph_transform_mode =  0
       integer (kind=kint) :: i_FFT_package =         0
+      integer (kind=kint) :: i_legendre_vect_len  =  0
       integer (kind=kint) :: i_zm_sph_spec_file =    0
       integer (kind=kint) :: i_zm_field_file =       0
 !
@@ -74,7 +78,7 @@
       private :: hd_FFT_package
       private :: hd_sph_trans_params, i_sph_trans_params
       private :: hd_zm_sph_spec_file, hd_zm_field_file
-      private :: hd_sph_transform_mode
+      private :: hd_sph_transform_mode, hd_legendre_vect_len
       private :: hd_cmb_grp, hd_icb_grp, hd_gauss_file_name
       private :: read_sph_trans_control_data, read_sph_trans_params_ctl
       private :: read_sph_trans_model_ctl
@@ -173,6 +177,9 @@
      &      i_sph_trans_params)
         if(i_sph_trans_params .gt. 0) exit
 !
+!
+        call read_integer_ctl_item(hd_legendre_vect_len,                &
+     &        i_legendre_vect_len, legendre_vector_len_ctl)
 !
         call read_character_ctl_item(hd_sph_transform_mode,             &
      &          i_sph_transform_mode, Legendre_trans_loop_ctl)

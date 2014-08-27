@@ -88,6 +88,9 @@
       integer(kind = kint)                                              &
      &              :: id_legendre_transfer = iflag_leg_undefined
 !
+!>      vector length for grid in @f$ \theta @f$-direction
+      integer(kind = kint) :: nvector_l_rtm = 0
+!
 ! -----------------------------------------------------------------------
 !
       contains

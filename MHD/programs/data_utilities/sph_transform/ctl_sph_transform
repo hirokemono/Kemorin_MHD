@@ -52,6 +52,7 @@ begin spherical_transform
     radial_ICB_group_name        CMB
 
     FFT_library_ctl          'ISPACK'
+    Legendre_vector_length_ctl    2
 !
     zm_spectr_head_ctl     'sph_spectr/zm_spectr'
     zonal_udt_head_ctl     'zm_field/zm_spectr'

@@ -59,7 +59,7 @@
       real(kind = kreal), intent(inout)                                 &
      &      :: sp_rlm_spin(nidx_rtm(1)*ncomp,nidx_rlm(2))
 !
-      integer(kind = kint) :: ip, kst, ked
+      integer(kind = kint) :: ip, kst, ked, lp, lst, led
       integer(kind = kint) :: j_rlm, mp_rlm, mn_rlm, l_rtm
       integer(kind = kint) :: nb_nri, kr_nd, k_rlm
       real(kind = kreal) :: sp1, sp2, sp3, r2_1d_rlm_r
@@ -70,52 +70,70 @@
 !
       nb_nri = nvector*nidx_rlm(1)
 !$omp parallel do schedule(static)                                      &
-!$omp&            private(ip,kst,ked,j_rlm,kr_nd,l_rtm,k_rlm,           &
+!$omp&            private(ip,kst,ked,lp,lst,led,j_rlm,kr_nd,l_rtm,k_rlm,&
 !$omp&                    mp_rlm,mn_rlm,r2_1d_rlm_r,sp1,sp2,sp3,        &
 !$omp&                    Pvw_l,dPvw_l,Pgvw_l)
       do ip = 1, np_smp
         kst = nvector*idx_rlm_smp_stack(ip-1,1) + 1
         ked = nvector*idx_rlm_smp_stack(ip,  1)
-        do j_rlm = 1, nidx_rlm(2)
-          mp_rlm = mdx_p_rlm_rtm(j_rlm)
-          mn_rlm = mdx_n_rlm_rtm(j_rlm)
-!
-          do l_rtm = 1, nidx_rtm(2)
-            Pvw_l(l_rtm) = P_rtm(l_rtm,j_rlm)                           &
-     &                     * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
-            dPvw_l(l_rtm) = dPdt_rtm(l_rtm,j_rlm)                       &
-     &                     * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
-            Pgvw_l(l_rtm) = P_rtm(l_rtm,j_rlm)                          &
-     &                     * dble(idx_gl_1d_rlm_j(j_rlm,3))             &
-     &                      * asin_theta_1d_rtm(l_rtm)                  &
-     &                      * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
+        do kr_nd = kst, ked
+          do j_rlm = 1, nidx_rlm(2)
+            sp_rlm_spin(kr_nd,         j_rlm) = 0.0d0
+            sp_rlm_spin(kr_nd+nb_nri,  j_rlm) = 0.0d0
+            sp_rlm_spin(kr_nd+2*nb_nri,j_rlm) = 0.0d0
           end do
+        end do
 !
-          do kr_nd = kst, ked
-            k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-            r2_1d_rlm_r = radius_1d_rlm_r(k_rlm)*radius_1d_rlm_r(k_rlm)
-            sp1 = 0.0d0
-            sp2 = 0.0d0
-            sp3 = 0.0d0
+        do lp = 1, nblock_l_rtm
+          lst = lstack_block_rtm(lp-1) + 1
+          led = lstack_block_rtm(lp  )
+           do j_rlm = 1, nidx_rlm(2)
+             mp_rlm = mdx_p_rlm_rtm(j_rlm)
+            mn_rlm = mdx_n_rlm_rtm(j_rlm)
+!
             do l_rtm = 1, nidx_rtm(2)
-              sp1 = sp1                                                 &
-     &       +  vr_rtm_spin(l_rtm,kr_nd,         mp_rlm)*Pvw_l(l_rtm)
-!
-              sp2 = sp2                                                 &
-     &       + (vr_rtm_spin(l_rtm,kr_nd+nb_nri,  mp_rlm)*dPvw_l(l_rtm)  &
-     &        - vr_rtm_spin(l_rtm,kr_nd+2*nb_nri,mn_rlm)*Pgvw_l(l_rtm))
-!
-              sp3 = sp3                                                 &
-     &       - (vr_rtm_spin(l_rtm,kr_nd+nb_nri,  mn_rlm)*Pgvw_l(l_rtm)  &
-     &        + vr_rtm_spin(l_rtm,kr_nd+2*nb_nri,mp_rlm)*dPvw_l(l_rtm))
+              Pvw_l(l_rtm) = P_rtm(l_rtm,j_rlm)                         &
+     &                       * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
+              dPvw_l(l_rtm) = dPdt_rtm(l_rtm,j_rlm)                     &
+     &                       * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
+              Pgvw_l(l_rtm) = P_rtm(l_rtm,j_rlm)                        &
+     &                       * dble(idx_gl_1d_rlm_j(j_rlm,3))           &
+     &                        * asin_theta_1d_rtm(l_rtm)                &
+     &                        * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
             end do
 !
-            sp_rlm_spin(kr_nd,         j_rlm)                           &
-     &        = sp1 * r2_1d_rlm_r
-            sp_rlm_spin(kr_nd+nb_nri,  j_rlm)                           &
-     &        = sp2 * radius_1d_rlm_r(k_rlm)
-            sp_rlm_spin(kr_nd+2*nb_nri,j_rlm)                           &
-     &        = sp3 * radius_1d_rlm_r(k_rlm)
+            do kr_nd = kst, ked
+              k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
+              r2_1d_rlm_r = radius_1d_rlm_r(k_rlm)                      &
+     &                     * radius_1d_rlm_r(k_rlm)
+              sp1 = 0.0d0
+              sp2 = 0.0d0
+              sp3 = 0.0d0
+              do l_rtm = lst, led
+                sp1 = sp1 + vr_rtm_spin(l_rtm,kr_nd,         mp_rlm)    &
+     &                     * Pvw_l(l_rtm)
+!
+                sp2 = sp2 + (vr_rtm_spin(l_rtm,kr_nd+nb_nri,  mp_rlm)   &
+     &                      * dPvw_l(l_rtm)                             &
+     &                     - vr_rtm_spin(l_rtm,kr_nd+2*nb_nri,mn_rlm)   &
+     &                      * Pgvw_l(l_rtm))
+!
+                sp3 = sp3 - (vr_rtm_spin(l_rtm,kr_nd+nb_nri,  mn_rlm)   &
+     &                      * Pgvw_l(l_rtm)                             &
+     &                     + vr_rtm_spin(l_rtm,kr_nd+2*nb_nri,mp_rlm)   &
+     &                      * dPvw_l(l_rtm))
+              end do
+!
+              sp_rlm_spin(kr_nd,         j_rlm)                         &
+     &          = sp_rlm_spin(kr_nd,         j_rlm)                     &
+     &           + sp1 * r2_1d_rlm_r
+              sp_rlm_spin(kr_nd+nb_nri,  j_rlm)                         &
+     &          = sp_rlm_spin(kr_nd+nb_nri,  j_rlm)                     &
+     &           + sp2 * radius_1d_rlm_r(k_rlm)
+              sp_rlm_spin(kr_nd+2*nb_nri,j_rlm)                         &
+     &          = sp_rlm_spin(kr_nd+2*nb_nri,j_rlm)                     &
+     &           + sp3 * radius_1d_rlm_r(k_rlm)
+            end do
           end do
         end do
       end do
@@ -135,36 +153,48 @@
      &      :: sp_rlm_spin(nidx_rtm(1)*ncomp,nidx_rlm(2))
 !
       integer(kind = kint) :: j_rlm, l_rtm, mp_rlm
-      integer(kind = kint) :: kr_nd, kst, ked, ip
+      integer(kind = kint) :: kr_nd, kst, ked, ip, lp, lst, led
       real(kind = kreal) :: sp1
       real(kind = kreal) :: Pws_l(nidx_rtm(2))
 !
 !
 !$omp parallel do schedule(static)                                      &
-!$omp&         private(ip,kst,ked,j_rlm,kr_nd,l_rtm,mp_rlm,sp1,Pws_l)
+!$omp&         private(ip,kst,ked,lp,lst,led,j_rlm,kr_nd,l_rtm,mp_rlm,  &
+!$omp&                 sp1,Pws_l)
       do ip = 1, np_smp
         kst = 3*nvector*nidx_rtm(1)                                     &
      &       + nscalar*idx_rlm_smp_stack(ip-1,1) + 1
         ked = 3*nvector*nidx_rtm(1)                                     &
      &       + nscalar*idx_rlm_smp_stack(ip,  1)
-        do j_rlm = 1, nidx_rlm(2)
-          mp_rlm = mdx_p_rlm_rtm(j_rlm)
-!
-          do l_rtm = 1, nidx_rtm(2)
-            Pws_l(l_rtm) = P_rtm(l_rtm,j_rlm)                           &
-     &                   * g_sph_rlm(j_rlm,6)*weight_rtm(l_rtm)
+        do kr_nd = kst, ked
+          do j_rlm = 1, nidx_rlm(2)
+            sp_rlm_spin(kr_nd,j_rlm) = 0.0d0
           end do
+        end do
 !
-          do kr_nd = kst, ked
-!          do nd = nvector+1, nvector+nscalar
-!            do k_rlm = 1, nidx_rlm(1)
-!              kr_nd = k_rlm + (nd-1) * nidx_rlm(1)
+        do lp = 1, nblock_l_rtm
+          lst = lstack_block_rtm(lp-1) + 1
+          led = lstack_block_rtm(lp  )
+          do j_rlm = 1, nidx_rlm(2)
+            mp_rlm = mdx_p_rlm_rtm(j_rlm)
 !
-            sp1 = 0.0d0
-            do l_rtm = 1, nidx_rtm(2)
-              sp1 = sp1 + vr_rtm_spin(l_rtm,kr_nd,mp_rlm) * Pws_l(l_rtm)
+            do l_rtm = lst, led
+              Pws_l(l_rtm) = P_rtm(l_rtm,j_rlm)                         &
+     &                      * g_sph_rlm(j_rlm,6)*weight_rtm(l_rtm)
             end do
-            sp_rlm_spin(kr_nd,j_rlm) = sp1
+!
+            do kr_nd = kst, ked
+!            do nd = nvector+1, nvector+nscalar
+!              do k_rlm = 1, nidx_rlm(1)
+!                kr_nd = k_rlm + (nd-1) * nidx_rlm(1)
+!
+              sp1 = 0.0d0
+              do l_rtm = lst, led
+                sp1 = sp1 + vr_rtm_spin(l_rtm,kr_nd,mp_rlm)             &
+     &                     * Pws_l(l_rtm)
+              end do
+              sp_rlm_spin(kr_nd,j_rlm) = sp_rlm_spin(kr_nd,j_rlm) + sp1
+            end do
           end do
         end do
       end do

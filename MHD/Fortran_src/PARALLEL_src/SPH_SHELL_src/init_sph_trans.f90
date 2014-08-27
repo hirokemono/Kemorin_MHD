@@ -61,8 +61,10 @@
       use m_work_pole_sph_trans
       use schmidt_poly_on_rtm_grid
       use FFT_selector
+      use legendre_transform_select
       use init_spherical_SRs
       use select_fourier_transform
+      use cal_minmax_and_stacks
 !
       integer(kind = kint) :: ncomp
       integer(kind = kint) :: Nstacksmp(0:np_smp)
@@ -85,6 +87,16 @@
 !      call allocate_legendre_trans_mat
 !      call cal_legendre_trans_coefs
 !
+      if(nvector_l_rtm.le.0 .or. nvector_l_rtm.gt.nidx_rtm(2)) then
+        nvector_l_rtm = nidx_rtm(2)
+        nblock_l_rtm =  1
+      else
+        nblock_l_rtm =  nidx_rtm(2) / nvector_l_rtm
+      end if
+!
+      call allocate_l_rtm_block
+      call count_number_4_smp(nblock_l_rtm, ione, nidx_rtm(2),          &
+     &    lstack_block_rtm, lmax_block_rtm)
 !
       ncomp = ncomp_sph_trans*nidx_rtp(1)*nidx_rtp(2)
       Nstacksmp(0:np_smp) = ncomp_sph_trans*irt_rtp_smp_stack(0:np_smp)
@@ -95,6 +107,10 @@
       call split_rtp_comms(nneib_domain_rtp, id_domain_rtp,             &
      &          nneib_domain_rj) 
       call init_sph_send_recv_N(ncomp, vr_rtp, vr_rtm, sp_rlm, sp_rj)
+!
+      if(my_rank .ne. 0) return
+      write(*,*) 'Vector length for Legendre transform:', nvector_l_rtm
+      write(*,*) 'Block number for Legendre transform: ', nblock_l_rtm
 !
       end subroutine initialize_sph_trans
 !

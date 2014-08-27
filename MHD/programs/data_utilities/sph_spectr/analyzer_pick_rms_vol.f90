@@ -41,6 +41,7 @@
       use count_num_sph_smp
       use set_phys_name_4_sph_trans
       use init_sph_trans
+      use legendre_transform_select
       use cal_rms_fields_by_sph
 !
 !     --------------------- 
@@ -85,6 +86,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
+      if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
+     &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp
       call initialize_sph_trans
 !

@@ -54,6 +54,12 @@
 !
 !   setting for spherical transform
 !
+      if(i_legendre_vect_len .gt. 0) then
+        nvector_l_rtm = legendre_vector_len_ctl
+      else
+        nvector_l_rtm = 0
+      end if
+!
       if(i_sph_transform_mode .gt. 0) then
         call set_legendre_trans_mode_ctl(Legendre_trans_loop_ctl)
       end if
@@ -118,6 +124,12 @@
       call set_control_ucd_file_def
 !
 !   setting for spherical transform
+!
+      if(i_legendre_vect_len .gt. 0) then
+        nvector_l_rtm = legendre_vector_len_ctl
+      else
+        nvector_l_rtm = 0
+      end if
 !
       if(i_sph_transform_mode .gt. 0) then
         call set_legendre_trans_mode_ctl(Legendre_trans_loop_ctl)
@@ -212,6 +224,12 @@
       end if
 !
 !   setting for spherical transform
+!
+      if(i_legendre_vect_len .gt. 0) then
+        nvector_l_rtm = legendre_vector_len_ctl
+      else
+        nvector_l_rtm = 0
+      end if
 !
       if(i_sph_transform_mode .gt. 0) then
         call set_legendre_trans_mode_ctl(Legendre_trans_loop_ctl)

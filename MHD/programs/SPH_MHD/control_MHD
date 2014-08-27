@@ -493,6 +493,7 @@ begin MHD_control
       FFT_library_ctl                'ISPACK'
       import_table_mode_ctl          'reversed_table'
       send_recv_routine_ctl          'SEND_RECV'
+      Legendre_vector_length_ctl    2
     end time_loop_ctl
   end control
 !

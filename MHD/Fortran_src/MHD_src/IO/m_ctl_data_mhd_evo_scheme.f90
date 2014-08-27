@@ -58,6 +58,7 @@
 !!                     ('regular_table' or 'reversed_table')
 !!   send_recv_routine_ctl:    Selection of send_recv_routines
 !!                     ('SEND_RECV', 'AllToAllv', or 'AllToAll')
+!!   Legendre_vector_length_ctl:  vector length for Legendre transform
 !!
 !! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -79,6 +80,8 @@
 !!
 !!      Legendre_trans_loop_ctl   'inner_radial_loop'
 !!      FFT_library_ctl           'FFTW'
+!!
+!!      Legendre_vector_length_ctl    2
 !!    end time_loop_ctl
 !!
 !! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -123,6 +126,8 @@
       character(len = kchara) :: FFT_library_ctl
       character(len = kchara) :: import_mode_ctl
       character(len = kchara) :: SR_routine_ctl
+!
+      integer(kind = kint) :: legendre_vector_len_ctl
 !
 !     label for entry
 !
@@ -186,6 +191,8 @@
      &      :: hd_import_mode =  'import_table_mode_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_SR_routine =   'send_recv_routine_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_legendre_vect_len = 'Legendre_vector_length_ctl'
 !
       integer (kind=kint) :: i_iflag_supg =         0
       integer (kind=kint) :: i_iflag_v_supg =       0
@@ -210,6 +217,7 @@
       integer (kind=kint) :: i_FFT_package =        0
       integer (kind=kint) :: i_import_mode =        0
       integer (kind=kint) :: i_SR_routine =         0
+      integer (kind=kint) :: i_legendre_vect_len  = 0
 !
       private :: hd_restart_file, hd_rst_flag, i_restart_file
       private :: hd_time_loop, i_time_loop
@@ -220,7 +228,7 @@
       private :: hd_diff_correct, hd_coef_imp_v, hd_coef_imp_t
       private :: hd_coef_imp_b, hd_coef_imp_c, hd_eps_crank
       private :: hd_method_4_velo, hd_precond_4_crank
-      private :: hd_sph_transform_mode
+      private :: hd_sph_transform_mode, hd_legendre_vect_len
       private :: hd_FFT_package, hd_import_mode, hd_SR_routine
 !
 !   --------------------------------------------------------------------
@@ -312,6 +320,8 @@
         call read_integer_ctl_item(hd_num_multi_pass, i_num_multi_pass, &
      &        num_multi_pass_ctl)
         call read_integer_ctl_item(hd_maxiter, i_maxiter, maxiter_ctl)
+        call read_integer_ctl_item(hd_legendre_vect_len,                &
+     &        i_legendre_vect_len, legendre_vector_len_ctl)
       end do
 !
       end subroutine read_time_loop_ctl
