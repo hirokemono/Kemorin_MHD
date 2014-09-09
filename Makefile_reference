@@ -53,6 +53,10 @@ F90OPTFLAGS= -O3 -fopenmp -Wall
 OPTFLAGS = -O3 -Wall
 CXXFLAGS = -O2 -Wall
 #
+#   BLAS settings
+#
+BLAS_LIBS = -framework veclib
+#
 #   libpng and zlib settings
 #
 ZLIB_CFLAGS = -I/Users/matsui/local/include
@@ -125,6 +129,7 @@ makemake: mpif.h
 		MPILIBS="$(MPILIBS)" \
 		MPICHBINDIR="$(MPICHBINDIR)" \
 		MPICHINCDIR="$(MPICHINCDIR)" \
+		BLAS_LIBS="$(BLAS_LIBS)" \
 		ZLIB_CFLAGS="$(ZLIB_CFLAGS)" \
 		ZLIB_LIB="$(ZLIB_LIB)"       \
 		PNG_CFLAGS="$(PNG_CFLAGS)"   \

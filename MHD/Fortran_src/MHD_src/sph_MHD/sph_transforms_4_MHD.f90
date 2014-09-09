@@ -26,6 +26,7 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use m_work_time
 !
       implicit  none
 !
@@ -89,10 +90,18 @@
           write(tmpchara,'(a)') trim(leg_krloop_inner)
         else if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
           write(tmpchara,'(a)') trim(leg_krloop_outer)
-        else if(id_legendre_transfer .eq. iflag_leg_long_loop) then
-          write(tmpchara,'(a)') trim(leg_long_loop)
         else if(id_legendre_transfer .eq. iflag_leg_fdout_loop) then
           write(tmpchara,'(a)') trim(leg_fdout_loop)
+        else if(id_legendre_transfer .eq. iflag_leg_symmetry) then
+          write(tmpchara,'(a)') trim(leg_sym_org_loop)
+        else if(id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
+          write(tmpchara,'(a)') trim(leg_sym_spin_loop)
+        else if(id_legendre_transfer .eq. iflag_leg_sym_matmul) then
+          write(tmpchara,'(a)') trim(leg_sym_matmul)
+        else if(id_legendre_transfer .eq. iflag_leg_matmul) then
+          write(tmpchara,'(a)') trim(leg_matmul)
+        else if(id_legendre_transfer .eq. iflag_leg_test_loop) then
+          write(tmpchara,'(a)') trim(leg_test_loop)
         end if
         call change_2_upper_case(tmpchara)
 !
@@ -113,18 +122,22 @@
 !
 !
       if(ncomp_rj_2_rtp .eq. 0) return
+      call start_eleps_time(51)
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_vec_spec_to_trans'
       call copy_mhd_vec_spec_to_trans
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_scl_spec_to_trans'
       call copy_mhd_scl_spec_to_trans
+      call end_eleps_time(51)
 !
       call sph_b_trans_w_coriolis(ncomp_rj_2_rtp,                       &
      &    nvector_rj_2_rtp, nscalar_rj_2_rtp)
 !
+      call start_eleps_time(52)
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_vec_fld_from_trans'
       call copy_mhd_vec_fld_from_trans
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_scl_fld_from_trans'
       call copy_mhd_scl_fld_from_trans
+      call end_eleps_time(52)
 !
       end subroutine sph_back_trans_4_MHD
 !
@@ -138,12 +151,16 @@
 !
 !
       if(ncomp_rtp_2_rj .eq. 0) return
+      call start_eleps_time(53)
       call copy_mhd_vec_fld_to_trans
+      call end_eleps_time(53)
 !
       call sph_f_trans_w_coriolis(ncomp_rtp_2_rj,                       &
      &    nvector_rtp_2_rj, nscalar_rtp_2_rj)
 !
+      call start_eleps_time(54)
       call copy_mhd_vec_spec_from_trans
+      call end_eleps_time(54)
 !
       end subroutine sph_forward_trans_4_MHD
 !
@@ -275,12 +292,13 @@
       use legendre_transform_select
 !
       real(kind = kreal) :: starttime, etime_shortest
-      real(kind = kreal) :: endtime(5), etime_trans(5)
+      real(kind = kreal) :: endtime(ntype_Leg_trans_loop)
+      real(kind = kreal) :: etime_trans(ntype_Leg_trans_loop)
 !
       integer(kind = kint) :: iloop_type
 !
 !
-      do iloop_type = 1, 5
+      do iloop_type = 1, ntype_Leg_trans_loop
         id_legendre_transfer = iloop_type
         call sel_alloc_legendre_trans(ncomp_sph_trans)
 !
@@ -294,14 +312,15 @@
         call sel_dealloc_legendre_trans
       end do
 !
-      call MPI_allREDUCE (endtime, etime_trans, ifive,                  &
+      call MPI_allREDUCE (endtime, etime_trans, ntype_Leg_trans_loop,   &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      etime_trans(1:5) = etime_trans(1:5) / dble(nprocs)
+      etime_trans(1:ntype_Leg_trans_loop)                               &
+     &      = etime_trans(1:ntype_Leg_trans_loop) / dble(nprocs)
 !
       id_legendre_transfer = iflag_leg_orginal_loop
       etime_shortest =       etime_trans(iflag_leg_orginal_loop)
 !
-      do iloop_type = 2, 5
+      do iloop_type = 2, ntype_Leg_trans_loop
         if(etime_trans(iloop_type) .lt. etime_shortest) then
           id_legendre_transfer = iloop_type
           etime_shortest =       etime_trans(iloop_type)
@@ -315,10 +334,16 @@
      &            etime_trans(iflag_leg_krloop_inner)
         write(*,*) '3: elapsed by outer radius loop:  ',                &
      &            etime_trans(iflag_leg_krloop_outer)
-        write(*,*) '4: elapsed by long loop:          ',                &
-     &            etime_trans(iflag_leg_long_loop)
-        write(*,*) '5: elapsed by outmost field loop: ',                &
+        write(*,*) '4: elapsed by outmost field loop: ',                &
      &            etime_trans(iflag_leg_fdout_loop)
+        write(*,*) '5: elapsed by original loop with symmetric: ',      &
+     &            etime_trans(iflag_leg_symmetry)
+        write(*,*) '6: elapsed by sym. outer radius: ',                 &
+     &            etime_trans(iflag_leg_sym_spin_loop)
+        write(*,*) '7: elapsed by matmul: ',                            &
+     &            etime_trans(iflag_leg_matmul)
+        write(*,*) '8: elapsed by matmul with symmetric: ',             &
+     &            etime_trans(iflag_leg_sym_matmul)
 !
       end subroutine select_legendre_transform
 !

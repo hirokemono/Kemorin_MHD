@@ -86,15 +86,24 @@
 !
 !
 !>      Number of block for grid in @f$ \theta @f$-direction
-      integer(kind = kint) :: nblock_l_rtm = 8
+      integer(kind = kint) :: nblock_l_rtm = 1
 !>      End point of each block for grid in @f$ \theta @f$-direction
       integer(kind = kint), allocatable :: lstack_block_rtm(:)
 !>      Maximum point of each block for grid in @f$ \theta @f$-direction
       integer(kind = kint) :: lmax_block_rtm
 !
+!>      Number of block for grid in hermonics degree
+      integer(kind = kint) :: nblock_j_rlm = 1
+!>      End point of each block for grid in  hermonics degree
+      integer(kind = kint), allocatable :: jstack_block_rlm(:)
+!>      Maximum point of each block for grid in  hermonics degree
+      integer(kind = kint) :: jmax_block_rlm
+!
 !
 !>      End address of spherical harmonics order for SMP parallelization
       integer(kind = kint), allocatable :: lstack_rlm(:)
+!>      Maximum point of each block for grid in  hermonics degree
+      integer(kind = kint) :: maxdegree_rlm
 !
 !>      Data size for Legendre transform to check work area
       integer(kind = kint), private :: iflag_sph_trans = -1
@@ -141,6 +150,7 @@
       allocate(cot_theta_1d_rtp(nidx_rtp(2)))
 !
       lstack_rlm = 0
+      maxdegree_rlm = 0
       mdx_p_rlm_rtm = 0
       mdx_n_rlm_rtm = 0
       asin_theta_1d_rtm = 0.0d0
@@ -165,8 +175,11 @@
 !
 !
       allocate(lstack_block_rtm(0:nblock_l_rtm))
+      allocate(jstack_block_rlm(0:nblock_j_rlm))
       lstack_block_rtm = 0
+      jstack_block_rlm = 0
       lmax_block_rtm = 0
+      jmax_block_rlm = 0
 !
       end subroutine allocate_l_rtm_block
 !
@@ -183,6 +196,7 @@
       deallocate(sp_rj, vr_rtp)
       deallocate(sp_rlm, vr_rtm)
 !
+      maxdegree_rlm =   0
       iflag_sph_trans = 0
 !
       end subroutine deallocate_work_4_sph_trans
@@ -192,8 +206,9 @@
       subroutine deallocate_l_rtm_block
 !
 !
-      deallocate(lstack_block_rtm)
+      deallocate(lstack_block_rtm, jstack_block_rlm)
       lmax_block_rtm = 0
+      jmax_block_rlm = 0
 !
       end subroutine deallocate_l_rtm_block
 !

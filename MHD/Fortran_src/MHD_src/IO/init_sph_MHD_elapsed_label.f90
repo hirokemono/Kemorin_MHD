@@ -27,7 +27,7 @@
       use m_work_time
 !
 !
-      num_elapsed = 36
+      num_elapsed = 55
       call allocate_elapsed_times
 !
       elapse_labels(1) = 'Total time                 '
@@ -70,6 +70,27 @@
       elapse_labels(33) = 'copy_FFT_real       '
       elapse_labels(34) = 'dfftw_execute       '
       elapse_labels(35) = 'copy_FFT_complex    '
+!
+      elapse_labels(36) = 'set_to_send_buf_N    '
+      elapse_labels(37) = 'calypso_send_recv_core    '
+      elapse_labels(38) = 'set_from_recv_buf_rev_N    '
+      elapse_labels(39) = 'unused    '
+      elapse_labels(40) = 'unused    '
+!
+      elapse_labels(41) = 'Copy P_lm for bwd. trans.   '
+      elapse_labels(42) = 'Copy spectrum for bwd. trans.    '
+      elapse_labels(43) = 'mat product for bwd. trans.    '
+      elapse_labels(44) = 'Copy fields to bwd. trans.    '
+      elapse_labels(45) = 'Equator for bwd. trans.    '
+      elapse_labels(46) = 'Copy P_lm for fwd. trans.    '
+      elapse_labels(47) = 'Copy field for fwd. trans.    '
+      elapse_labels(48) = 'mat product for fwd. trans.    '
+      elapse_labels(49) = 'Copy spectrum to fwd. trans.    '
+!
+      elapse_labels(51) = 'copy_mhd_vec_spec_to_trans.   '
+      elapse_labels(52) = 'copy_mhd_vec_fld_from_trans.    '
+      elapse_labels(53) = 'copy_mhd_vec_fld_to_trans.    '
+      elapse_labels(54) = 'copy_mhd_vec_spec_from_trans.    '
 !
       elapse_labels(num_elapsed) = 'Communication time        '
 !

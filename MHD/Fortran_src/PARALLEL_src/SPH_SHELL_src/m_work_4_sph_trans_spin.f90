@@ -10,6 +10,8 @@
 !!@verbatim
 !!      subroutine allocate_work_sph_trans(ncomp)
 !!      subroutine deallocate_work_sph_trans
+!!      subroutine clear_fwd_legendre_work(ncomp)
+!!      subroutine clear_bwd_legendre_work(ncomp)
 !!
 !!    Data for single vector field
 !!      radial component:      vr_rtp(3*i_rtp-2)
@@ -61,8 +63,8 @@
       allocate(sp_rlm_wk(nnod_rlm*ncomp))
       allocate(vr_rtm_wk(nnod_rtm*ncomp))
 !
-      sp_rlm_wk = 0.0d0
-      vr_rtm_wk = 0.0d0
+      call clear_bwd_legendre_work(ncomp)
+      call clear_fwd_legendre_work(ncomp)
 !
       end subroutine allocate_work_sph_trans
 !
@@ -73,6 +75,45 @@
       deallocate(vr_rtm_wk, sp_rlm_wk)
 !
       end subroutine deallocate_work_sph_trans
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine clear_fwd_legendre_work(ncomp)
+!
+      use m_spheric_parameter
+!
+      integer(kind = kint), intent(in) :: ncomp
+      integer(kind = kint)  :: inod
+!
+!
+      if(ncomp .le. 0) return
+!$omp parallel do
+      do inod = 1, nnod_rlm*ncomp
+        sp_rlm_wk(inod) = 0.0d0
+      end do
+!$omp end parallel do
+!
+      end subroutine clear_fwd_legendre_work
+!
+! ----------------------------------------------------------------------
+!
+      subroutine clear_bwd_legendre_work(ncomp)
+!
+      use m_spheric_parameter
+!
+      integer(kind = kint), intent(in) :: ncomp
+      integer(kind = kint)  :: inod
+!
+!
+      if(ncomp .le. 0) return
+!$omp parallel do
+      do inod = 1, nnod_rtm*ncomp
+        vr_rtm_wk(inod) = 0.0d0
+      end do
+!$omp end parallel do
+!
+      end subroutine clear_bwd_legendre_work
 !
 ! ----------------------------------------------------------------------
 !

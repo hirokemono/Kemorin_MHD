@@ -87,16 +87,24 @@
 !      call allocate_legendre_trans_mat
 !      call cal_legendre_trans_coefs
 !
-      if(nvector_l_rtm.le.0 .or. nvector_l_rtm.gt.nidx_rtm(2)) then
-        nvector_l_rtm = nidx_rtm(2)
+      if(nvector_legendre .le. 0                                        &
+     &     .or. nvector_legendre .gt. nidx_rtm(2)) then
         nblock_l_rtm =  1
       else
-        nblock_l_rtm =  nidx_rtm(2) / nvector_l_rtm
+        nblock_l_rtm =  nidx_rtm(2) / nvector_legendre
+      end if
+      if(nvector_legendre .le. 0                                        &
+     &     .or. nvector_legendre .gt. nidx_rlm(2)) then
+        nblock_j_rlm =  1
+      else
+        nblock_j_rlm =  nidx_rlm(2) / nvector_legendre
       end if
 !
       call allocate_l_rtm_block
       call count_number_4_smp(nblock_l_rtm, ione, nidx_rtm(2),          &
      &    lstack_block_rtm, lmax_block_rtm)
+      call count_number_4_smp(nblock_j_rlm, ione, nidx_rlm(2),          &
+     &    jstack_block_rlm, jmax_block_rlm)
 !
       ncomp = ncomp_sph_trans*nidx_rtp(1)*nidx_rtp(2)
       Nstacksmp(0:np_smp) = ncomp_sph_trans*irt_rtp_smp_stack(0:np_smp)
@@ -109,8 +117,10 @@
       call init_sph_send_recv_N(ncomp, vr_rtp, vr_rtm, sp_rlm, sp_rj)
 !
       if(my_rank .ne. 0) return
-      write(*,*) 'Vector length for Legendre transform:', nvector_l_rtm
-      write(*,*) 'Block number for Legendre transform: ', nblock_l_rtm
+      write(*,*) 'Vector length for Legendre transform:',               &
+     &          nvector_legendre
+      write(*,*) 'Block number for meridinal grid: ', nblock_l_rtm
+      write(*,*) 'Block number for Legendre transform: ', nblock_j_rlm
 !
       end subroutine initialize_sph_trans
 !
@@ -135,11 +145,13 @@
 !
       mdx_p_rlm_rtm(1:nidx_rlm(2)) = 0
       mdx_n_rlm_rtm(1:nidx_rlm(2)) = 0
+      maxdegree_rlm = 0
       lstack_rlm(0) = 0
       do m = 1, nidx_rtm(3)
         mm = idx_gl_1d_rtm_m(m,2)
         mdx_rlm_rtm(mm) = m
         lstack_rlm(m) = lstack_rlm(m-1) + (l_truncation - abs(mm) + 1)
+        maxdegree_rlm = max(maxdegree_rlm,(l_truncation - abs(mm) + 1))
       end do
 !
       do m = 1, nidx_rtm(3)

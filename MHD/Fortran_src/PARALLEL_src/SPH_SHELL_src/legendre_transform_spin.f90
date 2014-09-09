@@ -19,6 +19,9 @@
 !!      subroutine leg_forward_trans_spin(ncomp, nvector)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
+!!
+!!      subroutine leg_backward_trans_sym_spin(ncomp, nvector, nscalar)
+!!      subroutine leg_forward_trans_sym_spin(ncomp, nvector, nscalar)
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -71,7 +74,6 @@
       end subroutine leg_backward_trans_spin
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
       subroutine leg_forward_trans_spin(ncomp, nvector, nscalar)
 !
@@ -102,6 +104,71 @@
       call end_eleps_time(32)
 !
       end subroutine leg_forward_trans_spin
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine leg_backward_trans_sym_spin(ncomp, nvector, nscalar)
+!
+      use ordering_schmidt_trans_spin
+      use ordering_schmidt_trans_krin
+      use legendre_bwd_trans_sym_spin
+!
+      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+!
+!
+      call start_eleps_time(25)
+      call order_b_trans_fields_spin(ncomp, nvector, nscalar,           &
+     &    sp_rlm(1), sp_rlm_wk(1))
+      call end_eleps_time(25)
+!
+      call start_eleps_time(27)
+      if(nvector .gt. 0) call leg_bwd_trans_vector_sym_spin             &
+     &                      (ncomp, nvector,                            &
+     &                       sp_rlm_wk(1), vr_rtm_wk(1))
+      if(nscalar .gt. 0) call leg_bwd_trans_scalar_sym_spin             &
+     &                      (ncomp, nvector, nscalar,                   &
+     &                       sp_rlm_wk(1), vr_rtm_wk(1))
+      call end_eleps_time(27)
+!
+      call start_eleps_time(28)
+      call back_b_trans_fields_krin(ncomp, nvector, nscalar,            &
+     &    vr_rtm_wk(1), vr_rtm(1))
+      call end_eleps_time(28)
+!
+      end subroutine leg_backward_trans_sym_spin
+!
+! -----------------------------------------------------------------------
+!
+      subroutine leg_forward_trans_sym_spin(ncomp, nvector, nscalar)
+!
+      use ordering_schmidt_trans_spin
+      use ordering_schmidt_trans_krin
+      use legendre_fwd_trans_sym_spin
+!
+      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+!
+!
+      call start_eleps_time(29)
+      call order_f_trans_fields_spin(ncomp, nvector, nscalar,           &
+     &    vr_rtm(1), vr_rtm_wk(1))
+      call end_eleps_time(29)
+!
+      call start_eleps_time(31)
+      if(nvector .gt. 0) call leg_fwd_trans_vector_sym_spin             &
+     &                      (ncomp, nvector,  vr_rtm_wk(1),             &
+     &                       sp_rlm_wk(1))
+      if(nscalar .gt. 0) call leg_fwd_trans_scalar_sym_spin             &
+     &                      (ncomp, nvector, nscalar, vr_rtm_wk(1),     &
+     &                       sp_rlm_wk(1))
+      call end_eleps_time(31)
+!
+      call start_eleps_time(32)
+      call back_f_trans_fields_krin(ncomp, nvector, nscalar,            &
+     &    sp_rlm_wk(1), sp_rlm(1))
+      call end_eleps_time(32)
+!
+      end subroutine leg_forward_trans_sym_spin
 !
 ! -----------------------------------------------------------------------
 !

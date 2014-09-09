@@ -55,9 +55,9 @@
 !   setting for spherical transform
 !
       if(i_legendre_vect_len .gt. 0) then
-        nvector_l_rtm = legendre_vector_len_ctl
+        nvector_legendre = legendre_vector_len_ctl
       else
-        nvector_l_rtm = 0
+        nvector_legendre = 0
       end if
 !
       if(i_sph_transform_mode .gt. 0) then
@@ -126,9 +126,9 @@
 !   setting for spherical transform
 !
       if(i_legendre_vect_len .gt. 0) then
-        nvector_l_rtm = legendre_vector_len_ctl
+        nvector_legendre = legendre_vector_len_ctl
       else
-        nvector_l_rtm = 0
+        nvector_legendre = 0
       end if
 !
       if(i_sph_transform_mode .gt. 0) then
@@ -226,9 +226,9 @@
 !   setting for spherical transform
 !
       if(i_legendre_vect_len .gt. 0) then
-        nvector_l_rtm = legendre_vector_len_ctl
+        nvector_legendre = legendre_vector_len_ctl
       else
-        nvector_l_rtm = 0
+        nvector_legendre = 0
       end if
 !
       if(i_sph_transform_mode .gt. 0) then
