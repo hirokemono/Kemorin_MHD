@@ -16,7 +16,7 @@
 !!    Forward transforms
 !!      subroutine leg_forward_trans_sym_org(ncomp, nvector, nscalar)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
-!!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
+!!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal) 
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
