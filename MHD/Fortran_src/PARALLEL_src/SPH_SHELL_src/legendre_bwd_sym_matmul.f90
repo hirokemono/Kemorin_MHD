@@ -387,6 +387,10 @@
       end do
 !$omp end parallel do
 !
+      call dealloc_vec_bleg_sym_mat
+      elapsed(41:44)                                                    &
+     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
+!
       call start_eleps_time(45)
 !   Equator (if necessary)
       if(mod(nidx_rtm(2),2) .eq. 0) return
@@ -415,11 +419,6 @@
       end do
 !$omp end parallel do
       call end_eleps_time(45)
-!
-      elapsed(41:44)                                                    &
-     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
-!
-      call dealloc_vec_bleg_sym_mat
 !
       end subroutine leg_b_trans_vec_sym_matmul
 !
@@ -544,6 +543,8 @@
 !$omp end parallel do
 !
       call dealloc_scl_bleg_sym_mat
+      elapsed(41:44)                                                    &
+     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
 !
       call start_eleps_time(45)
 !   Equator (if necessary)
@@ -571,9 +572,6 @@
       end do
 !$omp end parallel do
       call end_eleps_time(45)
-!
-      elapsed(41:44)                                                    &
-     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
 !
       end subroutine leg_b_trans_scl_sym_matmul
 !

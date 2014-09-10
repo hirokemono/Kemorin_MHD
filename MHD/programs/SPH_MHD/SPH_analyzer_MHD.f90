@@ -47,6 +47,7 @@
       use sph_mhd_rms_IO
       use cal_sol_sph_MHD_crank
       use cal_nonlinear
+      use sum_b_trans_at_pole
 !
       use m_work_time
 !
@@ -127,10 +128,10 @@
 !
 !* -----  Open Volume integration data files -----------------
 !*
-       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
-       call start_eleps_time(4)
-       call open_sph_vol_rms_file_mhd
-       call end_eleps_time(4)
+      if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
+      call start_eleps_time(4)
+      call open_sph_vol_rms_file_mhd
+      call end_eleps_time(4)
 !
       end subroutine SPH_initialize_MHD
 !

@@ -84,6 +84,7 @@
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(18)
+      if(iflag_debug .gt. 0) write(*,*) 'send_recv_rj_2_rlm_N'
       call send_recv_rj_2_rlm_N(ncomp_trans, sp_rj, sp_rlm)
       call end_eleps_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
