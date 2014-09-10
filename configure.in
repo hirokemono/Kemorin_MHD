@@ -70,6 +70,7 @@ AC_MSG_RESULT(enable-fftw3... "${USE_fftw3}")
 AC_MSG_RESULT(enable-libpng..."${USE_libpng}")
 AC_MSG_RESULT(enable-gtk...  "${USE_gtk}")
 
+AC_MSG_RESULT(with-blas...     "${with_blas}")
 AC_MSG_RESULT(with-zlib...     "${with_zlib}")
 AC_MSG_RESULT(with-aquaterm... "${with_aquaterm}")
 AC_MSG_RESULT(with-pgplot...   "${with_pgplot}")
@@ -128,8 +129,10 @@ AC_MSG_RESULT(HDF5_LDFLAGS... "${HDF5_LDFLAGS}")
 AC_MSG_RESULT(HDF5_PFLIBS... "${HDF5_PFLIBS}")
 
 # Check BLAS
-AX_BLAS
-# AX_BLAS_F77_FUNC
+if test -n "${with_blas}"; then
+    AX_BLAS
+#   AX_BLAS_F77_FUNC
+fi
 AC_SUBST(BLAS_LIBS)
 
 #
