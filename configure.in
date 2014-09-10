@@ -12,7 +12,7 @@ dnl Include Fortran related definitions
 builtin(include,MHD/confdb/aclocal_fc.m4)
 
 dnl Include OpenMP related definitions
-builtin(include,MHD/cosnfdb/ax_pthread.m4)
+builtin(include,MHD/confdb/ax_pthread.m4)
 builtin(include,MHD/confdb/ax_openmp.m4)
 
 dnl Include MPI related definitions
@@ -23,6 +23,10 @@ builtin(include,MHD/confdb/ax_have_opengl.m4)
 
 dnl Include gmake Check related definitions
 builtin(include,MHD/confdb/check_gnu_make.m4)
+
+dnl Include BLAS library check
+builtin(include,MHD/confdb/ax_blas.m4)
+builtin(include,MHD/confdb/ax_blas_f77_func.m4)
 
 builtin(include,MHD/confdb/ax_check_gl.m4)
 builtin(include,MHD/confdb/ax_check_glu.m4)
@@ -123,15 +127,10 @@ AX_LIB_HDF5(parallel)
 AC_MSG_RESULT(HDF5_LDFLAGS... "${HDF5_LDFLAGS}")
 AC_MSG_RESULT(HDF5_PFLIBS... "${HDF5_PFLIBS}")
 
-<<<<<<< HEAD
-
-=======
 # Check BLAS
 AX_BLAS
 # AX_BLAS_F77_FUNC
-AC_MSG_RESULT(BLAS_LIBS)
 AC_SUBST(BLAS_LIBS)
->>>>>>> 2f96018... Update configuration for BLAS
 
 #
 #  Check subroutien name for Fortran-C connection
@@ -315,6 +314,12 @@ if test -n "${X_LIBS}"; then
         AC_MSG_RESULT(    Use X Window...       yes)
 else
         AC_MSG_RESULT(    Use X Window...        no)
+fi
+AC_MSG_RESULT()
+if test -n "${BLAS_LIBS}"; then
+        AC_MSG_RESULT(    Use BLAS ...          yes)
+else
+        AC_MSG_RESULT(    Use BLAS ...           no)
 fi
 AC_MSG_RESULT()
 if test -n "${FFTW3_LIBS}"; then

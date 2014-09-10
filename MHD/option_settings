@@ -5,12 +5,11 @@ Settings for Makefiles
 # Intel mac with gfortran-openmpi (MacBook Pro with homebrew)
 # -------------------------------------------------------------------------------
 #
-# setenv PKG_CONFIG_PATH /Users/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig:/usr/local/lib/pkgconfig
-#
-#./configure --prefix='/Users/matsui/local' CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' \
-#  --enable-cocoa --enable-fftw3 --enable-gl --enable-glui --enable-gtk \
-#  --enable-libpng  --with-zlib=/Users/matsui/local --with-hdf5=/Users/matsui/local/bin/h5pcc \
-#  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/usr/local 
+./configure --prefix='/Users/matsui/local' CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' \
+  --enable-cocoa --with-blas=yes --enable-fftw3 --enable-gl --enable-glui --enable-gtk \
+  --enable-libpng  --with-zlib=/Users/matsui/local --with-hdf5=/Users/matsui/local/bin/h5pcc \
+  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/usr/local  \
+PKG_CONFIG_PATH='/Users/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig:/usr/local/lib/pkgconfig'
 #
 #
 #  directories of CALYPSO
@@ -271,7 +270,7 @@ module load phdf5
 ./configure  --prefix='/home1/02179/matsui/local' CC=icc FC=ifort CXX=icc AR=xiar \
   MPICC=mpicc MPIFC=mpif90 PKG_CONFIG=/usr/bin/pkg-config \
   CFLAGS='-O3  -Wall -g -xhost' FCFLAGS='-O3 -warn all -g -xhost' \
-  --enable-fftw3 --enable-gl --enable-glui \
+  --with-blas=-mkl=sequential --enable-fftw3 --enable-gl --enable-glui \
   --enable-libpng  --with-hdf5  --with-zlib=/usr/lib64 \
   --without-pgplot --without-aquaterm
 #
@@ -282,8 +281,8 @@ module swap mvapich2 impi/4.1.1.036
 ./configure  --prefix='/home1/02179/matsui/local' CC=icc FC=ifort CXX=icc AR=xiar \
   MPICC=mpicc MPIFC=mpif90 PKG_CONFIG=/usr/bin/pkg-config \
   CFLAGS='-O3  -Wall -g -xhost' FCFLAGS='-O3 -warn all -g -xhost' \
-  --enable-fftw3 --enable-gl --enable-glui \
-  --enable-libpng  --without-hdf5  --with-zlib=/usr/lib64 \
+  --with-blas=-mkl=sequential --enable-fftw3 --enable-gl --enable-glui \
+  --enable-libpng  --with-hdf5  --with-zlib=/usr/lib64 \
   --without-pgplot --without-aquaterm
 #
 #

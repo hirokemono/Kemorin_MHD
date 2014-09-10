@@ -73,6 +73,11 @@ ifdef FC_NAME_MANGLE
   endif
 endif
 
+ifdef BLAS_LIBS
+  FORTRAN_C_CONNECT += -DBLAS
+  F90LIBS+= $$(BLAS_LIBS)
+endif
+
 ifdef HDF5_FLIBS
   FORTRAN_C_CONNECT += -DHDF5_IO
   F_INCLUDE+= $$(HDF5_FFLAGS)
@@ -156,13 +161,17 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo '# zlib settings' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo 'ZLIB_CFLAGS = $(ZLIB_CFLAGS)'  >> $(MAKENAME)
-	@echo 'ZLIB_LIB =    $(ZLIB_LIB)'  >> $(MAKENAME)
+	@echo 'ZLIB_CFLAGS = $(ZLIB_CFLAGS)' >> $(MAKENAME)
+	@echo 'ZLIB_LIB =    $(ZLIB_LIB)'    >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# libpng settings' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo 'PNG_CFLAGS = $(PNG_CFLAGS)'  >> $(MAKENAME)
-	@echo 'PNG_LIBS =    $(PNG_LIBS)'  >> $(MAKENAME)
+	@echo 'PNG_CFLAGS = $(PNG_CFLAGS)'   >> $(MAKENAME)
+	@echo 'PNG_LIBS =    $(PNG_LIBS)'    >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# BLAS settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'BLAS_LIBS =   $(BLAS_LIBS)'   >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# FFTW3 settings' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
