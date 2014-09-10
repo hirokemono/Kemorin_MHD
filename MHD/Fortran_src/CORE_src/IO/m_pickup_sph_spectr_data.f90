@@ -148,9 +148,9 @@
 !
       allocate( idx_pick_sph_gl(ntot_pick_sph_mode) )
       allocate( idx_pick_sph_lc(ntot_pick_sph_mode) )
+      allocate( scale_for_zelo(ntot_pick_sph_mode) )
       allocate( d_rj_pick_sph_lc(ntot_comp_pick_sph,num) )
       allocate( d_rj_pick_sph_gl(ntot_comp_pick_sph,num) )
-      allocate( scale_for_zelo(ntot_comp_pick_sph) )
       allocate( pick_sph_spec_name(ntot_comp_pick_sph) )
       allocate( istack_comp_pick_sph(0:num_fld_pick_sph) )
       allocate( ifield_monitor_rj(num_fld_pick_sph) )
