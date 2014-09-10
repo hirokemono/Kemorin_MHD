@@ -104,7 +104,7 @@
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use copy_rj_phys_data_4_IO
-      use output_sph_rms_one_layer
+      use output_sph_m_square_file
 !
 !
       integer(kind = kint) :: i_step
@@ -124,8 +124,7 @@
         call cal_rms_sph_spec_rms_whole
 !
         if (iflag_debug.gt.0)                                           &
-     &      write(*,*) 'write_sph_1layer_ms_file'
-        call write_sph_1layer_ms_file(my_rank, i_step, time)
+     &      write(*,*) 'write_sph_1layer_ms_spec_file'
         call write_sph_1layer_ms_spec_file(my_rank, i_step, time)
       end do
 !

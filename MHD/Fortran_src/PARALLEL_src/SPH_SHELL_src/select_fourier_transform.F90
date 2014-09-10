@@ -86,9 +86,9 @@
 !
 !
 #ifdef FFTW3
-!      iflag_FFT = iflag_FFTW
-!      call test_fourier_trans_vector(ncomp, Nstacksmp,                 &
-!     &    etime_fft(iflag_FFTW))
+      iflag_FFT = iflag_FFTW
+      call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
+     &    etime_fft(iflag_FFTW))
 !
       iflag_FFT = iflag_FFTW_SINGLE
       call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
@@ -103,9 +103,9 @@
       if(my_rank .gt. 0) return
         write(*,*)   '1: elapsed by FFTPACK: ',                         &
      &            etime_fft(iflag_FFTPACK)
-!        if(etime_fft(iflag_FFTW) .gt. zero) then
-!          write(*,*) '2: elapsed by FFTW3:   ', etime_fft(iflag_FFTW)
-!        end if
+        if(etime_fft(iflag_FFTW) .gt. zero) then
+          write(*,*) '2: elapsed by FFTW3:   ', etime_fft(iflag_FFTW)
+        end if
         if(etime_fft(iflag_FFTW_SINGLE) .gt. zero) then
           write(*,*) '3: elapsed by single FFTW3:   ',                  &
      &            etime_fft(iflag_FFTW_SINGLE)

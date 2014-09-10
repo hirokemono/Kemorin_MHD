@@ -110,6 +110,7 @@
       use m_rms_4_sph_spectr
       use copy_rj_phys_data_4_IO
       use output_sph_m_square_file
+      use volume_average_4_sph
 !
 !
       integer(kind = kint) :: i_step

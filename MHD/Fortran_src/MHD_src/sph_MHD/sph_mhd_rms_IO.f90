@@ -52,6 +52,7 @@
       use set_exit_flag_4_visualizer
       use cal_rms_fields_by_sph
       use m_no_heat_Nusselt_num
+      use volume_average_4_sph
 !
       integer (kind = kint) :: i_flag
 !
