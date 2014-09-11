@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine set_sph_MHD_elapsed_label
+!!      subroutine write_resolution_data
 !!@endverbatim
 !
       module init_sph_MHD_elapsed_label
@@ -95,6 +96,59 @@
       elapse_labels(num_elapsed) = 'Communication time        '
 !
       end subroutine set_sph_MHD_elapsed_label
+!
+! ----------------------------------------------------------------------
+!
+      subroutine write_resolution_data
+!
+      use calypso_mpi
+      use m_work_time
+      use m_spheric_parameter
+!
+      integer(kind = kint) :: nproc_rj_IO(2),  nproc_rlm_IO(2)
+      integer(kind = kint) :: nproc_rtm_IO(3), nproc_rtp_IO(3)
+!
+!
+      call MPI_REDUCE(sph_rank_rj, nproc_rj_IO, itwo,                   &
+     &    CALYPSO_REAL, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_REDUCE(sph_rank_rlm, nproc_rlm_IO, itwo,                 &
+     &    CALYPSO_REAL, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_REDUCE(sph_rank_rtm, nproc_rtm_IO, ithree,               &
+     &    CALYPSO_REAL, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_REDUCE(sph_rank_rtp, nproc_rtp_IO, ithree,               &
+     &    CALYPSO_REAL, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
+!
+      if(my_rank .ne. 0) return
+!
+      nproc_rj_IO(1:2) =  nproc_rj_IO(1:2) +  1
+      nproc_rlm_IO(1:2) = nproc_rlm_IO(1:2) + 1
+      nproc_rtm_IO(1:3) = nproc_rtm_IO(1:3) + 1
+      nproc_rtp_IO(1:3) = nproc_rtp_IO(1:3) + 1
+!
+      write(*,*) 'nproc_rj_IO', nproc_rj_IO
+      open(id_timer_file,file=time_file_name,position='append')
+!
+      write(id_timer_file,*)
+      write(id_timer_file,*) '=========================================='
+      write(id_timer_file,*) 'Truncation level:    ', l_truncation
+      write(id_timer_file,*) 'N_r for fluid shell: ',                   &
+     &                      nlayer_CMB-nlayer_ICB
+      write(id_timer_file,*) 'N_theta:              ', nidx_rtm(2)
+      write(id_timer_file,*) 'N_phi:                ', nidx_rtp(3)
+!
+      write(id_timer_file,*) 'Total MPI processes: ',  nprocs
+      write(id_timer_file,*)                                            &
+     &   'Processes for spetr (r, l and m):        ', nproc_rj_IO(1:2)
+      write(id_timer_file,*)                                            &
+     &   'Processes for Legendre trans. (r, l, m): ', nproc_rlm_IO(1:2)
+      write(id_timer_file,*)                                            &
+     &   'Processes for Legendre trans. (r, t, m): ', nproc_rtm_IO(1:3)
+      write(id_timer_file,*)                                            &
+     &   'Processes for physical space. (r, t, p): ', nproc_rtp_IO(1:3)
+!
+      close(id_timer_file)
+!
+      end subroutine write_resolution_data
 !
 ! ----------------------------------------------------------------------
 !

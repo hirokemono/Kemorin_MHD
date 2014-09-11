@@ -308,15 +308,18 @@ module swap mvapich2 impi/4.1.1.036
 #
 # setenv PKG_CONFIG_PATH /home0/matsui/local/lib/pkgconfig
 #
-#./configure --prefix='/home0/matsui/local' CC=cc FC=mpif90_r AR="ar -X64" RANLIB="ranlib -X64"\
-#  CFLAGS="-q64 -O" LIBS="-lm" \
-#  FCFLAGS="-64 -Oss -noifswpl -omp -pardiag=2 -autoinline=2 -model=L1" \
-#   MPICC=mpcc_r MPIFC=mpif90_r \
-#  --disable-cocoa --disable-fftw3 --disable-gl --disable-glui --disable-gtk \
-#  --with-mpi=/usr/lpp/ppe.poe \
-#  --enable-libpng --with-zlib=/home0/matsui/local \
-#  --without-opengl  --without-pgplot
+./configure --prefix='/home0/matsui/local' CC=cc FC=mpif90_r AR="ar -X64" RANLIB="ranlib -X64"\
+  CFLAGS="-q64 -O" LIBS="-lm" \
+  FCFLAGS="-64 -Oss -noifswpl -omp -pardiag=2 -autoinline=2 -model=L1" \
+   MPICC=mpcc_r MPIFC=mpif90_r \
+  --disable-fftw3  --with-mpi=/usr/lpp/ppe.poe \
+  --enable-libpng --with-zlib=/home0/matsui/local \
+  --without-opengl  --without-pgplot --without-aquaterm \
+PKG_CONFIG_PATH="/home0/matsui/local/lib/pkgconfig"
 #
+  --without-blas="-L/usr/local/lib -lblas_p64" --with-mpi=/usr/lpp/ppe.poe \
+
+
 #  directories of CALYPSO
 #
 HOMEDIR = /home0/matsui

@@ -67,8 +67,6 @@ MOD_SPH_ENE_LAYER = \
 m_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
 \
-output_sph_rms_one_layer.o \
-\
 analyzer_ene_sph_layer.o \
 main_ene_sph_layer.o
 

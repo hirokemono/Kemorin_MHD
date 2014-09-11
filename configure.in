@@ -7,6 +7,8 @@ AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
 
 AM_INIT_AUTOMAKE
 AM_CONDITIONAL([am__fastdepOBJC], false)
+AM_CONDITIONAL([am__fastdepCXX], false)
+
 
 dnl Include Fortran related definitions
 builtin(include,MHD/confdb/aclocal_fc.m4)

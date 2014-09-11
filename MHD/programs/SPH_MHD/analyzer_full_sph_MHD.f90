@@ -25,6 +25,7 @@
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_MHD
       use sections_for_1st
+      use init_sph_MHD_elapsed_label
 !
       implicit none
 !
@@ -39,7 +40,6 @@
       use set_control_sph_mhd
       use set_control_SPH_to_FEM
       use m_ctl_data_sph_MHD
-      use init_sph_MHD_elapsed_label
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -155,6 +155,7 @@
       call copy_COMM_TIME_to_eleps(num_elapsed)
       call end_eleps_time(1)
 !
+      call write_resolution_data
       call output_elapsed_times
 !
       call calypso_MPI_barrier
