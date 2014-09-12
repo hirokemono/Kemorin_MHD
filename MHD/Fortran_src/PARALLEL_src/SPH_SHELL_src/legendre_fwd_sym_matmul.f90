@@ -247,18 +247,18 @@
             nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
             do lp_rtm = 1, nlo_rtm
               ln_rtm = nidx_rtm(2) - lp_rtm + 1
-              ip_rtpm = 3*nd + (lp_rtm-1) * ncomp                       &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-              ip_rtnm = 3*nd + (ln_rtm-1) * ncomp                       &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-              in_rtpm = 3*nd + (lp_rtm-1) * ncomp                       &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mn_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-              in_rtnm = 3*nd + (ln_rtm-1) * ncomp                       &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mn_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+              ip_rtpm = 3*nd + ncomp * ((lp_rtm-1) * istep_rtm(2)       &
+     &                                + (k_rlm-1) *  istep_rtm(1)       &
+     &                                + (mp_rlm-1) * istep_rtm(3))
+              ip_rtnm = 3*nd + ncomp *((ln_rtm-1) * istep_rtm(2)        &
+     &                                + (k_rlm-1)*  istep_rtm(1)        &
+     &                                + (mp_rlm-1) *  istep_rtm(3))
+              in_rtpm = 3*nd + ncomp*((lp_rtm-1) * istep_rtm(2)         &
+     &                                + (k_rlm-1) *  istep_rtm(1)       &
+     &                                + (mn_rlm-1) *  istep_rtm(3))
+              in_rtnm = 3*nd + ncomp*((ln_rtm-1) * istep_rtm(2)         &
+     &                                + (k_rlm-1) *  istep_rtm(1)       &
+     &                                + (mn_rlm-1) *  istep_rtm(3))
 !
               i_lk = lp_rtm + (kk-1) * nle_rtm
 !
@@ -273,12 +273,12 @@
 !   Equator (if necessary)
             do ll = 2*(nlo_rtm)+1, nidx_rtm(2)
               lp_rtm = (ll+1) /2
-              ip_rtpm = 3*nd + (lp_rtm-1) * ncomp                       &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-              in_rtpm = 3*nd + (lp_rtm-1) * ncomp                       &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mn_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+              ip_rtpm = 3*nd + ncomp * ((lp_rtm-1) * istep_rtm(2)       &
+     &                                + (k_rlm-1) *  istep_rtm(1)       &
+     &                                + (mp_rlm-1) * istep_rtm(3))
+              in_rtpm = 3*nd + ncomp * ((lp_rtm-1) * istep_rtm(2)       &
+     &                                + (k_rlm-1) *  istep_rtm(1)       &
+     &                                + (mn_rlm-1) * istep_rtm(3))
 !
               i_lk = lp_rtm + (kk-1) * nle_rtm
               symp_r(i_lk,ip) = vr_rtm(ip_rtpm-2)
@@ -349,18 +349,18 @@
             nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
             do lp_rtm = 1, nlo_rtm
               ln_rtm = nidx_rtm(2) - lp_rtm + 1
-              ip_rtpm = 3*nd + (lp_rtm-1) * ncomp                       &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-              ip_rtnm = 3*nd + (ln_rtm-1) * ncomp                       &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-              in_rtpm = 3*nd + (lp_rtm-1) * ncomp                       &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mn_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-              in_rtnm = 3*nd + (ln_rtm-1) * ncomp                       &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mn_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+              ip_rtpm = 3*nd + ncomp * ((lp_rtm-1) * istep_rtm(2)       &
+     &                                + (k_rlm-1) *  istep_rtm(1)       &
+     &                                + (mp_rlm-1) * istep_rtm(3))
+              ip_rtnm = 3*nd + ncomp * ((ln_rtm-1) * istep_rtm(2)       &
+     &                                + (k_rlm-1) *  istep_rtm(1)       &
+     &                                + (mp_rlm-1) * istep_rtm(3))
+              in_rtpm = 3*nd + ncomp * ((lp_rtm-1) * istep_rtm(2)       &
+     &                                + (k_rlm-1) *  istep_rtm(1)       &
+     &                                + (mn_rlm-1) * istep_rtm(3))
+              in_rtnm = 3*nd + ncomp * ((ln_rtm-1) * istep_rtm(2)       &
+     &                                + (k_rlm-1) *  istep_rtm(1)       &
+     &                                + (mn_rlm-1) * istep_rtm(3))
 !
               i_lk = lp_rtm + (kk-1) * nle_rtm
 !
@@ -374,9 +374,9 @@
 !   Equator (if necessary)
             do ll = 2*(nlo_rtm)+1, nidx_rtm(2)
               lp_rtm = (ll+1) /2
-              ip_rtpm = 3*nd + (lp_rtm-1) * ncomp                       &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+              ip_rtpm = 3*nd + ncomp * ((lp_rtm-1) * istep_rtm(2)       &
+     &                               +  (k_rlm-1) *  istep_rtm(1)       &
+     &                               +  (mp_rlm-1) * istep_rtm(3))
 !
               i_lk = lp_rtm + (kk-1) * nle_rtm
               symp_t(i_lk,ip) = vr_rtm(ip_rtpm-1)
@@ -510,12 +510,14 @@
             nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
             do lp_rtm = 1, nlo_rtm
               ln_rtm = nidx_rtm(2) - lp_rtm + 1
-              ip_rtpm = nd + 3*nvector + (lp_rtm-1) * ncomp             &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-              ip_rtnm = nd + 3*nvector + (ln_rtm-1) * ncomp             &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+              ip_rtpm = nd + 3*nvector                                  &
+     &                     + ncomp * ((lp_rtm-1) * istep_rtm(2)         &
+     &                               + (k_rlm-1) *  istep_rtm(1)        &
+     &                               + (mp_rlm-1) * istep_rtm(3))
+              ip_rtnm = nd + 3*nvector                                  &
+     &                     + ncomp * ((ln_rtm-1) * istep_rtm(2)         &
+     &                              + (k_rlm-1) *  istep_rtm(1)         &
+     &                              + (mp_rlm-1) * istep_rtm(3))
 !
               i_lk = lp_rtm + (kk-1) * nle_rtm
               symp(i_lk,ip) =  vr_rtm(ip_rtpm) + vr_rtm(ip_rtnm)
@@ -523,9 +525,10 @@
 !   Equator (if necessary)
             do ll = 2*(nlo_rtm)+1, nidx_rtm(2)
               lp_rtm = (ll+1) /2
-              ip_rtpm = nd + 3*nvector + (lp_rtm-1) * ncomp             &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+              ip_rtpm = nd + 3*nvector                                  &
+     &                     + ncomp * ((lp_rtm-1) * istep_rtm(2)         &
+     &                              + (k_rlm-1) *  istep_rtm(1)         &
+     &                              + (mp_rlm-1) * istep_rtm(3))
               i_lk = lp_rtm + (kk-1) * nle_rtm
               symp(i_lk,ip) = vr_rtm(ip_rtpm)
             end do
@@ -572,12 +575,14 @@
             nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
             do lp_rtm = 1, nlo_rtm
               ln_rtm = nidx_rtm(2) - lp_rtm + 1
-              ip_rtpm = nd + 3*nvector + (lp_rtm-1) * ncomp             &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-              ip_rtnm = nd + 3*nvector + (ln_rtm-1) * ncomp             &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+              ip_rtpm = nd + 3*nvector                                  &
+     &                     + ncomp * ((lp_rtm-1) * istep_rtm(2)         &
+     &                              + (k_rlm-1) *  istep_rtm(1)         &
+     &                              + (mp_rlm-1) * istep_rtm(3))
+              ip_rtnm = nd + 3*nvector                                  &
+     &                     + ncomp * ((ln_rtm-1) * istep_rtm(2)         &
+     &                              + (k_rlm-1) *  istep_rtm(1)         &
+     &                              + (mp_rlm-1) * istep_rtm(3))
 !
               i_lk = lp_rtm + (kk-1) * nlo_rtm
 !

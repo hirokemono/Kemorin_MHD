@@ -210,6 +210,15 @@
 !>      number of 1d data points for @f$ f(r,j) @f$
       integer(kind = kint) :: nidx_rj(2)
 !
+!>      number of increments for @f$ f(r,\theta,\phi) @f$
+      integer(kind = kint) :: istep_rtp(3)
+!>      number of increments for @f$ f(r,\theta,m) @f$
+      integer(kind = kint) :: istep_rtm(3)
+!>      number of increments for @f$ f(r,l,m) @f$
+      integer(kind = kint) :: istep_rlm(2)
+!>      number of increments for @f$ f(r,j) @f$
+      integer(kind = kint) :: istep_rj(2)
+!
 !
 !>      global data address @f$ f(r,\theta,\phi) @f$
       integer(kind = kint), allocatable :: inod_global_rtp(:)

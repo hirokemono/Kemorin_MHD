@@ -115,9 +115,9 @@
           k_rtm = 1 + mod( (kr_nd-1),nidx_rtm(1))
           nd =    1 + (kr_nd-k_rtm) / nidx_rtm(1)
 !
-          i_rtm_0 = 3*nd + (l_rtm-1) * ncomp                            &
-     &                   + (k_rtm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+          i_rtm_0 = 3*nd + (l_rtm-1) * ncomp*istep_rtm(2)               &
+     &                   + (k_rtm-1) * ncomp*istep_rtm(1)               &
+     &                   + (m_rtm-1) * ncomp*istep_rtm(3)
 !
           vr_rtm_spin(k_rtm,nd,          l_rtm,m_rtm)                   &
      &            = WRecv(i_rtm_0-2)

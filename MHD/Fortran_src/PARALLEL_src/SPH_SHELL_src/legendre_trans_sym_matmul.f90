@@ -87,7 +87,6 @@
 !
       subroutine leg_backward_trans_matmul(ncomp, nvector, nscalar)
 !
-      use m_work_4_sph_trans_spin
       use legendre_bwd_trans_matmul
       use merge_polidal_toroidal_v
 !
@@ -109,7 +108,6 @@
 !
       subroutine leg_forward_trans_matmul(ncomp, nvector, nscalar)
 !
-      use m_work_4_sph_trans_spin
       use legendre_fwd_trans_matmul
       use merge_polidal_toroidal_v
 !

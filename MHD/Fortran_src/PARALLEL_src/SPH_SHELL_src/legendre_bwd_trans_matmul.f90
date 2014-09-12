@@ -224,12 +224,12 @@
                 kr_nd = kk + kst(ip)
                 k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
                 nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
-                ip_rtm = 3*nd + (l_rtm-1) * ncomp                       &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-                in_rtm = 3*nd + (l_rtm-1) * ncomp                       &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mn_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+                ip_rtm = 3*nd + ncomp * ((l_rtm-1) *  istep_rtm(2)      &
+     &                                 + (k_rlm-1) *  istep_rtm(1)      &
+     &                                 + (mp_rlm-1) * istep_rtm(3))
+                in_rtm = 3*nd + ncomp * ((l_rtm-1) *  istep_rtm(2)      &
+     &                                 + (k_rlm-1) *  istep_rtm(1)      &
+     &                                 + (mn_rlm-1) * istep_rtm(3))
 !
                 i_lk = l_rtm + (kk-1) * nidx_rtm(2)
 !
@@ -307,9 +307,10 @@
                 kr_nd = kk + kst(ip)
                 k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
                 nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
-                ip_rtm = nd + 3*nvector + (l_rtm-1) * ncomp             &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+                ip_rtm = nd + 3*nvector                                 &
+     &                      + ncomp * ((l_rtm-1) *  istep_rtm(2)        &
+     &                               + (k_rlm-1) *  istep_rtm(1)        &
+     &                               + (mp_rlm-1) * istep_rtm(3))
                 i_lk = l_rtm + (kk-1) * nidx_rtm(2)
                 vr_rtm(ip_rtm) = vr_rtm(ip_rtm) + symp(i_lk,ip)
               end do

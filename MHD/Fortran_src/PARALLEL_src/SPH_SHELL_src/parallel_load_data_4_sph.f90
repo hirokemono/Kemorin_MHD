@@ -16,6 +16,8 @@
 !
       implicit none
 !
+      private :: count_interval_4_each_dir
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -52,6 +54,15 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
 !
 !
+      call count_interval_4_each_dir(ithree, nnod_rtp, idx_global_rtp,  &
+     &    istep_rtp)
+      call count_interval_4_each_dir(ithree, nnod_rtm, idx_global_rtm,  &
+     &    istep_rtm)
+      call count_interval_4_each_dir(itwo,   nnod_rlm, idx_global_rlm,  &
+     &    istep_rlm)
+      call count_interval_4_each_dir(itwo,   nnod_rj,  idx_global_rj,   &
+     &    istep_rj)
+!
       call set_special_degree_order_flags(nidx_rj(2), nidx_rlm(2),      &
      &    idx_gl_1d_rj_j, idx_gl_1d_rlm_j, idx_rj_degree_zero,          &
      &    idx_rj_degree_one,  ist_rtm_order_zero,                       &
@@ -66,6 +77,31 @@
       if(iflag_rj_center .gt. 0) iflag_rj_center = 1
 !
       end subroutine load_para_sph_mesh
+!
+! -----------------------------------------------------------------------
+!
+      subroutine count_interval_4_each_dir(numdir, nnod, idx_global,    &
+     &    istep)
+!
+      integer(kind = kint), intent(in) :: numdir, nnod
+      integer(kind = kint), intent(in) :: idx_global(nnod,numdir)
+!
+      integer(kind = kint), intent(inout) :: istep(numdir)
+!
+      integer(kind = kint) :: nd, inod, iref
+!
+!
+      do nd = 1, numdir
+        iref = idx_global(1,nd)
+        do inod = 2, nnod
+          if(idx_global(inod,nd) .ne. iref) then
+            istep(nd) = inod - 1
+            exit
+          end if
+        end do
+      end do
+!
+      end subroutine count_interval_4_each_dir
 !
 ! -----------------------------------------------------------------------
 !

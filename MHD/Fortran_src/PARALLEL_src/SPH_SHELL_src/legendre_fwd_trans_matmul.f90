@@ -202,12 +202,12 @@
             do l_rtm = 1, nidx_rtm(2)
               i_lk = l_rtm + (kk-1) * nidx_rtm(2)
 !
-              ip_rtm = 3*nd + (l_rtm-1) * ncomp                         &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
-              in_rtm = 3*nd + (l_rtm-1) * ncomp                         &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mn_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+              ip_rtm = 3*nd + ncomp * ((l_rtm-1) *  istep_rtm(2)        &
+     &                               + (k_rlm-1) *  istep_rtm(1)        &
+     &                               + (mp_rlm-1) * istep_rtm(3))
+              in_rtm = 3*nd + ncomp * ((l_rtm-1) *  istep_rtm(2)        &
+     &                               + (k_rlm-1) *  istep_rtm(1)        &
+     &                               + (mn_rlm-1) * istep_rtm(3))
 !
               symp_r(i_lk,ip) =  vr_rtm(ip_rtm-2)
 !
@@ -253,7 +253,7 @@
 !$omp end parallel do
 !
 !$omp parallel do schedule(static)                                      &
-!$omp&            private(ip,kk,kr_nd,nd,j_rlm,k_rlm,r2_1d_rlm_r)
+!$omp&         private(ip,kk,kr_nd,nd,j_rlm,k_rlm,r2_1d_rlm_r,i_rlm)
       do ip = 1, np_smp
         kst(ip) = nvector*idx_rtm_smp_stack(ip-1,1)
         nkr(ip) = nvector                                               &
@@ -321,9 +321,10 @@
             nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
             do l_rtm = 1, nidx_rtm(2)
               i_lk = l_rtm + (kk-1) * nidx_rtm(2)
-              ip_rtm = nd + 3*nvector + (l_rtm-1) * ncomp               &
-     &                   + (k_rlm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+              ip_rtm = nd + 3*nvector                                   &
+     &                    + ncomp * ((l_rtm-1) *  istep_rtm(2)          &
+     &                             + (k_rlm-1) *  istep_rtm(1)          &
+     &                             + (mp_rlm-1) * istep_rtm(3))
               symp(i_lk,ip) =  vr_rtm(ip_rtm)
             end do
           end do
