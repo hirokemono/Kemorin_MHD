@@ -119,9 +119,9 @@
           k_rtm = 1 + mod( (kr_nd-1),nidx_rtm(1))
           nd =    1 + (kr_nd-k_rtm) / nidx_rtm(1)
 !
-          i_rtm_0 = 3*nd + (l_rtm-1) * ncomp                            &
-     &                   + (k_rtm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+          i_rtm_0 = 3*nd + ncomp*((l_rtm-1) * istep_rtm(2)              &
+     &                          + (k_rtm-1) * istep_rtm(1)              &
+     &                          + (m_rtm-1) * istep_rtm(3))
 !
           vr_rtm_krin(k_rtm,nd,          l_rtm,m_rtm)                   &
      &            = vr_rtm(i_rtm_0-2)
@@ -142,9 +142,9 @@
           k_rtm = 1 + mod( (kr_nd-1),nidx_rtm(1))
           nd =    1 + (kr_nd-k_rtm) / nidx_rtm(1)
 !
-          i_rtm_0 = nd + 3*nvector + (l_rtm-1) * ncomp                  &
-     &                   + (k_rtm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+          i_rtm_0 =  nd + 3*nvector + ncomp*((l_rtm-1) * istep_rtm(2)   &
+     &                                     + (k_rtm-1) * istep_rtm(1)   &
+     &                                     + (m_rtm-1) * istep_rtm(3))
 !
           vr_rtm_krin(k_rtm,nd+3*nvector,l_rtm,m_rtm)                   &
      &            = vr_rtm(i_rtm_0  )

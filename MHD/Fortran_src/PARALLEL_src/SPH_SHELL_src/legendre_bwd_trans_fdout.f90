@@ -119,8 +119,9 @@
                     vr3 = vr3                                           &
      &                   - sp_rlm_fdout(i_rlm,3*nd  )*dPdt_j(j_rlm)
                   end do
-                  ip_rtm = l_rtm + (k_rtm-1) * nidx_rtm(2)              &
-     &                           + (mp_rlm-1) * nidx_rtm(1)*nidx_rtm(2)
+                  ip_rtm = 1 + (l_rtm-1) * istep_rtm(2)                 &
+     &                       + (k_rtm-1) *  istep_rtm(1)                &
+     &                       + (mp_rlm-1) * istep_rtm(3)
                   vr_rtm_fdout(ip_rtm,3*nd-2) = vr1
                   vr_rtm_fdout(ip_rtm,3*nd-1) = vr2
                   vr_rtm_fdout(ip_rtm,3*nd  ) = vr3
@@ -151,8 +152,9 @@
      &                   + sp_rlm_fdout(i_rlm,3*nd-1) * Pgv_j(j_rlm)
                   end do
 !
-                  in_rtm = l_rtm + (k_rtm-1) * nidx_rtm(2)              &
-     &                           + (mn_rlm-1) * nidx_rtm(1)*nidx_rtm(2)
+                  in_rtm = 1 + (l_rtm-1) * istep_rtm(2)                 &
+     &                       + (k_rtm-1) *  istep_rtm(1)                &
+     &                       + (mn_rlm-1) * istep_rtm(3)
                   vr_rtm_fdout(in_rtm,3*nd-1)                           &
      &                   = vr_rtm_fdout(in_rtm,3*nd-1) + vr2
                   vr_rtm_fdout(in_rtm,3*nd  )                           &
@@ -214,8 +216,9 @@
 !
                     vr1 = vr1 + sp_rlm_fdout(i_rlm,nd) * P_j(j_rlm)
                   end do
-                  ip_rtm = l_rtm + (k_rtm-1) * nidx_rtm(2)              &
-     &                           + (mp_rlm-1) * nidx_rtm(1)*nidx_rtm(2)
+                  ip_rtm = 1 + (l_rtm-1) * istep_rtm(2)                 &
+     &                       + (k_rtm-1) *  istep_rtm(1)                &
+     &                       + (mp_rlm-1) * istep_rtm(3)
                   vr_rtm_fdout(ip_rtm,nd) = vr1
                 end do
               end do

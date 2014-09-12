@@ -108,12 +108,12 @@
                 sp2 = 0.0d0
                 sp3 = 0.0d0
                 do l_rtm = lst, led
-                  ip_rtm = l_rtm + (k_rlm-1) * nidx_rtm(2)              &
-     &                           + (mdx_p_rlm_rtm(j_rlm)-1)             &
-     &                            * nidx_rtm(1) * nidx_rtm(2)
-                  in_rtm = l_rtm + (k_rlm-1) * nidx_rtm(2)              &
-     &                           + (mdx_n_rlm_rtm(j_rlm)-1)             &
-     &                            * nidx_rtm(1) * nidx_rtm(2)
+                  ip_rtm = 1 + (l_rtm-1) * istep_rtm(2)                 &
+     &                       + (k_rlm-1) * istep_rtm(1)                 &
+     &                       + (mdx_p_rlm_rtm(j_rlm)-1) * istep_rtm(3)
+                  in_rtm = 1 + (l_rtm-1) * istep_rtm(2)                 &
+     &                       + (k_rlm-1) * istep_rtm(1)                 &
+     &                       + (mdx_n_rlm_rtm(j_rlm)-1) * istep_rtm(3)
 !
                   sp1 = sp1 + vr_rtm_fdout(ip_rtm,3*nd-2)               &
      &                        * Pvw_l(l_rtm)
@@ -196,9 +196,9 @@
               do k_rlm = kst, ked
                 sp1 = 0.0d0
                 do l_rtm = lst, led
-                  ip_rtm = l_rtm + (k_rlm-1) * nidx_rtm(2)              &
-     &                           + (mdx_p_rlm_rtm(j_rlm)-1)             &
-     &                            * nidx_rtm(1) * nidx_rtm(2)
+                  ip_rtm = 1 + (l_rtm-1) * istep_rtm(2)                 &
+     &                       + (k_rlm-1) * istep_rtm(1)                 &
+     &                       + (mdx_p_rlm_rtm(j_rlm)-1) * istep_rtm(3)
 !
                   sp1 = sp1 + vr_rtm_fdout(ip_rtm,nd) * Pws_l(l_rtm)
                 end do

@@ -97,14 +97,12 @@
             sp2 = 0.0d0
             sp3 = 0.0d0
             do l_rtm = lst, led
-              ip_rtm = 3*nd + (l_rtm-1)  * ncomp                        &
-     &                      + (k_rlm-1)  * ncomp * nidx_rtm(2)          &
-     &                      + (mdx_p_rlm_rtm(j_rlm)-1)                  &
-     &                       * ncomp * nidx_rtm(1) * nidx_rtm(2)
-              in_rtm = 3*nd + (l_rtm-1)  * ncomp                        &
-     &                      + (k_rlm-1)  * ncomp * nidx_rtm(2)          &
-     &                      + (mdx_n_rlm_rtm(j_rlm)-1)                  &
-     &                       * ncomp * nidx_rtm(1) * nidx_rtm(2)
+              ip_rtm = 3*nd + ncomp*((l_rtm-1) * istep_rtm(2)           &
+     &                             + (k_rlm-1) * istep_rtm(1)           &
+     &              + (mdx_p_rlm_rtm(j_rlm)-1) * istep_rtm(3))
+              in_rtm = 3*nd + ncomp*((l_rtm-1) * istep_rtm(2)           &
+     &                             + (k_rlm-1) * istep_rtm(1)           &
+     &              + (mdx_n_rlm_rtm(j_rlm)-1) * istep_rtm(3))
 !
               sp1 = sp1 + vr_rtm(ip_rtm-2) * Pvw_l(l_rtm)
               sp2 = sp2 + ( vr_rtm(ip_rtm-1) * dPvw_l(l_rtm)            &
@@ -176,10 +174,10 @@
 !
             sp1 = 0.0d0
             do l_rtm = lst, led
-              ip_rtm = nd + 3*nvector + (l_rtm-1)  * ncomp              &
-     &                + (k_rlm-1)  * ncomp * nidx_rtm(2)                &
-     &                + (mdx_p_rlm_rtm(j_rlm)-1)                        &
-     &                 * ncomp * nidx_rtm(1) * nidx_rtm(2)
+              ip_rtm = nd + 3*nvector                                   &
+     &                    + ncomp*((l_rtm-1) * istep_rtm(2)             &
+     &                           + (k_rlm-1) * istep_rtm(1)             &
+     &            + (mdx_p_rlm_rtm(j_rlm)-1) * istep_rtm(3))
 !
               sp1 = sp1  + vr_rtm(ip_rtm) * Pws_l(l_rtm)
             end do

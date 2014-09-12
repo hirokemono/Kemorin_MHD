@@ -102,9 +102,9 @@
             k_rtm = 1 + mod((lnod-1),nidx_rtm(1))
             m_rtm = 1 + (lnod - k_rtm) / nidx_rtm(1)
 !
-            i_rtm_0 = nd + (l_rtm-1) * ncomp                            &
-     &                   + (k_rtm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+            i_rtm_0 = nd + ncomp*((l_rtm-1) * istep_rtm(2)              &
+     &                          + (k_rtm-1) * istep_rtm(1)              &
+     &                          + (m_rtm-1) * istep_rtm(3))
 !
             vr_rtm_fdout(inod,nd) = vr_rtm(i_rtm_0)
           end do
@@ -178,9 +178,9 @@
           k_rtm = 1 + mod((lnod-1),nidx_rtm(1))
           m_rtm = 1 + (lnod - k_rtm) / nidx_rtm(1)
 !
-          i_rtm_0 = nd + (l_rtm-1) * ncomp                              &
-     &                 + (k_rtm-1) * ncomp*nidx_rtm(2)                  &
-     &                 + (m_rtm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+          i_rtm_0 = nd + ncomp*((l_rtm-1) * istep_rtm(2)                &
+     &                        + (k_rtm-1) * istep_rtm(1)                &
+     &                        + (m_rtm-1) * istep_rtm(3))
 !
           vr_rtm(i_rtm_0)  = vr_rtm_fdout(inod,nd)
         end do

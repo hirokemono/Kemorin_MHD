@@ -177,28 +177,29 @@
                     sa_p = sa_p + dpl_o(j_rlm) * Pgv_jo(j_rlm)
                   end do
 !
-                  i_rtm = 3*nd + (lp_rtm-1) * ncomp                     &
-     &                    + (k_rtm-1) * ncomp*nidx_rtm(2)               &
-     &                    + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+                  i_rtm = 3*nd + ncomp*((lp_rtm-1) * istep_rtm(2)       &
+     &                                + (k_rtm-1) *  istep_rtm(1)       &
+     &                                + (mp_rlm-1) * istep_rtm(3))
                   vr_rtm(i_rtm-2) = vr_rtm(i_rtm-2) + ss_r + sa_r
                   vr_rtm(i_rtm-1) = vr_rtm(i_rtm-1) + sa_t + ss_t
                   vr_rtm(i_rtm  ) = vr_rtm(i_rtm  ) + ta_p + ts_p
 !
-                  i_rtm = 3*nd + (lp_rtm-1) * ncomp                     &
-     &                    + (k_rtm-1) * ncomp*nidx_rtm(2)               &
-     &                    + (mn_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+                  i_rtm = 3*nd + ncomp*((lp_rtm-1) * istep_rtm(2)       &
+     &                                + (k_rtm-1) *  istep_rtm(1)       &
+     &                                + (mn_rlm-1) * istep_rtm(3))
                   vr_rtm(i_rtm-1) = vr_rtm(i_rtm-1) + ts_t + ta_t
                   vr_rtm(i_rtm  ) = vr_rtm(i_rtm  ) + ss_p + sa_p
 !
-                  i_rtm = 3*nd + (ln_rtm-1) * ncomp                     &
-     &                    + (k_rtm-1) * ncomp*nidx_rtm(2)               &
-     &                    + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+                  i_rtm = 3*nd + ncomp*((ln_rtm-1) * istep_rtm(2)       &
+     &                                + (k_rtm-1) *  istep_rtm(1)       &
+     &                                + (mp_rlm-1) * istep_rtm(3))
                   vr_rtm(i_rtm-2) = vr_rtm(i_rtm-2) + ss_r - sa_r
                   vr_rtm(i_rtm-1) = vr_rtm(i_rtm-1) - sa_t + ss_t
                   vr_rtm(i_rtm  ) = vr_rtm(i_rtm  ) - ta_p + ts_p
-                  i_rtm = 3*nd + (ln_rtm-1) * ncomp                     &
-     &                    + (k_rtm-1) * ncomp*nidx_rtm(2)               &
-     &                    + (mn_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+!
+                  i_rtm = 3*nd + ncomp*((ln_rtm-1) * istep_rtm(2)       &
+     &                                + (k_rtm-1) *  istep_rtm(1)       &
+     &                                + (mn_rlm-1) * istep_rtm(3))
                   vr_rtm(i_rtm-1) = vr_rtm(i_rtm-1) + ts_t - ta_t
                   vr_rtm(i_rtm  ) = vr_rtm(i_rtm  ) + ss_p - sa_p
                 end do
@@ -221,9 +222,9 @@
         do mp_rlm = 1, nidx_rtm(3)
           do k_rtm = kst, ked
             do nd = 1, nvector
-              i_rtm = 3*nd + (lp_rtm-1) * ncomp                         &
-     &                     + (k_rtm-1) * ncomp*nidx_rtm(2)              &
-     &                     + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+              i_rtm = 3*nd + ncomp*((lp_rtm-1) * istep_rtm(2)           &
+     &                            + (k_rtm-1) *  istep_rtm(1)           &
+     &                            + (mp_rlm-1) * istep_rtm(3))
               vr_rtm(i_rtm-2) = half * vr_rtm(i_rtm-2)
               vr_rtm(i_rtm-1) = half * vr_rtm(i_rtm-1)
               vr_rtm(i_rtm  ) = half * vr_rtm(i_rtm  )
@@ -304,14 +305,16 @@
                   do j_rlm = 1, nj_rlm/2
                     sa_r = sa_r + pol_o(j_rlm) * P_jo(j_rlm)
                   end do
-                  i_rtm = nd + 3*nvector + (lp_rtm-1) * ncomp           &
-     &                    + (k_rtm-1) * ncomp*nidx_rtm(2)               &
-     &                    + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+                  i_rtm = nd + 3*nvector                                &
+     &                        + ncomp*((lp_rtm-1) * istep_rtm(2)        &
+     &                               + (k_rtm-1) *  istep_rtm(1)        &
+     &                               + (mp_rlm-1) * istep_rtm(3))
                   vr_rtm(i_rtm) = vr_rtm(i_rtm) + ss_r + sa_r
 !
-                  i_rtm = nd + 3*nvector + (ln_rtm-1) * ncomp           &
-     &                    + (k_rtm-1) * ncomp*nidx_rtm(2)               &
-     &                    + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+                  i_rtm = nd + 3*nvector                                &
+     &                        + ncomp*((ln_rtm-1) * istep_rtm(2)        &
+     &                               + (k_rtm-1) *  istep_rtm(1)        &
+     &                               + (mp_rlm-1) * istep_rtm(3))
                   vr_rtm(i_rtm) = vr_rtm(i_rtm) + ss_r - sa_r
                 end do
               end do
@@ -334,9 +337,10 @@
         do mp_rlm = 1, nidx_rtm(3)
           do k_rtm = kst, ked
             do nd = 1, nscalar
-              i_rtm = nd + 3*nvector + (lp_rtm-1) * ncomp               &
-     &                   + (k_rtm-1) * ncomp*nidx_rtm(2)                &
-     &                   + (mp_rlm-1) * ncomp*nidx_rtm(1)*nidx_rtm(2)
+              i_rtm = nd + 3*nvector                                    &
+     &                   + ncomp*((lp_rtm-1) * istep_rtm(2)             &
+     &                          + (k_rtm-1) *  istep_rtm(1)             &
+     &                          + (mp_rlm-1) * istep_rtm(3))
               vr_rtm(i_rtm) = half * vr_rtm(i_rtm)
             end do
           end do
