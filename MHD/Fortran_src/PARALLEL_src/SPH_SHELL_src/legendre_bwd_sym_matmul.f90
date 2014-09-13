@@ -220,8 +220,8 @@
           nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
           a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
           do j_rlm = 1, nidx_rlm(2)
-            i_rlm = 3*nd + (j_rlm-1) * ncomp                            &
-     &                   + (k_rlm-1) * ncomp*nidx_rlm(2)
+            i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)            &
+     &                            + (k_rlm-1) * istep_rlm(1))
 !
             sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) * a2r_1d_rlm_r
             sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1) * a_r_1d_rlm_r(k_rlm)
@@ -287,8 +287,8 @@
 !   even l-m
               do jj = 1, n_jk_e(ip)
                 j_rlm = 2*jj + jst(ip) - 1
-                i_rlm = 3*nd + (j_rlm-1) * ncomp                        &
-     &                       + (k_rlm-1) * ncomp*nidx_rlm(2)
+                i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)        &
+     &                                + (k_rlm-1) * istep_rlm(1))
 !
                 i_jk = jj + (kk-1) * n_jk_e(ip)
 !
@@ -299,9 +299,8 @@
 !   odd l-m
               do jj = 1, n_jk_o(ip)
                 j_rlm = 2*jj + jst(ip)
-!
-                i_rlm = 3*nd + (j_rlm-1) * ncomp                        &
-     &                       + (k_rlm-1) * ncomp*nidx_rlm(2)
+                i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)        &
+     &                                + (k_rlm-1) * istep_rlm(1))
 !
                 i_jk = jj + (kk-1) * n_jk_o(ip)
                 pol_o(i_jk,ip) = sp_rlm(i_rlm-2)
@@ -491,8 +490,9 @@
 !   even l-m
               do jj = 1, n_jk_e(ip)
                 j_rlm = 2*jj + jst(ip) - 1
-                i_rlm = nd + 3*nvector + (j_rlm-1) * ncomp              &
-     &                     + (k_rlm-1) * ncomp*nidx_rlm(2)
+                i_rlm = nd + 3*nvector                                  &
+     &                     + ncomp * ((j_rlm-1) * istep_rlm(2)          &
+     &                              + (k_rlm-1) * istep_rlm(1))
 !
                 i_jk = jj + (kk-1) * n_jk_e(ip)
                 scl_e(i_jk,ip) = sp_rlm(i_rlm)
@@ -500,8 +500,9 @@
 !   odd l-m
               do jj = 1, n_jk_o(ip)
                 j_rlm = 2*jj + jst(ip)
-                i_rlm = nd + 3*nvector + (j_rlm-1) * ncomp              &
-     &                     + (k_rlm-1) * ncomp*nidx_rlm(2)
+                i_rlm = nd + 3*nvector                                  &
+     &                     + ncomp * ((j_rlm-1) * istep_rlm(2)          &
+     &                              + (k_rlm-1) * istep_rlm(1))
 !
                 i_jk = jj + (kk-1) * n_jk_o(ip)
                 scl_o(i_jk,ip) = sp_rlm(i_rlm)

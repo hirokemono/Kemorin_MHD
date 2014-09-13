@@ -90,8 +90,6 @@
           write(tmpchara,'(a)') trim(leg_krloop_inner)
         else if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
           write(tmpchara,'(a)') trim(leg_krloop_outer)
-        else if(id_legendre_transfer .eq. iflag_leg_fdout_loop) then
-          write(tmpchara,'(a)') trim(leg_fdout_loop)
         else if(id_legendre_transfer .eq. iflag_leg_symmetry) then
           write(tmpchara,'(a)') trim(leg_sym_org_loop)
         else if(id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
@@ -334,15 +332,13 @@
      &            etime_trans(iflag_leg_krloop_inner)
         write(*,*) '3: elapsed by outer radius loop:  ',                &
      &            etime_trans(iflag_leg_krloop_outer)
-        write(*,*) '4: elapsed by outmost field loop: ',                &
-     &            etime_trans(iflag_leg_fdout_loop)
-        write(*,*) '5: elapsed by original loop with symmetric: ',      &
+        write(*,*) '4: elapsed by original loop with symmetric: ',      &
      &            etime_trans(iflag_leg_symmetry)
-        write(*,*) '6: elapsed by sym. outer radius: ',                 &
+        write(*,*) '5: elapsed by sym. outer radius: ',                 &
      &            etime_trans(iflag_leg_sym_spin_loop)
-        write(*,*) '7: elapsed by matmul: ',                            &
+        write(*,*) '6: elapsed by matmul: ',                            &
      &            etime_trans(iflag_leg_matmul)
-        write(*,*) '8: elapsed by matmul with symmetric: ',             &
+        write(*,*) '7: elapsed by matmul with symmetric: ',             &
      &            etime_trans(iflag_leg_sym_matmul)
 !
       end subroutine select_legendre_transform

@@ -39,7 +39,6 @@
       use legendre_transform_org
       use legendre_transform_krin
       use legendre_transform_spin
-      use legendre_transform_fdout
       use legendre_transform_symmetry
       use legendre_transform_testloop
       use legendre_trans_sym_matmul
@@ -61,10 +60,6 @@
 !@n     with inneromst Legendre polynomial loop
       character(len = kchara), parameter                                &
      &           :: leg_krloop_outer = 'outer_radial_loop'
-!>      Character flag to perform Legendre transform 
-!@n     with outmost field loop
-      character(len = kchara), parameter                                &
-     &           :: leg_fdout_loop =   'outer_field_loop'
 !>      Character flag to perform Legendre transform 
 !@n     with symmetry
       character(len = kchara), parameter                                &
@@ -98,20 +93,17 @@
 !>      integer flag to perform Legendre transform 
 !@n     with inneromst Legendre polynomial loop
       integer(kind = kint), parameter :: iflag_leg_krloop_outer = 3
-!>      integer flag to perform Legendre transform 
-!@n     with outmost field loop
-      integer(kind = kint), parameter :: iflag_leg_fdout_loop =    4
 !>      integer flag to perform Legendre transform with symmetry
-      integer(kind = kint), parameter :: iflag_leg_symmetry =      5
+      integer(kind = kint), parameter :: iflag_leg_symmetry =     4
 !>      integer flag to perform Legendre transform 
 !@n     with symmetry and inneromst Legendre polynomial loop
-      integer(kind = kint), parameter :: iflag_leg_sym_spin_loop = 6
+      integer(kind = kint), parameter :: iflag_leg_sym_spin_loop = 5
 !>      integer flag to perform Legendre transform 
 !@n     with mutmul function
-      integer(kind = kint), parameter :: iflag_leg_matmul =        7
+      integer(kind = kint), parameter :: iflag_leg_matmul =        6
 !>      integer flag to perform Legendre transform 
 !@n     with symmetry and mutmul function
-      integer(kind = kint), parameter :: iflag_leg_sym_matmul =    8
+      integer(kind = kint), parameter :: iflag_leg_sym_matmul =    7
 !>      integer flag to perform Legendre transform 
 !@n     with testing loop
       integer(kind = kint), parameter :: iflag_leg_test_loop =   99
@@ -142,8 +134,6 @@
         id_legendre_transfer = iflag_leg_krloop_inner
       else if(cmp_no_case(tranx_loop_ctl, leg_krloop_outer).gt.0) then
         id_legendre_transfer = iflag_leg_krloop_outer
-      else if(cmp_no_case(tranx_loop_ctl, leg_fdout_loop).gt.0) then
-        id_legendre_transfer = iflag_leg_fdout_loop
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_org_loop).gt.0) then
         id_legendre_transfer = iflag_leg_symmetry
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_spin_loop).gt.0) then
@@ -168,7 +158,6 @@
 !
       if    (id_legendre_transfer .eq. iflag_leg_krloop_outer           &
      &  .or. id_legendre_transfer .eq. iflag_leg_krloop_inner           &
-     &  .or. id_legendre_transfer .eq. iflag_leg_fdout_loop             &
      &  .or. id_legendre_transfer .eq. iflag_leg_sym_spin_loop          &
      &  .or. id_legendre_transfer .eq. iflag_leg_matmul                 &
      &  .or. id_legendre_transfer .eq. iflag_leg_sym_matmul             &
@@ -185,7 +174,6 @@
 !
       if    (id_legendre_transfer .eq. iflag_leg_krloop_outer           &
      &  .or. id_legendre_transfer .eq. iflag_leg_krloop_inner           &
-     &  .or. id_legendre_transfer .eq. iflag_leg_fdout_loop             &
      &  .or. id_legendre_transfer .eq. iflag_leg_sym_spin_loop          &
      &  .or. id_legendre_transfer .eq. iflag_leg_matmul                 &
      &  .or. id_legendre_transfer .eq. iflag_leg_sym_matmul             &
@@ -209,8 +197,6 @@
         call leg_backward_trans_spin(ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         call leg_bwd_trans_fields_krin(ncomp, nvector, nscalar)
-      else if(id_legendre_transfer .eq. iflag_leg_fdout_loop) then
-        call leg_backward_trans_fdout(ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_symmetry) then
         call leg_backward_trans_sym_org(ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
@@ -239,8 +225,6 @@
         call leg_forward_trans_spin(ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         call leg_fwd_trans_fields_krin(ncomp, nvector, nscalar)
-      else if(id_legendre_transfer .eq. iflag_leg_fdout_loop) then
-        call leg_forward_trans_fdout(ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_symmetry) then
         call leg_forward_trans_sym_org(ncomp, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then

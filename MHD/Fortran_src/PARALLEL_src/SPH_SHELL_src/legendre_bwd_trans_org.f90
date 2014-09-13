@@ -67,8 +67,8 @@
           a2r_1d_rlm_r = a_r_1d_rlm_r(k_rtm)*a_r_1d_rlm_r(k_rtm)
           do j_rlm = 1, nidx_rlm(2)
             do nd = 1, nvector
-              i_rlm = 3*nd + (j_rlm-1) * ncomp                          &
-     &                   + (k_rtm-1) * ncomp * nidx_rlm(2)
+              i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)          &
+     &                              + (k_rtm-1) * istep_rlm(1))
 !
               sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) * a2r_1d_rlm_r
               sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1) * a_r_1d_rlm_r(k_rtm)
@@ -95,8 +95,8 @@
                   vr2 = 0.0d0
                   vr3 = 0.0d0
                   do j_rlm = jst, jed
-                    i_rlm = 3*nd + (j_rlm-1) * ncomp                    &
-     &                           + (k_rtm-1) * ncomp * nidx_rlm(2)
+                    i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)    &
+     &                                    + (k_rtm-1) * istep_rlm(1))
 !
                     vr1 = vr1 + sp_rlm(i_rlm-2) * Pg3_j(j_rlm)
                     vr2 = vr2 + sp_rlm(i_rlm-1) * dPdt_j(j_rlm)
@@ -129,8 +129,8 @@
                   vr2 = 0.0d0
                   vr3 = 0.0d0
                   do j_rlm = jst, jed
-                    i_rlm = 3*nd + (j_rlm-1) * ncomp                    &
-     &                           + (k_rtm-1) * ncomp * nidx_rlm(2)
+                    i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)    &
+     &                                    + (k_rtm-1) * istep_rlm(1))
 !
                     vr2 = vr2 + sp_rlm(i_rlm  ) * Pgv_j(j_rlm)
                     vr3 = vr3 + sp_rlm(i_rlm-1) * Pgv_j(j_rlm)
@@ -185,8 +185,9 @@
                 do nd = 1, nscalar
                   vr1 = 0.0d0
                   do j_rlm = jst, jed
-                    i_rlm = nd + 3*nvector + (j_rlm-1) * ncomp          &
-     &                        + (k_rtm-1) * ncomp*nidx_rlm(2)
+                    i_rlm = nd + 3*nvector                              &
+     &                         + ncomp * ((j_rlm-1) * istep_rlm(2)      &
+     &                                  + (k_rtm-1) * istep_rlm(1))
 !
                     vr1 = vr1 + sp_rlm(i_rlm) * P_j(j_rlm)
                   end do

@@ -478,7 +478,7 @@ begin MHD_control
 !
 !   Legendre_trans_loop_ctl: spherical transfer loop type
 !                   ('inner_radial_loop', 'outer_radial_loop', 'long_loop',
-!                    'original_loop', 'outer_field_loop'
+!                    'original_loop'
 !   FFT_library_ctl:  Selection of FFT librarry  ('FFTW3' or 'FFTPACK')
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

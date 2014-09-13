@@ -65,8 +65,8 @@
           inod  = 1 + (inum - nd) / nvector
           j_rlm = 1 + mod( (inod-1),nidx_rlm(2))
           k_rlm = 1 + (inod - j_rlm) / nidx_rlm(2)
-          i_rlm = 3*nd + (j_rlm-1) * ncomp                              &
-     &                 + (k_rlm-1) * ncomp*nidx_rlm(2)
+          i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)              &
+     &                          + (k_rlm-1) * istep_rlm(1))
           sp_rlm(i_rlm-2) = 0.0d0
           sp_rlm(i_rlm-1) = 0.0d0
           sp_rlm(i_rlm  ) = 0.0d0
@@ -111,8 +111,8 @@
      &                    + vr_rtm(ip_rtm  ) * dPvw_l(l_rtm))
             end do
 !
-            i_rlm = 3*nd + (j_rlm-1) * ncomp                            &
-     &                   + (k_rlm-1) * ncomp*nidx_rlm(2)
+            i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)            &
+     &                          + (k_rlm-1) * istep_rlm(1))
             sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2)                           &
      &                       + sp1 * radius_1d_rlm_r(k_rlm)             &
      &                             * radius_1d_rlm_r(k_rlm)
@@ -152,8 +152,9 @@
           inod  = 1 + (inum - nd) / nscalar
           j_rlm = 1 + mod( (inod-1),nidx_rlm(2))
           k_rlm = 1 + (inod - j_rlm) / nidx_rlm(2)
-          i_rlm = nd + 3*nvector + (j_rlm-1) * ncomp                    &
-     &                           + (k_rlm-1) * ncomp*nidx_rlm(2)
+          i_rlm = nd + 3*nvector                                        &
+     &               + ncomp * ((j_rlm-1) * istep_rlm(2)                &
+     &                        + (k_rlm-1) * istep_rlm(1))
           sp_rlm(i_rlm) = 0.0d0
         end do
 !
@@ -182,8 +183,9 @@
               sp1 = sp1  + vr_rtm(ip_rtm) * Pws_l(l_rtm)
             end do
 !
-            i_rlm = nd + 3*nvector + (j_rlm-1) * ncomp                  &
-     &                             + (k_rlm-1) * ncomp*nidx_rlm(2)
+            i_rlm = nd + 3*nvector                                      &
+     &                 + ncomp * ((j_rlm-1) * istep_rlm(2)              &
+     &                          + (k_rlm-1) * istep_rlm(1))
             sp_rlm(i_rlm) = sp_rlm(i_rlm) + sp1
           end do
         end do

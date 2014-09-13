@@ -197,8 +197,8 @@
 !   even l-m
               do jj = 1, nj_rlm(ip)
                 j_rlm = jj + jst(ip)
-                i_rlm = 3*nd + (j_rlm-1) * ncomp                        &
-     &                       + (k_rlm-1) * ncomp*nidx_rlm(2)
+                i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)        &
+     &                                + (k_rlm-1) * istep_rlm(1))
                 i_jk = jj + (kk-1) * nj_rlm(ip)
                 pol_e(i_jk,ip) = sp_rlm(i_rlm-2) * a2r_1d_rlm_r
                 dpl_e(i_jk,ip) = sp_rlm(i_rlm-1) * a_r_1d_rlm_r(k_rlm)
@@ -291,8 +291,9 @@
               nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
               do jj = 1, nj_rlm(ip)
                 j_rlm = jj + jst(ip)
-                i_rlm = nd + 3*nvector + (j_rlm-1) * ncomp              &
-     &                                 + (k_rlm-1) * ncomp*nidx_rlm(2)
+                i_rlm = nd + 3*nvector                                  &
+     &                     + ncomp * ((j_rlm-1) * istep_rlm(2)          &
+     &                              + (k_rlm-1) * istep_rlm(1))
                 i_jk = jj + (kk-1) * nj_rlm(ip)
                 scl_e(i_jk,ip) = sp_rlm(i_rlm)
               end do

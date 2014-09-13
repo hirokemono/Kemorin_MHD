@@ -770,13 +770,13 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	};
 	
 	link_glut_menu_address();
+	glutInit(&narg_glut, arg_glut);
 	
 	/*! GTK Initialization*/
 	gtk_set_locale();
 	gtk_init (&narg_glut, &arg_glut);
     
 	/*! Initializations with GLUT*/
-	glutInit(&narg_glut, arg_glut);
 	if(iflag_streo_shutter == SHUTTER_ON){
 		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH
 				|GLUT_MULTISAMPLE|GLUT_STEREO);

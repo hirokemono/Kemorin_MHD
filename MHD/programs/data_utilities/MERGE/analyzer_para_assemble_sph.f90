@@ -76,7 +76,6 @@
         irank_org = ip - 1
         if(mod(irank_org,np_sph_new) .ne. my_rank) cycle
 !
-        write(*,*) 'set_local_rj_mesh_4_merge', my_rank, irank_org
         call set_local_rj_mesh_4_merge(irank_org, org_sph_mesh(ip))
         call set_sph_boundary_4_merge(org_sph_mesh(ip)%sph_grps,        &
      &    nlayer_ICB_org, nlayer_CMB_org)

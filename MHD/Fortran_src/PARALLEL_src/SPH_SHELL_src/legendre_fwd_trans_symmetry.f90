@@ -177,16 +177,16 @@
      &                           + symp_p(l_rtm) * dPvw_lo(l_rtm))
                 end do
 !
-                i_rlm = 3*nd + (2*j_rlm+jst-2) * ncomp                  &
-     &                       + (k_rlm-1) * ncomp*nidx_rlm(2)
+                i_rlm = 3*nd + ncomp * ((2*j_rlm+jst-2) * istep_rlm(2)  &
+     &                                      + (k_rlm-1) * istep_rlm(1))
                 sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + pol_s * r2_1d_rlm_r
                 sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                       &
      &                           + dpl_s * radius_1d_rlm_r(k_rlm)
                 sp_rlm(i_rlm  ) = sp_rlm(i_rlm  )                       &
      &                           + tor_s * radius_1d_rlm_r(k_rlm)
 !
-                i_rlm = 3*nd + (2*j_rlm+jst-1) * ncomp                  &
-     &                       + (k_rlm-1) * ncomp*nidx_rlm(2)
+                i_rlm = 3*nd + ncomp * ((2*j_rlm+jst-1) * istep_rlm(2)  &
+     &                                      + (k_rlm-1) * istep_rlm(1))
                 sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + pol_a * r2_1d_rlm_r
                 sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                       &
      &                           + dpl_a * radius_1d_rlm_r(k_rlm)
@@ -260,8 +260,8 @@
      &                           + asmp_p(l_rtm) * dPvw_le(l_rtm))
                 end do
 !
-                i_rlm = 3*nd + (2*j_rlm+jst-2) * ncomp                  &
-     &                       + (k_rlm-1) * ncomp*nidx_rlm(2)
+                i_rlm = 3*nd + ncomp * ((2*j_rlm+jst-2) * istep_rlm(2)  &
+     &                                      + (k_rlm-1) * istep_rlm(1))
                 sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + pol_s * r2_1d_rlm_r
                 sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                       &
      &                           + dpl_s * radius_1d_rlm_r(k_rlm)
@@ -347,12 +347,14 @@
                   pol_a = pol_a + asmp_r(l_rtm) * Pws_lo(l_rtm)
                 end do
 !
-                i_rlm = nd + 3*nvector + (2*j_rlm+jst-2) * ncomp        &
-     &                     + (k_rlm-1) * ncomp*nidx_rlm(2)
+                i_rlm = nd + 3*nvector                                  &
+     &                     + ncomp * ((2*j_rlm+jst-2) * istep_rlm(2)    &
+     &                                    + (k_rlm-1) * istep_rlm(1))
                 sp_rlm(i_rlm) = sp_rlm(i_rlm)  + pol_s
 !
-                i_rlm = nd + 3*nvector + (2*j_rlm+jst-1) * ncomp        &
-     &                     + (k_rlm-1) * ncomp*nidx_rlm(2)
+                i_rlm = nd + 3*nvector                                  &
+     &                     + ncomp * ((2*j_rlm+jst-1) * istep_rlm(2)    &
+     &                                    + (k_rlm-1) * istep_rlm(1))
                 sp_rlm(i_rlm) = sp_rlm(i_rlm)  + pol_a
               end do
             end do
@@ -393,8 +395,9 @@
                   pol_s = pol_s + symp_r(l_rtm) * Pws_le(l_rtm)
                 end do
 !
-                i_rlm = nd + 3*nvector + (2*j_rlm+jst-2) * ncomp        &
-     &                     + (k_rlm-1) * ncomp*nidx_rlm(2)
+                i_rlm = nd + 3*nvector                                  &
+     &                     + ncomp * ((2*j_rlm+jst-2) * istep_rlm(2)    &
+     &                                    + (k_rlm-1) * istep_rlm(1))
                 sp_rlm(i_rlm) = sp_rlm(i_rlm)  + pol_s
               end do
             end do

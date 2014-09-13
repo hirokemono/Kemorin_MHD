@@ -40,10 +40,12 @@
       subroutine leg_backward_trans_org(ncomp, nvector, nscalar)
 !
       use legendre_bwd_trans_org
-      use merge_polidal_toroidal_v
+!      use merge_polidal_toroidal_v
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
 !
+!
+!      call clear_bwd_legendre_trans(ncomp)
 !
       if(nvector .gt. 0) then
         call legendre_b_trans_vector_org(ncomp, nvector)
@@ -66,6 +68,8 @@
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
 !
+!
+      call clear_fwd_legendre_trans(ncomp)
 !
       if(nvector .gt. 0) then
         call legendre_f_trans_vector_org(ncomp, nvector)
