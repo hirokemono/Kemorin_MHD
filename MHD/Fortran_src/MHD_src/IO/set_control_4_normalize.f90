@@ -146,7 +146,7 @@
         num_coef_4_t_diffuse = coef_4_t_diffuse_ctl%num
       end if
 !
-      if (coef_4_heat_src_ctl%icou .eq. 0) then
+      if (coef_4_heat_src_ctl%icou .gt. 0) then
         num_coef_4_h_source = coef_4_heat_src_ctl%num
       end if
 !
