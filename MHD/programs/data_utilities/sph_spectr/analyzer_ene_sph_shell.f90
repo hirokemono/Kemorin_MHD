@@ -131,7 +131,7 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_sph_spec_rms_whole'
         call cal_rms_sph_spec_rms_whole
 !
-        call write_sph_vol_ave_file(my_rank, i_step, time)
+        call write_sph_vol_ave_file(i_step, time)
         call write_sph_vol_ms_file(my_rank, i_step, time)
         call write_sph_vol_ms_spectr_file(my_rank, i_step, time)
         call write_sph_layer_ms_file(my_rank, i_step, time)

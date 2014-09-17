@@ -208,8 +208,7 @@
 !$omp parallel do schedule(static)                                      &
 !$omp             private(ip,kr_nd,ll,lp_rtm,ln_rtm,jj,j_rlm,nd,i_rlm,  &
 !$omp&                    k_rlm,kk,mp_rlm,mn_rlm,i_lk,i_jl,i_jk,        &
-!$omp&                    ip_rtpm,in_rtpm,ip_rtnm,in_rtnm,              &
-!$omp&                    st_elapsed) &
+!$omp&                    ip_rtpm,in_rtpm,ip_rtnm,in_rtnm,st_elapsed)   &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
         kst(ip) = nvector*idx_rlm_smp_stack(ip-1,1)
@@ -479,7 +478,7 @@
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,kr_nd,k_rlm,nd,kk,jj,j_rlm,mp_rlm,i_rlm,   &
 !$omp&                    ll,lp_rtm,ln_rtm,i_lk,i_jl,i_jk,              &
-!$omp&                    ip_rtpm,ip_rtnm,st_elapsed) &
+!$omp&                    ip_rtpm,ip_rtnm,st_elapsed)                   &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
         kst(ip) = nscalar*idx_rlm_smp_stack(ip-1,1)

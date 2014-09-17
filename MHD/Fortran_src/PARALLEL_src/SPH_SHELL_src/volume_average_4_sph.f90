@@ -5,7 +5,7 @@
 !
 !!      subroutine allocate_ave_4_sph_spectr(nri_ave, ntot_rms)
 !!      subroutine deallocate_ave_4_sph_spectr
-!!      subroutine write_sph_vol_ave_file(my_rank, istep, time)
+!!      subroutine write_sph_vol_ave_file(istep, time)
 !!
 !!      subroutine cal_volume_average_sph(kg_st, kg_ed, avol)
 !
@@ -69,18 +69,17 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_sph_vol_ave_file(my_rank, istep, time)
+      subroutine write_sph_vol_ave_file(istep, time)
 !
       use set_parallel_file_name
       use m_rms_4_sph_spectr
 !
-      integer(kind = kint), intent(in) :: my_rank, istep
+      integer(kind = kint), intent(in) :: istep
       real(kind = kreal), intent(in) :: time
 !
       character(len=kchara) :: fname_rms, mode_label
 !
 !
-      if(my_rank .ne. 0)  return
       if(idx_rj_degree_zero .eq. 0)  return
       if(ntot_rms_rj .eq. 0)  return
 !

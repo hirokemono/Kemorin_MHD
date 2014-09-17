@@ -110,13 +110,13 @@
 !
 !
       call MPI_REDUCE(sph_rank_rj, nproc_rj_IO, itwo,                   &
-     &    CALYPSO_REAL, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_REDUCE(sph_rank_rlm, nproc_rlm_IO, itwo,                 &
-     &    CALYPSO_REAL, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_REDUCE(sph_rank_rtm, nproc_rtm_IO, ithree,               &
-     &    CALYPSO_REAL, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_REDUCE(sph_rank_rtp, nproc_rtp_IO, ithree,               &
-     &    CALYPSO_REAL, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) return
 !
@@ -125,7 +125,6 @@
       nproc_rtm_IO(1:3) = nproc_rtm_IO(1:3) + 1
       nproc_rtp_IO(1:3) = nproc_rtp_IO(1:3) + 1
 !
-      write(*,*) 'nproc_rj_IO', nproc_rj_IO
       open(id_timer_file,file=time_file_name,position='append')
 !
       write(id_timer_file,*)
@@ -145,6 +144,7 @@
      &   'Processes for Legendre trans. (r, t, m): ', nproc_rtm_IO(1:3)
       write(id_timer_file,*)                                            &
      &   'Processes for physical space. (r, t, p): ', nproc_rtp_IO(1:3)
+      write(id_timer_file,*)
 !
       close(id_timer_file)
 !

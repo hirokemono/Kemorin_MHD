@@ -236,7 +236,7 @@
 !$omp&                    k_rlm,nd,i_jk,i_lj,i_lk,i_rlm,                &
 !$omp&                    ip_rtpm,in_rtpm,ip_rtnm,in_rtnm,              &
 !$omp&                    j_rlm,mp_rlm,mn_rlm,a2r_1d_rlm_r,             &
-!$omp&                    st_elapsed) &
+!$omp&                    st_elapsed)                                   &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
         kst(ip) = nvector*idx_rtm_smp_stack(ip-1,1)

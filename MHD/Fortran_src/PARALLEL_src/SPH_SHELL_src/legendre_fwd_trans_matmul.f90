@@ -37,6 +37,8 @@
 !
       use m_precision
       use m_constants
+      use m_work_time
+      use calypso_mpi
 !
       use m_machine_parameter
       use m_spheric_parameter
@@ -72,6 +74,10 @@
 !
       integer(kind = kint), private :: nscl_lk
       real(kind = kreal), allocatable, private :: symp(:,:)
+!
+      real(kind = kreal), private :: st_elapsed
+      real(kind = kreal), private :: elaps(4)
+      integer, external :: omp_get_max_threads
 !
 ! -----------------------------------------------------------------------
 !
@@ -164,12 +170,15 @@
       real(kind = kreal) :: r2_1d_rlm_r
 !
 !
+      elaps(1:4) = 0
       call alloc_vec_fleg_mat_test(nvector)
 !
       nb_nri = nvector*nidx_rlm(1)
 !$omp parallel do schedule(static)                                      &
 !$omp             private(ip,kr_nd,ll,l_rtm,jj,j_rlm,nd,ip_rtm,in_rtm,  &
-!$omp&                    k_rlm,kk,mp_rlm,mn_rlm,i_lk,i_jl,i_jk,i_rlm)
+!$omp&                    k_rlm,kk,mp_rlm,mn_rlm,i_lk,i_jl,i_jk,i_rlm,  &
+!$omp&                    st_elapsed)                                   &
+!$omp& reduction(+:elaps)
       do ip = 1, np_smp
         kst(ip) = nvector*idx_rlm_smp_stack(ip-1,1)
         nkr(ip) = nvector                                               &
@@ -180,6 +189,7 @@
           jst(ip) = lstack_rlm(mp_rlm-1)
           nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
 !    even l-m
+            st_elapsed = MPI_WTIME()
           do l_rtm = 1, nidx_rtm(2)
             do jj = 1, nj_rlm(ip)
               j_rlm = jj + jst(ip)
@@ -194,7 +204,9 @@
      &                * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
             end do
           end do
+            elaps(1) = MPI_WTIME() - st_elapsed + elaps(1)
 !
+            st_elapsed = MPI_WTIME()
           do kk = 1, nkr(ip)
             kr_nd = kk + kst(ip)
             k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
@@ -218,7 +230,9 @@
               symn_p(i_lk,ip) =  vr_rtm(in_rtm  )
             end do
           end do
+            elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
+            st_elapsed = MPI_WTIME()
           call matmul_fwd_leg_trans(nj_rlm(ip), nkr(ip), nidx_rtm(2),   &
      &        Pvw_le(1,ip), symp_r(1,ip), pol_e(1,ip))
           call matmul_fwd_leg_trans(nj_rlm(ip), nkr(ip), nidx_rtm(2),   &
@@ -229,7 +243,9 @@
      &        Pgvw_le(1,ip), symn_t(1,ip), tor_e(1,ip))
           call matmul_fwd_leg_trans(nj_rlm(ip), nkr(ip), nidx_rtm(2),   &
      &        dPvw_le(1,ip), asmp_p(1,ip), tor_o(1,ip))
+            elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
+            st_elapsed = MPI_WTIME()
           do kk = 1, nkr(ip)
             kr_nd = kk + kst(ip)
             k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
@@ -247,6 +263,7 @@
      &                - tor_e(i_jk,ip) - tor_o(i_jk,ip)
             end do
           end do
+            elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
       end do
@@ -276,6 +293,8 @@
 !$omp end parallel do
 !
       call dealloc_vec_fleg_mat_test
+      elapsed(46:49)                                                    &
+     &     = elaps(1:4) / dble(omp_get_max_threads()) + elapsed(46:49)
 !
       end subroutine leg_f_trans_vector_matmul
 !
@@ -292,11 +311,13 @@
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
 !
 !
+      elaps(1:4) = 0
       call alloc_scl_fleg_mat_test(nscalar)
 !
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,kr_nd,kk,jj,j_rlm,mp_rlm,ip_rtm,nd,k_rlm,  &
-!$omp&                    ll,l_rtm,i_lk,i_jl,i_jk,i_rlm)
+!$omp&                    ll,l_rtm,i_lk,i_jl,i_jk,i_rlm,st_elapsed)     &
+!$omp& reduction(+:elaps)
       do ip = 1, np_smp
         kst(ip) = nscalar*idx_rlm_smp_stack(ip-1,1)
         nkr(ip) = nscalar                                               &
@@ -306,6 +327,7 @@
           nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
 !
 !    even l-m
+            st_elapsed = MPI_WTIME()
           do l_rtm = 1, nidx_rtm(2)
             do jj = 1, nj_rlm(ip)
               j_rlm = jj + jst(ip)
@@ -314,7 +336,9 @@
      &                         * g_sph_rlm(j_rlm,6) * weight_rtm(l_rtm)
             end do
           end do
+            elaps(1) = MPI_WTIME() - st_elapsed + elaps(1)
 !
+            st_elapsed = MPI_WTIME()
           do kk = 1, nkr(ip)
             kr_nd = kk + kst(ip)
             k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
@@ -328,10 +352,14 @@
               symp(i_lk,ip) =  vr_rtm(ip_rtm)
             end do
           end do
+            elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
+            st_elapsed = MPI_WTIME()
           call matmul_fwd_leg_trans(nj_rlm(ip), nkr(ip), nidx_rtm(2),   &
      &        Pws_le(1,ip), symp(1,ip), scl_e(1,ip))
+            elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
+            st_elapsed = MPI_WTIME()
           do kk = 1, nkr(ip)
             kr_nd = kk + kst(ip) + 3*nvector*nidx_rlm(1)
             k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
@@ -346,11 +374,15 @@
               sp_rlm(i_rlm) = sp_rlm(i_rlm) + scl_e(i_jk,ip)
             end do
           end do
+            elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
       end do
 !$omp end parallel do
 !
+!
+      elapsed(46:49)                                                    &
+     &     = elaps(1:4) / dble(omp_get_max_threads()) + elapsed(46:49)
 !
       call dealloc_scl_fleg_mat_test
 !

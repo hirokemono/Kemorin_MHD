@@ -74,7 +74,7 @@
       if(iflag_debug.gt.0)  write(*,*) 'write_total_energy_to_screen'
       call write_total_energy_to_screen(my_rank, i_step_MHD, time)
 !
-      call write_sph_vol_ave_file(my_rank, i_step_MHD, time)
+      call write_sph_vol_ave_file(i_step_MHD, time)
       call write_sph_vol_ms_file(my_rank, i_step_MHD, time)
       call write_sph_vol_ms_spectr_file(my_rank, i_step_MHD, time)
       call write_sph_layer_ms_file(my_rank, i_step_MHD, time)
