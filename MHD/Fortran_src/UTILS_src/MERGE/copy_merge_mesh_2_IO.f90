@@ -51,6 +51,7 @@
       call set_grp_data_type_to_IO(merged_grp)
 !
       call dealloc_groups_data(merged_grp)
+      call deallocate_ele_connect_type(merged%ele)
       call deallocate_node_geometry_type(merged%node)
       call deallocate_array_4_merge
 !

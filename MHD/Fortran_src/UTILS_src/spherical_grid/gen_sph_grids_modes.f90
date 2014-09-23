@@ -274,6 +274,7 @@
       call set_grp_data_type_to_IO(group)
 !
       call dealloc_groups_data(group)
+      call deallocate_ele_connect_type(mesh%ele)
       call deallocate_node_geometry_type(mesh%node)
       call deallocate_type_comm_tbl(mesh%nod_comm)
 !
