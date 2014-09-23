@@ -10,14 +10,17 @@
 !!      subroutine set_import_table_ctl(import_ctl)
 !!      subroutine set_sph_comm_routine_ctl(send_recv_ctl)
 !!
-!!      subroutine sel_calypso_sph_send_recv_N                          &
-!!     &                   (NB, nnod_org, nnod_new, nmax_sr,            &
-!!     &                    npe_send, isend_self,                       &
-!!     &                    id_pe_send, istack_send, inod_export,       &
-!!     &                    npe_recv, irecv_self,                       &
-!!     &                    id_pe_recv, istack_recv, inod_import,       &
-!!     &                    irev_import, X_org, X_new, CALYPSO_SUB_COMM)
 !!      subroutine finish_sph_send_recv(npe_send, isend_self)
+!!      subroutine sel_calypso_sph_comm_N(NB, nmax_sr,                  &
+!!     &                  npe_send, isend_self, id_pe_send, istack_send,&
+!!     &                  npe_recv, irecv_self, id_pe_recv, istack_recv,&
+!!     &                  CALYPSO_SUB_COMM)
+!!      subroutine sel_calypso_to_send_N(NB, nnod_org, nmax_sr,         &
+!!     &                    npe_send, istack_send, inod_export,         &
+!!     &                    npe_recv, istack_recv, X_org)
+!!      subroutine sel_calypso_from_recv_N(NB, nnod_new, nmax_sr,       &
+!!     &                    npe_recv, istack_recv, inod_import,         &
+!!     &                    irev_import, X_new)
 !!@endverbatim
 !
       module m_sel_spherical_SRs
@@ -106,54 +109,6 @@
       end if
 !
       end subroutine set_sph_comm_routine_ctl
-!
-!-----------------------------------------------------------------------
-!
-      subroutine sel_calypso_sph_send_recv_N                            &
-     &                   (NB, nnod_org, nnod_new, nmax_sr,              &
-     &                    npe_send, isend_self,                         &
-     &                    id_pe_send, istack_send, inod_export,         &
-     &                    npe_recv, irecv_self,                         &
-     &                    id_pe_recv, istack_recv, inod_import,         &
-     &                    irev_import, X_org, X_new, CALYPSO_SUB_COMM)
-!
-      integer, intent(in)  :: CALYPSO_SUB_COMM
-      integer(kind = kint), intent(in) :: NB
-!
-      integer(kind = kint), intent(in) :: nnod_org, nnod_new
-      integer(kind = kint), intent(in) :: nmax_sr
-!
-      integer(kind = kint), intent(in) :: npe_send, isend_self
-      integer(kind = kint), intent(in) :: id_pe_send(npe_send)
-      integer(kind = kint), intent(in) :: istack_send(0:npe_send)
-      integer(kind = kint), intent(in)                                  &
-     &                      :: inod_export( istack_send(npe_send) )
-!
-      integer(kind = kint), intent(in) :: npe_recv, irecv_self
-      integer(kind = kint), intent(in) :: id_pe_recv(npe_recv)
-      integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
-      integer(kind = kint), intent(in)                                  &
-     &                      :: inod_import( istack_recv(npe_recv) )
-      integer(kind = kint), intent(in) :: irev_import(nnod_new)
-!
-      real (kind=kreal), intent(in)::    X_org(NB*nnod_org)
-!
-      real (kind=kreal), intent(inout):: X_new(NB*nnod_new)
-!
-!
-      call sel_calypso_to_send_N(NB, nnod_org, nmax_sr,                 &
-     &    npe_send, istack_send, inod_export,                           &
-     &    npe_recv, istack_recv, X_org)
-!
-      call sel_calypso_sph_comm_N(NB, nmax_sr,                          &
-     &    npe_send, isend_self, id_pe_send, istack_send,                &
-     &    npe_recv, irecv_self, id_pe_recv, istack_recv,                &
-     &    CALYPSO_SUB_COMM)
-!
-      call sel_calypso_from_recv_N(NB, nnod_new, nmax_sr,               &
-     &    npe_recv, istack_recv, inod_import, irev_import, X_new)
-!
-      end subroutine sel_calypso_sph_send_recv_N
 !
 !-----------------------------------------------------------------------
 !

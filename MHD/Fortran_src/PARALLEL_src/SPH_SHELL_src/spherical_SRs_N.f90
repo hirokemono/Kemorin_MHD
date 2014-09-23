@@ -138,13 +138,19 @@
 !
 !
 !      iflag_sph_commN = iflag_send_recv
-      call sel_calypso_sph_send_recv_N                                  &
-     &             (NB, nnod_rtp, nnod_rtm, nmax_sr_rtp,                &
+      call sel_calypso_to_send_N(NB, nnod_rtp, nmax_sr_rtp,             &
+     &              nneib_domain_rtp, istack_sr_rtp, item_sr_rtp,       &
+     &              nneib_domain_rtm, istack_sr_rtm, X_rtp)
+!
+      call sel_calypso_sph_comm_N(NB, nmax_sr_rtp,                      &
      &              nneib_domain_rtp, iflag_self_rtp,                   &
-     &              id_domain_rtp, istack_sr_rtp, item_sr_rtp,          &
+     &              id_domain_rtp, istack_sr_rtp,                       &
      &              nneib_domain_rtm, iflag_self_rtm,                   &
-     &              id_domain_rtm, istack_sr_rtm, item_sr_rtm,          &
-     &              irev_sr_rtm, X_rtp, X_rtm, CALYPSO_RTP_COMM)
+     &              id_domain_rtm, istack_sr_rtm, CALYPSO_RTP_COMM)
+!
+      call sel_calypso_from_recv_N(NB, nnod_rtm, nmax_sr_rtp,           &
+     &              nneib_domain_rtm, istack_sr_rtm,                    &
+     &              item_sr_rtm, irev_sr_rtm, X_rtm)
 !
       end subroutine send_recv_rtp_2_rtm_N
 !
@@ -163,13 +169,19 @@
 !
 !
 !      iflag_sph_commN = iflag_send_recv
-      call sel_calypso_sph_send_recv_N                                  &
-     &             (NB, nnod_rtm, nnod_rtp, nmax_sr_rtp,                &
+      call sel_calypso_to_send_N(NB, nnod_rtm, nmax_sr_rtp,             &
+     &              nneib_domain_rtm, istack_sr_rtm, item_sr_rtm,       &
+     &              nneib_domain_rtp, istack_sr_rtp, X_rtm)
+!
+      call sel_calypso_sph_comm_N(NB, nmax_sr_rtp,                      &
      &              nneib_domain_rtm, iflag_self_rtm,                   &
-     &              id_domain_rtm, istack_sr_rtm, item_sr_rtm,          &
+     &              id_domain_rtm, istack_sr_rtm,                       &
      &              nneib_domain_rtp, iflag_self_rtp,                   &
-     &              id_domain_rtp, istack_sr_rtp, item_sr_rtp,          &
-     &              irev_sr_rtp, X_rtm, X_rtp, CALYPSO_RTP_COMM)
+     &              id_domain_rtp, istack_sr_rtp, CALYPSO_RTP_COMM)
+!
+      call sel_calypso_from_recv_N(NB, nnod_rtp, nmax_sr_rtp,           &
+     &              nneib_domain_rtp, istack_sr_rtp,                    &
+     &              item_sr_rtp, irev_sr_rtp, X_rtp)
 !
       end subroutine send_recv_rtm_2_rtp_N
 !
@@ -188,13 +200,19 @@
 !
 !
 !      iflag_sph_commN = iflag_send_recv
-      call sel_calypso_sph_send_recv_N                                  &
-     &             (NB, nnod_rj, nnod_rlm, nmax_sr_rj,                  &
-     &              nneib_domain_rj, iflag_self_rj,                     &
-     &              id_domain_rj, istack_sr_rj, item_sr_rj,             &
+      call sel_calypso_to_send_N(NB, nnod_rj, nmax_sr_rj,               &
+     &              nneib_domain_rj,  istack_sr_rj,  item_sr_rj,        &
+     &              nneib_domain_rlm, istack_sr_rlm, X_rj)
+!
+      call sel_calypso_sph_comm_N(NB, nmax_sr_rj,                       &
+     &              nneib_domain_rj,  iflag_self_rj,                    &
+     &              id_domain_rj,  istack_sr_rj,                        &
      &              nneib_domain_rlm, iflag_self_rlm,                   &
-     &              id_domain_rlm, istack_sr_rlm, item_sr_rlm,          &
-     &              irev_sr_rlm, X_rj, X_rlm, CALYPSO_RJ_COMM)
+     &              id_domain_rlm, istack_sr_rlm, CALYPSO_RJ_COMM)
+!
+      call sel_calypso_from_recv_N(NB, nnod_rlm, nmax_sr_rj,            &
+     &              nneib_domain_rlm, istack_sr_rlm,                    &
+     &              item_sr_rlm, irev_sr_rlm, X_rlm)
 !
       end subroutine send_recv_rj_2_rlm_N
 !
@@ -213,13 +231,19 @@
 !
 !
 !      iflag_sph_commN = iflag_send_recv
-      call sel_calypso_sph_send_recv_N                                  &
-     &             (NB, nnod_rlm, nnod_rj,  nmax_sr_rj,                 &
+      call sel_calypso_to_send_N(NB, nnod_rlm, nmax_sr_rj,              &
+     &              nneib_domain_rlm, istack_sr_rlm, item_sr_rlm,       &
+     &              nneib_domain_rj,  istack_sr_rj,  X_rlm)
+!
+      call sel_calypso_sph_comm_N(NB, nmax_sr_rj,                       &
      &              nneib_domain_rlm, iflag_self_rlm,                   &
-     &              id_domain_rlm, istack_sr_rlm, item_sr_rlm,          &
-     &              nneib_domain_rj, iflag_self_rj,                     &
-     &              id_domain_rj, istack_sr_rj, item_sr_rj,             &
-     &              irev_sr_rj, X_rlm, X_rj, CALYPSO_RJ_COMM)
+     &              id_domain_rlm, istack_sr_rlm,                       &
+     &              nneib_domain_rj,  iflag_self_rj,                    &
+     &              id_domain_rj,  istack_sr_rj, CALYPSO_RJ_COMM)
+!
+      call sel_calypso_from_recv_N(NB, nnod_rj,  nmax_sr_rj,            &
+     &              nneib_domain_rj,  istack_sr_rj,                     &
+     &              item_sr_rj,  irev_sr_rj,  X_rj)
 !
       end subroutine send_recv_rlm_2_rj_N
 !
