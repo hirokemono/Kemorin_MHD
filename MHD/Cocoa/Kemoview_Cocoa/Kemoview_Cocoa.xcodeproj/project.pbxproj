@@ -1018,6 +1018,7 @@
 					/usr/X11/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_LDFLAGS = "-L/opt/local/lib";
 				PRODUCT_NAME = Kemoview_Cocoa;
 			};
 			name = Release;

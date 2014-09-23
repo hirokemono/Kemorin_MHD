@@ -189,7 +189,7 @@
       integer(kind = kint), intent(in) :: ncomp, nvector
 !
       integer(kind = kint) :: ip, nb_nri, kr_nd, kk, k_rlm, i_rlm
-      integer(kind = kint) :: lp_rtm, ln_rtm, i_lk, i_jl, i_jk
+      integer(kind = kint) :: lp_rtm, ln_rtm, i_kl, i_lj, i_kj
       integer(kind = kint) :: nd, ll, mp_rlm, mn_rlm, j_rlm, jj
       integer(kind = kint) :: ip_rtpm, in_rtpm, ip_rtnm, in_rtnm
       integer(kind = kint) :: kst(np_smp), nkr(np_smp)
@@ -207,7 +207,7 @@
       nlo_rtm = nidx_rtm(2) / 2
 !$omp parallel do schedule(static)                                      &
 !$omp             private(ip,kr_nd,ll,lp_rtm,ln_rtm,jj,j_rlm,nd,i_rlm,  &
-!$omp&                    k_rlm,kk,mp_rlm,mn_rlm,i_lk,i_jl,i_jk,        &
+!$omp&                    k_rlm,kk,mp_rlm,mn_rlm,i_kl,i_lj,i_kj,        &
 !$omp&                    ip_rtpm,in_rtpm,ip_rtnm,in_rtnm,st_elapsed)   &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
@@ -223,15 +223,16 @@
           n_jk_o(ip) = nj_rlm(ip)/2
 !    even l-m
             st_elapsed = MPI_WTIME()
-          do lp_rtm = 1, nle_rtm
-            do jj = 1, n_jk_e(ip)
-              j_rlm = 2*jj + jst(ip) - 1
-              i_jl = jj + (lp_rtm-1) * n_jk_e(ip)
-              Pvw_le(i_jl,ip) = P_rtm(lp_rtm,j_rlm)                     &
+          do jj = 1, n_jk_e(ip)
+            j_rlm = 2*jj + jst(ip) - 1
+            do lp_rtm = 1, nle_rtm
+              i_lj = lp_rtm + (jj-1) * nle_rtm
+!
+              Pvw_le(i_lj,ip) = P_rtm(lp_rtm,j_rlm)                     &
      &               * g_sph_rlm(j_rlm,7)* weight_rtm(lp_rtm)
-              dPvw_le(i_jl,ip) = dPdt_rtm(lp_rtm,j_rlm)                 &
+              dPvw_le(i_lj,ip) = dPdt_rtm(lp_rtm,j_rlm)                 &
      &               * g_sph_rlm(j_rlm,7)* weight_rtm(lp_rtm)
-              Pgvw_le(i_jl,ip) = P_rtm(lp_rtm,j_rlm)                    &
+              Pgvw_le(i_lj,ip) = P_rtm(lp_rtm,j_rlm)                    &
      &               * dble(idx_gl_1d_rlm_j(j_rlm,3))                   &
      &                * asin_theta_1d_rtm(lp_rtm)                       &
      &                * g_sph_rlm(j_rlm,7)* weight_rtm(lp_rtm)
@@ -240,12 +241,12 @@
             elaps(1) = MPI_WTIME() - st_elapsed + elaps(1)
 !
             st_elapsed = MPI_WTIME()
-          do kk = 1, nkr(ip)
-            kr_nd = kk + kst(ip)
-            k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-            nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
-            do lp_rtm = 1, nlo_rtm
-              ln_rtm = nidx_rtm(2) - lp_rtm + 1
+          do lp_rtm = 1, nlo_rtm
+            ln_rtm = nidx_rtm(2) - lp_rtm + 1
+            do kk = 1, nkr(ip)
+              kr_nd = kk + kst(ip)
+              k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
+              nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
               ip_rtpm = 3*nd + ncomp * ((lp_rtm-1) * istep_rtm(2)       &
      &                                + (k_rlm-1) *  istep_rtm(1)       &
      &                                + (mp_rlm-1) * istep_rtm(3))
@@ -259,19 +260,24 @@
      &                                + (k_rlm-1) *  istep_rtm(1)       &
      &                                + (mn_rlm-1) *  istep_rtm(3))
 !
-              i_lk = lp_rtm + (kk-1) * nle_rtm
+              i_kl = kk + (lp_rtm-1) * nkr(ip)
 !
-              symp_r(i_lk,ip) = vr_rtm(ip_rtpm-2) + vr_rtm(ip_rtnm-2)
+              symp_r(i_kl,ip) = vr_rtm(ip_rtpm-2) + vr_rtm(ip_rtnm-2)
 !
-              asmp_t(i_lk,ip) = vr_rtm(ip_rtpm-1) - vr_rtm(ip_rtnm-1)
-              asmp_p(i_lk,ip) = vr_rtm(ip_rtpm  ) - vr_rtm(ip_rtnm  )
+              asmp_t(i_kl,ip) = vr_rtm(ip_rtpm-1) - vr_rtm(ip_rtnm-1)
+              asmp_p(i_kl,ip) = vr_rtm(ip_rtpm  ) - vr_rtm(ip_rtnm  )
 !
-              symn_t(i_lk,ip) = vr_rtm(in_rtpm-1) + vr_rtm(in_rtnm-1)
-              symn_p(i_lk,ip) = vr_rtm(in_rtpm  ) + vr_rtm(in_rtnm  )
+              symn_t(i_kl,ip) = vr_rtm(in_rtpm-1) + vr_rtm(in_rtnm-1)
+              symn_p(i_kl,ip) = vr_rtm(in_rtpm  ) + vr_rtm(in_rtnm  )
             end do
+          end do
 !   Equator (if necessary)
-            do ll = 2*(nlo_rtm)+1, nidx_rtm(2)
-              lp_rtm = (ll+1) /2
+          do ll = 2*(nlo_rtm)+1, nidx_rtm(2)
+            lp_rtm = (ll+1) /2
+            do kk = 1, nkr(ip)
+              kr_nd = kk + kst(ip)
+              k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
+              nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
               ip_rtpm = 3*nd + ncomp * ((lp_rtm-1) * istep_rtm(2)       &
      &                                + (k_rlm-1) *  istep_rtm(1)       &
      &                                + (mp_rlm-1) * istep_rtm(3))
@@ -279,28 +285,29 @@
      &                                + (k_rlm-1) *  istep_rtm(1)       &
      &                                + (mn_rlm-1) * istep_rtm(3))
 !
-              i_lk = lp_rtm + (kk-1) * nle_rtm
-              symp_r(i_lk,ip) = vr_rtm(ip_rtpm-2)
-              asmp_t(i_lk,ip) = 0.0d0
-              asmp_p(i_lk,ip) = 0.0d0
+              i_kl = kk + (lp_rtm-1) * nkr(ip)
 !
-              symn_t(i_lk,ip) = vr_rtm(in_rtpm-1)
-              symn_p(i_lk,ip) = vr_rtm(in_rtpm  )
+              symp_r(i_kl,ip) = vr_rtm(ip_rtpm-2)
+              asmp_t(i_kl,ip) = 0.0d0
+              asmp_p(i_kl,ip) = 0.0d0
+!
+              symn_t(i_kl,ip) = vr_rtm(in_rtpm-1)
+              symn_p(i_kl,ip) = vr_rtm(in_rtpm  )
             end do
           end do
             elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
             st_elapsed = MPI_WTIME()
-          call matmul_fwd_leg_trans(n_jk_e(ip), nkr(ip), nle_rtm,       &
-     &        Pvw_le(1,ip), symp_r(1,ip), pol_e(1,ip))
-          call matmul_fwd_leg_trans(n_jk_e(ip), nkr(ip), nle_rtm,       &
-     &        dPvw_le(1,ip), asmp_t(1,ip), dpl_o(1,ip))
-          call matmul_fwd_leg_trans(n_jk_e(ip), nkr(ip), nle_rtm,       &
-     &        Pgvw_le(1,ip), symn_p(1,ip), dpl_e(1,ip))
-          call matmul_fwd_leg_trans(n_jk_e(ip), nkr(ip), nle_rtm,       &
-     &        Pgvw_le(1,ip), symn_t(1,ip), tor_e(1,ip))
-          call matmul_fwd_leg_trans(n_jk_e(ip), nkr(ip), nle_rtm,       &
-     &        dPvw_le(1,ip), asmp_p(1,ip), tor_o(1,ip))
+          call matmul_fwd_leg_trans(nkr(ip), n_jk_e(ip), nle_rtm,       &
+     &        symp_r(1,ip), Pvw_le(1,ip),  pol_e(1,ip))
+          call matmul_fwd_leg_trans(nkr(ip), n_jk_e(ip), nle_rtm,       &
+     &        asmp_t(1,ip), dPvw_le(1,ip), dpl_o(1,ip))
+          call matmul_fwd_leg_trans(nkr(ip), n_jk_e(ip), nle_rtm,       &
+     &        symn_p(1,ip), Pgvw_le(1,ip), dpl_e(1,ip))
+          call matmul_fwd_leg_trans(nkr(ip), n_jk_e(ip), nle_rtm,       &
+     &        symn_t(1,ip), Pgvw_le(1,ip), tor_e(1,ip))
+          call matmul_fwd_leg_trans(nkr(ip), n_jk_e(ip), nle_rtm,       &
+     &        asmp_p(1,ip), dPvw_le(1,ip), tor_o(1,ip))
             elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
             st_elapsed = MPI_WTIME()
@@ -312,28 +319,29 @@
               j_rlm = 2*jj + jst(ip) - 1
               i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)          &
      &                              + (k_rlm-1) * istep_rlm(1))
+              i_kj = kk + (jj-1) * nkr(ip)
 !
-              i_jk = jj + (kk-1) * n_jk_e(ip)
-              sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + pol_e(i_jk,ip)
+              sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + pol_e(i_kj,ip)
               sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                         &
-     &                         - dpl_e(i_jk,ip) + dpl_o(i_jk,ip)
+     &                         - dpl_e(i_kj,ip) + dpl_o(i_kj,ip)
               sp_rlm(i_rlm  ) = sp_rlm(i_rlm  )                         &
-     &                         - tor_e(i_jk,ip) - tor_o(i_jk,ip)
+     &                         - tor_e(i_kj,ip) - tor_o(i_kj,ip)
             end do
           end do
             elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
 !    odd  l-m
             st_elapsed = MPI_WTIME()
-          do lp_rtm = 1, nle_rtm
-            do jj = 1, n_jk_o(ip)
-              j_rlm = 2*jj + jst(ip)
-              i_jl = jj + (lp_rtm-1) * n_jk_o(ip)
-              Pvw_lo(i_jl,ip) = P_rtm(lp_rtm,j_rlm)                     &
+          do jj = 1, n_jk_o(ip)
+            j_rlm = 2*jj + jst(ip)
+            do lp_rtm = 1, nle_rtm
+              i_lj = lp_rtm + (jj-1) * nle_rtm
+!
+              Pvw_lo(i_lj,ip) = P_rtm(lp_rtm,j_rlm)                     &
      &               * g_sph_rlm(j_rlm,7)* weight_rtm(lp_rtm)
-              dPvw_lo(i_jl,ip) = dPdt_rtm(lp_rtm,j_rlm)                 &
+              dPvw_lo(i_lj,ip) = dPdt_rtm(lp_rtm,j_rlm)                 &
      &               * g_sph_rlm(j_rlm,7)* weight_rtm(lp_rtm)
-              Pgvw_lo(i_jl,ip) = P_rtm(lp_rtm,j_rlm)                    &
+              Pgvw_lo(i_lj,ip) = P_rtm(lp_rtm,j_rlm)                    &
      &               * dble(idx_gl_1d_rlm_j(j_rlm,3))                   &
      &                * asin_theta_1d_rtm(lp_rtm)                       &
      &                * g_sph_rlm(j_rlm,7)* weight_rtm(lp_rtm)
@@ -342,12 +350,12 @@
             elaps(1) = MPI_WTIME() - st_elapsed + elaps(1)
 !
             st_elapsed = MPI_WTIME()
-          do kk = 1, nkr(ip)
-            kr_nd = kk + kst(ip)
-            k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-            nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
-            do lp_rtm = 1, nlo_rtm
-              ln_rtm = nidx_rtm(2) - lp_rtm + 1
+          do lp_rtm = 1, nlo_rtm
+            ln_rtm = nidx_rtm(2) - lp_rtm + 1
+            do kk = 1, nkr(ip)
+              kr_nd = kk + kst(ip)
+              k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
+              nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
               ip_rtpm = 3*nd + ncomp * ((lp_rtm-1) * istep_rtm(2)       &
      &                                + (k_rlm-1) *  istep_rtm(1)       &
      &                                + (mp_rlm-1) * istep_rtm(3))
@@ -361,44 +369,50 @@
      &                                + (k_rlm-1) *  istep_rtm(1)       &
      &                                + (mn_rlm-1) * istep_rtm(3))
 !
-              i_lk = lp_rtm + (kk-1) * nle_rtm
+              i_kl = kk + (lp_rtm-1) * nkr(ip)
 !
-              asmp_r(i_lk,ip) = vr_rtm(ip_rtpm-2) - vr_rtm(ip_rtnm-2)
-              symp_t(i_lk,ip) = vr_rtm(ip_rtpm-1) + vr_rtm(ip_rtnm-1)
-              symp_p(i_lk,ip) = vr_rtm(ip_rtpm  ) + vr_rtm(ip_rtnm  )
+              asmp_r(i_kl,ip) = vr_rtm(ip_rtpm-2) - vr_rtm(ip_rtnm-2)
+              symp_t(i_kl,ip) = vr_rtm(ip_rtpm-1) + vr_rtm(ip_rtnm-1)
+              symp_p(i_kl,ip) = vr_rtm(ip_rtpm  ) + vr_rtm(ip_rtnm  )
 !
-              asmn_t(i_lk,ip) = vr_rtm(in_rtpm-1) - vr_rtm(in_rtnm-1)
-              asmn_p(i_lk,ip) = vr_rtm(in_rtpm  ) - vr_rtm(in_rtnm  )
+              asmn_t(i_kl,ip) = vr_rtm(in_rtpm-1) - vr_rtm(in_rtnm-1)
+              asmn_p(i_kl,ip) = vr_rtm(in_rtpm  ) - vr_rtm(in_rtnm  )
             end do
+          end do
 !   Equator (if necessary)
-            do ll = 2*(nlo_rtm)+1, nidx_rtm(2)
-              lp_rtm = (ll+1) /2
+          do ll = 2*(nlo_rtm)+1, nidx_rtm(2)
+            lp_rtm = (ll+1) /2
+            do kk = 1, nkr(ip)
+              kr_nd = kk + kst(ip)
+              k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
+              nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
               ip_rtpm = 3*nd + ncomp * ((lp_rtm-1) * istep_rtm(2)       &
      &                               +  (k_rlm-1) *  istep_rtm(1)       &
      &                               +  (mp_rlm-1) * istep_rtm(3))
 !
-              i_lk = lp_rtm + (kk-1) * nle_rtm
-              symp_t(i_lk,ip) = vr_rtm(ip_rtpm-1)
-              symp_p(i_lk,ip) = vr_rtm(ip_rtpm  )
-              asmp_r(i_lk,ip) = 0.0d0
+              i_kl = kk + (lp_rtm-1) * nkr(ip)
 !
-              asmn_t(i_lk,ip) = 0.0d0
-              asmn_p(i_lk,ip) = 0.0d0
+              symp_t(i_kl,ip) = vr_rtm(ip_rtpm-1)
+              symp_p(i_kl,ip) = vr_rtm(ip_rtpm  )
+              asmp_r(i_kl,ip) = 0.0d0
+!
+              asmn_t(i_kl,ip) = 0.0d0
+              asmn_p(i_kl,ip) = 0.0d0
             end do
           end do
             elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
             st_elapsed = MPI_WTIME()
-          call matmul_fwd_leg_trans(n_jk_o(ip), nkr(ip), nle_rtm,       &
-     &        Pvw_lo(1,ip), asmp_r(1,ip), pol_o(1,ip))
-          call matmul_fwd_leg_trans(n_jk_o(ip), nkr(ip), nle_rtm,       &
-     &        dPvw_lo(1,ip), symp_t(1,ip), dpl_e(1,ip))
-          call matmul_fwd_leg_trans(n_jk_o(ip), nkr(ip), nle_rtm,       &
-     &        Pgvw_lo(1,ip), symp_t(1,ip), dpl_o(1,ip))
-          call matmul_fwd_leg_trans(n_jk_o(ip), nkr(ip), nle_rtm,       &
-     &        Pgvw_lo(1,ip), asmn_t(1,ip), tor_e(1,ip))
-          call matmul_fwd_leg_trans(n_jk_o(ip), nkr(ip), nle_rtm,       &
-     &        dPvw_lo(1,ip), symp_p(1,ip), tor_o(1,ip))
+          call matmul_fwd_leg_trans(nkr(ip), n_jk_o(ip), nle_rtm,       &
+     &        asmp_r(1,ip), Pvw_lo(1,ip), pol_o(1,ip))
+          call matmul_fwd_leg_trans(nkr(ip), n_jk_o(ip), nle_rtm,       &
+     &        symp_t(1,ip), dPvw_lo(1,ip), dpl_e(1,ip))
+          call matmul_fwd_leg_trans(nkr(ip), n_jk_o(ip), nle_rtm,       &
+     &        symp_t(1,ip), Pgvw_lo(1,ip), dpl_o(1,ip))
+          call matmul_fwd_leg_trans(nkr(ip), n_jk_o(ip), nle_rtm,       &
+     &        asmn_t(1,ip), Pgvw_lo(1,ip), tor_e(1,ip))
+          call matmul_fwd_leg_trans(nkr(ip), n_jk_o(ip), nle_rtm,       &
+     &        symp_p(1,ip), dPvw_lo(1,ip), tor_o(1,ip))
             elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
             st_elapsed = MPI_WTIME()
@@ -410,13 +424,13 @@
               j_rlm = 2*jj + jst(ip)
               i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)          &
      &                              + (k_rlm-1) * istep_rlm(1))
+              i_kj = kk + (jj-1) * nkr(ip)
 !
-              i_jk = jj + (kk-1) * n_jk_o(ip)
-              sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + pol_o(i_jk,ip)
+              sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + pol_o(i_kj,ip)
               sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                         &
-     &                         + dpl_e(i_jk,ip) - dpl_o(i_jk,ip)
+     &                         + dpl_e(i_kj,ip) - dpl_o(i_kj,ip)
               sp_rlm(i_rlm  ) = sp_rlm(i_rlm  )                         &
-     &                         - tor_e(i_jk,ip) - tor_o(i_jk,ip)
+     &                         - tor_e(i_kj,ip) - tor_o(i_kj,ip)
             end do
           end do
             elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
@@ -463,7 +477,7 @@
 !
       integer(kind = kint) :: ip, kr_nd, kk, k_rlm, nd, i_rlm
       integer(kind = kint) :: mp_rlm, j_rlm, jj, ip_rtpm, ip_rtnm
-      integer(kind = kint) :: ll, lp_rtm, ln_rtm, i_lk, i_jl, i_jk
+      integer(kind = kint) :: ll, lp_rtm, ln_rtm, i_kl, i_lj, i_kj
       integer(kind = kint) :: kst(np_smp), nkr(np_smp)
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
       integer(kind = kint) :: n_jk_e(np_smp), n_jk_o(np_smp)
@@ -477,7 +491,7 @@
       nlo_rtm = nidx_rtm(2) / 2
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,kr_nd,k_rlm,nd,kk,jj,j_rlm,mp_rlm,i_rlm,   &
-!$omp&                    ll,lp_rtm,ln_rtm,i_lk,i_jl,i_jk,              &
+!$omp&                    ll,lp_rtm,ln_rtm,i_kl,i_lj,i_kj,              &
 !$omp&                    ip_rtpm,ip_rtnm,st_elapsed)                   &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
@@ -492,23 +506,24 @@
 !
 !    even l-m
             st_elapsed = MPI_WTIME()
-          do lp_rtm = 1, nle_rtm
-            do jj = 1, n_jk_e(ip)
-              j_rlm = 2*jj + jst(ip) - 1
-              i_jl = jj + (lp_rtm-1) * n_jk_e(ip)
-              Pws_le(i_jl,ip) = P_rtm(lp_rtm,j_rlm)                     &
+          do jj = 1, n_jk_e(ip)
+            j_rlm = 2*jj + jst(ip) - 1
+            do lp_rtm = 1, nle_rtm
+              i_lj = lp_rtm + (jj-1) * nle_rtm
+!
+              Pws_le(i_lj,ip) = P_rtm(lp_rtm,j_rlm)                     &
      &                         * g_sph_rlm(j_rlm,6)*weight_rtm(lp_rtm)
             end do
           end do
             elaps(1) = MPI_WTIME() - st_elapsed + elaps(1)
 !
             st_elapsed = MPI_WTIME()
-          do kk = 1, nkr(ip)
-            kr_nd = kk + kst(ip)
-            k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-            nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
-            do lp_rtm = 1, nlo_rtm
-              ln_rtm = nidx_rtm(2) - lp_rtm + 1
+          do lp_rtm = 1, nlo_rtm
+            ln_rtm = nidx_rtm(2) - lp_rtm + 1
+            do kk = 1, nkr(ip)
+              kr_nd = kk + kst(ip)
+              k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
+              nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
               ip_rtpm = nd + 3*nvector                                  &
      &                     + ncomp * ((lp_rtm-1) * istep_rtm(2)         &
      &                               + (k_rlm-1) *  istep_rtm(1)        &
@@ -518,25 +533,32 @@
      &                              + (k_rlm-1) *  istep_rtm(1)         &
      &                              + (mp_rlm-1) * istep_rtm(3))
 !
-              i_lk = lp_rtm + (kk-1) * nle_rtm
-              symp(i_lk,ip) =  vr_rtm(ip_rtpm) + vr_rtm(ip_rtnm)
+              i_kl = kk + (lp_rtm-1) * nkr(ip)
+!
+              symp(i_kl,ip) =  vr_rtm(ip_rtpm) + vr_rtm(ip_rtnm)
             end do
+          end do
 !   Equator (if necessary)
-            do ll = 2*(nlo_rtm)+1, nidx_rtm(2)
-              lp_rtm = (ll+1) /2
+          do ll = 2*(nlo_rtm)+1, nidx_rtm(2)
+            lp_rtm = (ll+1) /2
+            do kk = 1, nkr(ip)
+              kr_nd = kk + kst(ip)
+              k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
+              nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
               ip_rtpm = nd + 3*nvector                                  &
      &                     + ncomp * ((lp_rtm-1) * istep_rtm(2)         &
      &                              + (k_rlm-1) *  istep_rtm(1)         &
      &                              + (mp_rlm-1) * istep_rtm(3))
-              i_lk = lp_rtm + (kk-1) * nle_rtm
-              symp(i_lk,ip) = vr_rtm(ip_rtpm)
+              i_kl = kk + (lp_rtm-1) * nkr(ip)
+!
+              symp(i_kl,ip) = vr_rtm(ip_rtpm)
             end do
           end do
             elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
             st_elapsed = MPI_WTIME()
-          call matmul_fwd_leg_trans(n_jk_e(ip), nkr(ip), nle_rtm,       &
-     &        Pws_le(1,ip), symp(1,ip), scl_e(1,ip))
+          call matmul_fwd_leg_trans(nkr(ip), n_jk_e(ip), nle_rtm,       &
+     &        symp(1,ip), Pws_le(1,ip), scl_e(1,ip))
             elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
             st_elapsed = MPI_WTIME()
@@ -546,35 +568,36 @@
             nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
             do jj = 1, n_jk_e(ip)
               j_rlm = 2*jj + jst(ip) - 1
-              i_jk = jj + (kk-1) * n_jk_e(ip)
               i_rlm = nd + 3*nvector                                    &
      &                   + ncomp * ((j_rlm-1) * istep_rlm(2)            &
      &                            + (k_rlm-1) * istep_rlm(1))
+              i_kj = kk + (jj-1) * nkr(ip)
 !
-              sp_rlm(i_rlm) = sp_rlm(i_rlm) + scl_e(i_jk,ip)
+              sp_rlm(i_rlm) = sp_rlm(i_rlm) + scl_e(i_kj,ip)
             end do
           end do
             elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
 !    odd  l-m
             st_elapsed = MPI_WTIME()
-          do lp_rtm = 1, nle_rtm
-            do jj = 1, n_jk_o(ip)
-              j_rlm = 2*jj + jst(ip)
-              i_jl = jj + (lp_rtm-1) * n_jk_o(ip)
-              Pws_lo(i_jl,ip) = P_rtm(lp_rtm,j_rlm)                     &
+          do jj = 1, n_jk_o(ip)
+            j_rlm = 2*jj + jst(ip)
+            do lp_rtm = 1, nle_rtm
+              i_lj = lp_rtm + (jj-1) * nle_rtm
+!
+              Pws_lo(i_lj,ip) = P_rtm(lp_rtm,j_rlm)                     &
      &                       * g_sph_rlm(j_rlm,6) * weight_rtm(lp_rtm)
             end do
           end do
             elaps(1) = MPI_WTIME() - st_elapsed + elaps(1)
 !
             st_elapsed = MPI_WTIME()
-          do kk = 1, nkr(ip)
-            kr_nd = kk + kst(ip)
-            k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-            nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
-            do lp_rtm = 1, nlo_rtm
-              ln_rtm = nidx_rtm(2) - lp_rtm + 1
+          do lp_rtm = 1, nlo_rtm
+            ln_rtm = nidx_rtm(2) - lp_rtm + 1
+            do kk = 1, nkr(ip)
+              kr_nd = kk + kst(ip)
+              k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
+              nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
               ip_rtpm = nd + 3*nvector                                  &
      &                     + ncomp * ((lp_rtm-1) * istep_rtm(2)         &
      &                              + (k_rlm-1) *  istep_rtm(1)         &
@@ -584,16 +607,16 @@
      &                              + (k_rlm-1) *  istep_rtm(1)         &
      &                              + (mp_rlm-1) * istep_rtm(3))
 !
-              i_lk = lp_rtm + (kk-1) * nlo_rtm
+              i_kl = kk + (lp_rtm-1) * nkr(ip)
 !
-              asmp(i_lk,ip) =  vr_rtm(ip_rtpm) - vr_rtm(ip_rtnm)
+              asmp(i_kl,ip) =  vr_rtm(ip_rtpm) - vr_rtm(ip_rtnm)
             end do
           end do
             elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
             st_elapsed = MPI_WTIME()
-          call matmul_fwd_leg_trans(n_jk_o(ip), nkr(ip), nlo_rtm,       &
-     &        Pws_lo(1,ip), asmp(1,ip), scl_o(1,ip))
+          call matmul_fwd_leg_trans(nkr(ip), n_jk_o(ip), nlo_rtm,       &
+     &        asmp(1,ip), Pws_lo(1,ip), scl_o(1,ip))
             elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
             st_elapsed = MPI_WTIME()
@@ -606,9 +629,9 @@
               i_rlm = nd + 3*nvector                                    &
      &                   + ncomp * ((j_rlm-1) * istep_rlm(2)            &
      &                            + (k_rlm-1) * istep_rlm(1))
-              i_jk = jj + (kk-1) * n_jk_o(ip)
+              i_kj = kk + (jj-1) * nkr(ip)
 !
-              sp_rlm(i_rlm) = sp_rlm(i_rlm) + scl_o(i_jk,ip)
+              sp_rlm(i_rlm) = sp_rlm(i_rlm) + scl_o(i_kj,ip)
             end do
           end do
             elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
@@ -627,26 +650,26 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine matmat_fwd_leg_trans(n_jk, nkr, nl_rtm,                &
-     &          P_jl, V_lk, S_jk)
+      subroutine matmat_fwd_leg_trans(nkr, n_jk, nl_rtm,                &
+     &          V_kl, P_lj, S_kj)
 !
       integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
-      real(kind = kreal), intent(in) :: P_jl(n_jk,nl_rtm)
-      real(kind = kreal), intent(in) :: V_lk(nl_rtm,nkr)
+      real(kind = kreal), intent(in) :: V_kl(nkr,nl_rtm)
+      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
 !
-      real(kind = kreal), intent(inout) :: S_jk(n_jk,nkr)
+      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
 !
       integer(kind = kint) :: jj, kk, ll
       real(kind = kreal) :: s
 !
 !
-      do kk = 1, nkr
-        do jj = 1, n_jk
+      do jj = 1, n_jk
+        do kk = 1, nkr
           s = 0.0d0
           do ll = 1, nl_rtm
-            s = s + P_jl(jj,ll) * V_lk(ll,kk)
+            s = s + P_lj(ll,jj) * V_kl(kk,ll)
           end do
-          S_jk(jj,kk) = s
+          S_kj(kk,jj) = s
         end do
       end do
 !
@@ -654,36 +677,36 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine matmul_fwd_leg_trans(n_jk, nkr, nl_rtm,                &
-     &          P_jl, V_lk, S_jk)
+      subroutine matmul_fwd_leg_trans(nkr, n_jk, nl_rtm,                &
+     &          V_kl, P_lj, S_kj)
 !
       integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
-      real(kind = kreal), intent(in) :: P_jl(n_jk,nl_rtm)
-      real(kind = kreal), intent(in) :: V_lk(nl_rtm,nkr)
+      real(kind = kreal), intent(in) :: V_kl(nkr,nl_rtm)
+      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
 !
-      real(kind = kreal), intent(inout) :: S_jk(n_jk,nkr)
+      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
 !
 !
-      S_jk = matmul(P_jl,V_lk)
+      S_kj = matmul(V_kl,P_lj)
 !
       end subroutine matmul_fwd_leg_trans
 !
 ! ----------------------------------------------------------------------
 !
-!      subroutine dgemm_fwd_leg_trans(n_jk, nkr, nl_rtm,                &
-!     &          P_jl, V_lk, S_jk)
+      subroutine dgemm_fwd_leg_trans(nkr, n_jk, nl_rtm,                &
+     &          V_kl, P_lj, S_kj)
 !
-!      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
-!      real(kind = kreal), intent(in) :: P_jl(n_jk,nl_rtm)
-!      real(kind = kreal), intent(in) :: V_lk(nl_rtm,nkr)
+      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
+      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
+      real(kind = kreal), intent(in) :: V_kl(nkr,nl_rtm)
 !
-!      real(kind = kreal), intent(inout) :: S_jk(n_jk,nkr)
+      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
 !
 !
-!      call DGEMM('N', 'N', n_jk, nkr, nl_rtm, one,                     &
-!     &    P_jl, n_jk, V_lk, nl_rtm, zero, S_jk, n_jk)
+      call DGEMM('N', 'N', nkr, n_jk, nl_rtm, one,                     &
+     &    V_kl, nkr, P_lj, nl_rtm, zero, S_kj, nkr)
 !
-!      end subroutine dgemm_fwd_leg_trans
+      end subroutine dgemm_fwd_leg_trans
 !
 ! ----------------------------------------------------------------------
 !
