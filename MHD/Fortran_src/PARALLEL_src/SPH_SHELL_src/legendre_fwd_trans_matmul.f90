@@ -231,7 +231,7 @@
               symn_p(i_kl,ip) =  vr_rtm(in_rtm  )
             end do
           end do
-            elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
+            elaps(2) = MPI_WTIME() - st_elapsed + elaps(2) 
 !
             st_elapsed = MPI_WTIME()
           call matmul_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),   &
