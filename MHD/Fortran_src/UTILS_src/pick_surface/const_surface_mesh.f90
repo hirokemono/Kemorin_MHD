@@ -181,14 +181,15 @@
       if ( nnod_4_ele .eq. num_t_lag ) then
         nnod_4_surf = num_lag_sf
         nnod_4_edge = num_quad_edge
+        call allocate_quad4_2_linear_tri
       else if ( nnod_4_ele .eq. num_t_quad ) then
         nnod_4_surf = num_quad_sf
         nnod_4_edge = num_quad_edge
-        call allocate_quad_2_linear_sf
+        call allocate_quad8_2_linear_tri
       else if ( nnod_4_ele .eq. num_t_linear ) then
         nnod_4_surf = num_linear_sf
         nnod_4_edge = num_linear_edge
-        call allocate_lag_2_linear_sf
+        call allocate_quad9_2_linear_tri
       end if
 !
       call allocate_inod_in_surf

@@ -86,7 +86,6 @@
 !
       allocate(ie_4_333(mesh_q%ele%numele,27) )
 !
-      call init_27quad_2_8x8linear
       call gen_connect_quad27_from_quad20(mesh_q%node%numnod,           &
      &    mesh_q%ele%numele, surf_q%numsurf, mesh_q%ele%ie,             &
      &    surf_q%isf_4_ele, ie_4_333)
@@ -115,7 +114,6 @@
       call allocate_ele_connect_type(mesh_l%ele)
       call allocate_ele_geometry_type(mesh_l%ele)
 !
-      call init_27quad_2_8x8linear
       call set_27quad_2_8x8linear(mesh_q%ele%numele, mesh_q%ele%ie,     &
      &    mesh_l%node%numnod, mesh_l%ele%ie)
 !

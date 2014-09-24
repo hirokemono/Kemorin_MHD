@@ -81,12 +81,14 @@
       integer(kind = kint), intent(in) :: nnod_2
 !
 !
+      iflag_debug = 1
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_origin'
       call set_itp_course_to_fine_origin
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_dest'
       call set_itp_course_to_fine_dest(nnod_2)
 !
       call allocate_itp_coef_dest
+      call allocate_itp_coef_stack(ione)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_table_org_to_IO'
       call copy_itp_table_org_to_IO
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_table_dest_to_IO'
@@ -104,6 +106,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'allocate_itp_coef_dest'
       call allocate_itp_coef_dest
+      call allocate_itp_coef_stack(ione)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_table_org_to_IO'
       call copy_itp_table_org_to_IO
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_table_dest_to_IO'
