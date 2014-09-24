@@ -49,52 +49,62 @@ static double cal_normal_4_each_surface(int nnod_patch, int *ie_sf, int *ie_each
 	return size;
 };
 
+static void ave_normal_4_two_tris(double size1, double size2, double norm1[3], double norm2[3]){
+	double size;
+	int nd;
+	
+	if( (size1+size2) ==ZERO){
+		for (nd = 0; nd < 3; nd++){
+			norm1[nd] = ZERO;
+			norm2[nd] = ZERO;
+		};
+	} else {
+		for (nd = 0; nd < 3; nd++){norm1[nd] = (size1*norm1[nd] + size2*norm2[nd]);};
+		size = sqrt(norm1[0]*norm1[0] + norm1[1]*norm1[1] + norm1[2]*norm1[2]);
+		
+		for (nd = 0; nd < 3; nd++){
+			norm1[nd] = norm1[nd] / size;
+			norm2[nd] = norm1[nd];
+		};
+	};
+	return;
+}
+
+
+
 
 void take_normal_surf_mesh_c(struct viewer_mesh *mesh_s){
 	int iele, j, jnum;
 
-/*#pragma omp parallel for private(jnum)*/
+/*#pragma omp parallel for private(iele,j,jnum)*/
 	for(iele = 0; iele < mesh_s->surfpetot_viewer; iele++){
-		jnum = iele * mesh_s->nsurf_each_sf;
-		set_center_of_each_surface(IFOUR, mesh_s->ie_sf_viewer[iele], 
-								   &mesh_s->node_quad_2_linear_sf[0],
-								   mesh_s->xx_view, mesh_s->surf_center_view[jnum]);
-		mesh_s->surf_size_view[jnum]
-			= cal_normal_4_each_surface(IFOUR, mesh_s->ie_sf_viewer[iele], 
-										&mesh_s->node_quad_2_linear_sf[0], 
-										mesh_s->xx_view, mesh_s->surf_norm_view[jnum]);
-	};
-
-	if (mesh_s->nnod_4_surf == 9){
-/*#pragma omp parallel for private(j, jnum)*/
-		for(iele = 0; iele < mesh_s->surfpetot_viewer; iele++){
-			for (j = 1; j < mesh_s->nsurf_each_sf; j++) {
-				jnum = j + iele * mesh_s->nsurf_each_sf;
-				set_center_of_each_surface(IFOUR, mesh_s->ie_sf_viewer[iele], 
-										   &mesh_s->node_quad_2_linear_sf[4*j], mesh_s->xx_view,
-										   mesh_s->surf_center_view[jnum]);
-				mesh_s->surf_size_view[jnum]
-					= cal_normal_4_each_surface(IFOUR, mesh_s->ie_sf_viewer[iele], 
-										   &mesh_s->node_quad_2_linear_sf[4*j], mesh_s->xx_view,
-										   mesh_s->surf_norm_view[jnum]);
-			};
+		for (j = 0; j < mesh_s->nsurf_each_tri; j++) {
+			jnum = j + iele * mesh_s->nsurf_each_tri;
+			set_center_of_each_surface(ITHREE, mesh_s->ie_sf_viewer[iele], 
+						&mesh_s->node_quad_2_linear_tri[3*j], mesh_s->xx_view,
+						mesh_s->surf_center_view[jnum]);
+			mesh_s->surf_size_view[jnum]
+			= cal_normal_4_each_surface(ITHREE, mesh_s->ie_sf_viewer[iele], 
+						&mesh_s->node_quad_2_linear_tri[3*j], mesh_s->xx_view,
+						mesh_s->surf_norm_view[jnum]);
 		};
-
-	} else if (mesh_s->nnod_4_surf == 8){
-		for(iele = 0; iele < mesh_s->surfpetot_viewer; iele++){
-/*#pragma omp parallel for private(j, jnum)*/
-			for (j = 1; j < mesh_s->nsurf_each_sf; j++) {
-				jnum = j + iele * mesh_s->nsurf_each_sf;
-				set_center_of_each_surface(ITHREE, mesh_s->ie_sf_viewer[iele], 
-										   &mesh_s->node_quad_2_linear_sf[4*j], mesh_s->xx_view,
-										   mesh_s->surf_center_view[jnum]);
-				mesh_s->surf_size_view[jnum]
-					= cal_normal_4_each_surface(ITHREE, mesh_s->ie_sf_viewer[iele], 
-												 &mesh_s->node_quad_2_linear_sf[4*j], mesh_s->xx_view,
-												 mesh_s->surf_norm_view[jnum]);
-			};
-		};
- 
 	};
-	return;
+	
+	if (mesh_s->nnod_4_surf == 8){
+/*#pragma omp parallel for private(j, jnum, s_norm)*/
+		for(iele = 0; iele < mesh_s->surfpetot_viewer; iele++){
+			jnum = iele * mesh_s->nsurf_each_tri;
+			ave_normal_4_two_tris(mesh_s->surf_size_view[jnum], mesh_s->surf_size_view[jnum+1], 
+						mesh_s->surf_norm_view[jnum], mesh_s->surf_norm_view[jnum+1]);
+		}
+	} else {
+/*#pragma omp parallel for private(j, jnum, s_norm)*/
+		for(iele = 0; iele < mesh_s->surfpetot_viewer; iele++){
+			for (j = 0; j < mesh_s->nsurf_each_tri/2; j++) {
+				jnum = 2*j + iele * mesh_s->nsurf_each_tri;
+				ave_normal_4_two_tris(mesh_s->surf_size_view[jnum], mesh_s->surf_size_view[jnum+1], 
+							mesh_s->surf_norm_view[jnum], mesh_s->surf_norm_view[jnum+1]);
+			}
+		}
+	};
 }

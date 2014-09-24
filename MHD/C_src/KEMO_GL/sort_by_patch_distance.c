@@ -18,7 +18,7 @@ void copy_patch_distance_mesh(struct viewer_mesh *mesh_s){
 void sort_by_patch_distance_mesh(struct viewer_mesh *mesh_s, struct view_element *view_s){
 	int ip, i, j, ist, ied, num;
 	
-	num = mesh_s->nsurf_each_sf * mesh_s->surfpetot_viewer;
+	num = mesh_s->nsurf_each_tri * mesh_s->surfpetot_viewer;
 	set_distance_in_model(view_s, num, mesh_s->surf_center_view,  mesh_s->z_ele_view);
 	set_distance_in_model(view_s, mesh_s->num_pe_sf, mesh_s->domain_center,  mesh_s->z_center_view);
 	
@@ -26,17 +26,17 @@ void sort_by_patch_distance_mesh(struct viewer_mesh *mesh_s, struct view_element
 		mesh_s->ip_domain_far[i] = i+1;
 	};	
 	for(i=0; i < mesh_s->nsurf_domain_sf;i++){
-		j = mesh_s->isurf_domain_sf[i] * mesh_s->nsurf_each_sf;
+		j = mesh_s->isurf_domain_sf[i] * mesh_s->nsurf_each_tri;
 		mesh_s->iele_domain_far[i] = i;
 		mesh_s->z_domain_view[i] = mesh_s->z_ele_view[j];
 	};
 	for(i=0; i < mesh_s->nele_ele_sf;i++) {
-		j = mesh_s->ele_item_sf[i] * mesh_s->nsurf_each_sf;
+		j = mesh_s->ele_item_sf[i] * mesh_s->nsurf_each_tri;
 		mesh_s->iele_grp_far[i] = i;
 		mesh_s->z_ele_grp_view[i] = mesh_s->z_ele_view[j];
 	};
 	for(i=0; i < mesh_s->nsurf_surf_sf;i++) {
-		j = mesh_s->surf_item_sf[i] * mesh_s->nsurf_each_sf;
+		j = mesh_s->surf_item_sf[i] * mesh_s->nsurf_each_tri;
 		mesh_s->isurf_grp_far[i] = i;
 		mesh_s->z_surf_grp_view[i] = mesh_s->z_ele_view[j];
 	};

@@ -45,81 +45,93 @@ void alloc_sf_type_viewer_s(struct viewer_mesh *mesh_s){
 void alloc_surface_params_s(struct viewer_mesh *mesh_s){
 	
 	if( mesh_s->surftyp_viewer[0] == 223 ){
-		mesh_s->nnod_4_surf =   9;
-		mesh_s->nnod_4_edge =   3;
-		mesh_s->nedge_4_surf =  4;
-		mesh_s->nsurf_each_sf = 4;
+		mesh_s->nnod_4_surf =    9;
+		mesh_s->nnod_4_edge =    3;
+		mesh_s->nedge_4_surf =   4;
+		mesh_s->nsurf_each_tri = 8;
 	}
 	else if( mesh_s->surftyp_viewer[0] == 222 ){
-		mesh_s->nnod_4_surf =   8;
-		mesh_s->nnod_4_edge =   3;
-		mesh_s->nedge_4_surf =  4;
-		mesh_s->nsurf_each_sf = 5;
+		mesh_s->nnod_4_surf =    8;
+		mesh_s->nnod_4_edge =    3;
+		mesh_s->nedge_4_surf =   4;
+		mesh_s->nsurf_each_tri = 6;
 	}
 	else{
-		mesh_s->nnod_4_surf =   4;
-		mesh_s->nnod_4_edge =   2;
-		mesh_s->nedge_4_surf =  4;
-		mesh_s->nsurf_each_sf = 1;
+		mesh_s->nnod_4_surf =    4;
+		mesh_s->nnod_4_edge =    2;
+		mesh_s->nedge_4_surf =   4;
+		mesh_s->nsurf_each_tri = 2;
 	}
 	
-	/* allocate memory  node_quad_2_linear_sf[4*(devided surface #) + local node ID]*/
-	mesh_s->node_quad_2_linear_sf = (int *)calloc((4*mesh_s->nsurf_each_sf),sizeof(int));
+	/* allocate memory  node_quad_2_linear_tri[3*(divided surface #) + local node ID]*/
+	mesh_s->node_quad_2_linear_tri = (int *)calloc((3*mesh_s->nsurf_each_tri),sizeof(int));
 	
 	if( mesh_s->surftyp_viewer[0] == 223 ){
-		mesh_s->node_quad_2_linear_sf[0] = 1;
-		mesh_s->node_quad_2_linear_sf[1] = 5;
-		mesh_s->node_quad_2_linear_sf[2] = 9;
-		mesh_s->node_quad_2_linear_sf[3] = 8;
+		mesh_s->node_quad_2_linear_tri[0] =  1;
+		mesh_s->node_quad_2_linear_tri[1] =  5;
+		mesh_s->node_quad_2_linear_tri[2] =  9;
+
+		mesh_s->node_quad_2_linear_tri[3] =  9;
+		mesh_s->node_quad_2_linear_tri[4] =  8;
+		mesh_s->node_quad_2_linear_tri[5] =  1;
+
+        mesh_s->node_quad_2_linear_tri[6] =  5;
+		mesh_s->node_quad_2_linear_tri[7] =  2;
+		mesh_s->node_quad_2_linear_tri[8] =  6;
+
+        mesh_s->node_quad_2_linear_tri[9] =  6;
+		mesh_s->node_quad_2_linear_tri[10] = 9;
+		mesh_s->node_quad_2_linear_tri[11] = 5;
 		
-		mesh_s->node_quad_2_linear_sf[4] = 5;
-		mesh_s->node_quad_2_linear_sf[5] = 2;
-		mesh_s->node_quad_2_linear_sf[6] = 6;
-		mesh_s->node_quad_2_linear_sf[7] = 9;
-		
-		mesh_s->node_quad_2_linear_sf[8] = 9;
-		mesh_s->node_quad_2_linear_sf[9] = 6;
-		mesh_s->node_quad_2_linear_sf[10] = 3;
-		mesh_s->node_quad_2_linear_sf[11] = 7;
-		
-		mesh_s->node_quad_2_linear_sf[12] = 8;
-		mesh_s->node_quad_2_linear_sf[13] = 9;
-		mesh_s->node_quad_2_linear_sf[14] = 7;
-		mesh_s->node_quad_2_linear_sf[15] = 4;
-		
-	}
+		mesh_s->node_quad_2_linear_tri[12] = 9;
+		mesh_s->node_quad_2_linear_tri[13] = 6;
+		mesh_s->node_quad_2_linear_tri[14] = 3;
+
+        mesh_s->node_quad_2_linear_tri[15] = 3;
+        mesh_s->node_quad_2_linear_tri[16] = 7;
+        mesh_s->node_quad_2_linear_tri[17] = 9;
+
+        mesh_s->node_quad_2_linear_tri[18] = 8;
+        mesh_s->node_quad_2_linear_tri[19] = 9;
+        mesh_s->node_quad_2_linear_tri[20] = 7;
+
+        mesh_s->node_quad_2_linear_tri[21] = 7;
+        mesh_s->node_quad_2_linear_tri[22] = 4;
+        mesh_s->node_quad_2_linear_tri[23] = 8;
+}
 	else if( mesh_s->surftyp_viewer[0] == 222 ){
-		mesh_s->node_quad_2_linear_sf[0] = 5;
-		mesh_s->node_quad_2_linear_sf[1] = 6;
-		mesh_s->node_quad_2_linear_sf[2] = 7;
-		mesh_s->node_quad_2_linear_sf[3] = 8;
+		mesh_s->node_quad_2_linear_tri[0] =  5;
+		mesh_s->node_quad_2_linear_tri[1] =  6;
+		mesh_s->node_quad_2_linear_tri[2] =  7;
 		
-		mesh_s->node_quad_2_linear_sf[4] = 5;
-		mesh_s->node_quad_2_linear_sf[5] = 8;
-		mesh_s->node_quad_2_linear_sf[6] = 1;
-		mesh_s->node_quad_2_linear_sf[7] = 0;
+		mesh_s->node_quad_2_linear_tri[3] =  7;
+		mesh_s->node_quad_2_linear_tri[4] =  8;
+		mesh_s->node_quad_2_linear_tri[5] =  5;
+
+		mesh_s->node_quad_2_linear_tri[6] =  1;
+		mesh_s->node_quad_2_linear_tri[7] =  5;
+		mesh_s->node_quad_2_linear_tri[8] =  8;
 		
-		mesh_s->node_quad_2_linear_sf[8] = 2;
-		mesh_s->node_quad_2_linear_sf[9] = 6;
-		mesh_s->node_quad_2_linear_sf[10] = 5;
-		mesh_s->node_quad_2_linear_sf[11] = 0;
+		mesh_s->node_quad_2_linear_tri[9] =  2;
+		mesh_s->node_quad_2_linear_tri[10] = 6;
+		mesh_s->node_quad_2_linear_tri[11] = 5;
 		
-		mesh_s->node_quad_2_linear_sf[12] = 3;
-		mesh_s->node_quad_2_linear_sf[13] = 7;
-		mesh_s->node_quad_2_linear_sf[14] = 6;
-		mesh_s->node_quad_2_linear_sf[15] = 0;
+		mesh_s->node_quad_2_linear_tri[12] = 3;
+		mesh_s->node_quad_2_linear_tri[13] = 7;
+		mesh_s->node_quad_2_linear_tri[14] = 6;
 		
-		mesh_s->node_quad_2_linear_sf[16] = 4;
-		mesh_s->node_quad_2_linear_sf[17] = 8;
-		mesh_s->node_quad_2_linear_sf[18] = 7;
-		mesh_s->node_quad_2_linear_sf[19] = 0;
-		
+		mesh_s->node_quad_2_linear_tri[15] = 4;
+		mesh_s->node_quad_2_linear_tri[16] = 8;
+		mesh_s->node_quad_2_linear_tri[17] = 7;
 	}
 	else{
-		mesh_s->node_quad_2_linear_sf[0] = 1;
-		mesh_s->node_quad_2_linear_sf[1] = 2;
-		mesh_s->node_quad_2_linear_sf[2] = 3;
-		mesh_s->node_quad_2_linear_sf[3] = 4;
+		mesh_s->node_quad_2_linear_tri[0] = 1;
+		mesh_s->node_quad_2_linear_tri[1] = 2;
+		mesh_s->node_quad_2_linear_tri[2] = 3;
+        
+		mesh_s->node_quad_2_linear_tri[3] = 3;
+        mesh_s->node_quad_2_linear_tri[4] = 4;
+        mesh_s->node_quad_2_linear_tri[5] = 1;
 	}
 	
 	return;
@@ -154,7 +166,7 @@ void alloc_edge_4_sf_viewer_s(struct viewer_mesh *mesh_s){
 
 void alloc_normal_surf_viewer_s(struct viewer_mesh *mesh_s){
 	int i, num;
-	num = mesh_s->nsurf_each_sf * mesh_s->surfpetot_viewer;
+	num = mesh_s->nsurf_each_tri * mesh_s->surfpetot_viewer;
 	/* allocate memory  surf_norm_view[devided surface #][component] */
 	/* allocate memory  surf_center_view[devided surface #][component] */
 	mesh_s->surf_norm_view = (double **)calloc(num,sizeof(double *));
@@ -309,7 +321,7 @@ void alloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 	
 
 
-	num = mesh_s->nsurf_domain_sf * mesh_s->nsurf_each_sf;
+	num = mesh_s->nsurf_domain_sf * mesh_s->nsurf_each_tri;
 	mesh_s->normal_domain =   (double **)calloc(num,sizeof(double *));
 	mesh_s->norm_nod_domain = (double **)calloc(num,sizeof(double *));
 	mesh_s->dist_nod_domain = (double **)calloc(num,sizeof(double *));
@@ -319,7 +331,7 @@ void alloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 		mesh_s->dist_nod_domain[i] = (double *)calloc( 4,sizeof(double));
 	};
 	
-	num = mesh_s->nele_ele_sf * mesh_s->nsurf_each_sf;
+	num = mesh_s->nele_ele_sf * mesh_s->nsurf_each_tri;
 	mesh_s->normal_ele_grp = (double **)calloc(num,sizeof(double *));
 	mesh_s->norm_nod_ele_grp = (double **)calloc(num,sizeof(double *));
 	mesh_s->dist_nod_ele_grp = (double **)calloc(num,sizeof(double *));
@@ -329,7 +341,7 @@ void alloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 		mesh_s->dist_nod_ele_grp[i] = (double *)calloc( 4,sizeof(double));
 	};
 	
-	num = mesh_s->nsurf_surf_sf * mesh_s->nsurf_each_sf;
+	num = mesh_s->nsurf_surf_sf * mesh_s->nsurf_each_tri;
 	mesh_s->normal_surf_grp =   (double **)calloc(num,sizeof(double *));
 	mesh_s->norm_nod_surf_grp = (double **)calloc(num,sizeof(double *));
 	mesh_s->dist_nod_surf_grp = (double **)calloc(num,sizeof(double *));
@@ -370,7 +382,7 @@ static void dealloc_surf_connect_viewer_s(struct viewer_mesh *mesh_s){
 	for (i = 0; i < mesh_s->surfpetot_viewer; i++) free(mesh_s->ie_sf_viewer[i]);
 	free(mesh_s->ie_sf_viewer);
 	
-	free(mesh_s->node_quad_2_linear_sf);
+	free(mesh_s->node_quad_2_linear_tri);
 	free(mesh_s->surftyp_viewer);
 	return;
 };
@@ -388,7 +400,7 @@ static void dealloc_edge_4_sf_viewer_s(struct viewer_mesh *mesh_s){
 
 static void dealloc_normal_surf_viewer_s(struct viewer_mesh *mesh_s){
 	int i, num;
-	num = mesh_s->nsurf_each_sf * mesh_s->surfpetot_viewer;
+	num = mesh_s->nsurf_each_tri * mesh_s->surfpetot_viewer;
 	for (i = 0; i < num; i++) free(mesh_s->surf_norm_view[i]);
 	free(mesh_s->surf_norm_view);
 	for (i = 0; i < num; i++) free(mesh_s->surf_center_view[i]);
@@ -509,7 +521,7 @@ static void dealloc_domain_center_s(struct viewer_mesh *mesh_s){
 static void dealloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 	int i, num;
 
-	num = mesh_s->nsurf_surf_sf * mesh_s->nsurf_each_sf;
+	num = mesh_s->nsurf_surf_sf * mesh_s->nsurf_each_tri;
 	for (i = 0; i < num; i++) free(mesh_s->normal_surf_grp[i]);
 	for (i = 0; i < num; i++) free(mesh_s->norm_nod_surf_grp[i]);
 	for (i = 0; i < num; i++) free(mesh_s->dist_nod_surf_grp[i]);
@@ -517,7 +529,7 @@ static void dealloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 	free(mesh_s->norm_nod_surf_grp);
 	free(mesh_s->dist_nod_surf_grp);
 
-	num = mesh_s->nele_ele_sf * mesh_s->nsurf_each_sf;
+	num = mesh_s->nele_ele_sf * mesh_s->nsurf_each_tri;
 	for (i = 0; i < num; i++) free(mesh_s->normal_ele_grp[i]);
 	for (i = 0; i < num; i++) free(mesh_s->norm_nod_ele_grp[i]);
 	for (i = 0; i < num; i++) free(mesh_s->dist_nod_ele_grp[i]);
@@ -525,7 +537,7 @@ static void dealloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 	free(mesh_s->norm_nod_ele_grp);
 	free(mesh_s->dist_nod_ele_grp);
 
-	num = mesh_s->nsurf_domain_sf * mesh_s->nsurf_each_sf;
+	num = mesh_s->nsurf_domain_sf * mesh_s->nsurf_each_tri;
 	for (i = 0; i < num; i++) free(mesh_s->normal_domain[i]);
 	for (i = 0; i < num; i++) free(mesh_s->norm_nod_domain[i]);
 	for (i = 0; i < num; i++) free(mesh_s->dist_nod_domain[i]);

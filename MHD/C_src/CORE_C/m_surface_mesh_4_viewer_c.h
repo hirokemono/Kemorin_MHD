@@ -17,8 +17,8 @@ struct viewer_mesh {
 	int nnod_4_surf;
 	int nnod_4_edge;
 	int nedge_4_surf;
-	int nsurf_each_sf;
-	int *node_quad_2_linear_sf;
+	int nsurf_each_tri;
+	int *node_quad_2_linear_tri;
 	
 	int *inod_sf_stack;
 	int *iedge_sf_stack;

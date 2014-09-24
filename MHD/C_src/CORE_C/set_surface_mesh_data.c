@@ -63,16 +63,16 @@ void set_surface_normal_4_each_node(struct viewer_mesh *mesh_s){
 		iele = abs(mesh_s->isurf_domain_sf[i]) - 1;
 		idir = abs(mesh_s->isurf_domain_sf[i]) / mesh_s->isurf_domain_sf[i];
         
-		for (j=0; j<mesh_s->nsurf_each_sf; j++) {
-			jnum = j + i * mesh_s->nsurf_each_sf;
-			inum = j + iele * mesh_s->nsurf_each_sf;
+		for (j=0; j<mesh_s->nsurf_each_tri; j++) {
+			jnum = j + i * mesh_s->nsurf_each_tri;
+			inum = j + iele * mesh_s->nsurf_each_tri;
 			for (nd=0; nd<3; nd++){
 				mesh_s->normal_domain[jnum][nd] = ((double) idir) * mesh_s->surf_norm_view[inum][nd];
 				x_center[nd] = mesh_s->surf_center_view[inum][nd];
 			};
-			for (k1=0; k1<IFOUR; k1++) {
-				if(mesh_s->node_quad_2_linear_sf[4*j+k1] > 0){
-					k = mesh_s->node_quad_2_linear_sf[4*j+k1] - 1;
+			for (k1=0; k1<ITHREE; k1++) {
+				if(mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] > 0){
+					k = mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] - 1;
 					inod = mesh_s->ie_sf_viewer[iele][k] - 1;
 					mesh_s->dist_nod_domain[jnum][k1]
                     = sqrt( (mesh_s->xx_view[inod][0] - x_center[0])
@@ -95,17 +95,17 @@ void set_surface_normal_4_each_node(struct viewer_mesh *mesh_s){
 		iele = abs(mesh_s->ele_item_sf[i]) - 1;
 		idir = abs(mesh_s->ele_item_sf[i]) / mesh_s->ele_item_sf[i];
 		
-		for (j=0; j<mesh_s->nsurf_each_sf; j++) {
-			jnum = j + i * mesh_s->nsurf_each_sf;
-			inum = j + iele * mesh_s->nsurf_each_sf;
+		for (j=0; j<mesh_s->nsurf_each_tri; j++) {
+			jnum = j + i * mesh_s->nsurf_each_tri;
+			inum = j + iele * mesh_s->nsurf_each_tri;
             
 			for (nd=0; nd<3; nd++){
 				mesh_s->normal_ele_grp[jnum][nd] = ((double) idir) * mesh_s->surf_norm_view[inum][nd];
 				x_center[nd] = mesh_s->surf_center_view[inum][nd];
 			};
-			for (k1=0; k1<IFOUR; k1++) {
-				if(mesh_s->node_quad_2_linear_sf[4*j+k1] > 0){
-					k = mesh_s->node_quad_2_linear_sf[4*j+k1] - 1;
+			for (k1=0; k1<ITHREE; k1++) {
+				if(mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] > 0){
+					k = mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] - 1;
 					inod = mesh_s->ie_sf_viewer[iele][k] - 1;
 					mesh_s->dist_nod_ele_grp[jnum][k1]
 					= sqrt( (mesh_s->xx_view[inod][0] - x_center[0])
@@ -128,17 +128,17 @@ void set_surface_normal_4_each_node(struct viewer_mesh *mesh_s){
 		iele = abs(mesh_s->surf_item_sf[i]) - 1;
 		idir = abs(mesh_s->surf_item_sf[i]) / mesh_s->surf_item_sf[i];
         
-		for (j=0; j<mesh_s->nsurf_each_sf; j++) {
-			jnum = j + i * mesh_s->nsurf_each_sf;
-			inum = j + iele * mesh_s->nsurf_each_sf;
+		for (j=0; j<mesh_s->nsurf_each_tri; j++) {
+			jnum = j + i * mesh_s->nsurf_each_tri;
+			inum = j + iele * mesh_s->nsurf_each_tri;
 			
 			for (nd=0; nd<3; nd++){
 				mesh_s->normal_surf_grp[jnum][nd] = ((double) idir) * mesh_s->surf_norm_view[inum][nd];
 				x_center[nd] = mesh_s->surf_center_view[inum][nd];
 			};
-			for (k1=0; k1<IFOUR; k1++) {
-				if(mesh_s->node_quad_2_linear_sf[4*j+k1] > 0){
-					k = mesh_s->node_quad_2_linear_sf[4*j+k1] - 1;
+			for (k1=0; k1<ITHREE; k1++) {
+				if(mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] > 0){
+					k = mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] - 1;
 					inod = mesh_s->ie_sf_viewer[iele][k] - 1;
 					mesh_s->dist_nod_surf_grp[jnum][k1]
 					= sqrt( (mesh_s->xx_view[inod][0] - x_center[0])
