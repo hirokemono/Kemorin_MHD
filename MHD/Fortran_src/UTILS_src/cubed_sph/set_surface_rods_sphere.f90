@@ -51,7 +51,7 @@
       call set_bottom_vert_edge(num_hemi, iele, inod, x_edge(1),        &
      &    numnod_sf20, ntot_edge_sf20, xyz_surf, iedge_sf20)
       iele_ref = (2*num_hemi+6)*num_hemi
-      write(*,*) 'set_bottom_vert_edge', iele_ref,  iele, inod
+!      write(*,*) 'set_bottom_vert_edge', iele_ref,  iele, inod
 !
 !   side vertical rod
 !
@@ -109,26 +109,26 @@
       call set_bottom_squre_edge_x(num_hemi, iele, inod, x_edge(1),     &
      &    numnod_sf20, ntot_edge_sf20, xyz_surf, iedge_sf20)
       iele_ref = (num_hemi+1)*num_hemi
-      write(*,*) 'set_bottom_squre_edge_x end', iele_ref, inod
+!      write(*,*) 'set_bottom_squre_edge_x end', iele_ref, inod
 !
       call set_bottom_squre_edge_y(num_hemi, iele, inod, x_edge(1),     &
      &    numnod_sf20, ntot_edge_sf20, xyz_surf, iedge_sf20)
       iele_ref = 2*(num_hemi+1)*num_hemi
-      write(*,*) 'set_bottom_squre_edge_y end', iele_ref, inod
+!      write(*,*) 'set_bottom_squre_edge_y end', iele_ref, inod
 !
 !    bottom vertical rod
 !
       call set_bottom_vert_edge(num_hemi, iele, inod, v_edge(1),        &
      &    numnod_sf20, ntot_edge_sf20, xyz_surf, iedge_sf20)
       iele_ref = (2*num_hemi+6)*num_hemi
-      write(*,*) 'set_bottom_vert_edge end', iele_ref, inod
+!      write(*,*) 'set_bottom_vert_edge end', iele_ref, inod
 !
 !   side vertical rod
 !
       call set_wall_vert_edge(num_hemi, ncube_vertical, iele, inod,     &
      &    v_edge(1), numnod_sf20, ntot_edge_sf20, xyz_surf, iedge_sf20)
       iele_ref = (2*num_hemi+4*ncube_vertical-2)*num_hemi
-      write(*,*) 'set_wall_vert_edge end', iele_ref, inod
+!      write(*,*) 'set_wall_vert_edge end', iele_ref, inod
 !
 !    top vertical rod
 !
@@ -136,26 +136,26 @@
      &    v_edge(ncube_vertical), numnod_sf20, ntot_edge_sf20,          &
      &    xyz_surf, iedge_sf20)
       iele_ref = (2*num_hemi+4*ncube_vertical+2)*num_hemi
-      write(*,*) 'set_top_vert_edge end', iele_ref, inod
+!      write(*,*) 'set_top_vert_edge end', iele_ref, inod
 !
 !   side horizontal rod
 !
       call set_side_horiz_edge(num_hemi, ncube_vertical, iele, inod,    &
      &    x_edge(1), numnod_sf20, ntot_edge_sf20, xyz_surf, iedge_sf20)
       iele_ref = (2*num_hemi+8*ncube_vertical-2)*num_hemi
-      write(*,*) 'set_side_horiz_edge end', iele_ref, inod
+!      write(*,*) 'set_side_horiz_edge end', iele_ref, inod
 !
 !  top surface
 !
       call set_top_squre_edge_x(num_hemi, ncube_vertical, iele, inod,   &
      &    x_edge(1), numnod_sf20, ntot_edge_sf20, xyz_surf, iedge_sf20)
       iele_ref = (3*num_hemi+8*ncube_vertical-1)*num_hemi
-      write(*,*) 'set_top_squre_edge_x end', iele_ref, inod
+!      write(*,*) 'set_top_squre_edge_x end', iele_ref, inod
 !
       call set_top_squre_edge_y(num_hemi, ncube_vertical, iele, inod,   &
      &    x_edge(1), numnod_sf20, ntot_edge_sf20, xyz_surf, iedge_sf20)
       iele_ref = (4*num_hemi+8*ncube_vertical)*num_hemi
-      write(*,*) 'set_top_squre_edge_y end', iele_ref, inod
+!      write(*,*) 'set_top_squre_edge_y end', iele_ref, inod
 !
       inod_sf_end = inod
       irod_sf_end = iele

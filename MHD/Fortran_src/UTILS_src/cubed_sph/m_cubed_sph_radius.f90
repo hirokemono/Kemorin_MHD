@@ -49,7 +49,7 @@
 !
       allocate(kr_edge_latitude_ref(0:num_edge_latitude_ref+1))
       allocate(edge_latitude_ref(num_edge_latitude_ref))
-      allocate(edge_latitude(n_shell))
+      allocate(edge_latitude(0:n_shell))
 !
       if(num_edge_latitude_ref .gt. 0) then
         kr_edge_latitude_ref(1:num_edge_latitude_ref) = 0

@@ -1,17 +1,16 @@
-!const_peri_cube_surface.f90
-!      module const_peri_cube_surface
+!const_rect_sphere_surface.f90
+!      module const_rect_sphere_surface
 !      Written by Kemorin on Apr., 2006
 !
 !      subroutine const_rect_sphere_surf_node(rad_edge)
 !      subroutine const_rect_sphere_surf_data
-!      subroutine const_peri_cube_surface
+!      subroutine const_rect_sphere_surface
 !      subroutine const_coarse_rect_surf_data
 !
 !
-      module const_peri_cube_surface
+      module const_rect_sphere_surface
 !
       use m_precision
-      use m_constants
 !
       implicit none
 !
@@ -36,7 +35,6 @@
       integer(kind= kint) :: inod_sf_end, irod_sf_end
 !
 !
-       write(*,*) 'set_rect_skin'
       call set_rect_skin(inod_sf_end, rad_edge)
 !
       if (inod_sf_end.ne.numnod_sf) then
@@ -117,7 +115,6 @@
       irod_sf_end = numedge_sf
       iele_sf_end = numele_sf
       do icoarse = 1, max_coarse_level
-!
         call cal_coarse_rect_params(icoarse)
 !
         call set_coarse_rect_skin(inod_sf_end)
@@ -149,4 +146,4 @@
 !
 !   --------------------------------------------------------------------
 !
-      end module const_peri_cube_surface
+      end module const_rect_sphere_surface

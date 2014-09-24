@@ -20,7 +20,6 @@ const_cube_sphere_data.o
 MOD_CUBED_SPH2_MESH = \
 mesh_core_kemo2.o \
 \
-const_rect_sphere_surface.o \
 const_rect_sphere_data.o
 
 

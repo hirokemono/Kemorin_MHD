@@ -3,6 +3,7 @@
 !
 !
       use m_precision
+      use m_constants
 !
       use m_cubed_sph_mesh
       use m_cubed_sph_surf_mesh
@@ -23,6 +24,7 @@
 !
       implicit none
 !
+      real(kind = kreal) :: rad_edge
 !
 !      write(*,*) 'Mesh generation is starting. Press return key'
 !      read(5,*)
@@ -59,6 +61,8 @@
 ! set sphere cube data
 !
        write(*,*) 'const_rect_sphere_surf_data'
+      rad_edge = atan(one / sqrt(two))
+      call const_rect_sphere_surf_node(rad_edge)
       call const_rect_sphere_surf_data
 !
        write(*,*) 'const_coarse_rect_surf_data'

@@ -31,8 +31,7 @@
       use set_surface_rods_sphere
       use set_surf_connect_cubed_sph
 !
-      integer(kind= kint) :: inod_sf_end
-      integer(kind= kint) :: iele_sf_end, irod_sf_end
+      integer(kind= kint) :: inod_sf_end, irod_sf_end
       integer(kind= kint) :: inod
 !
 !

@@ -70,7 +70,7 @@
        call adjust_to_shell(inod_start, id_l_mesh, id_flag_quad,        &
      &     num_hemi, num_hemi)
 !
-       call projection(inod_start, id_l_mesh, id_flag_quad,             &
+       call project_to_sphere(inod_start, id_l_mesh, id_flag_quad,      &
      &     num_hemi, num_hemi)
 !
        if ( inod_start .ne. numnod ) then

@@ -6,7 +6,7 @@
 !      subroutine allocate_cubed_sph_posi_tmp
 !      subroutine deallocate_cubed_sph_posi_tmp
 !
-!      subroutine projection(inod, ifile, ifile_q, num_h, num_v)
+!      subroutine project_to_sphere(inod, ifile, ifile_q, num_h, num_v)
 !      subroutine projection_quad(inod, ifile, num_h, num_v)
 !
 !      subroutine adjust_to_shell(inod, ifile, ifile_q, num_h, num_v)
@@ -15,6 +15,7 @@
       module cal_shell_position
 !
       use m_precision
+      use m_constants
 !
       use m_cubed_sph_mesh
       use m_cubed_sph_surf_mesh
@@ -63,8 +64,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine projection(inod, ifile, ifile_q, num_h, num_v)
+      subroutine project_to_sphere(inod, ifile, ifile_q, num_h, num_v)
 !
+      use const_rect_sphere_surface
       use coordinate_converter
       use modify_colat_cube_surf
 !
@@ -73,6 +75,7 @@
       integer(kind = kint), intent(inout) :: inod
 !
       integer(kind = kint) :: k, inod0
+      real(kind = kreal) :: rad_edge
 !
 !
       do k = nr_adj+1, n_shell
@@ -80,15 +83,13 @@
 !
         if(num_edge_latitude_ref.gt.0 .or. num_h.ne.num_v) then
           call cal_wall_latitude_ratio(num_h, num_v, edge_latitude(k))
-          call modify_colat_on_cube_sf(numnod_sf, num_h, num_v,         &
-     &        theta_surf(1), t(1))
-        else
-          t(1:numnod_sf) = theta_surf(1:numnod_sf)
+          rad_edge = atan(one) * edge_latitude(k) / 45.0d0
+          call const_rect_sphere_surf_node(rad_edge)
         end if
 !
 !
         call position_2_xyz(numnod_sf,                                  &
-     &      r(1), t(1), phi_surf(1), x(1), y(1), z(1))
+     &      r(1), theta_surf(1), phi_surf(1), x(1), y(1), z(1))
 !
         do inod0 = 1, numnod_sf
           inod = inod + 1
@@ -101,13 +102,13 @@
         end do
       end do
 !
-      end subroutine projection
+      end subroutine project_to_sphere
 !
 !   --------------------------------------------------------------------
 !
       subroutine projection_quad(inod, ifile, num_h, num_v)
 !
-      use m_constants
+      use const_rect_sphere_surface
       use coordinate_converter
       use modify_colat_cube_surf
 !
@@ -115,8 +116,8 @@
       integer(kind = kint), intent(in) :: num_h, num_v
       integer(kind = kint), intent(inout) :: inod
 !
-      integer(kind = kint) :: k, inod0, iedge0, num
-      real(kind = kreal) :: elat_mid
+      integer(kind = kint) :: k, inod0, num
+      real(kind = kreal) :: rad_edge
 !
 !
       num = numnod_sf+numedge_sf
@@ -125,17 +126,21 @@
         r(numnod_sf+1:num) = r_nod(k)
 !
         if(num_edge_latitude_ref.gt.0 .or. num_h.ne.num_v) then
-          elat_mid = half * (edge_latitude(k-1) + edge_latitude(k))
-          call cal_wall_latitude_ratio(num_h, num_v, elat_mid)
-          call modify_colat_on_cube_sf(numnod_sf, num_h, num_v,         &
-     &        theta_surf(1), t(1))
-!
           call cal_wall_latitude_ratio(num_h, num_v, edge_latitude(k))
-          call modify_colat_on_cube_edge(numnod_sf, numedge_sf,         &
-     &        num_h, num_v, theta_surf(numnod_sf+1), t(numnod_sf+1))
+!
+          rad_edge = atan(one) * (edge_latitude(k)+edge_latitude(k-1))  &
+     &             / 90.0d0
+          call const_rect_sphere_surf_node(rad_edge)
+          t(1:numnod_sf) =     theta_surf(1:numnod_sf)
+!
+          rad_edge = atan(one) * edge_latitude(k) / 45.0d0
+          call const_rect_sphere_surf_node(rad_edge)
+          t(numnod_sf+1:num) = theta_surf(numnod_sf+1:num)
         else
-          t(1:num) = theta_surf(1:num)
+          t(1:numnod_sf) =     theta_surf(1:numnod_sf)
+          t(numnod_sf+1:num) = theta_surf(numnod_sf+1:num)
         end if
+!
 !
         call position_2_xyz(num, r(1), t(1), phi_surf(1),               &
      &      x(1), y(1), z(1))
@@ -154,6 +159,7 @@
 !
       subroutine adjust_to_shell(inod, ifile, ifile_q, num_h, num_v)
 !
+      use const_rect_sphere_surface
       use coordinate_converter
       use modify_colat_cube_surf
 !
@@ -162,15 +168,14 @@
       integer(kind = kint), intent(inout) :: inod
 !
       integer(kind = kint) :: k, inod0
+      real(kind = kreal) :: rad_edge
 !
 !
       do k = 1, nr_adj
         if(num_edge_latitude_ref.gt.0 .or. num_h.ne.num_v) then
           call cal_wall_latitude_ratio(num_h, num_v, edge_latitude(k))
-          call modify_colat_on_cube_sf(numnod_sf, num_h, num_v,         &
-     &        theta_surf(1), t(1))
-        else
-          t(1:numnod_sf) = theta_surf(1:numnod_sf)
+          rad_edge = atan(one) * edge_latitude(k) / 45.0d0
+          call const_rect_sphere_surf_node(rad_edge)
         end if
 !
         do inod0 = 1, numnod_sf
@@ -181,7 +186,7 @@
         end do
 !
         call position_2_xyz(numnod_sf,                                  &
-     &      r(1), t(1), phi_surf(1), x(1), y(1), z(1))
+     &      r(1), theta_surf(1), phi_surf(1), x(1), y(1), z(1))
 !
 !
         do inod0 = 1, numnod_sf
@@ -202,7 +207,7 @@
 !
       subroutine adjust_to_shell_quad(inod, ifile, num_h, num_v)
 !
-      use m_constants
+      use const_rect_sphere_surface
       use coordinate_converter
       use modify_colat_cube_surf
 !
@@ -211,22 +216,25 @@
       integer(kind = kint), intent(inout) :: inod
 !
       integer(kind = kint) :: k, inod0, iedge0, num
-      real(kind = kreal) :: elat_mid
+      real(kind = kreal) :: rad_edge
 !
 !
       num = numnod_sf+numedge_sf
       do k = 1, nr_adj-1
         if(num_edge_latitude_ref.gt.0 .or. num_h.ne.num_v) then
-          elat_mid = half * (edge_latitude(k) + edge_latitude(k+1))
-          call cal_wall_latitude_ratio(num_h, num_v, elat_mid)
-          call modify_colat_on_cube_sf(numnod_sf, num_h, num_v,         &
-     &        theta_surf(1), t(1))
-!
           call cal_wall_latitude_ratio(num_h, num_v, edge_latitude(k))
-          call modify_colat_on_cube_edge(numnod_sf, numedge_sf,         &
-     &        num_h, num_v, theta_surf(numnod_sf+1), t(numnod_sf+1))
+!
+          rad_edge = atan(one) * (edge_latitude(k)+edge_latitude(k-1))  &
+     &             / 90.0d0
+          call const_rect_sphere_surf_node(rad_edge)
+          t(1:numnod_sf) =     theta_surf(1:numnod_sf)
+!
+          rad_edge = atan(one) * edge_latitude(k) / 45.0d0
+          call const_rect_sphere_surf_node(rad_edge)
+          t(numnod_sf+1:num) = theta_surf(numnod_sf+1:num)
         else
-          t(1:num) = theta_surf(1:num)
+          t(1:numnod_sf) =     theta_surf(1:numnod_sf)
+          t(numnod_sf+1:num) = theta_surf(numnod_sf+1:num)
         end if
 !
         do inod0 = 1, numnod_sf

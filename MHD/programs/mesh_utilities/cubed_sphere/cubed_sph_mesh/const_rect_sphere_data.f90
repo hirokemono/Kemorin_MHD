@@ -76,7 +76,7 @@
      &      num_hemi, ncube_vertical)
 !
         write(*,*) 'projection'
-       call projection(inod_start, id_l_mesh, id_flag_quad,             &
+       call project_to_sphere(inod_start, id_l_mesh, id_flag_quad,      &
      &      num_hemi, ncube_vertical)
         write(*,*) 'projection end'
 !
@@ -180,8 +180,7 @@
       use write_cubed_sph_grp_data
       use modify_colat_cube_surf
 !
-      integer(kind = kint) :: iele_start, inod_end, inum, ic
-      integer(kind = kint) :: inum1, iele_s2
+      integer(kind = kint) :: iele_start, inod_end, inum, ic, iele_s2
 !
 !
        write(*,*) 'max_coarse_level', max_coarse_level

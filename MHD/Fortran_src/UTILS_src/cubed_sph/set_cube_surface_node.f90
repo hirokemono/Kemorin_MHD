@@ -102,11 +102,11 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_side_plane_squre_node(num_h, num_v, nnod_sf, inod, &
-     &          cube_size, x_node, v_node, xyz_sf)
+     &          x_size, x_node, v_node, xyz_sf)
 !
       integer(kind = kint), intent(in) :: num_h, num_v
       integer(kind = kint), intent(in) :: nnod_sf
-      real(kind = kreal), intent(in) :: cube_size
+      real(kind = kreal), intent(in) :: x_size
       real(kind = kreal), intent(in) :: x_node(num_h+1)
       real(kind = kreal), intent(in) :: v_node(num_v+1)
 !
@@ -120,24 +120,24 @@
         do ix = 1, num_h
           inod = inod + 1
           xyz_sf(inod,1) =  x_node(ix)
-          xyz_sf(inod,2) = -cube_size
+          xyz_sf(inod,2) = -x_size
           xyz_sf(inod,3) =  v_node(iz+1)
         end do
         do iy = 1, num_h
           inod = inod + 1
-          xyz_sf(inod,1) =  cube_size
+          xyz_sf(inod,1) =  x_size
           xyz_sf(inod,2) =  x_node(iy)
           xyz_sf(inod,3) =  v_node(iz+1)
         end do
         do ix = 1, num_h
           inod = inod + 1
           xyz_sf(inod,1) =  x_node(num_h+2-ix)
-          xyz_sf(inod,2) =  cube_size
+          xyz_sf(inod,2) =  x_size
           xyz_sf(inod,3) =  v_node(iz+1)
         end do
         do iy = 1, num_h
           inod = inod + 1
-          xyz_sf(inod,1) = -cube_size
+          xyz_sf(inod,1) = -x_size
           xyz_sf(inod,2) =  x_node(num_h+2-iy)
           xyz_sf(inod,3) =  v_node(iz+1)
         end do

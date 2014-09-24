@@ -15,7 +15,7 @@
 !   position
       real(kind = kreal) :: xyz(3)
 !   connectivity
-      integer(kind = kint) :: ie(8), ie20(20), ie27(27)
+      integer(kind = kint) :: ie(8), ie20(20)
       integer(kind = kint) :: isurf(4), isurf8(8)
       integer(kind = kint) :: iedge(2), iedge3(3)
 !
