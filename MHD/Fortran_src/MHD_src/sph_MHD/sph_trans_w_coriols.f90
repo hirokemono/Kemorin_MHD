@@ -69,6 +69,8 @@
       subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar)
 !
       use m_work_time
+      use m_sph_trans_comm_table
+      use m_solver_SR
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: nvector, nscalar
@@ -89,11 +91,10 @@
       call end_eleps_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
-!      call check_sp_rlm(my_rank, ncomp_trans)
-!
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'sum_coriolis_rlm'
-      call sum_coriolis_rlm(ncomp_trans, sp_rlm)
+      call sum_coriolis_rlm(ncomp_trans,                                &
+     &    istack_sr_rlm(nneib_domain_rlm), irev_sr_rlm, WR(1))
       call end_eleps_time(13)
 !
       call start_eleps_time(22)
@@ -190,6 +191,8 @@
       subroutine sph_b_trans_licv(ncomp_trans)
 !
       use m_work_time
+      use m_sph_trans_comm_table
+      use m_solver_SR
 !
       integer(kind = kint), intent(in) :: ncomp_trans
 !
@@ -201,11 +204,10 @@
       call end_eleps_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
-!      call check_sp_rlm(my_rank, ncomp_trans)
-!
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'sum_coriolis_rlm'
-      call sum_coriolis_rlm(ncomp_trans, sp_rlm)
+      call sum_coriolis_rlm(ncomp_trans,                                &
+     &    istack_sr_rlm(nneib_domain_rlm), irev_sr_rlm, WR(1))
       call end_eleps_time(13)
 !
       call finish_send_recv_rj_2_rlm

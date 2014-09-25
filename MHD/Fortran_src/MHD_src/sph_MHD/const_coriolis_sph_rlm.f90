@@ -68,30 +68,34 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sum_coriolis_rlm(ncomp_trans, sp_rlm)
+      subroutine sum_coriolis_rlm(ncomp_trans, nnod_recv, irev_sr_rlm, WR2)
 !
       use t_boundary_params_sph_MHD
       use m_boundary_params_sph_MHD
       use m_coriolis_terms_rlm
       use sum_coriolis_terms_rlm
 !
-      integer(kind = kint), intent(in) :: ncomp_trans
-      real(kind = kreal), intent(in) :: sp_rlm(ncomp_trans*nnod_rlm)
+      integer(kind = kint), intent(in) :: ncomp_trans, nnod_recv
+      integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
+      real(kind = kreal), intent(in) :: WR2(ncomp_trans,nnod_recv+1)
 !
 !
       if( iflag_4_coriolis .eq. id_turn_OFF) return
 !
-      call sum_rot_coriolis_rlm_10(ncomp_trans, sp_rlm)
+      call sum_rot_coriolis_rlm_10(ncomp_trans,                         &
+     &    nnod_recv, irev_sr_rlm, WR2(1,1))
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        call inner_core_rot_z_coriolis_rlm(ncomp_trans, sp_rlm)
+        call inner_core_rot_z_coriolis_rlm(ncomp_trans,                 &
+     &      nnod_recv, irev_sr_rlm, WR2(1,1))
       end if
 !
-!      call sum_div_coriolis_rlm_10(ncomp_trans, sp_rlm)
+!      call sum_div_coriolis_rlm_10(ncomp_trans,                        &
+!     &    nnod_recv, irev_sr_rlm, WR2(1,1))
 !      call sum_r_coriolis_bc_rlm_10(ncomp_trans, kr_in_U_rlm,          &
-!     &    sp_rlm, d_cor_in_rlm)
+!     &    nnod_recv, irev_sr_rlm, WR2(1,1), d_cor_in_rlm)
 !      call sum_r_coriolis_bc_rlm_10(ncomp_trans, kr_out_U_rlm,         &
-!     &    sp_rlm, d_cor_out_rlm)
+!     &    nnod_recv, irev_sr_rlm, WR2(1,1), d_cor_out_rlm)
 !
       end subroutine sum_coriolis_rlm
 !
