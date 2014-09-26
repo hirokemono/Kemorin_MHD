@@ -67,7 +67,8 @@
       if     (iflag_shell_mode.eq.iflag_no_FEMMESH                      &
         .or.  iflag_shell_mode.eq.iflag_MESH_same) return
 !
-      call calypso_rj_to_send_N(ncomp_trans, sp_rj)
+      call check_calypso_rj_2_rlm_buf_N(ncomp_trans)
+      call calypso_rj_to_send_N(ncomp_trans, sp_rj, WS(1))
       call calypso_sph_comm_rj_2_rlm_N(ncomp_trans)
       call calypso_rlm_from_recv_N(ncomp_trans, WR(1), sp_rlm)
 !

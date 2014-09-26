@@ -83,7 +83,8 @@
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(18)
-      call calypso_rj_to_send_N(ncomp_trans, sp_rj)
+      call check_calypso_rj_2_rlm_buf_N(ncomp_trans)
+      call calypso_rj_to_send_N(ncomp_trans, sp_rj, WS(1))
       call calypso_sph_comm_rj_2_rlm_N(ncomp_trans)
       call end_eleps_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
@@ -100,7 +101,8 @@
 !      call check_vr_rtm(my_rank, ncomp_trans)
 !
       call finish_send_recv_rj_2_rlm
-      call calypso_rtm_to_send_N(ncomp_trans, vr_rtm)
+      call check_calypso_rtm_2_rtp_buf_N(ncomp_trans)
+      call calypso_rtm_to_send_N(ncomp_trans, vr_rtm, WS(1))
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(19)
@@ -151,7 +153,8 @@
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(20)
-      call calypso_rtp_to_send_N(ncomp_trans, vr_rtp)
+      call check_calypso_rtp_2_rtm_buf_N(ncomp_trans)
+      call calypso_rtp_to_send_N(ncomp_trans, vr_rtp, WS(1))
       call calypso_sph_comm_rtp_2_rtm_N(ncomp_trans)
       call calypso_rtm_from_recv_N(ncomp_trans, WR(1), vr_rtm)
       call end_eleps_time(20)
@@ -166,7 +169,8 @@
       call end_eleps_time(23)
 !      call check_sp_rlm(my_rank, ncomp_trans)
 !
-      call calypso_rlm_to_send_N(ncomp_trans, sp_rlm)
+      call check_calypso_rlm_2_rj_buf_N(ncomp_trans)
+      call calypso_rlm_to_send_N(ncomp_trans, sp_rlm, WS(1))
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(21)

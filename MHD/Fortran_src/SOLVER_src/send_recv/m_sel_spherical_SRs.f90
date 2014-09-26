@@ -11,13 +11,15 @@
 !!      subroutine set_sph_comm_routine_ctl(send_recv_ctl)
 !!
 !!      subroutine finish_sph_send_recv(npe_send, isend_self)
+!!      subroutine check_calypso_sph_buf_N(NB, nmax_sr,                 &
+!!     &          npe_send, istack_send, npe_recv, istack_recv)
 !!      subroutine sel_calypso_sph_comm_N(NB, nmax_sr,                  &
 !!     &                  npe_send, isend_self, id_pe_send, istack_send,&
 !!     &                  npe_recv, irecv_self, id_pe_recv, istack_recv,&
 !!     &                  CALYPSO_SUB_COMM)
 !!      subroutine sel_calypso_to_send_N(NB, nnod_org, nmax_sr,         &
 !!     &                    npe_send, istack_send, inod_export,         &
-!!     &                    npe_recv, istack_recv, X_org)
+!!     &                    X_org, WS)
 !!      subroutine sel_calypso_from_recv_N(NB, nnod_new, nmax_sr,       &
 !!     &                    npe_recv, istack_recv, inod_import,         &
 !!     &                    irev_import, WR, X_new)
@@ -131,6 +133,36 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
+      subroutine check_calypso_sph_buf_N(NB, nmax_sr,                   &
+     &          npe_send, istack_send, npe_recv, istack_recv)
+!
+      use m_solver_SR
+      use set_to_send_buffer
+!
+      integer(kind = kint), intent(in) :: NB
+      integer(kind = kint), intent(in) :: nmax_sr
+!
+      integer(kind = kint), intent(in) :: npe_send
+      integer(kind = kint), intent(in) :: istack_send(0:npe_send)
+!
+      integer(kind = kint), intent(in) :: npe_recv
+      integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
+!
+      integer(kind = kint) :: nitem
+!
+!
+      if     (iflag_sph_commN .eq. iflag_alltoall) then
+        nitem = npe_send*nmax_sr
+        call resize_work_sph_SR(NB, npe_send, npe_recv, nitem, nitem)
+      else
+        call resize_work_sph_SR(NB, npe_send, npe_recv,                 &
+     &      istack_send(npe_send), istack_recv(npe_recv))
+      end if
+!
+      end subroutine check_calypso_sph_buf_N
+!
+!-----------------------------------------------------------------------
+!
       subroutine sel_calypso_sph_comm_N(NB, nmax_sr,                    &
      &                  npe_send, isend_self, id_pe_send, istack_send,  &
      &                  npe_recv, irecv_self, id_pe_recv, istack_recv,  &
@@ -171,9 +203,8 @@
 !
       subroutine sel_calypso_to_send_N(NB, nnod_org, nmax_sr,           &
      &                    npe_send, istack_send, inod_export,           &
-     &                    npe_recv, istack_recv, X_org)
+     &                    X_org, WS)
 !
-      use m_solver_SR
       use set_to_send_buffer
 !
       integer(kind = kint), intent(in) :: NB, nnod_org
@@ -183,22 +214,10 @@
       integer(kind = kint), intent(in) :: istack_send(0:npe_send)
       integer(kind = kint), intent(in)                                  &
      &                      :: inod_export( istack_send(npe_send) )
-!
-      integer(kind = kint), intent(in) :: npe_recv
-      integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
-!
       real (kind=kreal), intent(in)::    X_org(NB*nnod_org)
 !
-      integer(kind = kint) :: nitem
+      real (kind=kreal), intent(inout):: WS(NB*istack_send(npe_send))
 !
-!
-      if     (iflag_sph_commN .eq. iflag_alltoall) then
-        nitem = npe_send*nmax_sr
-        call resize_work_sph_SR(NB, npe_send, npe_recv, nitem, nitem)
-      else
-        call resize_work_sph_SR(NB, npe_send, npe_recv,                 &
-     &      istack_send(npe_send), istack_recv(npe_recv))
-      end if
 !
       call start_eleps_time(36)
       if(    iflag_sph_commN .eq. iflag_alltoall) then

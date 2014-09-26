@@ -9,6 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine buffer_size_sph_send_recv(NB)
+!!      subroutine check_calypso_sph_buffer_N(NB)
 !!
 !!      subroutine send_recv_rtp_2_rtm_N(NB, X_rtp, X_rtm)
 !!      subroutine send_recv_rtm_2_rtp_N(NB, X_rtm, X_rtp)
@@ -20,15 +21,15 @@
 !!      subroutine calypso_sph_comm_rj_2_rlm_N(NB)
 !!      subroutine calypso_sph_comm_rlm_2_rj_N(NB)
 !!
-!!      subroutine calypso_rtp_to_send_N(NB, X_rtp)
-!!      subroutine calypso_rtm_to_send_N(NB, X_rtp)
-!!      subroutine calypso_rj_to_send_N(NB, X_rtp)
-!!      subroutine calypso_rlm_to_send_N(NB, X_rtp)
+!!      subroutine calypso_rtp_to_send_N(NB, X_rtp, WS)
+!!      subroutine calypso_rtm_to_send_N(NB, X_rtm, WS)
+!!      subroutine calypso_rj_to_send_N(NB, X_rj, WS)
+!!      subroutine calypso_rlm_to_send_N(NB, X_rlm, WS)
 !!
 !!      subroutine calypso_rtm_from_recv_N(NB, WR, X_rtm)
-!!      subroutine calypso_rtp_from_recv_N(NB, WR, X_rtm)
-!!      subroutine calypso_rlm_from_recv_N(NB, WR, X_rtm)
-!!      subroutine calypso_rj_from_recv_N(NB, WR, X_rtm)
+!!      subroutine calypso_rtp_from_recv_N(NB, WR, X_rtp)
+!!      subroutine calypso_rlm_from_recv_N(NB, WR, X_rlm)
+!!      subroutine calypso_rj_from_recv_N(NB, WR, X_rj)
 !!
 !!      subroutine finish_send_recv_rtp_2_rtm
 !!      subroutine finish_send_recv_rtm_2_rtp
@@ -133,13 +134,36 @@
      &    CALYPSO_INTEGER, MPI_MAX, CALYPSO_COMM, ierr_MPI)
       end if
 !
-      call resize_work_sph_SR(NB, nneib_max_send, nneib_max_recv,       &
-     &    ntot_item_sr_rtp, ntot_item_sr_rtm)
+      call check_calypso_sph_buffer_N(NB)
 !
       end subroutine buffer_size_sph_send_recv
 !
 !-----------------------------------------------------------------------
-! ----------------------------------------------------------------------
+!
+      subroutine check_calypso_sph_buffer_N(NB)
+!
+      use m_sph_communicators
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
+      use m_sel_spherical_SRs
+      use m_solver_SR
+!
+      integer (kind=kint), intent(in) :: NB
+!
+!
+      call check_calypso_sph_buf_N(NB, nmax_sr_rtp, nneib_domain_rtp,   &
+     &    istack_sr_rtp, nneib_domain_rtm, istack_sr_rtm)
+      call check_calypso_sph_buf_N(NB, nmax_sr_rtp, nneib_domain_rtm,   &
+     &    istack_sr_rtm, nneib_domain_rtp, istack_sr_rtp)
+      call check_calypso_sph_buf_N(NB, nmax_sr_rj,  nneib_domain_rj,    &
+     &    istack_sr_rj,  nneib_domain_rlm, istack_sr_rlm)
+      call check_calypso_sph_buf_N(NB, nmax_sr_rj,  nneib_domain_rlm,   &
+     &    istack_sr_rlm, nneib_domain_rj,  istack_sr_rj)
+!
+      end subroutine check_calypso_sph_buffer_N
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
       subroutine send_recv_rtp_2_rtm_N(NB, X_rtp, X_rtm)
 !
@@ -154,7 +178,8 @@
       real (kind=kreal), intent(inout):: X_rtm(NB*nnod_rtm)
 !
 !
-      call calypso_rtp_to_send_N(NB, X_rtp)
+      call check_calypso_rtp_2_rtm_buf_N(NB)
+      call calypso_rtp_to_send_N(NB, X_rtp, WS(1))
       call calypso_sph_comm_rtp_2_rtm_N(NB)
       call calypso_rtm_from_recv_N(NB, WR(1), X_rtm)
       call finish_send_recv_rtp_2_rtm
@@ -176,7 +201,8 @@
       real (kind=kreal), intent(inout):: X_rtp(NB*nnod_rtp)
 !
 !
-      call calypso_rtm_to_send_N(NB, X_rtm)
+      call check_calypso_rtm_2_rtp_buf_N(NB)
+      call calypso_rtm_to_send_N(NB, X_rtm, WS(1))
       call calypso_sph_comm_rtm_2_rtp_N(NB)
       call calypso_rtp_from_recv_N(NB, WR(1), X_rtp)
       call finish_send_recv_rtm_2_rtp
@@ -198,7 +224,8 @@
       real (kind=kreal), intent(inout):: X_rlm(NB*nnod_rlm)
 !
 !
-      call calypso_rj_to_send_N(NB, X_rj)
+      call check_calypso_rj_2_rlm_buf_N(NB)
+      call calypso_rj_to_send_N(NB, X_rj, WS(1))
       call calypso_sph_comm_rj_2_rlm_N(NB)
       call calypso_rlm_from_recv_N(NB, WR(1), X_rlm)
       call finish_send_recv_rj_2_rlm
@@ -220,12 +247,80 @@
       real (kind=kreal), intent(inout):: X_rj(NB*nnod_rj)
 !
 !
-      call calypso_rlm_to_send_N(NB, X_rlm)
+      call check_calypso_rlm_2_rj_buf_N(NB)
+      call calypso_rlm_to_send_N(NB, X_rlm, WS(1))
       call calypso_sph_comm_rlm_2_rj_N(NB)
       call calypso_rj_from_recv_N(NB, WR(1), X_rj)
       call finish_send_recv_rlm_2_rj
 !
       end subroutine send_recv_rlm_2_rj_N
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine check_calypso_rtp_2_rtm_buf_N(NB)
+!
+      use m_sph_communicators
+      use m_sph_trans_comm_table
+      use m_sel_spherical_SRs
+      use m_solver_SR
+!
+      integer (kind=kint), intent(in) :: NB
+!
+!
+      call check_calypso_sph_buf_N(NB, nmax_sr_rtp, nneib_domain_rtp,   &
+     &    istack_sr_rtp, nneib_domain_rtm, istack_sr_rtm)
+!
+      end subroutine check_calypso_rtp_2_rtm_buf_N
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_calypso_rtm_2_rtp_buf_N(NB)
+!
+      use m_sph_communicators
+      use m_sph_trans_comm_table
+      use m_sel_spherical_SRs
+      use m_solver_SR
+!
+      integer (kind=kint), intent(in) :: NB
+!
+!
+      call check_calypso_sph_buf_N(NB, nmax_sr_rtp, nneib_domain_rtm,   &
+     &    istack_sr_rtm, nneib_domain_rtp, istack_sr_rtp)
+!
+      end subroutine check_calypso_rtm_2_rtp_buf_N
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_calypso_rj_2_rlm_buf_N(NB)
+!
+      use m_sph_communicators
+      use m_sph_trans_comm_table
+      use m_sel_spherical_SRs
+      use m_solver_SR
+!
+      integer (kind=kint), intent(in) :: NB
+!
+      call check_calypso_sph_buf_N(NB, nmax_sr_rj,  nneib_domain_rj,    &
+     &    istack_sr_rj,  nneib_domain_rlm, istack_sr_rlm)
+!
+      end subroutine check_calypso_rj_2_rlm_buf_N
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_calypso_rlm_2_rj_buf_N(NB)
+!
+      use m_sph_communicators
+      use m_sph_trans_comm_table
+      use m_sel_spherical_SRs
+      use m_solver_SR
+!
+      integer (kind=kint), intent(in) :: NB
+!
+      call check_calypso_sph_buf_N(NB, nmax_sr_rj,  nneib_domain_rlm,   &
+     &    istack_sr_rlm, nneib_domain_rj,  istack_sr_rj)
+!
+      end subroutine check_calypso_rlm_2_rj_buf_N
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -311,7 +406,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine calypso_rtp_to_send_N(NB, X_rtp)
+      subroutine calypso_rtp_to_send_N(NB, X_rtp, WS)
 !
       use m_sph_communicators
       use m_spheric_parameter
@@ -320,17 +415,17 @@
 !
       integer (kind=kint), intent(in) :: NB
       real (kind=kreal), intent(in)::    X_rtp(NB*nnod_rtp)
+      real (kind=kreal), intent(inout):: WS(NB*ntot_item_sr_rtp)
 !
 !
       call sel_calypso_to_send_N(NB, nnod_rtp, nmax_sr_rtp,             &
-     &              nneib_domain_rtp, istack_sr_rtp, item_sr_rtp,       &
-     &              nneib_domain_rtm, istack_sr_rtm, X_rtp)
+     &    nneib_domain_rtp, istack_sr_rtp, item_sr_rtp, X_rtp, WS)
 !
       end subroutine calypso_rtp_to_send_N
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine calypso_rtm_to_send_N(NB, X_rtm)
+      subroutine calypso_rtm_to_send_N(NB, X_rtm, WS)
 !
       use m_sph_communicators
       use m_spheric_parameter
@@ -339,17 +434,17 @@
 !
       integer (kind=kint), intent(in) :: NB
       real (kind=kreal), intent(in)::    X_rtm(NB*nnod_rtm)
+      real (kind=kreal), intent(inout):: WS(NB*ntot_item_sr_rtm)
 !
 !
       call sel_calypso_to_send_N(NB, nnod_rtm, nmax_sr_rtp,             &
-     &              nneib_domain_rtm, istack_sr_rtm, item_sr_rtm,       &
-     &              nneib_domain_rtp, istack_sr_rtp, X_rtm)
+     &    nneib_domain_rtm, istack_sr_rtm, item_sr_rtm, X_rtm, WS)
 !
       end subroutine calypso_rtm_to_send_N
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine calypso_rj_to_send_N(NB, X_rj)
+      subroutine calypso_rj_to_send_N(NB, X_rj, WS)
 !
       use m_sph_communicators
       use m_spheric_parameter
@@ -358,17 +453,17 @@
 !
       integer (kind=kint), intent(in) :: NB
       real (kind=kreal), intent(in)::    X_rj(NB*nnod_rj)
+      real (kind=kreal), intent(inout):: WS(NB*ntot_item_sr_rj)
 !
 !
       call sel_calypso_to_send_N(NB, nnod_rj, nmax_sr_rj,               &
-     &              nneib_domain_rj,  istack_sr_rj,  item_sr_rj,        &
-     &              nneib_domain_rlm, istack_sr_rlm, X_rj)
+     &    nneib_domain_rj,  istack_sr_rj,  item_sr_rj, X_rj, WS)
 !
       end subroutine calypso_rj_to_send_N
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine calypso_rlm_to_send_N(NB, X_rlm)
+      subroutine calypso_rlm_to_send_N(NB, X_rlm, WS)
 !
       use m_sph_communicators
       use m_spheric_parameter
@@ -377,11 +472,11 @@
 !
       integer (kind=kint), intent(in) :: NB
       real (kind=kreal), intent(in)::    X_rlm(NB*nnod_rlm)
+      real (kind=kreal), intent(inout):: WS(NB*ntot_item_sr_rlm)
 !
 !
       call sel_calypso_to_send_N(NB, nnod_rlm, nmax_sr_rj,              &
-     &              nneib_domain_rlm, istack_sr_rlm, item_sr_rlm,       &
-     &              nneib_domain_rj,  istack_sr_rj,  X_rlm)
+     &    nneib_domain_rlm, istack_sr_rlm, item_sr_rlm, X_rlm, WS)
 !
       end subroutine calypso_rlm_to_send_N
 !
@@ -396,8 +491,7 @@
       use m_sel_spherical_SRs
 !
       integer (kind=kint), intent(in) :: NB
-      real (kind=kreal), intent(inout)                                  &
-     &                  :: WR(NB*(istack_sr_rtm(nneib_domain_rtm)+1))
+      real (kind=kreal), intent(inout) :: WR(NB*(ntot_item_sr_rtm+1))
       real (kind=kreal), intent(inout):: X_rtm(NB*nnod_rtm)
 !
 !
@@ -417,8 +511,7 @@
       use m_sel_spherical_SRs
 !
       integer (kind=kint), intent(in) :: NB
-      real (kind=kreal), intent(inout)                                  &
-     &                  :: WR(NB*(istack_sr_rtp(nneib_domain_rtp)+1))
+      real (kind=kreal), intent(inout) :: WR(NB*(ntot_item_sr_rtp+1))
       real (kind=kreal), intent(inout):: X_rtp(NB*nnod_rtp)
 !
 !
@@ -438,8 +531,7 @@
       use m_sel_spherical_SRs
 !
       integer (kind=kint), intent(in) :: NB
-      real (kind=kreal), intent(inout)                                  &
-     &                  :: WR(NB*(istack_sr_rlm(nneib_domain_rlm)+1))
+      real (kind=kreal), intent(inout) :: WR(NB*(ntot_item_sr_rlm+1))
       real (kind=kreal), intent(inout):: X_rlm(NB*nnod_rlm)
 !
 !
@@ -459,8 +551,7 @@
       use m_sel_spherical_SRs
 !
       integer (kind=kint), intent(in) :: NB
-      real (kind=kreal), intent(inout)                                  &
-     &                   :: WR(NB*(istack_sr_rj(nneib_domain_rj)+1))
+      real (kind=kreal), intent(inout) :: WR(NB*(ntot_item_sr_rj+1))
       real (kind=kreal), intent(inout):: X_rj(NB*nnod_rj)
 !
 !
