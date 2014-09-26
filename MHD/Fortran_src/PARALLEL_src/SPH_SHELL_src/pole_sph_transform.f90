@@ -52,6 +52,7 @@
       subroutine pole_backward_transforms(ncomp_trans,                  &
      &          nvector, nscalar, ntensor)
 !
+      use m_solver_SR
       use spherical_SRs_N
       use schmidt_b_trans_at_pole
       use schmidt_b_trans_at_center
@@ -66,7 +67,9 @@
       if     (iflag_shell_mode.eq.iflag_no_FEMMESH                      &
         .or.  iflag_shell_mode.eq.iflag_MESH_same) return
 !
-      call send_recv_rj_2_rlm_N(ncomp_trans, sp_rj, sp_rlm)
+      call calypso_rj_to_send_N(ncomp_trans, sp_rj)
+      call calypso_sph_comm_rj_2_rlm_N(ncomp_trans)
+      call calypso_rlm_from_recv_N(ncomp_trans, WR(1), sp_rlm)
 !
       if (iflag_debug.gt.0)  write(*,*) 'schmidt_b_trans_pole_vect',    &
      &                     ncomp_trans

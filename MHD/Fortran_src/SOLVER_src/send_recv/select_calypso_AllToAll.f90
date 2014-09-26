@@ -83,6 +83,7 @@
 !
       use m_solver_SR
       use calypso_AllToAll
+      use select_copy_from_recv
 !
       integer, intent(in)  :: CALYPSO_SUB_COMM
       integer(kind = kint), intent(in) :: iflag_SR
@@ -110,7 +111,7 @@
       call resize_work_sph_SR(NB, npe_send, npe_recv,                   &
      &    istack_send(npe_send), istack_recv(npe_recv))
 !
-      if( iflag_SR.eq.iflag_import_rev) then
+      if(iflag_SR .eq. iflag_import_rev) then
         call calypso_AllToAllV_rev_N(NB, nnod_org, nnod_new,            &
      &                  npe_send, istack_send, inod_export,             &
      &                  npe_recv, istack_recv, irev_import,             &

@@ -118,8 +118,6 @@
 !
        real(kind = kreal), intent(inout) :: S(NB*NP)
 !
-       integer(kind = kint) :: iv
-!
 !
        call gauss_zeidel_forward_nn                                     &
      &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &

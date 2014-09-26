@@ -71,8 +71,7 @@
       use m_solver_SR
       use calypso_SR_core
       use set_to_send_buffer
-      use set_from_recv_buffer
-      use set_from_recv_buf_rev
+      use select_copy_from_recv
 !
       integer(kind = kint), intent(in) :: iflag_SR
 !
@@ -110,13 +109,9 @@
      &                   npe_recv, irecv_self, id_pe_recv, istack_recv)
 !
 !C-- RECV
-      if(iflag_SR .eq. iflag_import_rev) then
-        call set_from_recv_buf_rev_1(nnod_new,                          &
-     &      istack_recv(npe_recv), irev_import, WR, X_new)
-      else
-        call set_from_recv_buf_1(nnod_new,                              &
-     &      istack_recv(npe_recv), inod_import, WR, X_new)
-      end if
+      call sel_cppy_from_recv_buf_1(iflag_SR, nnod_new,                 &
+     &    istack_recv(npe_recv), inod_import, irev_import,              &
+     &    WR(1), X_new)
 !
 !C-- WAIT
       call calypso_send_recv_fin(npe_send, isend_self)
@@ -137,8 +132,7 @@
       use m_solver_SR
       use calypso_SR_core
       use set_to_send_buf_tri
-      use set_from_recv_buff_tri
-      use set_from_recv_buf_rev_tri
+      use select_copy_from_recv
 !
       integer(kind = kint), intent(in) :: iflag_SR
 !
@@ -180,13 +174,9 @@
      &                   npe_recv, irecv_self, id_pe_recv, istack_recv)
 !
 !C-- RECV
-      if(iflag_SR .eq. iflag_import_rev) then
-        call set_from_recv_buf_rev_3x1(nnod_new, istack_recv(npe_recv), &
-     &      irev_import, WR, X1_new, X2_new, X3_new)
-      else
-        call set_from_recv_buf_3x1(nnod_new, istack_recv(npe_recv),     &
-     &      inod_import, WR, X1_new, X2_new, X3_new)
-      end if
+      call sel_cppy_from_recv_buf_3x1(iflag_SR, nnod_new,               &
+     &         istack_recv(npe_recv), inod_import, irev_import,         &
+     &         WR(1), X1_new, X2_new, X3_new)
 !
 !C-- WAIT
       call calypso_send_recv_fin(npe_send, isend_self)

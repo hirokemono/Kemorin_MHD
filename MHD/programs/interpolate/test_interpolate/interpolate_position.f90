@@ -170,6 +170,7 @@
 !
       use calypso_SR_int
       use solver_SR_int
+      use select_copy_from_recv
 !
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest

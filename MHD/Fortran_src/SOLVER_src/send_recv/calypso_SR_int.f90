@@ -63,8 +63,7 @@
       use m_solver_SR
       use calypso_SR_core
       use set_to_send_buffer
-      use set_from_recv_buffer
-      use set_from_recv_buf_rev
+      use select_copy_from_recv
 !
       integer(kind = kint), intent(in) :: iflag_SR
       integer(kind = kint), intent(in) :: nnod_org
@@ -87,11 +86,6 @@
 !
       integer (kind=kint), intent(inout):: iX_new(nnod_new)
 !
-      integer (kind = kint) :: neib, istart, num
-      integer (kind = kint) :: i
-      integer (kind = kint) :: ncomm_send, ncomm_recv
-      integer (kind = kint) :: ist_send, ist_recv
-!
 !
       call resize_iwork_sph_SR(npe_send, npe_recv,                      &
      &    istack_send(npe_send), istack_recv(npe_recv))
@@ -107,13 +101,9 @@
      &              npe_recv, irecv_self, id_pe_recv, istack_recv)
 !
 !C-- RECV
-      if(iflag_SR .eq. iflag_import_rev) then
-        call set_from_recv_buf_rev_int(nnod_new,                        &
-     &      istack_recv(npe_recv), irev_import, iWR, iX_new)
-      else
-        call set_from_recv_buf_int(nnod_new,                            &
-     &      istack_recv(npe_recv), inod_import, iWR, iX_new)
-      end if
+      call sel_cppy_from_recv_buf_int(iflag_SR, nnod_new,               &
+     &    istack_recv(npe_recv), inod_import, irev_import,              &
+     &    iWR(1), iX_new)
 !
 !C-- WAIT
       call calypso_send_recv_fin(npe_send, isend_self)

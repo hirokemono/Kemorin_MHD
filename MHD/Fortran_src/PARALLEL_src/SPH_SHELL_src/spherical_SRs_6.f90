@@ -35,6 +35,7 @@
       use m_solver_SR
 !
       use calypso_SR_6
+      use select_copy_from_recv
 !
       implicit none
 !

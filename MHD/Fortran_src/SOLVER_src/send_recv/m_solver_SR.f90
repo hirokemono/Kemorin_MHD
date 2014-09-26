@@ -41,13 +41,6 @@
 !
       implicit none
 !
-!>      Undefined flag
-      integer(kind = kint), parameter :: iflag_import_UNDEFINED = -1
-!>      Integer flag to use import table
-      integer(kind = kint), parameter :: iflag_import_item = 0
-!>      Integer flag to use reversed import table for data points
-      integer(kind = kint), parameter :: iflag_import_rev =  1
-!
 !>       status flag for sending
       integer, save, allocatable :: sta1(:,:)
 !>       status flag for recieving

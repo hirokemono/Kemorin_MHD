@@ -66,6 +66,7 @@
      &         (ncomp_trans, nvector, nscalar, ntensor)
 !
       use m_work_time
+      use m_solver_SR
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: nvector, nscalar, ntensor
@@ -82,7 +83,8 @@
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(18)
-      call send_recv_rj_2_rlm_N(ncomp_trans, sp_rj, sp_rlm)
+      call calypso_rj_to_send_N(ncomp_trans, sp_rj)
+      call calypso_sph_comm_rj_2_rlm_N(ncomp_trans)
       call end_eleps_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
@@ -90,6 +92,7 @@
 !
       call start_eleps_time(22)
       if(iflag_debug .gt. 0) write(*,*) 'sel_backward_legendre_trans'
+      call calypso_rlm_from_recv_N(ncomp_trans, WR(1), sp_rlm)
       call sel_backward_legendre_trans                                  &
      &   (ncomp_trans, nvector, nscalar_trans)
       call end_eleps_time(22)
@@ -97,10 +100,12 @@
 !      call check_vr_rtm(my_rank, ncomp_trans)
 !
       call finish_send_recv_rj_2_rlm
+      call calypso_rtm_to_send_N(ncomp_trans, vr_rtm)
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(19)
-      call send_recv_rtm_2_rtp_N(ncomp_trans, vr_rtm, vr_rtp)
+      call calypso_sph_comm_rtm_2_rtp_N(ncomp_trans)
+      call calypso_rtp_from_recv_N(ncomp_trans, WR(1), vr_rtp)
       call end_eleps_time(19)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
@@ -123,6 +128,7 @@
      &         (ncomp_trans, nvector, nscalar, ntensor)
 !
       use m_work_time
+      use m_solver_SR
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: nvector, nscalar, ntensor
@@ -145,10 +151,13 @@
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(20)
-      call send_recv_rtp_2_rtm_N(ncomp_trans, vr_rtp, vr_rtm)
+      call calypso_rtp_to_send_N(ncomp_trans, vr_rtp)
+      call calypso_sph_comm_rtp_2_rtm_N(ncomp_trans)
+      call calypso_rtm_from_recv_N(ncomp_trans, WR(1), vr_rtm)
       call end_eleps_time(20)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
-!      call check_vr_rtm(my_rank, ncomp_trans)
+!
+      call finish_send_recv_rtp_2_rtm
 !
       call start_eleps_time(23)
       if(iflag_debug .gt. 0) write(*,*) 'sel_forward_legendre_trans'
@@ -157,11 +166,12 @@
       call end_eleps_time(23)
 !      call check_sp_rlm(my_rank, ncomp_trans)
 !
-      call finish_send_recv_rtp_2_rtm
+      call calypso_rlm_to_send_N(ncomp_trans, sp_rlm)
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(21)
-      call send_recv_rlm_2_rj_N(ncomp_trans, sp_rlm, sp_rj)
+      call calypso_sph_comm_rlm_2_rj_N(ncomp_trans)
+      call calypso_rj_from_recv_N(ncomp_trans, WR(1), sp_rj)
       call finish_send_recv_rlm_2_rj
 !
       call end_eleps_time(21)

@@ -35,6 +35,7 @@
       use m_sph_trans_comm_table
       use m_solver_SR
 !
+      use select_copy_from_recv
       use calypso_SR_2
 !
       implicit none

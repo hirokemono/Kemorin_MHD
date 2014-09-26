@@ -215,8 +215,7 @@
       use m_solver_SR
       use calypso_AlltoAll_core
       use set_to_send_buffer
-      use set_from_recv_buffer
-      use set_from_recv_buf_rev
+      use select_copy_from_recv
 !
       integer, intent(in)  :: CALYPSO_SUB_COMM
       integer(kind = kint), intent(in) :: iflag_SR
@@ -252,13 +251,9 @@
      &   (npe_send, istack_send, istack_recv, CALYPSO_SUB_COMM)
 !
 !C-- RECV
-      if(iflag_SR .eq. iflag_import_rev) then
-        call set_from_recv_buf_rev_int(nnod_new,                        &
-     &      istack_recv(npe_recv), irev_import, iWR, iX_new)
-      else
-        call set_from_recv_buf_int(nnod_new,                            &
-     &      istack_recv(npe_recv), inod_import, iWR, iX_new)
-      end if
+      call sel_cppy_from_recv_buf_int(iflag_SR, nnod_new,               &
+     &    istack_recv(npe_recv), inod_import, irev_import,              &
+     &    iWR(1), iX_new)
 !
       end subroutine calypso_AllToAllV_int
 !

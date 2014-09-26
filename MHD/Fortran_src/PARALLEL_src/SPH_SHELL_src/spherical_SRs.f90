@@ -28,6 +28,7 @@
       use m_constants
       use m_spheric_parameter
       use m_sph_trans_comm_table
+      use select_copy_from_recv
 !
       use calypso_SR
       use m_solver_SR

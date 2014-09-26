@@ -125,6 +125,7 @@
      &                         irev_import, X_org, X_new)
 !
       use m_solver_SR
+      use select_copy_from_recv
       use calypso_SR_N
       use calypso_SR_rev_N
 !
@@ -185,6 +186,7 @@
      &                                      X1_new, X2_new, X3_new)
 !
       use m_solver_SR
+      use select_copy_from_recv
       use calypso_SR_N
       use calypso_SR_rev_N
 !

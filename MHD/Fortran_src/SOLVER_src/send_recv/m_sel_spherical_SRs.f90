@@ -20,14 +20,14 @@
 !!     &                    npe_recv, istack_recv, X_org)
 !!      subroutine sel_calypso_from_recv_N(NB, nnod_new, nmax_sr,       &
 !!     &                    npe_recv, istack_recv, inod_import,         &
-!!     &                    irev_import, X_new)
+!!     &                    irev_import, WR, X_new)
 !!@endverbatim
 !
       module m_sel_spherical_SRs
 !
       use m_precision
-      use m_solver_SR
       use m_work_time
+      use select_copy_from_recv
 !
       implicit none
 !
@@ -47,6 +47,7 @@
 !>      Character flag to use single transforms in FFTW3
       character(len = kchara), parameter                                &
      &                       :: hd_all2all =  'AllToAll'
+!
 !
 !
 !>      Undefined flag
@@ -73,6 +74,7 @@
 !
       subroutine set_import_table_ctl(import_ctl)
 !
+      use m_solver_SR
       use skip_comment_f
       use calypso_solver_SR
 !
@@ -93,6 +95,7 @@
 !
       subroutine set_sph_comm_routine_ctl(send_recv_ctl)
 !
+      use m_solver_SR
       use skip_comment_f
 !
       character(len = kchara), intent(in) :: send_recv_ctl
@@ -114,6 +117,7 @@
 !
       subroutine finish_sph_send_recv(npe_send, isend_self)
 !
+      use m_solver_SR
       use select_calypso_SR
 !
       integer(kind = kint), intent(in) :: npe_send, isend_self
@@ -132,6 +136,7 @@
      &                  npe_recv, irecv_self, id_pe_recv, istack_recv,  &
      &                  CALYPSO_SUB_COMM)
 !
+      use m_solver_SR
       use calypso_SR_core
       use calypso_AlltoAll_core
 !
@@ -168,6 +173,7 @@
      &                    npe_send, istack_send, inod_export,           &
      &                    npe_recv, istack_recv, X_org)
 !
+      use m_solver_SR
       use set_to_send_buffer
 !
       integer(kind = kint), intent(in) :: NB, nnod_org
@@ -213,7 +219,7 @@
 !
       subroutine sel_calypso_from_recv_N(NB, nnod_new, nmax_sr,         &
      &                    npe_recv, istack_recv, inod_import,           &
-     &                    irev_import, X_new)
+     &                    irev_import, WR, X_new)
 !
       use set_from_recv_buffer
       use set_from_recv_buf_rev
@@ -226,8 +232,10 @@
       integer(kind = kint), intent(in)                                  &
      &                      :: inod_import( istack_recv(npe_recv) )
       integer(kind = kint), intent(in) :: irev_import(nnod_new)
+      real (kind=kreal), intent(inout)                                  &
+     &                      :: WR(NB*(istack_recv(npe_recv)+1))
 !
-      real (kind=kreal), intent(inout):: X_new(NB*nnod_new)
+      real (kind=kreal), intent(inout) :: X_new(NB*nnod_new)
 !
 !
       call start_eleps_time(38)
@@ -239,7 +247,7 @@
      &    istack_recv(npe_recv), irev_import, WR, X_new)
       else
         call set_from_recv_buf_N_mod(NB, nnod_new, npe_recv,            &
-     &    istack_recv(npe_recv), istack_recv, inod_import, WR, X_new)
+     &      istack_recv(npe_recv), istack_recv, inod_import, WR, X_new)
       end if
       call end_eleps_time(38)
 !

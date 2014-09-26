@@ -110,7 +110,6 @@
 !
       real(kind = kreal) :: starttime, endtime(0:2)
       real(kind = kreal) :: etime_item_import(0:1) = 0.0d0
-      real(kind = kreal) :: etime_shortest
 !
 !
       call check_spherical_SRs_N(NB)
