@@ -79,6 +79,8 @@
       subroutine init_solver_send_recv(NP, N, NEIBPETOT,                &
      &                 STACK_IMPORT, NOD_IMPORT, REV_IMPORT)
 !
+      use set_from_recv_buf_rev
+!
       integer(kind = kint), intent(in) :: NP, N
       integer(kind = kint), intent(in) :: NEIBPETOT
 !

@@ -9,9 +9,6 @@
 !>@brief  Work area for data communications
 !!
 !!@verbatim
-!!      subroutine set_reverse_import_table(N_SHIFT,                    &
-!!     &          NTOT_RECV, ITEM_IMPORT, REV_IMPORT)
-!!
 !!      subroutine resize_work_4_SR(NB, NEIBPETOT, NTOT_SEND, NTOT_RECV)
 !!      subroutine resize_iwork_4_SR(NEIBPETOT, NTOT_SEND, NTOT_RECV)
 !!
@@ -69,27 +66,6 @@
 ! ----------------------------------------------------------------------
 !
       contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_reverse_import_table(N_SHIFT,                      &
-     &          NTOT_RECV, ITEM_IMPORT, REV_IMPORT)
-!
-      integer(kind = kint), intent(in) :: N_SHIFT
-      integer(kind = kint), intent(in) :: NTOT_RECV
-      integer(kind = kint), intent(in) :: ITEM_IMPORT(NTOT_RECV)
-!
-      integer(kind = kint), intent(inout) :: REV_IMPORT(NTOT_RECV)
-!
-      integer(kind = kint) :: inum, inod
-!
-!
-      do inum = 1, NTOT_RECV
-        inod = ITEM_IMPORT(inum) - N_SHIFT
-        REV_IMPORT(inod) = inum
-      end do
-!
-      end subroutine set_reverse_import_table
 !
 ! ----------------------------------------------------------------------
 !

@@ -65,6 +65,7 @@
       use init_spherical_SRs
       use select_fourier_transform
       use cal_minmax_and_stacks
+      use set_all2all_buffer
 !
       integer(kind = kint) :: ncomp
       integer(kind = kint) :: Nstacksmp(0:np_smp)
@@ -116,11 +117,23 @@
      &          nneib_domain_rj) 
       call init_sph_send_recv_N(ncomp, vr_rtp, vr_rtm, sp_rlm, sp_rj)
 !
+      if(iflag_sph_commN .eq. iflag_alltoall) then
+        call set_rev_all2all_import_tbl(nnod_rtp, nmax_sr_rtp,          &
+     &      nneib_domain_rtp, istack_sr_rtp, item_sr_rtp, irev_sr_rtp)
+        call set_rev_all2all_import_tbl(nnod_rtm, nmax_sr_rtp,          &
+     &      nneib_domain_rtm, istack_sr_rtm, item_sr_rtm, irev_sr_rtm)
+        call set_rev_all2all_import_tbl(nnod_rlm, nmax_sr_rj,           &
+     &      nneib_domain_rlm, istack_sr_rlm, item_sr_rlm, irev_sr_rlm)
+        call set_rev_all2all_import_tbl(nnod_rj, nmax_sr_rj,            &
+     &      nneib_domain_rj,  istack_sr_rj,  item_sr_rj,  irev_sr_rj)
+      end if
+!
       if(my_rank .ne. 0) return
       write(*,*) 'Vector length for Legendre transform:',               &
      &          nvector_legendre
       write(*,*) 'Block number for meridinal grid: ', nblock_l_rtm
       write(*,*) 'Block number for Legendre transform: ', nblock_j_rlm
+!
 !
       end subroutine initialize_sph_trans
 !

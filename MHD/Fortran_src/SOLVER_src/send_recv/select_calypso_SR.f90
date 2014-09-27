@@ -7,9 +7,6 @@
 !>@brief  Select communication routines for spherical harmonics transform
 !!
 !!@verbatim
-!!      subroutine set_reverse_import_table(nnod_new, nnod_recv,        &
-!!     &          inod_import, irev_import)
-!!
 !!      subroutine sel_calypso_send_recv_N(iflag_SR,                    &
 !!     &                         NB, nnod_org, nnod_new,                &
 !!     &                         npe_send, isend_self,                  &
@@ -84,36 +81,6 @@
 !
       contains
 !
-!-----------------------------------------------------------------------
-!
-      subroutine set_reverse_import_table(nnod_new, nnod_recv,          &
-     &          inod_import, irev_import)
-!
-      integer(kind = kint), intent(in) :: nnod_new
-      integer(kind = kint), intent(in) :: nnod_recv
-      integer(kind = kint), intent(in) :: inod_import(nnod_recv)
-!
-      integer(kind = kint), intent(inout) :: irev_import(nnod_new)
-!
-      integer(kind = kint) :: i, k
-!
-!
-!$omp parallel do
-      do i = 1, nnod_new
-        irev_import(i) = nnod_recv + 1
-      end do
-!$omp end parallel do
-!
-!$omp parallel do private(i)
-      do k = 1, nnod_recv
-        i = inod_import(k)
-        irev_import(i) = k
-      end do
-!$omp end parallel do
-!
-      end subroutine set_reverse_import_table
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine sel_calypso_send_recv_N(iflag_SR,                      &

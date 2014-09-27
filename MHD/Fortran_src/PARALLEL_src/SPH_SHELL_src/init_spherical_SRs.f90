@@ -149,7 +149,10 @@
 !
       subroutine sel_sph_comm_routine(NB, X_rtp, X_rtm, X_rlm, X_rj)
 !
+      use m_sph_communicators
       use calypso_mpi
+      use set_all2all_buffer
+      use set_from_recv_buf_rev
 !
       integer (kind=kint), intent(in) :: NB
       real (kind=kreal), intent(inout) :: X_rtp(NB*nnod_rtp)
@@ -166,12 +169,30 @@
 !
       if(iflag_sph_commN .ne. iflag_SR_UNDEFINED) return
 !
+      call set_rev_all2all_import_tbl(nnod_rtp, nmax_sr_rtp,            &
+     &    nneib_domain_rtp, istack_sr_rtp, item_sr_rtp, irev_sr_rtp)
+      call set_rev_all2all_import_tbl(nnod_rtm, nmax_sr_rtp,            &
+     &    nneib_domain_rtm, istack_sr_rtm, item_sr_rtm, irev_sr_rtm)
+      call set_rev_all2all_import_tbl(nnod_rlm, nmax_sr_rj,             &
+     &    nneib_domain_rlm, istack_sr_rlm, item_sr_rlm, irev_sr_rlm)
+      call set_rev_all2all_import_tbl(nnod_rj, nmax_sr_rj,              &
+     &    nneib_domain_rj,  istack_sr_rj,  item_sr_rj,  irev_sr_rj)
+!
       endtime(0:2) = 0.0d0
       iflag_sph_commN = iflag_alltoall
       starttime = MPI_WTIME()
       write(*,*) 'all_sph_send_recv_N', iflag_alltoall
       call all_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
       endtime(2) = MPI_WTIME() - starttime
+!
+      call set_reverse_import_table(nnod_rtp, ntot_item_sr_rtp,         &
+     &    item_sr_rtp, irev_sr_rtp)
+      call set_reverse_import_table(nnod_rtm, ntot_item_sr_rtm,         &
+     &    item_sr_rtm, irev_sr_rtm)
+      call set_reverse_import_table(nnod_rlm, ntot_item_sr_rlm,         &
+     &    item_sr_rlm, irev_sr_rlm)
+      call set_reverse_import_table(nnod_rj, ntot_item_sr_rj,           &
+     &    item_sr_rj, irev_sr_rj)
 !
       iflag_sph_commN = iflag_send_recv
       starttime = MPI_WTIME()

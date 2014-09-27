@@ -12,8 +12,8 @@
 !!     &                 npe_send, istack_send, inod_export,            &
 !!     &                 npe_recv, istack_recv, inod_import,            &
 !!     &                 irev_import, X_org, X_new, CALYPSO_SUB_COMM)
-!!      subroutine sel_calypso_AllToAll                                 &
-!!     &                (nitem_SR, NB, nnod_org, nnod_new, nitem_SR,    &
+!!      subroutine sel_calypso_AllToAll(iflag_SR,                       &
+!!     &                 NB, nnod_org, nnod_new, nitem_SR,              &
 !!     &                 npe_send, istack_send, inod_export,            &
 !!     &                 npe_recv, istack_recv, inod_import,            &
 !!     &                 irev_import, X_org, X_new, CALYPSO_SUB_COMM)
@@ -127,16 +127,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_calypso_AllToAll                                   &
-     &                (NB, nnod_org, nnod_new, nitem_SR,                &
+      subroutine sel_calypso_AllToAll(iflag_SR,                         &
+     &                 NB, nnod_org, nnod_new, nitem_SR,                &
      &                 npe_send, istack_send, inod_export,              &
      &                 npe_recv, istack_recv, inod_import,              &
      &                 irev_import, X_org, X_new, CALYPSO_SUB_COMM)
 !
       use m_solver_SR
       use calypso_AllToAll
+      use select_copy_from_recv
 !
       integer, intent(in)  :: CALYPSO_SUB_COMM
+      integer(kind = kint), intent(in) :: iflag_SR
       integer(kind = kint), intent(in) :: NB
 !
       integer(kind = kint), intent(in) :: nnod_org
@@ -164,10 +166,17 @@
       nitem = npe_send*nitem_SR
       call resize_work_sph_SR(NB, npe_send, npe_recv, nitem, nitem)
 !
-      call calypso_AllToAll_N(NB, nnod_org, nnod_new, nitem_SR,         &
+      if(iflag_SR .eq. iflag_import_rev) then
+        call calypso_AllToAll_rev_N(NB, nnod_org, nnod_new, nitem_SR,   &
+     &                  npe_send, istack_send, inod_export,             &
+     &                  npe_recv, irev_import,                          &
+     &                  X_org, X_new, CALYPSO_SUB_COMM)
+      else
+        call calypso_AllToAll_N(NB, nnod_org, nnod_new, nitem_SR,       &
      &                  npe_send, istack_send, inod_export,             &
      &                  npe_recv, istack_recv, inod_import,             &
      &                  X_org, X_new, CALYPSO_SUB_COMM)
+      end if
 !
       end subroutine sel_calypso_AllToAll
 !

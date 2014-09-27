@@ -205,6 +205,7 @@
      &                    npe_send, istack_send, inod_export,           &
      &                    X_org, WS)
 !
+      use set_all2all_buffer
       use set_to_send_buffer
 !
       integer(kind = kint), intent(in) :: NB, nnod_org
@@ -223,12 +224,9 @@
       if(    iflag_sph_commN .eq. iflag_alltoall) then
         call set_to_all2all_buf_N(NB, nnod_org, nmax_sr, npe_send,      &
      &    istack_send, inod_export, X_org, WS)
-      else if(iflag_sph_SRN .eq. iflag_import_rev) then
+      else
         call set_to_send_buf_N(NB, nnod_org, istack_send(npe_send),     &
      &      inod_export, X_org, WS)
-      else
-        call set_to_send_buf_N_mod(NB, nnod_org, npe_send,              &
-     &      istack_send(npe_send), istack_send, inod_export, X_org, WS)
       end if
       call end_eleps_time(36)
 !
@@ -240,6 +238,7 @@
      &                    npe_recv, istack_recv, inod_import,           &
      &                    irev_import, WR, X_new)
 !
+      use set_all2all_buffer
       use set_from_recv_buffer
       use set_from_recv_buf_rev
 !
@@ -258,15 +257,19 @@
 !
 !
       call start_eleps_time(38)
-      if(     iflag_sph_commN .eq. iflag_alltoall) then
+      if(     iflag_sph_commN .eq. iflag_alltoall                       &
+     &  .and. iflag_sph_SRN .eq. iflag_import_item) then
         call set_from_all2all_buf_N(NB, nnod_new, nmax_sr,              &
      &      npe_recv, istack_recv, inod_import, WR, X_new)
-      else if(iflag_sph_SRN .eq. iflag_import_rev) then
-        call set_from_recv_buf_rev_N(NB, nnod_new,                      &
-     &    istack_recv(npe_recv), irev_import, WR, X_new)
+      else if(iflag_sph_commN .eq. iflag_alltoall) then
+        call set_from_all2all_rev_N(NB, nnod_new, nmax_sr,              &
+     &      npe_recv, irev_import, WR, X_new)
+      else if(iflag_sph_SRN .eq. iflag_import_item) then
+        call set_from_recv_buf_N(NB, nnod_new,                          &
+     &      istack_recv(npe_recv), inod_import, WR, X_new)
       else
-        call set_from_recv_buf_N_mod(NB, nnod_new, npe_recv,            &
-     &      istack_recv(npe_recv), istack_recv, inod_import, WR, X_new)
+        call set_from_recv_buf_rev_N(NB, nnod_new,                      &
+     &      istack_recv(npe_recv), irev_import, WR, X_new)
       end if
       call end_eleps_time(38)
 !
