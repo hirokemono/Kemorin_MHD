@@ -17,10 +17,10 @@
 !!     &                  npe_send, isend_self, id_pe_send, istack_send,&
 !!     &                  npe_recv, irecv_self, id_pe_recv, istack_recv,&
 !!     &                  CALYPSO_SUB_COMM)
-!!      subroutine sel_calypso_to_send_N(NB, nnod_org, nmax_sr,         &
+!!      subroutine sel_calypso_to_send_N(NB, nnod_org, n_WS, nmax_sr,   &
 !!     &                    npe_send, istack_send, inod_export,         &
 !!     &                    X_org, WS)
-!!      subroutine sel_calypso_from_recv_N(NB, nnod_new, nmax_sr,       &
+!!      subroutine sel_calypso_from_recv_N(NB, nnod_new, n_WR, nmax_sr, &
 !!     &                    npe_recv, istack_recv, inod_import,         &
 !!     &                    irev_import, WR, X_new)
 !!@endverbatim
@@ -201,7 +201,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_calypso_to_send_N(NB, nnod_org, nmax_sr,           &
+      subroutine sel_calypso_to_send_N(NB, nnod_org, n_WS, nmax_sr,     &
      &                    npe_send, istack_send, inod_export,           &
      &                    X_org, WS)
 !
@@ -209,7 +209,7 @@
       use set_to_send_buffer
 !
       integer(kind = kint), intent(in) :: NB, nnod_org
-      integer(kind = kint), intent(in) :: nmax_sr
+      integer(kind = kint), intent(in) :: nmax_sr, n_WS
 !
       integer(kind = kint), intent(in) :: npe_send
       integer(kind = kint), intent(in) :: istack_send(0:npe_send)
@@ -217,16 +217,16 @@
      &                      :: inod_export( istack_send(npe_send) )
       real (kind=kreal), intent(in)::    X_org(NB*nnod_org)
 !
-      real (kind=kreal), intent(inout):: WS(NB*istack_send(npe_send))
+      real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
       call start_eleps_time(36)
       if(    iflag_sph_commN .eq. iflag_alltoall) then
         call set_to_all2all_buf_N(NB, nnod_org, nmax_sr, npe_send,      &
-     &    istack_send, inod_export, X_org, WS)
+     &    istack_send, inod_export, X_org, WS(1))
       else
         call set_to_send_buf_N(NB, nnod_org, istack_send(npe_send),     &
-     &      inod_export, X_org, WS)
+     &      inod_export, X_org, WS(1))
       end if
       call end_eleps_time(36)
 !
@@ -234,7 +234,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_calypso_from_recv_N(NB, nnod_new, nmax_sr,         &
+      subroutine sel_calypso_from_recv_N(NB, nnod_new, n_WR, nmax_sr,   &
      &                    npe_recv, istack_recv, inod_import,           &
      &                    irev_import, WR, X_new)
 !
@@ -243,15 +243,14 @@
       use set_from_recv_buf_rev
 !
       integer(kind = kint), intent(in) :: NB, nnod_new
-      integer(kind = kint), intent(in) :: nmax_sr
+      integer(kind = kint), intent(in) :: nmax_sr, n_WR
 !
       integer(kind = kint), intent(in) :: npe_recv
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
       integer(kind = kint), intent(in)                                  &
      &                      :: inod_import( istack_recv(npe_recv) )
       integer(kind = kint), intent(in) :: irev_import(nnod_new)
-      real (kind=kreal), intent(inout)                                  &
-     &                      :: WR(NB*(istack_recv(npe_recv)+1))
+      real (kind=kreal), intent(inout) :: WR(n_WR)
 !
       real (kind=kreal), intent(inout) :: X_new(NB*nnod_new)
 !
@@ -260,16 +259,16 @@
       if(     iflag_sph_commN .eq. iflag_alltoall                       &
      &  .and. iflag_sph_SRN .eq. iflag_import_item) then
         call set_from_all2all_buf_N(NB, nnod_new, nmax_sr,              &
-     &      npe_recv, istack_recv, inod_import, WR, X_new)
+     &      npe_recv, istack_recv, inod_import, WR(1), X_new)
       else if(iflag_sph_commN .eq. iflag_alltoall) then
         call set_from_all2all_rev_N(NB, nnod_new, nmax_sr,              &
-     &      npe_recv, irev_import, WR, X_new)
+     &      npe_recv, irev_import, WR(1), X_new)
       else if(iflag_sph_SRN .eq. iflag_import_item) then
         call set_from_recv_buf_N(NB, nnod_new,                          &
-     &      istack_recv(npe_recv), inod_import, WR, X_new)
+     &      istack_recv(npe_recv), inod_import, WR(1), X_new)
       else
         call set_from_recv_buf_rev_N(NB, nnod_new,                      &
-     &      istack_recv(npe_recv), irev_import, WR, X_new)
+     &      istack_recv(npe_recv), irev_import, WR(1), X_new)
       end if
       call end_eleps_time(38)
 !

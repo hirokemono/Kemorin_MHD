@@ -9,10 +9,12 @@
 !!       (Original version)
 !!
 !!@verbatim
-!!      subroutine legendre_f_trans_vector_org(ncomp, nvector)
+!!      subroutine legendre_f_trans_vector_org                          &
+!!     &         (ncomp, nvector, vr_rtm_1, sp_rlm_1)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
-!!      subroutine legendre_f_trans_scalar_org(ncomp, nvector, nscalar)
+!!      subroutine legendre_f_trans_scalar_org                          &
+!!     &         (ncomp, nvector, nscalar, vr_rtm_1, sp_rlm_1)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
 !!@endverbatim
@@ -40,9 +42,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_f_trans_vector_org(ncomp, nvector)
+      subroutine legendre_f_trans_vector_org                            &
+     &         (ncomp, nvector, vr_rtm_1, sp_rlm_1)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
+      real(kind = kreal), intent(in) :: vr_rtm_1(ncomp*nnod_rtm)
+      real(kind = kreal), intent(inout) :: sp_rlm_1(ncomp*nnod_rlm)
 !
       integer(kind = kint) :: i_rlm, k_rtm, j_rlm
       integer(kind = kint) :: l_rtm
@@ -93,19 +98,19 @@
      &                      + (k_rtm-1) *                istep_rtm(1)   &
      &                      + (mdx_n_rlm_rtm(j_rlm)-1) * istep_rtm(3))
 !
-                  sp1 = sp1 + vr_rtm(ip_rtm-2) * Pvw_l(l_rtm)
-                  sp2 = sp2 + ( vr_rtm(ip_rtm-1) * dPvw_l(l_rtm)        &
-     &                        - vr_rtm(in_rtm  ) * Pgvw_l(l_rtm))
-                  sp3 = sp3 - ( vr_rtm(in_rtm-1) * Pgvw_l(l_rtm)        &
-     &                        + vr_rtm(ip_rtm  ) * dPvw_l(l_rtm))
+                  sp1 = sp1 + vr_rtm_1(ip_rtm-2) * Pvw_l(l_rtm)
+                  sp2 = sp2 + ( vr_rtm_1(ip_rtm-1) * dPvw_l(l_rtm)        &
+     &                        - vr_rtm_1(in_rtm  ) * Pgvw_l(l_rtm))
+                  sp3 = sp3 - ( vr_rtm_1(in_rtm-1) * Pgvw_l(l_rtm)        &
+     &                        + vr_rtm_1(ip_rtm  ) * dPvw_l(l_rtm))
                 end do
 !
                 i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)        &
      &                                + (k_rtm-1) * istep_rlm(1))
-                sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + sp1 * r2_1d_rlm_r
-                sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                       &
+                sp_rlm_1(i_rlm-2) = sp_rlm_1(i_rlm-2) + sp1 * r2_1d_rlm_r
+                sp_rlm_1(i_rlm-1) = sp_rlm_1(i_rlm-1)                       &
      &                           + sp2 * radius_1d_rlm_r(k_rtm)
-                sp_rlm(i_rlm  ) = sp_rlm(i_rlm  )                       &
+                sp_rlm_1(i_rlm  ) = sp_rlm_1(i_rlm  )                       &
      &                           + sp3 * radius_1d_rlm_r(k_rtm)
               end do
             end do
@@ -118,9 +123,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_f_trans_scalar_org(ncomp, nvector, nscalar)
+      subroutine legendre_f_trans_scalar_org                            &
+     &         (ncomp, nvector, nscalar, vr_rtm_1, sp_rlm_1)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      real(kind = kreal), intent(in) :: vr_rtm_1(ncomp*nnod_rtm)
+      real(kind = kreal), intent(inout) :: sp_rlm_1(ncomp*nnod_rlm)
 !
       integer(kind = kint) :: l_rtm, ip_rtm, i_rlm, k_rtm, j_rlm
       integer(kind = kint) :: nd, ip, kst, ked, lp, lst, led
@@ -154,13 +162,13 @@
      &                      + (k_rtm-1) *                istep_rtm(1)   &
      &                      + (mdx_p_rlm_rtm(j_rlm)-1) * istep_rtm(3))
 !
-                  sp1 = sp1 + vr_rtm(ip_rtm) * Pws_l(l_rtm)
+                  sp1 = sp1 + vr_rtm_1(ip_rtm) * Pws_l(l_rtm)
                 end do
 !
                 i_rlm = nd + 3*nvector                                  &
      &                     + ncomp * ((j_rlm-1) * istep_rlm(2)          &
      &                              + (k_rtm-1) * istep_rlm(1))
-                sp_rlm(i_rlm) = sp_rlm(i_rlm)  + sp1
+                sp_rlm_1(i_rlm) = sp_rlm_1(i_rlm)  + sp1
               end do
             end do
           end do

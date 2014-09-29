@@ -56,7 +56,7 @@
       real(kind = kreal), intent(in)                                    &
      &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(1)*ncomp,nidx_rtm(3))
       real(kind = kreal), intent(inout)                                 &
-     &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
+     &      :: sp_rlm_spin(nidx_rtm(1)*ncomp,nidx_rlm(2))
 !
       integer(kind = kint) :: ip, nb_nri, kr_nd, kst, ked, k_rlm
       integer(kind = kint) ::  nd, ll
@@ -207,24 +207,24 @@
      &                           + symp_p(l_rtm) * dPvw_lo(l_rtm))
                 end do
 !
-                sp_rlm_spin(2*j_rlm+jst-1,kr_nd         )               &
-     &               = sp_rlm_spin(2*j_rlm+jst-1,kr_nd         )        &
+                sp_rlm_spin(kr_nd,         2*j_rlm+jst-1)               &
+     &               = sp_rlm_spin(kr_nd,         2*j_rlm+jst-1)        &
      &                + pol_s * r2_1d_rlm_r
-                sp_rlm_spin(2*j_rlm+jst-1,kr_nd+nb_nri  )               &
-     &               = sp_rlm_spin(2*j_rlm+jst-1,kr_nd+nb_nri  )        &
+                sp_rlm_spin(kr_nd+nb_nri,  2*j_rlm+jst-1)               &
+     &               = sp_rlm_spin(kr_nd+nb_nri,  2*j_rlm+jst-1)        &
      &                + dpl_s * radius_1d_rlm_r(k_rlm)
-                sp_rlm_spin(2*j_rlm+jst-1,kr_nd+2*nb_nri)               &
-     &               = sp_rlm_spin(2*j_rlm+jst-1,kr_nd+2*nb_nri)        &
+                sp_rlm_spin(kr_nd+2*nb_nri,2*j_rlm+jst-1)               &
+     &               = sp_rlm_spin(kr_nd+2*nb_nri,2*j_rlm+jst-1)        &
      &                + tor_s * radius_1d_rlm_r(k_rlm)
 !
-                sp_rlm_spin(2*j_rlm+jst,  kr_nd         )               &
-     &               = sp_rlm_spin(2*j_rlm+jst,  kr_nd         )        &
+                sp_rlm_spin(kr_nd,         2*j_rlm+jst  )               &
+     &               = sp_rlm_spin(kr_nd,         2*j_rlm+jst  )        &
      &                + pol_a * r2_1d_rlm_r
-                sp_rlm_spin(2*j_rlm+jst,  kr_nd+nb_nri  )               &
-     &               = sp_rlm_spin(2*j_rlm+jst,  kr_nd+nb_nri  )        &
+                sp_rlm_spin(kr_nd+nb_nri,  2*j_rlm+jst  )               &
+     &               = sp_rlm_spin(kr_nd+nb_nri,  2*j_rlm+jst  )        &
      &                + dpl_a * radius_1d_rlm_r(k_rlm)
-                sp_rlm_spin(2*j_rlm+jst,  kr_nd+2*nb_nri)               &
-     &               = sp_rlm_spin(2*j_rlm+jst,  kr_nd+2*nb_nri)        &
+                sp_rlm_spin(kr_nd+2*nb_nri,2*j_rlm+jst  )               &
+     &               = sp_rlm_spin(kr_nd+2*nb_nri,2*j_rlm+jst  )        &
      &                + tor_a * radius_1d_rlm_r(k_rlm)
               end do
             end do
@@ -312,14 +312,14 @@
      &                           + asmp_p(l_rtm) * dPvw_le(l_rtm))
                 end do
 !
-                sp_rlm_spin(2*j_rlm+jst-1,kr_nd         )               &
-     &               = sp_rlm_spin(2*j_rlm+jst-1,kr_nd         )        &
+                sp_rlm_spin(kr_nd,         2*j_rlm+jst-1)               &
+     &               = sp_rlm_spin(kr_nd,         2*j_rlm+jst-1)        &
      &                + pol_s * r2_1d_rlm_r
-                sp_rlm_spin(2*j_rlm+jst-1,kr_nd+nb_nri  )               &
-     &               = sp_rlm_spin(2*j_rlm+jst-1,kr_nd+nb_nri  )        &
+                sp_rlm_spin(kr_nd+nb_nri,  2*j_rlm+jst-1)               &
+     &               = sp_rlm_spin(kr_nd+nb_nri,  2*j_rlm+jst-1)        &
      &                + dpl_s * radius_1d_rlm_r(k_rlm)
-                sp_rlm_spin(2*j_rlm+jst-1,kr_nd+2*nb_nri)               &
-     &               = sp_rlm_spin(2*j_rlm+jst-1,kr_nd+2*nb_nri)        &
+                sp_rlm_spin(kr_nd+2*nb_nri,2*j_rlm+jst-1)               &
+     &               = sp_rlm_spin(kr_nd+2*nb_nri,2*j_rlm+jst-1)        &
      &                + tor_s * radius_1d_rlm_r(k_rlm)
               end do
             end do
@@ -340,7 +340,7 @@
       real(kind = kreal), intent(in)                                    &
      &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(1)*ncomp,nidx_rtm(3))
       real(kind = kreal), intent(inout)                                 &
-     &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
+     &      :: sp_rlm_spin(nidx_rtm(1)*ncomp,nidx_rlm(2))
 !
       integer(kind = kint) :: ip, kr_nd, kst, ked, k_rlm, nd
       integer(kind = kint) :: mp_rlm, jst, nj_rlm, j_rlm, jj
@@ -398,11 +398,11 @@
                   pol_a = pol_a + asmp_r(l_rtm) * Pws_lo(l_rtm)
                 end do
 !
-                sp_rlm_spin(2*j_rlm+jst-1,kr_nd)                        &
-     &               = sp_rlm_spin(2*j_rlm+jst-1,kr_nd) + pol_s
+                sp_rlm_spin(kr_nd,2*j_rlm+jst-1)                        &
+     &               = sp_rlm_spin(kr_nd,2*j_rlm+jst-1) + pol_s
 !
-                sp_rlm_spin(2*j_rlm+jst,  kr_nd)                        &
-     &               = sp_rlm_spin(2*j_rlm+jst,  kr_nd) + pol_a
+                sp_rlm_spin(kr_nd,2*j_rlm+jst  )                        &
+     &               = sp_rlm_spin(kr_nd,2*j_rlm+jst  ) + pol_a
               end do
             end do
           end do
@@ -435,8 +435,8 @@
                   pol_s = pol_s + symp_r(l_rtm) * Pws_le(l_rtm)
                 end do
 !
-                sp_rlm_spin(2*j_rlm+jst-1,kr_nd)                        &
-     &               = sp_rlm_spin(2*j_rlm+jst-1,kr_nd) + pol_s
+                sp_rlm_spin(kr_nd,2*j_rlm+jst-1)                        &
+     &               = sp_rlm_spin(kr_nd,2*j_rlm+jst-1) + pol_s
               end do
             end do
           end do

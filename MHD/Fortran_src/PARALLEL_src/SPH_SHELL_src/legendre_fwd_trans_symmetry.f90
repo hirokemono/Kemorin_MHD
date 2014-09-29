@@ -7,10 +7,12 @@
 !>@brief  forward Legendre transform considering symmetry
 !!
 !!@verbatim
-!!      subroutine leg_fwd_trans_vector_sym_org(ncomp, nvector)
+!!      subroutine leg_fwd_trans_vector_sym_org(ncomp, nvector,         &
+!!     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
-!!      subroutine leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar)
+!!      subroutine leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar,&
+!!     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
 !!@endverbatim
@@ -38,12 +40,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine leg_fwd_trans_vector_sym_org(ncomp, nvector)
+      subroutine leg_fwd_trans_vector_sym_org(ncomp, nvector,           &
+     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
+      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
+      real (kind=kreal), intent(inout):: WR(n_WR)
+      real(kind = kreal), intent(inout) :: sp_rlm_1(ncomp*nnod_rlm)
+!
 !
       integer(kind = kint) :: ip, kst, ked, k_rlm, nd, i_rlm, ll
-      integer(kind = kint) :: l_rtm, ipn_rtm, inn_rtm, ips_rtm, ins_rtm
+      integer(kind = kint) :: l_rtm, ip_rtpm, in_rtpm, ip_rtnm, in_rtnm
+      integer(kind = kint) :: ipp_recv, ipn_recv, inp_recv, inn_recv
       integer(kind = kint) :: mp_rlm, mn_rlm, jst, nj_rlm, j_rlm, jj
       real(kind = kreal) :: r2_1d_rlm_r
       real(kind = kreal) :: pol_s, dpl_s, tor_s, pol_a, dpl_a, tor_a
@@ -69,7 +78,8 @@
 !
 !$omp parallel do schedule(static)                                      &
 !$omp             private(ip,kst,ked,ll,l_rtm,jj,j_rlm,k_rlm,           &
-!$omp&                    nd,i_rlm,ipn_rtm,ips_rtm,inn_rtm,ins_rtm,     &
+!$omp&                    nd,i_rlm,ip_rtpm,ip_rtnm,in_rtpm,in_rtnm,     &
+!$omp&                    ipp_recv,ipn_recv,inp_recv,inn_recv,          &
 !$omp&                    mp_rlm,mn_rlm,jst,nj_rlm,r2_1d_rlm_r,         &
 !$omp&                    pol_s,dpl_s,tor_s,pol_a,dpl_a,tor_a,          &
 !$omp&                    symp_r,symp_t,symp_p,symn_t,symn_p,           &
@@ -110,50 +120,56 @@
 !
               do nd = 1, nvector
                 do l_rtm = 1, nidx_rtm(2)/2
-                  ipn_rtm = 3*nd + ncomp*((l_rtm-1) * istep_rtm(2)      &
-     &                                  + (k_rlm-1) *  istep_rtm(1)     &
-     &                                  + (mp_rlm-1) * istep_rtm(3))
-                  ips_rtm = 3*nd                                        &
-     &                   + ncomp*((nidx_rtm(2) - l_rtm) * istep_rtm(2)  &
-     &                                  + (k_rlm-1) *  istep_rtm(1)     &
-     &                                  + (mp_rlm-1) * istep_rtm(3))
-                  symp_r(l_rtm) = vr_rtm(ipn_rtm-2) + vr_rtm(ips_rtm-2)
-                  symp_t(l_rtm) = vr_rtm(ipn_rtm-1) + vr_rtm(ips_rtm-1)
-                  symp_p(l_rtm) = vr_rtm(ipn_rtm  ) + vr_rtm(ips_rtm  )
-                  asmp_r(l_rtm) = vr_rtm(ipn_rtm-2) - vr_rtm(ips_rtm-2)
-                  asmp_t(l_rtm) = vr_rtm(ipn_rtm-1) - vr_rtm(ips_rtm-1)
-                  asmp_p(l_rtm) = vr_rtm(ipn_rtm  ) - vr_rtm(ips_rtm  )
+                  ip_rtpm = 1 + (l_rtm-1) *  istep_rtm(2)               &
+     &                        + (k_rlm-1) *  istep_rtm(1)               &
+     &                        + (mp_rlm-1) * istep_rtm(3)
+                  ip_rtnm = 1 + (nidx_rtm(2) - l_rtm) * istep_rtm(2)    &
+     &                        + (k_rlm-1) *             istep_rtm(1)    &
+     &                        + (mp_rlm-1) *            istep_rtm(3)
+                  in_rtpm = 1 + (l_rtm-1) *  istep_rtm(2)               &
+     &                        + (k_rlm-1) *  istep_rtm(1)               &
+     &                        + (mn_rlm-1) * istep_rtm(3)
+                  in_rtnm = 1 + (nidx_rtm(2) - l_rtm) * istep_rtm(2)    &
+     &                        + (k_rlm-1) *             istep_rtm(1)    &
+     &                        + (mn_rlm-1) *            istep_rtm(3)
+                  ipp_recv = 3*nd + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
+                  ipn_recv = 3*nd + (irev_sr_rtm(ip_rtnm) - 1) * ncomp
+                  inp_recv = 3*nd + (irev_sr_rtm(in_rtpm) - 1) * ncomp
+                  inn_recv = 3*nd + (irev_sr_rtm(in_rtnm) - 1) * ncomp
 !
-                  inn_rtm = 3*nd + ncomp*((l_rtm-1) * istep_rtm(2)      &
-     &                                  + (k_rlm-1) *  istep_rtm(1)     &
-     &                                  + (mn_rlm-1) * istep_rtm(3))
-                  ins_rtm = 3*nd                                        &
-     &                   + ncomp*((nidx_rtm(2) - l_rtm) * istep_rtm(2)  &
-     &                                  + (k_rlm-1) *  istep_rtm(1)     &
-     &                                  + (mn_rlm-1) * istep_rtm(3))
-                  symn_t(l_rtm) = vr_rtm(inn_rtm-1) + vr_rtm(ins_rtm-1)
-                  symn_p(l_rtm) = vr_rtm(inn_rtm  ) + vr_rtm(ins_rtm  )
-                  asmn_t(l_rtm) = vr_rtm(inn_rtm-1) - vr_rtm(ins_rtm-1)
-                  asmn_p(l_rtm) = vr_rtm(inn_rtm  ) - vr_rtm(ins_rtm  )
+                  symp_r(l_rtm) = WR(ipp_recv-2) + WR(ipn_recv-2)
+                  symp_t(l_rtm) = WR(ipp_recv-1) + WR(ipn_recv-1)
+                  symp_p(l_rtm) = WR(ipp_recv  ) + WR(ipn_recv  )
+                  asmp_r(l_rtm) = WR(ipp_recv-2) - WR(ipn_recv-2)
+                  asmp_t(l_rtm) = WR(ipp_recv-1) - WR(ipn_recv-1)
+                  asmp_p(l_rtm) = WR(ipp_recv  ) - WR(ipn_recv  )
+!
+                  symn_t(l_rtm) = WR(inp_recv-1) + WR(inn_recv-1)
+                  symn_p(l_rtm) = WR(inp_recv  ) + WR(inn_recv  )
+                  asmn_t(l_rtm) = WR(inp_recv-1) - WR(inn_recv-1)
+                  asmn_p(l_rtm) = WR(inp_recv  ) - WR(inn_recv  )
                 end do
 !   Equator (if necessary)
                 do ll = 2*(nidx_rtm(2)/2)+1, nidx_rtm(2)
                   l_rtm = (ll+1) /2
-                  ipn_rtm = 3*nd + ncomp*((l_rtm-1) * istep_rtm(2)      &
-     &                                  + (k_rlm-1) *  istep_rtm(1)     &
-     &                                  + (mp_rlm-1) * istep_rtm(3))
-                  symp_r(l_rtm) = vr_rtm(ipn_rtm-2)
-                  symp_t(l_rtm) = vr_rtm(ipn_rtm-1)
-                  symp_p(l_rtm) = vr_rtm(ipn_rtm  )
+                  ip_rtpm = 1 + (l_rtm-1) *  istep_rtm(2)               &
+     &                        + (k_rlm-1) *  istep_rtm(1)               &
+     &                        + (mp_rlm-1) * istep_rtm(3)
+                  in_rtpm = 1 + (l_rtm-1) *  istep_rtm(2)               &
+     &                        + (k_rlm-1) *  istep_rtm(1)               &
+     &                        + (mn_rlm-1) * istep_rtm(3)
+                  ipp_recv = 3*nd + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
+                  inp_recv = 3*nd + (irev_sr_rtm(in_rtpm) - 1) * ncomp
+!
+                  symp_r(l_rtm) = WR(ipp_recv-2)
+                  symp_t(l_rtm) = WR(ipp_recv-1)
+                  symp_p(l_rtm) = WR(ipp_recv  )
                   asmp_t(l_rtm) = 0.0d0
                   asmp_p(l_rtm) = 0.0d0
                   asmp_r(l_rtm) = 0.0d0
 !
-                  inn_rtm = 3*nd + ncomp*((l_rtm-1) * istep_rtm(2)      &
-     &                                  + (k_rlm-1) *  istep_rtm(1)     &
-     &                                  + (mn_rlm-1) * istep_rtm(3))
-                  symn_t(l_rtm) = vr_rtm(inn_rtm-1)
-                  symn_p(l_rtm) = vr_rtm(inn_rtm  )
+                  symn_t(l_rtm) = WR(inp_recv-1)
+                  symn_p(l_rtm) = WR(inp_recv  )
                   asmn_t(l_rtm) = 0.0d0
                   asmn_p(l_rtm) = 0.0d0
                 end do
@@ -179,18 +195,18 @@
 !
                 i_rlm = 3*nd + ncomp * ((2*j_rlm+jst-2) * istep_rlm(2)  &
      &                                      + (k_rlm-1) * istep_rlm(1))
-                sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + pol_s * r2_1d_rlm_r
-                sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                       &
+                sp_rlm_1(i_rlm-2) = sp_rlm_1(i_rlm-2) + pol_s * r2_1d_rlm_r
+                sp_rlm_1(i_rlm-1) = sp_rlm_1(i_rlm-1)                       &
      &                           + dpl_s * radius_1d_rlm_r(k_rlm)
-                sp_rlm(i_rlm  ) = sp_rlm(i_rlm  )                       &
+                sp_rlm_1(i_rlm  ) = sp_rlm_1(i_rlm  )                       &
      &                           + tor_s * radius_1d_rlm_r(k_rlm)
 !
                 i_rlm = 3*nd + ncomp * ((2*j_rlm+jst-1) * istep_rlm(2)  &
      &                                      + (k_rlm-1) * istep_rlm(1))
-                sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + pol_a * r2_1d_rlm_r
-                sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                       &
+                sp_rlm_1(i_rlm-2) = sp_rlm_1(i_rlm-2) + pol_a * r2_1d_rlm_r
+                sp_rlm_1(i_rlm-1) = sp_rlm_1(i_rlm-1)                       &
      &                           + dpl_a * radius_1d_rlm_r(k_rlm)
-                sp_rlm(i_rlm  ) = sp_rlm(i_rlm  )                       &
+                sp_rlm_1(i_rlm  ) = sp_rlm_1(i_rlm  )                       &
      &                           + tor_a * radius_1d_rlm_r(k_rlm)
               end do
             end do
@@ -211,42 +227,48 @@
 !
               do nd = 1, nvector
                 do l_rtm = 1, nidx_rtm(2)/2
-                  ipn_rtm = 3*nd + ncomp*((l_rtm-1) * istep_rtm(2)      &
-     &                                  + (k_rlm-1) *  istep_rtm(1)     &
-     &                                  + (mp_rlm-1) * istep_rtm(3))
-                  ips_rtm = 3*nd                                        &
-     &                   + ncomp*((nidx_rtm(2) - l_rtm) * istep_rtm(2)  &
-     &                                  + (k_rlm-1) *  istep_rtm(1)     &
-     &                                  + (mp_rlm-1) * istep_rtm(3))
-                  symp_r(l_rtm) = vr_rtm(ipn_rtm-2) + vr_rtm(ips_rtm-2)
-                  asmp_t(l_rtm) = vr_rtm(ipn_rtm-1) - vr_rtm(ips_rtm-1)
-                  asmp_p(l_rtm) = vr_rtm(ipn_rtm  ) - vr_rtm(ips_rtm  )
+                  ip_rtpm = 1 + (l_rtm-1) *  istep_rtm(2)               &
+     &                        + (k_rlm-1) *  istep_rtm(1)               &
+     &                        + (mp_rlm-1) * istep_rtm(3)
+                  ip_rtnm = 1 + (nidx_rtm(2) - l_rtm) * istep_rtm(2)    &
+     &                        + (k_rlm-1) *             istep_rtm(1)    &
+     &                        + (mp_rlm-1) *            istep_rtm(3)
+                  in_rtpm = 1 + (l_rtm-1) *  istep_rtm(2)               &
+     &                        + (k_rlm-1) *  istep_rtm(1)               &
+     &                        + (mn_rlm-1) * istep_rtm(3)
+                  in_rtnm = 1 + (nidx_rtm(2) - l_rtm) * istep_rtm(2)    &
+     &                        + (k_rlm-1) *             istep_rtm(1)    &
+     &                        + (mn_rlm-1) *            istep_rtm(3)
+                  ipp_recv = 3*nd + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
+                  ipn_recv = 3*nd + (irev_sr_rtm(ip_rtnm) - 1) * ncomp
+                  inp_recv = 3*nd + (irev_sr_rtm(in_rtpm) - 1) * ncomp
+                  inn_recv = 3*nd + (irev_sr_rtm(in_rtnm) - 1) * ncomp
 !
-                  inn_rtm = 3*nd + ncomp*((l_rtm-1) * istep_rtm(2)      &
-     &                                  + (k_rlm-1) *  istep_rtm(1)     &
-     &                                  + (mn_rlm-1) * istep_rtm(3))
-                  ins_rtm = 3*nd                                        &
-     &                   + ncomp*((nidx_rtm(2) - l_rtm) * istep_rtm(2)  &
-     &                                  + (k_rlm-1) *  istep_rtm(1)     &
-     &                                  + (mn_rlm-1) * istep_rtm(3))
-                  symn_t(l_rtm) = vr_rtm(inn_rtm-1) + vr_rtm(ins_rtm-1)
-                  symn_p(l_rtm) = vr_rtm(inn_rtm  ) + vr_rtm(ins_rtm  )
+                  symp_r(l_rtm) = WR(ipp_recv-2) + WR(ipn_recv-2)
+                  asmp_t(l_rtm) = WR(ipp_recv-1) - WR(ipn_recv-1)
+                  asmp_p(l_rtm) = WR(ipp_recv  ) - WR(ipn_recv  )
+!
+                  symn_t(l_rtm) = WR(inp_recv-1) + WR(inn_recv-1)
+                  symn_p(l_rtm) = WR(inp_recv  ) + WR(inn_recv  )
                 end do
 !   Equator (if necessary)
                 do ll = 2*(nidx_rtm(2)/2)+1, nidx_rtm(2)
                   l_rtm = (ll+1) /2
-                  ipn_rtm = 3*nd + ncomp*((l_rtm-1) * istep_rtm(2)      &
-     &                                  + (k_rlm-1) *  istep_rtm(1)     &
-     &                                  + (mp_rlm-1) * istep_rtm(3))
-                  symp_r(l_rtm) = vr_rtm(ipn_rtm-2)
+                  ip_rtpm = 1 + (l_rtm-1) *  istep_rtm(2)               &
+     &                        + (k_rlm-1) *  istep_rtm(1)               &
+     &                        + (mp_rlm-1) * istep_rtm(3)
+                  in_rtpm = 1 + (l_rtm-1) *  istep_rtm(2)               &
+     &                        + (k_rlm-1) *  istep_rtm(1)               &
+     &                        + (mn_rlm-1) * istep_rtm(3)
+                  ipp_recv = 3*nd + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
+                  inp_recv = 3*nd + (irev_sr_rtm(in_rtpm) - 1) * ncomp
+!
+                  symp_r(l_rtm) = WR(ipp_recv-2)
                   asmp_t(l_rtm) = 0.0d0
                   asmp_p(l_rtm) = 0.0d0
 !
-                  inn_rtm = 3*nd + ncomp*((l_rtm-1) * istep_rtm(2)      &
-     &                                  + (k_rlm-1) *  istep_rtm(1)     &
-     &                                  + (mn_rlm-1) * istep_rtm(3))
-                  symn_t(l_rtm) = vr_rtm(inn_rtm-1)
-                  symn_p(l_rtm) = vr_rtm(inn_rtm  )
+                  symn_t(l_rtm) = WR(inp_recv-1)
+                  symn_p(l_rtm) = WR(inp_recv  )
                 end do
 !
                 pol_s = 0.0d0
@@ -262,10 +284,10 @@
 !
                 i_rlm = 3*nd + ncomp * ((2*j_rlm+jst-2) * istep_rlm(2)  &
      &                                      + (k_rlm-1) * istep_rlm(1))
-                sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + pol_s * r2_1d_rlm_r
-                sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                       &
+                sp_rlm_1(i_rlm-2) = sp_rlm_1(i_rlm-2) + pol_s * r2_1d_rlm_r
+                sp_rlm_1(i_rlm-1) = sp_rlm_1(i_rlm-1)                       &
      &                           + dpl_s * radius_1d_rlm_r(k_rlm)
-                sp_rlm(i_rlm  ) = sp_rlm(i_rlm  )                       &
+                sp_rlm_1(i_rlm  ) = sp_rlm_1(i_rlm  )                       &
      &                           + tor_s * radius_1d_rlm_r(k_rlm)
               end do
             end do
@@ -279,13 +301,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar)
+      subroutine leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar,  &
+     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
+      real (kind=kreal), intent(inout):: WR(n_WR)
+      real(kind = kreal), intent(inout) :: sp_rlm_1(ncomp*nnod_rlm)
+!
 !
       integer(kind = kint) :: ip, kst, ked, k_rlm, nd, i_rlm
-      integer(kind = kint) :: mp_rlm, jst, nj_rlm, j_rlm, jj
-      integer(kind = kint) :: ll, l_rtm, ipn_rtm, ips_rtm
+      integer(kind = kint) :: mp_rlm, jst, nj_rlm, j_rlm, jj, ll, l_rtm
+      integer(kind = kint) :: ip_rtpm, ip_rtnm, ipp_recv, ipn_recv
       real(kind = kreal) :: pol_s, pol_a
       real(kind = kreal) :: Pws_le( (nidx_rtm(2)+1)/2 )
       real(kind = kreal) :: Pws_lo( (nidx_rtm(2)+1)/2 )
@@ -295,8 +323,9 @@
 !
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,kst,ked,jj,j_rlm,k_rlm,mp_rlm,             &
-!$omp&                    nd,jst,nj_rlm,i_rlm,ipn_rtm,ips_rtm,ll,l_rtm, &
-!$omp&                    pol_s,pol_a,Pws_le,Pws_lo,symp_r,asmp_r)
+!$omp&                    nd,jst,nj_rlm,i_rlm,ip_rtpm,ip_rtnm,ll,l_rtm, &
+!$omp&                    ipp_recv,ipn_recv,pol_s,pol_a,Pws_le,Pws_lo,  &
+!$omp&                    symp_r,asmp_r)
       do ip = 1, np_smp
         kst = idx_rlm_smp_stack(ip-1,1) + 1
         ked = idx_rlm_smp_stack(ip,  1)
@@ -318,25 +347,30 @@
 !
               do nd = 1, nscalar
                 do l_rtm = 1, nidx_rtm(2)/2
-                  ipn_rtm = nd + 3*nvector                              &
-     &                         + ncomp*((l_rtm-1) *  istep_rtm(2)       &
-     &                                + (k_rlm-1) *  istep_rtm(1)       &
-     &                                + (mp_rlm-1) * istep_rtm(3))
-                  ips_rtm = nd + 3*nvector                              &
-     &                  + ncomp*((nidx_rtm(2) - l_rtm) *  istep_rtm(2)  &
-     &                                     + (k_rlm-1) *  istep_rtm(1)  &
-     &                                     + (mp_rlm-1) * istep_rtm(3))
-                  symp_r(l_rtm) = vr_rtm(ipn_rtm) + vr_rtm(ips_rtm)
-                  asmp_r(l_rtm) = vr_rtm(ipn_rtm) - vr_rtm(ips_rtm)
+                  ip_rtpm = 1 + (l_rtm-1) *  istep_rtm(2)               &
+     &                        + (k_rlm-1) *  istep_rtm(1)               &
+     &                        + (mp_rlm-1) * istep_rtm(3)
+                  ip_rtnm = 1 + (nidx_rtm(2) - l_rtm) *  istep_rtm(2)   &
+     &                        + (k_rlm-1) *              istep_rtm(1)   &
+     &                        + (mp_rlm-1) *             istep_rtm(3)
+                  ipp_recv = nd + 3*nvector                             &
+     &                          + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
+                  ipn_recv = nd + 3*nvector                             &
+     &                          + (irev_sr_rtm(ip_rtnm) - 1) * ncomp
+!
+                  symp_r(l_rtm) = WR(ipp_recv) + WR(ipn_recv)
+                  asmp_r(l_rtm) = WR(ipp_recv) - WR(ipn_recv)
                 end do
 !   Equator (if necessary)
                 do ll = 2*(nidx_rtm(2)/2)+1, nidx_rtm(2)
                   l_rtm = (ll+1) /2
-                  ipn_rtm = nd + 3*nvector                              &
-     &                         + ncomp*((l_rtm-1) *  istep_rtm(2)       &
-     &                                + (k_rlm-1) *  istep_rtm(1)       &
-     &                                + (mp_rlm-1) * istep_rtm(3))
-                  symp_r(l_rtm) = vr_rtm(ipn_rtm)
+                  ip_rtpm = 1 + (l_rtm-1) *  istep_rtm(2)               &
+     &                        + (k_rlm-1) *  istep_rtm(1)               &
+     &                        + (mp_rlm-1) * istep_rtm(3)
+                  ipp_recv = nd + 3*nvector                             &
+     &                          + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
+!
+                  symp_r(l_rtm) = WR(ipp_recv)
                   asmp_r(l_rtm) = 0.0d0
                 end do
 !
@@ -350,12 +384,12 @@
                 i_rlm = nd + 3*nvector                                  &
      &                     + ncomp * ((2*j_rlm+jst-2) * istep_rlm(2)    &
      &                                    + (k_rlm-1) * istep_rlm(1))
-                sp_rlm(i_rlm) = sp_rlm(i_rlm)  + pol_s
+                sp_rlm_1(i_rlm) = sp_rlm_1(i_rlm)  + pol_s
 !
                 i_rlm = nd + 3*nvector                                  &
      &                     + ncomp * ((2*j_rlm+jst-1) * istep_rlm(2)    &
      &                                    + (k_rlm-1) * istep_rlm(1))
-                sp_rlm(i_rlm) = sp_rlm(i_rlm)  + pol_a
+                sp_rlm_1(i_rlm) = sp_rlm_1(i_rlm)  + pol_a
               end do
             end do
 !
@@ -370,24 +404,28 @@
 !
               do nd = 1, nscalar
                 do l_rtm = 1, nidx_rtm(2)/2
-                  ipn_rtm = nd + 3*nvector                              &
-     &                         + ncomp*((l_rtm-1) *  istep_rtm(2)       &
-     &                                + (k_rlm-1) *  istep_rtm(1)       &
-     &                                + (mp_rlm-1) * istep_rtm(3))
-                  ips_rtm = nd + 3*nvector                              &
-     &                  + ncomp*((nidx_rtm(2) - l_rtm) *  istep_rtm(2)  &
-     &                                     + (k_rlm-1) *  istep_rtm(1)  &
-     &                                     + (mp_rlm-1) * istep_rtm(3))
-                  symp_r(l_rtm) = vr_rtm(ipn_rtm) + vr_rtm(ips_rtm)
+                  ip_rtpm = 1 + (l_rtm-1) *  istep_rtm(2)               &
+     &                        + (k_rlm-1) *  istep_rtm(1)               &
+     &                        + (mp_rlm-1) * istep_rtm(3)
+                  ip_rtnm = 1 + (nidx_rtm(2) - l_rtm) *  istep_rtm(2)   &
+     &                        + (k_rlm-1) *              istep_rtm(1)   &
+     &                        + (mp_rlm-1) *             istep_rtm(3)
+                  ipp_recv = nd + 3*nvector                             &
+     &                          + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
+                  ipn_recv = nd + 3*nvector                             &
+     &                          + (irev_sr_rtm(ip_rtnm) - 1) * ncomp
+!
+                  symp_r(l_rtm) = WR(ipp_recv) + WR(ipn_recv)
                 end do
 !   Equator (if necessary)
                 do ll = 2*(nidx_rtm(2)/2)+1, nidx_rtm(2)
                   l_rtm = (ll+1) /2
-                  ipn_rtm = nd + 3*nvector                              &
-     &                         + ncomp*((l_rtm-1) *  istep_rtm(2)       &
-     &                                + (k_rlm-1) *  istep_rtm(1)       &
-     &                                + (mp_rlm-1) * istep_rtm(3))
-                  symp_r(l_rtm) = vr_rtm(ipn_rtm)
+                  ip_rtpm = 1 + (l_rtm-1) *  istep_rtm(2)               &
+     &                        + (k_rlm-1) *  istep_rtm(1)               &
+     &                        + (mp_rlm-1) * istep_rtm(3)
+                  ipp_recv = nd + 3*nvector                             &
+     &                          + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
+                  symp_r(l_rtm) = WR(ipp_recv)
                 end do
 !
                 pol_s = 0.0d0
@@ -398,7 +436,7 @@
                 i_rlm = nd + 3*nvector                                  &
      &                     + ncomp * ((2*j_rlm+jst-2) * istep_rlm(2)    &
      &                                    + (k_rlm-1) * istep_rlm(1))
-                sp_rlm(i_rlm) = sp_rlm(i_rlm)  + pol_s
+                sp_rlm_1(i_rlm) = sp_rlm_1(i_rlm)  + pol_s
               end do
             end do
           end do

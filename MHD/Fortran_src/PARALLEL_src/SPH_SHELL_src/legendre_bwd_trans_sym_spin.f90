@@ -58,7 +58,7 @@
       real(kind = kreal), intent(inout)                                 &
      &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
       real(kind = kreal), intent(inout)                                 &
-     &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(1)*ncomp,nidx_rtm(3))
+     &      :: vr_rtm_spin(nidx_rtm(1)*ncomp,nidx_rtm(3),nidx_rtm(2))
 !
       integer(kind = kint) :: nb_nri, ip, kst, ked, kr_nd, k_rtm
       integer(kind = kint) :: lp, lst, nl_rtm, l_rtm, lp_rtm, ln_rtm
@@ -79,6 +79,7 @@
       real(kind = kreal) :: pol_o(maxdegree_rlm)
       real(kind = kreal) :: dpl_o(maxdegree_rlm)
       real(kind = kreal) :: tor_o(maxdegree_rlm)
+!
 !
 !
       nb_nri = nvector*nidx_rtm(1)
@@ -192,39 +193,39 @@
                   sa_p = sa_p + dpl_o(jj) * Pgv_jo(jj)
                 end do
 !
-                vr_rtm_spin(lp_rtm,kr_nd,         mp_rlm)               &
-     &               = vr_rtm_spin(lp_rtm,kr_nd,         mp_rlm)        &
+                vr_rtm_spin(kr_nd,         mp_rlm,lp_rtm)               &
+     &               = vr_rtm_spin(kr_nd,         mp_rlm,lp_rtm)        &
      &                + ss_r + sa_r
-                vr_rtm_spin(lp_rtm,kr_nd+nb_nri,  mp_rlm)               &
-     &               = vr_rtm_spin(lp_rtm,kr_nd+nb_nri,  mp_rlm)        &
+                vr_rtm_spin(kr_nd+nb_nri,  mp_rlm,lp_rtm)               &
+     &               = vr_rtm_spin(kr_nd+nb_nri,  mp_rlm,lp_rtm)        &
      &                + sa_t + ss_t
-                vr_rtm_spin(lp_rtm,kr_nd+2*nb_nri,mp_rlm)               &
-     &               = vr_rtm_spin(lp_rtm,kr_nd+2*nb_nri,mp_rlm)        &
+                vr_rtm_spin(kr_nd+2*nb_nri,mp_rlm,lp_rtm)               &
+     &               = vr_rtm_spin(kr_nd+2*nb_nri,mp_rlm,lp_rtm)        &
      &                + ta_p + ts_p
 !
-                vr_rtm_spin(lp_rtm,kr_nd+nb_nri,  mn_rlm)               &
-     &               = vr_rtm_spin(lp_rtm,kr_nd+nb_nri,  mn_rlm)        &
+                vr_rtm_spin(kr_nd+nb_nri,  mn_rlm,lp_rtm)               &
+     &               = vr_rtm_spin(kr_nd+nb_nri,  mn_rlm,lp_rtm)        &
      &                + ts_t + ta_t
-                vr_rtm_spin(lp_rtm,kr_nd+2*nb_nri,mn_rlm)               &
-     &               = vr_rtm_spin(lp_rtm,kr_nd+2*nb_nri,mn_rlm)        &
+                vr_rtm_spin(kr_nd+2*nb_nri,mn_rlm,lp_rtm)               &
+     &               = vr_rtm_spin(kr_nd+2*nb_nri,mn_rlm,lp_rtm)        &
      &                + ss_p + sa_p
 !
 !
-                vr_rtm_spin(ln_rtm,kr_nd,         mp_rlm)               &
-     &               = vr_rtm_spin(ln_rtm,kr_nd,         mp_rlm)        &
+                vr_rtm_spin(kr_nd,         mp_rlm,ln_rtm)               &
+     &               = vr_rtm_spin(kr_nd,         mp_rlm,ln_rtm)        &
      &                + ss_r - sa_r
-                vr_rtm_spin(ln_rtm,kr_nd+nb_nri,  mp_rlm)               &
-     &               = vr_rtm_spin(ln_rtm,kr_nd+nb_nri,  mp_rlm)        &
+                vr_rtm_spin(kr_nd+nb_nri,  mp_rlm,ln_rtm)               &
+     &               = vr_rtm_spin(kr_nd+nb_nri,  mp_rlm,ln_rtm)        &
      &                - sa_t + ss_t
-                vr_rtm_spin(ln_rtm,kr_nd+2*nb_nri,mp_rlm)               &
-     &               = vr_rtm_spin(ln_rtm,kr_nd+2*nb_nri,mp_rlm)        &
+                vr_rtm_spin(kr_nd+2*nb_nri,mp_rlm,ln_rtm)               &
+     &               = vr_rtm_spin(kr_nd+2*nb_nri,mp_rlm,ln_rtm)        &
      &                - ta_p + ts_p
 !
-                vr_rtm_spin(ln_rtm,kr_nd+nb_nri,  mn_rlm)               &
-     &               = vr_rtm_spin(ln_rtm,kr_nd+nb_nri,  mn_rlm)        &
+                vr_rtm_spin(kr_nd+nb_nri,  mn_rlm,ln_rtm)               &
+     &               = vr_rtm_spin(kr_nd+nb_nri,  mn_rlm,ln_rtm)        &
      &                + ts_t - ta_t
-                vr_rtm_spin(ln_rtm,kr_nd+2*nb_nri,mn_rlm)               &
-     &               = vr_rtm_spin(ln_rtm,kr_nd+2*nb_nri,mn_rlm)        &
+                vr_rtm_spin(kr_nd+2*nb_nri,mn_rlm,ln_rtm)               &
+     &               = vr_rtm_spin(kr_nd+2*nb_nri,mn_rlm,ln_rtm)        &
      &                + ss_p - sa_p
               end do
             end do
@@ -244,12 +245,12 @@
         ked = nvector*idx_rtm_smp_stack(ip,  1)
         do mp_rlm = 1, nidx_rtm(3)
           do kr_nd = kst+1, ked
-            vr_rtm_spin(lp_rtm,kr_nd,         mp_rlm)                   &
-     &           = half * vr_rtm_spin(lp_rtm,kr_nd,         mp_rlm)
-            vr_rtm_spin(lp_rtm,kr_nd+nb_nri,  mp_rlm)                   &
-     &           = half * vr_rtm_spin(lp_rtm,kr_nd+nb_nri,  mp_rlm)
-            vr_rtm_spin(lp_rtm,kr_nd+2*nb_nri,mp_rlm)                   &
-     &           = half * vr_rtm_spin(lp_rtm,kr_nd+2*nb_nri,mp_rlm)
+            vr_rtm_spin(kr_nd,         mp_rlm,lp_rtm)                   &
+     &           = half * vr_rtm_spin(kr_nd,         mp_rlm,lp_rtm)
+            vr_rtm_spin(kr_nd+nb_nri,  mp_rlm,lp_rtm)                   &
+     &           = half * vr_rtm_spin(kr_nd+nb_nri,  mp_rlm,lp_rtm)
+            vr_rtm_spin(kr_nd+2*nb_nri,mp_rlm,lp_rtm)                   &
+     &           = half * vr_rtm_spin(kr_nd+2*nb_nri,mp_rlm,lp_rtm)
           end do
         end do
       end do
@@ -266,7 +267,7 @@
       real(kind = kreal), intent(in)                                    &
      &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
       real(kind = kreal), intent(inout)                                 &
-     &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(1)*ncomp,nidx_rtm(3))
+     &      :: vr_rtm_spin(nidx_rtm(1)*ncomp,nidx_rtm(3),nidx_rtm(2))
 !
       integer(kind = kint) :: ip, kst, ked, kr_nd
       integer(kind = kint) :: lp, lst, nl_rtm, l_rtm, lp_rtm, ln_rtm
@@ -333,10 +334,10 @@
                   sa_r = sa_r + pol_o(jj) * P_jo(jj)
                 end do
 !
-                vr_rtm_spin(lp_rtm,kr_nd,mp_rlm)                        &
-     &               = vr_rtm_spin(lp_rtm,kr_nd,mp_rlm) + ss_r + sa_r
-                vr_rtm_spin(ln_rtm,kr_nd,mp_rlm)                        &
-     &               = vr_rtm_spin(ln_rtm,kr_nd,mp_rlm) + ss_r - sa_r
+                vr_rtm_spin(kr_nd,mp_rlm,lp_rtm)                        &
+     &               = vr_rtm_spin(kr_nd,mp_rlm,lp_rtm) + ss_r + sa_r
+                vr_rtm_spin(kr_nd,mp_rlm,ln_rtm)                        &
+     &               = vr_rtm_spin(kr_nd,mp_rlm,ln_rtm) + ss_r - sa_r
               end do
             end do
           end do
@@ -358,8 +359,8 @@
      &       + nscalar*idx_rtm_smp_stack(ip,  1)
         do mp_rlm = 1, nidx_rtm(3)
           do kr_nd = kst+1, ked
-            vr_rtm_spin(lp_rtm,kr_nd,mp_rlm)                            &
-     &          = half * vr_rtm_spin(lp_rtm,kr_nd,mp_rlm)
+            vr_rtm_spin(kr_nd,mp_rlm,lp_rtm)                            &
+     &          = half * vr_rtm_spin(kr_nd,mp_rlm,lp_rtm)
           end do
         end do
       end do

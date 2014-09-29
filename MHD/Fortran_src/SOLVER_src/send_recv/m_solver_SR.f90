@@ -48,14 +48,24 @@
       integer, save, allocatable :: req2(:  )
 !
 !
-!>       work array for sending
+!>       size of send buffer
+      integer(kind = kint) :: n_WS = 0
+!>       size of kint buffer
+      integer(kind = kint) :: n_WR = 0
+!
+!>       work array for send buffer
       real(kind = kreal), allocatable :: WS(:)
-!>       work array for recieving
+!>       work array for recieve buffer
       real(kind = kreal), allocatable :: WR(:)
 !
-!>       work array for integer sending
+!>       size of send buffer
+      integer(kind = kint) :: n_iWS = 0
+!>       size of recieve buffer
+      integer(kind = kint) :: n_iWR = 0
+!
+!>       work array for integer send buffer
       integer(kind = kint), allocatable :: iWS(:)
-!>       work array for integer recieving
+!>       work array for integer recieve buffer
       integer(kind = kint), allocatable :: iWR(:)
 !
 !
@@ -192,6 +202,7 @@
       if (allocated(WS) .eqv. .true.                                    &
      &    .and. size(WS) .lt. (NB*NTOT_SEND)) deallocate (WS)
       if (allocated(WS) .eqv. .false.) allocate (WS(NB*NTOT_SEND))
+      n_WS = size(WS)
 !
       end subroutine resize_wsend_SR
 !
@@ -205,6 +216,7 @@
       if (allocated(WR) .eqv. .true.                                    &
      &    .and. size(WR) .lt. (NB*NTOT_RECV)) deallocate (WR)
       if (allocated(WR) .eqv. .false.) allocate (WR(NB*NTOT_RECV))
+      n_WR = size(WR)
 !
       end subroutine resize_wrecv_SR
 !
@@ -217,6 +229,7 @@
       if (allocated(iWS) .eqv. .true.                                   &
      &    .and. size(iWS) .lt. (NTOT_SEND)) deallocate (iWS)
       if (allocated(iWS) .eqv. .false.) allocate (iWS(NTOT_SEND))
+      n_iWS = size(iWS)
 !
       end subroutine resize_isend_SR
 !
@@ -230,6 +243,7 @@
       if (allocated(iWR) .eqv. .true.                                   &
      &    .and. size(iWR) .lt. (NTOT_RECV)) deallocate (iWR)
       if (allocated(iWR) .eqv. .false.) allocate (iWR(NTOT_RECV))
+      n_iWR = size(iWR)
 !
       end subroutine resize_irecv_SR
 !

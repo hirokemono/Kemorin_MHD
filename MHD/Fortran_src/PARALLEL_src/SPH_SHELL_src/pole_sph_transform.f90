@@ -68,9 +68,9 @@
         .or.  iflag_shell_mode.eq.iflag_MESH_same) return
 !
       call check_calypso_rj_2_rlm_buf_N(ncomp_trans)
-      call calypso_rj_to_send_N(ncomp_trans, sp_rj, WS(1))
+      call calypso_rj_to_send_N(ncomp_trans, n_WS, sp_rj, WS)
       call calypso_sph_comm_rj_2_rlm_N(ncomp_trans)
-      call calypso_rlm_from_recv_N(ncomp_trans, WR(1), sp_rlm)
+      call calypso_rlm_from_recv_N(ncomp_trans, n_WR, WR, sp_rlm)
 !
       if (iflag_debug.gt.0)  write(*,*) 'schmidt_b_trans_pole_vect',    &
      &                     ncomp_trans

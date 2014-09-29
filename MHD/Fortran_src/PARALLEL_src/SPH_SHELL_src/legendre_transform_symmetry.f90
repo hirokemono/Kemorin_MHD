@@ -9,12 +9,14 @@
 !!
 !!
 !!@verbatim
-!!      subroutine leg_backward_trans_sym_org(ncomp, nvector, nscalar)
+!!      subroutine leg_backward_trans_sym_org,                          &
+!!     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !!        Input:  sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!        Output: vr_rtm   (Order: radius,theta,phi)
 !!
-!!    Forward transforms
-!!      subroutine leg_forward_trans_sym_org(ncomp, nvector, nscalar)
+!!    Forward transforms 
+!!      subroutine leg_forward_trans_sym_org                            &
+!!     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal) 
 !!@endverbatim
@@ -36,41 +38,65 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine leg_backward_trans_sym_org(ncomp, nvector, nscalar)
+      subroutine leg_backward_trans_sym_org                             &
+     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
       use legendre_bwd_trans_symmetry
       use merge_polidal_toroidal_v
+      use spherical_SRs_N
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WR, n_WS
+      real (kind=kreal), intent(inout):: WR(n_WR)
+      real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
+      WR(ncomp*ntot_item_sr_rlm+1:ncomp*ntot_item_sr_rlm+ncomp) = 0.0d0
       call clear_bwd_legendre_trans(ncomp)
+!
       if(nvector .gt. 0) then
-        call leg_bwd_trans_vector_sym_org(ncomp, nvector)
+        call leg_bwd_trans_vector_sym_org(ncomp, nvector,               &
+     &          irev_sr_rlm, n_WR, WR, vr_rtm)
       end if
       if(nscalar .gt. 0) then
-        call leg_bwd_trans_scalar_sym_org(ncomp, nvector, nscalar)
+        call leg_bwd_trans_scalar_sym_org(ncomp, nvector, nscalar,      &
+     &          irev_sr_rlm, n_WR, WR, vr_rtm)
       end if
+!
+      call finish_send_recv_rj_2_rlm
+      call calypso_rtm_to_send_N(ncomp, n_WS, vr_rtm, WS)
 !
       end subroutine leg_backward_trans_sym_org
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine leg_forward_trans_sym_org(ncomp, nvector, nscalar)
+      subroutine leg_forward_trans_sym_org                              &
+     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
       use legendre_fwd_trans_symmetry
       use merge_polidal_toroidal_v
+      use spherical_SRs_N
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WR, n_WS
+      real (kind=kreal), intent(inout):: WR(n_WR)
+      real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
+      WR(ncomp*ntot_item_sr_rtm+1:ncomp*ntot_item_sr_rlm+ncomp) = 0.0d0
       call clear_fwd_legendre_trans(ncomp)
+!
       if(nvector .gt. 0) then
-        call leg_fwd_trans_vector_sym_org(ncomp, nvector)
+        call leg_fwd_trans_vector_sym_org(ncomp, nvector,               &
+     &      irev_sr_rtm, n_WR, WR, sp_rlm)
       end if
       if(nscalar .gt. 0) then
-        call leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar)
+        call leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar,      &
+     &      irev_sr_rtm, n_WR, WR, sp_rlm)
       end if
+!
+      call finish_send_recv_rtp_2_rtm
+      call calypso_rlm_to_send_N(ncomp, n_WS, sp_rlm, WS)
 !
       end subroutine leg_forward_trans_sym_org
 !
