@@ -14,8 +14,10 @@
 !!      subroutine dealloc_vec_bleg_sym_mat
 !!      subroutine dealloc_scl_bleg_sym_mat
 !!
-!!      subroutine leg_b_trans_vec_sym_matmul(ncomp, nvector)
-!!      subroutine leg_b_trans_scl_sym_matmul(ncomp, nvector, nscalar)
+!!      subroutine leg_b_trans_vec_sym_matmul(ncomp, nvector,           &
+!!     &          irev_sr_rlm, n_WR, WR, vr_rtm_1)
+!!      subroutine leg_b_trans_scl_sym_matmul(ncomp, nvector, nscalar,  &
+!!     &          irev_sr_rlm, n_WR, WR, vr_rtm_1)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
 !!
@@ -188,12 +190,17 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine leg_b_trans_vec_sym_matmul(ncomp, nvector)
+      subroutine leg_b_trans_vec_sym_matmul(ncomp, nvector,             &
+     &          irev_sr_rlm, n_WR, WR, vr_rtm_1)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
+      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
+      real (kind=kreal), intent(inout):: WR(n_WR)
+      real(kind = kreal), intent(inout) :: vr_rtm_1(ncomp*nnod_rtm)
 !
-      integer(kind = kint) :: nb_nri, ip, kk, kr_nd, k_rlm, nd
-      integer(kind = kint) :: ll, lp_rtm, ln_rtm, i_rlm
+      integer(kind = kint) :: ip, kk, kr_nd, k_rlm, nd
+      integer(kind = kint) :: ll, lp_rtm, ln_rtm, i_rlm, i_recv
       integer(kind = kint) :: mp_rlm, mn_rlm, j_rlm, jj
       integer(kind = kint) :: i_jk, i_lj, i_lk, nl_rtm
       integer(kind = kint) :: ip_rtpm, in_rtpm, ip_rtnm, in_rtnm
@@ -206,34 +213,10 @@
       call alloc_vec_bleg_sym_mat(nvector)
 !
       elaps(1:4) = 0
-      nb_nri = nvector*nidx_rtm(1)
       nl_rtm = (nidx_rtm(2) + 1)/2
 !$omp parallel do schedule(static)                                      &
-!$omp&         private(ip,kk,kr_nd,j_rlm,k_rlm,a2r_1d_rlm_r,nd,i_rlm)
-      do ip = 1, np_smp
-        kst(ip) = nvector*idx_rtm_smp_stack(ip-1,1)
-        nkr(ip) = nvector                                               &
-     &       * (idx_rtm_smp_stack(ip,  1) - idx_rtm_smp_stack(ip-1,1))
-        do kk = 1, nkr(ip)
-          kr_nd = kk + kst(ip)
-          k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-          nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
-          a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
-          do j_rlm = 1, nidx_rlm(2)
-            i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)            &
-     &                            + (k_rlm-1) * istep_rlm(1))
-!
-            sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) * a2r_1d_rlm_r
-            sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1) * a_r_1d_rlm_r(k_rlm)
-            sp_rlm(i_rlm  ) = sp_rlm(i_rlm  ) * a_r_1d_rlm_r(k_rlm)
-            end do
-        end do
-      end do
-!$omp end parallel do
-!
-!$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,kk,kr_nd,jj,ll,lp_rtm,ln_rtm,              &
-!$omp&                    k_rlm,nd,i_jk,i_lj,i_lk,i_rlm,                &
+!$omp&                    k_rlm,nd,i_jk,i_lj,i_lk,i_rlm,i_recv,         &
 !$omp&                    ip_rtpm,in_rtpm,ip_rtnm,in_rtnm,              &
 !$omp&                    j_rlm,mp_rlm,mn_rlm,a2r_1d_rlm_r,             &
 !$omp&                    st_elapsed)                                   &
@@ -284,28 +267,29 @@
               kr_nd = kk + kst(ip)
               k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
               nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
+              a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
 !   even l-m
               do jj = 1, n_jk_e(ip)
-                j_rlm = 2*jj + jst(ip) - 1
-                i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)        &
-     &                                + (k_rlm-1) * istep_rlm(1))
+                i_rlm = 1 + (2*jj + jst(ip) - 2) * istep_rlm(2)         &
+     &                    + (k_rlm-1) *            istep_rlm(1)
+                i_recv = 3*nd + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !
                 i_jk = jj + (kk-1) * n_jk_e(ip)
 !
-                pol_e(i_jk,ip) = sp_rlm(i_rlm-2)
-                dpl_e(i_jk,ip) = sp_rlm(i_rlm-1)
-                tor_e(i_jk,ip) = sp_rlm(i_rlm  )
+                pol_e(i_jk,ip) = WR(i_recv-2) * a2r_1d_rlm_r
+                dpl_e(i_jk,ip) = WR(i_recv-1) * a_r_1d_rlm_r(k_rlm)
+                tor_e(i_jk,ip) = WR(i_recv  ) * a_r_1d_rlm_r(k_rlm)
               end do
 !   odd l-m
               do jj = 1, n_jk_o(ip)
-                j_rlm = 2*jj + jst(ip)
-                i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)        &
-     &                                + (k_rlm-1) * istep_rlm(1))
+                i_rlm = 1 + (2*jj + jst(ip)-1) * istep_rlm(2)           &
+     &                    + (k_rlm-1) *          istep_rlm(1)
+                i_recv = 3*nd + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !
                 i_jk = jj + (kk-1) * n_jk_o(ip)
-                pol_o(i_jk,ip) = sp_rlm(i_rlm-2)
-                dpl_o(i_jk,ip) = sp_rlm(i_rlm-1)
-                tor_o(i_jk,ip) = sp_rlm(i_rlm  )
+                pol_o(i_jk,ip) = WR(i_recv-2) * a2r_1d_rlm_r
+                dpl_o(i_jk,ip) = WR(i_recv-1) * a_r_1d_rlm_r(k_rlm)
+                tor_o(i_jk,ip) = WR(i_recv  ) * a_r_1d_rlm_r(k_rlm)
               end do
             end do
             elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
@@ -359,29 +343,29 @@
      &                                + (k_rlm-1) *  istep_rtm(1)       &
      &                                + (mn_rlm-1) * istep_rtm(3))
 !
-                vr_rtm(ip_rtpm-2) = vr_rtm(ip_rtpm-2)                   &
+                vr_rtm_1(ip_rtpm-2) = vr_rtm_1(ip_rtpm-2)                   &
      &                + symp_r(i_lk,ip) + asmp_r(i_lk,ip)
-                vr_rtm(ip_rtpm-1) = vr_rtm(ip_rtpm-1)                   &
+                vr_rtm_1(ip_rtpm-1) = vr_rtm_1(ip_rtpm-1)                   &
      &                + asmp_t(i_lk,ip) + symp_t(i_lk,ip)
-                vr_rtm(ip_rtpm  ) = vr_rtm(ip_rtpm  )                   &
+                vr_rtm_1(ip_rtpm  ) = vr_rtm_1(ip_rtpm  )                   &
      &                - asmp_p(i_lk,ip) - symp_p(i_lk,ip)
 !
-                vr_rtm(in_rtpm-1) = vr_rtm(in_rtpm-1)                   &
+                vr_rtm_1(in_rtpm-1) = vr_rtm_1(in_rtpm-1)                   &
      &                + symn_t(i_lk,ip) + asmn_t(i_lk,ip)
-                vr_rtm(in_rtpm  ) = vr_rtm(in_rtpm  )                   &
+                vr_rtm_1(in_rtpm  ) = vr_rtm_1(in_rtpm  )                   &
      &                + symn_p(i_lk,ip) + asmn_p(i_lk,ip)
 !
 !
-                vr_rtm(ip_rtnm-2) = vr_rtm(ip_rtnm-2)                   &
+                vr_rtm_1(ip_rtnm-2) = vr_rtm_1(ip_rtnm-2)                   &
      &                + symp_r(i_lk,ip) - asmp_r(i_lk,ip)
-                vr_rtm(ip_rtnm-1) = vr_rtm(ip_rtnm-1)                   &
+                vr_rtm_1(ip_rtnm-1) = vr_rtm_1(ip_rtnm-1)                   &
      &                - asmp_t(i_lk,ip) + symp_t(i_lk,ip)
-                vr_rtm(ip_rtnm  ) = vr_rtm(ip_rtnm  )                   &
+                vr_rtm_1(ip_rtnm  ) = vr_rtm_1(ip_rtnm  )                   &
      &                + asmp_p(i_lk,ip) - symp_p(i_lk,ip)
 !
-                vr_rtm(in_rtnm-1) = vr_rtm(in_rtnm-1)                   &
+                vr_rtm_1(in_rtnm-1) = vr_rtm_1(in_rtnm-1)                   &
      &                + symn_t(i_lk,ip) - asmn_t(i_lk,ip)
-                vr_rtm(in_rtnm  ) = vr_rtm(in_rtnm  )                   &
+                vr_rtm_1(in_rtnm  ) = vr_rtm_1(in_rtnm  )                   &
      &                + symn_p(i_lk,ip) - asmn_p(i_lk,ip)
               end do
             end do
@@ -415,9 +399,9 @@
      &                            + (k_rlm-1) *  istep_rtm(1)           &
      &                            + (mp_rlm-1) * istep_rtm(3))
 !
-            vr_rtm(ip_rtpm-2)  = half * vr_rtm(ip_rtpm-2)
-            vr_rtm(ip_rtpm-1)  = half * vr_rtm(ip_rtpm-1)
-            vr_rtm(ip_rtpm  )  = half * vr_rtm(ip_rtpm  )
+            vr_rtm_1(ip_rtpm-2)  = half * vr_rtm_1(ip_rtpm-2)
+            vr_rtm_1(ip_rtpm-1)  = half * vr_rtm_1(ip_rtpm-1)
+            vr_rtm_1(ip_rtpm  )  = half * vr_rtm_1(ip_rtpm  )
           end do
         end do
       end do
@@ -428,12 +412,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine leg_b_trans_scl_sym_matmul(ncomp, nvector, nscalar)
+      subroutine leg_b_trans_scl_sym_matmul(ncomp, nvector, nscalar,    &
+     &          irev_sr_rlm, n_WR, WR, vr_rtm_1)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
+      real (kind=kreal), intent(inout):: WR(n_WR)
+      real(kind = kreal), intent(inout) :: vr_rtm_1(ncomp*nnod_rtm)
 !
       integer(kind = kint) :: ip, kk, kr_nd, nd, i_jk, i_lj, i_lk
-      integer(kind = kint) :: ll, lp_rtm, ln_rtm, nl_rtm, k_rlm, i_rlm
+      integer(kind = kint) :: ll, lp_rtm, ln_rtm, nl_rtm
+      integer(kind = kint) :: k_rlm, i_rlm, i_recv
       integer(kind = kint) :: mp_rlm, jj, j_rlm, ip_rtpm, ip_rtnm
       integer(kind = kint) :: kst(np_smp), nkr(np_smp)
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
@@ -447,7 +437,7 @@
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,kk,kr_nd,jj,j_rlm,ll,ip_rtpm,ip_rtnm,      &
 !$omp&                    k_rlm,nd,mp_rlm,lp_rtm,ln_rtm,i_lj,i_jk,i_lk, &
-!$omp&                    i_rlm,st_elapsed) &
+!$omp&                    i_rlm,i_recv,st_elapsed) &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
         kst(ip) = nscalar*idx_rtm_smp_stack(ip-1,1)
@@ -490,22 +480,23 @@
 !   even l-m
               do jj = 1, n_jk_e(ip)
                 j_rlm = 2*jj + jst(ip) - 1
-                i_rlm = nd + 3*nvector                                  &
-     &                     + ncomp * ((j_rlm-1) * istep_rlm(2)          &
-     &                              + (k_rlm-1) * istep_rlm(1))
+                i_rlm = 1 + (2*jj + jst(ip) - 2) * istep_rlm(2)         &
+     &                    + (k_rlm-1) *            istep_rlm(1)
+                i_recv = nd + 3*nvector                                 &
+     &                      + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !
                 i_jk = jj + (kk-1) * n_jk_e(ip)
-                scl_e(i_jk,ip) = sp_rlm(i_rlm)
+                scl_e(i_jk,ip) = WR(i_recv)
               end do
 !   odd l-m
               do jj = 1, n_jk_o(ip)
-                j_rlm = 2*jj + jst(ip)
-                i_rlm = nd + 3*nvector                                  &
-     &                     + ncomp * ((j_rlm-1) * istep_rlm(2)          &
-     &                              + (k_rlm-1) * istep_rlm(1))
+                i_rlm = 1 + (2*jj + jst(ip) - 1) * istep_rlm(2)         &
+     &                    + (k_rlm-1) *            istep_rlm(1)
+                i_recv = nd + 3*nvector                                 &
+     &                      + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !
                 i_jk = jj + (kk-1) * n_jk_o(ip)
-                scl_o(i_jk,ip) = sp_rlm(i_rlm)
+                scl_o(i_jk,ip) = WR(i_recv)
               end do
             end do
             elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
@@ -538,9 +529,9 @@
      &                                + (k_rlm-1) *  istep_rtm(1)       &
      &                                + (mp_rlm-1) * istep_rtm(3))
 !
-                vr_rtm(ip_rtpm) = vr_rtm(ip_rtpm)                       &
+                vr_rtm_1(ip_rtpm) = vr_rtm_1(ip_rtpm)                       &
      &                + symp(i_lk,ip) + asmp(i_lk,ip)
-                vr_rtm(ip_rtnm) = vr_rtm(ip_rtnm)                       &
+                vr_rtm_1(ip_rtnm) = vr_rtm_1(ip_rtnm)                       &
      &                + symp(i_lk,ip) - asmp(i_lk,ip)
               end do
             end do

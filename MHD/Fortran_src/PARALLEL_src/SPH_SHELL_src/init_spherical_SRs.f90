@@ -181,7 +181,6 @@
       endtime(0:2) = 0.0d0
       iflag_sph_commN = iflag_alltoall
       starttime = MPI_WTIME()
-      write(*,*) 'all_sph_send_recv_N', iflag_alltoall
       call all_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
       endtime(2) = MPI_WTIME() - starttime
 !
@@ -196,13 +195,11 @@
 !
       iflag_sph_commN = iflag_send_recv
       starttime = MPI_WTIME()
-      write(*,*) 'all_sph_send_recv_N', iflag_send_recv
       call all_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
       endtime(0) = MPI_WTIME() - starttime
 !
       iflag_sph_commN = iflag_alltoallv
       starttime = MPI_WTIME()
-      write(*,*) 'all_sph_send_recv_N', iflag_alltoallv
       call all_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
       endtime(1) = MPI_WTIME() - starttime
 !
@@ -240,13 +237,9 @@
       real (kind=kreal), intent(inout)::  X_rj(NB*nnod_rj)
 !
 !
-      write(*,*) 'send_recv_rj_2_rlm_N'
       call send_recv_rj_2_rlm_N(NB, X_rj, X_rlm)
-      write(*,*) 'send_recv_rlm_2_rj_N'
       call send_recv_rlm_2_rj_N(NB, X_rlm, X_rj)
-      write(*,*) 'send_recv_rtp_2_rtm_N'
       call send_recv_rtp_2_rtm_N(NB, X_rtp, X_rtm)
-      write(*,*) 'send_recv_rtm_2_rtp_N'
       call send_recv_rtm_2_rtp_N(NB, X_rtm, X_rtp)
 !
       end subroutine all_sph_send_recv_N

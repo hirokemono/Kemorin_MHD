@@ -12,8 +12,10 @@
 !!      subroutine dealloc_vec_fleg_mat_test
 !!      subroutine dealloc_scl_fleg_mat_test
 !!
-!!      subroutine leg_f_trans_vector_matmul(ncomp, nvector)
-!!      subroutine leg_f_trans_scalar_matmul(ncomp, nvector, nscalar)
+!!      subroutine leg_f_trans_vector_matmul(ncomp, nvector,            &
+!!     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
+!!      subroutine leg_f_trans_scalar_matmul(ncomp, nvector, nscalar,   &
+!!     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
 !!
@@ -158,13 +160,19 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine leg_f_trans_vector_matmul(ncomp, nvector)
+      subroutine leg_f_trans_vector_matmul(ncomp, nvector,              &
+     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
+      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
+      real (kind=kreal), intent(inout):: WR(n_WR)
+      real(kind = kreal), intent(inout) :: sp_rlm_1(ncomp*nnod_rlm)
 !
       integer(kind = kint) :: ip, nb_nri, kr_nd, kk, k_rlm, i_rlm
       integer(kind = kint) :: l_rtm, i_kl, i_lj, i_kj, ip_rtm, in_rtm
       integer(kind = kint) :: nd, ll, mp_rlm, mn_rlm, j_rlm, jj
+      integer(kind = kint) :: ip_recv, in_recv
       integer(kind = kint) :: kst(np_smp), nkr(np_smp)
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
       real(kind = kreal) :: r2_1d_rlm_r
@@ -177,7 +185,7 @@
 !$omp parallel do schedule(static)                                      &
 !$omp             private(ip,kr_nd,ll,l_rtm,jj,j_rlm,nd,ip_rtm,in_rtm,  &
 !$omp&                    k_rlm,kk,mp_rlm,mn_rlm,i_kl,i_lj,i_kj,i_rlm,  &
-!$omp&                    st_elapsed)                                   &
+!$omp&                    ip_recv,in_recv,st_elapsed)                   &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
         kst(ip) = nvector*idx_rlm_smp_stack(ip-1,1)
@@ -214,21 +222,23 @@
               k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
               nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
 !
-              ip_rtm = 3*nd + ncomp * ((l_rtm-1) *  istep_rtm(2)        &
-     &                               + (k_rlm-1) *  istep_rtm(1)        &
-     &                               + (mp_rlm-1) * istep_rtm(3))
-              in_rtm = 3*nd + ncomp * ((l_rtm-1) *  istep_rtm(2)        &
-     &                               + (k_rlm-1) *  istep_rtm(1)        &
-     &                               + (mn_rlm-1) * istep_rtm(3))
+              ip_rtm = 1 + (l_rtm-1) *  istep_rtm(2)                    &
+     &                   + (k_rlm-1) *  istep_rtm(1)                    &
+     &                   + (mp_rlm-1) * istep_rtm(3)
+              in_rtm = 1 + (l_rtm-1) *  istep_rtm(2)                    &
+     &                   + (k_rlm-1) *  istep_rtm(1)                    &
+     &                   + (mn_rlm-1) * istep_rtm(3)
+              ip_recv = 3*nd + (irev_sr_rtm(ip_rtm) - 1) * ncomp
+              in_recv = 3*nd + (irev_sr_rtm(in_rtm) - 1) * ncomp
               i_kl = kk + (l_rtm-1) * nkr(ip)
 !
-              symp_r(i_kl,ip) =  vr_rtm(ip_rtm-2)
+              symp_r(i_kl,ip) =  WR(ip_recv-2)
 !
-              asmp_t(i_kl,ip) =  vr_rtm(ip_rtm-1)
-              asmp_p(i_kl,ip) =  vr_rtm(ip_rtm  )
+              asmp_t(i_kl,ip) =  WR(ip_recv-1)
+              asmp_p(i_kl,ip) =  WR(ip_recv  )
 !
-              symn_t(i_kl,ip) =  vr_rtm(in_rtm-1)
-              symn_p(i_kl,ip) =  vr_rtm(in_rtm  )
+              symn_t(i_kl,ip) =  WR(in_recv-1)
+              symn_p(i_kl,ip) =  WR(in_recv  )
             end do
           end do
             elaps(2) = MPI_WTIME() - st_elapsed + elaps(2) 
@@ -257,10 +267,10 @@
      &                              + (k_rlm-1) * istep_rlm(1))
               i_kj = kk + (jj-1) * nkr(ip)
 !
-              sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + pol_e(i_kj,ip)
-              sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                         &
+              sp_rlm_1(i_rlm-2) = sp_rlm_1(i_rlm-2) + pol_e(i_kj,ip)
+              sp_rlm_1(i_rlm-1) = sp_rlm_1(i_rlm-1)                         &
      &                - dpl_e(i_kj,ip) + dpl_o(i_kj,ip)
-              sp_rlm(i_rlm  ) = sp_rlm(i_rlm  )                         &
+              sp_rlm_1(i_rlm  ) = sp_rlm_1(i_rlm  )                         &
      &                - tor_e(i_kj,ip) - tor_o(i_kj,ip)
             end do
           end do
@@ -285,9 +295,9 @@
             i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)            &
      &                            + (k_rlm-1) * istep_rlm(1))
 !
-            sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) * r2_1d_rlm_r
-            sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1) * radius_1d_rlm_r(k_rlm)
-            sp_rlm(i_rlm  ) = sp_rlm(i_rlm  ) * radius_1d_rlm_r(k_rlm)
+            sp_rlm_1(i_rlm-2) = sp_rlm_1(i_rlm-2) * r2_1d_rlm_r
+            sp_rlm_1(i_rlm-1) = sp_rlm_1(i_rlm-1) * radius_1d_rlm_r(k_rlm)
+            sp_rlm_1(i_rlm  ) = sp_rlm_1(i_rlm  ) * radius_1d_rlm_r(k_rlm)
             end do
         end do
       end do
@@ -301,12 +311,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine leg_f_trans_scalar_matmul(ncomp, nvector, nscalar)
+      subroutine leg_f_trans_scalar_matmul(ncomp, nvector, nscalar,     &
+     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
+      real (kind=kreal), intent(inout):: WR(n_WR)
+      real(kind = kreal), intent(inout) :: sp_rlm_1(ncomp*nnod_rlm)
 !
       integer(kind = kint) :: ip, kr_nd, kk, ip_rtm, nd, k_rlm
-      integer(kind = kint) :: mp_rlm, j_rlm, jj, i_rlm
+      integer(kind = kint) :: mp_rlm, j_rlm, jj, i_rlm, i_recv
       integer(kind = kint) :: ll, l_rtm, i_kl, i_lj, i_kj
       integer(kind = kint) :: kst(np_smp), nkr(np_smp)
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
@@ -317,7 +332,8 @@
 !
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,kr_nd,kk,jj,j_rlm,mp_rlm,ip_rtm,nd,k_rlm,  &
-!$omp&                    ll,l_rtm,i_kl,i_lj,i_kj,i_rlm,st_elapsed)     &
+!$omp&                    ll,l_rtm,i_kl,i_lj,i_kj,i_rlm,i_recv,         &
+!$omp&                    st_elapsed)                                   &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
         kst(ip) = nscalar*idx_rlm_smp_stack(ip-1,1)
@@ -347,13 +363,14 @@
               k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
               nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
 !
-              ip_rtm = nd + 3*nvector                                   &
-     &                    + ncomp * ((l_rtm-1) *  istep_rtm(2)          &
-     &                             + (k_rlm-1) *  istep_rtm(1)          &
-     &                             + (mp_rlm-1) * istep_rtm(3))
+              ip_rtm = 1 + (l_rtm-1) *  istep_rtm(2)                    &
+     &                   + (k_rlm-1) *  istep_rtm(1)                    &
+     &                   + (mp_rlm-1) * istep_rtm(3)
+              i_recv = nd + 3*nvector                                   &
+     &                    + (irev_sr_rtm(ip_rtm) - 1) * ncomp
               i_kl = kk + (l_rtm-1) * nkr(ip)
 !
-              symp(i_kl,ip) =  vr_rtm(ip_rtm)
+              symp(i_kl,ip) =  WR(i_recv)
             end do
           end do
             elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
@@ -375,7 +392,7 @@
      &                            + (k_rlm-1) * istep_rlm(1))
               i_kj = kk + (jj-1) * nkr(ip)
 !
-              sp_rlm(i_rlm) = sp_rlm(i_rlm) + scl_e(i_kj,ip)
+              sp_rlm_1(i_rlm) = sp_rlm_1(i_rlm) + scl_e(i_kj,ip)
             end do
           end do
             elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)

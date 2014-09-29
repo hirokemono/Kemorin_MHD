@@ -15,7 +15,8 @@
 !!      subroutine sel_dealloc_legendre_trans
 !!
 !!    Backward transforms
-!!      subroutine sel_backward_legendre_trans(ncomp, nvector, nscalar)
+!!      subroutine sel_backward_legendre_trans                          &
+!!     &         (ncomp, nvector, nscalar, n_WS, WS)
 !!        Input:  sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!        Output: vr_rtm   (Order: radius,theta,phi)
 !!
@@ -186,56 +187,109 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_backward_legendre_trans(ncomp, nvector, nscalar)
+      subroutine sel_backward_legendre_trans                            &
+     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
+!
+      use m_work_4_sph_trans
+      use spherical_SRs_N
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WR, n_WS
+      real (kind=kreal), intent(inout):: WR(n_WR)
+      real (kind=kreal), intent(inout):: WS(n_WS)
+!
 !
 !
       if(id_legendre_transfer .eq. iflag_leg_test_loop) then
+        call calypso_rlm_from_recv_N(ncomp, n_WR, WR, sp_rlm)
         call leg_backward_trans_test(ncomp, nvector, nscalar)
+        call finish_send_recv_rj_2_rlm
+        call calypso_rtm_to_send_N(ncomp, n_WS, vr_rtm, WS)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
+        call calypso_rlm_from_recv_N(ncomp, n_WR, WR, sp_rlm)
         call leg_backward_trans_spin(ncomp, nvector, nscalar)
+        call finish_send_recv_rj_2_rlm
+        call calypso_rtm_to_send_N(ncomp, n_WS, vr_rtm, WS)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
+        call calypso_rlm_from_recv_N(ncomp, n_WR, WR, sp_rlm)
         call leg_bwd_trans_fields_krin(ncomp, nvector, nscalar)
+        call finish_send_recv_rj_2_rlm
+        call calypso_rtm_to_send_N(ncomp, n_WS, vr_rtm, WS)
       else if(id_legendre_transfer .eq. iflag_leg_symmetry) then
+        call calypso_rlm_from_recv_N(ncomp, n_WR, WR, sp_rlm)
         call leg_backward_trans_sym_org(ncomp, nvector, nscalar)
+        call finish_send_recv_rj_2_rlm
+        call calypso_rtm_to_send_N(ncomp, n_WS, vr_rtm, WS)
       else if(id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
+        call calypso_rlm_from_recv_N(ncomp, n_WR, WR, sp_rlm)
         call leg_backward_trans_sym_spin(ncomp, nvector, nscalar)
+        call finish_send_recv_rj_2_rlm
+        call calypso_rtm_to_send_N(ncomp, n_WS, vr_rtm, WS)
       else if(id_legendre_transfer .eq. iflag_leg_matmul) then
-        call leg_backward_trans_matmul(ncomp, nvector, nscalar)
+        call leg_backward_trans_matmul(ncomp, nvector, nscalar,         &
+     &      n_WR, n_WS, WR, WS)
       else if(id_legendre_transfer .eq. iflag_leg_sym_matmul) then
-        call leg_backward_trans_sym_matmul(ncomp, nvector, nscalar)
+        call leg_backward_trans_sym_matmul(ncomp, nvector, nscalar,     &
+     &      n_WR, n_WS, WR, WS)
       else
-        call leg_backward_trans_org(ncomp, nvector, nscalar)
+        call leg_backward_trans_org(ncomp, nvector, nscalar,            &
+     &      n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine sel_backward_legendre_trans
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_forward_legendre_trans(ncomp, nvector, nscalar)
+      subroutine sel_forward_legendre_trans                             &
+     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
+!
+      use m_work_4_sph_trans
+      use spherical_SRs_N
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WR, n_WS
+      real (kind=kreal), intent(inout):: WR(n_WR)
+      real (kind=kreal), intent(inout):: WS(n_WS)
+!
 !
 !
       if(ncomp .le. 0) return
       if(id_legendre_transfer .eq. iflag_leg_test_loop) then
+        call calypso_rtm_from_recv_N(ncomp, n_WR, WR, vr_rtm)
         call leg_forward_trans_test(ncomp, nvector, nscalar)
+        call finish_send_recv_rtp_2_rtm
+        call calypso_rlm_to_send_N(ncomp, n_WS, sp_rlm, WS)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
+        call calypso_rtm_from_recv_N(ncomp, n_WR, WR, vr_rtm)
         call leg_forward_trans_spin(ncomp, nvector, nscalar)
+        call finish_send_recv_rtp_2_rtm
+        call calypso_rlm_to_send_N(ncomp, n_WS, sp_rlm, WS)
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
+        call calypso_rtm_from_recv_N(ncomp, n_WR, WR, vr_rtm)
         call leg_fwd_trans_fields_krin(ncomp, nvector, nscalar)
+        call finish_send_recv_rtp_2_rtm
+        call calypso_rlm_to_send_N(ncomp, n_WS, sp_rlm, WS)
       else if(id_legendre_transfer .eq. iflag_leg_symmetry) then
+        call calypso_rtm_from_recv_N(ncomp, n_WR, WR, vr_rtm)
         call leg_forward_trans_sym_org(ncomp, nvector, nscalar)
+        call finish_send_recv_rtp_2_rtm
+        call calypso_rlm_to_send_N(ncomp, n_WS, sp_rlm, WS)
       else if(id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
+        call calypso_rtm_from_recv_N(ncomp, n_WR, WR, vr_rtm)
         call leg_forward_trans_sym_spin(ncomp, nvector, nscalar)
+        call finish_send_recv_rtp_2_rtm
+        call calypso_rlm_to_send_N(ncomp, n_WS, sp_rlm, WS)
       else if(id_legendre_transfer .eq. iflag_leg_matmul) then
-        call leg_forward_trans_matmul(ncomp, nvector, nscalar)
+        call leg_forward_trans_matmul(ncomp, nvector, nscalar,          &
+     &      n_WR, n_WS, WR, WS)
       else if(id_legendre_transfer .eq. iflag_leg_sym_matmul) then
-        call leg_forward_trans_sym_matmul(ncomp, nvector, nscalar)
+        call leg_forward_trans_sym_matmul(ncomp, nvector, nscalar,      &
+     &      n_WR, n_WS, WR, WS)
       else
-        call leg_forwawd_trans_org(ncomp, nvector, nscalar)
+        call leg_forwawd_trans_org(ncomp, nvector, nscalar,             &
+     &      n_WR, n_WS, WR, WS)
       end if
+!
 !
       end subroutine sel_forward_legendre_trans
 !
