@@ -17,9 +17,17 @@
 !!     &                  npe_send, isend_self, id_pe_send, istack_send,&
 !!     &                  npe_recv, irecv_self, id_pe_recv, istack_recv,&
 !!     &                  CALYPSO_SUB_COMM)
+!!
 !!      subroutine sel_calypso_to_send_N(NB, nnod_org, n_WS, nmax_sr,   &
 !!     &                    npe_send, istack_send, inod_export,         &
 !!     &                    X_org, WS)
+!!      subroutine sel_calypso_to_send_vector(NB, nnod_org, n_WS,       &
+!!     &                    nmax_sr, npe_send, istack_send, inod_export,&
+!!     &                    ncomp_X, i_fld_X, i_fld_WS, X_org, WS)
+!!      subroutine sel_calypso_to_send_scalar(NB, nnod_org, n_WS,       &
+!!     &                    nmax_sr, npe_send, istack_send, inod_export,&
+!!     &                    ncomp_X, i_fld_X, i_fld_WS, X_org, WS)
+!!
 !!      subroutine sel_calypso_from_recv_N(NB, nnod_new, n_WR, nmax_sr, &
 !!     &                    npe_recv, istack_recv, inod_import,         &
 !!     &                    irev_import, WR, X_new)
@@ -232,6 +240,77 @@
 !
       end subroutine sel_calypso_to_send_N
 !
+!-----------------------------------------------------------------------
+!
+      subroutine sel_calypso_to_send_vector(NB, nnod_org, n_WS,         &
+     &                    nmax_sr, npe_send, istack_send, inod_export,  &
+     &                    ncomp_X, i_fld_X, i_fld_WS, X_org, WS)
+!
+      use set_all2all_buffer
+      use set_to_send_buffer
+!
+      integer(kind = kint), intent(in) :: NB, i_fld_WS, nmax_sr, n_WS
+      integer(kind = kint), intent(in) :: ncomp_X, i_fld_X, nnod_org
+!
+      integer(kind = kint), intent(in) :: npe_send
+      integer(kind = kint), intent(in) :: istack_send(0:npe_send)
+      integer(kind = kint), intent(in)                                  &
+     &                      :: inod_export( istack_send(npe_send) )
+      real (kind=kreal), intent(in)::    X_org(NB*nnod_org)
+!
+      real (kind=kreal), intent(inout):: WS(n_WS)
+!
+!
+      call start_eleps_time(36)
+      if(    iflag_sph_commN .eq. iflag_alltoall) then
+        call set_to_all2all_buf_vector(NB, nnod_org, nmax_sr, npe_send, &
+     &      istack_send, inod_export, ncomp_X, i_fld_X, i_fld_WS,       &
+     &      X_org, WS(1))
+      else
+        call set_to_send_buf_vector(NB, nnod_org,                       &
+     &      istack_send(npe_send), inod_export, ncomp_X,                &
+     &      i_fld_X, i_fld_WS, X_org, WS(1))
+      end if
+      call end_eleps_time(36)
+!
+      end subroutine sel_calypso_to_send_vector
+!
+!-----------------------------------------------------------------------
+!
+      subroutine sel_calypso_to_send_scalar(NB, nnod_org, n_WS,         &
+     &                    nmax_sr, npe_send, istack_send, inod_export,  &
+     &                    ncomp_X, i_fld_X, i_fld_WS, X_org, WS)
+!
+      use set_all2all_buffer
+      use set_to_send_buffer
+!
+      integer(kind = kint), intent(in) :: NB, i_fld_WS, nmax_sr, n_WS
+      integer(kind = kint), intent(in) :: ncomp_X, i_fld_X, nnod_org
+!
+      integer(kind = kint), intent(in) :: npe_send
+      integer(kind = kint), intent(in) :: istack_send(0:npe_send)
+      integer(kind = kint), intent(in)                                  &
+     &                      :: inod_export( istack_send(npe_send) )
+      real (kind=kreal), intent(in)::    X_org(NB*nnod_org)
+!
+      real (kind=kreal), intent(inout):: WS(n_WS)
+!
+!
+      call start_eleps_time(36)
+      if(    iflag_sph_commN .eq. iflag_alltoall) then
+        call set_to_all2all_buf_scalar(NB, nnod_org, nmax_sr, npe_send, &
+     &      istack_send, inod_export, ncomp_X, i_fld_X, i_fld_WS,       &
+     &      X_org, WS(1))
+      else
+        call set_to_send_buf_scalar(NB, nnod_org,                       &
+     &      istack_send(npe_send), inod_export, ncomp_X,                &
+     &      i_fld_X, i_fld_WS, X_org, WS(1))
+      end if
+      call end_eleps_time(36)
+!
+      end subroutine sel_calypso_to_send_scalar
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine sel_calypso_from_recv_N(NB, nnod_new, n_WR, nmax_sr,   &

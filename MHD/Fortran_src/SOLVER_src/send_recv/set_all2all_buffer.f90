@@ -12,6 +12,13 @@
 !!
 !!      subroutine set_to_all2all_buf_N(NB, nnod_org, nitem_SR,         &
 !!     &          npe_send, istack_send, inod_export, X_org, WS)
+!!      subroutine set_to_all2all_buf_vector(NB, nnod_org, nitem_SR,    &
+!!     &          npe_send, istack_send, inod_export,                   &
+!!     &          ncomp_X, i_fld_X, i_fld_WS, X_org, WS)
+!!      subroutine set_to_all2all_buf_scalar(NB, nnod_org, nitem_SR,    &
+!!     &          npe_send, istack_send, inod_export,                   &
+!!     &          ncomp_X, i_fld_X, i_fld_WS, X_org, WS)
+!!
 !!      subroutine set_from_all2all_buf_N(NB, nnod_new, nitem_SR,       &
 !!     &          npe_recv, istack_recv, inod_import, WR, X_new)
 !!      subroutine set_from_all2all_rev_N(NB, nnod_new, nitem_SR,       &
@@ -130,6 +137,85 @@
 !
       end subroutine set_to_all2all_buf_N
 !
+! ----------------------------------------------------------------------
+!
+      subroutine set_to_all2all_buf_vector(NB, nnod_org, nitem_SR,      &
+     &          npe_send, istack_send, inod_export,                     &
+     &          ncomp_X, i_fld_X, i_fld_WS, X_org, WS)
+!
+      integer(kind = kint), intent(in) :: NB, i_fld_WS
+      integer(kind = kint), intent(in) :: ncomp_X, i_fld_X, nnod_org
+      integer(kind = kint), intent(in) :: npe_send, nitem_SR
+!
+      integer(kind = kint), intent(in) :: istack_send(0:npe_send)
+      integer(kind = kint), intent(in)                                  &
+     &      :: inod_export(istack_send(npe_send))
+!
+      real (kind=kreal), intent(in)::    X_org(ncomp_X*nnod_org)
+!
+      real (kind=kreal), intent(inout):: WS(NB*npe_send*nitem_SR)
+!
+      integer (kind = kint) :: neib, ist, num
+      integer (kind = kint) :: k, jj, kk
+!
+!
+!$omp parallel private(neib,ist,num)
+      do neib = 1, npe_send
+        ist = istack_send(neib-1)
+        num = istack_send(neib  ) - istack_send(neib-1)
+!$omp do private(k,jj,kk)
+        do k = 1, num
+          jj = i_fld_X +  (inod_export(k+ist) - 1) * ncomp_X
+          kk = i_fld_WS + (k-1)*NB + (neib-1)*nitem_SR*NB
+          WS(kk  ) = X_org(jj  )
+          WS(kk+1) = X_org(jj+1)
+          WS(kk+2) = X_org(jj+2)
+        end do
+!$omp end do nowait
+      end do
+!$omp end parallel
+!
+      end subroutine set_to_all2all_buf_vector
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_to_all2all_buf_scalar(NB, nnod_org, nitem_SR,      &
+     &          npe_send, istack_send, inod_export,                     &
+     &          ncomp_X, i_fld_X, i_fld_WS, X_org, WS)
+!
+      integer(kind = kint), intent(in) :: NB, i_fld_WS
+      integer(kind = kint), intent(in) :: ncomp_X, i_fld_X, nnod_org
+      integer(kind = kint), intent(in) :: npe_send, nitem_SR
+!
+      integer(kind = kint), intent(in) :: istack_send(0:npe_send)
+      integer(kind = kint), intent(in)                                  &
+     &      :: inod_export(istack_send(npe_send))
+!
+      real (kind=kreal), intent(in)::    X_org(ncomp_X*nnod_org)
+!
+      real (kind=kreal), intent(inout):: WS(NB*npe_send*nitem_SR)
+!
+      integer (kind = kint) :: neib, ist, num
+      integer (kind = kint) :: k, jj, kk
+!
+!
+!$omp parallel private(neib,ist,num)
+      do neib = 1, npe_send
+        ist = istack_send(neib-1)
+        num = istack_send(neib  ) - istack_send(neib-1)
+!$omp do private(k,jj,kk)
+        do k = 1, num
+          jj = i_fld_X +  (inod_export(k+ist) - 1) * ncomp_X
+          kk = i_fld_WS + (k-1)*NB + (neib-1)*nitem_SR*NB
+          WS(kk  ) = X_org(jj  )
+        end do
+!$omp end do nowait
+      end do
+!$omp end parallel
+!
+      end subroutine set_to_all2all_buf_scalar
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine set_from_all2all_buf_N(NB, nnod_new, nitem_SR,         &

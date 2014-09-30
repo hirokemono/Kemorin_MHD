@@ -60,8 +60,7 @@
 !
       integer(kind = kint) :: ip, lst, led
       integer(kind = kint) :: j_rlm, mp_rlm, mn_rlm, l_rtm
-      integer(kind = kint) :: nb_nri, kr_nd, k_rlm, jst, jed
-      real(kind = kreal) :: a2r_1d_rlm_r
+      integer(kind = kint) :: nb_nri, kr_nd, jst, jed
       real(kind = kreal) :: vr1(nvector*nidx_rtm(1))
       real(kind = kreal) :: vr2(nvector*nidx_rtm(1))
       real(kind = kreal) :: vr3(nvector*nidx_rtm(1))
@@ -71,27 +70,6 @@
 !
 !
       nb_nri = nvector*nidx_rtm(1)
-!$omp parallel do schedule(static)                                      &
-!$omp&            private(ip,jst,jed,j_rlm,kr_nd,k_rlm,a2r_1d_rlm_r)
-      do ip = 1, np_smp
-        jst = idx_rlm_smp_stack(ip-1,2) + 1
-        jed = idx_rlm_smp_stack(ip,  2)
-        do kr_nd = 1, nb_nri
-          k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-          a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
-!          nd =  1 + (kr_nd - k_rlm) / nidx_rlm(1)
-          do j_rlm = jst, jed
-            sp_rlm_krin(kr_nd,         j_rlm)                           &
-     &        = sp_rlm_krin(kr_nd,         j_rlm) * a2r_1d_rlm_r
-            sp_rlm_krin(kr_nd+nb_nri,  j_rlm)                           &
-     &        = sp_rlm_krin(kr_nd+nb_nri,  j_rlm) * a_r_1d_rlm_r(k_rlm)
-            sp_rlm_krin(kr_nd+2*nb_nri,j_rlm)                           &
-     &        = sp_rlm_krin(kr_nd+2*nb_nri,j_rlm) * a_r_1d_rlm_r(k_rlm)
-          end do
-        end do
-      end do
-!$omp end parallel do
-!
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,lst,led,j_rlm,kr_nd,l_rtm,mp_rlm,jst,jed,  &
 !$omp&                    vr1,vr2,vr3,Pg3_j,dPdt_j)

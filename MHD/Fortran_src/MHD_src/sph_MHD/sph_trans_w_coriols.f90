@@ -96,7 +96,7 @@
 !
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'sum_coriolis_rlm'
-      call sum_coriolis_rlm(ncomp_trans, n_WR, irev_sr_rlm, WR)
+      call sum_coriolis_rlm(ncomp_trans, n_WR, WR)
       call end_eleps_time(13)
 !
       call start_eleps_time(22)
@@ -173,11 +173,8 @@
 !
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'copy_coriolis_terms_rlm'
-      call copy_coriolis_terms_rlm(ncomp_trans, sp_rlm)
+      call copy_coriolis_terms_rlm(ncomp_trans, n_WS, WS)
       call end_eleps_time(13)
-!
-      call check_calypso_rlm_2_rj_buf_N(ncomp_trans)
-      call calypso_rlm_to_send_N(ncomp_trans, n_WS, sp_rlm, WS)
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(21)
@@ -214,7 +211,7 @@
 !
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'sum_coriolis_rlm'
-      call sum_coriolis_rlm(ncomp_trans, n_WR, irev_sr_rlm, WR)
+      call sum_coriolis_rlm(ncomp_trans, n_WR, WR)
       call end_eleps_time(13)
 !
       call finish_send_recv_rj_2_rlm
@@ -233,13 +230,12 @@
 !
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'copy_coriolis_terms_rlm'
-      call copy_coriolis_terms_rlm(ncomp_trans, sp_rlm)
+      call check_calypso_rlm_2_rj_buf_N(ncomp_trans)
+      call copy_coriolis_terms_rlm(ncomp_trans, n_WS, WS)
       call end_eleps_time(24)
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(21)
-      call check_calypso_rlm_2_rj_buf_N(ncomp_trans)
-      call calypso_rlm_to_send_N(ncomp_trans, n_WS, sp_rlm, WS)
       call calypso_sph_comm_rlm_2_rj_N(ncomp_trans)
       call calypso_rj_from_recv_N(ncomp_trans, n_WR, WR, sp_rj)
       call finish_send_recv_rlm_2_rj
