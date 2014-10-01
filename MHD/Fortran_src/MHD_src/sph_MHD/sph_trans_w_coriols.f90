@@ -54,7 +54,6 @@
       use m_work_4_sph_trans
       use FFT_selector
       use legendre_transform_select
-      use merge_polidal_toroidal_v
       use spherical_SRs_N
       use const_coriolis_sph_rlm
 !

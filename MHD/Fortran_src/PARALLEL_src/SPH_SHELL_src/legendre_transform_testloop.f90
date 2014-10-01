@@ -42,11 +42,11 @@
       subroutine leg_backward_trans_test                                &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
+      use m_sph_communicators
       use m_work_4_sph_trans_spin
       use legendre_bwd_trans_testloop
       use ordering_schmidt_trans_spin
       use ordering_schmidt_trans_krin
-      use merge_polidal_toroidal_v
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
@@ -55,11 +55,9 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call calypso_rlm_from_recv_N(ncomp, n_WR, WR, sp_rlm)
       call order_b_trans_fields_spin(ncomp, nvector, nscalar,           &
-     &    sp_rlm(1), sp_rlm_wk(1))
+     &    irev_sr_rlm, n_WR, WR(1), sp_rlm_wk(1))
       call clear_bwd_legendre_work(ncomp)
-      call clear_bwd_legendre_trans(ncomp)
       if(nscalar .gt. 0) then
         call legendre_b_trans_scalar_test(ncomp, nvector, nscalar,      &
      &      sp_rlm_wk(1), vr_rtm_wk(1))
@@ -71,8 +69,8 @@
 !
       call finish_send_recv_rj_2_rlm
       call back_b_trans_fields_spin(ncomp, nvector, nscalar,            &
-     &    vr_rtm_wk(1), vr_rtm(1))
-      call calypso_rtm_to_send_N(ncomp, n_WS, vr_rtm, WS)
+     &    vr_rtm_wk(1), nmax_sr_rtp, nneib_domain_rtm, istack_sr_rtm,   &
+     &    item_sr_rtm, WS(1))
 !
       end subroutine leg_backward_trans_test
 !
@@ -81,6 +79,7 @@
       subroutine leg_forward_trans_test                                 &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
+      use m_sph_communicators
       use m_work_4_sph_trans_spin
       use legendre_fwd_trans_testloop
       use ordering_schmidt_trans_spin
@@ -92,9 +91,9 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call calypso_rtm_from_recv_N(ncomp, n_WR, WR, vr_rtm)
+      WR(ncomp*ntot_item_sr_rtm+1:ncomp*ntot_item_sr_rtm+ncomp) = 0.0d0
       call order_f_trans_fields_spin(ncomp, nvector, nscalar,           &
-     &    vr_rtm(1), vr_rtm_wk(1))
+     &    irev_sr_rtm, n_WR, WR(1), vr_rtm_wk(1))
       call clear_fwd_legendre_work(ncomp)
 !
       if(nvector .gt. 0) then
@@ -108,8 +107,8 @@
 !
       call finish_send_recv_rtp_2_rtm
       call back_f_trans_fields_spin(ncomp, nvector, nscalar,            &
-     &    sp_rlm_wk(1), sp_rlm(1))
-      call calypso_rlm_to_send_N(ncomp, n_WS, sp_rlm, WS)
+     &    sp_rlm_wk(1),  nmax_sr_rj, nneib_domain_rlm, istack_sr_rlm,   &
+     &    item_sr_rlm, WS(1))
 !
       end subroutine leg_forward_trans_test
 !

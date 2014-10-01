@@ -63,7 +63,6 @@
       integer(kind = kint) :: nb_nri, ip, kst, ked, kr_nd, k_rtm
       integer(kind = kint) :: lp, lst, nl_rtm, l_rtm, lp_rtm, ln_rtm
       integer(kind = kint) :: mp_rlm, mn_rlm, jst, nj_rlm, j_rlm, jj
-      real(kind = kreal) :: a2r_1d_rlm_r
       real(kind = kreal) :: ss_r, sa_t, ta_p, sa_r, ss_t, ts_p
       real(kind = kreal) :: ts_t, ss_p, ta_t, sa_p
       real(kind = kreal) :: Pg3_je(maxdegree_rlm)
@@ -84,34 +83,12 @@
 !
       nb_nri = nvector*nidx_rtm(1)
 !$omp parallel do schedule(static)                                      &
-!$omp&            private(ip,kst,ked,kr_nd,j_rlm,k_rtm,a2r_1d_rlm_r)
-      do ip = 1, np_smp
-        kst = nvector*idx_rtm_smp_stack(ip-1,1)
-        ked = nvector*idx_rtm_smp_stack(ip,  1)
-        do kr_nd = kst+1, ked
-          k_rtm = 1 + mod((kr_nd-1),nidx_rlm(1))
-            a2r_1d_rlm_r = a_r_1d_rlm_r(k_rtm)*a_r_1d_rlm_r(k_rtm)
-            do j_rlm = 1, nidx_rlm(2)
-!
-            sp_rlm_spin(j_rlm,kr_nd         )                           &
-     &        = sp_rlm_spin(j_rlm,kr_nd         ) * a2r_1d_rlm_r
-            sp_rlm_spin(j_rlm,kr_nd+nb_nri  )                           &
-     &        = sp_rlm_spin(j_rlm,kr_nd+nb_nri  ) * a_r_1d_rlm_r(k_rtm)
-            sp_rlm_spin(j_rlm,kr_nd+2*nb_nri)                           &
-     &        = sp_rlm_spin(j_rlm,kr_nd+2*nb_nri) * a_r_1d_rlm_r(k_rtm)
-            end do
-        end do
-      end do
-!$omp end parallel do
-!
-!$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,kst,ked,kr_nd,lp,lst,nl_rtm,jst,nj_rlm,    &
 !$omp&                    j_rlm,jj,l_rtm,lp_rtm,ln_rtm,k_rtm,           &
 !$omp&                    mp_rlm,mn_rlm,ts_t,ss_p,ta_t,sa_p,            &
 !$omp&                    ss_r,sa_t,ta_p,sa_r,ss_t,ts_p,                &
 !$omp&                    pol_e,dpl_e,tor_e,pol_o,dpl_o,tor_o,          &
-!$omp&                    Pg3_je,dPdt_je,Pgv_je,Pg3_jo,dPdt_jo,Pgv_jo,  &
-!$omp&                    a2r_1d_rlm_r)
+!$omp&                    Pg3_je,dPdt_je,Pgv_je,Pg3_jo,dPdt_jo,Pgv_jo)
       do ip = 1, np_smp
         kst = nvector*idx_rtm_smp_stack(ip-1,1)
         ked = nvector*idx_rtm_smp_stack(ip,  1)

@@ -566,7 +566,7 @@
      &                          + (k_rlm-1) *  istep_rtm(1)             &
      &                          + (mp_rlm-1) * istep_rtm(3))
 !
-            vr_rtm(ip_rtpm) = half * vr_rtm(ip_rtpm)
+            vr_rtm_1(ip_rtpm) = half * vr_rtm_1(ip_rtpm)
           end do
         end do
       end do

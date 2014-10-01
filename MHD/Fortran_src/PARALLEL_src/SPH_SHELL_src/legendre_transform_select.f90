@@ -157,14 +157,7 @@
       integer(kind = kint), intent(in) :: ncomp
 !
 !
-      if    (id_legendre_transfer .eq. iflag_leg_krloop_outer           &
-     &  .or. id_legendre_transfer .eq. iflag_leg_krloop_inner           &
-     &  .or. id_legendre_transfer .eq. iflag_leg_sym_spin_loop          &
-     &  .or. id_legendre_transfer .eq. iflag_leg_matmul                 &
-     &  .or. id_legendre_transfer .eq. iflag_leg_sym_matmul             &
-     &  .or. id_legendre_transfer .eq. iflag_leg_test_loop) then
-        call allocate_work_sph_trans(ncomp)
-      end if
+      call allocate_work_sph_trans(ncomp)
 !
       end subroutine sel_alloc_legendre_trans
 !
@@ -173,14 +166,7 @@
       subroutine sel_dealloc_legendre_trans
 !
 !
-      if    (id_legendre_transfer .eq. iflag_leg_krloop_outer           &
-     &  .or. id_legendre_transfer .eq. iflag_leg_krloop_inner           &
-     &  .or. id_legendre_transfer .eq. iflag_leg_sym_spin_loop          &
-     &  .or. id_legendre_transfer .eq. iflag_leg_matmul                 &
-     &  .or. id_legendre_transfer .eq. iflag_leg_sym_matmul             &
-     &  .or. id_legendre_transfer .eq. iflag_leg_test_loop) then
-        call deallocate_work_sph_trans
-      end if
+      call deallocate_work_sph_trans
 !
       end subroutine sel_dealloc_legendre_trans
 !

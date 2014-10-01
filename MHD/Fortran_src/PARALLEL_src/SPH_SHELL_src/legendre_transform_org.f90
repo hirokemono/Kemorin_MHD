@@ -42,10 +42,9 @@
       subroutine leg_backward_trans_org                                 &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
-      use m_work_4_sph_trans
+      use m_work_4_sph_trans_spin
       use legendre_bwd_trans_org
       use spherical_SRs_N
-!      use merge_polidal_toroidal_v
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
@@ -53,21 +52,21 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call calypso_rlm_from_recv_N(ncomp, n_WR, WR, sp_rlm)
+      call calypso_rlm_from_recv_N(ncomp, n_WR, WR, sp_rlm_wk(1))
 !
-!      call clear_bwd_legendre_trans(ncomp)
+!      call clear_bwd_legendre_work(ncomp)
 !
       if(nvector .gt. 0) then
         call legendre_b_trans_vector_org                                &
-     &     (ncomp, nvector, sp_rlm, vr_rtm)
+     &     (ncomp, nvector, sp_rlm_wk(1), vr_rtm_wk(1))
       end if
       if(nscalar .gt. 0) then
         call legendre_b_trans_scalar_org                                &
-     &     (ncomp, nvector, nscalar, sp_rlm, vr_rtm)
+     &     (ncomp, nvector, nscalar, sp_rlm_wk(1), vr_rtm_wk(1))
       end if
 !
       call finish_send_recv_rj_2_rlm
-      call calypso_rtm_to_send_N(ncomp, n_WS, vr_rtm, WS)
+      call calypso_rtm_to_send_N(ncomp, n_WS, vr_rtm_wk(1), WS(1))
 !
       end subroutine leg_backward_trans_org
 !
@@ -77,9 +76,8 @@
       subroutine leg_forwawd_trans_org                                  &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
-      use m_work_4_sph_trans
+      use m_work_4_sph_trans_spin
       use legendre_fwd_trans_org
-      use merge_polidal_toroidal_v
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
@@ -88,20 +86,20 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call calypso_rtm_from_recv_N(ncomp, n_WR, WR, vr_rtm)
-      call clear_fwd_legendre_trans(ncomp)
+      call calypso_rtm_from_recv_N(ncomp, n_WR, WR, vr_rtm_wk(1))
+      call clear_fwd_legendre_work(ncomp)
 !
       if(nvector .gt. 0) then
         call legendre_f_trans_vector_org                               &
-     &     (ncomp, nvector, vr_rtm, sp_rlm)
+     &     (ncomp, nvector, vr_rtm_wk(1), sp_rlm_wk(1))
       end if
       if(nscalar .gt. 0) then
         call legendre_f_trans_scalar_org                               &
-     &     (ncomp, nvector, nscalar, vr_rtm, sp_rlm)
+     &     (ncomp, nvector, nscalar, vr_rtm_wk(1), sp_rlm_wk(1))
       end if
 !
       call finish_send_recv_rtp_2_rtm
-      call calypso_rlm_to_send_N(ncomp, n_WS, sp_rlm, WS)
+      call calypso_rlm_to_send_N(ncomp, n_WS, sp_rlm_wk(1), WS)
 !
       end subroutine leg_forwawd_trans_org
 !

@@ -50,6 +50,8 @@
       subroutine leg_backward_trans_spin                                &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
+      use m_sph_communicators
+      use m_sph_trans_comm_table
       use ordering_schmidt_trans_spin
       use ordering_schmidt_trans_krin
       use legendre_bwd_trans_spin
@@ -62,9 +64,9 @@
 !
 !
       call start_eleps_time(25)
-      call calypso_rlm_from_recv_N(ncomp, n_WR, WR, sp_rlm)
+      WR(ncomp*ntot_item_sr_rlm+1:ncomp*ntot_item_sr_rlm+ncomp) = 0.0d0
       call order_b_trans_fields_spin(ncomp, nvector, nscalar,           &
-     &    sp_rlm(1), sp_rlm_wk(1))
+     &    irev_sr_rlm, n_WR, WR(1), sp_rlm_wk(1))
       call end_eleps_time(25)
 !
       call start_eleps_time(27)
@@ -77,10 +79,10 @@
       call end_eleps_time(27)
 !
       call start_eleps_time(28)
-      call back_b_trans_fields_krin(ncomp, nvector, nscalar,            &
-     &    vr_rtm_wk(1), vr_rtm(1))
       call finish_send_recv_rj_2_rlm
-      call calypso_rtm_to_send_N(ncomp, n_WS, vr_rtm, WS)
+      call back_b_trans_fields_krin(ncomp, nvector, nscalar,            &
+     &    vr_rtm_wk(1), nmax_sr_rtp, nneib_domain_rtm,                  &
+     &    istack_sr_rtm, item_sr_rtm, WS(1))
       call end_eleps_time(28)
 !
       end subroutine leg_backward_trans_spin
@@ -91,6 +93,7 @@
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
       use m_sph_communicators
+      use m_sph_trans_comm_table
       use ordering_schmidt_trans_spin
       use ordering_schmidt_trans_krin
       use legendre_fwd_trans_spin
@@ -103,9 +106,9 @@
 !
 !
       call start_eleps_time(29)
-      call calypso_rtm_from_recv_N(ncomp, n_WR, WR, vr_rtm)
+      WR(ncomp*ntot_item_sr_rtm+1:ncomp*ntot_item_sr_rtm+ncomp) = 0.0d0
       call order_f_trans_fields_spin(ncomp, nvector, nscalar,           &
-     &    vr_rtm(1), vr_rtm_wk(1))
+     &    irev_sr_rtm, n_WR, WR(1), vr_rtm_wk(1))
       call end_eleps_time(29)
 !
       call start_eleps_time(31)
@@ -120,7 +123,7 @@
       call start_eleps_time(32)
       call finish_send_recv_rtp_2_rtm
       call back_f_trans_fields_krin(ncomp, nvector, nscalar,            &
-     &    sp_rlm_wk(1), sp_rlm, nmax_sr_rj, nneib_domain_rlm,           &
+     &    sp_rlm_wk(1), nmax_sr_rj, nneib_domain_rlm,                   &
      &    istack_sr_rlm, item_sr_rlm, WS(1))
       call end_eleps_time(32)
 !
@@ -132,6 +135,8 @@
       subroutine leg_backward_trans_sym_spin                            &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
+      use m_sph_communicators
+      use m_sph_trans_comm_table
       use ordering_schmidt_trans_spin
       use ordering_schmidt_trans_krin
       use legendre_bwd_trans_sym_spin
@@ -145,9 +150,9 @@
 !
 !
       call start_eleps_time(25)
-      call calypso_rlm_from_recv_N(ncomp, n_WR, WR, sp_rlm)
+      WR(ncomp*ntot_item_sr_rlm+1:ncomp*ntot_item_sr_rlm+ncomp) = 0.0d0
       call order_b_trans_fields_spin(ncomp, nvector, nscalar,           &
-     &    sp_rlm(1), sp_rlm_wk(1))
+     &    irev_sr_rlm, n_WR, WR(1), sp_rlm_wk(1))
       vr_rtm_wk(1:ncomp*nnod_rtm) = 0.0d0
       call end_eleps_time(25)
 !
@@ -161,10 +166,10 @@
       call end_eleps_time(27)
 !
       call start_eleps_time(28)
-      call back_b_trans_fields_krin(ncomp, nvector, nscalar,            &
-     &    vr_rtm_wk(1), vr_rtm(1))
       call finish_send_recv_rj_2_rlm
-      call calypso_rtm_to_send_N(ncomp, n_WS, vr_rtm, WS)
+      call back_b_trans_fields_krin(ncomp, nvector, nscalar,            &
+     &    vr_rtm_wk(1), nmax_sr_rtp, nneib_domain_rtm,                  &
+     &    istack_sr_rtm, item_sr_rtm, WS(1))
       call end_eleps_time(28)
 !
       end subroutine leg_backward_trans_sym_spin
@@ -175,6 +180,7 @@
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
       use m_sph_communicators
+      use m_sph_trans_comm_table
       use ordering_schmidt_trans_spin
       use ordering_schmidt_trans_krin
       use legendre_fwd_trans_sym_spin
@@ -188,9 +194,9 @@
 !
 !
       call start_eleps_time(29)
-      call calypso_rtm_from_recv_N(ncomp, n_WR, WR, vr_rtm)
+      WR(ncomp*ntot_item_sr_rtm+1:ncomp*ntot_item_sr_rtm+ncomp) = 0.0d0
       call order_f_trans_fields_spin(ncomp, nvector, nscalar,           &
-     &    vr_rtm(1), vr_rtm_wk(1))
+     &    irev_sr_rtm, n_WR, WR(1), vr_rtm_wk(1))
       sp_rlm_wk(1:ncomp*nnod_rlm) = 0.0d0
       call end_eleps_time(29)
 !
@@ -206,7 +212,7 @@
       call start_eleps_time(32)
       call finish_send_recv_rtp_2_rtm
       call back_f_trans_fields_krin(ncomp, nvector, nscalar,            &
-     &    sp_rlm_wk(1), sp_rlm, nmax_sr_rj, nneib_domain_rlm,           &
+     &    sp_rlm_wk(1), nmax_sr_rj, nneib_domain_rlm,                   &
      &    istack_sr_rlm, item_sr_rlm, WS(1))
       call end_eleps_time(32)
 !

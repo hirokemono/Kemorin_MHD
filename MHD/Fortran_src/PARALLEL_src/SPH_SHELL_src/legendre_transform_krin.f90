@@ -44,6 +44,8 @@
       subroutine leg_bwd_trans_fields_krin                              &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
+      use m_sph_communicators
+      use m_sph_trans_comm_table
       use legendre_bwd_trans_krin
       use ordering_schmidt_trans_krin
       use spherical_SRs_N
@@ -65,8 +67,8 @@
 !
       call finish_send_recv_rj_2_rlm
       call back_b_trans_fields_krin(ncomp, nvector, nscalar,            &
-     &    vr_rtm_wk(1), vr_rtm(1))
-      call calypso_rtm_to_send_N(ncomp, n_WS, vr_rtm, WS)
+     &    vr_rtm_wk(1), nmax_sr_rtp, nneib_domain_rtm,                  &
+     &    istack_sr_rtm, item_sr_rtm, WS(1))
 !
       end subroutine leg_bwd_trans_fields_krin
 !
@@ -77,6 +79,7 @@
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
       use m_sph_communicators
+      use m_sph_trans_comm_table
       use legendre_fwd_trans_krin
       use ordering_schmidt_trans_krin
       use spherical_SRs_N
@@ -87,6 +90,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
+      WR(ncomp*ntot_item_sr_rtm+1:ncomp*ntot_item_sr_rtm+ncomp) = 0.0d0
       call order_f_trans_fields_krin(ncomp, nvector, nscalar,           &
      &    irev_sr_rtm, n_WR, WR, vr_rtm_wk(1))
 !
@@ -97,7 +101,7 @@
 !
       call finish_send_recv_rtp_2_rtm
       call back_f_trans_fields_krin(ncomp, nvector, nscalar,            &
-     &    sp_rlm_wk(1), sp_rlm, nmax_sr_rj, nneib_domain_rlm,           &
+     &    sp_rlm_wk(1), nmax_sr_rj, nneib_domain_rlm,                   &
      &    istack_sr_rlm, item_sr_rlm, WS(1))
 !
       end subroutine leg_fwd_trans_fields_krin

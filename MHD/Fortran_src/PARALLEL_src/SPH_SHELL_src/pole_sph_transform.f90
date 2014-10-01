@@ -9,11 +9,11 @@
 !!@verbatim
 !!      subroutine init_pole_transform
 !!
-!!      subroutine pole_backward_transforms(ncomp_trans,                &
+!!      subroutine pole_backward_transforms(ncomp,                      &
 !!     &          nvector, nscalar, ntensor)
 !!@endverbatim
 !!
-!!@param ncomp_trans Number of components for transform
+!!@param ncomp Number of components for transform
 !
       module pole_sph_transform
 !
@@ -49,7 +49,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine pole_backward_transforms(ncomp_trans,                  &
+      subroutine pole_backward_transforms(ncomp,                        &
      &          nvector, nscalar, ntensor)
 !
       use m_solver_SR
@@ -58,7 +58,7 @@
       use schmidt_b_trans_at_center
       use sum_b_trans_at_pole
 !
-      integer(kind = kint), intent(in) :: ncomp_trans
+      integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: nvector, nscalar, ntensor
 !
       integer(kind = kint) :: nscalar_trans
@@ -67,28 +67,29 @@
       if     (iflag_shell_mode.eq.iflag_no_FEMMESH                      &
         .or.  iflag_shell_mode.eq.iflag_MESH_same) return
 !
-      call check_calypso_rj_2_rlm_buf_N(ncomp_trans)
-      call calypso_rj_to_send_N(ncomp_trans, n_WS, sp_rj, WS)
-      call calypso_sph_comm_rj_2_rlm_N(ncomp_trans)
-      call calypso_rlm_from_recv_N(ncomp_trans, n_WR, WR, sp_rlm)
+      call check_calypso_rj_2_rlm_buf_N(ncomp)
+      call calypso_rj_to_send_N(ncomp, n_WS, sp_rj, WS)
+      call calypso_sph_comm_rj_2_rlm_N(ncomp)
 !
       if (iflag_debug.gt.0)  write(*,*) 'schmidt_b_trans_pole_vect',    &
-     &                     ncomp_trans
+     &                     ncomp
       nscalar_trans = nscalar + 6 * ntensor
-      call schmidt_b_trans_pole_vect(ncomp_trans, nvector)
-      call schmidt_b_trans_pole_scalar(ncomp_trans, nvector,            &
-     &    nscalar_trans)
+      WR(ncomp*ntot_item_sr_rlm+1:ncomp*ntot_item_sr_rlm+ncomp) = 0.0d0
+      call schmidt_b_trans_pole_vect(ncomp, nvector,                    &
+     &    irev_sr_rlm, n_WR, WR)
+      call schmidt_b_trans_pole_scalar(ncomp, nvector, nscalar_trans,   &
+     &    irev_sr_rlm, n_WR, WR)
 !
       if (iflag_debug.gt.0)  write(*,*) 'sum_back_trans_at_pole',       &
-     &                     ncomp_trans
-      call sum_back_trans_at_pole(ncomp_trans)
+     &                     ncomp
+      call sum_back_trans_at_pole(ncomp)
 !
       if(iflag_shell_mode .eq. iflag_MESH_w_center) then
-        call schmidt_b_trans_center_vect(ncomp_trans, nvector)
-        call schmidt_b_trans_center_scalar(ncomp_trans,                 &
-     &      nvector, nscalar_trans)
+        call schmidt_b_trans_center_vect(ncomp, nvector,                &
+     &      irev_sr_rlm, n_WR, WR)
+        call schmidt_b_trans_center_scalar(ncomp, nvector, nscalar_trans)
 !
-        call sum_back_trans_at_center(ncomp_trans)
+        call sum_back_trans_at_center(ncomp)
       end if
 !
       call finish_send_recv_rj_2_rlm

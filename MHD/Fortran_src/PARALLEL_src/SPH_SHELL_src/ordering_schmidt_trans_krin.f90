@@ -14,9 +14,11 @@
 !!     &          irev_sr_rtm, n_WR, WR, vr_rtm_krin)
 !!
 !!      subroutine back_f_trans_fields_krin(ncomp, nvector, nscalar,    &
-!!     &          sp_rlm_krin, sp_rlm)
+!!     &          sp_rlm_krin, nmax_sr_rj, nneib_domain_rlm,            &
+!!     &          istack_sr_rlm, item_sr_rlm, WS)
 !!      subroutine back_b_trans_fields_krin(ncomp, nvector, nscalar,    &
-!!     &          vr_rtm_krin, vr_rtm)
+!!     &          vr_rtm_krin, nmax_sr_rtp, nneib_domain_rtm,           &
+!!     &          istack_sr_rtm, item_sr_rtm, WS)
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -164,7 +166,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine back_f_trans_fields_krin(ncomp, nvector, nscalar,      &
-     &          sp_rlm_krin, sp_rlm, nmax_sr_rj, nneib_domain_rlm,      &
+     &          sp_rlm_krin, nmax_sr_rj, nneib_domain_rlm,              &
      &          istack_sr_rlm, item_sr_rlm, WS)
 !
       use m_sel_spherical_SRs
@@ -176,10 +178,9 @@
       integer(kind = kint), intent(in)                                  &
      &           :: item_sr_rlm(istack_sr_rlm(nneib_domain_rlm))
       real(kind = kreal), intent(in)                                    &
-     &      :: sp_rlm_krin(nidx_rlm(1),ncomp,nidx_rlm(2))
-      real(kind = kreal), intent(inout) :: sp_rlm(ncomp*nnod_rlm)
+     &           :: sp_rlm_krin(nidx_rlm(1),ncomp,nidx_rlm(2))
       real (kind=kreal), intent(inout)                                  &
-     &     :: WS(ncomp*istack_sr_rlm(nneib_domain_rlm))
+     &           :: WS(ncomp*istack_sr_rlm(nneib_domain_rlm))
 !
       integer(kind = kint) :: ip, ist, inum, i, num, inod
       integer(kind = kint) :: i_rlm, nd, j_rlm, k_rlm
@@ -262,51 +263,104 @@
 ! -----------------------------------------------------------------------
 !
       subroutine back_b_trans_fields_krin(ncomp, nvector, nscalar,      &
-     &          vr_rtm_krin, vr_rtm)
+     &          vr_rtm_krin, nmax_sr_rtp, nneib_domain_rtm,             &
+     &          istack_sr_rtm, item_sr_rtm, WS)
+!
+      use m_sel_spherical_SRs
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: nneib_domain_rtm, nmax_sr_rtp
+      integer(kind = kint), intent(in)                                  &
+     &       :: istack_sr_rtm(0:nneib_domain_rtm)
+      integer(kind = kint), intent(in)                                  &
+     &       :: item_sr_rtm(istack_sr_rtm(nneib_domain_rtm))
       real(kind = kreal), intent(in)                                    &
      &      :: vr_rtm_krin(nidx_rtm(1),ncomp,nidx_rtm(3),nidx_rtm(2))
-      real(kind = kreal), intent(inout) :: vr_rtm(ncomp*nnod_rtm)
+      real (kind=kreal), intent(inout)                                  &
+     &       :: WS(ncomp*istack_sr_rtm(nneib_domain_rtm))
 !
-      integer(kind = kint) :: ip, ist, ied, inum
-      integer(kind = kint) :: i_rtm, k_rtm, l_rtm, m_rtm, nd
+      integer(kind = kint) :: ip, ist, num, inum, nd, i, inod
+      integer(kind = kint) :: i_rtm, k_rtm, l_rtm, m_rtm, km_rtm
 !
 !
-!$omp parallel do private(ip,ist,ied,i_rtm,k_rtm,l_rtm,nd,m_rtm,inum)
-      do ip = 1, np_smp
-        ist = idx_rtm_smp_stack(ip-1,3) + 1
-        ied = idx_rtm_smp_stack(ip,  3)
-        do m_rtm = ist, ied
-          do k_rtm = 1, nidx_rtm(1)
-            do l_rtm = 1, nidx_rtm(2)
-              do nd = 1, nvector
-                i_rtm = 3*nd + ncomp*((l_rtm-1) * istep_rtm(2)          &
-     &                              + (k_rtm-1) * istep_rtm(1)          &
-     &                              + (m_rtm-1) * istep_rtm(3))
+      if(iflag_sph_commN .eq. iflag_alltoall) then
+!$omp parallel private(nd,ip,ist,num)
+        do ip = 1, nneib_domain_rtm
+          ist = istack_sr_rtm(ip-1)
+          num = istack_sr_rtm(ip  ) - istack_sr_rtm(ip-1)
+          do nd = 1, nvector
+!$omp do private(inum,i_rtm,l_rtm,km_rtm,k_rtm,m_rtm,i,inod)
+            do inum = 1, num
+              i = 3*nd + (inum-1)*ncomp + (ip-1)*nmax_sr_rtp*ncomp
+              inod = item_sr_rtm(inum+ist)
+              i_rtm = 3*nd + (inod - 1) * ncomp
+              l_rtm = 1 + mod((inod-1),nidx_rtm(2))
+              km_rtm = 1 + (inod - l_rtm) / nidx_rtm(2)
+              k_rtm = 1 + mod((km_rtm-1),nidx_rtm(1))
+              m_rtm = 1 + (km_rtm - k_rtm) / nidx_rtm(1)
 !
-                vr_rtm(i_rtm-2)                                         &
-     &                = vr_rtm_krin(k_rtm,nd,          m_rtm,l_rtm)
-                vr_rtm(i_rtm-1)                                         &
-     &                = vr_rtm_krin(k_rtm,nd+nvector,  m_rtm,l_rtm)
-                vr_rtm(i_rtm  )                                         &
-     &                = vr_rtm_krin(k_rtm,nd+2*nvector,m_rtm,l_rtm)
-              end do
-!
-              do nd = 1, nscalar
-                i_rtm =  nd + 3*nvector                                 &
-     &                      + ncomp*((l_rtm-1) * istep_rtm(2)           &
-     &                             + (k_rtm-1) * istep_rtm(1)           &
-     &                             + (m_rtm-1) * istep_rtm(3))
-!
-                vr_rtm(i_rtm  )                                         &
-     &               = vr_rtm_krin(k_rtm,nd+3*nvector,m_rtm,l_rtm)
-              end do
+              WS(i-2) = vr_rtm_krin(k_rtm,nd,          m_rtm,l_rtm)
+              WS(i-1) = vr_rtm_krin(k_rtm,nd+nvector,  m_rtm,l_rtm)
+              WS(i  ) = vr_rtm_krin(k_rtm,nd+2*nvector,m_rtm,l_rtm)
             end do
+!$omp end do nowait
+          end do
+          do nd = 1, nscalar
+!$omp do private(inum,i_rtm,l_rtm,km_rtm,k_rtm,m_rtm,i,inod)
+            do inum = 1, num
+              i = nd + 3*nvector + (inum-1)*ncomp                       &
+     &                           + (ip-1)*nmax_sr_rtp*ncomp
+              inod = item_sr_rtm(inum+ist)
+              i_rtm = nd + 3*nvector + (inod - 1) * ncomp
+              l_rtm = 1 + mod((inod-1),nidx_rtm(2))
+              km_rtm = 1 + (inod - l_rtm) / nidx_rtm(2)
+              k_rtm = 1 + mod((km_rtm-1),nidx_rtm(1))
+              m_rtm = 1 + (km_rtm - k_rtm) / nidx_rtm(1)
+!
+              WS(i  ) = vr_rtm_krin(k_rtm,nd+3*nvector,m_rtm,l_rtm)
+            end do
+!$omp end do nowait
           end do
         end do
-      end do
-!$omp end parallel do
+!$omp end parallel
+!
+      else
+!
+!$omp parallel private(nd)
+        do nd = 1, nvector
+!$omp do private(inum,i_rtm,l_rtm,km_rtm,k_rtm,m_rtm,i,inod)
+          do inum = 1, istack_sr_rtm(nneib_domain_rtm)
+            i = 3*nd + (inum-1) * ncomp
+            inod = item_sr_rtm(inum)
+            i_rtm = 3*nd + (inod-1) * ncomp
+            l_rtm = 1 + mod((inod-1),nidx_rtm(2))
+            km_rtm = 1 + (inod - l_rtm) / nidx_rtm(2)
+            k_rtm = 1 + mod((km_rtm-1),nidx_rtm(1))
+            m_rtm = 1 + (km_rtm - k_rtm) / nidx_rtm(1)
+!
+            WS(i-2) = vr_rtm_krin(k_rtm,nd,          m_rtm,l_rtm)
+            WS(i-1) = vr_rtm_krin(k_rtm,nd+nvector,  m_rtm,l_rtm)
+            WS(i  ) = vr_rtm_krin(k_rtm,nd+2*nvector,m_rtm,l_rtm)
+          end do
+!$omp end do nowait
+        end do
+        do nd = 1, nscalar
+!$omp do private(inum,i_rtm,l_rtm,km_rtm,k_rtm,m_rtm,i,inod)
+          do inum = 1, istack_sr_rtm(nneib_domain_rtm)
+            i = nd + 3*nvector + (inum-1) * ncomp
+            inod = item_sr_rtm(inum)
+            i_rtm = nd + 3*nvector + (inod-1) * ncomp
+            l_rtm = 1 + mod((inod-1),nidx_rtm(2))
+            km_rtm = 1 + (inod - l_rtm) / nidx_rtm(2)
+            k_rtm = 1 + mod((km_rtm-1),nidx_rtm(1))
+            m_rtm = 1 + (km_rtm - k_rtm) / nidx_rtm(1)
+!
+            WS(i  ) = vr_rtm_krin(k_rtm,nd+3*nvector,m_rtm,l_rtm)
+        end do
+!$omp end do nowait
+        end do
+!$omp end parallel
+      end if
 !
       end subroutine back_b_trans_fields_krin
 !
