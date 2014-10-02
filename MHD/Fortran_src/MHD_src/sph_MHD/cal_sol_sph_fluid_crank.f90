@@ -342,7 +342,7 @@ end subroutine check_NaN_temperature
 !      j = find_local_sph_mode_address(30,-23)
 !      if(j.gt.0) then
 !        write(*,*) 'matrix'
-!        call check_single_radial_3band_mat(my_rank, nri,                &
+!        call check_single_radial_3band_mat(my_rank, nri,               &
 !     &      radius_1d_rj_r, evo_mat(1,1,j))
 !      end if
 !

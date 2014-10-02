@@ -23,8 +23,7 @@
 !!      subroutine deallocate_wk_nod_data_to_sph
 !!
 !!      subroutine check_vr_rtp(my_rank, nb)
-!!      subroutine check_vr_rtm(my_rank, nb)
-!!      subroutine check_sp_rlm(my_rank, nb)
+!!      subroutine check_sp_rj(my_rank, nb)
 !!
 !!   input /outpt data
 !!
@@ -59,15 +58,6 @@
       real(kind = kreal), allocatable :: sp_rj(:)
 !>      field data on Gauss-Legendre points @f$ f(r,\theta,\phi) @f$ 
       real(kind = kreal), allocatable :: vr_rtp(:)
-!
-!>      Spectr data for Legendre transform  @f$ f(r,l,m) @f$ 
-!>@n      Order: sp_rlm(i_comp,i_fld,j_rlm,k_rtm)
-!>@n      size: sp_rlm(3*nb*nidx_rlm(2)*nidx_rtm(1))
-      real(kind = kreal), allocatable :: sp_rlm(:)
-!>      field data for Legendre transform  @f$ f(r,\theta,m) @f$ 
-!!@n     Order: vr_rtm(i_comp,i_fld,l_rtm,k_rtm,m_rtm)
-!!@n     size:  vr_rtm(3*nb*nidx_rtm(2)*nidx_rtm(1)*nidx_rtm(3))
-      real(kind = kreal), allocatable :: vr_rtm(:)
 !
 !
 !>      Spectr harmonics order for Legendre transform
@@ -138,12 +128,8 @@
       allocate(mdx_n_rlm_rtm(nidx_rlm(2)))
       allocate(asin_theta_1d_rtm(nidx_rtm(2)))
 !
-      allocate(sp_rlm(ncomp_sph_trans*nnod_rlm))
       allocate(vr_rtp(ncomp_sph_trans*nnod_rtp))
-!
       allocate(sp_rj(ncomp_sph_trans*nnod_rj))
-!
-      allocate(vr_rtm(ncomp_sph_trans*nnod_rtm))
 !
       allocate(cos_theta_1d_rtp(nidx_rtp(2)))
       allocate(sin_theta_1d_rtp(nidx_rtp(2)))
@@ -161,9 +147,6 @@
 !
       sp_rj =  0.0d0
       vr_rtp = 0.0d0
-!
-      sp_rlm = 0.0d0
-      vr_rtm = 0.0d0
 !
       iflag_sph_trans = ncomp_sph_trans
 !
@@ -194,7 +177,6 @@
       deallocate(sin_theta_1d_rtp, cos_theta_1d_rtp)
 !
       deallocate(sp_rj, vr_rtp)
-      deallocate(sp_rlm, vr_rtm)
 !
       maxdegree_rlm =   0
       iflag_sph_trans = 0
@@ -274,44 +256,6 @@
       end do
 !
       end subroutine check_vr_rtp
-!
-! ----------------------------------------------------------------------
-!
-      subroutine check_vr_rtm(my_rank, nb)
-!
-      use m_spheric_parameter
-!
-      integer(kind = kint), intent(in) :: my_rank, nb
-      integer(kind = kint) :: inod, ist, ied
-!
-      write(50+my_rank,*) 'vr_rtm', nb
-      do inod = 1, nnod_rtm
-        ist = (inod-1) * nb + 1
-        ied = (inod-1) * nb + nb
-        write(50+my_rank,'(4i10,1p200e20.12)') inod,                    &
-     &        idx_global_rtm(inod,1:3), vr_rtm(ist:ied)
-      end do
-!
-      end subroutine check_vr_rtm
-!
-! ----------------------------------------------------------------------
-!
-      subroutine check_sp_rlm(my_rank, nb)
-!
-      use m_spheric_parameter
-!
-      integer(kind = kint), intent(in) :: my_rank, nb
-      integer(kind = kint) :: inod, ist, ied
-!
-      write(50+my_rank,*) 'sp_rlm', nb
-      do inod = 1, nnod_rlm
-        ist = (inod-1) * nb + 1
-        ied = (inod-1) * nb + nb
-        write(50+my_rank,'(3i10,1p200e20.12)') inod,                    &
-     &        idx_global_rlm(inod,1:2), sp_rlm(ist:ied)
-      end do
-!
-      end subroutine check_sp_rlm
 !
 ! ----------------------------------------------------------------------
 !

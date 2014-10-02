@@ -1,0 +1,246 @@
+!>@file   matmul_for_legendre_trans.F90
+!!@brief  module matmul_for_legendre_trans
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2013
+!
+!>@brief  Matrix products for Legendre transforms
+!!
+!!@verbatim
+!!      subroutine matmat_fwd_leg_trans(nkr, n_jk, nl_rtm,              &
+!!     &          V_kl, P_lj, S_kj)
+!!      subroutine matmul_fwd_leg_trans(nkr, n_jk, nl_rtm,              &
+!!     &          V_kl, P_lj, S_kj)
+!!      subroutine add_matmat_fwd_leg_trans(nkr, n_jk, nl_rtm,          &
+!!     &          V_kl, P_lj, coef, S_kj)
+!!      subroutine dgemm_fwd_leg_trans(nkr, n_jk, nl_rtm,               &
+!!     &          V_kl, P_lj, coef, S_kj)
+!!
+!!      subroutine matmat_bwd_leg_trans(nl_rtm, nkr, n_jk,              &
+!!     &          P_lj, S_jk, V_lk)
+!!      subroutine matmul_bwd_leg_trans(nl_rtm, nkr, n_jk,              &
+!!     &          P_lj, S_jk, V_lk)
+!!      subroutine add_matmat_bwd_leg_trans(nl_rtm, nkr, n_jk,          &
+!!     &          P_lj, S_jk, coef, V_lk)
+!!      subroutine dgemm_bwd_leg_trans(nl_rtm, nkr, n_jk,               &
+!!     &          P_lj, S_jk, coef, V_lk)
+!!
+!!@endverbatim
+!!
+!!@param   nkr     Number of radial grid and field
+!!@param   n_jk    Number of spherical harmonic degree for transform
+!!@param   nl_rtm  Number of meridional grids
+!!
+!!@param   P_lj    Matrix for Legendre polynomials
+!!@param   V_kl    field data @f$ f(r,\theta,m) @f$ with V_kl(r,theta)
+!!@param   S_kj    spectrum data @f$ f(r,l,m) @f$ with S_kj(r,l)
+!!@param   V_lk    field data @f$ f(r,\theta,m) @f$ with V_kl(theta,r)
+!!@param   S_jk    spectrum data @f$ f(r,l,m) @f$ with S_jk(l,r)
+!
+      module matmul_for_legendre_trans
+!
+      use m_precision
+      use m_constants
+!
+      implicit none
+!
+! -----------------------------------------------------------------------
+!
+      contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine matmat_fwd_leg_trans(nkr, n_jk, nl_rtm,                &
+     &          V_kl, P_lj, S_kj)
+!
+      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
+      real(kind = kreal), intent(in) :: V_kl(nkr,nl_rtm)
+      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
+!
+      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
+!
+      integer(kind = kint) :: jj, kk, ll
+      real(kind = kreal) :: s
+!
+!
+      do jj = 1, n_jk
+        do kk = 1, nkr
+          s = 0.0d0
+          do ll = 1, nl_rtm
+            s = s + P_lj(ll,jj) * V_kl(kk,ll)
+          end do
+          S_kj(kk,jj) = s
+        end do
+      end do
+!
+      end subroutine matmat_fwd_leg_trans
+!
+! ----------------------------------------------------------------------
+!
+      subroutine matmul_fwd_leg_trans(nkr, n_jk, nl_rtm,                &
+     &          V_kl, P_lj, S_kj)
+!
+      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
+      real(kind = kreal), intent(in) :: V_kl(nkr,nl_rtm)
+      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
+!
+      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
+!
+!
+      S_kj = matmul(V_kl,P_lj)
+!
+      end subroutine matmul_fwd_leg_trans
+!
+! ----------------------------------------------------------------------
+!
+      subroutine add_matmat_fwd_leg_trans(nkr, n_jk, nl_rtm,            &
+     &          V_kl, P_lj, coef, S_kj)
+!
+      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
+      real(kind = kreal), intent(in) :: coef
+      real(kind = kreal), intent(in) :: V_kl(nkr,nl_rtm)
+      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
+!
+      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
+!
+      integer(kind = kint) :: jj, kk, ll
+      real(kind = kreal) :: s
+!
+!
+      do jj = 1, n_jk
+        do kk = 1, nkr
+          s = 0.0d0
+          do ll = 1, nl_rtm
+            s = s + P_lj(ll,jj) * V_kl(kk,ll)
+          end do
+          S_kj(kk,jj) = coef * S_kj(kk,jj) + s
+        end do
+      end do
+!
+      end subroutine add_matmat_fwd_leg_trans
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dgemm_fwd_leg_trans(nkr, n_jk, nl_rtm,                 &
+     &          V_kl, P_lj, coef, S_kj)
+!
+      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
+      real(kind = kreal), intent(in) :: coef
+      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
+      real(kind = kreal), intent(in) :: V_kl(nkr,nl_rtm)
+!
+      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
+!
+!
+#ifdef BLAS
+      call DGEMM('N', 'N', nkr, n_jk, nl_rtm, one,                      &
+     &    V_kl, nkr, P_lj, nl_rtm, coef, S_kj, nkr)
+#else
+      call add_matmat_fwd_leg_trans(nkr, n_jk, nl_rtm,                  &
+     &    V_kl, P_lj, coef, S_kj)
+#endif
+!
+      end subroutine dgemm_fwd_leg_trans
+!
+! ----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine matmat_bwd_leg_trans(nl_rtm, nkr, n_jk,                &
+     &          P_lj, S_jk, V_lk)
+!
+      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
+      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
+      real(kind = kreal), intent(in) :: S_jk(n_jk,nkr)
+!
+      real(kind = kreal), intent(inout) :: V_lk(nl_rtm,nkr)
+!
+      integer(kind = kint) :: jj, kk, ll
+      real(kind = kreal) :: s
+!
+!
+      do kk = 1, nkr
+        do ll = 1, nl_rtm
+          s = 0.0d0
+          do jj = 1, n_jk
+            s = s + P_lj(ll,jj) * S_jk(jj,kk)
+          end do
+          V_lk(ll,kk) = s
+        end do
+      end do
+!
+      end subroutine matmat_bwd_leg_trans
+!
+! ----------------------------------------------------------------------
+!
+      subroutine matmul_bwd_leg_trans(nl_rtm, nkr, n_jk,                &
+     &          P_lj, S_jk, V_lk)
+!
+      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
+      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
+      real(kind = kreal), intent(in) :: S_jk(n_jk,nkr)
+!
+      real(kind = kreal), intent(inout) :: V_lk(nl_rtm,nkr)
+!
+!
+      V_lk = matmul(P_lj,S_jk)
+!
+      end subroutine matmul_bwd_leg_trans
+!
+! ----------------------------------------------------------------------
+!
+      subroutine add_matmat_bwd_leg_trans(nl_rtm, nkr, n_jk,            &
+     &          P_lj, S_jk, coef, V_lk)
+!
+      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
+      real(kind = kreal), intent(in) :: coef
+      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
+      real(kind = kreal), intent(in) :: S_jk(n_jk,nkr)
+!
+      real(kind = kreal), intent(inout) :: V_lk(nl_rtm,nkr)
+!
+      integer(kind = kint) :: jj, kk, ll
+      real(kind = kreal) :: s
+!
+!
+      do kk = 1, nkr
+        do ll = 1, nl_rtm
+          s = 0.0d0
+          do jj = 1, n_jk
+            s = s + P_lj(ll,jj) * S_jk(jj,kk)
+          end do
+          V_lk(ll,kk) = coef * V_lk(ll,kk) + s
+        end do
+      end do
+!
+      end subroutine add_matmat_bwd_leg_trans
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dgemm_bwd_leg_trans(nl_rtm, nkr, n_jk,                 &
+     &          P_lj, S_jk, coef, V_lk)
+!
+      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
+      real(kind = kreal), intent(in) :: coef
+      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
+      real(kind = kreal), intent(in) :: S_jk(n_jk,nkr)
+!
+      real(kind = kreal), intent(inout) :: V_lk(nl_rtm,nkr)
+!
+!
+#ifdef BLAS
+      if(n_jk .eq. 0) then
+        V_lk = 0.0d0
+      else
+        call DGEMM('N', 'N', nl_rtm, nkr, n_jk, one,                    &
+     &      P_lj, nl_rtm, S_jk, n_jk, coef, V_lk, nl_rtm)
+      end if
+#else
+      call add_matmat_bwd_leg_trans(nl_rtm, nkr, n_jk,                  &
+     &    P_lj, S_jk, coef, V_lk)
+#endif
+!
+      end subroutine dgemm_bwd_leg_trans
+!
+! ----------------------------------------------------------------------
+!
+      end module matmul_for_legendre_trans

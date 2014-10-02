@@ -119,8 +119,6 @@
 !
       subroutine copy_comm_rtp_from_type(rtp_comm, nnod_rtp)
 !
-      use set_from_recv_buf_rev
-!
       integer(kind = kint), intent(in) :: nnod_rtp
       type(sph_comm_tbl), intent(in) :: rtp_comm
 !
@@ -132,10 +130,7 @@
 !
       item_sr_rtp(1:ntot_item_sr_rtp)                                   &
      &      = rtp_comm%item_sr(1:ntot_item_sr_rtp)
-!
-      call set_reverse_import_table(nnod_rtp, ntot_item_sr_rtp,         &
-     &    item_sr_rtp, irev_sr_rtp)
-!
+      irev_sr_rtp(1:nnod_rtp) = rtp_comm%irev_sr(1:nnod_rtp)
       iflag_self_rtp = rtp_comm%iflag_self
 !
 !      call dealloc_type_sph_comm_item(rtp_comm)
@@ -145,8 +140,6 @@
 ! -----------------------------------------------------------------------
 !
       subroutine copy_comm_rtm_from_type(rtm_comm, nnod_rtm)
-!
-      use set_from_recv_buf_rev
 !
       integer(kind = kint), intent(in) :: nnod_rtm
       type(sph_comm_tbl), intent(in) :: rtm_comm
@@ -159,10 +152,7 @@
 !
       item_sr_rtm(1:ntot_item_sr_rtm)                                   &
      &      = rtm_comm%item_sr(1:ntot_item_sr_rtm)
-!
-      call set_reverse_import_table(nnod_rtm, ntot_item_sr_rtm,         &
-     &    item_sr_rtm, irev_sr_rtm)
-!
+      irev_sr_rtm(1:nnod_rtm) = rtm_comm%irev_sr(1:nnod_rtm)
       iflag_self_rtm = rtm_comm%iflag_self
 !
 !      call dealloc_type_sph_comm_item(rtm_comm)
@@ -172,8 +162,6 @@
 ! -----------------------------------------------------------------------
 !
       subroutine copy_comm_rlm_from_type(rlm_comm, nnod_rlm)
-!
-      use set_from_recv_buf_rev
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       type(sph_comm_tbl), intent(in) :: rlm_comm
@@ -186,10 +174,7 @@
 !
       item_sr_rlm(1:ntot_item_sr_rlm)                                   &
      &      = rlm_comm%item_sr(1:ntot_item_sr_rlm)
-!
-      call set_reverse_import_table(nnod_rlm, ntot_item_sr_rlm,         &
-     &    item_sr_rlm, irev_sr_rlm)
-!
+      irev_sr_rlm(1:nnod_rlm) = rlm_comm%irev_sr(1:nnod_rlm)
       iflag_self_rlm = rlm_comm%iflag_self
 !
 !      call dealloc_type_sph_comm_item(rlm_comm)
@@ -199,8 +184,6 @@
 ! -----------------------------------------------------------------------
 !
       subroutine copy_comm_rj_from_type(rj_comm, nnod_rj)
-!
-      use set_from_recv_buf_rev
 !
       integer(kind = kint), intent(in) :: nnod_rj
       type(sph_comm_tbl), intent(in) :: rj_comm
@@ -213,10 +196,7 @@
 !
       item_sr_rj(1:ntot_item_sr_rj)                                     &
      &      = rj_comm%item_sr(1:ntot_item_sr_rj)
-!
-      call set_reverse_import_table(nnod_rj, ntot_item_sr_rj,           &
-     &    item_sr_rj, irev_sr_rj)
-!
+      irev_sr_rj(1:nnod_rj) = rj_comm%irev_sr(1:nnod_rj)
       iflag_self_rj = rj_comm%iflag_self
 !
 !      call dealloc_type_sph_comm_item(rj_comm)

@@ -79,13 +79,11 @@
         call select_legendre_transform
       end if
 !
-      if (iflag_debug.eq.1) write(*,*) 'sel_alloc_legendre_trans'
-      call sel_alloc_legendre_trans(ncomp_sph_trans)
-!
-!
       if(my_rank .ne. 0) return
         if     (id_legendre_transfer .eq. iflag_leg_orginal_loop) then
           write(tmpchara,'(a)') trim(leg_orginal_loop)
+        else if(id_legendre_transfer .eq. iflag_leg_blocked) then
+          write(tmpchara,'(a)') trim(leg_blocked_loop)
         else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
           write(tmpchara,'(a)') trim(leg_krloop_inner)
         else if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
@@ -298,7 +296,6 @@
 !
       do iloop_type = 1, ntype_Leg_trans_loop
         id_legendre_transfer = iloop_type
-        call sel_alloc_legendre_trans(ncomp_sph_trans)
 !
         starttime = MPI_WTIME()
         if(iflag_debug .gt. 0) write(*,*) 'sph_back_trans_4_MHD'
@@ -306,8 +303,6 @@
         if(iflag_debug .gt. 0) write(*,*) 'sph_forward_trans_4_MHD'
         call sph_forward_trans_4_MHD
         endtime(id_legendre_transfer) = MPI_WTIME() - starttime
-!
-        call sel_dealloc_legendre_trans
       end do
 !
       call MPI_allREDUCE (endtime, etime_trans, ntype_Leg_trans_loop,   &
@@ -328,17 +323,19 @@
       if(my_rank .gt. 0) return
         write(*,*) '1: elapsed by original loop:      ',                &
      &            etime_trans(iflag_leg_orginal_loop)
-        write(*,*) '2: elapsed by inner radius loop:  ',                &
+        write(*,*) '2: elapsed by blocked loop:      ',                &
+     &            etime_trans(iflag_leg_blocked)
+        write(*,*) '3: elapsed by inner radius loop:  ',                &
      &            etime_trans(iflag_leg_krloop_inner)
-        write(*,*) '3: elapsed by outer radius loop:  ',                &
+        write(*,*) '4: elapsed by outer radius loop:  ',                &
      &            etime_trans(iflag_leg_krloop_outer)
-        write(*,*) '4: elapsed by original loop with symmetric: ',      &
+        write(*,*) '5: elapsed by original loop with symmetric: ',      &
      &            etime_trans(iflag_leg_symmetry)
-        write(*,*) '5: elapsed by sym. outer radius: ',                 &
+        write(*,*) '6: elapsed by sym. outer radius: ',                 &
      &            etime_trans(iflag_leg_sym_spin_loop)
-        write(*,*) '6: elapsed by matmul: ',                            &
+        write(*,*) '7: elapsed by matmul: ',                            &
      &            etime_trans(iflag_leg_matmul)
-        write(*,*) '7: elapsed by matmul with symmetric: ',             &
+        write(*,*) '8: elapsed by matmul with symmetric: ',             &
      &            etime_trans(iflag_leg_sym_matmul)
 !
       end subroutine select_legendre_transform

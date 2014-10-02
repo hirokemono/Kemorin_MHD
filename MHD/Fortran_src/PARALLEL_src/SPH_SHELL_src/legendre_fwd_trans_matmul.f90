@@ -13,9 +13,9 @@
 !!      subroutine dealloc_scl_fleg_mat_test
 !!
 !!      subroutine leg_f_trans_vector_matmul(ncomp, nvector,            &
-!!     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
+!!     &          irev_sr_rtm, n_WR, WR, sp_rlm)
 !!      subroutine leg_f_trans_scalar_matmul(ncomp, nvector, nscalar,   &
-!!     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
+!!     &          irev_sr_rtm, n_WR, WR, sp_rlm)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
 !!
@@ -47,6 +47,7 @@
       use m_spheric_param_smp
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
+      use matmul_for_legendre_trans
 !
       implicit none
 !
@@ -59,12 +60,12 @@
 !
       integer(kind = kint), private :: nvec_jk
       real(kind = kreal), allocatable, private :: pol_e(:,:)
-      real(kind = kreal), allocatable, private :: dpl_e(:,:)
-      real(kind = kreal), allocatable, private :: tor_e(:,:)
-      real(kind = kreal), allocatable, private :: dpl_o(:,:)
-      real(kind = kreal), allocatable, private :: tor_o(:,:)
+      real(kind = kreal), allocatable, private :: dpoldp_e(:,:)
+      real(kind = kreal), allocatable, private :: dtordp_e(:,:)
+      real(kind = kreal), allocatable, private :: dpoldt_e(:,:)
+      real(kind = kreal), allocatable, private :: dtordt_e(:,:)
 !
-      integer(kind = kint), private :: nvec_lk
+      integer(kind = kint), private :: nvec_kl
       real(kind = kreal), allocatable, private :: symp_r(:,:)
       real(kind = kreal), allocatable, private :: asmp_t(:,:)
       real(kind = kreal), allocatable, private :: asmp_p(:,:)
@@ -99,18 +100,18 @@
 !
       nvec_jk = nidx_rtm(2) * maxidx_rlm_smp(1)*nvector
       allocate(pol_e(nvec_jk,np_smp))
-      allocate(dpl_e(nvec_jk,np_smp))
-      allocate(tor_e(nvec_jk,np_smp))
-      allocate(dpl_o(nvec_jk,np_smp))
-      allocate(tor_o(nvec_jk,np_smp))
+      allocate(dpoldp_e(nvec_jk,np_smp))
+      allocate(dtordp_e(nvec_jk,np_smp))
+      allocate(dpoldt_e(nvec_jk,np_smp))
+      allocate(dtordt_e(nvec_jk,np_smp))
 !
-      nvec_lk = nidx_rtm(2) * maxidx_rlm_smp(1)*nvector
-      allocate(symp_r(nvec_lk,np_smp))
-      allocate(symn_t(nvec_lk,np_smp))
-      allocate(symn_p(nvec_lk,np_smp))
+      nvec_kl = nidx_rtm(2) * maxidx_rlm_smp(1)*nvector
+      allocate(symp_r(nvec_kl,np_smp))
+      allocate(symn_t(nvec_kl,np_smp))
+      allocate(symn_p(nvec_kl,np_smp))
 !
-      allocate(asmp_t(nvec_lk,np_smp))
-      allocate(asmp_p(nvec_lk,np_smp))
+      allocate(asmp_t(nvec_kl,np_smp))
+      allocate(asmp_p(nvec_kl,np_smp))
 !
       end subroutine alloc_vec_fleg_mat_test
 !
@@ -139,7 +140,7 @@
 !
       deallocate(Pvw_le, dPvw_le, Pgvw_le)
 !
-      deallocate(pol_e, dpl_e, tor_e, dpl_o, tor_o)
+      deallocate(pol_e, dpoldp_e, dtordp_e, dpoldt_e, dtordt_e)
 !
       deallocate(symp_r, symn_t, symn_p)
       deallocate(asmp_t, asmp_p)
@@ -161,13 +162,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_f_trans_vector_matmul(ncomp, nvector,              &
-     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
+     &          irev_sr_rtm, n_WR, WR, sp_rlm)
+!
+      use set_legendre_for_matmul
+      use set_vr_rtm_for_leg_matmul
+      use cal_sp_rlm_by_matmul
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
       integer(kind = kint), intent(in) :: n_WR
       integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
       real (kind=kreal), intent(inout):: WR(n_WR)
-      real(kind = kreal), intent(inout) :: sp_rlm_1(ncomp*nnod_rlm)
+      real(kind = kreal), intent(inout) :: sp_rlm(ncomp*nnod_rlm)
 !
       integer(kind = kint) :: ip, nb_nri, kr_nd, kk, k_rlm, i_rlm
       integer(kind = kint) :: l_rtm, i_kl, i_lj, i_kj, ip_rtm, in_rtm
@@ -196,85 +201,38 @@
           mn_rlm = nidx_rtm(3) - mp_rlm + 1
           jst(ip) = lstack_rlm(mp_rlm-1)
           nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
-!    even l-m
-          st_elapsed = MPI_WTIME()
-          do jj = 1, nj_rlm(ip)
-            j_rlm = jj + jst(ip)
-            do l_rtm = 1, nidx_rtm(2)
-              i_lj = l_rtm + (jj-1) * nidx_rtm(2)
-!
-              Pvw_le(i_lj,ip) = P_rtm(l_rtm,j_rlm)                      &
-     &               * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
-              dPvw_le(i_lj,ip) = dPdt_rtm(l_rtm,j_rlm)                  &
-     &               * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
-              Pgvw_le(i_lj,ip) = P_rtm(l_rtm,j_rlm)                     &
-     &               * dble(idx_gl_1d_rlm_j(j_rlm,3))                   &
-     &                * asin_theta_1d_rtm(l_rtm)                        &
-     &                * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
-            end do
-          end do
-            elaps(1) = MPI_WTIME() - st_elapsed + elaps(1)
 !
           st_elapsed = MPI_WTIME()
-          do l_rtm = 1, nidx_rtm(2)
-            do kk = 1, nkr(ip)
-              kr_nd = kk + kst(ip)
-              k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-              nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
+          call set_fwd_leg_vector_matmul(jst(ip), nj_rlm(ip),           &
+     &        num_jl, Pvw_le(1,ip), dPvw_le(1,ip), Pgvw_le(1,ip))
+          elaps(1) = MPI_WTIME() - st_elapsed + elaps(1)
 !
-              ip_rtm = 1 + (l_rtm-1) *  istep_rtm(2)                    &
-     &                   + (k_rlm-1) *  istep_rtm(1)                    &
-     &                   + (mp_rlm-1) * istep_rtm(3)
-              in_rtm = 1 + (l_rtm-1) *  istep_rtm(2)                    &
-     &                   + (k_rlm-1) *  istep_rtm(1)                    &
-     &                   + (mn_rlm-1) * istep_rtm(3)
-              ip_recv = 3*nd + (irev_sr_rtm(ip_rtm) - 1) * ncomp
-              in_recv = 3*nd + (irev_sr_rtm(in_rtm) - 1) * ncomp
-              i_kl = kk + (l_rtm-1) * nkr(ip)
+          st_elapsed = MPI_WTIME()
+          call set_vr_rtm_vector_matmul(kst(ip), nkr(ip),               &
+     &        mp_rlm, mn_rlm, ncomp, irev_sr_rtm, n_WR, WR,             &
+     &        nvec_kl, symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),        &
+     &        symn_t(1,ip), symn_p(1,ip))
+          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2) 
 !
-              symp_r(i_kl,ip) =  WR(ip_recv-2)
-!
-              asmp_t(i_kl,ip) =  WR(ip_recv-1)
-              asmp_p(i_kl,ip) =  WR(ip_recv  )
-!
-              symn_t(i_kl,ip) =  WR(in_recv-1)
-              symn_p(i_kl,ip) =  WR(in_recv  )
-            end do
-          end do
-            elaps(2) = MPI_WTIME() - st_elapsed + elaps(2) 
-!
-            st_elapsed = MPI_WTIME()
+          st_elapsed = MPI_WTIME()
           call matmul_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),   &
      &        symp_r(1,ip), Pvw_le(1,ip), pol_e(1,ip))
           call matmul_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),   &
-     &        asmp_t(1,ip), dPvw_le(1,ip), dpl_o(1,ip))
+     &        asmp_t(1,ip), dPvw_le(1,ip), dpoldt_e(1,ip))
           call matmul_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),   &
-     &        symn_p(1,ip), Pgvw_le(1,ip), dpl_e(1,ip))
+     &        symn_p(1,ip), Pgvw_le(1,ip), dpoldp_e(1,ip))
           call matmul_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),   &
-     &        symn_t(1,ip), Pgvw_le(1,ip), tor_e(1,ip))
+     &        symn_t(1,ip), Pgvw_le(1,ip), dtordp_e(1,ip))
           call matmul_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),   &
-     &        asmp_p(1,ip), dPvw_le(1,ip), tor_o(1,ip))
+     &        asmp_p(1,ip), dPvw_le(1,ip), dtordt_e(1,ip))
             elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
           st_elapsed = MPI_WTIME()
-          do jj = 1, nj_rlm(ip)
-            j_rlm = jj + jst(ip)
-            do kk = 1, nkr(ip)
-              kr_nd = kk + kst(ip)
-              k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-              nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
-              i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)          &
-     &                              + (k_rlm-1) * istep_rlm(1))
-              i_kj = kk + (jj-1) * nkr(ip)
-!
-              sp_rlm_1(i_rlm-2) = sp_rlm_1(i_rlm-2) + pol_e(i_kj,ip)
-              sp_rlm_1(i_rlm-1) = sp_rlm_1(i_rlm-1)                         &
-     &                - dpl_e(i_kj,ip) + dpl_o(i_kj,ip)
-              sp_rlm_1(i_rlm  ) = sp_rlm_1(i_rlm  )                         &
-     &                - tor_e(i_kj,ip) - tor_o(i_kj,ip)
-            end do
-          end do
-            elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
+          call cal_sp_rlm_vector_matmul                                 &
+     &       (kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                    &
+     &        nvec_jk, pol_e(1,ip), dpoldt_e(1,ip), dpoldp_e(1,ip),     &
+     &        dtordt_e(1,ip), dtordp_e(1,ip), ncomp, sp_rlm)
+          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
       end do
@@ -295,9 +253,9 @@
             i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)            &
      &                            + (k_rlm-1) * istep_rlm(1))
 !
-            sp_rlm_1(i_rlm-2) = sp_rlm_1(i_rlm-2) * r2_1d_rlm_r
-            sp_rlm_1(i_rlm-1) = sp_rlm_1(i_rlm-1) * radius_1d_rlm_r(k_rlm)
-            sp_rlm_1(i_rlm  ) = sp_rlm_1(i_rlm  ) * radius_1d_rlm_r(k_rlm)
+            sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) * r2_1d_rlm_r
+            sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1) * radius_1d_rlm_r(k_rlm)
+            sp_rlm(i_rlm  ) = sp_rlm(i_rlm  ) * radius_1d_rlm_r(k_rlm)
             end do
         end do
       end do
@@ -312,13 +270,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_f_trans_scalar_matmul(ncomp, nvector, nscalar,     &
-     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
+     &          irev_sr_rtm, n_WR, WR, sp_rlm)
+!
+      use set_legendre_for_matmul
+      use set_vr_rtm_for_leg_matmul
+      use cal_sp_rlm_by_matmul
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR
       integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
       real (kind=kreal), intent(inout):: WR(n_WR)
-      real(kind = kreal), intent(inout) :: sp_rlm_1(ncomp*nnod_rlm)
+      real(kind = kreal), intent(inout) :: sp_rlm(ncomp*nnod_rlm)
 !
       integer(kind = kint) :: ip, kr_nd, kk, ip_rtm, nd, k_rlm
       integer(kind = kint) :: mp_rlm, j_rlm, jj, i_rlm, i_recv
@@ -343,59 +305,27 @@
           jst(ip) = lstack_rlm(mp_rlm-1)
           nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
 !
-!    even l-m
           st_elapsed = MPI_WTIME()
-          do jj = 1, nj_rlm(ip)
-            j_rlm = jj + jst(ip)
-            do l_rtm = 1, nidx_rtm(2)
-              i_lj = l_rtm + (jj-1) * nidx_rtm(2)
-!
-              Pws_le(i_lj,ip) = P_rtm(l_rtm,j_rlm)                      &
-     &                         * g_sph_rlm(j_rlm,6) * weight_rtm(l_rtm)
-            end do
-          end do
-            elaps(1) = MPI_WTIME() - st_elapsed + elaps(1)
+          call set_fwd_leg_scalar_matmul                                &
+     &         (jst(ip), nj_rlm(ip), num_jl, Pws_le(1,ip))
+          elaps(1) = MPI_WTIME() - st_elapsed + elaps(1)
 !
           st_elapsed = MPI_WTIME()
-          do l_rtm = 1, nidx_rtm(2)
-            do kk = 1, nkr(ip)
-              kr_nd = kk + kst(ip)
-              k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-              nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
+          call set_vr_rtm_scalar_matmul(kst(ip), nkr(ip), mp_rlm,       &
+     &        ncomp, nvector, irev_sr_rtm, n_WR, WR,                    &
+     &        nscl_lk, symp(1,ip))
+          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
-              ip_rtm = 1 + (l_rtm-1) *  istep_rtm(2)                    &
-     &                   + (k_rlm-1) *  istep_rtm(1)                    &
-     &                   + (mp_rlm-1) * istep_rtm(3)
-              i_recv = nd + 3*nvector                                   &
-     &                    + (irev_sr_rtm(ip_rtm) - 1) * ncomp
-              i_kl = kk + (l_rtm-1) * nkr(ip)
-!
-              symp(i_kl,ip) =  WR(i_recv)
-            end do
-          end do
-            elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
-!
-            st_elapsed = MPI_WTIME()
+          st_elapsed = MPI_WTIME()
           call matmul_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),   &
      &        Pws_le(1,ip), symp(1,ip), scl_e(1,ip))
-            elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
+          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
           st_elapsed = MPI_WTIME()
-          do jj = 1, nj_rlm(ip)
-            j_rlm = jj + jst(ip)
-            do kk = 1, nkr(ip)
-              kr_nd = kk + kst(ip) + 3*nvector*nidx_rlm(1)
-              k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-              nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
-              i_rlm = nd + 3*nvector                                    &
-     &                   + ncomp * ((j_rlm-1) * istep_rlm(2)            &
-     &                            + (k_rlm-1) * istep_rlm(1))
-              i_kj = kk + (jj-1) * nkr(ip)
-!
-              sp_rlm_1(i_rlm) = sp_rlm_1(i_rlm) + scl_e(i_kj,ip)
-            end do
-          end do
-            elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
+          call cal_sp_rlm_scalar_matmul                                 &
+     &       (kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                    &
+     &        nscl_jk, scl_e(1,ip), ncomp, nvector, sp_rlm)
+          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
       end do
@@ -410,66 +340,5 @@
       end subroutine leg_f_trans_scalar_matmul
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine matmat_fwd_leg_trans(nkr, n_jk, nl_rtm,                &
-     &          V_kl, P_lj, S_kj)
-!
-      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
-      real(kind = kreal), intent(in) :: V_kl(nkr,nl_rtm)
-      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
-!
-      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
-!
-      integer(kind = kint) :: jj, kk, ll
-      real(kind = kreal) :: s
-!
-!
-      do jj = 1, n_jk
-        do kk = 1, nkr
-          s = 0.0d0
-          do ll = 1, nl_rtm
-            s = s + P_lj(ll,jj) * V_kl(kk,ll)
-          end do
-          S_kj(kk,jj) = s
-        end do
-      end do
-!
-      end subroutine matmat_fwd_leg_trans
-!
-! ----------------------------------------------------------------------
-!
-      subroutine matmul_fwd_leg_trans(nkr, n_jk, nl_rtm,                &
-     &          V_kl, P_lj, S_kj)
-!
-      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
-      real(kind = kreal), intent(in) :: V_kl(nkr,nl_rtm)
-      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
-!
-      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
-!
-!
-      S_kj = matmul(V_kl,P_lj)
-!
-      end subroutine matmul_fwd_leg_trans
-!
-! ----------------------------------------------------------------------
-!
-      subroutine dgemm_fwd_leg_trans(nkr, n_jk, nl_rtm,                &
-     &          V_kl, P_lj, S_kj)
-!
-      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
-      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
-      real(kind = kreal), intent(in) :: V_kl(nkr,nl_rtm)
-!
-      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
-!
-!
-      call DGEMM('N', 'N', nkr, n_jk, nl_rtm, one,                     &
-     &    V_kl, nkr, P_lj, nl_rtm, zero, S_kj, nkr)
-!
-      end subroutine dgemm_fwd_leg_trans
-!
-! ----------------------------------------------------------------------
 !
       end module legendre_fwd_trans_matmul

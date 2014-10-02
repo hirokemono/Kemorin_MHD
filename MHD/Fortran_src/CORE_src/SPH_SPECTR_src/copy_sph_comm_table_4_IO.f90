@@ -48,8 +48,6 @@
 !
       subroutine copy_comm_rtp_from_IO(my_rank, nnod_rtp)
 !
-      use set_from_recv_buf_rev
-!
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: nnod_rtp
 !
@@ -71,22 +69,11 @@
       call deallocate_import_item_IO
       call deallocate_neib_domain_IO
 !
-      call set_reverse_import_table(nnod_rtp, ntot_item_sr_rtp,         &
-     &    item_sr_rtp, irev_sr_rtp)
-!
-      if(id_domain_rtp(nneib_domain_rtp) .eq. my_rank) then
-        iflag_self_rtp = 1
-      else
-        iflag_self_rtp = 0
-      end if
-!
       end subroutine copy_comm_rtp_from_IO
 !
 ! -----------------------------------------------------------------------
 !
       subroutine copy_comm_rtm_from_IO(my_rank, nnod_rtm)
-!
-      use set_from_recv_buf_rev
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: nnod_rtm
@@ -109,22 +96,11 @@
       call deallocate_import_item_IO
       call deallocate_neib_domain_IO
 !
-      call set_reverse_import_table(nnod_rtm, ntot_item_sr_rtm,         &
-     &    item_sr_rtm, irev_sr_rtm)
-!
-      if(id_domain_rtm(nneib_domain_rtm) .eq. my_rank) then
-        iflag_self_rtm = 1
-      else
-        iflag_self_rtm = 0
-      end if
-!
       end subroutine copy_comm_rtm_from_IO
 !
 ! -----------------------------------------------------------------------
 !
       subroutine copy_comm_rlm_from_IO(my_rank, nnod_rlm)
-!
-      use set_from_recv_buf_rev
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: nnod_rlm
@@ -147,22 +123,11 @@
       call deallocate_import_item_IO
       call deallocate_neib_domain_IO
 !
-      call set_reverse_import_table(nnod_rlm, ntot_item_sr_rlm,         &
-     &    item_sr_rlm, irev_sr_rlm)
-!
-      if(id_domain_rlm(nneib_domain_rlm) .eq. my_rank) then
-        iflag_self_rlm = 1
-      else
-        iflag_self_rlm = 0
-      end if
-!
       end subroutine copy_comm_rlm_from_IO
 !
 ! -----------------------------------------------------------------------
 !
       subroutine copy_comm_rj_from_IO(my_rank, nnod_rj)
-!
-      use set_from_recv_buf_rev
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: nnod_rj
@@ -184,15 +149,6 @@
 !
       call deallocate_import_item_IO
       call deallocate_neib_domain_IO
-!
-      call set_reverse_import_table(nnod_rj, ntot_item_sr_rj,           &
-     &    item_sr_rj, irev_sr_rj)
-!
-      if(id_domain_rj(nneib_domain_rj) .eq. my_rank) then
-        iflag_self_rj = 1
-      else
-        iflag_self_rj = 0
-      end if
 !
       end subroutine copy_comm_rj_from_IO
 !

@@ -35,6 +35,7 @@
       use m_spheric_param_smp
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
+      use matmul_for_legendre_trans
 !
       implicit none
 !
@@ -349,66 +350,5 @@
       end subroutine legendre_f_trans_scalar_test
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine matmat_fwd_leg_trans(n_jk, nkr, nl_rtm,                &
-     &          P_jl, V_lk, S_jk)
-!
-      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
-      real(kind = kreal), intent(in) :: P_jl(n_jk,nl_rtm)
-      real(kind = kreal), intent(in) :: V_lk(nl_rtm,nkr)
-!
-      real(kind = kreal), intent(inout) :: S_jk(n_jk,nkr)
-!
-      integer(kind = kint) :: jj, kk, ll
-      real(kind = kreal) :: s
-!
-!
-      do kk = 1, nkr
-        do jj = 1, n_jk
-          s = 0.0d0
-          do ll = 1, nl_rtm
-            s = s + P_jl(jj,ll) * V_lk(ll,kk)
-          end do
-          S_jk(jj,kk) = s
-        end do
-      end do
-!
-      end subroutine matmat_fwd_leg_trans
-!
-! ----------------------------------------------------------------------
-!
-      subroutine matmul_fwd_leg_trans(n_jk, nkr, nl_rtm,                &
-     &          P_jl, V_lk, S_jk)
-!
-      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
-      real(kind = kreal), intent(in) :: P_jl(n_jk,nl_rtm)
-      real(kind = kreal), intent(in) :: V_lk(nl_rtm,nkr)
-!
-      real(kind = kreal), intent(inout) :: S_jk(n_jk,nkr)
-!
-!
-      S_jk = matmul(P_jl,V_lk)
-!
-      end subroutine matmul_fwd_leg_trans
-!
-! ----------------------------------------------------------------------
-!
-!      subroutine dgemm_fwd_leg_trans(n_jk, nkr, nl_rtm,                &
-!     &          P_jl, V_lk, S_jk)
-!
-!      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
-!      real(kind = kreal), intent(in) :: P_jl(n_jk,nl_rtm)
-!      real(kind = kreal), intent(in) :: V_lk(nl_rtm,nkr)
-!
-!      real(kind = kreal), intent(inout) :: S_jk(n_jk,nkr)
-!
-!
-!      call DGEMM('N', 'N', n_jk, nkr, nl_rtm, one,                     &
-!     &    P_jl, n_jk, V_lk, nl_rtm, zero, S_jk, n_jk)
-!
-!      end subroutine dgemm_fwd_leg_trans
-!
-! ----------------------------------------------------------------------
 !
       end module legendre_fwd_trans_testloop

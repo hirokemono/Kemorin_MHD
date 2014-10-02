@@ -10,11 +10,11 @@
 !!
 !!@verbatim
 !!      subroutine legendre_b_trans_vector_org                          &
-!!     &         (ncomp, nvector, sp_rlm_1, vr_rtm_1)
+!!     &         (ncomp, nvector, sp_rlm, vr_rtm)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!      subroutine legendre_b_trans_scalar_org                          &
-!!     &         (ncomp, nvector, nscalar, sp_rlm_1, vr_rtm_1)
+!!     &         (ncomp, nvector, nscalar, sp_rlm, vr_rtm)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
 !!@endverbatim
@@ -43,15 +43,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine legendre_b_trans_vector_org                            &
-     &         (ncomp, nvector, sp_rlm_1, vr_rtm_1)
+     &         (ncomp, nvector, sp_rlm, vr_rtm)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
-      real(kind = kreal), intent(inout) :: sp_rlm_1(ncomp*nnod_rlm)
-      real(kind = kreal), intent(inout) :: vr_rtm_1(ncomp*nnod_rtm)
+      real(kind = kreal), intent(inout) :: sp_rlm(ncomp*nnod_rlm)
+      real(kind = kreal), intent(inout) :: vr_rtm(ncomp*nnod_rtm)
 !
       integer(kind = kint) :: ip_rtm, in_rtm, i_rlm, j_rlm
       integer(kind = kint) :: k_rtm, l_rtm, nd
-      integer(kind = kint) :: ip, kst, ked, lp, lst, led
+      integer(kind = kint) :: ip, kst, ked
       integer(kind = kint) :: mp_rlm, mn_rlm, jst, jed
       real(kind = kreal) :: a2r_1d_rlm_r
       real(kind = kreal) :: vr1, vr2, vr3
@@ -61,7 +61,7 @@
 !
 !
 !$omp parallel do schedule(static)                                      &
-!$omp&            private(ip,kst,ked,lp,lst,led,jst,jed,                &
+!$omp&            private(ip,kst,ked,jst,jed,                           &
 !$omp&                    j_rlm,l_rtm,nd,i_rlm,ip_rtm,in_rtm,           &
 !$omp&                    mp_rlm,mn_rlm,vr1,vr2,vr3,Pg3_j,dPdt_j,Pgv_j, &
 !$omp&                    a2r_1d_rlm_r)
@@ -75,82 +75,77 @@
               i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)          &
      &                              + (k_rtm-1) * istep_rlm(1))
 !
-              sp_rlm_1(i_rlm-2) = sp_rlm_1(i_rlm-2) * a2r_1d_rlm_r
-              sp_rlm_1(i_rlm-1) = sp_rlm_1(i_rlm-1) * a_r_1d_rlm_r(k_rtm)
-              sp_rlm_1(i_rlm  ) = sp_rlm_1(i_rlm  ) * a_r_1d_rlm_r(k_rtm)
+              sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) * a2r_1d_rlm_r
+              sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1) * a_r_1d_rlm_r(k_rtm)
+              sp_rlm(i_rlm  ) = sp_rlm(i_rlm  ) * a_r_1d_rlm_r(k_rtm)
             end do
           end do
         end do
 !
-        do lp = 1, nblock_l_rtm
-          lst = lstack_block_rtm(lp-1) + 1
-          led = lstack_block_rtm(lp  )
-          do mp_rlm = 1, nidx_rtm(3)
-            jst = lstack_rlm(mp_rlm-1) + 1
-            jed = lstack_rlm(mp_rlm)
-            do k_rtm = kst, ked
-              do l_rtm = lst, led
+        do mp_rlm = 1, nidx_rtm(3)
+          jst = lstack_rlm(mp_rlm-1) + 1
+          jed = lstack_rlm(mp_rlm)
+          do k_rtm = kst, ked
+            do l_rtm = 1, nidx_rtm(2)
+              do j_rlm = jst, jed
+                Pg3_j(j_rlm) = P_jl(j_rlm,l_rtm) * g_sph_rlm(j_rlm,3)
+                dPdt_j(j_rlm) = dPdt_jl(j_rlm,l_rtm)
+              end do
+!
+              do nd = 1, nvector
+                vr1 = 0.0d0
+                vr2 = 0.0d0
+                vr3 = 0.0d0
                 do j_rlm = jst, jed
-                  Pg3_j(j_rlm) = P_jl(j_rlm,l_rtm) * g_sph_rlm(j_rlm,3)
-                  dPdt_j(j_rlm) = dPdt_jl(j_rlm,l_rtm)
-                end do
+                  i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)      &
+     &                                  + (k_rtm-1) * istep_rlm(1))
 !
-                do nd = 1, nvector
-                  vr1 = 0.0d0
-                  vr2 = 0.0d0
-                  vr3 = 0.0d0
-                  do j_rlm = jst, jed
-                    i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)    &
-     &                                    + (k_rtm-1) * istep_rlm(1))
-!
-                    vr1 = vr1 + sp_rlm_1(i_rlm-2) * Pg3_j(j_rlm)
-                    vr2 = vr2 + sp_rlm_1(i_rlm-1) * dPdt_j(j_rlm)
-                    vr3 = vr3 - sp_rlm_1(i_rlm  ) * dPdt_j(j_rlm)
-                  end do
-                  ip_rtm = 3*nd + ncomp*((l_rtm-1) *  istep_rtm(2)      &
-     &                                 + (k_rtm-1) *  istep_rtm(1)      &
-     &                                 + (mp_rlm-1) * istep_rtm(3))
-                  vr_rtm_1(ip_rtm-2) = vr1
-                  vr_rtm_1(ip_rtm-1) = vr2
-                  vr_rtm_1(ip_rtm  ) = vr3
+                  vr1 = vr1 + sp_rlm(i_rlm-2) * Pg3_j(j_rlm)
+                  vr2 = vr2 + sp_rlm(i_rlm-1) * dPdt_j(j_rlm)
+                  vr3 = vr3 - sp_rlm(i_rlm  ) * dPdt_j(j_rlm)
                 end do
+                ip_rtm = 3*nd + ncomp*((l_rtm-1) *  istep_rtm(2)        &
+     &                               + (k_rtm-1) *  istep_rtm(1)        &
+     &                               + (mp_rlm-1) * istep_rtm(3))
+                vr_rtm(ip_rtm-2) = vr1
+                vr_rtm(ip_rtm-1) = vr2
+                vr_rtm(ip_rtm  ) = vr3
               end do
             end do
           end do
+        end do
 !
-          do mp_rlm = 1, nidx_rtm(3)
-            mn_rlm = nidx_rtm(3) - mp_rlm + 1
-            jst = lstack_rlm(mp_rlm-1) + 1
-            jed = lstack_rlm(mp_rlm)
-            do k_rtm = kst, ked
-              do l_rtm = lst, led
-                do j_rlm = jst, jed
-                  Pgv_j(j_rlm) = -P_jl(j_rlm,l_rtm)                     &
+        do mp_rlm = 1, nidx_rtm(3)
+          mn_rlm = nidx_rtm(3) - mp_rlm + 1
+          jst = lstack_rlm(mp_rlm-1) + 1
+          jed = lstack_rlm(mp_rlm)
+          do k_rtm = kst, ked
+            do l_rtm = 1, nidx_rtm(2)
+              do j_rlm = jst, jed
+                Pgv_j(j_rlm) = -P_jl(j_rlm,l_rtm)                       &
      &                          * dble(idx_gl_1d_rlm_j(j_rlm,3))        &
      &                           *asin_theta_1d_rtm(l_rtm)
-                end do
-!
-                do nd = 1, nvector
-                  vr2 = 0.0d0
-                  vr3 = 0.0d0
-                  do j_rlm = jst, jed
-                    i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)    &
-     &                                    + (k_rtm-1) * istep_rlm(1))
-!
-                    vr2 = vr2 + sp_rlm_1(i_rlm  ) * Pgv_j(j_rlm)
-                    vr3 = vr3 + sp_rlm_1(i_rlm-1) * Pgv_j(j_rlm)
-                  end do
-                  in_rtm = 3*nd + ncomp*((l_rtm-1) *  istep_rtm(2)      &
-     &                                 + (k_rtm-1) *  istep_rtm(1)      &
-     &                                 + (mn_rlm-1) * istep_rtm(3))
-                  vr_rtm_1(in_rtm-1) = vr_rtm_1(in_rtm-1) + vr2
-                  vr_rtm_1(in_rtm  ) = vr_rtm_1(in_rtm  ) + vr3
-                end do
               end do
 !
-            end do
-          end do
+              do nd = 1, nvector
+                vr2 = 0.0d0
+                vr3 = 0.0d0
+                do j_rlm = jst, jed
+                  i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)      &
+     &                                  + (k_rtm-1) * istep_rlm(1))
 !
+                  vr2 = vr2 + sp_rlm(i_rlm  ) * Pgv_j(j_rlm)
+                  vr3 = vr3 + sp_rlm(i_rlm-1) * Pgv_j(j_rlm)
+                end do
+                in_rtm = 3*nd + ncomp*((l_rtm-1) *  istep_rtm(2)        &
+     &                               + (k_rtm-1) *  istep_rtm(1)        &
+     &                               + (mn_rlm-1) * istep_rtm(3))
+                vr_rtm(in_rtm-1) = vr_rtm(in_rtm-1) + vr2
+                vr_rtm(in_rtm  ) = vr_rtm(in_rtm  ) + vr3
+              end do
+            end do
+!
+          end do
         end do
       end do
 !$omp end parallel do
@@ -160,56 +155,51 @@
 ! -----------------------------------------------------------------------
 !
       subroutine legendre_b_trans_scalar_org                            &
-     &         (ncomp, nvector, nscalar, sp_rlm_1, vr_rtm_1)
+     &         (ncomp, nvector, nscalar, sp_rlm, vr_rtm)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      real(kind = kreal), intent(in) :: sp_rlm_1(ncomp*nnod_rlm)
-      real(kind = kreal), intent(inout) :: vr_rtm_1(ncomp*nnod_rtm)
+      real(kind = kreal), intent(in) :: sp_rlm(ncomp*nnod_rlm)
+      real(kind = kreal), intent(inout) :: vr_rtm(ncomp*nnod_rtm)
 !
       integer(kind = kint) :: i_rlm, j_rlm, k_rtm, l_rtm
-      integer(kind = kint) :: ip_rtm, nd, ip, kst, ked, lp, lst, led
+      integer(kind = kint) :: ip_rtm, nd, ip, kst, ked
       integer(kind = kint) :: mp_rlm, jst, jed
       real(kind = kreal) :: vr1
       real(kind = kreal) :: P_j(nidx_rlm(2))
 !
 !
 !$omp parallel do schedule(static)                                      &
-!$omp&            private(ip,kst,ked,lp,lst,led,j_rlm,l_rtm,nd,         &
+!$omp&            private(ip,kst,ked,j_rlm,l_rtm,nd,                    &
 !$omp&                    ip_rtm,i_rlm,mp_rlm,jst,jed,vr1,P_j)
       do ip = 1, np_smp
         kst = idx_rtm_smp_stack(ip-1,1) + 1
         ked = idx_rtm_smp_stack(ip,  1)
-        do lp = 1, nblock_l_rtm
-          lst = lstack_block_rtm(lp-1) + 1
-          led = lstack_block_rtm(lp  )
 !
-          do mp_rlm = 1, nidx_rtm(3)
-            jst = lstack_rlm(mp_rlm-1) + 1
-            jed = lstack_rlm(mp_rlm)
-            do k_rtm = kst, ked
+        do mp_rlm = 1, nidx_rtm(3)
+          jst = lstack_rlm(mp_rlm-1) + 1
+          jed = lstack_rlm(mp_rlm)
+          do k_rtm = kst, ked
 !
-              do l_rtm = lst, led
-                P_j(jst:jed) = P_jl(jst:jed,l_rtm)
-                do nd = 1, nscalar
-                  vr1 = 0.0d0
-                  do j_rlm = jst, jed
-                    i_rlm = nd + 3*nvector                              &
-     &                         + ncomp * ((j_rlm-1) * istep_rlm(2)      &
-     &                                  + (k_rtm-1) * istep_rlm(1))
+            do l_rtm = 1, nidx_rtm(2)
+              P_j(jst:jed) = P_jl(jst:jed,l_rtm)
+              do nd = 1, nscalar
+                vr1 = 0.0d0
+                do j_rlm = jst, jed
+                  i_rlm = nd + 3*nvector                                &
+     &                       + ncomp * ((j_rlm-1) * istep_rlm(2)        &
+     &                                + (k_rtm-1) * istep_rlm(1))
 !
-                    vr1 = vr1 + sp_rlm_1(i_rlm) * P_j(j_rlm)
-                  end do
-                  ip_rtm = nd + 3*nvector                               &
-     &                        + ncomp*((l_rtm-1) *  istep_rtm(2)        &
-     &                               + (k_rtm-1) *  istep_rtm(1)        &
-     &                               + (mp_rlm-1) * istep_rtm(3))
-                  vr_rtm_1(ip_rtm) = vr1
+                  vr1 = vr1 + sp_rlm(i_rlm) * P_j(j_rlm)
                 end do
+                ip_rtm = nd + 3*nvector                                 &
+     &                      + ncomp*((l_rtm-1) *  istep_rtm(2)          &
+     &                             + (k_rtm-1) *  istep_rtm(1)          &
+     &                             + (mp_rlm-1) * istep_rtm(3))
+                vr_rtm(ip_rtm) = vr1
               end do
-!
             end do
-          end do
 !
+          end do
         end do
       end do
 !$omp end parallel do

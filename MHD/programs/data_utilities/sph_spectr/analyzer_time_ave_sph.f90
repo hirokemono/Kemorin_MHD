@@ -33,7 +33,7 @@
       use m_ctl_params_sph_utils
       use m_sph_spectr_data
       use m_sph_phys_address
-      use load_data_for_sph_IO
+      use parallel_load_data_4_sph
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
 !
@@ -52,11 +52,7 @@
 !       set spectr grids
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
-      call input_modes_rj_sph_trans(my_rank)
-!
-      if (iflag_debug.gt.0) write(*,*) 's_count_num_sph_smp'
-      call s_count_num_sph_smp(ierr)
-      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
+      call load_para_rj_mesh
 !
 !  ------  initialize spectr data
 !

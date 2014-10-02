@@ -72,6 +72,7 @@
 !
 !
       call allocate_work_4_sph_trans
+      call allocate_work_sph_trans(ncomp_sph_trans)
       call allocate_wk_nod_data_to_sph
 !
       call radial_4_sph_trans
@@ -115,7 +116,7 @@
       ncomp = ncomp_sph_trans
       call split_rtp_comms(nneib_domain_rtp, id_domain_rtp,             &
      &          nneib_domain_rj) 
-      call init_sph_send_recv_N(ncomp, vr_rtp, vr_rtm, sp_rlm, sp_rj)
+      call init_sph_send_recv_N(ncomp, vr_rtp, vr_rtm_wk, sp_rlm_wk, sp_rj)
 !
       if(iflag_sph_commN .eq. iflag_alltoall) then
         call set_rev_all2all_import_tbl(nnod_rtp, nmax_sr_rtp,          &

@@ -41,10 +41,12 @@
       implicit none
 !
 !
-!>     Work field data for Legendre transform
+!>      field data for Legendre transform  @f$ f(r,\theta,m) @f$ 
+!!@n     size:  vr_rtm(ncomp*nidx_rtm(2)*nidx_rtm(1)*nidx_rtm(3))
       real(kind = kreal), allocatable :: vr_rtm_wk(:)
 !
-!>     Work spectr data for Legendre transform
+!>      Spectr data for Legendre transform  @f$ f(r,l,m) @f$ 
+!>@n      size: sp_rlm(ncomp*nidx_rlm(2)*nidx_rtm(1))
       real(kind = kreal), allocatable :: sp_rlm_wk(:)
 !
 ! ----------------------------------------------------------------------

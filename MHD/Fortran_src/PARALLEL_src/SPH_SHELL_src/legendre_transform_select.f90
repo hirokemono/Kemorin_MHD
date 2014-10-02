@@ -11,9 +11,6 @@
 !!@verbatim
 !!      subroutine set_legendre_trans_mode_ctl(tranx_loop_ctl)
 !!
-!!      subroutine sel_alloc_legendre_trans(ncomp)
-!!      subroutine sel_dealloc_legendre_trans
-!!
 !!    Backward transforms
 !!      subroutine sel_backward_legendre_trans                          &
 !!     &         (ncomp, nvector, nscalar, n_WS, WS)
@@ -54,6 +51,10 @@
       character(len = kchara), parameter                                &
      &           :: leg_orginal_loop = 'original_loop'
 !>      Character flag to perform Legendre transform 
+!@n     using blocked loop
+      character(len = kchara), parameter                                &
+     &           :: leg_blocked_loop = 'blocked_loop'
+!>      Character flag to perform Legendre transform 
 !!@n    using longer loop for original array order 
       character(len = kchara), parameter                                &
      &           :: leg_krloop_inner = 'inner_radial_loop'
@@ -89,22 +90,25 @@
 !@n     using original array order
       integer(kind = kint), parameter :: iflag_leg_orginal_loop = 1
 !>      integer flag to perform Legendre transform 
+!@n     using blocked loop
+      integer(kind = kint), parameter :: iflag_leg_blocked =      2
+!>      integer flag to perform Legendre transform 
 !!@n    using longer loop for original array order 
-      integer(kind = kint), parameter :: iflag_leg_krloop_inner = 2
+      integer(kind = kint), parameter :: iflag_leg_krloop_inner = 3
 !>      integer flag to perform Legendre transform 
 !@n     with inneromst Legendre polynomial loop
-      integer(kind = kint), parameter :: iflag_leg_krloop_outer = 3
+      integer(kind = kint), parameter :: iflag_leg_krloop_outer = 4
 !>      integer flag to perform Legendre transform with symmetry
-      integer(kind = kint), parameter :: iflag_leg_symmetry =     4
+      integer(kind = kint), parameter :: iflag_leg_symmetry =     5
 !>      integer flag to perform Legendre transform 
 !@n     with symmetry and inneromst Legendre polynomial loop
-      integer(kind = kint), parameter :: iflag_leg_sym_spin_loop = 5
+      integer(kind = kint), parameter :: iflag_leg_sym_spin_loop = 6
 !>      integer flag to perform Legendre transform 
 !@n     with mutmul function
-      integer(kind = kint), parameter :: iflag_leg_matmul =        6
+      integer(kind = kint), parameter :: iflag_leg_matmul =        7
 !>      integer flag to perform Legendre transform 
 !@n     with symmetry and mutmul function
-      integer(kind = kint), parameter :: iflag_leg_sym_matmul =    7
+      integer(kind = kint), parameter :: iflag_leg_sym_matmul =    8
 !>      integer flag to perform Legendre transform 
 !@n     with testing loop
       integer(kind = kint), parameter :: iflag_leg_test_loop =   99
@@ -143,32 +147,15 @@
         id_legendre_transfer = iflag_leg_matmul
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_matmul).gt.0) then
         id_legendre_transfer = iflag_leg_sym_matmul
+      else if(cmp_no_case(tranx_loop_ctl, leg_blocked_loop).gt.0) then
+        id_legendre_transfer = iflag_leg_blocked
       else if(cmp_no_case(tranx_loop_ctl, leg_orginal_loop).gt.0) then
+        id_legendre_transfer = iflag_leg_orginal_loop
+      else
         id_legendre_transfer = iflag_leg_orginal_loop
       end if
 !
       end subroutine set_legendre_trans_mode_ctl
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine sel_alloc_legendre_trans(ncomp)
-!
-      integer(kind = kint), intent(in) :: ncomp
-!
-!
-      call allocate_work_sph_trans(ncomp)
-!
-      end subroutine sel_alloc_legendre_trans
-!
-! -----------------------------------------------------------------------
-!
-      subroutine sel_dealloc_legendre_trans
-!
-!
-      call deallocate_work_sph_trans
-!
-      end subroutine sel_dealloc_legendre_trans
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -205,6 +192,9 @@
      &      n_WR, n_WS, WR, WS)
       else if(id_legendre_transfer .eq. iflag_leg_sym_matmul) then
         call leg_backward_trans_sym_matmul(ncomp, nvector, nscalar,     &
+     &      n_WR, n_WS, WR, WS)
+      else if(id_legendre_transfer .eq. iflag_leg_blocked) then
+        call leg_backward_trans_blocked(ncomp, nvector, nscalar,        &
      &      n_WR, n_WS, WR, WS)
       else
         call leg_backward_trans_org(ncomp, nvector, nscalar,            &
@@ -248,6 +238,9 @@
      &      n_WR, n_WS, WR, WS)
       else if(id_legendre_transfer .eq. iflag_leg_sym_matmul) then
         call leg_forward_trans_sym_matmul(ncomp, nvector, nscalar,      &
+     &      n_WR, n_WS, WR, WS)
+      else if(id_legendre_transfer .eq. iflag_leg_blocked) then
+        call leg_forwawd_trans_blocked(ncomp, nvector, nscalar,         &
      &      n_WR, n_WS, WR, WS)
       else
         call leg_forwawd_trans_org(ncomp, nvector, nscalar,             &

@@ -8,11 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine leg_fwd_trans_vector_sym_org(ncomp, nvector,         &
-!!     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
+!!     &          irev_sr_rtm, n_WR, WR, sp_rlm)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!      subroutine leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar,&
-!!     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
+!!     &          irev_sr_rtm, n_WR, WR, sp_rlm)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
 !!@endverbatim
@@ -41,13 +41,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_fwd_trans_vector_sym_org(ncomp, nvector,           &
-     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
+     &          irev_sr_rtm, n_WR, WR, sp_rlm)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
       integer(kind = kint), intent(in) :: n_WR
       integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
       real (kind=kreal), intent(inout):: WR(n_WR)
-      real(kind = kreal), intent(inout) :: sp_rlm_1(ncomp*nnod_rlm)
+      real(kind = kreal), intent(inout) :: sp_rlm(ncomp*nnod_rlm)
 !
 !
       integer(kind = kint) :: ip, kst, ked, k_rlm, nd, i_rlm, ll
@@ -195,18 +195,18 @@
 !
                 i_rlm = 3*nd + ncomp * ((2*j_rlm+jst-2) * istep_rlm(2)  &
      &                                      + (k_rlm-1) * istep_rlm(1))
-                sp_rlm_1(i_rlm-2) = sp_rlm_1(i_rlm-2) + pol_s * r2_1d_rlm_r
-                sp_rlm_1(i_rlm-1) = sp_rlm_1(i_rlm-1)                       &
+                sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + pol_s * r2_1d_rlm_r
+                sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                       &
      &                           + dpl_s * radius_1d_rlm_r(k_rlm)
-                sp_rlm_1(i_rlm  ) = sp_rlm_1(i_rlm  )                       &
+                sp_rlm(i_rlm  ) = sp_rlm(i_rlm  )                       &
      &                           + tor_s * radius_1d_rlm_r(k_rlm)
 !
                 i_rlm = 3*nd + ncomp * ((2*j_rlm+jst-1) * istep_rlm(2)  &
      &                                      + (k_rlm-1) * istep_rlm(1))
-                sp_rlm_1(i_rlm-2) = sp_rlm_1(i_rlm-2) + pol_a * r2_1d_rlm_r
-                sp_rlm_1(i_rlm-1) = sp_rlm_1(i_rlm-1)                       &
+                sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + pol_a * r2_1d_rlm_r
+                sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                       &
      &                           + dpl_a * radius_1d_rlm_r(k_rlm)
-                sp_rlm_1(i_rlm  ) = sp_rlm_1(i_rlm  )                       &
+                sp_rlm(i_rlm  ) = sp_rlm(i_rlm  )                       &
      &                           + tor_a * radius_1d_rlm_r(k_rlm)
               end do
             end do
@@ -284,10 +284,10 @@
 !
                 i_rlm = 3*nd + ncomp * ((2*j_rlm+jst-2) * istep_rlm(2)  &
      &                                      + (k_rlm-1) * istep_rlm(1))
-                sp_rlm_1(i_rlm-2) = sp_rlm_1(i_rlm-2) + pol_s * r2_1d_rlm_r
-                sp_rlm_1(i_rlm-1) = sp_rlm_1(i_rlm-1)                       &
+                sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + pol_s * r2_1d_rlm_r
+                sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                       &
      &                           + dpl_s * radius_1d_rlm_r(k_rlm)
-                sp_rlm_1(i_rlm  ) = sp_rlm_1(i_rlm  )                       &
+                sp_rlm(i_rlm  ) = sp_rlm(i_rlm  )                       &
      &                           + tor_s * radius_1d_rlm_r(k_rlm)
               end do
             end do
@@ -302,13 +302,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar,  &
-     &          irev_sr_rtm, n_WR, WR, sp_rlm_1)
+     &          irev_sr_rtm, n_WR, WR, sp_rlm)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR
       integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
       real (kind=kreal), intent(inout):: WR(n_WR)
-      real(kind = kreal), intent(inout) :: sp_rlm_1(ncomp*nnod_rlm)
+      real(kind = kreal), intent(inout) :: sp_rlm(ncomp*nnod_rlm)
 !
 !
       integer(kind = kint) :: ip, kst, ked, k_rlm, nd, i_rlm
@@ -384,12 +384,12 @@
                 i_rlm = nd + 3*nvector                                  &
      &                     + ncomp * ((2*j_rlm+jst-2) * istep_rlm(2)    &
      &                                    + (k_rlm-1) * istep_rlm(1))
-                sp_rlm_1(i_rlm) = sp_rlm_1(i_rlm)  + pol_s
+                sp_rlm(i_rlm) = sp_rlm(i_rlm)  + pol_s
 !
                 i_rlm = nd + 3*nvector                                  &
      &                     + ncomp * ((2*j_rlm+jst-1) * istep_rlm(2)    &
      &                                    + (k_rlm-1) * istep_rlm(1))
-                sp_rlm_1(i_rlm) = sp_rlm_1(i_rlm)  + pol_a
+                sp_rlm(i_rlm) = sp_rlm(i_rlm)  + pol_a
               end do
             end do
 !
@@ -436,7 +436,7 @@
                 i_rlm = nd + 3*nvector                                  &
      &                     + ncomp * ((2*j_rlm+jst-2) * istep_rlm(2)    &
      &                                    + (k_rlm-1) * istep_rlm(1))
-                sp_rlm_1(i_rlm) = sp_rlm_1(i_rlm)  + pol_s
+                sp_rlm(i_rlm) = sp_rlm(i_rlm)  + pol_s
               end do
             end do
           end do
