@@ -17,7 +17,7 @@
       implicit  none
 !
 !
-      integer (kind=kint), allocatable :: num_quad_2_tri
+      integer (kind=kint) :: num_quad_2_tri
       integer (kind=kint), allocatable :: node_quad_2_tri(:,:)
 !
       integer(kind = kint), parameter  :: nod_quad4_2_2tris(3,2)        &
