@@ -118,8 +118,11 @@
 !
       subroutine set_sp_rlm_vector_sym_matmul                           &
      &         (kst, nkr, jst, n_jk_e, n_jk_o,                          &
-     &          ncomp, irev_sr_rlm, n_WR, WR,                           &
-     &          nvec_jk, pol_e, dpl_e, tor_e, pol_o, dpl_o, tor_o)
+     &          ncomp, irev_sr_rlm, n_WR, WR, nvec_jk,                  &
+     &          pol_e, dpoldt_e, dpoldp_e, dtordt_e, dtordp_e,          &
+     &          pol_o, dpoldt_o, dpoldp_o, dtordt_o, dtordp_o)
+!
+      use m_schmidt_poly_on_rtm
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: jst, n_jk_e, n_jk_o
@@ -130,45 +133,61 @@
 !
       integer(kind = kint), intent(in) :: nvec_jk
       real(kind = kreal), intent(inout) :: pol_e(nvec_jk)
-      real(kind = kreal), intent(inout) :: dpl_e(nvec_jk)
-      real(kind = kreal), intent(inout) :: tor_e(nvec_jk)
+      real(kind = kreal), intent(inout) :: dpoldt_e(nvec_jk)
+      real(kind = kreal), intent(inout) :: dpoldp_e(nvec_jk)
+      real(kind = kreal), intent(inout) :: dtordt_e(nvec_jk)
+      real(kind = kreal), intent(inout) :: dtordp_e(nvec_jk)
       real(kind = kreal), intent(inout) :: pol_o(nvec_jk)
-      real(kind = kreal), intent(inout) :: dpl_o(nvec_jk)
-      real(kind = kreal), intent(inout) :: tor_o(nvec_jk)
+      real(kind = kreal), intent(inout) :: dpoldt_o(nvec_jk)
+      real(kind = kreal), intent(inout) :: dpoldp_o(nvec_jk)
+      real(kind = kreal), intent(inout) :: dtordt_o(nvec_jk)
+      real(kind = kreal), intent(inout) :: dtordp_o(nvec_jk)
 !
       integer(kind = kint) :: kk, kr_nd, k_rlm, nd
       integer(kind = kint) :: i_rlm, i_recv
-      integer(kind = kint) :: jj, i_jk
-      real(kind = kreal) :: a2r_1d_rlm_r
+      integer(kind = kint) :: jj, i_jk, j_rlm
+      real(kind = kreal) :: a1r_1d_rlm_r, a2r_1d_rlm_r
+      real(kind = kreal) :: g3, gm
 !
 !
       do kk = 1, nkr
         kr_nd = kk + kst
         k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
         nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
+        a1r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)
         a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
 !   even l-m
         do jj = 1, n_jk_e
-          i_rlm = 1 + (2*jj + jst - 2) * istep_rlm(2)                   &
-     &              + (k_rlm-1) *        istep_rlm(1)
+          j_rlm = 2*jj + jst - 1
+          g3 = g_sph_rlm(j_rlm,3)
+          gm = dble(idx_gl_1d_rlm_j(j_rlm,3))
+          i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                          &
+     &              + (k_rlm-1) * istep_rlm(1)
           i_recv = 3*nd + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !
           i_jk = jj + (kk-1) * n_jk_e
 !
-          pol_e(i_jk) = WR(i_recv-2) * a2r_1d_rlm_r
-          dpl_e(i_jk) = WR(i_recv-1) * a_r_1d_rlm_r(k_rlm)
-          tor_e(i_jk) = WR(i_recv  ) * a_r_1d_rlm_r(k_rlm)
+          pol_e(i_jk) =    WR(i_recv-2) * a2r_1d_rlm_r * g3
+          dpoldt_e(i_jk) = WR(i_recv-1) * a1r_1d_rlm_r
+          dpoldp_e(i_jk) = WR(i_recv-1) * a1r_1d_rlm_r * gm
+          dtordt_e(i_jk) = WR(i_recv  ) * a1r_1d_rlm_r
+          dtordp_e(i_jk) = WR(i_recv  ) * a1r_1d_rlm_r * gm
         end do
 !   odd l-m
         do jj = 1, n_jk_o
-          i_rlm = 1 + (2*jj + jst-1) * istep_rlm(2)                     &
-     &              + (k_rlm-1) *      istep_rlm(1)
+          j_rlm = 2*jj + jst
+          g3 = g_sph_rlm(j_rlm,3)
+          gm = dble(idx_gl_1d_rlm_j(j_rlm,3))
+          i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                          &
+     &              + (k_rlm-1) * istep_rlm(1)
           i_recv = 3*nd + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !
           i_jk = jj + (kk-1) * n_jk_o
-          pol_o(i_jk) = WR(i_recv-2) * a2r_1d_rlm_r
-          dpl_o(i_jk) = WR(i_recv-1) * a_r_1d_rlm_r(k_rlm)
-          tor_o(i_jk) = WR(i_recv  ) * a_r_1d_rlm_r(k_rlm)
+          pol_o(i_jk) =    WR(i_recv-2) * a2r_1d_rlm_r * g3
+          dpoldt_o(i_jk) = WR(i_recv-1) * a1r_1d_rlm_r
+          dpoldp_o(i_jk) = WR(i_recv-1) * a1r_1d_rlm_r * gm
+          dtordt_o(i_jk) = WR(i_recv  ) * a1r_1d_rlm_r
+          dtordp_o(i_jk) = WR(i_recv  ) * a1r_1d_rlm_r * gm
         end do
       end do
 !

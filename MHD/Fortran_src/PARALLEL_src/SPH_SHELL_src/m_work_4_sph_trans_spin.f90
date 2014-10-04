@@ -86,15 +86,12 @@
       use m_spheric_parameter
 !
       integer(kind = kint), intent(in) :: ncomp
-      integer(kind = kint)  :: inod
 !
 !
       if(ncomp .le. 0) return
-!$omp parallel do
-      do inod = 1, nnod_rlm*ncomp
-        sp_rlm_wk(inod) = 0.0d0
-      end do
-!$omp end parallel do
+!$omp parallel workshare
+      sp_rlm_wk(1:nnod_rlm*ncomp) = 0.0d0
+!$omp end parallel workshare
 !
       end subroutine clear_fwd_legendre_work
 !
@@ -105,15 +102,12 @@
       use m_spheric_parameter
 !
       integer(kind = kint), intent(in) :: ncomp
-      integer(kind = kint)  :: inod
 !
 !
       if(ncomp .le. 0) return
-!$omp parallel do
-      do inod = 1, nnod_rtm*ncomp
-        vr_rtm_wk(inod) = 0.0d0
-      end do
-!$omp end parallel do
+!$omp parallel workshare
+      vr_rtm_wk(1:nnod_rtm*ncomp) = 0.0d0
+!$omp end parallel workshare
 !
       end subroutine clear_bwd_legendre_work
 !

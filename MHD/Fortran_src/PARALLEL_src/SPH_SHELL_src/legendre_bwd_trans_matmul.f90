@@ -14,10 +14,12 @@
 !!      subroutine dealloc_vec_bleg_mat_test
 !!      subroutine dealloc_scl_bleg_mat_test
 !!
-!!      subroutine leg_b_trans_vector_matmul(ncomp, nvector)
-!!      subroutine leg_b_trans_scalar_matmul(ncomp, nvector, nscalar)
-!!        Input:  vr_rtm
-!!        Output: sp_rlm
+!!      subroutine leg_b_trans_vector_matmul(ncomp, nvector,            &
+!!     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+!!      subroutine leg_b_trans_scalar_matmul(ncomp, nvector, nscalar,   &
+!!     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+!!        Input:  sp_rlm
+!!        Output: vr_rtm
 !!
 !!     field data for Legendre transform
 !!       original layout: vr_rtm(l_rtm,m_rtm,k_rlm,icomp)
@@ -155,17 +157,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_b_trans_vector_matmul(ncomp, nvector,              &
-     &          irev_sr_rlm, n_WR, WR, vr_rtm)
+     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
 !
       use set_legendre_for_matmul
       use set_sp_rlm_for_leg_matmul
       use cal_vr_rtm_by_matmul
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
-      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: n_WR, n_WS
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
+      integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
       real (kind=kreal), intent(inout):: WR(n_WR)
-      real(kind = kreal), intent(inout) :: vr_rtm(ncomp*nnod_rtm)
+      real (kind=kreal), intent(inout):: WS(n_WS)
 !
       integer(kind = kint) :: nb_nri, ip, mp_rlm, mn_rlm
       integer(kind = kint) :: kst(np_smp), nkr(np_smp)
@@ -219,7 +222,7 @@
           call cal_vr_rtm_vector_matmul                                 &
      &       (kst(ip), nkr(ip), mp_rlm, mn_rlm, nvec_lk,                &
      &        symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),                 &
-     &        symn_t(1,ip), symn_p(1,ip), ncomp, vr_rtm)
+     &        symn_t(1,ip), symn_p(1,ip), ncomp, irev_sr_rtm, n_WS, WS)
            elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
@@ -235,17 +238,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_b_trans_scalar_matmul(ncomp, nvector, nscalar,     &
-     &          irev_sr_rlm, n_WR, WR, vr_rtm)
+     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
 !
       use set_legendre_for_matmul
       use set_sp_rlm_for_leg_matmul
       use cal_vr_rtm_by_matmul
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: n_WR, n_WS
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
+      integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
       real (kind=kreal), intent(inout):: WR(n_WR)
-      real(kind = kreal), intent(inout) :: vr_rtm(ncomp*nnod_rtm)
+      real (kind=kreal), intent(inout):: WS(n_WS)
 !
       integer(kind = kint) :: ip, mp_rlm
       integer(kind = kint) :: kst(np_smp), nkr(np_smp)
@@ -285,8 +289,9 @@
           elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
           st_elapsed = MPI_WTIME()
-          call cal_vr_rtm_scalar_matmul(kst(ip), nkr(ip), mp_rlm,       &
-     &        nscl_lk, symp(1,ip), ncomp, nvector, vr_rtm)
+          call cal_vr_rtm_scalar_matmul                                 &
+     &       (kst(ip), nkr(ip), mp_rlm, nscl_lk, symp(1,ip),            &
+     &        ncomp, nvector, irev_sr_rtm, n_WS, WS)
           elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do

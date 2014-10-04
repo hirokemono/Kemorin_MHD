@@ -4,7 +4,8 @@
 !!@author H. Matsui
 !!@date Programmed in Aug., 2013
 !
-!>@brief  forward Legendre transform for testing
+!>@brief  forward Legendre transform useing mat multi 
+!>@n      data are strored communication buffer
 !!
 !!@verbatim
 !!      subroutine alloc_vec_fleg_mat_test(nvector)
@@ -13,9 +14,10 @@
 !!      subroutine dealloc_scl_fleg_mat_test
 !!
 !!      subroutine leg_f_trans_vec_sym_matmul(ncomp, nvector,           &
+!!     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
 !!     &          irev_sr_rtm, n_WR, WR, sp_rlm)
 !!      subroutine leg_f_trans_scl_sym_matmul(ncomp, nvector, nscalar,  &
-!!     &          irev_sr_rtm, n_WR, WR, sp_rlm)
+!!     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
 !!
@@ -197,26 +199,23 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_f_trans_vec_sym_matmul(ncomp, nvector,             &
-     &          irev_sr_rtm, n_WR, WR, sp_rlm)
+     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
 !
       use set_legendre_for_matmul
       use set_vr_rtm_for_leg_matmul
       use cal_sp_rlm_by_matmul
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
-      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: n_WR, n_WS
       integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
+      integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
       real (kind=kreal), intent(inout):: WR(n_WR)
-      real(kind = kreal), intent(inout) :: sp_rlm(ncomp*nnod_rlm)
+      real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: ip, kr_nd, kk, k_rlm
-      integer(kind = kint) :: ie_rlm
-      integer(kind = kint) :: nd, mp_rlm, mn_rlm, je_rlm
-      integer(kind = kint) :: nle_rtm, nlo_rtm
+      integer(kind = kint) :: ip, mp_rlm, mn_rlm, nle_rtm, nlo_rtm
       integer(kind = kint) :: kst(np_smp), nkr(np_smp)
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
       integer(kind = kint) :: n_jk_e(np_smp), n_jk_o(np_smp)
-      real(kind = kreal) :: r2_1d_rlm_r
 !
 !
       call alloc_vec_fleg_mat_test(nvector)
@@ -288,33 +287,9 @@
      &        nvec_jk, pol_e(1,ip), pol_o(1,ip), dpoldt_e(1,ip),        &
      &        dpoldp_e(1,ip), dpoldt_o(1,ip), dpoldp_o(1,ip),           &
      &        dtordt_e(1,ip), dtordp_e(1,ip), dtordt_o(1,ip),           &
-     &        dtordp_o(1,ip), ncomp, sp_rlm)
+     &        dtordp_o(1,ip), ncomp, irev_sr_rlm, n_WS, WS)
           elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
-        end do
-      end do
-!$omp end parallel do
-!
-!$omp parallel do schedule(static)                                      &
-!$omp&        private(ip,kk,kr_nd,je_rlm,k_rlm,r2_1d_rlm_r,nd,ie_rlm)
-      do ip = 1, np_smp
-        kst(ip) = nvector*idx_rtm_smp_stack(ip-1,1)
-        nkr(ip) = nvector                                               &
-     &       * (idx_rtm_smp_stack(ip,  1) - idx_rtm_smp_stack(ip-1,1))
-        do kk = 1, nkr(ip)
-          kr_nd = kk + kst(ip)
-          k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-          nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
-          r2_1d_rlm_r = radius_1d_rlm_r(k_rlm) * radius_1d_rlm_r(k_rlm)
-          do je_rlm = 1, nidx_rlm(2)
-!
-            ie_rlm = 3*nd + ncomp * ((je_rlm-1) * istep_rlm(2)          &
-     &                             + (k_rlm-1) * istep_rlm(1))
-!
-            sp_rlm(ie_rlm-2) = sp_rlm(ie_rlm-2)*r2_1d_rlm_r
-            sp_rlm(ie_rlm-1) = sp_rlm(ie_rlm-1)*radius_1d_rlm_r(k_rlm)
-            sp_rlm(ie_rlm  ) = sp_rlm(ie_rlm  )*radius_1d_rlm_r(k_rlm)
-            end do
         end do
       end do
 !$omp end parallel do
@@ -328,17 +303,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_f_trans_scl_sym_matmul(ncomp, nvector, nscalar,    &
-     &          irev_sr_rtm, n_WR, WR, sp_rlm)
+     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
 !
       use set_legendre_for_matmul
       use set_vr_rtm_for_leg_matmul
       use cal_sp_rlm_by_matmul
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: n_WR, n_WS
       integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
+      integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
       real (kind=kreal), intent(inout):: WR(n_WR)
-      real(kind = kreal), intent(inout) :: sp_rlm(ncomp*nnod_rlm)
+      real (kind=kreal), intent(inout):: WS(n_WS)
 !
       integer(kind = kint) :: ip, mp_rlm
       integer(kind = kint) :: nle_rtm, nlo_rtm
@@ -390,7 +366,7 @@
           call cal_sp_rlm_scalar_sym_matmul                             &
      &       (kst(ip), nkr(ip), jst(ip), n_jk_o(ip), n_jk_e(ip),        &
      &        nscl_jk, scl_e(1,ip), scl_o(1,ip),                        &
-     &        ncomp, nvector, sp_rlm)
+     &        ncomp, nvector, irev_sr_rlm, n_WS, WS)
           elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do

@@ -15,11 +15,11 @@
 !!      subroutine dealloc_scl_bleg_sym_mat
 !!
 !!      subroutine leg_b_trans_vec_sym_matmul(ncomp, nvector,           &
-!!     &          irev_sr_rlm, n_WR, WR, vr_rtm)
+!!     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
 !!      subroutine leg_b_trans_scl_sym_matmul(ncomp, nvector, nscalar,  &
-!!     &          irev_sr_rlm, n_WR, WR, vr_rtm)
-!!        Input:  vr_rtm
-!!        Output: sp_rlm
+!!     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+!!        Input:  sp_rlm
+!!        Output: vr_rtm
 !!
 !!     field data for Legendre transform
 !!       original layout: vr_rtm(l_rtm,m_rtm,k_rlm,icomp)
@@ -53,43 +53,86 @@
 !
       implicit none
 !
+!>     Maximum matrix size for Legendre polynomial
       integer(kind = kint), private :: num_lj
+!>     Maximum for Legendre polynomials with evem (l-m)
+!!     for radial component's transform
       real(kind = kreal), allocatable, private :: Pg3_je(:,:)
+!>     Maximum for difference of Legendre polynomials with evem (l-m)
+!!     for horizontal component's transform
       real(kind = kreal), allocatable, private :: dPdt_je(:,:)
-      real(kind = kreal), allocatable, private :: Pgv_je(:,:)
+!>     Maximum for Legendre polynomials with odd (l-m)
+!!     for radial component's transform
       real(kind = kreal), allocatable, private :: Pg3_jo(:,:)
+!>     Maximum for difference of Legendre polynomials with odd (l-m)
+!!     for horizontal component's transform
       real(kind = kreal), allocatable, private :: dPdt_jo(:,:)
-      real(kind = kreal), allocatable, private :: Pgv_jo(:,:)
 !
+!>     Maximum for Legendre polynomials with evem (l-m)
+!!     for scalar's transform
       real(kind = kreal), allocatable, private :: P_je(:,:)
+!>     Maximum for Legendre polynomials with odd (l-m)
+!!     for scalar's transform
       real(kind = kreal), allocatable, private :: P_jo(:,:)
 !
+!>     Maximum matrix size for spectr data
       integer(kind = kint), private :: nvec_jk
+!>     Poloidal component with evem (l-m)
       real(kind = kreal), allocatable, private :: pol_e(:,:)
-      real(kind = kreal), allocatable, private :: dpl_e(:,:)
-      real(kind = kreal), allocatable, private :: tor_e(:,:)
+!>     radial difference of Poloidal component with evem (l-m)
+      real(kind = kreal), allocatable, private :: dpoldt_e(:,:)
+!>     radial difference of Poloidal component with evem (l-m)
+      real(kind = kreal), allocatable, private :: dpoldp_e(:,:)
+!>     Toroidal component with evem (l-m)
+      real(kind = kreal), allocatable, private :: dtordt_e(:,:)
+!>     Toroidal component with evem (l-m)
+      real(kind = kreal), allocatable, private :: dtordp_e(:,:)
+!>     Poloidal component with odd (l-m)
       real(kind = kreal), allocatable, private :: pol_o(:,:)
-      real(kind = kreal), allocatable, private :: dpl_o(:,:)
-      real(kind = kreal), allocatable, private :: tor_o(:,:)
+!>     radial difference of Poloidal component with odd (l-m)
+      real(kind = kreal), allocatable, private :: dpoldt_o(:,:)
+!>     radial difference of Poloidal component with odd (l-m)
+      real(kind = kreal), allocatable, private :: dpoldp_o(:,:)
+!>     Toroidal component with odd (l-m)
+      real(kind = kreal), allocatable, private :: dtordt_o(:,:)
+!>     Toroidal component with odd (l-m)
+      real(kind = kreal), allocatable, private :: dtordp_o(:,:)
 !
+!>     Maximum matrix size for field data
       integer(kind = kint), private :: nvec_lk
+!>     Symmetric radial component
       real(kind = kreal), allocatable, private :: symp_r(:,:)
+!>     Anti-symmetric theta-component
       real(kind = kreal), allocatable, private :: asmp_t(:,:)
+!>     Anti-symmetric phi-component
       real(kind = kreal), allocatable, private :: asmp_p(:,:)
+!>     Symmetric theta-component with condugate order
       real(kind = kreal), allocatable, private :: symn_t(:,:)
+!>     Symmetric phi-component with condugate order
       real(kind = kreal), allocatable, private :: symn_p(:,:)
+!>     Anti-symmetric radial component
       real(kind = kreal), allocatable, private :: asmp_r(:,:)
+!>     Symmetric theta-component
       real(kind = kreal), allocatable, private :: symp_t(:,:)
+!>     Symmetric phi-component
       real(kind = kreal), allocatable, private :: symp_p(:,:)
+!>     Anti-symmetric theta-component with condugate order
       real(kind = kreal), allocatable, private :: asmn_t(:,:)
+!>     Anti-symmetric phi-component with condugate order
       real(kind = kreal), allocatable, private :: asmn_p(:,:)
 !
+!>     Maximum matrix size for spectr data
       integer(kind = kint), private :: nscl_jk
+!>     Scalar with evem (l-m)
       real(kind = kreal), allocatable, private :: scl_e(:,:)
+!>     Scalar with odd (l-m)
       real(kind = kreal), allocatable, private :: scl_o(:,:)
 !
+!>     Maximum matrix size for field data
       integer(kind = kint), private :: nscl_lk
+!>     Symmetric scalar component
       real(kind = kreal), allocatable, private :: symp(:,:)
+!>     Anti-symmetric scalar component
       real(kind = kreal), allocatable, private :: asmp(:,:)
 !
       real(kind = kreal), private :: st_elapsed
@@ -115,18 +158,20 @@
       num_lj = ((nidx_rtm(2)+1)/2) * maxdegree_rlm
       allocate(Pg3_je(num_lj,np_smp))
       allocate(dPdt_je(num_lj,np_smp))
-      allocate(Pgv_je(num_lj,np_smp))
       allocate(Pg3_jo(num_lj,np_smp))
       allocate(dPdt_jo(num_lj,np_smp))
-      allocate(Pgv_jo(num_lj,np_smp))
 !
       nvec_jk = ((nidx_rtm(2)+1)/2) * maxidx_rlm_smp(1)*nvector
       allocate(pol_e(nvec_jk,np_smp))
-      allocate(dpl_e(nvec_jk,np_smp))
-      allocate(tor_e(nvec_jk,np_smp))
+      allocate(dpoldt_e(nvec_jk,np_smp))
+      allocate(dpoldp_e(nvec_jk,np_smp))
+      allocate(dtordt_e(nvec_jk,np_smp))
+      allocate(dtordp_e(nvec_jk,np_smp))
       allocate(pol_o(nvec_jk,np_smp))
-      allocate(dpl_o(nvec_jk,np_smp))
-      allocate(tor_o(nvec_jk,np_smp))
+      allocate(dpoldt_o(nvec_jk,np_smp))
+      allocate(dpoldp_o(nvec_jk,np_smp))
+      allocate(dtordt_o(nvec_jk,np_smp))
+      allocate(dtordp_o(nvec_jk,np_smp))
 !
       nvec_lk = ((nidx_rtm(2)+1)/2) * maxidx_rlm_smp(1)*nvector
       allocate(symp_r(nvec_lk,np_smp))
@@ -168,9 +213,10 @@
       subroutine dealloc_vec_bleg_sym_mat
 !
 !
-      deallocate(Pg3_je, dPdt_je, Pgv_je, Pg3_jo, dPdt_jo, Pgv_jo)
+      deallocate(Pg3_je, dPdt_je, Pg3_jo, dPdt_jo)
 !
-      deallocate(pol_e, dpl_e, tor_e, pol_o, dpl_o, tor_o)
+      deallocate(pol_e, dpoldt_e, dpoldp_e, dtordt_e, dtordp_e)
+      deallocate(pol_o, dpoldt_o, dpoldp_o, dtordt_o, dtordp_o)
 !
       deallocate(symp_r, symp_t, symp_p, symn_t, symn_p)
       deallocate(asmp_r, asmp_t, asmp_p, asmn_t, asmn_p)
@@ -192,17 +238,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_b_trans_vec_sym_matmul(ncomp, nvector,             &
-     &          irev_sr_rlm, n_WR, WR, vr_rtm)
+     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
 !
       use set_legendre_for_matmul
       use set_sp_rlm_for_leg_matmul
       use cal_vr_rtm_by_matmul
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
-      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: n_WR, n_WS
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
+      integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
       real (kind=kreal), intent(inout):: WR(n_WR)
-      real(kind = kreal), intent(inout) :: vr_rtm(ncomp*nnod_rtm)
+      real (kind=kreal), intent(inout):: WS(n_WS)
 !
       integer(kind = kint) :: ip
       integer(kind = kint) :: nl_rtm, mp_rlm, mn_rlm
@@ -232,16 +279,16 @@
           st_elapsed = MPI_WTIME()
           call set_bwd_leg_vector_sym_matmul                            &
      &       (jst(ip), n_jk_e(ip), n_jk_o(ip), nl_rtm, num_lj,          &
-     &        Pg3_je(1,ip), dPdt_je(1,ip), Pgv_je(1,ip),                &
-     &        Pg3_jo(1,ip), dPdt_jo(1,ip), Pgv_jo(1,ip))
+     &        Pg3_je(1,ip), dPdt_je(1,ip), Pg3_jo(1,ip), dPdt_jo(1,ip))
             elaps(1) = MPI_WTIME() - st_elapsed + elaps(1)
 !
           st_elapsed = MPI_WTIME()
           call set_sp_rlm_vector_sym_matmul                             &
      &       (kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
-     &        ncomp, irev_sr_rlm, n_WR, WR,                             &
-     &        nvec_jk, pol_e(1,ip), dpl_e(1,ip), tor_e(1,ip),           &
-     &        pol_o(1,ip), dpl_o(1,ip), tor_o(1,ip) )
+     &        ncomp, irev_sr_rlm, n_WR, WR, nvec_jk, pol_e(1,ip),       &
+     &        dpoldt_e(1,ip), dpoldp_e(1,ip), dtordt_e(1,ip),           &
+     &        dtordp_e(1,ip), pol_o(1,ip), dpoldt_o(1,ip),              &
+     &        dpoldp_o(1,ip), dtordt_o(1,ip), dtordp_o(1,ip))
           elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
 !   even l-m
@@ -249,26 +296,26 @@
           call matmul_bwd_leg_trans(nl_rtm, nkr(ip), n_jk_e(ip),        &
      &        Pg3_je(1,ip), pol_e(1,ip), symp_r(1,ip))
           call matmul_bwd_leg_trans(nl_rtm, nkr(ip), n_jk_e(ip),        &
-     &        dPdt_je(1,ip), dpl_e(1,ip), asmp_t(1,ip))
+     &        dPdt_je(1,ip), dpoldt_e(1,ip), asmp_t(1,ip))
           call matmul_bwd_leg_trans(nl_rtm, nkr(ip), n_jk_e(ip),        &
-     &        dPdt_je(1,ip), tor_e(1,ip), asmp_p(1,ip))
+     &        dPdt_je(1,ip), dtordt_e(1,ip), asmp_p(1,ip))
 !
           call matmul_bwd_leg_trans(nl_rtm, nkr(ip), n_jk_e(ip),        &
-     &        Pgv_je(1,ip), tor_e(1,ip), symn_t(1,ip))
+     &        Pg3_je(1,ip), dtordp_e(1,ip), symn_t(1,ip))
           call matmul_bwd_leg_trans(nl_rtm, nkr(ip), n_jk_e(ip),        &
-     &        Pgv_je(1,ip), dpl_e(1,ip), symn_p(1,ip))
+     &        Pg3_je(1,ip), dpoldp_e(1,ip), symn_p(1,ip))
 !   odd l-m
           call matmul_bwd_leg_trans(nl_rtm, nkr(ip), n_jk_o(ip),        &
      &        Pg3_jo(1,ip), pol_o(1,ip), asmp_r(1,ip))
           call matmul_bwd_leg_trans(nl_rtm, nkr(ip), n_jk_o(ip),        &
-     &        dPdt_jo(1,ip), dpl_o(1,ip), symp_t(1,ip))
+     &        dPdt_jo(1,ip), dpoldt_o(1,ip), symp_t(1,ip))
           call matmul_bwd_leg_trans(nl_rtm, nkr(ip), n_jk_o(ip),        &
-     &        dPdt_jo(1,ip), tor_o(1,ip), symp_p(1,ip))
+     &        dPdt_jo(1,ip), dtordt_o(1,ip), symp_p(1,ip))
 !
           call matmul_bwd_leg_trans(nl_rtm, nkr(ip), n_jk_o(ip),        &
-     &        Pgv_jo(1,ip), tor_o(1,ip), asmn_t(1,ip))
+     &        Pg3_jo(1,ip), dtordp_o(1,ip), asmn_t(1,ip))
           call matmul_bwd_leg_trans(nl_rtm, nkr(ip), n_jk_o(ip),        &
-     &        Pgv_jo(1,ip), dpl_o(1,ip), asmn_p(1,ip))
+     &        Pg3_jo(1,ip), dpoldp_o(1,ip), asmn_p(1,ip))
           elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
           st_elapsed = MPI_WTIME()
@@ -276,7 +323,7 @@
      &       (kst(ip), nkr(ip), mp_rlm, mn_rlm, nl_rtm, nvec_lk,        &
      &        symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip), symn_t(1,ip),   &
      &        symn_p(1,ip), asmp_r(1,ip), symp_t(1,ip), symp_p(1,ip),   &
-     &        asmn_t(1,ip), asmn_p(1,ip), ncomp, vr_rtm)
+     &        asmn_t(1,ip), asmn_p(1,ip), ncomp, irev_sr_rtm, n_WS, WS)
           elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
@@ -292,17 +339,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_b_trans_scl_sym_matmul(ncomp, nvector, nscalar,    &
-     &          irev_sr_rlm, n_WR, WR, vr_rtm)
+     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
 !
       use set_legendre_for_matmul
       use set_sp_rlm_for_leg_matmul
       use cal_vr_rtm_by_matmul
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: n_WR, n_WS
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
+      integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
       real (kind=kreal), intent(inout):: WR(n_WR)
-      real(kind = kreal), intent(inout) :: vr_rtm(ncomp*nnod_rtm)
+      real (kind=kreal), intent(inout):: WS(n_WS)
 !
       integer(kind = kint) :: ip
       integer(kind = kint) :: nl_rtm, mp_rlm
@@ -353,9 +401,9 @@
           elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
           st_elapsed = MPI_WTIME()
-          call cal_vr_rtm_scalar_sym_matmul                             &
-     &       (kst(ip), nkr(ip), mp_rlm, nl_rtm, nscl_lk,                &
-     &        symp(1,ip), asmp(1,ip), ncomp, nvector, vr_rtm)
+          call cal_vr_rtm_scalar_sym_matmul(kst(ip), nkr(ip),           &
+     &        mp_rlm, nl_rtm, nscl_lk, symp(1,ip), asmp(1,ip),          &
+     &        ncomp, nvector, irev_sr_rtm, n_WS, WS)
           elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
