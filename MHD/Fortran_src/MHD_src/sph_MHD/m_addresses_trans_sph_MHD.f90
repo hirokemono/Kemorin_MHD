@@ -149,6 +149,9 @@
       ncomp_rtp_2_rj = ncomp_rtp_2_rj + nscalar_rtp_2_rj
 !
       ncomp_sph_trans = max(ncomp_rj_2_rtp, ncomp_rtp_2_rj)
+      nvector_sph_trans = max(nvector_rj_2_rtp, nvector_rtp_2_rj)
+      nscalar_sph_trans = max((nscalar_rj_2_rtp+6*ntensor_rj_2_rtp),    &
+     &                        (nscalar_rtp_2_rj+6*ntensor_rtp_2_rj))
 !
       end subroutine set_addresses_trans_sph_MHD
 !

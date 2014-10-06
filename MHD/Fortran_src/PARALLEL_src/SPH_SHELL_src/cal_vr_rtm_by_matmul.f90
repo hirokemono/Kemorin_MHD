@@ -44,14 +44,16 @@
      &        symp_r, asmp_t, asmp_p, symn_t, symn_p, ncomp,            &
      &        irev_sr_rtm, n_WS, WS)
 !
+      use m_work_4_sph_trans
+!
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
       integer(kind = kint), intent(in) :: nvec_lk
-      real(kind = kreal), intent(in) :: symp_r(nvec_lk)
-      real(kind = kreal), intent(in) :: asmp_t(nvec_lk)
-      real(kind = kreal), intent(in) :: asmp_p(nvec_lk)
-      real(kind = kreal), intent(in) :: symn_t(nvec_lk)
-      real(kind = kreal), intent(in) :: symn_p(nvec_lk)
+      real(kind = kreal), intent(in) ::    symp_r(nvec_lk)
+      real(kind = kreal), intent(in) ::    asmp_t(nvec_lk)
+      real(kind = kreal), intent(in) ::    asmp_p(nvec_lk)
+      real(kind = kreal), intent(inout) :: symn_t(nvec_lk)
+      real(kind = kreal), intent(inout) :: symn_p(nvec_lk)
 !
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
@@ -61,6 +63,14 @@
       integer(kind = kint) :: kk, kr_nd, k_rlm, nd, l_rtm, i_lk
       integer(kind = kint) :: ip_rtm, in_rtm, ip_send, in_send
 !
+!
+      do kk = 1, nkr
+        do l_rtm = 1, nidx_rtm(2)
+          i_lk = l_rtm + (kk-1) * nidx_rtm(2)
+          symn_t(i_lk) = - symn_t(i_lk) * asin_theta_1d_rtm(l_rtm)
+          symn_p(i_lk) = - symn_p(i_lk) * asin_theta_1d_rtm(l_rtm)
+        end do
+      end do
 !
       do kk = 1, nkr
         kr_nd = kk + kst

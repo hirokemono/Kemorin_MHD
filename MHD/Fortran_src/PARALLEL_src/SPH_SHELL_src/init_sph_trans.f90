@@ -20,7 +20,7 @@
 !
       private :: set_mdx_rlm_rtm, set_sin_theta_rtm, set_sin_theta_rtp
       private :: radial_4_sph_trans, cal_legendre_trans_coefs
-      private :: set_trans_legendre_rtm
+      private :: set_trans_legendre_rtm, set_legendre_hemispher_rtm
 !
 ! -----------------------------------------------------------------------
 !
@@ -86,8 +86,8 @@
       call allocate_trans_schmidt_rtm
       call set_trans_legendre_rtm
 !
-!      call allocate_legendre_trans_mat
-!      call cal_legendre_trans_coefs
+      call allocate_hemi_schmidt_rtm
+      call set_legendre_hemispher_rtm
 !
       if(nvector_legendre .le. 0                                        &
      &     .or. nvector_legendre .gt. nidx_rtm(2)) then
@@ -116,7 +116,8 @@
       ncomp = ncomp_sph_trans
       call split_rtp_comms(nneib_domain_rtp, id_domain_rtp,             &
      &          nneib_domain_rj) 
-      call init_sph_send_recv_N(ncomp, vr_rtp, vr_rtm_wk, sp_rlm_wk, sp_rj)
+      call init_sph_send_recv_N(ncomp, vr_rtp, vr_rtm_wk,               &
+     &    sp_rlm_wk, sp_rj)
 !
       if(iflag_sph_commN .eq. iflag_alltoall) then
         call set_rev_all2all_import_tbl(nnod_rtp, nmax_sr_rtp,          &
@@ -241,6 +242,52 @@
       end subroutine set_sin_theta_rtp
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_legendre_hemispher_rtm
+!
+      use m_spheric_parameter
+      use m_schmidt_poly_on_rtm
+      use m_work_4_sph_trans
+!
+      integer(kind = kint) :: l_rtm, j_rlm
+      integer(kind = kint) :: mp_rlm, jst, nj_rlm, n_jk_e, n_jk_o, jj
+!
+!
+      do mp_rlm = 1, nidx_rtm(3)
+        jst = lstack_rlm(mp_rlm-1)
+        nj_rlm = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+        lstack_even_rlm(mp_rlm) = jst + (nj_rlm+1) / 2
+      end do
+!
+!$omp parallel do private(jst,nj_rlm,j_rlm,l_rtm,jj,n_jk_e,n_jk_o)
+      do mp_rlm = 1, nidx_rtm(3)
+        jst = lstack_rlm(mp_rlm-1)
+        nj_rlm = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+        n_jk_e = (nj_rlm+1) / 2
+        n_jk_o =  nj_rlm - n_jk_e
+        lstack_even_rlm(mp_rlm) = jst + n_jk_e
+!
+        do jj = 1, n_jk_e
+          j_rlm = 2*jj + jst - 1
+          do l_rtm = 1, nth_hemi_rtm
+            Ps_rtm(l_rtm,jj+jst) =     P_rtm(l_rtm,j_rlm)
+            dPsdt_rtm(l_rtm,jj+jst) =  dPdt_rtm(l_rtm,j_rlm)
+          end do
+        end do
+!
+        do jj = 1, n_jk_o
+          j_rlm = 2*jj + jst
+          do l_rtm = 1, nth_hemi_rtm
+            Ps_rtm(l_rtm,jj+jst+n_jk_e) =     P_rtm(l_rtm,j_rlm)
+            dPsdt_rtm(l_rtm,jj+jst+n_jk_e) =  dPdt_rtm(l_rtm,j_rlm)
+          end do
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine set_legendre_hemispher_rtm
+!
 ! -----------------------------------------------------------------------
 !
       subroutine set_trans_legendre_rtm

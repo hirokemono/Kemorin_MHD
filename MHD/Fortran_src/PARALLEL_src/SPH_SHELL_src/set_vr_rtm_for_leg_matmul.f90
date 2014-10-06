@@ -28,7 +28,9 @@
       module set_vr_rtm_for_leg_matmul
 !
       use m_precision
+      use m_constants
       use m_spheric_parameter
+      use m_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -42,11 +44,7 @@
      &         mp_rlm, mn_rlm, ncomp, irev_sr_rtm, n_WR, WR,            &
      &         nvec_kl, symp_r, asmp_t, asmp_p, symn_t, symn_p)
 !
-      use m_precision
-      use m_constants
-      use m_spheric_parameter
-!
-      implicit none
+      use m_work_4_sph_trans
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
@@ -62,19 +60,22 @@
       real(kind = kreal), intent(inout) :: asmp_p(nvec_kl)
       real(kind = kreal), intent(inout) :: symn_t(nvec_kl)
       real(kind = kreal), intent(inout) :: symn_p(nvec_kl)
-      real(kind = kreal) :: r2_1d_rlm_r
-!
 !
       integer(kind = kint) :: kr_nd, kk, k_rlm, nd
       integer(kind = kint) :: l_rtm, i_kl, ip_rtm, in_rtm
       integer(kind = kint) :: ip_recv, in_recv
+      real(kind = kreal) :: r1_1d_rlm_r, r2_1d_rlm_r
+      real(kind = kreal) :: wp_rtm, asin_rtm
 !
 !
       do l_rtm = 1, nidx_rtm(2)
+        wp_rtm =   weight_rtm(l_rtm)
+        asin_rtm = asin_theta_1d_rtm(l_rtm)
         do kk = 1, nkr
           kr_nd = kk + kst
           k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
           nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
+          r1_1d_rlm_r = radius_1d_rlm_r(k_rlm)
           r2_1d_rlm_r = radius_1d_rlm_r(k_rlm) * radius_1d_rlm_r(k_rlm)
 !
           ip_rtm = 1 + (l_rtm-1) *  istep_rtm(2)                        &
@@ -87,13 +88,13 @@
           in_recv = 3*nd + (irev_sr_rtm(in_rtm) - 1) * ncomp
           i_kl = kk + (l_rtm-1) * nkr
 !
-          symp_r(i_kl) =  WR(ip_recv-2) * r2_1d_rlm_r
+          symp_r(i_kl) =  WR(ip_recv-2) * r2_1d_rlm_r * wp_rtm
 !
-          asmp_t(i_kl) =  WR(ip_recv-1) * radius_1d_rlm_r(k_rlm)
-          asmp_p(i_kl) =  WR(ip_recv  ) * radius_1d_rlm_r(k_rlm)
+          asmp_t(i_kl) =  WR(ip_recv-1) * r1_1d_rlm_r * wp_rtm
+          asmp_p(i_kl) =  WR(ip_recv  ) * r1_1d_rlm_r * wp_rtm
 !
-          symn_t(i_kl) =  WR(in_recv-1) * radius_1d_rlm_r(k_rlm)
-          symn_p(i_kl) =  WR(in_recv  ) * radius_1d_rlm_r(k_rlm)
+          symn_t(i_kl) =  WR(in_recv-1) * r1_1d_rlm_r * wp_rtm*asin_rtm
+          symn_p(i_kl) =  WR(in_recv  ) * r1_1d_rlm_r * wp_rtm*asin_rtm
         end do
       end do
 !
@@ -103,12 +104,6 @@
 !
       subroutine set_vr_rtm_scalar_matmul(kst, nkr, mp_rlm,             &
      &          ncomp, nvector, irev_sr_rtm, n_WR, WR, nscl_lk, symp)
-!
-      use m_precision
-      use m_constants
-      use m_spheric_parameter
-!
-      implicit none
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm
@@ -124,9 +119,11 @@
       integer(kind = kint) :: kr_nd, kk, k_rlm, nd
       integer(kind = kint) :: l_rtm, i_kl
       integer(kind = kint) :: ip_rtm, i_recv
+      real(kind = kreal) :: wp_rtm
 !
 !
       do l_rtm = 1, nidx_rtm(2)
+        wp_rtm =   weight_rtm(l_rtm)
         do kk = 1, nkr
           kr_nd = kk + kst
           k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
@@ -138,7 +135,7 @@
           i_recv = nd + 3*nvector + (irev_sr_rtm(ip_rtm) - 1) * ncomp
           i_kl = kk + (l_rtm-1) * nkr
 !
-          symp(i_kl) =  WR(i_recv)
+          symp(i_kl) =  WR(i_recv) * wp_rtm
         end do
       end do
 !
@@ -154,13 +151,7 @@
      &          symn_t, symn_p, asmp_r,                                 &
      &          symp_t, symp_p, asmn_t, asmn_p)
 !
-      use m_precision
-      use m_constants
-      use m_spheric_parameter
-      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
-!
-      implicit none
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
@@ -272,8 +263,15 @@
           symp_t(i_kl) = WR(ipp_recv-1) * wp_rtm * r1_1d_rlm_r
           symp_p(i_kl) = WR(ipp_recv  ) * wp_rtm * r1_1d_rlm_r
 !
+          asmp_r(i_kl) = 0.0d0
+          asmp_t(i_kl) = 0.0d0
+          asmp_p(i_kl) = 0.0d0
+!
           symn_t(i_kl) = WR(inp_recv-1) * wp_rtm * r1_1d_rlm_r*asin_rtm
           symn_p(i_kl) = WR(inp_recv  ) * wp_rtm * r1_1d_rlm_r*asin_rtm
+!
+          asmn_t(i_kl) = 0.0d0
+          asmn_p(i_kl) = 0.0d0
         end do
       end do
 !
@@ -285,13 +283,6 @@
      &         (kst, nkr, mp_rlm, nle_rtm, nlo_rtm,                     &
      &          ncomp, nvector, irev_sr_rtm, n_WR, WR,                  &
      &          nscl_lk, symp, asmp)
-!
-      use m_precision
-      use m_constants
-      use m_spheric_parameter
-      use m_schmidt_poly_on_rtm
-!
-      implicit none
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm
@@ -351,6 +342,7 @@
           i_kl = kk + (lp_rtm-1) * nkr
 !
           symp(i_kl) = WR(ipp_recv) * wp_rtm
+          asmp(i_kl) = 0.0d0
         end do
       end do
 !

@@ -50,6 +50,10 @@
 !
 !>      total number of components for spherical harmonics transform
       integer(kind = kint) :: ncomp_sph_trans
+!>      total number of vectors for spherical harmonics transform
+      integer(kind = kint) :: nvector_sph_trans
+!>      total number of svalars for spherical harmonics transform
+      integer(kind = kint) :: nscalar_sph_trans
 !
 !>      field data including pole and center  @f$ f(r,\theta,\phi) @f$ 
       real(kind = kreal), allocatable :: d_nod_rtp(:,:)
@@ -94,6 +98,8 @@
       integer(kind = kint), allocatable :: lstack_rlm(:)
 !>      Maximum point of each block for grid in  hermonics degree
       integer(kind = kint) :: maxdegree_rlm
+!>      End address of spherical harmonics order for SMP parallelization
+      integer(kind = kint), allocatable :: lstack_even_rlm(:)
 !
 !>      Data size for Legendre transform to check work area
       integer(kind = kint), private :: iflag_sph_trans = -1
@@ -123,6 +129,7 @@
 !
 !
       allocate(lstack_rlm(0:nidx_rtm(3)))
+      allocate(lstack_even_rlm(0:nidx_rtm(3)))
 !
       allocate(mdx_p_rlm_rtm(nidx_rlm(2)))
       allocate(mdx_n_rlm_rtm(nidx_rlm(2)))
@@ -136,6 +143,7 @@
       allocate(cot_theta_1d_rtp(nidx_rtp(2)))
 !
       lstack_rlm = 0
+      lstack_even_rlm = 0
       maxdegree_rlm = 0
       mdx_p_rlm_rtm = 0
       mdx_n_rlm_rtm = 0
@@ -171,7 +179,7 @@
       subroutine deallocate_work_4_sph_trans
 !
 !
-      deallocate(lstack_rlm)
+      deallocate(lstack_rlm, lstack_even_rlm)
       deallocate(mdx_p_rlm_rtm, mdx_n_rlm_rtm)
       deallocate(asin_theta_1d_rtm, cot_theta_1d_rtp)
       deallocate(sin_theta_1d_rtp, cos_theta_1d_rtp)

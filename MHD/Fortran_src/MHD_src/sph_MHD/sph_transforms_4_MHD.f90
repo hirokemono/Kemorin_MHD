@@ -79,6 +79,9 @@
         call select_legendre_transform
       end if
 !
+       call sel_init_legendre_trans                                     &
+     &    (nvector_sph_trans, nscalar_sph_trans)
+!
       if(my_rank .ne. 0) return
         if     (id_legendre_transfer .eq. iflag_leg_orginal_loop) then
           write(tmpchara,'(a)') trim(leg_orginal_loop)
@@ -296,6 +299,9 @@
 !
       do iloop_type = 1, ntype_Leg_trans_loop
         id_legendre_transfer = iloop_type
+        call sel_init_legendre_trans                                    &
+     &      (nvector_sph_trans, nscalar_sph_trans)
+!
 !
         starttime = MPI_WTIME()
         if(iflag_debug .gt. 0) write(*,*) 'sph_back_trans_4_MHD'
@@ -303,6 +309,8 @@
         if(iflag_debug .gt. 0) write(*,*) 'sph_forward_trans_4_MHD'
         call sph_forward_trans_4_MHD
         endtime(id_legendre_transfer) = MPI_WTIME() - starttime
+!
+        call sel_finalize_legendre_trans
       end do
 !
       call MPI_allREDUCE (endtime, etime_trans, ntype_Leg_trans_loop,   &
@@ -323,7 +331,7 @@
       if(my_rank .gt. 0) return
         write(*,*) '1: elapsed by original loop:      ',                &
      &            etime_trans(iflag_leg_orginal_loop)
-        write(*,*) '2: elapsed by blocked loop:      ',                &
+        write(*,*) '2: elapsed by blocked loop:      ',                 &
      &            etime_trans(iflag_leg_blocked)
         write(*,*) '3: elapsed by inner radius loop:  ',                &
      &            etime_trans(iflag_leg_krloop_inner)

@@ -96,6 +96,13 @@
       ncomp_sph_trans = max(ncomp_sph_trans, ncomp_tmp_rtp_2_rj)
       ncomp_sph_trans = max(ncomp_sph_trans, ncomp_tmp_rj_2_rtp)
 !
+      nvector_sph_trans = max(nvector_sph_trans, nvector_tmp_rj_2_rtp)
+      nvector_sph_trans = max(nvector_sph_trans, nvector_tmp_rtp_2_rj)
+      nscalar_sph_trans = max(nscalar_sph_trans,                        &
+     &                 (nscalar_tmp_rj_2_rtp+6*ntensor_tmp_rj_2_rtp))
+      nscalar_sph_trans = max(nscalar_sph_trans,                        &
+     &                 (nscalar_tmp_rtp_2_rj+6*ntensor_tmp_rtp_2_rj))
+!
       end subroutine set_addresses_temporal_trans
 !
 !-----------------------------------------------------------------------

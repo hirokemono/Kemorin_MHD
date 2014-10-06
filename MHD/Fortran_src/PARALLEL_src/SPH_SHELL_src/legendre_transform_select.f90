@@ -10,6 +10,8 @@
 !!
 !!@verbatim
 !!      subroutine set_legendre_trans_mode_ctl(tranx_loop_ctl)
+!!      subroutine sel_init_legendre_trans(nvector, nscalar))
+!!      subroutine sel_finalize_legendre_trans
 !!
 !!    Backward transforms
 !!      subroutine sel_backward_legendre_trans                          &
@@ -156,6 +158,42 @@
       end if
 !
       end subroutine set_legendre_trans_mode_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sel_init_legendre_trans(nvector, nscalar)
+!
+      use m_legendre_work_sym_matmul
+!
+      integer(kind = kint), intent(in) :: nvector, nscalar
+!
+!
+      if(id_legendre_transfer .eq. iflag_leg_sym_matmul) then
+        call alloc_leg_vec_sym_matmul(nvector)
+        call alloc_leg_scl_sym_matmul(nscalar)
+      else if(id_legendre_transfer .eq. iflag_leg_matmul) then
+        call alloc_leg_vec_matmul(nvector)
+        call alloc_leg_scl_matmul(nscalar)
+      end if
+!
+      end subroutine sel_init_legendre_trans
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sel_finalize_legendre_trans
+!
+      use m_legendre_work_sym_matmul
+!
+!
+      if(id_legendre_transfer .eq. iflag_leg_sym_matmul) then
+        call dealloc_leg_vec_sym_matmul
+        call dealloc_leg_scl_sym_matmul
+      else if(id_legendre_transfer .eq. iflag_leg_matmul) then
+        call dealloc_leg_vec_matmul
+        call dealloc_leg_scl_matmul
+      end if
+!
+      end subroutine sel_finalize_legendre_trans
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

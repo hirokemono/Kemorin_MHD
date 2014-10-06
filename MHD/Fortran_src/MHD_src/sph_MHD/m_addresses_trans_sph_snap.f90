@@ -178,6 +178,13 @@
       ncomp_sph_trans = max(ncomp_sph_trans, ncomp_snap_rtp_2_rj)
       ncomp_sph_trans = max(ncomp_sph_trans, ncomp_snap_rj_2_rtp)
 !
+      nvector_sph_trans = max(nvector_sph_trans, nvector_snap_rj_2_rtp)
+      nvector_sph_trans = max(nvector_sph_trans, nvector_snap_rtp_2_rj)
+      nscalar_sph_trans = max(nscalar_sph_trans,                        &
+     &                 (nscalar_snap_rj_2_rtp+6*ntensor_snap_rj_2_rtp))
+      nscalar_sph_trans = max(nscalar_sph_trans,                        &
+     &                 (nscalar_snap_rtp_2_rj+6*ntensor_snap_rtp_2_rj))
+!
       end subroutine set_addresses_snapshot_trans
 !
 !-----------------------------------------------------------------------

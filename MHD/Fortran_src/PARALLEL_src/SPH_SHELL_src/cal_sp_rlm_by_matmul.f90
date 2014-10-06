@@ -30,6 +30,7 @@
       use m_precision
       use m_constants
       use m_spheric_parameter
+      use m_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -48,11 +49,11 @@
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: jst, nj_rlm
 !
-      real(kind = kreal), intent(in) :: pol_e(nvec_jk)
-      real(kind = kreal), intent(in) :: dpoldt_e(nvec_jk)
-      real(kind = kreal), intent(in) :: dpoldp_e(nvec_jk)
-      real(kind = kreal), intent(in) :: dtordt_e(nvec_jk)
-      real(kind = kreal), intent(in) :: dtordp_e(nvec_jk)
+      real(kind = kreal), intent(inout) :: pol_e(nvec_jk)
+      real(kind = kreal), intent(inout) :: dpoldt_e(nvec_jk)
+      real(kind = kreal), intent(inout) :: dpoldp_e(nvec_jk)
+      real(kind = kreal), intent(inout) :: dtordt_e(nvec_jk)
+      real(kind = kreal), intent(inout) :: dtordp_e(nvec_jk)
 !
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
@@ -61,7 +62,22 @@
 !
       integer(kind = kint) :: kr_nd, kk, nd, k_rlm
       integer(kind = kint) :: i_rlm, i_send, i_kj, j_rlm, jj
+      real(kind = kreal) :: g7, gm
 !
+!
+      do jj = 1, nj_rlm
+        j_rlm = jj + jst
+        g7 = g_sph_rlm(jj+jst,7)
+        gm = dble(idx_gl_1d_rlm_j(jj+jst,3))
+        do kk = 1, nkr
+          i_kj = kk + (jj-1) * nkr
+          pol_e(i_kj) =    pol_e(i_kj) *    g7
+          dpoldt_e(i_kj) = dpoldt_e(i_kj) * g7
+          dpoldp_e(i_kj) = dpoldp_e(i_kj) * g7 * gm
+          dtordt_e(i_kj) = dtordt_e(i_kj) * g7
+          dtordp_e(i_kj) = dtordp_e(i_kj) * g7 * gm
+        end do
+      end do
 !
       do jj = 1, nj_rlm
         j_rlm = jj + jst
@@ -100,10 +116,12 @@
 !
       integer(kind = kint) :: kr_nd, kk, nd, k_rlm
       integer(kind = kint) :: i_rlm, i_send, i_kj, j_rlm, jj
+      real(kind = kreal) :: g6
 !
 !
       do jj = 1, nj_rlm
         j_rlm = jj + jst
+        g6 = g_sph_rlm(j_rlm,6)
         do kk = 1, nkr
           kr_nd = kk + kst + 3*nvector*nidx_rlm(1)
           k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
@@ -113,7 +131,7 @@
      &              + (k_rlm-1) * istep_rlm(1)
           i_send = nd + 3*nvector + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !
-          WS(i_send) = WS(i_send) + scl_e(i_kj)
+          WS(i_send) = WS(i_send) + scl_e(i_kj) * g6
         end do
       end do
 !
@@ -127,8 +145,6 @@
      &          pol_e, pol_o, dpoldt_e, dpoldp_e, dpoldt_o, dpoldp_o,   &
      &          dtordt_e, dtordp_e, dtordt_o, dtordp_o,                 &
      &          ncomp, irev_sr_rlm, n_WS, WS)
-!
-      use m_schmidt_poly_on_rtm
 !
       integer(kind = kint), intent(in) :: nvec_jk
       integer(kind = kint), intent(in) :: kst, nkr
@@ -235,8 +251,6 @@
       subroutine cal_sp_rlm_scalar_sym_matmul                           &
      &         (kst, nkr, jst, n_jk_o, n_jk_e, nscl_jk, scl_e, scl_o,   &
      &          ncomp, nvector, irev_sr_rlm, n_WS, WS)
-!
-      use m_schmidt_poly_on_rtm
 !
       integer(kind = kint), intent(in) :: nscl_jk
       integer(kind = kint), intent(in) :: kst, nkr

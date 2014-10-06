@@ -8,9 +8,6 @@
 !!
 !!@verbatim
 !!      subroutine alloc_vec_fleg_mat_test(nvector)
-!!      subroutine alloc_scl_fleg_mat_test(nscalar)
-!!      subroutine dealloc_vec_fleg_mat_test
-!!      subroutine dealloc_scl_fleg_mat_test
 !!
 !!      subroutine leg_f_trans_vector_matmul(ncomp, nvector,            &
 !!     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
@@ -47,36 +44,10 @@
       use m_spheric_param_smp
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
+      use m_legendre_work_sym_matmul
       use matmul_for_legendre_trans
 !
       implicit none
-!
-      integer(kind = kint), private :: num_jl
-      real(kind = kreal), allocatable, private :: Pvw_le(:,:)
-      real(kind = kreal), allocatable, private :: dPvw_le(:,:)
-      real(kind = kreal), allocatable, private :: Pgvw_le(:,:)
-!
-      real(kind = kreal), allocatable, private :: Pws_le(:,:)
-!
-      integer(kind = kint), private :: nvec_jk
-      real(kind = kreal), allocatable, private :: pol_e(:,:)
-      real(kind = kreal), allocatable, private :: dpoldp_e(:,:)
-      real(kind = kreal), allocatable, private :: dtordp_e(:,:)
-      real(kind = kreal), allocatable, private :: dpoldt_e(:,:)
-      real(kind = kreal), allocatable, private :: dtordt_e(:,:)
-!
-      integer(kind = kint), private :: nvec_kl
-      real(kind = kreal), allocatable, private :: symp_r(:,:)
-      real(kind = kreal), allocatable, private :: asmp_t(:,:)
-      real(kind = kreal), allocatable, private :: asmp_p(:,:)
-      real(kind = kreal), allocatable, private :: symn_t(:,:)
-      real(kind = kreal), allocatable, private :: symn_p(:,:)
-!
-      integer(kind = kint), private :: nscl_jk
-      real(kind = kreal), allocatable, private :: scl_e(:,:)
-!
-      integer(kind = kint), private :: nscl_lk
-      real(kind = kreal), allocatable, private :: symp(:,:)
 !
       real(kind = kreal), private :: st_elapsed
       real(kind = kreal), private :: elaps(4)
@@ -88,83 +59,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_vec_fleg_mat_test(nvector)
-!
-      integer(kind = kint), intent(in) ::nvector
-!
-!
-      num_jl = maxdegree_rlm * nidx_rtm(2)
-      allocate(Pvw_le(num_jl,np_smp))
-      allocate(dPvw_le(num_jl,np_smp))
-      allocate(Pgvw_le(num_jl,np_smp))
-!
-      nvec_jk = nidx_rtm(2) * maxidx_rlm_smp(1)*nvector
-      allocate(pol_e(nvec_jk,np_smp))
-      allocate(dpoldp_e(nvec_jk,np_smp))
-      allocate(dtordp_e(nvec_jk,np_smp))
-      allocate(dpoldt_e(nvec_jk,np_smp))
-      allocate(dtordt_e(nvec_jk,np_smp))
-!
-      nvec_kl = nidx_rtm(2) * maxidx_rlm_smp(1)*nvector
-      allocate(symp_r(nvec_kl,np_smp))
-      allocate(symn_t(nvec_kl,np_smp))
-      allocate(symn_p(nvec_kl,np_smp))
-!
-      allocate(asmp_t(nvec_kl,np_smp))
-      allocate(asmp_p(nvec_kl,np_smp))
-!
-      end subroutine alloc_vec_fleg_mat_test
-!
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_scl_fleg_mat_test(nscalar)
-!
-      integer(kind = kint), intent(in) :: nscalar
-!
-!
-      num_jl = maxdegree_rlm * nidx_rtm(2)
-      allocate(Pws_le(num_jl,np_smp))
-!
-      nscl_jk = nidx_rtm(2) * maxidx_rlm_smp(1)*nscalar
-      allocate(scl_e(nscl_jk,np_smp))
-!
-      nscl_lk = nidx_rtm(2) * maxidx_rlm_smp(1)*nscalar
-      allocate(symp(nscl_lk,np_smp))
-!
-      end subroutine alloc_scl_fleg_mat_test
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_vec_fleg_mat_test
-!
-!
-      deallocate(Pvw_le, dPvw_le, Pgvw_le)
-!
-      deallocate(pol_e, dpoldp_e, dtordp_e, dpoldt_e, dtordt_e)
-!
-      deallocate(symp_r, symn_t, symn_p)
-      deallocate(asmp_t, asmp_p)
-!
-      end subroutine dealloc_vec_fleg_mat_test
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_scl_fleg_mat_test
-!
-!
-      deallocate(Pws_le)
-      deallocate(scl_e)
-      deallocate(symp)
-!
-      end subroutine dealloc_scl_fleg_mat_test
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
       subroutine leg_f_trans_vector_matmul(ncomp, nvector,              &
      &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
 !
-      use set_legendre_for_matmul
       use set_vr_rtm_for_leg_matmul
       use cal_sp_rlm_by_matmul
 !
@@ -181,7 +78,6 @@
 !
 !
       elaps(1:4) = 0
-      call alloc_vec_fleg_mat_test(nvector)
 !
 !$omp parallel do schedule(static)                                      &
 !$omp             private(ip,mp_rlm,mn_rlm,st_elapsed)                  &
@@ -197,28 +93,23 @@
           nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
 !
           st_elapsed = MPI_WTIME()
-          call set_fwd_leg_vector_matmul(jst(ip), nj_rlm(ip),           &
-     &        num_jl, Pvw_le(1,ip), dPvw_le(1,ip), Pgvw_le(1,ip))
-          elaps(1) = MPI_WTIME() - st_elapsed + elaps(1)
-!
-          st_elapsed = MPI_WTIME()
           call set_vr_rtm_vector_matmul(kst(ip), nkr(ip),               &
      &        mp_rlm, mn_rlm, ncomp, irev_sr_rtm, n_WR, WR,             &
-     &        nvec_kl, symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),        &
+     &        nvec_lk, symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),        &
      &        symn_t(1,ip), symn_p(1,ip))
           elaps(2) = MPI_WTIME() - st_elapsed + elaps(2) 
 !
           st_elapsed = MPI_WTIME()
           call matmul_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),   &
-     &        symp_r(1,ip), Pvw_le(1,ip), pol_e(1,ip))
+     &        symp_r(1,ip), P_rtm(1,jst(ip)+1),    pol_e(1,ip))
           call matmul_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),   &
-     &        asmp_t(1,ip), dPvw_le(1,ip), dpoldt_e(1,ip))
+     &        asmp_t(1,ip), dPdt_rtm(1,jst(ip)+1), dpoldt_e(1,ip))
           call matmul_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),   &
-     &        symn_p(1,ip), Pgvw_le(1,ip), dpoldp_e(1,ip))
+     &        symn_p(1,ip), P_rtm(1,jst(ip)+1),    dpoldp_e(1,ip))
           call matmul_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),   &
-     &        symn_t(1,ip), Pgvw_le(1,ip), dtordp_e(1,ip))
+     &        symn_t(1,ip), P_rtm(1,jst(ip)+1),    dtordp_e(1,ip))
           call matmul_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),   &
-     &        asmp_p(1,ip), dPvw_le(1,ip), dtordt_e(1,ip))
+     &        asmp_p(1,ip), dPdt_rtm(1,jst(ip)+1), dtordt_e(1,ip))
             elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
           st_elapsed = MPI_WTIME()
@@ -233,7 +124,6 @@
       end do
 !$omp end parallel do
 !
-      call dealloc_vec_fleg_mat_test
       elapsed(46:49)                                                    &
      &     = elaps(1:4) / dble(omp_get_max_threads()) + elapsed(46:49)
 !
@@ -244,7 +134,6 @@
       subroutine leg_f_trans_scalar_matmul(ncomp, nvector, nscalar,     &
      &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
 !
-      use set_legendre_for_matmul
       use set_vr_rtm_for_leg_matmul
       use cal_sp_rlm_by_matmul
 !
@@ -261,7 +150,6 @@
 !
 !
       elaps(1:4) = 0
-      call alloc_scl_fleg_mat_test(nscalar)
 !
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,mp_rlm,st_elapsed)                         &
@@ -275,11 +163,6 @@
           nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
 !
           st_elapsed = MPI_WTIME()
-          call set_fwd_leg_scalar_matmul                                &
-     &         (jst(ip), nj_rlm(ip), num_jl, Pws_le(1,ip))
-          elaps(1) = MPI_WTIME() - st_elapsed + elaps(1)
-!
-          st_elapsed = MPI_WTIME()
           call set_vr_rtm_scalar_matmul(kst(ip), nkr(ip), mp_rlm,       &
      &        ncomp, nvector, irev_sr_rtm, n_WR, WR,                    &
      &        nscl_lk, symp(1,ip))
@@ -287,7 +170,7 @@
 !
           st_elapsed = MPI_WTIME()
           call matmul_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),   &
-     &        Pws_le(1,ip), symp(1,ip), scl_e(1,ip))
+     &        P_rtm(1,jst(ip)+1), symp(1,ip), scl_e(1,ip))
           elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
           st_elapsed = MPI_WTIME()
@@ -303,8 +186,6 @@
 !
       elapsed(46:49)                                                    &
      &     = elaps(1:4) / dble(omp_get_max_threads()) + elapsed(46:49)
-!
-      call dealloc_scl_fleg_mat_test
 !
       end subroutine leg_f_trans_scalar_matmul
 !
