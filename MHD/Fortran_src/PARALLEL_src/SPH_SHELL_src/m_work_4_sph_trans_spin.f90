@@ -14,18 +14,18 @@
 !!      subroutine clear_bwd_legendre_work(ncomp)
 !!
 !!    Data for single vector field
-!!      radial component:      vr_rtp(3*i_rtp-2)
-!!      elevetional component: vr_rtp(3*i_rtp-1)
-!!      azimuthal component:   vr_rtp(2*i_rtp  )
+!!      radial component:      vr_rtm_wk(3*i_rtm-2)
+!!      elevetional component: vr_rtm_wk(3*i_rtm-1)
+!!      azimuthal component:   vr_rtm_wk(3*i_rtm  )
 !!
 !!    Data for single vector spectrum
-!!      Poloidal component:          sp_rj(3*i_rj-2)
-!!      diff. of Poloidal component: sp_rj(3*i_rj-1)
-!!      Toroidal component:          sp_rj(3*i_rj  )
+!!      Poloidal component:          sp_rlm_wk(3*i_rlm-2)
+!!      diff. of Poloidal component: sp_rlm_wk(3*i_rlm-1)
+!!      Toroidal component:          sp_rlm_wk(3*i_rlm  )
 !!
 !!    Data for single scalar
-!!      field: vr_rtp(i_rtp)
-!!      spectr: sp_rj(i_rj)
+!!      field: vr_rtm_wk(i_rtm)
+!!      spectr: sp_rlm_wk(i_rlm)
 !!
 !!@endverbatim
 !!

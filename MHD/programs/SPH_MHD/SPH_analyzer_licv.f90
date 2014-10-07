@@ -167,14 +167,14 @@
 !*
 !* ----  Update fields after time evolution ------------------------=
 !*
-      call start_eleps_time(7)
 !
+      call start_eleps_time(9)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd
-      call end_eleps_time(7)
+      call end_eleps_time(9)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
@@ -183,7 +183,7 @@
 !*  -----------  output restart data --------------
 !*
       call start_eleps_time(4)
-      call start_eleps_time(8)
+      call start_eleps_time(10)
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
       call output_sph_restart_control
 !
@@ -193,14 +193,14 @@
         call output_sph_rst_by_elaps
         iflag_finish = 1
       end if
-      call end_eleps_time(8)
+      call end_eleps_time(10)
 !
 !*  -----------  lead energy data --------------
 !*
-      call start_eleps_time(10)
+      call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
       call output_rms_sph_mhd_control
-      call end_eleps_time(10)
+      call end_eleps_time(11)
 !
       if(iflag_debug.gt.0) write(*,*) 'sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph

@@ -127,10 +127,10 @@
 !
 !*  -----------  lead energy data --------------
 !*
-      call start_eleps_time(10)
+      call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
       call output_rms_sph_mhd_control
-      call end_eleps_time(10)
+      call end_eleps_time(11)
       call end_eleps_time(4)
 !
       end subroutine SPH_analyze_mod_restart

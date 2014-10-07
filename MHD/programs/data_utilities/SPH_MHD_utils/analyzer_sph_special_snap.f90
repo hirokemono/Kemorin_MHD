@@ -82,9 +82,9 @@
 !*
         if(visval .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
-          call start_eleps_time(11)
+          call start_eleps_time(12)
           call visualize_surface(istep_psf, istep_iso)
-          call end_eleps_time(11)
+          call end_eleps_time(12)
         end if
         call end_eleps_time(1)
 !
@@ -148,30 +148,28 @@
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
-      call start_eleps_time(12)
+      call start_eleps_time(8)
       call nonlinear
-      call end_eleps_time(12)
+      call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
 !*
-      call start_eleps_time(4)
-      call start_eleps_time(7)
+      call start_eleps_time(9)
 !
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph
 !*
-!*  ---------------- Modify field data ... ----------
-!*
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
       call lead_special_fields_4_sph_mhd
-      call end_eleps_time(7)
+      call end_eleps_time(9)
 !
 !*  -----------  lead energy data --------------
 !*
-      call start_eleps_time(10)
+      call start_eleps_time(4)
+      call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
       call output_rms_sph_mhd_control
-      call end_eleps_time(10)
+      call end_eleps_time(11)
       call end_eleps_time(4)
 !
 !*  -----------  Output spectr data --------------

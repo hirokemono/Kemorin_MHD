@@ -62,7 +62,7 @@
 !
       integer(kind = kint) :: kr_nd, kk, nd, k_rlm
       integer(kind = kint) :: i_rlm, i_send, i_kj, j_rlm, jj
-      real(kind = kreal) :: g7, gm
+      real(kind = kreal) :: g7, gm, r1_1d_rlm_r, r2_1d_rlm_r
 !
 !
       do jj = 1, nj_rlm
@@ -71,11 +71,14 @@
         gm = dble(idx_gl_1d_rlm_j(jj+jst,3))
         do kk = 1, nkr
           i_kj = kk + (jj-1) * nkr
-          pol_e(i_kj) =    pol_e(i_kj) *    g7
-          dpoldt_e(i_kj) = dpoldt_e(i_kj) * g7
-          dpoldp_e(i_kj) = dpoldp_e(i_kj) * g7 * gm
-          dtordt_e(i_kj) = dtordt_e(i_kj) * g7
-          dtordp_e(i_kj) = dtordp_e(i_kj) * g7 * gm
+          k_rlm = 1 + mod((kk+kst-1),nidx_rlm(1))
+          r1_1d_rlm_r = radius_1d_rlm_r(k_rlm)
+          r2_1d_rlm_r = r1_1d_rlm_r * r1_1d_rlm_r
+          pol_e(i_kj) =    pol_e(i_kj) *    r2_1d_rlm_r * g7
+          dpoldt_e(i_kj) = dpoldt_e(i_kj) * r1_1d_rlm_r * g7
+          dpoldp_e(i_kj) = dpoldp_e(i_kj) * r1_1d_rlm_r * g7 * gm
+          dtordt_e(i_kj) = dtordt_e(i_kj) * r1_1d_rlm_r * g7
+          dtordp_e(i_kj) = dtordp_e(i_kj) * r1_1d_rlm_r * g7 * gm
         end do
       end do
 !
@@ -123,10 +126,10 @@
         j_rlm = jj + jst
         g6 = g_sph_rlm(j_rlm,6)
         do kk = 1, nkr
+          i_kj = kk + (jj-1) * nkr
           kr_nd = kk + kst + 3*nvector*nidx_rlm(1)
           k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
           nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
-          i_kj = kk + (jj-1) * nkr
           i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                          &
      &              + (k_rlm-1) * istep_rlm(1)
           i_send = nd + 3*nvector + (irev_sr_rlm(i_rlm) - 1) * ncomp
@@ -169,7 +172,7 @@
       integer(kind = kint) :: kr_nd, kk, k_rlm
       integer(kind = kint) :: ie_rlm, io_rlm, ie_send, io_send
       integer(kind = kint) :: nd, jj, i_kj
-      real(kind = kreal) :: g7, gm
+      real(kind = kreal) :: g7, gm, r1_1d_rlm_r, r2_1d_rlm_r
 !
 !
       do jj = 1, n_jk_e
@@ -177,23 +180,31 @@
         gm = dble(idx_gl_1d_rlm_j(2*jj+jst-1,3))
         do kk = 1, nkr
           i_kj = kk + (jj-1) * nkr
-          pol_e(i_kj) =    pol_e(i_kj) *    g7
-          dpoldt_e(i_kj) = dpoldt_e(i_kj) * g7
-          dpoldp_e(i_kj) = dpoldp_e(i_kj) * g7 * gm
-          dtordt_e(i_kj) = dtordt_e(i_kj) * g7
-          dtordp_e(i_kj) = dtordp_e(i_kj) * g7 * gm
+          k_rlm = 1 + mod((kk+kst-1),nidx_rlm(1))
+          r1_1d_rlm_r = radius_1d_rlm_r(k_rlm)
+          r2_1d_rlm_r = r1_1d_rlm_r * r1_1d_rlm_r
+!
+          pol_e(i_kj) =    pol_e(i_kj) *    r2_1d_rlm_r * g7
+          dpoldt_e(i_kj) = dpoldt_e(i_kj) * r1_1d_rlm_r * g7
+          dpoldp_e(i_kj) = dpoldp_e(i_kj) * r1_1d_rlm_r * g7 * gm
+          dtordt_e(i_kj) = dtordt_e(i_kj) * r1_1d_rlm_r * g7
+          dtordp_e(i_kj) = dtordp_e(i_kj) * r1_1d_rlm_r * g7 * gm
         end do
       end do
       do jj = 1, n_jk_o
         g7 = g_sph_rlm(2*jj+jst,7)
         gm = dble(idx_gl_1d_rlm_j(2*jj+jst,3))
         do kk = 1, nkr
+          k_rlm = 1 + mod((kk+kst-1),nidx_rlm(1))
+          r1_1d_rlm_r = radius_1d_rlm_r(k_rlm)
+          r2_1d_rlm_r = r1_1d_rlm_r * r1_1d_rlm_r
           i_kj = kk + (jj-1) * nkr
-          pol_o(i_kj) =    pol_o(i_kj) *    g7
-          dpoldt_o(i_kj) = dpoldt_o(i_kj) * g7
-          dpoldp_o(i_kj) = dpoldp_o(i_kj) * g7 * gm
-          dtordt_o(i_kj) = dtordt_o(i_kj) * g7
-          dtordp_o(i_kj) = dtordp_o(i_kj) * g7 * gm
+!
+          pol_o(i_kj) =    pol_o(i_kj) *    r2_1d_rlm_r * g7
+          dpoldt_o(i_kj) = dpoldt_o(i_kj) * r1_1d_rlm_r * g7
+          dpoldp_o(i_kj) = dpoldp_o(i_kj) * r1_1d_rlm_r * g7 * gm
+          dtordt_o(i_kj) = dtordt_o(i_kj) * r1_1d_rlm_r * g7
+          dtordp_o(i_kj) = dtordp_o(i_kj) * r1_1d_rlm_r * g7 * gm
         end do
       end do
 !

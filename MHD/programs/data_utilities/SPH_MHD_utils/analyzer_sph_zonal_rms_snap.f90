@@ -133,9 +133,9 @@
 !*
         if(visval .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
-          call start_eleps_time(11)
+          call start_eleps_time(8)
           call visualize_surface(istep_psf, istep_iso)
-          call end_eleps_time(11)
+          call end_eleps_time(8)
         end if
         call end_eleps_time(1)
 !

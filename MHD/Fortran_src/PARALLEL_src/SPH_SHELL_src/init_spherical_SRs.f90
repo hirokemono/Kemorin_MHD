@@ -36,7 +36,8 @@
 !
       implicit none
 !
-      private :: all_sph_send_recv_N, check_spherical_SRs_N
+      private :: all_sph_send_recv_N, all_sph_SR_core_N
+      private :: check_spherical_SRs_N
       private :: sel_sph_import_table, sel_sph_comm_routine
 !
 ! ----------------------------------------------------------------------
@@ -181,7 +182,7 @@
       endtime(0:2) = 0.0d0
       iflag_sph_commN = iflag_alltoall
       starttime = MPI_WTIME()
-      call all_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
+      call all_sph_SR_core_N(NB)
       endtime(2) = MPI_WTIME() - starttime
 !
       call set_reverse_import_table(nnod_rtp, ntot_item_sr_rtp,         &
@@ -195,12 +196,12 @@
 !
       iflag_sph_commN = iflag_send_recv
       starttime = MPI_WTIME()
-      call all_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
+      call all_sph_SR_core_N(NB)
       endtime(0) = MPI_WTIME() - starttime
 !
       iflag_sph_commN = iflag_alltoallv
       starttime = MPI_WTIME()
-      call all_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
+      call all_sph_SR_core_N(NB)
       endtime(1) = MPI_WTIME() - starttime
 !
       call MPI_allREDUCE (endtime(0), etime_send_recv(0), ithree,       &
@@ -243,6 +244,31 @@
       call send_recv_rtm_2_rtp_N(NB, X_rtm, X_rtp)
 !
       end subroutine all_sph_send_recv_N
+!
+! ----------------------------------------------------------------------
+!
+      subroutine all_sph_SR_core_N(NB)
+!
+      use spherical_SRs_N
+!
+      integer (kind=kint), intent(in) :: NB
+!
+!
+      call check_calypso_rj_2_rlm_buf_N(NB)
+      call check_calypso_rlm_2_rj_buf_N(NB)
+      call check_calypso_rtp_2_rtm_buf_N(NB)
+      call check_calypso_rtm_2_rtp_buf_N(NB)
+!
+      call calypso_sph_comm_rj_2_rlm_N(NB)
+      call finish_send_recv_rj_2_rlm
+      call calypso_sph_comm_rlm_2_rj_N(NB)
+      call finish_send_recv_rlm_2_rj
+      call calypso_sph_comm_rtp_2_rtm_N(NB)
+      call finish_send_recv_rtp_2_rtm
+      call calypso_sph_comm_rtm_2_rtp_N(NB)
+      call finish_send_recv_rtm_2_rtp
+!
+      end subroutine all_sph_SR_core_N
 !
 ! ----------------------------------------------------------------------
 !
