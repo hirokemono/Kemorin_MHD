@@ -143,7 +143,7 @@
 !
 !
       call resize_flag_4_SR(NPE_SEND, NPE_RECV)
-      call resize_wsend_SR(NB, NTOT_SEND  )
+      call resize_wsend_SR(NB, NTOT_SEND+1)
       call resize_wrecv_SR(NB, NTOT_RECV+1)
 !
       end subroutine resize_work_sph_SR

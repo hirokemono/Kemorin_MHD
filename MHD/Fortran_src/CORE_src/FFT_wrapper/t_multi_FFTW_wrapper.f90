@@ -71,7 +71,7 @@
       use m_precision
       use m_constants
 !
-      use FFTW3_wrapper
+      use FFTW3_multi_wrapper
 !
       implicit none
 !
@@ -124,7 +124,8 @@
       type(working_mul_FFTW), intent(inout) :: WK
 !
 !
-      call destroy_FFTW_smp(Nsmp, WK%plan_fowd_mul, WK%plan_back_mul)
+      call destroy_FFTW_mul_smp                                         &
+     &   (Nsmp, WK%plan_fowd_mul, WK%plan_back_mul)
       call dealloc_mul_FFTW_plan_t(WK)
 !
       end subroutine finalize_FFTW_mul_type

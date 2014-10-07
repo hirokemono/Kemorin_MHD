@@ -241,8 +241,7 @@
       subroutine dealloc_leg_scl_matmul
 !
 !
-      deallocate(scl_e, scl_o)
-      deallocate(symp, asmp)
+      deallocate(scl_e, symp)
 !
       end subroutine dealloc_leg_scl_matmul
 !

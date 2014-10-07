@@ -64,7 +64,7 @@
       use m_precision
       use m_constants
 !
-      use FFTW3_wrapper
+      use FFTW3_multi_wrapper
 !
       implicit none
 !
@@ -115,7 +115,7 @@
       integer(kind = kint), intent(in) ::  Nsmp
 !
 !
-      call destroy_FFTW_smp(Nsmp, plan_fowd_mul, plan_back_mul)
+      call destroy_FFTW_mul_smp(Nsmp, plan_fowd_mul, plan_back_mul)
       call deallocate_mul_FFTW_plan
 !
       end subroutine finalize_FFTW_mul

@@ -254,5 +254,54 @@
       end subroutine backward_FFT_select
 !
 ! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine forwd_FFT_select_to_send(Nsmp, Nstacksmp, M, Nfft, X)
+!
+      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: M, Nfft
+!
+      real(kind = kreal), intent(inout) :: X(M, Nfft)
+!
+!
+#ifdef FFTW3
+      if(iflag_FFT .eq. iflag_FFTW) then
+        call FFTW_mul_forward(Nsmp, Nstacksmp, M, Nfft, X)
+        return
+      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
+        call FFTW_forward(Nsmp, Nstacksmp, M, Nfft, X)
+        return
+      end if
+#endif
+!
+      call CALYPSO_RFFTMF(Nsmp, Nstacksmp, M, Nfft, X)
+!
+      end subroutine forwd_FFT_select_to_send
+!
+! ------------------------------------------------------------------
+!
+      subroutine back_FFT_select_from_recv(Nsmp, Nstacksmp, M, Nfft, X)
+!
+      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: M, Nfft
+!
+      real(kind = kreal), intent(inout) :: X(M,Nfft)
+!
+!
+#ifdef FFTW3
+      if(iflag_FFT .eq. iflag_FFTW) then
+        call FFTW_mul_backward(Nsmp, Nstacksmp, M, Nfft, X)
+        return
+      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
+        call FFTW_backward(Nsmp, Nstacksmp, M, Nfft, X)
+        return
+      end if
+#endif
+!
+      call CALYPSO_RFFTMB(Nsmp, Nstacksmp, M, Nfft, X)
+!
+      end subroutine back_FFT_select_from_recv
+!
+! ------------------------------------------------------------------
 !
       end module FFT_selector

@@ -95,10 +95,18 @@
           write(tmpchara,'(a)') trim(leg_sym_org_loop)
         else if(id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
           write(tmpchara,'(a)') trim(leg_sym_spin_loop)
-        else if(id_legendre_transfer .eq. iflag_leg_sym_matmul) then
-          write(tmpchara,'(a)') trim(leg_sym_matmul)
         else if(id_legendre_transfer .eq. iflag_leg_matmul) then
           write(tmpchara,'(a)') trim(leg_matmul)
+        else if(id_legendre_transfer .eq. iflag_leg_dgemm) then
+          write(tmpchara,'(a)') trim(leg_dgemm)
+        else if(id_legendre_transfer .eq. iflag_leg_matprod) then
+          write(tmpchara,'(a)') trim(leg_matprod)
+        else if(id_legendre_transfer .eq. iflag_leg_sym_matmul) then
+          write(tmpchara,'(a)') trim(leg_sym_matmul)
+        else if(id_legendre_transfer .eq. iflag_leg_sym_dgemm) then
+          write(tmpchara,'(a)') trim(leg_sym_dgemm)
+        else if(id_legendre_transfer .eq. iflag_leg_sym_matprod) then
+          write(tmpchara,'(a)') trim(leg_sym_matprod)
         else if(id_legendre_transfer .eq. iflag_leg_test_loop) then
           write(tmpchara,'(a)') trim(leg_test_loop)
         end if
@@ -299,14 +307,13 @@
 !
       do iloop_type = 1, ntype_Leg_trans_loop
         id_legendre_transfer = iloop_type
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &            'Test SPH transform for ', id_legendre_transfer
         call sel_init_legendre_trans                                    &
      &      (nvector_sph_trans, nscalar_sph_trans)
 !
-!
         starttime = MPI_WTIME()
-        if(iflag_debug .gt. 0) write(*,*) 'sph_back_trans_4_MHD'
         call sph_back_trans_4_MHD
-        if(iflag_debug .gt. 0) write(*,*) 'sph_forward_trans_4_MHD'
         call sph_forward_trans_4_MHD
         endtime(id_legendre_transfer) = MPI_WTIME() - starttime
 !
@@ -329,22 +336,30 @@
       end do
 !
       if(my_rank .gt. 0) return
-        write(*,*) '1: elapsed by original loop:      ',                &
+        write(*,*) ' 1: elapsed by original loop:      ',               &
      &            etime_trans(iflag_leg_orginal_loop)
-        write(*,*) '2: elapsed by blocked loop:      ',                 &
+        write(*,*) ' 2: elapsed by blocked loop:      ',                &
      &            etime_trans(iflag_leg_blocked)
-        write(*,*) '3: elapsed by inner radius loop:  ',                &
+        write(*,*) ' 3: elapsed by inner radius loop:  ',               &
      &            etime_trans(iflag_leg_krloop_inner)
-        write(*,*) '4: elapsed by outer radius loop:  ',                &
+        write(*,*) ' 4: elapsed by outer radius loop:  ',               &
      &            etime_trans(iflag_leg_krloop_outer)
-        write(*,*) '5: elapsed by original loop with symmetric: ',      &
+        write(*,*) ' 5: elapsed by original loop with symmetric: ',     &
      &            etime_trans(iflag_leg_symmetry)
-        write(*,*) '6: elapsed by sym. outer radius: ',                 &
+        write(*,*) ' 6: elapsed by sym. outer radius: ',                &
      &            etime_trans(iflag_leg_sym_spin_loop)
-        write(*,*) '7: elapsed by matmul: ',                            &
+        write(*,*) ' 7: elapsed by matmul: ',                           &
      &            etime_trans(iflag_leg_matmul)
-        write(*,*) '8: elapsed by matmul with symmetric: ',             &
+        write(*,*) ' 8: elapsed by BLAS: ',                             &
+     &            etime_trans(iflag_leg_dgemm)
+        write(*,*) ' 9: elapsed by matrix product: ',                   &
+     &            etime_trans(iflag_leg_matprod)
+        write(*,*) '10: elapsed by matmul with symmetric: ',            &
      &            etime_trans(iflag_leg_sym_matmul)
+        write(*,*) '11: elapsed by BLAS with symmetric: ',              &
+     &            etime_trans(iflag_leg_sym_dgemm)
+        write(*,*) '12: elapsed by matrix prod. with symm.: ',          &
+     &            etime_trans(iflag_leg_sym_matprod)
 !
       end subroutine select_legendre_transform
 !

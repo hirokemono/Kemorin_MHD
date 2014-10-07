@@ -41,12 +41,13 @@
       use legendre_transform_spin
       use legendre_transform_symmetry
       use legendre_transform_testloop
+      use legendre_transform_matmul
       use legendre_trans_sym_matmul
 !
       implicit none
 !
 !
-      integer(kind = kint), parameter :: ntype_Leg_trans_loop = 8
+      integer(kind = kint), parameter :: ntype_Leg_trans_loop = 12
 !
 !>      Character flag to perform Legendre transform 
 !@n     using original array order
@@ -73,13 +74,29 @@
       character(len = kchara), parameter                                &
      &           :: leg_sym_spin_loop = 'symmetric_outer_radial_loop'
 !>      Character flag to perform Legendre transform 
-!@n     with inneromst Legendre polynomial loop
+!@n     with mutmul function
       character(len = kchara), parameter                                &
      &           :: leg_matmul = 'matmul'
 !>      Character flag to perform Legendre transform 
-!@n     with inneromst Legendre polynomial loop
+!@n     with dgemm in BLAS
       character(len = kchara), parameter                                &
-     &           :: leg_sym_matmul = 'symmetric_matmul'
+     &           :: leg_dgemm = 'BLAS'
+!>      Character flag to perform Legendre transform 
+!@n     with self matrix product
+      character(len = kchara), parameter                                &
+     &           :: leg_matprod = 'matproduct'
+!>      Chalacter flag to perform Legendre transform 
+!@n     with symmetry and mutmul function
+      character(len = kchara), parameter                                &
+     &           :: leg_sym_matmul =  'symmetric_matmul'
+!>      Character flag to perform Legendre transform 
+!@n     with symmetry and dgemm in BLAS
+      character(len = kchara), parameter                                &
+     &           :: leg_sym_dgemm =   'symmetric_BLAS'
+!>      Character flag to perform Legendre transform 
+!@n     with symmetry and  self matrix product
+      character(len = kchara), parameter                                &
+     &           :: leg_sym_matprod = 'symmetric_matproduct'
 !>      Character flag to perform Legendre transform 
 !@n     with testing loop
       character(len = kchara), parameter                                &
@@ -109,8 +126,20 @@
 !@n     with mutmul function
       integer(kind = kint), parameter :: iflag_leg_matmul =        7
 !>      integer flag to perform Legendre transform 
+!@n     with dgemm in BLAS
+      integer(kind = kint), parameter :: iflag_leg_dgemm =         8
+!>      integer flag to perform Legendre transform 
+!@n     with self matrix product
+      integer(kind = kint), parameter :: iflag_leg_matprod =       9
+!>      integer flag to perform Legendre transform 
 !@n     with symmetry and mutmul function
-      integer(kind = kint), parameter :: iflag_leg_sym_matmul =    8
+      integer(kind = kint), parameter :: iflag_leg_sym_matmul =   10
+!>      integer flag to perform Legendre transform 
+!@n     with symmetry and dgemm in BLAS
+      integer(kind = kint), parameter :: iflag_leg_sym_dgemm =    11
+!>      integer flag to perform Legendre transform 
+!@n     with symmetry and  self matrix product
+      integer(kind = kint), parameter :: iflag_leg_sym_matprod =  12
 !>      integer flag to perform Legendre transform 
 !@n     with testing loop
       integer(kind = kint), parameter :: iflag_leg_test_loop =   99
@@ -147,8 +176,16 @@
         id_legendre_transfer = iflag_leg_sym_spin_loop
       else if(cmp_no_case(tranx_loop_ctl, leg_matmul).gt.0) then
         id_legendre_transfer = iflag_leg_matmul
+      else if(cmp_no_case(tranx_loop_ctl, leg_dgemm).gt.0) then
+        id_legendre_transfer = iflag_leg_dgemm
+      else if(cmp_no_case(tranx_loop_ctl, leg_matprod).gt.0) then
+        id_legendre_transfer = iflag_leg_matprod
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_matmul).gt.0) then
         id_legendre_transfer = iflag_leg_sym_matmul
+      else if(cmp_no_case(tranx_loop_ctl, leg_sym_dgemm).gt.0) then
+        id_legendre_transfer = iflag_leg_sym_dgemm
+      else if(cmp_no_case(tranx_loop_ctl, leg_sym_matprod).gt.0) then
+        id_legendre_transfer = iflag_leg_sym_matprod
       else if(cmp_no_case(tranx_loop_ctl, leg_blocked_loop).gt.0) then
         id_legendre_transfer = iflag_leg_blocked
       else if(cmp_no_case(tranx_loop_ctl, leg_orginal_loop).gt.0) then
@@ -168,10 +205,14 @@
       integer(kind = kint), intent(in) :: nvector, nscalar
 !
 !
-      if(id_legendre_transfer .eq. iflag_leg_sym_matmul) then
+      if     (id_legendre_transfer .eq. iflag_leg_sym_matmul            &
+     &   .or. id_legendre_transfer .eq. iflag_leg_sym_dgemm             &
+     &   .or. id_legendre_transfer .eq. iflag_leg_sym_matprod) then
         call alloc_leg_vec_sym_matmul(nvector)
         call alloc_leg_scl_sym_matmul(nscalar)
-      else if(id_legendre_transfer .eq. iflag_leg_matmul) then
+      else if(id_legendre_transfer .eq. iflag_leg_matmul                &
+     &   .or. id_legendre_transfer .eq. iflag_leg_dgemm                 &
+     &   .or. id_legendre_transfer .eq. iflag_leg_matprod) then
         call alloc_leg_vec_matmul(nvector)
         call alloc_leg_scl_matmul(nscalar)
       end if
@@ -185,10 +226,14 @@
       use m_legendre_work_sym_matmul
 !
 !
-      if(id_legendre_transfer .eq. iflag_leg_sym_matmul) then
+      if     (id_legendre_transfer .eq. iflag_leg_sym_matmul            &
+     &   .or. id_legendre_transfer .eq. iflag_leg_sym_dgemm             &
+     &   .or. id_legendre_transfer .eq. iflag_leg_sym_matprod) then
         call dealloc_leg_vec_sym_matmul
         call dealloc_leg_scl_sym_matmul
-      else if(id_legendre_transfer .eq. iflag_leg_matmul) then
+      else if(id_legendre_transfer .eq. iflag_leg_matmul                &
+     &   .or. id_legendre_transfer .eq. iflag_leg_dgemm                 &
+     &   .or. id_legendre_transfer .eq. iflag_leg_matprod) then
         call dealloc_leg_vec_matmul
         call dealloc_leg_scl_matmul
       end if
@@ -228,8 +273,20 @@
       else if(id_legendre_transfer .eq. iflag_leg_matmul) then
         call leg_backward_trans_matmul(ncomp, nvector, nscalar,         &
      &      n_WR, n_WS, WR, WS)
+      else if(id_legendre_transfer .eq. iflag_leg_dgemm) then
+        call leg_backward_trans_dgemm(ncomp, nvector, nscalar,          &
+     &      n_WR, n_WS, WR, WS)
+      else if(id_legendre_transfer .eq. iflag_leg_matprod) then
+        call leg_backward_trans_matprod(ncomp, nvector, nscalar,        &
+     &      n_WR, n_WS, WR, WS)
       else if(id_legendre_transfer .eq. iflag_leg_sym_matmul) then
         call leg_backward_trans_sym_matmul(ncomp, nvector, nscalar,     &
+     &      n_WR, n_WS, WR, WS)
+      else if(id_legendre_transfer .eq. iflag_leg_sym_dgemm) then
+        call leg_backward_trans_sym_dgemm(ncomp, nvector, nscalar,      &
+     &      n_WR, n_WS, WR, WS)
+      else if(id_legendre_transfer .eq. iflag_leg_sym_matprod) then
+        call leg_backward_trans_sym_matprod(ncomp, nvector, nscalar,    &
      &      n_WR, n_WS, WR, WS)
       else if(id_legendre_transfer .eq. iflag_leg_blocked) then
         call leg_backward_trans_blocked(ncomp, nvector, nscalar,        &
@@ -274,8 +331,20 @@
       else if(id_legendre_transfer .eq. iflag_leg_matmul) then
         call leg_forward_trans_matmul(ncomp, nvector, nscalar,          &
      &      n_WR, n_WS, WR, WS)
+      else if(id_legendre_transfer .eq. iflag_leg_dgemm) then
+        call leg_forward_trans_dgemm(ncomp, nvector, nscalar,           &
+     &      n_WR, n_WS, WR, WS)
+      else if(id_legendre_transfer .eq. iflag_leg_matprod) then
+        call leg_forward_trans_matprod(ncomp, nvector, nscalar,         &
+     &      n_WR, n_WS, WR, WS)
       else if(id_legendre_transfer .eq. iflag_leg_sym_matmul) then
         call leg_forward_trans_sym_matmul(ncomp, nvector, nscalar,      &
+     &      n_WR, n_WS, WR, WS)
+      else if(id_legendre_transfer .eq. iflag_leg_sym_dgemm) then
+        call leg_forward_trans_sym_dgemm(ncomp, nvector, nscalar,       &
+     &      n_WR, n_WS, WR, WS)
+      else if(id_legendre_transfer .eq. iflag_leg_sym_matprod) then
+        call leg_forward_trans_sym_matprod(ncomp, nvector, nscalar,     &
      &      n_WR, n_WS, WR, WS)
       else if(id_legendre_transfer .eq. iflag_leg_blocked) then
         call leg_forwawd_trans_blocked(ncomp, nvector, nscalar,         &
