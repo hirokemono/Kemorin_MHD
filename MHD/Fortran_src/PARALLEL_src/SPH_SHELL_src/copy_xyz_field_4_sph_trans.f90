@@ -1,35 +1,40 @@
-!copy_xyz_field_4_sph_trans.f90
-!      module copy_xyz_field_4_sph_trans
+!>@file   copy_xyz_field_4_sph_trans.f90
+!!@brief  module copy_xyz_field_4_sph_trans
+!!
+!!@author H. Matsui
+!!@date Programmed in Nov., 2012
 !
-!      Written by H. Matsui on Nov., 2012
-!
-!      subroutine copy_scalar_from_trans_w_pole(numnod, internal_node,  &
-!     &          xx, ncomp_trans, i_trns, i_field, ntot_phys, d_nod)
-!      subroutine copy_xyz_vec_from_trans_w_pole(numnod, internal_node, &
-!     &          inod_smp_stack, xx, colatitude, longitude,             &
-!     &          ncomp_trans, i_trns, i_field, ntot_phys, d_nod)
-!      subroutine copy_xyz_tsr_from_trans_w_pole                        &
-!     &         (numnod, internal_node, inod_smp_stack,                 &
-!     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,        &
-!     &          ncomp_trans, i_trns, i_field, ntot_phys, d_nod)
-!
-!      subroutine copy_scalar_from_sph_trans(numnod,                    &
-!     &          ncomp_trans, i_trns, i_field, ntot_phys, d_nod)
-!      subroutine copy_xyz_vec_from_sph_trans(numnod, inod_smp_stack,   &
-!     &          colatitude, longitude, ncomp_trans, i_trns, i_field,   &
-!     &          ntot_phys, d_nod)
-!      subroutine copy_xyz_tsr_from_sph_trans(numnod, inod_smp_stack,   &
-!     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,        &
-!     &          ncomp_trans, i_trns, i_field, ntot_phys, d_nod)
-!
-!      subroutine copy_scalar_to_sph_trans(numnod, ncomp_trans,         &
-!     &          i_trns, i_field, ntot_phys, d_nod)
-!      subroutine copy_xyz_vec_to_sph_trans(numnod, inod_smp_stack,     &
-!     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,        &
-!     &          ncomp_trans, i_trns, i_field, ntot_phys, d_nod)
-!      subroutine copy_xyz_tsr_to_sph_trans(numnod, inod_smp_stack,     &
-!     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,        &
-!     &          ncomp_trans, i_trns, i_field, ntot_phys, d_nod)
+!>@brief  Copy spherical harmonics data to FEM data directly
+!!
+!!@verbatim
+!!      subroutine copy_scalar_from_trans_w_pole(numnod, internal_node, &
+!!     &          xx, ncomp_trans, i_trns, i_field, ntot_phys, d_nod)
+!!      subroutine copy_xyz_vec_from_trans_w_pole(numnod, internal_node,&
+!!     &          inod_smp_stack, xx, colatitude, longitude,            &
+!!     &          ncomp_trans, i_trns, i_field, ntot_phys, d_nod)
+!!      subroutine copy_xyz_tsr_from_trans_w_pole                       &
+!!     &         (numnod, internal_node, inod_smp_stack,                &
+!!     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,       &
+!!     &          ncomp_trans, i_trns, i_field, ntot_phys, d_nod)
+!!
+!!      subroutine copy_scalar_from_sph_trans(numnod, i_trns, i_field,  &
+!!     &          ntot_phys, d_nod)
+!!      subroutine copy_xyz_vec_from_sph_trans(numnod, inod_smp_stack,  &
+!!     &          colatitude, longitude, i_trns, i_field,               &
+!!     &          ntot_phys, d_nod)
+!!      subroutine copy_xyz_tsr_from_sph_trans(numnod, inod_smp_stack,  &
+!!     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,       &
+!!     &          i_trns, i_field, ntot_phys, d_nod)
+!!
+!!      subroutine copy_scalar_to_sph_trans(numnod, i_trns, i_field,    &
+!!     &          ntot_phys, d_nod)
+!!      subroutine copy_xyz_vec_to_sph_trans(numnod, inod_smp_stack,    &
+!!     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,       &
+!!     &          i_trns, i_field, ntot_phys, d_nod)
+!!      subroutine copy_xyz_tsr_to_sph_trans(numnod, inod_smp_stack,    &
+!!     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,       &
+!!     &          i_trns, i_field, ntot_phys, d_nod)
+!!@endverbatim
 !
       module copy_xyz_field_4_sph_trans
 !
@@ -64,8 +69,7 @@
 !
 !
 !$omp parallel
-      call copy_scalar_from_trans(ncomp_trans, i_trns,                  &
-     &    numnod, d_nod(1,i_field))
+      call copy_scalar_from_trans(i_trns, numnod, d_nod(1,i_field))
 !$omp end parallel
 !
       call copy_pole_scl_fld_from_trans(numnod, internal_node,          &
@@ -97,8 +101,7 @@
 !
 !
 !$omp parallel
-      call copy_vector_from_trans(ncomp_trans, i_trns,                  &
-     &    numnod, d_nod(1,i_field))
+      call copy_vector_from_trans(i_trns, numnod, d_nod(1,i_field))
 !$omp end parallel
 !
       call copy_pole_vec_fld_from_trans(numnod, internal_node,          &
@@ -136,8 +139,7 @@
 !
 !
 !$omp parallel
-      call copy_tensor_from_trans(ncomp_trans, i_trns,                  &
-     &    numnod, d_nod(1,i_field))
+      call copy_tensor_from_trans(i_trns, numnod, d_nod(1,i_field))
 !$omp end parallel
 !
       call copy_pole_tsr_fld_from_trans(numnod, internal_node,          &
@@ -152,12 +154,11 @@
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      subroutine copy_scalar_from_sph_trans(numnod,                     &
-     &          ncomp_trans, i_trns, i_field, ntot_phys, d_nod)
+      subroutine copy_scalar_from_sph_trans(numnod, i_trns, i_field,    &
+     &          ntot_phys, d_nod)
 !
       use copy_field_4_sph_trans
 !
-      integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: i_field, i_trns
 !
       integer(kind = kint), intent(in) :: numnod
@@ -167,8 +168,7 @@
 !
 !
 !$omp parallel
-      call copy_scalar_from_trans(ncomp_trans, i_trns,                  &
-     &    numnod, d_nod(1,i_field))
+      call copy_scalar_from_trans(i_trns, numnod, d_nod(1,i_field))
 !$omp end parallel
 !
       end subroutine copy_scalar_from_sph_trans
@@ -176,13 +176,12 @@
 ! -------------------------------------------------------------------
 !
       subroutine copy_xyz_vec_from_sph_trans(numnod, inod_smp_stack,    &
-     &          colatitude, longitude, ncomp_trans, i_trns, i_field,    &
+     &          colatitude, longitude, i_trns, i_field,                 &
      &          ntot_phys, d_nod)
 !
       use copy_field_4_sph_trans
       use cvt_sph_vector_2_xyz_smp
 !
-      integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: i_field, i_trns
 !
       integer(kind = kint), intent(in) :: numnod
@@ -195,8 +194,7 @@
 !
 !
 !$omp parallel
-      call copy_vector_from_trans(ncomp_trans, i_trns,                &
-     &    numnod, d_nod(1,i_field))
+      call copy_vector_from_trans(i_trns, numnod, d_nod(1,i_field))
 !$omp end parallel
 !
       call overwrite_sph_vect_2_xyz_smp(np_smp, numnod, inod_smp_stack, &
@@ -208,12 +206,11 @@
 !
       subroutine copy_xyz_tsr_from_sph_trans(numnod, inod_smp_stack,    &
      &          xx, radius, s_cylinder, a_radius, a_s_cylinder,         &
-     &          ncomp_trans, i_trns, i_field, ntot_phys, d_nod)
+     &          i_trns, i_field, ntot_phys, d_nod)
 !
       use copy_field_4_sph_trans
       use cvt_sph_tensor_2_xyz_smp
 !
-      integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: i_field, i_trns
 !
       integer(kind = kint), intent(in) :: numnod
@@ -229,8 +226,7 @@
 !
 !
 !$omp parallel
-      call copy_tensor_from_trans(ncomp_trans, i_trns,                  &
-     &    numnod, d_nod(1,i_field))
+      call copy_tensor_from_trans(i_trns, numnod, d_nod(1,i_field))
 !$omp end parallel
 !
       call overwrite_xyz_tensor_by_sph_smp(np_smp, numnod,              &
@@ -242,14 +238,12 @@
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      subroutine copy_scalar_to_sph_trans(numnod, ncomp_trans,          &
-     &          i_trns, i_field, ntot_phys, d_nod)
+      subroutine copy_scalar_to_sph_trans(numnod, i_trns, i_field,      &
+     &          ntot_phys, d_nod)
 !
       use copy_field_4_sph_trans
 !
-      integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: i_field, i_trns
-!
       integer(kind = kint), intent(in) :: numnod
 !
       integer(kind = kint), intent(in) :: ntot_phys
@@ -257,8 +251,7 @@
 !
 !
 !$omp parallel
-      call copy_scalar_to_trans(ncomp_trans, i_trns, numnod,            &
-     &    d_nod(1,i_field))
+      call copy_scalar_to_trans(i_trns, numnod, d_nod(1,i_field))
 !$omp end parallel
 !
       end subroutine copy_scalar_to_sph_trans
@@ -267,13 +260,12 @@
 !
       subroutine copy_xyz_vec_to_sph_trans(numnod, inod_smp_stack,      &
      &          xx, radius, s_cylinder, a_radius, a_s_cylinder,         &
-     &          ncomp_trans, i_trns, i_field, ntot_phys, d_nod)
+     &          i_trns, i_field, ntot_phys, d_nod)
 !
       use m_work_4_sph_trans
       use copy_field_4_sph_trans
       use cvt_xyz_vector_2_sph_smp
 !
-      integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: i_field, i_trns
 !
       integer(kind = kint), intent(in) :: numnod
@@ -293,7 +285,7 @@
      &            s_cylinder, a_radius, a_s_cylinder)
 !
 !$omp parallel
-      call copy_vector_tmp_to_trans(ncomp_trans, i_trns)
+      call copy_vector_tmp_to_trans(i_trns)
 !$omp end parallel
 !
       end subroutine copy_xyz_vec_to_sph_trans
@@ -302,13 +294,12 @@
 !
       subroutine copy_xyz_tsr_to_sph_trans(numnod, inod_smp_stack,      &
      &          xx, radius, s_cylinder, a_radius, a_s_cylinder,         &
-     &          ncomp_trans, i_trns, i_field, ntot_phys, d_nod)
+     &          i_trns, i_field, ntot_phys, d_nod)
 !
       use m_work_4_sph_trans
       use copy_field_4_sph_trans
       use cvt_xyz_tensor_2_sph_smp
 !
-      integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: i_field, i_trns
 !
       integer(kind = kint), intent(in) :: numnod
@@ -328,7 +319,7 @@
      &    s_cylinder, a_radius, a_s_cylinder)
 !
 !$omp parallel
-      call copy_tensor_tmp_to_trans(ncomp_trans, i_trns)
+      call copy_tensor_tmp_to_trans(i_trns)
 !$omp end parallel
 !
       end subroutine copy_xyz_tsr_to_sph_trans

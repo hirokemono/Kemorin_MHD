@@ -103,7 +103,7 @@
       if(r_4_gauss_coefs .ge. radius_1d_rj_r(nlayer_CMB)) then
         a2r_4_gauss = one / (r_4_gauss_coefs**2)
         rcmb_to_Re = radius_1d_rj_r(nlayer_CMB) / r_4_gauss_coefs
-!$omp parallel do private(j,inod)
+!$omp parallel do private(j,l,inod)
         do inum = 1, num_pick_gauss_mode
           j = idx_pick_gauss_coef_lc(inum)
           l = int( aint(sqrt(dble(j))) )
@@ -118,7 +118,7 @@
       else if(r_4_gauss_coefs .le. radius_1d_rj_r(nlayer_ICB)) then
         a2r_4_gauss = one / (radius_1d_rj_r(nlayer_ICB)**2)
         ricb_to_Rref = r_4_gauss_coefs / radius_1d_rj_r(nlayer_ICB)
-!$omp parallel do private(j,inod)
+!$omp parallel do private(j,l,inod)
         do inum = 1, num_pick_gauss_mode
           j = idx_pick_gauss_coef_lc(inum)
           l = int( aint(sqrt(dble(j))) )

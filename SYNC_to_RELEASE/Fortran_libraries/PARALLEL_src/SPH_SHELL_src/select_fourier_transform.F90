@@ -47,7 +47,7 @@
         iflag_FFT = iflag_seelcted
       end if
 !
-      call initialize_FFT_select(my_rank, np_smp, Nstacksmp,            &
+      call init_sph_FFT_select(my_rank, np_smp, Nstacksmp,              &
      &    nidx_rtp(3))
 !
       if(my_rank .gt. 0) return
@@ -118,7 +118,7 @@
       real(kind = kreal) :: starttime, endtime
 !
 !
-      call initialize_FFT_select(my_rank, np_smp, Nstacksmp,            &
+      call init_sph_FFT_select(my_rank, np_smp, Nstacksmp,              &
      &    nidx_rtp(3))
 !
       starttime = MPI_WTIME()
@@ -132,7 +132,7 @@
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       etime_fft = etime_fft / dble(nprocs)
 !
-      call finalize_FFT_select(np_smp, Nstacksmp)
+      call finalize_sph_FFT_select(np_smp, Nstacksmp)
 !
       if(etime_fft .lt. etime_shortest                                  &
       &        .or. etime_shortest.lt.0.0d0) then

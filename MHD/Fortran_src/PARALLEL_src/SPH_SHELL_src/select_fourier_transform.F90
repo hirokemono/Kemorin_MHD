@@ -7,7 +7,7 @@
 !>@brief Select Fourier transform routine by elapsed time
 !!
 !!@verbatim
-!!      subroutine sel_fourier_transform_4_sph(ncomp, Nstacksmp)
+!!      subroutine sel_fourier_transform_4_sph(ncomp_sph_trans)
 !!
 !!       Current problem
 !!      FFTW crashes when both single and multi transforms are 
@@ -24,7 +24,7 @@
       use m_spheric_parameter
       use m_spheric_param_smp
       use m_work_4_sph_trans
-      use FFT_selector
+      use sph_FFT_selector
 !
       implicit none
 !
@@ -40,19 +40,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_fourier_transform_4_sph(ncomp, Nstacksmp)
+      subroutine sel_fourier_transform_4_sph(ncomp_sph_trans)
 !
-      integer(kind = kint), intent(in) :: ncomp
-      integer(kind = kint), intent(in) :: Nstacksmp(0:np_smp)
+      use m_solver_SR
+!
+      integer(kind = kint), intent(in) :: ncomp_sph_trans
 !
 !
       if(iflag_FFT .eq. iflag_UNDEFINED_FFT) then
-        call s_select_fourier_transform(ncomp, Nstacksmp)
+        call s_select_fourier_transform(ncomp_sph_trans,                &
+     &      n_WS, n_WR, WS, WR)
         iflag_FFT = iflag_seelcted
       end if
 !
-      call initialize_FFT_select(my_rank, np_smp, Nstacksmp,            &
-     &    nidx_rtp(3))
+      call init_sph_FFT_select(my_rank, ncomp_sph_trans)
 !
       if(my_rank .gt. 0) return
       write(*,'(a,i4)', advance='no') 'Selected Fourier transform: ',   &
@@ -72,32 +73,33 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_select_fourier_transform(ncomp, Nstacksmp)
+      subroutine s_select_fourier_transform(ncomp, n_WS, n_WR, WS, WR)
 !
-      integer(kind = kint), intent(in) :: ncomp
-      integer(kind = kint), intent(in) :: Nstacksmp(0:np_smp)
+      integer(kind = kint), intent(in) :: ncomp, n_WS, n_WR
+      real (kind=kreal), intent(inout):: WS(n_WS)
+      real (kind=kreal), intent(inout):: WR(n_WR)
 !
       real(kind = kreal) :: etime_fft(1:4)
 !
 !
       iflag_FFT = iflag_FFTPACK
-      call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
+      call test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR,         &
      &    etime_fft(iflag_FFT))
 !
 !
 #ifdef FFTW3
       iflag_FFT = iflag_FFTW
-      call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
+      call test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR,         &
      &    etime_fft(iflag_FFTW))
 !
       iflag_FFT = iflag_FFTW_SINGLE
-      call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
+      call test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR,         &
      &    etime_fft(iflag_FFTW_SINGLE))
 !
 #endif
 !
       iflag_FFT = iflag_ISPACK
-      call test_fourier_trans_vector(ncomp, Nstacksmp,                  &
+      call test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR,         &
      &    etime_fft(iflag_ISPACK))
 !
       if(my_rank .gt. 0) return
@@ -119,32 +121,31 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine test_fourier_trans_vector(ncomp, Nstacksmp, etime_fft)
+      subroutine test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR,   &
+     &          etime_fft)
 !
       use calypso_mpi
 !
-      integer(kind = kint), intent(in) :: ncomp
-      integer(kind = kint), intent(in) :: Nstacksmp(0:np_smp)
+      integer(kind = kint), intent(in) :: ncomp, n_WS, n_WR
+      real (kind=kreal), intent(inout):: WS(n_WS)
+      real (kind=kreal), intent(inout):: WR(n_WR)
       real(kind = kreal), intent(inout) :: etime_fft
 !
       real(kind = kreal) :: starttime, endtime
 !
 !
-      call initialize_FFT_select(my_rank, np_smp, Nstacksmp,            &
-     &    nidx_rtp(3))
+      call init_sph_FFT_select(my_rank, ncomp)
 !
       starttime = MPI_WTIME()
-      call backward_FFT_select(np_smp, Nstacksmp, ncomp, nidx_rtp(3),   &
-     &    vr_rtp)
-      call forward_FFT_select(np_smp, Nstacksmp, ncomp, nidx_rtp(3),    &
-     &    vr_rtp)
+      call back_FFT_select_from_recv(ncomp, n_WR, WR)
+      call fwd_FFT_select_to_send(ncomp, n_WS, WS)
       endtime = MPI_WTIME() - starttime
 !
       call MPI_allREDUCE (endtime, etime_fft, ione,                     &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       etime_fft = etime_fft / dble(nprocs)
 !
-      call finalize_FFT_select(np_smp, Nstacksmp)
+      call finalize_sph_FFT_select(ncomp)
 !
       if(etime_fft .lt. etime_shortest                                  &
       &        .or. etime_shortest.lt.0.0d0) then

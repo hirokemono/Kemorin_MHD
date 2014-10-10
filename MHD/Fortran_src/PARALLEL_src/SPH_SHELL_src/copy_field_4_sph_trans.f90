@@ -1,23 +1,17 @@
 !copy_field_4_sph_trans.f90
 !     module copy_field_4_sph_trans
 !
-!      subroutine copy_scalar_from_trans(ncomp_trans, i_trns,           &
-!     &          nnod, dnod_sph)
-!      subroutine copy_scalar_to_trans(ncomp_trans, i_trns,             &
-!     &          nnod, dnod_sph)
+!      subroutine copy_scalar_from_trans(i_trns, nnod, dnod_sph)
+!      subroutine copy_scalar_to_trans(i_trns, nnod, dnod_sph)
 !
-!      subroutine copy_vector_from_trans(ncomp_trans, i_trns,           &
-!     &          nnod, dnod_sph)
-!      subroutine copy_vector_to_trans(ncomp_trans, i_trns,             &
-!     &          nnod, dnod_sph)
+!      subroutine copy_vector_from_trans(i_trns, nnod, dnod_sph)
+!      subroutine copy_vector_to_trans(i_trns, nnod, dnod_sph)
 !
-!      subroutine copy_tensor_from_trans(ncomp_trans, i_trns,           &
-!     &          nnod, dnod_sph)
-!      subroutine copy_tensor_to_trans(ncomp_trans, i_trns,             &
-!     &          nnod, dnod_sph)
+!      subroutine copy_tensor_from_trans(i_trns, nnod, dnod_sph)
+!      subroutine copy_tensor_to_trans(i_trns, nnod, dnod_sph)
 !
-!      subroutine copy_vector_tmp_to_trans(ncomp_trans, i_trns)
-!      subroutine copy_tensor_tmp_to_trans(ncomp_trans, i_trns)
+!      subroutine copy_vector_tmp_to_trans(i_trns)
+!      subroutine copy_tensor_tmp_to_trans(i_trns)
 !
 !      Written by H. Matsui on Feb., 2008
 !
@@ -37,23 +31,19 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine copy_scalar_from_trans(ncomp_trans, i_trns,            &
-     &          nnod, dnod_sph)
+      subroutine copy_scalar_from_trans(i_trns, nnod, dnod_sph)
 !
-      integer(kind = kint), intent(in) :: ncomp_trans, i_trns, nnod
+      integer(kind = kint), intent(in) :: i_trns, nnod
       real(kind = kreal), intent(inout) :: dnod_sph(nnod)
 !
-      integer(kind = kint) :: inod, jnod, ist, ied, ip
+      integer(kind = kint) :: ist, ied, ip
 !
 !
-!$omp do private(ist,ied,inod,jnod)
+!$omp do private(ist,ied)
       do ip = 1, np_smp
         ist = inod_rtp_smp_stack(ip-1) + 1
         ied = inod_rtp_smp_stack(ip)
-        do inod = ist, ied
-          jnod = i_trns + (inod-1)*ncomp_trans
-          dnod_sph(inod) = vr_rtp(jnod)
-        end do
+        dnod_sph(ist:ied) = vr_rtp(ist:ied,i_trns)
       end do
 !$omp end do nowait
 !
@@ -61,23 +51,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_scalar_to_trans(ncomp_trans, i_trns,              &
-     &          nnod, dnod_sph)
+      subroutine copy_scalar_to_trans(i_trns, nnod, dnod_sph)
 !
-      integer(kind = kint), intent(in) :: ncomp_trans, i_trns, nnod
+      integer(kind = kint), intent(in) :: i_trns, nnod
       real(kind = kreal), intent(in) :: dnod_sph(nnod)
 !
-      integer(kind = kint) :: inod, jnod, ist, ied, ip
+      integer(kind = kint) :: ist, ied, ip
 !
 !
-!$omp do private(inod,jnod,ist,ied)
+!$omp do private(ist,ied)
       do ip = 1, np_smp
         ist = inod_rtp_smp_stack(ip-1) + 1
         ied = inod_rtp_smp_stack(ip)
-        do inod = ist, ied
-          jnod = i_trns + (inod-1)*ncomp_trans
-          vr_rtp(jnod) = dnod_sph(inod)
-        end do
+        vr_rtp(ist:ied,i_trns) = dnod_sph(ist:ied)
       end do
 !$omp end do nowait
 !
@@ -86,25 +72,21 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine copy_vector_from_trans(ncomp_trans, i_trns,            &
-     &          nnod, dnod_sph)
+      subroutine copy_vector_from_trans(i_trns, nnod, dnod_sph)
 !
-      integer(kind = kint), intent(in) :: ncomp_trans, i_trns, nnod
+      integer(kind = kint), intent(in) :: i_trns, nnod
       real(kind = kreal), intent(inout) :: dnod_sph(nnod,3)
 !
-      integer(kind = kint) :: inod, jnod, ist, ied, ip
+      integer(kind = kint) :: ist, ied, ip
 !
 !
-!$omp do private(ist,ied,inod,jnod)
+!$omp do private(ist,ied)
       do ip = 1, np_smp
         ist = inod_rtp_smp_stack(ip-1) + 1
         ied = inod_rtp_smp_stack(ip)
-        do inod = ist, ied
-          jnod = i_trns + (inod-1)*ncomp_trans
-          dnod_sph(inod,1) = vr_rtp(jnod  )
-          dnod_sph(inod,2) = vr_rtp(jnod+1)
-          dnod_sph(inod,3) = vr_rtp(jnod+2)
-        end do
+        dnod_sph(ist:ied,1) = vr_rtp(ist:ied,i_trns  )
+        dnod_sph(ist:ied,2) = vr_rtp(ist:ied,i_trns+1)
+        dnod_sph(ist:ied,3) = vr_rtp(ist:ied,i_trns+2)
       end do
 !$omp end do nowait
 !
@@ -112,25 +94,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_vector_to_trans(ncomp_trans, i_trns,              &
-     &          nnod, dnod_sph)
+      subroutine copy_vector_to_trans(i_trns, nnod, dnod_sph)
 !
-      integer(kind = kint), intent(in) :: ncomp_trans, i_trns, nnod
+      integer(kind = kint), intent(in) :: i_trns, nnod
       real(kind = kreal), intent(in) :: dnod_sph(nnod,3)
 !
-      integer(kind = kint) :: inod, jnod, ist, ied, ip
+      integer(kind = kint) :: ist, ied, ip
 !
 !
-!$omp do private(inod,jnod,ist,ied)
+!$omp do private(ist,ied)
       do ip = 1, np_smp
         ist = inod_rtp_smp_stack(ip-1) + 1
         ied = inod_rtp_smp_stack(ip)
-        do inod = ist, ied
-          jnod = i_trns + (inod-1)*ncomp_trans
-          vr_rtp(jnod  ) = dnod_sph(inod,1)
-          vr_rtp(jnod+1) = dnod_sph(inod,2)
-          vr_rtp(jnod+2) = dnod_sph(inod,3)
-        end do
+        vr_rtp(ist:ied,i_trns  ) = dnod_sph(ist:ied,1)
+        vr_rtp(ist:ied,i_trns+1) = dnod_sph(ist:ied,2)
+        vr_rtp(ist:ied,i_trns+2) = dnod_sph(ist:ied,3)
       end do
 !$omp end do
 !
@@ -139,28 +117,24 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine copy_tensor_from_trans(ncomp_trans, i_trns,            &
-     &          nnod, dnod_sph)
+      subroutine copy_tensor_from_trans(i_trns, nnod, dnod_sph)
 !
-      integer(kind = kint), intent(in) :: ncomp_trans, i_trns, nnod
+      integer(kind = kint), intent(in) :: i_trns, nnod
       real(kind = kreal), intent(inout) :: dnod_sph(nnod,6)
 !
-      integer(kind = kint) :: inod, jnod, ist, ied, ip
+      integer(kind = kint) :: ist, ied, ip
 !
 !
-!$omp do private(ist,ied,inod,jnod)
+!$omp do private(ist,ied)
       do ip = 1, np_smp
         ist = inod_rtp_smp_stack(ip-1) + 1
         ied = inod_rtp_smp_stack(ip)
-        do inod = ist, ied
-          jnod = i_trns + (inod-1)*ncomp_trans
-          dnod_sph(inod,1) = vr_rtp(jnod  )
-          dnod_sph(inod,2) = vr_rtp(jnod+1)
-          dnod_sph(inod,3) = vr_rtp(jnod+2)
-          dnod_sph(inod,4) = vr_rtp(jnod+3)
-          dnod_sph(inod,5) = vr_rtp(jnod+4)
-          dnod_sph(inod,6) = vr_rtp(jnod+5)
-        end do
+        dnod_sph(ist:ied,1) = vr_rtp(ist:ied,i_trns  )
+        dnod_sph(ist:ied,2) = vr_rtp(ist:ied,i_trns+1)
+        dnod_sph(ist:ied,3) = vr_rtp(ist:ied,i_trns+2)
+        dnod_sph(ist:ied,4) = vr_rtp(ist:ied,i_trns+3)
+        dnod_sph(ist:ied,5) = vr_rtp(ist:ied,i_trns+4)
+        dnod_sph(ist:ied,6) = vr_rtp(ist:ied,i_trns+5)
       end do
 !$omp end do nowait
 !
@@ -168,28 +142,24 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_tensor_to_trans(ncomp_trans, i_trns,            &
-     &          nnod, dnod_sph)
+      subroutine copy_tensor_to_trans(i_trns, nnod, dnod_sph)
 !
-      integer(kind = kint), intent(in) :: ncomp_trans, i_trns, nnod
+      integer(kind = kint), intent(in) :: i_trns, nnod
       real(kind = kreal), intent(inout) :: dnod_sph(nnod,6)
 !
-      integer(kind = kint) :: inod, jnod, ist, ied, ip
+      integer(kind = kint) :: inod, ist, ied, ip
 !
 !
-!$omp do private(inod,jnod,ist,ied)
+!$omp do private(inod,ist,ied)
       do ip = 1, np_smp
         ist = inod_rtp_smp_stack(ip-1) + 1
         ied = inod_rtp_smp_stack(ip)
-        do inod = ist, ied
-          jnod = i_trns + (inod-1)*ncomp_trans
-          vr_rtp(jnod  ) = dnod_sph(inod,1)
-          vr_rtp(jnod+1) = dnod_sph(inod,2)
-          vr_rtp(jnod+2) = dnod_sph(inod,3)
-          vr_rtp(jnod+3) = dnod_sph(inod,4)
-          vr_rtp(jnod+4) = dnod_sph(inod,5)
-          vr_rtp(jnod+5) = dnod_sph(inod,6)
-        end do
+        vr_rtp(ist:ied,i_trns  ) = dnod_sph(ist:ied,1)
+        vr_rtp(ist:ied,i_trns+1) = dnod_sph(ist:ied,2)
+        vr_rtp(ist:ied,i_trns+2) = dnod_sph(ist:ied,3)
+        vr_rtp(ist:ied,i_trns+3) = dnod_sph(ist:ied,4)
+        vr_rtp(ist:ied,i_trns+4) = dnod_sph(ist:ied,5)
+        vr_rtp(ist:ied,i_trns+5) = dnod_sph(ist:ied,6)
       end do
 !$omp end do nowait
 !
@@ -198,23 +168,20 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine copy_vector_tmp_to_trans(ncomp_trans, i_trns)
+      subroutine copy_vector_tmp_to_trans(i_trns)
 !
-      integer(kind = kint), intent(in) :: ncomp_trans, i_trns
+      integer(kind = kint), intent(in) :: i_trns
 !
-      integer(kind = kint) :: inod, jnod, ist, ied, ip
+      integer(kind = kint) :: ist, ied, ip
 !
 !
-!$omp do private(inod,jnod,ist,ied)
+!$omp do private(ist,ied)
       do ip = 1, np_smp
         ist = inod_rtp_smp_stack(ip-1) + 1
         ied = inod_rtp_smp_stack(ip)
-        do inod = ist, ied
-          jnod = i_trns + (inod-1)*ncomp_trans
-          vr_rtp(jnod  ) = d_nod_rtp(inod,1)
-          vr_rtp(jnod+1) = d_nod_rtp(inod,2)
-          vr_rtp(jnod+2) = d_nod_rtp(inod,3)
-        end do
+        vr_rtp(ist:ied,i_trns  ) = d_nod_rtp(ist:ied,1)
+        vr_rtp(ist:ied,i_trns+1) = d_nod_rtp(ist:ied,2)
+        vr_rtp(ist:ied,i_trns+2) = d_nod_rtp(ist:ied,3)
       end do
 !$omp end do nowait
 !
@@ -222,26 +189,23 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_tensor_tmp_to_trans(ncomp_trans, i_trns)
+      subroutine copy_tensor_tmp_to_trans(i_trns)
 !
-      integer(kind = kint), intent(in) :: ncomp_trans, i_trns
+      integer(kind = kint), intent(in) :: i_trns
 !
-      integer(kind = kint) :: inod, jnod, ist, ied, ip
+      integer(kind = kint) :: ist, ied, ip
 !
 !
-!$omp do private(inod,jnod,ist,ied)
+!$omp do private(ist,ied)
       do ip = 1, np_smp
         ist = inod_rtp_smp_stack(ip-1) + 1
         ied = inod_rtp_smp_stack(ip)
-        do inod = ist, ied
-          jnod = i_trns + (inod-1)*ncomp_trans
-          vr_rtp(jnod  ) = d_nod_rtp(inod,1)
-          vr_rtp(jnod+1) = d_nod_rtp(inod,2)
-          vr_rtp(jnod+2) = d_nod_rtp(inod,3)
-          vr_rtp(jnod+3) = d_nod_rtp(inod,4)
-          vr_rtp(jnod+4) = d_nod_rtp(inod,5)
-          vr_rtp(jnod+5) = d_nod_rtp(inod,6)
-        end do
+        vr_rtp(ist:ied,i_trns  ) = d_nod_rtp(ist:ied,1)
+        vr_rtp(ist:ied,i_trns+1) = d_nod_rtp(ist:ied,2)
+        vr_rtp(ist:ied,i_trns+2) = d_nod_rtp(ist:ied,3)
+        vr_rtp(ist:ied,i_trns+3) = d_nod_rtp(ist:ied,4)
+        vr_rtp(ist:ied,i_trns+4) = d_nod_rtp(ist:ied,5)
+        vr_rtp(ist:ied,i_trns+5) = d_nod_rtp(ist:ied,6)
       end do
 !$omp end do nowait
 !

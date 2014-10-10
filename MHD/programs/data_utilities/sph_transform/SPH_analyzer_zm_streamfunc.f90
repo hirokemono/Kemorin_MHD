@@ -207,21 +207,20 @@
       use m_work_4_sph_trans
 !
 !
-      integer(kind = kint) :: inod, j, k, l, m, jnod
+      integer(kind = kint) :: inod, j, k, l, m
 !
 !
       do j = 1, num_vector_rtp
 !
-!$omp parallel do private(k,l,m,inod,jnod)
+!$omp parallel do private(k,l,m,inod)
           do m = 1, nidx_rtp(3)
             do l = 1, nidx_rtp(2)
               do k = 1, nidx_rtp(1)
                 inod = k + (l-1)*nidx_rtp(1)                            &
      &                   + (m-1)*nidx_rtp(1)*nidx_rtp(2)
-                jnod = j + (inod-1)*ncomp_sph_trans
-                vr_rtp(3*jnod-2) =  zero
-                vr_rtp(3*jnod-1) =  zero
-                vr_rtp(3*jnod  ) = -vr_rtp(3*jnod  )                    &
+                vr_rtp(inod,3*j-2) =  zero
+                vr_rtp(inod,3*j-1) =  zero
+                vr_rtp(inod,3*j  ) = -vr_rtp(inod,3*j  )                &
      &                      * radius_1d_rtp_r(k)*sin_theta_1d_rtp(l)
               end do
             end do

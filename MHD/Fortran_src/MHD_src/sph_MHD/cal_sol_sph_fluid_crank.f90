@@ -267,7 +267,7 @@
         if(d_rj(inod,is_field) .ne. d_rj(inod,is_field)) then
           j = idx_global_rj(inod,2)
           k = idx_global_rj(inod,1)
-          l = aint(sqrt(real(j)))
+          l = int(aint(sqrt(real(j))))
           m = j - l*(l+1)
           write(50+my_rank,*) 'Broken', inod, k, j, l, m,  &
      &              d_rj(inod,is_field)

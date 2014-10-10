@@ -81,10 +81,10 @@
 !    swap array
 !
       do j = 1, num_fft
-      do inod = 1, num_spectr
-       i = (j-1)*num_spectr + inod
-       phys_d(i) = work(i)
-      end do
+        do inod = 1, num_spectr
+          i = (j-1)*num_spectr + inod
+          phys_d(i) = work(i)
+        end do
       end do
 !
 !      do j = 1, num_fft

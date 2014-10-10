@@ -68,7 +68,6 @@
       use set_all2all_buffer
 !
       integer(kind = kint) :: ncomp
-      integer(kind = kint) :: Nstacksmp(0:np_smp)
 !
 !
       call allocate_work_4_sph_trans
@@ -108,10 +107,6 @@
       call count_number_4_smp(nblock_j_rlm, ione, nidx_rlm(2),          &
      &    jstack_block_rlm, jmax_block_rlm)
 !
-      ncomp = ncomp_sph_trans*nidx_rtp(1)*nidx_rtp(2)
-      Nstacksmp(0:np_smp) = ncomp_sph_trans*irt_rtp_smp_stack(0:np_smp)
-      call sel_fourier_transform_4_sph(ncomp, Nstacksmp)
-!
 !
       ncomp = ncomp_sph_trans
       call split_rtp_comms(nneib_domain_rtp, id_domain_rtp,             &
@@ -129,6 +124,8 @@
         call set_rev_all2all_import_tbl(nnod_rj, nmax_sr_rj,            &
      &      nneib_domain_rj,  istack_sr_rj,  item_sr_rj,  irev_sr_rj)
       end if
+!
+      call sel_fourier_transform_4_sph(ncomp_sph_trans)
 !
       if(my_rank .ne. 0) return
       write(*,*) 'Vector length for Legendre transform:',               &

@@ -27,9 +27,9 @@
 !!
 !!   input /outpt data
 !!
-!!      radial component:      vr_rtp(3*i_rtp-2)
-!!      elevetional component: vr_rtp(3*i_rtp-1)
-!!      azimuthal component:   vr_rtp(2*i_rtp  )
+!!      radial component:      vr_rtp(i_rtp,1)
+!!      elevetional component: vr_rtp(i_rtp,2)
+!!      azimuthal component:   vr_rtp(i_rtp,3)
 !!
 !!      Poloidal component:          sp_rj(3*i_rj-2)
 !!      diff. of Poloidal component: sp_rj(3*i_rj-1)
@@ -61,7 +61,7 @@
 !>      Spectr data for spherical harmonics transform  @f$ f(r,j) @f$
       real(kind = kreal), allocatable :: sp_rj(:)
 !>      field data on Gauss-Legendre points @f$ f(r,\theta,\phi) @f$ 
-      real(kind = kreal), allocatable :: vr_rtp(:)
+      real(kind = kreal), allocatable :: vr_rtp(:,:)
 !
 !
 !>      Spectr harmonics order for Legendre transform
@@ -135,7 +135,7 @@
       allocate(mdx_n_rlm_rtm(nidx_rlm(2)))
       allocate(asin_theta_1d_rtm(nidx_rtm(2)))
 !
-      allocate(vr_rtp(ncomp_sph_trans*nnod_rtp))
+      allocate(vr_rtp(nnod_rtp,ncomp_sph_trans))
       allocate(sp_rj(ncomp_sph_trans*nnod_rj))
 !
       allocate(cos_theta_1d_rtp(nidx_rtp(2)))
@@ -209,7 +209,7 @@
 !
       use m_spheric_parameter
 !
-      allocate(vr_rtp(ncomp_sph_trans*nnod_rtp))
+      allocate(vr_rtp(nnod_rtp,ncomp_sph_trans))
       vr_rtp = 0.0d0
 !
       iflag_sph_trans = ncomp_sph_trans
@@ -253,14 +253,12 @@
       use m_spheric_parameter
 !
       integer(kind = kint), intent(in) :: my_rank, nb
-      integer(kind = kint) :: inod, ist, ied
+      integer(kind = kint) :: inod
 !
       write(50+my_rank,*) 'vr_rtp', nb
       do inod = 1, nnod_rtp
-        ist = (inod-1) * nb + 1
-        ied = (inod-1) * nb + nb
         write(50+my_rank,'(4i10,1p200e20.12)') inod,                    &
-     &        idx_global_rtp(inod,1:3), vr_rtp(ist:ied)
+     &        idx_global_rtp(inod,1:3), vr_rtp(inod,1:nb)
       end do
 !
       end subroutine check_vr_rtp
