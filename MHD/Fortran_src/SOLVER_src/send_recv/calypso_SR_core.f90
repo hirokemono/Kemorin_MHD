@@ -214,7 +214,7 @@
       do neib = 1, ncomm_send
         ist = NB * istack_send(neib-1) + 1
         num = NB * (istack_send(neib  ) - istack_send(neib-1))
-        if(ist .le. 0) write(*,*) 'wrong istack_send(0)', my_rank
+        if(ist .lt. 0) write(*,*) 'wrong istack_send(0)', my_rank
         if(ist .gt. size(WS)) write(*,*) 'wrong istack_send(neib)',     &
      &       my_rank, neib, ist, size(WS)
         if((ist+num-1) .le. 0) write(*,*)                               &
@@ -228,7 +228,7 @@
         do neib= 1, ncomm_recv
           ist= NB * istack_recv(neib-1) + 1
           num  = NB * (istack_recv(neib  ) - istack_recv(neib-1))
-          if(ist .le. 0) write(*,*) 'wrong istack_recv(0)', my_rank
+          if(ist .lt. 0) write(*,*) 'wrong istack_recv(0)', my_rank
           if(ist .gt. size(WR)) write(*,*) 'wrong istack_recv(neib)',   &
      &       my_rank, neib, ist, size(WR)
           if((ist+num-1) .le. 0) write(*,*)                             &
@@ -242,7 +242,7 @@
       ist_send= NB * istack_send(npe_send-1)
       ist_recv= NB * istack_recv(npe_recv-1)
       num = NB * (istack_send(npe_send  ) - istack_send(npe_send-1))
-        if(ist_send .le. 0) write(*,*) 'wrong istack_send(0)', my_rank
+        if(ist_send .lt. 0) write(*,*) 'wrong istack_send(0)', my_rank
         if(ist_send .gt. size(WS)) write(*,*)                           &
      &      'wrong istack_send(npe_send)',                              &
      &       my_rank, npe_send, ist_send, size(WS)
@@ -252,7 +252,7 @@
      &      'large num_send(npe_send)',                                 &
      &       my_rank, npe_send, ist_send, num, size(WS)
 !
-        if(ist_recv .le. 0) write(*,*) 'wrong istack_recv(0)', my_rank
+        if(ist_recv .lt. 0) write(*,*) 'wrong istack_recv(0)', my_rank
         if(ist_recv .gt. size(WR)) write(*,*)                           &
      &      'wrong istack_recv(npe_recv)',                              &
      &       my_rank, npe_recv, ist_recv, size(WR)

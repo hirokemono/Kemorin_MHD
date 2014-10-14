@@ -51,20 +51,19 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      WR(ncomp*ntot_item_sr_rlm+1:ncomp*ntot_item_sr_rlm+ncomp) = 0.0d0
-      call clear_bwd_legendre_work(ncomp)
+      call finish_send_recv_rj_2_rlm
+!$omp parallel workshare
+      WS(1:ncomp*ntot_item_sr_rtm) = 0.0d0
+!$omp end parallel workshare
 !
       if(nvector .gt. 0) then
         call leg_bwd_trans_vector_sym_org(ncomp, nvector,               &
-     &          irev_sr_rlm, n_WR, WR, vr_rtm_wk(1))
+     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_bwd_trans_scalar_sym_org(ncomp, nvector, nscalar,      &
-     &          irev_sr_rlm, n_WR, WR, vr_rtm_wk(1))
+     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
       end if
-!
-      call finish_send_recv_rj_2_rlm
-      call calypso_rtm_to_send_N(ncomp, n_WS, vr_rtm_wk(1), WS)
 !
       end subroutine leg_backward_trans_sym_org
 !
@@ -83,20 +82,19 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      WR(ncomp*ntot_item_sr_rtm+1:ncomp*ntot_item_sr_rlm+ncomp) = 0.0d0
-      call clear_fwd_legendre_work(ncomp)
+      call finish_send_recv_rtp_2_rtm
+!$omp parallel workshare
+      WS(1:ncomp*ntot_item_sr_rlm) = 0.0d0
+!$omp end parallel workshare
 !
       if(nvector .gt. 0) then
         call leg_fwd_trans_vector_sym_org(ncomp, nvector,               &
-     &      irev_sr_rtm, n_WR, WR, sp_rlm_wk(1))
+     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar,      &
-     &      irev_sr_rtm, n_WR, WR, sp_rlm_wk(1))
+     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
       end if
-!
-      call finish_send_recv_rtp_2_rtm
-      call calypso_rlm_to_send_N(ncomp, n_WS, sp_rlm_wk(1), WS)
 !
       end subroutine leg_forward_trans_sym_org
 !

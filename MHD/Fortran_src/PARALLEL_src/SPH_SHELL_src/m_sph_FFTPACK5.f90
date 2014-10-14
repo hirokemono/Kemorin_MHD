@@ -259,8 +259,6 @@
       integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
 !
 !
-      WR(ncomp*nnod_rtp+1:ncomp*nnod_rtp+ncomp) = 0.0d0
-!
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(m,j,nd,ist,num,inum,nsize,inod_s,inod_c,      &
 !$omp&                    ic_rtp,is_rtp,ic_recv,is_recv)

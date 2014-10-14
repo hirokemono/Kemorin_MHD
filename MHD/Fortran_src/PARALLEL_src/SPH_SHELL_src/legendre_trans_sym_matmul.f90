@@ -62,7 +62,6 @@
 !
       call finish_send_recv_rj_2_rlm
 !$omp parallel workshare
-      WR(ncomp*ntot_item_sr_rlm+1:ncomp*ntot_item_sr_rlm+ncomp) = 0.0d0
       WS(1:ncomp*ntot_item_sr_rtm) = 0.0d0
 !$omp end parallel workshare
 !
@@ -94,7 +93,6 @@
 !
       call finish_send_recv_rtp_2_rtm
 !$omp parallel workshare
-      WR(ncomp*ntot_item_sr_rtm+1:ncomp*ntot_item_sr_rtm+ncomp) = 0.0d0
       WS(1:ncomp*ntot_item_sr_rlm) = 0.0d0
 !$omp end parallel workshare
 !
@@ -127,7 +125,6 @@
 !
       call finish_send_recv_rj_2_rlm
 !$omp parallel workshare
-      WR(ncomp*ntot_item_sr_rlm+1:ncomp*ntot_item_sr_rlm+ncomp) = 0.0d0
       WS(1:ncomp*ntot_item_sr_rtm) = 0.0d0
 !$omp end parallel workshare
 !
@@ -159,7 +156,6 @@
 !
       call finish_send_recv_rtp_2_rtm
 !$omp parallel workshare
-      WR(ncomp*ntot_item_sr_rtm+1:ncomp*ntot_item_sr_rtm+ncomp) = 0.0d0
       WS(1:ncomp*ntot_item_sr_rlm) = 0.0d0
 !$omp end parallel workshare
 !
@@ -192,7 +188,6 @@
 !
       call finish_send_recv_rj_2_rlm
 !$omp parallel workshare
-      WR(ncomp*ntot_item_sr_rlm+1:ncomp*ntot_item_sr_rlm+ncomp) = 0.0d0
       WS(1:ncomp*ntot_item_sr_rtm) = 0.0d0
 !$omp end parallel workshare
 !
@@ -224,7 +219,6 @@
 !
       call finish_send_recv_rtp_2_rtm
 !$omp parallel workshare
-      WR(ncomp*ntot_item_sr_rtm+1:ncomp*ntot_item_sr_rtm+ncomp) = 0.0d0
       WS(1:ncomp*ntot_item_sr_rlm) = 0.0d0
 !$omp end parallel workshare
 !

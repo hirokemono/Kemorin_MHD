@@ -29,9 +29,9 @@
       implicit none
 !
       real(kind = kreal) :: etime_shortest = -1.0e10
-      integer(kind = kint) :: iflag_seelcted
+      integer(kind = kint) :: iflag_selected
 !
-      private :: etime_shortest, iflag_seelcted
+      private :: etime_shortest, iflag_selected
       private :: s_select_fourier_transform, test_fourier_trans_vector
 !
 ! -----------------------------------------------------------------------
@@ -50,7 +50,7 @@
       if(iflag_FFT .eq. iflag_UNDEFINED_FFT) then
         call s_select_fourier_transform(ncomp_sph_trans,                &
      &      n_WS, n_WR, WS, WR)
-        iflag_FFT = iflag_seelcted
+        iflag_FFT = iflag_selected
       end if
 !
       call init_sph_FFT_select(my_rank, ncomp_sph_trans)
@@ -134,22 +134,26 @@
       real(kind = kreal) :: starttime, endtime
 !
 !
+      if(iflag_debug .gt. 0) write(*,*) 'init_sph_FFT_select'
       call init_sph_FFT_select(my_rank, ncomp)
 !
+      if(iflag_debug .gt. 0) write(*,*) 'back_FFT_select_from_recv'
       starttime = MPI_WTIME()
       call back_FFT_select_from_recv(ncomp, n_WR, WR)
       call fwd_FFT_select_to_send(ncomp, n_WS, WS)
       endtime = MPI_WTIME() - starttime
+      if(iflag_debug .gt. 0) write(*,*) 'fwd_FFT_select_to_send end'
 !
       call MPI_allREDUCE (endtime, etime_fft, ione,                     &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       etime_fft = etime_fft / dble(nprocs)
 !
-      call finalize_sph_FFT_select(ncomp)
+      if(iflag_debug .gt. 0) write(*,*) 'finalize_sph_FFT_select'
+      call finalize_sph_FFT_select
 !
       if(etime_fft .lt. etime_shortest                                  &
       &        .or. etime_shortest.lt.0.0d0) then
-        iflag_seelcted = iflag_FFTW
+        iflag_selected = iflag_FFTW
         etime_shortest = etime_fft
       end if
 !

@@ -74,7 +74,6 @@
       if (iflag_debug.gt.0)  write(*,*) 'schmidt_b_trans_pole_vect',    &
      &                     ncomp
       nscalar_trans = nscalar + 6 * ntensor
-      WR(ncomp*ntot_item_sr_rlm+1:ncomp*ntot_item_sr_rlm+ncomp) = 0.0d0
       call schmidt_b_trans_pole_vect(ncomp, nvector,                    &
      &    irev_sr_rlm, n_WR, WR)
       call schmidt_b_trans_pole_scalar(ncomp, nvector, nscalar_trans,   &

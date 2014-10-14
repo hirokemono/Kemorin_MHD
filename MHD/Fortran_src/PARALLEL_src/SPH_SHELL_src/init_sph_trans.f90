@@ -270,6 +270,9 @@
           do l_rtm = 1, nth_hemi_rtm
             Ps_rtm(l_rtm,jj+jst) =     P_rtm(l_rtm,j_rlm)
             dPsdt_rtm(l_rtm,jj+jst) =  dPdt_rtm(l_rtm,j_rlm)
+!
+            Ps_jl(jj+jst,l_rtm) =     P_rtm(l_rtm,j_rlm)
+            dPsdt_jl(jj+jst,l_rtm) =  dPdt_rtm(l_rtm,j_rlm)
           end do
         end do
 !
@@ -278,6 +281,9 @@
           do l_rtm = 1, nth_hemi_rtm
             Ps_rtm(l_rtm,jj+jst+n_jk_e) =     P_rtm(l_rtm,j_rlm)
             dPsdt_rtm(l_rtm,jj+jst+n_jk_e) =  dPdt_rtm(l_rtm,j_rlm)
+!
+            Ps_jl(jj+jst+n_jk_e,l_rtm) =     P_rtm(l_rtm,j_rlm)
+            dPsdt_jl(jj+jst+n_jk_e,l_rtm) =  dPdt_rtm(l_rtm,j_rlm)
           end do
         end do
       end do

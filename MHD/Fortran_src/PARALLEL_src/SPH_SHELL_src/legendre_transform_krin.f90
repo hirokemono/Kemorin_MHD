@@ -56,7 +56,6 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      WR(ncomp*ntot_item_sr_rlm+1:ncomp*ntot_item_sr_rlm+ncomp) = 0.0d0
       call order_b_trans_fields_krin(ncomp, nvector, nscalar,           &
      &    irev_sr_rlm, n_WR, WR, sp_rlm_wk(1))
 !
@@ -90,7 +89,6 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      WR(ncomp*ntot_item_sr_rtm+1:ncomp*ntot_item_sr_rtm+ncomp) = 0.0d0
       call order_f_trans_fields_krin(ncomp, nvector, nscalar,           &
      &    irev_sr_rtm, n_WR, WR, vr_rtm_wk(1))
 !

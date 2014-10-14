@@ -50,6 +50,13 @@
 !!        at gouss points in northen hemisphere
       real(kind = kreal), allocatable :: dPsdt_rtm(:,:)
 !
+!>        @$f P_{l}{m} @$f with even (l-m) 
+!!        at gouss points in northen hemisphere
+      real(kind = kreal), allocatable :: Ps_jl(:,:)
+!>        @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
+!!        at gouss points in northen hemisphere
+      real(kind = kreal), allocatable :: dPsdt_jl(:,:)
+!
 !
 !>        Normalization constants for spherical harmonics in (r,l,m)
       real(kind = kreal), allocatable:: g_sph_rlm(:,:)
@@ -150,8 +157,14 @@
       allocate( Ps_rtm(nth_hemi_rtm,nidx_rlm(2)) )
       allocate( dPsdt_rtm(nth_hemi_rtm,nidx_rlm(2)) )
 !
+      allocate( Ps_jl(nidx_rlm(2),nth_hemi_rtm) )
+      allocate( dPsdt_jl(nidx_rlm(2),nth_hemi_rtm) )
+!
       Ps_rtm =    0.0d0
       dPsdt_rtm = 0.0d0
+!
+      Ps_jl =    0.0d0
+      dPsdt_jl = 0.0d0
 !
       end subroutine allocate_hemi_schmidt_rtm
 !
@@ -244,6 +257,7 @@
       subroutine deallocate_hemi_schmidt_rtm
 !
       deallocate(Ps_rtm, dPsdt_rtm)
+      deallocate(Ps_jl,  dPsdt_jl)
 !
       end subroutine deallocate_hemi_schmidt_rtm
 !

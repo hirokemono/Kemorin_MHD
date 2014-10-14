@@ -215,6 +215,9 @@
      &   .or. id_legendre_transfer .eq. iflag_leg_matprod) then
         call alloc_leg_vec_matmul(nvector)
         call alloc_leg_scl_matmul(nscalar)
+      else if(id_legendre_transfer .eq. iflag_leg_symmetry) then
+        call alloc_leg_vec_symmetry
+        call alloc_leg_scl_symmetry
       end if
 !
       end subroutine sel_init_legendre_trans
@@ -236,6 +239,9 @@
      &   .or. id_legendre_transfer .eq. iflag_leg_matprod) then
         call dealloc_leg_vec_matmul
         call dealloc_leg_scl_matmul
+      else if(id_legendre_transfer .eq. iflag_leg_symmetry) then
+        call dealloc_leg_vec_symmetry
+        call dealloc_leg_scl_symmetry
       end if
 !
       end subroutine sel_finalize_legendre_trans

@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_FFT_select(my_rank, ncomp)
-!!      subroutine finalize_sph_FFT_select(ncomp)
+!!      subroutine finalize_sph_FFT_select
 !!      subroutine verify_sph_FFT_select(ncomp)
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT for ISPACK
@@ -105,16 +105,12 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_FFT_select(ncomp)
+      subroutine finalize_sph_FFT_select
 !
       use m_spheric_parameter
       use m_spheric_param_smp
 !
-      integer(kind = kint), intent(in) :: ncomp
-      integer(kind = kint) :: Nstacksmp(0:np_smp)
 !
-!
-      Nstacksmp(0:np_smp) = ncomp*irt_rtp_smp_stack(0:np_smp)
       if(iflag_FFT .eq. iflag_ISPACK) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK'
         call finalize_sph_ISPACK
@@ -198,7 +194,7 @@
 !
       use m_sph_trans_comm_table
       use m_work_4_sph_trans
-!back_sph_single_FFTW_from_recv
+!
       integer(kind = kint), intent(in) :: ncomp, n_WR
       real (kind=kreal), intent(inout):: WR(n_WR)
 !

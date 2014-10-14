@@ -18,6 +18,11 @@
 !!      subroutine dealloc_leg_vec_matmul
 !!      subroutine dealloc_leg_scl_matmul
 !!
+!!      subroutine alloc_leg_vec_symmetry
+!!      subroutine alloc_leg_scl_symmetry
+!!      subroutine dealloc_leg_vec_symmetry
+!!      subroutine dealloc_leg_scl_symmetry
+!!
 !!     field data for Legendre transform
 !!       original layout: vr_rtm(l_rtm,m_rtm,k_rtm,icomp)
 !!       size: vr_rtm(nidx_rtm(2),nidx_rtm(1)*ncomp,nidx_rtm(3))
@@ -244,6 +249,70 @@
       deallocate(scl_e, symp)
 !
       end subroutine dealloc_leg_scl_matmul
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_leg_vec_symmetry
+!
+!
+      nvec_jk = (maxdegree_rlm+1)/2
+      allocate(pol_e(nvec_jk,np_smp))
+      allocate(dpoldt_e(nvec_jk,np_smp))
+      allocate(dpoldp_e(nvec_jk,np_smp))
+      allocate(dtordt_e(nvec_jk,np_smp))
+      allocate(dtordp_e(nvec_jk,np_smp))
+      allocate(pol_o(nvec_jk,np_smp))
+      allocate(dpoldt_o(nvec_jk,np_smp))
+      allocate(dpoldp_o(nvec_jk,np_smp))
+      allocate(dtordt_o(nvec_jk,np_smp))
+      allocate(dtordp_o(nvec_jk,np_smp))
+!
+      nvec_lk = (nidx_rtm(2)+1)/2
+      allocate(symp_r(nvec_lk,np_smp))
+      allocate(symp_t(nvec_lk,np_smp))
+      allocate(symp_p(nvec_lk,np_smp))
+      allocate(symn_t(nvec_lk,np_smp))
+      allocate(symn_p(nvec_lk,np_smp))
+!
+      allocate(asmp_r(nvec_lk,np_smp))
+      allocate(asmp_t(nvec_lk,np_smp))
+      allocate(asmp_p(nvec_lk,np_smp))
+      allocate(asmn_t(nvec_lk,np_smp))
+      allocate(asmn_p(nvec_lk,np_smp))
+!
+      end subroutine alloc_leg_vec_symmetry
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_leg_scl_symmetry
+!
+!
+      nscl_jk = (maxdegree_rlm+1)/2
+      allocate(scl_e(nscl_jk,np_smp))
+      allocate(scl_o(nscl_jk,np_smp))
+!
+      nscl_lk = (nidx_rtm(2)+1)/2
+      allocate(symp(nscl_lk,np_smp))
+      allocate(asmp(nscl_lk,np_smp))
+!
+      end subroutine alloc_leg_scl_symmetry
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_leg_vec_symmetry
+!
+      call dealloc_leg_vec_sym_matmul
+!
+      end subroutine dealloc_leg_vec_symmetry
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_leg_scl_symmetry
+!
+      call dealloc_leg_scl_sym_matmul
+!
+      end subroutine dealloc_leg_scl_symmetry
 !
 ! -----------------------------------------------------------------------
 !

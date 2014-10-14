@@ -64,7 +64,6 @@
 !
 !
       call start_eleps_time(25)
-      WR(ncomp*ntot_item_sr_rlm+1:ncomp*ntot_item_sr_rlm+ncomp) = 0.0d0
       call order_b_trans_fields_spin(ncomp, nvector, nscalar,           &
      &    irev_sr_rlm, n_WR, WR(1), sp_rlm_wk(1))
       call end_eleps_time(25)
@@ -106,7 +105,6 @@
 !
 !
       call start_eleps_time(29)
-      WR(ncomp*ntot_item_sr_rtm+1:ncomp*ntot_item_sr_rtm+ncomp) = 0.0d0
       call order_f_trans_fields_spin(ncomp, nvector, nscalar,           &
      &    irev_sr_rtm, n_WR, WR(1), vr_rtm_wk(1))
       call end_eleps_time(29)
@@ -150,7 +148,6 @@
 !
 !
       call start_eleps_time(25)
-      WR(ncomp*ntot_item_sr_rlm+1:ncomp*ntot_item_sr_rlm+ncomp) = 0.0d0
       call order_b_trans_fields_spin(ncomp, nvector, nscalar,           &
      &    irev_sr_rlm, n_WR, WR(1), sp_rlm_wk(1))
       vr_rtm_wk(1:ncomp*nnod_rtm) = 0.0d0
@@ -194,7 +191,6 @@
 !
 !
       call start_eleps_time(29)
-      WR(ncomp*ntot_item_sr_rtm+1:ncomp*ntot_item_sr_rtm+ncomp) = 0.0d0
       call order_f_trans_fields_spin(ncomp, nvector, nscalar,           &
      &    irev_sr_rtm, n_WR, WR(1), vr_rtm_wk(1))
       sp_rlm_wk(1:ncomp*nnod_rlm) = 0.0d0

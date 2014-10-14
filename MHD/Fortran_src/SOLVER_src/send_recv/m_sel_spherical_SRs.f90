@@ -205,6 +205,10 @@
       end if
       call end_eleps_time(37)
 !
+!$omp parallel workshare
+      WR(NB*istack_recv(npe_recv)+1:NB*istack_recv(npe_recv)+NB) = 0.0d0
+!$omp end parallel workshare
+!
       end subroutine sel_calypso_sph_comm_N
 !
 !-----------------------------------------------------------------------

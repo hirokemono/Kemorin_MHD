@@ -91,7 +91,6 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      WR(ncomp*ntot_item_sr_rtm+1:ncomp*ntot_item_sr_rtm+ncomp) = 0.0d0
       call order_f_trans_fields_spin(ncomp, nvector, nscalar,           &
      &    irev_sr_rtm, n_WR, WR(1), vr_rtm_wk(1))
       call clear_fwd_legendre_work(ncomp)
