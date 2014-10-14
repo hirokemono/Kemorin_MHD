@@ -63,26 +63,26 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call start_eleps_time(25)
+!      call start_eleps_time(25)
       call order_b_trans_fields_spin(ncomp, nvector, nscalar,           &
      &    irev_sr_rlm, n_WR, WR(1), sp_rlm_wk(1))
-      call end_eleps_time(25)
+!      call end_eleps_time(25)
 !
-      call start_eleps_time(27)
+!      call start_eleps_time(27)
       if(nvector .gt. 0) call legendre_b_trans_vector_spin              &
      &                      (ncomp, nvector,                            &
      &                       sp_rlm_wk(1), vr_rtm_wk(1))
       if(nscalar .gt. 0) call legendre_b_trans_scalar_spin              &
      &                      (ncomp, nvector, nscalar,                   &
      &                       sp_rlm_wk(1), vr_rtm_wk(1))
-      call end_eleps_time(27)
+!      call end_eleps_time(27)
 !
-      call start_eleps_time(28)
+!      call start_eleps_time(28)
       call finish_send_recv_rj_2_rlm
       call back_b_trans_fields_krin(ncomp, nvector, nscalar,            &
      &    vr_rtm_wk(1), nmax_sr_rtp, nneib_domain_rtm,                  &
      &    istack_sr_rtm, item_sr_rtm, WS(1))
-      call end_eleps_time(28)
+!      call end_eleps_time(28)
 !
       end subroutine leg_backward_trans_spin
 !
@@ -104,26 +104,26 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call start_eleps_time(29)
+!      call start_eleps_time(29)
       call order_f_trans_fields_spin(ncomp, nvector, nscalar,           &
      &    irev_sr_rtm, n_WR, WR(1), vr_rtm_wk(1))
-      call end_eleps_time(29)
+!      call end_eleps_time(29)
 !
-      call start_eleps_time(31)
+!      call start_eleps_time(31)
       if(nvector .gt. 0) call legendre_f_trans_vector_spin              &
      &                      (ncomp, nvector,  vr_rtm_wk(1),             &
      &                       sp_rlm_wk(1))
       if(nscalar .gt. 0) call legendre_f_trans_scalar_spin              &
      &                      (ncomp, nvector, nscalar, vr_rtm_wk(1),     &
      &                       sp_rlm_wk(1))
-      call end_eleps_time(31)
+!      call end_eleps_time(31)
 !
-      call start_eleps_time(32)
+!      call start_eleps_time(32)
       call finish_send_recv_rtp_2_rtm
       call back_f_trans_fields_krin(ncomp, nvector, nscalar,            &
      &    sp_rlm_wk(1), nmax_sr_rj, nneib_domain_rlm,                   &
      &    istack_sr_rlm, item_sr_rlm, WS(1))
-      call end_eleps_time(32)
+!      call end_eleps_time(32)
 !
       end subroutine leg_forward_trans_spin
 !
@@ -147,27 +147,27 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call start_eleps_time(25)
+!      call start_eleps_time(25)
       call order_b_trans_fields_spin(ncomp, nvector, nscalar,           &
      &    irev_sr_rlm, n_WR, WR(1), sp_rlm_wk(1))
       vr_rtm_wk(1:ncomp*nnod_rtm) = 0.0d0
-      call end_eleps_time(25)
+!      call end_eleps_time(25)
 !
-      call start_eleps_time(27)
+!      call start_eleps_time(27)
       if(nvector .gt. 0) call leg_bwd_trans_vector_sym_spin             &
      &                      (ncomp, nvector,                            &
      &                       sp_rlm_wk(1), vr_rtm_wk(1))
       if(nscalar .gt. 0) call leg_bwd_trans_scalar_sym_spin             &
      &                      (ncomp, nvector, nscalar,                   &
      &                       sp_rlm_wk(1), vr_rtm_wk(1))
-      call end_eleps_time(27)
+!      call end_eleps_time(27)
 !
-      call start_eleps_time(28)
+!      call start_eleps_time(28)
       call finish_send_recv_rj_2_rlm
       call back_b_trans_fields_krin(ncomp, nvector, nscalar,            &
      &    vr_rtm_wk(1), nmax_sr_rtp, nneib_domain_rtm,                  &
      &    istack_sr_rtm, item_sr_rtm, WS(1))
-      call end_eleps_time(28)
+!      call end_eleps_time(28)
 !
       end subroutine leg_backward_trans_sym_spin
 !
@@ -190,27 +190,27 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call start_eleps_time(29)
+!      call start_eleps_time(29)
       call order_f_trans_fields_spin(ncomp, nvector, nscalar,           &
      &    irev_sr_rtm, n_WR, WR(1), vr_rtm_wk(1))
       sp_rlm_wk(1:ncomp*nnod_rlm) = 0.0d0
-      call end_eleps_time(29)
+!      call end_eleps_time(29)
 !
-      call start_eleps_time(31)
+!      call start_eleps_time(31)
       if(nvector .gt. 0) call leg_fwd_trans_vector_sym_spin             &
      &                      (ncomp, nvector,  vr_rtm_wk(1),             &
      &                       sp_rlm_wk(1))
       if(nscalar .gt. 0) call leg_fwd_trans_scalar_sym_spin             &
      &                      (ncomp, nvector, nscalar, vr_rtm_wk(1),     &
      &                       sp_rlm_wk(1))
-      call end_eleps_time(31)
+!      call end_eleps_time(31)
 !
-      call start_eleps_time(32)
+!      call start_eleps_time(32)
       call finish_send_recv_rtp_2_rtm
       call back_f_trans_fields_krin(ncomp, nvector, nscalar,            &
      &    sp_rlm_wk(1), nmax_sr_rj, nneib_domain_rlm,                   &
      &    istack_sr_rlm, item_sr_rlm, WS(1))
-      call end_eleps_time(32)
+!      call end_eleps_time(32)
 !
       end subroutine leg_forward_trans_sym_spin
 !

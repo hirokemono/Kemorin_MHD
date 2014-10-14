@@ -102,16 +102,16 @@
             jst(ip) = lstack_rlm(mp_rlm-1)
             nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
 !
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call set_sp_rlm_vector_matmul                                 &
      &         (kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                  &
      &          ncomp, irev_sr_rlm, n_WR, WR,                           &
      &          nvec_jk, pol_e(1,ip), dpoldt_e(1,ip), dpoldp_e(1,ip),   &
      &          dtordt_e(1,ip), dtordp_e(1,ip))
-          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
+!          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
 !   even l-m
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call matmul_bwd_leg_trans(nidx_rtm(2), nkr(ip), nj_rlm(ip),   &
      &        P_rtm(1,jst(ip)+1),    pol_e(1,ip), symp_r(1,ip))
           call matmul_bwd_leg_trans(nidx_rtm(2), nkr(ip), nj_rlm(ip),   &
@@ -123,21 +123,21 @@
      &        P_rtm(1,jst(ip)+1), dtordp_e(1,ip), symn_t(1,ip))
           call matmul_bwd_leg_trans(nidx_rtm(2), nkr(ip), nj_rlm(ip),   &
      &        P_rtm(1,jst(ip)+1), dpoldp_e(1,ip), symn_p(1,ip))
-          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
+!          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_vector_matmul                                 &
      &       (kst(ip), nkr(ip), mp_rlm, mn_rlm, nvec_lk,                &
      &        symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),                 &
      &        symn_t(1,ip), symn_p(1,ip), ncomp, irev_sr_rtm, n_WS, WS)
-           elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
+!          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
       end do
 !$omp end parallel do
 !
-      elapsed(41:44)                                                    &
-     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
+!      elapsed(41:44)                                                   &
+!     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
 !
       end subroutine leg_b_trans_vector_matmul
 !
@@ -175,30 +175,30 @@
           jst(ip) = lstack_rlm(mp_rlm-1)
           nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
 !
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call set_sp_rlm_scalar_matmul                                 &
      &         (kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                  &
      &          ncomp, nvector, irev_sr_rlm, n_WR, WR,                  &
      &          nscl_jk, scl_e(1,ip))
-          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
+!          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call matmul_bwd_leg_trans(nidx_rtm(2), nkr(ip), nj_rlm(ip),   &
      &        P_rtm(1,jst(ip)+1), scl_e(1,ip), symp(1,ip))
-          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
+!          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_scalar_matmul                                 &
      &       (kst(ip), nkr(ip), mp_rlm, nscl_lk, symp(1,ip),            &
      &        ncomp, nvector, irev_sr_rtm, n_WS, WS)
-          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
+!          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
       end do
 !$omp end parallel do
 !
-      elapsed(41:44)                                                    &
-     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
+!      elapsed(41:44)                                                   &
+!     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
 !
       end subroutine leg_b_trans_scalar_matmul
 !
@@ -238,16 +238,16 @@
             jst(ip) = lstack_rlm(mp_rlm-1)
             nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
 !
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call set_sp_rlm_vector_matmul                                 &
      &         (kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                  &
      &          ncomp, irev_sr_rlm, n_WR, WR,                           &
      &          nvec_jk, pol_e(1,ip), dpoldt_e(1,ip), dpoldp_e(1,ip),   &
      &          dtordt_e(1,ip), dtordp_e(1,ip))
-          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
+!          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
 !   even l-m
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call dgemm_bwd_leg_trans(nidx_rtm(2), nkr(ip), nj_rlm(ip),   &
      &      P_rtm(1,jst(ip)+1),    pol_e(1,ip), zero, symp_r(1,ip))
           call dgemm_bwd_leg_trans(nidx_rtm(2), nkr(ip), nj_rlm(ip),   &
@@ -259,21 +259,21 @@
      &      P_rtm(1,jst(ip)+1), dtordp_e(1,ip), zero, symn_t(1,ip))
           call dgemm_bwd_leg_trans(nidx_rtm(2), nkr(ip), nj_rlm(ip),   &
      &      P_rtm(1,jst(ip)+1), dpoldp_e(1,ip), zero, symn_p(1,ip))
-          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
+!          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_vector_matmul                                 &
      &       (kst(ip), nkr(ip), mp_rlm, mn_rlm, nvec_lk,                &
      &        symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),                 &
      &        symn_t(1,ip), symn_p(1,ip), ncomp, irev_sr_rtm, n_WS, WS)
-           elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
+!          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
       end do
 !$omp end parallel do
 !
-      elapsed(41:44)                                                    &
-     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
+!      elapsed(41:44)                                                   &
+!     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
 !
       end subroutine leg_b_trans_vector_dgemm
 !
@@ -311,30 +311,30 @@
           jst(ip) = lstack_rlm(mp_rlm-1)
           nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
 !
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call set_sp_rlm_scalar_matmul                                 &
      &         (kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                  &
      &          ncomp, nvector, irev_sr_rlm, n_WR, WR,                  &
      &          nscl_jk, scl_e(1,ip))
-          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
+!          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call dgemm_bwd_leg_trans(nidx_rtm(2), nkr(ip), nj_rlm(ip),    &
      &        P_rtm(1,jst(ip)+1), scl_e(1,ip), zero, symp(1,ip))
-          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
+!          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_scalar_matmul                                 &
      &       (kst(ip), nkr(ip), mp_rlm, nscl_lk, symp(1,ip),            &
      &        ncomp, nvector, irev_sr_rtm, n_WS, WS)
-          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
+!          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
       end do
 !$omp end parallel do
 !
-      elapsed(41:44)                                                    &
-     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
+!      elapsed(41:44)                                                   &
+!     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
 !
       end subroutine leg_b_trans_scalar_dgemm
 !
@@ -374,16 +374,16 @@
             jst(ip) = lstack_rlm(mp_rlm-1)
             nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
 !
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call set_sp_rlm_vector_matmul                                 &
      &         (kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                  &
      &          ncomp, irev_sr_rlm, n_WR, WR,                           &
      &          nvec_jk, pol_e(1,ip), dpoldt_e(1,ip), dpoldp_e(1,ip),   &
      &          dtordt_e(1,ip), dtordp_e(1,ip))
-          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
+!          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
 !   even l-m
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call matmat_bwd_leg_trans(nidx_rtm(2), nkr(ip), nj_rlm(ip),   &
      &        P_rtm(1,jst(ip)+1),    pol_e(1,ip), symp_r(1,ip))
           call matmat_bwd_leg_trans(nidx_rtm(2), nkr(ip), nj_rlm(ip),   &
@@ -395,21 +395,21 @@
      &        P_rtm(1,jst(ip)+1), dtordp_e(1,ip), symn_t(1,ip))
           call matmat_bwd_leg_trans(nidx_rtm(2), nkr(ip), nj_rlm(ip),   &
      &        P_rtm(1,jst(ip)+1), dpoldp_e(1,ip), symn_p(1,ip))
-          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
+!          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_vector_matmul                                 &
      &       (kst(ip), nkr(ip), mp_rlm, mn_rlm, nvec_lk,                &
      &        symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),                 &
      &        symn_t(1,ip), symn_p(1,ip), ncomp, irev_sr_rtm, n_WS, WS)
-           elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
+!          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
       end do
 !$omp end parallel do
 !
-      elapsed(41:44)                                                    &
-     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
+!      elapsed(41:44)                                                   &
+!     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
 !
       end subroutine leg_b_trans_vector_matprod
 !
@@ -447,30 +447,30 @@
           jst(ip) = lstack_rlm(mp_rlm-1)
           nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
 !
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call set_sp_rlm_scalar_matmul                                 &
      &         (kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                  &
      &          ncomp, nvector, irev_sr_rlm, n_WR, WR,                  &
      &          nscl_jk, scl_e(1,ip))
-          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
+!          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call matmat_bwd_leg_trans(nidx_rtm(2), nkr(ip), nj_rlm(ip),   &
      &        P_rtm(1,jst(ip)+1), scl_e(1,ip), symp(1,ip))
-          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
+!          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
-          st_elapsed = MPI_WTIME()
+!          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_scalar_matmul                                 &
      &       (kst(ip), nkr(ip), mp_rlm, nscl_lk, symp(1,ip),            &
      &        ncomp, nvector, irev_sr_rtm, n_WS, WS)
-          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
+!          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
       end do
 !$omp end parallel do
 !
-      elapsed(41:44)                                                    &
-     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
+!      elapsed(41:44)                                                   &
+!     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
 !
       end subroutine leg_b_trans_scalar_matprod
 !

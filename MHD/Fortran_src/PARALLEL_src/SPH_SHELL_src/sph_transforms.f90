@@ -20,12 +20,6 @@
 !!      elevetional component: vr_rtp(i_rtp,2)
 !!      azimuthal component:   vr_rtp(i_rtp,3)
 !!
-!!     forward transform: 
-!!      Poloidal component:          sp_rj(3*i_rj-2)
-!!      diff. of Poloidal component: sp_rj(3*i_rj-1)
-!!      Toroidal component:          sp_rj(3*i_rj  )
-!!
-!!     backward transform: 
 !!      Poloidal component:          sp_rj(3*i_rj-2)
 !!      diff. of Poloidal component: sp_rj(3*i_rj-1)
 !!      Toroidal component:          sp_rj(3*i_rj  )

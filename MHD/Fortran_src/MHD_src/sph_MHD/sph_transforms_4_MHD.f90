@@ -80,7 +80,7 @@
       end if
 !
        call sel_init_legendre_trans                                     &
-     &    (nvector_sph_trans, nscalar_sph_trans)
+     &    (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       if(my_rank .ne. 0) return
         if     (id_legendre_transfer .eq. iflag_leg_orginal_loop) then
@@ -129,22 +129,22 @@
 !
 !
       if(ncomp_rj_2_rtp .eq. 0) return
-      call start_eleps_time(51)
+!      call start_eleps_time(51)
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_vec_spec_to_trans'
       call copy_mhd_vec_spec_to_trans
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_scl_spec_to_trans'
       call copy_mhd_scl_spec_to_trans
-      call end_eleps_time(51)
+!      call end_eleps_time(51)
 !
       call sph_b_trans_w_coriolis(ncomp_rj_2_rtp,                       &
      &    nvector_rj_2_rtp, nscalar_rj_2_rtp)
 !
-      call start_eleps_time(52)
+!      call start_eleps_time(52)
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_vec_fld_from_trans'
       call copy_mhd_vec_fld_from_trans
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_scl_fld_from_trans'
       call copy_mhd_scl_fld_from_trans
-      call end_eleps_time(52)
+!      call end_eleps_time(52)
 !
       end subroutine sph_back_trans_4_MHD
 !
@@ -158,16 +158,16 @@
 !
 !
       if(ncomp_rtp_2_rj .eq. 0) return
-      call start_eleps_time(53)
+!      call start_eleps_time(53)
       call copy_mhd_vec_fld_to_trans
-      call end_eleps_time(53)
+!      call end_eleps_time(53)
 !
       call sph_f_trans_w_coriolis(ncomp_rtp_2_rj,                       &
      &    nvector_rtp_2_rj, nscalar_rtp_2_rj)
 !
-      call start_eleps_time(54)
+!      call start_eleps_time(54)
       call copy_mhd_vec_spec_from_trans
-      call end_eleps_time(54)
+!      call end_eleps_time(54)
 !
       end subroutine sph_forward_trans_4_MHD
 !
@@ -310,7 +310,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            'Test SPH transform for ', id_legendre_transfer
         call sel_init_legendre_trans                                    &
-     &      (nvector_sph_trans, nscalar_sph_trans)
+     &      (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
         starttime = MPI_WTIME()
         call sph_back_trans_4_MHD

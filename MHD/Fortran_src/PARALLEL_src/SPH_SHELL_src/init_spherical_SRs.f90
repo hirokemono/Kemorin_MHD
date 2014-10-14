@@ -8,6 +8,7 @@
 !!@n      for spherical harmonics transform
 !!
 !!@verbatim
+!!      subroutine init_sph_send_recv_N(NB, X_rtp, X_rj)
 !!      subroutine check_spherical_SRs_N(NB)
 !!@endverbatim
 !!
@@ -46,27 +47,29 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
+      subroutine init_sph_send_recv_N(NB, X_rtp, X_rj)
 !
       use calypso_mpi
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
       use m_sph_communicators
+      use m_work_4_sph_trans_spin
       use spherical_SRs_N
 !
       integer (kind=kint), intent(in) :: NB
       real (kind=kreal), intent(inout) :: X_rtp(NB*nnod_rtp)
-      real (kind=kreal), intent(inout) :: X_rtm(NB*nnod_rtm)
-      real (kind=kreal), intent(inout) :: X_rlm(NB*nnod_rlm)
       real (kind=kreal), intent(inout)::  X_rj(NB*nnod_rj)
 !
 !
-      call buffer_size_sph_send_recv(NB)
+      call allocate_work_sph_trans(NB)
 !
       call check_spherical_SRs_N(NB)
 !
-      call sel_sph_import_table(NB, X_rtp, X_rtm, X_rlm, X_rj)
+      call buffer_size_sph_send_recv(NB)
+      call sel_sph_import_table(NB, X_rtp, vr_rtm_wk, sp_rlm_wk, X_rj)
+      call deallocate_work_sph_trans
+!
       if(my_rank .eq. 0) then
         write(*,'(a,i4)', advance='no')                                 &
      &   'Communication mode for sph. transform: ', iflag_sph_SRN
@@ -77,7 +80,7 @@
         end if
       end if
 !
-      call sel_sph_comm_routine(NB, X_rtp, X_rtm, X_rlm, X_rj)
+      call sel_sph_comm_routine(NB)
       if(my_rank .eq. 0) then
         write(*,'(a,i4)', advance='no')                                 &
      &   'Selected communication routine: ', iflag_sph_commN
@@ -148,7 +151,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_sph_comm_routine(NB, X_rtp, X_rtm, X_rlm, X_rj)
+      subroutine sel_sph_comm_routine(NB)
 !
       use m_sph_communicators
       use calypso_mpi
@@ -156,10 +159,6 @@
       use set_from_recv_buf_rev
 !
       integer (kind=kint), intent(in) :: NB
-      real (kind=kreal), intent(inout) :: X_rtp(NB*nnod_rtp)
-      real (kind=kreal), intent(inout) :: X_rtm(NB*nnod_rtm)
-      real (kind=kreal), intent(inout) :: X_rlm(NB*nnod_rlm)
-      real (kind=kreal), intent(inout)::  X_rj(NB*nnod_rj)
 !
       real(kind = kreal) :: starttime, endtime(0:2)
       real(kind = kreal) :: etime_send_recv(0:2) =   0.0d0
