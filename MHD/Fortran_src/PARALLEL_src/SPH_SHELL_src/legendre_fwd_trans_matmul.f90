@@ -180,7 +180,7 @@
 !
 !          st_elapsed = MPI_WTIME()
           call matmul_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),   &
-     &        P_rtm(1,jst(ip)+1), symp(1,ip), scl_e(1,ip))
+     &        symp(1,ip), P_rtm(1,jst(ip)+1), scl_e(1,ip))
 !          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
 !          st_elapsed = MPI_WTIME()
@@ -312,7 +312,7 @@
 !
 !          st_elapsed = MPI_WTIME()
           call dgemm_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),    &
-     &        P_rtm(1,jst(ip)+1), symp(1,ip), zero, scl_e(1,ip))
+     &        symp(1,ip), P_rtm(1,jst(ip)+1), zero, scl_e(1,ip))
 !          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
 !          st_elapsed = MPI_WTIME()
@@ -444,7 +444,7 @@
 !
 !          st_elapsed = MPI_WTIME()
           call matmat_fwd_leg_trans(nkr(ip), nj_rlm(ip), nidx_rtm(2),   &
-     &        P_rtm(1,jst(ip)+1), symp(1,ip), scl_e(1,ip))
+     &        symp(1,ip), P_rtm(1,jst(ip)+1), scl_e(1,ip))
 !          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
 !          st_elapsed = MPI_WTIME()

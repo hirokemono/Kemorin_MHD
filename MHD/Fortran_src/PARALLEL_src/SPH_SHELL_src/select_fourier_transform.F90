@@ -79,7 +79,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
       real (kind=kreal), intent(inout):: WR(n_WR)
 !
-      real(kind = kreal) :: etime_fft(1:4)
+      real(kind = kreal) :: etime_fft(4)
 !
 !
       iflag_FFT = iflag_FFTPACK
@@ -95,12 +95,14 @@
       iflag_FFT = iflag_FFTW_SINGLE
       call test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR,         &
      &    etime_fft(iflag_FFTW_SINGLE))
-!
 #endif
 !
       iflag_FFT = iflag_ISPACK
       call test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR,         &
      &    etime_fft(iflag_ISPACK))
+!
+      iflag_selected = minloc(etime_fft,1)
+      etime_shortest = minval(etime_fft)
 !
       if(my_rank .gt. 0) return
         write(*,*)   '1: elapsed by FFTPACK: ',                         &
@@ -144,18 +146,12 @@
       endtime = MPI_WTIME() - starttime
       if(iflag_debug .gt. 0) write(*,*) 'fwd_FFT_select_to_send end'
 !
-      call MPI_allREDUCE (endtime, etime_fft, ione,                     &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      etime_fft = etime_fft / dble(nprocs)
-!
       if(iflag_debug .gt. 0) write(*,*) 'finalize_sph_FFT_select'
       call finalize_sph_FFT_select
 !
-      if(etime_fft .lt. etime_shortest                                  &
-      &        .or. etime_shortest.lt.0.0d0) then
-        iflag_selected = iflag_FFTW
-        etime_shortest = etime_fft
-      end if
+      call MPI_allREDUCE (endtime, etime_fft, ione,                     &
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      etime_fft = etime_fft / dble(nprocs)
 !
       end subroutine test_fourier_trans_vector
 !
