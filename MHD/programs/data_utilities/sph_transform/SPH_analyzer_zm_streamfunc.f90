@@ -141,14 +141,14 @@
       call check_calypso_rtm_2_rtp_buf_N(ncomp_sph_trans)
       call calypso_rj_to_send_N(ncomp_sph_trans, n_WS, sp_rj, WS)
 !
-      if (iflag_debug.gt.0) write(*,*) 'sph_forward_transforms',        &
+      if (iflag_debug.gt.0) write(*,*) 'pole_backward_transforms'
+      call pole_backward_transforms(ncomp_sph_trans, num_vector_rtp,    &
+     &    nscalar_trans, n_WS, n_WR, WS, WR)
+!
+      if (iflag_debug.gt.0) write(*,*) 'sph_backward_transforms',       &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
       call sph_backward_transforms(ncomp_sph_trans, num_vector_rtp,     &
      &    nscalar_trans, n_WS, n_WR, WS, WR)
-!
-      if (iflag_debug.gt.0) write(*,*) 'pole_backward_transforms'
-      call pole_backward_transforms(ncomp_sph_trans, num_vector_rtp,    &
-     &    num_scalar_rtp, num_tensor_rtp)
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'

@@ -12,7 +12,7 @@
 !!      subroutine sph_backward_transforms                              &
 !!     &         (ncomp_trans, nvector, nscalar, n_WS, n_WR, WS, WR)
 !!      subroutine sph_forward_transforms                               &
-!!     &         (ncomp_trans, nvector, nscalar, ntensor)
+!!     &         (ncomp_trans, nvector, nscalar, n_WS, n_WR, WS, WR)
 !!
 !!   input /outpt arrays for single field
 !!
@@ -88,23 +88,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_forward_transforms                                 &
-     &         (ncomp_trans, nvector, nscalar, ntensor)
-!     &          n_WS, n_WR, WS, WR)
-!
-      use m_solver_SR
-      use m_work_4_sph_trans
+     &         (ncomp_trans, nvector, nscalar, n_WS, n_WR, WS, WR)
 !
       integer(kind = kint), intent(in) :: ncomp_trans
-      integer(kind = kint), intent(in) :: nvector, nscalar, ntensor
-!      integer(kind = kint), intent(in) :: n_WS, n_WR
-!      real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
-!
-      integer(kind = kint) :: nscalar_trans
-!
-!
-      nscalar_trans = nscalar + 6*ntensor
-      call check_calypso_rtp_2_rtm_buf_N(ncomp_trans)
-      call check_calypso_rlm_2_rj_buf_N(ncomp_trans)
+      integer(kind = kint), intent(in) :: nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WS, n_WR
+      real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
 !
 !      call check_vr_rtp(my_rank, ncomp_trans)
       call start_eleps_time(24)
@@ -127,12 +116,9 @@
       START_SRtime= MPI_WTIME()
       call start_eleps_time(21)
       call calypso_sph_comm_rlm_2_rj_N(ncomp_trans)
-      call calypso_rj_from_recv_N(ncomp_trans, n_WR, WR, sp_rj)
       call finish_send_recv_rlm_2_rj
-!
       call end_eleps_time(21)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
-!      call check_sp_rj(my_rank, ncomp_trans)
 !
       end subroutine sph_forward_transforms
 !

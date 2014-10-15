@@ -106,6 +106,9 @@
 !
       subroutine nonlinear_incuction_wSGS_SPH
 !
+      use m_solver_SR
+      use spherical_SRs_N
+!
 !
       call cal_vecp_induction
       call cal_sgs_uxb_2_monitor
@@ -125,9 +128,12 @@
      &    f_trns%i_SGS_vp_induct, iphys_sph%i_SGS_vp_induct,            &
      &    mesh_sph%node, sph_fld)
 !
+      call check_calypso_rtp_2_rtm_buf_N(ncomp_xyz_2_rj)
+      call check_calypso_rlm_2_rj_buf_N(ncomp_xyz_2_rj)
 !
       call sph_forward_transforms(ncomp_xyz_2_rj, nvect_xyz_2_rj,       &
-     &    izero, izero)
+     &    izero, n_WS, n_WR, WS, WR)
+      call calypso_rj_from_recv_N(ncomp_xyz_2_rj, n_WR, WR, sp_rj)
 !
 !
       call copy_vec_spec_from_trans                                     &
@@ -146,6 +152,10 @@
 !
       subroutine nonlinear_incuction_SPH
 !
+      use m_solver_SR
+      use spherical_SRs_N
+!
+!
       call cal_vecp_induction
 !
       call interpolate_vector_type                                      &
@@ -156,9 +166,12 @@
      &    f_trns%i_vp_induct, iphys_sph%i_vp_induct,                    &
      &    mesh_sph%node, sph_fld)
 !
+      call check_calypso_rtp_2_rtm_buf_N(ncomp_xyz_2_rj)
+      call check_calypso_rlm_2_rj_buf_N(ncomp_xyz_2_rj)
 !
       call sph_forward_transforms(ncomp_xyz_2_rj, nvect_xyz_2_rj,       &
-     &    izero, izero)
+     &    izero, izero, n_WS, n_WR, WS, WR)
+      call calypso_rj_from_recv_N(ncomp_xyz_2_rj, n_WR, WR, sp_rj)
 !
 !
       call copy_vec_spec_from_trans                                     &
@@ -173,6 +186,7 @@
       subroutine cal_magneitc_field_by_SPH
 !
       use m_solver_SR
+      use spherical_SRs_N
 !
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call cal_diff_induction_MHD_adams
@@ -198,14 +212,14 @@
       end if
 !
 !
-      call check_calypso_rtp_2_rtm_buf_N(ncomp_rj_2_xyz)
-      call check_calypso_rlm_2_rj_buf_N(ncomp_rj_2_xyz)
+      call check_calypso_rj_2_rlm_buf_N(ncomp_rj_2_xyz)
+      call check_calypso_rtm_2_rtp_buf_N(ncomp_rj_2_xyz)
       call calypso_rj_to_send_N(ncomp_rj_2_xyz, n_WS, sp_rj, WS)
 !
-      call sph_backward_transforms(ncomp_rj_2_xyz, nvect_rj_2_xyz,      &
-     &    izero, n_WS, n_WR, WS, WR)
       call pole_backward_transforms(ncomp_rj_2_xyz, nvect_rj_2_xyz,     &
-     &    izero, n_WS, n_WR, WS, WR)
+     &    n_WS, n_WR, WS, WR)
+      call sph_backward_transforms(ncomp_rj_2_xyz, nvect_rj_2_xyz,      &
+     &    n_WS, n_WR, WS, WR)
 !
 !
       call copy_xyz_vec_t_from_trans_wpole(nvect_rj_2_xyz,              &
