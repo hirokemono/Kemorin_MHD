@@ -62,10 +62,13 @@
 !
       subroutine sph_b_trans_all_field
 !
+      use m_solver_SR
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
       use sph_transforms
       use pole_sph_transform
+!
+      integer(kind = kint) :: nscalar_trans
 !
 !
       if(ncomp_sph_trans .le. 0) return
@@ -81,10 +84,15 @@
       call set_all_tensor_spec_to_sph_t
 !
 !
+      nscalar_trans = num_scalar_rtp + 6*num_tensor_rtp
+      call check_calypso_rj_2_rlm_buf_N(ncomp_sph_trans)
+      call check_calypso_rtm_2_rtp_buf_N(ncomp_sph_trans)
+      call calypso_rj_to_send_N(ncomp_sph_trans, n_WS, sp_rj, WS)
+!
       if (iflag_debug.gt.0) write(*,*) 'sph_forward_transforms',        &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
       call sph_backward_transforms(ncomp_sph_trans, num_vector_rtp,     &
-     &    num_scalar_rtp, num_tensor_rtp)
+     &    nscalar_trans, n_WS, n_WR, WS, WR)
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'pole_backward_transforms'

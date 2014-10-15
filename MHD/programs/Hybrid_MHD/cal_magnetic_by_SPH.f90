@@ -172,6 +172,7 @@
 !
       subroutine cal_magneitc_field_by_SPH
 !
+      use m_solver_SR
 !
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call cal_diff_induction_MHD_adams
@@ -197,10 +198,14 @@
       end if
 !
 !
+      call check_calypso_rtp_2_rtm_buf_N(ncomp_rj_2_xyz)
+      call check_calypso_rlm_2_rj_buf_N(ncomp_rj_2_xyz)
+      call calypso_rj_to_send_N(ncomp_rj_2_xyz, n_WS, sp_rj, WS)
+!
       call sph_backward_transforms(ncomp_rj_2_xyz, nvect_rj_2_xyz,      &
-     &    izero, izero)
+     &    izero, n_WS, n_WR, WS, WR)
       call pole_backward_transforms(ncomp_rj_2_xyz, nvect_rj_2_xyz,     &
-     &    izero, izero)
+     &    izero, n_WS, n_WR, WS, WR)
 !
 !
       call copy_xyz_vec_t_from_trans_wpole(nvect_rj_2_xyz,              &

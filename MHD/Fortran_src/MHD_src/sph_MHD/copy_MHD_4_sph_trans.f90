@@ -16,11 +16,9 @@
 !!      subroutine copy_mhd_scl_fld_from_trans
 !!
 !!  routines for forward transform
-!!      subroutine copy_mhd_scalar_fld_to_trans
 !!      subroutine copy_mhd_scalar_spec_from_trans
 !!
 !!      subroutine copy_mhd_vec_fld_to_trans
-!!      subroutine copy_mhd_vec_spec_from_trans
 !!@endverbatim
 !
       module copy_MHD_4_sph_trans
@@ -129,40 +127,6 @@
 !$omp end parallel
 !
       end  subroutine copy_mhd_vec_fld_to_trans
-!
-!-----------------------------------------------------------------------
-!
-      subroutine copy_mhd_vec_spec_from_trans
-!
-      use copy_spectr_4_sph_trans
-!
-!
-!$omp parallel
-!   advection flag
-      call copy_vec_spec_from_trans(ncomp_rtp_2_rj,                     &
-     &      ipol%i_m_advect, f_trns%i_m_advect)
-!   Coriolis flag
-      call copy_vec_spec_from_trans(ncomp_rtp_2_rj,                     &
-     &      ipol%i_coriolis, f_trns%i_coriolis)
-      call copy_vec_spec_from_trans(ncomp_rtp_2_rj,                     &
-     &      ipol%i_rot_Coriolis, f_trns%i_rot_Coriolis)
-!   Lorentz flag
-      call copy_vec_spec_from_trans(ncomp_rtp_2_rj,                     &
-     &      ipol%i_lorentz, f_trns%i_lorentz)
-!
-!   induction flag
-      call copy_vec_spec_from_trans(ncomp_rtp_2_rj,                     &
-     &      ipol%i_vp_induct, f_trns%i_vp_induct)
-!
-!   divergence of heat flux flag
-      call copy_vec_spec_from_trans(ncomp_rtp_2_rj,                     &
-     &      ipol%i_h_flux, f_trns%i_h_flux)
-!   divergence of composition flux flag
-      call copy_vec_spec_from_trans(ncomp_rtp_2_rj,                     &
-     &      ipol%i_c_flux, f_trns%i_c_flux)
-!$omp end parallel
-!
-      end  subroutine copy_mhd_vec_spec_from_trans
 !
 !-----------------------------------------------------------------------
 !

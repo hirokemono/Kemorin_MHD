@@ -123,21 +123,25 @@
 !
       subroutine sph_back_trans_4_MHD
 !
+      use m_solver_SR
       use m_addresses_trans_sph_MHD
-      use copy_MHD_4_sph_trans
       use sph_trans_w_coriols
+      use copy_MHD_4_sph_trans
+      use copy_sph_MHD_4_send_recv
+      use spherical_SRs_N
 !
 !
-      if(ncomp_rj_2_rtp .eq. 0) return
+      call check_calypso_rj_2_rlm_buf_N(ncomp_rj_2_rtp)
+      call check_calypso_rtm_2_rtp_buf_N(ncomp_rj_2_rtp)
+!
 !      call start_eleps_time(51)
-      if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_vec_spec_to_trans'
-      call copy_mhd_vec_spec_to_trans
-      if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_scl_spec_to_trans'
-      call copy_mhd_scl_spec_to_trans
+      if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_spectr_to_send'
+      call copy_mhd_spectr_to_send(ncomp_rj_2_rtp, n_WS, WS)
 !      call end_eleps_time(51)
 !
+      if(ncomp_rj_2_rtp .eq. 0) return
       call sph_b_trans_w_coriolis(ncomp_rj_2_rtp,                       &
-     &    nvector_rj_2_rtp, nscalar_rj_2_rtp)
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, n_WS, n_WR, WS(1), WR(1))
 !
 !      call start_eleps_time(52)
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_vec_fld_from_trans'
@@ -152,21 +156,27 @@
 !
       subroutine sph_forward_trans_4_MHD
 !
+      use m_solver_SR
       use m_addresses_trans_sph_MHD
-      use copy_MHD_4_sph_trans
       use sph_trans_w_coriols
+      use copy_MHD_4_sph_trans
+      use copy_sph_MHD_4_send_recv
+      use spherical_SRs_N
 !
 !
-      if(ncomp_rtp_2_rj .eq. 0) return
+      call check_calypso_rtp_2_rtm_buf_N(ncomp_rtp_2_rj)
+      call check_calypso_rlm_2_rj_buf_N(ncomp_rtp_2_rj)
+!
 !      call start_eleps_time(53)
       call copy_mhd_vec_fld_to_trans
 !      call end_eleps_time(53)
 !
+      if(ncomp_rtp_2_rj .eq. 0) return
       call sph_f_trans_w_coriolis(ncomp_rtp_2_rj,                       &
-     &    nvector_rtp_2_rj, nscalar_rtp_2_rj)
+     &    nvector_rtp_2_rj, nscalar_rtp_2_rj, n_WS, n_WR, WS(1), WR(1))
 !
 !      call start_eleps_time(54)
-      call copy_mhd_vec_spec_from_trans
+      call copy_mhd_spectr_from_recv(ncomp_rtp_2_rj, n_WR, WR(1))
 !      call end_eleps_time(54)
 !
       end subroutine sph_forward_trans_4_MHD
@@ -176,20 +186,30 @@
 !
       subroutine sph_back_trans_snapshot_MHD
 !
+      use m_solver_SR
       use m_addresses_trans_sph_snap
+      use m_work_4_sph_trans
       use sph_transforms
       use copy_snap_4_sph_trans
+      use spherical_SRs_N
+!
+      integer(kind = kint) :: nscalar_trans
 !
 !
       if(ncomp_snap_rj_2_rtp .le. 0) return
 !
+      nscalar_trans = nscalar_snap_rj_2_rtp + 6*ntensor_snap_rj_2_rtp
+      call check_calypso_rj_2_rlm_buf_N(ncomp_snap_rj_2_rtp)
+      call check_calypso_rtm_2_rtp_buf_N(ncomp_snap_rj_2_rtp)
+!
       call copy_snap_vec_spec_to_trans
       call copy_snap_scl_spec_to_trans
+      call calypso_rj_to_send_N(ncomp_snap_rj_2_rtp, n_WS, sp_rj, WS)
 !
 !   transform for vectors
-      call sph_backward_transforms(ncomp_snap_rj_2_rtp,                 &
-     &    nvector_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                 &
-     &    ntensor_snap_rj_2_rtp)
+      call sph_backward_transforms                                      &
+     &   (ncomp_snap_rj_2_rtp, nvector_snap_rj_2_rtp, nscalar_trans,    &
+     &    n_WS, n_WR, WS(1), WR(1))
 !
       call copy_snap_vec_fld_from_trans
       call copy_snap_scl_fld_from_trans
@@ -224,9 +244,14 @@
 !
       subroutine sph_back_trans_tmp_snap_MHD
 !
+      use m_solver_SR
       use m_addresses_trans_sph_tmp
+      use m_work_4_sph_trans
       use sph_transforms
       use copy_temporal_4_sph_trans
+      use spherical_SRs_N
+!
+      integer(kind = kint) :: nscalar_trans
 !
 !
       if(ncomp_tmp_rj_2_rtp .le. 0) return
@@ -234,10 +259,15 @@
       call copy_tmp_vec_spec_to_trans
 !      call copy_tmp_scl_spec_to_trans
 !
+      nscalar_trans = nscalar_tmp_rj_2_rtp + 6*ntensor_tmp_rj_2_rtp
+      call check_calypso_rj_2_rlm_buf_N(ncomp_tmp_rj_2_rtp)
+      call check_calypso_rtm_2_rtp_buf_N(ncomp_tmp_rj_2_rtp)
+      call calypso_rj_to_send_N(ncomp_tmp_rj_2_rtp, n_WS, sp_rj, WS)
+!
 !   transform for vectors
-      call sph_backward_transforms(ncomp_tmp_rj_2_rtp,                  &
-     &    nvector_tmp_rj_2_rtp, nscalar_tmp_rj_2_rtp,                   &
-     &    ntensor_tmp_rj_2_rtp)
+      call sph_backward_transforms                                      &
+     &   (ncomp_tmp_rj_2_rtp, nvector_tmp_rj_2_rtp, nscalar_trans,      &
+     &    n_WS, n_WR, WS(1), WR(1))
 !
       call copy_tmp_vec_fld_from_trans
 !      call copy_tmp_scl_fld_from_trans
@@ -271,21 +301,25 @@
 !
       subroutine sph_transform_4_licv
 !
+      use m_solver_SR
       use m_addresses_trans_sph_MHD
-      use copy_MHD_4_sph_trans
-!
       use sph_trans_w_coriols
+      use copy_sph_MHD_4_send_recv
+      use spherical_SRs_N
 !
 !
       if((ncomp_rj_2_rtp*ncomp_rtp_2_rj) .eq. 0) return
 !
-      call copy_mhd_vec_spec_to_trans
+      call check_calypso_rj_2_rlm_buf_N(ncomp_rj_2_rtp)
+      call check_calypso_rlm_2_rj_buf_N(ncomp_rtp_2_rj)
 !
-      call sph_b_trans_licv(ncomp_rj_2_rtp)
-      call sph_f_trans_licv(ncomp_rtp_2_rj)
+      call copy_mhd_spectr_to_send(ncomp_rj_2_rtp, n_WS, WS(1))
 !
-      call copy_mhd_vec_spec_from_trans
+      call sph_b_trans_licv(ncomp_rj_2_rtp, n_WR, WR(1))
+      call sph_f_trans_licv(ncomp_rtp_2_rj, n_WS, WS(1))
 !
+      call copy_mhd_spectr_from_recv(ncomp_rtp_2_rj, n_WR, WR(1))
+
       end subroutine sph_transform_4_licv
 !
 !-----------------------------------------------------------------------

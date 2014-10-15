@@ -10,7 +10,7 @@
 !!
 !!@verbatim
 !!      subroutine sph_backward_transforms                              &
-!!     &         (ncomp_trans, nvector, nscalar, ntensor)
+!!     &         (ncomp_trans, nvector, nscalar, n_WS, n_WR, WS, WR)
 !!      subroutine sph_forward_transforms                               &
 !!     &         (ncomp_trans, nvector, nscalar, ntensor)
 !!
@@ -34,9 +34,6 @@
       use calypso_mpi
       use m_work_time
       use m_machine_parameter
-      use m_spheric_parameter
-      use m_spheric_param_smp
-      use m_work_4_sph_trans
       use sph_FFT_selector
       use legendre_transform_select
       use spherical_SRs_N
@@ -50,26 +47,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_backward_transforms                                &
-     &         (ncomp_trans, nvector, nscalar, ntensor)
-!
-      use m_work_time
-      use m_solver_SR
+     &         (ncomp_trans, nvector, nscalar, n_WS, n_WR, WS, WR)
 !
       integer(kind = kint), intent(in) :: ncomp_trans
-      integer(kind = kint), intent(in) :: nvector, nscalar, ntensor
+      integer(kind = kint), intent(in) :: nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WS, n_WR
+      real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
 !
-      integer(kind = kint) :: nscalar_trans
-!
-!
-      nscalar_trans = nscalar + 6*ntensor
-      call check_calypso_rj_2_rlm_buf_N(ncomp_trans)
-      call check_calypso_rtm_2_rtp_buf_N(ncomp_trans)
-!
-!      call check_sp_rj(my_rank, ncomp_trans)
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(18)
-      call calypso_rj_to_send_N(ncomp_trans, n_WS, sp_rj, WS)
       call calypso_sph_comm_rj_2_rlm_N(ncomp_trans)
       call end_eleps_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
@@ -77,7 +64,7 @@
       call start_eleps_time(22)
       if(iflag_debug .gt. 0) write(*,*) 'sel_backward_legendre_trans'
       call sel_backward_legendre_trans                                  &
-     &   (ncomp_trans, nvector, nscalar_trans, n_WR, n_WS, WR, WS)
+     &   (ncomp_trans, nvector, nscalar, n_WR, n_WS, WR, WS)
       call end_eleps_time(22)
 !
       START_SRtime= MPI_WTIME()
@@ -102,12 +89,15 @@
 !
       subroutine sph_forward_transforms                                 &
      &         (ncomp_trans, nvector, nscalar, ntensor)
+!     &          n_WS, n_WR, WS, WR)
 !
-      use m_work_time
       use m_solver_SR
+      use m_work_4_sph_trans
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: nvector, nscalar, ntensor
+!      integer(kind = kint), intent(in) :: n_WS, n_WR
+!      real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
 !
       integer(kind = kint) :: nscalar_trans
 !

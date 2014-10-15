@@ -9,11 +9,13 @@
 !!       including Coriolis terms
 !!
 !!@verbatim
-!!      subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar)
-!!      subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar)
+!!      subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar,&
+!!     &          n_WS, n_WR, WS, WR)
+!!      subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar,&
+!!     &          n_WS, n_WR, WS, WR)
 !!
-!!      subroutine sph_b_trans_licv(ncomp_trans)
-!!      subroutine sph_f_trans_licv(ncomp_trans)
+!!      subroutine sph_b_trans_licv(ncomp_trans, n_WR, WR)
+!!      subroutine sph_f_trans_licv(ncomp_trans, n_WS, WS)
 !!
 !!   input /outpt arrays for single field
 !!
@@ -30,6 +32,11 @@
 !!@param ncomp_trans Number of components for transform
 !!@param nvector     Number of vectors for transform
 !!@param nscalar     Number of scalars for transform
+!!
+!!@param n_WS Number of components for send buffrt
+!!@param n_WR Number of components for recieve buffer
+!!@param WS Send buffer
+!!@param WR Recieve buffer
 !
       module sph_trans_w_coriols
 !
@@ -38,9 +45,6 @@
       use calypso_mpi
       use m_work_time
       use m_machine_parameter
-      use m_spheric_parameter
-      use m_spheric_param_smp
-      use m_work_4_sph_trans
       use sph_FFT_selector
       use legendre_transform_select
       use spherical_SRs_N
@@ -54,25 +58,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar)
+      subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar,  &
+     &          n_WS, n_WR, WS, WR)
 !
-      use m_work_time
-      use m_sph_trans_comm_table
-      use m_solver_SR
+      integer(kind = kint), intent(in) :: ncomp_trans, nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WS, n_WR
+      real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
 !
-      integer(kind = kint), intent(in) :: ncomp_trans
-      integer(kind = kint), intent(in) :: nvector, nscalar
-!
-!
-      call check_calypso_rj_2_rlm_buf_N(ncomp_trans)
-      call check_calypso_rtm_2_rtp_buf_N(ncomp_trans)
-!
-!      call check_sp_rj(my_rank, ncomp_trans)
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(18)
       if(iflag_debug .gt. 0) write(*,*) 'calypso_sph_comm_rj_2_rlm_N'
-      call calypso_rj_to_send_N(ncomp_trans, n_WS, sp_rj, WS)
       call calypso_sph_comm_rj_2_rlm_N(ncomp_trans)
       call end_eleps_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
@@ -114,17 +110,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar)
+      subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar,  &
+     &          n_WS, n_WR, WS, WR)
 !
-      use m_work_time
-      use m_solver_SR
+      integer(kind = kint), intent(in) :: ncomp_trans, nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WS, n_WR
+      real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
 !
-      integer(kind = kint), intent(in) :: ncomp_trans
-      integer(kind = kint), intent(in) :: nvector, nscalar
-!
-!
-      call check_calypso_rtp_2_rtm_buf_N(ncomp_trans)
-      call check_calypso_rlm_2_rj_buf_N(ncomp_trans)
 !
 !      call check_vr_rtp(my_rank, ncomp_trans)
       call start_eleps_time(24)
@@ -153,31 +145,24 @@
       START_SRtime= MPI_WTIME()
       call start_eleps_time(21)
       call calypso_sph_comm_rlm_2_rj_N(ncomp_trans)
-      call calypso_rj_from_recv_N(ncomp_trans, n_WR, WR, sp_rj)
       call finish_send_recv_rlm_2_rj
       call end_eleps_time(21)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
-!      call check_sp_rj(my_rank, ncomp_trans)
 !
       end subroutine sph_f_trans_w_coriolis
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_b_trans_licv(ncomp_trans)
-!
-      use m_work_time
-      use m_sph_trans_comm_table
-      use m_solver_SR
+      subroutine sph_b_trans_licv(ncomp_trans, n_WR, WR)
 !
       integer(kind = kint), intent(in) :: ncomp_trans
+      integer(kind = kint), intent(in) :: n_WR
+      real(kind = kreal), intent(inout) :: WR(n_WR)
 !
-!      call check_sp_rj(my_rank, ncomp_trans)
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(18)
-      call check_calypso_rj_2_rlm_buf_N(ncomp_trans)
-      call calypso_rj_to_send_N(ncomp_trans, n_WS, sp_rj, WS)
       call calypso_sph_comm_rj_2_rlm_N(ncomp_trans)
       call end_eleps_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
@@ -193,28 +178,25 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_f_trans_licv(ncomp_trans)
-!
-      use m_work_time
-      use m_solver_SR
+      subroutine sph_f_trans_licv(ncomp_trans, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: ncomp_trans
+      integer(kind = kint), intent(in) :: n_WS
+      real(kind = kreal), intent(inout) :: WS(n_WS)
 !
 !
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'copy_coriolis_terms_rlm'
-      call check_calypso_rlm_2_rj_buf_N(ncomp_trans)
       call copy_coriolis_terms_rlm(ncomp_trans, n_WS, WS)
       call end_eleps_time(24)
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(21)
       call calypso_sph_comm_rlm_2_rj_N(ncomp_trans)
-      call calypso_rj_from_recv_N(ncomp_trans, n_WR, WR, sp_rj)
-      call finish_send_recv_rlm_2_rj
       call end_eleps_time(21)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
-!      call check_sp_rj(my_rank, ncomp_trans)
+!
+      call finish_send_recv_rlm_2_rj
 !
       end subroutine sph_f_trans_licv
 !

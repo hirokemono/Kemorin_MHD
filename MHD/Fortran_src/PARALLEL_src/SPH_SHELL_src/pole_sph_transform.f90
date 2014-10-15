@@ -79,8 +79,7 @@
       call schmidt_b_trans_pole_scalar(ncomp, nvector, nscalar_trans,   &
      &    irev_sr_rlm, n_WR, WR)
 !
-      if (iflag_debug.gt.0)  write(*,*) 'sum_back_trans_at_pole',       &
-     &                     ncomp
+      if (iflag_debug.gt.0)  write(*,*) 'sum_back_trans_at_pole'
       call sum_back_trans_at_pole(ncomp)
 !
       if(iflag_shell_mode .eq. iflag_MESH_w_center) then
