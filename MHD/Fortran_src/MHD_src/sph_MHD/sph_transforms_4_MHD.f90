@@ -307,7 +307,7 @@
 !
       do iloop_type = 1, ntype_Leg_trans_loop
         id_legendre_transfer = iloop_type
-        if(iflag_debug .gt. 0) write(*,*)                               &
+        if(my_rank .eq. 0) write(*,*)                                   &
      &            'Test SPH transform for ', id_legendre_transfer
         call sel_init_legendre_trans                                    &
      &      (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)

@@ -20,10 +20,6 @@
 !!      subroutine set_to_send_buf_N_mod(NB, nnod_org,                  &
 !!     &          npe_send, nnod_send, istack_send, inod_export,        &
 !!     &          X_org, WS)
-!!      subroutine set_to_send_buf_vector(NB, nnod_org, nnod_send,      &
-!!     &          inod_export, ncomp_X, i_fld_X, i_fld_WS, X_org, WS)
-!!      subroutine set_to_send_buf_scalar(NB, nnod_org, nnod_send,      &
-!!     &          inod_export, ncomp_X, i_fld_X, i_fld_WS, X_org, WS)
 !!
 !!      subroutine set_to_send_buf_int(nnod_org,                        &
 !!     &          nnod_send, inod_export, iX_org, iWS)
@@ -224,62 +220,6 @@
 !$omp end parallel
 !
       end subroutine set_to_send_buf_N_mod
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_to_send_buf_vector(NB, nnod_org, nnod_send,        &
-     &          inod_export, ncomp_X, i_fld_X, i_fld_WS, X_org, WS)
-!
-      integer(kind = kint), intent(in) :: NB, i_fld_WS, nnod_send
-      integer(kind = kint), intent(in) :: ncomp_X, i_fld_X, nnod_org
-      integer(kind = kint), intent(in) :: inod_export(nnod_send)
-!
-      real (kind=kreal), intent(in)::    X_org(ncomp_X*nnod_org)
-!
-      real (kind=kreal), intent(inout):: WS(NB*nnod_send)
-!
-!
-      integer (kind = kint) :: k, kk, jj
-!
-!
-!$omp parallel do private(k,jj,kk)
-      do k = 1, nnod_send
-        kk = NB*(k-1) + i_fld_WS
-        jj = ncomp_X*(inod_export(k)-1) + i_fld_X
-        WS(kk  ) = X_org(jj  )
-        WS(kk+1) = X_org(jj+1)
-        WS(kk+2) = X_org(jj+2)
-      end do
-!$omp end parallel do
-!
-      end subroutine set_to_send_buf_vector
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_to_send_buf_scalar(NB, nnod_org, nnod_send,        &
-     &          inod_export, ncomp_X, i_fld_X, i_fld_WS, X_org, WS)
-!
-      integer(kind = kint), intent(in) :: NB, i_fld_WS, nnod_send
-      integer(kind = kint), intent(in) :: ncomp_X, i_fld_X, nnod_org
-      integer(kind = kint), intent(in) :: inod_export(nnod_send)
-!
-      real (kind=kreal), intent(in)::    X_org(ncomp_X*nnod_org)
-!
-      real (kind=kreal), intent(inout):: WS(NB*nnod_send)
-!
-!
-      integer (kind = kint) :: k, kk, jj
-!
-!
-!$omp parallel do private(k,jj,kk)
-      do k = 1, nnod_send
-        kk = NB*(k-1) + i_fld_WS
-        jj = ncomp_X*(inod_export(k)-1) + i_fld_X
-        WS(kk  ) = X_org(jj  )
-      end do
-!$omp end parallel do
-!
-      end subroutine set_to_send_buf_scalar
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------

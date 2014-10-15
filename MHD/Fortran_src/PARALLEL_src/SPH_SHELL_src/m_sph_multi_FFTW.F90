@@ -292,8 +292,6 @@
       real :: dummy(3), rtmp(3)
 !
 !
-      WR(ncomp*nnod_rtp+1:ncomp*nnod_rtp+ncomp) = 0.0d0
-!
 !      call cpu_time(dummy(3))
 !$omp parallel do schedule(static)                                      &
 !$omp&         private(nd,m,j,ip,ist,ied,ic_rtp,is_rtp,ic_recv,is_recv)

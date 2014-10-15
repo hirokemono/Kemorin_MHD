@@ -136,14 +136,14 @@
           sp_dwp_k2 = (WR(b_trns%i_vort+1+NB*ir_21)                     &
      &         - two*a_r_1d_rlm_r(k_rlm)*WR(b_trns%i_vort+NB*ir_21))
 !
-          d_cor_rlm(ip_rlm_rot_cor,i_rlm)                               &
+          d_cor_rlm(i_rlm,ip_rlm_rot_cor)                               &
      &     =  sw_rlm(1,1,j_rlm) * omega_rlm(k_rlm,0) * sp_dvp_k1        &
      &      + sw_rlm(2,1,j_rlm) * omega_rlm(k_rlm,0) * sp_dvp_k2        &
      &      + sw_rlm(1,3,j_rlm) * omega_rlm(k_rlm,0) * sp_wp_l1         &
      &      + sw_rlm(1,2,j_rlm) * omega_rlm(k_rlm,1) * sp_vp_k1         &
      &      + sw_rlm(2,2,j_rlm) * omega_rlm(k_rlm,1) * sp_vp_k2
 !*
-          d_cor_rlm(it_rlm_rot_cor,i_rlm)                               &
+          d_cor_rlm(i_rlm,it_rlm_rot_cor)                               &
      &     =  tw_rlm(1,1,j_rlm) * omega_rlm(k_rlm,0) * sp_d2vp_l1       &
      &      - tw_rlm(1,2,j_rlm) * omega_rlm(k_rlm,2) * sp_vp_l1         &
      &      + tw_rlm(1,3,j_rlm) * omega_rlm(k_rlm,1) * sp_wp_k1         &
@@ -152,11 +152,11 @@
      &      + tw_rlm(2,4,j_rlm) * omega_rlm(k_rlm,0) * sp_dwp_k2
 !
 !
-          d_cor_rlm(ip_rlm_rot_cor,i_rlm)                               &
-     &          = -coef_cor * d_cor_rlm(ip_rlm_rot_cor,i_rlm)           &
+          d_cor_rlm(i_rlm,ip_rlm_rot_cor)                               &
+     &          = -coef_cor * d_cor_rlm(i_rlm,ip_rlm_rot_cor)           &
      &                      * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
-          d_cor_rlm(it_rlm_rot_cor,i_rlm)                               &
-     &          = -coef_cor * d_cor_rlm(it_rlm_rot_cor,i_rlm)           &
+          d_cor_rlm(i_rlm,it_rlm_rot_cor)                               &
+     &          = -coef_cor * d_cor_rlm(i_rlm,it_rlm_rot_cor)           &
      &                      * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
         end do
       end do
@@ -202,15 +202,15 @@
           sp_dwp_k1 =       WR(b_trns%i_vort+1+NB*ir_11)
           sp_dwp_k2 =       WR(b_trns%i_vort+1+NB*ir_21)
 !
-          d_cor_rlm(ip_rlm_div_cor,i_rlm)                               &
+          d_cor_rlm(i_rlm,ip_rlm_div_cor)                               &
      &     =  td_rlm(1,j_rlm) *   omega_rlm(k_rlm,1) * sp_wt_l1         &
      &      + sd_rlm(1,1,j_rlm) * omega_rlm(k_rlm,2) * sp_wp_k1         &
      &      + sd_rlm(2,1,j_rlm) * omega_rlm(k_rlm,2) * sp_wp_k2         &
      &      + sd_rlm(1,2,j_rlm) * omega_rlm(k_rlm,1) * sp_dwp_k1        &
      &      + sd_rlm(2,2,j_rlm) * omega_rlm(k_rlm,1) * sp_dwp_k2
 !
-          d_cor_rlm(ip_rlm_div_cor,i_rlm)                               &
-     &     = -coef_cor * d_cor_rlm(ip_rlm_div_cor,i_rlm)                &
+          d_cor_rlm(i_rlm,ip_rlm_div_cor)                               &
+     &     = -coef_cor * d_cor_rlm(i_rlm,ip_rlm_div_cor)                &
      &                 * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
         end do
       end do
@@ -232,12 +232,12 @@
           sp_wp_k1 = half * WR(b_trns%i_vort+  NB*ir_11)
           sp_dwp_k1 =       WR(b_trns%i_vort+1+NB*ir_11)
 !
-          d_cor_rlm(ip_rlm_div_cor,i_rlm)                               &
+          d_cor_rlm(i_rlm,ip_rlm_div_cor)                               &
      &       =  four*(two/three) * sp_wp_k1                             &
      &        + four*(two/three) * omega_rlm(k_rlm,1) * sp_dwp_k1
 !
-          d_cor_rlm(ip_rlm_div_cor,i_rlm)                               &
-     &       = -coef_cor * d_cor_rlm(ip_rlm_div_cor,i_rlm)              &
+          d_cor_rlm(i_rlm,ip_rlm_div_cor)                               &
+     &       = -coef_cor * d_cor_rlm(i_rlm,ip_rlm_div_cor)              &
      &                   * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
         end do
 !$omp end parallel do
@@ -340,11 +340,11 @@
       sp_wp_11s = WR(b_trns%i_vort+NB*ir_11s)
       sp_wp_11c = WR(b_trns%i_vort+NB*ir_11c)
 !
-      d_cor_rlm(ip_rlm_rot_cor,i10c) = zero
-      d_cor_rlm(ip_rlm_rot_cor,i11s)                                    &
+      d_cor_rlm(i10c,ip_rlm_rot_cor) = zero
+      d_cor_rlm(i11s,ip_rlm_rot_cor)                                    &
      &       = -two*coef_cor*radius_1d_rj_r(idx_rlm_ICB)                &
      &        * omega_rlm(idx_rlm_ICB,0)*sp_wp_11c
-      d_cor_rlm(ip_rlm_rot_cor,i11c)                                    &
+      d_cor_rlm(i11c,ip_rlm_rot_cor)                                    &
      &       =  two*coef_cor*radius_1d_rj_r(idx_rlm_ICB)                &
      &        * omega_rlm(idx_rlm_ICB,0)*sp_wp_11s
 !
