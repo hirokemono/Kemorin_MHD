@@ -10,7 +10,7 @@
 !!      subroutine init_pole_transform
 !!
 !!      subroutine pole_backward_transforms(ncomp, nvector, nscalar,    &
-!!     &          n_WS, n_WR, WS, WR)
+!!     &          n_WR, WR)
 !
 !!@endverbatim
 !!
@@ -51,7 +51,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine pole_backward_transforms(ncomp, nvector, nscalar,      &
-     &          n_WS, n_WR, WS, WR)
+     &          n_WR, WR)
 !
       use spherical_SRs_N
       use schmidt_b_trans_at_pole
@@ -60,8 +60,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: nvector, nscalar
-      integer(kind = kint), intent(in) :: n_WS, n_WR
-      real(kind = kreal), intent(in) ::    WS(n_WS)
+      integer(kind = kint), intent(in) :: n_WR
       real(kind = kreal), intent(inout) :: WR(n_WR)
 !
 !

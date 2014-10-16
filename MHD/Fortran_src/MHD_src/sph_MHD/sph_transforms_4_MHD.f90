@@ -188,7 +188,6 @@
 !
       use m_solver_SR
       use m_addresses_trans_sph_snap
-      use m_work_4_sph_trans
       use sph_transforms
       use copy_snap_4_sph_trans
       use spherical_SRs_N
@@ -202,11 +201,7 @@
       call check_calypso_rj_2_rlm_buf_N(ncomp_snap_rj_2_rtp)
       call check_calypso_rtm_2_rtp_buf_N(ncomp_snap_rj_2_rtp)
 !
-      call copy_snap_vec_spec_to_trans
-      call copy_snap_scl_spec_to_trans
-      call calypso_rj_to_send_N(ncomp_snap_rj_2_rtp, n_WS, sp_rj, WS)
-!
-!   transform for vectors
+      call copy_snap_spectr_to_send(ncomp_snap_rj_2_rtp, n_WS, WS)
       call sph_backward_transforms                                      &
      &   (ncomp_snap_rj_2_rtp, nvector_snap_rj_2_rtp, nscalar_trans,    &
      &    n_WS, n_WR, WS(1), WR(1))
@@ -239,11 +234,10 @@
 !   transform for vectors and scalars
       call sph_forward_transforms(ncomp_snap_rtp_2_rj,                  &
      &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
-     &    n_WS, n_WR, WS, WR)
-      call calypso_rj_from_recv_N(ncomp_snap_rtp_2_rj, n_WR, WR, sp_rj)
+     &    n_WS, n_WR, WS(1), WR(1))
 !
-      call copy_snap_vec_spec_from_trans
-      call copy_snap_scl_spec_from_trans
+      call copy_snap_vec_spec_from_trans                                &
+     &   (ncomp_snap_rtp_2_rj, n_WR, WR(1))
 !
       end subroutine sph_forward_trans_snapshot_MHD
 !
@@ -264,21 +258,17 @@
 !
       if(ncomp_tmp_rj_2_rtp .le. 0) return
 !
-      call copy_tmp_vec_spec_to_trans
-!      call copy_tmp_scl_spec_to_trans
-!
       nscalar_trans = nscalar_tmp_rj_2_rtp + 6*ntensor_tmp_rj_2_rtp
       call check_calypso_rj_2_rlm_buf_N(ncomp_tmp_rj_2_rtp)
       call check_calypso_rtm_2_rtp_buf_N(ncomp_tmp_rj_2_rtp)
-      call calypso_rj_to_send_N(ncomp_tmp_rj_2_rtp, n_WS, sp_rj, WS)
 !
-!   transform for vectors
+      call copy_tmp_vec_spec_to_trans(ncomp_tmp_rj_2_rtp, n_WS, WS)
+!
       call sph_backward_transforms                                      &
      &   (ncomp_tmp_rj_2_rtp, nvector_tmp_rj_2_rtp, nscalar_trans,      &
      &    n_WS, n_WR, WS(1), WR(1))
 !
       call copy_tmp_vec_fld_from_trans
-!      call copy_tmp_scl_fld_from_trans
 !
       end subroutine sph_back_trans_tmp_snap_MHD
 !
@@ -300,15 +290,12 @@
       call check_calypso_rlm_2_rj_buf_N(ncomp_tmp_rtp_2_rj)
 !
       call copy_tmp_scl_fld_to_trans
-!      call copy_tmp_vec_fld_to_trans
 !
 !   transform for vectors and scalars
       call sph_forward_transforms(ncomp_tmp_rtp_2_rj,                   &
      &   nvector_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj, n_WS, n_WR, WS, WR)
-      call calypso_rj_from_recv_N(ncomp_tmp_rtp_2_rj, n_WR, WR, sp_rj)
 !
-!      call copy_tmp_vec_spec_from_trans
-      call copy_tmp_scl_spec_from_trans
+      call copy_tmp_scl_spec_from_trans(ncomp_tmp_rtp_2_rj, n_WR, WR)
 !
       end subroutine sph_forward_trans_tmp_snap_MHD
 !

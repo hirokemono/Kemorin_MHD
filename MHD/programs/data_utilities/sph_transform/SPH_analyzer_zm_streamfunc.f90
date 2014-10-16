@@ -132,18 +132,18 @@
 !
 !
       if (num_vector_rtp .gt. 0) then
-        if (iflag_debug.gt.0)                                           &
-     &        write(*,*) 'set_all_vec_spec_to_sph_t'
-        call set_all_vec_spec_to_sph_t
 !
       nscalar_trans = num_scalar_rtp + 6*num_tensor_rtp
       call check_calypso_rj_2_rlm_buf_N(ncomp_sph_trans)
       call check_calypso_rtm_2_rtp_buf_N(ncomp_sph_trans)
-      call calypso_rj_to_send_N(ncomp_sph_trans, n_WS, sp_rj, WS)
+!
+        if (iflag_debug.gt.0)                                           &
+     &        write(*,*) 'set_all_vec_spec_to_sph_t'
+        call set_all_vec_spec_to_sph_t(ncomp_sph_trans, n_WS, WS)
 !
       if (iflag_debug.gt.0) write(*,*) 'pole_backward_transforms'
       call pole_backward_transforms(ncomp_sph_trans, num_vector_rtp,    &
-     &    nscalar_trans, n_WS, n_WR, WS, WR)
+     &    nscalar_trans, n_WR, WR)
 !
       if (iflag_debug.gt.0) write(*,*) 'sph_backward_transforms',       &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp

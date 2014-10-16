@@ -9,9 +9,6 @@
 !!
 !!@verbatim
 !!  routines for backward transform
-!!      subroutine copy_mhd_vec_spec_to_trans
-!!      subroutine copy_mhd_scl_spec_to_trans
-!!
 !!      subroutine copy_mhd_vec_fld_from_trans
 !!      subroutine copy_mhd_scl_fld_from_trans
 !!
@@ -34,43 +31,6 @@
 !
       contains
 !
-!-----------------------------------------------------------------------
-!
-      subroutine copy_mhd_vec_spec_to_trans
-!
-      use copy_spectr_4_sph_trans
-!
-!
-!$omp parallel
-      call copy_vec_spec_to_trans(ncomp_rj_2_rtp,                       &
-     &    ipol%i_velo, b_trns%i_velo)
-      call copy_vec_spec_to_trans(ncomp_rj_2_rtp,                       &
-     &    ipol%i_vort, b_trns%i_vort)
-      call copy_vec_spec_to_trans(ncomp_rj_2_rtp,                       &
-     &    ipol%i_magne, b_trns%i_magne)
-      call copy_vec_spec_to_trans(ncomp_rj_2_rtp,                       &
-     &    ipol%i_current, b_trns%i_current)
-!$omp end parallel
-!
-      end subroutine copy_mhd_vec_spec_to_trans
-!
-!-----------------------------------------------------------------------
-!
-      subroutine copy_mhd_scl_spec_to_trans
-!
-      use copy_spectr_4_sph_trans
-!
-!
-!$omp parallel
-      call copy_scalar_spec_to_trans(ncomp_rj_2_rtp,                    &
-     &      ipol%i_temp, b_trns%i_temp)
-      call copy_scalar_spec_to_trans(ncomp_rj_2_rtp,                    &
-     &      ipol%i_light, b_trns%i_light)
-!$omp end parallel
-!
-      end subroutine copy_mhd_scl_spec_to_trans
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine copy_mhd_vec_fld_from_trans

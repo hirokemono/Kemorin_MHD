@@ -57,19 +57,18 @@
       use m_addresses_trans_sph_MHD
       use spherical_SRs_N
       use pole_sph_transform
-      use copy_MHD_4_sph_trans
+      use copy_sph_MHD_4_send_recv
       use copy_MHD_4_pole_trans
 !
 !
       if(ncomp_rj_2_rtp .le. 0) return
 !
-      call copy_mhd_vec_spec_to_trans
-      call copy_mhd_scl_spec_to_trans
-!
       call check_calypso_rj_2_rlm_buf_N(ncomp_rj_2_rtp)
-      call calypso_rj_to_send_N(ncomp_rj_2_rtp, n_WS, sp_rj, WS)
+!
+      call copy_mhd_spectr_to_send(ncomp_rj_2_rtp, n_WS, WS)
+!
       call pole_backward_transforms(ncomp_rj_2_rtp,                     &
-     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, n_WS, n_WR, WS(1), WR(1))
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, n_WR, WR(1))
 !
       call copy_mhd_vec_from_pole_trans
       call copy_mhd_scl_from_pole_trans
@@ -81,7 +80,6 @@
       subroutine pole_back_trans_snapshot_MHD
 !
       use m_solver_SR
-      use m_work_4_sph_trans
       use m_addresses_trans_sph_snap
       use spherical_SRs_N
       use pole_sph_transform
@@ -91,14 +89,11 @@
 !
       if(ncomp_snap_rj_2_rtp .le. 0) return
 !
-      call copy_snap_vec_spec_to_trans
-      call copy_snap_scl_spec_to_trans
-!
       call check_calypso_rj_2_rlm_buf_N(ncomp_snap_rj_2_rtp)
-      call calypso_rj_to_send_N(ncomp_snap_rj_2_rtp, n_WS, sp_rj, WS)
+      call copy_snap_spectr_to_send(ncomp_snap_rj_2_rtp, n_WS, WS(1))
+!
       call pole_backward_transforms(ncomp_snap_rj_2_rtp,                &
-     &    nvector_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                 &
-     &    n_WS, n_WR, WS, WR)
+     &    nvector_snap_rj_2_rtp, nscalar_snap_rj_2_rtp, n_WR, WR)
 !
       call copy_snap_vec_from_pole_trans
       call copy_snap_scl_from_pole_trans

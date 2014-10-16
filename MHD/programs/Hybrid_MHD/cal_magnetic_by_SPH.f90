@@ -121,6 +121,9 @@
      &    itp_FEM_2_SPH, mesh_fem, mesh_sph, fem_fld, sph_fld)
 !
 !
+      call check_calypso_rtp_2_rtm_buf_N(ncomp_xyz_2_rj)
+      call check_calypso_rlm_2_rj_buf_N(ncomp_xyz_2_rj)
+!
       call copy_xyz_vec_t_to_sph_trans(nvect_xyz_2_rj,                  &
      &    f_trns%i_vp_induct, iphys_sph%i_vp_induct,                    &
      &    mesh_sph%node, sph_fld)
@@ -128,18 +131,13 @@
      &    f_trns%i_SGS_vp_induct, iphys_sph%i_SGS_vp_induct,            &
      &    mesh_sph%node, sph_fld)
 !
-      call check_calypso_rtp_2_rtm_buf_N(ncomp_xyz_2_rj)
-      call check_calypso_rlm_2_rj_buf_N(ncomp_xyz_2_rj)
-!
       call sph_forward_transforms(ncomp_xyz_2_rj, nvect_xyz_2_rj,       &
      &    izero, n_WS, n_WR, WS, WR)
-      call calypso_rj_from_recv_N(ncomp_xyz_2_rj, n_WR, WR, sp_rj)
 !
-!
-      call copy_vec_spec_from_trans                                     &
-     &   (ipol%i_vp_induct, f_trns%i_vp_induct)
-      call copy_vec_spec_from_trans                                     &
-     &   (ipol%i_SGS_vp_induct, f_trns%i_SGS_vp_induct)
+      call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
+     &   ipol%i_vp_induct, f_trns%i_vp_induct, n_WR, WR(1))
+      call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
+     &   ipol%i_SGS_vp_induct, f_trns%i_SGS_vp_induct, n_WR, WR(1))
 !
 !
       call const_sph_rotation_uxb(ipol%i_vp_induct, ipol%i_induction)
@@ -171,11 +169,9 @@
 !
       call sph_forward_transforms(ncomp_xyz_2_rj, nvect_xyz_2_rj,       &
      &    izero, izero, n_WS, n_WR, WS, WR)
-      call calypso_rj_from_recv_N(ncomp_xyz_2_rj, n_WR, WR, sp_rj)
 !
-!
-      call copy_vec_spec_from_trans                                     &
-     &   (ipol%i_vp_induct, f_trns%i_vp_induct)
+      call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
+     &   (ipol%i_vp_induct, f_trns%i_vp_induct, n_WR, WR)
 !
       call const_sph_rotation_uxb(ipol%i_vp_induct, ipol%i_induction)
 !
@@ -187,6 +183,7 @@
 !
       use m_solver_SR
       use spherical_SRs_N
+      use copy_spectr_4_sph_trans
 !
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call cal_diff_induction_MHD_adams
@@ -198,26 +195,24 @@
       call update_after_magne_sph
 !
 !
-      call copy_vec_spec_to_trans(ncomp_rj_2_xyz,                       &
-     &    ipol%i_magne, b_trns%i_magne)
-      call copy_vec_spec_to_trans(ncomp_rj_2_xyz,                       &
-     &    ipol%i_current, b_trns%i_current)
-      call copy_vec_spec_to_trans(ncomp_rj_2_xyz,                       &
-     &    ipol%i_b_diffuse, b_trns%i_b_diffuse)
-      call copy_vec_spec_to_trans(ncomp_rj_2_xyz,                       &
-     &    ipol%i_induction, b_trns%i_induction)
-      if (iflag_SGS_induction .ne. id_SGS_none) then
-        call copy_vec_spec_to_trans(ncomp_rj_2_xyz,                     &
-     &      ipol%i_SGS_induction, b_trns%i_SGS_induction)
-      end if
-!
-!
       call check_calypso_rj_2_rlm_buf_N(ncomp_rj_2_xyz)
       call check_calypso_rtm_2_rtp_buf_N(ncomp_rj_2_xyz)
-      call calypso_rj_to_send_N(ncomp_rj_2_xyz, n_WS, sp_rj, WS)
+!
+      call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
+     &    ipol%i_magne, b_trns%i_magne, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
+     &    ipol%i_current, b_trns%i_current, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
+     &    ipol%i_b_diffuse, b_trns%i_b_diffuse, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
+     &    ipol%i_induction, b_trns%i_induction, n_WS, WS)
+      if (iflag_SGS_induction .ne. id_SGS_none) then
+        call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                  &
+     &      ipol%i_SGS_induction, b_trns%i_SGS_induction, n_WS, WS)
+      end if
 !
       call pole_backward_transforms(ncomp_rj_2_xyz, nvect_rj_2_xyz,     &
-     &    n_WS, n_WR, WS, WR)
+     &    n_WR, WR)
       call sph_backward_transforms(ncomp_rj_2_xyz, nvect_rj_2_xyz,      &
      &    n_WS, n_WR, WS, WR)
 !

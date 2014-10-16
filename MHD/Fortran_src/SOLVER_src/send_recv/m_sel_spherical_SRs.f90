@@ -28,6 +28,22 @@
 !!      subroutine sel_calypso_to_send_scalar(NB, nnod_org, n_WS,       &
 !!     &                    nmax_sr, npe_send, istack_send, inod_export,&
 !!     &                    ncomp_X, i_fld_X, i_fld_WS, d_org, WS)
+!!      subroutine sel_calypso_to_send_tensor(NB, nnod_org, n_WS,       &
+!!     &                    nmax_sr, npe_send, istack_send, inod_export,&
+!!     &                    ncomp_X, i_fld_X, i_fld_WS, d_org, WS)
+!!
+!!      subroutine sel_sph_vector_from_recv(NB, nnod_new, n_WR, nmax_sr,&
+!!     &                    npe_recv, istack_recv, inod_import,         &
+!!     &                    irev_import, ncomp_X, i_fld_X, i_fld_WR,    &
+!!     &                    WR, d_new)
+!!      subroutine sel_sph_scalar_from_recv(NB, nnod_new, n_WR, nmax_sr,&
+!!     &                    npe_recv, istack_recv, inod_import,         &
+!!     &                    irev_import, ncomp_X, i_fld_X, i_fld_WR,    &
+!!     &                    WR, d_new)
+!!      subroutine sel_sph_tensor_from_recv(NB, nnod_new, n_WR, nmax_sr,&
+!!     &                    npe_recv, istack_recv, inod_import,         &
+!!     &                    irev_import, ncomp_X, i_fld_X, i_fld_WR,    &
+!!     &                    WR, d_new)
 !!
 !!      subroutine sel_calypso_from_recv_N(NB, nnod_new, n_WR, nmax_sr, &
 !!     &                    npe_recv, istack_recv, inod_import,         &
@@ -316,6 +332,41 @@
       end subroutine sel_calypso_to_send_scalar
 !
 !-----------------------------------------------------------------------
+!
+      subroutine sel_calypso_to_send_tensor(NB, nnod_org, n_WS,         &
+     &                    nmax_sr, npe_send, istack_send, inod_export,  &
+     &                    ncomp_X, i_fld_X, i_fld_WS, d_org, WS)
+!
+      use sph_field_to_all2all
+      use field_to_send_buffer
+!
+      integer(kind = kint), intent(in) :: NB, i_fld_WS, nmax_sr, n_WS
+      integer(kind = kint), intent(in) :: ncomp_X, i_fld_X, nnod_org
+!
+      integer(kind = kint), intent(in) :: npe_send
+      integer(kind = kint), intent(in) :: istack_send(0:npe_send)
+      integer(kind = kint), intent(in)                                  &
+     &                      :: inod_export( istack_send(npe_send) )
+      real (kind=kreal), intent(in)::    d_org(nnod_org,NB)
+!
+      real (kind=kreal), intent(inout):: WS(n_WS)
+!
+!
+      call start_eleps_time(36)
+      if(    iflag_sph_commN .eq. iflag_alltoall) then
+        call set_to_all2all_buf_tensor(NB, nnod_org, nmax_sr, npe_send, &
+     &      istack_send, inod_export, ncomp_X, i_fld_X, i_fld_WS,       &
+     &      d_org, WS(1))
+      else
+        call set_to_send_buf_tensor(NB, nnod_org,                       &
+     &      istack_send(npe_send), inod_export, ncomp_X,                &
+     &      i_fld_X, i_fld_WS, d_org, WS(1))
+      end if
+      call end_eleps_time(36)
+!
+      end subroutine sel_calypso_to_send_tensor
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine sel_sph_vector_from_recv(NB, nnod_new, n_WR, nmax_sr,  &
@@ -407,6 +458,52 @@
       call end_eleps_time(38)
 !
       end subroutine sel_sph_scalar_from_recv
+!
+!-----------------------------------------------------------------------
+!
+      subroutine sel_sph_tensor_from_recv(NB, nnod_new, n_WR, nmax_sr,  &
+     &                    npe_recv, istack_recv, inod_import,           &
+     &                    irev_import, ncomp_X, i_fld_X, i_fld_WR,      &
+     &                    WR, d_new)
+!
+      use field_to_send_buffer
+      use sph_field_to_all2all
+!
+      integer(kind = kint), intent(in) :: nnod_new, ncomp_X, i_fld_X
+      integer(kind = kint), intent(in) :: NB, nmax_sr, n_WR, i_fld_WR
+!
+      integer(kind = kint), intent(in) :: npe_recv
+      integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
+      integer(kind = kint), intent(in)                                  &
+     &                      :: inod_import( istack_recv(npe_recv) )
+      integer(kind = kint), intent(in) :: irev_import(nnod_new)
+      real (kind=kreal), intent(inout) :: WR(n_WR)
+!
+      real (kind=kreal), intent(inout):: d_new(nnod_new,ncomp_X)
+!
+!
+      call start_eleps_time(38)
+      if(     iflag_sph_commN .eq. iflag_alltoall                       &
+     &  .and. iflag_sph_SRN .eq. iflag_import_item) then
+        call set_from_all2all_buf_tensor(NB, nnod_new, nmax_sr,         &
+     &      npe_recv, istack_recv, inod_import,                         &
+     &      ncomp_X, i_fld_X, i_fld_WR, WR(1), d_new)
+      else if(iflag_sph_commN .eq. iflag_alltoall) then
+        call set_from_all2all_buf_rev_tsr(NB, nnod_new, nmax_sr,        &
+     &      npe_recv, irev_import, ncomp_X, i_fld_X, i_fld_WR,          &
+     &      WR(1), d_new)
+      else if(iflag_sph_SRN .eq. iflag_import_item) then
+        call set_from_recv_buf_tensor(NB, nnod_new,                     &
+     &      istack_recv(npe_recv), inod_import,                         &
+     &      ncomp_X, i_fld_X, i_fld_WR, WR(1), d_new)
+      else
+        call set_from_recv_buf_rev_tensor(NB, nnod_new,                 &
+     &      istack_recv(npe_recv), irev_import,                         &
+     &      ncomp_X, i_fld_X, i_fld_WR, WR(1), d_new)
+      end if
+      call end_eleps_time(38)
+!
+      end subroutine sel_sph_tensor_from_recv
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

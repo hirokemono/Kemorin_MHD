@@ -92,7 +92,7 @@
       elapse_labels(51) = 'copy_mhd_spectr_to_send.   '
       elapse_labels(52) = 'copy_mhd_vec_fld_from_trans.    '
       elapse_labels(53) = 'copy_mhd_vec_fld_to_trans.    '
-      elapse_labels(54) = 'sel_sph_rj_vector_from_recv.    '
+      elapse_labels(54) = 'copy_mhd_spectr_from_recv.    '
 !
       elapse_labels(num_elapsed) = 'Communication time        '
 !
