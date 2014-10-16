@@ -7,7 +7,7 @@
 !>@brief  Spherical transform at center
 !!
 !!@verbatim
-!!      subroutine schmidt_b_trans_center_scalar(ncomp, nvector, nscalar)
+!!      subroutine schmidt_b_trans_center_scalar(nvector, nscalar)
 !!      subroutine schmidt_b_trans_center_vect(ncomp, nvector,          &
 !!     &          irev_sr_rlm, n_WR, WR)
 !!
@@ -44,21 +44,17 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine schmidt_b_trans_center_scalar(ncomp, nvector, nscalar)
+      subroutine schmidt_b_trans_center_scalar(nvector, nscalar)
 !
-      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: nvector, nscalar
 !
-      integer(kind = kint) :: i_rlm, nd, icomp
+      integer(kind = kint) :: nd
 !
 !
       if(nscalar .le. 0) return
-      v_center(3*nvector+1:3*nvector+nscalar) = zero
 !
-      if(inod_rj_center .le. 0) return
-      do nd = 1, nscalar
-        icomp = nd + 3*nvector
-        i_rlm = icomp + (inod_rj_center-1) * ncomp
-        v_ct_local(icomp) =  two * sp_rj(i_rlm)
+      do nd = 3*nvector+1, 3*nvector+nscalar
+        v_ct_local(nd) =  two * v_ct_local(nd)
       end do
 !
       end subroutine schmidt_b_trans_center_scalar

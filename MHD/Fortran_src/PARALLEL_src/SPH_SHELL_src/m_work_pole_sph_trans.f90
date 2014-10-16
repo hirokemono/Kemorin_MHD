@@ -3,28 +3,28 @@
 !
 !     Written by H. Matsui on July, 2007
 !
-!      subroutine resize_work_pole_sph_trans
-!
-!      subroutine allocate_work_pole_sph_trans
-!      subroutine deallocate_work_pole_sph_trans
-!      subroutine check_vr_pole(my_rank, nb)
-!
-!   compressed array
-!   input /outpt arrays
-!
-!      radial component:      vr_rtp(3*i_rtp-2)
-!      elevetional component: vr_rtp(3*i_rtp-1)
-!      azimuthal component:   vr_rtp(2*i_rtp  )
-!
-!      Poloidal component:          sp_rj(3*i_rj-2)
-!      diff. of Poloidal component: sp_rj(3*i_rj-1)
-!      Toroidal component:          sp_rj(3*i_rj  )
-!
-!  transform for scalar
-!   input /outpt arrays
-!
-!      field: vr_rtp(i_rtp)
-!      spectr: sp_rj(i_rj)
+!!      subroutine resize_work_pole_sph_trans
+!!
+!!      subroutine allocate_work_pole_sph_trans
+!!      subroutine deallocate_work_pole_sph_trans
+!!      subroutine check_vr_pole(my_rank, nb)
+!!
+!!   compressed array
+!!   input /outpt arrays
+!!
+!!      radial component:      vr_rtp(3*i_rtp-2)
+!!      elevetional component: vr_rtp(3*i_rtp-1)
+!!      azimuthal component:   vr_rtp(2*i_rtp  )
+!!
+!!      Poloidal component:          WR(3*i_rj-2)
+!!      diff. of Poloidal component: WR(3*i_rj-1)
+!!      Toroidal component:          WR(3*i_rj  )
+!!
+!!  transform for scalar
+!!   input /outpt arrays
+!!
+!!      field: vr_rtp(i_rtp)
+!!      spectr: WR(i_rj)
 !
       module m_work_pole_sph_trans
 !
@@ -77,7 +77,7 @@
       num1 = ncomp_sph_trans*nidx_global_rtp(1)
       allocate(v_np_local(n_vector*num1) )
       allocate(v_sp_local(n_vector*num1) )
-      allocate(v_ct_local(n_vector*ncomp_sph_trans) )
+      allocate(v_ct_local(ncomp_sph_trans) )
 !
       allocate(v_n_pole(n_vector*num1) )
       allocate(v_s_pole(n_vector*num1) )

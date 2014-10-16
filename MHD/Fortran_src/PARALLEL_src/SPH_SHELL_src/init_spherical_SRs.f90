@@ -8,7 +8,7 @@
 !!@n      for spherical harmonics transform
 !!
 !!@verbatim
-!!      subroutine init_sph_send_recv_N(NB, X_rtp, X_rj)
+!!      subroutine init_sph_send_recv_N(NB, X_rtp)
 !!      subroutine check_spherical_SRs_N(NB)
 !!@endverbatim
 !!
@@ -16,12 +16,6 @@
 !!@n @param  NB    Number of components for communication
 !!@n @param  X_rtp(NB*nnod_rtp)  @f$ f(r,\theta,\phi) @f$
 !!@n               (Order, X_rtp(i_comp,inod))
-!!@n @param  X_rtm(NB*nnod_rtm)  @f$ f(r,\theta,m) @f$
-!!@n               (Order, X_rtm(i_comp,inod))
-!!@n @param  X_rlm(NB*nnod_rlm)  @f$ f(r,l,m) @f$
-!!@n               (Order, X_rlm(i_comp,inod))
-!!@n @param  X_rj(NB*nnod_rj)    @f$ f(r,j) @f$
-!!@n               (Order, X_rj(i_comp,inod))
 !
 !
       module init_spherical_SRs
@@ -47,7 +41,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_sph_send_recv_N(NB, X_rtp, X_rj)
+      subroutine init_sph_send_recv_N(NB, X_rtp)
 !
       use calypso_mpi
 !
@@ -59,15 +53,19 @@
 !
       integer (kind=kint), intent(in) :: NB
       real (kind=kreal), intent(inout) :: X_rtp(NB*nnod_rtp)
-      real (kind=kreal), intent(inout)::  X_rj(NB*nnod_rj)
 !
+      real(kind = kreal), allocatable :: X_rj(:)
 !
       call allocate_work_sph_trans(NB)
+      allocate(X_rj(NB*nnod_rj))
+      X_rj = 0.0d0
 !
       call check_spherical_SRs_N(NB)
 !
       call buffer_size_sph_send_recv(NB)
       call sel_sph_import_table(NB, X_rtp, vr_rtm_wk, sp_rlm_wk, X_rj)
+!
+      deallocate(X_rj)
       call deallocate_work_sph_trans
 !
       if(my_rank .eq. 0) then

@@ -14,7 +14,7 @@
 !!   wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
-!!      subroutine fwd_FFT_select_to_send(Nsmp, Nstacksmp, M, Nfft, X)
+!!      subroutine fwd_FFT_select_to_send(ncomp, n_WS, vr_rtp, WS)
 !! ------------------------------------------------------------------
 !!
 !!   wrapper subroutine for FFT in ISPACK
@@ -28,7 +28,7 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine back_FFT_select_from_recv(Nsmp, Nstacksmp, M, Nfft, X)
+!!      subroutine back_FFT_select_from_recv(ncomp, n_WR, WR, vr_rtp)
 !! ------------------------------------------------------------------
 !!
 !!   wrapper subroutine for backward FFT
@@ -161,12 +161,13 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine fwd_FFT_select_to_send(ncomp, n_WS, WS)
+      subroutine fwd_FFT_select_to_send(ncomp, n_WS, vr_rtp, WS)
 !
+      use m_spheric_parameter
       use m_sph_trans_comm_table
-      use m_work_4_sph_trans
 !
       integer(kind = kint), intent(in) :: ncomp, n_WS
+      real (kind=kreal), intent(inout):: vr_rtp(nnod_rtp,ncomp)
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
@@ -190,13 +191,14 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine back_FFT_select_from_recv(ncomp, n_WR, WR)
+      subroutine back_FFT_select_from_recv(ncomp, n_WR, WR, vr_rtp)
 !
+      use m_spheric_parameter
       use m_sph_trans_comm_table
-      use m_work_4_sph_trans
 !
       integer(kind = kint), intent(in) :: ncomp, n_WR
       real (kind=kreal), intent(inout):: WR(n_WR)
+      real (kind=kreal), intent(inout):: vr_rtp(nnod_rtp,ncomp)
 !
 !
       if(iflag_FFT .eq. iflag_ISPACK) then

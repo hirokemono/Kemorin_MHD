@@ -49,6 +49,7 @@
       use const_wz_coriolis_rtp
       use const_coriolis_sph_rlm
       use legendre_transform_select
+      use pole_sph_transform
       use skip_comment_f
 !
       character(len=kchara) :: tmpchara
@@ -68,6 +69,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_sph_trans'
       call initialize_sph_trans
+      call init_pole_transform
 !
       if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
       call set_colatitude_rtp
@@ -140,8 +142,8 @@
 !      call end_eleps_time(51)
 !
       if(ncomp_rj_2_rtp .eq. 0) return
-      call sph_b_trans_w_coriolis(ncomp_rj_2_rtp,                       &
-     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, n_WS, n_WR, WS(1), WR(1))
+      call sph_b_trans_w_coriolis(ncomp_rj_2_rtp, nvector_rj_2_rtp,     &
+     &    nscalar_rj_2_rtp, n_WS, n_WR, WS(1), WR(1))
 !
 !      call start_eleps_time(52)
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_vec_fld_from_trans'
@@ -172,8 +174,8 @@
 !      call end_eleps_time(53)
 !
       if(ncomp_rtp_2_rj .eq. 0) return
-      call sph_f_trans_w_coriolis(ncomp_rtp_2_rj,                       &
-     &    nvector_rtp_2_rj, nscalar_rtp_2_rj, n_WS, n_WR, WS(1), WR(1))
+      call sph_f_trans_w_coriolis(ncomp_rtp_2_rj, nvector_rtp_2_rj,     &
+     &    nscalar_rtp_2_rj, n_WS, n_WR, WS(1), WR(1))
 !
 !      call start_eleps_time(54)
       call copy_mhd_spectr_from_recv(ncomp_rtp_2_rj, n_WR, WR(1))

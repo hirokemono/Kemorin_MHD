@@ -23,7 +23,6 @@
 !!      subroutine deallocate_wk_nod_data_to_sph
 !!
 !!      subroutine check_vr_rtp(my_rank, nb)
-!!      subroutine check_sp_rj(my_rank, nb)
 !!
 !!   input /outpt data
 !!
@@ -31,15 +30,10 @@
 !!      elevetional component: vr_rtp(i_rtp,2)
 !!      azimuthal component:   vr_rtp(i_rtp,3)
 !!
-!!      Poloidal component:          sp_rj(3*i_rj-2)
-!!      diff. of Poloidal component: sp_rj(3*i_rj-1)
-!!      Toroidal component:          sp_rj(3*i_rj  )
-!!
 !!  transform for scalar
 !!   input /outpt arrays
 !!
 !!      field: vr_rtp(i_rtp)
-!!      spectr: sp_rj(i_rj)
 !!@endverbatim
 !!
       module m_work_4_sph_trans
@@ -58,8 +52,6 @@
 !>      field data including pole and center  @f$ f(r,\theta,\phi) @f$ 
       real(kind = kreal), allocatable :: d_nod_rtp(:,:)
 !
-!>      Spectr data for spherical harmonics transform  @f$ f(r,j) @f$
-      real(kind = kreal), allocatable :: sp_rj(:)
 !>      field data on Gauss-Legendre points @f$ f(r,\theta,\phi) @f$ 
       real(kind = kreal), allocatable :: vr_rtp(:,:)
 !
@@ -136,7 +128,6 @@
       allocate(asin_theta_1d_rtm(nidx_rtm(2)))
 !
       allocate(vr_rtp(nnod_rtp,ncomp_sph_trans))
-      allocate(sp_rj(ncomp_sph_trans*nnod_rj))
 !
       allocate(cos_theta_1d_rtp(nidx_rtp(2)))
       allocate(sin_theta_1d_rtp(nidx_rtp(2)))
@@ -153,7 +144,6 @@
       sin_theta_1d_rtp = 0.0d0
       cot_theta_1d_rtp = 0.0d0
 !
-      sp_rj =  0.0d0
       vr_rtp = 0.0d0
 !
       iflag_sph_trans = ncomp_sph_trans
@@ -184,7 +174,7 @@
       deallocate(asin_theta_1d_rtm, cot_theta_1d_rtp)
       deallocate(sin_theta_1d_rtp, cos_theta_1d_rtp)
 !
-      deallocate(sp_rj, vr_rtp)
+      deallocate(vr_rtp)
 !
       maxdegree_rlm =   0
       iflag_sph_trans = 0
@@ -262,25 +252,6 @@
       end do
 !
       end subroutine check_vr_rtp
-!
-! ----------------------------------------------------------------------
-!
-      subroutine check_sp_rj(my_rank, nb)
-!
-      use m_spheric_parameter
-!
-      integer(kind = kint), intent(in) :: my_rank, nb
-      integer(kind = kint) :: inod, ist, ied
-!
-      write(50+my_rank,*) 'sp_rj', nb
-      do inod = 1, nnod_rj
-        ist = (inod-1) * nb + 1
-        ied = (inod-1) * nb + nb
-        write(50+my_rank,'(3i10,1p200e20.12)') inod,                    &
-     &        idx_global_rj(inod,1:2), sp_rj(ist:ied)
-      end do
-!
-      end subroutine check_sp_rj
 !
 ! ----------------------------------------------------------------------
 !

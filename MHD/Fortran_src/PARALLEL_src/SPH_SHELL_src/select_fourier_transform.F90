@@ -141,8 +141,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'back_FFT_select_from_recv'
       starttime = MPI_WTIME()
-      call back_FFT_select_from_recv(ncomp, n_WR, WR)
-      call fwd_FFT_select_to_send(ncomp, n_WS, WS)
+      call back_FFT_select_from_recv(ncomp, n_WR, WR, vr_rtp)
+      call fwd_FFT_select_to_send(ncomp, n_WS, vr_rtp, WS)
       endtime = MPI_WTIME() - starttime
       if(iflag_debug .gt. 0) write(*,*) 'fwd_FFT_select_to_send end'
 !

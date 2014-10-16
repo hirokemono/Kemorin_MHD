@@ -71,8 +71,6 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
       call SPH_initialize_MHD
-      if(iflag_debug .gt. 0) write(*,*) 'SPH_to_FEM_init_MHD'
-      call SPH_to_FEM_init_MHD
       call calypso_MPI_barrier
 !
       call end_eleps_time(2)

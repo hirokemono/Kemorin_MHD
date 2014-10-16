@@ -13,7 +13,6 @@
 !!     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !!      subroutine FEM_finalize
 !!
-!!      subroutine SPH_to_FEM_init_MHD
 !!      subroutine SPH_to_FEM_bridge_MHD
 !!      subroutine FEM_to_SPH_bridge
 !!@endverbatim
@@ -140,17 +139,6 @@
       end subroutine FEM_analyze
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine SPH_to_FEM_init_MHD
-!
-      use pole_sph_transform
-!
-!
-      call init_pole_transform
-!
-      end subroutine SPH_to_FEM_init_MHD
-!
 !-----------------------------------------------------------------------
 !
       subroutine SPH_to_FEM_bridge_MHD

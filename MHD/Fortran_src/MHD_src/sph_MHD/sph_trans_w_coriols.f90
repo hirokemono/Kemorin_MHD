@@ -17,16 +17,14 @@
 !!      subroutine sph_b_trans_licv(ncomp_trans, n_WR, WR)
 !!      subroutine sph_f_trans_licv(ncomp_trans, n_WS, WS)
 !!
-!!   input /outpt arrays for single field
-!!
+!!   input /outpt arrays for single vector
 !!      radial component:      vr_rtp(i_rtp,1)
 !!      elevetional component: vr_rtp(i_rtp,2)
 !!      azimuthal component:   vr_rtp(i_rtp,3)
 !!
-!!     forward transform: 
-!!      Poloidal component:          sp_rj(3*i_rj-2)
-!!      diff. of Poloidal component: sp_rj(3*i_rj-1)
-!!      Toroidal component:          sp_rj(3*i_rj  )
+!!      Poloidal component:          WR(3*i_rj-2)
+!!      diff. of Poloidal component: WR(3*i_rj-1)
+!!      Toroidal component:          WR(3*i_rj  )
 !!@endverbatim
 !!
 !!@param ncomp_trans Number of components for transform
@@ -45,6 +43,7 @@
       use calypso_mpi
       use m_work_time
       use m_machine_parameter
+      use m_work_4_sph_trans
       use sph_FFT_selector
       use legendre_transform_select
       use spherical_SRs_N
@@ -98,7 +97,7 @@
       call start_eleps_time(24)
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &    'back_FFT_select_from_recv', ncomp_trans, nvector, nscalar
-      call back_FFT_select_from_recv(ncomp_trans, n_WR, WR)
+      call back_FFT_select_from_recv(ncomp_trans, n_WR, WR, vr_rtp)
       call end_eleps_time(24)
 !
       if(iflag_debug .gt. 0) write(*,*) 'finish_send_recv_rtm_2_rtp'
@@ -120,7 +119,7 @@
 !
 !      call check_vr_rtp(my_rank, ncomp_trans)
       call start_eleps_time(24)
-      call fwd_FFT_select_to_send(ncomp_trans, n_WS, WS)
+      call fwd_FFT_select_to_send(ncomp_trans, n_WS, vr_rtp, WS)
       call end_eleps_time(24)
 !      call check_vr_rtp(my_rank, ncomp_trans)
 !

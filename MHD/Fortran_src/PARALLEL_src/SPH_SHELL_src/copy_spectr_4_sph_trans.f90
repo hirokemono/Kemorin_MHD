@@ -5,6 +5,7 @@
 !!@date Programmed in Oct., 2009
 !
 !>@brief  Copy data from/to sphrical transform buffer
+!!        and local array for center
 !!
 !!@verbatim
 !!      subroutine sel_sph_rj_vector_to_send                            &
@@ -67,6 +68,7 @@
       use m_sph_communicators
       use m_sph_trans_comm_table
       use m_sel_spherical_SRs
+      use m_work_pole_sph_trans
 !
       integer(kind = kint), intent(in) :: i_field, i_send
       integer(kind = kint), intent(in) :: ncomp_send, n_WS
@@ -77,6 +79,13 @@
       call sel_calypso_to_send_scalar(ncomp_send, nnod_rj, n_WS,        &
      &    nmax_sr_rj,  nneib_domain_rj,  istack_sr_rj,  item_sr_rj,     &
      &    ntot_phys_rj, i_field, i_send, d_rj, WS)
+!
+      if(iflag_rj_center .le. 0) return
+      if(inod_rj_center .gt. 0) then
+        v_ct_local(i_send) = d_rj(inod_rj_center,i_field)
+      else
+        v_ct_local(i_send) = 0.0d0
+      end if
 !
       end subroutine sel_sph_rj_scalar_to_send
 !

@@ -81,7 +81,7 @@
       if(iflag_shell_mode .eq. iflag_MESH_w_center) then
         call schmidt_b_trans_center_vect(ncomp, nvector,                &
      &      irev_sr_rlm, n_WR, WR)
-        call schmidt_b_trans_center_scalar(ncomp, nvector, nscalar)
+        call schmidt_b_trans_center_scalar(nvector, nscalar)
 !
         call sum_back_trans_at_center(ncomp)
       end if

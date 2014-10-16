@@ -9,10 +9,10 @@
 !!       and gradient of scalar
 !!
 !!@verbatim
-!!      subroutine sph_backward_transforms                              &
-!!     &         (ncomp_trans, nvector, nscalar, n_WS, n_WR, WS, WR)
-!!      subroutine sph_forward_transforms                               &
-!!     &         (ncomp_trans, nvector, nscalar, n_WS, n_WR, WS, WR)
+!!      subroutine sph_backward_transforms(ncomp_trans,                 &
+!!     &          nvector, nscalar, n_WS, n_WR, WS, WR, vr_rtp)
+!!      subroutine sph_forward_transforms(ncomp_trans,                  &
+!!     &          nvector, nscalar, n_WS, n_WR, vr_rtp, WS, WR)
 !!
 !!   input /outpt arrays for single field
 !!
@@ -20,9 +20,9 @@
 !!      elevetional component: vr_rtp(i_rtp,2)
 !!      azimuthal component:   vr_rtp(i_rtp,3)
 !!
-!!      Poloidal component:          sp_rj(3*i_rj-2)
-!!      diff. of Poloidal component: sp_rj(3*i_rj-1)
-!!      Toroidal component:          sp_rj(3*i_rj  )
+!!      Poloidal component:          WR(3*i_rj-2)
+!!      diff. of Poloidal component: WR(3*i_rj-1)
+!!      Toroidal component:          WR(3*i_rj  )
 !!@endverbatim
 !!
 !!@param ncomp_trans Number of components for transform
@@ -34,6 +34,7 @@
       use calypso_mpi
       use m_work_time
       use m_machine_parameter
+      use m_work_4_sph_trans
       use sph_FFT_selector
       use legendre_transform_select
       use spherical_SRs_N
@@ -46,8 +47,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_backward_transforms                                &
-     &         (ncomp_trans, nvector, nscalar, n_WS, n_WR, WS, WR)
+      subroutine sph_backward_transforms(ncomp_trans,                   &
+     &          nvector, nscalar, n_WS, n_WR, WS, WR)
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: nvector, nscalar
@@ -76,7 +77,7 @@
 !      call check_vr_rtp(my_rank, ncomp_trans)
 !
       call start_eleps_time(24)
-      call back_FFT_select_from_recv(ncomp_trans, n_WR, WR)
+      call back_FFT_select_from_recv(ncomp_trans, n_WR, WR, vr_rtp)
       call end_eleps_time(24)
 !
       call finish_send_recv_rtm_2_rtp
@@ -87,8 +88,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_forward_transforms                                 &
-     &         (ncomp_trans, nvector, nscalar, n_WS, n_WR, WS, WR)
+      subroutine sph_forward_transforms(ncomp_trans,                    &
+     &          nvector, nscalar, n_WS, n_WR, WS, WR)
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: nvector, nscalar
@@ -97,7 +98,7 @@
 !
 !      call check_vr_rtp(my_rank, ncomp_trans)
       call start_eleps_time(24)
-      call fwd_FFT_select_to_send(ncomp_trans, n_WS, WS)
+      call fwd_FFT_select_to_send(ncomp_trans, n_WS, vr_rtp, WS)
       call end_eleps_time(24)
 !      call check_vr_rtp(my_rank, ncomp_trans)
 !
