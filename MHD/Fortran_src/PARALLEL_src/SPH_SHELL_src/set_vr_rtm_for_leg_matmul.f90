@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in Aug., 2013
 !
-!>@brief  forward Legendre transform for testing
+!>@brief  forward Legendre transform using matrix multi
 !!
 !!@verbatim
 !!      subroutine set_vr_rtm_vector_matmul(kst, nkr,                   &

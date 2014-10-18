@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in Aug., 2013
 !
-!>@brief  forward Legendre transform for testing
+!>@brief  Backward Legendre transform after mat multi
 !!
 !!@verbatim
 !!      subroutine cal_vr_rtm_vector_matmul                             &

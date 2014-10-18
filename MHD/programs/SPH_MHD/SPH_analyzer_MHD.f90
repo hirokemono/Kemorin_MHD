@@ -120,9 +120,7 @@
 !* obtain nonlinear terms for starting
 !*
        if(iflag_debug .gt. 0) write(*,*) 'first nonlinear'
-       call start_eleps_time(8)
        call nonlinear
-       call end_eleps_time(8)
 !
 !* -----  Open Volume integration data files -----------------
 !*

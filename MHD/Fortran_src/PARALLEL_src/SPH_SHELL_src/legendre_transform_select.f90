@@ -218,6 +218,9 @@
       else if(id_legendre_transfer .eq. iflag_leg_symmetry) then
         call alloc_leg_vec_symmetry
         call alloc_leg_scl_symmetry
+      else if(id_legendre_transfer .eq. iflag_leg_blocked) then
+        call alloc_leg_vec_blocked
+        call alloc_leg_scl_blocked
       else
         call allocate_work_sph_trans(ncomp)
       end if
@@ -244,6 +247,9 @@
       else if(id_legendre_transfer .eq. iflag_leg_symmetry) then
         call dealloc_leg_vec_symmetry
         call dealloc_leg_scl_symmetry
+      else if(id_legendre_transfer .eq. iflag_leg_blocked) then
+        call dealloc_leg_vec_blocked
+        call dealloc_leg_scl_blocked
       else
         call deallocate_work_sph_trans
       end if

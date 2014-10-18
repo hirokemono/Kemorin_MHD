@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in Aug., 2013
 !
-!>@brief  forward Legendre transform for testing
+!>@brief  forward Legendre transform using matmulti
 !!
 !!@verbatim
 !!      subroutine cal_sp_rlm_vector_matmul                             &
@@ -231,7 +231,7 @@
 !  odd l-m
           WS(io_send-2) = WS(io_send-2) + pol_o(i_kj)
           WS(io_send-1) = WS(io_send-1)                                 &
-     &                   + dpoldt_o(i_kj) - dpoldp_o(i_kj)
+     &                   - dpoldp_o(i_kj) + dpoldt_o(i_kj)
           WS(io_send  ) = WS(io_send  )                                 &
      &                   - dtordp_o(i_kj) - dtordt_o(i_kj)
         end do

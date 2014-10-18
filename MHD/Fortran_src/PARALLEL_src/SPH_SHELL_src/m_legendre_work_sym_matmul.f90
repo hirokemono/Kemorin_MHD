@@ -23,6 +23,11 @@
 !!      subroutine dealloc_leg_vec_symmetry
 !!      subroutine dealloc_leg_scl_symmetry
 !!
+!!      subroutine alloc_leg_vec_blocked
+!!      subroutine alloc_leg_scl_blocked
+!!      subroutine dealloc_leg_vec_blocked
+!!      subroutine dealloc_leg_scl_blocked
+!!
 !!     field data for Legendre transform
 !!       original layout: vr_rtm(l_rtm,m_rtm,k_rtm,icomp)
 !!       size: vr_rtm(nidx_rtm(2),nidx_rtm(1)*ncomp,nidx_rtm(3))
@@ -313,6 +318,57 @@
       call dealloc_leg_scl_sym_matmul
 !
       end subroutine dealloc_leg_scl_symmetry
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_leg_vec_blocked
+!
+!
+      nvec_jk = maxdegree_rlm
+      allocate(pol_e(nvec_jk,np_smp))
+      allocate(dpoldt_e(nvec_jk,np_smp))
+      allocate(dpoldp_e(nvec_jk,np_smp))
+      allocate(dtordt_e(nvec_jk,np_smp))
+      allocate(dtordp_e(nvec_jk,np_smp))
+!
+      nvec_lk = nidx_rtm(2)
+      allocate(symp_r(nvec_lk,np_smp))
+      allocate(symn_t(nvec_lk,np_smp))
+      allocate(symn_p(nvec_lk,np_smp))
+      allocate(asmp_t(nvec_lk,np_smp))
+      allocate(asmp_p(nvec_lk,np_smp))
+!
+      end subroutine alloc_leg_vec_blocked
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_leg_scl_blocked
+!
+!
+      nscl_jk = maxdegree_rlm
+      allocate(scl_e(nscl_jk,np_smp))
+!
+      nscl_lk = nidx_rtm(2)
+      allocate(symp(nscl_lk,np_smp))
+!
+      end subroutine alloc_leg_scl_blocked
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_leg_vec_blocked
+!
+      call dealloc_leg_vec_matmul
+!
+      end subroutine dealloc_leg_vec_blocked
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_leg_scl_blocked
+!
+      call dealloc_leg_scl_matmul
+!
+      end subroutine dealloc_leg_scl_blocked
 !
 ! -----------------------------------------------------------------------
 !

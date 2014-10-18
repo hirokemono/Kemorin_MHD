@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in Aug., 2013
 !
-!>@brief  forward Legendre transform for testing
+!>@brief  Set spectrum data for backward Legendre transform
 !!
 !!@verbatim
 !!      subroutine set_sp_rlm_vector_matmul                             &
