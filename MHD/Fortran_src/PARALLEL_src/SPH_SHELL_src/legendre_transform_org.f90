@@ -14,6 +14,8 @@
 !!     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !!      subroutine leg_backward_trans_blocked                           &
 !!     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
+!!      subroutine leg_backward_trans_sym_org,                          &
+!!     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !!        Input:  sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!        Output: vr_rtm   (Order: radius,theta,phi)
 !!
@@ -21,6 +23,8 @@
 !!      subroutine leg_forwawd_trans_org                                &
 !!     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !!      subroutine leg_forwawd_trans_blocked                            &
+!!     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
+!!      subroutine leg_forward_trans_sym_org                            &
 !!     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
@@ -111,7 +115,7 @@
       subroutine leg_backward_trans_blocked                             &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
-      use m_work_4_sph_trans_spin
+      use m_sph_trans_comm_table
       use legendre_bwd_trans_blocked
       use spherical_SRs_N
 !
@@ -142,7 +146,7 @@
       subroutine leg_forwawd_trans_blocked                              &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
-      use m_work_4_sph_trans_spin
+      use m_sph_trans_comm_table
       use legendre_fwd_trans_blocked
       use spherical_SRs_N
 !
@@ -167,6 +171,69 @@
       end if
 !
       end subroutine leg_forwawd_trans_blocked
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine leg_backward_trans_sym_org                             &
+     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
+!
+      use m_sph_trans_comm_table
+      use legendre_bwd_trans_symmetry
+      use spherical_SRs_N
+!
+      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WR, n_WS
+      real (kind=kreal), intent(inout):: WR(n_WR)
+      real (kind=kreal), intent(inout):: WS(n_WS)
+!
+!
+      call finish_send_recv_rj_2_rlm
+!$omp parallel workshare
+      WS(1:ncomp*ntot_item_sr_rtm) = 0.0d0
+!$omp end parallel workshare
+!
+      if(nvector .gt. 0) then
+        call leg_bwd_trans_vector_sym_org(ncomp, nvector,               &
+     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+      end if
+      if(nscalar .gt. 0) then
+        call leg_bwd_trans_scalar_sym_org(ncomp, nvector, nscalar,      &
+     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+      end if
+!
+      end subroutine leg_backward_trans_sym_org
+!
+! -----------------------------------------------------------------------
+!
+      subroutine leg_forward_trans_sym_org                              &
+     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
+!
+      use m_sph_trans_comm_table
+      use legendre_fwd_trans_symmetry
+      use spherical_SRs_N
+!
+      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WR, n_WS
+      real (kind=kreal), intent(inout):: WR(n_WR)
+      real (kind=kreal), intent(inout):: WS(n_WS)
+!
+!
+      call finish_send_recv_rtp_2_rtm
+!$omp parallel workshare
+      WS(1:ncomp*ntot_item_sr_rlm) = 0.0d0
+!$omp end parallel workshare
+!
+      if(nvector .gt. 0) then
+        call leg_fwd_trans_vector_sym_org(ncomp, nvector,               &
+     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+      end if
+      if(nscalar .gt. 0) then
+        call leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar,      &
+     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+      end if
+!
+      end subroutine leg_forward_trans_sym_org
 !
 ! -----------------------------------------------------------------------
 !

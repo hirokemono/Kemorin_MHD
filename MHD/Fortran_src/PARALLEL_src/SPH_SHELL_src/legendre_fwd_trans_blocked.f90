@@ -156,7 +156,7 @@
 !
                 call set_vr_rtm_scalar_blocked                          &
      &             (nd, k_rlm, mdx_p_rlm_rtm(j_rlm), lst, nth,          &
-     &              ncomp, nvector, irev_sr_rtm, n_WR, WR, symp)
+     &              ncomp, nvector, irev_sr_rtm, n_WR, WR, symp(1,ip))
                 call cal_scalar_sp_rlm_dotprod(nth, g_sph_rlm(j_rlm,6), &
      &             P_rtm(lst+1,j_rlm), symp(1,ip), WS(i_send))
               end do

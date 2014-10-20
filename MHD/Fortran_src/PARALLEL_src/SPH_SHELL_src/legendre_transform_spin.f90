@@ -133,13 +133,9 @@
       subroutine leg_backward_trans_sym_spin                            &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
-      use m_sph_communicators
       use m_sph_trans_comm_table
-      use ordering_schmidt_trans_spin
-      use ordering_schmidt_trans_krin
       use legendre_bwd_trans_sym_spin
       use spherical_SRs_N
-      use legendre_bwd_trans_spin
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
@@ -147,27 +143,19 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-!      call start_eleps_time(25)
-      call order_b_trans_fields_spin(ncomp, nvector, nscalar,           &
-     &    irev_sr_rlm, n_WR, WR(1), sp_rlm_wk(1))
-      vr_rtm_wk(1:ncomp*nnod_rtm) = 0.0d0
-!      call end_eleps_time(25)
-!
-!      call start_eleps_time(27)
-      if(nvector .gt. 0) call leg_bwd_trans_vector_sym_spin             &
-     &                      (ncomp, nvector,                            &
-     &                       sp_rlm_wk(1), vr_rtm_wk(1))
-      if(nscalar .gt. 0) call leg_bwd_trans_scalar_sym_spin             &
-     &                      (ncomp, nvector, nscalar,                   &
-     &                       sp_rlm_wk(1), vr_rtm_wk(1))
-!      call end_eleps_time(27)
-!
-!      call start_eleps_time(28)
       call finish_send_recv_rj_2_rlm
-      call back_b_trans_fields_krin(ncomp, nvector, nscalar,            &
-     &    vr_rtm_wk(1), nmax_sr_rtp, nneib_domain_rtm,                  &
-     &    istack_sr_rtm, item_sr_rtm, WS(1))
-!      call end_eleps_time(28)
+!$omp parallel workshare
+      WS(1:ncomp*ntot_item_sr_rtm) = 0.0d0
+!$omp end parallel workshare
+!
+      if(nvector .gt. 0) then
+        call leg_bwd_trans_vector_sym_spin(ncomp, nvector,              &
+     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+      end if
+      if(nscalar .gt. 0) then
+        call leg_bwd_trans_scalar_sym_spin(ncomp, nvector, nscalar,     &
+     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+      end if
 !
       end subroutine leg_backward_trans_sym_spin
 !
@@ -176,13 +164,9 @@
       subroutine leg_forward_trans_sym_spin                             &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
-      use m_sph_communicators
       use m_sph_trans_comm_table
-      use ordering_schmidt_trans_spin
-      use ordering_schmidt_trans_krin
       use legendre_fwd_trans_sym_spin
       use spherical_SRs_N
-      use legendre_fwd_trans_spin
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
@@ -190,27 +174,19 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-!      call start_eleps_time(29)
-      call order_f_trans_fields_spin(ncomp, nvector, nscalar,           &
-     &    irev_sr_rtm, n_WR, WR(1), vr_rtm_wk(1))
-      sp_rlm_wk(1:ncomp*nnod_rlm) = 0.0d0
-!      call end_eleps_time(29)
-!
-!      call start_eleps_time(31)
-      if(nvector .gt. 0) call leg_fwd_trans_vector_sym_spin             &
-     &                      (ncomp, nvector,  vr_rtm_wk(1),             &
-     &                       sp_rlm_wk(1))
-      if(nscalar .gt. 0) call leg_fwd_trans_scalar_sym_spin             &
-     &                      (ncomp, nvector, nscalar, vr_rtm_wk(1),     &
-     &                       sp_rlm_wk(1))
-!      call end_eleps_time(31)
-!
-!      call start_eleps_time(32)
       call finish_send_recv_rtp_2_rtm
-      call back_f_trans_fields_krin(ncomp, nvector, nscalar,            &
-     &    sp_rlm_wk(1), nmax_sr_rj, nneib_domain_rlm,                   &
-     &    istack_sr_rlm, item_sr_rlm, WS(1))
-!      call end_eleps_time(32)
+!$omp parallel workshare
+      WS(1:ncomp*ntot_item_sr_rlm) = 0.0d0
+!$omp end parallel workshare
+!
+      if(nvector .gt. 0) then
+        call leg_fwd_trans_vector_sym_spin(ncomp, nvector,              &
+     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+      end if
+      if(nscalar .gt. 0) then
+        call leg_fwd_trans_scalar_sym_spin(ncomp, nvector, nscalar,     &
+     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+      end if
 !
       end subroutine leg_forward_trans_sym_spin
 !

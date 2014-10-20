@@ -284,6 +284,7 @@
 !
       call start_eleps_time(36)
       if(    iflag_sph_commN .eq. iflag_alltoall) then
+        write(*,*) 'set_to_all2all_buf_vector', i_fld_X, i_fld_WS
         call set_to_all2all_buf_vector(NB, nnod_org, nmax_sr, npe_send, &
      &      istack_send, inod_export, ncomp_X, i_fld_X, i_fld_WS,       &
      &      d_org, WS(1))

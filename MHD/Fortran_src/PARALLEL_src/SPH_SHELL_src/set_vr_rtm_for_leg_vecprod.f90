@@ -273,7 +273,7 @@
         asmp(ll) = (WR(ipp_recv) - WR(ipn_recv)) * weight_rtm(l_rtm)
       end do
 !   Equator (if necessary)
-      do ll = nlo_rtm, nle_rtm
+      do ll = nlo_rtm+1, nle_rtm
         l_rtm = ll + lst
         ip_rtpm = 1 + (l_rtm-1) *  istep_rtm(2)               &
      &              + (k_rlm-1) *  istep_rtm(1)               &

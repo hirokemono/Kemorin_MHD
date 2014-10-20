@@ -39,7 +39,6 @@
       use legendre_transform_org
       use legendre_transform_krin
       use legendre_transform_spin
-      use legendre_transform_symmetry
       use legendre_transform_testloop
       use legendre_transform_matmul
       use legendre_trans_sym_matmul
@@ -215,7 +214,8 @@
      &   .or. id_legendre_transfer .eq. iflag_leg_matprod) then
         call alloc_leg_vec_matmul(nvector)
         call alloc_leg_scl_matmul(nscalar)
-      else if(id_legendre_transfer .eq. iflag_leg_symmetry) then
+      else if(id_legendre_transfer .eq. iflag_leg_symmetry              &
+     &   .or. id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
         call alloc_leg_vec_symmetry
         call alloc_leg_scl_symmetry
       else if(id_legendre_transfer .eq. iflag_leg_blocked) then
@@ -244,7 +244,8 @@
      &   .or. id_legendre_transfer .eq. iflag_leg_matprod) then
         call dealloc_leg_vec_matmul
         call dealloc_leg_scl_matmul
-      else if(id_legendre_transfer .eq. iflag_leg_symmetry) then
+      else if(id_legendre_transfer .eq. iflag_leg_symmetry              &
+     &   .or. id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
         call dealloc_leg_vec_symmetry
         call dealloc_leg_scl_symmetry
       else if(id_legendre_transfer .eq. iflag_leg_blocked) then

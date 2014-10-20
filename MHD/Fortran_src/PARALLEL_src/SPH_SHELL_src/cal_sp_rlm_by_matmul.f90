@@ -126,13 +126,13 @@
         j_rlm = jj + jst
         g6 = g_sph_rlm(j_rlm,6)
         do kk = 1, nkr
-          i_kj = kk + (jj-1) * nkr
-          kr_nd = kk + kst + 3*nvector*nidx_rlm(1)
+          kr_nd = kk + kst
           k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
           nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
           i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                          &
      &              + (k_rlm-1) * istep_rlm(1)
           i_send = nd + 3*nvector + (irev_sr_rlm(i_rlm) - 1) * ncomp
+          i_kj = kk + (jj-1) * nkr
 !
           WS(i_send) = WS(i_send) + scl_e(i_kj) * g6
         end do

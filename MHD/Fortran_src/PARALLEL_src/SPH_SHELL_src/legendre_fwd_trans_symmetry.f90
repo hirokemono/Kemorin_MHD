@@ -194,10 +194,6 @@
               je_rlm = 2*jj + jst - 1
               jo_rlm = 2*jj + jst
               do nd = 1, nscalar
-                call set_vr_rtm_scalar_symmetry(nd, k_rlm, mp_rlm,      &
-     &              izero, nle_rtm, nlo_rtm, ncomp, nvector,            &
-     &              irev_sr_rtm, n_WR, WR, symp(1,ip), asmp(1,ip))
-!
                 ie_rlm = 1 + (je_rlm-1) * istep_rlm(2)                  &
      &                     + (k_rlm-1) *  istep_rlm(1)
                 io_rlm = 1 + (jo_rlm-1) * istep_rlm(2)                  &
@@ -206,12 +202,16 @@
      &                       + (irev_sr_rlm(ie_rlm) - 1) * ncomp
                 io_send = nd + 3*nvector                                &
      &                       + (irev_sr_rlm(io_rlm) - 1) * ncomp
+                call set_vr_rtm_scalar_symmetry(nd, k_rlm, mp_rlm,      &
+     &              izero, nle_rtm, nlo_rtm, ncomp, nvector,            &
+     &              irev_sr_rtm, n_WR, WR, symp(1,ip), asmp(1,ip))
+!
                 call cal_scalar_sp_rlm_dotprod                          &
      &             (nle_rtm, g_sph_rlm(je_rlm,6),                       &
      &              Ps_rtm(1,jj+jst), symp(1,ip), WS(ie_send))
 !
                 call cal_scalar_sp_rlm_dotprod                          &
-     &             (nle_rtm, g_sph_rlm(jo_rlm,6),                       &
+     &             (nlo_rtm, g_sph_rlm(jo_rlm,6),                       &
      &              Ps_rtm(1,jj+jst+n_jk_e), asmp(1,ip), WS(io_send))
               end do
             end do

@@ -73,9 +73,8 @@
         kst = idx_rtm_smp_stack(ip-1,1) + 1
         ked = idx_rtm_smp_stack(ip,  1)
         do lp = 1, nblock_l_rtm
-          lst = (lstack_block_rtm(lp-1) + 1)/2
-          nl_rtm = (lstack_block_rtm(lp  ) + 1)/2                       &
-     &            - (lstack_block_rtm(lp-1) + 1)/2
+          lst = lstack_block_rtm(lp-1)/2
+          nl_rtm = lstack_block_rtm(lp  )/2 - lstack_block_rtm(lp-1)/2
 !
           do mp_rlm = 1, nidx_rtm(3)
             mn_rlm = nidx_rtm(3) - mp_rlm + 1
@@ -116,15 +115,18 @@
      &                pol_o(1,ip), dpoldt_o(1,ip), dpoldp_o(1,ip),      &
      &                dtordt_o(1,ip), dtordp_o(1,ip))
 !
-                  call cal_vr_rtm_vector_symmetry(nj_rlm,               &
+                  call cal_vr_rtm_dydtheta_symmetry(nj_rlm,             &
      &                Ps_jl(je,lp_rtm), dPsdt_jl(je,lp_rtm),            &
      &                Ps_jl(jo,lp_rtm), dPsdt_jl(jo,lp_rtm),            &
+     &                pol_e(1,ip), dpoldt_e(1,ip), dtordt_e(1,ip),      &
+     &                pol_o(1,ip), dpoldt_o(1,ip), dtordt_o(1,ip),      &
+     &                WS(ipp_send), WS(ipn_send))
+                  call cal_vr_rtm_dydphi_symmetry(nj_rlm,               &
+     &                Ps_jl(je,lp_rtm), Ps_jl(jo,lp_rtm),               &
      &                asin_theta_1d_rtm(lp_rtm),                        &
-     &                pol_e(1,ip), dpoldt_e(1,ip), dpoldp_e(1,ip),      &
-     &                dtordt_e(1,ip), dtordp_e(1,ip),                   &
-     &                pol_o(1,ip), dpoldt_o(1,ip), dpoldp_o(1,ip),      &
-     &                dtordt_o(1,ip), dtordp_o(1,ip), WS(ipp_send),     &
-     &                 WS(inp_send), WS(ipn_send), WS(inn_send))
+     &                dpoldp_e(1,ip), dtordp_e(1,ip),                   &
+     &                dpoldp_o(1,ip), dtordp_o(1,ip),                   &
+     &                WS(inp_send), WS(inn_send))
                 end do
               end do
             end do

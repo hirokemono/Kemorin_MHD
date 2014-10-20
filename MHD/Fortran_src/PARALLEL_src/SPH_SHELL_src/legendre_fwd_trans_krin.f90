@@ -170,7 +170,7 @@
       nb_nri = nscalar*nidx_rlm(1)
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,jst,jed,lp,lst,led,j_rlm,l_rtm,mp_rlm,     &
-!$omp&                    Pws_l,sp1)
+!$omp&                    kr_nd,Pws_l,sp1)
       do ip = 1, np_smp
         jst = idx_rlm_smp_stack(ip-1,2) + 1
         jed = idx_rlm_smp_stack(ip,  2)
