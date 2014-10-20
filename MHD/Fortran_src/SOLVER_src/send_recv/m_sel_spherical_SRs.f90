@@ -196,6 +196,8 @@
       use m_solver_SR
       use calypso_SR_core
       use calypso_AlltoAll_core
+      use set_from_recv_buf_rev
+      use set_all2all_buffer
 !
       integer, intent(in)  :: CALYPSO_SUB_COMM
       integer(kind = kint), intent(in) :: NB, nmax_sr
@@ -212,19 +214,18 @@
       call start_eleps_time(37)
       if     (iflag_sph_commN .eq. iflag_alltoall) then
         call calypso_AllToAll_Ncore(NB, nmax_sr, CALYPSO_SUB_COMM)
+        call clear_addtional_AllToAll_recv(NB, nmax_sr, npe_recv, WR)
       else if(iflag_sph_commN .eq. iflag_alltoallv) then
         call calypso_AllToAllv_Ncore                                    &
      &     (NB, npe_send, istack_send, istack_recv, CALYPSO_SUB_COMM)
+        call clear_addtional_SR_recv(NB, istack_recv(npe_recv), WR)
       else
         call calypso_send_recv_core                                     &
      &         (NB, npe_send, isend_self, id_pe_send, istack_send,      &
      &              npe_recv, irecv_self, id_pe_recv, istack_recv)
+        call clear_addtional_SR_recv(NB, istack_recv(npe_recv), WR)
       end if
       call end_eleps_time(37)
-!
-!$omp parallel workshare
-      WR(NB*istack_recv(npe_recv)+1:NB*istack_recv(npe_recv)+NB) = 0.0d0
-!$omp end parallel workshare
 !
       end subroutine sel_calypso_sph_comm_N
 !
@@ -284,7 +285,6 @@
 !
       call start_eleps_time(36)
       if(    iflag_sph_commN .eq. iflag_alltoall) then
-        write(*,*) 'set_to_all2all_buf_vector', i_fld_X, i_fld_WS
         call set_to_all2all_buf_vector(NB, nnod_org, nmax_sr, npe_send, &
      &      istack_send, inod_export, ncomp_X, i_fld_X, i_fld_WS,       &
      &      d_org, WS(1))

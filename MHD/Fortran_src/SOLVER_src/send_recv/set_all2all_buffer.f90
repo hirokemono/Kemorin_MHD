@@ -9,6 +9,8 @@
 !!@verbatim
 !!      subroutine set_rev_all2all_import_tbl(nnod_new, nitem_SR,       &
 !!     &          npe_recv, istack_recv, inod_import, irev_import)
+!!      subroutine clear_addtional_AllToAll_recv                        &
+!!     &         (NB, nitem_SR, npe_recv, WR)
 !!
 !!      subroutine set_to_all2all_buf_N(NB, nnod_org, nitem_SR,         &
 !!     &          npe_send, istack_send, inod_export, X_org, WS)
@@ -91,6 +93,21 @@
       end subroutine set_rev_all2all_import_tbl
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine clear_addtional_AllToAll_recv                          &
+     &         (NB, nitem_SR, npe_recv, WR)
+!
+      integer(kind = kint), intent(in) :: NB, nitem_SR, npe_recv
+      real (kind=kreal), intent(inout):: WR(NB*nitem_SR*npe_recv+NB)
+!
+!
+!$omp parallel workshare
+      WR(NB*nitem_SR*npe_recv+1:NB*nitem_SR*npe_recv+NB) = 0.0d0
+!$omp end parallel workshare
+!
+      end subroutine clear_addtional_AllToAll_recv
+!
+!-----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine set_to_all2all_buf_N(NB, nnod_org, nitem_SR,           &
