@@ -9,12 +9,12 @@
 !!       (Blocked loop version)
 !!
 !!@verbatim
-!!      subroutine leg_f_trans_vector_blocked                           &
-!!     &         (ncomp, nvector, vr_rtm, sp_rlm)
+!!      subroutine leg_f_trans_vector_blocked(ncomp, nvector,           &
+!!     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
-!!      subroutine leg_f_trans_scalar_blocked                           &
-!!     &         (ncomp, nvector, nscalar, vr_rtm, sp_rlm)
+!!      subroutine leg_f_trans_scalar_blocked(ncomp, nvector, nscalar,  &
+!!     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
 !!@endverbatim
@@ -56,19 +56,14 @@
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: i_rlm, k_rlm, j_rlm, l_rtm, i_send
-      integer(kind = kint) :: ip_rtm, in_rtm, ipp_recv,inp_recv
-      integer(kind = kint) :: nd, ip, kst, ked, lp, ll, lst, nth
+      integer(kind = kint) :: i_rlm, k_rlm, j_rlm, i_send
+      integer(kind = kint) :: nd, ip, kst, ked, lp, lst, nth
       real(kind = kreal) :: r1_1d_rlm_r, r2_1d_rlm_r, g7, gm
-      real(kind = kreal) :: Pvw_l(nidx_rtm(2))
-      real(kind = kreal) :: dPvw_l(nidx_rtm(2))
-      real(kind = kreal) :: Pgvw_l(nidx_rtm(2))
 !
 !
 !$omp parallel do schedule(static)                                      &
-!$omp             private(ip,kst,ked,lp,ll,lst,nth,l_rtm,j_rlm,k_rlm,nd,   &
-!$omp&                    i_rlm,ip_rtm,in_rtm,r1_1d_rlm_r,r2_1d_rlm_r,i_send, &
-!$omp&                    ipp_recv,inp_recv,Pvw_l,dPvw_l,Pgvw_l,g7,gm)
+!$omp             private(ip,kst,ked,lp,lst,nth,j_rlm,k_rlm,nd,         &
+!$omp&                    i_rlm,r1_1d_rlm_r,r2_1d_rlm_r,i_send,g7,gm)
       do ip = 1, np_smp
         kst = idx_rlm_smp_stack(ip-1,1) + 1
         ked = idx_rlm_smp_stack(ip,  1)
@@ -84,12 +79,6 @@
             do j_rlm = 1, nidx_rlm(2)
               g7 = g_sph_rlm(j_rlm,7)
               gm = dble(idx_gl_1d_rlm_j(j_rlm,3))
-              do ll = 1, nth
-                l_rtm = ll + lst
-                Pvw_l(ll) = P_rtm(l_rtm,j_rlm)
-                dPvw_l(ll) = dPdt_rtm(l_rtm,j_rlm)
-                Pgvw_l(ll) = P_rtm(l_rtm,j_rlm)
-              end do
 !
               do nd = 1, nvector
                 i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                    &

@@ -56,7 +56,7 @@
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: ip_rtm, in_rtm, i_rlm, j_rlm
+      integer(kind = kint) :: ip_rtm, in_rtm
       integer(kind = kint) :: ip_send, in_send
       integer(kind = kint) :: k_rlm, l_rtm, nd
       integer(kind = kint) :: ip, kst, ked, lp, lst, led
@@ -65,8 +65,8 @@
 !
 !
 !$omp parallel do schedule(static)                                      &
-!$omp&            private(ip,kst,ked,lp,lst,led,jst,nj_rlm,         &
-!$omp&                    j_rlm,l_rtm,nd,i_rlm,ip_rtm,in_rtm,ip_send,in_send, &
+!$omp&            private(ip,kst,ked,lp,lst,led,jst,nj_rlm,             &
+!$omp&                    l_rtm,nd,ip_rtm,in_rtm,ip_send,in_send,       &
 !$omp&                    mp_rlm,mn_rlm,a1r_1d_rlm_r,a2r_1d_rlm_r)
       do ip = 1, np_smp
         kst = idx_rtm_smp_stack(ip-1,1) + 1
@@ -132,15 +132,15 @@
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: i_rlm, j_rlm, k_rlm, l_rtm
+      integer(kind = kint) :: k_rlm, l_rtm
       integer(kind = kint) :: ip_rtm, nd, ip, kst, ked, lp, lst, led
       integer(kind = kint) :: ip_send, i_recv
       integer(kind = kint) :: mp_rlm, jst, nj_rlm
 !
 !
 !$omp parallel do schedule(static)                                      &
-!$omp&            private(ip,kst,ked,lp,lst,led,j_rlm,l_rtm,nd,i_recv,  &
-!$omp&                    ip_rtm,ip_send,i_rlm,mp_rlm,jst,nj_rlm)
+!$omp&            private(ip,kst,ked,lp,lst,led,l_rtm,nd,i_recv,        &
+!$omp&                    ip_rtm,ip_send,mp_rlm,jst,nj_rlm)
       do ip = 1, np_smp
         kst = idx_rtm_smp_stack(ip-1,1) + 1
         ked = idx_rtm_smp_stack(ip,  1)

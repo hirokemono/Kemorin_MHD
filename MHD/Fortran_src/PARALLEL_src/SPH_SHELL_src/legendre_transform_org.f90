@@ -62,6 +62,7 @@
 !
 !
       call calypso_rlm_from_recv_N(ncomp, n_WR, WR, sp_rlm_wk(1))
+      call clear_bwd_legendre_work(ncomp)
 !
       if(nvector .gt. 0) then
         call legendre_b_trans_vector_org                                &
