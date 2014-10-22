@@ -2,20 +2,19 @@
 !!@brief  module legendre_fwd_trans_testloop
 !!
 !!@author H. Matsui
-!!@date Programmed in Aug., 2013
+!!@date Programmed in Aug., 2007
+!!@n    Modified in Apr. 2013
 !
-!>@brief  forward Legendre transform for testing
+!>@brief  forward Legendre transform
+!!       (Blocked loop version)
 !!
 !!@verbatim
-!!      subroutine alloc_vec_fleg_mat_test(nvector)
-!!      subroutine alloc_scl_fleg_mat_test(nscalar)
-!!      subroutine dealloc_vec_fleg_mat_test
-!!      subroutine dealloc_scl_fleg_mat_test
-!!
-!!      subroutine legendre_f_trans_vector_test(ncomp, nvector)
+!!      subroutine legendre_f_trans_vector_test(ncomp, nvector,         &
+!!     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
-!!      subroutine legendre_f_trans_scalar_test(ncomp, nvector, nscalar)
+!!      subroutine legendre_f_trans_scalar_test(ncomp, nvector, nscalar, &
+!!     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
 !!@endverbatim
@@ -28,43 +27,15 @@
       module legendre_fwd_trans_testloop
 !
       use m_precision
-      use m_constants
 !
       use m_machine_parameter
       use m_spheric_parameter
       use m_spheric_param_smp
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
-      use matmul_for_legendre_trans
+      use m_legendre_work_sym_matmul
 !
       implicit none
-!
-      integer(kind = kint), private :: num_jl
-      real(kind = kreal), allocatable, private :: Pvw_le(:,:)
-      real(kind = kreal), allocatable, private :: dPvw_le(:,:)
-      real(kind = kreal), allocatable, private :: Pgvw_le(:,:)
-!
-      real(kind = kreal), allocatable, private :: Pws_le(:,:)
-!
-      integer(kind = kint), private :: nvec_jk
-      real(kind = kreal), allocatable, private :: pol_e(:,:)
-      real(kind = kreal), allocatable, private :: dpl_e(:,:)
-      real(kind = kreal), allocatable, private :: tor_e(:,:)
-      real(kind = kreal), allocatable, private :: dpl_o(:,:)
-      real(kind = kreal), allocatable, private :: tor_o(:,:)
-!
-      integer(kind = kint), private :: nvec_lk
-      real(kind = kreal), allocatable, private :: symp_r(:,:)
-      real(kind = kreal), allocatable, private :: asmp_t(:,:)
-      real(kind = kreal), allocatable, private :: asmp_p(:,:)
-      real(kind = kreal), allocatable, private :: symn_t(:,:)
-      real(kind = kreal), allocatable, private :: symn_p(:,:)
-!
-      integer(kind = kint), private :: nscl_jk
-      real(kind = kreal), allocatable, private :: scl_e(:,:)
-!
-      integer(kind = kint), private :: nscl_lk
-      real(kind = kreal), allocatable, private :: symp(:,:)
 !
 ! -----------------------------------------------------------------------
 !
@@ -72,280 +43,117 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_vec_fleg_mat_test(nvector)
+      subroutine legendre_f_trans_vector_test(ncomp, nvector,             &
+     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
 !
-      integer(kind = kint), intent(in) ::nvector
-!
-!
-      num_jl = maxdegree_rlm * lmax_block_rtm
-      allocate(Pvw_le(num_jl,np_smp))
-      allocate(dPvw_le(num_jl,np_smp))
-      allocate(Pgvw_le(num_jl,np_smp))
-!
-      nvec_jk = lmax_block_rtm * maxidx_rlm_smp(1)*nvector
-      allocate(pol_e(nvec_jk,np_smp))
-      allocate(dpl_e(nvec_jk,np_smp))
-      allocate(tor_e(nvec_jk,np_smp))
-      allocate(dpl_o(nvec_jk,np_smp))
-      allocate(tor_o(nvec_jk,np_smp))
-!
-      nvec_lk = lmax_block_rtm * maxidx_rlm_smp(1)*nvector
-      allocate(symp_r(nvec_lk,np_smp))
-      allocate(symn_t(nvec_lk,np_smp))
-      allocate(symn_p(nvec_lk,np_smp))
-!
-      allocate(asmp_t(nvec_lk,np_smp))
-      allocate(asmp_p(nvec_lk,np_smp))
-!
-      end subroutine alloc_vec_fleg_mat_test
-!
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_scl_fleg_mat_test(nscalar)
-!
-      integer(kind = kint), intent(in) :: nscalar
-!
-!
-      num_jl = maxdegree_rlm * lmax_block_rtm
-      allocate(Pws_le(num_jl,np_smp))
-!
-      nscl_jk = lmax_block_rtm * maxidx_rlm_smp(1)*nscalar
-      allocate(scl_e(nscl_jk,np_smp))
-!
-      nscl_lk = lmax_block_rtm * maxidx_rlm_smp(1)*nscalar
-      allocate(symp(nscl_lk,np_smp))
-!
-      end subroutine alloc_scl_fleg_mat_test
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_vec_fleg_mat_test
-!
-!
-      deallocate(Pvw_le, dPvw_le, Pgvw_le)
-!
-      deallocate(pol_e, dpl_e, tor_e, dpl_o, tor_o)
-!
-      deallocate(symp_r, symn_t, symn_p)
-      deallocate(asmp_t, asmp_p)
-!
-      end subroutine dealloc_vec_fleg_mat_test
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_scl_fleg_mat_test
-!
-!
-      deallocate(Pws_le)
-      deallocate(scl_e)
-      deallocate(symp)
-!
-      end subroutine dealloc_scl_fleg_mat_test
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine legendre_f_trans_vector_test(ncomp, nvector,           &
-     &          vr_rtm_spin, sp_rlm_spin)
+      use set_vr_rtm_for_leg_vecprod
+      use cal_sp_rlm_by_vecprod
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
-      real(kind = kreal), intent(in)                                    &
-     &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(1)*ncomp,nidx_rtm(3))
-      real(kind = kreal), intent(inout)                                 &
-     &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
+      integer(kind = kint), intent(in) :: n_WR, n_WS
+      integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
+      integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
+      real (kind=kreal), intent(inout):: WR(n_WR)
+      real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: ip, nb_nri, kr_nd, kk, k_rlm
-      integer(kind = kint) :: l_rtm, ls_rtm, i_lk, i_jl, i_jk
-      integer(kind = kint) :: nd, ll, mp_rlm, mn_rlm, j_rlm, jj
-      integer(kind = kint) :: kst(np_smp), nkr(np_smp)
-      integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
-      real(kind = kreal) :: r2_1d_rlm_r
+      integer(kind = kint) :: i_rlm, k_rlm, j_rlm, i_send
+      integer(kind = kint) :: nd, ip, kst, ked, lp, lst, nth
+      real(kind = kreal) :: r1_1d_rlm_r, r2_1d_rlm_r, g7, gm
 !
 !
-      call alloc_vec_fleg_mat_test(nvector)
-!
-      nb_nri = nvector*nidx_rlm(1)
 !$omp parallel do schedule(static)                                      &
-!$omp             private(ip,kr_nd,ll,l_rtm,ls_rtm,jj,j_rlm,nd,         &
-!$omp&                    k_rlm,kk,mp_rlm,mn_rlm,i_lk,i_jl,i_jk)
+!$omp             private(ip,kst,ked,lp,lst,nth,j_rlm,k_rlm,nd,         &
+!$omp&                    i_rlm,r1_1d_rlm_r,r2_1d_rlm_r,i_send,g7,gm)
       do ip = 1, np_smp
-        kst(ip) = nvector*idx_rlm_smp_stack(ip-1,1)
-        nkr(ip) = nvector                                               &
-     &       * (idx_rtm_smp_stack(ip,  1) - idx_rtm_smp_stack(ip-1,1))
+        kst = idx_rlm_smp_stack(ip-1,1) + 1
+        ked = idx_rlm_smp_stack(ip,  1)
 !
-        do mp_rlm = 1, nidx_rtm(3)
-          mn_rlm = nidx_rtm(3) - mp_rlm + 1
-          jst(ip) = lstack_rlm(mp_rlm-1)
-          nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
-!    even l-m
-          do l_rtm = 1, nidx_rtm(2)
-            do jj = 1, nj_rlm(ip)
-              j_rlm = jj + jst(ip)
-              i_jl = jj + (l_rtm-1) * nj_rlm(ip)
-              Pvw_le(i_jl,ip) = P_rtm(l_rtm,j_rlm)                      &
-     &               * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
-              dPvw_le(i_jl,ip) = dPdt_rtm(l_rtm,j_rlm)                  &
-     &               * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
-              Pgvw_le(i_jl,ip) = P_rtm(l_rtm,j_rlm)                     &
-     &               * dble(idx_gl_1d_rlm_j(j_rlm,3))                   &
-     &                * asin_theta_1d_rtm(l_rtm)                        &
-     &                * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
+        do lp = 1, nblock_l_rtm
+          lst = lstack_block_rtm(lp-1) 
+          nth = lstack_block_rtm(lp  ) - lstack_block_rtm(lp-1)
+!
+          do k_rlm = kst, ked
+            r1_1d_rlm_r = radius_1d_rlm_r(k_rlm)
+            r2_1d_rlm_r = radius_1d_rlm_r(k_rlm)*radius_1d_rlm_r(k_rlm)
+!
+            do j_rlm = 1, nidx_rlm(2)
+              g7 = g_sph_rlm(j_rlm,7)
+              gm = dble(idx_gl_1d_rlm_j(j_rlm,3))
+!
+              do nd = 1, nvector
+                i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                    &
+     &                    + (k_rlm-1) * istep_rlm(1)
+                i_send = 3*nd-2 + (irev_sr_rlm(i_rlm) - 1) * ncomp
+!
+                call set_vr_rtm_vector_blocked(nd, k_rlm,               &
+     &              mdx_p_rlm_rtm(j_rlm), mdx_n_rlm_rtm(j_rlm),         &
+     &              asin_theta_1d_rtm(1+lst), lst, nth,                 &
+     &              ncomp, irev_sr_rtm, n_WR, WR,                       &
+     &              symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),           &
+     &              symn_t(1,ip), symn_p(1,ip))
+                call cal_vector_sp_rlm_dotprod                          &
+     &             (nth, g7, gm, r1_1d_rlm_r, r2_1d_rlm_r,              &
+     &              P_rtm(1+lst,j_rlm), dPdt_rtm(1+lst,j_rlm),          &
+     &              symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),           &
+     &              symn_t(1,ip), symn_p(1,ip), WS(i_send))
+              end do
             end do
           end do
-!
-          do kk = 1, nkr(ip)
-            kr_nd = kk + kst(ip)
-            do l_rtm = 1, nidx_rtm(2)
-              ls_rtm = nidx_rtm(2) - l_rtm + 1
-              i_lk = l_rtm + (kk-1) * nidx_rtm(2)
-!
-              symp_r(i_lk,ip)                                           &
-     &               =  vr_rtm_spin(l_rtm, kr_nd,         mp_rlm)
-!
-              asmp_t(i_lk,ip)                                           &
-     &               =  vr_rtm_spin(l_rtm, kr_nd+nb_nri,  mp_rlm)
-              asmp_p(i_lk,ip)                                           &
-     &               =  vr_rtm_spin(l_rtm, kr_nd+2*nb_nri,mp_rlm)
-!
-              symn_t(i_lk,ip)                                           &
-     &               =  vr_rtm_spin(l_rtm, kr_nd+nb_nri,  mn_rlm)
-              symn_p(i_lk,ip)                                           &
-     &               =  vr_rtm_spin(l_rtm, kr_nd+2*nb_nri,mn_rlm)
-            end do
-          end do
-!
-          call matmul_fwd_leg_trans(nj_rlm(ip), nkr(ip), nidx_rtm(2),   &
-     &        Pvw_le(1,ip), symp_r(1,ip), pol_e(1,ip))
-          call matmul_fwd_leg_trans(nj_rlm(ip), nkr(ip), nidx_rtm(2),   &
-     &        dPvw_le(1,ip), asmp_t(1,ip), dpl_o(1,ip))
-          call matmul_fwd_leg_trans(nj_rlm(ip), nkr(ip), nidx_rtm(2),   &
-     &        Pgvw_le(1,ip), symn_p(1,ip), dpl_e(1,ip))
-          call matmul_fwd_leg_trans(nj_rlm(ip), nkr(ip), nidx_rtm(2),   &
-     &        Pgvw_le(1,ip), symn_t(1,ip), tor_e(1,ip))
-          call matmul_fwd_leg_trans(nj_rlm(ip), nkr(ip), nidx_rtm(2),   &
-     &        dPvw_le(1,ip), asmp_p(1,ip), tor_o(1,ip))
-!
-          do kk = 1, nkr(ip)
-            kr_nd = kk + kst(ip)
-            k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-            do jj = 1, nj_rlm(ip)
-              j_rlm = jj + jst(ip)
-              i_jk = jj + (kk-1) * nj_rlm(ip)
-              sp_rlm_spin(j_rlm,kr_nd         )                         &
-     &               = sp_rlm_spin(j_rlm,kr_nd         )                &
-     &                + pol_e(i_jk,ip)
-              sp_rlm_spin(j_rlm,kr_nd+nb_nri  )                         &
-     &               = sp_rlm_spin(j_rlm,kr_nd+nb_nri  )                &
-     &                - dpl_e(i_jk,ip) + dpl_o(i_jk,ip)
-              sp_rlm_spin(j_rlm,kr_nd+2*nb_nri)                         &
-     &               = sp_rlm_spin(j_rlm,kr_nd+2*nb_nri)                &
-     &                - tor_e(i_jk,ip) - tor_o(i_jk,ip)
-            end do
-          end do
-!
         end do
       end do
 !$omp end parallel do
-!
-!$omp parallel do schedule(static)                                      &
-!$omp&            private(ip,kk,kr_nd,j_rlm,k_rlm,r2_1d_rlm_r)
-      do ip = 1, np_smp
-        kst(ip) = nvector*idx_rtm_smp_stack(ip-1,1)
-        nkr(ip) = nvector                                               &
-     &       * (idx_rtm_smp_stack(ip,  1) - idx_rtm_smp_stack(ip-1,1))
-        do kk = 1, nkr(ip)
-          kr_nd = kk + kst(ip)
-          k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
-          r2_1d_rlm_r = radius_1d_rlm_r(k_rlm) * radius_1d_rlm_r(k_rlm)
-          do j_rlm = 1, nidx_rlm(2)
-!
-            sp_rlm_spin(j_rlm,kr_nd         )                           &
-     &        = sp_rlm_spin(j_rlm,kr_nd         ) * r2_1d_rlm_r
-            sp_rlm_spin(j_rlm,kr_nd+nb_nri  )                           &
-     &        = sp_rlm_spin(j_rlm,kr_nd+nb_nri  )                       &
-     &         * radius_1d_rlm_r(k_rlm)
-            sp_rlm_spin(j_rlm,kr_nd+2*nb_nri)                           &
-     &        = sp_rlm_spin(j_rlm,kr_nd+2*nb_nri)                       &
-     &         * radius_1d_rlm_r(k_rlm)
-            end do
-        end do
-      end do
-!$omp end parallel do
-!
-      call dealloc_vec_fleg_mat_test
 !
       end subroutine legendre_f_trans_vector_test
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_f_trans_scalar_test(ncomp, nvector, nscalar,  &
-     &          vr_rtm_spin, sp_rlm_spin)
+      subroutine legendre_f_trans_scalar_test(ncomp, nvector, nscalar,    &
+     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+!
+      use set_vr_rtm_for_leg_vecprod
+      use cal_sp_rlm_by_vecprod
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      real(kind = kreal), intent(in)                                    &
-     &      :: vr_rtm_spin(nidx_rtm(2),nidx_rtm(1)*ncomp,nidx_rtm(3))
-      real(kind = kreal), intent(inout)                                 &
-     &      :: sp_rlm_spin(nidx_rlm(2),nidx_rtm(1)*ncomp)
+      integer(kind = kint), intent(in) :: n_WR, n_WS
+      integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
+      integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
+      real (kind=kreal), intent(inout):: WR(n_WR)
+      real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: ip, kr_nd, kk
-      integer(kind = kint) :: mp_rlm, j_rlm, jj
-      integer(kind = kint) :: ll, l_rtm, ls_rtm, i_lk, i_jl, i_jk
-      integer(kind = kint) :: kst(np_smp), nkr(np_smp)
-      integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
+      integer(kind = kint) :: i_rlm, k_rlm, j_rlm
+      integer(kind = kint) :: nd, ip, kst, ked, lp, lst, nth, i_send
 !
-!
-      call alloc_scl_fleg_mat_test(nscalar)
 !
 !$omp parallel do schedule(static)                                      &
-!$omp&            private(ip,kr_nd,kk,jj,j_rlm,mp_rlm,                  &
-!$omp&                    ll,l_rtm,ls_rtm,i_lk,i_jl,i_jk)
+!$omp&            private(ip,kst,ked,lp,lst,nth,j_rlm,k_rlm,nd,         &
+!$omp&                    i_rlm,i_send)
       do ip = 1, np_smp
-        kst(ip) = 3*nvector*nidx_rlm(1)                                 &
-     &           + nscalar*idx_rlm_smp_stack(ip-1,1)
-        nkr(ip) = nscalar                                               &
-     &       * (idx_rtm_smp_stack(ip,  1) - idx_rtm_smp_stack(ip-1,1))
-        do mp_rlm = 1, nidx_rtm(3)
-          jst(ip) = lstack_rlm(mp_rlm-1)
-          nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+        kst = idx_rlm_smp_stack(ip-1,1) + 1
+        ked = idx_rlm_smp_stack(ip,  1)
 !
-!    even l-m
-          do l_rtm = 1, nidx_rtm(2)
-            do jj = 1, nj_rlm(ip)
-              j_rlm = jj + jst(ip)
-              i_jl = jj + (l_rtm-1) * nj_rlm(ip)
-              Pws_le(i_jl,ip) = P_rtm(l_rtm,j_rlm)                      &
-     &                         * g_sph_rlm(j_rlm,6) * weight_rtm(l_rtm)
+        do lp = 1, nblock_l_rtm
+          lst = lstack_block_rtm(lp-1)
+          nth = lstack_block_rtm(lp  ) - lstack_block_rtm(lp-1)
+!
+          do k_rlm = kst, ked
+            do j_rlm = 1, nidx_rlm(2)
+              do nd = 1, nscalar
+                i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                    &
+     &                    + (k_rlm-1) * istep_rlm(1)
+                i_send = nd + 3*nvector                                 &
+     &                      + (irev_sr_rlm(i_rlm) - 1) * ncomp
+!
+                call set_vr_rtm_scalar_blocked                          &
+     &             (nd, k_rlm, mdx_p_rlm_rtm(j_rlm), lst, nth,          &
+     &              ncomp, nvector, irev_sr_rtm, n_WR, WR, symp(1,ip))
+                call cal_scalar_sp_rlm_dotprod(nth, g_sph_rlm(j_rlm,6), &
+     &             P_rtm(lst+1,j_rlm), symp(1,ip), WS(i_send))
+              end do
             end do
           end do
-!
-          do kk = 1, nkr(ip)
-            kr_nd = kk + kst(ip)
-            do l_rtm = 1, nidx_rtm(2)
-              ls_rtm = nidx_rtm(2) - l_rtm + 1
-              i_lk = l_rtm + (kk-1) * nidx_rtm(2)
-              symp(i_lk,ip) =  vr_rtm_spin(l_rtm, kr_nd,mp_rlm)
-            end do
-          end do
-!
-          call matmul_fwd_leg_trans(nj_rlm(ip), nkr(ip), nidx_rtm(2),   &
-     &        Pws_le(1,ip), symp(1,ip), scl_e(1,ip))
-!
-          do kk = 1, nkr(ip)
-              kr_nd = kk + kst(ip)
-            do jj = 1, nj_rlm(ip)
-              j_rlm = jj + jst(ip)
-              i_jk = jj + (kk-1) * nj_rlm(ip)
-              sp_rlm_spin(j_rlm,kr_nd)                                  &
-     &            = sp_rlm_spin(j_rlm,kr_nd) + scl_e(i_jk,ip)
-            end do
-          end do
-!
         end do
       end do
 !$omp end parallel do
-!
-!
-      call dealloc_scl_fleg_mat_test
 !
       end subroutine legendre_f_trans_scalar_test
 !
