@@ -422,6 +422,7 @@ module:
 	draw_mapgrid.o \
 	draw_coastline.o \
 	drawcube_gl.o \
+	draw_patches_4_PSF.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -522,6 +523,7 @@ module:
 	sort_by_patch_distance.h \
 	m_gl_transfer_matrix.o \
 	m_psf_data_4_viewer_c.o \
+	m_kemoviewer_menu.h.o \
 	m_surface_mesh_4_viewer_c.o \
 	kemosrc_param_c.o \
 	quicksort_c.o \

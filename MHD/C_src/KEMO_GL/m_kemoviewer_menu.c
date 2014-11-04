@@ -4,6 +4,20 @@
 
 #include "m_kemoviewer_menu.h"
 
+void alloc_psfs_sorting_list(struct kemo_array_control *psf_a){
+    psf_a->z_ele_viz =    (double *)calloc(psf_a->ntot_psf_patch,sizeof(double));
+    psf_a->ipsf_viz_far = (int *)calloc(psf_a->ntot_psf_patch,sizeof(int));
+    psf_a->iele_viz_far = (int *)calloc(psf_a->ntot_psf_patch,sizeof(int));
+    return;
+}
+
+void dealloc_psfs_sorting_list(struct kemo_array_control *psf_a){
+    free(psf_a->z_ele_viz);
+    free(psf_a->ipsf_viz_far);
+    free(psf_a->iele_viz_far);
+
+    return;
+}
 
 void alloc_draw_mesh_flags(struct viewer_mesh *mesh_s, 
 			struct mesh_menu_val *mesh_m){
@@ -190,6 +204,13 @@ void dealloc_draw_psf_texture(struct psf_menu_val *psf_m){
 
 void alloc_kemoview_array(struct kemo_array_control *psf_a){
 	psf_a->iflag_loaded = (int *) calloc(psf_a->nlimit_loaded,sizeof(int));
+    
+    psf_a->ntot_psf_patch = 0;
+    psf_a->istack_solid_psf_txtur = 0;
+    psf_a->istack_solid_psf_patch = 0;
+    psf_a->istack_trans_psf_txtur = 0;
+    psf_a->istack_trans_psf_patch = 0;
+    alloc_psfs_sorting_list(psf_a);
 	return;
 };
 void init_kemoview_array(int ntot_psf_data, struct kemo_array_control *psf_a){
@@ -201,6 +222,8 @@ void init_kemoview_array(int ntot_psf_data, struct kemo_array_control *psf_a){
 	return;
 };
 void dealloc_kemoview_array(struct kemo_array_control *psf_a){
+    dealloc_psfs_sorting_list(psf_a);
+    
 	free(psf_a->iflag_loaded);
 	return;
 };

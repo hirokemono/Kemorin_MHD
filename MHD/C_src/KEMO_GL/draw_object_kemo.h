@@ -21,18 +21,10 @@
 
 /* prototypes */
 
-void draw_objects_4_map(int shading_mode, struct psf_data *psf_s, 
-						struct psf_menu_val *psf_m, struct view_element *view_s, 
-						struct buffer_for_gl *gl_buf, int iflag_coast, int iflag_grid);
+int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
+                        struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                        struct view_element *view_s, struct buffer_for_gl *gl_buf);
 	
-void draw_solid_objects_4_psf(struct psf_data *psf_s, struct psf_menu_val *psf_m,
-							  struct buffer_for_gl *gl_buf, int iflag_retina,
-                              int iflag_write_ps);
-void draw_solid_patch_4_psf(int shading_mode, struct psf_data *psf_s,
-							struct psf_menu_val *psf_m, struct buffer_for_gl *gl_buf);
-void draw_transparent_objects_4_psf(int shading_mode, struct psf_data *psf_s, struct psf_menu_val *psf_m, 
-									struct view_element *view_s, struct buffer_for_gl *gl_buf);
-
 void draw_nodes_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
 						 struct buffer_for_gl *gl_buf);
 void draw_grids_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,

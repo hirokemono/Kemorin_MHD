@@ -156,6 +156,16 @@ struct kemo_array_control{
 	int id_current;
     int istep_sync;
 	int *iflag_loaded;
+    
+    int ntot_psf_patch;
+    int istack_solid_psf_txtur;
+    int istack_solid_psf_patch;
+    int istack_trans_psf_txtur;
+    int istack_trans_psf_patch;
+    
+    double *z_ele_viz;
+    int *ipsf_viz_far;
+    int *iele_viz_far;
 };
 
 struct psf_menu_val{
@@ -226,6 +236,10 @@ struct ucd_file_menu_val{
 };
 
 /* Prototypes */
+void alloc_psfs_sorting_list(struct kemo_array_control *psf_a);
+void dealloc_psfs_sorting_list(struct kemo_array_control *psf_a);
+
+
 void alloc_draw_mesh_flags(struct viewer_mesh *mesh_s,
 			struct mesh_menu_val *mesh_m);
 void dealloc_draw_mesh_flags(struct mesh_menu_val *mesh_m);

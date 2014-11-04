@@ -60,7 +60,7 @@ ifdef PNG_LIBS
    read_image_2_png.o
 endif
 
-ifdef FFTW3_LIBS
+ifdef FFTW3_C
   OBJ_KEMO_C += \
  fftw3_wrapper_kemo_c.o
 endif

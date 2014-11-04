@@ -10,18 +10,26 @@
 #include "set_color_code_on_nodes.h"
 
 static double white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
+static double gray[4] =   {0.2,0.2,0.2,0.5};
 static double black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 
-void set_color_code_for_psf(struct psf_data *psf_s, struct psf_menu_val *psf_m){
+static void set_color_code_for_psf(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	int inod, nd;
 	double d_patch;
 	
-	if (psf_m->psf_patch_color == WHITE_SURFACE) {
+	if (   psf_m->psf_patch_color == WHITE_SURFACE) {
 		for (inod=0; inod< psf_s->nnod_viz; inod++){
 			for(nd=0;nd<3;nd++){psf_s->color_nod[inod][nd] = white[nd];};
             set_opacity_from_value_s(psf_m->cmap_psf, d_patch, &psf_s->color_nod[inod][3]);
 		};
 	}
+
+    if (psf_m->psf_patch_color == TEXTURED_SURFACE) {
+        for (inod=0; inod< psf_s->nnod_viz; inod++){
+            for(nd=0;nd<3;nd++){psf_s->color_nod[inod][nd] = gray[nd];};
+            set_opacity_from_value_s(psf_m->cmap_psf, d_patch, &psf_s->color_nod[inod][3]);
+        };
+    }
 /*
 	else if (psf_m->psf_patch_color == BLACK_LINE) {
 		for (inod=0; inod< psf_s->nnod_viz; inod++){
@@ -53,6 +61,19 @@ void set_color_code_for_psf(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 */	
 	return;
 }
+
+void set_color_code_for_psfs(struct psf_data **psf_s, struct psf_menu_val **psf_m, 
+                             struct kemo_array_control *psf_a){
+    int i;
+    
+    for(i=0; i<psf_a->nmax_loaded; i++){
+        if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_solid){
+            set_color_code_for_psf(psf_s[i], psf_m[i]);
+        };
+    };
+    return;
+}
+
 
 void set_color_code_for_fieldlines(struct psf_data *fline_s,
 								   struct fline_menu_val *fline_m){

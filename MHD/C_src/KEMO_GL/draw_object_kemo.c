@@ -4,11 +4,15 @@
 #include "draw_object_kemo.h"
 
 
-void draw_objects_4_map(int shading_mode, struct psf_data *psf_s, 
-						struct psf_menu_val *psf_m, struct view_element *view_s, 
-						struct buffer_for_gl *gl_buf, int iflag_coast, int iflag_grid){ 
+int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
+                       struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                       struct view_element *view_s, struct buffer_for_gl *gl_buf){
+    int i;
+    int iflag_map = 0;
 	GLdouble xwin, ywin;
 	
+    set_color_code_for_psfs(psf_s, psf_m, psf_a);
+    
 	/* set shading mode */
 	glShadeModel(GL_SMOOTH);
 	glDisable(GL_CULL_FACE);
@@ -30,79 +34,29 @@ void draw_objects_4_map(int shading_mode, struct psf_data *psf_s,
 	glPushMatrix();
 	glLoadIdentity();
 	
+    for(i=0; i<psf_a->nmax_loaded; i++){
+        iflag_map = iflag_map + psf_a->iflag_loaded[i];
+        if(psf_a->iflag_loaded[i] != 0){
+            if(psf_m[i]->draw_psf_solid != 0){
+                copy_patch_distance_psf(psf_s[i]);
+                draw_patches_4_map(mesh_m->shading_mode, psf_s[i], psf_m[i], gl_buf);
+            }
+            if( (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero) != 0){
+                draw_map_PSF_isoline(psf_s[i], psf_m[i], gl_buf, view_s->iflag_retina,
+                                     view_s->iflag_write_ps);
+            };
+        };
+    };
 	
-	if(psf_m->draw_psf_solid != 0){
-		copy_patch_distance_psf(psf_s);
-        draw_patches_4_map(shading_mode, psf_s, psf_m, gl_buf);
-    }
-	if( (psf_m->draw_psf_grid+psf_m->draw_psf_zero) != 0){
-		draw_map_PSF_isoline(psf_s, psf_m, gl_buf, view_s->iflag_retina,
-                             view_s->iflag_write_ps);
-	};
 
-	if(iflag_coast != 0)   {draw_map_coast(gl_buf);}
-	if(iflag_grid != 0){draw_flame_4_map(gl_buf, view_s->iflag_write_ps);};
+	if(mesh_m->iflag_draw_coast != 0)   {draw_map_coast(gl_buf);}
+	if(mesh_m->iflag_draw_sph_grid != 0){draw_flame_4_map(gl_buf, view_s->iflag_write_ps);};
 	
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
-	return;
-}
-
-void draw_solid_objects_4_psf(struct psf_data *psf_s, struct psf_menu_val *psf_m,
-							  struct buffer_for_gl *gl_buf, int iflag_retina,
-                              int iflag_write_ps){
-
-	if(psf_m->draw_psf_vect  != 0) draw_arrow_4_PSF(psf_s, psf_m);
-	if( (psf_m->draw_psf_grid+psf_m->draw_psf_zero) != 0){
-		draw_PSF_isoline(psf_s, psf_m, gl_buf, iflag_retina, iflag_write_ps);
-	};
-	return;
-}
-
-void draw_solid_patch_4_psf(int shading_mode, struct psf_data *psf_s,
-							struct psf_menu_val *psf_m, struct buffer_for_gl *gl_buf){
-	
-	if(psf_m->draw_psf_solid != 0) {
-		copy_patch_distance_psf(psf_s);
-		
-		if (psf_m->psf_patch_color == TEXTURED_SURFACE){
-			draw_texure_4_PSF(shading_mode, psf_s, psf_m, gl_buf);
-		} else {
-			draw_patch_4_PSF(shading_mode, psf_s, psf_m, gl_buf);
-		};
-	};
-	
-	return;
-}
-
-void draw_transparent_objects_4_psf(int shading_mode, struct psf_data *psf_s, struct psf_menu_val *psf_m, 
-									struct view_element *view_s, struct buffer_for_gl *gl_buf){
-	
-	
-	if(psf_m->draw_psf_solid != 0) {
-		sort_by_patch_distance_psf(psf_s, view_s);
-		
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		glDepthMask(GL_FALSE);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
-		
-		if (psf_m->psf_patch_color == TEXTURED_SURFACE){
-			draw_texure_4_PSF(shading_mode, psf_s, psf_m, gl_buf);
-		} else {
-			draw_patch_4_PSF(shading_mode, psf_s, psf_m, gl_buf);
-		};
-		
-		glDisable(GL_BLEND);
-		glDepthMask(GL_TRUE);
-		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		glDisable(GL_MULTISAMPLE);
-	};
-	return;
+	return iflag_map;
 }
 
 void draw_nodes_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
