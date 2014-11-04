@@ -10,9 +10,7 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
     int i;
     int iflag_map = 0;
 	GLdouble xwin, ywin;
-	
-    set_color_code_for_psfs(psf_s, psf_m, psf_a);
-    
+	    
 	/* set shading mode */
 	glShadeModel(GL_SMOOTH);
 	glDisable(GL_CULL_FACE);
@@ -34,13 +32,12 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 	glPushMatrix();
 	glLoadIdentity();
 	
+    draw_patches_4_map(mesh_m->shading_mode, IZERO, psf_a->istack_solid_psf_patch,
+                       psf_s, psf_a, gl_buf);
+
     for(i=0; i<psf_a->nmax_loaded; i++){
         iflag_map = iflag_map + psf_a->iflag_loaded[i];
         if(psf_a->iflag_loaded[i] != 0){
-            if(psf_m[i]->draw_psf_solid != 0){
-                copy_patch_distance_psf(psf_s[i]);
-                draw_patches_4_map(mesh_m->shading_mode, psf_s[i], psf_m[i], gl_buf);
-            }
             if( (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero) != 0){
                 draw_map_PSF_isoline(psf_s[i], psf_m[i], gl_buf, view_s->iflag_retina,
                                      view_s->iflag_write_ps);

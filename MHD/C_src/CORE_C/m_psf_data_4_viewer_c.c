@@ -31,10 +31,6 @@ void alloc_viz_ele_s(struct psf_data *viz_s){
 	for (i = 0; i < viz_s->nele_viz; i++){
 		viz_s->x_ele_viz[i] = (double *)calloc(3,sizeof(double));
 	};
-	/* allocate memory  z_ele_viz[patch #]*/
-	viz_s->z_ele_viz = (double *)calloc(viz_s->nele_viz,sizeof(double));
-	/* allocate memory  iele_viz_far[patch #]*/
-	viz_s->iele_viz_far = (int *)calloc(viz_s->nele_viz,sizeof(int));
 	
 	return;
 };
@@ -206,9 +202,6 @@ void dealloc_psf_data_s(struct psf_data *viz_s){
 
 void dealloc_psf_mesh_c(struct psf_data *viz_s){
 	int i;
-	free(viz_s->iele_viz_far);
-	free(viz_s->z_ele_viz);
-	
 	for (i = 0; i < viz_s->nele_viz; i++) free(viz_s->x_ele_viz[i]);
 	free(viz_s->x_ele_viz);
 	

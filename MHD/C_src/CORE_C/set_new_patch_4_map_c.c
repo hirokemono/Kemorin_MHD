@@ -10,8 +10,6 @@ static const int ie_map_12_3[6] = {1, 4, 3,  4, 2, 3};
 static const int ie_map_23_1[6] = {4, 1, 2,  1, 4, 3};
 static const int ie_map_31_2[6] = {1, 2, 4,  4, 2, 3};
 
-static const int ie_map_org[3] = {1, 2, 3};
-
 
 void projection_patch_4_map(double *xyz_patch, double *xyz_map){
 	int i;

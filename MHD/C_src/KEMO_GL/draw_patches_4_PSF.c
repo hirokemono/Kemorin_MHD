@@ -104,23 +104,24 @@ static void set_psf_textures_to_buf(int ist_psf, int num_buf, struct psf_data **
 	return;
 }
 
-static void set_psf_nodes_to_map(int ist_ele, int num_buf,
-									struct psf_data *psf_s, struct buffer_for_gl *gl_buf){
-	int inum, iele, inod, k;
+static void set_psf_nodes_to_map(int ist_psf, int num_buf, struct psf_data **psf_s, 
+                                 struct kemo_array_control *psf_a, struct buffer_for_gl *gl_buf){
+	int inum, iele, inod, ipsf, k;
 	double xx_tri[9], xyz_map[9];
 	
-	for(inum=0; inum<num_buf; inum++){
-		iele = inum + ist_ele;
+    for(inum=0; inum<num_buf; inum++){
+        ipsf = psf_a->ipsf_viz_far[inum+ist_psf]-1;
+        iele = psf_a->iele_viz_far[inum+ist_psf]-1;
 		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s->ie_viz[iele][k] - 1;
-			xx_tri[3*k  ] = psf_s->xx_viz[inod][0];
-			xx_tri[3*k+1] = psf_s->xx_viz[inod][1];
-			xx_tri[3*k+2] = psf_s->xx_viz[inod][2];
+			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
+			xx_tri[3*k  ] = psf_s[ipsf]->xx_viz[inod][0];
+			xx_tri[3*k+1] = psf_s[ipsf]->xx_viz[inod][1];
+			xx_tri[3*k+2] = psf_s[ipsf]->xx_viz[inod][2];
 		};
 		projection_patch_4_map(xx_tri, xyz_map);
 		
 		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s->ie_viz[iele][k] - 1;
+			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
 			gl_buf->xy[ITHREE*inum+k][0] = xyz_map[ITHREE*k  ];
 			gl_buf->xy[ITHREE*inum+k][1] = xyz_map[ITHREE*k+1];
 		};
@@ -128,18 +129,19 @@ static void set_psf_nodes_to_map(int ist_ele, int num_buf,
 	return;
 }
 
-static void set_psf_colors_to_map(int ist_ele, int num_buf,
-                                  struct psf_data *psf_s, struct buffer_for_gl *gl_buf){
-    int inum, iele, inod, k;
+static void set_psf_colors_to_map(int ist_psf, int num_buf, struct psf_data **psf_s,
+                                  struct kemo_array_control *psf_a, struct buffer_for_gl *gl_buf){
+    int inum, iele, inod, ipsf, k;
     
     for(inum=0; inum<num_buf; inum++){
-        iele = psf_s->iele_viz_far[inum+ist_ele]-1;
+        ipsf = psf_a->ipsf_viz_far[inum+ist_psf]-1;
+        iele = psf_a->iele_viz_far[inum+ist_psf]-1;
         for (k = 0; k < ITHREE; k++) {
-            inod = psf_s->ie_viz[iele][k] - 1;
-            gl_buf->rgba[ITHREE*inum+k][0] = psf_s->color_nod[inod][0];
-            gl_buf->rgba[ITHREE*inum+k][1] = psf_s->color_nod[inod][1];
-            gl_buf->rgba[ITHREE*inum+k][2] = psf_s->color_nod[inod][2];
-            gl_buf->rgba[ITHREE*inum+k][3] = psf_s->color_nod[inod][3];
+            inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
+            gl_buf->rgba[ITHREE*inum+k][0] = psf_s[ipsf]->color_nod[inod][0];
+            gl_buf->rgba[ITHREE*inum+k][1] = psf_s[ipsf]->color_nod[inod][1];
+            gl_buf->rgba[ITHREE*inum+k][2] = psf_s[ipsf]->color_nod[inod][2];
+            gl_buf->rgba[ITHREE*inum+k][3] = psf_s[ipsf]->color_nod[inod][3];
         };
     };
     return;
@@ -190,8 +192,9 @@ void draw_patch_4_PSF(int shading_mode, int ist_psf, int ied_psf,
 	return;	
 }
 
-void draw_patches_4_map(int shading_mode, struct psf_data *psf_s,
-						struct psf_menu_val *psf_m, struct buffer_for_gl *gl_buf) {
+void draw_patches_4_map(int shading_mode, int ist_psf, int ied_psf,
+                        struct psf_data **psf_s, struct kemo_array_control *psf_a,
+						struct buffer_for_gl *gl_buf) {
 	int icou, num;
 		
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -205,13 +208,13 @@ void draw_patches_4_map(int shading_mode, struct psf_data *psf_s,
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	
-	icou = 0;
-	while(icou < psf_s->nele_viz){
-		if( (icou+NSIZE_GL_BUFFER) <= psf_s->nele_viz) {num = NSIZE_GL_BUFFER;}
-		else										   {num = psf_s->nele_viz-icou;};
+	icou = ist_psf;
+	while(icou < ied_psf){
+		if( (icou+NSIZE_GL_BUFFER) <= ied_psf) {num = NSIZE_GL_BUFFER;}
+		else								   {num = ied_psf-icou;};
 		
-		set_psf_nodes_to_map(icou, num, psf_s, gl_buf);
-		set_psf_colors_to_map(icou, num, psf_s, gl_buf);
+		set_psf_nodes_to_map(icou, num, psf_s, psf_a, gl_buf);
+		set_psf_colors_to_map(icou, num, psf_s, psf_a, gl_buf);
 		
 		glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num));
 		icou = icou + NSIZE_GL_BUFFER;
@@ -219,7 +222,6 @@ void draw_patches_4_map(int shading_mode, struct psf_data *psf_s,
 
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
-
 	return;	
 }
 

@@ -31,7 +31,6 @@ static void draw_solid_patch_4_psf(struct psf_data **psf_s, struct mesh_menu_val
                       psf_s, psf_m, psf_a, gl_buf);
     draw_patch_4_PSF(mesh_m->shading_mode, psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch, 
                      psf_s, psf_m, psf_a, gl_buf);
-   /* draw_texure_4_PSF(mesh_m->shading_mode, psf_s, psf_m, psf_a, gl_buf);*/
     return;
 }
 
@@ -92,6 +91,7 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	};
     
     if(mesh_m->iflag_view_type == VIEW_MAP) {
+        set_color_code_for_psfs(psf_s, psf_m, psf_a);
         iflag_psf = draw_objects_4_map(psf_s, mesh_m, psf_m, psf_a, view_s, gl_buf);
     } else {
         iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);

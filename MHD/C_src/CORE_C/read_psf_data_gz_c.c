@@ -74,18 +74,18 @@ static int read_gz_kemoview_connect_data(struct psf_data *viz_s){
 	}
 	
 	else if(viz_s->nnod_4_ele_viz == 2){
-		sscanf(buf, "%d %d %3s %d %d %d", &itmp, &itmp, celllabel,
+		sscanf(buf, "%d %d line %d %d %d", &itmp, &itmp,
 				&viz_s->ie_viz[0][0], &viz_s->ie_viz[0][1], &viz_s->ie_viz[0][2]);
 		
 		for (i = 1; i < viz_s->nele_viz; i++) {
 			get_one_line_from_gz(lbuf, num_word, nchara, buf);
-			sscanf(buf, "%d %d tri %d %d %d", &itmp, &itmp, 
+			sscanf(buf, "%d %d line %d %d %d", &itmp, &itmp, 
 					&viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1], &viz_s->ie_viz[i][2]);
 		};
 	}
 	
 	else if(viz_s->nnod_4_ele_viz == 4){
-		sscanf(buf, "%d %d %4s %d %d %d %d", &itmp, &itmp, celllabel,
+		sscanf(buf, "%d %d quad %d %d %d %d", &itmp, &itmp,
 			   &viz_s->ie_viz[0][0], &viz_s->ie_viz[0][1],
 			   &viz_s->ie_viz[0][2], &viz_s->ie_viz[0][3]);
 		

@@ -81,27 +81,6 @@ void sort_by_patch_distance_mesh(struct viewer_mesh *mesh_s, struct view_element
 }
 
 
-void copy_patch_distance_psf(struct psf_data *viz_s){
-	int i;
-	for(i=0; i < viz_s->nele_viz;i++) {viz_s->iele_viz_far[i] = i+1;};
-	return;
-}
-
-void sort_by_patch_distance_psf(struct psf_data *viz_s, struct view_element *view_s){
-	int i;
-	
-	
-	set_distance_in_model(view_s, viz_s->nele_viz, viz_s->x_ele_viz, viz_s->z_ele_viz);
-	
-	for(i=0; i < viz_s->nele_viz;i++) {
-		viz_s->iele_viz_far[i] =   i+1;
-		viz_s->z_ele_viz[i] = viz_s->z_ele_viz[i];
-	};
-	quicksort_double_c(viz_s->z_ele_viz, viz_s->iele_viz_far, IZERO, (viz_s->nele_viz-1));
-	
-	return;
-}
-
 int sort_by_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **psf_m, 
                                  struct kemo_array_control *psf_a, struct view_element *view_s){
     int i, iele, icou, ntot_tmp;
@@ -147,8 +126,6 @@ int sort_by_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **p
     icou_trans_psf = psf_a->istack_trans_psf_txtur;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_solid != 0){ 
-            set_distance_in_model(view_s, psf_s[i]->nele_viz, psf_s[i]->x_ele_viz, psf_s[i]->z_ele_viz);
-            
             if(psf_m[i]->cmap_psf->min_opacity >= 1.0){
                 if(psf_m[i]->psf_patch_color == TEXTURED_SURFACE){
                     icou = icou_solid_txt;
@@ -167,8 +144,9 @@ int sort_by_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **p
                 };
             };
             
+            set_distance_in_model(view_s, psf_s[i]->nele_viz, psf_s[i]->x_ele_viz, &psf_a->z_ele_viz[icou]);
+
             for(iele=0; iele < psf_s[i]->nele_viz;iele++) {
-                psf_a->z_ele_viz[icou] = psf_s[i]->z_ele_viz[iele];
                 psf_a->ipsf_viz_far[icou] = i+1;
                 psf_a->iele_viz_far[icou] = iele+1;
                 icou = icou+1;
