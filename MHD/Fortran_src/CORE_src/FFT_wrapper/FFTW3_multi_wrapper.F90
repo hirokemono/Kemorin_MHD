@@ -15,7 +15,7 @@
 !!   wrapper subroutine for initierize FFTW plans
 !! ------------------------------------------------------------------
 !!      subroutine destroy_FFTW_mul_smp                                 &
-!!     &         (Nsmp, plan_forward, plan_backward)
+!!     &         (Nsmp, plan_backward_smp, plan_backward)
 !!        CAUTION!!  dfftw_destroy_plan oftern makes SEGMENTAION FAULT!!
 !!
 !!
@@ -219,9 +219,11 @@
         ist = Nstacksmp(ip-1) + 1
         ied = Nstacksmp(ip)
 #ifdef FFTW3_C
-        call kemo_fftw_execute(plan_forward_smp(ip))
+        call kemo_fftw_execute_dft_r2c(plan_forward_smp(ip),             &
+     &        X_FFTW(1,ist), C_FFTW(1,ist))
 #else
-        call dfftw_execute(plan_forward_smp(ip))
+        call dfftw_execute_dft_r2c(plan_forward_smp(ip),                 &
+     &        X_FFTW(1,ist), C_FFTW(1,ist))
 #endif
       end do
 !$omp end parallel do
@@ -291,9 +293,11 @@
         ist = Nstacksmp(ip-1) + 1
         ied = Nstacksmp(ip)
 #ifdef FFTW3_C
-        call kemo_fftw_execute(plan_backward_smp(ip))
+        call kemo_fftw_execute_dft_c2r(plan_backward_smp(ip),           &
+     &        C_FFTW(1,ist), X_FFTW(1,ist))
 #else
-        call dfftw_execute(plan_backward_smp(ip))
+        call dfftw_execute_dft_c2r(plan_backward_smp(ip),               &
+     &        C_FFTW(1,ist), X_FFTW(1,ist))
 #endif
       end do
 !$omp end parallel do

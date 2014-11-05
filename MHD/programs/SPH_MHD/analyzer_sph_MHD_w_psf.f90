@@ -1,5 +1,5 @@
-!>@file   analyzer_full_sph_MHD.f90
-!!@brief  module analyzer_full_sph_MHD
+!>@file   analyzer_sph_MHD_w_psf.f90
+!!@brief  module analyzer_sph_MHD_w_psf
 !!
 !!@author H. Matsui
 !!@date   Programmed  H. Matsui in Apr., 2010
@@ -7,11 +7,11 @@
 !>@brief  Main loop for MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine initialize_full_sph_mhd
-!!      subroutine evolution_full_sph_mhd
+!!      subroutine initialize_sph_mhd_w_psf
+!!      subroutine evolution_sph_mhd_w_psf
 !!@endverbatim
 !
-      module analyzer_full_sph_MHD
+      module analyzer_sph_MHD_w_psf
 !
       use m_precision
       use calypso_mpi
@@ -35,11 +35,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialize_full_sph_mhd
+      subroutine initialize_sph_mhd_w_psf
 !
       use set_control_sph_mhd
       use set_control_SPH_to_FEM
-      use m_ctl_data_sph_MHD
+      use m_ctl_data_sph_MHD_psf
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -50,8 +50,8 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD'
-      call read_control_4_sph_MHD
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_w_psf'
+      call read_control_4_sph_MHD_w_psf
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
       call set_control_4_sph_mhd
@@ -82,11 +82,11 @@
 !
       call end_eleps_time(2)
 !
-      end subroutine initialize_full_sph_mhd
+      end subroutine initialize_sph_mhd_w_psf
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine evolution_full_sph_mhd
+      subroutine evolution_sph_mhd_w_psf
 !
       integer(kind = kint) :: visval, iflag_finish
       integer(kind = kint) :: istep_psf, istep_iso
@@ -161,8 +161,8 @@
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
-      end subroutine evolution_full_sph_mhd
+      end subroutine evolution_sph_mhd_w_psf
 !
 ! ----------------------------------------------------------------------
 !
-      end module analyzer_full_sph_MHD
+      end module analyzer_sph_MHD_w_psf

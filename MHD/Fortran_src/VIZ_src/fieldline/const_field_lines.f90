@@ -100,6 +100,7 @@
      &        color_nod_fline(1,i_fln), isf_fline_start(1,i),           &
      &        xx_fline_start(1,i), v_fline_start(1,i),                  &
      &         c_fline_start(i), icount_fline(i), iflag_comm)
+          write(50+my_rank,*) 'extension end for ', i, iflag_comm
 !
           call set_fline_start_2_bcast(iflag_comm, i,                   &
      &          numnod, numele,  globalnodid, globalelmid,              &
@@ -123,7 +124,8 @@
         if(iflag_debug .gt. 0) then
           ist = istack_all_fline(0,i_fln) + 1
           ied = istack_all_fline(nprocs,i_fln)
-          write(my_rank+50,*) 'i, new_start_pe, new_start_cont'
+          write(my_rank+50,*)                                           &
+     &        'i, new_start_pe, iflag_fline, new_start_cont'
           do i = ist, ied
             write(my_rank+50,'(10i8)') i, id_fline_export(1:3,i)
           end do
@@ -136,11 +138,11 @@
      &          id_neib, istack_export, item_export)
         call set_fline_start_from_neib(i_fln)
 !
-        if(i_debug .gt. iflag_full_msg) then
+        nline = istack_all_fline(nprocs,i_fln)                          &
+     &         - istack_all_fline(0,i_fln)
+        if(i_debug .gt. 0) then
           write(my_rank+50,*) 'istack_all_fline',                       &
      &                       istack_all_fline(:,i_fln)
-          nline = istack_all_fline(nprocs,i_fln)                        &
-     &         - istack_all_fline(0,i_fln)
 !
           write(my_rank+50,*) 'number of lines: ', nline
           write(*,*) 'number of lines: ', my_rank, nline

@@ -222,6 +222,9 @@
      &   .or. id_legendre_transfer .eq. iflag_leg_krloop_outer) then
         call alloc_leg_vec_blocked
         call alloc_leg_scl_blocked
+      else if(id_legendre_transfer .eq. iflag_leg_test_loop) then
+        call alloc_leg_vec_blocked
+        call alloc_leg_scl_blocked
       else
         call allocate_work_sph_trans(ncomp)
       end if
@@ -251,6 +254,9 @@
         call dealloc_leg_scl_symmetry
       else if(id_legendre_transfer .eq. iflag_leg_blocked               &
      &   .or. id_legendre_transfer .eq. iflag_leg_krloop_outer) then
+        call dealloc_leg_vec_blocked
+        call dealloc_leg_scl_blocked
+      else if(id_legendre_transfer .eq. iflag_leg_test_loop) then
         call dealloc_leg_vec_blocked
         call dealloc_leg_scl_blocked
       else

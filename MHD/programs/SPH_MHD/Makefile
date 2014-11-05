@@ -4,8 +4,9 @@
 
 SPH_MHD_MAINDIR =   $$(PROG_DIR)/SPH_MHD
 
-TARGET_SPH_MHD_FULL =      sph_mhd
-TARGET_SPH_MHD =        sph_mhd_noviz
+TARGET_SPH_MHD =        sph_mhd
+TARGET_SPH_MHD_PSF =    sph_mhd_psf
+TARGET_SPH_MHD_NOVIZ =  sph_mhd_noviz
 TARGET_SPH_MHD_MINI =   sph_mhd_nosnap
 
 TARGET_SPH_LICV =       sph_licv
@@ -37,15 +38,20 @@ endif
 
 SOURCES = $(shell ls *.f90)
 
-MOD_SPH_MHD_FULL_MAIN =  \
-main_full_sph_MHD.o \
-analyzer_full_sph_MHD.o \
-SPH_analyzer_MHD.o
-
-
 MOD_SPH_MHD_MAIN =  \
 main_sph_MHD.o \
 analyzer_sph_MHD.o \
+SPH_analyzer_MHD.o
+
+MOD_SPH_MHD_PSF_MAIN =  \
+main_sph_MHD_w_psf.o \
+analyzer_sph_MHD_w_psf.o \
+SPH_analyzer_MHD.o
+
+
+MOD_SPH_MHD_NOVIZ_MAIN =  \
+main_sph_MHD_noviz.o \
+analyzer_sph_MHD_noviz.o \
 SPH_analyzer_MHD.o
 
 MOD_SPH_MINI_MHD_MAIN =  \
@@ -67,28 +73,36 @@ dir_list:
 	@echo 'SPH_MHD_MAINDIR = $(SPH_MHD_MAINDIR)' >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_SPH_MHD_FULL =   $$(BUILDDIR)/$(TARGET_SPH_MHD_FULL)'  >> $(MAKENAME)
+	@echo 'TARGET_SPH_MHD =        $$(BUILDDIR)/$(TARGET_SPH_MHD)'  >> $(MAKENAME)
+	@echo 'TARGET_SPH_MHD_PSF =    $$(BUILDDIR)/$(TARGET_SPH_MHD_PSF)'  >> $(MAKENAME)
 	@echo 'TARGET_SPH_LICV =       $$(BUILDDIR)/$(TARGET_SPH_LICV)'      >> $(MAKENAME)
 	@echo 'TARGET_SPH_MHD_MINI =   $$(BUILDDIR)/$(TARGET_SPH_MHD_MINI)'  >> $(MAKENAME)
-	@echo 'TARGET_SPH_MHD =        $$(BUILDDIR)/$(TARGET_SPH_MHD)'       >> $(MAKENAME)
+	@echo 'TARGET_SPH_MHD_NOVIZ =  $$(BUILDDIR)/$(TARGET_SPH_MHD_NOVIZ)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo sph_mhd: \
-	 '$$(TARGET_SPH_MHD_FULL)'   \
 	 '$$(TARGET_SPH_LICV)'       \
 	 '$$(TARGET_SPH_MHD)'        \
+	 '$$(TARGET_SPH_MHD_PSF)'    \
+	 '$$(TARGET_SPH_MHD_NOVIZ)'  \
 	 '$$(TARGET_SPH_MHD_MINI)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_SPH_MHD_FULL): $$(MOD_SPH_MHD_FULL_MAIN) $$(LIB_FILES_SPH_MHD)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_MHD_FULL)' '$$(MOD_SPH_MHD_FULL_MAIN)' \
-	'-L. $$(LIBS_SPH_MHD)  $$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	
 	@echo '$$(TARGET_SPH_MHD): $$(MOD_SPH_MHD_MAIN) $$(LIB_FILES_SPH_MHD)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_MHD)' '$$(MOD_SPH_MHD_MAIN)' \
+	'-L. $$(LIBS_SPH_MHD)  $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	
+	@echo '$$(TARGET_SPH_MHD_PSF): $$(MOD_SPH_MHD_PSF_MAIN) $$(LIB_FILES_SPH_MHD)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_MHD_PSF)' '$$(MOD_SPH_MHD_PSF_MAIN)' \
+	'-L. $$(LIBS_SPH_MHD)  $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	
+	@echo '$$(TARGET_SPH_MHD_NOVIZ): $$(MOD_SPH_MHD_NOVIZ_MAIN) $$(LIB_FILES_SPH_MHD)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_MHD_NOVIZ)' '$$(MOD_SPH_MHD_NOVIZ_MAIN)' \
 	'-L. $$(LIBS_SPH_MHD)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
@@ -115,10 +129,12 @@ lib_name:
 
 
 mod_list:
-	@echo  MOD_SPH_MHD_FULL_MAIN=  \\ >> $(MAKENAME)
-	@echo  $(MOD_SPH_MHD_FULL_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_MHD_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_MHD_MAIN) >> $(MAKENAME)
+	@echo  MOD_SPH_MHD_PSF_MAIN=  \\ >> $(MAKENAME)
+	@echo  $(MOD_SPH_MHD_PSF_MAIN) >> $(MAKENAME)
+	@echo  MOD_SPH_MHD_NOVIZ_MAIN=  \\ >> $(MAKENAME)
+	@echo  $(MOD_SPH_MHD_NOVIZ_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_LICV_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_LICV_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_MINI_MHD_MAIN=  \\ >> $(MAKENAME)

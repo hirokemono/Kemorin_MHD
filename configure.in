@@ -53,16 +53,22 @@ AC_CONFIG_SRCDIR([MHD/programs/SPH_MHD/main_sph_MHD.f90])
 
 AC_ARG_ENABLE(cocoa,
 	[  --enable-cocoa          Use Cocoa framework],[USE_Cocoa='yes'],[USE_Cocoa='no'])
+
 AC_ARG_ENABLE(fftw3,
 	[  --enable-fftw3          Use fftw3 library],[USE_fftw3='yes'],[USE_fftw3='no'])
+
 AC_ARG_ENABLE(libpng,
 	[  --enable-libpng         Use libpng library],[USE_libpng='yes'],[USE_libpng='no'])
+
 AC_ARG_ENABLE(gl,
 	[  --enable-gl             Use OpenGL for viewer],[USE_gl='yes'],[USE_gl='no'])
+
 AC_ARG_ENABLE(glui,
 	[  --enable-glui           Use glui GUI framework],[USE_glui='yes'],[USE_glui='no'])
+
 AC_ARG_ENABLE(gtk,
 	[  --enable-gtk            Use gtk+ GUI framework],[USE_gtk='yes'],[USE_gtk='no'])
+
 
 AC_MSG_RESULT(enable-cocoa... "${USE_Cocoa}")
 AC_MSG_RESULT(enable-OpenGL.. "${USE_gl}")

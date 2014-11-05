@@ -38,7 +38,7 @@
 !
       use set_control_sph_mhd
       use set_control_SPH_to_FEM
-      use m_ctl_data_sph_MHD
+      use m_ctl_data_sph_MHD_psf
       use init_sph_MHD_elapsed_label
       use SPH_analyzer_snap
 !
@@ -51,8 +51,8 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap'
-      call read_control_4_sph_snap
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap_w_psf'
+      call read_control_4_sph_snap_w_psf
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
       call set_control_4_sph_mhd
       call set_control_4_SPH_to_FEM

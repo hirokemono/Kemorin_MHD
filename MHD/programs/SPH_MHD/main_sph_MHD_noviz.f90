@@ -14,16 +14,16 @@
       use m_precision
 !
       use calypso_mpi
-      use analyzer_sph_MHD
+      use analyzer_sph_MHD_noviz
 !
       implicit none
 !
 !
       call calypso_MPI_init
 !
-      call initialize_sph_MHD
+      call initialize_sph_MHD_noviz
 !
-      call evolution_sph_MHD
+      call evolution_sph_MHD_noviz
 !
       call calypso_MPI_finalize
 !

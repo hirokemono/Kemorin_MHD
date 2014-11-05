@@ -5,11 +5,10 @@
 !!@date   Programmed  H. Matsui in Apr., 2010
 !
 !>@brief  Main loop for MHD dynamo simulation
-!!        without cross sectioning routines
 !!
 !!@verbatim
-!!      subroutine initialize_sph_MHD
-!!      subroutine evolution_sph_MHD
+!!      subroutine initialize_sph_mhd
+!!      subroutine evolution_sph_mhd
 !!@endverbatim
 !
       module analyzer_sph_MHD
@@ -23,8 +22,9 @@
       use m_t_int_parameter
       use m_t_step_parameter
 !
-      use FEM_analyzer_sph_MHD
       use SPH_analyzer_MHD
+      use visualizer_all
+      use init_sph_MHD_elapsed_label
 !
       implicit none
 !
@@ -34,12 +34,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialize_sph_MHD
+      subroutine initialize_sph_mhd
 !
       use set_control_sph_mhd
       use set_control_SPH_to_FEM
-      use m_ctl_data_noviz_MHD
-      use init_sph_MHD_elapsed_label
+      use m_ctl_data_sph_MHD
+      use FEM_analyzer_sph_MHD_w_viz
+!
+      integer(kind = kint) :: ierr
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -50,8 +52,13 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_MHD_noviz'
-      call read_control_4_MHD_noviz
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD'
+      call read_control_4_sph_MHD(ierr)
+      if(ierr .gt. 0) then
+        write(e_message,*) 'Error in reading control for PVR'
+        call calypso_MPI_abort(ierr, e_message)
+      end if
+!
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
       call set_control_4_sph_mhd
       call set_control_4_SPH_to_FEM
@@ -64,22 +71,34 @@
 !
 !        Initialize FEM mesh data for field data IO
 !
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize'
-      call FEM_initialize
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
+      call FEM_initialize_w_viz
 !
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
       call SPH_initialize_MHD
+!
+!        Initialize visualization
+!
+      if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
+      call init_visualize(ierr)
+      if(ierr .gt. 0) then
+        write(e_message,*) 'Error in PVR initialization'
+        call calypso_MPI_abort(ierr, e_message)
+      end if
+!
       call calypso_MPI_barrier
 !
       call end_eleps_time(2)
 !
-      end subroutine initialize_sph_MHD
+      end subroutine initialize_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine evolution_sph_MHD
+      subroutine evolution_sph_mhd
+!
+      use FEM_analyzer_sph_MHD
 !
       integer(kind = kint) :: visval, iflag_finish
       integer(kind = kint) :: istep_psf, istep_iso
@@ -119,6 +138,16 @@
 !
         call end_eleps_time(4)
 !
+!*  ----------- Visualization --------------
+!*
+        if(visval .eq. 0) then
+          if (iflag_debug.eq.1) write(*,*) 'visualize_all', my_rank
+          call start_eleps_time(12)
+          call visualize_all(istep_psf, istep_iso, istep_pvr,           &
+     &        istep_fline)
+          call end_eleps_time(12)
+        end if
+!
 !*  -----------  exit loop --------------
 !*
         if(iflag_finish .gt. 0) exit
@@ -137,12 +166,15 @@
       call copy_COMM_TIME_to_eleps(num_elapsed)
       call end_eleps_time(1)
 !
+      if (iflag_debug.eq.1) write(*,*) 'write_resolution_data'
+      call write_resolution_data
+      if (iflag_debug.eq.1) write(*,*) 'output_elapsed_times '
       call output_elapsed_times
 !
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
-      end subroutine evolution_sph_MHD
+      end subroutine evolution_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !

@@ -45,7 +45,7 @@
 !!      subroutine set_band_mt_2_mat(n, np, nband, band_a, a)
 !!      subroutine set_mt_2_band_mat(n, np, nband, a, band_a)
 !!
-!!      Data formt of band matrix
+!!      Example: data format of 3-band matrix
 !!
 !!               | a(2,1)  a(1,2)  ........     0         0     |
 !!               | a(3,1)  a(2,2)  ........     .         .     |

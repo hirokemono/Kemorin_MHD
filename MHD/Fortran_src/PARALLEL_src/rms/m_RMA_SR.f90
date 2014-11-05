@@ -34,7 +34,7 @@
 ! \beginARG       work array for communication (receive)
       integer(kind=kint ), allocatable:: iWS(:)
 ! \beginARG       work array for communication (receive)
-      integer(kind=kint ), allocatable:: iWRecieve(send)
+      integer(kind=kint ), allocatable:: iWRecieve(:)
 ! \beginARG       work array for communication (receive)
 !
       integer, save :: win, iwin
@@ -130,7 +130,7 @@
 !        imported node count for each neighbor pe (i-th pe)
 !
 !
-      allocate (WRecieve(STACK_IMPORT(NEIBPETOT)))
+      allocate (WRecieve(NB*STACK_IMPORT(NEIBPETOT)))
       size_window = NB*STACK_IMPORT(NEIBPETOT) * kreal
 !
       call MPI_WIN_CREATE(WRecieve, size_window, kreal,                 &

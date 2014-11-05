@@ -239,9 +239,11 @@
 !
 !        call cpu_time(dummy(2))
 #ifdef FFTW3_C
-          call kemo_fftw_execute(plan_fowd_mul(ip))
+          call kemo_fftw_execute_dft_r2c(plan_fowd_mul(ip),             &
+     &        X_FFTW_mul(1,ist), C_FFTW_mul(1,ist))
 #else
-          call dfftw_execute(plan_fowd_mul(ip))
+          call dfftw_execute_dft_r2c(plan_fowd_mul(ip),                 &
+     &        X_FFTW_mul(1,ist), C_FFTW_mul(1,ist))
 #endif
 !
 !      call cpu_time(rtmp(2))
@@ -320,9 +322,11 @@
 !
 !        call cpu_time(dummy(2))
 #ifdef FFTW3_C
-          call kemo_fftw_execute(plan_back_mul(ip))
+          call kemo_fftw_execute_dft_c2r(plan_back_mul(ip),             &
+     &        C_FFTW_mul(1,ist), X_FFTW_mul(1,ist))
 #else
-          call dfftw_execute(plan_back_mul(ip))
+          call dfftw_execute_dft_c2r(plan_back_mul(ip),                 &
+     &        C_FFTW_mul(1,ist), X_FFTW_mul(1,ist))
 #endif
 !        call cpu_time(rtmp(2))
 !

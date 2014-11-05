@@ -37,7 +37,7 @@
       subroutine initialize_sph_mhd_only
 !
       use set_control_sph_mhd
-      use m_ctl_data_noviz_MHD
+      use m_ctl_data_sph_MHD_psf
       use init_sph_MHD_elapsed_label
 !
 !
@@ -49,8 +49,8 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_MHD_noviz'
-      call read_control_4_MHD_noviz
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_noviz'
+      call read_control_4_sph_MHD_noviz
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
       call set_control_4_sph_mhd
 !

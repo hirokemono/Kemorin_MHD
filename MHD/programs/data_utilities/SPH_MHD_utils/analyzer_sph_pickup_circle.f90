@@ -35,7 +35,7 @@
 !
       subroutine initialize_sph_pick_circle
 !
-      use m_ctl_data_noviz_MHD
+      use m_ctl_data_sph_MHD_psf
       use set_control_sph_mhd
       use set_control_sph_data_MHD
       use init_sph_MHD_elapsed_label
@@ -49,8 +49,8 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_snap_noviz'
-      call read_control_4_snap_noviz
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap_noviz'
+      call read_control_4_sph_snap_noviz
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
       call set_control_4_sph_mhd
       call set_ctl_params_pick_circle

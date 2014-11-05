@@ -6,7 +6,6 @@
 !     Modified by H. Matsui on July, 2006
 !
 !      subroutine set_connect_RHS_assemble
-!      subroutine set_connect_for_fieldline
 !
       module const_RHS_assemble_list
 !
@@ -37,17 +36,6 @@
       call sort_node_index
 !
       end subroutine set_connect_RHS_assemble
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_connect_for_fieldline
-!
-!
-!      Search surrounding node and element
-!
-      call set_ele_id_4_node
-!
-      end subroutine set_connect_for_fieldline
 !
 !-----------------------------------------------------------------------
 !

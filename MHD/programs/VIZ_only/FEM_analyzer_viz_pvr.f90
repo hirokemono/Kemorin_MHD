@@ -38,7 +38,7 @@
       use const_mesh_info
       use load_mesh_data
       use set_parallel_file_name
-      use const_RHS_assemble_list
+      use set_element_id_4_node
 !
       use cal_jacobian
       use int_volume_of_domain
@@ -62,8 +62,8 @@
 !
 !     --------------------- init for PVR
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_connect_for_fieldline'
-      call set_connect_for_fieldline
+      if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
+      call set_ele_id_4_node
 !
       call set_max_int_point_by_etype
       if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'

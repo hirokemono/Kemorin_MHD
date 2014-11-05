@@ -14,7 +14,7 @@
 !!@n*         Normalization...
 !!@n*           P_{l}^{0} = P_{l,0}
 !!@n*           P_{l}^{m} = sqrt( 2(l-m)! / (l+m)! ) * P_{l,m}
-!!@n*        dth      :  input degree theta ( 0 =< dth <= pi )
+!!@n*        dth      :  input colatitude ( 0 =< dth <= pi )
 !!@n*
 !!@n*        df(m,l)  :   work area
 !!@n*

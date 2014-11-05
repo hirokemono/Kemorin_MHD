@@ -82,6 +82,8 @@
       call deallocate_surface_geometry
       call deallocate_edge_geometry
 !
+!  -------------------------------
+!
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(isix, numnod)
 !
@@ -99,7 +101,6 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
       call output_grd_file_4_snapshot
-!
 !
       end subroutine FEM_initialize
 !

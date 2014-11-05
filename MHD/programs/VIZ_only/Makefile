@@ -32,8 +32,7 @@ MOD_VIZ_PLUG =  \
 main_visualization.o  \
 analyzer_viz.o \
 FEM_analyzer_viz.o \
-m_control_data_vizs.o  \
-visualizer_all.o
+m_control_data_vizs.o
 
 MOD_PSF_PLUG = \
 main_surface_rendering.o \
@@ -45,8 +44,7 @@ MOD_PVR_PLUG =  \
 main_visualization.o  \
 analyzer_viz.o \
 FEM_analyzer_viz_pvr.o \
-m_control_data_vizs.o  \
-visualizer_all.o
+m_control_data_vizs.o
 
 MOD_FLINE_PLUG = \
 main_fieldline.o \

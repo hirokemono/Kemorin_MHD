@@ -36,7 +36,7 @@
       use load_mesh_data
       use const_mesh_info
       use cal_jacobian
-      use const_RHS_assemble_list
+      use set_element_id_4_node
       use int_volume_of_domain
       use set_normal_vectors
       use set_surf_grp_vectors
@@ -64,8 +64,8 @@
 !     --------------------- init for fieldline and PVR
 !
       if( (i_step_output_fline+i_step_output_pvr) .gt. 0) then
-        if (iflag_debug.gt.0) write(*,*) 'set_connect_for_fieldline'
-        call set_connect_for_fieldline
+        if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
+        call set_ele_id_4_node
 !
         call set_max_int_point_by_etype
         if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'

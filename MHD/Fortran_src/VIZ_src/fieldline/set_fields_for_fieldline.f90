@@ -253,7 +253,7 @@
         inum = ist_grp
 !
 !
-!        write(my_rank+50,*)  'random_seed', nRand, num_line_local(i_fln)
+        write(my_rank+50,*)  'random_seed', nRand, num_line_local(i_fln)
         call random_seed(size = nRand)
 !
         num = num_line_local(i_fln)
@@ -263,8 +263,11 @@
         allocate(rnd_flux(num))
 !
         if(num .gt. 0) then
+          write(*,*)  'system_clock'
           call system_clock(count = clock)
+          write(*,*)  'random_seed'
           call random_seed(put = seed)
+           write(*,*)  'random_number'
           call random_number(r_rnd) 
           do i = 1, num_line_local(i_fln)
             rnd_flux(i) = r_rnd(i) * abs_flux_start_l

@@ -1,5 +1,5 @@
-!>@file   analyzer_sph_snap.f90
-!!@brief  module analyzer_sph_snap
+!>@file   analyzer_sph_snap_w_psf.f90
+!!@brief  module analyzer_sph_snap_w_psf
 !!
 !!@author H. Matsui
 !!@date   Programmed  H. Matsui in Apr., 2010
@@ -7,11 +7,11 @@
 !>@brief  Main loop to evaluate snapshots from spectr data
 !!
 !!@verbatim
-!!      subroutine initialize_sph_snap
-!!      subroutine evolution_sph_snap
+!!      subroutine initialize_sph_snap_w_psf
+!!      subroutine evolution_sph_snap_w_psf
 !!@endverbatim
 !
-      module analyzer_sph_snap
+      module analyzer_sph_snap_w_psf
 !
       use m_precision
       use calypso_mpi
@@ -22,8 +22,9 @@
       use m_t_int_parameter
       use m_t_step_parameter
 !
+      use FEM_analyzer_sph_MHD
       use SPH_analyzer_snap
-      use visualizer_all
+      use sections_for_1st
 !
       implicit none
 !
@@ -33,15 +34,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialize_sph_snap
+      subroutine initialize_sph_snap_w_psf
 !
       use set_control_sph_mhd
       use set_control_SPH_to_FEM
-      use m_ctl_data_sph_MHD
+      use m_ctl_data_sph_MHD_psf
       use init_sph_MHD_elapsed_label
-      use FEM_analyzer_sph_MHD_w_viz
-!
-      integer(kind = kint) :: ierr
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -52,13 +50,8 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap'
-      call read_control_4_sph_snap(ierr)
-      if(ierr .gt. 0) then
-        write(e_message,*) 'Error in reading control for PVR'
-        call calypso_MPI_abort(ierr, e_message)
-      end if
-!
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap_noviz'
+      call read_control_4_sph_snap_noviz
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
       call set_control_4_sph_mhd
       call set_control_4_SPH_to_FEM
@@ -71,8 +64,8 @@
 !
 !     --------------------- 
 !
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
-      call FEM_initialize_w_viz
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize'
+      call FEM_initialize
 !
 !        Initialize spherical transform dynamo
 !
@@ -81,23 +74,17 @@
 !
 !        Initialize visualization
 !
-      if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize(ierr)
-      if(ierr .gt. 0) then
-        write(e_message,*) 'Error in PVR initialization'
-        call calypso_MPI_abort(ierr, e_message)
-      end if
+      if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
+      call init_visualize_surface
 !
       call calypso_MPI_barrier
       call end_eleps_time(2)
 !
-      end subroutine initialize_sph_snap
+      end subroutine initialize_sph_snap_w_psf
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine evolution_sph_snap
-!
-      use FEM_analyzer_sph_MHD
+      subroutine evolution_sph_snap_w_psf
 !
       integer(kind = kint) :: visval
       integer(kind = kint) :: istep_psf, istep_iso
@@ -142,8 +129,7 @@
         if(visval .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
           call start_eleps_time(12)
-          call visualize_all(istep_psf, istep_iso, istep_pvr,           &
-     &        istep_fline)
+          call visualize_surface(istep_psf, istep_iso)
           call end_eleps_time(12)
         end if
         call end_eleps_time(1)
@@ -171,8 +157,8 @@
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
-      end subroutine evolution_sph_snap
+      end subroutine evolution_sph_snap_w_psf
 !
 ! ----------------------------------------------------------------------
 !
-      end module analyzer_sph_snap
+      end module analyzer_sph_snap_w_psf
