@@ -48,7 +48,6 @@ target_task:
 	'$$(TARGET_SQURE_CIRC)'  \
 	'$$(TARGET_CUTSHELL)'    \
 	'$$(TARGET_ADDGRP_SPH) ' \
-    '$$(TARGET_PARA_ADDGRP_SPH) ' \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \

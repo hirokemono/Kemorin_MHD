@@ -53,7 +53,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_count_num_sph_smp'
       call s_count_num_sph_smp(ierr)
-      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
+!      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
 !
 !
       call set_reverse_import_table(nnod_rtp, ntot_item_sr_rtp,         &
@@ -116,7 +116,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_count_num_sph_smp'
       call s_count_num_sph_smp(ierr)
-      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
+!      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
 !
       call set_reverse_import_table(nnod_rj, ntot_item_sr_rj,           &
      &    item_sr_rj, irev_sr_rj)

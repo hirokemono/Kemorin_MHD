@@ -5,7 +5,6 @@
 ELE_GRP_SPH_DIR = $$(CUBE_SPH_DIR)/add_element_grp
 
 TARGET_ADDGRP_SPH =      add_egrp_cubed_sph
-TARGET_PARA_ADDGRP_SPH = parapllel_add_egrp_mesh
 
 SRC_ADDGRP_SPH = $(shell ls *.f90)
 MOD_ADDGRP_SPH = \
@@ -32,7 +31,6 @@ dir_list:
 
 target_list:
 	@echo 'TARGET_ADDGRP_SPH =      $$(BUILDDIR)/$(TARGET_ADDGRP_SPH)'    \
-    @echo 'TARGET_PARA_ADDGRP_SPH = $$(BUILDDIR)/$(TARGET_PARA_ADDGRP_SPH)'    \
 	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
