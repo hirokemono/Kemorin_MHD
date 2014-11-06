@@ -86,6 +86,10 @@
           IAM(ist+19) = ie(iele,19)
           IAM(ist+20) = ie(iele,20)
 !
+          xi = xi_gauss(ig,1)
+          ei = xi_gauss(ig,2)
+          zi = xi_gauss(ig,3)
+!
           xi_nega = one - xi
           xi_posi = one + xi
           xi_sqre = one - xi * xi

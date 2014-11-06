@@ -1,10 +1,14 @@
 !
 !      module set_ctl_diff_udt
 !
-      module set_ctl_diff_udt
-!
 !     Written by H. Matsui on July, 2006
 !     Modified by H. Matsui on JUne, 2007
+!
+!      subroutine set_ctl_params_correlate_udt
+!      subroutine set_ctl_params_diff_udt
+!      subroutine s_set_ctl_4_diff_udt_steps
+!
+      module set_ctl_diff_udt
 !
       use m_precision
 !
@@ -13,10 +17,6 @@
       use m_ctl_params_4_diff_udt
 !
       implicit none
-!
-!      subroutine set_ctl_params_correlate_udt
-!      subroutine set_ctl_params_diff_udt
-!      subroutine s_set_ctl_4_diff_udt_steps
 !
 !   --------------------------------------------------------------------
 !
@@ -165,6 +165,7 @@
       subroutine s_set_ctl_4_diff_udt_steps
 !
       use m_t_step_parameter
+      use m_error_IDs
       use m_t_int_parameter
       use m_ctl_data_4_time_steps
       use cal_num_digits
@@ -180,7 +181,7 @@
 !
         if (i_i_step_number.eq.0) then
           e_message = 'Set step number to finish'
-            call calypso_MPI_abort(90, e_message)
+            call calypso_MPI_abort(ierr_evo, e_message)
         else
           i_step_number = i_step_number_ctl
         end if

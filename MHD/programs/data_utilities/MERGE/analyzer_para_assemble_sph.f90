@@ -46,6 +46,7 @@
 !
       subroutine init_para_assemble_sph
 !
+      use m_error_IDs
       use m_control_data_4_merge
 !
       use m_node_id_spherical_IO
@@ -60,7 +61,7 @@
       call set_control_4_newsph
 !
       if(nprocs .ne. np_sph_new) then
-        call calypso_MPI_abort(1,                                       &
+        call calypso_MPI_abort(ierr_P_MPI,                              &
      &      'num. of process has to be the number of target processes')
       end if
 !

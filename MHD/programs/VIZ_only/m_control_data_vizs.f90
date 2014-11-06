@@ -53,19 +53,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_data_vizs(ierr)
+      subroutine read_control_data_vizs
 !
       use m_read_control_elements
       use skip_comment_f
-!
-      integer(kind = kint), intent(inout) :: ierr
 !
 !
       ctl_file_code = viz_ctl_file_code
       open (ctl_file_code, file=fname_viz_ctl, status='old' )
 !
       call load_ctl_label_and_line
-      call read_vizs_control_data(ierr)
+      call read_vizs_control_data
 !
       close(ctl_file_code)
 !
@@ -73,7 +71,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_vizs_control_data(ierr)
+      subroutine read_vizs_control_data
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
@@ -82,10 +80,7 @@
       use skip_comment_f
       use m_control_data_pvrs
 !
-      integer(kind = kint), intent(inout) :: ierr
 !
-!
-      ierr = 0
       if(right_begin_flag(hd_viz_only_file) .eq. 0) return
       if (i_viz_only_file .gt. 0) return
       do
@@ -97,7 +92,7 @@
         call read_ctl_data_4_platform
         call read_time_step_ctl
 !
-        call read_viz_control_data(ierr)
+        call read_viz_control_data
       end do
 !
       end subroutine read_vizs_control_data

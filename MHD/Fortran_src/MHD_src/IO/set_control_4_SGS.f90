@@ -16,6 +16,7 @@
       module set_control_4_SGS
 !
       use m_precision
+      use m_error_IDs
 !
       implicit  none
 !
@@ -119,7 +120,7 @@
         if (i_SGS_clips.eq.0) then
           e_message                                                     &
      &      = 'Set cliping method for model coefficient'
-          call calypso_MPI_abort(90, e_message)
+          call calypso_MPI_abort(ierr_SGS, e_message)
         else
 !
           if (  SGS_negative_clip_ctl.eq.'none'                         &
@@ -224,7 +225,7 @@
       if (iflag_SGS_model .ne. id_SGS_none) then
         if (SGS_terms_ctl%icou .eq. izero) then
             e_message = 'Set equations to apply SGS model'
-            call calypso_MPI_abort(90, e_message)
+            call calypso_MPI_abort(ierr_SGS, e_message)
         else
 !
           do i = 1, SGS_terms_ctl%num

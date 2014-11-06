@@ -94,6 +94,7 @@
       subroutine set_initial_field_id
 !
       use calypso_mpi
+      use m_error_IDs
       use m_machine_parameter
       use m_t_step_parameter
       use m_ctl_data_mhd_evo_scheme
@@ -103,7 +104,7 @@
 !
       if (i_rst_flag .eq. 0) then
         e_message  = 'Set initial condition'
-        call calypso_MPI_abort(90, e_message)
+        call calypso_MPI_abort(ierr_evo, e_message)
       else
         if(     cmp_no_case(restart_flag_ctl, No_restart) .gt. 0        &
      &       .or. restart_flag_ctl .eq. '0') then
@@ -144,7 +145,7 @@
       if (iflag_restart .eq. i_rst_no_file) then
         if (i_dt .eq. 0) then
           e_message  = 'Set initial time'
-          call calypso_MPI_abort(90, e_message)
+          call calypso_MPI_abort(ierr_evo, e_message)
         else
           time_init = time_init_ctl
         end if

@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine read_control_data_section_only(ierr)
+!      subroutine read_control_data_section_only
 !
 !!   --------------------------------------------------------------------
 !!    Example of control block
@@ -52,19 +52,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_data_section_only(ierr)
+      subroutine read_control_data_section_only
 !
       use m_read_control_elements
       use skip_comment_f
-!
-      integer(kind = kint), intent(inout) :: ierr
 !
 !
       ctl_file_code = viz_ctl_file_code
       open (ctl_file_code, file=fname_viz_ctl, status='old' )
 !
       call load_ctl_label_and_line
-      call read_vizs_control_data(ierr)
+      call read_vizs_control_data
 !
       close(ctl_file_code)
 !
@@ -72,7 +70,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_vizs_control_data(ierr)
+      subroutine read_vizs_control_data
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
@@ -81,10 +79,7 @@
       use skip_comment_f
       use m_control_data_sections
 !
-      integer(kind=kint), intent(inout) :: ierr
 !
-!
-      ierr = 0
       if(right_begin_flag(hd_viz_only_file) .eq. 0) return
       if (i_viz_only_file .gt. 0) return
       do

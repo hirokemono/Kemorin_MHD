@@ -8,6 +8,7 @@
       module m_ctl_parameter_Multigrid
 !
       use m_precision
+      use m_error_IDs
 !
       implicit  none
 !
@@ -49,14 +50,14 @@
       if (num_MG_level .gt. max_MG_level) then
           write(e_message,*)                                            &
      &           'Resize maximum MG level to ', num_MG_level
-          call calypso_MPI_abort(999, e_message)
+          call calypso_MPI_abort(ierr_CG, e_message)
       end if
 !
       if (num_MG_level .gt. 0) then
         if(num_MG_subdomain_ctl%num .ne. num_MG_level) then
           write(e_message,'(a)')                                        &
      &            'set correct level for MG subdomains'
-          call calypso_MPI_abort(999, e_message)
+          call calypso_MPI_abort(ierr_CG, e_message)
         end if
 !
         MG_vector(1:num_MG_level)%nprocs                                &
@@ -69,7 +70,7 @@
           call dealloc_control_array_chara(MG_mesh_prefix_ctl)
         else
           e_message = 'Set coarse mesh header'
-          call calypso_MPI_abort(1000, e_message)
+          call calypso_MPI_abort(ierr_file, e_message)
         end if
 !
         if (MG_fine_2_coarse_tbl_ctl%icou .eq. num_MG_level) then
@@ -78,7 +79,7 @@
           call dealloc_control_array_chara(MG_fine_2_coarse_tbl_ctl)
         else
           e_message = 'Set restriction table header'
-          call calypso_MPI_abort(1001, e_message)
+          call calypso_MPI_abort(ierr_file, e_message)
         end if
 !
         if (MG_coarse_2_fine_tbl_ctl%icou .eq. num_MG_level) then
@@ -87,7 +88,7 @@
           call dealloc_control_array_chara(MG_coarse_2_fine_tbl_ctl)
         else
           e_message = 'Set prolongation table header'
-          call calypso_MPI_abort(1002, e_message)
+          call calypso_MPI_abort(ierr_file, e_message)
         end if
 !
         if (MG_f2c_ele_tbl_ctl%icou .eq. num_MG_level) then
@@ -133,7 +134,7 @@
           call dealloc_control_array_chara(MG_mesh_fmt_ctl)
         else
           e_message = 'Set mesh file formats for MG'
-          call calypso_MPI_abort(1003, e_message)
+          call calypso_MPI_abort(ierr_file, e_message)
         end if
 !
         if(MG_table_fmt_ctl%icou .eq. num_MG_level) then
@@ -144,7 +145,7 @@
           call dealloc_control_array_chara(MG_table_fmt_ctl)
         else
           e_message = 'Set interpolation table file formats for MG'
-          call calypso_MPI_abort(1004, e_message)
+          call calypso_MPI_abort(ierr_file, e_message)
         end if
       end if
 !

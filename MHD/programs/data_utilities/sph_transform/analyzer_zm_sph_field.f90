@@ -32,8 +32,6 @@
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
 !
-      integer(kind = kint) :: ierr
-!
 !
       num_elapsed = 30
       call allocate_elapsed_times
@@ -61,7 +59,7 @@
 !
 !  -------------------------------
 !
-      call init_visualize(ierr)
+      call init_visualize
 !
       end subroutine init_zm_sph_field
 !

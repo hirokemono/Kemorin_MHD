@@ -27,7 +27,7 @@
 !
       use m_matrix_data_4_djds
 !
-      integer(kind = kint) :: inod1, inod2, mat_num, im, i, j1, j2, k
+      integer(kind = kint) :: inod1, inod2, mat_num, im, j1, j2, k
 !
 !
       do inod1 = 1, numnod

@@ -26,6 +26,7 @@
       subroutine set_control_4_FEM_params
 !
       use calypso_mpi
+      use m_error_IDs
       use m_machine_parameter
       use m_control_parameter
       use m_ctl_data_4_fem_int_pts
@@ -88,8 +89,8 @@
           if (iflag_t_evo_4_velo .gt. id_no_evolution) then
             if (i_eps_4_velo.eq.0) then
               e_message                                                 &
-     &         = 'Set conservation area for velocity iteration'
-              call calypso_MPI_abort(90, e_message)
+     &         = 'Set convergence area for velocity iteration'
+              call calypso_MPI_abort(ierr_CG, e_message)
             else
               eps_4_velo = eps_4_velo_ctl
             end if
@@ -99,8 +100,8 @@
      &            .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
             if (i_eps_4_magne.eq.0) then
               e_message                                                 &
-     &         = 'Set conservation area for magnetic iteration'
-              call calypso_MPI_abort(90, e_message)
+     &         = 'Set convergence area for magnetic iteration'
+              call calypso_MPI_abort(ierr_CG, e_message)
             else
               eps_4_magne = eps_4_magne_ctl
             end if
@@ -117,7 +118,7 @@
 !
         if (i_intg_point_poisson.eq.0.0d0) then
           e_message  = 'Set number of integration points for Poisson'
-          call calypso_MPI_abort(90, e_message)
+          call calypso_MPI_abort(ierr_FEM, e_message)
         else
           intg_point_poisson =  intg_point_poisson_ctl
         end if
@@ -125,7 +126,7 @@
         if (i_intg_point_t_evo.eq.0.0d0) then
           e_message                                                     &
      &       = 'Set number of integration points for time integration'
-          call calypso_MPI_abort(90, e_message)
+          call calypso_MPI_abort(ierr_FEM, e_message)
         else
           intg_point_t_evo =    intg_point_t_evo_ctl
         end if

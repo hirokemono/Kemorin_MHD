@@ -13,6 +13,7 @@
 !
       use m_precision
       use calypso_mpi
+      use m_machine_parameter
 !
       implicit none
 !
@@ -49,6 +50,7 @@
 !
       subroutine read_3d_filter_moments
 !
+      use m_error_IDs
       use m_control_parameter
       use m_filter_file_names
       use m_geometry_parameter
@@ -63,13 +65,13 @@
         call sel_read_filter_elen_file(my_rank, numnod, numele, ierr)
 !
         if (ierr.eq.500) then
-          write(*,*) 'Check num. of node in mesh and filter file for',  &
-     &              my_rank
-          call calypso_MPI_abort(ierr, 'finished ')
+          write(e_message,*)                                            &
+     &        'Check num. of node in mesh and filter file for', my_rank
+          call calypso_MPI_abort(ierr_file, e_message)
         else if (ierr.eq.501) then
-          write(*,*) 'Check num. of element in mesh and filter for',    &
-     &              my_rank
-          call calypso_MPI_abort(ierr, 'finished ')
+          write(e_message,*)                                            &
+     &        'Check num. of element in mesh and filter for', my_rank
+          call calypso_MPI_abort(ierr_file, e_message)
         end if
       end if
 !
@@ -144,6 +146,7 @@
 !
       subroutine read_line_filtering_data
 !
+      use m_error_IDs
       use m_control_parameter
       use m_filter_file_names
       use m_filter_coef_combained
@@ -164,13 +167,13 @@
       call sel_read_filter_elen_file(my_rank, numnod, numele, ierr)
 !
         if (ierr.eq.500) then
-          write(*,*) 'Check num. of node in mesh and filter file for',  &
-     &              my_rank
-          call calypso_MPI_abort(ierr, 'finished ')
+          write(e_message,*)                                            &
+     &        'Check num. of node in mesh and filter file for', my_rank
+          call calypso_MPI_abort(ierr_file, e_message)
         else if (ierr.eq.501) then
-          write(*,*) 'Check num. of element in mesh and filter for',    &
-     &              my_rank
-          call calypso_MPI_abort(ierr, 'finished ')
+          write(e_message,*)                                            &
+     &        'Check num. of element in mesh and filter for', my_rank
+          call calypso_MPI_abort(ierr_file, e_message)
         end if
 !
 !

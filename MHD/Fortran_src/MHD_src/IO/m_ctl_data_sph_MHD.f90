@@ -11,8 +11,8 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_control_4_sph_MHD(ierr)
-!!      subroutine read_control_4_sph_snap(ierr)
+!!      subroutine read_control_4_sph_MHD
+!!      subroutine read_control_4_sph_snap
 !!@endverbatim
 !
       module m_ctl_data_sph_MHD
@@ -48,16 +48,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_control_4_sph_MHD(ierr)
-!
-      integer(kind = kint), intent(inout) :: ierr
+      subroutine read_control_4_sph_MHD
 !
 !
       ctl_file_code = control_file_code
       open ( ctl_file_code, file = MHD_ctl_name, status='old' )
 !
       call load_ctl_label_and_line
-      call read_sph_mhd_control_data(ierr)
+      call read_sph_mhd_control_data
 !
       close(ctl_file_code)
 !
@@ -65,16 +63,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_control_4_sph_snap(ierr)
-!
-      integer(kind = kint), intent(inout) :: ierr
+      subroutine read_control_4_sph_snap
 !
 !
       ctl_file_code = control_file_code
       open ( ctl_file_code, file = snap_ctl_name, status='old' )
 !
       call load_ctl_label_and_line
-      call read_sph_mhd_control_data(ierr)
+      call read_sph_mhd_control_data
 !
       close(ctl_file_code)
 !
@@ -83,7 +79,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine read_sph_mhd_control_data(ierr)
+      subroutine read_sph_mhd_control_data
 !
       use calypso_mpi
       use m_ctl_data_4_platforms
@@ -94,10 +90,6 @@
       use read_ctl_data_sph_MHD
 !
 !
-      integer(kind = kint), intent(inout) :: ierr
-!
-!
-      ierr = 0
       if(right_begin_flag(hd_mhd_ctl) .eq. 0) return
       if (i_mhd_ctl .gt. 0) return
       do
@@ -116,7 +108,7 @@
         call read_monitor_data_ctl
         call read_pickup_sph_ctl
 !
-        call read_viz_control_data(ierr)
+        call read_viz_control_data
       end do
 !
       end subroutine read_sph_mhd_control_data

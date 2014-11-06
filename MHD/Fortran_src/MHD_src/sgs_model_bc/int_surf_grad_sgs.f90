@@ -83,7 +83,7 @@
        integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
        integer(kind = kint), intent(in) :: i_scalar, i_filter
 !
-       integer(kind=kint) :: k2, nd, i, igrp
+       integer(kind=kint) :: k2, i, igrp
 !
 !
 !  ---------  set number of integral points

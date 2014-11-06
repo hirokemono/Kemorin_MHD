@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine init_visualize(ierr)
+!      subroutine init_visualize
 !      subroutine visualize_all(istep_psf, istep_iso, istep_pvr,        &
 !     &          istep_fline)
 !
@@ -29,7 +29,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize(ierr)
+      subroutine init_visualize
 !
       use m_quad_2_triangle
       use m_control_data_sections
@@ -38,8 +38,6 @@
       use m_cross_section
       use m_isosurface
       use set_psf_case_table
-!
-      integer(kind = kint), intent(inout) :: ierr
 !
 !
       if ( (num_psf_ctl+num_iso_ctl+num_pvr_ctl) .gt. 0) then
@@ -54,7 +52,7 @@
       if (num_iso .gt. 0) call isosurface_init_1st
 !
       num_pvr = num_pvr_ctl
-      if (num_pvr .gt. 0) call pvr_init_1st(ierr)
+      if (num_pvr .gt. 0) call pvr_init_1st
 !
       num_fline = num_fline_ctl
       if (num_fline .gt. 0) call field_line_init_1st

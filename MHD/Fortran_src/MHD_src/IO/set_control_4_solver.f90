@@ -32,6 +32,7 @@
       subroutine s_set_control_4_solver
 !
       use calypso_mpi
+      use m_error_IDs
       use m_iccg_parameter
       use m_ctl_data_4_solvers
       use m_ctl_parameter_Multigrid
@@ -41,7 +42,7 @@
         if ((i_method*i_precond) .eq. 0) then
           e_message                                                     &
      &    = 'Set CG method and preconditioning for Poisson solver'
-            call calypso_MPI_abort(90, e_message)
+            call calypso_MPI_abort(ierr_CG, e_message)
         else
           precond_4_solver = precond_ctl
           method_4_solver  = method_ctl
@@ -50,7 +51,7 @@
         if (i_itr.eq.0) then
             e_message                                                   &
      &      = 'Set max iteration count for CG solver '
-            call calypso_MPI_abort(90, e_message)
+            call calypso_MPI_abort(ierr_CG, e_message)
         else
           itr   = itr_ctl
         end if
@@ -58,7 +59,7 @@
         if (i_eps.eq.0) then
             e_message                                                   &
      &      = 'Set conservation limit for CG solver '
-            call calypso_MPI_abort(90, e_message)
+            call calypso_MPI_abort(ierr_CG, e_message)
         else
           eps   = eps_ctl
         end if
@@ -66,7 +67,7 @@
         if (i_sigma.eq.0) then
             e_message                                                   &
      &      = 'Set coefficient of diagonal for SSOR preconditioning'
-            call calypso_MPI_abort(90, e_message)
+            call calypso_MPI_abort(ierr_CG, e_message)
         else
           sigma = sigma_ctl
         end if
@@ -91,7 +92,7 @@
           if ((i_method_4_velo*i_precond_4_crank) .eq. 0) then
             e_message                                                   &
      &      = 'Set CG method and preconditioning for implicit solver'
-            call calypso_MPI_abort(90, e_message)
+            call calypso_MPI_abort(ierr_CG, e_message)
           else
             method_4_velo = method_4_velo_ctl
             precond_4_crank = precond_4_crank_ctl
@@ -99,8 +100,8 @@
 !
           if (i_eps_crank .eq. 0) then
             e_message                                                   &
-     &      = 'Set conservation area for implicit solver'
-            call calypso_MPI_abort(90, e_message)
+     &      = 'Set convergence area for implicit solver'
+            call calypso_MPI_abort(ierr_CG, e_message)
           else
             eps_crank  = eps_crank_ctl
           end if
@@ -112,7 +113,7 @@
         if (i_order_method.eq.0) then
               e_message                                                 &
      &         = 'Set ordering scheme for DJDS solver'
-              call calypso_MPI_abort(90, e_message)
+              call calypso_MPI_abort(ierr_CG, e_message)
         else
           ordering_name = order_method_ctl
         end if

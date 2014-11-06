@@ -28,6 +28,7 @@
       subroutine s_set_control_sph_data_MHD
 !
       use calypso_mpi
+      use m_error_IDs
       use m_machine_parameter
       use m_node_phys_data
       use m_ctl_data_4_platforms
@@ -64,7 +65,7 @@
 !   set physical values
 !
       if(field_ctl%icou .eq. 0) then
-        call calypso_MPI_abort(90, 'Set field for simulation')
+        call calypso_MPI_abort(ierr_fld, 'Set field for simulation')
       end if
       if (iflag_debug.eq.1) write(*,*)                                  &
      &    'original number of field ', field_ctl%num

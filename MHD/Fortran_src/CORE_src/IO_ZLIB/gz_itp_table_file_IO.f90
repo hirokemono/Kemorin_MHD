@@ -14,6 +14,7 @@
       module gz_itp_table_file_IO
 !
       use m_precision
+      use m_error_IDs
 !
       use m_interpolate_table_dest_IO
       use m_interpolate_table_org_IO
@@ -135,7 +136,7 @@
       call close_gzfile
 !
       ierr = 0
-      if (n_rank_file .ne. my_rank) ierr = n_rank_file
+      if (n_rank_file .ne. my_rank) ierr = ierr_file
 !
       end subroutine gz_read_itp_coefs_dest_file
 !
@@ -158,7 +159,7 @@
       call close_gzfile
 !
       ierr = 0
-      if (n_rank_file .ne. my_rank) ierr = n_rank_file
+      if (n_rank_file .ne. my_rank) ierr = ierr_file
 !
       end subroutine gz_read_itp_table_dest_file
 !
@@ -180,7 +181,7 @@
       call close_gzfile
 !
       ierr = 0
-      if (n_rank_file .ne. my_rank) ierr = n_rank_file
+      if (n_rank_file .ne. my_rank) ierr = ierr_file
 !
       end subroutine gz_read_itp_domain_dest_file
 !

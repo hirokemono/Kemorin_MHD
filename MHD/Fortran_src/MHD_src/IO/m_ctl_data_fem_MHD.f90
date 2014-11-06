@@ -170,8 +170,6 @@
       use m_ctl_data_4_fem_int_pts
       use m_ctl_data_mhd_evo_scheme
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(right_begin_flag(hd_control) .eq. 0) return
       if (i_control .gt. 0) return
@@ -186,8 +184,7 @@
         call read_restart_ctl
         call read_fem_int_points_ctl
 !
-        call read_crs_solver_param_ctl(ierr)
-        if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
+        call read_crs_solver_param_ctl
 !
         call read_DJDS_solver_param_ctl
 !

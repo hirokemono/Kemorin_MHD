@@ -25,7 +25,6 @@
       real (kind = kreal), intent(in) :: r
 !
       real (kind = kreal) :: ri, pi
-      real (kind = kreal) :: r_posi, r_nega, posi, nega
 !
 !
         pi = 4.0d0*atan(1.0d0)

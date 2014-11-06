@@ -81,6 +81,7 @@
       subroutine set_field_id_4_product
 !
       use calypso_mpi
+      use m_error_IDs
       use m_ctl_params_4_prod_udt
       use m_ucd_data
       use m_ucd_input_data
@@ -101,7 +102,7 @@
      &   product_field_2_name, i_field_product2, ncomp_4_product2)
 !
       if( (i_field_product1*i_field_product2) .eq. 0) then
-        call calypso_MPI_abort(100,'Field does not excist')
+        call calypso_MPI_abort(ierr_fld,'Field does not excist')
       end if
 !
       if(ncomp_4_product1.eq.1) then

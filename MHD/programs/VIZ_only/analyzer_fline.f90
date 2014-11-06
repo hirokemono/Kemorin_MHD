@@ -32,7 +32,7 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
-      call read_control_data_vizs(ierr)
+      call read_control_data_vizs
       call set_control_params_4_viz(my_rank, ierr)
 !
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
@@ -42,7 +42,6 @@
 !
 !  VIZ Initialization
       call init_visualize_fline
-      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
       end subroutine initialize_fline
 !

@@ -10,6 +10,7 @@
       module set_ctl_parallel_platform
 !
       use m_precision
+      use m_error_IDs
 !
       implicit  none
 !
@@ -32,7 +33,7 @@
         if( nprocs .ne. num_subdomain_ctl) then
           write(e_message,'(a)')                                        &
      &              'Number of processes should be num. of mesh'
-          call calypso_MPI_abort(ione, e_message)
+          call calypso_MPI_abort(ierr_P_MPI, e_message)
         end if
       end if
 !

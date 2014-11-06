@@ -12,6 +12,7 @@
       use m_precision
 !
       use m_constants
+      use m_error_IDs
       use m_ctl_data_4_view_transfer
       use m_control_params_4_pvr
 !
@@ -161,7 +162,7 @@
       if(mat%modelview_mat_ctl%num .ne. 16) then
         write(e_message,'(a)')                                          &
      &     'Modelview  Matrix should be 16 components'
-        call calypso_MPI_abort(10, e_message)
+        call calypso_MPI_abort(ierr_PVR, e_message)
       end if
 !
       do i = 1, mat%modelview_mat_ctl%num
@@ -192,17 +193,17 @@
       if(mat%lookpoint_ctl%num .ne. 3) then
         write(e_message,'(a)')                                          &
      &     'Lookatpoint vector should be 3 components'
-        call calypso_MPI_abort(10, e_message)
+        call calypso_MPI_abort(ierr_PVR, e_message)
       end if
       if(mat%viewpoint_ctl%num .ne. 3) then
         write(e_message,'(a)')                                          &
      &     'Viewpoint vector should be 3 components'
-        call calypso_MPI_abort(10, e_message)
+        call calypso_MPI_abort(ierr_PVR, e_message)
       end if
       if(mat%up_dir_ctl%num .ne. 3) then
         write(e_message,'(a)')                                          &
      &     'Up-direction vector should be 3 components'
-        call calypso_MPI_abort(10, e_message)
+        call calypso_MPI_abort(ierr_PVR, e_message)
       end if
 !
       do i = 1, mat%lookpoint_ctl%num
@@ -251,7 +252,7 @@
       if(mat%view_rot_vec_ctl%num .ne. 3) then
         write(e_message,'(a)')                                          &
      &     'Rotaion of viewpoint vector should be 3 components'
-        call calypso_MPI_abort(10, e_message)
+        call calypso_MPI_abort(ierr_PVR, e_message)
       end if
 !
       if (mat%i_view_rot_deg .gt. 0) then
@@ -283,7 +284,7 @@
       if(mat%scale_vector_ctl%num .ne. 3) then
         write(e_message,'(a)')                                          &
      &     'Scale factor vector should be 3 components'
-        call calypso_MPI_abort(10, e_message)
+        call calypso_MPI_abort(ierr_PVR, e_message)
       end if
 !
       do i = 1, mat%scale_vector_ctl%num
@@ -312,7 +313,7 @@
       if(mat%viewpt_in_viewer_ctl%num .ne. 3) then
         write(e_message,'(a)')                                          &
      &     'Viewpoint in viewer should be 3 components'
-        call calypso_MPI_abort(10, e_message)
+        call calypso_MPI_abort(ierr_PVR, e_message)
       end if
 !
       do i = 1, mat%viewpt_in_viewer_ctl%num

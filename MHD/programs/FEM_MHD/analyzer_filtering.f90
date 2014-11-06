@@ -28,8 +28,6 @@
       use m_ctl_data_fem_MHD
       use set_control_MHD
 !
-      integer(kind = kint) :: ierr
-!
 !
       write(*,*) 'Simulation start: PE. ', my_rank
 !
@@ -55,7 +53,7 @@
 !
       call FEM_initialize_snapshot
 !
-      call init_visualize(ierr)
+      call init_visualize
 !
       end subroutine init_analyzer
 !

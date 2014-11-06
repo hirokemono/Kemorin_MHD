@@ -95,7 +95,6 @@
       integer (kind=kint), intent(in) :: id_file
       integer (kind=kint), intent(in) :: numnod, numele
       integer (kind=kint), intent(inout) :: ierr
-      integer (kind=kint) :: itmp
 !
 !
       call read_filter_elen_head(id_file,                               &
@@ -129,7 +128,6 @@
       integer (kind=kint), intent(in) :: id_file
       integer (kind=kint), intent(in) :: numnod, numele
       integer (kind=kint), intent(inout) :: ierr
-      integer (kind=kint) :: itmp
 !
       integer (kind=kint) :: ifil
 !

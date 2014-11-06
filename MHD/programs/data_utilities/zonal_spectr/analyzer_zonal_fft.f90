@@ -64,7 +64,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_count_num_sph_smp'
       call s_count_num_sph_smp(ierr)
-      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
+!      if(ierr .gt. 0) call calypso_MPI_abort(ierr_sph, e_message_Rsmp)
 !
 !  -------------------------------
 !

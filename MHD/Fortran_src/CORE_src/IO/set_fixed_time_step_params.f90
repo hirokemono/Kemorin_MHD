@@ -22,6 +22,7 @@
 !
       subroutine s_set_fixed_time_step_params(ierr, errmsg)
 !
+      use m_error_IDs
       use m_ctl_data_4_time_steps
       use m_t_step_parameter
       use m_t_int_parameter
@@ -37,7 +38,7 @@
       end if
 !
       if (i_i_step_number.eq.0) then
-        ierr = 90
+        ierr = ierr_evo
         errmsg = 'Set step number to finish'
         return
       else
@@ -87,7 +88,7 @@
 !
       if (i_step_number.eq.-1) then
         if (i_elapsed_time.eq.0) then
-          ierr = 90
+          ierr = ierr_evo
           errmsg = 'Set elapsed time to finish (second)'
           return
         else

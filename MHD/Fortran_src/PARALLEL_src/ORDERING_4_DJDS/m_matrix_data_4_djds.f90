@@ -136,7 +136,7 @@
        use m_geometry_parameter
        use m_solver_djds
 !
-       integer (kind = kint) :: my_rank, i, k1, k2, j, ist, ied
+       integer (kind = kint) :: my_rank, i, k1, k2, ist, ied
 !
        do i = 1, numnod
            write(my_rank+50,*) "vector (inod) = ", i

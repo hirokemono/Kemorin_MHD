@@ -77,7 +77,7 @@
       real(kind=kreal), intent(inout) :: f_width(nf_type)
       real(kind=kreal), intent(inout) :: xmom_1d_org(nf_type,0:2)
 !
-      integer (kind=kint) :: itmp, ifil, j
+      integer (kind=kint) :: ifil, j
 !
 !
       read(id_file) filter_type(1:nf_type)

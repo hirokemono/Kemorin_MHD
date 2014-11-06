@@ -124,7 +124,7 @@
       do 10 l = 0 ,nth
         dc(0,l) = 1.0
         do 11 m = 1 ,l
-          dc(m,l) = ( 2.0d0 / factorial(l-m,l+m,1) )**0.5d0
+          dc(m,l) = ( 2.0d0 / factorial(l-m,l+m,ione) )**half
   11    continue
   10  continue
 !*
@@ -135,7 +135,7 @@
           do 21 m = 1 ,l-1
 !*
             dp(m,l) = ( dble(l+m) * dble(l-m+1) * dplm(m-1,l)           &
-     &                 - dplm(m+1,l) ) / 2.0d0
+     &                 - dplm(m+1,l) ) * half
 !*
   21      continue
           dp(0,l) = - dplm(1,l)

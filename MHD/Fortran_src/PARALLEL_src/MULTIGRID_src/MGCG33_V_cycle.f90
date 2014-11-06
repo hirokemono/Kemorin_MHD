@@ -32,6 +32,7 @@
       module MGCG33_V_cycle
 !
       use m_precision
+      use m_error_IDs
 !
       use m_solver_count_time
       use t_interpolate_table
@@ -175,7 +176,7 @@
      &      MG_itp(i+1)%c2f,  MG_vect(i+1)%x_vec, MG_vect(i)%x_vec,     &
      &      PEsmpTOT)
       call calypso_MPI_barrier
-      call calypso_MPI_abort(1, 'tako')
+      call calypso_MPI_abort(ierr_CG, 'tako')
 !
 !
 !C calculate residual

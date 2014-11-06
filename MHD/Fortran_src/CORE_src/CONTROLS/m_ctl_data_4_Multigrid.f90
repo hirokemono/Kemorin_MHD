@@ -3,7 +3,7 @@
 !
 !        programmed by H.Matsui on July, 2007
 !
-!      subroutine read_ctl_data_4_Multigrid(ierr, e_message)
+!      subroutine read_ctl_data_4_Multigrid
 !
 !      Example of this block
 !!
@@ -229,16 +229,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_ctl_data_4_Multigrid(ierr)
+      subroutine read_ctl_data_4_Multigrid
 !
       use m_machine_parameter
       use m_read_control_elements
       use skip_comment_f
 !
-      integer(kind = kint), intent(inout) :: ierr
 !
-!
-      ierr = 0
       if(right_begin_flag(hd_Multigrid_params) .eq. 0) return
       if (i_Multigrid_params .gt. 0) return
       do

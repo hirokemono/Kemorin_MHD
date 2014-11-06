@@ -107,7 +107,7 @@
 !
 !
       call s_set_control_nodal_data(ierr)
-      if (ierr .ne. 0) call calypso_MPI_abort(ierr_MPI, e_message)
+      if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       end subroutine set_ctl_interpolate_udt
 !

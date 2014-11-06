@@ -28,6 +28,7 @@
 !
       use calypso_mpi
       use m_constants
+      use m_error_IDs
       use m_machine_parameter
       use m_file_format_switch
       use m_phys_labels
@@ -73,7 +74,7 @@
      &     .or. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_SGS_filter .eq. id_SGS_NO_FILTERING) then
           e_message = 'Set filtering type for dynamic model'
-          call calypso_MPI_abort(90, e_message)
+          call calypso_MPI_abort(ierr_SGS, e_message)
         end if
       end if
 !

@@ -93,7 +93,7 @@
 !
       use calypso_mpi
 !
-      integer(kind = kint), intent(in) :: iflag_elps
+      integer, intent(in) :: iflag_elps
 !
 !
       start_times(iflag_elps) = MPI_WTIME()
@@ -106,7 +106,7 @@
 !
       use calypso_mpi
 !
-      integer(kind = kint), intent(in) :: iflag_elps
+      integer, intent(in) :: iflag_elps
 !
 !
       elapsed(iflag_elps) = MPI_WTIME() - start_times(iflag_elps)       &

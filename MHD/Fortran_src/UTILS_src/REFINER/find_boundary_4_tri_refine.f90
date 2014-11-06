@@ -1,9 +1,11 @@
 !find_boundary_4_tri_refine.f90
 !      module find_boundary_4_tri_refine
 !
-      module find_boundary_4_tri_refine
-!
 !      Writen by H. Matsui on Oct., 2007
+!
+!      subroutine s_find_boundary_4_tri_refine(nele_tri, iele_tri)
+!
+      module find_boundary_4_tri_refine
 !
       use m_precision
 !
@@ -15,8 +17,6 @@
       integer(kind = kint), allocatable, private :: imark_sf(:)
 !
       private :: set_triple_refine_by_surf
-!
-!      subroutine s_find_boundary_4_tri_refine(nele_tri, iele_tri)
 !
 !  ---------------------------------------------------------------------
 !
@@ -37,7 +37,6 @@
       integer(kind = kint) :: inum, iele, isurf, icou, iflag
       integer(kind = kint) :: k1, inod
       integer(kind = kint) :: isf1, isf2, isf3, isf4, isf5, isf6
-      integer(kind = kint) :: imk1, imk2, imk3, imk4, imk5, imk6
 !
 !
       allocate(imark_sf(numsurf))
@@ -243,7 +242,6 @@
 !
       integer(kind = kint) :: iele, isurf, icou
       integer(kind = kint) :: isf1, isf2, isf3, isf4, isf5, isf6
-      integer(kind = kint) :: imk1, imk2, imk3, imk4, imk5, imk6
 !
 !
       imark_sf =  0

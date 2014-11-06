@@ -26,6 +26,7 @@
       subroutine s_set_control_4_force
 !
       use calypso_mpi
+      use m_error_IDs
       use m_machine_parameter
       use m_control_parameter
       use m_ctl_data_mhd_forces
@@ -189,7 +190,7 @@
         if (i_grav .eq. iflag_const_g) then
           if (gravity_vector_ctl%icou .eq. 0) then
             e_message = 'Set gravity vector'
-            call calypso_MPI_abort(90, e_message)
+            call calypso_MPI_abort(ierr_force, e_message)
           else
 !
             do i = 1, gravity_vector_ctl%num
@@ -240,7 +241,7 @@
       if (iflag_magneto_cv .gt. id_turn_OFF) then
         if (ext_magne_ctl%icou .eq. 0) then
           e_message = 'Set external magnetic field'
-          call calypso_MPI_abort(90, e_message)
+          call calypso_MPI_abort(ierr_force, e_message)
         else
 !
           do i = 1, ext_magne_ctl%num

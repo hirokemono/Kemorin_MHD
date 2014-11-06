@@ -17,6 +17,7 @@
       use m_precision
 !
       use calypso_mpi
+      use m_error_IDs
       use m_machine_parameter
       use m_control_parameter
       use m_ctl_data_4_time_steps
@@ -56,7 +57,7 @@
 !
         if (i_dt.eq.0) then
           e_message = 'Set delta t'
-          call calypso_MPI_abort(90, e_message)
+          call calypso_MPI_abort(ierr_evo, e_message)
         else
           dt = dt_ctl
           ddt = 1.0d0 / dt
@@ -66,28 +67,28 @@
         if(iflag_flexible_step .eq. iflag_flex_step) then
           if (i_min_delta_t.eq.0) then
             e_message = 'Set maximum delta t'
-            call calypso_MPI_abort(90, e_message)
+            call calypso_MPI_abort(ierr_evo, e_message)
           else
             dt_min = min_delta_t_ctl
           end if
 !
           if (i_max_delta_t.eq.0) then
             e_message = 'Set maximum delta t'
-            call calypso_MPI_abort(90, e_message)
+            call calypso_MPI_abort(ierr_evo, e_message)
           else
             dt_max = max_delta_t_ctl
           end if
 !
           if (i_max_eps_to_shrink.eq.0) then
             e_message = 'Set maximum error to shrink delta t'
-            call calypso_MPI_abort(90, e_message)
+            call calypso_MPI_abort(ierr_evo, e_message)
           else
             max_eps_to_shrink_dt = max_eps_to_shrink_ctl
           end if
 !
           if (i_min_eps_to_expand.eq.0) then
             e_message = 'Set minimum error to expand delta t'
-            call calypso_MPI_abort(90, e_message)
+            call calypso_MPI_abort(ierr_evo, e_message)
           else
             min_eps_to_expand_dt = min_eps_to_expand_ctl
           end if
@@ -118,7 +119,7 @@
         if (i_elapsed_time.eq.0) then
           e_message                                                     &
      &      = 'Set elapsed time to finish (second)'
-          call calypso_MPI_abort(90, e_message)
+          call calypso_MPI_abort(ierr_evo, e_message)
         else
           elapsed_time  = elapsed_time_ctl
         end if
@@ -180,7 +181,7 @@
 !
       if (i_end_rst_step .eq. 0) then
         e_message = 'Set time to finish'
-          call calypso_MPI_abort(90, e_message)
+          call calypso_MPI_abort(ierr_evo, e_message)
       else
         istep_rst_end = end_rst_step_ctl
       end if
@@ -238,7 +239,7 @@
         if (i_elapsed_time.eq.0) then
           e_message                                                     &
      &      = 'Set elapsed time to finish (second)'
-          call calypso_MPI_abort(90, e_message)
+          call calypso_MPI_abort(ierr_evo, e_message)
         else
           elapsed_time  = elapsed_time_ctl
         end if

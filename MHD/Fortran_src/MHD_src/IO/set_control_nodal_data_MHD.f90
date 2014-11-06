@@ -31,6 +31,7 @@
       subroutine set_control_4_fields
 !
       use calypso_mpi
+      use m_error_IDs
       use m_node_phys_data
 !
       use set_control_nodal_data
@@ -43,7 +44,7 @@
 !
       if(field_ctl%icou .le. 0) then
         e_message = 'Set field for simulation'
-        call calypso_MPI_abort(90, e_message)
+        call calypso_MPI_abort(ierr_fld, e_message)
       end if
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)               &
      &    'original field_ctl%num ', field_ctl%num

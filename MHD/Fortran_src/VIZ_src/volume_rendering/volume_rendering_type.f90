@@ -3,8 +3,7 @@
 !
 !      Written by H. Matsui on Apr., 2012
 !
-!      subroutine init_visualize_pvr_type(ierr, fem,                    &
-!     &          sf_mesh_psf, fld_nod)
+!      subroutine init_visualize_pvr_type(fem, sf_mesh_psf, fld_nod)
 !      subroutine visualize_pvr_type(istep_pvr,                         &
 !     &          fem, sf_mesh_psf, jac_3d, fld_nod)
 !        integer(kind = kint), intent(in) :: istep_pvr
@@ -14,10 +13,9 @@
 !        type(phys_data), intent(in) :: fld_nod
 !        type(jacobians_3d), intent(in) :: jac_3d
 !
-!      subroutine pvr_init_type(ierr, fem, surf, fld_nod)
+!      subroutine pvr_init_type(fem, surf, fld_nod)
 !        type(mesh_data), intent(in) :: fem
 !        type(surface_data), intent(in) :: surf
-!        type(edge_data), intent(in) :: edge
 !        type(phys_data), intent(in) :: fld_nod
 !
 !      subroutine pvr_main_type(istep_pvr, fem, surf, jac_3d, fld_nod)
@@ -46,13 +44,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize_pvr_type(ierr, fem,                     &
-     &          sf_mesh_psf, fld_nod)
+      subroutine init_visualize_pvr_type(fem, sf_mesh_psf, fld_nod)
 !
       use m_control_data_pvrs
       use m_control_params_4_pvr
-!
-      integer(kind = kint), intent(inout) :: ierr
 !
       type(mesh_data), intent(in) :: fem
       type(surface_geometry), intent(in) :: sf_mesh_psf
@@ -61,7 +56,7 @@
 !
       num_pvr = num_pvr_ctl
       if (num_pvr .gt. 0) then
-        call pvr_init_type(ierr, fem, sf_mesh_psf%surf, fld_nod)
+        call pvr_init_type(fem, sf_mesh_psf%surf, fld_nod)
       end if
       call calypso_MPI_barrier
 !
@@ -93,15 +88,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine pvr_init_type(ierr, fem, surf, fld_nod)
+      subroutine pvr_init_type(fem, surf, fld_nod)
 !
       use volume_rendering
 !
       type(mesh_data), intent(in) :: fem
       type(surface_data), intent(in) :: surf
       type(phys_data), intent(in) :: fld_nod
-!
-      integer(kind = kint), intent(inout) :: ierr
 !
 !
       call pvr_init(fem%mesh%node%numnod, fem%mesh%ele%numele,          &
@@ -110,7 +103,7 @@
      &    surf%isf_4_ele, surf%iele_4_surf, fem%group%ele_grp%num_grp,  &
      &    fem%group%ele_grp%num_item, fem%group%ele_grp%grp_name,       &
      &    fem%group%ele_grp%istack_grp, fem%group%ele_grp%item_grp,     &
-     &    fld_nod%num_phys, fld_nod%phys_name, ierr)
+     &    fld_nod%num_phys, fld_nod%phys_name)
 !
       end subroutine pvr_init_type
 !

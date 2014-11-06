@@ -23,6 +23,7 @@
       subroutine s_set_control_nodal_data(ierr)
 !
       use m_machine_parameter
+      use m_error_IDs
       use m_ctl_data_4_fields
       use m_node_phys_data
 !
@@ -34,7 +35,7 @@
       ierr = 0
       if(field_ctl%icou .le. 0) then
         e_message = 'Set field for simulation'
-        ierr = 90
+        ierr = ierr_file
       else
         num_nod_phys = field_ctl%num
       end if

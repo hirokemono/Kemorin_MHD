@@ -11,6 +11,7 @@
       use m_precision
 !
       use calypso_mpi
+      use m_error_IDs
 !
       implicit none
 !
@@ -129,7 +130,7 @@
       if (nprocs .ne. max(ndomain_org,ndomain_dest) ) then
         write(e_message,*)                                              &
      &     'Num. of rank is larger num. of orgin or destinate dom.'
-        call  calypso_MPI_abort(4000, e_message)
+        call  calypso_MPI_abort(ierr_P_MPI, e_message)
       end if
 !
       end subroutine set_ctl_params_interpolation
@@ -152,7 +153,7 @@
 !
         if (i_i_step_number.eq.0) then
           e_message = 'Set step number to finish'
-            call calypso_MPI_abort(90, e_message)
+            call calypso_MPI_abort(ierr_evo, e_message)
         else
           i_step_number = i_step_number_ctl
         end if

@@ -33,16 +33,15 @@
 !     read controls
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
-      call read_control_data_section_only(ierr)
+      call read_control_data_section_only
       call set_control_params_4_viz(my_rank, ierr)
-!
+      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
       call FEM_initialize_surface
 !
 !  VIZ Initialization
       call init_visualize_surface
-      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
       end subroutine init_analyzer
 !

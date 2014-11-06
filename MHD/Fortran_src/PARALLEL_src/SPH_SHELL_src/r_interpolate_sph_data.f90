@@ -258,6 +258,7 @@
 !
       subroutine copy_original_sph_rj_from_IO
 !
+      use m_error_IDs
       use m_node_id_spherical_IO
       use m_comm_data_IO
       use m_group_data_sph_specr_IO
@@ -265,21 +266,24 @@
 !
       if(sph_rank_rj(1).ne.sph_rank_IO(1)                               &
      &       .or. sph_rank_rj(2).ne.sph_rank_IO(2)) then
-        call calypso_MPI_abort(1,'rj rank ID is wrong')
+        call calypso_MPI_abort(ierr_sph,'rj rank ID is wrong')
       end if
 !
       if(nidx_global_rj(2) .ne. nidx_gl_sph_IO(2)) then
-        call calypso_MPI_abort(1,'number of local mode is wrong')
+        call calypso_MPI_abort                                          &
+     &     (ierr_sph,'number of local mode is wrong')
       end if
       if(l_truncation .ne. ltr_gl_IO) then
-        call calypso_MPI_abort(1,'truncation is wrong')
+        call calypso_MPI_abort(ierr_sph,'truncation is wrong')
       end if
 !
       if(ist_rj(2).ne.ist_sph_IO(2)) then
-        call calypso_MPI_abort(1,'start point of harminics is wrong')
+        call calypso_MPI_abort                                          &
+     &      (ierr_sph,'start point of harminics is wrong')
       end if
       if(ied_rj(2).ne.ied_sph_IO(2)) then
-        call calypso_MPI_abort(1,'end point of harminics is wrong')
+        call calypso_MPI_abort                                          &
+     &     (ierr_sph,'end point of harminics is wrong')
       end if
 !
       n_rj_org = nnod_sph_IO

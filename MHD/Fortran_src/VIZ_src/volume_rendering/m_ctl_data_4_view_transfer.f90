@@ -3,7 +3,7 @@
 !
 !        programmed by H.Matsui on May. 2006
 !
-!      subroutine read_view_transfer_ctl(mat, ierr)
+!      subroutine read_view_transfer_ctl(mat)
 !      subroutine reset_view_transfer_ctl(mat)
 !
 !
@@ -253,13 +253,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_view_transfer_ctl(mat, ierr)
+      subroutine read_view_transfer_ctl(mat)
 !
       type(modeview_ctl), intent(inout) :: mat
-      integer(kind = kint), intent(inout) :: ierr
 !
-!
-      ierr = 0
 !
       if(right_begin_flag(hd_view_transform) .eq. 0) return
       if (mat%i_view_transform .gt. 0) return

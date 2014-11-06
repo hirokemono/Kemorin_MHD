@@ -73,6 +73,7 @@
       subroutine set_initial_data
 !
       use calypso_mpi
+      use m_error_IDs
       use m_control_parameter
       use m_initial_field_control
       use m_t_step_parameter
@@ -138,7 +139,7 @@
 !
       else if (iflag_restart .ne. i_rst_no_file                         &
      &   .and. iflag_restart .ne. i_rst_by_file) then
-       call calypso_MPI_abort(10,'cannot set initial data!!!')
+       call calypso_MPI_abort(ierr_fld,'cannot set initial data!!!')
 !
       end if
 !

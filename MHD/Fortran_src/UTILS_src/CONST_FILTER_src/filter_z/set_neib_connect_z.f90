@@ -25,7 +25,7 @@
       use m_commute_filter_z
       use m_neibor_data_z
 !
-      integer(kind = kint) :: i, i1, j, j1
+      integer(kind = kint) :: i, j, j1
 !
 !
        do i = 1, totalele

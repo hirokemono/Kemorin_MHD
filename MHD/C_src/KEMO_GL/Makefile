@@ -523,7 +523,7 @@ module:
 	sort_by_patch_distance.h \
 	m_gl_transfer_matrix.o \
 	m_psf_data_4_viewer_c.o \
-	m_kemoviewer_menu.h.o \
+	m_kemoviewer_menu.o \
 	m_surface_mesh_4_viewer_c.o \
 	kemosrc_param_c.o \
 	quicksort_c.o \

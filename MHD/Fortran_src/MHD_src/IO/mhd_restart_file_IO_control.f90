@@ -155,7 +155,7 @@
 !
 !
       call check_step_FEM_field_file(my_rank, istep_rst_start, ierr)
-      if(ierr .gt. 0) call calypso_MPI_abort(10,'No restart file.')
+      if(ierr .gt. 0) call calypso_MPI_abort(ierr,'No restart file.')
 !
       call sel_read_alloc_step_FEM_file(my_rank, istep_rst_start)
 !

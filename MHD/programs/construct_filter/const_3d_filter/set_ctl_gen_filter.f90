@@ -27,6 +27,7 @@
       subroutine set_ctl_params_gen_filter
 !
       use calypso_mpi
+      use m_error_IDs
       use m_ctl_data_4_solvers
       use m_ctl_data_org_filter_name
       use m_filter_elength
@@ -345,7 +346,7 @@
       if (iflag_tgt_filter_type .eq. -1                                 &
      &  .and. i_org_filter_coef_head .eq. 0) then
         e_message = "set original filter coefficient datafile"
-        call calypso_MPI_abort(100, e_message)
+        call calypso_MPI_abort(ierr_file, e_message)
       end if
 !
       end subroutine set_ctl_params_gen_filter

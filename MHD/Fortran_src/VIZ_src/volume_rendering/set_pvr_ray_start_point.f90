@@ -184,7 +184,7 @@
       integer(kind = kint) :: icou, iele, k1, isurf, iflag
       integer(kind = kint) :: ist_pix, ied_pix, jst_pix, jed_pix
       integer(kind = kint) :: ipix, jpix, ipix_s, jpix_s, id_pixel
-      real(kind = kreal) :: a(2,2), x_pix(2)
+      real(kind = kreal) :: x_pix(2)
       real(kind = kreal) :: x_surf(2,4), xi(2)
 !
 !

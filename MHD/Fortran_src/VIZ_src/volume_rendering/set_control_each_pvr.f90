@@ -13,6 +13,7 @@
       use m_precision
 !
       use m_constants
+      use m_error_IDs
       use m_control_data_4_pvr
       use m_control_params_4_pvr
       use calypso_mpi
@@ -85,7 +86,7 @@
       call check_field_4_viz(num_nod_phys, phys_nod_name,               &
      &    ione, pvr%pvr_field_ctl, num_field )
       if(num_field .eq. 0) then
-        call calypso_MPI_abort(10,'set correct field name')
+        call calypso_MPI_abort(ierr_PVR,'set correct field name')
       end if
 !
 !
@@ -96,7 +97,7 @@
      &                          + nele_grp_area_pvr(i_pvr)
 !
       if ( nele_grp_area_pvr(i_pvr) .eq. 0)                             &
-     &     call calypso_MPI_abort(100, 'set correct element group')
+     &   call calypso_MPI_abort(ierr_PVR, 'set correct element group')
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'i_pvr', i_pvr

@@ -41,8 +41,6 @@
       use m_ctl_data_sph_MHD
       use FEM_analyzer_sph_MHD_w_viz
 !
-      integer(kind = kint) :: ierr
-!
 !
       write(*,*) 'Simulation start: PE. ', my_rank
       total_start = MPI_WTIME()
@@ -53,11 +51,7 @@
       call start_eleps_time(1)
       call start_eleps_time(4)
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD'
-      call read_control_4_sph_MHD(ierr)
-      if(ierr .gt. 0) then
-        write(e_message,*) 'Error in reading control for PVR'
-        call calypso_MPI_abort(ierr, e_message)
-      end if
+      call read_control_4_sph_MHD
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
       call set_control_4_sph_mhd
@@ -82,11 +76,7 @@
 !        Initialize visualization
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize(ierr)
-      if(ierr .gt. 0) then
-        write(e_message,*) 'Error in PVR initialization'
-        call calypso_MPI_abort(ierr, e_message)
-      end if
+      call init_visualize
 !
       call calypso_MPI_barrier
 !

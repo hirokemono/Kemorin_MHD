@@ -63,6 +63,7 @@
       subroutine count_control_4_psf(i_psf, psf, num_mat, mat_name,     &
      &          num_nod_phys, phys_nod_name, psf_fld, psf_param, ierr)
 !
+      use m_error_IDs
       use m_control_data_4_psf
       use m_field_file_format
       use m_file_format_switch
@@ -102,7 +103,7 @@
      &    psf%psf_area_ctl%num, psf%psf_area_ctl%c_tbl,                 &
      &    psf_param%nele_grp_area)
 !
-      if(psf_param%nele_grp_area .eq. 0) ierr = 100
+      if(psf_param%nele_grp_area .eq. 0) ierr = ierr_VIZ
 !
       end subroutine count_control_4_psf
 !

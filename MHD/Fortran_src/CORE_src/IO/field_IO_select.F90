@@ -45,6 +45,7 @@
       subroutine check_step_FEM_field_file(my_rank, istep_fld, ierr)
 !
       use set_field_file_names
+      use m_error_IDs
 !
       integer(kind=kint), intent(in) :: my_rank, istep_fld
       integer(kind=kint), intent(inout) :: ierr
@@ -62,7 +63,7 @@
       return
 !
   99  continue
-      ierr = 1
+      ierr = ierr_file
       return
 !
       end subroutine check_step_FEM_field_file

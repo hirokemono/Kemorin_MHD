@@ -26,6 +26,7 @@
       subroutine set_component_add_4_correlate
 !
       use calypso_mpi
+      use m_error_IDs
       use m_ctl_params_4_diff_udt
       use m_node_phys_data
       use set_components_flags
@@ -43,7 +44,7 @@
       end do
 !
       if(i_field_4_correlate .eq. 0) then
-        call calypso_MPI_abort(1, 'set correct field name')
+        call calypso_MPI_abort(ierr_file, 'set correct field name')
       end if
 !
       call s_set_components_flags(correlate_comp_name,                  &

@@ -40,6 +40,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
 !
       implicit none
 !
@@ -54,6 +55,7 @@
      &          r_low_t, r_high_t)
 !
       use calypso_mpi
+      use m_error_IDs
       use skip_comment_f
 !
       integer (kind = kint), intent(in) :: num_dimless
@@ -91,8 +93,8 @@
              end if
            end do
            if (iflag .eq. 0) then
-             write(*,*) 'there is missing dimensionless number'
-             call calypso_MPI_abort(1000, 'normalization problem')
+             write(e_message,*) 'there is missing dimensionless number'
+             call calypso_MPI_abort(ierr_dless, e_message)
            end if
          end if
        end do

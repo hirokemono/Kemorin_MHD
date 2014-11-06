@@ -164,8 +164,6 @@
       use m_read_control_elements
       use skip_comment_f
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(right_begin_flag(hd_filter_param_ctl) .eq. 0) return
       if (i_filter_param_ctl .gt. 0) return
@@ -177,8 +175,7 @@
         if(i_filter_param_ctl .gt. 0) exit
 !
 !
-        call read_crs_solver_param_ctl(ierr)
-        if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
+        call read_crs_solver_param_ctl
 !
         call read_DJDS_solver_param_ctl
 !

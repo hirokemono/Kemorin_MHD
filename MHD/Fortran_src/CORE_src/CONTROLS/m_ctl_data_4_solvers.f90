@@ -3,7 +3,7 @@
 !
 !        programmed by H.Matsui on June, 2007
 !
-!      subroutine read_crs_solver_param_ctl(ierr, e_message)
+!      subroutine read_crs_solver_param_ctl
 !      subroutine read_DJDS_solver_param_ctl
 !
 !!!!!!  parameter for solver 
@@ -214,17 +214,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_crs_solver_param_ctl(ierr)
+      subroutine read_crs_solver_param_ctl
 !
       use m_machine_parameter
       use m_read_control_elements
       use m_ctl_data_4_Multigrid
       use skip_comment_f
 !
-      integer(kind = kint), intent(inout) :: ierr
 !
-!
-      ierr = 0
       if(right_begin_flag(hd_solver_ctl) .eq. 0) return
       if (i_solver_ctl .gt. 0) return
       do
@@ -235,8 +232,7 @@
 !
 !
         call read_DJDS_solver_param_ctl
-        call read_ctl_data_4_Multigrid(ierr)
-        if(ierr .gt. 0) return
+        call read_ctl_data_4_Multigrid
 !
 !
         call read_real_ctl_item(hd_eps, i_eps, eps_ctl)

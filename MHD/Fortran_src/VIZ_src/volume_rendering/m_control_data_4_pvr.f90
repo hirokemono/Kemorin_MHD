@@ -375,27 +375,23 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_data_pvr(pvr, ierr)
+      subroutine read_control_data_pvr(pvr)
 !
       type(pvr_ctl), intent(inout) :: pvr
-      integer(kind = kint), intent(inout) :: ierr
 !
 !
       call load_ctl_label_and_line
-      call read_vr_psf_ctl(pvr, ierr)
+      call read_vr_psf_ctl(pvr)
 !
       end subroutine read_control_data_pvr
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_vr_psf_ctl(pvr, ierr)
+      subroutine read_vr_psf_ctl(pvr)
 !
       type(pvr_ctl), intent(inout) :: pvr
-      integer(kind = kint), intent(inout) :: ierr
 !
-!
-      ierr = 0
 !
       if(right_begin_flag(hd_vr_psf_ctl) .eq. 0) return
       if (pvr%i_pvr_ctl.gt.0) return
@@ -406,8 +402,7 @@
         if(pvr%i_pvr_ctl .gt. 0) exit
 !
 !
-        call read_view_transfer_ctl(pvr%mat, ierr)
-        if(ierr .ne. 0) return
+        call read_view_transfer_ctl(pvr%mat)
 !
         call read_plot_area_ctl(pvr)
         call read_lighting_ctl(pvr)

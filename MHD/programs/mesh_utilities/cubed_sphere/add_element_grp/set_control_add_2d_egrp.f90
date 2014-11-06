@@ -1,16 +1,16 @@
 !set_control_add_2d_egrp.f90
 !      module set_control_add_2d_egrp
 !
-      module set_control_add_2d_egrp
-!
 !      Written by Kemorin on Mar., 2008
 !
+!      subroutine s_set_control_add_2d_egrp
+!
+      module set_control_add_2d_egrp
+!
       use m_precision
+      use m_error_IDs
 !
       implicit    none
-!
-!
-!      subroutine s_set_control_add_2d_egrp
 !
 ! -----------------------------------------------------------------------
 !
@@ -41,7 +41,7 @@
       if (i_new_mesh_head .gt. 0) then
         modified_mesh_head = new_mesh_prefix
       else
-        call calypso_MPI_abort(1, 'set modifield mesh prefix')
+        call calypso_MPI_abort(ierr_mesh, 'set modifield mesh prefix')
       end if
 !
       if (i_2nd_grp_direction .gt. 0) then
@@ -81,10 +81,11 @@
      &       .or. sph_grp_direction_ctl .eq. 'r_s') then
           iflag_grping_direction = 1
         else
-          call calypso_MPI_abort(1, 'set correct grouping mode')
+          call calypso_MPI_abort                                        &
+     &       (ierr_mesh, 'set correct grouping mode')
         end if
       else
-        call calypso_MPI_abort(1, 'set correct grouping mode')
+        call calypso_MPI_abort(ierr_mesh, 'set correct grouping mode')
       end if
 !
       if (r_ele_grouping_ctl%icou .gt. 0) then

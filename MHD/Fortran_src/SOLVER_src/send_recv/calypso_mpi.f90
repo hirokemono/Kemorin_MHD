@@ -10,12 +10,12 @@
 !!@verbatim
 !!      subroutine calypso_MPI_init
 !!      subroutine calypso_MPI_finalize
-!!      subroutine calypso_MPI_abort(code, message)
+!!      subroutine calypso_MPI_abort(icode, message)
 !!
 !!      subroutine calypso_MPI_barrier
 !!@endverbatim
 !!
-!!@n @param  code       error code
+!!@n @param  icode       error code
 !!@n @param  message    message to output
 !
       module calypso_mpi
@@ -96,13 +96,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine calypso_MPI_abort(code, message)
+      subroutine calypso_MPI_abort(icode, message)
 !
-      integer,       intent(in)  ::  code
+      integer(kind = kint), intent(in)  ::  icode
       character(len=*), intent(in)  ::  message
 !
 !
-      write(*,*) ' ///// abnormal termination ///// ', code,            &
+      write(*,*) ' ///// abnormal termination ///// ', icode,           &
      &                                            ' ', message
 !
       call  MPI_ABORT(CALYPSO_COMM, ierr_MPI)
