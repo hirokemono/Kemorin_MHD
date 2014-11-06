@@ -42,6 +42,8 @@
 !
       subroutine grouping_for_node_partition
 !
+      use m_constants
+      use m_error_IDs
       use m_ctl_param_partitioner
       use m_geometry_parameter
       use m_geometry_data
@@ -116,7 +118,7 @@
       else if (NTYP_div .eq. iPART_MeTiS_RSB) then
         write(*,*) 'read_group_by_metis'
         call read_group_by_metis(ierr, numnod, internal_node)
-        if (ierr .eq. 32) call ERROR_EXIT(32,0)
+        if (ierr .eq. ierr_P_MPI) call ERROR_EXIT(ierr_P_MPI, izero)
         write(*,*) 'copy_domain_list_from_IO'
         call copy_domain_list_from_IO
 !

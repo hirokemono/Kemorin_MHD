@@ -273,7 +273,7 @@
         write(id_file,'(a)') '#'
         write(id_file,'(a)') '# number of element groups'
         write(id_file,'(a)') '#'
-        write(id_file,'(i10)') num_mat
+        write(id_file,'(i15)') num_mat
       end if
 !
       end subroutine init_ele_grp_med_patch

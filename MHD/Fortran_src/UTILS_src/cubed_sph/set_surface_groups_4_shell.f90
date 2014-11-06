@@ -33,7 +33,7 @@
       write(id_file,'(a)') '!'
       write(id_file,'(a)') '! 4.2. Surface group'
 !
-      write(id_file,'(i10)') num_surf
+      write(id_file,'(i15)') num_surf
       write(id_file,'(6i10)')  (surf_istack(i),i=1,num_surf)
 !
       do k = 1, num_surf

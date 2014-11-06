@@ -29,7 +29,7 @@
       write(ifile,'(a)') '!'
       write(ifile,'(a)') '!  coarsing level'
       write(ifile,'(a)') '!'
-      write(ifile,'(i10)') is_level
+      write(ifile,'(i15)') is_level
 !
       write(ifile,'(a)') '!'
       write(ifile,'(a)') '!  number of internal node and element'

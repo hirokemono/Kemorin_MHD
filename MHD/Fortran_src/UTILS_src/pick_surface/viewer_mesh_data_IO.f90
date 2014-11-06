@@ -44,7 +44,7 @@
       write(surface_id,'(a)') '!   stack of edge for domain '
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i10)') num_pe_sf
+      write(surface_id,'(i15)') num_pe_sf
       write(surface_id,'(8i10)') inod_sf_stack(1:num_pe_sf)
       write(surface_id,'(8i10)') isurf_sf_stack(1:num_pe_sf)
       write(surface_id,'(8i10)') iedge_sf_stack(1:num_pe_sf)
@@ -85,12 +85,12 @@
       write(surface_id,'(a)') '! Global ID, x, y, z'
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i10)') nodpetot_viewer
+      write(surface_id,'(i15)') nodpetot_viewer
 !
       do i = 1, nodpetot_viewer
         write(surface_id,1002) i, xx_view(i,1:3)
       end do
- 1002 format(i10, 1p3e23.12)
+ 1002 format(i15, 1p3e23.12)
 !
       end subroutine write_node_data_viewer
 !
@@ -128,7 +128,7 @@
       write(surface_id,'(a)') '! Global ID, connectivity'
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i10)') surfpetot_viewer
+      write(surface_id,'(i15)') surfpetot_viewer
       write(surface_id,1003) surftyp_viewer(1:surfpetot_viewer)
 !
       do i = 1, surfpetot_viewer
@@ -195,7 +195,7 @@
       write(surface_id,'(a)') '!  global ID, connectivity'
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i10)') edgepetot_viewer
+      write(surface_id,'(i15)') edgepetot_viewer
 !
       do i = 1, edgepetot_viewer
        write(surface_id,'(10i10)') i, ie_edge_viewer(i,1:nnod_4_edge)
@@ -204,7 +204,7 @@
       write(surface_id,'(a)') '!'
       write(surface_id,'(a)') '!  edge ID for surfaces'
       write(surface_id,'(a)') '!'
-      write(surface_id,'(i10)') surfpetot_viewer
+      write(surface_id,'(i15)') surfpetot_viewer
       do i = 1, surfpetot_viewer
         write(surface_id,'(10i10)') i, iedge_sf_viewer(i,1:nedge_4_surf)
       end do

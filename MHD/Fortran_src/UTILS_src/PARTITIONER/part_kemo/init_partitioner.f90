@@ -78,6 +78,7 @@
 !
       subroutine initialize_nod_partitioner
 !
+      use m_error_IDs
       use m_geometry_parameter
       use m_ctl_param_partitioner
       use m_domain_group_4_partition
@@ -117,7 +118,7 @@
       call set_origin_global_node
 !
       write (*,'(//,"*** ",i5," SUBDOMAINS",//)') num_domain
-      if (num_domain .gt. numnod) call ERROR_EXIT(32,numnod)
+      if (num_domain .gt. numnod) call ERROR_EXIT(ierr_P_MPI,numnod)
 !
       end subroutine  initialize_nod_partitioner
 !

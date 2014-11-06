@@ -85,7 +85,7 @@
 !
         fem_ucd%ifmt_file = itype_assembled_data
         fem_ucd%file_prefix = merged_data_head
-        call sel_write_ucd_file(-1, istep, fem_ucd)
+        call sel_write_ucd_file(iminus, istep, fem_ucd)
         call deallocate_ucd_data(fem_ucd)
       write(*,*) 'step', istep, 'finish '
       end do

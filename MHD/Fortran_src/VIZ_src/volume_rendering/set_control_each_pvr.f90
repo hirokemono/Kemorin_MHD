@@ -147,7 +147,7 @@
      &    nele_grp_area_pvr(i_pvr), id_ele_grp_area_pvr(ist) )
 !
       if (icheck_ncomp(1) .gt. 1)                                       &
-     &     call calypso_MPI_abort(100, 'set scalar for rendering')
+     &     call calypso_MPI_abort(ierr_PVR, 'set scalar for rendering')
 !
 !
       if(pvr%i_ambient .gt. 0) then

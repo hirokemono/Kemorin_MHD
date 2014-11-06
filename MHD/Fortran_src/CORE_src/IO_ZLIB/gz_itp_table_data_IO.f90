@@ -50,9 +50,9 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
 !
-      write(textbuf,'(i10,a1)') my_rank, char(0)
+      write(textbuf,'(i15,a1)') my_rank, char(0)
       call write_compress_txt(nbuf, textbuf)
-      write(textbuf,'(i10,a1)') num_dest_domain_IO, char(0)
+      write(textbuf,'(i15,a1)') num_dest_domain_IO, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       if (num_dest_domain_IO .gt. 0) then
@@ -92,7 +92,7 @@
 !
       use m_interpolate_table_org_IO
 !
-      integer(kind = kint) :: i, inod
+      integer(kind = kint) :: inod
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
@@ -173,7 +173,7 @@
 !
       use m_interpolate_table_org_IO
 !
-      integer(kind = kint) :: i, inod, nchara
+      integer(kind = kint) :: inod, nchara
 !
 !
       if (num_dest_domain_IO .eq. 0) return
@@ -211,9 +211,9 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
 !
-      write(textbuf,'(i10,a1)') my_rank, char(0)
+      write(textbuf,'(i15,a1)') my_rank, char(0)
       call write_compress_txt(nbuf, textbuf)
-      write(textbuf,'(i10,a1)') num_org_domain_IO, char(0)
+      write(textbuf,'(i15,a1)') num_org_domain_IO, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       if (num_org_domain_IO .gt. 0) then

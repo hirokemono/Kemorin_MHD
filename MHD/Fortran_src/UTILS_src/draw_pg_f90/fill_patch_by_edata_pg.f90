@@ -34,7 +34,7 @@
       real(kind = kreal), intent(in) :: s_patch(nele_pg)
       real(kind = kreal), intent(in) :: xmax, xmin
 !
-      integer :: inod, iele, i1, i2, i3
+      integer(kind = kint) :: iele, i1, i2, i3
       real :: x_tri(3), y_tri(3)
 !
 !
@@ -84,7 +84,7 @@
       real(kind = kreal), intent(in) :: s_patch(nele_pg)
       real(kind = kreal), intent(in) :: xmax, xmin
 !
-      integer :: inod, iele, i1, i2, i3, i4
+      integer(kind = kint) :: iele, i1, i2, i3, i4
       real :: x_tri(4), y_tri(4)
 !
 !

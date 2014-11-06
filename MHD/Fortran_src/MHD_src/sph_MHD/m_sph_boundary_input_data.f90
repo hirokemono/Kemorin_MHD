@@ -288,12 +288,14 @@
       real(kind = kreal), intent(inout) :: bc_data(jmax)
 !
       integer(kind = kint) :: inum, j
+      integer(kind = 4) :: l, m
 !
 !
       do inum = 1, bc%num_bc_mode
-         j = find_local_sph_mode_address(bc%imode_gl(1,inum),           &
-     &                                   bc%imode_gl(2,inum) )
-         if(j .gt. 0) bc_data(j) = bc%bc_input(inum,1)
+        l = int(bc%imode_gl(1,inum))
+        m = int(bc%imode_gl(2,inum))
+        j = find_local_sph_mode_address(l, m)
+        if(j .gt. 0) bc_data(j) = bc%bc_input(inum,1)
       end do
 !
       end subroutine set_bc_for_sph_scalar_by_file

@@ -25,12 +25,12 @@
 !
       subroutine getarg_k(i, argc)
 !
-      integer(kind = kint), intent(in) :: i
+      integer(kind = 4), intent(in) :: i
       character(len=*), intent(out) :: argc
 !
       call getarg(0, argc)
       if(argc == "") then
-        call getarg(i + 1, argc)
+        call getarg(i+1, argc)
       else
         call getarg(i, argc)
       end if

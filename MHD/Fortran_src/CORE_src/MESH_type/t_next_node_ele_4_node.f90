@@ -213,7 +213,7 @@
       integer(kind = kint), intent(in) :: my_rank, numnod
       type(next_nod_id_4_nod), intent(in) :: neib_nod
 !
-      integer(kind = kint) :: inod, inum, ist, ied
+      integer(kind = kint) :: inod, ist, ied
 !
       do inod = 1, numnod
         ist = neib_nod%istack_next(inod-1) + 1

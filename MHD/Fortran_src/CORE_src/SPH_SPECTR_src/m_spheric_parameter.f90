@@ -38,9 +38,17 @@
 !!      subroutine check_spheric_param_rtm(my_rank)
 !!      subroutine check_spheric_param_rlm(my_rank)
 !!      subroutine check_spheric_param_rj(my_rank)
+!!
+!!      integer(kind = kint) function find_local_sph_mode_address(l, m)
+!!        integer(kind = 4), intent(in) :: l, m
+!!      integer(kind = kint) function local_sph_data_address(kr, j_lc)
+!!
 !!@endverbatim
 !!
 !!@n @param  my_rank     Running rank ID
+!!@n @param   l          Sphrical harmonics degree
+!!@n @param   m          Sphrical harmonics order
+!!
 !
       module m_spheric_parameter
 !
@@ -705,17 +713,17 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer function find_local_sph_mode_address(l, m)
+      integer(kind = kint) function find_local_sph_mode_address(l, m)
 !
-      integer(kind = kint), intent(in) :: l, m
+      integer(kind = 4), intent(in) :: l, m
 !
       integer(kind = kint) :: j
 !
 !
       find_local_sph_mode_address = 0
       do j = 1, nidx_rj(2)
-        if (   idx_gl_1d_rj_j(j,2) .eq. l                               &
-     &   .and. idx_gl_1d_rj_j(j,3) .eq. m) then
+        if (   int(idx_gl_1d_rj_j(j,2)) .eq. l                          &
+     &   .and. int(idx_gl_1d_rj_j(j,3)) .eq. m) then
           find_local_sph_mode_address = j
           return
         end if
@@ -725,7 +733,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      integer function local_sph_data_address(kr, j_lc)
+      integer(kind = kint) function local_sph_data_address(kr, j_lc)
 !
       integer(kind = kint), intent(in) :: kr, j_lc
 !

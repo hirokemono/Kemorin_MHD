@@ -73,7 +73,7 @@
           write(pick_monitor_file_code,1001)  num_fld_monitor
           write(pick_monitor_file_code,1002)                            &
      &        num_nod_component(1:num_fld_monitor)
- 1001     format('number_of_fields: ',i10)
+ 1001     format('number_of_fields: ',i15)
  1002     format('number_of_components: ',200i3)
 !
           do i = 1, num_fld_monitor

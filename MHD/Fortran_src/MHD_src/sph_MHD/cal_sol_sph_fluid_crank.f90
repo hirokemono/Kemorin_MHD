@@ -241,9 +241,12 @@
       integer(kind = kint), intent(in) :: l, m, is_field
 !
       integer(kind = kint) :: j,k,inod
+      integer(kind = 4) :: l4, m4
 !
 !
-      j = find_local_sph_mode_address(l, m)
+      l4 = int(l)
+      m4 = int(m)
+      j = find_local_sph_mode_address(l4, m4)
       if(j .eq. 0) return
 !
       write(*,*) 'field ID, l, m: ', is_field, l, m

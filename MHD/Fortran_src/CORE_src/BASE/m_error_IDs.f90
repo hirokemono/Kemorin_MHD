@@ -51,4 +51,29 @@
 !>     Error ID in PVR module
       integer(kind = kint), parameter :: ierr_PVR = 621
 !
+!
+!
+!>     Error ID for FEM element
+      integer(kind = kint), parameter :: ierr_ele =   1001
+!>     Error ID for FEM number of groups
+      integer(kind = kint), parameter :: ierr_ngrp =  1002
+!>     Error ID for FEM grouping
+      integer(kind = kint), parameter :: ierr_grp =   1003
+!>     Error ID for FEM element type
+      integer(kind = kint), parameter :: ierr_etype = 1004
+!>     Error ID for FEM element connectivity
+      integer(kind = kint), parameter :: ierr_econ =  1005
+!
+!>     Error ID for overflow of FEM node
+      integer(kind = kint), parameter :: ierr_ovnod =   2001
+!>     Error ID for overflow of FEM group
+      integer(kind = kint), parameter :: ierr_ov_grp =  2002
+!>     Error ID for surface group
+      integer(kind = kint), parameter :: ierr_sf_grp =  2003
+!
+!>     Error ID for MeTiS input
+      integer(kind = kint), parameter :: ierr_MeTISfile =  7001
+!>     Error ID for MeTiS input
+      integer(kind = kint), parameter :: ierr_MeTISData =  7002
+
       end module m_error_IDs

@@ -42,8 +42,8 @@
 !
       write(id_mesh,'(a)') '!'
       write(id_mesh,'(a)') '! 1. Parallel information'
-      write(id_mesh,'(i10)') izero
-      write(id_mesh,'(i10)') izero
+      write(id_mesh,'(i15)') izero
+      write(id_mesh,'(i15)') izero
       write(id_mesh,'(a)') ''
 !
       write(id_mesh,'(a)') '!'
@@ -55,7 +55,7 @@
 !
       write(id_conn,'(a)') '! 2.2. Element connectivity'
 !
-      write(id_conn,'(i10)') numele
+      write(id_conn,'(i15)') numele
 !
       if (nnod_4_ele.eq.20) then
         write(id_conn,'(10i6)') (i_quad,i=1,numele)

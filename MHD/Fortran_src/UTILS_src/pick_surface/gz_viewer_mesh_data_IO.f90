@@ -52,7 +52,7 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
 !
-      write(textbuf,'(i10,a1)') num_pe_sf, char(0)
+      write(textbuf,'(i15,a1)') num_pe_sf, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       call write_gz_multi_int_8i10(num_pe_sf, inod_sf_stack(1))
@@ -99,14 +99,14 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
 !
-      write(textbuf,'(i10,a1)') nodpetot_viewer, char(0)
+      write(textbuf,'(i15,a1)') nodpetot_viewer, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       do i = 1, nodpetot_viewer
         write(textbuf,1002) i, xx_view(i,1:3), char(0)
         call write_compress_txt(nbuf, textbuf)
       end do
- 1002 format(i10, 1p3e23.12,a1)
+ 1002 format(i15, 1p3e23.12,a1)
 !
       end subroutine write_node_data_viewer_gz
 !
@@ -151,12 +151,12 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
 !
-      write(textbuf,'(i10,a1)') surfpetot_viewer, char(0)
+      write(textbuf,'(i15,a1)') surfpetot_viewer, char(0)
       call write_compress_txt(nbuf, textbuf)
       call write_gz_multi_int_10i8(surfpetot_viewer, surftyp_viewer)
 !
       write(fmt_txt,'(a5,i2,a9)')                                       &
-     &                '(i10,', nnod_4_surf, '(i10),a1)'
+     &                '(i15,', nnod_4_surf, '(i15),a1)'
       do i = 1, surfpetot_viewer
         write(textbuf,fmt_txt) i, ie_sf_viewer(i,1:nnod_4_surf),        &
      &                        char(0)
@@ -229,12 +229,12 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
 !
-      write(textbuf,'(i10,a1)') edgepetot_viewer, char(0)
+      write(textbuf,'(i15,a1)') edgepetot_viewer, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
 !
       write(fmt_txt,'(a5,i2,a9)')                                       &
-     &                '(i10,', nnod_4_edge, '(i10),a1)'
+     &                '(i15,', nnod_4_edge, '(i15),a1)'
       do i = 1, edgepetot_viewer
         write(textbuf,fmt_txt) i, ie_edge_viewer(i,1:nnod_4_edge),      &
      &                         char(0)
@@ -247,11 +247,11 @@
       call write_compress_txt(nbuf, textbuf)
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
-      write(textbuf,'(i10,a1)') surfpetot_viewer, char(0)
+      write(textbuf,'(i15,a1)') surfpetot_viewer, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       write(fmt_txt,'(a5,i2,a9)')                                       &
-     &                '(i10,', nedge_4_surf, '(i10),a1)'
+     &                '(i15,', nedge_4_surf, '(i15),a1)'
       do i = 1, surfpetot_viewer
         write(textbuf,fmt_txt) i, iedge_sf_viewer(i,1:nedge_4_surf),    &
      &                           char(0)

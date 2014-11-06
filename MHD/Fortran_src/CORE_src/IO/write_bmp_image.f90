@@ -5,9 +5,9 @@
 !>                                by  K. Hayashi
 !  Modified by H. Matsui on June, 2009
 !
-!      subroutine pixout_ppm_p3(fhead, ihpixf, jvpixf, rgb)
-!      subroutine pixout_ppm_p6(fhead, ihpixf, jvpixf, rgb)
-!      subroutine pixout_BMP(fhead, ihpixf, jvpixf, rgb)
+!      subroutine pixout_ppm_p3(fhead, npixel_x, npixel_y, rgb)
+!      subroutine pixout_ppm_p6(fhead, npixel_x, npixel_y, rgb)
+!      subroutine pixout_BMP(fhead, npixel_x, npixel_y, rgb)
 !
 !      character(len=kchara), intent(in) :: fhead
 !      integer, intent(in) :: ihpixf, jvpixf
@@ -46,19 +46,24 @@
 !
 !------------------------------------------------------------------------
 !
-      subroutine pixout_ppm_p3(fhead, ihpixf, jvpixf, rgb)
+      subroutine pixout_ppm_p3(fhead, npixel_x, npixel_y, rgb)
 !
 !* interface arg.
       character(len=kchara), intent(in) :: fhead
-      integer, intent(in) :: ihpixf, jvpixf
+      integer(kind = kint), intent(in) :: npixel_x, npixel_y
 ! RGB data array
-      character(len=1), intent(in) :: rgb(3,ihpixf,jvpixf)
+      character(len=1), intent(in) :: rgb(3,npixel_x,npixel_y)
 !* local
       integer, parameter :: id_img = 16
       character(len=kchara) :: fname
-      integer i, j, k
+      integer i, j, k, ihpixf, jvpixf
       integer itmp, icnt
+!
+!
 
+      ihpixf = int(npixel_x)
+      jvpixf = int(npixel_y)
+!
 !* PPM P3 ! rather "safer" choice for many Fortran compiler(s).
 
       call add_ppm_suffix(fhead, fname)
@@ -92,20 +97,24 @@
 !
 !------------------------------------------------------------------------
 !
-      subroutine pixout_ppm_p6(fhead, ihpixf, jvpixf, rgb)
+      subroutine pixout_ppm_p6(fhead, npixel_x, npixel_y, rgb)
 !
 !* interface arg.
       character(len=kchara), intent(in) :: fhead
-      integer, intent(in) :: ihpixf, jvpixf
+      integer(kind = kint), intent(in) :: npixel_x, npixel_y
 ! RGB data array
-      character(len=1), intent(in) :: rgb(3,ihpixf,jvpixf)
+      character(len=1), intent(in) :: rgb(3,npixel_x,npixel_y)
 !
 !* local
       integer, parameter :: id_img = 16
       character(len=kchara) :: fname
-      integer i, j
+      integer i, j, ihpixf, jvpixf
       integer itmp
       character(len=14) :: frmtstr
+!
+!
+      ihpixf = int(npixel_x)
+      jvpixf = int(npixel_y)
 !
 !* PPM P6
       call add_ppm_suffix(fhead, fname)
@@ -127,21 +136,24 @@
 !
 !------------------------------------------------------------------------
 !
-       subroutine pixout_BMP(fhead, ihpixf, jvpixf, rgb)
+       subroutine pixout_BMP(fhead, npixel_x, npixel_y, rgb)
 !* interface arg.
        character(len=kchara), intent(in) :: fhead
-       integer, intent(in) :: ihpixf, jvpixf
+       integer(kind = kint), intent(in) :: npixel_x, npixel_y
 ! RGB data array
-       character(len=1), intent(in) :: rgb(3,ihpixf,jvpixf)
+       character(len=1), intent(in) :: rgb(3,npixel_x,npixel_y)
 !* local
        integer, parameter :: id_img = 16
        character(len=kchara) :: fname
-       integer :: i, j
+       integer :: i, j, ihpixf, jvpixf
        integer :: itmp
        character(len=14) :: frmtstr
        character(len=54) :: headmsw
        character(len=4) ::  byt4
        character(len=2) ::  byt2
+!
+       ihpixf = int(npixel_x)
+       jvpixf = int(npixel_y)
 !
 !* BMP (24bit depth)... this part works only when width is multiple of 4.
 

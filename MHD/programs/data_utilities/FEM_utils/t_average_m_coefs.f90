@@ -55,9 +55,9 @@
 !
       psf_ucd%ifmt_file = iflag_udt
       psf_ucd%file_prefix = tave_grp_udt_head
-      call sel_write_grd_file(-1, psf_ucd)
+      call sel_write_grd_file(iminus, psf_ucd)
       psf_ucd%file_prefix = tsig_grp_udt_head
-      call sel_write_grd_file(-1, psf_ucd)
+      call sel_write_grd_file(iminus, psf_ucd)
 !
       call deallocate_med_grouping_patch
 !
@@ -79,7 +79,7 @@
           end do
           icou = icou + 1
         end if
-        write(*,'(28a1,i10,a8,i10)', advance='NO')                      &
+        write(*,'(28a1,i15,a8,i15)', advance='NO')                      &
      &           (char(8),i=1,28), istep_read, ' count: ', icou
         if(istep_read .ge. istep_end) exit
       end do
@@ -110,7 +110,7 @@
           end do
           icou = icou + 1
         end if
-        write(*,'(28a1,i10,a8,i10)', advance='NO')                      &
+        write(*,'(28a1,i15,a8,i15)', advance='NO')                      &
      &           (char(8),i=1,28), istep_read, ' count: ', icou
 !
         if(istep_read .ge. istep_end) exit
@@ -136,10 +136,10 @@
 !
       psf_ucd%ifmt_file = iflag_udt
       psf_ucd%file_prefix = tave_grp_udt_head
-      call sel_write_udt_file(-1, istep_read, psf_ucd)
+      call sel_write_udt_file(iminus, istep_read, psf_ucd)
 !
       call set_field_to_med_patch(num_layer, num_comp,                  &
      &    comp_name, sigma_coef)
-      call sel_write_udt_file(-1, istep_read, psf_ucd)
+      call sel_write_udt_file(iminus, istep_read, psf_ucd)
 !
       end program element_grouping_udt

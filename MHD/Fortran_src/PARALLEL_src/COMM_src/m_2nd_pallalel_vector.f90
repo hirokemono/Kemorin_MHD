@@ -119,7 +119,7 @@
 !
 !
        allocate(ivec_2nd(numnod))
-       ivec_2nd  =0.0d00
+       ivec_2nd  = 0
 !
        isize_solver_int2 = numnod
 !

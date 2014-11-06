@@ -1,4 +1,4 @@
-      program drcz_fem
+      program drcy_fem
 !*********************************************************************
 !*
 !*     program for draw const_x plane
@@ -27,11 +27,10 @@
       implicit none
 !
 !
-      integer :: iw, iw2, iw3
+      integer(kind = kint) :: iw, iw2, iw3
+      integer(kind = kint) :: istep,  i_field, ist_comp
 !
-      integer :: istep
-!
-      integer :: pgopen, id1, i_field, ist_comp
+      integer :: pgopen, id1
       real(kind = kreal) :: fv(2,2)
 !
       real :: r_flame

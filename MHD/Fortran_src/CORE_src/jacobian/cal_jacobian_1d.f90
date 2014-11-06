@@ -248,7 +248,7 @@
       integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: numedge, nnod_4_edge
       integer(kind = kint), intent(in) :: ie_edge(numedge, nnod_4_edge)
-      real(kind = kreal), intent(in) :: xx(numedge)
+      real(kind = kreal), intent(in) :: xx(numnod)
 !
       real(kind = kreal), intent(in) :: dnxi(2)
 !
@@ -284,7 +284,7 @@
       integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: numedge, nnod_4_edge
       integer(kind = kint), intent(in) :: ie_edge(numedge, nnod_4_edge)
-      real(kind = kreal), intent(in) :: xx(numedge)
+      real(kind = kreal), intent(in) :: xx(numnod)
 !
       real(kind = kreal), intent(in) :: dnxi(3)
 !
@@ -324,7 +324,7 @@
       integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: numedge, nnod_4_edge
       integer(kind = kint), intent(in) :: ie_edge(numedge, nnod_4_edge)
-      real(kind = kreal), intent(in) :: xx(numedge)
+      real(kind = kreal), intent(in) :: xx(numnod)
 !
       real(kind = kreal), intent(in) :: dnxi(3)
 !

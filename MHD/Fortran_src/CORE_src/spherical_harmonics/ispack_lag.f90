@@ -78,8 +78,8 @@
 !
       integer(kind = kint), intent(in) :: MM, IM, JM, KM
 !
-      integer(kind = kint) :: JH, K, J, M, N, L, I, P1, P0
-      real(kind = kreal) :: RD, A, B, Z
+      integer(kind = kint) :: JH, K, J, M, N, L, I
+      real(kind = kreal) :: RD, A, B
       real(kind = kreal), parameter :: PI = 3.1415926535897932385D0
 !
 !*/ CHECK JM /*
@@ -339,8 +339,8 @@
       real(kind = kreal) :: E(NB)
       real(kind = kreal), parameter :: PI = 3.1415926535897932385D0
 !
-      integer(kind = kint) :: JH, I, J, N, P0, P1, IFLAG
-      real(kind = kreal) :: EPS, Z, DZ, DP
+      integer(kind = kint) :: JH, I, J, N, IFLAG
+      real(kind = kreal) :: P0, P1, EPS, Z, DZ, DP
 !
 !
       JH=JM/2
@@ -367,8 +367,8 @@
           P0=0
           P1=1
           DO N=1,JM-1,2
-            P0=((2*N-1)*Z*P1-(N-1)*P0)/N
-            P1=((2*N+1)*Z*P0-N*P1)/(N+1)
+            P0=(dble(2*N-1)*Z*P1-(N-1)*P0)/N
+            P1=(dble(2*N+1)*Z*P0-N*P1)/(N+1)
           END DO
           DP=JM*(P0-Z*P1)/(1-Z*Z)
           DZ=P1/DP

@@ -79,11 +79,11 @@
 !
       psf_ucd%ifmt_file = iflag_udt
       psf_ucd%file_prefix = psf_ave_header
-      call sel_write_grd_file(-1, psf_ucd)
+      call sel_write_grd_file(iminus, psf_ucd)
       psf_ucd%file_prefix = psf_rms_header
-      call sel_write_grd_file(-1, psf_ucd)
+      call sel_write_grd_file(iminus, psf_ucd)
       psf_ucd%file_prefix = psf_sdev_header
-      call sel_write_grd_file(-1, psf_ucd)
+      call sel_write_grd_file(iminus, psf_ucd)
 !
 !   Evaluate size of patches
 !
@@ -113,7 +113,7 @@
         write(*,'(10a1)', advance='NO') (char(8),i=1,10)
         write(*,'(i10)', advance='NO') istep
 !
-        call sel_read_udt_file(-1, istep, psf_ucd)
+        call sel_read_udt_file(iminus, istep, psf_ucd)
         call cal_rms_ave_4_psf
         call cal_minmax_psf
 !
@@ -148,7 +148,7 @@
         write(*,'(10a1)', advance='NO') (char(8),i=1,10)
         write(*,'(i10)', advance='NO') istep
 !
-        call sel_read_udt_file(-1, istep, psf_ucd)
+        call sel_read_udt_file(iminus, istep, psf_ucd)
 !
         do nd = 1, ncomptot_psf
           tsdev_psf(1:numnod_psf,nd) = tsdev_psf(1:numnod_psf,nd)       &
@@ -169,20 +169,20 @@
       end do
 
       psf_ucd%file_prefix = psf_ave_header
-      call sel_write_udt_file(-1, istep_end, psf_ucd)
+      call sel_write_udt_file(iminus, istep_end, psf_ucd)
 !
       do nd = 1, ncomptot_psf
         d_nod_psf(1:numnod_psf,nd) = trms_psf(1:numnod_psf,nd)
       end do
 !
       psf_ucd%file_prefix = psf_rms_header
-      call sel_write_udt_file(-1, istep_end, psf_ucd)
+      call sel_write_udt_file(iminus, istep_end, psf_ucd)
 !
       do nd = 1, ncomptot_psf
         d_nod_psf(1:numnod_psf,nd) = tsdev_psf(1:numnod_psf,nd)
       end do
       psf_ucd%file_prefix = psf_sdev_header
-      call sel_write_udt_file(-1, istep_end, psf_ucd)
+      call sel_write_udt_file(iminus, istep_end, psf_ucd)
 !
       stop ' //// program normally finished //// '
 !

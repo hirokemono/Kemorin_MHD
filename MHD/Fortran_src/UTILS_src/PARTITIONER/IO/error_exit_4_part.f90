@@ -6,6 +6,7 @@
 !      Written by H. Matsui on Sep., 2007
 !
       use m_precision
+      use m_error_IDs
 !
       implicit none
 !
@@ -23,29 +24,29 @@
 !
       write (*,'(/,a)')                                                 &
      &        "********** Error MESSAGE from Partitioner **********"
-      if (IFLAG.ge. 1001 .and. IFLAG.lt.2000) then
+      if (IFLAG.ge. ierr_ele .and. IFLAG.lt. (ierr_ovnod-1)) then
         write (*,'(/,a)')                                               &
      &        " ### ABORT : unexpected ZERO/minus in the orginal file"
-        if (IFLAG.eq.1001) write (*,'(  a,/)')                          &
+        if (IFLAG.eq.ierr_ele) write (*,'(  a,/)')                      &
      &        "     TOTAL NODE and/or ELEMENT NUMBER"
-        if (IFLAG.eq.1002) write (*,'(  a,i12/)')                       &
+        if (IFLAG.eq.ierr_ngrp) write (*,'(  a,i12/)')                  &
      &        "     BOUNDARY GROUP NUMBER (1:node, 2:elem, 3:suf)", nn
-        if (IFLAG.eq.1003) write (*,'(  a,i12/)')                       &
+        if (IFLAG.eq.ierr_grp) write (*,'(  a,i12/)')                   &
      &        "     BOUNDARY info ITEMs   (1:node, 2:elem, 3:suf)", nn
-        if (IFLAG.eq.1004) write (*,'(  a,i12/)')                       &
+        if (IFLAG.eq.ierr_etype) write (*,'(  a,i12/)')                 &
      &        "     ELEMENT type", nn
-        if (IFLAG.eq.1005) write (*,'(  a,i12/)')                       &
+        if (IFLAG.eq.ierr_econ) write (*,'(  a,i12/)')                  &
      &        "     ELEMENT connectivity in ", nn
         stop
       endif
 
-      if (IFLAG.eq. 2001) then
+      if (IFLAG.eq. ierr_ovnod) then
         write (*,'(/,a,i12/)')                                          &
      &        " ### ABORT : local node ID > numnod appears in ELEMENT", nn
         stop
       endif
 
-      if (IFLAG.eq.2002) then
+      if (IFLAG.eq.ierr_ov_grp) then
         write (*,'(/,a  )')                                             &
      &        " ### ABORT : local node/elem ID > numnod appears in GROUPS"
         write (*,'(  a,i12/  )')                                        &
@@ -53,32 +54,32 @@
         stop
       endif
 
-      if (IFLAG.eq.2003) then
+      if (IFLAG.eq.ierr_sf_grp) then
         write (*,'(/,a,i12/)')                                          &
-     &        " ### ABORT : local surface ID inconsistent in SUF.GRP.", &
+     &       " ### ABORT : local surface ID inconsistent in SUF.GRP.",  &
      &          nn
         stop
       endif
 
-      if (IFLAG.eq.6000) then
+      if (IFLAG.eq.ierr_file) then
         write (*,'(/,a,/)')                                             &
-     &        " ### ABORT : ERROR in ORIGINAL GRID FILE : Parallel Info"
+     &       " ### ABORT : ERROR in ORIGINAL GRID FILE : Parallel Info"
         stop
       endif
 
-      if (IFLAG.eq.21) then
+      if (IFLAG.eq.ierr_MeTISfile) then
         write (*,'(/,a,/)')                                             &
      &        " ### ABORT : ERROR in GRID/MeTiS FILE"
         stop
       endif
 
-      if (IFLAG.eq.22) then
+      if (IFLAG.eq.ierr_MeTISData) then
         write (*,'(/,a,/)')                                             &
      &        " ### ABORT : UNEXPECTED EOF in GRID/MeTiS FILE"
         stop
       endif
 
-      if (IFLAG.eq.32) then
+      if (IFLAG.eq.ierr_P_MPI) then
         write (*,'(/,a,2i12/)')                                         &
      &        " ### ABORT : INVALID PE  and node #", nn
         stop

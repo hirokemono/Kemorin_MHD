@@ -88,7 +88,7 @@
           psf_ucd%ifmt_file = iflag_udt
           psf_ucd%file_prefix = psf_header(i_psf)
           if(istep .ne. i_step_init) then
-            call sel_read_udt_file(-1, istep, psf_ucd)
+            call sel_read_udt_file(iminus, istep, psf_ucd)
           end if
           call cal_minmax_psf
 !

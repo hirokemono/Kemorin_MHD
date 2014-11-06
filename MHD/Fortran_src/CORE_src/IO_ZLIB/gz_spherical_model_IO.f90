@@ -91,7 +91,7 @@
       call write_compress_txt(nbuf, textbuf)
 !
       write(fmt_txt,'(a1,i2,a9)')                                       &
-     &                '(', ndir_sph_IO, '(i10),a1)'
+     &                '(', ndir_sph_IO, '(i15),a1)'
       write(textbuf,fmt_txt) sph_rank_IO(1:ndir_sph_IO), char(0)
       call write_compress_txt(nbuf, textbuf)
 !
@@ -115,11 +115,11 @@
       call write_compress_txt(nbuf, textbuf)
 !
       write(fmt_txt,'(a1,i2,a9)')                                       &
-     &                '(', ndir_sph_IO, '(i10),a1)'
+     &                '(', ndir_sph_IO, '(i15),a1)'
       write(textbuf,fmt_txt) nidx_gl_sph_IO(1:ndir_sph_IO), char(0)
       call write_compress_txt(nbuf, textbuf)
 !
-      write(textbuf,'(i10,a1)') ltr_gl_IO, char(0)
+      write(textbuf,'(i15,a1)') ltr_gl_IO, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       end subroutine write_gl_resolution_sph_gz
@@ -132,11 +132,11 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      write(textbuf,'(i10,a1)') nnod_sph_IO, char(0)
+      write(textbuf,'(i15,a1)') nnod_sph_IO, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       write(fmt_txt,'(a5,i2,a9)')                                       &
-     &                '(i10,', ndir_sph_IO, '(i10),a1)'
+     &                '(i15,', ndir_sph_IO, '(i15),a1)'
       do i = 1, nnod_sph_IO
         write(textbuf,fmt_txt)                                          &
      &      inod_gl_sph_IO(i), idx_gl_sph_IO(i,1:ndir_sph_IO), char(0)

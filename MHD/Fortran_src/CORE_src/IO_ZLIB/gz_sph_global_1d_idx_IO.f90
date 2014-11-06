@@ -144,7 +144,7 @@
       call write_compress_txt(nbuf, textbuf)
 !
       write(fmt_txt,'(a1,i3,a9)')                                       &
-     &                '(', ncomp_itbl_1d_IO(2), '(i10),a1)'
+     &                '(', ncomp_itbl_1d_IO(2), '(i15),a1)'
       do i = 1, nidx_sph_IO(2)
         write(textbuf,fmt_txt)                                          &
      &        idx_gl_2_IO(i,1:ncomp_itbl_1d_IO(2)), char(0)
@@ -169,7 +169,7 @@
       call write_compress_txt(nbuf, textbuf)
 !
       write(fmt_txt,'(a1,i3,a9)')                                       &
-     &                '(', ncomp_itbl_1d_IO(3), '(i10),a1)'
+     &                '(', ncomp_itbl_1d_IO(3), '(i15),a1)'
       do i = 1, nidx_sph_IO(3)
         write(textbuf,fmt_txt)                                          &
      &               idx_gl_3_IO(i,1:ncomp_itbl_1d_IO(3)), char(0)
@@ -232,7 +232,7 @@
       call write_compress_txt(nbuf, textbuf)
 !
       write(fmt_txt,'(a1,i3,a9)')                                       &
-     &                '(', ncomp_itbl_1d_IO(2), '(i10),a1)'
+     &                '(', ncomp_itbl_1d_IO(2), '(i15),a1)'
       do i = 1, nidx_sph_IO(2)
         write(textbuf,fmt_txt)                                          &
      &          idx_gl_2_IO(i,1:ncomp_itbl_1d_IO(2)), char(0)

@@ -40,7 +40,7 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
 !
-      write(textbuf,'(i10,a1)') nnod_domain_sf, char(0)
+      write(textbuf,'(i15,a1)') nnod_domain_sf, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       call write_gz_multi_int_8i10(num_pe_sf,                           &
@@ -56,7 +56,7 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
 !
-      write(textbuf,'(i10,a1)') nsurf_domain_sf, char(0)
+      write(textbuf,'(i15,a1)') nsurf_domain_sf, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       call write_gz_multi_int_8i10(num_pe_sf,                           &
@@ -72,7 +72,7 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
 !
-      write(textbuf,'(i10,a1)') nedge_domain_sf, char(0)
+      write(textbuf,'(i15,a1)') nedge_domain_sf, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       call write_gz_multi_int_8i10(num_pe_sf,                           &
@@ -127,7 +127,7 @@
       call write_compress_txt(nbuf, textbuf)
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
-      write(textbuf,'(i10,a1)') ngrp_nod_sf, char(0)
+      write(textbuf,'(i15,a1)') ngrp_nod_sf, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_nod_sf,           &
@@ -183,7 +183,7 @@
       call write_compress_txt(nbuf, textbuf)
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
-      write(textbuf,'(i10,a1)') nnod_ele_sf, char(0)
+      write(textbuf,'(i15,a1)') nnod_ele_sf, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_ele_sf,           &
@@ -196,7 +196,7 @@
       call write_compress_txt(nbuf, textbuf)
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
-      write(textbuf,'(i10,a1)') nedge_ele_sf, char(0)
+      write(textbuf,'(i15,a1)') nedge_ele_sf, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_ele_sf,           &
@@ -279,7 +279,7 @@
       call write_compress_txt(nbuf, textbuf)
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
-      write(textbuf,'(i10,a1)') nnod_surf_sf, char(0)
+      write(textbuf,'(i15,a1)') nnod_surf_sf, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_surf_sf,          &
@@ -292,7 +292,7 @@
       call write_compress_txt(nbuf, textbuf)
       write(textbuf,'(a,a1)') '!', char(0)
       call write_compress_txt(nbuf, textbuf)
-      write(textbuf,'(i10,a1)') nedge_surf_sf, char(0)
+      write(textbuf,'(i15,a1)') nedge_surf_sf, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_surf_sf,          &

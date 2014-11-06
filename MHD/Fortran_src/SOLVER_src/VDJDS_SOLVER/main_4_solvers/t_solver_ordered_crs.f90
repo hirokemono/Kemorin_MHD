@@ -439,21 +439,21 @@
 !
        integer(kind = kint) :: i
 !
-      write(50+my_rank,'(a,i10)')                                       &
+      write(50+my_rank,'(a,i15)')                                       &
      &                      'inod, INOD_DJO, INOD_DJO', djo_tbl%NC
       do i = 1, djo_tbl%NC
         write(50+my_rank,'(10i8)')                                      &
      &                      i, djo_tbl%INOD_DJO(i), djo_tbl%INM(i)
       end do
 !
-      write(50+my_rank,'(a,i10)') 'NUM_NCOMP', djo_tbl%NUM_NCOMP
-      write(50+my_rank,'(a,i10)') 'IEND_SUM'
+      write(50+my_rank,'(a,i15)') 'NUM_NCOMP', djo_tbl%NUM_NCOMP
+      write(50+my_rank,'(a,i15)') 'IEND_SUM'
       write(50+my_rank,'(10i8)') djo_tbl%IEND_SUM(1:djo_tbl%NUM_NCOMP)
-      write(50+my_rank,'(a,i10)') 'IEND_SUM_smp'
+      write(50+my_rank,'(a,i15)') 'IEND_SUM_smp'
       write(50+my_rank,'(10i8)')                                        &
      &                djo_tbl%IEND_SUM_smp(1:np_smp*djo_tbl%NUM_NCOMP)
 !
-      write(50+my_rank,'(a,i10)') 'IAM', djo_tbl%NCM
+      write(50+my_rank,'(a,i15)') 'IAM', djo_tbl%NCM
       write(50+my_rank,'(10i8)') djo_tbl%IAM(1:djo_tbl%NCM)
 !
       end subroutine check_type_DJO_table_info

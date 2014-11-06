@@ -8,6 +8,7 @@
       module load_psf_data
 !
       use m_precision
+      use m_constants
       use m_psf_results
       use t_ucd_data
 !
@@ -33,7 +34,7 @@
       read_psf%file_prefix = psf_file_header
       read_psf%ifmt_file =   iflag_psf_fmt
 !
-      call sel_read_ucd_file(-1, istep, ithree, read_psf)
+      call sel_read_ucd_file(iminus, istep, ithree, read_psf)
 !
       call set_psf_udt_mesh(read_psf)
       call set_psf_udt_data(read_psf)

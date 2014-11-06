@@ -27,12 +27,13 @@
       implicit none
 !
 !
-      integer :: iw, iw2, iw3
+      integer(kind = kint) :: iw, iw2, iw3
 !
-      integer :: istep
+      integer(kind = kint)  :: istep
 !
-      integer :: pgopen, id1, i_field, ist_comp
+      integer(kind = kint) :: id1, i_field, ist_comp
       real(kind = kreal) :: fv(2,2)
+      integer :: pgopen
       real :: r_flame
 !*
 !*  ---------  input setting  ------------

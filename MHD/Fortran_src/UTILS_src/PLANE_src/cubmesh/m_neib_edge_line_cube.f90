@@ -157,8 +157,8 @@
             open (nb_out, file=nb_name)
 !
             write(nb_out,'(a12)') '! num_edge:  '
-            write(nb_out,'(i10)') edgetot
-            write(nb_out,'(i10)') edgetot, edgetot, edgetot
+            write(nb_out,'(i15)') edgetot
+            write(nb_out,'(i15)') edgetot, edgetot, edgetot
             write(nb_out,'(a12)') '! num_depth: '
             write(nb_out,'(2i10)') ndep_1
 !

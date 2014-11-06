@@ -75,8 +75,12 @@
 !!        integer(kind = kint), intent(in) :: my_rank
 !!        type(sph_rj_grid), intent(in) :: rj
 !!
-!!      integer function find_local_sph_mode_address_t(rj, l, m)
-!!      integer function local_sph_data_address_t(rj, kr, j_lc)
+!!      integer(kind = kint) function find_local_sph_mode_address_t     &
+!!     &                             (rj, l, m)
+!!        type(sph_rj_grid), intent(in) :: rj
+!!        integer(kind = 4), intent(in) :: l, m
+!!      integer(kind = kint) function local_sph_data_address_t          &
+!!     &                            (rj, kr, j_lc)
 !!        type(sph_rj_grid), intent(in) :: rj
 !!@endverbatim
 !!
@@ -758,10 +762,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer function find_local_sph_mode_address_t(rj, l, m)
+      integer(kind = kint) function find_local_sph_mode_address_t       &
+     &                            (rj, l, m)
 !
       type(sph_rj_grid), intent(in) :: rj
-      integer(kind = kint), intent(in) :: l, m
+      integer(kind = 4), intent(in) :: l, m
 !
       integer(kind = kint) :: j
 !
@@ -779,7 +784,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      integer function local_sph_data_address_t(rj, kr, j_lc)
+      integer(kind = kint) function local_sph_data_address_t            &
+     &                            (rj, kr, j_lc)
 !
       type(sph_rj_grid), intent(in) :: rj
       integer(kind = kint), intent(in) :: kr, j_lc

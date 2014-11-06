@@ -107,7 +107,7 @@
 !>        Real work array for HDF data output
         real(kind=kreal), pointer :: fld_hdf5(:)
 !>        Integer array for HDF data output
-        integer(kind=kint), pointer :: ie_hdf5(:)
+        integer(kind = 4), pointer :: ie_hdf5(:)
       end type merged_ucd_data
 !
 ! -----------------------------------------------------------------------

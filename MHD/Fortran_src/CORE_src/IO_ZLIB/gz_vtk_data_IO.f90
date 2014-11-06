@@ -73,7 +73,7 @@
       write(textbuf,'(a1)')        char(0)
       call write_compress_txt(nbuf, textbuf)
 !
-      write(textbuf,'(a,i10,a1)') 'POINT_DATA ', nnod, char(0)
+      write(textbuf,'(a,i15,a1)') 'POINT_DATA ', nnod, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       end subroutine write_gz_vtk_fields_head
@@ -89,7 +89,7 @@
 !
 !
       if (ncomp_field .eq. n_scalar) then
-        write(textbuf,'(a,a,a,i10,a1)') 'SCALARS ', trim(field_name),   &
+        write(textbuf,'(a,a,a,i15,a1)') 'SCALARS ', trim(field_name),   &
      &                        ' double ', ione, char(0)
         call write_compress_txt(nbuf, textbuf)
 !
@@ -167,7 +167,7 @@
       call write_compress_txt(nbuf, textbuf)
 !
 !
-      write(textbuf,'(a,i10,a,a1)')  'POINTS ', nnod,                   &
+      write(textbuf,'(a,i15,a,a1)')  'POINTS ', nnod,                   &
      &                              ' double', char(0)
       call write_compress_txt(nbuf, textbuf)
 !
@@ -210,7 +210,7 @@
         icellid = 3
       end if
 !
-      write(textbuf,'(a,i10,a1)') 'CELL_TYPES ', nele, char(0)
+      write(textbuf,'(a,i15,a1)') 'CELL_TYPES ', nele, char(0)
       call write_compress_txt(nbuf, textbuf)
 !
       do iele = 1, nele
@@ -234,7 +234,7 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      write(fmt_txt,'(a1,i3,a9)')   '(', (nnod_ele+1), '(i10),a1)'
+      write(fmt_txt,'(a1,i3,a9)')   '(', (nnod_ele+1), '(i15),a1)'
 !
       do iele = 1, nele
         ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
@@ -343,7 +343,7 @@
       call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
 !
       call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
-      read(textbuf,'(a,i10,a)')  tmpchara, nnod
+      read(textbuf,'(a,i15,a)')  tmpchara, nnod
 !
       end subroutine read_gz_vtk_node_head
 !

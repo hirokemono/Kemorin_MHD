@@ -245,13 +245,14 @@
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,3)
 !
       real(kind = kreal) :: ratio, al
-      integer(kind = kint) :: inod, j, j_gl, l_gl, m_gl, k
+      integer(kind = kint) :: inod, j, j_gl, k
+      integer(kind = 4) :: l_gl, m_gl
 !
 !
 !$omp parallel do private(j_gl,l_gl,m_gl,j,inod,ratio,al)
       do j_gl = 1, ltr_w*(ltr_w+2)
-        l_gl = index_w(j_gl,1)
-        m_gl = index_w(j_gl,2)
+        l_gl = int(index_w(j_gl,1))
+        m_gl = int(index_w(j_gl,2))
         j = find_local_sph_mode_address(l_gl, m_gl)
         if(j .eq. 0) cycle
         al = one / dble(l_gl)
@@ -282,15 +283,16 @@
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,3)
 !
       real(kind = kreal) :: ratio, ar_gauss, al1
-      integer(kind = kint) :: inod, j, j_gl, l_gl, m_gl, k
+      integer(kind = kint) :: inod, j, j_gl, k
+      integer(kind = 4) :: l_gl, m_gl
 !
 !
       ar_gauss = one / r_gauss
 !
 !$omp parallel do private(j_gl,l_gl,m_gl,j,al1,inod,ratio)
       do j_gl = 1, ltr_w*(ltr_w+2)
-        l_gl = index_w(j_gl,1)
-        m_gl = index_w(j_gl,2)
+        l_gl = int(index_w(j_gl,1))
+        m_gl = int(index_w(j_gl,2))
         j = find_local_sph_mode_address(l_gl, m_gl)
         if(j .eq. 0) cycle
         al1 = one / dble(l_gl+1)

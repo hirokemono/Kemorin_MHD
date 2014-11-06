@@ -82,7 +82,7 @@
 !
       integer(kind = kint), intent(in) :: id_file
 !
-      integer(kind = kint) :: i, inod
+      integer(kind = kint) :: inod
 !
 !
       write(id_file,'(a)') '!'

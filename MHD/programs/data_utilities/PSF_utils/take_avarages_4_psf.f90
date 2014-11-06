@@ -119,7 +119,7 @@
 !
       integer(kind = kint) :: iele, icomp, i1, i2, i3
       real(kind = kreal) :: d_ele, ref_ele
-      real(kind = kreal) :: x_ctr(3)
+!      real(kind = kreal) :: x_ctr(3)
 !
 !   Evaluate average and RMS
       area =    0.0d0

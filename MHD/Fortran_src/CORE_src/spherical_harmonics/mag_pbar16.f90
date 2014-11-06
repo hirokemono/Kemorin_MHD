@@ -12,6 +12,7 @@
       module mag_pbar16
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -74,7 +75,7 @@
 !
       integer(kind = kint), intent(in) :: ni, lmax
 !
-      integer(kind = kint) :: ic, lm, lmp, l, m, lc, mc, mcq, mca, j
+      integer(kind = kint) :: ic, lm, lmp, l, m, lc, mc, mca
       real(kind = kquad) :: xm, plm
       real(kind = kquad) :: pi, sqrt2pi
       real(kind = kquad), allocatable :: bleg1(:), bleg2(:), bleg3(:)
@@ -149,7 +150,7 @@
       integer(kind = kint), intent(in) :: ni, lmax
 !
       real(kind = kquad) :: pi, sqrt2pi, cl
-      integer(kind = kint) :: ic, lm, l, m, lc, mc, mcq, mca, j
+      integer(kind = kint) :: ic, lm, l, m, lc, mc, j
 !
       pi = 4.0d0*atan(1.0d0)
       sqrt2pi=sqrt(2.0d0*pi)
@@ -179,7 +180,7 @@
       integer(kind = kint), intent(in) :: ni, lmax
 !
       real(kind = kquad) :: pi, sqrt2pi, cl
-      integer(kind = kint) :: ic, lm, l, m, lc, mc, mcq, mca, j
+      integer(kind = kint) :: ic, lm, l, m, lc, mc, j
 !
       pi = 4.0d0*atan(1.0d0)
       sqrt2pi=sqrt(2.0d0*pi)
@@ -242,7 +243,7 @@
    20 t1=t2
       t2=t1+del
       theta=t2
-      call pbar16(theta,l,0,p)
+      call pbar16(theta,l,izero,p)
       p1=p2
       p2=p
       if((k*p2) .gt. 0.) go to 20
@@ -251,7 +252,7 @@
       t1=t2
       t2=t2-s*p2
       theta=t2
-      call pbar16(theta,l,0,p)
+      call pbar16(theta,l,izero,p)
       p1=p2
       p2=p
       if(abs(p) .le. 1.e-10) go to 30
@@ -261,7 +262,7 @@
       end if
       go to 40
    30 colat(i)=theta
-      call pbar16(theta,l1,0,p)
+      call pbar16(theta,l1,izero,p)
       gauss_w(i)=co*(sin(theta)/p)**2
    10 continue
 !c
@@ -270,7 +271,7 @@
       l2=l2+1
       theta=pi/2.
       colat(l2)=theta
-      call pbar16(theta,l1,0,p)
+      call pbar16(theta,l1,izero,p)
       gauss_w(l2)=co/p**2
    70 continue
 !c

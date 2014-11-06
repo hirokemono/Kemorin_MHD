@@ -30,12 +30,12 @@
       implicit none
 !
 !
-      integer :: iw, iw2, iw3
+      integer(kind = kint) :: iw, iw2, iw3
+      integer(kind = kint) :: istep, i_field, ist_comp
 !
       real(kind= kreal), parameter :: xframe = 2.25, yframe = 1.125
-      integer :: istep
 !
-      integer :: pgopen, id1, i_field, ist_comp
+      integer :: pgopen, id1
 !*
 !*  ---------  input setting  ------------
 !*

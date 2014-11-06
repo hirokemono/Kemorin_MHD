@@ -185,9 +185,11 @@
       real(kind = kreal) :: abs_flux_start, abs_flux_start_l
       real(kind = kreal) :: flux_4_each_line
 !
-      integer(kind = kint) :: nRand = 2
-      integer(kind = kint) ::  count, clock, num_int_point
-      integer(kind = kint), allocatable :: seed(:)
+      integer(kind = kint) :: num_int_point
+!
+      integer(kind = 4) :: nRand = 2
+      integer(kind = 4) ::  count, clock
+      integer(kind = 4), allocatable :: seed(:)
 !
 !
       num_int_point = 2

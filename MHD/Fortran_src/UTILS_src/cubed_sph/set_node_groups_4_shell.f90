@@ -44,7 +44,7 @@
       write(id_file,'(a)') '! 4. Group information'
       write(id_file,'(a)') '! 4.1. Node group'
 !
-      write(id_file,'(i10)') num_bc
+      write(id_file,'(i15)') num_bc
       write(id_file,'(6i10)') (bc_istack(i),i=1,num_bc)
 !
       do k = 1, num_bc

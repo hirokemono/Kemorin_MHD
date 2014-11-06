@@ -171,7 +171,7 @@
         call pgslw(itwo)
 !
         bx2 = wbt_x + 0.16
-        by1 = wbt_y - wid_bary*xmin / (xmax-xmin)
+        by1 = wbt_y - wid_bary* real(xmin) / real(xmax-xmin)
         call pgmove(bx1,by1)
         call pgdraw(bx2,by1)
         call pgtext( (wbt_x+0.16), (by1+0.02), cxzero)

@@ -70,7 +70,7 @@
       call set_psf_mesh_to_ucd_data(psf_ucd)
 !
       psf_ucd%file_prefix = psf_fixed_header
-      call sel_write_grd_file(-1, psf_ucd)
+      call sel_write_grd_file(iminus, psf_ucd)
 !
       ipsf_temp = 0
       do ifld = 1, nfield_psf
@@ -103,7 +103,7 @@
         write(*,'(i10)', advance='NO') istep
 !
         psf_ucd%file_prefix = psf_org_header
-        call sel_read_udt_file(-1, istep, psf_ucd)
+        call sel_read_udt_file(iminus, istep, psf_ucd)
 !
         do inod = 1, numnod_psf
           d_nod_psf(inod,ipsf_temp) = d_nod_psf(inod,ipsf_temp)         &
@@ -111,7 +111,7 @@
         end do
 !
         psf_ucd%file_prefix = psf_fixed_header
-        call sel_write_udt_file(-1, istep, psf_ucd)
+        call sel_write_udt_file(iminus, istep, psf_ucd)
       end do
       write(*,*)
 !

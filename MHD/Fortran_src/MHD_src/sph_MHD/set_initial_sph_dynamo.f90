@@ -195,7 +195,8 @@
 !
       integer ( kind = kint), intent(in) :: isig
 !
-      integer ( kind = kint) :: inod, m, k, jj
+      integer(kind = 4) ::  m
+      integer(kind = kint) :: inod, k, jj
       real (kind = kreal) :: pi, xr, shell
 !
 !
@@ -203,7 +204,7 @@
       shell = r_CMB - r_ICB
 !
       m = int( mod(isig,1000) / 100 )
-      jj = find_local_sph_mode_address(m,m)
+      jj = find_local_sph_mode_address(m, m)
 !
       if (jj .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB
@@ -226,7 +227,8 @@
 !
       integer ( kind = kint), intent(in) :: isig, is_fld
 !
-      integer ( kind = kint) :: inod, m, k, jj
+      integer(kind = 4) :: m
+      integer ( kind = kint) :: inod, k, jj
       real (kind = kreal) :: pi, xr, shell
 !
 !
@@ -249,7 +251,7 @@
 !
 !
       m = int( mod(isig,1000) / 100 )
-      jj = find_local_sph_mode_address(m,m)
+      jj = find_local_sph_mode_address(m, m)
 !
 !
       if (jj .gt. 0) then
@@ -273,11 +275,10 @@
 !
       real (kind = kreal) :: pi, rr
       integer(kind = kint) :: is, it, k, js, jt
-      integer(kind = kint), parameter :: ls = 1, lt = 2
 !
 !
-      js = find_local_sph_mode_address(ls,izero)
-      jt = find_local_sph_mode_address(lt,izero)
+      js = find_local_sph_mode_address(1,0)
+      jt = find_local_sph_mode_address(2,0)
 !
       pi = four * atan(one)
 !

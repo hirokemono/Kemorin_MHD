@@ -165,6 +165,7 @@
 !
       pi = four * atan(one)
       shell = r_CMB - r_ICB
+      dr =   half * shell * ( one - cos( pi/dble(nri)) )
 !
 !      Set grid by Chebyshev grid
       r = r_ICB

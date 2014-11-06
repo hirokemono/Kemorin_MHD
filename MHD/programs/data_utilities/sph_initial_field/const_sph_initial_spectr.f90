@@ -278,7 +278,7 @@
 !
 !
 !    Find local addrtess for (l,m) = (1,0)
-      js =  find_local_sph_mode_address(ione, izero)
+      js =  find_local_sph_mode_address(1, 0)
 !
       if (js .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB
@@ -312,7 +312,7 @@
 !
 !
 !    Find local addrtess for (l,m) = (2,0)
-      jt =  find_local_sph_mode_address(itwo, izero)
+      jt =  find_local_sph_mode_address(2, 0)
 !
       if (jt .gt. 0) then
         do k = 1, nlayer_CMB
@@ -345,7 +345,7 @@
 !
 !
 !    Find address for l = m = 0
-      jj =  find_local_sph_mode_address(izero, izero)
+      jj =  find_local_sph_mode_address(0, 0)
 !
       if (jj .gt. 0) then
         do k = 1, nlayer_ICB
@@ -379,7 +379,7 @@
 !
 !
 !    Find address for l = m = 0
-      jj =  find_local_sph_mode_address(izero, izero)
+      jj =  find_local_sph_mode_address(0, 0)
 !
       if (jj .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB

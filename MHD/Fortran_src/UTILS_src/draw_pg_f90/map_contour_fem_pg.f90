@@ -61,7 +61,7 @@
 !
       real(kind = kreal) :: pi, xx(3), rtp_psf(3), s_psf(1)
       real(kind = kreal) :: ar_psf(1), as_psf(1)
-      integer :: inod
+      integer(kind = kint) :: inod
       real :: rfv(2,2)
       real :: vx_pg(2), xx_pg(2), norm_vect
       character(len=16) :: cxnorm
@@ -73,7 +73,7 @@
       rfv(2,2) =  0.4 / 2.0
 !
 !
-      norm_vect = sqrt( dble(rfv(1,2))**2 + dble(rfv(2,2))**2 )
+      norm_vect = real(sqrt( dble(rfv(1,2))**2 + dble(rfv(2,2))**2 ))
 !
       call pgbbuf
       call pgsls(ione)
@@ -212,8 +212,8 @@
           iflag_cline = ione
         else if ( idisp_mode.eq.ione .and. icolor_mode.eq.izero) then
           iflag_cline = itwo
-        else if ( idisp_mode.eq.three ) then
-          iflag_cline = three
+        else if ( idisp_mode .eq. ithree ) then
+          iflag_cline = ithree
         end if
 !
         do iele = 1, nele_pg

@@ -1,4 +1,4 @@
-      program drcz_fem
+      program drcx_fem
 !*********************************************************************
 !*
 !*     program for draw const_x plane
@@ -27,11 +27,10 @@
       implicit none
 !
 !
-      integer :: iw, iw2, iw3
+      integer(kind = kint) :: iw, iw2, iw3
+      integer(kind = kint) :: istep, i_field, ist_comp
 !
-      integer :: istep
-!
-      integer :: pgopen, id1, i_field, ist_comp
+      integer :: pgopen, id1
       real(kind = kreal) :: fv(2,2)
 !
       real :: r_flame
@@ -52,11 +51,11 @@
       endif
 !*
       if ( npanel_window .le. 2 ) then
-        iw3 = npanel_window
+        iw3 = int(npanel_window)
         call pgsubp(npanel_window,1)
       else
-        iw2 = mod(npanel_window,2)                                      &
-     &       + ( npanel_window - mod(npanel_window,2) ) / 2
+        iw2 = int(mod(npanel_window,2)                                  &
+     &       + ( npanel_window - mod(npanel_window,2) )) / 2
         iw3 = iw2*2
         call pgsubp(iw2,2)
       endif

@@ -83,7 +83,7 @@
 !
 !
       write(fmt_txt,'(a5,i3,a16)')                                      &
-     &                '(i10,', ncomp_dat, '(1pE25.15e3),a1)'
+     &                '(i15,', ncomp_dat, '(1pE25.15e3),a1)'
       do inod = 1, nnod
         write(textbuf,fmt_txt)                                          &
      &             inod_out(inod), dat_out(inod,1:ncomp_dat), char(0)
@@ -268,7 +268,7 @@
       if(nnod_4_ele.eq.num_linear_edge) write(eleflag,'(a6)') ' line '
 !
       write(fmt_txt,'(a11,i3,a9)')                                      &
-     &                '(i10,i3,a6,', nnod_4_ele, '(i10),a1)'
+     &                '(i15,i3,a6,', nnod_4_ele, '(i15),a1)'
 !
       do iele = 1, nele
         write(textbuf,fmt_txt) iele_gl(iele), ione, eleflag,            &

@@ -50,7 +50,7 @@
      &              numnod_sf, numedge_sf, (nr+1)
 !
        write(id_sf_linear_mesh,'(a)') '! number of element'
-       write(id_sf_linear_mesh,'(i10)') numele_sf
+       write(id_sf_linear_mesh,'(i15)') numele_sf
        write(id_sf_linear_mesh,'(a)')                                   &
      &  '! num. of layer for inner and outer core boundary'
        write(id_sf_linear_mesh,'(5i10)')                                &
@@ -93,7 +93,7 @@
      &              numnod_sf, numedge_sf, (nr+1)
 !
        write(id_sf_quad_mesh,'(a)') '! number of element'
-       write(id_sf_quad_mesh,'(i10)') numele_sf
+       write(id_sf_quad_mesh,'(i15)') numele_sf
        write(id_sf_quad_mesh,'(a)')                                     &
      &  '! num. of layer for inner and outer core boundary'
        write(id_sf_quad_mesh,'(5i10)')                                  &
@@ -208,7 +208,7 @@
      &              numnod_sf, numedge_sf, (nr+1)
 !
        write(id_sf_linear_mesh,'(a)') '! number of element'
-       write(id_sf_linear_mesh,'(i10)') ntot_edge_sf20
+       write(id_sf_linear_mesh,'(i15)') ntot_edge_sf20
        write(id_sf_linear_mesh,'(a)')                                   &
      &  '! num. of layer for inner and outer core boundary'
        write(id_sf_linear_mesh,'(5i10)')                                &
@@ -251,7 +251,7 @@
      &              numnod_sf, numedge_sf, (nr+1)
 !
        write(id_sf_quad_mesh,'(a)') '! number of element'
-       write(id_sf_quad_mesh,'(i10)') ntot_edge_sf20
+       write(id_sf_quad_mesh,'(i15)') ntot_edge_sf20
        write(id_sf_quad_mesh,'(a)')                                     &
      &  '! num. of layer for inner and outer core boundary'
        write(id_sf_quad_mesh,'(5i10)')                                  &

@@ -58,7 +58,7 @@
 !
       integer(kind = kint), intent(in) :: id_file
       type(filter_config_type), intent(in) ::  filter_conf
-      integer (kind=kint) :: ifil, j
+!
 !
       call write_ref_filter_param_b(id_file, filter_conf%nf_type,       &
      &    filter_conf%filter_type, filter_conf%f_width,                 &

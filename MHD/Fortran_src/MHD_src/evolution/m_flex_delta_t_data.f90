@@ -188,7 +188,7 @@
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) ::   time
 !
-      write(id_file,'(i10, 1p127E25.15e3)') i_step, time,               &
+      write(id_file,'(i15, 1p127E25.15e3)') i_step, time,               &
      &       d_ratio(1:ntot_dratio)
 !
       end subroutine write_rms_delta_t_check
@@ -201,7 +201,7 @@
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) ::   time
 !
-      write(id_file,'(i10, 1p127E25.15e3)') i_step, time,               &
+      write(id_file,'(i15, 1p127E25.15e3)') i_step, time,               &
      &       d_ratio_max(1:ntot_dratio)
 !
       end subroutine write_max_delta_t_check
@@ -214,7 +214,7 @@
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) ::   time
 !
-      write(id_file,'(i10, 1p127E25.15e3)') i_step, time,               &
+      write(id_file,'(i15, 1p127E25.15e3)') i_step, time,               &
      &       d_ratio_min(1:ntot_dratio)
 !
       end subroutine write_min_delta_t_check

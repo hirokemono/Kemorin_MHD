@@ -37,7 +37,7 @@
       write(surface_id,'(a)') '! 3. node ID for domain boundary'
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i10)') nnod_domain_sf
+      write(surface_id,'(i15)') nnod_domain_sf
       write(surface_id,'(8i10)') nod_stack_domain_sf(1:num_pe_sf)
       write(surface_id,'(8i10)') nod_item_domain_sf(1:nnod_domain_sf)
 !
@@ -45,7 +45,7 @@
       write(surface_id,'(a)') '! 3.1 surface ID for domain boundary'
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i10)') nsurf_domain_sf
+      write(surface_id,'(i15)') nsurf_domain_sf
       write(surface_id,'(8i10)') isurf_stack_domain_sf(1:num_pe_sf)
 !
       write(surface_id,'(8i10)') isurf_domain_sf(1:nsurf_domain_sf)
@@ -54,7 +54,7 @@
       write(surface_id,'(a)') '! 3.2 edge ID for domain boundary'
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i10)') nedge_domain_sf
+      write(surface_id,'(i15)') nedge_domain_sf
       write(surface_id,'(8i10)') edge_stack_domain_sf(1:num_pe_sf)
 !
       write(surface_id,'(8i10)') edge_item_domain_sf(1:nedge_domain_sf)
@@ -106,7 +106,7 @@
       write(surface_id,'(a)') '! 4. group information'
       write(surface_id,'(a)') '! 4.1 node group'
       write(surface_id,'(a)') '!'
-      write(surface_id,'(i10)') ngrp_nod_sf
+      write(surface_id,'(i15)') ngrp_nod_sf
 !
       call write_viewer_group_data(surface_id, num_pe_sf, ngrp_nod_sf,  &
      &    nnod_nod_sf, nod_stack_sf, nod_gp_name_sf, nod_item_sf)
@@ -154,7 +154,7 @@
       write(surface_id,'(a)') '!'
       write(surface_id,'(a)') '! 4.2.2 node data'
       write(surface_id,'(a)') '!'
-      write(surface_id,'(i10)') nnod_ele_sf
+      write(surface_id,'(i15)') nnod_ele_sf
 !
       call write_viewer_group_data(surface_id, num_pe_sf, ngrp_ele_sf,  &
      &    nnod_ele_sf, ele_nod_stack_sf, ele_gp_name_sf,                &
@@ -163,7 +163,7 @@
       write(surface_id,'(a)') '!'
       write(surface_id,'(a)') '! 4.2.3 edge data'
       write(surface_id,'(a)') '!'
-      write(surface_id,'(i10)') nedge_ele_sf
+      write(surface_id,'(i15)') nedge_ele_sf
 !
       call write_viewer_group_data(surface_id, num_pe_sf, ngrp_ele_sf,  &
      &    nedge_ele_sf, ele_edge_stack_sf, ele_gp_name_sf,              &
@@ -238,7 +238,7 @@
       write(surface_id,'(a)') '!'
       write(surface_id,'(a)') '! 4.3.2 node data'
       write(surface_id,'(a)') '!'
-      write(surface_id,'(i10)') nnod_surf_sf
+      write(surface_id,'(i15)') nnod_surf_sf
 !
       call write_viewer_group_data(surface_id, num_pe_sf, ngrp_surf_sf, &
      &    nnod_surf_sf, surf_nod_stack_sf, surf_gp_name_sf,             &
@@ -247,7 +247,7 @@
       write(surface_id,'(a)') '!'
       write(surface_id,'(a)') '! 4.3.3 edge data'
       write(surface_id,'(a)') '!'
-      write(surface_id,'(i10)') nedge_surf_sf
+      write(surface_id,'(i15)') nedge_surf_sf
 !
       call write_viewer_group_data(surface_id, num_pe_sf, ngrp_surf_sf, &
      &    nedge_surf_sf, surf_edge_stack_sf, surf_gp_name_sf,           &
