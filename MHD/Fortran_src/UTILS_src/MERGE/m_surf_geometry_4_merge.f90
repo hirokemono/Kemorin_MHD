@@ -78,7 +78,7 @@
 !
 !
       write(50,*) 'surfpetot, nnod_4_surf'
-      write(50,'(2i10)') merged_surf%numsurf, merged_surf%nnod_4_surf
+      write(50,'(2i15)') merged_surf%numsurf, merged_surf%nnod_4_surf
 !
       write(50,*) 'istack_surfpe'
       write(50,'(8i10)') istack_surfpe
@@ -90,7 +90,7 @@
       end do
 !
       write(50,*) 'elmpetot, nsurf_4_ele'
-      write(50,'(2i10)') merged%ele%numele, nsurf_4_ele
+      write(50,'(2i15)') merged%ele%numele, nsurf_4_ele
       write(50,*) 'iele, edge ID for surface'
 !
       do iele = 1, merged%ele%numele

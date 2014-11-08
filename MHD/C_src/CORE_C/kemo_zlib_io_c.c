@@ -190,11 +190,11 @@ void compress_file(const char *txt_file_name, const char *gz_file_name)
 	
 	int count, flush, status;
 	
-	if ((fout = fopen(txt_file_name, "w")) == NULL) {
+	if ((fout = fopen(gz_file_name, "w")) == NULL) {
 		fprintf(stderr, "Can't open %s\n", txt_file_name);
 		exit(1);
 	}
-	if ((fin = fopen(gz_file_name, "r")) == NULL) {
+	if ((fin = fopen(txt_file_name, "r")) == NULL) {
 		fprintf(stderr, "Can't open %s\n", gz_file_name);
 		exit(1);
 	}

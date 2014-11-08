@@ -100,12 +100,12 @@
       psf_ucd%file_prefix = psf_file_header
 !
       icou = 0
-      write(*,'(a,i10)', advance='NO')                                  &
+      write(*,'(a,i15)', advance='NO')                                  &
      &          'read for averaging. Step:  ', istep_start
       do istep = istep_start, istep_end, istep_int
         icou = icou + 1
         write(*,'(10a1)', advance='NO') (char(8),i=1,10)
-        write(*,'(i10)', advance='NO') istep
+        write(*,'(i15)', advance='NO') istep
 !
         call sel_read_udt_file(iminus, istep, psf_ucd)
         call cal_range_rms_ave_4_psf                                    &

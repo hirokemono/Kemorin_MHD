@@ -34,7 +34,7 @@
       write(ifile,'(a)') '!'
       write(ifile,'(a)') '!  number of internal node and element'
       write(ifile,'(a)') '!'
-      write(ifile,'(2i10)') numnod_coarse, numele_coarse
+      write(ifile,'(2i15)') numnod_coarse, numele_coarse
 !
       write(ifile,'(a)') '!'
       write(ifile,'(a)') '!  Domain ID local node ID for coarse grid, '

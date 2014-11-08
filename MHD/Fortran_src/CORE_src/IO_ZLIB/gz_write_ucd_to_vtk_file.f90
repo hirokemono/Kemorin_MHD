@@ -63,22 +63,22 @@
       call open_wt_gzfile(gzip_name)
 !
       write(textbuf,'(a,a1)') '<File version="pvtk-1.0"', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)')                                           &
      &     '       dataType="vtkUnstructuredGrid"', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,i6,a,a1)')                                      &
      &     '       numberOfPieces="', nprocs, '" >', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       do ip = 0, nprocs-1
         call set_parallel_ucd_file_name(fname_nodir, iflag_vtk,         &
      &      ip, istep, file_name)
         write(textbuf,'(3a,a1)') '   <Piece fileName="',                &
      &                       trim(file_name), '" />', char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
       write(textbuf,'(a,a1)') '</File>', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call close_gzfile
 !

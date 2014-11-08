@@ -112,7 +112,7 @@
 !
       write(id_file,'(a)') '! filter type '
       do ifil = 1, nf_type
-        write(id_file,'(i10,a2,a)') ifil, '  ',                         &
+        write(id_file,'(i15,a2,a)') ifil, '  ',                         &
      &                       trim(filter_type(ifil))
       end do
       write(id_file,'(a)') '! filter width '

@@ -124,7 +124,7 @@
 !
       write(50+my_rank,*) 'iele, elemental field: ', i_field, numdir
       do iele = 1, numele
-        write(50+my_rank,'(i10,1p10e25.14)')                            &
+        write(50+my_rank,'(i15,1p10e25.14)')                            &
      &         iele, (d_ele(iele,i_field+nd-1),nd=1, numdir)
       end do
 !

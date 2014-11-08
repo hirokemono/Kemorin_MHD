@@ -65,7 +65,7 @@
       call skip_gz_comment_int( inod_gl_sph_IO(1) )
       read(textbuf,*) inod_gl_sph_IO(1), idx_gl_sph_IO(1,1:ndir_sph_IO)
       do i = 2, nnod_sph_IO
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*)                                                 &
      &           inod_gl_sph_IO(i), idx_gl_sph_IO(i,1:ndir_sph_IO)
       end do
@@ -81,19 +81,19 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! Domain ID', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! segment ID for each direction',       &
      &                         char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(fmt_txt,'(a1,i2,a9)')                                       &
      &                '(', ndir_sph_IO, '(i15),a1)'
       write(textbuf,fmt_txt) sph_rank_IO(1:ndir_sph_IO), char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       end subroutine write_rank_4_sph_gz
 !
@@ -105,22 +105,22 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! num. of global grids', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)')                                           &
      &    '! truncation level for spherical harmonics', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(fmt_txt,'(a1,i2,a9)')                                       &
      &                '(', ndir_sph_IO, '(i15),a1)'
       write(textbuf,fmt_txt) nidx_gl_sph_IO(1:ndir_sph_IO), char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(i15,a1)') ltr_gl_IO, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       end subroutine write_gl_resolution_sph_gz
 !
@@ -133,14 +133,14 @@
 !
 !
       write(textbuf,'(i15,a1)') nnod_sph_IO, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(fmt_txt,'(a5,i2,a9)')                                       &
      &                '(i15,', ndir_sph_IO, '(i15),a1)'
       do i = 1, nnod_sph_IO
         write(textbuf,fmt_txt)                                          &
      &      inod_gl_sph_IO(i), idx_gl_sph_IO(i,1:ndir_sph_IO), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       call deallocate_nod_id_sph_IO

@@ -108,7 +108,7 @@
 !
 !
       write(textbuf,'(i10,a1)') ngrp, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       if (ngrp .gt. 0) then
         call write_gz_multi_int_8i10(ngrp, istack(1))
@@ -118,11 +118,11 @@
           num = istack(i) - istack(i-1)
 !
           write(textbuf,'(a,a1)') trim(name(i)), char(0)
-          call write_compress_txt(nbuf, textbuf)
+          call gz_write_textbuf_f
 !
           if(num .le. 0) then
             write(textbuf,'(a1)') char(0)
-            call write_compress_txt(nbuf, textbuf)
+            call gz_write_textbuf_f
           else
             call write_gz_multi_int_8i10(num, item(ist))
           end if
@@ -130,7 +130,7 @@
         end do
       else
         write(textbuf,'(a1)') char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end if
 !
       end subroutine write_group_data_gz
@@ -149,7 +149,7 @@
 !
 !
       write(textbuf,'(i10,a1)') ngrp, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       if (ngrp .gt. 0) then
         call write_gz_multi_int_8i10(ngrp, istack(1))
@@ -159,13 +159,13 @@
           num = istack(i) - istack(i-1)
 !
           write(textbuf,'(a,a1)') trim(name(i)), char(0)
-          call write_compress_txt(nbuf, textbuf)
+          call gz_write_textbuf_f
 !
           if(num .le. 0) then
             write(textbuf,'(a1)') char(0)
-            call write_compress_txt(nbuf, textbuf)
+            call gz_write_textbuf_f
             write(textbuf,'(a1)') char(0)
-            call write_compress_txt(nbuf, textbuf)
+            call gz_write_textbuf_f
           else
             call write_gz_multi_int_8i10(num, item_sf(ist,1))
             call write_gz_multi_int_8i10(num, item_sf(ist,2))
@@ -174,9 +174,9 @@
         end do
       else
         write(textbuf,'(a1)') char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
         write(textbuf,'(a1)') char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end if
 !
       end subroutine write_surf_group_data_gz

@@ -169,7 +169,7 @@
 !
 !
       write(id_gauss_coef,'(a)')    'num_spectr, reference_radius'
-      write(id_gauss_coef,'(i10,1pe25.15e3)')                           &
+      write(id_gauss_coef,'(i15,1pe25.15e3)')                           &
      &     num_pick_gauss_mode, r_4_gauss_coefs
 !
       write(id_gauss_coef,'(a)',advance='NO')    't_step    time    '
@@ -196,7 +196,7 @@
 !
       call open_gauss_coefs_4_monitor
 !
-      write(id_gauss_coef,'(i10,1pe23.14e3)', advance='NO')             &
+      write(id_gauss_coef,'(i15,1pe23.14e3)', advance='NO')             &
      &       i_step, time
       do inum = 1, num_pick_gauss_mode
         write(id_gauss_coef,'(1pe23.14e3)', advance='NO')               &

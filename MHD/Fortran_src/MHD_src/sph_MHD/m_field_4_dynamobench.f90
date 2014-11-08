@@ -142,7 +142,7 @@
 !
       call open_dynamobench_monitor_file
 !
-      write(id_dynamobench,'(i10,1pE25.15e3)', advance='NO')            &
+      write(id_dynamobench,'(i15,1pE25.15e3)', advance='NO')            &
      &     i_step, time
       write(id_dynamobench,'(1p3E25.15e3)', advance='NO') KE_bench(1:3)
 !

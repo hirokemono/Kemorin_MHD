@@ -24,7 +24,6 @@
 #define get_one_line_from_gz      get_one_line_from_gz_
 #define compress_file             compress_file_
 #define decompress_file           decompress_file_
-#define delete_file_c             delete_file_c_
 
 #define write_png_rgba_c          write_png_rgba_c_
 #define write_png_rgb_c           write_png_rgb_c_
@@ -39,8 +38,6 @@
 #define kemo_fftw_execute_dft_r2c    kemo_fftw_execute_dft_r2c_
 #define kemo_fftw_execute_dft_c2r    kemo_fftw_execute_dft_c2r_
 
-#define generate_ysfont8x12_c      generate_ysfont8x12_c_
-#define generate_ysfont16x24_c     generate_ysfont16x24_c_
 #elif FC_NAME_UPPER
 #define open_wt_gzfile            OPEN_WT_GZFILE
 #define open_ad_gzfile            OPEN_AD_GZFILE
@@ -52,7 +49,6 @@
 #define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
 #define compress_file             COMPRESS_FILE
 #define decompress_file           DECOMPRESS_FILE
-#define delete_file_c             DELETE_FILE_C
 
 #define write_png_rgba_c          WRITE_PNG_RGBA_C
 #define write_png_rgb_c           WRITE_PNG_RGB_C
@@ -67,8 +63,6 @@
 #define kemo_fftw_execute_dft_r2c    KEMO_FFTW_EXECUTE_DFT_R2C
 #define kemo_fftw_execute_dft_c2r    KEMO_FFTW_EXECUTE_DFT_C2R
 
-#define generate_ysfont8x12_c      GENERATE_YSFONT8X12_C
-#define generate_ysfont16x24_c     GENERATE_YSFONT16X24_C
 #elif FC_NAME_UPPER_STDCALL
 #define open_wt_gzfile            OPEN_WT_GZFILE
 #define open_ad_gzfile            OPEN_AD_GZFILE
@@ -80,14 +74,9 @@
 #define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
 #define compress_file             COMPRESS_FILE
 #define decompress_file           DECOMPRESS_FILE
-#define delete_file_c             DELETE_FILE_C
 
 #define write_png_rgba_c          WRITE_PNG_RGBA_C
 #define write_png_rgb_c           WRITE_PNG_RGB_C
-
-#define read_png_file_c           READ_PNG_FILE_C
-#define copy_rgb_from_png_c       COPY_RGB_FROM_PNG_C
-#define copy_rgba_from_png_c      COPY_RGBA_FROM_PNG_C
 
 #define kemo_fftw_plan_dft_r2c_1d    KEMO_FFTW_PLAN_DFT_R2C_1D
 #define kemo_fftw_plan_dft_c2r_1d    KEMO_FFTW_PLAN_DFT_C2R_1D
@@ -99,8 +88,6 @@
 #define kemo_fftw_execute_dft_r2c    KEMO_FFTW_EXECUTE_DFT_R2C
 #define kemo_fftw_execute_dft_c2r    KEMO_FFTW_EXECUTE_DFT_C2R
 
-#define generate_ysfont8x12_c      GENERATE_YSFONT8X12_C
-#define generate_ysfont16x24_c     GENERATE_YSFONT16X24_C
 #else
 #define open_wt_gzfile            open_wt_gzfile
 #define open_ad_gzfile            open_ad_gzfile
@@ -112,7 +99,6 @@
 #define get_one_line_from_gz      get_one_line_from_gz
 #define compress_file             compress_file
 #define decompress_file           decompress_file
-#define delete_file_c             delete_file_c
 
 #define write_png_rgba_c          write_png_rgba_c
 #define write_png_rgb_c           write_png_rgb_c
@@ -126,9 +112,6 @@
 #define kemo_fftw_execute            kemo_fftw_execute
 #define kemo_fftw_execute_dft_r2c    kemo_fftw_execute_dft_r2c
 #define kemo_fftw_execute_dft_c2r    kemo_fftw_execute_dft_c2r
-
-#define generate_ysfont8x12_c      generate_ysfont8x12_c
-#define generate_ysfont16x24_c     generate_ysfont16x24_c
 #endif
 
 #define LENGTHBUF 4096     /* length of text buffer */

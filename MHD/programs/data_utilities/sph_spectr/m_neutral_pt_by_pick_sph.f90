@@ -162,12 +162,12 @@
           r_neut = (radius_1d_rj_r(k  )*abs(freq2(k+1))                 &
      &            + radius_1d_rj_r(k+1)*abs(freq2(k)  ) )               &
      &             / (abs(freq2(k+1) - freq2(k)))
-          write(id_neutral_pt,'(i10,1p2E25.15e3)') istep, time, r_neut
+          write(id_neutral_pt,'(i15,1p2E25.15e3)') istep, time, r_neut
         end if
       end do
 !
       do k = 1, num_pick_layer
-            write(id_ave_den,'(i10,1pE25.15e3,i10,1p7E25.15e3)')        &
+            write(id_ave_den,'(i15,1pE25.15e3,i15,1p7E25.15e3)')        &
      &           istep, time, k, radius_1d_rj_r(k),                     &
      &           temp00(k), comp00(k), grad_temp00(k), grad_comp00(k),  &
      &           freq2(k), freq(k)

@@ -78,7 +78,7 @@
 !
       write(id_delta_z,*) 'inod, z, delta z, diff.'
       do i = 1, numnod
-        write(id_delta_z,'(i10,1p20E25.15e3)')                          &
+        write(id_delta_z,'(i15,1p20E25.15e3)')                          &
      &        i, xx(i,3), delta_z(i), delta_dz(i), d2_dz(i)
       end do
 !

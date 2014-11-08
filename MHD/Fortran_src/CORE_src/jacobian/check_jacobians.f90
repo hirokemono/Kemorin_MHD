@@ -33,7 +33,7 @@
 !
       write(50+my_rank,*) 'integration point, an'
       do ii = 1, ntot_int_3d
-          write(50+my_rank,'(i10,1p20e25.14)') ii,                    &
+          write(50+my_rank,'(i15,1p20e25.14)') ii,                    &
      &         (an(k1,ii),k1 = 1, num_t_linear)
       end do
 !
@@ -42,7 +42,7 @@
        do nd = 1, 3
         write(50+my_rank,*) 'iele, integration point, dnx', ii, nd
         do iele = 1, numele
-          write(50+my_rank,'(i10,1p20e25.14)') iele,                    &
+          write(50+my_rank,'(i15,1p20e25.14)') iele,                    &
      &           (dnx(iele,k1,ii,nd), k1 = 1, num_t_linear)
         end do
        end do
@@ -50,7 +50,7 @@
 !
       write(50+my_rank,*) 'iele, jacobian'
       do iele = 1, numele
-          write(50+my_rank,'(i10,1p20e25.14)') iele,                    &
+          write(50+my_rank,'(i15,1p20e25.14)') iele,                    &
      &           (xjac(iele,ii), k1 = 1, ntot_int_3d)
       end do
 !
@@ -70,7 +70,7 @@
 !
       write(50+my_rank,*) 'integration point, aw'
       do ii = 1, ntot_int_3d
-          write(50+my_rank,'(i10,1p20e25.14)') ii,                      &
+          write(50+my_rank,'(i15,1p20e25.14)') ii,                      &
      &         (aw(k1,ii),k1 = 1, num_t_linear)
       end do
 !
@@ -79,7 +79,7 @@
        do nd = 1, 3
         write(50+my_rank,*) 'iele, integration point, dwx', ii, nd
         do iele = 1, numele
-          write(50+my_rank,'(i10,1p20e25.14)') iele,                    &
+          write(50+my_rank,'(i15,1p20e25.14)') iele,                    &
      &           (dwx(iele,k1,ii,nd), k1 = 1, nnod_4_ele)
         end do
        end do
@@ -87,7 +87,7 @@
 !
 !      write(50+my_rank,*) 'iele, jacobian'
 !      do iele = 1, numele
-!          write(50+my_rank,'(i10,1p20e25.14)') iele,                   &
+!          write(50+my_rank,'(i15,1p20e25.14)') iele,                   &
 !     &           (xjac_q(iele,ii), k1 = 1, ntot_int_3d)
 !      end do
 !

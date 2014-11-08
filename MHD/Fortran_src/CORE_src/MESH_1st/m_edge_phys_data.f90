@@ -121,7 +121,7 @@
 !
       write(50+my_rank,*) 'iedge, edge field: ', i_field, numdir
       do iedge = 1, numedge
-        write(50+my_rank,'(i10,1p10e25.14)')                            &
+        write(50+my_rank,'(i15,1p10e25.14)')                            &
      &         iedge, (d_edge(iedge,i_field+nd-1),nd=1, numdir)
       end do
 !

@@ -33,74 +33,74 @@
 !
 !
       write(textbuf,'(a,a1)') '!' , char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  edge connectivity ', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  and communication table ', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!' , char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! 1.parallel information', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! ', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_domain_info_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  2  edge connectivity', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  2.1  edge connectivity ', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!      (type and connection) ', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_element_info_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  2.2  edge id for each surface', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_surface_4_element_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  2.3   edge id for each element',      &
      &       char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_edge_4_element_gz
 !
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! 3.import / export information '        &
      &      , char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! 3.1 edge ID for import ', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_import_data_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! 3.2 edge ID for export ', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_export_data_gz
 !
@@ -148,31 +148,31 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! 4.   geometry of edge', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  4.1. center of edge', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_geometry_info_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  4.2  direction of edge', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_vector_in_element_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  4.3  length of edge', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_scalar_in_element_gz
 !
@@ -187,33 +187,33 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! 4.   geometry of edge', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  4.1. center of edge', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  (spherical coordinate) ', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_geometry_info_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  4.2  direction of edge', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_vector_in_element_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  4.3  length of edge', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_scalar_in_element_gz
 !
@@ -227,33 +227,33 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! 4.   geometry of edge', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  4.1. center of edge', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  (cylindrical coordinate) ', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_geometry_info_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  4.2  direction of edge', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_vector_in_element_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!  4.3  length of edge', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_scalar_in_element_gz
 !

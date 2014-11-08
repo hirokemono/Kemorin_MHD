@@ -79,7 +79,7 @@
       write(*,*) 'ascii data file: ', trim(zene_file_name)
       open(id_zene_spec_file, file = zene_file_name, form= 'formatted')
 !
-      write(id_zene_spec_file,'(2i10)') num_ene_spec, num_phys_rtp
+      write(id_zene_spec_file,'(2i15)') num_ene_spec, num_phys_rtp
       write(id_zene_spec_file,'(10i5)')                                 &
      &      num_phys_comp_rtp(1:num_phys_rtp)
 !
@@ -126,7 +126,7 @@
       write(*,*) 'ascii data file: ', trim(zene_file_name)
       open(id_zene_spec_file, file = zene_file_name, form= 'formatted')
 !
-      write(id_zene_spec_file,'(2i10)') num_ene_spec, num_phys_rtp
+      write(id_zene_spec_file,'(2i15)') num_ene_spec, num_phys_rtp
       write(id_zene_spec_file,'(10i5)')                                 &
      &      num_phys_comp_rtp(1:num_phys_rtp)
 !

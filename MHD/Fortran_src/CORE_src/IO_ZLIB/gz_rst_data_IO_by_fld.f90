@@ -103,7 +103,7 @@
      &      num_phys_comp_IO(i) )
 !
         do inod = 1, numgrid_phys_IO
-          call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+          call get_one_line_from_gz_f
         end do
       end do
 !

@@ -101,7 +101,7 @@
        do k = 1, num_ene_z
         read(z_stacked_code,*) kx, ky, (ene_z(nd),nd= 1, num_fft)
         if ( kx.eq.kx_in .and. ky.eq.ky_in) then
-         write(output_code,'(i10,1p254e23.12)')                         &
+         write(output_code,'(i15,1p254e23.12)')                         &
      &    istep, (ene_z(nd),nd= 1, num_fft)
         end if
        end do

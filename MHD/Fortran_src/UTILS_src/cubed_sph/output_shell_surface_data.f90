@@ -58,7 +58,7 @@
 !
        write(id_sf_linear_mesh,'(a)') '! node'
        do inod = 1, numnod_sf
-        write(id_sf_linear_mesh,'(i10,1p3E25.15e3)') inod,              &
+        write(id_sf_linear_mesh,'(i15,1p3E25.15e3)') inod,              &
      &                              xyz_surf(inod,1:3)
        end do
 !
@@ -101,7 +101,7 @@
 !
        write(id_sf_quad_mesh,'(a)') '! node'
        do inod = 1, numnod_sf20
-        write(id_sf_quad_mesh,'(i10,1p3E25.15e3)') inod,                &
+        write(id_sf_quad_mesh,'(i15,1p3E25.15e3)') inod,                &
      &                              xyz_surf(inod,1:3)
        end do
 !
@@ -139,7 +139,7 @@
          ist = inod_stack_sf(ic-1) + 1
          ied = inod_stack_sf(ic)
          do inod = ist, ied
-           write(id_sf_coarsing,'(3i10)') (inod-inod_stack_sf(ic-1)),   &
+           write(id_sf_coarsing,'(3i15)') (inod-inod_stack_sf(ic-1)),   &
      &         inod_2_next(inod), inod_2_org(inod)
          end do
        end do
@@ -216,7 +216,7 @@
 !
        write(id_sf_linear_mesh,'(a)') '! node'
        do inod = 1, numnod_sf
-        write(id_sf_linear_mesh,'(i10,1p3E25.15e3)') inod,              &
+        write(id_sf_linear_mesh,'(i15,1p3E25.15e3)') inod,              &
      &                          xyz_surf(inod,1:3)
        end do
 !
@@ -259,7 +259,7 @@
 !
        write(id_sf_quad_mesh,'(a)') '! node'
        do inod = 1, numnod_sf20
-        write(id_sf_quad_mesh,'(i10,1p3E25.15e3)') inod,                &
+        write(id_sf_quad_mesh,'(i15,1p3E25.15e3)') inod,                &
      &                              xyz_surf(inod,1:3)
        end do
 !

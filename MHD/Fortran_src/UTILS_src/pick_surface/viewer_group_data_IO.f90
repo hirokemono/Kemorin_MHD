@@ -145,7 +145,7 @@
       write(surface_id,'(a)') '! 4.2.1 element data'
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(2i10)') ngrp_ele_sf, nele_ele_sf
+      write(surface_id,'(2i15)') ngrp_ele_sf, nele_ele_sf
 !
       call write_viewer_group_data(surface_id, num_pe_sf, ngrp_ele_sf,  &
      &    nele_ele_sf, ele_stack_sf, ele_gp_name_sf, ele_item_sf)
@@ -228,7 +228,7 @@
       write(surface_id,'(a)') '! 4.3 surface group'
       write(surface_id,'(a)') '! 4.3.1 surface data'
       write(surface_id,'(a)') '!'
-      write(surface_id,'(2i10)') ngrp_surf_sf, nsurf_surf_sf
+      write(surface_id,'(2i15)') ngrp_surf_sf, nsurf_surf_sf
 !
       call write_viewer_group_data(surface_id, num_pe_sf, ngrp_surf_sf, &
      &    nsurf_surf_sf, surf_stack_sf, surf_gp_name_sf,                &

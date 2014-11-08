@@ -34,12 +34,12 @@
 !
       write(textbuf,'(2i10,a1)') numnod_dummy, internal_node_dummy,     &
      &      char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       do i=1, numnod_dummy
         write(textbuf,'(i10,1p3E25.15e3,a1)')  globalnodid_dummy(i),    &
      &        xx_dummy(i,1:3), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       call deallocate_node_data_dummy
@@ -54,11 +54,11 @@
 !
       write(textbuf,'(2i10,a1)') numnod_dummy, internal_node_dummy,     &
      &      char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       do i = 1, numnod_dummy
         write(textbuf,'(i10,1p3E25.15e3,a1)') i, ele_scalar_IO(i),      &
      &      char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       call deallocate_ele_scalar_IO
@@ -73,11 +73,11 @@
 !
       write(textbuf,'(2i10,a1)') numnod_dummy, internal_node_dummy,     &
      &      char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       do i = 1, numnod_dummy
         write(textbuf,'(i10,1p3E25.15e3,a1)') i, ele_vector_IO(i,1:3),  &
      &         char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       call deallocate_ele_vector_IO
@@ -105,7 +105,7 @@
       call allocate_node_data_dummy
 !
       do i=1, numnod_dummy
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*)  globalnodid_dummy(i), (xx_dummy(i,k),k=1,3)
       end do
 !
@@ -124,7 +124,7 @@
       call allocate_ele_scalar_IO
 !
       do i = 1, numnod_dummy
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) itmp, ele_scalar_IO(i)
       end do
 !
@@ -142,7 +142,7 @@
       call allocate_ele_vector_IO
 !
       do i = 1, numnod_dummy
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) itmp, ele_vector_IO(i,1:3)
       end do
 !

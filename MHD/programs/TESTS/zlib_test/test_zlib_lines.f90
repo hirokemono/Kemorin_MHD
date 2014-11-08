@@ -6,9 +6,9 @@
       implicit none
 !
       integer(kind = kint) :: i,j, k(10)
-      integer(kind = kint) :: num_txt, iflag_fin, num_word, nchara
+      integer(kind = 4) :: num_txt, iflag_fin, num_word, nchara
       character(len=kchara) :: fname
-      integer(kind = kint), parameter :: nbuf = 2000
+      integer(kind = 4), parameter :: nbuf = 2000
       character(len=nbuf) :: input_txt
 !
 !
@@ -64,7 +64,7 @@
       call get_one_line_from_gz(nbuf, num_word, nchara, input_txt)
 !
       write(*,*) 'num_word', num_word
-        write(*,*) 'nchara', nchara
+      write(*,*) 'nchara', nchara
       read(input_txt,*) fname
       write(*,'(a)') trim(fname)
 !

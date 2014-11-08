@@ -340,10 +340,10 @@
           write(id_file,'(a)') '# element group name, node lists'
           write(id_file,'(a)') '#'
           write(id_file,'(a)') trim(grp_name)
-          write(id_file,'(2i10)') (3*npatch_g), npatch_g
+          write(id_file,'(2i15)') (3*npatch_g), npatch_g
 !
           do inum = 1, 3*npatch_g
-            write(id_file,'(i10,1p3e23.13e3)')                          &
+            write(id_file,'(i15,1p3e23.13e3)')                          &
      &                               inum, xyz_med_g(1:3,inum)
           end do
           write(id_file,'(a)') '# element lists'

@@ -198,7 +198,7 @@
       write (id_file,'(2i6)')  ltr_gaunt, jmax_gaunt
       write (id_file,'(a)')                                             &
      &      'ntot_larger_gei_nl_lm3, ntot_gi_nl_lm3, ntot_ei_nl_lm3'
-      write (id_file,'(3i10)') ntot_larger_gei_nl_lm3,                  &
+      write (id_file,'(3i15)') ntot_larger_gei_nl_lm3,                  &
      &                         ntot_gi_nl_lm3, ntot_ei_nl_lm3
 !
       write (id_file,'(a)')                                             &

@@ -14,6 +14,7 @@
       character(len = 1), allocatable :: rgb_chara_gl(:,:)
       character(len = 1), allocatable :: rgba_chara_gl(:,:)
       character(len=1024) ::  fname_img_v
+      integer(kind = 4) :: npix4_x, npix4_y
 !
 !
       num_pixel_x = 240
@@ -29,13 +30,17 @@
       call cvt_double_rgba_to_char_rgba(num_pixel_xy, rgba_real_gl,     &
      &    rgba_chara_gl)
       write(fname_img_v, '(a,a1)') 'rgba_test_1', CHAR(0)
-      call write_png_rgba_c(fname_img_v, num_pixel_x,                   &
-     &    num_pixel_y, rgba_chara_gl(1,1))
+      npix4_x = int(num_pixel_x)
+      npix4_y = int(num_pixel_y)
+      call write_png_rgba_c(fname_img_v, npix4_x, npix4_y,              &
+     &    rgba_chara_gl(1,1))
 !
       call cvt_double_rgba_to_char_rgb(num_pixel_xy, rgba_real_gl,      &
      &    rgb_chara_gl)
       write(fname_img_v, '(a,a1)') 'rgb_test_1', CHAR(0)
-      call write_png_rgb_c(fname_img_v, num_pixel_x, num_pixel_y,       &
+      npix4_x = int(num_pixel_x)
+      npix4_y = int(num_pixel_y)
+      call write_png_rgb_c(fname_img_v, npix4_x, npix4_y,               &
      &    rgb_chara_gl(1,1))
 !
 !
@@ -44,13 +49,17 @@
       call cvt_double_rgba_to_char_rgba(num_pixel_xy, rgba_real_gl,     &
      &    rgba_chara_gl)
       write(fname_img_v, '(a,a1)') 'rgba_test_2', CHAR(0)
-      call write_png_rgba_c(fname_img_v, num_pixel_x,                   &
-     &    num_pixel_y, rgba_chara_gl(1,1))
+      npix4_x = int(num_pixel_x)
+      npix4_y = int(num_pixel_y)
+      call write_png_rgba_c(fname_img_v, npix4_x, npix4_y,              &
+     &    rgba_chara_gl(1,1))
 !
       call cvt_double_rgba_to_char_rgb(num_pixel_xy, rgba_real_gl,      &
      &    rgb_chara_gl)
       write(fname_img_v, '(a,a1)') 'rgb_test_2', CHAR(0)
-      call write_png_rgb_c(fname_img_v, num_pixel_x, num_pixel_y,       &
+      npix4_x = int(num_pixel_x)
+      npix4_y = int(num_pixel_y)
+      call write_png_rgb_c(fname_img_v,npix4_x, npix4_y,                &
      &    rgb_chara_gl(1,1))
 !
       end subroutine s_png_test_from_f

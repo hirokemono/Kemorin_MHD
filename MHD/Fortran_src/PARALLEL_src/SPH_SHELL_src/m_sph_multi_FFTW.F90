@@ -77,6 +77,8 @@
       complex(kind = fftw_complex), parameter :: iu = (0.0d0,1.0d0)
 !>      estimation flag for FFTW
       integer(kind = 4), parameter :: FFTW_ESTIMATE = 64
+!>      Meajor flag for FFTW
+      integer(kind = 4), parameter :: FFTW_MEASURE = 0
 !
 !
 !>      plan ID for multi backward transform
@@ -97,6 +99,10 @@
 !
       real(kind = kreal) :: elapsed_fftw(3) = (/0.0,0.0,0.0/)
 !
+      integer, parameter :: IONE_4 = 1
+      integer, parameter :: inembed = 0
+      integer, parameter :: istride = 1
+!
       private :: iu
       private :: FFTW_ESTIMATE
       private :: iflag_fft_mul_len
@@ -116,40 +122,40 @@
       use m_spheric_parameter
       use m_spheric_param_smp
 !
-      integer(kind = kint) :: ip, ist, howmany, inembed, istride
-      integer(kind = kint) :: idist_r, idist_c
+      integer(kind = kint) :: ip, ist
+      integer(kind = 4) :: Nfft4, howmany, idist_r, idist_c
 !
 !
+      Nfft4 = int(nidx_rtp(3))
       call allocate_mul_FFTW_plan                                       &
      &   (irt_rtp_smp_stack(np_smp), nidx_rtp(3))
 !
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1) + 1
-        howmany = irt_rtp_smp_stack(ip  ) - irt_rtp_smp_stack(ip-1)
-        inembed = 0
-        istride = 1
-        idist_r = nidx_rtp(3)
-        idist_c = nidx_rtp(3)/2+1
+        howmany = int(irt_rtp_smp_stack(ip  )                           &
+     &           - irt_rtp_smp_stack(ip-1))
+        idist_r = int(nidx_rtp(3))
+        idist_c = int(nidx_rtp(3)/2+1)
 !
 #ifdef FFTW3_C
         call kemo_fftw_plan_many_dft_r2c                                &
-     &     (plan_fowd_mul(ip), ione, nidx_rtp(3), howmany,              &
+     &     (plan_fowd_mul(ip), IONE_4, Nfft4, howmany,                  &
      &      X_FFTW_mul(1,ist), inembed, istride, idist_r,               &
      &      C_FFTW_mul(1,ist), inembed, istride, idist_c,               &
      &      FFTW_ESTIMATE)
         call kemo_fftw_plan_many_dft_c2r                                &
-     &     (plan_back_mul(ip), ione, nidx_rtp(3), howmany,              &
+     &     (plan_back_mul(ip), IONE_4, Nfft4, howmany,                  &
      &      C_FFTW_mul(1,ist), inembed, istride, idist_c,               &
      &      X_FFTW_mul(1,ist), inembed, istride, idist_r,               &
      &      FFTW_ESTIMATE)
 #else
         call dfftw_plan_many_dft_r2c                                    &
-     &     (plan_fowd_mul(ip), ione, nidx_rtp(3), howmany,              &
+     &     (plan_fowd_mul(ip), IONE_4, Nfft4, howmany,                  &
      &      X_FFTW_mul(1,ist), inembed, istride, idist_r,               &
      &      C_FFTW_mul(1,ist), inembed, istride, idist_c,               &
      &      FFTW_ESTIMATE)
         call dfftw_plan_many_dft_c2r                                    &
-     &     (plan_back_mul(ip), ione, nidx_rtp(3), howmany,              &
+     &     (plan_back_mul(ip), IONE_4, Nfft4, howmany,                  &
      &      C_FFTW_mul(1,ist), inembed, istride, idist_c,               &
      &      X_FFTW_mul(1,ist), inembed, istride, idist_r,               &
      &      FFTW_ESTIMATE)

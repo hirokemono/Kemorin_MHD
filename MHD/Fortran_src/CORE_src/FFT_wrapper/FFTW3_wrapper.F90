@@ -89,6 +89,8 @@
 !
 !>      estimation flag for FFTW
       integer(kind = 4), parameter :: FFTW_ESTIMATE = 64
+!>      Meajor flag for FFTW
+      integer(kind = 4), parameter :: FFTW_MEASURE = 0
 !
       real(kind = kreal) :: elapsed_fftw(3) = (/0.0,0.0,0.0/)
 !
@@ -115,18 +117,20 @@
      &              :: C_FFTW(Nfft/2+1,Ncomp)
 !
       integer(kind = kint) :: j
+      integer(kind = 4) :: Nfft4
 !
 !
+      Nfft4 = int(Nfft)
       do j = 1, Ncomp
 #ifdef FFTW3_C
-        call kemo_fftw_plan_dft_r2c_1d(plan_forward(j), Nfft,           &
+        call kemo_fftw_plan_dft_r2c_1d(plan_forward(j), Nfft4,          &
      &      X_FFTW(1,j), C_FFTW(1,j) , FFTW_ESTIMATE)
-        call kemo_fftw_plan_dft_c2r_1d(plan_backward(j), Nfft,          &
+        call kemo_fftw_plan_dft_c2r_1d(plan_backward(j), Nfft4,         &
      &      C_FFTW(1,j), X_FFTW(1,j) , FFTW_ESTIMATE)
 #else
-        call dfftw_plan_dft_r2c_1d(plan_forward(j), Nfft,               &
+        call dfftw_plan_dft_r2c_1d(plan_forward(j), Nfft4,              &
      &      X_FFTW(1,j), C_FFTW(1,j) , FFTW_ESTIMATE)
-        call dfftw_plan_dft_c2r_1d(plan_backward(j), Nfft,              &
+        call dfftw_plan_dft_c2r_1d(plan_backward(j), Nfft4,             &
      &      C_FFTW(1,j), X_FFTW(1,j) , FFTW_ESTIMATE)
 #endif
       end do

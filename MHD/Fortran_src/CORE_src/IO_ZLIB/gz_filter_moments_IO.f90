@@ -55,14 +55,14 @@
 !
       write(textbuf,'(a,a1)') '! number of node for filtering: ',       &
      &      char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(2i10,a1)') nnod, nele, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)')  '! number of filter function ', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(i10,a1)') nf_type, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       end subroutine write_filter_elen_head_gz
 !
@@ -97,14 +97,14 @@
 !
       write(textbuf,'(a,a1)') '! number of node for filtering: ',       &
      &      char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(3i10,a1)')  nnod, nele, n_filter, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)')  '! number of filter function ', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(i10,a1)') nf_type, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       end subroutine write_filter_moms_head_gz
 !
@@ -124,7 +124,7 @@
       call skip_gz_comment_int(itmp)
       read(textbuf,*) itmp, el1(1), el2(1), el3(1)
       do i = 2, num
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) itmp, el1(i), el2(i), el3(i)
       end do
 !
@@ -147,7 +147,7 @@
         call skip_gz_comment_int(itmp)
         read(textbuf,*) itmp, itmp, el1(1,nd), el2(1,nd), el3(1,nd)
         do i = 2, num
-          call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+          call get_one_line_from_gz_f
           read(textbuf,*) itmp, itmp, el1(i,nd), el2(i,nd), el3(i,nd)
         end do
       end do
@@ -169,7 +169,7 @@
       do i = 1, num
         write(textbuf,'(i10,1p3E25.15e3,a1)') i,                        &
      &                                el1(i), el2(i), el3(i), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       end subroutine write_elength_gz
@@ -190,7 +190,7 @@
           do i = 1, num
             write(textbuf,'(2i10,1p3E25.15e3,a1)') nd, i, el1(i,nd),    &
      &         el2(i,nd), el3(i,nd), char(0)
-            call write_compress_txt(nbuf, textbuf)
+            call gz_write_textbuf_f
           end do
         end do
 !

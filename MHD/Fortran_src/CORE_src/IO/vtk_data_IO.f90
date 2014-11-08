@@ -67,7 +67,7 @@
 !
 !
       write(id_vtk,'(a)')
-      write(id_vtk,'(a,i10)') 'POINT_DATA ', nnod
+      write(id_vtk,'(a,i15)') 'POINT_DATA ', nnod
 ! 
       end subroutine write_vtk_fields_head
 !
@@ -85,7 +85,7 @@
 !
 !
       if (ncomp_field .eq. n_scalar) then
-        write(id_vtk,'(a,a,a,i10)') 'SCALARS ', trim(field_name),       &
+        write(id_vtk,'(a,a,a,i15)') 'SCALARS ', trim(field_name),       &
      &                        ' double ', ione
         write(id_vtk,'(a)') 'LOOKUP_TABLE default'
       else if (ncomp_field .eq. n_vector) then
@@ -141,7 +141,7 @@
       write(id_vtk,'(a)') 'ASCII'
       write(id_vtk,'(a)') 'DATASET UNSTRUCTURED_GRID'
 !
-      write(id_vtk,'(a,i10,a)')  'POINTS ', nnod, ' double'
+      write(id_vtk,'(a,i15,a)')  'POINTS ', nnod, ' double'
 !
       end subroutine write_vtk_node_head
 !
@@ -157,7 +157,7 @@
 !
 !
       nums = nele * (nnod_ele+1)
-      write(id_vtk,'(a,2i10)') 'CELLS ', nele, nums
+      write(id_vtk,'(a,2i15)') 'CELLS ', nele, nums
 !
       end subroutine write_vtk_connect_head
 !
@@ -183,7 +183,7 @@
         icellid = 3
       end if
 !
-      write(id_vtk,'(a,i10)') 'CELL_TYPES ', nele
+      write(id_vtk,'(a,i15)') 'CELL_TYPES ', nele
       do iele = 1, nele
         write(id_vtk,'(i5)') icellid
       end do
@@ -311,7 +311,7 @@
       read(id_vtk,*) tmpchara
       read(id_vtk,*) tmpchara
 !
-      read(id_vtk,'(a,i10,a)')  tmpchara, nnod
+      read(id_vtk,'(a,i15,a)')  tmpchara, nnod
 !
       end subroutine read_vtk_node_head
 !

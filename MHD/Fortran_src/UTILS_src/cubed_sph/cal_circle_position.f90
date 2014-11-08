@@ -75,10 +75,10 @@
 !
         do inod0 = 1, numnod_sf
           inod = inod + 1
-          write (ifile,'(i10,1p3E25.15e3)')                             &
+          write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), zero
           if (ifile_q .gt. 0) then
-            write (ifile_q,'(i10,1p3E25.15e3)')                         &
+            write (ifile_q,'(i15,1p3E25.15e3)')                         &
      &          inod, x(inod0), y(inod0), zero
           end if
         end do
@@ -110,10 +110,10 @@
 !
         do inod0 = 1, numnod_sf
           inod = inod + 1
-          write (ifile,'(i10,1p3E25.15e3)')                             &
+          write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), zero
           if (ifile_q .gt. 0) then
-            write (ifile_q,'(i10,1p3E25.15e3)')                         &
+            write (ifile_q,'(i15,1p3E25.15e3)')                         &
      &          inod, x(inod0), y(inod0), zero
           end if
         end do
@@ -147,10 +147,10 @@
 !
         do inod0 = 1, numnod_sf
           inod = inod + 1
-          write (ifile,'(i10,1p3E25.15e3)')                             &
+          write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), zero
           if (ifile_q .gt. 0) then
-            write (ifile_q,'(i10,1p3E25.15e3)')                         &
+            write (ifile_q,'(i15,1p3E25.15e3)')                         &
      &          inod, x(inod0), y(inod0), zero
           end if
         end do
@@ -193,7 +193,7 @@
 !
         do inod0 = 1, numnod_sf+numedge_sf
           inod = inod + 1
-          write (ifile,'(i10,1p3E25.15e3)')                             &
+          write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), zero
         end do
       end do
@@ -242,7 +242,7 @@
 !
         do inod0 = 1, numnod_sf+numedge_sf
           inod = inod + 1
-          write (ifile,'(i10,1p3E25.15e3)')                             &
+          write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), zero
         end do
       end do

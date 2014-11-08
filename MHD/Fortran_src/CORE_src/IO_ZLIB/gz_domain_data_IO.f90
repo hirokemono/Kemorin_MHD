@@ -34,7 +34,7 @@
 !
       call skip_gz_comment_int(my_rank_IO)
 !
-      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+      call get_one_line_from_gz_f
       read(textbuf,*) num_neib_domain_IO
 !
       call allocate_neib_domain_IO
@@ -94,16 +94,16 @@
 !
 !
       write(textbuf,'(i10,a1)') my_rank_IO, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(i10,a1)') num_neib_domain_IO, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       if (num_neib_domain_IO .gt. 0) then
         call write_gz_multi_int_8i10(num_neib_domain_IO,           &
      &      id_neib_domain_IO)
       else
         write(textbuf,'(a1)') char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end if
 !
       call deallocate_neib_domain_IO
@@ -145,7 +145,7 @@
 !
       call skip_gz_comment_int( inod_sr(1) )
       do i = 2, ntot_sr
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) inod_sr(i)
       end do
 !
@@ -166,11 +166,11 @@
         call write_gz_multi_int_8i10(num_sr, istack_sr(1))
         do i = 1, ntot_sr
           write(textbuf,'(i10,a1)') inod_sr(i), char(0)
-          call write_compress_txt(nbuf, textbuf)
+          call gz_write_textbuf_f
         end do
       else
         write(textbuf,'(a1)') char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end if
 !
       end subroutine write_send_recv_data_gz

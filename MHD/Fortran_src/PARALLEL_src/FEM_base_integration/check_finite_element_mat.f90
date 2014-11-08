@@ -36,7 +36,7 @@
 !
       write(50+my_rank,*) 'inod, ml, ml_o'
       do inod = 1, numnod
-        write(50+my_rank,'(i10,1p2e25.14)') inod, ml(inod), ml_o(inod)
+        write(50+my_rank,'(i15,1p2e25.14)') inod, ml(inod), ml_o(inod)
       end do
 !
       end subroutine check_mass_martix
@@ -49,7 +49,7 @@
 !
       write(50+my_rank,*) 'inod, ml_fl, ml_o'
       do inod = 1, numnod
-        write(50+my_rank,'(i10,1p2e25.14)')                             &
+        write(50+my_rank,'(i15,1p2e25.14)')                             &
      &           inod, ml_fl(inod), ml_o_fl(inod)
       end do
 !
@@ -63,7 +63,7 @@
 !
       write(50+my_rank,*) 'inod, ml_cd, ml_o_cd'
       do inod = 1, numnod
-        write(50+my_rank,'(i10,1p2e25.14)')                             &
+        write(50+my_rank,'(i15,1p2e25.14)')                             &
      &       inod, ml_cd(inod), ml_o_cd(inod)
       end do
 !
@@ -77,7 +77,7 @@
 !
       write(50+my_rank,*) 'inod, ml_ins, ml_o_ins'
       do inod = 1, numnod
-        write(50+my_rank,'(i10,1p2e25.14)')                             &
+        write(50+my_rank,'(i15,1p2e25.14)')                             &
      &        inod, ml_ins(inod), ml_ins(inod)
       end do
 !
@@ -92,7 +92,7 @@
 !
       write(50+my_rank,*) 'inod, ff', numdir
       do inod = 1, numnod
-        write(50+my_rank,'(i10,1p10e25.14)')                            &
+        write(50+my_rank,'(i15,1p10e25.14)')                            &
      &         inod, (ff(inod,nd),nd=1, numdir)
       end do
 !
@@ -107,7 +107,7 @@
 !
       write(50+my_rank,*) 'inod, ff_nl', numdir
       do inod = 1, numnod
-        write(50+my_rank,'(i10,1p10e25.14)')                            &
+        write(50+my_rank,'(i15,1p10e25.14)')                            &
      &         inod, (ff_nl(inod,nd),nd=1, numdir)
       end do
 !

@@ -71,10 +71,10 @@
 !
 !
       write(textbuf,'(a1)')        char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,i15,a1)') 'POINT_DATA ', nnod, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       end subroutine write_gz_vtk_fields_head
 !
@@ -91,18 +91,18 @@
       if (ncomp_field .eq. n_scalar) then
         write(textbuf,'(a,a,a,i15,a1)') 'SCALARS ', trim(field_name),   &
      &                        ' double ', ione, char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
 !
         write(textbuf,'(a,a1)') 'LOOKUP_TABLE default', char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       else if (ncomp_field .eq. n_vector) then
         write(textbuf,'(a,a,a,a1)') 'VECTORS ', trim(field_name),       &
      &                        ' double', char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       else if (ncomp_field .eq. n_sym_tensor) then
         write(textbuf,'(a,a,a,a1)') 'TENSORS ', trim(field_name),       &
      &                        ' double', char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end if
 !
       end subroutine write_gz_vtk_each_field_head
@@ -126,19 +126,19 @@
           do nd2 = 1, 3
             write(textbuf,'(1p3e23.12,a1)')                             &
      &             (d_nod(inod,1+l_sim_t(nd,nd2)), nd=1,3), char(0)
-            call write_compress_txt(nbuf, textbuf)
+            call gz_write_textbuf_f
           end do
         end do
       else if(ncomp_field .eq. n_vector) then
         do inod = 1, nnod
           write(textbuf,'(1p3e23.12,a1)')                               &
      &               d_nod(inod,1:ncomp_field), char(0)
-          call write_compress_txt(nbuf, textbuf)
+          call gz_write_textbuf_f
         end do
       else if(ncomp_field .eq. n_scalar) then
         do inod = 1, nnod
           write(textbuf,'(1pe23.12,a1)') d_nod(inod,1), char(0)
-          call write_compress_txt(nbuf, textbuf)
+          call gz_write_textbuf_f
         end do
       end if
 !
@@ -153,23 +153,23 @@
 !
 !
       write(textbuf,'(a,a1)') '# vtk DataFile Version 2.0', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)')                                           &
      &              'converted data of tri-linear hexahedral element',  &
      &              char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)') 'ASCII', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)') 'DATASET UNSTRUCTURED_GRID', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
 !
       write(textbuf,'(a,i15,a,a1)')  'POINTS ', nnod,                   &
      &                              ' double', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       end subroutine write_gz_vtk_node_head
 !
@@ -185,7 +185,7 @@
 !
       nums = nele*(nnod_ele+1)
       write(textbuf,'(a,2i10,a1)') 'CELLS ', nele, nums, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       end subroutine write_gz_vtk_connect_head
 !
@@ -211,11 +211,11 @@
       end if
 !
       write(textbuf,'(a,i15,a1)') 'CELL_TYPES ', nele, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       do iele = 1, nele
         write(textbuf,'(i5,a1)') icellid, char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       end subroutine write_gz_vtk_cell_type
@@ -239,7 +239,7 @@
       do iele = 1, nele
         ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
         write(textbuf,fmt_txt) nnod_ele, ie0(1:nnod_ele), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       end subroutine write_gz_vtk_connect_data
@@ -272,7 +272,7 @@
       character(len=kchara)  :: vtk_fld_type
 !
 !
-      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+      call get_one_line_from_gz_f
       if(nchara .eq. izero) go to 99
 !
       read(textbuf,*) vtk_fld_type, field_name
@@ -281,7 +281,7 @@
       else if(vtk_fld_type .eq. 'VECTORS') then
         ncomp_field = n_vector
       else
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         ncomp_field = n_scalar
       end if
       iflag_end = izero
@@ -311,16 +311,16 @@
 !
       if (ncomp_field .eq. n_sym_tensor) then
         do inod = 1, nnod
-          call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+          call get_one_line_from_gz_f
           read(textbuf,*) d_nod(inod,1:3)
-          call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+          call get_one_line_from_gz_f
           read(textbuf,*) rtmp, d_nod(inod,4:5)
-          call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+          call get_one_line_from_gz_f
           read(textbuf,*) rtmp, rtmp, d_nod(inod,6)
         end do
       else
         do inod = 1, nnod
-          call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+          call get_one_line_from_gz_f
           read(textbuf,*) d_nod(inod,1:ncomp_field)
         end do
       end if
@@ -339,10 +339,10 @@
 !
 !
       call skip_gz_comment_chara(tmpchara)
-      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
-      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+      call get_one_line_from_gz_f
+      call get_one_line_from_gz_f
 !
-      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+      call get_one_line_from_gz_f
       read(textbuf,'(a,i15,a)')  tmpchara, nnod
 !
       end subroutine read_gz_vtk_node_head
@@ -358,7 +358,7 @@
       character(len=kchara) :: tmpchara
 !
 !
-      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+      call get_one_line_from_gz_f
       read(textbuf,*) tmpchara, nele, nums
       nnod_ele = nums / nele - 1
 !
@@ -373,10 +373,10 @@
       integer(kind = kint) :: nchara, iele
 !
 !
-      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+      call get_one_line_from_gz_f
 !
       do iele = 1, nele
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
       end do
 !
       end subroutine read_gz_vtk_cell_type
@@ -394,7 +394,7 @@
 !
 !
       do iele = 1, nele
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) itmp, ie(iele,1:nnod_ele)
         ie(iele,1:nnod_ele) = ie(iele,1:nnod_ele) + 1
       end do

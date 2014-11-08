@@ -28,11 +28,9 @@
 !
       use m_precision
       use m_constants
+      use skip_gz_comment
 !
       implicit none
-!
-!
-      private :: gz_write_one_label_cont
 !
 ! ----------------------------------------------------------------------
 !
@@ -44,7 +42,7 @@
 !
       character(len=kchara), intent(in) :: label1
 !
-      call gz_write_one_label_cont(label1)
+      call gz_write_chara_nolf(label1)
 !
       end subroutine gz_write_one_label
 !
@@ -77,8 +75,8 @@
 !
       character(len=kchara), intent(in) :: label1, label2
 !
-      call gz_write_one_label_cont(label1)
-      call gz_write_one_label_cont(label2)
+      call gz_write_chara_nolf(label1)
+      call gz_write_chara_nolf(label2)
 !
       end subroutine gz_write_two_labels
 !
@@ -88,9 +86,9 @@
 !
       character(len=kchara), intent(in) :: label1, label2, label3
 !
-      call gz_write_one_label_cont(label1)
-      call gz_write_one_label_cont(label2)
-      call gz_write_one_label_cont(label3)
+      call gz_write_chara_nolf(label1)
+      call gz_write_chara_nolf(label2)
+      call gz_write_chara_nolf(label3)
 !
       end subroutine gz_write_three_labels
 !
@@ -102,10 +100,10 @@
       character(len=kchara), intent(in) :: label1, label2
       character(len=kchara), intent(in) :: label3, label4
 !
-      call gz_write_one_label_cont(label1)
-      call gz_write_one_label_cont(label2)
-      call gz_write_one_label_cont(label3)
-      call gz_write_one_label_cont(label4)
+      call gz_write_chara_nolf(label1)
+      call gz_write_chara_nolf(label2)
+      call gz_write_chara_nolf(label3)
+      call gz_write_chara_nolf(label4)
 !
       end subroutine gz_write_four_labels
 !
@@ -117,12 +115,12 @@
       character(len=kchara), intent(in) :: label1, label2, label3
       character(len=kchara), intent(in) :: label4, label5, label6
 !
-      call gz_write_one_label_cont(label1)
-      call gz_write_one_label_cont(label2)
-      call gz_write_one_label_cont(label3)
-      call gz_write_one_label_cont(label4)
-      call gz_write_one_label_cont(label5)
-      call gz_write_one_label_cont(label6)
+      call gz_write_chara_nolf(label1)
+      call gz_write_chara_nolf(label2)
+      call gz_write_chara_nolf(label3)
+      call gz_write_chara_nolf(label4)
+      call gz_write_chara_nolf(label5)
+      call gz_write_chara_nolf(label6)
 !
       end subroutine gz_write_six_labels
 !
@@ -136,7 +134,7 @@
       integer(kind = kint) :: nd
 !
       do nd = 1, nlabel
-        call gz_write_one_label_cont(labels(nd) )
+        call gz_write_chara_nolf(labels(nd) )
       end do
 !
       end subroutine gz_write_multi_labels
@@ -151,29 +149,15 @@
       character(len=kchara), intent(in) :: label3, label4
       character(len=kchara), intent(in) :: label5, label6, label7
 !
-      call gz_write_one_label_cont(label1)
-      call gz_write_one_label_cont(label2)
-      call gz_write_one_label_cont(label3)
-      call gz_write_one_label_cont(label4)
-      call gz_write_one_label_cont(label5)
-      call gz_write_one_label_cont(label6)
-      call gz_write_one_label_cont(label7)
+      call gz_write_chara_nolf(label1)
+      call gz_write_chara_nolf(label2)
+      call gz_write_chara_nolf(label3)
+      call gz_write_chara_nolf(label4)
+      call gz_write_chara_nolf(label5)
+      call gz_write_chara_nolf(label6)
+      call gz_write_chara_nolf(label7)
 !
       end subroutine gz_write_seven_labels
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine gz_write_one_label_cont(label1)
-!
-      use skip_gz_comment
-!
-      character(len=kchara), intent(in) :: label1
-!
-      write(textbuf,'(2a,a1)') trim(label1), '    ', CHAR(0)
-      call write_compress_txt_nolf(nbuf, textbuf)
-!
-      end subroutine gz_write_one_label_cont
 !
 ! ----------------------------------------------------------------------
 !

@@ -88,7 +88,7 @@
       call open_sph_mean_sq_file                                        &
      &      (id_file_ave, fname_rms, mode_label)
 !
-      write(id_file_ave,'(i10,1pe23.14e3,1p200e23.14e3)')               &
+      write(id_file_ave,'(i15,1pe23.14e3,1p200e23.14e3)')               &
      &                 istep, time, ave_sph_vol(1:ntot_rms_rj)
       close(id_file_ave)
 !

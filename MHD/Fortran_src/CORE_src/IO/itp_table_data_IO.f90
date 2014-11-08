@@ -46,8 +46,8 @@
       write(id_file,'(a)') '!  domain IDs to export'
       write(id_file,'(a)') '!'
 !
-      write(id_file,'(i10)') my_rank
-      write(id_file,'(i10)') num_dest_domain_IO
+      write(id_file,'(i15)') my_rank
+      write(id_file,'(i15)') num_dest_domain_IO
 !
       if (num_dest_domain_IO .gt. 0) then
         write(id_file,'(10i8)')                                         &
@@ -197,8 +197,8 @@
       write(id_file,'(a)') '!  domain IDs to import'
       write(id_file,'(a)') '!'
 !
-      write(id_file,'(i10)') my_rank
-      write(id_file,'(i10)') num_org_domain_IO
+      write(id_file,'(i15)') my_rank
+      write(id_file,'(i15)') num_org_domain_IO
 !
       if (num_org_domain_IO .gt. 0) then
         write(id_file,'(10i8)')                                         &

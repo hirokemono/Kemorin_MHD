@@ -117,7 +117,7 @@
       integer(kind = kint) :: i, ist, ied
 !
 !
-      write(id_file,'(i10)') ngrp
+      write(id_file,'(i15)') ngrp
       if (ngrp .gt. 0) then
         write(id_file,'(8i10)') istack(1:ngrp)
         do i = 1, ngrp
@@ -146,7 +146,7 @@
       integer(kind = kint) :: i, ist, ied
 !
 !
-      write(id_file,'(i10)') ngrp
+      write(id_file,'(i15)') ngrp
       if (ngrp .gt. 0) then
         write(id_file,'(8i10)') istack(1:ngrp)
         do i = 1, ngrp

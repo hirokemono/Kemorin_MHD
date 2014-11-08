@@ -29,14 +29,14 @@
 !
        write(file_code,'(a)')                                           &
      &        '! num_depth, max. number of node for filtering cube: '
-       write(file_code,'(2i10)') ndepth_l, num_filter_l
+       write(file_code,'(2i15)') ndepth_l, num_filter_l
        write(file_code,'(a)')                                           &
      &     '! num_depth, max. and min. number of node for filtering: '
        do i = 1, 3
-        write(file_code,'(3i10)') i, nmax_l_filter(i), nmin_l_filter(i)
+        write(file_code,'(3i15)') i, nmax_l_filter(i), nmin_l_filter(i)
        end do
        write(file_code,'(a)') '! total number of filtering data '
-       write(file_code,'(3i10)') (num_l_filter(i),i=1,3)
+       write(file_code,'(3i15)') (num_l_filter(i),i=1,3)
 !
 !
        write(file_code,'(a)') '! orderind ID for filtering'

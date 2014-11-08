@@ -35,7 +35,7 @@
         ist = surf_istack(i_grp-1) + 1
         ied = surf_istack(i_grp)
         do inum = ist, ied
-          write(id_check,'(i10,1p3e23.12)') inum,                       &
+          write(id_check,'(i15,1p3e23.12)') inum,                       &
      &              x_sf_grp(inum,1:3)
         end do
       end do
@@ -59,7 +59,7 @@
         ist = surf_istack(i_grp-1) + 1
         ied = surf_istack(i_grp)
         do inum = ist, ied
-          write(id_check,'(i10,1p4e23.12)') inum, r_sf_grp(inum),       &
+          write(id_check,'(i15,1p4e23.12)') inum, r_sf_grp(inum),       &
      &         theta_sf_grp(inum), phi_sf_grp(inum), s_sf_grp(inum)
         end do
       end do
@@ -112,7 +112,7 @@
 !
        do isurf = 1, num_surf_bc
          iele = surf_item(1,isurf)
-         write(id_check,'(2i10, 1p6E25.15e3)') isurf, iele,             &
+         write(id_check,'(2i15, 1p6E25.15e3)') isurf, iele,             &
      &           vnorm_sf_grp(isurf,1:3), area_sf_grp(isurf),           &
      &           volume_ele(iele)
        end do

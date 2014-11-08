@@ -76,8 +76,8 @@
 !      write(id_file,'(a)') '!    domain ID for transfer'
 !      write(id_file,'(a)') '! '
 !
-      write(id_file,'(i10)') my_rank_IO
-      write(id_file,'(i10)') num_neib_domain_IO
+      write(id_file,'(i15)') my_rank_IO
+      write(id_file,'(i15)') num_neib_domain_IO
 !
       if (num_neib_domain_IO .gt. 0) then
         write(id_file,'(8i10)') id_neib_domain_IO(1:num_neib_domain_IO)

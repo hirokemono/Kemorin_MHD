@@ -185,19 +185,19 @@
 !
       write(id_file,*) numnod, numedge
       do i = 1, numnod
-        write(id_file,'(i10,1p3e16.7)') i, xx_edge(1:3,i)
-!        write(id_file,'(i10,1p3e16.7)') i, tp_edge(2*i-1:2*i)
+        write(id_file,'(i15,1p3e16.7)') i, xx_edge(1:3,i)
+!        write(id_file,'(i15,1p3e16.7)') i, tp_edge(2*i-1:2*i)
       end do
 !
       do i = 1, numedge
-        write(id_file,'(2i10,a7,2i10)') i, ione,                        &
+        write(id_file,'(2i15,a7,2i15)') i, ione,                        &
      &               '  line ', ie_edge(2*i-1:2*i)
       end do
 !
       write(id_file,'(2i4)') ione, ione
       write(id_file,'(a,a1)') "coastline", ','
       do i = 1, numnod
-        write(id_file,'(i10,1pe16.7)') i, d_edge(2*i)
+        write(id_file,'(i15,1pe16.7)') i, d_edge(2*i)
       end do
 !
       close(id_file)

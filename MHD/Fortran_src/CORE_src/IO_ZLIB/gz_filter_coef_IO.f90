@@ -50,11 +50,11 @@
         ist = istack_nod_filter_IO(i-1)+1
         ied = istack_nod_filter_IO(i)
 !
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) grp_name_filter_IO(i)
 !
         do j = ist, ied
-          call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+          call get_one_line_from_gz_f
           read(textbuf,*) inod_filter_IO(j),                            &
      &                    istack_near_nod_filter_IO(j)
         end do
@@ -79,7 +79,7 @@
       call skip_gz_comment_int(itmp)
 !
       do j = 1, ntot_near_nod_filter_IO
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) itmp, inod_near_nod_IO(j), filter_func_IO(j),   &
      &                  filter_weight_IO(j)
       end do
@@ -95,14 +95,14 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! nodes for filtering', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(i12,a1)') ngrp_nod_filter_IO, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       call write_gz_multi_int_10i12(ngrp_nod_filter_IO,                 &
      &     istack_nod_filter_IO(1) )
 !
@@ -110,11 +110,11 @@
         ist = istack_nod_filter_IO(i-1)+1
         ied = istack_nod_filter_IO(i)
         write(textbuf,'(a,a1)') trim(grp_name_filter_IO(i)), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
         do j = ist, ied
           write(textbuf,'(3i12,a1)') inod_filter_IO(j),                 &
      &                         istack_near_nod_filter_IO(j), char(0)
-          call write_compress_txt(nbuf, textbuf)
+          call gz_write_textbuf_f
         end do
       end do
 !
@@ -128,19 +128,19 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!   filter coefficients', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(i12)') ntot_near_nod_filter_IO
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       do j = 1, ntot_near_nod_filter_IO
         write(textbuf,'(2i12,1p2E25.15e3,a1)') j, inod_near_nod_IO(j),  &
      &     filter_func_IO(j), filter_weight_IO(j), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       end subroutine write_3d_filter_weights_coef_gz

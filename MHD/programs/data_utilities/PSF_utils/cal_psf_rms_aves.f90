@@ -134,11 +134,11 @@
       real(kind = kreal), intent(in) :: area
 !
 !
-      write(id_ave_psf,'(i10,1p255E25.15e3)') istep,                    &
+      write(id_ave_psf,'(i15,1p255E25.15e3)') istep,                    &
                ave_psf(1:ncomptot_psf), area
-      write(id_rms_psf,'(i10,1p255E25.15e3)') istep,                    &
+      write(id_rms_psf,'(i15,1p255E25.15e3)') istep,                    &
                 rms_psf(1:ncomptot_psf), area
-      write(id_sdev_psf,'(i10,1p255E25.15e3)') istep,                   &
+      write(id_sdev_psf,'(i15,1p255E25.15e3)') istep,                   &
                 sdev_psf(1:ncomptot_psf), area
 !
       end subroutine write_psf_ave_rms_data
@@ -152,9 +152,9 @@
       integer(kind = kint), intent(in) :: istep
 !
 !
-      write(id_min_psf,'(i10,1p255E25.15e3)') istep,                    &
+      write(id_min_psf,'(i15,1p255E25.15e3)') istep,                    &
      &           xmin_psf(1:ncomptot_psf)
-      write(id_max_psf,'(i10,1p255E25.15e3)') istep,                    &
+      write(id_max_psf,'(i15,1p255E25.15e3)') istep,                    &
      &           xmax_psf(1:ncomptot_psf)
 !
       end subroutine write_psf_range_data

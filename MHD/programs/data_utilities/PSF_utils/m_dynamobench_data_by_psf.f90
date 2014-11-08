@@ -110,7 +110,7 @@
       time_prev = time
 !
       call open_new_dynamobench_file
-      write(id_bench,'(i10,1p12e23.15)') istep, time, phi(1:4),         &
+      write(id_bench,'(i15,1p12e23.15)') istep, time, phi(1:4),         &
      &                        v_phi(1), b_theta(1), temp(1), omega
       close(id_bench)
 !

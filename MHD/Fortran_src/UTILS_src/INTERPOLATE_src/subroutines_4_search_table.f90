@@ -248,7 +248,7 @@
       do inod = 1, internal_node
         if (iflag_org_domain(inod) .le. 0) then
           ierr = ierr + 1
-          write(id_miss_file,'(i10,1p3e16.7,3i10)')                     &
+          write(id_miss_file,'(i15,1p3e16.7,3i10)')                     &
      &              inod, xx(inod,1:3), id_search_area(inod,1:3)
         end if
       end do

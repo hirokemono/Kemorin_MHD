@@ -198,9 +198,9 @@
       enddo
 
 !      write(*,*) 'indexDJDS_L'
-!      write(*,'(i10)') indexDJDS_L
+!      write(*,'(i15)') indexDJDS_L
 !      write(*,*) 'inumDJDS_L'
-!      write(*,'(i10)') inumDJDS_L
+!      write(*,'(i15)') inumDJDS_L
 
 !C
 !C== UPPER part
@@ -309,9 +309,9 @@
       end do
 
 !      write(*,*) 'indexDJDS_U'
-!      write(*,'(i10)') indexDJDS_U
+!      write(*,'(i15)') indexDJDS_U
 !      write(*,*) 'inumDJDS_U'
-!      write(*,'(i10)') inumDJDS_U
+!      write(*,'(i15)') inumDJDS_U
 !
 !voption novec
 !cdir novector

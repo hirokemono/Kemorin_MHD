@@ -101,7 +101,7 @@
       write(id_file,*) '#   domain IDs'
       write(id_file,*) '#'
 !
-      write(id_file,'(i10)') num_org_domain
+      write(id_file,'(i15)') num_org_domain
       write(id_file,'(10i10)') id_org_domain(1:num_org_domain)
 !
       write(id_file,*) '#'

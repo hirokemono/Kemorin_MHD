@@ -74,7 +74,7 @@
           if ( iflag_data_f .eq. 1) then
            write(l_out) node_id_gl, x, y, z
           else
-           write(l_out,'(i10,3(1pe21.11))') node_id_gl, x, y, z
+           write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
           end if 
 !
          enddo
@@ -140,7 +140,7 @@
           if ( iflag_data_f .eq. 1) then
            write(l_out) node_id_gl, x, y, z
           else
-           write(l_out,'(i10,3(1pe21.11))') node_id_gl, x, y, z
+           write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
           end if 
 !
          enddo
@@ -204,7 +204,7 @@
           if ( iflag_data_f .eq. 1) then
            write(l_out) node_id_gl, x, y, z
           else
-           write(l_out,'(i10,3(1pe21.11))') node_id_gl, x, y, z
+           write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
           end if 
 !
          enddo
@@ -270,7 +270,7 @@
           if ( iflag_data_f .eq. 1) then
            write(l_out) node_id_gl, x, y, z
           else
-           write(l_out,'(i10,3(1pe21.11))') node_id_gl, x, y, z
+           write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
           end if 
 !
          enddo

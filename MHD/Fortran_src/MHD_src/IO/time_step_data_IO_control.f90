@@ -43,7 +43,7 @@
       call set_output_flag(ii, istep_max_dt, i_step_check)
 !
       if ( ii .eq. 0 ) then
-        if(my_rank .eq. 0) write(*,'(a10,i10,a10,e15.8)')               &
+        if(my_rank .eq. 0) write(*,'(a10,i15,a10,e15.8)')               &
      &            'i_step=',i_step_MHD,'time=',time
 !
         call s_int_bulk

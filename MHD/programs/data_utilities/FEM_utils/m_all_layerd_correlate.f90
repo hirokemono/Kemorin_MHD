@@ -189,7 +189,7 @@
 !
 !      write(*,*) 'nlayer_correlate', nlayer_correlate
       do igrp = 1, nlayer_correlate
-        write(id_file,'(i10,1pE25.15e3,i10,1p255E25.15e3)')             &
+        write(id_file,'(i15,1pE25.15e3,i15,1p255E25.15e3)')             &
      &            i_step, zero, igrp, data(igrp,1:ntot_correlate)
       end do
       close(id_file)

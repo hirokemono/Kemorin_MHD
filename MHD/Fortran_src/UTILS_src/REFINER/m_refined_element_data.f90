@@ -213,12 +213,12 @@
 !
       write(50,*) 'i, iflag_refine_sf_lcl(i)'
       do i = 1, numele
-        write(50,'(i10,6i5)') i, iflag_refine_sf_lcl(1:nsurf_4_ele,i)
+        write(50,'(i15,6i5)') i, iflag_refine_sf_lcl(1:nsurf_4_ele,i)
       end do
 !
       write(50,*) 'i, iflag_refine_ed_lcl(i)'
       do i = 1, numele
-        write(50,'(i10,12i5)') i, iflag_refine_ed_lcl(1:nedge_4_ele,i)
+        write(50,'(i15,12i5)') i, iflag_refine_ed_lcl(1:nedge_4_ele,i)
       end do
 !
       end subroutine check_local_refine_flags

@@ -96,11 +96,11 @@
 !   Evaluate size of patches
 !
 !
-      write(*,'(a,i10)', advance='NO')                                  &
+      write(*,'(a,i15)', advance='NO')                                  &
      &          'read for correctiong. Step:  ', istep_start
       do istep = istep_start, istep_end, istep_int
         write(*,'(10a1)', advance='NO') (char(8),i=1,10)
-        write(*,'(i10)', advance='NO') istep
+        write(*,'(i15)', advance='NO') istep
 !
         psf_ucd%file_prefix = psf_org_header
         call sel_read_udt_file(iminus, istep, psf_ucd)

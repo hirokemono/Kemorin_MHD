@@ -37,17 +37,17 @@
 !
 !
       write(textbuf,'(a,a1)'   )   '!  domain ID', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(i10,a1)') my_rank, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)'   )   '!  time step number', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(i10,a1)') i_time_step_IO, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)'   )   '!  time, Delta t', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(1p2E25.15e3,a1)') time_IO, delta_t_IO, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       end subroutine write_gz_step_data
 !
@@ -91,14 +91,14 @@
 !
       write(textbuf,'(a,a1)'   )                                        &
      &          '! number of field and component', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(2i10,a1)')                                        &
      &           nnod, num_field, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(fmt_txt,'(a1,i3,a6)') '(', num_field, 'i4,a1)'
       write(textbuf,fmt_txt) ncomp_field(1:num_field), char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       icou = 0
       do i_fld = 1, num_field
@@ -148,12 +148,12 @@
 !
 !
       write(textbuf,'(a,a1)') trim(d_name), char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(fmt_txt,'(a1,i3,a16)') '(', ndir, '(1pE25.15e3),a1)'
       do i = 1, nnod
         write(textbuf,fmt_txt) vector(i,1:ndir), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       end subroutine write_gz_field_vect
@@ -172,7 +172,7 @@
       call skip_gz_comment_chara(d_name)
 !
       do i = 1, nnod
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*)  vector(i,1:ndir)
 !        if(mod(i,10000) .eq. 0) write(*,*) 'read ', i
       end do

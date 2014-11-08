@@ -38,11 +38,11 @@
 !
 !
       write(50+my_rank,*) 'numnod, internal_node'
-      write(50+my_rank,'(2i10)') numnod, internal_node
+      write(50+my_rank,'(2i15)') numnod, internal_node
 !
       write(50+my_rank,*) 'inod, position'
       do inod = 1, numnod
-        write(50+my_rank,'(i10,1p3e25.14)') inod, xx(inod,1:3)
+        write(50+my_rank,'(i15,1p3e25.14)') inod, xx(inod,1:3)
       end do
 !
       end subroutine check_node_data
@@ -56,7 +56,7 @@
       integer(kind = kint) :: iele
 !
       write(50+my_rank,*) 'numele, nnod_4_ele'
-      write(50+my_rank,'(2i10)') numele, nnod_4_ele
+      write(50+my_rank,'(2i15)') numele, nnod_4_ele
 !
       write(50+my_rank,*) 'iele, connection'
       do iele = 1, numele
@@ -76,7 +76,7 @@
 !
 !
       write(50+my_rank,*) 'numsurf, nnod_4_surf'
-      write(50+my_rank,'(2i10)') numsurf, nnod_4_surf
+      write(50+my_rank,'(2i15)') numsurf, nnod_4_surf
 !
       write(50+my_rank,*) 'isurf, connection'
       do isurf = 1, numsurf
@@ -84,7 +84,7 @@
       end do
 !
       write(50+my_rank,*) 'numele, nsurf_4_ele'
-      write(50+my_rank,'(2i10)') numele, nsurf_4_ele
+      write(50+my_rank,'(2i15)') numele, nsurf_4_ele
       write(50+my_rank,*) 'iele, edge ID for surface'
 !
       do iele = 1, numele
@@ -106,7 +106,7 @@
 !
 !
       write(50+my_rank,*) 'numedge, nnod_4_edge'
-      write(50+my_rank,'(2i10)') numedge, nnod_4_edge
+      write(50+my_rank,'(2i15)') numedge, nnod_4_edge
 !
       write(50+my_rank,*) 'iedge, connection'
       do iedge = 1, numedge
@@ -115,7 +115,7 @@
 !
 !
       write(50+my_rank,*) 'numsurf, nedge_4_surf'
-      write(50+my_rank,'(2i10)') numsurf, nedge_4_surf
+      write(50+my_rank,'(2i15)') numsurf, nedge_4_surf
       write(50+my_rank,*) 'isurf, edge ID for surface'
 !
       do isurf = 1, numsurf
@@ -136,7 +136,7 @@
 !
 !
       write(50+my_rank,*) 'numele, nedge_4_ele'
-      write(50+my_rank,'(2i10)') numele, nedge_4_ele
+      write(50+my_rank,'(2i15)') numele, nedge_4_ele
       write(50+my_rank,*) 'isurf, edge ID for surface'
 !
       do iele = 1, numele

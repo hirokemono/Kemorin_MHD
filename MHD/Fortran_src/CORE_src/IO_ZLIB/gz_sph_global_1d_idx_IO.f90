@@ -40,7 +40,7 @@
       call allocate_idx_sph_1d1_IO
 !
       do i = 1, nidx_sph_IO(1)
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) idx_gl_1_IO(i), r_gl_1_IO(i)
       end do
 !
@@ -49,7 +49,7 @@
       call allocate_idx_sph_1d2_IO
 !
       do i = 1, nidx_sph_IO(2)
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) idx_gl_2_IO(i,1:ncomp_itbl_1d_IO(2))
       end do
 !
@@ -58,7 +58,7 @@
       call allocate_idx_sph_1d3_IO
 !
       do i = 1, nidx_sph_IO(3)
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) idx_gl_3_IO(i,1:ncomp_itbl_1d_IO(3))
       end do
 !
@@ -80,7 +80,7 @@
       call allocate_idx_sph_1d1_IO
 !
       do i = 1, nidx_sph_IO(1)
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) idx_gl_1_IO(i), r_gl_1_IO(i)
       end do
 !
@@ -89,7 +89,7 @@
       call allocate_idx_sph_1d2_IO
 !
       do i = 1, nidx_sph_IO(2)
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) idx_gl_2_IO(i,1:ncomp_itbl_1d_IO(2))
       end do
 !
@@ -103,77 +103,77 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)')                                           &
      &       '! num. start and end global grids', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)') '! r-direction', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(3i10,a1)') nidx_sph_IO(1),                        &
      &                        ist_sph_IO(1), ied_sph_IO(1), char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       do i = 1, nidx_sph_IO(1)
         write(textbuf,'(i10,1pE25.15e3,a1)')                            &
      &                        idx_gl_1_IO(i), r_gl_1_IO(i), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)')                                           &
      &      '! num. start and end global grids', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)') '! theta direction', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(3i10,a1)') nidx_sph_IO(2),                        &
      &                        ist_sph_IO(2), ied_sph_IO(2), char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(fmt_txt,'(a1,i3,a9)')                                       &
      &                '(', ncomp_itbl_1d_IO(2), '(i15),a1)'
       do i = 1, nidx_sph_IO(2)
         write(textbuf,fmt_txt)                                          &
      &        idx_gl_2_IO(i,1:ncomp_itbl_1d_IO(2)), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)')                                           &
      &      '! num. of start and end global grids and modes', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)') '! phi direction', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(3i10,a1)') nidx_sph_IO(3),                        &
      &                        ist_sph_IO(3), ied_sph_IO(3), char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(fmt_txt,'(a1,i3,a9)')                                       &
      &                '(', ncomp_itbl_1d_IO(3), '(i15),a1)'
       do i = 1, nidx_sph_IO(3)
         write(textbuf,fmt_txt)                                          &
      &               idx_gl_3_IO(i,1:ncomp_itbl_1d_IO(3)), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       call deallocate_idx_sph_1d1_IO
@@ -191,52 +191,52 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)')                                           &
      &      '! num. start and end global grids', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)') '! r-direction', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(3i10,a1)') nidx_sph_IO(1),                        &
      &                        ist_sph_IO(1), ied_sph_IO(1), char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       do i = 1, nidx_sph_IO(1)
         write(textbuf,'(i10,1pE25.15e3,a1)')                            &
      &                        idx_gl_1_IO(i), r_gl_1_IO(i), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)')                                           &
      &      '! num. start and end global modes', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)')                                           &
      &      '! on sphere surface wuth degree and order', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(textbuf,'(3i10,a1)') nidx_sph_IO(2),                        &
      &                        ist_sph_IO(2), ied_sph_IO(2), char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       write(fmt_txt,'(a1,i3,a9)')                                       &
      &                '(', ncomp_itbl_1d_IO(2), '(i15),a1)'
       do i = 1, nidx_sph_IO(2)
         write(textbuf,fmt_txt)                                          &
      &          idx_gl_2_IO(i,1:ncomp_itbl_1d_IO(2)), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       call deallocate_idx_sph_1d1_IO

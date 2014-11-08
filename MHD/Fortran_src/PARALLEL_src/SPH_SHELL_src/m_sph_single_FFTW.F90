@@ -79,6 +79,8 @@
       complex(kind = fftw_complex), parameter :: iu = (0.0d0,1.0d0)
 !>      estimation flag for FFTW
       integer(kind = 4), parameter :: FFTW_ESTIMATE = 64
+!>      Meajor flag for FFTW
+      integer(kind = 4), parameter :: FFTW_MEASURE = 0
 !
 !>      plan ID for backward transform
       integer(kind = fftw_plan), allocatable :: plan_backward(:)
@@ -112,20 +114,22 @@
       use m_spheric_parameter
 !
       integer(kind = kint) :: j
+      integer(kind = 4) :: Nfft4
 !
 !
       call allocate_FFTW_plan(np_smp, nidx_rtp(3))
 !
+      Nfft4 = int(nidx_rtp(3))
       do j = 1, np_smp
 #ifdef FFTW3_C
-        call kemo_fftw_plan_dft_r2c_1d(plan_forward(j), nidx_rtp(3),    &
+        call kemo_fftw_plan_dft_r2c_1d(plan_forward(j), Nfft4,          &
      &      X_FFTW(1,j), C_FFTW(1,j) , FFTW_ESTIMATE)
-        call kemo_fftw_plan_dft_c2r_1d(plan_backward(j), nidx_rtp(3),   &
+        call kemo_fftw_plan_dft_c2r_1d(plan_backward(j), Nfft4,         &
      &      C_FFTW(1,j), X_FFTW(1,j) , FFTW_ESTIMATE)
 #else
-        call dfftw_plan_dft_r2c_1d(plan_forward(j), nidx_rtp(3),        &
+        call dfftw_plan_dft_r2c_1d(plan_forward(j), Nfft4,              &
      &      X_FFTW(1,j), C_FFTW(1,j) , FFTW_ESTIMATE)
-        call dfftw_plan_dft_c2r_1d(plan_backward(j), nidx_rtp(3),       &
+        call dfftw_plan_dft_c2r_1d(plan_backward(j), Nfft4,             &
      &      C_FFTW(1,j), X_FFTW(1,j) , FFTW_ESTIMATE)
 #endif
       end do

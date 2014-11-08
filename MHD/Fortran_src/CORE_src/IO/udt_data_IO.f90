@@ -80,7 +80,7 @@
 !
 !
       write(fmt_txt,'(a5,i3,a13)')                                      &
-     &                '(i10,', ncomp_dat, '(1pE25.15e3))'
+     &                '(i15,', ncomp_dat, '(1pE25.15e3))'
       do inod = 1, nnod
         write(ifile_psf,fmt_txt)                                        &
      &                  inod_out(inod), dat_out(inod,1:ncomp_dat)
@@ -208,7 +208,7 @@
       if(nnod_4_ele.eq.num_linear_edge) write(eleflag,'(a6)') ' line '
 !
       do iele = 1, nele
-        write(ifile_psf,'(i10,i3,a6,30i10)') iele_gl(iele), ione,       &
+        write(ifile_psf,'(i15,i3,a6,30i10)') iele_gl(iele), ione,       &
      &       eleflag, ie_out(iele,1:nnod_4_ele)
       end do
 !

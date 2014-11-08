@@ -206,7 +206,7 @@
         ist = istack_pvr_surf_domain(i_pvr-1) + 1
         ied = istack_pvr_surf_domain(i_pvr)
         do inum = ist, ied
-          write(50+my_rank,'(i10,4i5,1p4e16.7)')                        &
+          write(50+my_rank,'(i15,4i5,1p4e16.7)')                        &
      &          inum, isurf_xrng_pvr_domain(1:2,inum),                  &
      &                jsurf_yrng_pvr_domain(1:2,inum),                  &
      &                screen_xrng_pvr_domain(1:2,inum),                 &

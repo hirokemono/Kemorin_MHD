@@ -117,9 +117,9 @@
       write(id_file,*) '#  min. and max. for radial'
       write(id_file,*) '#'
 !
-      write(id_file,'(i10)') nele_2
+      write(id_file,'(i15)') nele_2
       do iele = 1, nele_2
-        write(id_file,'(i10,1p2e23.12)') iele,                          &
+        write(id_file,'(i15,1p2e23.12)') iele,                          &
      &      min_sph_each_ele(iele,1), max_sph_each_ele(iele,1)
       end do
 !
@@ -127,9 +127,9 @@
       write(id_file,*) '#  min. and max. for elevation'
       write(id_file,*) '#'
 !
-      write(id_file,'(i10)') nele_2
+      write(id_file,'(i15)') nele_2
       do iele = 1, nele_2
-        write(id_file,'(i10,1p2e23.12)') iele,                          &
+        write(id_file,'(i15,1p2e23.12)') iele,                          &
      &      min_sph_each_ele(iele,2), max_sph_each_ele(iele,2)
       end do
 !
@@ -137,9 +137,9 @@
       write(id_file,*) '#  min. and max. for azumuth'
       write(id_file,*) '#'
 !
-      write(id_file,'(i10)') nele_2
+      write(id_file,'(i15)') nele_2
       do iele = 1, nele_2
-        write(id_file,'(i10,1p2e23.12)') iele,                          &
+        write(id_file,'(i15,1p2e23.12)') iele,                          &
      &      min_sph_each_ele(iele,3), max_sph_each_ele(iele,3)
       end do
 !
@@ -158,14 +158,14 @@
       write(id_file,*) '#  stack for original elment in search bin'
       write(id_file,*) '#'
 !
-      write(id_file,'(i10)') ntot_sph_bin
+      write(id_file,'(i15)') ntot_sph_bin
       write(id_file,'(10i8)') iele_stack_bin(0:ntot_sph_bin)
 !
       write(id_file,*) '#'
       write(id_file,*) '#  element for original elment in search bin'
       write(id_file,*) '#'
 !
-      write(id_file,'(i10)') ntot_org_ele_in_bin
+      write(id_file,'(i15)') ntot_org_ele_in_bin
       write(id_file,'(10i8)') iele_in_bin(1:ntot_org_ele_in_bin)
 !
       end subroutine check_iele_in_search_bin

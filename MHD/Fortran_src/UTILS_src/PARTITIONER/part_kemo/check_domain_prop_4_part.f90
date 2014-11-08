@@ -82,7 +82,7 @@
       type(communication_table), intent(in) :: new_comm
 !
 !
-      write (*,'(i6,i10,255i6)') ip, new_comm%num_neib,                 &
+      write (*,'(i6,i15,255i6)') ip, new_comm%num_neib,                 &
      &     new_comm%id_neib(1:new_comm%num_neib)
 !
       end subroutine write_neighboring_pes

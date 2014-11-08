@@ -100,12 +100,12 @@
 !
       call open_maximum_file
 !
-      write(maximum_data_code,'(i10,1p250E25.15e3)')                    &
+      write(maximum_data_code,'(i15,1p250E25.15e3)')                    &
      &       istep_ucd, time,                                           &
      &      phys_min(1:num_tot_nod_phys_vis),                           &
      &      phys_max(1:num_tot_nod_phys_vis)
 !
-      write(maximum_position_code,'(i10,1pE25.15e3,249i10)')            &
+      write(maximum_position_code,'(i15,1pE25.15e3,249i10)')            &
      &       istep_ucd, time,                                           &
      &      node_min(1:num_tot_nod_phys_vis),                           &
      &      node_max(1:num_tot_nod_phys_vis)

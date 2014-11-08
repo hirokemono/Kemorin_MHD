@@ -91,10 +91,16 @@
 !
 !>      estimation flag for FFTW
       integer(kind = 4), parameter :: FFTW_ESTIMATE = 64
+!>      Meajor flag for FFTW
+      integer(kind = 4), parameter :: FFTW_MEASURE = 0
 !
       real(kind = kreal) :: elapsed_fftw(3) = (/0.0,0.0,0.0/)
 !
-      private :: iu
+      integer, parameter :: IONE_4 = 1
+      integer, parameter :: inembed = 0
+      integer, parameter :: istride = 1
+!
+      private :: iu, IONE_4, inembed, istride
       private :: FFTW_ESTIMATE
 !
 ! ------------------------------------------------------------------
@@ -119,34 +125,33 @@
       complex(kind = fftw_complex), intent(inout)                       &
      &              :: C_FFTW(Nfft/2+1,Ncomp)
 !
-      integer(kind = kint) :: ip, ist, howmany, inembed, istride
-      integer(kind = kint) :: idist_r, idist_c
+      integer(kind = kint) :: ip, ist
+      integer(kind = 4) :: Nfft4, howmany, idist_r, idist_c
 !
 !
+      Nfft4 = int(Nfft)
       do ip = 1, Nsmp
         ist = Nstacksmp(ip-1) + 1
-        howmany = Nstacksmp(ip  ) - Nstacksmp(ip-1)
-        inembed = 0
-        istride = 1
-        idist_r = Nfft
-        idist_c = Nfft/2+1
+        howmany = int(Nstacksmp(ip  ) - Nstacksmp(ip-1))
+        idist_r = int(Nfft)
+        idist_c = int(Nfft)/2+1
 !
 #ifdef FFTW3_C
         call kemo_fftw_plan_many_dft_r2c                                &
-     &     (plan_forward_smp(ip), ione, Nfft, howmany,                  &
+     &     (plan_forward_smp(ip), IONE_4, Nfft4, howmany,               &
      &      X_FFTW(1,ist), inembed, istride, idist_r,                   &
      &      C_FFTW(1,ist), inembed, istride, idist_c, FFTW_ESTIMATE)
         call kemo_fftw_plan_many_dft_c2r                                &
-     &     (plan_backward_smp(ip), ione, Nfft, howmany,                 &
+     &     (plan_backward_smp(ip), IONE_4, Nfft4, howmany,              &
      &      C_FFTW(1,ist), inembed, istride, idist_c,                   &
      &      X_FFTW(1,ist), inembed, istride, idist_r, FFTW_ESTIMATE)
 #else
         call dfftw_plan_many_dft_r2c                                    &
-     &     (plan_forward_smp(ip), ione, Nfft, howmany,                  &
+     &     (plan_forward_smp(ip), IONE_4, Nfft4, howmany,               &
      &      X_FFTW(1,ist), inembed, istride, idist_r,                   &
      &      C_FFTW(1,ist), inembed, istride, idist_c, FFTW_ESTIMATE)
         call dfftw_plan_many_dft_c2r                                    &
-     &     (plan_backward_smp(ip), ione, Nfft, howmany,                 &
+     &     (plan_backward_smp(ip), IONE_4, Nfft4, howmany,              &
      &      C_FFTW(1,ist), inembed, istride, idist_c,                   &
      &      X_FFTW(1,ist), inembed, istride, idist_r, FFTW_ESTIMATE)
 #endif

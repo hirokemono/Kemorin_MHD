@@ -112,14 +112,14 @@
       do inod = 1, nidx_global_rtp(1)
         ist = (inod-1) * nb + 1
         ied = (inod-1) * nb + nb
-        write(50+my_rank,'(i10,1p200e20.12)') inod, v_n_pole(ist:ied)
+        write(50+my_rank,'(i15,1p200e20.12)') inod, v_n_pole(ist:ied)
       end do
 !
       write(50+my_rank,*) 'v_s_pole', nb
       do inod = 1, nidx_global_rtp(1)
         ist = (inod-1) * nb + 1
         ied = (inod-1) * nb + nb
-        write(50+my_rank,'(i10,1p200e20.12)') inod, v_s_pole(ist:ied)
+        write(50+my_rank,'(i15,1p200e20.12)') inod, v_s_pole(ist:ied)
       end do
 !
       write(50+my_rank,*) 'v_center', nb

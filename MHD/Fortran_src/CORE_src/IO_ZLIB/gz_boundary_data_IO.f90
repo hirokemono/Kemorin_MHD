@@ -81,13 +81,13 @@
 !   write node group
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! 4. group information  ', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! 4.1 node group ', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_group_data_gz(num_bc_dummy, num_nod_bc_dummy,          &
      &    bc_istack_dummy, bc_name_dummy, bc_item_dummy)
@@ -98,11 +98,11 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! 4.2 element group ', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_group_data_gz(num_mat_dummy, num_mat_bc_dummy,         &
      &    mat_istack_dummy, mat_name_dummy, mat_item_dummy)
@@ -112,11 +112,11 @@
 !  write surface group
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '! 4.3 surface group ', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '!', char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       call write_surf_group_data_gz(num_surf_dummy, num_surf_bc_dummy,  &
      &    surf_istack_dummy, surf_name_dummy, surf_item_dummy)

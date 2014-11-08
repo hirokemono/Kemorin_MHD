@@ -3,20 +3,24 @@
 !
 !     Written by H. Matsui on July, 2007
 !
-!      subroutine skip_gz_comment_int(int_input)
-!      subroutine skip_gz_comment_int2(int_input, int_input2)
-!      subroutine skip_gz_comment_real(real_input)
-!      subroutine skip_gz_comment_real2(real_input, real_input2)
-!      subroutine skip_gz_comment_chara(chara_input)
-!      subroutine skip_gz_comment_chara_int(chara_input, int_input)
+!!      subroutine gz_write_textbuf_f
+!!
+!!      subroutine get_one_line_from_gz_f
+!!      subroutine skip_gz_comment_int(int_input)
+!!      subroutine skip_gz_comment_int2(int_input, int_input2)
+!!      subroutine skip_gz_comment_real(real_input)
+!!      subroutine skip_gz_comment_real2(real_input, real_input2)
+!!      subroutine skip_gz_comment_chara(chara_input)
+!!      subroutine skip_gz_comment_chara_int(chara_input, int_input)
 !
-!      subroutine read_gz_multi_real(num, real_input)
-!      subroutine read_gz_multi_int(num, int_input)
-!      subroutine write_gz_multi_int_8i10(num, int_output)
-!      subroutine write_gz_multi_int_10i8(num, int_output)
-!      subroutine write_gz_multi_int_10i12(num, int_output)
+!!      subroutine read_gz_multi_real(num, real_input)
+!!      subroutine read_gz_multi_int(num, int_input)
+!!      subroutine write_gz_multi_int_8i10(num, int_output)
+!!      subroutine write_gz_multi_int_10i8(num, int_output)
+!!      subroutine write_gz_multi_int_10i12(num, int_output)
 !
-!      subroutine write_gz_comment_string(comment)
+!!      subroutine write_gz_comment_string(comment)
+!!      subroutine gz_write_chara_nolf(chara_output)
 !
       module skip_gz_comment
 !
@@ -24,7 +28,7 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter :: nbuf = 65535
+      integer(kind = 4), parameter :: nbuf = 65535
       integer (kind =kint) :: num_word, nchara
       character(len=nbuf) :: textbuf, tbuf2
       character(len=1), private :: chara_flag
@@ -36,6 +40,30 @@
 !
        contains
 !
+!------------------------------------------------------------------
+!
+      subroutine gz_write_textbuf_f
+!
+!
+      call write_compress_txt(nbuf, textbuf)
+!
+      end subroutine gz_write_textbuf_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine get_one_line_from_gz_f
+!
+      integer(kind = 4) :: num_word4, nchara4
+!
+!
+      call get_one_line_from_gz(nbuf, num_word4, nchara4, textbuf)
+      num_word = num_word4
+      nchara = nchara4
+!
+      end subroutine get_one_line_from_gz_f
+!
+!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine skip_gz_comment_int(int_input)
@@ -121,7 +149,7 @@
 !
 !
       do
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         if(nchara .le. 1) cycle
 !
         write(chara_flag,'(a1)',err=1) adjustl(textbuf)
@@ -159,7 +187,7 @@
       if(num .gt. num_word) then
         ist = num_word
         do
-          call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+          call get_one_line_from_gz_f
           read(textbuf,*) real_input(ist+1:ist+num_word)
           ist = ist + num_word
           if(ist .ge. num) exit
@@ -186,7 +214,7 @@
       if(num .gt. num_word) then
         ist = num_word
         do
-          call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+          call get_one_line_from_gz_f
           read(textbuf,*) int_input(ist+1:ist+num_word)
           ist = ist + num_word
           if(ist .ge. num) exit
@@ -212,7 +240,7 @@
         n = min((num-ist-1),7) + 1
         write(fmt_txt,'(a1,i2,a7)') '(', n, 'i10,a1)'
         write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -235,7 +263,7 @@
         n = min((num-ist-1),9) + 1
         write(fmt_txt,'(a1,i3,a6)') '(', n, 'i8,a1)'
         write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -258,7 +286,7 @@
         n = min((num-ist-1),9) + 1
         write(fmt_txt,'(a1,i3,a7)') '(', n, 'i12,a1)'
         write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -273,10 +301,22 @@
 !
 !
       write(textbuf,'(a,a1)') comment, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       end subroutine write_gz_comment_string
 !
 !------------------------------------------------------------------
+!
+      subroutine gz_write_chara_nolf(chara_output)
+!
+!
+      character(len=kchara), intent(in) :: chara_output
+!
+      write(textbuf,'(2a,a1)') trim(chara_output), '    ', CHAR(0)
+      call write_compress_txt_nolf(nbuf, textbuf)
+!
+      end subroutine gz_write_chara_nolf
+!
+! ----------------------------------------------------------------------
 !
       end module skip_gz_comment

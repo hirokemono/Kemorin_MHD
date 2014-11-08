@@ -31,7 +31,7 @@
       open(id_sph_cor,file=sph_cor_file_name)
       write(id_sph_cor,'(a)') '# ----- rotate.dat -----'
       write(id_sph_cor,'(a)') '#  truncation'
-      write(id_sph_cor,'(i10)')  ltr_cor_IO
+      write(id_sph_cor,'(i15)')  ltr_cor_IO
 !
       j1 = 2
       write(id_sph_cor,'(a)') '# j1, l2_gl, j3_gl, Ki/pi'

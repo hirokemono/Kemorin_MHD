@@ -50,7 +50,7 @@
       write(id_mesh,'(a)') '! 2. Mesh information (nodes and elements)'
       write(id_mesh,'(a)') '! 2.1. Position of nodes'
 !
-      write(id_mesh,'(2i10)') numnod, numnod
+      write(id_mesh,'(2i15)') numnod, numnod
 !
 !
       write(id_conn,'(a)') '! 2.2. Element connectivity'

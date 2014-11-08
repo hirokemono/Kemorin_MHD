@@ -65,39 +65,39 @@
 !
 !
       write(id_file,'(a)') '! i, indexDJDS_L(i)'
-      write(id_file,'(3i10)')  NLmax*NHYP*PEsmpTOT, NLmax, npLX1
+      write(id_file,'(3i15)')  NLmax*NHYP*PEsmpTOT, NLmax, npLX1
       do i = 1, NLmax*NHYP*PEsmpTOT
         write(id_file,'(8i10)') i, indexDJDS_L(i)
       end do
 !
       write(id_file,'(a)') '! i, indexDJDS_U(i)'
-      write(id_file,'(3i10)')  NUmax*NHYP*PEsmpTOT, NUmax, npUX1
+      write(id_file,'(3i15)')  NUmax*NHYP*PEsmpTOT, NUmax, npUX1
       do i = 1, NUmax*NHYP*PEsmpTOT
         write(id_file,'(8i10)') i, indexDJDS_U(i)
       end do
 !
       write(id_file,'(a)') '! i, NEWtoOLD(i), D(i)'
-      write(id_file,'(i10)') NP
+      write(id_file,'(i15)') NP
       do i = 1, NP
-        write(id_file,'(2i10,1pE25.15e3)') i, NEWtoOLD(i), D(i)
+        write(id_file,'(2i15,1pE25.15e3)') i, NEWtoOLD(i), D(i)
       end do
 !
       write(id_file,'(a)') '! i, itemDJDS_L(i), AL(i)'
-      write(id_file,'(i10)') itotal_l
+      write(id_file,'(i15)') itotal_l
       do i = 1, itotal_l
-        write(id_file,'(2i10,1pE25.15e3)') i, itemDJDS_L(i), AL(i)
+        write(id_file,'(2i15,1pE25.15e3)') i, itemDJDS_L(i), AL(i)
       end do
 !
       write(id_file,'(a)') '! i, itemDJDS_U(i), AU(i)'
-      write(id_file,'(i10)') itotal_u
+      write(id_file,'(i15)') itotal_u
       do i = 1, itotal_u
-        write(id_file,'(2i10,1pE25.15e3)') i, itemDJDS_U(i), AU(i)
+        write(id_file,'(2i15,1pE25.15e3)') i, itemDJDS_U(i), AU(i)
       end do
 !
       write(id_file,'(a)') '! i, ALUG_L(i), ALUG_U(i)'
-      write(id_file,'(i10)') N
+      write(id_file,'(i15)') N
       do i = 1, N
-        write(id_file,'(i10,1p2E25.15e3)') i, ALUG_L(i), ALUG_U(i)
+        write(id_file,'(i15,1p2E25.15e3)') i, ALUG_L(i), ALUG_U(i)
       end do
 !
       end subroutine write_djds_mat11_comp
@@ -137,41 +137,41 @@
 !
 !
       write(id_file,'(a)') '! i, indexDJDS_L(i)'
-      write(id_file,'(3i10)')  NLmax*NHYP*PEsmpTOT, NLmax, npLX1
+      write(id_file,'(3i15)')  NLmax*NHYP*PEsmpTOT, NLmax, npLX1
       do i = 1, NLmax*NHYP*PEsmpTOT
         write(id_file,'(8i10)') i, indexDJDS_L(i)
       end do
 !
       write(id_file,'(a)') '! i, indexDJDS_U(i)'
-      write(id_file,'(3i10)')  NUmax*NHYP*PEsmpTOT, NUmax, npUX1
+      write(id_file,'(3i15)')  NUmax*NHYP*PEsmpTOT, NUmax, npUX1
       do i = 1, NUmax*NHYP*PEsmpTOT
         write(id_file,'(8i10)') i, indexDJDS_U(i)
       end do
 !
       write(id_file,'(a)') '! i, NEWtoOLD(i), D(i)'
-      write(id_file,'(i10)') NP
+      write(id_file,'(i15)') NP
       do i = 1, NP
-        write(id_file,'(2i10,1p9E25.15e3)') i, NEWtoOLD(i), D(9:i-8:9*i)
+        write(id_file,'(2i15,1p9E25.15e3)') i, NEWtoOLD(i), D(9:i-8:9*i)
       end do
 !
       write(id_file,'(a)') '! i, itemDJDS_L(i), AL(i)'
-      write(id_file,'(i10)') itotal_l
+      write(id_file,'(i15)') itotal_l
       do i = 1, itotal_l
-        write(id_file,'(2i10,1p9E25.15e3)') i, itemDJDS_L(i),           &
+        write(id_file,'(2i15,1p9E25.15e3)') i, itemDJDS_L(i),           &
      &       AL(9:i-8:9*i)
       end do
 !
       write(id_file,'(a)') '! i, itemDJDS_U(i), AU(i)'
-      write(id_file,'(i10)') itotal_u
+      write(id_file,'(i15)') itotal_u
       do i = 1, itotal_u
-        write(id_file,'(2i10,1p9E25.15e3)') i, itemDJDS_U(i),           &
+        write(id_file,'(2i15,1p9E25.15e3)') i, itemDJDS_U(i),           &
      &       AU(9:i-8:9*i)
       end do
 !
       write(id_file,'(a)') '! i, ALUG_L(i), ALUG_U(i)'
-      write(id_file,'(i10)') N
+      write(id_file,'(i15)') N
       do i = 1, N
-        write(id_file,'(i10,1p18E25.15e3)') i, ALUG_L(9:i-8:9*i),       &
+        write(id_file,'(i15,1p18E25.15e3)') i, ALUG_L(9:i-8:9*i),       &
      &                                      ALUG_U(9:i-8:9*i)
       end do
 !
@@ -209,26 +209,26 @@
 !
 !
       write(id_file,'(a)') '! i, STACKmcG(i)'
-      write(id_file,'(i10)')  PEsmpTOT
+      write(id_file,'(i15)')  PEsmpTOT
       do i = 1, PEsmpTOT
         write(id_file,'(8i10)') i, STACKmcG(i)
       end do
 !
       write(id_file,'(a)') '! i, IVECT(i), NLmaxHYP(i), NUmaxHYP(i)'
-      write(id_file,'(i10)') NHYP
+      write(id_file,'(i15)') NHYP
       do i = 1, NHYP
         write(id_file,'(8i10)') i, IVECT(i), NLmaxHYP(i), NUmaxHYP(i)
       end do
 !
       write(id_file,'(a)') '! i, STACKmc(i)'
-      write(id_file,'(i10)')  PEsmpTOT*NHYP
+      write(id_file,'(i15)')  PEsmpTOT*NHYP
       do i = 1, PEsmpTOT*NHYP
         write(id_file,'(8i10)') i, STACKmc(i)
       end do
 !
       write(id_file,'(2a)') '!  i, NEWtoOLD_DJDS_U(i), ',               &
      &    'OLDtoNEW_DJDS_L(i), OLDtoNEW_DJDS_U(i), LtoU(i)'
-      write(id_file,'(i10)') NP
+      write(id_file,'(i15)') NP
       do i = 1, NP
         write(id_file,'(8i10)') i, NEWtoOLD_DJDS_U(i),                  &
      &           OLDtoNEW_DJDS_L(i),  OLDtoNEW_DJDS_U(i), LtoU(i)
@@ -237,7 +237,7 @@
       write(id_file,'(a)') '! EXPORT'
       write(id_file,'(8i10)')  STACK_EXPORT(1:NEIBPETOT)
       do i = 1, STACK_EXPORT(NEIBPETOT)
-        write(id_file,'(2i10)') i, NOD_EXPORT_NEW(i)
+        write(id_file,'(2i15)') i, NOD_EXPORT_NEW(i)
       end do
 !
       end subroutine write_djds_mat_connects

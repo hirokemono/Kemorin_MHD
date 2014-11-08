@@ -102,11 +102,11 @@
           iq(1) = ie(iele,1) - 1
           iq(2) = ie(iele,2) - 1
           iq(3) = ie(iele,3) - 1
-          write(id_output,'(3i10)') (iq(nd),nd= 1,nnod_ele)
+          write(id_output,'(3i15)') (iq(nd),nd= 1,nnod_ele)
         else if (nnod_ele .eq. num_linear_edge) then
           iq(1) = ie(iele,1) - 1
           iq(2) = ie(iele,2) - 1
-          write(id_output,'(3i10)') (iq(nd),nd= 1,nnod_ele)
+          write(id_output,'(3i15)') (iq(nd),nd= 1,nnod_ele)
         end if
       end do
 !

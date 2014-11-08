@@ -61,10 +61,10 @@
 !
         write(rst_sgs_coef_code,'(a)')                                  &
      &              '! time step and interbal for dynamic model'
-        write(rst_sgs_coef_code,'(2i10)') i_step_MHD, i_step_sgs_coefs
+        write(rst_sgs_coef_code,'(2i15)') i_step_MHD, i_step_sgs_coefs
 !
         write(rst_sgs_coef_code,'(a)')  '! num. of model coefs'
-        write(rst_sgs_coef_code,'(2i10)')  num_sgs_kinds, n_layer_d
+        write(rst_sgs_coef_code,'(2i15)')  num_sgs_kinds, n_layer_d
 !
         call write_sgs_coef_head(rst_sgs_coef_code)
 !
@@ -81,7 +81,7 @@
         if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
 !
           write(rst_sgs_coef_code,'(a)')  '! num. of commute coefs'
-          write(rst_sgs_coef_code,'(2i10)')  num_diff_kinds, n_layer_d
+          write(rst_sgs_coef_code,'(2i15)')  num_diff_kinds, n_layer_d
 !
           call write_diff_coef_head(rst_sgs_coef_code)
 !
@@ -99,7 +99,7 @@
 !
       end if
 !
- 1000 format(i10,1pE25.15e3,i10,1p200E25.15e3)
+ 1000 format(i15,1pE25.15e3,i15,1p200E25.15e3)
 !
       end subroutine output_ini_model_coefs
 !

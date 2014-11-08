@@ -117,11 +117,11 @@
 !      if(iflag_debug .gt. 0) then
 !        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', iak_sgs_tbuo
 !        do i = 1, n_layer_d
-!          write(*,'(i10,1pe20.12)') i, sgs_f_coef(i,iak_sgs_tbuo)
+!          write(*,'(i15,1pe20.12)') i, sgs_f_coef(i,iak_sgs_tbuo)
 !        end do
 !        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', icomp_sgs_cbuo
 !        do i = 1, n_layer_d
-!          write(*,'(i10,1p6e20.12)') i,                                &
+!          write(*,'(i15,1p6e20.12)') i,                                &
 !     &              sgs_c_coef(i,icomp_sgs_tbuo:icomp_sgs_tbuo+5)
 !        end do
 !      end if

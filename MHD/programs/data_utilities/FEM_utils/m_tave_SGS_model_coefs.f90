@@ -84,10 +84,10 @@
       open (id_ave_file,file=file_name)
 !
       write(id_ave_file,'(a)')   '# start and end step'
-      write(id_ave_file,'(2i10)')  istep_start, istep
+      write(id_ave_file,'(2i15)')  istep_start, istep
       write(id_ave_file,'(1p2e23.12)')  start_time,  time
       write(id_ave_file,'(a)')   '# number of component and layer'
-      write(id_ave_file,'(2i10)')   num_comp, num_layer
+      write(id_ave_file,'(2i15)')   num_comp, num_layer
 !
       write(id_ave_file,'(a)', advance='no')                            &
      &        'end_step, end_time, layer_id, '
@@ -98,7 +98,7 @@
       write(id_ave_file,*)
 !
       do i = 1, num_layer
-        write(id_ave_file,'(i10,1pE25.15e3,i10,1p100E25.15e3)')         &
+        write(id_ave_file,'(i15,1pE25.15e3,i15,1p100E25.15e3)')         &
      &        istep, time, i,  ave_coef(i,1:num_comp)
       end do
 !
@@ -125,10 +125,10 @@
       open (id_sig_file,file=file_name)
 !
       write(id_sig_file,'(a)')   '# start and end step'
-      write(id_sig_file,'(2i10)')  istep_start, istep
+      write(id_sig_file,'(2i15)')  istep_start, istep
       write(id_sig_file,'(1p2e23.15)')  start_time,  time
       write(id_ave_file,'(a)')   '# number of component and layer'
-      write(id_sig_file,'(2i10)')  num_comp, num_layer
+      write(id_sig_file,'(2i15)')  num_comp, num_layer
 !
       write(id_sig_file,'(a)', advance='no')                            &
      &        'end_step, end_time, layer_id, '
@@ -139,7 +139,7 @@
       write(id_sig_file,*)
 !
       do i = 1, num_layer
-        write(id_sig_file,'(i10,1pE25.15e3,i10,1p100E25.15e3)')         &
+        write(id_sig_file,'(i15,1pE25.15e3,i15,1p100E25.15e3)')         &
      &        istep, time, i,  sigma_coef(i,1:num_comp)
       end do
 !

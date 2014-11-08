@@ -197,7 +197,7 @@
       close (sgs_ratio_file_code)
       close (sgs_rms_file_code)
 !
- 1000 format(i10,1pE25.15e3,i10,1p200E25.15e3)
+ 1000 format(i15,1pE25.15e3,i15,1p200E25.15e3)
 !
       end subroutine output_layered_model_coefs_file
 !
@@ -243,7 +243,7 @@
       close (sgs_ratio_file_code)
       close (sgs_rms_file_code)
 !
- 1001 format(i10,1pE25.15e3,1p200E25.15e3)
+ 1001 format(i15,1pE25.15e3,1p200E25.15e3)
 !
       end subroutine output_whole_model_coefs_file
 !
@@ -289,7 +289,7 @@
       close (diff_ratio_file_code)
       close (diff_rms_file_code)
 !
- 1001 format(i10,1pE25.15e3,1p200E25.15e3)
+ 1001 format(i15,1pE25.15e3,1p200E25.15e3)
 !
       end subroutine output_whole_diff_coefs_file
 !
@@ -340,7 +340,7 @@
       close(diff_ratio_file_code)
       close(diff_rms_file_code)
 !
- 1000 format(i10,1pE25.15e3,i10,1p200E25.15e3)
+ 1000 format(i15,1pE25.15e3,i15,1p200E25.15e3)
 !
       end subroutine output_layered_diff_coefs_file
 !

@@ -60,10 +60,10 @@
 !
 !
       write(id_file,'(a)') '! number of node for filtering: '
-      write(id_file,'(2i10)') nnod, nele
+      write(id_file,'(2i15)') nnod, nele
 !
       write(id_file,'(a)')  '! number of filter function '
-      write(id_file,'(i10)') nf_type
+      write(id_file,'(i15)') nf_type
 !
 !
       end subroutine write_filter_elen_head
@@ -99,10 +99,10 @@
 !
 !
       write(id_file,'(a)') '! number of node for filtering: '
-      write(id_file,'(3i10)')  nnod, nele, n_filter
+      write(id_file,'(3i15)')  nnod, nele, n_filter
 !
       write(id_file,'(a)')  '! number of filter function '
-      write(id_file,'(i10)') nf_type
+      write(id_file,'(i15)') nf_type
 !
       end subroutine write_filter_moms_head
 !
@@ -160,7 +160,7 @@
       integer(kind = kint) :: i
 !
       do i = 1, num
-        write(id_file,'(i10,1p3E25.15e3)') i, el1(i), el2(i), el3(i)
+        write(id_file,'(i15,1p3E25.15e3)') i, el1(i), el2(i), el3(i)
       end do
 !
       end subroutine write_elength
@@ -177,7 +177,7 @@
 !
         do nd = 1, 3
           do i = 1, num
-            write(id_file,'(2i10,1p3E25.15e3)') nd, i, el1(i,nd),       &
+            write(id_file,'(2i15,1p3E25.15e3)') nd, i, el1(i,nd),       &
      &         el2(i,nd), el3(i,nd)
           end do
         end do

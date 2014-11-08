@@ -27,12 +27,15 @@
       integer(kind = kint), intent(in) :: npix_x, npix_y
       character(len=kchara), intent(in) :: img_head
       character(len = 1), intent(in) :: cimage(3,npix_x*npix_y)
+      integer(kind = 4) :: npix4_x, npix4_y
 !
 !
 #ifdef PNG_OUTPUT
       if(id_file_type .eq. 12) then
+        npix4_x = int(npix_x)
+        npix4_y = int(npix_y)
         write(fhead_img_v, '(a,a1)') trim(img_head), CHAR(0)
-        call write_png_rgb_c(fhead_img_v, npix_x, npix_y,               &
+        call write_png_rgb_c(fhead_img_v, npix4_x, npix4_y,             &
      &      cimage(1,1))
         return
       end if
@@ -51,12 +54,15 @@
       integer(kind = kint), intent(in) :: npix_x, npix_y
       character(len=kchara), intent(in) :: img_head
       character(len = 1), intent(in) :: cimage(4,npix_x*npix_y)
+      integer(kind = 4) :: npix4_x, npix4_y
 !
 !
 #ifdef PNG_OUTPUT
       if(id_file_type .eq. 12) then
         write(fhead_img_v, '(a,a1)') trim(img_head), CHAR(0)
-        call write_png_rgba_c(fhead_img_v, npix_x, npix_y,              &
+        npix4_x = int(npix_x)
+        npix4_y = int(npix_y)
+        call write_png_rgba_c(fhead_img_v, npix4_x, npix4_y,            &
      &      cimage(1,1))
         return
       end if

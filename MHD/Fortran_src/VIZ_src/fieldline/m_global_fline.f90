@@ -186,18 +186,18 @@
 !
       write(id_file,*) ntot_nod_line_gl, ntot_ele_line_gl
       do i = 1, ntot_nod_line_gl
-        write(id_file,'(i10,1p3e16.7)') i, xx_line_gl(1:3,i)
+        write(id_file,'(i15,1p3e16.7)') i, xx_line_gl(1:3,i)
       end do
 !
       do i = 1, ntot_ele_line_gl
-        write(id_file,'(2i10,a7,2i10)') i, ione,                        &
+        write(id_file,'(2i15,a7,2i10)') i, ione,                        &
      &               '  line ', iedge_line_gl(1:2,i)
       end do
 !
       write(id_file,'(2i4)') ione, ione
       write(id_file,'(a,a1)') trim(color_name_gl), ','
       do i = 1, ntot_nod_line_gl
-        write(id_file,'(i10,1pe16.7)') i, col_line_gl(i)
+        write(id_file,'(i15,1pe16.7)') i, col_line_gl(i)
       end do
 !
       end subroutine write_global_fline
@@ -212,7 +212,7 @@
 !
       write(id_file,'(a)') '#'
       write(id_file,'(a)') '#  node information'
-      write(id_file,'(a,i10,a)')                                        &
+      write(id_file,'(a,i15,a)')                                        &
      &   'object 1 class array type float rank 1 shape 3 items  ',      &
      &   ntot_nod_line_gl, ' data follows'
 !
@@ -222,18 +222,18 @@
 !
       write(id_file,'(a)') '#'
       write(id_file,'(a)') '# element connectivity'
-      write(id_file,'(a,i10,a)')                                        &
+      write(id_file,'(a,i15,a)')                                        &
      &   'object 2 class array type int rank 1 shape 2 items    ',      &
      &   ntot_ele_line_gl, ' data follows'
       do i = 1, ntot_ele_line_gl
-        write(id_file,'(2i10)') (iedge_line_gl(1:2,i)-1)
+        write(id_file,'(2i15)') (iedge_line_gl(1:2,i)-1)
       end do
       write(id_file,'(a)') 'attribute "element type" string "lines"'
       write(id_file,'(a)') 'attribute "ref" string "positions"'
 !
       write(id_file,'(a)') '#'
       write(id_file,'(a)') '# scalar'
-      write(id_file,'(a,i10,a)')                                        &
+      write(id_file,'(a,i15,a)')                                        &
      &   'object 3 class array type float rank 1 shape 1 items  ',      &
      &   ntot_nod_line_gl, ' data follows'
       do i = 1, ntot_nod_line_gl

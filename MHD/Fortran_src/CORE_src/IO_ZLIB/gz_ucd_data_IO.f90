@@ -59,11 +59,11 @@
 !
       write(textbuf,fmt_txt) num_output,'  ', ncomp_out(1:num_output),  &
      &                      char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       do j = 1, num_output
         write(textbuf,'(a,a1,a1)') trim(name_out(j)), ",", char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       end subroutine write_gz_udt_field_header
@@ -87,7 +87,7 @@
       do inod = 1, nnod
         write(textbuf,fmt_txt)                                          &
      &             inod_out(inod), dat_out(inod,1:ncomp_dat), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       end subroutine  write_gz_ucd_field_data
@@ -102,7 +102,7 @@
       integer(kind = kint) :: nchara
 !
 !
-      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+      call get_one_line_from_gz_f
       read(textbuf,*) num_input
 !
       end subroutine read_gz_udt_field_num
@@ -124,7 +124,7 @@
       if(num_input .gt. num_word-1) then
         ist = num_word-1
         do
-          call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+          call get_one_line_from_gz_f
           read(textbuf,*) ncomp_in(ist+1:ist+num_word)
           ist = ist + num_word
           if(ist .gt. num_input) exit
@@ -132,7 +132,7 @@
       end if
 !
       do i = 1, num_input
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) name_in(i)
       end do
 !
@@ -149,7 +149,7 @@
       integer(kind = kint) :: nchara
 !
 !
-      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+      call get_one_line_from_gz_f
       call read_gz_udt_field_name(num_input, ncomp_in, name_in)
 !
       end subroutine read_gz_udt_field_header
@@ -167,13 +167,13 @@
 !
 !
       do inod = 1, nnod_in
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) itmp, dat_in(inod,1:num_word-1)
 !
         if(ncomp_dat .gt. num_word-1) then
           ist = num_word-1
           do
-            call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+            call get_one_line_from_gz_f
             read(textbuf,*) dat_in(inod,ist+1:ist+num_word)
             ist = ist + num_word
             if(ist .gt. ncomp_dat) exit
@@ -195,7 +195,7 @@
       integer(kind = kint) :: itmp
 !
 !
-      call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+      call get_one_line_from_gz_f
       read(textbuf,*) nnod_input, nele_in, ncomptot_in, itmp, itmp
 !
       end subroutine read_gz_udt_mesh_header
@@ -218,12 +218,12 @@
 !
 !
       do inod = 1, nnod_in
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) inod_gl(inod), xx_in(inod,1:3)
       end do
 !
       do iele = 1, nele_in
-        call get_one_line_from_gz(nbuf, num_word, nchara, textbuf)
+        call get_one_line_from_gz_f
         read(textbuf,*) iele_gl(iele), itmp, tmpchara,                  &
      &                  ie_in(iele,1:nnod_4_ele)
       end do
@@ -242,7 +242,7 @@
 !
       write(textbuf,'(3i10,2i5,a1)') nnod_output, nele_out,             &
      &         ncomp_output, izero, izero, char(0)
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_f
 !
       end subroutine write_gz_udt_mesh_header
 !
@@ -273,7 +273,7 @@
       do iele = 1, nele
         write(textbuf,fmt_txt) iele_gl(iele), ione, eleflag,            &
      &                         ie_out(iele,1:nnod_4_ele), char(0)
-        call write_compress_txt(nbuf, textbuf)
+        call gz_write_textbuf_f
       end do
 !
       end subroutine  write_gz_ucd_mesh_connect

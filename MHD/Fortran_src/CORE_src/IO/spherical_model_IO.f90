@@ -115,8 +115,8 @@
       write(id_file,'(a)') '! truncation level for spherical harmonics'
       write(id_file,'(a)') '!'
 !
-      write(id_file,'(3i10)') nidx_gl_sph_IO(1:ndir_sph_IO)
-      write(id_file,'(i10)') ltr_gl_IO
+      write(id_file,'(3i15)') nidx_gl_sph_IO(1:ndir_sph_IO)
+      write(id_file,'(i15)') ltr_gl_IO
 !
       end subroutine write_gl_resolution_sph
 !
@@ -128,7 +128,7 @@
       integer(kind = kint) :: i
 !
 !
-      write(id_file,'(i10)') nnod_sph_IO
+      write(id_file,'(i15)') nnod_sph_IO
       do i = 1, nnod_sph_IO
         write(id_file,'(20i10)')                                        &
      &              inod_gl_sph_IO(i), idx_gl_sph_IO(i,1:ndir_sph_IO)

@@ -44,7 +44,7 @@
       integer (kind = kint) :: i
 !
 !
-      write(id_file,'(i10)') numele_dummy
+      write(id_file,'(i15)') numele_dummy
       write(id_file,'(10i8)') i_ele_dummy(1:numele_dummy)
 !
       do i=1, numele_dummy
@@ -63,7 +63,7 @@
       integer (kind = kint), intent(in) :: id_file
       integer(kind = kint) :: i
 !
-      write(id_file,'(2i10)') nsf_4_ele_IO, nsurf_in_ele_IO
+      write(id_file,'(2i15)') nsf_4_ele_IO, nsurf_in_ele_IO
 !
       do i = 1, nsf_4_ele_IO
         write(id_file,'(10i10)') i, isf_4_ele_IO(i,1:nsurf_in_ele_IO)
@@ -80,7 +80,7 @@
       integer (kind = kint), intent(in) :: id_file
       integer(kind = kint) :: i
 !
-      write(id_file,'(2i10)') ned_4_ele_IO, nedge_in_ele_IO
+      write(id_file,'(2i15)') ned_4_ele_IO, nedge_in_ele_IO
 !
       do i = 1, ned_4_ele_IO
         write(id_file,'(15i10)') i, iedge_4_ele_IO(i,1:nedge_in_ele_IO)

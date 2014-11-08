@@ -192,11 +192,11 @@
       real(kind = kreal), intent(inout) :: spec_lm(ncomp,nri)
 !
 !
-      write(id_max_rms_l,'(i10,1pE25.15e3,i10,1p255E25.15e3)')          &
+      write(id_max_rms_l,'(i15,1pE25.15e3,i15,1p255E25.15e3)')          &
      &         istep, time_sph, izero, spec_l(1:ncomp,1)
-      write(id_max_rms_m,'(i10,1pE25.15e3,i10,1p255E25.15e3)')          &
+      write(id_max_rms_m,'(i15,1pE25.15e3,i15,1p255E25.15e3)')          &
      &         istep, time_sph, izero, spec_m(1:ncomp,1)
-      write(id_max_rms_lm,'(i10,1pE25.15e3,i10,1p255E25.15e3)')         &
+      write(id_max_rms_lm,'(i15,1pE25.15e3,i15,1p255E25.15e3)')         &
      &         istep, time_sph, izero, spec_lm(1:ncomp,1)
 !
       end subroutine write_max_vol_sph_data
@@ -217,11 +217,11 @@
 !
 !
       do kr = 1, nri
-        write(id_max_rms_l,'(i10,1pE25.15e3,2i10,1p255E25.15e3)')       &
+        write(id_max_rms_l,'(i15,1pE25.15e3,2i10,1p255E25.15e3)')       &
      &     istep, time_sph, kr_sph(kr), izero, spec_l(1:ncomp,kr)
-        write(id_max_rms_m,'(i10,1pE25.15e3,2i10,1p255E25.15e3)')       &
+        write(id_max_rms_m,'(i15,1pE25.15e3,2i10,1p255E25.15e3)')       &
      &     istep, time_sph, kr_sph(kr), izero, spec_m(1:ncomp,kr)
-        write(id_max_rms_lm,'(i10,1pE25.15e3,2i10,1p255E25.15e3)')      &
+        write(id_max_rms_lm,'(i15,1pE25.15e3,2i10,1p255E25.15e3)')      &
      &     istep, time_sph, kr_sph(kr), izero, spec_lm(1:ncomp,kr)
       end do
 !

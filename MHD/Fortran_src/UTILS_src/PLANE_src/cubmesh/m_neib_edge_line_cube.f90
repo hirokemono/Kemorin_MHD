@@ -160,7 +160,7 @@
             write(nb_out,'(i15)') edgetot
             write(nb_out,'(i15)') edgetot, edgetot, edgetot
             write(nb_out,'(a12)') '! num_depth: '
-            write(nb_out,'(2i10)') ndep_1
+            write(nb_out,'(2i15)') ndep_1
 !
        write(nb_out,'(a16)') '!  xi direction'
        do iedge = 1, edgetot

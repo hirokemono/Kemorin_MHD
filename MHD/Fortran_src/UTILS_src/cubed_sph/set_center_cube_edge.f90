@@ -49,7 +49,7 @@
         do iy = 1, num_h-1
           do ix = 1, num_h-2
             inod = inod + 1
-            write (ifile,'(i10,1p3E25.15e3)') inod,                     &
+            write (ifile,'(i15,1p3E25.15e3)') inod,                     &
      &           x_edge(ix+1), x_node(iy+1), v_node(iz+1)
           end do
         end do
@@ -76,7 +76,7 @@
         do iy = 1, num_h-2
           do ix = 1, num_h-1
             inod = inod + 1
-            write (ifile,'(i10,1p3E25.15e3)') inod,                     &
+            write (ifile,'(i15,1p3E25.15e3)') inod,                     &
      &           x_node(ix+1), x_edge(iy+1), v_node(iz+1)
           end do
         end do
@@ -102,7 +102,7 @@
         do iy = 1, num_h-1
           do ix = 1, num_h-1
             inod = inod + 1
-            write (ifile,'(i10,1p3E25.15e3)') inod,                     &
+            write (ifile,'(i15,1p3E25.15e3)') inod,                     &
      &           x_node(ix+1), x_node(iy+1), v_edge(iz+1)
           end do
         end do
@@ -128,7 +128,7 @@
       do iy = 1, num_h-1
         do ix = 1, num_h-1
           inod = inod + 1
-          write (ifile,'(i10,1p3E25.15e3)') inod,                       &
+          write (ifile,'(i15,1p3E25.15e3)') inod,                       &
      &         x_node(ix+1), x_node(iy+1), v_edge
         end do
       end do
@@ -155,14 +155,14 @@
 !  surface (y = -cube_size)
         do ix = 1, num_h-1
           inod = inod + 1
-          write (ifile,'(i10,1p3E25.15e3)') inod,                       &
+          write (ifile,'(i15,1p3E25.15e3)') inod,                       &
      &         x_node(ix+1), x_edge(1), v_node(iz+1)
         end do
 !
 !  surface (x=cube_size)
         do iy = 1, num_h-1
           inod = inod + 1
-          write (ifile,'(i10,1p3E25.15e3)') inod,                       &
+          write (ifile,'(i15,1p3E25.15e3)') inod,                       &
      &         x_edge(num_h), x_node(iy+1), v_node(iz+1)
         end do
 !
@@ -170,7 +170,7 @@
         do ix = 1, num_h-1
           inum = (num_h+1) - ix
           inod = inod + 1
-          write (ifile,'(i10,1p3E25.15e3)') inod,                       &
+          write (ifile,'(i15,1p3E25.15e3)') inod,                       &
      &         x_node(inum), x_edge(num_h), v_node(iz+1)
         end do
 !
@@ -178,7 +178,7 @@
         do iy = 1, num_h-1
           inum = (num_h+1) - iy
           inod = inod + 1
-          write (ifile,'(i10,1p3E25.15e3)') inod,                       &
+          write (ifile,'(i15,1p3E25.15e3)') inod,                       &
      &         x_edge(1), x_node(inum), v_node(iz+1)
         end do
       end do
@@ -201,7 +201,7 @@
       do irod = 1, nedge_sf
          inum = nnod_sf + irod
          inod = inod + 1
-         write (ifile,'(i10,1p3E25.15e3)') inod, xyz_sf(inum,1:3)
+         write (ifile,'(i15,1p3E25.15e3)') inod, xyz_sf(inum,1:3)
       end do
 !
       end subroutine set_center_surf_edge

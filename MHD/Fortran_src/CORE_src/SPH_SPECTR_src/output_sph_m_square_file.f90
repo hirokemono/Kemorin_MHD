@@ -47,7 +47,7 @@
 !
 !
       if(my_rank .gt. 0) return
-      write(*,'(a10,i10,a10,1pe15.8)',advance='no')                     &
+      write(*,'(a10,i15,a10,1pe15.8)',advance='no')                     &
      &            'time step=',istep,'time=',time
 !
       do i = 1, num_rms_rj
@@ -92,7 +92,7 @@
       write(mode_label,'(a)') 'EMPTY'
       call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label)
 !
-      write(id_file_rms,'(i10,1pe23.14e3,1p200e23.14e3)')               &
+      write(id_file_rms,'(i15,1pe23.14e3,1p200e23.14e3)')               &
      &                 istep, time, rms_sph_vol(1:ntot_rms_rj)
       close(id_file_rms)
 !

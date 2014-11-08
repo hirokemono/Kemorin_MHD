@@ -57,10 +57,10 @@
       open(id_subdomain,file = fname_subdomain)
 !
       write(id_subdomain,*) '! number of subdomains'
-      write(id_subdomain,'(i10)') nproc_group_IO
+      write(id_subdomain,'(i15)') nproc_group_IO
 !
       write(id_subdomain,*) '! number of total node'
-      write(id_subdomain,'(2i10)') nnod_group_IO, internod_group_IO
+      write(id_subdomain,'(2i15)') nnod_group_IO, internod_group_IO
 !
       write(id_subdomain,'(10i8)') IGROUP_IO(1:nnod_group_IO)
 !

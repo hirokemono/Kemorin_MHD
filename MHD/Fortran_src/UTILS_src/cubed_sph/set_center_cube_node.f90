@@ -38,10 +38,10 @@
           do ix = 1, (num_h-1)
 !
             inod = inod + 1
-            write(ifile,'(i10,1p3E25.15e3)') inod,                      &
+            write(ifile,'(i15,1p3E25.15e3)') inod,                      &
      &               x_node(ix+1), x_node(iy+1), v_node(iz+1)
             if(ifile_q .gt. 0) then
-              write(ifile_q,'(i10,1p3E25.15e3)') inod,                  &
+              write(ifile_q,'(i15,1p3E25.15e3)') inod,                  &
      &               x_node(ix+1), x_node(iy+1), v_node(iz+1)
             end if
 !
@@ -84,7 +84,7 @@
             knod =  (num_hfc-1)**2 * (iz*nl_s-1)                        &
      &            + (num_hfc-1)*(iy*nl_s-1) + ix*nl_s
 !
-            write(id,'(i10,1p3E25.15e3)') jnod, x_node(ix*nskip_s+1),   &
+            write(id,'(i15,1p3E25.15e3)') jnod, x_node(ix*nskip_s+1),   &
      &            x_node(iy*nskip_s+1), v_node(iz*nskip_s+1)
             write(id_f2c,'(6i10)') izero, jnod,                         &
      &            izero, knod, izero, inod
@@ -113,10 +113,10 @@
       do iy = 1, num_h-1
         do ix = 1, num_h-1
           inod = inod + 1
-          write(ifile,'(i10,1p3E25.15e3)') inod,                        &
+          write(ifile,'(i15,1p3E25.15e3)') inod,                        &
      &                x_node(ix+1), x_node(iy+1), zero
           if(ifile_q .gt. 0) then
-            write(ifile_q,'(i10,1p3E25.15e3)') inod,                    &
+            write(ifile_q,'(i15,1p3E25.15e3)') inod,                    &
      &                x_node(ix+1), x_node(iy+1), zero
             end if
         end do

@@ -229,18 +229,18 @@
 !
       write(id_file,*) nnod_line_l, nele_line_l
       do i = 1, nnod_line_l
-        write(id_file,'(i10,1p3e16.7)') i, xx_line_l(1:3,i)
+        write(id_file,'(i15,1p3e16.7)') i, xx_line_l(1:3,i)
       end do
 !
       do i = 1, nele_line_l
-        write(id_file,'(2i10,a7,2i10)') i, ione,                        &
+        write(id_file,'(2i15,a7,2i10)') i, ione,                        &
      &               '  line ', iedge_line_l(1:2,i)
       end do
 !
       write(id_file,'(2i4)') ione, ione
       write(id_file,'(a)') 'color_data,'
       do i = 1, nnod_line_l
-        write(id_file,'(i10,1pe16.7)') i, col_line_l(i)
+        write(id_file,'(i15,1pe16.7)') i, col_line_l(i)
       end do
 !
       close(id_file)
@@ -257,7 +257,7 @@
 !
       write(id_file,'(a)') '#'
       write(id_file,'(a)') '#  node information'
-      write(id_file,'(a,i10,a)')                                        &
+      write(id_file,'(a,i15,a)')                                        &
      &   'object 1 class array type float rank 1 shape 3 items  ',      &
      &   nnod_line_l, ' data follows'
 !
@@ -267,18 +267,18 @@
 !
       write(id_file,'(a)') '#'
       write(id_file,'(a)') '# element connectivity'
-      write(id_file,'(a,i10,a)')                                        &
+      write(id_file,'(a,i15,a)')                                        &
      &   'object 2 class array type int rank 1 shape 2 items    ',      &
      &   nele_line_l, ' data follows'
       do i = 1, nele_line_l
-        write(id_file,'(2i10)') (iedge_line_l(1:2,i)-1)
+        write(id_file,'(2i15)') (iedge_line_l(1:2,i)-1)
       end do
       write(id_file,'(a)') 'attribute "element type" string "lines"'
       write(id_file,'(a)') 'attribute "ref" string "positions"'
 !
       write(id_file,'(a)') '#'
       write(id_file,'(a)') '# scalar'
-      write(id_file,'(a,i10,a)')                                        &
+      write(id_file,'(a,i15,a)')                                        &
      &   'object 3 class array type float rank 1 shape 1 items  ',      &
      &   nnod_line_l, ' data follows'
       do i = 1, nnod_line_l
