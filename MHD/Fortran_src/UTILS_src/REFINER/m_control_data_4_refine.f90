@@ -21,9 +21,6 @@
       character (len = kchara), parameter                               &
      &         :: control_file_name = 'ctl_refine'
 !
-      character (len = kchara) :: orginal_mesh_head_ctl
-      character (len = kchara) :: refine_mesh_head_ctl
-!
       character (len = kchara) :: coarse_2_fine_head_ctl
       character (len = kchara) :: fine_2_course_head_ctl
       character (len = kchara) :: refine_info_head_ctl
@@ -49,7 +46,7 @@
 !   2nd level for partitioner_control
 !
       character(len=kchara), parameter :: hd_single_refine_files        &
-     &                      = 'single_itp_table_ctl'
+     &                      = 'single_refined_table_ctl'
       character(len=kchara), parameter :: hd_refine_param               &
      &                      = 'refine_parameter_ctl'
       integer (kind=kint) :: i_single_refine_files =  0
@@ -57,10 +54,6 @@
 !
 !   3rd level for partitioner_control
 !
-      character(len=kchara), parameter :: hd_org_f_ctl                  &
-     &                      = 'orginal_mesh_head_ctl'
-      character(len=kchara), parameter :: hd_refined_f_ctl              &
-     &                      = 'refined_mesh_head_ctl'
       character(len=kchara), parameter :: hd_course_to_fine_ctl         &
      &                      = 'cource_to_fine_table_ctl'
       character(len=kchara), parameter :: hd_fine_to_course_ctl         &
@@ -70,8 +63,6 @@
       character(len=kchara), parameter :: hd_old_refine_info_ctl        &
      &                      = 'old_refine_info_head_ctl'
 !
-      integer (kind=kint) :: i_org_f_ctl =           0
-      integer (kind=kint) :: i_refined_f_ctl =       0
       integer (kind=kint) :: i_course_to_fine_ctl =  0
       integer (kind=kint) :: i_fine_to_course_ctl =  0
       integer (kind=kint) :: i_refine_info_ctl =     0
@@ -96,7 +87,6 @@
       private :: hd_single_refine_files, i_single_refine_files
       private :: hd_refine_param
       private :: i_refine_param
-      private :: hd_org_f_ctl, hd_refined_f_ctl
       private :: hd_course_to_fine_ctl, hd_fine_to_course_ctl
       private :: hd_refine_info_ctl, hd_old_refine_info_ctl
 !
@@ -163,8 +153,12 @@
       end subroutine read_control_data_4_refiner
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------!
-       subroutine read_refine_control_data
+! -----------------------------------------------------------------------
+!
+      subroutine read_refine_control_data
+!
+      use m_ctl_data_4_platforms
+      use m_ctl_data_4_2nd_data
 !
 !
       if(right_begin_flag(hd_refine_ctl) .eq. 0) return
@@ -175,7 +169,8 @@
         call find_control_end_flag(hd_refine_ctl, i_refine_ctl)
         if(i_refine_ctl .gt. 0) exit
 !
-!
+        call read_ctl_data_4_platform
+        call read_ctl_data_4_new_data
         call read_ctl_data_4_refine_mesh
         call read_ctl_data_4_refine_type
       end do
@@ -198,11 +193,6 @@
         if(i_single_refine_files .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_org_f_ctl,                      &
-     &           i_org_f_ctl, orginal_mesh_head_ctl)
-        call read_character_ctl_item(hd_refined_f_ctl,                  &
-     &           i_refined_f_ctl, refine_mesh_head_ctl)
-!
         call read_character_ctl_item(hd_course_to_fine_ctl,             &
      &           i_course_to_fine_ctl, coarse_2_fine_head_ctl)
         call read_character_ctl_item(hd_fine_to_course_ctl,             &
@@ -216,7 +206,8 @@
 !
       end subroutine read_ctl_data_4_refine_mesh
 !
-! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------
+!
       subroutine read_ctl_data_4_refine_type
 !
 !

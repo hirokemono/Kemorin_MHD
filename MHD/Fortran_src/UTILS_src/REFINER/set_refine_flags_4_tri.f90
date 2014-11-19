@@ -66,7 +66,7 @@
         if(imark_ele(iele) .eq. 0) then
           icou = icou + 1
           if( iflag_refine_ele(iele) .ne. 0) then
-            write(50,'(i15,8i3,i6)') iele, imark_nod(ie(iele,1:8)),     &
+            write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),     &
      &                            iflag_refine_ele(iele)
           end if
         end if
@@ -76,7 +76,7 @@
          write(50,'(a,i2)') 'nummber of marks:  ', inum
          do iele = 1, numele
           if(imark_ele(iele) .eq. inum) then
-            write(50,'(i15,8i3,i6)') iele, imark_nod(ie(iele,1:8)),     &
+            write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),     &
      &                            iflag_refine_ele(iele)
           end if
          end do
@@ -85,7 +85,7 @@
         write(50,'(a,i2)') 'nummber of marks:  ', inum
         do iele = 1, numele
           if(imark_ele(iele) .eq. inum) then
-            write(50,'(i15,8i3,i6)') iele, imark_nod(ie(iele,1:8)),     &
+            write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),     &
      &                            iflag_refine_ele(iele)
           end if
         end do
@@ -97,12 +97,12 @@
         if(imark_ele(iele) .eq. 8) then
           icou = icou + 1
           if( iflag_refine_ele(iele) .ne. 300) then
-            write(50,'(i15,8i3,i6)') iele, imark_nod(ie(iele,1:8)),     &
+            write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),     &
      &                            iflag_refine_ele(iele)
           end if
         end if
        end do
-       write(50,'(a,2i15)') 'total refine ele: ', icou, numele
+       write(50,'(a,2i16)') 'total refine ele: ', icou, numele
       end if
 !
       write(*,*) 'deallocate imark_ele'

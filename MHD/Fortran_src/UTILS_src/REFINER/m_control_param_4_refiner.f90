@@ -82,17 +82,22 @@
       subroutine set_control_4_refiner
 !
       use m_control_data_4_refine
+      use m_ctl_data_4_platforms
+      use m_ctl_data_4_2nd_data
+      use skip_comment_f
 !
 !
-      if (i_org_f_ctl .gt. 0) then
-        original_mesh_head = orginal_mesh_head_ctl
+      if (i_mesh_header .gt. 0) then
+        original_mesh_head = mesh_file_prefix
+        write(*,*) 'original_mesh_head: ', trim(original_mesh_head)
       else
         write(*,*) 'set original mesh header'
         stop
       end if
 !
-      if (i_refined_f_ctl .gt. 0) then
-        refined_mesh_head = refine_mesh_head_ctl
+      if (i_new_mesh_head .gt. 0) then
+        refined_mesh_head = new_mesh_prefix
+        write(*,*) 'refined_mesh_head: ', trim(refined_mesh_head)
       else
         write(*,*) 'set refined mesh header'
         stop
@@ -119,18 +124,13 @@
 !
       iflag_interpolate_type = 0
       if (i_itp_type .gt. 0) then
-        if ( interpolate_type_ctl .eq. 'project_sphere'                 &
-     &       .or. interpolate_type_ctl .eq. 'Project_sphere'            &
-     &       .or. interpolate_type_ctl .eq. 'PROJECT_SPHERE'            &
-     &       .or. interpolate_type_ctl .eq. 'project_to_sphere'         &
-     &       .or. interpolate_type_ctl .eq. 'Project_to_sphere'         &
-     &       .or. interpolate_type_ctl .eq. 'PROJECT_TO_SPHERE') then
+        if (cmp_no_case(interpolate_type_ctl, 'project_sphere')         &
+     &    + cmp_no_case(interpolate_type_ctl, 'project_to_sphere')      &
+     &     .gt. 0) then
           iflag_interpolate_type = 2
-!        else if(  interpolate_type_ctl .eq. 'rtp'                      &
-!     &       .or. interpolate_type_ctl .eq. 'RTP'                      &
-!     &       .or. interpolate_type_ctl .eq. 'spherical'                &
-!     &       .or. interpolate_type_ctl .eq. 'Spherical'                &
-!     &       .or. interpolate_type_ctl .eq. 'SPHERICAL') then
+!        else if (cmp_no_case(interpolate_type_ctl, 'rtp')              &
+!     &         + cmp_no_case(interpolate_type_ctl, 'spherical')        &
+!     &     .gt. 0) then
 !          iflag_interpolate_type = 1
         end if
       end if

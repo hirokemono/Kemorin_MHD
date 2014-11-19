@@ -1,6 +1,17 @@
 begin refine_control
 !
-  begin file_name_ctl
+  begin data_files_def
+    num_subdomain_ctl           1
+
+    mesh_file_prefix             'sph_lm31r48c_4/in'
+    mesh_file_fmt_ctl            'ascii'
+  end data_files_def
+!
+  begin new_data_files_def
+    new_mesh_prefix             'sph_lm31r48c_6/in'
+  end new_data_files_def
+!
+  begin refiner_file_name_ctl
     orginal_mesh_head_ctl     'mesh_1/in'
     refined_mesh_head_ctl     'mesh_2/in'
 !
@@ -9,7 +20,7 @@ begin refine_control
 !
     refine_info_head_ctl         'refine_info'
     old_refine_info_head_ctl     'refine_info'
-  end file_name_ctl
+  end refiner_file_name_ctl
 !
   begin refine_parameter_ctl
 !
