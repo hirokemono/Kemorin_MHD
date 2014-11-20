@@ -76,8 +76,8 @@
       integer (kind=kint) :: istart, iend
 !
 !
-      nrot1 = mod(nd  ,3)+1
-      nrot2 = mod(nd+1,3)+1
+      nrot1 = mod(nd,     ithree) + ione
+      nrot2 = mod(nd+ione,ithree) + ione
 !
 !$omp parallel do private(k1,ii,ix,iele,istart,iend) 
       do iproc = 1, np_smp
@@ -182,8 +182,8 @@
       integer (kind=kint) :: istart, iend
 !
 !
-       nrot1 = mod(nd  ,3)+1
-       nrot2 = mod(nd+1,3)+1
+       nrot1 = mod(nd,     ithree) + ione
+       nrot2 = mod(nd+ione,ithree) + ione
 !
 !$omp parallel do private(k1,ii,ix,iele,istart,iend) 
       do iproc = 1, np_smp

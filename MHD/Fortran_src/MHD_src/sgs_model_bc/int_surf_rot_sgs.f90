@@ -50,8 +50,8 @@
 !
       do nd = 1, n_vector
 !
-        nrot1 = mod(nd  ,3)+1
-        nrot2 = mod(nd+1,3)+1
+        nrot1 = mod(nd,     ithree) + ione
+        nrot2 = mod(nd+ione,ithree) + ione
 !
 ! --------- set vector at each node in an element
 !
@@ -117,8 +117,8 @@
       call reset_sk6(n_vector)
 !
       do nd = 1, n_vector
-        nrot1 = mod(nd  ,3)+1
-        nrot2 = mod(nd+1,3)+1
+        nrot1 = mod(nd,     ithree) + ione
+        nrot2 = mod(nd+ione,ithree) + ione
 !
         i_comp = i_vect + nrot2 - 1
         do i = 1, ngrp_sf(nrot2)

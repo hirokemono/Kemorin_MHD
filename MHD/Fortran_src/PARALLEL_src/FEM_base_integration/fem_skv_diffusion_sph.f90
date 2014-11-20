@@ -36,9 +36,9 @@
      &          ak_d, scalar_e, sk_v)
 !
       integer(kind=kint), intent(in) :: numele, nedge_4_e1, nedge_4_e2
-      integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: np_smp, ntot_int_3d
       integer(kind=kint), intent(in) :: n_int, k2
+      integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       real(kind=kreal),   intent(in) :: xjac(numele, ntot_int_3d)
       real(kind=kreal),   intent(in)                                    &
@@ -109,9 +109,9 @@
      &          vector_e, sk_v)
 !
       integer(kind=kint), intent(in) :: numele, nedge_4_e1, nedge_4_e2
-      integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: np_smp, ntot_int_3d
       integer(kind=kint), intent(in) :: n_int, k2
+      integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       real(kind=kreal),   intent(in) :: xjac(numele, ntot_int_3d)
       real(kind=kreal),   intent(in)                                    &

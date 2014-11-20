@@ -36,6 +36,7 @@
      &          ak_d, phi_e, sk_v)
 !
       integer(kind=kint), intent(in) :: numele, nnod_4_e1, nnod_4_e2
+      integer (kind=kint), intent(in) :: n_int, k2, nd, np_smp
       integer (kind=kint), intent(in) :: num_index_ibc
       integer (kind=kint), intent(in) :: ele_bc_id(num_index_ibc)
       integer (kind=kint), intent(in) :: ibc_stack_smp(0:np_smp)
@@ -47,7 +48,6 @@
       real(kind=kreal),   intent(in)                                    &
      &                  :: dnx2(numele,nnod_4_e2,ntot_int_3d,3)
 !
-      integer (kind=kint), intent(in) :: n_int, k2, nd, np_smp
       real (kind=kreal), intent(in) :: phi_e(numele)
       real (kind=kreal), intent(in) :: ak_d(numele)
 !
@@ -97,6 +97,7 @@
      &          k2, n_int, ntot_int_3d, xjac, dnx1, dnx2, phi_e, sk_v)
 !
       integer(kind=kint), intent(in) :: numele, nnod_4_e1, nnod_4_e2
+      integer (kind=kint), intent(in) :: n_int, k2, np_smp
       integer (kind=kint), intent(in) :: num_index_ibc
       integer (kind=kint), intent(in) :: ele_bc_id(num_index_ibc)
       integer (kind=kint), intent(in) :: ibc_stack_smp(0:np_smp)
@@ -108,7 +109,6 @@
       real(kind=kreal),   intent(in)                                    &
      &                  :: dnx2(numele,nnod_4_e2,ntot_int_3d,3)
 !
-      integer (kind=kint), intent(in) :: n_int, k2, np_smp
       real (kind=kreal), intent(in) :: phi_e(numele)
 !
       real (kind=kreal), intent(inout)                                  &

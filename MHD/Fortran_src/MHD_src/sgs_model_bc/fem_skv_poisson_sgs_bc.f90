@@ -36,10 +36,10 @@
      &         ak_diff, phi_e, sk_v)
 !
       integer(kind=kint), intent(in) :: numele, nnod_4_e1, nnod_4_e2
+      integer(kind=kint), intent(in) :: n_int, k2, np_smp
       integer(kind=kint), intent(in) :: num_index_ibc
       integer(kind=kint), intent(in) :: ele_bc_id(num_index_ibc)
       integer(kind=kint), intent(in) :: ibc_stack_smp(0:np_smp)
-      integer(kind=kint), intent(in) :: n_int, k2, np_smp
 !
       integer(kind=kint), intent(in) :: ntot_int_3d
       real(kind=kreal),   intent(in) :: xjac(numele, ntot_int_3d)

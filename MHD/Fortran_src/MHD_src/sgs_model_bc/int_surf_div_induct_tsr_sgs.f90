@@ -41,7 +41,7 @@
       integer(kind=kint), intent(in) :: n_int, i_filter
       integer (kind = kint), intent(in) :: i_b, i_v, i_flux
 !
-      integer(kind=kint) :: k2, n_diff, nd, i, igrp
+      integer(kind=kint) :: k2, nd, i, igrp
 !
 !
       if (sum(ngrp_sf_sgs_magne) .eq. 0) return

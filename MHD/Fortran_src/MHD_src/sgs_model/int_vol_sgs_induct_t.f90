@@ -72,8 +72,8 @@
 !
 !
       do nd = 1, n_asym_tensor
-        nd2 = 3 - mod((nd+1),2)
-        nd3 = 3 - mod( nd,   3)
+        nd2 = ithree - mod((nd+ione),itwo)
+        nd3 = ithree - mod( nd,      ithree)
         id_dvx2 = ie_dvx + 3*(nd2-1)
         id_dbx2 = ie_dbx + 3*(nd2-1)
         icomp_v = ifield_v + nd3 - 1
@@ -121,8 +121,8 @@
 !
 !
       do nd = 1, n_asym_tensor
-        nd2 = 3 - mod((nd+1),2)
-        nd3 = 3 - mod( nd,   3)
+        nd2 = ithree - mod((nd+ione),itwo)
+        nd3 = ithree - mod( nd,      ithree)
         id_dvx2 = ie_dvx + 3*(nd2-1)
         id_dbx2 = ie_dbx + 3*(nd2-1)
         icomp_v = ifield_v + nd3 - 1

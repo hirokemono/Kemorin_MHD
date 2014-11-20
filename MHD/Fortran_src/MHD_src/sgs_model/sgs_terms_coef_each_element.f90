@@ -152,7 +152,6 @@
 !
       integer(kind = kint) :: iproc, inod, iele
       integer(kind = kint) :: ist, ied
-      integer(kind = kint) :: n1, n2, n3
 !
 !
 !
