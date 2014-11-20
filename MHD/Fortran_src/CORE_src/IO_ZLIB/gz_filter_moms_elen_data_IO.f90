@@ -115,7 +115,7 @@
       write(textbuf,'(a,a1)') '! filter type ', char(0)
       call gz_write_textbuf_f
       do ifil = 1, nf_type
-        write(textbuf,'(i10,a,a1)')                                     &
+        write(textbuf,'(i16,a,a1)')                                     &
      &           ifil, trim(filter_type(ifil)), char(0)
         call gz_write_textbuf_f
       end do

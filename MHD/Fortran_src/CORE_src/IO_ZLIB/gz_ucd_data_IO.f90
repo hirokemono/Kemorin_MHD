@@ -83,7 +83,7 @@
 !
 !
       write(fmt_txt,'(a5,i3,a16)')                                      &
-     &                '(i15,', ncomp_dat, '(1pE25.15e3),a1)'
+     &                '(i16,', ncomp_dat, '(1pE25.15e3),a1)'
       do inod = 1, nnod
         write(textbuf,fmt_txt)                                          &
      &             inod_out(inod), dat_out(inod,1:ncomp_dat), char(0)
@@ -98,8 +98,6 @@
       subroutine read_gz_udt_field_num(num_input)
 !
       integer(kind = kint), intent(inout) :: num_input
-!
-      integer(kind = kint) :: nchara
 !
 !
       call get_one_line_from_gz_f
@@ -116,7 +114,6 @@
       character(len = kchara), intent(inout) :: name_in(num_input)
 !
       integer (kind =kint) :: i, ist
-      integer(kind = kint) :: nchara
 !
 !
       read(textbuf,*) num_input, ncomp_in(1:num_word-1)
@@ -146,8 +143,6 @@
       integer(kind = kint), intent(inout) :: ncomp_in(num_input)
       character(len = kchara), intent(inout) :: name_in(num_input)
 !
-      integer(kind = kint) :: nchara
-!
 !
       call get_one_line_from_gz_f
       call read_gz_udt_field_name(num_input, ncomp_in, name_in)
@@ -163,7 +158,6 @@
       real(kind = kreal), intent(inout) :: dat_in(nnod_in, ncomp_dat)
 !
       integer(kind = kint) :: inod, ist, itmp
-      integer(kind = kint) :: nchara
 !
 !
       do inod = 1, nnod_in
@@ -191,7 +185,6 @@
       integer(kind = kint), intent(inout) :: nnod_input, nele_in
       integer(kind = kint), intent(inout) :: ncomptot_in
 !
-      integer(kind = kint) :: nchara
       integer(kind = kint) :: itmp
 !
 !
@@ -211,7 +204,6 @@
       integer(kind = kint), intent(inout) :: inod_gl(nnod_in)
       real(kind = kreal), intent(inout) :: xx_in(nnod_in,3)
 !
-      integer(kind = kint) :: nchara
       integer(kind = kint) :: inod, iele
       integer(kind = kint) :: itmp
       character(len=kchara) :: tmpchara
@@ -240,7 +232,7 @@
       integer(kind = kint), intent(in) :: ncomp_output
 !
 !
-      write(textbuf,'(3i10,2i5,a1)') nnod_output, nele_out,             &
+      write(textbuf,'(3i16,2i5,a1)') nnod_output, nele_out,             &
      &         ncomp_output, izero, izero, char(0)
       call gz_write_textbuf_f
 !
@@ -268,7 +260,7 @@
       if(nnod_4_ele.eq.num_linear_edge) write(eleflag,'(a6)') ' line '
 !
       write(fmt_txt,'(a11,i3,a9)')                                      &
-     &                '(i15,i3,a6,', nnod_4_ele, '(i15),a1)'
+     &                '(i16,i3,a6,', nnod_4_ele, '(i16),a1)'
 !
       do iele = 1, nele
         write(textbuf,fmt_txt) iele_gl(iele), ione, eleflag,            &

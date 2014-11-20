@@ -73,7 +73,7 @@
       write(textbuf,'(a1)')        char(0)
       call gz_write_textbuf_f
 !
-      write(textbuf,'(a,i15,a1)') 'POINT_DATA ', nnod, char(0)
+      write(textbuf,'(a,i16,a1)') 'POINT_DATA ', nnod, char(0)
       call gz_write_textbuf_f
 !
       end subroutine write_gz_vtk_fields_head
@@ -89,7 +89,7 @@
 !
 !
       if (ncomp_field .eq. n_scalar) then
-        write(textbuf,'(a,a,a,i15,a1)') 'SCALARS ', trim(field_name),   &
+        write(textbuf,'(a,a,a,i16,a1)') 'SCALARS ', trim(field_name),   &
      &                        ' double ', ione, char(0)
         call gz_write_textbuf_f
 !
@@ -167,7 +167,7 @@
       call gz_write_textbuf_f
 !
 !
-      write(textbuf,'(a,i15,a,a1)')  'POINTS ', nnod,                   &
+      write(textbuf,'(a,i16,a,a1)')  'POINTS ', nnod,                   &
      &                              ' double', char(0)
       call gz_write_textbuf_f
 !
@@ -184,7 +184,7 @@
 !
 !
       nums = nele*(nnod_ele+1)
-      write(textbuf,'(a,2i10,a1)') 'CELLS ', nele, nums, char(0)
+      write(textbuf,'(a,2i16,a1)') 'CELLS ', nele, nums, char(0)
       call gz_write_textbuf_f
 !
       end subroutine write_gz_vtk_connect_head
@@ -210,7 +210,7 @@
         icellid = 3
       end if
 !
-      write(textbuf,'(a,i15,a1)') 'CELL_TYPES ', nele, char(0)
+      write(textbuf,'(a,i16,a1)') 'CELL_TYPES ', nele, char(0)
       call gz_write_textbuf_f
 !
       do iele = 1, nele
@@ -234,7 +234,7 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      write(fmt_txt,'(a1,i3,a9)')   '(', (nnod_ele+1), '(i15),a1)'
+      write(fmt_txt,'(a1,i3,a9)')   '(', (nnod_ele+1), '(i16),a1)'
 !
       do iele = 1, nele
         ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
@@ -304,7 +304,6 @@
       integer (kind=kint), intent(in) :: nnod
       real(kind = kreal), intent(inout) :: d_nod(ntot_nod,ncomp_field)
 !
-      integer(kind = kint) :: nchara
       integer(kind = kint) :: inod
       real(kind = kreal) :: rtmp
 !
@@ -334,7 +333,6 @@
 !
       integer(kind = kint), intent(inout) :: nnod
 !
-      integer(kind = kint) :: nchara
       character(len=kchara) :: tmpchara
 !
 !
@@ -343,7 +341,7 @@
       call get_one_line_from_gz_f
 !
       call get_one_line_from_gz_f
-      read(textbuf,'(a,i15,a)')  tmpchara, nnod
+      read(textbuf,'(a,i16,a)')  tmpchara, nnod
 !
       end subroutine read_gz_vtk_node_head
 !
@@ -354,7 +352,7 @@
 !
       integer(kind = kint), intent(inout) :: nele, nnod_ele
 !
-      integer(kind = kint) :: nchara, nums
+      integer(kind = kint) :: nums
       character(len=kchara) :: tmpchara
 !
 !
@@ -370,7 +368,7 @@
 !
       integer(kind = kint), intent(in) :: nele
 !
-      integer(kind = kint) :: nchara, iele
+      integer(kind = kint) :: iele
 !
 !
       call get_one_line_from_gz_f
@@ -390,7 +388,7 @@
       integer(kind = kint), intent(in) :: nele
       integer(kind = kint), intent(inout) :: ie(ntot_ele,nnod_ele)
 !
-      integer(kind = kint) :: nchara, iele, itmp
+      integer(kind = kint) :: iele, itmp
 !
 !
       do iele = 1, nele

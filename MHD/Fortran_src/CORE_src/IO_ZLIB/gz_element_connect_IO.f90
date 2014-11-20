@@ -36,12 +36,12 @@
       integer (kind = kint) :: i
 !
 !
-      write(textbuf,'(i10,a1)') numele_dummy, char(0)
+      write(textbuf,'(i16,a1)') numele_dummy, char(0)
       call gz_write_textbuf_f
       call write_gz_multi_int_10i8(numele_dummy, i_ele_dummy)
 !
       do i=1, numele_dummy
-        write(fmt_txt,'(a5,i3,a7)') '(i10,', nodelm_dummy(i), 'i10,a1)'
+        write(fmt_txt,'(a5,i3,a7)') '(i16,', nodelm_dummy(i), 'i16,a1)'
         write(textbuf,fmt_txt) globalelmid_dummy(i),                    &
      &         ie_dummy(i,1:nodelm_dummy(i)), char(0)
         call gz_write_textbuf_f
@@ -57,10 +57,10 @@
 !
       integer(kind = kint) :: i
 !
-      write(textbuf,'(2i10,a1)') nsf_4_ele_IO, nsurf_in_ele_IO, char(0)
+      write(textbuf,'(2i16,a1)') nsf_4_ele_IO, nsurf_in_ele_IO, char(0)
       call gz_write_textbuf_f
 !
-      write(fmt_txt,'(a5,i3,a7)') '(i10,', nsurf_in_ele_IO, 'i10,a1)'
+      write(fmt_txt,'(a5,i3,a7)') '(i16,', nsurf_in_ele_IO, 'i16,a1)'
       do i = 1, nsf_4_ele_IO
         write(textbuf,fmt_txt)                                          &
     &         i, isf_4_ele_IO(i,1:nsurf_in_ele_IO), char(0)
@@ -78,10 +78,10 @@
       integer(kind = kint) :: i
 !
 !
-      write(textbuf,'(2i10,a1)') ned_4_ele_IO, nedge_in_ele_IO, char(0)
+      write(textbuf,'(2i16,a1)') ned_4_ele_IO, nedge_in_ele_IO, char(0)
       call gz_write_textbuf_f
 !
-      write(fmt_txt,'(a5,i3,a7)') '(i10,', nedge_in_ele_IO, 'i10,a1)'
+      write(fmt_txt,'(a5,i3,a7)') '(i16,', nedge_in_ele_IO, 'i16,a1)'
       do i = 1, ned_4_ele_IO
         write(textbuf,fmt_txt)                                          &
      &        i, iedge_4_ele_IO(i,1:nedge_in_ele_IO), char(0)
@@ -109,7 +109,7 @@
 !
        use set_nnod_4_ele_by_type
 !
-       integer (kind = kint) :: i, nchara
+       integer (kind = kint) :: i
 !
 !
        call allocate_ele_info_dummy
@@ -135,7 +135,7 @@
 !
       subroutine read_surface_4_element_gz
 !
-      integer (kind = kint) :: i, itmp, nchara
+      integer (kind = kint) :: i, itmp
 !
 !
       call skip_gz_comment_int(nsf_4_ele_IO)
@@ -154,7 +154,7 @@
 !
       subroutine read_edge_4_element_gz
 !
-      integer(kind = kint) :: i, itmp, nchara
+      integer(kind = kint) :: i, itmp
 !
       call skip_gz_comment_int(ned_4_ele_IO)
       read(textbuf,*) ned_4_ele_IO, nedge_in_ele_IO

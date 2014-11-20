@@ -29,12 +29,12 @@
       write(ifile,'(a)') '!'
       write(ifile,'(a)') '!  coarsing level'
       write(ifile,'(a)') '!'
-      write(ifile,'(i15)') is_level
+      write(ifile,'(i16)') is_level
 !
       write(ifile,'(a)') '!'
       write(ifile,'(a)') '!  number of internal node and element'
       write(ifile,'(a)') '!'
-      write(ifile,'(2i15)') numnod_coarse, numele_coarse
+      write(ifile,'(2i16)') numnod_coarse, numele_coarse
 !
       write(ifile,'(a)') '!'
       write(ifile,'(a)') '!  Domain ID local node ID for coarse grid, '
@@ -59,7 +59,7 @@
       write(ifile,'(a)') '! number of element for marging'
       write(ifile,'(a)') '!'
 !
-      write(ifile, '(10i8)') (nl_3,i=1,nele_cube_c),                    &
+      write(ifile, '(10i16)') (nl_3,i=1,nele_cube_c),                   &
      &                       (nl_shell,i=1,nele_shell_c)
 !
       write(ifile,'(a)') '!'
@@ -85,10 +85,10 @@
       write(ifile,'(a)') '!'
 !
       do iele = 1, nele_cube_c
-        write(ifile, '(100i8)') iele, (izero,i=1,nl_3)
+        write(ifile, '(100i16)') iele, (izero,i=1,nl_3)
       end do
       do iele = nele_cube_c+1, nele_cube_c+nele_shell_c
-        write(ifile, '(100i8)') iele, (izero,i=1,nl_shell)
+        write(ifile, '(100i16)') iele, (izero,i=1,nl_shell)
       end do
 !
       end subroutine output_domain_4_merge
@@ -108,8 +108,11 @@
       integer(kind = kint) :: ix, iy, iz
       integer(kind = kint) :: jx, jy, jz
 !
+      character(len=kchara) :: fmt_txt
+!
 !
       write(*,*) 'imerge_ele', size(imerge_ele)
+      write(fmt_txt,'(a1,i3,a6)')  '(', (nl_3+1), '(i16))'
 !
       do iz = 1, n_hemi_c
         do iy = 1, n_hemi_c
@@ -139,7 +142,7 @@
               end do
             end do
 !
-            write(ifile,'(300i10)') jele, (imerge_ele(k),k=1,nl_3)
+            write(ifile,fmt_txt) jele, imerge_ele(1:nl_3)
 !
           end do
         end do
@@ -161,8 +164,10 @@
       integer(kind = kint) :: jele0, kele0, kele1
       integer(kind = kint) :: jele, jele_m
       integer(kind = kint) :: iele_sf, jnum
+      character(len=kchara) :: fmt_txt
 !
 !
+      write(fmt_txt,'(a1,i3,a6)')  '(', (nl_shell+1), '(i16))'
       do k = 1, nr_c
         do jnum = 1, nele_sf_c
 !
@@ -181,8 +186,7 @@
             end do
           end do
 !
-          write(ifile,'(300i10)') jele, (imerge_ele(k0),k0=1,nl_shell)
-!
+          write(ifile,fmt_txt) jele, imerge_ele(1:nl_shell)
        end do
       end do
 !

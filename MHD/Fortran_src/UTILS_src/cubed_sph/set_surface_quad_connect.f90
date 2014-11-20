@@ -60,8 +60,8 @@
       ie20(20) = ie20(17)     + (num_h-1)
 !
       iele = iele + 1
-      write(ifile,'(21i10)') iele, ie20(1:8)
-      if(ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:20)
+      write(ifile,'(21i16)') iele, ie20(1:8)
+      if(ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:20)
 !
       end subroutine set_body_quad_connect_0
 !
@@ -115,8 +115,8 @@
       ie20(20) = ie20(17)     + (num_h-1)
 !
       iele = iele + 1
-      write(ifile,'(21i10)') iele, ie20(1:8)
-      if(ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:20)
+      write(ifile,'(21i16)') iele, ie20(1:8)
+      if(ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:20)
 !
       end subroutine set_surface_quad_connect_5
 !
@@ -174,8 +174,8 @@
       ie20(19) = ie20(20) + 1
 !
       iele = iele + 1
-      write(ifile,'(21i10)') iele, ie20(1:8)
-      if(ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:20)
+      write(ifile,'(21i16)') iele, ie20(1:8)
+      if(ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:20)
 !
       end subroutine set_surface_quad_connect_3
 !
@@ -235,8 +235,8 @@
       ie20(20) = ie20(20)
 !
       iele = iele + 1
-      write(ifile,'(21i10)') iele, ie20(1:8)
-      if(ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:20)
+      write(ifile,'(21i16)') iele, ie20(1:8)
+      if(ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:20)
 !
       end subroutine set_surface_quad_connect_1
 !
@@ -295,8 +295,8 @@
       ie20(20) = ie20(17) + (num_h-1)
 !
       iele = iele + 1
-      write(ifile,'(21i10)') iele, ie20(1:8)
-      if(ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:20)
+      write(ifile,'(21i16)') iele, ie20(1:8)
+      if(ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:20)
 !
       end subroutine set_surface_quad_connect_2
 !
@@ -354,8 +354,8 @@
       ie20(20) = ie20(19) + 1
 !
       iele = iele + 1
-      write(ifile,'(21i10)') iele, ie20(1:8)
-      if(ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:20)
+      write(ifile,'(21i16)') iele, ie20(1:8)
+      if(ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:20)
 !
       end subroutine set_surface_quad_connect_4
 !
@@ -414,8 +414,8 @@
       ie20(20) = ie20(17)     + (num_h-1)
 !
       iele = iele + 1
-      write(ifile,'(21i10)') iele, ie20(1:8)
-      if(ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:20)
+      write(ifile,'(21i16)') iele, ie20(1:8)
+      if(ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:20)
 !
       end subroutine set_surface_quad_connect_6
 !

@@ -37,7 +37,7 @@
       call gz_write_textbuf_f
       write(textbuf,'(a,a1)') '#  truncation', char(0)
       call gz_write_textbuf_f
-      write(textbuf,'(i10,a1)')  ltr_cor_IO, char(0)
+      write(textbuf,'(i16,a1)')  ltr_cor_IO, char(0)
       call gz_write_textbuf_f
 !
       j1 = 2
@@ -45,7 +45,7 @@
       call gz_write_textbuf_f
       do j3 = 1 ,jmax_cor_IO
         do j2 = 1, 2
-          write(textbuf,'(3i10,1pE25.15e3,a1)') j1,                     &
+          write(textbuf,'(3i16,1pE25.15e3,a1)') j1,                     &
      &        jgl_kcor_IO(j3,j2,j1), j3, gk_cor_IO(j3,j2,j1), char(0)
           call gz_write_textbuf_f
         end do
@@ -53,7 +53,7 @@
       write(textbuf,'(a,a1)') '# j1, l2_gl, j3_gl, Li/pi', char(0)
       call gz_write_textbuf_f
       do j3 = 1 ,jmax_cor_IO
-        write(textbuf,'(3i10,1pE25.15e3,a1)') j1,                       &
+        write(textbuf,'(3i16,1pE25.15e3,a1)') j1,                       &
      &          jgl_lcor_IO(j3,1,j1), j3, el_cor_IO(j3,1,j1), char(0)
         call gz_write_textbuf_f
       end do
@@ -64,7 +64,7 @@
         call gz_write_textbuf_f
         do j3 = 1 ,jmax_cor_IO
           do j2 = 1, 4
-            write(textbuf,'(3i10,1pE25.15e3,a1)') j1,                   &
+            write(textbuf,'(3i16,1pE25.15e3,a1)') j1,                   &
      &         jgl_kcor_IO(j3,j2,j1), j3, gk_cor_IO(j3,j2,j1), char(0)
             call gz_write_textbuf_f
           end do
@@ -74,7 +74,7 @@
         call gz_write_textbuf_f
         do j3 = 1, jmax_cor_IO
           do j2 = 1, 2
-            write(textbuf,'(3i10,1pE25.15e3,a1)') j1,                   &
+            write(textbuf,'(3i16,1pE25.15e3,a1)') j1,                   &
      &        jgl_lcor_IO(j3,j2,j1), j3, el_cor_IO(j3,j2,j1), char(0)
             call gz_write_textbuf_f
           end do

@@ -56,12 +56,12 @@
       write(textbuf,'(a,a1)') '! number of node for filtering: ',       &
      &      char(0)
       call gz_write_textbuf_f
-      write(textbuf,'(2i10,a1)') nnod, nele, char(0)
+      write(textbuf,'(2i16,a1)') nnod, nele, char(0)
       call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)')  '! number of filter function ', char(0)
       call gz_write_textbuf_f
-      write(textbuf,'(i10,a1)') nf_type, char(0)
+      write(textbuf,'(i16,a1)') nf_type, char(0)
       call gz_write_textbuf_f
 !
       end subroutine write_filter_elen_head_gz
@@ -98,12 +98,12 @@
       write(textbuf,'(a,a1)') '! number of node for filtering: ',       &
      &      char(0)
       call gz_write_textbuf_f
-      write(textbuf,'(3i10,a1)')  nnod, nele, n_filter, char(0)
+      write(textbuf,'(3i16,a1)')  nnod, nele, n_filter, char(0)
       call gz_write_textbuf_f
 !
       write(textbuf,'(a,a1)')  '! number of filter function ', char(0)
       call gz_write_textbuf_f
-      write(textbuf,'(i10,a1)') nf_type, char(0)
+      write(textbuf,'(i16,a1)') nf_type, char(0)
       call gz_write_textbuf_f
 !
       end subroutine write_filter_moms_head_gz
@@ -118,7 +118,7 @@
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(inout) :: el1(num), el2(num), el3(num)
 !
-      integer(kind = kint) :: i, itmp, nchara
+      integer(kind = kint) :: i, itmp
 !
 !
       call skip_gz_comment_int(itmp)
@@ -140,7 +140,7 @@
       real(kind = kreal), intent(inout) :: el1(num,3), el2(num,3)
       real(kind = kreal), intent(inout) :: el3(num,3)
 !
-      integer(kind = kint) :: nd, i, itmp, nchara
+      integer(kind = kint) :: nd, i, itmp
 !
 !
       do nd = 1, 3
@@ -167,7 +167,7 @@
       integer(kind = kint) :: i
 !
       do i = 1, num
-        write(textbuf,'(i10,1p3E25.15e3,a1)') i,                        &
+        write(textbuf,'(i16,1p3E25.15e3,a1)') i,                        &
      &                                el1(i), el2(i), el3(i), char(0)
         call gz_write_textbuf_f
       end do
@@ -188,7 +188,7 @@
 !
         do nd = 1, 3
           do i = 1, num
-            write(textbuf,'(2i10,1p3E25.15e3,a1)') nd, i, el1(i,nd),    &
+            write(textbuf,'(2i16,1p3E25.15e3,a1)') nd, i, el1(i,nd),    &
      &         el2(i,nd), el3(i,nd), char(0)
             call gz_write_textbuf_f
           end do

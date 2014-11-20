@@ -76,10 +76,10 @@
 !
       write(id_refine_table,'(a)') trim('!')
       write(id_refine_table,'(a)') trim('! maximum_refine_level')
-      write(id_refine_table,'(4i10)') max_refine_level_IO
+      write(id_refine_table,'(4i16)') max_refine_level_IO
       write(id_refine_table,'(a)') trim('!')
       write(id_refine_table,'(a)') trim('! org_num_ele, new_num_ele')
-      write(id_refine_table,'(2i15)') nele_ref_IO, nele_org_IO
+      write(id_refine_table,'(2i16)') nele_ref_IO, nele_org_IO
 !
       write(id_refine_table,'(a)') trim('!')
       write(id_refine_table,'(2a)')                                     &
@@ -88,9 +88,9 @@
       write(id_refine_table,'(a)') trim('!')
       write(id_refine_table,'(a)') trim('!')
 !
-      write(id_refine_table,'(i15)')  nele_ref_IO
+      write(id_refine_table,'(i16)')  nele_ref_IO
       do iele_neo = 1, nele_ref_IO
-        write(id_refine_table,'(6i10)') iele_global_new_IO(iele_neo),   &
+        write(id_refine_table,'(6i16)') iele_global_new_IO(iele_neo),   &
      &       ilevel_refine_IO(iele_neo), iflag_refine_ele_IO(iele_neo), &
      &       iele_global_org_IO(iele_neo), icou_global_org_IO(iele_neo)
       end do

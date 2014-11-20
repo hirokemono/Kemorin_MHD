@@ -48,7 +48,7 @@
           ie(7) = inod0 + ie_sf20(iele_sf,3) + nnod_sf_c
           ie(8) = inod0 + ie_sf20(iele_sf,4) + nnod_sf_c
 !
-         write(ifile,'(10i10)') iele, (ie(i),i=1,8)
+         write(ifile,'(10i16)') iele, (ie(i),i=1,8)
 !
        end do
       end do

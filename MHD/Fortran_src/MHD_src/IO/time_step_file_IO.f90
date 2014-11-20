@@ -54,9 +54,9 @@
 !
       call open_monitor_file(my_rank)
 !
-      write(time_step_data_code,'(i15,1p1000e20.11)')                   &
+      write(time_step_data_code,'(i16,1p1000e20.11)')                   &
      &     i_step_MHD, time, bulk_global(1:num_bulk)
-      write(rms_data_code,'(i15,1p100e20.11)')                          &
+      write(rms_data_code,'(i16,1p100e20.11)')                          &
      &     i_step_MHD, time, rms_global(1:num_rms)
 !
       close(time_step_data_code)

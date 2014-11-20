@@ -69,9 +69,9 @@
         ie20(19) = inod17 + ie_sf20(iele0,3)
         ie20(20) = inod17 + ie_sf20(iele0,4)
 !
-        write(ifile,    '(21i10)') iele, ie20(1:8)
+        write(ifile,    '(21i16)') iele, ie20(1:8)
         if (ifile_20 .gt. 0) then
-          write(ifile_20 ,'(21i10)') iele, ie20(1:20)
+          write(ifile_20 ,'(21i16)') iele, ie20(1:20)
         end if
 !
         end do
@@ -122,9 +122,9 @@
         ie20( 6) = inod17 + iedge_sf20(iele0,1)
         ie20( 8) = inod17 + iedge_sf20(iele0,3)
 !
-        write(ifile,    '(21i10)') iele, ie20(1:4)
+        write(ifile,    '(21i16)') iele, ie20(1:4)
         if (ifile_20 .gt. 0) then
-          write(ifile_20 ,'(21i10)') iele, ie20(1:8)
+          write(ifile_20 ,'(21i16)') iele, ie20(1:8)
         end if
 !
         end do

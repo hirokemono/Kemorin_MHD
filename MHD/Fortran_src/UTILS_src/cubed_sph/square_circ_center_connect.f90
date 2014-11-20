@@ -111,8 +111,8 @@
       ie20( 8) = ie20( 5)  + 4*num_h - 1
 !
       iele = iele + 1
-      write(ifile,    '(21i10)') iele, ie20(1:4)
-      if (ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:8)
+      write(ifile,    '(21i16)') iele, ie20(1:4)
+      if (ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:8)
 !
       end subroutine square_corner_quad_connect_1
 !
@@ -146,8 +146,8 @@
       ie20( 7) = ie20( 8) + 1
 !
       iele = iele + 1
-      write(ifile,    '(21i10)') iele, ie20(1:4)
-      if (ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:8)
+      write(ifile,    '(21i16)') iele, ie20(1:4)
+      if (ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:8)
 !
       end subroutine square_corner_quad_connect_2
 !
@@ -183,8 +183,8 @@
       ie20( 7) = ie20( 8) - 1
 !
       iele = iele + 1
-      write(ifile,    '(21i10)') iele, ie20(1:4)
-      if (ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:8)
+      write(ifile,    '(21i16)') iele, ie20(1:4)
+      if (ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:8)
 !
       end subroutine square_corner_quad_connect_4
 !
@@ -220,8 +220,8 @@
       ie20( 5) = ie20( 8) - 1
 !
       iele = iele + 1
-      write(ifile,    '(21i10)') iele, ie20(1:4)
-      if (ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:8)
+      write(ifile,    '(21i16)') iele, ie20(1:4)
+      if (ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:8)
 !
       end subroutine square_corner_quad_connect_3
 !
@@ -259,8 +259,8 @@
       ie20( 6) = ie20( 8) + 1
 !
       iele = iele + 1
-      write(ifile,    '(21i10)') iele, ie20(1:4)
-      if (ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:8)
+      write(ifile,    '(21i16)') iele, ie20(1:4)
+      if (ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:8)
 !
       end subroutine square_side_quad_connect_1
 !
@@ -297,8 +297,8 @@
       ie20( 7) = ie20( 5) - 1
 !
       iele = iele + 1
-      write(ifile,    '(21i10)') iele, ie20(1:4)
-      if (ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:8)
+      write(ifile,    '(21i16)') iele, ie20(1:4)
+      if (ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:8)
 !
       end subroutine square_side_quad_connect_4
 !
@@ -335,8 +335,8 @@
       ie20( 7) = ie20(5) + 1
 !
       iele = iele + 1
-      write(ifile,    '(21i10)') iele, ie20(1:4)
-      if (ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:8)
+      write(ifile,    '(21i16)') iele, ie20(1:4)
+      if (ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:8)
 !
       end subroutine square_side_quad_connect_2
 !
@@ -373,8 +373,8 @@
       ie20( 8) = ie20( 6) + 1
 !
       iele = iele + 1
-      write(ifile,    '(21i10)') iele, ie20(1:4)
-      if (ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:8)
+      write(ifile,    '(21i16)') iele, ie20(1:4)
+      if (ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:8)
 !
       end subroutine square_side_quad_connect_3
 !
@@ -412,8 +412,8 @@
       ie20( 6) = ie20( 8) + 1
 !
       iele = iele + 1
-      write(ifile,    '(21i10)') iele, ie20(1:4)
-      if (ifile_20 .gt. 0) write(ifile_20, '(21i10)') iele, ie20(1:8)
+      write(ifile,    '(21i16)') iele, ie20(1:4)
+      if (ifile_20 .gt. 0) write(ifile_20, '(21i16)') iele, ie20(1:8)
 !
       end subroutine square_surf_quad_connect
 !

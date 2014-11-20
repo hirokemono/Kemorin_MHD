@@ -33,15 +33,15 @@
       write(id_file,'(a)') '!'
       write(id_file,'(a)') '! 4.2. Surface group'
 !
-      write(id_file,'(i15)') num_surf
-      write(id_file,'(6i10)')  (surf_istack(i),i=1,num_surf)
+      write(id_file,'(i16)') num_surf
+      write(id_file,'(6i16)')  (surf_istack(i),i=1,num_surf)
 !
       do k = 1, num_surf
         ist = surf_istack(k-1) + 1
         ied = surf_istack(k)
         write(id_file,*) trim(surf_name(k))
-        write(id_file,'(6i10)') (surf_item(1,i),i=ist,ied)
-        write(id_file,'(6i10)') (surf_item(2,i),i=ist,ied)
+        write(id_file,'(6i16)') (surf_item(1,i),i=ist,ied)
+        write(id_file,'(6i16)') (surf_item(2,i),i=ist,ied)
       end do
 !
       end subroutine write_surface_group

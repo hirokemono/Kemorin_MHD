@@ -38,11 +38,11 @@
 !
       write(textbuf,'(a,a1)'   )   '!  domain ID', char(0)
       call gz_write_textbuf_f
-      write(textbuf,'(i10,a1)') my_rank, char(0)
+      write(textbuf,'(i16,a1)') my_rank, char(0)
       call gz_write_textbuf_f
       write(textbuf,'(a,a1)'   )   '!  time step number', char(0)
       call gz_write_textbuf_f
-      write(textbuf,'(i10,a1)') i_time_step_IO, char(0)
+      write(textbuf,'(i16,a1)') i_time_step_IO, char(0)
       call gz_write_textbuf_f
       write(textbuf,'(a,a1)'   )   '!  time, Delta t', char(0)
       call gz_write_textbuf_f
@@ -92,7 +92,7 @@
       write(textbuf,'(a,a1)'   )                                        &
      &          '! number of field and component', char(0)
       call gz_write_textbuf_f
-      write(textbuf,'(2i10,a1)')                                        &
+      write(textbuf,'(2i16,a1)')                                        &
      &           nnod, num_field, char(0)
       call gz_write_textbuf_f
 !

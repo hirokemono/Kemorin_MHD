@@ -38,7 +38,7 @@
       ie20(4) = ie20(1)     + (num_hemi+1)
 !
       iele = iele + 1
-      write(ifile,    '(21i10)') iele, ie20(1:4)
+      write(ifile,    '(21i16)') iele, ie20(1:4)
 !
 !  edge (y = -cube_size)
 !
@@ -49,7 +49,7 @@
         ie20(4) = ie20(1)     + (num_hemi+1)
 !
         iele = iele + 1
-        write(ifile,    '(21i10)') iele, ie20(1:4)
+        write(ifile,    '(21i16)') iele, ie20(1:4)
       end do
 !
 !  corner (x = cube_size, y = -cube_size)
@@ -60,7 +60,7 @@
       ie20(4) = ie20(1)     + (num_hemi+1)
 !
       iele = iele + 1
-      write(ifile,    '(21i10)') iele, ie20(1:4)
+      write(ifile,    '(21i16)') iele, ie20(1:4)
 !
 !
 !  edge (x=-cube_size)
@@ -72,7 +72,7 @@
         ie20(4) = ie20(1)     + (num_hemi+1)
 !
         iele = iele + 1
-        write(ifile,    '(21i10)') iele, ie20(1:4)
+        write(ifile,    '(21i16)') iele, ie20(1:4)
 !
 !  bottom surface
 !
@@ -83,7 +83,7 @@
           ie20(4) = ie20(1)     + (num_hemi+1)
 !
           iele = iele + 1
-          write(ifile,    '(21i10)') iele, ie20(1:4)
+          write(ifile,    '(21i16)') iele, ie20(1:4)
         end do
 !
 !  edge (x=cube_size)
@@ -94,7 +94,7 @@
         ie20(4) = ie20(1)     + (num_hemi+1)
 !
         iele = iele + 1
-        write(ifile,    '(21i10)') iele, ie20(1:4)
+        write(ifile,    '(21i16)') iele, ie20(1:4)
       end do
 !
 !  corner (x=-cube_size, y=cube_size)
@@ -105,7 +105,7 @@
       ie20(4) = ie20(1)     + (num_hemi+1)
 !
       iele = iele + 1
-      write(ifile,    '(21i10)') iele, ie20(1:4)
+      write(ifile,    '(21i16)') iele, ie20(1:4)
 !
 !  edge (y=cube_size)
 !
@@ -116,7 +116,7 @@
         ie20(4) = ie20(1)     + (num_hemi+1)
 !
         iele = iele + 1
-        write(ifile,    '(21i10)') iele, ie20(1:4)
+        write(ifile,    '(21i16)') iele, ie20(1:4)
       end do
 !
 !  corner (x=y=cube_size)
@@ -127,7 +127,7 @@
       ie20(4) = ie20(1)     + (num_hemi+1)
 !
       iele = iele + 1
-      write(ifile,    '(21i10)') iele, ie20(1:4)
+      write(ifile,    '(21i16)') iele, ie20(1:4)
 !
       end subroutine set_center_square_connect
 !

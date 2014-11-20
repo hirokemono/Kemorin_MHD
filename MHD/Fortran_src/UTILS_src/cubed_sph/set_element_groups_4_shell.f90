@@ -33,14 +33,14 @@
       write(id_file,'(a)') '!'
       write(id_file,'(a)') '! 4.2. Element group'
 !
-      write(id_file,'(i15)') num_mat
-      write(id_file,'(6i10)')  (mat_istack(i),i=1,num_mat)
+      write(id_file,'(i16)') num_mat
+      write(id_file,'(6i16)')  (mat_istack(i),i=1,num_mat)
 !
       do k = 1, num_mat
         ist = mat_istack(k-1)+1
         ied = mat_istack(k)
         write(id_file,*) trim(mat_name(k))
-        write(id_file,'(6i10)') (mat_item(i),i=ist,ied)
+        write(id_file,'(6i16)') (mat_item(i),i=ist,ied)
       end do
 !
       end subroutine write_element_group

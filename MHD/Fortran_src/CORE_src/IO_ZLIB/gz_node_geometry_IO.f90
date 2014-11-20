@@ -32,12 +32,12 @@
       integer (kind = kint) :: i
 !
 !
-      write(textbuf,'(2i10,a1)') numnod_dummy, internal_node_dummy,     &
+      write(textbuf,'(2i16,a1)') numnod_dummy, internal_node_dummy,     &
      &      char(0)
       call gz_write_textbuf_f
 !
       do i=1, numnod_dummy
-        write(textbuf,'(i10,1p3E25.15e3,a1)')  globalnodid_dummy(i),    &
+        write(textbuf,'(i16,1p3E25.15e3,a1)')  globalnodid_dummy(i),    &
      &        xx_dummy(i,1:3), char(0)
         call gz_write_textbuf_f
       end do
@@ -52,11 +52,11 @@
 !
       integer(kind = kint) :: i
 !
-      write(textbuf,'(2i10,a1)') numnod_dummy, internal_node_dummy,     &
+      write(textbuf,'(2i16,a1)') numnod_dummy, internal_node_dummy,     &
      &      char(0)
       call gz_write_textbuf_f
       do i = 1, numnod_dummy
-        write(textbuf,'(i10,1p3E25.15e3,a1)') i, ele_scalar_IO(i),      &
+        write(textbuf,'(i16,1p3E25.15e3,a1)') i, ele_scalar_IO(i),      &
      &      char(0)
         call gz_write_textbuf_f
       end do
@@ -71,11 +71,11 @@
 !
       integer(kind = kint) :: i
 !
-      write(textbuf,'(2i10,a1)') numnod_dummy, internal_node_dummy,     &
+      write(textbuf,'(2i16,a1)') numnod_dummy, internal_node_dummy,     &
      &      char(0)
       call gz_write_textbuf_f
       do i = 1, numnod_dummy
-        write(textbuf,'(i10,1p3E25.15e3,a1)') i, ele_vector_IO(i,1:3),  &
+        write(textbuf,'(i16,1p3E25.15e3,a1)') i, ele_vector_IO(i,1:3),  &
      &         char(0)
         call gz_write_textbuf_f
       end do
@@ -99,7 +99,7 @@
 !
       subroutine read_geometry_info_gz
 !
-      integer (kind = kint) :: i, k, nchara
+      integer (kind = kint) :: i, k
 !
 !
       call allocate_node_data_dummy
@@ -116,7 +116,7 @@
 !
       subroutine read_scalar_in_element_gz
 !
-      integer(kind = kint) :: i, itmp, nchara
+      integer(kind = kint) :: i, itmp
 !
 !
       call read_number_of_node_gz
@@ -134,7 +134,7 @@
 !
       subroutine read_vector_in_element_gz
 !
-      integer(kind = kint) :: i, itmp, nchara
+      integer(kind = kint) :: i, itmp
 !
 !
       call read_number_of_node_gz

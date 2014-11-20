@@ -144,18 +144,18 @@
  1000 format('#')
  1001 format('# node information')
  1002 format('object 1 class array type float rank 1 shape 3 items',    &
-     &       i15, ' msb ascii')
+     &       i16, ' msb ascii')
  1003 format('data file ', a)
  1004 format('# element connectivity')
 !
  1005 format('object 2 class array type int rank 1 shape 4 items',      &
-     &       i15, ' msb ascii')
+     &       i16, ' msb ascii')
  1035 format('object 2 class array type int rank 1 shape 8 items',      &
-     &       i15, ' msb ascii')
+     &       i16, ' msb ascii')
  1045 format('object 2 class array type int rank 1 shape 3 items',      &
-     &       i15, ' msb ascii')
+     &       i16, ' msb ascii')
  1055 format('object 2 class array type int rank 1 shape 2 items',      &
-     &       i15, ' msb ascii')
+     &       i16, ' msb ascii')
 !
  1006 format('data file ', a)
 !
@@ -168,17 +168,17 @@
 !
  1009 format('# scaler...', a)
  1010 format('object',i6,' class array type float rank 0 items',        &
-     &       i15, ' msb ascii')
+     &       i16, ' msb ascii')
  1011 format('data file ', a)
  1012 format('attribute "dep" string "positions"')
 !
  1013 format('# vector...', a)
  1014 format('object',i6,' class array type float rank 1 shape 3 items',&
-     &       i15, ' msb ascii')
+     &       i16, ' msb ascii')
 !
  1015 format('# tensor...', a)
  1016 format('object',i6,' class array type float rank 2 shape 3 3 ',   &
-     & 'items', i15, ' msb ascii')
+     & 'items', i16, ' msb ascii')
 !
  1017 format('# the field with "positions", "connections", and "data"')
  1025 format('# Choose as data from following components')

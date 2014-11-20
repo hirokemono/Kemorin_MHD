@@ -46,11 +46,11 @@
       write(id_file,'(a)') '!  domain IDs to export'
       write(id_file,'(a)') '!'
 !
-      write(id_file,'(i15)') my_rank
-      write(id_file,'(i15)') num_dest_domain_IO
+      write(id_file,'(i16)') my_rank
+      write(id_file,'(i16)') num_dest_domain_IO
 !
       if (num_dest_domain_IO .gt. 0) then
-        write(id_file,'(10i8)')                                         &
+        write(id_file,'(10i16)')                                        &
      &          id_dest_domain_IO(1:num_dest_domain_IO)
       else
         write(id_file,*)
@@ -63,9 +63,9 @@
       write(id_file,'(a)') '!'
 !
       if (num_dest_domain_IO .gt. 0) then
-        write(id_file,'(8i10)')                                         &
+        write(id_file,'(8i16)')                                         &
               istack_nod_table_org_IO(1:num_dest_domain_IO)
-        write(id_file,'(8i10)') inod_itp_send_IO(1:ntot_table_org_IO)
+        write(id_file,'(8i16)') inod_itp_send_IO(1:ntot_table_org_IO)
 !
       else
         write(id_file,*)
@@ -94,10 +94,10 @@
       write(id_file,'(a)') '!'
 !
       if (num_dest_domain_IO .gt. 0) then
-        write(id_file,'(4i10)') istack_itp_type_org_IO(1:4)
+        write(id_file,'(4i16)') istack_itp_type_org_IO(1:4)
 !
         do inod = 1, ntot_table_org_IO
-          write(id_file,'(3i10,1p3e23.12)')                             &
+          write(id_file,'(3i16,1p3e23.12)')                             &
      &        inod_gl_dest_4_org_IO(inod), iele_org_4_org_IO(inod),     &
      &        itype_inter_org_IO(inod), coef_inter_org_IO(inod,1:3)
         end do
@@ -197,11 +197,11 @@
       write(id_file,'(a)') '!  domain IDs to import'
       write(id_file,'(a)') '!'
 !
-      write(id_file,'(i15)') my_rank
-      write(id_file,'(i15)') num_org_domain_IO
+      write(id_file,'(i16)') my_rank
+      write(id_file,'(i16)') num_org_domain_IO
 !
       if (num_org_domain_IO .gt. 0) then
-        write(id_file,'(10i8)')                                         &
+        write(id_file,'(10i16)')                                        &
      &          id_org_domain_IO(1:num_org_domain_IO)
       else
         write(id_file,*)
@@ -214,9 +214,9 @@
       write(id_file,'(a)') '!'
 !
       if (num_org_domain_IO .gt. 0) then
-        write(id_file,'(8i10)')                                         &
+        write(id_file,'(8i16)')                                         &
               istack_table_dest_IO(1:num_org_domain_IO)
-        write(id_file,'(8i10)') inod_dest_IO(1:ntot_table_dest_IO)
+        write(id_file,'(8i16)') inod_dest_IO(1:ntot_table_dest_IO)
 !
       else
         write(id_file,*)
@@ -244,12 +244,12 @@
 !
       if (num_org_domain_IO .gt. 0) then
         do i = 1, num_org_domain_IO
-          write(id_file,'(8i10)')                                       &
+          write(id_file,'(8i16)')                                       &
      &                istack_table_wtype_dest_IO(4*i-3:4*i)
         end do
 !
         do inod = 1, ntot_table_dest_IO
-          write(id_file,'(3i10,1p3e23.12)')                             &
+          write(id_file,'(3i16,1p3e23.12)')                             &
      &        inod_global_dest_IO(inod), iele_orgin_IO(inod),           &
      &        itype_inter_dest_IO(inod), coef_inter_dest_IO(inod,1:3)
         end do

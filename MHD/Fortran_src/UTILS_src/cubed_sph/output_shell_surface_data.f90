@@ -42,29 +42,29 @@
 !
        write(id_sf_linear_mesh,'(a)')                                   &
      &  '! num. of node and edge for cube'
-       write(id_sf_linear_mesh,'(5i10)')                                &
+       write(id_sf_linear_mesh,'(5i16)')                                &
      &              numnod_cube, (numedge_cube-numedge_sf)
        write(id_sf_linear_mesh,'(a)')                                   &
      &  '! num. of node and edge for sphere, layer'
-       write(id_sf_linear_mesh,'(5i10)')                                &
+       write(id_sf_linear_mesh,'(5i16)')                                &
      &              numnod_sf, numedge_sf, (nr+1)
 !
        write(id_sf_linear_mesh,'(a)') '! number of element'
-       write(id_sf_linear_mesh,'(i15)') numele_sf
+       write(id_sf_linear_mesh,'(i16)') numele_sf
        write(id_sf_linear_mesh,'(a)')                                   &
      &  '! num. of layer for inner and outer core boundary'
-       write(id_sf_linear_mesh,'(5i10)')                                &
+       write(id_sf_linear_mesh,'(5i16)')                                &
      &              (nr_icb+1), (nr_cmb+1)
 !
        write(id_sf_linear_mesh,'(a)') '! node'
        do inod = 1, numnod_sf
-        write(id_sf_linear_mesh,'(i15,1p3E25.15e3)') inod,              &
+        write(id_sf_linear_mesh,'(i16,1p3E25.15e3)') inod,              &
      &                              xyz_surf(inod,1:3)
        end do
 !
        write(id_sf_linear_mesh,'(a)') '! connectivity'
        do iele = 1, numele_sf
-        write(id_sf_linear_mesh,'(5i10)') iele, ie_sf20(iele,1:4)
+        write(id_sf_linear_mesh,'(5i16)') iele, ie_sf20(iele,1:4)
        end do
 !
       close (id_sf_linear_mesh)
@@ -85,29 +85,29 @@
 !
        write(id_sf_quad_mesh,'(a)')                                     &
      &  '! num. of node and edge for cube'
-       write(id_sf_quad_mesh,'(5i10)')                                  &
+       write(id_sf_quad_mesh,'(5i16)')                                  &
      &              numnod_cube, (numedge_cube-numedge_sf)
        write(id_sf_quad_mesh,'(a)')                                     &
      &  '! num. of node and edge for sphere, layer'
-       write(id_sf_quad_mesh,'(5i10)')                                  &
+       write(id_sf_quad_mesh,'(5i16)')                                  &
      &              numnod_sf, numedge_sf, (nr+1)
 !
        write(id_sf_quad_mesh,'(a)') '! number of element'
-       write(id_sf_quad_mesh,'(i15)') numele_sf
+       write(id_sf_quad_mesh,'(i16)') numele_sf
        write(id_sf_quad_mesh,'(a)')                                     &
      &  '! num. of layer for inner and outer core boundary'
-       write(id_sf_quad_mesh,'(5i10)')                                  &
+       write(id_sf_quad_mesh,'(5i16)')                                  &
      &              (nr_icb+1), (nr_cmb+1)
 !
        write(id_sf_quad_mesh,'(a)') '! node'
        do inod = 1, numnod_sf20
-        write(id_sf_quad_mesh,'(i15,1p3E25.15e3)') inod,                &
+        write(id_sf_quad_mesh,'(i16,1p3E25.15e3)') inod,                &
      &                              xyz_surf(inod,1:3)
        end do
 !
        write(id_sf_quad_mesh,'(a)') '! connectivity'
        do iele = 1, numele_sf
-         write(id_sf_quad_mesh,'(9i10)') iele, ie_sf20(iele,1:8)
+         write(id_sf_quad_mesh,'(9i16)') iele, ie_sf20(iele,1:8)
        end do
 !
       close (id_sf_quad_mesh)
@@ -131,7 +131,7 @@
        write(id_sf_coarsing,'(a)')  max_coarse_level
 !
        write(id_sf_coarsing,'(a)') '! node stack for each level'
-       write(id_sf_coarsing,'(10i10)')                                  &
+       write(id_sf_coarsing,'(10i16)')                                  &
      &         (inod_stack_sf(ic),ic=1, max_coarse_level)
 !
        write(id_sf_coarsing,'(a)') '! node table'
@@ -139,14 +139,14 @@
          ist = inod_stack_sf(ic-1) + 1
          ied = inod_stack_sf(ic)
          do inod = ist, ied
-           write(id_sf_coarsing,'(3i15)') (inod-inod_stack_sf(ic-1)),   &
+           write(id_sf_coarsing,'(3i16)') (inod-inod_stack_sf(ic-1)),   &
      &         inod_2_next(inod), inod_2_org(inod)
          end do
        end do
 !
 !
        write(id_sf_coarsing,'(a)') '! element stack for each level'
-       write(id_sf_coarsing,'(8i10)')                                   &
+       write(id_sf_coarsing,'(8i16)')                                   &
      &            (iele_stack_sf(ic),ic=1, max_coarse_level)
 !
        write(id_sf_coarsing,'(a)') '! connectivity'
@@ -155,7 +155,7 @@
          ied = iele_stack_sf(ic)
          do iele0 = ist, ied
            iele = iele0 + numele_sf
-            write(id_sf_coarsing,'(6i10)') (iele0-iele_stack_sf(ic-1)), &
+            write(id_sf_coarsing,'(6i16)') (iele0-iele_stack_sf(ic-1)), &
      &                      ie_sf20(iele,1:4)
          end do
        end do
@@ -167,7 +167,7 @@
        do ic = 1, max_coarse_level
          ist = iele_stack_sf(ic-1)+1
          ied = iele_stack_sf(ic)
-         write(id_sf_coarsing,'(8i10)')                                 &
+         write(id_sf_coarsing,'(8i16)')                                 &
      &            (num_merge_e_sf(iele),iele=ist,ied)
        end do
 !
@@ -177,7 +177,7 @@
          ied = iele_stack_sf(ic)
          do iele = ist, ied
            iele0 = iele - iele_stack_sf(ic-1)
-           write(id_sf_coarsing,'(8i10)') iele0,                        &
+           write(id_sf_coarsing,'(8i16)') iele0,                        &
      &            (imerge_e_sf(iele,i),i=1,num_merge_e_sf(iele))
          end do
        end do
@@ -200,29 +200,29 @@
 !
        write(id_sf_linear_mesh,'(a)')                                   &
      &  '! num. of node and edge for cube'
-       write(id_sf_linear_mesh,'(5i10)')                                &
+       write(id_sf_linear_mesh,'(5i16)')                                &
      &              numnod_cube, (numedge_cube-numedge_sf)
        write(id_sf_linear_mesh,'(a)')                                   &
      &  '! num. of node and edge for sphere, layer'
-       write(id_sf_linear_mesh,'(5i10)')                                &
+       write(id_sf_linear_mesh,'(5i16)')                                &
      &              numnod_sf, numedge_sf, (nr+1)
 !
        write(id_sf_linear_mesh,'(a)') '! number of element'
-       write(id_sf_linear_mesh,'(i15)') ntot_edge_sf20
+       write(id_sf_linear_mesh,'(i16)') ntot_edge_sf20
        write(id_sf_linear_mesh,'(a)')                                   &
      &  '! num. of layer for inner and outer core boundary'
-       write(id_sf_linear_mesh,'(5i10)')                                &
+       write(id_sf_linear_mesh,'(5i16)')                                &
      &              (nr_icb+1), (nr_cmb+1)
 !
        write(id_sf_linear_mesh,'(a)') '! node'
        do inod = 1, numnod_sf
-        write(id_sf_linear_mesh,'(i15,1p3E25.15e3)') inod,              &
+        write(id_sf_linear_mesh,'(i16,1p3E25.15e3)') inod,              &
      &                          xyz_surf(inod,1:3)
        end do
 !
        write(id_sf_linear_mesh,'(a)') '! connectivity'
        do iele = 1, ntot_edge_sf20
-        write(id_sf_linear_mesh,'(5i10)') iele, iedge_sf20(iele,1:3:2)
+        write(id_sf_linear_mesh,'(5i16)') iele, iedge_sf20(iele,1:3:2)
        end do
 !
       close (id_sf_linear_mesh)
@@ -243,29 +243,29 @@
 !
        write(id_sf_quad_mesh,'(a)')                                     &
      &  '! num. of node and edge for cube'
-       write(id_sf_quad_mesh,'(5i10)')                                  &
+       write(id_sf_quad_mesh,'(5i16)')                                  &
      &              numnod_cube, (numedge_cube-numedge_sf)
        write(id_sf_quad_mesh,'(a)')                                     &
      &  '! num. of node and edge for sphere, layer'
-       write(id_sf_quad_mesh,'(5i10)')                                  &
+       write(id_sf_quad_mesh,'(5i16)')                                  &
      &              numnod_sf, numedge_sf, (nr+1)
 !
        write(id_sf_quad_mesh,'(a)') '! number of element'
-       write(id_sf_quad_mesh,'(i15)') ntot_edge_sf20
+       write(id_sf_quad_mesh,'(i16)') ntot_edge_sf20
        write(id_sf_quad_mesh,'(a)')                                     &
      &  '! num. of layer for inner and outer core boundary'
-       write(id_sf_quad_mesh,'(5i10)')                                  &
+       write(id_sf_quad_mesh,'(5i16)')                                  &
      &              (nr_icb+1), (nr_cmb+1)
 !
        write(id_sf_quad_mesh,'(a)') '! node'
        do inod = 1, numnod_sf20
-        write(id_sf_quad_mesh,'(i15,1p3E25.15e3)') inod,                &
+        write(id_sf_quad_mesh,'(i16,1p3E25.15e3)') inod,                &
      &                              xyz_surf(inod,1:3)
        end do
 !
        write(id_sf_quad_mesh,'(a)') '! connectivity'
        do iele = 1, ntot_edge_sf20
-         write(id_sf_quad_mesh,'(9i10)') iele, iedge_sf20(iele,1:3)
+         write(id_sf_quad_mesh,'(9i16)') iele, iedge_sf20(iele,1:3)
        end do
 !
       close (id_sf_quad_mesh)

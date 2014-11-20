@@ -29,8 +29,6 @@
 !
       subroutine read_domain_info_gz
 !
-      integer(kind = kint) :: nchara
-!
 !
       call skip_gz_comment_int(my_rank_IO)
 !
@@ -93,9 +91,9 @@
       subroutine write_domain_info_gz
 !
 !
-      write(textbuf,'(i10,a1)') my_rank_IO, char(0)
+      write(textbuf,'(i16,a1)') my_rank_IO, char(0)
       call gz_write_textbuf_f
-      write(textbuf,'(i10,a1)') num_neib_domain_IO, char(0)
+      write(textbuf,'(i16,a1)') num_neib_domain_IO, char(0)
       call gz_write_textbuf_f
 !
       if (num_neib_domain_IO .gt. 0) then
@@ -141,7 +139,7 @@
       integer(kind = kint), intent(in) :: ntot_sr
       integer(kind = kint), intent(inout) :: inod_sr(ntot_sr)
 !
-      integer(kind = kint) :: i, nchara
+      integer(kind = kint) :: i
 !
       call skip_gz_comment_int( inod_sr(1) )
       do i = 2, ntot_sr
@@ -165,7 +163,7 @@
       if (num_sr .gt. 0) then
         call write_gz_multi_int_8i10(num_sr, istack_sr(1))
         do i = 1, ntot_sr
-          write(textbuf,'(i10,a1)') inod_sr(i), char(0)
+          write(textbuf,'(i16,a1)') inod_sr(i), char(0)
           call gz_write_textbuf_f
         end do
       else

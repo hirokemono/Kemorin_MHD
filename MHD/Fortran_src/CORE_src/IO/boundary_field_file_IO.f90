@@ -151,7 +151,7 @@
       call add_int_suffix(my_rank, boundary_data_head, bc_file_name)
       open (boundary_data_code, file=bc_file_name)
 !
-      write(boundary_data_code,'(i15)') num_bc_group_IO
+      write(boundary_data_code,'(i16)') num_bc_group_IO
 !
       do i = 1, num_bc_group_IO
         write(boundary_data_code,'(a,a2,a)')                            &
@@ -166,7 +166,7 @@
         jst = istack_bc_data_IO(i-1) + 1
         jed = istack_bc_data_IO(i)
         do j = jst, jed
-          write(boundary_data_code,'(i15,1pe23.14e3)')                  &
+          write(boundary_data_code,'(i16,1pe23.14e3)')                  &
      &              id_local_bc_fld_IO(j), boundary_field_IO(j)
         end do
       end do

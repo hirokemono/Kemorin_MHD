@@ -86,7 +86,7 @@
             do i = 1, 4
               iq(i) = ie(iele,ie_tetra(i,j))-1
             end do
-            write(id_output,'(4i10)') (iq(nd),nd= 1,4)
+            write(id_output,'(4i16)') (iq(nd),nd= 1,4)
           end do
         else if (nnod_ele .eq. num_t_linear) then
           iq(1) = ie(iele,4) - 1
@@ -97,16 +97,16 @@
           iq(6) = ie(iele,2) - 1
           iq(7) = ie(iele,7) - 1
           iq(8) = ie(iele,6) - 1
-          write(id_output,'(8i10)') (iq(nd),nd= 1,nnod_ele)
+          write(id_output,'(8i16)') (iq(nd),nd= 1,nnod_ele)
         else if (nnod_ele .eq. num_triangle) then
           iq(1) = ie(iele,1) - 1
           iq(2) = ie(iele,2) - 1
           iq(3) = ie(iele,3) - 1
-          write(id_output,'(3i15)') (iq(nd),nd= 1,nnod_ele)
+          write(id_output,'(3i16)') (iq(nd),nd= 1,nnod_ele)
         else if (nnod_ele .eq. num_linear_edge) then
           iq(1) = ie(iele,1) - 1
           iq(2) = ie(iele,2) - 1
-          write(id_output,'(3i15)') (iq(nd),nd= 1,nnod_ele)
+          write(id_output,'(3i16)') (iq(nd),nd= 1,nnod_ele)
         end if
       end do
 !

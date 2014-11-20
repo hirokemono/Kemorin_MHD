@@ -25,6 +25,7 @@
       module skip_gz_comment
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -120,7 +121,7 @@
 !
       call skip_gz_comment_get_nword
 !
-      write(charaint,'(i8)') min(nchara-1,kchara)
+      write(charaint,'(i8)') min(int(nchara-ione),int(kchara))
       write(fmtchara,'(a2,a,a1)')                                       &
      &          '(a', trim(ADJUSTL(charaint)),')'
 
@@ -150,7 +151,7 @@
 !
       do
         call get_one_line_from_gz_f
-        if(nchara .le. 1) cycle
+        if(nchara .le. ione) cycle
 !
         write(chara_flag,'(a1)',err=1) adjustl(textbuf)
         if(chara_flag.eq.char(10) .or. chara_flag.eq.char(13)) cycle
@@ -158,10 +159,10 @@
    1    continue
       end do
 !
-!      write(charaint,'(i8)') nchara-1
+!      write(charaint,'(i8)') nchara-ione
 !      write(fmtchara,'(a2,a,a4)')  '(a', trim(ADJUSTL(charaint)),',a1)'
 !      write(tbuf2,fmtchara) textbuf, char(32)
-!      do i = 1, nchara+1
+!      do i = 1, nchara+ione
 !        write(*,*) i, ichar(textbuf(i:i)), ichar(tbuf2(i:i)),       &
 !     &              textbuf(i:i), tbuf2(i:i)
 !      end do
@@ -237,8 +238,8 @@
 !
       ist = 0
       do
-        n = min((num-ist-1),7) + 1
-        write(fmt_txt,'(a1,i2,a7)') '(', n, 'i10,a1)'
+        n = min(num-ist-ione,iseven) + 1
+        write(fmt_txt,'(a1,i2,a7)') '(', n, 'i16,a1)'
         write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
         call gz_write_textbuf_f
         ist = ist + n
@@ -260,7 +261,7 @@
 !
       ist = 0
       do
-        n = min((num-ist-1),9) + 1
+        n = min(num-ist-ione,inine) + 1
         write(fmt_txt,'(a1,i3,a6)') '(', n, 'i8,a1)'
         write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
         call gz_write_textbuf_f
@@ -283,7 +284,7 @@
 !
       ist = 0
       do
-        n = min((num-ist-1),9) + 1
+        n = min(num-ist-ione,inine) + 1
         write(fmt_txt,'(a1,i3,a7)') '(', n, 'i12,a1)'
         write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
         call gz_write_textbuf_f

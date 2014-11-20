@@ -107,7 +107,7 @@
       integer(kind = kint) :: i, ist, num
 !
 !
-      write(textbuf,'(i10,a1)') ngrp, char(0)
+      write(textbuf,'(i16,a1)') ngrp, char(0)
       call gz_write_textbuf_f
 !
       if (ngrp .gt. 0) then
@@ -148,7 +148,7 @@
       integer(kind = kint) :: i, ist, num
 !
 !
-      write(textbuf,'(i10,a1)') ngrp, char(0)
+      write(textbuf,'(i16,a1)') ngrp, char(0)
       call gz_write_textbuf_f
 !
       if (ngrp .gt. 0) then
