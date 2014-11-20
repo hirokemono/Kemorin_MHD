@@ -407,7 +407,7 @@
         do ix = 0, ky_max/2
           do iz = 1, iz_max
             iii = iz*kx_max*ky_max
-            write(spectr_data_code,'(3i8,1pe20.11)')                    &
+            write(spectr_data_code,'(3i16,1pe20.11)')                   &
      &            ix, iy, iz, merged%node%xx(iii,3)
         end do
        end do

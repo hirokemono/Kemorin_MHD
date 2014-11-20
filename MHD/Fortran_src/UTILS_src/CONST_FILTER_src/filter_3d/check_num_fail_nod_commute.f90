@@ -124,7 +124,7 @@
 !
         do ip = 1, nprocs
           id_dest = ip - 1
-          write(id_failed_nod,'(3i15)') id_dest,                        &
+          write(id_failed_nod,'(3i16)') id_dest,                        &
      &            num_failed_whole_gl(ip), num_failed_fluid_gl(ip)
         end do
         close(id_failed_nod)

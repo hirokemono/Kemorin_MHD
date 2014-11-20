@@ -16,6 +16,7 @@
       module interpolate_imark_surf
 !
       use m_precision
+      use m_constants
 !
       use m_geometry_constants
 !
@@ -53,7 +54,7 @@
         do ig = ist, ied
 !
           iele = iele_gauss(ig)
-          isf =  mod(isurf_gauss(ig),100)
+          isf =  mod(isurf_gauss(ig),icent)
 !
           k1 = node_on_sf_4(1,isf)
           i1 = ie(iele,k1)
@@ -95,7 +96,7 @@
         do ig = ist, ied
 !
           iele = iele_gauss(ig)
-          isf =  mod(isurf_gauss(ig),100)
+          isf =  mod(isurf_gauss(ig),icent)
 !
           k1 = node_on_sf_8(1,isf)
           i1 = ie(iele,k1)
@@ -138,7 +139,7 @@
         do ig = ist, ied
 !
           iele = iele_gauss(ig)
-          isf =  mod(isurf_gauss(ig),100)
+          isf =  mod(isurf_gauss(ig),icent)
 !
           k9 = node_on_sf_9(9,isf)
           i9 = ie(iele,k9)

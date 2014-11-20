@@ -190,14 +190,14 @@
         do i = 1, numnod
           write(50+my_rank,*) 'item_crs_l',                             &
      &       i, tbl_crs%istack_crs_l(i-1), tbl_crs%istack_crs_l(i)
-          write(50+my_rank,'(10i8)')                                    &
+          write(50+my_rank,'(10i16)')                                   &
      &         tbl_crs%item_crs_l(tbl_crs%istack_crs_l(i-1)+1           &
      &                           :tbl_crs%istack_crs_l(i) )
         end do
         do i = 1, numnod
           write(50+my_rank,*) 'item_crs_u',                             &
      &       i, tbl_crs%istack_crs_u(i-1), tbl_crs%istack_crs_u(i)
-          write(50+my_rank,'(10i8)')                                    &
+          write(50+my_rank,'(10i16)')                                   &
      &         tbl_crs%item_crs_u(tbl_crs%istack_crs_u(i-1)+1           &
      &                           :tbl_crs%istack_crs_u(i))
         end do
@@ -217,13 +217,13 @@
         do i = 1, numnod
           write(50+my_rank,*) 'item_2d_rs_l',                           &
      &            i, tbl_2drs%num_2d_rs_l(i)
-          write(50+my_rank,'(10i8)')                                    &
+          write(50+my_rank,'(10i16)')                                   &
      &            tbl_2drs%item_2d_rs_l(1:tbl_2drs%num_2d_rs_l(i),i)
         end do
         do i = 1, numnod
           write(50+my_rank,*) 'item_2d_rs_u',                           &
      &            i, tbl_2drs%num_2d_rs_u(i)
-          write(50+my_rank,'(10i8)')                                    &
+          write(50+my_rank,'(10i16)')                                   &
      &            tbl_2drs%item_2d_rs_u(1:tbl_2drs%num_2d_rs_u(i),i)
         end do
 !

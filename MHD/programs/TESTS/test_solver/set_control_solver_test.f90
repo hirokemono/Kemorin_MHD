@@ -31,9 +31,6 @@
 !
       use set_parallel_file_name
 !
-      integer(kind = kint) :: i
-!
-!
 !
       if (i_matrix_head_ctl .ne. 0) then
         matrix_file_head = matrix_head_ctl

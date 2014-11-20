@@ -101,8 +101,8 @@
 !
       is = int((l1+l2+l3)/2)
 !*
-      itmax = min ( (l1-m1) ,(l3-m3) ,(l2+l3-m1))
-      itmin = -( min ( (l2-l3+m1) ,(l1+m1) , 0 ) )
+      itmax =  min((l1-m1), (l3-m3), (l2+l3-m1))
+      itmin = -min((l2-l3+m1), (l1+m1), izero)
 !*
 !*
       kil(0) = 0
@@ -228,8 +228,8 @@
 !
       is = int((l1+l2+l3)/2)
 !
-      itmax = min ( (l1-m1) ,(l3-m3) ,(l2+l3-m1))
-      itmin = -( min ( (l2-l3+m1) ,(l1+m1) , 0 ) )
+      itmax =  min((l1-m1), (l3-m3), (l2+l3-m1))
+      itmin = -min((l2-l3+m1), (l1+m1), izero)
 !
 !
       kil(0) = 0

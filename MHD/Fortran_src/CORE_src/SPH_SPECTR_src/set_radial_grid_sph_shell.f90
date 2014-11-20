@@ -75,7 +75,7 @@
         r_grid(k) = (r_ICB - half * shell) * dble(k) / dble(ked+1)
       end do
 !
-      kst = max(1,nlayer_ICB-nri/2)
+      kst = max(ione,nlayer_ICB-nri/itwo)
       ked = nlayer_ICB-1
       do k = kst, ked
         r_grid(k) = r_ICB - half * shell * (one - cos( pi               &

@@ -210,7 +210,7 @@
         write(50+my_rank,*)                                             &
      &      'iele, diff. of elemental field: ', i_field, nd
        do iele = 1, numele
-        write(50+my_rank,'(i15,1p10e25.14)')                            &
+        write(50+my_rank,'(i16,1p10e25.14)')                            &
      &         iele, (dvx(iele,i_field+3*(nd-1)+ndiff-1),ndiff=1, 3)
        end do
       end do

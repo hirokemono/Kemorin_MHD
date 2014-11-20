@@ -228,7 +228,7 @@
           if (kx_out .eq. 0  .and.  ky_out .eq. 0) then
             do iz = 1, nz_all
               iii   = ky_out*(nz_all*nx_2) + kx_out*nz_all + iz
-              write(picked_data_code,'(2i10,1p256e20.11)')              &
+              write(picked_data_code,'(2i16,1p256e20.11)')              &
      &           istep, iz, zz(iz),                                     &
      &           phys_cxcy(iii,1:num_fft)
             end do
@@ -236,7 +236,7 @@
           else if (ky_out .eq. 0) then
             do iz = 1, nz_all
               iii   = ky_out*(nz_all*nx_2) + kx_out*nz_all + iz
-              write(picked_data_code,'(2i10,1p256e20.11)')              &
+              write(picked_data_code,'(2i16,1p256e20.11)')              &
      &           istep, iz, zz(iz),                                     &
      &           phys_cxcy(iii,1:num_fft), phys_sxcy(iii,1:num_fft)
             end do
@@ -244,7 +244,7 @@
           else if (kx_out .eq. 0) then
             do iz = 1, nz_all
               iii   = ky_out*(nz_all*nx_2) + kx_out*nz_all + iz
-              write(picked_data_code,'(2i10,1p256e20.11)')              &
+              write(picked_data_code,'(2i16,1p256e20.11)')              &
      &           istep, iz, zz(iz),                                     &
      &           phys_cxcy(iii,1:num_fft),                              &
      &           phys_cxsy(iii,1:num_fft)
@@ -252,7 +252,7 @@
           else
             do iz = 1, nz_all
               iii   = ky_out*(nz_all*nx_2) + kx_out*nz_all + iz
-              write(picked_data_code,'(2i10,1p256e20.11)')              &
+              write(picked_data_code,'(2i16,1p256e20.11)')              &
      &           istep, iz, zz(iz),                                     &
      &           phys_cxcy(iii,1:num_fft), phys_sxcy(iii,1:num_fft),    &
      &           phys_cxsy(iii,1:num_fft), phys_sxsy(iii,1:num_fft)

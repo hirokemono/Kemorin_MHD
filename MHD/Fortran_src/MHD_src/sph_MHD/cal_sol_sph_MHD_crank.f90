@@ -246,7 +246,7 @@
       do j = 1, nidx_rj(2)
          do k = 1, nidx_rj(1)
           inod = j + (k-1) * nidx_rj(2)
-          write(150+my_rank,'(2i15,1p20E25.15e3)') j, k,                &
+          write(150+my_rank,'(2i16,1p20E25.15e3)') j, k,                &
      &        d_rj(inod,ipol%i_velo),d_rj(inod,idpdr%i_velo),           &
      &        d_rj(inod,itor%i_velo)
         end do
@@ -264,7 +264,7 @@
       do j = 1, nidx_rj(2)
          do k = 1, nidx_rj(1)
           inod = j + (k-1) * nidx_rj(2)
-          write(150+my_rank,'(2i15,1p20E25.15e3)') j, k,                &
+          write(150+my_rank,'(2i16,1p20E25.15e3)') j, k,                &
      &        d_rj(inod,ipol%i_vort), d_rj(inod,idpdr%i_vort),          &
      &        d_rj(inod,itor%i_vort)
         end do

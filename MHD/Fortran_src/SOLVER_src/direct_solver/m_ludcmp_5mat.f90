@@ -35,6 +35,7 @@
       module m_ludcmp_5mat
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -69,10 +70,10 @@
       d = 1.0d0
       do i = 1, n
         aamax =abs(a(i,i))
-        if(i.gt.1)   aamax = max( abs(a(i,i-1)), aamax)
-        if(i.gt.2)   aamax = max( abs(a(i,i-2)), aamax)
-        if(i.gt.n-2) aamax = max( abs(a(i,i+2)), aamax)
-        if(i.gt.n-1) aamax = max( abs(a(i,i+1)), aamax)
+        if(i.gt.1)   aamax = max( abs(a(i,i-ione)), aamax)
+        if(i.gt.2)   aamax = max( abs(a(i,i-itwo)), aamax)
+        if(i.gt.n-2) aamax = max( abs(a(i,i+itwo)), aamax)
+        if(i.gt.n-1) aamax = max( abs(a(i,i+ione)), aamax)
 !
         if (aamax.eq.0.0d0) pause 'singular matrix in ludcmp'
         vv(i) = 1.0d0 / aamax
@@ -257,7 +258,7 @@
       integer(kind = kint) :: k
 !
       call swap_int(idx(j), idx(imax))
-      do k = max(j-4,1), min(j+4,n)
+      do k = max(j-ifour,ione), min(j+ifour,n)
         call swap_real(a(j,k), a(imax,k))
       end do
       d = -d

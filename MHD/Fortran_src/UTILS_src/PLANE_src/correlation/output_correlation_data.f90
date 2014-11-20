@@ -36,7 +36,7 @@
 !
       end do
 !
- 4001  format(2i15, 1p255E25.15e3)
+ 4001  format(2i16, 1p255E25.15e3)
 !
       end subroutine output_correlate_plane
 !
@@ -66,8 +66,8 @@
 !
       end do
 !
- 4001 format(2i15, 1p255E25.15e3)
- 4002 format(4i10, 1p255E25.15e3)
+ 4001 format(2i16, 1p255E25.15e3)
+ 4002 format(4i16, 1p255E25.15e3)
 !
       end subroutine output_correlate_snap
 !

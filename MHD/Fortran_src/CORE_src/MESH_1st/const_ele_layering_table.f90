@@ -43,7 +43,7 @@
 !
       if (iflag_debug.eq.1) then
         write(*,*) 'igrp_stack_each_layer'
-        write(*,'(8i10)') igrp_stack_each_layer(0:num_layer_grp)
+        write(*,'(8i16)') igrp_stack_each_layer(0:num_layer_grp)
         write(*,*) 'i, dynamic_layer_grp_name(i)', ntotal_layer_grp
         do i = 1, ntotal_layer_grp
           write(*,*) i, ': ', trim(dynamic_layer_grp_name(i))

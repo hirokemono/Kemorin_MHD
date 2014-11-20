@@ -417,7 +417,7 @@
        integer(kind = kint) :: ii, i1
 !
        write(50,*) 'nnod_neib_x'
-       write(50,'(10i8)') nnod_neib_x
+       write(50,'(10i16)') nnod_neib_x
 !
        write(50,*) 'filter information for x-direction'
        do k=k_st2,k_end2
@@ -443,7 +443,7 @@
        integer(kind = kint) :: jj, j1
 !
        write(50,*) 'nnod_neib_y'
-       write(50,'(10i8)') nnod_neib_y
+       write(50,'(10i16)') nnod_neib_y
 !
        write(50,*) 'filter information for y-direction'
        do k=k_st2,k_end2
@@ -470,7 +470,7 @@
        integer(kind = kint) :: kk, k1
 !
        write(50,*) 'nnod_neib_z'
-       write(50,'(10i8)') nnod_neib_z
+       write(50,'(10i16)') nnod_neib_z
 !
        write(50,*) 'filter information for z-direction'
        do k=k_st2,k_end2
@@ -496,7 +496,7 @@
        integer(kind = kint) :: ij, i1, j1
 !
        write(50,*) 'nnod_neib_xy'
-       write(50,'(10i8)') nnod_neib_xy
+       write(50,'(10i16)') nnod_neib_xy
 !
        write(50,*) 'filter information for each plane'
        do k=k_st2,k_end2
@@ -526,7 +526,7 @@
        integer(kind = kint) :: ijk, i1, j1, k1, nd
 !
        write(50,*) 'nnod_neib'
-       write(50,'(10i8)') nnod_neib
+       write(50,'(10i16)') nnod_neib
 !
        write(50,*) 'filter information for all direction'
        do k=k_st2,k_end2

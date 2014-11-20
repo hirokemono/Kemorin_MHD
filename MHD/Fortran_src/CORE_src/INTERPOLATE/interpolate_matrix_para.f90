@@ -81,11 +81,12 @@
       integer (kind = kint), intent(in) :: np_smp
       integer (kind = kint), intent(in) :: numele, nnod_4_ele
       integer (kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+!
+      integer(kind = kint), intent(in) :: NC, NCM
       integer (kind = kint), intent(in) :: iele_gauss(NC)
       integer (kind = kint), intent(in) :: itype_gauss(NC)
       real (kind=kreal), intent(in) :: xi_gauss(NC,3)
 !
-      integer(kind = kint), intent(in) :: NC, NCM
       integer(kind = kint), intent(in) :: INM(0:NC)
       integer(kind = kint), intent(in) :: IEND_SUM_smp(0:4*np_smp)
 !

@@ -34,12 +34,12 @@
      &          iele_gauss, xi_gauss, NC, NCM, INM, IAM, AM,            &
      &          IEND_SUM_smp)
 !
+      integer (kind = kint), intent(in) :: NC, NCM
       integer (kind = kint), intent(in) :: np_smp
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: ie(numele,8)
       integer (kind = kint), intent(in) :: iele_gauss(NC)
       real (kind=kreal), intent(in) :: xi_gauss(NC,3)
-      integer (kind = kint), intent(in) :: NC, NCM
 !
       integer(kind=kint), intent(in) :: INM(0:NC)
       integer(kind = kint), intent(in) :: IEND_SUM_smp(0:np_smp)
@@ -110,12 +110,12 @@
      &          iele_gauss, isurf_gauss, xi_gauss,                      &
      &          NC, NCM, INM, IAM, AM, IEND_SUM_smp)
 !
+      integer (kind = kint), intent(in) :: NC, NCM
       integer (kind = kint), intent(in) :: np_smp, numele
       integer (kind = kint), intent(in) :: ie(numele,8)
       integer (kind = kint), intent(in) :: iele_gauss(NC)
       integer (kind = kint), intent(in) :: isurf_gauss(NC)
       real (kind=kreal), intent(in) :: xi_gauss(NC,3)
-      integer (kind = kint), intent(in) :: NC, NCM
 !
       integer(kind=kint), intent(in) :: INM(0:NC)
       integer(kind = kint), intent(in) :: IEND_SUM_smp(0:np_smp)
@@ -142,7 +142,7 @@
           ist = INM(ig-1)
 !
           iele = iele_gauss(ig)
-          isf =  mod(isurf_gauss(ig),100)
+          isf =  mod(isurf_gauss(ig),icent)
 !
           k1 = node_on_sf_4(1,isf)
           k2 = node_on_sf_4(2,isf)
@@ -182,13 +182,12 @@
      &          iele_gauss, iedge_gauss, xi_gauss,                      &
      &          NC, NCM, INM, IAM, AM, IEND_SUM_smp)
 !
+      integer (kind = kint), intent(in) :: NC, NCM
       integer (kind = kint), intent(in) :: np_smp, numele
       integer (kind = kint), intent(in) :: ie(numele,8)
       integer (kind = kint), intent(in) :: iele_gauss(NC)
       integer (kind = kint), intent(in) :: iedge_gauss(NC)
       real (kind=kreal), intent(in) :: xi_gauss(NC,3)
-!
-      integer (kind = kint), intent(in) :: NC, NCM
 !
       integer(kind=kint), intent(in) :: INM(0:NC)
       integer(kind = kint), intent(in) :: IEND_SUM_smp(0:np_smp)
@@ -214,7 +213,7 @@
           ist = INM(ig-1)
 !
           iele =  iele_gauss(ig)
-          iedge = mod(iedge_gauss(ig),100)
+          iedge = mod(iedge_gauss(ig),icent)
 !
           k1 = node_on_edge_l(1,iedge)
           k2 = node_on_edge_l(2,iedge)
@@ -243,13 +242,12 @@
      &          nnod_4_ele, ie, iele_gauss, inod_gauss,                 &
      &          NC, NCM, INM, IAM, AM, IEND_SUM_smp)
 !
+      integer (kind = kint), intent(in) :: NC, NCM
       integer (kind = kint), intent(in) :: np_smp
       integer (kind = kint), intent(in) :: numele, nnod_4_ele
       integer (kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       integer (kind = kint), intent(in) :: iele_gauss(NC)
       integer (kind = kint), intent(in) :: inod_gauss(NC)
-!
-      integer (kind = kint), intent(in) :: NC, NCM
 !
       integer(kind=kint), intent(in) :: INM(0:NC)
       integer(kind = kint), intent(in) :: IEND_SUM_smp(0:np_smp)

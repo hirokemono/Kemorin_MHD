@@ -51,7 +51,7 @@
              write(l_out,'( a )')                                       &
      &        '! 2.1 node'
 
-             write(l_out,'(10i10)')  nodtot,intnodtot
+             write(l_out,'(10i16)')  nodtot,intnodtot
             end if
 !
 ! *****  initialization to construct node information

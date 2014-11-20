@@ -1,12 +1,20 @@
 !
 !      module mesh_send_recv_test
 !
-      module mesh_send_recv_test
-!
 !     Written by H. Matsui on Sep., 2007
 !     Written by H. Matsui on Apr., 2008
 !
+!      subroutine s_mesh_send_recv_test
+!
+!      subroutine node_send_recv_test
+!      subroutine ele_send_recv_test
+!      subroutine surf_send_recv_test
+!      subroutine edge_send_recv_test
+!
+      module mesh_send_recv_test
+!
       use m_precision
+      use m_constants
 !
       use calypso_mpi
       use m_geometry_parameter
@@ -20,13 +28,6 @@
 !
       private :: ele_send_recv_test, surf_send_recv_test
       private :: edge_send_recv_test
-!
-!      subroutine s_mesh_send_recv_test
-!
-!      subroutine node_send_recv_test
-!      subroutine ele_send_recv_test
-!      subroutine surf_send_recv_test
-!      subroutine edge_send_recv_test
 !
 ! ----------------------------------------------------------------------
 !
@@ -300,8 +301,8 @@
         num = istack_export(neib  ) - istack_export(neib-1)
 !$omp do private(k,nd,ii,ix)
         do inum = 1, NB*num
-          k = mod(inum-1,num) + 1
-          nd = (inum-k) / NB + 1
+          k = mod(inum-ione,num) + ione
+          nd = (inum-k) / NB + ione
                  ii   = NB * (item_export(k+ist) - 1) + nd
                  ix   = inum + NB*ist
              WS(ix)= xx4(ii)
@@ -317,8 +318,8 @@
         num = istack_import(neib  ) - istack_import(neib-1)
 !$omp do private(inum,k,ii,ix)
         do inum = 1, NB*num
-          nd = mod(inum-1,NB) + 1
-          k = (inum-nd) / NB + 1
+          nd = mod(inum-ione,NB) + ione
+          k = (inum-nd) / NB + ione
             ii   = NB * (item_import(k+ist)-1) + nd
             ix   = k + (nd-1) * num + NB*ist
             xx4(ii)= WR(ix)
@@ -335,8 +336,8 @@
         num = istack_import(neib  ) - istack_import(neib-1)
 !$omp do private(k,ii,ix)
         do inum = 1, NB*num
-          nd = mod(inum-1,NB) + 1
-          k = (inum-nd) / NB + 1
+          nd = mod(inum-ione,NB) + ione
+          k = (inum-nd) / NB + ione
             ii   = NB * (internal_node+k+ist-1) + nd
             ix   = irev_import(k) + (nd-1) * num + NB*ist
             xx4(ii)= WR(ix)

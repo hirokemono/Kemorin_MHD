@@ -61,7 +61,7 @@
           write(15,'(a,i5)')                                            &
      &         'i, k, result_back, result_fw, original', j
         do i = 1, ngrd
-          k = ((i+1)/2-1) * (-1)**mod((i-1),2)
+          k = ((i+1)/2-1) * (-1)**mod((i-ione),itwo)
           write(15,'(2i5,1p3E25.15e3)') i, k, z(j,i), y(j,i), x(j,i)
         end do
       end do

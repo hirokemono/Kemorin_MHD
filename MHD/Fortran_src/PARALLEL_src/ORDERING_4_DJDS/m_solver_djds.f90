@@ -227,18 +227,18 @@
       write(50+my_rank,*) 'inod, NEWtoOLD, OLDtoNEW_DJDS_L, ',          &
      &        ' OLDtoNEW_DJDS_U, LtoU'
       do i = 1, numnod
-      write(50+my_rank,'(10i8)') i, NEWtoOLD(i),                        &
+      write(50+my_rank,'(10i16)') i, NEWtoOLD(i),                       &
      &            OLDtoNEW_DJDS_L(i), OLDtoNEW_DJDS_U(i), LtoU(i)
       end do
 !
       write(50+my_rank,*) 'indexDJDS_L'
-       write(50+my_rank,'(10i8)') indexDJDS_L
+       write(50+my_rank,'(10i16)') indexDJDS_L
       write(50+my_rank,*) 'itemDJDS_l'
-      write(50+my_rank,'(10i8)') itemDJDS_l
+      write(50+my_rank,'(10i16)') itemDJDS_l
       write(50+my_rank,*) 'indexDJDS_U'
-       write(50+my_rank,'(10i8)') indexDJDS_U
+       write(50+my_rank,'(10i16)') indexDJDS_U
       write(50+my_rank,*) 'itemDJDS_u'
-       write(50+my_rank,'(10i8)') itemDJDS_u
+       write(50+my_rank,'(10i16)') itemDJDS_u
 !
 !
        end subroutine check_DJDS_ordering_info

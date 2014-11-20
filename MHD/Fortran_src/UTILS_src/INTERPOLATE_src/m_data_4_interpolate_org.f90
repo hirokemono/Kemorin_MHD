@@ -159,14 +159,14 @@
       write(id_file,*) '#'
 !
       write(id_file,'(i15)') ntot_sph_bin
-      write(id_file,'(10i8)') iele_stack_bin(0:ntot_sph_bin)
+      write(id_file,'(1i16)') iele_stack_bin(0:ntot_sph_bin)
 !
       write(id_file,*) '#'
       write(id_file,*) '#  element for original elment in search bin'
       write(id_file,*) '#'
 !
       write(id_file,'(i15)') ntot_org_ele_in_bin
-      write(id_file,'(10i8)') iele_in_bin(1:ntot_org_ele_in_bin)
+      write(id_file,'(10i16)') iele_in_bin(1:ntot_org_ele_in_bin)
 !
       end subroutine check_iele_in_search_bin
 !

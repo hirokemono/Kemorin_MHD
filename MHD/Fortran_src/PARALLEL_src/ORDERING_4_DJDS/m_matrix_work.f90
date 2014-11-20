@@ -227,11 +227,11 @@
 !
         do i = 1, internal_node
           write(50+my_rank,*) 'IALmc', i, INLmc(i)
-          write(50+my_rank,'(10i8)') (IALmc(i,j),j=1,INLmc(i))
+          write(50+my_rank,'(10i16)') (IALmc(i,j),j=1,INLmc(i))
         end do
         do i = 1, internal_node
           write(50+my_rank,*) 'IAUmc', i, INUmc(i)
-          write(50+my_rank,'(10i8)') (IAUmc(i,j),j=1,INUmc(i))
+          write(50+my_rank,'(10i16)') (IAUmc(i,j),j=1,INUmc(i))
         end do
 !
        end subroutine check_istack_and_items_mc

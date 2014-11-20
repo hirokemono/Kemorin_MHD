@@ -227,7 +227,7 @@
       end do
 !
       write(fmt_txt,'(a6,i3,a16)')                                      &
-     &           '(4i10,', ntot_phys_rtp, '(1pE25.15e3),a1)'
+     &           '(4i16,', ntot_phys_rtp, '(1pE25.15e3),a1)'
       do inod = 1, nnod_rtp
         write(50+my_rank,fmt_txt) inod,                                 &
      &        idx_global_rtp(inod,1:3), d_rtp(inod,1:ntot_phys_rtp)
@@ -243,7 +243,7 @@
       integer(kind = kint) :: i
 !
 !
-      write(*,'(a,i15)') 'num_phys_rj ', num_phys_rj
+      write(*,'(a,i16)') 'num_phys_rj ', num_phys_rj
       write(*,'(a)') 'number, component, stack, monitor_flag, name'
       do i = 1, num_phys_rj
         write(*,'(4i6,a2,a)') i, num_phys_comp_rj(i),                   &
@@ -270,7 +270,7 @@
         write(50+my_rank,*) phys_name_rj(inod)
       end do
       write(fmt_txt,'(a6,i3,a16)')                                      &
-     &           '(3i15,', ntot_phys_rj, '(1pE25.15e3),a1)'
+     &           '(3i16,', ntot_phys_rj, '(1pE25.15e3),a1)'
       do inod = 1, nnod_rj
         write(50+my_rank,fmt_txt) inod,                                 &
      &        idx_global_rj(inod,1:2), d_rj(inod,1:ntot_phys_rj)

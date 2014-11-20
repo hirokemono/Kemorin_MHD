@@ -220,9 +220,9 @@
         ied = neib_nod%istack_next(inod)
         write(50+my_rank,*) 'next node ID for node nnod_next ',         &
      &                     inod, ist, ied, neib_nod%nnod_next(inod)
-        write(50+my_rank,'(8i10)') neib_nod%nnod_next(ist:ied)
+        write(50+my_rank,'(8i16)') neib_nod%nnod_next(ist:ied)
         write(50+my_rank,*) 'iweight_next'
-        write(50+my_rank,'(8i10)') neib_nod%iweight_next(ist:ied)
+        write(50+my_rank,'(8i16)') neib_nod%iweight_next(ist:ied)
       end do
 !
       end subroutine check_next_nod_4_node_type

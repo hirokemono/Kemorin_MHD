@@ -98,7 +98,7 @@
 !
 !
       do istep = i_step_init, i_step_number
-        if ( mod(istep,i_step_output_ucd) .eq. 0) then
+        if ( mod(istep,i_step_output_ucd) .eq. izero) then
           istep_ucd = istep / i_step_output_ucd
           call set_data_for_product(istep_ucd)
           call cal_rev_of_2nd_field

@@ -132,7 +132,7 @@
         end do
       end do
 !
- 1000 format(4i10, 1p6e20.12)
+ 1000 format(4i16, 1p6e20.12)
 !
       end subroutine write_diff_comm_test
 !

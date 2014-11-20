@@ -98,10 +98,10 @@
 !
         do inod0 = 1, numnod_sf
           inod = inod + 1
-          write (ifile,'(i15,1p3E25.15e3)')                             &
+          write (ifile,'(i16,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), z(inod0)
           if (ifile_q .gt. 0) then
-            write (ifile_q,'(i15,1p3E25.15e3)')                         &
+            write (ifile_q,'(i16,1p3E25.15e3)')                         &
      &          inod, x(inod0), y(inod0), z(inod0)
           end if
 !
@@ -146,9 +146,9 @@
           jnod = j_sf + nnod_cube_c + nnod_sf_c*((1-1)/nskip_r)
           knod = k_sf + nnod_cube_fc + nnod_sf_fc*((1-1)/nskip_fr)
 !
-          write (ifile,'(i15,1p3E25.15e3)')                             &
+          write (ifile,'(i16,1p3E25.15e3)')                             &
      &         jnod, x(inod0), y(inod0), z(inod0)
-          write (id_f2c,'(6i10)') izero, jnod, izero, knod, izero, inod
+          write (id_f2c,'(6i16)') izero, jnod, izero, knod, izero, inod
 !
         end do
 !

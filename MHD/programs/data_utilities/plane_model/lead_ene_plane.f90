@@ -397,26 +397,26 @@
 !
        do iii = 0, nx_2+ny_2-2
         i1 = iii + 1
-        write(xyz_stacked_code,'(2i10,1p120e20.11)') istep, iii,        &
+        write(xyz_stacked_code,'(2i16,1p120e20.11)') istep, iii,        &
      &              (ene_xyz(i1,j),j=1,num_fft)
        end do
 !
        do ix = 0, nx_2-1
         i1 = ix+1
-        write(yz_stacked_code,'(2i10,1p120e20.11)') istep, ix,          &
+        write(yz_stacked_code,'(2i16,1p120e20.11)') istep, ix,          &
      &              (ene_yz(i1,j),j=1,num_fft)
        end do
 !
        do iy = 0, ny_2-1
         i1 = iy+1
-        write(xz_stacked_code,'(2i10,1p120e20.11)') istep, iy,          &
+        write(xz_stacked_code,'(2i16,1p120e20.11)') istep, iy,          &
      &              (ene_xz(i1,j),j=1,num_fft)
        end do
 !
        do iy = 0, ny_2-1
         do ix = 0, nx_2-1
           i1    = iy*(nx_2) + ix+1
-         write(z_stacked_code,'(2i10,1p120e20.11)') ix, iy,             &
+         write(z_stacked_code,'(2i16,1p120e20.11)') ix, iy,             &
      &          (ene_z(i1,j), j=1,num_fft)
         end do
        end do

@@ -157,18 +157,18 @@
             open (nb_out, file=nb_name)
 !
             write(nb_out,'(a12)') '! num_edge:  '
-            write(nb_out,'(i15)') edgetot
-            write(nb_out,'(i15)') edgetot, edgetot, edgetot
+            write(nb_out,'(i16)') edgetot
+            write(nb_out,'(i16)') edgetot, edgetot, edgetot
             write(nb_out,'(a12)') '! num_depth: '
-            write(nb_out,'(2i15)') ndep_1
+            write(nb_out,'(2i16)') ndep_1
 !
        write(nb_out,'(a16)') '!  xi direction'
        do iedge = 1, edgetot
         ist = ndep_1*(iedge- 1) + 1
         ied = ndep_1*iedge
 !
-          write(nb_out,'(10i8)') (iedge_f_d_x(i),  i = ist, ied)
-          write(nb_out,'(10i8)') (iedge_neib_x(i), i = ist, ied)
+          write(nb_out,'(10i16)') (iedge_f_d_x(i),  i = ist, ied)
+          write(nb_out,'(10i16)') (iedge_neib_x(i), i = ist, ied)
 !
        end do
 !
@@ -177,8 +177,8 @@
         ist = ndep_1*(iedge- 1) + 1
         ied = ndep_1*iedge
 !
-          write(nb_out,'(10i8)') (iedge_f_d_y(i),  i = ist, ied)
-          write(nb_out,'(10i8)') (iedge_neib_y(i), i = ist, ied)
+          write(nb_out,'(10i16)') (iedge_f_d_y(i),  i = ist, ied)
+          write(nb_out,'(10i16)') (iedge_neib_y(i), i = ist, ied)
 !
        end do
 !
@@ -187,8 +187,8 @@
         ist = ndep_1*(iedge- 1) + 1
         ied = ndep_1*iedge
 !
-          write(nb_out,'(10i8)') (iedge_f_d_z(i),  i = ist, ied)
-          write(nb_out,'(10i8)') (iedge_neib_z(i), i = ist, ied)
+          write(nb_out,'(10i16)') (iedge_f_d_z(i),  i = ist, ied)
+          write(nb_out,'(10i16)') (iedge_neib_z(i), i = ist, ied)
 !
        end do
 !
@@ -228,8 +228,8 @@
         ist = ndep_1*(iedge- 1) + 1
         ied = ndep_1*iedge
 !
-          write(nb_out,'(10i8)') (iedge_f_d_y(i),  i = ist, ied)
-          write(nb_out,'(10i8)') (iedge_neib_y(i), i = ist, ied)
+          write(nb_out,'(10i16)') (iedge_f_d_y(i),  i = ist, ied)
+          write(nb_out,'(10i16)') (iedge_neib_y(i), i = ist, ied)
 !
        end do
 !

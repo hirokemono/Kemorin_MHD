@@ -45,8 +45,8 @@
         write(l_out)  (elm_type,i=1,elmtot)
       else
         write(l_out,'( a )') '! 2.2 element (connection)'
-        write(l_out,'(10i10)')   elmtot
-        write(l_out,'(10i10)')  (elm_type,i=1,elmtot)
+        write(l_out,'(10i16)')   elmtot
+        write(l_out,'(10i16)')  (elm_type,i=1,elmtot)
       end if
 
       element_id = 0
@@ -71,7 +71,7 @@
            write(l_out)  element_id_gl,                                 &
      &    i1, i2, i3, i4, i5, i6, i7, i8
          else
-           write(l_out,'(12i10)')  element_id_gl,                       &
+           write(l_out,'(9i16)')  element_id_gl,                        &
      &    i1, i2, i3, i4, i5, i6, i7, i8
          end if
 !
@@ -106,8 +106,8 @@
         write(l_out)  (elm_type,i=1,elmtot)
       else
         write(l_out,'( a )') '! 2.2 element (connection)'
-        write(l_out,'(10i10)')   elmtot
-        write(l_out,'(10i10)')  (elm_type,i=1,elmtot)
+        write(l_out,'(10i16)')   elmtot
+        write(l_out,'(10i16)')  (elm_type,i=1,elmtot)
       end if
 
       element_id = 0
@@ -149,7 +149,7 @@
      &     i1 , i2 , i3 , i4 , i5 , i6 , i7 , i8 , i9 , i10,            &
      &     i11, i12, i13, i14, i15, i16, i17, i18, i19, i20
          else
-           write(l_out,'(21i10)')  element_id_gl,                       &
+           write(l_out,'(21i16)')  element_id_gl,                       &
      &     i1 , i2 , i3 , i4 , i5 , i6 , i7 , i8 , i9 , i10,            &
      &     i11, i12, i13, i14, i15, i16, i17, i18, i19, i20
          end if

@@ -123,25 +123,29 @@
 !*
 !**********************************************************************
 !*
+      use m_precision
       use m_ludcmp_3band
       use lubksb_357band
       use lubksb_357band_mul
+!
+      implicit none
 !*
 !* ------  define  --------------
 !*
-      integer, parameter :: ismp = 4, nvect = 8, ncp = 8
-      integer :: istack_smp(0:ismp) = (/0,2,4,6,8/)
+      integer(kind = kint), parameter :: ismp = 4, nvect = 8, ncp = 8
+      integer(kind = kint) :: istack_smp(0:ismp) = (/0,2,4,6,8/)
 !
-       real*8 a(ncp,ncp)
-       real*8 b(ncp), x(ncp)
-       real*8 ep, dm(nvect), d1
+      real(kind = kreal) :: a(ncp,ncp)
+      real(kind = kreal) :: b(ncp), x(ncp)
+      real(kind = kreal) :: dm(nvect)
 !
-       real*8 :: band_am(3,ncp,nvect) , band_lum(5,ncp,nvect)
-       real*8 :: bm(nvect,ncp) , xm(nvect,ncp)
-       real*8 :: diff(nvect,ncp) , xm2(nvect,ncp)
+      real(kind = kreal) :: band_am(3,ncp,nvect)
+      real(kind = kreal) :: band_lum(5,ncp,nvect)
+      real(kind = kreal) ::  bm(nvect,ncp) , xm(nvect,ncp)
+      real(kind = kreal) :: xm2(nvect,ncp)
 !*
-       integer ip(ncp) ,iopt(2), idxm(ncp,nvect)
-       integer :: i, j
+      integer(kind = kint) :: idxm(ncp,nvect)
+      integer(kind = kint) :: i, j, k, ierr
 !*
        data a/ 1.0 ,-4.0,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0                   &
      &        ,3.0 ,2.0 ,1.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0                   &
@@ -222,7 +226,7 @@
       end do
 !
       do j = 1, 8
-        write(6,*) 'RHS and soultion by band matrix', j, ier
+        write(6,*) 'RHS and soultion by band matrix', j, ierr
         do 20 k = 1 ,ncp
           write(6,*) bm(j,k) ,xm(j,k), xm2(j,k)
   20    continue

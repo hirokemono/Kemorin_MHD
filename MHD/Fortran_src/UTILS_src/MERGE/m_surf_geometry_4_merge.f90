@@ -78,23 +78,23 @@
 !
 !
       write(50,*) 'surfpetot, nnod_4_surf'
-      write(50,'(2i15)') merged_surf%numsurf, merged_surf%nnod_4_surf
+      write(50,'(2i16)') merged_surf%numsurf, merged_surf%nnod_4_surf
 !
       write(50,*) 'istack_surfpe'
-      write(50,'(8i10)') istack_surfpe
+      write(50,'(8i16)') istack_surfpe
 !
       write(50,*) 'isurf, connection'
       do isurf = 1, merged_surf%numsurf
-        write(50,'(30i10)') isurf,                                      &
+        write(50,'(9i16)') isurf,                                       &
      &      merged_surf%ie_surf(isurf,1:merged_surf%nnod_4_surf)
       end do
 !
       write(50,*) 'elmpetot, nsurf_4_ele'
-      write(50,'(2i15)') merged%ele%numele, nsurf_4_ele
+      write(50,'(2i16)') merged%ele%numele, nsurf_4_ele
       write(50,*) 'iele, edge ID for surface'
 !
       do iele = 1, merged%ele%numele
-        write(50,'(30i10)')                                             &
+        write(50,'(7i16)')                                              &
      &            iele, merged_surf%isf_4_ele(iele,1:nsurf_4_ele)
       end do
 !
@@ -108,7 +108,7 @@
       write(50,*) 'numsurf_iso', merged_surf%numsurf_iso
 !
       write(50,*) 'isf_isolate'
-      write(50,'(8i10)')                                                &
+      write(50,'(8i16)')                                                &
      &     merged_surf%isf_isolate(1:merged_surf%numsurf_iso)
 !
       end subroutine check_merged_iso_surf

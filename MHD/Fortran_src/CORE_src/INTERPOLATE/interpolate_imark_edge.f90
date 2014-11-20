@@ -13,6 +13,7 @@
       module interpolate_imark_edge
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -50,7 +51,7 @@
         do ig = ist, ied
 !
           iele =  iele_gauss(ig)
-          iedge = mod(iedge_gauss(ig),100)
+          iedge = mod(iedge_gauss(ig),icent)
 !
           k1 = node_on_edge_l(1,iedge)
           i1 = ie(iele,k1)
@@ -94,7 +95,7 @@
         do ig = ist, ied
 !
           iele =  iele_gauss(ig)
-          iedge = mod(iedge_gauss(ig),100)
+          iedge = mod(iedge_gauss(ig),icent)
 !
           k2 = node_on_edge_q(2,iedge)
           i2 = ie(iele,k2)

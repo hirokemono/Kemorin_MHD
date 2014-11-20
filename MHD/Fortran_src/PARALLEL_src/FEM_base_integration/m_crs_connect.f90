@@ -97,13 +97,13 @@
         do i = 1, numnod
           write(50+my_rank,*) 'item_crs_l',                             &
      &                 i, istack_crs_l(i-1), istack_crs_l(i)
-          write(50+my_rank,'(10i8)')                                    &
+          write(50+my_rank,'(10i16)')                                   &
      &        (item_crs_l(j), j=istack_crs_l(i-1)+1,istack_crs_l(i))
         end do
         do i = 1, numnod
           write(50+my_rank,*) 'item_crs_u',                             &
      &                 i, istack_crs_u(i-1), istack_crs_u(i)
-          write(50+my_rank,'(10i8)')                                    &
+          write(50+my_rank,'(10i16)')                                   &
      &        (item_crs_u(j), j=istack_crs_u(i-1)+1,istack_crs_u(i))
         end do
 !

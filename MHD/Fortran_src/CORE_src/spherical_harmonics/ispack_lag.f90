@@ -2,6 +2,7 @@
       module ispack_lag
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -84,7 +85,7 @@
 !
 !*/ CHECK JM /*
 
-      IF(MOD(JM,2).NE.0) THEN
+      IF(MOD(JM,itwo).NE.0) THEN
         CALL BSDMSG('E','SKINIT','JM MUST BE EVEN.')
       END IF
 

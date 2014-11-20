@@ -5,6 +5,9 @@
 !
 !      Writen by H. Matsui on Sep., 2007
 !
+!      subroutine count_refined_connection(iele, iflag_refine)
+!      subroutine s_set_refined_connection(iele, iflag_refine)
+!
       use m_precision
 !
       use m_refine_flag_parameters
@@ -12,9 +15,6 @@
       use m_refined_node_id
 !
       implicit none
-!
-!      subroutine count_refined_connection(iele, iflag_refine)
-!      subroutine s_set_refined_connection(iele, iflag_refine)
 !
 ! ----------------------------------------------------------------------
 !
@@ -157,7 +157,7 @@
 !
         ist = istack_ele_refined(iele-1)
         call set_no_refined_connect(ntot_ele_refined, ist,              &
-     &      inod_refine_nod_local(1), ie_refined )
+     &      inod_refine_nod_local(1), ie_refined(1,1) )
 !
       else if(iflag_refine .eq. iflag_8_to_20) then
         call s_copy_refined_nod_quad20(inod_refine_local(1),            &
@@ -166,7 +166,7 @@
 !
         ist = istack_ele_refined(iele-1)
         call set_refined_connect_quad20(ntot_ele_refined, ist,          &
-     &      inod_refine_local(1), ie_refined )
+     &      inod_refine_local(1), ie_refined(1,1) )
 !
       else if(iflag_refine .eq. iflag_8_to_27) then
         call s_copy_refined_nod_quad27(inod_refine_local(1),            &
@@ -175,7 +175,7 @@
 !
         ist = istack_ele_refined(iele-1)
         call set_refined_connect_quad27(ntot_ele_refined, ist,          &
-     &      inod_refine_local(1), ie_refined )
+     &      inod_refine_local(1), ie_refined(1,1) )
 !
 !
       else if(iflag_refine .eq. iflag_double_x) then
@@ -185,7 +185,7 @@
 !
         ist = istack_ele_refined(iele-1)
         call set_refined_connect_dbl_wx(ntot_ele_refined, ist,          &
-     &      inod_refine_local(1), ie_refined )
+     &      inod_refine_local(1), ie_refined(1,1) )
 !
       else if(iflag_refine .eq. iflag_double_y) then
         call s_copy_refined_nod_dbl_y(inod_refine_local(1),             &
@@ -194,7 +194,7 @@
 !
         ist = istack_ele_refined(iele-1)
         call set_refined_connect_dbl_wy(ntot_ele_refined, ist,          &
-     &      inod_refine_local(1), ie_refined )
+     &      inod_refine_local(1), ie_refined(1,1) )
 !
       else if(iflag_refine .eq. iflag_double_z) then
         call s_copy_refined_nod_dbl_z(inod_refine_local(1),             &
@@ -203,7 +203,7 @@
 !
         ist = istack_ele_refined(iele-1)
         call set_refined_connect_dbl_wz(ntot_ele_refined, ist,          &
-     &      inod_refine_local(1), ie_refined )
+     &      inod_refine_local(1), ie_refined(1,1) )
 !
 !
       else if(iflag_refine .eq. iflag_double) then
@@ -213,7 +213,7 @@
 !
         ist = istack_ele_refined(iele-1)
         call set_refined_connect_dbl_w(ntot_ele_refined, ist,           &
-     &      inod_refine_local(1), ie_refined )
+     &      inod_refine_local(1), ie_refined(1,1) )
 !
 !
 !
@@ -224,7 +224,7 @@
 !
         ist = istack_ele_refined(iele-1)
         call set_refined_connect_tri_wx(ntot_ele_refined, ist,          &
-     &      inod_refine_local(1), ie_refined )
+     &      inod_refine_local(1), ie_refined(1,1) )
 !
 !
       else if(iflag_refine .eq. iflag_tri_y) then
@@ -234,7 +234,7 @@
 !
         ist = istack_ele_refined(iele-1)
         call set_refined_connect_tri_wy(ntot_ele_refined, ist,          &
-     &      inod_refine_local(1), ie_refined )
+     &      inod_refine_local(1), ie_refined(1,1) )
 !
 !
       else if(iflag_refine .eq. iflag_tri_z) then
@@ -244,7 +244,7 @@
 !
         ist = istack_ele_refined(iele-1)
         call set_refined_connect_tri_wz(ntot_ele_refined, ist,          &
-     &      inod_refine_local(1), ie_refined )
+     &      inod_refine_local(1), ie_refined(1,1) )
 !
 !
       else if(iflag_refine .eq. iflag_tri_xs1                           &
@@ -261,7 +261,7 @@
 !
         ist = istack_ele_refined(iele-1)
         call set_refined_connect_tri_1ds(ntot_ele_refined, ist,         &
-     &      inod_refine_local(1), ie_refined )
+     &      inod_refine_local(1), ie_refined(1,1) )
 !
 !
       else if(iflag_refine .eq. iflag_tri_full                          &
@@ -272,7 +272,7 @@
 !
         ist = istack_ele_refined(iele-1)
         call set_refined_connect_tri_w(ntot_ele_refined, ist,           &
-     &      inod_refine_local(1), ie_refined )
+     &      inod_refine_local(1), ie_refined(1,1) )
 !
 !
 !
@@ -289,7 +289,7 @@
 !
         ist = istack_ele_refined(iele-1)
         call set_refined_connect_tri_s(ntot_ele_refined, ist,           &
-     &      inod_refine_local(1), ie_refined )
+     &      inod_refine_local(1), ie_refined(1,1) )
 !
 !
       else if(iflag_refine .eq. iflag_tri_e1                            &
@@ -311,7 +311,7 @@
 !
         ist = istack_ele_refined(iele-1)
         call set_refined_connect_tri_e(ntot_ele_refined, ist,           &
-     &      inod_refine_local(1), ie_refined )
+     &      inod_refine_local(1), ie_refined(1,1) )
 !
 !
 !
@@ -330,7 +330,7 @@
 !
         ist = istack_ele_refined(iele-1)
         call set_refined_connect_tri_n(ntot_ele_refined, ist,           &
-     &      inod_refine_local(1), ie_refined )
+     &      inod_refine_local(1), ie_refined(1,1) )
 !
       else if(iflag_refine .eq. iflag_stri_e1                           &
      &   .or. iflag_refine .eq. iflag_stri_e2                           &
@@ -353,63 +353,63 @@
 !
         if     (iflag_refine .eq. iflag_stri_e1) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_sm_tri_e1, ntot_ele_refined, ist,                  &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_sm_tri_e1(1), ntot_ele_refined, ist,               &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if(iflag_refine .eq. iflag_stri_e2) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_sm_tri_e2, ntot_ele_refined, ist,                  &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_sm_tri_e2(1), ntot_ele_refined, ist,               &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if(iflag_refine .eq. iflag_stri_e3) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_sm_tri_e3, ntot_ele_refined, ist,                  &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_sm_tri_e3(1), ntot_ele_refined, ist,               &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if(iflag_refine .eq. iflag_stri_e4) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_sm_tri_e4, ntot_ele_refined, ist,                  &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_sm_tri_e4(1), ntot_ele_refined, ist,               &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if(iflag_refine .eq. iflag_stri_e5) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_sm_tri_e5, ntot_ele_refined, ist,                  &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_sm_tri_e5(1), ntot_ele_refined, ist,               &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if(iflag_refine .eq. iflag_stri_e6) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_sm_tri_e6, ntot_ele_refined, ist,                  &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_sm_tri_e6(1), ntot_ele_refined, ist,               &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if(iflag_refine .eq. iflag_stri_e7) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_sm_tri_e7, ntot_ele_refined, ist,                  &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_sm_tri_e7(1), ntot_ele_refined, ist,               &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if(iflag_refine .eq. iflag_stri_e8) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_sm_tri_e8, ntot_ele_refined, ist,                  &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_sm_tri_e8(1), ntot_ele_refined, ist,               &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if(iflag_refine .eq. iflag_stri_e9) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_sm_tri_e9, ntot_ele_refined, ist,                  &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_sm_tri_e9(1), ntot_ele_refined, ist,               &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if(iflag_refine .eq. iflag_stri_e10) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_sm_tri_e10, ntot_ele_refined, ist,                 &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_sm_tri_e10(1), ntot_ele_refined, ist,              &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if(iflag_refine .eq. iflag_stri_e11) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_sm_tri_e11, ntot_ele_refined, ist,                 &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_sm_tri_e11(1), ntot_ele_refined, ist,              &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if(iflag_refine .eq. iflag_stri_e12) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_sm_tri_e12, ntot_ele_refined, ist,                 &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_sm_tri_e12(1), ntot_ele_refined, ist,              &
+              inod_refine_local(1), ie_refined(1,1))
         end if
 !
       else if(iflag_refine .eq. iflag_five_x                            &
@@ -424,18 +424,18 @@
 !
         if      (iflag_refine .eq. iflag_five_z) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_five_wz, ntot_ele_refined, ist,                    &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_five_wz(1), ntot_ele_refined, ist,                 &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if (iflag_refine .eq. iflag_five_y) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_five_wy, ntot_ele_refined, ist,                    &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_five_wy(1), ntot_ele_refined, ist,                 &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if (iflag_refine .eq. iflag_five_x) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_five_wx, ntot_ele_refined, ist,                    &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_five_wx(1), ntot_ele_refined, ist,                 &
+              inod_refine_local(1), ie_refined(1,1))
 !
         end if
 !
@@ -454,33 +454,33 @@
 !
         if      (iflag_refine .eq. iflag_five_s6) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_five_s6, ntot_ele_refined, ist,                    &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_five_s6(1), ntot_ele_refined, ist,                 &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if (iflag_refine .eq. iflag_five_s5) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_five_s5, ntot_ele_refined, ist,                    &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_five_s5(1), ntot_ele_refined, ist,                 &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if (iflag_refine .eq. iflag_five_s4) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_five_s4, ntot_ele_refined, ist,                    &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_five_s4(1), ntot_ele_refined, ist,                 &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if (iflag_refine .eq. iflag_five_s3) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_five_s3, ntot_ele_refined, ist,                    &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_five_s3(1), ntot_ele_refined, ist,                 &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if (iflag_refine .eq. iflag_five_s2) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_five_s2, ntot_ele_refined, ist,                    &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_five_s2(1), ntot_ele_refined, ist,                 &
+              inod_refine_local(1), ie_refined(1,1))
 !
         else if (iflag_refine .eq. iflag_five_s1) then
           call set_refined_connection(num_ele_refined(iele),            &
-     &        ie_new_five_s1, ntot_ele_refined, ist,                    &
-              inod_refine_local(1), ie_refined)
+     &        ie_new_five_s1(1), ntot_ele_refined, ist,                 &
+              inod_refine_local(1), ie_refined(1,1))
 !
         end if
 !

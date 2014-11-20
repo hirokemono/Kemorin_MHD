@@ -1,13 +1,14 @@
 !
       program test_legendre_by_MAG
 !
+      use m_precision
       use mag_pbar
 !
       implicit none
 !
-      integer(kind = 4) :: ltr, ntheta, lst, led
-      integer(kind = 4) :: i, j, l, m, lc, mc, lm
-      integer(kind = 4) :: iend, istart, t_rate, t_max
+      integer(kind = kint) :: ltr, ntheta, lst, led
+      integer(kind = kint) :: i, j, l, m
+      integer(kind = kint) :: iend, istart, t_rate, t_max
 !
       write(*,*) 'imput number of points'
       read(*,*) ntheta
@@ -38,7 +39,7 @@
         do m = 0, l
           j = l*(l+1)+m
           do i = lst, led
-            write(50,'(4i10,1p3E25.15e3)') j, l, m, i,                  &
+            write(50,'(4i16,1p3E25.15e3)') j, l, m, i,                  &
      &             colat(ntheta-i+1), p_mag(j,i), dp_mag(j,i)
           end do
         end do

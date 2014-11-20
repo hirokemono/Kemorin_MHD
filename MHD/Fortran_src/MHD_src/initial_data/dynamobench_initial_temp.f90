@@ -37,7 +37,7 @@
       real (kind = kreal) :: pi, xr, sit, csp
 !
 !
-      real_m = dble( mod(isig,1000) / 100 )
+      real_m = dble( mod(isig,ikilo) / icent )
       pi = four * atan(one)
 !
 !$omp parallel do

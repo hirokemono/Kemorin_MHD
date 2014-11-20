@@ -203,7 +203,7 @@
       pi = four * atan(one)
       shell = r_CMB - r_ICB
 !
-      m = int( mod(isig,1000) / 100 )
+      m = int( mod(isig,ikilo) / icent )
       jj = find_local_sph_mode_address(m, m)
 !
       if (jj .gt. 0) then
@@ -250,7 +250,7 @@
       end if
 !
 !
-      m = int( mod(isig,1000) / 100 )
+      m = int( mod(isig,ikilo) / icent )
       jj = find_local_sph_mode_address(m, m)
 !
 !

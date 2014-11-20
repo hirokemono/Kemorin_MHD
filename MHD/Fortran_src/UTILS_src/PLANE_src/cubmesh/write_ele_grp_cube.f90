@@ -167,18 +167,18 @@
 !
         write(l_out,'( a )')    '!'
         write(l_out,'(  a  )')  '! 4.2 element group'
-        write(l_out,'(10i10)') elmgrptot
-        write(l_out,'(10i10)') (index(i),i=1,elmgrptot)
+        write(l_out,'(10i16)') elmgrptot
+        write(l_out,'(10i16)') (index(i),i=1,elmgrptot)
 !
         write(l_out,'(  a  )') 'layer_start'
-        write(l_out,'(6i10)') (iele_group_id(i),i=1, index(1))
+        write(l_out,'(6i16)') (iele_group_id(i),i=1, index(1))
 !
         write(l_out,'(  a  )') 'layer_end'
-        write(l_out,'(6i10)')                                           &
+        write(l_out,'(6i16)')                                           &
      &            (iele_group_id(i),i=index(1)+1, index(2))
 !
         write(l_out,'(  a  )') 'conductive_fluid'
-        write(l_out,'(6i10)')                                           &
+        write(l_out,'(6i16)')                                           &
      &            (iele_group_id(i),i=index(2)+1, index(3))
 !
         do k = 1, (nz_all-1)
@@ -198,7 +198,7 @@
           end if
 !
           write(l_out,'(a)') trim(group_name)
-          write(l_out,'(6i10)')                                         &
+          write(l_out,'(6i16)')                                         &
      &            (iele_group_id(i),i=index(2+k)+1, index(3+k))
         end do
 !

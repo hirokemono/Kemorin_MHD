@@ -31,7 +31,7 @@
       integer(kind = kint) :: istep_ucd
 !
 !
-      if (mod(i_step,i_step_output_ucd) .ne. 0) return
+      if (mod(i_step,i_step_output_ucd) .ne. izero) return
       istep_ucd = i_step / i_step_output_ucd
       call set_data_by_read_ucd_once(my_rank, istep_ucd,                &
     &       ifmt_org_ucd, org_ucd_header)

@@ -105,7 +105,7 @@
 !
 !
       do istep = i_step_init, i_step_number
-        if ( mod(istep,i_step_output_ucd) .eq. 0) then
+        if ( mod(istep,i_step_output_ucd) .eq. izero) then
           istep_ucd = istep / i_step_output_ucd
 !
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &

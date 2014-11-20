@@ -38,6 +38,7 @@
       module m_ludcmp_bmat
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -70,7 +71,7 @@
 !
       d = 1.0d0
       do i = 1,n
-        jst = max(i-nb,1)
+        jst = max(i-nb,ione)
         jed = min(i+nb,n)
         aamax = abs(a(i,jst))
         do j = jst+1, jed
@@ -82,8 +83,8 @@
       end do
 !
       do j = 1,n
-        ist = max( (j-2*nb),1 )
-        ied = min( (j+nb),n )
+        ist = max((j-itwo*nb),ione)
+        ied = min((j+nb),n)
 !
         do i = ist, j-1
           do k = ist, i-1
@@ -93,7 +94,7 @@
 !
         aamax = 0.0d0
         do i = j, ied
-          kst = max( (i-2*nb),1 )
+          kst = max((i-itwo*nb),ione)
           do k = kst, j-1
             a(i,j) = a(i,j) - a(i,k)*a(k,j)
           end do
@@ -109,8 +110,8 @@
           idx_org(imax) = idx_org(j)
           idx_org(j) = k
 !
-          kst = max( (j-2*nb),1 )
-          ked = min( (imax+2*nb),n ) 
+          kst = max((j-itwo*nb),ione)
+          ked = min((imax+itwo*nb),n ) 
           do k = kst, ked
             dum = a(imax,k)
             a(imax,k) = a(j,k)
@@ -124,7 +125,7 @@
         if(a(j,j).eq.0.0d0) a(j,j) = TINY
         if(j .ne. n) then
           dum = 1.0d0 / a(j,j)
-          ied = min( (j+2*nb),n )
+          ied = min( (j+itwo*nb),n )
           do i = j+1, ied
             a(i,j) = a(i,j) * dum
           end do
@@ -166,14 +167,14 @@
       end do
 !
       do i = ii, n
-        jst = max( (i-2*nb),1 )
+        jst = max((i-itwo*nb),ione)
         do j = jst,i-1
           b(i) = b(i) - a(i,j)*b(j)
         end do
       end do
 !
       do i = n, 1, -1
-        jed = min( (i+2*nb),n )
+        jed = min( (i+itwo*nb),n )
         do j = i+1, jed
           b(i) = b(i) - a(i,j)*b(j)
         end do

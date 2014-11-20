@@ -108,16 +108,16 @@
 !C===
       open (15, file=MATfile(my_rank+1), status='unknown')
 
-      read (15,'(10i8)') N, NP, NPL, NPU, NB, NEIBPETOT
+      read (15,'(10i16)') N, NP, NPL, NPU, NB, NEIBPETOT
 
       allocate (INL(0:NP), INU(0:NP), IAL(NPL), IAU(NPU))
       allocate (AL(NB,NB,NPL), AU(NB,NB,NPU), D(NB,NB,NP))
       allocate ( B(NB*NP),      X(NB*NP))
 
-      read (15,'(10i8)') (INL(k), k= 1, NP)
-      read (15,'(10i8)') (INU(k), k= 1, NP)
-      read (15,'(10i8)') (IAL(k), k= 1, NPL)
-      read (15,'(10i8)') (IAU(k), k= 1, NPU)
+      read (15,'(10i16)') (INL(k), k= 1, NP)
+      read (15,'(10i16)') (INU(k), k= 1, NP)
+      read (15,'(10i16)') (IAL(k), k= 1, NPL)
+      read (15,'(10i16)') (IAU(k), k= 1, NPU)
 
       do  k= 1, NPL
       do j1= 1, NB
@@ -142,7 +142,7 @@
 
       allocate (NEIBPE(NEIBPETOT))
       if (PETOT.ne.1) then
-        read (15,'(10i8)') (NEIBPE(k), k= 1, NEIBPETOT)
+        read (15,'(10i16)') (NEIBPE(k), k= 1, NEIBPETOT)
 
         allocate (STACK_IMPORT(0:NEIBPETOT))
         allocate (STACK_EXPORT(0:NEIBPETOT))
@@ -150,16 +150,16 @@
         STACK_IMPORT(0)= 0
         STACK_EXPORT(0)= 0
 
-        read (15,'(10i8)') (STACK_IMPORT(k), k= 1, NEIBPETOT)
-        read (15,'(10i8)') (STACK_EXPORT(k), k= 1, NEIBPETOT)
+        read (15,'(10i16)') (STACK_IMPORT(k), k= 1, NEIBPETOT)
+        read (15,'(10i16)') (STACK_EXPORT(k), k= 1, NEIBPETOT)
 
         NPSI= STACK_IMPORT(NEIBPETOT)
         NPSE= STACK_EXPORT(NEIBPETOT)
 
         allocate (NOD_IMPORT(NPSI))
         allocate (NOD_EXPORT(NPSE))
-        read (15,'(10i8)') (NOD_IMPORT(k), k= 1, NPSI)
-        read (15,'(10i8)') (NOD_EXPORT(k), k= 1, NPSE)
+        read (15,'(10i16)') (NOD_IMPORT(k), k= 1, NPSI)
+        read (15,'(10i16)') (NOD_EXPORT(k), k= 1, NPSE)
       endif
       close (15)
 !C===
@@ -188,7 +188,7 @@
 
       if (my_rank.eq.0) then
       do i= 1, N
-      write (*,'(i8,3(1pe16.6))') i,X(3*i-2),X(3*i-1),X(3*i)
+      write (*,'(i16,3(1pe16.6))') i,X(3*i-2),X(3*i-1),X(3*i)
       enddo
       endif
 

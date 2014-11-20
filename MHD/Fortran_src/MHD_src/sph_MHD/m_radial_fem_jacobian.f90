@@ -117,7 +117,7 @@
 !
       integer(kind = kint), intent(in) :: nri
 !
-      if( mod(nri,2) .eq. 1) then
+      if( mod(nri,itwo) .eq. ione) then
         max_int_point = 3
         nedge_r3 = (nri - 1) / 2
       else

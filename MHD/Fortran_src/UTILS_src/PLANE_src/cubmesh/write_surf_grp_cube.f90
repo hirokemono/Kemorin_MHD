@@ -37,8 +37,8 @@
             write(l_out,'( a )') '!'
             write(l_out,'(  a  )')                                      &
      &        '! 4.3 surface group'
-            write(l_out,'(10i10)') sufgrptot
-            write(l_out,'(10i10)') (index(i),i=1,sufgrptot)
+            write(l_out,'(10i16)') sufgrptot
+            write(l_out,'(10i16)') (index(i),i=1,sufgrptot)
 !
 !
             do ibd = 1, neib
@@ -54,12 +54,12 @@
 !
               if (kpe == 1) then 
                 istart = (nx-1)*(ny-1)*(ibd-1)
-                write(l_out,'(6i10)')                                   &
+                write(l_out,'(6i16)')                                   &
      &               ( ( (i+(j-1)*(nx-1)+istart), i=1,nx-1 ),j=1,ny-1)
-                write(l_out,'(6i10)') (( ifive, i=1, nx-1 ),j=1,ny-1)
+                write(l_out,'(6i16)') (( ifive, i=1, nx-1 ),j=1,ny-1)
               else
-                write(l_out,'(6i10)')
-                write(l_out,'(6i10)')
+                write(l_out,'(6i16)')
+                write(l_out,'(6i16)')
               endif
 !                                                 .. zmax_surf
               if (ibd .eq. 1) then
@@ -72,12 +72,12 @@
 !
               if (kpe == ndz) then 
                 istart = (nx-1)*(ny-1)*(nz-ibd-1)
-                write(l_out,'(6i10)')                                   &
+                write(l_out,'(6i16)')                                   &
      &             ( ( (i+(j-1)*(nx-1)+istart),i=1,nx-1 ),j=1,ny-1)
-                write(l_out,'(6i10)') (( isix, i=1, nx-1 ),j=1,ny-1)
+                write(l_out,'(6i16)') (( isix, i=1, nx-1 ),j=1,ny-1)
               else
-                write(l_out,'(6i10)')
-                write(l_out,'(6i10)')
+                write(l_out,'(6i16)')
+                write(l_out,'(6i16)')
               end if
 !
             end do

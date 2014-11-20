@@ -166,7 +166,7 @@
         m3 = idx_gl3(j0,3)
         if(j3 .eq. 0) cycle
 !
-        if(iflag_db .gt. 0 .and. mod(j0,100).eq.0 ) then
+        if(iflag_db .gt. 0 .and. mod(j0,icent).eq.0 ) then
           write(*,*) 'set Gaunt for ',  j3, l3, m3
         end if
 !
@@ -283,7 +283,7 @@
         m3 = idx_gl3(j0,3)
         if(j3 .eq. 0) cycle
 !
-        if(iflag_db .gt. 0 .and. mod(j0,100).eq.0 ) then
+        if(iflag_db .gt. 0 .and. mod(j0,icent).eq.0 ) then
           write(*,*) 'set Elsasser for ',  j3, l3, m3
         end if
 !*

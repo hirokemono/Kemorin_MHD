@@ -269,9 +269,9 @@
       write(xz_stacked_code,*)   '# start and end step'
       write(yz_stacked_code,*)   '# start and end step'
       write(xyz_stacked_code,*)  '# start and end step'
-      write(xz_stacked_code,'(2i15)')  ist_true, ied_true
-      write(yz_stacked_code,'(2i15)')  ist_true, ied_true
-      write(xyz_stacked_code,'(2i15)') ist_true, ied_true
+      write(xz_stacked_code,'(2i16)')  ist_true, ied_true
+      write(yz_stacked_code,'(2i16)')  ist_true, ied_true
+      write(xyz_stacked_code,'(2i16)') ist_true, ied_true
 !
       write(xz_stacked_code,*)   '# number of component'
       write(yz_stacked_code,*)   '# number of component'
@@ -288,19 +288,19 @@
 !
       do iii = 0, nx_2+ny_2-2
         i1 = iii + 1
-        write(xyz_stacked_code,'(i15,1p120e20.11)') iii,                &
+        write(xyz_stacked_code,'(i16,1p120e20.11)') iii,                &
      &            ene_xyz_tave(i1,1:num_fft)
       end do
 !
       do ix = 0, nx_2-1
         i1 = ix+1
-        write(yz_stacked_code,'(i15,1p120e20.11)') ix,                  &
+        write(yz_stacked_code,'(i16,1p120e20.11)') ix,                  &
      &            ene_yz_tave(i1,1:num_fft)
       end do
 !
       do iy = 0, ny_2-1
         i1 = iy+1
-        write(xz_stacked_code,'(i15,1p120e20.11)') iy,                  &
+        write(xz_stacked_code,'(i16,1p120e20.11)') iy,                  &
      &              ene_xz_tave(i1,1:num_fft)
       end do
 !
@@ -315,11 +315,11 @@
         open (horiz_rms_code,  file=t_horiz_rms_name,                   &
      &         form='formatted', status ='unknown')
         write(horiz_ave_code,*)   '# start and end step'
-        write(horiz_ave_code,'(2i15)')  ist_true, ied_true
+        write(horiz_ave_code,'(2i16)')  ist_true, ied_true
         write(horiz_ave_code,*)   '# number of component'
         write(horiz_ave_code,*)  num_fft
         write(horiz_rms_code,*)   '# start and end step'
-        write(horiz_rms_code,'(2i15)')  ist_true, ied_true
+        write(horiz_rms_code,'(2i16)')  ist_true, ied_true
         write(horiz_rms_code,*)   '# number of component'
         write(horiz_rms_code,*)  num_fft
 !
@@ -329,9 +329,9 @@
         end do
 !
         do iz = 1, nz_all
-          write(horiz_ave_code,'(i15,1p120e20.11)') iz, zz(iz),         &
+          write(horiz_ave_code,'(i16,1p120e20.11)') iz, zz(iz),         &
      &            phys_cxcy_tave(iz,1:num_fft)
-          write(horiz_rms_code,'(i15,1p120e20.11)') iz, zz(iz),         &
+          write(horiz_rms_code,'(i16,1p120e20.11)') iz, zz(iz),         &
      &            horiz_sq_tave(iz,1:num_fft)
         end do
         close(horiz_ave_code)

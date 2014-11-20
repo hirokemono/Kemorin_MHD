@@ -36,47 +36,47 @@
        integer (kind=kint) :: num0
 !
 !
-            write(l_out,'(10i10)')   nodgrptot
-            write(l_out,'(10i10)')  (index(i),i=1,nodgrptot)
+            write(l_out,'(10i16)')   nodgrptot
+            write(l_out,'(10i16)')  (index(i),i=1,nodgrptot)
 !                                                 ..zmin
             write(l_out,'(a)'  )  'zmin'
             if (kpe == 1) then 
-              write(l_out,'(6i10)') ((node_id_lc(i,j,1),i=1,nx),j=1,ny)
+              write(l_out,'(6i16)') ((node_id_lc(i,j,1),i=1,nx),j=1,ny)
             else
-              write(l_out,'(6i10)')
+              write(l_out,'(6i16)')
             endif
 !                                                 .. zmax
             write(l_out,'(a)'  )  'zmax'
             if (kpe == ndz) then 
-              write(l_out,'(6i10)') ((node_id_lc(i,j,nz),i=1,nx),j=1,ny)
+              write(l_out,'(6i16)') ((node_id_lc(i,j,nz),i=1,nx),j=1,ny)
             else
-              write(l_out,'(6i10)')
+              write(l_out,'(6i16)')
             endif
 !                                                           . mid.
             write(l_out,'(a)'  )  'Press'
             num0 = 0
             if (kpe ==ndz .and. ipe==1 .and. jpe==1 ) then
-              write(l_out,'(i15)')                                      &
+              write(l_out,'(i16)')                                      &
      &          node_id_lc(1,1,nz)
               num0 = 1
             endif
             if (kpe ==ndz .and. ipe==ndx .and. jpe==1 ) then
-              write(l_out,'(i15)')                                      &
+              write(l_out,'(i16)')                                      &
      &          node_id_lc(nxi+ndepth,1,nz)
               num0 = 1
             endif
             if (kpe ==ndz .and. ipe==ndx .and. jpe==ndy ) then
-              write(l_out,'(i15)')                                      &
+              write(l_out,'(i16)')                                      &
      &          node_id_lc(nxi+ndepth,nyi+ndepth,nz)
               num0 = 1
             endif
             if (kpe ==ndz .and. ipe==1 .and. jpe==ndy ) then
-              write(l_out,'(i15)')                                      &
+              write(l_out,'(i16)')                                      &
      &          node_id_lc(1,nyi+ndepth,nz)
               num0 = 1
             endif
             if ( num0 .eq. 0 ) then
-              write(l_out,'(i15)')
+              write(l_out,'(i16)')
             endif
 !
        end subroutine write_node_group
@@ -92,54 +92,54 @@
        integer (kind=kint) :: num0
 !
 !
-            write(l_out,'(10i10)')   nodgrptot
-            write(l_out,'(10i10)')  (index(i),i=1,nodgrptot)
+            write(l_out,'(10i16)')   nodgrptot
+            write(l_out,'(10i16)')  (index(i),i=1,nodgrptot)
 !                                                 ..zmin
             write(l_out,'(a)'  )  'zmin'
 !
             if (kpe == 1) then 
-              write(l_out,'(i15)') ((node_id_lc(i,j,1),i=1,nx),j=1,ny), &
+              write(l_out,'(i16)') ((node_id_lc(i,j,1),i=1,nx),j=1,ny), &
      &                      ((edge_id_lc(ia,ja,1,1),ia=1,nx-1),ja=1,ny),&
      &                      ((edge_id_lc(ib,jb,1,2),ib=1,nx),jb=1,ny-1)
             else
-              write(l_out,'(6i10)')
+              write(l_out,'(6i16)')
             endif
 !                                                 .. zmax
             write(l_out,'(a)'  )  'zmax'
             if (kpe == ndz) then 
-              write(l_out,'(i15)')                                      &
+              write(l_out,'(i16)')                                      &
      &                    ((node_id_lc(i,j,nz),i=1,nx),j=1,ny),         &
      &                    ((edge_id_lc(ia,ja,nz,1),ia=1,nx-1),ja=1,ny), &
      &                    ((edge_id_lc(ib,jb,nz,2),ib=1,nx),jb=1,ny-1)
 
             else
-              write(l_out,'(i15)')
+              write(l_out,'(i16)')
             endif
 !                                                           . mid.
             write(l_out,'(a)'  )  'Press'
             num0 = 0
             if (kpe ==ndz .and. ipe==1 .and. jpe==1 ) then
-              write(l_out,'(i15)')                                      &
+              write(l_out,'(i16)')                                      &
      &          node_id_lc(1,1,nz)
               num0 = 1
             endif
             if (kpe ==ndz .and. ipe==ndx .and. jpe==1 ) then
-              write(l_out,'(i15)')                                      &
+              write(l_out,'(i16)')                                      &
      &          node_id_lc(nxi+ndepth,1,nz)
               num0 = 1
             endif
             if (kpe ==ndz .and. ipe==ndx .and. jpe==ndy ) then
-              write(l_out,'(i15)')                                      &
+              write(l_out,'(i16)')                                      &
      &          node_id_lc(nxi+ndepth,nyi+ndepth,nz)
               num0 = 1
             endif
             if (kpe ==ndz .and. ipe==1 .and. jpe==ndy ) then
-              write(l_out,'(i15)')                                      &
+              write(l_out,'(i16)')                                      &
      &          node_id_lc(1,nyi+ndepth,nz)
               num0 = 1
             endif
             if ( num0 .eq. 0 ) then
-              write(l_out,'(i15)')
+              write(l_out,'(i16)')
             endif
 !
        end subroutine write_node_group_quad

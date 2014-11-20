@@ -52,7 +52,7 @@
       call write_compress_txt(nbuf, input_txt)
 !
       do i = 1, 10
-        write(input_txt,'(10i8,a)') ((i*1000+j),j=1,10), char(0)
+        write(input_txt,'(10i16,a)') ((i*1000+j),j=1,10), char(0)
         num_txt = 80
         call write_compress_txt(nbuf, input_txt)
 !

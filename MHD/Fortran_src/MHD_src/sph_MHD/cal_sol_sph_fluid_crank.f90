@@ -122,7 +122,7 @@
 !         j = 6
 !        do k = 1, sph_bc_U%kr_out
 !            inod = (k-1)*nidx_rj(2) + j
-!            write(my_rank+170,'(2i15,1p8E25.15e3)') k, j,              &
+!            write(my_rank+170,'(2i16,1p8E25.15e3)') k, j,              &
 !     &              d_rj(inod,ipol%i_velo),d_rj(inod,itor%i_velo)
 !     &          d_rj(inod,ipol%i_velo), d_rj(inod,idpdr%i_velo),       &
 !     &          d_rj(inod,itor%i_velo), d_rj(inod,itor%i_vort)

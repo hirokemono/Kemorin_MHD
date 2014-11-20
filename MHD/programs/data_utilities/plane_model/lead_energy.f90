@@ -487,34 +487,34 @@
        end do
 !
        do iz = 1, nz_all
-        write(horiz_ave_code,'(2i10,1p120e20.11)') istep, iz, zz(iz),   &
+        write(horiz_ave_code,'(2i16,1p120e20.11)') istep, iz, zz(iz),   &
      &              (phys_cxcy(iz,j),j=1,num_fft)
-        write(horiz_rms_code,'(2i10,1p120e20.11)') istep, iz, zz(iz),   &
+        write(horiz_rms_code,'(2i16,1p120e20.11)') istep, iz, zz(iz),   &
      &              (horiz_sq(iz,j),j=1,num_fft)
        end do
 !
        do iii = 0, nx_2+ny_2-2
         i1 = iii + 1
-        write(xyz_stacked_code,'(2i10,1p120e20.11)') istep, iii,        &
+        write(xyz_stacked_code,'(2i16,1p120e20.11)') istep, iii,        &
      &              (ene_xyz(i1,j),j=1,num_fft)
        end do
 !
        do ix = 0, nx_2-1
         i1 = ix+1
-        write(yz_stacked_code,'(2i10,1p120e20.11)') istep, ix,          &
+        write(yz_stacked_code,'(2i16,1p120e20.11)') istep, ix,          &
      &              (ene_yz(i1,j),j=1,num_fft)
        end do
 !
        do iy = 0, ny_2-1
         i1 = iy+1
-        write(xz_stacked_code,'(2i10,1p120e20.11)') istep, iy,          &
+        write(xz_stacked_code,'(2i16,1p120e20.11)') istep, iy,          &
      &              (ene_xz(i1,j),j=1,num_fft)
        end do
 !
        do iy = 0, ny_2-1
         do ix = 0, nx_2-1
           i1    = iy*(nx_2) + ix+1
-         write(z_stacked_code,'(2i10,1p120e20.11)') ix, iy,             &
+         write(z_stacked_code,'(2i16,1p120e20.11)') ix, iy,             &
      &          (ene_z(i1,j), j=1,num_fft)
         end do
        end do
@@ -523,7 +523,7 @@
         do ix = 0, nx_2-1
          do iz = 1, nz_all
           iii   = iy*(nz_all*nx_2) + ix*nz_all + iz
-          write(ene_spec_code,'(3i10,1p120e20.11)') ix, iy, iz,         &
+          write(ene_spec_code,'(3i16,1p120e20.11)') ix, iy, iz,         &
      &          (phys_ene(iii,j),j=1,num_fft)
          end do
         end do

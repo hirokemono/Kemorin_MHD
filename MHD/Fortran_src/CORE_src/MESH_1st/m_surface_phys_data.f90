@@ -121,7 +121,7 @@
 !
       write(50+my_rank,*) 'isurf, surface field: ', i_field, numdir
       do isurf = 1, numsurf
-        write(50+my_rank,'(i15,1p10e25.14)')                            &
+        write(50+my_rank,'(i16,1p10e25.14)')                            &
      &         isurf, (d_surf(isurf,i_field+nd-1),nd=1, numdir)
       end do
 !

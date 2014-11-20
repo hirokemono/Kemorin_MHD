@@ -45,7 +45,7 @@
 !
       real(kind=kreal), intent(inout) :: g(n_order+1, n_point)
 !
-      integer (kind = kint) :: i, j, k
+      integer (kind = kint) :: i, k
       real(kind=kreal) :: pi
 !
 !
@@ -70,7 +70,7 @@
 !
       real(kind=kreal), intent(inout) :: g(n_order+1, n_point)
 !
-      integer (kind = kint) :: i, j, k
+      integer (kind = kint) :: i, k
 !
 !
       do k = 1, n_point
@@ -105,7 +105,7 @@
 !
       real(kind=kreal), intent(inout) :: g(n_order+1, n_point)
 !
-      integer (kind = kint) :: i, j, k
+      integer (kind = kint) :: i, k
 !
 !
       do k = 1, n_point

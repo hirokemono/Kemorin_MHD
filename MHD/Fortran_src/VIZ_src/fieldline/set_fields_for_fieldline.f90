@@ -70,7 +70,7 @@
      &      vector_nod_fline(1,1,i_fln) )
 !
         i_field = ifield_linecolor(i_fln)
-        ist_fld = istack_nod_component(i_field-1) + 1
+        ist_fld = istack_nod_component(i_field-1)
         num_comp = istack_nod_component(i_field) - ist_fld
         if (iflag_debug .gt. 0) write(*,*)                              &
      &     'convert_comps_4_viz ifield_linecolor', i_field

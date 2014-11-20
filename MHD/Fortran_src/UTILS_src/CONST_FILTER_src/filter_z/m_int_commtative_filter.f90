@@ -174,12 +174,12 @@
       integer(kind = kint) :: i, j, k, i1
 !
       write(50+my_rank,*) 'nneib_nod2'
-      write(50+my_rank,'(10i8)') (nneib_nod2(i,1),i=1,numnod_z)
-      write(50+my_rank,'(10i8)') (nneib_nod2(i,2),i=1,numnod_z)
+      write(50+my_rank,'(10i16)') (nneib_nod2(i,1),i=1,numnod_z)
+      write(50+my_rank,'(10i16)') (nneib_nod2(i,2),i=1,numnod_z)
       write(50+my_rank,*) 'direction, inod, ineib_nod2'
       do k = 1, 2
         do i = 1, numnod_z
-          write(50+my_rank,'(10i8)') k, i,                              &
+          write(50+my_rank,'(10i16)') k, i,                             &
      &            (ineib_nod2(i,j,k),j=1,nneib_nod2(i,k))
         end do
       end do
@@ -196,12 +196,12 @@
       integer(kind = kint) :: i, j, k, i1
 !
       write(50+my_rank,*) 'nneib_ele2'
-      write(50+my_rank,'(10i8)') (nneib_ele2(i,1),i=1,numele_z)
-      write(50+my_rank,'(10i8)') (nneib_ele2(i,2),i=1,numele_z)
+      write(50+my_rank,'(10i16)') (nneib_ele2(i,1),i=1,numele_z)
+      write(50+my_rank,'(10i16)') (nneib_ele2(i,2),i=1,numele_z)
       write(50+my_rank,*) 'direction, iele, ineib_ele2'
       do k = 1, 2
         do i = 1, numele_z
-          write(50+my_rank,'(10i8)') k, i,                              &
+          write(50+my_rank,'(10i16)') k, i,                             &
      &            (ineib_ele2(i,j,k),j=1,nneib_ele2(i,k))
         end do
       end do

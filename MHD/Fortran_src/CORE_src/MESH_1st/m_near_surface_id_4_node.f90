@@ -144,7 +144,7 @@
         ied = isurf_stack_near_nod(inod)
         write(50+my_rank,*) 'near surface ID for node ',                &
      &                     inod, ist, ied, nsurf_near_nod(inod)
-        write(50+my_rank,'(8i10)') isurf_near_nod(ist:ied)
+        write(50+my_rank,'(8i16)') isurf_near_nod(ist:ied)
       end do
 !
       end subroutine check_near_surf_4_node

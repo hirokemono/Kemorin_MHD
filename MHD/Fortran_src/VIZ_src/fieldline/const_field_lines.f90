@@ -127,7 +127,7 @@
           write(my_rank+50,*)                                           &
      &        'i, new_start_pe, iflag_fline, new_start_cont'
           do i = ist, ied
-            write(my_rank+50,'(10i8)') i, id_fline_export(1:3,i)
+            write(my_rank+50,'(10i16)') i, id_fline_export(1:3,i)
           end do
         end if
 !

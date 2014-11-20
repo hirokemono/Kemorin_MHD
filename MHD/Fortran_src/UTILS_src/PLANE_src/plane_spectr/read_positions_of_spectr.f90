@@ -1,17 +1,16 @@
 !
 !     module read_positions_of_spectr
 !
-      module read_positions_of_spectr
-!
 !      Written by H.Matsui
 !      Modified by H.Matsui on June, 2007
+!
+!      subroutine s_read_positions_of_spectr(iz_max, zz)
+!
+      module read_positions_of_spectr
 !
       use m_precision
 !
       implicit none
-!
-!
-!      subroutine s_read_positions_of_spectr(iz_max, zz)
 !
 !  ---------------------------------------------------------------------
 !
@@ -23,8 +22,8 @@
 !
       use set_spectr_file_name
 !
-      real(kind = kreal), dimension(iz_max) :: zz
-      integer (kind = kint) :: iz_max
+      integer (kind = kint), intent(in) :: iz_max
+      real(kind = kreal), intent(inout) :: zz(iz_max)
 !
       integer (kind = kint) :: spectr_data_code = 22
       integer (kind = kint) :: ix, iy, iz, itmp

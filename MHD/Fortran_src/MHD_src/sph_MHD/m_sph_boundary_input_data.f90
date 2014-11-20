@@ -194,7 +194,7 @@
       write(id_boundary_file,'(a)') '#  number of boundary conditions'
       write(id_boundary_file,'(a)') '#'
 !
-      write(id_boundary_file,'(i15)') num_bc_field_ctl
+      write(id_boundary_file,'(i16)') num_bc_field_ctl
 !
       do igrp = 1, num_bc_field_ctl
         write(id_boundary_file,'(a)') '#'
@@ -203,10 +203,10 @@
 !
         write(id_boundary_file,'(a)')   trim(bc_ctls(igrp)%bc_field)
         write(id_boundary_file,'(a)')   trim(bc_ctls(igrp)%bc_group)
-        write(id_boundary_file,'(i15)')  bc_ctls(igrp)%num_bc_mode
+        write(id_boundary_file,'(i16)')  bc_ctls(igrp)%num_bc_mode
 !
         do inum = 1, bc_ctls(igrp)%num_bc_mode
-          write(id_boundary_file,'(2i15,1p10E25.15e3)')                 &
+          write(id_boundary_file,'(2i16,1p10E25.15e3)')                 &
      &          bc_ctls(igrp)%imode_gl(1:2,inum),                       &
      &          bc_ctls(igrp)%bc_input(inum,1:bc_ctls(igrp)%ncomp_bc)
         end do

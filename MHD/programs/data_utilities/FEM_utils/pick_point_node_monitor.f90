@@ -99,7 +99,7 @@
      &        d_nod(1:ntot_cmp_monitor)
 !
             if(inod .eq. inod_2_pick) then
-              write(pick_monitor_file_code,'(2i8,50e16.6)')             &
+              write(pick_monitor_file_code,'(2i16,50e16.6)')            &
      &        i_step_MHD, inod, time, xx(1:3),                          &
      &        d_nod(1:ntot_cmp_monitor)
             end if

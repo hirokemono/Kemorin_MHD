@@ -154,11 +154,11 @@
 !
 !
       do lm = 0, l_truncation
-        write(id_file_rms_l,'(i15,1pe23.14e3,i15,1p200e23.14e3)')       &
+        write(id_file_rms_l,'(i16,1pe23.14e3,i16,1p200e23.14e3)')       &
      &            istep, time, lm, rms_sph_vol_l(lm,1:ntot_rms_rj)
-        write(id_file_rms_m,'(i15,1pe23.14e3,i15,1p200e23.14e3)')       &
+        write(id_file_rms_m,'(i16,1pe23.14e3,i16,1p200e23.14e3)')       &
      &            istep, time, lm, rms_sph_vol_m(lm,1:ntot_rms_rj)
-        write(id_file_rms_lm,'(i15,1pe23.14e3,i15,1p200e23.14e3)')      &
+        write(id_file_rms_lm,'(i16,1pe23.14e3,i16,1p200e23.14e3)')      &
      &            istep, time, lm, rms_sph_vol_lm(lm,1:ntot_rms_rj)
       end do
 !
@@ -179,17 +179,17 @@
       if(iflag_rj_center .gt. 0) kst = 0
 !
       do kg = kst, nidx_rj(1)
-        write(id_file_rms,'(i15,1pe23.14e3,i15,1p200e23.14e3)')         &
+        write(id_file_rms,'(i16,1pe23.14e3,i16,1p200e23.14e3)')         &
      &                   istep, time, kg, rms_sph(kg,1:ntot_rms_rj)
       end do
 !
       do kg = kst, nidx_rj(1)
         do lm = 0, l_truncation
-          write(id_file_rms_l,'(i15,1pe23.14e3,2i15,1p200e23.14e3)')    &
+          write(id_file_rms_l,'(i16,1pe23.14e3,2i16,1p200e23.14e3)')    &
      &           istep, time, kg, lm, rms_sph_l(kg,lm,1:ntot_rms_rj)
-          write(id_file_rms_m,'(i15,1pe23.14e3,2i15,1p200e23.14e3)')    &
+          write(id_file_rms_m,'(i16,1pe23.14e3,2i16,1p200e23.14e3)')    &
      &           istep, time, kg, lm, rms_sph_m(kg,lm,1:ntot_rms_rj)
-          write(id_file_rms_lm,'(i15,1pe23.14e3,2i15,1p200e23.14e3)')   &
+          write(id_file_rms_lm,'(i16,1pe23.14e3,2i16,1p200e23.14e3)')   &
      &           istep, time, kg, lm, rms_sph_lm(kg,lm,1:ntot_rms_rj)
         end do
       end do
@@ -213,18 +213,18 @@
 !
       do k = 1, num_pick_layer
         kg = id_pick_layer(k)
-        write(id_file_rms,'(i15,1pe23.14e3,i15,1p200e23.14e3)')         &
+        write(id_file_rms,'(i16,1pe23.14e3,i16,1p200e23.14e3)')         &
      &                   istep, time, kg, rms_sph(kg,1:ntot_rms_rj)
       end do
 !
       do k = 1, num_pick_layer
         kg = id_pick_layer(k)
         do lm = 0, l_truncation
-          write(id_file_rms_l,'(i15,1pe23.14e3,2i15,1p200e23.14e3)')    &
+          write(id_file_rms_l,'(i16,1pe23.14e3,2i16,1p200e23.14e3)')    &
      &           istep, time, kg, lm, rms_sph_l(kg,lm,1:ntot_rms_rj)
-          write(id_file_rms_m,'(i15,1pe23.14e3,2i15,1p200e23.14e3)')    &
+          write(id_file_rms_m,'(i16,1pe23.14e3,2i16,1p200e23.14e3)')    &
      &           istep, time, kg, lm, rms_sph_m(kg,lm,1:ntot_rms_rj)
-          write(id_file_rms_lm,'(i15,1pe23.14e3,2i15,1p200e23.14e3)')   &
+          write(id_file_rms_lm,'(i16,1pe23.14e3,2i16,1p200e23.14e3)')   &
      &           istep, time, kg, lm, rms_sph_lm(kg,lm,1:ntot_rms_rj)
         end do
       end do
@@ -270,12 +270,12 @@
       if(iflag_rj_center .gt. 0) nri = nri + 1
 !
       write(id_file,'(a)')    'radial_layers, truncation'
-      write(id_file,'(3i15)') nri, l_truncation
+      write(id_file,'(3i16)') nri, l_truncation
       write(id_file,'(a)')    'ICB_id, CMB_id'
-      write(id_file,'(3i15)') nlayer_ICB, nlayer_CMB
+      write(id_file,'(3i16)') nlayer_ICB, nlayer_CMB
 !
       write(id_file,'(a)')    'number of components'
-      write(id_file,'(5i10)')   num_rms_rj, ntot_rms_rj
+      write(id_file,'(5i16)')   num_rms_rj, ntot_rms_rj
       write(id_file,'(16i5)')   num_rms_comp_rj(1:num_rms_rj)
 !
 !

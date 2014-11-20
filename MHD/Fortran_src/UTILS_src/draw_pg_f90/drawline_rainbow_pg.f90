@@ -73,7 +73,7 @@
           else
 !
             do k1 = 1, 3
-              k2 = mod(k1,3) + 1
+              k2 = mod(k1,ithree) + 1
               inod1 = ie(k1,iele)
               inod2 = ie(k2,iele)
 !

@@ -53,8 +53,8 @@
         ist_s = NB*IEND_SUM_smp(ip-1) + 1
         ied_s = NB*IEND_SUM_smp(ip)
         do i = ist_s, ied_s
-          nd = mod(i-1,NB) + 1
-          ig = (i - nd) / NB + 1
+          nd = mod(i-ione,NB) + ione
+          ig = (i - nd) / NB + ione
 !
           ist = INM(ig-1)
 !
@@ -112,8 +112,8 @@
         ist_s = NB*IEND_SUM_smp(ip-1) + 1
         ied_s = NB*IEND_SUM_smp(ip)
         do i = ist_s, ied_s
-          nd = mod(i-1,NB) + 1
-          ig = (i - nd) / NB + 1
+          nd = mod(i-ione,NB) + ione
+          ig = (i - nd) / NB + ione
 !
           ist = INM(ig-1)
 !

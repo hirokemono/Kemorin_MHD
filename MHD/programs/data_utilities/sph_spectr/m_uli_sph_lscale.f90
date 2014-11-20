@@ -142,7 +142,7 @@
       real(kind = kreal), intent(inout) :: spec_l(ncomp,nri)
 !
 !
-      write(id_lscale,'(i15,1pE25.15e3,i15,1p255E25.15e3)')             &
+      write(id_lscale,'(i16,1pE25.15e3,i16,1p255E25.15e3)')             &
      &         istep, time_sph, izero, spec_l(1:ncomp,1)
 !
       end subroutine write_volume_sph_lscale
@@ -160,7 +160,7 @@
 !
 !
       do kr = 1, nri
-        write(id_lscale,'(i15,1pE25.15e3,2i10,1p255E25.15e3)')          &
+        write(id_lscale,'(i16,1pE25.15e3,2i16,1p255E25.15e3)')          &
      &     istep, time_sph, kr_sph(kr), izero, spec_l(1:ncomp,kr)
       end do
 !

@@ -222,9 +222,9 @@
       write(id_file,*) '#  sphere block ID for search'
       write(id_file,*) '#'
 !
-      write(id_file,'(i15)') ntot_table_dest
+      write(id_file,'(i16)') ntot_table_dest
       do inod = 1, ntot_table_dest
-        write(id_file,'(40i10)') inod, id_search_area(inod,1:3)
+        write(id_file,'(4i16)') inod, id_search_area(inod,1:3)
       end do
 !
       end subroutine check_search_ID

@@ -70,7 +70,7 @@
     &       istep_read, time, coef, ierr)
         if(ierr .gt. 0) exit
 !
-        if(mod((istep_read-istep_start),istep_inc) .eq. 0               &
+        if(mod((istep_read-istep_start),istep_inc) .eq. izero           &
      &     .and. istep_read.ge.istep_start) then
           if(icou .eq. 0) start_time = time
           do nd = 1, num_comp
@@ -102,7 +102,7 @@
     &       istep_read, time, coef, ierr)
         if(ierr .gt. 0) exit
 !
-        if(mod((istep_read-istep_start),istep_inc) .eq. 0               &
+        if(mod((istep_read-istep_start),istep_inc) .eq. izero           &
      &     .and. istep_read.ge.istep_start) then
           do nd = 1, num_comp
             sigma_coef(1:num_layer,nd) = sigma_coef(1:num_layer,nd)     &

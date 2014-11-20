@@ -79,13 +79,13 @@
       write(*,*) 'ascii data file: ', trim(zene_file_name)
       open(id_zene_spec_file, file = zene_file_name, form= 'formatted')
 !
-      write(id_zene_spec_file,'(2i15)') num_ene_spec, num_phys_rtp
+      write(id_zene_spec_file,'(2i16)') num_ene_spec, num_phys_rtp
       write(id_zene_spec_file,'(10i5)')                                 &
      &      num_phys_comp_rtp(1:num_phys_rtp)
 !
       write(id_zene_spec_file,*) 'inod, kr, itheta, mphi'
       do j = 1, num_ene_spec
-        write(id_zene_spec_file,'(4i10)')  j, inod_ene_gl_rtp(j,1:3)
+        write(id_zene_spec_file,'(4i16)')  j, inod_ene_gl_rtp(j,1:3)
       end do
 !
 !
@@ -126,13 +126,13 @@
       write(*,*) 'ascii data file: ', trim(zene_file_name)
       open(id_zene_spec_file, file = zene_file_name, form= 'formatted')
 !
-      write(id_zene_spec_file,'(2i15)') num_ene_spec, num_phys_rtp
+      write(id_zene_spec_file,'(2i16)') num_ene_spec, num_phys_rtp
       write(id_zene_spec_file,'(10i5)')                                 &
      &      num_phys_comp_rtp(1:num_phys_rtp)
 !
       write(id_zene_spec_file,*) 'inod, kr, itheta, mphi'
       do j = 1, num_ene_spec
-        write(id_zene_spec_file,'(4i10)')  j, inod_ene_gl_rtp(j,1:3)
+        write(id_zene_spec_file,'(4i16)')  j, inod_ene_gl_rtp(j,1:3)
       end do
 !
 !

@@ -161,11 +161,11 @@
         ied = near_tbl%istack_nod(inod)
         write(50+my_rank,*) 'near node ID for node num_nod',      &
      &                     inod, ist, ied, near_tbl%num_nod(inod)
-        write(50+my_rank,'(8i10)') near_tbl%id_near_nod(ist:ied)
+        write(50+my_rank,'(8i16)') near_tbl%id_near_nod(ist:ied)
         write(50+my_rank,*) 'iweight '
-        write(50+my_rank,'(8i10)') near_tbl%iweight(ist:ied)
+        write(50+my_rank,'(8i16)') near_tbl%iweight(ist:ied)
         write(50+my_rank,*) 'idist '
-        write(50+my_rank,'(8i10)') near_tbl%idist(ist:ied)
+        write(50+my_rank,'(8i16)') near_tbl%idist(ist:ied)
       end do
 !
       end subroutine check_near_nod_4_node

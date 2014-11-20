@@ -17,6 +17,7 @@
       module ordering_MC_RCM_type
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -141,12 +142,12 @@
 !C===
 !C
 !C-- ORDERING
-        call MPI_allREDUCE (djds_tbl%NHYP, NHYPmax, 1, CALYPSO_INTEGER, &
-     &                      MPI_MAX, CALYPSO_COMM, ierr_MPI)
+        call MPI_allREDUCE (djds_tbl%NHYP, NHYPmax, ione,               &
+     &      CALYPSO_INTEGER, MPI_MAX, CALYPSO_COMM, ierr_MPI)
 
         NCOLORtot= min_color
-        if (NCOLORtot.gt.NHYPmax/2) then
-          NCOLORtot= ( NHYPmax+mod(NHYPmax,2) )/2
+        if (NCOLORtot.gt.NHYPmax/itwo) then
+          NCOLORtot= ( NHYPmax+mod(NHYPmax,itwo) ) / itwo
         endif
 
   999   continue
@@ -188,12 +189,12 @@
 !
 !        do i = 1, NP
 !          write(60+my_rank,*) 'istack_mc_l', i, istack_mc_l(i)
-!          write(60+my_rank,'(10i8)')                                   &
+!          write(60+my_rank,'(10i16)')                                  &
 !     &             item_mc_l(istack_mc_l(i-1)+1:istack_mc_l(i))
 !        end do
 !        do i = 1, NP
 !          write(60+my_rank,*) 'istack_mc_u', i, istack_mc_u(i)
-!          write(60+my_rank,'(10i8)')                                   &
+!          write(60+my_rank,'(10i16)')                                  &
 !     &             item_mc_u(istack_mc_u(i-1)+1:istack_mc_u(i))
 !        end do
 !

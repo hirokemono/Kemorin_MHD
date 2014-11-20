@@ -58,7 +58,7 @@
         ist =  1
         ied =  nsurf_4_ele
         inc =  1
-      else if(mod(isf_org,2) .eq. 1) then
+      else if(mod(isf_org,itwo) .eq. ione) then
         ist =  1
         ied =  nsurf_4_ele-1
         inc =  1
@@ -70,7 +70,7 @@
 !
       isf_tgt = izero
       do k = ist, ied, inc
-        k1 = mod(isf_org+k-1,nsurf_4_ele) + 1
+        k1 = mod(isf_org+k-ione,nsurf_4_ele) + ione
         isurf = abs(isf_4_ele(iele,k1))
 !
         do k2 = 1, num_linear_sf
@@ -92,7 +92,7 @@
 !
 !
       do k = ist, ied, inc
-        k1 = mod(isf_org+k-1,nsurf_4_ele) + 1
+        k1 = mod(isf_org+k-ione,nsurf_4_ele) + ione
 !
         isurf = abs(isf_4_ele(iele,k1))
         do k2 = 1, num_linear_sf

@@ -76,7 +76,7 @@
         if(ierr .gt. 0) exit
         write(*,*) 'read finish for step', istep_read, ierr
 !
-        if(mod((istep_read-istep_start),istep_inc) .eq. 0               &
+        if(mod((istep_read-istep_start),istep_inc) .eq. izero           &
      &     .and. istep_read.ge.istep_start) then
           call sqrt_of_rms_coefs(num_layer, num_comp, coef)
           call set_field_to_med_patch(num_layer, num_comp,              &

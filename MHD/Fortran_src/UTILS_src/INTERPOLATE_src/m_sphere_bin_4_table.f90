@@ -89,20 +89,20 @@
       write(id_file,*) '#  number of grid (r, theta, phi)'
       write(id_file,*) '#'
 !
-      write(id_file,'(3i15)') num_sph_grid
+      write(id_file,'(3i16)') num_sph_grid
 !
       write(id_file,*) '#'
       write(id_file,*) '#  number of bins (r, theta, phi)'
       write(id_file,*) '#'
 !
-      write(id_file,'(3i15)') num_sph_bin
+      write(id_file,'(3i16)') num_sph_bin
 !
       write(id_file,*) '#'
       write(id_file,*) '#  radial grid'
       write(id_file,*) '#'
 !
       do i = 0, num_sph_grid(1)
-        write(id_file,'(i15,1pE25.15e3)') i, r_divide(i)
+        write(id_file,'(i16,1pE25.15e3)') i, r_divide(i)
       end do
 !
       write(id_file,*) '#'
@@ -110,7 +110,7 @@
       write(id_file,*) '#'
 !
       do i = 0, num_sph_grid(2)
-        write(id_file,'(i15,1pE25.15e3)') i, theta_divide(i)
+        write(id_file,'(i16,1pE25.15e3)') i, theta_divide(i)
       end do
 !
       write(id_file,*) '#'
@@ -118,7 +118,7 @@
       write(id_file,*) '#'
 !
       do i = 0, num_sph_grid(3)
-        write(id_file,'(i15,1pE25.15e3)') i, phi_divide(i)
+        write(id_file,'(i16,1pE25.15e3)') i, phi_divide(i)
       end do
 !
       end subroutine check_sph_grid_4_bin

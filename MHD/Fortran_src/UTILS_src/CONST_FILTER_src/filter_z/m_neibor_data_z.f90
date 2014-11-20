@@ -80,18 +80,18 @@
 !
       write(50+my_rank,*) 'nummat', nummat
       write(50+my_rank,*) 'nneib_nod'
-      write(50+my_rank,'(10i8)') (nneib_nod(i,1),i=1,internal_node)
-      write(50+my_rank,'(10i8)') (nneib_nod(i,2),i=1,internal_node)
+      write(50+my_rank,'(10i16)') (nneib_nod(i,1),i=1,internal_node)
+      write(50+my_rank,'(10i16)') (nneib_nod(i,2),i=1,internal_node)
       write(50+my_rank,*) 'direction, inod, ineib_nod'
       do k = 1, 2
         do i = 1, internal_node
-          write(50+my_rank,'(10i8)') k, i,                              &
+          write(50+my_rank,'(10i16)') k, i,                             &
      &            (ineib_nod(i,j,k),j=1,nneib_nod(i,k))
         end do
       end do
 !
       write(50+my_rank,*) 'ncomp_st'
-      write(50+my_rank,'(10i8)') (ncomp_st(i),i=1,numnod)
+      write(50+my_rank,'(10i16)') (ncomp_st(i),i=1,numnod)
 !
       end subroutine check_neib_nod
 !
@@ -106,12 +106,12 @@
       integer(kind = kint) :: i, j, k, i1
 !
       write(50+my_rank,*) 'nneib_ele'
-      write(50+my_rank,'(10i8)') (nneib_ele(i,1),i=1,totalele)
-      write(50+my_rank,'(10i8)') (nneib_ele(i,2),i=1,totalele)
+      write(50+my_rank,'(10i16)') (nneib_ele(i,1),i=1,totalele)
+      write(50+my_rank,'(10i16)') (nneib_ele(i,2),i=1,totalele)
       write(50+my_rank,*) 'direction, iele, ineib_ele'
       do k = 1, 2
         do i = 1, totalele
-          write(50+my_rank,'(10i8)') k, i,                              &
+          write(50+my_rank,'(10i16)') k, i,                             &
      &            (ineib_ele(i,j,k),j=1,nneib_ele(i,k))
         end do
       end do
@@ -119,7 +119,7 @@
       do k = 1, 2
         do i = 1, totalele
           write(50+my_rank,*) 'k, i, jdx'
-          write(50+my_rank,'(10i8)') k, i,                              &
+          write(50+my_rank,'(10i16)') k, i,                             &
      &              (jdx(i,j,k),j=1,nfilter2_1)
         end do
       end do

@@ -124,7 +124,7 @@
      &      .or. idx_rtp_recieve(inod,2) .ne. idx_global_rtp(inod,2)    &
      &      .or. idx_rtp_recieve(inod,3) .ne. idx_global_rtp(inod,3)    &
      &      ) then
-            write(id_check,'(3i10,6i5)') inod,                          &
+            write(id_check,'(3i16,6i5)') inod,                          &
      &        inod_global_rtp(inod), idx_rtp_recieve(inod,4),           &
      &        idx_global_rtp(inod,1:3), idx_rtp_recieve(inod,1:3)
           end if
@@ -138,7 +138,7 @@
      &      .or. idx_rtm_recieve(inod,2) .ne. idx_global_rtm(inod,2)    &
      &      .or. idx_rtm_recieve(inod,3) .ne. idx_global_rtm(inod,3)    &
      &      ) then
-            write(id_check,'(3i10,6i5)') inod,                          &
+            write(id_check,'(3i16,6i5)') inod,                          &
      &        inod_global_rtm(inod), idx_rtm_recieve(inod,4),           &
      &        idx_global_rtm(inod,1:3), idx_rtm_recieve(inod,1:3)
           end if
@@ -152,7 +152,7 @@
      &      .or. idx_rlm_recieve(inod,1) .ne. idx_global_rlm(inod,1)    &
      &      .or. idx_rlm_recieve(inod,2) .ne. idx_global_rlm(inod,2)    &
      &      ) then
-            write(id_check,'(3i10,6i5)') inod,                          &
+            write(id_check,'(3i16,6i5)') inod,                          &
      &        inod_global_rlm(inod), idx_rlm_recieve(inod,3),           &
      &        idx_global_rlm(inod,1:2), idx_rlm_recieve(inod,1:2)
           end if
@@ -166,7 +166,7 @@
      &      .or. idx_rj_recieve(inod,1) .ne. idx_global_rj(inod,1)      &
      &      .or. idx_rj_recieve(inod,2) .ne. idx_global_rj(inod,2)      &
      &      ) then
-            write(id_check,'(3i10,6i5)') inod,                          &
+            write(id_check,'(3i16,6i5)') inod,                          &
      &        inod_global_rj(inod), idx_rj_recieve(inod,3),             &
      &        idx_global_rj(inod,1:2), idx_rj_recieve(inod,1:2)
           end if
@@ -195,7 +195,7 @@
             inod = kr + nidx_rtp(1) * (lth - 1)                         &
      &                + nidx_rtp(1) * nidx_rtp(2) * (mphi - 1)
             if(idx_rtp_recieve(inod,4) .eq. 0) then
-              write(id_check,'(3i10,6i5)') inod,                        &
+              write(id_check,'(3i16,6i5)') inod,                        &
      &           inod_global_rtp(inod), idx_gl_1d_rtp_r(kr),            &
      &           idx_gl_1d_rtp_t(lth), idx_gl_1d_rtp_p(mphi,1:2)
             end if
@@ -212,7 +212,7 @@
             inod =  lth + (kr-1) * nidx_rtm(2)                          &
      &                  + (mphi-1) * nidx_rtm(1) * nidx_rtm(2)
             if(idx_rtm_recieve(inod,4) .eq. 0) then
-              write(id_check,'(3i10,6i5)') inod,                        &
+              write(id_check,'(3i16,6i5)') inod,                        &
      &             inod_global_rtm(inod), idx_gl_1d_rtm_r(kr),          &
      &             idx_gl_1d_rtm_t(lth), idx_gl_1d_rtm_m(mphi,1:2)
             end if
@@ -227,7 +227,7 @@
         do j = 1, nidx_rlm(2)
           inod = j + (kr-1) * nidx_rlm(2)
           if(idx_rlm_recieve(inod,3) .eq. 0) then
-              write(id_check,'(3i10,6i5)') inod,                        &
+              write(id_check,'(3i16,6i5)') inod,                        &
      &        inod_global_rlm(inod), idx_gl_1d_rlm_r(kr),               &
      &        idx_gl_1d_rlm_j(j,2:3)
           end if
@@ -241,7 +241,7 @@
         do j = 1, nidx_rj(2)
           inod = j + (kr-1) * nidx_rj(2)
           if(idx_rj_recieve(inod,3) .eq. 0) then
-              write(id_check,'(3i10,6i5)') inod,                        &
+              write(id_check,'(3i16,6i5)') inod,                        &
      &        inod_global_rj(inod),  idx_gl_1d_rj_r(kr),                &
      &        idx_gl_1d_rj_j(j,2:3)
           end if

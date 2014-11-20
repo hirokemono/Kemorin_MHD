@@ -150,7 +150,7 @@
             d_ratio =    (d_nod(inod,i_fld  ) - d_nod(inod,i_chk2  ) )  &
      &            / (two*(d_nod(inod,i_chk  ) - d_nod(inod,i_chk2  ) ))
             d_ratio = abs(d_ratio - one)
-!            write(100+my_rank,'(i15,1p4e16.5)') inod, d_ratio, d_nod(inod,i_fld  ), d_nod(inod,i_chk  ), d_nod(inod,i_chk2  )
+!            write(100+my_rank,'(i16,1p4e16.5)') inod, d_ratio, d_nod(inod,i_fld  ), d_nod(inod,i_chk  ), d_nod(inod,i_chk2  )
             d_ratio_max_smp(ip,idrm)                                    &
      &            = max(d_ratio_max_smp(ip,idrm), d_ratio)
             d_ratio_min_smp(ip,idrm)                                    &

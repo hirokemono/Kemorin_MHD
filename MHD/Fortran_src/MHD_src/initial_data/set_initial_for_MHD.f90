@@ -10,6 +10,7 @@
       module set_initial_for_MHD
 !
       use m_precision
+      use m_constants
 !
       use m_control_parameter
       use m_geometry_parameter
@@ -40,11 +41,11 @@
 !
       use dynamobench_r_func_sph_vecp
 !
-      integer ( kind = kint), intent(in) :: isig
-      integer ( kind = kint) :: inod, ifl, j_rst
+      integer(kind = kint), intent(in) :: isig
+      integer(kind = kint) :: inod, ifl, j_rst
 !
 !
-      j_rst = ( isig-mod(isig,1000) )/1000
+      j_rst = ( isig-mod(isig,ikilo) )/ikilo
 !
       ifl = 1
       if ( abs(depth_low_t/depth_high_t - 0.35) .lt. 1.0d-4) ifl = 2
@@ -108,7 +109,7 @@
       integer ( kind = kint) :: inod, j, ifl, j_rst
 !
 !
-      j_rst = ( isig-mod(isig,1000) )/1000
+      j_rst = ( isig-mod(isig,ikilo) )/ikilo
 !
       ifl = 1
       if ( abs(depth_low_t/depth_high_t - 0.35) .lt. 1.0d-4) ifl = 2

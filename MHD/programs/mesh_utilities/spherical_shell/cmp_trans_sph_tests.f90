@@ -284,7 +284,7 @@
      &                      - X_global_rtp(NB*inod-NB+nd))
           end do
           if (diff .gt. 1.0E-11) then
-            write(id_check,'(2i10,1p3E23.15)') inod,                    &
+            write(id_check,'(2i16,1p3E23.15)') inod,                    &
      &       inod_global_rtp(inod), diff, X_rtp_recieve(NB*inod-NB+1),  &
      &       X_global_rtp(NB*inod-NB+1)
           end if
@@ -299,7 +299,7 @@
      &                      - X_global_rtm(NB*inod-NB+nd))
           end do
           if (diff .gt. 1.0E-11) then
-            write(id_check,'(2i10,1pE23.15)') inod,                     &
+            write(id_check,'(2i16,1pE23.15)') inod,                     &
      &                             inod_global_rtm(inod), diff
           end if
         end if
@@ -314,7 +314,7 @@
      &                      - X_global_rlm(NB*inod-NB+nd))
           end do
           if (diff .gt. 1.0E-11) then
-            write(id_check,'(2i10,1pE23.15)') inod,                     &
+            write(id_check,'(2i16,1pE23.15)') inod,                     &
      &                             inod_global_rlm(inod), diff
           end if
         end if
@@ -329,7 +329,7 @@
      &                      - X_global_rj(NB*inod-NB+nd))
           end do
           if (diff .gt. 1.0E-11) then
-            write(id_check,'(2i10,1p3E23.15)') inod,                    &
+            write(id_check,'(2i16,1p3E23.15)') inod,                    &
      &                             inod_global_rj(inod), diff
           end if
         end if

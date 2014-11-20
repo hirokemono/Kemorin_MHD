@@ -56,9 +56,9 @@
      &          BD_crs, BL_crs, BU_crs, AB)
 !
       integer(kind=kint), intent(in) :: NA, NB
+      integer(kind=kint), intent(in) :: NP, NPL, NPU
       real(kind = kreal), intent(in) :: A(NA,NP)
 !
-      integer(kind = kint), intent(in) :: NP, NPL, NPU
       integer(kind = kint), intent(in) :: INL_B(0:NP)
       integer(kind = kint), intent(in) :: INU_B(0:NP)
       integer(kind = kint), intent(in) :: IAL_B(NPL)
@@ -173,10 +173,10 @@
      &          NPM, INOD_djo, INM_djo, IAM_djo, BM_djo, AB)
 !
       integer(kind=kint), intent(in) :: NA, NB
+      integer(kind=kint), intent(in) ::  NP
       real(kind = kreal), intent(in) :: A(NA,NP)
 !
-      integer(kind=kint ) ::  NP
-      integer(kind=kint ) ::  NPM
+      integer(kind=kint ), intent(in) ::  NPM
       integer(kind=kint ), intent(in) :: INOD_djo(NP)
       integer(kind=kint ), intent(in) :: INM_djo(0:NP)
       integer(kind=kint ), intent(in) :: IAM_djo(NPM)
@@ -218,8 +218,8 @@
       integer(kind=kint), intent(in) :: IA_rs2(NA,NMA_rs2)
       real(kind = kreal), intent(in) :: A_rs2(NA,NMA_rs2)
 !
-      integer(kind=kint ) ::  NP
-      integer(kind=kint ) ::  NPM
+      integer(kind=kint ), intent(in) ::  NP
+      integer(kind=kint ), intent(in) ::  NPM
       integer(kind=kint ), intent(in) :: INOD_djo(NP)
       integer(kind=kint ), intent(inout) :: INOD_djo_rev(NP)
       integer(kind=kint ), intent(in) :: INM_djo(0:NP)

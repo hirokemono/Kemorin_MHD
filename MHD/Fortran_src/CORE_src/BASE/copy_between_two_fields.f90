@@ -66,8 +66,8 @@
 !
       integer(kind = kint), intent(in) :: ifld_org, ifld_dst
       integer(kind = kint), intent(in) :: nnod_org, ntot_org_phys
-      real(kind = kreal), intent(in) :: d_org(nnod_org,ntot_org_phys)
       integer(kind = kint), intent(in) :: nnod_dst, ntot_dst_phys
+      real(kind = kreal), intent(in) :: d_org(nnod_org,ntot_org_phys)
       real(kind = kreal), intent(inout) :: d_dst(nnod_dst,ntot_dst_phys)
 !
       integer(kind = kint) :: inod, num
@@ -90,8 +90,8 @@
 !
       integer(kind = kint), intent(in) :: ifld_org, ifld_dst
       integer(kind = kint), intent(in) :: nnod_org, ntot_org_phys
-      real(kind=kreal), intent(in) :: d_org(nnod_org, ntot_org_phys)
       integer(kind = kint), intent(in) :: nnod_dst, ntot_dst_phys
+      real(kind=kreal), intent(in) :: d_org(nnod_org, ntot_org_phys)
       real(kind=kreal), intent(inout) :: d_dst(nnod_dst,ntot_dst_phys)
 !
       integer(kind = kint) :: inod, num
@@ -116,8 +116,8 @@
 !
       integer(kind = kint), intent(in) :: ifld_org, ifld_dst
       integer(kind = kint), intent(in) :: nnod_org, ntot_org_phys
-      real(kind = kreal), intent(in) :: d_org(nnod_org,ntot_org_phys)
       integer(kind = kint), intent(in) :: nnod_dst, ntot_dst_phys
+      real(kind = kreal), intent(in) :: d_org(nnod_org,ntot_org_phys)
       real(kind=kreal), intent(inout) :: d_dst(nnod_dst,ntot_dst_phys)
 !
       integer(kind = kint) :: inod, num
@@ -145,8 +145,8 @@
       integer(kind = kint), intent(in) :: numdir
       integer(kind = kint), intent(in) :: ifld_org, ifld_dst
       integer(kind = kint), intent(in) :: nnod_org, ntot_org_phys
-      real(kind = kreal), intent(in) :: d_org(nnod_org,ntot_org_phys)
       integer(kind = kint), intent(in) :: nnod_dst, ntot_dst_phys
+      real(kind = kreal), intent(in) :: d_org(nnod_org,ntot_org_phys)
       real(kind=kreal), intent(inout) :: d_dst(nnod_dst,ntot_dst_phys)
 !
       integer(kind = kint) :: inod, num, nd
@@ -173,9 +173,9 @@
 !
       integer(kind = kint), intent(in) :: ifld_org, ifld_dst
       integer(kind = kint), intent(in) :: ist_fill, ntot_org_phys
-      real(kind = kreal), intent(in) :: d_org(numnod,ntot_org_phys)
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: ntot_dst_phys
+      real(kind = kreal), intent(in) :: d_org(numnod,ntot_org_phys)
       real(kind = kreal), intent(inout) :: d_dst(numnod,ntot_dst_phys)
 !
       integer(kind = kint) :: inod
@@ -200,9 +200,9 @@
 !
       integer(kind = kint), intent(in) :: ifld_org, ifld_dst
       integer(kind = kint), intent(in) :: ist_fill, ntot_org_phys
-      real(kind=kreal), intent(in) :: d_org(numnod, ntot_org_phys)
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: ntot_dst_phys
+      real(kind=kreal), intent(in) :: d_org(numnod, ntot_org_phys)
       real(kind=kreal), intent(inout) :: d_dst(numnod,ntot_dst_phys)
 !
       integer(kind = kint) :: inod
@@ -228,9 +228,9 @@
 !
       integer(kind = kint), intent(in) :: ifld_org, ifld_dst
       integer(kind = kint), intent(in) :: ist_fill, ntot_org_phys
-      real(kind = kreal), intent(in) :: d_org(numnod,ntot_org_phys)
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: ntot_dst_phys
+      real(kind = kreal), intent(in) :: d_org(numnod,ntot_org_phys)
       real(kind=kreal), intent(inout) :: d_dst(numnod,ntot_dst_phys)
 !
       integer(kind = kint) :: inod
@@ -260,9 +260,9 @@
       integer(kind = kint), intent(in) :: numdir
       integer(kind = kint), intent(in) :: ifld_org, ifld_dst
       integer(kind = kint), intent(in) :: ist_fill, ntot_org_phys
-      real(kind = kreal), intent(in) :: d_org(numnod,ntot_org_phys)
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: ntot_dst_phys
+      real(kind = kreal), intent(in) :: d_org(numnod,ntot_org_phys)
       real(kind=kreal), intent(inout) :: d_dst(numnod,ntot_dst_phys)
 !
       integer(kind = kint) :: inod, nd

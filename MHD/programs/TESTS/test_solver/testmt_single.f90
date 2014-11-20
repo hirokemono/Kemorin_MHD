@@ -123,18 +123,22 @@
 !*
 !**********************************************************************
 !*
+      use m_precision
       use m_ludcmp
       use m_ludcmp_3band
       use lubksb_357band
+!
+      implicit none
 !*
 !* ------  define  --------------
 !*
-      integer, parameter :: ismp = 4, nvect = 8, ncp = 8
-       real*8 a(ncp,ncp) ,band_a(3,ncp), band_lu(5,ncp)
-       real*8 b(ncp) ,x(ncp) ,y(ncp)
-       real*8 ep, d
+      integer(kind = kint), parameter :: ismp = 4, nvect = 8, ncp = 8
+      real(kind = kreal) :: a(ncp,ncp) ,band_a(3,ncp), band_lu(5,ncp)
+      real(kind = kreal) :: b(ncp), x(ncp)
+      real(kind = kreal) :: ep
 !*
-       integer ip(ncp) ,iopt(2)
+      integer(kind = kint) :: ip(ncp)
+      integer(kind = kint) :: i, ierr, j, k
 !*
        data a/ 1.0 ,-4.0,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0                   &
      &        ,3.0 ,2.0 ,1.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0                   &

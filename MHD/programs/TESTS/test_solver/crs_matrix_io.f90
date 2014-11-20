@@ -46,7 +46,7 @@
        write (id_file,*) 'node_id, solutions'
          do i= 1, internal_node
            ii = NB_crs*(i-1)
-           write (id_file,'(i8,100(1pe23.12))') i,                      &
+           write (id_file,'(i16,100(1pe23.12))') i,                     &
      &            (X_crs(ii+k),k=1,NB_crs)
          end do
 !
@@ -80,7 +80,7 @@
 !
       use m_nod_comm_table
 !
-       read (id_file,'(10i8)') internal_node, numnod,                   &
+       read (id_file,'(10i16)') internal_node, numnod,                  &
      &     ntot_crs_l, ntot_crs_u, NB_crs, num_neib
 
 !
@@ -90,13 +90,13 @@
 !
        subroutine read_crs_matrix
 !
-       integer (kind = kint) :: i, k, j1, j2, jj, kk
+       integer (kind = kint) :: i, k, j1, j2, kk
 !
 
-      read (id_file,'(10i8)') (istack_crs_l(k), k= 1, numnod)
-      read (id_file,'(10i8)') (istack_crs_u(k), k= 1, numnod)
-      read (id_file,'(10i8)') (item_crs_l(k), k= 1, ntot_crs_l)
-      read (id_file,'(10i8)') (item_crs_u(k), k= 1, ntot_crs_u)
+      read (id_file,'(10i16)') (istack_crs_l(k), k= 1, numnod)
+      read (id_file,'(10i16)') (istack_crs_u(k), k= 1, numnod)
+      read (id_file,'(10i16)') (item_crs_l(k), k= 1, ntot_crs_l)
+      read (id_file,'(10i16)') (item_crs_u(k), k= 1, ntot_crs_u)
 
       if (NB_crs .eq. 1) then
         read (id_file,'(5e27.20)') (AL_crs(1,1,k),k= 1,ntot_crs_l)

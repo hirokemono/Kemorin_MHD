@@ -113,10 +113,10 @@
 !
       write(id_pick_mode,'(a)')
       write(id_pick_mode,'(a)')    '# num_layers, num_spectr'
-      write(id_pick_mode,'(2i15)')                                      &
+      write(id_pick_mode,'(2i16)')                                      &
      &        num_pick_layer, num_pick_sph_rms_mode
       write(id_pick_mode,'(a)')    '# number of component'
-      write(id_pick_mode,'(i15)') ncomp_pick_sph_rms
+      write(id_pick_mode,'(i16)') ncomp_pick_sph_rms
 !
 !
       write(id_pick_mode,'(a)',advance='NO') 't_step    time    '
@@ -151,9 +151,9 @@
         m = j - l*(l+1)
         do knum = 1, num_pick_layer
           ipick = knum + (inum-1) * num_pick_layer
-          write(id_pick_mode,'(i15,1pe23.14e3)', advance='NO')          &
+          write(id_pick_mode,'(i16,1pe23.14e3)', advance='NO')          &
      &           i_step, time
-          write(id_pick_mode,'(i15,1pe23.14e3,2i10)', advance='NO')     &
+          write(id_pick_mode,'(i16,1pe23.14e3,2i16)', advance='NO')     &
      &          id_pick_layer(knum), r_pick_layer(knum), l, m
           do i_fld = 1, ncomp_pick_sph_rms
             write(id_pick_mode,'(1pe23.14e3)', advance='NO')            &

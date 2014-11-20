@@ -273,7 +273,7 @@
         write(id_file,'(a)') '#'
         write(id_file,'(a)') '# number of element groups'
         write(id_file,'(a)') '#'
-        write(id_file,'(i15)') num_mat
+        write(id_file,'(i16)') num_mat
       end if
 !
       end subroutine init_ele_grp_med_patch
@@ -340,15 +340,15 @@
           write(id_file,'(a)') '# element group name, node lists'
           write(id_file,'(a)') '#'
           write(id_file,'(a)') trim(grp_name)
-          write(id_file,'(2i15)') (3*npatch_g), npatch_g
+          write(id_file,'(2i16)') (3*npatch_g), npatch_g
 !
           do inum = 1, 3*npatch_g
-            write(id_file,'(i15,1p3e23.13e3)')                          &
+            write(id_file,'(i16,1p3e23.13e3)')                          &
      &                               inum, xyz_med_g(1:3,inum)
           end do
           write(id_file,'(a)') '# element lists'
           do inum = 1, npatch_g
-            write(id_file,'(4i10)') inum, ((3*inum+k1-3), k1=1,3)
+            write(id_file,'(4i16)') inum, ((3*inum+k1-3), k1=1,3)
           end do
 !
           deallocate(xyz_med_g)

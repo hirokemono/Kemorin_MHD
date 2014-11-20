@@ -135,13 +135,13 @@
 !       call write_filter_nod_line(ithree)
 !
           write(nb_out,*) '! distance in x-direction'
-          write(nb_out,'(10i8)')                                        &
+          write(nb_out,'(10i16)')                                       &
      &               (inod_f_dist_l(i,1),i = 1, num_l_filter(1))
           write(nb_out,*) '! distance in y-direction'
-          write(nb_out,'(10i8)')                                        &
+          write(nb_out,'(10i16)')                                       &
      &               (inod_f_dist_l(i,2),i = 1, num_l_filter(2))
           write(nb_out,*) '! distance in z-direction'
-          write(nb_out,'(10i8)')                                        &
+          write(nb_out,'(10i16)')                                       &
      &               (inod_f_dist_l(i,3),i = 1, num_l_filter(3))
 !
 !
@@ -321,20 +321,23 @@
 !
        integer(kind = kint) :: nd
        integer(kind = kint) :: inod
-       integer(kind = kint) :: ii, ist, ied
+       integer(kind = kint) :: ist, ied, num
+!
+      character(len=kchara) :: fmt_txt
 !
 !
-       do inod = 1, nodtot
+      do inod = 1, nodtot
+        ist = istack_l_filter(inod-1,nd) + 1
+        ied = istack_l_filter(inod,nd)
+        num = ied - ist + 1
 !
-          ist = istack_l_filter(inod-1,nd) + 1
-          ied = istack_l_filter(inod,nd)
+        write(fmt_txt,'(a1,i3,a6)')  '(', num, '(i15))'
+        write(22,fmt_txt) item_l_filter(ist:ied,nd)
+        write(22,fmt_txt) inod_f_dist_l(ist:ied,nd)
 !
-          write(22,'(100i10)') (item_l_filter(ii,nd),ii = ist, ied)
-          write(22,'(100i8)')                                           &
-     &               (inod_f_dist_l(ii,nd),ii = ist, ied)
-          write(22,'(1p100E25.15e3)')                                   &
-     &               (coef_l_filter(ii,nd),ii = ist, ied)
-       enddo
+        write(fmt_txt,'(a1,i3,a13)')  '(', num, '(1pE25.15e3))'
+        write(22,fmt_txt) coef_l_filter(ist:ied,nd)
+       end do
 !
       end subroutine write_filter_nod_line
 !

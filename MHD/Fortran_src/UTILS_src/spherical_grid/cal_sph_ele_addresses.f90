@@ -23,20 +23,22 @@
 !!
 !!      subroutine cal_sph_local_numele(numele)
 !!
-!!      integer function sph_shell_ele_id(ip_r, ip_t, kr, lt, mp)
-!!      integer function sph_n_pole_ele_id(ip_r, kr, mp)
-!!      integer function sph_inter_ctr_shell_ele_id(lt, mp)
-!!      integer function sph_exter_ctr_shell_ele_id(ip_t, lt, mp)
-!!      integer function sph_inter_ctr_spole_ele_id(mp)
-!!      integer function sph_inter_ctr_npole_ele_id(mp)
-!!      integer function sph_exter_ctr_npole_ele_id(mp)
+!!      integer(kind= kint) function sph_shell_ele_id                   &
+!!     &                  (ip_r, ip_t, kr, lt, mp)
+!!      integer(kind= kint) function sph_n_pole_ele_id(ip_r, kr, mp)
+!!      integer(kind= kint) function sph_inter_ctr_shell_ele_id(lt, mp)
+!!      integer(kind= kint) function sph_exter_ctr_shell_ele_id         &
+!!     &                  (ip_t, lt, mp)
+!!      integer(kind= kint) function sph_inter_ctr_spole_ele_id(mp)
+!!      integer(kind= kint) function sph_inter_ctr_npole_ele_id(mp)
+!!      integer(kind= kint) function sph_exter_ctr_npole_ele_id(mp)
 !!
-!!      integer function global_sph_shell_ele_id(kr, lt, mp)
-!!      integer function global_sph_s_pole_ele_id(kr, mp)
-!!      integer function global_sph_n_pole_ele_id(kr, mp)
-!!      integer function global_ctr_shell_ele_id(lt, mp)
-!!      integer function global_ctr_spole_ele_id(mp)
-!!      integer function global_ctr_npole_ele_id(mp)
+!!      integer(kind= kint) function global_sph_shell_ele_id(kr, lt, mp)
+!!      integer(kind= kint) function global_sph_s_pole_ele_id(kr, mp)
+!!      integer(kind= kint) function global_sph_n_pole_ele_id(kr, mp)
+!!      integer(kind= kint) function global_ctr_shell_ele_id(lt, mp)
+!!      integer(kind= kint) function global_ctr_spole_ele_id(mp)
+!!      integer(kind= kint) function global_ctr_npole_ele_id(mp)
 !!@endverbatim
 !!
 !
@@ -226,7 +228,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer function sph_shell_ele_id(ip_r, ip_t, kr, lt, mp)
+      integer(kind= kint) function sph_shell_ele_id                     &
+     &                  (ip_r, ip_t, kr, lt, mp)
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
       integer(kind = kint), intent(in) :: kr, lt, mp
@@ -239,7 +242,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer function sph_s_pole_ele_id(ip_r, kr, mp)
+      integer(kind= kint) function sph_s_pole_ele_id(ip_r, kr, mp)
 !
       integer(kind = kint), intent(in) :: ip_r
       integer(kind = kint), intent(in) :: kr, mp
@@ -252,7 +255,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer function sph_n_pole_ele_id(ip_r, kr, mp)
+      integer(kind= kint) function sph_n_pole_ele_id(ip_r, kr, mp)
 !
       integer(kind = kint), intent(in) :: ip_r
       integer(kind = kint), intent(in) :: kr, mp
@@ -265,7 +268,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer function sph_inter_ctr_shell_ele_id(lt, mp)
+      integer(kind= kint) function sph_inter_ctr_shell_ele_id(lt, mp)
 !
       use m_spheric_parameter
 !
@@ -279,7 +282,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer function sph_exter_ctr_shell_ele_id(ip_t, lt, mp)
+      integer(kind= kint) function sph_exter_ctr_shell_ele_id           &
+     &                  (ip_t, lt, mp)
 !
       integer(kind = kint), intent(in) :: ip_t, lt, mp
 !
@@ -291,7 +295,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer function sph_inter_ctr_spole_ele_id(mp)
+      integer(kind= kint) function sph_inter_ctr_spole_ele_id(mp)
 !
       use m_spheric_parameter
 !
@@ -306,7 +310,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer function sph_inter_ctr_npole_ele_id(mp)
+      integer(kind= kint) function sph_inter_ctr_npole_ele_id(mp)
 !
       use m_spheric_parameter
 !
@@ -321,7 +325,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer function sph_exter_ctr_npole_ele_id(mp)
+      integer(kind= kint) function sph_exter_ctr_npole_ele_id(mp)
 !
       use m_spheric_parameter
 !
@@ -337,7 +341,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer function global_sph_shell_ele_id(kr, lt, mp)
+      integer(kind= kint) function global_sph_shell_ele_id(kr, lt, mp)
 !
       use m_spheric_parameter
 !
@@ -351,7 +355,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer function global_sph_s_pole_ele_id(kr, mp)
+      integer(kind= kint) function global_sph_s_pole_ele_id(kr, mp)
 !
       integer(kind = kint), intent(in) :: kr, mp
 !
@@ -363,7 +367,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer function global_sph_n_pole_ele_id(kr, mp)
+      integer(kind= kint) function global_sph_n_pole_ele_id(kr, mp)
 !
       integer(kind = kint), intent(in) :: kr, mp
 !
@@ -375,7 +379,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer function global_ctr_shell_ele_id(lt, mp)
+      integer(kind= kint) function global_ctr_shell_ele_id(lt, mp)
 !
       use m_spheric_parameter
 !
@@ -389,7 +393,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer function global_ctr_spole_ele_id(mp)
+      integer(kind= kint) function global_ctr_spole_ele_id(mp)
 !
       use m_spheric_parameter
 !
@@ -404,7 +408,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer function global_ctr_npole_ele_id(mp)
+      integer(kind= kint) function global_ctr_npole_ele_id(mp)
 !
       use m_spheric_parameter
 !

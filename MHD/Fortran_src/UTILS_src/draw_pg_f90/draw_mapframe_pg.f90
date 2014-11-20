@@ -96,8 +96,8 @@
       xf(1) = - real(two)
       xf(2) =   real(two)
       do jj = 1 ,7
-        yf(1) = dble(jj-4) / 3.0d0
-        yf(2) = dble(jj-4) / 3.0d0
+        yf(1) = real(jj-4) / 3.0e0
+        yf(2) = real(jj-4) / 3.0e0
         call pgline(itwo,xf,yf)
       end do
 !*

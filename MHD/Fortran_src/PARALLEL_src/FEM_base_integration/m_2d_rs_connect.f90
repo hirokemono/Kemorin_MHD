@@ -82,13 +82,13 @@
         do i = 1, numnod
           write(50+my_rank,*) 'item_2d_rs_l',                           &
      &                 i, num_2d_rs_l(i)
-          write(50+my_rank,'(10i8)')                                    &
+          write(50+my_rank,'(10i16)')                                   &
      &        (item_2d_rs_l(j,i), j=1,num_2d_rs_l(i))
         end do
         do i = 1, numnod
           write(50+my_rank,*) 'item_2d_rs_u',                           &
      &                 i, num_2d_rs_u(i)
-          write(50+my_rank,'(10i8)')                                    &
+          write(50+my_rank,'(10i16)')                                   &
      &        (item_2d_rs_u(j,i), j=1,num_2d_rs_u(i))
         end do
 !

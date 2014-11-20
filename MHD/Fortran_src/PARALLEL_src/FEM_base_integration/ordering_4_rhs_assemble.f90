@@ -20,6 +20,7 @@
       module ordering_4_rhs_assemble
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -96,7 +97,7 @@
         do inod = 1, numnod
           if (nele_4_node(inod) .eq. inum) then
             ii = ii + 1
-            ip = mod(ii-1,np_smp) + 1
+            ip = mod(ii-ione,np_smp) + 1
             jj = (ii-ip) / np_smp + 1
           end if
         end do
@@ -151,7 +152,7 @@
 !
             ii = ii + 1
 !
-            ip = mod(ii-1,np_smp) + 1
+            ip = mod(ii-ione,np_smp) + 1
             jj = (ii-ip) / np_smp + 1
             node_sort_list_smp(inod,1) = jj
             node_sort_list_smp(inod,2) = ip

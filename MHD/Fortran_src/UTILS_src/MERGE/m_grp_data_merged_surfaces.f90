@@ -133,7 +133,7 @@
         write(50,*) 'isf_isolate_ele_grp_m', igrp
         ist = istack_sf_iso_ele_grp_m(igrp-1) + 1
         ied = istack_sf_iso_ele_grp_m(igrp)
-        write(50,'(8i10)') isf_isolate_ele_grp_m(ist:ied)
+        write(50,'(8i16)') isf_isolate_ele_grp_m(ist:ied)
       end do
 !
       end subroutine check_merged_isurf_4_ele_grp
@@ -154,7 +154,7 @@
         write(50,*) 'isf_surf_grp_m', igrp
         ist = merged_grp%surf_grp%istack_grp(igrp-1) + 1
         ied = merged_grp%surf_grp%istack_grp(igrp)
-        write(50,'(8i10)') isf_surf_grp_m(ist:ied)
+        write(50,'(8i16)') isf_surf_grp_m(ist:ied)
       end do
 !
       end subroutine check_merged_isurf_4_surf_grp

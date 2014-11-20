@@ -247,7 +247,7 @@
 !
       write(50+my_rank,*) 'vr_rtp', nb
       do inod = 1, nnod_rtp
-        write(50+my_rank,'(4i10,1p200e20.12)') inod,                    &
+        write(50+my_rank,'(4i16,1p200e20.12)') inod,                    &
      &        idx_global_rtp(inod,1:3), vr_rtp(inod,1:nb)
       end do
 !

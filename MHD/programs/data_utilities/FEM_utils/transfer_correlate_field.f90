@@ -10,6 +10,7 @@
       module transfer_correlate_field
 !
       use m_precision
+      use m_constants
       use m_machine_parameter
       use m_geometry_constants
       use m_geometry_parameter
@@ -52,7 +53,7 @@
      &    field_comp_name)
 !
       icomp_4_correlate = istack_nod_component(i_field_4_correlate-1)   &
-     &                   + mod(icomp,10)
+     &                   + mod(icomp,iten)
       if(icomp .eq. icomp_CYLINDER_R) then
         icomp_4_correlate = istack_nod_component(i_field_4_correlate-1) &
      &                     + 1

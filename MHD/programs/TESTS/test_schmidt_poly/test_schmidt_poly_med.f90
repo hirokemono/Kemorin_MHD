@@ -12,7 +12,7 @@
       implicit none
 !
       integer(kind = kint) :: j, l, m, i, itime
-      integer(kind = 4) :: iend, istart, t_rate, t_max, lst, led
+      integer(kind = kint) :: iend, istart, t_rate, t_max, lst, led
 !
 !
       write(*,*) 'input num. of points'
@@ -44,7 +44,7 @@
       do m = 0, l
         j = l*(l+1) + m
         do i = lst, led
-          write(50,'(4i10,1p4E25.15e3)') j, l, m, i,                    &
+          write(50,'(4i16,1p4E25.15e3)') j, l, m, i,                    &
      &      g_colat_med(i), P_org(i,j), P_smdt(i,j), dPdt_smdt(i,j)
         end do
       end do

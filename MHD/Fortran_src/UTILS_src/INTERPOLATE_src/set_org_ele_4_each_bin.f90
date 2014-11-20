@@ -10,6 +10,7 @@
       module set_org_ele_4_each_bin
 !
       use m_precision
+      use m_constants
       use m_machine_parameter
 !
       implicit none
@@ -57,7 +58,7 @@
             do jr_bin = isph_st(1), isph_ed(1)
               do jt_bin = isph_st(2), isph_ed(2)
                 do jp_bin = isph_st(3), isph_ed(3)
-                  itmp = mod(jp_bin-1,num_sph_grid(3)) + 1
+                  itmp = mod(jp_bin-ione,num_sph_grid(3)) + ione
                   ihash = jr_bin + (itmp - 1) * num_sph_bin(1)          &
      &                 + (jt_bin-1) * num_sph_bin(1) * num_sph_bin(3)
                   nele_bin_smp(ip,ihash) = nele_bin_smp(ip,ihash) + 1
@@ -113,7 +114,7 @@
               do jt_bin = isph_st(2), isph_ed(2)
                 do jp_bin = isph_st(3), isph_ed(3)
 !
-                  itmp = mod(jp_bin-1,num_sph_grid(3)) + 1
+                  itmp = mod(jp_bin-ione,num_sph_grid(3)) + ione
                   ihash = jr_bin + (itmp - 1) * num_sph_bin(1)         &
      &                 + (jt_bin-1) * num_sph_bin(1) * num_sph_bin(3)
                  i = (ihash-1) * np_smp + ip

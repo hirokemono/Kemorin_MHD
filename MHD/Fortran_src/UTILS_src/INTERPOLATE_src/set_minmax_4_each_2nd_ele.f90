@@ -54,7 +54,7 @@
 !
         do iele = ist, ied
           if (    iflag_meridian_x(iele) .gt. 100                       &
-     &      .and. mod(iflag_meridian_x(iele),100) .gt. 0) then
+     &      .and. mod(iflag_meridian_x(iele),icent) .gt. 0) then
             iflag_meridian_x(iele) = 1
           else
             iflag_meridian_x(iele) = 0

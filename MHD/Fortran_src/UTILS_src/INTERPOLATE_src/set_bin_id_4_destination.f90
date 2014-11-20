@@ -1,15 +1,16 @@
 !
 !     module set_bin_id_4_destination
 !
-      module set_bin_id_4_destination
-!
-      use m_precision
-!
-      implicit none
-!
 !     Written by H. Matsui on Aug., 2006
 !
 !      subroutine s_set_bin_id_4_destination(id_search_area)
+!
+      module set_bin_id_4_destination
+!
+      use m_precision
+      use m_constants
+!
+      implicit none
 !
 !  ---------------------------------------------------------------------
 !
@@ -46,7 +47,7 @@
         do inod = ist, ied
 !
           do j = 1, num_sph_grid(3)
-            jp = mod( (jp_st+j-1), num_sph_grid(3) ) + 1
+            jp = mod( (jp_st+j-ione), num_sph_grid(3) ) + ione
             if (    longitude(inod) .ge. phi_divide(jp-1)               &
      &        .and. longitude(inod) .lt. phi_divide(jp) ) then
               jp_bin = jp
@@ -60,7 +61,7 @@
           end do
 !
           do j = 1, num_sph_grid(2)
-            jt = mod( (jt_st+j-1), num_sph_grid(2) ) + 1
+            jt = mod( (jt_st+j-ione), num_sph_grid(2) ) + ione
             if (    colatitude(inod) .ge. theta_divide(jt-1)            &
      &        .and. colatitude(inod) .lt. theta_divide(jt) ) then
               jt_bin = jt
@@ -74,7 +75,7 @@
           end do
 !
           do j = 1, num_sph_grid(1)+1
-            jr = mod( (jr_st+j-1), (num_sph_grid(1)+1) ) + 1
+            jr = mod( (jr_st+j-ione), (num_sph_grid(1)+1) ) + ione
             if ( jr.eq. num_sph_grid(1)+1 ) then
               if (radius(inod) .ge. r_divide(num_sph_grid(1)) ) then
                 jr_bin = jr

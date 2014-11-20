@@ -64,7 +64,7 @@
 !
       do ip= 1, num_domain
         icou= numele_4_subdomain(ip) - num_intele_sub(ip)
-        write (*,'(i3,5i8)') ip, num_intnod_sub(ip),                    &
+        write (*,'(i3,5i16)') ip, num_intnod_sub(ip),                   &
      &                        numele_4_subdomain(ip), icou
       enddo
 !

@@ -22,10 +22,10 @@
 !
       implicit none
 !
-      integer ihpixf, jvpixf
+      integer(kind = kint) :: ihpixf, jvpixf
       parameter(ihpixf = 128, jvpixf = 128) ! pixel size
       character(len=1) rgb(3,ihpixf,jvpixf) ! RGB image array
-      integer nframe
+      integer(kind = kint) nframe
       character(len=kchara) ::  fheadout
       integer ipixout
 !
@@ -56,23 +56,28 @@
 !*   fill rgb data array with something
 !* --------------------------------------------
 
-       subroutine mkbitmap(rgb,nframe, ihpixf, jvpixf)
+       subroutine mkbitmap(rgb, nframe, ihpixf, jvpixf)
+!
+       use m_precision
+!
        implicit none
-       integer nframe
-       integer ::  ihpixf, jvpixf
+!
+       integer(kind = kint) nframe
+       integer(kind = kint) ::  ihpixf, jvpixf
 !      RGB pixel data array
        character(len=1) :: rgb(3,ihpixf,jvpixf)
 !* local
-       real*8  red, gre, blu
-       integer ired, igre, iblu
-       real*8  ofst
+       real(kind = kreal) :: red, gre, blu
+       integer(kind = kint) ired, igre, iblu
+       real(kind = kreal) ::  ofst
        parameter(ofst = 0.7D+00)
-       integer i, j, itmp
-       real*8   aa, bb, cc, rr, xx, yy, tt
-       integer ichoice
+       integer(kind = kint) i, j, itmp
+       real(kind = kreal) ::   aa, bb, cc, rr, xx, yy, tt
+       integer(kind = kint) ichoice
        parameter(ichoice = 1) ! .... choice
-       real*8  pi
+       real(kind = kreal) ::  pi
        parameter(pi = 3.14159265358979D+00)
+
 
        if (ichoice .EQ. 0) then
          do 100 j = 1, jvpixf

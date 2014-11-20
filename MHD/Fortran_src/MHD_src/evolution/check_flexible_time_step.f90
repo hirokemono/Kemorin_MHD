@@ -67,7 +67,7 @@
       use check_deltat_by_prev_rms
 !
 !
-      if( mod(istep_flex_to_max,2) .eq. 0) then
+      if( mod(istep_flex_to_max,itwo) .eq. izero) then
 !        call s_check_deltat_by_previous
         call s_check_deltat_by_prev_rms
 !

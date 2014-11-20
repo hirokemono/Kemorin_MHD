@@ -148,10 +148,10 @@
 !
 !     cal filter functions
 !
-        write(70+my_rank,'(4i10,1p2e23.12)')                            &
+        write(70+my_rank,'(4i16,1p2e23.12)')                            &
      &    inod, maximum_neighbour, ibest_mat_size,                      &
      &    ibest_fixed_point, min_rms_weight, det_mat_solution
-        if (iflag_err_level_filter.ge.2) write(*,'(5i10,1p2e23.12)')    &
+        if (iflag_err_level_filter.ge.2) write(*,'(5i16,1p2e23.12)')    &
      &    my_rank, inod, maximum_neighbour, ibest_mat_size,             &
      &    ibest_fixed_point, min_rms_weight, det_mat_solution
 !
@@ -290,7 +290,7 @@
               if (min_rms_weight .lt. max_rms_weight_limit) exit
             end do
 !
-            write(70+my_rank,'(4i10,1p2e23.12)')                        &
+            write(70+my_rank,'(4i16,1p2e23.12)')                        &
      &        inod, maximum_neighbour, ibest_mat_size,                  &
      &        ibest_fixed_point, min_rms_weight, det_mat_solution
             if (iflag_err_level_filter.ge.2) write(*,*) my_rank, inod,  &

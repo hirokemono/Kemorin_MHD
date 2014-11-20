@@ -101,17 +101,17 @@
       write(id_file,*) '#   domain IDs'
       write(id_file,*) '#'
 !
-      write(id_file,'(i15)') num_org_domain
-      write(id_file,'(10i10)') id_org_domain(1:num_org_domain)
+      write(id_file,'(i16)') num_org_domain
+      write(id_file,'(10i16)') id_org_domain(1:num_org_domain)
 !
       write(id_file,*) '#'
       write(id_file,*) '#  node, domain for original, belonged element'
       write(id_file,*) '#   coefficients'
       write(id_file,*) '#'
 !
-      write(id_file,'(10i10)') istack_nod_tbl_dest(1:num_org_domain)
+      write(id_file,'(10i16)') istack_nod_tbl_dest(1:num_org_domain)
       do inod = 1, ntot_table_dest 
-        write(id_file,'(2i10,1p3e23.12)') inod_dest_4_dest(inod),       &
+        write(id_file,'(2i16,1p3e23.12)') inod_dest_4_dest(inod),       &
      &        iele_org_4_dest(inod), coef_inter_dest(inod,1:3)
       end do
 !

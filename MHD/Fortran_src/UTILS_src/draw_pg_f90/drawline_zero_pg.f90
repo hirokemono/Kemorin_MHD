@@ -4,6 +4,7 @@
       module drawline_zero_pg
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -24,8 +25,8 @@
 !
       real(kind = kreal) ::rsig1, rsig2
       real xline(2), yline(2)
-      integer :: inod1, inod2, inod3, iflag, kline
-      integer :: iele, k1, k2
+      integer(kind = kint) :: inod1, inod2, inod3, iflag, kline
+      integer(kind = kint) :: iele, k1, k2
 !
 !
       call pgsci(1)
@@ -47,7 +48,7 @@
         else
 !
           do k1 = 1, 3
-            k2 = mod(k1,3) + 1
+            k2 = mod(k1,ithree) + 1
             inod1 = ie(k1,iele)
             inod2 = ie(k2,iele)
 !
@@ -56,10 +57,10 @@
 !
             if ( rsig2 .eq. 0.0 .and. rsig1 .eq. 0.0) then
               iflag = 1
-              xline(1) = xg(1,inod1)
-              xline(2) = xg(1,inod2)
-              yline(1) = xg(2,inod1)
-              yline(2) = xg(2,inod2)
+              xline(1) = real(xg(1,inod1))
+              xline(2) = real(xg(1,inod2))
+              yline(1) = real(xg(2,inod1))
+              yline(2) = real(xg(2,inod2))
 !
             else if ( rsig1 .le. 0.0 .and. kline .lt. 2) then
               iflag = 1

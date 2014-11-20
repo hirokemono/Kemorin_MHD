@@ -198,13 +198,13 @@
       write (id_file,'(2i6)')  ltr_gaunt, jmax_gaunt
       write (id_file,'(a)')                                             &
      &      'ntot_larger_gei_nl_lm3, ntot_gi_nl_lm3, ntot_ei_nl_lm3'
-      write (id_file,'(3i15)') ntot_larger_gei_nl_lm3,                  &
+      write (id_file,'(3i16)') ntot_larger_gei_nl_lm3,                  &
      &                         ntot_gi_nl_lm3, ntot_ei_nl_lm3
 !
       write (id_file,'(a)')                                             &
      &      'j3, lm3_gl, istack_gi, istack_ei, num_gi, num_ei'
       do j3 = 1 ,jmax
-        write (id_file,'(6i10)') j3, idx_lc(j3,1),                      &
+        write (id_file,'(6i16)') j3, idx_lc(j3,1),                      &
      &          istack_gi_nl_lm3(j3,1:2), num_gi_nl_lm3(j3,1:2)
       end do
 !

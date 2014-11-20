@@ -15,6 +15,7 @@
       module drcap_pg
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -45,7 +46,7 @@
       call pgsch(2.0)
       call pgmtxt('t',1.0, 0.5, 0.5, title )
 !*
-      if ( mod(iw,npanel) .eq. 1 ) then
+      if ( mod(iw,npanel) .eq. ione) then
 !* +++++ dimension of simulation +++++
 !*
       call pgsch(1.0)
@@ -74,7 +75,7 @@
       character(len=32) :: cm_zposi
 !*
 !*  +++++++  position ++++++++++++++++
-      if ( mod(iw,npanel) .eq. 1 ) then
+      if ( mod(iw,npanel) .eq. ione) then
         write(cm_zposi,3020) z_position
         call pgsci(1)
         call pgsch(1.5)
@@ -95,7 +96,7 @@
       character(len=32) :: cm_zposi
 !*
 !*  +++++++  position ++++++++++++++++
-      if ( mod(iw,npanel) .eq. 1 ) then
+      if ( mod(iw,npanel) .eq. ione) then
         write(cm_zposi,3020) x_position
         call pgsci(1)
         call pgsch(1.5)
@@ -116,7 +117,7 @@
       character(len=32) :: cm_rposi
 !*
 !*  +++++++  position ++++++++++++++++
-      if ( mod(iw,npanel) .eq. 1 ) then
+      if ( mod(iw,npanel) .eq. ione) then
         write(cm_rposi,3020) r_position
         call pgsci(1)
         call pgsch(1.5)

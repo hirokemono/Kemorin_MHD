@@ -44,7 +44,7 @@
 !        do m = 0, l
 !          j = l*(l+1)+m
 !          do i = 1, ntheta
-!            write(50,'(4i10,1p3E25.15e3)') j, l, m, i,                  &
+!            write(50,'(4i16,1p3E25.15e3)') j, l, m, i,                  &
 !     &             colat(ntheta-i+1), p_mag(j,i), dp_mag(j,i)
 !          end do
 !        end do

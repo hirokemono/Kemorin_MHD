@@ -61,13 +61,13 @@
        integer(kind = kint) :: my_rank
 !
         write(my_rank+50,*) 'inod_fluid'
-        write(my_rank+50,'(10i8)') inod_fluid
+        write(my_rank+50,'(10i16)') inod_fluid
         write(my_rank+50,*) 'inod_conduct'
-        write(my_rank+50,'(10i8)') inod_conduct
+        write(my_rank+50,'(10i16)') inod_conduct
         write(my_rank+50,*) 'inod_insulate'
-        write(my_rank+50,'(10i8)') inod_insulate
+        write(my_rank+50,'(10i16)') inod_insulate
         write(my_rank+50,*) 'inod_in_core'
-        write(my_rank+50,'(10i8)') inod_in_core
+        write(my_rank+50,'(10i16)') inod_in_core
 !
        end subroutine check_nodes_4_layers
 !

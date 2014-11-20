@@ -349,7 +349,7 @@
         ied = inod_stack_nod_all_w(inum)
         write(50+my_rank,*) 'near node ID inod_near_nod_all_w',         &
      &     inum, inod_all_w(inum), ist, ied, nnod_near_nod_all_w(inum)
-        write(50+my_rank,'(8i10)') inod_near_nod_all_w(ist:ied)
+        write(50+my_rank,'(8i16)') inod_near_nod_all_w(ist:ied)
       end do
 !
       end subroutine check_near_nod_all_filter

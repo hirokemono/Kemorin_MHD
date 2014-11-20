@@ -143,8 +143,8 @@
      &                     i_pvr, nsurf_pvr_surf_domain(i_pvr)
         ist = istack_pvr_surf_domain(i_pvr-1) + 1
         ied = istack_pvr_surf_domain(i_pvr)
-        write(50+my_rank,'(8i10)') item_pvr_surf_domain(1,ist:ied)
-        write(50+my_rank,'(8i10)') item_pvr_surf_domain(2,ist:ied)
+        write(50+my_rank,'(8i16)') item_pvr_surf_domain(1,ist:ied)
+        write(50+my_rank,'(8i16)') item_pvr_surf_domain(2,ist:ied)
       end do
 !
       end subroutine check_surf_grp_4_pvr_domain
@@ -206,7 +206,7 @@
         ist = istack_pvr_surf_domain(i_pvr-1) + 1
         ied = istack_pvr_surf_domain(i_pvr)
         do inum = ist, ied
-          write(50+my_rank,'(i15,4i5,1p4e16.7)')                        &
+          write(50+my_rank,'(i16,4i5,1p4e16.7)')                        &
      &          inum, isurf_xrng_pvr_domain(1:2,inum),                  &
      &                jsurf_yrng_pvr_domain(1:2,inum),                  &
      &                screen_xrng_pvr_domain(1:2,inum),                 &

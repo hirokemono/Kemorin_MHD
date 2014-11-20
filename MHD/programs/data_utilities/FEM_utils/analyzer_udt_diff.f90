@@ -92,7 +92,7 @@
       call link_global_mesh_4_ucd_out
 !
       do istep = i_step_init, i_step_number
-        if ( mod(istep,i_step_output_ucd) .eq. 0) then
+        if ( mod(istep,i_step_output_ucd) .eq. izero) then
 !
           istep_ucd = istep / i_step_output_ucd
 !

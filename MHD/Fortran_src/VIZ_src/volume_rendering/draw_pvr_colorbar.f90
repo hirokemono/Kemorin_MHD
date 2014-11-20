@@ -29,8 +29,8 @@
 !
       if( iflag_pvr_colorbar(i_pvr) .eq. 1) then
         iext_colorbar = 15 + 8 * 9 * iscale_font(i_pvr)
-        iext_colorbar = (iext_colorbar-1 - mod((iext_colorbar-1),4))    &
-     &                 + 4
+        iext_colorbar = iext_colorbar + ithree                          &
+     &                  - mod((iext_colorbar-ione),ifour) 
 !        if(cbar_range(2,i_pvr) .le. cbar_range(1,i_pvr)) then
 !          cbar_range(1:2,i_pvr) = d_minmax_pvr(1:2,i_pvr)
 !        end if
@@ -105,7 +105,6 @@
       integer(kind = kint) :: i, j, k
       integer(kind = kint) :: ist_dmap, ist_dopt, num_of_features
       integer(kind = kint) :: ist, jst, ied, jed
-      integer(kind = kint) :: start_px(2)
 !
 !
       ist = npix_img(1) - isleeve_bar

@@ -29,32 +29,32 @@
 !
        write(file_code,'(a)')                                           &
      &        '! num_depth, max. number of node for filtering cube: '
-       write(file_code,'(2i15)') ndepth_l, num_filter_l
+       write(file_code,'(2i16)') ndepth_l, num_filter_l
        write(file_code,'(a)')                                           &
      &     '! num_depth, max. and min. number of node for filtering: '
        do i = 1, 3
-        write(file_code,'(3i15)') i, nmax_l_filter(i), nmin_l_filter(i)
+        write(file_code,'(3i16)') i, nmax_l_filter(i), nmin_l_filter(i)
        end do
        write(file_code,'(a)') '! total number of filtering data '
-       write(file_code,'(3i15)') (num_l_filter(i),i=1,3)
+       write(file_code,'(3i16)') (num_l_filter(i),i=1,3)
 !
 !
        write(file_code,'(a)') '! orderind ID for filtering'
        write(file_code,'(a)')                                           &
      &     '! and stack for filtering for each direction'
        do i = 1, numnod
-          write(file_code,'(6i10)') (inod_l_filter(i,nd), nd=1, 3),     &
+          write(file_code,'(6i16)') (inod_l_filter(i,nd), nd=1, 3),     &
       &                          (istack_l_filter(i,nd), nd=1, 3)
        enddo
 !
           write(file_code,'(a)') '! node ID for x-filtering'
-          write(file_code,'(8i10)')                                     &
+          write(file_code,'(8i16)')                                     &
      &           (item_l_filter(i,1),i = 1, num_l_filter(1))
           write(file_code,'(a)') '! node ID for y-filtering'
-          write(file_code,'(8i10)')                                     &
+          write(file_code,'(8i16)')                                     &
      &           (item_l_filter(i,2),i = 1, num_l_filter(2))
           write(file_code,'(a)') '! node ID for z-filtering'
-          write(file_code,'(8i10)')                                     &
+          write(file_code,'(8i16)')                                     &
      &           (item_l_filter(i,3),i = 1, num_l_filter(3))
 !
           write(file_code,'(a)')                                        &
