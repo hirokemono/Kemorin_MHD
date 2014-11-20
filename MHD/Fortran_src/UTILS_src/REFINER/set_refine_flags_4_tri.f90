@@ -1,9 +1,11 @@
 !set_refine_flags_4_tri.f90
 !      module set_refine_flags_4_tri
 !
-      module set_refine_flags_4_tri
-!
 !      Writen by H. Matsui on Oct., 2007
+!
+!      subroutine s_set_refine_flags_4_tri
+!
+      module set_refine_flags_4_tri
 !
       use m_precision
 !
@@ -11,7 +13,6 @@
 !
       integer(kind = kint), allocatable, private :: imark_nod(:)
       integer(kind = kint), allocatable, private :: imark_ele(:)
-      integer(kind = kint), allocatable, private :: imark_tmp(:)
 !
       private :: set_refine_id_for_n1
       private :: set_refine_id_for_n2, set_refine_id_for_n4
@@ -19,7 +20,7 @@
       private :: change_refine_id_for_n5, change_refine_id_for_n7
       private :: set_refine_id_for_stri_n4, set_refine_id_for_stri_n2
 !
-!      subroutine s_set_refine_flags_4_tri
+      private :: mark_refine_node_flag, redefine_refine_node_flag
 !
 !  ---------------------------------------------------------------------
 !
@@ -61,27 +62,18 @@
 !
       if(iflag_debug .gt. 0) then
 !
-       write(50,'(a)') 'error nummber of marks:  0'
-       do iele = 1, numele
-        if(imark_ele(iele) .eq. 0) then
-          icou = icou + 1
-          if( iflag_refine_ele(iele) .ne. 0) then
-            write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),     &
+        write(50,'(a)') 'error nummber of marks:  0'
+        do iele = 1, numele
+          if(imark_ele(iele) .eq. 0) then
+            icou = icou + 1
+            if( iflag_refine_ele(iele) .ne. 0) then
+              write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),   &
      &                            iflag_refine_ele(iele)
+            end if
           end if
-        end if
-       end do
+        end do
 !
         inum = 3
-         write(50,'(a,i2)') 'nummber of marks:  ', inum
-         do iele = 1, numele
-          if(imark_ele(iele) .eq. inum) then
-            write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),     &
-     &                            iflag_refine_ele(iele)
-          end if
-         end do
-!
-       do inum = 5, 7
         write(50,'(a,i2)') 'nummber of marks:  ', inum
         do iele = 1, numele
           if(imark_ele(iele) .eq. inum) then
@@ -89,20 +81,29 @@
      &                            iflag_refine_ele(iele)
           end if
         end do
-       end do
 !
-       icou = 0
-       write(50,'(a)') 'error nummber of marks:  8'
-       do iele = 1, numele
-        if(imark_ele(iele) .eq. 8) then
-          icou = icou + 1
-          if( iflag_refine_ele(iele) .ne. 300) then
-            write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),     &
+        do inum = 5, 7
+          write(50,'(a,i2)') 'nummber of marks:  ', inum
+          do iele = 1, numele
+            if(imark_ele(iele) .eq. inum) then
+               write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),  &
      &                            iflag_refine_ele(iele)
+            end if
+          end do
+        end do
+!
+        icou = 0
+        write(50,'(a)') 'error nummber of marks:  8'
+        do iele = 1, numele
+          if(imark_ele(iele) .eq. 8) then
+            icou = icou + 1
+            if( iflag_refine_ele(iele) .ne. 300) then
+              write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),   &
+     &                            iflag_refine_ele(iele)
+            end if
           end if
-        end if
-       end do
-       write(50,'(a,2i16)') 'total refine ele: ', icou, numele
+        end do
+        write(50,'(a,2i16)') 'total refine ele: ', icou, numele
       end if
 !
       write(*,*) 'deallocate imark_ele'
@@ -725,11 +726,9 @@
 !
       integer(kind = kint) :: iele, k1, inod
 !
-!
       allocate(imark_nod(numnod))
       imark_nod = 0
 !
-      imark_nod(inod) = 0
       do iele = 1, numele
         if(iflag_refine_ele(iele) .eq. iflag_tri_full) then
           do k1 = 1, 8
@@ -748,6 +747,7 @@
       use m_geometry_parameter
 !
       integer(kind = kint) :: num
+      integer(kind = kint), allocatable :: imark_tmp(:)
 !
 !
       num = size(imark_nod)
