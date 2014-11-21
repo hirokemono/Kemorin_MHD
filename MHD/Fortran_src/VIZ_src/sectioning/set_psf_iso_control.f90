@@ -57,7 +57,7 @@
       type(phys_data), intent(inout) :: psf_fld(num_psf)
       type(psf_patch_data), intent(inout) :: psf_pat
 !
-      integer(kind = kint) :: i_psf
+      integer(kind = kint) :: i_psf, ierr
 !
 !
       ctl_file_code = psf_ctl_file_code
@@ -72,9 +72,9 @@
       do i_psf = 1, num_psf
         call count_control_4_psf(i_psf, psf_ctl_struct(i_psf),          &
      &      num_mat, mat_name, num_nod_phys, phys_nod_name,             &
-     &      psf_fld(i_psf), psf_param(i_psf), ierr_MPI)
-        if(ierr_MPI.gt.0) call calypso_MPI_abort                        &
-     &                   (ierr_MPI, 'set correct element group')
+     &      psf_fld(i_psf), psf_param(i_psf), ierr)
+        if(ierr.gt.0) call calypso_MPI_abort                            &
+     &                   (ierr, 'set correct element group')
       end do
 !
       do i_psf = 1, num_psf

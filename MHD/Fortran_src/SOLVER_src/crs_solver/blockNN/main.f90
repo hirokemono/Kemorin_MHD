@@ -38,8 +38,6 @@
       integer(kind=kint ), dimension(:), allocatable :: IW1 
       integer(kind=kint ), dimension(:), allocatable :: IW2 
 
-      integer PETOT
-
       character*80 MATfile(8)
 
       real*8,  dimension(10) :: REALARRAY
@@ -51,14 +49,10 @@
 !C
 !C-- init. MPI
 
-      call MPI_INIT      (ierr_MPI)
-      call MPI_COMM_SIZE (MPI_COMM_WORLD, PETOT, ierr_MPI )
-      call MPI_COMM_RANK (MPI_COMM_WORLD, my_rank, ierr_MPI )
-      call MPI_COMM_DUP  (MPI_COMM_WORLD, CALYPSO_COMM, ierr_MPI)
-
+      call calypso_MPI_init
 !C
 !C-- CNTL DATA
-      if (PETOT.eq.1) then
+      if (nprocs.eq.1) then
         MATfile(1)= '1PE/matIN.0'
        else
         MATfile(1)= '4PE/matIN.0'
@@ -141,7 +135,7 @@
       INL(0)= 0
 
       allocate (NEIBPE(NEIBPETOT))
-      if (PETOT.ne.1) then
+      if (nprocs.ne.1) then
         read (15,'(10i16)') (NEIBPE(k), k= 1, NEIBPETOT)
 
         allocate (STACK_IMPORT(0:NEIBPETOT))

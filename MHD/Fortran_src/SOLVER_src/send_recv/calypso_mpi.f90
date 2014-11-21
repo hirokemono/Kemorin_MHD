@@ -43,7 +43,7 @@
       integer(kind=kint) :: nprocs
 !
 !>      error flag for MPI
-      integer(kind=kint) :: ierr_MPI
+      integer :: ierr_MPI
 !
 ! ----------------------------------------------------------------------
 !

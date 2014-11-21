@@ -76,7 +76,7 @@
         recv_time = 0
         CALL MPI_REDUCE(send_time, recv_time, 1, CALYPSO_REAL,          &
      &                   MPI_SUM, 0, CALYPSO_COMM, ierr_MPI)
-        CALL MPI_COMM_SIZE(CALYPSO_COMM, nprocs, ierr_MPI)
+
         IF(my_rank .eq. 0) THEN
           out_time = recv_time / NPROCS
           WRITE(*,'("***", i3, ":", 1pe16.6, " sec")')                  &
@@ -85,7 +85,6 @@
 !
       else if(iflag_op .eq. 4) then
 !
-        CALL MPI_COMM_SIZE(CALYPSO_COMM, NPROCS, ierr_MPI)
         IF(my_rank .eq. 0) THEN
           WRITE(*,'(a)') "#  2:sr_aggre"
           WRITE(*,'(a)') "#  3:sr_elem"
