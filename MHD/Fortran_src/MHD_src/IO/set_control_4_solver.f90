@@ -106,6 +106,7 @@
             eps_crank  = eps_crank_ctl
           end if
 !
+          if(i_eps_B_crank .gt. 0) eps_4_magne_crank = eps_B_crank_ctl
         end if
 !
 !   control for number of processores for DJDS solver
@@ -153,13 +154,14 @@
           write(*,*) 'method_4_solver:  ',  trim(method_4_solver)
           write(*,*) 'ordering_name: , iflag_ordering ',                &
      &                trim(ordering_name), iflag_ordering
-          write(*,*) 'min_color:       ', min_color
-          write(*,*) 'mc_color:        ', mc_color
-          write(*,*) 'eps_4_velo:      ', eps_4_velo
-          write(*,*) 'eps_4_magne:     ', eps_4_magne
-          write(*,*) 'eps_4_crank:     ', eps_crank
-          write(*,*) 'method_4_velo:   ', trim(method_4_velo)
-          write(*,*) 'precond_4_crank: ', trim(precond_4_crank)
+          write(*,*) 'min_color:         ', min_color
+          write(*,*) 'mc_color:          ', mc_color
+          write(*,*) 'eps_4_velo:        ', eps_4_velo
+          write(*,*) 'eps_4_magne:       ', eps_4_magne
+          write(*,*) 'eps_4_crank:       ', eps_crank
+          write(*,*) 'eps_4_magne_crank: ', eps_4_magne_crank
+          write(*,*) 'method_4_velo:     ', trim(method_4_velo)
+          write(*,*) 'precond_4_crank:   ', trim(precond_4_crank)
         end if
 !
       if (     ((method_4_solver(1:1).eq.'M')                           &

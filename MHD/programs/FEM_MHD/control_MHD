@@ -930,7 +930,10 @@ begin MHD_control
       coef_imp_t_ctl          5.0e-1
       coef_imp_b_ctl          5.0e-1
       coef_imp_c_ctl          5.0e-1
+!
       eps_crank_ctl           1.0e-6
+      eps_B_solver_ctl        1.0e-6
+!
       method_4_velo_ctl      CG 
       precond_4_crank_ctl     SSOR   
     end  time_loop_ctl

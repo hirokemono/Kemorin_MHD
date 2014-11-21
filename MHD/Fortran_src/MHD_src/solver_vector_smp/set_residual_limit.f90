@@ -40,20 +40,18 @@
      &     write(12,*) 'eps_4_temp_crank', eps_4_temp_crank
       end if
 !
-      if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
-        eps_4_magne_crank = eps_crank * coef_d_magne * dt**2
-        if(iflag_debug.eq.1)                                            &
-     &     write(12,*) 'eps_4_magne_crank', eps_4_magne_crank
-      end if
+      if (   iflag_t_evo_4_magne .ge. id_Crank_nicolson                 &
+     &  .or. iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
 !
-      if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-        eps_4_magne_crank = eps_crank * coef_d_magne * dt**2
+        if(eps_4_magne_crank .le. 0.0d0) then
+          eps_4_magne_crank = eps_crank * coef_d_magne * dt**2
+        end if
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'eps_4_magne_crank', eps_4_magne_crank
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        eps_4_d_scalar_crank = eps_crank * coef_d_magne * dt**2
+        eps_4_comp_crank = eps_crank * coef_d_magne * dt**2
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'iflag_t_evo_4_composit', iflag_t_evo_4_composit
       end if

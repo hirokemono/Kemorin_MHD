@@ -471,7 +471,6 @@ begin MHD_control
 !                 Crank_Nicolson...Crank_Nicolson with 2nd_Adams_Bashforth
 !                 Crank_Nicolson_consist...Crank_Nicolson
 !                                         with consistent mass matrix
-!   eps_crank_ctl:        
 !   method_4_velo_ctl:    method for Crank Nicolson Scheme
 !   precond_4_crank_ctl:  preconditioning method for Crank Nicolson Scheme
 !

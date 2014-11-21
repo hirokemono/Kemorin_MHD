@@ -698,7 +698,6 @@ begin fluid_control
 !                 Crank_Nicolson...Crank_Nicolson with 2nd_Adams_Bashforth
 !                 Crank_Nicolson_consist...Crank_Nicolson
 !                                         with consistent mass matrix
-!   eps_crank_ctl:        
 !   method_4_velo_ctl:    method for Crank Nicolson Scheme
 !   precond_4_crank_ctl:  preconditioning method for Crank Nicolson Scheme
 !
@@ -718,7 +717,6 @@ begin fluid_control
       coef_imp_t_ctl          5.0e-1
       coef_imp_b_ctl          5.0e-1
       coef_imp_d_ctl          5.0e-1
-      eps_crank_ctl           1.0e-6
       method_4_velo_ctl      CG 
       precond_4_crank_ctl     SSOR   
       modify_coriolis_4_crank_ctl  0

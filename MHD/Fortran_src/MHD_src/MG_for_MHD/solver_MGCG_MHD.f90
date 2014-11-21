@@ -341,13 +341,13 @@
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm_fl,                 &
      &      MG_itp, MG_djds_tbl_fl, MG_mat_d_scalar, MG_vector, np_smp, &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
-     &      eps_4_d_scalar_crank, EPS_MG, precond_4_solver,             &
+     &      eps_4_comp_crank, EPS_MG, precond_4_solver,                 &
      &      METHOD_MG, PRECOND_MG, ierr)
       else
         call solve_DJDS11_struct(np_smp, DJDS_comm_fl, DJDS_fluid,      &
      &      Cmat_DJDS, numnod, b_vec(1), x_vec(1),                      &
      &      method_4_solver, precond_4_solver, ierr,                    &
-     &      eps_4_d_scalar_crank, itr, itr_res)
+     &      eps_4_comp_crank, itr, itr_res)
       end if
 !
       call end_eleps_time(5)

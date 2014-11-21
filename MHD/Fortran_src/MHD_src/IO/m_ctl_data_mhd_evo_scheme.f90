@@ -74,7 +74,9 @@
 !!      coef_imp_t_ctl          5.0e-1
 !!      coef_imp_b_ctl          5.0e-1
 !!      coef_imp_c_ctl          5.0e-1
+!!
 !!      eps_crank_ctl           1.0e-6
+!!      eps_B_solver_ctl        1.0e-6
 !!      method_4_velo_ctl      CG 
 !!      precond_4_crank_ctl     SSOR   
 !!
@@ -114,7 +116,9 @@
 ! 
       real(kind=kreal)   :: eps_4_velo_ctl
       real(kind=kreal)   :: eps_4_magne_ctl
+!
       real(kind=kreal)   :: eps_crank_ctl
+      real(kind=kreal)   :: eps_B_crank_ctl
 ! 
       character (len=kchara)   :: scheme_ctl
       character (len=kchara)   :: diffuse_correct_ctl
@@ -180,6 +184,8 @@
       character(len=kchara), parameter                                  &
      &      :: hd_eps_crank =      'eps_crank_ctl'
       character(len=kchara), parameter                                  &
+     &      :: hd_eps_B_crank =    'eps_B_solver_ctl'
+      character(len=kchara), parameter                                  &
      &      :: hd_method_4_velo =  'method_4_velo_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_precond_4_crank = 'precond_4_crank_ctl'
@@ -211,6 +217,7 @@
       integer (kind=kint) :: i_coef_imp_b =         0
       integer (kind=kint) :: i_coef_imp_c =         0
       integer (kind=kint) :: i_eps_crank =          0
+      integer (kind=kint) :: i_eps_B_crank =        0
       integer (kind=kint) :: i_method_4_velo =      0
       integer (kind=kint) :: i_precond_4_crank =    0
       integer (kind=kint) :: i_sph_transform_mode = 0
@@ -223,7 +230,7 @@
       private :: hd_time_loop, i_time_loop
       private :: hd_iflag_supg, hd_num_multi_pass, hd_maxiter
       private :: hd_iflag_v_supg, hd_iflag_t_supg, hd_iflag_b_supg
-      private :: hd_iflag_c_supg
+      private :: hd_iflag_c_supg, hd_eps_B_crank
       private :: hd_eps_4_velo, hd_eps_4_magne, hd_scheme
       private :: hd_diff_correct, hd_coef_imp_v, hd_coef_imp_t
       private :: hd_coef_imp_b, hd_coef_imp_c, hd_eps_crank
@@ -305,6 +312,8 @@
      &        coef_imp_c_ctl)
         call read_real_ctl_item(hd_eps_crank, i_eps_crank,              &
      &        eps_crank_ctl)
+        call read_real_ctl_item(hd_eps_B_crank, i_eps_B_crank,          &
+     &        eps_B_crank_ctl)
 !
         call read_character_ctl_item(hd_iflag_supg, i_iflag_supg,       &
      &        iflag_supg_ctl)

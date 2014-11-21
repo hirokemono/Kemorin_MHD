@@ -36,12 +36,12 @@
       character (len=kchara) :: precond_4_crank
       character (len=kchara) :: method_4_velo
 ! 
-      real(kind=kreal)     :: eps_crank
+      real(kind=kreal) :: eps_crank
 ! 
-      real(kind=kreal)   :: eps_4_velo_crank
-      real(kind=kreal)   :: eps_4_magne_crank
-      real(kind=kreal)   :: eps_4_temp_crank
-      real(kind=kreal)   :: eps_4_d_scalar_crank
+      real(kind=kreal)   :: eps_4_velo_crank =  0.0d0
+      real(kind=kreal)   :: eps_4_magne_crank = 0.0d0
+      real(kind=kreal)   :: eps_4_temp_crank =  0.0d0
+      real(kind=kreal)   :: eps_4_comp_crank =  0.0d0
 !
 !
       integer(kind=kint) :: itr_res
