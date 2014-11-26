@@ -105,7 +105,7 @@
       end do
 !
       do i = 1, numele
-        globaledgeid(i) = globalnodid(ie_edge(i,1))
+        iedge_global(i) = globalnodid(ie_edge(i,1))
       end do
 !
       end subroutine set_global_id_z_commute

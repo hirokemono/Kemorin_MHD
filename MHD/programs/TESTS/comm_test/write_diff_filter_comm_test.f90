@@ -33,7 +33,7 @@
      &      'xx_org, yy_org, zz_org, xx_get, yy_get, zz_get'
       call write_diff_comm_test(istack_filter_nod_diff_pe,              &
      &    ntot_nod_filter_diff_pe, inod_filter_diff_IO,                 &
-     &    inod_gl_filter_diff_IO, xx_filter_diff_IO)
+     &    xx_filter_diff_IO)
 !
       close(id_comm_test)
 !

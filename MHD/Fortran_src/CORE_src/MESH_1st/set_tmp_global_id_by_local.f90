@@ -39,7 +39,7 @@
       use set_global_id_by_local
 !
       call s_set_global_id_by_local(numsurf, internal_surf,             &
-     &    interior_surf, globalsurfid)
+     &    interior_surf, isurf_global)
 !
       end subroutine set_global_surf_id_by_local
 !
@@ -52,7 +52,7 @@
       use set_global_id_by_local
 !
       call s_set_global_id_by_local(numedge, internal_edge,             &
-     &    interior_edge, globaledgeid)
+     &    interior_edge, iedge_global)
 !
       end subroutine set_global_edge_id_by_local
 !

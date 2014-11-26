@@ -15,8 +15,8 @@
 !      subroutine count_diff_ctest(num_diff_l, ntot_diff_pe,            &
 !     &          num_diff_pe, istack_diff_pe)
 !      subroutine collect_diff_ctest(np, num_diff_l, id_diff,           &
-!     &          id_gl_diff, x_diff, ntot_diff_pe, num_diff_pe,         &
-!     &          istack_diff_pe, id_diff_IO, id_gl_diff_IO, x_diff_IO)
+!     &          x_diff, ntot_diff_pe, num_diff_pe,                     &
+!     &          istack_diff_pe, id_diff_IO, x_diff_IO)
 !
       module collect_diff_4_comm_test
 !
@@ -152,9 +152,8 @@
       use m_geometry_4_comm_test
 !
       call collect_diff_ctest(nprocs, nnod_diff_local, inod_diff,       &
-     &    inod_gl_diff, xx_diff, ntot_nod_diff_pe,                      &
-     &    num_nod_diff_pe, istack_nod_diff_pe,                          &
-     &    inod_diff_IO, inod_gl_diff_IO, xx_diff_IO)
+     &    xx_diff, ntot_nod_diff_pe, num_nod_diff_pe,                   &
+     &    istack_nod_diff_pe,  inod_diff_IO, xx_diff_IO)
 !
       end subroutine collect_diff_nod_comm_test
 !
@@ -165,9 +164,8 @@
       use m_geometry_4_comm_test
 !
       call collect_diff_ctest(nprocs, nele_diff_local, iele_diff,       &
-     &    iele_gl_diff, xele_diff, ntot_ele_diff_pe,                    &
-     &    num_ele_diff_pe, istack_ele_diff_pe,                          &
-     &    iele_diff_IO, iele_gl_diff_IO, xele_diff_IO)
+     &    xele_diff, ntot_ele_diff_pe,  num_ele_diff_pe,                &
+     &    istack_ele_diff_pe, iele_diff_IO, xele_diff_IO)
 !
       end subroutine collect_diff_ele_comm_test
 !
@@ -178,9 +176,8 @@
       use m_geometry_4_comm_test
 !
       call collect_diff_ctest(nprocs, nsurf_diff_local, isurf_diff,     &
-     &    isurf_gl_diff, xsurf_diff, ntot_surf_diff_pe,                 &
-     &    num_surf_diff_pe, istack_surf_diff_pe,                        &
-     &    isurf_diff_IO, isurf_gl_diff_IO, xsurf_diff_IO)
+     &    xsurf_diff, ntot_surf_diff_pe, num_surf_diff_pe,              &
+     &    istack_surf_diff_pe, isurf_diff_IO, xsurf_diff_IO)
 !
       end subroutine collect_diff_surf_comm_test
 !
@@ -192,9 +189,8 @@
 !
 !
       call collect_diff_ctest(nprocs, nedge_diff_local, iedge_diff,     &
-     &    iedge_gl_diff, xedge_diff, ntot_edge_diff_pe,                 &
-     &    num_edge_diff_pe, istack_edge_diff_pe,                        &
-     &    iedge_diff_IO, iedge_gl_diff_IO, xedge_diff_IO)
+     &    xedge_diff, ntot_edge_diff_pe, num_edge_diff_pe,              &
+     &    istack_edge_diff_pe, iedge_diff_IO, xedge_diff_IO)
 !
       end subroutine collect_diff_edge_comm_test
 !
@@ -237,14 +233,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine collect_diff_ctest(np, num_diff_l, id_diff,            &
-     &          id_gl_diff, x_diff, ntot_diff_pe, num_diff_pe,          &
-     &          istack_diff_pe, id_diff_IO, id_gl_diff_IO, x_diff_IO)
+     &          x_diff, ntot_diff_pe, num_diff_pe,                      &
+     &          istack_diff_pe, id_diff_IO, x_diff_IO)
 !
 !
       integer(kind = kint), intent(in) :: np
       integer(kind = kint), intent(in) :: num_diff_l
       integer(kind = kint), intent(in) :: id_diff(num_diff_l)
-      integer(kind = kint), intent(in) :: id_gl_diff(2*num_diff_l)
       real(kind = kreal), intent(in) :: x_diff(6*num_diff_l)
 !
       integer(kind = kint), intent(in) :: ntot_diff_pe
@@ -252,8 +247,6 @@
       integer(kind = kint), intent(in) :: istack_diff_pe(0:np)
 !
       integer(kind = kint), intent(inout) :: id_diff_IO(ntot_diff_pe)
-      integer(kind = kint), intent(inout)                               &
-     &      :: id_gl_diff_IO(2*ntot_diff_pe)
       real(kind = kreal), intent(inout) :: x_diff_IO(6*ntot_diff_pe)
 !
       integer(kind = kint) :: num, ist, ip, id_rank
@@ -268,22 +261,6 @@
           ist = istack_diff_pe(ip-1) + 1
           num = num_diff_pe(ip)
           call MPI_IRECV (id_diff_IO(ist), num, CALYPSO_INTEGER,        &
-     &        id_rank, 0, CALYPSO_COMM, req2(ip), ierr_MPI)
-        end do
-        call MPI_WAITALL (np, req2(1), sta2(1,1), ierr_MPI)
-      end if
-      call MPI_WAITALL (ione, req1(1), sta1(1,1), ierr_MPI)
-!
-!
-      num = 2*num_diff_l
-      call MPI_ISEND (id_gl_diff, num, CALYPSO_INTEGER,                 &
-     &    izero, 0, CALYPSO_COMM, req1(ione), ierr_MPI)
-      if (my_rank .eq. 0) then
-        do ip = 1, np
-          id_rank = ip - 1
-          ist = 2*istack_diff_pe(ip-1) + 1
-          num = 2*num_diff_pe(ip)
-          call MPI_IRECV(id_gl_diff_IO(ist), num, CALYPSO_INTEGER,      &
      &        id_rank, 0, CALYPSO_COMM, req2(ip), ierr_MPI)
         end do
         call MPI_WAITALL (np, req2(1), sta2(1,1), ierr_MPI)

@@ -40,10 +40,9 @@
       use collect_diff_4_comm_test
 !
       call collect_diff_ctest(nprocs, nnod_filter_diff_local,           &
-     &    inod_filter_diff, inod_gl_filter_diff, xx_filter_diff,        &
-     &    ntot_nod_filter_diff_pe, num_filter_nod_diff_pe,              &
-     &    istack_filter_nod_diff_pe, inod_filter_diff_IO,               &
-     &    inod_gl_filter_diff_IO, xx_filter_diff_IO)
+     &    inod_filter_diff, xx_filter_diff, ntot_nod_filter_diff_pe,    &
+     &    num_filter_nod_diff_pe, istack_filter_nod_diff_pe,            &
+     &    inod_filter_diff_IO, xx_filter_diff_IO)
 !
 !
       end subroutine collect_diff_filter_nod_ctest

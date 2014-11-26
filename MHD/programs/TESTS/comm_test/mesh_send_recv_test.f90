@@ -363,23 +363,16 @@
 !
 !
       do iele = 1, numele
-        iele_gl_comm(iele) = globalelmid(iele)
         x_ele_comm(3*iele-2) = x_ele(iele,1)
         x_ele_comm(3*iele-1) = x_ele(iele,2)
         x_ele_comm(3*iele  ) = x_ele(iele,3)
       end do
       do inum = 1, ntot_import_ele
         iele = item_import_ele(inum)
-        iele_gl_comm(iele) = 0
         x_ele_comm(3*iele-2) = 0.0d0
         x_ele_comm(3*iele-1) = 0.0d0
         x_ele_comm(3*iele  ) = 0.0d0
       end do
-!
-      call solver_send_recv_i(numele, num_neib_ele, id_neib_ele,        &
-     &                        istack_import_ele, item_import_ele,       &
-     &                        istack_export_ele, item_export_ele,       &
-     &                        iele_gl_comm)
 !
       call solver_send_recv_3(numele, num_neib_ele, id_neib_ele,        &
      &                        istack_import_ele, item_import_ele,       &
@@ -399,23 +392,16 @@
 !
 !
       do isurf = 1, numsurf
-        isurf_gl_comm(isurf) = globalsurfid(isurf)
         x_surf_comm(3*isurf-2) = x_surf(isurf,1)
         x_surf_comm(3*isurf-1) = x_surf(isurf,2)
         x_surf_comm(3*isurf  ) = x_surf(isurf,3)
       end do
       do inum = 1, ntot_import_surf
         isurf = item_import_surf(inum)
-        isurf_gl_comm(isurf) = 0
         x_surf_comm(3*isurf-2) = 0.0d0
         x_surf_comm(3*isurf-1) = 0.0d0
         x_surf_comm(3*isurf  ) = 0.0d0
       end do
-!
-      call solver_send_recv_i(numsurf, num_neib_surf, id_neib_surf,     &
-     &                        istack_import_surf, item_import_surf,     &
-     &                        istack_export_surf, item_export_surf,     &
-     &                        isurf_gl_comm)
 !
       call solver_send_recv_3(numsurf, num_neib_surf, id_neib_surf,     &
      &                        istack_import_surf, item_import_surf,     &
@@ -435,23 +421,16 @@
 !
 !
       do iedge = 1, numedge
-        iedge_gl_comm(iedge) = globaledgeid(iedge)
         x_edge_comm(3*iedge-2) = x_edge(iedge,1)
         x_edge_comm(3*iedge-1) = x_edge(iedge,2)
         x_edge_comm(3*iedge  ) = x_edge(iedge,3)
       end do
       do inum = 1, ntot_import_edge
         iedge = item_import_edge(inum)
-        iedge_gl_comm(iedge) = 0
         x_edge_comm(3*iedge-2) = 0.0d0
         x_edge_comm(3*iedge-1) = 0.0d0
         x_edge_comm(3*iedge  ) = 0.0d0
       end do
-!
-      call solver_send_recv_i(numedge, num_neib_edge, id_neib_edge,     &
-     &                        istack_import_edge, item_import_edge,     &
-     &                        istack_export_edge, item_export_edge,     &
-     &                        iedge_gl_comm)
 !
       call solver_send_recv_3(numedge, num_neib_edge, id_neib_edge,     &
      &                        istack_import_edge, item_import_edge,     &

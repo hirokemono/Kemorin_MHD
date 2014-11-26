@@ -29,16 +29,10 @@
 !
 !
       do inod = 1, inter_nod_3dfilter
-        inod_gl_filter_comm(inod) = id_globalnod_filtering(inod)
         xx_filter_comm(3*inod-2) = xx_filtering(inod,1)
         xx_filter_comm(3*inod-1) = xx_filtering(inod,2)
         xx_filter_comm(3*inod  ) = xx_filtering(inod,3)
       end do
-!
-      call solver_send_recv_i(nnod_filtering, num_neib_filter,          &
-     &    id_neib_filter, istack_import_filter, item_import_filter,     &
-     &    istack_export_filter, item_export_filter,                     &
-     &    inod_gl_filter_comm)
 !
       call solver_send_recv_3(nnod_filtering, num_neib_filter,          &
      &    id_neib_filter, istack_import_filter, item_import_filter,     &

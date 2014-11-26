@@ -56,7 +56,7 @@
       end if
 !
       nodelm_dummy(1:numsurf) = nnod_4_surf
-      globalelmid_dummy(1:numsurf) = globalsurfid(1:numsurf)
+      globalelmid_dummy(1:numsurf) = isurf_global(1:numsurf)
       ie_dummy(1:numsurf,1:nnod_4_surf)                                 &
      &        = ie_surf(1:numsurf,1:nnod_4_surf)
 !
@@ -78,7 +78,7 @@
       call allocate_ele_scalar_IO
 !
 !
-      globalnodid_dummy(1:numsurf) = globalsurfid(1:numsurf)
+      globalnodid_dummy(1:numsurf) = isurf_global(1:numsurf)
       xx_dummy(1:numsurf,1:3) = x_surf(1:numsurf,1:3)
 !
       ele_scalar_IO(1:numsurf) =     area_surf(1:numsurf)
@@ -97,7 +97,7 @@
       call allocate_ele_vector_IO
       call allocate_ele_scalar_IO
 !
-      globalnodid_dummy(1:numsurf) = globalsurfid(1:numsurf)
+      globalnodid_dummy(1:numsurf) = isurf_global(1:numsurf)
       xx_dummy(1:numsurf,1) = r_surf(1:numsurf)
       xx_dummy(1:numsurf,2) = theta_surf(1:numsurf)
       xx_dummy(1:numsurf,3) = phi_surf(1:numsurf)
@@ -118,7 +118,7 @@
       call allocate_ele_vector_IO
       call allocate_ele_scalar_IO
 !
-      globalnodid_dummy(1:numsurf) = globalsurfid(1:numsurf)
+      globalnodid_dummy(1:numsurf) = isurf_global(1:numsurf)
       xx_dummy(1:numsurf,1) = s_surf(1:numsurf)
       xx_dummy(1:numsurf,2) = phi_surf(1:numsurf)
       xx_dummy(1:numsurf,3) = x_surf(1:numsurf,3)
@@ -139,7 +139,7 @@
 !
       call allocate_surface_connect
 !
-      globalsurfid(1:numsurf) = globalelmid_dummy(1:numsurf)
+      isurf_global(1:numsurf) = globalelmid_dummy(1:numsurf)
       ie_surf(1:numsurf,1:nnod_4_surf)                                  &
      &        = ie_dummy(1:numsurf,1:nnod_4_surf)
 !
