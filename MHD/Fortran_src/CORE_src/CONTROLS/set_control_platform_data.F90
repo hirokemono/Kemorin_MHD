@@ -65,6 +65,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank
       integer, external :: omp_get_max_threads
+      integer :: np_smp4
 !
 !
       if (i_num_smp .gt. 0) then
@@ -74,10 +75,11 @@
       end if
 !
 #ifdef _OPENMP
-      if (np_smp .lt. omp_get_max_threads()) then
+      if (int(np_smp) .lt. omp_get_max_threads()) then
         if(my_rank .eq. 0) write(*,*)                                   &
      &               'Number of SMP threads is chenged to', np_smp
-        call omp_set_num_threads(np_smp)
+        np_smp4 = int(np_smp)
+        call omp_set_num_threads(np_smp4)
       end if
 #endif
 !

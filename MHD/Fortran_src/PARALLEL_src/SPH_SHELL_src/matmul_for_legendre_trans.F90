@@ -149,10 +149,15 @@
 !
       real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
 !
+      integer :: n_jk4, nkr4, nl_rtm4
+!
 !
 #ifdef BLAS
-      call DGEMM('N', 'N', nkr, n_jk, nl_rtm, one,                      &
-     &    V_kl, nkr, P_lj, nl_rtm, coef, S_kj, nkr)
+      nkr4 =    int(nkr)
+      n_jk4 =   int(n_jk)
+      nl_rtm4 = int(nl_rtm)
+      call DGEMM('N', 'N', nkr4, n_jk4, nl_rtm4, one,                   &
+     &    V_kl, nkr4, P_lj, nl_rtm4, coef, S_kj, nkr4)
 #else
       call add_matmat_fwd_leg_trans(nkr, n_jk, nl_rtm,                  &
      &    V_kl, P_lj, coef, S_kj)
@@ -262,13 +267,18 @@
 !
       real(kind = kreal), intent(inout) :: V_lk(nl_rtm,nkr)
 !
+      integer :: n_jk4, nkr4, nl_rtm4
+!
 !
 #ifdef BLAS
       if(n_jk .eq. 0) then
         V_lk = 0.0d0
       else
-        call DGEMM('N', 'N', nl_rtm, nkr, n_jk, one,                    &
-     &      P_lj, nl_rtm, S_jk, n_jk, coef, V_lk, nl_rtm)
+        nl_rtm4 = int(nl_rtm)
+        nkr4 =    int(nkr)
+        n_jk4 =   int(n_jk)
+        call DGEMM('N', 'N', nl_rtm4, nkr4, n_jk4, one,                 &
+     &      P_lj, nl_rtm4, S_jk, n_jk4, coef, V_lk, nl_rtm4)
       end if
 #else
       call add_matmat_bwd_leg_trans(nl_rtm, nkr, n_jk,                  &

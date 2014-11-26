@@ -34,6 +34,7 @@
       integer(kind=kint ), intent(inout) ::  IER
 !
       integer(kind=kint ) :: ITR
+      integer :: ierror
 !
       ITR = ITER
 !C
@@ -92,10 +93,11 @@
 !C
 !C-- ERROR
       if (IER.gt.0) then
+        ierror = int(IER)
         if (my_rank.eq.0) then
           write (*,'(//,"#### GeoFEM SOLVER abort CODE=", i8,/)') IER
         endif
-        call MPI_FINALIZE(IER)
+        call MPI_FINALIZE(ierror)
         stop
       endif
 

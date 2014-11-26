@@ -8,10 +8,10 @@
 !!        between IO data
 !!
 !!@verbatim
-!!      subroutine copy_comm_rtp_from_IO(my_rank, nnod_rtp)
-!!      subroutine copy_comm_rtm_from_IO(my_rank, nnod_rtm)
-!!      subroutine copy_comm_rlm_from_IO(my_rank, nnod_rlm)
-!!      subroutine copy_comm_rj_from_IO(my_rank, nnod_rj)
+!!      subroutine copy_comm_rtp_from_IO(nnod_rtp)
+!!      subroutine copy_comm_rtm_from_IO(nnod_rtm)
+!!      subroutine copy_comm_rlm_from_IO(nnod_rlm)
+!!      subroutine copy_comm_rj_from_IO(nnod_rj)
 !!
 !!      subroutine copy_comm_rtp_to_IO(my_rank)
 !!      subroutine copy_comm_rtm_to_IO(my_rank)
@@ -46,9 +46,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_comm_rtp_from_IO(my_rank, nnod_rtp)
+      subroutine copy_comm_rtp_from_IO(nnod_rtp)
 !
-      integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: nnod_rtp
 !
 !
@@ -73,9 +72,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_comm_rtm_from_IO(my_rank, nnod_rtm)
+      subroutine copy_comm_rtm_from_IO(nnod_rtm)
 !
-      integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: nnod_rtm
 !
 !
@@ -100,9 +98,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_comm_rlm_from_IO(my_rank, nnod_rlm)
+      subroutine copy_comm_rlm_from_IO(nnod_rlm)
 !
-      integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: nnod_rlm
 !
 !
@@ -127,9 +124,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_comm_rj_from_IO(my_rank, nnod_rj)
+      subroutine copy_comm_rj_from_IO(nnod_rj)
 !
-      integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: nnod_rj
 !
 !

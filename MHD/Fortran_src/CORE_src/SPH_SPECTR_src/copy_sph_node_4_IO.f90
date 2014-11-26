@@ -48,7 +48,6 @@
       call allocate_spheric_param_rtp
       call allocate_sph_1d_index_rtp
 !
-      inod_global_rtp(1:nnod_rtp) = inod_gl_sph_IO(1:nnod_rtp)
       do i = 1, ithree
         idx_global_rtp(1:nnod_rtp,i) = idx_gl_sph_IO(1:nnod_rtp,i)
       end do
@@ -85,7 +84,6 @@
       call allocate_spheric_param_rtm
       call allocate_sph_1d_index_rtm
 !
-      inod_global_rtm(1:nnod_rtm) = inod_gl_sph_IO(1:nnod_rtm)
       do i = 1, ithree
         idx_global_rtm(1:nnod_rtm,i) = idx_gl_sph_IO(1:nnod_rtm,i)
       end do
@@ -122,7 +120,6 @@
       call allocate_spheric_param_rlm
       call allocate_sph_1d_index_rlm
 !
-      inod_global_rlm(1:nnod_rlm) = inod_gl_sph_IO(1:nnod_rlm)
       do i = 1, itwo
         idx_global_rlm(1:nnod_rlm,i) = idx_gl_sph_IO(1:nnod_rlm,i)
       end do
@@ -158,7 +155,6 @@
       call allocate_spheric_param_rj
       call allocate_sph_1d_index_rj
 !
-      inod_global_rj(1:nnod_rj) = inod_gl_sph_IO(1:nnod_rj)
       do i = 1, itwo
         idx_global_rj(1:nnod_rj,i) = idx_gl_sph_IO(1:nnod_rj,i)
       end do
@@ -204,10 +200,15 @@
       call allocate_idx_sph_1d2_IO
       call allocate_idx_sph_1d3_IO
 !
-      inod_gl_sph_IO(1:nnod_rtp) = inod_global_rtp(1:nnod_rtp)
       do i = 1, ithree
         idx_gl_sph_IO(1:nnod_rtp,i) = idx_global_rtp(1:nnod_rtp,i)
       end do
+      inod_gl_sph_IO(1:nnod_rtp)                                        &
+     &        = idx_global_rtp(1:nnod_rtp,1)                            &
+     &         + (idx_global_rtp(1:nnod_rtp,2) - 1)                     &
+     &          * nidx_global_rtp(1)                                    &
+     &         + (idx_global_rtp(1:nnod_rtp,3) - 1)                     &
+     &          * nidx_global_rtp(1)*nidx_global_rtp(2)
 !
       r_gl_1_IO(1:nidx_rtp(1)) =     radius_1d_rtp_r(1:nidx_rtp(1))
       idx_gl_1_IO(1:nidx_rtp(1)) =   idx_gl_1d_rtp_r(1:nidx_rtp(1))
@@ -246,10 +247,15 @@
       call allocate_idx_sph_1d2_IO
       call allocate_idx_sph_1d3_IO
 !
-      inod_gl_sph_IO(1:nnod_rtm) = inod_global_rtm(1:nnod_rtm)
       do i = 1, ithree
         idx_gl_sph_IO(1:nnod_rtm,i) = idx_global_rtm(1:nnod_rtm,i)
       end do
+      inod_gl_sph_IO(1:nnod_rtm)                                    &
+     &     =   idx_global_rtm(1:nnod_rtm,1)                         &
+     &      + (idx_global_rtm(1:nnod_rtm,2) - 1)                    &
+     &       * nidx_global_rtm(1)                                   &
+     &      +  idx_global_rtm(1:nnod_rtm,3)                         &
+     &       * nidx_global_rtm(1)*nidx_global_rtm(2)
 !
       r_gl_1_IO(1:nidx_rtm(1)) =     radius_1d_rtm_r(1:nidx_rtm(1))
       idx_gl_1_IO(1:nidx_rtm(1)) =   idx_gl_1d_rtm_r(1:nidx_rtm(1))
@@ -286,10 +292,12 @@
       call allocate_idx_sph_1d1_IO
       call allocate_idx_sph_1d2_IO
 !
-      inod_gl_sph_IO(1:nnod_rlm) =    inod_global_rlm(1:nnod_rlm)
       do i = 1, itwo
         idx_gl_sph_IO(1:nnod_rlm,i) = idx_global_rlm(1:nnod_rlm,i)
       end do
+      inod_gl_sph_IO(1:nnod_rlm)                                        &
+     &           =  idx_global_rlm(1:nnod_rlm,1)                        &
+     &            + idx_global_rlm(1:nnod_rlm,2) * nidx_global_rlm(1)
 !
       r_gl_1_IO(1:nidx_rlm(1)) =     radius_1d_rlm_r(1:nidx_rlm(1))
       idx_gl_1_IO(1:nidx_rlm(1)) =   idx_gl_1d_rlm_r(1:nidx_rlm(1))
@@ -306,7 +314,7 @@
 !
       subroutine copy_sph_node_rj_to_IO
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, num
 !
       ndir_sph_IO =            itwo
       sph_rank_IO(1:itwo) =    sph_rank_rj(1:itwo)
@@ -326,10 +334,16 @@
       call allocate_idx_sph_1d1_IO
       call allocate_idx_sph_1d2_IO
 !
-      inod_gl_sph_IO(1:nnod_rj) =    inod_global_rj(1:nnod_rj)
       do i = 1, itwo
         idx_gl_sph_IO(1:nnod_rj,i) = idx_global_rj(1:nnod_rj,i)
       end do
+      inod_gl_sph_IO(1:nnod_rj)                                         &
+     &     =  idx_global_rj(1:nnod_rj,1)                                &
+     &      + idx_global_rj(1:nnod_rj,2) * nidx_global_rj(1)
+      if(inod_gl_sph_IO(nnod_rj) .eq. izero) then
+        num = (nidx_global_rj(2) + 1)
+        inod_gl_sph_IO(nnod_rj) = nidx_global_rj(1) * num + 1
+      end if
 !
       r_gl_1_IO(1:nidx_rj(1)) =     radius_1d_rj_r(1:nidx_rj(1))
       idx_gl_1_IO(1:nidx_rj(1)) =   idx_gl_1d_rj_r(1:nidx_rj(1))

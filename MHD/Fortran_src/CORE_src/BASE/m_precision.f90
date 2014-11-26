@@ -11,14 +11,17 @@
 !
       implicit none
 !
-!>  kind parameter for integer type variable (  8 byte )
-      integer, parameter   ::  kint  =       8
+!>  kind parameter for integer type variable (  4 byte )
+      integer, parameter   ::  kint  =       4
 !>  kind parameter for real    type variable (  8 byte )
       integer, parameter   ::  kreal =       8
 !>  character length for name               (  255 byte )
       integer, parameter   ::  kchara =    255
 !>  character length for file name          ( 2047 byte )
       integer, parameter   ::  len_fname = 2047
+!
+!>  kind parameter for long integer for global index (  8 byte )
+      integer, parameter   ::  kint_gl = 8
 !
       end module m_precision
 

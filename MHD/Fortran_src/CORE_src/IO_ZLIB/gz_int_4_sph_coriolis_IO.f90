@@ -94,7 +94,7 @@
       use m_int_4_sph_coriolis_IO
       use gz_node_geometry_IO
 !
-      integer(kind = kint) :: j3, j1, j2, itmp, nchara
+      integer(kind = kint) :: j3, j1, j2, itmp
       character(len=kchara) :: gzip_name
 !
 !

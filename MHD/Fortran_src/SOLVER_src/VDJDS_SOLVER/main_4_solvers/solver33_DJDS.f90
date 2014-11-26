@@ -66,6 +66,8 @@
       character(len=kchara) , intent(in):: PRECOND
       integer(kind=kint), intent(inout) :: ERROR
 !
+      integer :: ierror
+!
 !
       ERROR = 0
 !C
@@ -163,10 +165,11 @@
 !
 !C-- ERROR
       if (ERROR.gt.0) then
+        ierror = int(ERROR)
         if (my_rank.eq.0) then
           write (*,'(//,"#### GeoFEM SOLVER abort CODE=", i8,/)') ERROR
         end if
-        call MPI_FINALIZE(ERROR)
+        call MPI_FINALIZE(ierror)
         stop
       end if
 
@@ -278,8 +281,9 @@
 ! \beginARG       precondition method name
       integer(kind=kint )                  , intent(inout)   ::  IER
 ! \beginARG
+!
       integer(kind=kint ) :: ITR
-! \beginARG
+      integer :: ierror
 !
 !
       ITR = ITER
@@ -453,10 +457,11 @@
 !C
 !C-- ERROR
       if (IER.gt.0) then
+        ierror = int(IER)
         if (my_rank.eq.0) then
           write (*,'(//,"#### GeoFEM SOLVER abort CODE=", i8,/)') IER
         endif
-        call MPI_FINALIZE(IER)
+        call MPI_FINALIZE(ierror)
         stop
       end if
 
@@ -539,6 +544,7 @@
       integer(kind=kint )                  , intent(inout)   ::  IER
 !
       integer(kind=kint ) :: ITR
+      integer :: ierror
 !
 !
       ITR = ITER
@@ -712,10 +718,11 @@
 !C
 !C-- ERROR
       if (IER.gt.0) then
+        ierror = int(IER)
         if (my_rank.eq.0) then
           write (*,'(//,"#### GeoFEM SOLVER abort CODE=", i8,/)') IER
         endif
-        call MPI_FINALIZE(IER)
+        call MPI_FINALIZE(ierror)
         stop
       endif
 

@@ -12,7 +12,7 @@
 !
       use m_precision
 !
-      implicit REAL*8(A-H,O-Z)
+      implicit none
 !
 !-----------------------------------------------------------------------
 !
@@ -95,9 +95,16 @@
       integer(kind=kint ), parameter :: U = 8, W1 = 9, Y = 10, Z = 11
       integer(kind=kint ), parameter :: WK = 12, W2 = 13
 
+      integer(kind = kint) :: i, ii, k1, k2, j, jj, ieL, ieU, in, ip
+      integer(kind = kint) :: isL, isU, j1, j2, k, kk, L
+
       real(kind=kreal), dimension(NB) :: SWN, SWN_TT, SWN_W2, SWN_T0
-      real   (kind=kreal) :: TOL, W, SS, WNB
-      real   (kind=kreal), dimension(NB) :: PW, XN, WVAL
+      real(kind=kreal) :: TOL, SS, WNB
+      real(kind=kreal), dimension(NB) :: PW, XN, WVAL
+      real(kind=kreal) :: ALO, ALPHA, BETA, BNRM2, BNRM20, RHO0, RHO
+      real(kind=kreal) :: COEF1, COEF10, DNRM2, DNRM20, ETA, QSI
+      real(kind=kreal) :: RHO10, RHO1
+!
       data IFLAG/0/
 
 !C

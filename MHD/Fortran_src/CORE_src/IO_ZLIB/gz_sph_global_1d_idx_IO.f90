@@ -26,7 +26,6 @@
 !
       subroutine read_rtp_gl_1d_table_gz
 !
-      integer(kind = kint) :: nchara
       integer(kind = kint) :: i
 !
 !
@@ -64,10 +63,10 @@
 !
       end subroutine read_rtp_gl_1d_table_gz
 !
-! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------
+!
       subroutine read_rj_gl_1d_table_gz
 !
-      integer(kind = kint) :: nchara
       integer(kind = kint) :: i
 !
 !

@@ -3,7 +3,6 @@
 !
 !      Written by H. Matsui on Sep., 2006
 !
-!      subroutine set_global_nod_id_by_local
 !      subroutine set_global_ele_id_by_local
 !      subroutine set_global_surf_id_by_local
 !      subroutine set_global_edge_id_by_local
@@ -17,22 +16,6 @@
 ! ----------------------------------------------------------------------
 !
       contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_global_nod_id_by_local
-!
-      use m_geometry_parameter
-      use m_geometry_data
-      use set_global_id_by_local
-!
-      integer(kind = kint) :: inod
-!
-      do inod = 1, numnod
-        globalnodid(inod) = inod
-      end do
-!
-      end subroutine set_global_nod_id_by_local
 !
 ! ----------------------------------------------------------------------
 !

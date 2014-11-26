@@ -39,7 +39,6 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_geometry_z_commute'
       call set_geometry_z_commute
-      if (iflag_debug.eq.1) write(*,*) 'set_geometry_z_commute end'
 !
       end subroutine s_input_control_4_z_commute
 !

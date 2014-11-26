@@ -30,7 +30,7 @@
       integer(kind = kint) :: ndir_sph_IO
       integer(kind = kint) :: nnod_sph_IO
 !
-      integer(kind = kint), allocatable :: inod_gl_sph_IO(:)
+      integer(kind = kint_gl), allocatable :: inod_gl_sph_IO(:)
       integer(kind = kint), allocatable :: idx_gl_sph_IO(:,:)
 !
       integer(kind = kint) :: nidx_sph_IO(3)

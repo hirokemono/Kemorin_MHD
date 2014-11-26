@@ -110,9 +110,6 @@
 !
       do ip = 1, np_sph_org
         irank_org = mod(ip - 1,np_sph_new)
-        call MPI_Bcast(org_sph_mesh(ip)%sph_mesh%sph_rj%inod_global_rj, &
-     &      org_sph_mesh(ip)%sph_mesh%sph_rj%nnod_rj,                   &
-     &      CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
         call MPI_Bcast(org_sph_mesh(ip)%sph_mesh%sph_rj%idx_global_rj,  &
      &      itwo*org_sph_mesh(ip)%sph_mesh%sph_rj%nnod_rj,              &
      &      CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)

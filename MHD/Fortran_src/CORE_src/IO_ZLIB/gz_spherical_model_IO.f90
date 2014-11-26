@@ -54,7 +54,6 @@
 !
       subroutine read_gl_nodes_sph_gz
 !
-      integer(kind = kint) :: nchara
       integer(kind = kint) :: i
 !
 !
@@ -62,7 +61,7 @@
 !
       call allocate_nod_id_sph_IO
 !
-      call skip_gz_comment_int( inod_gl_sph_IO(1) )
+      call skip_gz_comment_int(i)
       read(textbuf,*) inod_gl_sph_IO(1), idx_gl_sph_IO(1,1:ndir_sph_IO)
       do i = 2, nnod_sph_IO
         call get_one_line_from_gz_f

@@ -65,8 +65,6 @@
       call alloc_type_spheric_param_rtp(rtp)
       call alloc_type_sph_1d_index_rtp(rtp)
 !
-      rtp%inod_global_rtp(1:rtp%nnod_rtp)                               &
-     &       = inod_gl_sph_IO(1:rtp%nnod_rtp)
       do i = 1, ithree
         rtp%idx_global_rtp(1:rtp%nnod_rtp,i)                            &
      &       = idx_gl_sph_IO(1:rtp%nnod_rtp,i)
@@ -111,8 +109,6 @@
       call alloc_type_spheric_param_rtm(rtm)
       call alloc_type_sph_1d_index_rtm(rtm)
 !
-      rtm%inod_global_rtm(1:rtm%nnod_rtm)                               &
-     &      = inod_gl_sph_IO(1:rtm%nnod_rtm)
       do i = 1, ithree
         rtm%idx_global_rtm(1:rtm%nnod_rtm,i)                            &
      &      = idx_gl_sph_IO(1:rtm%nnod_rtm,i)
@@ -157,8 +153,6 @@
       call alloc_type_spheric_param_rlm(rlm)
       call alloc_type_sph_1d_index_rlm(rlm)
 !
-      rlm%inod_global_rlm(1:rlm%nnod_rlm)                               &
-     &      = inod_gl_sph_IO(1:rlm%nnod_rlm)
       do i = 1, itwo
         rlm%idx_global_rlm(1:rlm%nnod_rlm,i)                            &
      &      = idx_gl_sph_IO(1:rlm%nnod_rlm,i)
@@ -202,7 +196,6 @@
       call alloc_type_spheric_param_rj(rj)
       call alloc_type_sph_1d_index_rj(rj)
 !
-      rj%inod_global_rj(1:rj%nnod_rj) = inod_gl_sph_IO(1:rj%nnod_rj)
       do i = 1, itwo
         rj%idx_global_rj(1:rj%nnod_rj,i)                                &
      &       = idx_gl_sph_IO(1:rj%nnod_rj,i)
@@ -255,12 +248,16 @@
       call allocate_idx_sph_1d2_IO
       call allocate_idx_sph_1d3_IO
 !
-      inod_gl_sph_IO(1:rtp%nnod_rtp)                                    &
-     &        = rtp%inod_global_rtp(1:rtp%nnod_rtp)
       do i = 1, ithree
         idx_gl_sph_IO(1:rtp%nnod_rtp,i)                                 &
      &        = rtp%idx_global_rtp(1:rtp%nnod_rtp,i)
       end do
+      inod_gl_sph_IO(1:rtp%nnod_rtp)                                    &
+     &        = rtp%idx_global_rtp(1:rtp%nnod_rtp,1)                    &
+     &         + (rtp%idx_global_rtp(1:rtp%nnod_rtp,2) - 1)             &
+     &          * rtp%nidx_global_rtp(1)                                &
+     &         + (rtp%idx_global_rtp(1:rtp%nnod_rtp,3) - 1)             &
+     &          * rtp%nidx_global_rtp(1)*rtp%nidx_global_rtp(2)
 !
       r_gl_1_IO(1:rtp%nidx_rtp(1))                                      &
      &        =     rtp%radius_1d_rtp_r(1:rtp%nidx_rtp(1))
@@ -306,12 +303,16 @@
       call allocate_idx_sph_1d2_IO
       call allocate_idx_sph_1d3_IO
 !
-      inod_gl_sph_IO(1:rtm%nnod_rtm)                                    &
-     &      = rtm%inod_global_rtm(1:rtm%nnod_rtm)
       do i = 1, ithree
         idx_gl_sph_IO(1:rtm%nnod_rtm,i)                                 &
      &      = rtm%idx_global_rtm(1:rtm%nnod_rtm,i)
       end do
+      inod_gl_sph_IO(1::rtm%nnod_rtm)                                   &
+     &     =   rtm%idx_global_rtm(1:rtm%nnod_rtm,1)                     &
+     &      + (rtm%idx_global_rtm(1:rtm%nnod_rtm,2) - 1)                &
+     &       * rtm%nidx_global_rtm(1)                                   &
+     &      +  rtm%idx_global_rtm(1:rtm%nnod_rtm,3)                     &
+     &       * rtm%nidx_global_rtm(1)*rtm%nidx_global_rtm(2)
 !
       r_gl_1_IO(1:rtm%nidx_rtm(1))                                      &
      &      =     rtm%radius_1d_rtm_r(1:rtm%nidx_rtm(1))
@@ -335,7 +336,6 @@
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rlm_grid), intent(inout) :: rlm
-      integer(kind = kint) :: i
 !
       ndir_sph_IO =            itwo
       sph_rank_IO(1:itwo) =    rlm%sph_rank_rlm(1:itwo)
@@ -355,12 +355,14 @@
       call allocate_idx_sph_1d1_IO
       call allocate_idx_sph_1d2_IO
 !
+      idx_gl_sph_IO(1:rlm%nnod_rlm,1)                                   &
+     &       = rlm%idx_global_rlm(1:rlm%nnod_rlm,1)
+      idx_gl_sph_IO(1:rlm%nnod_rlm,2)                                   &
+     &       = rlm%idx_global_rlm(1:rlm%nnod_rlm,2)
       inod_gl_sph_IO(1:rlm%nnod_rlm)                                    &
-     &       =    rlm%inod_global_rlm(1:rlm%nnod_rlm)
-      do i = 1, itwo
-        idx_gl_sph_IO(1:rlm%nnod_rlm,i)                                 &
-     &       = rlm%idx_global_rlm(1:rlm%nnod_rlm,i)
-      end do
+     &       =  rlm%idx_global_rlm(1:rlm%nnod_rlm,1)                    &
+     &        + rlm%idx_global_rlm(1:rlm%nnod_rlm,2)                    &
+     &         * rlm%nidx_global_rlm(1)
 !
       r_gl_1_IO(1:rlm%nidx_rlm(1))                                      &
      &       =     rlm%radius_1d_rlm_r(1:rlm%nidx_rlm(1))
@@ -384,7 +386,7 @@
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rj_grid), intent(inout) :: rj
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, num
 !
       ndir_sph_IO =            itwo
       sph_rank_IO(1:itwo) =    rj%sph_rank_rj(1:itwo)
@@ -404,11 +406,17 @@
       call allocate_idx_sph_1d1_IO
       call allocate_idx_sph_1d2_IO
 !
-      inod_gl_sph_IO(1:rj%nnod_rj) =    rj%inod_global_rj(1:rj%nnod_rj)
       do i = 1, itwo
         idx_gl_sph_IO(1:rj%nnod_rj,i)                                   &
      &      = rj%idx_global_rj(1:rj%nnod_rj,i)
       end do
+      inod_gl_sph_IO(1:rj%nnod_rj)                                      &
+     &     =  rj%idx_global_rj(1:rj%nnod_rj,1)                          &
+     &      + rj%idx_global_rj(1:rj%nnod_rj,2)  * rj%nidx_global_rj(1)
+      if(inod_gl_sph_IO(rj%nnod_rj) .eq. izero) then
+        num = (rj%nidx_global_rj(2) + 1)
+        inod_gl_sph_IO(rj%nnod_rj) = rj%nidx_global_rj(1) * num + 1
+      end if
 !
       r_gl_1_IO(1:rj%nidx_rj(1)) =   rj%radius_1d_rj_r(1:rj%nidx_rj(1))
       idx_gl_1_IO(1:rj%nidx_rj(1)) = rj%idx_gl_1d_rj_r(1:rj%nidx_rj(1))

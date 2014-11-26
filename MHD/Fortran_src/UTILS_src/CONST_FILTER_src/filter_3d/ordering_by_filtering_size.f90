@@ -90,7 +90,7 @@
       use m_filter_elength
 !
       integer(kind = kint), intent(in) :: inod
-      integer(kind = kint) :: ist_nod, ied_nod, inum, jnod
+      integer(kind = kint) :: inum, jnod
 !
 !
       do inum = 1, nnod_near_1nod_weight

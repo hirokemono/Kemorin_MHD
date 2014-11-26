@@ -180,7 +180,7 @@
       integer(kind = kint), intent(inout) :: inod_grp(numnod)
       integer(kind = kint), intent(inout) :: iweight_grp(numnod)
 !
-      integer(kind = kint) :: ist, ied, inum, jst, jed, jnum
+      integer(kind = kint) :: ist, ied
 !
 !
       iweight_grp(1:nnod_grp) = - iweight_grp(1:nnod_grp)
@@ -209,7 +209,7 @@
       integer(kind = kint), intent(inout) :: inod_grp(numnod)
       real(kind = kreal), intent(inout) :: weight_grp(numnod)
 !
-      integer(kind = kint) :: ist, ied, inum, jst, jed, jnum
+      integer(kind = kint) :: ist, ied
 !
 !
       ist = nnod_grp_org + 1

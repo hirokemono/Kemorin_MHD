@@ -20,12 +20,12 @@
 !
       module calypso_mpi
 !
-!      use mpi
+      use mpi
       use m_precision
 !
       implicit none
 !
-      include 'mpif.h'
+!      include 'mpif.h'
 !
 !>     MPI communicator
       integer :: CALYPSO_COMM
@@ -53,11 +53,15 @@
 !
       subroutine calypso_MPI_init
 !
+      integer :: nprocs4, my_rank4
+!
 !
       call  MPI_INIT(ierr_MPI)
       call  MPI_COMM_DUP (MPI_COMM_WORLD, CALYPSO_COMM, ierr_MPI)
-      call  MPI_COMM_SIZE(CALYPSO_COMM, nprocs, ierr_MPI)
-      call  MPI_COMM_RANK(CALYPSO_COMM, my_rank, ierr_MPI)
+      call  MPI_COMM_SIZE(CALYPSO_COMM, nprocs4, ierr_MPI)
+      call  MPI_COMM_RANK(CALYPSO_COMM, my_rank4, ierr_MPI)
+      nprocs =  nprocs4
+      my_rank = my_rank4
 !
       CALYPSO_CHARACTER = MPI_CHARACTER
 !
@@ -105,7 +109,7 @@
       write(*,*) ' ///// abnormal termination ///// ', icode,           &
      &                                            ' ', message
 !
-      call  MPI_ABORT(CALYPSO_COMM, ierr_MPI)
+      call  MPI_ABORT(CALYPSO_COMM, 999, ierr_MPI)
 !
       stop
       end subroutine calypso_MPI_abort
