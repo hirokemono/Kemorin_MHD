@@ -63,7 +63,7 @@
           do kr = 1, nidx_global_rtp(1)
             inod = kr + (kt-ione)*nidx_global_rtp(1)                    &
      &                + (kp-ione)*nidx_global_rtp(1)*nidx_global_rtp(2)
-            globalnodid(inod) = inod
+            inod_global(inod) = inod
             radius(inod) =     radius_1d_gl(kr)
             colatitude(inod) = w_colat(kt)
             longitude(inod) =  two*pi*dble(kp-1)                        &

@@ -58,7 +58,7 @@
       node%numnod =         numnod
       node%internal_node = internal_node
 !
-      node%inod_global => globalnodid
+      node%inod_global => inod_global
       node%xx =>  xx
 !
       node%rr =>    radius
@@ -94,7 +94,7 @@
       ele%interior_ele => interior_ele
       ele%e_multi =>      e_multi
 !
-      ele%iele_global => globalelmid
+      ele%iele_global => iele_global
       ele%elmtyp => elmtyp
       ele%nodelm => nodelm
 !

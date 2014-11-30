@@ -41,9 +41,9 @@
 !
       character(len=kchara), intent(in) :: gzip_name
 !
-      integer(kind = kint), intent(in) :: nnod, nele
       integer(kind = kint), intent(in) :: nnod_ele
-      integer(kind = kint), intent(in) :: ie(nele,nnod_ele)
+      integer(kind = kint_gl), intent(in) :: nnod, nele
+      integer(kind = kint_gl), intent(in) :: ie(nele,nnod_ele)
       real(kind = kreal), intent(in) :: xx(nnod,3)
 !
       integer (kind=kint), intent(in) :: num_field, ntot_comp
@@ -70,9 +70,9 @@
 !
       character(len=kchara), intent(in) :: gzip_name
 !
-      integer (kind=kint), intent(in) :: nnod
-      integer (kind=kint), intent(in) :: num_field, ntot_comp
-      integer(kind=kint ), intent(in) :: ncomp_field(num_field)
+      integer(kind=kint_gl), intent(in) :: nnod
+      integer(kind=kint), intent(in) :: num_field, ntot_comp
+      integer(kind=kint), intent(in) :: ncomp_field(num_field)
       character(len=kchara), intent(in) :: field_name(num_field)
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
@@ -93,9 +93,9 @@
 !
       character(len=kchara), intent(in) :: gzip_name
 !
-      integer(kind = kint), intent(in) :: nnod, nele
       integer(kind = kint), intent(in) :: nnod_ele
-      integer(kind = kint), intent(in) :: ie(nele,nnod_ele)
+      integer(kind = kint_gl), intent(in) :: nnod, nele
+      integer(kind = kint_gl), intent(in) :: ie(nele,nnod_ele)
       real(kind = kreal), intent(in) :: xx(nnod,3)
 !
 !
@@ -111,9 +111,9 @@
       subroutine write_gz_vtk_data(nnod, num_field, ntot_comp,          &
      &          ncomp_field, field_name, d_nod)
 !
-      integer (kind=kint), intent(in) :: nnod
-      integer (kind=kint), intent(in) :: num_field, ntot_comp
-      integer(kind=kint ), intent(in) :: ncomp_field(num_field)
+      integer(kind=kint_gl), intent(in) :: nnod
+      integer(kind=kint), intent(in) :: num_field, ntot_comp
+      integer(kind=kint), intent(in) :: ncomp_field(num_field)
       character(len=kchara), intent(in) :: field_name(num_field)
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
@@ -141,9 +141,9 @@
 !
       use m_phys_constants
 !
-      integer(kind = kint), intent(in) :: nnod, nele
       integer(kind = kint), intent(in) :: nnod_ele
-      integer(kind = kint), intent(in) :: ie(nele,nnod_ele)
+      integer(kind = kint_gl), intent(in) :: nnod, nele
+      integer(kind = kint_gl), intent(in) :: ie(nele,nnod_ele)
       real(kind = kreal), intent(in) :: xx(nnod,3)
 !
 !

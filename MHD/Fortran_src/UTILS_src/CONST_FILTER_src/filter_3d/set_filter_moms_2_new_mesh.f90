@@ -9,7 +9,7 @@
 !
       implicit none
 !
-      integer(kind = kint) :: max_gl_ele_newdomain
+      integer(kind = kint_gl) :: max_gl_ele_newdomain
       integer(kind = kint), allocatable :: iele_local_2nd(:)
 !
       integer(kind = kint), parameter :: n_vector = 3
@@ -83,7 +83,7 @@
 !
 !
       do iele = 1, numele
-        iele_gl = globalelmid(iele)
+        iele_gl = iele_global(iele)
         if (ie(iele,1) .le. new_node%internal_node                      &
      &      .and. iele_gl .le. max_gl_ele_newdomain                     &
      &      .and. iele_local_2nd(iele_gl) .gt. 0) then
@@ -146,7 +146,7 @@
 !
 !
       do iele = 1, numele
-        iele_gl = globalelmid(iele)
+        iele_gl = iele_global(iele)
         if (ie(iele,1) .le. new_node%internal_node                      &
      &      .and. iele_gl .le. max_gl_ele_newdomain                     &
      &      .and. iele_local_2nd(iele_gl) .gt. 0) then

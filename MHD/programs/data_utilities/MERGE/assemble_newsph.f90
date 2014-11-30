@@ -50,7 +50,7 @@
       integer(kind = kint) :: nlayer_ICB_new, nlayer_CMB_new
 !
       integer(kind = kint) :: istep
-      integer(kind = kint) :: jp, ip, irank_org, num, k, j , inod, nd
+      integer(kind = kint) :: jp, ip, irank_org
 !
 !
       write(*,*) 'Simulation start: PE. '

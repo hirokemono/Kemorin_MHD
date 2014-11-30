@@ -25,7 +25,7 @@
       call read_control_4_gen_shell_grids
       call s_set_control_4_gen_shell_eq
 !
-!       generate spherical mrid data
+!       generate spherical grid data
 !
       call s_set_sph_grid_for_equator
       call output_geom_rtp_sph_trans(izero)

@@ -29,7 +29,8 @@
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
       real(kind = kreal), intent(in) :: xx(numnod,3)
 !
-      integer(kind = kint), intent(in) :: nnod_on_edge, np_smp
+      integer(kind = kint), intent(in) :: np_smp
+      integer(kind = kint), intent(in) :: nnod_on_edge
       integer(kind = kint), intent(in) :: istack_n_on_e_smp(0:np_smp)
       integer(kind = kint), intent(in) :: iedge_4_nod(nnod_on_edge)
 !

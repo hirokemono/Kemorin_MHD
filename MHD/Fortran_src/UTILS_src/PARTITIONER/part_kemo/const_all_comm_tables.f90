@@ -209,10 +209,11 @@
       integer(kind = kint) :: jst_ele_im,  jed_ele_im,  jele
       integer(kind = kint) :: jst_surf_im, jed_surf_im, jsurf
       integer(kind = kint) :: jst_edge_im, jed_edge_im, jedge
-      integer(kind = kint) :: inod,  inod_org
-      integer(kind = kint) :: iele,  iele_org
-      integer(kind = kint) :: isurf, isurf_org
-      integer(kind = kint) :: iedge, iedge_org
+      integer(kind = kint) :: inod, iele, isurf, iedge
+      integer(kind = kint_gl) :: inod_org, iele_org
+      integer(kind = kint_gl) :: isurf_org, iedge_org
+      
+!
 !
       do j = 1, new_comm%num_neib
         jp = new_comm%id_neib(j)
@@ -222,6 +223,14 @@
         ISTACK_ELE_TMP(0) =  0
         ISTACK_SURF_TMP(0) = 0
         ISTACK_EDGE_TMP(0) = 0
+        jst_nod_im =  0
+        jed_nod_im =  0
+        jst_ele_im =  0
+        jed_ele_im =  0
+        jst_surf_im = 0
+        jed_surf_im = 0
+        jst_edge_im = 0
+        jed_edge_im = 0
         do jg = 1, NP_TMP
           if (NEIB_TMP(jg) .eq. ip) then
             jst_nod_im =  ISTACK_NOD_TMP(jg-1)

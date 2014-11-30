@@ -73,12 +73,12 @@
       subroutine write_gz_ucd_field_data(ntot_nod, ncomp_dat, nnod,     &
      &          inod_out, dat_out)
 !
-      integer(kind = kint), intent(in) :: ntot_nod, ncomp_dat
-      integer(kind = kint), intent(in) :: nnod
-      integer(kind = kint), intent(in) :: inod_out(ntot_nod)
+      integer(kind = kint), intent(in) :: ncomp_dat
+      integer(kind = kint_gl), intent(in) :: ntot_nod, nnod
+      integer(kind = kint_gl), intent(in) :: inod_out(ntot_nod)
       real(kind = kreal), intent(in) :: dat_out(ntot_nod, ncomp_dat)
 !
-      integer(kind = kint) :: inod
+      integer(kind = kint_gl) :: inod
       character(len=kchara) :: fmt_txt
 !
 !
@@ -154,10 +154,12 @@
       subroutine read_gz_udt_field_data(nnod_in, ncomp_dat,             &
      &          dat_in)
 !
-      integer(kind = kint), intent(in) :: nnod_in, ncomp_dat
+      integer(kind = kint), intent(in) :: ncomp_dat
+      integer(kind = kint_gl), intent(in) :: nnod_in
       real(kind = kreal), intent(inout) :: dat_in(nnod_in, ncomp_dat)
 !
-      integer(kind = kint) :: inod, ist, itmp
+      integer(kind = kint_gl) :: inod
+      integer(kind = kint) :: ist, itmp
 !
 !
       do inod = 1, nnod_in
@@ -182,7 +184,7 @@
       subroutine read_gz_udt_mesh_header(nnod_input, nele_in,           &
      &          ncomptot_in)
 !
-      integer(kind = kint), intent(inout) :: nnod_input, nele_in
+      integer(kind = kint_gl), intent(inout) :: nnod_input, nele_in
       integer(kind = kint), intent(inout) :: ncomptot_in
 !
       integer(kind = kint) :: itmp
@@ -198,13 +200,14 @@
       subroutine read_gz_ucd_mesh_data(nnod_in, nele_in,                &
      &          nnod_4_ele, inod_gl, iele_gl, xx_in, ie_in)
 !
-      integer(kind = kint), intent(in) :: nnod_in, nele_in, nnod_4_ele
-      integer(kind = kint), intent(inout) :: iele_gl(nele_in)
-      integer(kind = kint), intent(inout) :: ie_in(nele_in,nnod_4_ele)
-      integer(kind = kint), intent(inout) :: inod_gl(nnod_in)
+      integer(kind=kint), intent(in) :: nnod_4_ele
+      integer(kind=kint_gl), intent(in) :: nnod_in, nele_in
+      integer(kind=kint_gl), intent(inout) :: iele_gl(nele_in)
+      integer(kind=kint_gl), intent(inout) :: ie_in(nele_in,nnod_4_ele)
+      integer(kind=kint_gl), intent(inout) :: inod_gl(nnod_in)
       real(kind = kreal), intent(inout) :: xx_in(nnod_in,3)
 !
-      integer(kind = kint) :: inod, iele
+      integer(kind = kint_gl) :: inod, iele
       integer(kind = kint) :: itmp
       character(len=kchara) :: tmpchara
 !
@@ -228,7 +231,7 @@
       subroutine write_gz_udt_mesh_header( nnod_output,                 &
      &          nele_out, ncomp_output)
 !
-      integer(kind = kint), intent(in) :: nnod_output, nele_out
+      integer(kind = kint_gl), intent(in) :: nnod_output, nele_out
       integer(kind = kint), intent(in) :: ncomp_output
 !
 !
@@ -246,11 +249,12 @@
 !
       use m_geometry_constants
 !
-      integer(kind = kint), intent(in) :: ntot_ele, nnod_4_ele, nele
-      integer(kind = kint), intent(in) :: iele_gl(ntot_ele)
-      integer(kind = kint), intent(in) :: ie_out(ntot_ele,nnod_4_ele)
+      integer(kind=kint), intent(in) :: nnod_4_ele
+      integer(kind=kint_gl), intent(in) :: ntot_ele, nele
+      integer(kind=kint_gl), intent(in) :: iele_gl(ntot_ele)
+      integer(kind=kint_gl), intent(in) :: ie_out(ntot_ele,nnod_4_ele)
 !
-      integer(kind = kint) :: iele
+      integer(kind = kint_gl) :: iele
       character(len=6) :: eleflag
       character(len=kchara) :: fmt_txt
 !

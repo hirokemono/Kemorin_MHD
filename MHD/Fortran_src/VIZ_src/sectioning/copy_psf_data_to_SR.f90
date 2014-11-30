@@ -22,8 +22,8 @@
 !!
 !!      subroutine set_recv_2_ele_connect_psf(i_psf, nprocs, num_psf,   &
 !!     &          ntot_output, istack_nod_para, istack_ele_para,        &
-!!     &          istack_ele_recv, itri, irecv,                         &
-!!     &          nele_ucd, nnod_4_ele_ucd, ie_ucd)
+!!     &          istack_ele_recv, itri, irecv, ucd_out)
+!!        type(ucd_data), intent(inout) :: ucd_out
 !!@endverbatim
 !
       module copy_psf_data_to_SR
@@ -87,11 +87,12 @@
      &          ncomp_dat, recv, nnod_ucd, ntot_comp_ucd, d_ucd)
 !
       integer(kind = kint), intent(in) :: i_psf, nprocs, num_psf
-      integer(kind = kint), intent(in) :: nnod_ucd, ntot_comp_ucd
+      integer(kind = kint), intent(in) :: ntot_comp_ucd
       integer(kind = kint), intent(in) :: ntot_output, ncomp_dat
       integer(kind = kint), intent(in) :: istack_nod_para(0:nprocs)
       integer(kind = kint), intent(in)                                  &
      &      :: istack_nod_recv(0:nprocs*num_psf)
+      integer(kind = kint_gl), intent(in) :: nnod_ucd
       real(kind = kreal), intent(in) :: recv(ntot_output*ncomp_dat)
 !
       real(kind = kreal), intent(inout)                                 &
@@ -161,9 +162,9 @@
 !
       subroutine set_recv_2_ele_connect_psf(i_psf, nprocs, num_psf,     &
      &          ntot_output, istack_nod_para, istack_ele_para,          &
-     &          istack_ele_recv, itri, irecv,                           &
-     &          nele_ucd, nnod_4_ele_ucd, ie_ucd)
+     &          istack_ele_recv, itri, irecv, ucd_out)
 !
+      use t_ucd_data
 !
       integer(kind = kint), intent(in) :: i_psf, num_psf, nprocs
       integer(kind = kint), intent(in) :: ntot_output, itri
@@ -172,10 +173,8 @@
       integer(kind = kint), intent(in)                                  &
      &      :: istack_ele_recv(0:nprocs*num_psf)
       integer(kind = kint), intent(in) :: irecv(ntot_output*itri)
-      integer(kind = kint), intent(in) :: nele_ucd, nnod_4_ele_ucd
 !
-      integer(kind = kint), intent(inout)                               &
-     &      :: ie_ucd(nele_ucd,nnod_4_ele_ucd)
+      type(ucd_data), intent(inout) :: ucd_out
 !
       integer(kind = kint) :: inum, k0, kk, kst, num
       integer(kind = kint) :: ip, nd, iele
@@ -193,7 +192,7 @@
             iele = inum + istack_ele_para(ip-1) - istack_ele_para(0)
             kk = kst + inum
 !
-            ie_ucd(iele,nd) = irecv(kk) + istack_nod_para(ip-1)         &
+            ucd_out%ie(iele,nd) = irecv(kk) + istack_nod_para(ip-1)         &
      &                                  - istack_nod_para(0)
           end do
         end do

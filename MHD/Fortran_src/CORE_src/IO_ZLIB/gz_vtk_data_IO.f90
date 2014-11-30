@@ -67,7 +67,7 @@
 !
       subroutine write_gz_vtk_fields_head(nnod)
 !
-      integer(kind=kint ), intent(in) :: nnod
+      integer(kind=kint_gl), intent(in) :: nnod
 !
 !
       write(textbuf,'(a1)')        char(0)
@@ -114,11 +114,12 @@
 !
       use m_phys_constants
 !
-      integer (kind=kint), intent(in) :: ntot_nod, ncomp_field
-      integer (kind=kint), intent(in) :: nnod
+      integer(kind=kint), intent(in) :: ncomp_field
+      integer(kind=kint_gl), intent(in) :: ntot_nod, nnod
       real(kind = kreal), intent(in) :: d_nod(ntot_nod,ncomp_field)
 !
-      integer(kind = kint) :: inod, nd, nd2
+      integer(kind = kint_gl) :: inod
+      integer(kind = kint) :: nd, nd2
 !
 !
       if (ncomp_field .eq. n_sym_tensor) then
@@ -149,7 +150,7 @@
 !
       subroutine write_gz_vtk_node_head(nnod)
 !
-      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint_gl), intent(in) :: nnod
 !
 !
       write(textbuf,'(a,a1)') '# vtk DataFile Version 2.0', char(0)
@@ -178,9 +179,10 @@
 !
       subroutine write_gz_vtk_connect_head(nele, nnod_ele)
 !
-      integer(kind = kint), intent(in) :: nele, nnod_ele
+      integer(kind = kint), intent(in) :: nnod_ele
+      integer(kind = kint_gl), intent(in) :: nele
 !
-      integer(kind = kint) :: nums
+      integer(kind = kint_gl) :: nums
 !
 !
       nums = nele*(nnod_ele+1)
@@ -195,9 +197,11 @@
 !
       use m_geometry_constants
 !
-      integer(kind = kint), intent(in) :: nele, nnod_ele
+      integer(kind = kint), intent(in) :: nnod_ele
+      integer(kind = kint_gl), intent(in) :: nele
 !
-      integer(kind = kint) :: iele, icellid
+      integer(kind = kint) :: icellid
+      integer(kind = kint_gl) :: iele
 !
 !
       if (nnod_ele .eq. num_t_linear) then
@@ -225,12 +229,12 @@
       subroutine write_gz_vtk_connect_data(ntot_ele, nnod_ele,          &
      &          nele, ie)
 !
-      integer(kind = kint), intent(in) :: ntot_ele, nnod_ele
-      integer(kind = kint), intent(in) :: nele
-      integer(kind = kint), intent(in) :: ie(ntot_ele,nnod_ele)
+      integer(kind = kint), intent(in) :: nnod_ele
+      integer(kind = kint_gl), intent(in) :: ntot_ele, nele
+      integer(kind = kint_gl), intent(in) :: ie(ntot_ele,nnod_ele)
 !
-      integer(kind = kint) :: iele
-      integer(kind = kint), dimension(nnod_ele) :: ie0
+      integer(kind = kint_gl) :: iele
+      integer(kind = kint_gl), dimension(nnod_ele) :: ie0
       character(len=kchara) :: fmt_txt
 !
 !
@@ -250,11 +254,11 @@
 !
       subroutine read_gz_vtk_fields_head(nnod)
 !
-      integer(kind=kint ), intent(inout) :: nnod
+      integer(kind=kint_gl), intent(inout) :: nnod
       character(len=kchara)  :: label
 !
 !
-      call skip_gz_comment_chara_int(label, nnod)
+      call skip_gz_comment_chara_lint(label, nnod)
 !
       end subroutine read_gz_vtk_fields_head
 !
@@ -300,11 +304,11 @@
 !
       use m_phys_constants
 !
-      integer (kind=kint), intent(in) :: ntot_nod, ncomp_field
-      integer (kind=kint), intent(in) :: nnod
+      integer(kind=kint), intent(in) :: ncomp_field
+      integer(kind=kint_gl), intent(in) :: ntot_nod, nnod
       real(kind = kreal), intent(inout) :: d_nod(ntot_nod,ncomp_field)
 !
-      integer(kind = kint) :: inod
+      integer(kind = kint_gl) :: inod
       real(kind = kreal) :: rtmp
 !
 !
@@ -350,15 +354,16 @@
 !
       subroutine read_gz_vtk_connect_head(nele, nnod_ele)
 !
-      integer(kind = kint), intent(inout) :: nele, nnod_ele
+      integer(kind = kint), intent(inout) :: nnod_ele
+      integer(kind = kint_gl), intent(inout) :: nele
 !
-      integer(kind = kint) :: nums
+      integer(kind = kint_gl) :: nums
       character(len=kchara) :: tmpchara
 !
 !
       call get_one_line_from_gz_f
       read(textbuf,*) tmpchara, nele, nums
-      nnod_ele = nums / nele - 1
+      nnod_ele = int(nums / nele) - 1
 !
       end subroutine read_gz_vtk_connect_head
 !
@@ -366,9 +371,9 @@
 !
       subroutine read_gz_vtk_cell_type(nele)
 !
-      integer(kind = kint), intent(in) :: nele
+      integer(kind = kint_gl), intent(in) :: nele
 !
-      integer(kind = kint) :: iele
+      integer(kind = kint_gl) :: iele
 !
 !
       call get_one_line_from_gz_f
@@ -384,11 +389,12 @@
       subroutine read_gz_vtk_connect_data(ntot_ele, nnod_ele,           &
      &          nele, ie)
 !
-      integer(kind = kint), intent(in) :: ntot_ele, nnod_ele
+      integer(kind = kint_gl), intent(in) :: ntot_ele, nnod_ele
       integer(kind = kint), intent(in) :: nele
       integer(kind = kint), intent(inout) :: ie(ntot_ele,nnod_ele)
 !
-      integer(kind = kint) :: iele, itmp
+      integer(kind = kint_gl) :: iele
+      integer(kind = kint) :: itmp
 !
 !
       do iele = 1, nele

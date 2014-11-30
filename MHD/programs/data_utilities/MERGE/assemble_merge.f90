@@ -33,7 +33,7 @@
 !  ===========
 ! . for local 
 !  ===========
-      integer(kind=kint ) :: istep, i, k
+      integer(kind=kint ) :: istep
 !
 ! ==============================================                                                                                                            
 ! * get number of  nodes,elements for whole PES

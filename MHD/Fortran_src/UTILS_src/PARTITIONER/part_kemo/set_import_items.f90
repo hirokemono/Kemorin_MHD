@@ -40,8 +40,8 @@
       integer(kind = kint), intent(inout) :: ntot_import
       integer(kind = kint), intent(inout) :: istack_import(0:num_neib)
 !
-      integer(kind= kint) :: ist, ied, inum, inod, icou
-      integer(kind= kint) :: j, jp, jnod_org
+      integer(kind= kint) :: j, jp, ist, ied, inum, inod, icou
+      integer(kind= kint_gl) :: jnod_org
 !
 !
 !
@@ -77,8 +77,8 @@
 !
       integer(kind = kint), intent(inout) :: item_import(ntot_import)
 !
-      integer(kind= kint) :: ist, ied, inum, inod, icou
-      integer(kind= kint) :: j, jp, jnod_org
+      integer(kind= kint) :: j, jp, ist, ied, inum, inod, icou
+      integer(kind= kint_gl) :: jnod_org
 !
 !
       do j = 1, num_neib
@@ -111,7 +111,7 @@
       integer(kind = kint), intent(in) :: item_subd(ntot_subd)
 !
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: id_gl_org(num)
+      integer(kind = kint_gl), intent(in) :: id_gl_org(num)
       integer(kind = kint), intent(in) :: IGROUP(num)
 !
       integer(kind = kint), intent(in) :: num_neib
@@ -120,8 +120,8 @@
       integer(kind = kint), intent(inout) :: ntot_import
       integer(kind = kint), intent(inout) :: istack_import(0:num_neib)
 !
-      integer(kind= kint) :: ist, ied, inum, id, icou
-      integer(kind= kint) :: j, jp, jd_org
+      integer(kind= kint) :: j, jp, ist, ied, inum, id, icou
+      integer(kind= kint_gl) :: jd_org
 !
 !
 !
@@ -160,7 +160,7 @@
       integer(kind = kint), intent(in) :: item_subd(ntot_subd)
 !
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: id_gl_org(num)
+      integer(kind = kint_gl), intent(in) :: id_gl_org(num)
       integer(kind = kint), intent(in) :: IGROUP(num)
 !
       integer(kind = kint), intent(in) :: num_neib
@@ -170,8 +170,8 @@
 !
       integer(kind = kint), intent(inout) :: item_import(ntot_import)
 !
-      integer(kind= kint) :: ist, ied, inum, id, icou
-      integer(kind= kint) :: j, jp, jd_org
+      integer(kind= kint) :: j, jp, ist, ied, inum, id, icou
+      integer(kind= kint_gl) :: jd_org
 !
 !
 !

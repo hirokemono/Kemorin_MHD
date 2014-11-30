@@ -89,7 +89,8 @@
       character(len=kchara), intent(in) :: mesh_head
       integer(kind = kint), intent(in)  :: my_rank2
 
-      integer(kind = kint) :: ip2, inod, inod_g
+      integer(kind = kint) :: ip2, inod
+      integer(kind = kint_gl) :: inod_g
 !
 !
       ip2 = my_rank2 + 1

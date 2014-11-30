@@ -106,8 +106,6 @@
       use m_comm_data_IO
       use copy_communication_table
 !
-      integer(kind = kint) :: i
-!
 !
       num_neib_w_fil = num_neib_domain_IO
 !

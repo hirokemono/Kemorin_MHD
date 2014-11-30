@@ -42,8 +42,6 @@
       use set_element_id_4_node
       use delete_small_weighting
 !
-      integer(kind = kint) :: i
-!
 !
       if (inod_end_filter .eq. -1) then
         inod_end_filter = internal_node

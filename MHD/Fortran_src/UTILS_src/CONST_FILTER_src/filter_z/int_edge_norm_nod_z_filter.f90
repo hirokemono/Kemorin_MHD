@@ -39,7 +39,7 @@
 !
 !
       do inod = 1, numnod
-        inod0 = globalnodid(inod)
+        inod0 = inod_global(inod)
         zz0 = xx(inod0,3) 
         do je = 1, nfilter2_3 - 1
           j0 = je - nneib_nod(inod0,1) - 1

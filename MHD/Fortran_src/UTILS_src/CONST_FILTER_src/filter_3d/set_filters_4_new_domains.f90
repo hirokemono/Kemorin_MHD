@@ -95,13 +95,13 @@
 !
       integer(kind = kint), intent(in) :: ip2
 !
-      integer(kind = kint) :: inod, inod_g, inum
-      integer(kind = kint) :: jnod, jnod_g
+      integer(kind = kint) :: inod, jnod, inum
+      integer(kind = kint_gl) :: inod_g, jnod_g
       integer(kind = kint) :: ist, ied
 !
 !
       do inod = 1, internal_node
-        inod_g = globalnodid(inod)
+        inod_g = inod_global(inod)
         if (IGROUP_nod(inod_g) .eq. ip2) then
           ist = istack_near_nod_w_filter(inod-1) + 1
           ied = istack_near_nod_w_filter(inod)
@@ -109,7 +109,7 @@
             jnod = inod_near_nod_w_filter(inum)
             if (jnod .gt. numnod) write(*,*) 'jnod', jnod, inum
             if (jnod .lt. 1) write(*,*) 'jnod', jnod, inum
-            jnod_g = globalnodid(jnod)
+            jnod_g = inod_global(jnod)
             imark_whole_nod(jnod_g) = 1
           end do
           ist = istack_near_nod_f_filter(inod-1) + 1
@@ -118,14 +118,14 @@
             jnod = inod_near_nod_f_filter(inum)
             if (jnod .gt. numnod) write(*,*) 'jnod', jnod, inum
             if (jnod .lt. 1) write(*,*) 'jnod', jnod, inum
-            jnod_g = globalnodid(jnod)
+            jnod_g = inod_global(jnod)
             imark_whole_nod(jnod_g) = 1
           end do
         end if
       end do
 !
       do jnod = 1, numnod
-        jnod_g = globalnodid(jnod)
+        jnod_g = inod_global(jnod)
         if (imark_whole_nod(jnod_g) .gt. 0) then
           xx_whole_nod(jnod_g,1) = xx(jnod,1)
           xx_whole_nod(jnod_g,2) = xx(jnod,2)
@@ -147,7 +147,7 @@
       integer(kind = kint), intent(in) :: ip2
       type(node_data), intent(inout) :: new_node
 !
-      integer(kind = kint) :: inod, icou, inod_g, ntot_tmp
+      integer(kind = kint) :: inod, inod_g, ntot_tmp
 !
 !
       nnod_filtering = 0
@@ -212,7 +212,8 @@
       integer(kind = kint), intent(in) :: ip2
       type(node_data), intent(inout) :: new_node
 !
-      integer(kind = kint) :: inod, icou, inod_g
+      integer(kind = kint) :: inod, icou
+      integer(kind = kint_gl) :: inod_g
 !
 !   set internal nodes
 !
@@ -243,7 +244,8 @@
       use m_internal_4_partitioner
 !
       integer(kind = kint), intent(in) :: ip2
-      integer(kind = kint) :: ist, inum, inod_g
+      integer(kind = kint) :: ist, inum
+      integer(kind = kint_gl) :: inod_g
 !
       ist = istack_numnod_sub(ip2-1)
       do inum = 1, numnod_4_subdomain(ip2)
@@ -360,11 +362,12 @@
       integer(kind = kint), intent(in) :: ip2
       integer(kind = kint), intent(inout) :: icou_gl
 !
-      integer(kind = kint) :: inod, inod_g
+      integer(kind = kint) :: inod
+      integer(kind = kint_gl) :: inod_g
 !
 !
       do inod = 1, internal_node
-        inod_g = globalnodid(inod)
+        inod_g = inod_global(inod)
         if (IGROUP_nod(inod_g) .eq. ip2) then
           icou_gl = icou_gl + 1
           inod_filter_new_2(icou_gl) = inod_local_part(inod_g)
@@ -404,8 +407,8 @@
       integer(kind = kint), intent(in) :: ip2
       integer(kind = kint), intent(inout) :: icou_gl
 !
-      integer(kind = kint) :: inod, inod_g, inum
-      integer(kind = kint) :: jnod, jnod_g, jnod_l
+      integer(kind = kint) :: inod, inum, jnod, jnod_l
+      integer(kind = kint_gl) :: inod_g, jnod_g
       integer(kind = kint) :: jnum_org, jnum_new
       integer(kind = kint) :: ist_org, ist_new
 !
@@ -423,7 +426,7 @@
 !
 !
       do inod = 1, internal_node
-        inod_g = globalnodid(inod)
+        inod_g = inod_global(inod)
 !
         if (IGROUP_nod(inod_g) .eq. ip2) then
           icou_gl = icou_gl + 1
@@ -433,7 +436,7 @@
             jnum_org = inum + ist_org
             jnum_new = inum + ist_new
             jnod = inod_near_nod_w_filter(jnum_org)
-            jnod_g = globalnodid(jnod)
+            jnod_g = inod_global(jnod)
             jnod_l = inod_local_part(jnod_g)
 !
             inod_near_nod_w_filter2(jnum_new) = jnod_l
@@ -450,7 +453,7 @@
             jnum_org = inum + ist_org
             jnum_new = inum + ist_new
             jnod = inod_near_nod_f_filter(jnum_org)
-            jnod_g = globalnodid(jnod)
+            jnod_g = inod_global(jnod)
             jnod_l = inod_local_part(jnod_g)
 !
             inod_near_nod_f_filter2(jnum_new) = jnod_l

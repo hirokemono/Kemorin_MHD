@@ -35,7 +35,6 @@
       integer(kind = kint), intent(in) :: iele_tri(nele_tri)
 !
       integer(kind = kint) :: inum, iele, isurf, icou, iflag
-      integer(kind = kint) :: k1, inod
       integer(kind = kint) :: isf1, isf2, isf3, isf4, isf5, isf6
 !
 !

@@ -306,7 +306,7 @@
 !
 !      write(50+my_rank,*) 'd_nod'
 !      do i = 1, numnod
-!        write(50+my_rank,*) i, globalnodid(i),   &
+!        write(50+my_rank,*) i, inod_global(i),   &
 !     &          d_prod1(i,1:ncomp_4_product1),   &
 !     &          d_prod2(i,1:ncomp_4_product2),   &
 !     &         d_nod(i,1:num_tot_nod_phys_vis)

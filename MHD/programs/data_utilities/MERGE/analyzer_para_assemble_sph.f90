@@ -252,7 +252,7 @@
       use set_field_file_names
 !
       integer(kind = kint) :: istep, icou
-      integer(kind = kint) :: ip, irank_org, num, j
+      integer(kind = kint) :: ip, irank_org, num
 !
 !
 !     ---------------------

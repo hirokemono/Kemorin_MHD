@@ -91,7 +91,7 @@
         type(field_geometry_data) :: inner_core
 !
 !>       global element id (where i:element id)
-        integer(kind=kint), pointer :: iele_global_org(:)
+        integer(kind=kint_gl), pointer :: iele_global_org(:)
 !>     original element connectivity  (where i:nodal order j:element id)
         integer(kind=kint), pointer :: ie_org(:,:)
       end type mesh_data_MHD

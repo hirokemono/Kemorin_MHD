@@ -102,17 +102,17 @@
      &       my_rank, DJDS_comm_fl%istack_export
       end if
 !
-!       write(50+my_rank,*) 'i, globalnodid(i), iflag_nod(i)'
+!       write(50+my_rank,*) 'i, inod_global(i), iflag_nod(i)'
 !       do i = 1, numnod
-!         write(50+my_rank,*) i, globalnodid(i), iflag_nod(i)
+!         write(50+my_rank,*) i, inod_global(i), iflag_nod(i)
 !       end do
 !       write(50+my_rank,*) 'i, item_import(i)'
 !       do i = 1, ntot_import
-!         write(50+my_rank,*) i, item_import(i), globalnodid(item_import(i))
+!         write(50+my_rank,*) i, item_import(i), inod_global(item_import(i))
 !       end do
 !       write(50+my_rank,*) 'i, item_export(i)'
 !       do i = 1, ntot_export
-!         write(50+my_rank,*) i, item_export(i), globalnodid(item_export(i))
+!         write(50+my_rank,*) i, item_export(i), inod_global(item_export(i))
 !       end do
 !
       call deallocate_flags_reduced_comm

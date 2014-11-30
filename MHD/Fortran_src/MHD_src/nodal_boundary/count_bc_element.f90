@@ -182,8 +182,7 @@
       integer (kind= kint), intent(in)    :: ibc(numnod)
       integer (kind= kint), intent(inout) :: num_index_ibc
 !
-      integer (kind= kint) :: iele, isig
-      integer (kind= kint) :: kk
+      integer (kind= kint) :: iele, kk
 !
 !   conunt node in elements for boundary
 !

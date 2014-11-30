@@ -110,18 +110,18 @@
      &                   :: phys_data(nnod_target*nfield_target)
 !
       integer(kind = kint) :: j, ic, ii
-      integer(kind = kint) :: inod, inod_global
+      integer(kind = kint) :: inod, inod_gl
 !
 !
       do inod =1, mesh%node%internal_node
-        inod_global = mesh%node%inod_global(inod)
+        inod_gl = mesh%node%inod_global(inod)
 !
-        if (inod_global .le. nnod_target) then
+        if (inod_gl .le. nnod_target) then
           ic  = 0
           do j = 1, nfield_target
             if ( icomp_target(j) .ge. 0) then
               ic = icomp_target(j) + ifield_target(j)
-              ii = inod_global+(j-1)*nnod_target
+              ii = inod_gl+(j-1)*nnod_target
 !
               phys_data(ii) = ucd%d_ucd(inod,ic)
             end if

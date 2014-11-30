@@ -202,9 +202,7 @@
           ist = (i_psf-1)*nprocs
           call set_recv_2_ele_connect_psf(i_psf, nprocs, num_psf,       &
      &        ntot_output, istack_nod_para(ist), istack_ele_para(ist),  &
-     &        istack_ele_recv, ithree, irecv,                           &
-     &        ucd_out(i_psf)%nele,ucd_out(i_psf)%nnod_4_ele,            &
-     &        ucd_out(i_psf)%ie)
+     &        istack_ele_recv, ithree, irecv, ucd_out(i_psf))
         end do
 !
       end if

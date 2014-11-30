@@ -3,12 +3,10 @@
 !
 !      Written by H. Matsui on Feb., 2007
 !
-!      subroutine write_merged_gz_ucd_fields(nnod, num_field,           &
-!     &          ntot_comp, ncomp_field, field_name, d_nod,             &
-!     &          istack_numnod, istack_intnod)
-!      subroutine write_merged_gz_ucd_mesh(nnod, nele, nnod_ele,        &
-!     &          xx, ie, ntot_comp, istack_numnod, istack_intnod,       &
-!     &          istack_numele)
+!!      subroutine write_merged_gz_ucd_fields(ucd, m_ucd)
+!!      subroutine write_merged_gz_ucd_mesh(ucd, m_ucd)
+!!        type(ucd_data), intent(in) :: ucd
+!!        type(merged_ucd_data), intent(in) :: m_ucd
 !
       module gz_merged_ucd_data_IO
 !
@@ -29,84 +27,76 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_merged_gz_ucd_fields(nnod, num_field,            &
-     &          ntot_comp, ncomp_field, field_name, d_nod,              &
-     &          istack_numnod, istack_intnod)
+      subroutine write_merged_gz_ucd_fields(ucd, m_ucd)
 !
-      integer (kind=kint), intent(in) :: nnod
-      integer (kind=kint), intent(in) :: num_field, ntot_comp
-      integer(kind=kint ), intent(in) :: ncomp_field(num_field)
-      character(len=kchara), intent(in) :: field_name(num_field)
-      real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
+      use t_ucd_data
 !
-      integer (kind=kint), intent(in) :: istack_numnod(0:nprocs)
-      integer (kind=kint), intent(in) :: istack_intnod(0:nprocs)
+      type(ucd_data), intent(in) :: ucd
+      type(merged_ucd_data), intent(in) :: m_ucd
 !
 !
       if(my_rank .eq. 0) then
-        call write_gz_udt_field_header(num_field, ncomp_field,          &
-     &      field_name)
+        call write_gz_udt_field_header(ucd%num_field, ucd%num_comp,     &
+     &      ucd%phys_name)
       end if
 !
-      call write_merged_gz_udt_field(nnod, ntot_comp, d_nod,            &
-     &    istack_numnod, istack_intnod)
+      call write_merged_gz_udt_field                                    &
+     &   (ucd%nnod, ucd%ntot_comp, ucd%d_ucd,                           &
+     &    m_ucd%istack_merged_nod, m_ucd%istack_merged_intnod)
 !
       end subroutine write_merged_gz_ucd_fields
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_merged_gz_ucd_mesh(nnod, nele, nnod_ele,         &
-     &          xx, ie, ntot_comp, istack_numnod, istack_intnod,        &
-     &          istack_numele)
+      subroutine write_merged_gz_ucd_mesh(ucd, m_ucd)
 !
       use m_phys_constants
+      use t_ucd_data
 !
-      integer(kind = kint), intent(in) :: nnod, nele
-      integer(kind = kint), intent(in) :: nnod_ele, ntot_comp
-      integer(kind = kint), intent(in) :: ie(nele,nnod_ele)
-      real(kind = kreal), intent(in) :: xx(nnod,3)
-!
-      integer (kind=kint), intent(in) :: istack_numnod(0:nprocs)
-      integer (kind=kint), intent(in) :: istack_intnod(0:nprocs)
-      integer (kind=kint), intent(in) :: istack_numele(0:nprocs)
+      type(ucd_data), intent(in) :: ucd
+      type(merged_ucd_data), intent(in) :: m_ucd
 !
 !
       if(my_rank .eq. 0) then
-        call write_gz_udt_mesh_header(istack_intnod(nprocs),            &
-     &      istack_numele(nprocs), ntot_comp)
+        call write_gz_udt_mesh_header                                   &
+     &     (m_ucd%istack_merged_intnod(nprocs),                         &
+     &      m_ucd%istack_merged_ele(nprocs), ucd%ntot_comp)
       end if
 !
-      call write_merged_gz_udt_field(nnod, n_vector, xx,                &
-     &    istack_numnod, istack_intnod)
-      call write_merged_gz_ucd_connect(nele, nnod_ele, ie,              &
-     &    istack_numele)
+      call write_merged_gz_udt_field(ucd%nnod, n_vector, ucd%xx,        &
+     &    m_ucd%istack_merged_nod, m_ucd%istack_merged_intnod)
+      call write_merged_gz_ucd_connect(ucd%nele, ucd%nnod_4_ele,        &
+     &    ucd%ie, m_ucd%istack_merged_ele)
 !
       end subroutine write_merged_gz_ucd_mesh
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_merged_gz_ucd_connect(nele, nnod_ele, ie,        &
+      subroutine write_merged_gz_ucd_connect(numele, nnod_ele, ie,      &
      &          istack_numele)
 !
       use m_geometry_constants
       use m_merged_ucd_data
 !
-      integer(kind = kint), intent(in) :: nele, nnod_ele
-      integer(kind = kint), intent(in) :: ie(nele,nnod_ele)
+      integer(kind = kint), intent(in) :: nnod_ele
+      integer(kind = kint_gl), intent(in) :: numele
+      integer(kind = kint_gl), intent(in) :: ie(numele,nnod_ele)
 !
-      integer (kind=kint), intent(in) :: istack_numele(0:nprocs)
+      integer(kind = kint_gl), intent(in) :: istack_numele(0:nprocs)
 !
-      integer(kind = kint) :: ip, num, iele, isend_rank
+      integer(kind = kint) :: ip, num4, isend_rank
+      integer(kind = kint_gl) :: nele, iele
 !
 !
       if(my_rank .eq. 0) then
-        do iele = 1, istack_numele(ione)
+        nele = istack_numele(1)
+        do iele = 1, nele
           iele_single_ucd(iele) = iele
         end do
 !
-        call write_gz_ucd_mesh_connect(istack_numele(1), nnod_ele,      &
-     &      istack_numele(1), iele_single_ucd(1), ie(1,1) )
+        call write_gz_ucd_mesh_connect(nele, nnod_ele,                  &
+     &      nele, iele_single_ucd(1), ie(1,1) )
       end if
 !
       do ip = 2, nprocs
@@ -114,26 +104,27 @@
 !C
 !C-- SEND
         if(my_rank .eq. isend_rank ) then
-          num = nele*nnod_ele
-          call MPI_ISEND(ie(1,1), num, CALYPSO_INTEGER,                 &
+          num4 = int(numele*nnod_ele)
+          call MPI_ISEND(ie(1,1), num4, CALYPSO_INTEGER,                &
      &        izero, 0, CALYPSO_COMM, req1, ierr_MPI)
         end if
 !
 !C
 !C-- RECV
         if(my_rank .eq. 0) then
-          num = (istack_numele(ip) - istack_numele(ip-1)) * nnod_ele
-          call MPI_IRECV(ie_single_ucd(1), num, CALYPSO_INTEGER,        &
+          num4 = int(istack_numele(ip) - istack_numele(ip-1))           &
+     &          * nnod_ele
+          call MPI_IRECV(ie_single_ucd(1), num4, CALYPSO_INTEGER,       &
      &        (ip-1), 0, CALYPSO_COMM, req2, ierr_MPI)
 !
           call MPI_WAITALL (ione, req2, sta2, ierr_MPI)
 !
-          num = istack_numele(ip) - istack_numele(ip-1)
-          do iele = 1, num
+          nele = istack_numele(ip) - istack_numele(ip-1)
+          do iele = 1, nele
             iele_single_ucd(iele) = iele + istack_numele(ip-1)
           end do
 !
-          call write_gz_ucd_mesh_connect(num, nnod_ele,num,             &
+          call write_gz_ucd_mesh_connect(nele, nnod_ele, nele,          &
      &        iele_single_ucd(1), ie_single_ucd(1) )
         end if
 !
@@ -152,23 +143,26 @@
 !
       use m_merged_ucd_data
 !
-      integer (kind=kint), intent(in) :: numnod, ncomp_field
+      integer(kind = kint_gl), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: ncomp_field
       real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_field)
 !
-      integer (kind=kint), intent(in) :: istack_numnod(0:nprocs)
-      integer (kind=kint), intent(in) :: istack_intnod(0:nprocs)
+      integer(kind=kint_gl), intent(in) :: istack_numnod(0:nprocs)
+      integer(kind=kint_gl), intent(in) :: istack_intnod(0:nprocs)
 !
 !
-      integer(kind = kint) :: ip, num, nnod, inod, isend_rank
+      integer(kind = kint) :: ip, num4, isend_rank
+      integer(kind = kint_gl) :: nnod, inod
 !
 !
       if(my_rank .eq. 0) then
-        do inod = 1, istack_intnod(1)
+        nnod = istack_intnod(1)
+        do inod = 1, nnod
           inod_single_ucd(inod) = inod
         end do
 !
         call write_gz_ucd_field_data(numnod, ncomp_field,               &
-     &      istack_intnod(ione), inod_single_ucd(1), d_nod(1,1) )
+     &      nnod, inod_single_ucd(1), d_nod(1,1) )
       end if
 !
       do ip = 2, nprocs
@@ -176,27 +170,27 @@
 !C
 !C-- SEND
         if(my_rank .eq. isend_rank) then
-          num = numnod*ncomp_field
-          call MPI_ISEND(d_nod(1,1), num, CALYPSO_REAL,                 &
+          num4 = int(numnod*ncomp_field)
+          call MPI_ISEND(d_nod(1,1), num4, CALYPSO_REAL,                &
      &      izero, 0, CALYPSO_COMM, req1, ierr_MPI)
         end if
 !C
 !C-- RECV
         if(my_rank .eq. 0) then
-          num = (istack_numnod(ip) - istack_numnod(ip-1)) * ncomp_field
-          call MPI_IRECV(d_single_ucd(1), num, CALYPSO_REAL,            &
+          num4 = int(istack_numnod(ip) - istack_numnod(ip-1))           &
+     &         * ncomp_field
+          call MPI_IRECV(d_single_ucd(1), num4, CALYPSO_REAL,           &
      &        (ip-1), 0, CALYPSO_COMM, req2, ierr_MPI)
 !
           call MPI_WAITALL (ione, req2, sta2, ierr_MPI)
 !
           nnod = istack_numnod(ip) - istack_numnod(ip-1)
-          num =  istack_intnod(ip) - istack_intnod(ip-1)
-          do inod = 1, num
+          do inod = 1, nnod
             inod_single_ucd(inod) = inod + istack_intnod(ip-1)
           end do
 !
           call write_gz_ucd_field_data(nnod, ncomp_field,               &
-     &        num, inod_single_ucd(1), d_single_ucd(1))
+     &        nnod, inod_single_ucd(1), d_single_ucd(1))
         end if
 !
         if(my_rank .eq. isend_rank ) then

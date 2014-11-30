@@ -12,6 +12,7 @@
       module const_comm_table_sph
 !
       use m_precision
+      use m_machine_parameter
 !
       use m_sph_trans_comm_table
 !
@@ -33,18 +34,26 @@
 !
       call allocate_ncomm
 !
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &          'count_comm_table_4_rlm', ip_rank
       call count_comm_table_4_rlm
 !
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &          'count_num_domain_rtm_rlm', ip_rank
       call count_num_domain_rtm_rlm(nneib_domain_rlm)
 !
       call allocate_sph_comm_stack_rlm
 !
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &          'set_comm_stack_rtm_rlm', ip_rank
       call set_comm_stack_rtm_rlm(nneib_domain_rlm, id_domain_rlm,      &
      &    istack_sr_rlm, ntot_item_sr_rlm)
 !
       call deallocate_ncomm
       call allocate_sph_comm_item_rlm(nnod_rlm)
 !
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &          'set_comm_table_4_rlm', ip_rank
       call set_comm_table_4_rlm
 !
 !      call allocate_idx_gl_rlm_out

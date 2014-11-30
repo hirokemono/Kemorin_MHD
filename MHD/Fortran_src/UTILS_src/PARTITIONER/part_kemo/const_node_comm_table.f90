@@ -92,8 +92,8 @@
       type(communication_table), intent(inout) :: new_comm
 !
       integer(kind = kint) :: j, jp, jg, jst, jnum, icou
-      integer(kind = kint) :: jst_im, jed_im, jnod
-      integer(kind = kint) :: inod, inod_org
+      integer(kind = kint) :: inod, jst_im, jed_im, jnod
+      integer(kind = kint_gl) :: inod_org
 !
       do j = 1, new_comm%num_neib
         jp = new_comm%id_neib(j)
@@ -101,6 +101,8 @@
         call load_node_import_item_tmp(jp, work_f_head)
 !
         ISTACK_NOD_TMP(0) = 0
+        jst_im = ISTACK_NOD_TMP(0)
+        jed_im = ISTACK_NOD_TMP(0)
         do jg = 1, NP_TMP
           if (NEIB_TMP(jg) .eq. ip) then
             jst_im = ISTACK_NOD_TMP(jg-1)

@@ -46,7 +46,7 @@
       integer(kind = kint), intent(in) :: num_psf
       integer(kind = kint), intent(in) :: numnod, numele, numedge
       integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_edge
-      integer(kind = kint), intent(in) :: inod_global(numnod)
+      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
       integer(kind = kint), intent(in)                                  &
@@ -132,7 +132,7 @@
       integer(kind = kint), intent(in) :: num_iso
       integer(kind = kint), intent(in) :: numnod, numele, numedge
       integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_edge
-      integer(kind = kint), intent(in) :: inod_global(numnod)
+      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
       integer(kind = kint), intent(in)                                  &

@@ -43,10 +43,10 @@
       integer(kind = kint), allocatable :: isurf_local_part(:)
       integer(kind = kint), allocatable :: iedge_local_part(:)
 !
-      integer(kind = kint), allocatable :: id_glnode_org(:)
-      integer(kind = kint), allocatable :: id_glelem_org(:)
-      integer(kind = kint), allocatable :: id_glsurf_org(:)
-      integer(kind = kint), allocatable :: id_gledge_org(:)
+      integer(kind = kint_gl), allocatable :: id_glnode_org(:)
+      integer(kind = kint_gl), allocatable :: id_glelem_org(:)
+      integer(kind = kint_gl), allocatable :: id_glsurf_org(:)
+      integer(kind = kint_gl), allocatable :: id_gledge_org(:)
 !
 !
       integer(kind = kint) :: nproc_finer

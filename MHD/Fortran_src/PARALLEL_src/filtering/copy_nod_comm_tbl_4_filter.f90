@@ -30,7 +30,7 @@
       nnod_filtering = numnod
       call allocate_globalnod_filter
 !
-      id_globalnod_filtering(1:numnod) = globalnodid(1:numnod)
+      id_globalnod_filtering(1:numnod) = inod_global(1:numnod)
       xx_filtering(1:numnod,1) = xx(1:numnod,1)
       xx_filtering(1:numnod,2) = xx(1:numnod,2)
       xx_filtering(1:numnod,3) = xx(1:numnod,3)

@@ -101,7 +101,7 @@
       ele%numele =     numele
       ele%nnod_4_ele = nnod_4_ele
 !
-      ele%iele_global => globalelmid
+      ele%iele_global => iele_global
       ele%elmtyp =>      elmtyp
       ele%nodelm =>      nodelm
       ele%ie =>          ie

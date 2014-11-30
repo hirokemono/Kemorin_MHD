@@ -85,7 +85,7 @@
       call cross_section_init(numnod, numele, numsurf, numedge,         &
      &          nnod_4_ele, nnod_4_edge, ie, ie_edge,                   &
      &          isf_4_ele, iedge_4_sf, iedge_4_ele,                     &
-     &          interior_ele, globalnodid, xx,                          &
+     &          interior_ele, inod_global, xx,                          &
      &          inod_smp_stack, iele_smp_stack,                         &
      &          isurf_smp_stack, iedge_smp_stack,                       &
      &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,    &
@@ -148,7 +148,7 @@
 !
       call isosurface_main(istep_iso,                                   &
      &          numnod, numele, numedge, nnod_4_ele, nnod_4_edge,       &
-     &          ie, ie_edge, iedge_4_ele, globalnodid,                  &
+     &          ie, ie_edge, iedge_4_ele, inod_global,                  &
      &          xx, radius, a_radius, s_cylinder, a_s_cylinder,         &
      &          inod_smp_stack, num_nod_phys, num_tot_nod_phys,         &
      &          istack_nod_component, d_nod)

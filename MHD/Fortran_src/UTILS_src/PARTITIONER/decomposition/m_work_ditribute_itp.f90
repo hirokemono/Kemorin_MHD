@@ -167,7 +167,8 @@
       integer(kind = kint), intent(in) :: nprocs_dest
       type(mesh_data), intent(in) :: femmesh_dest(nprocs_dest)
 !
-      integer(kind = kint) :: ip, jp, inod, jele, inod_gl, jele_gl
+      integer(kind = kint) :: ip, jp, inod, jele
+      integer(kind = kint_gl) :: inod_gl, jele_gl
 !
 !
       do ip = 1, nprocs_dest
@@ -188,16 +189,16 @@
         end do
       end do
 !
-      do inod_gl = 1, ntot_nod_dest
-        if(inod_lc_dest(inod_gl,1)*inod_lc_dest(inod_gl,2) .eq. 0) then
-          write(*,*) 'node ', inod_gl,                                  &
-     &               ' is missing: ', inod_lc_dest(inod_gl,:)
+      do inod = 1, ntot_nod_dest
+        if(inod_lc_dest(inod,1)*inod_lc_dest(inod,2) .eq. 0) then
+          write(*,*) 'node ', inod,                                     &
+     &               ' is missing: ', inod_lc_dest(inod,:)
         end if
       end do
-      do jele_gl = 1, ntot_ele_org
-        if(iele_lc_org(jele_gl,1)*iele_lc_org(jele_gl,2) .eq. 0) then
-          write(*,*) 'element ', jele_gl,                               &
-     &             ' is missing: ', iele_lc_org(jele_gl,:)
+      do jele = 1, ntot_ele_org
+        if(iele_lc_org(jele,1)*iele_lc_org(jele,2) .eq. 0) then
+          write(*,*) 'element ', jele,                                  &
+     &             ' is missing: ', iele_lc_org(jele,:)
         end if
       end do
 !

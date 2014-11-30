@@ -46,7 +46,7 @@
       type(ucd_data), intent(in) :: line
 !
       integer(kind = kint) :: k1, i1, i2, icou
-      integer(kind = kint) :: iege1
+      integer(kind = kint_gl) :: iedge1
       real(kind = kreal) :: c1, c2, coef1
 !
       integer(kind = kint) :: icomp_vr, icomp_vp
@@ -66,9 +66,9 @@
 !
 !
       icou = 0
-      do iege1 = 1, line%nele
-        i1 = line%ie(iege1,1)
-        i2 = line%ie(iege1,2)
+      do iedge1 = 1, line%nele
+        i1 = int(line%ie(iedge1,1))
+        i2 = int(line%ie(iedge1,2))
         c1 = line%d_ucd(i1,icomp_vr)
         c2 = line%d_ucd(i2,icomp_vr)
         phi1  = atan2(line%xx(i1,2),line%xx(i1,1))

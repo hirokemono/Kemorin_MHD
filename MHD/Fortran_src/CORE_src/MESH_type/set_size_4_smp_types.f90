@@ -25,8 +25,6 @@
 !        type(node_data),    intent(in) :: nod
 !        type(edge_data),    intent(inout) :: edge
 !
-!      subroutine set_gl_ele_type_by_local(ele)
-!        type(element_data), intent(inout) :: ele
 !      subroutine set_gl_surf_type_by_local(surf)
 !        type(surface_data), intent(inout) :: surf
 !      subroutine set_gl_edge_type_by_local(edge)
@@ -179,21 +177,6 @@
       end subroutine count_overlap_edge_type
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_gl_ele_type_by_local(ele)
-!
-      use  t_geometry_data
-      use set_global_id_by_local
-!
-      type(element_data), intent(inout) :: ele
-!
-!
-      call s_set_global_id_by_local(ele%numele, ele%internal_ele,       &
-     &    ele%interior_ele, ele%iele_global)
-!
-      end subroutine set_gl_ele_type_by_local
-!
 ! ----------------------------------------------------------------------
 !
       subroutine set_gl_surf_type_by_local(surf)

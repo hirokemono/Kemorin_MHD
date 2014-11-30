@@ -119,7 +119,7 @@
       integer(kind = kint), intent(in) :: item_export(ntot_export)
       integer(kind = kint), intent(in) :: item_import(ntot_export)
 !
-      integer(kind = kint), intent(inout) :: id_gl_org(num)
+      integer(kind = kint_gl), intent(inout) :: id_gl_org(num)
 !
       integer(kind = kint) :: i, inum, iex, iim
 !

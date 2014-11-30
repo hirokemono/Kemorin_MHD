@@ -144,12 +144,14 @@
 !
       integer(kind = kint), intent(in) :: numdir
       integer(kind = kint), intent(in) :: ifld_org, ifld_dst
-      integer(kind = kint), intent(in) :: nnod_org, ntot_org_phys
-      integer(kind = kint), intent(in) :: nnod_dst, ntot_dst_phys
+      integer(kind = kint_gl), intent(in) :: nnod_org, nnod_dst
+      integer(kind = kint), intent(in) :: ntot_org_phys, ntot_dst_phys
       real(kind = kreal), intent(in) :: d_org(nnod_org,ntot_org_phys)
       real(kind=kreal), intent(inout) :: d_dst(nnod_dst,ntot_dst_phys)
 !
-      integer(kind = kint) :: inod, num, nd
+      integer(kind = kint) :: nd
+      integer(kind = kint_gl) :: num, inod
+!
 !
       num = min(nnod_org, nnod_dst)
 !$omp parallel private(inod)

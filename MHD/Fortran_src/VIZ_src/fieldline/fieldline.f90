@@ -9,9 +9,9 @@
 !     &    num_nod_phys, phys_nod_name)
 !
 !      subroutine field_line_main(istep_psf, numnod, numele, numsurf,   &
-!     &       nnod_4_surf, inod_smp_stack, globalnodid,                 &
+!     &       nnod_4_surf, inod_smp_stack, inod_global,                 &
 !     &       xx, radius, a_radius, s_cylinder, a_s_cylinder,           &
-!     &       globalelmid, e_multi, ie_surf, isf_4_ele, iele_4_surf,    &
+!     &       iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,    &
 !     &       x_surf, vnorm_surf, area_surf, interior_surf,             &
 !     &       num_mat, num_mat_bc, mat_istack,  mat_item,               &
 !     &       ntot_ele_4_node, iele_stack_4_node, iele_4_node,          &
@@ -82,9 +82,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine field_line_main(istep_psf, numnod, numele, numsurf,    &
-     &       nnod_4_surf, inod_smp_stack, globalnodid,                  &
+     &       nnod_4_surf, inod_smp_stack, inod_global,                  &
      &       xx, radius, a_radius, s_cylinder, a_s_cylinder,            &
-     &       globalelmid, e_multi, ie_surf, isf_4_ele, iele_4_surf,     &
+     &       iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,     &
      &       x_surf, vnorm_surf, area_surf, interior_surf,              &
      &       num_mat, num_mat_bc, mat_istack,  mat_item,                &
      &       ntot_ele_4_node, iele_stack_4_node, iele_4_node,           &
@@ -102,14 +102,14 @@
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-      integer(kind = kint), intent(in) :: globalnodid(numnod)
+      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
       real(kind = kreal), intent(in) :: xx(numnod,3)
       real(kind = kreal), intent(in) :: radius(numnod)
       real(kind = kreal), intent(in) :: a_radius(numnod)
       real(kind = kreal), intent(in) :: s_cylinder(numnod)
       real(kind = kreal), intent(in) :: a_s_cylinder(numnod)
 !
-      integer(kind = kint), intent(in) :: globalelmid(numele)
+      integer(kind = kint_gl), intent(in) :: iele_global(numele)
       real(kind = kreal), intent(in) :: e_multi(numele)
 !
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
@@ -156,7 +156,7 @@
         if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
         call s_set_fields_for_fieldline(i_fln,                          &
      &        numnod, numele, numsurf, nnod_4_surf,                     &
-     &        globalelmid, e_multi, ie_surf, isf_4_ele, iele_4_surf,    &
+     &        iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,    &
      &        x_surf, vnorm_surf, area_surf,                            &
      &        num_mat, num_mat_bc, mat_istack,  mat_item)
       end do
@@ -164,7 +164,7 @@
       do i_fln = 1, num_fline
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
         call s_const_field_lines(i_fln, numnod, numele, numsurf,        &
-     &          nnod_4_surf, globalnodid, xx, globalelmid, ie_surf,     &
+     &          nnod_4_surf, inod_global, xx, iele_global, ie_surf,     &
      &          isf_4_ele, iele_4_surf, interior_surf, vnorm_surf,      &
      &          ntot_ele_4_node, iele_stack_4_node, iele_4_node,        &
      &          num_neib, ntot_import, ntot_export, id_neib,            &

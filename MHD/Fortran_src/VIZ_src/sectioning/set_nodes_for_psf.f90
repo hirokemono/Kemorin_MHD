@@ -169,7 +169,7 @@
       integer(kind = kint), intent(in)                                  &
      &                     :: inod_surf_grp(ntot_node_sf_grp)
 !
-      integer(kind = kint), intent(in) :: inod_global(numnod)
+      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
       real(kind = kreal), intent(in) :: xx(numnod,3)
 !
@@ -240,7 +240,7 @@
 !
       integer(kind = kint), intent(in) :: num_iso
       integer(kind = kint), intent(in) :: numnod, numedge, nnod_4_edge
-      integer(kind = kint), intent(in) :: inod_global(numnod)
+      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
       real(kind = kreal), intent(in) :: xx(numnod,3)
 !

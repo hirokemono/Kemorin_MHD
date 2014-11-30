@@ -40,7 +40,7 @@
 !$omp parallel do
       do inod = 1, numnod
 !
-        globalnodid(inod) = globalelmid(inod)
+        inod_global(inod) = iele_global(inod)
         xx(inod,1) =       x_ele(inod,1)
         xx(inod,2) =       x_ele(inod,2)
         xx(inod,3) =       x_ele(inod,3)

@@ -11,7 +11,8 @@
 !
       implicit none
 !
-      type(ucd_data), save:: psf_ucd
+      type(ucd_data), save :: psf_ucd
+      type(ucd_data), save :: ucd_out
 !
       integer(kind = kint), parameter :: id_psf_result = 7
 !
@@ -44,7 +45,7 @@
       use ucd_IO_select
       use dx_grid
       use dx_phys
-      use vtk_file_IO
+      use write_ucd_to_vtk_file
       use cal_psf_rms_aves
 !
       integer(kind = kint), intent(in) :: num_psf, iflag_convert
@@ -67,13 +68,11 @@
 !
 !   output grid data
 !
-        if ( iflag_convert .eq. 0 ) then
-          call set_single_grd_file_name(psf_header(i_psf), iflag_vtd,   &
-     &        file_name)
-!
-          call write_vtk_grid(file_name, id_psf_result,                 &
-     &        numnod_psf, numele_psf, num_triangle, xx_psf, ie_psf)
-        else if ( iflag_convert .eq. 2 ) then
+        call set_psf_mesh_to_ucd_mesh(ucd_out)
+        if(iflag_convert .eq. 0) then
+          ucd_out%file_prefix = psf_header(i_psf)
+          call write_sgl_udt_data_2_vtk_grid(ucd_out)
+        else if(iflag_convert .eq. 2) then
           call add_dx_extension(psf_header(i_psf), node_file_name)
           call add_connect_extension(psf_header(i_psf), conn_file_name)
 !
@@ -94,13 +93,10 @@
 !
 !      write converted data
 !
+          call set_psf_mesh_to_ucd_field(ucd_out)
           if (iflag_convert .eq. 0) then
-            call set_single_ucd_file_name(psf_header(i_psf), iflag_vtd, &
-     &          istep, file_name)
-!
-            call write_vtk_phys(file_name, id_psf_result,               &
-     &          numnod_psf, nfield_psf, ncomptot_psf,                   &
-     &          ncomp_psf, psf_data_name, d_nod_psf)
+            ucd_out%file_prefix = psf_header(i_psf)
+            call write_sgl_udt_2_vtk_phys(istep, ucd_out)
           else if (iflag_convert .eq. 2) then
             call add_dx_extension(psf_header(i_psf), node_file_name)
             call add_connect_extension(psf_header(i_psf),               &

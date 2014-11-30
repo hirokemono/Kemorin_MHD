@@ -112,7 +112,7 @@
 !
       call link_fem_node_data_2_ucd_out
       call const_udt_global_connect(internal_node, numele, nnod_4_ele,  &
-     &    globalelmid_org, ie_org, fem_ucd)
+     &    iele_global_org, ie_org, fem_ucd)
 !
       end subroutine link_global_org_mesh_4_ucd
 !

@@ -58,7 +58,8 @@
 !
       type(element_data), intent(inout) :: ele
 !
-      integer(kind = kint) :: inum, iele, inod_g, k1
+      integer(kind = kint) :: inum, inod_g, k1
+      integer(kind = kint_gl) :: iele
 !
 !
       do inum = 1, ele%numele
@@ -82,7 +83,8 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(inout) :: surf
 !
-      integer(kind = kint) :: inum, iele, isurf, k1
+      integer(kind = kint) :: inum, isurf, k1
+      integer(kind = kint_gl) :: iele
 !
 !
       do inum = 1, ele%numele
@@ -107,7 +109,8 @@
 !
       type(element_data), intent(in) :: ele
       type(edge_data), intent(inout) :: edge
-      integer(kind = kint) :: inum, iele, iedge, k1
+      integer(kind = kint) :: inum, iedge, k1
+      integer(kind = kint_gl) :: iele
 !
 !
       do inum = 1, ele%numele
@@ -130,7 +133,8 @@
 !
       type(surface_data), intent(inout) :: surf
 !
-      integer(kind = kint) :: inum, isurf, inod_g, k1
+      integer(kind = kint) :: inum, inod_g, k1
+      integer(kind = kint_gl) :: isurf
 !
 !
       do inum = 1, surf%numsurf
@@ -153,7 +157,8 @@
 !
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
-      integer(kind = kint) :: inum, isurf, iedge, k1
+      integer(kind = kint) :: inum, iedge, k1
+      integer(kind = kint_gl) :: isurf
 !
 !
       do inum = 1, surf%numsurf
@@ -175,7 +180,8 @@
       use t_edge_data
 !
       type(edge_data), intent(inout) :: edge
-      integer(kind = kint) :: inum, iedge, inod_g, k1
+      integer(kind = kint) :: inum, inod_g, k1
+      integer(kind = kint_gl) :: iedge
 !
 !
       do inum = 1, edge%numedge

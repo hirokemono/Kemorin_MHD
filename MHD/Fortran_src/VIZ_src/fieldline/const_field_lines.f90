@@ -6,7 +6,7 @@
 !
 !      subroutine s_const_field_lines(i_fln,                            &
 !     &          numnod, numele, numsurf, nnod_4_surf,                  &
-!     &          globalnodid, xx, globalelmid, ie_surf,                 &
+!     &          inod_global, xx, iele_global, ie_surf,                 &
 !     &          isf_4_ele, iele_4_surf, interior_surf, vnorm_surf,     &
 !     &          ntot_ele_4_node, iele_stack_4_node, iele_4_node,       &
 !     &          num_neib, ntot_import, ntot_export, id_neib,           &
@@ -31,7 +31,7 @@
 !
       subroutine s_const_field_lines(i_fln,                             &
      &          numnod, numele, numsurf, nnod_4_surf,                   &
-     &          globalnodid, xx, globalelmid, ie_surf,                  &
+     &          inod_global, xx, iele_global, ie_surf,                  &
      &          isf_4_ele, iele_4_surf, interior_surf, vnorm_surf,      &
      &          ntot_ele_4_node, iele_stack_4_node, iele_4_node,        &
      &          num_neib, ntot_import, ntot_export, id_neib,            &
@@ -46,9 +46,9 @@
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: globalnodid(numnod)
+      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
       real(kind = kreal), intent(in) :: xx(numnod,3)
-      integer(kind = kint), intent(in) :: globalelmid(numele)
+      integer(kind = kint_gl), intent(in) :: iele_global(numele)
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
@@ -103,7 +103,7 @@
           write(50+my_rank,*) 'extension end for ', i, iflag_comm
 !
           call set_fline_start_2_bcast(iflag_comm, i,                   &
-     &          numnod, numele,  globalnodid, globalelmid,              &
+     &          numnod, numele,  inod_global, iele_global,              &
      &          num_neib, ntot_import, id_neib, istack_import,          &
      &          item_import)
         end do
@@ -132,7 +132,7 @@
         end if
 !
         call recover_local_fline_start(i_fln,                           &
-     &          numnod, numele, numsurf, globalelmid,                   &
+     &          numnod, numele, numsurf, iele_global,                   &
      &          isf_4_ele, iele_4_surf, ntot_ele_4_node,                &
      &          iele_stack_4_node, iele_4_node, num_neib, ntot_export,  &
      &          id_neib, istack_export, item_export)
@@ -157,15 +157,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_fline_start_2_bcast(iflag_comm, iline,             &
-     &          numnod, numele,  globalnodid, globalelmid,              &
+     &          numnod, numele, inod_global, iele_global,               &
      &          num_neib, ntot_import, id_neib, istack_import,          &
      &         item_import)
 !
       integer(kind = kint), intent(in) :: iflag_comm, iline
 !
       integer(kind = kint), intent(in) :: numnod, numele
-      integer(kind = kint), intent(in) :: globalnodid(numnod)
-      integer(kind = kint), intent(in) :: globalelmid(numele)
+      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
+      integer(kind = kint_gl), intent(in) :: iele_global(numele)
 !
       integer(kind = kint), intent(in) :: num_neib, ntot_import
       integer(kind = kint), intent(in) :: id_neib(num_neib)
@@ -193,9 +193,9 @@
 !
         id_fline_export(2,iline) = iflag_fline(iline)
         id_fline_export(3,iline) = icount_fline(iline)
-        id_fline_export(4,iline) = globalelmid(iele)
+        id_fline_export(4,iline) = int(iele_global(iele))
         id_fline_export(5,iline) = isf
-        id_fline_export(6,iline) = globalnodid(inod)
+        id_fline_export(6,iline) = int(inod_global(inod))
 !
         fline_export(1:3,iline) = xx_fline_start(1:3,iline)
         fline_export(4:6,iline) = v_fline_start(1:3,iline)
@@ -211,7 +211,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine recover_local_fline_start(i_fln,                       &
-     &          numnod, numele, numsurf, globalelmid,                   &
+     &          numnod, numele, numsurf, iele_global,                   &
      &          isf_4_ele, iele_4_surf, ntot_ele_4_node,                &
      &          iele_stack_4_node, iele_4_node, num_neib, ntot_export,  &
      &          id_neib, istack_export, item_export)
@@ -221,7 +221,7 @@
       integer(kind = kint), intent(in) :: i_fln
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer (kind=kint), intent(in) :: globalelmid(numele)
+      integer (kind=kint_gl), intent(in) :: iele_global(numele)
       integer (kind=kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       integer (kind=kint), intent(in) :: iele_4_surf(numsurf,2,2)
 !
@@ -249,16 +249,16 @@
             inum = id_fline_export(7,iline) + istack_export(ip-1)
             inod = item_export(inum)
 !            write(60+my_rank,*) 'recover node', inod,                  &
-!     &              globalnodid(inod),  id_fline_export(6,iline)
+!     &              inod_global(inod),  id_fline_export(6,iline)
 !
             id_fline_export(6,iline) = inod
             ist_ele = iele_stack_4_node(inod-1) + 1
             ied_ele = iele_stack_4_node(inod)
             do jnum = ist_ele, ied_ele
               jele = iele_4_node(jnum)
-              if(globalelmid(jele) .eq. id_fline_export(4,iline)) then
+              if(iele_global(jele) .eq. id_fline_export(4,iline)) then
 !                write(60+my_rank,*) 'recover ele',                     &
-!      &                      jele, globalelmid(jele)
+!      &                      jele, iele_global(jele)
                 isf =  id_fline_export(5,iline)
                 isurf = abs(isf_4_ele(jele,isf))
 !

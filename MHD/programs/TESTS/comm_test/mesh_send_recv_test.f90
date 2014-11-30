@@ -54,7 +54,7 @@
 !
 !
       do inod = 1, internal_node
-        ix_vec(inod) = globalnodid(inod)
+        ix_vec(inod) = int(inod_global(inod))
         x_vec(3*inod-2) = xx(inod,1)
         x_vec(3*inod-1) = xx(inod,2)
         x_vec(3*inod  ) = xx(inod,3)
@@ -91,7 +91,7 @@
       allocate(xx4(NB*numnod))
 !
       do inod = 1, internal_node
-        ix_vec(inod) = globalnodid(inod)
+        ix_vec(inod) = int(inod_global(inod))
         xx4(12*inod-11) = xx(inod,1)
         xx4(12*inod-10) = xx(inod,2)
         xx4(12*inod- 9) = xx(inod,3)

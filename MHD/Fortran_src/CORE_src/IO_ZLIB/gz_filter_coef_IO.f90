@@ -30,7 +30,7 @@
 !
       use cal_minmax_and_stacks
 !
-      integer(kind = kint) :: i, j, ist, ied, nchara
+      integer(kind = kint) :: i, j, ist, ied
 !
 !
       call skip_gz_comment_int(ngrp_nod_filter_IO)
@@ -71,7 +71,7 @@
 !
       subroutine read_3d_filter_weights_coef_gz
 !
-      integer(kind = kint) :: j, itmp, nchara
+      integer(kind = kint) :: j, itmp
 !
 !
       call allocate_3d_filter_data_IO

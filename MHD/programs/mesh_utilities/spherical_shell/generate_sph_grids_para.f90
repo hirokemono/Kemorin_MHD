@@ -5,6 +5,7 @@
       use m_constants
       use m_work_time
       use calypso_mpi
+      use m_machine_parameter
 !
       use m_read_ctl_gen_sph_shell
       use m_parallel_sph_grids
@@ -51,14 +52,17 @@
       call s_const_1d_ele_connect_4_sph
 !
       call start_eleps_time(2)
+      if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_transfer_grids'
       call para_gen_sph_transfer_grids
       call end_eleps_time(2)
 !
       call start_eleps_time(3)
+      if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_modes_grids'
       call para_gen_sph_modes_grids
       call end_eleps_time(3)
 !
       call start_eleps_time(4)
+      if(iflag_debug .gt. 0) write(*,*) 'para_gen_fem_mesh_for_sph'
       call para_gen_fem_mesh_for_sph
       call end_eleps_time(4)
 !

@@ -49,13 +49,8 @@
         call open_wt_gzfile(gzip_name)
       end if
 !
-      call write_merged_gz_ucd_mesh(ucd%nnod, ucd%nele, ucd%nnod_4_ele, &
-     &    ucd%xx, ucd%ie, ucd%ntot_comp, m_ucd%istack_merged_nod,       &
-     &    m_ucd%istack_merged_intnod, m_ucd%istack_merged_ele)
-!
-      call write_merged_gz_ucd_fields(ucd%nnod, ucd%num_field,          &
-     &    ucd%ntot_comp, ucd%num_comp, ucd%phys_name, ucd%d_ucd,        &
-     &    m_ucd%istack_merged_nod, m_ucd%istack_merged_intnod)
+      call write_merged_gz_ucd_mesh(ucd, m_ucd)
+      call write_merged_gz_ucd_fields(ucd, m_ucd)
 !
       if(my_rank .eq. 0) call close_gzfile
 !
@@ -82,9 +77,7 @@
         call open_wt_gzfile(gzip_name)
       end if
 !
-      call write_merged_gz_ucd_fields(ucd%nnod, ucd%num_field,          &
-     &    ucd%ntot_comp, ucd%num_comp, ucd%phys_name, ucd%d_ucd,        &
-     &    m_ucd%istack_merged_nod, m_ucd%istack_merged_intnod)
+      call write_merged_gz_ucd_fields(ucd, m_ucd)
 !
       if(my_rank .eq. 0) call close_gzfile
 !
@@ -110,10 +103,7 @@
         call open_wt_gzfile(gzip_name)
       end if
 !
-      call write_merged_gz_ucd_mesh(ucd%nnod, ucd%nele, ucd%nnod_4_ele, &
-     &    ucd%xx, ucd%ie, ucd%ntot_comp, m_ucd%istack_merged_nod,       &
-     &    m_ucd%istack_merged_intnod, m_ucd%istack_merged_ele)
-!
+      call write_merged_gz_ucd_mesh(ucd, m_ucd)
       if(my_rank .eq. 0) call close_gzfile
 !
       end subroutine write_gz_merged_grd_file
@@ -140,9 +130,7 @@
         call open_wt_gzfile(gzip_name)
       end if
 !
-      call write_merged_gz_vtk_mesh(ucd%nnod, ucd%nele, ucd%nnod_4_ele, &
-     &    ucd%xx, ucd%ie,  m_ucd%istack_merged_nod,                     &
-     &    m_ucd%istack_merged_intnod, m_ucd%istack_merged_ele)
+      call write_merged_gz_vtk_mesh(ucd, m_ucd)
 !
       call write_merged_gz_vtk_fields(ucd%nnod, ucd%num_field,          &
      &    ucd%ntot_comp, ucd%num_comp, ucd%phys_name, ucd%d_ucd,        &
@@ -201,9 +189,7 @@
         call open_wt_gzfile(gzip_name)
       end if
 !
-      call write_merged_gz_vtk_mesh(ucd%nnod, ucd%nele, ucd%nnod_4_ele, &
-     &    ucd%xx, ucd%ie,  m_ucd%istack_merged_nod,                     &
-     &    m_ucd%istack_merged_intnod, m_ucd%istack_merged_ele)
+      call write_merged_gz_vtk_mesh(ucd, m_ucd)
 !
       if(my_rank .eq. 0) call close_gzfile
 !

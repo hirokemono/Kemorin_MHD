@@ -72,9 +72,9 @@
       real(kind = kreal), intent(in) :: reference
       integer(kind = kint), intent(in) :: iedge_4_tri(nedge_tri,2)
 !
-      integer(kind = kint), intent(inout) :: nnod_edge, nline_on_node
+      integer(kind = kint_gl), intent(inout) :: nnod_edge
       integer(kind = kint), intent(inout) :: nfield_edge
-      integer(kind = kint), intent(inout) :: ncomp_edge
+      integer(kind = kint), intent(inout) :: ncomp_edge, nline_on_node
 !
       integer(kind = kint) :: i1, i2, icou, iedge
       real(kind = kreal) :: c1, c2
@@ -164,13 +164,14 @@
 !
       integer(kind = kint), intent(in) :: iedge_4_tri(nedge_tri,2)
 !
-      integer(kind = kint), intent(in) :: nnod_edge, nline_on_node
+      integer(kind = kint_gl), intent(in) :: nnod_edge
+      integer(kind = kint), intent(in) :: nline_on_node
       integer(kind = kint), intent(in) :: iedge_4_line(nnod_edge)
       real(kind = kreal), intent(in) ::   coef_on_edge(nnod_edge,2)
 !
       integer(kind = kint), intent(inout) :: num_edge_comp(nfield)
       character(len=kchara), intent(inout) :: edge_phys_name(nfield)
-      integer(kind = kint), intent(inout) :: inod_gl(nnod_edge)
+      integer(kind = kint_gl), intent(inout) :: inod_gl(nnod_edge)
       real(kind = kreal), intent(inout) :: xx_edge(nnod_edge,3)
       real(kind = kreal), intent(inout) :: d_edge(nnod_edge,ncomptot)
 !
@@ -214,13 +215,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine count_sections_in_triangle(nele_tri, ie_tri,           &
-     &          iedge_4_tri,  nele_edge, nnod_4_edge)
+     &          iedge_4_tri, nele_edge, nnod_4_edge)
 !
       integer(kind = kint), intent(in) :: nele_tri
       integer(kind = kint), intent(in) :: ie_tri(nele_tri,3)
       integer(kind = kint), intent(in) :: iedge_4_tri(nele_tri,3)
 !
-      integer(kind = kint), intent(inout) :: nele_edge, nnod_4_edge
+      integer(kind = kint_gl), intent(inout) :: nele_edge
+      integer(kind = kint), intent(inout) :: nnod_4_edge
 !
       integer(kind = kint) :: icou, isurf
       integer(kind = kint) :: inod1, inod2, inod3
@@ -279,9 +281,9 @@
       integer(kind = kint), intent(in) :: ie_tri(nele_tri,3)
       integer(kind = kint), intent(in) :: iedge_4_tri(nele_tri,3)
 !
-      integer(kind = kint), intent(in) :: nele_edge
-      integer(kind = kint), intent(inout) :: iedge_gl(nele_edge)
-      integer(kind = kint), intent(inout) :: ie_edge(nele_edge,2)
+      integer(kind = kint_gl), intent(in) :: nele_edge
+      integer(kind = kint_gl), intent(inout) :: iedge_gl(nele_edge)
+      integer(kind = kint_gl), intent(inout) :: ie_edge(nele_edge,2)
 !
       integer(kind = kint) :: iedge, icou, isurf
       integer(kind = kint) :: inod1, inod2, inod3

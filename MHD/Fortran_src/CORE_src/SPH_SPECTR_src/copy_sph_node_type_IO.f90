@@ -227,6 +227,8 @@
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rtp_grid), intent(inout) :: rtp
       integer(kind = kint) :: i
+      integer(kind = kint_gl) :: nr_8, nrt8
+!
 !
       ndir_sph_IO =              ithree
       sph_rank_IO(1:ithree) =    rtp%sph_rank_rtp(1:ithree)
@@ -248,16 +250,23 @@
       call allocate_idx_sph_1d2_IO
       call allocate_idx_sph_1d3_IO
 !
+!$omp parallel do private(i,nr_8,nrt8)
+      do i = 1, rtp%nnod_rtp
+        nr_8 = rtp%nidx_global_rtp(1)
+        nrt8 = rtp%nidx_global_rtp(1)*rtp%nidx_global_rtp(2)
+        idx_gl_sph_IO(i,1) = rtp%idx_global_rtp(i,1)
+        idx_gl_sph_IO(i,2) = rtp%idx_global_rtp(i,2)
+        idx_gl_sph_IO(i,3) = rtp%idx_global_rtp(i,3)
+        inod_gl_sph_IO(i) = rtp%idx_global_rtp(i,1)                    &
+     &                   + (rtp%idx_global_rtp(i,2) - 1) * nr_8        &
+     &                   + (rtp%idx_global_rtp(i,3) - 1) * nrt8
+      end do
+!$omp end parallel do
+!
       do i = 1, ithree
         idx_gl_sph_IO(1:rtp%nnod_rtp,i)                                 &
      &        = rtp%idx_global_rtp(1:rtp%nnod_rtp,i)
       end do
-      inod_gl_sph_IO(1:rtp%nnod_rtp)                                    &
-     &        = rtp%idx_global_rtp(1:rtp%nnod_rtp,1)                    &
-     &         + (rtp%idx_global_rtp(1:rtp%nnod_rtp,2) - 1)             &
-     &          * rtp%nidx_global_rtp(1)                                &
-     &         + (rtp%idx_global_rtp(1:rtp%nnod_rtp,3) - 1)             &
-     &          * rtp%nidx_global_rtp(1)*rtp%nidx_global_rtp(2)
 !
       r_gl_1_IO(1:rtp%nidx_rtp(1))                                      &
      &        =     rtp%radius_1d_rtp_r(1:rtp%nidx_rtp(1))
@@ -282,6 +291,8 @@
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rtm_grid), intent(inout) :: rtm
       integer(kind = kint) :: i
+      integer(kind = kint_gl) :: nr_8, nrt8
+!
 !
       ndir_sph_IO =              ithree
       sph_rank_IO(1:ithree) =    rtm%sph_rank_rtm(1:ithree)
@@ -303,16 +314,18 @@
       call allocate_idx_sph_1d2_IO
       call allocate_idx_sph_1d3_IO
 !
-      do i = 1, ithree
-        idx_gl_sph_IO(1:rtm%nnod_rtm,i)                                 &
-     &      = rtm%idx_global_rtm(1:rtm%nnod_rtm,i)
+!$omp parallel do private(i,nr_8,nrt8)
+      do i = 1, rtm%nnod_rtm
+        nr_8 = rtm%nidx_global_rtm(1)
+        nrt8 = rtm%nidx_global_rtm(1)*rtm%nidx_global_rtm(2)
+        idx_gl_sph_IO(i,1) = rtm%idx_global_rtm(i,1)
+        idx_gl_sph_IO(i,2) = rtm%idx_global_rtm(i,2)
+        idx_gl_sph_IO(i,3) = rtm%idx_global_rtm(i,3)
+        inod_gl_sph_IO(i) = rtm%idx_global_rtm(i,1)                     &
+     &                   + (rtm%idx_global_rtm(i,2) - 1) * nr_8         &
+     &                   +  rtm%idx_global_rtm(i,3) * nrt8
       end do
-      inod_gl_sph_IO(1::rtm%nnod_rtm)                                   &
-     &     =   rtm%idx_global_rtm(1:rtm%nnod_rtm,1)                     &
-     &      + (rtm%idx_global_rtm(1:rtm%nnod_rtm,2) - 1)                &
-     &       * rtm%nidx_global_rtm(1)                                   &
-     &      +  rtm%idx_global_rtm(1:rtm%nnod_rtm,3)                     &
-     &       * rtm%nidx_global_rtm(1)*rtm%nidx_global_rtm(2)
+!$omp end parallel do
 !
       r_gl_1_IO(1:rtm%nidx_rtm(1))                                      &
      &      =     rtm%radius_1d_rtm_r(1:rtm%nidx_rtm(1))
@@ -336,6 +349,9 @@
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rlm_grid), intent(inout) :: rlm
+      integer(kind = kint) :: i
+      integer(kind = kint_gl) :: nr_8
+!
 !
       ndir_sph_IO =            itwo
       sph_rank_IO(1:itwo) =    rlm%sph_rank_rlm(1:itwo)
@@ -355,14 +371,15 @@
       call allocate_idx_sph_1d1_IO
       call allocate_idx_sph_1d2_IO
 !
-      idx_gl_sph_IO(1:rlm%nnod_rlm,1)                                   &
-     &       = rlm%idx_global_rlm(1:rlm%nnod_rlm,1)
-      idx_gl_sph_IO(1:rlm%nnod_rlm,2)                                   &
-     &       = rlm%idx_global_rlm(1:rlm%nnod_rlm,2)
-      inod_gl_sph_IO(1:rlm%nnod_rlm)                                    &
-     &       =  rlm%idx_global_rlm(1:rlm%nnod_rlm,1)                    &
-     &        + rlm%idx_global_rlm(1:rlm%nnod_rlm,2)                    &
-     &         * rlm%nidx_global_rlm(1)
+!$omp parallel do private(i,nr_8)
+      do i = 1, rlm%nnod_rlm
+        nr_8 = rlm%nidx_global_rlm(1)
+        idx_gl_sph_IO(i,1) = rlm%idx_global_rlm(i,1)
+        idx_gl_sph_IO(i,2) = rlm%idx_global_rlm(i,2)
+        inod_gl_sph_IO(i) =  rlm%idx_global_rlm(i,1)                    &
+     &                     + rlm%idx_global_rlm(i,2) * nr_8
+      end do
+!$omp end parallel do
 !
       r_gl_1_IO(1:rlm%nidx_rlm(1))                                      &
      &       =     rlm%radius_1d_rlm_r(1:rlm%nidx_rlm(1))
@@ -386,7 +403,8 @@
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rj_grid), intent(inout) :: rj
-      integer(kind = kint) :: i, num
+      integer(kind = kint) :: i
+      integer(kind = kint_gl) :: nr_8
 !
       ndir_sph_IO =            itwo
       sph_rank_IO(1:itwo) =    rj%sph_rank_rj(1:itwo)
@@ -406,16 +424,19 @@
       call allocate_idx_sph_1d1_IO
       call allocate_idx_sph_1d2_IO
 !
-      do i = 1, itwo
-        idx_gl_sph_IO(1:rj%nnod_rj,i)                                   &
-     &      = rj%idx_global_rj(1:rj%nnod_rj,i)
+!$omp parallel do private(i,nr_8)
+      do i = 1, rj%nnod_rj
+        nr_8 = rj%nidx_global_rj(1)
+        idx_gl_sph_IO(i,1) = rj%idx_global_rj(i,1)
+        idx_gl_sph_IO(i,2) = rj%idx_global_rj(i,2)
+        inod_gl_sph_IO(i) =  rj%idx_global_rj(i,1)                      &
+     &                     + rj%idx_global_rj(i,2) * nr_8
       end do
-      inod_gl_sph_IO(1:rj%nnod_rj)                                      &
-     &     =  rj%idx_global_rj(1:rj%nnod_rj,1)                          &
-     &      + rj%idx_global_rj(1:rj%nnod_rj,2)  * rj%nidx_global_rj(1)
+!$omp end parallel do
+!
       if(inod_gl_sph_IO(rj%nnod_rj) .eq. izero) then
-        num = (rj%nidx_global_rj(2) + 1)
-        inod_gl_sph_IO(rj%nnod_rj) = rj%nidx_global_rj(1) * num + 1
+        nr_8 = (rj%nidx_global_rj(2) + 1)
+        inod_gl_sph_IO(rj%nnod_rj) = rj%nidx_global_rj(1) * nr_8 + 1
       end if
 !
       r_gl_1_IO(1:rj%nidx_rj(1)) =   rj%radius_1d_rj_r(1:rj%nidx_rj(1))

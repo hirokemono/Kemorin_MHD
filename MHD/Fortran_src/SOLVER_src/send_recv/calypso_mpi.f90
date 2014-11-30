@@ -37,6 +37,9 @@
 !>     character size for MPI
       integer :: CALYPSO_CHARACTER
 !
+!>     integer size for MPI
+      integer :: CALYPSO_GLOBAL_INT
+!
 !>      process ID (start from 0)
       integer(kind=kint) :: my_rank
 !>      total number of processes
@@ -85,6 +88,14 @@
         CALYPSO_REAL = MPI_REAL16
       else
         CALYPSO_REAL = MPI_DOUBLE_PRECISION
+      end if
+!
+      if(kint_gl .eq. 4) then
+        CALYPSO_GLOBAL_INT = MPI_INTEGER
+      else if(kint_gl .eq. 8) then
+        CALYPSO_GLOBAL_INT = MPI_INTEGER8
+      else
+        CALYPSO_GLOBAL_INT = MPI_INTEGER
       end if
 !
       end subroutine calypso_MPI_init

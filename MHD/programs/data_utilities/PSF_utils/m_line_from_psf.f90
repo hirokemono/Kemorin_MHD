@@ -65,7 +65,7 @@
       integer(kind = kint), allocatable :: iedge_4_line(:)
       real(kind = kreal), allocatable :: coef_on_edge(:,:)
       real(kind = kreal), allocatable :: ref_tri(:)
-      integer(kind = kint) :: i1
+      integer(kind = kint) :: i1, num
       integer(kind = kint) :: istack_smp(0:1)
 !
 !   Count number of lines
@@ -111,15 +111,15 @@
         iedge_4_line = 0
         coef_on_edge = 0.0d0
       end if
+      istack_smp(0) = nline_on_node
+      istack_smp(1) = int(line%nnod)
 !
       call set_section_list_in_triangle(numnod_psf, numedge_psf,        &
-     &    line%nnod, nline_on_node, iedge_4_line)
+     &    istack_smp(1), nline_on_node, iedge_4_line)
 !
-      istack_smp(0) = nline_on_node
-      istack_smp(1) = line%nnod
       call set_node_on_edge_4_quad_psf(numnod_psf, numedge_psf,         &
      &    num_linear_edge, iedge_psf, xx_psf, coef_line,                &
-     &    line%nnod, ione, istack_smp, iedge_4_line, coef_on_edge)
+     &    istack_smp(1), ione, istack_smp, iedge_4_line, coef_on_edge)
 !
       call set_section_fld_in_triangle(numnod_psf, numedge_psf,         &
      &    nfield_psf, ncomptot_psf, xx_psf, iedge_psf,                  &

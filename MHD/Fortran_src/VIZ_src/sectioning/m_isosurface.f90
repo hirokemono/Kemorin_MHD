@@ -18,7 +18,7 @@
 !!
 !!      subroutine isosurface_main(istep_iso,                           &
 !!     &          numnod, numele, numedge, nnod_4_ele, nnod_4_edge,     &
-!!     &          ie, ie_edge, iedge_4_ele, globalnodid,                &
+!!     &          ie, ie_edge, iedge_4_ele, inod_global,                &
 !!     &          xx, radius, a_radius, s_cylinder, a_s_cylinder,       &
 !!     &          inod_smp_stack, num_nod_phys, num_tot_nod_phys,       &
 !!     &          istack_nod_component, d_nod)
@@ -152,7 +152,7 @@
 !
       subroutine isosurface_main(istep_iso,                             &
      &          numnod, numele, numedge, nnod_4_ele, nnod_4_edge,       &
-     &          ie, ie_edge, iedge_4_ele, globalnodid,                  &
+     &          ie, ie_edge, iedge_4_ele, inod_global,                  &
      &          xx, radius, a_radius, s_cylinder, a_s_cylinder,         &
      &          inod_smp_stack, num_nod_phys, num_tot_nod_phys,         &
      &          istack_nod_component, d_nod)
@@ -174,7 +174,7 @@
       integer(kind=kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
       integer(kind=kint), intent(in) :: iedge_4_ele(numele,nedge_4_ele)
 !
-      integer(kind=kint), intent(in) :: globalnodid(numnod)
+      integer(kind=kint_gl), intent(in) :: inod_global(numnod)
       real(kind = kreal), intent(in) :: xx(numnod,3)
       real(kind = kreal), intent(in) :: radius(numnod)
       real(kind = kreal), intent(in) :: a_radius(numnod)
@@ -201,7 +201,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_iso'
       call set_node_and_patch_iso                                       &
      &   (num_iso, numnod, numele, numedge, nnod_4_ele,                 &
-     &    nnod_4_edge, globalnodid, xx, ie, ie_edge, iedge_4_ele,       &
+     &    nnod_4_edge, inod_global, xx, ie, ie_edge, iedge_4_ele,       &
      &    istack_nod_iso_smp, istack_patch_iso_smp,                     &
      &    iso_search, iso_list, iso_pat)
 !

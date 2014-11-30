@@ -89,9 +89,9 @@
 !
 !
       call field_line_main(istep_psf, numnod, numele, numsurf,          &
-     &       nnod_4_surf, inod_smp_stack, globalnodid,                  &
+     &       nnod_4_surf, inod_smp_stack, inod_global,                  &
      &       xx, radius, a_radius, s_cylinder, a_s_cylinder,            &
-     &       globalelmid, e_multi, ie_surf, isf_4_ele, iele_4_surf,     &
+     &       iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,     &
      &       x_surf, vnorm_surf, area_surf, interior_surf,              &
      &       num_mat, num_mat_bc, mat_istack,  mat_item,                &
      &       ntot_ele_4_node, iele_stack_4_node, iele_4_node,           &

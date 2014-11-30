@@ -1,13 +1,7 @@
 !
 !      module set_ele_import_items_peri
 !
-      module set_ele_import_items_peri
-!
 !     Written by H. Matsui on Aug., 2007
-!
-      use m_precision
-!
-      implicit  none
 !
 !      subroutine count_import_ele_peri(internal_node, numele,          &
 !     &          nnod_4_ele, ie, num_import_ele, istack_import_ele,     &
@@ -16,6 +10,12 @@
 !      subroutine set_import_ele_peri(internal_node, numele,            &
 !     &          nnod_4_ele, ie, istack_import_ele, ntot_import_ele,    &
 !     &          item_import_ele)
+!
+      module set_ele_import_items_peri
+!
+      use m_precision
+!
+      implicit  none
 !
 !------------------------------------------------------------------
 !

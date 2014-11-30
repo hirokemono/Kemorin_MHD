@@ -66,7 +66,7 @@
       use t_psf_geometry_list
 !
       integer(kind = kint), intent(in) :: nnod, nedge, nnod_edge
-      integer(kind = kint), intent(in) :: inod_global(nnod)
+      integer(kind = kint_gl), intent(in) :: inod_global(nnod)
       integer(kind = kint), intent(in) :: ie_edge(nedge,nnod_edge)
       real(kind = kreal), intent(in) :: xx(nnod,3)
 !
@@ -98,7 +98,7 @@
           xx_patch(jnum,1) = xx(inod,1)
           xx_patch(jnum,2) = xx(inod,2)
           xx_patch(jnum,3) = xx(inod,3)
-          inod_sum(jnum) =   inod_global(inod)
+          inod_sum(jnum) =   int(inod_global(inod))
         end do
 !
         do i = 1, num_e
@@ -113,7 +113,7 @@
      &                      + psf_list%coef_on_edge(inum,2)*xx(inod2,2)
           xx_patch(jnum,3) =  psf_list%coef_on_edge(inum,1)*xx(inod1,3) &
      &                      + psf_list%coef_on_edge(inum,2)*xx(inod2,3)
-          inod_sum(jnum) = inod_global(inod1) + inod_global(inod2)
+          inod_sum(jnum) = int(inod_global(inod1) + inod_global(inod2))
         end do
 !
       end do

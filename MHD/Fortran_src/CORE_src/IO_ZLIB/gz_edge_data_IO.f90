@@ -144,8 +144,6 @@
 !
       use gz_node_geometry_IO
 !
-      integer(kind = kint) :: iedge
-!
 !
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_f

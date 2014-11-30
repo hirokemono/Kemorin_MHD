@@ -11,7 +11,7 @@
 !!      subroutine cross_section_init(numnod, numele, numsurf, numedge, &
 !!     &          nnod_4_ele, nnod_4_edge, ie, ie_edge,                 &
 !!     &          isf_4_ele, iedge_4_sf, iedge_4_ele,                   &
-!!     &          interior_ele, globalnodid, xx,                        &
+!!     &          interior_ele, inod_global, xx,                        &
 !!     &          inod_smp_stack, iele_smp_stack,                       &
 !!     &          isurf_smp_stack, iedge_smp_stack,                     &
 !!     &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,  &
@@ -86,7 +86,7 @@
       subroutine cross_section_init(numnod, numele, numsurf, numedge,   &
      &          nnod_4_ele, nnod_4_edge, ie, ie_edge,                   &
      &          isf_4_ele, iedge_4_sf, iedge_4_ele,                     &
-     &          interior_ele, globalnodid, xx,                          &
+     &          interior_ele, inod_global, xx,                          &
      &          inod_smp_stack, iele_smp_stack,                         &
      &          isurf_smp_stack, iedge_smp_stack,                       &
      &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,    &
@@ -114,7 +114,7 @@
      &              :: iedge_4_sf(numsurf,nedge_4_surf)
       integer(kind=kint), intent(in) :: iedge_4_ele(numele,nedge_4_ele)
       integer(kind=kint), intent(in) :: interior_ele(numele)
-      integer(kind=kint), intent(in) :: globalnodid(numnod)
+      integer(kind=kint_gl), intent(in) :: inod_global(numnod)
       real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
@@ -169,7 +169,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_psf'
       call set_node_and_patch_psf                                       &
      &   (num_psf, numnod, numele, numedge, nnod_4_ele,                 &
-     &    nnod_4_edge, globalnodid, xx, ie, ie_edge, iedge_4_ele,       &
+     &    nnod_4_edge, inod_global, xx, ie, ie_edge, iedge_4_ele,       &
      &    num_surf, num_surf_bc, surf_istack, surf_item,                &
      &    ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp,           &
      &    istack_nod_psf_smp, istack_patch_psf_smp, psf_search,         &

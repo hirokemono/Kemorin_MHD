@@ -46,6 +46,7 @@
       type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: gzip_name
+      integer(kind = kint) :: nnod4
 !
 !
       call set_parallel_ucd_file_name(ucd%file_prefix, iflag_fld_gz,    &
@@ -56,9 +57,10 @@
 !
       call open_wt_gzfile(gzip_name)
 !
+      nnod4 = int(ucd%nnod)
       call write_gz_step_data(my_rank)
       call write_gz_field_data                                          &
-     &         (ucd%nnod, ucd%num_field, ucd%ntot_comp,                 &
+     &         (nnod4, ucd%num_field, ucd%ntot_comp,                    &
      &          ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
       call close_gzfile
@@ -74,6 +76,7 @@
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: gzip_name
+      integer(kind = kint) :: nnod4
 !
 !
       call set_parallel_ucd_file_name(ucd%file_prefix, iflag_fld_gz,    &
@@ -85,10 +88,12 @@
       call open_rd_gzfile(gzip_name)
 !
       call read_gz_step_data
-      call skip_gz_comment_int2(ucd%nnod, ucd%num_field)
+      call skip_gz_comment_int2(nnod4, ucd%num_field)
       call read_gz_multi_int(ucd%num_field, ucd%num_comp)
+!
+      ucd%nnod = nnod4
       call read_gz_field_data                                           &
-     &         (ucd%nnod, ucd%num_field, ucd%ntot_comp,                 &
+     &         (nnod4, ucd%num_field, ucd%ntot_comp,                    &
      &          ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
       call close_gzfile
@@ -103,6 +108,7 @@
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: gzip_name
+      integer(kind = kint) :: nnod4
 !
 !
       call set_parallel_ucd_file_name(ucd%file_prefix, iflag_fld_gz,    &
@@ -114,7 +120,9 @@
       call open_rd_gzfile(gzip_name)
 !
       call read_gz_step_data
-      call skip_gz_comment_int2(ucd%nnod, ucd%num_field)
+      call skip_gz_comment_int2(nnod4, ucd%num_field)
+      ucd%nnod = nnod4
+!
       call allocate_ucd_phys_name(ucd)
 !
       call read_gz_multi_int(ucd%num_field, ucd%num_comp)
@@ -123,7 +131,7 @@
       call allocate_ucd_phys_data(ucd)
 !
       call read_gz_field_data                                           &
-     &         (ucd%nnod, ucd%num_field, ucd%ntot_comp,                 &
+     &         (nnod4, ucd%num_field, ucd%ntot_comp,                    &
      &          ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
       call close_gzfile

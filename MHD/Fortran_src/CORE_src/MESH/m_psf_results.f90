@@ -31,14 +31,15 @@
       character(len=kchara) :: psf_file_header
       integer(kind = kint) :: iflag_psf_fmt = iflag_udt
 !
-      integer(kind = kint) :: numnod_psf, numele_psf, nnod_4_ele_psf
+      integer(kind = kint) :: numnod_psf, numele_psf
+      integer(kind = kint) :: nnod_4_ele_psf
       integer(kind = kint) :: nfield_psf, ncomptot_psf
 !
       real(kind = kreal), allocatable, target :: xx_psf(:,:)
       real(kind = kreal), allocatable, target :: d_nod_psf(:,:)
-      integer(kind = kint), allocatable, target :: inod_psf(:)
+      integer(kind = kint_gl), allocatable, target :: inod_psf(:)
 !
-      integer(kind = kint), allocatable, target :: iele_psf(:)
+      integer(kind = kint_gl), allocatable, target :: iele_psf(:)
       integer(kind = kint), allocatable, target :: ie_psf(:,:)
       integer(kind = kint), allocatable, target :: ncomp_psf(:)
       integer(kind = kint), allocatable, target :: istack_comp_psf(:)

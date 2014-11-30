@@ -263,7 +263,7 @@
       integer(kind = kint), intent(in) :: jp
       type(interpolate_table_org), intent(inout) :: para_tbl_org
 !
-      integer(kind = kint) :: ip0, ip, i, kst
+      integer(kind = kint) :: ip0, ip, kst
 !
 !
       para_tbl_org%istack_nod_tbl_org(0) =       0

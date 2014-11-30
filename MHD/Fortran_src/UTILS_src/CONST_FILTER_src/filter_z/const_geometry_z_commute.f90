@@ -101,11 +101,11 @@
       integer (kind = kint) :: i
 !
       do i = 1, internal_node
-        globalnodid(i) = i
+        inod_global(i) = i
       end do
 !
       do i = 1, numele
-        iedge_global(i) = globalnodid(ie_edge(i,1))
+        iedge_global(i) = inod_global(ie_edge(i,1))
       end do
 !
       end subroutine set_global_id_z_commute

@@ -27,7 +27,7 @@
 !
       use set_ucd_data
 !
-      integer(kind = kint) :: inod
+      integer(kind = kint_gl) :: inod
 !
 !
       fem_ucd%nnod = merge_tbl%nnod_merged
@@ -50,7 +50,8 @@
 !
       use set_ucd_data
 !
-      integer(kind = kint) :: iele, k1
+      integer(kind = kint_gl) :: iele
+      integer(kind = kint) :: k1
 !
 !
       fem_ucd%nele = merge_tbl%nele_merged
@@ -81,7 +82,8 @@
 !
       use set_ucd_data
 !
-      integer(kind = kint) :: inod, nd
+      integer(kind = kint_gl) :: inod
+      integer(kind = kint) :: nd
 !
 !
       fem_ucd%nnod =      merge_tbl%nnod_merged

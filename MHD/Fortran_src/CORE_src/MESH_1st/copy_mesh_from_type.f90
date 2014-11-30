@@ -113,7 +113,7 @@
 !
 !$omp parallel do
       do inod = 1, numnod
-        globalnodid(inod) = node%inod_global(inod)
+        inod_global(inod) = node%inod_global(inod)
         xx(inod,1) = node%xx(inod,1)
         xx(inod,2) = node%xx(inod,2)
         xx(inod,3) = node%xx(inod,3)
@@ -156,7 +156,7 @@
 !
 !$omp do
       do iele = 1, numele
-        globalelmid(iele) = ele%iele_global(iele)
+        iele_global(iele) = ele%iele_global(iele)
         elmtyp(iele) =      ele%elmtyp(iele)
         nodelm(iele) =      ele%nodelm(iele)
       end do

@@ -51,15 +51,16 @@
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      numnod_psf =   ucd%nnod
-      numele_psf =   ucd%nele
+      numnod_psf =   int(ucd%nnod)
+      numele_psf =   int(ucd%nele)
       ncomptot_psf = ucd%ntot_comp
       call allocate_psf_results
 !
       inod_psf(1:numnod_psf) = ucd%inod_global(1:numnod_psf)
       iele_psf(1:numele_psf) = ucd%iele_global(1:numele_psf)
       xx_psf(1:numnod_psf,1:ithree) = ucd%xx(1:numnod_psf,1:ithree)
-      ie_psf(1:numele_psf,1:ithree) = ucd%ie(1:numele_psf,1:ithree)
+      ie_psf(1:numele_psf,1:ithree)                                     &
+     &      = int(ucd%ie(1:numele_psf,1:ithree))
 !
       call deallocate_ucd_node(ucd)
       call deallocate_ucd_ele(ucd)

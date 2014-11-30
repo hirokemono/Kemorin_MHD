@@ -26,20 +26,20 @@
       use m_geometry_data
       use m_element_id_4_node
 !
-      integer(kind = kint), intent(in) :: id_glnod_org(numnod)
+      integer(kind = kint_gl), intent(in) :: id_glnod_org(numnod)
 !
-      integer(kind = kint) :: inum, iele_im
-      integer(kind = kint) :: inod, inod_org, k1
+      integer(kind = kint) :: inum, iele_im, iflag
+      integer(kind = kint) :: inod, k1
       integer(kind = kint) :: jst, jed, jnum, jele, jnod
-      integer(kind = kint) :: iflag
+      integer(kind = kint_gl) :: inod_gl
 !
 !
       do inum = 1, num_import_ele(1)
         iele_im = item_import_ele(inum)
         inod = ie(iele_im,1)
-        inod_org = id_glnod_org(inod)
-        jst = iele_stack_4_node(inod_org-1) +1
-        jed = iele_stack_4_node(inod_org)
+        inod_gl = id_glnod_org(inod)
+        jst = iele_stack_4_node(inod_gl-1) +1
+        jed = iele_stack_4_node(inod_gl)
         do jnum = jst, jed
           jele = iele_4_node(jnum)
           iflag = 0
@@ -72,20 +72,20 @@
       use m_geometry_data
       use m_element_id_4_node
 !
-      integer(kind = kint), intent(in) :: id_glnod_org(numnod)
+      integer(kind = kint_gl), intent(in) :: id_glnod_org(numnod)
 !
-      integer(kind = kint) :: inum, isurf_im
-      integer(kind = kint) :: inod, inod_org, k1, k2
+      integer(kind = kint) :: inum, isurf_im, iflag
+      integer(kind = kint) :: inod, k1, k2
       integer(kind = kint) :: jst, jed, jnum, jele, jsurf, jnod
-      integer(kind = kint) :: iflag
+      integer(kind = kint_gl) :: inod_gl
 !
 !
       do inum = 1, num_import_surf(1)
         isurf_im = item_import_surf(inum)
         inod = ie_surf(isurf_im,1)
-        inod_org = id_glnod_org(inod)
-        jst = iele_stack_4_node(inod_org-1) +1
-        jed = iele_stack_4_node(inod_org)
+        inod_gl = id_glnod_org(inod)
+        jst = iele_stack_4_node(inod_gl-1) +1
+        jed = iele_stack_4_node(inod_gl)
         do jnum = jst, jed
           jele = iele_4_node(jnum)
           do k2 = 1, nsurf_4_ele
@@ -121,19 +121,20 @@
       use m_geometry_data
       use m_element_id_4_node
 !
-      integer(kind = kint), intent(in) :: id_glnod_org(numnod)
+      integer(kind = kint_gl), intent(in) :: id_glnod_org(numnod)
 !
-      integer(kind = kint) :: inum, iedge_im
-      integer(kind = kint) :: inod, inod_org, k1, k2
+      integer(kind = kint) :: inum, iedge_im, iflag
+      integer(kind = kint) :: inod, k1, k2
       integer(kind = kint) :: jst, jed, jnum, jele, jedge, jnod
-      integer(kind = kint) :: iflag
+      integer(kind = kint_gl) :: inod_gl
+!
 !
       do inum = 1, num_import_edge(1)
         iedge_im = item_import_edge(inum)
         inod = ie_edge(iedge_im,1)
-        inod_org = id_glnod_org(inod)
-        jst = iele_stack_4_node(inod_org-1) +1
-        jed = iele_stack_4_node(inod_org)
+        inod_gl = id_glnod_org(inod)
+        jst = iele_stack_4_node(inod_gl-1) +1
+        jed = iele_stack_4_node(inod_gl)
         do jnum = jst, jed
           jele = iele_4_node(jnum)
           do k2 = 1, nedge_4_ele

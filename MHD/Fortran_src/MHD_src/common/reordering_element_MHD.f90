@@ -38,7 +38,7 @@
 !
 !
       call reordering_element_connect(numele, nnod_4_ele,               &
-     &    new2oldele_layer(1), globalelmid_org(1), globalelmid(1),      &
+     &    new2oldele_layer(1), iele_global_org(1), iele_global(1),      &
      &    ie_org(1,1), ie(1,1) )
 !
       call reordering_element_group(numele, old2newele_layer(1),        &
@@ -58,8 +58,8 @@
       integer (kind = kint), intent(in) :: numele, nnod_4_ele
       integer (kind = kint), intent(in) :: new2oldele_layer(numele)
 !
-      integer (kind = kint), intent(inout) :: iele_gl_org(numele)
-      integer (kind = kint), intent(inout) :: iele_gl(numele)
+      integer (kind = kint_gl), intent(inout) :: iele_gl_org(numele)
+      integer (kind = kint_gl), intent(inout) :: iele_gl(numele)
       integer (kind = kint), intent(inout) :: ie_org(numele,nnod_4_ele)
       integer (kind = kint), intent(inout) :: ie(numele,nnod_4_ele)
 !

@@ -39,9 +39,10 @@
 !
       type(ucd_data), intent(inout) :: psf_out(num_psf)
 !
-      integer(kind = kint) :: iele, inod, jnod, i, j, i1, i2, i3
+      integer(kind = kint) :: inod, jnod, i, j
       integer(kind = kint) :: i_psf, ist, ied, ishift
       integer(kind = kint) :: ii, jj
+      integer(kind = kint_gl) :: iele, i1, i2, i3
 !
 !
       if (my_rank .ne. 0) return
@@ -123,8 +124,8 @@
       integer(kind = kint), intent(in) :: num_psf
       type(ucd_data), intent(inout) :: psf_out(num_psf)
 !
-!
-      integer(kind = kint) :: i_psf, inum
+      integer(kind = kint) :: i_psf
+      integer(kind = kint_gl) :: inum
 !
 !
       if(my_rank .gt. 0) return

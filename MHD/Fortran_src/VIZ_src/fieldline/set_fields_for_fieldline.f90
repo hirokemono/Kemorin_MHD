@@ -10,7 +10,7 @@
 !     &          d_nod)
 !      subroutine s_set_fields_for_fieldline(i_fln,                     &
 !     &        numnod, numele, numsurf, nnod_4_surf,                    &
-!     &        globalelmid, e_multi, ie_surf, isf_4_ele, iele_4_surf,   &
+!     &        iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,   &
 !     &        x_surf, vnorm_surf, area_surf,                           &
 !     &        num_mat, num_mat_bc, mat_istack, mat_item)
 !
@@ -148,7 +148,7 @@
 !
       subroutine s_set_fields_for_fieldline(i_fln,                      &
      &        numnod, numele, numsurf, nnod_4_surf,                     &
-     &        globalelmid, e_multi, ie_surf, isf_4_ele, iele_4_surf,    &
+     &        iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,    &
      &        x_surf, vnorm_surf, area_surf,                            &
      &        num_mat, num_mat_bc, mat_istack, mat_item)
 !
@@ -160,7 +160,7 @@
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: globalelmid(numele)
+      integer(kind = kint_gl), intent(in) :: iele_global(numele)
       real(kind = kreal), intent(in) :: e_multi(numele)
 !
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
@@ -292,10 +292,10 @@
 !
       else if(id_fline_start_type(i_fln) .eq. 1) then
         call cnt_start_surface_by_gl_table(i_fln, numele,               &
-     &          globalelmid, e_multi, num_mat, num_mat_bc,              &
+     &          iele_global, e_multi, num_mat, num_mat_bc,              &
      &          mat_istack, mat_item)
         call set_start_surface_by_gl_table(i_fln, numele,               &
-     &          globalelmid, e_multi, num_mat, num_mat_bc,              &
+     &          iele_global, e_multi, num_mat, num_mat_bc,              &
      &          mat_istack, mat_item)
       end if
 !
@@ -370,13 +370,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cnt_start_surface_by_gl_table(i_fln, numele,           &
-     &          globalelmid, e_multi, num_mat, num_mat_bc,              &
+     &          iele_global, e_multi, num_mat, num_mat_bc,              &
      &          mat_istack, mat_item)
 !
       integer(kind = kint), intent(in) :: i_fln
 !
       integer(kind=kint), intent(in) :: numele
-      integer(kind=kint), intent(in) :: globalelmid(numele)
+      integer(kind=kint_gl), intent(in) :: iele_global(numele)
       real(kind = kreal), intent(in) :: e_multi(numele)
 !
       integer(kind=kint), intent(in) :: num_mat, num_mat_bc
@@ -386,7 +386,7 @@
       integer(kind = kint) :: inum, ist_grp, ied_grp
       integer(kind = kint) :: jgrp, jst_grp, jed_grp
       integer(kind = kint) :: icou, jnum, jele, jg, jst, jed
-      integer(kind = kint) :: iele_g
+      integer(kind = kint_gl) :: iele_g
 !
 !
       icou = 0
@@ -402,7 +402,7 @@
             jed = mat_istack(jg)
             do jnum = jst, jed
               jele = mat_item(jnum)
-              if(iele_g.eq.globalelmid(jele)                            &
+              if(iele_g.eq.iele_global(jele)                            &
      &           .and. e_multi(jele) .gt. 0.0d0) then
                 icou = icou + 1
                 exit
@@ -417,13 +417,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_start_surface_by_gl_table(i_fln, numele,           &
-     &          globalelmid, e_multi, num_mat, num_mat_bc,              &
+     &          iele_global, e_multi, num_mat, num_mat_bc,              &
      &          mat_istack, mat_item)
 !
       integer(kind = kint), intent(in) :: i_fln
 !
       integer(kind=kint), intent(in) :: numele
-      integer(kind=kint), intent(in) :: globalelmid(numele)
+      integer(kind=kint_gl), intent(in) :: iele_global(numele)
       real(kind = kreal), intent(in) :: e_multi(numele)
 !
       integer(kind=kint), intent(in) :: num_mat, num_mat_bc
@@ -433,7 +433,7 @@
       integer(kind = kint) :: inum, ist_grp, ied_grp
       integer(kind = kint) :: jgrp, jst_grp, jed_grp
       integer(kind = kint) :: icou, jnum, jele, jg, jst, jed
-      integer(kind = kint) :: iele_g
+      integer(kind = kint_gl) :: iele_g
 !
 !
       icou = istack_each_field_line(i_fln-1)
@@ -449,7 +449,7 @@
             jed = mat_istack(jg)
             do jnum = jst, jed
               jele = mat_item(jnum)
-              if(iele_g.eq.globalelmid(jele)                            &
+              if(iele_g.eq.iele_global(jele)                            &
      &           .and. e_multi(jele) .gt. 0.0d0) then
                 icou = icou + 1
                 id_surf_start_fline(1,icou) = jele

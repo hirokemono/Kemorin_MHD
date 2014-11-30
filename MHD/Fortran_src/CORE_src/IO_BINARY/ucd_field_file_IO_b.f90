@@ -50,6 +50,7 @@
       type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: file_name
+      integer(kind= kint) :: nnod4
 !
 !
       call set_parallel_ucd_file_name(ucd%file_prefix, iflag_bin,       &
@@ -60,9 +61,10 @@
 !
       open(id_binary_fld, file = file_name, form = 'unformatted')
 !
+      nnod4 = int(ucd%nnod)
       call write_step_data_b(id_binary_fld, my_rank)
       call write_field_data_b(id_binary_fld,                            &
-     &          ucd%nnod, ucd%num_field, ucd%ntot_comp,                 &
+     &          nnod4, ucd%num_field, ucd%ntot_comp,                    &
      &          ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
       close (id_binary_fld)
@@ -78,6 +80,7 @@
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: file_name
+      integer(kind= kint) :: nnod4
 !
 !
       call set_parallel_ucd_file_name(ucd%file_prefix, iflag_bin,       &
@@ -90,11 +93,12 @@
 !
       call read_step_data_b(id_binary_fld)
 !
-      read(id_binary_fld) ucd%nnod, ucd%num_field
+      read(id_binary_fld) nnod4, ucd%num_field
       read(id_binary_fld) ucd%num_comp(1:ucd%num_field)
+      ucd%nnod = nnod4
 !
       call read_field_data_b(id_binary_fld,                             &
-     &          ucd%nnod, ucd%num_field, ucd%ntot_comp,                 &
+     &          nnod4, ucd%num_field, ucd%ntot_comp,                    &
      &          ucd%phys_name, ucd%d_ucd)
 !
       close (id_binary_fld)
@@ -109,6 +113,7 @@
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: file_name
+      integer(kind= kint) :: nnod4
 !
 !
       call set_parallel_ucd_file_name(ucd%file_prefix, iflag_bin,       &
@@ -120,7 +125,8 @@
       open(id_binary_fld, file = file_name, form = 'unformatted')
 !
       call read_step_data_b(id_binary_fld)
-      read(id_binary_fld) ucd%nnod, ucd%num_field
+      read(id_binary_fld) nnod4, ucd%num_field
+      ucd%nnod = nnod4
 !
       call allocate_ucd_phys_name(ucd)
       read(id_binary_fld) ucd%num_comp(1:ucd%num_field)
@@ -129,7 +135,7 @@
       call allocate_ucd_phys_data(ucd)
 !
       call read_field_data_b(id_binary_fld,                             &
-     &          ucd%nnod, ucd%num_field, ucd%ntot_comp,                 &
+     &          nnod4, ucd%num_field, ucd%ntot_comp,                    &
      &          ucd%phys_name, ucd%d_ucd)
 !
       close (id_binary_fld)
@@ -144,6 +150,7 @@
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: file_name
+      integer(kind= kint) :: nnod4
 !
 !
       call set_parallel_ucd_file_name(ucd%file_prefix, iflag_bin,       &
@@ -155,7 +162,8 @@
       open(id_binary_fld, file = file_name, form = 'unformatted')
 !
       call read_step_data_b(id_binary_fld)
-      read(id_binary_fld) ucd%nnod, ucd%num_field
+      read(id_binary_fld) nnod4, ucd%num_field
+      ucd%nnod = nnod4
 !
       call allocate_ucd_phys_name(ucd)
       read(id_binary_fld) ucd%num_comp(1:ucd%num_field)

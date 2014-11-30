@@ -115,7 +115,6 @@
       subroutine read_node_data_viewer_gz
 !
       integer(kind = kint) :: i, itmp
-      integer(kind = kint) :: nchara
 !
 !
       call skip_gz_comment_int(itmp)
@@ -174,7 +173,6 @@
       use m_node_quad_2_linear_sf
 !
       integer(kind = kint) :: i, itmp
-      integer(kind = kint) :: nchara
 !
 !
       call skip_gz_comment_int(itmp)
@@ -269,7 +267,6 @@
       use m_node_quad_2_linear_sf
 !
       integer(kind = kint) :: i, itmp
-      integer(kind = kint) :: nchara
 !
 !
       call skip_gz_comment_int(itmp)
