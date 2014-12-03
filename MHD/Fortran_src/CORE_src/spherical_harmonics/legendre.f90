@@ -8,7 +8,7 @@
 !>@brief module for Legendre polynomials
 !!
 !!@verbatim
-!!    subroutine dladendre(nth, x, dplm, df)
+!!    subroutine dladendre(ltr, x, dplm, df)
 !!*************************************************************
 !!     lead legendre and adjoint Legendle Polynomial
 !!
@@ -18,7 +18,7 @@
 !!
 !!*************************************************************
 !!
-!!      subroutine schmidt_normalization(nth, dplm, dc, p, dp)
+!!      subroutine schmidt_normalization(ltr, dplm, dc, p, dp)
 !!*************************************************************
 !!     lead Schmidt quasi-normalization
 !!
@@ -30,7 +30,7 @@
 !!*************************************************************
 !!@endverbatim
 !!
-!!@n @param nth       Truncation level for the polynomial
+!!@n @param ltr       Truncation level for the polynomial
 !!@n @param x         Input value  ( -1 =< x =<1 )
 !!@n @param dplm(m,l) adjoint Legendre Polynomial P_l^m (x)
 !!@n @param p(m,l)    Schmidt Polynomial
@@ -51,13 +51,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dladendre(nth, x, dplm, df)
+      subroutine dladendre(ltr, x, dplm, df)
 !*
-      integer(kind = kint), intent(in) :: nth
+      integer(kind = kint), intent(in) :: ltr
       real(kind = kreal), intent(in) :: x
 !
-      real(kind = kreal), intent(inout) :: dplm(0:nth+2,0:nth+2)
-      real(kind = kreal), intent(inout) :: df(0:nth+2)
+      real(kind = kreal), intent(inout) :: dplm(0:ltr+2,0:ltr+2)
+      real(kind = kreal), intent(inout) :: df(0:ltr+2)
 !
       integer(kind = kint) :: l, m, mm, n
 !
@@ -66,7 +66,7 @@
       dplm(0,0) = 1.0d0
       dplm(0,1) = x
 !*
-      do 10 l = 2 ,nth+1
+      do 10 l = 2 ,ltr+1
 !*
         dplm(0,l) = x * dplm(0,l-1) * dble(2*l-1)/dble(l)               &
      &             - dplm(0,l-2) * dble(l-1)/dble(l)
@@ -75,7 +75,7 @@
 !*
 !* +++++++  adjoint Legendre Polynomial  ++++++++++++
 !*
-      do 20 m = 1 ,nth+1
+      do 20 m = 1 ,ltr+1
 !*
         df(m) = 1.0
         df(m+1) = x
@@ -86,14 +86,14 @@
         df(m+1) = df(m+1)*dble(2*m+1)
 !*
 !*
-        if ( m .lt. nth-1 ) then
-          do 40 mm = m+2 ,nth
+        if ( m .lt. ltr-1 ) then
+          do 40 mm = m+2 ,ltr
             df(mm) = x * df(mm-1) * dble(2*mm-1)/dble(mm-m)         &
      &                - df(mm-2) * dble(mm+m-1)/dble(mm-m)
   40      continue
         endif
 !*
-        do 50 l = m ,nth
+        do 50 l = m ,ltr
 !            write(*,*) 'l,m,df', l,m,df(l)
           dplm(m,l) = ( abs(1-x**2) )**(dble(m)/2) * df(l)
   50    continue
@@ -106,22 +106,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine schmidt_normalization(nth, dplm, dc, p, dp)
+      subroutine schmidt_normalization(ltr, dplm, dc, p, dp)
 !*
       use factorials
 !
-      integer(kind = kint), intent(in) :: nth
-      real(kind = kreal), intent(in) :: dplm(0:nth+2,0:nth+2)
+      integer(kind = kint), intent(in) :: ltr
+      real(kind = kreal), intent(in) :: dplm(0:ltr+2,0:ltr+2)
 !
-      real(kind = kreal), intent(inout) :: dc(0:nth,0:nth+2)
-      real(kind = kreal), intent(inout) :: p(0:nth,0:nth)
-      real(kind = kreal), intent(inout) :: dp(0:nth,0:nth)
+      real(kind = kreal), intent(inout) :: dc(0:ltr,0:ltr+2)
+      real(kind = kreal), intent(inout) :: p(0:ltr,0:ltr)
+      real(kind = kreal), intent(inout) :: dp(0:ltr,0:ltr)
 !
       integer(kind = kint) :: l, m
 !
 !*  +++++++   set normalized cpnstant ++++++++++++
 !*
-      do 10 l = 0 ,nth
+      do 10 l = 0 ,ltr
         dc(0,l) = 1.0
         do 11 m = 1 ,l
           dc(m,l) = ( 2.0d0 / factorial(l-m,l+m,ione) )**half
@@ -131,7 +131,7 @@
 !*   ++++++++++  lead difference of the Polynomial  ++++++
 !*
         dp(0,0) = 0.0d0
-        do 20 l = 1 ,nth
+        do 20 l = 1 ,ltr
           do 21 m = 1 ,l-1
 !*
             dp(m,l) = ( dble(l+m) * dble(l-m+1) * dplm(m-1,l)           &
@@ -145,7 +145,7 @@
 !*
 !*   ++++++++++ normalize  +++++++++++
 !*
-        do 31 l = 0 ,nth
+        do 31 l = 0 ,ltr
           do 32 m = 0 ,l
 !*
             p(m,l) =  dplm(m,l) * dc(m,l)
