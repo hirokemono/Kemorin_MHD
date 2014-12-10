@@ -20,12 +20,12 @@
 !
       module calypso_mpi
 !
-      use mpi
+!      use mpi
       use m_precision
 !
       implicit none
 !
-!      include 'mpif.h'
+      include 'mpif.h'
 !
 !>     MPI communicator
       integer :: CALYPSO_COMM

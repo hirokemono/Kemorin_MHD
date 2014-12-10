@@ -26,10 +26,12 @@ LIB_FILES_MERGE = \
 
 LIBS_PARA_MERGE = \
 '$$(LIB_SOLVER)'    \
+'$$(LIB_PARA)'      \
 '$$(LIBS_MERGE)'
 
 LIB_FILES_PARA_MERGE = \
 '$$(LIB_SOLVER_FILE)'   \
+'$$(LIB_PARA_FILE)'     \
 '$$(LIB_FILES_MERGE)'
 
 ifdef FORTRAN_C_CONNECT
