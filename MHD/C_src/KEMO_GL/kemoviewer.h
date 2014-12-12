@@ -314,7 +314,7 @@ extern "C" {
     int kemoview_open_data_glut(const char *file_name);
     
     void close_mesh_view();
-    int close_psf_view();
+    int  close_psf_view();
     void close_fline_view();
     
     void set_to_pick_surface_command(const char *command);

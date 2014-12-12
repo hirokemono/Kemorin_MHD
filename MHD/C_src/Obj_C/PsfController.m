@@ -462,6 +462,7 @@
         [self CopyPsfDisplayFlagsFromC];
         [self SetCurrentPsfMenu];
     };
+    [_kemoviewer setViewerType:VIEW_3D];
 	[_kemoviewer UpdateImage];
 };
 
