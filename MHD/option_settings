@@ -6,7 +6,7 @@ Settings for Makefiles
 # -------------------------------------------------------------------------------
 #
 ./configure --prefix='/Users/matsui/local' CFLAGS='-O4 -Wall -g'  FCFLAGS='-O4 -Wall -g' \
-  F77=gfortran-mp-4.8 FC=gfortran-mp-4.8 CC=gcc-mp-4.8 CXX=g++-mp-4.8 \
+  F77=gfortran-mp-4.8 FC=gfortran-mp-4.8 CC=gcc-mp-4.8 CXX=g++-mp-4.8 RANLIB='ranlib -c' \
   --enable-cocoa --with-blas=yes --enable-fftw3 --enable-gl --enable-glui --enable-gtk \
   --enable-libpng  --with-zlib=/opt/local --with-hdf5=/Users/matsui/local/bin/h5pcc \
   --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/usr/local  \

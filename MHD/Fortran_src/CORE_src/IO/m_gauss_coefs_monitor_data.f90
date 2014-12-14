@@ -228,7 +228,7 @@
       open(id_pick, file = gauss_coefs_file_name)
 !
       call skip_comment(tmpchara,id_pick)
-      read(tmpchara,*) num_pick_gauss_mode
+      read(id_pick,*) num_pick_gauss_mode
 !
       ntot_pick_gauss_mode = num_pick_gauss_mode
       call allocate_gauss_coef_monitor
@@ -251,6 +251,7 @@
       ierr = 0
       read(id_pick,*,err=99,end=99) i_step, time,                       &
      &       gauss_coef_gl(1:num_pick_gauss_mode)
+      write(*,*) 'i_step', i_step, time
 !
       return
 !

@@ -86,6 +86,9 @@ AC_MSG_RESULT(with-pgplot...   "${with_pgplot}")
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_FC
+AC_PROG_RANLIB
+AC_MSG_RESULT(RANLIB... "${RANLIB}")
+
 
 if test -z ${AR}
 then
