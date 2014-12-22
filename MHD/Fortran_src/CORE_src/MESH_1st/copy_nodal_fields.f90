@@ -1,11 +1,16 @@
-!copy_nodal_fields.f90
-!     module copy_nodal_fields
+!>@file   copy_nodal_fields.f90
+!!@brief  module copy_nodal_fields
+!!
+!!@author H. Matsui
+!!@date Programmed in ????
 !
-!      Written by H. Matsui
-!
-!      subroutine copy_scalar_component(i_target, i_org)
-!      subroutine copy_vector_component(i_target, i_org)
-!      subroutine copy_tensor_components(i_target, i_org)
+!>@brief  Copy field data (Need OMP PARALLEL)
+!!
+!!@verbatim
+!!      subroutine copy_scalar_component(i_target, i_org)
+!!      subroutine copy_vector_component(i_target, i_org)
+!!      subroutine copy_tensor_components(i_target, i_org)
+!!@endverbatim
 !
       module copy_nodal_fields
 !

@@ -3,12 +3,22 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine copy_scalar_type(i_target, i_org, node, fld_nod)
-!      subroutine copy_vector_type(i_target, i_org, node, fld_nod)
-!      subroutine copy_tensor_type(i_target, i_org, node, fld_nod)
-!        integer (kind = kint), intent(in) :: i_target, i_org
-!        type(node_data), intent(in) :: node
-!        type(phys_data), intent(inout) :: fld_nod
+!>@file   copy_nodal_field_type.f90
+!!@brief  module copy_nodal_field_type
+!!
+!!@author H. Matsui
+!!@date Programmed in ??
+!
+!>@brief Copy fields in structure
+!!
+!!@verbatim
+!!      subroutine copy_scalar_type(i_target, i_org, node, fld_nod)
+!!      subroutine copy_vector_type(i_target, i_org, node, fld_nod)
+!!      subroutine copy_tensor_type(i_target, i_org, node, fld_nod)
+!!        integer (kind = kint), intent(in) :: i_target, i_org
+!!        type(node_data), intent(in) :: node
+!!        type(phys_data), intent(inout) :: fld_nod
+!!@endverbatim
 !
       module copy_nodal_field_type
 !

@@ -10,15 +10,10 @@
 !!@verbatim
 !!  routines for backward transform
 !!      subroutine copy_mhd_spectr_to_send(ncomp_send, n_WS, WS)
-!!      subroutine copy_mhd_vec_fld_from_trans
-!!      subroutine copy_mhd_scl_fld_from_trans
 !!
 !!  routines for forward transform
-!!      subroutine copy_mhd_scalar_spec_from_trans
-!!
 !!      subroutine copy_mhd_fields_to_send(ncomp_send, n_WS, WS)
 !!      subroutine copy_mhd_spectr_from_recv(ncomp_recv, n_WR, WR)
-!!      subroutine copy_mhd_vec_fld_to_trans
 !!@endverbatim
 !
       module copy_sph_MHD_4_send_recv

@@ -21,7 +21,6 @@
       implicit none
 !
       private :: gradients_of_vectors_sph, enegy_fluxes_4_sph_mhd
-      private :: copy_nl_terms_to_rtp_fld
 !
 ! ----------------------------------------------------------------------
 !
@@ -34,6 +33,7 @@
       use m_control_parameter
       use m_t_step_parameter
       use output_viz_file_control
+      use copy_MHD_4_sph_trans
 !
       integer (kind =kint) :: iflag
 !
@@ -47,7 +47,7 @@
       end if
 !
       if(iflag .eq. 0) then
-        call copy_nl_terms_to_rtp_fld
+        call copy_mhd_vec_fld_from_trans
         call gradients_of_vectors_sph
         call enegy_fluxes_4_sph_mhd
       end if
@@ -140,24 +140,5 @@
       end subroutine gradients_of_vectors_sph
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine copy_nl_terms_to_rtp_fld
-!
-      use copy_MHD_4_sph_trans
-!
-!
-!      call start_eleps_time(52)
-      if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_vec_fld_from_trans'
-      call copy_mhd_vec_fld_from_trans
-      if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_scl_fld_from_trans'
-      call copy_mhd_scl_fld_from_trans
-!
-      if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_scl_fld_from_trans'
-      call copy_mhd_vec_fld_to_trans
-!      call end_eleps_time(52)
-!
-      end subroutine copy_nl_terms_to_rtp_fld
-!
-!-----------------------------------------------------------------------
 !
       end module lead_fields_4_sph_mhd
