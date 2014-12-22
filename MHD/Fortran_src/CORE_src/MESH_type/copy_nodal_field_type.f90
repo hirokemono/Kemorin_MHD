@@ -90,8 +90,10 @@
       real(kind=kreal), intent(inout)    :: d_nod(numnod,n_comp)
 !
 !
+!$omp parallel
       call copy_nod_scalar_smp(np_smp, numnod, inod_smp_stack,          &
      &    d_nod(1,i_org), d_nod(1,i_target) )
+!$omp end parallel
 !
       end subroutine copy_scalar_fld
 !
@@ -108,8 +110,10 @@
       real(kind=kreal), intent(inout)    :: d_nod(numnod,n_comp)
 !
 !
+!$omp parallel
       call copy_nod_vector_smp(np_smp, numnod, inod_smp_stack,          &
      &    d_nod(1,i_org), d_nod(1,i_target) )
+!$omp end parallel
 !
       end subroutine copy_vector_fld
 !
@@ -126,8 +130,10 @@
       real(kind=kreal), intent(inout)    :: d_nod(numnod,n_comp)
 !
 !
+!$omp parallel
       call copy_nod_sym_tensor_smp(np_smp, numnod, inod_smp_stack,      &
      &    d_nod(1,i_org), d_nod(1,i_target) )
+!$omp end parallel
 !
       end subroutine copy_tensor_fld
 !

@@ -8,6 +8,9 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
+!!      subroutine allocate_nonlinear_data
+!!      subroutine deallocate_nonlinear_data
+!!
 !!      subroutine set_addresses_trans_sph_MHD
 !!      subroutine check_add_trans_sph_MHD
 !!@endverbatim
@@ -40,16 +43,44 @@
       integer(kind = kint) :: ntensor_rtp_2_rj = 0
 !
 !
-!>    addresses of fields for backward transform
+!>      addresses of fields for backward transform
       type(phys_address), save :: b_trns
 !
-!>    addresses of forces for forward transform
+!>      addresses of forces for forward transform
       type(phys_address), save :: f_trns
+!
+!>      field data to evaluate nonliear terms in grid space
+      real(kind = kreal), allocatable :: fld_rtp(:,:)
+!>      Nonoliear terms data in grid space
+      real(kind = kreal), allocatable :: frc_rtp(:,:)
 !
 !-----------------------------------------------------------------------
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine allocate_nonlinear_data
+!
+      use m_spheric_parameter
+!
+!
+      allocate(fld_rtp(nnod_rtp,ncomp_rj_2_rtp))
+      allocate(frc_rtp(nnod_rtp,ncomp_rtp_2_rj))
+      if(ncomp_rj_2_rtp .gt. 0) fld_rtp = 0.0d0
+      if(ncomp_rtp_2_rj .gt. 0) frc_rtp = 0.0d0
+!
+      end subroutine allocate_nonlinear_data
+!
+!-----------------------------------------------------------------------
+!
+      subroutine deallocate_nonlinear_data
+!
+      deallocate(fld_rtp, frc_rtp)
+!
+      end subroutine deallocate_nonlinear_data
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine set_addresses_trans_sph_MHD

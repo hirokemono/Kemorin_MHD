@@ -67,6 +67,8 @@
         call check_addresses_temporal_trans
       end if
 !
+      call allocate_nonlinear_data
+!
       if (iflag_debug.eq.1) write(*,*) 'initialize_sph_trans'
       call initialize_sph_trans
       call init_pole_transform
@@ -128,7 +130,6 @@
       use m_solver_SR
       use m_addresses_trans_sph_MHD
       use sph_trans_w_coriols
-      use copy_MHD_4_sph_trans
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !
@@ -143,14 +144,7 @@
 !
       if(ncomp_rj_2_rtp .eq. 0) return
       call sph_b_trans_w_coriolis(ncomp_rj_2_rtp, nvector_rj_2_rtp,     &
-     &    nscalar_rj_2_rtp, n_WS, n_WR, WS(1), WR(1))
-!
-!      call start_eleps_time(52)
-      if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_vec_fld_from_trans'
-      call copy_mhd_vec_fld_from_trans
-      if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_scl_fld_from_trans'
-      call copy_mhd_scl_fld_from_trans
-!      call end_eleps_time(52)
+     &    nscalar_rj_2_rtp, n_WS, n_WR, WS(1), WR(1), fld_rtp)
 !
       end subroutine sph_back_trans_4_MHD
 !
@@ -161,7 +155,6 @@
       use m_solver_SR
       use m_addresses_trans_sph_MHD
       use sph_trans_w_coriols
-      use copy_MHD_4_sph_trans
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !
@@ -169,13 +162,9 @@
       call check_calypso_rtp_2_rtm_buf_N(ncomp_rtp_2_rj)
       call check_calypso_rlm_2_rj_buf_N(ncomp_rtp_2_rj)
 !
-!      call start_eleps_time(53)
-      call copy_mhd_vec_fld_to_trans
-!      call end_eleps_time(53)
-!
       if(ncomp_rtp_2_rj .eq. 0) return
       call sph_f_trans_w_coriolis(ncomp_rtp_2_rj, nvector_rtp_2_rj,     &
-     &    nscalar_rtp_2_rj, n_WS, n_WR, WS(1), WR(1))
+     &    nscalar_rtp_2_rj, frc_rtp, n_WS, n_WR, WS(1), WR(1))
 !
 !      call start_eleps_time(54)
       call copy_mhd_spectr_from_recv(ncomp_rtp_2_rj, n_WR, WR(1))

@@ -10,9 +10,9 @@
 !!
 !!@verbatim
 !!      subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar,&
-!!     &          n_WS, n_WR, WS, WR)
+!!     &          n_WS, n_WR, WS, WR, fld_rtp)
 !!      subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar,&
-!!     &          n_WS, n_WR, WS, WR)
+!!     &          frc_rtp, n_WS, n_WR, WS, WR)
 !!
 !!      subroutine sph_b_trans_licv(ncomp_trans, n_WR, WR)
 !!      subroutine sph_f_trans_licv(ncomp_trans, n_WS, WS)
@@ -35,6 +35,8 @@
 !!@param n_WR Number of components for recieve buffer
 !!@param WS Send buffer
 !!@param WR Recieve buffer
+!!@param fld_rtp Field data to make nonlinear terms
+!!@param frc_rtp Nonlinear terms
 !
       module sph_trans_w_coriols
 !
@@ -44,7 +46,7 @@
       use m_work_time
       use m_machine_parameter
       use m_work_4_sph_trans
-      use sph_FFT_selector
+      use MHD_FFT_selector
       use legendre_transform_select
       use spherical_SRs_N
       use const_coriolis_sph_rlm
@@ -58,11 +60,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar,  &
-     &          n_WS, n_WR, WS, WR)
+     &          n_WS, n_WR, WS, WR, fld_rtp)
 !
       integer(kind = kint), intent(in) :: ncomp_trans, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
+      real (kind=kreal), intent(inout):: fld_rtp(nnod_rtp,ncomp_trans)
 !
 !
       START_SRtime= MPI_WTIME()
@@ -96,8 +99,8 @@
 !
       call start_eleps_time(24)
       if(iflag_debug .gt. 0) write(*,*)                                 &
-     &    'back_FFT_select_from_recv', ncomp_trans, nvector, nscalar
-      call back_FFT_select_from_recv(ncomp_trans, n_WR, WR, vr_rtp)
+     &    'back_MHD_FFT_sel_from_recv', ncomp_trans, nvector, nscalar
+      call back_MHD_FFT_sel_from_recv(ncomp_trans, n_WR, WR, fld_rtp)
       call end_eleps_time(24)
 !
       if(iflag_debug .gt. 0) write(*,*) 'finish_send_recv_rtm_2_rtp'
@@ -110,16 +113,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar,  &
-     &          n_WS, n_WR, WS, WR)
+     &          frc_rtp, n_WS, n_WR, WS, WR)
 !
       integer(kind = kint), intent(in) :: ncomp_trans, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WS, n_WR
+      real (kind=kreal), intent(inout):: frc_rtp(nnod_rtp,ncomp_trans)
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
 !
 !
 !      call check_vr_rtp(my_rank, ncomp_trans)
       call start_eleps_time(24)
-      call fwd_FFT_select_to_send(ncomp_trans, n_WS, vr_rtp, WS)
+      call fwd_MHD_FFT_sel_from_recv(ncomp_trans, n_WS, frc_rtp, WS)
       call end_eleps_time(24)
 !      call check_vr_rtp(my_rank, ncomp_trans)
 !

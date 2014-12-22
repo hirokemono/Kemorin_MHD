@@ -114,8 +114,10 @@
      &          inod_smp_stack, d_nod(1,i_field), vec_trans, xx,        &
      &          s_cylinder, a_s_cylinder)
           else
+!$omp parallel
             call copy_nod_vector_smp(np_smp, numnod, inod_smp_stack,    &
      &          d_nod(1,i_field), vec_trans)
+!$omp end parallel
           end if
 !
           jcomp = istack_phys_comp_rtp(i-1) + 1
@@ -164,8 +166,10 @@
             call cvt_cyl_vect_2_xyz_smp(np_smp, numnod, inod_smp_stack, &
      &          d_nod(1,i_field), vec_trans, longitude)
           else
+!$omp parallel
             call copy_nod_vector_smp(np_smp, numnod, inod_smp_stack,    &
      &          vec_trans, d_nod(1,i_field) )
+!$omp end parallel
           end if
 !
         else

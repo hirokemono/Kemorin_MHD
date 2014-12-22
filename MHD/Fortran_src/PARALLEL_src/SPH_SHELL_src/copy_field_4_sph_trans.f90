@@ -1,19 +1,19 @@
 !copy_field_4_sph_trans.f90
 !     module copy_field_4_sph_trans
 !
-!      subroutine copy_scalar_from_trans(i_trns, nnod, dnod_sph)
-!      subroutine copy_scalar_to_trans(i_trns, nnod, dnod_sph)
-!
-!      subroutine copy_vector_from_trans(i_trns, nnod, dnod_sph)
-!      subroutine copy_vector_to_trans(i_trns, nnod, dnod_sph)
-!
-!      subroutine copy_tensor_from_trans(i_trns, nnod, dnod_sph)
-!      subroutine copy_tensor_to_trans(i_trns, nnod, dnod_sph)
-!
-!      subroutine copy_vector_tmp_to_trans(i_trns)
-!      subroutine copy_tensor_tmp_to_trans(i_trns)
-!
-!      Written by H. Matsui on Feb., 2008
+!!      subroutine copy_scalar_from_trans(i_trns, nnod, dnod_sph)
+!!      subroutine copy_scalar_to_trans(i_trns, nnod, dnod_sph)
+!!
+!!      subroutine copy_vector_from_trans(i_trns, nnod, dnod_sph)
+!!      subroutine copy_vector_to_trans(i_trns, nnod, dnod_sph)
+!!
+!!      subroutine copy_tensor_from_trans(i_trns, nnod, dnod_sph)
+!!      subroutine copy_tensor_to_trans(i_trns, nnod, dnod_sph)
+!!
+!!      subroutine copy_vector_tmp_to_trans(i_trns)
+!!      subroutine copy_tensor_tmp_to_trans(i_trns)
+!!
+!!      Written by H. Matsui on Feb., 2008
 !
       module copy_field_4_sph_trans
 !

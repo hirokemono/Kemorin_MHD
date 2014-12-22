@@ -71,8 +71,10 @@
       call reset_sk6_type(n_vector,                                     &
      &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
 !
+!$omp parallel
       call copy_nod_vector_smp(np_smp, mesh%ele%numele,                 &
      &    iele_fsmp_stack, vxe_up, fem_wk%vxe)
+!$omp end parallel
 !
 ! -------- loop for shape function for the field values
 !
@@ -114,8 +116,10 @@
       call reset_sk6_type(n_scalar,                                     &
      &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
 !
+!$omp parallel
       call copy_nod_vector_smp(np_smp, mesh%ele%numele,                 &
      &    iele_fsmp_stack, vxe_up, fem_wk%vxe)
+!$omp end parallel
 !
 ! -------- loop for shape function for the field values
 !
@@ -157,8 +161,10 @@
       call reset_sk6_type(n_vector,                                     &
      &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
 !
+!$omp parallel
       call copy_nod_vector_smp(np_smp, mesh%ele%numele,                 &
      &    iele_fsmp_stack, vxe_up, fem_wk%vxe)
+!$omp end parallel
 !
 ! -------- loop for shape function for the field values
 !
@@ -201,8 +207,10 @@
       call reset_sk6_type(n_vector,                                     &
      &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
 !
+!$omp parallel
       call copy_nod_vector_smp(np_smp, mesh%ele%numele,                 &
      &    iele_fsmp_stack, vxe_up, fem_wk%vxe)
+!$omp end parallel
 !
 ! -------- loop for shape function for the field values
 !
@@ -244,8 +252,10 @@
       call reset_sk6_type(n_vector,                                     &
      &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
 !
+!$omp parallel
       call copy_nod_vector_smp(np_smp, mesh%ele%numele,                 &
      &    iele_fsmp_stack, vxe_up, fem_wk%vxe)
+!$omp end parallel
 !
 ! -------- loop for shape function for the field values
 !
