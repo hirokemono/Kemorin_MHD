@@ -60,8 +60,10 @@
        real(kind=kreal), intent(in) :: phi(numnod)
 !
 !
+!$omp parallel
        call cvt_cyl_vect_2_xyz_smp(ione, numnod, istack,                &
      &     vect, v_cyl, phi)
+!$omp end parallel
 !
       end subroutine cal_cyl_vect_2_cartecian
 !
@@ -75,8 +77,10 @@
        real(kind=kreal), intent(in) :: phi(numnod)
 !
 !
+!$omp parallel
        call cvt_cyl_vect_2_x_comp_smp(ione, numnod, istack,             &
      &     v_x, v_cyl, phi)
+!$omp end parallel
 !
       end subroutine cal_cyl_vect_2_x_comp
 !
@@ -90,8 +94,10 @@
        real(kind=kreal), intent(in) :: phi(numnod)
 !
 !
-        call cvt_cyl_vect_2_y_comp_smp(ione, numnod, istack,            &
-     &      v_y, v_cyl, phi)
+!$omp parallel
+      call cvt_cyl_vect_2_y_comp_smp(ione, numnod, istack,              &
+     &    v_y, v_cyl, phi)
+!$omp end parallel
 !
       end subroutine cal_cyl_vect_2_y_comp
 !
@@ -99,13 +105,16 @@
 !
       subroutine cal_cyl_vect_2_z_comp(numnod, v_z, v_cyl)
 !
+      use copy_field_smp
+!
        integer (kind = kint), intent(in) :: numnod
        real(kind=kreal), intent(in) :: v_cyl(numnod,3)
        real(kind=kreal), intent(inout) :: v_z(numnod)
 !
 !
-       call cvt_cyl_vect_2_z_comp_smp(ione, numnod, istack,             &
-     &     v_z, v_cyl)
+!$omp parallel
+      call copy_nod_scalar_smp(ione, numnod, istack, v_cyl(1,3), v_z)
+!$omp end parallel
 !
       end subroutine cal_cyl_vect_2_z_comp
 !

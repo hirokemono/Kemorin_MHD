@@ -224,9 +224,11 @@
 !      d_nod(1:numnod,iphys%i_SGS_m_flux+5) = zero
 !$omp end parallel workshare
 !
+!$omp parallel
       call overwrite_xyz_tensor_by_sph_smp(np_smp, numnod,              &
      &    inod_smp_stack, d_nod(1,iphys%i_SGS_m_flux), xx,              &
      &    radius, s_cylinder,  a_radius, a_s_cylinder)
+!$omp end parallel
 !
       if (iphys%i_SGS_div_m_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
@@ -251,8 +253,10 @@
       d_nod(1:numnod,iphys%i_velo+2) = zero
 !$omp end parallel workshare
 !
+!$omp parallel
       call overwrite_sph_vect_2_xyz_smp(np_smp, numnod,                 &
      &    inod_smp_stack, d_nod(1,iphys%i_velo), colatitude, longitude)
+!$omp end parallel
 !
       if (iphys%i_SGS_vp_induct .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &

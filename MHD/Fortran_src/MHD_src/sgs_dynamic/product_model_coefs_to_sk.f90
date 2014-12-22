@@ -42,9 +42,9 @@
       integer(kind = kint) :: k1
 !
 !
+!$omp parallel private(k1)
       if(itype_csim .eq. 1) then
         if(icoord_SGS_model_coef .eq. iflag_spherical) then
-!$omp parallel private(k1)
           do k1 = 1, nnod_4_ele
             call overwrite_sph_tensor_smp(np_smp, numele,               &
      &        iele_smp_stack, sk6(1,1,k1), x_ele, r_ele,                &
@@ -55,10 +55,8 @@
      &        iele_smp_stack, sk6(1,1,k1), x_ele, r_ele,                &
      &        s_ele, ar_ele, as_ele)
           end do
-!$omp end parallel
 !
         else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
-!$omp parallel private(k1)
           do k1 = 1, nnod_4_ele
             call overwrite_cyl_tensor_smp(np_smp, numele,               &
      &        iele_smp_stack, sk6(1,1,k1), x_ele, s_ele, as_ele)
@@ -67,27 +65,21 @@
             call overwrite_xyz_tensor_by_cyl_smp(np_smp, numele,        &
      &        iele_smp_stack, sk6(1,1,k1), x_ele, s_ele, as_ele)
           end do
-!$omp end parallel
 !
         else
-!$omp parallel private(k1)
           do k1 = 1, nnod_4_ele
             call ovwrt_tensor_tensor_prod_smp(np_smp, numele,           &
      &          iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
           end do
-!$omp end parallel
-!
         end if
 !
       else
-!$omp parallel private(k1)
         do k1 = 1, nnod_4_ele
           call ovwrt_tensor_scalar_prod_smp(np_smp, numele,             &
      &        iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
          end do
-!$omp end parallel
-!
       end if
+!$omp end parallel
 !
       end subroutine prod_model_coefs_4_tensor
 !
@@ -109,9 +101,9 @@
       integer(kind = kint) :: k1
 !
 !
+!$omp parallel private(k1)
       if(itype_csim .eq. 1) then
         if(icoord_SGS_model_coef .eq. iflag_spherical) then
-!$omp parallel private(k1)
           do k1 = 1, nnod_4_ele
             call overwrite_vector_2_sph_smp(np_smp, numele,             &
      &          iele_smp_stack, sk6(1,1,k1), x_ele, r_ele,              &
@@ -121,10 +113,8 @@
             call overwrite_sph_vect_2_xyz_smp(np_smp, numele,           &
      &          iele_smp_stack, sk6(1,1,k1), theta_ele, phi_ele)
           end do
-!$omp end parallel
 !
         else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
-!$omp parallel private(k1)
           do k1 = 1, nnod_4_ele
             call overwrite_vector_2_cyl_smp(np_smp, numele,             &
      &          iele_smp_stack, sk6(1,1,k1), x_ele, s_ele, as_ele)
@@ -133,25 +123,21 @@
             call overwrite_cyl_vect_2_xyz_smp(np_smp, numele,           &
      &          iele_smp_stack, sk6(1,1,k1), phi_ele)
           end do
-!$omp end parallel
 !
         else
-!$omp parallel private(k1)
           do k1 = 1, nnod_4_ele
             call ovwrt_vector_vector_prod_smp(np_smp, numele,           &
      &          iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1))
           end do
-!$omp end parallel
         end if
 !
       else
-!$omp parallel private(k1)
         do k1 = 1, nnod_4_ele
           call ovwrt_vec_scalar_prod_smp(np_smp, numele,                &
      &        iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
          end do
-!$omp end parallel
       end if
+!$omp end parallel
 !
       end subroutine prod_model_coefs_4_vector
 !
@@ -173,9 +159,9 @@
       integer(kind = kint) :: k1
 !
 !
+!$omp parallel private(k1)
       if(itype_csim .eq. 1) then
         if(icoord_SGS_model_coef .eq. iflag_spherical) then
-!$omp parallel private(k1)
           do k1 = 1, nnod_4_ele
             call overwrite_sph_asym_t_smp(np_smp, numele,               &
      &        iele_smp_stack, sk6(1,1,k1), x_ele, r_ele,                &
@@ -186,10 +172,8 @@
      &        iele_smp_stack, sk6(1,1,k1), x_ele, r_ele,                &
      &        s_ele, ar_ele, as_ele)
           end do
-!$omp end parallel
 !
         else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
-!$omp parallel private(k1)
           do k1 = 1, nnod_4_ele
             call overwrite_cyl_asym_t_smp(np_smp, numele,               &
      &        iele_smp_stack, sk6(1,1,k1), x_ele, s_ele, as_ele)
@@ -198,27 +182,23 @@
             call overwrite_xyz_asym_t_by_cyl_smp(np_smp, numele,        &
      &        iele_smp_stack, sk6(1,1,k1), x_ele, s_ele, as_ele)
           end do
-!$omp end parallel
 !
         else
-!$omp parallel private(k1)
           do k1 = 1, nnod_4_ele
             call ovwrt_tensor_tensor_prod_smp(np_smp, numele,           &
      &          iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
           end do
-!$omp end parallel
 !
         end if
 !
       else
-!$omp parallel private(k1)
         do k1 = 1, nnod_4_ele
           call ovwrt_tensor_scalar_prod_smp(np_smp, numele,             &
      &        iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
          end do
-!$omp end parallel
 !
       end if
+!$omp end parallel
 !
       end subroutine prod_model_coefs_4_asym_t
 !

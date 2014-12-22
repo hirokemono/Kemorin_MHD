@@ -107,8 +107,10 @@
       call copy_pole_vec_fld_from_trans(numnod, internal_node,          &
      &    xx, ntot_phys, ncomp_trans, i_field, i_trns, d_nod )
 !
+!$omp parallel
       call overwrite_sph_vect_2_xyz_smp(np_smp, numnod, inod_smp_stack, &
      &    d_nod(1,i_field), colatitude, longitude)
+!$omp end parallel
 !
       end subroutine copy_xyz_vec_from_trans_w_pole
 !
@@ -145,9 +147,11 @@
       call copy_pole_tsr_fld_from_trans(numnod, internal_node,          &
      &    xx, ntot_phys, ncomp_trans, i_field, i_trns, d_nod)
 !
+!$omp parallel
       call overwrite_xyz_tensor_by_sph_smp(np_smp, numnod,              &
      &    inod_smp_stack, d_nod(1,i_field), xx, radius, s_cylinder,     &
      &    a_radius, a_s_cylinder)
+!$omp end parallel
 !
       end subroutine copy_xyz_tsr_from_trans_w_pole
 !
@@ -197,8 +201,10 @@
       call copy_vector_from_trans(i_trns, numnod, d_nod(1,i_field))
 !$omp end parallel
 !
+!$omp parallel
       call overwrite_sph_vect_2_xyz_smp(np_smp, numnod, inod_smp_stack, &
      &    d_nod(1,i_field), colatitude, longitude)
+!$omp end parallel
 !
       end subroutine copy_xyz_vec_from_sph_trans
 !
@@ -229,9 +235,11 @@
       call copy_tensor_from_trans(i_trns, numnod, d_nod(1,i_field))
 !$omp end parallel
 !
+!$omp parallel
       call overwrite_xyz_tensor_by_sph_smp(np_smp, numnod,              &
      &    inod_smp_stack, d_nod(1,i_field), xx, radius, s_cylinder,     &
      &    a_radius, a_s_cylinder)
+!$omp end parallel
 !
       end subroutine copy_xyz_tsr_from_sph_trans
 !

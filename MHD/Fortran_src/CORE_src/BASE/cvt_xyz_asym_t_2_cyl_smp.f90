@@ -75,7 +75,7 @@
        real(kind=kreal) :: txy, tzx, tyz
 !
 !
-!$omp parallel do private(inod,ist,ied,txy,tzx,tyz)
+!$omp do private(inod,ist,ied,txy,tzx,tyz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -100,7 +100,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cal_cyl_asym_t_smp
 !
@@ -122,7 +122,7 @@
        real(kind=kreal) :: txy, tzx, tyz
 !
 !
-!$omp parallel do private(inod,ist,ied,txy,tzx,tyz)
+!$omp do private(inod,ist,ied,txy,tzx,tyz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -147,7 +147,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine overwrite_cyl_asym_t_smp
 !
@@ -166,7 +166,7 @@
        integer (kind = kint) :: ip, inod, ist, ied
 !
 !
-!$omp parallel do private(inod,ist,ied)
+!$omp do private(inod,ist,ied)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -174,7 +174,7 @@
            t_sp(inod) =   tensor(inod,1)
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cal_sp_asym_t_smp
 !
@@ -196,7 +196,7 @@
        real(kind=kreal) :: tzx, tyz
 !
 !
-!$omp parallel do private(inod,ist,ied,tzx,tyz)
+!$omp do private(inod,ist,ied,tzx,tyz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -213,7 +213,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cal_zs_asym_t_smp
 !
@@ -235,7 +235,7 @@
        real(kind=kreal) :: tzx, tyz
 !
 !
-!$omp parallel do private(inod,ist,ied,tzx,tyz)
+!$omp do private(inod,ist,ied,tzx,tyz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -252,7 +252,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cal_pz_asym_t_smp
 !

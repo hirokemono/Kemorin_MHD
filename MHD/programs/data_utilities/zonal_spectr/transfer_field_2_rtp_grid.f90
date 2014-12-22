@@ -158,18 +158,18 @@
           jcomp = istack_phys_comp_rtp(i-1) + 1
           call copy_rtp_phys_2_tmp(jcomp)
 !
+!$omp parallel
           if ( ifrag_trans_vect .eq. 1) then
             call cvt_sph_vect_2_xyz_smp(np_smp, numnod, inod_smp_stack, &
      &          d_nod(1,i_field), vec_trans, colatitude, longitude)
           else if ( ifrag_trans_vect .eq. 2) then
-            call cvt_cyl_vect_2_xyz_smp(np_smp, numnod, inod_smp_stack, &
+           call cvt_cyl_vect_2_xyz_smp(np_smp, numnod, inod_smp_stack, &
      &          d_nod(1,i_field), vec_trans, longitude)
           else
-!$omp parallel
             call copy_nod_vector_smp(np_smp, numnod, inod_smp_stack,    &
      &          vec_trans, d_nod(1,i_field) )
-!$omp end parallel
           end if
+!$omp end parallel
 !
         else
           jst = istack_phys_comp_rtp(i-1) + 1
