@@ -1,5 +1,5 @@
-!>@file   m_sph_ISPACK_FFT.f90
-!!@brief  module m_sph_ISPACK_FFT
+!>@file   m_MHD_ISPACK_FFT.f90
+!!@brief  module m_MHD_ISPACK_FFT
 !!
 !!@author H. Matsui
 !!@date Programmed in 2008
@@ -10,14 +10,14 @@
 !!@verbatim
 !!  ---------------------------------------------------------------------
 !!
-!!      subroutine init_sph_ISPACK(ncomp)
-!!      subroutine finalize_sph_ISPACK
-!!      subroutine verify_sph_ISPACK(ncomp)
+!!      subroutine init_MHD_ISPACK(ncomp)
+!!      subroutine finalize_MHD_ISPACK
+!!      subroutine verify_MHD_ISPACK(ncomp)
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_FTTRUF_to_send                                   &
+!!      subroutine MHD_FTTRUF_to_send                                   &
 !!     &         (ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
 !! ------------------------------------------------------------------
 !!
@@ -32,7 +32,7 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_FTTRUB_from_recv                                 &
+!!      subroutine MHD_FTTRUB_from_recv                                 &
 !!     &         (ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
 !! ------------------------------------------------------------------
 !!
@@ -63,7 +63,7 @@
 !!@n @param Nfft        Data length for eadh FFT
 !!@n @param X(M, Nfft)  Data for Fourier transform
 !
-      module m_sph_ISPACK_FFT
+      module m_MHD_ISPACK_FFT
 !
       use m_precision
       use m_constants
@@ -73,9 +73,9 @@
       implicit none
 !
 !>      Structure to use ISPACK
-      type(work_for_ispack), save :: sph_ispack
+      type(work_for_ispack), save :: MHD_ispack
 !
-      private :: sph_ispack
+      private :: MHD_ispack
 !
 ! ------------------------------------------------------------------
 !
@@ -83,7 +83,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_ISPACK(ncomp)
+      subroutine init_MHD_ISPACK(ncomp)
 !
       use m_spheric_parameter
       use m_spheric_param_smp
@@ -92,22 +92,22 @@
 !
 !
       call init_sph_ISPACK_t(ncomp, nidx_rtp, maxirt_rtp_smp,           &
-     &    sph_ispack)
+     &    MHD_ispack)
 !
-      end subroutine init_sph_ISPACK
-!
-! ------------------------------------------------------------------
-!
-      subroutine finalize_sph_ISPACK
-!
-!
-      call finalize_sph_ISPACK_t(sph_ispack)
-!
-      end subroutine finalize_sph_ISPACK
+      end subroutine init_MHD_ISPACK
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_ISPACK(ncomp)
+      subroutine finalize_MHD_ISPACK
+!
+!
+      call finalize_sph_ISPACK_t(MHD_ispack)
+!
+      end subroutine finalize_MHD_ISPACK
+!
+! ------------------------------------------------------------------
+!
+      subroutine verify_MHD_ISPACK(ncomp)
 !
       use m_spheric_parameter
       use m_spheric_param_smp
@@ -116,14 +116,14 @@
 !
 !
       call verify_sph_ISPACK_t(ncomp, nidx_rtp, maxirt_rtp_smp,         &
-     &    sph_ispack)
+     &    MHD_ispack)
 !
-      end subroutine verify_sph_ISPACK
+      end subroutine verify_MHD_ISPACK
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine sph_FTTRUF_to_send                                     &
+      subroutine MHD_FTTRUF_to_send                                     &
      &         (ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
 !
       use m_spheric_parameter
@@ -139,13 +139,13 @@
 !
 !
       call sph_FTTRUF_to_send_t(ncomp, nnod_rtp, nidx_rtp,              &
-     &    irt_rtp_smp_stack, n_WS, irev_sr_rtp, X_rtp, WS, sph_ispack)
+     &    irt_rtp_smp_stack, n_WS, irev_sr_rtp, X_rtp, WS, MHD_ispack)
 !
-      end subroutine sph_FTTRUF_to_send
+      end subroutine MHD_FTTRUF_to_send
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sph_FTTRUB_from_recv                                   &
+      subroutine MHD_FTTRUB_from_recv                                   &
      &         (ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
 !
       use m_spheric_parameter
@@ -161,11 +161,10 @@
 !
 !
       call sph_FTTRUB_from_recv_t(ncomp, nnod_rtp, nidx_rtp,            &
-     &    irt_rtp_smp_stack, n_WR, irev_sr_rtp, WR, X_rtp, sph_ispack)
+     &    irt_rtp_smp_stack, n_WR, irev_sr_rtp, WR, X_rtp, MHD_ispack)
 !
-      end subroutine sph_FTTRUB_from_recv
+      end subroutine MHD_FTTRUB_from_recv
 !
 ! ------------------------------------------------------------------
-! ------------------------------------------------------------------
 !
-      end module m_sph_ISPACK_FFT
+      end module m_MHD_ISPACK_FFT
