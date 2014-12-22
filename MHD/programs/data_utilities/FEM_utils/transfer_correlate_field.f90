@@ -150,6 +150,7 @@
       do i_fld = 1, num_phys
         ist = istack_component(i_fld-1) + 1
         ncomp = istack_component(i_fld) - istack_component(i_fld-1)
+!$omp parallel
         if     (ncomp .eq. n_vector) then
           call overwrite_vector_2_sph_smp(np_smp, numnod,               &
      &          inod_smp_stack, d_nod(1,ist), xx, radius,               &
@@ -159,6 +160,7 @@
      &          inod_smp_stack, d_nod(1,ist), xx, radius,               &
      &          s_cylinder, a_radius, a_s_cylinder)
         end if
+!$omp end parallel
       end do
 !
       end subroutine transfer_nod_fld_to_sph
@@ -182,15 +184,17 @@
       do i_fld = 1, num_phys
         ist = istack_component(i_fld-1) + 1
         ncomp = istack_component(i_fld) - istack_component(i_fld-1)
+!$omp parallel
         if     (ncomp .eq. n_vector) then
           call overwrite_vector_2_cyl_smp(np_smp, numnod,               &
      &          inod_smp_stack, d_nod(1,ist),                           &
      &          xx, s_cylinder, a_s_cylinder)
-        else if(ncomp .eq. n_sym_tensor) then
+       else if(ncomp .eq. n_sym_tensor) then
           call overwrite_cyl_tensor_smp(np_smp, numnod,                 &
      &          inod_smp_stack, d_nod(1,ist), xx,                       &
      &          s_cylinder, a_s_cylinder)
         end if
+!$omp end parallel
       end do
 !
       end subroutine transfer_nod_fld_to_cyl

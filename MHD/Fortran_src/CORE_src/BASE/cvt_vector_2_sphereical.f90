@@ -74,8 +74,10 @@
        real(kind=kreal), intent(in) :: r(numnod), rs(numnod)
        real(kind=kreal), intent(in) :: a_r(numnod), a_rs(numnod)
 !
+!$omp parallel
        call cvt_vector_2_sph_smp(ione, numnod, istack,                  &
      &     vect, v_sph, xx, r, rs, a_r, a_rs)
+!$omp end parallel
 !
       end subroutine cvt_vector_2_spherical
 !
@@ -92,8 +94,10 @@
        real(kind=kreal), intent(in) :: r(numnod)
        real(kind=kreal), intent(in) :: a_r(numnod)
 !
+!$omp parallel
       call cal_radial_comp_smp(ione, numnod, istack,                    &
      &          vect, v_r, xx, r, a_r)
+!$omp end parallel
 !
       end subroutine cal_radial_component
 !
@@ -111,8 +115,10 @@
        real(kind=kreal), intent(in) :: r(numnod), rs(numnod)
        real(kind=kreal), intent(in) :: a_r(numnod), a_rs(numnod)
 !
+!$omp parallel
        call cal_theta_comp_smp(ione, numnod, istack,                    &
      &     vect, v_theta, xx, r, rs, a_r, a_rs)
+!$omp end parallel
 !
       end subroutine cal_theta_component
 !
@@ -129,8 +135,10 @@
        real(kind=kreal), intent(in) :: rs(numnod)
        real(kind=kreal), intent(in) :: a_rs(numnod)
 !
+!$omp parallel
       call cal_phi_comp_smp(ione, numnod, istack,                       &
      &    vect, v_phi, xx, rs, a_rs)
+!$omp end parallel
 !
       end subroutine cal_phi_component
 !
@@ -149,8 +157,10 @@
        real(kind=kreal), intent(in) :: rs(numnod)
        real(kind=kreal), intent(in) :: a_rs(numnod)
 !
+!$omp parallel
       call cvt_vector_2_cyl_smp(ione, numnod, istack,                   &
      &    vect, v_cyl, xx, rs, a_rs)
+!$omp end parallel
 !
       end subroutine cvt_vector_2_cylindrical
 !
@@ -168,8 +178,10 @@
        real(kind=kreal), intent(in) :: rs(numnod)
        real(kind=kreal), intent(in) :: a_rs(numnod)
 !
+!$omp parallel
       call cal_cylinder_r_comp_smp(ione, numnod, istack,                &
      &    vect, v_s, xx, rs, a_rs)
+!$omp end parallel
 !
       end subroutine cal_cylinder_r_component
 !

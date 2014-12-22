@@ -43,9 +43,11 @@
 !
       call allocate_edge_vector_sph
 !
+!$omp parallel
       call cvt_vector_2_sph_smp(np_smp, numedge, iedge_smp_stack,       &
      &    edge_vect, edge_vect_sph, x_edge, r_edge, s_edge,             &
      &    ar_edge, as_edge)
+!$omp end parallel
 !
       end subroutine s_cal_edge_vector_spherical
 !
@@ -58,8 +60,10 @@
 !
       call allocate_edge_vector_cyl
 !
+!$omp parallel
       call cvt_vector_2_cyl_smp(np_smp, numedge, iedge_smp_stack,       &
      &    edge_vect, edge_vect_cyl, x_edge, s_edge, as_edge)
+!$omp end parallel
 !
       end subroutine s_cal_edge_vector_cylindrical
 !

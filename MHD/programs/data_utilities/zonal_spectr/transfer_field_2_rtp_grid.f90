@@ -104,21 +104,20 @@
         i_field = istack_nod_component(i-1) + 1 
         if (num_nod_component(i) .eq. 3) then
 !
+!$omp parallel
           if ( ifrag_trans_vect .eq. 1) then
             call cvt_vector_2_sph_smp(np_smp, numnod, inod_smp_stack,   &
      &          d_nod(1,i_field), vec_trans, xx, radius, s_cylinder,    &
      &          a_radius, a_s_cylinder)
-!
           else if ( ifrag_trans_vect .eq. 2) then
             call cvt_vector_2_cyl_smp(np_smp, numnod,                   &
      &          inod_smp_stack, d_nod(1,i_field), vec_trans, xx,        &
      &          s_cylinder, a_s_cylinder)
           else
-!$omp parallel
             call copy_nod_vector_smp(np_smp, numnod, inod_smp_stack,    &
      &          d_nod(1,i_field), vec_trans)
-!$omp end parallel
           end if
+!$omp end parallel
 !
           jcomp = istack_phys_comp_rtp(i-1) + 1
           call copy_phys_tmp_2_rtp(jcomp)

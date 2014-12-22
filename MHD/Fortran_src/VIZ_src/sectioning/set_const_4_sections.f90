@@ -174,20 +174,15 @@
 !$omp end parallel
 !
       else if (ncomp_org .eq. 3) then
-        if (i_comp.eq.0) then
-!
 !$omp parallel
+        if (i_comp.eq.0) then
           call cal_vector_magnitude(np_smp, nnod, istack_nod_smp,       &
      &         d_nod(1,ist_field), c_ref_iso)
-!$omp end parallel
 !
         else if (i_comp.ge.1 .and. i_comp.le.3) then
-!
           ic = ist_field+i_comp-1
-!$omp parallel
           call copy_nod_scalar_smp(np_smp, nnod, istack_nod_smp,        &
      &        d_nod(1,ic), c_ref_iso)
-!$omp end parallel
 !
         else if (i_comp.eq.11) then
           call cal_radial_comp_smp(np_smp, nnod, istack_nod_smp,        &
@@ -204,8 +199,8 @@
           call cal_cylinder_r_comp_smp(np_smp, nnod, istack_nod_smp,    &
      &        d_nod(1,ist_field), c_ref_iso,                            &
      &        xx, s_radius, a_s)
-!
         end if
+!$omp end parallel
 !
       else if (ncomp_org .eq. 6) then
         if (i_comp.eq.0) then

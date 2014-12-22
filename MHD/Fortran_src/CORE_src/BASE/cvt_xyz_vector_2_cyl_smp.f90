@@ -68,7 +68,7 @@
        real(kind=kreal) :: vx, vy, vz
 !
 !
-!$omp parallel do private(inod,ist,ied,vx,vy,vz)
+!$omp do private(inod,ist,ied,vx,vy,vz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -90,7 +90,7 @@
            v_cyl(inod,3) = vz
          end do
        end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cvt_vector_2_cyl_smp
 !
@@ -112,7 +112,7 @@
        real(kind=kreal) :: vx, vy
 !
 !
-!$omp parallel do private(inod,ist,ied,vx,vy)
+!$omp do private(inod,ist,ied,vx,vy)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -132,7 +132,7 @@
 !
          end do
        end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine overwrite_vector_2_cyl_smp
 !
@@ -155,7 +155,7 @@
        real(kind=kreal) :: vx, vy
 !
 !
-!$omp parallel do private(inod,ist,ied,vx,vy)
+!$omp do private(inod,ist,ied,vx,vy)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -172,7 +172,7 @@
 !
          end do
        end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cal_cylinder_r_comp_smp
 !

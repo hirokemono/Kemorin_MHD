@@ -86,7 +86,7 @@
        real(kind=kreal) :: txx, txy, txz, tyy, tyz, tzz
 !
 !
-!$omp parallel do private(inod,ist,ied,txx,txy,txz,tyy,tyz,tzz)
+!$omp do private(inod,ist,ied,txx,txy,txz,tyy,tyz,tzz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -176,7 +176,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cal_sph_tensor_smp
 !
@@ -200,7 +200,7 @@
        real(kind=kreal) :: txx, txy, txz, tyy, tyz, tzz
 !
 !
-!$omp parallel do private(inod,ist,ied,txx,txy,txz,tyy,tyz,tzz)
+!$omp do private(inod,ist,ied,txx,txy,txz,tyy,tyz,tzz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -290,7 +290,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine overwrite_sph_tensor_smp
 !
@@ -314,7 +314,7 @@
        real(kind=kreal) :: txx, txy, txz, tyy, tyz, tzz
 !
 !
-!$omp parallel do private(inod,ist,ied,txx,txy,txz,tyy,tyz,tzz)
+!$omp do private(inod,ist,ied,txx,txy,txz,tyy,tyz,tzz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -345,7 +345,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cal_rr_tensor_smp
 !
@@ -369,7 +369,7 @@
        real(kind=kreal) :: txx, txy, txz, tyy, tyz, tzz
 !
 !
-!$omp parallel do private(inod,ist,ied,txx,txy,txz,tyy,tyz,tzz)
+!$omp do private(inod,ist,ied,txx,txy,txz,tyy,tyz,tzz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -402,7 +402,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cal_rt_tensor_smp
 !
@@ -426,7 +426,7 @@
        real(kind=kreal) :: txx, txy, txz, tyy, tyz
 !
 !
-!$omp parallel do private(inod,ist,ied,txx,txy,txz,tyy,tyz)
+!$omp do private(inod,ist,ied,txx,txy,txz,tyy,tyz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -456,7 +456,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cal_rp_tensor_smp
 !
@@ -480,7 +480,7 @@
        real(kind=kreal) :: txx, txy, txz, tyy, tyz, tzz
 !
 !
-!$omp parallel do private(inod,ist,ied,txx,txy,txz,tyy,tyz,tzz)
+!$omp do private(inod,ist,ied,txx,txy,txz,tyy,tyz,tzz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -511,7 +511,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cal_tt_tensor_smp
 !
@@ -535,7 +535,7 @@
        real(kind=kreal) :: txx, txy, txz, tyy, tyz
 !
 !
-!$omp parallel do private(inod,ist,ied,txx,txy,txz,tyy,tyz)
+!$omp do private(inod,ist,ied,txx,txy,txz,tyy,tyz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -565,7 +565,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cal_tp_tensor_smp
 !
@@ -588,7 +588,7 @@
        real(kind=kreal) :: txx, txy, tyy
 !
 !
-!$omp parallel do private(inod,ist,ied,txx,txy,tyy)
+!$omp do private(inod,ist,ied,txx,txy,tyy)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -613,7 +613,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cal_pp_tensor_smp
 !

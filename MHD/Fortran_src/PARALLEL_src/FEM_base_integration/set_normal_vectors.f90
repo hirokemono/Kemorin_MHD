@@ -55,9 +55,11 @@
 !
       call allocate_normal_vector_sph
 !
+!$omp parallel
       call cvt_vector_2_sph_smp(np_smp, numsurf, isurf_smp_stack,       &
      &    vnorm_surf, vnorm_surf_sph, x_surf, r_surf, s_surf,           &
      &    ar_surf, as_surf)
+!$omp end parallel
 !
       end subroutine s_cal_normal_vector_spherical
 !
@@ -70,8 +72,10 @@
 !
       call allocate_normal_vector_cyl
 !
+!$omp parallel
       call cvt_vector_2_cyl_smp(np_smp, numsurf, isurf_smp_stack,       &
      &    vnorm_surf, vnorm_surf_cyl, x_surf, s_surf, as_surf)
+!$omp end parallel
 !
       end subroutine s_cal_normal_vector_cylindrical
 !

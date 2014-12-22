@@ -84,7 +84,7 @@
        real(kind=kreal) :: vx, vy, vz
 !
 !
-!$omp parallel do private(inod,ist,ied,vx,vy,vz)
+!$omp do private(inod,ist,ied,vx,vy,vz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -123,7 +123,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cvt_vector_2_sph_smp
 !
@@ -144,7 +144,7 @@
        real(kind=kreal) :: vx, vy, vz
 !
 !
-!$omp parallel do private(inod,ist,ied,vx,vy,vz)
+!$omp do private(inod,ist,ied,vx,vy,vz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -183,7 +183,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine overwrite_vector_2_sph_smp
 !
@@ -206,7 +206,7 @@
        real(kind=kreal) :: vx, vy, vz
 !
 !
-!$omp parallel do private(inod,ist,ied,vx,vy,vz)
+!$omp do private(inod,ist,ied,vx,vy,vz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -226,7 +226,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cal_radial_comp_smp
 !
@@ -248,7 +248,7 @@
        real(kind=kreal) :: vx, vy, vz
 !
 !
-!$omp parallel do private(inod,ist,ied,vx,vy,vz)
+!$omp do private(inod,ist,ied,vx,vy,vz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -270,7 +270,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cal_theta_comp_smp
 !
@@ -291,7 +291,7 @@
        real(kind=kreal) :: vx, vy, vz
 !
 !
-!$omp parallel do private(inod,ist,ied,vx,vy,vz)
+!$omp do private(inod,ist,ied,vx,vy,vz)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
@@ -309,7 +309,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine cal_phi_comp_smp
 !

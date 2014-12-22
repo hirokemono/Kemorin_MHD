@@ -280,9 +280,11 @@
       real(kind = kreal), intent(in) :: d_nod(numnod,ntot_phys)
 !
 !
+!$omp parallel
       call cvt_vector_2_sph_smp(np_smp, numnod, inod_smp_stack,         &
      &            d_nod(1,i_field), d_nod_rtp(1,1), xx, radius,         &
      &            s_cylinder, a_radius, a_s_cylinder)
+!$omp end parallel
 !
 !$omp parallel
       call copy_vector_tmp_to_trans(i_trns)
@@ -314,9 +316,11 @@
       real(kind = kreal), intent(in) :: d_nod(numnod,ntot_phys)
 !
 !
+!$omp parallel
       call cal_sph_tensor_smp(np_smp, numnod, inod_smp_stack,           &
      &    d_nod(1,i_field), d_nod_rtp, xx, radius,                      &
      &    s_cylinder, a_radius, a_s_cylinder)
+!$omp end parallel
 !
 !$omp parallel
       call copy_tensor_tmp_to_trans(i_trns)
