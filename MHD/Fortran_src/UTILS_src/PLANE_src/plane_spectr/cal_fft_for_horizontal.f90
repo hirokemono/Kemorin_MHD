@@ -1,20 +1,16 @@
 !
 !     module cal_fft_for_horizontal
 !
-      module cal_fft_for_horizontal
-!
 !      Written by H.Matsui
 !      Modified by H.Matsui on June, 2006
+!
+!      subroutine s_cal_fft_for_horizontal
+!
+      module cal_fft_for_horizontal
 !
       use m_precision
 !
       implicit none
-!
-      integer(kind = kint) :: Nsmp
-      integer(kind = kint), allocatable :: Nstacksmp(:)
-      private :: Nsmp, Nstacksmp
-!
-!      subroutine s_cal_fft_for_horizontal
 !
 !  ---------------------------------------------------------------------
 !
@@ -25,7 +21,12 @@
       subroutine s_cal_fft_for_horizontal
 !
       use m_spectr_4_ispack
-      use FFT_selector
+      use t_FFT_selector
+!
+      integer(kind = kint) :: Nsmp
+      integer(kind = kint), allocatable :: Nstacksmp(:)
+!
+      type(working_FFTs) :: WK_FFTS
 !
       integer(kind=kint ) :: i, j, ix, iy, iz, i1, i2, i3, i4, i5, i6
       integer(kind=kint ) :: i_org, n1, inod
@@ -75,8 +76,9 @@
         Nstacksmp(j) = Nstacksmp(j-1) + iz_max*kx_max
       end do
 !
-      call verify_FFT_select(num_fft, Nstacksmp, kx_max)
-      call forward_FFT_select(Nsmp, Nstacksmp, n1, kx_max, work)
+      call verify_FFT_select(num_fft, Nstacksmp, kx_max, WK_FFTS)
+      call forward_FFT_select                                           &
+     &   (Nsmp, Nstacksmp, n1, kx_max, work, WK_FFTS)
 !
 !    swap array
 !
@@ -125,9 +127,9 @@
         Nstacksmp(j) = Nstacksmp(j-1) + iz_max*kx_max
       end do
 !
-      write(*,*) 'forward_FFT_select', n1, ky_max
-      call verify_FFT_select(num_fft, Nstacksmp, ky_max)
-      call forward_FFT_select(Nsmp, Nstacksmp, n1, ky_max, work)
+      call verify_FFT_select(num_fft, Nstacksmp, ky_max, WK_FFTS)
+      call forward_FFT_select                                           &
+     &   (Nsmp, Nstacksmp, n1, ky_max, work, WK_FFTS)
 !
 !    swap array
 !

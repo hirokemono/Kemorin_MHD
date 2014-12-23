@@ -18,9 +18,9 @@
 !!      subroutine sph_f_trans_licv(ncomp_trans, n_WS, WS)
 !!
 !!   input /outpt arrays for single vector
-!!      radial component:      vr_rtp(i_rtp,1)
-!!      elevetional component: vr_rtp(i_rtp,2)
-!!      azimuthal component:   vr_rtp(i_rtp,3)
+!!      radial component:      v_rtp(i_rtp,1)
+!!      elevetional component: v_rtp(i_rtp,2)
+!!      azimuthal component:   v_rtp(i_rtp,3)
 !!
 !!      Poloidal component:          WR(3*i_rj-2)
 !!      diff. of Poloidal component: WR(3*i_rj-1)

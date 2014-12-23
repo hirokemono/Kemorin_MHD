@@ -28,8 +28,9 @@
       subroutine s_inverse_fft_4_plane
 !
       use m_spectr_4_ispack
-      use FFT_selector
+      use t_FFT_selector
 !
+      type(working_FFTs) :: WK_FFTS
       integer(kind=kint ) :: n1
 !
 !
@@ -40,8 +41,9 @@
       n1 = num_fft*iz_max*kx_max
       Nstacksmp(1) = n1
 !
-      call verify_FFT_select(Nsmp, Nstacksmp, ky_max)
-      call backward_FFT_select(Nsmp, Nstacksmp, n1, ky_max, work)
+      call verify_FFT_select(Nsmp, Nstacksmp, ky_max, WK_FFTS)
+      call backward_FFT_select                                          &
+     &   (Nsmp, Nstacksmp, n1, ky_max, work, WK_FFTS)
 !
       call copy_4_inversse_fft_x
 !
@@ -49,8 +51,9 @@
       Nstacksmp(1) = n1
 !
 !      write(*,*) 'start FFT', n1, kx_max
-      call verify_FFT_select(Nsmp, Nstacksmp, kx_max)
-      call backward_FFT_select(Nsmp, Nstacksmp, n1, kx_max, work)
+      call verify_FFT_select(Nsmp, Nstacksmp, kx_max, WK_FFTS)
+      call backward_FFT_select                                          &
+     &   (Nsmp, Nstacksmp, n1, kx_max, work, WK_FFTS)
 !
       end subroutine s_inverse_fft_4_plane
 !

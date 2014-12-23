@@ -59,8 +59,8 @@
       use m_sph_communicators
       use m_work_4_sph_trans
       use m_work_pole_sph_trans
+      use m_FFT_selector
       use schmidt_poly_on_rtm_grid
-      use FFT_selector
       use legendre_transform_select
       use init_spherical_SRs
       use select_fourier_transform

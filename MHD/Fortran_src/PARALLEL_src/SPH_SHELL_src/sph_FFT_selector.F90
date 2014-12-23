@@ -65,7 +65,7 @@
       use m_machine_parameter
       use m_sph_FFTPACK5
       use m_sph_ISPACK_FFT
-      use FFT_selector
+      use m_FFT_selector
 !
 #ifdef FFTW3
       use m_sph_single_FFTW

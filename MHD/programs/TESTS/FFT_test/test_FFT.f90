@@ -5,7 +5,8 @@
       use m_constants
       use m_machine_parameter
 !
-      use FFT_selector
+      use m_FFT_selector
+      use t_FFT_selector
 !
       implicit none
 !
@@ -16,6 +17,8 @@
       real(kind = kreal), allocatable :: y(:,:)
       real(kind = kreal), allocatable :: z(:,:)
       real(kind = kreal) :: pi
+!
+      type(working_FFTs) :: WK_FFTS
 !
       integer(kind = kint) :: i, j, k
 !
@@ -48,13 +51,13 @@
 !
       z(1:nfld,1:ngrd) = x(1:nfld,1:ngrd)
 !
-      call initialize_FFT_select(izero, np_smp, nstack, ngrd)
+      call initialize_FFT_select(izero, np_smp, nstack, ngrd, WK_FFTS)
 !
-      call forward_FFT_select(np_smp, nstack, nfld, ngrd, x)
+      call forward_FFT_select(np_smp, nstack, nfld, ngrd, x, WK_FFTS)
 !
       y(1:nfld,1:ngrd) = x(1:nfld,1:ngrd)
 !
-      call backward_FFT_select(np_smp, nstack, nfld, ngrd, x)
+      call backward_FFT_select(np_smp, nstack, nfld, ngrd, x, WK_FFTS)
 !
       open(15,file='fft_test.dat')
       do j = 1, nfld

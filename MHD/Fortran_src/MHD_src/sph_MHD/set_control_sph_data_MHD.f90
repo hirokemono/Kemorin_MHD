@@ -45,11 +45,11 @@
       use m_field_data_IO
       use m_sph_boundary_input_data
       use m_sel_spherical_SRs
+      use m_FFT_selector
 !
       use skip_comment_f
       use set_control_sph_data
       use set_phys_name_4_sph_trans
-      use FFT_selector
       use legendre_transform_select
       use add_nodal_fields_4_MHD
       use add_sph_MHD_fields_2_ctl

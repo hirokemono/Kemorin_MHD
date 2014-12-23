@@ -1,1 +1,0 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/FFT_wrapper/m_multi_FFTW_wrapper.f90

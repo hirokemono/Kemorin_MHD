@@ -32,12 +32,12 @@
       use calypso_mpi
       use m_global_gauss_coefs
       use m_ucd_data
+      use m_FFT_selector
 !
       use set_control_nodal_data
       use set_control_sph_data
       use set_control_platform_data
       use set_fixed_time_step_params
-      use FFT_selector
       use legendre_transform_select
 !
       use m_ctl_data_4_sph_trans
@@ -103,11 +103,11 @@
       use m_ucd_data
 !
       use m_control_params_2nd_files
+      use m_FFT_selector
       use set_control_nodal_data
       use set_control_sph_data
       use set_control_platform_data
       use set_fixed_time_step_params
-      use FFT_selector
       use legendre_transform_select
 !
       use m_ctl_data_4_sph_trans
@@ -181,12 +181,12 @@
       use m_field_data_IO
       use m_node_id_spherical_IO
       use m_control_params_2nd_files
+      use m_FFT_selector
 !
       use set_control_nodal_data
       use set_control_sph_data
       use set_control_platform_data
       use set_fixed_time_step_params
-      use FFT_selector
       use legendre_transform_select
 !
       use m_ctl_data_4_platforms

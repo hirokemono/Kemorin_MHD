@@ -87,7 +87,7 @@
       use m_spheric_param_smp
 !
 !
-      call init_sph_multi_FFTW_t(nidx_rtp, irt_rtp_smp_stack,           &
+      call init_sph_field_FFTW_t(nidx_rtp, irt_rtp_smp_stack,           &
      &    sph_fld_FFTW)
 !
       end subroutine init_sph_multi_FFTW
@@ -97,7 +97,7 @@
       subroutine finalize_sph_multi_FFTW
 !
 !
-      call finalize_sph_multi_FFTW_t(sph_fld_FFTW)
+      call finalize_sph_field_FFTW_t(sph_fld_FFTW)
 !
       end subroutine finalize_sph_multi_FFTW
 !
@@ -109,7 +109,7 @@
       use m_spheric_param_smp
 !
 !
-      call verify_sph_multi_FFTW_t(nnod_rtp, nidx_rtp,                  &
+      call verify_sph_field_FFTW_t(nnod_rtp, nidx_rtp,                  &
      &    irt_rtp_smp_stack, sph_fld_FFTW)
 !
       end subroutine verify_sph_multi_FFTW

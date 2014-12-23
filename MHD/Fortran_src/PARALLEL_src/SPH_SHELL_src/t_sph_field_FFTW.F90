@@ -9,10 +9,10 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_sph_multi_FFTW_t(nidx_rtp, irt_rtp_smp_stack,   &
+!!      subroutine init_sph_field_FFTW_t(nidx_rtp, irt_rtp_smp_stack,   &
 !!     &          FFTW_t)
-!!      subroutine finalize_sph_multi_FFTW_t(FFTW_t)
-!!      subroutine verify_sph_multi_FFTW_t(nnod_rtp, nidx_rtp,          &
+!!      subroutine finalize_sph_field_FFTW_t(FFTW_t)
+!!      subroutine verify_sph_field_FFTW_t(nnod_rtp, nidx_rtp,          &
 !!     &          irt_rtp_smp_stack, FFTW_t)
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
@@ -84,7 +84,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_multi_FFTW_t(nidx_rtp, irt_rtp_smp_stack,     &
+      subroutine init_sph_field_FFTW_t(nidx_rtp, irt_rtp_smp_stack,     &
      &          FFTW_t)
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -133,11 +133,11 @@
       end do
       FFTW_t%aNfft = one / dble(nidx_rtp(3))
 !
-      end subroutine init_sph_multi_FFTW_t
+      end subroutine init_sph_field_FFTW_t
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_multi_FFTW_t(FFTW_t)
+      subroutine finalize_sph_field_FFTW_t(FFTW_t)
 !
       type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
 !
@@ -160,11 +160,11 @@
 !
       call dealloc_FFTW_plan(FFTW_t)
 !
-      end subroutine finalize_sph_multi_FFTW_t
+      end subroutine finalize_sph_field_FFTW_t
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_multi_FFTW_t(nnod_rtp, nidx_rtp,            &
+      subroutine verify_sph_field_FFTW_t(nnod_rtp, nidx_rtp,            &
      &          irt_rtp_smp_stack, FFTW_t)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
@@ -174,16 +174,16 @@
 !
 !
       if(ASSOCIATED(FFTW_t%X) .eqv. .false.) then
-        call init_sph_multi_FFTW_t(nidx_rtp, irt_rtp_smp_stack, FFTW_t)
+        call init_sph_field_FFTW_t(nidx_rtp, irt_rtp_smp_stack, FFTW_t)
         return
       end if
 !
       if(size(FFTW_t%X) .ne. nnod_rtp) then
-        call finalize_sph_multi_FFTW_t(FFTW_t)
-        call init_sph_multi_FFTW_t(nidx_rtp, irt_rtp_smp_stack, FFTW_t)
+        call finalize_sph_field_FFTW_t(FFTW_t)
+        call init_sph_field_FFTW_t(nidx_rtp, irt_rtp_smp_stack, FFTW_t)
       end if
 !
-      end subroutine verify_sph_multi_FFTW_t
+      end subroutine verify_sph_field_FFTW_t
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------

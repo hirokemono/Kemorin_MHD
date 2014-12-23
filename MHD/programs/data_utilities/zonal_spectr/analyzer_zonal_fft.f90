@@ -91,7 +91,9 @@
       use transfer_field_2_rtp_grid
       use field_IO_select
       use copy_rtp_phys_data_4_IO
-      use FFT_selector
+      use t_FFT_selector
+!
+      type(working_FFTs) :: WK_FFTS
 !
       integer(kind = kint) :: istep
       integer(kind = kint) :: ncomp
@@ -105,7 +107,7 @@
       Nstacksmp(0:np_smp) = ntot_phys_rtp*irt_rtp_smp_stack(0:np_smp)
 !
       call initialize_FFT_select(my_rank, np_smp, Nstacksmp,            &
-     &    nidx_rtp(3))
+     &    nidx_rtp(3), WK_FFTS)
 !
       do istep = istep_start, istep_end, istep_int
         call set_data_by_read_ucd(my_rank, istep)
@@ -114,7 +116,7 @@
         call trans_nod_phys_2_rtp_phys(ifrag_trans_vect)
 !
         call forward_FFT_select(np_smp, Nstacksmp, ncomp,               &
-     &      nidx_rtp(3), d_zonal(1,1) )
+     &      nidx_rtp(3), d_zonal(1,1), WK_FFTS)
 !
 !        do i = 1, nnod_rtp
 !          write(60,*) i, d_zonal(1:ntot_phys_rtp,i)
@@ -130,7 +132,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'
 !
-        end subroutine analyze
+      end subroutine analyze
 !
 ! ----------------------------------------------------------------------
 !

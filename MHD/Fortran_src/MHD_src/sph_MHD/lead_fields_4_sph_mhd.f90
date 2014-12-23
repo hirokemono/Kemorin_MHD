@@ -33,7 +33,7 @@
       use m_control_parameter
       use m_t_step_parameter
       use output_viz_file_control
-      use copy_MHD_4_sph_trans
+      use MHD_FFT_selector
 !
       integer (kind =kint) :: iflag
 !
@@ -47,7 +47,7 @@
       end if
 !
       if(iflag .eq. 0) then
-        call copy_mhd_vec_fld_from_trans
+        call select_mhd_field_from_trans
         call gradients_of_vectors_sph
         call enegy_fluxes_4_sph_mhd
       end if

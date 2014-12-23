@@ -10,15 +10,15 @@
 !>@brief  Selector of Fourier transform using structure
 !!
 !!@verbatim
-!!      subroutine initialize_FFT_sel_t(my_rank, Nsmp, Nstacksmp, Nfft, &
+!!      subroutine initialize_FFT_select(my_rank, Nsmp, Nstacksmp, Nfft,&
 !!     &          WKS)
 !!      subroutine finalize_FFT_sel_t(Nsmp, Nstacksmp, WKS)
-!!      subroutine verify_FFT_sel_t(Nsmp, Nstacksmp, Nfft, WKS)
+!!      subroutine verify_FFT_select(Nsmp, Nstacksmp, Nfft, WKS)
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
-!!      subroutine forward_FFT_sel_t(Nsmp, Nstacksmp, M, Nfft, X, WKS)
+!!      subroutine forward_FFT_select(Nsmp, Nstacksmp, M, Nfft, X, WKS)
 !! ------------------------------------------------------------------
 !!
 !!   wrapper subroutine for FFT in ISPACK
@@ -32,7 +32,7 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine backward_FFT_sel_t(Nsmp, Nstacksmp, M, Nfft, X, WKS)
+!!      subroutine backward_FFT_select(Nsmp, Nstacksmp, M, Nfft, X, WKS)
 !! ------------------------------------------------------------------
 !!
 !!   wrapper subroutine for backward FFT
@@ -67,6 +67,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_FFT_selector
       use t_FFTPACK5_wrapper
       use t_ispack_FFT_wrapper
 !
@@ -89,10 +90,9 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine initialize_FFT_sel_t(my_rank, Nsmp, Nstacksmp, Nfft,   &
+      subroutine initialize_FFT_select(my_rank, Nsmp, Nstacksmp, Nfft,  &
      &          WKS)
 !
-      use FFT_selector
 !
       integer(kind = kint), intent(in) ::  my_rank, Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -117,13 +117,11 @@
       end if
 !
 !
-      end subroutine initialize_FFT_sel_t
+      end subroutine initialize_FFT_select
 !
 ! ------------------------------------------------------------------
 !
       subroutine finalize_FFT_sel_t(Nsmp, Nstacksmp, WKS)
-!
-      use FFT_selector
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       type(working_FFTs), intent(inout) :: WKS
@@ -149,9 +147,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_FFT_sel_t(Nsmp, Nstacksmp, Nfft, WKS)
-!
-      use FFT_selector
+      subroutine verify_FFT_select(Nsmp, Nstacksmp, Nfft, WKS)
 !
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -176,14 +172,12 @@
         call verify_wk_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
       end if
 !
-      end subroutine verify_FFT_sel_t
+      end subroutine verify_FFT_select
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine forward_FFT_sel_t(Nsmp, Nstacksmp, M, Nfft, X, WKS)
-!
-      use FFT_selector
+      subroutine forward_FFT_select(Nsmp, Nstacksmp, M, Nfft, X, WKS)
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
@@ -207,13 +201,11 @@
      &      WKS%WK_FFTPACK)
       end if
 !
-      end subroutine forward_FFT_sel_t
+      end subroutine forward_FFT_select
 !
 ! ------------------------------------------------------------------
 !
-      subroutine backward_FFT_sel_t(Nsmp, Nstacksmp, M, Nfft, X, WKS)
-!
-      use FFT_selector
+      subroutine backward_FFT_select(Nsmp, Nstacksmp, M, Nfft, X, WKS)
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
@@ -237,7 +229,7 @@
      &      WKS%WK_FFTPACK)
       end if
 !
-      end subroutine backward_FFT_sel_t
+      end subroutine backward_FFT_select
 !
 ! ------------------------------------------------------------------
 !
