@@ -39,11 +39,11 @@
       real(kind = kreal), intent(inout) :: d_sph(nnod)
 !
 !
-!      if(iflag_FFT .eq. iflag_FFTW) then
-!        call swap_phi_scalar_from_trans(nnod, v_rtp, d_sph)
-!      else
+      if(iflag_FFT .eq. iflag_FFTW) then
+        call swap_phi_scalar_from_trans(nnod, v_rtp, d_sph)
+      else
         call copy_scalar_from_trans(nnod, v_rtp, d_sph)
-!      end if
+      end if
 !
       end subroutine sel_scalar_from_trans
 !
@@ -56,11 +56,11 @@
       real(kind = kreal), intent(inout) :: d_sph(nnod,3)
 !
 !
-!      if(iflag_FFT .eq. iflag_FFTW) then
-!        call swap_phi_vector_from_trans(nnod, v_rtp, d_sph)
-!      else
+      if(iflag_FFT .eq. iflag_FFTW) then
+        call swap_phi_vector_from_trans(nnod, v_rtp, d_sph)
+      else
         call copy_vector_from_trans(nnod, v_rtp, d_sph)
-!      end if
+      end if
 !
       end subroutine sel_vector_from_trans
 !
@@ -73,11 +73,11 @@
       real(kind = kreal), intent(inout) :: d_sph(nnod,6)
 !
 !
-!      if(iflag_FFT .eq. iflag_FFTW) then
-!        call swap_phi_tensor_from_trans(nnod, v_rtp, d_sph)
-!      else
+      if(iflag_FFT .eq. iflag_FFTW) then
+        call swap_phi_tensor_from_trans(nnod, v_rtp, d_sph)
+      else
         call copy_tensor_from_trans(nnod, v_rtp, d_sph)
-!      end if
+      end if
 !
       end subroutine sel_tensor_from_trans
 !
@@ -91,11 +91,11 @@
       real(kind = kreal), intent(inout) :: v_rtp(nnod_rtp)
 !
 !
-!      if(iflag_FFT .eq. iflag_FFTW) then
-!        call swap_phi_scalar_to_trans(nnod, d_sph, v_rtp)
-!      else
+      if(iflag_FFT .eq. iflag_FFTW) then
+        call swap_phi_scalar_to_trans(nnod, d_sph, v_rtp)
+      else
         call copy_scalar_to_trans(nnod, d_sph, v_rtp)
-!      end if
+      end if
 !
       end subroutine sel_scalar_to_trans
 !
@@ -108,11 +108,11 @@
       real(kind = kreal), intent(inout) :: v_rtp(nnod_rtp,3)
 !
 !
-!      if(iflag_FFT .eq. iflag_FFTW) then
-!        call swap_phi_vector_to_trans(nnod, d_sph, v_rtp)
-!      else
+      if(iflag_FFT .eq. iflag_FFTW) then
+        call swap_phi_vector_to_trans(nnod, d_sph, v_rtp)
+      else
         call copy_vector_to_trans(nnod, d_sph, v_rtp)
-!      end if
+      end if
 !
       end subroutine sel_vector_to_trans
 !
@@ -125,11 +125,11 @@
       real(kind = kreal), intent(inout) :: v_rtp(nnod_rtp,6)
 !
 !
-!      if(iflag_FFT .eq. iflag_FFTW) then
-!        call swap_phi_tensor_to_trans(nnod, d_sph, v_rtp)
-!      else
+      if(iflag_FFT .eq. iflag_FFTW) then
+        call swap_phi_tensor_to_trans(nnod, d_sph, v_rtp)
+      else
         call copy_tensor_to_trans(nnod, d_sph, v_rtp)
-!      end if
+      end if
 !
       end subroutine sel_tensor_to_trans
 !

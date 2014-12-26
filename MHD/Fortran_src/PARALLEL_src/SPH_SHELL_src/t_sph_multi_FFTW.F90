@@ -192,7 +192,7 @@
       end if
 !
       if(size(FFTW_t%X) .ne. nnod_rtp*ncomp) then
-        call finalize_sph_field_FFTW_t(FFTW_t)
+        call finalize_sph_multi_FFTW_t(FFTW_t)
         call init_sph_multi_FFTW_t(ncomp, ncomp_fwd, ncomp_bwd,         &
      &      nidx_rtp, irt_rtp_smp_stack, FFTW_t)
       end if
@@ -234,10 +234,10 @@
 !        call cpu_time(dummy(2))
 #ifdef FFTW3_C
         call kemo_fftw_execute_dft_r2c(FFTW_t%plan_fwd(ip),             &
-     &      FFTW_t%X(1,ist), X_rtp(1,ist))
+     &      X_rtp(1,ist), FFTW_t%C(1,ist))
 #else
         call dfftw_execute_dft_r2c(FFTW_t%plan_fwd(ip),                 &
-     &      FFTW_t%X(1,ist), X_rtp(1,ist))
+     &      X_rtp(1,ist), FFTW_t%C(1,ist))
 #endif
 !
 !      call cpu_time(rtmp(2))

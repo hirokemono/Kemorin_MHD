@@ -1,5 +1,5 @@
-!>@file   m_sph_multi_FFTW.F90
-!!@brief  module m_sph_multi_FFTW
+!>@file   m_sph_field_FFTW.F90
+!!@brief  module m_sph_field_FFTW
 !!
 !!@author H. Matsui
 !!@date Programmed in Apr., 2013
@@ -9,14 +9,14 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_sph_multi_FFTW
-!!      subroutine finalize_sph_multi_FFTW
-!!      subroutine verify_sph_multi_FFTW
+!!      subroutine init_sph_field_FFTW
+!!      subroutine finalize_sph_field_FFTW
+!!      subroutine verify_sph_field_FFTW
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_multi_fwd_FFTW_to_send                           &
+!!      subroutine sph_field_fwd_FFTW_to_send                           &
 !!     &         (ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
 !! ------------------------------------------------------------------
 !!
@@ -31,7 +31,7 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_multi_back_FFTW_from_recv                        &
+!!      subroutine sph_field_back_FFTW_from_recv                        &
 !!     &         (ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
 !! ------------------------------------------------------------------
 !!
@@ -61,7 +61,7 @@
 !!@n @param Nfft        Data length for eadh FFT
 !!@n @param X(Ncomp, Nfft)  Data for Fourier transform
 !
-      module m_sph_multi_FFTW
+      module m_sph_field_FFTW
 !
       use m_precision
       use m_constants
@@ -81,7 +81,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_multi_FFTW
+      subroutine init_sph_field_FFTW
 !
       use m_spheric_parameter
       use m_spheric_param_smp
@@ -90,20 +90,20 @@
       call init_sph_field_FFTW_t(nidx_rtp, irt_rtp_smp_stack,           &
      &    sph_fld_FFTW)
 !
-      end subroutine init_sph_multi_FFTW
+      end subroutine init_sph_field_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_multi_FFTW
+      subroutine finalize_sph_field_FFTW
 !
 !
       call finalize_sph_field_FFTW_t(sph_fld_FFTW)
 !
-      end subroutine finalize_sph_multi_FFTW
+      end subroutine finalize_sph_field_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_multi_FFTW
+      subroutine verify_sph_field_FFTW
 !
       use m_spheric_parameter
       use m_spheric_param_smp
@@ -112,12 +112,12 @@
       call verify_sph_field_FFTW_t(nnod_rtp, nidx_rtp,                  &
      &    irt_rtp_smp_stack, sph_fld_FFTW)
 !
-      end subroutine verify_sph_multi_FFTW
+      end subroutine verify_sph_field_FFTW
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine sph_multi_fwd_FFTW_to_send                             &
+      subroutine sph_field_fwd_FFTW_to_send                             &
      &         (ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
 !
       use m_spheric_parameter
@@ -135,11 +135,11 @@
      &    irt_rtp_smp_stack, n_WS, irev_sr_rtp, X_rtp, WS,              &
      &    sph_fld_FFTW)
 !
-      end subroutine sph_multi_fwd_FFTW_to_send
+      end subroutine sph_field_fwd_FFTW_to_send
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sph_multi_back_FFTW_from_recv                          &
+      subroutine sph_field_back_FFTW_from_recv                          &
      &         (ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
 !
       use m_spheric_parameter
@@ -157,8 +157,8 @@
      &    irt_rtp_smp_stack, n_WR, irev_sr_rtp, WR, X_rtp,              &
      &    sph_fld_FFTW)
 !
-      end subroutine sph_multi_back_FFTW_from_recv
+      end subroutine sph_field_back_FFTW_from_recv
 !
 ! ------------------------------------------------------------------
 !
-      end module m_sph_multi_FFTW
+      end module m_sph_field_FFTW

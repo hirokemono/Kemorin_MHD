@@ -1,8 +1,5 @@
-!copy_sph_field_4_sph_trans.f90
-!     module copy_sph_field_4_sph_trans
-!
-!>@file   copy_nodal_fields.f90
-!!@brief  module copy_nodal_fields
+!>@file   select_sph_fld_4_sph_trans.f90
+!!@brief  module select_sph_fld_4_sph_trans
 !!
 !!@author H. Matsui
 !!@date Programmed in ????
@@ -10,19 +7,18 @@
 !>@brief  Copy field data (Need OMP PARALLEL)
 !!
 !!@verbatim
-!!      subroutine copy_scalar_fld_from_trans(is_spec, i_trns)
-!!      subroutine copy_scalar_fld_to_trans(is_spec, i_trns)
+!!      subroutine sel_scalar_fld_from_trans(is_spec, i_trns)
+!!      subroutine sel_vector_fld_from_trans(is_spec, i_trns)
+!!      subroutine sel_tensor_fld_from_trans(is_spec, i_trns)
 !!
-!!      subroutine copy_vec_fld_from_trans(is_spec, i_trns)
-!!      subroutine copy_vec_fld_to_trans(is_spec, i_trns)
-!!
-!!      subroutine copy_tensor_fld_from_trans(is_spec, i_trns)
-!!      subroutine copy_tensor_fld_to_trans(is_spec, i_trns)
+!!      subroutine sel_scalar_fld_to_trans(is_spec, i_trns)
+!!      subroutine sel_vector_fld_to_trans(is_spec, i_trns)
+!!      subroutine sel_tensor_fld_to_trans(is_spec, i_trns)
 !!@endverbatim
 !
 !      Written by H. Matsui on Feb., 2008
 !
-      module copy_sph_field_4_sph_trans
+      module select_sph_fld_4_sph_trans
 !
       use m_precision
 !
@@ -31,7 +27,7 @@
       use m_spheric_param_smp
       use m_sph_spectr_data
 !
-      use copy_field_smp
+      use copy_field_4_sph_trans
 !
       implicit  none
 ! 
@@ -41,7 +37,7 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine copy_scalar_fld_from_trans(is_spec, i_trns)
+      subroutine sel_scalar_fld_from_trans(is_spec, i_trns)
 !
       use m_work_4_sph_trans
 !
@@ -49,14 +45,14 @@
 !
 !
       if( (is_spec*i_trns) .le. 0) return
-      call copy_nod_scalar_smp(np_smp, nnod_rtp, inod_rtp_smp_stack,    &
-     &    vr_rtp(1,i_trns), d_rtp(1,is_spec) )
+      call copy_scalar_from_trans                                       &
+     &    (nnod_rtp, vr_rtp(1,i_trns), d_rtp(1,is_spec) )
 !
-      end subroutine copy_scalar_fld_from_trans
+      end subroutine sel_scalar_fld_from_trans
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_scalar_fld_to_trans(is_spec, i_trns)
+      subroutine sel_vector_fld_from_trans(is_spec, i_trns)
 !
       use m_work_4_sph_trans
 !
@@ -64,15 +60,14 @@
 !
 !
       if( (is_spec*i_trns) .le. 0) return
-      call copy_nod_scalar_smp(np_smp, nnod_rtp, inod_rtp_smp_stack,    &
-     &    d_rtp(1,is_spec), vr_rtp(1,i_trns))
+      call copy_vector_from_trans                                       &
+     &    (nnod_rtp, vr_rtp(1,i_trns), d_rtp(1,is_spec) )
 !
-      end subroutine copy_scalar_fld_to_trans
+      end subroutine sel_vector_fld_from_trans
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
 !
-      subroutine copy_vec_fld_from_trans(is_spec, i_trns)
+      subroutine sel_tensor_fld_from_trans(is_spec, i_trns)
 !
       use m_work_4_sph_trans
 !
@@ -80,14 +75,15 @@
 !
 !
       if( (is_spec*i_trns) .le. 0) return
-      call copy_nod_vector_smp(np_smp, nnod_rtp, inod_rtp_smp_stack,    &
-     &    vr_rtp(1,i_trns), d_rtp(1,is_spec) )
+      call copy_tensor_from_trans                                       &
+     &    (nnod_rtp, vr_rtp(1,i_trns), d_rtp(1,is_spec) )
 !
-      end subroutine copy_vec_fld_from_trans
+      end subroutine sel_tensor_fld_from_trans
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
-      subroutine copy_vec_fld_to_trans(is_spec, i_trns)
+      subroutine sel_scalar_fld_to_trans(is_spec, i_trns)
 !
       use m_work_4_sph_trans
 !
@@ -95,15 +91,14 @@
 !
 !
       if( (is_spec*i_trns) .le. 0) return
-      call copy_nod_vector_smp(np_smp, nnod_rtp, inod_rtp_smp_stack,    &
-     &    d_rtp(1,is_spec), vr_rtp(1,i_trns))
+      call copy_scalar_to_trans                                         &
+     &    (nnod_rtp, d_rtp(1,is_spec), vr_rtp(1,i_trns) )
 !
-      end subroutine copy_vec_fld_to_trans
+      end subroutine sel_scalar_fld_to_trans
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
 !
-      subroutine copy_tensor_fld_from_trans(is_spec, i_trns)
+      subroutine sel_vector_fld_to_trans(is_spec, i_trns)
 !
       use m_work_4_sph_trans
 !
@@ -111,14 +106,14 @@
 !
 !
       if( (is_spec*i_trns) .le. 0) return
-      call copy_nod_sym_tensor_smp(np_smp, nnod_rtp,                    &
-     &    inod_rtp_smp_stack, vr_rtp(1,i_trns), d_rtp(1,is_spec) )
+      call copy_vector_to_trans                                         &
+     &    (nnod_rtp, d_rtp(1,is_spec), vr_rtp(1,i_trns) )
 !
-      end subroutine copy_tensor_fld_from_trans
+      end subroutine sel_vector_fld_to_trans
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_tensor_fld_to_trans(is_spec, i_trns)
+      subroutine sel_tensor_fld_to_trans(is_spec, i_trns)
 !
       use m_work_4_sph_trans
 !
@@ -126,11 +121,12 @@
 !
 !
       if( (is_spec*i_trns) .le. 0) return
-      call copy_nod_sym_tensor_smp(np_smp, nnod_rtp,                    &
-     &    inod_rtp_smp_stack, d_rtp(1,is_spec), vr_rtp(1,i_trns) )
+      call copy_tensor_to_trans                                         &
+     &    (nnod_rtp, d_rtp(1,is_spec), vr_rtp(1,i_trns) )
 !
-      end subroutine copy_tensor_fld_to_trans
+      end subroutine sel_tensor_fld_to_trans
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
-      end module copy_sph_field_4_sph_trans
+      end module select_sph_fld_4_sph_trans
