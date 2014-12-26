@@ -33,7 +33,7 @@
       use m_control_parameter
       use m_t_step_parameter
       use output_viz_file_control
-      use MHD_FFT_selector
+      use copy_MHD_4_sph_trans
 !
       integer (kind =kint) :: iflag
 !

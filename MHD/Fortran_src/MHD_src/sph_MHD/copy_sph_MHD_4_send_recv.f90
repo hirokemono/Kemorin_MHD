@@ -8,17 +8,22 @@
 !!       for dynamo simulation
 !!
 !!@verbatim
-!!  routines for backward transform
 !!      subroutine copy_mhd_spectr_to_send(ncomp_send, n_WS, WS)
-!!
-!!  routines for forward transform
-!!      subroutine copy_mhd_fields_to_send(ncomp_send, n_WS, WS)
 !!      subroutine copy_mhd_spectr_from_recv(ncomp_recv, n_WR, WR)
+!!
+!!      subroutine copy_snap_spectr_to_send(ncomp_send, n_WS, WS)
+!!      subroutine copy_snap_vec_spec_from_trans(ncomp_recv, n_WR, WR)
+!!
+!!      subroutine copy_tmp_vec_spec_to_trans(ncomp_send, n_WS, WS)
+!!      subroutine copy_tmp_scl_spec_from_trans(ncomp_recv, n_WR, WR)
 !!@endverbatim
 !
       module copy_sph_MHD_4_send_recv
 !
       use m_precision
+      use m_machine_parameter
+      use m_sph_phys_address
+      use copy_spectr_4_sph_trans
 !
       implicit  none
 !
@@ -30,9 +35,7 @@
 !
       subroutine copy_mhd_spectr_to_send(ncomp_send, n_WS, WS)
 !
-      use m_sph_phys_address
       use m_addresses_trans_sph_MHD
-      use copy_spectr_4_sph_trans
 !
       integer(kind = kint), intent(in) :: ncomp_send, n_WS
       real(kind = kreal), intent(inout) :: WS(n_WS)
@@ -56,50 +59,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_mhd_fields_to_send(ncomp_send, n_WS, WS)
-!
-      use m_sph_phys_address
-      use m_addresses_trans_sph_MHD
-!
-      integer(kind = kint), intent(in) :: ncomp_send, n_WS
-      real(kind = kreal), intent(inout) :: WS(n_WS)
-!
-!
-!   advection flag
-      call sel_sph_rtp_vector_to_send                                   &
-     &   (ncomp_send, ipol%i_m_advect, b_trns%i_m_advect, n_WS, WS)
-!   Coriolis flag
-      call sel_sph_rtp_vector_to_send                                   &
-     &   (ncomp_send, ipol%i_coriolis, b_trns%i_coriolis, n_WS, WS)
-!   Lorentz flag
-      call sel_sph_rtp_vector_to_send                                   &
-     &   (ncomp_send, ipol%i_lorentz, b_trns%i_lorentz, n_WS, WS)
-!   induction flag
-      call sel_sph_rtp_vector_to_send                                   &
-     &   (ncomp_send, ipol%i_vp_induct, b_trns%i_vp_induct, n_WS, WS)
-!   heat flux flag
-      call sel_sph_rtp_vector_to_send                                   &
-     &   (ncomp_send, ipol%i_h_flux, b_trns%i_h_flux, n_WS, WS)
-!   composition flux flag
-      call sel_sph_rtp_vector_to_send                                   &
-     &   (ncomp_send, ipol%i_c_flux, b_trns%i_c_flux, n_WS, WS)
-!
-      end subroutine copy_mhd_fields_to_send
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
       subroutine copy_mhd_spectr_from_recv(ncomp_recv, n_WR, WR)
 !
-      use m_sph_phys_address
       use m_addresses_trans_sph_MHD
-      use copy_spectr_4_sph_trans
 !
       integer(kind = kint), intent(in) :: ncomp_recv, n_WR
       real(kind = kreal), intent(inout) :: WR(n_WR)
 !
 !
-!$omp parallel
 !   advection flag
       call sel_sph_rj_vector_from_recv(ncomp_recv,                     &
      &      ipol%i_m_advect, f_trns%i_m_advect, n_WR, WR)
@@ -122,56 +89,154 @@
 !   composition flux flag
       call sel_sph_rj_vector_from_recv(ncomp_recv,                     &
      &      ipol%i_c_flux, f_trns%i_c_flux, n_WR, WR)
-!$omp end parallel
 !
       end  subroutine copy_mhd_spectr_from_recv
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sel_sph_rtp_vector_to_send                             &
-     &         (ncomp_send, i_field, i_send, n_WS, WS)
+      subroutine copy_snap_spectr_to_send(ncomp_send, n_WS, WS)
 !
-      use m_sph_communicators
-      use m_spheric_parameter
-      use m_sph_spectr_data
-      use m_sph_trans_comm_table
-      use m_sel_spherical_SRs
+      use m_addresses_trans_sph_snap
 !
-      integer(kind = kint), intent(in) :: i_field, i_send
       integer(kind = kint), intent(in) :: ncomp_send, n_WS
       real(kind = kreal), intent(inout) :: WS(n_WS)
 !
+!      Vectors
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_velo, bsnap_trns%i_velo, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_vort, bsnap_trns%i_vort, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_magne, bsnap_trns%i_magne, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_current, bsnap_trns%i_current, n_WS, WS)
 !
-      if(i_field*i_send .eq. 0) return
-      call sel_calypso_to_send_vector(ncomp_send, nnod_rtp, n_WS,       &
-     &    nmax_sr_rtp, nneib_domain_rtp, istack_sr_rtp, item_sr_rtp,    &
-     &    ntot_phys_rtp, i_field, i_send, d_rtp, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_v_diffuse, bsnap_trns%i_v_diffuse, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_w_diffuse, bsnap_trns%i_w_diffuse, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_vp_diffuse, bsnap_trns%i_vp_diffuse, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_b_diffuse, bsnap_trns%i_b_diffuse, n_WS, WS)
 !
-      end subroutine sel_sph_rtp_vector_to_send
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_rot_inertia, bsnap_trns%i_rot_inertia, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_rot_Coriolis, bsnap_trns%i_rot_Coriolis, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_rot_Lorentz, bsnap_trns%i_rot_Lorentz, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_rot_buoyancy, bsnap_trns%i_rot_buoyancy, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_rot_comp_buo, bsnap_trns%i_rot_comp_buo, n_WS, WS)
+!
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_press_grad, bsnap_trns%i_press_grad, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_induction, bsnap_trns%i_induction, n_WS, WS)
+!
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_grad_t, bsnap_trns%i_grad_t, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_grad_composit, bsnap_trns%i_grad_composit, n_WS, WS)
+!
+!      Scalar fields
+!
+      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
+     &    ipol%i_temp, bsnap_trns%i_temp, n_WS, WS)
+      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
+     &    ipol%i_light, bsnap_trns%i_light, n_WS, WS)
+!
+      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
+     &    ipol%i_press, bsnap_trns%i_press, n_WS, WS)
+      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
+     &    ipol%i_par_temp, bsnap_trns%i_par_temp, n_WS, WS)
+      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
+     &    ipol%i_t_diffuse, bsnap_trns%i_t_diffuse, n_WS, WS)
+      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
+     &    ipol%i_c_diffuse, bsnap_trns%i_c_diffuse, n_WS, WS)
+!
+      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
+     &    ipol%i_div_Coriolis, bsnap_trns%i_div_Coriolis, n_WS, WS)
+!
+      end subroutine copy_snap_spectr_to_send
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_sph_rtp_scalar_to_send                             &
-     &         (ncomp_send, i_field, i_send, n_WS, WS)
+      subroutine copy_snap_vec_spec_from_trans(ncomp_recv, n_WR, WR)
 !
-      use m_sph_communicators
-      use m_spheric_parameter
-      use m_sph_spectr_data
-      use m_sph_trans_comm_table
-      use m_sel_spherical_SRs
+      use m_addresses_trans_sph_snap
 !
-      integer(kind = kint), intent(in) :: i_field, i_send
+      integer(kind = kint), intent(in) :: ncomp_recv, n_WR
+      real(kind = kreal), intent(inout) :: WR(n_WR)
+!
+!
+!      Vectors
+      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
+     &    ipol%i_coriolis, fsnap_trns%i_coriolis, n_WR, WR)
+      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
+     &    ipol%i_electric, fsnap_trns%i_electric, n_WR, WR)
+      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
+     &    ipol%i_poynting, fsnap_trns%i_poynting, n_WR, WR)
+      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
+     &    ipol%i_mag_stretch, fsnap_trns%i_mag_stretch, n_WR, WR)
+!
+!      Scalars
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &      ipol%i_me_gen, fsnap_trns%i_me_gen, n_WR, WR)
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &      ipol%i_ujb, fsnap_trns%i_ujb, n_WR, WR)
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &      ipol%i_nega_ujb, fsnap_trns%i_nega_ujb, n_WR, WR)
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &      ipol%i_buo_gen, fsnap_trns%i_buo_gen, n_WR, WR)
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &      ipol%i_c_buo_gen, fsnap_trns%i_c_buo_gen, n_WR, WR)
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &      ipol%i_f_buo_gen, fsnap_trns%i_f_buo_gen, n_WR, WR)
+!
+      end  subroutine copy_snap_vec_spec_from_trans
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine copy_tmp_vec_spec_to_trans(ncomp_send, n_WS, WS)
+!
+      use m_addresses_trans_sph_tmp
+!
       integer(kind = kint), intent(in) :: ncomp_send, n_WS
       real(kind = kreal), intent(inout) :: WS(n_WS)
 !
 !
-      if(i_field*i_send .eq. 0) return
-      call sel_calypso_to_send_scalar(ncomp_send, nnod_rtp, n_WS,       &
-     &    nmax_sr_rtp, nneib_domain_rtp, istack_sr_rtp, item_sr_rtp,    &
-     &    ntot_phys_rtp, i_field, i_send, d_rtp, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &      ipol%i_grad_vx, btmp_trns%i_grad_vx, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &      ipol%i_grad_vy, btmp_trns%i_grad_vy, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &      ipol%i_grad_vz, btmp_trns%i_grad_vz, n_WS, WS)
 !
-      end subroutine sel_sph_rtp_scalar_to_send
+      end subroutine copy_tmp_vec_spec_to_trans
+!
+!-----------------------------------------------------------------------
+!
+      subroutine copy_tmp_scl_spec_from_trans(ncomp_recv, n_WR, WR)
+!
+      use m_addresses_trans_sph_tmp
+!
+      integer(kind = kint), intent(in) :: ncomp_recv, n_WR
+      real(kind = kreal), intent(inout) :: WR(n_WR)
+!
+!
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &      ipol%i_grad_vx, ftmp_trns%i_grad_vx, n_WR, WR)
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &      ipol%i_grad_vy, ftmp_trns%i_grad_vy, n_WR, WR)
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &      ipol%i_grad_vz, ftmp_trns%i_grad_vz, n_WR, WR)
+!
+      end  subroutine copy_tmp_scl_spec_from_trans
 !
 !-----------------------------------------------------------------------
 !

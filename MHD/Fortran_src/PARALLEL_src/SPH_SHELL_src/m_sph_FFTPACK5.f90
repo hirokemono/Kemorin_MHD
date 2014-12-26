@@ -133,15 +133,14 @@
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: n_WS
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
-      real (kind=kreal), intent(inout):: WS(n_WS)
-!
-      real(kind = kreal), intent(inout)                                 &
+      real(kind = kreal), intent(in)                                    &
      &     :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp)
+!
+      real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
       call sph_RFFTMF_to_send_t(ncomp, nnod_rtp, nidx_rtp,              &
-     &    irt_rtp_smp_stack, n_WS, irev_sr_rtp, X_rtp, WS,    &
-     &    sph_FFTPACK)
+     &    irt_rtp_smp_stack, n_WS, irev_sr_rtp, X_rtp, WS, sph_FFTPACK)
 !
       end subroutine sph_RFFTMF_to_send
 !

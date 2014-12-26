@@ -148,7 +148,7 @@
       if (iflag_debug.gt.0) write(*,*) 'sph_backward_transforms',       &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
       call sph_backward_transforms(ncomp_sph_trans, num_vector_rtp,     &
-     &    nscalar_trans, n_WS, n_WR, WS, WR)
+     &    nscalar_trans, n_WS, n_WR, WS(1), WR(1), vr_rtp(1,1))
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'

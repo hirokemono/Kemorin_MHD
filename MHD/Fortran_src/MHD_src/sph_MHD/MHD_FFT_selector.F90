@@ -1,5 +1,5 @@
-!>@file   sph_FFT_selector.F90
-!!@brief  module sph_FFT_selector
+!>@file   MHD_FFT_selector.F90
+!!@brief  module MHD_FFT_selector
 !!
 !!@author H. Matsui
 !!@date Programmed in Oct., 2009
@@ -7,14 +7,16 @@
 !>@brief  Selector of Fourier transform
 !!
 !!@verbatim
-!!      subroutine init_sph_FFT_select(my_rank, ncomp)
-!!      subroutine finalize_sph_FFT_select
-!!      subroutine verify_sph_FFT_select(ncomp)
+!!      subroutine init_MHD_FFT_select                                  &
+!!     &         (my_rank, ncomp, ncomp_fwd, ncomp_bwd)
+!!      subroutine finalize_MHD_FFT_select
+!!      subroutine verify_MHD_FFT_select(ncomp, ncomp_fwd, ncomp_bwd)
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
-!!      subroutine fwd_FFT_select_to_send(ncomp, n_WS, v_rtp, WS)
+!!      subroutine fwd_MHD_FFT_sel_from_recv                            &
+!!     &         (ncomp_fwd, n_WS, frc_rtp, WS)
 !! ------------------------------------------------------------------
 !!
 !!   wrapper subroutine for FFT in ISPACK
@@ -28,7 +30,8 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine back_FFT_select_from_recv(ncomp, n_WR, WR, v_rtp)
+!!      subroutine back_MHD_FFT_sel_from_recv                           &
+!!     &         (ncomp_bwd, n_WR, WR, fld_rtp)
 !! ------------------------------------------------------------------
 !!
 !!   wrapper subroutine for backward FFT
@@ -59,7 +62,7 @@
 !!@n @param Nfft        Data length for eadh FFT
 !!@n @param X(M, Nfft)  Data for Fourier transform
 !
-      module sph_FFT_selector
+      module MHD_FFT_selector
 !
       use m_precision
       use m_machine_parameter
@@ -70,6 +73,7 @@
 #ifdef FFTW3
       use m_sph_single_FFTW
       use m_sph_field_FFTW
+      use m_MHD_multi_FFTW
 #endif
 !
       implicit none
@@ -80,18 +84,24 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_FFT_select(my_rank, ncomp)
+      subroutine init_MHD_FFT_select                                    &
+     &         (my_rank, ncomp, ncomp_fwd, ncomp_bwd)
 !
-      integer(kind = kint), intent(in) ::  my_rank, ncomp
+      integer(kind = kint), intent(in) ::  my_rank
+      integer(kind = kint), intent(in) ::  ncomp, ncomp_fwd, ncomp_bwd
 !
 !
       if(iflag_FFT .eq. iflag_ISPACK) then
         if(my_rank .eq. 0) write(*,*) 'Use ISPACK'
         call init_sph_ISPACK(ncomp)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW                                 &
-     &   .or. iflag_FFT .eq. iflag_FFTW_FIELD) then
+      else if(iflag_FFT .eq. iflag_FFTW) then
         if(my_rank .eq. 0) write(*,*) 'Use FFTW'
+        call init_MHD_multi_FFTW(ncomp, ncomp_fwd, ncomp_bwd)
+        if(my_rank .eq. 0) write(*,*) 'Use FFTW for each field'
+        call init_sph_field_FFTW
+      else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
+        if(my_rank .eq. 0) write(*,*) 'Use FFTW for each field'
         call init_sph_field_FFTW
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(my_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
@@ -102,11 +112,11 @@
         call init_sph_FFTPACK5(ncomp)
       end if
 !
-      end subroutine init_sph_FFT_select
+      end subroutine init_MHD_FFT_select
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_FFT_select
+      subroutine finalize_MHD_FFT_select
 !
       use m_spheric_parameter
       use m_spheric_param_smp
@@ -116,9 +126,13 @@
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK'
         call finalize_sph_ISPACK
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW                                 &
-     &   .or. iflag_FFT .eq. iflag_FFTW_FIELD) then
+      else if(iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
+        call finalize_MHD_multi_FFTW
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize fields FFTW'
+        call finalize_sph_field_FFTW
+      else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize fields FFTW'
         call finalize_sph_field_FFTW
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTW'
@@ -129,15 +143,15 @@
         call finalize_sph_FFTPACK5
       end if
 !
-      end subroutine finalize_sph_FFT_select
+      end subroutine finalize_MHD_FFT_select
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_FFT_select(ncomp)
+      subroutine verify_MHD_FFT_select(ncomp, ncomp_fwd, ncomp_bwd)
 !
       use m_spheric_param_smp
 !
-      integer(kind = kint), intent(in) ::  ncomp
+      integer(kind = kint), intent(in) ::  ncomp, ncomp_fwd, ncomp_bwd
       integer(kind = kint) :: Nstacksmp(0:np_smp)
 !
 !
@@ -146,12 +160,17 @@
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK'
         call verify_sph_ISPACK(ncomp)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW                                 &
-     &   .or. iflag_FFT .eq. iflag_FFTW_FIELD) then
+      else if(iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
+        call verify_MHD_multi_FFTW(ncomp, ncomp_fwd, ncomp_bwd)
+        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW for wach field'
+        call verify_sph_field_FFTW
+      else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW for wach field'
         call verify_sph_field_FFTW
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use single transforms in FFTW'
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &                                'Use single transforms in FFTW'
         call verify_sph_single_FFTW
 #endif
       else
@@ -159,71 +178,77 @@
         call verify_sph_FFTPACK5(ncomp)
       end if
 !
-      end subroutine verify_sph_FFT_select
+      end subroutine verify_MHD_FFT_select
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine fwd_FFT_select_to_send(ncomp, n_WS, v_rtp, WS)
+      subroutine fwd_MHD_FFT_sel_from_recv                              &
+     &         (ncomp_fwd, n_WS, frc_rtp, WS)
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
 !
-      integer(kind = kint), intent(in) :: ncomp, n_WS
-      real (kind=kreal), intent(in):: v_rtp(nnod_rtp,ncomp)
+      integer(kind = kint), intent(in) :: ncomp_fwd, n_WS
+      real (kind=kreal), intent(inout):: frc_rtp(nnod_rtp,ncomp_fwd)
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
       if(iflag_FFT .eq. iflag_ISPACK) then
         call sph_FTTRUF_to_send                                         &
-     &     (ncomp, n_WS, irev_sr_rtp, v_rtp(1,1), WS(1))
+     &     (ncomp_fwd, n_WS, irev_sr_rtp, frc_rtp(1,1), WS(1))
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW                                 &
-     &   .or. iflag_FFT .eq. iflag_FFTW_FIELD) then
+      else if(iflag_FFT .eq. iflag_FFTW) then
+        call MHD_multi_fwd_FFTW_to_send                                 &
+     &     (ncomp_fwd, n_WS, irev_sr_rtp, frc_rtp(1,1), WS(1))
+      else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
         call sph_field_fwd_FFTW_to_send                                 &
-     &     (ncomp, n_WS, irev_sr_rtp, v_rtp(1,1), WS(1))
+     &     (ncomp_fwd, n_WS, irev_sr_rtp, frc_rtp(1,1), WS(1))
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_fwd_FFTW_to_send                                &
-     &     (ncomp, n_WS, irev_sr_rtp, v_rtp(1,1), WS(1))
+     &     (ncomp_fwd, n_WS, irev_sr_rtp, frc_rtp(1,1), WS(1))
 #endif
       else
         call sph_RFFTMF_to_send                                         &
-     &     (ncomp, n_WS, irev_sr_rtp, v_rtp(1,1), WS(1))
+     &     (ncomp_fwd, n_WS, irev_sr_rtp, frc_rtp(1,1), WS(1))
       end if
 !
-      end subroutine fwd_FFT_select_to_send
+      end subroutine fwd_MHD_FFT_sel_from_recv
 !
 ! ------------------------------------------------------------------
 !
-      subroutine back_FFT_select_from_recv(ncomp, n_WR, WR, v_rtp)
+      subroutine back_MHD_FFT_sel_from_recv                             &
+     &         (ncomp_bwd, n_WR, WR, fld_rtp)
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
 !
-      integer(kind = kint), intent(in) :: ncomp, n_WR
-      real (kind=kreal), intent(inout):: WR(n_WR)
-      real (kind=kreal), intent(inout):: v_rtp(nnod_rtp,ncomp)
+      integer(kind = kint), intent(in) :: ncomp_bwd, n_WR
+      real(kind=kreal), intent(inout):: WR(n_WR)
+      real(kind=kreal), intent(inout):: fld_rtp(nnod_rtp,ncomp_bwd)
 !
 !
       if(iflag_FFT .eq. iflag_ISPACK) then
         call sph_FTTRUB_from_recv                                       &
-     &    (ncomp, n_WR, irev_sr_rtp, WR(1), v_rtp(1,1))
+     &    (ncomp_bwd, n_WR, irev_sr_rtp, WR(1), fld_rtp(1,1))
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW                                 &
-     &   .or. iflag_FFT .eq. iflag_FFTW_FIELD) then
+      else if(iflag_FFT .eq. iflag_FFTW) then
+        call MHD_multi_back_FFTW_from_recv                             &
+     &    (ncomp_bwd, n_WR, irev_sr_rtp, WR(1), fld_rtp(1,1))
+      else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
         call sph_field_back_FFTW_from_recv                              &
-     &    (ncomp, n_WR, irev_sr_rtp, WR(1), v_rtp(1,1))
+     &    (ncomp_bwd, n_WR, irev_sr_rtp, WR(1), fld_rtp(1,1))
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_back_FFTW_from_recv                             &
-     &    (ncomp, n_WR, irev_sr_rtp, WR(1), v_rtp(1,1))
+     &    (ncomp_bwd, n_WR, irev_sr_rtp, WR(1), fld_rtp(1,1))
 #endif
       else
         call sph_RFFTMB_from_recv                                       &
-     &     (ncomp, n_WR, irev_sr_rtp, WR, v_rtp(1,1))
+     &     (ncomp_bwd, n_WR, irev_sr_rtp, WR, fld_rtp(1,1))
       end if
 !
-      end subroutine back_FFT_select_from_recv
+      end subroutine back_MHD_FFT_sel_from_recv
 !
 ! ------------------------------------------------------------------
 !
-      end module sph_FFT_selector
+      end module MHD_FFT_selector

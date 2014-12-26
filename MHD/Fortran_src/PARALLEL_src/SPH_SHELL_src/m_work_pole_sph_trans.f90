@@ -12,9 +12,9 @@
 !!   compressed array
 !!   input /outpt arrays
 !!
-!!      radial component:      vr_rtp(3*i_rtp-2)
-!!      elevetional component: vr_rtp(3*i_rtp-1)
-!!      azimuthal component:   vr_rtp(2*i_rtp  )
+!!      radial component:      v_rtp(3*i_rtp-2)
+!!      elevetional component: v_rtp(3*i_rtp-1)
+!!      azimuthal component:   v_rtp(2*i_rtp  )
 !!
 !!      Poloidal component:          WR(3*i_rj-2)
 !!      diff. of Poloidal component: WR(3*i_rj-1)
@@ -23,7 +23,7 @@
 !!  transform for scalar
 !!   input /outpt arrays
 !!
-!!      field: vr_rtp(i_rtp)
+!!      field: v_rtp(i_rtp)
 !!      spectr: WR(i_rj)
 !
       module m_work_pole_sph_trans

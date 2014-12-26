@@ -197,7 +197,7 @@
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp
-      real(kind = kreal), intent(inout)                                 &
+      real(kind = kreal), intent(in)                                    &
      &     :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp)
 !
       integer(kind = kint), intent(in) :: n_WS

@@ -132,7 +132,7 @@
      &    mesh_sph%node, sph_fld)
 !
       call sph_forward_transforms(ncomp_xyz_2_rj, nvect_xyz_2_rj,       &
-     &    izero, n_WS, n_WR, WS, WR)
+     &    izero, vr_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &   ipol%i_vp_induct, f_trns%i_vp_induct, n_WR, WR(1))
@@ -168,7 +168,7 @@
       call check_calypso_rlm_2_rj_buf_N(ncomp_xyz_2_rj)
 !
       call sph_forward_transforms(ncomp_xyz_2_rj, nvect_xyz_2_rj,       &
-     &    izero, izero, n_WS, n_WR, WS, WR)
+     &    izero, izero, vr_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &   (ipol%i_vp_induct, f_trns%i_vp_induct, n_WR, WR)
@@ -214,7 +214,7 @@
       call pole_backward_transforms(ncomp_rj_2_xyz, nvect_rj_2_xyz,     &
      &    n_WR, WR)
       call sph_backward_transforms(ncomp_rj_2_xyz, nvect_rj_2_xyz,      &
-     &    n_WS, n_WR, WS, WR)
+     &    n_WS, n_WR, WS, WR, vr_rtp(1,1))
 !
 !
       call copy_xyz_vec_t_from_trans_wpole(nvect_rj_2_xyz,              &

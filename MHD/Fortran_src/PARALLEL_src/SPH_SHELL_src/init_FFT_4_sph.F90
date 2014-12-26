@@ -1,5 +1,5 @@
-!>@file   select_fourier_transform.F90
-!!@brief  module select_fourier_transform
+!>@file   init_FFT_4_sph.F90
+!!@brief  module init_FFT_4_sph
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2013
@@ -7,14 +7,14 @@
 !>@brief Select Fourier transform routine by elapsed time
 !!
 !!@verbatim
-!!      subroutine sel_fourier_transform_4_sph(ncomp_sph_trans)
+!!      subroutine init_fourier_transform_4_sph(ncomp_sph_trans)
 !!
 !!       Current problem
 !!      FFTW crashes when both single and multi transforms are 
 !!      comparaed
 !!@endverbatim
 !
-      module select_fourier_transform
+      module init_FFT_4_sph
 !
       use m_precision
 !
@@ -40,7 +40,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_fourier_transform_4_sph(ncomp_sph_trans)
+      subroutine init_fourier_transform_4_sph(ncomp_sph_trans)
 !
       use m_solver_SR
 !
@@ -69,7 +69,7 @@
         write(*,'(a)') ' (FFTW_SINGLE) '
       end if
 !
-      end subroutine sel_fourier_transform_4_sph
+      end subroutine init_fourier_transform_4_sph
 !
 ! -----------------------------------------------------------------------
 !
@@ -157,4 +157,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module select_fourier_transform
+      end module init_FFT_4_sph

@@ -10,15 +10,15 @@
 !!
 !!@verbatim
 !!      subroutine sph_backward_transforms(ncomp_trans,                 &
-!!     &          nvector, nscalar, n_WS, n_WR, WS, WR, vr_rtp)
+!!     &          nvector, nscalar, n_WS, n_WR, WS, WR, v_rtp)
 !!      subroutine sph_forward_transforms(ncomp_trans,                  &
-!!     &          nvector, nscalar, n_WS, n_WR, vr_rtp, WS, WR)
+!!     &          nvector, nscalar, v_rtp, n_WS, n_WR, WS, WR)
 !!
 !!   input /outpt arrays for single field
 !!
-!!      radial component:      vr_rtp(i_rtp,1)
-!!      elevetional component: vr_rtp(i_rtp,2)
-!!      azimuthal component:   vr_rtp(i_rtp,3)
+!!      radial component:      v_rtp(i_rtp,1)
+!!      elevetional component: v_rtp(i_rtp,2)
+!!      azimuthal component:   v_rtp(i_rtp,3)
 !!
 !!      Poloidal component:          WR(3*i_rj-2)
 !!      diff. of Poloidal component: WR(3*i_rj-1)
@@ -34,7 +34,6 @@
       use calypso_mpi
       use m_work_time
       use m_machine_parameter
-      use m_work_4_sph_trans
       use sph_FFT_selector
       use legendre_transform_select
       use spherical_SRs_N
@@ -48,12 +47,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_backward_transforms(ncomp_trans,                   &
-     &          nvector, nscalar, n_WS, n_WR, WS, WR)
+     &          nvector, nscalar, n_WS, n_WR, WS, WR, v_rtp)
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: nvector, nscalar
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
+      real(kind = kreal), intent(inout):: v_rtp(nnod_rtp,ncomp_trans)
 !
 !
       START_SRtime= MPI_WTIME()
@@ -77,7 +77,7 @@
 !      call check_vr_rtp(my_rank, ncomp_trans)
 !
       call start_eleps_time(24)
-      call back_FFT_select_from_recv(ncomp_trans, n_WR, WR, vr_rtp)
+      call back_FFT_select_from_recv(ncomp_trans, n_WR, WR, v_rtp)
       call end_eleps_time(24)
 !
       call finish_send_recv_rtm_2_rtp
@@ -89,16 +89,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_forward_transforms(ncomp_trans,                    &
-     &          nvector, nscalar, n_WS, n_WR, WS, WR)
+     &          nvector, nscalar, v_rtp, n_WS, n_WR, WS, WR)
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: nvector, nscalar
       integer(kind = kint), intent(in) :: n_WS, n_WR
+      real(kind = kreal), intent(in):: v_rtp(nnod_rtp,ncomp_trans)
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
 !
 !      call check_vr_rtp(my_rank, ncomp_trans)
       call start_eleps_time(24)
-      call fwd_FFT_select_to_send(ncomp_trans, n_WS, vr_rtp, WS)
+      call fwd_FFT_select_to_send(ncomp_trans, n_WS, v_rtp, WS)
       call end_eleps_time(24)
 !      call check_vr_rtp(my_rank, ncomp_trans)
 !
