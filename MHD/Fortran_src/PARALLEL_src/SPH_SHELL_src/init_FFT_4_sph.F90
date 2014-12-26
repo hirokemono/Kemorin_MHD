@@ -79,7 +79,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
       real (kind=kreal), intent(inout):: WR(n_WR)
 !
-      real(kind = kreal) :: etime_fft(4)
+      real(kind = kreal) :: etime_fft(5)
 !
 !
       iflag_FFT = iflag_FFTPACK
