@@ -37,9 +37,9 @@
       use m_sph_phys_address
       use sph_poynting_flux_smp
       use sph_transforms_4_MHD
-      use products_sph_fields_smp
       use mag_of_field_smp
       use const_wz_coriolis_rtp
+      use cal_products_smp
 !
 !
 !$omp parallel
@@ -48,18 +48,21 @@
 !      end if
 !
       if((irtp%i_lorentz*irtp%i_ujb) .gt. 0) then
-        call cal_rtp_dot_product(irtp%i_lorentz, irtp%i_velo,           &
-     &      irtp%i_ujb)
+        call cal_dot_prod_no_coef_smp(np_smp, nnod_rtp,                 &
+     &      inod_rtp_smp_stack, d_rtp(1,irtp%i_lorentz),                &
+     &      d_rtp(1,irtp%i_velo), d_rtp(1,irtp%i_ujb) )
       end if
 !
       if((irtp%i_lorentz*irtp%i_nega_ujb) .gt. 0) then
-        call cal_rtp_dot_prod_w_coef(dminus,                            &
-     &      irtp%i_lorentz, irtp%i_velo, irtp%i_nega_ujb)
+        call cal_dot_prod_w_coef_smp(np_smp, nnod_rtp,                  &
+     &      inod_rtp_smp_stack, dminus, d_rtp(1,irtp%i_lorentz),        &
+     &      d_rtp(1,irtp%i_velo), d_rtp(1,irtp%i_nega_ujb) )
       end if
 !
       if((irtp%i_induction*irtp%i_me_gen) .gt. 0) then
-        call cal_rtp_dot_product(irtp%i_induction, irtp%i_magne,        &
-     &      irtp%i_me_gen)
+        call cal_dot_prod_no_coef_smp(np_smp, nnod_rtp,                 &
+     &      inod_rtp_smp_stack, d_rtp(1,irtp%i_induction),              &
+     &      d_rtp(1,irtp%i_magne), d_rtp(1,irtp%i_me_gen) )
       end if
 !
       if((irtp%i_current*irtp%i_vp_induct*irtp%i_electric) .gt. 0) then

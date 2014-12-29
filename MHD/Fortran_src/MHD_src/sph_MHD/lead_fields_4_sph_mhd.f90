@@ -20,6 +20,7 @@
 !
       implicit none
 !
+      private :: pressure_4_sph_mhd
       private :: gradients_of_vectors_sph, enegy_fluxes_4_sph_mhd
 !
 ! ----------------------------------------------------------------------

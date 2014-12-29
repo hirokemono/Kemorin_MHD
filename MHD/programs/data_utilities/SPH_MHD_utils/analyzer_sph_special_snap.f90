@@ -227,7 +227,6 @@
       use cal_zonal_mean_sph_spectr
       use sph_rtp_zonal_rms_data
       use sph_transforms_4_MHD
-      use products_sph_fields_smp
 !
 !
       call s_lead_fields_4_sph_mhd

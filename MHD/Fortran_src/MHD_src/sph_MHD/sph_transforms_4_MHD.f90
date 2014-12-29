@@ -201,7 +201,7 @@
      &   (ncomp_snap_rj_2_rtp, nvector_snap_rj_2_rtp, nscalar_trans,    &
      &    n_WS, n_WR, WS(1), WR(1), vr_rtp(1,1))
 !
-      call copy_snap_vec_fld_from_trans()
+      call copy_snap_vec_fld_from_trans
 !
       end subroutine sph_back_trans_snapshot_MHD
 !
@@ -284,8 +284,6 @@
 !
       call check_calypso_rtp_2_rtm_buf_N(ncomp_tmp_rtp_2_rj)
       call check_calypso_rlm_2_rj_buf_N(ncomp_tmp_rtp_2_rj)
-!
-      call copy_tmp_scl_fld_to_trans
 !
 !   transform for vectors and scalars
       call sph_forward_transforms(ncomp_tmp_rtp_2_rj,                   &

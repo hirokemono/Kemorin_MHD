@@ -37,7 +37,6 @@
       use m_machine_parameter
       use m_spheric_param_smp
       use m_addresses_trans_sph_MHD
-      use products_sph_fields_smp
       use const_wz_coriolis_rtp
       use cal_products_smp
 !

@@ -11,6 +11,7 @@
 !!      subroutine cal_rtp_electric_field_smp
 !!      subroutine cal_rtp_poynting_flux_smp
 !!      subroutine cal_rtp_magnetic_streaching
+!!      subroutine copy_velo_to_grad_v_rtp
 !!@endverbatim
 !
       module sph_poynting_flux_smp
@@ -80,22 +81,20 @@
 !
       subroutine copy_velo_to_grad_v_rtp
 !
-      integer(kind = kint) :: ip, ist, ied, inod
+      use m_addresses_trans_sph_MHD
+      use m_addresses_trans_sph_tmp
+      use m_work_4_sph_trans
+      use sel_fld_copy_4_sph_trans
 !
 !
-      if(irtp%i_mag_stretch .eq. 0) return
-!
-!$omp parallel do private(ip,ist,ied,inod)
-      do ip = 1, np_smp
-        ist = inod_rtp_smp_stack(ip-1) + 1
-        ied = inod_rtp_smp_stack(ip)
-        do inod = ist, ied
-          d_rtp(inod,irtp%i_grad_vx) = d_rtp(inod,irtp%i_velo  )
-          d_rtp(inod,irtp%i_grad_vy) = d_rtp(inod,irtp%i_velo+1)
-          d_rtp(inod,irtp%i_grad_vz) = d_rtp(inod,irtp%i_velo+2)
-        end do
-      end do
-!$omp end parallel do
+!$omp parallel
+      if(ftmp_trns%i_grad_vx.gt.0) call sel_scalar_from_trans(nnod_rtp, &
+     &    fld_rtp(1,b_trns%i_velo  ), vr_rtp(1,ftmp_trns%i_grad_vx) )
+      if(ftmp_trns%i_grad_vy.gt.0) call sel_scalar_from_trans(nnod_rtp, &
+     &    fld_rtp(1,b_trns%i_velo+1), vr_rtp(1,ftmp_trns%i_grad_vy) )
+      if(ftmp_trns%i_grad_vz.gt.0) call sel_scalar_from_trans(nnod_rtp, &
+     &    fld_rtp(1,b_trns%i_velo+2), vr_rtp(1,ftmp_trns%i_grad_vz) )
+!$omp end parallel
 !
       end subroutine copy_velo_to_grad_v_rtp
 !

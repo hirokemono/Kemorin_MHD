@@ -69,7 +69,7 @@
      &        i_fld, d_rtp)
         else if(num_phys_comp_rtp(i) .eq. 3) then
           call sph_overwrte_sph_vect_to_cyl(ntot_phys_rtp,              &
-     &         i_fld, d_rtp)
+     &        i_fld, d_rtp)
         end if
       end do
 !
@@ -79,10 +79,10 @@
         i_fld = istack_phys_comp_rtp(i-1) + 1
         if     (num_phys_comp_rtp(i) .eq. 6) then
           call sph_overwrte_cyl_tsr_to_sph(ntot_phys_rtp,               &
-     &         i_fld, d_rtp)
+     &        i_fld, d_rtp)
         else if(num_phys_comp_rtp(i) .eq. 3) then
           call sph_overwrte_cyl_vect_to_sph(ntot_phys_rtp,              &
-     &         i_fld, d_rtp)
+     &        i_fld, d_rtp)
         end if
       end do
 !
