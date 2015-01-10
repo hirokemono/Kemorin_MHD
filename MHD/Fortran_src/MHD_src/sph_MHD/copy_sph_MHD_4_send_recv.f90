@@ -154,6 +154,8 @@
       call sel_sph_rj_scalar_to_send(ncomp_send,                        &
      &    ipol%i_par_temp, bsnap_trns%i_par_temp, n_WS, WS)
       call sel_sph_rj_scalar_to_send(ncomp_send,                        &
+     &    ipol%i_filter_temp, bsnap_trns%i_filter_temp, n_WS, WS)
+      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
      &    ipol%i_t_diffuse, bsnap_trns%i_t_diffuse, n_WS, WS)
       call sel_sph_rj_scalar_to_send(ncomp_send,                        &
      &    ipol%i_c_diffuse, bsnap_trns%i_c_diffuse, n_WS, WS)
@@ -196,6 +198,15 @@
      &      ipol%i_c_buo_gen, fsnap_trns%i_c_buo_gen, n_WR, WR)
       call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
      &      ipol%i_f_buo_gen, fsnap_trns%i_f_buo_gen, n_WR, WR)
+!
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &      ipol%i_velo_scale, fsnap_trns%i_velo_scale, n_WR, WR)
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &      ipol%i_magne_scale, fsnap_trns%i_magne_scale, n_WR, WR)
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &      ipol%i_temp_scale, fsnap_trns%i_temp_scale, n_WR, WR)
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &      ipol%i_comp_scale, fsnap_trns%i_comp_scale, n_WR, WR)
 !
       end  subroutine copy_snap_vec_spec_from_trans
 !

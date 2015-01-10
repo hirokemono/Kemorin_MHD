@@ -34,7 +34,6 @@
       use m_control_parameter
       use m_t_step_parameter
       use output_viz_file_control
-      use copy_MHD_4_sph_trans
 !
       integer (kind =kint) :: iflag
 !
@@ -48,7 +47,6 @@
       end if
 !
       if(iflag .eq. 0) then
-        call select_mhd_field_from_trans
         call gradients_of_vectors_sph
         call enegy_fluxes_4_sph_mhd
       end if
@@ -95,6 +93,8 @@
       use sph_transforms_4_MHD
       use cal_energy_flux_rtp
       use cal_energy_flux_rj
+      use copy_snap_4_sph_trans
+      use copy_MHD_4_sph_trans
 !
 !
 !      Evaluate fields for output in spectrum space
@@ -104,7 +104,6 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_snapshot_MHD'
       call sph_back_trans_snapshot_MHD
 !
-!
 !      Evaluate fields for output in grid space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
       call s_cal_energy_flux_rtp
@@ -112,6 +111,11 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'
       call sph_forward_trans_snapshot_MHD
+!
+      call select_mhd_field_from_trans
+      call copy_snap_vec_fld_from_trans
+      call copy_tmp_vec_fld_from_trans
+      call copy_snap_vec_fld_to_trans
 !
       end subroutine enegy_fluxes_4_sph_mhd
 !
@@ -122,7 +126,6 @@
       use m_sph_phys_address
       use sph_transforms_4_MHD
       use sph_poynting_flux_smp
-!
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_velo_to_grad_v_rtp'

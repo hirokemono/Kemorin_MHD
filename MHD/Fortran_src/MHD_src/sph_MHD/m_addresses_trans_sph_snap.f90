@@ -8,6 +8,9 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
+!!      subroutine allocate_snap_trans_rtp
+!!      subroutine deallocate_snap_trans_rtp
+!!
 !!      subroutine set_addresses_snapshot_trans
 !!      subroutine check_addresses_snapshot_trans
 !!@endverbatim
@@ -46,10 +49,38 @@
 !>    addresses for forces to forward transform
       type(phys_address), save :: fsnap_trns
 !
+!>      field data to evaluate nonliear terms in grid space
+      real(kind = kreal), allocatable :: fld_snap_rtp(:,:)
+!>      Nonoliear terms data in grid space
+      real(kind = kreal), allocatable :: frc_snap_rtp(:,:)
+!
 !-----------------------------------------------------------------------
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine allocate_snap_trans_rtp
+!
+      use m_spheric_parameter
+!
+!
+      allocate(fld_snap_rtp(nnod_rtp,ncomp_snap_rj_2_rtp))
+      allocate(frc_snap_rtp(nnod_rtp,ncomp_snap_rtp_2_rj))
+      if(ncomp_snap_rj_2_rtp .gt. 0) fld_snap_rtp = 0.0d0
+      if(ncomp_snap_rtp_2_rj .gt. 0) frc_snap_rtp = 0.0d0
+!
+      end subroutine allocate_snap_trans_rtp
+!
+!-----------------------------------------------------------------------
+!
+      subroutine deallocate_snap_trans_rtp
+!
+      deallocate(fld_snap_rtp, frc_snap_rtp)
+!
+      end subroutine deallocate_snap_trans_rtp
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine set_addresses_snapshot_trans
@@ -90,26 +121,40 @@
       call add_scalar_trans_flag(ipol%i_f_buo_gen, irtp%i_f_buo_gen,    &
      &    ncomp_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                   &
      &    fsnap_trns%i_f_buo_gen)
+!
+      call add_scalar_trans_flag(ipol%i_velo_scale, irtp%i_velo_scale,  &
+     &    ncomp_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                   &
+     &    fsnap_trns%i_velo_scale)
+      call add_scalar_trans_flag                                        &
+     &   (ipol%i_magne_scale, irtp%i_magne_scale,                       &
+     &    ncomp_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                   &
+     &    fsnap_trns%i_magne_scale)
+      call add_scalar_trans_flag(ipol%i_temp_scale, irtp%i_temp_scale,  &
+     &    ncomp_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                   &
+     &    fsnap_trns%i_temp_scale)
+      call add_scalar_trans_flag(ipol%i_comp_scale, irtp%i_comp_scale,  &
+     &    ncomp_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                   &
+     &    fsnap_trns%i_comp_scale)
       ncomp_snap_rtp_2_rj = ncomp_snap_rtp_2_rj + nscalar_snap_rtp_2_rj
 !
 !
       nvector_snap_rj_2_rtp = 0
-      if(b_trns%i_velo .eq. 0) then
+!      if(b_trns%i_velo .eq. 0) then
         call add_vec_trans_flag(ipol%i_velo, irtp%i_velo,               &
      &      nvector_snap_rj_2_rtp, bsnap_trns%i_velo)
-      end if
-      if(b_trns%i_vort .eq. 0) then
+!      end if
+!      if(b_trns%i_vort .eq. 0) then
         call add_vec_trans_flag(ipol%i_vort, irtp%i_vort,               &
      &      nvector_snap_rj_2_rtp, bsnap_trns%i_vort)
-      end if
-      if(b_trns%i_magne .eq. 0) then
+!      end if
+!      if(b_trns%i_magne .eq. 0) then
         call add_vec_trans_flag(ipol%i_magne, irtp%i_magne,             &
      &      nvector_snap_rj_2_rtp, bsnap_trns%i_magne)
-      end if
-      if(b_trns%i_current .eq. 0) then
+!      end if
+!      if(b_trns%i_current .eq. 0) then
         call add_vec_trans_flag(ipol%i_current, irtp%i_current,         &
      &      nvector_snap_rj_2_rtp, bsnap_trns%i_current)
-      end if
+!      end if
 !
       call add_vec_trans_flag(ipol%i_v_diffuse, irtp%i_v_diffuse,       &
      &    nvector_snap_rj_2_rtp, bsnap_trns%i_v_diffuse)
@@ -145,16 +190,16 @@
 !
 !
       nscalar_snap_rj_2_rtp = 0
-      if(b_trns%i_temp.eq.0 .or. ipol%i_par_temp.gt.0) then
+!      if(b_trns%i_temp.eq.0 .or. ipol%i_par_temp.gt.0) then
         call add_scalar_trans_flag(ipol%i_temp, irtp%i_temp,            &
      &    ncomp_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                   &
      &    bsnap_trns%i_temp)
-      end if
-      if(b_trns%i_light .eq. 0) then
+!      end if
+!      if(b_trns%i_light .eq. 0) then
         call add_scalar_trans_flag(ipol%i_light, irtp%i_light,          &
      &    ncomp_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                   &
      &    bsnap_trns%i_light)
-      end if
+!      end if
 !
       call add_scalar_trans_flag(ipol%i_press, irtp%i_press,            &
      &    ncomp_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                   &
@@ -162,6 +207,10 @@
       call add_scalar_trans_flag(ipol%i_par_temp, irtp%i_par_temp,      &
      &    ncomp_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                   &
      &    bsnap_trns%i_par_temp)
+      call add_scalar_trans_flag                                        &
+     &   (ipol%i_filter_temp, irtp%i_filter_temp,                       &
+     &    ncomp_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                   &
+     &    bsnap_trns%i_filter_temp)
       call add_scalar_trans_flag(ipol%i_t_diffuse, irtp%i_t_diffuse,    &
      &    ncomp_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                   &
      &    bsnap_trns%i_t_diffuse)
@@ -272,6 +321,10 @@
      &            'bsnap_trns%i_par_temp', bsnap_trns%i_par_temp,       &
      &            ipol%i_par_temp, irtp%i_par_temp
 !
+      if(bsnap_trns%i_filter_temp .gt. 0) write(*,*)                    &
+     &            'bsnap_trns%i_filter_temp', bsnap_trns%i_filter_temp, &
+     &            ipol%i_filter_temp, irtp%i_filter_temp
+!
       if(bsnap_trns%i_t_diffuse .gt. 0) write(*,*)                      &
      &            'bsnap_trns%i_t_diffuse', bsnap_trns%i_t_diffuse,     &
      &            ipol%i_t_diffuse, irtp%i_t_diffuse
@@ -323,6 +376,19 @@
       if(fsnap_trns%i_f_buo_gen .gt. 0) write(*,*)                      &
      &            'fsnap_trns%i_f_buo_gen', fsnap_trns%i_f_buo_gen,     &
      &            ipol%i_f_buo_gen, irtp%i_f_buo_gen
+!
+      if(fsnap_trns%i_velo_scale .gt. 0) write(*,*)                     &
+     &            'fsnap_trns%i_velo_scale', fsnap_trns%i_velo_scale,   &
+     &            ipol%i_velo_scale, irtp%i_velo_scale
+      if(fsnap_trns%i_magne_scale .gt. 0) write(*,*)                    &
+     &            'fsnap_trns%i_magne_scale', fsnap_trns%i_magne_scale, &
+     &            ipol%i_magne_scale, irtp%i_magne_scale
+      if(fsnap_trns%i_temp_scale .gt. 0) write(*,*)                     &
+     &            'fsnap_trns%i_temp_scale', fsnap_trns%i_temp_scale,   &
+     &            ipol%i_temp_scale, irtp%i_temp_scale
+      if(fsnap_trns%i_comp_scale .gt. 0) write(*,*)                     &
+     &            'fsnap_trns%i_comp_scale', fsnap_trns%i_comp_scale,   &
+     &            ipol%i_comp_scale, irtp%i_comp_scale
         write(*,*)
 !
       end subroutine check_addresses_snapshot_trans

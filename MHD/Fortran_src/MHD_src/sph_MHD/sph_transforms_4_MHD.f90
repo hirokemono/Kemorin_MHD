@@ -69,8 +69,10 @@
       end if
 !
       call allocate_nonlinear_data
+      call allocate_snap_trans_rtp
+      call allocate_tmp_trans_rtp
 !
-      if (iflag_debug.eq.1) write(*,*) 'initialize_sph_trans'
+      if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
       call initialize_legendre_trans
       call init_fourier_transform_4_MHD(ncomp_sph_trans,                &
      &    ncomp_rtp_2_rj, ncomp_rj_2_rtp)
@@ -87,7 +89,7 @@
         call select_legendre_transform
       end if
 !
-       call sel_init_legendre_trans                                     &
+      call sel_init_legendre_trans                                      &
      &    (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       if(my_rank .ne. 0) return
@@ -184,7 +186,6 @@
       use m_work_4_sph_trans
       use sph_transforms
       use copy_sph_MHD_4_send_recv
-      use copy_snap_4_sph_trans
       use spherical_SRs_N
 !
       integer(kind = kint) :: nscalar_trans
@@ -199,9 +200,7 @@
       call copy_snap_spectr_to_send(ncomp_snap_rj_2_rtp, n_WS, WS)
       call sph_backward_transforms                                      &
      &   (ncomp_snap_rj_2_rtp, nvector_snap_rj_2_rtp, nscalar_trans,    &
-     &    n_WS, n_WR, WS(1), WR(1), vr_rtp(1,1))
-!
-      call copy_snap_vec_fld_from_trans
+     &    n_WS, n_WR, WS(1), WR(1), fld_snap_rtp)
 !
       end subroutine sph_back_trans_snapshot_MHD
 !
@@ -214,7 +213,6 @@
       use m_work_4_sph_trans
       use sph_transforms
       use copy_sph_MHD_4_send_recv
-      use copy_snap_4_sph_trans
       use spherical_SRs_N
 !
 !
@@ -223,12 +221,10 @@
       call check_calypso_rtp_2_rtm_buf_N(ncomp_snap_rtp_2_rj)
       call check_calypso_rlm_2_rj_buf_N(ncomp_snap_rtp_2_rj)
 !
-      call copy_snap_vec_fld_to_trans
-!
 !   transform for vectors and scalars
       call sph_forward_transforms(ncomp_snap_rtp_2_rj,                  &
      &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
-     &    vr_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
+     &    frc_snap_rtp, n_WS, n_WR, WS(1), WR(1))
 !
       call copy_snap_vec_spec_from_trans                                &
      &   (ncomp_snap_rtp_2_rj, n_WR, WR(1))
@@ -245,7 +241,6 @@
       use m_work_4_sph_trans
       use sph_transforms
       use copy_sph_MHD_4_send_recv
-      use copy_snap_4_sph_trans
       use spherical_SRs_N
 !
       integer(kind = kint) :: nscalar_trans
@@ -261,9 +256,7 @@
 !
       call sph_backward_transforms                                      &
      &   (ncomp_tmp_rj_2_rtp, nvector_tmp_rj_2_rtp, nscalar_trans,      &
-     &    n_WS, n_WR, WS(1), WR(1), vr_rtp(1,1))
-!
-      call copy_tmp_vec_fld_from_trans
+     &    n_WS, n_WR, WS(1), WR(1), fld_tmp_rtp)
 !
       end subroutine sph_back_trans_tmp_snap_MHD
 !
@@ -276,7 +269,6 @@
       use m_work_4_sph_trans
       use sph_transforms
       use copy_sph_MHD_4_send_recv
-      use copy_snap_4_sph_trans
       use spherical_SRs_N
 !
 !
@@ -287,13 +279,14 @@
 !
 !   transform for vectors and scalars
       call sph_forward_transforms(ncomp_tmp_rtp_2_rj,                   &
-     &   nvector_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                    &
-     &   vr_rtp(1,1), n_WS, n_WR, WS, WR)
+     &    nvector_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                   &
+     &    frc_tmp_rtp, n_WS, n_WR, WS, WR)
 !
       call copy_tmp_scl_spec_from_trans(ncomp_tmp_rtp_2_rj, n_WR, WR)
 !
       end subroutine sph_forward_trans_tmp_snap_MHD
 !
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine sph_transform_4_licv

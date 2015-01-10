@@ -8,9 +8,6 @@
 !!@n     $omp parallel is required to use these routines
 !!
 !!@verbatim
-!!      subroutine cal_rtp_electric_field_smp
-!!      subroutine cal_rtp_poynting_flux_smp
-!!      subroutine cal_rtp_magnetic_streaching
 !!      subroutine copy_velo_to_grad_v_rtp
 !!@endverbatim
 !
@@ -21,61 +18,12 @@
       use m_machine_parameter
       use m_spheric_parameter
       use m_spheric_param_smp
-      use m_sph_spectr_data
       use m_sph_phys_address
       use m_physical_property
 !
 ! -----------------------------------------------------------------------
 !
       contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_rtp_electric_field_smp
-!
-      use poynting_flux_smp
-!
-!
-      call cal_electric_field_smp(np_smp, nnod_rtp, inod_rtp_smp_stack, &
-     &    coef_d_magne, d_rtp(1,irtp%i_current),                        &
-     &    d_rtp(1,irtp%i_vp_induct), d_rtp(1,irtp%i_electric))
-!
-      end subroutine cal_rtp_electric_field_smp
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_rtp_poynting_flux_smp
-!
-      use poynting_flux_smp
-!
-!
-      call cal_poynting_flux_smp(np_smp, nnod_rtp, inod_rtp_smp_stack,  &
-     &     coef_d_magne, d_rtp(1,irtp%i_current),                       &
-     &     d_rtp(1,irtp%i_vp_induct), d_rtp(1,irtp%i_magne),            &
-     &     d_rtp(1,irtp%i_poynting))
-!
-      end subroutine cal_rtp_poynting_flux_smp
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine cal_rtp_magnetic_streaching
-!
-      use poynting_flux_smp
-      use m_work_4_sph_trans
-!
-!
-      if(irtp%i_mag_stretch .eq. 0) return
-!
-!$omp parallel
-      call cal_rtp_magnetic_streach(np_smp, nnod_rtp,                   &
-     &   inod_rtp_smp_stack, nidx_rtp(1), nidx_rtp(2), a_r_1d_rtp_r,    &
-     &   cot_theta_1d_rtp, d_rtp(1,irtp%i_magne), d_rtp(1,irtp%i_velo), &
-     &   d_rtp(1,irtp%i_grad_vx), d_rtp(1,irtp%i_grad_vy),              &
-     &   d_rtp(1,irtp%i_grad_vz), d_rtp(1,irtp%i_mag_stretch) )
-!$omp end parallel
-!
-      end subroutine cal_rtp_magnetic_streaching
 !
 ! -----------------------------------------------------------------------
 !
@@ -88,12 +36,21 @@
 !
 !
 !$omp parallel
-      if(ftmp_trns%i_grad_vx.gt.0) call sel_scalar_from_trans(nnod_rtp, &
-     &    fld_rtp(1,b_trns%i_velo  ), vr_rtp(1,ftmp_trns%i_grad_vx) )
-      if(ftmp_trns%i_grad_vy.gt.0) call sel_scalar_from_trans(nnod_rtp, &
-     &    fld_rtp(1,b_trns%i_velo+1), vr_rtp(1,ftmp_trns%i_grad_vy) )
-      if(ftmp_trns%i_grad_vz.gt.0) call sel_scalar_from_trans(nnod_rtp, &
-     &    fld_rtp(1,b_trns%i_velo+2), vr_rtp(1,ftmp_trns%i_grad_vz) )
+      if(ftmp_trns%i_grad_vx.gt.0) then
+        call sel_scalar_from_trans                                      &
+     &     (nnod_rtp, fld_rtp(1,b_trns%i_velo  ),                       &
+     &      frc_tmp_rtp(1,ftmp_trns%i_grad_vx) )
+      end if
+      if(ftmp_trns%i_grad_vy.gt.0) then
+        call sel_scalar_from_trans                                      &
+     &     (nnod_rtp, fld_rtp(1,b_trns%i_velo+1),                       &
+     &      frc_tmp_rtp(1,ftmp_trns%i_grad_vy) )
+      end if
+      if(ftmp_trns%i_grad_vz.gt.0) then
+        call sel_scalar_from_trans                                      &
+     &     (nnod_rtp, fld_rtp(1,b_trns%i_velo+2),                       &
+     &      frc_tmp_rtp(1,ftmp_trns%i_grad_vz) )
+      end if
 !$omp end parallel
 !
       end subroutine copy_velo_to_grad_v_rtp

@@ -8,6 +8,9 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
+!!      subroutine allocate_tmp_trans_rtp
+!!      subroutine deallocate_tmp_trans_rtp
+!!
 !!      subroutine set_addresses_temporal_trans
 !!      subroutine check_addresses_temporal_trans
 !!@endverbatim
@@ -46,10 +49,38 @@
 !>    addresses for forces to forward transform
       type(phys_address), save :: ftmp_trns
 !
+!>      field data to evaluate nonliear terms in grid space
+      real(kind = kreal), allocatable :: fld_tmp_rtp(:,:)
+!>      Nonoliear terms data in grid space
+      real(kind = kreal), allocatable :: frc_tmp_rtp(:,:)
+!
 !-----------------------------------------------------------------------
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine allocate_tmp_trans_rtp
+!
+      use m_spheric_parameter
+!
+!
+      allocate(fld_tmp_rtp(nnod_rtp,ncomp_tmp_rj_2_rtp))
+      allocate(frc_tmp_rtp(nnod_rtp,ncomp_tmp_rtp_2_rj))
+      if(ncomp_tmp_rj_2_rtp .gt. 0) fld_tmp_rtp = 0.0d0
+      if(ncomp_tmp_rtp_2_rj .gt. 0) frc_tmp_rtp = 0.0d0
+!
+      end subroutine allocate_tmp_trans_rtp
+!
+!-----------------------------------------------------------------------
+!
+      subroutine deallocate_tmp_trans_rtp
+!
+      deallocate(fld_tmp_rtp, frc_tmp_rtp)
+!
+      end subroutine deallocate_tmp_trans_rtp
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine set_addresses_temporal_trans
@@ -79,11 +110,11 @@
 !
 !
       nvector_tmp_rj_2_rtp = 0
-      call add_vec_trans_flag(ipol%i_grad_vx, irtp%i_grad_vx,           &
+      call add_vec_trans_flag(ipol%i_grad_vx, irtp%i_grad_vx,          &
      &    nvector_tmp_rj_2_rtp, btmp_trns%i_grad_vx)
-      call add_vec_trans_flag(ipol%i_grad_vy, irtp%i_grad_vy,           &
+      call add_vec_trans_flag(ipol%i_grad_vy, irtp%i_grad_vy,          &
      &    nvector_tmp_rj_2_rtp, btmp_trns%i_grad_vy)
-      call add_vec_trans_flag(ipol%i_grad_vz, irtp%i_grad_vz,           &
+      call add_vec_trans_flag(ipol%i_grad_vz, irtp%i_grad_vz,          &
      &    nvector_tmp_rj_2_rtp, btmp_trns%i_grad_vz)
       ncomp_tmp_rj_2_rtp = 3*nvector_tmp_rj_2_rtp
 !
