@@ -7,22 +7,25 @@
 !>@brief  Copy spherical harmonics data
 !!
 !!@verbatim
-!!      subroutine copy_scalar_from_trans(nnod, v_rtp, d_sph)
-!!      subroutine copy_vector_from_trans(nnod, v_rtp, d_sph)
-!!      subroutine copy_tensor_from_trans(nnod, v_rtp, d_sph)
+!!      subroutine copy_scalar_from_trans                              &
+!!     &         (nnod_rtp, inod_rtp_smp_stack, nnod, v_rtp, d_sph)
+!!      subroutine copy_vector_from_trans                              &                                                                
+!!     &         (nnod_rtp, inod_rtp_smp_stack, nnod, v_rtp, d_sph)
+!!      subroutine copy_tensor_from_trans                              &
+!!     &         (nnod_rtp, inod_rtp_smp_stack, nnod, v_rtp, d_sph)
 !!
-!!      subroutine copy_scalar_to_trans(nnod, d_sph, v_rtp)
-!!      subroutine copy_vector_to_trans(nnod, d_sph, v_rtp)
-!!      subroutine copy_tensor_to_trans(nnod, d_sph, v_rtp)
+!!      subroutine copy_scalar_to_trans                                 &
+!!     &         (nnod_rtp, inod_rtp_smp_stack, nnod, d_sph, v_rtp)
+!!      subroutine copy_vector_to_trans                                 &
+!!     &         (nnod_rtp, inod_rtp_smp_stack, nnod, d_sph, v_rtp)
+!!      subroutine copy_tensor_to_trans                                 &
+!!     &         (nnod_rtp, inod_rtp_smp_stack, nnod, d_sph, v_rtp)
 !!@endverbatim
 !
       module copy_field_4_sph_trans
 !
       use m_precision
-!
       use m_machine_parameter
-      use m_spheric_parameter
-      use m_spheric_param_smp
 !
       implicit  none
 ! 
@@ -32,9 +35,11 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine copy_scalar_from_trans(nnod, v_rtp, d_sph)
+      subroutine copy_scalar_from_trans                                &
+     &         (nnod_rtp, inod_rtp_smp_stack, nnod, v_rtp, d_sph)
 !
-      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod
+      integer(kind = kint), intent(in) :: inod_rtp_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: v_rtp(nnod_rtp)
       real(kind = kreal), intent(inout) :: d_sph(nnod)
 !
@@ -53,9 +58,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_vector_from_trans(nnod, v_rtp, d_sph)
+      subroutine copy_vector_from_trans                                 &
+     &         (nnod_rtp, inod_rtp_smp_stack, nnod, v_rtp, d_sph)
 !
-      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod
+      integer(kind = kint), intent(in) :: inod_rtp_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: v_rtp(nnod_rtp,3)
       real(kind = kreal), intent(inout) :: d_sph(nnod,3)
 !
@@ -76,9 +83,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_tensor_from_trans(nnod, v_rtp, d_sph)
+      subroutine copy_tensor_from_trans                                 &
+     &         (nnod_rtp, inod_rtp_smp_stack, nnod, v_rtp, d_sph)
 !
-      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod
+      integer(kind = kint), intent(in) :: inod_rtp_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: v_rtp(nnod_rtp,6)
       real(kind = kreal), intent(inout) :: d_sph(nnod,6)
 !
@@ -103,9 +112,11 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine copy_scalar_to_trans(nnod, d_sph, v_rtp)
+      subroutine copy_scalar_to_trans                                   &
+     &         (nnod_rtp, inod_rtp_smp_stack, nnod, d_sph, v_rtp)
 !
-      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod
+      integer(kind = kint), intent(in) :: inod_rtp_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: d_sph(nnod)
       real(kind = kreal), intent(inout) :: v_rtp(nnod_rtp)
 !
@@ -124,9 +135,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_vector_to_trans(nnod, d_sph, v_rtp)
+      subroutine copy_vector_to_trans                                   &
+     &         (nnod_rtp, inod_rtp_smp_stack, nnod, d_sph, v_rtp)
 !
-      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod
+      integer(kind = kint), intent(in) :: inod_rtp_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: d_sph(nnod,3)
       real(kind = kreal), intent(inout) :: v_rtp(nnod_rtp,3)
 !
@@ -147,9 +160,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_tensor_to_trans(nnod, d_sph, v_rtp)
+      subroutine copy_tensor_to_trans                                   &
+     &         (nnod_rtp, inod_rtp_smp_stack, nnod, d_sph, v_rtp)
 !
-      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod
+      integer(kind = kint), intent(in) :: inod_rtp_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: d_sph(nnod,6)
       real(kind = kreal), intent(inout) :: v_rtp(nnod_rtp,6)
 !

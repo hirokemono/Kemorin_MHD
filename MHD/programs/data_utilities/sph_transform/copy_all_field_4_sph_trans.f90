@@ -46,7 +46,7 @@
         do i = 1, num_nod_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
-            call copy_1st_scl_to_sph_trans(itrans, i_field)
+            call copy_1st_scl_to_sph_trans(i_field, vr_rtp(1,itrans))
             exit
           end if
         end do
@@ -71,7 +71,7 @@
         do i = 1, num_nod_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
-            call copy_1st_scl_from_sph_trans(itrans, i_field)
+            call copy_1st_scl_from_sph_trans(vr_rtp(1,itrans), i_field)
             exit
           end if
         end do
@@ -97,7 +97,7 @@
         do i = 1, num_nod_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
-            call copy_1st_vec_to_sph_trans(itrans, i_field)
+            call copy_1st_vec_to_sph_trans(i_field, vr_rtp(1,itrans))
             exit
           end if
         end do
@@ -123,7 +123,7 @@
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
             call copy_1st_vec_from_trans_wpole(ncomp_sph_trans,         &
-     &          itrans, i_field)
+     &          itrans, vr_rtp(1,1), i_field)
             exit
           end if
         end do
@@ -136,6 +136,7 @@
 !
       subroutine set_sph_tensor_to_sph_trans
 !
+      use m_work_4_sph_trans
       use copy_1st_nodal_4_sph_trans
 !
       integer(kind = kint) :: j, j0
@@ -149,7 +150,7 @@
         do i = 1, num_nod_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
-            call copy_1st_tsr_to_sph_trans(itrans, i_field)
+            call copy_1st_tsr_to_sph_trans(i_field, vr_rtp(1,itrans))
             exit
           end if
         end do
@@ -175,7 +176,7 @@
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
             call copy_1st_tsr_from_trans_wpole(ncomp_sph_trans, itrans, &
-     &          i_field)
+     &          vr_rtp(1,1), i_field)
             exit
           end if
         end do

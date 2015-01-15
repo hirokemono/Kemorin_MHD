@@ -9,17 +9,17 @@
 !!
 !!@verbatim
 !!      subroutine cal_cyl_asym_t_smp(np_smp, numnod, inod_smp_stack,   &
-!!     &          tensor, tcyl, xx, s, a_s)
+!!     &          tensor, tcyl, xx, yy, s, a_s)
 !!
 !!      subroutine overwrite_cyl_asym_t_smp(np_smp, numnod,             &
-!!     &          inod_smp_stack, tensor, xx, s, a_s)
+!!     &          inod_smp_stack, tensor, xx, yy, s, a_s)
 !!
 !!      subroutine cal_sp_asym_t_smp(np_smp, numnod, inod_smp_stack,    &
 !!     &          tensor, t_sp)
 !!      subroutine cal_zs_asym_t_smp(np_smp, numnod, inod_smp_stack,    &
-!!     &          tensor, t_zs, xx, s, a_s)
+!!     &          tensor, t_zs, xx, yy, s, a_s)
 !!      subroutine cal_pz_asym_t_smp(np_smp, numnod, inod_smp_stack,    &
-!!     &          tensor, t_pz, xx, s, a_s)
+!!     &          tensor, t_pz, xx, yy, s, a_s)
 !!
 !!   usup =         ux*uy
 !!   uzus = (as) * (      x* uz*ux - y* uy*uz)
@@ -30,7 +30,9 @@
 !!@n @param  numnod   Number of data points
 !!@n @param  inod_smp_stack(0:np_smp)
 !!                    End address of each SMP process
-!!@n @param  xx(numnod,3) position in Cartesian coordinate
+!!@n @param  xx(numnod) position in Cartesian coordinate
+!!@n @param  yy(numnod) position in Cartesian coordinate
+!!@n @param  zz(numnod) position in Cartesian coordinate
 !!@n @param  s(numnod)    cylindrical radius
 !!@n @param  a_s(numnod)  1 / s
 !!
@@ -60,12 +62,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_cyl_asym_t_smp(np_smp, numnod, inod_smp_stack,     &
-     &          tensor, tcyl, xx, s, a_s)
+     &          tensor, tcyl, xx, yy, s, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in) :: tensor(numnod,3)
-       real(kind=kreal), intent(in) :: xx(numnod,3)
+       real(kind=kreal), intent(in) :: xx(numnod), yy(numnod)
        real(kind=kreal), intent(in) :: s(numnod)
        real(kind=kreal), intent(in) :: a_s(numnod)
 !
@@ -91,11 +93,11 @@
            else
              tcyl(inod,1) =   txy
 !
-             tcyl(inod,2) = ( tzx * xx(inod,1)                          &
-     &                      - tyz * xx(inod,2) ) * a_s(inod)
+             tcyl(inod,2) = ( tzx * xx(inod)                            &
+     &                      - tyz * yy(inod) ) * a_s(inod)
 !
-             tcyl(inod,3) = ( tzx * xx(inod,2)                          &
-     &                      + tyz * xx(inod,1) ) * a_s(inod)
+             tcyl(inod,3) = ( tzx * yy(inod)                            &
+     &                      + tyz * xx(inod) ) * a_s(inod)
            end if
 !
         end do
@@ -108,11 +110,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine overwrite_cyl_asym_t_smp(np_smp, numnod,               &
-     &          inod_smp_stack, tensor, xx, s, a_s)
+     &          inod_smp_stack, tensor, xx, yy, s, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-       real(kind=kreal), intent(in) :: xx(numnod,3)
+       real(kind=kreal), intent(in) :: xx(numnod), yy(numnod)
        real(kind=kreal), intent(in) :: s(numnod)
        real(kind=kreal), intent(in) :: a_s(numnod)
 !
@@ -138,11 +140,11 @@
            else
              tensor(inod,1) =   txy
 !
-             tensor(inod,2) = ( tzx * xx(inod,1)                        &
-     &                        - tyz * xx(inod,2) ) * a_s(inod)
+             tensor(inod,2) = ( tzx * xx(inod)                          &
+     &                        - tyz * yy(inod) ) * a_s(inod)
 !
-             tensor(inod,3) = ( tzx * xx(inod,2)                        &
-     &                        + tyz * xx(inod,1) ) * a_s(inod)
+             tensor(inod,3) = ( tzx * yy(inod)                          &
+     &                        + tyz * xx(inod) ) * a_s(inod)
            end if
 !
         end do
@@ -181,12 +183,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_zs_asym_t_smp(np_smp, numnod, inod_smp_stack,      &
-     &          tensor, t_zs, xx, s, a_s)
+     &          tensor, t_zs, xx, yy, s, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in) :: tensor(numnod,3)
-       real(kind=kreal), intent(in) :: xx(numnod,3)
+       real(kind=kreal), intent(in) :: xx(numnod), yy(numnod)
        real(kind=kreal), intent(in) :: s(numnod)
        real(kind=kreal), intent(in) :: a_s(numnod)
 !
@@ -207,8 +209,8 @@
            if ( s(inod).eq.0.0 ) then
              t_zs(inod) =     tzx
            else
-             t_zs(inod) =   ( tzx * xx(inod,1)                          &
-     &                      - tyz * xx(inod,2) ) * a_s(inod)
+             t_zs(inod) =   ( tzx * xx(inod)                            &
+     &                      - tyz * yy(inod) ) * a_s(inod)
            end if
 !
         end do
@@ -220,12 +222,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_pz_asym_t_smp(np_smp, numnod, inod_smp_stack,      &
-     &          tensor, t_pz, xx, s, a_s)
+     &          tensor, t_pz, xx, yy, s, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in) :: tensor(numnod,3)
-       real(kind=kreal), intent(in) :: xx(numnod,3)
+       real(kind=kreal), intent(in) :: xx(numnod), yy(numnod)
        real(kind=kreal), intent(in) :: s(numnod)
        real(kind=kreal), intent(in) :: a_s(numnod)
 !
@@ -246,8 +248,8 @@
            if ( s(inod).eq.0.0 ) then
              t_pz(inod) =     tyz
            else
-             t_pz(inod) =   ( tzx * xx(inod,2)                          &
-     &                      + tyz * xx(inod,1) ) * a_s(inod)
+             t_pz(inod) =   ( tzx * yy(inod)                            &
+     &                      + tyz * xx(inod) ) * a_s(inod)
            end if
 !
         end do

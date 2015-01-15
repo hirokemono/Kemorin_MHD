@@ -186,19 +186,20 @@
 !
         else if (i_comp.eq.11) then
           call cal_radial_comp_smp(np_smp, nnod, istack_nod_smp,        &
-     &        d_nod(1,ist_field), c_ref_iso, xx, radius, a_r)
+     &        d_nod(1,ist_field), c_ref_iso, xx(1,1), xx(1,2), xx(1,3), &
+     &        radius, a_r)
         else if (i_comp.eq.12) then
           call cal_theta_comp_smp(np_smp, nnod, istack_nod_smp,         &
      &        d_nod(1,ist_field), c_ref_iso,                            &
-     &        xx, radius, s_radius, a_r, a_s)
+     &        xx(1,1), xx(1,2), xx(1,3), radius, s_radius, a_r, a_s)
         else if (i_comp.eq.13) then
           call cal_phi_comp_smp(np_smp, nnod, istack_nod_smp,           &
      &        d_nod(1,ist_field), c_ref_iso,                            &
-     &        xx, s_radius, a_s)
+     &        xx(1,1), xx(1,2), s_radius, a_s)
         else if (i_comp.eq.14) then
           call cal_cylinder_r_comp_smp(np_smp, nnod, istack_nod_smp,    &
      &        d_nod(1,ist_field), c_ref_iso,                            &
-     &        xx, s_radius, a_s)
+     &        xx(1,1), xx(1,2), s_radius, a_s)
         end if
 !$omp end parallel
 !

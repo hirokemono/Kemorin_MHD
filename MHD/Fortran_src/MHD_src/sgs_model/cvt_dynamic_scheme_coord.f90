@@ -74,15 +74,15 @@
 !$omp parallel
       call overwrite_vector_2_cyl_smp(np_smp, numnod,                   &
      &    inod_smp_stack, d_nod(1,iphys%i_sgs_simi),                    &
-     &    xx, s_cylinder, a_s_cylinder)
+     &    xx(1,1), xx(1,2), s_cylinder, a_s_cylinder)
 
       call overwrite_vector_2_cyl_smp(np_smp, numnod,                   &
      &    inod_smp_stack, d_nod(1,iphys%i_sgs_grad),                    &
-     &    xx, s_cylinder, a_s_cylinder)
+     &    xx(1,1), xx(1,2), s_cylinder, a_s_cylinder)
 
       call overwrite_vector_2_cyl_smp(np_smp, numnod,                   &
      &    inod_smp_stack, d_nod(1,iphys%i_sgs_grad_f),                  &
-     &    xx, s_cylinder, a_s_cylinder)
+     &    xx(1,1), xx(1,2), s_cylinder, a_s_cylinder)
 !$omp end parallel
 !
       end subroutine convert_dynamic_vectors_2_cyl
@@ -101,16 +101,16 @@
       if(iflag_debug .gt. 0) write(*,*) 'convert spherical corrdinate'
 !$omp parallel
       call overwrite_vector_2_sph_smp(np_smp, numnod, inod_smp_stack,   &
-     &    d_nod(1,iphys%i_sgs_simi), xx, radius, s_cylinder,            &
-     &    a_radius, a_s_cylinder)
+     &    d_nod(1,iphys%i_sgs_simi), xx(1,1), xx(1,2), xx(1,3),         &
+     &    radius, s_cylinder, a_radius, a_s_cylinder)
 
       call overwrite_vector_2_sph_smp(np_smp, numnod, inod_smp_stack,   &
-     &    d_nod(1,iphys%i_sgs_grad), xx, radius, s_cylinder,            &
-     &    a_radius, a_s_cylinder)
+     &    d_nod(1,iphys%i_sgs_grad), xx(1,1), xx(1,2), xx(1,3),         &
+     &    radius, s_cylinder, a_radius, a_s_cylinder)
 
       call overwrite_vector_2_sph_smp(np_smp, numnod, inod_smp_stack,   &
-     &    d_nod(1,iphys%i_sgs_grad_f), xx, radius, s_cylinder,          &
-     &    a_radius, a_s_cylinder)
+     &    d_nod(1,iphys%i_sgs_grad_f), xx(1,1), xx(1,2), xx(1,3),       &
+     &    radius, s_cylinder, a_radius, a_s_cylinder)
 !$omp end parallel
 !
       end subroutine convert_dynamic_vectors_2_sph
@@ -130,13 +130,16 @@
       if(iflag_debug.gt.0) write(*,*) 'convert cylindrical corrdinate'
 !$omp parallel
       call overwrite_cyl_tensor_smp(np_smp, numnod, inod_smp_stack,     &
-     &    d_nod(1,iphys%i_sgs_simi), xx, s_cylinder, a_s_cylinder)
+     &    d_nod(1,iphys%i_sgs_simi), xx(1,1), xx(1,2),                  &
+     &    s_cylinder, a_s_cylinder)
 
       call overwrite_cyl_tensor_smp(np_smp, numnod, inod_smp_stack,     &
-     &    d_nod(1,iphys%i_sgs_grad), xx, s_cylinder, a_s_cylinder)
+     &    d_nod(1,iphys%i_sgs_grad), xx(1,1), xx(1,2),                  &
+     &    s_cylinder, a_s_cylinder)
 
       call overwrite_cyl_tensor_smp(np_smp, numnod, inod_smp_stack,     &
-     &    d_nod(1,iphys%i_sgs_grad_f), xx, s_cylinder, a_s_cylinder)
+     &    d_nod(1,iphys%i_sgs_grad_f), xx(1,1), xx(1,2),                &
+     &    s_cylinder, a_s_cylinder)
 !$omp end parallel
 !
       end subroutine convert_dynamic_tensors_2_cyl
@@ -155,16 +158,16 @@
       if(iflag_debug .gt. 0) write(*,*) 'convert spherical corrdinate'
 !$omp parallel
       call overwrite_sph_tensor_smp(np_smp, numnod, inod_smp_stack,     &
-     &    d_nod(1,iphys%i_sgs_simi),  xx, radius, s_cylinder,           &
-     &    a_radius, a_s_cylinder)
+     &    d_nod(1,iphys%i_sgs_simi), xx(1,1), xx(1,2), xx(1,3),         &
+     &    radius, s_cylinder, a_radius, a_s_cylinder)
 !
       call overwrite_sph_tensor_smp(np_smp, numnod, inod_smp_stack,     &
-     &    d_nod(1,iphys%i_sgs_grad),  xx, radius, s_cylinder,           &
-     &    a_radius, a_s_cylinder)
+     &    d_nod(1,iphys%i_sgs_grad), xx(1,1), xx(1,2), xx(1,3),         &
+     &    radius, s_cylinder, a_radius, a_s_cylinder)
 !
       call overwrite_sph_tensor_smp(np_smp, numnod, inod_smp_stack,     &
-     &    d_nod(1,iphys%i_sgs_grad_f),  xx, radius, s_cylinder,         &
-     &    a_radius, a_s_cylinder)
+     &    d_nod(1,iphys%i_sgs_grad_f), xx(1,1), xx(1,2), xx(1,3),       &
+     &    radius, s_cylinder, a_radius, a_s_cylinder)
 !$omp end parallel
 !
       end subroutine convert_dynamic_tensors_2_sph

@@ -162,6 +162,8 @@
 !
       subroutine copy_scalar_from_snap_trans(i_trns, irtp_fld)
 !
+      use m_spheric_parameter
+      use m_spheric_param_smp
       use m_addresses_trans_sph_snap
       use m_sph_spectr_data
       use sel_fld_copy_4_sph_trans
@@ -170,8 +172,8 @@
 !
 !
       if( (irtp_fld*i_trns) .le. 0) return
-      call copy_scalar_from_trans                                       &
-     &   (nnod_rtp, fld_snap_rtp(1,i_trns), d_rtp(1,irtp_fld) )
+      call copy_scalar_from_trans(nnod_rtp, inod_rtp_smp_stack,         &
+     &    nnod_rtp, fld_snap_rtp(1,i_trns), d_rtp(1,irtp_fld) )
 !
       end subroutine copy_scalar_from_snap_trans
 !
@@ -187,8 +189,8 @@
 !
 !
       if( (irtp_fld*i_trns) .le. 0) return
-      call copy_vector_from_trans                                       &
-     &   (nnod_rtp, fld_snap_rtp(1,i_trns), d_rtp(1,irtp_fld) )
+      call copy_vector_from_trans(nnod_rtp, inod_rtp_smp_stack,         &
+     &    nnod_rtp, fld_snap_rtp(1,i_trns), d_rtp(1,irtp_fld) )
 !
       end subroutine copy_vector_from_snap_trans
 !
@@ -197,6 +199,8 @@
 !
       subroutine copy_scalar_from_snap_force(i_trns, irtp_fld)
 !
+      use m_spheric_parameter
+      use m_spheric_param_smp
       use m_addresses_trans_sph_snap
       use m_sph_spectr_data
       use sel_fld_copy_4_sph_trans
@@ -205,8 +209,8 @@
 !
 !
       if( (irtp_fld*i_trns) .le. 0) return
-      call copy_scalar_from_trans                                       &
-     &   (nnod_rtp, frc_snap_rtp(1,i_trns), d_rtp(1,irtp_fld) )
+      call copy_scalar_from_trans(nnod_rtp, inod_rtp_smp_stack,         &
+     &    nnod_rtp, frc_snap_rtp(1,i_trns), d_rtp(1,irtp_fld) )
 !
       end subroutine copy_scalar_from_snap_force
 !
@@ -222,8 +226,8 @@
 !
 !
       if( (irtp_fld*i_trns) .le. 0) return
-      call copy_vector_from_trans                                       &
-     &   (nnod_rtp, frc_snap_rtp(1,i_trns), d_rtp(1,irtp_fld) )
+      call copy_vector_from_trans(nnod_rtp, inod_rtp_smp_stack,         &
+     &    nnod_rtp, frc_snap_rtp(1,i_trns), d_rtp(1,irtp_fld) )
 !
       end subroutine copy_vector_from_snap_force
 !
@@ -240,8 +244,8 @@
 !
 !
       if( (irtp_fld*i_trns) .le. 0) return
-      call copy_vector_from_trans                                       &
-     &   (nnod_rtp, fld_tmp_rtp(1,i_trns), d_rtp(1,irtp_fld) )
+      call copy_vector_from_trans(nnod_rtp, inod_rtp_smp_stack,         &
+     &    nnod_rtp, fld_tmp_rtp(1,i_trns), d_rtp(1,irtp_fld) )
 !
       end subroutine copy_vector_from_tmp_trans
 !

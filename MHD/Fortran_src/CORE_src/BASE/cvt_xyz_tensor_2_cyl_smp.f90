@@ -9,21 +9,21 @@
 !!
 !!@verbatim
 !!      subroutine cal_cyl_tensor_smp(np_smp, numnod, inod_smp_stack,   &
-!!     &          tensor, tcyl, xx, s, a_s)
+!!     &          tensor, tcyl, xx, yy, s, a_s)
 !!
 !!      subroutine overwrite_cyl_tensor_smp(np_smp, numnod,             &
-!!     &          inod_smp_stack, tensor, xx, s, a_s)
+!!     &          inod_smp_stack, tensor, xx, yy, s, a_s)
 !!
 !!      subroutine cal_ss_tensor_smp(np_smp, numnod, inod_smp_stack,    &
-!!     &          tensor, t_ss, xx, s, a_s)
+!!     &          tensor, t_ss, xx, yy, s, a_s)
 !!      subroutine cal_sp_tensor_smp(np_smp, numnod, inod_smp_stack,    &
-!!     &          tensor, t_sp, xx, s, a_s)
+!!     &          tensor, t_sp, xx, yy, s, a_s)
 !!      subroutine cal_sz_tensor_smp(np_smp, numnod, inod_smp_stack,    &
-!!     &          tensor, t_sz, xx, s, a_s)
+!!     &          tensor, t_sz, xx, yy, s, a_s)
 !!      subroutine cal_pp_cyl_tensor_smp(np_smp, numnod, inod_smp_stack,&
-!!     &          tensor, t_pp, xx, s, a_s)
+!!     &          tensor, t_pp, xx, yy, s, a_s)
 !!      subroutine cal_pz_tensor_smp(np_smp, numnod, inod_smp_stack,    &
-!!     &          tensor, t_pz, xx, s, a_s)
+!!     &          tensor, t_pz, xx, yy, s, a_s)
 !!      subroutine cal_zz_tensor_smp(np_smp, numnod, inod_smp_stack,    &
 !!     &          tensor, t_zz)
 !!@endverbatim
@@ -32,7 +32,9 @@
 !!@n @param  numnod   Number of data points
 !!@n @param  inod_smp_stack(0:np_smp)
 !!                    End address of each SMP process
-!!@n @param  xx(numnod,3) position in Cartesian coordinate
+!!@n @param  xx(numnod) position in Cartesian coordinate
+!!@n @param  yy(numnod) position in Cartesian coordinate
+!!@n @param  zz(numnod) position in Cartesian coordinate
 !!@n @param  s(numnod)    cylindrical radius
 !!@n @param  a_s(numnod)  1 / s
 !!
@@ -67,12 +69,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_cyl_tensor_smp(np_smp, numnod, inod_smp_stack,     &
-     &          tensor, tcyl, xx, s, a_s)
+     &          tensor, tcyl, xx, yy, s, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in) :: tensor(numnod,6)
-       real(kind=kreal), intent(in) :: xx(numnod,3)
+       real(kind=kreal), intent(in) :: xx(numnod), yy(numnod)
        real(kind=kreal), intent(in) :: s(numnod)
        real(kind=kreal), intent(in) :: a_s(numnod)
 !
@@ -102,27 +104,27 @@
              tcyl(inod,5) =       tensor(inod,5)
              tcyl(inod,6) =       tensor(inod,6)
            else
-             tcyl(inod,1) =   (  txx * xx(inod,1)*xx(inod,1)            &
-     &                     + two*txy * xx(inod,1)*xx(inod,2)            &
-     &                     +     tyy * xx(inod,2)*xx(inod,2) )          &
+             tcyl(inod,1) =   (  txx * xx(inod)*xx(inod)                &
+     &                     + two*txy * xx(inod)*yy(inod)                &
+     &                     +     tyy * yy(inod)*yy(inod) )              &
      &                      * a_s(inod) * a_s(inod)
 !
-             tcyl(inod,2) =   ( -txx * xx(inod,1)*xx(inod,2)            &
-     &                     +     txy * (xx(inod,1)*xx(inod,1)           &
-     &                                - xx(inod,2)*xx(inod,2) )         &
-     &                     +     tyy*xx(inod,1)*xx(inod,2) )            &
+             tcyl(inod,2) =   ( -txx * xx(inod)*yy(inod)                &
+     &                     +     txy * (xx(inod)*xx(inod)               &
+     &                                - yy(inod)*yy(inod) )             &
+     &                     +     tyy*xx(inod)*yy(inod) )                &
      &                      * a_s(inod) * a_s(inod)
 !
-             tcyl(inod,3) =   (  txz * xx(inod,1)                       &
-     &                     +     tyz * xx(inod,2) ) * a_s(inod)
+             tcyl(inod,3) =   (  txz * xx(inod)                         &
+     &                     +     tyz * yy(inod) ) * a_s(inod)
 !
-             tcyl(inod,4) =   (  txx * xx(inod,2)*xx(inod,2)            &
-     &                     - two*txy * xx(inod,1)*xx(inod,2)            &
-     &                     +     tyy * xx(inod,1)*xx(inod,1) )          &
+             tcyl(inod,4) =   (  txx * yy(inod)*yy(inod)                &
+     &                     - two*txy * xx(inod)*yy(inod)                &
+     &                     +     tyy * xx(inod)*xx(inod) )              &
      &                      * a_s(inod) * a_s(inod)
 !
-             tcyl(inod,5) =   ( -txz * xx(inod,2)                       &
-     &                         + tyz * xx(inod,1) ) * a_s(inod)
+             tcyl(inod,5) =   ( -txz * yy(inod)                         &
+     &                         + tyz * xx(inod) ) * a_s(inod)
 !
              tcyl(inod,6) = tzz
            end if
@@ -137,11 +139,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine overwrite_cyl_tensor_smp(np_smp, numnod,               &
-     &          inod_smp_stack, tensor, xx, s, a_s)
+     &          inod_smp_stack, tensor, xx, yy, s, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-       real(kind=kreal), intent(in) :: xx(numnod,3)
+       real(kind=kreal), intent(in) :: xx(numnod), yy(numnod)
        real(kind=kreal), intent(in) :: s(numnod)
        real(kind=kreal), intent(in) :: a_s(numnod)
 !
@@ -171,27 +173,27 @@
              tensor(inod,5) =       tyz
              tensor(inod,6) =       tzz
            else
-             tensor(inod,1) = (  txx * xx(inod,1)*xx(inod,1)            &
-     &                     + two*txy * xx(inod,1)*xx(inod,2)            &
-     &                     +     tyy * xx(inod,2)*xx(inod,2) )          &
+             tensor(inod,1) = (  txx * xx(inod)*xx(inod)                &
+     &                     + two*txy * xx(inod)*yy(inod)                &
+     &                     +     tyy * yy(inod)*yy(inod) )              &
      &                      * a_s(inod) * a_s(inod)
 !
-             tensor(inod,2) = ( -txx * xx(inod,1)*xx(inod,2)            &
-     &                     +     txy * (xx(inod,1)*xx(inod,1)           &
-     &                                - xx(inod,2)*xx(inod,2) )         &
-     &                     +     tyy*xx(inod,1)*xx(inod,2) )            &
+             tensor(inod,2) = ( -txx * xx(inod)*yy(inod)                &
+     &                     +     txy * (xx(inod)*xx(inod)               &
+     &                                - yy(inod)*yy(inod) )             &
+     &                     +     tyy*xx(inod)*yy(inod) )                &
      &                      * a_s(inod) * a_s(inod)
 !
-             tensor(inod,3) = (  txz * xx(inod,1)                       &
-     &                     +     tyz * xx(inod,2) ) * a_s(inod)
+             tensor(inod,3) = (  txz * xx(inod)                         &
+     &                     +     tyz * yy(inod) ) * a_s(inod)
 !
-             tensor(inod,4) = (  txx * xx(inod,2)*xx(inod,2)            &
-     &                     - two*txy * xx(inod,1)*xx(inod,2)            &
-     &                     +     tyy * xx(inod,1)*xx(inod,1) )          &
+             tensor(inod,4) = (  txx * yy(inod)*yy(inod)                &
+     &                     - two*txy * xx(inod)*yy(inod)                &
+     &                     +     tyy * xx(inod)*xx(inod) )              &
      &                      * a_s(inod) * a_s(inod)
 !
-             tensor(inod,5) = ( -txz * xx(inod,2)                       &
-     &                         + tyz * xx(inod,1) ) * a_s(inod)
+             tensor(inod,5) = ( -txz * yy(inod)                         &
+     &                         + tyz * xx(inod) ) * a_s(inod)
 !
              tensor(inod,6) = tzz
            end if
@@ -206,12 +208,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_ss_tensor_smp(np_smp, numnod, inod_smp_stack,      &
-     &          tensor, t_ss, xx, s, a_s)
+     &          tensor, t_ss, xx, yy, s, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in) :: tensor(numnod,6)
-       real(kind=kreal), intent(in) :: xx(numnod,3)
+       real(kind=kreal), intent(in) :: xx(numnod), yy(numnod)
        real(kind=kreal), intent(in) :: s(numnod)
        real(kind=kreal), intent(in) :: a_s(numnod)
 !
@@ -233,9 +235,9 @@
            if ( s(inod).eq.0.0 ) then
              t_ss(inod) = txx
            else
-             t_ss(inod) =     (  txx * xx(inod,1)*xx(inod,1)            &
-     &                     + two*txy * xx(inod,1)*xx(inod,2)            &
-     &                     +     tyy * xx(inod,2)*xx(inod,2) )          &
+             t_ss(inod) =     (  txx * xx(inod)*xx(inod)                &
+     &                     + two*txy * xx(inod)*yy(inod)                &
+     &                     +     tyy * yy(inod)*yy(inod) )              &
      &                      * a_s(inod) * a_s(inod)
            end if
 !
@@ -248,12 +250,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sp_tensor_smp(np_smp, numnod, inod_smp_stack,      &
-     &          tensor, t_sp, xx, s, a_s)
+     &          tensor, t_sp, xx, yy, s, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in) :: tensor(numnod,6)
-       real(kind=kreal), intent(in) :: xx(numnod,3)
+       real(kind=kreal), intent(in) :: xx(numnod), yy(numnod)
        real(kind=kreal), intent(in) :: s(numnod)
        real(kind=kreal), intent(in) :: a_s(numnod)
 !
@@ -275,10 +277,10 @@
            if ( s(inod).eq.0.0 ) then
              t_sp(inod) = txy
            else
-             t_sp(inod) =     ( -txx * xx(inod,1)*xx(inod,2)            &
-     &                     +     txy * (xx(inod,1)*xx(inod,1)           &
-     &                                - xx(inod,2)*xx(inod,2) )         &
-     &                     +     tyy*xx(inod,1)*xx(inod,2) )            &
+             t_sp(inod) =     ( -txx * xx(inod)*yy(inod)                &
+     &                     +     txy * (xx(inod)*xx(inod)               &
+     &                                - yy(inod)*yy(inod) )             &
+     &                     +     tyy*xx(inod)*yy(inod) )                &
      &                      * a_s(inod) * a_s(inod)
            end if
 !
@@ -291,12 +293,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sz_tensor_smp(np_smp, numnod, inod_smp_stack,      &
-     &          tensor, t_sz, xx, s, a_s)
+     &          tensor, t_sz, xx, yy, s, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in) :: tensor(numnod,6)
-       real(kind=kreal), intent(in) :: xx(numnod,3)
+       real(kind=kreal), intent(in) :: xx(numnod), yy(numnod)
        real(kind=kreal), intent(in) :: s(numnod)
        real(kind=kreal), intent(in) :: a_s(numnod)
 !
@@ -317,8 +319,8 @@
            if ( s(inod).eq.0.0 ) then
              t_sz(inod) = txz
            else
-             t_sz(inod) =     (  txz * xx(inod,1)                       &
-     &                     +     tyz * xx(inod,2) ) * a_s(inod)
+             t_sz(inod) =     (  txz * xx(inod)                         &
+     &                     +     tyz * yy(inod) ) * a_s(inod)
            end if
 !
         end do
@@ -330,12 +332,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_pp_cyl_tensor_smp(np_smp, numnod, inod_smp_stack,  &
-     &          tensor, t_pp, xx, s, a_s)
+     &          tensor, t_pp, xx, yy, s, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in) :: tensor(numnod,6)
-       real(kind=kreal), intent(in) :: xx(numnod,3)
+       real(kind=kreal), intent(in) :: xx(numnod), yy(numnod)
        real(kind=kreal), intent(in) :: s(numnod)
        real(kind=kreal), intent(in) :: a_s(numnod)
 !
@@ -357,9 +359,9 @@
            if ( s(inod).eq.0.0 ) then
              t_pp(inod) = tyy
            else
-             t_pp(inod) =     (  txx * xx(inod,2)*xx(inod,2)            &
-     &                     - two*txy * xx(inod,1)*xx(inod,2)            &
-     &                     +     tyy * xx(inod,1)*xx(inod,1) )          &
+             t_pp(inod) =     (  txx * yy(inod)*yy(inod)                &
+     &                     - two*txy * xx(inod)*yy(inod)                &
+     &                     +     tyy * xx(inod)*xx(inod) )              &
      &                      * a_s(inod) * a_s(inod)
            end if
 !
@@ -372,12 +374,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_pz_tensor_smp(np_smp, numnod, inod_smp_stack,      &
-     &          tensor, t_pz, xx, s, a_s)
+     &          tensor, t_pz, xx, yy, s, a_s)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in) :: tensor(numnod,6)
-       real(kind=kreal), intent(in) :: xx(numnod,3)
+       real(kind=kreal), intent(in) :: xx(numnod), yy(numnod)
        real(kind=kreal), intent(in) :: s(numnod)
        real(kind=kreal), intent(in) :: a_s(numnod)
 !
@@ -398,8 +400,8 @@
            if ( s(inod).eq.0.0 ) then
              t_pz(inod) = tyz
            else
-             t_pz(inod) =     ( -txz * xx(inod,2)                       &
-     &                         + tyz * xx(inod,1) ) * a_s(inod)
+             t_pz(inod) =     ( -txz * yy(inod)                         &
+     &                         + tyz * xx(inod) ) * a_s(inod)
            end if
 !
         end do

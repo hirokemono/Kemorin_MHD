@@ -76,7 +76,7 @@
 !
 !$omp parallel
        call cvt_vector_2_sph_smp(ione, numnod, istack,                  &
-     &     vect, v_sph, xx, r, rs, a_r, a_rs)
+     &     vect, v_sph, xx(1,1), xx(1,2), xx(1,3), r, rs, a_r, a_rs)
 !$omp end parallel
 !
       end subroutine cvt_vector_2_spherical
@@ -96,7 +96,7 @@
 !
 !$omp parallel
       call cal_radial_comp_smp(ione, numnod, istack,                    &
-     &          vect, v_r, xx, r, a_r)
+     &          vect, v_r, xx(1,1), xx(1,2), xx(1,3), r, a_r)
 !$omp end parallel
 !
       end subroutine cal_radial_component
@@ -117,7 +117,7 @@
 !
 !$omp parallel
        call cal_theta_comp_smp(ione, numnod, istack,                    &
-     &     vect, v_theta, xx, r, rs, a_r, a_rs)
+     &     vect, v_theta, xx(1,1), xx(1,2), xx(1,3), r, rs, a_r, a_rs)
 !$omp end parallel
 !
       end subroutine cal_theta_component
@@ -137,7 +137,7 @@
 !
 !$omp parallel
       call cal_phi_comp_smp(ione, numnod, istack,                       &
-     &    vect, v_phi, xx, rs, a_rs)
+     &    vect, v_phi, xx(1,1), xx(1,2), rs, a_rs)
 !$omp end parallel
 !
       end subroutine cal_phi_component
@@ -159,7 +159,7 @@
 !
 !$omp parallel
       call cvt_vector_2_cyl_smp(ione, numnod, istack,                   &
-     &    vect, v_cyl, xx, rs, a_rs)
+     &    vect, v_cyl, xx(1,1), xx(1,2), rs, a_rs)
 !$omp end parallel
 !
       end subroutine cvt_vector_2_cylindrical
@@ -180,7 +180,7 @@
 !
 !$omp parallel
       call cal_cylinder_r_comp_smp(ione, numnod, istack,                &
-     &    vect, v_s, xx, rs, a_rs)
+     &    vect, v_s, xx(1,1), xx(1,2), rs, a_rs)
 !$omp end parallel
 !
       end subroutine cal_cylinder_r_component

@@ -97,8 +97,8 @@
 !
 !$omp parallel
       call cvt_vector_2_sph_smp(np_smp, numnod, inod_smp_stack,         &
-     &            d_nod(1,i_field), d_tmp(1,1), xx, radius,             &
-     &            s_cylinder, a_radius, a_s_cylinder)
+     &    d_nod(1,i_field), d_tmp(1,1), xx(1,1), xx(1,2), xx(1,3),      &
+     &    radius, s_cylinder, a_radius, a_s_cylinder)
 !$omp end parallel
 !
       call copy_vector_2_vector_fld(ione, numnod, isix, d_tmp,          &
@@ -177,8 +177,8 @@
 !
 !$omp parallel
       call cal_sph_tensor_smp(np_smp, numnod, inod_smp_stack,           &
-     &            d_nod(1,i_field), d_tmp(1,1), xx, radius,             &
-     &            s_cylinder, a_radius, a_s_cylinder)
+     &    d_nod(1,i_field), d_tmp(1,1), xx(1,1), xx(1,2), xx(1,3),      &
+     &    radius, s_cylinder, a_radius, a_s_cylinder)
 !$omp end parallel
 !
       call copy_tensor_2_tensor_fld(ione, numnod, isix, d_tmp,          &
@@ -224,7 +224,8 @@
 !$omp parallel
       call cal_xyz_tensor_by_sph_smp(np_smp, numnod,                    &
      &          inod_smp_stack, d_tmp(1,1), d_nod(1,i_field),           &
-     &          xx, radius, s_cylinder, a_radius, a_s_cylinder)
+     &          xx(1,1), xx(1,2), xx(1,3), radius, s_cylinder,          &
+     &          a_radius, a_s_cylinder)
 !$omp end parallel
 !
       end subroutine cvt_sph_tsr_to_nod_tsr

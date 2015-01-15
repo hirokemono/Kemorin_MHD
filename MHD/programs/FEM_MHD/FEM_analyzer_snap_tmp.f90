@@ -211,8 +211,9 @@
 !
 !$omp parallel
       call overwrite_sph_tensor_smp(np_smp, numnod,                     &
-     &    inod_smp_stack, d_nod(1,iphys%i_SGS_m_flux), xx,              &
-     &    radius, s_cylinder,  a_radius, a_s_cylinder)
+     &    inod_smp_stack, d_nod(1,iphys%i_SGS_m_flux),                  &
+     &    xx(1,1), xx(1,2), xx(1,3), radius, s_cylinder,                &
+     &    a_radius, a_s_cylinder)
 !$omp end parallel
 !
 !$omp parallel workshare
@@ -226,8 +227,9 @@
 !
 !$omp parallel
       call overwrite_xyz_tensor_by_sph_smp(np_smp, numnod,              &
-     &    inod_smp_stack, d_nod(1,iphys%i_SGS_m_flux), xx,              &
-     &    radius, s_cylinder,  a_radius, a_s_cylinder)
+     &    inod_smp_stack, d_nod(1,iphys%i_SGS_m_flux),                  &
+     &    xx(1,1), xx(1,2), xx(1,3), radius, s_cylinder,                &
+     &    a_radius, a_s_cylinder)
 !$omp end parallel
 !
       if (iphys%i_SGS_div_m_flux .gt. 0) then
@@ -242,8 +244,8 @@
      &      iphys%i_reynolds_wk)
       end if
 !
-      call overwrite_vector_2_sph_smp(np_smp, numnod,                   &
-     &    inod_smp_stack, d_nod(1,iphys%i_velo), xx,                    &
+      call overwrite_vector_2_sph_smp(np_smp, numnod, inod_smp_stack,   &
+     &    d_nod(1,iphys%i_velo), xx(1,1), xx(1,2), xx(1,3),             &
      &    radius, s_cylinder,  a_radius, a_s_cylinder)
 !$omp end parallel
 

@@ -21,6 +21,8 @@
       use m_precision
 !
       use m_FFT_selector
+      use m_spheric_parameter
+      use m_spheric_param_smp
       use swap_phi_4_sph_trans
       use copy_field_4_sph_trans
 !
@@ -42,7 +44,8 @@
       if(iflag_FFT .eq. iflag_FFTW) then
         call swap_phi_scalar_from_trans(nnod, v_rtp, d_sph)
       else
-        call copy_scalar_from_trans(nnod, v_rtp, d_sph)
+        call copy_scalar_from_trans(nnod_rtp, inod_rtp_smp_stack, nnod, &
+     &      v_rtp, d_sph)
       end if
 !
       end subroutine sel_scalar_from_trans
@@ -59,7 +62,8 @@
       if(iflag_FFT .eq. iflag_FFTW) then
         call swap_phi_vector_from_trans(nnod, v_rtp, d_sph)
       else
-        call copy_vector_from_trans(nnod, v_rtp, d_sph)
+        call copy_vector_from_trans(nnod_rtp, inod_rtp_smp_stack, nnod, &
+     &      v_rtp, d_sph)
       end if
 !
       end subroutine sel_vector_from_trans
@@ -76,7 +80,8 @@
       if(iflag_FFT .eq. iflag_FFTW) then
         call swap_phi_tensor_from_trans(nnod, v_rtp, d_sph)
       else
-        call copy_tensor_from_trans(nnod, v_rtp, d_sph)
+        call copy_tensor_from_trans(nnod_rtp, inod_rtp_smp_stack, nnod, &
+     &      v_rtp, d_sph)
       end if
 !
       end subroutine sel_tensor_from_trans
@@ -94,7 +99,8 @@
       if(iflag_FFT .eq. iflag_FFTW) then
         call swap_phi_scalar_to_trans(nnod, d_sph, v_rtp)
       else
-        call copy_scalar_to_trans(nnod, d_sph, v_rtp)
+        call copy_scalar_to_trans(nnod_rtp, inod_rtp_smp_stack, nnod,   &
+     &      d_sph, v_rtp)
       end if
 !
       end subroutine sel_scalar_to_trans
@@ -111,7 +117,8 @@
       if(iflag_FFT .eq. iflag_FFTW) then
         call swap_phi_vector_to_trans(nnod, d_sph, v_rtp)
       else
-        call copy_vector_to_trans(nnod, d_sph, v_rtp)
+        call copy_vector_to_trans(nnod_rtp, inod_rtp_smp_stack, nnod,   &
+     &      d_sph, v_rtp)
       end if
 !
       end subroutine sel_vector_to_trans
@@ -128,7 +135,8 @@
       if(iflag_FFT .eq. iflag_FFTW) then
         call swap_phi_tensor_to_trans(nnod, d_sph, v_rtp)
       else
-        call copy_tensor_to_trans(nnod, d_sph, v_rtp)
+        call copy_tensor_to_trans(nnod_rtp, inod_rtp_smp_stack, nnod,   &
+     &      d_sph, v_rtp)
       end if
 !
       end subroutine sel_tensor_to_trans
