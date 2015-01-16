@@ -3,19 +3,22 @@
 !
 !      Written by H. Matsui on Feb., 2008
 !
-!      subroutine cvt_vec_fld_to_sph_vec(i_rtp, i_field)
-!      subroutine cvt_sph_vec_to_vec_fld(i_rtp, i_field)
-!
-!      subroutine cvt_tsr_fld_to_sph_tsr(i_rtp, i_field)
-!      subroutine cvt_sph_tsr_to_tsr_fld(i_rtp, i_field)
-!
-!      subroutine copy_sph_scalar_2_scl_fld(i_rtp, i_field)
-!      subroutine copy_sph_vector_2_vec_fld(i_rtp, i_field)
-!      subroutine copy_sph_tensor_2_tsr_fld(i_rtp, i_field)
-!
-!      subroutine copy_scl_fld_2_sph_vector(i_rtp, i_field)
-!      subroutine copy_vct_fld_2_sph_vector(i_rtp, i_field)
-!      subroutine copy_tsr_fld_2_sph_tensor(i_rtp, i_field)
+!!      subroutine allocate_wk_nod_data_to_sph
+!!      subroutine deallocate_wk_nod_data_to_sph
+!!
+!!      subroutine cvt_vec_fld_to_sph_vec(i_rtp, i_field)
+!!      subroutine cvt_sph_vec_to_vec_fld(i_rtp, i_field)
+!!
+!!      subroutine cvt_tsr_fld_to_sph_tsr(i_rtp, i_field)
+!!      subroutine cvt_sph_tsr_to_tsr_fld(i_rtp, i_field)
+!!
+!!      subroutine copy_sph_scalar_2_scl_fld(i_rtp, i_field)
+!!      subroutine copy_sph_vector_2_vec_fld(i_rtp, i_field)
+!!      subroutine copy_sph_tensor_2_tsr_fld(i_rtp, i_field)
+!!
+!!      subroutine copy_scl_fld_2_sph_vector(i_rtp, i_field)
+!!      subroutine copy_vct_fld_2_sph_vector(i_rtp, i_field)
+!!      subroutine copy_tsr_fld_2_sph_tensor(i_rtp, i_field)
 !
       module cvt_nod_fld_and_sph_fld
 !
@@ -30,14 +33,39 @@
 !
       use m_spheric_parameter
       use m_sph_spectr_data
-      use m_work_4_sph_trans
+!      use m_work_4_sph_trans
 !
       implicit  none
+!
+!>      field data including pole and center  @f$ f(r,\theta,\phi) @f$ 
+      real(kind = kreal), allocatable :: d_nod_rtp(:,:)
+!
+      private :: d_nod_rtp
 !
 ! -------------------------------------------------------------------
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine allocate_wk_nod_data_to_sph
+!
+      use m_spheric_parameter
+!
+      allocate( d_nod_rtp(nnod_rtp_pole,6) )
+      d_nod_rtp = 0.0d0
+!
+      end subroutine allocate_wk_nod_data_to_sph
+!
+! -------------------------------------------------------------------
+!
+      subroutine deallocate_wk_nod_data_to_sph
+!
+      deallocate( d_nod_rtp )
+!
+      end subroutine deallocate_wk_nod_data_to_sph
+!
+! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
       subroutine cvt_vec_fld_to_sph_vec(i_rtp, i_field)

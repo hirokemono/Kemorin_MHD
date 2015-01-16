@@ -147,7 +147,7 @@
       subroutine FEM_finalize_sph_trans
 !
       use m_t_step_parameter
-      use m_work_4_sph_trans
+      use cvt_nod_fld_and_sph_fld
       use output_parallel_ucd_file
 !
 !

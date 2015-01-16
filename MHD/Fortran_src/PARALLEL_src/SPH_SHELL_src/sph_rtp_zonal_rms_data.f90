@@ -24,7 +24,9 @@
       use m_constants
 !
       implicit  none
-! 
+!
+      private :: cal_sph_zonal_rms_data, cal_sph_zonal_ave_data
+!
 ! -------------------------------------------------------------------
 !
       contains
@@ -36,7 +38,7 @@
       use m_sph_spectr_data
 !
 !
-      call cal_sph_zonal_ave_data(ntot_phys_rtp, ione)
+      call cal_sph_zonal_ave_data(ntot_phys_rtp, ione, d_rtp)
 !
       end subroutine zonal_mean_all_rtp_field
 !
@@ -47,7 +49,7 @@
       use m_sph_spectr_data
 !
 !
-      call cal_sph_zonal_rms_data(ntot_phys_rtp, ione)
+      call cal_sph_zonal_rms_data(ntot_phys_rtp, ione, d_rtp)
 !
       end subroutine zonal_rms_all_rtp_field
 !
@@ -73,7 +75,7 @@
         end if
       end do
 !
-      call cal_sph_zonal_rms_data(ntot_phys_rtp, ione)
+      call cal_sph_zonal_rms_data(ntot_phys_rtp, ione, d_rtp)
 !
       do i = 1, num_phys_rtp
         i_fld = istack_phys_comp_rtp(i-1) + 1
@@ -91,12 +93,13 @@
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      subroutine cal_sph_zonal_rms_data(numdir, irtp_fld)
+      subroutine cal_sph_zonal_rms_data(numdir, irtp_fld, d_rtp)
 !
       use m_spheric_parameter
-      use m_sph_spectr_data
 !
       integer(kind = kint), intent(in) :: numdir, irtp_fld
+      real(kind = kreal), intent(inout) :: d_rtp(nnod_rtp,numdir)
+!
       integer(kind = kint) :: nd, kt, mphi, inod
       real(kind = kreal) :: anphi
 !
@@ -145,12 +148,13 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine cal_sph_zonal_ave_data(numdir, irtp_fld)
+      subroutine cal_sph_zonal_ave_data(numdir, irtp_fld, d_rtp)
 !
       use m_spheric_parameter
-      use m_sph_spectr_data
 !
       integer(kind = kint), intent(in) :: numdir, irtp_fld
+      real(kind = kreal), intent(inout) :: d_rtp(nnod_rtp,numdir)
+!
       integer(kind = kint) :: nd, kt, mphi, inod
       real(kind = kreal) :: anphi
 !

@@ -8,18 +8,13 @@
 !!
 !!
 !!@verbatim
-!!      subroutine alloc_phys_rtp_name_t(sph_phys)
 !!      subroutine alloc_phys_rj_name_t(sph_phys)
-!!
-!!      subroutine alloc_phys_rtp_data_t(nnod_rtp, sph_phys)
 !!      subroutine alloc_phys_rj_data_t(nnod_rj, sph_phys)
 !!      subroutine alloc_reft_rj_data_t(nri, sph_phys)
 !!
-!!      subroutine dealloc_phys_rtp_data_t(sph_phys)
 !!      subroutine dealloc_phys_rj_name_t(sph_phys)
 !!      subroutine dealloc_reft_rj_data_t(sph_phys)
 !!
-!!      subroutine check_rtp_phys_data_t(my_rank, nnod_rtp, sph_phys)
 !!      subroutine check_rj_spectr_name_t(sph_phys)
 !!      subroutine check_rj_spectr_data_t(my_rank, nnod_rj, sph_phys)
 !!@endverbatim
@@ -51,37 +46,7 @@
         integer (kind=kint) :: num_tensor
       end type phys_w_start
 !
-!>      Structure for field data in spherical coordinate
-!!        Number of fields on spherical grid @f$ f(r,\theta,\phi) @f$
-!!          num_phys_rtp = phys_rtp%fld%num_phys
-!!      Total number of components for fields on spherical grid
-!!      @f$ f(r,\theta,\phi) @f$
-!!          ntot_phys_rtp = phys_rtp%fld%ntot_phys
-!!      Number of components for each field @f$ f(r,\theta,\phi) @f$
-!!          num_phys_comp_rtp = phys_rtp%fld%num_component
-!!      End address of d_rtp for each field @f$ f(r,\theta,\phi) @f$
-!!          istack_phys_comp_rtp = phys_rtp%fld%istack_component
-!!      Field name for @f$ f(r,\theta,\phi) @f$
-!!          phys_name_rtp = phys_rtp%fld%phys_name
-!!      Field data @f$ f(r,\theta,\phi) @f$
-!!          d_rtp = phys_rtp%fld%d_fld
-!!      Integer flag for monitoring output
-!!       for field data @f$ f(r,\theta,\phi) @f$
-!!          iflag_monitor_rtp = phys_rtp%fld%iflag_monitor
-!!      Start field address of scalar fields @f$ f(r,\theta,\phi) @f$
-!!          istart_scalar_rtp = phys_rtp%istart_scalar
-!!      Start field address of vector fields @f$ f(r,\theta,\phi) @f$
-!!          istart_vector_rtp = phys_rtp%istart_vector
-!!      Start field address of tensor fields @f$ f(r,\theta,\phi) @f$
-!!          istart_tensor_rtp = phys_rtp%istart_tensor
-!!      Number of fields of scalar fields @f$ f(r,\theta,\phi) @f$
-!!          num_scalar_rtp = phys_rtp%num_scalar
-!!      Number of fields of vector fields @f$ f(r,\theta,\phi) @f$
-!!          num_vector_rtp = phys_rtp%num_vector
-!!      Number of fields of tensor fields @f$ f(r,\theta,\phi) @f$
-!!          num_tensor_rtp = phys_rtp%num_tensor
-!!
-!!       Structure for spectr data
+!>!!       Structure for spectr data
 !!      Number of fields for spectrum data  @f$ f(r,j) @f$
 !!          num_phys_rj = phys_rj%fld%num_phys
 !!      Total number of components for spectrum data
@@ -105,8 +70,6 @@
 !!       @f$ f(r,\theta,\phi) @f$
 !!          ntot_comp_rj_vis = phys_rj%fld%ntot_phys_viz
       type sph_phys_data
-!>        Structure for field data @f$ ff(r,\theta,\phi) @f$
-        type(phys_w_start) :: phys_rtp
 !>        Structure for spectr data @f$ f(r,j) @f$
         type(phys_w_start) :: phys_rj
 !>    reference temerature spectr @f$ f(r,j) @f$
@@ -123,17 +86,6 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine alloc_phys_rtp_name_t(sph_phys)
-!
-      type(sph_phys_data), intent(inout) :: sph_phys
-!
-!
-      call alloc_phys_name_type(sph_phys%phys_rtp%fld)
-!
-      end subroutine alloc_phys_rtp_name_t
-!
-!  --------------------------------------------------------------------
-!
       subroutine alloc_phys_rj_name_t(sph_phys)
 !
       type(sph_phys_data), intent(inout) :: sph_phys
@@ -144,18 +96,6 @@
       end subroutine alloc_phys_rj_name_t
 !
 !  --------------------------------------------------------------------
-!  --------------------------------------------------------------------
-!
-      subroutine alloc_phys_rtp_data_t(nnod_rtp, sph_phys)
-!
-      integer(kind = kint), intent(in) :: nnod_rtp
-      type(sph_phys_data), intent(inout) :: sph_phys
-!
-!
-      call alloc_phys_data_type(nnod_rtp, sph_phys%phys_rtp%fld)
-!
-      end subroutine alloc_phys_rtp_data_t
-!
 !  --------------------------------------------------------------------
 !
       subroutine alloc_phys_rj_data_t(nnod_rj, sph_phys)
@@ -183,18 +123,6 @@
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
-      subroutine dealloc_phys_rtp_data_t(sph_phys)
-!
-      type(sph_phys_data), intent(inout) :: sph_phys
-!
-!
-      call dealloc_phys_data_type(sph_phys%phys_rtp%fld)
-      call dealloc_phys_name_type(sph_phys%phys_rtp%fld)
-!
-      end subroutine dealloc_phys_rtp_data_t
-!
-!  --------------------------------------------------------------------
-!
       subroutine dealloc_phys_rj_name_t(sph_phys)
 !
       type(sph_phys_data), intent(inout) :: sph_phys
@@ -216,28 +144,6 @@
       end subroutine dealloc_reft_rj_data_t
 !
 !  --------------------------------------------------------------------
-!  --------------------------------------------------------------------
-!
-      subroutine check_rtp_phys_data_t(my_rank, nnod_rtp, sph_phys)
-!
-      integer(kind = kint), intent(in) :: my_rank, nnod_rtp
-      type(sph_phys_data), intent(in) :: sph_phys
-!
-      integer(kind = kint) :: i_fld
-!
-!
-      write(*,*) 'sph_phys%phys_rtp%fld'
-      call check_nodal_field_name_type(sph_phys%phys_rtp%fld)
-!
-      write(50+my_rank,*) 'sph_phys%phys_rtp%fld'
-      do i_fld = 1, sph_phys%phys_rtp%fld%num_phys
-        call check_nodal_data_type(my_rank, sph_phys%phys_rtp%fld,      &
-     &      nnod_rtp, sph_phys%phys_rtp%fld%ntot_phys,                  &
-     &      sph_phys%phys_rtp%fld%istack_component(i_fld-1)+1)
-      end do
-!
-      end subroutine check_rtp_phys_data_t
-!
 !  --------------------------------------------------------------------
 !
       subroutine check_rj_spectr_name_t(sph_phys)

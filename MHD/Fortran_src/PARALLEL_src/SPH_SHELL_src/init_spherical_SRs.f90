@@ -8,7 +8,7 @@
 !!@n      for spherical harmonics transform
 !!
 !!@verbatim
-!!      subroutine init_sph_send_recv_N(NB, X_rtp)
+!!      subroutine init_sph_send_recv_N(NB)
 !!      subroutine check_spherical_SRs_N(NB)
 !!@endverbatim
 !!
@@ -41,7 +41,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_sph_send_recv_N(NB, X_rtp)
+      subroutine init_sph_send_recv_N(NB)
 !
       use calypso_mpi
 !
@@ -52,20 +52,21 @@
       use spherical_SRs_N
 !
       integer (kind=kint), intent(in) :: NB
-      real (kind=kreal), intent(inout) :: X_rtp(NB*nnod_rtp)
 !
-      real(kind = kreal), allocatable :: X_rj(:)
+      real(kind = kreal), allocatable :: X_rtp(:), X_rj(:)
 !
       call allocate_work_sph_trans(NB)
       allocate(X_rj(NB*nnod_rj))
+      allocate(X_rtp(NB*nnod_rtp))
       X_rj = 0.0d0
+      X_rtp = 0.0d0
 !
       call check_spherical_SRs_N(NB)
 !
       call buffer_size_sph_send_recv(NB)
       call sel_sph_import_table(NB, X_rtp, vr_rtm_wk, sp_rlm_wk, X_rj)
 !
-      deallocate(X_rj)
+      deallocate(X_rj, X_rtp)
       call deallocate_work_sph_trans
 !
       if(my_rank .eq. 0) then

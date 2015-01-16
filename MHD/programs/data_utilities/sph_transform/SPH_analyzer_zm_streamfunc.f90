@@ -127,6 +127,7 @@
       use sph_transforms
       use pole_sph_transform
       use spherical_SRs_N
+      use sph_transfer_all_field
 !
       integer(kind = kint) :: nscalar_trans
 !
@@ -148,12 +149,14 @@
       if (iflag_debug.gt.0) write(*,*) 'sph_backward_transforms',       &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
       call sph_backward_transforms(ncomp_sph_trans, num_vector_rtp,     &
-     &    nscalar_trans, n_WS, n_WR, WS(1), WR(1), vr_rtp(1,1))
+     &    nscalar_trans, n_WS, n_WR, WS(1), WR(1), dall_rtp(1,1))
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'
-        call adjust_phi_comp_for_streamfunc
-        call set_xyz_vect_from_sph_trans
+        call adjust_phi_comp_for_streamfunc(ncomp_sph_trans,            &
+     &      dall_rtp(1,1))
+        call set_xyz_vect_from_sph_trans(nnod_rtp, ncomp_sph_trans,     &
+     &      dall_rtp(1,1))
       end if
 !
       end subroutine sph_b_trans_streamline
@@ -208,13 +211,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine adjust_phi_comp_for_streamfunc
+      subroutine adjust_phi_comp_for_streamfunc(ncomp_trans, v_rtp)
 !
       use m_phys_labels
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_work_4_sph_trans
 !
+      integer(kind = kint), intent(in) ::  ncomp_trans
+      real(kind = kreal), intent(inout) :: v_rtp(nnod_rtp,ncomp_trans)
 !
       integer(kind = kint) :: inod, j, k, l, m
 !
@@ -227,9 +232,9 @@
               do k = 1, nidx_rtp(1)
                 inod = k + (l-1)*nidx_rtp(1)                            &
      &                   + (m-1)*nidx_rtp(1)*nidx_rtp(2)
-                vr_rtp(inod,3*j-2) =  zero
-                vr_rtp(inod,3*j-1) =  zero
-                vr_rtp(inod,3*j  ) = -vr_rtp(inod,3*j  )                &
+                v_rtp(inod,3*j-2) =  zero
+                v_rtp(inod,3*j-1) =  zero
+                v_rtp(inod,3*j  ) = -v_rtp(inod,3*j  )                  &
      &                      * radius_1d_rtp_r(k)*sin_theta_1d_rtp(l)
               end do
             end do

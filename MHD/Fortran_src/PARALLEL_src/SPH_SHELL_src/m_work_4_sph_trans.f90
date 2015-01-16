@@ -8,32 +8,11 @@
 !!        communication test
 !!
 !!@verbatim
-!!      subroutine resize_work_4_sph_trans
-!!
 !!      subroutine allocate_work_4_sph_trans
 !!      subroutine allocate_l_rtm_block
 !!
 !!      subroutine deallocate_work_4_sph_trans
 !!      subroutine deallocate_l_rtm_block
-!!
-!!      subroutine allocate_work_4_zonal_fft
-!!      subroutine deallocate_work_4_zonal_fft
-!!
-!!      subroutine allocate_wk_nod_data_to_sph
-!!      subroutine deallocate_wk_nod_data_to_sph
-!!
-!!      subroutine check_vr_rtp(my_rank, nb)
-!!
-!!   input /outpt data
-!!
-!!      radial component:      vr_rtp(i_rtp,1)
-!!      elevetional component: vr_rtp(i_rtp,2)
-!!      azimuthal component:   vr_rtp(i_rtp,3)
-!!
-!!  transform for scalar
-!!   input /outpt arrays
-!!
-!!      field: vr_rtp(i_rtp)
 !!@endverbatim
 !!
       module m_work_4_sph_trans
@@ -48,12 +27,6 @@
       integer(kind = kint) :: nvector_sph_trans
 !>      total number of svalars for spherical harmonics transform
       integer(kind = kint) :: nscalar_sph_trans
-!
-!>      field data including pole and center  @f$ f(r,\theta,\phi) @f$ 
-      real(kind = kreal), allocatable :: d_nod_rtp(:,:)
-!
-!>      field data on Gauss-Legendre points @f$ f(r,\theta,\phi) @f$ 
-      real(kind = kreal), allocatable :: vr_rtp(:,:)
 !
 !
 !>      Spectr harmonics order for Legendre transform
@@ -93,26 +66,10 @@
 !>      End address of spherical harmonics order for SMP parallelization
       integer(kind = kint), allocatable :: lstack_even_rlm(:)
 !
-!>      Data size for Legendre transform to check work area
-      integer(kind = kint), private :: iflag_sph_trans = -1
-!
 ! ----------------------------------------------------------------------
 !
       contains
 !
-! ----------------------------------------------------------------------
-!
-      subroutine resize_work_4_sph_trans
-!
-      if (ncomp_sph_trans .gt. iflag_sph_trans) then
-        call deallocate_work_4_sph_trans
-      end if
-!
-      if (iflag_sph_trans .le. 0)  call allocate_work_4_sph_trans
-!
-      end subroutine resize_work_4_sph_trans
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine allocate_work_4_sph_trans
@@ -126,8 +83,6 @@
       allocate(mdx_p_rlm_rtm(nidx_rlm(2)))
       allocate(mdx_n_rlm_rtm(nidx_rlm(2)))
       allocate(asin_theta_1d_rtm(nidx_rtm(2)))
-!
-      allocate(vr_rtp(nnod_rtp,ncomp_sph_trans))
 !
       allocate(cos_theta_1d_rtp(nidx_rtp(2)))
       allocate(sin_theta_1d_rtp(nidx_rtp(2)))
@@ -143,10 +98,6 @@
       cos_theta_1d_rtp = 0.0d0
       sin_theta_1d_rtp = 0.0d0
       cot_theta_1d_rtp = 0.0d0
-!
-      vr_rtp = 0.0d0
-!
-      iflag_sph_trans = ncomp_sph_trans
 !
       end subroutine allocate_work_4_sph_trans
 !
@@ -174,10 +125,7 @@
       deallocate(asin_theta_1d_rtm, cot_theta_1d_rtp)
       deallocate(sin_theta_1d_rtp, cos_theta_1d_rtp)
 !
-      deallocate(vr_rtp)
-!
       maxdegree_rlm =   0
-      iflag_sph_trans = 0
 !
       end subroutine deallocate_work_4_sph_trans
 !
@@ -191,67 +139,6 @@
       jmax_block_rlm = 0
 !
       end subroutine deallocate_l_rtm_block
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine allocate_work_4_zonal_fft
-!
-      use m_spheric_parameter
-!
-      allocate(vr_rtp(nnod_rtp,ncomp_sph_trans))
-      vr_rtp = 0.0d0
-!
-      iflag_sph_trans = ncomp_sph_trans
-!
-      end subroutine allocate_work_4_zonal_fft
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_work_4_zonal_fft
-!
-      deallocate(vr_rtp)
-      iflag_sph_trans = 0
-!
-      end subroutine deallocate_work_4_zonal_fft
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine allocate_wk_nod_data_to_sph
-!
-      use m_spheric_parameter
-!
-      allocate( d_nod_rtp(nnod_rtp_pole,6) )
-      d_nod_rtp = 0.0d0
-!
-      end subroutine allocate_wk_nod_data_to_sph
-!
-! -------------------------------------------------------------------
-!
-      subroutine deallocate_wk_nod_data_to_sph
-!
-      deallocate( d_nod_rtp )
-!
-      end subroutine deallocate_wk_nod_data_to_sph
-!
-! -------------------------------------------------------------------
-! -------------------------------------------------------------------
-!
-      subroutine check_vr_rtp(my_rank, nb)
-!
-      use m_spheric_parameter
-!
-      integer(kind = kint), intent(in) :: my_rank, nb
-      integer(kind = kint) :: inod
-!
-      write(50+my_rank,*) 'vr_rtp', nb
-      do inod = 1, nnod_rtp
-        write(50+my_rank,'(4i16,1p200e20.12)') inod,                    &
-     &        idx_global_rtp(inod,1:3), vr_rtp(inod,1:nb)
-      end do
-!
-      end subroutine check_vr_rtp
 !
 ! ----------------------------------------------------------------------
 !

@@ -36,6 +36,7 @@
       use set_phys_name_4_sph_trans
       use init_sph_trans
       use legendre_transform_select
+      use sph_transfer_all_field
 !
 !  ------    set spectr grids
 !
@@ -58,6 +59,8 @@
       call copy_sph_trans_nums_from_rtp
       call initialize_sph_trans
 !
+      call allocate_d_rtp_4_all_trans
+!
       end subroutine SPH_initialize_sph_trans
 !
 ! ----------------------------------------------------------------------
@@ -70,7 +73,6 @@
       use m_time_data_IO
       use m_field_data_IO
       use m_node_id_spherical_IO
-!      use m_schmidt_poly_on_rtm
 !
       use field_IO_select
       use copy_rj_phys_data_4_IO

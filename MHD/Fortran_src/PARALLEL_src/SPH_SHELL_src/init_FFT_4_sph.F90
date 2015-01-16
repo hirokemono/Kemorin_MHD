@@ -7,7 +7,7 @@
 !>@brief Select Fourier transform routine by elapsed time
 !!
 !!@verbatim
-!!      subroutine init_fourier_transform_4_sph(ncomp_sph_trans)
+!!      subroutine init_fourier_transform_4_sph(ncomp)
 !!
 !!       Current problem
 !!      FFTW crashes when both single and multi transforms are 
@@ -23,7 +23,6 @@
       use m_machine_parameter
       use m_spheric_parameter
       use m_spheric_param_smp
-      use m_work_4_sph_trans
       use sph_FFT_selector
 !
       implicit none
@@ -40,20 +39,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_fourier_transform_4_sph(ncomp_sph_trans)
+      subroutine init_fourier_transform_4_sph(ncomp)
 !
       use m_solver_SR
 !
-      integer(kind = kint), intent(in) :: ncomp_sph_trans
+      integer(kind = kint), intent(in) :: ncomp
 !
 !
       if(iflag_FFT .eq. iflag_UNDEFINED_FFT) then
-        call s_select_fourier_transform(ncomp_sph_trans,                &
-     &      n_WS, n_WR, WS, WR)
+        call s_select_fourier_transform(ncomp, n_WS, n_WR, WS, WR)
         iflag_FFT = iflag_selected
       end if
 !
-      call init_sph_FFT_select(my_rank, ncomp_sph_trans)
+      call init_sph_FFT_select(my_rank, ncomp)
 !
       if(my_rank .gt. 0) return
       write(*,'(a,i4)', advance='no') 'Selected Fourier transform: ',   &
@@ -79,27 +77,32 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
       real (kind=kreal), intent(inout):: WR(n_WR)
 !
+      real(kind = kreal), allocatable :: X_rtp(:)
       real(kind = kreal) :: etime_fft(5)
 !
 !
+      allocate(X_rtp(ncomp*nnod_rtp))
+      X_rtp = 0.0d0
+!
       iflag_FFT = iflag_FFTPACK
-      call test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR,         &
+      call test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR, X_rtp,  &
      &    etime_fft(iflag_FFT))
 !
 !
 #ifdef FFTW3
       iflag_FFT = iflag_FFTW
-      call test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR,         &
+      call test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR, X_rtp,  &
      &    etime_fft(iflag_FFTW))
 !
       iflag_FFT = iflag_FFTW_SINGLE
-      call test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR,         &
+      call test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR, X_rtp,  &
      &    etime_fft(iflag_FFTW_SINGLE))
 #endif
 !
       iflag_FFT = iflag_ISPACK
-      call test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR,         &
+      call test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR, X_rtp,  &
      &    etime_fft(iflag_ISPACK))
+      deallocate(X_rtp)
 !
       iflag_selected = minloc(etime_fft,1)
       etime_shortest = minval(etime_fft)
@@ -124,13 +127,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine test_fourier_trans_vector(ncomp, n_WS, n_WR, WS, WR,   &
-     &          etime_fft)
+     &          X_rtp, etime_fft)
 !
       use calypso_mpi
 !
-      integer(kind = kint), intent(in) :: ncomp, n_WS, n_WR
-      real (kind=kreal), intent(inout):: WS(n_WS)
-      real (kind=kreal), intent(inout):: WR(n_WR)
+      integer(kind = kint), intent(in)  :: ncomp, n_WS, n_WR
+      real(kind = kreal), intent(inout) :: WS(n_WS)
+      real(kind = kreal), intent(inout) :: WR(n_WR)
+      real(kind = kreal), intent(inout) :: X_rtp(nnod_rtp,ncomp)
       real(kind = kreal), intent(inout) :: etime_fft
 !
       real(kind = kreal) :: starttime, endtime
@@ -141,8 +145,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'back_FFT_select_from_recv'
       starttime = MPI_WTIME()
-      call back_FFT_select_from_recv(ncomp, n_WR, WR, vr_rtp)
-      call fwd_FFT_select_to_send(ncomp, n_WS, vr_rtp, WS)
+      call back_FFT_select_from_recv(ncomp, n_WR, WR, X_rtp)
+      call fwd_FFT_select_to_send(ncomp, n_WS, X_rtp, WS)
       endtime = MPI_WTIME() - starttime
       if(iflag_debug .gt. 0) write(*,*) 'fwd_FFT_select_to_send end'
 !

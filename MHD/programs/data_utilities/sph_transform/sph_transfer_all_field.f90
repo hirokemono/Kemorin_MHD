@@ -3,8 +3,10 @@
 !
 !     Written by H. Matsui on June, 2012
 !
-!      subroutine sph_f_trans_all_field
-!      subroutine sph_b_trans_all_field
+!!      subroutine allocate_d_rtp_4_all_trans
+!!      subroutine deallocate_d_rtp_4_all_trans
+!!      subroutine sph_f_trans_all_field
+!!      subroutine sph_b_trans_all_field
 !
       module sph_transfer_all_field
 !
@@ -12,15 +14,41 @@
 !
       implicit none
 !
+      real(kind = kreal), allocatable :: dall_rtp(:,:)
+!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine allocate_d_rtp_4_all_trans()
+!
+      use m_spheric_parameter
+      use m_work_4_sph_trans
+!
+!
+      allocate(dall_rtp(nnod_rtp,ncomp_sph_trans))
+      dall_rtp = 0.0d0
+!
+      end subroutine allocate_d_rtp_4_all_trans
+!
+! -----------------------------------------------------------------------
+!
+      subroutine deallocate_d_rtp_4_all_trans
+!
+!
+      deallocate(dall_rtp)
+!
+      end subroutine deallocate_d_rtp_4_all_trans
+!
+! -----------------------------------------------------------------------
+!
       subroutine sph_f_trans_all_field
 !
       use m_solver_SR
+      use m_spheric_parameter
+      use m_work_4_sph_trans
       use sph_transforms
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
@@ -33,13 +61,16 @@
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_sph_vect_to_sph_trans'
-      call set_sph_vect_to_sph_trans
+      call set_sph_vect_to_sph_trans(nnod_rtp, ncomp_sph_trans,         &
+     &    dall_rtp(1,1))
       if (iflag_debug.gt.0)                                             &
      &    write(*,*) 'set_sph_scalar_to_sph_trans'
-      call set_sph_scalar_to_sph_trans
+      call set_sph_scalar_to_sph_trans(nnod_rtp, ncomp_sph_trans,       &
+     &    dall_rtp(1,1))
       if (iflag_debug.gt.0)                                             &
      &    write(*,*) 'set_sph_tensor_to_sph_trans'
-      call set_sph_tensor_to_sph_trans
+      call set_sph_tensor_to_sph_trans(nnod_rtp, ncomp_sph_trans,       &
+     &    dall_rtp(1,1))
 !
       nscalar_trans = num_scalar_rtp + 6*num_tensor_rtp
       call check_calypso_rtp_2_rtm_buf_N(ncomp_sph_trans)
@@ -48,7 +79,7 @@
       if (iflag_debug.gt.0) write(*,*) 'sph_forward_transforms',        &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
       call sph_forward_transforms(ncomp_sph_trans, num_vector_rtp,      &
-     &    nscalar_trans, vr_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
+     &    nscalar_trans, dall_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
 !
 !
       if (iflag_debug.gt.0)                                             &
@@ -70,6 +101,8 @@
       subroutine sph_b_trans_all_field
 !
       use m_solver_SR
+      use m_spheric_parameter
+      use m_work_4_sph_trans
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
       use sph_transforms
@@ -103,19 +136,22 @@
       if (iflag_debug.gt.0) write(*,*) 'sph_backward_transforms',       &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
       call sph_backward_transforms(ncomp_sph_trans, num_vector_rtp,     &
-     &    nscalar_trans, n_WS, n_WR, WS(1), WR(1), vr_rtp(1,1))
+     &    nscalar_trans, n_WS, n_WR, WS(1), WR(1), dall_rtp(1,1))
 !
 !
       if (iflag_debug.gt.0)                                             &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'
-      call set_xyz_vect_from_sph_trans
+      call set_xyz_vect_from_sph_trans(nnod_rtp, ncomp_sph_trans,       &
+     &    dall_rtp(1,1))
 !
       if (iflag_debug.gt.0) write(*,*) 'set_sph_scalar_from_sph_trans'
-      call set_sph_scalar_from_sph_trans
+      call set_sph_scalar_from_sph_trans(nnod_rtp, ncomp_sph_trans,     &
+     &    dall_rtp(1,1))
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_sph_tensor_from_sph_trans'
-      call set_sph_tensor_from_sph_trans
+      call set_sph_tensor_from_sph_trans(nnod_rtp, ncomp_sph_trans,     &
+     &    dall_rtp(1,1))
 !
       end subroutine sph_b_trans_all_field
 !
