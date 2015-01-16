@@ -40,7 +40,6 @@
       use sph_mhd_rms_IO
 !
       use cal_zonal_mean_sph_spectr
-      use sph_rtp_zonal_rms_data
 !
       integer(kind = kint), intent(in) :: i_step
 !
@@ -76,9 +75,6 @@
       if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_sph_spectr'
       call zonal_mean_all_sph_spectr
 !
-      if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_rtp_field'
-      call zonal_mean_all_rtp_field
-!
 !*  -----------  lead energy data --------------
 !*
       call start_eleps_time(4)
@@ -89,6 +85,45 @@
       call end_eleps_time(4)
 !
       end subroutine SPH_analyze_zm_snap
+!
+! ----------------------------------------------------------------------
+!
+      subroutine SPH_to_FEM_bridge_zm_snap
+!
+      use output_viz_file_control
+      use lead_pole_data_4_sph_mhd
+      use nod_phys_send_recv
+      use copy_snap_4_sph_trans
+      use copy_MHD_4_sph_trans
+      use sph_rtp_zonal_rms_data
+      use m_sph_spectr_data
+!
+!
+      integer (kind =kint) :: iflag
+!
+!
+      call set_lead_physical_values_flag(iflag)
+      if(iflag .ne. 0) return
+!*
+!*  -----------  data transfer to FEM array --------------
+!*
+      call select_mhd_field_from_trans
+      call copy_tmp_vec_fld_from_trans
+      call copy_snap_vec_fld_from_trans
+      call copy_snap_vec_fld_to_trans
+!
+! ----  Take zonal mean
+!
+      if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_rtp_field'
+      call zonal_mean_all_rtp_field
+!
+!*  ----------- transform field at pole and center --------------
+!*
+      call lead_pole_fields_4_sph_mhd
+!
+      call phys_send_recv_all
+!
+      end subroutine SPH_to_FEM_bridge_zm_snap
 !
 ! ----------------------------------------------------------------------
 !

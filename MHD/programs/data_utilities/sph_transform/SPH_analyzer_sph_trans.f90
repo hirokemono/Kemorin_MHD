@@ -49,7 +49,6 @@
       call copy_sph_name_rj_to_rtp
 !
       call allocate_phys_rj_data
-      call allocate_phys_rtp_data
 !
 !  ---- initialize spherical harmonics transform
 !

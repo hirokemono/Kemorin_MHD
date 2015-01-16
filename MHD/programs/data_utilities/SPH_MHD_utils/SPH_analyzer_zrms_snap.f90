@@ -13,6 +13,7 @@
 !!
 !!@verbatim
 !!      subroutine SPH_analyze_zRMS_snap(i_step)
+!!      subroutine SPH_to_FEM_bridge_zRMS_snap
 !!@endverbatim
 !!
 !!@param i_step  time step number
@@ -43,8 +44,6 @@
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
 !
-      use sph_rtp_zonal_rms_data
-!
       integer(kind = kint), intent(in) :: i_step
 !
 !
@@ -74,13 +73,47 @@
       call s_lead_fields_4_sph_mhd
       call end_eleps_time(9)
 !
+      end subroutine SPH_analyze_zRMS_snap
+!
+!-----------------------------------------------------------------------
+!
+      subroutine SPH_to_FEM_bridge_zRMS_snap
+!
+      use output_viz_file_control
+      use lead_pole_data_4_sph_mhd
+      use nod_phys_send_recv
+      use copy_snap_4_sph_trans
+      use copy_MHD_4_sph_trans
+      use sph_rtp_zonal_rms_data
+      use m_sph_spectr_data
+!
+!
+      integer (kind =kint) :: iflag
+!
+!
+      call set_lead_physical_values_flag(iflag)
+      if(iflag .ne. 0) return
+!*
+!*  -----------  data transfer to FEM array --------------
+!*
+      call select_mhd_field_from_trans
+      call copy_tmp_vec_fld_from_trans
+      call copy_snap_vec_fld_from_trans
+      call copy_snap_vec_fld_to_trans
+!
 ! ----  Take zonal mean
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_cyl_rms_all_rtp_field'
 !      call zonal_rms_all_rtp_field
       call zonal_cyl_rms_all_rtp_field
 !
-      end subroutine SPH_analyze_zRMS_snap
+!*  ----------- transform field at pole and center --------------
+!*
+      call lead_pole_fields_4_sph_mhd
+!
+      call phys_send_recv_all
+!
+      end subroutine SPH_to_FEM_bridge_zRMS_snap
 !
 ! ----------------------------------------------------------------------
 !

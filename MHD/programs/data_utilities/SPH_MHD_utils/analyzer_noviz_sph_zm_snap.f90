@@ -111,8 +111,8 @@
         call start_eleps_time(1)
         call start_eleps_time(4)
 !
-        if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
-        call SPH_to_FEM_bridge_MHD
+        if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_zm_snap'
+        call SPH_to_FEM_bridge_zm_snap
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze'
         call FEM_analyze(i_step_MHD, istep_psf, istep_iso,              &
      &      istep_pvr, istep_fline, visval)

@@ -35,7 +35,6 @@
       use parallel_load_data_4_sph
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
-      use set_phys_name_4_sph_trans
       use init_sph_trans
       use legendre_transform_select
       use cal_rms_fields_by_sph
@@ -68,9 +67,6 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_SPH_file'
       call sel_read_alloc_step_SPH_file(my_rank, i_step_init)
-!
-      if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
-      call copy_sph_name_rj_to_rtp
 !
 !  -------------------------------
 !

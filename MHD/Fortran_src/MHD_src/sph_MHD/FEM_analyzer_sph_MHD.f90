@@ -146,8 +146,11 @@
 !
       use output_viz_file_control
       use lead_pole_data_4_sph_mhd
-      use cvt_nod_data_to_sph_data
       use nod_phys_send_recv
+      use copy_snap_4_sph_trans
+      use copy_MHD_4_sph_trans
+      use coordinate_convert_4_sph
+!
 !
       integer (kind =kint) :: iflag
 !
@@ -155,15 +158,18 @@
       call set_lead_physical_values_flag(iflag)
       if(iflag .ne. 0) return
 !*
+!*  -----------  data transfer to FEM array --------------
+!*
+      call select_mhd_field_from_trans
+      call copy_tmp_vec_fld_from_trans
+      call copy_snap_vec_fld_from_trans
+      call copy_snap_vec_fld_to_trans
+!
+      call overwrite_nodal_sph_2_xyz
+!
 !*  ----------- transform field at pole and center --------------
 !*
       call lead_pole_fields_4_sph_mhd
-!*
-!*  -----------  data transfer to FEM array --------------
-!*
-      call copy_nod_scalar_from_sph_data
-      call cvt_xyz_from_sph_vec_sph_data
-      call cvt_sph_to_xyz_tensor_data
 !
       call phys_send_recv_all
 !

@@ -7,7 +7,7 @@
 !>@brief  Copy spherical harmonics data to FEM data directly
 !!
 !!@verbatim
-!!      subroutine copy_scalar_from_trans_w_pole                       &
+!!      subroutine copy_scalar_from_trans_w_pole                        &
 !!     &         (nnod_rtp, inod_rtp_smp_stack, numnod, internal_node,  &
 !!     &          xx, ncomp_trans, i_trns, d_rtp,                       &
 !!     &          i_field, ntot_phys, d_nod)

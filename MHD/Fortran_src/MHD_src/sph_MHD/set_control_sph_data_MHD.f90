@@ -49,7 +49,6 @@
 !
       use skip_comment_f
       use set_control_sph_data
-      use set_phys_name_4_sph_trans
       use legendre_transform_select
       use add_nodal_fields_4_MHD
       use add_sph_MHD_fields_2_ctl
@@ -83,9 +82,6 @@
 !
         if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data'
         call s_set_control_sph_data(ierr)
-!
-        if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
-        call copy_sph_name_rj_to_rtp
       end if
 !
 !

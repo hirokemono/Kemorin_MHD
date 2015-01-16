@@ -20,8 +20,11 @@ MOD_SPH_TRANS = \
 m_ctl_data_4_sph_trans.o \
 m_ctl_params_sph_trans.o \
 \
+set_phys_name_4_sph_trans.o \
+copy_all_spec_4_sph_trans.o \
 copy_all_field_4_sph_trans.o \
 sph_transfer_all_field.o \
+\
 analyzer_sph_transform.o \
 FEM_analyzer_sph_trans.o \
 SPH_analyzer_sph_trans.o \
@@ -31,8 +34,11 @@ MOD_SPH_B_TRANS = \
 m_ctl_data_4_sph_trans.o \
 m_ctl_params_sph_trans.o \
 \
+set_phys_name_4_sph_trans.o \
+copy_all_spec_4_sph_trans.o \
 copy_all_field_4_sph_trans.o \
 sph_transfer_all_field.o \
+\
 analyzer_sph_back_trans.o \
 SPH_analyzer_back_trans.o \
 FEM_analyzer_back_trans.o \
@@ -44,8 +50,11 @@ MOD_GAUSS_B_TRANS = \
 m_ctl_data_4_sph_trans.o \
 m_ctl_params_sph_trans.o \
 \
+set_phys_name_4_sph_trans.o \
+copy_all_spec_4_sph_trans.o \
 copy_all_field_4_sph_trans.o \
 sph_transfer_all_field.o \
+\
 analyzer_gauss_back_trans.o \
 FEM_analyzer_back_trans.o \
 SPH_analyzer_gauss_b_trans.o \
@@ -57,8 +66,11 @@ MOD_ZM_F_TRANS = \
 m_ctl_data_4_sph_trans.o \
 m_ctl_params_sph_trans.o \
 \
+set_phys_name_4_sph_trans.o \
+copy_all_spec_4_sph_trans.o \
 copy_all_field_4_sph_trans.o \
 sph_transfer_all_field.o \
+\
 analyzer_zm_transform.o \
 SPH_analyzer_sph_trans.o \
 FEM_analyzer_sph_trans.o \
@@ -68,8 +80,10 @@ MOD_ZMEAN_STREAM = \
 m_ctl_data_4_sph_trans.o \
 m_ctl_params_sph_trans.o \
 \
-sph_transfer_all_field.o \
+set_phys_name_4_sph_trans.o \
+copy_all_spec_4_sph_trans.o \
 copy_all_field_4_sph_trans.o \
+sph_transfer_all_field.o \
 \
 main_zm_streamfunc.o \
 analyzer_zm_streamfunc.o \
@@ -82,6 +96,8 @@ MOD_PICK_ZM_FLD_SPH = \
 m_ctl_data_4_sph_trans.o \
 m_ctl_params_sph_trans.o \
 \
+set_phys_name_4_sph_trans.o \
+copy_all_spec_4_sph_trans.o \
 copy_all_field_4_sph_trans.o \
 sph_transfer_all_field.o \
 \
@@ -100,6 +116,8 @@ MOD_ZRMS_SPH_SPEC = \
 m_ctl_data_4_sph_trans.o \
 m_ctl_params_sph_trans.o \
 \
+set_phys_name_4_sph_trans.o \
+copy_all_spec_4_sph_trans.o \
 copy_all_field_4_sph_trans.o \
 sph_transfer_all_field.o \
 \
@@ -117,8 +135,10 @@ MOD_ZMEAN_KENE = \
 m_ctl_data_4_sph_trans.o \
 m_ctl_params_sph_trans.o \
 \
-sph_transfer_all_field.o \
+set_phys_name_4_sph_trans.o \
+copy_all_spec_4_sph_trans.o \
 copy_all_field_4_sph_trans.o \
+sph_transfer_all_field.o \
 \
 main_zm_kinetic_energy.o \
 analyzer_zm_kinetic_energy.o \

@@ -70,8 +70,9 @@
         call start_eleps_time(1)
         call start_eleps_time(4)
 !
-        if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
-        call SPH_to_FEM_bridge_MHD
+        if (iflag_debug.eq.1)                                           &
+     &     write(*,*) 'SPH_to_FEM_bridge_special_snap'
+        call SPH_to_FEM_bridge_special_snap
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze'
         call FEM_analyze(i_step_MHD, istep_psf, istep_iso,              &
      &      istep_pvr, istep_fline, visval)
@@ -225,7 +226,6 @@
       use lead_fields_4_sph_mhd
 !
       use cal_zonal_mean_sph_spectr
-      use sph_rtp_zonal_rms_data
       use sph_transforms_4_MHD
 !
 !
@@ -240,10 +240,46 @@
       if (my_rank.eq.0) write(*,*) 'zonal_mean_all_sph_spectr'
       call zonal_mean_all_sph_spectr
 !
-      if (my_rank.eq.0) write(*,*) 'zonal_mean_all_rtp_field'
+      end subroutine lead_special_fields_4_sph_mhd
+!
+! ----------------------------------------------------------------------
+!
+      subroutine SPH_to_FEM_bridge_special_snap
+!
+      use output_viz_file_control
+      use lead_pole_data_4_sph_mhd
+      use nod_phys_send_recv
+      use copy_snap_4_sph_trans
+      use copy_MHD_4_sph_trans
+      use sph_rtp_zonal_rms_data
+      use m_sph_spectr_data
+!
+!
+      integer (kind =kint) :: iflag
+!
+!
+      call set_lead_physical_values_flag(iflag)
+      if(iflag .ne. 0) return
+!*
+!*  -----------  data transfer to FEM array --------------
+!*
+      call select_mhd_field_from_trans
+      call copy_tmp_vec_fld_from_trans
+      call copy_snap_vec_fld_from_trans
+      call copy_snap_vec_fld_to_trans
+!
+! ----  Take zonal mean
+!
+      if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_rtp_field'
       call zonal_mean_all_rtp_field
 !
-      end subroutine lead_special_fields_4_sph_mhd
+!*  ----------- transform field at pole and center --------------
+!*
+      call lead_pole_fields_4_sph_mhd
+!
+      call phys_send_recv_all
+!
+      end subroutine SPH_to_FEM_bridge_special_snap
 !
 ! ----------------------------------------------------------------------
 !

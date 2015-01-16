@@ -152,7 +152,7 @@
       type(node_data), intent(in) :: node
       type(phys_data), intent(inout) :: nod_fld
 !
-      integer(kind = kint), intent(in) :: i_field, i_trns
+      integer(kind = kint), intent(in) :: i_field
       real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,3)
 !
 !
@@ -190,6 +190,8 @@
       subroutine copy_scalar_t_to_sph_trans                             &
      &         (i_field, node, nod_fld, d_rtp)
 !
+      use m_spheric_parameter
+      use m_spheric_param_smp
       use copy_xyz_field_4_sph_trans
 !
       type(node_data), intent(in) :: node
@@ -210,6 +212,8 @@
       subroutine copy_xyz_vec_t_to_sph_trans                            &
      &         (i_field, node, nod_fld, d_rtp)
 !
+      use m_spheric_parameter
+      use m_spheric_param_smp
       use copy_xyz_field_4_sph_trans
 !
       type(node_data), intent(in) :: node

@@ -46,10 +46,10 @@
         end if
       end if
 !
-      if(iflag .eq. 0) then
-        call gradients_of_vectors_sph
-        call enegy_fluxes_4_sph_mhd
-      end if
+      if(iflag .gt. 0) return
+!
+      call gradients_of_vectors_sph
+      call enegy_fluxes_4_sph_mhd
 !
       end subroutine s_lead_fields_4_sph_mhd
 !
@@ -93,8 +93,6 @@
       use sph_transforms_4_MHD
       use cal_energy_flux_rtp
       use cal_energy_flux_rj
-      use copy_snap_4_sph_trans
-      use copy_MHD_4_sph_trans
 !
 !
 !      Evaluate fields for output in spectrum space
@@ -111,11 +109,6 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'
       call sph_forward_trans_snapshot_MHD
-!
-      call select_mhd_field_from_trans
-      call copy_snap_vec_fld_from_trans
-      call copy_tmp_vec_fld_from_trans
-      call copy_snap_vec_fld_to_trans
 !
       end subroutine enegy_fluxes_4_sph_mhd
 !

@@ -31,29 +31,29 @@
 !
       subroutine select_mhd_field_from_trans
 !
-      use m_sph_phys_address
+      use m_node_phys_address
       use m_addresses_trans_sph_MHD
 !
 !
 !$omp parallel
 !   advection flag
       call sel_force_from_MHD_trans                                     &
-     &   (f_trns%i_m_advect, irtp%i_m_advect)
+     &   (f_trns%i_m_advect, iphys%i_m_advect)
 !   Coriolis flag
       call sel_force_from_MHD_trans                                     &
-     &   (f_trns%i_coriolis, irtp%i_coriolis)
+     &   (f_trns%i_coriolis, iphys%i_coriolis)
 !   Lorentz flag
       call sel_force_from_MHD_trans                                     &
-     &   (f_trns%i_lorentz, irtp%i_lorentz)
+     &   (f_trns%i_lorentz, iphys%i_lorentz)
 !
 !   induction flag
       call sel_force_from_MHD_trans                                     &
-     &   (f_trns%i_vp_induct, irtp%i_vp_induct)
+     &   (f_trns%i_vp_induct, iphys%i_vp_induct)
 !   divergence of heat flux flag
-      call sel_force_from_MHD_trans(f_trns%i_h_flux, irtp%i_h_flux)
+      call sel_force_from_MHD_trans(f_trns%i_h_flux, iphys%i_h_flux)
 !
 !   divergence of composition flux flag
-      call sel_force_from_MHD_trans(f_trns%i_c_flux, irtp%i_c_flux)
+      call sel_force_from_MHD_trans(f_trns%i_c_flux, iphys%i_c_flux)
 !$omp end parallel
 !
       end subroutine select_mhd_field_from_trans
@@ -61,18 +61,20 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sel_force_from_MHD_trans(i_trns, irtp_fld)
+      subroutine sel_force_from_MHD_trans(i_trns, i_field)
 !
       use m_addresses_trans_sph_MHD
-      use m_sph_spectr_data
+      use m_spheric_param_smp
+      use m_geometry_parameter
+      use m_node_phys_data
       use sel_fld_copy_4_sph_trans
 !
-      integer(kind = kint), intent(in) :: irtp_fld, i_trns
+      integer(kind = kint), intent(in) :: i_field, i_trns
 !
 !
-      if( (irtp_fld*i_trns) .le. 0) return
+      if( (i_field*i_trns) .le. 0) return
       call sel_vector_from_trans                                        &
-     &   (nnod_rtp, frc_rtp(1,i_trns), d_rtp(1,irtp_fld) )
+     &   (numnod, frc_rtp(1,i_trns), d_nod(1,i_field) )
 !
       end subroutine sel_force_from_MHD_trans
 !

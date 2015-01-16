@@ -161,25 +161,22 @@
       write(*,*) 'ncomp_xyz_2_rj  ', ncomp_xyz_2_rj
 !
       write(*,*) 'nvector_rj_2_xyz  ', nvector_rj_2_xyz
-      if(b_hbd_trns%i_magne .gt. 0) write(*,*) 'b_hbd_trns%i_magne ',   &
-     &        b_hbd_trns%i_magne, irtp%i_magne,                         &
+      if(b_hbd_trns%i_magne .gt. 0) write(*,*)                          &
+     &        'b_hbd_trns%i_magne ', b_hbd_trns%i_magne,                &
      &        ipol%i_magne, itor%i_magne, idpdr%i_magne
       if(b_hbd_trns%i_current .gt. 0) write(*,*)                        &
      &        'b_hbd_trns%i_current ', b_hbd_trns%i_current,            &
-     &        irtp%i_current, ipol%i_current,                           &
-     &        itor%i_current, idpdr%i_current
+     &        ipol%i_current, itor%i_current, idpdr%i_current
       if(b_hbd_trns%i_b_diffuse .gt. 0) write(*,*)                      &
      &        'b_hbd_trns%i_b_diffuse ', b_hbd_trns%i_b_diffuse,        &
-     &        irtp%i_b_diffuse, ipol%i_b_diffuse,                       &
-     &        itor%i_b_diffuse, idpdr%i_b_diffuse
+     &        ipol%i_b_diffuse, itor%i_b_diffuse, idpdr%i_b_diffuse
       if(b_hbd_trns%i_induction .gt. 0) write(*,*)                      &
      &        'b_hbd_trns%i_induction ', b_hbd_trns%i_induction,        &
-     &        irtp%i_induction, ipol%i_induction,                       &
-     &        itor%i_induction, idpdr%i_induction
+     &        ipol%i_induction, itor%i_induction, idpdr%i_induction
       if(b_hbd_trns%i_SGS_induction .gt. 0) write(*,*)                  &
      &       'b_hbd_trns%i_SGS_induction ', b_hbd_trns%i_SGS_induction, &
-     &       irtp%i_SGS_induction, ipol%i_SGS_induction,                &
-     &       itor%i_SGS_induction, idpdr%i_SGS_induction
+     &       ipol%i_SGS_induction, itor%i_SGS_induction,                &
+     &       idpdr%i_SGS_induction
       write(*,*)
 !
       write(*,*) 'nscalar_rj_2_xyz  ', nscalar_rj_2_xyz
@@ -188,12 +185,11 @@
       write(*,*) 'nvector_xyz_2_rj  ', nvector_xyz_2_rj
       if(f_hbd_trns%i_vp_induct .gt. 0) write(*,*)                      &
      &       'f_hbd_trns%i_vp_induct ', f_hbd_trns%i_vp_induct,         &
-     &        irtp%i_vp_induct, ipol%i_vp_induct,                       &
-     &        itor%i_vp_induct, idpdr%i_vp_induct
+     &        ipol%i_vp_induct, itor%i_vp_induct, idpdr%i_vp_induct
       if(f_hbd_trns%i_SGS_vp_induct .gt. 0) write(*,*)                  &
      &       'f_hbd_trns%i_SGS_vp_induct', f_hbd_trns%i_SGS_vp_induct,  &
-     &        irtp%i_SGS_vp_induct, ipol%i_SGS_vp_induct,               &
-     &        itor%i_SGS_vp_induct, idpdr%i_SGS_vp_induct
+     &        ipol%i_SGS_vp_induct, itor%i_SGS_vp_induct,               &
+     &        idpdr%i_SGS_vp_induct
 !
       write(*,*) 'nscalar_xyz_2_rj  ', nscalar_xyz_2_rj
       write(*,*)

@@ -201,55 +201,55 @@
       write(*,*) 'ncomp_rtp_2_rj  ', ncomp_rtp_2_rj
 !
       write(*,*) 'nvector_rj_2_rtp  ', nvector_rj_2_rtp
-      if(b_trns%i_velo .gt. 0) write(*,*) 'b_trns%i_velo  ',            &
-     &        b_trns%i_velo, irtp%i_velo,                               &
+      if(b_trns%i_velo .gt. 0) write(*,*)                               &
+     &        'b_trns%i_velo  ', b_trns%i_velo,                         &
      &        ipol%i_velo, itor%i_velo, idpdr%i_velo
-      if(b_trns%i_vort .gt. 0) write(*,*) 'b_trns%i_vort  ',            &
-     &         b_trns%i_vort, irtp%i_vort,                              &
+      if(b_trns%i_vort .gt. 0) write(*,*)                               &
+     &        'b_trns%i_vort  ', b_trns%i_vort,                         &
      &        ipol%i_vort, itor%i_vort, idpdr%i_vort
-      if(b_trns%i_magne .gt. 0) write(*,*) 'b_trns%i_magne ',           &
-     &        b_trns%i_magne, irtp%i_magne,                             &
+      if(b_trns%i_magne .gt. 0) write(*,*)                              &
+     &        'b_trns%i_magne ', b_trns%i_magne,                        &
      &        ipol%i_magne, itor%i_magne, idpdr%i_magne
-      if(b_trns%i_current .gt. 0) write(*,*) 'b_trns%i_current ',       &
-     &        b_trns%i_current, irtp%i_current, ipol%i_current,         &
+      if(b_trns%i_current .gt. 0) write(*,*)                            &
+     &        'b_trns%i_current ', b_trns%i_current, ipol%i_current,    &
      &        itor%i_current, idpdr%i_current
       write(*,*)
 !
       write(*,*) 'nscalar_rj_2_rtp  ', nscalar_rj_2_rtp
       if(b_trns%i_temp .gt. 0) write(*,*) 'b_trns%i_temp   ',           &
-     &         b_trns%i_temp, irtp%i_temp, ipol%i_temp
+     &         b_trns%i_temp, ipol%i_temp
       if(b_trns%i_light .gt. 0) write(*,*) 'b_trns%i_light  ',          &
-     &         b_trns%i_light, irtp%i_light, ipol%i_light
+     &         b_trns%i_light, ipol%i_light
       write(*,*)
 !
       write(*,*) 'nvector_rtp_2_rj  ', nvector_rtp_2_rj
       if(f_trns%i_m_advect .gt. 0) write(*,*) 'f_trns%i_m_advect ',     &
-     &        f_trns%i_m_advect, irtp%i_m_advect, ipol%i_m_advect,      &
+     &        f_trns%i_m_advect, ipol%i_m_advect,                       &
      &        itor%i_m_advect, idpdr%i_m_advect
       if(f_trns%i_coriolis .gt. 0) write(*,*) 'f_trns%i_coriolis  ',    &
-     &        f_trns%i_coriolis, irtp%i_coriolis, ipol%i_coriolis,      &
+     &        f_trns%i_coriolis, ipol%i_coriolis,                       &
      &        itor%i_coriolis, idpdr%i_coriolis
       if(f_trns%i_rot_Coriolis .gt. 0) write(*,*)                       &
      &       'f_trns%i_rot_Coriolis  ', f_trns%i_rot_Coriolis,          &
-     &        irtp%i_rot_Coriolis, ipol%i_rot_Coriolis,                 &
-     &        itor%i_rot_Coriolis, idpdr%i_rot_Coriolis
+     &        ipol%i_rot_Coriolis, itor%i_rot_Coriolis,                 &
+     &        idpdr%i_rot_Coriolis
       if(f_trns%i_lorentz .gt. 0) write(*,*) 'f_trns%i_lorentz  ',      &
-     &        f_trns%i_lorentz, irtp%i_lorentz, ipol%i_lorentz,         &
+     &        f_trns%i_lorentz, ipol%i_lorentz,                         &
      &        itor%i_lorentz, idpdr%i_lorentz
       if(f_trns%i_vp_induct .gt. 0) write(*,*) 'f_trns%i_vp_induct ',   &
-     &        f_trns%i_vp_induct, irtp%i_vp_induct, ipol%i_vp_induct,   &
+     &        f_trns%i_vp_induct, ipol%i_vp_induct,                     &
      &        itor%i_vp_induct, idpdr%i_vp_induct
       if(f_trns%i_h_flux .gt. 0) write(*,*) 'f_trns%i_h_flux',          &
-     &        f_trns%i_h_flux, irtp%i_h_flux, ipol%i_h_flux,            &
+     &        f_trns%i_h_flux, ipol%i_h_flux,                           &
      &        itor%i_h_flux, idpdr%i_h_flux
       if(f_trns%i_c_flux .gt. 0) write(*,*) 'f_trns%i_c_flux',          &
-     &        f_trns%i_c_flux, irtp%i_c_flux,                           &
-     &        ipol%i_c_flux, itor%i_c_flux, idpdr%i_c_flux
+     &        f_trns%i_c_flux, ipol%i_c_flux,                           &
+     &        itor%i_c_flux, idpdr%i_c_flux
 !
       write(*,*) 'nscalar_rtp_2_rj  ', nscalar_rtp_2_rj
       if(f_trns%i_div_Coriolis .gt. 0) write(*,*)                       &
      &       'f_trns%i_div_Coriolis  ', f_trns%i_div_Coriolis,          &
-     &        irtp%i_div_Coriolis, ipol%i_div_Coriolis
+     &        ipol%i_div_Coriolis
       write(*,*)
 !
       end subroutine check_add_trans_sph_MHD

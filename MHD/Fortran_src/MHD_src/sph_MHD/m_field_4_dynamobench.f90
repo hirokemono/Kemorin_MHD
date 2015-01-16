@@ -94,7 +94,7 @@
       write(id_dynamobench,'(a)', advance='NO')                         &
      &     'KE_pol    KE_tor    KE_total    '
 !
-      if(irtp%i_magne .gt. 0) then
+      if(ipol%i_magne .gt. 0) then
         write(id_dynamobench,'(a)', advance='NO')                       &
      &     'ME_pol    ME_tor    ME_total    '
       end if
@@ -119,7 +119,7 @@
       write(id_dynamobench,'(a)', advance='NO')                         &
      &     'omega_vp44    omega_vt54    '
 !
-      if(irtp%i_magne .gt. 0) then
+      if(ipol%i_magne .gt. 0) then
         write(id_dynamobench,'(a)', advance='NO') 'B_theta    '
       end if
 !
@@ -146,7 +146,7 @@
      &     i_step, time
       write(id_dynamobench,'(1p3E25.15e3)', advance='NO') KE_bench(1:3)
 !
-      if(irtp%i_magne .gt. 0) then
+      if(ipol%i_magne .gt. 0) then
         write(id_dynamobench,'(1p3E25.15e3)', advance='NO')             &
      &     ME_bench(1:3)
       end if
@@ -172,7 +172,7 @@
       write(id_dynamobench,'(1p2E25.15e3)', advance='NO')               &
      &      omega_vm4(1:2)
 !
-      if(irtp%i_magne .gt. 0) then
+      if(ipol%i_magne .gt. 0) then
         write(id_dynamobench,'(1p2E25.15e3)', advance='NO')             &
      &      d_zero(0,ibench_magne+1)
       end if

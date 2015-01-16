@@ -4,7 +4,6 @@
 !      subroutine FEM_analyze_sph_trans(i_step, visval)
 !
 !      subroutine SPH_to_FEM_bridge_sph_trans
-!      subroutine FEM_to_SPH_bridge_sph_trans(visval)
 !
       module FEM_analyzer_sph_trans
 !
@@ -29,6 +28,7 @@
       use m_jacobians
       use m_t_step_parameter
       use m_ucd_input_data
+      use m_node_phys_data
 !
       use nodal_vector_send_recv
       use load_mesh_data
@@ -42,7 +42,6 @@
       use m_ucd_input_data
       use output_parallel_ucd_file
 !
-      use cvt_nod_data_to_sph_data
       use copy_all_field_4_sph_trans
 !
 !   --------------------------------
@@ -124,37 +123,15 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_to_SPH_bridge_sph_trans(visval)
-!
-      use cvt_nod_data_to_sph_data
-!      use nod_phys_send_recv
-!
-      integer (kind =kint), intent(in) :: visval
-!
-!*  -----------  data transfer to FEM array --------------
-!*
-      if(visval .eq. 0) then
-!        call phys_send_recv_all
-        call copy_nod_scalar_to_sph_data
-        call cvt_xyz_to_sph_vec_sph_data
-        call cvt_xyz_to_sph_tensor_data
-      end if
-!
-      end subroutine FEM_to_SPH_bridge_sph_trans
-!
-!-----------------------------------------------------------------------
-!
       subroutine FEM_finalize_sph_trans
 !
       use m_t_step_parameter
-      use cvt_nod_fld_and_sph_fld
       use output_parallel_ucd_file
 !
 !
       if(i_step_output_ucd .gt. 0) then
         call finalize_ucd_file_output
       end if
-      call deallocate_wk_nod_data_to_sph
 !
       end subroutine FEM_finalize_sph_trans
 !

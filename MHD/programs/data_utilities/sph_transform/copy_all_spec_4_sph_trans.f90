@@ -17,7 +17,9 @@
       use m_precision
 !
       use m_work_4_sph_trans
+      use m_node_phys_data
       use m_sph_spectr_data
+      use set_phys_name_4_sph_trans
 !
       implicit  none
 !

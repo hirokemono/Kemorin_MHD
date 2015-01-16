@@ -49,7 +49,7 @@
 !
 !$omp parallel
 !      if(fsnap_trns%i_coriolis .gt. 0) then
-!        call cal_wz_coriolis_rtp(fld_rtp(1,b_trns%i_velo),             &
+!        call cal_wz_coriolis_rtp(nnod_rtp, fld_rtp(1,b_trns%i_velo),   &
 !            frc_snap_rtp(1,fsnap_trns%i_Coriolis))
 !      end if
 !
@@ -123,33 +123,33 @@
      &      frc_snap_rtp(1,fsnap_trns%i_f_buo_gen) )
       end if
 !
-      if(irtp%i_velo_scale .gt. 0) then
+      if(fsnap_trns%i_velo_scale .gt. 0) then
         call cal_len_scale_by_rot_smp                                   &
      &      (np_smp, nnod_rtp, inod_rtp_smp_stack,                      &
      &      fld_snap_rtp(1,bsnap_trns%i_velo),                          &
      &      fld_snap_rtp(1,bsnap_trns%i_vort),                          &
-     &      frc_snap_rtp(1,irtp%i_velo_scale))
+     &      frc_snap_rtp(1,fsnap_trns%i_velo_scale))
       end if
-      if(irtp%i_magne_scale .gt. 0) then
+      if(fsnap_trns%i_magne_scale .gt. 0) then
         call cal_len_scale_by_rot_smp                                   &
      &     (np_smp, nnod_rtp, inod_rtp_smp_stack,                       &
      &      fld_snap_rtp(1,bsnap_trns%i_magne),                         &
      &      fld_snap_rtp(1,bsnap_trns%i_current),                       &
-     &      frc_snap_rtp(1,irtp%i_magne_scale))
+     &      frc_snap_rtp(1,fsnap_trns%i_magne_scale))
       end if
-      if(irtp%i_temp_scale .gt. 0) then
+      if(fsnap_trns%i_temp_scale .gt. 0) then
         call cal_len_scale_by_diffuse_smp                               &
      &     (np_smp, nnod_rtp, inod_rtp_smp_stack,                       &
      &      fld_snap_rtp(1,bsnap_trns%i_temp),                          &
      &      fld_snap_rtp(1,bsnap_trns%i_t_diffuse),                     &
-     &      frc_snap_rtp(1,irtp%i_temp_scale))
+     &      frc_snap_rtp(1,fsnap_trns%i_temp_scale))
       end if
-      if(irtp%i_comp_scale .gt. 0) then
+      if(fsnap_trns%i_comp_scale .gt. 0) then
         call cal_len_scale_by_diffuse_smp                               &
      &     (np_smp, nnod_rtp, inod_rtp_smp_stack,                       &
      &      fld_snap_rtp(1,bsnap_trns%i_light),                         &
      &      fld_snap_rtp(1,bsnap_trns%i_c_diffuse),                     &
-     &      frc_snap_rtp(1,irtp%i_comp_scale))
+     &      frc_snap_rtp(1,fsnap_trns%i_comp_scale))
       end if
 !$omp end parallel
 !

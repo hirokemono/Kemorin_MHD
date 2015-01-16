@@ -24,6 +24,7 @@
 !
       use m_machine_parameter
       use m_sph_spectr_data
+      use set_phys_name_4_sph_trans
 !
       implicit  none
 !

@@ -70,11 +70,9 @@
       use schmidt_poly_on_rtm_grid
       use set_legendre_matrices
       use set_params_sph_trans
-      use cvt_nod_fld_and_sph_fld
 !
 !
       call allocate_work_4_sph_trans
-      call allocate_wk_nod_data_to_sph
 !
       call radial_4_sph_trans
       call set_mdx_rlm_rtm
