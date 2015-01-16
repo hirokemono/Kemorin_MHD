@@ -8,6 +8,7 @@
 !> @brief Evaluate energy fluxes for MHD dynamo in physical space
 !!
 !!@verbatim
+!!      subroutine cal_nonlinear_pole_MHD
 !!      subroutine s_cal_energy_flux_rtp
 !!@endverbatim
 !
@@ -26,6 +27,74 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine cal_nonlinear_pole_MHD
+!
+      use m_machine_parameter
+      use m_control_parameter
+      use m_addresses_trans_sph_MHD
+      use m_addresses_trans_sph_snap
+      use m_physical_property
+      use m_work_pole_sph_trans
+      use const_wz_coriolis_rtp
+      use cal_products_smp
+!
+!
+!$omp parallel
+      if( (f_trns%i_m_advect*iflag_t_evo_4_velo) .gt. 0) then
+        call cal_cross_prod_w_coef_smp                                  &
+     &     (np_smp, nnod_pole, istack_npole_smp, coef_velo,             &
+     &      fld_snap_pole(1,bsnap_trns%i_vort),                         &
+     &      fld_snap_pole(1,bsnap_trns%i_velo),                         &
+     &      frc_MHD_pole(1,f_trns%i_m_advect) )
+      end if
+!
+      if( (f_trns%i_lorentz*iflag_4_lorentz) .gt. 0) then
+        call cal_cross_prod_w_coef_smp                                  &
+     &     (np_smp, nnod_pole, istack_npole_smp, coef_lor,              &
+     &      fld_snap_pole(1,bsnap_trns%i_current),                      &
+     &      fld_snap_pole(1,bsnap_trns%i_magne),                        &
+     &      frc_MHD_pole(1,f_trns%i_lorentz) )
+      end if
+!
+!
+!
+      if( (f_trns%i_vp_induct*iflag_t_evo_4_magne) .gt. 0) then
+        call cal_cross_prod_w_coef_smp                                  &
+     &     (np_smp, nnod_pole, istack_npole_smp, coef_induct,           &
+     &      fld_snap_pole(1,bsnap_trns%i_velo),                         &
+     &      fld_snap_pole(1,bsnap_trns%i_magne),                        &
+     &      frc_MHD_pole(1,f_trns%i_vp_induct) )
+      end if
+!
+!
+      if( (f_trns%i_h_flux*iflag_t_evo_4_temp) .gt. 0) then
+        call cal_vec_scalar_prod_w_coef_smp                             &
+     &     (np_smp, nnod_pole, istack_npole_smp, coef_temp,             &
+     &      fld_snap_pole(1,bsnap_trns%i_velo),                         &
+     &      fld_snap_pole(1,bsnap_trns%i_temp),                         &
+     &      frc_MHD_pole(1,f_trns%i_h_flux) )
+      end if
+!
+      if( (f_trns%i_c_flux*iflag_t_evo_4_composit) .gt. 0) then
+        call cal_vec_scalar_prod_w_coef_smp                             &
+     &     (np_smp, nnod_pole, istack_npole_smp, coef_light,            &
+     &      fld_snap_pole(1,bsnap_trns%i_velo),                         &
+     &      fld_snap_pole(1,bsnap_trns%i_light),                        &
+     &      frc_MHD_pole(1,f_trns%i_c_flux) )
+      end if
+!
+!      if( (f_trns%i_Coriolis*iflag_4_coriolis) .gt. 0) then
+!        call cal_wz_coriolis_rtp                                       &
+!     &     (nnod_pole, fld_snap_pole(1,bsnap_trns%i_velo),             &
+!            frc_MHD_pole(1,f_trns%i_Coriolis))
+!      end if
+!$omp end parallel
+!
+      end subroutine cal_nonlinear_pole_MHD
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
       subroutine s_cal_energy_flux_rtp
 !
       use m_machine_parameter
@@ -37,7 +106,6 @@
       use m_sph_phys_address
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
-      use m_addresses_trans_sph_tmp
       use m_work_4_sph_trans
       use poynting_flux_smp
       use sph_poynting_flux_smp
@@ -49,8 +117,9 @@
 !
 !$omp parallel
 !      if(fsnap_trns%i_coriolis .gt. 0) then
-!        call cal_wz_coriolis_rtp(nnod_rtp, fld_rtp(1,b_trns%i_velo),   &
-!            frc_snap_rtp(1,fsnap_trns%i_Coriolis))
+!        call cal_wz_coriolis_rtp(nnod_rtp,                             &
+!     &      fld_snap_rtp(1,bsnap_trns%i_velo),                         &
+!     &      frc_snap_rtp(1,fsnap_trns%i_Coriolis))
 !      end if
 !
       if(fsnap_trns%i_ujb .gt. 0) then

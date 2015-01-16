@@ -8,11 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine copy_1st_scl_from_trans_wpole                        &
-!!     &         (ncomp_trans, i_trns, d_rtp, i_field)
+!!     &         (ncomp_trans, i_trns, d_rtp, v_pole, i_field)
 !!      subroutine copy_1st_vec_from_trans_wpole                        &
-!!     &         (ncomp_trans, i_trns, d_rtp, i_field)
+!!     &         (ncomp_trans, i_trns, d_rtp, v_pole, i_field)
 !!      subroutine copy_1st_tsr_from_trans_wpole                        &
-!!     &         (ncomp_trans, i_trns, d_rtp, i_field)
+!!     &         (ncomp_trans, i_trns, d_rtp, v_pole, i_field)
 !!
 !!      subroutine copy_1st_scl_from_sph_trans(d_rtp,  i_field)
 !!      subroutine copy_1st_vec_from_sph_trans(d_rtp, i_field)
@@ -44,61 +44,69 @@
 ! -------------------------------------------------------------------
 !
       subroutine copy_1st_scl_from_trans_wpole                          &
-     &         (ncomp_trans, i_trns, d_rtp, i_field)
+     &         (ncomp_trans, i_trns, d_rtp, v_pole, i_field)
 !
       use m_spheric_parameter
       use m_spheric_param_smp
-      use copy_xyz_field_4_sph_trans
+      use m_work_pole_sph_trans
+      use copy_pole_field_sph_trans
 !
       integer(kind = kint), intent(in) :: i_field, i_trns
       integer(kind = kint), intent(in) :: ncomp_trans
       real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,ncomp_trans)
+      real(kind = kreal), intent(in) :: v_pole(nnod_pole,ncomp_trans)
 !
 !
-      call copy_scalar_from_trans_w_pole(nnod_rtp, inod_rtp_smp_stack, &
-     &    numnod, internal_node, xx, ncomp_trans, i_trns, d_rtp,       &
-     &    i_field, num_tot_nod_phys, d_nod)
+      call copy_1st_scl_from_sph_trans(d_rtp(1,i_trns), i_field)
+      call copy_pole_scl_fld_from_trans                                 &
+     &   (numnod, internal_node, xx, v_pole(1,i_trns),                  &
+     &    num_tot_nod_phys, i_field, d_nod)
 !
       end subroutine copy_1st_scl_from_trans_wpole
 !
 ! -------------------------------------------------------------------
 !
       subroutine copy_1st_vec_from_trans_wpole                          &
-     &         (ncomp_trans, i_trns, d_rtp, i_field)
+     &         (ncomp_trans, i_trns, d_rtp, v_pole, i_field)
 !
       use m_spheric_parameter
       use m_spheric_param_smp
-      use copy_xyz_field_4_sph_trans
+      use m_work_pole_sph_trans
+      use copy_pole_field_sph_trans
 !
       integer(kind = kint), intent(in) :: i_field, i_trns
       integer(kind = kint), intent(in) :: ncomp_trans
       real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,ncomp_trans)
+      real(kind = kreal), intent(in) :: v_pole(nnod_pole,ncomp_trans)
 !
 !
-      call copy_xyz_vec_from_trans_w_pole(nnod_rtp, inod_rtp_smp_stack, &
-     &    numnod, internal_node, xx, colatitude, longitude,             &
-     &    ncomp_trans, i_trns, d_rtp, i_field, num_tot_nod_phys, d_nod)
+      call copy_1st_vec_from_sph_trans(d_rtp(1,i_trns), i_field)
+      call copy_pole_vec_fld_from_trans                                 &
+     &   (numnod, internal_node, xx, v_pole(1,i_trns),                  &
+     &    num_tot_nod_phys, i_field, d_nod)
 !
       end subroutine copy_1st_vec_from_trans_wpole
 !
 ! -------------------------------------------------------------------
 !
       subroutine copy_1st_tsr_from_trans_wpole                          &
-     &         (ncomp_trans, i_trns, d_rtp, i_field)
+     &         (ncomp_trans, i_trns, d_rtp, v_pole, i_field)
 !
       use m_spheric_parameter
       use m_spheric_param_smp
-      use copy_xyz_field_4_sph_trans
+      use m_work_pole_sph_trans
+      use copy_pole_field_sph_trans
 !
       integer(kind = kint), intent(in) :: i_field, i_trns
       integer(kind = kint), intent(in) :: ncomp_trans
       real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,ncomp_trans)
+      real(kind = kreal), intent(in) :: v_pole(nnod_pole,ncomp_trans)
 !
 !
-      call copy_xyz_tsr_from_trans_w_pole(nnod_rtp, inod_rtp_smp_stack, &
-     &    numnod, internal_node, xx, radius, s_cylinder,                &
-     &    a_radius, a_s_cylinder, ncomp_trans, i_trns, d_rtp, i_field,  &
-     &    num_tot_nod_phys, d_nod)
+      call copy_1st_tsr_from_sph_trans(d_rtp(1,i_trns), i_field)
+      call copy_pole_tsr_fld_from_trans                                 &
+     &   (numnod, internal_node, xx, v_pole(1,i_trns),                  &
+     &    num_tot_nod_phys, i_field, d_nod)
 !
       end subroutine copy_1st_tsr_from_trans_wpole
 !
@@ -129,7 +137,7 @@
       use copy_xyz_field_4_sph_trans
 !
       integer(kind = kint), intent(in) :: i_field
-      real(kind = kreal), intent(inout) :: d_rtp(nnod_rtp,3)
+      real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,3)
 !
 !
       call copy_xyz_vec_from_sph_trans(nnod_rtp, inod_rtp_smp_stack,    &
@@ -147,7 +155,7 @@
       use copy_xyz_field_4_sph_trans
 !
       integer(kind = kint), intent(in) :: i_field
-      real(kind = kreal), intent(inout) :: d_rtp(nnod_rtp,6)
+      real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,6)
 !
 !
       call copy_xyz_tsr_from_sph_trans(nnod_rtp, inod_rtp_smp_stack,    &

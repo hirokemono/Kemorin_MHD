@@ -17,8 +17,6 @@
 !
       implicit  none
 !
-      private :: pole_back_trans_snapshot_MHD
-!
 !-----------------------------------------------------------------------
 !
       contains
@@ -31,12 +29,13 @@
       use m_spheric_constants
       use m_spheric_parameter
       use pole_energy_flux_sph
+      use copy_MHD_4_pole_trans
 !
 !
       if(iflag_shell_mode .eq. iflag_MESH_same) return
 !
-      if (iflag_debug.eq.1) write(*,*) 'pole_back_trans_snapshot_MHD'
-      call pole_back_trans_snapshot_MHD
+      if (iflag_debug.eq.1) write(*,*) 'copy_snap_vec_from_pole_trans'
+      call copy_snap_vec_from_pole_trans
 !
       if (iflag_debug.eq.1) write(*,*) 'pole_nonlinear_sph_MHD'
       call pole_nonlinear_sph_MHD
@@ -44,33 +43,6 @@
       call pole_energy_flux_rtp
 !
       end subroutine lead_pole_fields_4_sph_mhd
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine pole_back_trans_snapshot_MHD
-!
-      use m_solver_SR
-      use m_addresses_trans_sph_snap
-      use spherical_SRs_N
-      use pole_sph_transform
-      use copy_sph_MHD_4_send_recv
-      use copy_snap_4_sph_trans
-      use copy_MHD_4_pole_trans
-!
-!
-      if(ncomp_snap_rj_2_rtp .le. 0) return
-!
-      call check_calypso_rj_2_rlm_buf_N(ncomp_snap_rj_2_rtp)
-      call copy_snap_spectr_to_send(ncomp_snap_rj_2_rtp, n_WS, WS(1))
-!
-      call pole_backward_transforms(ncomp_snap_rj_2_rtp,                &
-     &    nvector_snap_rj_2_rtp, nscalar_snap_rj_2_rtp, n_WR, WR)
-!
-      call copy_snap_vec_from_pole_trans
-      call copy_snap_scl_from_pole_trans
-!
-      end subroutine pole_back_trans_snapshot_MHD
 !
 !-----------------------------------------------------------------------
 !

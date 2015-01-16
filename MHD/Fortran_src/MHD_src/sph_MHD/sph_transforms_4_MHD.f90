@@ -55,6 +55,8 @@
       character(len=kchara) :: tmpchara
 !
 !
+      call init_pole_transform
+!
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_addresses_trans_sph_MHD'
       call set_addresses_trans_sph_MHD
@@ -75,8 +77,6 @@
       call initialize_legendre_trans
       call init_fourier_transform_4_MHD(ncomp_sph_trans,                &
      &    ncomp_rtp_2_rj, ncomp_rj_2_rtp)
-!
-      call init_pole_transform
 !
       if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
       call set_colatitude_rtp
@@ -182,7 +182,6 @@
 !
       use m_solver_SR
       use m_addresses_trans_sph_snap
-      use m_work_4_sph_trans
       use sph_transforms
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
@@ -196,10 +195,13 @@
       call check_calypso_rj_2_rlm_buf_N(ncomp_snap_rj_2_rtp)
       call check_calypso_rtm_2_rtp_buf_N(ncomp_snap_rj_2_rtp)
 !
-      call copy_snap_spectr_to_send(ncomp_snap_rj_2_rtp, n_WS, WS)
+      call copy_snap_spectr_to_send(ncomp_snap_rj_2_rtp,                &
+     &    n_WS, WS, fll_snap_pole)
+!
       call sph_backward_transforms                                      &
      &   (ncomp_snap_rj_2_rtp, nvector_snap_rj_2_rtp, nscalar_trans,    &
-     &    n_WS, n_WR, WS(1), WR(1), fld_snap_rtp)
+     &    n_WS, n_WR, WS(1), WR(1), fld_snap_rtp,                       &
+     &    fll_snap_pole, fld_snap_pole)
 !
       end subroutine sph_back_trans_snapshot_MHD
 !

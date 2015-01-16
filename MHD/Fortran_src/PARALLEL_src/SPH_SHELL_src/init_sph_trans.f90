@@ -65,7 +65,6 @@
 !
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
-      use m_work_pole_sph_trans
       use m_FFT_selector
       use schmidt_poly_on_rtm_grid
       use set_legendre_matrices

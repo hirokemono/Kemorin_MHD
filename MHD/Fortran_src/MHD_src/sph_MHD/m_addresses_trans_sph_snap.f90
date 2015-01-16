@@ -49,6 +49,7 @@
 !>    addresses for forces to forward transform
       type(phys_address), save :: fsnap_trns
 !
+!
 !>      field data to evaluate nonliear terms in grid space
       real(kind = kreal), allocatable :: fld_snap_rtp(:,:)
 !>      Nonoliear terms obtained for snapshot
@@ -56,6 +57,17 @@
 !
 !>      Nonoliear terms data using simulation
       real(kind = kreal), allocatable :: frc_MHD_rtp(:,:)
+!
+!
+!>      field data to evaluate nonliear terms at pole
+      real(kind = kreal), allocatable :: fld_snap_pole(:,:)
+!>      local field data to evaluate nonliear terms at pole
+      real(kind = kreal), allocatable :: fll_snap_pole(:,:)
+!
+!>      field data to evaluate nonliear terms at pole
+      real(kind = kreal), allocatable :: frc_snap_pole(:,:)
+!>      field data to evaluate nonliear terms at pole
+      real(kind = kreal), allocatable :: frc_MHD_pole(:,:)
 !
 !-----------------------------------------------------------------------
 !
@@ -66,15 +78,28 @@
       subroutine allocate_snap_trans_rtp
 !
       use m_spheric_parameter
+      use m_work_pole_sph_trans
       use m_addresses_trans_sph_MHD
 !
 !
       allocate(fld_snap_rtp(nnod_rtp,ncomp_snap_rj_2_rtp))
       allocate(frc_snap_rtp(nnod_rtp,ncomp_snap_rtp_2_rj))
       allocate(frc_MHD_rtp(nnod_rtp,ncomp_rtp_2_rj))
+!
       if(ncomp_snap_rj_2_rtp .gt. 0) fld_snap_rtp = 0.0d0
       if(ncomp_snap_rtp_2_rj .gt. 0) frc_snap_rtp = 0.0d0
       if(ncomp_rtp_2_rj .gt. 0)      frc_MHD_rtp =  0.0d0
+!
+!
+      allocate(fld_snap_pole(nnod_pole,ncomp_snap_rj_2_rtp))
+      allocate(fll_snap_pole(nnod_pole,ncomp_snap_rj_2_rtp))
+      allocate(frc_snap_pole(nnod_pole,ncomp_snap_rtp_2_rj))
+      allocate(frc_MHD_pole(nnod_pole,ncomp_rtp_2_rj))
+!
+      if(ncomp_snap_rj_2_rtp .gt. 0) fld_snap_pole = 0.0d0
+      if(ncomp_snap_rj_2_rtp .gt. 0) fll_snap_pole = 0.0d0
+      if(ncomp_snap_rtp_2_rj .gt. 0) frc_snap_pole = 0.0d0
+      if(ncomp_rtp_2_rj .gt. 0)      frc_MHD_pole =  0.0d0
 !
       end subroutine allocate_snap_trans_rtp
 !
@@ -83,6 +108,8 @@
       subroutine deallocate_snap_trans_rtp
 !
       deallocate(fld_snap_rtp, frc_snap_rtp, frc_MHD_rtp)
+      deallocate(fld_snap_pole, fll_snap_pole)
+      deallocate(frc_snap_pole, frc_MHD_pole)
 !
       end subroutine deallocate_snap_trans_rtp
 !

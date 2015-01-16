@@ -125,7 +125,6 @@
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
       use sph_transforms
-      use pole_sph_transform
       use spherical_SRs_N
       use sph_transfer_all_field
 !
@@ -142,21 +141,18 @@
      &        write(*,*) 'set_all_vec_spec_to_sph_t'
         call set_all_vec_spec_to_sph_t(ncomp_sph_trans, n_WS, WS)
 !
-      if (iflag_debug.gt.0) write(*,*) 'pole_backward_transforms'
-      call pole_backward_transforms(ncomp_sph_trans, num_vector_rtp,    &
-     &    nscalar_trans, n_WR, WR)
-!
       if (iflag_debug.gt.0) write(*,*) 'sph_backward_transforms',       &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
       call sph_backward_transforms(ncomp_sph_trans, num_vector_rtp,     &
-     &    nscalar_trans, n_WS, n_WR, WS(1), WR(1), dall_rtp(1,1))
+     &    nscalar_trans, n_WS, n_WR, WS(1), WR(1), dall_rtp,            &
+     &    dlcl_pole, dall_pole)
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'
         call adjust_phi_comp_for_streamfunc(ncomp_sph_trans,            &
      &      dall_rtp(1,1))
         call set_xyz_vect_from_sph_trans(nnod_rtp, ncomp_sph_trans,     &
-     &      dall_rtp(1,1))
+     &      dall_rtp(1,1), dall_pole(1,1))
       end if
 !
       end subroutine sph_b_trans_streamline

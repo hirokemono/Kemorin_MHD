@@ -11,7 +11,8 @@
 !!      subroutine copy_mhd_spectr_to_send(ncomp_send, n_WS, WS)
 !!      subroutine copy_mhd_spectr_from_recv(ncomp_recv, n_WR, WR)
 !!
-!!      subroutine copy_snap_spectr_to_send(ncomp_send, n_WS, WS)
+!!      subroutine copy_snap_spectr_to_send                            &
+!!     &         (ncomp_send, n_WS, WS, v_pl_local)
 !!      subroutine copy_snap_vec_spec_from_trans(ncomp_recv, n_WR, WR)
 !!
 !!      subroutine copy_tmp_scl_spec_from_trans(ncomp_recv, n_WR, WR)
@@ -94,12 +95,17 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine copy_snap_spectr_to_send(ncomp_send, n_WS, WS)
+      subroutine copy_snap_spectr_to_send                              &
+     &         (ncomp_send, n_WS, WS, v_pl_local)
 !
+      use m_spheric_parameter
       use m_addresses_trans_sph_snap
+      use m_work_pole_sph_trans
 !
       integer(kind = kint), intent(in) :: ncomp_send, n_WS
       real(kind = kreal), intent(inout) :: WS(n_WS)
+      real(kind = kreal), intent(inout)                                 &
+     &                :: v_pl_local(nnod_pole,ncomp_send)
 !
 !      Vectors
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
@@ -150,24 +156,28 @@
 !
 !      Scalar fields
 !
-      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
-     &    ipol%i_temp, bsnap_trns%i_temp, n_WS, WS)
-      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
-     &    ipol%i_light, bsnap_trns%i_light, n_WS, WS)
+      call sel_sph_rj_scalar_2_send_wpole(ncomp_send,                   &
+     &    ipol%i_temp, bsnap_trns%i_temp, n_WS, WS, v_pl_local)
+      call sel_sph_rj_scalar_2_send_wpole(ncomp_send,                   &
+     &    ipol%i_light, bsnap_trns%i_light, n_WS, WS, v_pl_local)
 !
-      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
-     &    ipol%i_press, bsnap_trns%i_press, n_WS, WS)
-      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
-     &    ipol%i_par_temp, bsnap_trns%i_par_temp, n_WS, WS)
-      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
-     &    ipol%i_filter_temp, bsnap_trns%i_filter_temp, n_WS, WS)
-      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
-     &    ipol%i_t_diffuse, bsnap_trns%i_t_diffuse, n_WS, WS)
-      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
-     &    ipol%i_c_diffuse, bsnap_trns%i_c_diffuse, n_WS, WS)
+      call sel_sph_rj_scalar_2_send_wpole(ncomp_send,                   &
+     &    ipol%i_press, bsnap_trns%i_press, n_WS, WS, v_pl_local)
+      call sel_sph_rj_scalar_2_send_wpole(ncomp_send,                   &
+     &    ipol%i_par_temp, bsnap_trns%i_par_temp, n_WS, WS, v_pl_local)
+      call sel_sph_rj_scalar_2_send_wpole(ncomp_send,                   &
+     &    ipol%i_filter_temp, bsnap_trns%i_filter_temp,                 &
+     &    n_WS, WS, v_pl_local)
+      call sel_sph_rj_scalar_2_send_wpole(ncomp_send,                   &
+     &    ipol%i_t_diffuse, bsnap_trns%i_t_diffuse,                     &
+     &    n_WS, WS, v_pl_local)
+      call sel_sph_rj_scalar_2_send_wpole(ncomp_send,                   &
+     &    ipol%i_c_diffuse, bsnap_trns%i_c_diffuse,                     &
+     &    n_WS, WS, v_pl_local)
 !
-      call sel_sph_rj_scalar_to_send(ncomp_send,                        &
-     &    ipol%i_div_Coriolis, bsnap_trns%i_div_Coriolis, n_WS, WS)
+      call sel_sph_rj_scalar_2_send_wpole(ncomp_send,                   &
+     &    ipol%i_div_Coriolis, bsnap_trns%i_div_Coriolis,               &
+     &    n_WS, WS, v_pl_local)
 !
       end subroutine copy_snap_spectr_to_send
 !

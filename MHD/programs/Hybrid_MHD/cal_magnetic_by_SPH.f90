@@ -43,6 +43,8 @@
         sph_fld%ntot_phys = 21
       end if
 !
+      call init_pole_transform
+!
       call set_addresses_trans_hbd_MHD
       call allocate_hbd_trans_rtp
       call check_add_trans_hbd_MHD
@@ -80,7 +82,6 @@
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call initialize_sph_trans
-      call init_pole_transform
 !
       end subroutine induction_SPH_initialize
 !
@@ -195,27 +196,25 @@
      &      ipol%i_SGS_induction, b_hbd_trns%i_SGS_induction, n_WS, WS)
       end if
 !
-      call pole_backward_transforms(ncomp_rj_2_xyz, nvector_rj_2_xyz,   &
-     &    n_WR, WR)
       call sph_backward_transforms(ncomp_rj_2_xyz, nvector_rj_2_xyz,    &
-     &    n_WS, n_WR, WS, WR, fld_hbd_rtp(1,1))
+     &    n_WS, n_WR, WS, WR, fld_hbd_rtp, flc_hbd_pole, fld_hbd_pole)
 !
 !
       call copy_xyz_vec_t_from_trans_wpole(nvector_rj_2_xyz,            &
-     &    b_hbd_trns%i_magne, fld_hbd_rtp(1,1), iphys_sph%i_magne,      &
-     &    mesh_sph%node, sph_fld)
+     &    b_hbd_trns%i_magne, fld_hbd_rtp(1,1), fld_hbd_pole,           &
+     &    iphys_sph%i_magne, mesh_sph%node, sph_fld)
       call copy_xyz_vec_t_from_trans_wpole(nvector_rj_2_xyz,            &
-     &    b_hbd_trns%i_current, fld_hbd_rtp(1,1), iphys_sph%i_current,  &
-     &    mesh_sph%node, sph_fld)
+     &    b_hbd_trns%i_current, fld_hbd_rtp(1,1), fld_hbd_pole,         &
+     &    iphys_sph%i_current, mesh_sph%node, sph_fld)
       call copy_xyz_vec_t_from_trans_wpole(nvector_rj_2_xyz,            &
-     &    b_hbd_trns%i_b_diffuse, fld_hbd_rtp(1,1),                     &
+     &    b_hbd_trns%i_b_diffuse, fld_hbd_rtp(1,1), fld_hbd_pole,       &
      &     iphys_sph%i_b_diffuse, mesh_sph%node, sph_fld)
       call copy_xyz_vec_t_from_trans_wpole(nvector_rj_2_xyz,            &
-     &    b_hbd_trns%i_induction, fld_hbd_rtp(1,1),                     &
+     &    b_hbd_trns%i_induction, fld_hbd_rtp(1,1), fld_hbd_pole,       &
      &    iphys_sph%i_induction, mesh_sph%node, sph_fld)
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call copy_xyz_vec_t_from_trans_wpole(nvector_rj_2_xyz,          &
-     &    b_hbd_trns%i_SGS_induction, fld_hbd_rtp(1,1),                 &
+     &    b_hbd_trns%i_SGS_induction, fld_hbd_rtp(1,1), fld_hbd_pole,   &
      &    iphys_sph%i_SGS_induction, mesh_sph%node, sph_fld)
       end if
 !

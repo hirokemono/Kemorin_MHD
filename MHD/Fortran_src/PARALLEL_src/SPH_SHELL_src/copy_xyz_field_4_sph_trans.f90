@@ -7,19 +7,6 @@
 !>@brief  Copy spherical harmonics data to FEM data directly
 !!
 !!@verbatim
-!!      subroutine copy_scalar_from_trans_w_pole                        &
-!!     &         (nnod_rtp, inod_rtp_smp_stack, numnod, internal_node,  &
-!!     &          xx, ncomp_trans, i_trns, d_rtp,                       &
-!!     &          i_field, ntot_phys, d_nod)
-!!      subroutine copy_xyz_vec_from_trans_w_pole                       &
-!!     &         (nnod_rtp, inod_rtp_smp_stack, numnod, internal_node,  &
-!!     &          xx, colatitude, longitude, ncomp_trans, i_trns, d_rtp,&
-!!     &          i_field, ntot_phys, d_nod)
-!!      subroutine copy_xyz_tsr_from_trans_w_pole                       &
-!!     &         (nnod_rtp, inod_rtp_smp_stack, numnod, internal_node,  &
-!!     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,       &
-!!     &          ncomp_trans, i_trns, d_rtp, i_field, ntot_phys, d_nod)
-!!
 !!      subroutine copy_scalar_from_sph_trans                           &
 !!     &         (nnod_rtp, inod_rtp_smp_stack,numnod, d_rtp, i_field,  &
 !!     &          ntot_phys, d_nod)
@@ -57,107 +44,6 @@
 !
       contains
 !
-! -------------------------------------------------------------------
-!
-      subroutine copy_scalar_from_trans_w_pole                          &
-     &         (nnod_rtp, inod_rtp_smp_stack, numnod, internal_node,    &
-     &          xx, ncomp_trans, i_trns, d_rtp,                         &
-     &          i_field, ntot_phys, d_nod)
-!
-      use copy_pole_field_sph_trans
-!
-      integer(kind = kint), intent(in) :: i_field, i_trns
-!
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: inod_rtp_smp_stack(0:np_smp)
-      integer(kind = kint), intent(in) :: numnod, internal_node
-      real(kind = kreal), intent(in) :: xx(numnod,3)
-!
-      integer(kind = kint), intent(in) :: ncomp_trans
-      real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,ncomp_trans)
-      integer(kind = kint), intent(in) :: ntot_phys
-      real(kind = kreal), intent(inout) :: d_nod(numnod,ntot_phys)
-!
-!
-      call copy_scalar_from_sph_trans(nnod_rtp, inod_rtp_smp_stack,     &
-     &    numnod, d_rtp(1,i_trns), i_field,  ntot_phys, d_nod)
-!
-      call copy_pole_scl_fld_from_trans(numnod, internal_node,          &
-     &    xx, ntot_phys, ncomp_trans, i_field, i_trns, d_nod )
-!
-      end subroutine copy_scalar_from_trans_w_pole
-!
-! -------------------------------------------------------------------
-!
-      subroutine copy_xyz_vec_from_trans_w_pole                         &
-     &         (nnod_rtp, inod_rtp_smp_stack, numnod, internal_node,    &
-     &          xx, colatitude, longitude, ncomp_trans, i_trns, d_rtp,  &
-     &          i_field, ntot_phys, d_nod)
-!
-      use copy_pole_field_sph_trans
-!
-      integer(kind = kint), intent(in) :: i_field, i_trns
-!
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: inod_rtp_smp_stack(0:np_smp)
-      integer(kind = kint), intent(in) :: numnod, internal_node
-      real(kind = kreal), intent(in) :: xx(numnod,3)
-      real(kind = kreal), intent(in) :: colatitude(numnod)
-      real(kind = kreal), intent(in) :: longitude(numnod)
-!
-      integer(kind = kint), intent(in) :: ncomp_trans
-      real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,ncomp_trans)
-      integer(kind = kint), intent(in) :: ntot_phys
-      real(kind = kreal), intent(inout) :: d_nod(numnod,ntot_phys)
-!
-!
-      call copy_xyz_vec_from_sph_trans(nnod_rtp, inod_rtp_smp_stack,    &
-     &    numnod, colatitude, longitude, d_rtp(1,i_trns),               &
-     &    i_field, ntot_phys, d_nod)
-!
-      call copy_pole_vec_fld_from_trans(numnod, internal_node,          &
-     &    xx, ntot_phys, ncomp_trans, i_field, i_trns, d_nod )
-!
-      end subroutine copy_xyz_vec_from_trans_w_pole
-!
-! -------------------------------------------------------------------
-!
-      subroutine copy_xyz_tsr_from_trans_w_pole                         &
-     &         (nnod_rtp, inod_rtp_smp_stack, numnod, internal_node,    &
-     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,         &
-     &          ncomp_trans, i_trns, d_rtp, i_field, ntot_phys, d_nod)
-!
-      use copy_field_4_sph_trans
-      use copy_pole_field_sph_trans
-      use cvt_sph_tensor_2_xyz_smp
-!
-      integer(kind = kint), intent(in) :: i_field, i_trns
-!
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: inod_rtp_smp_stack(0:np_smp)
-      integer(kind = kint), intent(in) :: numnod, internal_node
-      real(kind = kreal), intent(in) :: xx(numnod,3)
-      real(kind = kreal), intent(in) :: radius(numnod)
-      real(kind = kreal), intent(in) :: s_cylinder(numnod)
-      real(kind = kreal), intent(in) :: a_radius(numnod)
-      real(kind = kreal), intent(in) :: a_s_cylinder(numnod)
-!
-      integer(kind = kint), intent(in) :: ncomp_trans
-      real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,ncomp_trans)
-      integer(kind = kint), intent(in) :: ntot_phys
-      real(kind = kreal), intent(inout) :: d_nod(numnod,ntot_phys)
-!
-!
-      call copy_xyz_tsr_from_sph_trans(nnod_rtp, inod_rtp_smp_stack,    &
-     &    numnod, xx, radius, s_cylinder, a_radius, a_s_cylinder,       &
-     &    d_rtp(1,i_trns), i_field, ntot_phys, d_nod)
-!
-      call copy_pole_tsr_fld_from_trans(numnod, internal_node,          &
-     &    xx, ntot_phys, ncomp_trans, i_field, i_trns, d_nod)
-!
-      end subroutine copy_xyz_tsr_from_trans_w_pole
-!
-! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
       subroutine copy_scalar_from_sph_trans                             &

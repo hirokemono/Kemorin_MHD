@@ -54,6 +54,11 @@
 !>      Nonoliear terms data in grid space
       real(kind = kreal), allocatable :: frc_hbd_rtp(:,:)
 !
+!>      field data to evaluate nonliear terms at pole
+      real(kind = kreal), allocatable :: fld_hbd_pole(:,:)
+!>      local field data to evaluate nonliear terms at pole
+      real(kind = kreal), allocatable :: flc_hbd_pole(:,:)
+!
 !-----------------------------------------------------------------------
 !
       contains
@@ -63,12 +68,20 @@
       subroutine allocate_hbd_trans_rtp
 !
       use m_spheric_parameter
+      use m_work_pole_sph_trans
+!
+      integer(kind = kint) :: num1
 !
 !
       allocate(fld_hbd_rtp(nnod_rtp,ncomp_rj_2_xyz))
       allocate(frc_hbd_rtp(nnod_rtp,ncomp_xyz_2_rj))
       if(ncomp_rj_2_xyz .gt. 0) fld_hbd_rtp = 0.0d0
       if(ncomp_xyz_2_rj .gt. 0) frc_hbd_rtp = 0.0d0
+!
+      allocate(fld_hbd_pole(nnod_pole,ncomp_rj_2_xyz))
+      allocate(flc_hbd_pole(nnod_pole,ncomp_rj_2_xyz))
+      if(ncomp_rj_2_xyz .gt. 0) fld_hbd_pole = 0.0d0
+      if(ncomp_rj_2_xyz .gt. 0) flc_hbd_pole = 0.0d0
 !
       end subroutine allocate_hbd_trans_rtp
 !

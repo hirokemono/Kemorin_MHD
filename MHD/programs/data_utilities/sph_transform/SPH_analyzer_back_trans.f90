@@ -38,6 +38,7 @@
       use init_sph_trans
       use pole_sph_transform
       use legendre_transform_select
+      use sph_transfer_all_field
 !
 !  ------    set spectr grids
 !
@@ -77,7 +78,9 @@
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp
       call initialize_sph_trans
+!
       call init_pole_transform
+      call allocate_d_pole_4_all_trans
 !
 !      call calypso_MPI_barrier
 !      call check_schmidt_poly_rtm(my_rank+40)

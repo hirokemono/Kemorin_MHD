@@ -3,22 +3,25 @@
 !
 !        programmed by H.Matsui on Jan., 2008
 !
-!      subroutine set_all_scalar_spec_to_sph_t(ncomp_send, n_WS, WS)
-!      subroutine set_all_scalar_spec_from_sph_t(ncomp_recv, n_WR, WR)
-!
-!      subroutine set_all_vec_spec_to_sph_t(ncomp_send, n_WS, WS)
-!      subroutine set_all_vec_spec_from_sph_t(ncomp_recv, n_WR, WR)
-!
-!      subroutine set_all_tensor_spec_to_sph_t(ncomp_send, n_WS, WS)
-!      subroutine set_all_tensor_spec_from_sph_t(ncomp_recv, n_WR, WR)
+!!      subroutine set_all_scalar_spec_to_sph_t                         &
+!!     &          (ncomp_send, n_WS, WS, v_pl_local)
+!!      subroutine set_all_scalar_spec_from_sph_t(ncomp_recv, n_WR, WR)
+!!
+!!      subroutine set_all_vec_spec_to_sph_t(ncomp_send, n_WS, WS)
+!!      subroutine set_all_vec_spec_from_sph_t(ncomp_recv, n_WR, WR)
+!!
+!!      subroutine set_all_tensor_spec_to_sph_t(ncomp_send, n_WS, WS)
+!!      subroutine set_all_tensor_spec_from_sph_t(ncomp_recv, n_WR, WR)
 !
       module copy_all_spec_4_sph_trans
 !
       use m_precision
 !
-      use m_work_4_sph_trans
-      use m_node_phys_data
+      use m_spheric_parameter
       use m_sph_spectr_data
+      use m_node_phys_data
+      use m_work_4_sph_trans
+      use m_work_pole_sph_trans
       use set_phys_name_4_sph_trans
 !
       implicit  none
@@ -29,12 +32,15 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine set_all_scalar_spec_to_sph_t(ncomp_send, n_WS, WS)
+      subroutine set_all_scalar_spec_to_sph_t                           &
+     &          (ncomp_send, n_WS, WS, v_pl_local)
 !
       use copy_spectr_4_sph_trans
 !
       integer(kind = kint), intent(in) :: ncomp_send, n_WS
       real(kind = kreal), intent(inout) :: WS(n_WS)
+      real(kind = kreal), intent(inout)                                 &
+     &                :: v_pl_local(nnod_pole,ncomp_send)
 !
       integer(kind = kint) :: i, j, j0, i_field, itrans
 !
@@ -45,8 +51,8 @@
         do i = 1, num_phys_rj
           if ( phys_name_rtp(j0) .eq. phys_name_rj(i) ) then
             i_field = istack_phys_comp_rj(i-1) + 1
-            call sel_sph_rj_scalar_to_send                              &
-     &         (ncomp_send, i_field, itrans, n_WS, WS)
+            call sel_sph_rj_scalar_2_send_wpole                         &
+     &         (ncomp_send, i_field, itrans, n_WS, WS, v_pl_local)
             exit
           end if
         end do
