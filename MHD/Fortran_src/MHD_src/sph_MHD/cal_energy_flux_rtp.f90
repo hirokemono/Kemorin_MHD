@@ -55,14 +55,15 @@
 !
       if(fsnap_trns%i_ujb .gt. 0) then
         call cal_dot_prod_no_coef_smp(np_smp, nnod_rtp,                 &
-     &      inod_rtp_smp_stack, frc_rtp(1,f_trns%i_lorentz),            &
+     &      inod_rtp_smp_stack, frc_MHD_rtp(1,f_trns%i_lorentz),        &
      &      fld_snap_rtp(1,bsnap_trns%i_velo),                          &
      &      frc_snap_rtp(1,fsnap_trns%i_ujb) )
       end if
 !
       if(fsnap_trns%i_nega_ujb .gt. 0) then
         call cal_dot_prod_w_coef_smp(np_smp, nnod_rtp,                  &
-     &      inod_rtp_smp_stack, dminus, frc_rtp(1,f_trns%i_lorentz),    &
+     &      inod_rtp_smp_stack, dminus,                                 &
+     &      frc_MHD_rtp(1,f_trns%i_lorentz),                            &
      &      fld_snap_rtp(1,bsnap_trns%i_velo),                          &
      &      frc_snap_rtp(1,fsnap_trns%i_nega_ujb) )
       end if
@@ -78,7 +79,7 @@
         call cal_electric_field_smp                                     &
      &     (np_smp, nnod_rtp, inod_rtp_smp_stack, coef_d_magne,         &
      &      fld_snap_rtp(1,bsnap_trns%i_current),                       &
-     &      frc_rtp(1,f_trns%i_vp_induct),                              &
+     &      frc_MHD_rtp(1,f_trns%i_vp_induct),                          &
      &      frc_snap_rtp(1,fsnap_trns%i_electric))
       end if
 !
@@ -86,7 +87,7 @@
         call cal_poynting_flux_smp                                      &
      &     (np_smp, nnod_rtp, inod_rtp_smp_stack, coef_d_magne,         &
      &      fld_snap_rtp(1,bsnap_trns%i_current),                       &
-     &      frc_rtp(1,f_trns%i_vp_induct),                              &
+     &      frc_MHD_rtp(1,f_trns%i_vp_induct),                          &
      &      fld_snap_rtp(1,bsnap_trns%i_magne),                         &
      &      frc_snap_rtp(1,fsnap_trns%i_poynting))
       end if

@@ -263,7 +263,7 @@
 !*
 !*  -----------  data transfer to FEM array --------------
 !*
-      call select_mhd_field_from_trans
+      call copy_forces_to_snapshot_rtp
       call copy_tmp_vec_fld_from_trans
       call copy_snap_vec_fld_from_trans
       call copy_snap_vec_fld_to_trans

@@ -164,6 +164,7 @@
       subroutine copy_scalar_from_snap_trans(i_trns, i_field)
 !
       use m_addresses_trans_sph_snap
+      use m_spheric_parameter
       use m_spheric_param_smp
       use m_geometry_parameter
       use m_node_phys_data
@@ -183,6 +184,7 @@
       subroutine copy_vector_from_snap_trans(i_trns, i_field)
 !
       use m_addresses_trans_sph_snap
+      use m_spheric_parameter
       use m_spheric_param_smp
       use m_geometry_parameter
       use m_node_phys_data
@@ -203,6 +205,7 @@
       subroutine copy_scalar_from_snap_force(i_trns, i_field)
 !
       use m_addresses_trans_sph_snap
+      use m_spheric_parameter
       use m_spheric_param_smp
       use m_geometry_parameter
       use m_geometry_data
@@ -223,6 +226,7 @@
       subroutine copy_vector_from_snap_force(i_trns, i_field)
 !
       use m_addresses_trans_sph_snap
+      use m_spheric_parameter
       use m_spheric_param_smp
       use m_geometry_parameter
       use m_node_phys_data
@@ -243,6 +247,7 @@
       subroutine copy_vector_from_tmp_trans(i_trns, i_field)
 !
       use m_addresses_trans_sph_tmp
+      use m_spheric_parameter
       use m_spheric_param_smp
       use m_geometry_parameter
       use m_node_phys_data

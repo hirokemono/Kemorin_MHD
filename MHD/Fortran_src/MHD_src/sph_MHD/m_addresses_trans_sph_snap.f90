@@ -51,8 +51,11 @@
 !
 !>      field data to evaluate nonliear terms in grid space
       real(kind = kreal), allocatable :: fld_snap_rtp(:,:)
-!>      Nonoliear terms data in grid space
+!>      Nonoliear terms obtained for snapshot
       real(kind = kreal), allocatable :: frc_snap_rtp(:,:)
+!
+!>      Nonoliear terms data using simulation
+      real(kind = kreal), allocatable :: frc_MHD_rtp(:,:)
 !
 !-----------------------------------------------------------------------
 !
@@ -63,12 +66,15 @@
       subroutine allocate_snap_trans_rtp
 !
       use m_spheric_parameter
+      use m_addresses_trans_sph_MHD
 !
 !
       allocate(fld_snap_rtp(nnod_rtp,ncomp_snap_rj_2_rtp))
       allocate(frc_snap_rtp(nnod_rtp,ncomp_snap_rtp_2_rj))
+      allocate(frc_MHD_rtp(nnod_rtp,ncomp_rtp_2_rj))
       if(ncomp_snap_rj_2_rtp .gt. 0) fld_snap_rtp = 0.0d0
       if(ncomp_snap_rtp_2_rj .gt. 0) frc_snap_rtp = 0.0d0
+      if(ncomp_rtp_2_rj .gt. 0)      frc_MHD_rtp =  0.0d0
 !
       end subroutine allocate_snap_trans_rtp
 !
@@ -76,7 +82,7 @@
 !
       subroutine deallocate_snap_trans_rtp
 !
-      deallocate(fld_snap_rtp, frc_snap_rtp)
+      deallocate(fld_snap_rtp, frc_snap_rtp, frc_MHD_rtp)
 !
       end subroutine deallocate_snap_trans_rtp
 !
