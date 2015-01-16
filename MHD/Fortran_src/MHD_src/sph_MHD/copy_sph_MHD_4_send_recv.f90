@@ -14,7 +14,6 @@
 !!      subroutine copy_snap_spectr_to_send(ncomp_send, n_WS, WS)
 !!      subroutine copy_snap_vec_spec_from_trans(ncomp_recv, n_WR, WR)
 !!
-!!      subroutine copy_tmp_vec_spec_to_trans(ncomp_send, n_WS, WS)
 !!      subroutine copy_tmp_scl_spec_from_trans(ncomp_recv, n_WR, WR)
 !!@endverbatim
 !
@@ -142,6 +141,13 @@
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_grad_composit, bsnap_trns%i_grad_composit, n_WS, WS)
 !
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &      ipol%i_grad_vx, bsnap_trns%i_grad_vx, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &      ipol%i_grad_vy, bsnap_trns%i_grad_vy, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &      ipol%i_grad_vz, bsnap_trns%i_grad_vz, n_WS, WS)
+!
 !      Scalar fields
 !
       call sel_sph_rj_scalar_to_send(ncomp_send,                        &
@@ -211,25 +217,6 @@
       end  subroutine copy_snap_vec_spec_from_trans
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine copy_tmp_vec_spec_to_trans(ncomp_send, n_WS, WS)
-!
-      use m_addresses_trans_sph_tmp
-!
-      integer(kind = kint), intent(in) :: ncomp_send, n_WS
-      real(kind = kreal), intent(inout) :: WS(n_WS)
-!
-!
-      call sel_sph_rj_vector_to_send(ncomp_send,                        &
-     &      ipol%i_grad_vx, btmp_trns%i_grad_vx, n_WS, WS)
-      call sel_sph_rj_vector_to_send(ncomp_send,                        &
-     &      ipol%i_grad_vy, btmp_trns%i_grad_vy, n_WS, WS)
-      call sel_sph_rj_vector_to_send(ncomp_send,                        &
-     &      ipol%i_grad_vz, btmp_trns%i_grad_vz, n_WS, WS)
-!
-      end subroutine copy_tmp_vec_spec_to_trans
-!
 !-----------------------------------------------------------------------
 !
       subroutine copy_tmp_scl_spec_from_trans(ncomp_recv, n_WR, WR)

@@ -131,7 +131,7 @@
       v_n_pole =   zero
       v_s_pole =   zero
 !
-      ncomp = ncomp_trans * nidx_rj(1)
+      ncomp = ncomp_trans * nidx_global_rtp(1)
       call MPI_allreduce(v_np_local, v_n_pole, ncomp,                   &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call MPI_allreduce(v_sp_local, v_s_pole, ncomp,                   &

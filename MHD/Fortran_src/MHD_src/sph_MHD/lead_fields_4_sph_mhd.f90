@@ -132,10 +132,6 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_grad_of_velocities_sph'
       call cal_grad_of_velocities_sph
 !
-      if (iflag_debug.eq.1) write(*,*)                                  &
-     &                          'sph_back_trans_tmp_snap_MHD'
-      call sph_back_trans_tmp_snap_MHD
-!
       end subroutine gradients_of_vectors_sph
 !
 ! ----------------------------------------------------------------------

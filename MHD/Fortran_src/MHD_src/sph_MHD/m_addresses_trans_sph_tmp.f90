@@ -111,12 +111,8 @@
 !
 !
       nvector_tmp_rj_2_rtp = 0
-      call add_vec_trans_flag(ipol%i_grad_vx, iphys%i_grad_vx,         &
-     &    nvector_tmp_rj_2_rtp, btmp_trns%i_grad_vx)
-      call add_vec_trans_flag(ipol%i_grad_vy, iphys%i_grad_vy,         &
-     &    nvector_tmp_rj_2_rtp, btmp_trns%i_grad_vy)
-      call add_vec_trans_flag(ipol%i_grad_vz, iphys%i_grad_vz,         &
-     &    nvector_tmp_rj_2_rtp, btmp_trns%i_grad_vz)
+!      call add_vec_trans_flag(ipol%i_grad_vx, iphys%i_grad_vx,         &
+!     &    nvector_tmp_rj_2_rtp, btmp_trns%i_grad_vx)
       ncomp_tmp_rj_2_rtp = 3*nvector_tmp_rj_2_rtp
 !
       nscalar_tmp_rj_2_rtp = 0
@@ -151,15 +147,9 @@
       write(*,*) 'ncomp_tmp_rtp_2_rj', ncomp_tmp_rtp_2_rj
 !
       write(*,*) 'nvector_tmp_rj_2_rtp', nvector_tmp_rj_2_rtp
-      if(btmp_trns%i_grad_vx .gt. 0) write(*,*)                         &
-     &            'btmp_trns%i_grad_vx', btmp_trns%i_grad_vx,           &
-     &            ipol%i_grad_vx, iphys%i_grad_vx
-      if(btmp_trns%i_grad_vy .gt. 0) write(*,*)                         &
-     &            'btmp_trns%i_grad_vy', btmp_trns%i_grad_vy,           &
-     &            ipol%i_grad_vy, iphys%i_grad_vy
-      if(btmp_trns%i_grad_vz .gt. 0) write(*,*)                         &
-     &            'btmp_trns%i_grad_vz', btmp_trns%i_grad_vz,           &
-     &            ipol%i_grad_vz, iphys%i_grad_vz
+!      if(btmp_trns%i_grad_vx .gt. 0) write(*,*)                        &
+!     &            'btmp_trns%i_grad_vx', btmp_trns%i_grad_vx,          &
+!     &            ipol%i_grad_vx, iphys%i_grad_vx
       write(*,*)
 !
       write(*,*) 'nscalar_tmp_rj_2_rtp', nscalar_tmp_rj_2_rtp

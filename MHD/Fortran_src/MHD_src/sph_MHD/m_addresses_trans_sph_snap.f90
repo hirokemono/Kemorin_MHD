@@ -196,6 +196,13 @@
       call add_vec_trans_flag(ipol%i_grad_composit,                     &
      &    iphys%i_grad_composit, nvector_snap_rj_2_rtp,                 &
      &    bsnap_trns%i_grad_composit)
+!
+      call add_vec_trans_flag(ipol%i_grad_vx, iphys%i_grad_vx,         &
+     &    nvector_snap_rj_2_rtp, bsnap_trns%i_grad_vx)
+      call add_vec_trans_flag(ipol%i_grad_vy, iphys%i_grad_vy,         &
+     &    nvector_snap_rj_2_rtp, bsnap_trns%i_grad_vy)
+      call add_vec_trans_flag(ipol%i_grad_vz, iphys%i_grad_vz,         &
+     &    nvector_snap_rj_2_rtp, bsnap_trns%i_grad_vz)
       ncomp_snap_rj_2_rtp = 3*nvector_snap_rj_2_rtp
 !
 !
@@ -316,6 +323,16 @@
      &            'bsnap_trns%i_grad_composit',                         &
      &            bsnap_trns%i_grad_composit,                           &
      &            ipol%i_grad_composit, iphys%i_grad_composit
+!
+      if(bsnap_trns%i_grad_vx .gt. 0) write(*,*)                        &
+     &            'bsnap_trns%i_grad_vx', bsnap_trns%i_grad_vx,         &
+     &            ipol%i_grad_vx, iphys%i_grad_vx
+      if(bsnap_trns%i_grad_vy .gt. 0) write(*,*)                        &
+     &            'bsnap_trns%i_grad_vy', bsnap_trns%i_grad_vy,         &
+     &            ipol%i_grad_vy, iphys%i_grad_vy
+      if(bsnap_trns%i_grad_vz .gt. 0) write(*,*)                        &
+     &            'bsnap_trns%i_grad_vz', bsnap_trns%i_grad_vz,         &
+     &            ipol%i_grad_vz, iphys%i_grad_vz
       write(*,*)
 !
       write(*,*) 'nscalar_snap_rj_2_rtp', nscalar_snap_rj_2_rtp

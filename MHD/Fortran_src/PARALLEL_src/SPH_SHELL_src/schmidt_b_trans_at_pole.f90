@@ -95,9 +95,6 @@
       integer(kind = kint) :: jst, jed, j_rlm, i_rlm, i_recv
 !
 !
-      v_np_local = zero
-      v_sp_local = zero
-!
       if(ist_rtm_order_zero .le. 0) return
 !!$omp parallel do private(k_rlm,nd,kr_nd,jst,jed,j_rlm,i_rlm,i_recv)
       do k_rlm = 1, nidx_rlm(1)
@@ -174,7 +171,7 @@
             kr_nd = nd + (idx_gl_1d_rtm_r(k_rlm)-1) * ncomp
 !
             jst = ist_rtm_order_1s
-            jed = ist_rtm_order_1s + l_truncation
+            jed = ist_rtm_order_1s + l_truncation-1
             do j_rlm = jst, jed
               i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                      &
      &                  + (k_rlm-1) * istep_rlm(1)
@@ -202,7 +199,7 @@
             kr_nd = nd + (idx_gl_1d_rtm_r(k_rlm)-1) * ncomp
 !
             jst = ist_rtm_order_1c
-            jed = ist_rtm_order_1c + l_truncation
+            jed = ist_rtm_order_1c + l_truncation-1
             do j_rlm = jst, jed
               i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                      &
      &                  + (k_rlm-1) * istep_rlm(1)

@@ -17,7 +17,7 @@
 !
       implicit  none
 !
-      private :: pole_back_trans_4_MHD, pole_back_trans_snapshot_MHD
+      private :: pole_back_trans_snapshot_MHD
 !
 !-----------------------------------------------------------------------
 !
@@ -35,8 +35,6 @@
 !
       if(iflag_shell_mode .eq. iflag_MESH_same) return
 !
-      if (iflag_debug.eq.1) write(*,*) 'pole_back_trans_4_MHD'
-      call pole_back_trans_4_MHD
       if (iflag_debug.eq.1) write(*,*) 'pole_back_trans_snapshot_MHD'
       call pole_back_trans_snapshot_MHD
 !
@@ -48,33 +46,6 @@
       end subroutine lead_pole_fields_4_sph_mhd
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine pole_back_trans_4_MHD
-!
-      use m_solver_SR
-      use m_work_4_sph_trans
-      use m_addresses_trans_sph_MHD
-      use spherical_SRs_N
-      use pole_sph_transform
-      use copy_sph_MHD_4_send_recv
-      use copy_MHD_4_pole_trans
-!
-!
-      if(ncomp_rj_2_rtp .le. 0) return
-!
-      call check_calypso_rj_2_rlm_buf_N(ncomp_rj_2_rtp)
-!
-      call copy_mhd_spectr_to_send(ncomp_rj_2_rtp, n_WS, WS)
-!
-      call pole_backward_transforms(ncomp_rj_2_rtp,                     &
-     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, n_WR, WR(1))
-!
-      call copy_mhd_vec_from_pole_trans
-      call copy_mhd_scl_from_pole_trans
-!
-      end subroutine pole_back_trans_4_MHD
-!
 !-----------------------------------------------------------------------
 !
       subroutine pole_back_trans_snapshot_MHD

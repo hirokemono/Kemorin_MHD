@@ -163,9 +163,9 @@
      &      nidx_rtp(1), nidx_rtp(2), a_r_1d_rtp_r, cot_theta_1d_rtp,   &
      &      fld_snap_rtp(1,bsnap_trns%i_magne),                         &
      &      fld_snap_rtp(1,bsnap_trns%i_velo),                          &
-     &      fld_tmp_rtp(1,btmp_trns%i_grad_vx),                         &
-     &      fld_tmp_rtp(1,btmp_trns%i_grad_vy),                         &
-     &      fld_tmp_rtp(1,btmp_trns%i_grad_vz),                         &
+     &      fld_snap_rtp(1,bsnap_trns%i_grad_vx),                       &
+     &      fld_snap_rtp(1,bsnap_trns%i_grad_vy),                       &
+     &      fld_snap_rtp(1,bsnap_trns%i_grad_vz),                       &
      &      frc_snap_rtp(1,fsnap_trns%i_mag_stretch) )
 !$omp end parallel
       end if

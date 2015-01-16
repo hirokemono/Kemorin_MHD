@@ -8,8 +8,6 @@
 !!
 !!@verbatim
 !!      subroutine copy_snap_vec_fld_from_trans
-!!      subroutine copy_tmp_vec_fld_from_trans
-!!
 !!      subroutine copy_snap_vec_fld_to_trans
 !!@endverbatim
 !
@@ -71,6 +69,13 @@
       call copy_vector_from_snap_trans                                  &
      &   (bsnap_trns%i_grad_composit, iphys%i_grad_composit)
 !
+      call copy_vector_from_snap_trans                                  &
+     &    (bsnap_trns%i_grad_vx, iphys%i_grad_vx)
+      call copy_vector_from_snap_trans                                  &
+     &    (bsnap_trns%i_grad_vy, iphys%i_grad_vy)
+      call copy_vector_from_snap_trans                                  &
+     &    (bsnap_trns%i_grad_vz, iphys%i_grad_vz)
+!
 !  Copy scalars
       call copy_scalar_from_snap_trans(bsnap_trns%i_temp, iphys%i_temp)
       call copy_scalar_from_snap_trans                                  &
@@ -92,25 +97,6 @@
 !$omp end parallel
 !
       end subroutine copy_snap_vec_fld_from_trans
-!
-!-----------------------------------------------------------------------
-!
-      subroutine copy_tmp_vec_fld_from_trans
-!
-      use m_node_phys_address
-      use m_addresses_trans_sph_tmp
-!
-!
-!$omp parallel
-      call copy_vector_from_tmp_trans                                   &
-     &    (btmp_trns%i_grad_vx, iphys%i_grad_vx)
-      call copy_vector_from_tmp_trans                                   &
-     &    (btmp_trns%i_grad_vy, iphys%i_grad_vy)
-      call copy_vector_from_tmp_trans                                   &
-     &    (btmp_trns%i_grad_vz, iphys%i_grad_vz)
-!$omp end parallel
-!
-      end subroutine copy_tmp_vec_fld_from_trans
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -240,27 +226,6 @@
      &    numnod, frc_snap_rtp(1,i_trns), d_nod(1,i_field) )
 !
       end subroutine copy_vector_from_snap_force
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine copy_vector_from_tmp_trans(i_trns, i_field)
-!
-      use m_addresses_trans_sph_tmp
-      use m_spheric_parameter
-      use m_spheric_param_smp
-      use m_geometry_parameter
-      use m_node_phys_data
-      use sel_fld_copy_4_sph_trans
-!
-      integer(kind = kint), intent(in) :: i_field, i_trns
-!
-!
-      if( (i_field*i_trns) .le. 0) return
-      call copy_vector_from_trans(nnod_rtp, inod_rtp_smp_stack,         &
-     &    numnod, fld_tmp_rtp(1,i_trns), d_nod(1,i_field) )
-!
-      end subroutine copy_vector_from_tmp_trans
 !
 !-----------------------------------------------------------------------
 !

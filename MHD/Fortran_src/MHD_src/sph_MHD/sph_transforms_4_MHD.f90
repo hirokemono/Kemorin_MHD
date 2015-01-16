@@ -15,7 +15,6 @@
 !!      subroutine sph_back_trans_snapshot_MHD
 !!      subroutine sph_forward_trans_snapshot_MHD
 !!
-!!      subroutine sph_back_trans_tmp_snap_MHD
 !!      subroutine sph_forward_trans_tmp_snap_MHD
 !!
 !!      subroutine sph_transform_4_licv
@@ -232,34 +231,6 @@
       end subroutine sph_forward_trans_snapshot_MHD
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine sph_back_trans_tmp_snap_MHD
-!
-      use m_solver_SR
-      use m_addresses_trans_sph_tmp
-      use m_work_4_sph_trans
-      use sph_transforms
-      use copy_sph_MHD_4_send_recv
-      use spherical_SRs_N
-!
-      integer(kind = kint) :: nscalar_trans
-!
-!
-      if(ncomp_tmp_rj_2_rtp .le. 0) return
-!
-      nscalar_trans = nscalar_tmp_rj_2_rtp + 6*ntensor_tmp_rj_2_rtp
-      call check_calypso_rj_2_rlm_buf_N(ncomp_tmp_rj_2_rtp)
-      call check_calypso_rtm_2_rtp_buf_N(ncomp_tmp_rj_2_rtp)
-!
-      call copy_tmp_vec_spec_to_trans(ncomp_tmp_rj_2_rtp, n_WS, WS)
-!
-      call sph_backward_transforms                                      &
-     &   (ncomp_tmp_rj_2_rtp, nvector_tmp_rj_2_rtp, nscalar_trans,      &
-     &    n_WS, n_WR, WS(1), WR(1), fld_tmp_rtp)
-!
-      end subroutine sph_back_trans_tmp_snap_MHD
-!
 !-----------------------------------------------------------------------
 !
       subroutine sph_forward_trans_tmp_snap_MHD
