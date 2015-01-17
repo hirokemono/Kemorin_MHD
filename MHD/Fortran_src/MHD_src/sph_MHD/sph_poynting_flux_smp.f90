@@ -36,20 +36,20 @@
 !
 !
 !$omp parallel
-      if(ftmp_trns%i_grad_vx.gt.0) then
+      if(ft_trns%i_grad_vx.gt.0) then
         call sel_scalar_from_trans                                      &
      &     (nnod_rtp, fld_rtp(1,b_trns%i_velo  ),                       &
-     &      frc_tmp_rtp(1,ftmp_trns%i_grad_vx) )
+     &      frt_rtp(1,ft_trns%i_grad_vx) )
       end if
-      if(ftmp_trns%i_grad_vy.gt.0) then
+      if(ft_trns%i_grad_vy.gt.0) then
         call sel_scalar_from_trans                                      &
      &     (nnod_rtp, fld_rtp(1,b_trns%i_velo+1),                       &
-     &      frc_tmp_rtp(1,ftmp_trns%i_grad_vy) )
+     &      frt_rtp(1,ft_trns%i_grad_vy) )
       end if
-      if(ftmp_trns%i_grad_vz.gt.0) then
+      if(ft_trns%i_grad_vz.gt.0) then
         call sel_scalar_from_trans                                      &
      &     (nnod_rtp, fld_rtp(1,b_trns%i_velo+2),                       &
-     &      frc_tmp_rtp(1,ftmp_trns%i_grad_vz) )
+     &      frt_rtp(1,ft_trns%i_grad_vz) )
       end if
 !$omp end parallel
 !

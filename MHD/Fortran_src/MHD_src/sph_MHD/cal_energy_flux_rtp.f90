@@ -43,17 +43,15 @@
       if( (f_trns%i_m_advect*iflag_t_evo_4_velo) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (np_smp, nnod_pole, istack_npole_smp, coef_velo,             &
-     &      fld_snap_pole(1,bsnap_trns%i_vort),                         &
-     &      fld_snap_pole(1,bsnap_trns%i_velo),                         &
-     &      frc_MHD_pole(1,f_trns%i_m_advect) )
+     &      fls_pl(1,bs_trns%i_vort), fls_pl(1,bs_trns%i_velo),         &
+     &      frm_pl(1,f_trns%i_m_advect) )
       end if
 !
       if( (f_trns%i_lorentz*iflag_4_lorentz) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (np_smp, nnod_pole, istack_npole_smp, coef_lor,              &
-     &      fld_snap_pole(1,bsnap_trns%i_current),                      &
-     &      fld_snap_pole(1,bsnap_trns%i_magne),                        &
-     &      frc_MHD_pole(1,f_trns%i_lorentz) )
+     &      fls_pl(1,bs_trns%i_current), fls_pl(1,bs_trns%i_magne),     &
+     &      frm_pl(1,f_trns%i_lorentz) )
       end if
 !
 !
@@ -61,32 +59,29 @@
       if( (f_trns%i_vp_induct*iflag_t_evo_4_magne) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (np_smp, nnod_pole, istack_npole_smp, coef_induct,           &
-     &      fld_snap_pole(1,bsnap_trns%i_velo),                         &
-     &      fld_snap_pole(1,bsnap_trns%i_magne),                        &
-     &      frc_MHD_pole(1,f_trns%i_vp_induct) )
+     &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_magne),        &
+     &      frm_pl(1,f_trns%i_vp_induct) )
       end if
 !
 !
       if( (f_trns%i_h_flux*iflag_t_evo_4_temp) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (np_smp, nnod_pole, istack_npole_smp, coef_temp,             &
-     &      fld_snap_pole(1,bsnap_trns%i_velo),                         &
-     &      fld_snap_pole(1,bsnap_trns%i_temp),                         &
-     &      frc_MHD_pole(1,f_trns%i_h_flux) )
+     &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_temp),         &
+     &      frm_pl(1,f_trns%i_h_flux) )
       end if
 !
       if( (f_trns%i_c_flux*iflag_t_evo_4_composit) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (np_smp, nnod_pole, istack_npole_smp, coef_light,            &
-     &      fld_snap_pole(1,bsnap_trns%i_velo),                         &
-     &      fld_snap_pole(1,bsnap_trns%i_light),                        &
-     &      frc_MHD_pole(1,f_trns%i_c_flux) )
+     &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_light),        &
+     &      frm_pl(1,f_trns%i_c_flux) )
       end if
 !
 !      if( (f_trns%i_Coriolis*iflag_4_coriolis) .gt. 0) then
 !        call cal_wz_coriolis_rtp                                       &
-!     &     (nnod_pole, fld_snap_pole(1,bsnap_trns%i_velo),             &
-!            frc_MHD_pole(1,f_trns%i_Coriolis))
+!     &     (nnod_pole, fls_pl(1,bs_trns%i_velo),                       &
+!            frm_pl(1,f_trns%i_Coriolis))
 !      end if
 !$omp end parallel
 !
@@ -116,126 +111,111 @@
 !
 !
 !$omp parallel
-!      if(fsnap_trns%i_coriolis .gt. 0) then
-!        call cal_wz_coriolis_rtp(nnod_rtp,                             &
-!     &      fld_snap_rtp(1,bsnap_trns%i_velo),                         &
-!     &      frc_snap_rtp(1,fsnap_trns%i_Coriolis))
+!      if(fs_trns%i_coriolis .gt. 0) then
+!        call cal_wz_coriolis_rtp(nnod_rtp, fls_rtp(1,bs_trns%i_velo),  &
+!     &      frs_rtp(1,fs_trns%i_Coriolis))
 !      end if
 !
-      if(fsnap_trns%i_ujb .gt. 0) then
+      if(fs_trns%i_ujb .gt. 0) then
         call cal_dot_prod_no_coef_smp(np_smp, nnod_rtp,                 &
-     &      inod_rtp_smp_stack, frc_MHD_rtp(1,f_trns%i_lorentz),        &
-     &      fld_snap_rtp(1,bsnap_trns%i_velo),                          &
-     &      frc_snap_rtp(1,fsnap_trns%i_ujb) )
+     &      inod_rtp_smp_stack, frm_rtp(1,f_trns%i_lorentz),            &
+     &      fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_ujb) )
       end if
 !
-      if(fsnap_trns%i_nega_ujb .gt. 0) then
+      if(fs_trns%i_nega_ujb .gt. 0) then
         call cal_dot_prod_w_coef_smp(np_smp, nnod_rtp,                  &
      &      inod_rtp_smp_stack, dminus,                                 &
-     &      frc_MHD_rtp(1,f_trns%i_lorentz),                            &
-     &      fld_snap_rtp(1,bsnap_trns%i_velo),                          &
-     &      frc_snap_rtp(1,fsnap_trns%i_nega_ujb) )
+     &      frm_rtp(1,f_trns%i_lorentz), fls_rtp(1,bs_trns%i_velo),     &
+     &      frs_rtp(1,fs_trns%i_nega_ujb) )
       end if
 !
-      if(fsnap_trns%i_me_gen .gt. 0) then
+      if(fs_trns%i_me_gen .gt. 0) then
         call cal_dot_prod_no_coef_smp(np_smp, nnod_rtp,                 &
-     &      inod_rtp_smp_stack, fld_snap_rtp(1,bsnap_trns%i_induction), &
-     &      fld_snap_rtp(1,bsnap_trns%i_magne),                         &
-     &      frc_snap_rtp(1,fsnap_trns%i_me_gen))
+     &      inod_rtp_smp_stack, fls_rtp(1,bs_trns%i_induction),         &
+     &      fls_rtp(1,bs_trns%i_magne), frs_rtp(1,fs_trns%i_me_gen))
       end if
 !
-      if(fsnap_trns%i_electric .gt. 0) then
+      if(fs_trns%i_electric .gt. 0) then
         call cal_electric_field_smp                                     &
      &     (np_smp, nnod_rtp, inod_rtp_smp_stack, coef_d_magne,         &
-     &      fld_snap_rtp(1,bsnap_trns%i_current),                       &
-     &      frc_MHD_rtp(1,f_trns%i_vp_induct),                          &
-     &      frc_snap_rtp(1,fsnap_trns%i_electric))
+     &      fls_rtp(1,bs_trns%i_current),                               &
+     &      frm_rtp(1,f_trns%i_vp_induct),                              &
+     &      frs_rtp(1,fs_trns%i_electric))
       end if
 !
-      if(fsnap_trns%i_poynting .gt. 0) then
+      if(fs_trns%i_poynting .gt. 0) then
         call cal_poynting_flux_smp                                      &
      &     (np_smp, nnod_rtp, inod_rtp_smp_stack, coef_d_magne,         &
-     &      fld_snap_rtp(1,bsnap_trns%i_current),                       &
-     &      frc_MHD_rtp(1,f_trns%i_vp_induct),                          &
-     &      fld_snap_rtp(1,bsnap_trns%i_magne),                         &
-     &      frc_snap_rtp(1,fsnap_trns%i_poynting))
+     &      fls_rtp(1,bs_trns%i_current),                               &
+     &      frm_rtp(1,f_trns%i_vp_induct), fls_rtp(1,bs_trns%i_magne),  &
+     &      frs_rtp(1,fs_trns%i_poynting))
       end if
 !
-      if(fsnap_trns%i_buo_gen .gt. 0) then
+      if(fs_trns%i_buo_gen .gt. 0) then
         if(iflag_4_ref_temp .eq. id_sphere_ref_temp) then
           call cal_buoyancy_flux_rtp_smp(np_smp, nnod_rtp, nidx_rtp(1), &
      &        inod_rtp_smp_stack, radius_1d_rtp_r, coef_buo,            &
-     &        fld_snap_rtp(1,bsnap_trns%i_par_temp),                    &
-     &        fld_snap_rtp(1,bsnap_trns%i_velo),                        &
-     &        frc_snap_rtp(1,fsnap_trns%i_buo_gen) )
+     &        fls_rtp(1,bs_trns%i_par_temp), fls_rtp(1,bs_trns%i_velo), &
+     &        frs_rtp(1,fs_trns%i_buo_gen) )
         else
           call cal_buoyancy_flux_rtp_smp(np_smp, nnod_rtp, nidx_rtp(1), &
      &        inod_rtp_smp_stack, radius_1d_rtp_r, coef_buo,            &
-     &        fld_snap_rtp(1,bsnap_trns%i_temp),                        &
-     &        fld_snap_rtp(1,bsnap_trns%i_velo),                        &
-     &        frc_snap_rtp(1,fsnap_trns%i_buo_gen) )
+     &        fls_rtp(1,bs_trns%i_temp), fls_rtp(1,bs_trns%i_velo),     &
+     &        frs_rtp(1,fs_trns%i_buo_gen) )
         end if
       end if
 !
-      if(fsnap_trns%i_c_buo_gen .gt. 0) then
+      if(fs_trns%i_c_buo_gen .gt. 0) then
         call cal_buoyancy_flux_rtp_smp(np_smp, nnod_rtp, nidx_rtp(1),   &
      &      inod_rtp_smp_stack, radius_1d_rtp_r, coef_comp_buo,         &
-     &      fld_snap_rtp(1,bsnap_trns%i_light),                         &
-     &      fld_snap_rtp(1,bsnap_trns%i_velo),                          &
-     &      frc_snap_rtp(1,fsnap_trns%i_c_buo_gen) )
+     &      fls_rtp(1,bs_trns%i_light), fls_rtp(1,bs_trns%i_velo),      &
+     &      frs_rtp(1,fs_trns%i_c_buo_gen) )
       end if
 !
-      if(fsnap_trns%i_f_buo_gen .gt. 0) then
+      if(fs_trns%i_f_buo_gen .gt. 0) then
         call cal_buoyancy_flux_rtp_smp(np_smp, nnod_rtp, nidx_rtp(1),   &
      &      inod_rtp_smp_stack, radius_1d_rtp_r, coef_buo,              &
-     &      fld_snap_rtp(1,bsnap_trns%i_filter_temp),                   &
-     &      fld_snap_rtp(1,bsnap_trns%i_velo),                          &
-     &      frc_snap_rtp(1,fsnap_trns%i_f_buo_gen) )
+     &      fls_rtp(1,bs_trns%i_filter_temp),                           &
+     &      fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_f_buo_gen) )
       end if
 !
-      if(fsnap_trns%i_velo_scale .gt. 0) then
+      if(fs_trns%i_velo_scale .gt. 0) then
         call cal_len_scale_by_rot_smp                                   &
      &      (np_smp, nnod_rtp, inod_rtp_smp_stack,                      &
-     &      fld_snap_rtp(1,bsnap_trns%i_velo),                          &
-     &      fld_snap_rtp(1,bsnap_trns%i_vort),                          &
-     &      frc_snap_rtp(1,fsnap_trns%i_velo_scale))
+     &      fls_rtp(1,bs_trns%i_velo), fls_rtp(1,bs_trns%i_vort),       &
+     &      frs_rtp(1,fs_trns%i_velo_scale))
       end if
-      if(fsnap_trns%i_magne_scale .gt. 0) then
+      if(fs_trns%i_magne_scale .gt. 0) then
         call cal_len_scale_by_rot_smp                                   &
      &     (np_smp, nnod_rtp, inod_rtp_smp_stack,                       &
-     &      fld_snap_rtp(1,bsnap_trns%i_magne),                         &
-     &      fld_snap_rtp(1,bsnap_trns%i_current),                       &
-     &      frc_snap_rtp(1,fsnap_trns%i_magne_scale))
+     &      fls_rtp(1,bs_trns%i_magne), fls_rtp(1,bs_trns%i_current),   &
+     &      frs_rtp(1,fs_trns%i_magne_scale))
       end if
-      if(fsnap_trns%i_temp_scale .gt. 0) then
+      if(fs_trns%i_temp_scale .gt. 0) then
         call cal_len_scale_by_diffuse_smp                               &
      &     (np_smp, nnod_rtp, inod_rtp_smp_stack,                       &
-     &      fld_snap_rtp(1,bsnap_trns%i_temp),                          &
-     &      fld_snap_rtp(1,bsnap_trns%i_t_diffuse),                     &
-     &      frc_snap_rtp(1,fsnap_trns%i_temp_scale))
+     &      fls_rtp(1,bs_trns%i_temp), fls_rtp(1,bs_trns%i_t_diffuse),  &
+     &      frs_rtp(1,fs_trns%i_temp_scale))
       end if
-      if(fsnap_trns%i_comp_scale .gt. 0) then
+      if(fs_trns%i_comp_scale .gt. 0) then
         call cal_len_scale_by_diffuse_smp                               &
      &     (np_smp, nnod_rtp, inod_rtp_smp_stack,                       &
-     &      fld_snap_rtp(1,bsnap_trns%i_light),                         &
-     &      fld_snap_rtp(1,bsnap_trns%i_c_diffuse),                     &
-     &      frc_snap_rtp(1,fsnap_trns%i_comp_scale))
+     &      fls_rtp(1,bs_trns%i_light), fls_rtp(1,bs_trns%i_c_diffuse), &
+     &      frs_rtp(1,fs_trns%i_comp_scale))
       end if
 !$omp end parallel
 !
 !
-      if(fsnap_trns%i_mag_stretch .gt. 0) then
+      if(fs_trns%i_mag_stretch .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rtp_magnetic_streach'
 !$omp parallel
         call cal_rtp_magnetic_streach                                   &
      &     (np_smp, nnod_rtp, inod_rtp_smp_stack,                       &
      &      nidx_rtp(1), nidx_rtp(2), a_r_1d_rtp_r, cot_theta_1d_rtp,   &
-     &      fld_snap_rtp(1,bsnap_trns%i_magne),                         &
-     &      fld_snap_rtp(1,bsnap_trns%i_velo),                          &
-     &      fld_snap_rtp(1,bsnap_trns%i_grad_vx),                       &
-     &      fld_snap_rtp(1,bsnap_trns%i_grad_vy),                       &
-     &      fld_snap_rtp(1,bsnap_trns%i_grad_vz),                       &
-     &      frc_snap_rtp(1,fsnap_trns%i_mag_stretch) )
+     &      fls_rtp(1,bs_trns%i_magne), fls_rtp(1,bs_trns%i_velo),      &
+     &      fls_rtp(1,bs_trns%i_grad_vx), fls_rtp(1,bs_trns%i_grad_vy), &
+     &      fls_rtp(1,bs_trns%i_grad_vz),                               &
+     &      frs_rtp(1,fs_trns%i_mag_stretch) )
 !$omp end parallel
       end if
 !

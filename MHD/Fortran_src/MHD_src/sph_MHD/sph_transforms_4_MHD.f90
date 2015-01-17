@@ -195,13 +195,12 @@
       call check_calypso_rj_2_rlm_buf_N(ncomp_snap_rj_2_rtp)
       call check_calypso_rtm_2_rtp_buf_N(ncomp_snap_rj_2_rtp)
 !
-      call copy_snap_spectr_to_send(ncomp_snap_rj_2_rtp,                &
-     &    n_WS, WS, fll_snap_pole)
+      call copy_snap_spectr_to_send                                     &
+     &   (ncomp_snap_rj_2_rtp, n_WS, WS, flc_pl)
 !
       call sph_backward_transforms                                      &
      &   (ncomp_snap_rj_2_rtp, nvector_snap_rj_2_rtp, nscalar_trans,    &
-     &    n_WS, n_WR, WS(1), WR(1), fld_snap_rtp,                       &
-     &    fll_snap_pole, fld_snap_pole)
+     &    n_WS, n_WR, WS(1), WR(1), fls_rtp, flc_pl, fls_pl)
 !
       end subroutine sph_back_trans_snapshot_MHD
 !
@@ -225,7 +224,7 @@
 !   transform for vectors and scalars
       call sph_forward_transforms(ncomp_snap_rtp_2_rj,                  &
      &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
-     &    frc_snap_rtp, n_WS, n_WR, WS(1), WR(1))
+     &    frs_rtp, n_WS, n_WR, WS(1), WR(1))
 !
       call copy_snap_vec_spec_from_trans                                &
      &   (ncomp_snap_rtp_2_rj, n_WR, WR(1))
@@ -253,7 +252,7 @@
 !   transform for vectors and scalars
       call sph_forward_transforms(ncomp_tmp_rtp_2_rj,                   &
      &    nvector_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                   &
-     &    frc_tmp_rtp, n_WS, n_WR, WS, WR)
+     &    frt_rtp, n_WS, n_WR, WS, WR)
 !
       call copy_tmp_scl_spec_from_trans(ncomp_tmp_rtp_2_rj, n_WR, WR)
 !

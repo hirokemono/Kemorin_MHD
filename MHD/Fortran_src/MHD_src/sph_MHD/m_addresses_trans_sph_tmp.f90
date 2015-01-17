@@ -44,15 +44,15 @@
       integer(kind = kint) :: ntensor_tmp_rtp_2_rj = 0
 !
 !>    addresses for fields to backward transform
-      type(phys_address), save :: btmp_trns
+      type(phys_address), save :: bt_trns
 !
 !>    addresses for forces to forward transform
-      type(phys_address), save :: ftmp_trns
+      type(phys_address), save :: ft_trns
 !
 !>      field data to evaluate nonliear terms in grid space
-      real(kind = kreal), allocatable :: fld_tmp_rtp(:,:)
+      real(kind = kreal), allocatable :: flt_rtp(:,:)
 !>      Nonoliear terms data in grid space
-      real(kind = kreal), allocatable :: frc_tmp_rtp(:,:)
+      real(kind = kreal), allocatable :: frt_rtp(:,:)
 !
 !-----------------------------------------------------------------------
 !
@@ -65,10 +65,10 @@
       use m_spheric_parameter
 !
 !
-      allocate(fld_tmp_rtp(nnod_rtp,ncomp_tmp_rj_2_rtp))
-      allocate(frc_tmp_rtp(nnod_rtp,ncomp_tmp_rtp_2_rj))
-      if(ncomp_tmp_rj_2_rtp .gt. 0) fld_tmp_rtp = 0.0d0
-      if(ncomp_tmp_rtp_2_rj .gt. 0) frc_tmp_rtp = 0.0d0
+      allocate(flt_rtp(nnod_rtp,ncomp_tmp_rj_2_rtp))
+      allocate(frt_rtp(nnod_rtp,ncomp_tmp_rtp_2_rj))
+      if(ncomp_tmp_rj_2_rtp .gt. 0) flt_rtp = 0.0d0
+      if(ncomp_tmp_rtp_2_rj .gt. 0) frt_rtp = 0.0d0
 !
       end subroutine allocate_tmp_trans_rtp
 !
@@ -76,7 +76,7 @@
 !
       subroutine deallocate_tmp_trans_rtp
 !
-      deallocate(fld_tmp_rtp, frc_tmp_rtp)
+      deallocate(flt_rtp, frt_rtp)
 !
       end subroutine deallocate_tmp_trans_rtp
 !
@@ -94,30 +94,30 @@
 !
       nvector_tmp_rtp_2_rj = 0
 !      call add_vec_trans_flag(ipol%i_coriolis, iphys%i_coriolis,       &
-!     &    nvector_tmp_rtp_2_rj, fsnap_trns%i_coriolis)
+!     &    nvector_tmp_rtp_2_rj, fs_trns%i_coriolis)
       ncomp_tmp_rtp_2_rj = 3*nvector_tmp_rtp_2_rj
 !
       nscalar_tmp_rtp_2_rj = 0
       call add_scalar_trans_flag(ipol%i_grad_vx, iphys%i_grad_vx,       &
      &    ncomp_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                     &
-     &    ftmp_trns%i_grad_vx)
+     &    ft_trns%i_grad_vx)
       call add_scalar_trans_flag(ipol%i_grad_vy, iphys%i_grad_vy,       &
      &    ncomp_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                     &
-     &    ftmp_trns%i_grad_vy)
+     &    ft_trns%i_grad_vy)
       call add_scalar_trans_flag(ipol%i_grad_vz, iphys%i_grad_vz,       &
      &    ncomp_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                     &
-     &    ftmp_trns%i_grad_vz)
+     &    ft_trns%i_grad_vz)
       ncomp_tmp_rtp_2_rj = ncomp_tmp_rtp_2_rj + nscalar_tmp_rtp_2_rj
 !
 !
       nvector_tmp_rj_2_rtp = 0
 !      call add_vec_trans_flag(ipol%i_grad_vx, iphys%i_grad_vx,         &
-!     &    nvector_tmp_rj_2_rtp, btmp_trns%i_grad_vx)
+!     &    nvector_tmp_rj_2_rtp, bt_trns%i_grad_vx)
       ncomp_tmp_rj_2_rtp = 3*nvector_tmp_rj_2_rtp
 !
       nscalar_tmp_rj_2_rtp = 0
 !      call add_transform_flag(ipol%i_temp, iphys%i_temp,               &
-!     &    ncomp_tmp_rj_2_rtp, nscalar_tmp_rj_2_rtp, bsnap_trns%i_temp)
+!     &    ncomp_tmp_rj_2_rtp, nscalar_tmp_rj_2_rtp, bs_trns%i_temp)
       ncomp_tmp_rj_2_rtp = ncomp_tmp_rj_2_rtp + nscalar_tmp_rj_2_rtp
 !
 !
@@ -147,33 +147,33 @@
       write(*,*) 'ncomp_tmp_rtp_2_rj', ncomp_tmp_rtp_2_rj
 !
       write(*,*) 'nvector_tmp_rj_2_rtp', nvector_tmp_rj_2_rtp
-!      if(btmp_trns%i_grad_vx .gt. 0) write(*,*)                        &
-!     &            'btmp_trns%i_grad_vx', btmp_trns%i_grad_vx,          &
+!      if(bt_trns%i_grad_vx .gt. 0) write(*,*)                          &
+!     &            'bt_trns%i_grad_vx', bt_trns%i_grad_vx,              &
 !     &            ipol%i_grad_vx, iphys%i_grad_vx
       write(*,*)
 !
       write(*,*) 'nscalar_tmp_rj_2_rtp', nscalar_tmp_rj_2_rtp
-!      if(btmp_trns%i_temp .gt. 0) write(*,*)                           &
-!     &            'btmp_trns%i_temp', btmp_trns%i_temp,                &
+!      if(bt_trns%i_temp .gt. 0) write(*,*)                             &
+!     &            'bt_trns%i_temp', bt_trns%i_temp,                    &
 !     &            ipol%i_temp, iphys%i_temp
       write(*,*)
 !
 !
       write(*,*) 'nvector_tmp_rtp_2_rj', nvector_tmp_rtp_2_rj
-!      if(ftmp_trns%i_coriolis .gt. 0) write(*,*)                       &
-!     &            'ftmp_trns%i_coriolis',  ftmp_trns%i_coriolis,       &
+!      if(ft_trns%i_coriolis .gt. 0) write(*,*)                         &
+!     &            'ft_trns%i_coriolis',  ft_trns%i_coriolis,           &
 !     &            ipol%i_coriolis, iphys%i_coriolis
 !
 !
       write(*,*) 'nscalar_tmp_rtp_2_rj', nscalar_tmp_rtp_2_rj
-      if(ftmp_trns%i_grad_vx .gt. 0) write(*,*)                         &
-     &            'ftmp_trns%i_grad_vx', ftmp_trns%i_grad_vx,           &
+      if(ft_trns%i_grad_vx .gt. 0) write(*,*)                           &
+     &            'ft_trns%i_grad_vx', ft_trns%i_grad_vx,               &
      &            ipol%i_grad_vx, iphys%i_velo
-      if(ftmp_trns%i_grad_vy .gt. 0) write(*,*)                         &
-     &            'ftmp_trns%i_grad_vy', ftmp_trns%i_grad_vy,           &
+      if(ft_trns%i_grad_vy .gt. 0) write(*,*)                           &
+     &            'ft_trns%i_grad_vy', ft_trns%i_grad_vy,               &
      &            ipol%i_grad_vy, iphys%i_velo+1
-      if(ftmp_trns%i_grad_vz .gt. 0) write(*,*)                         &
-     &            'ftmp_trns%i_grad_vz', ftmp_trns%i_grad_vz,           &
+      if(ft_trns%i_grad_vz .gt. 0) write(*,*)                           &
+     &            'ft_trns%i_grad_vz', ft_trns%i_grad_vz,               &
      &            ipol%i_grad_vz, iphys%i_velo+2
         write(*,*)
 !
