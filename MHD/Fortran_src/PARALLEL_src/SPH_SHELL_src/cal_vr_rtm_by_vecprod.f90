@@ -22,6 +22,12 @@
 !!     &        dpoldp_e, dtordp_e, dpoldp_o, dtordp_o, vr_np, vr_nn)
 !!      subroutine cal_vr_rtm_scalar_symmetry(nj_rlm, P_je, P_jo,       &
 !!     &          scl_e, scl_o, vr_p, vr_n)
+!!
+!!      subroutine cal_vr_rtm_dydtheta_equator(nj_rlm, Pg3_je, dPdt_jo, &
+!!     &          pol_e, dpoldt_o, dtordt_o, vr_pp)
+!!      subroutine cal_vr_rtm_dydphi_equator                            &
+!!     &       (nj_rlm, Pg3_je, dpoldp_e, dtordp_e, vr_np)
+!!      subroutine cal_vr_rtm_scalar_equator(nj_rlm, P_je, scl_e, vr_p)
 !!@endverbatim
 !!
 !
@@ -220,6 +226,83 @@
       vr_p = vr_p + symp_r + asmp_r
 !
       end subroutine cal_vr_rtm_scalar_symmetry
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine cal_vr_rtm_dydtheta_equator(nj_rlm, Pg3_je, dPdt_jo,   &
+     &          pol_e, dpoldt_o, dtordt_o, vr_pp)
+!
+      integer(kind = kint), intent(in) :: nj_rlm
+      real(kind = kreal), intent(in) :: Pg3_je((nj_rlm+1)/2)
+      real(kind = kreal), intent(in) :: dPdt_jo(nj_rlm/2)
+!
+      real(kind = kreal), intent(in) :: pol_e((nj_rlm+1)/2)
+      real(kind = kreal), intent(in) :: dpoldt_o(nj_rlm/2)
+      real(kind = kreal), intent(in) :: dtordt_o(nj_rlm/2)
+!
+      real(kind = kreal), intent(inout) :: vr_pp(3)
+!
+      real(kind = kreal) :: symp_r, symp_t, symp_p
+!
+!
+!   even l-m
+      symp_r = DOT_PRODUCT(pol_e, Pg3_je)
+!
+!   odd l-m
+      symp_t = DOT_PRODUCT(dpoldt_o, dPdt_jo)
+      symp_p = DOT_PRODUCT(dtordt_o, dPdt_jo)
+!
+      vr_pp(1) = vr_pp(1) + symp_r
+      vr_pp(2) = vr_pp(2) + symp_t
+      vr_pp(3) = vr_pp(3) - symp_p
+!
+      end subroutine cal_vr_rtm_dydtheta_equator
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_vr_rtm_dydphi_equator                              &
+     &       (nj_rlm, Pg3_je, dpoldp_e, dtordp_e, vr_np)
+!
+      integer(kind = kint), intent(in) :: nj_rlm
+      real(kind = kreal), intent(in) :: Pg3_je((nj_rlm+1)/2)
+!
+      real(kind = kreal), intent(in) :: dpoldp_e((nj_rlm+1)/2)
+      real(kind = kreal), intent(in) :: dtordp_e((nj_rlm+1)/2)
+!
+      real(kind = kreal), intent(inout) :: vr_np(3)
+!
+      real(kind = kreal) :: symn_t, symn_p
+!
+!
+!   even l-m
+      symn_t = DOT_PRODUCT(dtordp_e, Pg3_je)
+      symn_p = DOT_PRODUCT(dpoldp_e, Pg3_je)
+!
+      vr_np(2) = vr_np(2) - symn_t
+      vr_np(3) = vr_np(3) - symn_p
+!
+      end subroutine cal_vr_rtm_dydphi_equator
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_vr_rtm_scalar_equator(nj_rlm, P_je, scl_e, vr_p)
+!
+      integer(kind = kint), intent(in) :: nj_rlm
+      real(kind = kreal), intent(in) :: P_je((nj_rlm+1)/2)
+!
+      real(kind = kreal), intent(in) :: scl_e((nj_rlm+1)/2)
+!
+      real(kind = kreal), intent(inout) :: vr_p
+!
+      real(kind = kreal) :: symp_r
+!
+!
+!   even l-m
+      symp_r = DOT_PRODUCT(scl_e, P_je)
+      vr_p = vr_p + symp_r
+!
+      end subroutine cal_vr_rtm_scalar_equator
 !
 ! -----------------------------------------------------------------------
 !

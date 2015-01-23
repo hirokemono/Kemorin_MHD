@@ -136,15 +136,38 @@
 !   Equator (if necessary)
         do lp_rtm = nidx_rtm(2)/2+1, (nidx_rtm(2)+1)/2
           do mp_rlm = 1, nidx_rtm(3)
+            mn_rlm = nidx_rtm(3) - mp_rlm + 1
+            jst = lstack_rlm(mp_rlm-1)
+            nj_rlm = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+            je = 1 + jst
+            jo = 1 + jst + (nj_rlm+1) / 2
             do k_rlm = kst, ked
+              a1r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)
+              a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
+!
               do nd = 1, nvector
                 ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                 &
      &                      + (k_rlm-1) *  istep_rtm(1)                 &
      &                      + (mp_rlm-1) * istep_rtm(3)
+                in_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                 &
+     &                      + (k_rlm-1) *  istep_rtm(1)                 &
+     &                      + (mn_rlm-1) * istep_rtm(3)
                 ipp_send = 3*nd-2 + (irev_sr_rtm(ip_rtpm)-1) * ncomp
-                WS(ipp_send  ) = half * WS(ipp_send  )
-                WS(ipp_send+1) = half * WS(ipp_send+1)
-                WS(ipp_send+2) = half * WS(ipp_send+2)
+                inp_send = 3*nd-2 + (irev_sr_rtm(in_rtpm)-1) * ncomp
+!
+                call set_sp_rlm_vector_equator                          &
+     &               (jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,       &
+     &                ncomp, n_WR, irev_sr_rlm, WR, nj_rlm,             &
+     &                pol_e(1,ip), dpoldp_e(1,ip), dtordp_e(1,ip),      &
+     &                dpoldt_o(1,ip), dtordt_o(1,ip))
+!
+                call cal_vr_rtm_dydtheta_equator(nj_rlm,                &
+     &              Ps_jl(je,lp_rtm), dPsdt_jl(jo,lp_rtm),              &
+     &              pol_e(1,ip), dpoldt_o(1,ip), dtordt_o(1,ip),        &
+     &              WS(ipp_send))
+                call cal_vr_rtm_dydphi_equator(nj_rlm,                  &
+     &              Ps_jl(je,lp_rtm), dpoldp_e(1,ip), dtordp_e(1,ip),   &
+     &              WS(inp_send))
               end do
             end do
           end do
@@ -224,31 +247,32 @@
           end do
         end do
 !
+!   Equator (if necessary)
         do lp_rtm = nidx_rtm(2)/2+1, (nidx_rtm(2)+1)/2
           do mp_rlm = 1, nidx_rtm(3)
             jst = lstack_rlm(mp_rlm-1)
             nj_rlm = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
             je = 1 + jst
-            jo = 1 + jst + (nj_rlm+1) / 2
             do k_rlm = kst, ked
-                do nd = 1, nscalar
-                  ip_rtm = 1 + (lp_rtm-1) * istep_rtm(2)                &
-     &                       + (k_rlm-1) *  istep_rtm(1)                &
-     &                       + (mp_rlm-1) * istep_rtm(3)
-                  ip_send = nd + 3*nvector                              &
-     &                         + (irev_sr_rtm(ip_rtm)-1) * ncomp
+              do nd = 1, nscalar
+                ip_rtm = 1 + (lp_rtm-1) * istep_rtm(2)                  &
+     &                     + (k_rlm-1) *  istep_rtm(1)                  &
+     &                     + (mp_rlm-1) * istep_rtm(3)
+                ip_send = nd + 3*nvector                                &
+     &                       + (irev_sr_rtm(ip_rtm)-1) * ncomp
 !
-                  call set_sp_rlm_scalar_symmetry(jst, nd, k_rlm,       &
+                call set_sp_rlm_scalar_equator(jst, nd, k_rlm,          &
      &               ncomp, nvector, n_WR, irev_sr_rlm, WR,             &
-     &               nj_rlm, scl_e(1,ip), scl_o(1,ip))
+     &               nj_rlm, scl_e(1,ip))
 !
-                  call cal_vr_rtm_scalar_blocked((nj_rlm+1)/2,          &
-     &               Ps_jl(je,lp_rtm), scl_e(1,ip), WS(ip_send))
-                end do
+                call cal_vr_rtm_scalar_equator(nj_rlm,                  &
+     &              Ps_jl(je,lp_rtm), scl_e(1,ip), WS(ip_send))
+              end do
 !
             end do
           end do
         end do
+!
       end do
 !$omp end parallel do
 !
