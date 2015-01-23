@@ -22,7 +22,15 @@ void set_rgb_from_value_s(struct colormap_params *cmap_s,
 		color_rainbow_c(rnorm, red, green, blue);
 	}
 	return;
+}
 
+void set_rgb_from_rgb(struct colormap_params *cmap_s,
+                      double red, double green, double blue){
+    
+    cmap_s->single_color[0] = red;
+    cmap_s->single_color[1] = green;
+    cmap_s->single_color[2] = blue;
+    return;
 }
 
 void set_opacity_from_value_s(struct colormap_params *cmap_s,

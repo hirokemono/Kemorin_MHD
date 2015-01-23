@@ -16,6 +16,7 @@
     
 	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
 	IBOutlet KemoviewerController*  _kemoviewControl;
+    IBOutlet NSColorWell *PSFPatchColorWell;
     
 	RGBAMapController * rgbaMapObject;
 	ColorMapController * colorMapObject;
@@ -60,6 +61,7 @@
 	NSInteger currentPSFID;
 	NSInteger currentPSFStep;
 	CGFloat PSFOpacity;
+    NSColor *nsPSFPatchColor;
     
 	
 	CGFloat PsfMinimumValue;
@@ -179,11 +181,12 @@
 
 - (IBAction)SetPSFDisplayrange:(id)sender;
 - (IBAction)ShowIsolineNumber:(id)pSender;
-- (IBAction)ShowPsfOpacity:(id)pSender;
 
 - (IBAction)DrawPSFVectorAction:(id)sender;
 - (IBAction)SetReferenceVector:(id)pSender;
 - (IBAction)SetVectorIncrement:(id)pSender;
 
 - (IBAction)ChoosePsfPatchDirection:(id)sender;
+
+- (IBAction)SetPSFPatchColorAction:(id)sender;
 @end

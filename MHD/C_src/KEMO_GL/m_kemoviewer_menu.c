@@ -73,6 +73,7 @@ void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 			printf( "psf_m->cmap_psf_comp[i] cannot alloc!\n" );
 			exit( 1 );
 		}
+        alloc_single_color_code(psf_m->cmap_psf_comp[i]);
 		alloc_color_index_list_s(psf_m->cmap_psf_comp[i], RAINBOW_MODE, ITWO);
 		alloc_opacity_index_list_s(psf_m->cmap_psf_comp[i], ITWO);
 	};
@@ -88,6 +89,7 @@ void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 			printf( "psf_m->cmap_psf_fld[i] cannot alloc!\n" );
 			exit( 1 );
 		}
+        alloc_single_color_code(psf_m->cmap_psf_fld[i]);
 		alloc_color_index_list_s(psf_m->cmap_psf_fld[i], RAINBOW_MODE, ITWO);
 		alloc_opacity_index_list_s(psf_m->cmap_psf_fld[i], ITWO);
 	}

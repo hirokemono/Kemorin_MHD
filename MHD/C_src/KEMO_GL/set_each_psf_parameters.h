@@ -63,7 +63,7 @@ int toggle_draw_psf_vect(struct psf_menu_val *psf_menu);
 int send_draw_psf_refv(struct psf_menu_val *psf_menu);
 int toggle_draw_psf_refv(struct psf_menu_val *psf_menu);
 
-void set_psf_patch_color(struct psf_menu_val *psf_menu, int iflag);
+void set_psf_patch_color_mode(struct psf_menu_val *psf_menu, int iflag);
 
 void set_each_isoline_color(struct psf_menu_val *psf_menu, int iflag);
 void set_each_n_isoline(struct psf_menu_val *psf_menu, int nlline);
@@ -88,6 +88,8 @@ void realloc_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int num);
 
 void set_PSF_linear_colormap(struct psf_menu_val *psf_menu, double minvalue, double maxvalue);
 
+void set_PSF_fixed_color(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
+                         double *rgba);
 void set_PSF_constant_opacity(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
                                  double opacity);
 

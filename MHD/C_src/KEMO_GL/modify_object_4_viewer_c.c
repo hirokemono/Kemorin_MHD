@@ -17,9 +17,11 @@ static void set_center_4_draw_c(struct view_element *view,
             view->x_lookat[nd] = ZERO;
         };
 	};
+    view->iso_scale =ONE;
     
     if (view->r_max < sqrt(3.0*rmax*rmax)){view->r_max = sqrt(3.0*rmax*rmax);};   
-    view->iso_scale =  1.0 / view->r_max;
+//    view->x_lookfrom[2] = TEN*view->r_max;
+//    view->iso_scale =  1.0 / view->r_max;
     return;
 };
 
@@ -68,12 +70,13 @@ void cal_range_4_map_grid_c(struct view_element *view){
 	view->max_point[2] =  ONE;
 	
 	view->r_max = ONE;
-	view->iso_scale =  1.0 / view->r_max;
-	
+    view->iso_scale =ONE;
+    	
 	view->x_lookat[0] = ZERO;
 	view->x_lookat[1] = ZERO;
 	view->x_lookat[2] = ZERO;
-	return;
+
+    return;
 }
 
 

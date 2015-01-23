@@ -77,19 +77,24 @@
 !
       implicit none
 !
+!>      Structure for each FFTPACK
+      type work_each_fftpack
+!>        Data for multiple Fourier transform
+        real(kind = 8), pointer :: X(:)
+!>        Work area for FFTPACK
+        real(kind = 8), pointer :: WK(:)
+      end type work_each_fftpack
+!
 !>      Structure to use ISPACK
       type work_for_fftpack
+!>      Structure for each thread
+        type(work_each_fftpack), pointer :: smp(:)
 !>        Maximum nuber of components for each SMP process
         integer(kind = kint) :: Mmax_smp
-!>        Data for multiple Fourier transform
-        real(kind = 8), pointer :: X(:,:)
-!
 !>        Size of work constant for FFTPACK
         integer(kind = kint) :: NSV
 !>        Work constatnts for FFTPACK
         real(kind = 8), pointer :: WSV(:)
-!>        Work area for FFTPACK
-        real(kind = 8), pointer :: WK(:,:)
 !>        flag for length of Fourier transform
         integer(kind = kint) :: iflag_fft_len =  -1
       end type work_for_fftpack
@@ -154,7 +159,7 @@
         if(fftpack_t%iflag_fft_len .lt. 0) then
           call alloc_const_4_FFTPACK(nidx_rtp(3), fftpack_t)
         else if((fftpack_t%Mmax_smp*nidx_rtp(3))                        &
-     &          .gt. size(fftpack_t%WK,1) ) then
+     &          .gt. size(fftpack_t%smp(1)%WK) ) then
           call dealloc_const_4_FFTPACK(fftpack_t)
           call alloc_const_4_FFTPACK(nidx_rtp(3), fftpack_t)
         end if
@@ -162,10 +167,10 @@
         call RFFTMI(nidx_rtp(3), fftpack_t%WSV, fftpack_t%NSV, ierr)
       end if
 !
-      if(ASSOCIATED(fftpack_t%WK) .eqv. .false.) then
+      if(ASSOCIATED(fftpack_t%smp(1)%WK) .eqv. .false.) then
         call alloc_work_4_FFTPACK(nidx_rtp(3), fftpack_t)
       else if( (fftpack_t%Mmax_smp*nidx_rtp(3))                         &
-     &      .gt. size(fftpack_t%WK,1)  ) then
+     &      .gt. size(fftpack_t%smp(1)%WK,1)  ) then
         call dealloc_work_4_FFTPACK(fftpack_t)
         call alloc_work_4_FFTPACK(nidx_rtp(3), fftpack_t)
       end if
@@ -211,12 +216,12 @@
             nd = 1 + mod(ist+inum-1,ncomp)
             j =  1 + (ist+inum-nd) / ncomp
             inod_c = inum + (m-1) * num
-            fftpack_t%X(inod_c,ip) = X_rtp(j,m,nd)
+            fftpack_t%smp(ip)%X(inod_c) = X_rtp(j,m,nd)
           end do
         end do
 !
-        call RFFTMF(num, ione, nidx_rtp(3), num, fftpack_t%X(1,ip),     &
-     &      nsize, fftpack_t%WSV, fftpack_t%NSV, fftpack_t%WK(1,ip),    &
+        call RFFTMF(num, ione, nidx_rtp(3), num, fftpack_t%smp(ip)%X,   &
+     &      nsize, fftpack_t%WSV, fftpack_t%NSV, fftpack_t%smp(ip)%WK,  &
      &      nsize, ierr)
 !
         do inum = 1, num
@@ -226,8 +231,8 @@
           is_rtp = j + irt_rtp_smp_stack(np_smp)
           ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp
           is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
-          WS(ic_send) = fftpack_t%X(inum,ip)
-          WS(is_send) = fftpack_t%X(inod_s,ip)
+          WS(ic_send) = fftpack_t%smp(ip)%X(inum)
+          WS(is_send) = fftpack_t%smp(ip)%X(inod_s)
         end do
         do m = 1, (nidx_rtp(3)+1)/2 - 1
           do inum = 1, num
@@ -239,8 +244,8 @@
             is_rtp = j + (2*m+1) * irt_rtp_smp_stack(np_smp)
             ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
             is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
-            WS(ic_send) = fftpack_t%X(inod_c,ip)
-            WS(is_send) = fftpack_t%X(inod_s,ip)
+            WS(ic_send) = fftpack_t%smp(ip)%X(inod_c)
+            WS(is_send) = fftpack_t%smp(ip)%X(inod_s)
           end do
         end do
 !
@@ -290,8 +295,8 @@
           is_rtp = j + irt_rtp_smp_stack(np_smp)
           ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp
           is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
-          fftpack_t%X(inum,ip) =   WR(ic_recv)
-          fftpack_t%X(inod_s,ip) = WR(is_recv)
+          fftpack_t%smp(ip)%X(inum) =   WR(ic_recv)
+          fftpack_t%smp(ip)%X(inod_s) = WR(is_recv)
         end do
         do m = 1, (nidx_rtp(3)+1)/2 - 1
           do inum = 1, num
@@ -303,13 +308,13 @@
             is_rtp = j + (2*m+1) * irt_rtp_smp_stack(np_smp)
             ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
             is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
-            fftpack_t%X(inod_c,ip) = WR(ic_recv)
-            fftpack_t%X(inod_s,ip) = WR(is_recv)
+            fftpack_t%smp(ip)%X(inod_c) = WR(ic_recv)
+            fftpack_t%smp(ip)%X(inod_s) = WR(is_recv)
           end do
         end do
 !
-        call RFFTMB (num, ione, nidx_rtp(3), num, fftpack_t%X(1,ip),    &
-     &      nsize, fftpack_t%WSV, fftpack_t%NSV, fftpack_t%WK(1,ip),    &
+        call RFFTMB (num, ione, nidx_rtp(3), num, fftpack_t%smp(ip)%X,  &
+     &      nsize, fftpack_t%WSV, fftpack_t%NSV, fftpack_t%smp(ip)%WK,  &
      &      nsize, ierr)
 !
         do m = 1, nidx_rtp(3)
@@ -317,7 +322,7 @@
             nd = 1 + mod(ist+inum-1,ncomp)
             j =  1 + (ist+inum-nd) / ncomp
             inod_c = inum + (m-1) * num
-            X_rtp(j,m,nd) = fftpack_t%X(inod_c,ip)
+            X_rtp(j,m,nd) = fftpack_t%smp(ip)%X(inod_c)
           end do
         end do
       end do
@@ -333,13 +338,17 @@
       integer(kind = kint), intent(in) :: Nfft
       type(work_for_fftpack), intent(inout) :: fftpack_t
 !
-      integer(kind = kint) :: iflag_fft_comp
+      integer(kind = kint) :: iflag_fft_comp, ip
 !
+!
+      allocate( fftpack_t%smp(np_smp) )
 !
       iflag_fft_comp = fftpack_t%Mmax_smp*Nfft
-      allocate( fftpack_t%X(iflag_fft_comp,np_smp) )
-      allocate( fftpack_t%WK(iflag_fft_comp,np_smp) )
-      fftpack_t%WK = 0.0d0
+      do ip = 1, np_smp
+        allocate( fftpack_t%smp(ip)%X(iflag_fft_comp) )
+        allocate( fftpack_t%smp(ip)%WK(iflag_fft_comp) )
+        fftpack_t%smp(ip)%WK = 0.0d0
+      end do
 !
       end subroutine alloc_work_4_FFTPACK
 !
@@ -364,9 +373,14 @@
       subroutine dealloc_work_4_FFTPACK(fftpack_t)
 !
       type(work_for_fftpack), intent(inout) :: fftpack_t
+      integer(kind = kint) :: ip
 !
 !
-      deallocate(fftpack_t%X, fftpack_t%WK)
+      do ip = 1, np_smp
+        deallocate(fftpack_t%smp(ip)%X, fftpack_t%smp(ip)%WK)
+      end do
+!
+      deallocate(fftpack_t%smp)
 !
       end subroutine dealloc_work_4_FFTPACK
 !

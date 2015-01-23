@@ -76,18 +76,25 @@
 !
       implicit none
 !
+!
+!>      Structure for each thread
+      type work_each_ispack
+!>        Data for multiple Fourier transform
+        real(kind = 8), pointer :: X(:)
+!>        Work area for ISPACK
+        real(kind = 8), pointer :: WK(:)
+      end type work_each_ispack
+!
 !>      Structure to use ISPACK
       type work_for_ispack
+!>      Structure for each thread
+        type(work_each_ispack), pointer :: smp(:)
 !>        Maximum nuber of components for each SMP process
         integer(kind = kint) :: Mmax_smp
-!>        Data for multiple Fourier transform
-        real(kind = 8), pointer :: X(:,:)
-!>        Work area for ISPACK
-        integer(kind = 4) :: IT(5)
 !>        Work constants for ISPACK
         real(kind = 8), pointer :: T(:)
 !>        Work area for ISPACK
-        real(kind = 8), pointer :: WK(:,:)
+        integer(kind = 4) :: IT(5)
       end type work_for_ispack
 !
       private :: alloc_work_4_ispack, alloc_const_4_ispack
@@ -113,7 +120,7 @@
 !
       ispack_t%Mmax_smp = ncomp*maxirt_rtp_smp
       call alloc_const_4_ispack(nidx_rtp(3), ispack_t)
-      call FTTRUI(nidx_rtp(3), ispack_t%IT, ispack_t%T(1))
+      call FTTRUI(nidx_rtp(3), ispack_t%IT, ispack_t%T)
 !
       call alloc_work_4_ispack(nidx_rtp(3), ispack_t)
 !
@@ -154,13 +161,13 @@
           call alloc_const_4_ispack(nidx_rtp(3), ispack_t)
         end if
 !
-        call FTTRUI( nidx_rtp(3), ispack_t%IT, ispack_t%T(1) )
+        call FTTRUI( nidx_rtp(3), ispack_t%IT, ispack_t%T )
       end if
 !
-      if(ASSOCIATED(ispack_t%X) .eqv. .false.) then
+      if(ASSOCIATED(ispack_t%smp) .eqv. .false.) then
         call alloc_work_4_ispack(nidx_rtp(3), ispack_t)
       else if( (ispack_t%Mmax_smp*nidx_rtp(3))                          &
-     &       .gt. size(ispack_t%X,1) ) then
+     &       .gt. size(ispack_t%smp(1)%X,1) ) then
         call dealloc_work_4_ispack(ispack_t)
         call alloc_work_4_ispack(nidx_rtp(3), ispack_t)
       end if
@@ -206,13 +213,13 @@
             j =  1 + (ist+inum-nd) / ncomp
             inod_c = inum + (2*m-2) * num
             inod_s = inum + (2*m-1) * num
-            ispack_t%X(inod_c,ip) = X_rtp(j,2*m-1,nd)
-            ispack_t%X(inod_s,ip) = X_rtp(j,2*m,  nd)
+            ispack_t%smp(ip)%X(inod_c) = X_rtp(j,2*m-1,nd)
+            ispack_t%smp(ip)%X(inod_s) = X_rtp(j,2*m,  nd)
           end do
         end do
 !
-        call FTTRUF(num, nidx_rtp(3), ispack_t%X(1,ip),                 &
-     &      ispack_t%WK(1,ip), ispack_t%IT(1), ispack_t%T(1))
+        call FTTRUF(num, nidx_rtp(3), ispack_t%smp(ip)%X,               &
+     &      ispack_t%smp(ip)%WK, ispack_t%IT, ispack_t%T)
 !
         do inum = 1, num
           nd = 1 + mod(ist+inum-1,ncomp)
@@ -222,8 +229,8 @@
           is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
           inod_c = inum
           inod_s = inum + num
-          WS(ic_send) = ispack_t%X(inod_c,ip)
-          WS(is_send) = ispack_t%X(inod_s,ip)
+          WS(ic_send) = ispack_t%smp(ip)%X(inod_c)
+          WS(is_send) = ispack_t%smp(ip)%X(inod_s)
         end do
         do m = 2, nidx_rtp(3)/2
           do inum = 1, num
@@ -235,8 +242,8 @@
             is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
             inod_c = inum + (2*m-2) * num
             inod_s = inum + (2*m-1) * num
-            WS(ic_send) =   two * ispack_t%X(inod_c,ip)
-            WS(is_send) = - two * ispack_t%X(inod_s,ip)
+            WS(ic_send) =   two * ispack_t%smp(ip)%X(inod_c)
+            WS(is_send) = - two * ispack_t%smp(ip)%X(inod_s)
           end do
         end do
 !
@@ -285,8 +292,8 @@
           is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
           inod_c = inum
           inod_s = inum + num
-          ispack_t%X(inod_c,ip) = WR(ic_recv)
-          ispack_t%X(inod_s,ip) = WR(is_recv)
+          ispack_t%smp(ip)%X(inod_c) = WR(ic_recv)
+          ispack_t%smp(ip)%X(inod_s) = WR(is_recv)
         end do
         do m = 2, nidx_rtp(3)/2
           do inum = 1, num
@@ -298,13 +305,13 @@
             is_rtp = j + (2*m-1) * irt_rtp_smp_stack(np_smp)
             ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
             is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
-            ispack_t%X(inod_c,ip) =  half * WR(ic_recv)
-            ispack_t%X(inod_s,ip) = -half * WR(is_recv)
+            ispack_t%smp(ip)%X(inod_c) =  half * WR(ic_recv)
+            ispack_t%smp(ip)%X(inod_s) = -half * WR(is_recv)
           end do
         end do
 !
-        call FTTRUB(num, nidx_rtp(3), ispack_t%X(1,ip),                 &
-     &      ispack_t%WK(1,ip), ispack_t%IT(1), ispack_t%T(1) )
+        call FTTRUB(num, nidx_rtp(3), ispack_t%smp(ip)%X,               &
+     &      ispack_t%smp(ip)%WK, ispack_t%IT, ispack_t%T )
 !
         do m = 1, nidx_rtp(3)/2
           do inum = 1, num
@@ -312,8 +319,8 @@
             j =  1 + (ist+inum-nd) / ncomp
             inod_c = inum + (2*m-2) * num
             inod_s = inum + (2*m-1) * num
-            X_rtp(j,2*m-1,nd) = ispack_t%X(inod_c,ip)
-            X_rtp(j,2*m,  nd) = ispack_t%X(inod_s,ip)
+            X_rtp(j,2*m-1,nd) = ispack_t%smp(ip)%X(inod_c)
+            X_rtp(j,2*m,  nd) = ispack_t%smp(ip)%X(inod_s)
           end do
         end do
       end do
@@ -329,13 +336,17 @@
       integer(kind = kint), intent(in) :: Nfft
       type(work_for_ispack), intent(inout) :: ispack_t
 !
-      integer(kind = kint) :: iflag_fft_comp
+      integer(kind = kint) :: iflag_fft_comp, ip
 !
+!
+      allocate( ispack_t%smp(np_smp) )
 !
       iflag_fft_comp = ispack_t%Mmax_smp*Nfft
-      allocate( ispack_t%X(iflag_fft_comp,np_smp) )
-      allocate( ispack_t%WK(iflag_fft_comp,np_smp) )
-      ispack_t%WK = 0.0d0
+      do ip = 1, np_smp
+        allocate( ispack_t%smp(ip)%X(iflag_fft_comp) )
+        allocate( ispack_t%smp(ip)%WK(iflag_fft_comp) )
+        ispack_t%smp(ip)%WK = 0.0d0
+      end do
 !
       end subroutine alloc_work_4_ispack
 !
@@ -359,8 +370,14 @@
 !
       type(work_for_ispack), intent(inout) :: ispack_t
 !
+      integer(kind = kint) :: ip
 !
-      deallocate(ispack_t%X, ispack_t%WK)
+!
+      do ip = 1, np_smp
+        deallocate(ispack_t%smp(ip)%X, ispack_t%smp(ip)%WK)
+      end do
+!
+      deallocate(ispack_t%smp)
 !
       end subroutine dealloc_work_4_ispack
 !

@@ -5,6 +5,11 @@
 #include <stdlib.h>
 #include "m_color_table_c.h"
 
+void alloc_single_color_code(struct colormap_params *cmap_s){
+    cmap_s->single_color = (double *)calloc(4,sizeof(double));
+    return;
+}
+
 void alloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode, int num){
 	cmap_s->n_color_point =    num;
 	cmap_s->nbuf_color_point = num;
@@ -24,6 +29,10 @@ void alloc_opacity_index_list_s(struct colormap_params *cmap_s, int num){
 	return;
 }
 
+void dealloc_single_color_code(struct colormap_params *cmap_s){
+    free(cmap_s->single_color);
+    return;
+}
 
 void dealloc_color_index_list_s(struct colormap_params *cmap_s){
 	free(cmap_s->color_data);

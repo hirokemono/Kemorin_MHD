@@ -107,7 +107,7 @@ static void load_psf_texture_glui(int sel){
 	
 	if(ext_fmt == SAVE_PNG || ext_fmt == SAVE_BMP){
 		set_texture_current_psf(ext_fmt, file_head);
-		set_current_psf_patch_color(TEXTURED_SURFACE);
+		set_current_psf_patch_color_mode(TEXTURED_SURFACE);
 	};
 	
 	draw_mesh_w_menu();
@@ -399,8 +399,9 @@ static void set_psf_comp_handler(int sel){
 };
 
 static void set_psf_patchcolor_handler(int sel){
-	if (sel == WHITE_PSF_SURF)        {set_current_psf_patch_color(WHITE_SURFACE);}
-	else if (sel == RAINBOW_PSF_SURF) {set_current_psf_patch_color(RAINBOW_SURFACE);}
+	if (sel == WHITE_PSF_SURF)        {set_current_psf_patch_color_mode(WHITE_SURFACE);}
+    else if (sel == SGL_COLOR_PSF_SURF) {set_current_psf_patch_color_mode(SINGLE_COLOR);}
+	else if (sel == RAINBOW_PSF_SURF) {set_current_psf_patch_color_mode(RAINBOW_SURFACE);}
 	else if (sel == TEXTURE_PSF_SURF) {set_psf_texture_by_glui(winid);};
 	
 	draw_mesh_w_menu();

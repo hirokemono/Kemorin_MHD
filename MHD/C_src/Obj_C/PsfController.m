@@ -528,7 +528,7 @@
 	if(self.psfPatchColorTag == TEXTURED_SURFACE){
 		[self ChooseTextureFile];
 	};
-	set_current_psf_patch_color(self.psfPatchColorTag);
+	set_current_psf_patch_color_mode(self.psfPatchColorTag);
     
 	[_kemoviewer UpdateImage];
 }
@@ -544,9 +544,6 @@
 		kemoview_psf_draw_switch_select(RAINBOW_PSF_VECT);
 	} else if (self.psfVectorColorTag == 1) {
 		kemoview_psf_draw_switch_select(WHITE_PSF_VECT);
-	} else if (self.psfVectorColorTag == 2) {
-		[self ChooseTextureFile];
-		set_current_psf_patch_color(TEXTURED_SURFACE);
 	}
 	
 	[_kemoviewer UpdateImage];
@@ -570,12 +567,6 @@
 
 - (IBAction) ShowIsolineNumber:(id)pSender {
 	set_current_n_isoline((int) self.IsolineNumber);
-    
-	[_kemoviewer UpdateImage];
-}
-
-- (IBAction)ShowPsfOpacity:(id)pSender; {
-	set_current_PSF_constant_opacity((double) self.PSFOpacity);
     
 	[_kemoviewer UpdateImage];
 }
@@ -609,4 +600,20 @@
 	[_kemoviewer UpdateImage];
 }
 
+- (IBAction)SetPSFPatchColorAction:(id)sender
+{
+    CGFloat redBG, greenBG, blueBG, opacityBG;
+    double rgba[4];
+    nsPSFPatchColor = [PSFPatchColorWell color];
+    [nsPSFPatchColor getRed:&redBG green:&greenBG blue:&blueBG alpha:&opacityBG ];
+
+    rgba[0] = (double) redBG;
+    rgba[1] = (double) greenBG;
+    rgba[2] = (double) blueBG;
+    rgba[3] = (double) opacityBG;
+
+    set_current_PSF_fixed_color(rgba);
+
+    [_kemoviewer UpdateImage];
+}
 @end

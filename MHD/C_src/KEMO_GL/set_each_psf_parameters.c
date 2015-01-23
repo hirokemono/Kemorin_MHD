@@ -90,7 +90,7 @@ int toggle_draw_psf_refv(struct psf_menu_val *psf_menu){
 	return psf_menu->draw_psf_refv;
 };
 
-void set_psf_patch_color(struct psf_menu_val *psf_menu, int iflag){
+void set_psf_patch_color_mode(struct psf_menu_val *psf_menu, int iflag){
 	if(psf_menu->psf_patch_color == TEXTURED_SURFACE){
 		release_texture_4_psf(psf_menu);
 	};
@@ -139,12 +139,21 @@ void set_PSF_linear_colormap(struct psf_menu_val *psf_menu, double minvalue, dou
 	return;
 }
 
+void set_PSF_fixed_color(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
+                         double *rgba){
+    int icomp = psf_menu->icomp_draw_psf;
+    set_rgb_from_rgb(psf_menu->cmap_psf, rgba[0], rgba[1], rgba[2]);	
+    set_constant_opacitymap(psf_menu->cmap_psf,
+                            psf_d->d_min[icomp], psf_d->d_max[icomp], rgba[3]);
+    return;
+}
+
 void set_PSF_constant_opacity(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
                                  double opacity){
 	int icomp = psf_menu->icomp_draw_psf;
 	set_constant_opacitymap(psf_menu->cmap_psf,
                             psf_d->d_min[icomp], psf_d->d_max[icomp], opacity);
-	return;
+    return;
 }
 
 void set_PSF_rgb_from_value(struct psf_menu_val *psf_menu,

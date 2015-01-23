@@ -151,6 +151,9 @@ void glut_PSF_patchcolor_select(){
 	if (iflag_p_color != WHITE_SURFACE) {
 		glutAddMenuEntry("White surface",   WHITE_PSF_SURF);
 	};
+    if (iflag_p_color != SINGLE_COLOR) {
+        glutAddMenuEntry("Single color",    SGL_COLOR_PSF_SURF);
+    };
 	if (iflag_p_color != TEXTURED_SURFACE) {
 		glutAddMenuEntry("Textured surface",TEXTURE_PSF_SURF);
 	};

@@ -743,7 +743,7 @@ void set_current_psf_tanvec_mode(int iflag){set_psf_vector_mode(psf_current_menu
 int send_draw_current_psf_refv()  {return send_draw_psf_refv(psf_current_menu);};
 int toggle_draw_current_psf_refv(){return toggle_draw_psf_refv(psf_current_menu);};
 
-void set_current_psf_patch_color(int iflag){set_psf_patch_color(psf_current_menu, iflag);};
+void set_current_psf_patch_color_mode(int iflag){set_psf_patch_color_mode(psf_current_menu, iflag);};
 
 void set_current_isoline_color(int iflag)     {set_each_isoline_color(psf_current_menu, iflag);};
 void set_current_n_isoline(int nlline)        {set_each_n_isoline(psf_current_menu, nlline);};
@@ -802,6 +802,10 @@ void realloc_current_PSF_opacity_idx_list(int num){
 
 void set_current_PSF_linear_colormap(double minvalue, double maxvalue){
     set_PSF_linear_colormap(psf_current_menu, minvalue, maxvalue);
+}
+
+void set_current_PSF_fixed_color(double *rgba){
+    set_PSF_fixed_color(psf_current_data, psf_current_menu, rgba);
 }
 
 void set_current_PSF_constant_opacity(double opacity){

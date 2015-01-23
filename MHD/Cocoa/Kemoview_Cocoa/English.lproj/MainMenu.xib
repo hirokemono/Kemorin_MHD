@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="13F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6254" systemVersion="13F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6254"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -1146,7 +1146,7 @@
             </connections>
         </customObject>
         <userDefaultsController representsSharedInstance="YES" id="716"/>
-        <window title="Mesh View" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" backingType="retained" animationBehavior="default" id="721">
+        <window title="Mesh View" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="721">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -1431,14 +1431,14 @@
                             <tabViewItem label="Node Grp." identifier="2" id="726">
                                 <view key="view" id="774">
                                     <rect key="frame" x="10" y="33" width="342" height="405"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="777">
                                             <rect key="frame" x="9" y="185" width="324" height="217"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="VN6-s2-786">
                                                 <rect key="frame" x="1" y="17" width="322" height="199"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="788" id="787">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="19"/>
@@ -1569,14 +1569,14 @@
                             <tabViewItem label="Element Grp." identifier="Item 2" id="725">
                                 <view key="view" id="795">
                                     <rect key="frame" x="10" y="33" width="342" height="405"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="798">
                                             <rect key="frame" x="9" y="185" width="324" height="217"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="QVH-ow-4aF">
                                                 <rect key="frame" x="1" y="17" width="322" height="199"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" autosaveColumns="NO" headerView="823" id="822">
                                                         <rect key="frame" x="0.0" y="0.0" width="305" height="19"/>
@@ -1801,14 +1801,14 @@
                             <tabViewItem label="Surface Grp." identifier="Item 3" id="724">
                                 <view key="view" id="834">
                                     <rect key="frame" x="10" y="33" width="342" height="405"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="837">
                                             <rect key="frame" x="9" y="185" width="324" height="217"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="6Xq-lm-Rc6">
                                                 <rect key="frame" x="1" y="17" width="322" height="199"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="859" id="860">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="19"/>
@@ -2208,7 +2208,7 @@
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="1025" y="57" width="232" height="757"/>
+            <rect key="contentRect" x="1196" y="87" width="232" height="757"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
             <view key="contentView" id="1065">
                 <rect key="frame" x="0.0" y="0.0" width="232" height="757"/>
@@ -2388,7 +2388,7 @@
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <popUpButton verticalHuggingPriority="750" id="1877">
-                                                        <rect key="frame" x="82" y="171" width="99" height="26"/>
+                                                        <rect key="frame" x="76" y="171" width="105" height="26"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <popUpButtonCell key="cell" type="push" title="Rainbow" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="1880" id="1878">
                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -2397,6 +2397,7 @@
                                                                 <items>
                                                                     <menuItem title="Rainbow" state="on" id="1880"/>
                                                                     <menuItem title="White" tag="1" id="1881"/>
+                                                                    <menuItem title="Single color" tag="6" id="xbX-r6-dDd"/>
                                                                     <menuItem title="Texture.." tag="7" id="3638">
                                                                         <connections>
                                                                             <binding destination="964" name="enabled" keyPath="self.psfTexTureEnable" id="3744"/>
@@ -2461,19 +2462,6 @@
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <slider verticalHuggingPriority="750" id="1092">
-                                                        <rect key="frame" x="83" y="147" width="97" height="21"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <sliderCell key="cell" alignment="left" maxValue="1" doubleValue="1" tickMarkPosition="below" sliderType="linear" id="1093">
-                                                            <connections>
-                                                                <action selector="ShowPsfOpacity:" target="1157" id="2432"/>
-                                                                <binding destination="1157" name="value" keyPath="self.PSFOpacity" id="2431"/>
-                                                            </connections>
-                                                        </sliderCell>
-                                                        <connections>
-                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1364"/>
-                                                        </connections>
-                                                    </slider>
                                                     <textField verticalHuggingPriority="750" id="3042">
                                                         <rect key="frame" x="77" y="94" width="43" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
@@ -2582,6 +2570,14 @@
                                                             </connections>
                                                         </textFieldCell>
                                                     </textField>
+                                                    <colorWell id="StT-jt-Xhd">
+                                                        <rect key="frame" x="134" y="147" width="44" height="23"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <color key="color" red="0.11946704630635285" green="0.021984556839427571" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <connections>
+                                                            <action selector="SetPSFPatchColorAction:" target="1157" id="HQ7-et-bQz"/>
+                                                        </connections>
+                                                    </colorWell>
                                                 </subviews>
                                             </view>
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
@@ -4090,6 +4086,7 @@
         </customObject>
         <customObject id="1157" customClass="PsfController">
             <connections>
+                <outlet property="PSFPatchColorWell" destination="StT-jt-Xhd" id="xeY-3f-W9P"/>
                 <outlet property="_PSFVectorSwitchOutlet" destination="3004" id="3060"/>
                 <outlet property="_PsfCOlorbarOutlet" destination="2854" id="2890"/>
                 <outlet property="_PsfLineSwitchOutlet" destination="1069" id="1161"/>

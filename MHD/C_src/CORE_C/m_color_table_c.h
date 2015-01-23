@@ -21,13 +21,17 @@ struct colormap_params{
 	double min_opacity, max_opacity;
 	double *opacity_data;
 	double *opacity_value;
+    
+    double *single_color;
 };
 
 /* prototypes */
 
+void alloc_single_color_code(struct colormap_params *cmap_s);
 void alloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode, int num);
 void alloc_opacity_index_list_s(struct colormap_params *cmap_s, int num);
 
+void dealloc_single_color_code(struct colormap_params *cmap_s);
 void dealloc_color_index_list_s(struct colormap_params *cmap_s);
 void dealloc_opacity_index_list_s(struct colormap_params *cmap_s);
 

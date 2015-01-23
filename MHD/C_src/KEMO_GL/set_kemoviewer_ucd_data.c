@@ -246,7 +246,7 @@ int kemoview_open_data(const char *file_name, struct viewer_mesh *mesh_d, struct
     
     if ( mesh_m->iflag_draw_mesh == IZERO ) {
         cal_psf_viewer_range(psf_d, psf_a, fline_d, fline_m, view);
-        reset_light_by_size_of_domain(view->iso_scale);
+        reset_light_by_size_of_domain(view->r_max);
         reset_to_init_angle(view);
     };
 	return iflag_datatype;

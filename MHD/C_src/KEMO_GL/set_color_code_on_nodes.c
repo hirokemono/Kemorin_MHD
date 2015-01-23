@@ -30,6 +30,14 @@ static void set_color_code_for_psf(struct psf_data *psf_s, struct psf_menu_val *
             set_opacity_from_value_s(psf_m->cmap_psf, d_patch, &psf_s->color_nod[inod][3]);
         };
     }
+
+    if (   psf_m->psf_patch_color == SINGLE_COLOR) {
+        for (inod=0; inod< psf_s->nnod_viz; inod++){
+            for(nd=0;nd<3;nd++){psf_s->color_nod[inod][nd] = psf_m->cmap_psf->single_color[nd];};
+            set_opacity_from_value_s(psf_m->cmap_psf, d_patch, &psf_s->color_nod[inod][3]);
+        };
+    }
+
 /*
 	else if (psf_m->psf_patch_color == BLACK_LINE) {
 		for (inod=0; inod< psf_s->nnod_viz; inod++){
