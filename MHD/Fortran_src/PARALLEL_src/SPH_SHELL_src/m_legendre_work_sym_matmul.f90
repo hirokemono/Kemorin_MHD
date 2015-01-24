@@ -164,7 +164,7 @@
       integer(kind = kint), intent(in) :: nscalar
 !
 !
-      nscl_jk = ((nidx_rtm(2)+1)/2) * maxidx_rlm_smp(1)*nscalar
+      nscl_jk = ((maxdegree_rlm+1)/2) * maxidx_rlm_smp(1)*nscalar
       allocate(scl_e(nscl_jk,np_smp))
       allocate(scl_o(nscl_jk,np_smp))
 !

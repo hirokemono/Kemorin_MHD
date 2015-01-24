@@ -200,6 +200,7 @@
       subroutine sel_init_legendre_trans(ncomp, nvector, nscalar)
 !
       use m_legendre_work_sym_matmul
+      use m_legendre_work_testlooop
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
 !
@@ -223,8 +224,7 @@
         call alloc_leg_vec_blocked
         call alloc_leg_scl_blocked
       else if(id_legendre_transfer .eq. iflag_leg_test_loop) then
-        call alloc_leg_vec_blocked
-        call alloc_leg_scl_blocked
+        call alloc_leg_vec_test(nvector, nscalar)
       else
         call allocate_work_sph_trans(ncomp)
       end if
@@ -236,6 +236,7 @@
       subroutine sel_finalize_legendre_trans
 !
       use m_legendre_work_sym_matmul
+      use m_legendre_work_testlooop
 !
 !
       if     (id_legendre_transfer .eq. iflag_leg_sym_matmul            &
@@ -257,8 +258,7 @@
         call dealloc_leg_vec_blocked
         call dealloc_leg_scl_blocked
       else if(id_legendre_transfer .eq. iflag_leg_test_loop) then
-        call dealloc_leg_vec_blocked
-        call dealloc_leg_scl_blocked
+        call dealloc_leg_vec_test
       else
         call deallocate_work_sph_trans
       end if

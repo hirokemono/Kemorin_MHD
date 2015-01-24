@@ -50,7 +50,6 @@
       subroutine leg_backward_trans_matmul                              &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
-      use m_work_4_sph_trans_spin
       use legendre_bwd_trans_matmul
       use spherical_SRs_N
 !
@@ -81,7 +80,6 @@
       subroutine leg_forward_trans_matmul                               &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
-      use m_work_4_sph_trans_spin
       use legendre_fwd_trans_matmul
       use spherical_SRs_N
 !
@@ -113,7 +111,6 @@
       subroutine leg_backward_trans_dgemm                               &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
-      use m_work_4_sph_trans_spin
       use legendre_bwd_trans_matmul
       use spherical_SRs_N
 !
@@ -144,7 +141,6 @@
       subroutine leg_forward_trans_dgemm                                &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
-      use m_work_4_sph_trans_spin
       use legendre_fwd_trans_matmul
       use spherical_SRs_N
 !
@@ -176,7 +172,6 @@
       subroutine leg_backward_trans_matprod                             &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
-      use m_work_4_sph_trans_spin
       use legendre_bwd_trans_matmul
       use spherical_SRs_N
 !
@@ -207,7 +202,6 @@
       subroutine leg_forward_trans_matprod                              &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
-      use m_work_4_sph_trans_spin
       use legendre_fwd_trans_matmul
       use spherical_SRs_N
 !

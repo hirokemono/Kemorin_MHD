@@ -42,12 +42,8 @@
       subroutine leg_backward_trans_test                                &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
-      use m_sph_trans_comm_table
-      use m_sph_communicators
       use m_work_4_sph_trans_spin
       use legendre_bwd_trans_testloop
-      use ordering_schmidt_trans_spin
-      use ordering_schmidt_trans_krin
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
@@ -57,17 +53,18 @@
 !
 !
       call finish_send_recv_rj_2_rlm
+!$omp parallel workshare
+      WS(1:ncomp*ntot_item_sr_rtm) = 0.0d0
+!$omp end parallel workshare
 !
-      if(nvector .gt. 0) then
-        call legendre_b_trans_vector_test(ncomp, nvector,              &
-     &          irev_sr_rlm, n_WR, WR(1), vr_rtm_wk(1))
+      if(ncomp .gt. 0) then
+        call legendre_b_trans_vector_test(ncomp, nvector, nscalar,      &
+     &      irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
       end if
-      if(nscalar .gt. 0) then
-        call legendre_b_trans_scalar_test(ncomp, nvector, nscalar,      &
-     &          irev_sr_rlm, n_WR, WR(1), vr_rtm_wk(1))
-      end if
-!
-      call calypso_rtm_to_send_N(ncomp, n_WS, vr_rtm_wk(1), WS(1))
+!      if(nscalar .gt. 0) then
+!        call legendre_b_trans_scalar_test(ncomp, nvector, nscalar,      &
+!     &      irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+!      end if
 !
       end subroutine leg_backward_trans_test
 !
@@ -76,11 +73,7 @@
       subroutine leg_forward_trans_test                                 &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
-      use m_sph_trans_comm_table
-      use m_sph_communicators
-      use m_work_4_sph_trans_spin
       use legendre_fwd_trans_testloop
-      use ordering_schmidt_trans_spin
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
@@ -94,13 +87,9 @@
       WS(1:ncomp*ntot_item_sr_rlm) = 0.0d0
 !$omp end parallel workshare
 !
-      if(nvector .gt. 0) then
-        call legendre_f_trans_vector_test(ncomp, nvector,             &
-     &      irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR(1), WS(1))
-      end if
-      if(nscalar .gt. 0) then
-        call legendre_f_trans_scalar_test(ncomp, nvector, nscalar,  &
-     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR(1), WS(1))
+      if(ncomp .gt. 0) then
+        call legendre_f_trans_vector_test(ncomp, nvector, nscalar,      &
+     &      irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_forward_trans_test
