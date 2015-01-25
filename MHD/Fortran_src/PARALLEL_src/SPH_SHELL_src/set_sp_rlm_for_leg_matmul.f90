@@ -16,11 +16,11 @@
 !!      subroutine set_sp_rlm_vector_sym_matmul                         &
 !!     &         (kst, nkr, jst, n_jk_e, n_jk_o,                        &
 !!     &          ncomp, irev_sr_rlm, n_WR, WR,                         &
-!!     &          nvec_jk, pol_e, dpl_e, tor_e, pol_o, dpl_o, tor_o)
+!!     &          pol_e, dpoldt_e, dpoldp_e, dtordt_e, dtordp_e,        &
+!!     &          pol_o, dpoldt_o, dpoldp_o, dtordt_o, dtordp_o)
 !!      subroutine set_sp_rlm_scalar_sym_matmul                         &
-!!     &         (kst, nkr, jst, n_jk_e, n_jk_o,                        &
-!!     &          ncomp, nvector, irev_sr_rlm, n_WR, WR,                &
-!!     &          nscl_jk, scl_e, scl_o)
+!!     &         (kst, nkr, jst, n_jk_e, n_jk_o, ncomp, nvector,        &
+!!     &          irev_sr_rlm, n_WR, WR, scl_e, scl_o)
 !!@endverbatim
 !!
       module set_sp_rlm_for_leg_matmul
@@ -127,9 +127,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sp_rlm_vector_sym_matmul                           &
-     &         (kst, nkr, jst, n_jk_e, n_jk_o,                          &
-     &          ncomp, irev_sr_rlm, n_WR, WR, nvec_jk,                  &
+      subroutine set_sp_rlm_vector_sym_matmul(kst, nkr, jst,            &
+     &          n_jk_e, n_jk_o, ncomp, irev_sr_rlm, n_WR, WR,           &
      &          pol_e, dpoldt_e, dpoldp_e, dtordt_e, dtordp_e,          &
      &          pol_o, dpoldt_o, dpoldp_o, dtordt_o, dtordp_o)
 !
@@ -142,21 +141,19 @@
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
       real (kind=kreal), intent(inout):: WR(n_WR)
 !
-      integer(kind = kint), intent(in) :: nvec_jk
-      real(kind = kreal), intent(inout) :: pol_e(nvec_jk)
-      real(kind = kreal), intent(inout) :: dpoldt_e(nvec_jk)
-      real(kind = kreal), intent(inout) :: dpoldp_e(nvec_jk)
-      real(kind = kreal), intent(inout) :: dtordt_e(nvec_jk)
-      real(kind = kreal), intent(inout) :: dtordp_e(nvec_jk)
-      real(kind = kreal), intent(inout) :: pol_o(nvec_jk)
-      real(kind = kreal), intent(inout) :: dpoldt_o(nvec_jk)
-      real(kind = kreal), intent(inout) :: dpoldp_o(nvec_jk)
-      real(kind = kreal), intent(inout) :: dtordt_o(nvec_jk)
-      real(kind = kreal), intent(inout) :: dtordp_o(nvec_jk)
+      real(kind = kreal), intent(inout) :: pol_e(n_jk_e,nkr)
+      real(kind = kreal), intent(inout) :: dpoldt_e(n_jk_e,nkr)
+      real(kind = kreal), intent(inout) :: dpoldp_e(n_jk_e,nkr)
+      real(kind = kreal), intent(inout) :: dtordt_e(n_jk_e,nkr)
+      real(kind = kreal), intent(inout) :: dtordp_e(n_jk_e,nkr)
+      real(kind = kreal), intent(inout) :: pol_o(n_jk_o,nkr)
+      real(kind = kreal), intent(inout) :: dpoldt_o(n_jk_o,nkr)
+      real(kind = kreal), intent(inout) :: dpoldp_o(n_jk_o,nkr)
+      real(kind = kreal), intent(inout) :: dtordt_o(n_jk_o,nkr)
+      real(kind = kreal), intent(inout) :: dtordp_o(n_jk_o,nkr)
 !
-      integer(kind = kint) :: kk, kr_nd, k_rlm, nd
-      integer(kind = kint) :: i_rlm, i_recv
-      integer(kind = kint) :: jj, i_jk, j_rlm
+      integer(kind = kint) :: jj, kk, kr_nd, k_rlm, nd
+      integer(kind = kint) :: j_rlm, i_rlm, i_recv
       real(kind = kreal) :: a1r_1d_rlm_r, a2r_1d_rlm_r
       real(kind = kreal) :: g3, gm
 !
@@ -176,13 +173,11 @@
      &              + (k_rlm-1) * istep_rlm(1)
           i_recv = 3*nd + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !
-          i_jk = jj + (kk-1) * n_jk_e
-!
-          pol_e(i_jk) =    WR(i_recv-2) * a2r_1d_rlm_r * g3
-          dpoldt_e(i_jk) = WR(i_recv-1) * a1r_1d_rlm_r
-          dpoldp_e(i_jk) = WR(i_recv-1) * a1r_1d_rlm_r * gm
-          dtordt_e(i_jk) = WR(i_recv  ) * a1r_1d_rlm_r
-          dtordp_e(i_jk) = WR(i_recv  ) * a1r_1d_rlm_r * gm
+          pol_e(jj,kk) =    WR(i_recv-2) * a2r_1d_rlm_r * g3
+          dpoldt_e(jj,kk) = WR(i_recv-1) * a1r_1d_rlm_r
+          dpoldp_e(jj,kk) = WR(i_recv-1) * a1r_1d_rlm_r * gm
+          dtordt_e(jj,kk) = WR(i_recv  ) * a1r_1d_rlm_r
+          dtordp_e(jj,kk) = WR(i_recv  ) * a1r_1d_rlm_r * gm
         end do
 !   odd l-m
         do jj = 1, n_jk_o
@@ -193,12 +188,11 @@
      &              + (k_rlm-1) * istep_rlm(1)
           i_recv = 3*nd + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !
-          i_jk = jj + (kk-1) * n_jk_o
-          pol_o(i_jk) =    WR(i_recv-2) * a2r_1d_rlm_r * g3
-          dpoldt_o(i_jk) = WR(i_recv-1) * a1r_1d_rlm_r
-          dpoldp_o(i_jk) = WR(i_recv-1) * a1r_1d_rlm_r * gm
-          dtordt_o(i_jk) = WR(i_recv  ) * a1r_1d_rlm_r
-          dtordp_o(i_jk) = WR(i_recv  ) * a1r_1d_rlm_r * gm
+          pol_o(jj,kk) =    WR(i_recv-2) * a2r_1d_rlm_r * g3
+          dpoldt_o(jj,kk) = WR(i_recv-1) * a1r_1d_rlm_r
+          dpoldp_o(jj,kk) = WR(i_recv-1) * a1r_1d_rlm_r * gm
+          dtordt_o(jj,kk) = WR(i_recv  ) * a1r_1d_rlm_r
+          dtordp_o(jj,kk) = WR(i_recv  ) * a1r_1d_rlm_r * gm
         end do
       end do
 !
@@ -208,8 +202,7 @@
 !
       subroutine set_sp_rlm_scalar_sym_matmul                           &
      &         (kst, nkr, jst, n_jk_e, n_jk_o,                          &
-     &          ncomp, nvector, irev_sr_rlm, n_WR, WR,                  &
-     &          nscl_jk, scl_e, scl_o)
+     &          ncomp, nvector, irev_sr_rlm, n_WR, WR, scl_e, scl_o)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: jst, n_jk_e, n_jk_o
@@ -218,13 +211,11 @@
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
       real (kind=kreal), intent(inout):: WR(n_WR)
 !
-      integer(kind = kint), intent(in) :: nscl_jk
-      real(kind = kreal), intent(inout) :: scl_e(nscl_jk)
-      real(kind = kreal), intent(inout) :: scl_o(nscl_jk)
+      real(kind = kreal), intent(inout) :: scl_e(n_jk_e,nkr)
+      real(kind = kreal), intent(inout) :: scl_o(n_jk_o,nkr)
 !
-      integer(kind = kint) :: kk, kr_nd, k_rlm, nd
+      integer(kind = kint) :: jj, kk, kr_nd, k_rlm, nd
       integer(kind = kint) :: i_rlm, i_recv
-      integer(kind = kint) :: jj, i_jk
 !
 !
       do kk = 1, nkr
@@ -236,18 +227,14 @@
           i_rlm = 1 + (2*jj + jst - 2) * istep_rlm(2)                   &
      &              + (k_rlm-1) *        istep_rlm(1)
           i_recv = nd + 3*nvector + (irev_sr_rlm(i_rlm) - 1) * ncomp
-!
-          i_jk = jj + (kk-1) * n_jk_e
-          scl_e(i_jk) = WR(i_recv)
+          scl_e(jj,kk) = WR(i_recv)
         end do
 !   odd l-m
         do jj = 1, n_jk_o
           i_rlm = 1 + (2*jj + jst - 1) * istep_rlm(2)                   &
      &              + (k_rlm-1) *        istep_rlm(1)
           i_recv = nd + 3*nvector + (irev_sr_rlm(i_rlm) - 1) * ncomp
-!
-          i_jk = jj + (kk-1) * n_jk_o
-          scl_o(i_jk) = WR(i_recv)
+          scl_o(jj,kk) = WR(i_recv)
         end do
       end do
 !

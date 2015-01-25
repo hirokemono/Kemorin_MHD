@@ -108,7 +108,7 @@
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_vector_sym_matmul                             &
      &       (kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
-     &        ncomp, irev_sr_rlm, n_WR, WR, nvec_jk, pol_e(1,ip),       &
+     &        ncomp, irev_sr_rlm, n_WR, WR, pol_e(1,ip),                &
      &        dpoldt_e(1,ip), dpoldp_e(1,ip), dtordt_e(1,ip),           &
      &        dtordp_e(1,ip), pol_o(1,ip), dpoldt_o(1,ip),              &
      &        dpoldp_o(1,ip), dtordt_o(1,ip), dtordp_o(1,ip))
@@ -143,7 +143,7 @@
 !
 !          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_vector_sym_matmul                             &
-     &       (kst(ip), nkr(ip), mp_rlm, mn_rlm, nl_rtm, nvec_lk,        &
+     &       (kst(ip), nkr(ip), mp_rlm, mn_rlm, nl_rtm,                 &
      &        symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip), symn_t(1,ip),   &
      &        symn_p(1,ip), asmp_r(1,ip), symp_t(1,ip), symp_p(1,ip),   &
      &        asmn_t(1,ip), asmn_p(1,ip), ncomp, irev_sr_rtm, n_WS, WS)
@@ -200,7 +200,7 @@
           call set_sp_rlm_scalar_sym_matmul                             &
      &       (kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
      &        ncomp, nvector, irev_sr_rlm, n_WR, WR,                    &
-     &        nscl_jk, scl_e(1,ip), scl_o(1,ip) )
+     &        scl_e(1,ip), scl_o(1,ip) )
 !          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
 !   even l-m
@@ -214,7 +214,7 @@
 !
 !          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_scalar_sym_matmul(kst(ip), nkr(ip),           &
-     &        mp_rlm, nl_rtm, nscl_lk, symp(1,ip), asmp(1,ip),          &
+     &        mp_rlm, nl_rtm, symp(1,ip), asmp(1,ip),                   &
      &        ncomp, nvector, irev_sr_rtm, n_WS, WS)
 !          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
@@ -269,7 +269,7 @@
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_vector_sym_matmul                             &
      &       (kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
-     &        ncomp, irev_sr_rlm, n_WR, WR, nvec_jk, pol_e(1,ip),       &
+     &        ncomp, irev_sr_rlm, n_WR, WR, pol_e(1,ip),                &
      &        dpoldt_e(1,ip), dpoldp_e(1,ip), dtordt_e(1,ip),           &
      &        dtordp_e(1,ip), pol_o(1,ip), dpoldt_o(1,ip),              &
      &        dpoldp_o(1,ip), dtordt_o(1,ip), dtordp_o(1,ip))
@@ -304,7 +304,7 @@
 !
 !          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_vector_sym_matmul                             &
-     &       (kst(ip), nkr(ip), mp_rlm, mn_rlm, nl_rtm, nvec_lk,        &
+     &       (kst(ip), nkr(ip), mp_rlm, mn_rlm, nl_rtm,                 &
      &        symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip), symn_t(1,ip),   &
      &        symn_p(1,ip), asmp_r(1,ip), symp_t(1,ip), symp_p(1,ip),   &
      &        asmn_t(1,ip), asmn_p(1,ip), ncomp, irev_sr_rtm, n_WS, WS)
@@ -361,7 +361,7 @@
           call set_sp_rlm_scalar_sym_matmul                             &
      &       (kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
      &        ncomp, nvector, irev_sr_rlm, n_WR, WR,                    &
-     &        nscl_jk, scl_e(1,ip), scl_o(1,ip) )
+     &        scl_e(1,ip), scl_o(1,ip) )
 !          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
 !   even l-m
@@ -375,7 +375,7 @@
 !
 !          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_scalar_sym_matmul(kst(ip), nkr(ip),           &
-     &        mp_rlm, nl_rtm, nscl_lk, symp(1,ip), asmp(1,ip),          &
+     &        mp_rlm, nl_rtm, symp(1,ip), asmp(1,ip),                   &
      &        ncomp, nvector, irev_sr_rtm, n_WS, WS)
 !          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
@@ -430,7 +430,7 @@
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_vector_sym_matmul                             &
      &       (kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
-     &        ncomp, irev_sr_rlm, n_WR, WR, nvec_jk, pol_e(1,ip),       &
+     &        ncomp, irev_sr_rlm, n_WR, WR, pol_e(1,ip),                &
      &        dpoldt_e(1,ip), dpoldp_e(1,ip), dtordt_e(1,ip),           &
      &        dtordp_e(1,ip), pol_o(1,ip), dpoldt_o(1,ip),              &
      &        dpoldp_o(1,ip), dtordt_o(1,ip), dtordp_o(1,ip))
@@ -465,7 +465,7 @@
 !
 !          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_vector_sym_matmul                             &
-     &       (kst(ip), nkr(ip), mp_rlm, mn_rlm, nl_rtm, nvec_lk,        &
+     &       (kst(ip), nkr(ip), mp_rlm, mn_rlm, nl_rtm,                 &
      &        symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip), symn_t(1,ip),   &
      &        symn_p(1,ip), asmp_r(1,ip), symp_t(1,ip), symp_p(1,ip),   &
      &        asmn_t(1,ip), asmn_p(1,ip), ncomp, irev_sr_rtm, n_WS, WS)
@@ -522,7 +522,7 @@
           call set_sp_rlm_scalar_sym_matmul                             &
      &       (kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
      &        ncomp, nvector, irev_sr_rlm, n_WR, WR,                    &
-     &        nscl_jk, scl_e(1,ip), scl_o(1,ip) )
+     &        scl_e(1,ip), scl_o(1,ip) )
 !          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
 !   even l-m
@@ -536,7 +536,7 @@
 !
 !          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_scalar_sym_matmul(kst(ip), nkr(ip),           &
-     &        mp_rlm, nl_rtm, nscl_lk, symp(1,ip), asmp(1,ip),          &
+     &        mp_rlm, nl_rtm, symp(1,ip), asmp(1,ip),                   &
      &        ncomp, nvector, irev_sr_rtm, n_WS, WS)
 !          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
