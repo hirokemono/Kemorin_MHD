@@ -276,15 +276,15 @@
           call deallocate_phys_data_IO
           call deallocate_phys_data_name_IO
         end do
-        time = time_init
-        i_step_MHD = i_step_init
-!
         call MPI_Bcast(i_step_init, ione, CALYPSO_INTEGER,              &
      &        izero, CALYPSO_COMM, ierr_MPI)
         call MPI_Bcast(time_init, ione, CALYPSO_REAL,                   &
      &        izero, CALYPSO_COMM, ierr_MPI)
         call MPI_Bcast(dt, ione, CALYPSO_REAL,                          &
      &        izero, CALYPSO_COMM, ierr_MPI)
+!
+        time = time_init
+        i_step_MHD = i_step_init
 !
 !     Bloadcast original spectr data
         do ip = 1, np_sph_org
