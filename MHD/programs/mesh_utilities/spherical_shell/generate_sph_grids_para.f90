@@ -51,14 +51,23 @@
       if(iflag_debug .gt. 0) write(*,*) 's_const_1d_ele_connect_4_sph'
       call s_const_1d_ele_connect_4_sph
 !
+      call alloc_parallel_sph_grids(ndomain_sph)
+      if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_grids'
       call start_eleps_time(2)
-      if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_transfer_grids'
-      call para_gen_sph_transfer_grids
+      call para_gen_sph_rlm_grids
       call end_eleps_time(2)
-!
+      if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rj_modes'
       call start_eleps_time(3)
-      if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_modes_grids'
-      call para_gen_sph_modes_grids
+      call para_gen_sph_rj_modes
+      call end_eleps_time(3)
+!
+      if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtm_grids'
+      call start_eleps_time(2)
+      call para_gen_sph_rtm_grids
+      call end_eleps_time(2)
+      if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtp_grids'
+      call start_eleps_time(3)
+      call para_gen_sph_rtp_grids
       call end_eleps_time(3)
 !
       call start_eleps_time(4)

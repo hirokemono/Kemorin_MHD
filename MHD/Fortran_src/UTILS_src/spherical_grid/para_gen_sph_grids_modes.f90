@@ -9,8 +9,12 @@
 !!
 !!
 !!@verbatim
-!!      subroutine para_gen_sph_transfer_grids
-!!      subroutine para_gen_sph_modes_grids
+!!      subroutine para_gen_sph_rlm_grids
+!!      subroutine para_gen_sph_rtm_grids
+!!
+!!      subroutine para_gen_sph_rj_modes
+!!      subroutine para_gen_sph_rtp_grids
+!!
 !!      subroutine para_gen_fem_mesh_for_sph
 !!@endverbatim
 !
@@ -32,8 +36,11 @@
       integer(kind = kint), allocatable :: nneib_rtm_gl(:)
 !
       private :: nneib_rlm_lc, nneib_rtm_lc, nneib_rlm_gl, nneib_rtm_gl
-      private :: allocate_nneib_sph_tmp, deallocate_nneib_sph_tmp
-      private :: bcast_comm_stacks_rlm_rtm
+      private :: allocate_nneib_sph_rlm_tmp
+      private :: deallocate_nneib_sph_rlm_tmp
+      private :: allocate_nneib_sph_rtm_tmp
+      private :: deallocate_nneib_sph_rtm_tmp
+      private :: bcast_comm_stacks_rlm, bcast_comm_stacks_rtm
 !
 ! -----------------------------------------------------------------------
 !
@@ -41,35 +48,52 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_nneib_sph_tmp(ndomain_sph)
+      subroutine allocate_nneib_sph_rlm_tmp(ndomain_sph)
 !
       integer(kind = kint), intent(in) :: ndomain_sph
 !
       allocate(nneib_rlm_lc(ndomain_sph))
       allocate(nneib_rlm_gl(ndomain_sph))
-      allocate(nneib_rtm_lc(ndomain_sph))
-      allocate(nneib_rtm_gl(ndomain_sph))
       nneib_rlm_lc = 0
       nneib_rlm_gl = 0
+!
+      end subroutine allocate_nneib_sph_rlm_tmp
+!
+! -----------------------------------------------------------------------
+!
+      subroutine allocate_nneib_sph_rtm_tmp(ndomain_sph)
+!
+      integer(kind = kint), intent(in) :: ndomain_sph
+!
+      allocate(nneib_rtm_lc(ndomain_sph))
+      allocate(nneib_rtm_gl(ndomain_sph))
       nneib_rtm_lc = 0
       nneib_rtm_gl = 0
 !
-      end subroutine allocate_nneib_sph_tmp
+      end subroutine allocate_nneib_sph_rtm_tmp
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine deallocate_nneib_sph_tmp
+      subroutine deallocate_nneib_sph_rlm_tmp
 !
 !
       deallocate(nneib_rlm_lc, nneib_rlm_gl)
+!
+      end subroutine deallocate_nneib_sph_rlm_tmp
+!
+! -----------------------------------------------------------------------
+!
+      subroutine deallocate_nneib_sph_rtm_tmp
+!
+!
       deallocate(nneib_rtm_lc, nneib_rtm_gl)
 !
-      end subroutine deallocate_nneib_sph_tmp
+      end subroutine deallocate_nneib_sph_rtm_tmp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_transfer_grids
+      subroutine para_gen_sph_rlm_grids
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
@@ -80,63 +104,111 @@
       integer(kind = kint) :: ip_rank, ip
 !
 !
-      call allocate_nneib_sph_tmp(ndomain_sph)
-      call alloc_parallel_sph_grids(ndomain_sph)
-!
+      call allocate_nneib_sph_rlm_tmp(ndomain_sph)
       do ip = 1, ndomain_sph
         ip_rank = ip - 1
         if(mod(ip_rank,nprocs) .ne. my_rank                             &
      &    .and. iflag_memory_conserve_sph .ne. 0) cycle
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
-     &             'start table generation for',                        &
+     &             'start rlm table generation for',                    &
      &            ip_rank, 'on ', my_rank, nprocs
-        call const_transform_grids_modes(ip_rank)
+        call const_sph_rlm_modes(ip_rank)
 !
         if(mod(ip_rank,nprocs).eq. my_rank) then
           nneib_rlm_lc(ip)                                              &
      &       = sph_para(ip)%sph_comms%comm_rlm%nneib_domain
-          nneib_rtm_lc(ip)                                              &
-     &       = sph_para(ip_rank+1)%sph_comms%comm_rtm%nneib_domain
-!
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &          'Write spherical transform table for domain ',          &
-     &          ip_rank,  ' on ', my_rank
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
      &        'output_modes_rlm_sph_trans', ip_rank
           call output_modes_rlm_sph_trans(ip_rank)
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &        'output_geom_rtm_sph_trans', ip_rank
-          call output_geom_rtm_sph_trans(ip_rank)
         else
           call deallocate_sph_comm_item_rlm
           call deallocate_sph_1d_index_rlm
           call deallocate_spheric_param_rlm
-!
-          call deallocate_sph_comm_item_rtm
-          call deallocate_sph_1d_index_rtm
-          call deallocate_spheric_param_rtm
         end if
 !
         write(*,'(a,i6,a)') 'Spherical transform table for domain',     &
      &          ip_rank, ' is done.'
       end do
+      call bcast_comm_stacks_rlm
+      call deallocate_nneib_sph_rlm_tmp
 !
-      if(iflag_memory_conserve_sph .gt. 0) then
-        if(i_debug .gt. 0) write(*,*) 'barrier for rlm', my_rank
-        call calypso_MPI_barrier
-      end if
-      if(my_rank .eq. 0) write(*,*) 'barrier finished for rlm'
+      end subroutine para_gen_sph_rlm_grids
 !
-      call bcast_comm_stacks_rlm_rtm
-      call deallocate_nneib_sph_tmp
+! -----------------------------------------------------------------------
 !
-      end subroutine para_gen_sph_transfer_grids
+      subroutine para_gen_sph_rtm_grids
+!
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
+      use m_parallel_sph_grids
+      use load_data_for_sph_IO
+      use gen_sph_grids_modes
+!
+      integer(kind = kint) :: ip_rank, ip
+!
+!
+      call allocate_nneib_sph_rtm_tmp(ndomain_sph)
+      do ip = 1, ndomain_sph
+        ip_rank = ip - 1
+        if(mod(ip_rank,nprocs) .ne. my_rank                             &
+     &    .and. iflag_memory_conserve_sph .ne. 0) cycle
+!
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &             'start rtm table generation for',                    &
+     &            ip_rank, 'on ', my_rank, nprocs
+        call const_sph_rtm_grids(ip_rank)
+!
+        if(mod(ip_rank,nprocs).eq. my_rank) then
+          nneib_rtm_lc(ip)                                              &
+     &       = sph_para(ip_rank+1)%sph_comms%comm_rtm%nneib_domain
+!
+          if(iflag_debug .gt. 0) write(*,*)                             &
+     &        'output_geom_rtm_sph_trans', ip_rank
+          call output_geom_rtm_sph_trans(ip_rank)
+        else
+          call deallocate_sph_comm_item_rtm
+          call deallocate_sph_1d_index_rtm
+          call deallocate_spheric_param_rtm
+        end if
+!
+        write(*,'(a,i6,a)') 'Legendre transform table rtm',             &
+     &          ip_rank, ' is done.'
+      end do
+      call bcast_comm_stacks_rtm
+      call deallocate_nneib_sph_rtm_tmp
+!
+      end subroutine para_gen_sph_rtm_grids
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_modes_grids
+      subroutine para_gen_sph_rj_modes
+!
+      use m_spheric_parameter
+      use m_parallel_sph_grids
+      use set_local_index_table_sph
+      use gen_sph_grids_modes
+!
+      integer(kind = kint) :: ip_rank
+!
+!
+      call allocate_rj_1d_local_idx
+      do ip_rank = 0, ndomain_sph-1
+        if(mod(ip_rank,nprocs) .ne. my_rank) cycle
+!
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &             'Construct spherical modes for domain ',             &
+     &            ip_rank,  ' on ', my_rank
+        call const_sph_rj_modes(ip_rank)
+      end do
+      call deallocate_rj_1d_local_idx
+!
+      end subroutine para_gen_sph_rj_modes
+!
+! ----------------------------------------------------------------------
+!
+      subroutine para_gen_sph_rtp_grids
 !
       use m_spheric_parameter
       use m_parallel_sph_grids
@@ -147,21 +219,17 @@
 !
 !
       call allocate_rtp_1d_local_idx
-      call allocate_rj_1d_local_idx
-!
       do ip_rank = 0, ndomain_sph-1
         if(mod(ip_rank,nprocs) .ne. my_rank) cycle
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
-     &             'Construct spherical modes and grids for domain ',   &
+     &             'Construct spherical grids for domain ',             &
      &            ip_rank,  ' on ', my_rank
-        call const_sph_modes_grids(ip_rank)
+        call const_sph_rtp_grids(ip_rank)
       end do
-!
       call deallocate_rtp_1d_local_idx
-      call deallocate_rj_1d_local_idx
 !
-      end subroutine para_gen_sph_modes_grids
+      end subroutine para_gen_sph_rtp_grids
 !
 ! ----------------------------------------------------------------------
 !
@@ -206,7 +274,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine bcast_comm_stacks_rlm_rtm
+      subroutine bcast_comm_stacks_rlm
 !
       use m_spheric_parameter
       use m_parallel_sph_grids
@@ -216,23 +284,21 @@
 !
       if(iflag_memory_conserve_sph .eq. 0) return
 !
+      if(i_debug .gt. 0) write(*,*) 'barrier for rlm', my_rank
+      call calypso_MPI_barrier
+      if(my_rank .eq. 0) write(*,*) 'barrier finished for rlm'
+!
       call MPI_allREDUCE(nneib_rlm_lc(1), nneib_rlm_gl(1),              &
-     &      ndomain_sph, CALYPSO_INTEGER, MPI_SUM,                      &
-     &      CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE(nneib_rtm_lc(1), nneib_rtm_gl(1),              &
      &      ndomain_sph, CALYPSO_INTEGER, MPI_SUM,                      &
      &      CALYPSO_COMM, ierr_MPI)
 !
       sph_para(1:ndomain_sph)%sph_comms%comm_rlm%nneib_domain           &
      &        = nneib_rlm_gl(1:ndomain_sph)
-      sph_para(1:ndomain_sph)%sph_comms%comm_rtm%nneib_domain           &
-     &        = nneib_rtm_gl(1:ndomain_sph)
 !
       do ip = 1, ndomain_sph
         ip_rank = ip - 1
         if(mod(ip_rank,nprocs) .eq. my_rank) cycle
         call alloc_type_sph_comm_stack(sph_para(ip)%sph_comms%comm_rlm)
-        call alloc_type_sph_comm_stack(sph_para(ip)%sph_comms%comm_rtm)
       end do
 !
       do ip = 1, ndomain_sph
@@ -243,7 +309,42 @@
      &      nneib, CALYPSO_INTEGER, iroot, CALYPSO_COMM, ierr_MPI)
         call MPI_Bcast(sph_para(ip)%sph_comms%comm_rlm%istack_sr(1),    &
      &      nneib, CALYPSO_INTEGER, iroot, CALYPSO_COMM, ierr_MPI)
+      end do
 !
+      end subroutine bcast_comm_stacks_rlm
+!
+! ----------------------------------------------------------------------
+!
+      subroutine bcast_comm_stacks_rtm
+!
+      use m_spheric_parameter
+      use m_parallel_sph_grids
+!
+      integer(kind = kint) :: ip_rank, ip, iroot, nneib
+!
+!
+      if(iflag_memory_conserve_sph .eq. 0) return
+!
+      if(i_debug .gt. 0) write(*,*) 'barrier for rtm', my_rank
+      call calypso_MPI_barrier
+      if(my_rank .eq. 0) write(*,*) 'barrier finished for rtm'
+!
+      call MPI_allREDUCE(nneib_rtm_lc(1), nneib_rtm_gl(1),              &
+     &      ndomain_sph, CALYPSO_INTEGER, MPI_SUM,                      &
+     &      CALYPSO_COMM, ierr_MPI)
+!
+      sph_para(1:ndomain_sph)%sph_comms%comm_rtm%nneib_domain           &
+     &        = nneib_rtm_gl(1:ndomain_sph)
+!
+      do ip = 1, ndomain_sph
+        ip_rank = ip - 1
+        if(mod(ip_rank,nprocs) .eq. my_rank) cycle
+        call alloc_type_sph_comm_stack(sph_para(ip)%sph_comms%comm_rtm)
+      end do
+!
+      do ip = 1, ndomain_sph
+        ip_rank = ip - 1
+        iroot = mod(ip_rank,nprocs)
         nneib = sph_para(ip)%sph_comms%comm_rtm%nneib_domain
         call MPI_Bcast(sph_para(ip)%sph_comms%comm_rtm%id_domain(1),    &
      &      nneib, CALYPSO_INTEGER, iroot, CALYPSO_COMM, ierr_MPI)
@@ -251,7 +352,7 @@
      &      nneib, CALYPSO_INTEGER, iroot, CALYPSO_COMM, ierr_MPI)
       end do
 !
-      end subroutine bcast_comm_stacks_rlm_rtm
+      end subroutine bcast_comm_stacks_rtm
 !
 ! ----------------------------------------------------------------------
 !

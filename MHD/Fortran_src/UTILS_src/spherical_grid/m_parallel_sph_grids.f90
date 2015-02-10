@@ -1,15 +1,22 @@
-!m_parallel_sph_grids.f90
-!      module m_parallel_sph_grids
+!>@file   m_parallel_sph_grids.f90
+!!@brief  module m_parallel_sph_grids
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2012
 !
-!
-!      subroutine alloc_parallel_sph_grids(ndomain_sph)
-!      subroutine dealloc_parallel_sph_grids
-!
-!      subroutine  copy_sph_rlm_grid_from_mem(ip)
-!      subroutine  copy_sph_rtm_grid_from_mem(ip)
-!
-!      subroutine  copy_sph_rlm_grid_to_mem(ip)
-!      subroutine  copy_sph_rtm_grid_to_mem(ip)
+!>@brief Arrays for spherical transform tables
+!!
+!!
+!!@verbatim
+!!      subroutine alloc_parallel_sph_grids(ndomain_sph)
+!!      subroutine dealloc_parallel_sph_grids
+!!
+!!      subroutine  copy_sph_rlm_grid_from_mem(ip)
+!!      subroutine  copy_sph_rtm_grid_from_mem(ip)
+!!
+!!      subroutine  copy_sph_rlm_grid_to_mem(ip)
+!!      subroutine  copy_sph_rtm_grid_to_mem(ip)
+!!@endverbatim
 !
       module m_parallel_sph_grids
 !
@@ -19,8 +26,10 @@
 !
       implicit none
 !
+!>      Integer flag for memory conservation mode
       integer(kind = kint) :: iflag_memory_conserve_sph = 0
-      type(sph_mesh_data), allocatable :: sph_para(:)
+!>      Structure for parallel spherical mesh table
+      type(sph_mesh_data), allocatable, save :: sph_para(:)
 !
 ! -----------------------------------------------------------------------
 !
