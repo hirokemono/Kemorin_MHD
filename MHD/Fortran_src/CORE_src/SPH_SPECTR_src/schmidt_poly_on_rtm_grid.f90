@@ -179,8 +179,7 @@
 !
 !
       do i = 1, nidx_rtm(2)
-        dth = g_colat_rtm(i)
-        call dschmidt
+        call dschmidt(g_colat_rtm(i))
 !
         do j = 1, nidx_rlm(2)
           jj = idx_gl_1d_rlm_j(j,1)
@@ -208,9 +207,7 @@
 !
 !
       pi = four * atan(one)
-!
-      dth = zero
-      call dschmidt
+      call dschmidt(zero)
 !
       do j = 1, nidx_rlm(2)
         jj = idx_gl_1d_rlm_j(j,1)
@@ -220,8 +217,7 @@
         dPdt_pole_rtm(1,j) = dp(mm,l)
       end do
 !
-      dth = pi
-      call dschmidt
+      call dschmidt(pi)
 !
       do j = 1, nidx_rlm(2)
         jj = idx_gl_1d_rlm_j(j,1)

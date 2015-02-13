@@ -321,7 +321,7 @@
 !
       write(50+my_rank,*) 'num_gauss_points, truncation',               &
      &         nidx_rtm(2), nidx_rlm(2)
-      write(50+my_rank,*) 'med_no, j, l, m, P, dp/dth'
+      write(50+my_rank,*) 'med_no, j, l, m, P, dp/dtheta'
 !
       do j = 1, nidx_rlm(2)
         do i = 1, nidx_rtm(2)
@@ -343,7 +343,7 @@
 !
 !
       write(50+my_rank,*) 'truncation', nidx_rlm(2)
-      write(50+my_rank,*) 'med_no, j, l, m, P, dp/dth'
+      write(50+my_rank,*) 'med_no, j, l, m, P, dp/dtheta'
 !
       do j = 1, nidx_rlm(2)
         do i = 1, 2

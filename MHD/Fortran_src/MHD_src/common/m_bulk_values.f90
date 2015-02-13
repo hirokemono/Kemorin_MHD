@@ -313,23 +313,30 @@
 !
             ja_amom = j0 + 1
             j0 = j0 + 3
-          else if ( phys_nod_name(i) .eq. fhd_magne ) then
+          end if
+!
+          if ( phys_nod_name(i) .eq. fhd_magne ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_magne, j_ave%i_magne)
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          ir_me_ic, ja_mag_ic)
             call set_rms_address(n_scalar, i0, j0,                      &
      &          ir_divb, ja_divb)
-          else if ( phys_nod_name(i) .eq. fhd_vecp ) then
+          end if
+!
+          if ( phys_nod_name(i) .eq. fhd_vecp ) then
             call set_rms_address(n_scalar, i0, j0,                      &
      &          ir_diva, ja_diva)
-          else if ( phys_nod_name(i) .eq. fhd_vort ) then
+          end if
+
+          if ( phys_nod_name(i) .eq. fhd_vort ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_vort, j_ave%i_vort)
-!
             ir_rms_w   = i0 + 1
             i0 = i0 + 1
-          else if ( phys_nod_name(i) .eq. fhd_current ) then
+          end if
+!
+          if ( phys_nod_name(i) .eq. fhd_current ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_current, j_ave%i_current)
             call set_rms_address(num_nod_component(i), i0, j0,          &
@@ -338,8 +345,9 @@
             ir_rms_j    = i0 + 1
             ir_rms_j_ic = i0 + 2
             i0 = i0 + 2
+          end if
 !
-          else if ( phys_nod_name(i) .eq. fhd_e_field ) then
+          if ( phys_nod_name(i) .eq. fhd_e_field ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_electric, j_ave%i_electric)
           else if ( phys_nod_name(i) .eq. fhd_poynting ) then
@@ -354,8 +362,9 @@
           else if ( phys_nod_name(i) .eq. fhd_mag_potential ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_mag_p, j_ave%i_mag_p)
+          end if
 !
-          else if ( phys_nod_name(i) .eq. fhd_part_temp ) then
+          if ( phys_nod_name(i) .eq. fhd_part_temp ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_par_temp, j_ave%i_par_temp)
           else if ( phys_nod_name(i) .eq. fhd_light ) then
@@ -386,31 +395,37 @@
           else if ( phys_nod_name(i) .eq. fhd_entropy_source ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_entropy_source, j_ave%i_entropy_source)
+          end if
 !
-          else if ( phys_nod_name(i) .eq. fhd_press_grad ) then
+          if ( phys_nod_name(i) .eq. fhd_press_grad ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_press_grad, j_ave%i_press_grad)
+          end if
 !
-          else if ( phys_nod_name(i) .eq. fhd_mag_tension ) then
+          if ( phys_nod_name(i) .eq. fhd_mag_tension ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_m_tension, j_ave%i_m_tension)
+          end if
 !
-          else if ( phys_nod_name(i) .eq. fhd_filter_v ) then
+          if ( phys_nod_name(i) .eq. fhd_filter_v ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_filter_velo, j_ave%i_filter_velo)
             call set_rms_address(n_scalar, i0, j0,                      &
      &          ir_divv_f, ja_divv_f)
-!
             jr_amom_f = i0 + 1
             j0 = j0 + 3
-          else if ( phys_nod_name(i) .eq. fhd_filter_b ) then
+          end if
+!
+          if ( phys_nod_name(i) .eq. fhd_filter_b ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_filter_magne, j_ave%i_filter_magne)
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          ir_me_f_ic, ja_mag_f_ic)
             call set_rms_address(n_scalar, i0, j0,                      &
      &          ir_divb_f, ja_divb_f)
-          else if ( phys_nod_name(i) .eq. fhd_filter_a ) then
+          end if
+!
+          if ( phys_nod_name(i) .eq. fhd_filter_a ) then
             call set_rms_address(n_scalar, i0, j0,                      &
      &          ir_diva_f, ja_diva_f)
           else if ( phys_nod_name(i) .eq. fhd_filter_temp ) then
@@ -419,8 +434,9 @@
           else if ( phys_nod_name(i) .eq. fhd_filter_comp ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_filter_comp, j_ave%i_filter_comp)
+          end if
 !
-          else if ( phys_nod_name(i) .eq. fhd_grad_v_1 ) then
+          if ( phys_nod_name(i) .eq. fhd_grad_v_1 ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_grad_vx, j_ave%i_grad_vx)
           else if ( phys_nod_name(i) .eq. fhd_grad_v_2 ) then
@@ -429,8 +445,9 @@
           else if ( phys_nod_name(i) .eq. fhd_grad_v_3 ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_grad_vz, j_ave%i_grad_vz)
+          end if
 !
-          else if ( phys_nod_name(i) .eq. fhd_mom_flux ) then
+          if ( phys_nod_name(i) .eq. fhd_mom_flux ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_m_flux, j_ave%i_m_flux)
           else if ( phys_nod_name(i) .eq. fhd_maxwell_t ) then
@@ -475,8 +492,9 @@
           else if ( phys_nod_name(i) .eq. fhd_filter_buo ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_filter_buo, j_ave%i_filter_buo)
+          end if
 !
-          else if ( phys_nod_name(i) .eq. fhd_viscous ) then
+          if ( phys_nod_name(i) .eq. fhd_viscous ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_v_diffuse, j_ave%i_v_diffuse)
           else if ( phys_nod_name(i) .eq. fhd_vecp_diffuse ) then
@@ -491,8 +509,9 @@
           else if ( phys_nod_name(i) .eq. fhd_c_diffuse) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_c_diffuse, j_ave%i_c_diffuse)
+          end if
 !
-          else if ( phys_nod_name(i) .eq. fhd_SGS_m_flux ) then
+          if ( phys_nod_name(i) .eq. fhd_SGS_m_flux ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_SGS_m_flux, j_ave%i_SGS_m_flux)
           else if ( phys_nod_name(i) .eq. fhd_SGS_maxwell_t ) then
@@ -519,8 +538,9 @@
           else if ( phys_nod_name(i) .eq. fhd_SGS_comp_buo ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_SGS_comp_buo, j_ave%i_SGS_comp_buo)
+          end if
 !
-          else if ( phys_nod_name(i) .eq. fhd_mag_ene_gen ) then
+          if ( phys_nod_name(i) .eq. fhd_mag_ene_gen ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_me_gen, j_ave%i_me_gen)
           else if ( phys_nod_name(i) .eq. fhd_Lorentz_work ) then
@@ -541,8 +561,9 @@
           else if ( phys_nod_name(i) .eq. fhd_filter_buo_flux) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_f_buo_gen, j_ave%i_f_buo_gen)
+          end if
 !
-          else if ( phys_nod_name(i) .eq. fhd_vis_ene_diffuse ) then
+          if ( phys_nod_name(i) .eq. fhd_vis_ene_diffuse ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_vis_e_diffuse, j_ave%i_vis_e_diffuse)
           else if ( phys_nod_name(i) .eq. fhd_mag_ene_diffuse ) then
@@ -602,8 +623,9 @@
           else if ( phys_nod_name(i) .eq. fhd_SGS_comp_buo_flux ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_SGS_comp_buo_wk, j_ave%i_SGS_comp_buo_wk)
+          end if
 !
-          else if (phys_nod_name(i) .eq. fhd_SGS_div_h_flux_true) then
+          if (phys_nod_name(i) .eq. fhd_SGS_div_h_flux_true) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_SGS_div_hf_true, j_ave%i_SGS_div_hf_true)
           else if (phys_nod_name(i) .eq. fhd_SGS_div_m_flux_true) then
@@ -615,8 +637,9 @@
           else if ( phys_nod_name(i) .eq. fhd_SGS_mag_induct_true ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_SGS_idct_true, j_ave%i_SGS_idct_true)
+          end if
 !
-          else if ( phys_nod_name(i) .eq. fhd_SGS_Lorentz_wk_true ) then
+          if ( phys_nod_name(i) .eq. fhd_SGS_Lorentz_wk_true ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_SGS_Lor_wk_tr, j_ave%i_SGS_Lor_wk_tr)
           else if ( phys_nod_name(i) .eq. fhd_Reynolds_work_true ) then
@@ -628,8 +651,9 @@
           else if ( phys_nod_name(i) .eq. fhd_SGS_m_ene_gen_true ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_SGS_me_gen_tr, j_ave%i_SGS_me_gen_tr)
+          end if
 !
-          else if ( phys_nod_name(i) .eq. fhd_velocity_scale ) then
+          if ( phys_nod_name(i) .eq. fhd_velocity_scale ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_velo_scale, j_ave%i_velo_scale)
           else if ( phys_nod_name(i) .eq. fhd_magnetic_scale ) then
@@ -641,12 +665,12 @@
           else if ( phys_nod_name(i) .eq. fhd_composition_scale ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_comp_scale, j_ave%i_comp_scale)
+          end if
 !
 !   Old field label... Should be deleted later!!
-          else if ( phys_nod_name(i) .eq. fhd_buoyancy_work ) then
+          if ( phys_nod_name(i) .eq. fhd_buoyancy_work ) then
             call set_rms_address(num_nod_component(i), i0, j0,          &
      &          i_rms%i_buo_gen, j_ave%i_buo_gen)
-
           end if
 !
         else

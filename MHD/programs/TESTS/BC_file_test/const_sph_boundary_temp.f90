@@ -89,11 +89,9 @@
       num = bc_istack(igrp  ) - bc_istack(igrp-1)
       do inum = 1, num
         inod = bc_item(ist+inum)
-        dth = colatitude(inod)
-        dph = longitude(inod)
 !
-        call dschmidt
-        call spheric
+        call dschmidt(colatitude(inod))
+        call spheric(longitude(inod))
 !
         inod_bc(inum) = inod
         bc_temp(inum) = s(j,0)

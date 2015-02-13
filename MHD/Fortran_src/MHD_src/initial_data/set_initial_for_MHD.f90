@@ -57,12 +57,8 @@
       call idx28
 !
         do inod = 1, numnod
-!
-         dth = colatitude(inod)
-         dph = longitude(inod)
-!
-         call dschmidt
-         call spheric
+         call dschmidt(colatitude(inod))
+         call spheric(longitude(inod))
 !
          call radial_function_sph_vecp(radius(inod), ifl, j_rst,        &
      &       depth_high_t, depth_low_t)
@@ -73,9 +69,10 @@
 !     &                               + mp(j)*s(j,0)
 !         end do
 !
-         call cvt_spectr_2_field(radius(inod), dth)
+         call cvt_spectr_2_field(radius(inod), colatitude(inod))
 !
-         call cvt_one_vector_2_cart(b_cart, b_pole, dth, dph)
+         call cvt_one_vector_2_cart                                     &
+     &      (b_cart, b_pole, colatitude(inod), longitude(inod))
          d_nod(inod,iphys%i_vecp  ) = b_cart(1)
          d_nod(inod,iphys%i_vecp+1) = b_cart(2)
          d_nod(inod,iphys%i_vecp+2) = b_cart(3)
@@ -121,12 +118,8 @@
       call idx28
 !
         do inod = 1, numnod
-!
-         dth = colatitude(inod)
-         dph = longitude(inod)
-!
-         call dschmidt
-         call spheric
+         call dschmidt(colatitude(inod))
+         call spheric(longitude(inod))
 !
          call radial_function_sph(radius(inod), ifl, j_rst,             &
      &       depth_high_t, depth_low_t)
@@ -137,9 +130,10 @@
      &                               + mp(j)*s(j,0)
          end do
 !
-         call cvt_spectr_2_field(radius(inod), dth)
+         call cvt_spectr_2_field(radius(inod), colatitude(inod))
 !
-         call cvt_one_vector_2_cart(b_cart, b_pole, dth, dph)
+         call cvt_one_vector_2_cart                                     &
+     &      (b_cart, b_pole, colatitude(inod), longitude(inod))
          d_nod(inod,iphys%i_magne  ) = b_cart(1)
          d_nod(inod,iphys%i_magne+1) = b_cart(2)
          d_nod(inod,iphys%i_magne+2) = b_cart(3)
@@ -183,18 +177,17 @@
         do inum = 1, numnod_fluid
          inod = inod_fluid(inum)
 !
-         dth = colatitude(inod)
-         dph = longitude(inod)
-!
-         call dschmidt
-         call spheric
+         call dschmidt(colatitude(inod))
+         call spheric(longitude(inod))
 !
          call radial_function_sph_velo( radius(inod) )
 !
-         call cvt_spectr_2_field(radius(inod), dth)
+         call cvt_spectr_2_field(radius(inod), colatitude(inod))
 !
-         call cvt_one_vector_2_cart(v_cart, v_pole, dth, dph)
-         call cvt_one_vector_2_cart(b_cart, b_pole, dth, dph)
+         call cvt_one_vector_2_cart                                     &
+     &      (v_cart, v_pole, colatitude(inod), longitude(inod))
+         call cvt_one_vector_2_cart                                     &
+     &      (b_cart, b_pole, colatitude(inod), longitude(inod))
 !
          d_nod(inod,iphys%i_velo  ) = v_cart(1)
          d_nod(inod,iphys%i_velo+1) = v_cart(2)
@@ -219,12 +212,11 @@
 !
       real(kind = kreal), intent(in) :: r, theta
 !
-      if ( r .gt. 0.0d0 ) then
-        if ( sin(theta) .eq. 0.0d0 ) then
-          call cvtp(r)
-        else 
-          call cvt(r)
-        end if
+      if ( r .le. 0.0d0 ) return
+      if ( sin(theta) .eq. 0.0d0 ) then
+        call cvtp(r, theta)
+      else 
+        call cvt(r, theta)
       end if
 !
       end subroutine cvt_spectr_2_field

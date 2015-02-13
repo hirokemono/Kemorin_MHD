@@ -33,7 +33,7 @@
 !
       integer(kind = kint) :: inod, nd, i_comp
       integer(kind = kint) :: jj,ll,mm
-      real ( kind = kreal) :: bmag, dph
+      real ( kind = kreal) :: bmag
 !
 !
       call allocate_schmidt_polynomial
@@ -51,14 +51,12 @@
          ibc_b_id(l_f(nd),nd) = inod
        end do
 !
-       dth = colatitude(inod) 
-       dph = longitude(inod)
-       call dschmidt
+       call dschmidt(colatitude(inod))
 !
        if (mm.ge.0) then
-         bmag = p(mm,ll) * cos( dph*dble(mm) )
+         bmag = p(mm,ll) * cos( longitude(inod)*dble(mm) )
        else
-         bmag = p(mm,ll) * sin( dph*dble(mm) )
+         bmag = p(mm,ll) * sin( longitude(inod)*dble(mm) )
        end if
 !
        do nd = 1, 3

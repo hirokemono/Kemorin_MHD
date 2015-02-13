@@ -63,8 +63,7 @@
       dint_p = 0.0d0
 !
       do i = lst, led
-        dth = g_colat_med(i)
-        call full_norm_legendre
+        call full_norm_legendre(g_colat_med(i))
 !
         do j = 0, jmax_g
           l = idx(j,1)
@@ -73,7 +72,7 @@
           dPdt_smdt(i,j) = dp(m,l)
         end do
 !
-        call dlad
+        call dlad(g_colat_med(i))
         do j = 0, jmax_g
           l = idx(j,1)
           m = abs( idx(j,2) )

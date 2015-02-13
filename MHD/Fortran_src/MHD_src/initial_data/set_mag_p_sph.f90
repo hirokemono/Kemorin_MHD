@@ -34,7 +34,6 @@
 !
       integer(kind = kint) :: inod
       integer(kind = kint) :: jj,ll,mm
-      real ( kind = kreal) :: dph
 !
 !
       call allocate_schmidt_polynomial
@@ -50,18 +49,16 @@
        inod = bc_item(k+bc_istack(i-1))
        ibc_mag_p_id(ii)=inod
 !
-       dth = colatitude(inod)
-       dph = longitude(inod)
-       call dschmidt
+       call dschmidt(colatitude(inod))
 !
        if (mm.ge.0) then
-         bc_mag_p_id_apt(ii) = p(mm,ll) * cos( dph*dble(mm) )
+         bc_mag_p_id_apt(ii) = p(mm,ll) * cos(longitude(inod)*dble(mm))
        else
-         bc_mag_p_id_apt(ii) = p(mm,ll) * sin( dph*dble(mm) )
+         bc_mag_p_id_apt(ii) = p(mm,ll) * sin(longitude(inod)*dble(mm))
        end if
 !
         ibc_mag_p(    inod ) = 1
-        ibc2_mag_p(    inod ) = 1
+        ibc2_mag_p(   inod ) = 1
 !
       end do
 !

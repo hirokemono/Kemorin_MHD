@@ -65,8 +65,7 @@
       nth = ltr_circle
       call allocate_schmidt_polynomial
 !
-      dth = theta_circle
-      call dschmidt
+      call dschmidt(theta_circle)
 !
       do l = 1, ltr_circle
         do m = -l, l

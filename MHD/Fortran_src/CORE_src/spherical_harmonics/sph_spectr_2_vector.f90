@@ -4,7 +4,7 @@
 !     Written by H. Matsui in 1997
 !     modified by H. Matsui on June, 2006
 !
-!      subroutine cvt(r)
+!      subroutine cvt(r, theta)
 !******************************************************
 !*
 !*    subroutin of  spector => vector for vector field
@@ -65,7 +65,7 @@
 !*
 !*
 !
-!      subroutine cvtp(r)
+!      subroutine cvtp(r, theta)
 !******************************************************
 !*    subroutin of  spector => vector for vector field
 !*      of a point    for pole 
@@ -101,9 +101,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cvt(r)
+      subroutine cvt(r, theta)
 !*
-      real(kind = kreal), intent(in) ::  r
+      real(kind = kreal), intent(in) ::  r, theta
       integer(kind = kint) :: nm, j
 !*
 !*
@@ -117,17 +117,17 @@
         v_pole(1) = v_pole(1) + g(j,3) * vp(j) * s(j,0) / r**2
 !*
         v_pole(2) = v_pole(2) + ( dvp(j) * s(j,2)                       &
-     &         + vt(j) * s(j,1) / sin(dth) ) / r
+     &         + vt(j) * s(j,1) / sin(theta) ) / r
 !*
-        v_pole(3) = v_pole(3) + ( dvp(j) * s(j,1) / sin(dth)            &
+        v_pole(3) = v_pole(3) + ( dvp(j) * s(j,1) / sin(theta)          &
      &         - vt(j) * s(j,2) ) / r
 !*
         b_pole(1) = b_pole(1) + g(j,3) * bp(j) * s(j,0) / r**2
 !*
         b_pole(2) = b_pole(2) + ( dbp(j) * s(j,2)                       &
-     &         + bt(j) * s(j,1) / sin(dth) ) / r
+     &         + bt(j) * s(j,1) / sin(theta) ) / r
 !*
-        b_pole(3) = b_pole(3) + ( dbp(j) * s(j,1) / sin(dth)            &
+        b_pole(3) = b_pole(3) + ( dbp(j) * s(j,1) / sin(theta)          &
      &         - bt(j) * s(j,2) ) / r
 !*
   20  continue
@@ -137,9 +137,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cvtp(r)
+      subroutine cvtp(r, theta)
 !
-      real(kind = kreal), intent(in) ::  r
+      real(kind = kreal), intent(in) ::  r, theta
       integer(kind = kint) :: nm, l, j0, j9, j1
 !*
 !*
@@ -156,22 +156,22 @@
 !*
         v_pole(1) = v_pole(1) +  g(j0,3) * vp(j0) * s(j0,0) / r**2
 !*
-        v_pole(2) = v_pole(2) +  ( dvp(j9) * s(j9,2)                   &
-     &   + dvp(j1) * s(j1,2) + cos(dth) * ( vt(j9) * s(j9,3)           &
+        v_pole(2) = v_pole(2) +  ( dvp(j9) * s(j9,2)                    &
+     &   + dvp(j1) * s(j1,2) + cos(theta) * ( vt(j9) * s(j9,3)          &
      &         + vt(j1) * s(j1,3) ) ) / r
 !*
-        v_pole(3) = v_pole(3) + ( cos(dth) * ( dvp(j9) * s(j9,3)       &
-     &         + dvp(j1) * s(j1,3) )  - vt(j9) * s(j9,2)               &
+        v_pole(3) = v_pole(3) + ( cos(theta) * ( dvp(j9) * s(j9,3)      &
+     &         + dvp(j1) * s(j1,3) )  - vt(j9) * s(j9,2)                &
      &         - vt(j1) * s(j1,2) ) / r
 !*
         b_pole(1) = b_pole(1) +  g(j0,3) * bp(j0) * s(j0,0) / r**2
 !*
-        b_pole(2) = b_pole(2) +  ( dbp(j9) * s(j9,2)                   &
-     &   + dbp(j1) * s(j1,2) + cos(dth) * ( bt(j9) * s(j9,3)           &
+        b_pole(2) = b_pole(2) +  ( dbp(j9) * s(j9,2)                    &
+     &   + dbp(j1) * s(j1,2) + cos(theta) * ( bt(j9) * s(j9,3)          &
      &         + bt(j1) * s(j1,3) ) ) / r
 !*
-        b_pole(3) = b_pole(3) + ( cos(dth) * ( dbp(j9) * s(j9,3)       &
-     &         + dbp(j1) * s(j1,3) )  - bt(j9) * s(j9,2)               &
+        b_pole(3) = b_pole(3) + ( cos(theta) * ( dbp(j9) * s(j9,3)      &
+     &         + dbp(j1) * s(j1,3) )  - bt(j9) * s(j9,2)                &
      &         - bt(j1) * s(j1,2) ) / r
 !*
   20  continue

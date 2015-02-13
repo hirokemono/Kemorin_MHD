@@ -17,17 +17,6 @@
 !!        df(m,l)  :   work area
 !!
 !!*************************************************************
-!!
-!!      subroutine schmidt_normalization(ltr, dplm, dc, p, dp)
-!!*************************************************************
-!!     lead Schmidt quasi-normalization
-!!
-!!      p(m,l)  : Schmidt Polynomial
-!!      dp(m,l) : diffrence of Schmidt Polynomial dp/dtheta
-!!      dplm(m,l)  : adjoint Legendre Polynomial P_l^m (x)
-!!      dc(m,l)  :   work area
-!!
-!!*************************************************************
 !!@endverbatim
 !!
 !!@n @param ltr       Truncation level for the polynomial
@@ -36,7 +25,6 @@
 !!@n @param p(m,l)    Schmidt Polynomial
 !!@n @param dp(m,l)   diffrence of Schmidt Polynomial  dp/dtheta
 !!@n @param df(m)     work area
-!!@n @param dc(m,l)   work area
 !
       module legendre
 !
@@ -103,60 +91,6 @@
 !*
       return
       end subroutine dladendre
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine schmidt_normalization(ltr, dplm, dc, p, dp)
-!*
-      use factorials
-!
-      integer(kind = kint), intent(in) :: ltr
-      real(kind = kreal), intent(in) :: dplm(0:ltr+2,0:ltr+2)
-!
-      real(kind = kreal), intent(inout) :: dc(0:ltr,0:ltr+2)
-      real(kind = kreal), intent(inout) :: p(0:ltr,0:ltr)
-      real(kind = kreal), intent(inout) :: dp(0:ltr,0:ltr)
-!
-      integer(kind = kint) :: l, m
-!
-!*  +++++++   set normalized cpnstant ++++++++++++
-!*
-      do 10 l = 0 ,ltr
-        dc(0,l) = 1.0
-        do 11 m = 1 ,l
-          dc(m,l) = ( 2.0d0 / factorial(l-m,l+m,ione) )**half
-  11    continue
-  10  continue
-!*
-!*   ++++++++++  lead difference of the Polynomial  ++++++
-!*
-        dp(0,0) = 0.0d0
-        do 20 l = 1 ,ltr
-          do 21 m = 1 ,l-1
-!*
-            dp(m,l) = ( dble(l+m) * dble(l-m+1) * dplm(m-1,l)           &
-     &                 - dplm(m+1,l) ) * half
-!*
-  21      continue
-          dp(0,l) = - dplm(1,l)
-          dp(l,l) = dble(l) * dplm(l-1,l)
-!*
-  20    continue
-!*
-!*   ++++++++++ normalize  +++++++++++
-!*
-        do 31 l = 0 ,ltr
-          do 32 m = 0 ,l
-!*
-            p(m,l) =  dplm(m,l) * dc(m,l)
-            dp(m,l) = dp(m,l) * dc(m,l)
-!            write(*,*) 'l,m',l,m, p(m,l),dp(m,l)
-!*
-  32      continue
-  31    continue
-!*
-      return
-      end subroutine schmidt_normalization
 !
 !  ---------------------------------------------------------------------
 !
