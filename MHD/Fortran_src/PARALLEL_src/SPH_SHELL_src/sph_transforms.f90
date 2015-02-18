@@ -76,7 +76,6 @@
       call pole_backward_transforms(ncomp_trans, nvector, nscalar,      &
      &    n_WR, WR, v_pl_local)
 !
-      if(iflag_debug .gt. 0) write(*,*) 'sel_backward_legendre_trans'
       call sel_backward_legendre_trans                                  &
      &   (ncomp_trans, nvector, nscalar, n_WR, n_WS, WR, WS)
       call end_eleps_time(22)

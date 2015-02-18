@@ -11,15 +11,15 @@
 !!      subroutine allocate_ncomm
 !!      subroutine deallocate_ncomm
 !!
-!!      subroutine count_comm_table_4_rlm
-!!      subroutine set_comm_table_4_rlm
+!!      subroutine count_comm_table_4_rlm(ip_rank)
+!!      subroutine set_comm_table_4_rlm(ip_rank)
 !!
-!!      subroutine count_comm_table_4_rtm
-!!      subroutine set_comm_table_4_rtm
+!!      subroutine count_comm_table_4_rtm(ip_rank)
+!!      subroutine set_comm_table_4_rtm(ip_rank)
 !!
 !!      subroutine count_num_domain_rtm_rlm(nneib_domain)
-!!      subroutine set_comm_stack_rtm_rlm(nneib_domain, id_domain,      &
-!!     &          istack_sr, ntot_item_sr)
+!!      subroutine set_comm_stack_rtm_rlm(ip_rank,                      &
+!!     &          nneib_domain, id_domain, istack_sr, ntot_item_sr)
 !!@endverbatim
 !
       module set_comm_table_rtm_rlm
@@ -57,18 +57,20 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine count_comm_table_4_rlm
+      subroutine count_comm_table_4_rlm(ip_rank)
 !
       use m_spheric_parameter
       use m_spheric_global_ranks
       use m_sph_trans_comm_table
+!
+      integer(kind = kint), intent(in) :: ip_rank
 !
       integer(kind = kint) :: ip, id_tgt_rank, kp, jp, inod
       integer(kind = kint) :: idx1, idx2, kp_rj, jp_rj
 !
 !
       do ip = 1, ndomain_sph
-        id_tgt_rank = ip - 1
+        id_tgt_rank = mod( (ip_rank+ip),ndomain_sph )
         kp = iglobal_rank_rj(1,id_tgt_rank)
         jp = iglobal_rank_rj(2,id_tgt_rank)
 !
@@ -89,18 +91,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_comm_table_4_rlm
+      subroutine set_comm_table_4_rlm(ip_rank)
 !
       use m_spheric_parameter
       use m_spheric_global_ranks
       use m_sph_trans_comm_table
+!
+      integer(kind = kint), intent(in) :: ip_rank
 !
       integer(kind = kint) :: ip, id_tgt_rank, kp, jp, inod, icou
       integer(kind = kint) :: idx1, idx2, kp_rj, jp_rj
 !
       icou = 0
       do ip = 1, ndomain_sph
-        id_tgt_rank = ip - 1
+        id_tgt_rank = mod( (ip_rank+ip),ndomain_sph )
         kp = iglobal_rank_rj(1,id_tgt_rank)
         jp = iglobal_rank_rj(2,id_tgt_rank)
 !
@@ -137,7 +141,7 @@
 !
       ncomm = 0
       do ip = 1, ndomain_sph
-        id_tgt_rank = ip - 1
+        id_tgt_rank = mod( (ip_rank+ip),ndomain_sph )
         kp = iglobal_rank_rtp(1,id_tgt_rank)
         lp = iglobal_rank_rtp(2,id_tgt_rank)
         mp = iglobal_rank_rtp(3,id_tgt_rank)
@@ -195,7 +199,7 @@
 !
       icou = 0
       do ip = 1, ndomain_sph
-        id_tgt_rank = ip - 1
+        id_tgt_rank = mod( (ip_rank+ip),ndomain_sph )
         kp = iglobal_rank_rtp(1,id_tgt_rank)
         lp = iglobal_rank_rtp(2,id_tgt_rank)
         mp = iglobal_rank_rtp(3,id_tgt_rank)
@@ -254,11 +258,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_comm_stack_rtm_rlm(nneib_domain, id_domain,        &
-     &          istack_sr, ntot_item_sr)
+      subroutine set_comm_stack_rtm_rlm(ip_rank,                        &
+     &          nneib_domain, id_domain, istack_sr, ntot_item_sr)
 !
       use m_spheric_parameter
 !
+      integer(kind = kint), intent(in) :: ip_rank
       integer(kind = kint), intent(in) :: nneib_domain
       integer(kind = kint), intent(inout) :: ntot_item_sr
       integer(kind = kint), intent(inout) :: id_domain(nneib_domain)
@@ -270,7 +275,7 @@
       istack_sr(0) = 0
       icou = 0
       do ip = 1, ndomain_sph
-        id_tgt_rank = ip - 1
+        id_tgt_rank = mod( (ip_rank+ip),ndomain_sph )
         if (ncomm(id_tgt_rank) .gt. 0) then
           icou = icou + 1
           id_domain(icou) = id_tgt_rank

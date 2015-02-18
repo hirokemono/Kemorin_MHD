@@ -1,5 +1,122 @@
 Settings for Makefiles
 
+# -------------------------------------------------------------------------------
+# SR24000 (NIPR:sr1)
+# -------------------------------------------------------------------------------
+#
+./configure --prefix='/hsfs/home0/matsui/local' CC=cc FC=f90 \
+AR="ar -X64" RANLIB="ranlib -X64" MPICC=mpcc_r MPIFC=mpif90 \
+FCFLAGS="-64 -O4 -noifswpl  -pardiag=2 -autoinline=2 -model=L1 -pmfunc" \
+PKG_CONFIG_PATH=/hsfs/home0/matsui/local/lib/pkgconfig \
+--with-blas=yes --enable-fftw3 --enable-libpng  --with-zlib=/hsfs/home0/matsui/local \
+--with-pgplot=/hsfs/home0/matsui/local/pgplot --with-hdf5=no
+
+#
+#  Makefile for Kemo's Dynamo toolkit
+#    Written by H. Matsui
+#
+SHELL           = /bin/sh
+#
+#  directories of Kemo's Dynamo toolkit
+#
+SRCDIR = /hsfs/home0/matsui/src_kemo
+INSTDIR= /hsfs/home0/matsui/local
+#
+MHDDIR = $(SRCDIR)/MHD
+MAKEDIR= $(SRCDIR)/work
+BUILDDIR= $(SRCDIR)/bin
+#
+# MPI settings
+#
+MPICHDIR =    
+MPICHLIBDIR = $(MPICHDIR)/lib
+MPICHBINDIR = $(MPICHDIR)/bin
+MPICHINCDIR = 
+MPILIBS =      
+#
+#    compilers
+#
+F90 = f90
+CC =  cc -qlanglvl=extc89
+CXX = 
+
+F90_LOCAL = $(F90) -omp
+
+MPIF90 = mpif90
+MPICC =  mpcc_r
+
+GMAKE = make
+AR = ar -X64
+RANLIB = ranlib -X64
+
+#
+# OPENMP_FCFLAGS OprnMP option for fortran compiler
+# FC_NAME_MANGLE definition for Fortran-C connection
+#    C routtine name mangle flag for Fortran connection
+#     -DFC_NAME_LOWER_USCORE, -DFC_NAME_UPPER, or -DFC_NAME_LOWER
+# FC_NAME_MANGLE -DWITH_FLAG is defined to use cocoa Framework
+#
+OPENMP_FCFLAGS = -omp
+FC_NAME_MANGLE = -DFC_NAME_UPPER_STDCALL
+COCOA_FLAG =     
+
+#
+#  optimization
+#
+F90OPTFLAGS= -64 -O4 -noifswpl  -pardiag=2 -autoinline=2 -model=L1 -pmfunc
+OPTFLAGS =   -q64 -O3    -qsmp=omp
+CXXFLAGS =   -qsmp=omp
+#
+#   BLAS settings
+#
+BLAS_LIBS = -lblas_p64
+#
+#   libpng and zlib settings
+#
+ZLIB_CFLAGS =  -I/hsfs/home0/matsui/local/include
+ZLIB_LIB =     -L/hsfs/home0/matsui/local/lib -lz -lm -L/opt/IBM/xlc/13.1.0/lib -lxlopt
+PNG_CFLAGS =  -I/hsfs/home0/matsui/local/include/libpng15  
+PNG_LIBS =    -L/hsfs/home0/matsui/local/lib -lpng15
+#
+#    FFTW3 settings
+#
+FFTW3_CFLAGS= -I/hsfs/home0/matsui/local/include
+FFTW3_LIBS= -L/hsfs/home0/matsui/local/lib -lfftw3
+#
+#    HDF5 fortran wrapper settings
+#
+HDF5_FFLAGS=    
+HDF5_LDFLAGS=   
+HDF5_FLIBS=     
+#
+#   GLUT settings (Requirement: OpenGL, GLUT, libpng)
+#
+OPENGL_INC = 
+OPENGL_LIBS= 
+#
+#   PGPLOT settings (Requirement: pgplot, libpng)
+#
+PGPLOT_LIBS= -L/hsfs/home0/matsui/local/lib -lpgplot -lX11
+#
+#   GTK+ settings (Requirement: OpenGL, GLUT, libpng)
+GTK2_CFLAGS= 
+GTK2_LIBS= 
+#
+#   GLUI settings (Requirement: OpenGL, GLUT, libpng)
+#     It Turns on if C++ compiler is defined
+#
+
+#
+# -------------------------------------------------------------------------------
+# SR24000 without FFTW3 (NIPR:sr1)
+# -------------------------------------------------------------------------------
+#
+# setenv PKG_CONFIG_PATH /home0/matsui/local/lib/pkgconfig
+#
+# ./configure --prefix='/home0/matsui/local' CC=cc FC=mpif90_r AR="ar -X64" RANLIB="ranlib -X64"\
+#  FCFLAGS="-64 -Oss -noifswpl -omp -pardiag=2 -autoinline=2 -model=L1" \
+#  MPICC=mpcc_r MPIFC=mpif90_r
+#
 #
 # -------------------------------------------------------------------------------
 # Intel mac with gfortran-openmpi (MacBook Pro with macport)
@@ -176,8 +293,6 @@ GTK2_LIBS=
 # Intel cluster with Myrinet (Sirens)
 # -------------------------------------------------------------------------------
 #
-# setenv PKG_CONFIG_PATH /home/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig:/usr/local/lib/pkgconfig
-#
 #./configure  --prefix='/home/matsui/local' CC=icc FC=ifort CXX=icc AR=ar \
 #  MPICC=mpicc MPIFC=mpif90 PKG_CONFIG=/usr/bin/pkg-config \
 #  PKG_CONFIG_PATH='/usr/lib/pkgconfig:/usr/local/lib/pkgconfig' \
@@ -191,10 +306,24 @@ GTK2_LIBS=
 #  MPICC=mpicc MPIFC=mpif90 PKG_CONFIG=/usr/bin/pkg-config \
 #  CFLAGS='-ipo -O3 -no-prec-div -xHost -Wall -g' \
 #  FCFLAGS='-ipo -O3 -no-prec-div -xHost -warn all -g' \
+#  PKG_CONFIG_PATH='/usr/lib/pkgconfig:/usr/local/lib/pkgconfig' \
 #  --disable-cocoa --enable-gl --enable-glui --enable-gtk \
 #  --enable-libpng  --with-zlib=/home/matsui/local \
 #  --with-pgplot=/home/matsui/local/pgplot --without-aquaterm \
 #  PNG_CFLAGS='-I/home/matsui/local/include' PNG_LIBS='-L/home/matsui/local/lib -lpng'
+#
+# -------------------------------------------------------------------------------
+# Intel cluster with Infiniband (henyey)
+# -------------------------------------------------------------------------------
+#
+./configure  --prefix='/home/matsui/local' CC=icc FC=ifort CXX=icc AR=ar \
+  MPICC=mpicc MPIFC=mpif90 PKG_CONFIG=/usr/bin/pkg-config \
+  CFLAGS='-O3 -no-prec-div -Wall -g' \
+  FCFLAGS='-O3 -no-prec-div -warn all -g' \
+  PKG_CONFIG_PATH='/usr/lib64/pkgconfig:/usr/local/lib64/pkgconfig:/home/hmatsui/local/lib/pkgconfig' \
+  --enable-gl --enable-glui --enable-gtk \
+  --enable-libpng  --with-zlib=/usr/lib64/ --with-blas=yes --enable-fftw3 \
+  --without-pgplot --without-aquaterm
 #
 #
 #  directories of CALYPSO

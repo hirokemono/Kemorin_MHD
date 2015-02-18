@@ -88,7 +88,7 @@
 !C
 !C-- RECEIVE
       if(ncomm_recv .gt. 0) then
-        do neib= 1, ncomm_recv
+        do neib = ncomm_recv, 1, -1
           ist= NB * istack_recv(neib-1) + 1
           num  = NB * (istack_recv(neib  ) - istack_recv(neib-1))
           call MPI_IRECV(WR(ist), num, CALYPSO_REAL,                    &
@@ -144,7 +144,7 @@
 !C
 !C-- RECEIVE
       if(ncomm_recv .gt. 0) then
-        do neib= 1, ncomm_recv
+        do neib = ncomm_recv, 1, -1
           ist= istack_recv(neib-1) + 1
           num  = istack_recv(neib  ) - istack_recv(neib-1)
           call MPI_IRECV(iWR(ist), num, CALYPSO_INTEGER,                &
@@ -225,7 +225,7 @@
 !C
 !C-- RECEIVE
       if(ncomm_recv .gt. 0) then
-        do neib= 1, ncomm_recv
+        do neib = ncomm_recv, 1, -1
           ist= NB * istack_recv(neib-1) + 1
           num  = NB * (istack_recv(neib  ) - istack_recv(neib-1))
           if(ist .lt. 0) write(*,*) 'wrong istack_recv(0)', my_rank

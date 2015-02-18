@@ -1,5 +1,5 @@
-!>@file   m_legendre_work_testlooop.f90
-!!@brief  module m_legendre_work_testlooop
+!>@file   m_leg_trans_sym_matmul_big.f90
+!!@brief  module m_leg_trans_sym_matmul_big
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2013
@@ -8,9 +8,8 @@
 !>@n      data are strored communication buffer
 !!
 !!@verbatim
-!!      subroutine alloc_leg_vec_test(nvector, nscalar)
-!!      subroutine dealloc_leg_vec_test
-!!      subroutine dealloc_leg_scl_test
+!!      subroutine alloc_leg_sym_matmul_big(nvector, nscalar)
+!!      subroutine dealloc_leg_sym_matmul_big
 !!
 !!     field data for Legendre transform
 !!       original layout: vr_rtm(l_rtm,m_rtm,k_rtm,icomp)
@@ -28,7 +27,7 @@
 !!@param   nscalar  Number of scalar (including tensor components)
 !!                  for spherical transform
 !
-      module m_legendre_work_testlooop
+      module m_leg_trans_sym_matmul_big
 !
       use m_precision
       use m_constants
@@ -158,37 +157,37 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_vec_test(nvector, nscalar)
+      subroutine alloc_leg_sym_matmul_big(nvector, nscalar)
 !
       integer(kind = kint), intent(in) ::nvector, nscalar
 !
 !
-      nvec_jk = ((maxdegree_rlm+1)/2) * nidx_rlm(1)*nvector
-      nscl_jk = ((maxdegree_rlm+1)/2) * nidx_rlm(1)*nscalar
+      nvec_jk = ((maxdegree_rlm+1)/2) * maxidx_rlm_smp(1)*nvector
+      nscl_jk = ((maxdegree_rlm+1)/2) * maxidx_rlm_smp(1)*nscalar
       allocate(pol_e(3*nvec_jk+nscl_jk,np_smp))
       allocate(tor_e(2*nvec_jk,np_smp))
       allocate(pol_o(3*nvec_jk+nscl_jk,np_smp))
       allocate(tor_o(2*nvec_jk,np_smp))
 !
-      nvec_lk = ((maxidx_rtm_smp(2)+1)/2) * nidx_rlm(1)*nvector
-      nscl_lk = ((maxidx_rtm_smp(2)+1)/2) * nidx_rlm(1)*nscalar
+      nvec_lk = ((nidx_rtm(2)+1)/2) * maxidx_rlm_smp(1)*nvector
+      nscl_lk = ((nidx_rtm(2)+1)/2) * maxidx_rlm_smp(1)*nscalar
       allocate(symp_r(3*nvec_lk+nscl_lk,np_smp))
       allocate(symp_p(2*nvec_lk,np_smp))
       allocate(asmp_r(3*nvec_lk+nscl_lk,np_smp))
       allocate(asmp_p(2*nvec_lk,np_smp))
 !
-      end subroutine alloc_leg_vec_test
+      end subroutine alloc_leg_sym_matmul_big
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_leg_vec_test
+      subroutine dealloc_leg_sym_matmul_big
 !
 !
       deallocate(pol_e, tor_e, pol_o, tor_o)
       deallocate(symp_r, symp_p, asmp_r, asmp_p)
 !
-      end subroutine dealloc_leg_vec_test
+      end subroutine dealloc_leg_sym_matmul_big
 !
 ! -----------------------------------------------------------------------
 !
-      end module m_legendre_work_testlooop
+      end module m_leg_trans_sym_matmul_big
