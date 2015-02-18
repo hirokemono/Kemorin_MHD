@@ -11,6 +11,7 @@
       module m_ctl_data_plot_pg
 !
       use m_precision
+      use t_control_elements
       use t_read_control_arrays
 !
       implicit none
@@ -38,7 +39,7 @@
 !
 !   parameter for plane model
 !
-      real(kind = kreal) :: plane_size_ctl(2)
+      type(read_real2_item), save :: pg_plane_size_ctl
 !
 !   parameter for map
 !
@@ -151,7 +152,6 @@
      &                    :: hd_plane_size_ctl =   'plane_size_ctl'
       integer(kind= kint) :: i_outer_radius_ctl = 0
       integer(kind= kint) :: i_ro_ri_ratio_ctl =  0
-      integer(kind= kint) :: i_plane_size_ctl =   0
 !
 !     flags for sphere map
 !
@@ -398,8 +398,7 @@
         call read_real_ctl_item(hd_ro_ri_ratio_ctl,                     &
      &        i_ro_ri_ratio_ctl, ro_ri_ratio_ctl)
 !
-        call read_real2_ctl_item(hd_plane_size_ctl,                     &
-     &        i_plane_size_ctl, plane_size_ctl)
+        call read_real2_ctl_type(hd_plane_size_ctl, pg_plane_size_ctl)
       end do
 !
       end subroutine read_ctl_data_4_zplane_plot

@@ -30,6 +30,7 @@
       use m_ctl_data_4_plane_model
       use m_ctl_data_4_cub_kemo
       use m_ctl_data_filter_files
+      use skip_comment_f
 !
 !
       if (i_mesh_header .eq. 1) then
@@ -52,33 +53,27 @@
 !
 !
 !
-      if (i_plane_size_ctl .eq. 0) then
-        plane_size_ctl(1:3) = 1.0d0
+      if (plane_size_ctl%iflag .eq. 0) then
+        plane_size_ctl%realvalue(1:3) = 1.0d0
       end if
 !
       pi = 4.0d0 * atan(1.0d0)
-      if (   unit_len_plane_ctl(1) .eq. 'pi'                            &
-     &  .or. unit_len_plane_ctl(1) .eq. 'Pi'                            &
-     &  .or. unit_len_plane_ctl(1) .eq. 'PI') then
-        xsize = pi*plane_size_ctl(1)
+      if (cmp_no_case(unit_len_plane_ctl%charavalue(1),'pi').gt.0) then
+        xsize = pi*plane_size_ctl%realvalue(1)
       else
-        xsize = plane_size_ctl(1)
+        xsize = plane_size_ctl%realvalue(1)
       end if
 !
-      if (   unit_len_plane_ctl(2) .eq. 'pi'                            &
-     &  .or. unit_len_plane_ctl(2) .eq. 'Pi'                            &
-     &  .or. unit_len_plane_ctl(2) .eq. 'PI') then
-        ysize = pi*plane_size_ctl(2)
+      if (cmp_no_case(unit_len_plane_ctl%charavalue(2),'pi').gt.0) then
+        ysize = pi*plane_size_ctl%realvalue(2)
       else
-        ysize = plane_size_ctl(2)
+        ysize = plane_size_ctl%realvalue(2)
       end if
 !
-      if (   unit_len_plane_ctl(3) .eq. 'pi'                            &
-     &  .or. unit_len_plane_ctl(3) .eq. 'Pi'                            &
-     &  .or. unit_len_plane_ctl(3) .eq. 'PI') then
-        zsize = pi*plane_size_ctl(3)
+      if (cmp_no_case(unit_len_plane_ctl%charavalue(3),'pi').gt.0) then
+        zsize = pi*plane_size_ctl%realvalue(3)
       else
-        zsize = plane_size_ctl(3)
+        zsize = plane_size_ctl%realvalue(3)
       end if
 !
       xmax = xsize / two
@@ -88,24 +83,21 @@
       ymin = -ymax
       zmin = -zmax
 !
-      if (        horizontal_grid_ctl .eq. 'chebyshev'                  &
-     &       .or. horizontal_grid_ctl .eq. 'Chebyshev'                  &
-     &       .or. horizontal_grid_ctl .eq. 'CHEBYSHEV') then
+      if      (cmp_no_case(horizontal_grid_ctl%charavalue,              &
+     &                      'chebyshev') .gt.0) then
         iradi = 2
-      else if (   horizontal_grid_ctl .eq. 'half_chebyshev'             &
-     &       .or. horizontal_grid_ctl .eq. 'half_Chebyshev'             &
-     &       .or. horizontal_grid_ctl .eq. 'Half_Chebyshev'             &
-     &       .or. horizontal_grid_ctl .eq. 'HALF_CHEBYSHEV') then
+      else if (cmp_no_case(horizontal_grid_ctl%charavalue,              &
+     &                      'half_chebyshev').gt.0) then
         iradi = 1
       else
         iradi = 0
       end if
 !
 !
-      if (i_nnod_plane_ctl .eq. 1) then
-        nx_all = nnod_plane_ctl(1)
-        ny_all = nnod_plane_ctl(2)
-        nz_all = nnod_plane_ctl(3)
+      if (nnod_plane_ctl%iflag .gt. 0) then
+        nx_all = nnod_plane_ctl%intvalue(1)
+        ny_all = nnod_plane_ctl%intvalue(2)
+        nz_all = nnod_plane_ctl%intvalue(3)
       else
         nx_all = 2
         ny_all = 2
@@ -113,10 +105,10 @@
       end if
 !
 !
-      if (i_ndomain_plane_ctl .eq. 1) then
-        ndx = ndomain_plane_ctl(1)
-        ndy = ndomain_plane_ctl(2)
-        ndz = ndomain_plane_ctl(3)
+      if (ndomain_plane_ctl%iflag .gt. 0) then
+        ndx = ndomain_plane_ctl%intvalue(1)
+        ndy = ndomain_plane_ctl%intvalue(2)
+        ndz = ndomain_plane_ctl%intvalue(3)
       else
         ndx = 1
         ndy = 1
@@ -133,8 +125,8 @@
         stop ' ***** error : illegal input '
       end if
 !
-      if (i_num_of_sleeve_ctl .eq. 1) then
-        ndepth = num_of_sleeve_ctl
+      if (num_of_sleeve_ctl%iflag .eq. 1) then
+        ndepth = num_of_sleeve_ctl%intvalue
       else
         ndepth = 1
       end if

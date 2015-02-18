@@ -211,8 +211,8 @@
         shell_ratio = 0.35d0
       end if
 !
-      if(i_plane_size_ctl .gt. 0) then
-        plane_size(1:2) = plane_size_ctl(1:2)
+      if(pg_plane_size_ctl%iflag .gt. 0) then
+        plane_size(1:2) = pg_plane_size_ctl%realvalue(1:2)
       else
         plane_size(1:2) = 1.0d0
       end if

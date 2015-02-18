@@ -171,7 +171,7 @@
      &          istack_import, istack_export, item_import, item_export)
 !
         if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
-        call s_collect_fline_data(istep_psf, i_fln)
+       call s_collect_fline_data(istep_psf, i_fln)
       end do
 !
       end subroutine field_line_main

@@ -11,16 +11,13 @@ begin refine_control
     new_mesh_prefix             'sph_lm31r48c_6/in'
   end new_data_files_def
 !
-  begin refiner_file_name_ctl
-    orginal_mesh_head_ctl     'mesh_1/in'
-    refined_mesh_head_ctl     'mesh_2/in'
-!
+  begin single_refined_table_ctl
     cource_to_fine_table_ctl     'couse_2_fine'
     fine_to_cource_table_ctl     'fine_2_course'
 !
     refine_info_head_ctl         'refine_info'
     old_refine_info_head_ctl     'refine_info'
-  end refiner_file_name_ctl
+  end single_refined_table_ctl
 !
   begin refine_parameter_ctl
 !

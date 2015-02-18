@@ -30,6 +30,7 @@
       use m_ctl_data_gen_z_filter
 !
       use set_parallel_file_name
+      use skip_comment_f
 !
       integer(kind = kint) :: i
       real(kind = kreal) :: pi
@@ -54,46 +55,37 @@
 !
 !    set plane layer parameters
 !
-      totalnod_x = nnod_plane_ctl(1)
-      totalnod_y = nnod_plane_ctl(2)
-      totalnod =   nnod_plane_ctl(3)
+      totalnod_x = nnod_plane_ctl%intvalue(1)
+      totalnod_y = nnod_plane_ctl%intvalue(2)
+      totalnod =   nnod_plane_ctl%intvalue(3)
 !
-      if      (unit_len_plane_ctl(1) .eq. 'pi'                 &
-     &    .or. unit_len_plane_ctl(1) .eq. 'Pi'                 &
-     &    .or. unit_len_plane_ctl(1) .eq. 'PI') then
-       xsize = pi * plane_size_ctl(1)
+      if(cmp_no_case(unit_len_plane_ctl%charavalue(1),'pi').gt. 0) then
+        xsize = pi * plane_size_ctl%realvalue(1)
       else
-       xsize = plane_size_ctl(1)
+        xsize = plane_size_ctl%realvalue(1)
       end if
 !
-      if      (unit_len_plane_ctl(2) .eq. 'pi'                 &
-     &    .or. unit_len_plane_ctl(2) .eq. 'Pi'                 &
-     &    .or. unit_len_plane_ctl(2) .eq. 'PI') then
-       ysize = pi * plane_size_ctl(2)
+      if(cmp_no_case(unit_len_plane_ctl%charavalue(2),'pi').gt. 0) then
+        ysize = pi * plane_size_ctl%realvalue(2)
       else
-       ysize = plane_size_ctl(2)
+        ysize = plane_size_ctl%realvalue(2)
       end if
 !
-      if      (unit_len_plane_ctl(3) .eq. 'pi'                 &
-     &    .or. unit_len_plane_ctl(3) .eq. 'Pi'                 &
-     &    .or. unit_len_plane_ctl(3) .eq. 'PI') then
-       zsize = pi * plane_size_ctl(3)
+      if(cmp_no_case(unit_len_plane_ctl%charavalue(3),'pi').gt. 0) then
+        zsize = pi * plane_size_ctl%realvalue(3)
       else
-       zsize = plane_size_ctl(3)
+        zsize = plane_size_ctl%realvalue(3)
       end if
 !
-      if      (horizontal_grid_ctl .eq. 'equi_distance'                 &
-     &    .or. horizontal_grid_ctl .eq. 'Equi_distance'                 &
-     &    .or. horizontal_grid_ctl .eq. 'EQUI_DISTANCE') then
-       iflag_grid = 0
-      else if (horizontal_grid_ctl .eq. 'half_chebyshev'                &
-     &    .or. horizontal_grid_ctl .eq. 'Half_Chebyshev'                &
-     &    .or. horizontal_grid_ctl .eq. 'HALF_CHEBYSHEV') then
-       iflag_grid = 1
-      else if (horizontal_grid_ctl .eq. 'chebyshev'                     &
-     &    .or. horizontal_grid_ctl .eq. 'Chebyshev'                     &
-     &    .or. horizontal_grid_ctl .eq. 'CHEBYSHEV') then
-       iflag_grid = 2
+      if      (cmp_no_case(horizontal_grid_ctl%charavalue,              &
+     &                     'equi_distance' ) .gt. 0) then
+        iflag_grid = 0
+      else if (cmp_no_case(horizontal_grid_ctl%charavalue,              &
+     &                     'half_chebyshev') .gt. 0) then
+        iflag_grid = 1
+      else if (cmp_no_case(horizontal_grid_ctl%charavalue,              &
+     &                     'chebyshev'     ) .gt. 0) then
+        iflag_grid = 2
       end if
 !
 !   set number of integration points

@@ -165,6 +165,7 @@
       use m_machine_parameter
       use m_read_control_elements
       use m_ctl_data_4_view_transfer
+      use t_control_elements
       use t_read_control_arrays
       use skip_comment_f
 !
@@ -174,9 +175,9 @@
       type pvr_ctl
         type(modeview_ctl) :: mat
 !
-        character(len=kchara) :: pvr_file_head_ctl
-        character(len=kchara) :: pvr_output_type_ctl
-        character(len=kchara) :: pvr_transparent_ctl
+        type(read_character_item) :: file_head_ctl
+        type(read_character_item) :: file_fmt_ctl
+        type(read_character_item) :: transparent_ctl
 !
 !>      Structure for element group list for PVR
 !!@n      group_4_monitor_ctl%c_tbl: Name of element group for PVR
@@ -186,9 +187,9 @@
         character(len=kchara) :: pvr_comp_ctl(1)
 !
 !
-        real(kind = kreal) :: ambient_coef_ctl
-        real(kind = kreal) :: diffuse_coef_ctl
-        real(kind = kreal) :: specular_coef_ctl
+        type(read_real_item) :: ambient_coef_ctl
+        type(read_real_item) :: diffuse_coef_ctl
+        type(read_real_item) :: specular_coef_ctl
 !
 !>      Structure for light positions
 !!@n      light_position_ctl%vec1:  X-component of light position
@@ -196,22 +197,23 @@
 !!@n      light_position_ctl%vec3:  Z-component of light position
         type(ctl_array_r3) :: light_position_ctl
 !
-        character(len=kchara) :: rotation_axis_ctl
-        integer (kind=kint) ::   num_frames_ctl = 0
+        type(read_character_item) :: rotation_axis_ctl
+        type(read_integer_item) ::   num_frames_ctl
 !
-        character(len=kchara) :: colorbar_switch_ctl
-        character(len=kchara) :: colorbar_scale_ctl
-        character(len=kchara) :: zeromarker_flag_ctl
-        integer(kind = kint) :: font_size_ctl = 0
-        integer(kind = kint) :: numgrid_pvr_cbar_ctl = 3
-        real(kind = kreal) :: cbar_range_ctl(2)
+        type(read_character_item) :: colorbar_switch_ctl
+        type(read_character_item) :: colorbar_scale_ctl
+        type(read_character_item) :: zeromarker_flag_ctl
+        type(read_integer_item) ::   font_size_ctl
+        type(read_integer_item) ::   ngrid_cbar_ctl
+        type(read_real2_item) ::     cbar_range_ctl
 !
-        character(len=kchara) :: pvr_colormap_ctl
-        character(len=kchara) :: pvr_data_mapping_ctl
-        character(len=kchara) :: opacity_style_ctl
+        type(read_character_item) :: colormap_ctl
+        type(read_character_item) :: data_mapping_ctl
+        type(read_character_item) :: opacity_style_ctl
 !
-        real(kind = kreal) :: pvr_range_min_ctl, pvr_range_max_ctl
-        real(kind = kreal) :: constant_opacity_ctl
+        type(read_real_item) :: range_min_ctl
+        type(read_real_item) :: range_max_ctl
+        type(read_real_item) :: fix_opacity_ctl
 !
 !>      Structure for color map controls
 !!@n      opacity_ctl%vec1:  field data value
@@ -230,9 +232,6 @@
         integer (kind=kint) :: i_pvr_ctl = 0
 !
 !     2nd level for volume rendering
-        integer (kind=kint) :: i_pvr_file_head =       0
-        integer (kind=kint) :: i_pvr_out_type =        0
-        integer (kind=kint) :: i_pvr_rgba_type =       0
         integer (kind=kint) :: i_output_field_def =    0
         integer (kind=kint) :: i_output_comp_def =     0
         integer (kind=kint) :: i_plot_area =           0
@@ -241,32 +240,6 @@
         integer (kind=kint) :: i_pvr_colordef =        0
         integer (kind=kint) :: i_pvr_colorbar =        0
         integer (kind=kint) :: i_pvr_rotation =        0
-!
-!     3rd level for colormap
-        integer (kind=kint) :: i_colormap =              0
-        integer (kind=kint) :: i_data_mapping =          0
-        integer (kind=kint) :: i_opacity_style =         0
-        integer (kind=kint) :: i_pvr_range_min =         0
-        integer (kind=kint) :: i_pvr_range_max =         0
-        integer (kind=kint) :: i_constant_opacity =      0
-!
-!     3rd level for lighting
-        integer (kind=kint) :: i_ambient =  0
-        integer (kind=kint) :: i_diffuse =  0
-        integer (kind=kint) :: i_specular = 0
-!
-!     3rd level for colorbar
-        integer (kind=kint) :: i_colorbar_switch =  0
-        integer (kind=kint) :: i_colorbar_scale =   0
-        integer (kind=kint) :: i_pvr_font_size =    0
-        integer (kind=kint) :: i_pvr_numgrid_cbar = 0
-        integer (kind=kint) :: i_zeromarker_flag =  0
-        integer (kind=kint) :: i_cbar_range =       0
-        integer (kind=kint) :: i_num_data_mapping = 0
-!
-!     3rd level for rotation
-        integer (kind=kint) :: i_movie_rot_axis =  0
-        integer (kind=kint) :: i_movie_rot_frame =  0
       end type pvr_ctl
 !
 !
@@ -411,12 +384,9 @@
         call read_pvr_rotation_ctl(pvr)
 !
 !
-        call read_character_ctl_item(hd_pvr_file_head,                  &
-     &          pvr%i_pvr_file_head,  pvr%pvr_file_head_ctl)
-        call read_character_ctl_item(hd_pvr_out_type,                   &
-     &          pvr%i_pvr_out_type,  pvr%pvr_output_type_ctl )
-        call read_character_ctl_item(hd_pvr_rgba_type,                  &
-     &          pvr%i_pvr_rgba_type,  pvr%pvr_transparent_ctl )
+        call read_chara_ctl_type(hd_pvr_file_head, pvr%file_head_ctl)
+        call read_chara_ctl_type(hd_pvr_out_type,  pvr%file_fmt_ctl )
+        call read_chara_ctl_type(hd_pvr_rgba_type, pvr%transparent_ctl)
         call read_character_ctl_item(hd_output_field_def,               &
      &          pvr%i_output_field_def, pvr%pvr_field_ctl(1) )
         call read_character_ctl_item(hd_output_comp_def,                &
@@ -464,12 +434,9 @@
         call read_control_array_r3                                      &
      &     (hd_light_param, pvr%light_position_ctl)
 !
-        call read_real_ctl_item(hd_ambient,                             &
-     &          pvr%i_ambient, pvr%ambient_coef_ctl )
-        call read_real_ctl_item(hd_diffuse,                             &
-     &          pvr%i_diffuse, pvr%diffuse_coef_ctl )
-        call read_real_ctl_item(hd_specular,                            &
-     &          pvr%i_specular, pvr%specular_coef_ctl )
+        call read_real_ctl_type(hd_ambient, pvr%ambient_coef_ctl )
+        call read_real_ctl_type(hd_diffuse, pvr%diffuse_coef_ctl )
+        call read_real_ctl_type(hd_specular, pvr%specular_coef_ctl)
       end do
 !
       end subroutine read_lighting_ctl
@@ -495,19 +462,15 @@
         call read_control_array_r3(hd_opacity_def, pvr%opacity_ctl)
 !
 !
-        call read_character_ctl_item(hd_colormap,                       &
-     &          pvr%i_colormap, pvr%pvr_colormap_ctl )
-        call read_character_ctl_item(hd_data_mapping,                   &
-     &          pvr%i_data_mapping, pvr%pvr_data_mapping_ctl )
-        call read_character_ctl_item(hd_opacity_style,                  &
-     &          pvr%i_opacity_style, pvr%opacity_style_ctl )
+        call read_chara_ctl_type(hd_colormap, pvr%colormap_ctl)
+        call read_chara_ctl_type(hd_data_mapping, pvr%data_mapping_ctl)
+        call read_chara_ctl_type(hd_opacity_style,                      &
+     &      pvr%opacity_style_ctl)
 !
-        call read_real_ctl_item(hd_pvr_range_min,                       &
-     &          pvr%i_pvr_range_min, pvr%pvr_range_min_ctl )
-        call read_real_ctl_item(hd_pvr_range_max,                       &
-     &          pvr%i_pvr_range_max, pvr%pvr_range_max_ctl )
-        call read_real_ctl_item(hd_constant_opacity,                    &
-     &          pvr%i_constant_opacity, pvr%constant_opacity_ctl )
+        call read_real_ctl_type(hd_pvr_range_min, pvr%range_min_ctl)
+        call read_real_ctl_type(hd_pvr_range_max, pvr%range_max_ctl)
+        call read_real_ctl_type(hd_constant_opacity,                    &
+     &      pvr%fix_opacity_ctl)
       end do
 !
       end subroutine read_pvr_colordef_ctl
@@ -528,21 +491,19 @@
         if(pvr%i_pvr_colorbar .gt. 0) exit
 !
 !
-        call read_integer_ctl_item(hd_pvr_font_size,                    &
-     &          pvr%i_pvr_font_size, pvr%font_size_ctl )
-        call read_integer_ctl_item(hd_pvr_numgrid_cbar,                 &
-     &          pvr%i_pvr_numgrid_cbar, pvr%numgrid_pvr_cbar_ctl )
+        call read_integer_ctl_type(hd_pvr_font_size, pvr%font_size_ctl)
+        call read_integer_ctl_type(hd_pvr_numgrid_cbar,                 &
+     &      pvr%ngrid_cbar_ctl )
 !
 !
-        call read_character_ctl_item(hd_colorbar_switch,                &
-     &          pvr%i_colorbar_switch, pvr%colorbar_switch_ctl )
-        call read_character_ctl_item(hd_colorbar_scale,                 &
-     &          pvr%i_colorbar_scale, pvr%colorbar_scale_ctl )
-        call read_character_ctl_item(hd_zeromarker_flag,                &
-     &          pvr%i_zeromarker_flag, pvr%zeromarker_flag_ctl )
+        call read_chara_ctl_type(hd_colorbar_switch,                    &
+     &      pvr%colorbar_switch_ctl )
+        call read_chara_ctl_type(hd_colorbar_scale,                     &
+     &      pvr%colorbar_scale_ctl )
+        call read_chara_ctl_type(hd_zeromarker_flag,                    &
+     &      pvr%zeromarker_flag_ctl )
 !
-        call read_real2_ctl_item(hd_cbar_range,                         &
-     &          pvr%i_cbar_range, pvr%cbar_range_ctl )
+        call read_real2_ctl_type(hd_cbar_range, pvr%cbar_range_ctl )
       end do
 !
       end subroutine read_pvr_colorbar_ctl
@@ -562,12 +523,10 @@
         call find_control_end_flag(hd_pvr_rotation, pvr%i_pvr_rotation)
         if(pvr%i_pvr_rotation .gt. 0) exit
 !
-        call read_integer_ctl_item(hd_movie_rot_frame,                  &
-     &         pvr%i_movie_rot_frame, pvr%num_frames_ctl )
-!
-!
-        call read_character_ctl_item(hd_movie_rot_axis,                 &
-     &         pvr%i_movie_rot_axis, pvr%rotation_axis_ctl )
+        call read_integer_ctl_type(hd_movie_rot_frame,                  &
+     &      pvr%num_frames_ctl )
+        call read_chara_ctl_type(hd_movie_rot_axis,                     &
+     &      pvr%rotation_axis_ctl )
       end do
 !
 !
@@ -585,30 +544,30 @@
       pvr%colortbl_ctl%num =       0
       pvr%opacity_ctl%num =        0
 !
-      pvr%i_pvr_file_head =       0
-      pvr%i_pvr_out_type =        0
-      pvr%i_pvr_rgba_type =       0
+      pvr%file_head_ctl%iflag =   0
+      pvr%file_fmt_ctl%iflag =    0
+      pvr%transparent_ctl%iflag = 0
       pvr%i_output_field_def =    0
       pvr%i_output_comp_def =     0
-      pvr%i_ambient =  0
-      pvr%i_diffuse =  0
-      pvr%i_specular = 0
-      pvr%light_position_ctl%icou =  0
-      pvr%i_movie_rot_frame = 0
-      pvr%i_movie_rot_axis =  0
+      pvr%ambient_coef_ctl%iflag =  0
+      pvr%diffuse_coef_ctl%iflag =  0
+      pvr%specular_coef_ctl%iflag = 0
+      pvr%light_position_ctl%icou = 0
+      pvr%num_frames_ctl%iflag =    0
+      pvr%rotation_axis_ctl%iflag = 0
 !
-      pvr%i_colorbar_switch = 0
-      pvr%i_colorbar_scale =  0
-      pvr%i_pvr_font_size =   0
-      pvr%i_pvr_numgrid_cbar = 0
-      pvr%i_zeromarker_flag =  0
-      pvr%i_cbar_range =       0
-      pvr%i_colormap =              0
-      pvr%i_data_mapping =          0
-      pvr%i_pvr_range_min =         0
-      pvr%i_pvr_range_max =         0
-      pvr%i_opacity_style =         0
-      pvr%i_constant_opacity =      0
+      pvr%colorbar_switch_ctl%iflag = 0
+      pvr%colorbar_scale_ctl%iflag =  0
+      pvr%font_size_ctl%iflag =       0
+      pvr%ngrid_cbar_ctl%iflag =      0
+      pvr%zeromarker_flag_ctl%iflag = 0
+      pvr%cbar_range_ctl%iflag =      0
+      pvr%colormap_ctl%iflag =        0
+      pvr%data_mapping_ctl%iflag =    0
+      pvr%range_min_ctl%iflag =       0
+      pvr%range_max_ctl%iflag =       0
+      pvr%opacity_style_ctl%iflag =   0
+      pvr%fix_opacity_ctl%iflag =     0
 !
       pvr%i_pvr_ctl = 0
       pvr%i_plot_area =   0

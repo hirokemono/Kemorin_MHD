@@ -46,12 +46,10 @@
       integer(kind=kint ), intent(inout) :: num_pe, ist, ied, iint
 !
 !
-      nx_all = nnod_plane_ctl(1)
-      ny_all = nnod_plane_ctl(2)
-      nz_all = nnod_plane_ctl(3)
-      num_pe =  ndomain_plane_ctl(1)                                    &
-     &        * ndomain_plane_ctl(2)                                    &
-     &        * ndomain_plane_ctl(3)
+      nx_all = nnod_plane_ctl%intvalue(1)
+      ny_all = nnod_plane_ctl%intvalue(2)
+      nz_all = nnod_plane_ctl%intvalue(3)
+      num_pe =  nx_all * ny_all * nz_all
 !
       kx_max = nx_all
       ky_max = ny_all
@@ -90,18 +88,11 @@
 !      write(*,*) 'new_field_file_prefix  ', new_field_file_prefix
 !      write(*,*) 'new_restart_prefix     ', new_restart_prefix
 !      write(*,*) 'new_udt_type_ctl     ', new_udt_type_ctl
-      write(*,*) 'nnod_plane_ctl       ', nnod_plane_ctl
-      write(*,*) 'ndomain_plane_ctl    ', ndomain_plane_ctl
-!      write(*,*) 'num_of_sleeve_ctl     ', num_of_sleeve_ctl
+      write(*,*) 'nnod_plane_ctl       ', nnod_plane_ctl%intvalue
+      write(*,*) 'ndomain_plane_ctl    ', ndomain_plane_ctl%intvalue
 !      write(*,*) 'plane_size_ctl        ', plane_size_ctl
-!      write(*,*) 'unit_len_plane_ctl    ', unit_len_plane_ctl
-!      write(*,*) 'horizontal_grid_ctl   ', horizontal_grid_ctl
-      write(*,*) 'nnod_plane2_ctl       ', nnod_plane2_ctl
-      write(*,*) 'ndomain_plane2_ctl    ', ndomain_plane2_ctl
-!      write(*,*) 'num_of_sleeve2_ctl    ', num_of_sleeve2_ctl
-!      write(*,*) 'plane_size2_ctl       ', plane_size2_ctl
-!      write(*,*) 'unit_len_plane2_ctl   ', unit_len_plane2_ctl
-!      write(*,*) 'horizontal_grid2_ctl  ', horizontal_grid2_ctl
+      write(*,*) 'nnod_plane2_ctl       ', nnod_plane2_ctl%intvalue
+      write(*,*) 'ndomain_plane2_ctl    ', ndomain_plane2_ctl%intvalue
 !
       if (i_new_mesh_head .gt. 0) then
         mesh_file_head = new_mesh_prefix
@@ -115,25 +106,23 @@
         rst_head_plane = def_newrst_head
       end if
 !
-      kx_max = nnod_plane_ctl(1)
-      ky_max = nnod_plane_ctl(2)
-      iz_max = nnod_plane_ctl(3)
-      num_spectr =  nnod_plane_ctl(1)                                   &
-     &            * nnod_plane_ctl(2)                                   &
-     &            * nnod_plane_ctl(3)
-      kx_org = nnod_plane_ctl(1)
-      ky_org = nnod_plane_ctl(2)
-      iz_org = nnod_plane_ctl(3)
+      kx_max = nnod_plane_ctl%intvalue(1)
+      ky_max = nnod_plane_ctl%intvalue(2)
+      iz_max = nnod_plane_ctl%intvalue(3)
+      num_spectr =  kx_max * ky_max * iz_max
+      kx_org = kx_max
+      ky_org = ky_max
+      iz_org = ky_max
 !
-      nx_all = nnod_plane2_ctl(1)
-      ny_all = nnod_plane2_ctl(2)
-      nz_all = nnod_plane2_ctl(3)
+      nx_all = nnod_plane2_ctl%intvalue(1)
+      ny_all = nnod_plane2_ctl%intvalue(2)
+      nz_all = nnod_plane2_ctl%intvalue(3)
 !
       nnod_new_k_org_z = kx_max*ky_max*nz_all
 !
-      num_pe =  ndomain_plane2_ctl(1)                                   &
-     &        * ndomain_plane2_ctl(2)                                   &
-     &        * ndomain_plane2_ctl(3)
+      num_pe =  ndomain_plane2_ctl%intvalue(1)                          &
+     &        * ndomain_plane2_ctl%intvalue(2)                          &
+     &        * ndomain_plane2_ctl%intvalue(3)
 !
       ist = i_step_init_ctl
       ied = i_step_number_ctl
@@ -166,18 +155,11 @@
       integer(kind=kint ), intent(inout) :: kx_org, ky_org, iz_org
 !
 !
-      write(*,*) 'nnod_plane_ctl       ', nnod_plane_ctl
-      write(*,*) 'ndomain_plane_ctl    ', ndomain_plane_ctl
-!      write(*,*) 'num_of_sleeve_ctl     ', num_of_sleeve_ctl
+      write(*,*) 'nnod_plane_ctl       ', nnod_plane_ctl%intvalue
+      write(*,*) 'ndomain_plane_ctl    ', ndomain_plane_ctl%intvalue
 !      write(*,*) 'plane_size_ctl        ', plane_size_ctl
-!      write(*,*) 'unit_len_plane_ctl    ', unit_len_plane_ctl
-!      write(*,*) 'horizontal_grid_ctl   ', horizontal_grid_ctl
-      write(*,*) 'nnod_plane2_ctl       ', nnod_plane2_ctl
-      write(*,*) 'ndomain_plane2_ctl    ', ndomain_plane2_ctl
-!      write(*,*) 'num_of_sleeve2_ctl    ', num_of_sleeve2_ctl
-!      write(*,*) 'plane_size2_ctl       ', plane_size2_ctl
-!      write(*,*) 'unit_len_plane2_ctl   ', unit_len_plane2_ctl
-!      write(*,*) 'horizontal_grid2_ctl  ', horizontal_grid2_ctl
+      write(*,*) 'nnod_plane2_ctl       ', nnod_plane2_ctl%intvalue
+      write(*,*) 'ndomain_plane2_ctl    ', ndomain_plane2_ctl%intvalue
 !
       if (i_new_mesh_head .gt. 0) then
         mesh_file_head = new_mesh_prefix
@@ -196,16 +178,16 @@
       end if
 !
 !
-      kx_org = nnod_plane_ctl(1)
-      ky_org = nnod_plane_ctl(2)
-      iz_org = nnod_plane_ctl(3)
+      kx_org = nnod_plane_ctl%intvalue(1)
+      ky_org = nnod_plane_ctl%intvalue(2)
+      iz_org = nnod_plane_ctl%intvalue(3)
 !
-      nx_all = nnod_plane2_ctl(1)
-      ny_all = nnod_plane2_ctl(2)
-      nz_all = nnod_plane2_ctl(3)
-      num_pe =  ndomain_plane2_ctl(1)                                   &
-     &        * ndomain_plane2_ctl(2)                                   &
-     &        * ndomain_plane2_ctl(3)
+      nx_all = nnod_plane2_ctl%intvalue(1)
+      ny_all = nnod_plane2_ctl%intvalue(2)
+      nz_all = nnod_plane2_ctl%intvalue(3)
+      num_pe =  ndomain_plane2_ctl%intvalue(1)                          &
+     &        * ndomain_plane2_ctl%intvalue(2)                          &
+     &        * ndomain_plane2_ctl%intvalue(3)
       nnod_new_k_org_z = kx_max*ky_max*nz_all
 !
       end subroutine set_parameters_data_by_spec

@@ -8,16 +8,17 @@
       module m_ctl_data_2nd_plane
 !
       use m_precision
+      use t_control_elements
 !
       implicit  none
 !
-      integer(kind = kint) :: nnod_plane2_ctl(3)
-      integer(kind = kint) :: ndomain_plane2_ctl(3)
-      integer(kind = kint) :: num_of_sleeve2_ctl
-      real(kind = kreal) ::   plane_size2_ctl(3)
+      type(read_int3_item), save :: nnod_plane2_ctl
+      type(read_int3_item), save :: ndomain_plane2_ctl
+      type(read_integer_item), save :: num_of_sleeve2_ctl
+      type(read_real3_item), save :: plane_size2_ctl
 !
-      character(len = kchara) :: unit_len_plane2_ctl(3)
-      character(len = kchara) :: horizontal_grid2_ctl
+      type(read_chara3_item), save :: unit_len_plane2_ctl
+      type(read_character_item), save :: horizontal_grid2_ctl
 !
 !   label for entry
 !
@@ -38,13 +39,6 @@
      &       :: hd_unit_len_plane_ctl =  'unit_len_plane_ctl'
       character(len=kchara), parameter                                  &
      &       :: hd_horizontal_grid_ctl = 'horizontal_grid_ctl'
-!
-      integer (kind=kint) :: i_nnod_plane2_ctl =      0
-      integer (kind=kint) :: i_ndomain_plane2_ctl =   0
-      integer (kind=kint) :: i_num_of_sleeve2_ctl =   0
-      integer (kind=kint) :: i_plane_size2_ctl =      0
-      integer (kind=kint) :: i_unit_len_plane2_ctl =  0
-      integer (kind=kint) :: i_horizontal_grid2_ctl = 0
 !
       private :: i_2nd_plane_def
       private :: hd_nnod_plane_ctl, hd_ndomain_plane_ctl
@@ -72,24 +66,22 @@
         if(i_2nd_plane_def .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_horizontal_grid_ctl,            &
-     &        i_horizontal_grid2_ctl, horizontal_grid2_ctl)
+        call read_chara_ctl_type(hd_horizontal_grid_ctl,                &
+     &      horizontal_grid2_ctl)
 !
-        call read_integer_ctl_item(hd_num_of_sleeve_ctl,                &
-     &        i_num_of_sleeve2_ctl, num_of_sleeve2_ctl)
+        call read_integer_ctl_type(hd_num_of_sleeve_ctl,                &
+     &      num_of_sleeve2_ctl)
 !
 !
-        call read_real3_ctl_item(hd_plane_size_ctl,                     &
-     &        i_plane_size2_ctl, plane_size2_ctl)
+        call read_real3_ctl_type(hd_plane_size_ctl, plane_size2_ctl)
 !
-        call read_integer3_ctl_item(hd_nnod_plane_ctl,                  &
-     &        i_nnod_plane2_ctl, nnod_plane2_ctl)
+        call read_integer3_ctl_type(hd_nnod_plane_ctl, nnod_plane2_ctl)
 !
-        call read_integer3_ctl_item(hd_ndomain_plane_ctl,               &
-     &        i_ndomain_plane2_ctl, ndomain_plane2_ctl)
+        call read_integer3_ctl_type(hd_ndomain_plane_ctl,               &
+     &      ndomain_plane2_ctl)
 !
-        call read_character3_ctl_item(hd_unit_len_plane_ctl,            &
-     &        i_unit_len_plane2_ctl, unit_len_plane2_ctl)
+        call read_character3_ctl_type(hd_unit_len_plane_ctl,            &
+     &      unit_len_plane2_ctl)
       end do
 !
       end subroutine read_2nd_plane_model_param_ctl

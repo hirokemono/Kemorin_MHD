@@ -15,7 +15,7 @@
 !!        type(read_integer_item), intent(inout) :: int_item
 !!      subroutine read_chara_ctl_type(label, chara_item)
 !!        character(len=kchara), intent(in) :: label
-!!        type(read_integer_item), intent(inout) :: chara_item
+!!        type(read_character_item), intent(inout) :: chara_item
 !!      subroutine read_real2_ctl_type(label, real2_item)
 !!        character(len=kchara), intent(in) :: label
 !!        type(read_real2_item), intent(inout) :: real2_item
@@ -72,6 +72,7 @@
         real(kind = kreal) ::    realvalue(2)
       end type read_real2_item
 !
+!
 !>        structure of control item with three reals
       type read_real3_item
 !>        read flag (If item is read iflag = 1)
@@ -79,7 +80,6 @@
 !>        array for read real items
         real(kind = kreal) ::    realvalue(3)
       end type read_real3_item
-!
 !
 !>        structure of control item with three integers
       type read_int3_item
