@@ -84,7 +84,7 @@
 !
 !*   ++++++++++  lead adjoint Legendre Polynomial  ++++++
 !*
-      call dladendre(nth, x, dplm, df)
+      call dledendre(nth, x, dplm, df)
 !
       end subroutine dlad
 !
@@ -99,11 +99,11 @@
 !
 !*   ++++++++++  lead adjoint Legendre Polynomial  ++++++
 !*
-      call schmidt_polynomial(nth, theta, p, df)
+      call schmidt_legendre(nth, theta, p, df)
 !
 !*   ++++++++++  lead difference of Legendre Polynomial  ++++++
 !*
-      call diff_schmidt_polynomial(nth, p, dp)
+      call diff_schmidt_legendre(nth, p, dp)
 !
       end subroutine dschmidt
 !
@@ -118,15 +118,11 @@
 !
 !*   ++++++++++  lead adjoint Legendre Polynomial  ++++++
 !*
-      call schmidt_polynomial(nth, theta, p, df)
-!
-!*   ++++++++++  lead difference of Legendre Polynomial  ++++++
-!*
-      call diff_schmidt_polynomial(nth, p, dp)
+      call dschmidt(theta)
 !
 !*   ++++++++++  Full normalizationl  ++++++
 !*
-      call full_normalize_by_smdt(nth, p, dp)
+      call full_normalize_from_smdt(nth, p, dp)
 !
       end subroutine full_norm_legendre
 !

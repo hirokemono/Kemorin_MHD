@@ -6,7 +6,7 @@
 !
 !> @brief module for Legendre polynomials with Schmidt normalization
 !!
-!!@n      subroutine schmidt_polynomial(ltr, theta,  p, df)
+!!@n      subroutine schmidt_legendre(ltr, theta,  p, df)
 !!@n*************************************************************
 !!@n*     lead legendre and adjoint Legendle Polynomial
 !!@n*
@@ -20,7 +20,7 @@
 !!@n*
 !!@n*************************************************************
 !!@n
-!!@n      subroutine diff_schmidt_polynomial(ltr, p, dp)
+!!@n      subroutine diff_schmidt_legendre(ltr, p, dp)
 !!@n*************************************************************
 !!@n*     lead difference of Schmidt Polynomial
 !!@n*
@@ -32,7 +32,7 @@
 !!@n*
 !!@n*************************************************************
 !!@n
-!!@n      subroutine full_normalize_by_smdt(ltr, p, dp)
+!!@n      subroutine full_normalize_from_smdt(ltr, p, dp)
 !!@n
 !!@n @param ltr       Truncation level for the polynomial
 !!@n @param theta     Input degree ( \f$ 0 \le \theta \le \pi \f$)
@@ -55,7 +55,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine schmidt_polynomial(ltr, theta,  p, df)
+      subroutine schmidt_legendre(ltr, theta,  p, df)
 !*
       integer(kind = kint), intent(in) :: ltr
       real(kind = kreal), intent(in) :: theta
@@ -106,11 +106,11 @@
 !*
       end do
 !*
-      end subroutine schmidt_polynomial
+      end subroutine schmidt_legendre
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine diff_schmidt_polynomial(ltr, p, dp)
+      subroutine diff_schmidt_legendre(ltr, p, dp)
 !*
       integer(kind = kint), intent(in) :: ltr
       real(kind = kreal), intent(in) :: p(0:ltr,0:ltr)
@@ -145,11 +145,11 @@
         end do
       end do
 !*
-      end subroutine diff_schmidt_polynomial
+      end subroutine diff_schmidt_legendre
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine full_normalize_by_smdt(ltr, p, dp)
+      subroutine full_normalize_from_smdt(ltr, p, dp)
 !*
       integer(kind = kint), intent(in) :: ltr
       real(kind = kreal), intent(inout) :: p(0:ltr,0:ltr)
@@ -176,7 +176,7 @@
         end do
       end do
 !
-      end subroutine full_normalize_by_smdt
+      end subroutine full_normalize_from_smdt
 !
 !  ---------------------------------------------------------------------
 !

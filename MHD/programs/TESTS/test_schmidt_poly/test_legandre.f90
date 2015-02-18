@@ -61,7 +61,6 @@
       call construct_gauss_coefs
 !
       call allocate_gauss_colatitude
-      call allocate_schmidt_polynomial
       call set_gauss_colatitude
 !
       call set_gauss_points_rtm
