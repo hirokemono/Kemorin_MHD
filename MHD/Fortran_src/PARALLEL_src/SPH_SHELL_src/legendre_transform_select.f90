@@ -163,31 +163,31 @@
       character(len = kchara), intent(in) :: tranx_loop_ctl
 !
 !
-      if(     cmp_no_case(tranx_loop_ctl, leg_test_loop).gt.0) then
+      if(     cmp_no_case(tranx_loop_ctl, leg_test_loop)) then
         id_legendre_transfer = iflag_leg_test_loop
-      else if(cmp_no_case(tranx_loop_ctl, leg_krloop_inner).gt.0) then
+      else if(cmp_no_case(tranx_loop_ctl, leg_krloop_inner)) then
         id_legendre_transfer = iflag_leg_krloop_inner
-      else if(cmp_no_case(tranx_loop_ctl, leg_krloop_outer).gt.0) then
+      else if(cmp_no_case(tranx_loop_ctl, leg_krloop_outer)) then
         id_legendre_transfer = iflag_leg_krloop_outer
-      else if(cmp_no_case(tranx_loop_ctl, leg_sym_org_loop).gt.0) then
+      else if(cmp_no_case(tranx_loop_ctl, leg_sym_org_loop)) then
         id_legendre_transfer = iflag_leg_symmetry
-      else if(cmp_no_case(tranx_loop_ctl, leg_sym_spin_loop).gt.0) then
+      else if(cmp_no_case(tranx_loop_ctl, leg_sym_spin_loop)) then
         id_legendre_transfer = iflag_leg_sym_spin_loop
-      else if(cmp_no_case(tranx_loop_ctl, leg_matmul).gt.0) then
+      else if(cmp_no_case(tranx_loop_ctl, leg_matmul)) then
         id_legendre_transfer = iflag_leg_matmul
-      else if(cmp_no_case(tranx_loop_ctl, leg_dgemm).gt.0) then
+      else if(cmp_no_case(tranx_loop_ctl, leg_dgemm)) then
         id_legendre_transfer = iflag_leg_dgemm
-      else if(cmp_no_case(tranx_loop_ctl, leg_matprod).gt.0) then
+      else if(cmp_no_case(tranx_loop_ctl, leg_matprod)) then
         id_legendre_transfer = iflag_leg_matprod
-      else if(cmp_no_case(tranx_loop_ctl, leg_sym_matmul).gt.0) then
+      else if(cmp_no_case(tranx_loop_ctl, leg_sym_matmul)) then
         id_legendre_transfer = iflag_leg_sym_matmul
-      else if(cmp_no_case(tranx_loop_ctl, leg_sym_dgemm).gt.0) then
+      else if(cmp_no_case(tranx_loop_ctl, leg_sym_dgemm)) then
         id_legendre_transfer = iflag_leg_sym_dgemm
-      else if(cmp_no_case(tranx_loop_ctl, leg_sym_matprod).gt.0) then
+      else if(cmp_no_case(tranx_loop_ctl, leg_sym_matprod)) then
         id_legendre_transfer = iflag_leg_sym_matprod
-      else if(cmp_no_case(tranx_loop_ctl, leg_blocked_loop).gt.0) then
+      else if(cmp_no_case(tranx_loop_ctl, leg_blocked_loop)) then
         id_legendre_transfer = iflag_leg_blocked
-      else if(cmp_no_case(tranx_loop_ctl, leg_orginal_loop).gt.0) then
+      else if(cmp_no_case(tranx_loop_ctl, leg_orginal_loop)) then
         id_legendre_transfer = iflag_leg_orginal_loop
       else
         id_legendre_transfer = iflag_leg_orginal_loop

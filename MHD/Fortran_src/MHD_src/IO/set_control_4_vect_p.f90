@@ -71,9 +71,9 @@
      &       a_potential_nod%ibc_type(i))
 !
           if(cmp_no_case(node_bc_A_ctl%c1_tbl(i), 'insulate_shell' )    &
-     &       .gt. 0) a_potential_nod%ibc_type(i) = iflag_insulator
+     &       ) a_potential_nod%ibc_type(i) = iflag_insulator
 !          if (cmp_no_case(node_bc_A_ctl%c1_tbl(i), 'sph'               &
-!     &      .gt. 0)  a_potential_nod%ibc_type(i) = 999
+!     &       )  a_potential_nod%ibc_type(i) = 999
         end do
 !
         if (iflag_debug .eq. iflag_full_msg) then

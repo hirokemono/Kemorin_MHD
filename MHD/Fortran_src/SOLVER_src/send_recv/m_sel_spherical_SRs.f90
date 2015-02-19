@@ -108,9 +108,9 @@
       character(len = kchara), intent(in) :: import_ctl
 !
 !
-      if(cmp_no_case(import_ctl, hd_import_item) .gt. 0) then
+      if(cmp_no_case(import_ctl, hd_import_item)) then
         iflag_sph_SRN = iflag_import_item
-      else if(cmp_no_case(import_ctl, hd_import_rev) .gt. 0) then
+      else if(cmp_no_case(import_ctl, hd_import_rev)) then
         iflag_sph_SRN = iflag_import_rev
       else
         iflag_sph_SRN = iflag_import_UNDEFINED
@@ -128,11 +128,11 @@
       character(len = kchara), intent(in) :: send_recv_ctl
 !
 !
-      if(cmp_no_case(send_recv_ctl, hd_sendrecv) .gt. 0) then
+      if(cmp_no_case(send_recv_ctl, hd_sendrecv)     ) then
         iflag_sph_commN = iflag_send_recv
-      else if(cmp_no_case(send_recv_ctl, hd_all2allv) .gt. 0) then
+      else if(cmp_no_case(send_recv_ctl, hd_all2allv)) then
         iflag_sph_commN = iflag_alltoallv
-      else if(cmp_no_case(send_recv_ctl, hd_all2all) .gt. 0) then
+      else if(cmp_no_case(send_recv_ctl, hd_all2all) ) then
         iflag_sph_commN = iflag_alltoall
       else
         iflag_sph_commN = iflag_SR_UNDEFINED

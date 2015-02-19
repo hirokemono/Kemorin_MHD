@@ -89,7 +89,7 @@
       num_fft = 0
       do i = 1, plane_phys%num_phys
         do j = 1, field_ctl%num
-          if (cmp_no_case(field_ctl%c2_tbl(j), 'Viz_On') .gt. 0) then
+          if (cmp_no_case(field_ctl%c2_tbl(j), 'Viz_On')) then
             if (field_ctl%c1_tbl(j) .eq. plane_phys%phys_name(i)) then
               if ( plane_phys%num_component(i) .eq. 1) then
                 num_fft = num_fft + 1
@@ -109,7 +109,7 @@
       ii = 1
       do i = 1, plane_phys%num_phys
         do j = 1, field_ctl%num
-          if (cmp_no_case(field_ctl%c2_tbl(j), 'Viz_On') .gt. 0) then
+          if (cmp_no_case(field_ctl%c2_tbl(j), 'Viz_On')) then
             if (field_ctl%c1_tbl(j) .eq. plane_phys%phys_name(i)) then
 !
               do jj = 1, plane_phys%num_component(i)

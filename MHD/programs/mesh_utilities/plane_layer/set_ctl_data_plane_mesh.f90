@@ -58,19 +58,19 @@
       end if
 !
       pi = 4.0d0 * atan(1.0d0)
-      if (cmp_no_case(unit_len_plane_ctl%charavalue(1),'pi').gt.0) then
+      if (cmp_no_case(unit_len_plane_ctl%charavalue(1),'pi')) then
         xsize = pi*plane_size_ctl%realvalue(1)
       else
         xsize = plane_size_ctl%realvalue(1)
       end if
 !
-      if (cmp_no_case(unit_len_plane_ctl%charavalue(2),'pi').gt.0) then
+      if (cmp_no_case(unit_len_plane_ctl%charavalue(2),'pi')) then
         ysize = pi*plane_size_ctl%realvalue(2)
       else
         ysize = plane_size_ctl%realvalue(2)
       end if
 !
-      if (cmp_no_case(unit_len_plane_ctl%charavalue(3),'pi').gt.0) then
+      if (cmp_no_case(unit_len_plane_ctl%charavalue(3),'pi')) then
         zsize = pi*plane_size_ctl%realvalue(3)
       else
         zsize = plane_size_ctl%realvalue(3)
@@ -84,10 +84,10 @@
       zmin = -zmax
 !
       if      (cmp_no_case(horizontal_grid_ctl%charavalue,              &
-     &                      'chebyshev') .gt.0) then
+     &                      'chebyshev')     ) then
         iradi = 2
       else if (cmp_no_case(horizontal_grid_ctl%charavalue,              &
-     &                      'half_chebyshev').gt.0) then
+     &                      'half_chebyshev')) then
         iradi = 1
       else
         iradi = 0

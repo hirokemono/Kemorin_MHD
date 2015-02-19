@@ -41,14 +41,14 @@
 !
 !
       if(i_debug_flag_ctl .gt. 0) then
-        if     (cmp_no_case(debug_flag_ctl,'Off') .gt. 0                &
-     &     .or. cmp_no_case(debug_flag_ctl,'0') .gt. 0) then
+        if     (cmp_no_case(debug_flag_ctl,'Off')                       &
+     &     .or. cmp_no_case(debug_flag_ctl,'0')   ) then
           i_debug =     iflag_minimum_msg
-        else if(cmp_no_case(debug_flag_ctl,'On') .gt. 0                 &
-     &     .or. cmp_no_case(debug_flag_ctl,'1') .gt. 0) then
+        else if(cmp_no_case(debug_flag_ctl,'On')                        &
+     &     .or. cmp_no_case(debug_flag_ctl,'1')   ) then
           i_debug =     iflag_routine_msg
-        else if(cmp_no_case(debug_flag_ctl,'Full') .gt. 0               &
-     &     .or. cmp_no_case(debug_flag_ctl,'2') .gt. 0) then
+        else if(cmp_no_case(debug_flag_ctl,'Full')                      &
+     &     .or. cmp_no_case(debug_flag_ctl,'2')   ) then
           i_debug =     iflag_full_msg
         end if
       end if
@@ -95,8 +95,8 @@
 !
 !
       if(i_mesh_extension .gt. 0) then
-        if     (cmp_no_case(mesh_extension_flags_ctl,'Off') .gt. 0      &
-     &     .or. cmp_no_case(mesh_extension_flags_ctl,'0') .gt. 0) then
+        if     (cmp_no_case(mesh_extension_flags_ctl,'Off')             &
+     &     .or. cmp_no_case(mesh_extension_flags_ctl,'0') ) then
           iflag_mesh_file_ext = 0
         end if
       end if

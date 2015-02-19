@@ -50,11 +50,11 @@
       write(*,*) 'input position to cut'
       read(*,*) xref
 !
-      if(cmp_no_case(direction, 'X') .gt. 0) nd = 1
-      if(cmp_no_case(direction, 'Y') .gt. 0) nd = 2
-      if(cmp_no_case(direction, 'Z') .gt. 0) nd = 3
-      if(cmp_no_case(direction, 'r') .gt. 0) nd = 11
-      if(cmp_no_case(direction, 's') .gt. 0) nd = 21
+      if(cmp_no_case(direction, 'X')) nd = 1
+      if(cmp_no_case(direction, 'Y')) nd = 2
+      if(cmp_no_case(direction, 'Z')) nd = 3
+      if(cmp_no_case(direction, 'r')) nd = 11
+      if(cmp_no_case(direction, 's')) nd = 21
 !
       write(*,*) 'input output header'
       read(*,*) line_udt_head

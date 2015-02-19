@@ -60,10 +60,8 @@
         do k = 1, ref_phys%num_phys
           if ( cor_phys%phys_name(i) .eq. ref_phys%phys_name(k) ) then
             do j = 1, field_ctl%num
-              iflag = cmp_no_case(field_ctl%c1_tbl(j),                  &
-     &                            cor_phys%phys_name(i))                &
-     &              + cmp_no_case(field_ctl%c2_tbl(j), 'Viz_On')
-              if(iflag .gt. 0) then
+              if(cmp_no_case(field_ctl%c1_tbl(j),cor_phys%phys_name(i)) &
+     &          .or. cmp_no_case(field_ctl%c2_tbl(j), 'Viz_On')) then
                 num_crt = num_crt + cor_phys%num_component(i)
                 exit
               end if
@@ -82,10 +80,8 @@
         do k = 1, ref_phys%num_phys
           if ( cor_phys%phys_name(i) .eq. ref_phys%phys_name(k) ) then
             do j = 1, field_ctl%num
-              iflag = cmp_no_case(field_ctl%c1_tbl(j),                  &
-     &                            cor_phys%phys_name(i))                &
-     &              + cmp_no_case(field_ctl%c2_tbl(j), 'Viz_On')
-              if(iflag .gt. 0) then
+              if(cmp_no_case(field_ctl%c1_tbl(j),cor_phys%phys_name(i)) &
+     &          .or. cmp_no_case(field_ctl%c2_tbl(j), 'Viz_On')) then
                 do jj = 1, cor_phys%num_component(i)
                   crt_name(ii+jj-1) =   field_ctl%c1_tbl(j)
                   ifield_crt(ii+jj-1) = icomp

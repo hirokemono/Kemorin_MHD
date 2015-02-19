@@ -44,26 +44,26 @@
 !
 !
       if (i_SGS_filter .gt. 0) then
-        if   (cmp_no_case(SGS_filter_name_ctl, '3D') .gt. 0             &
-     &   .or. cmp_no_case(SGS_filter_name_ctl, '3-D') .gt. 0            &
-     &   .or. cmp_no_case(SGS_filter_name_ctl, '3-Dimensional') .gt. 0  &
+        if   (cmp_no_case(SGS_filter_name_ctl, '3D')                    &
+     &   .or. cmp_no_case(SGS_filter_name_ctl, '3-D')                   &
+     &   .or. cmp_no_case(SGS_filter_name_ctl, '3-Dimensional')         &
      &  )  iflag_SGS_filter = id_SGS_3D_FILTERING
 !
-        if   (cmp_no_case(SGS_filter_name_ctl, 'Line') .gt. 0           &
+        if   (cmp_no_case(SGS_filter_name_ctl, 'Line')                  &
      &  )  iflag_SGS_filter = id_SGS_LINE_FILTERING
 !
-        if   (cmp_no_case(SGS_filter_name_ctl, 'Plane') .gt. 0          &
+        if   (cmp_no_case(SGS_filter_name_ctl, 'Plane')                 &
      &  )  iflag_SGS_filter = id_SGS_PLANE_FILTERING
 !
-        if   (cmp_no_case(SGS_filter_name_ctl, '3D_easy') .gt. 0        &
+        if   (cmp_no_case(SGS_filter_name_ctl, '3D_easy')               &
      &  )  iflag_SGS_filter = id_SGS_3D_EZ_FILTERING
 !
-        if   (cmp_no_case(SGS_filter_name_ctl, '3D_smp') .gt. 0         &
-     &   .or. cmp_no_case(SGS_filter_name_ctl, '3-D_smp') .gt. 0        &
+        if   (cmp_no_case(SGS_filter_name_ctl, '3D_smp')                &
+     &   .or. cmp_no_case(SGS_filter_name_ctl, '3-D_smp')               &
      &   .or. cmp_no_case(SGS_filter_name_ctl, '3-Dimensional_smp')     &
-     &      .gt. 0)  iflag_SGS_filter = id_SGS_3D_SMP_FILTERING
+     &       )  iflag_SGS_filter = id_SGS_3D_SMP_FILTERING
 !
-        if   (cmp_no_case(SGS_filter_name_ctl, '3D_easy_sm') .gt. 0     &
+        if   (cmp_no_case(SGS_filter_name_ctl, '3D_easy_sm')            &
      &  )  iflag_SGS_filter = id_SGS_3D_EZ_SMP_FILTERING
 !
         if (iflag_debug .gt. 0)  write(*,*)                             &
@@ -128,26 +128,26 @@
         if (iflag_t_evo_4_temp .gt. id_no_evolution) then
           iflag_heat_filtering = 0
           if (cmp_no_case(heat_filter_ctl, 'Whole_filtering')           &
-     &       .gt. 0) iflag_heat_filtering = 0
+     &      ) iflag_heat_filtering = 0
           if (cmp_no_case(heat_filter_ctl, 'Fluid_filtering')           &
-     &       .gt. 0) iflag_heat_filtering = 1
+     &      ) iflag_heat_filtering = 1
         end if
 !
         if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
           iflag_momentum_filtering = 0
           if (cmp_no_case(momentum_filter_ctl, 'Whole_filtering')       &
-     &       .gt. 0) iflag_momentum_filtering = 0
+     &      ) iflag_momentum_filtering = 0
           if (cmp_no_case(momentum_filter_ctl, 'Fluid_filtering')       &
-     &       .gt. 0) iflag_momentum_filtering = 1
+     &      ) iflag_momentum_filtering = 1
         end if
 !
         if (iflag_t_evo_4_magne .gt. id_no_evolution                    &
      &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
           iflag_induction_filtering = 0
           if (cmp_no_case(induction_filter_ctl, 'Whole_filtering')      &
-     &       .gt. 0) iflag_induction_filtering = 0
+     &      ) iflag_induction_filtering = 0
           if (cmp_no_case(induction_filter_ctl, 'Fluid_filtering')      &
-     &       .gt. 0) iflag_induction_filtering = 1
+     &      ) iflag_induction_filtering = 1
         end if
 !
         if (iflag_debug.eq.1) then

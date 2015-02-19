@@ -124,13 +124,12 @@
 !
       iflag_interpolate_type = 0
       if (i_itp_type .gt. 0) then
-        if (cmp_no_case(interpolate_type_ctl, 'project_sphere')         &
-     &    + cmp_no_case(interpolate_type_ctl, 'project_to_sphere')      &
-     &     .gt. 0) then
+        if (   cmp_no_case(interpolate_type_ctl, 'project_sphere')      &
+     &    .or. cmp_no_case(interpolate_type_ctl, 'project_to_sphere')   &
+     &     ) then
           iflag_interpolate_type = 2
 !        else if (cmp_no_case(interpolate_type_ctl, 'rtp')              &
-!     &         + cmp_no_case(interpolate_type_ctl, 'spherical')        &
-!     &     .gt. 0) then
+!     &      .or. cmp_no_case(interpolate_type_ctl, 'spherical')) then
 !          iflag_interpolate_type = 1
         end if
       end if

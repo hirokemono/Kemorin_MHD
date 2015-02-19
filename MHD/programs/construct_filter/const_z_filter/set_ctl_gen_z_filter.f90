@@ -59,32 +59,32 @@
       totalnod_y = nnod_plane_ctl%intvalue(2)
       totalnod =   nnod_plane_ctl%intvalue(3)
 !
-      if(cmp_no_case(unit_len_plane_ctl%charavalue(1),'pi').gt. 0) then
+      if(cmp_no_case(unit_len_plane_ctl%charavalue(1),'pi')) then
         xsize = pi * plane_size_ctl%realvalue(1)
       else
         xsize = plane_size_ctl%realvalue(1)
       end if
 !
-      if(cmp_no_case(unit_len_plane_ctl%charavalue(2),'pi').gt. 0) then
+      if(cmp_no_case(unit_len_plane_ctl%charavalue(2),'pi')) then
         ysize = pi * plane_size_ctl%realvalue(2)
       else
         ysize = plane_size_ctl%realvalue(2)
       end if
 !
-      if(cmp_no_case(unit_len_plane_ctl%charavalue(3),'pi').gt. 0) then
+      if(cmp_no_case(unit_len_plane_ctl%charavalue(3),'pi')) then
         zsize = pi * plane_size_ctl%realvalue(3)
       else
         zsize = plane_size_ctl%realvalue(3)
       end if
 !
       if      (cmp_no_case(horizontal_grid_ctl%charavalue,              &
-     &                     'equi_distance' ) .gt. 0) then
+     &                     'equi_distance' )) then
         iflag_grid = 0
       else if (cmp_no_case(horizontal_grid_ctl%charavalue,              &
-     &                     'half_chebyshev') .gt. 0) then
+     &                     'half_chebyshev')) then
         iflag_grid = 1
       else if (cmp_no_case(horizontal_grid_ctl%charavalue,              &
-     &                     'chebyshev'     ) .gt. 0) then
+     &                     'chebyshev'     )) then
         iflag_grid = 2
       end if
 !
@@ -118,31 +118,19 @@
       call deallocate_ref_filter_ctl
       call deallocate_horiz_filter_ctl
 !
-      if      (   type_filter_z .eq. 'tophat'                           &
-     &       .or. type_filter_z .eq. 'Tophat'                           &
-     &       .or. type_filter_z .eq. 'TOPHAT') then
+      if      (cmp_no_case(type_filter_z, 'tophat')) then
        iflag_filter = 0
-      else if (   type_filter_z .eq. 'linear'                           &
-     &       .or. type_filter_z .eq. 'Linear'                           &
-     &       .or. type_filter_z .eq. 'LINEAR') then
+      else if (cmp_no_case(type_filter_z, 'linear')) then
        iflag_filter = 1
-      else if (   type_filter_z .eq. 'gaussian'                         &
-     &       .or. type_filter_z .eq. 'Gaussian'                         &
-     &       .or. type_filter_z .eq. 'GAUSSIAN') then
+      else if (cmp_no_case(type_filter_z, 'gaussian')) then
        iflag_filter = 2
-     end if
+      end if
 !
-      if      (   type_filter_h .eq. 'tophat'                           &
-     &       .or. type_filter_h .eq. 'Tophat'                           &
-     &       .or. type_filter_h .eq. 'TOPHAT') then
+      if      (cmp_no_case(type_filter_h, 'tophat')) then
        iflag_filter_h = 0
-      else if (   type_filter_h .eq. 'linear'                           &
-     &       .or. type_filter_h .eq. 'Linear'                           &
-     &       .or. type_filter_h .eq. 'LINEAR') then
+      else if (cmp_no_case(type_filter_h, 'linear')) then
        iflag_filter_h = 1
-      else if (   type_filter_h .eq. 'gaussian'                         &
-     &       .or. type_filter_h .eq. 'Gaussian'                         &
-     &       .or. type_filter_h .eq. 'GAUSSIAN') then
+      else if (cmp_no_case(type_filter_h, 'gaussian')) then
        iflag_filter_h = 2
      end if
 !

@@ -75,26 +75,24 @@
       end if
 !
 !
-      if     (cmp_no_case(contour_type_ctl, 'Both') .gt.          0     &
-     &   .or. cmp_no_case(contour_type_ctl, 'Line_and_Fill') .gt. 0     &
-     &   ) then
+      if     (cmp_no_case(contour_type_ctl, 'Both')                     &
+     &   .or. cmp_no_case(contour_type_ctl, 'Line_and_Fill')) then
         idisp_mode = 3
-      else if(cmp_no_case(contour_type_ctl, 'Fill') .gt.   0            &
-     &   .or. cmp_no_case(contour_type_ctl, 'Filled') .gt. 0) then
+      else if(cmp_no_case(contour_type_ctl, 'Fill')                     &
+     &   .or. cmp_no_case(contour_type_ctl, 'Filled')       ) then
         idisp_mode = 2
       else
         idisp_mode = 1
       end if
 !
 !
-      if     (cmp_no_case(contour_type_ctl, 'Rainbow') .gt. 0           &
-     &   .or. cmp_no_case(contour_type_ctl, 'Color') .gt.   0) then
+      if     (cmp_no_case(contour_type_ctl, 'Rainbow')                  &
+     &   .or. cmp_no_case(contour_type_ctl, 'Color')        ) then
         icolor_mode = 1
-      else if(cmp_no_case(contour_type_ctl, 'Yellow_Green') .gt. 0      &
-     &     ) then
+      else if(cmp_no_case(contour_type_ctl, 'Yellow_Green') ) then
         icolor_mode = -1
-      else if(cmp_no_case(contour_type_ctl, 'Grayscale') .gt. 0         &
-     &   .or. cmp_no_case(contour_type_ctl, 'Gray') .gt.      0) then
+      else if(cmp_no_case(contour_type_ctl, 'Grayscale')                &
+     &   .or. cmp_no_case(contour_type_ctl, 'Gray')         ) then
         icolor_mode = 0
       else
         icolor_mode = 1
@@ -235,11 +233,11 @@
 !
 !
       if(i_sph_grid_type .gt. 0) then
-        if     (cmp_no_case(sph_grid_type_ctl, 'No_pole'   ).gt.0) then
+        if     (cmp_no_case(sph_grid_type_ctl, 'No_pole'   )) then
           id_shell_mode_pg = iflag_MESH_same
-        else if(cmp_no_case(sph_grid_type_ctl, 'With_pole' ).gt.0) then
+        else if(cmp_no_case(sph_grid_type_ctl, 'With_pole' )) then
           id_shell_mode_pg = iflag_MESH_w_pole
-        else if(cmp_no_case(sph_grid_type_ctl,'With_center').gt.0) then
+        else if(cmp_no_case(sph_grid_type_ctl,'With_center')) then
           id_shell_mode_pg = iflag_MESH_w_center
         else
           id_shell_mode_pg = iflag_MESH_same

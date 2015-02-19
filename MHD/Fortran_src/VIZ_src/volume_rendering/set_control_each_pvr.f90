@@ -54,12 +54,12 @@
       end if
 !
       tmpchara = pvr%file_fmt_ctl%charavalue
-      if     (cmp_no_case(tmpchara, 'ucd') .gt. 0                       &
-     &   .or. cmp_no_case(tmpchara, 'udt') .gt. 0) then
+      if     (cmp_no_case(tmpchara, 'ucd')                              &
+     &   .or. cmp_no_case(tmpchara, 'udt')) then
         id_pvr_file_type(i_pvr) = 0
-      else if(cmp_no_case(tmpchara, 'png') .gt. 0) then
+      else if(cmp_no_case(tmpchara, 'png')) then
         id_pvr_file_type(i_pvr) = 12
-      else if(cmp_no_case(tmpchara, 'bmp') .gt. 0) then
+      else if(cmp_no_case(tmpchara, 'bmp')) then
         id_pvr_file_type(i_pvr) = 11
       else
         id_pvr_file_type(i_pvr) = 11
@@ -67,11 +67,11 @@
 !
 !
       tmpchara = pvr%transparent_ctl%charavalue
-      if     (cmp_no_case(tmpchara, 'rgba')        .gt. 0               &
-     &   .or. cmp_no_case(tmpchara, 'transparent') .gt. 0) then
+      if     (cmp_no_case(tmpchara, 'rgba')                             &
+     &   .or. cmp_no_case(tmpchara, 'transparent')) then
         id_pvr_transparent(i_pvr) = 1
-      else if(cmp_no_case(tmpchara, 'rgb')   .gt. 0                     &
-     &   .or. cmp_no_case(tmpchara, 'solid') .gt. 0) then
+      else if(cmp_no_case(tmpchara, 'rgb')                              &
+     &   .or. cmp_no_case(tmpchara, 'solid')) then
         id_pvr_transparent(i_pvr) = 0
       else
         id_pvr_transparent(i_pvr) = 0
@@ -206,13 +206,13 @@
       if      (pvr%num_frames_ctl%iflag .gt.    0                       &
      &   .and. pvr%rotation_axis_ctl%iflag .gt. 0) then
         tmpchara = pvr%rotation_axis_ctl%charavalue
-        if     (cmp_no_case(tmpchara, 'x') .gt. 0) then
+        if     (cmp_no_case(tmpchara, 'x')) then
           iprm_pvr_rot(1,i_pvr) = 1
           iflag_rotation = 1
-        else if(cmp_no_case(tmpchara, 'y') .gt. 0) then
+        else if(cmp_no_case(tmpchara, 'y')) then
           iprm_pvr_rot(1,i_pvr) = 2
           iflag_rotation = 1
-        else if(cmp_no_case(tmpchara, 'z') .gt. 0) then
+        else if(cmp_no_case(tmpchara, 'z')) then
           iprm_pvr_rot(1,i_pvr) = 3
           iflag_rotation = 1
         else
@@ -231,11 +231,11 @@
       id_pvr_color(1,i_pvr) = 2
       if( pvr%colormap_ctl%iflag .gt. 0) then
         tmpchara = pvr%colormap_ctl%charavalue
-        if     (cmp_no_case(tmpchara, 'rainbow') .gt. 0) then
+        if     (cmp_no_case(tmpchara, 'rainbow')) then
           id_pvr_color(1,i_pvr) = 2
-        else if(cmp_no_case(tmpchara, 'red_blue') .gt. 0) then
+        else if(cmp_no_case(tmpchara, 'red_blue')) then
           id_pvr_color(1,i_pvr) = 1
-        else if(cmp_no_case(tmpchara, 'grayscale') .gt. 0) then
+        else if(cmp_no_case(tmpchara, 'grayscale')) then
           id_pvr_color(1,i_pvr) = 3
         end if
       end if
@@ -244,14 +244,14 @@
       num_pvr_datamap_pnt(i_pvr) = 2
       if( pvr%data_mapping_ctl%iflag .gt. 0) then
         tmpchara = pvr%data_mapping_ctl%charavalue
-        if      (cmp_no_case(tmpchara, 'nonlinear')     .gt. 0          &
-     &      .or. cmp_no_case(tmpchara, 'colormap_list') .gt. 0) then
+        if      (cmp_no_case(tmpchara, 'nonlinear')                     &
+     &      .or. cmp_no_case(tmpchara, 'colormap_list')) then
           if(pvr%colortbl_ctl%num .gt. 0) then
             id_pvr_color(2,i_pvr) = 3
             num_pvr_datamap_pnt(i_pvr) = pvr%colortbl_ctl%num
           end if
-        else if (cmp_no_case(tmpchara, 'linear') .gt. 0                 &
-     &      .or. cmp_no_case(tmpchara, 'minmax') .gt. 0) then
+        else if (cmp_no_case(tmpchara, 'linear')                        &
+     &      .or. cmp_no_case(tmpchara, 'minmax')) then
           if(      pvr%range_min_ctl%iflag .gt. 0                       &
      &       .and. pvr%range_max_ctl%iflag .gt. 0) then
             id_pvr_color(2,i_pvr) = 2
@@ -302,22 +302,22 @@
       num_opacity_pnt(i_pvr) = 0
       if( pvr%opacity_style_ctl%iflag .gt. 0) then
         tmpchara = pvr%opacity_style_ctl%charavalue
-!        if     (cmp_no_case(tmpchara, 'intense_chenge' .gt. 0) then
+!        if     (cmp_no_case(tmpchara, 'intense_chenge') then
 !          id_pvr_color(3,i_pvr) = 2
 !        end if
-        if     (cmp_no_case(tmpchara, 'point_delta') .gt. 0) then
+        if     (cmp_no_case(tmpchara, 'point_delta')) then
           if( pvr%opacity_ctl%num .gt. 0) then
             id_pvr_color(3,i_pvr) = 3
             num_opacity_pnt(i_pvr) = pvr%opacity_ctl%num
           end if
 !
-        else if(cmp_no_case(tmpchara, 'point_ranges') .gt. 0) then
+        else if(cmp_no_case(tmpchara, 'point_ranges')) then
           if( pvr%opacity_ctl%num .gt. 0) then
             id_pvr_color(3,i_pvr) = 4
             num_opacity_pnt(i_pvr) = pvr%opacity_ctl%num
           end if
 !
-        else if(cmp_no_case(tmpchara, 'point_linear') .gt. 0) then
+        else if(cmp_no_case(tmpchara, 'point_linear')) then
           if( pvr%opacity_ctl%num .gt. 0) then
             id_pvr_color(3,i_pvr) = 5
             num_opacity_pnt(i_pvr) = pvr%opacity_ctl%num
@@ -379,9 +379,9 @@
       iflag_pvr_colorbar(i_pvr) = 0
       if( pvr%colorbar_switch_ctl%iflag .gt. 0) then
         tmpchara = pvr%colorbar_switch_ctl%charavalue
-        if   (cmp_no_case(tmpchara, 'on')        .gt. 0                 &
-     &   .or. cmp_no_case(tmpchara, 'data')      .gt. 0                 &
-     &   .or. cmp_no_case(tmpchara, 'equi_data') .gt. 0) then
+        if   (cmp_no_case(tmpchara, 'on')                               &
+     &   .or. cmp_no_case(tmpchara, 'data')                             &
+     &   .or. cmp_no_case(tmpchara, 'equi_data')) then
           iflag_pvr_colorbar(i_pvr) = 1
         end if
       end if
@@ -389,7 +389,7 @@
       if ( iflag_pvr_colorbar(i_pvr) .gt. 0) then
         if( pvr%colorbar_scale_ctl%iflag .gt. 0) then
           tmpchara = pvr%colorbar_scale_ctl%charavalue
-          if  (cmp_no_case(tmpchara, 'on') .gt. 0) then
+          if  (cmp_no_case(tmpchara, 'on')) then
             iflag_pvr_cbar_nums(i_pvr) = 1
 !
             if (pvr%font_size_ctl%iflag .gt. 0) then
@@ -407,7 +407,7 @@
 !
             if (pvr%zeromarker_flag_ctl%iflag .gt. 0) then
               tmpchara = pvr%zeromarker_flag_ctl%charavalue
-              if  (cmp_no_case(tmpchara, 'on') .gt. 0) then
+              if  (cmp_no_case(tmpchara, 'on')) then
                 iflag_pvr_zero_mark(i_pvr) = 1
               else
                 iflag_pvr_zero_mark(i_pvr) = 0

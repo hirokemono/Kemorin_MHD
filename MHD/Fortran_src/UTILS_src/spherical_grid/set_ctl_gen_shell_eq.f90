@@ -41,14 +41,11 @@
 !
       iflag_shell_mode = iflag_no_FEMMESH
       if(i_sph_g_type .gt. 0) then
-        if      (cmp_no_case(sph_grid_type_ctl, 'no_pole') .gt. 0       &
-     &         ) then
+        if      (cmp_no_case(sph_grid_type_ctl, 'no_pole')) then
           iflag_shell_mode = iflag_MESH_same
-        else if (cmp_no_case(sph_grid_type_ctl, 'with_pole') .gt. 0     &
-     &         ) then
+        else if (cmp_no_case(sph_grid_type_ctl, 'with_pole')) then
           iflag_shell_mode = iflag_MESH_w_pole
-        else if (cmp_no_case(sph_grid_type_ctl, 'with_center') .gt. 0   &
-     &         ) then
+        else if (cmp_no_case(sph_grid_type_ctl, 'with_center')) then
           iflag_shell_mode = iflag_MESH_w_center
         end if
       else
@@ -92,16 +89,14 @@
       nlayer_mid_OC =   -1
       if(radial_grp_ctl%icou .gt. 0) then
         do i = 1, radial_grp_ctl%num
-          if     (cmp_no_case(radial_grp_ctl%c_tbl(i),'ICB') .gt. 0     &
-     &            ) then
+          if     (cmp_no_case(radial_grp_ctl%c_tbl(i),'ICB')) then
             nlayer_ICB = radial_grp_ctl%ivec(i)
-          else if(cmp_no_case(radial_grp_ctl%c_tbl(i),'CMB') .gt. 0     &
-     &            ) then
+          else if(cmp_no_case(radial_grp_ctl%c_tbl(i),'CMB')) then
             nlayer_CMB = radial_grp_ctl%ivec(i)
-          else if(cmp_no_case(radial_grp_ctl%c_tbl(i),'to_center').gt.0 &
+          else if(cmp_no_case(radial_grp_ctl%c_tbl(i),'to_center')      &
      &            ) then
             nlayer_2_center = radial_grp_ctl%ivec(i)
-          else if(cmp_no_case(radial_grp_ctl%c_tbl(i),'mid_depth').gt.0 &
+          else if(cmp_no_case(radial_grp_ctl%c_tbl(i),'mid_depth')      &
      &            ) then
             nlayer_mid_OC = radial_grp_ctl%ivec(i)
           end if

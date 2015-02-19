@@ -38,55 +38,56 @@
 !
       real(kind = kreal), intent(inout) :: c_surf(10)
 !
-      integer(kind = kint) :: i, iflag
+      integer(kind = kint) :: i
 !
 !
       do i = 1, num_const
-        iflag =  cmp_no_case(c_name_psf(i), 'XX')                       &
-     &         + cmp_no_case(c_name_psf(i), 'X2')                       &
-     &         + cmp_no_case(c_name_psf(i), 'X^2')
-        if(iflag .gt. 0) c_surf(1) = const_psf_ctl(i)
+        if(      cmp_no_case(c_name_psf(i), 'XX')                       &
+     &      .or. cmp_no_case(c_name_psf(i), 'X2')                       &
+     &      .or. cmp_no_case(c_name_psf(i), 'X^2')) then
+          c_surf(1) = const_psf_ctl(i)
 !
-        iflag =  cmp_no_case(c_name_psf(i), 'YY')                       &
-     &         + cmp_no_case(c_name_psf(i), 'Y2')                       &
-     &         + cmp_no_case(c_name_psf(i), 'Y^2')
-        if(iflag .gt. 0) c_surf(2) = const_psf_ctl(i)
+        else if( cmp_no_case(c_name_psf(i), 'YY')                       &
+     &      .or. cmp_no_case(c_name_psf(i), 'Y2')                       &
+     &      .or. cmp_no_case(c_name_psf(i), 'Y^2')) then
+          c_surf(2) = const_psf_ctl(i)
 !
-        iflag =  cmp_no_case(c_name_psf(i), 'ZZ')                       &
-     &         + cmp_no_case(c_name_psf(i), 'Z2')                       &
-     &         + cmp_no_case(c_name_psf(i), 'Z^2')
-        if(iflag .gt. 0) c_surf(3) = const_psf_ctl(i)
+        else if( cmp_no_case(c_name_psf(i), 'ZZ')                       &
+     &      .or. cmp_no_case(c_name_psf(i), 'Z2')                       &
+     &      .or. cmp_no_case(c_name_psf(i), 'Z^2')) then
+          c_surf(3) = const_psf_ctl(i)
 !
-        iflag =  cmp_no_case(c_name_psf(i), 'XY')                       &
-     &         + cmp_no_case(c_name_psf(i), 'YZ')
-        if(iflag .gt. 0) c_surf(4) = const_psf_ctl(i)
+        else if( cmp_no_case(c_name_psf(i), 'XY')                       &
+     &      .or. cmp_no_case(c_name_psf(i), 'YZ')) then
+          c_surf(4) = const_psf_ctl(i)
 !
-        iflag =  cmp_no_case(c_name_psf(i), 'YZ')                       &
-     &         + cmp_no_case(c_name_psf(i), 'ZY')
-        if(iflag .gt. 0) c_surf(5) = const_psf_ctl(i)
+        else if( cmp_no_case(c_name_psf(i), 'YZ')                       &
+     &      .or. cmp_no_case(c_name_psf(i), 'ZY')) then
+          c_surf(5) = const_psf_ctl(i)
 !
-        iflag =  cmp_no_case(c_name_psf(i), 'ZX')                       &
-     &         + cmp_no_case(c_name_psf(i), 'XZ')
-        if(iflag .gt. 0) c_surf(6) = const_psf_ctl(i)
+        else if( cmp_no_case(c_name_psf(i), 'ZX')                       &
+     &      .or. cmp_no_case(c_name_psf(i), 'XZ')) then
+          c_surf(6) = const_psf_ctl(i)
 !
-        iflag =  cmp_no_case(c_name_psf(i), 'X')                        &
-     &         + cmp_no_case(c_name_psf(i), 'X1')                       &
-     &         + cmp_no_case(c_name_psf(i), 'X^1')
-        if(iflag .gt. 0) c_surf(7) = const_psf_ctl(i)
+        else if( cmp_no_case(c_name_psf(i), 'X')                        &
+     &      .or. cmp_no_case(c_name_psf(i), 'X1')                       &
+     &      .or. cmp_no_case(c_name_psf(i), 'X^1')) then
+          c_surf(7) = const_psf_ctl(i)
 !
-        iflag =  cmp_no_case(c_name_psf(i), 'Y')                        &
-     &         + cmp_no_case(c_name_psf(i), 'Y1')                       &
-     &         + cmp_no_case(c_name_psf(i), 'Y^1')
-        if(iflag .gt. 0) c_surf(8) = const_psf_ctl(i)
+        else if( cmp_no_case(c_name_psf(i), 'Y')                        &
+     &      .or. cmp_no_case(c_name_psf(i), 'Y1')                       &
+     &      .or. cmp_no_case(c_name_psf(i), 'Y^1')) then
+          c_surf(8) = const_psf_ctl(i)
 !
-        iflag =  cmp_no_case(c_name_psf(i), 'Z')                        &
-     &         + cmp_no_case(c_name_psf(i), 'Z1')                       &
-     &         + cmp_no_case(c_name_psf(i), 'Z^1')
-        if(iflag .gt. 0) c_surf(9) = const_psf_ctl(i)
+        else if( cmp_no_case(c_name_psf(i), 'Z')                        &
+     &      .or. cmp_no_case(c_name_psf(i), 'Z1')                       &
+     &      .or. cmp_no_case(c_name_psf(i), 'Z^1')) then
+          c_surf(9) = const_psf_ctl(i)
 !
-        iflag =  cmp_no_case(c_name_psf(i), 'Const')                    &
-     &         + cmp_no_case(c_name_psf(i), 'C')
-        if(iflag .gt. 0) c_surf(10) = const_psf_ctl(i)
+        else if( cmp_no_case(c_name_psf(i), 'Const')                    &
+     &      .or. cmp_no_case(c_name_psf(i), 'C')) then
+          c_surf(10) = const_psf_ctl(i)
+        end if
       end do
 !
       end subroutine set_coefs_4_psf

@@ -203,13 +203,11 @@
 !
       iflag_circle_coord = iflag_circle_sph
       if (i_circle_coord .ne. 0) then
-        if(    cmp_no_case(pick_circle_coord_ctl,'spherical') .gt. 0    &
-     &    .or. cmp_no_case(pick_circle_coord_ctl,'rtp') .gt.       0    &
-         ) then
+        if(    cmp_no_case(pick_circle_coord_ctl,'spherical')           &
+     &    .or. cmp_no_case(pick_circle_coord_ctl,'rtp')) then
           iflag_circle_coord = iflag_circle_sph
-        else if(cmp_no_case(pick_circle_coord_ctl,'cyrindrical') .gt. 0 &
-      &    .or. cmp_no_case(pick_circle_coord_ctl,'spz') .gt.         0 &
-         ) then
+        else if(cmp_no_case(pick_circle_coord_ctl,'cyrindrical')        &
+      &    .or. cmp_no_case(pick_circle_coord_ctl,'spz')) then
           iflag_circle_coord = iflag_circle_cyl
         end if
       end if

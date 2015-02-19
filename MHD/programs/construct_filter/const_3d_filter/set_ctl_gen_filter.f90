@@ -85,11 +85,11 @@
         do i = 1, num_ref_filter
           iref_filter_type(i) = iflag_tophat_filter
           if(cmp_no_case(reference_filter_ctl%c_tbl(i), 'Gaussian')     &
-     &          .gt. 0) iref_filter_type(i) = iflag_gaussian_filter
+     &          ) iref_filter_type(i) = iflag_gaussian_filter
           if(cmp_no_case(reference_filter_ctl%c_tbl(i), 'Linear')       &
-     &          .gt. 0) iref_filter_type(i) = iflag_linear_filter
+     &          ) iref_filter_type(i) = iflag_linear_filter
           if(cmp_no_case(reference_filter_ctl%c_tbl(i), 'Tophat')       &
-     &          .gt. 0) iref_filter_type(i) = iflag_tophat_filter
+     &          ) iref_filter_type(i) = iflag_tophat_filter
 !
           filter_type(i) = reference_filter_ctl%c_tbl(i)
 !
@@ -127,8 +127,7 @@
         num_order_1d = num_moments_order
 !
         do i = 1, num_moments_order
-          if(cmp_no_case(ref_filter_mom_ctl%c_tbl(i), 'refered') .gt. 0 &
-      &      ) then
+          if(cmp_no_case(ref_filter_mom_ctl%c_tbl(i), 'refered')) then
             iref_mom_type(i) = 1
           else
             iref_mom_type(i) = 0

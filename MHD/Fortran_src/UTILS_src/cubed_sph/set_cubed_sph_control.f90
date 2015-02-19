@@ -126,18 +126,17 @@
       if (node_grp_name_ctl%icou .gt. 0) then
 !
         do j = 1, node_grp_name_ctl%num
-          if(cmp_no_case(node_grp_name_ctl%c_tbl(j),'CMB') .gt. 0) then
+          if(cmp_no_case(node_grp_name_ctl%c_tbl(j),'CMB')) then
             if_CMB = 0
             k = istack_nod_grp_layer_csp(j-1) + 1
             nlayer_CMB = node_grp_layer_ctl%ivec(k)
           end if
-          if(cmp_no_case(node_grp_name_ctl%c_tbl(j),'ICB') .gt. 0) then
+          if(cmp_no_case(node_grp_name_ctl%c_tbl(j),'ICB')) then
             if_ICB = 0
             k = istack_nod_grp_layer_csp(j-1) + 1
             nlayer_ICB = node_grp_layer_ctl%ivec(k)
           end if
-          if(cmp_no_case(node_grp_name_ctl%c_tbl(j),'infinity') .gt. 0) &
-     &       then
+          if(cmp_no_case(node_grp_name_ctl%c_tbl(j),'infinity')) then
             if_EXT = 0
             k = istack_nod_grp_layer_csp(j-1) + 1
             nlayer_EXT = node_grp_layer_ctl%ivec(k)
@@ -213,11 +212,11 @@
       if (elem_grp_name_ctl%icou .gt. 0) then
         do j = 1, elem_grp_name_ctl%num
           if(cmp_no_case(elem_grp_name_ctl%c_tbl(j), 'outer_core')      &
-     &       .gt. 0)  if_CMB = 0
+     &       )  if_CMB = 0
           if(cmp_no_case(elem_grp_name_ctl%c_tbl(j), 'inner_core')      &
-     &       .gt. 0)  if_ICB = 0
+     &       )  if_ICB = 0
           if(cmp_no_case(elem_grp_name_ctl%c_tbl(j), 'external')        &
-     &       .gt. 0)  if_EXT = 0
+     &       )  if_EXT = 0
         end do
 !
         num_ele_grp_csp = elem_grp_name_ctl%num + if_CMB+if_ICB+if_EXT
@@ -312,16 +311,15 @@
       if_EXT = 1
       if (surf_grp_name_ctl%icou .gt. 0) then
         do j = 1, surf_grp_name_ctl%num
-          if(cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'CMB_surf') .gt. 0 &
-     &     .or. cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'CMB') .gt. 0   &
+          if(cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'CMB_surf')        &
+     &     .or. cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'CMB')          &
      &     )  if_CMB = 0
-          if(cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'ICB_surf') .gt. 0 &
-     &     .or. cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'ICB') .gt. 0   &
+          if(cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'ICB_surf')        &
+     &     .or. cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'ICB')          &
      &     )  if_ICB = 0
           if(cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'external_surf')   &
-     &      .gt. 0                                                      &
      &      .or. cmp_no_case(surf_grp_name_ctl%c_tbl(j), 'external')    &
-     &      .gt. 0 )  if_EXT = 0
+     &     )  if_EXT = 0
         end do
 !
         num_surf_grp_csp                                                &
@@ -377,9 +375,9 @@
           id_surf_grp_layer_csp(1,k) = surf_grp_layer_ctl%ivec(j)
 !
           if (   cmp_no_case(surf_grp_layer_ctl%c_tbl(j), 'in')         &
-     &       .gt. 0) id_surf_grp_layer_csp(2,k) = 5
+     &        ) id_surf_grp_layer_csp(2,k) = 5
           if (   cmp_no_case(surf_grp_layer_ctl%c_tbl(j), 'out')        &
-     &       .gt. 0) id_surf_grp_layer_csp(2,k) = 6
+     &        ) id_surf_grp_layer_csp(2,k) = 6
         end do
 !
         call dealloc_control_array_c_i(surf_grp_layer_ctl)

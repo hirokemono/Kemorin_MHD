@@ -64,20 +64,18 @@
       character(len = kchara), intent(in) :: FFT_library_ctl
 !
 !
-      if     (cmp_no_case(FFT_library_ctl, hd_FFTPACK) .gt. 0) then
+      if     (cmp_no_case(FFT_library_ctl, hd_FFTPACK)) then
         iflag_FFT = iflag_FFTPACK
-      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK) .gt. 0) then
+      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK)) then
         iflag_FFT = iflag_ISPACK
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTW) .gt. 0              &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3) .gt. 0) then
+      else if(cmp_no_case(FFT_library_ctl, hd_FFTW)                     &
+     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3)) then
         iflag_FFT = iflag_FFTW
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_S) .gt. 0            &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_S) .gt. 0)        &
-     &   then
+      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_S)                   &
+     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_S)) then
         iflag_FFT = iflag_FFTW_SINGLE
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_F) .gt. 0            &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_F) .gt. 0)        &
-     &   then
+      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_F)                   &
+     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_F)) then
         iflag_FFT = iflag_FFTW_FIELD
       end if
 !

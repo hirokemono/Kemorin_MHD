@@ -340,13 +340,13 @@
       character(len = kchara), intent(in) :: dir_ctl
 !
 !
-      if     (cmp_no_case(dir_ctl,'x').gt.0 .or. dir_ctl.eq.'1') then
+      if     (cmp_no_case(dir_ctl,'x') .or. dir_ctl.eq.'1') then
         set_4direction_flag = 1
-      else if(cmp_no_case(dir_ctl,'y').gt.0 .or. dir_ctl.eq.'2') then
+      else if(cmp_no_case(dir_ctl,'y') .or. dir_ctl.eq.'2') then
         set_4direction_flag = 2
-      else if(cmp_no_case(dir_ctl,'z').gt.0 .or. dir_ctl.eq.'3') then
+      else if(cmp_no_case(dir_ctl,'z') .or. dir_ctl.eq.'3') then
         set_4direction_flag = 3
-      else if(cmp_no_case(dir_ctl,'w').gt.0 .or. dir_ctl.eq.'4') then
+      else if(cmp_no_case(dir_ctl,'w') .or. dir_ctl.eq.'4') then
         set_4direction_flag = 4
       else
         set_4direction_flag = 0

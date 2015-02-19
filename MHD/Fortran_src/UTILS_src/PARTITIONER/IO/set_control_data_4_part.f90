@@ -32,7 +32,7 @@
       use itp_table_IO_select_4_zlib
       use skip_comment_f
 !
-      integer(kind = kint) :: i, iflag
+      integer(kind = kint) :: i
 !
 !
       if (i_mesh_header .gt. 0) then
@@ -60,9 +60,9 @@
 !
 !
       if(i_mem_conserve .gt. 0) then
-        iflag =  cmp_no_case(memory_conservation_ctl, 'no')             &
-     &         + cmp_no_case(memory_conservation_ctl, 'off')
-        if(iflag .gt. 0) iflag_memory_conserve = 0
+        if(      cmp_no_case(memory_conservation_ctl, 'no')             &
+     &      .or. cmp_no_case(memory_conservation_ctl, 'off')            &
+     &      ) iflag_memory_conserve = 0
       end if
 !
       write(*,*) 'iflag_memory_conserve', iflag_memory_conserve
@@ -90,40 +90,42 @@
       end if
 !
       if (i_part_method .gt. 0) then
-        iflag =  cmp_no_case(part_method_ctl, 'RCB')                    &
-     &         + cmp_no_case(part_method_ctl, 'RCB_xyz')
-        if(iflag .gt. 0) NTYP_div = iPART_RCB_XYZ
+        if(      cmp_no_case(part_method_ctl, 'RCB')                    &
+     &      .or. cmp_no_case(part_method_ctl, 'RCB_xyz')) then
+            NTYP_div = iPART_RCB_XYZ
 !
-        iflag =  cmp_no_case(part_method_ctl, 'RCB_sph')
-        if(iflag .gt. 0) NTYP_div = iPART_RCB_SPH
+        else if( cmp_no_case(part_method_ctl, 'RCB_sph')) then
+            NTYP_div = iPART_RCB_SPH
 !
-        iflag =  cmp_no_case(part_method_ctl, 'ES')                     &
-     &         + cmp_no_case(part_method_ctl, 'ES_xyz')
-        if(iflag .gt. 0) NTYP_div = iPART_EQ_XYZ
+        else if( cmp_no_case(part_method_ctl, 'ES')                     &
+     &      .or. cmp_no_case(part_method_ctl, 'ES_xyz') ) then
+            NTYP_div = iPART_EQ_XYZ
 !
-        iflag =  cmp_no_case(part_method_ctl, 'ES_sph')
-        if(iflag .gt. 0) NTYP_div = iPART_EQ_SPH
+        else if( cmp_no_case(part_method_ctl, 'ES_sph') ) then
+            NTYP_div = iPART_EQ_SPH
 !
-        iflag =  cmp_no_case(part_method_ctl, 'ES_layered_sph')
-        if(iflag .gt. 0) NTYP_div = iPART_LAYER_SPH
+        else if( cmp_no_case(part_method_ctl, 'ES_layered_sph')) then
+            NTYP_div = iPART_LAYER_SPH
 !
-        iflag =  cmp_no_case(part_method_ctl, 'MeTiS_input')
-        if(iflag .gt. 0) NTYP_div = iPART_GEN_MeTiS
+        else if( cmp_no_case(part_method_ctl, 'MeTiS_input')) then
+            NTYP_div = iPART_GEN_MeTiS
 !
-        iflag =  cmp_no_case(part_method_ctl, 'MeTiS_RSB')
-        if(iflag .gt. 0) NTYP_div = iPART_MeTiS_RSB
+        else if( cmp_no_case(part_method_ctl, 'MeTiS_RSB')) then
+            NTYP_div = iPART_MeTiS_RSB
 !
-        iflag =  cmp_no_case(part_method_ctl, 'Cubed_sphere')           &
-     &         + cmp_no_case(part_method_ctl, 'Cubed_sph')
-        if(iflag .gt. 0) NTYP_div = iPART_CUBED_SPHERE
+        else if( cmp_no_case(part_method_ctl, 'Cubed_sphere')           &
+     &      .or. cmp_no_case(part_method_ctl, 'Cubed_sph')) then
+            NTYP_div = iPART_CUBED_SPHERE
 !
-        iflag =  cmp_no_case(part_method_ctl, 'finer_mesh')             &
-     &         + cmp_no_case(part_method_ctl, 'Divide_by_finer_mesh')
-        if(iflag .gt. 0) NTYP_div = iPART_FINE_MESH_TBL
+        else if( cmp_no_case(part_method_ctl, 'finer_mesh')             &
+     &      .or. cmp_no_case(part_method_ctl, 'Divide_by_finer_mesh')   &
+     &      ) then
+            NTYP_div = iPART_FINE_MESH_TBL
 !
-        iflag =  cmp_no_case(part_method_ctl, 'Decomp_data')            &
-     &         + cmp_no_case(part_method_ctl, 'decomposit_data')
-        if(iflag .gt. 0) NTYP_div = iPART_FINE_MESH_TBL
+        else if( cmp_no_case(part_method_ctl, 'Decomp_data')            &
+     &      .or. cmp_no_case(part_method_ctl, 'decomposit_data')) then
+            NTYP_div = iPART_FINE_MESH_TBL
+        end if
 !
         write (*,'(/," *********************************")')
         write (*,'(  " ||                             ||")')
@@ -158,7 +160,7 @@
       write(*,*) 'sleeve level :', n_overlap
 !
       if (i_ele_overlap .gt. 0 .and. n_overlap .eq. 1) then
-        if(cmp_no_case(element_overlap_ctl, 'On') .gt. 0) then
+        if(cmp_no_case(element_overlap_ctl, 'On')) then
           i_sleeve_ele = 1
           n_overlap =    2
         else
@@ -175,13 +177,13 @@
 !
         NPOWER_rcb = 0
         do i = 1, RCB_dir_ctl%num
-          if     (cmp_no_case(RCB_dir_ctl%c_tbl(i), 'X') .gt. 0) then
+          if     (cmp_no_case(RCB_dir_ctl%c_tbl(i), 'X')) then
             NPOWER_rcb = NPOWER_rcb + 1
             idir_rcb(NPOWER_rcb) = 1
-          else if(cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Y') .gt. 0) then
+          else if(cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Y')) then
             NPOWER_rcb = NPOWER_rcb + 1
             idir_rcb(NPOWER_rcb) = 2
-          else if(cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Z') .gt. 0) then
+          else if(cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Z')) then
             NPOWER_rcb = NPOWER_rcb + 1
             idir_rcb(NPOWER_rcb) = 3
           end if
@@ -200,26 +202,21 @@
 !
         NPOWER_rcb = 0
         do i = 1, RCB_dir_ctl%num
-          iflag =  cmp_no_case(RCB_dir_ctl%c_tbl(i), 'R')               &
-     &           + cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Radius')          &
-     &           + cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Radial')
-          if(iflag .gt. 0) then
+          if(      cmp_no_case(RCB_dir_ctl%c_tbl(i), 'R')               &
+     &        .or. cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Radius')          &
+     &        .or. cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Radial')) then
             NPOWER_rcb = NPOWER_rcb + 1
             idir_rcb(NPOWER_rcb) = 1
-          end if
 !
-          iflag =  cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Meridional')      &
-     &           + cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Theta')           &
-     &           + cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Elevation')
-          if(iflag .gt. 0) then
+          else if( cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Meridional')      &
+     &        .or. cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Theta')           &
+     &        .or. cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Elevation')) then
             NPOWER_rcb = NPOWER_rcb + 1
             idir_rcb(NPOWER_rcb) = 2
-          end if
 !
-          iflag =  cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Longitudinal')    &
-     &           + cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Phi')             &
-     &           + cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Azimuth')
-          if(iflag .gt. 0) then
+          else if( cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Longitudinal')    &
+     &        .or. cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Phi')             &
+     &        .or. cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Azimuth')) then
             NPOWER_rcb = NPOWER_rcb + 1
             idir_rcb(NPOWER_rcb) = 3
           end if
@@ -244,11 +241,11 @@
         ndivide_eb(1:3) = 1
         do i = 1, ndomain_section_ctl%num
           if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'X')             &
-     &          .gt. 0) ndivide_eb(1) = ndomain_section_ctl%ivec(i)
+     &          ) ndivide_eb(1) = ndomain_section_ctl%ivec(i)
           if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Y')             &
-     &          .gt. 0) ndivide_eb(2) = ndomain_section_ctl%ivec(i)
+     &          ) ndivide_eb(2) = ndomain_section_ctl%ivec(i)
           if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Z')             &
-     &          .gt. 0) ndivide_eb(3) = ndomain_section_ctl%ivec(i)
+     &          ) ndivide_eb(3) = ndomain_section_ctl%ivec(i)
         end do
         num_domain = ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)
 !
@@ -262,20 +259,24 @@
 !
         ndivide_eb(1:3) = 1
         do i = 1, ndomain_section_ctl%num
-          iflag =  cmp_no_case(ndomain_section_ctl%c_tbl(i), 'R')       &
-     &           + cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Radius')  &
-     &           + cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Radial')
-          if(iflag .gt. 0) ndivide_eb(1) = ndomain_section_ctl%ivec(i)
+          if(      cmp_no_case(ndomain_section_ctl%c_tbl(i), 'R')       &
+     &        .or. cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Radius')  &
+     &        .or. cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Radial')  &
+     &       ) then
+            ndivide_eb(1) = ndomain_section_ctl%ivec(i)
 !
-          iflag =  cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Theta')   &
-     &      + cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Meridional')   &
-     &      + cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Elevation')
-          if(iflag .gt. 0) ndivide_eb(2) = ndomain_section_ctl%ivec(i)
+          else if( cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Theta')   &
+     &     .or. cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Meridional') &
+     &     .or. cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Elevation')  &
+     &        ) then
+            ndivide_eb(2) = ndomain_section_ctl%ivec(i)
 !
-          iflag =  cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Phi')     &
-     &      + cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Longitudinal') &
-     &      + cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Azimuth')
-          if(iflag .gt. 0) ndivide_eb(3) = ndomain_section_ctl%ivec(i)
+          else if( cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Phi')     &
+     &    .or. cmp_no_case(ndomain_section_ctl%c_tbl(i),'Longitudinal') &
+     &    .or. cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Azimuth')     &
+     &        ) then
+            ndivide_eb(3) = ndomain_section_ctl%ivec(i)
+          end if
         end do
         num_domain = ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)
 !

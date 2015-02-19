@@ -46,8 +46,6 @@
 !
       integer(kind = kint) :: nprocs_ctl
       integer(kind = kint) :: i, np, kr, icou
-      integer(kind = kint) :: iflag_no, iflag_yes
-      integer(kind = kint) :: iflag_r, iflag_t, iflag_p
 !
 !
       nprocs_ctl = num_subdomain_ctl
@@ -64,39 +62,29 @@
 !
       iflag_memory_conserve_sph = 0
       if(i_mem_conserve .gt. 0) then
-        iflag_no =  cmp_no_case(memory_conservation_ctl, 'no')          &
-     &         + cmp_no_case(memory_conservation_ctl, 'off')
-        iflag_yes = cmp_no_case(memory_conservation_ctl, 'yes')         &
-     &         + cmp_no_case(memory_conservation_ctl, 'on')
-        if(iflag_no .gt. 0) then
+        if(no_flag(memory_conservation_ctl)) then
           iflag_memory_conserve_sph = 0
-        else if(iflag_yes .gt. 0) then
+        else if(yes_flag(memory_conservation_ctl)) then
           iflag_memory_conserve_sph = 1
         end if
       end if
 !
       iflag_excluding_FEM_mesh = 0
       if(i_mem_conserve .gt. 0) then
-        iflag_no =  cmp_no_case(excluding_FEM_mesh_ctl, 'no')           &
-     &         + cmp_no_case(excluding_FEM_mesh_ctl, 'off')
-        iflag_yes = cmp_no_case(excluding_FEM_mesh_ctl, 'yes')          &
-     &         + cmp_no_case(excluding_FEM_mesh_ctl, 'on')
-        if(iflag_no .gt. 0) then
+        if(no_flag(excluding_FEM_mesh_ctl)) then
           iflag_excluding_FEM_mesh = 0
-        else if(iflag_yes .gt. 0) then
+        else if(yes_flag(excluding_FEM_mesh_ctl)) then
           iflag_excluding_FEM_mesh = 1
         end if
       end if
 !
       iflag_shell_mode = iflag_no_FEMMESH
       if(i_sph_g_type .gt. 0) then
-        if      (cmp_no_case(sph_grid_type_ctl, 'no_pole') .gt. 0) then
+        if      (cmp_no_case(sph_grid_type_ctl, 'no_pole')) then
           iflag_shell_mode = iflag_MESH_same
-        else if(cmp_no_case(sph_grid_type_ctl, 'with_pole')             &
-     &     .gt. 0) then
+        else if(cmp_no_case(sph_grid_type_ctl, 'with_pole')) then
           iflag_shell_mode = iflag_MESH_w_pole
-        else if(cmp_no_case(sph_grid_type_ctl, 'with_center')           &
-     &     .gt. 0) then
+        else if(cmp_no_case(sph_grid_type_ctl, 'with_center')) then
           iflag_shell_mode = iflag_MESH_w_center
         end if
       else
@@ -112,14 +100,11 @@
       nidx_global_rtp(3) = 4
       l_truncation = 2
 !
-      if     (cmp_no_case(radial_grid_type_ctl, 'explicit')             &
-     &     .gt. 0) then
+      if     (cmp_no_case(radial_grid_type_ctl, 'explicit')) then
        iflag_radial_grid =  igrid_non_euqidist
-      else if(cmp_no_case(radial_grid_type_ctl, 'Chebyshev')            &
-     &     .gt. 0) then
+      else if(cmp_no_case(radial_grid_type_ctl, 'Chebyshev')) then
        iflag_radial_grid =  igrid_Chebyshev
-      else if(cmp_no_case(radial_grid_type_ctl, 'equi_distance')        &
-     &     .gt. 0) then
+      else if(cmp_no_case(radial_grid_type_ctl, 'equi_distance')) then
        iflag_radial_grid =  igrid_euqidistance
       end if
 !
@@ -145,17 +130,13 @@
 !
       icou = 0
       do i = 1, numlayer_sph_bc
-        if     (cmp_no_case(radial_grp_ctl%c_tbl(i), 'ICB')             &
-     &          .gt. 0) then
+        if     (cmp_no_case(radial_grp_ctl%c_tbl(i), 'ICB')) then
           numlayer_sph_bc = numlayer_sph_bc - 1
-        else if(cmp_no_case(radial_grp_ctl%c_tbl(i), 'CMB')             &
-     &          .gt. 0) then
+        else if(cmp_no_case(radial_grp_ctl%c_tbl(i), 'CMB')) then
           numlayer_sph_bc = numlayer_sph_bc - 1
-        else if(cmp_no_case(radial_grp_ctl%c_tbl(i), 'to_Center')       &
-     &          .gt. 0) then
+        else if(cmp_no_case(radial_grp_ctl%c_tbl(i), 'to_Center')) then
           numlayer_sph_bc = numlayer_sph_bc - 1
-        else if(cmp_no_case(radial_grp_ctl%c_tbl(i), 'Mid_Depth')       &
-     &          .gt. 0) then
+        else if(cmp_no_case(radial_grp_ctl%c_tbl(i), 'Mid_Depth')) then
           numlayer_sph_bc = numlayer_sph_bc - 1
         else
           icou = icou + 1
@@ -168,7 +149,7 @@
       iflag_rj_center = 0
       if(iflag_radial_grid .eq. igrid_non_euqidist) then
         if(i_sph_c_type .gt. 0) then
-          if(cmp_no_case(sph_coef_type_ctl, 'with_center').gt.0) then
+          if(cmp_no_case(sph_coef_type_ctl, 'with_center')) then
              iflag_rj_center = 1
           end if
         end if
@@ -195,16 +176,16 @@
         if(radial_grp_ctl%icou .gt. 0) then
           do i = 1, radial_grp_ctl%num
             if     (cmp_no_case(radial_grp_ctl%c_tbl(i), 'ICB')         &
-     &          .gt. 0) then
+     &         ) then
               nlayer_ICB = radial_grp_ctl%ivec(i)
             else if(cmp_no_case(radial_grp_ctl%c_tbl(i), 'CMB')         &
-     &          .gt. 0) then
+     &         ) then
               nlayer_CMB = radial_grp_ctl%ivec(i)
             else if(cmp_no_case(radial_grp_ctl%c_tbl(i), 'to_Center')   &
-     &          .gt. 0) then
+     &         ) then
               nlayer_2_center = radial_grp_ctl%ivec(i)
             else if(cmp_no_case(radial_grp_ctl%c_tbl(i), 'Mid_Depth')   &
-     &          .gt. 0) then
+     &         ) then
               nlayer_mid_OC = radial_grp_ctl%ivec(i)
             end if
           end do
@@ -239,13 +220,13 @@
       ndomain_rtp(1:3) = 1
       if (ndomain_sph_grid_ctl%num .gt. 0) then
         do i = 1, ndomain_sph_grid_ctl%num
-          iflag_r = cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'r')     &
-     &           + cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'radial')
-          iflag_t = cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'theta') &
-     &       + cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'meridional')
-          if     (iflag_r .gt. 0) then
+          if     (cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'r')       &
+     &       .or. cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'radial')  &
+     &           ) then
             ndomain_rtp(1) = ndomain_sph_grid_ctl%ivec(i)
-          else if (iflag_t .gt. 0) then
+          else if (cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'theta')  &
+     &     .or. cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i),'meridional') &
+     &           ) then
             ndomain_rtp(2) = ndomain_sph_grid_ctl%ivec(i)
           end if
         end do
@@ -256,13 +237,13 @@
       ndomain_rtm(1:3) = 1
       if (ndomain_legendre_ctl%num .gt. 0) then
         do i = 1, ndomain_legendre_ctl%num
-          iflag_r = cmp_no_case(ndomain_legendre_ctl%c_tbl(i), 'r')     &
-     &           + cmp_no_case(ndomain_legendre_ctl%c_tbl(i), 'radial')
-          iflag_p = cmp_no_case(ndomain_legendre_ctl%c_tbl(i), 'phi')   &
-     &           + cmp_no_case(ndomain_legendre_ctl%c_tbl(i), 'zonal')
-          if     (iflag_r .gt. 0) then
+          if     (cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'r')       &
+     &       .or. cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'radial')  &
+     &           ) then
             ndomain_rtm(1) = ndomain_legendre_ctl%ivec(i)
-          else if (iflag_p .gt. 0) then
+          else if (cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'phi')    &
+     &     .or. cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i),'zonal')      &
+     &           ) then
             ndomain_rtm(3) = ndomain_legendre_ctl%ivec(i)
            end if
         end do
@@ -276,9 +257,9 @@
       ndomain_rj(1:2) = 1
       if (ndomain_spectr_ctl%num .gt. 0) then
         do i = 1, ndomain_spectr_ctl%num
-          iflag_t = cmp_no_case(ndomain_spectr_ctl%c_tbl(i), 'modes')   &
-     &       + cmp_no_case(ndomain_spectr_ctl%c_tbl(i), 'degree_order')
-          if(iflag_t .gt. 0) ndomain_rj(2) = ndomain_spectr_ctl%ivec(i)
+          if(cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'degree_order') &
+     &       .or. cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i),'modes')    &
+     &      ) ndomain_rj(2) = ndomain_spectr_ctl%ivec(i)
         end do
 !
         call deallocate_ndomain_rj_ctl

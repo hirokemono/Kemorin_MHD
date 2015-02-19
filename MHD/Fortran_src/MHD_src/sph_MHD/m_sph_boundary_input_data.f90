@@ -230,14 +230,13 @@
       real(kind = kreal), intent(inout) :: bc_data(jmax)
       integer(kind = kint), intent(inout) :: iflag_bc_scalar
 !
-      integer(kind = kint) :: igrp, iflag
+      integer(kind = kint) :: igrp
 !
 !
       if(iflag_bc_scalar .ne. iflag_undefined_bc) return
       do igrp = 1, num_bc_field_ctl
-        iflag = cmp_no_case(bc_ctls(igrp)%bc_field, field_name)         &
-     &        * cmp_no_case(bc_ctls(igrp)%bc_group, ref_grp)
-        if(iflag .gt. 0) then
+        if(      cmp_no_case(bc_ctls(igrp)%bc_field, field_name)        &
+     &     .and. cmp_no_case(bc_ctls(igrp)%bc_group, ref_grp)) then
           iflag_bc_scalar =  iflag_fixed_field
           call set_bc_for_sph_scalar_by_file                            &
      &              (bc_ctls(igrp), jmax, bc_data)
@@ -260,14 +259,13 @@
       real(kind = kreal), intent(inout) :: bc_data(jmax)
       integer(kind = kint), intent(inout) :: iflag_bc_scalar
 !
-      integer(kind = kint) :: igrp, iflag
+      integer(kind = kint) :: igrp
 !
 !
       if(iflag_bc_scalar .ne. iflag_undefined_bc) return
       do igrp = 1, num_bc_field_ctl
-        iflag = cmp_no_case(bc_ctls(igrp)%bc_field, field_name)         &
-     &        * cmp_no_case(bc_ctls(igrp)%bc_group, ref_grp)
-        if(iflag .gt. 0) then
+        if(     cmp_no_case(bc_ctls(igrp)%bc_field, field_name)         &
+     &    .and. cmp_no_case(bc_ctls(igrp)%bc_group, ref_grp)) then
           iflag_bc_scalar =  iflag_fixed_flux
           call set_bc_for_sph_scalar_by_file                            &
      &                (bc_ctls(igrp), jmax, bc_data)
@@ -308,20 +306,17 @@
       use skip_comment_f
 !
       type(each_boundary_spectr), intent(inout) :: bc
-      integer(kind = kint) :: iflag
 !
 !
-      iflag =  cmp_no_case(bc%bc_field, fhd_velo)                       &
-     &       + cmp_no_case(bc%bc_field, fhd_vort)                       &
-     &       + cmp_no_case(bc%bc_field, fhd_magne)
-     if(iflag .gt. 0)  bc%ncomp_bc = 2
+      if(      cmp_no_case(bc%bc_field, fhd_velo)                       &
+     &    .or. cmp_no_case(bc%bc_field, fhd_vort)                       &
+     &    .or. cmp_no_case(bc%bc_field, fhd_magne))  bc%ncomp_bc = 2
 !
-      iflag =  cmp_no_case(bc%bc_field, fhd_temp)                       &
-     &       + cmp_no_case(bc%bc_field, fhd_light)                      &
-     &       + cmp_no_case(bc%bc_field, fhd_entropy)                    &
-     &       + cmp_no_case(bc%bc_field, fhd_h_flux)                     &
-     &       + cmp_no_case(bc%bc_field, fhd_c_flux)
-     if(iflag .gt. 0)  bc%ncomp_bc = 1
+      if(      cmp_no_case(bc%bc_field, fhd_temp)                       &
+     &    .or. cmp_no_case(bc%bc_field, fhd_light)                      &
+     &    .or. cmp_no_case(bc%bc_field, fhd_entropy)                    &
+     &    .or. cmp_no_case(bc%bc_field, fhd_h_flux)                     &
+     &    .or. cmp_no_case(bc%bc_field, fhd_c_flux))  bc%ncomp_bc = 1
 !
       end subroutine set_num_comp_bc_data
 !
