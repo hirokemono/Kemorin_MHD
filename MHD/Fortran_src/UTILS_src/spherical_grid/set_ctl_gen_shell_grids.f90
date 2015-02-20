@@ -148,15 +148,11 @@
 !   Set radial grid explicitly
       iflag_rj_center = 0
       if(iflag_radial_grid .eq. igrid_non_euqidist) then
-        if(i_sph_c_type .gt. 0) then
-          if(cmp_no_case(sph_coef_type_ctl, 'with_center')) then
-             iflag_rj_center = 1
-          end if
-        end if
+        if(i_sph_c_type .gt. 0                                          &
+          .and. cmp_no_case(sph_coef_type_ctl, 'with_center')           &
+     &        ) iflag_rj_center = 1
 !
-        if (radius_ctl%icou .gt. 0) then
-          nidx_global_rtp(1) = radius_ctl%num
-        end if
+        if (radius_ctl%icou .gt. 0) nidx_global_rtp(1) = radius_ctl%num
 !
         if (nidx_global_rtp(1) .gt. 0) then
           call allocate_radius_1d_gl
@@ -237,12 +233,12 @@
       ndomain_rtm(1:3) = 1
       if (ndomain_legendre_ctl%num .gt. 0) then
         do i = 1, ndomain_legendre_ctl%num
-          if     (cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'r')       &
-     &       .or. cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'radial')  &
+          if     (cmp_no_case(ndomain_legendre_ctl%c_tbl(i), 'r')       &
+     &       .or. cmp_no_case(ndomain_legendre_ctl%c_tbl(i), 'radial')  &
      &           ) then
             ndomain_rtm(1) = ndomain_legendre_ctl%ivec(i)
-          else if (cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'phi')    &
-     &     .or. cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i),'zonal')      &
+          else if (cmp_no_case(ndomain_legendre_ctl%c_tbl(i), 'phi')    &
+     &     .or. cmp_no_case(ndomain_legendre_ctl%c_tbl(i),'zonal')      &
      &           ) then
             ndomain_rtm(3) = ndomain_legendre_ctl%ivec(i)
            end if
@@ -257,8 +253,8 @@
       ndomain_rj(1:2) = 1
       if (ndomain_spectr_ctl%num .gt. 0) then
         do i = 1, ndomain_spectr_ctl%num
-          if(cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i), 'degree_order') &
-     &       .or. cmp_no_case(ndomain_sph_grid_ctl%c_tbl(i),'modes')    &
+          if(cmp_no_case(ndomain_spectr_ctl%c_tbl(i), 'degree_order')   &
+     &       .or. cmp_no_case(ndomain_spectr_ctl%c_tbl(i),'modes')      &
      &      ) ndomain_rj(2) = ndomain_spectr_ctl%ivec(i)
         end do
 !
