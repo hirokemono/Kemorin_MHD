@@ -97,9 +97,10 @@
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
-      use m_parallel_sph_grids
+      use set_comm_table_rtp_rj
       use load_data_for_sph_IO
       use gen_sph_grids_modes
+      use copy_sph_comm_table_4_type
 !
       integer(kind = kint) :: ip_rank, ip
 !
@@ -107,26 +108,20 @@
       call allocate_nneib_sph_rlm_tmp(ndomain_sph)
       do ip = 1, ndomain_sph
         ip_rank = ip - 1
-        if(mod(ip_rank,nprocs) .ne. my_rank                             &
-     &    .and. iflag_memory_conserve_sph .ne. 0) cycle
+        if(mod(ip_rank,nprocs) .ne. my_rank) cycle
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &             'start rlm table generation for',                    &
      &            ip_rank, 'on ', my_rank, nprocs
         call const_sph_rlm_modes(ip_rank)
+        call copy_comm_rlm_num_to_type(sph_para(ip)%sph_comms%comm_rlm)
 !
-        if(mod(ip_rank,nprocs).eq. my_rank) then
-          nneib_rlm_lc(ip)                                              &
+        nneib_rlm_lc(ip)                                                &
      &       = sph_para(ip)%sph_comms%comm_rlm%nneib_domain
 !
-          if(iflag_debug .gt. 0) write(*,*)                             &
+        if(iflag_debug .gt. 0) write(*,*)                               &
      &        'output_modes_rlm_sph_trans', ip_rank
-          call output_modes_rlm_sph_trans(ip_rank)
-        else
-          call deallocate_sph_comm_item_rlm
-          call deallocate_sph_1d_index_rlm
-          call deallocate_spheric_param_rlm
-        end if
+        call output_modes_rlm_sph_trans(ip_rank)
 !
         write(*,'(a,i6,a)') 'Spherical transform table for domain',     &
      &          ip_rank, ' is done.'
@@ -142,9 +137,10 @@
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
-      use m_parallel_sph_grids
+      use set_comm_table_rtp_rj
       use load_data_for_sph_IO
       use gen_sph_grids_modes
+      use copy_sph_comm_table_4_type
 !
       integer(kind = kint) :: ip_rank, ip
 !
@@ -152,27 +148,21 @@
       call allocate_nneib_sph_rtm_tmp(ndomain_sph)
       do ip = 1, ndomain_sph
         ip_rank = ip - 1
-        if(mod(ip_rank,nprocs) .ne. my_rank                             &
-     &    .and. iflag_memory_conserve_sph .ne. 0) cycle
+        if(mod(ip_rank,nprocs) .ne. my_rank) cycle
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &             'start rtm table generation for',                    &
      &            ip_rank, 'on ', my_rank, nprocs
         call const_sph_rtm_grids(ip_rank)
 !
-        if(mod(ip_rank,nprocs).eq. my_rank) then
-          nneib_rtm_lc(ip)                                              &
+        call copy_comm_rtm_num_to_type(sph_para(ip)%sph_comms%comm_rtm)
+        nneib_rtm_lc(ip)                                                &
      &       = sph_para(ip_rank+1)%sph_comms%comm_rtm%nneib_domain
 !
-          if(iflag_debug .gt. 0) write(*,*)                             &
+        if(iflag_debug .gt. 0) write(*,*)                               &
      &        'output_geom_rtm_sph_trans', ip_rank
-          call output_geom_rtm_sph_trans(ip_rank)
-        else
-          call deallocate_sph_comm_item_rtm
-          call deallocate_sph_1d_index_rtm
-          call deallocate_spheric_param_rtm
-        end if
-!
+        call output_geom_rtm_sph_trans(ip_rank)
+ 
         write(*,'(a,i6,a)') 'Legendre transform table rtm',             &
      &          ip_rank, ' is done.'
       end do
@@ -186,7 +176,6 @@
       subroutine para_gen_sph_rj_modes
 !
       use m_spheric_parameter
-      use m_parallel_sph_grids
       use set_local_index_table_sph
       use gen_sph_grids_modes
 !
@@ -211,7 +200,6 @@
       subroutine para_gen_sph_rtp_grids
 !
       use m_spheric_parameter
-      use m_parallel_sph_grids
       use set_local_index_table_sph
       use gen_sph_grids_modes
 !
@@ -277,12 +265,10 @@
       subroutine bcast_comm_stacks_rlm
 !
       use m_spheric_parameter
-      use m_parallel_sph_grids
+      use set_comm_table_rtp_rj
 !
       integer(kind = kint) :: ip_rank, ip, iroot, nneib
 !
-!
-      if(iflag_memory_conserve_sph .eq. 0) return
 !
       if(i_debug .gt. 0) write(*,*) 'barrier for rlm', my_rank
       call calypso_MPI_barrier
@@ -318,12 +304,10 @@
       subroutine bcast_comm_stacks_rtm
 !
       use m_spheric_parameter
-      use m_parallel_sph_grids
+      use set_comm_table_rtp_rj
 !
       integer(kind = kint) :: ip_rank, ip, iroot, nneib
 !
-!
-      if(iflag_memory_conserve_sph .eq. 0) return
 !
       if(i_debug .gt. 0) write(*,*) 'barrier for rtm', my_rank
       call calypso_MPI_barrier

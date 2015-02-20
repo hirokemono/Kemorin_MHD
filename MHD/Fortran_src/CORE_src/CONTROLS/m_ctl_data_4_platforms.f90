@@ -89,8 +89,8 @@
 !>@n@param      itp_file_fmt_ctl         interpolation data file format
 !>@n@param      spectr_file_fmt_ctl      Spectr data file format
 !>@n@param      coriolis_file_fmt_ctl    integration data  file format
-!
-!
+!>
+!>
 !>@n@param      memory_conservation_ctl    memory conservation flag
 !>              File format for spherical shell grid data
 !

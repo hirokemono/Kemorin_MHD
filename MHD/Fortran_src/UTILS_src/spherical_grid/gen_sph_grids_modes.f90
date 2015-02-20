@@ -37,13 +37,11 @@
       subroutine const_sph_rlm_modes(ip_rank)
 !
       use m_spheric_parameter
-      use m_parallel_sph_grids
       use const_comm_table_sph
       use copy_sph_1d_global_index
       use set_local_sphere_param
 !
       integer(kind = kint), intent(in) :: ip_rank
-      integer(kind = kint) :: ip
 !
 !
       call copy_gl_2_local_rlm_param(ip_rank)
@@ -63,11 +61,6 @@
      &          'const_comm_table_4_rlm', ip_rank
       call const_comm_table_4_rlm(ip_rank, nnod_rlm)
 !
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &          'copy_sph_rlm_grid_to_mem', ip_rank
-      ip = ip_rank + 1
-      call copy_sph_rlm_grid_to_mem(ip)
-!
       end subroutine const_sph_rlm_modes
 !
 ! ----------------------------------------------------------------------
@@ -75,13 +68,11 @@
       subroutine const_sph_rtm_grids(ip_rank)
 !
       use m_spheric_parameter
-      use m_parallel_sph_grids
       use const_comm_table_sph
       use copy_sph_1d_global_index
       use set_local_sphere_param
 !
       integer(kind = kint), intent(in) :: ip_rank
-      integer(kind = kint) :: ip
 !
 !
       call copy_gl_2_local_rtm_param(ip_rank)
@@ -101,11 +92,6 @@
      &          'const_comm_table_4_rtm', ip_rank
       call const_comm_table_4_rtm(ip_rank, nnod_rtm)
 !
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &          'copy_sph_rtm_grid_to_mem', ip_rank
-      ip = ip_rank + 1
-      call copy_sph_rtm_grid_to_mem(ip)
-!
       end subroutine const_sph_rtm_grids
 !
 ! ----------------------------------------------------------------------
@@ -114,7 +100,6 @@
       subroutine const_sph_rj_modes(ip_rank)
 !
       use m_spheric_parameter
-      use m_parallel_sph_grids
       use const_comm_table_sph
       use load_data_for_sph_IO
       use set_sph_groups
@@ -164,7 +149,6 @@
       subroutine const_sph_rtp_grids(ip_rank)
 !
       use m_spheric_parameter
-      use m_parallel_sph_grids
       use const_comm_table_sph
       use load_data_for_sph_IO
       use set_sph_groups

@@ -8,7 +8,9 @@
 !> @brief Construct communication table for rj and rtp grid
 !!
 !!@verbatim
+!!      subroutine alloc_parallel_sph_grids
 !!      subroutine allocate_domain_sr_tmp
+!!      subroutine dealloc_parallel_sph_grids
 !!      subroutine deallocate_domain_sr_tmp
 !!
 !!      subroutine count_comm_table_4_rj(ip_rank)
@@ -23,8 +25,12 @@
       module set_comm_table_rtp_rj
 !
       use m_precision
+      use t_spheric_mesh
 !
       implicit none
+!
+!>      Structure for parallel spherical mesh table
+      type(sph_mesh_data), allocatable, save :: sph_para(:)
 !
       integer(kind = kint), allocatable :: id_domain_tmp(:)
       integer(kind = kint), allocatable :: nnod_sr_tmp(:)
@@ -33,6 +39,17 @@
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_parallel_sph_grids
+!
+      use m_spheric_parameter
+!
+!
+      allocate(sph_para(ndomain_sph))
+!
+      end subroutine alloc_parallel_sph_grids
 !
 ! -----------------------------------------------------------------------
 !
@@ -46,6 +63,15 @@
       nnod_sr_tmp = 0
 !
       end subroutine allocate_domain_sr_tmp
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_parallel_sph_grids
+!
+      deallocate(sph_para)
+!
+      end subroutine dealloc_parallel_sph_grids
 !
 ! -----------------------------------------------------------------------
 !
@@ -62,7 +88,6 @@
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
-      use m_parallel_sph_grids
 !
       integer(kind = kint), intent(in) :: ip_rank
 !
@@ -99,9 +124,8 @@
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
-      use m_parallel_sph_grids
-      use load_data_for_sph_IO
       use set_local_index_table_sph
+      use gen_sph_grids_modes
 !
       integer(kind = kint), intent(in) :: ip_rank
       integer(kind = kint), intent(inout) :: icou
@@ -128,12 +152,8 @@
         end do
         if(iflag_jp .eq. 0) cycle
 !
-        if(iflag_memory_conserve_sph .gt. 0) then
-          call input_modes_rlm_sph_trans(id_org_rank)
-        else
-!          write(*,*) 'copy_sph_rlm_grid_from_mem', ip_org
-          call copy_sph_rlm_grid_from_mem(ip_org)
-        end if
+        write(*,*) 'const_sph_rlm_modes', id_org_rank
+        call const_sph_rlm_modes(id_org_rank)
 !
         jst = istack_sr_rlm(iflag_jp-1)+1
         jed = istack_sr_rlm(iflag_jp)
@@ -161,7 +181,6 @@
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
-      use m_parallel_sph_grids
 !
       integer(kind = kint), intent(in) :: ip_rank
 !
@@ -198,9 +217,8 @@
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
-      use m_parallel_sph_grids
-      use load_data_for_sph_IO
       use set_local_index_table_sph
+      use gen_sph_grids_modes
 !
       integer(kind = kint), intent(in) :: ip_rank
       integer(kind = kint), intent(inout) :: icou
@@ -226,11 +244,7 @@
         end do
         if(iflag_jp .eq. 0) cycle
 !
-        if(iflag_memory_conserve_sph .gt. 0) then
-          call input_geom_rtm_sph_trans(id_org_rank)
-        else
-          call copy_sph_rtm_grid_from_mem(ip_org)
-        end if
+        call const_sph_rtm_grids(id_org_rank)
 !
         jst = istack_sr_rtm(iflag_jp-1)+1
         jed = istack_sr_rtm(iflag_jp)

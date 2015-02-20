@@ -34,14 +34,17 @@
 !
       subroutine gen_sph_rlm_grids
 !
-      use m_parallel_sph_grids
+      use set_comm_table_rtp_rj
       use load_data_for_sph_IO
+      use copy_sph_comm_table_4_type
 !
-      integer(kind = kint) :: ip_rank
+      integer(kind = kint) :: ip_rank, ip
 !
 !
-      do ip_rank = 0, ndomain_sph-1
+      do ip = 1, ndomain_sph
+        ip_rank = ip - 1
         call const_sph_rlm_modes(ip_rank)
+        call copy_comm_rlm_num_to_type(sph_para(ip)%sph_comms%comm_rlm)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'output_modes_rlm_sph_trans', ip_rank
@@ -58,14 +61,17 @@
 !
       subroutine gen_sph_rtm_grids
 !
-      use m_parallel_sph_grids
+      use set_comm_table_rtp_rj
       use load_data_for_sph_IO
+      use copy_sph_comm_table_4_type
 !
-      integer(kind = kint) :: ip_rank
+      integer(kind = kint) :: ip_rank, ip
 !
 !
-      do ip_rank = 0, ndomain_sph-1
+      do ip = 1, ndomain_sph
+        ip_rank = ip - 1
         call const_sph_rtm_grids(ip_rank)
+        call copy_comm_rtm_num_to_type(sph_para(ip)%sph_comms%comm_rtm)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'output_geom_rtm_sph_trans', ip_rank
@@ -84,7 +90,6 @@
       subroutine gen_sph_rj_modes
 !
       use m_spheric_parameter
-      use m_parallel_sph_grids
       use set_local_index_table_sph
 !
       integer(kind = kint) :: ip_rank
@@ -103,7 +108,6 @@
       subroutine gen_sph_rtp_grids
 !
       use m_spheric_parameter
-      use m_parallel_sph_grids
       use set_local_index_table_sph
 !
       integer(kind = kint) :: ip_rank

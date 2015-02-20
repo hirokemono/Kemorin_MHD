@@ -29,7 +29,6 @@
       use m_read_mesh_data
       use m_spheric_constants
       use m_spheric_parameter
-      use m_parallel_sph_grids
       use m_sph_1d_global_index
       use m_node_id_spherical_IO
       use m_file_format_switch
@@ -59,15 +58,6 @@
 !
       call choose_file_format(coriolis_file_fmt_ctl,                    &
      &    i_coriolis_file_fmt, ifmt_cor_int_file)
-!
-      iflag_memory_conserve_sph = 0
-      if(i_mem_conserve .gt. 0) then
-        if(no_flag(memory_conservation_ctl)) then
-          iflag_memory_conserve_sph = 0
-        else if(yes_flag(memory_conservation_ctl)) then
-          iflag_memory_conserve_sph = 1
-        end if
-      end if
 !
       iflag_excluding_FEM_mesh = 0
       if(i_mem_conserve .gt. 0) then
