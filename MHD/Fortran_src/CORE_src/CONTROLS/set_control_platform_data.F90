@@ -40,15 +40,14 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      if(i_debug_flag_ctl .gt. 0) then
-        if     (cmp_no_case(debug_flag_ctl,'Off')                       &
-     &     .or. cmp_no_case(debug_flag_ctl,'0')   ) then
+      i_debug = 0
+      if(debug_flag_ctl%iflag .gt. 0) then
+        if     (no_flag(debug_flag_ctl%charavalue)) then
           i_debug =     iflag_minimum_msg
-        else if(cmp_no_case(debug_flag_ctl,'On')                        &
-     &     .or. cmp_no_case(debug_flag_ctl,'1')   ) then
+        else if(yes_flag(debug_flag_ctl%charavalue)) then
           i_debug =     iflag_routine_msg
-        else if(cmp_no_case(debug_flag_ctl,'Full')                      &
-     &     .or. cmp_no_case(debug_flag_ctl,'2')   ) then
+        else if(cmp_no_case(debug_flag_ctl%charavalue,'Full')           &
+     &     .or. cmp_no_case(debug_flag_ctl%charavalue,'2')   ) then
           i_debug =     iflag_full_msg
         end if
       end if
@@ -68,11 +67,8 @@
       integer :: np_smp4
 !
 !
-      if (i_num_smp .gt. 0) then
-        np_smp = num_smp_ctl
-      else
-        np_smp = ione
-      end if
+      np_smp = 1
+      if(num_smp_ctl%iflag .gt. 0) np_smp = num_smp_ctl%intvalue
 !
 #ifdef _OPENMP
       if (int(np_smp) .lt. omp_get_max_threads()) then
@@ -94,23 +90,23 @@
       use skip_comment_f
 !
 !
-      if(i_mesh_extension .gt. 0) then
-        if     (cmp_no_case(mesh_extension_flags_ctl,'Off')             &
-     &     .or. cmp_no_case(mesh_extension_flags_ctl,'0') ) then
+      if(mesh_extension_ctl%iflag .gt. 0) then
+        if     (cmp_no_case(mesh_extension_ctl%charavalue,'Off')        &
+     &     .or. cmp_no_case(mesh_extension_ctl%charavalue,'0') ) then
           iflag_mesh_file_ext = 0
         end if
       end if
 !
-      if (i_mesh_header .gt. 0) then
-        mesh_file_head = mesh_file_prefix
+      if (mesh_file_prefix%iflag .gt. 0) then
+        mesh_file_head = mesh_file_prefix%charavalue
       else
         mesh_file_head = def_mesh_file_head
       end if
 !
 !   set data format
 !
-      call choose_file_format(mesh_file_fmt_ctl, i_mesh_file_fmt,       &
-     &          iflag_mesh_file_fmt)
+      call choose_file_format(mesh_file_fmt_ctl%charavalue,             &
+     &    mesh_file_fmt_ctl%iflag, iflag_mesh_file_fmt)
 !
       end subroutine set_control_mesh_def
 !
@@ -126,23 +122,23 @@
 !
 !   set data format
 !
-      call choose_file_format(sph_file_fmt_ctl, i_sph_files_fmt,        &
-     &    iflag_sph_file_fmt)
-      call choose_file_format(spectr_file_fmt_ctl, i_spect_files_fmt,   &
-     &    iflag_sph_spectr_fmt)
+      call choose_file_format(sph_file_fmt_ctl%charavalue,              &
+     &    sph_file_fmt_ctl%iflag, iflag_sph_file_fmt)
+      call choose_file_format(spectr_file_fmt_ctl%charavalue,           &
+     &    spectr_file_fmt_ctl%iflag, iflag_sph_spectr_fmt)
 !
 !   set file header at once
 !
-      if(i_sph_files_header .gt. 0) then
-        sph_file_head =  sph_file_prefix
-        mesh_file_head = sph_file_prefix
+      if(sph_file_prefix%iflag .gt. 0) then
+        sph_file_head =  sph_file_prefix%charavalue
+        mesh_file_head = sph_file_prefix%charavalue
         iflag_mesh_file_ext = 1
         iflag_mesh_file_fmt = iflag_sph_file_fmt
       end if
 !
-      iflag_sph_spec_output = i_spectr_header
+      iflag_sph_spec_output = spectr_file_head_ctl%iflag
       if(iflag_sph_spec_output .gt. 0) then
-        spectr_file_head = spectr_file_head_ctl
+        spectr_file_head = spectr_file_head_ctl%charavalue
       end if
 !
       end subroutine set_control_sph_mesh
@@ -155,12 +151,12 @@
       use m_file_format_switch
 !
 !
-      if (i_rst_header .gt. 0) then
-        phys_file_head = restart_file_prefix
+      if (restart_file_prefix%iflag .gt. 0) then
+        phys_file_head = restart_file_prefix%charavalue
       end if
 !
-      call choose_file_format(restart_file_fmt_ctl, i_rst_files_fmt,    &
-     &    iflag_field_data_fmt)
+      call choose_file_format(restart_file_fmt_ctl%charavalue,          &
+     &    restart_file_fmt_ctl%iflag, iflag_field_data_fmt)
 !
       end subroutine set_control_restart_file_def
 !

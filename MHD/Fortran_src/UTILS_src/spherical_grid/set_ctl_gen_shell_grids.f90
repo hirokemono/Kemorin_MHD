@@ -47,25 +47,23 @@
       integer(kind = kint) :: i, np, kr, icou
 !
 !
-      nprocs_ctl = num_subdomain_ctl
+      nprocs_ctl = 1
+      if(ndomain_ctl%iflag .gt. 0) nprocs_ctl = ndomain_ctl%intvalue
       call turn_off_debug_flag_by_ctl(izero)
       call set_control_mesh_def
       call set_control_sph_mesh
 !
-      if(i_coriolis_tri_int_name .gt. 0) then
-        sph_cor_file_name = coriolis_int_file_name
+      if(coriolis_int_file_name%iflag .gt. 0) then
+        sph_cor_file_name = coriolis_int_file_name%charavalue
       end if
 !
-      call choose_file_format(coriolis_file_fmt_ctl,                    &
-     &    i_coriolis_file_fmt, ifmt_cor_int_file)
+      call choose_file_format(coriolis_file_fmt_ctl%charavalue,         &
+     &    coriolis_file_fmt_ctl%iflag, ifmt_cor_int_file)
 !
       iflag_excluding_FEM_mesh = 0
-      if(i_mem_conserve .gt. 0) then
-        if(no_flag(excluding_FEM_mesh_ctl)) then
-          iflag_excluding_FEM_mesh = 0
-        else if(yes_flag(excluding_FEM_mesh_ctl)) then
-          iflag_excluding_FEM_mesh = 1
-        end if
+      if(excluding_FEM_mesh_ctl%iflag .gt. 0                            &
+     &    .and. yes_flag(excluding_FEM_mesh_ctl%charavalue)) then
+        iflag_excluding_FEM_mesh = 1
       end if
 !
       iflag_shell_mode = iflag_no_FEMMESH

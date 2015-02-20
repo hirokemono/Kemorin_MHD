@@ -96,7 +96,8 @@
       call set_control_mesh_def
 !
       org_mesh_head = mesh_file_head
-      nprocs_org = num_subdomain_ctl
+      nprocs_org = 1
+      if(ndomain_ctl%iflag .gt. 0) nprocs_org = ndomain_ctl%intvalue
 !
       nprocs_dest = num_new_domain_ctl
       if (i_new_mesh_head .ne. 0) then

@@ -111,16 +111,16 @@
            call choose_file_format(sph_cor_file_fmt_ctl,                &
      &         i_sph_coriolis_fmt, ifmt_cor_int_file)
         end if
-        if(i_coriolis_tri_int_name .gt. 0) then
-          sph_cor_file_name = coriolis_int_file_name
-          call choose_file_format(coriolis_file_fmt_ctl,                &
-     &        i_coriolis_file_fmt, ifmt_cor_int_file)
+        if(coriolis_int_file_name%iflag .gt. 0) then
+          sph_cor_file_name = coriolis_int_file_name%charavalue
+          call choose_file_format(coriolis_file_fmt_ctl%charavalue,     &
+     &        coriolis_file_fmt_ctl%iflag, ifmt_cor_int_file)
         end if
       end if
 !
 !
-      if (i_bc_data_file_name .gt. 0) then
-        bc_sph_file_name = bc_data_file_name_ctl
+      if (bc_data_file_name_ctl%iflag .gt. 0) then
+        bc_sph_file_name = bc_data_file_name_ctl%charavalue
       end if
 !
       end subroutine s_set_control_sph_data_MHD

@@ -199,8 +199,9 @@
       character(len=kchara), intent(in) :: control
 !
 !
-      if(cmp_no_case(control, 'yes') .or. cmp_no_case(control, 'on')    &
-     &    .or. cmp_no_case(control, '.true.')) then
+      if(cmp_no_case(control, 'yes') .or. cmp_no_case(control, '1')     &
+     &     .or. cmp_no_case(control, 'on')                              &
+     &     .or. cmp_no_case(control, '.true.')) then
         yes_flag = .true.
       else
         yes_flag = .false.
@@ -215,8 +216,9 @@
       character(len=kchara), intent(in) :: control
 !
 !
-      if(cmp_no_case(control, 'no') .or. cmp_no_case(control, 'off')    &
-     &    .or. cmp_no_case(control, '.false.')) then
+      if(cmp_no_case(control, 'no') .or. cmp_no_case(control, '0')      &
+     &    .or. cmp_no_case(control, 'off')                              &
+     &    .or. cmp_no_case(control, '.false.') ) then
         no_flag = .true.
       else
         no_flag = .false.

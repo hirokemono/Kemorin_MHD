@@ -293,7 +293,8 @@
       use m_control_params_2nd_files
 !
 !
-      if(i_udt_header .gt. 0) org_ucd_header = udt_file_head_ctl
+      if(udt_file_head_ctl%iflag .eq. 0) return
+      org_ucd_header = udt_file_head_ctl%charavalue
 !
       end subroutine set_ctl_data_4_pick_zm
 !

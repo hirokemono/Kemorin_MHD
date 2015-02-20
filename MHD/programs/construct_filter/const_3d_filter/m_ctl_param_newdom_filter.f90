@@ -71,8 +71,8 @@
       end if
 !
 !
-      if(i_num_subdomain .gt. 0) then
-        nprocs = num_subdomain_ctl
+      if(ndomain_ctl%iflag .gt. 0) then
+        nprocs = ndomain_ctl%intvalue
       else
         write(*,*) 'set original number of domain'
         stop
@@ -86,9 +86,9 @@
         stop
       end if
 !
-      if(i_mesh_header .gt. 0) then
-        org_mesh_head =  mesh_file_prefix
-        mesh_file_head = mesh_file_prefix
+      if(mesh_file_prefix%iflag .gt. 0) then
+        org_mesh_head =  mesh_file_prefix%charavalue
+        mesh_file_head = mesh_file_prefix%charavalue
       else
         write(*,*) 'set original mesh file name'
         stop

@@ -35,34 +35,34 @@
       integer(kind = kint) :: i
 !
 !
-      if (i_mesh_header .gt. 0) then
-        local_file_header = mesh_file_prefix
+      if (mesh_file_prefix%iflag .gt. 0) then
+        local_file_header = mesh_file_prefix%charavalue
       end if
 !
-      if (i_elem_header .gt. 0) then
-        local_ele_header = elem_file_prefix
+      if (elem_file_prefix%iflag .gt. 0) then
+        local_ele_header = elem_file_prefix%charavalue
       end if
 !
-      if (i_surf_header .gt. 0) then
-        local_surf_header = surf_file_prefix
+      if (surf_file_prefix%iflag .gt. 0) then
+        local_surf_header = surf_file_prefix%charavalue
       end if
 !
-      if (i_edge_header .gt. 0) then
-        local_edge_header = edge_file_prefix
+      if (edge_file_prefix%iflag .gt. 0) then
+        local_edge_header = edge_file_prefix%charavalue
       end if
 !
 !   set local data format
 !
       call choose_file_format(org_mesh_file_fmt_ctl,                    &
      &    i_org_mesh_file_fmt, ifmt_single_mesh_fmt)
-      call choose_file_format(mesh_file_fmt_ctl, i_mesh_file_fmt,       &
-     &    iflag_para_mesh_file_fmt)
+      call choose_file_format(mesh_file_fmt_ctl%charavalue,             &
+     &    mesh_file_fmt_ctl%iflag, iflag_para_mesh_file_fmt)
 !
 !
-      if(i_mem_conserve .gt. 0) then
-        if(      cmp_no_case(memory_conservation_ctl, 'no')             &
-     &      .or. cmp_no_case(memory_conservation_ctl, 'off')            &
-     &      ) iflag_memory_conserve = 0
+      iflag_memory_conserve = 1
+      if(memory_conservation_ctl%iflag .gt. 0                           &
+     &  .and. no_flag(memory_conservation_ctl%charavalue)) then
+        iflag_memory_conserve = 0
       end if
 !
       write(*,*) 'iflag_memory_conserve', iflag_memory_conserve

@@ -124,8 +124,8 @@
       integer(kind=kint ) :: i, icou
 !
 !
-      if (i_num_subdomain .gt. 0) then
-        num_pe = num_subdomain_ctl
+      if (ndomain_ctl%iflag .gt. 0) then
+        num_pe = ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains'
         stop
@@ -137,9 +137,10 @@
       call set_control_restart_file_def
       call set_control_ucd_file_def
 !
-      if(i_udt_header .gt. 0) udt_original_header = udt_file_head_ctl
-      call choose_ucd_file_format(udt_file_fmt_ctl, i_udt_files_fmt,    &
-     &    itype_org_ucd_file)
+      if(udt_file_head_ctl%iflag .gt. 0)                                &
+     &      udt_original_header = udt_file_head_ctl%charavalue
+      call choose_ucd_file_format(udt_file_fmt_ctl%charavalue,          &
+     &    udt_file_fmt_ctl%iflag, itype_org_ucd_file)
 !
 !
       if (i_new_vtk_head .gt. 0) then
@@ -222,8 +223,8 @@
       call set_control_4_newudt
 !
 !
-      if (i_rst_header .gt. 0) then
-        org_rst_head = restart_file_prefix
+      if (restart_file_prefix%iflag .gt. 0) then
+        org_rst_head = restart_file_prefix%charavalue
       else
         org_rst_head = org_rst_def_head
       end if
@@ -234,8 +235,8 @@
         new_rst_head = new_rst_def_head
       end if
 !
-      call choose_file_format(restart_file_fmt_ctl, i_rst_files_fmt,    &
-     &    iorg_rst_file_fmt)
+      call choose_file_format(restart_file_fmt_ctl%charavalue,          &
+     &    restart_file_fmt_ctl%iflag, iorg_rst_file_fmt)
       call choose_file_format(new_rst_files_fmt_ctl,                    &
      &    i_new_rst_files_fmt, inew_rst_file_fmt)
 !

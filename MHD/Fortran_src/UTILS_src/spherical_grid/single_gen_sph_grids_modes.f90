@@ -20,9 +20,7 @@
       module single_gen_sph_grids_modes
 !
       use m_precision
-!
       use m_machine_parameter
-      use gen_sph_grids_modes
 !
       implicit none
 !
@@ -37,6 +35,7 @@
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
       use copy_sph_comm_table_4_type
+      use gen_sph_grids_modes
 !
       integer(kind = kint) :: ip_rank, ip
 !
@@ -64,6 +63,7 @@
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
       use copy_sph_comm_table_4_type
+      use gen_sph_grids_modes
 !
       integer(kind = kint) :: ip_rank, ip
 !
@@ -91,6 +91,7 @@
 !
       use m_spheric_parameter
       use set_local_index_table_sph
+      use set_comm_table_rtp_rj
 !
       integer(kind = kint) :: ip_rank
 !
@@ -109,6 +110,7 @@
 !
       use m_spheric_parameter
       use set_local_index_table_sph
+      use set_comm_table_rtp_rj
 !
       integer(kind = kint) :: ip_rank
 !
@@ -128,6 +130,7 @@
       use m_gauss_points
       use m_group_data_sph_specr
       use m_sph_mesh_1d_connect
+      use gen_sph_grids_modes
       use set_local_index_table_sph
       use set_sph_groups
 !

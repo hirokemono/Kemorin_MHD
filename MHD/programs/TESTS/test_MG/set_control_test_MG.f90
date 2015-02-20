@@ -25,17 +25,14 @@
       use set_solver_MG_control
 !
 !
-      if (i_mesh_header .eq. 1) then
-        mesh_file_head = mesh_file_prefix
+      if (mesh_file_prefix%iflag .gt. 0) then
+        mesh_file_head = mesh_file_prefix%charavalue
       else
         mesh_file_head = def_mesh_file_head
       end if
 !
-      if (i_num_smp .eq. 1) then
-        np_smp = num_smp_ctl
-      else
-        np_smp = 1
-      end if
+      np_smp = 1
+      if (num_smp_ctl%iflag .eq. 1) np_smp = num_smp_ctl%intvalue
 !
 !
       call s_set_solver_MG_control

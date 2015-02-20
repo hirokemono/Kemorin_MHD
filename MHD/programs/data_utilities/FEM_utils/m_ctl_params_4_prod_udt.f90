@@ -56,7 +56,7 @@
       use set_control_platform_data
 !
 !
-      if (nprocs .ne. num_subdomain_ctl) then
+      if (nprocs .ne. ndomain_ctl%intvalue) then
         write(e_message,*) 'Number of processes should be num. of mesh'
         call  calypso_MPI_abort(ierr_P_MPI, e_message)
       end if
@@ -80,14 +80,14 @@
      &   write(*,*) 'prod_udt_file2_head: ', trim(prod_udt_file2_head)
       end if
 !
-      if (i_udt_header .ne. 0) then
-        result_udt_file_head = udt_file_head_ctl
+      if (udt_file_head_ctl%iflag .ne. 0) then
+        result_udt_file_head = udt_file_head_ctl%charavalue
       else
         result_udt_file_head = "field_new/out"
       end if
 !
-      call choose_ucd_file_format(udt_file_fmt_ctl,                     &
-     &    i_udt_files_fmt, ifmt_result_udt_file)
+      call choose_ucd_file_format(udt_file_fmt_ctl%charavalue,          &
+     &    udt_file_fmt_ctl%iflag, ifmt_result_udt_file)
 !
 !
       if (i_product_udt_1 .ne. 0) then

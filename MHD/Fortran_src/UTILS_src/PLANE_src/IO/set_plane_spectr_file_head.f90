@@ -29,8 +29,8 @@
 !
       call set_control_mesh_def
 !
-      if (i_udt_header .gt. 0) then
-        plane_udt_header = udt_file_head_ctl
+      if (udt_file_head_ctl%iflag .gt. 0) then
+        plane_udt_header = udt_file_head_ctl%charavalue
       end if
 !
 !

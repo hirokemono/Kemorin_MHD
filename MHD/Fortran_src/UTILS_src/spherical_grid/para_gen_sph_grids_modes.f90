@@ -177,7 +177,7 @@
 !
       use m_spheric_parameter
       use set_local_index_table_sph
-      use gen_sph_grids_modes
+      use set_comm_table_rtp_rj
 !
       integer(kind = kint) :: ip_rank
 !
@@ -201,7 +201,7 @@
 !
       use m_spheric_parameter
       use set_local_index_table_sph
-      use gen_sph_grids_modes
+      use set_comm_table_rtp_rj
 !
       integer(kind = kint) :: ip_rank
 !

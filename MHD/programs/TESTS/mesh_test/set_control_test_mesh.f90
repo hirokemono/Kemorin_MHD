@@ -26,8 +26,8 @@
       use m_ctl_data_4_platforms
 !
 !
-      if (i_mesh_header .ne. 0) then
-        mesh_file_head = mesh_file_prefix
+      if (mesh_file_prefix%iflag .gt. 0) then
+        mesh_file_head = mesh_file_prefix%charavalue
       else
         mesh_file_head = def_mesh_file_head
       end if
@@ -36,8 +36,8 @@
       np_smp = num_smp_ctl
       if (iflag_debug.gt.0) write(*,*) 'np_smp', np_smp
 !
-      call choose_file_format(mesh_file_fmt_ctl, i_mesh_file_fmt,       &
-     &          iflag_mesh_file_fmt)
+      call choose_file_format(mesh_file_fmt_ctl%charavalue,             &
+     &    mesh_file_fmt_ctl%iflag, iflag_mesh_file_fmt)
 !
       end subroutine set_ctl_params_4_test_mesh
 !

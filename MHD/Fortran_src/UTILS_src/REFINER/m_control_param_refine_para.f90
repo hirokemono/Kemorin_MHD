@@ -44,12 +44,12 @@
 !
       call turn_off_debug_flag_by_ctl(izero)
 !
-      if(i_num_subdomain .gt. 0) then
-        nprocs_fine = num_subdomain_ctl
+      if(ndomain_ctl%iflag .gt. 0) then
+        nprocs_fine = ndomain_ctl%intvalue
       end if
 !
-      if(i_mesh_header .gt. 0) then
-        para_fine_mesh_head = mesh_file_prefix
+      if(mesh_file_prefix%iflag .gt. 0) then
+        para_fine_mesh_head = mesh_file_prefix%charavalue
       end if
 !
 !

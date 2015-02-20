@@ -33,8 +33,8 @@
       use skip_comment_f
 !
 !
-      if (i_mesh_header .eq. 1) then
-        mesh_file_header = mesh_file_prefix
+      if (mesh_file_prefix%iflag .gt. 0) then
+        mesh_file_header = mesh_file_prefix%charavalue
       else
         mesh_file_header = 'mesh/in'
       end if

@@ -76,9 +76,9 @@
 !
 !    file header for field data
 !
-      if(i_spectr_header .gt. 0) then
-        org_sph_file_head = spectr_file_head_ctl
-        phys_file_head =    spectr_file_head_ctl
+      if(spectr_file_head_ctl%iflag .gt. 0) then
+        org_sph_file_head = spectr_file_head_ctl%charavalue
+        phys_file_head =    spectr_file_head_ctl%charavalue
         call choose_file_format(org_sph_file_fmt_ctl,                   &
      &      i_org_sph_files_fmt, iflag_org_sph_file_fmt)
       end if
@@ -89,9 +89,9 @@
 !
 !   using rstart data for spherical dynamo
 !
-      if(i_rst_header .gt. 0) then
-        org_sph_file_head = phys_file_head
-        phys_file_head =    phys_file_head
+      if(restart_file_prefix%iflag .gt. 0) then
+        org_sph_file_head = restart_file_prefix%charavalue
+        phys_file_head =    restart_file_prefix%charavalue
         i_step_output_ucd =   i_step_output_rst
       end if
 !

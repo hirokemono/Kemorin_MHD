@@ -87,8 +87,8 @@
       use skip_comment_f
 !
 !
-      if (i_mesh_header .gt. 0) then
-        original_mesh_head = mesh_file_prefix
+      if (mesh_file_prefix%iflag .gt. 0) then
+        original_mesh_head = mesh_file_prefix%charavalue
         write(*,*) 'original_mesh_head: ', trim(original_mesh_head)
       else
         write(*,*) 'set original mesh header'

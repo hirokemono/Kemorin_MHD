@@ -10,8 +10,6 @@
 !!@verbatim
 !!      subroutine const_sph_rlm_modes(ip_rank)
 !!      subroutine const_sph_rtm_grids(ip_rank)
-!!      subroutine const_sph_rj_modes(ip_rank)
-!!      subroutine const_sph_rtp_grids(ip_rank)
 !!
 !!      subroutine const_fem_mesh_for_sph(ip_rank)
 !!@endverbatim
@@ -19,14 +17,14 @@
       module gen_sph_grids_modes
 !
       use m_precision
-!
       use m_machine_parameter
-      use set_local_sphere_by_global
 !
       implicit none
 !
 !>      Integer flag to excluding FEM mesh
       integer(kind = kint) :: iflag_excluding_FEM_mesh = 0
+!
+      private :: const_comm_table_4_rlm, const_comm_table_4_rtm
 !
 ! -----------------------------------------------------------------------
 !
@@ -37,9 +35,9 @@
       subroutine const_sph_rlm_modes(ip_rank)
 !
       use m_spheric_parameter
-      use const_comm_table_sph
       use copy_sph_1d_global_index
       use set_local_sphere_param
+      use set_local_sphere_by_global
 !
       integer(kind = kint), intent(in) :: ip_rank
 !
@@ -68,9 +66,9 @@
       subroutine const_sph_rtm_grids(ip_rank)
 !
       use m_spheric_parameter
-      use const_comm_table_sph
       use copy_sph_1d_global_index
       use set_local_sphere_param
+      use set_local_sphere_by_global
 !
       integer(kind = kint), intent(in) :: ip_rank
 !
@@ -97,105 +95,6 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_sph_rj_modes(ip_rank)
-!
-      use m_spheric_parameter
-      use const_comm_table_sph
-      use load_data_for_sph_IO
-      use set_sph_groups
-      use copy_sph_1d_global_index
-      use set_local_sphere_param
-      use set_local_index_table_sph
-!
-      integer(kind = kint), intent(in) :: ip_rank
-!
-!
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                'copy_gl_2_local_rj_param', ip_rank
-      call copy_gl_2_local_rj_param(ip_rank)
-!
-      call add_center_mode_rj
-!
-      call allocate_spheric_param_rj
-      call allocate_sph_1d_index_rj
-!
-      call copy_sph_1d_gl_idx_rj
-!
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                 'set_global_sph_rj_id', ip_rank
-      call set_global_sph_rj_id
-!
-      if(iflag_debug .gt. 0) call check_spheric_param_rj(ip_rank)
-!
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                 'const_comm_table_4_rj', ip_rank
-      call const_comm_table_4_rj(ip_rank, nnod_rj)
-!
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                  'set_sph_rj_groups', ip_rank
-      call set_sph_rj_groups
-!
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                 'output_modes_rj_sph_trans', ip_rank
-      call output_modes_rj_sph_trans(ip_rank)
-!
-      write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
-     &          ip_rank, ' is done.'
-!
-      end subroutine const_sph_rj_modes
-!
-! ----------------------------------------------------------------------
-!
-      subroutine const_sph_rtp_grids(ip_rank)
-!
-      use m_spheric_parameter
-      use const_comm_table_sph
-      use load_data_for_sph_IO
-      use set_sph_groups
-      use copy_sph_1d_global_index
-      use set_local_sphere_param
-      use set_local_index_table_sph
-!
-      integer(kind = kint), intent(in) :: ip_rank
-!
-!
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                'copy_gl_2_local_rtp_param', ip_rank
-      call copy_gl_2_local_rtp_param(ip_rank)
-!
-      call allocate_spheric_param_rtp
-      call allocate_sph_1d_index_rtp
-!
-      call copy_sph_1d_gl_idx_rtp
-!
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                 'set_global_sph_rtp_id', ip_rank
-      call set_global_sph_rtp_id
-!
-      if(iflag_debug .gt. 0) then
-        write(*,*) 'check_spheric_param_rtp', ip_rank
-        call check_spheric_param_rtp(ip_rank)
-      end if
-!
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                 'const_comm_table_4_rtp', ip_rank
-      call const_comm_table_4_rtp(ip_rank, nnod_rtp)
-!
-      if(iflag_debug .gt. 0) write(*,*) 'set_sph_rtp_groups', ip_rank
-      call set_sph_rtp_groups
-!
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                 'output_geom_rtp_sph_trans', ip_rank
-      call output_geom_rtp_sph_trans(ip_rank)
-!
-      write(*,'(a,i6,a)') 'Spherical grids for domain',                 &
-     &          ip_rank, ' is done.'
-!
-      end subroutine const_sph_rtp_grids
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
       subroutine const_fem_mesh_for_sph(ip_rank)
 !
       use t_mesh_data
@@ -204,6 +103,7 @@
       use m_gauss_points
       use m_group_data_sph_specr
       use set_local_index_table_sph
+      use set_local_sphere_by_global
       use set_FEM_mesh_4_sph
       use m_sph_mesh_1d_connect
 !
@@ -244,5 +144,84 @@
       end subroutine const_fem_mesh_for_sph
 !
 ! ----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine const_comm_table_4_rlm(ip_rank, nnod_rlm)
+!
+      use m_sph_trans_comm_table
+      use set_comm_table_rtm_rlm
+!
+      integer(kind = kint), intent(in) :: ip_rank
+      integer(kind = kint), intent(in) :: nnod_rlm
+!
+!
+      call allocate_ncomm
+!
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &          'count_comm_table_4_rlm', ip_rank
+      call count_comm_table_4_rlm
+!
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &          'count_num_domain_rtm_rlm', ip_rank
+      call count_num_domain_rtm_rlm(nneib_domain_rlm)
+!
+      call allocate_sph_comm_stack_rlm
+!
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &          'set_comm_stack_rtm_rlm', ip_rank
+      call set_comm_stack_rtm_rlm(ip_rank, nneib_domain_rlm,            &
+     &    id_domain_rlm, istack_sr_rlm, ntot_item_sr_rlm)
+!
+      call allocate_sph_comm_item_rlm(nnod_rlm)
+!
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &          'set_comm_table_4_rlm', ip_rank
+      call set_comm_table_4_rlm
+      call deallocate_ncomm
+!
+!      call allocate_idx_gl_rlm_out
+!      call set_global_id_4_comm_rlm
+!
+      end subroutine const_comm_table_4_rlm
+!
+! -----------------------------------------------------------------------
+!
+      subroutine const_comm_table_4_rtm(ip_rank, nnod_rtm)
+!
+      use m_sph_trans_comm_table
+      use set_comm_table_rtm_rlm
+!
+      integer(kind = kint), intent(in) :: ip_rank
+      integer(kind = kint), intent(in) :: nnod_rtm
+!
+!      write(*,*) 'allocate_ncomm'
+      call allocate_ncomm
+!
+!      write(*,*) 'count_comm_table_4_rtm'
+      call count_comm_table_4_rtm
+!
+!      write(*,*) 'count_num_domain_rtm_rlm'
+      call count_num_domain_rtm_rlm(nneib_domain_rtm)
+!
+!      write(*,*) 'allocate_sph_comm_stack_rtm'
+      call allocate_sph_comm_stack_rtm
+!
+!      write(*,*) 'set_comm_stack_rtm_rlm'
+      call set_comm_stack_rtm_rlm(ip_rank, nneib_domain_rtm,            &
+     &    id_domain_rtm, istack_sr_rtm, ntot_item_sr_rtm)
+!
+      call allocate_sph_comm_item_rtm(nnod_rtm)
+!
+!      write(*,*) 'set_comm_table_4_rtm'
+      call set_comm_table_4_rtm
+      call deallocate_ncomm
+!
+!      call allocate_idx_gl_rtm_out
+!      write(*,*) 'set_global_id_4_comm_rtm'
+!      call set_global_id_4_comm_rtm
+!
+      end subroutine const_comm_table_4_rtm
+!
+! -----------------------------------------------------------------------
 !
       end module gen_sph_grids_modes

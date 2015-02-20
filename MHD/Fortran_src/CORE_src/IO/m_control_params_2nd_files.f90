@@ -78,10 +78,10 @@
         org_ucd_header = org_udt_head_ctl
       end if
 !
-      call choose_ucd_file_format(restart_file_fmt_ctl,                 &
-     &    i_rst_files_fmt, ifmt_org_rst)
-      call choose_ucd_file_format(udt_file_fmt_ctl,                     &
-     &    i_udt_files_fmt, ifmt_org_ucd)
+      call choose_ucd_file_format(restart_file_fmt_ctl%charavalue,      &
+     &    restart_file_fmt_ctl%iflag, ifmt_org_rst)
+      call choose_ucd_file_format(udt_file_fmt_ctl%charavalue,          &
+     &    udt_file_fmt_ctl%iflag, ifmt_org_ucd)
 !
       end subroutine set_control_org_fld_file_def
 !

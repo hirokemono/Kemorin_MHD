@@ -40,7 +40,7 @@
       call set_file_heads_3d_comm_filter
 !
       np_smp = 1
-      if(i_num_smp .gt. 0) np_smp = num_smp_ctl
+      if(num_smp_ctl%iflag .gt. 0) np_smp = num_smp_ctl%intvalue
 !
       num_int_points = 4
       if (i_num_int_points .ne. 0) num_int_points = num_int_points_ctl
@@ -359,8 +359,8 @@
       use m_filter_file_names
 !
 !
-      if (i_mesh_header .ne. 0) then
-        mesh_file_head = mesh_file_prefix
+      if (mesh_file_prefix%iflag .ne. 0) then
+        mesh_file_head = mesh_file_prefix%charavalue
       else
         mesh_file_head = def_mesh_file_head
       end if
@@ -394,8 +394,8 @@
 !
 !   set data format
 !
-      call choose_file_format(mesh_file_fmt_ctl, i_mesh_file_fmt,       &
-     &          iflag_mesh_file_fmt)
+      call choose_file_format(mesh_file_fmt_ctl%charavalue,             &
+     &    mesh_file_fmt_ctl%iflag, iflag_mesh_file_fmt)
 !
       call choose_file_format(filter_3d_format, i_filter_3d_fmt,        &
      &          ifmt_3d_filter)
@@ -412,8 +412,8 @@
       integer(kind = kint), intent(inout) :: nprocs
 !
 !
-      if (i_num_subdomain .ne. 0) then
-        nprocs = num_subdomain_ctl
+      if (ndomain_ctl%iflag .ne. 0) then
+        nprocs = ndomain_ctl%intvalue
       else
         write(*,*) 'set number of domains'
         stop

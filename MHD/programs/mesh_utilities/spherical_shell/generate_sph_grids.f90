@@ -9,6 +9,7 @@
       use m_spheric_parameter
       use m_read_mesh_data
       use m_node_id_spherical_IO
+      use gen_sph_grids_modes
       use set_ctl_gen_shell_grids
       use const_sph_radial_grid
       use const_global_sph_grids_modes

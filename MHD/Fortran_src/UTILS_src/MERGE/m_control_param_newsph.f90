@@ -49,8 +49,8 @@
       use ucd_IO_select
 !
 !
-      if (i_num_subdomain .gt. 0) then
-        np_sph_org = num_subdomain_ctl
+      if (ndomain_ctl%iflag .gt. 0) then
+        np_sph_org = ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains'
         stop
@@ -77,8 +77,8 @@
      &     i_new_sph_files_fmt, ifmt_new_sph_file)
 !
 !
-      if (i_rst_header .gt. 0) then
-        org_sph_fst_head = restart_file_prefix
+      if (restart_file_prefix%iflag .gt. 0) then
+        org_sph_fst_head = restart_file_prefix%charavalue
       end if
 !
       if (i_new_rst_head .gt. 0) then

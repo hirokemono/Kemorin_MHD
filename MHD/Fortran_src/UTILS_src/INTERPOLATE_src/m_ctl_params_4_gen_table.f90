@@ -99,8 +99,8 @@
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
 !
-      if (i_mesh_header .ne. 0) then
-        org_mesh_head = mesh_file_prefix
+      if (mesh_file_prefix%iflag .ne. 0) then
+        org_mesh_head = mesh_file_prefix%charavalue
       end if
 !
       if (i_new_mesh_head .ne. 0) then
@@ -111,8 +111,8 @@
         table_file_head = table_head_ctl
       end if
 !
-      call choose_file_format(mesh_file_fmt_ctl, i_mesh_file_fmt,       &
-     &    ifmt_org_mesh_file)
+      call choose_file_format(mesh_file_fmt_ctl%charavalue,             &
+     &    mesh_file_fmt_ctl%iflag, ifmt_org_mesh_file)
       call choose_file_format(new_mesh_file_fmt_ctl,                    &
      &    i_new_mesh_file_fmt, ifmt_itp_mesh_file)
       call choose_file_format(ifmt_itp_table_file_ctl, i_fmt_itp_tbl,   &
@@ -127,11 +127,9 @@
       end if
 !
 !
-      if (i_num_subdomain .gt. 0) then
-        ndomain_org = num_subdomain_ctl
-      else
-        ndomain_org = 1
-      end if
+      ndomain_org = 1
+      if (ndomain_ctl%iflag .gt. 0) ndomain_org = ndomain_ctl%intvalue
+!
       nprocs_2nd = ndomain_org
       if (iflag_debug.eq.1)   write(*,*) 'ndomain_org', nprocs_2nd
 !

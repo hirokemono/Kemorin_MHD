@@ -100,18 +100,18 @@
 !
 !   field setting
 !
-      if (i_udt_header .ne. 0) then
-        diff_udt_file_head = udt_file_head_ctl
-        ave_udt_file_head =  udt_file_head_ctl
-        prod_udt_file_head = udt_file_head_ctl
+      if (udt_file_head_ctl%iflag .ne. 0) then
+        diff_udt_file_head = udt_file_head_ctl%charavalue
+        ave_udt_file_head =  udt_file_head_ctl%charavalue
+        prod_udt_file_head = udt_file_head_ctl%charavalue
       else
         diff_udt_file_head = "field_diff/out"
         ave_udt_file_head =  "out_average"
         prod_udt_file_head = "field_new/out"
       end if
 !
-      call choose_ucd_file_format(udt_file_fmt_ctl,                     &
-     &    i_udt_files_fmt, ifmt_diff_udt_file)
+      call choose_ucd_file_format(udt_file_fmt_ctl%charavalue,          &
+     &    udt_file_fmt_ctl%iflag, ifmt_diff_udt_file)
 !
       if (i_prod_name .ne. 0) then
         product_field_name = product_field_ctl
