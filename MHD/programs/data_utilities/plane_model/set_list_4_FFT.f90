@@ -56,9 +56,20 @@
       iz_max = nz_all
       num_spectr = kx_max*ky_max*iz_max
 !
-      ist = i_step_init_ctl
-      ied = i_step_number_ctl
-      iint = i_step_ucd_ctl
+      ist = 0
+      if(i_step_init_ctl%iflag .gt. 0) then
+        ist = i_step_init_ctl%intvalue
+      end if
+!
+      ied = 0
+      if(i_step_number_ctl%iflag .gt. 0) then
+        ied = i_step_number_ctl%intvalue
+      end if
+!
+      iint = 1
+      if(i_step_ucd_ctl%iflag .gt. 0) then
+        iint = i_step_ucd_ctl%intvalue
+      end if
 !
       end subroutine set_parameters_4_FFT
 !
@@ -85,7 +96,6 @@
 !
 !
       write(*,*) 'new_mesh_prefix         ', new_mesh_prefix
-!      write(*,*) 'new_field_file_prefix  ', new_field_file_prefix
 !      write(*,*) 'new_restart_prefix     ', new_restart_prefix
 !      write(*,*) 'new_udt_type_ctl     ', new_udt_type_ctl
       write(*,*) 'nnod_plane_ctl       ', nnod_plane_ctl%intvalue
@@ -94,14 +104,14 @@
       write(*,*) 'nnod_plane2_ctl       ', nnod_plane2_ctl%intvalue
       write(*,*) 'ndomain_plane2_ctl    ', ndomain_plane2_ctl%intvalue
 !
-      if (i_new_mesh_head .gt. 0) then
-        mesh_file_head = new_mesh_prefix
+      if (new_mesh_prefix%iflag .gt. 0) then
+        mesh_file_head = new_mesh_prefix%charavalue
       else
         mesh_file_head = def_new_mesh_head
       end if
 !
-      if (i_new_rst_head .gt. 0) then
-        rst_head_plane = new_restart_prefix
+      if (new_restart_prefix%iflag .gt. 0) then
+        rst_head_plane = new_restart_prefix%charavalue
       else
         rst_head_plane = def_newrst_head
       end if
@@ -124,12 +134,35 @@
      &        * ndomain_plane2_ctl%intvalue(2)                          &
      &        * ndomain_plane2_ctl%intvalue(3)
 !
-      ist = i_step_init_ctl
-      ied = i_step_number_ctl
-      ifactor_step = i_step_ucd_ctl
-      ifactor_rst = i_step_rst_ctl
-      dt = dt_ctl
-      t_init = time_init_ctl
+      ist = 0
+      if(i_step_init_ctl%iflag .gt. 0) then
+        ist = i_step_init_ctl%intvalue
+      end if
+!
+      ied = 0
+      if(i_step_number_ctl%iflag .gt. 0) then
+        ied = i_step_number_ctl%intvalue
+      end if
+!
+      ifactor_step = 1
+      if(i_step_ucd_ctl%iflag .gt. 0) then
+        ifactor_step = i_step_ucd_ctl%intvalue
+      end if
+!
+      ifactor_rst = 1
+      if(i_step_rst_ctl%iflag .gt. 0) then
+        ifactor_rst = i_step_rst_ctl%intvalue
+      end if
+!
+      dt = 0.0d0
+      if(dt_ctl%iflag .gt. 0) then
+        t_init = dt_ctl%realvalue
+      end if
+!
+      t_init = 0.0d0
+      if(time_init_ctl%iflag .gt. 0) then
+        t_init = time_init_ctl%realvalue
+      end if
 !
       end subroutine set_parameters_rst_by_spec
 !
@@ -161,18 +194,18 @@
       write(*,*) 'nnod_plane2_ctl       ', nnod_plane2_ctl%intvalue
       write(*,*) 'ndomain_plane2_ctl    ', ndomain_plane2_ctl%intvalue
 !
-      if (i_new_mesh_head .gt. 0) then
-        mesh_file_head = new_mesh_prefix
+      if (new_mesh_prefix%iflag .gt. 0) then
+        mesh_file_head = new_mesh_prefix%charavalue
       else
         mesh_file_head = def_new_mesh_head
       end if
 !
-      if (i_new_udt_head .gt. 0) then
+      if (new_field_file_prefix%iflag .gt. 0) then
         call set_ucd_file_format(iflag_udt)
-        call set_ucd_file_prefix(new_field_file_prefix)
-      else if (i_new_vtk_head .gt. 0) then
+        call set_ucd_file_prefix(new_field_file_prefix%charavalue)
+      else if (new_vtk_prefix%iflag .gt. 0) then
         call set_ucd_file_format(iflag_vtk)
-        call set_ucd_file_prefix(new_vtk_prefix)
+        call set_ucd_file_prefix(new_vtk_prefix%charavalue)
       else
         call set_ucd_file_format(iflag_fld)
       end if

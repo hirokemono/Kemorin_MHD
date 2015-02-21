@@ -143,11 +143,11 @@
       end if
 !
       if (iflag_restart .eq. i_rst_no_file) then
-        if (i_dt .eq. 0) then
+        if (time_init_ctl%iflag .eq. 0) then
           e_message  = 'Set initial time'
           call calypso_MPI_abort(ierr_evo, e_message)
         else
-          time_init = time_init_ctl
+          time_init = time_init_ctl%realvalue
         end if
       end if
 !

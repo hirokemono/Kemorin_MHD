@@ -53,11 +53,11 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(i_num_new_domain .gt. 0) then
+      if(num_new_domain_ctl%intvalue .gt. 0) then
         if(nprocs_2nd .eq. 0) then
-          nprocs_2nd = num_new_domain_ctl
+          nprocs_2nd = num_new_domain_ctl%intvalue
         else
-          if(nprocs_2nd .ne. num_new_domain_ctl) then
+          if(nprocs_2nd .ne. num_new_domain_ctl%intvalue) then
             write(e_message,'(a)')                                      &
      &             'set num. of new domain for numn. of processes'
             ierr = 1
@@ -79,8 +79,8 @@
       end if
 !
 !
-      if(i_new_mesh_head .gt. 0) then
-        target_mesh_head = new_mesh_prefix
+      if(new_mesh_prefix%iflag .gt. 0) then
+        target_mesh_head = new_mesh_prefix%charavalue
       else
         write(*,*) 'set target mesh file name'
         stop

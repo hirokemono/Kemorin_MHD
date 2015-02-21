@@ -48,13 +48,13 @@
       use m_file_format_switch
 !
 !
-      iflag_org_sph_rj_head = i_org_sph_mode_head
+      iflag_org_sph_rj_head = org_sph_mode_head_ctl%iflag
       if(iflag_org_sph_rj_head .gt. 0) then
-        org_sph_rj_head =       org_sph_mode_head_ctl
+        org_sph_rj_head = org_sph_mode_head_ctl%charavalue
       end if
 !
-      call choose_file_format(org_sph_file_fmt_ctl,                     &
-     &    i_org_sph_files_fmt, ifmt_org_sph_rj_head)
+      call choose_file_format(org_sph_file_fmt_ctl%charavalue,          &
+     &    org_sph_file_fmt_ctl%iflag, ifmt_org_sph_rj_head)
 !
       end subroutine set_control_org_sph_mesh
 !
@@ -69,13 +69,13 @@
       use m_file_format_switch
 !
 !
-      iflag_org_rst = i_org_rst_head
-      if (iflag_org_rst .gt. 0) then
-        org_rst_header = orginal_restart_prefix
+      iflag_org_rst = orginal_restart_prefix%iflag
+      if(iflag_org_rst .gt. 0) then
+        org_rst_header = orginal_restart_prefix%charavalue
       end if
 !
-      if (i_org_udt_head .gt. 0) then
-        org_ucd_header = org_udt_head_ctl
+      if (org_udt_head_ctl%iflag .gt. 0) then
+        org_ucd_header = org_udt_head_ctl%charavalue
       end if
 !
       call choose_ucd_file_format(restart_file_fmt_ctl%charavalue,      &

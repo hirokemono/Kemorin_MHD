@@ -27,9 +27,20 @@
       integer(kind=kint ), intent(inout) :: ist, ied, iint
 !
 !
-      ist = i_step_init_ctl
-      ied = i_step_number_ctl
-      iint = i_step_ucd_ctl
+      ist = 1
+      if(i_step_init_ctl%iflag .gt. 0) then
+        ist = i_step_init_ctl%intvalue
+      end if
+!
+      ied = 1
+      if(i_step_number_ctl%iflag .gt. 0) then
+        ied = i_step_number_ctl%intvalue
+      end if
+!
+      iint = 1
+      if (i_step_ucd_ctl%iflag .gt. 0) then
+        iint = i_step_ucd_ctl%intvalue
+      end if
 !
       cor_mesh_header = cor_mesh_head_ctl
       ref_mesh_header = ref_mesh_head_ctl
@@ -52,7 +63,7 @@
       type(phys_data), intent(inout) :: cor_phys
       type(phys_data), intent(inout) :: ref_phys
 !
-      integer (kind = kint) :: i, j, k, ii, jj, icomp, icomp2, iflag
+      integer (kind = kint) :: i, j, k, ii, jj, icomp, icomp2
 !
 !
       num_crt = 0

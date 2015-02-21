@@ -169,7 +169,6 @@
       use mag_of_field_smp
 !
       integer(kind = kint),  intent(in) :: i_v, i_w
-      integer(kind = kint) :: inod
 !
 !
 !$omp parallel

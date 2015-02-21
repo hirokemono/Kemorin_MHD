@@ -103,8 +103,8 @@
         org_mesh_head = mesh_file_prefix%charavalue
       end if
 !
-      if (i_new_mesh_head .ne. 0) then
-        dest_mesh_head = new_mesh_prefix
+      if (new_mesh_prefix%iflag .ne. 0) then
+        dest_mesh_head = new_mesh_prefix%charavalue
       end if
 !
       if (i_table_head_ctl .ne. 0) then
@@ -113,8 +113,8 @@
 !
       call choose_file_format(mesh_file_fmt_ctl%charavalue,             &
      &    mesh_file_fmt_ctl%iflag, ifmt_org_mesh_file)
-      call choose_file_format(new_mesh_file_fmt_ctl,                    &
-     &    i_new_mesh_file_fmt, ifmt_itp_mesh_file)
+      call choose_file_format(new_mesh_file_fmt_ctl%charavalue,         &
+     &    new_mesh_file_fmt_ctl%iflag, ifmt_itp_mesh_file)
       call choose_file_format(ifmt_itp_table_file_ctl, i_fmt_itp_tbl,   &
      &    ifmt_itp_table_file)
 !
@@ -133,8 +133,8 @@
       nprocs_2nd = ndomain_org
       if (iflag_debug.eq.1)   write(*,*) 'ndomain_org', nprocs_2nd
 !
-      if (i_num_new_domain .gt. 0) then
-        ndomain_dest = num_new_domain_ctl
+      if (num_new_domain_ctl%iflag .gt. 0) then
+        ndomain_dest = num_new_domain_ctl%intvalue
       else
         ndomain_dest = 1
       end if

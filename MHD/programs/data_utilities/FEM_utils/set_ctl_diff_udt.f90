@@ -173,35 +173,32 @@
 !
 !   parameters for time evolution
 !
-        if (i_i_step_init.eq.0) then
+        if (i_step_init_ctl%iflag .eq. 0) then
           i_step_init   = 0
         else
-          i_step_init   = i_step_init_ctl
+          i_step_init   = i_step_init_ctl%intvalue
         end if
 !
-        if (i_i_step_number.eq.0) then
+        if (i_step_number_ctl%iflag .eq. 0) then
           e_message = 'Set step number to finish'
             call calypso_MPI_abort(ierr_evo, e_message)
         else
-          i_step_number = i_step_number_ctl
+          i_step_number = i_step_number_ctl%intvalue
         end if
 !
-        if (i_i_step_ucd.eq.0) then
-          i_step_output_ucd = 1
-        else
-          i_step_output_ucd = i_step_ucd_ctl
+        i_step_output_ucd = 1
+        if (i_step_ucd_ctl%iflag .gt. 0) then
+          i_step_output_ucd = i_step_ucd_ctl%intvalue
         end if
 !
-        if (i_i_diff_steps.eq.0) then
-          i_diff_steps = 1
-        else
-          i_diff_steps = i_diff_steps_ctl
+        i_diff_steps = 1
+        if (i_diff_steps_ctl%iflag .gt. 0) then
+          i_diff_steps = i_diff_steps_ctl%intvalue
         end if
 !
-        if (i_dt.eq.0) then
-          dt = 1.0d0
-        else
-          dt = dt_ctl
+        dt = 1.0d0
+        if (dt_ctl%iflag .gt. 0) then
+          dt = dt_ctl%realvalue
         end if
 !
         if (dt .eq. 0.0d0) then

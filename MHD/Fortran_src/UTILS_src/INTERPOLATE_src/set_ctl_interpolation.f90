@@ -42,8 +42,8 @@
 !
       org_mesh_head = mesh_file_head
 !
-      if (i_new_mesh_head .ne. 0) then
-        dest_mesh_head = new_mesh_prefix
+      if (new_mesh_prefix%iflag .ne. 0) then
+        dest_mesh_head = new_mesh_prefix%charavalue
       end if
 !
       if (i_table_head_ctl .ne. 0) then
@@ -67,14 +67,14 @@
      &   write(*,*) 'itp_node_file_head: ', trim(itp_node_file_head)
       end if
 !
-      if (i_new_rst_head .gt. 0) then
-        itp_rst_file_head = new_restart_prefix
+      if (new_restart_prefix%iflag .gt. 0) then
+        itp_rst_file_head = new_restart_prefix%charavalue
       end if
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'itp_rst_file_head: ', trim(itp_rst_file_head)
 !
-      if (i_new_udt_head .gt. 0) then
-        itp_udt_file_head = new_field_file_prefix
+      if (new_field_file_prefix%iflag .gt. 0) then
+        itp_udt_file_head = new_field_file_prefix%charavalue
       end if
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'itp_udt_file_head: ', trim(itp_udt_file_head)
@@ -100,29 +100,29 @@
       nprocs_2nd = ndomain_org
       if (iflag_debug.eq.1)   write(*,*) 'ndomain_org', nprocs_2nd
 !
-      if (i_num_new_domain .gt. 0) then
-        ndomain_dest = num_new_domain_ctl
+      if (num_new_domain_ctl%iflag .gt. 0) then
+        ndomain_dest = num_new_domain_ctl%intvalue
       else
         ndomain_dest = 1
       end if
 !
       call choose_file_format(mesh_file_fmt_ctl%charavalue,             &
      &    mesh_file_fmt_ctl%iflag, ifmt_org_mesh_file)
-      call choose_file_format(new_mesh_file_fmt_ctl,                    &
-     &    i_new_mesh_file_fmt, ifmt_itp_mesh_file)
+      call choose_file_format(new_mesh_file_fmt_ctl%charavalue,         &
+     &    new_mesh_file_fmt_ctl%iflag, ifmt_itp_mesh_file)
 !
       call choose_file_format(ifmt_itp_table_file_ctl, i_fmt_itp_tbl,   &
      &    ifmt_itp_table_file)
 !
       call choose_file_format(restart_file_fmt_ctl%charavalue,          &
      &    restart_file_fmt_ctl%iflag, ifmt_org_rst_file)
-      call choose_file_format(new_rst_files_fmt_ctl,                    &
-     &    i_new_rst_files_fmt, ifmt_itp_rst_file)
+      call choose_file_format(new_rst_files_fmt_ctl%charavalue,         &
+     &    new_rst_files_fmt_ctl%iflag, ifmt_itp_rst_file)
 !
       call choose_ucd_file_format(udt_file_fmt_ctl%charavalue,          &
      &    udt_file_fmt_ctl%iflag, itype_org_udt_file)
-      call choose_ucd_file_format(new_udt_file_fmt_ctl,                 &
-     &    i_new_udt_files_fmt, itype_itp_udt_file)
+      call choose_ucd_file_format(new_udt_file_fmt_ctl%charavalue,      &
+     &    new_udt_file_fmt_ctl%iflag, itype_itp_udt_file)
 !
 !
       if (nprocs .ne. max(ndomain_org,ndomain_dest) ) then
@@ -143,29 +143,26 @@
 !
 !   parameters for time evolution
 !
-        if (i_i_step_init.eq.0) then
-          i_step_init   = 0
-        else
-          i_step_init   = i_step_init_ctl
+        i_step_init   = 0
+        if (i_step_init_ctl%iflag .gt. 0) then
+          i_step_init   = i_step_init_ctl%intvalue
         end if
 !
-        if (i_i_step_number.eq.0) then
+        if (i_step_number_ctl%iflag .eq. 0) then
           e_message = 'Set step number to finish'
             call calypso_MPI_abort(ierr_evo, e_message)
         else
-          i_step_number = i_step_number_ctl
+          i_step_number = i_step_number_ctl%intvalue
         end if
 !
-        if (i_i_step_rst.eq.0) then
-          i_step_output_rst = 0
-        else
-          i_step_output_rst = i_step_rst_ctl
+        i_step_output_rst = 0
+        if (i_step_rst_ctl%intvalue .gt. 0) then
+          i_step_output_rst = i_step_rst_ctl%intvalue
         end if
 !
-        if (i_i_step_ucd.eq.0) then
-          i_step_output_ucd = 0
-        else
-          i_step_output_ucd = i_step_ucd_ctl
+        i_step_output_ucd = 0
+        if (i_step_ucd_ctl%iflag .gt. 0) then
+          i_step_output_ucd = i_step_ucd_ctl%intvalue
         end if
 !
         if (iflag_debug.eq.1) then

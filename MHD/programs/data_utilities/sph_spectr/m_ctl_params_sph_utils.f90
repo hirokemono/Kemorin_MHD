@@ -79,8 +79,8 @@
       if(spectr_file_head_ctl%iflag .gt. 0) then
         org_sph_file_head = spectr_file_head_ctl%charavalue
         phys_file_head =    spectr_file_head_ctl%charavalue
-        call choose_file_format(org_sph_file_fmt_ctl,                   &
-     &      i_org_sph_files_fmt, iflag_org_sph_file_fmt)
+        call choose_file_format(org_sph_file_fmt_ctl%charavalue,        &
+     &      org_sph_file_fmt_ctl%iflag, iflag_org_sph_file_fmt)
       end if
 !
       if(i_zm_sph_spec_file .gt. 0) then
@@ -99,8 +99,8 @@
         org_sph_file_head = org_rst_header
         phys_file_head =    org_rst_header
         i_step_output_ucd =   i_step_output_rst
-        call choose_file_format(org_sph_file_fmt_ctl,                   &
-     &      i_org_sph_files_fmt, iflag_org_sph_file_fmt)
+        call choose_file_format(org_sph_file_fmt_ctl%charavalue,        &
+     &      org_sph_file_fmt_ctl%iflag, iflag_org_sph_file_fmt)
       end if
 !
 !     file header for reduced data

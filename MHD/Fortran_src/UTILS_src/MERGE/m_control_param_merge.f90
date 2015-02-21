@@ -143,19 +143,19 @@
      &    udt_file_fmt_ctl%iflag, itype_org_ucd_file)
 !
 !
-      if (i_new_vtk_head .gt. 0) then
+      if (new_vtk_prefix%iflag .gt. 0) then
         itype_assembled_data = iflag_vtk
-        merged_data_head = new_vtk_prefix
+        merged_data_head = new_vtk_prefix%charavalue
       end if
 !
-      if (i_new_udt_head .gt. 0) then
-        new_udt_head =     new_field_file_prefix
-        merged_data_head = new_field_file_prefix
+      if (new_field_file_prefix%iflag .gt. 0) then
+        new_udt_head =     new_field_file_prefix%charavalue
+        merged_data_head = new_field_file_prefix%charavalue
       else
         new_udt_head = def_new_udt_head
       end if
-      call choose_ucd_file_format(new_udt_file_fmt_ctl,                 &
-     &    i_new_udt_files_fmt, itype_assembled_data)
+      call choose_ucd_file_format(new_udt_file_fmt_ctl%charavalue,      &
+     &    new_udt_file_fmt_ctl%iflag, itype_assembled_data)
 !
 !
        num_nod_phys = 0
@@ -180,9 +180,20 @@
          write(*,*) i, trim(ucd_on_label(i))
        end do
 !
-       istep_start = i_step_init_ctl
-       istep_end = i_step_number_ctl
-       increment_step = i_step_ucd_ctl
+      istep_start = 1
+      if(i_step_init_ctl%iflag .gt. 0) then
+        istep_start = i_step_init_ctl%intvalue
+      end if
+!
+      istep_end = 1
+      if(i_step_number_ctl%iflag .gt. 0) then
+        istep_end = i_step_number_ctl%intvalue
+      end if
+!
+      increment_step = 1
+      if(i_step_ucd_ctl%iflag .gt. 0) then
+        increment_step = i_step_ucd_ctl%intvalue
+      end if
 !
       end subroutine set_control_4_merge
 !
@@ -195,14 +206,14 @@
       use m_file_format_switch
 !
 !
-      if (i_new_mesh_head .gt. 0) then
-        new_mesh_head = new_mesh_prefix
+      if (new_mesh_prefix%iflag .gt. 0) then
+        new_mesh_head = new_mesh_prefix%charavalue
       else
         new_mesh_head = def_merged_mesh_header
       end if
 !
-      call choose_file_format(new_mesh_file_fmt_ctl,                    &
-     &     i_new_mesh_file_fmt, inew_mesh_file_fmt)
+      call choose_file_format(new_mesh_file_fmt_ctl%charavalue,         &
+     &    new_mesh_file_fmt_ctl%iflag, inew_mesh_file_fmt)
 !
       end subroutine set_control_4_merged_mesh
 !
@@ -229,16 +240,16 @@
         org_rst_head = org_rst_def_head
       end if
 !
-      if (i_new_rst_head .gt. 0) then
-        new_rst_head = new_restart_prefix
+      if (new_restart_prefix%iflag .gt. 0) then
+        new_rst_head = new_restart_prefix%charavalue
       else
         new_rst_head = new_rst_def_head
       end if
 !
       call choose_file_format(restart_file_fmt_ctl%charavalue,          &
      &    restart_file_fmt_ctl%iflag, iorg_rst_file_fmt)
-      call choose_file_format(new_rst_files_fmt_ctl,                    &
-     &    i_new_rst_files_fmt, inew_rst_file_fmt)
+      call choose_file_format(new_rst_files_fmt_ctl%charavalue,         &
+     &    new_rst_files_fmt_ctl%iflag, inew_rst_file_fmt)
 !
 !
       if (i_newrst_magne .gt. 0) then
@@ -247,7 +258,10 @@
         b_ratio = 1.0d0
       end if
 !
-      increment_step = i_step_rst_ctl
+      increment_step = 1
+      if (i_step_rst_ctl%iflag .gt. 0) then
+        increment_step = i_step_rst_ctl%intvalue
+      end if
 !
       end subroutine set_control_4_newrst
 !
@@ -260,31 +274,27 @@
       use m_ctl_data_4_2nd_data
       use m_2nd_geometry_4_merge
       use m_file_format_switch
+      use skip_comment_f
 !
 !
-      if (i_num_new_domain .gt. 0) then
-        num_pe2 = num_new_domain_ctl
+      if (num_new_domain_ctl%iflag .gt. 0) then
+        num_pe2 = num_new_domain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains for new grid'
         stop
       end if
 !
-      if (i_new_mesh_head .gt. 0) then
-        new_mesh_head = new_mesh_prefix
+      if (new_mesh_prefix%iflag .gt. 0) then
+        new_mesh_head = new_mesh_prefix%charavalue
       else
         new_mesh_head = def_newmesh_head
       end if
 !
-      call choose_file_format(new_mesh_file_fmt_ctl,                    &
-     &     i_new_mesh_file_fmt, inew_mesh_file_fmt)
+      call choose_file_format(new_mesh_file_fmt_ctl%charavalue,         &
+     &    new_mesh_file_fmt_ctl%iflag, inew_mesh_file_fmt)
 !
-      if(i_del_org_data .gt. 0) then
-        if(    del_org_data_ctl .eq. 'on'                               &
-     &    .or. del_org_data_ctl .eq. 'On'                               &
-     &    .or. del_org_data_ctl .eq. 'ON'                               &
-     &    .or. del_org_data_ctl .eq. 'yes'                              &
-     &    .or. del_org_data_ctl .eq. 'Yes'                              &
-     &    .or. del_org_data_ctl .eq. 'YES') then
+      if(del_org_data_ctl%iflag .gt. 0) then
+        if(yes_flag(del_org_data_ctl%charavalue)) then
           iflag_delete_org = 1
         end if
       end if

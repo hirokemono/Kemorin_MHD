@@ -55,15 +55,14 @@
       subroutine read_gl_nodes_sph_gz
 !
       integer(kind = kint) :: i
+      integer(kind = kint_gl) :: i8
 !
 !
       call skip_gz_comment_int( nnod_sph_IO )
 !
       call allocate_nod_id_sph_IO
 !
-      call skip_gz_comment_int(i)
-      read(textbuf,*) inod_gl_sph_IO(1), idx_gl_sph_IO(1,1:ndir_sph_IO)
-      do i = 2, nnod_sph_IO
+      do i = 1, nnod_sph_IO
         call get_one_line_from_gz_f
         read(textbuf,*)                                                 &
      &           inod_gl_sph_IO(i), idx_gl_sph_IO(i,1:ndir_sph_IO)

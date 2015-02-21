@@ -53,8 +53,8 @@
 !
 !   set local data format
 !
-      call choose_file_format(org_mesh_file_fmt_ctl,                    &
-     &    i_org_mesh_file_fmt, ifmt_single_mesh_fmt)
+      call choose_file_format(org_mesh_file_fmt_ctl%charavalue,         &
+     &    org_mesh_file_fmt_ctl%iflag, ifmt_single_mesh_fmt)
       call choose_file_format(mesh_file_fmt_ctl%charavalue,             &
      &    mesh_file_fmt_ctl%iflag, iflag_para_mesh_file_fmt)
 !
@@ -68,8 +68,8 @@
       write(*,*) 'iflag_memory_conserve', iflag_memory_conserve
 !
 !
-      if (i_org_mesh_head .gt. 0) then
-        global_mesh_head = org_mesh_head_ctl
+      if (org_mesh_head_ctl%iflag .gt. 0) then
+        global_mesh_head = org_mesh_head_ctl%charavalue
       else
         write(*,*) 'Set original mesh data'
         stop

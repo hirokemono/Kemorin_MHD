@@ -37,41 +37,35 @@
       integer(kind= kint) :: i, j
 !
 !
-      if(i_time_init .gt. 0) then
-        start_time_pg = time_init_ctl
-      else
-        start_time_pg = 0.0d0
+      start_time_pg = 0.0d0
+      if(time_init_ctl%iflag .gt. 0) then
+        start_time_pg = time_init_ctl%realvalue
       end if
 !
-      if(i_dt .gt. 0) then
-        delta_time_pg = dt_ctl
-      else
-        delta_time_pg = 0.0d0
+      delta_time_pg = 0.0d0
+      if(dt_ctl%iflag .gt. 0) then
+        delta_time_pg = dt_ctl%realvalue
       end if
 !
-      if(i_i_step_init .gt. 0) then
-        ist_pg = i_step_init_ctl
-      else
-        ist_pg = 1
+      ist_pg = 1
+      if(i_step_init_ctl%iflag .gt. 0) then
+        ist_pg = i_step_init_ctl%intvalue
       end if
 !
-      if(i_i_step_number .gt. 0) then
-        ied_pg = i_step_number_ctl
-      else
-        ied_pg = 1
+      ied_pg = 1
+      if(i_step_number_ctl%iflag .gt. 0) then
+        ied_pg = i_step_number_ctl%intvalue
       end if
 !
-      if(i_i_step_psf .gt. 0) then
-        inc_pg = i_step_psf_ctl
-      else
-        inc_pg = 1
+      inc_pg = 1
+      if(i_step_psf_ctl%iflag .gt. 0) then
+        inc_pg = i_step_psf_ctl%intvalue
       end if
 !
 !
+      npanel_window = 1
       if(i_num_panels_ctl .gt. 0) then
         npanel_window = num_panels_ctl
-      else
-        npanel_window = 1
       end if
 !
 !

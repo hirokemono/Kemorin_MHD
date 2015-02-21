@@ -99,9 +99,13 @@
       nprocs_org = 1
       if(ndomain_ctl%iflag .gt. 0) nprocs_org = ndomain_ctl%intvalue
 !
-      nprocs_dest = num_new_domain_ctl
-      if (i_new_mesh_head .ne. 0) then
-        dest_mesh_head = new_mesh_prefix
+      nprocs_dest = 1
+      if(num_new_domain_ctl%iflag .gt. 0) then
+         nprocs_dest = num_new_domain_ctl%intvalue
+      end if
+!
+      if (new_mesh_prefix%iflag .ne. 0) then
+        dest_mesh_head = new_mesh_prefix%charavalue
       end if
 !
       if (i_table_head_ctl .ne. 0) then

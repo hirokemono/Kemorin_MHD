@@ -95,8 +95,8 @@
         stop
       end if
 !
-      if (i_new_mesh_head .gt. 0) then
-        refined_mesh_head = new_mesh_prefix
+      if (new_mesh_prefix%iflag .gt. 0) then
+        refined_mesh_head = new_mesh_prefix%charavalue
         write(*,*) 'refined_mesh_head: ', trim(refined_mesh_head)
       else
         write(*,*) 'set refined mesh header'

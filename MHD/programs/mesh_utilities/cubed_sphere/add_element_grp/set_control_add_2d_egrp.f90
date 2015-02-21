@@ -38,8 +38,8 @@
       call set_control_mesh_def
       original_mesh_head = mesh_file_head
 !
-      if (i_new_mesh_head .gt. 0) then
-        modified_mesh_head = new_mesh_prefix
+      if (new_mesh_prefix%iflag .gt. 0) then
+        modified_mesh_head = new_mesh_prefix%charavalue
       else
         call calypso_MPI_abort(ierr_mesh, 'set modifield mesh prefix')
       end if
