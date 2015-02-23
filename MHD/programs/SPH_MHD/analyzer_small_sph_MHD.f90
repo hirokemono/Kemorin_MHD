@@ -37,7 +37,7 @@
       subroutine initialize_sph_mhd_only
 !
       use set_control_sph_mhd
-      use m_ctl_data_sph_MHD_psf
+      use m_ctl_data_sph_MHD_noviz
       use init_sph_MHD_elapsed_label
 !
 !

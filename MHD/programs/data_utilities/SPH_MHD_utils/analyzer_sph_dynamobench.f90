@@ -35,7 +35,7 @@
 !
       subroutine initialize_sph_dynamobench
 !
-      use m_ctl_data_sph_MHD_psf
+      use m_ctl_data_sph_MHD_noviz
       use set_control_sph_mhd
       use set_control_sph_data_MHD
       use set_control_SPH_to_FEM

@@ -50,8 +50,8 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap_noviz'
-      call read_control_4_sph_snap_noviz
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap_w_psf'
+      call read_control_4_sph_snap_w_psf
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
       call set_control_4_sph_mhd
       call set_control_4_SPH_to_FEM
