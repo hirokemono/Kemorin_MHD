@@ -226,18 +226,14 @@
       use skip_comment_f
 !
 !
-      if(i_sph_grid_type .gt. 0) then
-        if     (cmp_no_case(sph_grid_type_ctl, 'No_pole'   )) then
-          id_shell_mode_pg = iflag_MESH_same
-        else if(cmp_no_case(sph_grid_type_ctl, 'With_pole' )) then
-          id_shell_mode_pg = iflag_MESH_w_pole
-        else if(cmp_no_case(sph_grid_type_ctl,'With_center')) then
-          id_shell_mode_pg = iflag_MESH_w_center
-        else
-          id_shell_mode_pg = iflag_MESH_same
-        end if
-      else
-          id_shell_mode_pg = iflag_MESH_same
+      id_shell_mode_pg = iflag_MESH_same
+      if(pg_grid_type_ctl%iflag .gt. 0) then
+        if(cmp_no_case(pg_grid_type_ctl%charavalue, 'No_pole'   ))      &
+     &          id_shell_mode_pg = iflag_MESH_same
+        if(cmp_no_case(pg_grid_type_ctl%charavalue, 'With_pole' ))      &
+     &          id_shell_mode_pg = iflag_MESH_w_pole
+        if(cmp_no_case(pg_grid_type_ctl%charavalue,'With_center'))      &
+     &          id_shell_mode_pg = iflag_MESH_w_center
       end if
 !
 !

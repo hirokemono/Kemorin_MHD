@@ -50,13 +50,13 @@ AR = ar -X64
 RANLIB = ranlib -X64
 
 #
-# OPENMP_FCFLAGS OprnMP option for fortran compiler
+# OPENMP_F77FLAGS OprnMP option for fortran compiler
 # FC_NAME_MANGLE definition for Fortran-C connection
 #    C routtine name mangle flag for Fortran connection
 #     -DFC_NAME_LOWER_USCORE, -DFC_NAME_UPPER, or -DFC_NAME_LOWER
 # FC_NAME_MANGLE -DWITH_FLAG is defined to use cocoa Framework
 #
-OPENMP_FCFLAGS = -omp
+OPENMP_F77FLAGS = -omp
 FC_NAME_MANGLE = -DFC_NAME_UPPER_STDCALL
 COCOA_FLAG =     
 
@@ -626,13 +626,13 @@ AR = ar
 RANLIB = ranlib
 
 #
-# OPENMP_FCFLAGS OprnMP option for fortran compiler
+# OPENMP_F77FLAGS OprnMP option for fortran compiler
 # FC_NAME_MANGLE definition for Fortran-C connection
 #    C routtine name mangle flag for Fortran connection
 #     -DFC_NAME_LOWER_USCORE, -DFC_NAME_UPPER, or -DFC_NAME_LOWER
 # FC_NAME_MANGLE -DWITH_FLAG is defined to use cocoa Framework
 #
-OPENMP_FCFLAGS = -homp
+OPENMP_F77FLAGS = -homp
 FC_NAME_MANGLE = -DFC_NAME_LOWER_USCORE
 COCOA_FLAG =     
 

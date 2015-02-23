@@ -44,7 +44,7 @@
 !   parameter for map
 !
       integer(kind = kint) :: radial_ID_ctl
-      character(len=kchara) :: sph_grid_type_ctl = 'no_pole'
+      type(read_character_item), save :: pg_grid_type_ctl
 !
 !
       character(len=kchara) :: psf_data_fmt_ctl =   'ucd'
@@ -160,7 +160,6 @@
       character(len=kchara), parameter                                  &
      &                    :: hd_sph_grid_type = 'sph_grid_type_ctl'
       integer(kind= kint) :: i_radial_ID_ctl = 0
-      integer(kind= kint) :: i_sph_grid_type = 0
 !
 !     flags for grouping plot
 !
@@ -421,8 +420,7 @@
         if(i_sphere_map_ctl .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_sph_grid_type,                  &
-     &        i_sph_grid_type, sph_grid_type_ctl)
+        call read_chara_ctl_type(hd_sph_grid_type, pg_grid_type_ctl)
 !
         call read_integer_ctl_item(hd_radial_ID_ctl,                    &
      &        i_radial_ID_ctl, radial_ID_ctl)

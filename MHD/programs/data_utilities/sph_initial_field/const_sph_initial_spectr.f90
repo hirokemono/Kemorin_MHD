@@ -81,25 +81,25 @@
       time   =     time_init
 !
 !  Set initial velocity if velocity is exist
-      if(ipol%i_velo .gt. izero) call  set_initial_velocity
+!      if(ipol%i_velo .gt. izero) call  set_initial_velocity
 !
 !  Set initial temperature if temperature is exist
-      if(ipol%i_temp .gt. izero) call  set_initial_temperature
+!      if(ipol%i_temp .gt. izero) call  set_initial_temperature
 !
 !  Set initial composition if composition is exist
-      if(ipol%i_light .gt. izero) call set_initial_composition
+!      if(ipol%i_light .gt. izero) call set_initial_composition
 !
 !  Set initial magnetic field if magnetic field is exist
-      if(ipol%i_magne .gt. izero) call set_initial_magne_sph
+!      if(ipol%i_magne .gt. izero) call set_initial_magne_sph
 !
 !  Set heat source if  heat source is exist
       if(ipol%i_heat_source .gt. izero) then
         call set_initial_heat_source_sph
       end if
 !  Set light element source if light element is exist
-      if(ipol%i_light_source .gt. izero) then
-        call set_initial_light_source_sph
-      end if
+!      if(ipol%i_light_source .gt. izero) then
+!        call set_initial_light_source_sph
+!      end if
 !
 !  Copy initial field to restart IO data
       call set_sph_restart_num_to_IO

@@ -45,6 +45,7 @@
 !
       integer(kind = kint) :: nprocs_ctl
       integer(kind = kint) :: i, np, kr, icou
+      real(kind = kreal) :: ICB_to_CMB_ratio, fluid_core_size
 !
 !
       nprocs_ctl = 1
@@ -67,14 +68,13 @@
       end if
 !
       iflag_shell_mode = iflag_no_FEMMESH
-      if(i_sph_g_type .gt. 0) then
-        if      (cmp_no_case(sph_grid_type_ctl, 'no_pole')) then
-          iflag_shell_mode = iflag_MESH_same
-        else if(cmp_no_case(sph_grid_type_ctl, 'with_pole')) then
-          iflag_shell_mode = iflag_MESH_w_pole
-        else if(cmp_no_case(sph_grid_type_ctl, 'with_center')) then
-          iflag_shell_mode = iflag_MESH_w_center
-        end if
+      if(sph_grid_type_ctl%iflag .gt. 0) then
+        if      (cmp_no_case(sph_grid_type_ctl%charavalue, 'no_pole'))  &
+     &          iflag_shell_mode = iflag_MESH_same
+        if(cmp_no_case(sph_grid_type_ctl%charavalue, 'with_pole'))      &
+     &          iflag_shell_mode = iflag_MESH_w_pole
+        if(cmp_no_case(sph_grid_type_ctl%charavalue, 'with_center'))    &
+     &          iflag_shell_mode = iflag_MESH_w_center
       else
         iflag_shell_mode = iflag_MESH_same
       end if
@@ -88,24 +88,24 @@
       nidx_global_rtp(3) = 4
       l_truncation = 2
 !
-      if     (cmp_no_case(radial_grid_type_ctl, 'explicit')) then
-       iflag_radial_grid =  igrid_non_euqidist
-      else if(cmp_no_case(radial_grid_type_ctl, 'Chebyshev')) then
-       iflag_radial_grid =  igrid_Chebyshev
-      else if(cmp_no_case(radial_grid_type_ctl, 'equi_distance')) then
-       iflag_radial_grid =  igrid_euqidistance
+      iflag_radial_grid =  igrid_Chebyshev
+      if(cmp_no_case(radial_grid_type_ctl%charavalue, 'explicit'))      &
+     &       iflag_radial_grid =  igrid_non_euqidist
+      if(cmp_no_case(radial_grid_type_ctl%charavalue, 'Chebyshev'))     &
+     &       iflag_radial_grid =  igrid_Chebyshev
+      if(cmp_no_case(radial_grid_type_ctl%charavalue, 'equi_distance')) &
+     &       iflag_radial_grid =  igrid_euqidistance
+!
+      if (ltr_ctl%iflag .gt. 0) then
+        l_truncation = ltr_ctl%intvalue
       end if
 !
-      if (i_sph_truncate .gt. 0) then
-        l_truncation = ltr_ctl
+      if (ngrid_elevation_ctl%iflag .gt. 0) then
+        nidx_global_rtp(2) = ngrid_elevation_ctl%intvalue
       end if
 !
-      if (i_ntheta_shell .gt. 0) then
-        nidx_global_rtp(2) = ngrid_elevation_ctl
-      end if
-!
-      if (i_nphi_shell .gt. 0) then
-        nidx_global_rtp(3) = ngrid_azimuth_ctl
+      if (ngrid_azimuth_ctl%iflag .gt. 0) then
+        nidx_global_rtp(3) = ngrid_azimuth_ctl%intvalue
       end if
 !
 !   Set radial group
@@ -136,9 +136,8 @@
 !   Set radial grid explicitly
       iflag_rj_center = 0
       if(iflag_radial_grid .eq. igrid_non_euqidist) then
-        if(i_sph_c_type .gt. 0                                          &
-          .and. cmp_no_case(sph_coef_type_ctl, 'with_center')           &
-     &        ) iflag_rj_center = 1
+        if(cmp_no_case(sph_coef_type_ctl%charavalue, 'with_center')     &
+          .and. sph_coef_type_ctl%iflag .gt. 0) iflag_rj_center = 1
 !
         if (radius_ctl%icou .gt. 0) nidx_global_rtp(1) = radius_ctl%num
 !
@@ -179,26 +178,30 @@
 !
 !   Set radial grid by Chebyshev or equaidistance
       else
-        if(i_ICB_radius.gt.0 .and. i_CMB_radius.gt.0) then
-          r_ICB = ICB_radius_ctl
-          r_CMB = CMB_radius_ctl
-        else if(i_shell_size.gt.0 .and. i_shell_ratio.gt.0) then
-          r_ICB = fluid_core_size_ctl                                   &
-     &           * ICB_to_CMB_ratio_ctl / (one - ICB_to_CMB_ratio_ctl)
-          r_CMB = r_ICB + fluid_core_size_ctl
+        if(ICB_radius_ctl%iflag .gt. 0                                  &
+     &     .and. CMB_radius_ctl%iflag .gt. 0) then
+          r_ICB = ICB_radius_ctl%realvalue
+          r_CMB = CMB_radius_ctl%realvalue
+        else if(fluid_core_size_ctl%iflag .gt. 0                        &
+     &       .and. ICB_to_CMB_ratio_ctl%iflag .gt. 0) then
+          ICB_to_CMB_ratio = ICB_to_CMB_ratio_ctl%realvalue
+          fluid_core_size =  fluid_core_size_ctl%realvalue
+          r_ICB = fluid_core_size                                       &
+     &           * ICB_to_CMB_ratio / (one - ICB_to_CMB_ratio)
+          r_CMB = r_ICB + fluid_core_size
         else
           write(*,*)                                                    &
      &       'Set CMB and ICB radii or ratio and size of outer core'
           stop
         end if
 !
-        if(i_Min_radius .eq. 0) Min_radius_ctl = r_ICB
-        if(i_Max_radius .eq. 0) Max_radius_ctl = r_CMB
+        if(Min_radius_ctl%iflag.eq.0) Min_radius_ctl%realvalue = r_ICB
+        if(Max_radius_ctl%iflag.eq.0) Max_radius_ctl%realvalue = r_CMB
 !
-        if(Min_radius_ctl .eq. zero) iflag_rj_center = 1
+        if(Min_radius_ctl%realvalue .eq. zero) iflag_rj_center = 1
 !
-        call count_set_radial_grid(num_fluid_grid_ctl,                  &
-     &      Min_radius_ctl, Max_radius_ctl)
+        call count_set_radial_grid(num_fluid_grid_ctl%intvalue,         &
+     &      Min_radius_ctl%realvalue, Max_radius_ctl%realvalue)
       end if
 !
       ndomain_rtp(1:3) = 1
