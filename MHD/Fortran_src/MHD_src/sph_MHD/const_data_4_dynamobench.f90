@@ -40,7 +40,6 @@
 !
       call cal_rms_sph_outer_core
       if(my_rank .eq. 0) call copy_energy_4_dynamobench
-      return
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call pick_inner_core_rotation
