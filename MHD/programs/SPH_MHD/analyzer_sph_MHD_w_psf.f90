@@ -79,7 +79,6 @@
       call init_visualize_surface
 !
       call calypso_MPI_barrier
-!
       call end_eleps_time(2)
 !
       end subroutine initialize_sph_mhd_w_psf
