@@ -20,6 +20,7 @@
 !
       integer(kind=kint ) :: istep_start, istep_end, increment_step
 !
+      character(len=kchara) :: org_sph_head = 'mesh_org/in_rj'
       character(len=kchara) :: new_sph_head = 'mesh_new/in_rj'
 !
 !
@@ -57,12 +58,6 @@
         stop
       end if
 !
-      call set_control_sph_mesh
-      call set_control_restart_file_def
-      call set_control_ucd_file_def
-!
-      ifmt_org_sph_file =     iflag_sph_file_fmt
-!
       if (num_new_domain_ctl%iflag .gt. 0) then
         np_sph_new = num_new_domain_ctl%intvalue
       else
@@ -70,10 +65,18 @@
         stop
       end if
 !
+      call set_control_restart_file_def
+      call set_control_ucd_file_def
+!
+      if(sph_file_prefix%iflag .gt. 0) then
+        org_sph_head = sph_file_prefix%charavalue
+      end if
       if (new_sph_mode_prefix%iflag .gt. 0) then
         new_sph_head = new_sph_mode_prefix%charavalue
       end if
 !
+      call choose_file_format(sph_file_fmt_ctl%charavalue,              &
+     &    sph_file_fmt_ctl%iflag, ifmt_org_sph_file)
       call choose_file_format(new_sph_file_fmt_ctl%charavalue,          &
      &    new_sph_file_fmt_ctl%iflag, ifmt_new_sph_file)
 !

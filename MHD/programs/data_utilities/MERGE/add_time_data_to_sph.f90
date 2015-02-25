@@ -67,6 +67,7 @@
 !  set original spectr data
 !
       iflag_sph_file_fmt = ifmt_org_sph_file
+      sph_file_head = org_sph_head
       do ip = 1, np_sph_org
         irank_org = ip - 1
         call set_local_rj_mesh_4_merge(irank_org, org_sph_mesh(ip))
