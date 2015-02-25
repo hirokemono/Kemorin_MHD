@@ -5,6 +5,8 @@
 !
 !
 !      subroutine s_const_surface_type_data(nod, ele, surf)
+!      subroutine const_isolated_surface_t_data(nod, ele, surf)
+!      subroutine const_external_surface_t_data(nod, ele, surf)
 !      subroutine const_surface_type_hash(nod, ele, surf)
 !      subroutine const_part_surface_type_hash(nele_grp, item_grp,      &
 !     &          nod, ele, surf)
@@ -63,6 +65,48 @@
       call deallocate_surface_hash
 !
       end subroutine s_const_surface_type_data
+!
+!------------------------------------------------------------------
+!
+      subroutine const_isolated_surface_t_data(nod, ele, surf)
+!
+      use m_surface_hash
+      use set_surface_hash
+!
+      type(node_data),    intent(in) :: nod
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(inout) :: surf
+!
+!
+      call const_surface_type_hash(nod, ele, surf)
+      call const_all_surf_type_data(ele, surf)
+!
+      call const_external_surf_type_data(nod, ele, surf)
+!
+      call deallocate_surface_hash
+!
+      end subroutine const_isolated_surface_t_data
+!
+!------------------------------------------------------------------
+!
+      subroutine const_external_surface_t_data(nod, ele, surf)
+!
+      use m_surface_hash
+      use set_surface_hash
+!
+      type(node_data),    intent(in) :: nod
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(inout) :: surf
+!
+!
+      call const_surface_type_hash(nod, ele, surf)
+      call const_all_surf_type_data(ele, surf)
+!
+      call const_isolate_surf_type_data(ele, surf)
+!
+      call deallocate_surface_hash
+!
+      end subroutine const_external_surface_t_data
 !
 !------------------------------------------------------------------
 !

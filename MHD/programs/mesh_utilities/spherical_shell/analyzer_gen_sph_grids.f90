@@ -1,30 +1,39 @@
-!generate_sph_grids_para.f90
-      program generate_sph_grids_para
+!>@file   analyzer_gen_sph_grids.f90
+!!@brief  module analyzer_gen_sph_grids
+!!
+!!@author H. Matsui
+!!@date   Programmed  H. Matsui in Apr., 2010
+!
+!>@brief  Main loop to generate spherical harmonics indices
+!!
+!!@verbatim
+!!      subroutine init_gen_sph_grids
+!!      subroutine analyze_gen_sph_grids
+!!@endverbatim
+!
+      module analyzer_gen_sph_grids
 !
       use m_precision
       use m_constants
-      use m_work_time
       use calypso_mpi
-      use m_machine_parameter
 !
-      use m_read_ctl_gen_sph_shell
-      use m_spheric_parameter
-      use m_read_mesh_data
-      use m_node_id_spherical_IO
-      use set_ctl_gen_shell_grids
-      use const_sph_radial_grid
-      use const_global_sph_grids_modes
-      use para_gen_sph_grids_modes
-      use set_comm_table_rtp_rj
-      use const_1d_ele_connect_4_sph
+      use m_work_time
 !
       implicit none
 !
+! ----------------------------------------------------------------------
 !
-      call calypso_MPI_init
-      total_start = MPI_WTIME()
+      contains
 !
-!     --------------------- 
+! ----------------------------------------------------------------------
+!
+      subroutine init_gen_sph_grids
+!
+      use m_spheric_parameter
+      use m_read_ctl_gen_sph_shell
+      use set_ctl_gen_shell_grids
+      use const_sph_radial_grid
+!
 !
       num_elapsed = 4
       call allocate_elapsed_times
@@ -43,6 +52,18 @@
         call check_global_spheric_parameter
         call output_set_radial_grid
       end if
+!
+      end subroutine init_gen_sph_grids
+!
+! ----------------------------------------------------------------------
+!
+      subroutine analyze_gen_sph_grids
+!
+      use para_gen_sph_grids_modes
+      use set_comm_table_rtp_rj
+      use const_1d_ele_connect_4_sph
+      use const_global_sph_grids_modes
+!
 !
 !  ========= Generate spherical harmonics table ========================
 !
@@ -77,11 +98,13 @@
 !
       call end_eleps_time(1)
 !
-!  ========= Construct subdomain information for viewer ==============
-!
       call output_elapsed_times
-      call calypso_MPI_finalize
 !
-      write(*,*) 'program is normally finished'
+      call calypso_MPI_barrier
+      if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
-      end program generate_sph_grids_para
+      end subroutine analyze_gen_sph_grids
+!
+! ----------------------------------------------------------------------
+!
+      end module analyzer_gen_sph_grids

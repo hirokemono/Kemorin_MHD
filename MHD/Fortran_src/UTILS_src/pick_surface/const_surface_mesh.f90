@@ -10,6 +10,7 @@
 !
       use m_precision
 !
+      use m_constants
       use m_machine_parameter
       use m_file_format_switch
       use m_read_mesh_data
@@ -28,27 +29,27 @@
 !
       subroutine choose_surface_mesh(file_head)
 !
-      use m_constants
-      use m_file_format_switch
-      use set_parallel_file_name
-      use set_merged_geometry
-      use const_merged_surf_data
-      use const_merged_surf_4_group
-      use set_surf_connect_4_viewer
-      use set_nodes_4_viewer
-      use set_nodes_4_groups_viewer
-      use const_edge_4_viewer
-      use mesh_file_IO
-      use viewer_IO_select_4_zlib
-!
       character(len=kchara), intent(in) :: file_head
-!
-      character(len=kchara) :: fname, fname_tmp
-      integer(kind = kint) :: iflag
 !
 !
       mesh_file_head =    file_head
       surface_file_head = file_head
+      call find_mesh_format_4_viewer
+      call const_surf_mesh_4_viewer
+!
+      end subroutine choose_surface_mesh
+!
+!------------------------------------------------------------------
+!
+      subroutine find_mesh_format_4_viewer
+!
+      use m_file_format_switch
+      use set_parallel_file_name
+      use mesh_file_IO
+!
+      character(len=kchara) :: fname, fname_tmp
+      integer(kind = kint) :: iflag
+!
 !
 !  Detect file format
       iflag = 0
@@ -94,8 +95,7 @@
 !
 !   count number of subdomains
 !
-      do num_pe = 0, 10000000
-!
+      do
         call set_mesh_fname(num_pe)
         if(iflag_mesh_file_fmt .eq. id_gzip_txt_file_fmt) then
           call add_gzip_extension(mesh_file_name, fname)
@@ -110,6 +110,21 @@
   99  continue
 !
       write(*,*) 'Number of subdomains: ', num_pe
+!
+      end subroutine find_mesh_format_4_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine const_surf_mesh_4_viewer
+!
+      use set_merged_geometry
+      use const_merged_surf_data
+      use const_merged_surf_4_group
+      use set_surf_connect_4_viewer
+      use set_nodes_4_viewer
+      use const_edge_4_viewer
+      use set_nodes_4_groups_viewer
+      use viewer_IO_select_4_zlib
 !
 !  set mesh_information
 !
@@ -155,7 +170,7 @@
 !
        call sel_output_surface_grid(iflag_mesh_file_fmt)
 !
-      end subroutine choose_surface_mesh
+      end subroutine const_surf_mesh_4_viewer
 !
 !------------------------------------------------------------------
 !

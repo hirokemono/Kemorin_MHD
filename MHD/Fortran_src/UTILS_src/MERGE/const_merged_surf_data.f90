@@ -29,16 +29,8 @@
 !
 !   set hash data for suface elements using sum of local node ID
 !
-      call const_surface_type_hash(merged%node, merged%ele,             &
+      call const_isolated_surface_t_data(merged%node, merged%ele,       &
      &    merged_surf)
-!
-      call const_all_surf_type_data(merged%ele, merged_surf)
-!
-      call const_isolate_surf_type_data(merged%ele, merged_surf)
-!
-!
-      write(*,*) 'deallocate_surface_hash'
-      call deallocate_surface_hash
 !
 !   count number of element for each domain
 !
