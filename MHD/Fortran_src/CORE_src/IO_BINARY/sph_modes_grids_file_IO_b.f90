@@ -101,7 +101,7 @@
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read binary spectr modes file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
+      open (mesh_file_id,file = file_name, form = 'unformatted')
       call read_spectr_modes_rlm_data_b(mesh_file_id)
       close(mesh_file_id)
 !

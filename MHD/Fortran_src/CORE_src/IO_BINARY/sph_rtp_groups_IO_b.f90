@@ -217,7 +217,7 @@
      &    ntot_zonal_grp_rtp_IO, istack_zonal_grp_rtp_IO,               &
      &    name_zonal_grp_rtp_IO, item_zonal_grp_rtp_IO)
 !
-      call deallocate_rtp_t_grp_IO_item
+      call deallocate_rtp_p_grp_IO_item
 !
       end subroutine write_rtp_zonal_grp_data_b
 !
