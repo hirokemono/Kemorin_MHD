@@ -164,7 +164,7 @@
      &                           + WR(i_recv-2) * P_pole_rtm(1,j_rlm)   &
      &                            * g_sph_rlm(j_rlm,3)
               v_pl_local(k_sp,3*nd  ) = v_pl_local(k_sp,3*nd  )         &
-     &                           + WR(i_recv-2) * P_pole_rtm(2,j_rlm)   &
+     &                           - WR(i_recv-2) * P_pole_rtm(2,j_rlm)   &
      &                            * g_sph_rlm(j_rlm,3)
             end do
           end do
@@ -237,17 +237,17 @@
           k_sp = idx_gl_1d_rtm_r(k_rlm) + nidx_global_rtp(1)
           do nd = 1, nvector
             v_pl_local(k_np,3*nd-2) = v_pl_local(k_np,3*nd-2)           &
-     &                      * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
+     &                      * a_r_1d_rlm_r(k_rlm)
             v_pl_local(k_np,3*nd-1) = v_pl_local(k_np,3*nd-1)           &
      &                      * a_r_1d_rlm_r(k_rlm)
             v_pl_local(k_np,3*nd  ) = v_pl_local(k_np,3*nd  )           &
-     &                      * a_r_1d_rlm_r(k_rlm)
-            v_pl_local(k_sp,3*nd-2) = v_pl_local(k_sp,3*nd-2)           &
      &                      * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
+            v_pl_local(k_sp,3*nd-2) = v_pl_local(k_sp,3*nd-2)           &
+     &                      * a_r_1d_rlm_r(k_rlm)
             v_pl_local(k_sp,3*nd-1) = v_pl_local(k_sp,3*nd-1)           &
      &                      * a_r_1d_rlm_r(k_rlm)
             v_pl_local(k_sp,3*nd  ) = v_pl_local(k_sp,3*nd  )           &
-     &                      * a_r_1d_rlm_r(k_rlm)
+     &                      * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
           end do
         end do
       end if
