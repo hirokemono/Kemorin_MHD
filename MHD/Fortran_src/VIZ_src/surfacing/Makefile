@@ -2,9 +2,9 @@
 #
 #
 
-PSF_SECTION_DIR = $$(VIZ_SRCDIR)/sectioning
-SRC_PSF_RENDER = $(shell ls *.f90)
-MOD_PSF_RENDER = $(addsuffix .o,$(basename $(SRC_PSF_RENDER)) )
+PSF_SECTION_DIR = $$(VIZ_SRCDIR)/surfacing
+SRC_SURFACING = $(shell ls *.f90)
+MOD_SURFACING = $(addsuffix .o,$(basename $(SRC_SURFACING)) )
 
 #
 #  --------------------------------------------------------------------
@@ -21,18 +21,18 @@ lib_tasks: libtarget lib_archve
 libtarget:
 
 lib_archve:
-	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_PSF_RENDER)' \
+	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_SURFACING)' \
 	>> $(MAKENAME)
 
 
 mod_list:
-	@echo  MOD_PSF_RENDER=  \\ >> $(MAKENAME)
-	@echo  $(MOD_PSF_RENDER) >> $(MAKENAME)
+	@echo  MOD_SURFACING=  \\ >> $(MAKENAME)
+	@echo  $(MOD_SURFACING) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(PSF_SECTION_DIR)' $(SRC_PSF_RENDER)
+	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(PSF_SECTION_DIR)' $(SRC_SURFACING)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

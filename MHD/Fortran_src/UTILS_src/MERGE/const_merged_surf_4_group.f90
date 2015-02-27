@@ -82,7 +82,6 @@
 !
 !
         call deallocate_surface_hash
-!
       end do
 !
 !      call check_merged_isurf_4_ele_grp

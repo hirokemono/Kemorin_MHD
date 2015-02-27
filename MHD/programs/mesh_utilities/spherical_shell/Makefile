@@ -7,7 +7,6 @@ GEN_SPH_GRIDDIR = $$(MESHER_DIR)/spherical_shell
 TARGET_GEN_SPH_FULL =       gen_sph_grids_full
 TARGET_GEN_SPH_NOSF =       gen_sph_grids_gaunt
 TARGET_GEN_SPH_GRID =       gen_sph_grids
-TARGET_GEN_EQ_GRID =        gen_eq_plane
 TARGET_MAKE_SPH_RADIUS =    make_sph_mesh_radius
 TARGET_COR_TRIINT =         gaunt_coriolis
 TARGET_TEST_SPH_GRID =      check_sph_grids
@@ -23,9 +22,6 @@ generate_sph_grids_nosf.o
 MOD_GEN_SPH_GRID = \
 main_generate_sph_grids.o \
 analyzer_gen_sph_grids.o
-
-MOD_GEN_EQ_GRID = \
-generate_equator_grid.o
 
 MOD_MAKE_SPH_RADIUS = \
 const_radial_grid_sph.o
@@ -55,8 +51,6 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_GEN_SPH_GRID =     $$(BUILDDIR)/$(TARGET_GEN_SPH_GRID)'   \
 	>> $(MAKENAME)
-	@echo 'TARGET_GEN_EQ_GRID =     $$(BUILDDIR)/$(TARGET_GEN_EQ_GRID)'     \
-	>> $(MAKENAME)
 	@echo 'TARGET_MAKE_SPH_RADIUS = $$(BUILDDIR)/$(TARGET_MAKE_SPH_RADIUS)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_TEST_SPH_GRID = $$(BUILDDIR)/$(TARGET_TEST_SPH_GRID)'     \
@@ -67,10 +61,9 @@ target_list:
 
 target_task:
 	@echo sph_utils:   \
-	'$$(TARGET_GEN_SPH_FULL)    $$(TARGET_GEN_EQ_GRID)'   \
+	'$$(TARGET_GEN_SPH_FULL)    $$(TARGET_GEN_SPH_GRID)'   \
 	'$$(TARGET_MAKE_SPH_RADIUS) $$(TARGET_TEST_SPH_GRID)' \
-	'$$(TARGET_GEN_SPH_NOSF)    $$(TARGET_COR_TRIINT)'    \
-	'$$(TARGET_GEN_SPH_GRID)'   >> $(MAKENAME)
+	'$$(TARGET_GEN_SPH_NOSF)    $$(TARGET_COR_TRIINT)'    >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_GEN_SPH_FULL)': '$$(MOD_GEN_SPH_GRID_FULL)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
@@ -93,14 +86,6 @@ target_task:
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_GEN_SPH_GRID)' \
 	'$$(MOD_GEN_SPH_GRID)' \
-	'-L. $$(LIBS_MESH_UTIL)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_GEN_EQ_GRID)': '$$(MOD_GEN_EQ_GRID)' \
-	'$$(LIB_FILES_MESH_UTIL)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_GEN_EQ_GRID)' \
-	'$$(MOD_GEN_EQ_GRID)' \
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -138,8 +123,6 @@ mod_list:
 	@echo  $(MOD_GEN_SPH_GRID_NOSF) >> $(MAKENAME)
 	@echo  MOD_GEN_SPH_GRID=  \\ >> $(MAKENAME)
 	@echo  $(MOD_GEN_SPH_GRID) >> $(MAKENAME)
-	@echo  MOD_GEN_EQ_GRID=  \\ >> $(MAKENAME)
-	@echo  $(MOD_GEN_EQ_GRID) >> $(MAKENAME)
 	@echo  MOD_MAKE_SPH_RADIUS=  \\ >> $(MAKENAME)
 	@echo  $(MOD_MAKE_SPH_RADIUS) >> $(MAKENAME)
 	@echo  MOD_TEST_SPH_GRID=  \\ >> $(MAKENAME)

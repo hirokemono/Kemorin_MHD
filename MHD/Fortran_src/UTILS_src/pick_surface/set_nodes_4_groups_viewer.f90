@@ -36,6 +36,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_domain_viewer'
       call set_nod_4_domain_viewer
 !
+      call allocate_ele_gp_nod_item_sf
+      call allocate_sf_gp_nod_item_sf
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_ele_group_viewer'
       call set_nod_4_ele_group_viewer
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_surf_group_viewer'
@@ -65,7 +67,6 @@
       integer(kind = kint) :: igrp, ied
 !
 !
-      call allocate_ele_gp_nod_item_sf
       do igrp = 1, ngrp_ele_sf
         call mark_node_4_ele_grp_viewer(igrp)
 !
@@ -92,7 +93,6 @@
       integer(kind = kint) :: igrp, ied
 !
 !
-      call allocate_sf_gp_nod_item_sf
       do igrp = 1, ngrp_surf_sf
         call mark_node_4_surf_grp_viewer(igrp)
 !

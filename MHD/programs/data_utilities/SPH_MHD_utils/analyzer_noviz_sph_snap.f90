@@ -75,6 +75,7 @@
       call calypso_MPI_barrier
 !
       call end_eleps_time(2)
+      call reset_elapse_4_init_sph_mhd
 !
       end subroutine initialize_noviz_sph_snap
 !

@@ -81,7 +81,7 @@
       call const_surface_type_hash(nod, ele, surf)
       call const_all_surf_type_data(ele, surf)
 !
-      call const_external_surf_type_data(nod, ele, surf)
+      call const_isolate_surf_type_data(ele, surf)
 !
       call deallocate_surface_hash
 !
@@ -102,7 +102,7 @@
       call const_surface_type_hash(nod, ele, surf)
       call const_all_surf_type_data(ele, surf)
 !
-      call const_isolate_surf_type_data(ele, surf)
+      call const_external_surf_type_data(nod, ele, surf)
 !
       call deallocate_surface_hash
 !

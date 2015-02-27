@@ -95,6 +95,7 @@
 !
 !   count number of subdomains
 !
+      num_pe = 0
       do
         call set_mesh_fname(num_pe)
         if(iflag_mesh_file_fmt .eq. id_gzip_txt_file_fmt) then
@@ -106,6 +107,7 @@
         write(*,*) 'mesh file name: ', trim(fname)
         open(15,file = fname, status='old', action='read', err=99)
         close(15)
+        num_pe = num_pe + 1
       end do
   99  continue
 !
@@ -160,7 +162,6 @@
 !
 !
        call deallocate_subdomain_grp_stack
-!
        call deallocate_array_4_merge
 !
        write(*,*)  'construct_edge_4_viewer'
