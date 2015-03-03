@@ -48,7 +48,8 @@
       use m_gaunt_coriolis_rlm
       use m_integrals_4_sph_coriolis
       use m_int_4_sph_coriolis_IO
-      use sph_file_IO_select
+      use sph_coriolis_IO_select
+      use spherical_harmonics
 !
       integer(kind = kint), intent(in) :: iflag_sph_coriolis_file
       integer(kind = kint), intent(in) :: l_truncation, jmax_rlm
@@ -56,6 +57,8 @@
 !
       integer(kind = kint) :: l3, m3, j3, j_rlm
       integer(kind = kint) :: jgi_cor_ref1, jgi_cor_ref2, jei_cor_ref
+      integer(kind = kint) :: lgi_cor_ref1, lgi_cor_ref2, lei_cor_ref
+      integer(kind = kint) :: mgi_cor_ref1, mgi_cor_ref2, mei_cor_ref
       real(kind = kreal) :: err
 !
 !
@@ -70,12 +73,18 @@
         l3 = idx_gl_1d_rlm_j(j_rlm,2)
         m3 = idx_gl_1d_rlm_j(j_rlm,3)
 !
+        call get_dgree_order_by_full_j                                  &
+     &     (jgl_kcor(j3,1,2), lgi_cor_ref1, mgi_cor_ref1)
+        call get_dgree_order_by_full_j                                  &
+     &     (jgl_kcor(j3,2,2), lgi_cor_ref2, mgi_cor_ref2)
+        call get_dgree_order_by_full_j                                  &
+     &     (jgl_lcor(j3,1,2), lei_cor_ref, mei_cor_ref)
         jgi_cor_ref1 = find_local_sph_rlm_address(jmax_rlm,             &
-     &                          idx_gl_1d_rlm_j, jgl_kcor(j3,1,2))
+     &                idx_gl_1d_rlm_j, lgi_cor_ref1, mgi_cor_ref1)
         jgi_cor_ref2 = find_local_sph_rlm_address(jmax_rlm,             &
-     &                          idx_gl_1d_rlm_j, jgl_kcor(j3,2,2))
+     &                idx_gl_1d_rlm_j, lgi_cor_ref2, mgi_cor_ref2)
         jei_cor_ref = find_local_sph_rlm_address(jmax_rlm,              &
-     &                          idx_gl_1d_rlm_j, jgl_lcor(j3,1,2))
+     &                idx_gl_1d_rlm_j, lei_cor_ref, mei_cor_ref)
 !
         err = abs(gi_cor_rlm(j_rlm,1)-gk_cor(j3,1,2)) / gk_cor(j3,1,2)
         if(jgi_cor_rlm(j_rlm,1).ne.jgi_cor_ref1 .or. err .gt. 1.0E-11)  &

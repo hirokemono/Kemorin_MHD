@@ -8,7 +8,6 @@ TARGET_GEN_SPH_FULL =       gen_sph_grids_full
 TARGET_GEN_SPH_NOSF =       gen_sph_grids_gaunt
 TARGET_GEN_SPH_GRID =       gen_sph_grids
 TARGET_MAKE_SPH_RADIUS =    make_sph_mesh_radius
-TARGET_COR_TRIINT =         gaunt_coriolis
 TARGET_TEST_SPH_GRID =      check_sph_grids
 
 SOURCES = $(shell ls *.f90)
@@ -34,9 +33,6 @@ cmp_trans_sph_tests.o \
 analyzer_test_sph.o \
 main_test_sph.o
 
-MOD_COR_TRIINT = \
-gi_coriolis.o
-
 #
 #  -------------------------------------------------------------------------
 #
@@ -55,15 +51,13 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_TEST_SPH_GRID = $$(BUILDDIR)/$(TARGET_TEST_SPH_GRID)'     \
 	>> $(MAKENAME)
-	@echo 'TARGET_COR_TRIINT = $$(BUILDDIR)/$(TARGET_COR_TRIINT)'     \
-	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo sph_utils:   \
 	'$$(TARGET_GEN_SPH_FULL)    $$(TARGET_GEN_SPH_GRID)'   \
 	'$$(TARGET_MAKE_SPH_RADIUS) $$(TARGET_TEST_SPH_GRID)' \
-	'$$(TARGET_GEN_SPH_NOSF)    $$(TARGET_COR_TRIINT)'    >> $(MAKENAME)
+	'$$(TARGET_GEN_SPH_NOSF)'    >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_GEN_SPH_FULL)': '$$(MOD_GEN_SPH_GRID_FULL)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
@@ -104,14 +98,6 @@ target_task:
 	'-L. $$(LIBS_MESH_CHECK)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_COR_TRIINT):' \
-	'$$(MOD_COR_TRIINT) $$(LIB_FILES_MESH_UTIL)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_COR_TRIINT)' \
-	'$$(MOD_COR_TRIINT)' \
-	'-L. $$(LIBS_MESH_UTIL)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -127,8 +113,6 @@ mod_list:
 	@echo  $(MOD_MAKE_SPH_RADIUS) >> $(MAKENAME)
 	@echo  MOD_TEST_SPH_GRID=  \\ >> $(MAKENAME)
 	@echo  $(MOD_TEST_SPH_GRID) >> $(MAKENAME)
-	@echo  MOD_COR_TRIINT=  \\ >> $(MAKENAME)
-	@echo  $(MOD_COR_TRIINT) >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 module:

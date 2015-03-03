@@ -27,21 +27,21 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_schmidt_polynomial
+      use spherical_harmonics
 !
       implicit none
 !
-      integer(kind = kint) :: i, j, k, ii
+      integer(kind = kint) :: i, j, k, ii, jj
 !
       integer(kind = kint) :: inod
-      integer(kind = kint) :: jj,ll,mm
+      integer(kind = kint) :: ll, mm
 !
 !
       call allocate_schmidt_polynomial
 !
 !
-      jj = int( aint( e_potential_nod%bc_magnitude(j)) )
-      ll = int( aint( sqrt(e_potential_nod%bc_magnitude(j)) ))
-      mm = jj - ll*(ll+1)
+      jj = int(e_potential_nod%bc_magnitude(j))
+      call get_dgree_order_by_full_j(jj, ll, mm)
 !
       do k=1, bc_istack(i)-bc_istack(i-1)
        ii=ii+1

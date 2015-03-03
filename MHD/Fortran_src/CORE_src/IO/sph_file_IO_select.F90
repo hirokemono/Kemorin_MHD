@@ -16,9 +16,6 @@
 !!      subroutine sel_write_spectr_modes_rj_file(my_rank)
 !!      subroutine sel_write_geom_rtm_file(my_rank)
 !!      subroutine sel_write_modes_rlm_file(my_rank)
-!!
-!!      subroutine sel_read_int_4_sph_coriolis
-!!      subroutine sel_write_int_4_sph_coriolis
 !!@endverbatim
 !!
 !!@param my_rank    Process ID
@@ -273,55 +270,6 @@
       end if
 !
       end subroutine sel_write_modes_rlm_file
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine sel_read_int_4_sph_coriolis
-!
-      use m_int_4_sph_coriolis_IO
-      use int_4_sph_coriolis_IO
-      use int_4_sph_coriolis_IO_b
-      use gz_int_4_sph_coriolis_IO
-!
-!
-      if (ifmt_cor_int_file .eq. id_binary_file_fmt) then
-        call read_int_4_sph_coriolis_b
-!
-#ifdef ZLIB_IO
-      else if(ifmt_cor_int_file .eq. id_gzip_txt_file_fmt) then
-        call read_int_4_sph_coriolis_gz
-#endif
-!
-      else
-        call read_int_4_sph_coriolis
-      end if
-!
-      end subroutine sel_read_int_4_sph_coriolis
-!
-!------------------------------------------------------------------
-!
-      subroutine sel_write_int_4_sph_coriolis
-!
-      use m_int_4_sph_coriolis_IO
-      use int_4_sph_coriolis_IO
-      use int_4_sph_coriolis_IO_b
-      use gz_int_4_sph_coriolis_IO
-!
-!
-      if (ifmt_cor_int_file .eq. id_binary_file_fmt) then
-        call write_int_4_sph_coriolis_b
-!
-#ifdef ZLIB_IO
-      else if(ifmt_cor_int_file .eq. id_gzip_txt_file_fmt) then
-        call write_int_4_sph_coriolis_gz
-#endif
-!
-      else
-        call write_int_4_sph_coriolis
-      end if
-!
-      end subroutine sel_write_int_4_sph_coriolis
 !
 !------------------------------------------------------------------
 !

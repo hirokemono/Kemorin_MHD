@@ -38,14 +38,16 @@
       use m_node_phys_address
       use m_node_phys_data
       use m_physical_property
+      use spherical_harmonics
 !
       use dynamobench_r_func_sph_vecp
 !
       integer(kind = kint), intent(in) :: isig
-      integer(kind = kint) :: inod, ifl, j_rst
+      integer(kind = kint) :: inod, ifl, j_rst, l_rst, m_rst
 !
 !
       j_rst = ( isig-mod(isig,ikilo) )/ikilo
+      call get_dgree_order_by_full_j(j_rst, l_rst, m_rst)
 !
       ifl = 1
       if ( abs(depth_low_t/depth_high_t - 0.35) .lt. 1.0d-4) ifl = 2
@@ -60,7 +62,7 @@
          call dschmidt(colatitude(inod))
          call spheric(longitude(inod))
 !
-         call radial_function_sph_vecp(radius(inod), ifl, j_rst,        &
+         call radial_function_sph_vecp(radius(inod), ifl, j_rst, l_rst, &
      &       depth_high_t, depth_low_t)
 !
 !         d_nod(inod,iphys%i_mag_p) = 0.0d0
@@ -101,12 +103,14 @@
       use m_physical_property
 !
       use radial_func_sph_magne
+      use spherical_harmonics
 !
       integer ( kind = kint), intent(in) :: isig
-      integer ( kind = kint) :: inod, j, ifl, j_rst
+      integer ( kind = kint) :: inod, j, ifl, j_rst, l_rst, m_rst
 !
 !
       j_rst = ( isig-mod(isig,ikilo) )/ikilo
+      call get_dgree_order_by_full_j(j_rst, l_rst, m_rst)
 !
       ifl = 1
       if ( abs(depth_low_t/depth_high_t - 0.35) .lt. 1.0d-4) ifl = 2
@@ -121,7 +125,7 @@
          call dschmidt(colatitude(inod))
          call spheric(longitude(inod))
 !
-         call radial_function_sph(radius(inod), ifl, j_rst,             &
+         call radial_function_sph(radius(inod), ifl, j_rst, l_rst,      &
      &       depth_high_t, depth_low_t)
 !
          d_nod(inod,iphys%i_mag_p) = 0.0d0

@@ -4,7 +4,7 @@
 !!@author H. Matsui and H. Okuda
 !!@date Programmed in  Dec., 2012
 !
-!> @brief choose mean square data to output
+!> @brief Select mean square data to output
 !!
 !!@verbatim
 !!      subroutine init_sph_rms_4_monitor

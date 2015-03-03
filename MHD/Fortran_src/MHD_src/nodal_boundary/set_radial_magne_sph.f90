@@ -28,6 +28,7 @@
       use m_node_phys_address
       use m_node_phys_data
       use m_schmidt_polynomial
+      use spherical_harmonics
 !
       integer(kind = kint) :: i, j, k, l_f(3)
 !
@@ -39,8 +40,7 @@
       call allocate_schmidt_polynomial
 !
       jj = int( aint( magne_nod%bc_magnitude(j)) )
-      ll = int( aint( sqrt(magne_nod%bc_magnitude(j)) ))
-      mm = jj - ll
+      call get_dgree_order_by_full_j(jj, ll, mm)
 !
       do k=1, bc_istack(i)-bc_istack(i-1)
 !

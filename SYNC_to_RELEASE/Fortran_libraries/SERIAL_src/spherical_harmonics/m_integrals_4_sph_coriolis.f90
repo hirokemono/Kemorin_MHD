@@ -1,1 +1,0 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/spherical_harmonics/m_integrals_4_sph_coriolis.f90

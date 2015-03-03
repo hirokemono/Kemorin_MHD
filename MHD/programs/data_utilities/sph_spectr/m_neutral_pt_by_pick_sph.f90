@@ -1,7 +1,18 @@
-!m_neutral_pt_by_pick_sph.f90
-!      program m_neutral_pt_by_pick_sph
+!>@file   m_neutral_pt_by_pick_sph.f90
+!!@brief      module m_neutral_pt_by_pick_sph
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed in  Dec., 2012
 !
-!        programmed by H.Matsui on Dec., 2012
+!> @brief choose spectr data to output
+!!
+!!@verbatim
+!!      subroutine alloc_neutral_point
+!!      subroutine dealloc_neutral_point
+!!      subroutine find_field_address
+!!      subroutine set_radius_for_fdm
+!!      subroutine set_radial_grad_scalars(istep, time, buo_ratio)
+!!@endverbatim
 !
       module m_neutral_pt_by_pick_sph
 !
@@ -110,7 +121,7 @@
         radius_1d_rj_r(i) = r_pick_layer(i)
       end do
       do i = 1, num_pick_sph_mode
-        if(idx_pick_sph_gl(i) .eq. 0) ipick_l0m0 = i
+        if(idx_pick_sph_gl(i,1) .eq. 0) ipick_l0m0 = i
       end do
 !
       call allocate_dr_rj_noequi

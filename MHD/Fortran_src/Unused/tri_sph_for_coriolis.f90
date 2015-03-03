@@ -100,7 +100,7 @@
       use m_integrals_4_sph_coriolis
       use m_int_4_sph_coriolis_IO
       use set_integral_sph_coriolis
-      use sph_file_IO_select
+      use sph_coriolis_IO_select
 !
       integer(kind = kint), intent(in) :: ltr
 !

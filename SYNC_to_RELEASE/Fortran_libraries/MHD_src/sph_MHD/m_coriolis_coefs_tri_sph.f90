@@ -1,1 +1,0 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/MHD_src/sph_MHD/m_coriolis_coefs_tri_sph.f90

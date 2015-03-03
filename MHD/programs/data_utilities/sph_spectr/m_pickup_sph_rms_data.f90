@@ -9,7 +9,7 @@
 !!@author H. Matsui
 !!@date Programmed in Dec., 2012
 !
-!>@brief  Data IO routines for monitoring spectrum data
+!>@brief  Data IO routines for monitoring mean square spectrum data
 !!
 !!@verbatim
 !!      subroutine allocate_pick_sph_rms
@@ -40,7 +40,7 @@
 !
       integer(kind = kint) :: ntot_pick_sph_rms_mode = 0
       integer(kind = kint) :: num_pick_sph_rms_mode =  0
-      integer(kind = kint), allocatable :: idx_pick_sph_rms_gl(:)
+      integer(kind = kint), allocatable :: idx_pick_sph_rms_gl(:,:)
       integer(kind = kint), allocatable :: idx_pick_sph_rms_lc(:)
 !
       integer(kind = kint) :: ncomp_pick_sph_rms =  0
@@ -65,7 +65,7 @@
 !
       num = ntot_pick_sph_rms_mode*num_pick_layer
 !
-      allocate( idx_pick_sph_rms_gl(ntot_pick_sph_rms_mode) )
+      allocate( idx_pick_sph_rms_gl(ntot_pick_sph_rms_mode,3) )
       allocate( idx_pick_sph_rms_lc(ntot_pick_sph_rms_mode) )
       allocate( d_rms_pick_sph_lc(ncomp_pick_sph_rms,num) )
       allocate( d_rms_pick_sph_gl(ncomp_pick_sph_rms,num) )
@@ -137,7 +137,7 @@
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
 !
-      integer(kind = kint) :: inum, knum, j, l, m, ipick, i_fld
+      integer(kind = kint) :: inum, knum, ipick, i_fld
 !
 !
       if(num_pick_sph_rms_mode .eq. izero) return
@@ -146,15 +146,13 @@
       call open_sph_rms_4_monitor
 !
       do inum = 1, num_pick_sph_rms_mode
-        j = idx_pick_sph_rms_gl(inum)
-        l = int( aint(sqrt(dble(j))) )
-        m = j - l*(l+1)
         do knum = 1, num_pick_layer
           ipick = knum + (inum-1) * num_pick_layer
           write(id_pick_mode,'(i16,1pe23.14e3)', advance='NO')          &
      &           i_step, time
           write(id_pick_mode,'(i16,1pe23.14e3,2i16)', advance='NO')     &
-     &          id_pick_layer(knum), r_pick_layer(knum), l, m
+     &          id_pick_layer(knum), r_pick_layer(knum),                &
+     &          idx_pick_sph_rms_gl(inum,2:3)
           do i_fld = 1, ncomp_pick_sph_rms
             write(id_pick_mode,'(1pe23.14e3)', advance='NO')            &
      &              d_rms_pick_sph_gl(i_fld,ipick)
@@ -203,6 +201,8 @@
 !
       subroutine read_sph_rms_4_monitor(id_pick, i_step, time, ierr)
 !
+      use spherical_harmonics
+!
       integer(kind = kint), intent(in) :: id_pick
       integer(kind = kint), intent(inout) :: i_step, ierr
       real(kind = kreal), intent(inout) :: time
@@ -217,7 +217,10 @@
           read(id_pick,*,err=99,end=99) i_step, time,                   &
      &          id_pick_layer(knum), r_pick_layer(knum), l, m,          &
      &          d_rms_pick_sph_gl(1:ncomp_pick_sph_rms,ipick)
-          idx_pick_sph_rms_gl(inum) = l*(l+1) + m
+          idx_pick_sph_rms_gl(inum,1)                                   &
+     &              = get_idx_by_full_degree_order(l,m)
+          idx_pick_sph_rms_gl(inum,2) = l
+          idx_pick_sph_rms_gl(inum,3) = m
         end do
       end do
       return
