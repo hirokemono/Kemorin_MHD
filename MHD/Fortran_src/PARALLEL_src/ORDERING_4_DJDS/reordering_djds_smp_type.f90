@@ -12,7 +12,7 @@
 !!
 !!@verbatim
 !!      subroutine s_reordering_djds_smp_type(np_smp, NP, N,            &
-!!     &          ISTACK_N_smp, tbl_crs, djds_tbl)
+!!     &          ISTACK_N_smp, solver_C, tbl_crs, djds_tbl)
 !!@endverbatim
 !
       module reordering_djds_smp_type
@@ -28,10 +28,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_reordering_djds_smp_type(np_smp, NP, N,              &
-     &          ISTACK_N_smp, tbl_crs, djds_tbl)
+     &          ISTACK_N_smp, solver_C, tbl_crs, djds_tbl)
 !
       use t_crs_connect
       use t_solver_djds
+      use t_vector_for_solver
 !
       use m_matrix_work
       use m_colored_connect
@@ -42,6 +43,7 @@
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: NP, N
       integer(kind = kint), intent(in) :: ISTACK_N_smp(0:np_smp)
+      type(mpi_4_solver), intent(in) ::       solver_C
       type(CRS_matrix_connect), intent(in) :: tbl_crs
 !
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
@@ -57,7 +59,7 @@
 !      count_rcm
 !       (output:: NHYP, OLDtoNEW, NEWtoOLD, NLmax, NUmax)
 !
-      call count_rcm_type(NP, N, tbl_crs, djds_tbl)
+      call count_rcm_type(NP, N, solver_C, tbl_crs, djds_tbl)
 !
 !C +-----------------+
 !C | DJDS reordering |

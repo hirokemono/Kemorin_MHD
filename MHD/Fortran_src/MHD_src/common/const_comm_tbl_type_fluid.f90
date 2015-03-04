@@ -3,8 +3,8 @@
 !
 !     Programmed by H.Matsui on Dec., 2008
 !
-!      subroutine s_const_comm_tbl_type_fluid(vect, mesh, MHD_mesh)
-!        type(vectors_4_solver), intent(in) :: vect
+!      subroutine s_const_comm_tbl_type_fluid(solver_C, mesh, MHD_mesh)
+!        type(mpi_4_solver), intent(in) ::       solver_C
 !        type(mesh_geometry),    intent(in) :: mesh
 !
 !        type(mesh_data_MHD), intent(inout) :: MHD_mesh
@@ -24,14 +24,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine s_const_comm_tbl_type_fluid(vect, mesh, MHD_mesh)
+      subroutine s_const_comm_tbl_type_fluid(solver_C, mesh, MHD_mesh)
 !
       use m_control_parameter
       use t_vector_for_solver
       use t_mesh_data
       use t_geometry_data_MHD
 !
-      type(vectors_4_solver), intent(in) :: vect
+      type(mpi_4_solver), intent(in) :: solver_C
       type(mesh_geometry),    intent(in) :: mesh
 !
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
@@ -40,7 +40,7 @@
       if (mesh%node%numnod .eq. 0) then
         call set_empty_comm_tbl_type_fluid(MHD_mesh%nod_fl_comm)
       else
-        call set_comm_tbl_type_fluid(vect, mesh, MHD_mesh%fluid,        &
+        call set_comm_tbl_type_fluid(solver_C, mesh, MHD_mesh%fluid,    &
      &      MHD_mesh%nod_fl_comm)
       end if
 !
@@ -67,7 +67,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_comm_tbl_type_fluid(vect, mesh, fluid,             &
+      subroutine set_comm_tbl_type_fluid(solver_C, mesh, fluid,         &
      &          nod_fl_comm)
 !
       use calypso_mpi
@@ -79,13 +79,14 @@
       use set_comm_table_fluid
 !
       type(mesh_geometry), intent(in) :: mesh
-      type(vectors_4_solver),    intent(in) :: vect
+      type(mpi_4_solver), intent(in) ::       solver_C
       type(field_geometry_data), intent(in) :: fluid
 !
       type(communication_table), intent(inout) :: nod_fl_comm
 !
 !
-      call allocate_flags_reduced_comm(vect%nprocs, mesh%node%numnod)
+      call allocate_flags_reduced_comm                                  &
+     &   (solver_C%nprocs, mesh%node%numnod)
 !
       write(*,*) 'fluid%istack_ele_fld_smp(0)', fluid%istack_ele_fld_smp
       call mark_4_fluid_nod_by_ele(mesh%ele%numele,                     &

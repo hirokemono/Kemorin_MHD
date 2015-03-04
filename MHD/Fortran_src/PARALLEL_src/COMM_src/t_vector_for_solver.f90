@@ -19,13 +19,25 @@
       module   t_vector_for_solver
 !
       use m_precision
+!      use calypso_mpi
 !
       implicit  none
 !
-      type vectors_4_solver
+!
+!>      Structure for communicatiors for solver
+      type mpi_4_solver
+!>        Communicator for each level
+        integer :: SOLVER_COMM
+!>        MPI rank for each level
+        integer(kind=kint) :: MG_rank
+!>        Total process count (1 to petot)
         integer(kind=kint) :: nprocs
-!             total pe count (1 to petot)
-! 
+!>        Lavel for communicator
+        integer(kind=kint) :: icolor_MG
+      end type mpi_4_solver
+!
+!>      Structure for vectors for solver
+      type vectors_4_solver
         real(kind=kreal), pointer :: x_vec(:)
         real(kind=kreal), pointer :: b_vec(:)
         integer(kind = kint) :: isize_solver_vect

@@ -232,11 +232,11 @@
 !
 !C
 !C-- change B,X
-
-       call change_order_2_solve_bx1(NP, PEsmpTOT, STACKmcG,            &
+      call change_order_2_solve_bx1(NP, PEsmpTOT, STACKmcG,             &
      &           NtoO, B, X)
 
-       call clear_vector_solve_11(NP, W(1,3) )
+      write(*,*) 'clear_vector_solve_11', my_rank
+      call clear_vector_solve_11(NP, W(1,3) )
 
 !C
 !C-- INTERFACE data EXCHANGE

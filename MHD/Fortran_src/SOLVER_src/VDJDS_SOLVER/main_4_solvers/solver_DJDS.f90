@@ -55,6 +55,7 @@
 !
       use calypso_mpi
 !
+      use m_flags_4_solvers
       use solver_VCG11_DJDS_SMP
       use solver_VBiCGSTAB11_DJDS_SMP
       use solver_VGPBiCG11_DJDS_SMP
@@ -71,49 +72,27 @@
       ERROR = 0
 !
 !C-- BiCGSTAB
-      if ( ((METHOD(1:1).eq.'B').or.(METHOD(1:1).eq.'b')) .and.         &
-     &     ((METHOD(2:2).eq.'I').or.(METHOD(2:2).eq.'i')) .and.         &
-     &     ((METHOD(3:3).eq.'C').or.(METHOD(3:3).eq.'c')) .and.         &
-     &     ((METHOD(4:4).eq.'G').or.(METHOD(4:4).eq.'g')) .and.         &
-     &     ((METHOD(5:5).eq.'S').or.(METHOD(5:5).eq.'s')) ) then
+      if(solver_iflag(METHOD) .eq. iflag_bicgstab) then
         call init_VBiCGSTAB11_DJDS_SMP(NP, PEsmpTOT, PRECOND)
 !
 !C
 !C-- GPBiCG
-      else if ( ((METHOD(1:1).eq.'G').or.(METHOD(1:1).eq.'g')) .and.    &
-     &          ((METHOD(2:2).eq.'P').or.(METHOD(2:2).eq.'p')) .and.    &
-     &          ((METHOD(3:3).eq.'B').or.(METHOD(3:3).eq.'b')) .and.    &
-     &          ((METHOD(4:4).eq.'I').or.(METHOD(4:4).eq.'i')) .and.    &
-     &          ((METHOD(5:5).eq.'C').or.(METHOD(5:5).eq.'c')) .and.    &
-     &          ((METHOD(6:6).eq.'G').or.(METHOD(6:6).eq.'g')) ) then
+      else if(solver_iflag(METHOD) .eq. iflag_gpbicg) then
         call init_VGPBiCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND)
 !
 !C
 !C-- CG
-
-      else if ( ((METHOD(1:1).eq.'C').or.(METHOD(1:1).eq.'c')) .and.    &
-     &          ((METHOD(2:2).eq.'G').or.(METHOD(2:2).eq.'g')) ) then
+      else if(solver_iflag(METHOD) .eq. iflag_cg) then
         call init_VCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND)
 !
 !
 !C
 !C-- GAuss-Zeidel
-
-      else if ( ((METHOD(1:1).eq.'G').or.(METHOD(1:1).eq.'g')) .and.    &
-     &          ((METHOD(2:2).eq.'A').or.(METHOD(2:2).eq.'a')) .and.    &
-     &          ((METHOD(3:3).eq.'U').or.(METHOD(3:3).eq.'u')) .and.    &
-     &          ((METHOD(4:4).eq.'S').or.(METHOD(4:4).eq.'s')) .and.    &
-     &          ((METHOD(5:5).eq.'S').or.(METHOD(5:5).eq.'s')) ) then
+      else if(solver_iflag(METHOD) .eq. iflag_gausszeidel) then
         call init_VGAUSS_ZEIDEL11_DJDS_SMP(NP, PEsmpTOT)
 !C
 !C-- Jacobi
-
-      else if ( ((METHOD(1:1).eq.'J').or.(METHOD(1:1).eq.'j')) .and.    &
-     &          ((METHOD(2:2).eq.'A').or.(METHOD(2:2).eq.'a')) .and.    &
-     &          ((METHOD(3:3).eq.'C').or.(METHOD(3:3).eq.'c')) .and.    &
-     &          ((METHOD(4:4).eq.'O').or.(METHOD(4:4).eq.'o')) .and.    &
-     &          ((METHOD(5:5).eq.'B').or.(METHOD(5:5).eq.'b')) .and.    &
-     &          ((METHOD(6:6).eq.'I').or.(METHOD(6:6).eq.'i')) ) then
+      else if(solver_iflag(METHOD) .eq. iflag_jacobi) then
         call init_VJACOBI11_DJDS_SMP(NP, PEsmpTOT)
       else
         ERROR = 1
@@ -148,6 +127,7 @@
 !
       use calypso_mpi
 !
+      use m_flags_4_solvers
       use solver_VCG11_DJDS_SMP
       use solver_VBiCGSTAB11_DJDS_SMP
       use solver_VGPBiCG11_DJDS_SMP
@@ -244,12 +224,7 @@
 
 !C
 !C-- BiCGSTAB
-      if ( ((METHOD(1:1).eq.'B').or.(METHOD(1:1).eq.'b')) .and.         &
-     &     ((METHOD(2:2).eq.'I').or.(METHOD(2:2).eq.'i')) .and.         &
-     &     ((METHOD(3:3).eq.'C').or.(METHOD(3:3).eq.'c')) .and.         &
-     &     ((METHOD(4:4).eq.'G').or.(METHOD(4:4).eq.'g')) .and.         &
-     &     ((METHOD(5:5).eq.'S').or.(METHOD(5:5).eq.'s')) ) then
-!
+      if(solver_iflag(METHOD) .eq. iflag_bicgstab) then
        call solve_VBiCGSTAB11_DJDS_SMP                                  &
      &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
@@ -261,13 +236,7 @@
 !
 !C
 !C-- GPBiCG
-      else if ( ((METHOD(1:1).eq.'G').or.(METHOD(1:1).eq.'g')) .and.    &
-     &          ((METHOD(2:2).eq.'P').or.(METHOD(2:2).eq.'p')) .and.    &
-     &          ((METHOD(3:3).eq.'B').or.(METHOD(3:3).eq.'b')) .and.    &
-     &          ((METHOD(4:4).eq.'I').or.(METHOD(4:4).eq.'i')) .and.    &
-     &          ((METHOD(5:5).eq.'C').or.(METHOD(5:5).eq.'c')) .and.    &
-     &          ((METHOD(6:6).eq.'G').or.(METHOD(6:6).eq.'g')) ) then
-!
+      else if(solver_iflag(METHOD) .eq. iflag_gpbicg) then
        call solve_VGPBiCG11_DJDS_SMP                                    &
      &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
@@ -279,10 +248,7 @@
 !
 !C
 !C-- CG
-
-      else if ( ((METHOD(1:1).eq.'C').or.(METHOD(1:1).eq.'c')) .and.    &
-     &          ((METHOD(2:2).eq.'G').or.(METHOD(2:2).eq.'g')) ) then
-!
+      else if(solver_iflag(METHOD) .eq. iflag_cg) then
         call solve_VCG11_DJDS_SMP                                       &
      &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
@@ -292,16 +258,9 @@
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !
-!
 !C
 !C-- GAuss-Zeidel
-
-      else if ( ((METHOD(1:1).eq.'G').or.(METHOD(1:1).eq.'g')) .and.    &
-     &          ((METHOD(2:2).eq.'A').or.(METHOD(2:2).eq.'a')) .and.    &
-     &          ((METHOD(3:3).eq.'U').or.(METHOD(3:3).eq.'u')) .and.    &
-     &          ((METHOD(4:4).eq.'S').or.(METHOD(4:4).eq.'s')) .and.    &
-     &          ((METHOD(5:5).eq.'S').or.(METHOD(5:5).eq.'s')) ) then
-!
+      else if(solver_iflag(METHOD) .eq. iflag_gausszeidel) then
         call solve_VGAUSS_ZEIDEL11_DJDS_SMP                             &
      &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
@@ -312,14 +271,7 @@
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !C
 !C-- Jacobi
-
-      else if ( ((METHOD(1:1).eq.'J').or.(METHOD(1:1).eq.'j')) .and.    &
-     &          ((METHOD(2:2).eq.'A').or.(METHOD(2:2).eq.'a')) .and.    &
-     &          ((METHOD(3:3).eq.'C').or.(METHOD(3:3).eq.'c')) .and.    &
-     &          ((METHOD(4:4).eq.'O').or.(METHOD(4:4).eq.'o')) .and.    &
-     &          ((METHOD(5:5).eq.'B').or.(METHOD(5:5).eq.'b')) .and.    &
-     &          ((METHOD(6:6).eq.'I').or.(METHOD(6:6).eq.'i')) ) then
-!
+      else if(solver_iflag(METHOD) .eq. iflag_jacobi) then
         call solve_VJACOBI11_DJDS_SMP                                   &
      &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
@@ -328,7 +280,6 @@
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!
       endif
 
       ITERactual= ITR
@@ -360,6 +311,7 @@
 !
       use calypso_mpi
 !
+      use m_flags_4_solvers
       use solver_VCG11_DJDS_SMP
       use solver_VBiCGSTAB11_DJDS_SMP
       use solver_VGPBiCG11_DJDS_SMP
@@ -418,12 +370,7 @@
 
 !C
 !C-- BiCGSTAB
-      if ( ((METHOD(1:1).eq.'B').or.(METHOD(1:1).eq.'b')) .and.         &
-     &     ((METHOD(2:2).eq.'I').or.(METHOD(2:2).eq.'i')) .and.         &
-     &     ((METHOD(3:3).eq.'C').or.(METHOD(3:3).eq.'c')) .and.         &
-     &     ((METHOD(4:4).eq.'G').or.(METHOD(4:4).eq.'g')) .and.         &
-     &     ((METHOD(5:5).eq.'S').or.(METHOD(5:5).eq.'s')) ) then
-!
+      if(solver_iflag(METHOD) .eq. iflag_bicgstab) then
        call VBiCGSTAB11_DJDS_SMP                                        &
      &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
@@ -435,13 +382,7 @@
 !
 !C
 !C-- GPBiCG
-      else if ( ((METHOD(1:1).eq.'G').or.(METHOD(1:1).eq.'g')) .and.    &
-     &          ((METHOD(2:2).eq.'P').or.(METHOD(2:2).eq.'p')) .and.    &
-     &          ((METHOD(3:3).eq.'B').or.(METHOD(3:3).eq.'b')) .and.    &
-     &          ((METHOD(4:4).eq.'I').or.(METHOD(4:4).eq.'i')) .and.    &
-     &          ((METHOD(5:5).eq.'C').or.(METHOD(5:5).eq.'c')) .and.    &
-     &          ((METHOD(6:6).eq.'G').or.(METHOD(6:6).eq.'g')) ) then
-!
+      else if(solver_iflag(METHOD) .eq. iflag_gpbicg) then
        call VGPBiCG11_DJDS_SMP                                          &
      &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
@@ -453,10 +394,7 @@
 !
 !C
 !C-- CG
-
-      else if ( ((METHOD(1:1).eq.'C').or.(METHOD(1:1).eq.'c')) .and.    &
-     &          ((METHOD(2:2).eq.'G').or.(METHOD(2:2).eq.'g')) ) then
-!
+      else if(solver_iflag(METHOD) .eq. iflag_cg) then
         call VCG11_DJDS_SMP                                             &
      &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
@@ -469,13 +407,7 @@
 !
 !C
 !C-- GAuss-Zeidel
-
-      else if ( ((METHOD(1:1).eq.'G').or.(METHOD(1:1).eq.'g')) .and.    &
-     &          ((METHOD(2:2).eq.'A').or.(METHOD(2:2).eq.'a')) .and.    &
-     &          ((METHOD(3:3).eq.'U').or.(METHOD(3:3).eq.'u')) .and.    &
-     &          ((METHOD(4:4).eq.'S').or.(METHOD(4:4).eq.'s')) .and.    &
-     &          ((METHOD(5:5).eq.'S').or.(METHOD(5:5).eq.'s')) ) then
-!
+      else if(solver_iflag(METHOD) .eq. iflag_gausszeidel) then
         call VGAUSS_ZEIDEL11_DJDS_SMP                                   &
      &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &
@@ -486,14 +418,7 @@
      &           STACK_EXPORT, NOD_EXPORT, PRECOND)
 !C
 !C-- Jacobi
-
-      else if ( ((METHOD(1:1).eq.'J').or.(METHOD(1:1).eq.'j')) .and.    &
-     &          ((METHOD(2:2).eq.'A').or.(METHOD(2:2).eq.'a')) .and.    &
-     &          ((METHOD(3:3).eq.'C').or.(METHOD(3:3).eq.'c')) .and.    &
-     &          ((METHOD(4:4).eq.'O').or.(METHOD(4:4).eq.'o')) .and.    &
-     &          ((METHOD(5:5).eq.'B').or.(METHOD(5:5).eq.'b')) .and.    &
-     &          ((METHOD(6:6).eq.'I').or.(METHOD(6:6).eq.'i')) ) then
-!
+      else if(solver_iflag(METHOD) .eq. iflag_jacobi) then
         call VJACOBI11_DJDS_SMP                                         &
      &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
      &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,                &

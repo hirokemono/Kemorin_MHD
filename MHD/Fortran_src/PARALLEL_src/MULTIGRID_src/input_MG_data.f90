@@ -41,7 +41,7 @@
 !
       do i_level = 1, num_MG_level
         iflag_mesh_file_fmt = ifmt_MG_mesh_file(i_level)
-        if(my_rank .lt. MG_vector(i_level)%nprocs ) then
+        if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
 !
           mesh_file_head = MG_mesh_file_head(i_level)
           call sel_read_mesh(my_rank)
@@ -78,7 +78,7 @@
      &        MG_surf_mesh(i_level), MG_edge_mesh(i_level))
         end if
 !
-        call sync_group_name_4_empty(MG_vector(i_level)%nprocs,         &
+        call sync_group_name_4_empty(MG_mpi(i_level)%nprocs,            &
      &      MG_mesh(i_level)%group%nod_grp,                             &
      &      MG_mesh(i_level)%group%ele_grp,                             &
      &      MG_mesh(i_level)%group%surf_grp)
@@ -97,7 +97,7 @@
 !
 !
       do i_level = 1, num_MG_level
-        if(i_level.eq.1 .or. my_rank.lt.MG_vector(i_level-1)%nprocs)    &
+        if(i_level.eq.1 .or. my_rank.lt.MG_mpi(i_level-1)%nprocs)       &
      &      then
           table_file_header = MG_f2c_tbl_head(i_level)
           ifmt_itp_table_file = ifmt_MG_table_file(i_level)
@@ -114,7 +114,7 @@
 !
 !
       do i_level = 1, num_MG_level
-        if(i_level.eq.1 .or. my_rank.lt.MG_vector(i_level-1)%nprocs)    &
+        if(i_level.eq.1 .or. my_rank.lt.MG_mpi(i_level-1)%nprocs)       &
      &      then
           table_file_header = MG_c2f_tbl_head(i_level)
           ifmt_itp_table_file = ifmt_MG_table_file(i_level)
@@ -132,7 +132,7 @@
 !
       if (iflag_MG_commute_by_ele .gt. 0) then
         do i_level = 1, num_MG_level
-          if(i_level.eq.1 .or. my_rank.lt.MG_vector(i_level-1)%nprocs)  &
+          if(i_level.eq.1 .or. my_rank.lt.MG_mpi(i_level-1)%nprocs)     &
      &      then
             table_file_header = MG_f2c_eletbl_head(i_level)
             call sel_read_interpolate_table(my_rank, ierr)

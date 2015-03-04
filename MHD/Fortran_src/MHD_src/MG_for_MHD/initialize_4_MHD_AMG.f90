@@ -13,6 +13,7 @@
       use m_machine_parameter
       use m_type_AMG_mesh
       use m_type_AMG_data_4_MHD
+      use m_type_AMG_data
       use calypso_mpi
 !
       implicit none
@@ -52,7 +53,9 @@
       integer(kind = kint) :: i_level
 !
 !
-      if (iflag_debug.ge.1 ) write(*,*) 'alloc_iccgN_vec_type'
+      call split_multigrid_comms
+!
+      if (iflag_debug .gt. 0) write(*,*) 'alloc_iccgN_vec_type'
       MG_vector(0)%isize_solver_vect = -1
       call alloc_iccgN_vec_type                                         &
      &           (isix, numnod,  MG_vector(0))
@@ -69,7 +72,7 @@
 !
 !
       do i_level = 1, num_MG_level
-        if(my_rank .lt. MG_vector(i_level)%nprocs ) then
+        if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'set_layers_type_4_MHD', i_level
           call set_layers_type_4_MHD(MG_mesh(i_level)%mesh,             &
@@ -115,14 +118,14 @@
       do i_level = 1, num_MG_level
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_const_comm_tbl_type_fluid', i_level
-        call s_const_comm_tbl_type_fluid(MG_vector(i_level),            &
+        call s_const_comm_tbl_type_fluid(MG_mpi(i_level),               &
      &      MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level) )
       end do
 !
 !     ---------------------
 !
       do i_level = 1, num_MG_level
-        if(my_rank .lt. MG_vector(i_level)%nprocs ) then
+        if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            's_const_bc_infty_surf_type', i_level
           call s_const_bc_infty_surf_type                               &
@@ -135,7 +138,7 @@
 !     --------------------- 
 !
       do i_level = 1, num_MG_level
-        if(my_rank .lt. MG_vector(i_level)%nprocs ) then
+        if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'const_jacobian_type', i_level
           call const_jacobian_type(MG_mesh(i_level)%mesh,               &
@@ -184,7 +187,7 @@
 !     --------------------- 
 !
       do i_level = 1, num_MG_level
-        if(my_rank .lt. MG_vector(i_level)%nprocs ) then
+        if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            's_set_table_type_RHS_assemble', i_level
           call s_set_table_type_RHS_assemble( MG_mesh(i_level)%mesh,    &
@@ -200,10 +203,11 @@
 !     --------------------- 
 !
       do i_level = 1, num_MG_level
-        if(my_rank .lt. MG_vector(i_level)%nprocs ) then
+        if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            's_set_djds_connectivity_type', i_level
-          call s_set_djds_connectivity_type(MG_mesh(i_level)%mesh,      &
+          call s_set_djds_connectivity_type                             &
+     &       (MG_mesh(i_level)%mesh, MG_mpi(i_level),                   &
      &        MG_next_table(i_level), MG_djds_tbl(i_level) )
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
@@ -275,24 +279,14 @@
      &      MG_djds_tbl(i_level), MG_djds_tbl_fl(i_level),              &
      &      MG_djds_const_idx(i_level), MG_djds_const_idx_fl(i_level) )
 !
-        if(MG_mesh(i_level)%mesh%ele%nnod_4_ele .eq. num_t_linear) then
-          if(iflag_debug .gt. 0) write(*,*) 'link_MG_djds_const_lin_idx'
-          call link_MG_djds_const_lin_idx(num_MG_level)
-        else
-          if(iflag_debug .gt. 0)                                        &
-     &          write(*,*) 'set_MHD_idx_linear_mat_type'
-          call set_MHD_idx_linear_mat_type( MG_mesh(i_level)%mesh,      &
-     &        MG_MHD_mesh(i_level), MG_FEM_tbl(i_level),                &
-     &        MG_djds_tbl(i_level), MG_djds_tbl_fl(i_level),            &
-     &        MG_djds_const_idx_l(i_level),                             &
-     &        MG_djds_const_idx_fll(i_level) )
-        end if
+        if(iflag_debug .gt. 0) write(*,*) 'link_MG_djds_const_lin_idx'
+        call link_MG_djds_const_lin_idx(num_MG_level)
       end do
 !
 !     ---------------------
 !
       do i_level = 1, num_MG_level
-        if(my_rank .lt. MG_vector(i_level)%nprocs) then
+        if(my_rank .lt. MG_mpi(i_level)%nprocs) then
           if(iflag_debug .gt. 0) write(*,*) 'alloc_MG_AMG_matrices'
           call alloc_MG_AMG_matrices( MG_mesh(i_level),                 &
      &      MG_djds_tbl(i_level), MG_djds_tbl_fl(i_level),              &
@@ -327,7 +321,7 @@
      &    MG_mat_press(0), MG_mat_magp(0))
 !
       do i_level = 1, num_MG_level
-        if(my_rank .lt. MG_vector(i_level)%nprocs) then
+        if(my_rank .lt. MG_mpi(i_level)%nprocs) then
           if (iflag_debug.eq.1) write(*,*) 'set MG matrices', i_level
           call s_set_aiccg_matrices_type(MG_mesh(i_level),              &
      &      MG_surf_mesh(i_level),  MG_MHD_mesh(i_level),               &
@@ -348,7 +342,7 @@
       end do
 !
       do i_level = 1, num_MG_level
-        if(my_rank .lt. MG_vector(i_level)%nprocs) then
+        if(my_rank .lt. MG_mpi(i_level)%nprocs) then
           if (iflag_debug.gt.0) write(*,*) 'preconditioning', i_level
           call s_matrices_precond_type(PRECOND_MG,                      &
      &      MG_djds_tbl(i_level), MG_djds_tbl_fl(i_level),              &

@@ -140,13 +140,14 @@
         NP_c = mat11(i+1)%num_diag
         ierr = IER
 !
-        write(*,*) 'solve_DJDS11_struct', i
         if(NP_f.gt.0) then
+          write(*,*) 'solve_DJDS11_struct', i, my_rank
           call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                &
      &      djds_tbl(i), mat11(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
      &      EPS_MG, iter_mid, iter_res)
         else
+          write(*,*) 'empty_solve_DJDS_kemo', i, my_rank
           call empty_solve_DJDS_kemo(EPS_MG, iter_mid, iter_res, ierr,  &
      &        METHOD_MG)
         end if

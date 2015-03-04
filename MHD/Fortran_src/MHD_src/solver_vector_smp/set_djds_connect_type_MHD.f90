@@ -45,7 +45,7 @@
 !
 !
       do i_level = 1, num_MG_level
-        if(my_rank .lt. MG_vector(i_level)%nprocs ) then
+        if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &       'set_djds_layer_connect_type fluid', i_level
           call set_djds_layer_connect_type                              &
@@ -53,7 +53,7 @@
      &       MG_MHD_mesh(i_level)%fluid%iele_start_fld,                 &
      &       MG_MHD_mesh(i_level)%fluid%iele_end_fld,                   &
      &       MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level)%nod_fl_comm,   &
-     &       MG_djds_tbl_fl(i_level) )
+     &       MG_mpi(i_level), MG_djds_tbl_fl(i_level) )
 !
 !
 !          call set_djds_layer_connect_type                             &
@@ -61,14 +61,14 @@
 !     &       MG_MHD_mesh(i_level)%conduct%iele_start_fld,              &
 !     &       MG_MHD_mesh(i_level)%conduct%iele_end_fld,                &
 !     &       MG_mesh(i_level)%mesh, MG_mesh(i_level)%mesh%nod_comm,    &
-!     &       MG_djds_tbl_cd(i_level))
+!     &       MG_mpi(i_level), MG_djds_tbl_cd(i_level))
 !
 !          call set_djds_layer_connect_type                             &
 !     &      (MG_mesh(i_level)%mesh%ele%nnod_4_ele,                     &
 !     &       MG_MHD_mesh(i_level)%insulate%iele_start_fld,             &
 !     &       MG_MHD_mesh(i_level)%insulate%iele_end_fld,               &
 !     &       MG_mesh(i_level)%mesh,  MG_mesh(i_level)%mesh%nod_comm,   &
-!     &       MG_djds_tbl_ins(i_level))
+!     &       MG_mpi(i_level), MG_djds_tbl_ins(i_level))
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
      &       'empty_djds_connectivity_type fluid', i_level
@@ -102,7 +102,7 @@
 !
 !
       do i_level = 1, num_MG_level
-        if(my_rank .lt. MG_vector(i_level)%nprocs) then
+        if(my_rank .lt. MG_mpi(i_level)%nprocs) then
           if( MG_mesh(i_level)%mesh%ele%nnod_4_ele                      &
      &      .eq. num_t_linear) then
             call link_djds_connect_structs(MG_djds_tbl(i_level),        &
@@ -121,25 +121,25 @@
             call set_djds_layer_connect_type(num_t_linear,              &
      &         ione, MG_mesh(i_level)%mesh%ele%numele,                  &
      &         MG_mesh(i_level)%mesh, MG_mesh(i_level)%mesh%nod_comm,   &
-     &         MG_djds_tbl_l(i_level))
+     &         MG_mpi(i_level), MG_djds_tbl_l(i_level))
 !
             call set_djds_layer_connect_type(num_t_linear,              &
      &         MG_MHD_mesh(i_level)%fluid%iele_start_fld,               &
      &         MG_MHD_mesh(i_level)%fluid%iele_end_fld,                 &
      &         MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level)%nod_fl_comm, &
-     &         MG_djds_tbl_fll(i_level))
+     &         MG_mpi(i_level), MG_djds_tbl_fll(i_level))
 !
 !            call set_djds_layer_connect_type(num_t_linear,             &
 !     &         MG_MHD_mesh(i_level)%conduct%iele_start_fld,            &
 !     &         MG_MHD_mesh(i_level)%conduct%iele_end_fld,              &
 !     &         MG_mesh(i_level)%mesh, MG_mesh(i_level)%mesh%nod_comm,  &
-!     &         MG_djds_tbl_cdl(i_level))
+!     &         MG_mpi(i_level), MG_djds_tbl_cdl(i_level))
 !
 !            call set_djds_layer_connect_type(num_t_linear,             &
 !     &         MG_MHD_mesh(i_level)%insulate%iele_start_fld,           &
 !     &         MG_MHD_mesh(i_level)%insulate%iele_end_fld,             &
 !     &         MG_mesh(i_level)%mesh, MG_mesh(i_level)%mesh%nod_comm,  &
-!     &         MG_djds_tbl_insl(i_level))
+!     &         MG_mpi(i_level), MG_djds_tbl_insl(i_level))
           end if
         else
           call empty_djds_connectivity_type(MG_mesh(i_level)%mesh,      &

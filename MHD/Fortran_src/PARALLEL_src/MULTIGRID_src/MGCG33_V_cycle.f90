@@ -175,8 +175,6 @@
         call interpolate_type_3(NP_c, NP_f, MG_comm(i),                 &
      &      MG_itp(i+1)%c2f,  MG_vect(i+1)%x_vec, MG_vect(i)%x_vec,     &
      &      PEsmpTOT)
-      call calypso_MPI_barrier
-      call calypso_MPI_abort(ierr_CG, 'tako')
 !
 !
 !C calculate residual

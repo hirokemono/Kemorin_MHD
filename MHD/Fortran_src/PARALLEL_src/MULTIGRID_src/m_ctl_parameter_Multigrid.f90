@@ -60,7 +60,7 @@
           call calypso_MPI_abort(ierr_CG, e_message)
         end if
 !
-        MG_vector(1:num_MG_level)%nprocs                                &
+        MG_mpi(1:num_MG_level)%nprocs                                   &
      &         = num_MG_subdomain_ctl%ivec(1:num_MG_level)
         call dealloc_control_array_int(num_MG_subdomain_ctl)
 !
@@ -163,7 +163,7 @@
 !
         if (iflag_debug .gt. 0) then
           do i = 1, num_MG_level
-            write(*,*) 'MG_mesh_file_head', MG_vector(i)%nprocs,        &
+            write(*,*) 'MG_mesh_file_head', MG_mpi(i)%nprocs,           &
      &                trim(MG_mesh_file_head(i))
 !
             write(*,*) 'MG_f2c_tbl_head: ', trim(MG_f2c_tbl_head(i))

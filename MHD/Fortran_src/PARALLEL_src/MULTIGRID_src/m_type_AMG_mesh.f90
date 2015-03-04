@@ -21,25 +21,25 @@
       implicit  none
 !
 !
-      type(mesh_data), target :: MG_mesh(max_MG_level)
-      type(element_comms) ::    MG_ele_mesh(max_MG_level)
-      type(surface_geometry) :: MG_surf_mesh(max_MG_level)
-      type(edge_geometry) ::    MG_edge_mesh(max_MG_level)
+      type(mesh_data), target, save :: MG_mesh(max_MG_level)
+      type(element_comms), save ::    MG_ele_mesh(max_MG_level)
+      type(surface_geometry), save :: MG_surf_mesh(max_MG_level)
+      type(edge_geometry), save ::    MG_edge_mesh(max_MG_level)
 !   mesh data structure
 !
-      type(MG_itp_table) :: MG_itp(max_MG_level)
+      type(MG_itp_table), save :: MG_itp(max_MG_level)
 !   interpolation table structure for interpolation
 !
 !
-      integer(kind = kint) :: iflag_MG_commute_by_ele = 0
-      type(interpolate_table) :: MG_c2f_ele_tbl(max_MG_level)
+      integer(kind = kint), save :: iflag_MG_commute_by_ele = 0
+      type(interpolate_table), save :: MG_c2f_ele_tbl(max_MG_level)
 !   interpolation table structure for elemnent averaging
 !
-      type(jacobians_type) :: MG_jacobians(max_MG_level)
+      type(jacobians_type), save :: MG_jacobians(max_MG_level)
 !   jacobians for mesh
 !
-      type(tables_4_FEM_assembles) ::    MG_FEM_tbl(max_MG_level)
-      type(arrays_finite_element_mat) :: MG_FEM_mat(max_MG_level)
+      type(tables_4_FEM_assembles), save ::    MG_FEM_tbl(max_MG_level)
+      type(arrays_finite_element_mat), save :: MG_FEM_mat(max_MG_level)
 !   table for FEM assemble
 !
 !      work structure for matrix assemble

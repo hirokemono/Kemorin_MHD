@@ -102,9 +102,9 @@
 !        call set_idx_4_mat_type_part(mesh, MHD_mesh%insulate,          &
 !     &      rhs_tbl, djds_tbl_ins, djds_const_ins)
 !
-      write(*,*) 'dealloc_type_4_djds_table'
+      write(*,*) 'dealloc_type_4_djds_table djds_tbl'
       call dealloc_type_4_djds_table(djds_tbl)
-      write(*,*) 'dealloc_type_4_djds_table'
+      write(*,*) 'dealloc_type_4_djds_table djds_tbl_fl'
       call dealloc_type_4_djds_table(djds_tbl_fl)
 !      call dealloc_type_4_djds_table(djds_tbl_cd)
 !      call dealloc_type_4_djds_table(djds_tbl_ins)

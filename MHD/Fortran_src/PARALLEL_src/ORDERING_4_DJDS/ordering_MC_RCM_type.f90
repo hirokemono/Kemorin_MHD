@@ -11,7 +11,7 @@
 !>      RCM ordering from CRS matrix
 !!
 !!@verbatim
-!!      subroutine count_rcm_type(NP, N, tbl_crs, djds_tbl)
+!!      subroutine count_rcm_type(NP, N, solver_C, tbl_crs, djds_tbl)
 !!@endverbatim
 !
       module ordering_MC_RCM_type
@@ -27,12 +27,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_rcm_type(NP, N, tbl_crs, djds_tbl)
+      subroutine count_rcm_type(NP, N, solver_C, tbl_crs, djds_tbl)
 !
       use calypso_mpi
       use m_machine_parameter
       use t_crs_connect
       use t_solver_djds
+      use t_vector_for_solver
 !
       use m_iccg_parameter
       use m_matrix_work
@@ -43,6 +44,7 @@
 !
       integer(kind = kint), intent(in) :: NP, N
       type(CRS_matrix_connect), intent(in) :: tbl_crs
+      type(mpi_4_solver), intent(in) :: solver_C
 !
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
@@ -143,7 +145,7 @@
 !C
 !C-- ORDERING
         call MPI_allREDUCE (djds_tbl%NHYP, NHYPmax, ione,               &
-     &      CALYPSO_INTEGER, MPI_MAX, CALYPSO_COMM, ierr_MPI)
+     &      CALYPSO_INTEGER, MPI_MAX, solver_C%SOLVER_COMM, ierr_MPI)
 
         NCOLORtot= min_color
         if (NCOLORtot.gt.NHYPmax/itwo) then
@@ -169,7 +171,7 @@
      &      item_mc_l, item_mc_u, NCOLORtot, IVECmc, IVnew, IW, IFLAG)
 !
         call MPI_allREDUCE (IFLAG, IFLAGmax, 1, CALYPSO_INTEGER,        &
-     &                    MPI_MAX, CALYPSO_COMM, ierr_MPI)
+     &                    MPI_MAX, solver_C%SOLVER_COMM, ierr_MPI)
 !
         if (IFLAGmax.eq.1) then
           NCOLORtot= NCOLORtot + 1

@@ -36,6 +36,8 @@
       use m_work_4_dynamic_model
       use m_work_layer_correlate
       use m_boundary_condition_IDs
+      use m_flags_4_solvers
+      use m_solver_djds_MHD
 !
       use m_check_subroutines
       use m_cal_max_indices
@@ -161,6 +163,9 @@
 !
 !  -------------------------------
 !
+      if (iflag_debug.eq.1) write(*,*) 'copy_communicator_4_MHD'
+      call copy_communicator_4_MHD
+!
       if (iflag_debug.eq.1) write(*,*) 'init_send_recv'
       call init_send_recv
 !
@@ -244,14 +249,7 @@
 !
 !     ---------------------
 !
-      if (     ((method_4_solver(1:1).eq.'M')                           &
-     &      .or.(method_4_solver(1:1).eq.'m'))                          &
-     &   .and. ((method_4_solver(2:2).eq.'G')                           &
-     &      .or.(method_4_solver(2:2).eq.'g'))                          &
-     &   .and. ((method_4_solver(3:3).eq.'C')                           &
-     &      .or.(method_4_solver(3:3).eq.'c'))                          &
-     &   .and. ((method_4_solver(4:4).eq.'G')                           &
-     &      .or.(method_4_solver(4:4).eq.'g')) ) then
+      if(solver_iflag(method_4_solver) .eq. iflag_mgcg) then
         call s_initialize_4_MHD_AMG
       end if
 !

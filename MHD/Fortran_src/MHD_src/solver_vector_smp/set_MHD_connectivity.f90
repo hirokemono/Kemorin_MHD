@@ -60,30 +60,36 @@
       use m_solver_djds_MHD
 !
 !
-      call set_djds_layer_connectivity(nnod_4_ele,                      &
-     &    iele_fl_start, iele_fl_end, DJDS_comm_fl, DJDS_fluid)
+      call set_djds_layer_connectivity                                  &
+     &    (nnod_4_ele, iele_fl_start, iele_fl_end,                      &
+     &     DJDS_comm_fl, solver_C, DJDS_fluid)
 !
       if ( nnod_4_ele .ne. num_t_linear) then
         call set_djds_layer_connectivity(num_t_linear,                  &
-     &     ione, numele, DJDS_comm_etr, DJDS_linear)
-        call set_djds_layer_connectivity(num_t_linear,                  &
-     &     iele_fl_start, iele_fl_end, DJDS_comm_fl, DJDS_fl_l)
+     &     ione, numele, DJDS_comm_etr, solver_C, DJDS_linear)
+        call set_djds_layer_connectivity                                &
+     &     (num_t_linear, iele_fl_start, iele_fl_end,                   &
+     &      DJDS_comm_fl, solver_C, DJDS_fl_l)
       else
         call link_djds_connect_structs(DJDS_entire, DJDS_linear)
         call link_djds_connect_structs(DJDS_fluid, DJDS_fl_l)
       end if
 !
 !
-!      call set_djds_layer_connectivity(nnod_4_ele,                     &
-!     &    iele_cd_start, iele_cd_end, DJDS_comm_etr, DJDS_conduct)
-!      call set_djds_layer_connectivity(nnod_4_ele,                     &
-!     &    iele_ins_start, iele_ins_end, DJDS_comm_etr, DJDS_insulator)
+!      call set_djds_layer_connectivity                                 &
+!     &   (nnod_4_ele, iele_cd_start, iele_cd_end,                      &
+!     &    DJDS_comm_etr, solver_C, DJDS_conduct)
+!      call set_djds_layer_connectivity                                 &
+!     &   (nnod_4_ele, iele_ins_start, iele_ins_end,                    &
+!     &    DJDS_comm_etr, solver_C, DJDS_insulator)
 !
 !      if ( nnod_4_ele .ne. num_t_linear) then
-!        call set_djds_layer_connectivity(num_t_linear,                 &
-!     &     iele_cd_start, iele_cd_end, DJDS_comm_etr, DJDS_cd_l)
-!        call set_djds_layer_connectivity(num_t_linear,                 &
-!     &     iele_ins_start, iele_ins_end, DJDS_comm_etr, DJDS_ins_l)
+!        call set_djds_layer_connectivity                               &
+!     &     (num_t_linear, iele_cd_start, iele_cd_end,                  &
+!     &      DJDS_comm_etr, solver_C, DJDS_cd_l)
+!        call set_djds_layer_connectivity                               &
+!     &     (num_t_linear, iele_ins_start, iele_ins_end,                &
+!     &      DJDS_comm_etr, solver_C, DJDS_ins_l)
 !      else
 !        call link_djds_connect_structs(DJDS_conduct, DJDS_cd_l)
 !        call link_djds_connect_structs(DJDS_insulator, DJDS_ins_l)
@@ -121,7 +127,7 @@
 !C===
 !C
       call s_reordering_djds_smp_type(np_smp, numnod, internal_node,    &
-     &    inter_smp_stack, MHD_CRS, DJDS_entire)
+     &    inter_smp_stack, solver_C, MHD_CRS, DJDS_entire)
 !C
 !      write(*,*) 'STACKmc', size(DJDS_entire%STACKmc)
 !      write(*,*) 'NLmaxHYP', size(DJDS_entire%NLmaxHYP),               &
@@ -159,11 +165,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_djds_layer_connectivity(nnod_1ele,                 &
-     &    iele_start, iele_end, layer_comm, djds_tbl)
+     &    iele_start, iele_end, layer_comm, solver_C, djds_tbl)
 !
       use t_comm_table
       use t_crs_connect
       use t_solver_djds
+      use t_vector_for_solver
 !
       use set_element_id_4_node
       use reordering_djds_smp_type
@@ -173,6 +180,7 @@
       integer(kind = kint), intent(in) :: nnod_1ele
       integer(kind = kint), intent(in) :: iele_start, iele_end
       type(communication_table), intent(in) :: layer_comm
+      type(mpi_4_solver), intent(in) ::       solver_C
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
       type(CRS_matrix_connect) :: MHD_CRS
@@ -186,7 +194,7 @@
      &    inod_next_4_node, MHD_CRS)
 !
       call s_reordering_djds_smp_type(np_smp, numnod, internal_node,    &
-     &    inter_smp_stack, MHD_CRS, djds_tbl)
+     &    inter_smp_stack, solver_C, MHD_CRS, djds_tbl)
       call set_new_comm_table_type(numnod, layer_comm, djds_tbl)
 !
       call dealloc_type_crs_connect(MHD_CRS)
