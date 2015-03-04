@@ -71,7 +71,7 @@
 !
 !
          do nd = 1, num_bulk
-           bulk_global(nd) = bulk_global(nd) / rms_global(num_rms)
+           bulk_global(nd) = bulk_global(nd) / rms_global(ivol)
          end do
          do nd = 1, num_rms - 1
            if (nd .eq. i_rms%i_velo                                     &
@@ -81,9 +81,9 @@
      &    .or. nd .eq. i_rms%i_filter_velo                              &
      &    .or. nd .eq. i_rms%i_filter_magne                             &
      &    .or. nd.eq.ir_me_f_ic) then
-            rms_global(nd) = rms_global(nd) / rms_global(num_rms)
+            rms_global(nd) = rms_global(nd) / rms_global(ivol)
           else
-            rms_global(nd) = sqrt(rms_global(nd) / rms_global(num_rms))
+            rms_global(nd) = sqrt(rms_global(nd) / rms_global(ivol))
           end if
         end do
 !

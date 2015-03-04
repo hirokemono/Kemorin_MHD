@@ -128,7 +128,7 @@
 !
       integer (kind = kint) :: i, i0, j0
 !
-      i0 = 1
+      i0 = 0
       j0 = 0
       do i = 1, num_nod_phys
        if (iflag_nod_fld_monitor(i) .eq. 1) then
