@@ -3,42 +3,38 @@
 !
 !     Written by Kemorin
 !
-!      subroutine allocate_work_GaussZeidel_11(NP)
-!      subroutine allocate_work_GaussZeidel_3x11(NP)
-!      subroutine deallocate_work_GaussZeidel_11
-!
-!       subroutine gauss_zeidel_forward_11                              &
-!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
-!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
-!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
-!     &            ALU_U, B, S)
-!       subroutine gauss_zeidel_backward_11                             &
-!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
-!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
-!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
-!     &            ALU_U, B, S)
-!
-!       subroutine gauss_zeidel_forward_3x11                            &
-!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
-!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
-!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
-!     &            ALU_U, B1, B2, B3, S1, S2, S3)
-!       subroutine gauss_zeidel_backward_3x11                           &
-!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
-!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
-!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
-!     &            ALU_U, B1, B2, B3, S1, S2, S3)
-!
-!       subroutine gauss_zeidel_each_plane_11                           &
-!     &           (iv, N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,    &
-!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
-!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
-!     &            ALU_U, B, S)
-!       subroutine gauss_zeidel_each_plane_3x11                         &
-!     &           (iv, N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,    &
-!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
-!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
-!     &            ALU_U, B1, B2, B3, S1, S2, S3)
+!!       subroutine gauss_zeidel_forward_11                             &
+!!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,       &
+!!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,  &
+!!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,   &
+!!     &            ALU_U, B, S, W3)
+!!       subroutine gauss_zeidel_backward_11                            &
+!!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,       &
+!!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,  &
+!!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,   &
+!!     &            ALU_U, B, S, W3)
+!!
+!!       subroutine gauss_zeidel_forward_3x11                           &
+!!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,       &
+!!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,  &
+!!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,   &
+!!     &            ALU_U, B1, B2, B3, S1, S2, S3, W9)
+!!       subroutine gauss_zeidel_backward_3x11                          &
+!!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,       &
+!!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,  &
+!!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,   &
+!!     &            ALU_U, B1, B2, B3, S1, S2, S3, W9)
+!!
+!!       subroutine gauss_zeidel_each_plane_11                          &
+!!     &           (iv, N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,   &
+!!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,  &
+!!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,   &
+!!     &            ALU_U, B, S, W3)
+!!       subroutine gauss_zeidel_each_plane_3x11                        &
+!!     &           (iv, N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,   &
+!!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,  &
+!!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,   &
+!!     &            ALU_U, B1, B2, B3, S1, S2, S3, W9)
 !
       module gauss_zeidel_11
 !
@@ -46,14 +42,9 @@
 !
       implicit none
 !
-       integer(kind = kint) :: iflag_work_GaussZeidel_11 = 0
-       integer(kind = kint), parameter :: IZR = 2
        integer(kind = kint), parameter :: IZ1 = 1, IZ2 = 2, IZ3 = 3
        integer(kind = kint), parameter :: IZ4 = 4, IZ5 = 5, IZ6 = 6
        integer(kind = kint), parameter :: IZ7 = 7, IZ8 = 8, IZ9 = 9
-       real(kind = kreal), allocatable :: W9(:,:)
-       private :: W9, iflag_work_GaussZeidel_11
-       private :: IZR
        private :: IZ1, IZ2, IZ3, IZ4, IZ5, IZ6, IZ7, IZ8, IZ9
 !
 !  ---------------------------------------------------------------------
@@ -62,49 +53,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine verify_work_GaussZeidel_11(NP)
-!
-       integer(kind = kint), intent(in) :: NP
-!
-       if(iflag_work_GaussZeidel_11 .eq. 0) then
-         call allocate_work_GaussZeidel_11(NP)
-       else if(iflag_work_GaussZeidel_11 .lt. (3*NP)) then
-         call deallocate_work_GaussZeidel_11
-         call allocate_work_GaussZeidel_11(NP)
-       end if
-!
-      end subroutine verify_work_GaussZeidel_11
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_work_GaussZeidel_11(NP)
-!
-       integer(kind = kint), intent(in) :: NP
-!
-       allocate ( W9(NP,3) )
-       W9 = 0.0d0
-       iflag_work_GaussZeidel_11 = 3*NP
-!
-      end subroutine allocate_work_GaussZeidel_11
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_work_GaussZeidel_11
-!
-       deallocate ( W9 )
-       iflag_work_GaussZeidel_11 = 0
-!
-      end subroutine deallocate_work_GaussZeidel_11
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
        subroutine gauss_zeidel_forward_11                               &
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B, S)
+     &            ALU_U, B, S, W3)
 !
        integer(kind = kint), intent(in) :: N, NP, PEsmpTOT
        integer(kind = kint), intent(in) :: NL, NU, NPL, NPU
@@ -126,6 +79,7 @@
        real(kind = kreal), intent(in) :: B(NP)
 !
        real(kind = kreal), intent(inout) :: S(NP)
+       real(kind = kreal), intent(inout) :: W3(NP,3)
 !
        integer(kind = kint) :: iv
 !
@@ -135,7 +89,7 @@
      &           (iv, N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B, S)
+     &            ALU_U, B, S, W3)
       end do
 !
        end subroutine gauss_zeidel_forward_11
@@ -146,7 +100,7 @@
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B, S)
+     &            ALU_U, B, S, W3)
 !
        integer(kind = kint), intent(in) :: N, NP, PEsmpTOT
        integer(kind = kint), intent(in) :: NL, NU, NPL, NPU
@@ -168,6 +122,7 @@
        real(kind = kreal), intent(in) :: B(NP)
 !
        real(kind = kreal), intent(inout) :: S(NP)
+       real(kind = kreal), intent(inout) :: W3(NP,3)
 !
        integer(kind = kint) :: iv
 !
@@ -177,7 +132,7 @@
      &           (iv, N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B, S)
+     &            ALU_U, B, S, W3)
       end do
 !
        end subroutine gauss_zeidel_backward_11
@@ -189,7 +144,7 @@
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B1, B2, B3, S1, S2, S3)
+     &            ALU_U, B1, B2, B3, S1, S2, S3, W9)
 !
        integer(kind = kint), intent(in) :: N, NP, PEsmpTOT
        integer(kind = kint), intent(in) :: NL, NU, NPL, NPU
@@ -211,6 +166,7 @@
        real(kind = kreal), intent(in) :: B1(NP), B2(NP), B3(NP)
 !
        real(kind = kreal), intent(inout) :: S1(NP), S2(NP), S3(NP)
+       real(kind = kreal), intent(inout) :: W9(NP,9)
 !
        integer(kind = kint) :: iv
 !
@@ -220,7 +176,7 @@
      &           (iv, N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B1, B2, B3, S1, S2, S3)
+     &            ALU_U, B1, B2, B3, S1, S2, S3, W9)
       end do
 !
        end subroutine gauss_zeidel_forward_3x11
@@ -231,7 +187,7 @@
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B1, B2, B3, S1, S2, S3)
+     &            ALU_U, B1, B2, B3, S1, S2, S3, W9)
 !
        integer(kind = kint), intent(in) :: N, NP, PEsmpTOT
        integer(kind = kint), intent(in) :: NL, NU, NPL, NPU
@@ -253,6 +209,7 @@
        real(kind = kreal), intent(in) :: B1(NP), B2(NP), B3(NP)
 !
        real(kind = kreal), intent(inout) :: S1(NP), S2(NP), S3(NP)
+       real(kind = kreal), intent(inout) :: W9(NP,9)
 !
        integer(kind = kint) :: iv
 !
@@ -262,7 +219,7 @@
      &           (iv, N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B1, B2, B3, S1, S2, S3)
+     &            ALU_U, B1, B2, B3, S1, S2, S3, W9)
       end do
 !
        end subroutine gauss_zeidel_backward_3x11
@@ -274,7 +231,7 @@
      &           (iv, N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B, S)
+     &            ALU_U, B, S, W3)
 !
       use ordering_by_o2nl_11
       use ordering_by_l2u_o2nu_11
@@ -302,24 +259,24 @@
        real(kind = kreal), intent(in) :: B(NP)
 !
        real(kind = kreal), intent(inout) :: S(NP)
+       real(kind = kreal), intent(inout) :: W3(NP,3)
 !
-      integer :: i
 !
         call ordering_1x2_by_old2new_L(NP, PEsmpTOT, STACKmcG,          &
-     &      OtoN_L, W9(1,IZ2), W9(1,IZ1), S, B)
+     &      OtoN_L, W3(1,IZ2), W3(1,IZ1), S, B)
         call gauss_zeidel_hp_11_l(iv, NP, NL, NPL, PEsmpTOT,            &
-     &      NVECT, npLX1, STACKmc, NLhyp, INL, IAL, W9(1,IZ1),          &
-     &      AL, W9(1,IZ2))
+     &      NVECT, npLX1, STACKmc, NLhyp, INL, IAL, W3(1,IZ1),          &
+     &      AL, W3(1,IZ2))
 !
        call ordering_1x1_l2u_o2n_u(NP, OtoN_U, LtoU,                    &
-     &     W9(1,IZ3), W9(1,IZ2), S, W9(1,IZ1) )
+     &     W3(1,IZ3), W3(1,IZ2), S, W3(1,IZ1) )
 !
        call gauss_zeidel_hp_11_u(iv, NP, N, NU, NPU, PEsmpTOT,          &
-     &      NVECT, npUX1, STACKmc, NUhyp, INU, IAU, W9(1,IZ2),          &
-     &      AU, ALU_U, W9(1,IZ3) )
+     &      NVECT, npUX1, STACKmc, NUhyp, INU, IAU, W3(1,IZ2),          &
+     &      AU, ALU_U, W3(1,IZ3) )
 !
         call ordering_1x1_by_new2old_U(NP, PEsmpTOT, STACKmcG,          &
-     &      NtoO_U, S, W9(1,IZ2) )
+     &      NtoO_U, S, W3(1,IZ2) )
 !
        end subroutine gauss_zeidel_each_plane_11
 !
@@ -329,7 +286,7 @@
      &           (iv, N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B1, B2, B3, S1, S2, S3)
+     &            ALU_U, B1, B2, B3, S1, S2, S3, W9)
 !
       use ordering_by_o2nl_11
       use ordering_by_l2u_o2nu_11
@@ -357,6 +314,7 @@
        real(kind = kreal), intent(in) :: B1(NP), B2(NP), B3(NP)
 !
        real(kind = kreal), intent(inout) :: S1(NP), S2(NP), S3(NP)
+       real(kind = kreal), intent(inout) :: W9(NP,9)
 !
 !
        call ordering_1x6_by_old2new_L(NP, PEsmpTOT, STACKmcG, OtoN_L,   &

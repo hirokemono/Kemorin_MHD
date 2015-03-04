@@ -41,10 +41,32 @@
 !
       implicit none
 !
+      real(kind = kreal), allocatable :: W2(:,:)
+      private :: W2
+      private :: verify_work_4_I_Choleskynn
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine verify_work_4_I_Choleskynn(NP, NB)
+!
+       integer(kind = kint), intent(in) :: NP, NB
+!
+      if(allocated(W2) .eqv. .false.) then
+        allocate ( W2(NB*NP,2) )
+        W2 = 0.0d0
+      else if(size(W2) .lt. (2*NB*NP)) then
+        deallocate (W2)
+        allocate ( W2(NB*NP,2) )
+        W2 = 0.0d0
+      end if
+!
+      end subroutine verify_work_4_I_Choleskynn
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine VCGnn_DJDS_SMP                                         &
@@ -124,28 +146,17 @@
       integer(kind=kint ), intent(in) :: NP, NB, PEsmpTOT
       character(len=kchara), intent(in) :: PRECOND
 
-      integer(kind=kint ), parameter :: iterPREmax = 1
-!      integer(kind=kint ), intent(in)  :: iterPREmax
-!
 !
 !   allocate work arrays
 !
       call verify_work_CG_nn(NP, NB, PEsmpTOT)
       call verify_work_4_matvecnn(NP,NB)
 !
-      if (PRECOND(1:2).eq.'IC'  .or.                                    &
-     &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
-        if (iterPREmax .eq. 1) then
-          call verify_work_4_I_Choleskynn(NP, NB)
-        else
-          call verify_work_4_IC_asddnn(NP, NB)
-        end if
+      if (PRECOND(1:2).eq.'IC'                                          &
+     &  .or. PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR'          &
+     &  .or. PRECOND(1:4).eq.'BLOC' .or. PRECOND(1:6).eq.'BL_ILU') then
+        call verify_work_4_I_Choleskynn(NP, NB)
       end if
-!
-      if (PRECOND(1:4).eq.'BLOC' .or. PRECOND(1:6).eq.'BL_ILU') then
-        call verify_work_4_bl_ilunn(NP, NB)
-      end if
-!
 !
       end subroutine init_VCGnn_DJDS_SMP
 !
@@ -297,7 +308,7 @@
      &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,             &
-     &            ALU_L, ALU_U, W(1,Z), W(1,R) )
+     &            ALU_L, ALU_U, W(1,Z), W(1,R), W2(1,1))
         else
 !
           do iterPRE= 1, iterPREmax
@@ -306,7 +317,8 @@
      &           (iterPRE, N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1,   &
      &            NVECT, PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp,     &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
-     &            D, AL, AU, ALU_L, ALU_U, W(1,ZQ), W(1,Z), W(1,R) )
+     &            D, AL, AU, ALU_L, ALU_U, W(1,ZQ), W(1,Z), W(1,R),     &
+     &            W2(1,1))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -329,7 +341,7 @@
      &    .or. PRECOND(1:6).eq.'BL_ILU') then
         call block_ilu_1xnn                                             &
      &          (N, NP, NB, PEsmpTOT, STACKmcG, OtoN_L, NtoO_U, LtoU,   &
-     &           ALU_L, W(1,Z), W(1,R) )
+     &           ALU_L, W(1,Z), W(1,R), W2(1,1))
 !
 !C===
 !

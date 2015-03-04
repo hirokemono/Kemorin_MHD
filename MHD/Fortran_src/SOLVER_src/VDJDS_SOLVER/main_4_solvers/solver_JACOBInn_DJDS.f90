@@ -40,6 +40,9 @@
 !
       implicit none
 !
+      real(kind = kreal), allocatable :: W3(:,:)
+      private :: W3
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -137,7 +140,14 @@
       call verify_work_CG_nn(NP, NB, PEsmpTOT)
       call verify_work_4_matvecnn(NP,NB)
 !
-      call verify_work_4_jacobi_precNN(NP,NB)
+      if(allocated(W3) .eqv. .false.) then
+        allocate ( W3(NB*NP,3) )
+        W3 = 0.0d0
+      else if(size(W3) .lt. (3*NB*NP)) then
+        deallocate (W3)
+        allocate ( W3(NB*NP,3) )
+        W3 = 0.0d0
+      end if
 !
       end subroutine init_VJACOBInn_DJDS_SMP
 !
@@ -271,7 +281,7 @@
      &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1,            &
      &            NVECT, PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp,     &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
-     &            AL, AU, ALU_L, X, B)
+     &            AL, AU, ALU_L, X, B, W3)
         call SOLVER_SEND_RECV_N                                         &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
      &     STACK_EXPORT, NOD_EXPORT, X)

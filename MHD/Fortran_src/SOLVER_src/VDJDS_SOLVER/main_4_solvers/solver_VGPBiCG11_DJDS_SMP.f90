@@ -40,10 +40,32 @@
 !
       implicit none
 !
+       real(kind = kreal), allocatable :: W6(:,:)
+       private :: W6
+       private :: verify_work_4_I_Cholesky3x11
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine verify_work_4_I_Cholesky3x11(NP)
+!
+      integer(kind = kint), intent(in) :: NP
+!
+      if(allocated(W6) .eqv. .false.) then
+        allocate ( W6(NP,6) )
+        W6 = 0.0d0
+      else if(size(W6) .lt. (6*NP)) then
+        deallocate (W6)
+        allocate ( W6(NP,6) )
+        W6 = 0.0d0
+      end if
+!
+      end subroutine verify_work_4_I_Cholesky3x11
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine VGPBiCG11_DJDS_SMP                                     &
@@ -122,8 +144,6 @@
 !
       character(len=kchara), intent(in) :: PRECOND
       integer(kind=kint ), intent(in) :: NP, PEsmpTOT
-      integer(kind=kint ), parameter :: iterPREmax = 1
-!      integer(kind=kint ), intent(in)  :: iterPREmax
 !
 !   allocate work arrays
 !
@@ -132,11 +152,7 @@
 !
       if (PRECOND(1:2).eq.'IC'  .or.                                    &
      &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
-        if (iterPREmax .eq. 1) then
-          call verify_work_4_I_Cholesky3x11(NP)
-        else
-          call verify_work_4_IC_asdd3x11(NP)
-        end if
+        call verify_work_4_I_Cholesky3x11(NP)
       end if
 !
       end subroutine init_VGPBiCG11_DJDS_SMP
@@ -318,7 +334,7 @@
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,             &
-     &            ALU_L, ALU_U, W(1,R), W(1,WK) )
+     &            ALU_L, ALU_U, W(1,R), W(1,WK), W6(1,1))
           else
 !
             do iterPRE= 1, iterPREmax
@@ -327,7 +343,8 @@
      &           (iterPRE, N, NP, NL, NU, NPL, NPU, npLX1, npUX1,       &
      &            NVECT, PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp,     &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
-     &            D, AL, AU, ALU_L, ALU_U, W(1,RZ), W(1,R), W(1,WK) )
+     &            D, AL, AU, ALU_L, ALU_U, W(1,RZ), W(1,R), W(1,WK),    &
+     &            W6(1,1))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -439,7 +456,7 @@
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,             &
      &            ALU_L, ALU_U, W(1,TT), W(1,W2), W(1,T0),              &
-     &            W(1,T ), W(1,PT), W(1,WT) )
+     &            W(1,T ), W(1,PT), W(1,WT), W6(1,1))
           else
 !
             do iterPRE= 1, iterPREmax
@@ -450,7 +467,7 @@
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
      &            D, AL, AU, ALU_L, ALU_U, W(1,RX), W(1,RY), W(1,RZ),   &
      &            W(1,TT), W(1,W2), W(1,T0),                            &
-     &            W(1,T ), W(1,PT), W(1,WT) )
+     &            W(1,T ), W(1,PT), W(1,WT), W6(1,1))
 
 !C
 !C-- INTERFACE data EXCHANGE

@@ -52,6 +52,14 @@
 !
       implicit none
 !
+      type MGCG33_work
+        real(kind = kreal), pointer :: W2(:,:)
+      end type MGCG33_work
+!
+      type(MGCG33_work), allocatable :: wk_MGCG33(:)
+!
+      private :: wk_MGCG33
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -117,12 +125,13 @@
 !
 !   allocate work arrays
 !
+!      allocate(wk_MGCG33(0:num_MG_level))
       call verify_work_MGCG_33(NP, PEsmpTOT)
       call verify_work_4_matvec33(NP)
 !
       if (PRECOND(1:2).eq.'IC'  .or.                                    &
      &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
-        call verify_work_4_I_Cholesky33(NP)
+!        call verify_work_4_I_Cholesky33(NP)
       end if
 !
       call init_MGCG33_V_cycle(NP, PEsmpTOT, METHOD_MG, PRECOND_MG)

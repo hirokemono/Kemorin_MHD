@@ -5,61 +5,61 @@
 !
 !    complete Gauss-Zeidel (data communication for each hyperplane)
 !
-!       subroutine weak_gauss_zeidel_forward_11                         &
-!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
-!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
-!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
-!     &            ALU_U, B, S, NEIBPETOT, NEIBPE,                      &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
-!       subroutine weak_gauss_zeidel_backward_11                        &
-!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
-!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
-!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
-!     &            ALU_U, B, S, NEIBPETOT, NEIBPE,                      &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
-!
-!       subroutine weak_gauss_zeidel_forward_3x11                       &
-!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
-!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
-!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
-!     &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,    &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
-!       subroutine weak_gauss_zeidel_backward_3x11                      &
-!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
-!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
-!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
-!     &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,    &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
-!
-!    complete Gauss-Zeidel (data communication for each hyperplane)
-!
-!       subroutine full_gauss_zeidel_forward_11                         &
-!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
-!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
-!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
-!     &            ALU_U, B, S, NEIBPETOT, NEIBPE,                      &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
-!       subroutine full_gauss_zeidel_backward_11                        &
-!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
-!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
-!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
-!     &            ALU_U, B, S, NEIBPETOT, NEIBPE,                      &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
-!
-!       subroutine full_gauss_zeidel_forward_3x11                       &
-!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
-!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
-!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
-!     &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,    &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
-!       subroutine full_gauss_zeidel_backward_3x11                      &
-!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
-!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
-!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
-!     &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,    &
-!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
-!
-!       ALU_U = 1 / Diag (Ordered by DJDS ordering for upper component)
+!!       subroutine weak_gauss_zeidel_forward_11                        &
+!!     &          (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
+!!     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
+!!     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
+!!     &           ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                  &
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+!!       subroutine weak_gauss_zeidel_backward_11                       &
+!!     &          (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
+!!     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
+!!     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
+!!     &           ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                  &
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+!!
+!!       subroutine weak_gauss_zeidel_forward_3x11                      &
+!!     &          (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
+!!     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
+!!     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
+!!     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,&
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+!!       subroutine weak_gauss_zeidel_backward_3x11                     &
+!!     &          (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
+!!     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
+!!     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
+!!     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,&
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+!!
+!!    complete Gauss-Zeidel (data communication for each hyperplane)
+!!
+!!       subroutine full_gauss_zeidel_forward_11                        &
+!!     &          (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
+!!     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
+!!     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
+!!     &          ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                   &
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+!!       subroutine full_gauss_zeidel_backward_11                       &
+!!     &          (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
+!!     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
+!!     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
+!!     &           ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                  &
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+!!
+!!       subroutine full_gauss_zeidel_forward_3x11                      &
+!!     &          (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
+!!     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
+!!     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
+!!     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,&
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+!!       subroutine full_gauss_zeidel_backward_3x11                     &
+!!     &          (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
+!!     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
+!!     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
+!!     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,&
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+!!
+!!       ALU_U = 1 / Diag (Ordered by DJDS ordering for upper component)
 !
       module gauss_zeidel_w_comm_11
 !
@@ -82,7 +82,7 @@
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B, S, NEIBPETOT, NEIBPE,                       &
+     &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                   &
      &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
@@ -114,13 +114,14 @@
        real(kind = kreal), intent(in) :: B(NP)
 !
        real(kind = kreal), intent(inout) :: S(NP)
+       real(kind = kreal), intent(inout) :: W3(NP,3)
 !
 !
        call gauss_zeidel_forward_11                                     &
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B, S)
+     &            ALU_U, B, S, W3)
 !
 !
         START_TIME= MPI_WTIME()
@@ -138,7 +139,7 @@
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B, S, NEIBPETOT, NEIBPE,                       &
+     &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                   &
      &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
@@ -170,13 +171,14 @@
        real(kind = kreal), intent(in) :: B(NP)
 !
        real(kind = kreal), intent(inout) :: S(NP)
+       real(kind = kreal), intent(inout) :: W3(NP,3)
 !
 !
        call gauss_zeidel_backward_11                                    &
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B, S)
+     &            ALU_U, B, S, W3)
 !
 !
         START_TIME= MPI_WTIME()
@@ -192,11 +194,11 @@
 !  ---------------------------------------------------------------------
 !
        subroutine weak_gauss_zeidel_forward_3x11                        &
-     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
-     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
-     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,     &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+     &          (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,          &
+     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,     &
+     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,      &
+     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,  &
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
@@ -227,13 +229,14 @@
        real(kind = kreal), intent(in) :: B1(NP), B2(NP), B3(NP)
 !
        real(kind = kreal), intent(inout) :: S1(NP), S2(NP), S3(NP)
+       real(kind = kreal), intent(inout) :: W9(NP,9)
 !
 !
         call gauss_zeidel_forward_3x11                                  &
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B1, B2, B3, S1, S2, S3)
+     &            ALU_U, B1, B2, B3, S1, S2, S3, W9)
 !
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECVx3                                         &
@@ -247,11 +250,11 @@
 !  ---------------------------------------------------------------------
 !
        subroutine weak_gauss_zeidel_backward_3x11                       &
-     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
-     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
-     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,     &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+     &          (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,          &
+     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,     &
+     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,      &
+     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,  &
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
@@ -282,13 +285,14 @@
        real(kind = kreal), intent(in) :: B1(NP), B2(NP), B3(NP)
 !
        real(kind = kreal), intent(inout) :: S1(NP), S2(NP), S3(NP)
+       real(kind = kreal), intent(inout) :: W9(NP,9)
 !
 !
         call gauss_zeidel_backward_3x11                                 &
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B1, B2, B3, S1, S2, S3)
+     &            ALU_U, B1, B2, B3, S1, S2, S3, W9)
 !
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECVx3                                         &
@@ -306,7 +310,7 @@
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B, S, NEIBPETOT, NEIBPE,                       &
+     &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                   &
      &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
@@ -338,6 +342,7 @@
        real(kind = kreal), intent(in) :: B(NP)
 !
        real(kind = kreal), intent(inout) :: S(NP)
+       real(kind = kreal), intent(inout) :: W3(NP,3)
 !
        integer(kind = kint) :: iv
 !
@@ -347,7 +352,7 @@
      &           (iv, N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B, S)
+     &            ALU_U, B, S, W3)
 !
 !
         START_TIME= MPI_WTIME()
@@ -366,7 +371,7 @@
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B, S, NEIBPETOT, NEIBPE,                       &
+     &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                   &
      &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
@@ -398,6 +403,7 @@
        real(kind = kreal), intent(in) :: B(NP)
 !
        real(kind = kreal), intent(inout) :: S(NP)
+       real(kind = kreal), intent(inout) :: W3(NP,3)
 !
        integer(kind = kint) :: iv
 !
@@ -407,7 +413,7 @@
      &           (iv, N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B, S)
+     &            ALU_U, B, S, W3)
 !
 !
         START_TIME= MPI_WTIME()
@@ -424,11 +430,11 @@
 !  ---------------------------------------------------------------------
 !
        subroutine full_gauss_zeidel_forward_3x11                        &
-     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
-     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
-     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,     &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+     &          (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,          &
+     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,     &
+     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,      &
+     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,  &
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
@@ -459,6 +465,7 @@
        real(kind = kreal), intent(in) :: B1(NP), B2(NP), B3(NP)
 !
        real(kind = kreal), intent(inout) :: S1(NP), S2(NP), S3(NP)
+       real(kind = kreal), intent(inout) :: W9(NP,9)
 !
        integer(kind = kint) :: iv
 !
@@ -468,7 +475,7 @@
      &           (iv, N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B1, B2, B3, S1, S2, S3)
+     &            ALU_U, B1, B2, B3, S1, S2, S3, W9)
 !
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECVx3                                         &
@@ -483,11 +490,11 @@
 !  ---------------------------------------------------------------------
 !
        subroutine full_gauss_zeidel_backward_3x11                       &
-     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
-     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
-     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B1, B2, B3, S1, S2, S3, NEIBPETOT, NEIBPE,     &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+     &          (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,          &
+     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,     &
+     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,      &
+     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,  &
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
@@ -518,6 +525,7 @@
        real(kind = kreal), intent(in) :: B1(NP), B2(NP), B3(NP)
 !
        real(kind = kreal), intent(inout) :: S1(NP), S2(NP), S3(NP)
+       real(kind = kreal), intent(inout) :: W9(NP,9)
 !
        integer(kind = kint) :: iv
 !
@@ -527,7 +535,7 @@
      &           (iv, N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B1, B2, B3, S1, S2, S3)
+     &            ALU_U, B1, B2, B3, S1, S2, S3, W9)
 !
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECVx3                                         &

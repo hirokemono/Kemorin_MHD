@@ -41,10 +41,32 @@
 !
       implicit none
 !
+       real(kind = kreal), allocatable :: W2(:,:)
+       private :: W2
+       private :: verify_work_4_I_Cholesky33
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine verify_work_4_I_Cholesky33(NP)
+!
+       integer(kind = kint), intent(in) :: NP
+!
+      if(allocated(W2) .eqv. .false.) then
+        allocate ( W2(3*NP,2) )
+        W2 = 0.0d0
+      else if(size(W2) .lt. (2*3*NP)) then
+        deallocate (W2)
+        allocate ( W2(3*NP,2) )
+        W2 = 0.0d0
+      end if
+!
+      end subroutine verify_work_4_I_Cholesky33
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine VBiCGSTAB33_DJDS_SMP                                   &
@@ -125,24 +147,16 @@
 !
       character(len=kchara), intent(in) :: PRECOND
       integer(kind=kint ), intent(in) :: NP, PEsmpTOT
-      integer(kind=kint ), parameter :: iterPREmax = 1
-!      integer(kind=kint ), intent(in)  :: iterPREmax
 !
 !   allocate work arrays
 !
       call verify_work_BiCGSTAB_33(NP, PEsmpTOT)
       call verify_work_4_matvec33(NP)
 !
-      if (PRECOND(1:2).eq.'IC'  .or.                                    &
-     &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
-        if (iterPREmax .eq. 1) then
-          call verify_work_4_I_Cholesky33(NP)
-        else
-          call verify_work_4_IC_asdd33(NP)
-        end if
-      else if (PRECOND(1:4).eq.'BLOC'                                   &
-     &    .or. PRECOND(1:6).eq.'BL_ILU') then
-        call verify_work_4_bl_ilu33(NP)
+      if    (PRECOND(1:2).eq.'IC'                                       &
+     &  .or. PRECOND(1:3).eq.'ILU'  .or. PRECOND(1:4).eq.'SSOR'         &
+     &  .or. PRECOND(1:4).eq.'BLOC' .or. PRECOND(1:6).eq.'BL_ILU') then
+        call verify_work_4_I_Cholesky33(NP)
       end if
 !
       end subroutine init_VBiCGSTAB33_DJDS_SMP
@@ -336,7 +350,7 @@
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,             &
-     &            ALU_L, ALU_U, W(1,PT), W(1,P) )
+     &            ALU_L, ALU_U, W(1,PT), W(1,P), W2(1,1))
           else
 !
             do iterPRE= 1, iterPREmax
@@ -345,7 +359,8 @@
      &           (iterPRE, N, NP, NL, NU, NPL, NPU, npLX1, npUX1,       &
      &            NVECT, PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp,     &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
-     &            D, AL, AU, ALU_L, ALU_U, W(1,ZQ), W(1,PT), W(1,P) )
+     &            D, AL, AU, ALU_L, ALU_U, W(1,ZQ), W(1,PT), W(1,P),    &
+     &            W2(1,1))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -368,7 +383,7 @@
 !
           call block_ilu_1x33                                           &
      &          (N, NP, PEsmpTOT, STACKmcG, OtoN_L, NtoO_U, LtoU,       &
-     &           ALU_L, W(1,PT), W(1,P) )
+     &           ALU_L, W(1,PT), W(1,P), W2(1,1))
 !
         else if (PRECOND(1:4).eq.'DIAG') then
 !
@@ -448,7 +463,7 @@
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,             &
-     &            ALU_L, ALU_U, W(1,ST), W(1,S) )
+     &            ALU_L, ALU_U, W(1,ST), W(1,S), W2(1,1))
           else
 !
             do iterPRE= 1, iterPREmax
@@ -457,7 +472,8 @@
      &           (iterPRE, N, NP, NL, NU, NPL, NPU, npLX1, npUX1,       &
      &            NVECT, PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp,     &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
-     &            D, AL, AU, ALU_L, ALU_U, W(1,ZQ), W(1,ST), W(1,S) )
+     &            D, AL, AU, ALU_L, ALU_U, W(1,ZQ), W(1,ST), W(1,S),    &
+     &            W2(1,1))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -480,7 +496,7 @@
 !
           call block_ilu_1x33                                           &
      &          (N, NP, PEsmpTOT, STACKmcG, OtoN_L, NtoO_U, LtoU,       &
-     &           ALU_L, W(1,ST), W(1,S) )
+     &           ALU_L, W(1,ST), W(1,S), W2(1,1))
 !
 !
         else if (PRECOND(1:4).eq.'DIAG') then

@@ -120,7 +120,7 @@
 !
       if (PRECOND(1:2).eq.'IC'  .or.                                    &
      &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
-        call verify_work_4_I_Cholesky11(NP)
+!        call verify_work_4_I_Cholesky11(NP)
       end if
 !
       call init_MGCG11_V_cycle(NP, PEsmpTOT, METHOD_MG, PRECOND_MG)

@@ -40,10 +40,32 @@
 !
       implicit none
 !
+      real(kind = kreal), allocatable :: W3(:,:)
+      private :: W3
+      private :: verify_work_GaussZeidel_nn
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine verify_work_GaussZeidel_nn(NP, NB)
+!
+       integer(kind = kint), intent(in) :: NP, NB
+!
+      if(allocated(W3) .eqv. .false.) then
+        allocate ( W3(NB*NP,3) )
+        W3 = 0.0d0
+      else if(size(W3) .lt. (3*NB*NP)) then
+        deallocate (W3)
+        allocate ( W3(NB*NP,3) )
+        W3 = 0.0d0
+      end if
+!
+      end subroutine verify_work_GaussZeidel_nn
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !C
       subroutine VGAUSS_ZEIDELnn_DJDS_SMP                               &
@@ -195,7 +217,7 @@
 
       integer(kind=kint ), parameter :: iter_gauss = 1
 !
-      integer(kind=kint ) :: npLX1, npUX1, i
+      integer(kind=kint ) :: npLX1, npUX1
       integer(kind=kint ) :: iter, MAXIT
 !
 !
@@ -255,7 +277,7 @@
      &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B, X, NEIBPETOT, NEIBPE,                       &
+     &            ALU_U, B, X, W3(1,1), NEIBPETOT, NEIBPE,              &
      &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
      &            iter_gauss)
 !
