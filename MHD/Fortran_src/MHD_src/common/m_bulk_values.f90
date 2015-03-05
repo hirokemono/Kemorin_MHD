@@ -170,6 +170,7 @@
      &       .or. phys_nod_name(i) .eq. fhd_work_agst_Lorentz           &
      &       .or. phys_nod_name(i) .eq. fhd_Lorentz_work                &
      &       .or. phys_nod_name(i) .eq. fhd_mag_tension_work            &
+     &       .or. phys_nod_name(i) .eq. fhd_buoyancy_flux               &
      &       .or. phys_nod_name(i) .eq. fhd_buoyancy_work               &
      &       .or. phys_nod_name(i) .eq. fhd_comp_buo_flux               &
      &       .or. phys_nod_name(i) .eq. fhd_filter_buo_flux             &

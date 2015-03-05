@@ -80,7 +80,7 @@
      &    .or. nd .eq. i_rms%i_current .or.  nd .eq. ir_sqj_ic          &
      &    .or. nd .eq. i_rms%i_filter_velo                              &
      &    .or. nd .eq. i_rms%i_filter_magne                             &
-     &    .or. nd.eq.ir_me_f_ic) then
+     &    .or. nd .eq. ir_me_f_ic) then
             rms_global(nd) = rms_global(nd) / rms_global(ivol)
           else
             rms_global(nd) = sqrt(rms_global(nd) / rms_global(ivol))
