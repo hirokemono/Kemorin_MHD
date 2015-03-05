@@ -26,6 +26,9 @@
       real(kind=kreal), allocatable, private :: ALUG(:)
       real(kind=kreal), allocatable, private :: SCALE(:)
 !
+      real(kind = kreal), allocatable :: W(:,:)
+      private :: W
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -41,7 +44,7 @@
 !
       use calypso_mpi
 !
-      use m_work_4_CG11
+      use m_work_4_CG
       use solver_SR
       use crs_matrix_calcs_11
       use incomplete_cholesky_crs_11
@@ -95,11 +98,10 @@
         allocate (SCALE(NP))
         IFLAG= 1
         SCALE(1:NP)= 1.d0
-!
-        call allocate_work_CG_11(NP, ione)
-      else
-        call verify_work_CG_11(NP, ione)
       end if
+!
+      allocate(W(NP,nWK_CG))
+      W = 0.0d0
 
       MAXIT  = ITER
       TOL   = EPS
@@ -252,6 +254,7 @@
         if ( ITER .eq.MAXIT ) ERROR= -100
       end do
 !C===
+      deallocate(W)
 
 !C
 !C-- INTERFACE data EXCHANGE

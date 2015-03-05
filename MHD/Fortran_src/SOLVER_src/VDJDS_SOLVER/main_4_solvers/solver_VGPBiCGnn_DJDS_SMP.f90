@@ -42,8 +42,8 @@
 !
       implicit none
 !
-      real(kind = kreal), allocatable :: W6(:,:)
-      private :: W6
+      real(kind = kreal), allocatable :: W(:,:)
+      private :: W
       private :: verify_work_4_matvec3xnn
 !
 !  ---------------------------------------------------------------------
@@ -56,13 +56,13 @@
 !
       integer(kind = kint), intent(in) :: NP, NB, nwk
 !
-      if(allocated(W6) .eqv. .false.) then
-        allocate ( W6(NB*NP,nwk) )
-        W6 = 0.0d0
-      else if(size(W6) .lt. (nwk*NB*NP)) then
-        deallocate (W6)
-        allocate ( W6(NB*NP,nwk) )
-        W6 = 0.0d0
+      if(allocated(W) .eqv. .false.) then
+        allocate ( W(NB*NP,nwk) )
+        W = 0.0d0
+      else if(size(W) .lt. (nwk*NB*NP)) then
+        deallocate (W)
+        allocate ( W(NB*NP,nwk) )
+        W = 0.0d0
       end if
 !
       end subroutine verify_work_4_matvec3xnn
@@ -142,7 +142,7 @@
       subroutine init_VGPBiCGnn_DJDS_SMP                                &
      &         (NP, NB, PEsmpTOT, PRECOND, iterPREmax)
 !
-      use m_work_4_GPBiCGnn
+      use m_work_4_GPBiCG
 !
       use djds_matrix_calcs_nn
       use incomplete_cholesky_nn
@@ -153,18 +153,13 @@
       character(len=kchara), intent(in) :: PRECOND
       integer(kind=kint ), intent(in)  :: iterPREmax
 !
-      integer(kind=kint ) :: nwk
 !
-!   allocate work arrays
-!
-      nwk = 6
       if (PRECOND(1:2).eq.'IC'  .or.                                    &
      &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
-        if(iterPREmax .ge. 1) nwk = nwk + 9
+        if(iterPREmax .ge. 1) ntotWK_GPBiCG = ntotWK_GPBiCG + 9
       end if
 !
-      call verify_work_GPBiCG_nn(NP, NB, PEsmpTOT)
-      call verify_work_4_matvec3xnn(NP, NB, nwk)
+      call verify_work_4_matvec3xnn(NP, NB, ntotWK_GPBiCG)
 !
       end subroutine init_VGPBiCGnn_DJDS_SMP
 !
@@ -183,7 +178,7 @@
 !
       use solver_SR_N
 !
-      use m_work_4_GPBiCGnn
+      use m_work_4_GPBiCG
       use m_solver_count_time
 !
       use cal_norm_products_nn
@@ -253,13 +248,16 @@
 
       S1_TIME= MPI_WTIME()
 !
+!$omp workshare
+      W(1:NB*NP,1:ntotWK_GPBiCG) = 0.0d0
+!$omp end workshare
+!
       call reset_solver_time
-      call init_work_GPBiCG_nn(NP, NB, PEsmpTOT)
 !
 !C-- change B,X
 !
       call change_order_2_solve_bxn(NP, NB, PEsmpTOT, STACKmcG,         &
-     &           NtoO, B, X, W6(1,1))
+     &           NtoO, B, X, W(1,iWK))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -282,7 +280,7 @@
      &           (NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,R), B, X, W6(1,1))
+     &            W(1,R), B, X, W(1,iWK))
 !
        call copy_vector_nn(NP, NB, W(1,RT), W(1,R) )
 !C
@@ -293,7 +291,7 @@
 !C===
 
       call cal_local_sproduct_and_norm_n(NP, NB, PEsmpTOT, STACKmcG,    &
-     &           B, W(1,R), W(1,RT), RHO0, BNRM20, SP1smp, DNRMsmp)
+     &           B, W(1,R), W(1,RT), RHO0, BNRM20)
 
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
@@ -338,7 +336,7 @@
      &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,             &
-     &            ALU_L, ALU_U, W(1,R), W(1,WK), W6(1,1))
+     &            ALU_L, ALU_U, W(1,R), W(1,WK), W(1,iWK))
           else
 !
             do iterPRE= 1, iterPREmax
@@ -348,7 +346,7 @@
      &            NVECT, PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp,     &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
      &            D, AL, AU, ALU_L, ALU_U, W(1,RZ), W(1,R), W(1,WK),    &
-     &            W6(1,1))
+     &            W(1,iWK))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -377,7 +375,7 @@
 !
           call block_ilu_1xnn                                           &
      &          (N, NP, NB, PEsmpTOT, STACKmcG, OtoN_L, NtoO_U, LtoU,   &
-     &           ALU_L, W(1,R), W(1,WK), W6(1,1))
+     &           ALU_L, W(1,R), W(1,WK), W(1,iWK))
 !
         endif
 !
@@ -412,12 +410,12 @@
      &           (NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U,  NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU, &
-     &            W(1,PT), W(1,P), W6(1,1))
+     &            W(1,PT), W(1,P), W(1,iWK))
 !C
 !C-- calc. ALPHA
 !
         call cal_local_s_product_n(NP, NB, PEsmpTOT, STACKmcG,          &
-     &           W(1,RT), W(1,PT), RHO10, SP1smp)
+     &           W(1,RT), W(1,PT), RHO10)
 
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (RHO10, RHO1, 1, CALYPSO_REAL,               &
@@ -468,7 +466,7 @@
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,             &
      &            ALU_L, ALU_U, W(1,TT), W(1,WZ), W(1,T0),              &
-     &            W(1,T ), W(1,PT), W(1,WT), W6(1,1))
+     &            W(1,T ), W(1,PT), W(1,WT), W(1,iWK))
           else
 !
             do iterPRE= 1, iterPREmax
@@ -479,7 +477,7 @@
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
      &            D, AL, AU, ALU_L, ALU_U, W(1,RX), W(1,RY), W(1,RZ),   &
      &            W(1,TT), W(1,WZ), W(1,T0),                            &
-     &            W(1,T ), W(1,PT), W(1,WT), W6(1,1))
+     &            W(1,T ), W(1,PT), W(1,WT), W(1,iWK))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -512,7 +510,7 @@
           call block_ilu_3xnn                                           &
      &          (N, NP, NB, PEsmpTOT, STACKmcG, OtoN_L, NtoO_U, LtoU,   &
      &           ALU_L, W(1,TT), W(1,WZ), W(1,T0),                      &
-     &           W(1,T), W(1,PT), W(1,WT), W6(1,1))
+     &           W(1,T), W(1,PT), W(1,WT), W(1,iWK))
 !
         end if
 !
@@ -529,7 +527,7 @@
      &           (NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,WK), W(1,TT), W6(1,1))
+     &            W(1,WK), W(1,TT), W(1,iWK))
 !
         call copy_vector_nn(NP, NB, W(1,TT), W(1,WK) )
 !
@@ -540,9 +538,10 @@
 !C===
 !
         call cal_5_products_norm_n(NP, NB, PEsmpTOT, STACKmcG,          &
-     &          W(1,Y), W(1,T), W(1,TT), CG, C0, C0_smp)
+     &          W(1,Y), W(1,T), W(1,TT), C0)
 !
         START_TIME= MPI_WTIME()
+        CG(1:5) = 0.0d0
         call MPI_allREDUCE (C0, CG,  5, CALYPSO_REAL,                   &
      &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
         END_TIME= MPI_WTIME()
@@ -578,7 +577,7 @@
         call cal_x_and_residual_GPBiCG_nn(NP, NB, PEsmpTOT,             &
      &          STACKmcG, DNRM20, COEF10, X, W(1,R), W(1,T0), W(1,P),   &
      &          W(1,Z), W(1,T), W(1,Y), W(1,TT), W(1,RT), ALPHA,        &
-     &          ETA, QSI, DNRMsmp, COEFsmp)
+     &          ETA, QSI)
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,            &
@@ -631,7 +630,7 @@
 !C
 !C== change B,X
 !
-      call back_2_original_order_bxn(NP, NB, NtoO, B, X, W6(1,1))
+      call back_2_original_order_bxn(NP, NB, NtoO, B, X, W(1,iWK))
 
       IER = 0
       COMPtime= END_TIME - S1_TIME

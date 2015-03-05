@@ -29,7 +29,7 @@
 !
 !      subroutine cal_x_and_residual_GPBiCG_11(NP, PEsmpTOT,            &
 !     &          STACKmcG, DNRM, COEF, X, WR, WT0, WP, WZ, WT, WY, WTT, &
-!     &          WRT, ALPHA, ETA, QSI, DNRM_smp, COEF_smp)
+!     &          WRT, ALPHA, ETA, QSI)
 !
 !C
 !C +--------------------+
@@ -156,7 +156,7 @@
 !
       subroutine cal_x_and_residual_GPBiCG_11(NP, PEsmpTOT,             &
      &          STACKmcG, DNRM, COEF, X, WR, WT0, WP, WZ, WT, WY, WTT,  &
-     &          WRT, ALPHA, ETA, QSI, DNRM_smp, COEF_smp)
+     &          WRT, ALPHA, ETA, QSI)
 !
        integer(kind = kint), intent(in) :: NP, PEsmpTOT
        integer(kind = kint), intent(in) :: STACKmcG(0:PEsmpTOT)
@@ -166,28 +166,18 @@
        real(kind = kreal), intent(inout) :: X(NP), WR(NP)
        real(kind = kreal), intent(inout) :: WT0(NP)
        real(kind = kreal), intent(inout) :: DNRM, COEF
-       real(kind = kreal), intent(inout) :: DNRM_smp(PEsmpTOT)
-       real(kind = kreal), intent(inout) :: COEF_smp(PEsmpTOT)
 !
        integer (kind = kint) :: ip, iS, iE, i
 !
 !
-!
        DNRM    = 0.0d0
        COEF    = 0.0d0
-       do ip= 1, PEsmpTOT
-         DNRM_smp(ip)= 0.0d0
-         COEF_smp(ip)= 0.0d0
-       enddo
 !
-!cdir parallel do private(iS,iE,i)
-!$omp parallel do private(iS,iE,i)
-!poption indep (X,WR,WT0,WP,WZ,WT,WY,WTT,WRT,STACKmcG) tlocal (iS,iE,i)
+!$omp parallel do private(iS,iE,i) reduction(+:DNRM,COEF)
         do ip= 1, PEsmpTOT
           iS= STACKmcG(ip-1) + 1
           iE= STACKmcG(ip  )
 !voption indep (X,WR,WT0,WP,WZ,WT,WY,WTT,WRT)
-!OCL VECTOR, NOVREC
 !cdir nodep
           do i= iS, iE
 !
@@ -195,17 +185,11 @@
             WR(i) =  WT(i) - ETA*WY(i) - QSI*WTT(i)
             WT0(i) = WT(i)
 !
-            DNRM_smp(ip) = DNRM_smp(ip) + WR(i)*WR(i)
-            COEF_smp(ip) = COEF_smp(ip) + WR(i)*WRT(i)
-!
+            DNRM = DNRM + WR(i)*WR(i)
+            COEF = COEF + WR(i)*WRT(i)
           enddo
         enddo
 !$omp end parallel do
-!
-        do ip= 1, PEsmpTOT
-          DNRM = DNRM + DNRM_smp(ip)
-          COEF = COEF + COEF_smp(ip)
-        end do
 !
       end subroutine cal_x_and_residual_GPBiCG_11
 !

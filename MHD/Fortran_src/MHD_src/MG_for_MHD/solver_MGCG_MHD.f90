@@ -33,6 +33,8 @@
 !
       implicit  none
 !
+      integer(kind = kint), parameter, private :: iterPREmax = 1
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -56,7 +58,7 @@
      &     ((method(3:3).eq.'C').or.(method(3:3).eq.'c')) .and.         &
      &     ((method(4:4).eq.'G').or.(method(4:4).eq.'g')) ) then
         call init_VMGCG11_DJDS_SMP(numnod, np_smp,                      &
-            precond_4_solver,  METHOD_MG, PRECOND_MG)
+            precond_4_solver,  METHOD_MG, PRECOND_MG, iterPREmax)
       else
         call init_DJDS11_struct(numnod, np_smp, method,                 &
             precond_4_solver, ierr)
@@ -72,7 +74,7 @@
      &       ((method(3:3).eq.'C').or.(method(3:3).eq.'c')) .and.       &
      &       ((method(4:4).eq.'G').or.(method(4:4).eq.'g')) ) then
           call init_VMGCG33_DJDS_SMP(numnod, np_smp,                    &
-              precond_4_crank,  METHOD_MG, PRECOND_MG)
+              precond_4_crank,  METHOD_MG, PRECOND_MG, iterPREmax)
         else
           call init33_DJDS_struct(numnod, np_smp, method,               &
               precond_4_crank, ierr)
@@ -111,7 +113,7 @@
      &      MG_itp, MG_djds_tbl_fl, MG_mat_velo, MG_vector, np_smp,     &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
      &      eps_4_velo_crank, EPS_MG,                                   &
-     &      precond_4_crank, METHOD_MG, PRECOND_MG, ierr)
+     &      precond_4_crank, METHOD_MG, PRECOND_MG, ierr, iterPREmax)
       else
         call solve33_DJDS_struct(np_smp, DJDS_comm_fl, DJDS_fluid,      &
      &      Vmat_DJDS, numnod, b_vec(1), x_vec(1),                      &
@@ -153,7 +155,8 @@
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm_fl,                 &
      &      MG_itp, MG_djds_tbl_fll, MG_mat_press, MG_vector, np_smp,   &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
-     &      eps, EPS_MG, precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
+     &      eps, EPS_MG, precond_4_solver, METHOD_MG, PRECOND_MG, ierr, &
+     &      iterPREmax)
       else
         call solve_DJDS11_struct(np_smp, DJDS_comm_fl, DJDS_fl_l,       &
      &      Pmat_DJDS, numnod, b_vec(1), x_vec(1),                      &
@@ -196,7 +199,7 @@
      &      MG_itp, MG_djds_tbl, MG_mat_magne, MG_vector, np_smp,       &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
      &      eps_4_magne_crank, EPS_MG,                                  &
-     &      precond_4_crank, METHOD_MG, PRECOND_MG, ierr)
+     &      precond_4_crank, METHOD_MG, PRECOND_MG, ierr, iterPREmax)
       else
         call solve33_DJDS_struct(np_smp, DJDS_comm_etr, DJDS_entire,    &
      &      Bmat_DJDS, numnod, b_vec(1), x_vec(1),                      &
@@ -240,7 +243,8 @@
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm,                    &
      &      MG_itp, MG_djds_tbl_l, MG_mat_magp, MG_vector, np_smp,      &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
-     &      eps, EPS_MG, precond_4_solver, METHOD_MG, PRECOND_MG, ierr)
+     &      eps, EPS_MG, precond_4_solver, METHOD_MG, PRECOND_MG, ierr, &
+     &      iterPREmax)
       else
         call solve_DJDS11_struct(np_smp, DJDS_comm_etr, DJDS_linear,    &
      &      Fmat_DJDS, numnod, b_vec(1), x_vec(1),                      &
@@ -294,7 +298,7 @@
      &      MG_itp, MG_djds_tbl_fl, MG_mat_temp, MG_vector, np_smp,     &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
      &      eps_4_temp_crank, EPS_MG, precond_4_solver,                 &
-     &      METHOD_MG, PRECOND_MG, ierr)
+     &      METHOD_MG, PRECOND_MG, ierr, iterPREmax)
       else
         call solve_DJDS11_struct(np_smp, DJDS_comm_fl, DJDS_fluid,      &
      &      Tmat_DJDS, numnod, b_vec(1), x_vec(1),                      &
@@ -342,7 +346,7 @@
      &      MG_itp, MG_djds_tbl_fl, MG_mat_d_scalar, MG_vector, np_smp, &
      &      numnod, b_vec(1), x_vec(1), itr, itr_MG_mid, itr_MG_lowest, &
      &      eps_4_comp_crank, EPS_MG, precond_4_solver,                 &
-     &      METHOD_MG, PRECOND_MG, ierr)
+     &      METHOD_MG, PRECOND_MG, ierr, iterPREmax)
       else
         call solve_DJDS11_struct(np_smp, DJDS_comm_fl, DJDS_fluid,      &
      &      Cmat_DJDS, numnod, b_vec(1), x_vec(1),                      &

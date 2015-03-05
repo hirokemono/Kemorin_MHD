@@ -41,8 +41,8 @@
 !
       implicit none
 !
-      real(kind = kreal), allocatable :: W3(:,:)
-      private :: W3
+      real(kind = kreal), allocatable :: W(:,:)
+      private :: W
       private :: verify_work_4_matvecnn
 !
 !  ---------------------------------------------------------------------
@@ -55,13 +55,13 @@
 !
        integer(kind = kint), intent(in) :: NP, NB, nwk
 !
-      if(allocated(W3) .eqv. .false.) then
-        allocate ( W3(NB*NP,nwk))
-        W3 = 0.0d0
-      else if(size(W3) .lt. (nwk*NB*NP)) then
-        deallocate (W3)
-        allocate ( W3(NB*NP,nwk) )
-        W3 = 0.0d0
+      if(allocated(W) .eqv. .false.) then
+        allocate ( W(NB*NP,nwk))
+        W = 0.0d0
+      else if(size(W) .lt. (nwk*NB*NP)) then
+        deallocate (W)
+        allocate ( W(NB*NP,nwk) )
+        W = 0.0d0
       end if
 !
       end subroutine verify_work_4_matvecnn
@@ -141,7 +141,7 @@
       subroutine init_VBiCGSTABnn_DJDS_SMP                              &
      &         (NP, NB, PEsmpTOT, PRECOND, iterPREmax)
 !
-      use m_work_4_BiCGSTABnn
+      use m_work_4_BiCGSTAB
 !
       use djds_matrix_calcs_nn
       use incomplete_cholesky_nn
@@ -156,14 +156,12 @@
 !
 !   allocate work arrays
 !
-      nwk = 3
       if (PRECOND(1:2).eq.'IC'  .or.                                    &
      &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
-        if(iterPREmax .ge. 1) nwk = nwk + 2
+        if(iterPREmax .ge. 1) ntotWK_BiCGSTAB = ntotWK_BiCGSTAB + 2
       end if
 !
-      call verify_work_BiCGSTAB_nn(NP, NB, PEsmpTOT)
-      call verify_work_4_matvecnn(NP,NB, nwk)
+      call verify_work_4_matvecnn(NP,NB, ntotWK_BiCGSTAB)
 !
       end subroutine init_VBiCGSTABnn_DJDS_SMP
 !
@@ -182,7 +180,7 @@
 !
       use solver_SR_N
 !
-      use m_work_4_BiCGSTABnn
+      use m_work_4_BiCGSTAB
       use m_solver_count_time
 !
       use cal_norm_products_nn
@@ -192,7 +190,7 @@
       use i_cholesky_w_asdd_nn
       use block_ilu_nn
       use diagonal_scaling_nn
-      use calcs_4_BiCGSTABnn
+      use calcs_4_BiCGSTAB
 !
       integer(kind=kint ), intent(in) :: N, NP, NB, NL, NU, NPL, NPU
       integer(kind=kint ), intent(in) :: PEsmpTOT, NVECT
@@ -251,14 +249,16 @@
       TOL  = EPS
       S1_TIME= MPI_WTIME()
 !
+!$omp workshare
+      W(1:NB*NP,1:nWK_BiCGSTAB) = 0.0d0
+!$omp end workshare
+!
       call reset_solver_time
-      call init_work_BiCGSTAB_nn(NP, NB)
-!      call clear_vector_solve_nn(NP, NB, X)
 !C
 !C-- change B,X
 !
       call change_order_2_solve_bxn(NP, NB, PEsmpTOT, STACKmcG,         &
-     &           NtoO, B, X, W3(1,1))
+     &           NtoO, B, X, W(1,iWK))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -282,7 +282,7 @@
      &           (NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,R), B, X, W3(1,1))
+     &            W(1,R), B, X, W(1,iWK))
 !
        call copy_vector_nn(NP, NB, W(1,RT), W(1,R) )
 !
@@ -292,8 +292,7 @@
 !C +---------------+
 !C===
 
-      call cal_local_norm_n(NP, NB, PEsmpTOT, STACKmcG, B,              &
-     &    BNRM20, DNRMsmp)
+      call cal_local_norm_n(NP, NB, PEsmpTOT, STACKmcG, B, BNRM20)
 
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
@@ -315,7 +314,7 @@
 !C===
 !
         call cal_local_s_product_n(NP, NB, PEsmpTOT, STACKmcG,          &
-     &    W(1,R), W(1,RT), RHO0, SP1smp)
+     &    W(1,R), W(1,RT), RHO0)
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (RHO0, RHO, 1, CALYPSO_REAL,                 &
@@ -336,7 +335,7 @@
      &      W(1,P), W(1,R) )
         else
           call r_plus_beta_p_sub_omega_v_nn(NP, NB, PEsmpTOT, STACKmcG, &
-     &       W(1,P), W(1,R), W(1,V), BETA, OMEGA, ALPHA, RHO, RHO1)
+     &       W(1,P), W(1,R), W(1,V), OMEGA, ALPHA, RHO, RHO1)
         endif
 !C===
 
@@ -355,7 +354,7 @@
      &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,             &
-     &            ALU_L, ALU_U, W(1,PT), W(1,P), W3(1,1))
+     &            ALU_L, ALU_U, W(1,PT), W(1,P), W(1,iWK))
           else
 !
             do iterPRE= 1, iterPREmax
@@ -365,7 +364,7 @@
      &            NVECT, PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp,     &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
      &            D, AL, AU, ALU_L, ALU_U, W(1,ZQ), W(1,PT), W(1,P),    &
-     &            W3(1,1))
+     &            W(1,iWK))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -387,7 +386,7 @@
      &      .or. PRECOND(1:6).eq.'BL_ILU') then
           call block_ilu_1xnn                                           &
      &          (N, NP, NB, PEsmpTOT, STACKmcG, OtoN_L, NtoO_U, LtoU,   &
-     &           ALU_L, W(1,PT), W(1,P), W3(1,1))
+     &           ALU_L, W(1,PT), W(1,P), W(1,iWK))
 !
         else if (PRECOND(1:4).eq.'DIAG') then
           call diag_scaling_1xnn(NP, N, NB, PEsmpTOT, STACKmcG,         &
@@ -414,7 +413,7 @@
      &           (NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,V), W(1,PT), W3(1,1))
+     &            W(1,V), W(1,PT), W(1,iWK))
 !
 !C===
 
@@ -425,7 +424,7 @@
 !C===
 !
         call cal_local_s_product_n(NP, NB, PEsmpTOT, STACKmcG,          &
-     &      W(1,RT), W(1,V), C20, SP1smp)
+     &      W(1,RT), W(1,V), C20)
 
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (C20, C2, 1, CALYPSO_REAL,                   &
@@ -444,8 +443,7 @@
         call r_sub_alpha_v_nn(NP, NB, PEsmpTOT, STACKmcG, W(1,S),       &
      &      W(1,R), W(1,V), ALPHA)
 !
-!        call cal_local_norm_n(NP, NB, PEsmpTOT, STACKmcG, W(1,S), aa,  &
-!     &      DNRMsmp)
+!        call cal_local_norm_n(NP, NB, PEsmpTOT, STACKmcG, W(1,S), aa)
 !
 !C===
 
@@ -465,7 +463,7 @@
      &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,             &
-     &            ALU_L, ALU_U, W(1,ST), W(1,S), W3(1,1))
+     &            ALU_L, ALU_U, W(1,ST), W(1,S), W(1,iWK))
           else
 !
             do iterPRE= 1, iterPREmax
@@ -475,7 +473,7 @@
      &            NVECT, PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp,     &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
      &            D, AL, AU, ALU_L, ALU_U, W(1,ZQ), W(1,ST), W(1,S),    &
-     &            W3(1,1))
+     &            W(1,iWK))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -497,7 +495,7 @@
      &      .or. PRECOND(1:6).eq.'BL_ILU') then
           call block_ilu_1xnn                                           &
      &          (N, NP, NB, PEsmpTOT, STACKmcG, OtoN_L, NtoO_U, LtoU,   &
-     &           ALU_L, W(1,ST), W(1,S), W3(1,1))
+     &           ALU_L, W(1,ST), W(1,S), W(1,iWK))
 !
         else if (PRECOND(1:4).eq.'DIAG') then
           call diag_scaling_1xnn(NP, N, NB, PEsmpTOT, STACKmcG,         &
@@ -524,10 +522,9 @@
      &           (NP, Nb, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,T), W(1,ST), W3(1,1))
+     &            W(1,T), W(1,ST), W(1,iWK))
 !
-!        call cal_local_norm_n(NP, NB, PEsmpTOT, STACKmcG, W(1,T), aa,  &
-!     &      DNRMsmp)
+!        call cal_local_norm_n(NP, NB, PEsmpTOT, STACKmcG, W(1,T), aa)
 !
 !C
 !C +----------------------------+
@@ -536,9 +533,10 @@
 !C===
 !
         call cal_local_sproduct_norm_n(NP, NB, PEsmpTOT, STACKmcG,      &
-     &           W(1,T), W(1,S), C0(1), C0(2), SP1smp, DNRMsmp)
+     &           W(1,T), W(1,S), C0(1), C0(2))
 
         START_TIME= MPI_WTIME()
+        CG(1:2) = 0.0d0
         call MPI_allREDUCE (C0, CG, 2, CALYPSO_REAL, MPI_SUM,           &
      &                    CALYPSO_COMM, ierr_MPI)
         END_TIME= MPI_WTIME()
@@ -554,7 +552,7 @@
 !
         call cal_x_and_residual_BiCGSTAB_nn(NP, NB, PEsmpTOT, STACKmcG, &
      &      DNRM20, X, W(1,R), W(1,PT), W(1,ST), W(1,S), W(1,T),        &
-     &      ALPHA, OMEGA, DNRMsmp)
+     &      ALPHA, OMEGA)
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (DNRM20, DNRM2, 1, CALYPSO_REAL,             &
@@ -598,7 +596,7 @@
 !C
 !C== change B,X
 
-      call back_2_original_order_bxn(NP, NB, NtoO, B, X, W3(1,1))
+      call back_2_original_order_bxn(NP, NB, NtoO, B, X, W(1,iWK))
 
       IER = 0
       COMPtime= END_TIME - S1_TIME

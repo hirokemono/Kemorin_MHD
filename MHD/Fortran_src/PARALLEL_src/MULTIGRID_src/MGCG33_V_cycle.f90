@@ -9,7 +9,7 @@
 !!      subroutine s_MGCG33_V_cycle(num_MG_level, MG_comm, MG_itp,      &
 !!     &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,         &
 !!     &          iter_mid, iter_lowest, EPS_MG,                        &
-!!     &          METHOD_MG, PRECOND_MG, IER, W3)
+!!     &          METHOD_MG, PRECOND_MG, IER, W)
 !!       integer(kind = kint), intent(in) :: num_MG_level
 !!       type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
 !!       type(DJDS_ordering_table), intent(in) :: djds_tbl(0:num_MG_level)
@@ -74,11 +74,12 @@
       subroutine s_MGCG33_V_cycle(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,           &
      &          iter_mid, iter_lowest, EPS_MG,                          &
-     &          METHOD_MG, PRECOND_MG, IER, W3)
+     &          METHOD_MG, PRECOND_MG, IER, W)
 !
       use calypso_mpi
 !
       use m_constants
+      use m_work_4_CG
       use t_comm_table
       use solver_DJDS33_struct
       use interpolate_by_type
@@ -102,7 +103,7 @@
       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
       integer(kind = kint), intent(inout) :: IER
 !
-      real(kind = kreal), intent(inout) :: W3(3*3*NP)
+      real(kind = kreal), intent(inout) :: W(3*NP*ntotWK_CG)
 !
       integer(kind = kint) :: NP_f, NP_c
       integer(kind = kint) :: i, iter_res, ierr
@@ -117,7 +118,7 @@
 !$omp end parallel do
 !
       call back_2_original_order_bx3(NP, djds_tbl(0)%NEWtoOLD,          &
-     &    MG_vect(0)%b_vec, MG_vect(0)%x_vec, W3(1))
+     &    MG_vect(0)%b_vec, MG_vect(0)%x_vec, W(1))
 !
 !C restrict the residual vector
       DO i = 0, num_MG_level-1
@@ -132,7 +133,7 @@
 !C calculate residual
       if(print_residual_on_each_level) Then
         call cal_residual33_type(djds_tbl(0), mat33(0), MG_vect(0),     &
-     &      PEsmpTOT, resd, W3(1))
+     &      PEsmpTOT, resd, W(1))
         if(my_rank .eq. 0) write(*,*) '0-th level, pre ', resd
       end if
 !
@@ -182,7 +183,7 @@
 !C calculate residual
         if(print_residual_on_each_level) Then
           call cal_residual33_type(djds_tbl(i), mat33(i), MG_vect(i),   &
-     &      PEsmpTOT, resd, W3(1))
+     &      PEsmpTOT, resd, W(1))
           if(my_rank .eq. 0) write(*,*) i, 'th level, pre ', resd
         end if
 !
@@ -200,7 +201,7 @@
 !
       call change_order_2_solve_bx3(NP, PEsmpTOT, djds_tbl(0)%STACKmcG, &
      &    djds_tbl(0)%NEWtoOLD, MG_vect(0)%b_vec, MG_vect(0)%x_vec,     &
-     &    W3(1))
+     &    W(1))
 !
 !$omp parallel do
       do i = 1, 3*NP
@@ -213,12 +214,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_residual33_type(djds_tbl, mat33, MG_vect,          &
-     &          PEsmpTOT, resd, W3)
+     &          PEsmpTOT, resd, W)
 !
       use calypso_mpi
 !
       use m_constants
-      use m_work_4_MGCG33
+      use m_work_4_CG
       use cal_norm_products_33
 !
       type(DJDS_ordering_table), intent(in) :: djds_tbl
@@ -227,12 +228,13 @@
       type(vectors_4_solver), intent(inout) :: MG_vect
       integer(kind = kint), intent(in) :: PEsmpTOT
       real(kind = kreal), intent(inout) :: resd
-      real(kind = kreal), intent(inout) :: W3(3*mat33%num_diag,3)
+      real(kind = kreal), intent(inout)                                 &
+     &           :: W(3*mat33%num_diag,ntotWK_CG)
 !
 !
       call change_order_2_solve_bx3(mat33%num_diag, PEsmpTOT,           &
             djds_tbl%STACKmcG, djds_tbl%NEWtoOLD,                       &
-     &      MG_vect%b_vec, MG_vect%x_vec, W3(1,1))
+     &      MG_vect%b_vec, MG_vect%x_vec, W(1,iWK))
 !
 !C calculate residual
         call subtruct_matvec_33                                         &
@@ -246,14 +248,14 @@
      &       djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                &
      &       djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                  &
      &       mat33%D, mat33%AL,  mat33%AU, W(1,ZQ),                     &
-     &       MG_vect%b_vec, MG_vect%x_vec, W3(1,1))
+     &       MG_vect%b_vec, MG_vect%x_vec, W(1,iWK))
 !
       call back_2_original_order_bx3(mat33%num_diag, djds_tbl%NEWtoOLD, &
-     &    MG_vect%b_vec, MG_vect%x_vec, W3(1,1))
+     &    MG_vect%b_vec, MG_vect%x_vec, W(1,iWK))
 !
         BNRM20=zero
         call cal_local_norm_3(mat33%num_diag, PEsmpTOT,                 &
-     &      djds_tbl%STACKmcG, W(1,ZQ), BNRM20, DNRMsmp)
+     &      djds_tbl%STACKmcG, W(1,ZQ), BNRM20)
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (BNRM20, resd, 1, CALYPSO_REAL,              &

@@ -25,6 +25,9 @@
       real(kind=kreal), allocatable, private :: ALUG(:)
       real(kind=kreal), allocatable, private :: SCALE(:)
 !
+      real(kind = kreal), allocatable :: W(:,:)
+      private :: W
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -37,7 +40,7 @@
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
      &                  EPS, ITER, ERROR, my_rank, NSET)
 !
-      use m_work_4_CG11
+      use m_work_4_CG
       use crs_matrix_calcs_11
       use incomplete_cholesky_crs_11
       use precond_crs_incomplete_lu
@@ -88,12 +91,11 @@
         allocate (SCALE(N))
         IFLAG= 1
         SCALE(1:N)= 1.d0
-!
-        call allocate_work_CG_11(N, ione)
-      else
-        call verify_work_CG_11(N, ione)
       end if
 
+      allocate(W(N,nWK_CG))
+      W = 0.0d0
+!
       MAXIT  = ITER
       TOL   = EPS
 
@@ -232,6 +234,7 @@
         if ( ITER .eq.MAXIT ) ERROR= -100
       enddo
 !C===
+      deallocate(W)
 
 !C
 !C-- INTERFACE data EXCHANGE

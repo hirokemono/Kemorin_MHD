@@ -16,7 +16,7 @@
 !     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
 !
 !      subroutine init_VMGCG33_DJDS_SMP(NP, PEsmpTOT,                   &
-!     &          PRECOND, METHOD_MG, PRECOND_MG)
+!     &          PRECOND, METHOD_MG, PRECOND_MG, iterPREmax)
 !      subroutine solve_VMGCG33_DJDS_SMP(num_MG_level, MG_comm, MG_itp, &
 !     &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,          &
 !     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,               &
@@ -60,8 +60,8 @@
 !
       private :: wk_MGCG33
 !
-       real(kind = kreal), allocatable :: W3(:,:)
-       private :: W3
+       real(kind = kreal), allocatable :: W(:,:)
+       private :: W
        private :: verify_work_4_matvec33
 !
 !  ---------------------------------------------------------------------
@@ -75,13 +75,13 @@
       integer(kind = kint), intent(in) :: NP, nwk
 !
 !
-      if(allocated(W3) .eqv. .false.) then
-        allocate ( W3(3*NP,nwk) )
-        W3 = 0.0d0
-      else if(size(W3) .lt. (3*nwk*NP)) then
-        deallocate (W3)
-        allocate ( W3(3*NP,nwk) )
-        W3 = 0.0d0
+      if(allocated(W) .eqv. .false.) then
+        allocate ( W(3*NP,nwk) )
+        W = 0.0d0
+      else if(size(W) .lt. (3*nwk*NP)) then
+        deallocate (W)
+        allocate ( W(3*NP,nwk) )
+        W = 0.0d0
       end if
 !
       end subroutine verify_work_4_matvec33
@@ -91,7 +91,7 @@
       subroutine VMGCG33_DJDS_SMP(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,           &
      &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,                &
-     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
+     &          PRECOND, METHOD_MG, PRECOND_MG, IER, iterPREmax)
 !
       use calypso_mpi
       use solver_SR_3
@@ -119,10 +119,11 @@
       real(kind = kreal), intent(in) :: EPS
       real(kind = kreal), intent(in) :: EPS_MG
       integer(kind=kint ), intent(inout) :: ITR, IER
+      integer(kind=kint ), intent(in)  :: iterPREmax
 !
 !
       call init_VMGCG33_DJDS_SMP(NP, PEsmpTOT,                          &
-     &          PRECOND, METHOD_MG, PRECOND_MG)
+     &          PRECOND, METHOD_MG, PRECOND_MG, iterPREmax)
 !
       call solve_VMGCG33_DJDS_SMP(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,           &
@@ -134,26 +135,23 @@
 !  ---------------------------------------------------------------------
 !C
       subroutine init_VMGCG33_DJDS_SMP(NP, PEsmpTOT,                    &
-     &          PRECOND, METHOD_MG, PRECOND_MG)
+     &          PRECOND, METHOD_MG, PRECOND_MG, iterPREmax)
 !
-      use m_work_4_MGCG33
-!
+      use m_work_4_CG
       use MGCG33_V_cycle
 !
       integer(kind = kint), intent(in) :: NP, PEsmpTOT
       character (len=kchara), intent(in) :: PRECOND
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
+      integer(kind=kint ), intent(in)  :: iterPREmax
 !
-      integer(kind=kint ) :: nwk
 !
-!   allocate work arrays
+      if (PRECOND(1:2).eq.'IC'  .or.                                    &
+     &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
+        if(iterPREmax .ge. 1) ntotWK_CG = ntotWK_CG + 2
+      end if
 !
-      nwk = 3
-!
-!      allocate(wk_MGCG33(0:num_MG_level))
-      call verify_work_MGCG_33(NP, PEsmpTOT)
-      call verify_work_4_matvec33(NP, nwk)
-!
+      call verify_work_4_matvec33(NP, ntotWK_CG)
       call init_MGCG33_V_cycle(NP, PEsmpTOT, METHOD_MG, PRECOND_MG)
 !
       end subroutine init_VMGCG33_DJDS_SMP
@@ -174,7 +172,7 @@
       use t_solver_djds
       use t_vector_for_solver
 !
-      use m_work_4_MGCG33
+      use m_work_4_CG
       use m_solver_count_time
 !
       use cal_norm_products_33
@@ -184,7 +182,7 @@
       use diagonal_scaling_33
       use jacobi_precondition_33
       use gauss_zeidel_33
-      use calcs_4_CG33
+      use calcs_4_CG
       use MGCG33_V_cycle
 !
       integer(kind = kint), intent(in) :: num_MG_level
@@ -289,14 +287,16 @@
       TOL  = EPS
       S1_TIME= MPI_WTIME()
 !
-      call reset_solver_time
-      call init_work_MGCG_33(NP)
+!$omp workshare
+      W(1:3*NP,1:ntotWK_CG) = 0.0d0
+!$omp end workshare
 !
+      call reset_solver_time
 !C
 !C-- change B,X
 
        call change_order_2_solve_bx3(NP, PEsmpTOT, STACKmcG,            &
-     &           NtoO, B, X, W3(1,1))
+     &           NtoO, B, X, W(1,iWK))
 
        call clear_vector_solve_33(NP, W(1,3) )
 
@@ -319,14 +319,14 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,            &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,R), B, X, W3(1,1))
+     &            W(1,R), B, X, W(1,iWK))
 !
 !C
 !C +---------------+
 !C | BNORM2 = B^2  |
 !C +---------------+
 !C===
-      call cal_local_norm_3(NP, PEsmpTOT, STACKmcG, B, BNRM20, DNRMsmp)
+      call cal_local_norm_3(NP, PEsmpTOT, STACKmcG, B, BNRM20)
 !
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
@@ -354,7 +354,7 @@
        call s_MGCG33_V_cycle(num_MG_level, MG_comm, MG_itp,             &
      &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, W(1,R), W(1,Z), &
      &          iter_mid, iter_lowest, EPS_MG,                          &
-     &          METHOD_MG, PRECOND_MG, IER, W3(1,1))
+     &          METHOD_MG, PRECOND_MG, IER, W(1,1))
 !
 !C
 !C +---------------+
@@ -363,7 +363,7 @@
 !C===
 !
       call cal_local_s_product_3(NP, PEsmpTOT, STACKmcG,                &
-     &           W(1,R), W(1,Z), RHO0, SPsmp)
+     &           W(1,R), W(1,Z), RHO0)
 !
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (RHO0, RHO, 1, CALYPSO_REAL,                   &
@@ -405,7 +405,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,            &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,Q), W(1,P), W3(1,1))
+     &            W(1,Q), W(1,P), W(1,iWK))
 !
 !C===
 !C +---------------------+
@@ -414,7 +414,7 @@
 !C===
 !
         call cal_local_s_product_3(NP, PEsmpTOT, STACKmcG,              &
-     &           W(1,P), W(1,Q), C10, SPsmp)
+     &           W(1,P), W(1,Q), C10)
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (C10, C1, 1, CALYPSO_REAL,                   &
@@ -433,7 +433,7 @@
 !C===
 !
         call djds_x_and_residual_CG_33(NP, PEsmpTOT, STACKmcG,          &
-     &      DNRM20, X, W(1,R), W(1,P), W(1,Q), ALPHA, DNRMsmp)
+     &      DNRM20, X, W(1,R), W(1,P), W(1,Q), ALPHA)
 !
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (DNRM20, DNRM2, 1, CALYPSO_REAL,               &
@@ -473,7 +473,7 @@
 !C
 !C== change B,X
 
-       call back_2_original_order_bx3(NP, NtoO, B, X, W3(1,1))
+       call back_2_original_order_bx3(NP, NtoO, B, X, W(1,iWK))
 
       IER = 0
       E1_TIME= MPI_WTIME()

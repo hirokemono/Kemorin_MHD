@@ -13,10 +13,10 @@
 !      subroutine VMGCG11_DJDS_SMP(num_MG_level, MG_comm, MG_itp,       &
 !     &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,          &
 !     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,               &
-!     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
+!     &          PRECOND, METHOD_MG, PRECOND_MG, IER, iterPREmax)
 !
 !      subroutine init_VMGCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND,          &
-!     &           METHOD_MG, PRECOND_MG)
+!     &           METHOD_MG, PRECOND_MG, iterPREmax)
 !      subroutine solve_VMGCG11_DJDS_SMP(num_MG_level, MG_comm, MG_itp, &
 !     &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,          &
 !     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,               &
@@ -51,8 +51,8 @@
 !
       implicit none
 !
-       real(kind = kreal), allocatable :: W3(:,:)
-       private :: W3
+       real(kind = kreal), allocatable :: W(:,:)
+       private :: W
        private :: verify_work_4_matvec11
 !
 !  ---------------------------------------------------------------------
@@ -66,13 +66,13 @@
       integer(kind = kint), intent(in) :: NP, nwk
 !
 !
-      if(allocated(W3) .eqv. .false.) then
-        allocate ( W3(NP,nwk) )
-        W3 = 0.0d0
-      else if(size(W3) .lt. (nwk*NP)) then
-        deallocate (W3)
-        allocate ( W3(NP,nwk) )
-        W3 = 0.0d0
+      if(allocated(W) .eqv. .false.) then
+        allocate ( W(NP,nwk) )
+        W = 0.0d0
+      else if(size(W) .lt. (nwk*NP)) then
+        deallocate (W)
+        allocate ( W(NP,nwk) )
+        W = 0.0d0
       end if
 !
       end subroutine verify_work_4_matvec11
@@ -83,7 +83,7 @@
       subroutine VMGCG11_DJDS_SMP(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,           &
      &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,                &
-     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
+     &          PRECOND, METHOD_MG, PRECOND_MG, IER, iterPREmax)
 !
       use calypso_mpi
 !
@@ -110,10 +110,11 @@
       real(kind = kreal), intent(in) :: EPS
       real(kind = kreal), intent(in) :: EPS_MG
       integer(kind=kint ), intent(inout) :: ITR, IER
+      integer(kind=kint ), intent(in)  :: iterPREmax
 !
 !
       call init_VMGCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND,                 &
-     &    METHOD_MG, PRECOND_MG)
+     &    METHOD_MG, PRECOND_MG, iterPREmax)
 !
       call solve_VMGCG11_DJDS_SMP(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,           &
@@ -125,9 +126,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine init_VMGCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND,           &
-     &           METHOD_MG, PRECOND_MG)
+     &           METHOD_MG, PRECOND_MG, iterPREmax)
 !
-      use m_work_4_MGCG11
+      use m_work_4_CG
       use djds_matrix_calcs_11
       use incomplete_cholesky_11
       use MGCG11_V_cycle
@@ -135,16 +136,16 @@
       integer(kind=kint ), intent(in) :: NP, PEsmpTOT
       character (len=kchara), intent(in) :: PRECOND
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
-!
-      integer(kind=kint ) :: nwk
+      integer(kind=kint ), intent(in)  :: iterPREmax
 !
 !   allocate work arrays
 !
-      nwk = 3
+      if (PRECOND(1:2).eq.'IC'  .or.                                    &
+     &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
+        if(iterPREmax .ge. 1) ntotWK_CG = ntotWK_CG + 2
+      end if
 !
-      call verify_work_MGCG_11(NP, PEsmpTOT)
-      call verify_work_4_matvec11(NP, nwk)
-!
+      call verify_work_4_matvec11(NP, ntotWK_CG)
       call init_MGCG11_V_cycle(NP, PEsmpTOT, METHOD_MG, PRECOND_MG)
 !
       end subroutine init_VMGCG11_DJDS_SMP
@@ -164,7 +165,7 @@
       use t_solver_djds
       use t_vector_for_solver
 !
-      use m_work_4_MGCG11
+      use m_work_4_CG
       use m_solver_count_time
 !
       use djds_norm_products_11
@@ -174,7 +175,7 @@
       use diagonal_scaling_11
       use jacobi_precondition_11
       use gauss_zeidel_11
-      use calcs_4_CG11
+      use calcs_4_CG
       use MGCG11_V_cycle
       use solver_DJDS11_struct
 !
@@ -279,15 +280,18 @@
       TOL  = EPS
       S1_TIME= MPI_WTIME()
 !
+!$omp workshare
+      W(1:NP,1:ntotWK_CG) = 0.0d0
+!$omp end workshare
+!
       call reset_solver_time
-      call init_work_MGCG_11(NP)
 !
 !C
 !C-- change B,X
 
       write(*,*) 'change_order_2_solve_bx1'
        call change_order_2_solve_bx1(NP, PEsmpTOT, STACKmcG,            &
-     &           NtoO, B, X, W3(1,1))
+     &           NtoO, B, X, W(1,iWK))
 
       write(*,*) 'clear_vector_solve_11'
        call clear_vector_solve_11(NP, W(1,3) )
@@ -312,7 +316,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,            &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,R), B, X, W3(1,1))
+     &            W(1,R), B, X, W(1,iWK))
 !
 !C
 !C +---------------+
@@ -320,8 +324,7 @@
 !C +---------------+
 !C===
       write(*,*) 'djds_local_norm_1'
-      call djds_local_norm_1(NP, PEsmpTOT, STACKmcG, B,                 &
-     &    BNRM20, DNRMsmp)
+      call djds_local_norm_1(NP, PEsmpTOT, STACKmcG, B, BNRM20)
 !
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
@@ -349,7 +352,7 @@
         call s_MGCG11_V_cycle(num_MG_level, MG_comm, MG_itp,            &
      &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, W(1,R), W(1,Z), &
      &          iter_mid, iter_lowest, EPS_MG,                          &
-     &          METHOD_MG, PRECOND_MG, IER, W3(1,1))
+     &          METHOD_MG, PRECOND_MG, IER, W(1,1))
       write(*,*) 'IER', IER
 !
 !C
@@ -363,7 +366,7 @@
 !         write(*,*)  ist, W(ist,R), W(ist,Z)
 !       end do
       call djds_local_s_product_1(NP, PEsmpTOT, STACKmcG,               &
-     &           W(1,R), W(1,Z), RHO0, SPsmp)
+     &           W(1,R), W(1,Z), RHO0)
         write(*,*)  'RHO0', RHO0
 !
       START_TIME= MPI_WTIME()
@@ -406,7 +409,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,            &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,Q), W(1,P), W3(1,1))
+     &            W(1,Q), W(1,P), W(1,iWK))
 !
 !C===
 !C +---------------------+
@@ -415,7 +418,7 @@
 !C===
 !
         call djds_local_s_product_1(NP, PEsmpTOT, STACKmcG,             &
-     &           W(1,P), W(1,Q), C10, SPsmp)
+     &           W(1,P), W(1,Q), C10)
         write(*,*)  'RHO, C10', RHO, C10
 !
         START_TIME= MPI_WTIME()
@@ -438,7 +441,7 @@
 !C===
 !
         call djds_x_and_residual_CG_11(NP, PEsmpTOT, STACKmcG,          &
-     &      DNRM20, X, W(1,R), W(1,P), W(1,Q), ALPHA, DNRMsmp)
+     &      DNRM20, X, W(1,R), W(1,P), W(1,Q), ALPHA)
 !       do ist = 1, NP
 !         write(*,*)  ist, X(ist), W(ist,R)
 !       end do
@@ -484,7 +487,7 @@
 !C
 !C== change B,X
 
-       call back_2_original_order_bx1(NP, NtoO, B, X, W3(1,1))
+       call back_2_original_order_bx1(NP, NtoO, B, X, W(1,iWK))
 
       IER = 0
       E1_TIME= MPI_WTIME()

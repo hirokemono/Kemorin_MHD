@@ -42,8 +42,8 @@
 !
       implicit none
 !
-      real(kind = kreal), allocatable :: W3(:,:)
-      private :: W3
+      real(kind = kreal), allocatable :: W(:,:)
+      private :: W
       private :: verify_work_4_matvec33d
 !
 !  ---------------------------------------------------------------------
@@ -57,13 +57,13 @@
       integer(kind = kint), intent(in) :: NP, nwk
 !
 !
-      if(allocated(W3) .eqv. .false.) then
-        allocate ( W3(3*NP,nwk) )
-        W3 = 0.0d0
-      else if(size(W3) .lt. (3*nwk*NP)) then
-        deallocate (W3)
-        allocate ( W3(3*NP,nwk) )
-        W3 = 0.0d0
+      if(allocated(W) .eqv. .false.) then
+        allocate ( W(3*NP,nwk) )
+        W = 0.0d0
+      else if(size(W) .lt. (3*nwk*NP)) then
+        deallocate (W)
+        allocate ( W(3*NP,nwk) )
+        W = 0.0d0
       end if
 !
       end subroutine verify_work_4_matvec33d
@@ -141,7 +141,7 @@
       subroutine init_VCG33_DJDS_SMP_d                                  &
      &         (NP, PEsmpTOT, PRECOND, iterPREmax)
 !
-      use m_work_4_CG33
+      use m_work_4_CG
       use djds_matrix_calcs_33
       use incomplete_cholesky_33d
       use i_cholesky_w_asdd_33d
@@ -151,18 +151,13 @@
       integer(kind=kint ), intent(in) :: NP, PEsmpTOT
       integer(kind=kint ), intent(in)  :: iterPREmax
 !
-      integer(kind=kint ) :: nwk
 !
-      nwk = 3
       if (PRECOND(1:2).eq.'IC'  .or.                                    &
      &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
-        if(iterPREmax .ge. 1) nwk = nwk + 2
+        if(iterPREmax .ge. 1) ntotWK_CG = ntotWK_CG + 2
       end if
 !
-!   allocate work arrays
-!
-      call verify_work_CG_33(NP, PEsmpTOT)
-      call verify_work_4_matvec33d(NP, nwk)
+      call verify_work_4_matvec33d(NP, ntotWK_CG)
 !
       end subroutine init_VCG33_DJDS_SMP_d
 !
@@ -181,7 +176,7 @@
 !
       use solver_SR_3
 !
-      use m_work_4_CG33
+      use m_work_4_CG
       use m_solver_count_time
 !
       use cal_norm_products_33
@@ -192,7 +187,7 @@
       use i_cholesky_w_asdd_33d
       use diagonal_scaling_33
       use block_ilu_33
-      use calcs_4_CG33
+      use calcs_4_CG
 !
       integer(kind=kint ), intent(in) :: N, NP, NL, NU, NPL, NPU
       integer(kind=kint ), intent(in) :: PEsmpTOT, NVECT
@@ -252,16 +247,16 @@
       TOL  = EPS
       S1_TIME= MPI_WTIME()
 !
+!$omp workshare
+      W(1:3*NP,1:ntotWK_CG) = 0.0d0
+!$omp end workshare
 !
       call reset_solver_time
-      call init_work_CG_33(NP)
-!      call clear_vector_solve_33(NP, X)
-
 !C
 !C-- change B,X
 
       call change_order_2_solve_bx3d(NP, PEsmpTOT, STACKmcG,            &
-     &           NtoO, B, X, W3(1,1))
+     &           NtoO, B, X, W(1,iWK))
 !
 !C
 !C-- INTERFACE data EXCHANGE
@@ -283,7 +278,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT, PEsmpTOT,  &
      &            STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L, OtoN_U,      &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,          &
-     &            W(1,R), B, X, W3(1,1))
+     &            W(1,R), B, X, W(1,iWK))
 !
 !C
 !C +---------------+
@@ -291,7 +286,7 @@
 !C +---------------+
 !C===
 
-      call cal_local_norm_3(NP, PEsmpTOT, STACKmcG, B, BNRM20, DNRMsmp)
+      call cal_local_norm_3(NP, PEsmpTOT, STACKmcG, B, BNRM20)
 
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
@@ -322,7 +317,7 @@
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,             &
-     &            ALU_L, ALU_U, W(1,Z), W(1,R), W3(1,1))
+     &            ALU_L, ALU_U, W(1,Z), W(1,R), W(1,iWK))
         else
 !
           do iterPRE= 1, iterPREmax
@@ -331,7 +326,7 @@
      &            NVECT, PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp,     &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
      &            D, AL, AU, ALU_L, ALU_U, W(1,ZQ), W(1,Z), W(1,R),     &
-     &            W3(1,1))
+     &            W(1,iWK))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -355,7 +350,7 @@
 !
         call block_ilu_33d                                              &
      &          (N, NP, PEsmpTOT, STACKmcG, OtoN_L, NtoO_U, LtoU,       &
-     &           ALU_L, W(1,Z), W(1,R), W3(1,1))
+     &           ALU_L, W(1,Z), W(1,R), W(1,iWK))
 !
       endif
 !C===
@@ -374,7 +369,7 @@
 !C===
 !
       call cal_local_s_product_3(NP, PEsmpTOT, STACKmcG,                &
-     &    W(1,R), W(1,Z), RHO0, SPsmp)
+     &    W(1,R), W(1,Z), RHO0)
 
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (RHO0, RHO, 1, CALYPSO_REAL,                   &
@@ -417,7 +412,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT, PEsmpTOT,  &
      &            STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L, OtoN_U,      &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,          &
-     &            W(1,Q), W(1,P), W3(1,1))
+     &            W(1,Q), W(1,P), W(1,iWK))
 !
 !C===
 
@@ -428,7 +423,7 @@
 !C===
 !
       call cal_local_s_product_3(NP, PEsmpTOT, STACKmcG,                &
-     &    W(1,P), W(1,Q), C10, SPsmp)
+     &    W(1,P), W(1,Q), C10)
 
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (C10, C1, 1, CALYPSO_REAL,                     &
@@ -447,7 +442,7 @@
 !C===
 
       call djds_x_and_residual_CG_33(NP, PEsmpTOT, STACKmcG,            &
-     &    DNRM20, X, W(1,R), W(1,P), W(1,Q), ALPHA, DNRMsmp)
+     &    DNRM20, X, W(1,R), W(1,P), W(1,Q), ALPHA)
 !
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (DNRM20, DNRM2, 1, CALYPSO_REAL,               &
@@ -501,7 +496,7 @@
 !C
 !C== change B,X
 
-      call back_2_original_order_bx3d(NP, NtoO, B, X, W3(1,1))
+      call back_2_original_order_bx3d(NP, NtoO, B, X, W(1,iWK))
 
       IER = 0
       R1= 100.d0 * ( 1.d0 - COMMtime/COMPtime )

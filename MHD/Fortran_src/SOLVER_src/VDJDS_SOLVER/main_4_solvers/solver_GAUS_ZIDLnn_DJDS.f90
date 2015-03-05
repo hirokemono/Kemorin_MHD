@@ -40,8 +40,8 @@
 !
       implicit none
 !
-      real(kind = kreal), allocatable :: W3(:,:)
-      private :: W3
+      real(kind = kreal), allocatable :: W(:,:)
+      private :: W
       private :: verify_work_4_matvecnn
 !
 !  ---------------------------------------------------------------------
@@ -50,17 +50,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine verify_work_4_matvecnn(NP, NB)
+      subroutine verify_work_4_matvecnn(NP, NB, nwk)
 !
-       integer(kind = kint), intent(in) :: NP, NB
+       integer(kind = kint), intent(in) :: NP, NB, nwk
 !
-      if(allocated(W3) .eqv. .false.) then
-        allocate ( W3(NB*NP,3) )
-        W3 = 0.0d0
-      else if(size(W3) .lt. (3*NB*NP)) then
-        deallocate (W3)
-        allocate ( W3(NB*NP,3) )
-        W3 = 0.0d0
+      if(allocated(W) .eqv. .false.) then
+        allocate ( W(NB*NP,nwk))
+        W = 0.0d0
+      else if(size(W) .lt. (nwk*NB*NP)) then
+        deallocate (W)
+        allocate ( W(NB*NP,nwk) )
+        W = 0.0d0
       end if
 !
       end subroutine verify_work_4_matvecnn
@@ -137,16 +137,14 @@
 !
       subroutine init_VGAUSS_ZEIDELnn_DJDS_SMP(NP, NB, PEsmpTOT)
 !
-      use m_work_4_CGnn
+      use m_work_4_CG
       use djds_matrix_calcs_nn
       use symmetric_gauss_zeidel_nn
 !
       integer(kind=kint ), intent(in) :: NP, NB, PEsmpTOT
 !
-!   allocate work arrays
 !
-      call verify_work_CG_nn(NP, NB, PEsmpTOT)
-      call verify_work_4_matvecnn(NP,NB)
+      call verify_work_4_matvecnn(NP, NB, ntotWK_CG)
 !
       end subroutine init_VGAUSS_ZEIDELnn_DJDS_SMP
 !
@@ -165,7 +163,7 @@
 !
       use solver_SR_N
 !
-      use m_work_4_CGnn
+      use m_work_4_CG
       use m_solver_count_time
       use symmetric_gauss_zeidel_nn
 !
@@ -232,15 +230,18 @@
       TOL  = EPS
       S1_TIME= MPI_WTIME()
 !
+!$omp workshare
+      W(1:NB*NP,1:ntotWK_CG) = 0.0d0
+!$omp end workshare
+!
       call reset_solver_time
-      call init_work_CG_nn(NP, NB)
 !
 !
 !C
 !C-- change B,X
 !
        call change_order_2_solve_bxn(NP, NB, PEsmpTOT, STACKmcG,        &
-     &     NtoO, B, X, W3(1,1))
+     &     NtoO, B, X, W(1,iWK))
 !
 !C
 !C-- INTERFACE data EXCHANGE
@@ -257,7 +258,7 @@
 !C +---------------+
 !C===
        call change_order_2_solve_bxn(NP, NB, PEsmpTOT, STACKmcG,        &
-     &           NtoO, B, X, W3(1,1))
+     &           NtoO, B, X, W(1,iWK))
 !
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
@@ -275,7 +276,7 @@
      &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
-     &            ALU_U, B, X, W3(1,1), NEIBPETOT, NEIBPE,              &
+     &            ALU_U, B, X, W(1,iWK), NEIBPETOT, NEIBPE,             &
      &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
      &            iter_gauss)
 !
@@ -284,7 +285,7 @@
      &           (NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,R), B, X, W3(1,1))
+     &            W(1,R), B, X, W(1,iWK))
 !
 !C
 !C +---------------+
@@ -292,7 +293,7 @@
 !C +---------------+
 !C===
          call cal_local_norm_n(NP, NB, PEsmpTOT, STACKmcG, W(1,R),      &
-     &       DNRM20, DNRMsmp)
+     &       DNRM20)
 !
          START_TIME= MPI_WTIME()
          call MPI_allREDUCE (DNRM20, DNRM2, 1, CALYPSO_REAL,            &
@@ -330,7 +331,7 @@
 !C
 !C== change B,X
 
-      call back_2_original_order_bxn(NP, NB, NtoO, B, X, W3(1,1))
+      call back_2_original_order_bxn(NP, NB, NtoO, B, X, W(1,iWK))
 
       IER = 0
       E1_TIME= MPI_WTIME()

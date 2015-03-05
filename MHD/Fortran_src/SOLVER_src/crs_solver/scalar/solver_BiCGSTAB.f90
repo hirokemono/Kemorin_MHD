@@ -44,7 +44,7 @@
       use calypso_mpi
       use m_constants
 !
-      use m_work_4_BiCGSTAB11
+      use m_work_4_BiCGSTAB
       use solver_SR
       use crs_matrix_calcs_11
       use incomplete_cholesky_crs_11
@@ -89,12 +89,14 @@
 ! \beginARG       exported node                            (i-th node)
 
       integer(kind=kint ) :: MAXIT, IFLAG, MONITORFLAG
+      real(kind = kreal), allocatable :: W(:,:)
+      real(kind = kreal) :: BETA
 
       data IFLAG/0/
 
 !C
 !C-- INIT.
-      call allocate_work_BiCGSTAB_11(NP, ione)
+      allocate(W(NP,nWK_BiCGSTAB))
 
       MONITORFLAG = ERROR
       ERROR= 0
@@ -312,6 +314,8 @@
         if (RESID.le.TOL   ) exit
         if ( ITER.eq.MAXIT ) ERROR= -100
       end do
+
+      deallocate(W)
 
 !C
 !C-- INTERFACE data EXCHANGE

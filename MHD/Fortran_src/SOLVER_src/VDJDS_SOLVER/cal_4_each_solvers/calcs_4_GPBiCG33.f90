@@ -29,7 +29,7 @@
 !
 !      subroutine cal_x_and_residual_GPBiCG_33(NP, PEsmpTOT,            &
 !     &          STACKmcG, DNRM, COEF, X, WR, WT0, WP, WZ, WT, WY, WTT, &
-!     &          WRT, ALPHA, ETA, QSI, DNRM_smp, COEF_smp)
+!     &          WRT, ALPHA, ETA, QSI)
 !
 !C
 !C +--------------------+
@@ -71,13 +71,10 @@
        integer (kind = kint) :: ip, iS, iE, i
 !
 !
-!cdir parallel do private(iS,iE,i)
 !$omp parallel do private(iS,iE,i)
-!poption indep (WP,R,U,STACKmcG) tlocal (iS,iE,i)
         do ip= 1, PEsmpTOT
           iS= STACKmcG(ip-1) + 1
           iE= STACKmcG(ip  )
-!OCL VECTOR, NOVREC
 !cdir nodep
 !voption indep (WP,R,U)
           do i= iS, iE
@@ -104,13 +101,10 @@
        integer (kind = kint) :: ip, iS, iE, i
 !
 !
-!cdir parallel do private(iS,iE,i)
 !$omp parallel do private(iS,iE,i)
-!poption indep (WY,WT,RO,WW,PT,STACKmcG) tlocal (iS,iE,i)
         do ip= 1, PEsmpTOT
           iS= STACKmcG(ip-1) + 1
           iE= STACKmcG(ip  )
-!OCL VECTOR, NOVREC
 !cdir nodep
 !voption indep (WY,WT,RO,WW,PT)
           do i= iS, iE
@@ -144,13 +138,10 @@
        integer (kind = kint) :: ip, iS, iE, i
 !
 !
-!cdir parallel do private(iS,iE,i)
 !$omp parallel do private(iS,iE,i)
-!poption indep (WU,WZ,W2,WT0,WR,WU,STACKmcG) tlocal (iS,iE,i)
         do ip= 1, PEsmpTOT
           iS= STACKmcG(ip-1) + 1
           iE= STACKmcG(ip  )
-!OCL VECTOR, NOVREC
 !cdir nodep
 !voption indep (WU,WZ,W2,WT0,WR,WU)
           do i= iS, iE
@@ -177,7 +168,7 @@
 !
       subroutine cal_x_and_residual_GPBiCG_33(NP, PEsmpTOT,             &
      &          STACKmcG, DNRM, COEF, X, WR, WT0, WP, WZ, WT, WY, WTT,  &
-     &          WRT, ALPHA, ETA, QSI, DNRM_smp, COEF_smp)
+     &          WRT, ALPHA, ETA, QSI)
 !
        integer(kind = kint), intent(in) :: NP, PEsmpTOT
        integer(kind = kint), intent(in) :: STACKmcG(0:PEsmpTOT)
@@ -187,8 +178,6 @@
        real(kind = kreal), intent(inout) :: X(3*NP), WR(3*NP)
        real(kind = kreal), intent(inout) :: WT0(3*NP)
        real(kind = kreal), intent(inout) :: DNRM, COEF
-       real(kind = kreal), intent(inout) :: DNRM_smp(PEsmpTOT)
-       real(kind = kreal), intent(inout) :: COEF_smp(PEsmpTOT)
 !
        integer (kind = kint) :: ip, iS, iE, i
 !
@@ -196,19 +185,12 @@
 !
        DNRM    = 0.0d0
        COEF    = 0.0d0
-       do ip= 1, PEsmpTOT
-         DNRM_smp(ip)= 0.0d0
-         COEF_smp(ip)= 0.0d0
-       enddo
 !
-!cdir parallel do private(iS,iE,i)
-!$omp parallel do private(iS,iE,i)
-!poption indep (X,WR,WT0,WP,WZ,WT,WY,WTT,WRT,STACKmcG) tlocal (iS,iE,i)
+!$omp parallel do private(iS,iE,i) reduction(+:DNRM,COEF)
         do ip= 1, PEsmpTOT
           iS= STACKmcG(ip-1) + 1
           iE= STACKmcG(ip  )
 !voption indep (X,WR,WT0,WP,WZ,WT,WY,WTT,WRT)
-!OCL VECTOR, NOVREC
 !cdir nodep
           do i= iS, iE
 !
@@ -224,21 +206,16 @@
             WT0(3*i-1) = WT(3*i-1)
             WT0(3*i  ) = WT(3*i  )
 !
-            DNRM_smp(ip) = DNRM_smp(ip) + WR(3*i-2)*WR(3*i-2)           &
-     &                                  + WR(3*i-1)*WR(3*i-1)           &
-     &                                  + WR(3*i  )*WR(3*i  )
-            COEF_smp(ip) = COEF_smp(ip) + WR(3*i-2)*WRT(3*i-2)          &
-     &                                  + WR(3*i-1)*WRT(3*i-1)          &
-     &                                  + WR(3*i  )*WRT(3*i  )
+            DNRM = DNRM + WR(3*i-2)*WR(3*i-2)                           &
+     &                  + WR(3*i-1)*WR(3*i-1)                           &
+     &                  + WR(3*i  )*WR(3*i  )
+            COEF = COEF + WR(3*i-2)*WRT(3*i-2)                          &
+     &                  + WR(3*i-1)*WRT(3*i-1)                          &
+     &                  + WR(3*i  )*WRT(3*i  )
 !
-          enddo
-        enddo
-!$omp end parallel do
-!
-        do ip= 1, PEsmpTOT
-          DNRM = DNRM + DNRM_smp(ip)
-          COEF = COEF + COEF_smp(ip)
+          end do
         end do
+!$omp end parallel do
 !
       end subroutine cal_x_and_residual_GPBiCG_33
 !
@@ -260,14 +237,11 @@
        BETA = ALPHA*COEF / (QSI*RHO)
        RHO  = COEF
 !
-!cdir parallel do private(iS,iE,i)
 !$omp parallel do private(iS,iE,i)
-!poption indep (W1,WTT,WPT,STACKmcG) tlocal (iS,iE,i)
         do ip= 1, PEsmpTOT
           iS= STACKmcG(ip-1) + 1
           iE= STACKmcG(ip  )
 !voption indep (W1,WTT,WPT)
-!OCL VECTOR, NOVREC
 !cdir nodep
           do i= iS, iE
             W1(3*i-2) =  WTT(3*i-2) + BETA*WPT(3*i-2)
