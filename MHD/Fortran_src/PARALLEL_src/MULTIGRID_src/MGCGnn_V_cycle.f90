@@ -9,7 +9,7 @@
 !      subroutine s_MGCGnn_V_cycle(num_MG_level, MG_comm, MG_itp,       &
 !     &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,      &
 !     &          iter_mid, iter_lowest, EPS_MG,                         &
-!     &          METHOD_MG, PRECOND_MG, IER)
+!     &          METHOD_MG, PRECOND_MG, IER, W3)
 !       integer(kind = kint), intent(in) :: num_MG_level
 !       type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
 !       type(DJDS_ordering_table), intent(in) :: djds_tbl(0:num_MG_level)
@@ -73,7 +73,7 @@
       subroutine s_MGCGnn_V_cycle(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,       &
      &          iter_mid, iter_lowest, EPS_MG,                          &
-     &          METHOD_MG, PRECOND_MG, IER)
+     &          METHOD_MG, PRECOND_MG, IER, W3)
 !
       use calypso_mpi
 !
@@ -100,6 +100,7 @@
       real(kind = kreal), intent(in) :: EPS_MG
       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
       integer(kind = kint), intent(inout) :: IER
+      real(kind = kreal), intent(inout) :: W3(3*NB*NP)
 !
       integer(kind = kint) :: NP_f, NP_c
       integer(kind = kint) :: i, iter_res, ierr
@@ -114,7 +115,7 @@
 !$omp end parallel do
 !
       call back_2_original_order_bxn(NP, NB, djds_tbl(0)%NEWtoOLD,      &
-     &    MG_vect(0)%b_vec, MG_vect(0)%x_vec)
+     &    MG_vect(0)%b_vec, MG_vect(0)%x_vec, W3(1))
 !
 !C restrict the residual vector
       DO i = 0, num_MG_level-1
@@ -129,7 +130,7 @@
 !C calculate residual
       if(print_residual_on_each_level) Then
         call cal_residualnn_type(djds_tbl(0), matNN(0), MG_vect(0),     &
-     &      PEsmpTOT, NB, resd)
+     &      PEsmpTOT, NB, resd, W3(1))
         if(my_rank .eq. 0) write(*,*) '0-th level, pre ', resd
       end if
 !
@@ -179,7 +180,7 @@
 !C calculate residual
         if(print_residual_on_each_level) Then
           call cal_residualnn_type(djds_tbl(i), matNN(i), MG_vect(i),   &
-     &        PEsmpTOT, NB, resd)
+     &        PEsmpTOT, NB, resd, W3(1))
           if(my_rank .eq. 0) write(*,*) i, 'th level, pre ', resd
         end if
 !
@@ -197,7 +198,7 @@
 !
       call change_order_2_solve_bxn(NP, NB, PEsmpTOT,                   &
      &    djds_tbl(0)%STACKmcG, djds_tbl(0)%NEWtoOLD,                   &
-     &    MG_vect(0)%b_vec, MG_vect(0)%x_vec)
+     &    MG_vect(0)%b_vec, MG_vect(0)%x_vec, W3(1))
 !
 !$omp parallel do
       do i = 1, NB*NP
@@ -211,7 +212,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_residualnn_type(djds_tbl, matNN, MG_vect,          &
-     &          PEsmpTOT, NB, resd)
+     &          PEsmpTOT, NB, resd, W3)
 !
       use calypso_mpi
 !
@@ -226,11 +227,12 @@
       type(vectors_4_solver), intent(inout) :: MG_vect
       integer(kind = kint), intent(in) :: NB, PEsmpTOT
       real(kind = kreal), intent(inout) :: resd
+      real(kind = kreal), intent(inout) :: W3(NB*matNN%num_diag,3)
 !
 !
       call change_order_2_solve_bxn(matNN%num_diag, NB,  PEsmpTOT,      &
             djds_tbl%STACKmcG, djds_tbl%NEWtoOLD,                       &
-     &      MG_vect%b_vec, MG_vect%x_vec)
+     &      MG_vect%b_vec, MG_vect%x_vec, W3(1,1))
 !
 !C calculate residual
         call subtruct_matvec_nn                                         &
@@ -244,10 +246,10 @@
      &       djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                &
      &       djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                  &
      &       matNN%D, matNN%AL, matNN%AU, W(1,ZQ),                      &
-     &       MG_vect%b_vec, MG_vect%x_vec)
+     &       MG_vect%b_vec, MG_vect%x_vec, W3(1,1))
 !
       call back_2_original_order_bxn(matNN%num_diag, NB,                &
-     &    djds_tbl%NEWtoOLD, MG_vect%b_vec, MG_vect%x_vec)
+     &    djds_tbl%NEWtoOLD, MG_vect%b_vec, MG_vect%x_vec, W3(1,1))
 !
         BNRM20=zero
         call cal_local_norm_n(matNN%num_diag, NB, PEsmpTOT,             &

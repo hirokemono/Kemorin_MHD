@@ -42,7 +42,7 @@
 !
       real(kind = kreal), allocatable :: W3(:,:)
       private :: W3
-      private :: verify_work_GaussZeidel_nn
+      private :: verify_work_4_matvecnn
 !
 !  ---------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine verify_work_GaussZeidel_nn(NP, NB)
+      subroutine verify_work_4_matvecnn(NP, NB)
 !
        integer(kind = kint), intent(in) :: NP, NB
 !
@@ -63,7 +63,7 @@
         W3 = 0.0d0
       end if
 !
-      end subroutine verify_work_GaussZeidel_nn
+      end subroutine verify_work_4_matvecnn
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -147,8 +147,6 @@
 !
       call verify_work_CG_nn(NP, NB, PEsmpTOT)
       call verify_work_4_matvecnn(NP,NB)
-!
-      call verify_work_GaussZeidel_nn(NP,NB)
 !
       end subroutine init_VGAUSS_ZEIDELnn_DJDS_SMP
 !
@@ -242,7 +240,7 @@
 !C-- change B,X
 !
        call change_order_2_solve_bxn(NP, NB, PEsmpTOT, STACKmcG,        &
-     &     NtoO, B, X)
+     &     NtoO, B, X, W3(1,1))
 !
 !C
 !C-- INTERFACE data EXCHANGE
@@ -259,7 +257,7 @@
 !C +---------------+
 !C===
        call change_order_2_solve_bxn(NP, NB, PEsmpTOT, STACKmcG,        &
-     &           NtoO, B, X)
+     &           NtoO, B, X, W3(1,1))
 !
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
@@ -286,7 +284,7 @@
      &           (NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,R), B, X)
+     &            W(1,R), B, X, W3(1,1))
 !
 !C
 !C +---------------+
@@ -332,7 +330,7 @@
 !C
 !C== change B,X
 
-      call back_2_original_order_bxn(NP, NB, NtoO, B, X)
+      call back_2_original_order_bxn(NP, NB, NtoO, B, X, W3(1,1))
 
       IER = 0
       E1_TIME= MPI_WTIME()

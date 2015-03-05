@@ -138,7 +138,6 @@
 !   allocate work arrays
 !
       call verify_work_CG_nn(NP, NB, PEsmpTOT)
-      call verify_work_4_matvecnn(NP,NB)
 !
       if(allocated(W3) .eqv. .false.) then
         allocate ( W3(NB*NP,3) )
@@ -233,7 +232,7 @@
 !C-- change B,X
 !
        call change_order_2_solve_bxn(NP, NB, PEsmpTOT, STACKmcG,        &
-     &           NtoO, B, X)
+     &           NtoO, B, X, W3(1,1))
 !
 !C
 !C
@@ -255,7 +254,7 @@
      &           (NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,R), B, X)
+     &            W(1,R), B, X, W3(1,1))
 !
 !C
 !C +---------------+
@@ -290,7 +289,7 @@
      &           (NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,R), B, X)
+     &            W(1,R), B, X, W3(1,1))
 !
 !C
 !C +---------------+
@@ -336,7 +335,7 @@
 !C
 !C== change B,X
 
-      call back_2_original_order_bxn(NP, NB, NtoO, B, X)
+      call back_2_original_order_bxn(NP, NB, NtoO, B, X, W3(1,1))
 
       IER = 0
       E1_TIME= MPI_WTIME()

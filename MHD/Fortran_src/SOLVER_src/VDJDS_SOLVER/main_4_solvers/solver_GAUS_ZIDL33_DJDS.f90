@@ -6,34 +6,34 @@
 !      Written by Kengo Nakajima on May., 2001
 !      Modified by H. Matsui on Nov. 2005
 !
-!C
-!C***
-!C***  VGAUSS_ZEIDEL33_DJDS_SMP
-!C***
-!      subroutine VGAUSS_ZEIDEL33_DJDS_SMP                              &
-!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                     &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!C
-!      subroutine init_VGAUSS_ZEIDEL33_DJDS_SMP(NP, PEsmpTOT)
-!      subroutine solve_VGAUSS_ZEIDEL33_DJDS_SMP                        &
-!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                     &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!C
-!C     VCG_DJDS_SMP solves the linear system Ax = b 
-!C     using the Conjugate Gradient iterative method with preconditioning.
-!C     Elements are ordered in descending Jagged Diagonal Storage
-!C     for Vector Processing and Cyclic Ordering for SMP Parallel Computation
-!C
+!!C
+!!C***
+!!C***  VGAUSS_ZEIDEL33_DJDS_SMP
+!!C***
+!!      subroutine VGAUSS_ZEIDEL33_DJDS_SMP                             &
+!!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,            &
+!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
+!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
+!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
+!!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                    &
+!!     &           STACK_IMPORT, NOD_IMPORT,                            &
+!!     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+!!C
+!!      subroutine init_VGAUSS_ZEIDEL33_DJDS_SMP(NP, PEsmpTOT)
+!!      subroutine solve_VGAUSS_ZEIDEL33_DJDS_SMP                       &
+!!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,            &
+!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
+!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
+!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
+!!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                    &
+!!     &           STACK_IMPORT, NOD_IMPORT,                            &
+!!     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+!!C
+!!C     VCG_DJDS_SMP solves the linear system Ax = b 
+!!C     using the Conjugate Gradient iterative method with preconditioning.
+!!C     Elements are ordered in descending Jagged Diagonal Storage
+!!C     for Vector Processing and Cyclic Ordering for SMP Parallel Computation
+!!C
       module solver_GAUS_ZIDL33_DJDS
 !
       use m_precision
@@ -42,7 +42,7 @@
 !
        real(kind = kreal), allocatable :: W3(:,:)
        private :: W3
-       private :: verify_work_GaussZeidel_33
+       private :: verify_work_4_matvec33
 !
 !  ---------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine verify_work_GaussZeidel_33(NP)
+      subroutine verify_work_4_matvec33(NP)
 !
        integer(kind = kint), intent(in) :: NP
 !
@@ -63,7 +63,7 @@
         W3 = 0.0d0
       end if
 !
-      end subroutine verify_work_GaussZeidel_33
+      end subroutine verify_work_4_matvec33
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -144,8 +144,6 @@
 !
       call verify_work_CG_33(NP, PEsmpTOT)
       call verify_work_4_matvec33(NP)
-!
-      call verify_work_GaussZeidel_33(NP)
 !
       end subroutine init_VGAUSS_ZEIDEL33_DJDS_SMP
 !
@@ -237,7 +235,7 @@
 !C-- change B,X
 !
        call change_order_2_solve_bx3(NP, PEsmpTOT, STACKmcG,            &
-     &     NtoO, B, X)
+     &     NtoO, B, X, W3(1,1))
 !
 !C
 !C-- INTERFACE data EXCHANGE
@@ -280,7 +278,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,            &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,R), B, X)
+     &            W(1,R), B, X, W3(1,1))
 !
 !C
 !C +---------------+
@@ -326,7 +324,7 @@
 !C
 !C== change B,X
 
-       call back_2_original_order_bx3(NP, NtoO, B, X)
+       call back_2_original_order_bx3(NP, NtoO, B, X, W3(1,1))
 
       IER = 0
       E1_TIME= MPI_WTIME()

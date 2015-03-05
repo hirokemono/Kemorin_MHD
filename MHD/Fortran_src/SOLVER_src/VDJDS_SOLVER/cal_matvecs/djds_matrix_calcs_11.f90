@@ -3,14 +3,11 @@
 !
 !     Written by Kemorin
 !
-!      subroutine verify_work_4_matvec11(NP)
-!      subroutine verify_work_4_matvec3x11(NP)
-!
 !   Ordering by Multicolor
 !       subroutine change_order_2_solve_bx1(NP, PEsmpTOT, STACKmcG,     &
-!     &           NtoO, B, X)
+!     &           NtoO, B, X, W2)
 !   Returning from Multicolor
-!       subroutine back_2_original_order_bx1(NP, NtoO, B, X)
+!       subroutine back_2_original_order_bx1(NP, NtoO, B, X, W2)
 !
 !C +-------------+
 !C | {S} = {X}   |
@@ -24,12 +21,12 @@
 !     &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT, PEsmpTOT, &
 !     &            STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L, OtoN_U,     &
 !     &            NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,         &
-!     &            S, X )
+!     &            S, X, W3)
 !       subroutine cal_matvec_3x11                                      &
 !     &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT, PEsmpTOT, &
 !     &            STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L, OtoN_U,     &
 !     &            NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,         &
-!     &            S1, S2, S3, X1, X2, X3 )
+!     &            S1, S2, S3, X1, X2, X3, W9)
 !
 !C +-------------- ----+
 !C | {S}= {B} - [A]{X} |
@@ -43,7 +40,7 @@
 !     &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT, PEsmpTOT, &
 !     &            STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L, OtoN_U,     &
 !     &            NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,         &
-!     &            S1, S2, S3, B1, B2, B3, X1, X2, X3 )
+!     &            S1, S2, S3, B1, B2, B3, X1, X2, X3, W9)
 !
       module djds_matrix_calcs_11
 !
@@ -59,20 +56,14 @@
 !
       implicit none
 !
-       integer(kind = kint) :: iflag_work_matvec11 = 0
        integer(kind = kint), parameter :: IWK1 = 1, IWK2 = 2, IWK3 = 3
        integer(kind = kint), parameter :: IWK11= 1, IWK12= 4, IWK13= 7
        integer(kind = kint), parameter :: IWK21= 2, IWK22= 5, IWK23= 8
        integer(kind = kint), parameter :: IWK31= 3, IWK32= 6, IWK33= 9
-       real(kind = kreal), allocatable :: W3(:,:)
-!
-       private :: W3
        private :: IWK1, IWK2, IWK3
        private :: IWK11, IWK12, IWK13
        private :: IWK21, IWK22, IWK23
        private :: IWK31, IWK32, IWK33
-!
-       private :: allocate_work_4_matvec11, allocate_work_4_matvec3x11
 !
 !  ---------------------------------------------------------------------
 !
@@ -80,98 +71,35 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine verify_work_4_matvec11(NP)
-!
-       integer(kind = kint), intent(in) :: NP
-!
-      if (iflag_work_matvec11.eq.0) then
-        call allocate_work_4_matvec11(NP)
-      else if (iflag_work_matvec11.lt. (3*NP)) then
-        call deallocate_work_4_matvec11
-        call allocate_work_4_matvec11(NP)
-      end if
-!
-      end subroutine verify_work_4_matvec11
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine verify_work_4_matvec3x11(NP)
-!
-       integer(kind = kint), intent(in) :: NP
-!
-      if (iflag_work_matvec11.eq.0) then
-        call allocate_work_4_matvec3x11(NP)
-      else if (iflag_work_matvec11.lt. (9*NP)) then
-        call deallocate_work_4_matvec11
-        call allocate_work_4_matvec3x11(NP)
-      end if
-!
-      end subroutine verify_work_4_matvec3x11
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_work_4_matvec11(NP)
-!
-       integer(kind = kint), intent(in) :: NP
-!
-       allocate ( W3(NP,3) )
-       W3 = 0.0d0
-       iflag_work_matvec11 = 3*NP
-!
-      end subroutine allocate_work_4_matvec11
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_work_4_matvec3x11(NP)
-!
-       integer(kind = kint), intent(in) :: NP
-!
-       allocate ( W3(NP,9) )
-       W3 = 0.0d0
-       iflag_work_matvec11 = 9*NP
-!
-      end subroutine allocate_work_4_matvec3x11
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_work_4_matvec11
-!
-       deallocate ( W3 )
-       iflag_work_matvec11 = 0
-!
-      end subroutine deallocate_work_4_matvec11
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
        subroutine change_order_2_solve_bx1(NP, PEsmpTOT, STACKmcG,      &
-     &           NtoO, B, X)
+     &           NtoO, B, X, W2)
 !
        integer(kind = kint), intent(in) :: NP, PEsmpTOT
        integer(kind = kint), intent(in) :: STACKmcG(0:PEsmpTOT)
        integer(kind = kint), intent(in) :: NtoO(NP)
        real(kind = kreal), intent(inout) :: B(NP)
        real(kind = kreal), intent(inout) :: X(NP)
+       real(kind = kreal), intent(inout) :: W2(NP,2)
 !
 !
        call s_change_order_2_solve_bx1(NP, PEsmpTOT, STACKmcG,          &
-     &     NtoO, B, X, W3(1,IWK1), W3(1,IWK2) )
+     &     NtoO, B, X, W2(1,IWK1), W2(1,IWK2) )
 !
       end subroutine change_order_2_solve_bx1
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine back_2_original_order_bx1(NP, NtoO, B, X)
+      subroutine back_2_original_order_bx1(NP, NtoO, B, X, W2)
 !
       integer(kind = kint), intent(in) :: NP
       integer(kind = kint), intent(in) :: NtoO(NP)
       real(kind = kreal), intent(inout) :: B(NP)
       real(kind = kreal), intent(inout) :: X(NP)
+       real(kind = kreal), intent(inout) :: W2(NP,2)
 !
 !
       call s_back_2_original_order_bx1(NP, NtoO, B, X,                  &
-     &    W3(1,IWK1), W3(1,IWK2) )
+     &    W2(1,IWK1), W2(1,IWK2) )
 !
       end subroutine back_2_original_order_bx1
 !
@@ -185,20 +113,15 @@
        real(kind = kreal), intent(in) :: X(NP)
        real(kind = kreal), intent(inout) :: S(NP)
 !
-       integer (kind = kint) :: ip, iS, iE, i
+       integer (kind = kint) :: ip, iS, iE
 !
 !
-!$omp parallel do private(iS,iE,i)
+!$omp parallel do private(iS,iE,ip)
        do ip= 1, PEsmpTOT
          iS= STACKmcG(ip-1) + 1
          iE= STACKmcG(ip  )
-!OCL VECTOR, NOVREC
-!cdir nodep
-!voption indep (S,X)
-         do i= iS, iE
-           S(i) = X(i)
-         enddo
-       enddo
+         S(iS:iE) = X(iS:iE)
+       end do
 !$omp end parallel do
 !
       end subroutine copy_internal_vect_1_smp
@@ -209,7 +132,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT, PEsmpTOT,  &
      &            STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L, OtoN_U,      &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,          &
-     &            S, X )
+     &            S, X, W3)
 !
        integer(kind = kint), intent(in) :: NP, PEsmpTOT
        integer(kind = kint), intent(in) :: NL, NU, NPL, NPU
@@ -231,6 +154,7 @@
        real(kind = kreal), intent(in) :: AU(NPU)
 !
        real(kind = kreal), intent(inout) :: S(NP)
+       real(kind = kreal), intent(inout) :: W3(NP,3)
 !
 !
       call set_by_diagonal_11(NP, PEsmpTOT, STACKmcG,                   &
@@ -259,7 +183,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT, PEsmpTOT,  &
      &            STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L, OtoN_U,      &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,          &
-     &            S1, S2, S3, X1, X2, X3 )
+     &            S1, S2, S3, X1, X2, X3, W9)
 !
        integer(kind = kint), intent(in) :: NP, PEsmpTOT
        integer(kind = kint), intent(in) :: NL, NU, NPL, NPU
@@ -281,31 +205,32 @@
        real(kind = kreal), intent(in) :: X1(NP), X2(NP), X3(NP)
 !
        real(kind = kreal), intent(inout) :: S1(NP), S2(NP), S3(NP)
+       real(kind = kreal), intent(inout) :: W9(NP,9)
 !
 !
       call set_by_diagonal_3x11(NP, PEsmpTOT, STACKmcG,                 &
-     &    W3(1,IWK13), W3(1,IWK23), W3(1,IWK33), X1, X2, X3, D)
+     &    W9(1,IWK13), W9(1,IWK23), W9(1,IWK33), X1, X2, X3, D)
 
       call ordering_1x6_by_old2new_L(NP, PEsmpTOT, STACKmcG, OtoN_L,    &
-     &    W3(1,IWK11), W3(1,IWK21), W3(1,IWK31),                        &
-     &    W3(1,IWK12), W3(1,IWK22), W3(1,IWK32), X1, X2, X3,            &
-     &    W3(1,IWK13), W3(1,IWK23), W3(1,IWK33) )
+     &    W9(1,IWK11), W9(1,IWK21), W9(1,IWK31),                        &
+     &    W9(1,IWK12), W9(1,IWK22), W9(1,IWK32), X1, X2, X3,            &
+     &    W9(1,IWK13), W9(1,IWK23), W9(1,IWK33) )
 
       call add_lower_3x11(NP, NL, NPL, PEsmpTOT, NVECT,                 &
-     &    npLX1, STACKmc, NLhyp, INL, IAL, W3(1,IWK12), W3(1,IWK22),    &
-     &    W3(1,IWK32), AL, W3(1,IWK11), W3(1,IWK21), W3(1,IWK31) )
+     &    npLX1, STACKmc, NLhyp, INL, IAL, W9(1,IWK12), W9(1,IWK22),    &
+     &    W9(1,IWK32), AL, W9(1,IWK11), W9(1,IWK21), W9(1,IWK31) )
 
       call ordering_1x3_l2u_o2n_u(NP, OtoN_U, LtoU,                     &
-     &    W3(1,IWK11), W3(1,IWK21), W3(1,IWK31),                        &
-     &    W3(1,IWK13), W3(1,IWK23), W3(1,IWK33), X1, X2, X3,            &
-     &    W3(1,IWK12), W3(1,IWK22), W3(1,IWK32) )
+     &    W9(1,IWK11), W9(1,IWK21), W9(1,IWK31),                        &
+     &    W9(1,IWK13), W9(1,IWK23), W9(1,IWK33), X1, X2, X3,            &
+     &    W9(1,IWK12), W9(1,IWK22), W9(1,IWK32) )
 
       call add_upper_3x11(NP, NU, NPU, PEsmpTOT, NVECT, npUX1,          &
-     &    STACKmc, NUhyp, INU, IAU, W3(1,IWK13), W3(1,IWK23),           &
-     &    W3(1,IWK33), AU, W3(1,IWK11), W3(1,IWK21), W3(1,IWK31) )
+     &    STACKmc, NUhyp, INU, IAU, W9(1,IWK13), W9(1,IWK23),           &
+     &    W9(1,IWK33), AU, W9(1,IWK11), W9(1,IWK21), W9(1,IWK31) )
 
       call ordering_1x3_by_new2old_U(NP, PEsmpTOT, STACKmcG,            &
-     &    NtoO_U, S1, S2, S3, W3(1,IWK13), W3(1,IWK23), W3(1,IWK33) )
+     &    NtoO_U, S1, S2, S3, W9(1,IWK13), W9(1,IWK23), W9(1,IWK33) )
 !
        end subroutine cal_matvec_3x11
 !
@@ -316,7 +241,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT, PEsmpTOT,  &
      &            STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L, OtoN_U,      &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,          &
-     &            S, B, X )
+     &            S, B, X, W3)
 !
        integer(kind = kint), intent(in) :: NP, PEsmpTOT
        integer(kind = kint), intent(in) :: NL, NU, NPL, NPU
@@ -338,6 +263,7 @@
        real(kind = kreal), intent(in) :: AU(NPU)
 !
        real(kind = kreal), intent(inout) :: S(NP)
+       real(kind = kreal), intent(inout) :: W3(NP,3)
 !
 !
        call subtract_diagonal_11(NP, PEsmpTOT, STACKmcG,                &
@@ -366,7 +292,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT, PEsmpTOT,  &
      &            STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L, OtoN_U,      &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,          &
-     &            S1, S2, S3, B1, B2, B3, X1, X2, X3 )
+     &            S1, S2, S3, B1, B2, B3, X1, X2, X3, W9)
 !
        integer(kind = kint), intent(in) :: NP, PEsmpTOT
        integer(kind = kint), intent(in) :: NL, NU, NPL, NPU
@@ -389,32 +315,33 @@
        real(kind = kreal), intent(in) :: X1(NP), X2(NP), X3(NP)
 !
        real(kind = kreal), intent(inout) :: S1(NP), S2(NP), S3(NP)
+       real(kind = kreal), intent(inout) :: W9(NP,9)
 !
 !
        call subtract_diagonal_3x11(NP, PEsmpTOT, STACKmcG,              &
-     &     W3(1,IWK13), W3(1,IWK23), W3(1,IWK33), B1, B2, B3,           &
+     &     W9(1,IWK13), W9(1,IWK23), W9(1,IWK33), B1, B2, B3,           &
      &     X1, X2, X3, D)
 
        call ordering_1x6_by_old2new_L(NP, PEsmpTOT, STACKmcG, OtoN_L,   &
-     &    W3(1,IWK11), W3(1,IWK21), W3(1,IWK31),                        &
-     &    W3(1,IWK12), W3(1,IWK22), W3(1,IWK32), X1, X2, X3,            &
-     &    W3(1,IWK13), W3(1,IWK23), W3(1,IWK33) )
+     &    W9(1,IWK11), W9(1,IWK21), W9(1,IWK31),                        &
+     &    W9(1,IWK12), W9(1,IWK22), W9(1,IWK32), X1, X2, X3,            &
+     &    W9(1,IWK13), W9(1,IWK23), W9(1,IWK33) )
 
        call subtract_lower_3x11(NP, NL, NPL, PEsmpTOT, NVECT, npLX1,    &
-     &     STACKmc, NLhyp, INL, IAL, W3(1,IWK12), W3(1,IWK22),          &
-     &     W3(1,IWK32), AL, W3(1,IWK11), W3(1,IWK21), W3(1,IWK31) )
+     &     STACKmc, NLhyp, INL, IAL, W9(1,IWK12), W9(1,IWK22),          &
+     &     W9(1,IWK32), AL, W9(1,IWK11), W9(1,IWK21), W9(1,IWK31) )
 
        call ordering_1x3_l2u_o2n_u(NP, OtoN_U, LtoU,                    &
-     &    W3(1,IWK11), W3(1,IWK21), W3(1,IWK31),                        &
-     &    W3(1,IWK13), W3(1,IWK23), W3(1,IWK33), X1, X2, X3,            &
-     &    W3(1,IWK12), W3(1,IWK22), W3(1,IWK32) )
+     &    W9(1,IWK11), W9(1,IWK21), W9(1,IWK31),                        &
+     &    W9(1,IWK13), W9(1,IWK23), W9(1,IWK33), X1, X2, X3,            &
+     &    W9(1,IWK12), W9(1,IWK22), W9(1,IWK32) )
 
        call subtract_upper_3x11(NP, NU, NPU, PEsmpTOT, NVECT, npUX1,    &
-     &     STACKmc, NUhyp, INU, IAU, W3(1,IWK13), W3(1,IWK23),          &
-     &     W3(1,IWK33), AU, W3(1,IWK11), W3(1,IWK21), W3(1,IWK31) )
+     &     STACKmc, NUhyp, INU, IAU, W9(1,IWK13), W9(1,IWK23),          &
+     &     W9(1,IWK33), AU, W9(1,IWK11), W9(1,IWK21), W9(1,IWK31) )
 
        call ordering_1x3_by_new2old_U(NP, PEsmpTOT, STACKmcG,           &
-     &    NtoO_U, S1, S2, S3, W3(1,IWK13), W3(1,IWK23), W3(1,IWK33) )
+     &    NtoO_U, S1, S2, S3, W9(1,IWK13), W9(1,IWK23), W9(1,IWK33) )
 !
        end subroutine subtruct_matvec_3x11
 !

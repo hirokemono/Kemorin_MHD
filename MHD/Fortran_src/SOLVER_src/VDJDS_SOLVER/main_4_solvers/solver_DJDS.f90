@@ -42,6 +42,7 @@
 !
       implicit none
 !
+      integer(kind = kint), parameter, private :: iterPREmax = 1
 !
 !  ---------------------------------------------------------------------
 !
@@ -73,19 +74,16 @@
 !
 !C-- BiCGSTAB
       if(solver_iflag(METHOD) .eq. iflag_bicgstab) then
-        call init_VBiCGSTAB11_DJDS_SMP(NP, PEsmpTOT, PRECOND)
-!
+        call init_VBiCGSTAB11_DJDS_SMP                                  &
+     &     (NP, PEsmpTOT, PRECOND, iterPREmax)
 !C
 !C-- GPBiCG
       else if(solver_iflag(METHOD) .eq. iflag_gpbicg) then
-        call init_VGPBiCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND)
-!
+        call init_VGPBiCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND, iterPREmax)
 !C
 !C-- CG
       else if(solver_iflag(METHOD) .eq. iflag_cg) then
-        call init_VCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND)
-!
-!
+        call init_VCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND, iterPREmax)
 !C
 !C-- GAuss-Zeidel
       else if(solver_iflag(METHOD) .eq. iflag_gausszeidel) then
@@ -97,7 +95,6 @@
       else
         ERROR = 1
       end if
-!
 !C
 !C-- ERROR
       if (ERROR.gt.0) then
@@ -232,7 +229,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND, iterPREmax)
 !
 !C
 !C-- GPBiCG
@@ -244,7 +241,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND, iterPREmax)
 !
 !C
 !C-- CG
@@ -256,7 +253,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND, iterPREmax)
 !
 !C
 !C-- GAuss-Zeidel
@@ -377,8 +374,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !C
 !C-- GPBiCG
@@ -389,8 +386,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !C
 !C-- CG
@@ -401,8 +398,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !
 !C

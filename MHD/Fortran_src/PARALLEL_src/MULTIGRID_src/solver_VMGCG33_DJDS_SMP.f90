@@ -60,9 +60,31 @@
 !
       private :: wk_MGCG33
 !
+       real(kind = kreal), allocatable :: W3(:,:)
+       private :: W3
+       private :: verify_work_4_matvec33
+!
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine verify_work_4_matvec33(NP, nwk)
+!
+      integer(kind = kint), intent(in) :: NP, nwk
+!
+!
+      if(allocated(W3) .eqv. .false.) then
+        allocate ( W3(3*NP,nwk) )
+        W3 = 0.0d0
+      else if(size(W3) .lt. (3*nwk*NP)) then
+        deallocate (W3)
+        allocate ( W3(3*NP,nwk) )
+        W3 = 0.0d0
+      end if
+!
+      end subroutine verify_work_4_matvec33
 !
 !  ---------------------------------------------------------------------
 !C
@@ -116,26 +138,23 @@
 !
       use m_work_4_MGCG33
 !
-      use incomplete_cholesky_33
       use MGCG33_V_cycle
 !
       integer(kind = kint), intent(in) :: NP, PEsmpTOT
       character (len=kchara), intent(in) :: PRECOND
       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
 !
+      integer(kind=kint ) :: nwk
+!
 !   allocate work arrays
+!
+      nwk = 3
 !
 !      allocate(wk_MGCG33(0:num_MG_level))
       call verify_work_MGCG_33(NP, PEsmpTOT)
-      call verify_work_4_matvec33(NP)
-!
-      if (PRECOND(1:2).eq.'IC'  .or.                                    &
-     &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
-!        call verify_work_4_I_Cholesky33(NP)
-      end if
+      call verify_work_4_matvec33(NP, nwk)
 !
       call init_MGCG33_V_cycle(NP, PEsmpTOT, METHOD_MG, PRECOND_MG)
-
 !
       end subroutine init_VMGCG33_DJDS_SMP
 !
@@ -277,7 +296,7 @@
 !C-- change B,X
 
        call change_order_2_solve_bx3(NP, PEsmpTOT, STACKmcG,            &
-     &           NtoO, B, X)
+     &           NtoO, B, X, W3(1,1))
 
        call clear_vector_solve_33(NP, W(1,3) )
 
@@ -300,7 +319,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,            &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,R), B, X)
+     &            W(1,R), B, X, W3(1,1))
 !
 !C
 !C +---------------+
@@ -335,7 +354,7 @@
        call s_MGCG33_V_cycle(num_MG_level, MG_comm, MG_itp,             &
      &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, W(1,R), W(1,Z), &
      &          iter_mid, iter_lowest, EPS_MG,                          &
-     &          METHOD_MG, PRECOND_MG, IER)
+     &          METHOD_MG, PRECOND_MG, IER, W3(1,1))
 !
 !C
 !C +---------------+
@@ -386,7 +405,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,            &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,Q), W(1,P) )
+     &            W(1,Q), W(1,P), W3(1,1))
 !
 !C===
 !C +---------------------+
@@ -454,7 +473,7 @@
 !C
 !C== change B,X
 
-       call back_2_original_order_bx3(NP, NtoO, B, X)
+       call back_2_original_order_bx3(NP, NtoO, B, X, W3(1,1))
 
       IER = 0
       E1_TIME= MPI_WTIME()

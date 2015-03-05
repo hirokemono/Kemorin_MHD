@@ -80,10 +80,8 @@
        integer(kind = kint), intent(in) :: NP, PEsmpTOT
        integer(kind = kint) :: i
 !
-!cdir parallel do
 !$omp parallel do
 !poption indep (W)
-!OCL VECTOR, NOVREC
 !cdir nodep
 !voption indep (W)
       do i= 1, NP

@@ -10,24 +10,24 @@
 !C***
 !C***  VCG11_DJDS_SMP
 !C***
-!      subroutine VCG11_DJDS_SMP                                        &
-!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                     &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT, PRECOND, iterPREmax)
+!!      subroutine VCG11_DJDS_SMP                                       &
+!!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,            &
+!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
+!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
+!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
+!!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                    &
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
+!!     &           PRECOND, iterPREmax)
 !
-!      subroutine init_VCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND)
-!      subroutine solve_VCG11_DJDS_SMP                                  &
-!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                     &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT, PRECOND, iterPREmax)
+!!      subroutine init_VCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND,iterPREmax)
+!!      subroutine solve_VCG11_DJDS_SMP                                 &
+!!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,            &
+!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
+!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
+!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
+!!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                    &
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
+!!     &           PRECOND, iterPREmax)
 !C
 !C     VCG_DJDS_SMP solves the linear system Ax = b 
 !C     using the Conjugate Gradient iterative method with preconditioning.
@@ -40,9 +40,9 @@
 !
       implicit none
 !
-       real(kind = kreal), allocatable :: W2(:,:)
-       private :: W2
-       private :: verify_work_4_I_Cholesky11
+       real(kind = kreal), allocatable :: W3(:,:)
+       private :: W3
+       private :: verify_work_4_matvec11
 !
 !  ---------------------------------------------------------------------
 !
@@ -50,21 +50,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine verify_work_4_I_Cholesky11(NP)
+      subroutine verify_work_4_matvec11(NP, nwk)
 !
-      integer(kind = kint), intent(in) :: NP
+      integer(kind = kint), intent(in) :: NP, nwk
 !
 !
-      if(allocated(W2) .eqv. .false.) then
-        allocate ( W2(NP,2) )
-        W2 = 0.0d0
-      else if(size(W2) .lt. (2*NP)) then
-        deallocate (W2)
-        allocate ( W2(NP,2) )
-        W2 = 0.0d0
+      if(allocated(W3) .eqv. .false.) then
+        allocate ( W3(NP,nwk) )
+        W3 = 0.0d0
+      else if(size(W3) .lt. (nwk*NP)) then
+        deallocate (W3)
+        allocate ( W3(NP,nwk) )
+        W3 = 0.0d0
       end if
 !
-      end subroutine verify_work_4_I_Cholesky11
+      end subroutine verify_work_4_matvec11
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -75,9 +75,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!     &           PRECOND, iterPREmax)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !
       integer(kind=kint ), intent(in) :: N, NP, NL, NU, NPL, NPU, NVECT
@@ -118,9 +117,10 @@
       integer(kind=kint ), intent(in) :: STACK_EXPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &
      &      :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT)) 
+      integer(kind=kint ), intent(in)  :: iterPREmax
 !
 !
-      call init_VCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND)
+      call init_VCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND, iterPREmax)
 
       call solve_VCG11_DJDS_SMP                                         &
      &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
@@ -128,15 +128,14 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!     &           PRECOND, iterPREmax)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
       end subroutine VCG11_DJDS_SMP
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_VCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND)
+      subroutine init_VCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND, iterPREmax)
 !
       use m_work_4_CG11
       use djds_matrix_calcs_11
@@ -145,16 +144,20 @@
 !
       character(len=kchara), intent(in) :: PRECOND
       integer(kind=kint ), intent(in) :: NP, PEsmpTOT
+      integer(kind=kint ), intent(in)  :: iterPREmax
+!
+      integer(kind=kint ) :: nwk
 !
 !   allocate work arrays
 !
-      call verify_work_CG_11(NP, PEsmpTOT)
-      call verify_work_4_matvec11(NP)
-!
+      nwk = 3
       if (PRECOND(1:2).eq.'IC'  .or.                                    &
      &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
-        call verify_work_4_I_Cholesky11(NP)
+        if(iterPREmax .ge. 1) nwk = nwk + 2
       end if
+!
+      call verify_work_CG_11(NP, PEsmpTOT)
+      call verify_work_4_matvec11(NP, nwk)
 !
       end subroutine init_VCG11_DJDS_SMP
 !
@@ -166,9 +169,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!     &           PRECOND, iterPREmax)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 
       use calypso_mpi
 
@@ -224,8 +226,7 @@
       integer(kind=kint ), intent(in)                                   &
      &      :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT)) 
 
-      integer(kind=kint ), parameter :: iterPREmax = 1
-!      integer(kind=kint ), intent(in)  :: iterPREmax
+      integer(kind=kint ), intent(in)  :: iterPREmax
 !
       integer(kind=kint ) :: npLX1, npUX1
       integer(kind=kint ) :: iter, MAXIT
@@ -250,7 +251,7 @@
 !C
 !C-- change B,X
       call change_order_2_solve_bx1(NP, PEsmpTOT, STACKmcG,             &
-     &           NtoO, B, X)
+     &           NtoO, B, X, W3(1,1))
 
       call clear_vector_solve_11(NP, W(1,3) )
 
@@ -273,7 +274,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,            &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,R), B, X)
+     &            W(1,R), B, X, W3(1,1))
 !
 !C
 !C +---------------+
@@ -309,23 +310,20 @@
         if (PRECOND(1:2).eq.'IC'  .or.                                  &
      &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
 !C
-          if (iterPREmax.eq.1) then
+          if (iterPREmax .eq. 1) then
             call incomplete_cholesky_1x11                               &
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,             &
-     &            ALU_L, ALU_U, W(1,Z), W(1,R), W2(1,1))
+     &            ALU_L, ALU_U, W(1,Z), W(1,R), W3(1,1))
           else
-!
-            do iterPRE= 1, iterPREmax
-!
+            do iterPRE = 1, iterPREmax
               call i_cholesky_w_asdd_1x11                               &
      &           (iterPRE, N, NP, NL, NU, NPL, NPU, npLX1, npUX1,       &
      &            NVECT, PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp,     &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
      &            D, AL, AU, ALU_L, ALU_U, W(1,ZQ), W(1,Z), W(1,R),     &
-     &            W2(1,1))
-!
+     &            W3(1,1))
 !C
 !C-- INTERFACE data EXCHANGE
               START_TIME= MPI_WTIME()
@@ -336,9 +334,7 @@
               COMMtime = COMMtime + END_TIME - START_TIME
 !
 !   additive SCHWARTZ domain decomposition
-!
               call add_vector_11(NP, W(1,Z), W(1,ZQ) )
-!
             end do
           end if
 !C===
@@ -395,7 +391,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,            &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,Q), W(1,P) )
+     &            W(1,Q), W(1,P), W3(1,1))
 !
 !C===
 !C +---------------------+
@@ -462,7 +458,7 @@
 !C
 !C== change B,X
 
-       call back_2_original_order_bx1(NP, NtoO, B, X)
+       call back_2_original_order_bx1(NP, NtoO, B, X, W3(1,1))
 
       IER = 0
       E1_TIME= MPI_WTIME()

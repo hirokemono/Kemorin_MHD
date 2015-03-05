@@ -249,26 +249,26 @@
 
 !C
 !C-- calc. {t_tld} and {t0} by [M] inversion
-!C         {W2}   = [Minv]{p_tld} 
+!C         {WZ}   = [Minv]{p_tld} 
 !C
         call SOLVER_SEND_RECVx3                                         &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
      &     STACK_EXPORT, NOD_EXPORT, W(1,PT), W(1,T), W(1,T0) )
 
         W(1:NP,TT) = W(1:NP,T)
-        W(1:NP,W2) = W(1:NP,PT)
+        W(1:NP,WZ) = W(1:NP,PT)
 !C
 !C-- incomplete CHOLESKY
 
         if (PRECOND(1:2).eq.'IC'  .or.                                  &
      &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
           call i_cholesky_crs_3x11(NP, N, NPL, NPU, INL, INU, IAL, IAU, &
-     &      ALUG, AL, AU, W(1,TT), W(1,W2), W(1,T0) )
+     &      ALUG, AL, AU, W(1,TT), W(1,WZ), W(1,T0) )
 !C
 !C-- diagonal
         else if (PRECOND(1:4).eq.'DIAG') then
           W(1:N,TT)=  W(1:N,TT) * ALUG(1:N)
-          W(1:N,W2)=  W(1:N,W2) * ALUG(1:N)
+          W(1:N,WZ)=  W(1:N,WZ) * ALUG(1:N)
           W(1:N,T0)=  W(1:N,T0) * ALUG(1:N)
         end if
 !C===
@@ -311,7 +311,7 @@
 !C | {z} = QSI [Minv]{r}  + ETA*{z} - ALPHA*{u}               |
 !C +----------------------------------------------------------+
 !C===
-        W(1:N,U) = QSI * W(1:N,W2)                                      &
+        W(1:N,U) = QSI * W(1:N,WZ)                                      &
      &             + ETA * (W(1:N,T0) - W(1:N,R) + BETA*W(1:N,U))
         W(1:N,Z) = QSI * W(1:N, R) + ETA*W(1:N,Z) - ALPHA*W(1:N,U)
 !C===

@@ -6,44 +6,45 @@
 !      Written by Kengo Nakajima on May., 2001
 !      Modified by H. Matsui on Nov. 2005
 !
-!C
-!C
-!C***
-!C***  VCG33_DJDS_SMP_d
-!C***
-!      subroutine VCG33_DJDS_SMP_d                                      &
-!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                     &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT, PRECOND, iterPREmax)
-!C
-!      subroutine init_VCG33_DJDS_SMP_d(NP, PEsmpTOT, PRECOND)
-!      subroutine solve_VCG33_DJDS_SMP_d                                &
-!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                     &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT, PRECOND, iterPREmax)
-!C
-!C     VCG33_DJDS_SMP_d solves the linear system Ax = b with 3*3 block
-!C     using the Conjugate Gradient iterative method with preconditioning.
-!C     Elements are ordered in descending Jagged Diagonal Storage
-!C     for Vector Processing and Cyclic Ordering for SMP Parallel Computation
-!C
+!!C
+!!C
+!!C***
+!!C***  VCG33_DJDS_SMP_d
+!!C***
+!!      subroutine VCG33_DJDS_SMP_d                                     &
+!!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,            &
+!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
+!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
+!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
+!!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                    &
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
+!!     &           PRECOND, iterPREmax)
+!!C
+!!      subroutine init_VCG33_DJDS_SMP_d                                &
+!!     &         (NP, PEsmpTOT, PRECOND, iterPREmax)
+!!      subroutine solve_VCG33_DJDS_SMP_d                               &
+!!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,            &
+!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
+!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
+!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
+!!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                    &
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
+!!     &           PRECOND, iterPREmax)
+!!C
+!!C     VCG33_DJDS_SMP_d solves the linear system Ax = b with 3*3 block
+!!C     using the Conjugate Gradient iterative method with preconditioning.
+!!C     Elements are ordered in descending Jagged Diagonal Storage
+!!C     for Vector Processing and Cyclic Ordering for SMP Parallel Computation
+!!C
       module solver_VCG33_DJDS_SMP_d
 !
       use m_precision
 !
       implicit none
 !
-      real(kind = kreal), allocatable :: W2(:,:)
-      private :: W2
-      private :: verify_work_4_I_Cholesky33d
+      real(kind = kreal), allocatable :: W3(:,:)
+      private :: W3
+      private :: verify_work_4_matvec33d
 !
 !  ---------------------------------------------------------------------
 !
@@ -51,20 +52,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine verify_work_4_I_Cholesky33d(NP)
+      subroutine verify_work_4_matvec33d(NP, nwk)
 !
-       integer(kind = kint), intent(in) :: NP
+      integer(kind = kint), intent(in) :: NP, nwk
 !
-      if(allocated(W2) .eqv. .false.) then
-        allocate ( W2(3*NP,2) )
-        W2 = 0.0d0
-      else if(size(W2) .lt. (2*3*NP)) then
-        deallocate (W2)
-        allocate ( W2(3*NP,2) )
-        W2 = 0.0d0
+!
+      if(allocated(W3) .eqv. .false.) then
+        allocate ( W3(3*NP,nwk) )
+        W3 = 0.0d0
+      else if(size(W3) .lt. (3*nwk*NP)) then
+        deallocate (W3)
+        allocate ( W3(3*NP,nwk) )
+        W3 = 0.0d0
       end if
 !
-      end subroutine verify_work_4_I_Cholesky33d
+      end subroutine verify_work_4_matvec33d
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -75,9 +77,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!     &           PRECOND, iterPREmax)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
       integer(kind=kint ), intent(in) :: N, NP, NL, NU, NPL, NPU
       integer(kind=kint ), intent(in) :: PEsmpTOT, NVECT
@@ -119,8 +120,10 @@
       integer(kind=kint ), intent(in)                                   &
      &      :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT)) 
 !
+      integer(kind=kint ), intent(in)  :: iterPREmax
 !
-      call init_VCG33_DJDS_SMP_d(NP, PEsmpTOT, PRECOND)
+!
+      call init_VCG33_DJDS_SMP_d(NP, PEsmpTOT, PRECOND, iterPREmax)
 !
       call solve_VCG33_DJDS_SMP_d                                       &
      &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
@@ -128,15 +131,15 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!     &           PRECOND, iterPREmax)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
       end subroutine VCG33_DJDS_SMP_d
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_VCG33_DJDS_SMP_d(NP, PEsmpTOT, PRECOND)
+      subroutine init_VCG33_DJDS_SMP_d                                  &
+     &         (NP, PEsmpTOT, PRECOND, iterPREmax)
 !
       use m_work_4_CG33
       use djds_matrix_calcs_33
@@ -146,19 +149,20 @@
 !
       character(len=kchara), intent(in) :: PRECOND
       integer(kind=kint ), intent(in) :: NP, PEsmpTOT
-      integer(kind=kint ), parameter :: iterPREmax = 1
-!      integer(kind=kint ), intent(in)  :: iterPREmax
+      integer(kind=kint ), intent(in)  :: iterPREmax
+!
+      integer(kind=kint ) :: nwk
+!
+      nwk = 3
+      if (PRECOND(1:2).eq.'IC'  .or.                                    &
+     &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
+        if(iterPREmax .ge. 1) nwk = nwk + 2
+      end if
 !
 !   allocate work arrays
 !
       call verify_work_CG_33(NP, PEsmpTOT)
-      call verify_work_4_matvec33d(NP)
-!
-      if (   PRECOND(1:2).eq.'IC'                                       &
-     &  .or. PRECOND(1:3).eq.'ILU'  .or. PRECOND(1:4).eq.'SSOR'         &
-     &  .or. PRECOND(1:4).eq.'BLOC' .or. PRECOND(1:6).eq.'BL_ILU') then
-        call verify_work_4_I_Cholesky33d(NP)
-      end if
+      call verify_work_4_matvec33d(NP, nwk)
 !
       end subroutine init_VCG33_DJDS_SMP_d
 !
@@ -170,9 +174,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!     &           PRECOND, iterPREmax)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 
       use calypso_mpi
 !
@@ -231,8 +234,7 @@
       integer(kind=kint ), intent(in)                                   &
      &      :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT)) 
 
-      integer(kind=kint ), parameter :: iterPREmax = 1
-!      integer(kind=kint ), intent(in)  :: iterPREmax
+      integer(kind=kint ), intent(in)  :: iterPREmax
 
       integer(kind=kint ) :: npLX1, npUX1
       integer(kind=kint ) :: iter, MAXIT
@@ -259,7 +261,7 @@
 !C-- change B,X
 
       call change_order_2_solve_bx3d(NP, PEsmpTOT, STACKmcG,            &
-     &           NtoO, B, X)
+     &           NtoO, B, X, W3(1,1))
 !
 !C
 !C-- INTERFACE data EXCHANGE
@@ -281,7 +283,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT, PEsmpTOT,  &
      &            STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L, OtoN_U,      &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,          &
-     &            W(1,R), B, X)
+     &            W(1,R), B, X, W3(1,1))
 !
 !C
 !C +---------------+
@@ -320,17 +322,16 @@
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,             &
-     &            ALU_L, ALU_U, W(1,Z), W(1,R), W2(1,1))
+     &            ALU_L, ALU_U, W(1,Z), W(1,R), W3(1,1))
         else
 !
           do iterPRE= 1, iterPREmax
-!
             call i_cholesky_w_asdd_1x33d                                &
      &           (iterPRE, N, NP, NL, NU, NPL, NPU, npLX1, npUX1,       &
      &            NVECT, PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp,     &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
      &            D, AL, AU, ALU_L, ALU_U, W(1,ZQ), W(1,Z), W(1,R),     &
-     &            W2(1,1))
+     &            W3(1,1))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -354,7 +355,7 @@
 !
         call block_ilu_33d                                              &
      &          (N, NP, PEsmpTOT, STACKmcG, OtoN_L, NtoO_U, LtoU,       &
-     &           ALU_L, W(1,Z), W(1,R), W2(1,1))
+     &           ALU_L, W(1,Z), W(1,R), W3(1,1))
 !
       endif
 !C===
@@ -416,7 +417,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT, PEsmpTOT,  &
      &            STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L, OtoN_U,      &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,          &
-     &            W(1,Q), W(1,P) )
+     &            W(1,Q), W(1,P), W3(1,1))
 !
 !C===
 
@@ -500,7 +501,7 @@
 !C
 !C== change B,X
 
-      call back_2_original_order_bx3d(NP, NtoO, B, X)
+      call back_2_original_order_bx3d(NP, NtoO, B, X, W3(1,1))
 
       IER = 0
       R1= 100.d0 * ( 1.d0 - COMMtime/COMPtime )

@@ -44,7 +44,7 @@
       integer(kind=kint), parameter ::  Y = 10
       integer(kind=kint), parameter ::  Z = 11
       integer(kind=kint), parameter :: WK = 12
-      integer(kind=kint), parameter :: W2 = 13
+      integer(kind=kint), parameter :: WZ = 13
       integer(kind=kint), parameter :: WT = 14
       integer(kind=kint), parameter :: RX = 15
       integer(kind=kint), parameter :: RY = 16

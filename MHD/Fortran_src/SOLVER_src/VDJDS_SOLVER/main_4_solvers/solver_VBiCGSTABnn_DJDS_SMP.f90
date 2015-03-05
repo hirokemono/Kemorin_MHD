@@ -5,44 +5,45 @@
 !
 !      Written by H. Matsui on Nov. 2005
 !
-!C
-!C***
-!C***  VBiCGSTABnn_DJDS_SMP
-!C***
-!      subroutine VBiCGSTABnn_DJDS_SMP                                  &
-!     &         ( N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,         &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                     &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT, PRECOND, iterPREmax)
-!C
-!      subroutine init_VBiCGSTABnn_DJDS_SMP(NP, NB, PEsmpTOT, PRECOND)
-!      subroutine solve_VBiCGSTABnn_DJDS_SMP                            &
-!     &         ( N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,         &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                     &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT, PRECOND, iterPREmax)
-!C
-!C     VBiCGSTABnn_DJDS_SMP solves the linear system Ax = b
-!C     using the BiCGSTAB iterative method with preconditioning
-!C     for n*n Block Matrix by OVERLAPPING method.
-!C     Elements are ordered in descending Jagged Diagonal Storage
-!C     for Vector Processing and Cyclic Ordering for SMP Parallel Computation
-!C
+!!C
+!!C***
+!!C***  VBiCGSTABnn_DJDS_SMP
+!!C***
+!!      subroutine VBiCGSTABnn_DJDS_SMP                                 &
+!!     &         ( N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,        &
+!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
+!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
+!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
+!!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                    &
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
+!!     &           PRECOND, iterPREmax)
+!!C
+!!      subroutine init_VBiCGSTABnn_DJDS_SMP                            &
+!!     &         (NP, NB, PEsmpTOT, PRECOND, iterPREmax)
+!!      subroutine solve_VBiCGSTABnn_DJDS_SMP                           &
+!!     &         ( N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,        &
+!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
+!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
+!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
+!!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                    &
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
+!!     &           PRECOND, iterPREmax)
+!!C
+!!C     VBiCGSTABnn_DJDS_SMP solves the linear system Ax = b
+!!C     using the BiCGSTAB iterative method with preconditioning
+!!C     for n*n Block Matrix by OVERLAPPING method.
+!!C     Elements are ordered in descending Jagged Diagonal Storage
+!!C     for Vector Processing and Cyclic Ordering for SMP Parallel Computation
+!!C
       module solver_VBiCGSTABnn_DJDS_SMP
 !
       use m_precision
 !
       implicit none
 !
-      real(kind = kreal), allocatable :: W2(:,:)
-      private :: W2
-      private :: verify_work_4_I_Choleskynn
+      real(kind = kreal), allocatable :: W3(:,:)
+      private :: W3
+      private :: verify_work_4_matvecnn
 !
 !  ---------------------------------------------------------------------
 !
@@ -50,20 +51,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine verify_work_4_I_Choleskynn(NP, NB)
+      subroutine verify_work_4_matvecnn(NP, NB, nwk)
 !
-       integer(kind = kint), intent(in) :: NP, NB
+       integer(kind = kint), intent(in) :: NP, NB, nwk
 !
-      if(allocated(W2) .eqv. .false.) then
-        allocate ( W2(NB*NP,2) )
-        W2 = 0.0d0
-      else if(size(W2) .lt. (2*NB*NP)) then
-        deallocate (W2)
-        allocate ( W2(NB*NP,2) )
-        W2 = 0.0d0
+      if(allocated(W3) .eqv. .false.) then
+        allocate ( W3(NB*NP,nwk))
+        W3 = 0.0d0
+      else if(size(W3) .lt. (nwk*NB*NP)) then
+        deallocate (W3)
+        allocate ( W3(NB*NP,nwk) )
+        W3 = 0.0d0
       end if
 !
-      end subroutine verify_work_4_I_Choleskynn
+      end subroutine verify_work_4_matvecnn
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -74,9 +75,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!     &           PRECOND, iterPREmax)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
       integer(kind=kint ), intent(in) :: N, NP, NB, NL, NU, NPL, NPU
       integer(kind=kint ), intent(in) :: PEsmpTOT, NVECT
@@ -118,8 +118,11 @@
       integer(kind=kint ), intent(in)                                   &
      &      :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT)) 
 !
+      integer(kind=kint ), intent(in)  :: iterPREmax
 !
-      call init_VBiCGSTABnn_DJDS_SMP(NP, NB, PEsmpTOT, PRECOND)
+!
+      call init_VBiCGSTABnn_DJDS_SMP                                    &
+     &   (NP, NB, PEsmpTOT, PRECOND, iterPREmax)
 !
       call solve_VBiCGSTABnn_DJDS_SMP                                   &
      &         ( N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,          &
@@ -127,16 +130,16 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!     &           PRECOND, iterPREmax)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
       end subroutine VBiCGSTABnn_DJDS_SMP
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine init_VBiCGSTABnn_DJDS_SMP(NP, NB, PEsmpTOT, PRECOND)
+      subroutine init_VBiCGSTABnn_DJDS_SMP                              &
+     &         (NP, NB, PEsmpTOT, PRECOND, iterPREmax)
 !
       use m_work_4_BiCGSTABnn
 !
@@ -147,17 +150,20 @@
 !
       integer(kind=kint ), intent(in) :: NP, NB, PEsmpTOT
       character(len=kchara), intent(in) :: PRECOND
+      integer(kind=kint ), intent(in)  :: iterPREmax
+!
+      integer(kind=kint ) :: nwk
 !
 !   allocate work arrays
 !
-      call verify_work_BiCGSTAB_nn(NP, NB, PEsmpTOT)
-      call verify_work_4_matvecnn(NP,NB)
-!
-      if (   PRECOND(1:2).eq.'IC'                                       &
-     &  .or. PRECOND(1:3).eq.'ILU'  .or. PRECOND(1:4).eq.'SSOR'         &
-     &  .or. PRECOND(1:4).eq.'BLOC' .or. PRECOND(1:6).eq.'BL_ILU') then
-        call verify_work_4_I_Choleskynn(NP, NB)
+      nwk = 3
+      if (PRECOND(1:2).eq.'IC'  .or.                                    &
+     &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
+        if(iterPREmax .ge. 1) nwk = nwk + 2
       end if
+!
+      call verify_work_BiCGSTAB_nn(NP, NB, PEsmpTOT)
+      call verify_work_4_matvecnn(NP,NB, nwk)
 !
       end subroutine init_VBiCGSTABnn_DJDS_SMP
 !
@@ -169,9 +175,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!     &           PRECOND, iterPREmax)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 
       use calypso_mpi
 !
@@ -229,8 +234,7 @@
       integer(kind=kint ), intent(in)                                   &
      &      :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT)) 
 
-      integer(kind=kint ), parameter :: iterPREmax = 1
-!      integer(kind=kint ), intent(in)  :: iterPREmax
+      integer(kind=kint ), intent(in)  :: iterPREmax
 !
       integer(kind=kint ) :: npLX1, npUX1
       integer(kind=kint ) :: iter, MAXIT
@@ -254,7 +258,7 @@
 !C-- change B,X
 !
       call change_order_2_solve_bxn(NP, NB, PEsmpTOT, STACKmcG,         &
-     &           NtoO, B, X)
+     &           NtoO, B, X, W3(1,1))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -278,7 +282,7 @@
      &           (NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,R), B, X)
+     &            W(1,R), B, X, W3(1,1))
 !
        call copy_vector_nn(NP, NB, W(1,RT), W(1,R) )
 !
@@ -351,7 +355,7 @@
      &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,             &
-     &            ALU_L, ALU_U, W(1,PT), W(1,P), W2(1,1))
+     &            ALU_L, ALU_U, W(1,PT), W(1,P), W3(1,1))
           else
 !
             do iterPRE= 1, iterPREmax
@@ -361,7 +365,7 @@
      &            NVECT, PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp,     &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
      &            D, AL, AU, ALU_L, ALU_U, W(1,ZQ), W(1,PT), W(1,P),    &
-     &            W2(1,1))
+     &            W3(1,1))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -383,7 +387,7 @@
      &      .or. PRECOND(1:6).eq.'BL_ILU') then
           call block_ilu_1xnn                                           &
      &          (N, NP, NB, PEsmpTOT, STACKmcG, OtoN_L, NtoO_U, LtoU,   &
-     &           ALU_L, W(1,PT), W(1,P), W2(1,1))
+     &           ALU_L, W(1,PT), W(1,P), W3(1,1))
 !
         else if (PRECOND(1:4).eq.'DIAG') then
           call diag_scaling_1xnn(NP, N, NB, PEsmpTOT, STACKmcG,         &
@@ -410,7 +414,7 @@
      &           (NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,V), W(1,PT) )
+     &            W(1,V), W(1,PT), W3(1,1))
 !
 !C===
 
@@ -461,7 +465,7 @@
      &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,             &
-     &            ALU_L, ALU_U, W(1,ST), W(1,S), W2(1,1))
+     &            ALU_L, ALU_U, W(1,ST), W(1,S), W3(1,1))
           else
 !
             do iterPRE= 1, iterPREmax
@@ -471,7 +475,7 @@
      &            NVECT, PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp,     &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
      &            D, AL, AU, ALU_L, ALU_U, W(1,ZQ), W(1,ST), W(1,S),    &
-     &            W2(1,1))
+     &            W3(1,1))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -493,7 +497,7 @@
      &      .or. PRECOND(1:6).eq.'BL_ILU') then
           call block_ilu_1xnn                                           &
      &          (N, NP, NB, PEsmpTOT, STACKmcG, OtoN_L, NtoO_U, LtoU,   &
-     &           ALU_L, W(1,ST), W(1,S), W2(1,1))
+     &           ALU_L, W(1,ST), W(1,S), W3(1,1))
 !
         else if (PRECOND(1:4).eq.'DIAG') then
           call diag_scaling_1xnn(NP, N, NB, PEsmpTOT, STACKmcG,         &
@@ -520,7 +524,7 @@
      &           (NP, Nb, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,T), W(1,ST) )
+     &            W(1,T), W(1,ST), W3(1,1))
 !
 !        call cal_local_norm_n(NP, NB, PEsmpTOT, STACKmcG, W(1,T), aa,  &
 !     &      DNRMsmp)
@@ -594,7 +598,7 @@
 !C
 !C== change B,X
 
-      call back_2_original_order_bxn(NP, NB, NtoO, B, X)
+      call back_2_original_order_bxn(NP, NB, NtoO, B, X, W3(1,1))
 
       IER = 0
       COMPtime= END_TIME - S1_TIME

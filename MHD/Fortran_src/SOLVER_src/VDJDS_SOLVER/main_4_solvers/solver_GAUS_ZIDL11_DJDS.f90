@@ -42,7 +42,7 @@
 !
        real(kind = kreal), allocatable :: W3(:,:)
        private :: W3
-       private :: verify_work_GaussZeidel_11
+       private :: verify_work_4_matvec11
 !
 !  ---------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine verify_work_GaussZeidel_11(NP)
+      subroutine verify_work_4_matvec11(NP)
 !
        integer(kind = kint), intent(in) :: NP
 !
@@ -63,7 +63,7 @@
         W3 = 0.0d0
       end if
 !
-      end subroutine verify_work_GaussZeidel_11
+      end subroutine verify_work_4_matvec11
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -144,8 +144,6 @@
 !
       call verify_work_CG_11(NP, PEsmpTOT)
       call verify_work_4_matvec11(NP)
-!
-      call verify_work_GaussZeidel_11(NP)
 !
       end subroutine init_VGAUSS_ZEIDEL11_DJDS_SMP
 !
@@ -234,8 +232,6 @@
       call verify_work_CG_11(NP, PEsmpTOT)
       call verify_work_4_matvec11(NP)
 !
-      call verify_work_GaussZeidel_11(NP)
-!
       call reset_solver_time
       call init_work_CG_11(NP)
 !
@@ -244,7 +240,7 @@
 !C-- change B,X
 !
        call change_order_2_solve_bx1(NP, PEsmpTOT, STACKmcG,            &
-     &     NtoO, B, X)
+     &     NtoO, B, X, W3(1,1))
 !
 !C
 !C-- INTERFACE data EXCHANGE
@@ -288,7 +284,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,            &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,R), B, X)
+     &            W(1,R), B, X, W3(1,1))
 !
 !C
 !C +---------------+
@@ -334,7 +330,7 @@
 !C
 !C== change B,X
 
-       call back_2_original_order_bx1(NP, NtoO, B, X)
+       call back_2_original_order_bx1(NP, NtoO, B, X, W3(1,1))
 
       IER = 0
       E1_TIME= MPI_WTIME()

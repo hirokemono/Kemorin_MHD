@@ -9,30 +9,31 @@
 !C***
 !C***  VGPBiCG11_DJDS_SMP
 !C***
-!      subroutine VGPBiCG11_DJDS_SMP                                    &
-!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                     &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT, PRECOND, iterPREmax)
-!
-!      subroutine init_VGPBiCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND)
-!      subroutine solve_VGPBiCG11_DJDS_SMP                              &
-!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                     &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT, PRECOND, iterPREmax)
-!C
-!C     VGPBiCG11_DJDS_SMP solves the linear system Ax = b with
-!     GPBiCG iterative method with preconditioning.
-!C     Elements are ordered in descending Jagged Diagonal Storage
-!C     for Vector Processing and Cyclic Ordering for SMP Parallel Computation
-!C
+!!      subroutine VGPBiCG11_DJDS_SMP                                   &
+!!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,            &
+!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
+!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
+!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
+!!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                    &
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
+!!     &           PRECOND, iterPREmax)
+!!
+!!      subroutine init_VGPBiCG11_DJDS_SMP                              &
+!!     &          (NP, PEsmpTOT, PRECOND, iterPREmax)
+!!      subroutine solve_VGPBiCG11_DJDS_SMP                             &
+!!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,            &
+!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
+!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
+!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
+!!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                    &
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
+!!     &           PRECOND, iterPREmax)
+!!C
+!!C     VGPBiCG11_DJDS_SMP solves the linear system Ax = b with
+!!     GPBiCG iterative method with preconditioning.
+!!C     Elements are ordered in descending Jagged Diagonal Storage
+!!C     for Vector Processing and Cyclic Ordering for SMP Parallel Computation
+!!C
 !
       module solver_VGPBiCG11_DJDS_SMP
 !
@@ -42,7 +43,7 @@
 !
        real(kind = kreal), allocatable :: W6(:,:)
        private :: W6
-       private :: verify_work_4_I_Cholesky3x11
+       private :: verify_work_4_matvec3x11
 !
 !  ---------------------------------------------------------------------
 !
@@ -50,20 +51,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine verify_work_4_I_Cholesky3x11(NP)
+      subroutine verify_work_4_matvec3x11(NP, nwk)
 !
-      integer(kind = kint), intent(in) :: NP
+      integer(kind = kint), intent(in) :: NP, nwk
+!
 !
       if(allocated(W6) .eqv. .false.) then
-        allocate ( W6(NP,6) )
+        allocate ( W6(NP,nwk) )
         W6 = 0.0d0
-      else if(size(W6) .lt. (6*NP)) then
+      else if(size(W6) .lt. (nwk*NP)) then
         deallocate (W6)
-        allocate ( W6(NP,6) )
+        allocate ( W6(NP,nwk) )
         W6 = 0.0d0
       end if
 !
-      end subroutine verify_work_4_I_Cholesky3x11
+      end subroutine verify_work_4_matvec3x11
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -74,9 +76,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!     &           PRECOND, iterPREmax)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
       integer(kind=kint ), intent(in) :: N, NP, NL, NU, NPL, NPU
       integer(kind=kint ), intent(in) :: PEsmpTOT, NVECT
@@ -117,8 +118,10 @@
       integer(kind=kint ), intent(in)                                   &
      &      :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT)) 
 !
+      integer(kind=kint ), intent(in)  :: iterPREmax
 !
-      call init_VGPBiCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND)
+!
+      call init_VGPBiCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND, iterPREmax)
 !
       call solve_VGPBiCG11_DJDS_SMP                                     &
      &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,              &
@@ -126,16 +129,16 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!     &           PRECOND, iterPREmax)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !
       end subroutine VGPBiCG11_DJDS_SMP
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_VGPBiCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND)
+      subroutine init_VGPBiCG11_DJDS_SMP                                &
+     &          (NP, PEsmpTOT, PRECOND, iterPREmax)
 !
       use m_work_4_GPBiCG11
       use djds_matrix_calcs_11
@@ -144,16 +147,20 @@
 !
       character(len=kchara), intent(in) :: PRECOND
       integer(kind=kint ), intent(in) :: NP, PEsmpTOT
+      integer(kind=kint ), intent(in)  :: iterPREmax
+!
+      integer(kind=kint ) :: nwk
 !
 !   allocate work arrays
 !
-      call verify_work_GPBiCG_11(NP, PEsmpTOT)
-      call verify_work_4_matvec3x11(NP)
-!
+      nwk = 6
       if (PRECOND(1:2).eq.'IC'  .or.                                    &
      &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
-        call verify_work_4_I_Cholesky3x11(NP)
+        if(iterPREmax .ge. 1) nwk = nwk + 9
       end if
+!
+      call verify_work_GPBiCG_11(NP, PEsmpTOT)
+      call verify_work_4_matvec3x11(NP, nwk)
 !
       end subroutine init_VGPBiCG11_DJDS_SMP
 !
@@ -165,9 +172,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!     &           PRECOND, iterPREmax)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
       use calypso_mpi
 !
@@ -223,8 +229,8 @@
       integer(kind=kint ), intent(in)                                   &
      &      :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT)) 
 
-      integer(kind=kint ), parameter :: iterPREmax = 1
-!      integer(kind=kint ), intent(in)  :: iterPREmax
+      integer(kind=kint ), intent(in)  :: iterPREmax
+!
 !      integer :: j, in
 !      real(kind = kreal) :: zz1(NP)
 
@@ -251,7 +257,7 @@
 !C-- change B,X
 !
       call change_order_2_solve_bx1(NP, PEsmpTOT, STACKmcG,             &
-     &           NtoO, B, X)
+     &           NtoO, B, X, W6(1,1))
 
 !C
 !C-- INTERFACE data EXCHANGE
@@ -276,7 +282,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,            &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,R), B, X)
+     &            W(1,R), B, X, W6(1,1))
 !
 !C +-----------------+
 !C | BNORM2 = B^2    |
@@ -401,7 +407,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,            &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U,  NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU, &
-     &            W(1,PT), W(1,P) )
+     &            W(1,PT), W(1,P), W6(1,1))
 !C
 !C-- calc. ALPHA
 !
@@ -440,10 +446,10 @@
 !C===
 !C
 !C-- calc. {t_tld} and {t0} by [M] inversion
-!C         {W2}   = [Minv]{p_tld} 
+!C         {WZ}   = [Minv]{p_tld} 
 !C
         call copy_vector_11(NP, W(1,WT), W(1,T0) )
-        call clear_vector_solve_3x11(NP, W(1,TT), W(1,W2), W(1,T0) )
+        call clear_vector_solve_3x11(NP, W(1,TT), W(1,WZ), W(1,T0) )
 !C
 !C-- incomplete CHOLESKY x 3
 !
@@ -455,7 +461,7 @@
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,             &
-     &            ALU_L, ALU_U, W(1,TT), W(1,W2), W(1,T0),              &
+     &            ALU_L, ALU_U, W(1,TT), W(1,WZ), W(1,T0),              &
      &            W(1,T ), W(1,PT), W(1,WT), W6(1,1))
           else
 !
@@ -466,7 +472,7 @@
      &            NVECT, PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp,     &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
      &            D, AL, AU, ALU_L, ALU_U, W(1,RX), W(1,RY), W(1,RZ),   &
-     &            W(1,TT), W(1,W2), W(1,T0),                            &
+     &            W(1,TT), W(1,WZ), W(1,T0),                            &
      &            W(1,T ), W(1,PT), W(1,WT), W6(1,1))
 
 !C
@@ -481,7 +487,7 @@
 !
 !   additive SCHWARTZ domain decomposition
 !
-              call add_vector_3x11(NP, W(1,TT), W(1,W2), W(1,T0),       &
+              call add_vector_3x11(NP, W(1,TT), W(1,WZ), W(1,T0),       &
      &            W(1,RX), W(1,RY), W(1,RZ) )
 !
             enddo
@@ -491,7 +497,7 @@
         else if (PRECOND(1:4).eq.'DIAG') then
 !
           call diag_scaling_3x11(NP, N, PEsmpTOT, STACKmcG,             &
-     &        W(1,TT), W(1,W2), W(1,T0), W(1,T ), W(1,PT), W(1,WT),     &
+     &        W(1,TT), W(1,WZ), W(1,T0), W(1,T ), W(1,PT), W(1,WT),     &
      &        ALU_L)
 !
         end if
@@ -509,7 +515,7 @@
      &           (NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,            &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, D, AL, AU,  &
-     &            W(1,WK), W(1,TT) )
+     &            W(1,WK), W(1,TT), W6(1,1))
 !
         call copy_vector_11(NP, W(1,TT), W(1,WK) )
 !
@@ -547,7 +553,7 @@
 !C===
 !
       call cal_u_and_z_11(NP, PEsmpTOT, STACKmcG,                       &
-     &          W(1,U), W(1,Z), W(1,W2), W(1,T0), W(1,R),               &
+     &          W(1,U), W(1,Z), W(1,WZ), W(1,T0), W(1,R),               &
      &          QSI, ETA, ALPHA, BETA)
 !C
 !C +--------------------+
@@ -610,7 +616,7 @@
 !C
 !C== change B,X
 !
-      call back_2_original_order_bx1(NP, NtoO, B, X)
+      call back_2_original_order_bx1(NP, NtoO, B, X, W6(1,1))
 
       IER = 0
       COMPtime= END_TIME - S1_TIME

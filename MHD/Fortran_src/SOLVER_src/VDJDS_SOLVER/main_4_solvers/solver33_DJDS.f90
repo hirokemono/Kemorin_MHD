@@ -37,6 +37,7 @@
 !
       implicit none
 !
+      integer(kind = kint), parameter, private :: iterPREmax = 1
       integer(kind = kint), parameter, private :: NB = 3
 !
 !  ---------------------------------------------------------------------
@@ -74,20 +75,23 @@
 !C
 !C-- BiCGSTAB using n*n solver
       if(solver_iflag(METHOD) .eq. iflag_bicgstab_NN) then
-        call init_VBiCGSTABnn_DJDS_SMP(NP, NB, PEsmpTOT, PRECOND)
+        call init_VBiCGSTABnn_DJDS_SMP                                  &
+     &     (NP, NB, PEsmpTOT, PRECOND, iterPREmax)
 !C
 !C-- BiCGSTAB
       else if(solver_iflag(METHOD) .eq. iflag_bicgstab) then
-        call init_VBiCGSTAB33_DJDS_SMP(NP, PEsmpTOT, PRECOND)
+        call init_VBiCGSTAB33_DJDS_SMP                                  &
+     &     (NP, PEsmpTOT, PRECOND, iterPREmax)
 !C
 !C-- GPBiCG using n*n solver
       else if(solver_iflag(METHOD) .eq. iflag_gpbicg_NN) then
-        call init_VGPBiCGnn_DJDS_SMP(NP, NB, PEsmpTOT, PRECOND)
+        call init_VGPBiCGnn_DJDS_SMP                                    &
+     &     (NP, NB, PEsmpTOT, PRECOND, iterPREmax)
 !
 !C
 !C-- GPBiCG
       else if(solver_iflag(METHOD) .eq. iflag_gpbicg) then
-        call init_VGPBiCG33_DJDS_SMP(NP, PEsmpTOT, PRECOND)
+        call init_VGPBiCG33_DJDS_SMP(NP, PEsmpTOT, PRECOND, iterPREmax)
 !
 !C
 !C-- CG_only diagonal component
@@ -98,16 +102,16 @@
      &     ((METHOD(5:5).eq.'I').or.(METHOD(5:5).eq.'i')) .and.         &
      &     ((METHOD(6:6).eq.'A').or.(METHOD(6:6).eq.'a')) .and.         &
      &     ((METHOD(7:7).eq.'G').or.(METHOD(7:7).eq.'g')) ) then
-        call init_VCG33_DJDS_SMP_d(NP, PEsmpTOT, PRECOND)
+        call init_VCG33_DJDS_SMP_d(NP, PEsmpTOT, PRECOND, iterPREmax)
 !C
 !C-- CG
       else if(solver_iflag(METHOD) .eq. iflag_cg_NN) then
-        call init_VCGnn_DJDS_SMP(NP, NB, PEsmpTOT, PRECOND)
+        call init_VCGnn_DJDS_SMP(NP, NB, PEsmpTOT, PRECOND, iterPREmax)
 !
 !C
 !C-- CG
       else if(solver_iflag(METHOD) .eq. iflag_cg) then
-        call init_VCG33_DJDS_SMP(NP, PEsmpTOT, PRECOND)
+        call init_VCG33_DJDS_SMP(NP, PEsmpTOT, PRECOND, iterPREmax)
 !
 !C-- Gauss-Zeidel
       else if(solver_iflag(METHOD) .eq. iflag_gausszeidel) then
@@ -264,8 +268,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !C
 !C-- BiCGSTAB
@@ -281,8 +285,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !C
 !C-- GPBiCG using n*n solver
@@ -302,8 +306,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !C
 !C-- GPBiCG
@@ -320,8 +324,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !C
 !C-- CG_only diagonal component
@@ -339,8 +343,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !C
 !C-- CG
       else if ( ((METHOD(1:1).eq.'C').or.(METHOD(1:1).eq.'c')) .and.    &
@@ -355,8 +359,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !C
 !C-- CG
@@ -369,8 +373,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !C-- Gauss-Zeidel
 
@@ -525,8 +529,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !C
 !C-- BiCGSTAB
@@ -542,8 +546,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !C
 !C-- GPBiCG using n*n solver
@@ -563,8 +567,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !C
 !C-- GPBiCG
@@ -581,8 +585,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !C
 !C-- CG_only diagonal component
@@ -600,8 +604,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !C
 !C-- CG
       else if ( ((METHOD(1:1).eq.'C').or.(METHOD(1:1).eq.'c')) .and.    &
@@ -616,8 +620,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !C
 !C-- CG
@@ -630,8 +634,8 @@
      &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,           &
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
-     &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           PRECOND, iterPREmax)
 !
 !C-- Gauss-Zeidel
 
