@@ -286,6 +286,7 @@
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
+!
 
       if (BNRM2.eq.0.d0) BNRM2= 1.d0
 !C===

@@ -140,10 +140,10 @@ target_task:
 	@echo '' >> $(MAKENAME)
 	
 	@echo '$$(TARGET_ADD_TIME_SPH)': '$$(MOD_ADD_TIME_SPH)' \
-	'$$(LIB_FILES_MERGE)' \
+	'$$(LIB_FILES_PARA_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ADD_TIME_SPH)' '$$(MOD_ADD_TIME_SPH)' \
-	'-L. $$(LIBS_MERGE)' \
+	'-L. $$(LIBS_PARA_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	

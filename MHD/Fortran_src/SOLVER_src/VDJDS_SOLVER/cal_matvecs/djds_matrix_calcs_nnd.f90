@@ -86,6 +86,8 @@
        real(kind = kreal), intent(inout) :: W3(NB*NP,3)
 !
 !
+      if(NP .le. 0) return
+!
       call set_by_diagonal_nnd(NP, NB, PEsmpTOT, STACKmcG,              &
      &    W3(1,IWK3), X, D)
 
@@ -135,6 +137,8 @@
        real(kind = kreal), intent(inout) :: S3(NB*NP)
        real(kind = kreal), intent(inout) :: W9(NB*NP,9)
 !
+!
+      if(NP .le. 0) return
 !
       call set_by_diagonal_3xnnd(NP, NB, PEsmpTOT, STACKmcG,            &
      &    W9(1,IWK13), W9(1,IWK23), W9(1,IWK33), X1, X2, X3, D)
@@ -192,6 +196,8 @@
        real(kind = kreal), intent(inout) :: W3(NB*NP,3)
 !
 !
+      if(NP .le. 0) return
+!
        call subtract_diagonal_nnd(NP, NB, PEsmpTOT, STACKmcG,           &
      &     W3(1,IWK3), B, X, D)
 
@@ -242,6 +248,8 @@
        real(kind = kreal), intent(inout) :: S3(NB*NP)
        real(kind = kreal), intent(inout) :: W9(NB*NP,9)
 !
+!
+      if(NP .le. 0) return
 !
        call subtract_diagonal_3xnnd(NP, NB, PEsmpTOT, STACKmcG,         &
      &     W9(1,IWK13), W9(1,IWK23), W9(1,IWK33), B1, B2, B3,           &

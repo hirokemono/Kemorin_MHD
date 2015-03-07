@@ -33,6 +33,8 @@
 !
        integer (kind = kint) :: i
 !
+      if(NP .le. 0) return
+!
 !$omp parallel do
        do i= 1, NB*N
          S(i) = V(i)
@@ -50,6 +52,8 @@
        real(kind = kreal), intent(inout) :: S(NB*NP)
 !
        integer (kind = kint) :: i
+!
+      if(NP .le. 0) return
 !
 !$omp parallel do
 !voption indep (S,V)
@@ -72,6 +76,8 @@
 !
        integer (kind = kint) :: i
 !
+      if(NP .le. 0) return
+!
 !$omp parallel do
 !voption indep (S1,S2,V1,V2)
 !OCL VECTOR, NOVREC
@@ -93,6 +99,8 @@
        real(kind = kreal), intent(inout) :: S(NB*NP)
 !
        integer (kind = kint) :: i
+!
+      if(NP .le. 0) return
 !
 !$omp parallel do
 !voption indep (S,V)
@@ -117,6 +125,8 @@
 !
        integer (kind = kint) :: i
 !
+      if(NP .le. 0) return
+!
 !$omp parallel do
 !voption indep (S1,S2,S3,V1,V2,V3)
 !OCL VECTOR, NOVREC
@@ -139,6 +149,8 @@
 !
        integer (kind = kint) :: i
 !
+      if(NP .le. 0) return
+!
 !$omp parallel do
 !voption indep (S)
 !OCL VECTOR, NOVREC
@@ -159,6 +171,8 @@
        real(kind = kreal), intent(inout) :: S3(NB*NP)
 !
        integer (kind = kint) :: i
+!
+      if(NP .le. 0) return
 !
 !$omp parallel do
 !voption indep (S1,S2,S3)
@@ -183,6 +197,8 @@
        integer (kind = kint) :: i
 !
 !
+      if(NP .le. 0) return
+!
 !$omp parallel do
 !voption indep (S)
 !OCL VECTOR, NOVREC
@@ -204,6 +220,8 @@
 !
        integer (kind = kint) :: i
 !
+!
+      if(NP .le. 0) return
 !
 !$omp parallel do
 !voption indep (S1,S2,S3)

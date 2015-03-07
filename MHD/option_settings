@@ -119,6 +119,47 @@ GTK2_LIBS=
 #
 #
 # -------------------------------------------------------------------------------
+# Intel XEON cluster (NCAR yellowstone)
+# -------------------------------------------------------------------------------
+#
+#   compile with Intel MPI   (no HDF5 support)
+#
+#module load fftw
+#module load hdf5-mpi
+./configure --prefix='/glade/u/home/emheien/matsui/src_kemo' \
+CC=icc FC=ifort F77=ifort CXX=gcc AR=xiar MPICC=mpiicc MPIFC=mpiifort \
+CFLAGS='-O3  -Wall -g' FCFLAGS='-O3 -warn all -g' \
+PKG_CONFIG='/usr/bin/pkg-config' --enable-glui --enable-libpng \
+--enable-fftw3 --with-blas='-mkl=sequential' --with-hdf5 --with-zlib=/usr/lib64 --without-pgplot \
+PKG_CONFIG_PATH='/usr/lib64/pkgconfig:/glade/apps/opt/fftw/3.3.2/intel/12.1.4/lib/pkgconfig' \
+--without-aquaterm
+#
+# -------------------------------------------------------------------------------
+# IBM Blue Zene/Q
+# -------------------------------------------------------------------------------
+#
+#    OpenMP flag for fortran should be fixed!!
+#    Prepocessor options should be fixed!!
+#
+# ANL Vesta
+#
+./configure --prefix='/home/matsui/local' --enable-fftw3 --enable-libpng --disable-gl \
+--with-hdf5=no --with-zlib=/home/matsui/local --without-pgplot \
+CC=bgxlc FC=bgxlf MPICC=mpixlc MPIF90=mpixlf90 \
+CFLAGS='-O3 -q64' FCFLAGS='-O3 -q64' \
+PKG_CONFIG_PATH="$PKG_CONFIG_PATH":/home/matsui/local/lib/pkgconfig
+#
+# ANL Mira
+#
+./configure --prefix='/home/matsui/local' --enable-fftw3 --enable-libpng --disable-gl \
+--with-hdf5=no --with-zlib=/soft/libraries/alcf/current/xl/ZLIB --without-pgplot \
+CC=bgxlc FC=bgxlf MPICC=mpixlc MPIF90=mpixlf90 \
+CFLAGS='-O3 -q64' FCFLAGS='-O3 -q64' \
+FFTW3_CFLAGS='-I/soft/libraries/alcf/current/xl/FFTW3/include' \
+FFTW3_LIBS='-L/soft/libraries/alcf/current/xl/FFTW3/lib -lfftw3' \
+PKG_CONFIG_PATH="$PKG_CONFIG_PATH":/home/matsui/local/lib/pkgconfig
+#
+# -------------------------------------------------------------------------------
 # Intel mac with gfortran-openmpi (MacBook Pro with macport)
 # -------------------------------------------------------------------------------
 #
@@ -427,22 +468,6 @@ module swap mvapich2 impi/4.1.1.036
 #
 #
 # -------------------------------------------------------------------------------
-# Intel XEON cluster (NCAR yellowstone)
-# -------------------------------------------------------------------------------
-#
-#   compile with Intel MPI   (no HDF5 support)
-#
-#module load fftw3
-#module load hdf5-mpi
-# setenv PKG_CONFIG_PATH '/usr/lib64/pkgconfig:/glade/apps/opt/fftw/3.3.2/intel/12.1.4/lib/pkgconfig'
-#./configure --prefix='/glade/u/home/emheien/matsui/src_kemo' \
-#CC=icc FC=ifort CXX=icc AR=xiar MPICC=mpiicc MPIFC=mpiifort \
-#CFLAGS='-O3  -Wall -g -xhost' FCFLAGS='-O3 -warn all -g -xhost' \
-#PKG_CONFIG='/usr/bin/pkg-config' --enable-glui --enable-libpng \
-#--enable-fftw3 --with-hdf5 --with-zlib=/usr/lib64 --without-pgplot \
-#--without-aquaterm
-#
-# -------------------------------------------------------------------------------
 # SR16000 (NIPR:sr1)
 # -------------------------------------------------------------------------------
 #
@@ -679,31 +704,6 @@ GTK2_LIBS= -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lgdk_
 pixbuf-2.0 -lpangocairo-1.0 -lcairo -lpango-1.0 -lfreetype -lz -lfontconfig -lgo
 bject-2.0 -lgmodule-2.0 -lglib-2.0  
 #
-#
-# -------------------------------------------------------------------------------
-# IBM Blue Zene/Q
-# -------------------------------------------------------------------------------
-#
-#    OpenMP flag for fortran should be fixed!!
-#    Prepocessor options should be fixed!!
-#
-# ANL Vesta
-#
-./configure --prefix='/home/matsui/local' --enable-fftw3 --enable-libpng --disable-gl \
---with-hdf5=no --with-zlib=/home/matsui/local --without-pgplot \
-CC=bgxlc FC=bgxlf MPICC=mpixlc MPIF90=mpixlf90 \
-CFLAGS='-O3 -q64' FCFLAGS='-O3 -q64' \
-PKG_CONFIG_PATH="$PKG_CONFIG_PATH":/home/matsui/local/lib/pkgconfig
-#
-# ANL Mira
-#
-./configure --prefix='/home/matsui/local' --enable-fftw3 --enable-libpng --disable-gl \
---with-hdf5=no --with-zlib=/soft/libraries/alcf/current/xl/ZLIB --without-pgplot \
-CC=bgxlc FC=bgxlf MPICC=mpixlc MPIF90=mpixlf90 \
-CFLAGS='-O3 -q64' FCFLAGS='-O3 -q64' \
-FFTW3_CFLAGS='-I/soft/libraries/alcf/current/xl/FFTW3/include' \
-FFTW3_LIBS='-L/soft/libraries/alcf/current/xl/FFTW3/lib -lfftw3' \
-PKG_CONFIG_PATH="$PKG_CONFIG_PATH":/home/matsui/local/lib/pkgconfig
 
 
 # -------------------------------------------------------------------------------

@@ -63,6 +63,8 @@
 !
         BETA = (RHO/RHO1) * (ALPHA/OMEGA)
 !
+      if(NP .le. 0) return
+!
 !$omp parallel do private(iS,iE,i)
         do ip= 1, PEsmpTOT
           iS= STACKmcG(ip-1) + 1
@@ -93,6 +95,8 @@
 !
 !
         BETA= (RHO/RHO1) * (ALPHA/OMEGA)
+!
+      if(NP .le. 0) return
 !
 !$omp parallel do private(iS,iE,i)
         do ip= 1, PEsmpTOT
@@ -127,6 +131,8 @@
 !
         BETA= (RHO/RHO1) * (ALPHA/OMEGA)
 !
+      if(NP .le. 0) return
+!
 !$omp parallel do private(iS,iE,i)
         do ip= 1, PEsmpTOT
           iS= NB*STACKmcG(ip-1) + 1
@@ -156,6 +162,8 @@
        integer (kind = kint) :: ip, iS, iE, i
 !
 !
+      if(NP .le. 0) return
+!
 !$omp parallel do private(iS,iE,i)
         do ip= 1, PEsmpTOT
           iS= STACKmcG(ip-1) + 1
@@ -183,6 +191,8 @@
 !
        integer (kind = kint) :: ip, iS, iE, i
 !
+!
+      if(NP .le. 0) return
 !
 !$omp parallel do private(iS,iE,i)
         do ip= 1, PEsmpTOT
@@ -213,6 +223,8 @@
 !
        integer (kind = kint) :: ip, iS, iE, i
 !
+!
+      if(NP .le. 0) return
 !
 !$omp parallel do private(iS,iE,i)
         do ip= 1, PEsmpTOT
@@ -247,6 +259,8 @@
 !
        DNRM    = 0.0d0
 !
+      if(NP .le. 0) return
+!
 !$omp parallel do private(iS,iE,i) reduction(+:DNRM)
         do ip= 1, PEsmpTOT
           iS= STACKmcG(ip-1) + 1
@@ -280,6 +294,8 @@
 !
 !
        DNRM    = 0.0d0
+!
+      if(NP .le. 0) return
 !
 !$omp parallel do private(iS,iE,i) reduction(+:DNRM)
         do ip= 1, PEsmpTOT
@@ -320,6 +336,8 @@
 !
 !
        DNRM    = 0.0d0
+!
+      if(NP .le. 0) return
 !
 !$omp parallel do private(iS,iE,i) reduction(+:DNRM)
         do ip= 1, PEsmpTOT

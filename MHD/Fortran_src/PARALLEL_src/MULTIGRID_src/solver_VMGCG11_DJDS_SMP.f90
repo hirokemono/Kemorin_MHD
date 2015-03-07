@@ -323,7 +323,6 @@
 !C | BNORM2 = B^2  |
 !C +---------------+
 !C===
-      write(*,*) 'djds_local_norm_1'
       call djds_local_norm_1(NP, PEsmpTOT, STACKmcG, B, BNRM20)
 !
       START_TIME= MPI_WTIME()
@@ -348,7 +347,6 @@
 !C
 !C-- Multigtrid preconditioning
 !
-        write(*,*) 's_MGCG11_V_cycle', IER
         call s_MGCG11_V_cycle(num_MG_level, MG_comm, MG_itp,            &
      &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, W(1,R), W(1,Z), &
      &          iter_mid, iter_lowest, EPS_MG,                          &

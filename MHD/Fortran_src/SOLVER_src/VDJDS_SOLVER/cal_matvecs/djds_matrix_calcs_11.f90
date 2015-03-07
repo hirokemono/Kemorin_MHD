@@ -82,6 +82,8 @@
        real(kind = kreal), intent(inout) :: W2(NP,2)
 !
 !
+      if(NP .le. 0) return
+!
        call s_change_order_2_solve_bx1(NP, PEsmpTOT, STACKmcG,          &
      &     NtoO, B, X, W2(1,IWK1), W2(1,IWK2) )
 !
@@ -97,6 +99,8 @@
       real(kind = kreal), intent(inout) :: X(NP)
        real(kind = kreal), intent(inout) :: W2(NP,2)
 !
+!
+      if(NP .le. 0) return
 !
       call s_back_2_original_order_bx1(NP, NtoO, B, X,                  &
      &    W2(1,IWK1), W2(1,IWK2) )
@@ -115,6 +119,8 @@
 !
        integer (kind = kint) :: ip, iS, iE
 !
+!
+      if(NP .le. 0) return
 !
 !$omp parallel do private(iS,iE,ip)
        do ip= 1, PEsmpTOT
@@ -156,6 +162,8 @@
        real(kind = kreal), intent(inout) :: S(NP)
        real(kind = kreal), intent(inout) :: W3(NP,3)
 !
+!
+      if(NP .le. 0) return
 !
       call set_by_diagonal_11(NP, PEsmpTOT, STACKmcG,                   &
      &    W3(1,IWK3), X, D)
@@ -207,6 +215,8 @@
        real(kind = kreal), intent(inout) :: S1(NP), S2(NP), S3(NP)
        real(kind = kreal), intent(inout) :: W9(NP,9)
 !
+!
+      if(NP .le. 0) return
 !
       call set_by_diagonal_3x11(NP, PEsmpTOT, STACKmcG,                 &
      &    W9(1,IWK13), W9(1,IWK23), W9(1,IWK33), X1, X2, X3, D)
@@ -266,6 +276,8 @@
        real(kind = kreal), intent(inout) :: W3(NP,3)
 !
 !
+      if(NP .le. 0) return
+!
        call subtract_diagonal_11(NP, PEsmpTOT, STACKmcG,                &
      &     W3(1,IWK3), B, X, D)
 
@@ -317,6 +329,8 @@
        real(kind = kreal), intent(inout) :: S1(NP), S2(NP), S3(NP)
        real(kind = kreal), intent(inout) :: W9(NP,9)
 !
+!
+      if(NP .le. 0) return
 !
        call subtract_diagonal_3x11(NP, PEsmpTOT, STACKmcG,              &
      &     W9(1,IWK13), W9(1,IWK23), W9(1,IWK33), B1, B2, B3,           &

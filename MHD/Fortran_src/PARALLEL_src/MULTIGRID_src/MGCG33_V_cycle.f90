@@ -83,7 +83,6 @@
       use t_comm_table
       use solver_DJDS33_struct
       use interpolate_by_type
-      use empty_solver_DJDS
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
@@ -142,15 +141,10 @@
         NP_f = mat33(i  )%num_diag
         NP_c = mat33(i+1)%num_diag
         ierr = IER
-        if(NP_f.gt.0) then
-          call solve33_DJDS_struct(PEsmpTOT, MG_comm(i),                &
+        call solve33_DJDS_struct(PEsmpTOT, MG_comm(i),                  &
      &      djds_tbl(i), mat33(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
      &      EPS_MG, iter_mid, iter_res)
-        else
-          call empty_solve_DJDS_kemo(EPS_MG, iter_mid, iter_res, ierr,  &
-     &        METHOD_MG)
-        end if
 !
         call interpolate_type_3(NP_f, NP_c, MG_comm(i+1),               &
      &      MG_itp(i+1)%f2c, MG_vect(i)%x_vec, MG_vect(i+1)%x_vec,      &
@@ -162,15 +156,10 @@
       i = num_MG_level
       NP_f = mat33(i  )%num_diag
       ierr = IER
-      if(NP_f.gt.0) then
-        call solve33_DJDS_struct(PEsmpTOT, MG_comm(i),                  &
+      call solve33_DJDS_struct(PEsmpTOT, MG_comm(i),                    &
      &      djds_tbl(i), mat33(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
      &      EPS_MG, iter_lowest, iter_res)
-      else
-        call empty_solve_DJDS_kemo(EPS_MG, iter_lowest, iter_res, ierr, &
-     &      METHOD_MG)
-       end if
 !
       do i = num_MG_level-1, 0, -1
         NP_f = mat33(i  )%num_diag
@@ -188,15 +177,10 @@
         end if
 !
         ierr = IER
-        if(NP_f.gt.0) then
-          call solve33_DJDS_struct(PEsmpTOT, MG_comm(i),                &
+        call solve33_DJDS_struct(PEsmpTOT, MG_comm(i),                  &
      &      djds_tbl(i), mat33(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
      &      EPS_MG, iter_lowest, iter_res)
-        else
-          call empty_solve_DJDS_kemo(EPS_MG, iter_lowest, iter_res,     &
-     &        ierr, METHOD_MG)
-        end if
       end do
 !
       call change_order_2_solve_bx3(NP, PEsmpTOT, djds_tbl(0)%STACKmcG, &

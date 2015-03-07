@@ -29,6 +29,9 @@
 !
       real   (kind=kreal), dimension(:), allocatable, private :: ALUG
 
+      real(kind = kreal), allocatable :: W(:,:)
+      private :: W
+!
 !-----------------------------------------------------------------------
 !
       contains
@@ -48,7 +51,7 @@
       use calypso_mpi
 !
       use m_constants
-      use m_work_4_GPBiCG11
+      use m_work_4_GPBiCG
       use solver_SR
       use crs_matrix_calcs_11
       use crs_norm_products_11
@@ -100,10 +103,12 @@
 
 !C
 !C-- INIT.
-      call allocate_work_GPBiCG_11(NP, ione)
 
       MAXIT = ITER
       TOL   = EPS
+
+      allocate(W(NP,nWK_GPBiCG))
+      W = 0.0d0
 
       MONITORFLAG = ERROR
       ERROR= 0
@@ -353,6 +358,8 @@
       if ( ITER.eq.MAXIT ) ERROR= -100
 !C===
       enddo
+
+      deallocate(W)
 
 !C
 !C-- INTERFACE data EXCHANGE

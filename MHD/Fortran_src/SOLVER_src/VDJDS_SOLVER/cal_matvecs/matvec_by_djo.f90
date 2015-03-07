@@ -48,6 +48,8 @@
       integer(kind = kint) :: inum, inod, jnod, k, kk, icou, ist, ied
 !
 !
+      if(NP .le. 0) return
+!
 !$omp parallel do
       do inod = 1, NC
         X(inod) = 0.0d0
@@ -95,6 +97,8 @@
       integer(kind = kint) :: ip, ic
       integer(kind = kint) :: inum, inod, jnod, k, kk, icou, ist, ied
 !
+!
+      if(NP .le. 0) return
 !
 !$omp parallel do
       do inod = 1, NC
@@ -147,6 +151,8 @@
       integer(kind = kint) :: ip, ic
       integer(kind = kint) :: inum, inod, jnod, k, kk, icou, ist, ied
 !
+!
+      if(NP .le. 0) return
 !
 !$omp parallel do
       do inod = 1, NC
@@ -207,6 +213,8 @@
       integer(kind = kint) ::  ist, ied, nd
 !
 !
+      if(NP .le. 0) return
+!
 !$omp parallel private(inum,ii)
       do nd = 1,  NB
 !$omp do
@@ -263,6 +271,8 @@
       integer(kind = kint) :: inum, inod, jnod, k, kk, icou
       integer(kind = kint) ::  ist, ied
 !
+!
+      if(NP .le. 0) return
 !
 !$omp parallel do
       do inod = 1, NC
@@ -322,6 +332,8 @@
       integer(kind = kint) :: inum, ii, jj, k, kk, icou
       integer(kind = kint) ::  ist, ied, n1, n2
 !
+!
+      if(NP .le. 0) return
 !
 !$omp parallel private(inum,ii)
       do n1 = 1,  NB

@@ -51,9 +51,8 @@
 !
 !
       do ip = 1, np_smp
-!
-        ist = inter_smp_stack(ip-1) + 1
-        ied = inter_smp_stack(ip)
+        ist = inod_smp_stack(ip-1) + 1
+        ied = inod_smp_stack(ip)
 !
         do inod = ist, ied
 !
@@ -113,9 +112,8 @@
 !
 !
       do ip = 1, np_smp
-!
-        ist = inter_smp_stack(ip-1) + 1
-        ied = inter_smp_stack(ip)
+        ist = inod_smp_stack(ip-1) + 1
+        ied = inod_smp_stack(ip)
 !
         do inod = ist, ied
 !
@@ -179,9 +177,8 @@
 !
 !
       do ip = 1, np_smp
-!
-        ist = inter_smp_stack(ip-1) + 1
-        ied = inter_smp_stack(ip)
+        ist = inod_smp_stack(ip-1) + 1
+        ied = inod_smp_stack(ip)
 !
         do inod = ist, ied
 !
@@ -221,9 +218,8 @@
 !
 !
       do ip = 1, np_smp
-!
-        ist = inter_smp_stack(ip-1) + 1
-        ied = inter_smp_stack(ip)
+        ist = inod_smp_stack(ip-1) + 1
+        ied = inod_smp_stack(ip)
 !
         do inod = ist, ied
 !

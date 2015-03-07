@@ -49,6 +49,8 @@
 !
       BNRM   = 0.d0
 
+      if(NP .le. 0) return
+!
 !$omp parallel do private(iS,iE,i) reduction(+:BNRM)
       do ip= 1, PEsmpTOT
         iS= STACKmcG(ip-1) + 1
@@ -78,6 +80,8 @@
 !
       SP   = 0.d0
 
+      if(NP .le. 0) return
+!
 !$omp parallel do private(iS,iE,i) reduction(+:SP)
       do ip= 1, PEsmpTOT
         iS= STACKmcG(ip-1) + 1
@@ -108,6 +112,8 @@
       SP      = 0.d0
       BNRM    = 0.d0
 
+      if(NP .le. 0) return
+!
 !$omp parallel do private(iS,iE,i) reduction(+:SP,BNRM)
       do ip= 1, PEsmpTOT
         iS= STACKmcG(ip-1) + 1
@@ -140,6 +146,8 @@
       SP      = 0.d0
       BNRM    = 0.d0
 
+      if(NP .le. 0) return
+!
 !$omp parallel do private(iS,iE,i) reduction(+:SP,BNRM)
       do ip= 1, PEsmpTOT
         iS= STACKmcG(ip-1) + 1
@@ -170,6 +178,8 @@
 !
 !
        C0(1:5)= 0.0d0
+!
+      if(NP .le. 0) return
 !
 !$omp parallel do private(iS,iE,i) reduction(+:C0)
       do ip= 1, PEsmpTOT

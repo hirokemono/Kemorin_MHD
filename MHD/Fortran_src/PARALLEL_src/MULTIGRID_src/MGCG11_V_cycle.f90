@@ -80,7 +80,6 @@
       use t_comm_table
       use solver_DJDS11_struct
       use interpolate_by_type
-      use empty_solver_DJDS
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
@@ -143,17 +142,12 @@
         NP_c = mat11(i+1)%num_diag
         ierr = IER
 !
-        if(NP_f.gt.0) then
-          write(*,*) 'solve_DJDS11_struct', i, my_rank
-          call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                &
+        write(*,*) 'solve_DJDS11_struct', i, my_rank
+        call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                  &
      &      djds_tbl(i), mat11(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
      &      EPS_MG, iter_mid, iter_res)
-        else
-          write(*,*) 'empty_solve_DJDS_kemo', i, my_rank
-          call empty_solve_DJDS_kemo(EPS_MG, iter_mid, iter_res, ierr,  &
-     &        METHOD_MG)
-        end if
+!
 !        write(*,*) 'j, MG_vect(i)%x_vec(j)', i
 !        do j = 1, NP_f
 !          write(*,*) j, MG_vect(i)%x_vec(j), MG_vect(i)%b_vec(j)
@@ -175,16 +169,12 @@
       i = num_MG_level
       NP_c = mat11(i  )%num_diag
       ierr = IER
-      if(NP_f.gt.0) then
-        write(*,*) 'solve_DJDS11_struct', i
-        call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                  &
+!
+      write(*,*) 'solve_DJDS11_struct', i
+      call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                    &
      &      djds_tbl(i), mat11(i), NP_c, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
      &      EPS_MG, iter_lowest, iter_res)
-      else
-        call empty_solve_DJDS_kemo(EPS_MG, iter_lowest, iter_res, ierr, &
-     &      METHOD_MG)
-      end if
 !
 !
       do i = num_MG_level-1, 0, -1
@@ -209,16 +199,11 @@
           if(my_rank .eq. 0) write(*,*) i, 'th level, pre ', resd
         end if
 !
-        if(NP_f.gt.0) then
-          write(*,*) 'solve_DJDS11_struct', i
-          call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                &
+        write(*,*) 'solve_DJDS11_struct', i
+        call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                  &
      &      djds_tbl(i), mat11(i), NP_f, MG_vect(i)%b_vec,              &
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
      &      EPS_MG, iter_lowest, iter_res)
-        else
-          call empty_solve_DJDS_kemo(EPS_MG, iter_lowest, iter_res,     &
-     &        ierr, METHOD_MG)
-        end if
 !
 !        write(*,*) 'j, MG_vect(i)%x_vec(j)', i
 !        do j = 1, NP_f

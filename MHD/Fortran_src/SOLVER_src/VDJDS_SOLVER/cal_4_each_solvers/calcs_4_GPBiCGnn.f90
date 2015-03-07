@@ -71,6 +71,8 @@
        integer (kind = kint) :: ip, iS, iE, i
 !
 !
+      if(NP .le. 0) return
+!
 !cdir parallel do private(iS,iE,i)
 !$omp parallel do private(iS,iE,i)
 !poption indep (WP,R,U,STACKmcG) tlocal (iS,iE,i)
@@ -101,6 +103,8 @@
 !
        integer (kind = kint) :: ip, iS, iE, i
 !
+!
+      if(NP .le. 0) return
 !
 !cdir parallel do private(iS,iE,i)
 !$omp parallel do private(iS,iE,i)
@@ -133,6 +137,8 @@
 !
        integer (kind = kint) :: ip, iS, iE, i
 !
+!
+      if(NP .le. 0) return
 !
 !cdir parallel do private(iS,iE,i)
 !$omp parallel do private(iS,iE,i)
@@ -175,6 +181,8 @@
        DNRM    = 0.0d0
        COEF    = 0.0d0
 !
+      if(NP .le. 0) return
+!
 !$omp parallel do private(iS,iE,i) reduction(+:DNRM,COEF)
         do ip= 1, PEsmpTOT
           iS= NB*STACKmcG(ip-1) + 1
@@ -212,6 +220,8 @@
 !
        BETA = ALPHA*COEF / (QSI*RHO)
        RHO  = COEF
+!
+      if(NP .le. 0) return
 !
 !cdir parallel do private(iS,iE,i)
 !$omp parallel do private(iS,iE,i)
