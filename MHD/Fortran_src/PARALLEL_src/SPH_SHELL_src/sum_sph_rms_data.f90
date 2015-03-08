@@ -216,9 +216,6 @@
       end do
 !
       num = ntot_rms_rj * (nidx_rj(1) + 1) * (l_truncation + 1)
-      write(*,*) 'MPI_REDUCE', num, ntot_rms_rj, nidx_rj(1), l_truncation, &
-     &   size(rms_sph_l_local), size(rms_sph_m_local), size(rms_sph_lm_local), &
-     &   size(rms_sph_l), size(rms_sph_m), size(rms_sph_lm)
       call MPI_REDUCE (rms_sph_l_local, rms_sph_l, num, CALYPSO_REAL,   &
      &    MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_REDUCE (rms_sph_m_local, rms_sph_m, num, CALYPSO_REAL,   &

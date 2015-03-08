@@ -39,8 +39,10 @@
       use m_rms_4_sph_spectr
       use sum_sph_rms_data
       use volume_average_4_sph
+      use quicksort
 !
       integer(kind = kint) :: i_fld, j_fld
+      integer(kind = kint) :: k, knum
 !
 !
       num_rms_rj = 0
@@ -63,9 +65,25 @@
       end do
       ntot_rms_rj = istack_rms_comp_rj(num_rms_rj)
 !
+      call quicksort_int                                                &
+     &   (num_spectr_layer, id_spectr_layer, ione, num_spectr_layer)
+!
+      nri_rms = num_spectr_layer
       call allocate_rms_4_sph_spectr(my_rank)
       call allocate_ave_4_sph_spectr(ntot_rms_rj)
       call set_sum_table_4_sph_spectr
+!
+!
+
+      do knum = 1, num_spectr_layer
+        k = id_spectr_layer(knum)
+        kr_for_rms(knum) = k
+        if(k .le. 0) then
+          r_for_rms(knum) = 0.0d0
+        else
+          r_for_rms(knum) = radius_1d_rj_r(k)
+        end if
+      end do
 !
       end subroutine init_rms_4_sph_spectr
 !

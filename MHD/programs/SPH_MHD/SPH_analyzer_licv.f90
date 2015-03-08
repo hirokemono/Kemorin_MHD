@@ -42,7 +42,6 @@
       use sph_transforms_4_MHD
       use set_radius_func
       use const_radial_mat_4_sph
-      use cal_rms_fields_by_sph
       use sph_mhd_rms_IO
       use cal_sol_sph_MHD_crank
       use cal_nonlinear
@@ -68,9 +67,6 @@
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(isix, nnod_rtp)
-!
-      if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
-      call init_rms_4_sph_spectr
 !
 ! ---------------------------------
 !

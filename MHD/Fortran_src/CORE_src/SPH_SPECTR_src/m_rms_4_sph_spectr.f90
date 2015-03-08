@@ -3,8 +3,11 @@
 !
 !     Written by H. Matsui on Feb., 2008
 !
+!!@verbatim
+!!      subroutine allocate_num_spec_layer
 !!      subroutine allocate_rms_name_sph_spec
 !!      subroutine allocate_rms_4_sph_spectr(my_rank)
+!!      subroutine deallocate_num_spec_layer
 !!      subroutine deallocate_rms_4_sph_spectr(my_rank)
 !!
 !!      subroutine write_sph_vol_pwr(istep, time)
@@ -41,7 +44,12 @@
       integer (kind=kint), allocatable :: istack_rms_comp_rj(:)
       character (len=kchara), allocatable :: rms_name_rj(:)
 !
-      integer (kind=kint) :: nri_rms
+      integer(kind = kint) :: num_spectr_layer = 0
+      integer (kind=kint), allocatable :: id_spectr_layer(:)
+!
+      integer(kind=kint) :: nri_rms = 0
+      integer(kind=kint), allocatable :: kr_for_rms(:)
+      real(kind = kreal), allocatable :: r_for_rms(:)
       real(kind = kreal), allocatable :: rms_sph_l(:,:,:)
       real(kind = kreal), allocatable :: rms_sph_m(:,:,:)
       real(kind = kreal), allocatable :: rms_sph_lm(:,:,:)
@@ -72,6 +80,15 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine allocate_num_spec_layer
+!
+      allocate(id_spectr_layer(num_spectr_layer))
+      if(num_spectr_layer .gt. 0) id_spectr_layer = 0
+!
+      end subroutine allocate_num_spec_layer
+!
+! -----------------------------------------------------------------------
+!
       subroutine allocate_rms_name_sph_spec
 !
 !
@@ -97,7 +114,13 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      nri_rms =  nidx_rj(1) 
+      nri_rms =  nidx_rj(1)
+      allocate( kr_for_rms(nri_rms) )
+      allocate( r_for_rms(nri_rms) )
+      if(nri_rms .gt. 0) then
+        kr_for_rms = 0
+        r_for_rms =  0.0d0
+      end if
 !
       if(my_rank .gt. 0) return
 !
@@ -105,10 +128,12 @@
       allocate( rms_sph_m(0:nri_rms,0:l_truncation,ntot_rms_rj) )
       allocate( rms_sph_lm(0:nri_rms,0:l_truncation,ntot_rms_rj) )
       allocate( rms_sph(0:nri_rms,ntot_rms_rj) )
-      rms_sph = 0.0d0
-      rms_sph_l =  0.0d0
-      rms_sph_m =  0.0d0
-      rms_sph_lm = 0.0d0
+      if(nri_rms .gt. 0) then
+        rms_sph = 0.0d0
+        rms_sph_l =  0.0d0
+        rms_sph_m =  0.0d0
+        rms_sph_lm = 0.0d0
+      end if
 !
       allocate( rms_sph_vol_l(0:l_truncation,ntot_rms_rj) )
       allocate( rms_sph_vol_m(0:l_truncation,ntot_rms_rj) )
@@ -123,14 +148,23 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine deallocate_num_spec_layer
+!
+      deallocate(id_spectr_layer)
+!
+      end subroutine deallocate_num_spec_layer
+!
+! -----------------------------------------------------------------------
+!
       subroutine deallocate_rms_4_sph_spectr(my_rank)
 !
       integer(kind = kint), intent(in) :: my_rank
 !
 !
+      deallocate(r_for_rms, kr_for_rms)
+!
       if(my_rank .gt. 0) return
-      deallocate( rms_sph_l, rms_sph_m, rms_sph_lm)
-      deallocate( rms_sph )
+      deallocate(rms_sph_l, rms_sph_m, rms_sph_lm, rms_sph)
 !
       deallocate(rms_sph_vol_l, rms_sph_vol_m, rms_sph_vol_lm)
       deallocate(rms_sph_vol)
