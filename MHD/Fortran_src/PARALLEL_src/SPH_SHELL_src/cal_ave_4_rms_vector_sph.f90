@@ -8,7 +8,6 @@
 !!
 !!@verbatim
 !!      subroutine cal_one_over_volume(kg_st, kg_ed, avol)
-!!      subroutine r_int_sph_rms_data(kg_st, kg_ed, avol)
 !!@endverbatim
 !!@f$ 
 !!        1/V \int (\phi_l^m)^2 r^{2} sin \theta dr d\theta d\phi
@@ -32,8 +31,6 @@
 !
       implicit none
 !
-      private :: surf_ave_4_sph_rms_int, vol_ave_4_rms_sph
-!
 !-----------------------------------------------------------------------
 !
       contains
@@ -56,45 +53,6 @@
       end if
 !
       end subroutine cal_one_over_volume
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine r_int_sph_rms_data(kg_st, kg_ed, avol)
-!
-      use calypso_mpi
-      use m_spheric_parameter
-      use m_phys_constants
-      use m_sph_spectr_data
-      use m_rms_4_sph_spectr
-      use m_sph_phys_address
-      use cal_rms_by_sph_spectr
-      use radial_int_for_sph_spec
-      use sum_sph_rms_data
-!
-      integer(kind = kint), intent(in) :: kg_st, kg_ed
-      real(kind = kreal), intent(in) :: avol
-!
-      integer(kind = kint) :: num
-!
-!
-      if(my_rank .gt. 0) return
-!
-      num = (l_truncation + 1) * ntot_rms_rj
-      call radial_integration(kg_st, kg_ed, nidx_rj(1),                 &
-     &    radius_1d_rj_r, num, rms_sph_l(0,0,1),  rms_sph_vol_l(0,1))
-      call radial_integration(kg_st, kg_ed, nidx_rj(1),                 &
-     &    radius_1d_rj_r, num, rms_sph_m(0,0,1),   rms_sph_vol_m(0,1))
-      call radial_integration(kg_st, kg_ed, nidx_rj(1),                 &
-     &    radius_1d_rj_r, num, rms_sph_lm(0,0,1),  rms_sph_vol_lm(0,1))
-!
-      call radial_integration(kg_st, kg_ed, nidx_rj(1),                 &
-     &    radius_1d_rj_r, ntot_rms_rj, rms_sph(0,1), rms_sph_vol(1))
-!
-      call surf_ave_4_sph_rms_int
-      call vol_ave_4_rms_sph(avol)
-!
-      end subroutine r_int_sph_rms_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
