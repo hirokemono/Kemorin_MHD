@@ -18,6 +18,7 @@
       use m_precision
       use m_constants
 !
+      use m_machine_parameter
       use m_spheric_parameter
       use m_pickup_sph_rms_data
       use m_rms_4_sph_spectr
@@ -25,7 +26,7 @@
 !
       implicit  none
 !
-      real(kind = kreal), allocatable :: rms_sph_rj(:,:)
+      real(kind = kreal), allocatable :: rms_sph_rj(:,:,:)
       real(kind = kreal), allocatable :: rms_sph_int(:,:)
       real(kind = kreal), allocatable :: rms_sph_v(:)
 !
@@ -48,7 +49,7 @@
 !
       nri = nidx_rj(1)
       jmax = nidx_rj(2)
-      allocate( rms_sph_rj(nnod_rj,3) )
+      allocate( rms_sph_rj(0:nri,jmax,3) )
       allocate( rms_sph_int(0:nri,jmax) )
       allocate( rms_sph_v(jmax) )
 !
@@ -111,7 +112,6 @@
       integer(kind = kint) :: ist_fld, jst_rms
       integer(kind = kint) :: inum, knum, kr, inod
       integer(kind = kint) :: ipick, num
-      real(kind = kreal) :: rms_sph_rj(nnod_rj,3)
 !
 !
 !$omp parallel do
@@ -127,7 +127,8 @@
         ncomp = num_rms_comp_rj(j_fld)
         ist_fld =  istack_phys_comp_rj(i_fld-1)
         jst_rms = istack_rms_comp_rj(j_fld-1)
-        call cal_rms_sph_spec_one_field(ncomp, (ist_fld+1), rms_sph_rj)
+        call cal_rms_sph_spec_one_field(ncomp, (ist_fld+1),             &
+     &      nidx_rj(1), nidx_rj(2), rms_sph_rj)
 !
         do inum = 1, num_pick_sph_rms_mode
           j = idx_pick_sph_rms_lc(inum)
@@ -138,7 +139,7 @@
               inod = j + (kr-1) * nidx_rj(2)
               do icomp = 1, ncomp
                 d_rms_pick_sph_lc(jst_rms+icomp,ipick)                  &
-     &                 = rms_sph_rj(inod,icomp) * a_r_1d_rj_r(kr)**2
+     &                 = rms_sph_rj(kr,j,icomp) * a_r_1d_rj_r(kr)**2
               end do
             end do
           end if
@@ -185,7 +186,8 @@
         ncomp = num_rms_comp_rj(j_fld)
         ist_fld =  istack_phys_comp_rj(i_fld-1)
         jst_rms = istack_rms_comp_rj(j_fld-1)
-        call cal_rms_sph_spec_one_field(ncomp, (ist_fld+1), rms_sph_rj)
+        call cal_rms_sph_spec_one_field(ncomp, (ist_fld+1),             &
+     &      nidx_rj(1), nidx_rj(2), rms_sph_rj)
 !
         do icomp = 1, ncomp
 !
@@ -193,11 +195,11 @@
             rms_sph_int(0,j) = zero
             do kr = 1, nidx_rj(1)
               inod = j + (kr-1) * nidx_rj(2)
-              rms_sph_int(kr,j) = rms_sph_rj(inod,icomp)
+              rms_sph_int(kr,j) = rms_sph_rj(kr,j,icomp)
             end do
           end do
           if(inod_rj_center .gt. 0) then
-            rms_sph_int(0,0) = rms_sph_rj(inod_rj_center,icomp)
+            rms_sph_int(0,0) = rms_sph_rj(0,idx_rj_degree_zero,icomp)
           end if
 !
           call radial_integration(kg_st, kg_ed, nidx_rj(1),             &

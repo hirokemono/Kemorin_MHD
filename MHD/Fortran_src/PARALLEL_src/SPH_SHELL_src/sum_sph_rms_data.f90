@@ -19,7 +19,7 @@
 !
       implicit none
 !
-      real(kind = kreal), allocatable :: rms_sph_rj(:,:)
+      real(kind = kreal), allocatable :: rms_sph_rj(:,:,:)
 !
       integer(kind = kint), allocatable :: num_mode_sum_l(:)
       integer(kind = kint), allocatable :: num_mode_sum_m(:)
@@ -57,31 +57,31 @@
       use m_spheric_parameter
       use m_rms_4_sph_spectr
 !
-      integer(kind = kint) :: num
+      integer(kind = kint) :: nri, jmax
 !
 !
-      allocate( rms_sph_rj(nnod_rj,3) )
+      nri =  nidx_rj(1)
+      jmax = nidx_rj(2)
+      allocate( rms_sph_rj(0:nri,jmax,3) )
       rms_sph_rj = 0.0d0
 !
-      num = nidx_rj(1)
-      allocate( rms_sph_l_local(0:num,0:l_truncation,ntot_rms_rj) )
-      allocate( rms_sph_m_local(0:num,0:l_truncation,ntot_rms_rj) )
-      allocate( rms_sph_lm_local(0:num,0:l_truncation,ntot_rms_rj) )
+      allocate( rms_sph_l_local(0:nri,0:l_truncation,ntot_rms_rj) )
+      allocate( rms_sph_m_local(0:nri,0:l_truncation,ntot_rms_rj) )
+      allocate( rms_sph_lm_local(0:nri,0:l_truncation,ntot_rms_rj) )
       rms_sph_l_local = 0.0d0
       rms_sph_m_local = 0.0d0
       rms_sph_lm_local = 0.0d0
 !
 !
-      num = nidx_rj(2)
       allocate( num_mode_sum_l(0:l_truncation) )
       allocate( num_mode_sum_m(0:l_truncation) )
       allocate( num_mode_sum_lm(0:l_truncation) )
       allocate( istack_mode_sum_l(-1:l_truncation) )
       allocate( istack_mode_sum_m(-1:l_truncation) )
       allocate( istack_mode_sum_lm(-1:l_truncation) )
-      allocate( item_mode_sum_l(num) )
-      allocate( item_mode_sum_m(num) )
-      allocate( item_mode_sum_lm(num) )
+      allocate( item_mode_sum_l(jmax) )
+      allocate( item_mode_sum_m(jmax) )
+      allocate( item_mode_sum_lm(jmax) )
 !
       num_mode_sum_l =      0
       num_mode_sum_m =      0
@@ -199,20 +199,20 @@
         jcomp_st = istack_rms_comp_rj(j_fld-1) + 1
         ncomp_rj = num_rms_comp_rj(j_fld)
         call cal_rms_sph_spec_one_field(ncomp_rj, icomp_rj,             &
-     &      rms_sph_rj(1,1))
+     &      nidx_rj(1), nidx_rj(2), rms_sph_rj(0,1,1))
 !
-        call sum_sph_rms_by_degree(l_truncation, nnod_rj,               &
-     &        nidx_rj(1), nidx_rj(2), inod_rj_center,                   &
-     &        istack_mode_sum_l,  item_mode_sum_l, ncomp_rj,            &
-     &        rms_sph_rj(1,1), rms_sph_l_local(0,0,jcomp_st))
-        call sum_sph_rms_by_degree(l_truncation, nnod_rj,               &
-     &        nidx_rj(1), nidx_rj(2), inod_rj_center,                   &
-     &        istack_mode_sum_m,  item_mode_sum_m, ncomp_rj,            &
-     &        rms_sph_rj(1,1), rms_sph_m_local(0,0,jcomp_st))
-        call sum_sph_rms_by_degree(l_truncation, nnod_rj,               &
-     &        nidx_rj(1), nidx_rj(2), inod_rj_center,                   &
-     &        istack_mode_sum_lm, item_mode_sum_lm, ncomp_rj,           &
-     &        rms_sph_rj(1,1), rms_sph_lm_local(0,0,jcomp_st))
+        call sum_sph_rms_by_degree(l_truncation,                        &
+     &      nidx_rj(1), nidx_rj(2), inod_rj_center, idx_rj_degree_zero, &
+     &      istack_mode_sum_l,  item_mode_sum_l, ncomp_rj,              &
+     &      rms_sph_l_local(0,0,jcomp_st))
+        call sum_sph_rms_by_degree(l_truncation,                        &
+     &      nidx_rj(1), nidx_rj(2), inod_rj_center, idx_rj_degree_zero, &
+     &      istack_mode_sum_m,  item_mode_sum_m, ncomp_rj,              &
+     &      rms_sph_m_local(0,0,jcomp_st))
+        call sum_sph_rms_by_degree(l_truncation,                        &
+     &      nidx_rj(1), nidx_rj(2), inod_rj_center, idx_rj_degree_zero, &
+     &      istack_mode_sum_lm, item_mode_sum_lm, ncomp_rj,             &
+     &      rms_sph_lm_local(0,0,jcomp_st))
       end do
 !
       num = ntot_rms_rj * (nidx_rj(1) + 1) * (l_truncation + 1)
@@ -233,16 +233,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sum_sph_rms_by_degree(ltr, nnod_rj, nidx_r, nidx_j,    &
-     &          inod_rj_center, istack_sum, item_mode_4_sum,            &
-     &          ncomp, rms_sph_rj, rms_sph_lc)
+      subroutine sum_sph_rms_by_degree(ltr, nidx_r, nidx_j,             &
+     &          inod_rj_center, idx_rj_degree_zero,                     &
+     &          istack_sum, item_mode_4_sum, ncomp, rms_sph_lc)
 !
-      integer(kind = kint), intent(in) :: ltr, nidx_r, nidx_j, nnod_rj
+      integer(kind = kint), intent(in) :: ltr, nidx_r, nidx_j
       integer(kind = kint), intent(in) :: ncomp, inod_rj_center
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
 !
       integer(kind = kint), intent(in) :: istack_sum(-1:ltr)
       integer(kind = kint), intent(in) :: item_mode_4_sum(nidx_j)
-      real(kind = kreal), intent(in) :: rms_sph_rj(nnod_rj,ncomp)
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: rms_sph_lc(0:nidx_r,0:ltr,ncomp)
@@ -263,7 +263,7 @@
               inod = j + (k-1) * nidx_j
 !
               rms_sph_lc(k,lm,icomp) = rms_sph_lc(k,lm,icomp)           &
-     &                                + rms_sph_rj(inod,icomp)
+     &                                + rms_sph_rj(k,j,icomp)
             end do
           end do
         end do
@@ -272,8 +272,9 @@
 !$omp end parallel
 !
       if(inod_rj_center .eq. 0) return
+      j = idx_rj_degree_zero
       do icomp = 1, ncomp
-        rms_sph_lc(0,0,icomp) = rms_sph_rj(inod_rj_center,icomp)
+        rms_sph_lc(0,0,icomp) = rms_sph_rj(0,j,icomp)
       end do
 !
       end subroutine sum_sph_rms_by_degree
