@@ -27,10 +27,9 @@
       implicit  none
 !
       real(kind = kreal), allocatable :: rms_sph_rj(:,:,:)
-      real(kind = kreal), allocatable :: rms_sph_int(:,:)
-      real(kind = kreal), allocatable :: rms_sph_v(:)
+      real(kind = kreal), allocatable :: rms_sph_v(:,:)
 !
-      private :: rms_sph_rj, rms_sph_int, rms_sph_v
+      private :: rms_sph_rj, rms_sph_v
 !
       private :: set_sph_rms_labels_4_monitor
 !
@@ -50,11 +49,9 @@
       nri = nidx_rj(1)
       jmax = nidx_rj(2)
       allocate( rms_sph_rj(0:nri,jmax,3) )
-      allocate( rms_sph_int(0:nri,jmax) )
-      allocate( rms_sph_v(jmax) )
+      allocate( rms_sph_v(jmax,3) )
 !
       rms_sph_rj =  0.0d0
-      rms_sph_int = 0.0d0
       rms_sph_v =  0.0d0
 !
       end subroutine allocate_work_pick_rms_sph
@@ -64,7 +61,7 @@
       subroutine deallocate_work_pick_rms_sph
 !
 !
-      deallocate( rms_sph_rj, rms_sph_v, rms_sph_int)
+      deallocate( rms_sph_rj, rms_sph_v)
 !
       end subroutine deallocate_work_pick_rms_sph
 !
@@ -110,7 +107,7 @@
 !
       integer(kind = kint) :: i_fld, j_fld, j, icomp, ncomp
       integer(kind = kint) :: ist_fld, jst_rms
-      integer(kind = kint) :: inum, knum, kr, inod
+      integer(kind = kint) :: inum, knum, kr
       integer(kind = kint) :: ipick, num
 !
 !
@@ -120,8 +117,6 @@
       end do
 !$omp end parallel do
 !
-!$omp parallel do private(j_fld,i_fld,ncomp,ist_fld,jst_rms,icomp,      &
-!$omp&                   j,kr,inod,inum,knum,rms_sph_rj)
       do j_fld = 1, num_rms_rj
         i_fld = ifield_rms_rj(j_fld)
         ncomp = num_rms_comp_rj(j_fld)
@@ -130,13 +125,13 @@
         call cal_rms_sph_spec_one_field(ncomp, (ist_fld+1),             &
      &      nidx_rj(1), nidx_rj(2), rms_sph_rj)
 !
+!$omp parallel do private(icomp,j,kr,inum,knum)
         do inum = 1, num_pick_sph_rms_mode
           j = idx_pick_sph_rms_lc(inum)
           if(j .gt. izero) then
             do knum = 1, num_pick_layer
               kr = id_pick_layer(knum)
               ipick = knum + (inum-1) * num_pick_layer
-              inod = j + (kr-1) * nidx_rj(2)
               do icomp = 1, ncomp
                 d_rms_pick_sph_lc(jst_rms+icomp,ipick)                  &
      &                 = rms_sph_rj(kr,j,icomp) * a_r_1d_rj_r(kr)**2
@@ -144,8 +139,8 @@
             end do
           end if
         end do
-      end do
 !$omp end parallel do
+      end do
 !
       num = ntot_rms_rj*num_pick_layer*num_pick_sph_rms_mode
       call MPI_allREDUCE(d_rms_pick_sph_lc(1,1),                        &
@@ -165,7 +160,7 @@
 !
       integer(kind = kint), intent(in) :: kg_st, kg_ed
 !
-      integer(kind = kint) :: i_fld, j_fld, kr, j, icomp, ncomp, inod
+      integer(kind = kint) :: i_fld, j_fld, j, icomp, ncomp
       integer(kind = kint) :: ist_fld, jst_rms, num, inum
       real(kind = kreal) :: avol
 !
@@ -179,8 +174,6 @@
      &                - radius_1d_rj_r(kg_st)**3 )
       end if
 !
-!$omp parallel do private(j_fld,i_fld,ncomp,ist_fld,jst_rms,icomp,      &
-!$omp&                   j,kr,inod,rms_sph_rj,rms_sph_int)
       do j_fld = 1, num_rms_rj
         i_fld = ifield_rms_rj(j_fld)
         ncomp = num_rms_comp_rj(j_fld)
@@ -188,28 +181,15 @@
         jst_rms = istack_rms_comp_rj(j_fld-1)
         call cal_rms_sph_spec_one_field(ncomp, (ist_fld+1),             &
      &      nidx_rj(1), nidx_rj(2), rms_sph_rj)
+        call radial_integration(kg_st, kg_ed, nidx_rj(1),               &
+     &      radius_1d_rj_r, nidx_rj(2), rms_sph_rj, rms_sph_v)
 !
         do icomp = 1, ncomp
-!
-          do j = 1, nidx_rj(2)
-            rms_sph_int(0,j) = zero
-            do kr = 1, nidx_rj(1)
-              inod = j + (kr-1) * nidx_rj(2)
-              rms_sph_int(kr,j) = rms_sph_rj(kr,j,icomp)
-            end do
-          end do
-          if(inod_rj_center .gt. 0) then
-            rms_sph_int(0,0) = rms_sph_rj(0,idx_rj_degree_zero,icomp)
-          end if
-!
-          call radial_integration(kg_st, kg_ed, nidx_rj(1),             &
-     &        radius_1d_rj_r, nidx_rj(2), rms_sph_int, rms_sph_v)
-!
           do inum = 1, num_pick_sph_rms_mode
             j = idx_pick_sph_rms_lc(inum)
             if(j .gt. izero) then
               d_rms_pick_sph_lc(jst_rms+icomp,inum)                     &
-     &                         = avol * rms_sph_v(j)
+     &                         = avol * rms_sph_v(j,icomp)
             end if
           end do
         end do
