@@ -19,7 +19,7 @@
 !
       implicit none
 !
-      type(mesh_data), pointer :: origin_mesh(:)
+      type(mesh_data), allocatable :: origin_mesh(:)
 !
 ! ----------------------------------------------------------------------
 !

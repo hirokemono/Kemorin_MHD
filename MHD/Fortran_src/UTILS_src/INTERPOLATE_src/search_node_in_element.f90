@@ -38,9 +38,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine search_node_in_element_1st(my_rank, new_node, new_ele)
+      subroutine search_node_in_element_1st(my_rank, new_node, new_ele, &
+     &         nblock, iblock_tgt_node,  ntot_block, ntot_list, istack_list, iele_list)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: my_rank, ntot_list
+      integer(kind = kint), intent(in) :: ntot_block, nblock(3)
+      integer(kind = kint), intent(in) :: iblock_tgt_node(numnod,3)
+      integer(kind = kint), intent(inout) :: istack_list(0:ntot_block)
+      integer(kind = kint), intent(inout) :: iele_list(ntot_list)
 !
       type(node_data), intent(in) :: new_node
       type(element_data), intent(in) :: new_ele
@@ -57,25 +62,23 @@
         do inod = ist, ied
 !
           if ( iflag_org_domain(inod) .le. 0) then
-            ihash =   id_search_area(inod,1)                            &
-     &             + (id_search_area(inod,3) - 1) * num_sph_bin(1)      &
-     &             + (id_search_area(inod,2) - 1) * num_sph_bin(1)      &
-     &                                           * num_sph_bin(3)
+            ihash = iblock_tgt_node(inod,1)                             &
+     &           + (iblock_tgt_node(inod,2) - 1) * nblock(1)            &
+     &           + (iblock_tgt_node(inod,3) - 1) * nblock(1)*nblock(2)
 !
-            jst = iele_stack_bin(ihash-1) + 1
-            jed = iele_stack_bin(ihash)
+            jst = istack_list(ihash-1) + 1
+            jed = istack_list(ihash)
 !
             do jnum = jst, jed
-!
-              jele = iele_in_bin(jnum)
+              jele = iele_list(jnum)
               iflag = 0
 !
-              if (   radius(inod)     .ge. min_sph_each_ele(jele,1)     &
-     &         .and. radius(inod)     .le. max_sph_each_ele(jele,1)     &
-     &         .and. colatitude(inod) .ge. min_sph_each_ele(jele,2)     &
-     &         .and. colatitude(inod) .le. max_sph_each_ele(jele,2)     &
-     &         .and. longitude(inod)  .ge. min_sph_each_ele(jele,3)     &
-     &         .and. longitude(inod)  .le. max_sph_each_ele(jele,3)     &
+              if (   xx(inod,1) .ge. xele_min(jele,1)                   &
+     &         .and. xx(inod,1) .le. xele_max(jele,1)                   &
+     &         .and. yy(inod,2) .ge. xele_min(jele,2)                   &
+     &         .and. yy(inod,2) .le. xele_max(jele,2)                   &
+     &         .and. zz(inod,3) .ge. xele_min(jele,3)                   &
+     &         .and. zz(inod,3) .le. xele_max(jele,3)                   &
      &              ) then
 !
                  call s_cal_interpolate_coefs                           &

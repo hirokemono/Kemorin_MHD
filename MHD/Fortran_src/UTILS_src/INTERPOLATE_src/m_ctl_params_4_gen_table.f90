@@ -92,6 +92,7 @@
       use m_ctl_data_4_2nd_data
       use m_sphere_bin_4_table
       use m_file_format_switch
+      use m_search_bolck_4_itp
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
 !
@@ -173,6 +174,10 @@
         num_sph_bin(1) = num_sph_grid(1) + 1
         num_sph_bin(2) = num_sph_grid(2)
         num_sph_bin(3) = num_sph_grid(3)
+!
+        num_itp_block(1) = radial_divide_ctl%num
+        num_itp_block(2) = num_theta_divide_ctl
+        num_itp_block(3) = num_phi_divide_ctl
 !
         call allocate_sphere_divide_points
 !
