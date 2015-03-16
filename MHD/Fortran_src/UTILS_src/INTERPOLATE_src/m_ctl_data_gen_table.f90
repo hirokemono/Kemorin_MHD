@@ -15,6 +15,7 @@
 !
       use m_machine_parameter
       use m_read_control_elements
+      use t_control_elements
       use t_read_control_arrays
       use skip_comment_f
 !
@@ -40,12 +41,11 @@
       character(len = kchara) :: single_itp_tbl_head_ctl = "single_itp"
 !
       character(len = kchara) :: ele_hash_type_ctl = "sphere"
-      integer(kind = kint) :: num_theta_divide_ctl = 0
-      integer(kind = kint) :: num_phi_divide_ctl = 0
 !
+      type(read_integer_item), save :: num_theta_divide_ctl
+      type(read_integer_item), save :: num_phi_divide_ctl
 !>      Structure for element grouping in meridional direction
-!!@n      radial_divide_ctl%vect:  Radius data for searching
-      type(ctl_array_real), save :: radial_divide_ctl
+      type(read_integer_item), save :: radial_divide_ctl
 !
 !>      Structure for error torrance for refine interpolation
 !!@n      eps_4_itp_ctl%ivec:  level for interpolation
@@ -117,8 +117,6 @@
      &         ::  hd_num_hash_azim =   'num_azimuth_ctl'
 !
       integer (kind=kint) :: i_hash_type =       0
-      integer (kind=kint) :: i_num_hash_elev =   0
-      integer (kind=kint) :: i_num_hash_azim =   0
 !
 !     3rd level for iteration  control
 !
@@ -334,16 +332,15 @@
         call find_control_end_flag(hd_element_hash, i_element_hash)
         if(i_element_hash .gt. 0) exit
 !
-        call read_control_array_r1(hd_search_radius, radial_divide_ctl)
-!
 !
         call read_character_ctl_item(hd_hash_type,                      &
      &        i_hash_type, ele_hash_type_ctl)
 ! 
-        call read_integer_ctl_item(hd_num_hash_elev,                    &
-     &          i_num_hash_elev, num_theta_divide_ctl)
-        call read_integer_ctl_item(hd_num_hash_azim,                    &
-     &          i_num_hash_azim, num_phi_divide_ctl)
+        call read_integer_ctl_type(hd_search_radius, radial_divide_ctl)
+        call read_integer_ctl_type(hd_num_hash_elev,                    &
+     &      num_theta_divide_ctl)
+        call read_integer_ctl_type(hd_num_hash_azim,                    &
+     &      num_phi_divide_ctl)
       end do
 !
       end subroutine read_element_hash_ctl

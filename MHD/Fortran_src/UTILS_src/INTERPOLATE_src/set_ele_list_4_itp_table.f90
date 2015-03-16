@@ -12,6 +12,8 @@
 !>     Construct search list for interpolation
 !!
 !!@verbatim
+!!      subroutine set_element_range(nnod, nele, nnod_4_ele, xx, ie,    &
+!!     &         xe_min, xe_max)
 !!      subroutine set_block_boundary                                   &
 !!     &         (nnod, xyz, nblock, xmin, xmax, x_block)
 !!      subroutine set_block_list_4_target(nnod, xx, xmin, xmax,        &
@@ -23,9 +25,8 @@
 !!     &          nblock, ntot_block, ntot_list, nele_list,             &
 !!     &          istack_list, iele_list)
 !!
-!!      subroutine count_ele_list_with_range(nnod, nele, nnod_4_ele,    &
-!!     &          xx, ie, xmin, xmax, xe_min, xe_max, nblock,           &
-!!     &          ntot_block, nele_list)
+!!      subroutine count_ele_list_with_range(nele, xmin, xmax,          &
+!!     &          xe_min, xe_max, nblock, ntot_block, nele_list)
 !!      subroutine set_ele_list_with_range(nele, xmin, xmax,            &
 !!     &          xe_min, xe_max, nblock, ntot_block, ntot_list,        &
 !!     &          nele_list, istack_list, iele_list)
@@ -41,6 +42,37 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_element_range(nnod, nele, nnod_4_ele, xx, ie,      &
+     &         xe_min, xe_max)
+!
+      integer(kind = kint), intent(in) :: nnod, nele, nnod_4_ele
+      integer(kind = kint), intent(in) :: ie(nele,nnod_4_ele)
+      real(kind = kreal), intent(in) :: xx(nnod,3)
+      real(kind = kreal), intent(inout) ::  xe_min(nele,3)
+      real(kind = kreal), intent(inout) ::  xe_max(nele,3)
+!
+      integer(kind = kint) :: inod, iele, k1, nd
+!
+!
+!$omp parallel do private(iele,inod,nd,k1)
+      do iele = 1, nele
+        inod = ie(iele,1)
+        xe_min(iele,1:3) = xx(inod,1:3)
+        xe_max(iele,1:3) = xx(inod,1:3)
+        do nd = 1, 3
+          do k1 = 2, nnod_4_ele
+            inod = ie(iele,k1)
+            xe_min(iele,nd) = min(xe_min(iele,nd),xx(inod,nd))
+            xe_max(iele,nd) = max(xe_max(iele,nd),xx(inod,nd))
+          end do
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine set_element_range
 !
 !  ---------------------------------------------------------------------
 !
@@ -74,7 +106,7 @@
       real(kind = kreal), intent(in) :: xx(nnod,3)
       real(kind = kreal), intent(in) :: xmin(3), xmax(3)
 !
-      integer(kind = kint), intent(inout) :: iblock(nnod,3)
+      integer(kind = kint), intent(inout) :: iblock(nnod,4)
 !
       integer(kind = kint) :: inod, nd, imax(3)
 !
@@ -86,7 +118,19 @@
           iblock(inod,nd) = 1 + int(aint(dble(nblock(nd))               &
      &          * (xx(inod,nd) - xmin(nd)) / (xmax(nd) - xmin(nd))) )
         end do
-        iblock(imax,nd) = nblock(nd)
+      end do
+!
+      do inod = 1, nnod
+        if(    iblock(inod,1).ge.1 .and. iblock(inod,1).le.nblock(1)    &
+     &   .and. iblock(inod,2).ge.1 .and. iblock(inod,2).le.nblock(2)    &
+     &   .and. iblock(inod,3).ge.1 .and. iblock(inod,3).le.nblock(3))   &
+     &  then
+          iblock(inod,4) =   iblock(inod,1)                             &
+     &                    + (iblock(inod,2) - 1) * nblock(1)            &
+     &                    + (iblock(inod,3) - 1) * nblock(1)*nblock(2)
+        else
+          iblock(inod,4) = 0
+        end if
       end do
 !
       end subroutine set_block_list_4_target
@@ -171,13 +215,10 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_ele_list_with_range(nnod, nele, nnod_4_ele,      &
-     &          xx, ie, xmin, xmax, xe_min, xe_max, nblock,             &
-     &          ntot_block, nele_list)
+      subroutine count_ele_list_with_range(nele, xmin, xmax,            &
+     &          xe_min, xe_max, nblock, ntot_block, nele_list)
 !
-      integer(kind = kint), intent(in) :: nnod, nele, nnod_4_ele
-      integer(kind = kint), intent(in) :: ie(nele,nnod_4_ele)
-      real(kind = kreal), intent(in) :: xx(nnod,3)
+      integer(kind = kint), intent(in) :: nele
       real(kind = kreal), intent(in) :: xmin(3), xmax(3)
 !
       integer(kind = kint), intent(in) :: ntot_block, nblock(3)
@@ -186,31 +227,20 @@
       real(kind = kreal), intent(inout) ::  xe_max(nele,3)
       integer(kind = kint), intent(inout) :: nele_list(ntot_block)
 !
-      integer(kind = kint) :: inod, iele, k1, nd, jx, jy, jz, jblock
+      integer(kind = kint) :: iele, nd, jx, jy, jz, jblock
       integer(kind = kint) :: imin(3), imax(3)
 !
 !
-      imax = maxloc(xx, DIM=1)
       nele_list(1:ntot_block) = 0
 !
       do iele = 1, nele
-        inod = ie(iele,1)
-        xe_min(iele,1:3) = xx(inod,1:3)
-        xe_max(iele,1:3) = xx(inod,1:3)
         do nd = 1, 3
-          do k1 = 2, nnod_4_ele
-            inod = ie(iele,k1)
-            xe_min(iele,nd) = min(xe_min(iele,nd),xx(inod,nd))
-            xe_max(iele,nd) = max(xe_max(iele,nd),xx(inod,nd))
-          end do
           imin(nd)  = 1 + int(aint(dble(nblock(nd))                     &
      &        * (xe_min(iele,nd) - xmin(nd)) / (xmax(nd) - xmin(nd))))
           imax(nd)  = 1 + int(aint(dble(nblock(nd))                     &
      &        * (xe_max(iele,nd) - xmin(nd)) / (xmax(nd) - xmin(nd))))
-          imin(nd) = max(imin(nd),1)
-          imax(nd) = min(imax(nd),nblock(nd))
           if(xe_min(iele,nd) .gt. xmax(nd)) imin(nd) = nblock(nd) + 1
-          if(xe_max(iele,nd) .gt. xmax(nd)) imax(nd) = nblock(nd) - 1
+          if(xe_max(iele,nd) .lt. xmin(nd)) imax(nd) = nblock(nd) - 1
         end do
 !
         do jx = imin(1), imax(1)
@@ -261,7 +291,7 @@
           imin(nd) = max(imin(nd),1)
           imax(nd) = min(imax(nd),nblock(nd))
           if(xe_min(iele,nd) .gt. xmax(nd)) imin(nd) = nblock(nd) + 1
-          if(xe_max(iele,nd) .gt. xmax(nd)) imax(nd) = nblock(nd) - 1
+          if(xe_max(iele,nd) .lt. xmin(nd)) imax(nd) = nblock(nd) - 1
         end do
 !
         do jx = imin(1), imax(1)

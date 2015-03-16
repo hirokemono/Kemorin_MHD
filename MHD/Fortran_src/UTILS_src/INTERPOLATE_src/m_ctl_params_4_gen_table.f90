@@ -90,9 +90,8 @@
       use m_ctl_data_gen_table
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
-      use m_sphere_bin_4_table
-      use m_file_format_switch
       use m_search_bolck_4_itp
+      use m_file_format_switch
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
 !
@@ -167,30 +166,18 @@
 !
       if (id_ele_hash_type .eq. 1) then
 !
-        num_sph_grid(1) = radial_divide_ctl%num
-        num_sph_grid(2) = num_theta_divide_ctl
-        num_sph_grid(3) = num_phi_divide_ctl
-!
-        num_sph_bin(1) = num_sph_grid(1) + 1
-        num_sph_bin(2) = num_sph_grid(2)
-        num_sph_bin(3) = num_sph_grid(3)
-!
-        num_itp_block(1) = radial_divide_ctl%num
-        num_itp_block(2) = num_theta_divide_ctl
-        num_itp_block(3) = num_phi_divide_ctl
-!
-        call allocate_sphere_divide_points
-!
-        if (num_sph_grid(1) .gt. 0) then
-          r_divide(1:num_sph_grid(1))                                   &
-     &          = radial_divide_ctl%vect(1:num_sph_grid(1))
-          call dealloc_control_array_real(radial_divide_ctl)
+        if(radial_divide_ctl%iflag .gt. 0) then
+          num_sph_grid(1) = radial_divide_ctl%intvalue
+        end if
+        if(num_theta_divide_ctl%iflag .gt. 0) then
+          num_sph_grid(2) = num_theta_divide_ctl%intvalue
+        end if
+        if(num_phi_divide_ctl%iflag .gt. 0) then
+          num_sph_grid(3) = num_phi_divide_ctl%intvalue
         end if
 !
         if (iflag_debug.eq.1) then
           write(*,*) 'num_sph_grid',  num_sph_grid
-          write(*,*) 'num_sph_bin', num_sph_bin
-          write(*,*) 'r_divide', r_divide
         end if
 !
       end if

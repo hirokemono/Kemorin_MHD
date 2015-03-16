@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!      subroutine s_construct_interpolate_table(newmesh, newgroup,      &
+!      subroutine s_construct_interpolate_table(org_mesh, org_grp,      &
 !     &          ierr_missing)
 !
       module construct_interpolate_table
@@ -18,7 +18,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_construct_interpolate_table(newmesh, newgroup,       &
+      subroutine s_construct_interpolate_table(org_mesh, org_grp,       &
      &          ierr_missing)
 !
       use calypso_mpi
@@ -28,17 +28,17 @@
       use m_2nd_pallalel_vector
       use m_read_mesh_data
       use m_work_const_itp_table
+      use m_search_bolck_4_itp
 !
       use t_mesh_data
 !
       use set_2nd_geometry_4_table
-      use set_area_4_searching
       use search_node_in_element
       use subroutines_4_search_table
 !
       integer(kind = kint), intent(inout) :: ierr_missing
-      type(mesh_geometry), intent(inout) :: newmesh
-      type(mesh_groups), intent(inout) ::   newgroup
+      type(mesh_geometry), intent(inout) :: org_mesh
+      type(mesh_groups), intent(inout) ::   org_grp
 !
       integer(kind = kint) :: ierr_local
       integer(kind = kint) :: ilevel, jp
@@ -57,46 +57,39 @@
           my_rank_2nd = mod(my_rank+jp-1,nprocs_2nd)
 !
           call link_2nd_geometry_4_itp_tbl                              &
-     &       (my_rank_2nd, newmesh, newgroup)
+     &       (my_rank_2nd, org_mesh, org_grp)
 !
-          if (iflag_debug.eq.1 .and. jp.eq.1)                           &
-     &           write(*,*) 's_set_area_4_searching'
-          call s_set_area_4_searching(newmesh%node, newmesh%ele)
-!
-!
-          call allocate_work_4_interpolate(newmesh%ele%nnod_4_ele)
+          call allocate_work_4_interpolate(org_mesh%ele%nnod_4_ele)
 !
           if (ilevel .eq. 0) then
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'search_node_in_element_1st', ilevel, my_rank
             call search_node_in_element_1st(my_rank_2nd,                &
-     &          newmesh%node, newmesh%ele)
+     &          org_mesh%node, org_mesh%ele, org_blocks(my_rank_2nd+1))
           else if (ilevel .eq. (num_search_times+1)) then
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'search_node_in_all_element', ilevel, my_rank
             error_level_final = search_error_level(num_search_times)*2
             call search_node_in_all_element(my_rank_2nd,                &
-     &          error_level_final, newmesh%node, newmesh%ele)
+     &          error_level_final, org_mesh%node, org_mesh%ele)
           else if (ilevel .eq. (num_search_times+2)) then
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'giveup_to_search_element', ilevel, my_rank
             error_level_final = search_error_level(num_search_times)*2
             call giveup_to_search_element(my_rank_2nd,                  &
-     &          error_level_final, newmesh%node, newmesh%ele)
+     &          error_level_final, org_mesh%node, org_mesh%ele)
           else
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'search_node_in_element_2nd', ilevel, my_rank
-            call search_node_in_element_2nd(my_rank_2nd,                &
-     &         i_search_sleeve(ilevel), search_error_level(ilevel),    &
-     &         newmesh%node, newmesh%ele)
+            call search_node_in_element_2nd((ilevel-1), my_rank_2nd,    &
+     &          org_mesh%node, org_mesh%ele, org_blocks(my_rank_2nd+1))
           end if
 !
 !          if (ilevel.eq.3) call check_interpolation                    &
-!     &                   (newmesh%node, newmesh%ele, 14, my_rank_2nd)
+!     &                 (org_mesh%node, org_mesh%ele, 14, my_rank_2nd)
 !
           call deallocate_work_4_interpolate
-          call deallocate_search_area
-          call unlink_2nd_geometry_4_table(newmesh, newgroup)
+          call unlink_2nd_geometry_4_table(org_mesh, org_grp)
         end do
 !
         call check_missing_nodes(ierr_local, my_rank)
