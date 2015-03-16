@@ -37,12 +37,16 @@
 !
       subroutine set_MHD_whole_connectivity
 !
-      use const_RHS_assemble_list
+      use set_element_id_4_node
+      use ordering_4_rhs_assemble
 !
 !
 !      Search surrounding node and element
 !      set RHS assemble table
-      call set_connect_RHS_assemble
+      call set_belonged_ele_and_next_nod
+!
+!      set RHS assemble table
+      call sort_node_index
 !
 !      set Matrix assemble table
       call set_djds_whole_connectivity

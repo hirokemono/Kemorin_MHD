@@ -34,7 +34,6 @@
       use load_mesh_data
       use const_mesh_info
       use cal_jacobian
-      use const_RHS_assemble_list
       use int_volume_of_domain
       use set_normal_vectors
       use set_surf_grp_vectors

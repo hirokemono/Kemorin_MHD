@@ -49,7 +49,8 @@
       use set_nodal_bc_id_data
       use set_surface_bc_data
       use allocate_array_MHD
-      use const_RHS_assemble_list
+      use set_element_id_4_node
+      use ordering_4_rhs_assemble
       use ordering_line_filter_smp
       use const_ele_layering_table
       use const_comm_table_fluid
@@ -176,8 +177,11 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*)' set_connect_RHS_assemble'
-      call set_connect_RHS_assemble
+      if (iflag_debug.eq.1) write(*,*)' set_belonged_ele_and_next_nod'
+      call set_belonged_ele_and_next_nod
+!
+!      set RHS assemble table
+      call sort_node_index
 !
 !     --------------------- 
 !

@@ -78,11 +78,8 @@
 !       set belonged node and element for each node
 !  ---------------------------------------------------
 !
-       if(iflag_debug.eq.1) write(*,*) 'set_ele_id_4_node'
-      call set_ele_id_4_node
-!
-       if(iflag_debug.eq.1) write(*,*) 'const_next_nod_id_4_node'
-      call const_next_nod_id_4_node
+       if(iflag_debug.eq.1) write(*,*) 'set_belonged_ele_and_next_nod'
+      call set_belonged_ele_and_next_nod
 !
       end subroutine init_4_cal_fileters
 !

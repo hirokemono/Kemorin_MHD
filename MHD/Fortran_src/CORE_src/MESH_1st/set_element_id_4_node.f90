@@ -3,6 +3,7 @@
 !
 !      Written by H.Matsui on Oct., 2006
 !
+!      subroutine set_belonged_ele_and_next_nod
 !      subroutine set_ele_id_4_node
 !      subroutine set_layerd_ele_id_4_node(nnod, iele_start, iele_end)
 !      subroutine set_grouped_ele_id_4_node(nele_grp, iele_grp)
@@ -20,6 +21,19 @@
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine set_belonged_ele_and_next_nod
+!
+!
+!      Search surrounding node and element
+!
+      call set_ele_id_4_node
+      call const_next_nod_id_4_node
+!
+      end subroutine set_belonged_ele_and_next_nod
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine set_ele_id_4_node

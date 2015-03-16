@@ -114,8 +114,10 @@
      &             'start rlm table generation for',                    &
      &            ip_rank, 'on ', my_rank, nprocs
         call const_sph_rlm_modes(ip_rank)
+        if(iflag_debug .gt. 0) write(*,*) 'copy_comm_rlm_num_to_type'
         call copy_comm_rlm_num_to_type(sph_para(ip)%sph_comms%comm_rlm)
 !
+        if(iflag_debug .gt. 0) write(*,*) 'copy_comm_rlm_num_to_type d'
         nneib_rlm_lc(ip)                                                &
      &       = sph_para(ip)%sph_comms%comm_rlm%nneib_domain
 !
@@ -297,6 +299,12 @@
      &      nneib, CALYPSO_INTEGER, iroot, CALYPSO_COMM, ierr_MPI)
         call MPI_Bcast(sph_para(ip)%sph_comms%comm_rlm%istack_sr(1),    &
      &      nneib, CALYPSO_INTEGER, iroot, CALYPSO_COMM, ierr_MPI)
+      end do
+!
+      do ip = 1, ndomain_sph
+        write(50+my_rank,*) 'ip', ip
+        write(50+my_rank,*) 'nneib_domain', sph_para(ip)%sph_comms%comm_rlm%nneib_domain
+        write(50+my_rank,*) 'id_domain', sph_para(ip)%sph_comms%comm_rlm%id_domain
       end do
 !
       end subroutine bcast_comm_stacks_rlm

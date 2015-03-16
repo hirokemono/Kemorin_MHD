@@ -60,6 +60,7 @@
       use m_spheric_global_ranks
       use m_sph_global_parameter
       use m_sph_1d_global_index
+      use m_2d_sph_trans_table
       use set_sph_1d_global_index
       use set_sph_1d_domain_id
 !
@@ -89,10 +90,11 @@
       call deallocate_nidx_local
       call allocate_sph_1d_global_idx
 !
-      call set_sph_1d_global_idx_rtp
-      call set_sph_1d_global_idx_rtm
-      call set_sph_1d_global_idx_rlm
-      call set_sph_1d_global_idx_rj
+      call set_sph_1d_global_idx_rtp(nidx_global_rtp(3), mdx_ispack)
+      call set_sph_1d_global_idx_rtm                                    &
+     &   (nidx_global_rtp(3), mtbl_fft_2_lgd, mdx_4_lgd)
+      call set_sph_1d_global_idx_rlm(nidx_global_rj(2), jtbl_fsph)
+      call set_sph_1d_global_idx_rj(nidx_global_rj(2), jtbl_rj)
 !
       call allocate_sph_1d_domain_id
 !

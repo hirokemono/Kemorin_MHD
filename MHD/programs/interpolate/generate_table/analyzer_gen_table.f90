@@ -35,6 +35,7 @@
 !
       use input_control_gen_table
       use const_mesh_info
+      use set_element_id_4_node
       use set_serach_data_4_dest
       use set_2nd_geometry_4_table
 !
@@ -62,6 +63,9 @@
 !
 !  -------------------------------
 !  -------------------------------
+!
+      if (iflag_debug.eq.1) write(*,*) 'set_belonged_ele_and_next_nod'
+      call set_belonged_ele_and_next_nod
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_element'
       call set_max_int_point_by_etype
