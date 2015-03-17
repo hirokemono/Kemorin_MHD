@@ -73,8 +73,8 @@
         if (iflag_debug.eq.1)                                           &
      &     write(*,*) 'SPH_to_FEM_bridge_special_snap'
         call SPH_to_FEM_bridge_special_snap
-        if (iflag_debug.eq.1) write(*,*) 'FEM_analyze'
-        call FEM_analyze(i_step_MHD, istep_psf, istep_iso,              &
+        if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
+        call FEM_analyze_sph_MHD(i_step_MHD, istep_psf, istep_iso,      &
      &      istep_pvr, istep_fline, visval)
 !
         call end_eleps_time(4)

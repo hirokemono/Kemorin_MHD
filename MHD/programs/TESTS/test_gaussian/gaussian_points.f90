@@ -8,16 +8,16 @@
 !
       implicit none
 !
-      integer (kind = kint) :: i
+      integer (kind = kint) :: i, nth_g
 !
    10 continue
 !
       write(*,*) 'imput number of points (end: negative values)'
-      read(*,*) n_point
+      read(*,*) nth_g
 !
-      if (n_point.le.0) go to 999
+      if (nth_g.le.0) go to 999
 !
-      call allocate_gauss_points
+      call allocate_gauss_points(nth_g)
 !
       call construct_gauss_coefs
 !

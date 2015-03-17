@@ -142,9 +142,8 @@
 !
       call s_choose_filter_moments
 !
-       n_point = n_int_points
        num_inte = nfilter6_1 + 1
-       call allocate_gauss_points
+       call allocate_gauss_points(n_int_points)
       if (my_rank.eq.0) write(*,*) 'construct_gauss_coefs'
        call construct_gauss_coefs
        call allocate_work_4_integration

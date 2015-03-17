@@ -27,21 +27,21 @@
 !
       implicit none
 !
-      integer(kind = 4) :: ltr, ntheta
+      integer(kind = 4) :: ltr, ntheta, num_gauss
 !
       integer(kind = 4) :: i, j, l, m, lc, mc, lm, l_check
 !
    10 continue
 !
       write(*,*) 'Imput number of points (end: negative values)'
-      read(*,*) n_point
+      read(*,*) num_gauss
 !
-      if (n_point.le.0) go to 999
+      if (num_gauss.le.0) go to 999
 !
       write(*,*) 'Imput truncation degree'
       read(*,*)  ltr
 !
-      nidx_rtm(2) = n_point
+      nidx_rtm(2) = num_gauss
       nidx_rlm(2) = ltr*(ltr+2) + 1
       l_truncation = ltr
       nth = ltr
@@ -57,7 +57,7 @@
       end do
 !
       call allocate_gauss_colat_rtm
-      call allocate_gauss_points
+      call allocate_gauss_points(num_gauss)
       call construct_gauss_coefs
 !
       call allocate_gauss_colatitude

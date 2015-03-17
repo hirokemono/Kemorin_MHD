@@ -35,8 +35,7 @@
 !
 !     set gauss colatitudes
 !
-      n_point = nth_g
-      call allocate_gauss_points
+      call allocate_gauss_points(nth_g)
       call construct_gauss_coefs
 !
       call allocate_gauss_colatitude
