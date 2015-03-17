@@ -12,7 +12,6 @@ CONST_FILTER_src \
 INTERPOLATE_src  \
 \
 cubed_sph      \
-spherical_grid \
 PLANE_src      \
 PARTITIONER    \
 MERGE          \
@@ -84,7 +83,6 @@ mod_list:
 	'$$(MOD_PICK_SURFACE)' \
 	'$$(MOD_PLANE_MODEL)'  \
 	'$$(MOD_REFINE)'       \
-	'$$(MOD_SPH_GRID)'     \
 	'$$(MOD_DRAW_PG)'      >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \

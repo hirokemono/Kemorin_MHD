@@ -1,1 +1,0 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/UTILS_src/spherical_grid/set_comm_table_rtm_rlm.f90

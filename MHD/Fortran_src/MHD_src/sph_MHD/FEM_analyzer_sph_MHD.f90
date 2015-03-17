@@ -62,7 +62,7 @@
       use node_monitor_IO
 !
       use mesh_IO_select
-      use const_FEM_mesh_sph_mhd
+!      use const_FEM_mesh_sph_mhd
 !
       type(mesh_geometry) :: mesh
       type(mesh_groups) ::  group
@@ -73,7 +73,7 @@
 !   --------------------------------
 !
 !  --  Construct FEM mesh
-      call const_FEM_mesh_4_sph_mhd(my_rank, mesh, group)
+!      call const_FEM_mesh_4_sph_mhd(my_rank, mesh, group)
 !
 !  --  load FEM mesh data
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'

@@ -14,6 +14,7 @@ ORDERING_4_DJDS      \
 INTERPOLATE_PARA     \
 filtering            \
 SPH_SHELL_src        \
+CONST_SPH_GRID       \
 \
 MULTIGRID_src
 
@@ -59,10 +60,10 @@ lib_archve:
 mod_list:
 	@echo  MOD_PARALLEL= \\ >> $(MAKENAME)
 	@echo  \
-	'$$(MOD_COMM)       $$(MOD_FEM_INT) '  \
-	'$$(MOD_MULTIGRID)  $$(MOD_FILTERING)' \
+	'$$(MOD_COMM)       $$(MOD_FEM_INT) '         \
+	'$$(MOD_MULTIGRID)  $$(MOD_FILTERING)'        \
 	'$$(MOD_COMM_SPH)   $$(MOD_SOLVER_SET_ORDER)' \
-	'$$(MOD_ITP_PARA)'   >> $(MAKENAME)
+	'$$(MOD_ITP_PARA)   $$(MOD_SPH_GRID)'         >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \

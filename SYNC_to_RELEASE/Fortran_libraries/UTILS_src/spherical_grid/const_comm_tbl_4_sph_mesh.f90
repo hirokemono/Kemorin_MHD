@@ -1,1 +1,0 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/UTILS_src/spherical_grid/const_comm_tbl_4_sph_mesh.f90

@@ -1,1 +1,0 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/UTILS_src/spherical_grid/set_stack_4_sph_groups.f90
