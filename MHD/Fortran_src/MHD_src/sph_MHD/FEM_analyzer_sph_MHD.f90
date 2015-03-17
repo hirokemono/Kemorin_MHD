@@ -8,8 +8,8 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_initialize
-!!      subroutine FEM_analyze(i_step                                   &
+!!      subroutine FEM_initialize_sph_MHD
+!!      subroutine FEM_analyze_sph_MHD(i_step                           &
 !!     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !!      subroutine FEM_finalize
 !!
@@ -40,9 +40,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize
+      subroutine FEM_initialize_sph_MHD
+!
+      use t_mesh_data
+      use t_group_data
 !
       use m_geometry_parameter
+      use m_geometry_data
       use m_array_for_send_recv
       use m_t_step_parameter
       use m_surface_geometry_data
@@ -57,16 +61,27 @@
       use range_data_IO
       use node_monitor_IO
 !
+      use mesh_IO_select
+      use const_FEM_mesh_sph_mhd
+!
+      type(mesh_geometry) :: mesh
+      type(mesh_groups) ::  group
+!
 !
 !   --------------------------------
 !       setup mesh information
 !   --------------------------------
 !
-!  --  load FEM mesh data
+!  --  Construct FEM mesh
+      call const_FEM_mesh_4_sph_mhd(my_rank, mesh, group)
 !
+!  --  load FEM mesh data
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'
       call start_eleps_time(4)
-      call input_mesh(my_rank)
+      call sel_read_mesh(my_rank)
+      call set_mesh_data
+!
+      call allocate_element_geometry
       call end_eleps_time(4)
 !
 ! ---------------------------------
@@ -102,12 +117,12 @@
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
       call output_grd_file_4_snapshot
 !
-      end subroutine FEM_initialize
+      end subroutine FEM_initialize_sph_MHD
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze(i_step,                                    &
+      subroutine FEM_analyze_sph_MHD(i_step,                            &
      &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
       use set_exit_flag_4_visualizer
@@ -137,7 +152,7 @@
         call s_output_ucd_file_control
       end if
 !
-      end subroutine FEM_analyze
+      end subroutine FEM_analyze_sph_MHD
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

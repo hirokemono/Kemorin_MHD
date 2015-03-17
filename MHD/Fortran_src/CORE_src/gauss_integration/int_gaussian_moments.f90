@@ -70,7 +70,7 @@
 !
       real(kind = kreal) :: filter(0:n_level,2), z(2)
 !
-      integer(kind= kint) :: kf
+      integer(kind= kint) :: kf, num_gauss
 !
 !
       z(1) = zst
@@ -79,9 +79,9 @@
      &    filter(0,1), z)
 !
 !
-      n_point = 200
+      num_gauss = 200
       num_inte = 2
-      call allocate_gauss_points
+      call allocate_gauss_points(num_gauss)
       call allocate_work_4_integration
 !
       call construct_gauss_coefs

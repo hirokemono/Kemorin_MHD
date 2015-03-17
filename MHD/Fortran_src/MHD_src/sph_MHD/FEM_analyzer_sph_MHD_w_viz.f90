@@ -52,8 +52,8 @@
 !
 !  --  init FEM mesh data
 !
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize'
-      call FEM_initialize
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
+      call FEM_initialize_sph_MHD
 !
 !  -------------------------------
 !
