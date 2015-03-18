@@ -45,7 +45,7 @@
       subroutine check_step_FEM_field_file(my_rank, istep_fld, ierr)
 !
       use set_field_file_names
-      use m_error_IDs
+      use delete_data_files
 !
       integer(kind=kint), intent(in) :: my_rank, istep_fld
       integer(kind=kint), intent(inout) :: ierr
@@ -55,16 +55,7 @@
       call set_FEM_fld_file_name(phys_file_head, iflag_field_data_fmt,  &
      &    my_rank, istep_fld, file_name)
 !
-      write(*,*) 'Check existance of ', trim(file_name)
-      open (id_phys_file, file=file_name, status='old', err=99)
-      close(id_phys_file)
-!
-      ierr = 0
-      return
-!
-  99  continue
-      ierr = ierr_file
-      return
+      ierr = check_file_exist(file_name)
 !
       end subroutine check_step_FEM_field_file
 !

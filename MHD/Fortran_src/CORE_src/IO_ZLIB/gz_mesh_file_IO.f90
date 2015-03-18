@@ -1,16 +1,23 @@
+!>@file   gz_mesh_file_IO.f90
+!!@brief  module gz_mesh_file_IO
+!!
+!!@author H.Matsui
+!!@date     Programmed by H.Matsui in Apr., 2006
 !
-!      module gz_mesh_file_IO
-!
-!      subroutine read_mesh_gz(my_rank)
-!      subroutine read_mesh_geometry_gz(my_rank)
-!
-!      subroutine read_node_size_gz(my_rank)
-!      subroutine read_geometry_size_gz(my_rank)
-!
-!      subroutine write_mesh_file_gz(my_rank)
-!
-!      Written by H. Matsui on Apr., 2006
-!
+!>@brief  Mesh file IO for gxipped format
+!!
+!!@verbatim
+!!      subroutine read_mesh_gz(my_rank)
+!!      subroutine read_mesh_geometry_gz(my_rank)
+!!
+!!      subroutine read_node_size_gz(my_rank)
+!!      subroutine read_geometry_size_gz(my_rank)
+!!
+!!      subroutine write_mesh_file_gz(my_rank)
+!!
+!!      integer(kind = kint) function check_mesh_file_gz(my_rank)
+!!@endverbatim
+!!
       module gz_mesh_file_IO
 !
       use m_precision
@@ -135,6 +142,22 @@
       call close_gzfile
 !
       end subroutine write_mesh_file_gz
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function check_mesh_file_gz(my_rank)
+!
+      use delete_data_files
+!
+      integer(kind = kint), intent(in) :: my_rank
+      character(len=kchara) :: gzip_name
+!
+!
+      call add_gzip_extension(mesh_file_name, gzip_name)
+      check_mesh_file_gz = check_file_exist(gzip_name)
+!
+      end function check_mesh_file_gz
 !
 !  ---------------------------------------------------------------------
 !

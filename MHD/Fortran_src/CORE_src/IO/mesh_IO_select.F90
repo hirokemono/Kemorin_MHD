@@ -1,15 +1,22 @@
-!mesh_IO_select.F90
-!      module mesh_IO_select
+!>@file   mesh_IO_select.f90
+!!@brief  module mesh_IO_select
+!!
+!!@author H.Matsui
+!!@date     Programmed by H.Matsui in Apr., 2006
 !
-!      Written by H. Matsui on Apr., 2006
-!
-!      subroutine sel_read_mesh(my_rank)
-!      subroutine sel_read_mesh_geometry(my_rank)
-!
-!      subroutine sel_read_node_size(my_rank)
-!      subroutine sel_read_geometry_size(my_rank)
-!
-!      subroutine sel_write_mesh_file(my_rank)
+!>@brief  Choose mesh file to read
+!!
+!!@verbatim
+!!      subroutine sel_read_mesh(my_rank)
+!!      subroutine sel_read_mesh_geometry(my_rank)
+!!
+!!      subroutine sel_read_node_size(my_rank)
+!!      subroutine sel_read_geometry_size(my_rank)
+!!
+!!      subroutine sel_write_mesh_file(my_rank)
+!!
+!!      integer(kind = kint) function check_exist_mesh(my_rank)
+!!@endverbatim
 !
       module mesh_IO_select
 !
@@ -142,6 +149,33 @@
       end if
 !
       end subroutine sel_write_mesh_file
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function check_exist_mesh(my_rank)
+!
+      use delete_data_files
+!
+      integer(kind= kint), intent(in) :: my_rank
+!
+!
+      call set_mesh_fname(my_rank)
+!
+      if (iflag_mesh_file_fmt .eq. id_binary_file_fmt) then
+        check_exist_mesh = check_file_exist(mesh_file_name)
+!
+#ifdef ZLIB_IO
+      else if(iflag_mesh_file_fmt .eq. id_gzip_txt_file_fmt) then
+        check_exist_mesh = check_mesh_file_gz(my_rank)
+#endif
+!
+      else
+        check_exist_mesh = check_file_exist(mesh_file_name)
+      end if
+!
+      return
+      end function check_exist_mesh
 !
 !  ---------------------------------------------------------------------
 !

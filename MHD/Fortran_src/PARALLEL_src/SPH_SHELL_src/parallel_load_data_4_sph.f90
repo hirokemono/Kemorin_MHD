@@ -19,6 +19,7 @@
       implicit none
 !
       private :: count_interval_4_each_dir, self_comm_flag
+      private :: set_fem_center_mode_4_SPH
 !
 ! -----------------------------------------------------------------------
 !
@@ -38,6 +39,7 @@
 !
       subroutine load_FEM_mesh_4_SPH
 !
+      use calypso_mpi
       use t_mesh_data
       use t_group_data
 !
@@ -46,10 +48,19 @@
       use load_mesh_data
       use const_FEM_mesh_sph_mhd
       use copy_mesh_from_type
+      use mesh_IO_select
 !
       type(mesh_geometry) :: mesh
       type(mesh_groups) ::  group
 !
+!
+!  --  load FEM mesh data
+      if(check_exist_mesh(my_rank) .eq. 0) then
+        if (iflag_debug.gt.0) write(*,*) 'input_mesh'
+        call input_mesh(my_rank)
+        call set_fem_center_mode_4_SPH
+        return
+      end if
 !
 !  --  Construct FEM mesh
       if(iflag_shell_mode .eq. iflag_no_FEMMESH) then
@@ -61,13 +72,9 @@
       end if
 !
       call const_FEM_mesh_4_sph_mhd(mesh, group)
-      call set_mesh_from_type(mesh, group)
-!
-!  --  load FEM mesh data
-!      if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-!      call input_mesh(my_rank)
-!      call set_fem_mesh_mode_4_SPH
 !      call compare_mesh_type_vs_1st(my_rank, mesh, group)
+!
+      call set_mesh_from_type(mesh, group)
 !
       end subroutine load_FEM_mesh_4_SPH
 !
@@ -161,7 +168,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_fem_mesh_mode_4_SPH
+      subroutine set_fem_center_mode_4_SPH
 !
       use calypso_mpi
       use m_geometry_parameter
@@ -194,7 +201,7 @@
       if(i_debug .eq. iflag_full_msg) write(*,*) 'iflag_shell_mode',    &
      &     my_rank, iflag_shell_mode
 !
-      end subroutine set_fem_mesh_mode_4_SPH
+      end subroutine set_fem_center_mode_4_SPH
 !
 ! -----------------------------------------------------------------------
 !

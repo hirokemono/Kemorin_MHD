@@ -1,3 +1,16 @@
+!>@file   const_FEM_mesh_sph_mhd.f90
+!!@brief  module const_FEM_mesh_sph_mhd
+!!
+!!@author H.Matsui
+!!@date     Programmed by H.Matsui in March, 2015
+!
+!>@brief  Construct FEM mesh from spherical harmonics transform data
+!!
+!!@verbatim
+!!      subroutine const_FEM_mesh_4_sph_mhd(mesh, group)
+!!        type(mesh_geometry), intent(inout) :: mesh
+!!        type(mesh_groups), intent(inout) ::  group
+!!@endverbatim
 !
       module const_FEM_mesh_sph_mhd
 !
@@ -6,6 +19,8 @@
       use m_machine_parameter
 !
       implicit none
+!
+      private :: const_global_sph_FEM, const_global_rtp_mesh
 !
 !-----------------------------------------------------------------------
 !
