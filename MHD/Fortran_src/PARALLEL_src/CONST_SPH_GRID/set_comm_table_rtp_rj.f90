@@ -47,7 +47,7 @@
 !
       subroutine alloc_parallel_sph_grids
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
 !
 !
       allocate(sph_para(ndomain_sph))
@@ -58,7 +58,7 @@
 !
       subroutine allocate_domain_sr_tmp
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
 !
       allocate( id_domain_tmp(ndomain_sph) )
       allocate( nnod_sr_tmp(ndomain_sph) )
@@ -252,7 +252,7 @@
 !
       subroutine count_comm_table_4_rj(ip_rank)
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
       use m_sph_trans_comm_table
 !
       integer(kind = kint), intent(in) :: ip_rank
@@ -288,7 +288,7 @@
 !
       subroutine set_comm_table_4_rj(ip_rank, icou)
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
       use m_sph_trans_comm_table
       use set_local_index_table_sph
       use gen_sph_grids_modes
@@ -344,7 +344,7 @@
 !
       subroutine count_comm_table_4_rtp(ip_rank)
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
       use m_sph_trans_comm_table
 !
       integer(kind = kint), intent(in) :: ip_rank
@@ -380,7 +380,7 @@
 !
       subroutine set_comm_table_4_rtp(ip_rank, icou)
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
       use m_sph_trans_comm_table
       use set_local_index_table_sph
       use gen_sph_grids_modes

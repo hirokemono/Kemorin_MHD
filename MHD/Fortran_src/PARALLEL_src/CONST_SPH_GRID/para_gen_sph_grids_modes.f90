@@ -22,7 +22,7 @@
 !
       use m_precision
 !
-      use m_machine_parameter
+!      use m_machine_parameter
       use m_work_time
       use calypso_mpi
 !
@@ -51,6 +51,7 @@
       subroutine allocate_nneib_sph_rlm_tmp(ndomain_sph)
 !
       integer(kind = kint), intent(in) :: ndomain_sph
+!
 !
       allocate(nneib_rlm_lc(ndomain_sph))
       allocate(nneib_rlm_gl(ndomain_sph))
@@ -95,7 +96,7 @@
 !
       subroutine para_gen_sph_rlm_grids
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
       use m_sph_trans_comm_table
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
@@ -137,7 +138,7 @@
 !
       subroutine para_gen_sph_rtm_grids
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
       use m_sph_trans_comm_table
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
@@ -177,7 +178,7 @@
 !
       subroutine para_gen_sph_rj_modes
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
 !
@@ -201,7 +202,7 @@
 !
       subroutine para_gen_sph_rtp_grids
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
 !
@@ -225,6 +226,7 @@
 !
       subroutine para_gen_fem_mesh_for_sph
 !
+      use m_spheric_global_ranks
       use m_gauss_points
       use m_group_data_sph_specr
       use m_sph_mesh_1d_connect
@@ -267,7 +269,7 @@
 !
       subroutine bcast_comm_stacks_rlm
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
       use set_comm_table_rtp_rj
 !
       integer(kind = kint) :: ip_rank, ip, iroot, nneib
@@ -312,7 +314,7 @@
 !
       subroutine bcast_comm_stacks_rtm
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
       use set_comm_table_rtp_rj
 !
       integer(kind = kint) :: ip_rank, ip, iroot, nneib

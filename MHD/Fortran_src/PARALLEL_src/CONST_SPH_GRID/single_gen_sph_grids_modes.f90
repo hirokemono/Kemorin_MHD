@@ -32,6 +32,7 @@
 !
       subroutine gen_sph_rlm_grids
 !
+      use m_spheric_global_ranks
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
       use copy_sph_comm_table_4_type
@@ -60,6 +61,7 @@
 !
       subroutine gen_sph_rtm_grids
 !
+      use m_spheric_global_ranks
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
       use copy_sph_comm_table_4_type
@@ -89,7 +91,7 @@
 !
       subroutine gen_sph_rj_modes
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
 !
@@ -108,7 +110,7 @@
 !
       subroutine gen_sph_rtp_grids
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
 !
@@ -128,6 +130,7 @@
       subroutine gen_fem_mesh_for_sph
 !
       use m_gauss_points
+      use m_spheric_global_ranks
       use m_group_data_sph_specr
       use m_sph_mesh_1d_connect
       use const_1d_ele_connect_4_sph

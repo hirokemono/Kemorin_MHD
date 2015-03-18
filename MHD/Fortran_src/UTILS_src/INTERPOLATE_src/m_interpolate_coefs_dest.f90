@@ -111,7 +111,7 @@
 !
       write(id_file,'(10i16)') istack_nod_tbl_dest(1:num_org_domain)
       do inod = 1, ntot_table_dest 
-        write(id_file,'(2i16,1p3e23.12)') inod_dest_4_dest(inod),       &
+        write(id_file,'(2i16,1p3E25.15e3)') inod_dest_4_dest(inod),     &
      &        iele_org_4_dest(inod), coef_inter_dest(inod,1:3)
       end do
 !

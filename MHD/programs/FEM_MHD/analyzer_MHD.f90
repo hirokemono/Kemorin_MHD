@@ -26,8 +26,7 @@
 !
       subroutine initialization_MHD
 !
-      use m_ctl_data_fem_MHD
-      use set_control_MHD
+      use input_control
 !
 !
       total_start = MPI_WTIME()
@@ -48,15 +47,14 @@
 !     --------------------- 
 !
       call start_eleps_time(1)
-      call start_eleps_time(4)
 !
-      call read_control_4_fem_MHD
-      call set_control
+      call start_eleps_time(4)
+      call input_control_4_MHD
       call end_eleps_time(4)
 !
+      call start_eleps_time(2)
       call FEM_initialize_MHD
 !
-      call start_eleps_time(2)
       call init_visualize_surface
       call end_eleps_time(2)
 !

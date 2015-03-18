@@ -97,7 +97,7 @@
         write(id_file,'(4i16)') istack_itp_type_org_IO(1:4)
 !
         do inod = 1, ntot_table_org_IO
-          write(id_file,'(3i16,1p3e23.12)')                             &
+          write(id_file,'(3i16,1p3E25.15e3)')                           &
      &        inod_gl_dest_4_org_IO(inod), iele_org_4_org_IO(inod),     &
      &        itype_inter_org_IO(inod), coef_inter_org_IO(inod,1:3)
         end do
@@ -249,7 +249,7 @@
         end do
 !
         do inod = 1, ntot_table_dest_IO
-          write(id_file,'(3i16,1p3e23.12)')                             &
+          write(id_file,'(3i16,1p3E25.15e3)')                           &
      &        inod_global_dest_IO(inod), iele_orgin_IO(inod),           &
      &        itype_inter_dest_IO(inod), coef_inter_dest_IO(inod,1:3)
         end do

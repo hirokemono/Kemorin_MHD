@@ -45,7 +45,6 @@
       use set_element_id_4_node
       use cal_jacobian
 !
-!
 !   --------------------------------
 !       setup mesh information
 !   --------------------------------

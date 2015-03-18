@@ -24,8 +24,7 @@
 !
       subroutine init_analyzer
 !
-      use m_ctl_data_fem_MHD
-      use set_control_MHD
+      use input_control
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -43,14 +42,12 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
-      call read_control_4_fem_snap
-      if (iflag_debug.eq.1) write(*,*) 'set_control'
-      call set_control
+      call input_control_4_snapshot
+!
 !
 !     --------------------- 
 !
-      call FEM_initialize_snapshot
+      call FEM_initialize_snap_tmp
 !
       call init_visualize
 !
@@ -70,7 +67,7 @@
       do i_step = i_step_init, i_step_number
 !
 !  Read and generate fields
-        call FEM_analyze_snapshot(i_step,                               &
+        call FEM_analyze_snap_tmp(i_step,                               &
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
 !  Visualization
@@ -83,7 +80,7 @@
         end if
       end do
 !
-      call FEM_finalize_snapshot
+      call FEM_finalize_snap_tmp
 !
       end subroutine analyze
 !

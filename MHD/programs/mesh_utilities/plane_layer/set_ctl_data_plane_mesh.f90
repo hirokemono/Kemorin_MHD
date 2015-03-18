@@ -30,6 +30,7 @@
       use m_ctl_data_4_plane_model
       use m_ctl_data_4_cub_kemo
       use m_ctl_data_filter_files
+      use m_spheric_constants
       use skip_comment_f
 !
 !
@@ -84,13 +85,13 @@
       zmin = -zmax
 !
       if      (cmp_no_case(horizontal_grid_ctl%charavalue,              &
-     &                      'chebyshev')     ) then
-        iradi = 2
+     &                     label_Chebyshev)) then
+        iradi = igrid_Chebyshev
       else if (cmp_no_case(horizontal_grid_ctl%charavalue,              &
-     &                      'half_chebyshev')) then
-        iradi = 1
+     &                     label_half_Cbyv)) then
+        iradi = igrid_half_Chebyshev
       else
-        iradi = 0
+        iradi = igrid_euqidistance
       end if
 !
 !

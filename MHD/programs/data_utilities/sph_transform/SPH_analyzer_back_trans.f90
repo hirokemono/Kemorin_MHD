@@ -30,7 +30,6 @@
       use m_sph_phys_address
       use m_control_params_2nd_files
 !
-      use parallel_load_data_4_sph
       use r_interpolate_sph_data
       use count_num_sph_smp
       use field_IO_select
@@ -39,11 +38,6 @@
       use pole_sph_transform
       use legendre_transform_select
       use sph_transfer_all_field
-!
-!  ------    set spectr grids
-!
-      if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh
 !
 !  ------  initialize spectr data
 !

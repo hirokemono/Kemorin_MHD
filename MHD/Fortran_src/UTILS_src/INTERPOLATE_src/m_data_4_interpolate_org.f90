@@ -119,7 +119,7 @@
 !
       write(id_file,'(i15)') nele_2
       do iele = 1, nele_2
-        write(id_file,'(i15,1p2e23.12)') iele,                          &
+        write(id_file,'(i15,1p2E25.15e3)') iele,                        &
      &      min_sph_each_ele(iele,1), max_sph_each_ele(iele,1)
       end do
 !
@@ -129,7 +129,7 @@
 !
       write(id_file,'(i15)') nele_2
       do iele = 1, nele_2
-        write(id_file,'(i15,1p2e23.12)') iele,                          &
+        write(id_file,'(i15,1p2E25.15e3)') iele,                        &
      &      min_sph_each_ele(iele,2), max_sph_each_ele(iele,2)
       end do
 !
@@ -139,7 +139,7 @@
 !
       write(id_file,'(i15)') nele_2
       do iele = 1, nele_2
-        write(id_file,'(i15,1p2e23.12)') iele,                          &
+        write(id_file,'(i15,1p2E25.15e3)') iele,                        &
      &      min_sph_each_ele(iele,3), max_sph_each_ele(iele,3)
       end do
 !

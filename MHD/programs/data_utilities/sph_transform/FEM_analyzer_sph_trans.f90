@@ -31,7 +31,6 @@
       use m_node_phys_data
 !
       use nodal_vector_send_recv
-      use load_mesh_data
       use const_mesh_info
       use cal_jacobian
       use int_volume_of_domain
@@ -42,15 +41,6 @@
       use output_parallel_ucd_file
 !
       use copy_all_field_4_sph_trans
-!
-!   --------------------------------
-!       setup mesh information
-!   --------------------------------
-!
-!  --  load FEM mesh data
-!
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank)
 !
 !  -----    construct geometry informations
 !

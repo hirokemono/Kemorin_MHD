@@ -223,18 +223,18 @@
 !
           if ( ncomp_field(j) .eq. 1 ) then
             do inod = 1, nnod
-              write(id_output,'(1pe23.12)') d_nod(inod,ii)
+              write(id_output,'(1pE25.15e3)') d_nod(inod,ii)
             end do
             ii = ii + 1
           else if ( ncomp_field(j) .eq. 3 ) then
             do inod = 1, nnod
-              write(id_output,'(1p3e23.12)')                            &
+              write(id_output,'(1p3E25.15e3)')                          &
      &                (d_nod(inod,nd), nd = ii, ii+2)
             end do
             ii = ii + 3
           else if ( ncomp_field(j) .eq. 6 ) then
             do inod = 1, nnod
-              write(id_output,'(1p9e23.12)')                            &
+              write(id_output,'(1p9E25.15e3)')                          &
      &            (d_nod(inod,nd), nd=ii,ii+2),                         &
      &             d_nod(inod,ii+1), (d_nod(inod,nd), nd=ii+3,ii+4),    &
      &             d_nod(inod,ii+2), d_nod(inod,ii+4), d_nod(inod,ii+5)

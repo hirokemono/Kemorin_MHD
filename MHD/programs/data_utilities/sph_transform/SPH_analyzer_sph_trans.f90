@@ -31,17 +31,11 @@
       use m_field_data_IO
       use m_sph_spectr_data
 !
-      use parallel_load_data_4_sph
       use count_num_sph_smp
       use set_phys_name_4_sph_trans
       use init_sph_trans
       use legendre_transform_select
       use sph_transfer_all_field
-!
-!  ------    set spectr grids
-!
-      if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh
 !
 !  ---- allocate spectr data
 !

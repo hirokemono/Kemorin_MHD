@@ -20,6 +20,7 @@
       use m_precision
 !
       use m_spheric_parameter
+      use m_spheric_global_ranks
       use m_sph_1d_global_index
 !
       implicit none

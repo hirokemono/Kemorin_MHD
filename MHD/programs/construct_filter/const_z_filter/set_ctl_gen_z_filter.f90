@@ -28,6 +28,7 @@
       use m_ctl_data_4_solvers
       use m_ctl_data_gen_filter
       use m_ctl_data_gen_z_filter
+      use m_spheric_constants
 !
       use set_parallel_file_name
       use skip_comment_f
@@ -78,14 +79,14 @@
       end if
 !
       if      (cmp_no_case(horizontal_grid_ctl%charavalue,              &
-     &                     'equi_distance' )) then
-        iflag_grid = 0
+     &                     label_equi     )) then
+        iflag_grid = igrid_euqidistance
       else if (cmp_no_case(horizontal_grid_ctl%charavalue,              &
-     &                     'half_chebyshev')) then
-        iflag_grid = 1
+     &                     label_half_Cbyv)) then
+        iflag_grid = igrid_half_Chebyshev
       else if (cmp_no_case(horizontal_grid_ctl%charavalue,              &
-     &                     'chebyshev'     )) then
-        iflag_grid = 2
+     &                     label_Chebyshev)) then
+        iflag_grid = igrid_Chebyshev
       end if
 !
 !   set number of integration points

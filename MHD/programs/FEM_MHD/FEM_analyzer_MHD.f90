@@ -31,8 +31,6 @@
       use m_control_parameter
       use m_cal_max_indices
 !
-      use load_mesh_data
-      use input_control
       use initialization_4_MHD
       use lead_physical_values
       use update_after_evolution
@@ -46,25 +44,6 @@
       use range_data_IO
       use chenge_step_4_dynamic
 !
-!     Load mesh data
-!
-      call start_eleps_time(4)
-!
-!
-!   --------------------------------
-!       setup mesh information
-!   --------------------------------
-!
-!  --  load FEM mesh data
-!
-      call input_mesh(my_rank)
-!
-      call input_control_4_MHD
-!
-!    IO elapsed end 
-!    precondition elaps start
-      call end_eleps_time(4)
-      call start_eleps_time(2)
 !
 !   matrix assembling
 !

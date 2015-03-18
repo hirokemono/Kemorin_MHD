@@ -30,6 +30,8 @@
 !
       subroutine set_geometry_z_commute
 !
+      use m_spheric_constants
+!
 !
       ncomp_mat = ncomp_norm + 2
       if (numfilter .eq. 1) then
@@ -44,9 +46,9 @@
       call set_element_z_commute
       call set_global_id_z_commute
 !
-      if (iflag_grid.eq.2) then
+      if (iflag_grid .eq. igrid_Chebyshev) then
         call set_chebyshev_grids
-      else if (iflag_grid.eq.1) then
+      else if (iflag_grid .eq. igrid_half_Chebyshev) then
         call set_half_chebyshev_grids
       else if (iflag_grid.eq.-1) then
         call set_test_grids

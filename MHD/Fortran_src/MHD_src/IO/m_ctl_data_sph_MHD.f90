@@ -86,6 +86,7 @@
       use m_ctl_data_node_monitor
       use m_ctl_data_4_pickup_sph
       use m_ctl_data_4_org_data
+      use m_ctl_data_4_sphere_model
       use m_control_data_pvrs
       use read_ctl_data_sph_MHD
 !
@@ -109,6 +110,7 @@
         call read_pickup_sph_ctl
 !
         call read_viz_control_data
+        call read_ctl_4_shell_define
       end do
 !
       end subroutine read_sph_mhd_control_data

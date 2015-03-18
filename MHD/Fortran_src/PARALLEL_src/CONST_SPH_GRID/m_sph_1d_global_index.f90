@@ -108,7 +108,7 @@
 !
       subroutine allocate_sph_1d_global_stack
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
 !
       integer(kind = kint) :: num
 !
@@ -154,7 +154,7 @@
 !
       subroutine allocate_sph_1d_global_idx
 !
-      use m_spheric_parameter
+      use m_spheric_global_ranks
 !
       integer(kind = kint) :: n1, n2, n3
 !

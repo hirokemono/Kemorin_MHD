@@ -28,6 +28,8 @@
 !
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
+      use parallel_load_data_4_sph
+      use load_mesh_data
 !
 !
       num_elapsed = 30
@@ -39,6 +41,10 @@
       call read_control_data_sph_trans
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans
+!
+!  ------    set spectr grids
+      if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
+      call load_para_SPH_and_FEM_mesh
 !
 !  ------  initialize FEM data
 !

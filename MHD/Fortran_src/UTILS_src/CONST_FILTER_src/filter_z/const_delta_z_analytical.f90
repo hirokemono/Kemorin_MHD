@@ -31,15 +31,16 @@
       subroutine cal_delta_z_analytical
 !
       use int_edge_mass_mat_z_filter
+      use m_spheric_constants
 !
 !
       call int_edge_mass_matrix(i_int_z_filter)
       call allocate_delta_z
 !
-      if (iflag_grid.eq.2) then
+      if (iflag_grid .eq. igrid_Chebyshev) then
         if (my_rank.eq.0) write(*,*) 'cal_dz_chebyshev_grids'
         call cal_dz_chebyshev_grids
-      else if (iflag_grid.eq.1) then
+      else if (iflag_grid .eq. igrid_half_Chebyshev) then
         if (my_rank.eq.0) write(*,*) 'cal_dz_half_chebyshev_grids'
         call cal_dz_half_chebyshev_grids
       else if (iflag_grid.eq.-1) then

@@ -31,25 +31,9 @@
       use m_control_parameter
       use m_cal_max_indices
 !
-      use load_mesh_data
-      use input_control
       use initialize_4_snapshot
 !
       use output_ucd_file_control
-!
-!   --------------------------------
-!       setup mesh information
-!   --------------------------------
-!
-!  --  load FEM mesh data
-!
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank)
-!
-      if (iflag_debug.eq.1) write(*,*) 'input_meshes_4_MHD'
-      call input_meshes_4_MHD
-!
-!     --------------------- 
 !
 !   matrix assembling
 !

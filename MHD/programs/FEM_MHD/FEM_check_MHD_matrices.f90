@@ -27,24 +27,11 @@
 !
       use m_control_parameter
 !
-      use load_mesh_data
-      use input_control
       use initialization_4_MHD
 !
       use construct_matrices
       use write_djds_mat_MHD
 !
-!
-!   --------------------------------
-!       setup mesh information
-!   --------------------------------
-!
-!  --  load FEM mesh data
-!
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank)
-!
-      call input_control_4_MHD
 !
 !   matrix assembling
 !

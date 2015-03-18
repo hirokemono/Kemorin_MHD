@@ -33,7 +33,6 @@
       use m_t_step_parameter
 !
       use nodal_vector_send_recv
-      use load_mesh_data
       use const_mesh_info
       use cal_jacobian
       use set_element_id_4_node
@@ -42,15 +41,6 @@
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
       use output_parallel_ucd_file
-!
-!   --------------------------------
-!       setup mesh information
-!   --------------------------------
-!
-!  --  load FEM mesh data
-!
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank)
 !
 !  -----    construct geometry informations
 !

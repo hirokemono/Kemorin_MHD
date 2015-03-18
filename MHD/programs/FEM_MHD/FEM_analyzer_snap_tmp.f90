@@ -3,10 +3,10 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!      subroutine FEM_initialize_snapshot
-!      subroutine FEM_analyze_snapshot(istep_psf, istep_iso,            &
+!      subroutine FEM_initialize_snap_tmp
+!      subroutine FEM_analyze_snap_tmp(istep_psf, istep_iso,            &
 !     &          istep_pvr, istep_fline, visval)
-!      subroutine FEM_finalize_snapshot
+!      subroutine FEM_finalize_snap_tmp
 !
       module FEM_analyzer_snap_tmp
 !
@@ -26,33 +26,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_snapshot
+      subroutine FEM_initialize_snap_tmp
 !
       use m_control_parameter
       use m_cal_max_indices
 !
-      use input_control
       use initialize_4_snapshot
 !
-      use load_mesh_data
       use output_ucd_file_control
       use node_monitor_IO
       use open_sgs_model_coefs
       use range_data_IO
-!
-!   --------------------------------
-!       setup mesh information
-!   --------------------------------
-!
-!  --  load FEM mesh data
-!
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank)
-!
-      if (iflag_debug.eq.1) write(*,*) 'input_meshes_4_MHD'
-      call input_meshes_4_MHD
-!
-!     --------------------- 
 !
 !   matrix assembling
 !
@@ -63,11 +47,11 @@
 !
       call allocate_phys_range
 !
-      end subroutine FEM_initialize_snapshot
+      end subroutine FEM_initialize_snap_tmp
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_snapshot(i_step, istep_psf, istep_iso,     &
+      subroutine FEM_analyze_snap_tmp(i_step, istep_psf, istep_iso,     &
      &          istep_pvr, istep_fline, visval)
 !
       use m_control_parameter
@@ -168,11 +152,11 @@
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
       end if
 !
-      end subroutine FEM_analyze_snapshot
+      end subroutine FEM_analyze_snap_tmp
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_finalize_snapshot
+      subroutine FEM_finalize_snap_tmp
 !
       use m_t_step_parameter
       use m_cal_max_indices
@@ -183,7 +167,7 @@
       call deallocate_phys_range
 !        call close_boundary_monitor(my_rank)
 !
-      end subroutine FEM_finalize_snapshot
+      end subroutine FEM_finalize_snap_tmp
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

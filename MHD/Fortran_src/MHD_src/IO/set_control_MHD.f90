@@ -7,7 +7,7 @@
 !> @brief Set parameters for MHD dynamo simulation from control data
 !!
 !!@verbatim
-!!     subroutine set_control
+!!     subroutine set_control_FEM_MHD
 !!@endverbatim
 !
       module set_control_MHD
@@ -22,7 +22,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control
+      subroutine set_control_FEM_MHD
 !
       use calypso_mpi
       use m_control_params_2nd_files
@@ -144,7 +144,7 @@
 !
       call check_FEM_MHD_dependencies
 !
-      end subroutine set_control
+      end subroutine set_control_FEM_MHD
 !
 ! -----------------------------------------------------------------------
 !

@@ -47,7 +47,6 @@
       use m_physical_property
 !
       use set_control_sph_mhd
-      use parallel_load_data_4_sph
       use set_reference_sph_mhd
       use set_bc_sph_mhd
       use material_property
@@ -59,10 +58,6 @@
       use sph_mhd_rst_IO_control
       use sph_MHD_circle_transform
 !
-!   Load spherical harmonics data
-!
-      if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh
 !
 !   Allocate spectr field data
 !

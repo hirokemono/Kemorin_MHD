@@ -12,8 +12,9 @@
 !>@brief  Set global indices for spherical harominics transform
 !!
 !!@verbatim
-!!      subroutine set_sph_1d_global_idx_rtp
-!!      subroutine set_sph_1d_global_idx_rtm
+!!      subroutine set_sph_1d_global_idx_rtp(m_folding, nphi, mdx_ispack)
+!!      subroutine set_sph_1d_global_idx_rtm                            &
+!!     &         (m_folding, nphi, mtbl_fft_2_lgd, mdx_4_lgd)
 !!      subroutine set_sph_1d_global_idx_rlm
 !!      subroutine set_sph_1d_global_idx_rj
 !!@endverbatim
@@ -30,14 +31,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-!      call set_sph_1d_global_idx_rtp(nidx_global_rtp(3), mdx_ispack)
-      subroutine set_sph_1d_global_idx_rtp(nphi, mdx_ispack)
+      subroutine set_sph_1d_global_idx_rtp(m_folding, nphi, mdx_ispack)
 !
+      use m_spheric_global_ranks
       use m_sph_global_parameter
-      use m_spheric_parameter
       use m_sph_1d_global_index
 !
-      integer(kind = kint), intent(in) :: nphi
+      integer(kind = kint), intent(in) :: m_folding, nphi
       integer(kind = kint), intent(in) :: mdx_ispack(nphi)
 !
       integer(kind = kint) :: ist, ied
@@ -89,13 +89,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_sph_1d_global_idx_rtm                              &
-     &         (nphi, mtbl_fft_2_lgd, mdx_4_lgd)
+     &         (m_folding, nphi, mtbl_fft_2_lgd, mdx_4_lgd)
 !
+      use m_spheric_global_ranks
       use m_sph_global_parameter
-      use m_spheric_parameter
       use m_sph_1d_global_index
 !
-      integer(kind = kint), intent(in) :: nphi
+      integer(kind = kint), intent(in) :: m_folding, nphi
       integer(kind = kint), intent(in) :: mtbl_fft_2_lgd(0:nphi)
       integer(kind = kint), intent(in) :: mdx_4_lgd(0:nphi)
 !
@@ -146,10 +146,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-!      call set_sph_1d_global_idx_rlm(nidx_global_rj(2), jtbl_fsph)
       subroutine set_sph_1d_global_idx_rlm(jmax, jtbl_fsph)
 !
-      use m_spheric_parameter
       use m_sph_1d_global_index
 !
       integer(kind = kint), intent(in) :: jmax

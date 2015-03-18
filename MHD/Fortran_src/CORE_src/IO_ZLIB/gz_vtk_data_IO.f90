@@ -125,20 +125,20 @@
       if (ncomp_field .eq. n_sym_tensor) then
         do inod = 1, nnod
           do nd2 = 1, 3
-            write(textbuf,'(1p3e23.12,a1)')                             &
+            write(textbuf,'(1p3E25.15e3,a1)')                           &
      &             (d_nod(inod,1+l_sim_t(nd,nd2)), nd=1,3), char(0)
             call gz_write_textbuf_f
           end do
         end do
       else if(ncomp_field .eq. n_vector) then
         do inod = 1, nnod
-          write(textbuf,'(1p3e23.12,a1)')                               &
+          write(textbuf,'(1p3E25.15e3,a1)')                             &
      &               d_nod(inod,1:ncomp_field), char(0)
           call gz_write_textbuf_f
         end do
       else if(ncomp_field .eq. n_scalar) then
         do inod = 1, nnod
-          write(textbuf,'(1pe23.12,a1)') d_nod(inod,1), char(0)
+          write(textbuf,'(1pE25.15e3,a1)') d_nod(inod,1), char(0)
           call gz_write_textbuf_f
         end do
       end if

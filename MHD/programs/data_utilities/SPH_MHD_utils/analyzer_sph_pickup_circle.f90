@@ -39,6 +39,7 @@
       use set_control_sph_mhd
       use set_control_sph_data_MHD
       use init_sph_MHD_elapsed_label
+      use parallel_load_data_4_sph
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -55,14 +56,16 @@
       call set_control_4_sph_mhd
       call set_ctl_params_pick_circle
 !
-!    IO elapsed end
-!    precondition elaps start
+!   Load spherical harmonics data
+!
+      if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
+      call load_para_sph_mesh
 !
       call end_eleps_time(4)
-      call start_eleps_time(2)
 !
 !        Initialize spherical transform dynamo
 !
+      call start_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
       call SPH_init_sph_pick_circle
       call calypso_MPI_barrier

@@ -25,6 +25,7 @@
 !
       subroutine s_const_1d_ele_connect_4_sph
 !
+      use m_spheric_global_ranks
       use m_spheric_parameter
 !
 !

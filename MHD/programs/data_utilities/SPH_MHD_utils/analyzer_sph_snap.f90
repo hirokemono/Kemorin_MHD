@@ -35,11 +35,10 @@
 !
       subroutine initialize_sph_snap
 !
-      use set_control_sph_mhd
-      use set_control_SPH_to_FEM
       use m_ctl_data_sph_MHD
       use init_sph_MHD_elapsed_label
       use FEM_analyzer_sph_MHD_w_viz
+      use input_control_sph_MHD
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -53,25 +52,19 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap'
       call read_control_4_sph_snap
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
-      call set_control_4_sph_mhd
-      call set_control_4_SPH_to_FEM
-!
-!    IO elapsed end
-!    precondition elaps start
-!
+      if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
+      call input_control_SPH_mesh
       call end_eleps_time(4)
-      call start_eleps_time(2)
 !
 !     --------------------- 
+!
+      call start_eleps_time(2)
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
+      call FEM_initialize_w_viz
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
       call SPH_init_sph_snap
-!
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
-      call FEM_initialize_w_viz
-!
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize

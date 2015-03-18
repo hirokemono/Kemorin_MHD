@@ -28,6 +28,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
 !
       use calypso_mpi
       use m_work_time
@@ -42,11 +43,6 @@
 !
       subroutine FEM_initialize_sph_MHD
 !
-      use t_mesh_data
-      use t_group_data
-!
-      use m_geometry_parameter
-      use m_geometry_data
       use m_array_for_send_recv
       use m_t_step_parameter
       use m_surface_geometry_data
@@ -54,37 +50,12 @@
       use m_node_phys_address
       use m_cal_max_indices
 !
-      use load_mesh_data
       use const_mesh_info
       use nodal_vector_send_recv
       use output_ucd_file_control
       use range_data_IO
       use node_monitor_IO
 !
-      use mesh_IO_select
-!      use const_FEM_mesh_sph_mhd
-!
-      type(mesh_geometry) :: mesh
-      type(mesh_groups) ::  group
-!
-!
-!   --------------------------------
-!       setup mesh information
-!   --------------------------------
-!
-!  --  Construct FEM mesh
-!      call const_FEM_mesh_4_sph_mhd(my_rank, mesh, group)
-!
-!  --  load FEM mesh data
-      if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-      call start_eleps_time(4)
-      call sel_read_mesh(my_rank)
-      call set_mesh_data
-!
-      call allocate_element_geometry
-      call end_eleps_time(4)
-!
-! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_node_id_4_monitor'
       call set_local_node_id_4_monitor

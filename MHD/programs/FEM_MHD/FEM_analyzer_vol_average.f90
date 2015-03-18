@@ -3,7 +3,7 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!      subroutine FEM_initialize_snapshot
+!      subroutine FEM_initialize_vol_average
 !      subroutine FEM_analyze_vol_average(i_step)
 !
       module FEM_analyzer_vol_average
@@ -28,26 +28,11 @@
 !
       use m_control_parameter
 !
-      use load_mesh_data
-      use input_control
       use initialize_4_snapshot
 !
       use node_monitor_IO
       use open_sgs_model_coefs
 !
-!   --------------------------------
-!       setup mesh information
-!   --------------------------------
-!
-!  --  load FEM mesh data
-!
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank)
-!
-      if (iflag_debug.eq.1) write(*,*) 'input_meshes_4_MHD'
-      call input_meshes_4_MHD
-!
-!     --------------------- 
 !
 !   matrix assembling
 !

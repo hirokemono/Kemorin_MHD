@@ -69,7 +69,7 @@
      &    form='formatted', status ='unknown')
 !
       do inod = 1, nnod
-       write(id_output,'(1p3e23.12)') (xx(inod,nd), nd= 1, 3)
+       write(id_output,'(1p3E25.15e3)') (xx(inod,nd), nd= 1, 3)
       end do
 !
       close (id_output)

@@ -24,8 +24,7 @@
 !
       subroutine init_analyzer
 !
-      use m_ctl_data_fem_MHD
-      use set_control_MHD
+      use input_control
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -43,10 +42,7 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
-      call read_control_4_fem_snap
-      if (iflag_debug.eq.1) write(*,*) 'set_control'
-      call set_control
+      call input_control_4_snapshot
 !
 !     --------------------- 
 !
