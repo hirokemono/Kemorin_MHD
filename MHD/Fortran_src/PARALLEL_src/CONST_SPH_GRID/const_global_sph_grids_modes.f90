@@ -246,45 +246,45 @@
       integer(kind = kint) :: ist, ied
 !
 !
-      write(*,*) 'set_gl_rank_3d', ndomain_rtp(1:3)
+!      write(*,*) 'set_gl_rank_3d', ndomain_rtp(1:3)
       call set_gl_rank_3d(ndomain_sph, ndomain_rtp, iglobal_rank_rtp)
 !
 !      call cal_local_nums(ndomain_rtp(1), ione, nidx_global_rtp(1),    &
 !     &    nidx_local_rtp_r, istack_idx_local_rtp_r)
-      write(*,*) 'cal_local_nums 1', ndomain_rtp(1:3), nidx_global_rtp(2)
+!      write(*,*) 'cal_local_nums 1', ndomain_rtp(1:3), nidx_global_rtp(2)
       call cal_local_nums(ndomain_rtp(2), ione, nidx_global_rtp(2),     &
      &    nidx_local_rtp_t, istack_idx_local_rtp_t)
-      write(*,*) 'cal_local_nums 2'
+!      write(*,*) 'cal_local_nums 2'
       call cal_local_nums(ndomain_rtp(3), ione, nidx_global_rtp(3),     &
      &    nidx_local_rtp_p, istack_idx_local_rtp_p)
 !
 !
-      write(*,*) 'cal_local_nums_st'
+!      write(*,*) 'cal_local_nums_st'
       call cal_local_nums_st(ndomain_rtp(1), nlayer_ICB, nlayer_CMB,    &
      &    nidx_local_rtp_OC, ist_idx_local_rtp_OC)
 !
       if (nlayer_ICB .gt. 1) then
         ied = nlayer_ICB - 1
-      write(*,*) 'cal_local_nums_rev'
+!      write(*,*) 'cal_local_nums_rev'
         call cal_local_nums_rev(ndomain_rtp(1), ione, ied,              &
      &      nidx_local_rtp_IC, ist_idx_local_rtp_IC)
       end if
 !
       if (nlayer_CMB .lt. nidx_global_rtp(1)) then
         ist = nlayer_CMB + 1
-      write(*,*) 'cal_local_nums_rev'
+!      write(*,*) 'cal_local_nums_rev'
         call cal_local_nums_rev(ndomain_rtp(1), ist,                    &
      &      nidx_global_rtp(1), nidx_local_rtp_MT,                      &
      &      ist_idx_local_rtp_MT)
       end if
 !
-      write(*,*) 'merge_num_3_local_layers'
+!      write(*,*) 'merge_num_3_local_layers'
       call merge_num_3_local_layers(ndomain_rtp(1),                     &
      &    nidx_local_rtp_OC, nidx_local_rtp_IC, nidx_local_rtp_MT,      &
      &    ione, nidx_local_rtp_r, istack_idx_local_rtp_r)
 !
 !
-      write(*,*) 'set_gl_nnod_spherical'
+!      write(*,*) 'set_gl_nnod_spherical'
       call set_gl_nnod_spherical(ndomain_sph,                           &
      &    ndomain_rtp(1), ndomain_rtp(2), ndomain_rtp(3),               &
      &    iglobal_rank_rtp, nidx_local_rtp_r, nidx_local_rtp_t,         &
