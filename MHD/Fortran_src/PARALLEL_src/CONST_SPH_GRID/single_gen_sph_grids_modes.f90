@@ -8,22 +8,23 @@
 !!        (Serial version)
 !!
 !!@verbatim
-!!      subroutine gen_sph_rlm_grids(ndomain_sph, sph_para)
-!!      subroutine gen_sph_rtm_grids(ndomain_sph, sph_para)
+!!      subroutine gen_sph_rlm_grids(ndomain_sph, comm_rlm)
+!!      subroutine gen_sph_rtm_grids(ndomain_sph, comm_rtm)
 !!
-!!      subroutine gen_sph_rj_modes(ndomain_sph, sph_para)
-!!      subroutine gen_sph_rtp_grids(ndomain_sph, sph_para)
+!!      subroutine gen_sph_rj_modes(ndomain_sph, comm_rlm)
+!!      subroutine gen_sph_rtp_grids(ndomain_sph, comm_rtm)
 !!
 !!      subroutine gen_fem_mesh_for_sph(ndomain_sph)
 !!
-!!      subroutine dealloc_all_comm_stacks_rlm(ndomain_sph, sph_para)
-!!      subroutine dealloc_all_comm_stacks_rtm(ndomain_sph, sph_para)
+!!      subroutine dealloc_all_comm_stacks_rlm(ndomain_sph, comm_rlm)
+!!      subroutine dealloc_all_comm_stacks_rtm(ndomain_sph, comm_rtm)
 !!@endverbatim
 !
       module single_gen_sph_grids_modes
 !
       use m_precision
       use m_machine_parameter
+      use t_sph_trans_comm_tbl
 !
       implicit none
 !
@@ -33,23 +34,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gen_sph_rlm_grids(ndomain_sph, sph_para)
+      subroutine gen_sph_rlm_grids(ndomain_sph, comm_rlm)
 !
-      use t_spheric_mesh
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
       use copy_sph_comm_table_4_type
       use gen_sph_grids_modes
 !
       integer(kind = kint), intent(in) :: ndomain_sph
-      type(sph_mesh_data), intent(inout) :: sph_para(ndomain_sph)
+      type(sph_comm_tbl), intent(inout) :: comm_rlm(ndomain_sph)
       integer(kind = kint) :: ip_rank, ip
 !
 !
       do ip = 1, ndomain_sph
         ip_rank = ip - 1
         call const_sph_rlm_modes(ip_rank)
-        call copy_comm_rlm_num_to_type(sph_para(ip)%sph_comms%comm_rlm)
+        call copy_comm_rlm_num_to_type(comm_rlm(ip))
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'output_modes_rlm_sph_trans', ip_rank
@@ -64,23 +64,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine gen_sph_rtm_grids(ndomain_sph, sph_para)
+      subroutine gen_sph_rtm_grids(ndomain_sph, comm_rtm)
 !
-      use t_spheric_mesh
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
       use copy_sph_comm_table_4_type
       use gen_sph_grids_modes
 !
       integer(kind = kint), intent(in) :: ndomain_sph
-      type(sph_mesh_data), intent(inout) :: sph_para(ndomain_sph)
+      type(sph_comm_tbl), intent(inout) :: comm_rtm(ndomain_sph)
       integer(kind = kint) :: ip_rank, ip
 !
 !
       do ip = 1, ndomain_sph
         ip_rank = ip - 1
         call const_sph_rtm_grids(ip_rank)
-        call copy_comm_rtm_num_to_type(sph_para(ip)%sph_comms%comm_rtm)
+        call copy_comm_rtm_num_to_type(comm_rtm(ip))
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'output_geom_rtm_sph_trans', ip_rank
@@ -96,20 +95,19 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine gen_sph_rj_modes(ndomain_sph, sph_para)
+      subroutine gen_sph_rj_modes(ndomain_sph, comm_rlm)
 !
-      use t_spheric_mesh
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
 !
       integer(kind = kint), intent(in) :: ndomain_sph
-      type(sph_mesh_data), intent(in) :: sph_para(ndomain_sph)
+      type(sph_comm_tbl), intent(in) :: comm_rlm(ndomain_sph)
       integer(kind = kint) :: ip_rank
 !
 !
       call allocate_rj_1d_local_idx
       do ip_rank = 0, ndomain_sph-1
-        call const_sph_rj_modes(ip_rank, ndomain_sph, sph_para)
+        call const_sph_rj_modes(ip_rank, ndomain_sph, comm_rlm)
       end do
       call deallocate_rj_1d_local_idx
 !
@@ -117,20 +115,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine gen_sph_rtp_grids(ndomain_sph, sph_para)
+      subroutine gen_sph_rtp_grids(ndomain_sph, comm_rtm)
 !
-      use t_spheric_mesh
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
 !
       integer(kind = kint), intent(in) :: ndomain_sph
-      type(sph_mesh_data), intent(in) :: sph_para(ndomain_sph)
+      type(sph_comm_tbl), intent(in) :: comm_rtm(ndomain_sph)
       integer(kind = kint) :: ip_rank
 !
 !
       call allocate_rtp_1d_local_idx
       do ip_rank = 0, ndomain_sph-1
-        call const_sph_rtp_grids(ip_rank, ndomain_sph, sph_para)
+        call const_sph_rtp_grids(ip_rank, ndomain_sph, comm_rtm)
       end do
       call deallocate_rtp_1d_local_idx
 !
@@ -175,38 +172,32 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_all_comm_stacks_rlm(ndomain_sph, sph_para)
-!
-      use t_spheric_mesh
+      subroutine dealloc_all_comm_stacks_rlm(ndomain_sph, comm_rlm)
 !
       integer(kind = kint), intent(in) :: ndomain_sph
-      type(sph_mesh_data), intent(inout) :: sph_para(ndomain_sph)
+      type(sph_comm_tbl), intent(inout) :: comm_rlm(ndomain_sph)
       integer(kind = kint) :: ip
 !
 !
       do ip = 1, ndomain_sph
-        call dealloc_type_sph_comm_stack                               &
-     &       (sph_para(ip)%sph_comms%comm_rlm)
-          sph_para(ip)%sph_comms%comm_rlm%nneib_domain = 0
+        call dealloc_type_sph_comm_stack(comm_rlm(ip))
+          comm_rlm(ip)%nneib_domain = 0
       end do
 !
       end subroutine dealloc_all_comm_stacks_rlm
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_all_comm_stacks_rtm(ndomain_sph, sph_para)
-!
-      use t_spheric_mesh
+      subroutine dealloc_all_comm_stacks_rtm(ndomain_sph, comm_rtm)
 !
       integer(kind = kint), intent(in) :: ndomain_sph
-      type(sph_mesh_data), intent(inout) :: sph_para(ndomain_sph)
+      type(sph_comm_tbl), intent(inout) :: comm_rtm(ndomain_sph)
       integer(kind = kint) :: ip
 !
 !
       do ip = 1, ndomain_sph
-        call dealloc_type_sph_comm_stack                                &
-     &       (sph_para(ip)%sph_comms%comm_rtm)
-          sph_para(ip)%sph_comms%comm_rtm%nneib_domain = 0
+        call dealloc_type_sph_comm_stack(comm_rtm(ip))
+        comm_rtm(ip)%nneib_domain = 0
       end do
 !
       end subroutine dealloc_all_comm_stacks_rtm

@@ -5,7 +5,7 @@
       use m_constants
       use m_machine_parameter
 !
-      use t_spheric_mesh
+      use t_sph_trans_comm_tbl
 !
       use m_read_ctl_gen_sph_shell
       use m_spheric_global_ranks
@@ -25,7 +25,8 @@
       implicit none
 !
 !>      Structure for parallel spherical mesh table
-      type(sph_mesh_data), allocatable :: sph_para(:)
+      type(sph_comm_tbl), allocatable :: comm_rlm(:)
+      type(sph_comm_tbl), allocatable :: comm_rtm(:)
 !
 !
       call read_control_4_gen_shell_grids
@@ -42,20 +43,22 @@
       call s_const_global_sph_grids_modes
 !
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rlm_grids'
-      allocate(sph_para(ndomain_sph))
+      allocate(comm_rlm(ndomain_sph))
 !
-      call gen_sph_rlm_grids(ndomain_sph, sph_para)
+      call gen_sph_rlm_grids(ndomain_sph, comm_rlm)
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rj_modes'
-      call gen_sph_rj_modes(ndomain_sph, sph_para)
-      call dealloc_all_comm_stacks_rlm(ndomain_sph, sph_para)
+      call gen_sph_rj_modes(ndomain_sph, comm_rlm)
+      call dealloc_all_comm_stacks_rlm(ndomain_sph, comm_rlm)
+      deallocate(comm_rlm)
+!
+      allocate(comm_rtm(ndomain_sph))
 !
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rtm_grids'
-      call gen_sph_rtm_grids(ndomain_sph, sph_para)
+      call gen_sph_rtm_grids(ndomain_sph, comm_rtm)
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rtp_grids'
-      call gen_sph_rtp_grids(ndomain_sph, sph_para)
-      call dealloc_all_comm_stacks_rtm(ndomain_sph, sph_para)
-!
-      deallocate(sph_para)
+      call gen_sph_rtp_grids(ndomain_sph, comm_rtm)
+      call dealloc_all_comm_stacks_rtm(ndomain_sph, comm_rtm)
+      deallocate(comm_rtm)
 !
       if(iflag_debug .gt. 0) write(*,*) 'gen_fem_mesh_for_sph'
       call gen_fem_mesh_for_sph(ndomain_sph)

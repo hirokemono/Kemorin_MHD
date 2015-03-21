@@ -32,6 +32,7 @@
       use m_sph_spectr_data
       use m_field_data_IO
       use m_t_step_parameter
+      use m_t_int_parameter
       use field_IO_select
       use r_interpolate_marged_sph
       use copy_time_steps_4_restart
