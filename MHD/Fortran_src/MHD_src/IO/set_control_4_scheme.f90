@@ -116,19 +116,19 @@
 !
 !  control for number of points for integration
 !
-        if (i_intg_point_poisson.eq.0.0d0) then
+        if (intg_point_poisson_ctl%iflag .eq. 0) then
           e_message  = 'Set number of integration points for Poisson'
           call calypso_MPI_abort(ierr_FEM, e_message)
         else
-          intg_point_poisson =  intg_point_poisson_ctl
+          intg_point_poisson =  intg_point_poisson_ctl%intvalue
         end if
 !
-        if (i_intg_point_t_evo.eq.0.0d0) then
+        if (intg_point_t_evo_ctl%iflag .eq. 0) then
           e_message                                                     &
      &       = 'Set number of integration points for time integration'
           call calypso_MPI_abort(ierr_FEM, e_message)
         else
-          intg_point_t_evo =    intg_point_t_evo_ctl
+          intg_point_t_evo =    intg_point_t_evo_ctl%intvalue
         end if
 !
         if (iflag_debug .gt. iflag_routine_msg) then

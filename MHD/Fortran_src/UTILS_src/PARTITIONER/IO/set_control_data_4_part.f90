@@ -53,10 +53,10 @@
 !
 !   set local data format
 !
-      call choose_file_format(org_mesh_file_fmt_ctl%charavalue,         &
-     &    org_mesh_file_fmt_ctl%iflag, ifmt_single_mesh_fmt)
-      call choose_file_format(mesh_file_fmt_ctl%charavalue,             &
-     &    mesh_file_fmt_ctl%iflag, iflag_para_mesh_file_fmt)
+      call choose_file_format                                           &
+     &   (org_mesh_file_fmt_ctl, ifmt_single_mesh_fmt)
+      call choose_file_format                                           &
+     &   (mesh_file_fmt_ctl, iflag_para_mesh_file_fmt)
 !
 !
       iflag_memory_conserve = 1
@@ -75,7 +75,7 @@
         stop
       end if
 !
-      write(*,*) 'i_part_method', i_part_method
+      write(*,*) 'i_part_method', part_method_ctl%iflag
 !
       nele_grp_ordering = 0
       if (ele_grp_ordering_ctl%icou .eq. 1) then
@@ -89,41 +89,46 @@
         call dealloc_ele_grp_ordering_ctl
       end if
 !
-      if (i_part_method .gt. 0) then
-        if(      cmp_no_case(part_method_ctl, 'RCB')                    &
-     &      .or. cmp_no_case(part_method_ctl, 'RCB_xyz')) then
+      if (part_method_ctl%iflag .gt. 0) then
+        if(     cmp_no_case(part_method_ctl%charavalue,'RCB_xyz')       &
+     &     .or. cmp_no_case(part_method_ctl%charavalue,'RCB')) then
             NTYP_div = iPART_RCB_XYZ
 !
-        else if( cmp_no_case(part_method_ctl, 'RCB_sph')) then
+        else if(cmp_no_case(part_method_ctl%charavalue,'RCB_sph')) then
             NTYP_div = iPART_RCB_SPH
 !
-        else if( cmp_no_case(part_method_ctl, 'ES')                     &
-     &      .or. cmp_no_case(part_method_ctl, 'ES_xyz') ) then
+        else if(cmp_no_case(part_method_ctl%charavalue,'ES')            &
+     &     .or. cmp_no_case(part_method_ctl%charavalue,'ES_xyz')) then
             NTYP_div = iPART_EQ_XYZ
 !
-        else if( cmp_no_case(part_method_ctl, 'ES_sph') ) then
+        else if(cmp_no_case(part_method_ctl%charavalue,'ES_sph')) then
             NTYP_div = iPART_EQ_SPH
 !
-        else if( cmp_no_case(part_method_ctl, 'ES_layered_sph')) then
+        else if(cmp_no_case(part_method_ctl%charavalue,                 &
+     &                      'ES_layered_sph')) then
             NTYP_div = iPART_LAYER_SPH
 !
-        else if( cmp_no_case(part_method_ctl, 'MeTiS_input')) then
+        else if( cmp_no_case(part_method_ctl%charavalue,                &
+     &                       'MeTiS_input')) then
             NTYP_div = iPART_GEN_MeTiS
 !
-        else if( cmp_no_case(part_method_ctl, 'MeTiS_RSB')) then
+        else if( cmp_no_case(part_method_ctl%charavalue,                &
+     &                       'MeTiS_RSB')) then
             NTYP_div = iPART_MeTiS_RSB
 !
-        else if( cmp_no_case(part_method_ctl, 'Cubed_sphere')           &
-     &      .or. cmp_no_case(part_method_ctl, 'Cubed_sph')) then
+        else if( cmp_no_case(part_method_ctl%charavalue, 'Cubed_sph')   &
+     &      .or. cmp_no_case(part_method_ctl%charavalue,                &
+     &                      'Cubed_sphere')) then
             NTYP_div = iPART_CUBED_SPHERE
 !
-        else if( cmp_no_case(part_method_ctl, 'finer_mesh')             &
-     &      .or. cmp_no_case(part_method_ctl, 'Divide_by_finer_mesh')   &
-     &      ) then
+        else if( cmp_no_case(part_method_ctl%charavalue, 'finer_mesh')  &
+     &      .or. cmp_no_case(part_method_ctl%charavalue,                &
+     &                       'Divide_by_finer_mesh') ) then
             NTYP_div = iPART_FINE_MESH_TBL
 !
-        else if( cmp_no_case(part_method_ctl, 'Decomp_data')            &
-     &      .or. cmp_no_case(part_method_ctl, 'decomposit_data')) then
+        else if( cmp_no_case(part_method_ctl%charavalue, 'Decomp_data') &
+     &      .or. cmp_no_case(part_method_ctl%charavalue,                &
+     &                       'decomposit_data')) then
             NTYP_div = iPART_FINE_MESH_TBL
         end if
 !
@@ -152,15 +157,15 @@
       end if
 !
 !
-      if (i_sleeve_level .gt. 0) then
-        n_overlap = sleeve_level_ctl
+      if (sleeve_level_ctl%iflag .gt. 0) then
+        n_overlap = sleeve_level_ctl%intvalue
       else
         n_overlap = 1
       end if
       write(*,*) 'sleeve level :', n_overlap
 !
-      if (i_ele_overlap .gt. 0 .and. n_overlap .eq. 1) then
-        if(cmp_no_case(element_overlap_ctl, 'On')) then
+      if (element_overlap_ctl%iflag .gt. 0 .and. n_overlap .eq. 1) then
+        if(yes_flag(element_overlap_ctl%charavalue)) then
           i_sleeve_ele = 1
           n_overlap =    2
         else
@@ -293,13 +298,12 @@
           call dealloc_ele_grp_layer_ctl
 !
         else if ( NTYP_div .eq. iPART_CUBED_SPHERE) then
-          if (i_sph_sf_file .eq. 1) then
-            iflag_sphere_data = 1
-            sphere_data_file_name = sphere_file_name_ctl
+          iflag_sphere_data = sphere_file_name_ctl%iflag
+          if (iflag_sphere_data .eq. 1) then
+            sphere_data_file_name = sphere_file_name_ctl%charavalue
             write(*,*) 'Sphere surface correction file: ',              &
      &              trim(sphere_data_file_name)
           else
-            iflag_sphere_data = 0
             write(*,*) 'No Sphere surface correction file '
           end if
         end if
@@ -307,41 +311,41 @@
 !
       else if (NTYP_div .eq. iPART_DECMP_MESH_TBL                       &
      &    .or. NTYP_div .eq. iPART_FINE_MESH_TBL) then
-        if (i_domain_tbl_file .eq. 1) then
-          fname_subdomain = domain_group_file_ctl
+        if (domain_group_file_ctl%iflag .eq. 1) then
+          fname_subdomain = domain_group_file_ctl%charavalue
         else
           write(*,*) 'set domain table file name'
           stop
         end if
 !
         if(NTYP_div .eq. iPART_FINE_MESH_TBL) then
-          if (i_fine_itp_file .eq. 1) then
-            finer_inter_file_head = itp_tbl_head_ctl
+          if (itp_tbl_head_ctl%iflag .eq. 1) then
+            finer_inter_file_head = itp_tbl_head_ctl%charavalue
           else
             write(*,*) 'set interpolate file name'
             stop
           end if
-          if (i_fine_mesh_file .eq. 1) then
-            finer_mesh_file_head = finer_mesh_head_ctl
+          if (finer_mesh_head_ctl%iflag .eq. 1) then
+            finer_mesh_file_head = finer_mesh_head_ctl%charavalue
           else
             write(*,*) 'set reference mesh file name'
             stop
           end if
-          call choose_file_format(itp_tbl_format_ctl, i_fmt_itp_tbl,    &
-     &        ifmt_itp_table_file)
+          call choose_file_format                                       &
+     &       (itp_tbl_format_ctl, ifmt_itp_table_file)
         end if
 !
       else if(NTYP_div .eq. iPART_MeTiS_RSB) then
-        if (i_metis_in_file .eq. 1) then
-          metis_sdom_name = metis_domain_file_ctl
+        if (metis_domain_file_ctl%iflag .eq. 1) then
+          metis_sdom_name = metis_domain_file_ctl%charavalue
         else
           write(*,*) 'set MeTiS input file name'
           stop
         end if
 !
       else if (iPART_GEN_MeTiS .eq. iPART_GEN_MeTiS) then
-        if (i_metis_dom_file .eq. 1) then
-          metis_file_name = metis_input_file_ctl
+        if (metis_input_file_ctl%iflag .eq. 1) then
+          metis_file_name = metis_input_file_ctl%charavalue
         else
           write(*,*) 'set MeTiS domain file name'
           stop

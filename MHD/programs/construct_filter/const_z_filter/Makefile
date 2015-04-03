@@ -11,7 +11,6 @@ SOURCES = $(shell ls *.f90)
 
 MOD_Z_FILTER_CTL = \
 m_ctl_data_gen_z_filter.o \
-read_ctl_gen_z_filter.o \
 set_ctl_gen_z_filter.o \
 \
 input_control_gen_z_filter.o

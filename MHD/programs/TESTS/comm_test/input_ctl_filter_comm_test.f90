@@ -65,8 +65,8 @@
       use m_ctl_data_filter_files
 !
 !
-      if (i_filter_head_ctl .gt. 0) then
-        filter_3d_head = filter_head_ctl
+      if (filter_head_ctl%iflag .gt. 0) then
+        filter_3d_head = filter_head_ctl%charavalue
       end if
       ifmt_filter_file = id_ascii_file_fmt
 !

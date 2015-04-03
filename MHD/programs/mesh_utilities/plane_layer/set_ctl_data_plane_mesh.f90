@@ -40,8 +40,8 @@
         mesh_file_header = 'mesh/in'
       end if
 !
-      if (i_filter_head_ctl .eq. 1) then
-        filter_file_header = filter_head_ctl
+      if (filter_head_ctl%iflag .eq. 1) then
+        filter_file_header = filter_head_ctl%charavalue
       else
         filter_file_header = 'mesh/filter_node_l'
       end if

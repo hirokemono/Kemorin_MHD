@@ -212,8 +212,8 @@
         new_mesh_head = def_merged_mesh_header
       end if
 !
-      call choose_file_format(new_mesh_file_fmt_ctl%charavalue,         &
-     &    new_mesh_file_fmt_ctl%iflag, inew_mesh_file_fmt)
+      call choose_file_format                                           &
+     &   (new_mesh_file_fmt_ctl, inew_mesh_file_fmt)
 !
       end subroutine set_control_4_merged_mesh
 !
@@ -246,10 +246,8 @@
         new_rst_head = new_rst_def_head
       end if
 !
-      call choose_file_format(restart_file_fmt_ctl%charavalue,          &
-     &    restart_file_fmt_ctl%iflag, iorg_rst_file_fmt)
-      call choose_file_format(new_rst_files_fmt_ctl%charavalue,         &
-     &    new_rst_files_fmt_ctl%iflag, inew_rst_file_fmt)
+      call choose_file_format(restart_file_fmt_ctl, iorg_rst_file_fmt)
+      call choose_file_format(new_rst_files_fmt_ctl, inew_rst_file_fmt)
 !
 !
       if (i_newrst_magne .gt. 0) then
@@ -290,8 +288,8 @@
         new_mesh_head = def_newmesh_head
       end if
 !
-      call choose_file_format(new_mesh_file_fmt_ctl%charavalue,         &
-     &    new_mesh_file_fmt_ctl%iflag, inew_mesh_file_fmt)
+      call choose_file_format                                           &
+     &   (new_mesh_file_fmt_ctl, inew_mesh_file_fmt)
 !
       if(del_org_data_ctl%iflag .gt. 0) then
         if(yes_flag(del_org_data_ctl%charavalue)) then

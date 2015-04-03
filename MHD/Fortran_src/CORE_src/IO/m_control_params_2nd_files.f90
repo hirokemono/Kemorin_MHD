@@ -53,8 +53,8 @@
         org_sph_rj_head = org_sph_mode_head_ctl%charavalue
       end if
 !
-      call choose_file_format(org_sph_file_fmt_ctl%charavalue,          &
-     &    org_sph_file_fmt_ctl%iflag, ifmt_org_sph_rj_head)
+      call choose_file_format                                           &
+     &   (org_sph_file_fmt_ctl, ifmt_org_sph_rj_head)
 !
       end subroutine set_control_org_sph_mesh
 !

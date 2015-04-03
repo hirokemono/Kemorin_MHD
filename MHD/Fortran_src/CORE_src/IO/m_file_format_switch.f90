@@ -7,16 +7,20 @@
 !>@brief  integer flags for file format
 !!
 !!@verbatim
-!!      subroutine choose_file_format(file_fmt_ctl, i_file_fmt,         &
+!!      subroutine choose_file_format(file_fmt, id_file_fmt)
+!!        type(read_integer_item), intent(in) :: file_fmt
+!!      subroutine choose_file_format_array(num, files_fmt, id_files_fmt)
+!!        type(ctl_array_chara), intent(in) :: files_fmt
+!!      subroutine set_file_format(file_fmt_ctl, i_file_fmt,            &
 !!                id_file_fmt)
 !!
 !!        File format name
 !!          'ascii':            text (formatted) data
 !!          'gzip':             gziopped text (formatted) data
 !!          'binary' or 'bin':  binary (unformatted) data
-!!
 !!@endverbatim
 !!
+!!@n @param  file_fmt       Structure for File format control
 !!@n @param  file_fmt_ctl   File format name
 !!@n @param  i_file_fmt     Check flag if file format is read
 !!@n @param  id_file_fmt    File format flag (Output)
@@ -33,13 +37,51 @@
       integer(kind = kint), parameter :: id_gzip_bin_file_fmt = 2
       integer(kind = kint), parameter :: id_gzip_txt_file_fmt = 3
 !
+      private :: set_file_format
+!
 !------------------------------------------------------------------
 !
       contains
 !
 !------------------------------------------------------------------
 !
-      subroutine choose_file_format(file_fmt_ctl, i_file_fmt,           &
+      subroutine choose_file_format(file_fmt, id_file_fmt)
+!
+      use t_control_elements
+!
+      type(read_character_item), intent(in) :: file_fmt
+      integer(kind= kint), intent(inout) :: id_file_fmt
+!
+!
+      call set_file_format(file_fmt%charavalue, file_fmt%iflag,         &
+     &    id_file_fmt)
+!
+      end subroutine choose_file_format
+!
+!------------------------------------------------------------------
+!
+      subroutine choose_file_format_array(num, files_fmt, id_files_fmt)
+!
+      use t_read_control_arrays
+!
+      integer(kind= kint), intent(in) :: num
+      type(ctl_array_chara), intent(in) :: files_fmt
+      integer(kind= kint), intent(inout) :: id_files_fmt(num)
+!
+      integer(kind = kint) :: i
+!
+!
+      do i = 1, num
+        call set_file_format(files_fmt%c_tbl(i), files_fmt%icou,        &
+     &      id_files_fmt(i))
+      end do
+!
+      end subroutine choose_file_format_array
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine set_file_format(file_fmt_ctl, i_file_fmt,              &
      &          id_file_fmt)
 !
       use skip_comment_f
@@ -77,7 +119,7 @@
         end if
       end if
 !
-      end subroutine choose_file_format
+      end subroutine set_file_format
 !
 !------------------------------------------------------------------
 !

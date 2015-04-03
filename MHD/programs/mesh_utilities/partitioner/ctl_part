@@ -69,7 +69,6 @@ begin partitioner_control
 !    for finer mesh data
     finer_mesh_head_ctl    'mesh_fine/in'
     interpolate_tbl_head   'mesh_fine/itp_table'
-    domain_group_file_ctl  'group_fine.dat'
     interpolate_table_format_ctl   "gzip"
 !
   end decompose_ctl

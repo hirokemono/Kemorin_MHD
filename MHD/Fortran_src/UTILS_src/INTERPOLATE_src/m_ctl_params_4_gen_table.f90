@@ -94,6 +94,7 @@
       use m_file_format_switch
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
+      use skip_comment_f
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)
@@ -107,16 +108,15 @@
         dest_mesh_head = new_mesh_prefix%charavalue
       end if
 !
-      if (i_table_head_ctl .ne. 0) then
-        table_file_head = table_head_ctl
+      if (table_head_ctl%iflag .ne. 0) then
+        table_file_head = table_head_ctl%charavalue
       end if
 !
-      call choose_file_format(mesh_file_fmt_ctl%charavalue,             &
-     &    mesh_file_fmt_ctl%iflag, ifmt_org_mesh_file)
-      call choose_file_format(new_mesh_file_fmt_ctl%charavalue,         &
-     &    new_mesh_file_fmt_ctl%iflag, ifmt_itp_mesh_file)
-      call choose_file_format(ifmt_itp_table_file_ctl, i_fmt_itp_tbl,   &
-     &    ifmt_itp_table_file)
+      call choose_file_format(mesh_file_fmt_ctl, ifmt_org_mesh_file)
+      call choose_file_format                                           &
+     &   (new_mesh_file_fmt_ctl, ifmt_itp_mesh_file)
+      call choose_file_format                                           &
+     &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
 !
 !
       if (iflag_debug.eq.1)  then
@@ -146,18 +146,13 @@
       end if
 !
 !
-      if (i_reverse_ele_tbl .ne. 0) then
-        if(     reverse_element_table_ctl .eq.'on'                      &
-     &     .or. reverse_element_table_ctl .eq.'On'                      &
-     &     .or. reverse_element_table_ctl .eq.'ON') then
-          iflag_reverse_itp_tbl = 1
-        end if
+      if (reverse_element_table_ctl%iflag .ne. 0                        &
+     &    .and. yes_flag(reverse_element_table_ctl%charavalue)) then
+        iflag_reverse_itp_tbl = 1
       end if
 !
 !
-      if      ( ele_hash_type_ctl .eq. 'sphere'                         &
-     &  .or.    ele_hash_type_ctl .eq. 'Sphere'                         &
-     &  .or.    ele_hash_type_ctl .eq. 'SPHERE' ) then
+      if(cmp_no_case(ele_hash_type_ctl%charavalue, 'sphere')) then
         id_ele_hash_type = 1
       end if
 !
@@ -184,8 +179,10 @@
 !
 !
 !
-      maxitr =   itr_refine_ctl
-      eps_iter = eps_refine_ctl
+      if(itr_refine_ctl%iflag .gt. 0) maxitr = itr_refine_ctl%intvalue
+      if(eps_refine_ctl%iflag .gt. 0) then
+        eps_iter = eps_refine_ctl%realvalue
+      end if
 !
       if (iflag_debug.eq.1)  then
         write(*,*) 'maxitr ', maxitr

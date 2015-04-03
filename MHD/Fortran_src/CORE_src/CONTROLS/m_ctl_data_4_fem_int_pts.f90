@@ -1,34 +1,42 @@
-!m_ctl_data_4_fem_int_pts.f90
-!      module m_ctl_data_4_fem_int_pts
+!>@file   m_ctl_data_4_fem_int_pts.f90
+!!@brief  module m_ctl_data_4_fem_int_pts
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Matsui in 2002
+!!@n    Mmodified by H. Matsui in March, 2006
 !
-!        programmed by H.Matsui on March. 2006
-!
-!      subroutine read_fem_int_points_ctl
-!
-! -----------------------------------------------------------------------
-!
-!    begin intg_point_num_ctl
-!       integrate_points_ctl     2
-!
-!       intg_point_poisson_ctl   2
-!       intg_point_t_evo_ctl     2
-!    end intg_point_num_ctl
-!
-! -----------------------------------------------------------------------
+!> @brief REad integration points for FEM
+!!
+!!@verbatim
+!! ----------------------------------------------------------------------
+!!
+!!    begin intg_point_num_ctl
+!!       integrate_points_ctl     2
+!!
+!!       intg_point_poisson_ctl   2
+!!       intg_point_t_evo_ctl     2
+!!    end intg_point_num_ctl
+!!
+!! ----------------------------------------------------------------------
+!!@endverbatim
 !
       module m_ctl_data_4_fem_int_pts
 !
       use m_precision
+      use t_control_elements
 !
       implicit  none
 !
 !
 !   integeration points
 !
-      integer (kind=kint)  :: integration_points_ctl
+!>      Structure for read # of integration points
+      type(read_integer_item), save  :: integration_points_ctl
 !
-      integer (kind=kint)  :: intg_point_poisson_ctl
-      integer (kind=kint)  :: intg_point_t_evo_ctl
+!>      Structure for read # of integration points for Poisson eq.
+      type(read_integer_item), save :: intg_point_poisson_ctl
+!>      Structure for read # of integration points for time integration
+      type(read_integer_item), save :: intg_point_t_evo_ctl
 !
 !
 !  label for group entry
@@ -45,10 +53,6 @@
      &         = 'intg_point_poisson_ctl'
       character(len=kchara), parameter :: hd_intg_point_t_evo           &
      &         = 'intg_point_t_evo_ctl'
-!
-      integer (kind=kint) :: i_intgration_points =  0
-      integer (kind=kint) :: i_intg_point_poisson = 0
-      integer (kind=kint) :: i_intg_point_t_evo =   0
 !
 !
       private :: hd_int_points, i_int_points, hd_intgration_points
@@ -75,12 +79,12 @@
         call find_control_end_flag(hd_int_points, i_int_points)
         if(i_int_points .gt. 0) exit
 !
-        call read_integer_ctl_item(hd_intgration_points,                &
-     &          i_intgration_points, integration_points_ctl)
-        call read_integer_ctl_item(hd_intg_point_poisson,               &
-     &          i_intg_point_poisson, intg_point_poisson_ctl)
-        call read_integer_ctl_item(hd_intg_point_t_evo,                 &
-     &          i_intg_point_t_evo, intg_point_t_evo_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_intgration_points, integration_points_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_intg_point_poisson, intg_point_poisson_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_intg_point_t_evo, intg_point_t_evo_ctl)
       end do
 !
       end subroutine read_fem_int_points_ctl

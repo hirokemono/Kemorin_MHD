@@ -1,12 +1,14 @@
-!set_control_ele_layering.f90
-!      module set_control_ele_layering
+!>@file   set_control_ele_layering.f90
+!!@brief  module set_control_ele_layering
+!!
+!!@author H. Matsui
+!!@date Programmed in Nov., 2009
 !
-!        programmed by H.Matsui on Nov., 2009
-!
-!      subroutine s_set_control_ele_layering
-!
-!      subroutine count_layering_ele_grp_list
-!      subroutine set_layering_ele_grp_list
+!>@brief  Set parameters for radial grouping
+!!
+!!@verbatim
+!!      subroutine s_set_control_ele_layering
+!!@endverbatim
 !
       module set_control_ele_layering
 !
@@ -26,19 +28,17 @@
 !
       use m_ctl_data_ele_layering
       use set_layer_list_by_table
+      use skip_comment_f
+!
+      character(len=kchara) :: tmpchara
 !
 !
-      if    (layering_grp_type_ctl .eq. 'explicit'                      &
-     &  .or. layering_grp_type_ctl .eq. 'Explicit'                      &
-     &  .or. layering_grp_type_ctl .eq. 'EXPLICIT') then
+      tmpchara = layering_grp_type_ctl%charavalue
+      if     (cmp_no_case(tmpchara,'explicit')) then
         iflag_layering_type = 0
-      else if( layering_grp_type_ctl .eq. 'ele_group_list'              &
-     &    .or. layering_grp_type_ctl .eq. 'Ele_group_list'              &
-     &    .or. layering_grp_type_ctl .eq. 'ELE_GROUP_LIST') then
+      else if(cmp_no_case(tmpchara,'ele_group_list')) then
         iflag_layering_type = 2
-      else if( layering_grp_type_ctl .eq. 'start_end'                   &
-     &    .or. layering_grp_type_ctl .eq. 'Start_end'                   &
-     &    .or. layering_grp_type_ctl .eq. 'START_END') then
+      else if(cmp_no_case(tmpchara,'start_end')) then
         iflag_layering_type = 1
       else
         iflag_layering_type = 0
@@ -66,10 +66,12 @@
         call dealloc_control_array_chara(layer_grp_name_ctl)
 !
       else if (iflag_layering_type .eq. 2) then
-        num_layering_grp =              num_layering_grp_ctl
-        num_fluid_layering_grp =        num_fl_layer_grp_ctl
-        start_layering_grp_name =       start_layering_grp_name_ctl
-        start_fluid_layering_grp_name = start_fl_layer_grp_name_ctl
+        num_layering_grp =       num_layering_grp_ctl%intvalue
+        num_fluid_layering_grp = num_fl_layer_grp_ctl%intvalue
+        start_layering_grp_name                                         &
+     &     = start_layering_grp_name_ctl%charavalue
+        start_fluid_layering_grp_name                                   &
+     &     = start_fl_layer_grp_name_ctl%charavalue
       end if
 !
       if(iflag_debug .gt. 0) then

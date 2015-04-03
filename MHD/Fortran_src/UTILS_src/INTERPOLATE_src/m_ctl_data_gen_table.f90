@@ -1,11 +1,16 @@
+!>@file   m_ctl_data_gen_table.f90
+!!@brief  module m_ctl_data_gen_table
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2006
 !
-!      module m_ctl_data_gen_table
-!
-!      Written by H. Matsui on July, 2006
-!
-!      subroutine read_control_4_gen_itp_table
-!      subroutine read_control_4_interpolate
-!      subroutine read_control_4_distribute_itp
+!>@brief Structure for reading parameters to generate interpolate table
+!!
+!!@verbatim
+!!      subroutine read_control_4_gen_itp_table
+!!      subroutine read_control_4_interpolate
+!!      subroutine read_control_4_distribute_itp
+!!@endverbatim
 !
 !     required module for 3rd level
 !
@@ -32,19 +37,29 @@
      &                 :: fname_dist_itp_ctl = "ctl_distribute_itp"
 !
 !
-      character(len = kchara) :: table_head_ctl = "mesh/itp_table"
-      character(len = kchara) :: ifmt_itp_table_file_ctl = "ascii"
+!>      file prefix for interpolation table
+      type(read_character_item), save :: table_head_ctl
 !
-      character(len = kchara) :: itp_node_head_ctl = "node_test_itp"
-      character(len = kchara) :: reverse_element_table_ctl = "OFF"
+!>      file format for interpolation table
+      type(read_character_item), save :: fmt_itp_table_file_ctl
 !
-      character(len = kchara) :: single_itp_tbl_head_ctl = "single_itp"
+!>      file prefix for interpolation table
+      type(read_character_item), save :: itp_node_head_ctl
 !
-      character(len = kchara) :: ele_hash_type_ctl = "sphere"
+!>      switch for element interpolation table
+      type(read_character_item), save :: reverse_element_table_ctl
 !
-      type(read_integer_item), save :: num_theta_divide_ctl
-      type(read_integer_item), save :: num_phi_divide_ctl
+!>      file prefix for single interpolation table
+      type(read_character_item), save :: single_itp_tbl_head_ctl
+!
+!>      Structure for element hash type
+      type(read_character_item), save :: ele_hash_type_ctl
+!
 !>      Structure for element grouping in meridional direction
+      type(read_integer_item), save :: num_theta_divide_ctl
+!>      Structure for element grouping in zonal direction
+      type(read_integer_item), save :: num_phi_divide_ctl
+!>      Structure for element grouping in radial direction
       type(read_integer_item), save :: radial_divide_ctl
 !
 !>      Structure for error torrance for refine interpolation
@@ -52,8 +67,11 @@
 !!@n      eps_4_itp_ctl%vect:  Error torrance for interpolation
       type(ctl_array_ir), save :: eps_4_itp_ctl
 !
-      integer (kind=kint) :: itr_refine_ctl = 20000
-      real (kind=kreal) :: eps_refine_ctl = 1.0d-15
+!>      Structure for maximum iteration counts
+      type(read_integer_item), save :: itr_refine_ctl
+!
+!>      Structure for error torrance
+      type(read_real_item), save :: eps_refine_ctl
 !
 !
 !
@@ -99,12 +117,6 @@
       character(len=kchara), parameter                                  &
      &         :: hd_fmt_itp_tbl =    'interpolate_table_format_ctl'
 !
-      integer (kind=kint) :: i_table_head_ctl =     0
-      integer (kind=kint) :: i_itp_node_head_ctl =  0
-      integer (kind=kint) :: i_reverse_ele_tbl =    0
-      integer (kind=kint) :: i_single_itp_tbl =     0
-      integer (kind=kint) :: i_fmt_itp_tbl =        0
-!
 !     3rd level for element hash
 !
       character(len=kchara), parameter                                  &
@@ -116,8 +128,6 @@
       character(len=kchara), parameter                                  &
      &         ::  hd_num_hash_azim =   'num_azimuth_ctl'
 !
-      integer (kind=kint) :: i_hash_type =       0
-!
 !     3rd level for iteration  control
 !
       character(len=kchara), parameter                                  &
@@ -126,9 +136,6 @@
      &         ::  hd_itr =        'maxiter'
       character(len=kchara), parameter                                  &
      &         ::  hd_eps =        'eps_4_refine'
-!
-      integer (kind=kint) :: i_itr =        0
-      integer (kind=kint) :: i_eps =        0
 !
       private :: table_ctl_file_code, fname_table_ctl, fname_itp_ctl
       private :: hd_table_control, i_table_control
@@ -260,17 +267,16 @@
         if(i_itp_files .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_table_head_ctl,                 &
-     &        i_table_head_ctl, table_head_ctl)
-        call read_character_ctl_item(hd_itp_node_head_ctl,              &
-     &        i_itp_node_head_ctl, itp_node_head_ctl)
-        call read_character_ctl_item(hd_single_itp_tbl,                 &
-     &        i_single_itp_tbl, single_itp_tbl_head_ctl)
-        call read_character_ctl_item(hd_reverse_ele_tbl,                &
-     &        i_reverse_ele_tbl, reverse_element_table_ctl)
+        call read_chara_ctl_type(hd_table_head_ctl, table_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_itp_node_head_ctl, itp_node_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_single_itp_tbl, single_itp_tbl_head_ctl)
+        call read_chara_ctl_type                                        &
+     &      (hd_reverse_ele_tbl, reverse_element_table_ctl)
 !
-        call read_character_ctl_item(hd_fmt_itp_tbl, i_fmt_itp_tbl,     &
-     &      ifmt_itp_table_file_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_fmt_itp_tbl, fmt_itp_table_file_ctl)
       end do
 !
       end subroutine read_itp_files_ctl
@@ -312,9 +318,9 @@
 !
         call read_control_array_i_r(hd_eps_4_itp, eps_4_itp_ctl)
 !
-        call read_integer_ctl_item(hd_itr, i_itr, itr_refine_ctl)
+        call read_integer_ctl_type(hd_itr, itr_refine_ctl)
 !
-        call read_real_ctl_item(hd_eps, i_eps, eps_refine_ctl)
+        call read_real_ctl_type(hd_eps, eps_refine_ctl)
       end do
 !
       end subroutine read_itaration_param_ctl
@@ -333,8 +339,7 @@
         if(i_element_hash .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_hash_type,                      &
-     &        i_hash_type, ele_hash_type_ctl)
+        call read_chara_ctl_type(hd_hash_type, ele_hash_type_ctl)
 ! 
         call read_integer_ctl_type(hd_search_radius, radial_divide_ctl)
         call read_integer_ctl_type(hd_num_hash_elev,                    &

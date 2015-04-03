@@ -1,9 +1,14 @@
-!set_control_surface_mesh.f90
-!      module set_control_surface_mesh
+!>@file   set_control_surface_mesh.f90
+!!@brief  module set_control_surface_mesh
+!!
+!!@author H. Matsui
+!!@date Programmed in Nov., 2009
 !
-!        programmed by H.Matsui on Nov., 2009
-!
-!      subroutine set_control_surf_mesh_def
+!>@brief  Set parameters for surface and edge mesh
+!!
+!!@verbatim
+!!      subroutine set_control_surf_mesh_def
+!!@endverbatim
 !
       module set_control_surface_mesh
 !

@@ -36,52 +36,53 @@
       use m_iccg_parameter
       use m_ctl_data_4_solvers
       use m_ctl_parameter_Multigrid
+      use skip_comment_f
 !
 !   control for solvers
 !
-        if ((i_method*i_precond) .eq. 0) then
+        if ((method_ctl%iflag * precond_ctl%iflag) .eq. 0) then
           e_message                                                     &
      &    = 'Set CG method and preconditioning for Poisson solver'
             call calypso_MPI_abort(ierr_CG, e_message)
         else
-          precond_4_solver = precond_ctl
-          method_4_solver  = method_ctl
+          precond_4_solver = precond_ctl%charavalue
+          method_4_solver  = method_ctl%charavalue
         end if
 !
-        if (i_itr.eq.0) then
+        if (itr_ctl%iflag .eq. 0) then
             e_message                                                   &
      &      = 'Set max iteration count for CG solver '
             call calypso_MPI_abort(ierr_CG, e_message)
         else
-          itr   = itr_ctl
+          itr   = itr_ctl%intvalue
         end if
 !
-        if (i_eps.eq.0) then
+        if (eps_ctl%iflag .eq. 0) then
             e_message                                                   &
      &      = 'Set conservation limit for CG solver '
             call calypso_MPI_abort(ierr_CG, e_message)
         else
-          eps   = eps_ctl
+          eps   = eps_ctl%realvalue
         end if
 !
-        if (i_sigma.eq.0) then
+        if (sigma_ctl%iflag .eq. 0) then
             e_message                                                   &
      &      = 'Set coefficient of diagonal for SSOR preconditioning'
             call calypso_MPI_abort(ierr_CG, e_message)
         else
-          sigma = sigma_ctl
+          sigma = sigma_ctl%realvalue
         end if
 !
-        if (i_sigma.eq.0) then
+        if (sigma_ctl%iflag .eq. 0) then
           sigma = 1.0d0
         else
-          sigma = sigma_ctl
+          sigma = sigma_ctl%realvalue
         end if
 !
-        if (i_sigma_diag.eq.0) then
+        if (sigma_diag_ctl%iflag .eq. 0) then
           sigma_diag = 1.0d0
         else
-          sigma_diag = sigma_diag_ctl
+          sigma_diag = sigma_diag_ctl%realvalue
         end if
 !
 !   control for time evolution scheme
@@ -111,30 +112,30 @@
 !
 !   control for number of processores for DJDS solver
 !
-        if (i_order_method.eq.0) then
+        if (order_method_ctl%iflag .eq. 0) then
               e_message                                                 &
      &         = 'Set ordering scheme for DJDS solver'
               call calypso_MPI_abort(ierr_CG, e_message)
         else
-          ordering_name = order_method_ctl
+          ordering_name = order_method_ctl%charavalue
         end if
 !
-        if ( ordering_name .eq. 'RCM_DJDS') then 
+        if (cmp_no_case(ordering_name, 'RCM_DJDS')) then 
           iflag_ordering = 1
           mc_color = 0
-          if (i_min_color.eq.0) then
+          if (min_color_ctl%iflag .eq. 0) then
             min_color = 0
           else
-            min_color = min_color_ctl
+            min_color = min_color_ctl%intvalue
           end if
-        else if  ( ordering_name .eq. 'MC_DJDS') then
+        else if  (cmp_no_case(ordering_name,'MC_DJDS')) then
           iflag_ordering = 2
-          if (i_mc_color.eq.0) then
+          if (mc_color_ctl%iflag .eq. 0) then
             mc_color = 0
           else
-            mc_color = mc_color_ctl
+            mc_color = mc_color_ctl%intvalue
           end if
-          min_color = mc_color_ctl
+          min_color = mc_color_ctl%intvalue
         end if
 !
         if (       precond_4_solver .eq. 'DIAG'                         &
@@ -164,14 +165,7 @@
           write(*,*) 'precond_4_crank:   ', trim(precond_4_crank)
         end if
 !
-      if (     ((method_4_solver(1:1).eq.'M')                           &
-     &      .or.(method_4_solver(1:1).eq.'m'))                          &
-     &   .and. ((method_4_solver(2:2).eq.'G')                           &
-     &      .or.(method_4_solver(2:2).eq.'g'))                          &
-     &   .and. ((method_4_solver(3:3).eq.'C')                           &
-     &      .or.(method_4_solver(3:3).eq.'c'))                          &
-     &   .and. ((method_4_solver(4:4).eq.'G')                           &
-     &      .or.(method_4_solver(4:4).eq.'g')) ) then
+      if (cmp_no_case(method_4_solver, 'MGCG')) then
         if (iflag_debug.eq.1) write(*,*) 'set_ctl_data_4_Multigrid'
         call set_ctl_data_4_Multigrid
       end if

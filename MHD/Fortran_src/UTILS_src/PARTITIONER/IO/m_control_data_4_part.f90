@@ -1,13 +1,18 @@
+!>@file   m_control_data_4_part.f90
+!!@brief  module m_control_data_4_part
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep., 2007
 !
-!      module m_control_data_4_part
-!
-!      Written by Kemorin on Sep. 2007
-!
-!      subroutine dealloc_num_bisection_ctl
-!      subroutine dealloc_num_subdomains_ctl
-!      subroutine dealloc_ele_grp_ordering_ctl
-!      subroutine dealloc_ele_grp_layer_ctl
-!       subroutine read_control_data_4_part
+!>@brief  Control data for partitioner
+!!
+!!@verbatim
+!!      subroutine dealloc_num_bisection_ctl
+!!      subroutine dealloc_num_subdomains_ctl
+!!      subroutine dealloc_ele_grp_ordering_ctl
+!!      subroutine dealloc_ele_grp_layer_ctl
+!!      subroutine read_control_data_4_part
+!!@endverbatim
 !
       module m_control_data_4_part
 !
@@ -16,6 +21,7 @@
       use m_read_control_elements
       use skip_comment_f
       use t_read_control_arrays
+      use t_control_elements
 !
       implicit    none
 !
@@ -26,9 +32,12 @@
       integer (kind=kint), parameter :: my_rank = 0
 !
 !
-      character (len = kchara) :: part_method_ctl
-      character (len = kchara) :: element_overlap_ctl
-      integer(kind = kint) :: sleeve_level_ctl = 0
+!>      Patitioning method
+      type(read_character_item), save :: part_method_ctl
+!>      Flag for element overlapping
+      type(read_character_item), save :: element_overlap_ctl
+!>      Number of sleeve level
+      type(read_integer_item), save :: sleeve_level_ctl
 !
 !>      Structure for list of bisection
 !!@n      ele_grp_ordering_ctl%c_tbl: Direction of bisectioning
@@ -43,13 +52,21 @@
 !!@n      ele_grp_ordering_ctl%c_tbl:  list of element group
       type(ctl_array_chara), save :: ele_grp_layering_ctl
 !
-      character(len=kchara) :: sphere_file_name_ctl
-      character(len=kchara) :: metis_input_file_ctl
-      character(len=kchara) :: metis_domain_file_ctl
-      character(len=kchara) :: domain_group_file_ctl
-      character(len=kchara) :: finer_mesh_head_ctl
-      character(len=kchara) :: itp_tbl_head_ctl
-      character(len=kchara) :: itp_tbl_format_ctl
+!>      File name for sphere file data
+      type(read_character_item), save :: sphere_file_name_ctl
+!>      File name for MeTiS imput
+      type(read_character_item), save :: metis_input_file_ctl
+!>      File name for MeTiS domain file
+      type(read_character_item), save :: metis_domain_file_ctl
+!
+!>      File name for domain grouping file name
+      type(read_character_item), save :: domain_group_file_ctl
+!>      File name for finer mesh file prefix
+      type(read_character_item), save :: finer_mesh_head_ctl
+!>      File name for interpolation table for finer mesh file
+      type(read_character_item), save :: itp_tbl_head_ctl
+!>      File format for finer mesh file
+      type(read_character_item), save :: itp_tbl_format_ctl
 !
 !>      Structure for element group list for ordering
 !!@n      ele_grp_ordering_ctl%c_tbl:  list of element group
@@ -88,10 +105,6 @@
       character(len=kchara), parameter :: hd_ele_overlap                &
      &                      = 'element_overlap_ctl'
 !
-      integer (kind=kint) :: i_part_method =  0
-      integer (kind=kint) :: i_sleeve_level = 0
-      integer (kind=kint) :: i_ele_overlap =  0
-!
 !     RCB
       character(len=kchara), parameter :: hd_num_rcb = 'RCB_dir_ctl'
 !
@@ -105,17 +118,14 @@
 !     cubed sphere
       character(len=kchara), parameter :: hd_sph_sf_file                &
      &                      = 'sphere_file_name_ctl'
-      integer (kind=kint) :: i_sph_sf_file =  0
 !
 !     metis input
       character(len=kchara), parameter :: hd_metis_in_file              &
      &                      = 'metis_input_file_ctl'
-      integer (kind=kint) :: i_metis_in_file =  0
 !
 !     metis resules
       character(len=kchara), parameter :: hd_metis_dom_file             &
      &                      = 'metis_domain_file_ctl'
-      integer (kind=kint) :: i_metis_dom_file =  0
 !
 !     grouping data file
       character(len=kchara), parameter :: hd_domain_tbl_file            &
@@ -127,9 +137,6 @@
       character(len=kchara), parameter                                  &
      &         :: hd_fmt_itp_tbl =    'interpolate_table_format_ctl'
 
-      integer (kind=kint) :: i_domain_tbl_file =  0
-      integer (kind=kint) :: i_fine_mesh_file =   0
-      integer (kind=kint) :: i_fine_itp_file =    0
       integer (kind=kint) :: i_fmt_itp_tbl =      0
 !
 !
@@ -248,27 +255,21 @@
      &     (hd_num_r_layerd, ele_grp_layering_ctl)
 !
 !
-        call read_integer_ctl_item(hd_sleeve_level,                     &
-     &            i_sleeve_level, sleeve_level_ctl)
+        call read_integer_ctl_type(hd_sleeve_level, sleeve_level_ctl)
 !
-        call read_character_ctl_item(hd_part_method,                    &
-     &            i_part_method, part_method_ctl)
-        call read_character_ctl_item(hd_ele_overlap,                    &
-     &            i_ele_overlap, element_overlap_ctl)
-        call read_character_ctl_item(hd_sph_sf_file,                    &
-     &            i_sph_sf_file, sphere_file_name_ctl)
-        call read_character_ctl_item(hd_metis_in_file,                  &
-     &            i_metis_in_file, metis_input_file_ctl)
-        call read_character_ctl_item(hd_metis_dom_file,                 &
-     &            i_metis_dom_file, metis_domain_file_ctl)
-        call read_character_ctl_item(hd_fine_mesh_file,                 &
-     &            i_fine_mesh_file, finer_mesh_head_ctl)
-        call read_character_ctl_item(hd_fine_itp_file,                  &
-     &            i_fine_itp_file, itp_tbl_head_ctl)
-        call read_character_ctl_item(hd_domain_tbl_file,                &
-     &            i_domain_tbl_file, domain_group_file_ctl)
-        call read_character_ctl_item(hd_fmt_itp_tbl,                    &
-     &            i_fmt_itp_tbl, itp_tbl_format_ctl)
+        call read_chara_ctl_type(hd_part_method, part_method_ctl)
+        call read_chara_ctl_type(hd_ele_overlap, element_overlap_ctl)
+        call read_chara_ctl_type(hd_sph_sf_file, sphere_file_name_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_metis_in_file, metis_input_file_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_metis_dom_file, metis_domain_file_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_fine_mesh_file, finer_mesh_head_ctl)
+        call read_chara_ctl_type(hd_fine_itp_file, itp_tbl_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_domain_tbl_file, domain_group_file_ctl)
+        call read_chara_ctl_type(hd_fmt_itp_tbl, itp_tbl_format_ctl)
       end do
 !
       end subroutine read_ctl_data_4_decomp

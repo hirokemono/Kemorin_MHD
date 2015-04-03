@@ -1,13 +1,20 @@
+!>@file   m_ctl_data_solver_test.f90
+!!@brief  module m_ctl_data_solver_test
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007
 !
-!      module m_ctl_data_solver_test
+!>@brief  Structure for reading parameters for MGCG
+!!
+!!@verbatim
+!!      subroutine read_control_4_solver_test
+!!@endverbatim
 !
       module m_ctl_data_solver_test
 !
-!      Written by H. Matsui on June, 2007
-!
       use m_precision
-!
       use m_ctl_data_4_solvers
+      use t_control_elements
 !
       implicit  none
 !
@@ -16,12 +23,16 @@
       character(len = kchara), parameter                                &
      &                        :: fname_stest_ctl = "ctl_solver_test"
 !
-      character(len = kchara) :: matrix_head_ctl =   "matIN"
-      character(len = kchara) :: solution_head_ctl = "solution"
+!>      File prefix for matrix data
+      type(read_character_item), save :: matrix_head_ctl
+!>      File prefix for solution data
+      type(read_character_item), save :: solution_head_ctl
 !
-      integer(kind = kint) :: ip_smp_p_ctl = 1
+!>      Number of SMP
+      type(read_integer_item), save :: ip_smp_p_ctl
 !
-      character(len=kchara) :: solver_type_ctl = 'block33'
+!>      Solver type
+      type(read_character_item), save :: solver_type_ctl
 !
 !
 !     Top level
@@ -41,19 +52,11 @@
       character(len=kchara), parameter                                  &
      &         :: hd_solver_type =      'solver_type'
 !
-      integer (kind=kint) :: i_matrix_head_ctl =    0
-      integer (kind=kint) :: i_solution_head_ctl =  0
-      integer (kind=kint) :: i_ip_smp_p_ctl =       0
-      integer (kind=kint) :: i_plane_ctl =          0
-      integer (kind=kint) :: i_solver_type =        0
-!
       private :: hd_solver_test_ctl, i_solver_test_ctl
       private :: hd_matrix_head_ctl, hd_solution_head_ctl
       private :: hd_ip_smp_p_ctl,    hd_solver_type
 !
       private :: read_ctl_data_test
-!
-!      subroutine read_control_4_solver_test
 !
 !  ---------------------------------------------------------------------
 !
@@ -102,15 +105,12 @@
         call read_DJDS_solver_param_ctl
 !
 !
-        call read_character_ctl_item(hd_matrix_head_ctl,                &
-     &        i_matrix_head_ctl, matrix_head_ctl)
-        call read_character_ctl_item(hd_solution_head_ctl,              &
-     &        i_solution_head_ctl, solution_head_ctl)
-        call read_character_ctl_item(hd_solver_type,                    &
-     &        i_solver_type, solver_type_ctl)
+        call read_chara_ctl_type(hd_matrix_head_ctl, matrix_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_solution_head_ctl,solution_head_ctl)
+        call read_chara_ctl_type(hd_solver_type, solver_type_ctl)
 !
-        call read_integer_ctl_item(hd_ip_smp_p_ctl,                     &
-     &        i_ip_smp_p_ctl, ip_smp_p_ctl)
+        call read_integer_ctl_type(hd_ip_smp_p_ctl, ip_smp_p_ctl)
       end do
 !
       end subroutine read_ctl_data_test

@@ -24,7 +24,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use read_ctl_gen_z_filter
+      use m_ctl_data_gen_z_filter
       use set_ctl_gen_z_filter
       use const_geometry_z_commute
 !

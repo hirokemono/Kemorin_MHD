@@ -28,20 +28,21 @@
       use m_ctl_data_solver_test
       use m_ctl_data_4_solvers
       use crs_matrix_io
+      use skip_comment_f
 !
       use set_parallel_file_name
 !
 !
-      if (i_matrix_head_ctl .ne. 0) then
-        matrix_file_head = matrix_head_ctl
+      if (matrix_head_ctl%iflag .ne. 0) then
+        matrix_file_head = matrix_head_ctl%charavalue
       else
         matrix_file_head = "matIN"
       end if
       call add_int_suffix(my_rank, matrix_file_head, matrix_file_name)
       write(*,*) 'matrix data file: ', matrix_file_name
 !
-      if (i_matrix_head_ctl .ne. 0) then
-        solution_file_head = solution_head_ctl
+      if (solution_head_ctl%iflag .ne. 0) then
+        solution_file_head = solution_head_ctl%charavalue
       else
         solution_file_head = "matIN"
       end if
@@ -49,22 +50,28 @@
      &    solution_file_name)
       write(*,*) 'solution data file: ', solution_file_name
 !
-      if (i_ip_smp_p_ctl .ne. 0) then
-        np_smp = ip_smp_p_ctl
+      if (ip_smp_p_ctl%iflag .ne. 0) then
+        np_smp = ip_smp_p_ctl%intvalue
       else
         np_smp = 1
       end if
 !
 !     set solver information
 !
-      SOLVER_crs =  solver_type_ctl
+      if(solver_type_ctl%iflag .gt. 0) then
+        SOLVER_crs =  solver_type_ctl%charavalue
+      else
+        SOLVER_crs = 'block33'
+      end if
 !
-      precond =    precond_ctl
-      method =     method_ctl
-      eps =        eps_ctl
-      itr =        itr_ctl
-      sigma =      sigma_ctl
-      sigma_diag = sigma_diag_ctl
+      if(precond_ctl%iflag .gt. 0) precond = precond_ctl%charavalue
+      if(method_ctl%iflag .gt. 0)  method =  method_ctl%charavalue
+      if(eps_ctl%iflag .gt. 0) eps = eps_ctl%realvalue
+      if(itr_ctl%iflag .gt. 0) itr = itr_ctl%intvalue
+      if(sigma_ctl%iflag .gt. 0) sigma = sigma_ctl%realvalue
+      if(sigma_diag_ctl%iflag .gt. 0) then
+        sigma_diag =  sigma_diag_ctl%realvalue
+      end if
 !
       METHOD_crs =       method
       PRECOND_crs =      precond
@@ -73,20 +80,20 @@
       REALARRAY_crs(2) = sigma_diag
       REALARRAY_crs(3) = sigma
 !
-      if ( order_method_ctl .eq. 'RCM_DJDS') then 
+      if (cmp_no_case(order_method_ctl%charavalue, 'RCM_DJDS')) then 
         iflag_ordering = 1
         mc_color = 0
-        if (i_min_color.eq.0) then
+        if (min_color_ctl%iflag .eq. 0) then
           min_color = 0
         else
-          min_color = min_color_ctl
+          min_color = min_color_ctl%intvalue
         end if
-      else if  ( order_method_ctl .eq. 'MC_DJDS') then
+      else if(cmp_no_case(order_method_ctl%charavalue, 'MC_DJDS')) then
         iflag_ordering = 2
-        if (i_mc_color.eq.0) then
+        if (mc_color_ctl%iflag .eq. 0) then
           mc_color = 0
         else
-          mc_color = mc_color_ctl
+          mc_color = mc_color_ctl%intvalue
         end if
         min_color = 0
       end if

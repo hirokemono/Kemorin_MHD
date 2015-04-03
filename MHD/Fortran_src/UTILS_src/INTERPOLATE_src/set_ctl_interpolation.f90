@@ -46,12 +46,12 @@
         dest_mesh_head = new_mesh_prefix%charavalue
       end if
 !
-      if (i_table_head_ctl .ne. 0) then
-        table_file_head = table_head_ctl
+      if (table_head_ctl%iflag .ne. 0) then
+        table_file_head = table_head_ctl%charavalue
       end if
 !
-      if (i_single_itp_tbl .ne. 0) then
-        sgl_table_file_head = single_itp_tbl_head_ctl
+      if (single_itp_tbl_head_ctl%iflag .ne. 0) then
+        sgl_table_file_head = single_itp_tbl_head_ctl%charavalue
       end if
 !
       if (iflag_debug.eq.1) then
@@ -61,8 +61,8 @@
         write(*,*) 'table_file_head: ', trim(table_file_head)
       end if
 !
-      if (i_itp_node_head_ctl .ne. 0) then
-        itp_node_file_head = itp_node_head_ctl
+      if (itp_node_head_ctl%iflag .ne. 0) then
+        itp_node_file_head = itp_node_head_ctl%charavalue
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'itp_node_file_head: ', trim(itp_node_file_head)
       end if
@@ -106,18 +106,15 @@
         ndomain_dest = 1
       end if
 !
-      call choose_file_format(mesh_file_fmt_ctl%charavalue,             &
-     &    mesh_file_fmt_ctl%iflag, ifmt_org_mesh_file)
-      call choose_file_format(new_mesh_file_fmt_ctl%charavalue,         &
-     &    new_mesh_file_fmt_ctl%iflag, ifmt_itp_mesh_file)
+      call choose_file_format(mesh_file_fmt_ctl, ifmt_org_mesh_file)
+      call choose_file_format                                           &
+     &   (new_mesh_file_fmt_ctl, ifmt_itp_mesh_file)
 !
-      call choose_file_format(ifmt_itp_table_file_ctl, i_fmt_itp_tbl,   &
-     &    ifmt_itp_table_file)
+      call choose_file_format                                           &
+     &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
 !
-      call choose_file_format(restart_file_fmt_ctl%charavalue,          &
-     &    restart_file_fmt_ctl%iflag, ifmt_org_rst_file)
-      call choose_file_format(new_rst_files_fmt_ctl%charavalue,         &
-     &    new_rst_files_fmt_ctl%iflag, ifmt_itp_rst_file)
+      call choose_file_format(restart_file_fmt_ctl, ifmt_org_rst_file)
+      call choose_file_format(new_rst_files_fmt_ctl, ifmt_itp_rst_file)
 !
       call choose_ucd_file_format(udt_file_fmt_ctl%charavalue,          &
      &    udt_file_fmt_ctl%iflag, itype_org_udt_file)

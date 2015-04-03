@@ -16,7 +16,7 @@
 !
       character (len=kchara) :: METHOD_MG =  'CG'
       character (len=kchara) :: PRECOND_MG = 'DIAG'
-      integer(kind=kint) ::     itr_MG_mid =     2
+      integer(kind=kint) ::     itr_MG_mid =     1
       integer(kind=kint) ::     itr_MG_lowest =  30
       real(kind=kreal) ::       EPS_MG =         1.0d-8
 !
@@ -39,8 +39,8 @@
       integer(kind = kint) :: i
 !
 !
-      if (i_num_MG_level .gt. 0) then
-        num_MG_level = num_multigrid_level_ctl
+      if (num_multigrid_level_ctl%iflag .gt. 0) then
+        num_MG_level = num_multigrid_level_ctl%intvalue
       else
         num_MG_level = 0
       end if
@@ -127,10 +127,8 @@
         end if
 !
         if (MG_mesh_fmt_ctl%icou .eq. num_MG_level) then
-          do i = 1, num_MG_level
-            call choose_file_format(MG_mesh_fmt_ctl%c_tbl(i),           &
-     &          MG_mesh_fmt_ctl%icou, ifmt_MG_mesh_file(i))
-          end do
+          call choose_file_format_array(num_MG_level, MG_mesh_fmt_ctl,  &
+     &        ifmt_MG_mesh_file)
           call dealloc_control_array_chara(MG_mesh_fmt_ctl)
         else
           e_message = 'Set mesh file formats for MG'
@@ -138,10 +136,8 @@
         end if
 !
         if(MG_table_fmt_ctl%icou .eq. num_MG_level) then
-          do i = 1, num_MG_level
-            call choose_file_format(MG_table_fmt_ctl%c_tbl(i),          &
-     &        MG_table_fmt_ctl%icou, ifmt_MG_table_file(i))
-          end do
+          call choose_file_format_array(num_MG_level, MG_table_fmt_ctl, &
+     &        ifmt_MG_table_file)
           call dealloc_control_array_chara(MG_table_fmt_ctl)
         else
           e_message = 'Set interpolation table file formats for MG'
@@ -150,13 +146,24 @@
       end if
 !
 !
-      if (i_MG_METHOD .gt. 0)   METHOD_MG =      MG_METHOD_ctl
-      if (i_MG_PRECOND .gt. 0)  PRECOND_MG =    MG_PRECOND_ctl
-      if (i_maxiter_mid .gt. 0) itr_MG_mid =    maxiter_mid_ctl
-      if (i_MG_residual .gt. 0) EPS_MG =        MG_residual_ctl
+      if (MG_METHOD_ctl%iflag .gt. 0) then
+        METHOD_MG =      MG_METHOD_ctl%charavalue
+      end if
 !
-      if (i_maxiter_coarsest .gt. 0) then
-        itr_MG_lowest = maxiter_coarsest_ctl
+      if (MG_PRECOND_ctl%iflag .gt. 0) then
+        PRECOND_MG =    MG_PRECOND_ctl%charavalue
+      end if
+!
+      if (maxiter_mid_ctl%iflag .gt. 0) then
+        itr_MG_mid =    maxiter_mid_ctl%intvalue
+      end if
+!
+      if (MG_residual_ctl%iflag .gt. 0) then
+        EPS_MG = MG_residual_ctl%realvalue
+      end if
+!
+      if (maxiter_coarsest_ctl%iflag .gt. 0) then
+        itr_MG_lowest = maxiter_coarsest_ctl%intvalue
       end if
 !
 !

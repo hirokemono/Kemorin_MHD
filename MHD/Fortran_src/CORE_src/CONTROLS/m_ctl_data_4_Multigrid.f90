@@ -1,12 +1,12 @@
-!
-!      module m_ctl_data_4_Multigrid
-!
-!        programmed by H.Matsui on July, 2007
-!
-!      subroutine read_ctl_data_4_Multigrid
-!
-!      Example of this block
+!>@file   m_ctl_data_4_Multigrid.f90
+!!@brief  module m_ctl_data_4_Multigrid
 !!
+!!@author H. Matsui
+!!@date Programmed in July, 2007
+!
+!>@brief  Structure for reading parameters for MGCG
+!!
+!!@verbatim
 !!!!!!!!  setting for MGCG solver !!!!!!!!!!!!!!!!!!!!!
 !!
 !!   num_multigrid_level_ctl: multigrid level
@@ -41,79 +41,84 @@
 !!    maxiter_coarsest_ctl: iteration count for coarsest level
 !!    MG_residual_ctl:      residual level for Multigrid iteration
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-!    begin MGCG_parameter_ctl
-!      MG_METHOD_ctl     CG
-!      MG_PRECOND_ctl    DIAG
-!
-!      maxiter_mid_ctl          2
-!      maxiter_coarsest_ctl    30
-!      MG_residual_ctl         1.0e-20
-!
-!      num_multigrid_level_ctl           2
-!
-!      array num_MG_subdomain_ctl    2
-!        num_MG_subdomain_ctl           8
-!        num_MG_subdomain_ctl           2
-!      end array
-!
-!      array MG_mesh_header_ctl    2
-!        MG_mesh_header_ctl          'mesh_1st/in'
-!        MG_mesh_header_ctl          'mesh_2nd/in'
-!      end array
-!
-!      array MG_elem_header_ctl    2
-!        MG_elem_header_ctl          'mesh_1st/in_element'
-!        MG_elem_header_ctl          'mesh_2nd/in_element'
-!      end array
-!
-!      array MG_surf_header_ctl    2
-!        MG_surf_header_ctl          'mesh_1st/in_surface'
-!        MG_surf_header_ctl          'mesh_2nd/in_surface'
-!      end array
-!
-!      array MG_edge_header_ctl    2
-!        MG_edge_header_ctl          'mesh_1st/in_edge'
-!        MG_edge_header_ctl          'mesh_2nd/in_edge'
-!      end array
-!
-!
-!      array MG_fine_2_coarse_tbl_ctl    2
-!        MG_fine_2_coarse_tbl_ctl          'mesh_1st/fine_2_coarse'
-!        MG_fine_2_coarse_tbl_ctl          'mesh_2nd/fine_2_coarse'
-!      end array
-!
-!      array MG_coarse_2_fine_tbl_ctl    2
-!        MG_coarse_2_fine_tbl_ctl          'mesh_1st/coarse_2_fine'
-!        MG_coarse_2_fine_tbl_ctl          'mesh_2nd/coarse_2_fine'
-!      end array
-!
-!      array MG_fine_2_coarse_ele_tbl_ctl    2
-!        MG_fine_2_coarse_ele_tbl_ctl      'mesh_1st/fine_2_coarse_ele'
-!        MG_fine_2_coarse_ele_tbl_ctl      'mesh_2nd/fine_2_coarse_ele'
-!      end array
-!
-!
-!      array MG_mesh_file_fmt_ctl    2
-!        MG_mesh_file_fmt_ctl           'ascii'
-!        MG_mesh_file_fmt_ctl           'ascii'
-!      end array
-!
-!      array MG_table_file_fmt_ctl    2
-!        MG_table_file_fmt_ctl           'ascii'
-!        MG_table_file_fmt_ctl           'ascii'
-!      end array
-!    end
+!!
+!!    begin MGCG_parameter_ctl
+!!      MG_METHOD_ctl     CG
+!!      MG_PRECOND_ctl    DIAG
+!!
+!!      maxiter_mid_ctl          2
+!!      maxiter_coarsest_ctl    30
+!!      MG_residual_ctl         1.0e-20
+!!
+!!      num_multigrid_level_ctl           2
+!!
+!!      array num_MG_subdomain_ctl    2
+!!        num_MG_subdomain_ctl           8
+!!        num_MG_subdomain_ctl           2
+!!      end array
+!!
+!!      array MG_mesh_header_ctl    2
+!!        MG_mesh_header_ctl          'mesh_1st/in'
+!!        MG_mesh_header_ctl          'mesh_2nd/in'
+!!      end array
+!!
+!!      array MG_elem_header_ctl    2
+!!        MG_elem_header_ctl          'mesh_1st/in_element'
+!!        MG_elem_header_ctl          'mesh_2nd/in_element'
+!!      end array
+!!
+!!      array MG_surf_header_ctl    2
+!!        MG_surf_header_ctl          'mesh_1st/in_surface'
+!!        MG_surf_header_ctl          'mesh_2nd/in_surface'
+!!      end array
+!!
+!!      array MG_edge_header_ctl    2
+!!        MG_edge_header_ctl          'mesh_1st/in_edge'
+!!        MG_edge_header_ctl          'mesh_2nd/in_edge'
+!!      end array
+!!
+!!
+!!      array MG_fine_2_coarse_tbl_ctl    2
+!!        MG_fine_2_coarse_tbl_ctl          'mesh_1st/fine_2_coarse'
+!!        MG_fine_2_coarse_tbl_ctl          'mesh_2nd/fine_2_coarse'
+!!      end array
+!!
+!!      array MG_coarse_2_fine_tbl_ctl    2
+!!        MG_coarse_2_fine_tbl_ctl          'mesh_1st/coarse_2_fine'
+!!        MG_coarse_2_fine_tbl_ctl          'mesh_2nd/coarse_2_fine'
+!!      end array
+!!
+!!      array MG_fine_2_coarse_ele_tbl_ctl    2
+!!        MG_fine_2_coarse_ele_tbl_ctl      'mesh_1st/fine_2_coarse_ele'
+!!        MG_fine_2_coarse_ele_tbl_ctl      'mesh_2nd/fine_2_coarse_ele'
+!!      end array
+!!
+!!
+!!      array MG_mesh_file_fmt_ctl    2
+!!        MG_mesh_file_fmt_ctl           'ascii'
+!!        MG_mesh_file_fmt_ctl           'ascii'
+!!      end array
+!!
+!!      array MG_table_file_fmt_ctl    2
+!!        MG_table_file_fmt_ctl           'ascii'
+!!        MG_table_file_fmt_ctl           'ascii'
+!!      end array
+!!    end
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!@endverbatim
 !
       module m_ctl_data_4_Multigrid
 !
       use m_precision
+      use t_control_elements
       use t_read_control_arrays
 !
       implicit  none
 !
 !
-      integer(kind = kint) ::  num_multigrid_level_ctl = 0
+!>      Structure for number of multigrid levels
+      type(read_integer_item), save ::  num_multigrid_level_ctl
 !
 !>      Structure for number of subdomains for MG
 !!@n      num_MG_subdomain_ctl%ivec:  number of subdomains for MG
@@ -152,11 +157,20 @@
 !!@n      MG_table_fmt_ctl%c_tbl:interpolation table file format for MG
       type(ctl_array_chara), save :: MG_table_fmt_ctl
 !
-      character(len=kchara) :: MG_METHOD_ctl =  'CG'
-      character(len=kchara) :: MG_PRECOND_ctl = 'DIAG'
-      integer(kind = kint) :: maxiter_mid_ctl =      2
-      integer(kind = kint) :: maxiter_coarsest_ctl = 30
-      real(kind = kreal) ::   MG_residual_ctl = 1.0d-30
+!
+!>      Structure for method for each level
+      type(read_character_item), save :: MG_METHOD_ctl
+!
+!>      Structure for preconditioning for each level
+      type(read_character_item), save :: MG_PRECOND_ctl
+!
+!>      Structure for iteration for each level
+      type(read_integer_item), save :: maxiter_mid_ctl
+!>      Structure for iteration for coarsest level
+      type(read_integer_item), save :: maxiter_coarsest_ctl
+!
+!>      Structure for error torrance for each step
+      type(read_real_item), save :: MG_residual_ctl
 !
 !   label for entry of group
 !
@@ -203,16 +217,6 @@
       character(len=kchara), parameter                                  &
      &       :: hd_MG_residual =      'MG_residual_ctl'
 !
-!
-      integer(kind = kint) :: i_num_MG_level =     0
-!
-      integer(kind = kint) :: i_MG_METHOD = 0
-      integer(kind = kint) :: i_MG_PRECOND = 0
-      integer(kind = kint) :: i_maxiter_mid = 0
-      integer(kind = kint) :: i_maxiter_coarsest = 0
-      integer(kind = kint) :: i_MG_residual = 0
-!
-!
       private :: hd_Multigrid_params, i_Multigrid_params
       private :: hd_num_MG_level, hd_num_MG_subdomain
       private :: hd_MG_mesh_header, hd_MG_elem_header
@@ -246,21 +250,17 @@
         if(i_Multigrid_params .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_MG_METHOD,                      &
-     &          i_MG_METHOD, MG_METHOD_ctl)
-        call read_character_ctl_item(hd_MG_PRECOND,                     &
-     &          i_MG_PRECOND, MG_PRECOND_ctl)
+        call read_chara_ctl_type(hd_MG_METHOD, MG_METHOD_ctl)
+        call read_chara_ctl_type(hd_MG_PRECOND, MG_PRECOND_ctl)
 !
-        call read_real_ctl_item(hd_MG_residual,                         &
-     &          i_MG_residual, MG_residual_ctl)
+        call read_real_ctl_type(hd_MG_residual, MG_residual_ctl)
 !
-        call read_integer_ctl_item(hd_maxiter_mid,                      &
-     &        i_maxiter_mid, maxiter_mid_ctl)
-        call read_integer_ctl_item(hd_maxiter_coarsest,                 &
-     &        i_maxiter_coarsest, maxiter_coarsest_ctl)
+        call read_integer_ctl_type(hd_maxiter_mid, maxiter_mid_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_maxiter_coarsest, maxiter_coarsest_ctl)
 !
-        call read_integer_ctl_item(hd_num_MG_level,                     &
-     &        i_num_MG_level, num_multigrid_level_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_num_MG_level, num_multigrid_level_ctl)
 !
 !
         call read_control_array_i1                                      &

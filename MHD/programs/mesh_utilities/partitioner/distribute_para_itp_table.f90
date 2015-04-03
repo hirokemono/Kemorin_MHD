@@ -108,16 +108,16 @@
         dest_mesh_head = new_mesh_prefix%charavalue
       end if
 !
-      if (i_table_head_ctl .ne. 0) then
-        table_file_head = table_head_ctl
+      if (table_head_ctl%iflag .ne. 0) then
+        table_file_head = table_head_ctl%charavalue
       end if
 !
-      if (i_single_itp_tbl .ne. 0) then
-        sgl_table_file_head = single_itp_tbl_head_ctl
+      if (single_itp_tbl_head_ctl%iflag .ne. 0) then
+        sgl_table_file_head = single_itp_tbl_head_ctl%charavalue
       end if
 !
-      call choose_file_format(ifmt_itp_table_file_ctl, i_fmt_itp_tbl,   &
-          ifmt_itp_table_file)
+      call choose_file_format                                           &
+     &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
 !
       if (iflag_debug.eq.1) then
         write(*,*) 'np_smp', np_smp, np_smp

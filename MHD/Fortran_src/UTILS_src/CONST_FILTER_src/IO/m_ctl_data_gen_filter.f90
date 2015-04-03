@@ -58,7 +58,7 @@
 !!@n      ref_filter_mom_ctl%vect:  Value of filter moments
       type(ctl_array_icr), save :: ref_filter_mom_ctl
 !
-      character(len=kchara) :: solver_type_ctl = 'CRS'
+      character(len=kchara) :: f_solver_type_ctl = 'CRS'
 !
 !
 !     label for entry
@@ -190,7 +190,7 @@
 !
 !
         call read_character_ctl_item(hd_solver_type,                    &
-     &          i_solver_type, solver_type_ctl)
+     &          i_solver_type, f_solver_type_ctl)
         call read_character_ctl_item(hd_ordering_list,                  &
      &          i_ordering_list, ordering_list_ctl)
         call read_character_ctl_item(hd_tgt_filter_type,                &

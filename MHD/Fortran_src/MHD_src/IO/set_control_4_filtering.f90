@@ -171,22 +171,16 @@
 !
 !     set filter file header
 !
-        if (i_filter_head_ctl .eq. 1) then
-          filter_3d_head = filter_head_ctl
-        else
-          filter_3d_head = filter_3d_def_hd
+        if (filter_head_ctl%iflag .eq. 1) then
+          filter_3d_head = filter_head_ctl%charavalue
         end if
 !
-        if (i_filter_wide_head .eq. 1) then
-          filter_wide_head = filter_wide_head_ctl
-        else
-          filter_wide_head = filter_wide_def_hd
+        if (filter_wide_head_ctl%iflag .eq. 1) then
+          filter_wide_head = filter_wide_head_ctl%charavalue
         end if
 !
-        call choose_file_format(filter_3d_format, i_filter_3d_fmt,      &
-     &      ifmt_3d_filter)
-        call choose_file_format(filter_wide_format, i_filter_wide_fmt,  &
-     &      ifmt_wide_filter)
+        call choose_file_format(filter_3d_format, ifmt_3d_filter)
+        call choose_file_format(filter_wide_format, ifmt_wide_filter)
 !
         if (iflag_debug .gt. 0)  then
           write(*,*) 'filter_3d_head: ',     trim(filter_3d_head)
@@ -197,8 +191,8 @@
       end if
 !
       if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
-        if (i_filter_head_ctl .eq. 1) then
-          filter_line_head = filter_head_ctl
+        if (filter_head_ctl%iflag .eq. 1) then
+          filter_line_head = filter_head_ctl%charavalue
         else
           filter_line_head = filter_l_def_hd
         end if

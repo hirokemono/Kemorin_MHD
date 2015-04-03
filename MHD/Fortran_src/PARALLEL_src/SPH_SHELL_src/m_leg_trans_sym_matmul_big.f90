@@ -42,6 +42,7 @@
 !
       implicit none
 !
+!
 !>     Maximum matrix size for spectr data
       integer(kind = kint) :: nvec_jk
 !>     Maximum matrix size for spectr data
@@ -90,11 +91,6 @@
 !!@n     dtordt_o = tor_o(          1:  nvec_jk,ip)
 !!@n     dpoldt_o = tor_o(  nvec_jk+1:2*nvec_jk,ip)
       real(kind = kreal), allocatable :: tor_o(:,:)
-!
-!>     Scalar with evem (l-m)
-      real(kind = kreal), allocatable :: scl_e(:,:)
-!>     Scalar with odd (l-m)
-      real(kind = kreal), allocatable :: scl_o(:,:)
 !
 !
 !>     Maximum matrix size for field data
@@ -146,11 +142,6 @@
 !!@n     symp_t = symp_p(  nvec_lk+1:2*nvec_lk,ip)
       real(kind = kreal), allocatable :: symp_p(:,:)
 !
-!>     Symmetric scalar component
-      real(kind = kreal), allocatable :: symp(:,:)
-!>     Anti-symmetric scalar component
-      real(kind = kreal), allocatable :: asmp(:,:)
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -178,6 +169,30 @@
 !
       end subroutine alloc_leg_sym_matmul_big
 !
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_leg_sym_matmul_big2(nvector, nscalar)
+!
+      integer(kind = kint), intent(in) ::nvector, nscalar
+!
+!
+      nvec_jk = ((maxdegree_rlm+1)/2) * nidx_rlm(1)*nvector
+      nscl_jk = ((maxdegree_rlm+1)/2) * nidx_rlm(1)*nscalar
+      allocate(pol_e(3*nvec_jk+nscl_jk,np_smp))
+      allocate(tor_e(2*nvec_jk,np_smp))
+      allocate(pol_o(3*nvec_jk+nscl_jk,np_smp))
+      allocate(tor_o(2*nvec_jk,np_smp))
+!
+      nvec_lk = ((maxidx_rtm_smp(2)+1)/2) * nidx_rlm(1)*nvector
+      nscl_lk = ((maxidx_rtm_smp(2)+1)/2) * nidx_rlm(1)*nscalar
+      allocate(symp_r(3*nvec_lk+nscl_lk,np_smp))
+      allocate(symp_p(2*nvec_lk,np_smp))
+      allocate(asmp_r(3*nvec_lk+nscl_lk,np_smp))
+      allocate(asmp_p(2*nvec_lk,np_smp))
+!
+      end subroutine alloc_leg_sym_matmul_big2
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine dealloc_leg_sym_matmul_big

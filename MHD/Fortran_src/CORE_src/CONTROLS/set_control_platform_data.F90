@@ -105,8 +105,7 @@
 !
 !   set data format
 !
-      call choose_file_format(mesh_file_fmt_ctl%charavalue,             &
-     &    mesh_file_fmt_ctl%iflag, iflag_mesh_file_fmt)
+      call choose_file_format(mesh_file_fmt_ctl, iflag_mesh_file_fmt)
 !
       end subroutine set_control_mesh_def
 !
@@ -122,10 +121,9 @@
 !
 !   set data format
 !
-      call choose_file_format(sph_file_fmt_ctl%charavalue,              &
-     &    sph_file_fmt_ctl%iflag, iflag_sph_file_fmt)
-      call choose_file_format(spectr_file_fmt_ctl%charavalue,           &
-     &    spectr_file_fmt_ctl%iflag, iflag_sph_spectr_fmt)
+      call choose_file_format(sph_file_fmt_ctl, iflag_sph_file_fmt)
+      call choose_file_format                                           &
+     &   (spectr_file_fmt_ctl, iflag_sph_spectr_fmt)
 !
 !   set file header at once
 !
@@ -155,8 +153,8 @@
         phys_file_head = restart_file_prefix%charavalue
       end if
 !
-      call choose_file_format(restart_file_fmt_ctl%charavalue,          &
-     &    restart_file_fmt_ctl%iflag, iflag_field_data_fmt)
+      call choose_file_format                                           &
+     &   (restart_file_fmt_ctl, iflag_field_data_fmt)
 !
       end subroutine set_control_restart_file_def
 !

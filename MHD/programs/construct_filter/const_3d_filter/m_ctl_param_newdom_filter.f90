@@ -112,22 +112,22 @@
       end if
 !
 !
-      if(i_filter_elen_head_ctl .gt. 0) then
-        new_filter_elen_head = filter_elen_head_ctl
+      if(filter_elen_head_ctl%iflag .gt. 0) then
+        new_filter_elen_head = filter_elen_head_ctl%charavalue
       else
         write(*,*) 'set target filter length file name'
         stop
       end if
 !
-      if(i_filter_coef_head_ctl .gt. 0) then
-        new_filter_coef_head = filter_coef_head_ctl
+      if(filter_coef_head_ctl%iflag .gt. 0) then
+        new_filter_coef_head = filter_coef_head_ctl%charavalue
       else if(iflag_set_filter_coef .gt. 0) then
         write(*,*) 'set target filter coefficient file name'
         stop
       end if
 !
-      if(i_filter_moms_head_ctl .gt. 0) then
-        new_filter_moms_head = filter_moms_head_ctl
+      if(filter_moms_head_ctl%iflag .gt. 0) then
+        new_filter_moms_head = filter_moms_head_ctl%charavalue
       else if(iflag_set_filter_moms .gt. 0) then
         write(*,*) 'set target filter moment file name'
         stop

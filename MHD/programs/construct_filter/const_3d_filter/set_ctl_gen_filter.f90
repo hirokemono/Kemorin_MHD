@@ -155,28 +155,17 @@
       end if
 !
       if (i_tgt_filter_type .gt. 0) then
-        if      (tgt_filter_type_ctl .eq. 'tophat'                      &
-     &      .or. tgt_filter_type_ctl .eq. 'Tophat'                      &
-     &      .or. tgt_filter_type_ctl .eq. 'TOPHAT') then
+        if     (cmp_no_case(tgt_filter_type_ctl,'TOPHAT')) then
           iflag_tgt_filter_type = 2
-        else if (tgt_filter_type_ctl .eq. 'linear'                      &
-     &      .or. tgt_filter_type_ctl .eq. 'Linear'                      &
-     &      .or. tgt_filter_type_ctl .eq. 'LINEAR') then
+        else if(cmp_no_case(tgt_filter_type_ctl,'LINEAR')) then
           iflag_tgt_filter_type = 3
-        else if (tgt_filter_type_ctl .eq. 'gaussian'                    &
-     &      .or. tgt_filter_type_ctl .eq. 'Gaussian'                    &
-     &      .or. tgt_filter_type_ctl .eq. 'GAUSSIAN') then
+        else if(cmp_no_case(tgt_filter_type_ctl,'GAUSSIAN')) then
           iflag_tgt_filter_type = 4
-        else if (tgt_filter_type_ctl .eq. 'commutative'                 &
-     &      .or. tgt_filter_type_ctl .eq. 'Commutative'                 &
-     &      .or. tgt_filter_type_ctl .eq. 'COMMUTATIVE') then
+        else if(cmp_no_case(tgt_filter_type_ctl,'COMMUTATIVE')) then
           iflag_tgt_filter_type = 1
-        else if (tgt_filter_type_ctl .eq. 'none'                        &
-     &      .or. tgt_filter_type_ctl .eq. 'None'                        &
-     &      .or. tgt_filter_type_ctl .eq. 'NONE'                        &
-     &      .or. tgt_filter_type_ctl .eq. 'no'                          &
-     &      .or. tgt_filter_type_ctl .eq. 'No'                          &
-     &      .or. tgt_filter_type_ctl .eq. 'NO') then
+        else if(cmp_no_case(tgt_filter_type_ctl,'NONE')) then
+          iflag_tgt_filter_type = -10
+        else if(cmp_no_case(tgt_filter_type_ctl,'NO')) then
           iflag_tgt_filter_type = -10
         else
           iflag_tgt_filter_type = 0
@@ -186,9 +175,7 @@
       end if
 !
       if (i_filter_corection .gt. 0) then
-        if      (filter_correction_ctl .eq. 'on'                        &
-     &      .or. filter_correction_ctl .eq. 'On'                        &
-     &      .or. filter_correction_ctl .eq. 'ON') then
+        if      (yes_flag(filter_correction_ctl)) then
           if (iflag_tgt_filter_type .gt. 0) then
             iflag_tgt_filter_type = -iflag_tgt_filter_type
           end if
@@ -206,9 +193,7 @@
 !
 !
       if (i_filter_fixed_point .gt. 0) then
-        if      (filter_fixed_point_ctl .eq. 'on'                       &
-     &      .or. filter_fixed_point_ctl .eq. 'On'                       &
-     &      .or. filter_fixed_point_ctl .eq. 'ON') then
+        if      (yes_flag(filter_fixed_point_ctl)) then
           iflag_use_fixed_points = 1
         else
           iflag_use_fixed_points = 0
@@ -218,9 +203,7 @@
       end if
 !
       if (i_filter_negative_center .gt. 0) then
-        if      (negative_center_ctl .eq. 'on'                          &
-     &      .or. negative_center_ctl .eq. 'On'                          &
-     &      .or. negative_center_ctl .eq. 'ON') then
+        if      (yes_flag(negative_center_ctl)) then
           iflag_negative_center = 0
         else
           iflag_negative_center = 1
@@ -240,13 +223,9 @@
       end if
 !
       if (i_momentum_type .gt. 0) then
-        if      (momentum_type_ctl .eq. 'no_cross'                      &
-     &      .or. momentum_type_ctl .eq. 'No_cross'                      &
-     &      .or. momentum_type_ctl .eq. 'NO_CROSS') then
+        if     (cmp_no_case(momentum_type_ctl,'NO_CROSS')) then
           iflag_momentum_type = 1
-        else if (momentum_type_ctl .eq. 'normal'                        &
-     &      .or. momentum_type_ctl .eq. 'Normal'                        &
-     &      .or. momentum_type_ctl .eq. 'NORMAL') then
+        else if(cmp_no_case(momentum_type_ctl,'NORMAL')) then
           iflag_momentum_type = 0
         else
           iflag_momentum_type = 0
@@ -256,17 +235,11 @@
       end if
 !
       if (i_ordering_list.gt.0 .and. iflag_tgt_filter_type.eq.0) then
-        if      (ordering_list_ctl .eq. 'connection'                    &
-     &      .or. ordering_list_ctl .eq. 'Connection'                    &
-     &      .or. ordering_list_ctl .eq. 'CONNECTION') then
+        if     (cmp_no_case(ordering_list_ctl,'CONNECTION')) then
           iflag_ordering_list = 0
-        else if (ordering_list_ctl .eq. 'distance'                      &
-     &      .or. ordering_list_ctl .eq. 'Distance'                      &
-     &      .or. ordering_list_ctl .eq. 'DISTANCE') then
+        else if(cmp_no_case(ordering_list_ctl,'DISTANCE')) then
           iflag_ordering_list = 1
-        else if (ordering_list_ctl .eq. 'distance_ratio'                &
-     &      .or. ordering_list_ctl .eq. 'Distance_ratio'                &
-     &      .or. ordering_list_ctl .eq. 'DISTANCE_RATIO') then
+        else if(cmp_no_case(ordering_list_ctl,'DISTANCE_RATIO')) then
           iflag_ordering_list = 2
         end if 
       else
@@ -274,18 +247,14 @@
       end if
 !
 !
-      if (      mass_matrix_type_ctl .eq. 'consist'                     &
-     &     .or. mass_matrix_type_ctl .eq. 'Consist'                     &
-     &     .or. mass_matrix_type_ctl .eq. 'CONSIST' ) then
+      if     (cmp_no_case(mass_matrix_type_ctl,'CONSIST')) then
         itype_mass_matrix = 1
       else
         itype_mass_matrix = 0
       end if
 !
 !
-      if (      solver_type_ctl .eq. 'iterative'                       &
-     &     .or. solver_type_ctl .eq. 'Iterative'                       &
-     &     .or. solver_type_ctl .eq. 'ITERATIVE' ) then
+      if     (cmp_no_case(f_solver_type_ctl,'ITERATIVE')) then
         id_solver_type = 1
       else
         id_solver_type = 0
@@ -316,12 +285,14 @@
         ied_num_free = -1
       end if
 !
-      method =      method_ctl
-      precond =     precond_ctl
-      itr =         itr_ctl
-      eps =         eps_ctl
-      sigma =       sigma_ctl
-      sigma_diag =  sigma_diag_ctl
+      if(method_ctl%iflag .gt. 0)  method =  method_ctl%charavalue
+      if(precond_ctl%iflag .gt. 0) precond = precond_ctl%charavalue
+      if(itr_ctl%iflag .gt. 0) itr = itr_ctl%intvalue
+      if(eps_ctl%iflag .gt. 0) eps = eps_ctl%realvalue
+      if(sigma_ctl%iflag .gt. 0) sigma = sigma_ctl%realvalue
+      if(sigma_diag_ctl%iflag .gt. 0) then
+        sigma_diag =  sigma_diag_ctl%realvalue
+      end if
 !
 !
       method_elesize =      method_esize_ctl
@@ -366,26 +337,26 @@
       end if
       if (iflag_debug.gt.0) write(*,*) 'mesh_file_head ', mesh_file_head
 !
-      if (i_filter_head_ctl .ne. 0) then
-        filter_3d_head = filter_head_ctl
+      if (filter_head_ctl%iflag .ne. 0) then
+        filter_3d_head = filter_head_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &     write(*,*) 'filter_3d_head ', filter_3d_head
       end if
 !
-      if (i_filter_coef_head_ctl .ne. 0) then
-        filter_coef_head = filter_coef_head_ctl
+      if (filter_coef_head_ctl%iflag .ne. 0) then
+        filter_coef_head = filter_coef_head_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &     write(*,*) 'filter_coef_head ', filter_coef_head
       end if
 !
-      if (i_filter_elen_head_ctl .ne. 0) then
-        filter_elen_head = filter_elen_head_ctl
+      if (filter_elen_head_ctl%iflag .ne. 0) then
+        filter_elen_head = filter_elen_head_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &     write(*,*) 'filter_elen_head ', filter_elen_head
       end if
 !
-      if (i_filter_moms_head_ctl .ne. 0) then
-        filter_moms_head = filter_moms_head_ctl
+      if (filter_moms_head_ctl%iflag .ne. 0) then
+        filter_moms_head = filter_moms_head_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &     write(*,*) 'filter_moms_head ', filter_moms_head
       end if
@@ -394,13 +365,10 @@
 !
 !   set data format
 !
-      call choose_file_format(mesh_file_fmt_ctl%charavalue,             &
-     &    mesh_file_fmt_ctl%iflag, iflag_mesh_file_fmt)
+      call choose_file_format(mesh_file_fmt_ctl, iflag_mesh_file_fmt)
 !
-      call choose_file_format(filter_3d_format, i_filter_3d_fmt,        &
-     &          ifmt_3d_filter)
-      call choose_file_format(filter_elen_format, i_filter_elen_fmt,    &
-     &          ifmt_filter_elen)
+      call choose_file_format(filter_3d_format, ifmt_3d_filter)
+      call choose_file_format(filter_elen_format, ifmt_filter_elen)
       ifmt_filter_moms = ifmt_filter_elen
 !
       end subroutine set_file_heads_3d_comm_filter

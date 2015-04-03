@@ -367,14 +367,11 @@
       end if
 !
       if (iflag_SGS_model .eq. id_SGS_NL_grad) then
-        if (i_filter_elen_head_ctl .eq. 1) then
-          filter_elen_head = filter_elen_head_ctl
-        else
-          filter_elen_head = filter_elen_def_hd
+        if (filter_elen_head_ctl%iflag .eq. 1) then
+          filter_elen_head = filter_elen_head_ctl%charavalue
         end if
 !
-        call choose_file_format(filter_elen_format, i_filter_elen_fmt,  &
-     &      ifmt_filter_elen)
+        call choose_file_format(filter_elen_format, ifmt_filter_elen)
 !
         if (iflag_debug .gt. 0)  then
           write(*,*) 'filter_elen_head: ', trim(filter_elen_head)
@@ -416,9 +413,9 @@
       end if
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-        iflag_rst_sgs_coef_code = i_model_coef_ini_head
+        iflag_rst_sgs_coef_code = model_coef_ini_head_ctl%iflag
         if(iflag_rst_sgs_coef_code .gt. 0) then
-          rst_sgs_coef_head = model_coef_ini_head_ctl
+          rst_sgs_coef_head = model_coef_ini_head_ctl%charavalue
         end if
 !
         if (iflag_debug .gt. 0)  then
