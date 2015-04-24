@@ -1,8 +1,12 @@
-!set_ucd_data.f90
-!      module set_ucd_data
+!>@file  set_ucd_data.f90
+!!       module set_ucd_data
+!!
+!!@author H. Matsui
+!!@date        programmed by H.Matsui in July, 2007
 !
-!        programmed by H.Matsui on July, 2006
-!
+!> @brief Link field data to IO structure for data IO
+!!
+!!@verbatim
 !!      subroutine link_node_data_2_output(numnod, inod_gl, xx, ucd)
 !!      subroutine link_ele_data_2_output(numele, nnod_4_ele,           &
 !!     &          iele_gl, ie, ucd)
@@ -10,6 +14,7 @@
 !!      subroutine link_field_data_2_output(numnod, num_phys, ntot_comp,&
 !!     &          num_phys_vis, ntot_comp_vis, num_component,           &
 !!     &          phy_name, d_nod, ucd)
+!!@endverbatim
 !
       module set_ucd_data
 !

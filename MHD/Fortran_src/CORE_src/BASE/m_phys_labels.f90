@@ -793,4 +793,19 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_buoyancy_work =     'buoyancy_work'
 !
+!   --------------------------------------------------------------------
+!
+!>        Field label for kinetic viscosity
+      character(len=kchara), parameter                                  &
+     &             :: fhd_K_viscosity =      'kinetic_viscosity'
+!>        Field label for thermal diffusivity
+      character(len=kchara), parameter                                  &
+     &             :: fhd_T_diffusivity =    'thermal_diffusivity'
+!>        Field label for chemical diffusivity
+      character(len=kchara), parameter                                  &
+     &             :: fhd_C_diffusivity =    'chemical_diffusivity'
+!>        Field label for magnetic diffusivity
+      character(len=kchara), parameter                                  &
+     &             :: fhd_B_diffusivity =    'magnetic_diffusivity'
+!
       end module m_phys_labels

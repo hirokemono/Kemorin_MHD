@@ -7,9 +7,6 @@ PSF_UTIL_MAINDIR = $$(DATA_UTILS_DIR)/PSF_utils
 TARGET_PSF_AVES =  psf_average
 TARGET_PSF_RANGE_AVES =  psf_range_ave
 
-TARGET_PSF_2_VTK = psf_2_vtk
-TARGET_PSF_2_DX =  psf_2_dx
-
 TARGET_DRAW_CZ =   drcz_fem
 TARGET_DRAW_CX =   drcx_fem
 TARGET_DRAW_CY =   drcy_fem
@@ -55,22 +52,6 @@ m_norms_4_psf.o \
 m_control_data_psf_utils.o \
 take_avarages_4_psf.o \
 take_normals_4_psf.o
-
-MOD_PSF_2_VTK = \
-psf_2_vtk.o \
-m_norms_4_psf.o \
-m_control_data_psf_utils.o \
-take_avarages_4_psf.o \
-convert_psf_file.o \
-cal_psf_rms_aves.o
-
-MOD_PSF_2_DX = \
-psf_2_dx.o \
-m_norms_4_psf.o \
-m_control_data_psf_utils.o \
-convert_psf_file.o \
-cal_psf_rms_aves.o \
-take_avarages_4_psf.o
 
 
 MOD_ZCPLANE_PG = \
@@ -118,8 +99,6 @@ dir_list:
 target_list:
 	@echo 'TARGET_PSF_AVES =     $$(BUILDDIR)/$(TARGET_PSF_AVES)'         >> $(MAKENAME)
 	@echo 'TARGET_PSF_RANGE_AVES = $$(BUILDDIR)/$(TARGET_PSF_RANGE_AVES)' >> $(MAKENAME)
-	@echo 'TARGET_PSF_2_VTK =    $$(BUILDDIR)/$(TARGET_PSF_2_VTK)'        >> $(MAKENAME)
-	@echo 'TARGET_PSF_2_DX =     $$(BUILDDIR)/$(TARGET_PSF_2_DX)'         >> $(MAKENAME)
 	@echo 'TARGET_DRAW_CZ =      $$(BUILDDIR)/$(TARGET_DRAW_CZ)'          >> $(MAKENAME)
 	@echo 'TARGET_DRAW_CX =      $$(BUILDDIR)/$(TARGET_DRAW_CX)'          >> $(MAKENAME)
 	@echo 'TARGET_DRAW_CY =      $$(BUILDDIR)/$(TARGET_DRAW_CY)'          >> $(MAKENAME)
@@ -131,7 +110,6 @@ target_list:
 
 target_task:
 	@echo psf_utils: \
-	'$$(TARGET_PSF_2_VTK)      $$(TARGET_PSF_2_DX) '         \
 	'$$(TARGET_PSF_AVES)       $$(TARGET_PSF_RANGE_AVES)'    \
     '$$(TARGET_DBENCH_ON_PSF)  $$(TARGET_LINE_ON_PSF)'  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -152,20 +130,6 @@ target_task:
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PSF_RANGE_AVES)' \
 	'$$(MOD_PSF_RANGE_AVES)' '-L. $$(LIBS_PSF_UTIL)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_PSF_2_VTK)': '$$(MOD_PSF_2_VTK)' \
-	'$$(LIB_FILES_PSF_UTIL)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PSF_2_VTK)' \
-	'$$(MOD_PSF_2_VTK)' '-L. $$(LIBS_PSF_UTIL)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_PSF_2_DX)': '$$(MOD_PSF_2_DX)' \
-	'$$(LIB_FILES_PSF_UTIL)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PSF_2_DX)' \
-	'$$(MOD_PSF_2_DX)' '-L. $$(LIBS_PSF_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_DRAW_CZ)': '$$(MOD_ZCPLANE_PG)' \
@@ -231,10 +195,6 @@ mod_list:
 	@echo  $(MOD_PSF_AVES)           >> $(MAKENAME)
 	@echo  MOD_PSF_RANGE_AVES =  \\  >> $(MAKENAME)
 	@echo  $(MOD_PSF_RANGE_AVES)     >> $(MAKENAME)
-	@echo  MOD_PSF_2_VTK =  \\       >> $(MAKENAME)
-	@echo  $(MOD_PSF_2_VTK)          >> $(MAKENAME)
-	@echo  MOD_PSF_2_DX =  \\        >> $(MAKENAME)
-	@echo  $(MOD_PSF_2_DX)           >> $(MAKENAME)
 	@echo  MOD_ZCPLANE_PG =  \\      >> $(MAKENAME)
 	@echo  $(MOD_ZCPLANE_PG)         >> $(MAKENAME)
 	@echo  MOD_XCPLANE_PG =  \\      >> $(MAKENAME)

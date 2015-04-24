@@ -42,7 +42,7 @@
        real(kind = kreal), intent(inout) :: S(NB*NP)
 !
        integer (kind = kint) :: ip, iS, iE, iv0, iv, i, j, k
-       integer (kind = kint) :: ii, ix, im, k1, k2
+       integer (kind = kint) :: ii, ix, im, k1
 !
 !
 !cdir parallel do private(iv,iv0,j,iS,iE,i,k,k1,ii,ix,im) 
@@ -96,7 +96,7 @@
        real(kind = kreal), intent(inout) :: S3(NB*NP)
 !
        integer (kind = kint) :: ip, iS, iE, iv0, iv, i, j, k
-       integer (kind = kint) :: ii, ix, im, k1, k2
+       integer (kind = kint) :: ii, ix, im, k1
 !
 !
 !cdir parallel do private(iv,iv0,j,iS,iE,i,k,k1,ii,ix,im) 
@@ -150,7 +150,7 @@
        real(kind = kreal), intent(inout) :: S(NB*NP)
 !
        integer (kind = kint) :: ip, iS, iE, iv0, iv, i, j, k
-       integer (kind = kint) :: ii, ix, im, k1, k2
+       integer (kind = kint) :: ii, ix, im, k1
 !
 !
 !cdir parallel do private(iv,iv0,j,iS,iE,i,k,k1,ii,ix,im) 
@@ -204,7 +204,7 @@
        real(kind = kreal), intent(inout) :: S3(NB*NP)
 !
        integer (kind = kint) :: ip, iS, iE, iv0, iv, i, j, k
-       integer (kind = kint) :: ii, ix, im, k1, k2
+       integer (kind = kint) :: ii, ix, im, k1
 !
 !
 !cdir parallel do private(iv,iv0,j,iS,iE,i,k,k1,ii,ix,im) 

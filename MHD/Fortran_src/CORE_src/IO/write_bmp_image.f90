@@ -1,22 +1,23 @@
-!write_bmp_image.f90
-!      module write_bmp_image
+!>@file   write_bmp_image.f90
+!!@brief  module write_bmp_image
 !
 !> @brief FORTRAN 77 program to make PPM / BMP
 !>                                by  K. Hayashi
-!  Modified by H. Matsui on June, 2009
-!
-!      subroutine pixout_ppm_p3(fhead, npixel_x, npixel_y, rgb)
-!      subroutine pixout_ppm_p6(fhead, npixel_x, npixel_y, rgb)
-!      subroutine pixout_BMP(fhead, npixel_x, npixel_y, rgb)
-!
-!      character(len=kchara), intent(in) :: fhead
-!      integer, intent(in) :: ihpixf, jvpixf
-! RGB data array
-!      character(len=1), intent(in) :: rgb(3,ihpixf,jvpixf)
-!
-!      subroutine cvt_8bit_cl_int_2_chara(ihpixf, jvpixf, icl_tbl, rgb)
-!      integer, intent(in) :: icl_tbl(3,ihpixf,jvpixf)
-!
+!!  Modified by H. Matsui on June, 2009
+!!
+!!@verbatim
+!!      subroutine pixout_ppm_p3(fhead, npixel_x, npixel_y, rgb)
+!!      subroutine pixout_ppm_p6(fhead, npixel_x, npixel_y, rgb)
+!!      subroutine pixout_BMP(fhead, npixel_x, npixel_y, rgb)
+!!
+!!      character(len=kchara), intent(in) :: fhead
+!!      integer, intent(in) :: ihpixf, jvpixf
+!! RGB data array
+!!      character(len=1), intent(in) :: rgb(3,ihpixf,jvpixf)
+!!
+!!      subroutine cvt_8bit_cl_int_2_chara(ihpixf, jvpixf, icl_tbl, rgb)
+!!      integer, intent(in) :: icl_tbl(3,ihpixf,jvpixf)
+!!
 !!* --------------------------------------------
 !!*
 !!* Notes
@@ -31,6 +32,7 @@
 !!* o Recent intel compiler (ver. 9 or so) works for all three choices.
 !!*
 !!* --------------------------------------------
+!!@endverbatim
 !
       module write_bmp_image
 !

@@ -503,6 +503,15 @@
         integer (kind=kint) :: i_temp_scale =       izero
 !>        start address for composition length scale
         integer (kind=kint) :: i_comp_scale =       izero
+!
+!>        start address for kinetic viscosity
+        integer (kind=kint) :: i_K_viscosity =   izero
+!>        start address for thermal diffusivity
+        integer (kind=kint) :: i_T_diffusivity = izero
+!>        start address for chemical diffusivity
+        integer (kind=kint) :: i_C_diffusivity = izero
+!>        start address for magnetic diffusivity
+        integer (kind=kint) :: i_B_diffusivity = izero
       end type phys_address
 !
 !

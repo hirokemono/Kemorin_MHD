@@ -94,17 +94,17 @@ target_task:
 	'$$(TARGET_NEWSPH)       $$(TARGET_NEWSPH_SGL)'        \
 	'$$(TARGET_ADD_TIME_SPH) $$(TARGET_UPDATE_RST)'    >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_MERGE)': '$$(MOD_MERGE_UCD) $$(LIB_FILES_MERGE)' \
+	@echo '$$(TARGET_MERGE)': '$$(MOD_MERGE_UCD) $$(LIB_FILES_PARA_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MERGE)' '$$(MOD_MERGE_UCD)' \
-	'-L. $$(LIBS_MERGE)' \
+	'-L. $$(LIBS_PARA_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
-	@echo '$$(TARGET_M_MESH)': '$$(MOD_MERGE_MESH) $$(LIB_FILES_MERGE)' \
+	@echo '$$(TARGET_M_MESH)': '$$(MOD_MERGE_MESH) $$(LIB_FILES_PARA_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_M_MESH)' '$$(MOD_MERGE_MESH)' \
-	'-L. $$(LIBS_MERGE)' \
+	'-L. $$(LIBS_PARA_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	

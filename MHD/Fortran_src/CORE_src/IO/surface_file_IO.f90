@@ -3,21 +3,33 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!      subroutine set_surface_fname(my_rank)
+!>@file  surface_file_IO.F90
+!!       module surface_file_IO
+!!
+!!@author H. Matsui
+!!@date        programmed by H.Matsui in Aug., 2006
 !
-!      subroutine input_surface_connect_b
-!      subroutine input_surface_file_b
-!
-!      subroutine output_surface_connect_b
-!      subroutine output_surface_file_b
-!
-!      subroutine input_surface_connect
-!      subroutine input_surface_file
-!
-!      subroutine output_surface_connect
-!      subroutine output_surface_file
-!      subroutine output_surface_sph_file
-!      subroutine output_surface_cyl_file
+!> @brief surface mesh file IO
+!!
+!!@verbatim
+!!      subroutine set_surface_fname(my_rank)
+!!
+!!      subroutine input_surface_connect_b
+!!      subroutine input_surface_file_b
+!!
+!!      subroutine output_surface_connect_b
+!!      subroutine output_surface_file_b
+!!
+!!      subroutine input_surface_connect
+!!      subroutine input_surface_file
+!!
+!!      subroutine output_surface_connect
+!!      subroutine output_surface_file
+!!      subroutine output_surface_sph_file
+!!      subroutine output_surface_cyl_file
+!!@endverbatim
+!!
+!!@param my_rank  process ID
 !
       module surface_file_IO
 !

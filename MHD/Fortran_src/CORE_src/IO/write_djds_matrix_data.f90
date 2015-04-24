@@ -1,23 +1,28 @@
-!write_djds_matrix_data.f90
-!      module write_djds_matrix_data
+!>@file   write_djds_matrix_data.f90
+!!@brief  module write_djds_matrix_data
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep., 2006
 !
-!     Written by H. Matsui on Sep., 2006
-!
-!      subroutine write_djds_mat11_comp                                 &
-!     &         ( id_file, N, NP, NLmax, NUmax, itotal_l, itotal_u,     &
-!     &           npLX1, npUX1, NHYP, PEsmpTOT, NEWtoOLD,               &
-!     &           D, indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,  &
-!     &           AL, AU, ALUG_L, ALUG_U)
-!      subroutine write_djds_mat33_comp                                 &
-!     &         ( id_file, N, NP, NLmax, NUmax, itotal_l, itotal_u,     &
-!     &           npLX1, npUX1, NHYP, PEsmpTOT, NEWtoOLD,               &
-!     &           D, indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,  &
-!     &           AL, AU, ALUG_L, ALUG_U)
-!      subroutine write_djds_mat_connects                               &
-!     &         ( id_file, NP, NHYP, PEsmpTOT, STACKmcG, STACKmc,       &
-!     &           NLmaxHYP, NUmaxHYP, IVECT, OLDtoNEW_DJDS_L,           &
-!     &           OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U, LtoU,               &
-!     &           NEIBPETOT, STACK_EXPORT, NOD_EXPORT_NEW)
+!>@brief  Routines to output DJDS matrix data
+!!
+!!@verbatim
+!!      subroutine write_djds_mat11_comp                                &
+!!     &         ( id_file, N, NP, NLmax, NUmax, itotal_l, itotal_u,    &
+!!     &           npLX1, npUX1, NHYP, PEsmpTOT, NEWtoOLD,              &
+!!     &           D, indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U, &
+!!     &           AL, AU, ALUG_L, ALUG_U)
+!!      subroutine write_djds_mat33_comp                                &
+!!     &         ( id_file, N, NP, NLmax, NUmax, itotal_l, itotal_u,    &
+!!     &           npLX1, npUX1, NHYP, PEsmpTOT, NEWtoOLD,              &
+!!     &           D, indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U, &
+!!     &           AL, AU, ALUG_L, ALUG_U)
+!!      subroutine write_djds_mat_connects                              &
+!!     &         ( id_file, NP, NHYP, PEsmpTOT, STACKmcG, STACKmc,      &
+!!     &           NLmaxHYP, NUmaxHYP, IVECT, OLDtoNEW_DJDS_L,          &
+!!     &           OLDtoNEW_DJDS_U, NEWtoOLD_DJDS_U, LtoU,              &
+!!     &           NEIBPETOT, STACK_EXPORT, NOD_EXPORT_NEW)
+!!@endverbatim
 !
       module write_djds_matrix_data
 !

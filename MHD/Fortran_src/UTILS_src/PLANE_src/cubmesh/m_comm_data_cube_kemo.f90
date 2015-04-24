@@ -61,6 +61,8 @@
      &        + (nxi+2*ndepth)*(nyi+2*ndepth)*(nzi+2*ndepth-1)          &
      &         - nxi*nyi*nzi     - (nxi-1)*nyi*nzi                      &
      &         - nxi*(nyi-1)*nzi - nxi*nyi*(nzi-1)
+       else
+         inum0 = 0
        end if
 !
        allocate ( item_import(inum0) )

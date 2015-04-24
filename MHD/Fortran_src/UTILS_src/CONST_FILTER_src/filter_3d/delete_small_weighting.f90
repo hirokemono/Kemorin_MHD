@@ -79,7 +79,7 @@
       use quicksort
 !
       integer(kind = kint) :: id_start
-      integer(kind = kint) :: i, j, j_new, j_org
+      integer(kind = kint) :: i, j_org
 !
 !
 !

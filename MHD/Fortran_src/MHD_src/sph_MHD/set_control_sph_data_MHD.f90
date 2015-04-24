@@ -126,10 +126,10 @@
 !
 !
       iflag_circle_coord = iflag_circle_sph
-      if(i_nphi_mid_eq .gt. 0) then
-        mphi_circle = nphi_mid_eq_ctl
-      else
-        mphi_circle = -1
+!
+      mphi_circle = -1
+      if(nphi_mid_eq_ctl%iflag .gt. 0) then
+        mphi_circle = nphi_mid_eq_ctl%intvalue
       end if
 !
       do ifld = 1, field_ctl%num
@@ -185,35 +185,31 @@
       use ordering_field_by_viz
       use skip_comment_f
 !
+      character(len = kchara) :: tmpchara
+!
 !
       iflag_circle_coord = iflag_circle_sph
-      if (i_circle_coord .ne. 0) then
-        if(    cmp_no_case(pick_circle_coord_ctl,'spherical')           &
-     &    .or. cmp_no_case(pick_circle_coord_ctl,'rtp')) then
+      if (pick_circle_coord_ctl%iflag .ne. 0) then
+        tmpchara = pick_circle_coord_ctl%charavalue
+        if(    cmp_no_case(tmpchara,'spherical')                        &
+     &    .or. cmp_no_case(tmpchara,'rtp')) then
           iflag_circle_coord = iflag_circle_sph
-        else if(cmp_no_case(pick_circle_coord_ctl,'cyrindrical')        &
-      &    .or. cmp_no_case(pick_circle_coord_ctl,'spz')) then
+        else if(cmp_no_case(tmpchara,'cyrindrical')                     &
+      &    .or. cmp_no_case(tmpchara,'spz')) then
           iflag_circle_coord = iflag_circle_cyl
         end if
       end if
 !
-      if(i_nphi_mid_eq .gt. 0) then
-        mphi_circle = nphi_mid_eq_ctl
-      else
-        mphi_circle = -1
+      mphi_circle = -1
+      if(nphi_mid_eq_ctl%iflag .gt. 0) then
+        mphi_circle = nphi_mid_eq_ctl%intvalue
       end if
 !
-      if(i_pick_z_ctl .gt. 0) then
-        s_circle = pick_s_ctl
-      else
-        s_circle = 7.0d0/13.0d0 + 0.5d0
-      end if
+      s_circle = 7.0d0/13.0d0 + 0.5d0
+      if(pick_s_ctl%iflag .gt. 0) s_circle = pick_s_ctl%realvalue
 !
-      if(i_pick_z_ctl .gt. 0) then
-        z_circle = pick_z_ctl
-      else
-        z_circle = 0.0d0
-      end if
+      z_circle = 0.0d0
+      if(pick_z_ctl%iflag .gt. 0) z_circle = pick_z_ctl%realvalue
 !
       d_circle%num_phys = field_ctl%num
       call alloc_phys_name_type(d_circle)

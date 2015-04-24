@@ -1,20 +1,25 @@
-!surface_data_IO.f90
-!      module surface_data_IO
+!>@file  surface_data_IO.f90
+!!       module surface_data_IO
+!!
+!!@author H. Matsui
+!!@date        programmed by H.Matsui in Aug., 2006
 !
-!     Written by H. Matsui on Aug., 2006
-!
-!      subroutine write_surface_connection
-!      subroutine write_surface_connection_b
-!      subroutine read_surface_connection
-!      subroutine read_surface_connection_b
-!
-!      subroutine write_surface_geometry
-!      subroutine write_surface_geometry_b
-!      subroutine write_surface_geometry_sph
-!      subroutine write_surface_geometry_cyl
-!
-!      subroutine read_surface_geometry
-!      subroutine read_surface_geometry_b
+!> @brief routines for surface mesh data IO
+!!
+!!@verbatim
+!!      subroutine write_surface_connection
+!!      subroutine write_surface_connection_b
+!!      subroutine read_surface_connection
+!!      subroutine read_surface_connection_b
+!!
+!!      subroutine write_surface_geometry
+!!      subroutine write_surface_geometry_b
+!!      subroutine write_surface_geometry_sph
+!!      subroutine write_surface_geometry_cyl
+!!
+!!      subroutine read_surface_geometry
+!!      subroutine read_surface_geometry_b
+!!@endverbatim
 !
       module surface_data_IO
 !

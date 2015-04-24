@@ -87,7 +87,7 @@
       integer(kind = kint), intent(inout) :: inod_grp(ntot_nod_grp)
       integer(kind = kint), intent(inout) :: iweight_grp(ntot_nod_grp)
 !
-      integer(kind = kint) :: ist, ied, inum, jst, jed, jnum
+      integer(kind = kint) :: ist, ied, inum
 !
 !
       iweight_grp(1:ntot_nod_grp) = - iweight_grp(1:ntot_nod_grp)

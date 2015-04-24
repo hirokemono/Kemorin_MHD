@@ -1,16 +1,23 @@
-!surface_IO_select.F90
-!      module surface_IO_select
+!>@file  surface_IO_select.F90
+!!       module surface_IO_select
+!!
+!!@author H. Matsui
+!!@date        programmed by H.Matsui in Aug., 2006
 !
-!     Written by H. Matsui on Aug., 2006
-!
-!      subroutine sel_input_surface_connect(my_rank)
-!      subroutine sel_input_surface_file(my_rank)
-!
-!      subroutine sel_output_surface_connect(my_rank)
-!
-!      subroutine sel_output_surface_file(my_rank)
-!      subroutine sel_output_surface_sph_file(my_rank)
-!      subroutine sel_output_surface_cyl_file(my_rank)
+!> @brief data IO selector for surface mesh
+!!
+!!@verbatim
+!!      subroutine sel_input_surface_connect(my_rank)
+!!      subroutine sel_input_surface_file(my_rank)
+!!
+!!      subroutine sel_output_surface_connect(my_rank)
+!!
+!!      subroutine sel_output_surface_file(my_rank)
+!!      subroutine sel_output_surface_sph_file(my_rank)
+!!      subroutine sel_output_surface_cyl_file(my_rank)
+!!@endverbatim
+!!
+!!@param my_rank  process ID
 !
       module surface_IO_select
 !
