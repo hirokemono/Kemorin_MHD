@@ -1,9 +1,9 @@
 !
 !      module m_neibor_data_z
 !
-      module m_neibor_data_z
-!
 !      Written by Kemorin
+!
+      module m_neibor_data_z
 !
       use m_precision
 !

@@ -63,7 +63,7 @@
           end if
 !
           call write_merged_vtk_each_field(id_vtk, nnod,                &
-     &        ncomp_field(j), d_nod(1,icou), istack_numnod,   &
+     &        ncomp_field(j), d_nod(1,icou), istack_numnod,             &
      &        istack_intnod)
           icou = icou + ncomp_field(j)
         end do

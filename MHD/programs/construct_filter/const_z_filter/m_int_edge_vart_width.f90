@@ -1,6 +1,11 @@
 !
 !     module m_int_edge_vart_width
 !
+!      subroutine int_edge_vart_width(n_int)
+!      subroutine int_edge_diff_vart_w(n_int)
+!      subroutine int_edge_d2_vart_w(n_int)
+!      subroutine int_edge_d2_vart_w2(n_int)
+!
       module m_int_edge_vart_width
 !
       use m_precision
@@ -18,11 +23,6 @@
       real(kind = kreal), dimension(:), allocatable :: d2_dz_e
 !
       real(kind = kreal), dimension(:), allocatable :: rhs_dz
-!
-!     subroutine int_edge_vart_width(n_int)
-!      subroutine int_edge_diff_vart_w(n_int)
-!      subroutine int_edge_d2_vart_w(n_int)
-!      subroutine int_edge_d2_vart_w2(n_int)
 !
 ! ----------------------------------------------------------------------
 !

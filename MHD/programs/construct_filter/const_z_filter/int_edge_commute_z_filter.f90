@@ -1,17 +1,17 @@
 !int_edge_commute_z_filter.f90
 !      module int_edge_commute_z_filter
 !
-      module int_edge_commute_z_filter
-!
 !      Written by H. Matsui
 !
-      use m_precision
-!
-      implicit none
 !
 !      subroutine int_edge_commutative_filter(numnod, numele,           &
 !     &          zz, ie_edge)
 !
+      module int_edge_commute_z_filter
+!
+      use m_precision
+!
+      implicit none
 !   --------------------------------------------------------------------
 !
       contains
@@ -24,7 +24,7 @@
       use m_constants
       use m_commute_filter_z
       use m_int_commtative_filter
-      use m_filter_values
+      use m_z_filter_values
       use m_gauss_points
       use m_gauss_integration
       use m_work_4_integration

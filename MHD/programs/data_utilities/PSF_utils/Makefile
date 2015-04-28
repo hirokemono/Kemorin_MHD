@@ -19,13 +19,15 @@ TARGET_FIX_TEMP_PSF = psf_per_temp_2_temp
 
 
 LIBS_PSF_UTIL = \
-'$$(LIB_UTILS)' \
-'$$(LIB_VIZ)'   \
+'$$(LIB_UTILS)'   \
+'$$(LIB_PARA)'   \
+'$$(LIB_SOLVER)' \
 '$$(LIB_MESH)'
 
 LIB_FILES_PSF_UTIL = \
-'$$(LIB_UTILS_FILE)' \
-'$$(LIB_VIZ_FILE)'   \
+'$$(LIB_UTILS_FILE)'   \
+'$$(LIB_PARA_FILE)'   \
+'$$(LIB_SOLVER_FILE)' \
 '$$(LIB_MESH_FILE)'
 
 ifdef FORTRAN_C_CONNECT
@@ -40,7 +42,6 @@ psf_rms_aves.o \
 cal_psf_rms_aves.o \
 \
 m_norms_4_psf.o \
-m_control_data_psf_utils.o \
 take_avarages_4_psf.o \
 take_normals_4_psf.o
 
@@ -49,26 +50,29 @@ psf_range_rms_aves.o \
 cal_psf_rms_aves.o \
 \
 m_norms_4_psf.o \
-m_control_data_psf_utils.o \
 take_avarages_4_psf.o \
 take_normals_4_psf.o
 
 
 MOD_ZCPLANE_PG = \
 drcz_fem.o \
+set_rgb_colors.o \
 m_norms_4_psf.o
 
 
 MOD_XCPLANE_PG = \
 drcx_fem.o \
+set_rgb_colors.o \
 m_norms_4_psf.o
 
 MOD_YCPLANE_PG = \
 drcy_fem.o \
+set_rgb_colors.o \
 m_norms_4_psf.o
 
 MOD_MAP_PG = \
 drmap_fem.o \
+set_rgb_colors.o \
 m_norms_4_psf.o
 
 MOD_LINE_ON_PSF = \
@@ -76,6 +80,7 @@ section_from_psf.o \
 m_norms_4_psf.o \
 m_psf_edge_connect.o \
 m_line_from_psf.o \
+set_node_on_edge_quad_psf.o \
 const_section_from_triangle.o
 
 MOD_DYNAMOBENCH_PSF = \
@@ -83,6 +88,7 @@ psf_dynamobench.o \
 m_norms_4_psf.o \
 m_psf_edge_connect.o \
 m_line_from_psf.o \
+set_node_on_edge_quad_psf.o \
 const_section_from_triangle.o \
 m_dynamobench_data_by_psf.o
 

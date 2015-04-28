@@ -1,15 +1,15 @@
 !int_edge_mass_mat_z_filter.f90
 !      module int_edge_mass_mat_z_filter
 !
-      module int_edge_mass_mat_z_filter
-!
 !      Written by H. Matsui
+!
+!      subroutine int_edge_mass_matrix(n_int)
+!
+      module int_edge_mass_mat_z_filter
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine int_edge_mass_matrix(n_int)
 !
 !   --------------------------------------------------------------------
 !

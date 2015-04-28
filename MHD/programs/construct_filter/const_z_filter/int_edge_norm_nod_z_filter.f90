@@ -24,8 +24,8 @@
       use m_geometry_data
       use m_commute_filter_z
       use m_work_4_integration
-      use m_filter_values
-      use m_matrix_4_commutation
+      use m_z_filter_values
+      use m_matrix_4_z_commute
       use m_neibor_data_z
       use m_gauss_points
       use m_gauss_integration

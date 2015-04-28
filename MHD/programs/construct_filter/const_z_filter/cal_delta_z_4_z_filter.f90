@@ -1,15 +1,15 @@
 !cal_delta_z_4_z_filter.f90
 !      module cal_delta_z_4_z_filter
 !
-      module cal_delta_z_4_z_filter
-!
 !      Written by H. Matsui
+!
+!      subroutine cal_delta_z
+!
+      module cal_delta_z_4_z_filter
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine cal_delta_z
 !
 !   --------------------------------------------------------------------
 !

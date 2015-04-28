@@ -34,9 +34,9 @@
       use m_fem_gauss_int_coefs
       use m_commute_filter_z
       use m_neibor_data_z
-      use m_filter_values
+      use m_z_filter_values
       use m_work_4_integration
-      use m_matrix_4_commutation
+      use m_matrix_4_z_commute
       use m_int_commtative_filter
       use m_gauss_integration
       use m_int_edge_data
@@ -48,7 +48,6 @@
       use DJDS_precond_solve33
       use DJDS_precond_solveNN
 
-!      use cal_delta_z_4_z_filter
       use set_diff_position_z_filter
       use set_vert_diff_z_filter
       use int_edge_norm_nod_z_filter
@@ -56,11 +55,14 @@
       use int_edge_horiz_filter_peri
       use int_edge_commute_z_filter
 
+      use int_gaussian_moments
+      use int_linear_moments
+      use int_tophat_moments
+
       use input_control_gen_z_filter
-      use choose_filter_moments
       use calcs_by_LUsolver
       use const_connect_2_n_filter
-      use construct_commute_matrix
+      use const_z_commute_matrix
       use copy_1darray_2_2darray
       use switch_crs_matrix
       use cal_jacobian_linear_1d
@@ -140,7 +142,13 @@
       call allocate_filter_values(numfilter)
       write(*,*) 'allocate_filter', nfilter6_1, nfilter2_1, n_int
 !
-      call s_choose_filter_moments
+      if ( iflag_filter .eq. 0) then
+        call int_tophat_moment_infty(nfilter6_1,f_mom_full,f_width)
+      else if (iflag_filter .eq. 1) then
+        call int_linear_moment_infty(nfilter6_1,f_mom_full,f_width)
+      else
+        call int_gaussian_moment_infty(nfilter6_1,f_mom_full,f_width)
+      end if
 !
        num_inte = nfilter6_1 + 1
        call allocate_gauss_points(n_int_points)

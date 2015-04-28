@@ -19,12 +19,14 @@ TARGET_PICK_NODE_MONITOR = pick_from_node_monitor
 TARGET_MHD_LENGH_SCALE = fem_mhd_l_scale
 
 LIBS_UDT_UTIL = \
+'$$(LIB_UTILS)'   \
 '$$(LIB_VIZ)'    \
 '$$(LIB_PARA)'   \
 '$$(LIB_SOLVER)' \
 '$$(LIB_MESH)'
 
 LIB_FILES_UDT_UTIL = \
+'$$(LIB_UTILS_FILE)'   \
 '$$(LIB_VIZ_FILE)'    \
 '$$(LIB_PARA_FILE)'   \
 '$$(LIB_SOLVER_FILE)' \
@@ -256,7 +258,8 @@ target_task:
 	'$$(LIB_FILES_UDT_UTIL)'  \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PICK_NODE_MONITOR)' \
-	'$$(MOD_PICK_NODE_MONITOR) -L. $$(LIBS_UDT_UTIL)' >> $(MAKENAME)
+	'$$(MOD_PICK_NODE_MONITOR) -L. $$(LIBS_UDT_UTIL)' \
+    '$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
 	@echo '$$(TARGET_MHD_LENGH_SCALE)':  \

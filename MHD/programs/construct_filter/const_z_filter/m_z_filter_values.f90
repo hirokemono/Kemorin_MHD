@@ -1,9 +1,9 @@
 !
-!     module m_filter_values
-!
-      module m_filter_values
+!     module m_z_filter_values
 !
 !      Written by Kemorin
+!
+      module m_z_filter_values
 !
       use m_precision
 !
@@ -63,4 +63,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module m_filter_values
+      end module m_z_filter_values

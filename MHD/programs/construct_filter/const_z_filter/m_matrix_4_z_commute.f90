@@ -1,9 +1,9 @@
 !
-!      module m_matrix_4_commutation
-!
-      module m_matrix_4_commutation
+!      module m_matrix_4_z_commute
 !
 !      Written by Kemorin
+!
+      module m_matrix_4_z_commute
 !
       use m_precision
 !
@@ -55,5 +55,5 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module m_matrix_4_commutation
+      end module m_matrix_4_z_commute
       

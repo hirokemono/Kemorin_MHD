@@ -1,9 +1,9 @@
 !
 !      module m_work_4_integration
 !
-      module m_work_4_integration
-!
 !      Written by Kemorin
+!
+      module m_work_4_integration
 !
       use m_precision
 !

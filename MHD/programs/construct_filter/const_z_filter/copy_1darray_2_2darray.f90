@@ -1,15 +1,15 @@
 !
 !      module copy_1darray_2_2darray
 !
-      module copy_1darray_2_2darray
-!
 !        programmed by H. Matsui on June, 2007
+!
+!     subroutine s_copy_1darray_2_2darray(n1, n2, x2, x1)
+!
+      module copy_1darray_2_2darray
 !
       use m_precision
 !
       implicit none
-!
-!     subroutine s_copy_1darray_2_2darray(n1, n2, x2, x1)
 !
 !-----------------------------------------------------------------------
 !

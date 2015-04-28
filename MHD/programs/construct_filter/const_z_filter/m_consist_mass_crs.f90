@@ -1,9 +1,9 @@
 !
 !     module m_consist_mass_crs
 !
-      module m_consist_mass_crs
-!
 !     Written by H. Matsui
+!
+      module m_consist_mass_crs
 !
       use m_precision
 !

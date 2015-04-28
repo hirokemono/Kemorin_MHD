@@ -1,15 +1,15 @@
 !write_z_filter_4_nod.f90
 !      module write_z_filter_4_nod
 !
-      module write_z_filter_4_nod
-!
 !      Written by H. Matsui
+!
+!      subroutine write_filter_4_nod
+!
+      module write_z_filter_4_nod
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine write_filter_4_nod
 !
 !   --------------------------------------------------------------------
 !
@@ -23,7 +23,7 @@
       use m_geometry_data
       use m_int_commtative_filter
       use m_commute_filter_z
-      use m_filter_values
+      use m_z_filter_values
       use m_int_edge_vart_width
 !
       integer (kind= kint), parameter :: id_filter_z = 15

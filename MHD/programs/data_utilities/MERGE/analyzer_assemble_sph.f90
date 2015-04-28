@@ -107,6 +107,7 @@
      &      new_sph_mesh(1)%sph_mesh%sph_rj%radius_1d_rj_r, r_itp)
       end if
 !
+!      write(*,*) 'share_r_interpolation_tbl'
       call share_r_interpolation_tbl(np_sph_new, new_sph_mesh,          &
      &          r_itp, nlayer_ICB_org, nlayer_CMB_org,                  &
      &          nlayer_ICB_new, nlayer_CMB_new)
@@ -114,11 +115,13 @@
 !      Construct field list from spectr file
 !
       if(my_rank .eq. 0) then
+!        write(*,*) 'load_field_name_assemble_sph'
         call load_field_name_assemble_sph                               &
      &     (istep_start, org_sph_fst_head, np_sph_org,                  &
      &      new_sph_mesh(1)%sph_mesh, org_sph_phys(1), new_sph_phys(1))
       end if
 !
+!      write(*,*) 'share_spectr_field_names'
       call share_spectr_field_names(np_sph_org, np_sph_new,             &
      &    new_sph_mesh, org_sph_phys, new_sph_phys)
 !
@@ -133,6 +136,7 @@
 !          end do
 !        end do
 !      end do
+      write(*,*) 'init_assemble_sph end'
 !
       end subroutine init_assemble_sph
 !
@@ -151,7 +155,7 @@
       use parallel_sph_assemble
 !
       integer(kind = kint) :: istep, icou
-      integer(kind = kint) :: ip, jp, irank_org, irank_new, num
+      integer(kind = kint) :: ip, jp, irank_org, irank_new
 !
 !
 !     ---------------------

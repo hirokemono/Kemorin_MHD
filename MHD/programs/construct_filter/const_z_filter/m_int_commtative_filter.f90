@@ -1,9 +1,16 @@
 !
 !      module m_int_commtative_filter
 !
-      module m_int_commtative_filter
-!
 !      Written by Kemorin
+!
+!      subroutine allocate_int_commute_filter(numnod_z, numele_z)
+!      subroutine deallocate_int_commute_filter
+!
+!      subroutine check_int_commutative_filter(my_rank, numnod_z)
+!      subroutine check_neib_nod_2nd(my_rank, numnod_z)
+!      subroutine check_neib_ele_2nd(my_rank, numele_z)
+!
+      module m_int_commtative_filter
 !
       use m_precision
 !
@@ -33,13 +40,6 @@
 !
       integer(kind = kint), allocatable :: nneib_ele2(:,:)
       integer(kind = kint), allocatable :: ineib_ele2(:,:,:)
-!
-!      subroutine allocate_int_commute_filter(numnod_z, numele_z)
-!      subroutine deallocate_int_commute_filter
-!
-!      subroutine check_int_commutative_filter(my_rank, numnod_z)
-!      subroutine check_neib_nod_2nd(my_rank, numnod_z)
-!      subroutine check_neib_ele_2nd(my_rank, numele_z)
 !
 !-----------------------------------------------------------------------
 !

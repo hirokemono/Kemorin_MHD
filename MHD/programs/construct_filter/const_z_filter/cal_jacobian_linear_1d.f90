@@ -1,15 +1,15 @@
 !
 !      module cal_jacobian_linear_1d
 !
-      module cal_jacobian_linear_1d
-!
 !        programmed by H. Matsui on June, 2007
+!
+!      subroutine s_cal_jacobian_linear_1d(num_int)
+!
+      module cal_jacobian_linear_1d
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine s_cal_jacobian_linear_1d(num_int)
 !
 !-----------------------------------------------------------------------
 !

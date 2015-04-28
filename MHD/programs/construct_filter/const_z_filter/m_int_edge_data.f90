@@ -1,9 +1,9 @@
 !
 !      module m_int_edge_data
 !
-      module m_int_edge_data
-!
 !     Written by H. Matsui
+!
+      module m_int_edge_data
 !
       use m_precision
 !

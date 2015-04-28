@@ -1,15 +1,15 @@
 !
 !      module set_neib_connect_z
 !
-      module set_neib_connect_z
-!
 !        programmed by H. Matsui on June, 2007
+!
+!      subroutine s_set_neib_connect_z
+!
+      module set_neib_connect_z
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine s_set_neib_connect_z
 !
 !-----------------------------------------------------------------------
 !

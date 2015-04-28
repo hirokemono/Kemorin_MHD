@@ -9,11 +9,6 @@ LIB_GEN_FILTER_FILE = libcommute_3d.a
 
 SUBDIRS = \
 filter_3d \
-filter_z \
-IO
-
-FILTER3D_DIRS = \
-filter_3d \
 IO
 
 #

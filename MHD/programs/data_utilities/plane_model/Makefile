@@ -20,12 +20,16 @@ TARGET_COR_PLANE = correlate_plane_evo
 
 LIBS_PLANE_DATA = \
 '$$(LIB_UTILS)'   \
+'$$(LIB_PARA)'   \
+'$$(LIB_SOLVER)' \
 '$$(LIB_MESH)'    \
 '$$(LIB_FFTPACK)' \
 '$$(LIB_ISPACK)'
 
 LIB_FILES_PLANE_DATA = \
 '$$(LIB_UTILS_FILE)'   \
+'$$(LIB_PARA_FILE)'   \
+'$$(LIB_SOLVER_FILE)' \
 '$$(LIB_MESH_FILE)'    \
 '$$(LIB_FFTPACK_FILE)' \
 '$$(LIB_ISPACK_FILE)'

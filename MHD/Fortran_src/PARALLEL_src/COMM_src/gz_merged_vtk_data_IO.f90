@@ -118,7 +118,7 @@
 !
         if(my_rank .eq. isend_rank) then
           num4 = int(nele*nnod_ele)
-          call MPI_ISEND(ie(1,1), num4, CALYPSO_INTEGER,                &
+          call MPI_ISEND(ie(1,1), num4, CALYPSO_GLOBAL_INT,             &
      &        izero, 0, CALYPSO_COMM, req1, ierr_MPI)
         end if
 !
@@ -127,7 +127,7 @@
         if(my_rank .eq. 0) then
           num4 = int(istack_numele(ip) - istack_numele(ip-1))           &
      &          * nnod_ele
-          call MPI_IRECV(ie_single_ucd(1), num4, CALYPSO_INTEGER,       &
+          call MPI_IRECV(ie_single_ucd(1), num4, CALYPSO_GLOBAL_INT,    &
      &        isend_rank, 0, CALYPSO_COMM, req2, ierr_MPI)
 !
           call MPI_WAITALL (ione, req2, sta2, ierr_MPI)

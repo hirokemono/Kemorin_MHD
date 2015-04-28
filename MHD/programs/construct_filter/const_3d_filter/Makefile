@@ -34,6 +34,8 @@ set_ctl_gen_filter.o
 MOD_FILTER_NMESH_SGL= \
 single_filter_newdom.o \
 analyzer_filter_newdom_sgl.o \
+local_newdomain_filter.o \
+bcast_nodes_for_trans.o \
 \
 m_ctl_data_newdomain_filter.o \
 m_ctl_param_newdom_filter.o
@@ -41,6 +43,8 @@ m_ctl_param_newdom_filter.o
 MOD_FILTER_NEWMESH= \
 main_filter_newdomains.o \
 analyzer_filter_newdomains.o \
+local_newdomain_filter.o \
+bcast_nodes_for_trans.o \
 \
 m_ctl_data_newdomain_filter.o \
 m_ctl_param_newdom_filter.o
@@ -48,6 +52,7 @@ m_ctl_param_newdom_filter.o
 MOD_FILTER_COEF_TRANS= \
 main_trans_filter_coef.o \
 analyzer_trans_filter_coef.o \
+bcast_nodes_for_trans.o \
 \
 m_ctl_data_newdomain_filter.o \
 m_ctl_param_newdom_filter.o

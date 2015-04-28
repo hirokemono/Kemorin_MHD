@@ -1,16 +1,16 @@
 !set_matrices_4_z_filter.f90
 !      module set_matrices_4_z_filter
 !
-      module set_matrices_4_z_filter
-!
 !      Written by H. Matsui
+!
+!      subroutine set_consist_mass_mat
+!      subroutine set_matrix_4_border
+!
+      module set_matrices_4_z_filter
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine set_consist_mass_mat
-!      subroutine set_matrix_4_border
 !
 !   --------------------------------------------------------------------
 !
@@ -46,9 +46,9 @@
       use m_geometry_parameter
       use m_commute_filter_z
       use m_crs_matrix
-      use m_matrix_4_commutation
+      use m_matrix_4_z_commute
       use m_neibor_data_z
-      use m_filter_values
+      use m_z_filter_values
 !
       integer (kind = kint) :: kk, kfact, inod, i, k1, ii, jj, k2
       real(kind = kreal), parameter :: zero = 0.0d0, one = 1.0d0

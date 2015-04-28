@@ -108,34 +108,31 @@ target_task:
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
-	@echo '$$(TARGET_NEWUDT)': '$$(MOD_NEWUDT) $$(LIB_FILES_MERGE)' \
+	@echo '$$(TARGET_NEWUDT)': '$$(MOD_NEWUDT) $$(LIB_FILES_PARA_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWUDT)' '$$(MOD_NEWUDT)' \
-	'-L. $$(LIBS_MERGE)' \
+	'-L. $$(LIBS_PARA_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
-	@echo '$$(TARGET_NEWRST)': '$$(MOD_NEWRST)' \
-	'$$(LIB_FILES_MERGE)' \
+	@echo '$$(TARGET_NEWRST)': '$$(MOD_NEWRST) $$(LIB_FILES_PARA_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWRST)' '$$(MOD_NEWRST)' \
-	'-L. $$(LIBS_MERGE)' \
+	'-L. $$(LIBS_PARA_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
-	@echo '$$(TARGET_UPDATE_RST)': '$$(MOD_UPDATE_RST)' \
-	'$$(LIB_FILES_MERGE)' \
+	@echo '$$(TARGET_UPDATE_RST)': '$$(MOD_UPDATE_RST) $$(LIB_FILES_PARA_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_UPDATE_RST)' '$$(MOD_UPDATE_RST)' \
-	'-L. $$(LIBS_MERGE)' \
+	'-L. $$(LIBS_PARA_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
-	@echo '$$(TARGET_NEWSPH_SGL)': '$$(MOD_NEWSPH_SGL)' \
-	'$$(LIB_FILES_MERGE)' \
+	@echo '$$(TARGET_NEWSPH_SGL)': '$$(MOD_NEWSPH_SGL) $$(LIB_FILES_PARA_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWSPH_SGL)' '$$(MOD_NEWSPH_SGL)' \
-	'-L. $$(LIBS_MERGE)' \
+	'-L. $$(LIBS_PARA_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
@@ -147,10 +144,10 @@ target_task:
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
-	@echo '$$(TARGET_NEWSPH)': '$$(MOD_NEWSPH_SGL)' \
+	@echo '$$(TARGET_NEWSPH)': '$$(MOD_NEWSPH)' \
 	'$$(LIB_FILES_PARA_MERGE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWSPH)' '$$(MOD_NEWSPH_SGL)' \
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWSPH)' '$$(MOD_NEWSPH)' \
 	'-L. $$(LIBS_PARA_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)

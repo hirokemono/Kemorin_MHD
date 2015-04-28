@@ -1,16 +1,16 @@
 !
-!      module construct_commute_matrix
-!
-      module construct_commute_matrix
+!      module const_z_commute_matrix
 !
 !        programmed by H. Matsui on June, 2007
+!
+!      subroutine s_const_commute_matrix
+!
+      module const_z_commute_matrix
 !
       use m_precision
       use m_constants
 !
       implicit none
-!
-!      subroutine s_const_commute_matrix
 !
 !-----------------------------------------------------------------------
 !
@@ -23,9 +23,9 @@
       use m_geometry_parameter
       use m_commute_filter_z
       use m_crs_matrix
-      use m_matrix_4_commutation
+      use m_matrix_4_z_commute
       use m_neibor_data_z
-      use m_filter_values
+      use m_z_filter_values
       use m_int_edge_vart_width
 !
 !
@@ -73,4 +73,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module construct_commute_matrix
+      end module const_z_commute_matrix

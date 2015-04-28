@@ -1,16 +1,16 @@
 !int_edge_horiz_filter_peri.f90
 !      module int_edge_horiz_filter_peri
 !
-      module int_edge_horiz_filter_peri
-!
 !      Written by H. Matsui
+!
+!      subroutine int_edge_filter_peri(ndep_filter, numnod_h, hsize,    &
+!     &     xmom_h, xmom_ht)
+!
+      module int_edge_horiz_filter_peri
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine int_edge_filter_peri(ndep_filter, numnod_h, hsize,    &
-!     &     xmom_h, xmom_ht)
 !
 !   --------------------------------------------------------------------
 !
@@ -23,7 +23,7 @@
 !
       use m_constants
       use m_commute_filter_z
-      use m_filter_values
+      use m_z_filter_values
       use m_gauss_points
       use m_gauss_integration
       use m_int_edge_data
