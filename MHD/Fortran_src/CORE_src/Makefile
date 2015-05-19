@@ -15,6 +15,7 @@ MESH_type            \
 IO                   \
 IO_BINARY            \
 IO_ZLIB              \
+IO_MPI               \
 CONTROLS             \
 \
 INTERPOLATE          \
@@ -72,6 +73,7 @@ mod_list:
 	'$$(MOD_IO)'         \
 	'$$(MOD_BINARY_IO)'  \
 	'$$(MOD_ZLIB_IO)'    \
+	'$$(MOD_MPI_IO)'     \
 	'$$(MOD_MESH)'       \
 	'$$(MOD_MESH1)'      \
 	'$$(MOD_MESH2)'      \
