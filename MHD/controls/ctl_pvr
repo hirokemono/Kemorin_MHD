@@ -12,46 +12,44 @@ begin volume_rendering   (BMP or PNG)
 !
   begin plot_area_ctl
     array chosen_ele_grp_ctl  1
-      chosen_ele_grp_ctl   outer_core_ele   end
-    end array
-  end
+      chosen_ele_grp_ctl   outer_core   end
+    end array chosen_ele_grp_ctl
+  end  plot_area_ctl
 !
-!
-  begin pvr_subdomain_ctl
-    maximum_refinement      100
-!
-    num_voxel_ctl  x  8
-    num_voxel_ctl  y  1
-    num_voxel_ctl  z  1
-!
-!    domain_area  x    -0.5   0.5  end
-!    domain_area  y    -0.5   0.5  end
-!    domain_area  z    -0.5   0.5  end
-  end
 !
   begin view_transform_ctl
-!
     begin image_size_ctl
-      x_pixel_ctl   800
-      y_pixel_ctl   640
-    end
-
-    array look_at_point_ctl   3
-      look_at_point_ctl  x      3.0
-      look_at_point_ctl  y     -8.0
-      look_at_point_ctl  z      6.0 
-    end  array
-
-    array viewpoint_ctl  3
-      viewpoint_ctl  x      3.0
-      viewpoint_ctl  y     -8.0
-      viewpoint_ctl  z      6.0 
-    end  array
-    array up_direction_ctl  3
-      up_direction_ctl  x      0.0
-      up_direction_ctl  y      0.0
-      up_direction_ctl  z      1.0
-    end  array
+      x_pixel_ctl   1600
+      y_pixel_ctl   1280
+    end image_size_ctl
+!
+    array viewpoint_in_viewer_ctl  3
+      viewpoint_in_viewer_ctl   x   0.000000000000e+00 end
+      viewpoint_in_viewer_ctl   y   0.000000000000e+00 end
+      viewpoint_in_viewer_ctl   z   3.474078182490e+01 end
+    end array viewpoint_in_viewer_ctl
+!
+    scale_factor_ctl      1.000000000000e+00
+!
+    array look_at_point_ctl  3
+      look_at_point_ctl         x   0.000000000000e+00 end
+      look_at_point_ctl         y   0.000000000000e+00 end
+      look_at_point_ctl         z   4.285221734758e-18 end
+    end array look_at_point_ctl
+!
+    array view_rotation_vec_ctl  3
+      view_rotation_vec_ctl     x   -3.100636350464e-01 end
+      view_rotation_vec_ctl     y   -3.781962193178e-01 end
+      view_rotation_vec_ctl     z   -8.721408327339e-01 end
+    end array view_rotation_vec_ctl
+    view_rotation_deg_ctl   1.040465377125e+02 end
+!
+    begin projection_matrix_ctl
+      perspective_angle_ctl      9.765981906004e+00 end
+      perspective_xy_ratio_ctl   1.250000000000e+00 end
+      perspective_near_ctl       2.000000000000e-02 end
+      perspective_far_ctl        1.000000000000e+03 end
+    end projection_matrix_ctl
 !
     array modelview_matrix_ctl   16
       modelview_matrix_ctl   1  1  1.0  end
@@ -73,77 +71,60 @@ begin volume_rendering   (BMP or PNG)
       modelview_matrix_ctl   2  4  0.0  end
       modelview_matrix_ctl   3  4  0.0  end
       modelview_matrix_ctl   4  4  1.0  end
-    end array
-!
-!    projection parameter ....( perspective_near_ctl = perspective_far_ctl)
-!
-    begin projection_matrix_ctl
-      perspective_angle_ctl     10.0
-      perspective_xy_ratio_ctl   1.0
-      perspective_near_ctl       0.5
-      perspective_far_ctl     1000.0
-    end
-  end
+    end array modelview_matrix_ctl
+  end view_transform_ctl
 
   begin lighting_ctl
-    num_of_lights    4
+    array position_of_lights    4
       position_of_lights    0.0   0.0    0.0   end
       position_of_lights  -10.0   0.0  -10.0   end
       position_of_lights  -10.0   0.0    0.0   end
       position_of_lights    0.0  10.0    0.0   end
+    end array position_of_lights
 !
     ambient_coef              0.5
     diffuse_coef              5.6
     specular_coef             0.8
-  end
+  end lighting_ctl
 !
-  begin colormap_ctl
-!
-!       color_mapping_style   :auto,minmax, or manual
-!
-    color_mapping_style_ctl     minmax
-    range_ctl               0.0  1.0 
+  begin pvr_color_ctl
+    colormap_ctl       rainbow
 !
     data_mapping_ctl   Colormap_list
-	array color_table_ctl    3
-	  color_table_ctl    0.0   0.0
-	  color_table_ctl    0.2   0.6
-	  color_table_ctl    0.3   0.8
-	  color_table_ctl    1.0   1.0
-	end array
+    array color_table_ctl    3
+      color_table_ctl    0.0   0.0
+      color_table_ctl    0.5   0.5
+      color_table_ctl    1.0   1.0
+    end array color_table_ctl
 !
-    opacity_style_ctl              Point_linear
+    opacity_style_ctl              point_linear
     array  opacity_table_ctl         7
-      opacity_table_ctl   0.0     0.01    0.001
-      opacity_table_ctl   0.01    0.2     0.003
-      opacity_table_ctl   0.2     0.35    0.002
-      opacity_table_ctl   0.6     0.7     0.0035
-      opacity_table_ctl   0.7     0.85    0.006
+      opacity_table_ctl   0.0     0.01    0.01
+      opacity_table_ctl   0.01    0.2     0.015
+      opacity_table_ctl   0.2     0.35    0.02
+      opacity_table_ctl   0.6     0.7     0.04
+      opacity_table_ctl   0.7     0.85    0.03
       opacity_table_ctl   0.85    0.95    0.01
-      opacity_table_ctl   0.95    1.0     0.013
-	end array
-	constant_opacity_ctl           0.0002
-
-    array  opacity_step_define         7
-      opacity_step_define   0.0     0.01    0.001
-      opacity_step_define   0.01    0.01    0.003
-      opacity_step_define   0.2     0.2     0.002
-      opacity_step_define   0.6     0.6     0.0035
-      opacity_step_define   0.7     0.7     0.006
-      opacity_step_define   0.85    0.85    0.01
-      opacity_step_define   1.0     1.0     0.013
-	end array
+      opacity_table_ctl   0.95    1.0     0.001
+    end array opacity_table_ctl
+    constant_opacity_ctl           0.003
 !
+    range_min_ctl   0.0
+    range_max_ctl   1.0
+  end   pvr_color_ctl
+!
+  begin colorbar_ctl
     colorbar_switch_ctl    ON
     colorbar_scale_ctl     ON
-	iflag_zeromarker       ON
-	colorbar_range     0.0   1.0
-    font_size_ctl              1.5
-  end
+    iflag_zeromarker       ON
+    colorbar_range     0.0   1.0
+!    font_size_ctl         3
+    num_grid_ctl     4
+  end colorbar_ctl
 !
   begin image_rotation_ctl
     hd_movie_rot_axis       z
     num_of_frames           1
-  end
+  end image_rotation_ctl
 !
-end
+end volume_rendering

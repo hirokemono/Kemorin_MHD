@@ -248,7 +248,7 @@
 !
       pi = four * atan(one)
 !
-!$omp parallel private(ratio_z)
+!$omp parallel
 !$omp do
       do inod = 1, n
         if ( rs(inod).eq.0.0 ) then
@@ -261,24 +261,21 @@
 !
 !$omp do private(ratio_z)
       do inod = 1, n
-!
         r(inod) = sqrt( zz(inod)**2 + rs(inod)**2)
 !
-        if ( r(inod).eq.0.0 ) then
+        if    (zz(inod).eq.zero .and. rs(inod).eq.zero) then
           a_r(inod) =  1.0d99
           theta(inod) = 0.0
+        else if(zz(inod).gt.zero  .and. rs(inod).eq.zero) then
+          a_r(inod) = 1.0d0 / r(inod)
+          theta(inod) = 0.0d0
+        else if(zz(inod).lt.zero  .and. rs(inod).eq.zero) then
+          a_r(inod) = 1.0d0 / r(inod)
+          theta(inod) = pi
         else
           a_r(inod) = 1.0d0 / r(inod)
           ratio_z = zz(inod) * a_r(inod)
-!
-          if (ratio_z .ge. one) then
-            theta(inod) = 0.0d0
-          else if (ratio_z .le.-one) then
-            theta(inod) = pi
-          else
-            theta(inod) = acos(ratio_z)
-          end if
-!
+          theta(inod) = acos(ratio_z)
         end if
       end do
 !$omp end do

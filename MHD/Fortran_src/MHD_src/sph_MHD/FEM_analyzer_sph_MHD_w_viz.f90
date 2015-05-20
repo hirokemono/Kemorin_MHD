@@ -44,6 +44,7 @@
       use FEM_analyzer_sph_MHD
       use set_element_id_4_node
       use cal_jacobian
+      use int_volume_of_domain
 !
 !   --------------------------------
 !       setup mesh information
@@ -69,6 +70,11 @@
         call deallocate_dxi_dx_quad
         call deallocate_dxi_dx_linear
       end if
+!
+!     --------------------- Surface jacobian for fieldline
+!
+      if (iflag_debug.gt.0) write(*,*) 's_int_whole_volume_only'
+      call s_int_whole_volume_only
 !
       end subroutine FEM_initialize_w_viz
 !
