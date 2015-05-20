@@ -19,12 +19,12 @@ void output_GL_modelview_matrix(FILE *fp, struct view_element *view) {
 	fprintf(fp, "    array modelview_matrix_ctl    16\n");
 	for (j = 0; j < 4; j++) {
 		for (i = 0; i < 4; i++) {
-			fprintf(fp, "      modelview_matrix_ctl   %d  %d   %.12e end\n",
+			fprintf(fp, "      modelview_matrix_ctl   %d  %d   %.12e \n",
 					(i+1), (j+1), view->mat_object_2_eye[i+4*j]);
 		};
 		fprintf(fp, "!\n");
 	};
-	fprintf(fp, "    end array\n");
+	fprintf(fp, "    end array modelview_matrix_ctl\n");
 	fprintf(fp, "!\n");
 	
 	return;
@@ -39,12 +39,12 @@ void output_GL_projection_matrix(FILE *fp, struct view_element *view) {
 	fprintf(fp, "    begin projection_matrix_ctl\n");
 	for (j = 0; j < 4; j++) {
 		for (i = 0; i < 4; i++) {
-			fprintf(fp, "      matrix44_comp_ctl   %d  %d   %.12e end\n",
+			fprintf(fp, "      matrix44_comp_ctl   %d  %d   %.12e \n",
 					(i+1), (j+1), view->mat_eye_2_clip[i+4*j]);
 		};
 		fprintf(fp, "!\n");
 	};
-	fprintf(fp, "    end\n");
+	fprintf(fp, "    end projection_matrix_ctl\n");
 	fprintf(fp, "!\n");
 	
 	return;
@@ -54,7 +54,7 @@ void output_stereo_parameter(FILE *fp, struct view_element *view) {
 	fprintf(fp, "    begin streo_view_parameter_ctl\n");
 	fprintf(fp, "      focal_point_ctl            %.12e end\n", view->focal_length);
 	fprintf(fp, "      eye_separation_ctl         %.12e end\n", view->eye_separation);
-	fprintf(fp, "    end\n");
+	fprintf(fp, "    end streo_view_parameter_ctl\n");
     
 	return;
 }
@@ -72,41 +72,41 @@ void output_GL_modelview_parameters(FILE *fp, struct view_element *view) {
 	fprintf(fp, "    begin image_size_ctl\n");
 	fprintf(fp, "      x_pixel_ctl   %d\n", view->nx_window);
 	fprintf(fp, "      y_pixel_ctl   %d\n", view->ny_window);
-	fprintf(fp, "    end\n");
+	fprintf(fp, "    end image_size_ctl\n");
 	fprintf(fp, "!\n");
 	
 	
 	fprintf(fp, "    array viewpoint_in_viewer_ctl  3\n");
-	fprintf(fp, "      viewpoint_in_viewer_ctl   x   %.12e end\n",viewpt_in_view[0]);
-	fprintf(fp, "      viewpoint_in_viewer_ctl   y   %.12e end\n",viewpt_in_view[1]);
-	fprintf(fp, "      viewpoint_in_viewer_ctl   z   %.12e end\n",viewpt_in_view[2]);
-	fprintf(fp, "    end array\n");
+	fprintf(fp, "      viewpoint_in_viewer_ctl   x   %.12e \n",viewpt_in_view[0]);
+	fprintf(fp, "      viewpoint_in_viewer_ctl   y   %.12e \n",viewpt_in_view[1]);
+	fprintf(fp, "      viewpoint_in_viewer_ctl   z   %.12e \n",viewpt_in_view[2]);
+	fprintf(fp, "    end array viewpoint_in_viewer_ctl\n");
 	fprintf(fp, "!\n");
 	
 	fprintf(fp, "    scale_factor_ctl      %.12e\n", view->iso_scale);
 	fprintf(fp, "!\n");
 	
 	fprintf(fp, "    array look_at_point_ctl  3\n");
-	fprintf(fp, "      look_at_point_ctl         x   %.12e end\n", lookat_in_view[0]);
-	fprintf(fp, "      look_at_point_ctl         y   %.12e end\n", lookat_in_view[1]);
-	fprintf(fp, "      look_at_point_ctl         z   %.12e end\n", lookat_in_view[2]);
-	fprintf(fp, "    end array\n");
+	fprintf(fp, "      look_at_point_ctl         x   %.12e \n", lookat_in_view[0]);
+	fprintf(fp, "      look_at_point_ctl         y   %.12e \n", lookat_in_view[1]);
+	fprintf(fp, "      look_at_point_ctl         z   %.12e \n", lookat_in_view[2]);
+	fprintf(fp, "    end array look_at_point_ctl\n");
 	fprintf(fp, "!\n");
 	
 	fprintf(fp, "    array view_rotation_vec_ctl  3\n");
-	fprintf(fp, "      view_rotation_vec_ctl     x   %.12e end\n", view->rotation[1]);
-	fprintf(fp, "      view_rotation_vec_ctl     y   %.12e end\n", view->rotation[2]);
-	fprintf(fp, "      view_rotation_vec_ctl     z   %.12e end\n", view->rotation[3]);
-	fprintf(fp, "    end array\n");
-	fprintf(fp, "    view_rotation_deg_ctl   %.12e end\n", view->rotation[0]);
+	fprintf(fp, "      view_rotation_vec_ctl     x   %.12e \n", view->rotation[1]);
+	fprintf(fp, "      view_rotation_vec_ctl     y   %.12e \n", view->rotation[2]);
+	fprintf(fp, "      view_rotation_vec_ctl     z   %.12e \n", view->rotation[3]);
+	fprintf(fp, "    end array view_rotation_vec_ctl\n");
+	fprintf(fp, "    view_rotation_deg_ctl   %.12e \n", view->rotation[0]);
 	fprintf(fp, "!\n");
 	
 	fprintf(fp, "    begin projection_matrix_ctl\n");
-	fprintf(fp, "      perspective_angle_ctl      %.12e end\n", view->aperture);
-	fprintf(fp, "      perspective_xy_ratio_ctl   %.12e end\n", view->aspect);
-	fprintf(fp, "      perspective_near_ctl       %.12e end\n", view->near);
-	fprintf(fp, "      perspective_far_ctl        %.12e end\n", view->far);
-	fprintf(fp, "    end\n");
+	fprintf(fp, "      perspective_angle_ctl      %.12e \n", view->aperture);
+	fprintf(fp, "      perspective_xy_ratio_ctl   %.12e \n", view->aspect);
+	fprintf(fp, "      perspective_near_ctl       %.12e \n", view->near);
+	fprintf(fp, "      perspective_far_ctl        %.12e \n", view->far);
+	fprintf(fp, "    end projection_matrix_ctl\n");
 	fprintf(fp, "!\n");
 	
 	return;
@@ -277,7 +277,7 @@ void write_GL_modelview_file(const char *file_name, int iflag_view, struct view_
 	output_GL_modelview_parameters(fp_mat, view);
 	if(iflag_view == VIEW_STEREO) output_stereo_parameter(fp_mat, view);
     
-	fprintf(fp_mat, "  end\n");
+	fprintf(fp_mat, "  end view_transform_ctl\n");
 	fprintf(fp_mat, "!\n");
     
 	fclose(fp_mat);
