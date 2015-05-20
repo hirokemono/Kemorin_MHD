@@ -166,7 +166,7 @@
 !
         call fem_gradient_on_element(iele_smp_stack,                    &
      &          numnod, numele, nnod_4_ele, ie, a_vol_ele,              &
-     &          ntot_int_3d, itwo, dnx, xjac,                           &
+     &          ntot_int_3d, ione, dnx, xjac,                           &
      &          grad_ele_pvr(1,1,i_pvr), d_nod_pvr(1,i_pvr))
       end do
 !

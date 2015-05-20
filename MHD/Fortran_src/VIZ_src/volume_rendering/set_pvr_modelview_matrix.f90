@@ -190,21 +190,21 @@
       integer(kind = kint) :: i, nd
 !
 !
-      if(mat%lookpoint_ctl%num .ne. 3) then
-        write(e_message,'(a)')                                          &
-     &     'Lookatpoint vector should be 3 components'
-        call calypso_MPI_abort(ierr_PVR, e_message)
-      end if
-      if(mat%viewpoint_ctl%num .ne. 3) then
-        write(e_message,'(a)')                                          &
-     &     'Viewpoint vector should be 3 components'
-        call calypso_MPI_abort(ierr_PVR, e_message)
-      end if
-      if(mat%up_dir_ctl%num .ne. 3) then
-        write(e_message,'(a)')                                          &
-     &     'Up-direction vector should be 3 components'
-        call calypso_MPI_abort(ierr_PVR, e_message)
-      end if
+!      if(mat%lookpoint_ctl%num .ne. 3) then
+!        write(e_message,'(a)')                                         &
+!     &     'Lookatpoint vector should be 3 components'
+!        call calypso_MPI_abort(ierr_PVR, e_message)
+!      end if
+!      if(mat%viewpoint_ctl%num .ne. 3) then
+!        write(e_message,'(a)')                                         &
+!     &     'Viewpoint vector should be 3 components'
+!        call calypso_MPI_abort(ierr_PVR, e_message)
+!      end if
+!      if(mat%up_dir_ctl%num .ne. 3) then
+!        write(e_message,'(a)')                                         &
+!     &     'Up-direction vector should be 3 components'
+!        call calypso_MPI_abort(ierr_PVR, e_message)
+!      end if
 !
       do i = 1, mat%lookpoint_ctl%num
         nd = set_3direction_flag(mat%lookpoint_ctl%c_tbl(i))
