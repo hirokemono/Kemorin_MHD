@@ -110,11 +110,11 @@
 !
       do jj = 1, n_jk
         do kk = 1, nkr
-          s = 0.0d0
+          s = coef * S_kj(kk,jj)
           do ll = 1, nl_rtm
             s = s + P_lj(ll,jj) * V_kl(kk,ll)
           end do
-          S_kj(kk,jj) = coef * S_kj(kk,jj) + s
+          S_kj(kk,jj) = s
         end do
       end do
 !
