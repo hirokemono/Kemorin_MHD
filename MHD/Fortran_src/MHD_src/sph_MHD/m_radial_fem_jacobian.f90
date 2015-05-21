@@ -118,10 +118,10 @@
       integer(kind = kint), intent(in) :: nri
 !
       if( mod(nri,itwo) .eq. ione) then
-        max_int_point = 3
+        call maximum_integration_points(ithree)
         nedge_r3 = (nri - 1) / 2
       else
-        max_int_point = 2
+        call maximum_integration_points(itwo)
         nedge_r3 = 0
       end if
       nedge_r2 = nri - 1

@@ -30,22 +30,21 @@
 !
       integer (kind=kint), intent(in) :: n_int
 !
-      integer (kind=kint) :: iproc, iele, ii, ix
+      integer (kind=kint) :: ip, iele, ii, ix
       integer (kind=kint) :: istart, iend
 !
 !
-!
-       volume_ele = 0.0d0
+!$omp workshare
+      volume_ele(1:numele) = 0.0d0
+!$omp end workshare
 !
 !$omp parallel do private(iele,ii,ix,istart,iend) 
-       do iproc = 1, np_smp
-!
-         istart = iele_smp_stack(iproc-1)+1
-         iend = iele_smp_stack(iproc)
+       do ip = 1, np_smp
+         istart = iele_smp_stack(ip-1)+1
+         iend = iele_smp_stack(ip)
 !
          do ii=1, n_int * n_int * n_int
            ix = int_start3(n_int) + ii
-!
            do iele = istart, iend
              volume_ele(iele) = volume_ele(iele)                        &
      &                          + xjac(iele,ix)*owe3d(ix)
@@ -54,15 +53,12 @@
 !
 !
          do iele = istart, iend
-!
            if (volume_ele(iele).eq.0.0d0) then
              a_vol_ele(iele) = 1.0d60
            else
              a_vol_ele(iele) = 1.0d0 / volume_ele(iele)
            end if
-!
          end do
-!
        end do
 !$omp end parallel do
 !

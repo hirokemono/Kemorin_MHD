@@ -33,7 +33,8 @@
       call count_surf_size_4_smp
       call count_edge_size_4_smp
 !
-      call allocate_integrate_arrays(num_int)
+      call maximum_integration_points(num_int)
+      call allocate_integrate_parameters
 !
       call allocate_gauss_coef_4_fem
 !

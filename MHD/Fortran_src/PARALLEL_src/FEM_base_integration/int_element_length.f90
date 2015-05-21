@@ -32,17 +32,13 @@
       use m_filter_elength
       use m_fem_gauss_int_coefs
 !
-      integer(kind = kint) :: n_int
-!
-!
-      n_int = max_int_point
 !
       if      (nnod_4_ele .eq. num_t_linear) then
-        call fem_element_length_linear(n_int)
+        call fem_element_length_linear(max_int_point)
       else if (nnod_4_ele .eq. num_t_quad) then
-        call fem_element_length_quad(n_int)
+        call fem_element_length_quad(max_int_point)
       else if (nnod_4_ele .eq. num_t_lag) then
-        call fem_element_length_lag(n_int)
+        call fem_element_length_lag(max_int_point)
       end if
 !
       call cal_element_length_by_jacobi

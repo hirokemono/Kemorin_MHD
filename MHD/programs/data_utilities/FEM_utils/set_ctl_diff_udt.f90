@@ -48,7 +48,8 @@
       call s_set_ctl_4_diff_udt_steps
 !
       if(integration_points_ctl%iflag .gt. 0) then
-        max_int_point = integration_points_ctl%intvalue
+        call maximum_integration_points                                 &
+     &     (integration_points_ctl%intvalue)
       end if
 !
       end subroutine set_ctl_params_correlate_udt

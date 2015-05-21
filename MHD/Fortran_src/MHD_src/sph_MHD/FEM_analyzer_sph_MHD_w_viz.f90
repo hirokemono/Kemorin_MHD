@@ -62,18 +62,19 @@
         call set_ele_id_4_node
       end if
 !
-      if( (i_step_output_pvr) .gt. 0) then
-        if (iflag_debug.eq.1) write(*,*)  'cal_jacobian_element'
-        max_int_point = 1
-        call cal_jacobian_element
+      if(i_step_output_pvr .le. 0) Return
 !
-        call deallocate_dxi_dx_quad
-        call deallocate_dxi_dx_linear
-      end if
+!  -----  If there is no volume rendering... return
 !
-!     --------------------- Surface jacobian for fieldline
+      if (iflag_debug.eq.1) write(*,*)  'maximum_integration_points'
+      call maximum_integration_points(ione)
+      call cal_jacobian_element 
 !
-      if (iflag_debug.gt.0) write(*,*) 's_int_whole_volume_only'
+      call deallocate_dxi_dx_quad
+      call deallocate_dxi_dx_linear
+!
+!     --------------------- volume
+!
       call s_int_whole_volume_only
 !
       end subroutine FEM_initialize_w_viz

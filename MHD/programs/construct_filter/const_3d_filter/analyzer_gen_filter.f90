@@ -90,7 +90,7 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1)  write(*,*)  'cal_jacobian_element'
-      max_int_point =  num_int_points
+      call maximum_integration_points(num_int_points)
       call cal_jacobian_element
 !
       if (iflag_debug.eq.1)  write(*,*)  'cal_jacobian_surface'

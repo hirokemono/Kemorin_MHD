@@ -64,9 +64,7 @@
       vol_local = 0.0d0
       xvol_smp = 0.0d0
 !
-!cdir parallel do private(iele,istart,iend)
 !$omp parallel do private(iele,istart,iend)
-!poption parallel
       do iproc = 1, np_smp
         istart = iele_fsmp_stack(iproc-1)+1
         iend = iele_fsmp_stack(iproc)
@@ -79,7 +77,6 @@
       end do
 !$omp end parallel do
 !
-!poption noparallel
 !cdir noconcur
       do iproc = 1, np_smp
         vol_local = vol_local + xvol_smp(iproc)
