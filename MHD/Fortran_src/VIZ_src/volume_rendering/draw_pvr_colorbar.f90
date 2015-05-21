@@ -10,7 +10,7 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter, private :: BAR_WIDTH = iten
+      integer(kind = kint), parameter, private :: BAR_WIDTH = itwo*iten
 !
       private :: gen_colormark
 !
