@@ -53,12 +53,12 @@
 !!@endverbatim
 !!
 !!@n @param  n         Number of points
-!!@n @param  xx(n,3)   position @f$ (x,y,z) @f$
-!!@n @param  r(n)      radius   @f$ r @f$
-!!@n @param  theta(n)  colatitude  @f$ \theta @f$
-!!@n @param  phi(n)    longitude   @f$ \phi @f$
+!!@n @param  xx(n,3)   Position @f$ (x,y,z) @f$
+!!@n @param  r(n)      Radius   @f$ r @f$
+!!@n @param  theta(n)  Colatitude  @f$ \theta @f$
+!!@n @param  phi(n)    Longitude   @f$ \phi @f$
 !!@n @param  a_r(n)     @f$ 1/ r @f$
-!!@n @param  rs(n)     cylindrical radius  @f$ s @f$
+!!@n @param  rs(n)     Cylindrical radius  @f$ s @f$
 !!@n @param  a_rs(n)    @f$ 1 / s @f$
 !!
 !!@n @param  xx(n)   position @f$ x @f$
