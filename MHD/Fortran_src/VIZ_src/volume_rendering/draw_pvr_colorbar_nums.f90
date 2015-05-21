@@ -137,11 +137,11 @@
       do m = 1, 9
         write(char1,'(a1)') numeric(m:m)
         call gen_font8_12(char1, i_font)
-        do i = 1, 8
-          do j = 1, 12
+        do i = 1, 8*iscale
+          do j = 1, 12*iscale
             k = ( (ist_py+j-1)*npix_img(1)+ist_px + i)
-            ic =  (i-1) / iscale
-            jc = 13 - j / iscale
+            ic =  (i-1) / iscale + 1
+            jc = 12 - (j-1) / iscale
             dimage(1:3,k) = dimage(1:3,k) + i_font(ic,jc)               &
      &                     * (one - two*dimage(1:3,k))
             dimage(4,k) = one

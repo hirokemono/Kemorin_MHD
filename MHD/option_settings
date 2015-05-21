@@ -141,13 +141,69 @@ PKG_CONFIG_PATH='/usr/lib64/pkgconfig:/glade/apps/opt/fftw/3.3.2/intel/12.1.4/li
 #    OpenMP flag for fortran should be fixed!!
 #    Prepocessor options should be fixed!!
 #
-# ANL Vesta
-#
-./configure --prefix='/home/matsui/local' --enable-fftw3 --enable-libpng --disable-gl \
---with-hdf5=no --with-zlib=/home/matsui/local --without-pgplot \
-CC=bgxlc FC=bgxlf MPICC=mpixlc MPIF90=mpixlf90 \
-CFLAGS='-O3 -q64' FCFLAGS='-O3 -q64' \
-PKG_CONFIG_PATH="$PKG_CONFIG_PATH":/home/matsui/local/lib/pkgconfig
+# -qstrict[=<suboptions_list>] | -qnostrict
+# Ensures that optimizations done by default at optimization levels -O3, and higher, and optionally at -O2, do not alter the
+# semantics of a program.
+# 
+# The -qstrict=all, -qstrict=precision, -qstrict=exceptions, -qstrict=ieeefp, and -qstrict=order suboptions and their negative
+# forms are group suboptions that affect multiple, individual suboptions. Group suboptions act as if either the positive or the no
+# form of every suboption of the group is specified.
+# 
+# Default:
+# 
+# o Always -qstrict or -qstrict=all when the -qnoopt or -O0 optimization level is in effect
+# o -qstrict or -qstrict=all is the default when the -O2 or -O optimization level is in effect
+# o -qnostrict or -qstrict=none is the default when -O3 or a higher optimization level is in effect
+# 
+# <suboptions_list> is a colon-separated list of one or more of the following:
+# 
+# all | none
+# all disables all semantics-changing transformations, including those controlled by the ieeefp, order, library, precision,
+# and exceptions suboptions.  none enables these transformations.
+# precision | noprecision
+# precision disables all transformations that are likely to affect floating-point precision, including those controlled by
+# the subnormals, operationprecision, association, reductionorder, and library suboptions.  noprecision enables these
+# transformations.
+# exceptions | noexceptions
+# exceptions disables all transformations likely to affect exceptions or be affected by them, including those controlled by
+# the nans, infinities, subnormals, guards, and library suboptions. noexceptions enables these transformations.
+# ieeefp | noieeefp
+# ieeefp disables transformations that affect IEEE floating-point compliance, including those controlled by the nans,
+# infinities, subnormals, zerosigns, and operationprecision suboptions. noieeefp enables these transformations.
+# nans | nonans
+# nans disables transformations that may produce incorrect results in the presence of, or that may incorrectly produce IEEE
+# floating-point NaN (not-a-number) values. nonans enables these transformations.
+# infinities | noinfinities
+# infinities disables transformations that may produce incorrect results in the presence of, or that may incorrectly produce
+# floating-point infinities.  noinfinities enables these transformations.
+# subnormals | nosubnormals
+# subnormals disables transformations that may produce incorrect results in the presence of, or that may incorrectly produce
+# IEEE floating-point subnormals (formerly known as denorms). nosubnormals enables these transformations.
+# zerosigns | nozerosigns
+# zerosigns disables transformations that may affect or be affected by whether the sign of a floating-point zero is correct.
+# nozerosigns enables these transformations.
+# operationprecision | nooperationprecision
+# operationprecision disables transformations that produce approximate results for individual floating-point operations.
+# nooperationprecision enables these transformations.
+# vectorprecision | novectorprecision
+# vectorprecision disables vectorization in loops where it might produce different results in vectorized iterations than in
+# nonvectorized residue iterations, to ensure that every loop iteration of identical floating point operations on identical
+# data produces identical results. novectorprecision enables vectorization even when different iterations might produce
+# different results from the same inputs.
+# order | noorder
+# order disables all code reordering between multiple operations that may affect results or exceptions, including those
+# controlled by the association, reductionorder, and guards suboptions. noorder enables code reordering.
+# association | noassociation
+# association disables reordering operations within an expression. noassociation enables reordering operations.
+# reductionorder | noreductionorder
+# reductionorder disables parallelizing floating-point reductions. noreductionorder enables parallelizing these reductions.
+# guards | noguards
+# guards disables moving operations past guards (that is, past IF statements, out of loops, or past subroutine or function
+# calls which might end the program) which control whether the operation should be executed.  noguards enables moving
+# operations past guards.
+# library | nolibrary
+# library disables transformations that affect floating-point library functions. nolibrary enables these transformations.
+
 #
 # ANL Mira
 #
