@@ -56,6 +56,7 @@
       use m_constants
 !
       use skip_gz_comment
+      use vtk_data_to_buffer
 !
       implicit none
 !
@@ -67,14 +68,13 @@
 !
       subroutine write_gz_vtk_fields_head(nnod)
 !
+      use calypso_mpi
+!
       integer(kind=kint_gl), intent(in) :: nnod
 !
 !
-      write(textbuf,'(a1)')        char(0)
-      call gz_write_textbuf_f
-!
-      write(textbuf,'(a,i16,a1)') 'POINT_DATA ', nnod, char(0)
-      call gz_write_textbuf_f
+      write(textbuf,'(a,a1)') vtk_fields_head(nnod), char(0)
+      call gz_write_textbuf_no_lf
 !
       end subroutine write_gz_vtk_fields_head
 !
@@ -89,21 +89,13 @@
 !
 !
       if (ncomp_field .eq. n_scalar) then
-        write(textbuf,'(a,a,a,i16,a1)') 'SCALARS ', trim(field_name),   &
-     &                        ' double ', ione, char(0)
-        call gz_write_textbuf_f
-!
-        write(textbuf,'(a,a1)') 'LOOKUP_TABLE default', char(0)
-        call gz_write_textbuf_f
+        write(textbuf,'(a,a1)') vtk_scalar_head(field_name), char(0)
       else if (ncomp_field .eq. n_vector) then
-        write(textbuf,'(a,a,a,a1)') 'VECTORS ', trim(field_name),       &
-     &                        ' double', char(0)
-        call gz_write_textbuf_f
+        write(textbuf,'(a,a1)') vtk_vector_head(field_name), char(0)
       else if (ncomp_field .eq. n_sym_tensor) then
-        write(textbuf,'(a,a,a,a1)') 'TENSORS ', trim(field_name),       &
-     &                        ' double', char(0)
-        call gz_write_textbuf_f
+        write(textbuf,'(a,a1)') vtk_tensor_head(field_name), char(0)
       end if
+      call gz_write_textbuf_no_lf
 !
       end subroutine write_gz_vtk_each_field_head
 !
@@ -119,27 +111,29 @@
       real(kind = kreal), intent(in) :: d_nod(ntot_nod,ncomp_field)
 !
       integer(kind = kint_gl) :: inod
-      integer(kind = kint) :: nd, nd2
 !
 !
       if (ncomp_field .eq. n_sym_tensor) then
         do inod = 1, nnod
-          do nd2 = 1, 3
-            write(textbuf,'(1p3E25.15e3,a1)')                           &
-     &             (d_nod(inod,1+l_sim_t(nd,nd2)), nd=1,3), char(0)
-            call gz_write_textbuf_f
-          end do
+          write(textbuf,'(3a,a1)')                                      &
+     &    vtk_each_vector(d_nod(inod,1), d_nod(inod,2), d_nod(inod,3)), &
+     &    vtk_each_vector(d_nod(inod,2), d_nod(inod,4), d_nod(inod,5)), &
+     &    vtk_each_vector(d_nod(inod,3), d_nod(inod,5), d_nod(inod,6)), &
+     &    char(0)
+          call gz_write_textbuf_no_lf
         end do
       else if(ncomp_field .eq. n_vector) then
         do inod = 1, nnod
-          write(textbuf,'(1p3E25.15e3,a1)')                             &
-     &               d_nod(inod,1:ncomp_field), char(0)
-          call gz_write_textbuf_f
+          write(textbuf,'(a,a1)')                                       &
+     &    vtk_each_vector(d_nod(inod,1), d_nod(inod,2), d_nod(inod,3)), &
+     &    char(0)
+          call gz_write_textbuf_no_lf
         end do
-      else if(ncomp_field .eq. n_scalar) then
+      else
         do inod = 1, nnod
-          write(textbuf,'(1pE25.15e3,a1)') d_nod(inod,1), char(0)
-          call gz_write_textbuf_f
+          write(textbuf,'(a,a1)')                                       &
+     &     vtk_each_scalar(d_nod(inod,1)), char(0)
+          call gz_write_textbuf_no_lf
         end do
       end if
 !
@@ -153,24 +147,8 @@
       integer(kind = kint_gl), intent(in) :: nnod
 !
 !
-      write(textbuf,'(a,a1)') '# vtk DataFile Version 2.0', char(0)
-      call gz_write_textbuf_f
-!
-      write(textbuf,'(a,a1)')                                           &
-     &              'converted data of tri-linear hexahedral element',  &
-     &              char(0)
-      call gz_write_textbuf_f
-!
-      write(textbuf,'(a,a1)') 'ASCII', char(0)
-      call gz_write_textbuf_f
-!
-      write(textbuf,'(a,a1)') 'DATASET UNSTRUCTURED_GRID', char(0)
-      call gz_write_textbuf_f
-!
-!
-      write(textbuf,'(a,i16,a,a1)')  'POINTS ', nnod,                   &
-     &                              ' double', char(0)
-      call gz_write_textbuf_f
+      write(textbuf,'(a,a1)') vtk_node_head(nnod), char(0)
+      call gz_write_textbuf_no_lf
 !
       end subroutine write_gz_vtk_node_head
 !
@@ -182,12 +160,9 @@
       integer(kind = kint), intent(in) :: nnod_ele
       integer(kind = kint_gl), intent(in) :: nele
 !
-      integer(kind = kint_gl) :: nums
 !
-!
-      nums = nele*(nnod_ele+1)
-      write(textbuf,'(a,2i16,a1)') 'CELLS ', nele, nums, char(0)
-      call gz_write_textbuf_f
+      write(textbuf,'(a,a1)') vtk_connect_head(nele, nnod_ele), char(0)
+      call gz_write_textbuf_no_lf
 !
       end subroutine write_gz_vtk_connect_head
 !
@@ -204,22 +179,14 @@
       integer(kind = kint_gl) :: iele
 !
 !
-      if (nnod_ele .eq. num_t_linear) then
-        icellid = 12
-      else if (nnod_ele .eq. num_t_quad) then
-        icellid = 25
-      else if (nnod_ele .eq. num_triangle) then
-        icellid = 5
-      else if (nnod_ele .eq. num_linear_edge) then
-        icellid = 3
-      end if
+      icellid = vtk_cell_type(nnod_ele)
 !
-      write(textbuf,'(a,i16,a1)') 'CELL_TYPES ', nele, char(0)
-      call gz_write_textbuf_f
+      write(textbuf,'(a,a1)')  vtk_cell_type_head(nele), char(0)
+      call gz_write_textbuf_no_lf
 !
+      write(textbuf,'(a,a1)') vtk_each_cell_type(icellid), char(0)
       do iele = 1, nele
-        write(textbuf,'(i5,a1)') icellid, char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_no_lf
       end do
 !
       end subroutine write_gz_vtk_cell_type
@@ -235,15 +202,12 @@
 !
       integer(kind = kint_gl) :: iele
       integer(kind = kint_gl), dimension(nnod_ele) :: ie0
-      character(len=kchara) :: fmt_txt
 !
-!
-      write(fmt_txt,'(a1,i3,a9)')   '(', (nnod_ele+1), '(i16),a1)'
 !
       do iele = 1, nele
         ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
-        write(textbuf,fmt_txt) nnod_ele, ie0(1:nnod_ele), char(0)
-        call gz_write_textbuf_f
+        write(textbuf,'(a,a1)') vtk_each_connect(nnod_ele,ie0), char(0)
+        call gz_write_textbuf_no_lf
       end do
 !
       end subroutine write_gz_vtk_connect_data

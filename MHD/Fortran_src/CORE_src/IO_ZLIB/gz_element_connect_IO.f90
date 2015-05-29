@@ -37,14 +37,14 @@
 !
 !
       write(textbuf,'(i16,a1)') numele_dummy, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       call write_gz_multi_int_10i8(numele_dummy, i_ele_dummy)
 !
       do i=1, numele_dummy
         write(fmt_txt,'(a5,i3,a7)') '(i16,', nodelm_dummy(i), 'i16,a1)'
         write(textbuf,fmt_txt) globalelmid_dummy(i),                    &
      &         ie_dummy(i,1:nodelm_dummy(i)), char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end do
 !
       call deallocate_ele_info_dummy
@@ -58,13 +58,13 @@
       integer(kind = kint) :: i
 !
       write(textbuf,'(2i16,a1)') nsf_4_ele_IO, nsurf_in_ele_IO, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(fmt_txt,'(a5,i3,a7)') '(i16,', nsurf_in_ele_IO, 'i16,a1)'
       do i = 1, nsf_4_ele_IO
         write(textbuf,fmt_txt)                                          &
     &         i, isf_4_ele_IO(i,1:nsurf_in_ele_IO), char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end do
 !
       call deallocate_surface_connect_IO
@@ -79,13 +79,13 @@
 !
 !
       write(textbuf,'(2i16,a1)') ned_4_ele_IO, nedge_in_ele_IO, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(fmt_txt,'(a5,i3,a7)') '(i16,', nedge_in_ele_IO, 'i16,a1)'
       do i = 1, ned_4_ele_IO
         write(textbuf,fmt_txt)                                          &
      &        i, iedge_4_ele_IO(i,1:nedge_in_ele_IO), char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end do
 !
       call deallocate_edge_connect_IO

@@ -52,13 +52,13 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! Group data', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_rtp_node_grp_data_gz
       call write_rtp_radial_grp_data_gz
@@ -171,13 +171,13 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! Node groups', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
 !
       call write_group_data_gz(num_bc_grp_rtp_IO, ntot_bc_grp_rtp_IO,   &
@@ -193,13 +193,13 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! radial groups', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
 !
       call write_group_data_gz(num_radial_grp_rtp_IO,                   &
@@ -216,13 +216,13 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! meridional groups', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
 !
       call write_group_data_gz(num_theta_grp_rtp_IO,                    &
@@ -239,13 +239,13 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! zonal groups', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
 !
       call write_group_data_gz(num_zonal_grp_rtp_IO,                    &

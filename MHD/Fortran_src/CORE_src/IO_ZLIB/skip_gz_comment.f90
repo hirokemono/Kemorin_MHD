@@ -3,7 +3,8 @@
 !
 !     Written by H. Matsui on July, 2007
 !
-!!      subroutine gz_write_textbuf_f
+!!      subroutine gz_write_textbuf_no_lf
+!!      subroutine gz_write_textbuf_w_lf
 !!
 !!      subroutine get_one_line_from_gz_f
 !!      subroutine skip_gz_comment_int(int_input)
@@ -44,12 +45,21 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_write_textbuf_f
+      subroutine gz_write_textbuf_no_lf
+!
+!
+      call write_compress_txt_nolf(nbuf, textbuf)
+!
+      end subroutine gz_write_textbuf_no_lf
+!
+! ----------------------------------------------------------------------
+!
+      subroutine gz_write_textbuf_w_lf
 !
 !
       call write_compress_txt(nbuf, textbuf)
 !
-      end subroutine gz_write_textbuf_f
+      end subroutine gz_write_textbuf_w_lf
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -255,7 +265,7 @@
         n = min(num-ist-ione,iseven) + 1
         write(fmt_txt,'(a1,i2,a7)') '(', n, 'i16,a1)'
         write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -278,7 +288,7 @@
         n = min(num-ist-ione,inine) + 1
         write(fmt_txt,'(a1,i3,a6)') '(', n, 'i8,a1)'
         write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -301,7 +311,7 @@
         n = min(num-ist-ione,inine) + 1
         write(fmt_txt,'(a1,i3,a7)') '(', n, 'i12,a1)'
         write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -316,7 +326,7 @@
 !
 !
       write(textbuf,'(a,a1)') comment, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       end subroutine write_gz_comment_string
 !

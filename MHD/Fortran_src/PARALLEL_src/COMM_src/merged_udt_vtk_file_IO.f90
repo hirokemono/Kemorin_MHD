@@ -89,6 +89,7 @@
       subroutine write_merged_ucd_file(istep, ucd, m_ucd)
 !
       use merged_ucd_data_IO
+      use ucd_file_MPI_IO
 !
       integer(kind = kint), intent(in) :: istep
       type(ucd_data), intent(in) :: ucd
@@ -97,18 +98,21 @@
       character(len=kchara) :: file_name
 !
 !
-      if(my_rank .eq. 0) then
-        call set_single_ucd_file_name(ucd%file_prefix, iflag_ucd,       &
+      call set_single_ucd_file_name(ucd%file_prefix, iflag_ucd,         &
      &      istep, file_name)
+      if(my_rank .eq. 0) write(*,*) 'single UCD data: ',                &
+     &      trim(file_name)
+      call write_ucd_file_mpi(file_name, ucd, m_ucd)
+!      if(my_rank .eq. 0) then
 !
-        write(*,*) 'single UCD data: ', trim(file_name)
-        open(id_vtk_file,file=file_name, form='formatted')
-      end if
+!        write(*,*) 'single UCD data: ', trim(file_name)
+!        open(id_vtk_file,file=file_name, form='formatted')
+!      end if
 !
-      call write_merged_ucd_mesh(id_vtk_file, ucd, m_ucd)
-      call write_merged_ucd_fields(id_vtk_file, ucd, m_ucd)
+!      call write_merged_ucd_mesh(id_vtk_file, ucd, m_ucd)
+!      call write_merged_ucd_fields(id_vtk_file, ucd, m_ucd)
 !
-      if(my_rank .eq. 0) close(id_vtk_file)
+!      if(my_rank .eq. 0) close(id_vtk_file)
 !
       end subroutine write_merged_ucd_file
 !
@@ -117,6 +121,7 @@
       subroutine write_merged_udt_file(istep, ucd, m_ucd)
 !
       use merged_ucd_data_IO
+      use ucd_file_MPI_IO
 !
       integer(kind = kint), intent(in) ::  istep
       type(ucd_data), intent(in) :: ucd
@@ -125,17 +130,23 @@
       character(len=kchara) :: file_name
 !
 !
-      if(my_rank .eq. 0) then
-        call set_single_ucd_file_name(ucd%file_prefix, iflag_udt,       &
+      call set_single_ucd_file_name(ucd%file_prefix, iflag_udt,         &
      &      istep, file_name)
+      if(my_rank .eq. 0) write(*,*) 'single UCD field data: ',          &
+     &      trim(file_name)
+      call write_ucd_phys_mpi(file_name, ucd, m_ucd)
 !
-        write(*,*) 'single UCD field data: ', trim(file_name)
-        open(id_vtk_file,file=file_name, form='formatted')
-      end if
+!      if(my_rank .eq. 0) then
+!        call set_single_ucd_file_name(ucd%file_prefix, iflag_udt,       &
+!     &      istep, file_name)
 !
-      call write_merged_ucd_fields(id_vtk_file, ucd, m_ucd)
+!        write(*,*) 'single UCD field data: ', trim(file_name)
+!        open(id_vtk_file,file=file_name, form='formatted')
+!      end if
 !
-      if(my_rank .eq. 0) close(id_vtk_file)
+!      call write_merged_ucd_fields(id_vtk_file, ucd, m_ucd)
+!
+!      if(my_rank .eq. 0) close(id_vtk_file)
 !
       end subroutine write_merged_udt_file
 !
@@ -151,17 +162,23 @@
       character(len=kchara) :: file_name
 !
 !
-      if(my_rank .eq. 0) then
-        call set_single_grd_file_name(ucd%file_prefix, iflag_udt,       &
-     &      file_name)
+      call set_single_grd_file_name(ucd%file_prefix, iflag_udt,         &
+     &      istep, file_name)
+      if(my_rank .eq. 0) write(*,*) 'single UCD grid data: ',           &
+     &      trim(file_name)
+      call write_ucd_grid_mpi(file_name, ucd, m_ucd)
 !
-        write(*,*) 'single UCD grid data: ', trim(file_name)
-        open (id_vtk_file, file=file_name, status='replace')
-      end if
+!      if(my_rank .eq. 0) then
+!        call set_single_grd_file_name(ucd%file_prefix, iflag_udt,       &
+!     &      file_name)
 !
-      call write_merged_ucd_mesh(id_vtk_file, ucd, m_ucd)
+!        write(*,*) 'single UCD grid data: ', trim(file_name)
+!        open (id_vtk_file, file=file_name, status='replace')
+!      end if
 !
-      if(my_rank .eq. 0) close(id_vtk_file)
+!      call write_merged_ucd_mesh(id_vtk_file, ucd, m_ucd)
+!
+!      if(my_rank .eq. 0) close(id_vtk_file)
 !
       end subroutine write_merged_grd_file
 !
@@ -170,7 +187,7 @@
 !
       subroutine write_merged_vtk_file(istep, ucd, m_ucd)
 !
-      use merged_vtk_data_IO
+      use vtk_file_MPI_IO
 !
       integer(kind = kint), intent(in) ::  istep
       type(ucd_data), intent(in) :: ucd
@@ -179,23 +196,27 @@
       character(len=kchara) :: file_name
 !
 !
-      if(my_rank .eq. 0) then
-        call set_single_ucd_file_name(ucd%file_prefix, iflag_vtk,       &
+      call set_single_ucd_file_name(ucd%file_prefix, iflag_vtk,         &
      &      istep, file_name)
+      if(my_rank .eq. 0)  write(*,*) 'single VTK data: ',               &
+     &                                trim(file_name)
+      call write_vtk_file_mpi(file_name, ucd, m_ucd)
 !
-        write(*,*) 'single VTK data: ', trim(file_name)
-        open (id_vtk_file, file=file_name, form='formatted',            &
-     &                  status ='unknown')
-      end if
+!      if(my_rank .eq. 0) then
 !
-      call write_merged_vtk_mesh(id_vtk_file, ucd, m_ucd)
+!        write(*,*) 'single VTK data: ', trim(file_name)
+!        open (id_vtk_file, file=file_name, form='formatted',            &
+!     &                  status ='unknown')
+!      end if
 !
-      call write_merged_vtk_fields(id_vtk_file, ucd%nnod,               &
-     &    ucd%num_field, ucd%ntot_comp, ucd%num_comp, ucd%phys_name,    &
-     &    ucd%d_ucd, m_ucd%istack_merged_nod,                           &
-     &    m_ucd%istack_merged_intnod)
+!      call write_merged_vtk_mesh(id_vtk_file, ucd, m_ucd)
 !
-      if(my_rank .eq. 0) close(id_vtk_file)
+!      call write_merged_vtk_fields(id_vtk_file, ucd%nnod,               &
+!     &    ucd%num_field, ucd%ntot_comp, ucd%num_comp, ucd%phys_name,    &
+!     &    ucd%d_ucd, m_ucd%istack_merged_nod,                           &
+!     &    m_ucd%istack_merged_intnod)
+!
+!      if(my_rank .eq. 0) close(id_vtk_file)
 !
       end subroutine write_merged_vtk_file
 !
@@ -212,21 +233,27 @@
       character(len=kchara) :: file_name
 !
 !
-      if(my_rank .eq. 0) then
-        call set_single_ucd_file_name(ucd%file_prefix, iflag_vtd,       &
+      call set_single_ucd_file_name(ucd%file_prefix, iflag_vtd,         &
      &      istep, file_name)
+      if(my_rank .eq. 0)  write(*,*) 'single VTK field data: ',         &
+     &                                trim(file_name)
+      call write_vtk_phys_mpi(file_name, ucd, m_ucd)
 !
-        write(*,*) 'single VTK field data: ', file_name
-        open (id_vtk_file, file=file_name, form='formatted',            &
-     &                  status ='unknown')
-      end if
+!      if(my_rank .eq. 0) then
+!        call set_single_ucd_file_name(ucd%file_prefix, iflag_vtd,       &
+!     &      istep, file_name)
 !
-      call write_merged_vtk_fields(id_vtk_file, ucd%nnod,               &
-     &    ucd%num_field, ucd%ntot_comp, ucd%num_comp, ucd%phys_name,    &
-     &    ucd%d_ucd, m_ucd%istack_merged_nod,                           &
-     &    m_ucd%istack_merged_intnod)
+!        write(*,*) 'single VTK field data: ', file_name
+!        open (id_vtk_file, file=file_name, form='formatted',            &
+!     &                  status ='unknown')
+!      end if
 !
-      if(my_rank .eq. 0) close(id_vtk_file)
+!      call write_merged_vtk_fields(id_vtk_file, ucd%nnod,               &
+!     &    ucd%num_field, ucd%ntot_comp, ucd%num_comp, ucd%phys_name,    &
+!     &    ucd%d_ucd, m_ucd%istack_merged_nod,                           &
+!     &    m_ucd%istack_merged_intnod)
+!
+!      if(my_rank .eq. 0) close(id_vtk_file)
 !
       end subroutine write_merged_vtk_phys
 !
@@ -242,18 +269,24 @@
       character(len=kchara) :: file_name
 !
 !
-      if(my_rank .eq. 0) then
-        call set_single_grd_file_name(ucd%file_prefix, iflag_vtd,       &
-     &      file_name)
+      call set_single_grd_file_name(ucd%file_prefix, iflag_vtd,         &
+     &      istep, file_name)
+      if(my_rank .eq. 0)  write(*,*) 'single VTK grid data: ',          &
+     &                                trim(file_name)
+      call write_vtk_grid_mpi(file_name, ucd, m_ucd)
 !
-        write(*,*) 'single VTK grid data:     ', trim(file_name)
-        open (id_vtk_file,  file=file_name, form='formatted',           &
-     &                  status ='unknown')
-      end if
+!      if(my_rank .eq. 0) then
+!        call set_single_grd_file_name(ucd%file_prefix, iflag_vtd,       &
+!     &      file_name)
 !
-      call write_merged_vtk_mesh(id_vtk_file, ucd, m_ucd)
+!        write(*,*) 'single VTK grid data:     ', trim(file_name)
+!        open (id_vtk_file,  file=file_name, form='formatted',           &
+!     &                  status ='unknown')
+!      end if
 !
-      if(my_rank .eq. 0) close(id_vtk_file)
+!      call write_merged_vtk_mesh(id_vtk_file, ucd, m_ucd)
+!
+!      if(my_rank .eq. 0) close(id_vtk_file)
 !
       end subroutine write_merged_vtk_grid
 !

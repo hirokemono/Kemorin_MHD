@@ -112,15 +112,16 @@
       integer(kind = kint_gl), intent(in) :: ie(nele,nnod_ele)
       integer(kind=kint_gl), intent(in) :: istack_numele(0:nprocs)
 !
-      integer(kind = kint) :: ip, num4, isend_rank
+      integer(kind = kint) :: ip, num4, isend_rank, ioffset
       integer(kind = kint_gl) :: num
 !
 !
       if(my_rank .eq. 0) then
         call write_vtk_connect_head(id_vtk, istack_numele(nprocs),      &
      &      nnod_ele)
-        call write_vtk_connect_data(id_vtk, istack_numele(ione),        &
-     &      nnod_ele, istack_numele(ione), ie(1,1))
+        call write_vtk_connect_data(id_vtk, ioffset,                    &
+     &      istack_numele(ione), nnod_ele, istack_numele(ione),         &
+     &      ie(1,1))
       end if
 !
 !C
@@ -144,7 +145,7 @@
           call MPI_WAITALL (ione, req2, sta2, ierr_MPI)
 !
           num = istack_numele(ip) - istack_numele(ip-1)
-          call write_vtk_connect_data(id_vtk, num,                      &
+          call write_vtk_connect_data(id_vtk, ioffset, num,             &
      &        nnod_ele, num, ie_single_ucd(1))
         end if
 !
@@ -203,7 +204,7 @@
           call MPI_WAITALL (ione, req2, sta2, ierr_MPI)
 !
           nnod = istack_numnod(ip) - istack_numnod(ip-1)
-          call write_vtk_each_field(id_vtk, nnod,                       &
+          call write_vtk_each_field(id_vtk, numnod,                    &
      &        ncomp_field, nnod, d_single_ucd(1))
         end if
 !

@@ -135,13 +135,15 @@
       real(kind = kreal), intent(in) :: xx(nnod,3)
 !
       integer(kind = kint), intent(in) ::  id_vtk
+      integer(kind = kint) ::  ioffset
 !
 !
       call write_vtk_node_head(id_vtk, nnod)
       call write_vtk_each_field(id_vtk, nnod, ithree, nnod, xx)
 !
       call write_vtk_connect_head(id_vtk, nele, nnod_ele)
-      call write_vtk_connect_data(id_vtk, nele, nnod_ele, nele, ie)
+      call write_vtk_connect_data(id_vtk, ioffset, nele, nnod_ele,      &
+     &    nele, ie)
 !
       call write_vtk_cell_type(id_vtk, nele, nnod_ele)
 !

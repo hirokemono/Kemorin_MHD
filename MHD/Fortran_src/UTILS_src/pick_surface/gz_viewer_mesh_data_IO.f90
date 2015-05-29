@@ -37,23 +37,23 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! number of domain ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)')                                           &
      &                 '!   stack of node for domain ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)')                                           &
      &                 '!   stack of surface for domain ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)')                                           &
      &                 '!   stack of edge for domain ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(i15,a1)') num_pe_sf, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_gz_multi_int_8i10(num_pe_sf, inod_sf_stack(1))
       call write_gz_multi_int_8i10(num_pe_sf, isurf_sf_stack(1))
@@ -88,23 +88,23 @@
       integer(kind = kint) :: i
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 1. node information', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)')                                           &
      &                 '! number_of node, intenal_node', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! Global ID, x, y, z', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(i15,a1)') nodpetot_viewer, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       do i = 1, nodpetot_viewer
         write(textbuf,1002) i, xx_view(i,1:3), char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end do
  1002 format(i15, 1p3e23.12,a1)
 !
@@ -140,18 +140,18 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 2. element information', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! element type', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! Global ID, connectivity', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(i15,a1)') surfpetot_viewer, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       call write_gz_multi_int_10i8(surfpetot_viewer, surftyp_viewer)
 !
       write(fmt_txt,'(a5,i2,a9)')                                       &
@@ -159,7 +159,7 @@
       do i = 1, surfpetot_viewer
         write(textbuf,fmt_txt) i, ie_sf_viewer(i,1:nnod_4_surf),        &
      &                        char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end do
 !
       end subroutine write_surf_connect_viewer_gz
@@ -217,18 +217,18 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  edge information', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  edge type', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  global ID, connectivity', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(i15,a1)') edgepetot_viewer, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
 !
       write(fmt_txt,'(a5,i2,a9)')                                       &
@@ -236,24 +236,24 @@
       do i = 1, edgepetot_viewer
         write(textbuf,fmt_txt) i, ie_edge_viewer(i,1:nnod_4_edge),      &
      &                         char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end do
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  edge ID for surfaces', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(i15,a1)') surfpetot_viewer, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(fmt_txt,'(a5,i2,a9)')                                       &
      &                '(i15,', nedge_4_surf, '(i15),a1)'
       do i = 1, surfpetot_viewer
         write(textbuf,fmt_txt) i, iedge_sf_viewer(i,1:nedge_4_surf),    &
      &                           char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end do
 !
       end subroutine write_edge_connect_viewer_gz

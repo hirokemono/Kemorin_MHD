@@ -41,13 +41,13 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! Group data', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_rj_radial_grp_data_gz
       call write_rj_sphere_grp_data_gz
@@ -110,13 +110,13 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! radial groups in spectr', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
 !
       call write_group_data_gz(num_radial_grp_rj_IO,                    &
@@ -133,13 +133,13 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! spehrical harmonics groups', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_group_data_gz(num_sphere_grp_rj_IO,                    &
      &    ntot_sphere_grp_rj_IO, istack_sphere_grp_rj_IO,               &

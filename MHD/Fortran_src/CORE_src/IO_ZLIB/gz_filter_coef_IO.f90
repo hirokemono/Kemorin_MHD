@@ -95,14 +95,14 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! nodes for filtering', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(i12,a1)') ngrp_nod_filter_IO, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       call write_gz_multi_int_10i12(ngrp_nod_filter_IO,                 &
      &     istack_nod_filter_IO(1) )
 !
@@ -110,11 +110,11 @@
         ist = istack_nod_filter_IO(i-1)+1
         ied = istack_nod_filter_IO(i)
         write(textbuf,'(a,a1)') trim(grp_name_filter_IO(i)), char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
         do j = ist, ied
           write(textbuf,'(3i12,a1)') inod_filter_IO(j),                 &
      &                         istack_near_nod_filter_IO(j), char(0)
-          call gz_write_textbuf_f
+          call gz_write_textbuf_w_lf
         end do
       end do
 !
@@ -128,19 +128,19 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!   filter coefficients', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(i12)') ntot_near_nod_filter_IO
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       do j = 1, ntot_near_nod_filter_IO
         write(textbuf,'(2i12,1p2E25.15e3,a1)') j, inod_near_nod_IO(j),  &
      &     filter_func_IO(j), filter_weight_IO(j), char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end do
 !
       end subroutine write_3d_filter_weights_coef_gz

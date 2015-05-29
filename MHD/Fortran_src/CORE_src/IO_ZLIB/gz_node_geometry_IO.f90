@@ -34,12 +34,12 @@
 !
       write(textbuf,'(2i16,a1)') numnod_dummy, internal_node_dummy,     &
      &      char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       do i=1, numnod_dummy
         write(textbuf,'(i16,1p3E25.15e3,a1)')  globalnodid_dummy(i),    &
      &        xx_dummy(i,1:3), char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end do
 !
       call deallocate_node_data_dummy
@@ -54,11 +54,11 @@
 !
       write(textbuf,'(2i16,a1)') numnod_dummy, internal_node_dummy,     &
      &      char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       do i = 1, numnod_dummy
         write(textbuf,'(i16,1p3E25.15e3,a1)') i, ele_scalar_IO(i),      &
      &      char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end do
 !
       call deallocate_ele_scalar_IO
@@ -73,11 +73,11 @@
 !
       write(textbuf,'(2i16,a1)') numnod_dummy, internal_node_dummy,     &
      &      char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       do i = 1, numnod_dummy
         write(textbuf,'(i16,1p3E25.15e3,a1)') i, ele_vector_IO(i,1:3),  &
      &         char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end do
 !
       call deallocate_ele_vector_IO

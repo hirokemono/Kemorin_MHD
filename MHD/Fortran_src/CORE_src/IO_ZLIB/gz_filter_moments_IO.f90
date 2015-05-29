@@ -55,14 +55,14 @@
 !
       write(textbuf,'(a,a1)') '! number of node for filtering: ',       &
      &      char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(2i16,a1)') nnod, nele, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')  '! number of filter function ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)') nf_type, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       end subroutine write_filter_elen_head_gz
 !
@@ -97,14 +97,14 @@
 !
       write(textbuf,'(a,a1)') '! number of node for filtering: ',       &
      &      char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(3i16,a1)')  nnod, nele, n_filter, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')  '! number of filter function ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)') nf_type, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       end subroutine write_filter_moms_head_gz
 !
@@ -169,7 +169,7 @@
       do i = 1, num
         write(textbuf,'(i16,1p3E25.15e3,a1)') i,                        &
      &                                el1(i), el2(i), el3(i), char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end do
 !
       end subroutine write_elength_gz
@@ -190,7 +190,7 @@
           do i = 1, num
             write(textbuf,'(2i16,1p3E25.15e3,a1)') nd, i, el1(i,nd),    &
      &         el2(i,nd), el3(i,nd), char(0)
-            call gz_write_textbuf_f
+            call gz_write_textbuf_w_lf
           end do
         end do
 !

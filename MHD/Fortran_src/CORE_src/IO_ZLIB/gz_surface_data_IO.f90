@@ -34,70 +34,70 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  surface connectivity ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  and communication table ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!' , char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 1.parallel information', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_domain_info_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  2  surface connectivity', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  2.1  surface connectivity ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!      (type and connection) ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_element_info_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  2.2 surface id for each element',     &
      &      char(0) 
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!        positive: outward normal',      &
      &      char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!        normal: inward normal', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_surface_4_element_gz
 !
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 3.import / export information ',       &
     &         char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 3.1 surface ID for import ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_import_data_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 3.2 surface ID for export ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_export_data_gz
 !
@@ -140,31 +140,31 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.  geometry of surface', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.1 center of surface', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_geometry_info_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  4.2 normal vector of surface',char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_vector_in_element_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.3 area of surface', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_scalar_in_element_gz
 !
@@ -178,35 +178,35 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4   geometry of surface', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.1 center of surface', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  (spherical coordinate) ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_geometry_info_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  4.2 normal vector of surface',char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  (spherical coordinate) ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_vector_in_element_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  4.3 area of surface', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_scalar_in_element_gz
 !
@@ -221,35 +221,35 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4   geometry of surface', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.1 center of surface', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  (cylindrical coordinate) ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_geometry_info_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.2 normal vector of surface', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  (cylindrical coordinate) ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_vector_in_element_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.3 area of surface', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_scalar_in_element_gz
 !
