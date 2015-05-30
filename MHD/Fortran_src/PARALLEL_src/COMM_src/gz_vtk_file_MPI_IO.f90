@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date   Programmed in Ma, 2015
 !
-!> @brief Output merged VTK file usgin MPI-IO
+!> @brief Output merged VTK file usging MPI-IO
 !!
 !!@verbatim
 !!      subroutine gz_write_vtk_file_mpi(file_name, ucd, m_ucd)
@@ -24,7 +24,6 @@
 !
       implicit none
 !
-      character(len=65536), private :: textbuf
       character(len=1), allocatable :: gzip_buf(:)
 !
       private :: gz_write_vtk_data_mpi, gz_write_vtk_mesh_mpi

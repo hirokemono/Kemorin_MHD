@@ -138,12 +138,11 @@
       integer, intent(in) ::  id_vtk
 !
       integer(kind = kint) :: j
-      integer(kind = kint_gl) :: inod, nt_nod, num, inod_gl
+      integer(kind = kint_gl) :: inod, num, inod_gl
       integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
       real(kind = kreal)  :: dat_1(ntot_comp)
 !
 !
-      nt_nod = istack_merged_intnod(nprocs)
       num = istack_merged_intnod(my_rank+1)                             &
      &     - istack_merged_intnod(my_rank)
 !
@@ -185,7 +184,7 @@
      &      sta1, ierr_MPI)
         ioffset = ioffset + ilength
       end do
-      ioff_gl = ioff_gl + ilength * nt_nod
+      ioff_gl = ioff_gl + ilength * istack_merged_intnod(nprocs)
 !
       end subroutine write_ucd_data_mpi
 !
@@ -232,8 +231,8 @@
       end if
       ioff_gl = ioff_gl + ilength
 
-      inod_gl = 1 + istack_merged_intnod(my_rank)
-      dat_1(1:n_vector) = xx(1,1:n_vector)
+      inod_gl = 1
+      dat_1(1:n_vector) = zero
       ilength = len(ucd_each_field(inod_gl, n_vector, dat_1))
       ioffset = int(ioff_gl + ilength * istack_merged_intnod(my_rank))
       do inod = 1, num
@@ -249,8 +248,8 @@
       ioff_gl = ioff_gl + ilength * nt_nod
 !
 !
-      iele_gl = 1 + istack_merged_ele(my_rank)
-      ie0(1:nnod_ele) = ie(1,1:nnod_ele) - 1
+      iele_gl = 1
+      ie0(1:nnod_ele) = 0
       ilength = len(ucd_each_connect(iele_gl, nnod_ele, ie0))
       ioffset = int(ioff_gl + ilength * istack_merged_ele(my_rank))
       do iele = 1, nele
