@@ -19,6 +19,9 @@
 #define GZ_AD_MODE "ab6f"
 #define GZ_RD_MODE "rb6f"
 
+#define windowBits 15
+#define GZIP_ENCODING 16
+
 /* prototypes */
 
 void open_wt_gzfile(const char *gz_file_name);
@@ -33,6 +36,14 @@ void write_compress_txt(int *num_buffer, char *input_txt);
 void write_compress_txt_nolf(int *num_buffer, char *input_txt);
 void get_one_line_from_gz(int *num_buffer, int *num_word, int *nchara, char *line_buf);
 int skip_comment_gz_c(int *num_buffer, char *buf);
+
+void gzip_defleat_once(int *len_buf, const char *buf, int *len_gzipbuf, 
+                       int *len_gzipped, char *gzipbuf);
+void gzip_defleat_begin(int *len_buf, const char *buf, int *len_gzipbuf, 
+                        int *len_gzipped, char *gzipbuf);
+void gzip_defleat_cont(int *len_buf, const char *buf, int *len_gzipbuf, int *len_gzipped);
+void gzip_defleat_last(int *len_buf, const char *buf, int *len_gzipbuf, int *len_gzipped);
+
 
 void compress_file(const char *txt_file_name, const char *gz_file_name);
 void decompress_file(const char *gz_file_name, const char *txt_file_name);

@@ -117,8 +117,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_vtk_data_mpi(id_vtk, ioff_gl,                   &
-     &          nnod, num_field, ntot_comp, ncomp_field,               &
+      subroutine write_vtk_data_mpi(id_vtk, ioff_gl,                    &
+     &          nnod, num_field, ntot_comp, ncomp_field,                &
      &          field_name, d_nod, istack_merged_intnod)
 !
       use m_phys_constants
@@ -168,7 +168,7 @@
           end if
           ioff_gl = ioff_gl + ilength
 !
-          ilength = len(vtk_each_scalar(d_nod(1,icou)))
+          ilength = len(vtk_each_scalar(zero))
           ioffset = int(ioff_gl                                         &
      &             + ilength * istack_merged_intnod(my_rank))
           do inod = 1, num
@@ -193,8 +193,7 @@
           end if
           ioff_gl = ioff_gl + ilength
 !
-          ilength = len(vtk_each_vector                                 &
-     &                (d_nod(1,icou),d_nod(1,icou+1),d_nod(1,icou+2)))
+          ilength = len(vtk_each_vector(zero, zero, zero))
           ioffset = int(ioff_gl                                         &
      &             + ilength * istack_merged_intnod(my_rank))
           do inod = 1, num
@@ -220,8 +219,7 @@
           end if
           ioff_gl = ioff_gl + ilength
 !
-          ilength = len(vtk_each_vector                                 &
-     &                (d_nod(1,icou),d_nod(1,icou+1),d_nod(1,icou+2)))
+          ilength = len(vtk_each_vector(zero, zero, zero))
           ioffset = int(ioff_gl                                         &
      &             + ilength * istack_merged_intnod(my_rank))
           do inod = 1, num
@@ -296,7 +294,7 @@
       end if
       ioff_gl = ioff_gl + ilength
 
-      ilength = len(vtk_each_vector(xx(1,1),xx(1,2),xx(1,3)))
+      ilength = len(vtk_each_vector(zero, zero, zero))
       ioffset = int(ioff_gl + ilength * istack_merged_intnod(my_rank))
       do inod = 1, num
         write(textbuf,'(a,a1)')                                         &
@@ -320,7 +318,7 @@
       end if
       ioff_gl = ioff_gl + ilength
 !
-      ie0(1:nnod_ele) = ie(1,1:nnod_ele) - 1
+      ie0(1:nnod_ele) = 0
       ilength = len(vtk_each_connect(nnod_ele, ie0))
       ioffset = int(ioff_gl + ilength * istack_merged_ele(my_rank))
       do iele = 1, nele

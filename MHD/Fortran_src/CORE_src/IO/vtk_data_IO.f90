@@ -15,12 +15,9 @@
 !!     &          nnod, d_nod)
 !!
 !!      subroutine write_vtk_node_head(id_vtk, nnod)
-!!      subroutine write_vtk_connect_head(id_vtk, nele, nnod_ele)
-!!      subroutine write_vtk_cell_type(id_vtk, nele, nnod_ele)
 !!
-!!      subroutine write_vtk_connect_data(id_vtk, ntot_ele, nnod_ele,   &
-!!     &          nele, ie)
-!!
+!!      subroutine write_vtk_connect_data                               &
+!!     &         (id_vtk, ntot_ele, nnod_ele, nele, ie)
 !!
 !!      subroutine read_vtk_fields_head(id_vtk, nnod)
 !!      subroutine read_vtk_each_field_head(id_vtk, iflag_end,          &
@@ -149,44 +146,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_vtk_connect_head(id_vtk, nele, nnod_ele)
-!
-      integer(kind = kint_gl), intent(in) :: nele
-      integer(kind = kint), intent(in) :: nnod_ele
-      integer(kind = kint), intent(in) :: id_vtk
-!
-!
-      write(id_vtk,'(a)',advance='NO') vtk_connect_head(nele, nnod_ele)
-!
-      end subroutine write_vtk_connect_head
-!
-! -----------------------------------------------------------------------
-!
-      subroutine write_vtk_cell_type(id_vtk, nele, nnod_ele)
-!
-      use m_geometry_constants
-!
-      integer(kind = kint_gl), intent(in) :: nele
-      integer(kind = kint), intent(in) ::  id_vtk, nnod_ele
-!
-      integer(kind = kint) :: icellid
-      integer(kind = kint_gl) :: iele
-!
-!
-      icellid = vtk_cell_type(nnod_ele)
-!
-      write(id_vtk,'(a)',advance='NO') vtk_cell_type_head(nele)
-      do iele = 1, nele
-        write(id_vtk,'(a)',advance='NO') vtk_each_cell_type(icellid)
-      end do
-!
-      end subroutine write_vtk_cell_type
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine write_vtk_connect_data(id_vtk, ioffset,                &
-     &          ntot_ele, nnod_ele, nele, ie)
+      subroutine write_vtk_connect_data                                 &
+     &         (id_vtk, ntot_ele, nnod_ele, nele, ie)
 !
       use m_geometry_constants
 !
@@ -194,22 +155,28 @@
       integer(kind = kint), intent(in) :: nnod_ele
       integer(kind = kint_gl), intent(in) :: ntot_ele, nele
       integer(kind = kint_gl), intent(in) :: ie(ntot_ele,nnod_ele)
-      integer(kind = kint), intent(inout) :: ioffset
 !
       integer(kind = kint_gl) :: iele
       integer(kind = kint_gl) :: ie0(nnod_ele)
+      integer(kind = kint) :: icellid
 !
+!
+      icellid = vtk_cell_type(nnod_ele)
+      write(id_vtk,'(a)',advance='NO') vtk_connect_head(nele, nnod_ele)
 !
       do iele = 1, nele
         ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
         write(id_vtk,'(a)',advance='NO')                                &
      &         vtk_each_connect(nnod_ele, ie0)
       end do
-      ioffset = ioffset + nele * len(vtk_each_connect(nnod_ele, ie0))
+!
+      write(id_vtk,'(a)',advance='NO') vtk_cell_type_head(nele)
+      do iele = 1, nele
+        write(id_vtk,'(a)',advance='NO') vtk_each_cell_type(icellid)
+      end do
 !
       end subroutine  write_vtk_connect_data
 !
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !

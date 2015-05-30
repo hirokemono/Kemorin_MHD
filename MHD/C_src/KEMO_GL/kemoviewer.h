@@ -24,6 +24,10 @@
 #define get_one_line_from_gz      get_one_line_from_gz_
 #define compress_file             compress_file_
 #define decompress_file           decompress_file_
+#define gzip_defleat_once         gzip_defleat_once_
+#define gzip_defleat_begin        gzip_defleat_begin_
+#define gzip_defleat_cont         gzip_defleat_cont_
+#define gzip_defleat_last         gzip_defleat_last_
 
 #define write_png_rgba_c          write_png_rgba_c_
 #define write_png_rgb_c           write_png_rgb_c_
@@ -49,6 +53,10 @@
 #define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
 #define compress_file             COMPRESS_FILE
 #define decompress_file           DECOMPRESS_FILE
+#define gzip_defleat_once         GZIP_DEFLEAT_ONCE
+#define gzip_defleat_begin        GZIP_DEFLEAT_BEGIN
+#define gzip_defleat_cont         GZIP_DEFLEAT_CONT
+#define gzip_defleat_last         GZIP_DEFLEAT_LAST
 
 #define write_png_rgba_c          WRITE_PNG_RGBA_C
 #define write_png_rgb_c           WRITE_PNG_RGB_C
@@ -74,6 +82,10 @@
 #define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
 #define compress_file             COMPRESS_FILE
 #define decompress_file           DECOMPRESS_FILE
+#define gzip_defleat_once         GZIP_DEFLEAT_ONCE
+#define gzip_defleat_begin        GZIP_DEFLEAT_BEGIN
+#define gzip_defleat_cont         GZIP_DEFLEAT_CONT
+#define gzip_defleat_last         GZIP_DEFLEAT_LAST
 
 #define write_png_rgba_c          WRITE_PNG_RGBA_C
 #define write_png_rgb_c           WRITE_PNG_RGB_C
@@ -99,6 +111,10 @@
 #define get_one_line_from_gz      get_one_line_from_gz
 #define compress_file             compress_file
 #define decompress_file           decompress_file
+#define gzip_defleat_once         gzip_defleat_once
+#define gzip_defleat_begin        gzip_defleat_begin
+#define gzip_defleat_cont         gzip_defleat_cont
+#define gzip_defleat_last         gzip_defleat_last
 
 #define write_png_rgba_c          write_png_rgba_c
 #define write_png_rgb_c           write_png_rgb_c
