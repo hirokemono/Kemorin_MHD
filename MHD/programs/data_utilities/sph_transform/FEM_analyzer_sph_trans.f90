@@ -97,15 +97,17 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine SPH_to_FEM_bridge_sph_trans
+      subroutine SPH_to_FEM_bridge_sph_trans(fld_IO)
 !
-      use m_field_data_IO
+      use t_field_data_IO
       use copy_rj_phys_data_4_IO
+!
+      type(field_IO), intent(inout) :: fld_IO
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_rj_all_phys_name_to_IO'
-      call copy_rj_all_phys_name_to_IO
-      call allocate_phys_data_IO
+      call copy_rj_all_phys_name_to_IO(fld_IO)
+      call alloc_phys_data_IO(fld_IO)
 !
       end subroutine SPH_to_FEM_bridge_sph_trans
 !

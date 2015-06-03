@@ -47,38 +47,37 @@
 !
       use m_constants
       use m_geometry_data_4_merge
-      use m_field_data_IO
+      use t_field_data_IO
       use field_IO_select
       use set_list_4_FFT
+      use set_field_type_to_restart
+      use set_restart_data
 !
       integer(kind=kint), intent(in) :: ip, nnod
 !
       integer(kind=kint) :: my_rank
+      type(field_IO) :: pl_fld_IO
 !
 !
       my_rank = ip - 1
 !
-      numgrid_phys_IO = nnod
+      pl_fld_IO%nnod_IO = nnod
 !
-      num_phys_data_IO = merged_fld%num_phys
-      ntot_phys_data_IO = merged_fld%ntot_phys
-      call allocate_phys_data_name_IO
-      call allocate_phys_data_IO
+      pl_fld_IO%num_field_IO = merged_fld%num_phys
+      pl_fld_IO%ntot_comp_IO = merged_fld%ntot_phys
+      call alloc_phys_name_IO(pl_fld_IO)
+      call alloc_phys_data_IO(pl_fld_IO)
 !
-      phys_data_name_IO(1:num_phys_data_IO)                             &
-     &             = merged_fld%phys_name(1:num_phys_data_IO)
-      num_phys_comp_IO(1:num_phys_data_IO)                              &
-     &             = merged_fld%num_component(1:num_phys_data_IO)
-      istack_phys_comp_IO(0:num_phys_data_IO)                           &
-     &             = merged_fld%istack_component(0:num_phys_data_IO)
-      phys_data_IO(1:nnod,1:ntot_phys_data_IO)                          &
-     &             = rst_from_sp(1:nnod,1:ntot_phys_data_IO)
+      call simple_copy_fld_name_t_to_rst(merged_fld, pl_fld_IO)
+      call simple_copy_fld_dat_to_rst_IO                                &
+     &   (nnod, merged_fld%ntot_phys, rst_from_sp,                      &
+     &    pl_fld_IO%ntot_comp_IO, pl_fld_IO%nnod_IO, pl_fld_IO%d_IO)
 !
-      phys_file_head = rst_head_plane
-      call sel_write_step_FEM_field_file(my_rank, izero)
+      pl_fld_IO%file_prefix = rst_head_plane
+      call sel_write_step_FEM_field_file(my_rank, izero, pl_fld_IO)
 !
-      call deallocate_phys_data_name_IO
-      call deallocate_phys_data_IO
+      call dealloc_phys_name_IO(pl_fld_IO)
+      call dealloc_phys_data_IO(pl_fld_IO)
 !
       end subroutine s_write_restart_by_spectr
 !

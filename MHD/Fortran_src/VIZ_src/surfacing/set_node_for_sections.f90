@@ -33,7 +33,7 @@
 !
       type(sect_search_list), intent(in) :: nod_search
 !
-      type(sectiong_list), intent(inout) :: psf_list
+      type(sectioning_list), intent(inout) :: psf_list
 !
       integer(kind = kint) :: nnod_on_nod_smp(np_smp)
       integer(kind = kint) :: ip, inum, inod, ist, ied
@@ -70,7 +70,7 @@
       integer(kind = kint), intent(in) :: numnod
       type(sect_search_list), intent(in) :: nod_search
 !
-      type(sectiong_list), intent(inout) :: psf_list
+      type(sectioning_list), intent(inout) :: psf_list
 !
 !
       integer(kind = kint) :: ip, ist,ied,inum,inod,icou
@@ -109,7 +109,7 @@
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
       type(sect_search_list), intent(in) :: edge_search
 !
-      type(sectiong_list), intent(inout) :: psf_list
+      type(sectioning_list), intent(inout) :: psf_list
 !
       integer(kind = kint) :: nnod_on_edge_smp(np_smp)
       integer(kind = kint) :: ip, ist, ied, iedge
@@ -154,7 +154,7 @@
       integer(kind = kint), intent(in) :: istack_nod_smp(0:np_smp)
       type(sect_search_list), intent(in) :: edge_search
 !
-      type(sectiong_list), intent(inout) :: psf_list
+      type(sectioning_list), intent(inout) :: psf_list
 !
       integer(kind = kint) :: ip, icou, ist, ied, iedge
       integer(kind = kint) :: inod1, inod2, inum, num
@@ -223,7 +223,7 @@
       integer(kind = kint), intent(in) :: istack_nod_smp(0:np_smp)
       type(sect_search_list), intent(in) :: edge_search
 !
-      type(sectiong_list), intent(inout) :: psf_list
+      type(sectioning_list), intent(inout) :: psf_list
 !
       integer(kind = kint) :: ip, ist, ied, iedge, jp
       integer(kind = kint) :: inod1, inod2, inum

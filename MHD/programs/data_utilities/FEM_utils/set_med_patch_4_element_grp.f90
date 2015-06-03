@@ -67,7 +67,6 @@
       character(len=kchara), intent(in) :: file_head
 !
       integer(kind = kint) :: ip, igrp, inum
-      integer(kind = kint) :: ist_smp, ied_smp
       type(sect_search_list) :: ele_search
 !
 !
@@ -144,7 +143,7 @@
         xx_1ele(3,1:8) = xx(ie_1ele(1:8),3)
 !
         mark = mark_elegrp(inum) * int(e_multi(iele))
-        n_patch = num_patch(mark)
+        n_patch = psf_case_tbl(mark)%npatch
         if(n_patch .gt. 0) then
           do n = 1, n_patch
             call set_triangle_at_meridian(xx_1ele, mark, n,             &
@@ -188,7 +187,7 @@
         xx_1ele(3,1:8) = xx(ie_1ele(1:8),3)
 !
         mark = mark_elegrp(inum) * int(e_multi(iele))
-        n_patch = num_patch(mark)
+        n_patch = psf_case_tbl(mark)%npatch
         if(n_patch .gt. 0) then
           do n = 1, n_patch
             call set_triangle_at_meridian(xx_1ele, mark, n,             &
@@ -222,7 +221,7 @@
 !
       iflag = 0
 !
-      ie_p(1:3) = iedge_4_patch(i_1ele,mark_psf,1:3)
+      ie_p(1:3) = psf_case_tbl(mark_psf)%iedge(i_1ele,1:3)
       il(1:3,1) = node_on_edge_l(1,ie_p(1:3))
       il(1:3,2) = node_on_edge_l(2,ie_p(1:3))
 !

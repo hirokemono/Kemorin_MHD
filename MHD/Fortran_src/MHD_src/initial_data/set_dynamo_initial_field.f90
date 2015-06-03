@@ -32,7 +32,7 @@
       use m_t_int_parameter
       use m_t_step_parameter
       use m_node_phys_data
-      use mhd_restart_file_IO_control
+      use fem_mhd_rst_IO_control
       use set_restart_data
 !
 !

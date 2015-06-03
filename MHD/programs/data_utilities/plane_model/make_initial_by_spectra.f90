@@ -19,7 +19,6 @@
       use m_set_new_spectr
       use m_spectr_4_ispack
       use m_time_data_IO
-      use m_field_data_IO
       use m_control_plane_fft
       use count_number_with_overlap
       use set_plane_spectr_file_head

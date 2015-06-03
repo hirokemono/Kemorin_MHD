@@ -32,18 +32,22 @@
       use m_comm_data_IO
       use m_ctl_data_4_cub_kemo
       use m_time_data_IO
-      use m_field_data_IO
+      use t_field_data_IO
       use set_ctl_data_plane_mesh
       use set_parallel_file_name
       use mesh_IO_select
       use set_node_geometry_4_IO
       use field_IO_select
+      use set_field_type_to_restart
 !
       implicit none
 !
       integer(kind=kint) :: i, ip, my_rank, inod
       integer(kind=kint) :: np, jst, jed
+      type(field_IO) :: plane_fst_IO
 !
+      character(len=kchara), parameter                                  &
+     &      :: org_rst_f_header = 'restart/rst'
 !
       pi = four*atan(one)
 !
@@ -72,7 +76,7 @@
         call copy_node_geometry_from_IO
         call deallocate_neib_domain_IO
 !
-        call allocate_merged_field_data
+        call alloc_phys_data_type(merged%node%numnod, merged_fld)
 !
 !   set up of physical values
 !
@@ -115,28 +119,26 @@
 !     write data
 !
 !
-        numgrid_phys_IO = merged%node%numnod
+        plane_fst_IO%nnod_IO = merged%node%numnod
 !
-        num_phys_data_IO = merged_fld%num_phys
-        ntot_phys_data_IO = merged_fld%ntot_phys
-        call allocate_phys_data_name_IO
-        call allocate_phys_data_IO
+        plane_fst_IO%num_field_IO = merged_fld%num_phys
+        plane_fst_IO%ntot_comp_IO = merged_fld%ntot_phys
+        call alloc_phys_name_IO(plane_fst_IO)
+        call alloc_phys_data_IO(plane_fst_IO)
 !
-        phys_data_name_IO(1:num_phys_data_IO)                           &
-     &             = merged_fld%phys_name(1:num_phys_data_IO)
-        num_phys_comp_IO(1:num_phys_data_IO)                            &
-     &             = merged_fld%num_component(1:num_phys_data_IO)
-        istack_phys_comp_IO(0:num_phys_data_IO)                         &
-     &             = merged_fld%istack_component(0:num_phys_data_IO)
-        phys_data_IO(1:merged%node%numnod,1:ntot_phys_data_IO)          &
-     &    = merged_fld%d_fld(1:merged%node%numnod,1:ntot_phys_data_IO)
+        call simple_copy_fld_name_t_to_rst(merged_fld, plane_fst_IO)
+        call simple_copy_fld_dat_t_to_rst                               &
+     &     (merged%node, merged_fld, plane_fst_IO)
 !
-        call sel_write_step_FEM_field_file(my_rank, izero)
+        call set_field_file_fmt_prefix                                  &
+     &     (izero, org_rst_f_header, plane_fst_IO)
+        call sel_write_step_FEM_field_file                              &
+     &     (my_rank, izero, plane_fst_IO)
 !
-        call deallocate_phys_data_name_IO
-        call deallocate_phys_data_IO
+        call dealloc_phys_name_IO(plane_fst_IO)
+        call dealloc_phys_data_IO(plane_fst_IO)
 !
-        call deallocate_merged_field_data
+        call dealloc_phys_data_type(merged_fld)
         call deallocate_node_geometry
 !
       end do

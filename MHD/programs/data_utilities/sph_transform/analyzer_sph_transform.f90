@@ -19,11 +19,14 @@
       use m_machine_parameter
       use calypso_mpi
       use m_work_time
+      use t_field_data_IO
 !
       use FEM_analyzer_sph_trans
       use SPH_analyzer_sph_trans
 !
       implicit none
+!
+      type(field_IO), save, private :: sph_trns_IO
 !
 ! ----------------------------------------------------------------------
 !
@@ -65,7 +68,7 @@
 !
 !    Set field IOP array by spectr fields
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_sph_trans'
-      call SPH_to_FEM_bridge_sph_trans
+      call SPH_to_FEM_bridge_sph_trans(sph_trns_IO)
 !
       end subroutine initialize_sph_transform
 !
@@ -84,7 +87,7 @@
         call FEM_analyze_sph_trans(i_step, visval)
 !
 !   Spherical transform
-        call SPH_analyze_sph_trans(i_step)
+        call SPH_analyze_sph_trans(i_step, sph_trns_IO)
       end do
 !
       call FEM_finalize_sph_trans

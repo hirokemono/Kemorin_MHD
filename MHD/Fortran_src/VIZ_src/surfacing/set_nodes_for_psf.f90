@@ -57,7 +57,7 @@
       integer(kind = kint), intent(inout)                               &
      &      :: istack_nod_psf_smp(0:np_smp*num_psf)
       type(psf_search_lists), intent(inout) :: psf_search(num_psf)
-      type(sectiong_list), intent(inout) :: psf_list(num_psf)
+      type(sectioning_list), intent(inout) :: psf_list(num_psf)
 !
       integer(kind = kint) :: i, ist_smp, igrp, num
 !
@@ -120,7 +120,7 @@
       integer(kind = kint), intent(inout)                               &
      &      :: istack_nod_iso_smp(0:np_smp*num_iso)
       type(psf_search_lists), intent(inout) :: iso_search(num_iso)
-      type(sectiong_list), intent(inout) :: iso_list(num_iso)
+      type(sectioning_list), intent(inout) :: iso_list(num_iso)
 !
       integer(kind = kint) :: i, ist_smp
 !
@@ -177,7 +177,7 @@
      &      :: istack_nod_psf_smp(0:np_smp*num_psf)
 !
       type(psf_search_lists), intent(in) :: psf_search(num_psf)
-      type(sectiong_list), intent(inout) :: psf_list(num_psf)
+      type(sectioning_list), intent(inout) :: psf_list(num_psf)
       type(psf_patch_data), intent(inout) :: psf_pat
 !
       integer(kind = kint) :: i, ist_smp, ist, num, igrp
@@ -248,7 +248,7 @@
      &      :: istack_nod_iso_smp(0:np_smp*num_iso)
 !
       type(psf_search_lists), intent(in) :: iso_search(num_iso)
-      type(sectiong_list), intent(inout) :: iso_list(num_iso)
+      type(sectioning_list), intent(inout) :: iso_list(num_iso)
       type(psf_patch_data), intent(inout) :: iso_pat
 !
       integer(kind = kint) :: i, ist_smp

@@ -41,7 +41,6 @@
       use m_work_4_sph_trans
       use m_file_format_switch
 !
-      use m_field_data_IO
       use m_sph_boundary_input_data
       use m_sel_spherical_SRs
       use m_FFT_selector
@@ -51,14 +50,13 @@
       use legendre_transform_select
       use add_nodal_fields_4_MHD
       use add_sph_MHD_fields_2_ctl
+      use sph_mhd_rst_IO_control
 !
       integer(kind = kint) :: ierr
 !
 !   overwrite restart header for magnetic field extension
 !
-      if( (iflag_org_sph_rj_head*iflag_org_rst) .gt. 0) then
-        phys_file_head = org_rst_header
-      end if
+      call set_rst_file_by_orignal_mesh
 !
 !   set physical values
 !

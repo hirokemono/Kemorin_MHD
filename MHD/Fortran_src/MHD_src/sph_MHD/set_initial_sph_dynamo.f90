@@ -38,7 +38,6 @@
       use m_initial_field_control
       use m_t_int_parameter
       use m_t_step_parameter
-      use m_field_data_IO
       use set_sph_restart_IO
       use sph_mhd_rst_IO_control
       use initial_magne_dynamobench
@@ -90,10 +89,7 @@
         call set_all_part_temp_sph
       end if
 !
-      call set_sph_restart_num_to_IO
-!
-      i_step_MHD = i_step_init
-      time   =     time_init
+      call init_output_sph_restart_file
 !
       if (iflag_restart.ne.i_rst_by_file .and. i_step_init.eq.0) then
         call output_sph_restart_control

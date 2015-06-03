@@ -12,13 +12,16 @@
       use m_precision
       use m_constants
       use m_machine_parameter
-      use m_schmidt_poly_on_rtm
       use calypso_mpi
 !
+      use m_schmidt_poly_on_rtm
+      use t_field_data_IO
       use field_IO_select
       use pickup_sph_rms_spectr 
 !
       implicit none
+!
+      type(field_IO), save, private :: sph_fld_IO
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,7 +70,10 @@
 !  ------  initialize spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_SPH_file'
-      call sel_read_alloc_step_SPH_file(my_rank, i_step_init)
+      call set_field_file_fmt_prefix                                    &
+     &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IO)
+      call sel_read_alloc_step_SPH_file                                 &
+     &    (my_rank, i_step_init, sph_fld_IO)
 !
 !  -------------------------------
 !
@@ -114,9 +120,11 @@
 !
 !   Input spectr data
 !
-        call sel_read_step_SPH_field_file(my_rank, i_step)
+        call set_field_file_fmt_prefix                                  &
+     &     (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IO)
+        call sel_read_step_SPH_field_file(my_rank, i_step, sph_fld_IO)
 !
-        call set_rj_phys_data_from_IO
+        call set_rj_phys_data_from_IO(sph_fld_IO)
 !
 !  evaluate energies
 !

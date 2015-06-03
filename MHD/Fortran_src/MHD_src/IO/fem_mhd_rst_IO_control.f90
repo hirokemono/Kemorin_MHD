@@ -1,5 +1,5 @@
-!>@file   mhd_restart_file_IO_control.f90
-!!@brief  module mhd_restart_file_IO_control
+!>@file   fem_mhd_rst_IO_control.f90
+!!@brief  module fem_mhd_rst_IO_control
 !!
 !!@author H. Matsui
 !!@date   programmed by H.Matsui and H.Okuda
@@ -10,6 +10,8 @@
 !> @brief Call restart data IO routines
 !!
 !!@verbatim
+!!      subroutine set_ctl_restart_4_fem_mhd
+!!
 !!      subroutine init_MHD_restart_output
 !!      subroutine init_restart_4_snapshot
 !!
@@ -20,11 +22,12 @@
 !!      subroutine input_restart_4_snapshot
 !!@endverbatim
 !
-      module mhd_restart_file_IO_control
+      module fem_mhd_rst_IO_control
 !
       use m_precision
 !
       use calypso_mpi
+      use t_field_data_IO
       use m_t_step_parameter
 !
       implicit  none
@@ -32,23 +35,35 @@
       private :: output_restart_files, input_restart_files
       private :: input_model_coef_file, output_model_coef_file
 !
+      type(field_IO), save, private :: fem_fst_IO
+!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine set_ctl_restart_4_fem_mhd
+!
+      use set_control_platform_data
+!
+!
+      call set_control_restart_file_def(fem_fst_IO)
+!
+      end subroutine set_ctl_restart_4_fem_mhd
+!
+! -----------------------------------------------------------------------
+!
       subroutine init_MHD_restart_output
 !
-      use m_field_data_IO
       use set_field_to_restart
 !
 !
-      call count_field_num_to_restart
-      call allocate_phys_data_name_IO
+      call count_field_num_to_restart(fem_fst_IO)
+      call alloc_phys_name_IO(fem_fst_IO)
 !
-      call copy_field_name_to_restart
-      call allocate_phys_data_IO
+      call copy_field_name_to_restart(fem_fst_IO)
+      call alloc_phys_data_IO(fem_fst_IO)
 !
       end subroutine init_MHD_restart_output
 !
@@ -65,10 +80,10 @@
 !
 !
       index_rst = i_step_init / i_step_output_rst
-      call sel_read_alloc_FEM_fld_head(my_rank, index_rst)
+      call sel_read_alloc_FEM_fld_head(my_rank, index_rst, fem_fst_IO)
 !
-      numgrid_phys_IO = numnod
-      call allocate_phys_data_IO
+      fem_fst_IO%nnod_IO = numnod
+      call alloc_phys_data_IO(fem_fst_IO)
 !
       end subroutine init_restart_4_snapshot
 !
@@ -133,9 +148,10 @@
      &                      call scalar_send_recv(iphys%i_pre_composit)
 !
       call copy_time_steps_to_restart
-      call copy_field_data_to_restart
+      call copy_field_data_to_restart(fem_fst_IO)
 !
-      call sel_write_step_FEM_field_file(my_rank, index_rst)
+      call sel_write_step_FEM_field_file                                &
+     &   (my_rank, index_rst, fem_fst_IO)
 !
       end subroutine output_restart_files
 !
@@ -154,14 +170,16 @@
       integer(kind = kint) :: ierr
 !
 !
-      call check_step_FEM_field_file(my_rank, istep_rst_start, ierr)
+      call check_step_FEM_field_file                                    &
+     &   (my_rank, istep_rst_start, fem_fst_IO, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr,'No restart file.')
 !
-      call sel_read_alloc_step_FEM_file(my_rank, istep_rst_start)
+      call sel_read_alloc_step_FEM_file                                 &
+     &   (my_rank, istep_rst_start, fem_fst_IO)
 !
-      call copy_field_data_from_restart
-      call deallocate_phys_data_IO
-      call deallocate_phys_data_name_IO
+      call copy_field_data_from_restart(fem_fst_IO)
+      call dealloc_phys_data_IO(fem_fst_IO)
+      call dealloc_phys_name_IO(fem_fst_IO)
 !
       if(iflag_flexible_step .eq. iflag_flex_step) then
         call copy_time_steps_from_restart
@@ -188,9 +206,9 @@
       if ( mod(istep_max_dt,i_step_output_rst) .ne. 0) return
 !
       index_rst = istep_max_dt / i_step_output_rst
-      call sel_read_step_FEM_field_file(my_rank, index_rst)
+      call sel_read_step_FEM_field_file(my_rank, index_rst, fem_fst_IO)
 !
-      call copy_field_data_from_restart
+      call copy_field_data_from_restart(fem_fst_IO)
       time =       time_init
       i_step_MHD = istep_max_dt
 !
@@ -250,4 +268,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module mhd_restart_file_IO_control
+      end module fem_mhd_rst_IO_control

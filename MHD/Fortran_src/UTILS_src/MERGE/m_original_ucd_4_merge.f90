@@ -151,7 +151,7 @@
 !
       merged_fld%num_phys =  ic
       merged_fld%num_phys_viz =  merged_fld%num_phys
-      call allocate_merged_field_name
+      call alloc_phys_name_type(merged_fld)
 !
       ic =  0 
       do j = 1,org_fld%num_phys

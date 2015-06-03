@@ -1,5 +1,5 @@
-!>@file   set_control_MHD.f90
-!!@brief  module set_control_MHD
+!>@file   set_control_FEM_MHD.f90
+!!@brief  module set_control_FEM_MHD
 !!
 !!@author H. Matsui
 !!@date Programmed in 2002
@@ -7,10 +7,10 @@
 !> @brief Set parameters for MHD dynamo simulation from control data
 !!
 !!@verbatim
-!!     subroutine set_control_FEM_MHD
+!!     subroutine set_control_4_FEM_MHD
 !!@endverbatim
 !
-      module set_control_MHD
+      module set_control_FEM_MHD
 !
       use m_precision
 !
@@ -22,7 +22,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_FEM_MHD
+      subroutine set_control_4_FEM_MHD
 !
       use calypso_mpi
       use m_control_params_2nd_files
@@ -50,6 +50,7 @@
       use set_control_4_current
       use set_control_4_composition
       use set_control_4_infty
+      use fem_mhd_rst_IO_control
       use output_parallel_ucd_file
       use check_read_bc_file
 !
@@ -60,7 +61,7 @@
       call check_control_num_domains
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
-      call set_control_restart_file_def
+      call set_ctl_restart_4_fem_mhd
       call set_control_parallel_field_def
       call set_control_org_fld_file_def
 !
@@ -144,8 +145,8 @@
 !
       call check_FEM_MHD_dependencies
 !
-      end subroutine set_control_FEM_MHD
+      end subroutine set_control_4_FEM_MHD
 !
 ! -----------------------------------------------------------------------
 !
-      end module set_control_MHD
+      end module set_control_FEM_MHD

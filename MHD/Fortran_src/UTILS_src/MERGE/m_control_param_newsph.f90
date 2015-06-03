@@ -15,19 +15,25 @@
       integer(kind = kint) :: np_sph_org
       integer(kind = kint) :: np_sph_new
 !
-      character(len=kchara) :: org_sph_fst_head = "restart/rst"
-      character(len=kchara) :: new_sph_fst_head = "rst_new/rst"
-!
       integer(kind=kint ) :: istep_start, istep_end, increment_step
 !
       character(len=kchara) :: org_sph_head = 'mesh_org/in_rj'
       character(len=kchara) :: new_sph_head = 'mesh_new/in_rj'
 !
-!
       integer(kind=kint ) :: ifmt_org_sph_file =      0
       integer(kind=kint ) :: ifmt_new_sph_file =      0
 !
+!>      File prefix for new restart data
+      character(len=kchara) :: org_sph_fst_head = "restart/rst"
+!>      File prefix for new restart data
+      character(len=kchara) :: new_sph_fst_head = "rst_new/rst"
+!
+      integer(kind=kint ) :: ifmt_org_sph_fst =       0
+      integer(kind=kint ) :: ifmt_new_sph_fst =       0
+!
       integer(kind=kint ) :: iflag_delete_org_sph =   0
+!
+!>      multiply the amplitude
       real(kind = kreal) :: b_sph_ratio
 !
 !------------------------------------------------------------------
@@ -43,10 +49,10 @@
       use m_ctl_data_4_2nd_data
       use m_ctl_data_4_time_steps
       use m_node_id_spherical_IO
-      use m_field_data_IO
       use m_file_format_switch
       use m_ucd_data
       use set_control_platform_data
+      use new_SPH_restart
       use ucd_IO_select
       use skip_comment_f
 !
@@ -65,7 +71,6 @@
         stop
       end if
 !
-      call set_control_restart_file_def
       call set_control_ucd_file_def
 !
       if(sph_file_prefix%iflag .gt. 0) then
@@ -86,6 +91,9 @@
       if (new_restart_prefix%iflag .gt. 0) then
         new_sph_fst_head = new_restart_prefix%charavalue
       end if
+!
+      call choose_file_format(restart_file_fmt_ctl, ifmt_org_sph_fst)
+      call choose_file_format(restart_file_fmt_ctl, ifmt_new_sph_fst)
 !
       if(del_org_data_ctl%iflag .gt. 0) then
         if(yes_flag(del_org_data_ctl%charavalue)) then

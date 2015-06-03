@@ -25,7 +25,6 @@
 !
       implicit none
 !
-      character(len=65536), private :: textbuf
       character(len=1), allocatable :: gzip_buf(:)
 !
       private :: gz_write_ucd_data_mpi, gz_write_ucd_mesh_mpi

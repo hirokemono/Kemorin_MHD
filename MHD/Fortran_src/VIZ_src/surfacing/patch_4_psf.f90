@@ -10,9 +10,9 @@
 !!      subroutine set_patch_4_psf(numele, numedge, iedge_4_ele,        &
 !!     &          ele_search, mark_ele, id_n_on_e, npatch_tot,          &
 !!     &          istack_patch_smp, ie_patch)
-!
-!      subroutine renumber_patch_id_psf(npatch_tot, istack_nod_smp,     &
-!     &          istack_patch_smp, ie_patch)
+!!
+!!      subroutine renumber_patch_id_psf(npatch_tot, istack_nod_smp,    &
+!!     &          istack_patch_smp, ie_patch)
 !
       module patch_4_psf
 !
@@ -121,15 +121,15 @@
         do inum = ist, ied
           iele = ele_search%id_search(inum)
           mark = mark_ele(inum)
-          np = num_patch(mark)
+          np = psf_case_tbl(mark)%npatch
 !
           if (np .gt. 0) then
 !
             do n = 1, np
               icou = icou + 1
-              ie1 = iedge_4_patch(n,mark,1)
-              ie2 = iedge_4_patch(n,mark,2)
-              ie3 = iedge_4_patch(n,mark,3)
+              ie1 = psf_case_tbl(mark)%iedge(n,1)
+              ie2 = psf_case_tbl(mark)%iedge(n,2)
+              ie3 = psf_case_tbl(mark)%iedge(n,3)
               iedge1 = abs( iedge_4_ele(iele,ie1) )
               iedge2 = abs( iedge_4_ele(iele,ie2) )
               iedge3 = abs( iedge_4_ele(iele,ie3) )
@@ -187,14 +187,14 @@
         do inum = ist, ied
           iele = ele_search%id_search(inum)
           mark = mark_ele(inum)
-          np = num_patch(mark)
+          np = psf_case_tbl(mark)%npatch
 !
           if (np .gt. 0) then
 !
             do n = 1, np
-              ie1 = iedge_4_patch(n,mark,1)
-              ie2 = iedge_4_patch(n,mark,2)
-              ie3 = iedge_4_patch(n,mark,3)
+              ie1 = psf_case_tbl(mark)%iedge(n,1)
+              ie2 = psf_case_tbl(mark)%iedge(n,2)
+              ie3 = psf_case_tbl(mark)%iedge(n,3)
               iedge1 = abs( iedge_4_ele(iele,ie1) )
               iedge2 = abs( iedge_4_ele(iele,ie2) )
               iedge3 = abs( iedge_4_ele(iele,ie3) )
@@ -210,7 +210,7 @@
 !                   write(40+my_rank,*) 'id_n_on_e',                    &
 !     &                iele, id_n_on_e( abs(iedge_4_ele(iele,1:12)) )
 !                   write(40+my_rank,*) 'iedge_4_patch',                &
-!     &                icou, iedge_4_patch(n,mark,1:3)
+!     &                icou, psf_case_tbl(mark)%iedge(n,1:3)
 !                   write(40+my_rank,*)
               end if
             end do

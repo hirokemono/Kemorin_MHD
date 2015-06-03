@@ -48,7 +48,7 @@
 !
       type(psf_parameters), intent(in) :: psf_param(num_psf)
       type(phys_data), intent(in) :: psf_fld(num_psf)
-      type(sectiong_list), intent(in):: psf_list(num_psf)
+      type(sectioning_list), intent(in):: psf_list(num_psf)
 !
       type(psf_patch_data), intent(inout) :: psf_pat
 !
@@ -96,7 +96,7 @@
 !
       type(psf_parameters), intent(in) :: iso_param(num_iso)
       type(phys_data), intent(in) :: iso_fld(num_iso)
-      type(sectiong_list), intent(in):: iso_list(num_iso)
+      type(sectioning_list), intent(in):: iso_list(num_iso)
 !
       type(psf_patch_data), intent(inout) :: iso_pat
 !
@@ -155,7 +155,7 @@
       integer(kind = kint), intent(in) :: ncomp_org(nfield_psf)
       integer(kind = kint), intent(in) :: icomp_psf(nfield_psf)
 !
-      type(sectiong_list), intent(in) :: psf_list
+      type(sectioning_list), intent(in) :: psf_list
 !
       integer(kind = kint), intent(in) :: num_phys, ntot_phys
       integer(kind = kint), intent(in) :: istack_ncomp(0:num_phys)

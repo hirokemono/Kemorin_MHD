@@ -64,7 +64,7 @@
       use count_sgs_components
       use set_layer_list_by_table
       use set_normal_vectors
-      use mhd_restart_file_IO_control
+      use fem_mhd_rst_IO_control
 !
       use nodal_vector_send_recv
 !

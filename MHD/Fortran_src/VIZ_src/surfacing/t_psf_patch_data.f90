@@ -65,6 +65,44 @@
         real(kind = kreal), pointer :: tmp_psf(:,:)
       end type psf_patch_data
 !
+      type psf_local_data
+        integer(kind = kint) :: nnod_psf_tot
+        integer(kind = kint), pointer :: istack_nod_psf(:)
+        integer(kind = kint), pointer :: istack_nod_psf_smp(:)
+!
+        integer(kind = kint), pointer :: inod_hash_psf(:)
+!>         position of patch
+        real(kind = kreal), pointer :: xyz_psf(:,:)
+!
+!>         radius
+        real(kind = kreal), pointer :: rr(:)
+!>         theta
+        real(kind = kreal), pointer :: theta(:)
+!>         phi
+        real(kind = kreal), pointer :: phi(:)
+!>         1 / r
+        real(kind = kreal), pointer :: ar(:)
+!>         s
+        real(kind = kreal), pointer :: ss(:)
+!>         1 / s
+        real(kind = kreal), pointer :: as(:)
+!
+!
+!>         Number of patches
+        integer(kind = kint) :: npatch_psf
+!>         SMP stack for patch
+        integer(kind = kint), pointer :: istack_patch_psf_smp(:)
+!>         patch connectivity
+        integer(kind = kint), pointer :: ie_tri(:,:)
+!
+!>         number of components
+        integer(kind = kint) :: ncomp
+!>         sectioned data
+        real(kind = kreal), pointer :: dat_psf(:,:)
+!>         sectioned temporal
+        real(kind = kreal), pointer :: tmp_psf(:,:)
+      end type psf_local_data
+!
 !  ---------------------------------------------------------------------
 !
       contains

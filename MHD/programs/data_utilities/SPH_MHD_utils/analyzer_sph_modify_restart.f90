@@ -93,8 +93,6 @@
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
-      use m_field_data_IO
-      use m_control_params_2nd_files
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
@@ -104,23 +102,17 @@
       use sph_mhd_rms_IO
 !
       integer(kind = kint), intent(in) :: i_step
-      character(len=kchara) :: restart_tmp_prefix
 !
 !
-      restart_tmp_prefix = phys_file_head
-      phys_file_head =     org_rst_header
-      call read_alloc_sph_rst_4_snap(i_step)
-      phys_file_head =     restart_tmp_prefix
+      call read_alloc_sph_rst_2_modify(i_step)
 !
 !*  ----------------Modify spectr data ... ----------
 !*
       call set_modify_rj_fields
 !
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
-      call set_sph_restart_num_to_IO
+      call init_output_sph_restart_file
       call output_sph_restart_control
-      call deallocate_phys_data_IO
-      call deallocate_phys_data_name_IO
 !*
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
       call output_rms_sph_mhd_control

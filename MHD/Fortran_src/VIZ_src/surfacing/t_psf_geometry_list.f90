@@ -56,7 +56,7 @@
 !
 !
 !>      Structure for cross sectioning list
-      type sectiong_list
+      type sectioning_list
 !
 !>        reference field for sectioning
         real(kind = kreal), pointer :: ref_fld(:)
@@ -84,7 +84,7 @@
 !
 !>        Interpolation coefficients for node on edge
         real(kind = kreal), pointer :: coef_on_edge(:,:)
-      end type sectiong_list
+      end type sectioning_list
 !
 !  ---------------------------------------------------------------------
 !
@@ -167,7 +167,7 @@
       subroutine alloc_ref_field_4_psf(numnod, psf_list)
 !
       integer(kind= kint), intent(in) :: numnod
-      type(sectiong_list), intent(inout) :: psf_list
+      type(sectioning_list), intent(inout) :: psf_list
 !
 !
       allocate(psf_list%ref_fld(numnod) )
@@ -181,7 +181,7 @@
       subroutine alloc_nnod_psf(np_smp, numnod, numedge, psf_list)
 !
       integer(kind= kint), intent(in) :: np_smp, numnod, numedge
-      type(sectiong_list), intent(inout) :: psf_list
+      type(sectioning_list), intent(inout) :: psf_list
 !
 !
       allocate(psf_list%istack_n_on_n_smp(0:np_smp))
@@ -205,7 +205,7 @@
 !
       subroutine alloc_inod_psf(psf_list)
 !
-      type(sectiong_list), intent(inout) :: psf_list
+      type(sectioning_list), intent(inout) :: psf_list
 !
 !
       allocate(psf_list%inod_4_nod(psf_list%nnod_on_nod))
@@ -229,7 +229,7 @@
 !
       subroutine dealloc_ref_field_4_psf(psf_list)
 !
-      type(sectiong_list), intent(inout) :: psf_list
+      type(sectioning_list), intent(inout) :: psf_list
 !
 !
       deallocate(psf_list%ref_fld)
@@ -240,7 +240,7 @@
 !
       subroutine dealloc_nnod_psf(psf_list)
 !
-      type(sectiong_list), intent(inout) :: psf_list
+      type(sectioning_list), intent(inout) :: psf_list
 !
 !
       deallocate(psf_list%istack_n_on_n_smp)
@@ -254,7 +254,7 @@
 !
       subroutine dealloc_inod_psf(psf_list)
 !
-      type(sectiong_list), intent(inout) :: psf_list
+      type(sectioning_list), intent(inout) :: psf_list
 !
 !
       deallocate(psf_list%inod_4_nod)

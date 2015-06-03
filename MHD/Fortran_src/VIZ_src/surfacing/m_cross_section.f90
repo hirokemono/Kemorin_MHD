@@ -30,6 +30,7 @@
 !
       module m_cross_section
 !
+      use calypso_mpi
       use m_precision
 !
       use m_constants
@@ -55,7 +56,7 @@
       type(phys_data), allocatable, save :: psf_fld(:)
 !
 !>      Structure for table for sections
-      type(sectiong_list), allocatable, save :: psf_list(:)
+      type(sectioning_list), allocatable, save :: psf_list(:)
 !
 !>      Structure for search table for sections
       type(psf_search_lists), allocatable, save :: psf_search(:)
@@ -154,17 +155,23 @@
      &        iele_smp_stack, isurf_smp_stack, iedge_smp_stack,         &
      &        num_mat, num_mat_bc, mat_istack, mat_item,                &
      &        psf_param, psf_search)
+      call calypso_mpi_barrier
 !
 !
       do i_psf = 1, num_psf
+        if (iflag_debug.eq.1) write(*,*) 'alloc_ref_field_4_psf'
         call alloc_ref_field_4_psf(numnod, psf_list(i_psf))
+        if (iflag_debug.eq.1) write(*,*) 'alloc_nnod_psf'
         call alloc_nnod_psf(np_smp, numnod, numedge, psf_list(i_psf))
+        call calypso_mpi_barrier
       end do
+      if (iflag_debug.eq.1) write(*,*) 'allocate_num_patch_psf'
       call allocate_num_patch_psf(np_smp)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_crossections'
       call set_const_4_crossections                                     &
      &   (num_psf, numnod, inod_smp_stack, xx, psf_list)
+      call calypso_mpi_barrier
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_psf'
       call set_node_and_patch_psf                                       &
@@ -174,6 +181,7 @@
      &    ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp,           &
      &    istack_nod_psf_smp, istack_patch_psf_smp, psf_search,         &
      &    psf_list, psf_pat)
+      call calypso_mpi_barrier
 !
       call alloc_dat_on_patch_psf(psf_pat)
       call alloc_psf_outputs_num(nprocs, num_psf, psf_col)
@@ -182,13 +190,16 @@
       call collect_numbers_4_psf(num_psf, psf_header, itype_psf_file,   &
      &    istack_nod_psf_smp, istack_patch_psf_smp,                     &
      &    psf_fld, psf_col, psf_out)
+      call calypso_mpi_barrier
 !
       call alloc_psf_outputs_data(psf_col)
       call alloc_SR_array_psf(my_rank, psf_pat%max_ncomp_psf,           &
      &    psf_pat%nnod_psf_tot, psf_pat%npatch_tot, psf_col)
+      call calypso_mpi_barrier
 !
       if (iflag_debug.eq.1) write(*,*) 'collect_mesh_4_psf'
       call collect_mesh_4_psf(num_psf, psf_pat, psf_col, psf_out)
+      call calypso_mpi_barrier
 !
       if (iflag_debug.eq.1) write(*,*) 'output_psf_grids'
       call output_psf_grids(num_psf, psf_out)

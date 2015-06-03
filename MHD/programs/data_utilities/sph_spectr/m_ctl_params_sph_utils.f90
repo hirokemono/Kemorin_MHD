@@ -40,7 +40,6 @@
       use m_rms_4_sph_spectr
       use m_work_4_sph_trans
       use m_global_gauss_coefs
-      use m_field_data_IO
       use m_node_id_spherical_IO
       use m_control_params_2nd_files
 !
@@ -65,7 +64,6 @@
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
       call set_control_sph_mesh
-      call set_control_restart_file_def
       call set_control_parallel_field_def
       call set_control_org_sph_mesh
       call set_control_org_fld_file_def
@@ -77,28 +75,27 @@
 !    file header for field data
 !
       if(spectr_file_head_ctl%iflag .gt. 0) then
-        org_sph_file_head = spectr_file_head_ctl%charavalue
-        phys_file_head =    spectr_file_head_ctl%charavalue
+        org_sph_file_head =  spectr_file_head_ctl%charavalue
         call choose_file_format                                         &
-     &     (org_sph_file_fmt_ctl, iflag_org_sph_file_fmt)
+     &     (restart_file_fmt_ctl, iflag_org_sph_file_fmt)
       end if
 !
       if(i_zm_sph_spec_file .gt. 0) then
         zm_sph_file_head = zm_spec_file_head_ctl
       end if
 !
-!   using rstart data for spherical dynamo
+!   using restart data for spherical dynamo
 !
       if(restart_file_prefix%iflag .gt. 0) then
-        org_sph_file_head = restart_file_prefix%charavalue
-        phys_file_head =    restart_file_prefix%charavalue
+        org_sph_file_head =  restart_file_prefix%charavalue
+        call choose_file_format                                         &
+     &     (restart_file_fmt_ctl, iflag_org_sph_file_fmt)
         i_step_output_ucd =   i_step_output_rst
       end if
 !
       if( (iflag_org_sph_rj_head) .gt. 0) then
-        org_sph_file_head = org_rst_header
-        phys_file_head =    org_rst_header
-        i_step_output_ucd =   i_step_output_rst
+        org_sph_file_head =  org_rst_header
+        i_step_output_ucd =  i_step_output_rst
         call choose_file_format                                         &
      &     (org_sph_file_fmt_ctl, iflag_org_sph_file_fmt)
       end if

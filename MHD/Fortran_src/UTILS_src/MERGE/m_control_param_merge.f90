@@ -134,7 +134,6 @@
       call set_control_mesh_def
       iorg_mesh_file_fmt = iflag_mesh_file_fmt
 !
-      call set_control_restart_file_def
       call set_control_ucd_file_def
 !
       if(udt_file_head_ctl%iflag .gt. 0)                                &
@@ -227,7 +226,6 @@
       use m_ctl_data_4_time_steps
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
-      use m_field_data_IO
       use m_file_format_switch
 !
 !

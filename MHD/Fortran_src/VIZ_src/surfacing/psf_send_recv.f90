@@ -68,9 +68,13 @@
       integer(kind = kint) :: ip, ip_sent, ist, i_psf
 !
 !
+      call calypso_mpi_barrier
+      write(*,*) 'set_real_data_2_send_psf', my_rank, nnod_psf, n_vector
       call set_real_data_2_send_psf(nnod_psf, n_vector, xx_psf, send)
 !
       num_send = n_vector*nnod_psf
+      call calypso_mpi_barrier
+      write(*,*) 'MPI_ISEND', my_rank
       call MPI_ISEND (send(1), num_send, CALYPSO_REAL,                  &
      &      rank0, 0, CALYPSO_COMM,  req1_psf(1), ierr_MPI)
 !
@@ -96,6 +100,7 @@
 !
       end if
 !
+      write(*,*) 'MPI_WAITALL', my_rank
       call MPI_WAITALL (ione, req1_psf(ione), sta1_psf(ione,ione),      &
      &    ierr_MPI)
 !

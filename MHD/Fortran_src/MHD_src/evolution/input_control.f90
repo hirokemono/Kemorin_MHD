@@ -33,15 +33,15 @@
 !
       use m_ctl_data_fem_MHD
       use m_iccg_parameter
-      use set_control_MHD
+      use set_control_FEM_MHD
       use load_mesh_data
       use input_MG_data
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
       call read_control_4_fem_MHD
-      if (iflag_debug.eq.1) write(*,*) 'set_control_FEM_MHD'
-      call set_control_FEM_MHD
+      if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
+      call set_control_4_FEM_MHD
 !
 !  --  load FEM mesh data
       call input_mesh(my_rank)
@@ -67,14 +67,14 @@
       subroutine input_control_4_snapshot
 !
       use m_ctl_data_fem_MHD
-      use set_control_MHD
+      use set_control_FEM_MHD
       use load_mesh_data
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
       call read_control_4_fem_snap
-      if (iflag_debug.eq.1) write(*,*) 'set_control_FEM_MHD'
-      call set_control_FEM_MHD
+      if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
+      call set_control_4_FEM_MHD
 !
 !  --  load FEM mesh data
       call input_mesh(my_rank)

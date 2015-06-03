@@ -11,7 +11,7 @@
 !!
 !!      subroutine output_psf_grids(num_psf, psf_ucd)
 !!      subroutine output_psf_fields(num_psf, istep_psf, psf_ucd)
-!!      subroutine output_iso_ucds(num_iso, istep_iso、iso_out)
+!!      subroutine output_iso_ucds(num_iso, istep_iso縲（so_out)
 !!
 !!      subroutine deallocate_psf_outputs_data(my_rank, num_psf, psf_ucd)
 !
@@ -120,27 +120,40 @@
       type(ucd_data), intent(inout) :: psf_ucd(num_psf)
 !
 !
+      write(*,*) 'psf_grids_send_recv',  my_rank, &
+     &        patch%nnod_psf_tot,       &
+     &        size(patch%xyz_psf,1), size(patch%xyz_psf,2), &
+     &        size(collect%send_psf)
       call psf_grids_send_recv(num_psf, patch%nnod_psf_tot,             &
      &    collect%ntot_nod_output_psf, collect%istack_nod_para_psf,     &
      &    collect%istack_nod_recv_psf, patch%xyz_psf, collect%send_psf, &
      &    collect%recv_psf, psf_ucd)
 !
+      call calypso_mpi_barrier
+      if (iflag_debug.eq.1) write(*,*) 'psf_hash_send_recv'
       call psf_hash_send_recv(num_psf, patch%nnod_psf_tot,              &
      &    collect%ntot_nod_output_psf, collect%istack_nod_para_psf,     &
      &    collect%istack_nod_recv_psf, patch%inod_hash_psf,             &
      &    collect%isend_psf, collect%irecv_psf,                         &
      &    collect%ihash_output_psf)
 !
+      call calypso_mpi_barrier
+      if (iflag_debug.eq.1) write(*,*) 'set_global_psf_node_id'
       call set_global_psf_node_id(num_psf, psf_ucd)
 !
+      call calypso_mpi_barrier
+      if (iflag_debug.eq.1) write(*,*) 'psf_connect_send_recv'
       call psf_connect_send_recv(num_psf, patch%npatch_tot,             &
      &    collect%ntot_ele_output_psf, collect%istack_nod_para_psf,     &
      &    collect%istack_ele_para_psf, collect%istack_ele_recv_psf,     &
      &    patch%ie_tri, collect%isend_psf, collect%irecv_psf, psf_ucd)
 !
+      call calypso_mpi_barrier
+      if (iflag_debug.eq.1) write(*,*) 's_reconnect_psf_overlap_nod'
       call s_reconnect_psf_overlap_nod(num_psf,                         &
      &    collect%ntot_nod_output_psf, collect%istack_nod_output_psf,   &
      &    collect%ihash_output_psf, psf_ucd)
+      call calypso_mpi_barrier
 !
       end subroutine collect_mesh_4_psf
 !

@@ -54,7 +54,7 @@
       type(phys_data), allocatable, save :: iso_fld(:)
 !
 !>      Structure for table for sections
-      type(sectiong_list), allocatable, save :: iso_list(:)
+      type(sectioning_list), allocatable, save :: iso_list(:)
 !
 !>      Structure for search table for sections
       type(psf_search_lists), allocatable, save :: iso_search(:)

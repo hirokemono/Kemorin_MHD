@@ -51,7 +51,7 @@
       integer(kind = kint), intent(in) :: nitem_surf
       integer(kind = kint), intent(in) :: inod_surf_grp(nitem_surf)
 !
-      type(sectiong_list), intent(inout) :: psf_list
+      type(sectioning_list), intent(inout) :: psf_list
 !
       integer(kind = kint) :: i, icou, inod
 !

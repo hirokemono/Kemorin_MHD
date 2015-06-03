@@ -108,7 +108,7 @@
        end do
 !
        call deallocate_ioverlap_nod
-       call deallocate_geom_ex_glnod
+       call deallocate_node_geometry_type(merged%node)
        call deallocate_2nd_merge_table
 !
 !   loop for time integration

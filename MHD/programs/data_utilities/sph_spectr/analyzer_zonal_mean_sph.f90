@@ -10,14 +10,17 @@
       module analyzer_zonal_mean_sph
 !
       use m_precision
-      use calypso_mpi
-!
       use m_constants
       use m_machine_parameter
+      use calypso_mpi
+!
       use m_schmidt_poly_on_rtm
+      use t_field_data_IO
       use field_IO_select
 !
         implicit none
+!
+      type(field_IO), save, private :: sph_fld_IO
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,8 +60,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_SPH_file'
       call set_field_file_fmt_prefix                                    &
-     &     (iflag_org_sph_file_fmt, org_sph_file_head)
-      call sel_read_alloc_step_SPH_file(my_rank, i_step_init)
+     &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IO)
+      call sel_read_alloc_step_SPH_file                                 &
+     &   (my_rank, i_step_init, sph_fld_IO)
 !
 !  -------------------------------
 !
@@ -89,22 +93,22 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
         call set_field_file_fmt_prefix                                  &
-     &     (iflag_org_sph_file_fmt, org_sph_file_head)
-        call sel_read_step_SPH_field_file(my_rank, i_step)
+     &     (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IO)
+        call sel_read_step_SPH_field_file(my_rank, i_step, sph_fld_IO)
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-        call set_rj_phys_data_from_IO
+        call set_rj_phys_data_from_IO(sph_fld_IO)
 !
 !  evaluate energies
 !
         call zonal_mean_all_sph_spectr
-        call copy_rj_all_phys_data_to_IO
+        call copy_rj_all_phys_data_to_IO(sph_fld_IO)
 !
 !
-        phys_file_head = zm_sph_file_head
+        sph_fld_IO%file_prefix = zm_sph_file_head
         if (iflag_debug.gt.0)                                           &
      &    write(*,*) 'sel_write_step_SPH_field_file'
-        call sel_write_step_SPH_field_file(my_rank, i_step)
+        call sel_write_step_SPH_field_file(my_rank, i_step, sph_fld_IO)
       end do
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze_zonal_mean_sph'

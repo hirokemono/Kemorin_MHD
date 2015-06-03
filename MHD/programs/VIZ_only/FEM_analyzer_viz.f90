@@ -100,6 +100,7 @@
 !     ---------------------
 !
       call allocate_phys_data_by_output(my_rank, i_step_init)
+      call calypso_mpi_barrier
 !
       end subroutine FEM_initialize_vizs
 !

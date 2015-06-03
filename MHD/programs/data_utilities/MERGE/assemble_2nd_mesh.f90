@@ -65,7 +65,7 @@
 !    set list array for merged field
 !
       call set_field_list_4_merge
-      call allocate_merged_field_data
+      call alloc_phys_data_type(merged%node%numnod, merged_fld)
 !
 !   Cnostract grid data
 !

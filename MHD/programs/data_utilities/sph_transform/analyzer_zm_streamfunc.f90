@@ -13,12 +13,15 @@
       use calypso_mpi
       use m_work_time
 !
+      use t_field_data_IO
       use SPH_analyzer_back_trans
       use FEM_analyzer_back_trans
       use SPH_analyzer_zm_streamfunc
       use visualizer_all
 !
       implicit none
+!
+      type(field_IO), save, private :: sph_trns_IO
 !
 ! ----------------------------------------------------------------------
 !
@@ -58,7 +61,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_back_trans'
-      call SPH_initialize_back_trans
+      call SPH_initialize_back_trans(sph_trns_IO)
 !
 !  -------------------------------
 !
@@ -81,7 +84,7 @@
       do i_step = i_step_init, i_step_number
         if (iflag_debug.gt.0) write(*,*) 'step ', i_step, 'start...'
 !
-        call SPH_analyze_zm_streamfunc(i_step, visval)
+        call SPH_analyze_zm_streamfunc(i_step, visval, sph_trns_IO)
 !
         call FEM_analyze_back_trans(i_step, istep_psf, istep_iso,       &
      &          istep_pvr, istep_fline, visval)

@@ -72,7 +72,7 @@
 !
       integer(kind = kint), intent(in) :: nnod_patch
       integer(kind = kint), intent(in) :: istack_n_smp(0:np_smp)
-      type(sectiong_list), intent(in) :: psf_list
+      type(sectioning_list), intent(in) :: psf_list
 !
       integer(kind = kint), intent(inout) :: inod_sum(nnod_patch)
       real(kind = kreal), intent(inout) :: xx_patch(nnod_patch,3)
@@ -135,7 +135,7 @@
 !
       integer(kind = kint), intent(in) :: nnod_patch
       integer(kind = kint), intent(in) :: istack_n_smp(0:np_smp)
-      type(sectiong_list), intent(in) :: psf_list
+      type(sectioning_list), intent(in) :: psf_list
 !
       integer(kind = kint), intent(in) :: num_fld, ntot_comp
       integer(kind = kint), intent(in) :: istack_comp_nod(0:num_fld)
@@ -197,7 +197,7 @@
       integer(kind = kint), intent(in) :: nnod_patch
       integer(kind = kint), intent(in) :: istack_n_smp(0:np_smp)
       real(kind = kreal), intent(in) :: const
-      type(sectiong_list), intent(in) :: psf_list
+      type(sectioning_list), intent(in) :: psf_list
 !
       real(kind = kreal), intent(inout) :: dat_psf(nnod_patch)
 !
