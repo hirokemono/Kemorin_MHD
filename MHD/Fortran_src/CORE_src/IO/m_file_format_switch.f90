@@ -172,7 +172,7 @@
      &     .or. cmp_no_case(file_fmt_ctl, 'merged_bin')                 &
      &     .or. cmp_no_case(file_fmt_ctl, 'binary_merged')              &
      &     .or. cmp_no_case(file_fmt_ctl, 'bin_merged')        ) then
-           id_file_fmt = id_ascii_file_fmt + iflag_single
+           id_file_fmt = id_binary_file_fmt + iflag_single
         else if(cmp_no_case(file_fmt_ctl, 'merged_ascii')               &
      &     .or. cmp_no_case(file_fmt_ctl, 'ascii_merged')               &
      &     .or. cmp_no_case(file_fmt_ctl, 'merged') ) then
@@ -185,7 +185,7 @@
      &     .or. cmp_no_case(file_fmt_ctl, 'merged_gz')                  &
      &     .or. cmp_no_case(file_fmt_ctl, 'gzip_merged')                &
      &     .or. cmp_no_case(file_fmt_ctl, 'gz_merged')) then
-           id_file_fmt = id_ascii_file_fmt + iflag_single
+           id_file_fmt = id_gzip_txt_file_fmt + iflag_single
 !        else if(cmp_no_case(file_fmt_ctl, 'merged_gzip_binary')        &
 !     &     .or. cmp_no_case(file_fmt_ctl, 'merged_gz_binary')          &
 !     &     .or. cmp_no_case(file_fmt_ctl, 'merged_binary_gzip')        &

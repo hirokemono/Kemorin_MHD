@@ -45,6 +45,7 @@
 !
 #ifdef ZLIB_IO
       use gz_field_file_IO
+      use gz_field_file_MPI_IO
 #endif
 !
       implicit none
@@ -263,6 +264,9 @@
         call write_step_field_file_b(file_name, my_rank, fld_IO)
 !
 #ifdef ZLIB_IO
+      else if(fld_IO%iflag_file_fmt                                    &
+     &       .eq. iflag_single+id_gzip_txt_file_fmt) then
+        call write_gz_step_field_file_mpi(file_name, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
         call write_gz_step_field_file(file_name, my_rank, fld_IO)
 #endif
@@ -318,6 +322,9 @@
         call read_and_allocate_step_field_b(file_name, my_rank, fld_IO)
 !
 #ifdef ZLIB_IO
+      else if(fld_IO%iflag_file_fmt                                    &
+     &       .eq. iflag_single+id_gzip_txt_file_fmt) then
+        call read_alloc_stp_fld_file_gz_mpi(file_name, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
         call read_alloc_gz_step_field_file(file_name, my_rank, fld_IO)
 #endif

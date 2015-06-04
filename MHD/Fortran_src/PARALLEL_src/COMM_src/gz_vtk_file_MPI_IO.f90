@@ -27,7 +27,7 @@
       character(len=1), allocatable :: gzip_buf(:)
 !
       private :: gz_write_vtk_data_mpi, gz_write_vtk_mesh_mpi
-      private :: gz_write_vtk_header_mpi, gz_write_vtk_scalar_mpi
+      private :: gz_write_vtk_scalar_mpi
       private :: gz_write_vtk_tensor_mpi, gz_write_vtk_vecotr_mpi
       private :: gz_write_vtk_connect_mpi, gz_write_vtk_celltype_mpi
 !

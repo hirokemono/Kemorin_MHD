@@ -2,12 +2,14 @@
 !!       module field_file_MPI_IO
 !!
 !!@author H. Matsui
-!!@date   Programmed in Ma, 2015
+!!@date   Programmed in May, 2015
 !
 !> @brief Output merged VTK file usgin MPI-IO
 !!
 !!@verbatim
 !!      subroutine write_step_field_file_mpi(file_name, fld_IO)
+!!
+!!      subroutine read_alloc_step_fld_file_mpi(file_name, fld_IO)
 !!@endverbatim
 !
       module field_file_MPI_IO

@@ -199,7 +199,6 @@
 !
       integer, intent(in) ::  id_vtk
 !
-      integer(kind = kint_gl) :: ie0(nnod_ele)
       integer(kind = kint_gl) :: iele, nt_nod, nt_ele
       integer(kind = kint) :: icellid
 !
@@ -223,18 +222,8 @@
 !
       call write_vtk_header_mpi                                         &
      &   (id_vtk, ioff_gl, vtk_cell_type_head(nt_ele))
-!
-      icellid = vtk_cell_type(nnod_ele)
-      write(textbuf,'(a,a1)') vtk_each_cell_type(icellid), char(0)
-      ilength = len(vtk_each_cell_type(icellid))
-      ioffset = int(ioff_gl + ilength * istack_merged_ele(my_rank))
-      do iele = 1, nele
-        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength, MPI_CHARACTER,    &
-     &                      sta1, ierr_MPI)
-        ioffset = ioffset + ilength
-      end do
-      ioff_gl = ioff_gl + ilength * nt_ele
+      call write_vtk_celltype_mpi(id_vtk, ioff_gl,                      &
+     &    nnod_ele, istack_merged_intnod, istack_merged_ele)
 !
       end subroutine write_vtk_mesh_mpi
 !
@@ -251,8 +240,6 @@
       integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
 !
 !
-!
-!      write(textbuf,'(a,a1)') ≈
       ilength = len(header_txt)
       if(my_rank .eq. 0) then
         ioffset = int(ioff_gl)
@@ -421,6 +408,43 @@
       ioff_gl = ioff_gl + ilength * nt_ele
 !
       end subroutine write_vtk_connect_mpi
+!
+! -----------------------------------------------------------------------
+!
+      subroutine write_vtk_celltype_mpi(id_vtk, ioff_gl,                &
+     &          nnod_ele, istack_merged_intnod, istack_merged_ele)
+!
+      use m_phys_constants
+!
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint_gl), intent(in)                               &
+     &         :: istack_merged_intnod(0:nprocs)
+      integer(kind = kint_gl), intent(in)                               &
+     &         :: istack_merged_ele(0:nprocs)
+      integer(kind = kint), intent(in) :: nnod_ele
+!
+      integer, intent(in) ::  id_vtk
+!
+      integer(kind = kint_gl) :: iele, nele
+      integer(kind = kint) :: icellid
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+!
+!
+      nele = istack_merged_ele(my_rank+1) - istack_merged_ele(my_rank)
+      icellid = vtk_cell_type(nnod_ele)
+      write(textbuf,'(a,a1)') vtk_each_cell_type(icellid), char(0)
+      ilength = len(vtk_each_cell_type(icellid))
+      ioffset = int(ioff_gl + ilength * istack_merged_ele(my_rank))
+      do iele = 1, nele
+        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_WRITE(id_vtk, textbuf, ilength, MPI_CHARACTER,    &
+     &                      sta1, ierr_MPI)
+        ioffset = ioffset + ilength
+      end do
+      ioff_gl = ioff_gl + ilength * istack_merged_ele(nprocs)
+!
+      end subroutine write_vtk_celltype_mpi
 !
 ! -----------------------------------------------------------------------
 !
