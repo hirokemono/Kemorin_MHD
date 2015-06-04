@@ -113,8 +113,10 @@
       call choose_file_format                                           &
      &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
 !
-      call choose_file_format(restart_file_fmt_ctl, ifmt_org_rst_file)
-      call choose_file_format(new_rst_files_fmt_ctl, ifmt_itp_rst_file)
+      call choose_para_file_format                                      &
+     &   (restart_file_fmt_ctl, ifmt_org_rst_file)
+      call choose_para_file_format                                      &
+     &   (new_rst_files_fmt_ctl, ifmt_itp_rst_file)
 !
       call choose_ucd_file_format(udt_file_fmt_ctl%charavalue,          &
      &    udt_file_fmt_ctl%iflag, itype_org_udt_file)

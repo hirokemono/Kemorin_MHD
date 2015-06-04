@@ -120,8 +120,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_ucd_data_mpi(id_vtk, ioff_gl,                   &
-     &          nnod, num_field, ntot_comp, ncomp_field,               &
+      subroutine write_ucd_data_mpi(id_vtk, ioff_gl,                    &
+     &          nnod, num_field, ntot_comp, ncomp_field,                &
      &          field_name, d_nod, istack_merged_intnod)
 !
       use m_phys_constants

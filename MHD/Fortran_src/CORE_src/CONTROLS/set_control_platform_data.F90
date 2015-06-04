@@ -154,7 +154,7 @@
         fld_IO%file_prefix = restart_file_prefix%charavalue
       end if
 !
-      call choose_file_format                                           &
+      call choose_para_file_format                                      &
      &   (restart_file_fmt_ctl, fld_IO%iflag_file_fmt)
 !
       end subroutine set_control_restart_file_def

@@ -89,6 +89,7 @@
      &          my_rank, istep_fld, file_name)
 !
       use set_parallel_file_name
+      use m_file_format_switch
 !
       integer(kind=kint), intent(in) :: itype_file, my_rank, istep_fld
       character(len=kchara), intent(in) ::    file_header
@@ -101,7 +102,13 @@
       else
         call add_int_suffix(istep_fld, file_header, fname_tmp)
       end if
-      call add_int_suffix(my_rank, fname_tmp, file_name)
+!
+      if((itype_file/iflag_single) .eq. 0) then
+        call add_int_suffix(my_rank, fname_tmp, file_name)
+      else
+        file_name = fname_tmp
+      end if
+!
       call add_fld_extension(file_name, fname_tmp)
 !
       if (   mod(itype_file,iten) .eq. id_gzip_txt_file_fmt) then
@@ -118,6 +125,7 @@
      &          my_rank, istep_fld, file_name)
 !
       use set_parallel_file_name
+      use m_file_format_switch
 !
       integer(kind=kint), intent(in) :: itype_file, my_rank, istep_fld
       character(len=kchara), intent(in) ::    file_header
@@ -130,7 +138,13 @@
       else
         call add_int_suffix(istep_fld, file_header, fname_tmp)
       end if
-      call add_int_suffix(my_rank, fname_tmp, file_name)
+!
+      if((itype_file/iflag_single) .eq. 0) then
+        call add_int_suffix(my_rank, fname_tmp, file_name)
+      else
+        file_name = fname_tmp
+      end if
+!
       call add_fst_extension(file_name, fname_tmp)
 !
       if (   mod(itype_file,iten) .eq. id_gzip_txt_file_fmt) then

@@ -57,8 +57,7 @@
       call allocate_merged_ucd_num(m_ucd)
       call count_merged_ucd(numnod, internal_node, ucd%nele, m_ucd)
 !
-      call allocate_merged_ucd_data(numnod,                             &
-     &    ucd%nnod_4_ele, ucd%ntot_comp)
+      call allocate_merged_ucd_data(numnod, ucd%ntot_comp)
       call set_node_double_address                                      &
      &         (num_neib, id_neib, istack_import, item_import,          &
      &          istack_export, item_export)

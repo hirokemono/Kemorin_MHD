@@ -458,3 +458,7 @@ install:
 
 clean:
 	rm -f *~
+
+distclean:
+	rm -rf $(MAKEDIR) $(BUILDDIR)
+

@@ -41,8 +41,7 @@
 !  ===========
 
       integer(kind=kint ) :: ip, inod
-      integer(kind=kint ) :: i,j
-      integer(kind=kint ) :: ix,iz
+      integer(kind=kint ) :: i, j, iz
       integer(kind=kint ) :: icomp
       integer(kind=kint ) :: i1
       integer(kind=kint ) :: iflag

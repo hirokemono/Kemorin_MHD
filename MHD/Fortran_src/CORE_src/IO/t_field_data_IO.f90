@@ -11,9 +11,11 @@
 !!
 !!      subroutine alloc_phys_name_IO(fld_IO)
 !!      subroutine alloc_phys_data_IO(fld_IO)
+!!      subroutine alloc_merged_field_stack(nprocs, fld_IO)
 !!
 !!      subroutine dealloc_phys_name_IO(fld_IO)
 !!      subroutine dealloc_phys_data_IO(fld_IO)
+!!      subroutine dealloc_merged_field_stack(fld_IO)
 !!
 !!      subroutine set_field_file_fmt_prefix                            &
 !!     &         (iflag_fmt, file_head, fld_IO)
@@ -54,6 +56,11 @@
 !
 !>        field data for IO  (d_IO(:,:))
         real(kind = kreal), pointer :: d_IO(:,:)
+!
+!>        end point for number of node for each subdomain
+        integer(kind = kint_gl), pointer :: istack_merged_nod_IO(:)
+!>        end point for number of node for each subdomain
+        integer(kind = kint_gl), pointer :: istack_merged_byte_IO(:)
       end type field_IO
 !
 ! -------------------------------------------------------------------
@@ -101,6 +108,21 @@
       end subroutine alloc_phys_data_IO
 !
 ! -------------------------------------------------------------------
+!
+      subroutine alloc_merged_field_stack(nprocs, fld_IO)
+!
+      integer(kind = kint), intent(in) :: nprocs
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      allocate(fld_IO%istack_merged_nod_IO(0:nprocs))
+      allocate(fld_IO%istack_merged_byte_IO(0:nprocs))
+      fld_IO%istack_merged_nod_IO = 0
+      fld_IO%istack_merged_byte_IO = 0
+!
+      end subroutine alloc_merged_field_stack
+!
+! -----------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
       subroutine dealloc_phys_name_IO(fld_IO)
@@ -126,6 +148,18 @@
       end subroutine dealloc_phys_data_IO
 !
 ! -------------------------------------------------------------------
+!
+      subroutine dealloc_merged_field_stack(fld_IO)
+!
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      deallocate(fld_IO%istack_merged_nod_IO)
+      deallocate(fld_IO%istack_merged_byte_IO)
+!
+      end subroutine dealloc_merged_field_stack
+!
+! -----------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
       subroutine set_field_file_fmt_prefix                              &

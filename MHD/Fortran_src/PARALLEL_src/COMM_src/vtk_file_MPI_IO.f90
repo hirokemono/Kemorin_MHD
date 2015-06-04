@@ -135,13 +135,11 @@
       integer, intent(in) ::  id_vtk
 !
       integer(kind = kint) :: icou, j
-      integer(kind = kint_gl) :: inod, nt_nod, num
+      integer(kind = kint_gl) :: nt_nod
       integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
 !
 !
       nt_nod = istack_merged_intnod(nprocs)
-      num = istack_merged_intnod(my_rank+1)                             &
-     &     - istack_merged_intnod(my_rank)
 !
       ioffset = int(ioff_gl)
       ilength = len(vtk_fields_head(nt_nod))
@@ -157,95 +155,24 @@
       icou = 1
       do j = 1, num_field
         if ( ncomp_field(j) .eq. n_scalar) then
-          ilength = len(vtk_scalar_head(field_name(j)))
-          ioffset = int(ioff_gl)
-          if(my_rank .eq. 0) then
-            write(textbuf,'(a,a1)')                                     &
-     &          vtk_scalar_head(field_name(j)), char(0)
-            call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-            call MPI_FILE_WRITE(id_vtk, textbuf, ilength,               &
-     &          MPI_CHARACTER, sta1, ierr_MPI)
-          end if
-          ioff_gl = ioff_gl + ilength
-!
-          ilength = len(vtk_each_scalar(zero))
-          ioffset = int(ioff_gl                                         &
-     &             + ilength * istack_merged_intnod(my_rank))
-          do inod = 1, num
-            write(textbuf,'(a,a1)')                                     &
-     &          vtk_each_scalar(d_nod(inod,icou  )), char(0)
-            call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-            call MPI_FILE_WRITE(id_vtk, textbuf, ilength,               &
-     &          MPI_CHARACTER, sta1, ierr_MPI)
-            ioffset = ioffset + ilength
-          end do
-          ioff_gl = ioff_gl + ilength * istack_merged_intnod(nprocs)
+          call write_vtk_header_mpi(id_vtk, ioff_gl,                    &
+     &        vtk_scalar_head(field_name(j)))
+          call write_vtk_scalar_mpi(id_vtk, ioff_gl,                    &
+     &          nnod, d_nod(1,icou), istack_merged_intnod)
 !
         else if ( ncomp_field(j) .eq. n_vector) then
-          ilength = len(vtk_vector_head(field_name(j)))
-          ioffset = int(ioff_gl)
-          if(my_rank .eq. 0) then
-            write(textbuf,'(a,a1)')                                     &
-     &          vtk_vector_head(field_name(j)), char(0)
-            call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-            call MPI_FILE_WRITE(id_vtk, textbuf, ilength,               &
-     &          MPI_CHARACTER, sta1, ierr_MPI)
-          end if
-          ioff_gl = ioff_gl + ilength
+          call write_vtk_header_mpi(id_vtk, ioff_gl,                    &
+     &        vtk_vector_head(field_name(j)))
 !
-          ilength = len(vtk_each_vector(zero, zero, zero))
-          ioffset = int(ioff_gl                                         &
-     &             + ilength * istack_merged_intnod(my_rank))
-          do inod = 1, num
-            write(textbuf,'(a,a1)')                                     &
-     &          vtk_each_vector(d_nod(inod,icou  ),d_nod(inod,icou+1),  &
-     &                          d_nod(inod,icou+2)), char(0)
-            call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-            call MPI_FILE_WRITE(id_vtk, textbuf, ilength,               &
-     &          MPI_CHARACTER, sta1, ierr_MPI)
-            ioffset = ioffset + ilength
-          end do
-          ioff_gl = ioff_gl + ilength * istack_merged_intnod(nprocs)
+          call write_vtk_vecotr_mpi(id_vtk, ioff_gl,                    &
+     &          nnod, d_nod(1,icou), istack_merged_intnod)
 !
         else if ( ncomp_field(j) .eq. n_sym_tensor) then
-          ilength = len(vtk_tensor_head(field_name(j)))
-          ioffset = int(ioff_gl)
-          if(my_rank .eq. 0) then
-            write(textbuf,'(a,a1)')                                     &
-     &          vtk_tensor_head(field_name(j)), char(0)
-            call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-            call MPI_FILE_WRITE(id_vtk, textbuf, ilength,               &
-     &          MPI_CHARACTER, sta1, ierr_MPI)
-          end if
-          ioff_gl = ioff_gl + ilength
+          call write_vtk_header_mpi(id_vtk, ioff_gl,                    &
+     &        vtk_tensor_head(field_name(j)))
 !
-          ilength = len(vtk_each_vector(zero, zero, zero))
-          ioffset = int(ioff_gl                                         &
-     &             + ilength * istack_merged_intnod(my_rank))
-          do inod = 1, num
-            write(textbuf,'(a,a1)')                                     &
-     &          vtk_each_vector(d_nod(inod,icou  ),d_nod(inod,icou+1),  &
-     &                          d_nod(inod,icou+2)), char(0)
-            call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-            call MPI_FILE_WRITE(id_vtk, textbuf, ilength,               &
-     &          MPI_CHARACTER, sta1, ierr_MPI)
-            ioffset = ioffset + ilength
-            write(textbuf,'(a,a1)')                                     &
-     &          vtk_each_vector(d_nod(inod,icou+1),d_nod(inod,icou+3),  &
-     &                          d_nod(inod,icou+4)), char(0)
-            call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-            call MPI_FILE_WRITE(id_vtk, textbuf, ilength,               &
-     &          MPI_CHARACTER, sta1, ierr_MPI)
-            ioffset = ioffset + ilength
-            write(textbuf,'(a,a1)')                                     &
-     &          vtk_each_vector(d_nod(inod,icou+2),d_nod(inod,icou+4),  &
-     &                          d_nod(inod,icou+5)), char(0)
-            call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-            call MPI_FILE_WRITE(id_vtk, textbuf, ilength,               &
-     &          MPI_CHARACTER, sta1, ierr_MPI)
-            ioffset = ioffset + ilength
-          end do
-          ioff_gl = ioff_gl + 3*ilength * istack_merged_intnod(nprocs)
+          call write_vtk_tensor_mpi(id_vtk, ioff_gl,                    &
+     &          nnod, d_nod(1,icou), istack_merged_intnod)
         end if
         icou = icou + ncomp_field(j)
       end do
@@ -273,7 +200,7 @@
       integer, intent(in) ::  id_vtk
 !
       integer(kind = kint_gl) :: ie0(nnod_ele)
-      integer(kind = kint_gl) :: iele, inod, nt_nod, nt_ele, num
+      integer(kind = kint_gl) :: iele, nt_nod, nt_ele
       integer(kind = kint) :: icellid
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
@@ -281,66 +208,21 @@
 !
       nt_nod = istack_merged_intnod(nprocs)
       nt_ele = istack_merged_ele(nprocs)
-      num = istack_merged_intnod(my_rank+1)                             &
-     &     - istack_merged_intnod(my_rank)
 !
-      write(textbuf,'(a,a1)') vtk_node_head(nt_nod), char(0)
-      ilength = len(vtk_node_head(nt_nod))
-      if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
-        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength, MPI_CHARACTER,    &
-     &                      sta1, ierr_MPI)
-      end if
-      ioff_gl = ioff_gl + ilength
-
-      ilength = len(vtk_each_vector(zero, zero, zero))
-      ioffset = int(ioff_gl + ilength * istack_merged_intnod(my_rank))
-      do inod = 1, num
-        write(textbuf,'(a,a1)')                                         &
-     &    vtk_each_vector(xx(inod,1), xx(inod,2), xx(inod,3)),          &
-     &    char(0)
-        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,  MPI_CHARACTER,   &
-     &      sta1, ierr_MPI)
-        ioffset = ioffset + ilength
-      end do
-      ioff_gl = ioff_gl + ilength * nt_nod
+      call write_vtk_header_mpi                                         &
+     &   (id_vtk, ioff_gl, vtk_node_head(nt_nod))
+      call write_vtk_vecotr_mpi(id_vtk, ioff_gl,                        &
+     &    nnod, xx(1,1), istack_merged_intnod)
 !
-      write(textbuf,'(a,a1)')                                           &
-     &        vtk_connect_head(nt_ele, nnod_ele), char(0)
-      ilength = len(vtk_connect_head(nt_ele, nnod_ele))
-      ioffset = int(ioff_gl)
-      if(my_rank .eq. 0) then
-        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength, MPI_CHARACTER,    &
-     &                      sta1, ierr_MPI)
-      end if
-      ioff_gl = ioff_gl + ilength
+      call write_vtk_header_mpi                                         &
+     &   (id_vtk, ioff_gl, vtk_connect_head(nt_ele, nnod_ele))
 !
-      ie0(1:nnod_ele) = 0
-      ilength = len(vtk_each_connect(nnod_ele, ie0))
-      ioffset = int(ioff_gl + ilength * istack_merged_ele(my_rank))
-      do iele = 1, nele
-        ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
-        write(textbuf,'(a,a1)') vtk_each_connect(nnod_ele,ie0), char(0)
-        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength, MPI_CHARACTER,    &
-     &                      sta1, ierr_MPI)
-        ioffset = ioffset + ilength
-      end do
-      ioff_gl = ioff_gl + ilength * nt_ele
+      call write_vtk_connect_mpi(id_vtk, ioff_gl, nt_ele,               &
+     &   nele, nnod_ele, ie, istack_merged_ele(my_rank))
 !
 !
-      write(textbuf,'(a,a1)') vtk_cell_type_head(nt_ele), char(0)
-      ilength = len(vtk_cell_type_head(nt_ele))
-      ioffset = int(ioff_gl)
-      if(my_rank .eq. 0) then
-        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength, MPI_CHARACTER,    &
-     &                      sta1, ierr_MPI)
-      end if
-      ioff_gl = ioff_gl + ilength
+      call write_vtk_header_mpi                                         &
+     &   (id_vtk, ioff_gl, vtk_cell_type_head(nt_ele))
 !
       icellid = vtk_cell_type(nnod_ele)
       write(textbuf,'(a,a1)') vtk_each_cell_type(icellid), char(0)
@@ -355,6 +237,190 @@
       ioff_gl = ioff_gl + ilength * nt_ele
 !
       end subroutine write_vtk_mesh_mpi
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine write_vtk_header_mpi(id_vtk, ioff_gl, header_txt)
+!
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      character(len=*), intent(in) :: header_txt
+!
+      integer, intent(in) ::  id_vtk
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+!
+!
+!
+!      write(textbuf,'(a,a1)') ≈
+      ilength = len(header_txt)
+      if(my_rank .eq. 0) then
+        ioffset = int(ioff_gl)
+        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_WRITE(id_vtk, header_txt, ilength, MPI_CHARACTER, &
+     &                      sta1, ierr_MPI)
+      end if
+      ioff_gl = ioff_gl + ilength
+!
+      end subroutine write_vtk_header_mpi
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine write_vtk_scalar_mpi(id_vtk, ioff_gl,                  &
+     &          nnod, vect, istack_merged_intnod)
+!
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint_gl), intent(in)                               &
+     &         :: istack_merged_intnod(0:nprocs)
+      integer(kind = kint_gl), intent(in) :: nnod
+      real(kind = kreal), intent(in) :: vect(nnod)
+!
+      integer, intent(in) ::  id_vtk
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = kint_gl) :: inod, num
+!
+!
+      num = istack_merged_intnod(my_rank+1)                             &
+     &     - istack_merged_intnod(my_rank)
+!
+      ilength = len(vtk_each_scalar(zero))
+      ioffset = int(ioff_gl                                             &
+     &         + ilength * istack_merged_intnod(my_rank))
+      do inod = 1, num
+        write(textbuf,'(a,a1)')                                         &
+     &      vtk_each_scalar(vect(inod)), char(0)
+        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
+     &      MPI_CHARACTER, sta1, ierr_MPI)
+        ioffset = ioffset + ilength
+      end do
+      ioff_gl = ioff_gl + ilength * istack_merged_intnod(nprocs)
+!
+      end subroutine write_vtk_scalar_mpi
+!
+! -----------------------------------------------------------------------
+!
+      subroutine write_vtk_vecotr_mpi(id_vtk, ioff_gl,                  &
+     &          nnod, vect, istack_merged_intnod)
+!
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint_gl), intent(in)                               &
+     &         :: istack_merged_intnod(0:nprocs)
+      integer(kind = kint_gl), intent(in) :: nnod
+      real(kind = kreal), intent(in) :: vect(nnod,3)
+!
+      integer, intent(in) ::  id_vtk
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = kint_gl) :: inod, num
+!
+!
+      num = istack_merged_intnod(my_rank+1)                             &
+     &     - istack_merged_intnod(my_rank)
+!
+      ilength = len(vtk_each_vector(zero, zero, zero))
+      ioffset = int(ioff_gl                                             &
+     &             + ilength * istack_merged_intnod(my_rank))
+      do inod = 1, num
+        write(textbuf,'(a,a1)')                                         &
+     &     vtk_each_vector(vect(inod,1), vect(inod,2), vect(inod,3)),   &
+     &     char(0)
+        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
+     &      MPI_CHARACTER, sta1, ierr_MPI)
+        ioffset = ioffset + ilength
+      end do
+      ioff_gl = ioff_gl + ilength * istack_merged_intnod(nprocs)
+!
+      end subroutine write_vtk_vecotr_mpi
+!
+! -----------------------------------------------------------------------
+!
+      subroutine write_vtk_tensor_mpi(id_vtk, ioff_gl,                  &
+     &          nnod, vect, istack_merged_intnod)
+!
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint_gl), intent(in)                               &
+     &         :: istack_merged_intnod(0:nprocs)
+      integer(kind = kint_gl), intent(in) :: nnod
+      real(kind = kreal), intent(in) :: vect(nnod,6)
+!
+      integer, intent(in) ::  id_vtk
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = kint_gl) :: inod, num
+!
+!
+      num = istack_merged_intnod(my_rank+1)                             &
+     &     - istack_merged_intnod(my_rank)
+!
+      ilength = len(vtk_each_vector(zero, zero, zero))
+      ioffset = int(ioff_gl                                             &
+     &             + ilength * istack_merged_intnod(my_rank))
+      do inod = 1, num
+        write(textbuf,'(a,a1)')                                         &
+     &     vtk_each_vector(vect(inod,1), vect(inod,2), vect(inod,3)),   &
+     &     char(0)
+        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
+     &      MPI_CHARACTER, sta1, ierr_MPI)
+        ioffset = ioffset + ilength
+        write(textbuf,'(a,a1)')                                         &
+     &     vtk_each_vector(vect(inod,2), vect(inod,4), vect(inod,5)),   &
+     &     char(0)
+        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
+     &      MPI_CHARACTER, sta1, ierr_MPI)
+        ioffset = ioffset + ilength
+        write(textbuf,'(a,a1)')                                         &
+     &     vtk_each_vector(vect(inod,3), vect(inod,5), vect(inod,6)),   &
+     &     char(0)
+        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
+     &      MPI_CHARACTER, sta1, ierr_MPI)
+        ioffset = ioffset + ilength
+      end do
+      ioff_gl = ioff_gl + 3*ilength * istack_merged_intnod(nprocs)
+!
+      end subroutine write_vtk_tensor_mpi
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine write_vtk_connect_mpi(id_vtk, ioff_gl, nt_ele,         &
+     &          nele, nnod_ele, ie, istack)
+!
+      use m_phys_constants
+!
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint), intent(in) :: nnod_ele
+      integer(kind = kint_gl), intent(in) :: nele, nt_ele, istack
+      integer(kind = kint_gl), intent(in) :: ie(nele,nnod_ele)
+!
+      integer, intent(in) ::  id_vtk
+!
+      integer(kind = kint_gl) :: ie0(nnod_ele)
+      integer(kind = kint_gl) :: iele
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+!
+!
+      ie0(1:nnod_ele) = 0
+      ilength = len(vtk_each_connect(nnod_ele, ie0))
+      ioffset = int(ioff_gl + ilength * istack)
+      do iele = 1, nele
+        ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
+        write(textbuf,'(a,a1)') vtk_each_connect(nnod_ele,ie0), char(0)
+        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_WRITE(id_vtk, textbuf, ilength, MPI_CHARACTER,    &
+     &                      sta1, ierr_MPI)
+        ioffset = ioffset + ilength
+      end do
+      ioff_gl = ioff_gl + ilength * nt_ele
+!
+      end subroutine write_vtk_connect_mpi
 !
 ! -----------------------------------------------------------------------
 !

@@ -8,7 +8,8 @@
 !> @brief Data IO rountines for field data IO
 !!
 !!@verbatim
-!!      function field_num_buffer(nnod, num_field)
+!!      function field_istack_nod_buffer(nprocs, num_field)
+!!      function field_num_buffer(num_field)
 !!      function field_comp_buffer(num_field, ncomp_field)
 !!      function each_field_name_buffer(field_name)
 !!      function each_field_data_buffer(ncomp, vect)
@@ -16,9 +17,7 @@
 !!      subroutine read_field_num_buffer(textbuf, nnod, num_field)
 !!      subroutine read_field_comp_buffer                               &
 !!     &         (textbuf, num_field, ncomp_field)
-!!      integer(kind = kint) function read_each_field_name_buffer       &
-!!     &                            (textbuf, field_name)
-!!      function read_each_field_name_buffer(ncomp, vect)
+!!      subroutine read_each_field_name_buffer(textbuf, field_name)
 !!      subroutine read_each_field_data_buffer(textbuf ncomp, vect)
 !!
 !!      subroutine write_field_data(id_file, nnod, num_field, ntot_comp,&
@@ -38,8 +37,10 @@
 !
       implicit none
 !
+      character(len=25), parameter                                      &
+     &            :: FLD_HD0 = '! List of Number of nodes'
       character(len=31), parameter                                      &
-     &            :: FLD_HD1 = '! number of field and component'
+     &            :: FLD_HD1 = '! Number of field and component'
 !
       private :: FLD_HD1
 !
@@ -49,15 +50,36 @@
 !
 ! -------------------------------------------------------------------
 !
-      function field_num_buffer(nnod, num_field)
+      function field_istack_nod_buffer(nprocs, istack_nod)
 !
-      integer(kind = kint), intent(in) :: nnod, num_field
-      character(len=31+1+2*16+1) :: field_num_buffer
+      integer(kind = kint), intent(in) ::    nprocs
+      integer(kind = kint_gl), intent(in) :: istack_nod(0:nprocs)
+      character(len=25+1+nprocs*16+1) :: field_istack_nod_buffer
 !
-      character(len=2*16) :: buf_nfld
+      character(len=nprocs*16) :: buf_nfld
+!
+      character(len=kchara) :: fmt_txt
 !
 !
-      write(buf_nfld,'(2i16,a1)') nnod, num_field
+      write(fmt_txt,'(a1,i1,a9)') '(', nprocs, '(i16),a1)'
+!
+      write(buf_nfld,fmt_txt) istack_nod(1:nprocs)
+!
+      field_istack_nod_buffer = FLD_HD0  // char(10)                    &
+     &                     //  buf_nfld // char(10)
+!
+      end function field_istack_nod_buffer
+!
+! -------------------------------------------------------------------
+!
+      function field_num_buffer(num_field)
+!
+      integer(kind = kint), intent(in) ::    num_field
+      character(len=31+1+16+1) :: field_num_buffer
+!
+      character(len=16) :: buf_nfld
+!
+      write(buf_nfld,'(i16,a1)') num_field
 !
       field_num_buffer = FLD_HD1  // char(10)                           &
      &               //  buf_nfld // char(10)
@@ -115,16 +137,32 @@
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      subroutine read_field_num_buffer(textbuf, nnod, num_field)
+      subroutine read_field_istack_nod_buffer                           &
+     &         (textbuf, nprocs, istack_nod)
 !
-      character(len=65), intent(in) :: textbuf
-      integer(kind = kint), intent(inout) :: nnod, num_field
+      character(len=25+1+nprocs*16+1), intent(in) :: textbuf
+      integer(kind = kint), intent(in) :: nprocs
+      integer(kind = kint_gl), intent(inout) :: istack_nod(0:nprocs)
 !
-      character(len=kchara) :: tmpchara(2)
+      character(len=nprocs*16) ::    tmp1
 !
+      tmp1 = textbuf(27:27+nprocs*16)
+      istack_nod(0) = 0
+      read(tmp1,*) istack_nod(1:nprocs)
 !
-      read(textbuf,'(a32,a33)') tmpchara(1:2)
-      read(tmpchara(2),*) nnod, num_field
+      end subroutine read_field_istack_nod_buffer
+!
+! -------------------------------------------------------------------
+!
+      subroutine read_field_num_buffer(textbuf, num_field)
+!
+      character(len=48), intent(in) :: textbuf
+      integer(kind = kint), intent(inout) :: num_field
+!
+      character(len=16) ::    tmp1
+!
+      tmp1 = textbuf(33:48)
+      read(tmp1,*) num_field
 !
       end subroutine read_field_num_buffer
 !
@@ -133,8 +171,8 @@
       subroutine read_field_comp_buffer                                 &
      &         (textbuf, num_field, ncomp_field)
 !
-      character(len=*), intent(in) :: textbuf
       integer(kind = kint), intent(in) :: num_field
+      character(len=num_field*5), intent(in) :: textbuf
       integer(kind = kint), intent(inout) :: ncomp_field(num_field)
 !
 !
@@ -144,23 +182,21 @@
 !
 ! -------------------------------------------------------------------
 !
-      integer(kind = kint) function read_each_field_name_buffer         &
-     &                            (textbuf, field_name)
+      subroutine read_each_field_name_buffer(textbuf, field_name)
 !
-      character(len=*), intent(in) :: textbuf
+      character(len=kchara), intent(in) :: textbuf
       character(len=kchara), intent(inout) :: field_name
 !
 !
       read(textbuf,*) field_name
-      read_each_field_name_buffer = len_trim(field_name)
 !
-      end function read_each_field_name_buffer
+      end subroutine read_each_field_name_buffer
 !
 ! -------------------------------------------------------------------
 !
       subroutine read_each_field_data_buffer(textbuf, ncomp, vect)
 !
-      character(len=*), intent(in) :: textbuf
+      character(len=ncomp*25+1), intent(in) :: textbuf
       integer(kind = kint), intent(in) :: ncomp
       real(kind = kreal), intent(inout) :: vect(ncomp)
 !

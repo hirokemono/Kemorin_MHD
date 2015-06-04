@@ -48,7 +48,7 @@
       character(len=kchara), parameter                                  &
      &      :: new_rst_file_header = 'rst_new/rst'
 !
-      integer(kind=kint) :: i, istep, ip, my_rank, np, inod
+      integer(kind=kint) :: i, istep, ip, id_rank, np, inod
       integer(kind=kint) :: jst
       type(field_IO) :: plane_fst_IO
 !
@@ -71,7 +71,7 @@
 !     open original data
 !
       ip = 1
-      my_rank = 0
+      id_rank = 0
 !
       call set_field_file_fmt_prefix                                    &
      &   (izero, org_rst_f_header, plane_fst_IO)
@@ -99,13 +99,13 @@
 !
       merged%node%numnod = numnod
       do ip = 1, num_pe
-        my_rank = ip-1
+        id_rank = ip-1
 !
 !    read mesh file
 !
         iflag_mesh_file_fmt = izero
         mesh_file_head = 'mesh/in'
-        call sel_read_geometry_size(my_rank)
+        call sel_read_geometry_size(id_rank)
 !
         call copy_node_geometry_from_IO
         call deallocate_neib_domain_IO
@@ -125,7 +125,7 @@
 !
         call set_field_file_fmt_prefix                                  &
      &     (izero, org_rst_f_header, plane_fst_IO)
-        call sel_read_step_FEM_field_file(my_rank, istep, plane_fst_IO)
+        call sel_read_step_FEM_field_file(id_rank, istep, plane_fst_IO)
 !
         do np = 1, ntot_rst_org
           merged_fld%d_fld(1:merged%node%numnod,np)                     &
@@ -164,7 +164,7 @@
      &     (merged%node, merged_fld, plane_fst_IO)
 !
         plane_fst_IO%file_prefix = new_rst_file_header
-        call sel_write_step_FEM_field_file(my_rank, izero, plane_fst_IO)
+        call sel_write_step_FEM_field_file(id_rank, izero, plane_fst_IO)
 !
         call dealloc_phys_name_IO(plane_fst_IO)
         call dealloc_phys_data_IO(plane_fst_IO)

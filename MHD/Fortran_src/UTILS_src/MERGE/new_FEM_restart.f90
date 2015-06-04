@@ -61,18 +61,18 @@
       use field_IO_select
 !
       integer (kind = kint), intent(in) :: istep
-      integer (kind = kint) :: ip, my_rank
+      integer (kind = kint) :: ip, id_rank
 !
 !
       call set_field_file_fmt_prefix                                    &
      &   (iorg_rst_file_fmt, org_rst_head, merged_IO)
 !
       do ip = 1, num_pe
-        my_rank = ip - 1
+        id_rank = ip - 1
 !
         merged_IO%nnod_IO = subdomain(ip)%node%numnod
         call alloc_phys_data_IO(merged_IO)
-        call sel_read_step_FEM_field_file(my_rank, istep, merged_IO)
+        call sel_read_step_FEM_field_file(id_rank, istep, merged_IO)
         call set_restart_data_2_merge(ip, merged_IO)
 !
         call dealloc_phys_data_IO(merged_IO)
@@ -87,13 +87,13 @@
       call set_field_file_fmt_prefix                                    &
      &   (inew_rst_file_fmt, new_rst_head, merged_IO)
       do ip = 1, num_pe2
-        my_rank = ip - 1
+        id_rank = ip - 1
 !
         merged_IO%nnod_IO =   subdomains_2(ip)%node%numnod
         call alloc_phys_data_IO(merged_IO)
         call set_new_restart_data(ip, merged_IO)
 !
-        call sel_write_step_FEM_field_file(my_rank, istep, merged_IO)
+        call sel_write_step_FEM_field_file(id_rank, istep, merged_IO)
         call dealloc_phys_data_IO(merged_IO)
       end do
 !
@@ -136,19 +136,19 @@
       use input_old_file_sel_4_zlib
 !
       integer (kind = kint), intent(in) :: istep
-      integer (kind = kint) :: ip, my_rank
+      integer (kind = kint) :: ip, id_rank
 !
 !
       call set_field_file_fmt_prefix                                    &
      &   (iorg_rst_file_fmt, org_rst_head, merged_IO)
 !
       do ip = 1, num_pe
-        my_rank = ip - 1
+        id_rank = ip - 1
 !
         merged_IO%nnod_IO = subdomain(ip)%node%numnod
         call alloc_phys_data_IO(merged_IO)
 !
-        call sel_read_rst_file(my_rank, istep, merged_IO)
+        call sel_read_rst_file(id_rank, istep, merged_IO)
 !
         call set_restart_data_2_merge(ip, merged_IO)
 !
@@ -165,14 +165,14 @@
      &   (inew_rst_file_fmt, new_rst_head, merged_IO)
 !
       do ip = 1, num_pe2
-        my_rank = ip - 1
+        id_rank = ip - 1
 !
         merged_IO%nnod_IO =   subdomains_2(ip)%node%numnod
         call alloc_phys_data_IO(merged_IO)
 !
         call set_new_restart_data(ip, merged_IO)
 !
-        call sel_write_step_FEM_field_file(my_rank, istep, merged_IO)
+        call sel_write_step_FEM_field_file(id_rank, istep, merged_IO)
         call dealloc_phys_data_IO(merged_IO)
       end do
 !

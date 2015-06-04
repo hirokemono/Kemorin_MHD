@@ -76,7 +76,7 @@
 !
       if(spectr_file_head_ctl%iflag .gt. 0) then
         org_sph_file_head =  spectr_file_head_ctl%charavalue
-        call choose_file_format                                         &
+        call choose_para_file_format                                    &
      &     (restart_file_fmt_ctl, iflag_org_sph_file_fmt)
       end if
 !
@@ -88,7 +88,7 @@
 !
       if(restart_file_prefix%iflag .gt. 0) then
         org_sph_file_head =  restart_file_prefix%charavalue
-        call choose_file_format                                         &
+        call choose_para_file_format                                    &
      &     (restart_file_fmt_ctl, iflag_org_sph_file_fmt)
         i_step_output_ucd =   i_step_output_rst
       end if

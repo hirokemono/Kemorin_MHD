@@ -55,11 +55,11 @@
 !
       integer(kind=kint), intent(in) :: ip, nnod
 !
-      integer(kind=kint) :: my_rank
+      integer(kind=kint) :: id_rank
       type(field_IO) :: pl_fld_IO
 !
 !
-      my_rank = ip - 1
+      id_rank = ip - 1
 !
       pl_fld_IO%nnod_IO = nnod
 !
@@ -74,7 +74,7 @@
      &    pl_fld_IO%ntot_comp_IO, pl_fld_IO%nnod_IO, pl_fld_IO%d_IO)
 !
       pl_fld_IO%file_prefix = rst_head_plane
-      call sel_write_step_FEM_field_file(my_rank, izero, pl_fld_IO)
+      call sel_write_step_FEM_field_file(id_rank, izero, pl_fld_IO)
 !
       call dealloc_phys_name_IO(pl_fld_IO)
       call dealloc_phys_data_IO(pl_fld_IO)

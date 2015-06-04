@@ -73,7 +73,8 @@
       if (restart_file_prefix%iflag .gt. 0) then
         sph_file_head = restart_file_prefix%charavalue
       end if
-      call choose_file_format(restart_file_fmt_ctl, ifmt_sph_data)
+      call choose_para_file_format                                      &
+     &   (restart_file_fmt_ctl, ifmt_sph_data)
 !
 !      stepping parameter
 !
@@ -148,7 +149,8 @@
       if (restart_file_prefix%iflag .gt. 0) then
         sph_file_head = restart_file_prefix%charavalue
       end if
-      call choose_file_format(restart_file_fmt_ctl, ifmt_sph_data)
+      call choose_para_file_format                                      &
+     &   (restart_file_fmt_ctl, ifmt_sph_data)
 !
 !      stepping parameter
 !
@@ -235,7 +237,8 @@
       if (restart_file_prefix%iflag .gt. 0) then
         sph_file_head = restart_file_prefix%charavalue
       end if
-      call choose_file_format(restart_file_fmt_ctl, ifmt_sph_data)
+      call choose_para_file_format                                      &
+     &   (restart_file_fmt_ctl, ifmt_sph_data)
 !
 !   setting for spherical transform
 !

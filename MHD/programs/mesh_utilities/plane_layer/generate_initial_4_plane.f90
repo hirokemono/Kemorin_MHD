@@ -42,7 +42,7 @@
 !
       implicit none
 !
-      integer(kind=kint) :: i, ip, my_rank, inod
+      integer(kind=kint) :: i, ip, id_rank, inod
       integer(kind=kint) :: np, jst, jed
       type(field_IO) :: plane_fst_IO
 !
@@ -65,13 +65,13 @@
       merged%node%numnod = numnod
 !
       do ip = 1, num_pe
-        my_rank = ip-1
+        id_rank = ip-1
 !
 !    read mesh file
 !
         iflag_mesh_file_fmt = izero
         mesh_file_head = 'mesh/in'
-        call sel_read_geometry_size(my_rank)
+        call sel_read_geometry_size(id_rank)
 !
         call copy_node_geometry_from_IO
         call deallocate_neib_domain_IO
@@ -133,7 +133,7 @@
         call set_field_file_fmt_prefix                                  &
      &     (izero, org_rst_f_header, plane_fst_IO)
         call sel_write_step_FEM_field_file                              &
-     &     (my_rank, izero, plane_fst_IO)
+     &     (id_rank, izero, plane_fst_IO)
 !
         call dealloc_phys_name_IO(plane_fst_IO)
         call dealloc_phys_data_IO(plane_fst_IO)

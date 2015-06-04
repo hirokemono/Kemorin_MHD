@@ -244,8 +244,10 @@
         new_rst_head = new_rst_def_head
       end if
 !
-      call choose_file_format(restart_file_fmt_ctl, iorg_rst_file_fmt)
-      call choose_file_format(new_rst_files_fmt_ctl, inew_rst_file_fmt)
+      call choose_para_file_format                                      &
+     &   (restart_file_fmt_ctl, iorg_rst_file_fmt)
+      call choose_para_file_format                                      &
+     &   (new_rst_files_fmt_ctl, inew_rst_file_fmt)
 !
 !
       if (i_newrst_magne .gt. 0) then

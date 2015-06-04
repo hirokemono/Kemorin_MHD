@@ -39,8 +39,6 @@
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
 !
-      integer(kind = kint) :: ierr
-!
 !     ---------------------
 !
 !     read controls
