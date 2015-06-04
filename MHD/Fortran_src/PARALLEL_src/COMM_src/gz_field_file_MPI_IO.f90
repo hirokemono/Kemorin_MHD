@@ -66,6 +66,8 @@
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO,             &
      &    istack_merged_nod)
 !
+      call MPI_FILE_CLOSE(id_fld, ierr_MPI)
+!
       call deallocate_istack_merged_nod
 !
       end subroutine write_gz_step_field_file_mpi

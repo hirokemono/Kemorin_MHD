@@ -42,6 +42,7 @@
       use field_file_IO
       use field_file_IO_b
       use field_file_MPI_IO
+      use field_file_MPI_IO_b
 !
 #ifdef ZLIB_IO
       use gz_field_file_IO
@@ -191,11 +192,8 @@
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name
-      type(field_IO) :: tmp_IO
-      integer(kind=kint) :: inod, nd
 !
 !
-!      tmp_IO%iflag_file_fmt = fld_IO%iflag_file_fmt
       call set_SPH_fld_file_name(fld_IO%file_prefix,                    &
      &    fld_IO%iflag_file_fmt, my_rank, istep_fld, file_name)
 !
@@ -257,9 +255,9 @@
 !
       if(fld_IO%iflag_file_fmt .eq. iflag_single) then
         call write_step_field_file_mpi(file_name, fld_IO)
-!      else if(fld_IO%iflag_file_fmt                                    &
-!     &       .eq. iflag_single+id_binary_file_fmt) then
-!        call write_step_field_file_mpi_b(file_name, fld_IO)
+      else if(fld_IO%iflag_file_fmt                                     &
+     &       .eq. iflag_single+id_binary_file_fmt) then
+        call write_step_field_file_mpi_b(file_name, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
         call write_step_field_file_b(file_name, my_rank, fld_IO)
 !
@@ -315,9 +313,9 @@
       if(fld_IO%iflag_file_fmt .eq. iflag_single) then
         call read_alloc_step_fld_file_mpi(file_name, fld_IO)
 !
-!      else if(fld_IO%iflag_file_fmt                                    &
-!     &       .eq. iflag_single+id_binary_file_fmt) then
-!        call write_step_field_file_mpi_b(file_name, fld_IO)
+      else if(fld_IO%iflag_file_fmt                                    &
+     &       .eq. iflag_single+id_binary_file_fmt) then
+        call read_alloc_stp_fld_file_mpi_b(file_name, fld_IO)
       else if (fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
         call read_and_allocate_step_field_b(file_name, my_rank, fld_IO)
 !

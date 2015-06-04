@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date   Programmed in May, 2015
 !
-!> @brief Output merged VTK file usgin MPI-IO
+!> @brief Output merged field file using MPI-IO
 !!
 !!@verbatim
 !!      subroutine write_step_field_file_mpi(file_name, fld_IO)
