@@ -186,15 +186,15 @@
      &     .or. cmp_no_case(file_fmt_ctl, 'gzip_merged')                &
      &     .or. cmp_no_case(file_fmt_ctl, 'gz_merged')) then
            id_file_fmt = id_gzip_txt_file_fmt + iflag_single
-!        else if(cmp_no_case(file_fmt_ctl, 'merged_gzip_binary')        &
-!     &     .or. cmp_no_case(file_fmt_ctl, 'merged_gz_binary')          &
-!     &     .or. cmp_no_case(file_fmt_ctl, 'merged_binary_gzip')        &
-!     &     .or. cmp_no_case(file_fmt_ctl, 'merged_binary_gz')          &
-!     &     .or. cmp_no_case(file_fmt_ctl, 'merged_bin_gzip')           &
-!     &     .or. cmp_no_case(file_fmt_ctl, 'merged_bin_gz')             &
-!     &     .or. cmp_no_case(file_fmt_ctl, 'gzip_merged_bin')           &
-!     &     .or. cmp_no_case(file_fmt_ctl, 'gz_merged_bin')) then
-!           id_file_fmt = id_gzip_bin_file_fmt + iflag_single
+        else if(cmp_no_case(file_fmt_ctl, 'merged_gzip_binary')         &
+     &     .or. cmp_no_case(file_fmt_ctl, 'merged_gz_binary')           &
+     &     .or. cmp_no_case(file_fmt_ctl, 'merged_binary_gzip')         &
+     &     .or. cmp_no_case(file_fmt_ctl, 'merged_binary_gz')           &
+     &     .or. cmp_no_case(file_fmt_ctl, 'merged_bin_gzip')            &
+     &     .or. cmp_no_case(file_fmt_ctl, 'merged_bin_gz')              &
+     &     .or. cmp_no_case(file_fmt_ctl, 'gzip_merged_bin')            &
+     &     .or. cmp_no_case(file_fmt_ctl, 'gz_merged_bin')) then
+           id_file_fmt = id_gzip_bin_file_fmt + iflag_single
         else
           call set_file_format(file_fmt_ctl, i_file_fmt, id_file_fmt)
         end if

@@ -247,6 +247,16 @@ static void get_one_line_by_zlib(int *num_buffer, int *num_word, int *nchara, ch
 	return;
 }
 
+int gzseek_go_fwd_f(int *ioffset){
+    z_off_t ierr;
+    ierr = gzseek(file_gz, (z_off_t) *ioffset, SEEK_CUR);
+    return (int)ierr;
+}
+
+int gzread_f(int *ilength, char *textbuf){
+    printf("ilength %d\n", (uInt) *ilength);
+    return gzread(file_gz, textbuf, (uInt) *ilength);
+}
 void get_one_line_from_gz(int *num_buffer, int *num_word, int *nchara, char *line_buf){
 	
 	get_one_line_by_zlib(num_buffer, num_word, nchara, line_buf);

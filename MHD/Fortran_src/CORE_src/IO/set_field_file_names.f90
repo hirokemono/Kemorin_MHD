@@ -111,7 +111,8 @@
 !
       call add_fld_extension(file_name, fname_tmp)
 !
-      if (   mod(itype_file,iten) .eq. id_gzip_txt_file_fmt) then
+      if (   mod(itype_file,iten) .eq. id_gzip_txt_file_fmt             &
+     &  .or. mod(itype_file,iten) .eq. id_gzip_bin_file_fmt) then
         call add_gzip_extension(fname_tmp, file_name)
       else
         file_name = fname_tmp
@@ -147,7 +148,8 @@
 !
       call add_fst_extension(file_name, fname_tmp)
 !
-      if (   mod(itype_file,iten) .eq. id_gzip_txt_file_fmt) then
+      if (   mod(itype_file,iten) .eq. id_gzip_txt_file_fmt             &
+     &  .or. mod(itype_file,iten) .eq. id_gzip_bin_file_fmt) then
         call add_gzip_extension(fname_tmp, file_name)
       else
         file_name = fname_tmp

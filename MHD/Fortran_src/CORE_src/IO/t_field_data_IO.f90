@@ -59,8 +59,8 @@
 !
 !>        end point for number of node for each subdomain
         integer(kind = kint_gl), pointer :: istack_merged_nod_IO(:)
-!>        end point for number of node for each subdomain
-        integer(kind = kint_gl), pointer :: istack_merged_byte_IO(:)
+!>        number of node for each subdomain
+        integer(kind = kint_gl), pointer :: nnod_merged_IO(:)
       end type field_IO
 !
 ! -------------------------------------------------------------------
@@ -116,9 +116,9 @@
 !
 !
       allocate(fld_IO%istack_merged_nod_IO(0:nprocs))
-      allocate(fld_IO%istack_merged_byte_IO(0:nprocs))
+      allocate(fld_IO%nnod_merged_IO(nprocs))
       fld_IO%istack_merged_nod_IO = 0
-      fld_IO%istack_merged_byte_IO = 0
+      fld_IO%nnod_merged_IO =       0
 !
       end subroutine alloc_merged_field_stack
 !
@@ -155,7 +155,7 @@
 !
 !
       deallocate(fld_IO%istack_merged_nod_IO)
-      deallocate(fld_IO%istack_merged_byte_IO)
+      deallocate(fld_IO%nnod_merged_IO)
 !
       end subroutine dealloc_merged_field_stack
 !

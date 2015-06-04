@@ -47,6 +47,7 @@
 #ifdef ZLIB_IO
       use gz_field_file_IO
       use gz_field_file_MPI_IO
+      use gz_field_file_MPI_IO_b
 #endif
 !
       implicit none
@@ -251,8 +252,6 @@
       type(field_IO), intent(in) :: fld_IO
 !
 !
-      write(*,*) 'fld_IO%iflag_file_fmt', fld_IO%iflag_file_fmt
-!
       if(fld_IO%iflag_file_fmt .eq. iflag_single) then
         call write_step_field_file_mpi(file_name, fld_IO)
       else if(fld_IO%iflag_file_fmt                                     &
@@ -262,6 +261,9 @@
         call write_step_field_file_b(file_name, my_rank, fld_IO)
 !
 #ifdef ZLIB_IO
+      else if(fld_IO%iflag_file_fmt                                    &
+     &       .eq. iflag_single+id_gzip_bin_file_fmt) then
+        call gz_write_step_fld_file_mpi_b(file_name, fld_IO)
       else if(fld_IO%iflag_file_fmt                                    &
      &       .eq. iflag_single+id_gzip_txt_file_fmt) then
         call write_gz_step_field_file_mpi(file_name, fld_IO)
@@ -320,6 +322,9 @@
         call read_and_allocate_step_field_b(file_name, my_rank, fld_IO)
 !
 #ifdef ZLIB_IO
+      else if(fld_IO%iflag_file_fmt                                    &
+     &       .eq. iflag_single+id_gzip_bin_file_fmt) then
+        call gz_rd_alloc_st_fld_file_mpi_b(file_name, fld_IO)
       else if(fld_IO%iflag_file_fmt                                    &
      &       .eq. iflag_single+id_gzip_txt_file_fmt) then
         call read_alloc_stp_fld_file_gz_mpi(file_name, fld_IO)
