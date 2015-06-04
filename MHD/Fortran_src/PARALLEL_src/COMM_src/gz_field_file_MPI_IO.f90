@@ -175,7 +175,7 @@
 !
       v1(1:ncomp) = 0.0d0
       ilength = len(each_field_data_buffer(ncomp, v1))
-      ilen_gz = int(real(nnod*ilength) * 1.01) + 20
+      ilen_gz = int(real(nnod*ilength) * 1.01) + 24
       allocate(gzip_buf(ilen_gz))
       if(nnod .eq. 1) then
         v1(1:ncomp) = vect(1,1:ncomp)

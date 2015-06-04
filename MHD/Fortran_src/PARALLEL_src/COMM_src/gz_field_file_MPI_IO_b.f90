@@ -34,7 +34,7 @@
       integer, external :: gzread_f, gzseek_go_fwd_f
 !
       private :: nnod_merged, istack_merged_nod, sta1
-      private :: write_field_data_mpi
+      private :: gz_write_field_data_mpi_b
       private :: set_istack_merged_nod, deallocate_istack_merged_nod
 !
 !  ---------------------------------------------------------------------
@@ -60,7 +60,7 @@
      &    MPI_INFO_NULL, id_fld, ierr_MPI)
 !
       ioff_gl = 0
-      call write_field_data_mpi(id_fld, ioff_gl,                        &
+      call gz_write_field_data_mpi_b(id_fld, ioff_gl,                   &
      &    fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO,             &
      &    istack_merged_nod)
@@ -108,7 +108,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_field_data_mpi(id_fld, ioff_gl,                  &
+      subroutine gz_write_field_data_mpi_b(id_fld, ioff_gl,             &
      &          nnod, num_field, ntot_comp, ncomp_field,                &
      &          field_name, d_nod, istack_merged)
 !
@@ -140,7 +140,7 @@
       call gz_write_fld_realarray2_mpi_b                                &
      &         (id_fld, ioff_gl, nnod, ntot_comp, d_nod)
 !
-      end subroutine write_field_data_mpi
+      end subroutine gz_write_field_data_mpi_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -175,9 +175,6 @@
       call gz_read_fld_inthead_mpi_b(i_time_step_IO)
       call gz_read_fld_realhead_mpi_b(time_IO)
       call gz_read_fld_realhead_mpi_b(delta_t_IO)
-!
-        write(*,*) my_rank, id_rank, 'i_time_step_IO', i_time_step_IO,  &
-     &          time_IO, delta_t_IO
 !
       end subroutine read_step_data_mpi_b
 !
@@ -219,7 +216,7 @@
 !
       if(my_rank .eq. 0) then
         ilength = ione * kint
-        ilen_gz = int(real(ilength) *1.01) + 20
+        ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
         call gzip_defleat_once                                          &
      &     (ilength, int_dat, ilen_gz, ilen_gzipped, gzip_buf(1))
@@ -253,7 +250,7 @@
 !
       if(my_rank .eq. 0) then
         ilength = ione * kreal
-        ilen_gz = int(real(ilength) *1.01) + 20
+        ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
         call gzip_defleat_once                                          &
      &     (ilength, real_dat, ilen_gz, ilen_gzipped, gzip_buf(1))
@@ -290,7 +287,7 @@
 !
       if(my_rank .eq. 0) then
         ilength = num * kint_gl
-        ilen_gz = int(real(ilength) *1.01) + 20
+        ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
         call gzip_defleat_once                                          &
      &     (ilength, int_gl_dat, ilen_gz, ilen_gzipped, gzip_buf(1))
@@ -326,7 +323,7 @@
 !
       if(my_rank .eq. 0) then
         ilength = num * kint
-        ilen_gz = int(real(ilength) *1.01) + 20
+        ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
         call gzip_defleat_once                                          &
      &     (ilength, int_dat, ilen_gz, ilen_gzipped, gzip_buf(1))
@@ -362,7 +359,7 @@
 !
       if(my_rank .eq. 0) then
         ilength = num * kchara
-        ilen_gz = int(real(ilength) *1.01) + 20
+        ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
         call gzip_defleat_once                                          &
      &     (ilength, chara_dat, ilen_gz, ilen_gzipped, gzip_buf(1))
@@ -398,7 +395,7 @@
 !
 !
       ilength =  n1 * n2 * kreal
-      ilen_gz = int(real(ilength) *1.01) + 20
+      ilen_gz = int(real(ilength) *1.01) + 24
       allocate(gzip_buf(ilen_gz))
       call gzip_defleat_once                                            &
      &   (ilength, real_dat, ilen_gz, ilen_gzipped, gzip_buf(1))
@@ -537,9 +534,6 @@
       integer(kind = kint) :: ilength, ierr
 !
 !
-      ilength = kint
-      ierr = gzseek_go_fwd_f(ilength)
-!
       ilength =  int(istack_merged(my_rank)) * n2 * kreal
       ierr = gzseek_go_fwd_f(ilength)
 !
@@ -548,9 +542,6 @@
 !
       ilength = int(istack_merged(nprocs) - istack_merged(my_rank+1))   &
      &          * n2 * kreal
-      ierr = gzseek_go_fwd_f(ilength)
-!
-      ilength = kint
       ierr = gzseek_go_fwd_f(ilength)
 !
       end subroutine gz_read_fld_realarray2_mpi_b

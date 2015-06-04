@@ -37,6 +37,7 @@ void write_compress_txt_nolf(int *num_buffer, char *input_txt);
 
 int gzseek_go_fwd_f(int *ioffset);
 int gzread_f(int *ilength, char *textbuf);
+int gzwrite_f(int *ilength, char *textbuf);
 
 void get_one_line_from_gz(int *num_buffer, int *num_word, int *nchara, char *line_buf);
 int skip_comment_gz_c(int *num_buffer, char *buf);

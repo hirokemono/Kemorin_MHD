@@ -204,7 +204,7 @@
 !
       if(my_rank .eq. 0) then
         ilength = len(header_txt)
-        ilen_gz = int(real(ilength) *1.01) + 20
+        ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
         call gzip_defleat_once                                          &
      &     (ilength, header_txt, ilen_gz, ilen_gzipped, gzip_buf(1))
@@ -250,7 +250,7 @@
       inod_gl = 1
       dat_1(1:ntot_comp) = zero
       ilength = len(ucd_each_field(inod_gl, ntot_comp, dat_1))
-      ilen_gz = int(real(num*ilength) * 1.01) + 20
+      ilen_gz = int(real(num*ilength) * 1.01) + 24
       allocate(gzip_buf(ilen_gz))
       if(num .eq. 1) then
         inod_gl = 1 + istack_merged_intnod(my_rank)
@@ -328,7 +328,7 @@
       iele_gl = 1
       ie0(1:nnod_ele) = 0
       ilength = len(ucd_each_connect(iele_gl, nnod_ele, ie0))
-      ilen_gz = int(real(nele*ilength) * 1.01) + 20
+      ilen_gz = int(real(nele*ilength) * 1.01) + 24
       allocate(gzip_buf(ilen_gz))
       if(nele .eq. 1) then
         ie0(1:nnod_ele) = ie(1,1:nnod_ele) - 1

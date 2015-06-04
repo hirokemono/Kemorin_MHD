@@ -251,7 +251,7 @@
 !
       if(my_rank .eq. 0) then
         ilength = len(header_txt)
-        ilen_gz = int(real(ilength) *1.01) + 20
+        ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
         call gzip_defleat_once                                          &
      &     (ilength, header_txt, ilen_gz, ilen_gzipped, gzip_buf(1))
@@ -293,7 +293,7 @@
      &     - istack_merged_intnod(my_rank)
 !
       ilength = len(vtk_each_scalar(zero))
-      ilen_gz = int(real(num*ilength) * 1.01) + 20
+      ilen_gz = int(real(num*ilength) * 1.01) + 24
       allocate(gzip_buf(ilen_gz))
       if(num .eq. 1) then
         call gzip_defleat_once(ilength, vtk_each_scalar(vect(1)),       &
@@ -355,7 +355,7 @@
      &     - istack_merged_intnod(my_rank)
 !
       ilength = len(vtk_each_vector(zero, zero, zero))
-      ilen_gz = int(real(num*ilength) * 1.01) + 20
+      ilen_gz = int(real(num*ilength) * 1.01) + 24
       allocate(gzip_buf(ilen_gz))
       if(num .eq. 1) then
         call gzip_defleat_once(ilength,                                 &
@@ -421,10 +421,10 @@
      &     - istack_merged_intnod(my_rank)
 !
       ilength = len(vtk_each_vector(zero, zero, zero))
-      ilen_gz = int(real(3*num*ilength) * 1.01) + 20
+      ilen_gz = int(real(3*num*ilength) * 1.01) + 24
       allocate(gzip_buf(ilen_gz))
       if(num .eq. 1) then
-        call gzip_defleat_once(ilength,                                 &
+        call gzip_defleat_begin(ilength,                                &
      &      vtk_each_vector(vect(1,1),vect(1,2),vect(1,3)),             &
      &      ilen_gz, ilen_gzipped, gzip_buf(1))
         call gzip_defleat_cont(ilength,                                 &
@@ -515,7 +515,7 @@
 !
       ie0(1:nnod_ele) = 0
       ilength = len(vtk_each_connect(nnod_ele, ie0))
-      ilen_gz = int(real(nele*ilength) * 1.01) + 20
+      ilen_gz = int(real(nele*ilength) * 1.01) + 24
       allocate(gzip_buf(ilen_gz))
       if(nele .eq. 1) then
         ie0(1:nnod_ele) = ie(1,1:nnod_ele) - 1
@@ -584,7 +584,7 @@
 !
       icellid = vtk_cell_type(nnod_ele)
       ilength = len(vtk_each_cell_type(icellid))
-      ilen_gz = int(real(nele*ilength) * 1.01) + 20
+      ilen_gz = int(real(nele*ilength) * 1.01) + 24
       allocate(gzip_buf(ilen_gz))
       if(nele .eq. 1) then
         call gzip_defleat_once(ilength, vtk_each_cell_type(icellid),    &
