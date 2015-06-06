@@ -25,7 +25,7 @@
       subroutine scalar_send_recv_3d_filter(nnod, x_vec, d_nod)
 !
       use m_nod_comm_table
-      use solver_SR
+      use solver_SR_type
 !
       integer(kind = kint), intent(in) :: nnod
       real(kind = kreal), intent(inout) :: x_vec(nnod)
@@ -35,10 +35,7 @@
 !
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV                                             &
-     &   (nnod, nod_comm%num_neib, nod_comm%id_neib,                    &
-     &          nod_comm%istack_import, nod_comm%item_import,           &
-     &          nod_comm%istack_export, nod_comm%item_export, x_vec(1))
+      call SOLVER_SEND_RECV_type(nnod, nod_comm, x_vec(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
@@ -54,7 +51,7 @@
       subroutine vector_send_recv_3d_filter(nnod, x_vec, d_nod)
 !
       use m_nod_comm_table
-      use solver_SR_3
+      use solver_SR_type
 !
       integer(kind = kint), intent(in) :: nnod
       real(kind = kreal), intent(inout) :: x_vec(3*nnod)
@@ -64,10 +61,7 @@
 !
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_3                                           &
-     &   (nnod, nod_comm%num_neib, nod_comm%id_neib,                    &
-     &          nod_comm%istack_import, nod_comm%item_import,           &
-     &          nod_comm%istack_export, nod_comm%item_export, x_vec(1))
+      call SOLVER_SEND_RECV_3_type(nnod, nod_comm, x_vec(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
@@ -85,7 +79,7 @@
       subroutine tensor_send_recv_3d_filter(nnod, x_vec, d_nod)
 !
       use m_nod_comm_table
-      use solver_SR_6
+      use solver_SR_type
 !
       integer(kind = kint), intent(in) :: nnod
       real(kind = kreal), intent(inout) :: x_vec(6*nnod)
@@ -95,10 +89,7 @@
 !
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_6                                           &
-     &   (nnod, nod_comm%num_neib, nod_comm%id_neib,                    &
-     &          nod_comm%istack_import, nod_comm%item_import,           &
-     &          nod_comm%istack_export, nod_comm%item_export, x_vec(1))
+      call SOLVER_SEND_RECV_6_type(nnod, nod_comm, x_vec(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do

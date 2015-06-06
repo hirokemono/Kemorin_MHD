@@ -55,10 +55,8 @@
       use nodal_vector_send_recv
       use const_mesh_info
 !
-      integer(kind = kint) :: iflag
 !
-!
-      call allocate_iccg_int_matrix(numnod)
+      call allocate_iccg_int8_matrix(numnod)
       call allocate_cflag_collect_diff
       call allocate_vector_for_solver(ithree, numnod)
 !
@@ -82,7 +80,7 @@
       call allocate_diff_nod_comm_test
       call set_diff_node_comm_test
 !
-      call deallocate_iccg_int_matrix
+      call deallocate_iccg_int8_matrix
       call deallocate_vector_for_solver
 !
       call allocate_nod_stack_ctest_IO
@@ -107,14 +105,9 @@
 !
       call deallocate_cflag_collect_diff
 !
-      if (iflag .eq. 0) then
-        if (my_rank .eq. 0) call output_diff_node_comm_test
-        call deallocate_nod_comm_test_IO
-      else
-        if (my_rank .eq. 0) call output_diff_mesh_comm_test
-        call deallocate_nod_comm_test_IO
-        call deallocate_geom_comm_test_IO
-      end if
+      if (my_rank .eq. 0) call output_diff_mesh_comm_test
+      call deallocate_nod_comm_test_IO
+      call deallocate_geom_comm_test_IO
 !
       end subroutine analyze_communication_test
 !

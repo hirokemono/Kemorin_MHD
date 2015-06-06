@@ -121,9 +121,7 @@
         call copy_3d_filter_weights_to_IO
 !
         call deallocate_globalnod_filter
-        call deallocate_filter_import_item
-        call deallocate_filter_export_item
-        call deallocate_neib_filter_id
+        call deallocate_type_comm_tbl(flt_comm)
 !
         ifmt_filter_file = ifmt_3d_filter
         filter_file_head = filter_3d_head

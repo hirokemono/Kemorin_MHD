@@ -20,10 +20,6 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_geometry_4_comm_test
-      use solver_SR_3
-      use solver_SR_int
-      use solver_SR_N
-      use solver_SR_type
 !
       implicit  none
 !
@@ -50,26 +46,20 @@
 !
       use m_nod_comm_table
       use m_array_for_send_recv
+      use solver_SR_type
 !
       integer(kind = kint) :: inod
 !
 !
       do inod = 1, internal_node
-        ix_vec(inod) = int(inod_global(inod))
+        i8x_vec(inod) = int(inod_global(inod))
         x_vec(3*inod-2) = xx(inod,1)
         x_vec(3*inod-1) = xx(inod,2)
         x_vec(3*inod  ) = xx(inod,3)
       end do
 !
-      call solver_send_recv_i                                           &
-     &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &    nod_comm%istack_import, nod_comm%item_import,                 &
-     &    nod_comm%istack_export, nod_comm%item_export, ix_vec)
-!
-      call solver_send_recv_3                                           &
-     &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &    nod_comm%istack_import, nod_comm%item_import,                 &
-     &    nod_comm%istack_export, nod_comm%item_export, x_vec)
+      call SOLVER_SEND_RECV_int8_type(numnod, nod_comm, i8x_vec)
+      call SOLVER_SEND_RECV_3_type(numnod, nod_comm, x_vec)
 !
       end subroutine node_send_recv_test
 !
@@ -81,6 +71,7 @@
       use m_nod_comm_table
       use m_array_for_send_recv
       use m_solver_SR
+      use solver_SR_type
 !
       integer(kind = kint) :: inod
       integer(kind = kint), parameter :: NB = 12
@@ -94,7 +85,7 @@
       allocate(xx4(NB*numnod))
 !
       do inod = 1, internal_node
-        ix_vec(inod) = int(inod_global(inod))
+        i8x_vec(inod) = inod_global(inod)
         xx4(12*inod-11) = xx(inod,1)
         xx4(12*inod-10) = xx(inod,2)
         xx4(12*inod- 9) = xx(inod,3)
@@ -109,15 +100,9 @@
         xx4(12*inod   ) = xx(inod,3) + 300.0
       end do
 !
-      call solver_send_recv_i                                           &
-     &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &    nod_comm%istack_import, nod_comm%item_import,                 &
-     &    nod_comm%istack_export, nod_comm%item_export, ix_vec)
+      call SOLVER_SEND_RECV_int8_type(numnod, nod_comm, i8x_vec)
 !
-      call solver_send_recv_N                                           &
-     &   (numnod, NB, nod_comm%num_neib, nod_comm%id_neib,              &
-     &    nod_comm%istack_import, nod_comm%item_import,                 &
-     &    nod_comm%istack_export, nod_comm%item_export, xx4)
+      call SOLVER_SEND_RECV_N_type(numnod, NB, nod_comm, xx4)
 !
       do ii = 1, nod_comm%istack_import(nod_comm%num_neib)
         k = nod_comm%item_import(ii) - internal_node
@@ -369,6 +354,7 @@
       subroutine ele_send_recv_test
 !
       use m_ele_sf_eg_comm_tables
+      use solver_SR_type
 !
       integer(kind = kint) :: iele, inum
 !
@@ -395,6 +381,7 @@
 !
       use m_surface_geometry_data
       use m_ele_sf_eg_comm_tables
+      use solver_SR_type
 !
       integer(kind = kint) :: isurf, inum
 !
@@ -421,6 +408,7 @@
 !
       use m_edge_geometry_data
       use m_ele_sf_eg_comm_tables
+      use solver_SR_type
 !
       integer(kind = kint) :: iedge, inum
 !
