@@ -33,10 +33,10 @@
       new_comm%ntot_export = nod_comm%ntot_export
 !
       new_comm%id_neib =>        nod_comm%id_neib
-      new_comm%num_import =>     num_import
+      new_comm%num_import =>     nod_comm%num_import
       new_comm%istack_import =>  nod_comm%istack_import
       new_comm%item_import =>    nod_comm%item_import
-      new_comm%num_export =>     num_export
+      new_comm%num_export =>     nod_comm%num_export
       new_comm%istack_export =>  nod_comm%istack_export
       new_comm%item_export =>    nod_comm%item_export
 !

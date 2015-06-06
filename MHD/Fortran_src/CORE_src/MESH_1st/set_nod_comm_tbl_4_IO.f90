@@ -40,15 +40,16 @@
      &    nod_comm%istack_import, nod_comm%istack_export,               &
      &    nod_comm%ntot_import, nod_comm%ntot_export,                   &
      &    id_neib_domain_IO, istack_import_IO, istack_export_IO)
-      call copy_num_import_export(nod_comm%num_neib, num_import, num_export,     &
+      call copy_num_import_export(nod_comm%num_neib,                    &
+     &    nod_comm%num_import, nod_comm%num_export,                     &
      &    nod_comm%istack_import, nod_comm%istack_export)
 !
       call allocate_nod_import_item
       call allocate_nod_export_item
 !
-      call copy_communication_item                                     &
-     &   (nod_comm%ntot_import, nod_comm%ntot_export,                  &
-     &    nod_comm%item_import, nod_comm%item_export,                  &
+      call copy_communication_item                                      &
+     &   (nod_comm%ntot_import, nod_comm%ntot_export,                   &
+     &    nod_comm%item_import, nod_comm%item_export,                   &
      &    item_import_IO, item_export_IO)
 !
       call deallocate_comm_item_IO

@@ -43,7 +43,8 @@
      &    nod_comm%ntot_import,   nod_comm%ntot_export,                 &
      &    org_comm%id_neib, org_comm%istack_import,                     &
      &    org_comm%istack_export)
-      call copy_num_import_export(nod_comm%num_neib, num_import, num_export,     &
+      call copy_num_import_export(nod_comm%num_neib,                    &
+     &    nod_comm%num_import, nod_comm%num_export,                     &
      &    nod_comm%istack_import, nod_comm%istack_export)
 !
       call allocate_nod_import_item
@@ -103,7 +104,8 @@
      &    nod_comm%istack_import, nod_comm%istack_export,               &
      &    nod_comm%ntot_import,   nod_comm%ntot_export,                 &
      &    org_comm%id_neib, org_comm%istack_import)
-      call copy_num_import_export(nod_comm%num_neib, num_import, num_export,     &
+      call copy_num_import_export(nod_comm%num_neib,                    &
+     &    nod_comm%num_import, nod_comm%num_export,                     &
      &    nod_comm%istack_import, nod_comm%istack_export)
 !
       call allocate_nod_import_item

@@ -31,18 +31,6 @@
 !> data structure for node communication table
       type(communication_table), save :: nod_comm
 !
-!
-!>     import node count for each neighbor pe (i-th pe)
-      integer(kind = kint), allocatable, target :: num_import(:)
-!>     local id for import node                     (i-th)
-!      integer(kind = kint), allocatable, target :: item_import(:)
-!
-!>     export node count for each neighbor pe (i-th pe)
-      integer(kind = kint), allocatable, target :: num_export(:)
-!>     local id for export node                     (i-th)
-!      integer(kind = kint), allocatable, target :: item_export(:)
-!
-!
 !------------------------------------------------------------------
 !
       contains
@@ -61,10 +49,10 @@
 !
       subroutine allocate_nod_import_num
 !
-      allocate(num_import(nod_comm%num_neib))
+      allocate(nod_comm%num_import(nod_comm%num_neib))
       allocate(nod_comm%istack_import(0:nod_comm%num_neib))
 !
-      if (nod_comm%num_neib .gt. 0) num_import = 0
+      if (nod_comm%num_neib .gt. 0) nod_comm%num_import = 0
       nod_comm%istack_import = 0
 !
       end subroutine allocate_nod_import_num
@@ -73,10 +61,10 @@
 !
       subroutine allocate_nod_export_num
 !
-      allocate(num_export(nod_comm%num_neib))
+      allocate(nod_comm%num_export(nod_comm%num_neib))
       allocate(nod_comm%istack_export(0:nod_comm%num_neib))
 !
-      if (nod_comm%num_neib .gt. 0) num_export = 0
+      if (nod_comm%num_neib .gt. 0) nod_comm%num_export = 0
       nod_comm%istack_export = 0
 !
       end subroutine allocate_nod_export_num
@@ -117,7 +105,7 @@
 !
       subroutine deallocate_nod_import_item
 !
-      deallocate(num_import)
+      deallocate(nod_comm%num_import)
       deallocate(nod_comm%istack_import)
       deallocate(nod_comm%item_import)
 !
@@ -127,7 +115,7 @@
 !
       subroutine deallocate_nod_export_item
 !
-      deallocate(num_export)
+      deallocate(nod_comm%num_export)
       deallocate(nod_comm%istack_export)
       deallocate(nod_comm%item_export)
 !

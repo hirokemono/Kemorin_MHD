@@ -56,9 +56,9 @@
 !
       if (nod_comm%num_neib .gt. 0) then
         id_neib_filter(1:nod_comm%num_neib) =        nod_comm%id_neib(1:nod_comm%num_neib)
-        num_import_filter(1:nod_comm%num_neib) =     num_import(1:nod_comm%num_neib)
+        num_import_filter(1:nod_comm%num_neib) =     nod_comm%num_import(1:nod_comm%num_neib)
         istack_import_filter(0:nod_comm%num_neib) =  nod_comm%istack_import(0:nod_comm%num_neib)
-        num_export_filter(1:nod_comm%num_neib) =     num_export(1:nod_comm%num_neib)
+        num_export_filter(1:nod_comm%num_neib) =     nod_comm%num_export(1:nod_comm%num_neib)
         istack_export_filter(0:nod_comm%num_neib) =  nod_comm%istack_export(0:nod_comm%num_neib)
       end if
       if (nod_comm%ntot_import .gt. 0) then
