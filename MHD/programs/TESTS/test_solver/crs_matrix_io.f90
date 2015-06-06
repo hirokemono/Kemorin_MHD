@@ -146,28 +146,25 @@
       use m_nod_comm_table
 !
 !
-      call allocate_neib_id
+      call allocate_type_comm_tbl_num(nod_comm)
 !
-      if (nprocs .ne. 1) then
+      if(nod_comm%num_neib .gt. 0) then
         read (id_file,*) nod_comm%id_neib(1:nod_comm%num_neib)
-
-        call allocate_nod_import_num
-        call allocate_nod_export_num
-
         read (id_file,*) nod_comm%istack_import(1:nod_comm%num_neib)
         read (id_file,*) nod_comm%istack_export(1:nod_comm%num_neib)
+      end if
 
-        nod_comm%ntot_import= nod_comm%istack_import(nod_comm%num_neib)
-        nod_comm%ntot_export= nod_comm%istack_export(nod_comm%num_neib)
+      nod_comm%ntot_import= nod_comm%istack_import(nod_comm%num_neib)
+      nod_comm%ntot_export= nod_comm%istack_export(nod_comm%num_neib)
 
-        call allocate_nod_import_item
-        call allocate_nod_export_item
+      call allocate_type_comm_tbl_item(nod_comm)
+!
+      if(nod_comm%ntot_import .gt. 0) then
         read (id_file,*) nod_comm%item_import(1:nod_comm%ntot_import)
+      end if
+      if(nod_comm%ntot_export .gt. 0) then
         read (id_file,*) nod_comm%item_export(1:nod_comm%ntot_export)
-      else
-        nod_comm%ntot_import= 0
-        nod_comm%ntot_export= 0
-      endif
+      end if
 !
       end subroutine read_communication_data
 !

@@ -32,9 +32,7 @@
 !
       nod_comm%num_neib = num_neib_domain_IO
 !
-      call allocate_neib_id
-      call allocate_nod_import_num
-      call allocate_nod_export_num
+      call allocate_type_comm_tbl_num(nod_comm)
 !
       call copy_num_communication(nod_comm%num_neib, nod_comm%id_neib,  &
      &    nod_comm%istack_import, nod_comm%istack_export,               &
@@ -44,8 +42,7 @@
      &    nod_comm%num_import, nod_comm%num_export,                     &
      &    nod_comm%istack_import, nod_comm%istack_export)
 !
-      call allocate_nod_import_item
-      call allocate_nod_export_item
+      call allocate_type_comm_tbl_item(nod_comm)
 !
       call copy_communication_item                                      &
      &   (nod_comm%ntot_import, nod_comm%ntot_export,                   &

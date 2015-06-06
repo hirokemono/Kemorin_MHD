@@ -313,23 +313,29 @@
 !
       call allocate_type_comm_tbl_num(comm_tbls)
 !
-      comm_tbls%id_neib(1:comm_tbls%num_neib)                           &
+      if(comm_tbls%num_neib .gt. 0) then
+        comm_tbls%id_neib(1:comm_tbls%num_neib)                         &
      &      = comm_org%id_neib(1:comm_tbls%num_neib)
-      comm_tbls%num_import(1:comm_tbls%num_neib)                        &
+        comm_tbls%num_import(1:comm_tbls%num_neib)                      &
      &      =    comm_org%num_import(1:comm_tbls%num_neib)
+        comm_tbls%num_export(1:comm_tbls%num_neib)                      &
+     &      = comm_org%num_export(1:comm_tbls%num_neib)
+      end if
       comm_tbls%istack_import(0:comm_tbls%num_neib)                     &
      &      = comm_org%istack_import(0:comm_tbls%num_neib)
-      comm_tbls%num_export(1:comm_tbls%num_neib)                        &
-     &      = comm_org%num_export(1:comm_tbls%num_neib)
       comm_tbls%istack_export(0:comm_tbls%num_neib)                     &
      &      = comm_org%istack_export(0:comm_tbls%num_neib)
 !
       call allocate_type_comm_tbl_item(comm_tbls)
 !
-      comm_tbls%item_import(1:comm_tbls%ntot_import)                    &
+      if(comm_tbls%ntot_import .gt. 0) then
+        comm_tbls%item_import(1:comm_tbls%ntot_import)                  &
      &      = comm_org%item_import(1:comm_tbls%ntot_import)
-      comm_tbls%item_export(comm_tbls%ntot_export)                      &
+      end if
+      if(comm_tbls%ntot_export .gt. 0) then
+        comm_tbls%item_export(comm_tbls%ntot_export)                    &
      &      = comm_org%item_export(comm_tbls%ntot_export)
+      end if
 !
       end subroutine copy_comm_tbl_types
 !

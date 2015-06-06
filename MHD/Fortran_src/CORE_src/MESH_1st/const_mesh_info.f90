@@ -146,9 +146,7 @@
       call deallocate_boundary_data
       call deallocate_element_connection
       call deallocate_node_geometry
-      call deallocate_nod_export_item
-      call deallocate_nod_import_item
-      call deallocate_neib_id
+      call deallocate_type_comm_tbl(nod_comm)
 !
       end subroutine deallocate_mesh_infomations
 !
@@ -181,9 +179,7 @@
       call deallocate_boundary_data
       call deallocate_element_connection
       call deallocate_node_geometry
-      call deallocate_nod_export_item
-      call deallocate_nod_import_item
-      call deallocate_neib_id
+      call deallocate_type_comm_tbl(nod_comm)
 !
       end subroutine deallocate_nod_ele_infos
 !
