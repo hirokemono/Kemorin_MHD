@@ -41,6 +41,7 @@
 !
       use m_check_subroutines
       use m_cal_max_indices
+      use m_ele_sf_eg_comm_tables
 !
       use const_mesh_info
       use cal_mesh_position
@@ -168,6 +169,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'init_send_recv'
       call init_send_recv
+!
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
+      call const_element_comm_tables_1st
 !
       if (iflag_debug.eq.1) write(*,*) 'make comm. table for fluid'
       call s_const_comm_table_fluid

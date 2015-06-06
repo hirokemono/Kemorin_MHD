@@ -30,6 +30,7 @@
       use m_geometry_parameter
       use m_phys_constants
       use m_node_phys_address
+      use m_ele_sf_eg_comm_tables
       use input_control_udt_diff
       use const_mesh_info
       use nodal_vector_send_recv
@@ -68,6 +69,9 @@
       call allocate_vector_for_solver(n_sym_tensor, numnod)
 !
       call init_send_recv
+!
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
+      call const_element_comm_tables_1st
 !
       end subroutine initialize_udt_diff
 !

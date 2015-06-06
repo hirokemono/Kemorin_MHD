@@ -183,7 +183,7 @@
      &     each_field_data_buffer(ncomp, v1), char(0)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_fld, textbuf, ilength,                   &
-     &      MPI_CHARACTER, sta1, ierr_MPI)
+     &      CALYPSO_CHARACTER, sta1, ierr_MPI)
         ioffset = ioffset + ilength
       end do
       ioff_gl = ioff_gl + ilength * istack_merged(nprocs)
@@ -215,8 +215,8 @@
         ioffset = int(ioff_gl)
         allocate(c1buf(ilength))
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_READ(id_fld, c1buf(1), ilength, MPI_CHARACTER,    &
-     &                      sta1, ierr_MPI)
+        call MPI_FILE_READ(id_fld, c1buf(1), ilength,                   &
+     &                     CALYPSO_CHARACTER, sta1, ierr_MPI)
         call read_step_data_buffer(c1buf(1), id_rank)
         deallocate(c1buf)
       end if
@@ -234,8 +234,8 @@
         ioffset = int(ioff_gl)
         allocate(c1buf(ilength))
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_READ(id_fld, c1buf(1), ilength, MPI_CHARACTER,    &
-     &                      sta1, ierr_MPI)
+        call MPI_FILE_READ(id_fld, c1buf(1), ilength,                   &
+     &                     CALYPSO_CHARACTER, sta1, ierr_MPI)
         call read_field_istack_nod_buffer                               &
      &     (c1buf(1), nprocs, istack_merged)
         deallocate(c1buf)
@@ -251,8 +251,8 @@
         ioffset = int(ioff_gl)
         allocate(c1buf(ilength))
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_READ(id_fld, c1buf(1), ilength, MPI_CHARACTER,    &
-     &                      sta1, ierr_MPI)
+        call MPI_FILE_READ(id_fld, c1buf(1), ilength,                   &
+     &                     CALYPSO_CHARACTER, sta1, ierr_MPI)
         call read_field_num_buffer(c1buf(1), num_field)
         deallocate(c1buf)
       end if
@@ -287,8 +287,8 @@
         ioffset = int(ioff_gl)
         allocate(c1buf(ilength))
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_READ(id_fld, c1buf(1), ilength, MPI_CHARACTER,    &
-     &                      sta1, ierr_MPI)
+        call MPI_FILE_READ(id_fld, c1buf(1), ilength,                   &
+     &                     CALYPSO_CHARACTER, sta1, ierr_MPI)
         call read_field_comp_buffer(c1buf(1), num_field, ncomp_field)
         deallocate(c1buf)
       end if
@@ -330,8 +330,8 @@
           ilength = kchara + 1
           allocate(c1buf(ilength))
           call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
-          call MPI_FILE_READ(id_fld, c1buf(1), ilength, MPI_CHARACTER,  &
-     &                      sta1, ierr_MPI)
+          call MPI_FILE_READ(id_fld, c1buf(1), ilength,                 &
+     &                       CALYPSO_CHARACTER, sta1, ierr_MPI)
           call read_each_field_name_buffer(c1buf(1), field_name(j))
           deallocate(c1buf)
         end if
@@ -378,7 +378,7 @@
       do inod = 1, nnod
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_READ(id_fld, c1buf(1), ilength,                   &
-     &      MPI_CHARACTER, sta1, ierr_MPI)
+     &      CALYPSO_CHARACTER, sta1, ierr_MPI)
         ioffset = ioffset + ilength
 !
         call read_each_field_data_buffer(c1buf(1), ncomp, v1)

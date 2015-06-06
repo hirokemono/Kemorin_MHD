@@ -147,7 +147,7 @@
         write(textbuf,'(a,a1)') vtk_fields_head(nt_nod), char(0)
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
-     &                      MPI_CHARACTER, sta1, ierr_MPI)
+     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
       end if
       ioff_gl = ioff_gl + ilength
 !
@@ -244,8 +244,8 @@
       if(my_rank .eq. 0) then
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, header_txt, ilength, MPI_CHARACTER, &
-     &                      sta1, ierr_MPI)
+        call MPI_FILE_WRITE(id_vtk, header_txt, ilength,                &
+     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
       end if
       ioff_gl = ioff_gl + ilength
 !
@@ -280,7 +280,7 @@
      &      vtk_each_scalar(vect(inod)), char(0)
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
-     &      MPI_CHARACTER, sta1, ierr_MPI)
+     &      CALYPSO_CHARACTER, sta1, ierr_MPI)
         ioffset = ioffset + ilength
       end do
       ioff_gl = ioff_gl + ilength * istack_merged_intnod(nprocs)
@@ -316,7 +316,7 @@
      &     char(0)
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
-     &      MPI_CHARACTER, sta1, ierr_MPI)
+     &      CALYPSO_CHARACTER, sta1, ierr_MPI)
         ioffset = ioffset + ilength
       end do
       ioff_gl = ioff_gl + ilength * istack_merged_intnod(nprocs)
@@ -352,21 +352,21 @@
      &     char(0)
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
-     &      MPI_CHARACTER, sta1, ierr_MPI)
+     &      CALYPSO_CHARACTER, sta1, ierr_MPI)
         ioffset = ioffset + ilength
         write(textbuf,'(a,a1)')                                         &
      &     vtk_each_vector(vect(inod,2), vect(inod,4), vect(inod,5)),   &
      &     char(0)
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
-     &      MPI_CHARACTER, sta1, ierr_MPI)
+     &      CALYPSO_CHARACTER, sta1, ierr_MPI)
         ioffset = ioffset + ilength
         write(textbuf,'(a,a1)')                                         &
      &     vtk_each_vector(vect(inod,3), vect(inod,5), vect(inod,6)),   &
      &     char(0)
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
-     &      MPI_CHARACTER, sta1, ierr_MPI)
+     &      CALYPSO_CHARACTER, sta1, ierr_MPI)
         ioffset = ioffset + ilength
       end do
       ioff_gl = ioff_gl + 3*ilength * istack_merged_intnod(nprocs)
@@ -401,8 +401,8 @@
         ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
         write(textbuf,'(a,a1)') vtk_each_connect(nnod_ele,ie0), char(0)
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength, MPI_CHARACTER,    &
-     &                      sta1, ierr_MPI)
+        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
+     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
         ioffset = ioffset + ilength
       end do
       ioff_gl = ioff_gl + ilength * nt_ele
@@ -438,8 +438,8 @@
       ioffset = int(ioff_gl + ilength * istack_merged_ele(my_rank))
       do iele = 1, nele
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength, MPI_CHARACTER,    &
-     &                      sta1, ierr_MPI)
+        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
+     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
         ioffset = ioffset + ilength
       end do
       ioff_gl = ioff_gl + ilength * istack_merged_ele(nprocs)

@@ -1,29 +1,38 @@
-!set_ele_id_4_node_type.f90
-!      module set_ele_id_4_node_type
+!>@file   set_ele_id_4_node_type.f90
+!!@brief  module set_ele_id_4_node_type
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2008
 !
-!      Written by H.Matsui on Dec., 2008
-!
-!      subroutine s_set_ele_id_4_node_type(mesh, neib_ele)
-!        type(mesh_geometry), intent(in) :: mesh
-!        type(element_around_node), intent(inout) :: neib_ele
-!      subroutine set_layerd_ele_id_4_node_type(nnod,                   &
-!     &          iele_start, iele_end, mesh, neib_ele)
-!        integer(kind = kint), intent(in) :: nnod
-!        integer(kind = kint), intent(in) :: iele_start, iele_end
-!        type(mesh_geometry), intent(in) :: mesh
-!        type(element_around_node), intent(inout) :: neib_ele
-!      subroutine set_grouped_ele_id_4_node_type(nele_grp, iele_grp,    &
-!     &          mesh, neib_ele)
-!        integer (kind=kint), intent(in) :: nele_grp
-!        integer (kind=kint), intent(in) :: iele_grp(nele_grp)
-!        type(mesh_geometry), intent(in) :: mesh
-!        type(element_around_node), intent(inout) :: neib_ele
-!
-!      subroutine const_next_nod_id_4_node_type(mesh, neib_ele,         &
-!     &          neib_nod)
-!        type(mesh_geometry),       intent(in) :: mesh
-!        type(element_around_node), intent(in) :: neib_ele
-!        type(next_nod_id_4_nod), intent(inout) :: neib_nod
+!> @brief Set belonged element list for each node
+!!
+!!@verbatim
+!!      subroutine s_set_ele_id_4_node_type(mesh, neib_ele)
+!!      subroutine set_surf_id_4_node_type(mesh, surf, neib_ele)
+!!      subroutine set_edge_id_4_node_type(mesh, edge, neib_ele)
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(surface_data), intent(in) :: surf
+!!        type(edge_data), intent(in) :: edge
+!!        type(element_around_node), intent(inout) :: neib_ele
+!!      subroutine set_layerd_ele_id_4_node_type(nnod,                  &
+!!     &          iele_start, iele_end, mesh, neib_ele)
+!!        integer(kind = kint), intent(in) :: nnod
+!!        integer(kind = kint), intent(in) :: iele_start, iele_end
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(element_around_node), intent(inout) :: neib_ele
+!!      subroutine set_grouped_ele_id_4_node_type(nele_grp, iele_grp,   &
+!!     &          mesh, neib_ele)
+!!        integer (kind=kint), intent(in) :: nele_grp
+!!        integer (kind=kint), intent(in) :: iele_grp(nele_grp)
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(element_around_node), intent(inout) :: neib_ele
+!!
+!!      subroutine const_next_nod_id_4_node_type(mesh, neib_ele,        &
+!!     &          neib_nod)
+!!        type(mesh_geometry),       intent(in) :: mesh
+!!        type(element_around_node), intent(in) :: neib_ele
+!!        type(next_nod_id_4_nod), intent(inout) :: neib_nod
+!!@endverbatim
 !
       module set_ele_id_4_node_type
 !
@@ -68,6 +77,75 @@
 !
       end subroutine s_set_ele_id_4_node_type
 !
+!-----------------------------------------------------------------------
+!
+      subroutine set_surf_id_4_node_type(mesh, surf, neib_ele)
+!
+      use t_mesh_data
+      use t_surface_data
+      use t_next_node_ele_4_node
+      use find_element_id_4_node
+      use cal_minmax_and_stacks
+!
+      type(mesh_geometry), intent(in) :: mesh
+      type(surface_data), intent(in) :: surf
+      type(element_around_node), intent(inout) :: neib_ele
+!
+!
+      call alloc_nele_belonged_type(mesh%node%numnod, neib_ele)
+!
+      call count_iele_4_node(mesh%node%numnod, surf%numsurf,            &
+     &    surf%nnod_4_surf, surf%ie_surf, ione, surf%numsurf,           &
+     &    neib_ele%nele_4_node)
+      call s_cal_minmax_and_stacks(mesh%node%numnod,                    &
+     &    neib_ele%nele_4_node, izero, neib_ele%istack_4_node,          &
+     &    neib_ele%ntot, neib_ele%nmax, neib_ele%nmin)
+!
+!
+      call alloc_iele_belonged_type(neib_ele)
+!
+      call set_iele_4_node(mesh%node%numnod, surf%numsurf,              &
+     &    surf%nnod_4_surf, surf%ie_surf,  ione, surf%numsurf,          &
+     &    neib_ele%ntot, neib_ele%istack_4_node, neib_ele%nele_4_node,  &
+     &    neib_ele%iele_4_node, neib_ele%iconn_4_node)
+!
+      end subroutine set_surf_id_4_node_type
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_edge_id_4_node_type(mesh, edge, neib_ele)
+!
+      use t_mesh_data
+      use t_edge_data
+      use t_next_node_ele_4_node
+      use find_element_id_4_node
+      use cal_minmax_and_stacks
+!
+      type(mesh_geometry), intent(in) :: mesh
+      type(edge_data), intent(in) :: edge
+      type(element_around_node), intent(inout) :: neib_ele
+!
+!
+      call alloc_nele_belonged_type(mesh%node%numnod, neib_ele)
+!
+      call count_iele_4_node(mesh%node%numnod, edge%numedge,            &
+     &    edge%nnod_4_edge, edge%ie_edge, ione, edge%numedge,           &
+     &    neib_ele%nele_4_node)
+      call s_cal_minmax_and_stacks(mesh%node%numnod,                    &
+     &    neib_ele%nele_4_node, izero, neib_ele%istack_4_node,          &
+     &    neib_ele%ntot, neib_ele%nmax, neib_ele%nmin)
+!
+!
+      call alloc_iele_belonged_type(neib_ele)
+!
+      call set_iele_4_node(mesh%node%numnod, edge%numedge,              &
+     &    edge%nnod_4_edge, edge%ie_edge,  ione, edge%numedge,          &
+     &    neib_ele%ntot, neib_ele%istack_4_node, neib_ele%nele_4_node,  &
+     &    neib_ele%iele_4_node, neib_ele%iconn_4_node)
+!
+      end subroutine set_edge_id_4_node_type
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine set_layerd_ele_id_4_node_type(nnod,                    &

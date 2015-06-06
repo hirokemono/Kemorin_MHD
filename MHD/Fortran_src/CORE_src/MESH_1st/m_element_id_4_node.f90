@@ -1,38 +1,52 @@
+!>@file   m_element_id_4_node.f90
+!!@brief  module m_element_id_4_node
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2006
 !
-!      module m_element_id_4_node
-!
-!> @brief Belonged element list for each node
-!
-!      Written by H.Matsui on Oct., 2006
-!
-!      subroutine allocate_numele_belonged(numnod)
-!      subroutine allocate_iele_belonged
-!
-!      subroutine deallocate_iele_belonged
-!
-!      subroutine check_element_id_4_node(my_rank, numnod)
+!> @brief included element list for each node
+!!
+!!@verbatim
+!!      subroutine allocate_numele_belonged(numnod)
+!!      subroutine allocate_iele_belonged
+!!
+!!      subroutine deallocate_iele_belonged
+!!
+!!      subroutine check_element_id_4_node(my_rank, numnod)
+!!@endverbatim
 !
       module m_element_id_4_node
 !
       use m_precision
+      use t_next_node_ele_4_node
 !
       implicit none
 !
+!>   total number of included element list for each node
       integer (kind=kint) :: ntot_ele_4_node
-!<   total number of belonged element list for each node
+!>   minimum number of included element for each node
       integer (kind=kint) :: nmin_ele_4_node
-!<   minimum number of belonged element for each node
+!>   maximum number of included element for each node
       integer (kind=kint) :: nmax_ele_4_node
-!<   maximum number of belonged element for each node
+!>   number of included element for each node
       integer (kind=kint), allocatable :: nele_4_node(:)
-!<   number of belonged element for each node
+!>   end number of included element list for each node
       integer (kind=kint), allocatable :: iele_stack_4_node(:)
-!<   end number of belonged element list for each node
 !
+!>   local element ID of included element for each node
       integer (kind=kint), allocatable :: iele_4_node(:)
-!<   local element ID of belonged element for each node
+!>   node ID in included element for each node
       integer (kind=kint), allocatable :: iconn_4_node(:)
-!<   node ID in belonged element for each node
+!
+!>   Structure of included element list for each node
+      type(element_around_node), save :: ele_4_nod
+!
+!>   Structure of included surface list for each node
+      type(element_around_node), save :: surf_4_nod
+!
+!>   Structure of included surface list for each node
+      type(element_around_node), save :: edge_4_nod
+!
 !
 !-----------------------------------------------------------------------
 !

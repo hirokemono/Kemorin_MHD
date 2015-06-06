@@ -213,7 +213,7 @@
       if(ilen_gzipped .gt. 0) then
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_vtk, gzip_buf(1), ilen_gzipped,          &
-     &                      MPI_CHARACTER, sta1, ierr_MPI)
+     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
       end if
       do ip = 1, nprocs
         ioff_gl = ioff_gl + ilen_gzipped_list(ip)

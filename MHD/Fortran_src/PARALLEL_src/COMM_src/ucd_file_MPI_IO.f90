@@ -153,7 +153,7 @@
      &          ucd_num_comps(num_field, ncomp_field), char(0)
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
-     &                      MPI_CHARACTER, sta1, ierr_MPI)
+     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
       end if
       ioff_gl = ioff_gl + ilength
 !
@@ -165,7 +165,7 @@
      &                ucd_field_name(field_name(j)), char(0)
           call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
           call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                 &
-     &                      MPI_CHARACTER, sta1, ierr_MPI)
+     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
         end if
         ioff_gl = ioff_gl + ilength
       end do
@@ -180,8 +180,8 @@
         write(textbuf,'(a,a1)')                                         &
      &      ucd_each_field(inod_gl, ntot_comp, dat_1), char(0)
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,  MPI_CHARACTER,   &
-     &      sta1, ierr_MPI)
+        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
+     &      CALYPSO_CHARACTER, sta1, ierr_MPI)
         ioffset = ioffset + ilength
       end do
       ioff_gl = ioff_gl + ilength * istack_merged_intnod(nprocs)
@@ -226,8 +226,8 @@
       if(my_rank .eq. 0) then
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength, MPI_CHARACTER,    &
-     &                      sta1, ierr_MPI)
+        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
+     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
       end if
       ioff_gl = ioff_gl + ilength
 
@@ -241,8 +241,8 @@
         write(textbuf,'(a,a1)')                                         &
      &      ucd_each_field(inod_gl, n_vector, dat_1), char(0)
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,  MPI_CHARACTER,   &
-     &      sta1, ierr_MPI)
+        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
+     &      CALYPSO_CHARACTER, sta1, ierr_MPI)
         ioffset = ioffset + ilength
       end do
       ioff_gl = ioff_gl + ilength * nt_nod
@@ -258,8 +258,8 @@
         write(textbuf,'(a,a1)')                                         &
      &        ucd_each_connect(iele_gl, nnod_ele,ie0), char(0)
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength, MPI_CHARACTER,    &
-     &                      sta1, ierr_MPI)
+        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
+     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
         ioffset = ioffset + ilength
       end do
       ioff_gl = ioff_gl + ilength * nt_ele

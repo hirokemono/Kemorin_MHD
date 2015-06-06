@@ -5,13 +5,14 @@
 !!@date Programmed in Nov., 2008
 !
 !> @brief Structure of edge geometry data
-!
+!!
 !> Substitution of
 !> @n      (module m_geometry_parameter)
 !> @n      (module m_geometry_data)
 !> @n      (module m_edgerime_geometry_data)
 !!
 !!@verbatim
+!!      subroutine alloc_numedge_stack(nprocs, edge)
 !!      subroutine allocate_inod_in_edge_type(edge)
 !!      subroutine allocate_edge_connect_type(edge, nsurf)
 !!      subroutine allocate_edge_4_ele_type(edge, nele)
@@ -28,6 +29,7 @@
 !!      subroutine alloc_surf_4_edge_item_type(edge)
 !!
 !!
+!!      subroutine dealloc_numedge_stack(nprocs, edge)
 !!      subroutine deallocate_inod_in_edge_type(edge)
 !!      subroutine deallocate_edge_connect_type(edge)
 !!      subroutine deallocate_edge_4_ele_type(edge)
@@ -68,6 +70,11 @@
 !>     number of isolated edge
         integer(kind=kint) ::  numedge_iso
 !
+!>        Stack list of number of edge
+        integer(kind=kint_gl), pointer  :: istack_numedge(:)
+!>        Stack list of number of internal edge
+        integer(kind=kint_gl), pointer  :: istack_interedge(:)
+!
 !>     local index for edge on each element
         integer (kind=kint), pointer :: node_on_edge(:,:)
 !>     local index for edge on each surface
@@ -81,7 +88,7 @@
         integer( kind=kint )  ::  max_internal_edge_smp
 !
 !>       global edge id (where i:edge id)
-        integer(kind=kint), pointer  ::  iedge_global(:)
+        integer(kind=kint_gl), pointer  ::  iedge_global(:)
 !
 !>   edge connectivity ie_edge(i:edge ID,j:surface index)
         integer(kind=kint), pointer  :: ie_edge(:,:)
@@ -146,6 +153,21 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_numedge_stack(nprocs, edge)
+!
+      integer(kind = kint), intent(in) :: nprocs
+      type(edge_data), intent(inout) :: edge
+!
+!
+      allocate(edge%istack_numedge(0:nprocs))
+      allocate(edge%istack_interedge(0:nprocs))
+      edge%istack_numedge =   0
+      edge%istack_interedge = 0
+!
+      end subroutine alloc_numedge_stack
 !
 !  ---------------------------------------------------------------------
 !
@@ -349,6 +371,17 @@
       end subroutine alloc_surf_4_edge_item_type
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_numedge_stack(edge)
+!
+      type(edge_data), intent(inout) :: edge
+!
+!
+      deallocate ( edge%istack_numedge, edge%istack_interedge)
+!
+      end subroutine dealloc_numedge_stack
+!
 !  ---------------------------------------------------------------------
 !
       subroutine deallocate_inod_in_edge_type(edge)

@@ -35,6 +35,7 @@
       use m_work_4_dynamic_model
       use m_work_layer_correlate
       use m_boundary_condition_IDs
+      use m_ele_sf_eg_comm_tables
 !
       use m_check_subroutines
 !
@@ -149,6 +150,9 @@
       call s_count_sgs_components
 !
       call init_send_recv
+!
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
+      call const_element_comm_tables_1st
 !
       if (iflag_debug.gt.0)  write(*,*)' make comm. table for fluid'
       call s_const_comm_table_fluid

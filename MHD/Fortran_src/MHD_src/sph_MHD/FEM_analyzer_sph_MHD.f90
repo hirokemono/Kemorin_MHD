@@ -49,6 +49,7 @@
       use m_edge_geometry_data
       use m_node_phys_address
       use m_cal_max_indices
+      use m_ele_sf_eg_comm_tables
 !
       use const_mesh_info
       use nodal_vector_send_recv
@@ -65,9 +66,6 @@
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)
 !
-      call deallocate_surface_geometry
-      call deallocate_edge_geometry
-!
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
@@ -75,6 +73,12 @@
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
       call init_send_recv
+!
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
+      call const_element_comm_tables_1st
+!
+      call deallocate_surface_geometry
+      call deallocate_edge_geometry
 !
 !  -------------------------------
 !

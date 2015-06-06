@@ -37,6 +37,8 @@
       use m_array_for_send_recv
       use m_geometry_parameter
       use m_node_phys_address
+      use m_ele_sf_eg_comm_tables
+!
       use input_control_udt_diff
       use const_mesh_info
       use nodal_vector_send_recv
@@ -103,6 +105,9 @@
       call allocate_2nd_iccg_matrix(isix, mesh_ref%node%numnod)
 !
       call init_send_recv
+!
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
+      call const_element_comm_tables_1st
 !
 !     --------------------- 
 !

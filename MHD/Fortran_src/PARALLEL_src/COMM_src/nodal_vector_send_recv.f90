@@ -36,6 +36,7 @@
       call resize_work_4_SR(n_sym_tensor, num_neib,                     &
      &    ntot_export, ntot_import)
       call resize_iwork_4_SR(num_neib, ntot_export, ntot_import)
+      call resize_i8work_4_SR(num_neib, ntot_export, ntot_import)
 !
       end subroutine init_send_recv
 !

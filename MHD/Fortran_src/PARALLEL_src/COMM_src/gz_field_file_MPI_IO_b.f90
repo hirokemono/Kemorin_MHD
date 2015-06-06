@@ -225,7 +225,7 @@
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_fld, gzip_buf(1), ilen_gzipped,          &
-     &                      MPI_CHARACTER, sta1, ierr_MPI)
+     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
         deallocate(gzip_buf)
       end if
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
@@ -259,7 +259,7 @@
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_fld, gzip_buf(1), ilen_gzipped,          &
-     &                      MPI_CHARACTER, sta1, ierr_MPI)
+     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
         deallocate(gzip_buf)
       end if
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
@@ -296,7 +296,7 @@
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_fld, gzip_buf(1), ilen_gzipped,          &
-     &                      MPI_CHARACTER, sta1, ierr_MPI)
+     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
         deallocate(gzip_buf)
       end if
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
@@ -332,7 +332,7 @@
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_fld, gzip_buf(1), ilen_gzipped,          &
-     &                      MPI_CHARACTER, sta1, ierr_MPI)
+     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
         deallocate(gzip_buf)
       end if
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
@@ -368,7 +368,7 @@
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_fld, gzip_buf(1), ilen_gzipped,          &
-     &                      MPI_CHARACTER, sta1, ierr_MPI)
+     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
         deallocate(gzip_buf)
       end if
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
@@ -412,7 +412,7 @@
         end do
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_fld, gzip_buf(1), ilen_gzipped,          &
-     &                      MPI_CHARACTER, sta1, ierr_MPI)
+     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
       end if
       do ip = 1, nprocs
         ioff_gl = ioff_gl + ilen_gzipped_list(ip)

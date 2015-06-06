@@ -49,6 +49,7 @@
       use set_MHD_idx_4_mat_type
       use link_djds_tbl_MHD_4_MG
       use link_MG_MHD_mesh_data
+      use const_element_comm_tables
 !
       integer(kind = kint) :: i_level
 !
@@ -80,7 +81,7 @@
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            's_const_mesh_types_info', i_level
           call s_const_mesh_types_info(MG_mesh(i_level),                &
-     &      MG_surf_mesh(i_level), MG_edge_mesh(i_level) )
+     &        MG_surf_mesh(i_level), MG_edge_mesh(i_level) )
         else
           call set_empty_layers_type_4_MHD(MG_MHD_mesh(i_level) )
           call empty_mesh_types_info(MG_mesh(i_level),                  &
@@ -120,6 +121,10 @@
      &            's_const_comm_tbl_type_fluid', i_level
         call s_const_comm_tbl_type_fluid(MG_mpi(i_level),               &
      &      MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level) )
+!
+        call const_ele_comm_tbl_global_id(MG_mesh(i_level)%mesh,        &
+     &      MG_ele_mesh(max_MG_level), MG_surf_mesh(i_level),           &
+     &      MG_edge_mesh(i_level))
       end do
 !
 !     ---------------------

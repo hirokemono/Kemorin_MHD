@@ -31,6 +31,7 @@
       use m_edge_geometry_data
       use m_jacobians
       use m_t_step_parameter
+      use m_ele_sf_eg_comm_tables
 !
       use nodal_vector_send_recv
       use const_mesh_info
@@ -89,6 +90,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_send_recv'
       call init_send_recv
+!
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
+      call const_element_comm_tables_1st
 !
       if (iflag_debug.gt.0) write(*,*) 'allocate_data_arrays'
       call allocate_data_arrays

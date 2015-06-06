@@ -1,47 +1,60 @@
-!
-!     module   m_geometry_data
+!>@file   m_geometry_data.f90
+!!@brief  module m_geometry_data
+!!
+!!@author H. Okuda and H. Matsui
+!!@date Programmed in 2001
+!!@date Modified in 2008
 !
 !> @brief geometry data for FEM mesh
 !!   including node and element position, all connectivities
-!
-!     written by H. Matsui
-!
-!      subroutine allocate_geometry_data
-!
-!      subroutine allocate_node_geometry
-!      subroutine allocate_element_connection
-!      subroutine deallocate_node_geometry
-!      subroutine deallocate_element_connection
-!
-!      subroutine allocate_element_geometry
-!
-!      subroutine allocate_surface_connect
-!
-!      subroutine allocate_edge_connect
-!      subroutine allocate_edge_4_ele
-!
-!      subroutine allocate_ele_4_surf
-!      subroutine allocate_ele_4_edge_num
-!      subroutine allocate_ele_4_edge_item
-!      subroutine allocate_surf_4_edge_num
-!      subroutine allocate_surf_4_edge_item
-!
-!      subroutine deallocate_surface_connect
-!
-!      subroutine deallocate_edge_connect
-!      subroutine deallocate_edge_4_ele
-!      subroutine deallocate_ele_4_surf
-!      subroutine deallocate_ele_4_edge_item
-!      subroutine deallocate_surf_4_edge_item
-!
-!      subroutine allocate_ext_surface
-!      subroutine allocate_iso_surface
-!      subroutine allocate_iso_edge
-!
-!      subroutine deallocate_ext_surface
-!      subroutine deallocate_iso_surface
-!      subroutine deallocate_iso_edge
-!
+!!
+!!@verbatim
+!!      subroutine allocate_numnod_stack(nprocs)
+!!      subroutine allocate_numele_stack(nprocs)
+!!      subroutine allocate_numsurf_stack(nprocs)
+!!      subroutine allocate_numedge_stack(nprocs)
+!!
+!!      subroutine deallocate_numnod_stack
+!!      subroutine deallocate_numele_stack
+!!      subroutine deallocate_numsurf_stack
+!!      subroutine deallocate_numedge_stack
+!!
+!!      subroutine allocate_geometry_data
+!!      subroutine allocate_node_geometry
+!!      subroutine allocate_element_connection
+!!      subroutine deallocate_node_geometry
+!!      subroutine deallocate_element_connection
+!!
+!!      subroutine allocate_element_geometry
+!!
+!!      subroutine allocate_surface_connect
+!!
+!!      subroutine allocate_edge_connect
+!!      subroutine allocate_edge_4_ele
+!!
+!!      subroutine allocate_ele_4_surf
+!!      subroutine allocate_ele_4_edge_num
+!!      subroutine allocate_ele_4_edge_item
+!!      subroutine allocate_surf_4_edge_num
+!!      subroutine allocate_surf_4_edge_item
+!!
+!!      subroutine deallocate_surface_connect
+!!
+!!      subroutine deallocate_edge_connect
+!!      subroutine deallocate_edge_4_ele
+!!      subroutine deallocate_ele_4_surf
+!!      subroutine deallocate_ele_4_edge_item
+!!      subroutine deallocate_surf_4_edge_item
+!!
+!!      subroutine allocate_ext_surface
+!!      subroutine allocate_iso_surface
+!!      subroutine allocate_iso_edge
+!!
+!!      subroutine deallocate_ext_surface
+!!      subroutine deallocate_iso_surface
+!!      subroutine deallocate_iso_edge
+!!@endverbatim
+!!
 !>
 !>@n@image html 1ele_node.png Node connectivity \p ie(iele,j)
 !>                            for each element
@@ -51,7 +64,7 @@
 !>                            for each element
 !>@n@image html 1quad_ele_img.png Node connectivity \p ie(iele,j)
 !>                            for quadrature element
-!>
+!
 !
       module   m_geometry_data
 !
@@ -60,12 +73,33 @@
       implicit  none
 !
 !
+!>   Stack list of number of node
+      integer(kind=kint_gl), allocatable, target  :: istack_numnod(:)
+!>   Stack list of number of internal node
+      integer(kind=kint_gl), allocatable, target  :: istack_internod(:)
+!
+!>   Stack list of number of element
+      integer(kind=kint_gl), allocatable, target  :: istack_numele(:)
+!>   Stack list of number of internal element
+      integer(kind=kint_gl), allocatable, target  :: istack_interele(:)
+!
 !>   position of nodes (i:direction, j:node ID)
       real(kind=kreal)  , allocatable, target  :: xx(:,:)
 !>   element connectivity ie(i:element ID,j:element index)
       integer(kind=kint), allocatable, target  :: ie(:,:)
 !>   element type defined by the first element
       integer(kind=kint) ::  first_ele_type
+!
+!
+!
+!>   Stack list of number of surface
+      integer(kind=kint_gl), allocatable, target  :: istack_numsurf(:)
+!>   Stack list of number of internal surface
+      integer(kind=kint_gl), allocatable, target  :: istack_intersurf(:)
+!>   Stack list of number of edge
+      integer(kind=kint_gl), allocatable, target  :: istack_numedge(:)
+!>   Stack list of number of internal edge
+      integer(kind=kint_gl), allocatable, target  :: istack_interedge(:)
 !
 !
 !>   surface connectivity ie_surf(i:surface ID,j:surface index)
@@ -133,9 +167,9 @@
 !>     global element id (where i:element id)
       integer(kind=kint_gl), allocatable, target  ::  iele_global(:)
 !>     global surface id (where i:surface id)
-      integer(kind=kint), allocatable, target  ::  isurf_global(:)
+      integer(kind=kint_gl), allocatable, target  ::  isurf_global(:)
 !>     global edge id (where i:edge id)
-      integer(kind=kint), allocatable, target  ::  iedge_global(:)
+      integer(kind=kint_gl), allocatable, target  ::  iedge_global(:)
 !
 !>   distance from the center
       real(kind=kreal)  , allocatable, target  :: radius(:)
@@ -207,6 +241,100 @@
 ! ------------------------------------------------------
 ! ------------------------------------------------------
 !
+      subroutine allocate_numnod_stack(nprocs)
+!
+      integer(kind = kint), intent(in) :: nprocs
+!
+!
+      allocate(istack_numnod(0:nprocs))
+      allocate(istack_internod(0:nprocs))
+      istack_numnod =   0
+      istack_internod = 0
+!
+      end subroutine allocate_numnod_stack
+!
+! ------------------------------------------------------
+!
+      subroutine allocate_numele_stack(nprocs)
+!
+      integer(kind = kint), intent(in) :: nprocs
+!
+!
+      allocate(istack_numele(0:nprocs))
+      allocate(istack_interele(0:nprocs))
+      istack_numele =   0
+      istack_interele = 0
+!
+      end subroutine allocate_numele_stack
+!
+! ------------------------------------------------------
+!
+      subroutine allocate_numsurf_stack(nprocs)
+!
+      integer(kind = kint), intent(in) :: nprocs
+!
+!
+      allocate(istack_numsurf(0:nprocs))
+      allocate(istack_intersurf(0:nprocs))
+      istack_numsurf =   0
+      istack_intersurf = 0
+!
+      end subroutine allocate_numsurf_stack
+!
+! ------------------------------------------------------
+!
+      subroutine allocate_numedge_stack(nprocs)
+!
+      integer(kind = kint), intent(in) :: nprocs
+!
+!
+      allocate(istack_numedge(0:nprocs))
+      allocate(istack_interedge(0:nprocs))
+      istack_numedge =   0
+      istack_interedge = 0
+!
+      end subroutine allocate_numedge_stack
+!
+! ------------------------------------------------------
+! ------------------------------------------------------
+!
+      subroutine deallocate_numnod_stack
+!
+!
+      deallocate(istack_numnod, istack_internod)
+!
+      end subroutine deallocate_numnod_stack
+!
+! ------------------------------------------------------
+!
+      subroutine deallocate_numele_stack
+!
+!
+      deallocate(istack_numele, istack_interele)
+!
+      end subroutine deallocate_numele_stack
+!
+! ------------------------------------------------------
+!
+      subroutine deallocate_numsurf_stack
+!
+!
+      deallocate(istack_numsurf, istack_intersurf)
+!
+      end subroutine deallocate_numsurf_stack
+!
+! ------------------------------------------------------
+!
+      subroutine deallocate_numedge_stack
+!
+!
+      deallocate(istack_numedge, istack_interedge)
+!
+      end subroutine deallocate_numedge_stack
+!
+! ------------------------------------------------------
+! ------------------------------------------------------
+!
       subroutine allocate_node_geometry
 !
       use m_geometry_parameter
@@ -253,6 +381,7 @@
 !
       end subroutine allocate_element_connection
 !
+! ------------------------------------------------------
 ! ------------------------------------------------------
 !
       subroutine deallocate_node_geometry
