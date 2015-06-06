@@ -28,7 +28,6 @@
 !
 !
       private :: set_geometry_data_from_type
-      private :: copy_node_comm_tbl_from_type
       private :: copy_node_geometry_from_type
       private :: copy_element_connect_from_type
       private :: compare_node_type_vs_1st
@@ -79,6 +78,7 @@
 !
       use m_geometry_data
       use t_mesh_data
+      use copy_nod_comm_tbl_4_type
 !
       type(mesh_geometry),    intent(inout) :: mesh
 !
@@ -108,41 +108,6 @@
       end subroutine compare_geometry_type_vs_1st
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine copy_node_comm_tbl_from_type(nod_comm)
-!
-      use m_nod_comm_table
-      use copy_communication_table
-      use t_comm_table
-!
-      type(communication_table), intent(inout) :: nod_comm
-!
-!
-      num_neib = nod_comm%num_neib
-!
-      call allocate_neib_id
-      call allocate_nod_import_num
-      call allocate_nod_export_num
-!
-      call copy_num_communication(num_neib, id_neib,                    &
-     &    istack_import, istack_export, ntot_import, ntot_export,       &
-     &    nod_comm%id_neib, nod_comm%istack_import,                     &
-     &    nod_comm%istack_export)
-      call copy_num_import_export(num_neib, num_import, num_export,     &
-     &    istack_import, istack_export)
-!
-      call allocate_nod_import_item
-      call allocate_nod_export_item
-!
-      call copy_communication_item                                      &
-     &   (ntot_import, ntot_export, item_import, item_export,           &
-     &    nod_comm%item_import, nod_comm%item_export)
-!
-      call deallocate_type_comm_tbl(nod_comm)
-!
-      end subroutine copy_node_comm_tbl_from_type
-!
 !-----------------------------------------------------------------------
 !
       subroutine copy_node_geometry_from_type(node)
@@ -310,46 +275,46 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine compare_node_comm_type_vs_1st(my_rank, nod_comm)
+      subroutine compare_node_comm_type_vs_1st(my_rank, new_comm)
 !
       use m_nod_comm_table
       use copy_communication_table
       use t_comm_table
 !
       integer(kind = kint), intent(in)  :: my_rank
-      type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(in) :: new_comm
 !
       integer(kind = kint) :: i
 !
 !
-      if(nod_comm%num_neib .ne. num_neib) write(*,*) 'num_neib',        &
-     &      my_rank, nod_comm%num_neib, num_neib
-      if(nod_comm%ntot_export .ne. ntot_export)                         &
+      if(new_comm%num_neib .ne. num_neib) write(*,*) 'num_neib',        &
+     &      my_rank, new_comm%num_neib, num_neib
+      if(new_comm%ntot_export .ne. ntot_export)                         &
      &      write(*,*) 'ntot_export',                                   &
-     &      my_rank, nod_comm%ntot_export, ntot_export
-      if(nod_comm%ntot_import .ne. ntot_import)                         &
+     &      my_rank, new_comm%ntot_export, ntot_export
+      if(new_comm%ntot_import .ne. ntot_import)                         &
      &      write(*,*) 'ntot_import',                                   &
-     &      my_rank, nod_comm%ntot_import, ntot_import
+     &      my_rank, new_comm%ntot_import, ntot_import
       do i = 1, num_neib
-        if(nod_comm%id_neib(i) .ne. id_neib(i))                         &
+        if(new_comm%id_neib(i) .ne. id_neib(i))                         &
      &       write(*,*) 'id_neib(i)', my_rank, i,                       &
-     &       nod_comm%id_neib(i), id_neib(i)
-        if(nod_comm%istack_import(i) .ne. istack_import(i))             &
+     &       new_comm%id_neib(i), id_neib(i)
+        if(new_comm%istack_import(i) .ne. istack_import(i))             &
      &       write(*,*) 'istack_import(i)', my_rank, i,                 &
-     &       nod_comm%istack_import(i), istack_import(i)
-        if(nod_comm%istack_export(i) .ne. istack_export(i))             &
+     &       new_comm%istack_import(i), istack_import(i)
+        if(new_comm%istack_export(i) .ne. istack_export(i))             &
      &       write(*,*) 'istack_export(i)', my_rank, i,                 &
-     &       nod_comm%istack_export(i), istack_export(i)
+     &       new_comm%istack_export(i), istack_export(i)
       end do
       do i = 1, ntot_export
-        if(nod_comm%item_export(i) .ne. item_export(i))                 &
+        if(new_comm%item_export(i) .ne. item_export(i))                 &
      &       write(*,*) 'item_export(i)', my_rank, i,                   &
-     &       nod_comm%item_export(i), item_export(i)
+     &       new_comm%item_export(i), item_export(i)
       end do
       do i = 1, ntot_import
-        if(nod_comm%item_import(i) .ne. item_import(i))                 &
+        if(new_comm%item_import(i) .ne. item_import(i))                 &
      &       write(*,*) 'item_import(i)', my_rank, i,                   &
-     &       nod_comm%item_import(i), item_import(i)
+     &       new_comm%item_import(i), item_import(i)
       end do
 !
       end subroutine compare_node_comm_type_vs_1st
