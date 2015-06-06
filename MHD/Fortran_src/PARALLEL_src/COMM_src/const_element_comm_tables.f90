@@ -191,7 +191,7 @@
       type(belonged_table), intent(inout) :: belongs
 !
 !
-      call s_set_ele_id_4_node_type(mesh, belongs%blng_surf)
+      call s_set_ele_id_4_node_type(mesh, belongs%blng_ele)
       call belonged_ele_id_4_node(mesh, belongs%host_ele)
       call const_ele_comm_table_type                                    &
      &   (mesh%ele%numele, mesh%ele%interior_ele, mesh%ele%x_ele,       &

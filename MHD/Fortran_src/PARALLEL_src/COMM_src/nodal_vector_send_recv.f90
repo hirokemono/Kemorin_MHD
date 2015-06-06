@@ -48,7 +48,7 @@
 !
       use m_array_for_send_recv
       use m_work_time
-      use solver_SR
+      use solver_SR_type
 !
       real(kind = kreal), intent(inout) :: scl_nod(numnod)
 !
@@ -62,11 +62,7 @@
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV                                             &
-     &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &            nod_comm%istack_import, nod_comm%item_import,         &
-     &            nod_comm%istack_export, nod_comm%item_export,         &
-     &    x_vec(1) )
+      call SOLVER_SEND_RECV_type(numnod, nod_comm, x_vec(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
@@ -83,7 +79,7 @@
 !
       use m_array_for_send_recv
       use m_work_time
-      use solver_SR_3
+      use solver_SR_type
 !
       real(kind = kreal), intent(inout) :: vec_nod(numnod,3)
 !
@@ -98,11 +94,7 @@
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_3                                           &
-     &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &            nod_comm%istack_import, nod_comm%item_import,         &
-     &            nod_comm%istack_export, nod_comm%item_export,         &
-     &    x_vec(1) )
+      call SOLVER_SEND_RECV_3_type(numnod, nod_comm, x_vec(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
@@ -121,7 +113,7 @@
 !
       use m_array_for_send_recv
       use m_work_time
-      use solver_SR_6
+      use solver_SR_type
 !
       real(kind = kreal), intent(inout) :: tsr_nod(numnod,6)
 !
@@ -139,11 +131,7 @@
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_6                                           &
-     &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &            nod_comm%istack_import, nod_comm%item_import,         &
-     &            nod_comm%istack_export, nod_comm%item_export,         &
-     &    x_vec(1) )
+      call SOLVER_SEND_RECV_6_type(numnod, nod_comm, x_vec(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do

@@ -172,6 +172,7 @@
 !
       subroutine const_element_comm_table_1st
 !
+      use m_nod_comm_table
       use m_geometry_parameter
       use m_geometry_data
       use m_element_id_4_node
@@ -179,12 +180,11 @@
       use set_element_id_4_node
 !
 !
-!
       call set_ele_id_4_node_t
       call belonged_ele_id_4_node_1(blng_tbls%host_ele)
       call const_ele_comm_table_1st(numnod, numele, inod_global,        &
-     &    interior_ele, x_ele, blng_tbls%host_ele, blng_tbls%host_ele,  &
-     &    ele_comm)
+     &    interior_ele, x_ele, nod_comm, ele_4_nod,                     &
+     &    blng_tbls%host_ele, ele_comm)
       call dealloc_iele_belonged_type(blng_tbls%host_ele)
       call dealloc_iele_belonged_type(ele_4_nod)
 !
@@ -194,6 +194,7 @@
 !
       subroutine const_surf_comm_table_1st
 !
+      use m_nod_comm_table
       use m_geometry_parameter
       use m_geometry_data
       use m_surface_geometry_data
@@ -205,7 +206,7 @@
       call set_surf_id_4_node
       call belonged_surf_id_4_node_1(blng_tbls%host_surf)
       call const_ele_comm_table_1st(numnod, numsurf, inod_global,       &
-     &    interior_surf, x_surf, blng_tbls%host_surf,                   &
+     &    interior_surf, x_surf, nod_comm, surf_4_nod,                  &
      &    blng_tbls%host_surf, surf_comm)
       call dealloc_iele_belonged_type(blng_tbls%host_surf)
       call dealloc_iele_belonged_type(surf_4_nod)
@@ -216,6 +217,7 @@
 !
       subroutine const_edge_comm_table_1st
 !
+      use m_nod_comm_table
       use m_geometry_parameter
       use m_geometry_data
       use m_edge_geometry_data
@@ -227,8 +229,8 @@
       call set_edge_id_4_node
       call belonged_edge_id_4_node_1(blng_tbls%host_edge)
       call const_ele_comm_table_1st(numnod, numedge, inod_global,       &
-     &    interior_edge, x_edge, edge_4_nod, blng_tbls%host_edge,       &
-     &    edge_comm)
+     &    interior_edge, x_edge, nod_comm, edge_4_nod,                  &
+     &    blng_tbls%host_edge,  edge_comm)
       call dealloc_iele_belonged_type(blng_tbls%host_edge)
       call dealloc_iele_belonged_type(edge_4_nod)
 !
@@ -238,9 +240,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_ele_comm_table_1st(numnod, numele, inod_global,  &
-     &          internal_flag, x_ele, neib_e, host, e_comm)
+     &          internal_flag, x_ele, nod_comm, neib_e, host, e_comm)
 !
-      use m_nod_comm_table
       use t_comm_table
       use t_next_node_ele_4_node
       use const_element_comm_table
@@ -253,6 +254,7 @@
 !
       type(element_around_node), intent(in) :: host
       type(element_around_node), intent(in) :: neib_e
+      type(communication_table), intent(in) :: nod_comm
 !
       type(communication_table), intent(inout) :: e_comm
 !
