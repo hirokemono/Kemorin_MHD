@@ -37,8 +37,6 @@
       use set_element_geometry_4_IO
       use set_surface_geometry_4_IO
       use set_edge_geometry_4_IO
-      use surface_file_IO
-      use edge_file_IO
       use m_geometry_parameter
       use m_geometry_data
       use m_surface_group
@@ -145,6 +143,7 @@
       use set_filter_comm_tbl_4_IO
       use filter_geometry_IO
       use check_num_fail_nod_commute
+      use nodal_vector_send_recv
 !
       use cal_filter_func_node
 !
@@ -156,6 +155,8 @@
 !
       if(iflag_debug.eq.1)  write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(ithree, numnod)
+!
+      call init_send_recv
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
       call s_cal_element_size

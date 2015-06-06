@@ -33,11 +33,13 @@
       use m_control_params_2nd_files
       use m_ucd_input_data
       use m_array_for_send_recv
+      use m_ele_sf_eg_comm_tables
 !
       use set_control_visualizer
       use const_mesh_info
       use load_mesh_data
       use set_parallel_file_name
+      use nodal_vector_send_recv
 !
 !   --------------------------------
 !       setup mesh information
@@ -48,8 +50,14 @@
 !
       call allocate_vector_for_solver(isix, numnod)
 !
+      if(iflag_debug.gt.0) write(*,*)' init_send_recv'
+      call init_send_recv
+!
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)
+!
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
+      call const_element_comm_tables_1st
 !
 !     --------------------- 
 !

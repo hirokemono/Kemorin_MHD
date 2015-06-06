@@ -31,7 +31,7 @@
       use increase_overlap
       use const_local_mesh_by_tbl
       use check_domain_prop_4_part
-      use generate_node_comm_table
+      use generate_comm_tables
       use local_mesh_by_part
       use const_mesh_info
 !

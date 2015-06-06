@@ -1,9 +1,18 @@
 !
 !      module m_shell_surface
 !
-      module m_shell_surface
-!
 !     Written by H. Matsui
+!
+!
+!      subroutine allocate_linear_shell
+!      subroutine allocate_quad_shell
+!      subroutine allocate_local_nnod_shell(nproc)
+!
+!      subroutine deallocate_linear_shell
+!      subroutine deallocate_quad_shell
+!      subroutine deallocate_local_nnod_shell
+!
+      module m_shell_surface
 !
       use m_precision
 !
@@ -34,14 +43,6 @@
 
       integer(kind=kint ),  allocatable :: IGROUP_cmb(:)
       integer(kind=kint ),  allocatable :: IGROUP_radius(:)
-!
-!      subroutine allocate_linear_shell
-!      subroutine allocate_quad_shell
-!      subroutine allocate_local_nnod_shell(nproc)
-!
-!      subroutine deallocate_linear_shell
-!      subroutine deallocate_quad_shell
-!      subroutine deallocate_local_nnod_shell
 !
 !  ---------------------------------------------------------------------
 !

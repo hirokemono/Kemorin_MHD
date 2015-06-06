@@ -30,7 +30,6 @@
       use m_ctl_params_4_prod_udt
       use m_ctl_data_product_udt
       use m_geometry_parameter
-      use m_ele_sf_eg_comm_tables
       use nodal_vector_send_recv
       use load_mesh_data
       use const_mesh_info
@@ -60,6 +59,12 @@
 !
 !     ---------------------
 !
+      if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
+      call allocate_vector_for_solver(isix, numnod)
+!
+      call init_send_recv
+!
+!     --------------------- 
       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
       call set_local_element_info
 !
@@ -70,15 +75,6 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, numnod)
-!
-      call init_send_recv
-!
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
-      call const_element_comm_tables_1st
-!
-!     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_id_4_product'
       call set_field_id_4_product

@@ -1,13 +1,6 @@
 !
 !      module grouping_by_sphere
-!
-      module grouping_by_sphere
-!
 !      Written by H. Matsui
-!
-      use m_precision
-!
-      implicit none
 !
 !      subroutine count_num_subdomain_4_cube(NP,                        &
 !     &          numnod_local, ncore_local, nrest_local)
@@ -18,6 +11,12 @@
 !      subroutine set_sphere_domain_list_q(NP, nnod, iradius, num_CMB,  &
 !     &          num_layer, istack20_sph, item20_sph,                   &
 !     &          IGROUP_cmb, IGROUP_radius, IGROUP, ncore_local)
+!
+      module grouping_by_sphere
+!
+      use m_precision
+!
+      implicit none
 !
 !   --------------------------------------------------------------------
 !

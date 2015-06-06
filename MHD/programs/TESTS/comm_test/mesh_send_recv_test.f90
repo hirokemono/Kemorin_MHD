@@ -23,6 +23,7 @@
       use solver_SR_3
       use solver_SR_int
       use solver_SR_N
+      use solver_SR_type
 !
       implicit  none
 !
@@ -357,7 +358,7 @@
 !
       subroutine ele_send_recv_test
 !
-      use m_ele_comm_table
+      use m_ele_sf_eg_comm_tables
 !
       integer(kind = kint) :: iele, inum
 !
@@ -367,17 +368,14 @@
         x_ele_comm(3*iele-1) = x_ele(iele,2)
         x_ele_comm(3*iele  ) = x_ele(iele,3)
       end do
-      do inum = 1, ntot_import_ele
-        iele = item_import_ele(inum)
+      do inum = 1, ele_comm%ntot_import
+        iele = ele_comm%item_import(inum)
         x_ele_comm(3*iele-2) = 0.0d0
         x_ele_comm(3*iele-1) = 0.0d0
         x_ele_comm(3*iele  ) = 0.0d0
       end do
 !
-      call solver_send_recv_3(numele, num_neib_ele, id_neib_ele,        &
-     &                        istack_import_ele, item_import_ele,       &
-     &                        istack_export_ele, item_export_ele,       &
-     &                        x_ele_comm)
+      call SOLVER_SEND_RECV_3_type(numele, ele_comm, x_ele_comm)
 !
       end subroutine ele_send_recv_test
 !
@@ -386,7 +384,7 @@
       subroutine surf_send_recv_test
 !
       use m_surface_geometry_data
-      use m_surf_comm_table
+      use m_ele_sf_eg_comm_tables
 !
       integer(kind = kint) :: isurf, inum
 !
@@ -396,17 +394,14 @@
         x_surf_comm(3*isurf-1) = x_surf(isurf,2)
         x_surf_comm(3*isurf  ) = x_surf(isurf,3)
       end do
-      do inum = 1, ntot_import_surf
-        isurf = item_import_surf(inum)
+      do inum = 1, surf_comm%ntot_import
+        isurf = surf_comm%item_import(inum)
         x_surf_comm(3*isurf-2) = 0.0d0
         x_surf_comm(3*isurf-1) = 0.0d0
         x_surf_comm(3*isurf  ) = 0.0d0
       end do
 !
-      call solver_send_recv_3(numsurf, num_neib_surf, id_neib_surf,     &
-     &                        istack_import_surf, item_import_surf,     &
-     &                        istack_export_surf, item_export_surf,     &
-     &                        x_surf_comm)
+      call SOLVER_SEND_RECV_3_type(numsurf, surf_comm, x_surf_comm)
 !
       end subroutine surf_send_recv_test
 !
@@ -415,7 +410,7 @@
       subroutine edge_send_recv_test
 !
       use m_edge_geometry_data
-      use m_edge_comm_table
+      use m_ele_sf_eg_comm_tables
 !
       integer(kind = kint) :: iedge, inum
 !
@@ -425,17 +420,14 @@
         x_edge_comm(3*iedge-1) = x_edge(iedge,2)
         x_edge_comm(3*iedge  ) = x_edge(iedge,3)
       end do
-      do inum = 1, ntot_import_edge
-        iedge = item_import_edge(inum)
+      do inum = 1, edge_comm%ntot_import
+        iedge = edge_comm%item_import(inum)
         x_edge_comm(3*iedge-2) = 0.0d0
         x_edge_comm(3*iedge-1) = 0.0d0
         x_edge_comm(3*iedge  ) = 0.0d0
       end do
 !
-      call solver_send_recv_3(numedge, num_neib_edge, id_neib_edge,     &
-     &                        istack_import_edge, item_import_edge,     &
-     &                        istack_export_edge, item_export_edge,     &
-     &                        x_edge_comm)
+      call SOLVER_SEND_RECV_3_type(numedge, edge_comm, x_edge_comm)
 !
       end subroutine edge_send_recv_test
 !

@@ -4,7 +4,6 @@
 !     Written by H. Matsui on Aug., 2007
 !
 !      subroutine grouping_for_partitioner
-!      subroutine grouping_for_node_partition
 !
       module grouping_for_partition
 !
@@ -19,28 +18,6 @@
 !------------------------------------------------------------------
 !
       subroutine grouping_for_partitioner
-!
-      use set_domain_and_org_id
-!C
-!C +-------------------------+
-!C | Set node grouping table |
-!C +-------------------------+
-!C===
-      call grouping_for_node_partition
-!C
-!C +------------------------------+
-!C | set group ID for elements    |
-!C +------------------------------+
-!C===
-!C===
-      write(*,*) 'set_all_domain_groups'
-      call set_all_domain_groups
-!
-      end subroutine grouping_for_partitioner
-!
-!------------------------------------------------------------------
-!
-      subroutine grouping_for_node_partition
 !
       use m_constants
       use m_error_IDs
@@ -163,7 +140,7 @@
 !C===
       call set_ele_domain_groups
 !
-      end subroutine grouping_for_node_partition
+      end subroutine grouping_for_partitioner
 !
 !------------------------------------------------------------------
 !

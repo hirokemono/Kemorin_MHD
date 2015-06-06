@@ -9,9 +9,6 @@ begin partitioner_control
     num_subdomain_ctl           64
 !
     mesh_file_prefix         'mesh/in'
-    elem_file_prefix         'mesh/element'
-    surf_file_prefix         'mesh/surface'
-    edge_file_prefix         'mesh/edge'
 !
     mesh_file_fmt_ctl        'gzip'
     memory_conservation_ctl     'NO'

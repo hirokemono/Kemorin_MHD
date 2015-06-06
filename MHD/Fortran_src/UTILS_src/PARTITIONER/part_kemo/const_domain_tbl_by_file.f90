@@ -1,9 +1,14 @@
 ! const_domain_tbl_by_file.f90
 !      module const_domain_tbl_by_file
 !
-      module const_domain_tbl_by_file
-!
 !      modified by H. Matsui on Apr., 2008
+!
+!      subroutine s_const_domain_tbl_by_file(mesh_head)
+!      subroutine count_nnod_whole_domain(mesh_head)
+!      subroutine set_domain_grp_whole_domain(mesh_head)
+!      subroutine set_domain_grp_each_domain(mesh_head, my_rank2)
+!
+      module const_domain_tbl_by_file
 !
       use m_precision
 !
@@ -15,11 +20,6 @@
       use mesh_IO_select
 !
       implicit none
-!
-!      subroutine s_const_domain_tbl_by_file(mesh_head)
-!      subroutine count_nnod_whole_domain(mesh_head)
-!      subroutine set_domain_grp_whole_domain(mesh_head)
-!      subroutine set_domain_grp_each_domain(mesh_head, my_rank2)
 !
 ! ----------------------------------------------------------------------
 !

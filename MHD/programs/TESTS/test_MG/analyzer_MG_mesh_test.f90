@@ -31,9 +31,6 @@
       use set_element_geometry_4_IO
       use set_surface_geometry_4_IO
       use set_edge_geometry_4_IO
-      use element_IO_select
-      use surface_IO_select
-      use edge_IO_select
       use m_geometry_data
       use m_surface_group
       use check_jacobians

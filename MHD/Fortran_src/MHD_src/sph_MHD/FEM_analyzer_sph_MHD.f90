@@ -61,11 +61,6 @@
       if (iflag_debug.gt.0) write(*,*) 'set_local_node_id_4_monitor'
       call set_local_node_id_4_monitor
 !
-!  -----    construct geometry informations
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
-      call const_mesh_informations(my_rank)
-!
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
@@ -73,6 +68,11 @@
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
       call init_send_recv
+!
+!  -----    construct geometry informations
+!
+      if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
+      call const_mesh_informations(my_rank)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
       call const_element_comm_tables_1st

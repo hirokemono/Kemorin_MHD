@@ -9,6 +9,15 @@
 !!@verbatim
 !!      subroutine dealloc_ele_sf_eg_comm_tables
 !!      subroutine const_element_comm_tables_1st
+!!
+!!      subroutine copy_ele_comm_tbl_from_type(org_ele_comm)
+!!      subroutine copy_ele_comm_tbl_to_type(new_ele_comm)
+!!
+!!      subroutine copy_surf_comm_tbl_from_type(org_surf_comm)
+!!      subroutine copy_surf_comm_tbl_to_type(new_surf_comm)
+!!
+!!      subroutine copy_edge_comm_tbl_from_type(org_edge_comm)
+!!      subroutine copy_edge_comm_tbl_to_type(new_edge_comm)
 !!@endverbatim
 !
       module m_ele_sf_eg_comm_tables
@@ -291,6 +300,75 @@
      &    e_comm%istack_export, e_comm%item_export)
 !
       end subroutine const_ele_comm_table_1st
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine copy_ele_comm_tbl_from_type(org_ele_comm)
+!
+      type(communication_table), intent(in) :: org_ele_comm
+!
+!
+      call copy_comm_tbl_types(org_ele_comm, ele_comm)
+!
+      end subroutine copy_ele_comm_tbl_from_type
+!
+!-----------------------------------------------------------------------
+!
+      subroutine copy_ele_comm_tbl_to_type(new_ele_comm)
+!
+      type(communication_table), intent(inout) :: new_ele_comm
+!
+!
+      call copy_comm_tbl_types(ele_comm, new_ele_comm)
+!
+      end subroutine copy_ele_comm_tbl_to_type
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine copy_surf_comm_tbl_from_type(org_surf_comm)
+!
+      type(communication_table), intent(in) :: org_surf_comm
+!
+!
+      call copy_comm_tbl_types(org_surf_comm, surf_comm)
+!
+      end subroutine copy_surf_comm_tbl_from_type
+!
+!-----------------------------------------------------------------------
+!
+      subroutine copy_surf_comm_tbl_to_type(new_surf_comm)
+!
+      type(communication_table), intent(inout) :: new_surf_comm
+!
+!
+      call copy_comm_tbl_types(surf_comm, new_surf_comm)
+!
+      end subroutine copy_surf_comm_tbl_to_type
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine copy_edge_comm_tbl_from_type(org_edge_comm)
+!
+      type(communication_table), intent(in) :: org_edge_comm
+!
+!
+      call copy_comm_tbl_types(org_edge_comm, edge_comm)
+!
+      end subroutine copy_edge_comm_tbl_from_type
+!
+!-----------------------------------------------------------------------
+!
+      subroutine copy_edge_comm_tbl_to_type(new_edge_comm)
+!
+      type(communication_table), intent(inout) :: new_edge_comm
+!
+!
+      call copy_comm_tbl_types(edge_comm, new_edge_comm)
+!
+      end subroutine copy_edge_comm_tbl_to_type
 !
 !-----------------------------------------------------------------------
 !

@@ -35,14 +35,14 @@ target_task:
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_DIGIT_TEST)': '$$(MOD_DIGIT_TEST)' \
-	'$$(LIB_MESH_FILE)' >> $(MAKENAME)
+	'$$(LIB_FILES_MESH_TEST)' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_DIGIT_TEST)' \
-	'$$(MOD_DIGIT_TEST)  -L. $$(LIB_MESH)' \
+	'$$(MOD_DIGIT_TEST)  -L. $$(LIBS_MESH_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '$$(TARGET_GAUSS_TEST)': '$$(MOD_GAUSS_TEST)' \
-	'$$(LIB_MESH_FILE)' >> $(MAKENAME)
+	'$$(LIB_FILES_MESH_TEST)' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_GAUSS_TEST)' \
-	'$$(MOD_GAUSS_TEST) -L. $$(LIB_MESH) $$(F90LIBS)'  >> $(MAKENAME)
+	'$$(MOD_GAUSS_TEST) -L. $$(LIBS_MESH_TEST) $$(F90LIBS)'  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 

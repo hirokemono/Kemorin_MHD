@@ -12,21 +12,16 @@
 !
       use init_partitioner
       use grouping_for_partition
-      use generate_local_all_mesh
+      use generate_local_mesh
       use set_control_data_4_part
 !
       use load_mesh_data
-      use load_element_surface_edge
 !
       use const_surface_mesh
 !
       implicit none
 !
       type(mesh_data), save :: partitioned_fem
-!
-      type(element_comms), save ::    part_ele
-      type(surface_geometry), save :: part_surf
-      type(edge_geometry), save ::    part_edge
 !
       integer(kind = kint), parameter :: my_rank = izero
 !
@@ -43,23 +38,12 @@
 !
 !  ========= Routines for partitioner ==============
 !
-!   initialize global mesh
       call initialize_partitioner
-!
       call grouping_for_partitioner
-!
-      write(mesh_ele_file_head,'(a,a)')                                 &
-     &                   trim(global_mesh_head), '_ele'
-      write(mesh_surf_file_head,'(a,a)')                                &
-     &                   trim(global_mesh_head), '_surf'
-      write(mesh_edge_file_head,'(a,a)')                                &
-     &                   trim(global_mesh_head), '_edge'
-      call output_ele_surf_edge_mesh(my_rank)
 !
 !C===
 !C-- create subdomain mesh
-      call const_communication_table(partitioned_fem,                   &
-     &    part_ele, part_surf, part_edge)
+      call PROC_LOCAL_MESH(partitioned_fem)
 !
 !  ========= Construct subdomain information for viewer ==============
 !

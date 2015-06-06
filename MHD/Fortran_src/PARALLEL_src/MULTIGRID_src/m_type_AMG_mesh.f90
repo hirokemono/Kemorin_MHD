@@ -46,14 +46,7 @@
 !
       type(next_nod_ele_table) :: MG_next_table(max_MG_level)
 !
-      integer(kind = kint), allocatable :: iflag_MG_elem_file(:)
-      integer(kind = kint), allocatable :: iflag_MG_surf_file(:)
-      integer(kind = kint), allocatable :: iflag_MG_edge_file(:)
-!
       character(len = kchara), allocatable :: MG_mesh_file_head(:)
-      character(len = kchara), allocatable :: MG_elem_file_head(:)
-      character(len = kchara), allocatable :: MG_surf_file_head(:)
-      character(len = kchara), allocatable :: MG_edge_file_head(:)
 !
       character(len = kchara), allocatable :: MG_f2c_tbl_head(:)
       character(len = kchara), allocatable :: MG_c2f_tbl_head(:)
@@ -72,14 +65,7 @@
 !
       use m_type_AMG_data
 !
-      allocate( iflag_MG_elem_file(num_MG_level) )
-      allocate( iflag_MG_surf_file(num_MG_level) )
-      allocate( iflag_MG_edge_file(num_MG_level) )
-!
       allocate( MG_mesh_file_head(num_MG_level) )
-      allocate( MG_elem_file_head(num_MG_level) )
-      allocate( MG_surf_file_head(num_MG_level) )
-      allocate( MG_edge_file_head(num_MG_level) )
 !
       allocate( MG_f2c_tbl_head(num_MG_level) )
       allocate( MG_c2f_tbl_head(num_MG_level) )
@@ -88,9 +74,6 @@
       allocate( ifmt_MG_mesh_file(num_MG_level) )
       allocate( ifmt_MG_table_file(num_MG_level) )
 !
-      iflag_MG_elem_file = 0
-      iflag_MG_surf_file = 0
-      iflag_MG_edge_file = 0
       ifmt_MG_mesh_file =  0
       ifmt_MG_table_file = 0
 !
@@ -100,12 +83,7 @@
 !
       subroutine deallocate_MG_mesh_file_heads
 !
-      deallocate( iflag_MG_elem_file, iflag_MG_surf_file )
-      deallocate( iflag_MG_edge_file )
-!
       deallocate( MG_mesh_file_head )
-      deallocate( MG_elem_file_head, MG_surf_file_head )
-      deallocate( MG_edge_file_head )
 !
       deallocate( MG_f2c_tbl_head, MG_c2f_tbl_head )
       deallocate( MG_f2c_eletbl_head )

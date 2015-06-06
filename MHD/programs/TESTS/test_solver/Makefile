@@ -20,6 +20,11 @@ LIB_FILES_SOLVER_TEST = \
 '$$(LIB_SOLVER_FILE)' \
 '$$(LIB_MESH_FILE)'
 
+ifdef FORTRAN_C_CONNECT
+  LIBS_SOLVER_TEST+=        '$$(LIB_KEMO_C)'
+  LIB_FILES_SOLVER_TEST+=   '$$(LIB_KEMO_C_FILE)'
+endif
+
 
 SOURCES = $(shell ls *.f90)
 

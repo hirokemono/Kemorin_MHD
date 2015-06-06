@@ -49,6 +49,13 @@
 !
 !     --------------------- 
 !
+      if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
+      call allocate_vector_for_solver(isix, numnod)
+!
+      call init_send_recv
+!
+!     --------------------- 
+!
       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
       call set_local_element_info
 !
@@ -61,13 +68,6 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_nod_field_data'
       call initialize_nod_field_data
-!
-!     --------------------- 
-!
-      if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, numnod)
-!
-      call init_send_recv
 !
       end subroutine initialize_ave_udt
 !

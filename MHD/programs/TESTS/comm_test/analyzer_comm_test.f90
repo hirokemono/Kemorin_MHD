@@ -24,7 +24,6 @@
       subroutine initialize_communication_test
 !
       use calypso_mpi
-      use const_mesh_info
       use input_control_comm_test
 !
 !
@@ -35,10 +34,6 @@
       if (iflag_debug.gt.0) write(*,*) 's_input_control_comm_test'
       call s_input_control_comm_test
 !
-!     --------------------- 
-!
-!       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
-!      call set_local_element_info
 !
        end subroutine initialize_communication_test
 !
@@ -52,17 +47,32 @@
       use m_geometry_parameter
       use m_geometry_4_comm_test
       use m_read_mesh_data
+      use m_ele_sf_eg_comm_tables
       use mesh_send_recv_test
       use set_diff_geom_comm_test
       use collect_diff_4_comm_test
       use write_diff_4_comm_test
+      use nodal_vector_send_recv
+      use const_mesh_info
 !
       integer(kind = kint) :: iflag
 !
 !
       call allocate_iccg_int_matrix(numnod)
-      call allocate_vector_for_solver(ithree, numnod)
       call allocate_cflag_collect_diff
+      call allocate_vector_for_solver(ithree, numnod)
+!
+      call init_send_recv
+!
+!  -----    construct geometry informations
+!
+      if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
+      call const_mesh_informations(my_rank)
+!
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
+      call const_element_comm_tables_1st
+!
+!  -------------------------------------------
 !
       call node_send_recv4_test
 !
@@ -81,24 +91,19 @@
       call collect_diff_nod_comm_test
       call deallocate_diff_nod_comm_test
 !
+      call allocate_geom_4_comm_test
+      call s_mesh_send_recv_test
+      call s_count_diff_geom_comm_test
 !
-      iflag = iflag_ele_file_name*iflag_surf_file_name                  &
-     &       *iflag_edge_file_name
-      if (iflag .gt. 0) then
-        call allocate_geom_4_comm_test
-        call s_mesh_send_recv_test
-        call s_count_diff_geom_comm_test
+      call allocate_diff_geom_comm_test
+      call s_set_diff_geom_comm_test
+      call deallocate_geom_4_comm_test
 !
-        call allocate_diff_geom_comm_test
-        call s_set_diff_geom_comm_test
-        call deallocate_geom_4_comm_test
-!
-        call allocate_geom_stack_ctest_IO
-        call s_count_diff_4_comm_test
-        call allocate_geom_comm_test_IO
-        call s_collect_diff_4_comm_test
-        call deallocate_diff_geom_comm_test
-      end if
+      call allocate_geom_stack_ctest_IO
+      call s_count_diff_4_comm_test
+      call allocate_geom_comm_test_IO
+      call s_collect_diff_4_comm_test
+      call deallocate_diff_geom_comm_test
 !
       call deallocate_cflag_collect_diff
 !

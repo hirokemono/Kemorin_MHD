@@ -1,9 +1,13 @@
 !sort_cube_4_rcb.f90
 !     module sort_cube_4_rcb
 !
-      module sort_cube_4_rcb
-!
 !     written by H. Matsui on Aug., 2007
+!
+!      subroutine s_sort_cube_4_rcb(numnod, num_cube, NP,               &
+!     &          iradius, itheta, iphi, xx, longitude, inod_free,       &
+!     &          num_local, IGROUP, IS1, VAL)
+!
+      module sort_cube_4_rcb
 !
       use m_precision
       use m_constants
@@ -19,10 +23,6 @@
       private :: copy_cube_position_vert_rcb
       private :: set_cube_domain_list_by_phi
       private :: set_cube_domain_list_by_z
-!
-!      subroutine s_sort_cube_4_rcb(numnod, num_cube, NP,               &
-!     &          iradius, itheta, iphi, xx, longitude, inod_free,       &
-!     &          num_local, IGROUP, IS1, VAL)
 !
 !   --------------------------------------------------------------------
 !

@@ -140,7 +140,6 @@
         istack_import_e(ip) = istack_import_e(ip-1) + num_import_e(ip)
       end do
       ntot_import_e = istack_import_e(num_neib)
-      write(*,*) 'ntot_import_e', my_rank, ntot_import_e
 !
       end subroutine count_element_import_num
 !

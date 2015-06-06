@@ -1,9 +1,16 @@
 !
 !      module const_geometry_graph
 !
-      module const_geometry_graph
-!
 !     Written by H. Matsui on Aug., 2007
+!
+!      subroutine s_const_geometry_graph
+!
+!      subroutine const_geometry_graph_linear
+!      subroutine const_geometry_graph_quad
+!
+!      subroutine const_internal_geometry_graph
+!
+      module const_geometry_graph
 !
       use m_precision
 !
@@ -15,13 +22,6 @@
       use cal_minmax_and_stacks
 !
       implicit  none
-!
-!      subroutine s_const_geometry_graph
-!
-!      subroutine const_geometry_graph_linear
-!      subroutine const_geometry_graph_quad
-!
-!      subroutine const_internal_geometry_graph
 !
 ! ----------------------------------------------------------------------
 !

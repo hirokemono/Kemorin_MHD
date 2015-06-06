@@ -4,9 +4,7 @@
 !     Written by H. Matsui on Aug., 2007
 !
 !      subroutine set_ele_domain_groups
-!      subroutine set_all_domain_groups
 !      subroutine set_origin_global_node
-!      subroutine set_origin_global_ids
 !
       module set_domain_and_org_id
 !
@@ -37,23 +35,6 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_all_domain_groups
-!
-      use m_geometry_parameter
-      use m_geometry_data
-      use m_domain_group_4_partition
-!
-!
-      call set_domain_group_4_ele(nnod_s_domin, nsurf_s_domin,          &
-     &    nnod_4_surf, ie_surf, IGROUP_nod, IGROUP_surf)
-!
-      call set_domain_group_4_ele(nnod_s_domin, nedge_s_domin,          &
-     &    nnod_4_edge, ie_edge, IGROUP_nod, IGROUP_edge)
-!
-      end subroutine set_all_domain_groups
-!
-!   --------------------------------------------------------------------
-!
       subroutine set_origin_global_node
 !
       use m_nod_comm_table
@@ -64,27 +45,6 @@
      &    item_export, item_import, id_glnode_org)
 !
       end subroutine set_origin_global_node
-!
-!------------------------------------------------------------------
-!
-      subroutine set_origin_global_ids
-!
-      use m_ele_comm_table
-      use m_surf_comm_table
-      use m_edge_comm_table
-      use m_domain_group_4_partition
-!
-!
-      call copy_node_id_4_peri_sleeve(nele_s_domin, ntot_export_ele,   &
-     &    item_export_ele, item_import_ele, id_glelem_org)
-!
-      call copy_node_id_4_peri_sleeve(nsurf_s_domin, ntot_export_surf, &
-     &    item_export_surf, item_import_surf, id_glsurf_org)
-!
-      call copy_node_id_4_peri_sleeve(nedge_s_domin, ntot_export_edge, &
-     &    item_export_edge, item_import_edge, id_gledge_org)
-!
-      end subroutine set_origin_global_ids
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

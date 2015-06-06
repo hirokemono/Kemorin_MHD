@@ -1,15 +1,15 @@
 !
 !      module set_control_data_4_part
 !
-      module set_control_data_4_part
-!
 !      Written by Kemorin on Sep. 2007
+!
+!      subroutine s_set_control_data_4_part
+!
+      module set_control_data_4_part
 !
       use m_precision
 !
       implicit    none
-!
-!      subroutine s_set_control_data_4_part
 !
 ! -----------------------------------------------------------------------
 !

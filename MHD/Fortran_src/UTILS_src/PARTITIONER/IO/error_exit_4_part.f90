@@ -1,16 +1,16 @@
 !error_exit_4_part.f90
 !      module error_exit_4_part
 !
-      module error_exit_4_part
-!
 !      Written by H. Matsui on Sep., 2007
+!
+!      subroutine ERROR_EXIT (IFLAG, nn)
+!
+      module error_exit_4_part
 !
       use m_precision
       use m_error_IDs
 !
       implicit none
-!
-!      subroutine ERROR_EXIT (IFLAG, nn)
 !
 !   --------------------------------------------------------------------
 !

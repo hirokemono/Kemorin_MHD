@@ -1,14 +1,7 @@
 !sort_by_position_4_eb3d.f90
 !     module sort_by_position_4_eb3d
 !
-      module sort_by_position_4_eb3d
-!
 !     written by H. Matsui on Aug., 2007
-!
-      use m_precision
-      use m_constants
-!
-      implicit none
 !
 !      subroutine s_sort_by_position_4_eb3d(nnod, ndiv, IGROUP,         &
 !     &          xx1, xx2, xx3, VAL, IS1)
@@ -16,6 +9,13 @@
 !     &          mat_name, ntot_node_ele_grp, inod_stack_ele_grp,       &
 !     &          inod_ele_grp, num_egrp_sel, grp_sel_name, IGROUP,      &
 !     &          xx1, xx2, xx3, VAL, IS1)
+!
+      module sort_by_position_4_eb3d
+!
+      use m_precision
+      use m_constants
+!
+      implicit none
 !
 !   --------------------------------------------------------------------
 !
