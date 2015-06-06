@@ -72,8 +72,8 @@
      &             istack_mass_l, item_mass_l, aiccg_mass(im_mass_u),   &
      &             istack_mass_u, item_mass_u, b_vec(1), x_vec(1),      &
      &             nset, nod_comm%num_neib, nod_comm%id_neib,           &
-     &             istack_import, item_import,                          &
-     &             istack_export, item_export,                          &
+     &             nod_comm%istack_import, item_import,                 &
+     &             nod_comm%istack_export, item_export,                 &
      &             itr_res, imonitor_solve,                             &
      &             method_elesize, precond_elesize,                     &
      &             INTARRAY, REALARRAY )

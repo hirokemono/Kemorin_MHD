@@ -74,15 +74,15 @@
 !
 !
       MG_comm_0%num_neib =    nod_comm%num_neib
-      MG_comm_0%ntot_import = ntot_import
-      MG_comm_0%ntot_export = ntot_export
+      MG_comm_0%ntot_import = nod_comm%ntot_import
+      MG_comm_0%ntot_export = nod_comm%ntot_export
 !
       MG_comm_0%id_neib =>       nod_comm%id_neib
       MG_comm_0%num_import =>    num_import
-      MG_comm_0%istack_import => istack_import
+      MG_comm_0%istack_import => nod_comm%istack_import
       MG_comm_0%item_import =>   item_import
       MG_comm_0%num_export =>    num_export
-      MG_comm_0%istack_export => istack_export
+      MG_comm_0%istack_export => nod_comm%istack_export
       MG_comm_0%item_export =>   item_export
 !
       end subroutine link_first_comm_to_type

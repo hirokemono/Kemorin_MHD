@@ -63,13 +63,13 @@
 !
       call solver_send_recv_i                                           &
      &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &                        istack_import, item_import,               &
-     &                        istack_export, item_export, ix_vec)
+     &    nod_comm%istack_import, item_import,               &
+     &    nod_comm%istack_export, item_export, ix_vec)
 !
       call solver_send_recv_3                                           &
      &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &                        istack_import, item_import,               &
-     &                        istack_export, item_export, x_vec)
+     &    nod_comm%istack_import, item_import,               &
+     &    nod_comm%istack_export, item_export, x_vec)
 !
       end subroutine node_send_recv_test
 !
@@ -90,7 +90,7 @@
       integer (kind = kint) :: neib, ist, inum, ied, num
       integer (kind = kint) :: k, ii, ix, nd
 !
-      allocate(irev_import( istack_import(nod_comm%num_neib) ))
+      allocate(irev_import(nod_comm%istack_import(nod_comm%num_neib)))
       allocate(xx4(NB*numnod))
 !
       do inod = 1, internal_node
@@ -111,15 +111,15 @@
 !
       call solver_send_recv_i                                           &
      &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &                        istack_import, item_import,               &
-     &                        istack_export, item_export, ix_vec)
+     &    nod_comm%istack_import, item_import,               &
+     &    nod_comm%istack_export, item_export, ix_vec)
 !
       call solver_send_recv_N                                           &
      &   (numnod, NB, nod_comm%num_neib, nod_comm%id_neib,              &
-     &                        istack_import, item_import,               &
-     &                        istack_export, item_export, xx4)
+     &    nod_comm%istack_import, item_import,               &
+     &    nod_comm%istack_export, item_export, xx4)
 !
-      do ii = 1, istack_import(nod_comm%num_neib)
+      do ii = 1, nod_comm%istack_import(nod_comm%num_neib)
         k = item_import(ii) - internal_node
         irev_import(k) = ii
       end do
@@ -140,8 +140,8 @@
       call start_eleps_time(2)
 !$omp parallel private(nd,neib,ist,ied)
       do neib= 1, nod_comm%num_neib
-        ist = istack_export(neib-1)
-        ied = istack_export(neib  )
+        ist = nod_comm%istack_export(neib-1)
+        ied = nod_comm%istack_export(neib  )
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= ist+1, ied
@@ -157,8 +157,8 @@
 
 !$omp parallel private(nd,neib,ist,ied)
       do neib= 1, nod_comm%num_neib
-        ist = istack_import(neib-1)
-        ied = istack_import(neib  )
+        ist = nod_comm%istack_import(neib-1)
+        ied = nod_comm%istack_import(neib  )
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= ist+1, ied
@@ -174,8 +174,8 @@
       call start_eleps_time(2)
 !$omp parallel private(nd,neib,ist,ied)
       do neib= 1, nod_comm%num_neib
-        ist = istack_import(neib-1)
-        ied = istack_import(neib  )
+        ist = nod_comm%istack_import(neib-1)
+        ied = nod_comm%istack_import(neib  )
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= ist+1, ied
@@ -193,8 +193,8 @@
       call start_eleps_time(4)
 !$omp parallel private(neib,ist,ied)
       do neib= 1, nod_comm%num_neib
-        ist = istack_export(neib-1)
-        ied = istack_export(neib  )
+        ist = nod_comm%istack_export(neib-1)
+        ied = nod_comm%istack_export(neib  )
 !$omp do private(k,nd,ii,ix)
         do k= ist+1, ied
           do nd = 1, NB
@@ -210,8 +210,8 @@
 
 !$omp parallel private(nd,neib,ist,ied)
       do neib= 1, nod_comm%num_neib
-        ist = istack_import(neib-1) 
-        ied = istack_import(neib  )
+        ist = nod_comm%istack_import(neib-1) 
+        ied = nod_comm%istack_import(neib  )
 !$omp do private(k,nd,ii,ix)
         do nd = 1, NB
           do k= ist+1, ied
@@ -227,8 +227,8 @@
       call start_eleps_time(4)
 !$omp parallel private(nd,neib,ist,ied)
       do neib= 1, nod_comm%num_neib
-        ist = istack_import(neib-1)
-        ied = istack_import(neib  )
+        ist = nod_comm%istack_import(neib-1)
+        ied = nod_comm%istack_import(neib  )
 !$omp do private(k,ii,ix)
         do nd = 1, NB
           do k= ist+1, ied
@@ -248,8 +248,9 @@
       call start_eleps_time(6)
 !$omp parallel private(neib,nd,ist,num)
       do neib= 1, nod_comm%num_neib
-        ist = istack_export(neib-1)
-        num = istack_export(neib  ) - istack_export(neib-1)
+        ist = nod_comm%istack_export(neib-1)
+        num = nod_comm%istack_export(neib  )                            &
+     &       - nod_comm%istack_export(neib-1)
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= 1, num
@@ -265,8 +266,9 @@
 
 !$omp parallel private(nd,neib,ist,num)
       do neib= 1, nod_comm%num_neib
-        ist = istack_import(neib-1)
-        num = istack_import(neib  ) - istack_import(neib-1)
+        ist = nod_comm%istack_import(neib-1)
+        num = nod_comm%istack_import(neib  )                            &
+     &       - nod_comm%istack_import(neib-1)
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= 1, num
@@ -282,8 +284,9 @@
       call start_eleps_time(6)
 !$omp parallel private(nd,neib,ist,num)
       do neib= 1, nod_comm%num_neib
-        ist = istack_import(neib-1)
-        num = istack_import(neib  ) - istack_import(neib-1)
+        ist = nod_comm%istack_import(neib-1)
+        num = nod_comm%istack_import(neib  )                            &
+     &       - nod_comm%istack_import(neib-1)
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= 1, num
@@ -302,8 +305,9 @@
       call start_eleps_time(8)
 !$omp parallel private(neib,ist,num)
       do neib= 1, nod_comm%num_neib
-        ist = istack_export(neib-1)
-        num = istack_export(neib  ) - istack_export(neib-1)
+        ist = nod_comm%istack_export(neib-1)
+        num = nod_comm%istack_export(neib  )                            &
+     &       - nod_comm%istack_export(neib-1)
 !$omp do private(k,nd,ii,ix)
         do inum = 1, NB*num
           k = mod(inum-ione,num) + ione
@@ -319,8 +323,9 @@
 
 !$omp parallel private(nd,neib,ist,num,inum)
       do neib= 1, nod_comm%num_neib
-        ist = istack_import(neib-1)
-        num = istack_import(neib  ) - istack_import(neib-1)
+        ist = nod_comm%istack_import(neib-1)
+        num = nod_comm%istack_import(neib  )                            &
+     &       - nod_comm%istack_import(neib-1)
 !$omp do private(inum,k,ii,ix)
         do inum = 1, NB*num
           nd = mod(inum-ione,NB) + ione
@@ -337,8 +342,9 @@
       call start_eleps_time(8)
 !$omp parallel private(nd,neib,ist,num,inum)
       do neib= 1, nod_comm%num_neib
-        ist = istack_import(neib-1)
-        num = istack_import(neib  ) - istack_import(neib-1)
+        ist = nod_comm%istack_import(neib-1)
+        num = nod_comm%istack_import(neib  )                            &
+     &       - nod_comm%istack_import(neib-1)
 !$omp do private(k,ii,ix)
         do inum = 1, NB*num
           nd = mod(inum-ione,NB) + ione

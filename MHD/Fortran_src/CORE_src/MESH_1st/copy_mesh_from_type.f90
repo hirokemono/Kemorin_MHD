@@ -290,29 +290,29 @@
       if(new_comm%num_neib .ne. nod_comm%num_neib)                      &
      &    write(*,*) 'num_neib', my_rank,                               &
      &            new_comm%num_neib, nod_comm%num_neib
-      if(new_comm%ntot_export .ne. ntot_export)                         &
+      if(new_comm%ntot_export .ne. nod_comm%ntot_export)                &
      &      write(*,*) 'ntot_export',                                   &
-     &      my_rank, new_comm%ntot_export, ntot_export
-      if(new_comm%ntot_import .ne. ntot_import)                         &
+     &      my_rank, new_comm%ntot_export, nod_comm%ntot_export
+      if(new_comm%ntot_import .ne. nod_comm%ntot_import)                &
      &      write(*,*) 'ntot_import',                                   &
-     &      my_rank, new_comm%ntot_import, ntot_import
+     &      my_rank, new_comm%ntot_import, nod_comm%ntot_import
       do i = 1, nod_comm%num_neib
         if(new_comm%id_neib(i) .ne. nod_comm%id_neib(i))                &
      &       write(*,*) 'id_neib(i)', my_rank, i,                       &
      &       new_comm%id_neib(i), nod_comm%id_neib(i)
-        if(new_comm%istack_import(i) .ne. istack_import(i))             &
+        if(new_comm%istack_import(i) .ne. nod_comm%istack_import(i))    &
      &       write(*,*) 'istack_import(i)', my_rank, i,                 &
-     &       new_comm%istack_import(i), istack_import(i)
-        if(new_comm%istack_export(i) .ne. istack_export(i))             &
+     &       new_comm%istack_import(i), nod_comm%istack_import(i)
+        if(new_comm%istack_export(i) .ne. nod_comm%istack_export(i))    &
      &       write(*,*) 'istack_export(i)', my_rank, i,                 &
-     &       new_comm%istack_export(i), istack_export(i)
+     &       new_comm%istack_export(i), nod_comm%istack_export(i)
       end do
-      do i = 1, ntot_export
+      do i = 1, nod_comm%ntot_export
         if(new_comm%item_export(i) .ne. item_export(i))                 &
      &       write(*,*) 'item_export(i)', my_rank, i,                   &
      &       new_comm%item_export(i), item_export(i)
       end do
-      do i = 1, ntot_import
+      do i = 1, nod_comm%ntot_import
         if(new_comm%item_import(i) .ne. item_import(i))                 &
      &       write(*,*) 'item_import(i)', my_rank, i,                   &
      &       new_comm%item_import(i), item_import(i)

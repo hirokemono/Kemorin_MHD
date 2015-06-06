@@ -154,19 +154,19 @@
         call allocate_nod_import_num
         call allocate_nod_export_num
 
-        read (id_file,*) istack_import(1:nod_comm%num_neib)
-        read (id_file,*) istack_export(1:nod_comm%num_neib)
+        read (id_file,*) nod_comm%istack_import(1:nod_comm%num_neib)
+        read (id_file,*) nod_comm%istack_export(1:nod_comm%num_neib)
 
-        ntot_import= istack_import(nod_comm%num_neib)
-        ntot_export= istack_export(nod_comm%num_neib)
+        nod_comm%ntot_import= nod_comm%istack_import(nod_comm%num_neib)
+        nod_comm%ntot_export= nod_comm%istack_export(nod_comm%num_neib)
 
         call allocate_nod_import_item
         call allocate_nod_export_item
-        read (id_file,*) item_import(1:ntot_import)
-        read (id_file,*) item_export(1:ntot_export)
+        read (id_file,*) item_import(1:nod_comm%ntot_import)
+        read (id_file,*) item_export(1:nod_comm%ntot_export)
       else
-        ntot_import= 0
-        ntot_export= 0
+        nod_comm%ntot_import= 0
+        nod_comm%ntot_export= 0
       endif
 !
       end subroutine read_communication_data

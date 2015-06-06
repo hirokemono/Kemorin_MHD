@@ -29,15 +29,15 @@
       type(communication_table), intent(inout) :: new_comm
 !
       new_comm%num_neib =    nod_comm%num_neib
-      new_comm%ntot_import = ntot_import
-      new_comm%ntot_export = ntot_export
+      new_comm%ntot_import = nod_comm%ntot_import
+      new_comm%ntot_export = nod_comm%ntot_export
 !
       new_comm%id_neib =>        nod_comm%id_neib
       new_comm%num_import =>     num_import
-      new_comm%istack_import =>  istack_import
+      new_comm%istack_import =>  nod_comm%istack_import
       new_comm%item_import =>    item_import
       new_comm%num_export =>     num_export
-      new_comm%istack_export =>  istack_export
+      new_comm%istack_export =>  nod_comm%istack_export
       new_comm%item_export =>    item_export
 !
       end subroutine set_nod_comm_tbl_2_type

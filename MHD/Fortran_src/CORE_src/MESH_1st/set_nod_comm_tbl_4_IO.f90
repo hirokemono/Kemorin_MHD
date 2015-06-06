@@ -37,15 +37,17 @@
       call allocate_nod_export_num
 !
       call copy_num_communication(nod_comm%num_neib, nod_comm%id_neib,  &
-     &    istack_import, istack_export, ntot_import, ntot_export,       &
+     &    nod_comm%istack_import, nod_comm%istack_export,               &
+     &    nod_comm%ntot_import, nod_comm%ntot_export,                   &
      &    id_neib_domain_IO, istack_import_IO, istack_export_IO)
       call copy_num_import_export(nod_comm%num_neib, num_import, num_export,     &
-     &    istack_import, istack_export)
+     &    nod_comm%istack_import, nod_comm%istack_export)
 !
       call allocate_nod_import_item
       call allocate_nod_export_item
 !
-      call copy_communication_item(ntot_import, ntot_export,            &
+      call copy_communication_item                                     &
+     &   (nod_comm%ntot_import, nod_comm%ntot_export,                  &
      &    item_import, item_export, item_import_IO, item_export_IO)
 !
       call deallocate_comm_item_IO
@@ -67,7 +69,7 @@
       call copy_num_communication(num_neib_domain_IO,                   &
      &    id_neib_domain_IO, istack_import_IO, istack_export_IO,        &
      &    ntot_import_IO, ntot_export_IO, nod_comm%id_neib,             &
-     &    istack_import, istack_export)
+     &    nod_comm%istack_import, nod_comm%istack_export)
 !
       call allocate_comm_item_IO
 !

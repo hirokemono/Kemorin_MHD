@@ -34,9 +34,11 @@
 !
 !
       call resize_work_4_SR(n_sym_tensor, nod_comm%num_neib,            &
-     &    ntot_export, ntot_import)
-      call resize_iwork_4_SR(nod_comm%num_neib, ntot_export, ntot_import)
-      call resize_i8work_4_SR(nod_comm%num_neib, ntot_export, ntot_import)
+     &    nod_comm%ntot_export, nod_comm%ntot_import)
+      call resize_iwork_4_SR(nod_comm%num_neib, nod_comm%ntot_export,   &
+     &    nod_comm%ntot_import)
+      call resize_i8work_4_SR(nod_comm%num_neib, nod_comm%ntot_export,  &
+     &    nod_comm%ntot_import)
 !
       end subroutine init_send_recv
 !
@@ -62,8 +64,8 @@
       START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &                      istack_import, item_import,                 &
-     &                      istack_export, item_export, x_vec(1) )
+     &            nod_comm%istack_import, item_import,                 &
+     &            nod_comm%istack_export, item_export, x_vec(1) )
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
@@ -97,8 +99,8 @@
       START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
      &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &                        istack_import, item_import,               &
-     &                        istack_export, item_export,               &
+     &            nod_comm%istack_import, item_import,               &
+     &            nod_comm%istack_export, item_export,               &
      &                        x_vec(1) )
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
@@ -138,8 +140,8 @@
       START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_6                                           &
      &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &                        istack_import, item_import,               &
-     &                        istack_export, item_export, x_vec(1) )
+     &            nod_comm%istack_import, item_import,               &
+     &            nod_comm%istack_export, item_export, x_vec(1) )
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do

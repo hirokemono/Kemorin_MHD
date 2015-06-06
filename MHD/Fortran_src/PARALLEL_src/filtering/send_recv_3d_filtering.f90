@@ -36,8 +36,8 @@
 !
       START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV(nnod, nod_comm%num_neib, nod_comm%id_neib,  &
-     &                      istack_import, item_import,                 &
-     &                      istack_export, item_export, x_vec(1) )
+     &                      nod_comm%istack_import, item_import,                 &
+     &                      nod_comm%istack_export, item_export, x_vec(1) )
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
@@ -65,8 +65,8 @@
       START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
      &   (nnod, nod_comm%num_neib, nod_comm%id_neib,                    &
-     &                         istack_import, item_import,              &
-     &                         istack_export, item_export, x_vec(1) )
+     &                         nod_comm%istack_import, item_import,              &
+     &                         nod_comm%istack_export, item_export, x_vec(1) )
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
@@ -96,8 +96,9 @@
       START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_6                                           &
      &   (nnod, nod_comm%num_neib, nod_comm%id_neib,                    &
-     &       istack_import, item_import, istack_export, item_export,    &
-     &       x_vec(1) )
+     &          nod_comm%istack_import, item_import,                    &
+     &          nod_comm%istack_export, item_export,    &
+     &    x_vec(1) )
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do

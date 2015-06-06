@@ -108,8 +108,8 @@
      &     aiccg(im_l), aiccg(im_u),                                    &
      &     ALUG_L, ALUG_U, eps, itr, ierr,                              &
      &     nod_comm%num_neib, nod_comm%id_neib,                         &
-     &     istack_import, item_import,                                  &
-     &     istack_export, NOD_EXPORT_NEW,                               &
+     &     nod_comm%istack_import, item_import,                                  &
+     &     nod_comm%istack_export, NOD_EXPORT_NEW,                      &
      &     method_4_solver, precond_4_solver, itr_res)
 
       call copy_solution_2_crs_nn

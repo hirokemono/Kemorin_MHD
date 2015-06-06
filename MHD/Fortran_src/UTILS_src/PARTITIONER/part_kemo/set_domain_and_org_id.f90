@@ -41,7 +41,8 @@
       use m_domain_group_4_partition
 !
 !
-      call copy_node_id_4_peri_sleeve(nnod_s_domin, ntot_export,        &
+      call copy_node_id_4_peri_sleeve                                   &
+     &   (nnod_s_domin, nod_comm%ntot_export,                           &
      &    item_export, item_import, id_glnode_org)
 !
       end subroutine set_origin_global_node

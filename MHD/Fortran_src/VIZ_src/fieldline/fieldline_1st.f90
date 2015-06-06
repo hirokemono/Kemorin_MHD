@@ -95,8 +95,10 @@
      &       x_surf, vnorm_surf, area_surf, interior_surf,              &
      &       num_mat, num_mat_bc, mat_istack,  mat_item,                &
      &       ntot_ele_4_node, iele_stack_4_node, iele_4_node,           &
-     &       nod_comm%num_neib, ntot_import, ntot_export, nod_comm%id_neib,               &
-     &       istack_import, istack_export, item_import, item_export,    &
+     &       nod_comm%num_neib, nod_comm%ntot_import,                   &
+     &       nod_comm%ntot_export, nod_comm%id_neib,                    &
+     &       nod_comm%istack_import, nod_comm%istack_export,            &
+     &       item_import, item_export,    &
      &       num_nod_phys, num_tot_nod_phys, istack_nod_component,      &
      &       d_nod)
 !

@@ -58,9 +58,9 @@
         call set_liner_grids
       end if
 !
-      nod_comm%num_neib = 0
-      ntot_import = 0
-      ntot_export = 0
+      nod_comm%num_neib =    0
+      nod_comm%ntot_import = 0
+      nod_comm%ntot_export = 0
       call allocate_neib_id
       call allocate_nod_import_num
       call allocate_nod_export_num
