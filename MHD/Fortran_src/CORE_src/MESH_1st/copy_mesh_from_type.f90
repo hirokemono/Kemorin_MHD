@@ -287,15 +287,16 @@
       integer(kind = kint) :: i
 !
 !
-      if(new_comm%num_neib .ne. num_neib) write(*,*) 'num_neib',        &
-     &      my_rank, new_comm%num_neib, num_neib
+      if(new_comm%num_neib .ne. nod_comm%num_neib)                      &
+     &    write(*,*) 'num_neib', my_rank,                               &
+     &            new_comm%num_neib, nod_comm%num_neib
       if(new_comm%ntot_export .ne. ntot_export)                         &
      &      write(*,*) 'ntot_export',                                   &
      &      my_rank, new_comm%ntot_export, ntot_export
       if(new_comm%ntot_import .ne. ntot_import)                         &
      &      write(*,*) 'ntot_import',                                   &
      &      my_rank, new_comm%ntot_import, ntot_import
-      do i = 1, num_neib
+      do i = 1, nod_comm%num_neib
         if(new_comm%id_neib(i) .ne. id_neib(i))                         &
      &       write(*,*) 'id_neib(i)', my_rank, i,                       &
      &       new_comm%id_neib(i), id_neib(i)

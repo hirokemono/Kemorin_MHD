@@ -59,7 +59,7 @@
 !
       call allocate_merged_ucd_data(numnod, ucd%ntot_comp)
       call set_node_double_address                                      &
-     &         (num_neib, id_neib, istack_import, item_import,          &
+     &         (nod_comm%num_neib, id_neib, istack_import, item_import,          &
      &          istack_export, item_export)
 !
       call update_ele_by_double_address(m_ucd, ucd)

@@ -30,16 +30,16 @@
       subroutine copy_node_comm_tbl_from_IO
 !
 !
-      num_neib = num_neib_domain_IO
+      nod_comm%num_neib = num_neib_domain_IO
 !
       call allocate_neib_id
       call allocate_nod_import_num
       call allocate_nod_export_num
 !
-      call copy_num_communication(num_neib, id_neib,                    &
+      call copy_num_communication(nod_comm%num_neib, id_neib,      &
      &    istack_import, istack_export, ntot_import, ntot_export,       &
      &    id_neib_domain_IO, istack_import_IO, istack_export_IO)
-      call copy_num_import_export(num_neib, num_import, num_export,     &
+      call copy_num_import_export(nod_comm%num_neib, num_import, num_export,     &
      &    istack_import, istack_export)
 !
       call allocate_nod_import_item
@@ -60,7 +60,7 @@
 !
 !
       my_rank_IO = my_rank
-      num_neib_domain_IO = num_neib
+      num_neib_domain_IO = nod_comm%num_neib
 !
       call allocate_neib_comm_stack_IO
 !

@@ -50,9 +50,10 @@
         STARTTIME= MPI_WTIME()
  
         ierr = 1
-        if (num_neib .gt. 0) then
-          call resize_work_4_SR(ione, num_neib,                        &
-     &        istack_export(num_neib), istack_import(num_neib) )
+        if (nod_comm%num_neib .gt. 0) then
+          call resize_work_4_SR(ione, nod_comm%num_neib,                &
+     &        istack_export(nod_comm%num_neib),     &
+     &        istack_import(nod_comm%num_neib) )
         end if
 
         call precond_DJDS11                                             &
@@ -73,7 +74,7 @@
      &     NEWtoOLD_DJDS_U, LtoU, aiccg(im_d), b_djds, x_djds,          &
      &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
      &     aiccg(im_l), aiccg(im_u),                                    &
-     &     ALUG_L, ALUG_U, eps, itr, ierr, num_neib, id_neib,           &
+     &     ALUG_L, ALUG_U, eps, itr, ierr, nod_comm%num_neib, id_neib,           &
      &     istack_import, item_import,                                  &
      &     istack_export, NOD_EXPORT_NEW,                               &
      &     method_4_solver, precond_4_solver, itr_res)

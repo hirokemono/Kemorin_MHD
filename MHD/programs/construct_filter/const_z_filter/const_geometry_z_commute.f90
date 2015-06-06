@@ -58,7 +58,7 @@
         call set_liner_grids
       end if
 !
-      num_neib = 0
+      nod_comm%num_neib = 0
       ntot_import = 0
       ntot_export = 0
       call allocate_neib_id
@@ -76,7 +76,7 @@
       internal_node = totalnod
       numnod = internal_node
       totalele = internal_node - 1
-!      num_neib = 2
+!      nod_comm%num_neib = 2
 !
       nmat_ele = totalele*nfilter2_1
       nmat_nod = internal_node*nfilter2_3

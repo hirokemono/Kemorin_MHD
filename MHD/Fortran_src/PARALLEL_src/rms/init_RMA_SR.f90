@@ -27,8 +27,8 @@
       integer(kind = kint), parameter :: isix = 6
 !
 !
-      call init_work_4_SR( num_neib, id_neib,  istack_import)
-      call init_window_4_SR(isix, num_neib, istack_import)
+      call init_work_4_SR( nod_comm%num_neib, id_neib,  istack_import)
+      call init_window_4_SR(isix, nod_comm%num_neib, istack_import)
 !
       end subroutine init_RMA_SendRecv
 !

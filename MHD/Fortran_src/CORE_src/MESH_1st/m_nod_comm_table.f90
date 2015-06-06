@@ -24,12 +24,15 @@
       module m_nod_comm_table
 !
       use m_precision
+      use t_comm_table
 !
       implicit  none
 !
+!> data structure for node communication table
+      type(communication_table), save :: nod_comm
 !
 !>     number of neighboring domain
-      integer(kind = kint) :: num_neib
+!      integer(kind = kint) :: num_neib
 !>     neighboring pe id
       integer(kind = kint), allocatable, target :: id_neib(:)
 !
@@ -61,8 +64,8 @@
 !
       subroutine allocate_neib_id
 !
-      allocate(id_neib(num_neib))
-      if (num_neib .gt. 0) id_neib = -1
+      allocate(id_neib(nod_comm%num_neib))
+      if (nod_comm%num_neib .gt. 0) id_neib = -1
 !
       end subroutine allocate_neib_id
 !
@@ -71,10 +74,10 @@
 !
       subroutine allocate_nod_import_num
 !
-      allocate(num_import(num_neib))
-      allocate(istack_import(0:num_neib))
+      allocate(num_import(nod_comm%num_neib))
+      allocate(istack_import(0:nod_comm%num_neib))
 !
-      if (num_neib .gt. 0) num_import = 0
+      if (nod_comm%num_neib .gt. 0) num_import = 0
       istack_import = 0
 !
       end subroutine allocate_nod_import_num
@@ -83,10 +86,10 @@
 !
       subroutine allocate_nod_export_num
 !
-      allocate(num_export(num_neib))
-      allocate(istack_export(0:num_neib))
+      allocate(num_export(nod_comm%num_neib))
+      allocate(istack_export(0:nod_comm%num_neib))
 !
-      if (num_neib .gt. 0) num_export = 0
+      if (nod_comm%num_neib .gt. 0) num_export = 0
       istack_export = 0
 !
       end subroutine allocate_nod_export_num
@@ -95,7 +98,7 @@
 !
       subroutine allocate_nod_import_item
 !
-      ntot_import = istack_import(num_neib)
+      ntot_import = istack_import(nod_comm%num_neib)
       allocate(item_import(ntot_import))
 !
       if (ntot_import .gt. 0) item_import = 0
@@ -106,7 +109,7 @@
 !
       subroutine allocate_nod_export_item
 !
-      ntot_export = istack_export(num_neib)
+      ntot_export = istack_export(nod_comm%num_neib)
       allocate(item_export(ntot_export))
 !
       if (ntot_export .gt. 0) item_export = 0

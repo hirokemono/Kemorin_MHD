@@ -18,7 +18,6 @@
 !
       use calypso_mpi
       use m_geometry_parameter
-      use m_nod_comm_table
       use m_node_phys_data
 !
       implicit none

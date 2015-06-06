@@ -28,7 +28,7 @@
 !
       type(communication_table), intent(inout) :: new_comm
 !
-      new_comm%num_neib =    num_neib
+      new_comm%num_neib =    nod_comm%num_neib
       new_comm%ntot_import = ntot_import
       new_comm%ntot_export = ntot_export
 !

@@ -44,7 +44,7 @@
       use m_nod_comm_table
 !
 !
-      num_neib_filter = num_neib
+      num_neib_filter = nod_comm%num_neib
       ntot_import_filter = ntot_import
       ntot_export_filter = ntot_export
 !
@@ -54,12 +54,12 @@
       call allocate_filter_import_item
       call allocate_filter_export_item
 !
-      if (num_neib .gt. 0) then
-        id_neib_filter(1:num_neib) =        id_neib(1:num_neib)
-        num_import_filter(1:num_neib) =     num_import(1:num_neib)
-        istack_import_filter(0:num_neib) =  istack_import(0:num_neib)
-        num_export_filter(1:num_neib) =     num_export(1:num_neib)
-        istack_export_filter(0:num_neib) =  istack_export(0:num_neib)
+      if (nod_comm%num_neib .gt. 0) then
+        id_neib_filter(1:nod_comm%num_neib) =        id_neib(1:nod_comm%num_neib)
+        num_import_filter(1:nod_comm%num_neib) =     num_import(1:nod_comm%num_neib)
+        istack_import_filter(0:nod_comm%num_neib) =  istack_import(0:nod_comm%num_neib)
+        num_export_filter(1:nod_comm%num_neib) =     num_export(1:nod_comm%num_neib)
+        istack_export_filter(0:nod_comm%num_neib) =  istack_export(0:nod_comm%num_neib)
       end if
       if (ntot_import .gt. 0) then
         item_import_filter(1:ntot_import) = item_import(1:ntot_import)

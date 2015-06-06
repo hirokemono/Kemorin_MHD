@@ -73,7 +73,7 @@
       type(communication_table), intent(inout) :: MG_comm_0
 !
 !
-      MG_comm_0%num_neib =    num_neib
+      MG_comm_0%num_neib =    nod_comm%num_neib
       MG_comm_0%ntot_import = ntot_import
       MG_comm_0%ntot_export = ntot_export
 !

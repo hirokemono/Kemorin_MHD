@@ -32,17 +32,17 @@
       type(communication_table), intent(in) :: org_comm
 !
 !
-      num_neib = org_comm%num_neib
+      nod_comm%num_neib = org_comm%num_neib
 !
       call allocate_neib_id
       call allocate_nod_import_num
       call allocate_nod_export_num
 !
-      call copy_num_communication(num_neib, id_neib,                    &
+      call copy_num_communication(nod_comm%num_neib, id_neib,                    &
      &    istack_import, istack_export, ntot_import, ntot_export,       &
      &    org_comm%id_neib, org_comm%istack_import,                     &
      &    org_comm%istack_export)
-      call copy_num_import_export(num_neib, num_import, num_export,     &
+      call copy_num_import_export(nod_comm%num_neib, num_import, num_export,     &
      &    istack_import, istack_export)
 !
       call allocate_nod_import_item
@@ -61,7 +61,7 @@
       type(communication_table), intent(inout) :: new_comm
 !
 !
-      new_comm%num_neib = num_neib
+      new_comm%num_neib = nod_comm%num_neib
 !
       call allocate_type_comm_tbl_num(new_comm)
 !
@@ -89,16 +89,16 @@
       type(communication_table), intent(in) :: org_comm
 !
 !
-      num_neib = org_comm%num_neib
+      nod_comm%num_neib = org_comm%num_neib
 !
       call allocate_neib_id
       call allocate_nod_import_num
       call allocate_nod_export_num
 !
-      call copy_num_import(num_neib, id_neib,                           &
+      call copy_num_import(nod_comm%num_neib, id_neib,                           &
      &    istack_import, istack_export, ntot_import, ntot_export,       &
      &    org_comm%id_neib, org_comm%istack_import)
-      call copy_num_import_export(num_neib, num_import, num_export,     &
+      call copy_num_import_export(nod_comm%num_neib, num_import, num_export,     &
      &    istack_import, istack_export)
 !
       call allocate_nod_import_item
@@ -117,7 +117,7 @@
       type(communication_table), intent(inout) :: new_comm
 !
 !
-      new_comm%num_neib = num_neib
+      new_comm%num_neib = nod_comm%num_neib
 !
       call allocate_type_comm_tbl_num(new_comm)
 !

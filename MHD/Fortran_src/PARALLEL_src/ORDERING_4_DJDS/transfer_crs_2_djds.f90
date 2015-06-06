@@ -56,8 +56,8 @@
 !C +--------------------------------------+
 !C===
 !C
-      call allocate_new_comm_table(istack_export(num_neib))
-      call set_new_comm_table(numnod, OLDtoNEW, num_neib,               &
+      call allocate_new_comm_table(istack_export(nod_comm%num_neib))
+      call set_new_comm_table(numnod, OLDtoNEW, nod_comm%num_neib,      &
      &    istack_export, item_export, NOD_EXPORT_NEW)
 !
 !C +-------------+
@@ -104,7 +104,7 @@
        call allocate_new_comm_table(ntot_export)
 !
        if (iflag_debug.eq.1) write(*,*) 'set_new_comm_table'
-       call set_new_comm_table(numnod, OLDtoNEW, num_neib,              &
+       call set_new_comm_table(numnod, OLDtoNEW, nod_comm%num_neib,     &
                 istack_export, item_export, NOD_EXPORT_NEW)
 !
       end subroutine set_new_comm_table_entire

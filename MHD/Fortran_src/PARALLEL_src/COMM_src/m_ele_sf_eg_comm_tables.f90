@@ -257,12 +257,12 @@
       type(communication_table), intent(inout) :: e_comm
 !
 !
-      e_comm%num_neib = num_neib
+      e_comm%num_neib = nod_comm%num_neib
       call allocate_type_neib_id(e_comm)
       call allocate_type_import_num(e_comm)
 !
       call count_element_import_num(numnod, host%istack_4_node,         &
-     &    num_neib, id_neib, istack_import, item_import,                &
+     &    nod_comm%num_neib, id_neib, istack_import, item_import,       &
      &    e_comm%num_neib, e_comm%id_neib, e_comm%num_import,           &
      &    e_comm%istack_import, e_comm%ntot_import)
 !
@@ -272,7 +272,7 @@
 !
       call set_element_import_item(numnod, numele,                      &
      &    inod_global, x_ele, host%istack_4_node, host%iele_4_node,     &
-     &    num_neib, istack_import, item_import,                         &
+     &    nod_comm%num_neib, istack_import, item_import,                &
      &    e_comm%num_neib, e_comm%istack_import, e_comm%item_import)
 !
       call allocate_type_export_num(e_comm)
@@ -289,7 +289,8 @@
 !
       call set_eleent_export_item(numnod, numele, inod_global,          &
      &    internal_flag, x_ele, neib_e%istack_4_node,                   &
-     &    neib_e%iele_4_node, num_neib, istack_export, item_export,     &
+     &    neib_e%iele_4_node, nod_comm%num_neib,                        &
+     &    istack_export, item_export,     &
      &    e_comm%num_neib, e_comm%istack_export, e_comm%item_export)
 !
       call deallocate_element_rev_list

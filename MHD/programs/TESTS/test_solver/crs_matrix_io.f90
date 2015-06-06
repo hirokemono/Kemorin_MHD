@@ -81,7 +81,7 @@
       use m_nod_comm_table
 !
        read (id_file,'(10i16)') internal_node, numnod,                  &
-     &     ntot_crs_l, ntot_crs_u, NB_crs, num_neib
+     &     ntot_crs_l, ntot_crs_u, NB_crs, nod_comm%num_neib
 
 !
        end subroutine read_size_of_crs_matrix
@@ -149,16 +149,16 @@
       call allocate_neib_id
 !
       if (nprocs .ne. 1) then
-        read (id_file,*) id_neib(1:num_neib)
+        read (id_file,*) id_neib(1:nod_comm%num_neib)
 
         call allocate_nod_import_num
         call allocate_nod_export_num
 
-        read (id_file,*) istack_import(1:num_neib)
-        read (id_file,*) istack_export(1:num_neib)
+        read (id_file,*) istack_import(1:nod_comm%num_neib)
+        read (id_file,*) istack_export(1:nod_comm%num_neib)
 
-        ntot_import= istack_import(num_neib)
-        ntot_export= istack_export(num_neib)
+        ntot_import= istack_import(nod_comm%num_neib)
+        ntot_export= istack_export(nod_comm%num_neib)
 
         call allocate_nod_import_item
         call allocate_nod_export_item

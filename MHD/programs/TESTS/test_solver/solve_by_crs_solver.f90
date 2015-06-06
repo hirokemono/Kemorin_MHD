@@ -45,7 +45,7 @@
      &                  (internal_node, numnod, ntot_crs_l, ntot_crs_u, &
      &                   D_crs, AL_crs, istack_crs_l, item_crs_l,       &
      &                   AU_crs, istack_crs_u, item_crs_u, B_crs,       &
-     &                   X_crs, PRESET_crs, num_neib,                   &
+     &                   X_crs, PRESET_crs, nod_comm%num_neib,          &
      &                   id_neib, istack_import, item_import,           &
      &                   istack_export, item_export,                    &
      &                   ITERactual, ierr, METHOD_crs, PRECOND_crs,     &
@@ -70,7 +70,7 @@
      &                  (internal_node, numnod, ntot_crs_l, ntot_crs_u, &
      &                   D_crs, AL_crs, istack_crs_l, item_crs_l,       &
      &                   AU_crs, istack_crs_u, item_crs_u, B_crs,       &
-     &                   X_crs, PRESET_crs, num_neib,                   &
+     &                   X_crs, PRESET_crs, nod_comm%num_neib,          &
      &                   id_neib, istack_import, item_import,           &
      &                   istack_export, item_export,                    &
      &                   ITERactual, ierr, METHOD_crs, PRECOND_crs,     &
@@ -97,7 +97,7 @@
      &                   istack_crs_l, item_crs_l, AU_crs,              &
      &                   istack_crs_u, item_crs_u,                      &
      &                   B_crs, X_crs,  PRESET_crs,                     &
-     &                   num_neib, id_neib,                             &
+     &                   nod_comm%num_neib, id_neib,                             &
      &                   istack_import, item_import,                    &
      &                   istack_export, item_export,                    &
      &                   ITERactual, ierr, METHOD_crs, PRECOND_crs,     &
