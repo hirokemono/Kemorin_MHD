@@ -76,9 +76,9 @@
 !
       subroutine set_geometry_data_from_type(mesh)
 !
+      use m_nod_comm_table
       use m_geometry_data
       use t_mesh_data
-      use copy_nod_comm_tbl_4_type
 !
       type(mesh_geometry),    intent(inout) :: mesh
 !

@@ -35,6 +35,7 @@
       subroutine initialize_udt_correlate
 !
       use m_array_for_send_recv
+      use m_nod_comm_table
       use m_geometry_parameter
       use m_node_phys_address
       use m_ele_sf_eg_comm_tables
@@ -44,7 +45,6 @@
       use nodal_vector_send_recv
 !
       use m_2nd_pallalel_vector
-      use copy_nod_comm_tbl_4_type
       use link_data_type_to_1st_mesh
       use link_group_type_2_1st_mesh
       use const_ele_layering_table

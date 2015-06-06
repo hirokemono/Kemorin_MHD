@@ -1,1 +1,0 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/MESH_1st/copy_nod_comm_tbl_4_type.f90

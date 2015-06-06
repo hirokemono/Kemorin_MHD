@@ -1,5 +1,5 @@
-!>@file   set_comm_tbl_type_4_IO.f90
-!!@brief  module set_comm_tbl_type_4_IO
+!>@file   set_comm_table_4_IO.f90
+!!@brief  module set_comm_table_4_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in Nov., 2008
@@ -13,7 +13,7 @@
 !!        type(communication_table), intent(in) :: comm_tbls
 !!@endverbatim
 !
-      module set_comm_tbl_type_4_IO
+      module set_comm_table_4_IO
 !
       use m_precision
 !
@@ -86,4 +86,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module set_comm_tbl_type_4_IO
+      end module set_comm_table_4_IO

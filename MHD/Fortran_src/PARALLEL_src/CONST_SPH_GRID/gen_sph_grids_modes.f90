@@ -110,7 +110,7 @@
 !
       use m_node_id_spherical_IO
       use m_read_mesh_data
-      use set_comm_tbl_type_4_IO
+      use set_comm_table_4_IO
       use set_node_types_4_IO
       use set_element_types_4_IO
       use set_group_types_4_IO
