@@ -297,9 +297,9 @@
      &      write(*,*) 'ntot_import',                                   &
      &      my_rank, new_comm%ntot_import, ntot_import
       do i = 1, nod_comm%num_neib
-        if(new_comm%id_neib(i) .ne. id_neib(i))                         &
+        if(new_comm%id_neib(i) .ne. nod_comm%id_neib(i))                &
      &       write(*,*) 'id_neib(i)', my_rank, i,                       &
-     &       new_comm%id_neib(i), id_neib(i)
+     &       new_comm%id_neib(i), nod_comm%id_neib(i)
         if(new_comm%istack_import(i) .ne. istack_import(i))             &
      &       write(*,*) 'istack_import(i)', my_rank, i,                 &
      &       new_comm%istack_import(i), istack_import(i)

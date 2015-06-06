@@ -149,7 +149,7 @@
       call allocate_neib_id
 !
       if (nprocs .ne. 1) then
-        read (id_file,*) id_neib(1:nod_comm%num_neib)
+        read (id_file,*) nod_comm%id_neib(1:nod_comm%num_neib)
 
         call allocate_nod_import_num
         call allocate_nod_export_num

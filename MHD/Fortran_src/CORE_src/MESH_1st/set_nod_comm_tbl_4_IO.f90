@@ -36,7 +36,7 @@
       call allocate_nod_import_num
       call allocate_nod_export_num
 !
-      call copy_num_communication(nod_comm%num_neib, id_neib,      &
+      call copy_num_communication(nod_comm%num_neib, nod_comm%id_neib,  &
      &    istack_import, istack_export, ntot_import, ntot_export,       &
      &    id_neib_domain_IO, istack_import_IO, istack_export_IO)
       call copy_num_import_export(nod_comm%num_neib, num_import, num_export,     &
@@ -66,7 +66,7 @@
 !
       call copy_num_communication(num_neib_domain_IO,                   &
      &    id_neib_domain_IO, istack_import_IO, istack_export_IO,        &
-     &    ntot_import_IO, ntot_export_IO, id_neib,                      &
+     &    ntot_import_IO, ntot_export_IO, nod_comm%id_neib,             &
      &    istack_import, istack_export)
 !
       call allocate_comm_item_IO

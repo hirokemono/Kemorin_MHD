@@ -38,7 +38,7 @@
       call allocate_nod_import_num
       call allocate_nod_export_num
 !
-      call copy_num_communication(nod_comm%num_neib, id_neib,                    &
+      call copy_num_communication(nod_comm%num_neib, nod_comm%id_neib,  &
      &    istack_import, istack_export, ntot_import, ntot_export,       &
      &    org_comm%id_neib, org_comm%istack_import,                     &
      &    org_comm%istack_export)
@@ -68,7 +68,8 @@
       call copy_num_communication(new_comm%num_neib,                   &
      &    new_comm%id_neib, new_comm%istack_import,                    &
      &    new_comm%istack_export, new_comm%ntot_import,                &
-     &    new_comm%ntot_export, id_neib, istack_import, istack_export)
+     &    new_comm%ntot_export, nod_comm%id_neib,                      &
+     &    istack_import, istack_export)
       call copy_num_import_export(new_comm%num_neib,                   &
      &    new_comm%num_import, new_comm%num_export,                    &
      &    new_comm%istack_import, new_comm%istack_export)
@@ -95,7 +96,7 @@
       call allocate_nod_import_num
       call allocate_nod_export_num
 !
-      call copy_num_import(nod_comm%num_neib, id_neib,                           &
+      call copy_num_import(nod_comm%num_neib, nod_comm%id_neib,         &
      &    istack_import, istack_export, ntot_import, ntot_export,       &
      &    org_comm%id_neib, org_comm%istack_import)
       call copy_num_import_export(nod_comm%num_neib, num_import, num_export,     &
@@ -123,8 +124,8 @@
 !
       call copy_num_import(new_comm%num_neib, new_comm%id_neib,        &
      &    new_comm%istack_import, new_comm%istack_export,              &
-     &    new_comm%ntot_import, new_comm%ntot_export, id_neib,         &
-     &    istack_import)
+     &    new_comm%ntot_import, new_comm%ntot_export,                  &
+     &    nod_comm%id_neib, istack_import)
       call copy_num_import_export(new_comm%num_neib,                   &
      &    new_comm%num_import, new_comm%num_export,                    &
      &    new_comm%istack_import, new_comm%istack_export)

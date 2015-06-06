@@ -32,7 +32,7 @@
       new_comm%ntot_import = ntot_import
       new_comm%ntot_export = ntot_export
 !
-      new_comm%id_neib =>        id_neib
+      new_comm%id_neib =>        nod_comm%id_neib
       new_comm%num_import =>     num_import
       new_comm%istack_import =>  istack_import
       new_comm%item_import =>    item_import

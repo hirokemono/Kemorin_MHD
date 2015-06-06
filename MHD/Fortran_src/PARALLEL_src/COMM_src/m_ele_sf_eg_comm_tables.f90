@@ -262,7 +262,8 @@
       call allocate_type_import_num(e_comm)
 !
       call count_element_import_num(numnod, host%istack_4_node,         &
-     &    nod_comm%num_neib, id_neib, istack_import, item_import,       &
+     &    nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    istack_import, item_import,       &
      &    e_comm%num_neib, e_comm%id_neib, e_comm%num_import,           &
      &    e_comm%istack_import, e_comm%ntot_import)
 !

@@ -55,7 +55,7 @@
       call allocate_filter_export_item
 !
       if (nod_comm%num_neib .gt. 0) then
-        id_neib_filter(1:nod_comm%num_neib) =        id_neib(1:nod_comm%num_neib)
+        id_neib_filter(1:nod_comm%num_neib) =        nod_comm%id_neib(1:nod_comm%num_neib)
         num_import_filter(1:nod_comm%num_neib) =     num_import(1:nod_comm%num_neib)
         istack_import_filter(0:nod_comm%num_neib) =  istack_import(0:nod_comm%num_neib)
         num_export_filter(1:nod_comm%num_neib) =     num_export(1:nod_comm%num_neib)

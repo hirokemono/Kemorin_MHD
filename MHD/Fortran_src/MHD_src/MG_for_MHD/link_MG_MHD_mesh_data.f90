@@ -77,7 +77,7 @@
       MG_comm_0%ntot_import = ntot_import
       MG_comm_0%ntot_export = ntot_export
 !
-      MG_comm_0%id_neib =>       id_neib
+      MG_comm_0%id_neib =>       nod_comm%id_neib
       MG_comm_0%num_import =>    num_import
       MG_comm_0%istack_import => istack_import
       MG_comm_0%item_import =>   item_import

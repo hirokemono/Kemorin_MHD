@@ -61,11 +61,13 @@
         x_vec(3*inod  ) = xx(inod,3)
       end do
 !
-      call solver_send_recv_i(numnod, nod_comm%num_neib, id_neib,                &
+      call solver_send_recv_i                                           &
+     &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
      &                        istack_import, item_import,               &
      &                        istack_export, item_export, ix_vec)
 !
-      call solver_send_recv_3(numnod, nod_comm%num_neib, id_neib,                &
+      call solver_send_recv_3                                           &
+     &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
      &                        istack_import, item_import,               &
      &                        istack_export, item_export, x_vec)
 !
@@ -107,11 +109,13 @@
         xx4(12*inod   ) = xx(inod,3) + 300.0
       end do
 !
-      call solver_send_recv_i(numnod, nod_comm%num_neib, id_neib,                &
+      call solver_send_recv_i                                           &
+     &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
      &                        istack_import, item_import,               &
      &                        istack_export, item_export, ix_vec)
 !
-      call solver_send_recv_N(numnod, NB, nod_comm%num_neib, id_neib,            &
+      call solver_send_recv_N                                           &
+     &   (numnod, NB, nod_comm%num_neib, nod_comm%id_neib,              &
      &                        istack_import, item_import,               &
      &                        istack_export, item_export, xx4)
 !

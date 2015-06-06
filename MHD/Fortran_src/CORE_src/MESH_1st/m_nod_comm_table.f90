@@ -31,10 +31,8 @@
 !> data structure for node communication table
       type(communication_table), save :: nod_comm
 !
-!>     number of neighboring domain
-!      integer(kind = kint) :: num_neib
 !>     neighboring pe id
-      integer(kind = kint), allocatable, target :: id_neib(:)
+!      integer(kind = kint), allocatable, target :: id_neib(:)
 !
 !
 !>     total number of import node 
@@ -64,8 +62,8 @@
 !
       subroutine allocate_neib_id
 !
-      allocate(id_neib(nod_comm%num_neib))
-      if (nod_comm%num_neib .gt. 0) id_neib = -1
+      allocate(nod_comm%id_neib(nod_comm%num_neib))
+      if (nod_comm%num_neib .gt. 0) nod_comm%id_neib = -1
 !
       end subroutine allocate_neib_id
 !
@@ -121,7 +119,7 @@
 !
       subroutine deallocate_neib_id
 !
-      deallocate(id_neib)
+      deallocate(nod_comm%id_neib)
 !
       end subroutine deallocate_neib_id
 !
