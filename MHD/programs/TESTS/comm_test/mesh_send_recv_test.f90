@@ -63,13 +63,13 @@
 !
       call solver_send_recv_i                                           &
      &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &    nod_comm%istack_import, item_import,               &
-     &    nod_comm%istack_export, item_export, ix_vec)
+     &    nod_comm%istack_import, nod_comm%item_import,                 &
+     &    nod_comm%istack_export, nod_comm%item_export, ix_vec)
 !
       call solver_send_recv_3                                           &
      &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &    nod_comm%istack_import, item_import,               &
-     &    nod_comm%istack_export, item_export, x_vec)
+     &    nod_comm%istack_import, nod_comm%item_import,                 &
+     &    nod_comm%istack_export, nod_comm%item_export, x_vec)
 !
       end subroutine node_send_recv_test
 !
@@ -111,16 +111,16 @@
 !
       call solver_send_recv_i                                           &
      &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &    nod_comm%istack_import, item_import,               &
-     &    nod_comm%istack_export, item_export, ix_vec)
+     &    nod_comm%istack_import, nod_comm%item_import,                 &
+     &    nod_comm%istack_export, nod_comm%item_export, ix_vec)
 !
       call solver_send_recv_N                                           &
      &   (numnod, NB, nod_comm%num_neib, nod_comm%id_neib,              &
-     &    nod_comm%istack_import, item_import,               &
-     &    nod_comm%istack_export, item_export, xx4)
+     &    nod_comm%istack_import, nod_comm%item_import,                 &
+     &    nod_comm%istack_export, nod_comm%item_export, xx4)
 !
       do ii = 1, nod_comm%istack_import(nod_comm%num_neib)
-        k = item_import(ii) - internal_node
+        k = nod_comm%item_import(ii) - internal_node
         irev_import(k) = ii
       end do
 !
@@ -145,7 +145,7 @@
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= ist+1, ied
-                 ii   = NB * (item_export(k)-1) + nd
+                 ii   = NB * (nod_comm%item_export(k)-1) + nd
                  ix   = NB * (k-1) + nd
              WS(ix)= xx4(ii)
            end do
@@ -162,7 +162,7 @@
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= ist+1, ied
-            ii   = NB * (item_import(k)-1) + nd
+            ii   = NB * (nod_comm%item_import(k)-1) + nd
             ix   = NB * (k-1) + nd
             xx4(ii)= WR(ix)
           end do
@@ -198,7 +198,7 @@
 !$omp do private(k,nd,ii,ix)
         do k= ist+1, ied
           do nd = 1, NB
-                 ii   = NB * (item_export(k)-1) + nd
+                 ii   = NB * (nod_comm%item_export(k)-1) + nd
                  ix   = NB * (k-1) + nd
              WS(ix)= xx4(ii)
            end do
@@ -215,7 +215,7 @@
 !$omp do private(k,nd,ii,ix)
         do nd = 1, NB
           do k= ist+1, ied
-            ii   = NB * (item_import(k)-1) + nd
+            ii   = NB * (nod_comm%item_import(k)-1) + nd
             ix   = NB * (k-1) + nd
             xx4(ii)= WR(ix)
           end do
@@ -254,7 +254,7 @@
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= 1, num
-                 ii   = NB * (item_export(k+ist) - 1) + nd
+                 ii   = NB * (nod_comm%item_export(k+ist) - 1) + nd
                  ix   = k + (nd-1) * num + NB*ist
              WS(ix)= xx4(ii)
            end do
@@ -272,7 +272,7 @@
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= 1, num
-            ii   = NB * (item_import(k+ist)-1) + nd
+            ii   = NB * (nod_comm%item_import(k+ist)-1) + nd
             ix   = k + (nd-1) * num + NB*ist
             xx4(ii)= WR(ix)
           end do
@@ -312,7 +312,7 @@
         do inum = 1, NB*num
           k = mod(inum-ione,num) + ione
           nd = (inum-k) / NB + ione
-                 ii   = NB * (item_export(k+ist) - 1) + nd
+                 ii   = NB * (nod_comm%item_export(k+ist) - 1) + nd
                  ix   = inum + NB*ist
              WS(ix)= xx4(ii)
         end do
@@ -330,7 +330,7 @@
         do inum = 1, NB*num
           nd = mod(inum-ione,NB) + ione
           k = (inum-nd) / NB + ione
-            ii   = NB * (item_import(k+ist)-1) + nd
+            ii   = NB * (nod_comm%item_import(k+ist)-1) + nd
             ix   = k + (nd-1) * num + NB*ist
             xx4(ii)= WR(ix)
         end do

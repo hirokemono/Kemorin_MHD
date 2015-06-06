@@ -47,8 +47,8 @@
      &                   AU_crs, istack_crs_u, item_crs_u,              &
      &                   B_crs, X_crs, PRESET_crs,                      &
      &                   nod_comm%num_neib, nod_comm%id_neib,           &
-     &                   nod_comm%istack_import, item_import,           &
-     &                   nod_comm%istack_export, item_export,                    &
+     &                   nod_comm%istack_import, nod_comm%item_import,  &
+     &                   nod_comm%istack_export, nod_comm%item_export,  &
      &                   ITERactual, ierr, METHOD_crs, PRECOND_crs,     &
      &                   INTARRAY_crs, REALARRAY_crs         )
 !
@@ -73,8 +73,8 @@
      &                   AU_crs, istack_crs_u, item_crs_u,              &
      &                   B_crs, X_crs, PRESET_crs,                      &
      &                   nod_comm%num_neib, nod_comm%id_neib,           &
-     &                   nod_comm%istack_import, item_import,           &
-     &                   nod_comm%istack_export, item_export,                    &
+     &                   nod_comm%istack_import, nod_comm%item_import,  &
+     &                   nod_comm%istack_export, nod_comm%item_export,  &
      &                   ITERactual, ierr, METHOD_crs, PRECOND_crs,     &
      &                   INTARRAY_crs, REALARRAY_crs         )
 !
@@ -100,8 +100,8 @@
      &                   istack_crs_u, item_crs_u,                      &
      &                   B_crs, X_crs,  PRESET_crs,                     &
      &                   nod_comm%num_neib, nod_comm%id_neib,           &
-     &                   nod_comm%istack_import, item_import,                    &
-     &                   nod_comm%istack_export, item_export,                    &
+     &                   nod_comm%istack_import, nod_comm%item_import,  &
+     &                   nod_comm%istack_export, nod_comm%item_export,  &
      &                   ITERactual, ierr, METHOD_crs, PRECOND_crs,     &
      &                   INTARRAY_crs, REALARRAY_crs         )
 !

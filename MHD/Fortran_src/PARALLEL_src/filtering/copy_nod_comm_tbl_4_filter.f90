@@ -62,10 +62,10 @@
         istack_export_filter(0:nod_comm%num_neib) =  nod_comm%istack_export(0:nod_comm%num_neib)
       end if
       if (nod_comm%ntot_import .gt. 0) then
-        item_import_filter(1:nod_comm%ntot_import) = item_import(1:nod_comm%ntot_import)
+        item_import_filter(1:nod_comm%ntot_import) = nod_comm%item_import(1:nod_comm%ntot_import)
       end if
       if (nod_comm%ntot_export .gt. 0) then
-        item_export_filter(1:nod_comm%ntot_export) = item_export(1:nod_comm%ntot_export)
+        item_export_filter(1:nod_comm%ntot_export) = nod_comm%item_export(1:nod_comm%ntot_export)
       end if
 !
       end subroutine copy_comm_table_to_filter

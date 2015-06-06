@@ -98,7 +98,7 @@
      &       nod_comm%num_neib, nod_comm%ntot_import,                   &
      &       nod_comm%ntot_export, nod_comm%id_neib,                    &
      &       nod_comm%istack_import, nod_comm%istack_export,            &
-     &       item_import, item_export,    &
+     &       nod_comm%item_import,   nod_comm%item_export,              &
      &       num_nod_phys, num_tot_nod_phys, istack_nod_component,      &
      &       d_nod)
 !

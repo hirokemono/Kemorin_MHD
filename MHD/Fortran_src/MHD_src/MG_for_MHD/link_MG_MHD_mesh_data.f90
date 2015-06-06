@@ -80,10 +80,10 @@
       MG_comm_0%id_neib =>       nod_comm%id_neib
       MG_comm_0%num_import =>    num_import
       MG_comm_0%istack_import => nod_comm%istack_import
-      MG_comm_0%item_import =>   item_import
+      MG_comm_0%item_import =>   nod_comm%item_import
       MG_comm_0%num_export =>    num_export
       MG_comm_0%istack_export => nod_comm%istack_export
-      MG_comm_0%item_export =>   item_export
+      MG_comm_0%item_export =>   nod_comm%item_export
 !
       end subroutine link_first_comm_to_type
 !

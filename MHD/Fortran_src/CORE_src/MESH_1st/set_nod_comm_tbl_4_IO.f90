@@ -48,7 +48,8 @@
 !
       call copy_communication_item                                     &
      &   (nod_comm%ntot_import, nod_comm%ntot_export,                  &
-     &    item_import, item_export, item_import_IO, item_export_IO)
+     &    nod_comm%item_import, nod_comm%item_export,                  &
+     &    item_import_IO, item_export_IO)
 !
       call deallocate_comm_item_IO
 !
@@ -74,7 +75,8 @@
       call allocate_comm_item_IO
 !
       call copy_communication_item(ntot_import_IO, ntot_export_IO,      &
-     &    item_import_IO, item_export_IO, item_import, item_export)
+     &    item_import_IO, item_export_IO,                               &
+     &    nod_comm%item_import, nod_comm%item_export)
 !
       end subroutine copy_node_comm_tbl_to_IO
 !

@@ -73,7 +73,7 @@
      &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
      &     aiccg(im_l), aiccg(im_u),  ALUG_L, ALUG_U, eps, itr, ierr,   &
      &     nod_comm%num_neib, nod_comm%id_neib,                         &
-     &     nod_comm%istack_import, item_import,                                  &
+     &     nod_comm%istack_import, nod_comm%item_import,                &
      &     nod_comm%istack_export, NOD_EXPORT_NEW,                      &
      &     method_4_solver, precond_4_solver, itr_res)
 

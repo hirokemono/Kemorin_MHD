@@ -49,15 +49,15 @@
 !
       call solver_send_recv_i                                           &
      &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
-     &    nod_comm%istack_import, item_import,              &
-     &    nod_comm%istack_export, item_export,       &
+     &    nod_comm%istack_import, nod_comm%item_import,                 &
+     &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    iflag_nod)
 !
 !
       call mark_reduced_neib_domain(nod_comm%num_neib,                  &
      &    nod_comm%ntot_import, nod_comm%ntot_export, nod_comm%id_neib, &
      &    nod_comm%istack_import, nod_comm%istack_export,               &
-     &    item_import, item_export)
+     &    nod_comm%item_import, nod_comm%item_export)
 !
 !
       call count_reduced_neib_domain                                    &
@@ -70,12 +70,12 @@
 !
       call count_reduced_comm_stack                                     &
      &   (nod_comm%num_neib, nod_comm%ntot_import, nod_comm%id_neib,    &
-     &    nod_comm%istack_import, item_import,   &
+     &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    DJDS_comm_fl%num_neib, DJDS_comm_fl%ntot_import,              &
      &    DJDS_comm_fl%num_import, DJDS_comm_fl%istack_import)
       call count_reduced_comm_stack                                     &
      &   (nod_comm%num_neib, nod_comm%ntot_export, nod_comm%id_neib,    &
-     &    nod_comm%istack_export, item_export,   &
+     &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    DJDS_comm_fl%num_neib, DJDS_comm_fl%ntot_export,              &
      &    DJDS_comm_fl%num_export, DJDS_comm_fl%istack_export)
 !
@@ -83,12 +83,12 @@
 !
       call set_reduced_comm_item                                        &
      &   (nod_comm%num_neib, nod_comm%ntot_import, nod_comm%id_neib,    &
-     &    nod_comm%istack_import, item_import,   &
+     &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    DJDS_comm_fl%num_neib, DJDS_comm_fl%ntot_import,              &
      &    DJDS_comm_fl%istack_import, DJDS_comm_fl%item_import)
       call set_reduced_comm_item                                        &
      &   (nod_comm%num_neib, nod_comm%ntot_export, nod_comm%id_neib,    &
-     &    nod_comm%istack_export, item_export,   &
+     &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    DJDS_comm_fl%num_neib, DJDS_comm_fl%ntot_export,              &
      &    DJDS_comm_fl%istack_export, DJDS_comm_fl%item_export)
 !
@@ -115,11 +115,13 @@
 !       end do
 !       write(50+my_rank,*) 'i, item_import(i)'
 !       do i = 1, nod_comm%ntot_import
-!         write(50+my_rank,*) i, item_import(i), inod_global(item_import(i))
+!         write(50+my_rank,*) i, nod_comm%item_import(i),               &
+!     &                          inod_global(item_import(i))
 !       end do
-!       write(50+my_rank,*) 'i, item_export(i)'
+!       write(50+my_rank,*) 'i, nod_comm%item_export(i)'
 !       do i = 1, nod_comm%ntot_export
-!         write(50+my_rank,*) i, item_export(i), inod_global(item_export(i))
+!         write(50+my_rank,*) i, nod_comm%item_export(i),               &
+!     &                          inod_global(item_export(i))
 !       end do
 !
       call deallocate_flags_reduced_comm

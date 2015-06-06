@@ -162,8 +162,8 @@
 
         call allocate_nod_import_item
         call allocate_nod_export_item
-        read (id_file,*) item_import(1:nod_comm%ntot_import)
-        read (id_file,*) item_export(1:nod_comm%ntot_export)
+        read (id_file,*) nod_comm%item_import(1:nod_comm%ntot_import)
+        read (id_file,*) nod_comm%item_export(1:nod_comm%ntot_export)
       else
         nod_comm%ntot_import= 0
         nod_comm%ntot_export= 0

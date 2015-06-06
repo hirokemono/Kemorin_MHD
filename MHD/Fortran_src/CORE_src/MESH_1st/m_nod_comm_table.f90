@@ -35,12 +35,12 @@
 !>     import node count for each neighbor pe (i-th pe)
       integer(kind = kint), allocatable, target :: num_import(:)
 !>     local id for import node                     (i-th)
-      integer(kind = kint), allocatable, target :: item_import(:)
+!      integer(kind = kint), allocatable, target :: item_import(:)
 !
 !>     export node count for each neighbor pe (i-th pe)
       integer(kind = kint), allocatable, target :: num_export(:)
 !>     local id for export node                     (i-th)
-      integer(kind = kint), allocatable, target :: item_export(:)
+!      integer(kind = kint), allocatable, target :: item_export(:)
 !
 !
 !------------------------------------------------------------------
@@ -86,9 +86,9 @@
       subroutine allocate_nod_import_item
 !
       nod_comm%ntot_import = nod_comm%istack_import(nod_comm%num_neib)
-      allocate(item_import(nod_comm%ntot_import))
+      allocate(nod_comm%item_import(nod_comm%ntot_import))
 !
-      if (nod_comm%ntot_import .gt. 0) item_import = 0
+      if (nod_comm%ntot_import .gt. 0) nod_comm%item_import = 0
 !
       end subroutine allocate_nod_import_item
 !
@@ -97,9 +97,9 @@
       subroutine allocate_nod_export_item
 !
       nod_comm%ntot_export = nod_comm%istack_export(nod_comm%num_neib)
-      allocate(item_export(nod_comm%ntot_export))
+      allocate(nod_comm%item_export(nod_comm%ntot_export))
 !
-      if (nod_comm%ntot_export .gt. 0) item_export = 0
+      if (nod_comm%ntot_export .gt. 0) nod_comm%item_export = 0
 !
       end subroutine allocate_nod_export_item
 !
@@ -119,7 +119,7 @@
 !
       deallocate(num_import)
       deallocate(nod_comm%istack_import)
-      deallocate(item_import)
+      deallocate(nod_comm%item_import)
 !
       end subroutine deallocate_nod_import_item
 !
@@ -129,7 +129,7 @@
 !
       deallocate(num_export)
       deallocate(nod_comm%istack_export)
-      deallocate(item_export)
+      deallocate(nod_comm%item_export)
 !
       end subroutine deallocate_nod_export_item
 !

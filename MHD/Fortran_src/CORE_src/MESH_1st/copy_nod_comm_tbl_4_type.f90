@@ -51,8 +51,8 @@
 !
       call copy_communication_item                                      &
      &   (nod_comm%ntot_import, nod_comm%ntot_export,                   &
-     &    item_import, item_export, org_comm%item_import,               &
-     &    org_comm%item_export)
+     &    nod_comm%item_import, nod_comm%item_export,                   &
+     &    org_comm%item_import, org_comm%item_export)
 !
       end subroutine copy_node_comm_tbl_from_type
 !
@@ -78,9 +78,10 @@
 !
       call allocate_type_comm_tbl_item(new_comm)
 !
-      call copy_communication_item(new_comm%ntot_import,               &
-     &    new_comm%ntot_export, new_comm%item_import,                  &
-     &    new_comm%item_export, item_import, item_export)
+      call copy_communication_item                                     &
+     &   (new_comm%ntot_import, new_comm%ntot_export,                  &
+     &    new_comm%item_import, new_comm%item_export,                  &
+     &    nod_comm%item_import, nod_comm%item_export)
 !
       end subroutine copy_node_comm_tbl_to_type
 !
@@ -108,9 +109,10 @@
       call allocate_nod_import_item
       call allocate_nod_export_item
 !
-      call copy_communication_item(nod_comm%ntot_import, nod_comm%ntot_export,   &
-     &    item_import, item_export, org_comm%item_import,               &
-     &    org_comm%item_export)
+      call copy_communication_item                                      &
+     &   (nod_comm%ntot_import, nod_comm%ntot_export,                   &
+     &    nod_comm%item_import, nod_comm%item_export,                   &
+     &    org_comm%item_import, org_comm%item_export)
 !
       end subroutine copy_node_import_from_type
 !
@@ -135,9 +137,10 @@
 !
       call allocate_type_comm_tbl_item(new_comm)
 !
-      call copy_communication_item(new_comm%ntot_import,               &
-     &    new_comm%ntot_export, new_comm%item_import,                  &
-     &    new_comm%item_export, item_import, item_export)
+      call copy_communication_item                                     &
+     &   (new_comm%ntot_import,  new_comm%ntot_export,                 &
+     &    new_comm%item_import,  new_comm%item_export,                 &
+     &    nod_comm%item_import,  nod_comm%item_export)
 !
       end subroutine copy_node_import_to_type
 !

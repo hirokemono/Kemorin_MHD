@@ -308,14 +308,14 @@
      &       new_comm%istack_export(i), nod_comm%istack_export(i)
       end do
       do i = 1, nod_comm%ntot_export
-        if(new_comm%item_export(i) .ne. item_export(i))                 &
+        if(new_comm%item_export(i) .ne. nod_comm%item_export(i))        &
      &       write(*,*) 'item_export(i)', my_rank, i,                   &
-     &       new_comm%item_export(i), item_export(i)
+     &       new_comm%item_export(i), nod_comm%item_export(i)
       end do
       do i = 1, nod_comm%ntot_import
-        if(new_comm%item_import(i) .ne. item_import(i))                 &
+        if(new_comm%item_import(i) .ne. nod_comm%item_import(i))        &
      &       write(*,*) 'item_import(i)', my_rank, i,                   &
-     &       new_comm%item_import(i), item_import(i)
+     &       new_comm%item_import(i), nod_comm%item_import(i)
       end do
 !
       end subroutine compare_node_comm_type_vs_1st
