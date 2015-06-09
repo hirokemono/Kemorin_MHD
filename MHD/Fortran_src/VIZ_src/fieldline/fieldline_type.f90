@@ -7,9 +7,8 @@
 !        type(mesh_data), intent(in) :: fem
 !        type(phys_data), intent(in) :: fld_nod
 !
-!      subroutine cross_section_main_type(istep_psf, mesh, edge,        &
-!     &          fld_nod)
-!      subroutine isosurface_main_type(istep_iso, mesh, edge, fld_nod)
+!!      subroutine field_line_main_type(istep_psf, fem, surf, next_tbl, &
+!!     &          fld_nod)
 !        integer(kind = kint), intent(in) :: istep_psf
 !        integer(kind = kint), intent(in) :: istep_iso
 !        type(mesh_geometry), intent(in) :: mesh

@@ -254,7 +254,7 @@
       ioffset = int(ioff_gl + ilength * istack_merged_ele(my_rank))
       do iele = 1, nele
         iele_gl = iele + istack_merged_ele(my_rank)
-        ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
+        ie0(1:nnod_ele) = ie(iele,1:nnod_ele)
         write(textbuf,'(a,a1)')                                         &
      &        ucd_each_connect(iele_gl, nnod_ele,ie0), char(0)
         call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)

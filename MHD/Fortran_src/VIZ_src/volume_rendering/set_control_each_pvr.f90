@@ -43,7 +43,7 @@
       type(pvr_ctl), intent(in) :: pvr
       integer(kind = kint), intent(in) :: i_pvr
 !
-      integer(kind = kint) :: num_field
+      integer(kind = kint) :: num_field, num_phys_viz
       character(len = kchara) :: tmpchara
 !
 !
@@ -78,7 +78,7 @@
       end if
 !
       call check_field_4_viz(num_nod_phys, phys_nod_name,               &
-     &    ione, pvr%pvr_field_ctl, num_field )
+     &    ione, pvr%pvr_field_ctl, num_field, num_phys_viz)
       if(num_field .eq. 0) then
         call calypso_MPI_abort(ierr_PVR,'set correct field name')
       end if

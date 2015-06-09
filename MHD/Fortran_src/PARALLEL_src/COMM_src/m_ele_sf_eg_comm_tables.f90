@@ -112,12 +112,8 @@
       call count_number_of_node_stack(numele, istack_numele)
       call count_number_of_node_stack(internal_ele, istack_interele)
 !
-      call set_global_ele_id                                            &
-     &         (numele, istack_interele, interior_ele,                  &
-     &          ele_comm%num_neib, ele_comm%id_neib,                    &
-     &          ele_comm%istack_import, ele_comm%item_import,           &
-     &          ele_comm%istack_export, ele_comm%item_export,           &
-     &          iele_global)
+      call set_global_ele_id(numele, istack_interele,                   &
+     &         interior_ele, ele_comm, iele_global)
 !
       end subroutine const_global_element_id_1st
 !
@@ -135,12 +131,8 @@
       call count_number_of_node_stack(numsurf, istack_numsurf)
       call count_number_of_node_stack(internal_surf, istack_intersurf)
 !
-      call set_global_ele_id                                            &
-     &         (numsurf, istack_intersurf, interior_surf,               &
-     &          surf_comm%num_neib, surf_comm%id_neib,                  &
-     &          surf_comm%istack_import, surf_comm%item_import,         &
-     &          surf_comm%istack_export, surf_comm%item_export,         &
-     &          isurf_global)
+      call set_global_ele_id(numsurf, istack_intersurf,                 &
+     &         interior_surf, surf_comm, isurf_global)
 !
       end subroutine const_global_surface_id_1st
 !
@@ -158,12 +150,8 @@
       call count_number_of_node_stack(numedge, istack_numedge)
       call count_number_of_node_stack(internal_edge, istack_interedge)
 !
-      call set_global_ele_id                                            &
-     &         (numedge, istack_interele, interior_edge,                &
-     &          edge_comm%num_neib, edge_comm%id_neib,                  &
-     &          edge_comm%istack_import, edge_comm%item_import,         &
-     &          edge_comm%istack_export, edge_comm%item_export,         &
-     &          iedge_global)
+      call set_global_ele_id(numedge, istack_interele,                  &
+     &         interior_edge, edge_comm, iedge_global)
 !
       end subroutine const_global_edge_id_1st
 !
@@ -298,10 +286,7 @@
 !
       call deallocate_element_rev_list
 !
-      call check_element_position                                       &
-     &   (numele, x_ele, e_comm%num_neib, e_comm%id_neib,               &
-     &    e_comm%istack_import, e_comm%item_import,                     &
-     &    e_comm%istack_export, e_comm%item_export)
+      call check_element_position(numele, x_ele, e_comm)
 !
       end subroutine const_ele_comm_table_1st
 !

@@ -11,6 +11,8 @@
 !!     &         (mesh, ele_mesh, surf_mesh, edge_mesh)
 !!      subroutine dealloc_ele_comm_tbls_gl_nele                        &
 !!     &         (mesh, ele_mesh, surf_mesh, edge_mesh)
+!!
+!!      subroutine const_global_numnod_list(node)
 !!@endverbatim
 !
       module const_element_comm_tables
@@ -28,7 +30,6 @@
 !
       implicit none
 !
-      private :: const_global_numnod_list, const_global_element_id
       private :: const_global_surface_id,  const_global_edge_id
       private :: const_element_comm_table, const_surf_comm_table
       private :: const_edge_comm_table
@@ -54,10 +55,10 @@
       type(belonged_table) :: belongs
 !
 !
-      call const_global_numnod_list(mesh)
+      call const_global_numnod_list(mesh%node)
 !
       call const_element_comm_table(mesh, belongs, ele_mesh)
-      call const_global_element_id(mesh, ele_mesh)
+      call const_global_numele_list(mesh%ele)
 !
       call const_surf_comm_table(mesh, belongs, surf_mesh)
       call const_global_surface_id(surf_mesh)
@@ -92,46 +93,38 @@
 !-----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine const_global_numnod_list(mesh)
+      subroutine const_global_numnod_list(node)
 !
       use t_geometry_data
       use const_global_element_ids
 !
-      type(mesh_geometry), intent(inout) :: mesh
+      type(node_data), intent(inout) :: node
 !
 !
-      call alloc_numnod_stack(nprocs, mesh%node)
+      call alloc_numnod_stack(nprocs, node)
 !
+      call count_number_of_node_stack(node%numnod, node%istack_numnod)
       call count_number_of_node_stack                                   &
-     &   (mesh%node%numnod, mesh%node%istack_numnod)
-      call count_number_of_node_stack                                   &
-     &   (mesh%node%internal_node, mesh%node%istack_internod)
+     &   (node%internal_node, node%istack_internod)
 !
       end subroutine const_global_numnod_list
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_global_element_id(mesh, ele_mesh)
+      subroutine const_global_numele_list(ele)
 !
       use const_global_element_ids
 !
-      type(mesh_geometry), intent(inout) :: mesh
-      type(element_comms), intent(inout) :: ele_mesh
+      type(element_data), intent(inout) :: ele
 !
 !
-      call alloc_numele_stack(nprocs, mesh%ele)
+      call alloc_numele_stack(nprocs, ele)
 !
+      call count_number_of_node_stack(ele%numele, ele%istack_numele)
       call count_number_of_node_stack                                   &
-     &   (mesh%ele%numele, mesh%ele%istack_numele)
-      call count_number_of_node_stack                                   &
-     &   (mesh%ele%internal_ele, mesh%ele%istack_interele)
+     &   (ele%internal_ele, ele%istack_interele)
 !
-      call set_global_ele_id_type                                       &
-     &   (mesh%ele%numele, mesh%ele%istack_interele,                    &
-     &    mesh%ele%interior_ele, ele_mesh%ele_comm,                     &
-     &    mesh%ele%iele_global)
-!
-      end subroutine const_global_element_id
+      end subroutine const_global_numele_list
 !
 !  ---------------------------------------------------------------------
 !
@@ -311,10 +304,7 @@
 !
       call deallocate_element_rev_list
 !
-      call check_element_position                                       &
-     &   (numele, x_ele, e_comm%num_neib, e_comm%id_neib,               &
-     &    e_comm%istack_import, e_comm%item_import,                     &
-     &    e_comm%istack_export, e_comm%item_export)
+      call check_element_position(numele, x_ele, e_comm)
 !
       end subroutine const_ele_comm_table_type
 !
@@ -337,11 +327,8 @@
       integer(kind = kint_gl), intent(inout)  :: iele_global(nele)
 !
 !
-      call set_global_ele_id                                            &
-     &         (nele, istack_internal_e, internal_flag,                 &
-     &          e_comm%num_neib, e_comm%id_neib,                        &
-     &          e_comm%istack_import, e_comm%item_import,               &
-     &          e_comm%istack_export, e_comm%item_export, iele_global)
+      call set_global_ele_id(nele, istack_internal_e, internal_flag,    &
+     &          e_comm, iele_global)
 !
       end subroutine set_global_ele_id_type
 !

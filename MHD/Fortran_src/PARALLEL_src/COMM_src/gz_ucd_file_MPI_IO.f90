@@ -331,26 +331,26 @@
       ilen_gz = int(real(nele*ilength) * 1.01) + 24
       allocate(gzip_buf(ilen_gz))
       if(nele .eq. 1) then
-        ie0(1:nnod_ele) = ie(1,1:nnod_ele) - 1
+        ie0(1:nnod_ele) = ie(1,1:nnod_ele)
         call gzip_defleat_once(ilength,                                 &
      &      ucd_each_connect(iele_gl, nnod_ele, ie0),                   &
      &      ilen_gz, ilen_gzipped, gzip_buf(1))
 !
       else if(nele .gt. 1) then
         iele_gl = 1 + istack_merged_ele(my_rank)
-        ie0(1:nnod_ele) = ie(1,1:nnod_ele) - 1
+        ie0(1:nnod_ele) = ie(1,1:nnod_ele)
         call gzip_defleat_begin(ilength,                                &
      &      ucd_each_connect(iele_gl, nnod_ele, ie0),                   &
      &      ilen_gz, ilen_gzipped, gzip_buf(1))
         do iele = 2, nele-1
           iele_gl = iele + istack_merged_ele(my_rank)
-          ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
+          ie0(1:nnod_ele) = ie(iele,1:nnod_ele)
           call gzip_defleat_cont(ilength,                               &
      &        ucd_each_connect(iele_gl, nnod_ele, ie0),                 &
      &        ilen_gz, ilen_gzipped)
         end do
         iele_gl = nele + istack_merged_ele(my_rank)
-        ie0(1:nnod_ele) = ie(nele,1:nnod_ele) - 1
+        ie0(1:nnod_ele) = ie(nele,1:nnod_ele)
         call gzip_defleat_last(ilength,                                 &
      &      ucd_each_connect(iele_gl, nnod_ele, ie0),                   &
      &      ilen_gz, ilen_gzipped)

@@ -119,7 +119,7 @@
 !
       call set_node_on_edge_4_quad_psf(numnod_psf, numedge_psf,         &
      &    num_linear_edge, iedge_psf, xx_psf, coef_line,                &
-     &    istack_smp(1), ione, istack_smp, iedge_4_line, coef_on_edge)
+     &    istack_smp(1), istack_smp, iedge_4_line, coef_on_edge)
 !
       call set_section_fld_in_triangle(numnod_psf, numedge_psf,         &
      &    nfield_psf, ncomptot_psf, xx_psf, iedge_psf,                  &

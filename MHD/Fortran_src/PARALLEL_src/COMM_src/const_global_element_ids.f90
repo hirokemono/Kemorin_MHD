@@ -8,10 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine count_number_of_node_stack(nnod, istack_nod_list)
-!!      subroutine set_global_ele_id                                    &
-!!     &         (nele, istack_internal_e, internal_flag,               &
-!!     &          num_neib_e, id_neib_e, istack_import_e, item_import_e,&
-!!     &          istack_export_e, item_export_e, iele_global)
+!!      subroutine set_global_ele_id(nele, istack_internal_e,           &
+!!     &         internal_flag, e_comm, iele_global)
+!!      subroutine check_element_position(nele, x_ele, e_comm)
 !!@endverbatim
 !!
       module const_global_element_ids
@@ -56,26 +55,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_global_ele_id                                      &
-     &         (nele, istack_internal_e, internal_flag,                 &
-     &          num_neib_e, id_neib_e, istack_import_e, item_import_e,  &
-     &          istack_export_e, item_export_e, iele_global)
+      subroutine set_global_ele_id(nele, istack_internal_e,             &
+     &          internal_flag, e_comm, iele_global)
 !
-      use solver_SR_int
+      use t_comm_table
+      use solver_SR_type
 !
       integer(kind = kint), intent(in) :: nele
       integer(kind = kint), intent(in) :: internal_flag(nele)
       integer(kind = kint_gl), intent(in)                               &
      &        :: istack_internal_e(0:nprocs)
 !
-      integer(kind = kint), intent(in) :: num_neib_e
-      integer(kind = kint), intent(in) :: id_neib_e(num_neib_e)
-      integer(kind = kint), intent(in) :: istack_import_e(0:num_neib_e)
-      integer(kind = kint), intent(in)                                  &
-     &        :: item_import_e(istack_import_e(num_neib_e))
-      integer(kind = kint), intent(in) :: istack_export_e(0:num_neib_e)
-      integer(kind = kint), intent(in)                                  &
-     &        :: item_export_e(istack_export_e(num_neib_e))
+      type(communication_table), intent(in) :: e_comm
 !
       integer(kind = kint_gl), intent(inout)  :: iele_global(nele)
 !
@@ -92,9 +83,7 @@
         end if
       end do
 !
-      call solver_send_recv_i8                                          &
-     &   (nele, num_neib_e, id_neib_e, istack_import_e, item_import_e,  &
-     &    istack_export_e, item_export_e, iele_global)
+      call SOLVER_SEND_RECV_int8_type(nele, e_comm, iele_global)
 !
       do iele = 1, nele
         if(iele_global(iele) .eq. 0)  write(*,*)                        &
@@ -106,23 +95,15 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine check_element_position(nele, x_ele,                    &
-     &          num_neib_e, id_neib_e, istack_import_e, item_import_e,  &
-     &          istack_export_e, item_export_e)
+      subroutine check_element_position(nele, x_ele, e_comm)
 !
-      use solver_SR_3
+      use t_comm_table
+      use solver_SR_type
 !
       integer(kind = kint), intent(in) :: nele
       real(kind = kreal), intent(in)  :: x_ele(nele,3)
 !
-      integer(kind = kint), intent(in) :: num_neib_e
-      integer(kind = kint), intent(in) :: id_neib_e(num_neib_e)
-      integer(kind = kint), intent(in) :: istack_import_e(0:num_neib_e)
-      integer(kind = kint), intent(in)                                  &
-     &        :: item_import_e(istack_import_e(num_neib_e))
-      integer(kind = kint), intent(in) :: istack_export_e(0:num_neib_e)
-      integer(kind = kint), intent(in)                                  &
-     &        :: item_export_e(istack_export_e(num_neib_e))
+      type(communication_table), intent(in) :: e_comm
 !
 !
       real(kind = kreal), parameter :: tiny = 1.0d-15
@@ -141,9 +122,7 @@
       end do
 !$omp end parallel do
 !
-      call solver_send_recv_3                                           &
-     &   (nele, num_neib_e, id_neib_e, istack_import_e, item_import_e,  &
-     &    istack_export_e, item_export_e, x_test(1))
+      call SOLVER_SEND_RECV_3_type(nele, e_comm, x_test(1))
 !
       do iele = 1, nele
         dx = x_test(3*iele-2) - x_ele(iele,1)

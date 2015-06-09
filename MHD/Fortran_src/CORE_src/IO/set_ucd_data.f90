@@ -57,10 +57,12 @@
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      call allocate_ucd_ele(ucd)
-!
       ucd%nele =         numele
       ucd%nnod_4_ele =   nnod_4_ele
+!
+      call allocate_ucd_ele(ucd)
+!
+      if(numele .le. 0) return
 !
 !$omp parallel workshare
       ucd%ie(1:numele,1:nnod_4_ele) = ie(1:numele,1:nnod_4_ele)
