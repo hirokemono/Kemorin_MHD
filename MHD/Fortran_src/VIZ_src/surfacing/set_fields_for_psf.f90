@@ -7,6 +7,9 @@
 !> @brief Construct surface patch
 !!
 !!@verbatim
+!!      subroutine alloc_psf_field_data(num_psf, psf_mesh)
+!!      subroutine dealloc_psf_field_data(num_psf, psf_mesh)
+!!
 !!      subroutine set_field_4_psf                                      &
 !!     &         (num_psf, numnod, numedge, nnod_4_edge, ie_edge,       &
 !!     &          num_phys, ntot_phys, istack_ncomp, d_nod,             &
@@ -30,6 +33,45 @@
 !
       contains
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_psf_field_data(num_psf, psf_mesh)
+!
+      use t_psf_patch_data
+!
+      integer(kind = kint), intent(in) :: num_psf
+      type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
+!
+      integer(kind = kint) :: i
+!
+      do i = 1, num_psf
+        call alloc_dat_on_patch_psf(psf_mesh(i))
+        call alloc_phys_data_type                                       &
+     &     (psf_mesh(i)%node%numnod, psf_mesh(i)%field)
+      end do
+!
+      end subroutine alloc_psf_field_data
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_psf_field_data(num_psf, psf_mesh)
+!
+      use t_psf_patch_data
+!
+      integer(kind = kint), intent(in) :: num_psf
+      type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
+!
+      integer(kind = kint) :: i
+!
+      do i = 1, num_psf
+        call dealloc_dat_on_patch_psf(psf_mesh(i))
+        call dealloc_phys_data_type(psf_mesh(i)%field)
+      end do
+!
+      end subroutine dealloc_psf_field_data
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine set_field_4_psf                                        &

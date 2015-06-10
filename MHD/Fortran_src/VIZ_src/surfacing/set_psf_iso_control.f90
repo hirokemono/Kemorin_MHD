@@ -8,6 +8,7 @@
 !>@brief Structure for parallel sectioned data
 !!
 !!@verbatim
+!!      subroutine dealloc_psf_field_name(num_psf, psf_mesh)
 !!      subroutine set_psf_control(num_psf, num_mat, mat_name,          &
 !!     &          num_surf, surf_name, num_nod_phys, phys_nod_name,     &
 !!     &          psf_param, psf_mesh)
@@ -32,6 +33,23 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_psf_field_name(num_psf, psf_mesh)
+!
+      use t_psf_patch_data
+!
+      integer(kind = kint), intent(in) :: num_psf
+      type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
+!
+      integer(kind = kint) :: i
+!
+      do i = 1, num_psf
+        call dealloc_phys_name_type(psf_mesh(i)%field)
+      end do
+!
+      end subroutine dealloc_psf_field_name
 !
 !  ---------------------------------------------------------------------
 !

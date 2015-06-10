@@ -7,6 +7,9 @@
 !> @brief Construct surface patch
 !!
 !!@verbatim
+!!      subroutine dealloc_psf_node_and_patch                           &
+!!     &         (num_psf, psf_list, psf_mesh)
+!!
 !!      subroutine set_node_and_patch_psf                               &
 !!     &         (num_psf, numnod, internal_node, numele,               &
 !!     &          numedge, nnod_4_ele, nnod_4_edge, xx, ie, ie_edge,    &
@@ -30,6 +33,33 @@
 !
       contains
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_psf_node_and_patch                             &
+     &         (num_psf, psf_list, psf_mesh)
+!
+      use t_psf_geometry_list
+      use t_psf_patch_data
+!
+      integer(kind = kint), intent(in) :: num_psf
+      type(sectioning_list), intent(inout) :: psf_list(num_psf)
+      type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
+!
+      integer(kind = kint) :: i_psf
+!
+!
+      do i_psf = 1, num_psf
+        call dealloc_nnod_psf(psf_list(i_psf))
+        call dealloc_inod_psf(psf_list(i_psf))
+        call dealloc_numnod_stack(psf_mesh(i_psf)%node)
+        call dealloc_numele_stack(psf_mesh(i_psf)%patch)
+        call deallocate_node_geometry_type(psf_mesh(i_psf)%node)
+        call deallocate_ele_connect_type(psf_mesh(i_psf)%patch)
+      end do
+!
+      end subroutine dealloc_psf_node_and_patch
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine set_node_and_patch_psf                                 &
@@ -82,6 +112,11 @@
 !
       integer(kind = kint) :: i_psf
 !
+!
+      do i_psf = 1, num_psf
+        if (iflag_debug.eq.1) write(*,*) 'alloc_nnod_psf'
+        call alloc_nnod_psf(np_smp, numnod, numedge, psf_list(i_psf))
+      end do
 !
       if (iflag_debug.eq.1)  write(*,*) 'count_nodes_4_psf'
       call count_nodes_4_psf                                            &
@@ -158,13 +193,13 @@
       integer(kind = kint) :: i_iso
 !
 !
+      do i_iso = 1, num_iso
+        if (iflag_debug.eq.1) write(*,*) 'alloc_nnod_psf'
+        call alloc_nnod_psf(np_smp, numnod, numedge, iso_list(i_iso))
+      end do
+!
       call count_nodes_4_iso(num_iso, internal_node, numedge,           &
      &    nnod_4_edge, ie_edge, iso_search, iso_list, iso_mesh)
-!
-      do i_iso = 1, num_iso
-        call alloc_inod_psf(iso_list(i_iso))
-        call allocate_node_geometry_type(iso_mesh(i_iso)%node)
-      end do
 !
       call set_nodes_4_iso                                              &
      &   (num_iso, numnod, internal_node, numedge, nnod_4_edge,         &

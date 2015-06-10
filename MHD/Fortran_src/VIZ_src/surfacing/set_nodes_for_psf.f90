@@ -238,8 +238,11 @@
 !
 !
       do i = 1, num_iso
+        call alloc_inod_psf(iso_list(i))
+        call allocate_node_geometry_type(iso_mesh(i)%node)
+!
         call set_node_at_node_psf(numnod, internal_node,                &
-     &     iso_search(i)%node_list, iso_list(i))
+     &      iso_search(i)%node_list, iso_list(i))
 !
         call set_node_on_edge_4_psf                                     &
      &     (internal_node, numedge,  nnod_4_edge, ie_edge,              &
@@ -252,7 +255,7 @@
      &      iso_search(i)%edge_list, iso_list(i))
 !
         call psf_global_nod_id_on_edge(edge_comm, numedge,              &
-     &       iso_mesh(i)%node%istack_internod, iso_list(i)%id_n_on_e)
+     &      iso_mesh(i)%node%istack_internod, iso_list(i)%id_n_on_e)
 !
 !
         call set_position_4_psf(numnod, numedge, nnod_4_edge,           &

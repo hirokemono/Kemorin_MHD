@@ -21,6 +21,8 @@
 !
       integer(kind = kint) :: nmax_pixel, num_pixel_xy
 !
+      integer(kind = kint), allocatable :: istack_image(:)
+!
       real(kind = kreal), allocatable :: rgba_real_gl(:,:)
       real(kind = kreal), allocatable :: rgba_left_gl(:,:)
       real(kind = kreal), allocatable :: rgba_right_gl(:,:)
@@ -38,6 +40,17 @@
       real(kind = kreal), allocatable :: ave_depth_gl(:)
       real(kind = kreal), allocatable :: ave_depth_recv(:)
       real(kind = kreal) :: ave_depth_lc, covered_area
+!
+!>       status flag for sending
+      integer, save, allocatable :: sta1(:,:)
+!>       status flag for recieving
+      integer, save, allocatable :: sta2(:,:)
+!>       status flag for sending
+      integer, save, allocatable :: req1(:  )
+!>       status flag for recieving
+      integer, save, allocatable :: req2(:  )
+!
+      private :: sta1, sta2, req1, req2
 !
 !  ---------------------------------------------------------------------
 !
@@ -59,6 +72,11 @@
         nmax_pixel = max(nmax_pixel,num)
       end do
 !
+      allocate(ave_depth_gl(nprocs))
+      allocate(ip_farther(nprocs))
+      ave_depth_gl = 0.0d0
+      ip_farther = -1
+!
       if(my_rank .eq. 0) then
         allocate(rgb_chara_gl(3,nmax_pixel))
         allocate(rgba_chara_gl(4,nmax_pixel))
@@ -68,21 +86,19 @@
 !
         allocate(rgba_real_gl(4,nmax_pixel))
 !
-        allocate(ave_depth_gl(nprocs))
-        allocate(ip_farther(nprocs))
 !
         rgba_real_gl =  0.0d0
         rgba_left_gl =  0.0d0
         rgba_right_gl = 0.0d0
 !
-        ave_depth_gl = 0.0d0
-        ip_farther = -1
 !
         allocate(rgba_recv(4*nmax_pixel,nprocs))
         allocate(ave_depth_recv(nprocs))
         rgba_recv =      0.0d0
         ave_depth_recv = 0.0d0
       end if
+!
+      allocate(istack_image(0:nprocs))
 !
       allocate(iflag_mapped(nmax_pixel))
       allocate(rgba_lc(4,nmax_pixel))
@@ -91,6 +107,11 @@
       iflag_mapped = 0
       rgba_lc = 0.0d0
       depth_lc = 0.0d0
+!
+      allocate (sta1(MPI_STATUS_SIZE,nprocs))
+      allocate (req1(nprocs))
+      allocate (sta2(MPI_STATUS_SIZE,nprocs))
+      allocate (req2(nprocs))
 !
       end subroutine allocate_pvr_image_array
 !
@@ -103,10 +124,15 @@
         deallocate(rgb_chara_gl, rgba_chara_gl)
         deallocate(rgba_left_gl, rgba_right_gl)
         deallocate(rgba_real_gl, rgba_recv)
-        deallocate(ave_depth_gl, ave_depth_recv)
+        deallocate(ave_depth_recv)
       end if
 !
+      deallocate (sta1, req1, sta2, req2)
+!
+      deallocate(ave_depth_gl, ip_farther)
+      deallocate(istack_image)
       deallocate(rgba_lc,rgb_chara_lc)
+      deallocate(iflag_mapped,depth_lc)
 !
       end subroutine deallocate_pvr_image_array
 !
@@ -119,14 +145,30 @@
       use quicksort
       use set_rgba_4_each_pixel
       use draw_pvr_colorbar
+      use cal_minmax_and_stacks
 !
       integer(kind = kint), intent(in) :: i_pvr
 !
-      integer(kind = kint) :: num, ip, inum, ipix
+      integer(kind = kint) :: npixel_local
+      real(kind = kreal), allocatable :: rgba_part(:,:,:)
+      real(kind = kreal), allocatable :: rgba_real_part(:,:)
+!
+      integer(kind = kint) :: num, ip, inum, ipix, max_smp, ist
 !
 !
       num_pixel_xy = n_pvr_pixel(1,i_pvr)*n_pvr_pixel(2,i_pvr)
+      call count_number_4_smp(nprocs, ione, num_pixel_xy,               &
+     &    istack_image, max_smp)
+      npixel_local = istack_image(my_rank+1) - istack_image(my_rank)
 !
+      allocate(rgba_part(4,npixel_local,nprocs))
+      allocate(rgba_real_part(4,npixel_local))
+!
+!$omp workshare
+      rgba_part(1:4,1:npixel_local,1:nprocs) = zero
+!$omp end workshare
+!
+! -- Set Average depth for each subdomain
       covered_area = 0.0d0
       do ipix = 1, num_pixel_xy
         covered_area = covered_area + dble(iflag_mapped(ipix))
@@ -136,37 +178,71 @@
       end do
       ave_depth_lc = ave_depth_lc / covered_area
 !
-      num = 4*num_pixel_xy
-      call MPI_Gather(rgba_lc(1,1), num, CALYPSO_REAL,                  &
-     &                rgba_recv(1,1), num, CALYPSO_REAL,                &
-     &                izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Allgather(ave_depth_lc, ione, CALYPSO_REAL,              &
+     &                   ave_depth_gl, ione, CALYPSO_REAL,              &
+     &                   CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Gather(ave_depth_lc, ione, CALYPSO_REAL,                 &
-     &                ave_depth_gl(1), ione, CALYPSO_REAL,              &
-     &                izero, CALYPSO_COMM, ierr_MPI)
+      do ip = 1, nprocs
+        ip_farther(ip) = ip
+      end do
+!
+      call quicksort_real_w_index(nprocs, ave_depth_gl, ione, nprocs,   &
+     &    ip_farther)
+!
+! Distribute image
+!
+      do ip = 1, nprocs
+        ist =          istack_image(ip-1)
+        num = ifour * (istack_image(ip) - istack_image(ip-1))
+        call MPI_ISEND(rgba_lc(1,ist+1), num, CALYPSO_REAL,             &
+     &      (ip-1), 0, CALYPSO_COMM, req1(ip), ierr_MPI)
+      end do
+!
+      do ip = 1, nprocs
+        num = ifour * npixel_local
+        call MPI_IRECV(rgba_part(1,1,ip), num, CALYPSO_REAL,            &
+     &      (ip-1), 0, CALYPSO_COMM, req2(ip), ierr_MPI)
+      end do
+!
+      call MPI_WAITALL (nprocs, req2, sta2, ierr_MPI)
+      call MPI_WAITALL (nprocs, req1, sta1, ierr_MPI)
+!
+!  Alpha blending
+!
+!$omp workshare
+      rgba_real_part(1:4,1:npixel_local) = zero
+!$omp end workshare
+!
+!$omp parallel do private(ipix,inum,ip)
+      do ipix = 1, npixel_local
+        do inum = 1, nprocs
+          ip = ip_farther(inum)
+          call composite_alpha_blending(rgba_part(1,ipix,ip),           &
+     &        rgba_real_part(1,ipix))
+        end do
+      end do
+!$omp end parallel do
+!
+!  Collect image to rank 0
+!
+      num = ifour * npixel_local
+      call MPI_ISEND(rgba_real_part(1,1), num, CALYPSO_REAL,            &
+     &    izero, 0, CALYPSO_COMM, req1(1), ierr_MPI)
 !
       if(my_rank .eq. 0) then
         do ip = 1, nprocs
-          ip_farther(ip) = ip
+          ist =          istack_image(ip-1)
+          num = ifour * (istack_image(ip) - istack_image(ip-1))
+          call MPI_IRECV(rgba_real_gl(1,ist+1), num, CALYPSO_REAL,      &
+     &       (ip-1), 0, CALYPSO_COMM, req2(ip), ierr_MPI)
         end do
-!
-        call quicksort_real_w_index(nprocs, ave_depth_gl, ione, nprocs, &
-     &      ip_farther)
-!
-!
-        rgba_real_gl = 0.0d0
-!$omp parallel do private(ipix,inum,ip)
-        do ipix = 1, num_pixel_xy
-          do inum = 1, nprocs
-            ip = ip_farther(inum)
-            call alpha_blending(rgba_recv(4*ipix-3,ip),                 &
-     &          rgba_real_gl(1,ipix))
-          end do
-        end do
-!$omp end parallel do
+        call MPI_WAITALL(nprocs, req2, sta2, ierr_MPI)
 !
         call set_pvr_colorbar(i_pvr, num_pixel_xy, rgba_real_gl(1,1))
       end if
+      call MPI_WAITALL (ione, req1(1), sta1, ierr_MPI)
+!
+      deallocate(rgba_real_part, rgba_part)
 !
       end subroutine blend_pvr_over_domains
 !

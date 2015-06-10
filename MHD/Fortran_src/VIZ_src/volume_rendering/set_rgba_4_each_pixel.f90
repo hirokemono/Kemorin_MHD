@@ -1,9 +1,16 @@
 !
 !      module set_rgba_4_each_pixel
 !
-      module set_rgba_4_each_pixel
-!
 !      Written by H. Matsui on July, 2006
+!
+!!      subroutine s_set_rgba_4_each_pixel(i_pvr, xin_model, xout_model,&
+!!     &          c_data, grad_data, rgba)
+!!      subroutine compute_opacity(transfer_function_style, opa_value,  &
+!!     &          num_of_features, fea_point, value, opacity_local)
+!!      subroutine composite_alpha_blending(rgba_src, rgba_tgt)
+!!      subroutine alpha_blending(rgba_src, rgba_tgt)
+!
+      module set_rgba_4_each_pixel
 !
       use m_precision
       use m_constants
@@ -15,9 +22,6 @@
 !
 !
       private :: rendering_with_light
-!
-!      subroutine s_set_rgba_4_each_pixel(i_pvr, xin_model, xout_model, &
-!     &          c_data, grad_data, rgba)
 !
 ! ----------------------------------------------------------------------
 !
@@ -202,9 +206,23 @@
 !
       rgb(1:3) = rgb(1:3) * opa_current
       rgb(4) =   opa_current*coff_i
-      call alpha_blending(rgb, accum_rgba)
+      call composite_alpha_blending(rgb, accum_rgba)
 !
       end subroutine rendering_with_light
+!
+! ----------------------------------------------------------------------
+!
+      subroutine composite_alpha_blending(rgba_src, rgba_tgt)
+!
+      real(kind = kreal), intent(in) :: rgba_src(4)
+      real(kind = kreal), intent(inout) :: rgba_tgt(4)
+!
+!
+      rgba_tgt(4) = rgba_src(4) + rgba_tgt(4) * (one - rgba_src(4))
+      rgba_tgt(1:3) =  rgba_src(1:3)                                    &
+     &               + rgba_tgt(1:3) * (one - rgba_src(4))
+!
+      end subroutine composite_alpha_blending
 !
 ! ----------------------------------------------------------------------
 !
@@ -213,12 +231,20 @@
       real(kind = kreal), intent(in) :: rgba_src(4)
       real(kind = kreal), intent(inout) :: rgba_tgt(4)
 !
+      real(kind = kreal) :: rgba_bck(4), a_rgba
 !
-      rgba_tgt(1:3) = rgba_tgt(1:3)                                     &
-     &                   + rgba_src(1:3) * (one - rgba_tgt(4))
-      rgba_tgt(4) = rgba_tgt(4)                                         &
-     &                   + rgba_src(4) * (one - rgba_tgt(4))
-      rgba_tgt(4) = min(one,rgba_tgt(4))
+!
+      rgba_bck(1:4) = rgba_tgt(1:4)
+!
+      rgba_tgt(4) = rgba_src(4) + rgba_bck(4) * (one - rgba_src(4))
+      if(rgba_tgt(4) .eq. zero) then
+        rgba_tgt(1:3) = zero
+      else
+        a_rgba = one / rgba_tgt(4)
+        rgba_tgt(1:3) =  rgba_src(1:3) * (rgba_src(4)*a_rgba)           &
+     &                 + rgba_bck(1:3) * (rgba_bck(4)*a_rgba)           &
+     &                  * (one - rgba_src(4))
+      end if
 !
       end subroutine alpha_blending
 !

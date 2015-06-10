@@ -94,6 +94,7 @@
       use find_node_and_patch_psf
       use set_ucd_data_to_type
       use parallel_ucd_IO_select
+      use set_fields_for_psf
 !
       integer(kind=kint), intent(in) :: numnod, internal_node, numele
       integer(kind=kint), intent(in) :: numsurf, numedge
@@ -150,14 +151,10 @@
 !
 !
       do i_psf = 1, num_psf
-        if (iflag_debug.eq.1) write(*,*) 'alloc_numnod_stack', i_psf
         call allocate_node_param_smp_type(psf_mesh(i_psf)%node)
         call allocate_ele_param_smp_type(psf_mesh(i_psf)%patch)
 !
-        if (iflag_debug.eq.1) write(*,*) 'alloc_ref_field_4_psf'
         call alloc_ref_field_4_psf(numnod, psf_list(i_psf))
-        if (iflag_debug.eq.1) write(*,*) 'alloc_nnod_psf'
-        call alloc_nnod_psf(np_smp, numnod, numedge, psf_list(i_psf))
       end do
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_crossections'
@@ -172,11 +169,7 @@
      &    ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp,           &
      &    psf_search, psf_list, psf_mesh)
 !
-      do i_psf = 1, num_psf
-        call alloc_dat_on_patch_psf(psf_mesh(i_psf))
-        call alloc_phys_data_type                                       &
-     &     (psf_mesh(i_psf)%node%numnod, psf_mesh(i_psf)%field)
-      end do
+      call alloc_psf_field_data(num_psf, psf_mesh)
 !
       do i_psf = 1, num_psf
         psf_out(i_psf)%file_prefix = psf_header(i_psf)
@@ -189,13 +182,9 @@
         call link_field_data_type_2_output(psf_mesh(i_psf)%node%numnod, &
      &      psf_mesh(i_psf)%field, psf_out(i_psf))
 !
-        call alloc_merged_ucd_stack(nprocs, psf_out_m(i_psf))
-        psf_out_m(i_psf)%istack_merged_nod                              &
-     &           => psf_mesh(i_psf)%node%istack_numnod
-        psf_out_m(i_psf)%istack_merged_intnod                           &
-     &           => psf_mesh(i_psf)%node%istack_internod
-        psf_out_m(i_psf)%istack_merged_ele                              &
-     &           => psf_mesh(i_psf)%patch%istack_numele
+        call link_nnod_stacks_type_2_output(nprocs,                     &
+     &      psf_mesh(i_psf)%node, psf_mesh(i_psf)%patch,                &
+     &      psf_out_m(i_psf))
 !
         call sel_write_parallel_ucd_mesh                                &
      &     (psf_out(i_psf), psf_out_m(i_psf))
@@ -270,6 +259,20 @@
 !
       subroutine dealloc_psf_field_type
 !
+      use set_psf_iso_control
+      use set_fields_for_psf
+      use find_node_and_patch_psf
+!
+      integer(kind = kint) :: i_psf
+!
+      do i_psf = 1, num_psf
+        call disconnect_merged_ucd_mesh                                 &
+    &      (psf_out(i_psf), psf_out_m(i_psf))
+      end do
+!
+      call dealloc_psf_node_and_patch(num_psf, psf_list, psf_mesh)
+      call dealloc_psf_field_name(num_psf, psf_mesh)
+      call dealloc_psf_field_data(num_psf, psf_mesh)
 !
       deallocate(psf_mesh, psf_list)
       deallocate(psf_search, psf_out, psf_out_m, psf_param)
