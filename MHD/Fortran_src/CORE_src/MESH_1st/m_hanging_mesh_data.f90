@@ -17,25 +17,12 @@
       module m_hanging_mesh_data
 !
       use m_precision
+      use t_hanging_mesh_data
 !
       implicit none
 !
-      integer(kind = kint), allocatable :: iflag_hang_nod(:,:)
-      integer(kind = kint), allocatable :: iflag_hang_edge(:,:)
-      integer(kind = kint), allocatable :: iflag_hang_surf(:,:)
-!
-      integer(kind = kint) :: nnod_hang4
-      integer(kind = kint), allocatable :: inod_hang4(:,:)
-      integer(kind = kint) :: nnod_hang2
-      integer(kind = kint), allocatable :: inod_hang2(:,:)
-!
-      integer(kind = kint) :: nedge_hang2
-      integer(kind = kint), allocatable :: iedge_hang2(:,:)
-!
-      integer(kind = kint) :: nsurf_hang4
-      integer(kind = kint), allocatable :: isurf_hang4(:,:)
-      integer(kind = kint) :: nsurf_hang2
-      integer(kind = kint), allocatable :: isurf_hang2(:,:)
+!>     Structure for hanging nodes on mesh
+      type(hanging_mesh), save :: hang1
 !
 !-----------------------------------------------------------------------
 !
@@ -47,13 +34,7 @@
 !
       integer(kind = kint), intent(in) :: nnod, nsurf, nedge
 !
-      allocate(iflag_hang_nod(2,nnod))
-      allocate(iflag_hang_surf(2,nsurf))
-      allocate(iflag_hang_edge(2,nedge))
-!
-      if(nnod .gt.  0) iflag_hang_nod =  0
-      if(nsurf .gt. 0) iflag_hang_surf = 0
-      if(nedge .gt. 0) iflag_hang_edge = 0
+      call alloc_iflag_hanging_type(nnod, nsurf, nedge, hang1)
 !
       end subroutine allocate_iflag_hanging
 !
@@ -62,9 +43,7 @@
       subroutine deallocate_iflag_hanging
 !
 !
-      deallocate(iflag_hang_nod)
-      deallocate(iflag_hang_surf)
-      deallocate(iflag_hang_edge)
+      call dealloc_iflag_hanging_type(hang1)
 !
       end subroutine deallocate_iflag_hanging
 !
@@ -74,11 +53,7 @@
       subroutine allocate_inod_hang
 !
 !
-      allocate(inod_hang4(5,nnod_hang4))
-      allocate(inod_hang2(3,nnod_hang2))
-!
-      if(nnod_hang4 .gt. 0) inod_hang4 = 0
-      if(nnod_hang2 .gt. 0) inod_hang2 = 0
+      call alloc_id_hang(hang1%nod_hang)
 !
       end subroutine allocate_inod_hang
 !
@@ -87,10 +62,7 @@
       subroutine allocate_isurf_hang
 !
 !
-      allocate(isurf_hang4(5,nsurf_hang4))
-      allocate(isurf_hang2(3,nsurf_hang2))
-      if(nsurf_hang4 .gt. 0) isurf_hang4 = 0
-      if(nsurf_hang2 .gt. 0) isurf_hang2 = 0
+      call alloc_id_hang(hang1%surf_hang)
 !
       end subroutine allocate_isurf_hang
 !
@@ -99,8 +71,7 @@
       subroutine allocate_iedge_hang
 !
 !
-      allocate(iedge_hang2(3,nedge_hang2))
-      if(nedge_hang2 .gt. 0) iedge_hang2 = 0
+      call alloc_id_hang(hang1%edge_hang)
 !
       end subroutine allocate_iedge_hang
 !
@@ -110,7 +81,7 @@
       subroutine deallocate_inod_hang
 !
 !
-      deallocate(inod_hang4, inod_hang2)
+      call dealloc_id_hang(hang1%nod_hang)
 !
       end subroutine deallocate_inod_hang
 !
@@ -119,7 +90,7 @@
       subroutine deallocate_isurf_hang
 !
 !
-      deallocate(isurf_hang4, isurf_hang2)
+      call dealloc_id_hang(hang1%surf_hang)
 !
       end subroutine deallocate_isurf_hang
 !
@@ -128,7 +99,7 @@
       subroutine deallocate_iedge_hang
 !
 !
-      deallocate(iedge_hang2)
+      call dealloc_id_hang(hang1%edge_hang)
 !
       end subroutine deallocate_iedge_hang
 !

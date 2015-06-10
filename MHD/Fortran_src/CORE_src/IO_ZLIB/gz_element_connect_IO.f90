@@ -4,15 +4,10 @@
 !     Written by H. Matsui on Oct., 2006
 !
 !
-!
 !      subroutine write_element_info_gz
-!      subroutine write_surface_4_element_gz
-!      subroutine write_edge_4_element_gz
 !
 !      subroutine read_number_of_element_gz
 !      subroutine read_element_info_gz
-!      subroutine read_surface_4_element_gz
-!      subroutine read_edge_4_element_gz
 !
       module gz_element_connect_IO
 !
@@ -52,47 +47,6 @@
       end subroutine write_element_info_gz
 !
 !------------------------------------------------------------------
-!
-      subroutine write_surface_4_element_gz
-!
-      integer(kind = kint) :: i
-!
-      write(textbuf,'(2i16,a1)') nsf_4_ele_IO, nsurf_in_ele_IO, char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(fmt_txt,'(a5,i3,a7)') '(i16,', nsurf_in_ele_IO, 'i16,a1)'
-      do i = 1, nsf_4_ele_IO
-        write(textbuf,fmt_txt)                                          &
-    &         i, isf_4_ele_IO(i,1:nsurf_in_ele_IO), char(0)
-        call gz_write_textbuf_w_lf
-      end do
-!
-      call deallocate_surface_connect_IO
-!
-      end subroutine write_surface_4_element_gz
-!
-!------------------------------------------------------------------
-!
-      subroutine write_edge_4_element_gz
-!
-      integer(kind = kint) :: i
-!
-!
-      write(textbuf,'(2i16,a1)') ned_4_ele_IO, nedge_in_ele_IO, char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(fmt_txt,'(a5,i3,a7)') '(i16,', nedge_in_ele_IO, 'i16,a1)'
-      do i = 1, ned_4_ele_IO
-        write(textbuf,fmt_txt)                                          &
-     &        i, iedge_4_ele_IO(i,1:nedge_in_ele_IO), char(0)
-        call gz_write_textbuf_w_lf
-      end do
-!
-      call deallocate_edge_connect_IO
-!
-      end subroutine write_edge_4_element_gz
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine read_number_of_element_gz
@@ -130,44 +84,6 @@
        end do
 !
        end subroutine read_element_info_gz
-!
-!------------------------------------------------------------------
-!
-      subroutine read_surface_4_element_gz
-!
-      integer (kind = kint) :: i, itmp
-!
-!
-      call skip_gz_comment_int(nsf_4_ele_IO)
-      read(textbuf,*) nsf_4_ele_IO, nsurf_in_ele_IO
-!
-      call allocate_surface_connect_IO
-!
-      do i = 1, nsf_4_ele_IO
-        call get_one_line_from_gz_f
-        read(textbuf,*) itmp, isf_4_ele_IO(i,1:nsurf_in_ele_IO)
-      end do
-!
-      end subroutine read_surface_4_element_gz
-!
-!------------------------------------------------------------------
-!
-      subroutine read_edge_4_element_gz
-!
-      integer(kind = kint) :: i, itmp
-!
-      call skip_gz_comment_int(ned_4_ele_IO)
-      read(textbuf,*) ned_4_ele_IO, nedge_in_ele_IO
-!
-!
-      call allocate_edge_connect_IO
-!
-      do i = 1, ned_4_ele_IO
-        call get_one_line_from_gz_f
-        read(textbuf,*) itmp, iedge_4_ele_IO(i,1:nedge_in_ele_IO)
-      end do
-!
-      end subroutine read_edge_4_element_gz
 !
 !------------------------------------------------------------------
 !

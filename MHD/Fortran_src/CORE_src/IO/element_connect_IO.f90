@@ -7,17 +7,11 @@
 !      subroutine write_surface_4_element(id_file)
 !      subroutine write_edge_4_element(id_file)
 !      subroutine write_element_info_b(id_file)
-!      subroutine write_surface_4_element_b(id_file)
-!      subroutine write_edge_4_element_b(id_file)
 !
 !      subroutine read_number_of_element(id_file)
 !      subroutine read_element_info(id_file)
-!      subroutine read_surface_4_element(id_file)
-!      subroutine read_edge_4_element(id_file)
 !      subroutine read_number_of_element_b(id_file)
 !      subroutine read_element_info_b(id_file)
-!      subroutine read_surface_4_element_b(id_file)
-!      subroutine read_edge_4_element_b(id_file)
 !
 !
       module element_connect_IO
@@ -111,36 +105,6 @@
       end subroutine write_element_info_b
 !
 !------------------------------------------------------------------
-!
-      subroutine write_surface_4_element_b(id_file)
-!
-      integer (kind = kint), intent(in) :: id_file
-      integer (kind = kint) :: i
-!
-      write(id_file) nsf_4_ele_IO, nsurf_in_ele_IO
-      write(id_file)                                                    &
-     & (isf_4_ele_IO(i,1:nsurf_in_ele_IO),i=1,nsf_4_ele_IO)
-!
-      call deallocate_surface_connect_IO
-!
-      end subroutine write_surface_4_element_b
-!
-!------------------------------------------------------------------
-!
-      subroutine write_edge_4_element_b(id_file)
-!
-      integer (kind = kint), intent(in) :: id_file
-      integer(kind = kint) :: i
-!
-      write(id_file) ned_4_ele_IO, nedge_in_ele_IO
-      write(id_file)                                                    &
-     & (iedge_4_ele_IO(i,1:nedge_in_ele_IO), i=1,ned_4_ele_IO)
-!
-      call deallocate_edge_connect_IO
-!
-      end subroutine write_edge_4_element_b
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine read_number_of_element(id_file)
@@ -187,46 +151,6 @@
        end subroutine read_element_info
 !
 !------------------------------------------------------------------
-!
-      subroutine read_surface_4_element(id_file)
-!
-      use skip_comment_f
-!
-      integer (kind = kint), intent(in) :: id_file
-      integer (kind = kint) :: i, itmp
-!
-      call skip_comment(character_4_read,id_file)
-      read(character_4_read,*) nsf_4_ele_IO, nsurf_in_ele_IO
-!
-      call allocate_surface_connect_IO
-!
-      do i = 1, nsf_4_ele_IO
-        read(id_file,*) itmp, isf_4_ele_IO(i,1:nsurf_in_ele_IO)
-      end do
-!
-      end subroutine read_surface_4_element
-!
-!------------------------------------------------------------------
-!
-      subroutine read_edge_4_element(id_file)
-!
-      use skip_comment_f
-!
-      integer (kind = kint), intent(in) :: id_file
-      integer(kind = kint) :: i, itmp
-!
-      call skip_comment(character_4_read,id_file)
-      read(character_4_read,*) ned_4_ele_IO, nedge_in_ele_IO
-!
-      call allocate_edge_connect_IO
-!
-      do i = 1, ned_4_ele_IO
-        read(id_file,*) itmp, iedge_4_ele_IO(i,1:nedge_in_ele_IO)
-      end do
-!
-      end subroutine read_edge_4_element
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
        subroutine read_number_of_element_b(id_file)
@@ -264,38 +188,6 @@
        read(id_file) (ie_dummy(i,1:nodelm_dummy(i)),i=1,numele_dummy)
 !
        end subroutine read_element_info_b
-!
-!------------------------------------------------------------------
-!
-      subroutine read_surface_4_element_b(id_file)
-!
-      integer (kind = kint), intent(in) :: id_file
-      integer(kind = kint) :: i
-!
-      read(id_file) nsf_4_ele_IO, nsurf_in_ele_IO
-!
-      call allocate_surface_connect_IO
-!
-      read(id_file)                                                     &
-     & (isf_4_ele_IO(i,1:nsurf_in_ele_IO),i=1,nsf_4_ele_IO)
-!
-      end subroutine read_surface_4_element_b
-!
-!------------------------------------------------------------------
-!
-      subroutine read_edge_4_element_b(id_file)
-!
-      integer (kind = kint), intent(in) :: id_file
-      integer(kind = kint) :: i
-!
-      read(id_file) ned_4_ele_IO, nedge_in_ele_IO
-!
-      call allocate_edge_connect_IO
-!
-      read(id_file)                                                     &
-     & (iedge_4_ele_IO(i,1:nedge_in_ele_IO),i=1,ned_4_ele_IO)
-!
-      end subroutine read_edge_4_element_b
 !
 !------------------------------------------------------------------
 !

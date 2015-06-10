@@ -4,16 +4,10 @@
 !     Written by H. Matsui on Oct., 2006
 !
 !      subroutine write_element_comm_table
-!      subroutine write_element_comm_table_b
-!      subroutine read_element_comm_table
-!      subroutine read_element_comm_table_b
 !
 !      subroutine write_element_geometry
-!      subroutine write_element_geometry_b
 !      subroutine write_element_geometry_sph
 !      subroutine write_element_geometry_cyl
-!      subroutine read_element_geometries
-!      subroutine read_element_geometries_b
 !
       module element_data_IO
 !
@@ -61,64 +55,6 @@
       end subroutine write_element_comm_table
 !
 !------------------------------------------------------------------
-!
-      subroutine write_element_comm_table_b
-!
-      use domain_data_IO
-      use comm_stack_item_IO
-!
-!
-!      write(input_file_code,*) '! 1.parallel information'
-      call write_domain_info_b(input_file_code)
-!
-!      write(input_file_code,*) '! 2.import / export information '
-!      write(input_file_code,*) '! 2.1 element ID for import '
-      call write_import_data_b(input_file_code)
-!
-!      write(input_file_code,*) '! 2.2 element ID for export '
-      call write_export_data_b(input_file_code)
-!
-      end subroutine write_element_comm_table_b
-!
-!------------------------------------------------------------------
-!
-      subroutine read_element_comm_table
-!
-      use domain_data_IO
-      use comm_stack_item_IO
-!
-!
-!      write(input_file_code,*) '! 1.parallel information'
-      call read_domain_info(input_file_code)
-!
-!      write(input_file_code,*) '! 2.import / export information '
-!      write(input_file_code,*) '! 2.1 element ID for import '
-      call read_import_data(input_file_code)
-!      write(input_file_code,*) '! 2.2 element ID for export '
-      call read_export_data(input_file_code)
-!
-      end subroutine read_element_comm_table
-!
-!------------------------------------------------------------------
-!
-      subroutine read_element_comm_table_b
-!
-      use domain_data_IO
-      use comm_stack_item_IO
-!
-!
-!      write(input_file_code,*) '! 1.parallel information'
-      call read_domain_info_b(input_file_code)
-!
-!      write(input_file_code,*) '! 2.import / export information '
-!      write(input_file_code,*) '! 2.1 element ID for import '
-      call read_import_data_b(input_file_code)
-!      write(input_file_code,*) '! 2.2 element ID for export '
-      call read_export_data_b(input_file_code)
-!
-      end subroutine read_element_comm_table_b
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine write_element_geometry
@@ -142,22 +78,6 @@
       call write_scalar_in_element(input_file_code)
 !
       end subroutine write_element_geometry
-!
-!------------------------------------------------------------------
-!
-      subroutine write_element_geometry_b
-!
-      use node_geometry_IO
-!
-!
-!      write(input_file_code,*) '! 3.element information'
-!      write(input_file_code,*) '! 3.1 center of element (r,theta,phi)'
-      call write_geometry_info_b(input_file_code)
-!
-!      write(input_file_code,*) '! 3.2 Volume of element '
-      call write_scalar_in_element_b(input_file_code)
-!
-      end subroutine write_element_geometry_b
 !
 !------------------------------------------------------------------
 !
@@ -206,41 +126,6 @@
       call write_scalar_in_element(input_file_code)
 !
       end subroutine write_element_geometry_cyl
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine read_element_geometries
-!
-      use node_geometry_IO
-!
-!
-!      write(input_file_code,*) '! 3.element information'
-!      write(input_file_code,*) '! 3.1 center of element'
-      call read_number_of_node(input_file_code)
-      call read_geometry_info(input_file_code)
-!
-!      write(input_file_code,*) '! 3.2 Volume of element '
-      call read_scalar_in_element(input_file_code)
-!
-      end subroutine read_element_geometries
-!
-!------------------------------------------------------------------
-!
-      subroutine read_element_geometries_b
-!
-      use node_geometry_IO
-!
-!
-!      write(input_file_code,*) '! 3.element information'
-!      write(input_file_code,*) '! 3.1 center of element'
-      call read_number_of_node_b(input_file_code)
-      call read_geometry_info_b(input_file_code)
-!
-!      write(input_file_code,*) '! 3.2 Volume of element '
-      call read_scalar_in_element_b(input_file_code)
-!
-      end subroutine read_element_geometries_b
 !
 !------------------------------------------------------------------
 !
