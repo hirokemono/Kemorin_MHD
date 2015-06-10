@@ -8,10 +8,9 @@
 !      subroutine write_gz_step_data(my_rank)
 !      subroutine read_gz_step_data
 !
-!      subroutine write_gz_field_data(nnod, num_field, ntot_comp,       &
-!     &          ncomp_field, field_name, field_data)
-!      subroutine read_gz_field_data(nnod, num_field, ntot_comp,        &
-!     &          ncomp_field, field_name, field_data)
+!!      subroutine read_gz_field_data(nnod, num_field, ntot_comp,       &
+!!     &          ncomp_field, field_name, field_data)
+!!      subroutine read_gz_field_vect(nnod, ndir, vector)
 !
       module gz_field_data_IO
 !
@@ -21,7 +20,7 @@
 !
       implicit none
 !
-      private :: write_gz_field_vect, read_gz_field_vect
+      private :: write_gz_field_vect
 !
 !------------------------------------------------------------------
 !
@@ -124,11 +123,12 @@
       integer(kind=kint)  :: i_fld, icou
 !
 !
-      icou = 0
+      icou = 1
       do i_fld = 1, num_field
 !
-        call read_gz_field_vect(field_name(i_fld),                      &
-     &      nnod, ncomp_field(i_fld), field_data(1,icou+1) )
+        call skip_gz_comment_chara(field_name(i_fld))
+        call read_gz_field_vect                                         &
+     &     (nnod, ncomp_field(i_fld), field_data(1,icou) )
         icou = icou + ncomp_field(i_fld)
       end do
 !
@@ -160,21 +160,17 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_gz_field_vect(d_name, nnod, ndir, vector)
+      subroutine read_gz_field_vect(nnod, ndir, vector)
 !
       integer(kind=kint), intent(in) :: nnod, ndir
-      character(len=kchara), intent(inout) :: d_name
       real(kind = kreal), intent(inout) :: vector(nnod,ndir)
 !
-      integer(kind=kint)  :: i, nchara
+      integer(kind=kint)  :: i
 !
-!
-      call skip_gz_comment_chara(d_name)
 !
       do i = 1, nnod
         call get_one_line_from_gz_f
         read(textbuf,*)  vector(i,1:ndir)
-!        if(mod(i,10000) .eq. 0) write(*,*) 'read ', i
       end do
 !
       end subroutine read_gz_field_vect

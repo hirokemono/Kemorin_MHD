@@ -35,7 +35,7 @@ int check_gzfile_eof();
 void write_compress_txt(int *num_buffer, char *input_txt);
 void write_compress_txt_nolf(int *num_buffer, char *input_txt);
 
-int gzseek_go_fwd_f(int *ioffset);
+void gzseek_go_fwd_f(int *ioffset, int *ierr);
 int gzread_f(int *ilength, char *textbuf);
 int gzwrite_f(int *ilength, char *textbuf);
 

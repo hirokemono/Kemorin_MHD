@@ -17,6 +17,7 @@
 !
 !!      subroutine read_gz_multi_real(num, real_input)
 !!      subroutine read_gz_multi_int(num, int_input)
+!!      subroutine read_gz_multi_int8(num, int8_input)
 !!      subroutine write_gz_multi_int_8i10(num, int_output)
 !!      subroutine write_gz_multi_int_10i8(num, int_output)
 !!      subroutine write_gz_multi_int_10i12(num, int_output)
@@ -247,6 +248,33 @@
       end if
 !
       end subroutine read_gz_multi_int
+!
+!------------------------------------------------------------------
+!
+      subroutine read_gz_multi_int8(num, int8_input)
+!
+      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(inout) :: int8_input(num)
+!
+      integer(kind = kint) :: ist
+!
+!
+      if(num .le. 0) return
+!
+      call skip_gz_comment_get_nword
+      read(textbuf,*) int8_input(1:num_word)
+!
+      if(num .gt. num_word) then
+        ist = num_word
+        do
+          call get_one_line_from_gz_f
+          read(textbuf,*) int8_input(ist+1:ist+num_word)
+          ist = ist + num_word
+          if(ist .ge. num) exit
+        end do
+      end if
+!
+      end subroutine read_gz_multi_int8
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

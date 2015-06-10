@@ -26,7 +26,7 @@
 !
       implicit none
 !
-      integer, external :: gzwrite_f, gzread_f, gzseek_go_fwd_f
+      integer, external :: gzwrite_f, gzread_f
 !
 !  ---------------------------------------------------------------------
 !

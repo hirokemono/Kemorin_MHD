@@ -247,10 +247,10 @@ static void get_one_line_by_zlib(int *num_buffer, int *num_word, int *nchara, ch
 	return;
 }
 
-int gzseek_go_fwd_f(int *ioffset){
-    z_off_t ierr;
-    ierr = gzseek(file_gz, (z_off_t) *ioffset, SEEK_CUR);
-    return (int)ierr;
+void gzseek_go_fwd_f(int *ioffset, int *ierr){
+    z_off_t ierr_z;
+    ierr_z = gzseek(file_gz, (z_off_t) *ioffset, SEEK_CUR);
+    *ierr =  (int)ierr_z;
 }
 
 int gzread_f(int *ilength, char *textbuf){
