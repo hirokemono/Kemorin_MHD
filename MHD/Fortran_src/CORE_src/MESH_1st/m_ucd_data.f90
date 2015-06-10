@@ -10,6 +10,8 @@
 !!      subroutine set_control_ucd_file_def
 !!      subroutine set_ucd_file_prefix(file_prefix)
 !!      subroutine set_ucd_file_format(ifile_format)
+!!
+!!      subroutine link_nnod_stacks_2_ucd_out(nprocs)
 !!@endverbatim
 !
       module m_ucd_data
@@ -135,6 +137,21 @@
      &    num_nod_component, phys_nod_name, d_nod, fem_ucd)
 !
       end subroutine link_fem_field_data_2_ucd_out
+!
+!-----------------------------------------------------------------------
+!
+      subroutine link_nnod_stacks_2_ucd_out(nprocs)
+!
+      use m_geometry_data
+      use set_ucd_data
+!
+      integer(kind = kint),  intent(in) :: nprocs
+!
+!
+      call link_numnod_stacks_2_output(nprocs, istack_numnod,           &
+     &    istack_internod, istack_numele, merged_ucd)
+!
+      end subroutine link_nnod_stacks_2_ucd_out
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

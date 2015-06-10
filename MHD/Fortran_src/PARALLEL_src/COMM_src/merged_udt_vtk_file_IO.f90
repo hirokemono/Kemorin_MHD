@@ -46,16 +46,19 @@
       subroutine init_merged_ucd(ucd, m_ucd)
 !
       use m_geometry_parameter
+      use m_geometry_data
       use m_nod_comm_table
       use m_merged_ucd_data
       use hdf5_file_IO
+      use set_ucd_data
 !
       type(ucd_data), intent(inout) :: ucd
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
-      call allocate_merged_ucd_num(m_ucd)
-      call count_merged_ucd(numnod, internal_node, ucd%nele, m_ucd)
+      call allocate_merged_ucd_status
+      call link_numnod_stacks_2_output(nprocs, istack_numnod,           &
+     &    istack_internod, istack_numele, m_ucd)
 !
       call allocate_merged_ucd_data(numnod, ucd%ntot_comp)
       call set_node_double_address                                      &

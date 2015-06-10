@@ -9,7 +9,10 @@
 !!@verbatim
 !!      subroutine gz_write_step_fld_file_b(gzip_name, my_rank, fld_IO)
 !!
+!!      subroutine gz_read_step_field_file_b(gzip_name, my_rank, fld_IO)
 !!      subroutine gz_rd_alloc_st_fld_file_b(gzip_name, my_rank, fld_IO)
+!!
+!!      subroutine gz_rd_alloc_st_fld_head_b(gzip_name, my_rank, fld_IO)
 !!@endverbatim
 !
       module gz_field_file_IO_b
@@ -54,6 +57,39 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine gz_read_step_field_file_b(gzip_name, my_rank, fld_IO)
+!
+      character(len=kchara), intent(in) :: gzip_name
+      integer(kind = kint), intent(in) :: my_rank
+!
+      type(field_IO), intent(inout) :: fld_IO
+!
+      integer(kind = kint_gl) :: istack_merged(1)
+      integer(kind = kint) :: id_rank
+!
+!
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read gzipped binary data file: ', trim(gzip_name)
+!
+      call open_rd_gzfile(gzip_name)
+!
+      call read_step_data_mpi_b(id_rank)
+      call gz_read_fld_mul_i8head_b(ione, istack_merged)
+      call gz_read_fld_inthead_b(fld_IO%num_field_IO)
+!
+      call gz_read_fld_mul_inthead_b                                    &
+     &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
+!
+      call read_field_data_mpi_b                                        &
+     &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
+     &    fld_IO%fld_name, fld_IO%d_IO)
+!
+      call close_gzfile()
+!
+      end subroutine gz_read_step_field_file_b
+!
+! -----------------------------------------------------------------------
+!
       subroutine gz_rd_alloc_st_fld_file_b(gzip_name, my_rank, fld_IO)
 !
       character(len=kchara), intent(in) :: gzip_name
@@ -88,6 +124,38 @@
       call close_gzfile()
 !
       end subroutine gz_rd_alloc_st_fld_file_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine gz_rd_alloc_st_fld_head_b(gzip_name, my_rank, fld_IO)
+!
+      character(len=kchara), intent(in) :: gzip_name
+      integer(kind = kint), intent(in) :: my_rank
+!
+      type(field_IO), intent(inout) :: fld_IO
+!
+      integer(kind = kint_gl) :: istack_merged(1)
+      integer(kind = kint) :: id_rank
+!
+!
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read gzipped binary data file: ', trim(gzip_name)
+!
+      call open_rd_gzfile(gzip_name)
+!
+      call read_step_data_mpi_b(id_rank)
+      call gz_read_fld_mul_i8head_b(ione, istack_merged)
+      call gz_read_fld_inthead_b(fld_IO%num_field_IO)
+!
+      call alloc_phys_name_IO(fld_IO)
+      call gz_read_fld_mul_inthead_b                                    &
+     &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
+!
+      call close_gzfile()
+!
+      call cal_istack_phys_comp_IO(fld_IO)
+!
+      end subroutine gz_rd_alloc_st_fld_head_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

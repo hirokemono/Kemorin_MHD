@@ -45,16 +45,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_merged_ucd_num(m_ucd)
+      subroutine allocate_merged_ucd_status
 !
-      use t_ucd_data
-!
-      type(merged_ucd_data), intent(inout) :: m_ucd
 !
       allocate (sta1(MPI_STATUS_SIZE))
-      call alloc_merged_ucd_stack(nprocs, m_ucd)
 !
-      end subroutine allocate_merged_ucd_num
+      end subroutine allocate_merged_ucd_status
 !
 ! -----------------------------------------------------------------------
 !
@@ -90,55 +86,9 @@
       deallocate (sta1)
       deallocate(inod_local_ucd, ihome_pe_ucd)
 !
-      call dealloc_merged_ucd_stack(m_ucd)
+      call disconnect_merged_ucd_stack(m_ucd)
 !
       end subroutine deallocate_merged_ucd_data
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine count_merged_ucd(nnod, internal_node, nele_ucd, m_ucd)
-!
-      use t_ucd_data
-!
-      integer(kind = kint), intent(in) :: nnod, internal_node
-      integer(kind = kint_gl), intent(inout) :: nele_ucd
-      type(merged_ucd_data), intent(inout) :: m_ucd
-!
-      integer(kind = kint), allocatable :: nnod_ucd_list(:)
-      integer(kind = kint), allocatable :: nele_ucd_list(:)
-      integer(kind = kint), allocatable :: internod_ucd_list(:)
-      integer(kind = kint) :: ip
-!
-!
-      allocate(nnod_ucd_list(nprocs))
-      allocate(nele_ucd_list(nprocs))
-      allocate(internod_ucd_list(nprocs))
-      nnod_ucd_list = 0
-      nele_ucd_list = 0
-      internod_ucd_list = 0
-!
-      call MPI_Allgather(nnod, ione, CALYPSO_INTEGER,                   &
-     &    nnod_ucd_list, ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
-      call MPI_Allgather(nele_ucd, ione, CALYPSO_INTEGER,               &
-     &    nele_ucd_list, ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
-      call MPI_Allgather(internal_node, ione, CALYPSO_INTEGER,          &
-     &    internod_ucd_list, ione, CALYPSO_INTEGER, CALYPSO_COMM,       &
-     &    ierr_MPI)
-!
-      do ip = 1,  nprocs
-        m_ucd%istack_merged_nod(ip) = m_ucd%istack_merged_nod(ip-1)     &
-     &                              + nnod_ucd_list(ip)
-        m_ucd%istack_merged_ele(ip) = m_ucd%istack_merged_ele(ip-1)     &
-     &                              + nele_ucd_list(ip)
-        m_ucd%istack_merged_intnod(ip)                                  &
-     &                    = m_ucd%istack_merged_intnod(ip-1)            &
-     &                              + internod_ucd_list(ip)
-      end do
-!
-      deallocate(nnod_ucd_list, nele_ucd_list, internod_ucd_list)
-!
-      end subroutine count_merged_ucd
 !
 ! -----------------------------------------------------------------------
 !

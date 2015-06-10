@@ -9,7 +9,10 @@
 !!@verbatim
 !!      subroutine write_gz_step_field_file_mpi(file_name, fld_IO)
 !!
+!!      subroutine read_step_field_file_gz_mpi(file_name, fld_IO)
 !!      subroutine read_alloc_stp_fld_file_gz_mpi(file_name, fld_IO)
+!!
+!!      subroutine read_alloc_stp_fld_head_gz_mpi(file_name, fld_IO)
 !!@endverbatim
 !
       module gz_field_file_MPI_IO
@@ -74,6 +77,36 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine read_step_field_file_gz_mpi(file_name, fld_IO)
+!
+      use gz_field_data_IO
+      use skip_gz_comment
+!
+      character(len=kchara), intent(in) :: file_name
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      call set_istack_merged_nod(fld_IO%nnod_IO)
+!
+      call open_rd_gzfile(file_name)
+      call read_gz_step_data
+!
+      call read_field_header_gz_mpi                                     &
+     &   (fld_IO%num_field_IO,  istack_merged_nod)
+!
+      call read_field_num_gz_mpi                                        &
+     &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
+!
+      call read_field_data_gz_mpi(fld_IO%nnod_IO, fld_IO%num_field_IO,  &
+     &    fld_IO%ntot_comp_IO, fld_IO%num_comp_IO, fld_IO%fld_name,     &
+     &    fld_IO%d_IO, istack_merged_nod)
+!
+      call deallocate_istack_merged_nod
+!
+      end subroutine read_step_field_file_gz_mpi
+!
+! -----------------------------------------------------------------------
+!
       subroutine read_alloc_stp_fld_file_gz_mpi(file_name, fld_IO)
 !
       use gz_field_data_IO
@@ -107,6 +140,35 @@
       call deallocate_istack_merged_nod
 !
       end subroutine read_alloc_stp_fld_file_gz_mpi
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_alloc_stp_fld_head_gz_mpi(file_name, fld_IO)
+!
+      use gz_field_data_IO
+      use skip_gz_comment
+!
+      character(len=kchara), intent(in) :: file_name
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      call set_istack_merged_nod(fld_IO%nnod_IO)
+!
+      call open_rd_gzfile(file_name)
+      call read_gz_step_data
+!
+      call read_field_header_gz_mpi                                     &
+     &   (fld_IO%num_field_IO,  istack_merged_nod)
+      call alloc_phys_name_IO(fld_IO)
+!
+      call read_field_num_gz_mpi                                        &
+     &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
+!
+      call deallocate_istack_merged_nod
+!
+      call cal_istack_phys_comp_IO(fld_IO)
+!
+      end subroutine read_alloc_stp_fld_head_gz_mpi
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

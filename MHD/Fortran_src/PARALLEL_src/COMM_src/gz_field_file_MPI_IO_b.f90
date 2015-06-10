@@ -9,7 +9,10 @@
 !!@verbatim
 !!      subroutine gz_write_step_fld_file_mpi_b(file_name, fld_IO)
 !!
+!!      subroutine gz_read_step_field_file_mpi_b(file_name, fld_IO)
 !!      subroutine gz_rd_alloc_st_fld_file_mpi_b(file_name, fld_IO)
+!!
+!!      subroutine gz_rd_alloc_st_fld_head_mpi_b(file_name, fld_IO)
 !!@endverbatim
 !
       module gz_field_file_MPI_IO_b
@@ -72,6 +75,36 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine gz_read_step_field_file_mpi_b(file_name, fld_IO)
+!
+      character(len=kchara), intent(in) :: file_name
+!
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      call set_istack_merged_nod(fld_IO%nnod_IO)
+!
+      call open_rd_gzfile(file_name)
+!
+      call read_step_data_mpi_b(my_rank)
+      call gz_read_fld_mul_i8head_mpi_b(nprocs, istack_merged_nod(1))
+      call gz_read_fld_inthead_mpi_b(fld_IO%num_field_IO)
+!
+      call gz_read_fld_mul_inthead_mpi_b                                &
+     &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
+!
+      call read_field_data_mpi_b                                        &
+     &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
+     &    fld_IO%fld_name, fld_IO%d_IO, istack_merged_nod)
+!
+      call close_gzfile()
+!
+      call deallocate_istack_merged_nod
+!
+      end subroutine gz_read_step_field_file_mpi_b
+!
+! -----------------------------------------------------------------------
+!
       subroutine gz_rd_alloc_st_fld_file_mpi_b(file_name, fld_IO)
 !
       character(len=kchara), intent(in) :: file_name
@@ -104,6 +137,34 @@
       call deallocate_istack_merged_nod
 !
       end subroutine gz_rd_alloc_st_fld_file_mpi_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine gz_rd_alloc_st_fld_head_mpi_b(file_name, fld_IO)
+!
+      character(len=kchara), intent(in) :: file_name
+!
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      call set_istack_merged_nod(fld_IO%nnod_IO)
+!
+      call open_rd_gzfile(file_name)
+!
+      call read_step_data_mpi_b(my_rank)
+      call gz_read_fld_mul_i8head_mpi_b(nprocs, istack_merged_nod(1))
+      call gz_read_fld_inthead_mpi_b(fld_IO%num_field_IO)
+!
+      call alloc_phys_name_IO(fld_IO)
+      call gz_read_fld_mul_inthead_mpi_b                                &
+     &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
+!
+      call close_gzfile()
+      call cal_istack_phys_comp_IO(fld_IO)
+!
+      call deallocate_istack_merged_nod
+!
+      end subroutine gz_rd_alloc_st_fld_head_mpi_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

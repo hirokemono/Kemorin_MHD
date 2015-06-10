@@ -248,10 +248,17 @@
 !
       subroutine sel_write_step_field_file(file_name, my_rank, fld_IO)
 !
+      use delete_data_files
+!
       character(len=kchara), intent(in) :: file_name
       integer(kind=kint), intent(in) :: my_rank
       type(field_IO), intent(in) :: fld_IO
 !
+!
+      if( (fld_IO%iflag_file_fmt/iflag_single) .gt. 0                   &
+     &     .and. my_rank.eq.0) then
+        call delete_file_if_exist(file_name)
+      end if
 !
       if(fld_IO%iflag_file_fmt .eq. iflag_single) then
         call write_step_field_file_mpi(file_name, fld_IO)
@@ -269,7 +276,6 @@
      &       .eq. iflag_single+id_gzip_txt_file_fmt) then
         call write_gz_step_field_file_mpi(file_name, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_bin_file_fmt) then
-        write(*,*) 'gz_write_step_fld_file_b'
         call gz_write_step_fld_file_b(file_name, my_rank, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
         call write_gz_step_field_file(file_name, my_rank, fld_IO)
@@ -294,6 +300,14 @@
         call read_step_field_file_b(file_name, my_rank, fld_IO)
 !
 #ifdef ZLIB_IO
+      else if(fld_IO%iflag_file_fmt                                    &
+     &       .eq. iflag_single+id_gzip_bin_file_fmt) then
+        call gz_read_step_field_file_mpi_b(file_name, fld_IO)
+      else if(fld_IO%iflag_file_fmt                                    &
+     &       .eq. iflag_single+id_gzip_txt_file_fmt) then
+        call read_step_field_file_gz_mpi(file_name, fld_IO)
+      else if(fld_IO%iflag_file_fmt .eq. id_gzip_bin_file_fmt) then
+        call gz_read_step_field_file_b(file_name, my_rank, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
         call read_gz_step_field_file(file_name, my_rank, fld_IO)
 #endif
@@ -313,8 +327,6 @@
       character(len=kchara), intent(in) :: file_name
       type(field_IO), intent(inout) :: fld_IO
 !
-!
-      write(*,*) 'read fld_IO%iflag_file_fmt', fld_IO%iflag_file_fmt
 !
       if(fld_IO%iflag_file_fmt .eq. iflag_single) then
         call read_alloc_step_fld_file_mpi(file_name, fld_IO)
@@ -357,6 +369,14 @@
         call read_and_allocate_step_head_b(file_name, my_rank, fld_IO)
 !
 #ifdef ZLIB_IO
+      else if(fld_IO%iflag_file_fmt                                    &
+     &       .eq. iflag_single+id_gzip_bin_file_fmt) then
+        call gz_rd_alloc_st_fld_head_mpi_b(file_name, fld_IO)
+      else if(fld_IO%iflag_file_fmt                                    &
+     &       .eq. iflag_single+id_gzip_txt_file_fmt) then
+        call read_alloc_stp_fld_head_gz_mpi(file_name, fld_IO)
+      else if(fld_IO%iflag_file_fmt .eq. id_gzip_bin_file_fmt) then
+        call gz_rd_alloc_st_fld_head_b(file_name, my_rank, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
         call read_alloc_gz_step_field_head(file_name, my_rank, fld_IO)
 #endif
