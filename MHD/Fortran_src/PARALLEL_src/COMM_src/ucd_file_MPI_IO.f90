@@ -18,14 +18,12 @@
       use m_constants
 !
       use calypso_mpi
-      use vtk_data_to_buffer
+      use m_calypso_mpi_IO
       use t_ucd_data
-      use m_merged_ucd_data
+      use vtk_data_to_buffer
       use ucd_data_to_buffer
 !
       implicit none
-!
-      character(len=65536), private :: textbuf
 !
       private :: write_ucd_data_mpi, write_ucd_mesh_mpi
 !
@@ -46,9 +44,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call MPI_FILE_OPEN                                                &
-     &   (CALYPSO_COMM, file_name, MPI_MODE_WRONLY+MPI_MODE_CREATE,     &
-     &    MPI_INFO_NULL, id_vtk, ierr_MPI)
+      call calypso_mpi_write_file_open(file_name, id_vtk)
 !
       ioff_gl = 0
       call write_ucd_mesh_mpi(id_vtk, ioff_gl,                          &
@@ -60,7 +56,7 @@
      &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
      &    ucd%phys_name, ucd%d_ucd, m_ucd%istack_merged_intnod)
 !
-      call MPI_FILE_CLOSE(id_vtk, ierr_MPI)
+      call calypso_close_mpi_file(id_vtk)
 !
       end subroutine write_ucd_file_mpi
 !
@@ -77,16 +73,14 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call MPI_FILE_OPEN                                                &
-     &   (CALYPSO_COMM, file_name, MPI_MODE_WRONLY+MPI_MODE_CREATE,     &
-     &    MPI_INFO_NULL, id_vtk, ierr_MPI)
+      call calypso_mpi_write_file_open(file_name, id_vtk)
 !
       ioff_gl = 0
       call write_ucd_data_mpi(id_vtk, ioff_gl,                          &
      &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
      &    ucd%phys_name, ucd%d_ucd, m_ucd%istack_merged_intnod)
 !
-      call MPI_FILE_CLOSE(id_vtk, ierr_MPI)
+      call calypso_close_mpi_file(id_vtk)
 !
       end subroutine write_ucd_phys_mpi
 !
@@ -103,9 +97,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call MPI_FILE_OPEN                                                &
-     &   (CALYPSO_COMM, file_name, MPI_MODE_WRONLY+MPI_MODE_CREATE,     &
-     &    MPI_INFO_NULL, id_vtk, ierr_MPI)
+      call calypso_mpi_write_file_open(file_name, id_vtk)
       ioff_gl = 0
 !
       call write_ucd_mesh_mpi(id_vtk, ioff_gl,                          &
@@ -113,7 +105,7 @@
      &    ucd%xx, ucd%ie,           &
      &    m_ucd%istack_merged_intnod, m_ucd%istack_merged_ele)
 !
-      call MPI_FILE_CLOSE(id_vtk, ierr_MPI)
+      call calypso_close_mpi_file(id_vtk)
 !
       end subroutine write_ucd_grid_mpi
 !
@@ -139,35 +131,20 @@
 !
       integer(kind = kint) :: j
       integer(kind = kint_gl) :: inod, num, inod_gl
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilength
       real(kind = kreal)  :: dat_1(ntot_comp)
 !
 !
       num = istack_merged_intnod(my_rank+1)                             &
      &     - istack_merged_intnod(my_rank)
 !
-      ioffset = int(ioff_gl)
-      ilength = len(ucd_num_comps(num_field, ncomp_field))
-      if(my_rank .eq. 0) then
-        write(textbuf,'(a,a1)')                                         &
-     &          ucd_num_comps(num_field, ncomp_field), char(0)
-        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
-     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
-      end if
-      ioff_gl = ioff_gl + ilength
+      call calypso_mpi_seek_write_head_c(id_vtk, ioff_gl,               &
+     &   ucd_num_comps(num_field, ncomp_field))
 !
       do j = 1, num_field
-        ioffset = int(ioff_gl)
-        ilength = len(ucd_field_name(field_name(j)))
-        if(my_rank .eq. 0) then
-          write(textbuf,'(a,a1)')                                       &
-     &                ucd_field_name(field_name(j)), char(0)
-          call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-          call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                 &
-     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
-        end if
-        ioff_gl = ioff_gl + ilength
+        call calypso_mpi_seek_write_head_c(id_vtk, ioff_gl,             &
+     &      ucd_field_name(field_name(j)))
       end do
 !
       inod_gl = 1 + istack_merged_intnod(my_rank)
@@ -177,12 +154,8 @@
       do inod = 1, num
         inod_gl =    inod + istack_merged_intnod(my_rank)
         dat_1(1:ntot_comp) = d_nod(inod,1:ntot_comp)
-        write(textbuf,'(a,a1)')                                         &
-     &      ucd_each_field(inod_gl, ntot_comp, dat_1), char(0)
-        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
-     &      CALYPSO_CHARACTER, sta1, ierr_MPI)
-        ioffset = ioffset + ilength
+        call calypso_mpi_seek_write_chara(id_vtk, ioffset, ilength,     &
+     &      ucd_each_field(inod_gl, ntot_comp, dat_1))
       end do
       ioff_gl = ioff_gl + ilength * istack_merged_intnod(nprocs)
 !
@@ -212,7 +185,8 @@
       integer(kind = kint_gl) :: iele, inod, nt_nod, nt_ele, num
       real(kind = kreal)  :: dat_1(n_vector)
 !
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilength
 !
 !
       nt_nod = istack_merged_intnod(nprocs)
@@ -220,16 +194,8 @@
       num = istack_merged_intnod(my_rank+1)                             &
      &     - istack_merged_intnod(my_rank)
 !
-      write(textbuf,'(a,a1)')                                           &
-     &      ucd_connect_head(nt_nod, nt_ele, ntot_comp), char(0)
-      ilength = len(ucd_connect_head(nt_nod, nt_ele, ntot_comp))
-      if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
-        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
-     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
-      end if
-      ioff_gl = ioff_gl + ilength
+      call calypso_mpi_seek_write_head_c(id_vtk, ioff_gl,               &
+     &   ucd_connect_head(nt_nod, nt_ele, ntot_comp))
 
       inod_gl = 1
       dat_1(1:n_vector) = zero
@@ -238,12 +204,8 @@
       do inod = 1, num
         inod_gl =    inod + istack_merged_intnod(my_rank)
         dat_1(1:n_vector) = xx(inod,1:n_vector)
-        write(textbuf,'(a,a1)')                                         &
-     &      ucd_each_field(inod_gl, n_vector, dat_1), char(0)
-        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
-     &      CALYPSO_CHARACTER, sta1, ierr_MPI)
-        ioffset = ioffset + ilength
+        call calypso_mpi_seek_write_chara(id_vtk, ioffset, ilength,     &
+     &      ucd_each_field(inod_gl, n_vector, dat_1))
       end do
       ioff_gl = ioff_gl + ilength * nt_nod
 !
@@ -255,12 +217,8 @@
       do iele = 1, nele
         iele_gl = iele + istack_merged_ele(my_rank)
         ie0(1:nnod_ele) = ie(iele,1:nnod_ele)
-        write(textbuf,'(a,a1)')                                         &
-     &        ucd_each_connect(iele_gl, nnod_ele,ie0), char(0)
-        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, textbuf, ilength,                   &
-     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
-        ioffset = ioffset + ilength
+        call calypso_mpi_seek_write_chara(id_vtk, ioffset, ilength,     &
+     &      ucd_each_connect(iele_gl, nnod_ele,ie0))
       end do
       ioff_gl = ioff_gl + ilength * nt_ele
 !

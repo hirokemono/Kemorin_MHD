@@ -43,7 +43,6 @@
       integer(kind = kint), intent(in) :: num_int
 !
       max_int_point = num_int
-      write(*,*) 'inside maximum_integration_points', num_int, max_int_point
 !
       end subroutine maximum_integration_points
 !

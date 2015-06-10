@@ -9,7 +9,9 @@
 !!@verbatim
 !!      subroutine write_step_field_file_mpi_b(file_name, fld_IO)
 !!
+!!      subroutine read_step_field_file_mpi_b(file_name, fld_IO)
 !!      subroutine read_alloc_stp_fld_file_mpi_b(file_name, fld_IO)
+!!      subroutine read_alloc_stp_fld_head_mpi_b(file_name, fld_IO)
 !!@endverbatim
 !
       module field_file_MPI_IO_b
@@ -18,6 +20,7 @@
       use m_constants
 !
       use calypso_mpi
+      use m_calypso_mpi_IO
       use m_time_data_IO
       use t_field_data_IO
 !
@@ -29,10 +32,7 @@
       integer(kind = kint), allocatable ::    nnod_merged(:)
       integer(kind = kint_gl), allocatable :: istack_merged_nod(:)
 !
-!>       status flag for sending
-      integer, allocatable :: sta1(:)
-!
-      private :: nnod_merged, istack_merged_nod, sta1, c1buf
+      private :: nnod_merged, istack_merged_nod, c1buf
       private :: write_field_data_mpi
       private :: set_istack_merged_nod, deallocate_istack_merged_nod
 !
@@ -54,9 +54,7 @@
 !
       call set_istack_merged_nod(fld_IO%nnod_IO)
 !
-      call MPI_FILE_OPEN                                                &
-     &   (CALYPSO_COMM, file_name, MPI_MODE_WRONLY+MPI_MODE_CREATE,     &
-     &    MPI_INFO_NULL, id_fld, ierr_MPI)
+      call calypso_mpi_write_file_open(file_name, id_fld)
 !
       ioff_gl = 0
       call write_field_data_mpi(id_fld, ioff_gl,                        &
@@ -64,10 +62,44 @@
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO,             &
      &    istack_merged_nod)
 !
-      call MPI_FILE_CLOSE(id_fld, ierr_MPI)
+      call calypso_close_mpi_file(id_fld)
       call deallocate_istack_merged_nod
 !
       end subroutine write_step_field_file_mpi_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_step_field_file_mpi_b(file_name, fld_IO)
+!
+      character(len=kchara), intent(in) :: file_name
+!
+      type(field_IO), intent(inout) :: fld_IO
+!
+      integer :: id_fld
+      integer(kind = kint_gl) :: ioff_gl
+!
+!
+      call set_istack_merged_nod(fld_IO%nnod_IO)
+!
+      call calypso_mpi_read_file_open(file_name, id_fld)
+!
+      ioff_gl = 0
+      call read_step_data_mpi_b(id_fld, ioff_gl, my_rank)
+      call read_field_header_mpi_b(id_fld, ioff_gl,                     &
+     &    fld_IO%num_field_IO, istack_merged_nod)
+!
+      call read_field_num_mpi_b(id_fld, ioff_gl,                        &
+     &    fld_IO%num_field_IO, fld_IO%num_comp_IO)
+!
+      call read_field_data_mpi_b(id_fld, ioff_gl,                       &
+     &    fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
+     &    fld_IO%fld_name, fld_IO%d_IO, istack_merged_nod)
+!
+      call calypso_close_mpi_file(id_fld)
+!
+      call deallocate_istack_merged_nod
+!
+      end subroutine read_step_field_file_mpi_b
 !
 ! -----------------------------------------------------------------------
 !
@@ -83,9 +115,7 @@
 !
       call set_istack_merged_nod(fld_IO%nnod_IO)
 !
-      call MPI_FILE_OPEN                                                &
-     &   (CALYPSO_COMM, file_name, MPI_MODE_RDONLY,                     &
-     &    MPI_INFO_NULL, id_fld, ierr_MPI)
+      call calypso_mpi_read_file_open(file_name, id_fld)
 !
       ioff_gl = 0
       call read_step_data_mpi_b(id_fld, ioff_gl, my_rank)
@@ -104,11 +134,43 @@
      &    fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%fld_name, fld_IO%d_IO, istack_merged_nod)
 !
-      call MPI_FILE_CLOSE(id_fld, ierr_MPI)
+      call calypso_close_mpi_file(id_fld)
 !
       call deallocate_istack_merged_nod
 !
       end subroutine read_alloc_stp_fld_file_mpi_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_alloc_stp_fld_head_mpi_b(file_name, fld_IO)
+!
+      character(len=kchara), intent(in) :: file_name
+!
+      type(field_IO), intent(inout) :: fld_IO
+!
+      integer :: id_fld
+      integer(kind = kint_gl) :: ioff_gl
+!
+!
+      call set_istack_merged_nod(fld_IO%nnod_IO)
+!
+      call calypso_mpi_read_file_open(file_name, id_fld)
+!
+      ioff_gl = 0
+      call read_step_data_mpi_b(id_fld, ioff_gl, my_rank)
+      call read_field_header_mpi_b(id_fld, ioff_gl,                     &
+     &    fld_IO%num_field_IO, istack_merged_nod)
+!
+      call alloc_phys_name_IO(fld_IO)
+      call read_field_num_mpi_b(id_fld, ioff_gl,                        &
+     &    fld_IO%num_field_IO, fld_IO%num_comp_IO)
+!
+      call calypso_close_mpi_file(id_fld)
+!
+      call cal_istack_phys_comp_IO(fld_IO)
+      call deallocate_istack_merged_nod
+!
+      end subroutine read_alloc_stp_fld_head_mpi_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -119,7 +181,6 @@
 !
       use m_phys_constants
       use field_data_IO
-      use vtk_file_MPI_IO
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs)
@@ -154,7 +215,8 @@
 !
       integer, intent(in) ::  id_fld
 !
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilength
 !
 !
       ilength = ione
@@ -162,22 +224,22 @@
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_fld, id_rank, ilength,                   &
-     &                       CALYPSO_INTEGER, sta1, ierr_MPI)
+     &                       CALYPSO_INTEGER, sta1_IO, ierr_MPI)
         ioffset = ioffset + kint * ilength
 !
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_fld, i_time_step_IO, ilength,            &
-     &                       CALYPSO_INTEGER, sta1, ierr_MPI)
+     &                       CALYPSO_INTEGER, sta1_IO, ierr_MPI)
         ioffset = ioffset + kint * ilength
 !
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_fld, time_IO, ilength,                   &
-     &                       CALYPSO_REAL, sta1, ierr_MPI)
+     &                       CALYPSO_REAL, sta1_IO, ierr_MPI)
         ioffset = ioffset + kreal * ilength
 !
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_fld, delta_t_IO, ilength,                &
-     &                       CALYPSO_REAL, sta1, ierr_MPI)
+     &                       CALYPSO_REAL, sta1_IO, ierr_MPI)
         ioffset = ioffset + kreal * ilength
       end if
       ioff_gl = ioff_gl + 2*kint + 2*kreal
@@ -195,7 +257,8 @@
 !
       integer, intent(in) ::  id_fld
 !
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilength
 !
 !
       ilength = nprocs
@@ -203,7 +266,7 @@
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_fld, istack_merged(1), ilength,          &
-     &                       CALYPSO_GLOBAL_INT, sta1, ierr_MPI)
+     &                       CALYPSO_GLOBAL_INT, sta1_IO, ierr_MPI)
       end if
       ioff_gl = ioff_gl + ilength*kint_gl
 !
@@ -212,7 +275,7 @@
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_fld, num_field, ilength,                 &
-     &                       CALYPSO_INTEGER, sta1, ierr_MPI)
+     &                       CALYPSO_INTEGER, sta1_IO, ierr_MPI)
       end if
       ioff_gl = ioff_gl + ilength*kint
 !
@@ -229,7 +292,8 @@
 !
       integer, intent(in) ::  id_fld
 !
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilength
 !
 !
       ilength = num_field
@@ -237,7 +301,7 @@
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_fld, ncomp_field, ilength,               &
-     &                       CALYPSO_INTEGER, sta1, ierr_MPI)
+     &                       CALYPSO_INTEGER, sta1_IO, ierr_MPI)
       end if
       ioff_gl = ioff_gl + ilength * kint
 !
@@ -260,7 +324,8 @@
 !
       integer, intent(in) ::  id_fld
 !
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilength
 !
 !
       ilength = num_field * kchara
@@ -268,7 +333,7 @@
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_fld, field_name, ilength,                &
-     &                        CALYPSO_CHARACTER, sta1, ierr_MPI)
+     &                        CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
       end if
       ioff_gl = ioff_gl + ilength
 !
@@ -276,7 +341,7 @@
       ioffset = int(ioff_gl + kreal * ncomp*istack_merged(my_rank))
       call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
       call MPI_FILE_WRITE(id_fld, vect, ilength,                        &
-     &    CALYPSO_REAL, sta1, ierr_MPI)
+     &    CALYPSO_REAL, sta1_IO, ierr_MPI)
       ioff_gl = ioff_gl + kreal * ncomp*istack_merged(nprocs)
 !
       end subroutine write_fld_vecotr_mpi_b
@@ -292,7 +357,8 @@
       integer, intent(in) ::  id_fld
 !
       integer(kind = kint) :: id_rank
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilength
 !
 !
       ilength = ione
@@ -300,22 +366,22 @@
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_READ(id_fld, id_rank, ilength,                    &
-     &                       CALYPSO_INTEGER, sta1, ierr_MPI)
+     &                       CALYPSO_INTEGER, sta1_IO, ierr_MPI)
         ioffset = ioffset + kint * ilength
 !
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_READ(id_fld, i_time_step_IO, ilength,             &
-     &                       CALYPSO_INTEGER, sta1, ierr_MPI)
+     &                       CALYPSO_INTEGER, sta1_IO, ierr_MPI)
         ioffset = ioffset + kint * ilength
 !
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_READ(id_fld, time_IO, ilength,                    &
-     &                       CALYPSO_REAL, sta1, ierr_MPI)
+     &                       CALYPSO_REAL, sta1_IO, ierr_MPI)
         ioffset = ioffset + kreal * ilength
 !
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_READ(id_fld, delta_t_IO, ilength,                 &
-     &                       CALYPSO_REAL, sta1, ierr_MPI)
+     &                       CALYPSO_REAL, sta1_IO, ierr_MPI)
         ioffset = ioffset + kreal * ilength
       end if
       ioff_gl = ioff_gl + 2*kint + 2*kreal
@@ -347,7 +413,8 @@
       integer, intent(in) ::  id_fld
 !
       integer(kind = kint) :: id_rank
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilength
 !
 !
       ilength = nprocs
@@ -356,7 +423,7 @@
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_READ(id_fld, istack_merged(1), ilength,           &
-     &                       CALYPSO_GLOBAL_INT, sta1, ierr_MPI)
+     &                       CALYPSO_GLOBAL_INT, sta1_IO, ierr_MPI)
       end if
       ioff_gl = ioff_gl + ilength*kint_gl
 !
@@ -369,7 +436,7 @@
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_READ(id_fld, num_field, ilength,                  &
-     &                       CALYPSO_INTEGER, sta1, ierr_MPI)
+     &                       CALYPSO_INTEGER, sta1_IO, ierr_MPI)
       end if
       ioff_gl = ioff_gl + ilength*kint
 !
@@ -385,7 +452,6 @@
 !
       use m_phys_constants
       use field_data_IO
-      use vtk_file_MPI_IO
       use ucd_data_to_buffer
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -394,7 +460,8 @@
 !
       integer, intent(in) ::  id_fld
 !
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilength
 !
 !
       ilength = num_field
@@ -402,7 +469,7 @@
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_READ(id_fld, ncomp_field, ilength,                &
-     &                       CALYPSO_INTEGER, sta1, ierr_MPI)
+     &                       CALYPSO_INTEGER, sta1_IO, ierr_MPI)
       end if
       ioff_gl = ioff_gl + ilength * kint
 !
@@ -429,7 +496,8 @@
 !
       integer, intent(in) ::  id_fld
 !
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilength
 !
 !
       ilength = num_field * kchara
@@ -437,7 +505,7 @@
         ioffset = int(ioff_gl)
         call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_READ(id_fld, field_name, ilength,                 &
-     &                        CALYPSO_CHARACTER, sta1, ierr_MPI)
+     &                        CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
       end if
       ioff_gl = ioff_gl + ilength
 !
@@ -448,7 +516,7 @@
       ilength = nnod * ncomp
       call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
       call MPI_FILE_READ(id_fld, vect, ilength,                         &
-     &    CALYPSO_REAL, sta1, ierr_MPI)
+     &    CALYPSO_REAL, sta1_IO, ierr_MPI)
       ioff_gl = ioff_gl + kreal * ncomp*istack_merged(nprocs)
 !
       end subroutine read_field_data_mpi_b
@@ -465,7 +533,6 @@
 !
       allocate(nnod_merged(nprocs))
       allocate(istack_merged_nod(0:nprocs))
-      allocate(sta1(MPI_STATUS_SIZE))
 !
       call MPI_Allgather(nnod, ione, CALYPSO_INTEGER,                   &
      &    nnod_merged, ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
@@ -481,7 +548,6 @@
 !
       subroutine deallocate_istack_merged_nod
 !
-      deallocate(sta1)
       deallocate(istack_merged_nod, nnod_merged)
 !
       end subroutine deallocate_istack_merged_nod

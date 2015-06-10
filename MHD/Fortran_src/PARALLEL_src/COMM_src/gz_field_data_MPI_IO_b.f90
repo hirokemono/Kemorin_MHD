@@ -7,9 +7,6 @@
 !> @brief IO routines for field data IO for merged gzipped binary file
 !!
 !!@verbatim
-!!      subroutine allocate_mpi_status_gz_mpi_b
-!!      subroutine deallocate_mpi_status_gz_mpi_b
-!!
 !!      subroutine gz_write_fld_inthead_mpi_b(id_fld, ioff_gl, int_dat)
 !!      subroutine gz_write_fld_realhead_mpi_b(id_fld, ioff_gl, real_dat)
 !!
@@ -38,6 +35,7 @@
 !
       use m_precision
       use m_constants
+      use m_calypso_mpi_IO
 !
       use calypso_mpi
 !
@@ -45,34 +43,14 @@
 !
       character(len=1), allocatable :: gzip_buf(:)
 !
-!>       status flag for sending
-      integer, allocatable :: sta1(:)
-!
       integer, external :: gzread_f
 !
-      private :: gzip_buf, sta1
+      private :: gzip_buf
 !
 ! -----------------------------------------------------------------------
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_mpi_status_gz_mpi_b
-!
-      allocate(sta1(MPI_STATUS_SIZE))
-!
-      end subroutine allocate_mpi_status_gz_mpi_b
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_mpi_status_gz_mpi_b
-!
-      deallocate(sta1)
-!
-      end subroutine deallocate_mpi_status_gz_mpi_b
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine gz_write_fld_inthead_mpi_b(id_fld, ioff_gl, int_dat)
@@ -82,8 +60,8 @@
 !
       integer, intent(in) ::  id_fld
 !
-      integer(kind = kint) :: ilen_gz, ilen_gzipped
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
 !
@@ -96,9 +74,8 @@
         ilength = ilen_gzipped
 !
         ioffset = int(ioff_gl)
-        call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_fld, gzip_buf(1), ilen_gzipped,          &
-     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
+        call calypso_mpi_seek_write_chara                               &
+     &     (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
       end if
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
@@ -116,8 +93,8 @@
 !
       integer, intent(in) ::  id_fld
 !
-      integer(kind = kint) :: ilen_gz, ilen_gzipped
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
 !
@@ -130,9 +107,8 @@
         ilength = ilen_gzipped
 !
         ioffset = int(ioff_gl)
-        call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_fld, gzip_buf(1), ilen_gzipped,          &
-     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
+        call calypso_mpi_seek_write_chara                               &
+     &     (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
       end if
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
@@ -153,8 +129,8 @@
 !
       integer, intent(in) ::  id_fld
 !
-      integer(kind = kint) :: ilen_gz, ilen_gzipped
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
 !
@@ -167,9 +143,8 @@
         ilength = ilen_gzipped
 !
         ioffset = int(ioff_gl)
-        call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_fld, gzip_buf(1), ilen_gzipped,          &
-     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
+        call calypso_mpi_seek_write_chara                               &
+     &     (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
       end if
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
@@ -189,8 +164,8 @@
 !
       integer, intent(in) ::  id_fld
 !
-      integer(kind = kint) :: ilen_gz, ilen_gzipped
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
 !
@@ -203,9 +178,8 @@
         ilength = ilen_gzipped
 !
         ioffset = int(ioff_gl)
-        call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_fld, gzip_buf(1), ilen_gzipped,          &
-     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
+        call calypso_mpi_seek_write_chara                               &
+     &     (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
       end if
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
@@ -225,8 +199,8 @@
 !
       integer, intent(in) ::  id_fld
 !
-      integer(kind = kint) :: ilen_gz, ilen_gzipped
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
 !
@@ -239,9 +213,8 @@
         ilength = ilen_gzipped
 !
         ioffset = int(ioff_gl)
-        call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_fld, gzip_buf(1), ilen_gzipped,          &
-     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
+        call calypso_mpi_seek_write_chara                               &
+     &     (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
       end if
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
@@ -261,10 +234,7 @@
 !
       integer, intent(in) ::  id_fld
 !
-      integer(kind = kint) :: ilen_gz, ilen_gzipped, ip
-      integer(kind = kint) :: ilen_gzipped_list(nprocs)
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
-!
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
 !
 !
       ilength =  n1 * n2 * kreal
@@ -272,24 +242,9 @@
       allocate(gzip_buf(ilen_gz))
       call gzip_defleat_once                                            &
      &   (ilength, real_dat, ilen_gz, ilen_gzipped, gzip_buf(1))
-      ilength = ilen_gzipped
 !
-      call MPI_Allgather(ilen_gzipped, ione, CALYPSO_INTEGER,           &
-     &    ilen_gzipped_list(1), ione, CALYPSO_INTEGER,                  &
-     &    CALYPSO_COMM, ierr_MPI)
-      ioffset = int(ioff_gl)
-!
-      if(ilen_gzipped .gt. 0) then
-        do ip = 1, my_rank
-          ioffset = ioffset + ilen_gzipped_list(ip)
-        end do
-        call MPI_FILE_SEEK(id_fld, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_fld, gzip_buf(1), ilen_gzipped,          &
-     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
-      end if
-      do ip = 1, nprocs
-        ioff_gl = ioff_gl + ilen_gzipped_list(ip)
-      end do
+      call calypso_gz_mpi_seek_write                                    &
+     &   (id_fld, ioff_gl, ilen_gzipped, gzip_buf(1))
       deallocate(gzip_buf)
 !
       end subroutine gz_write_fld_realarray2_mpi_b

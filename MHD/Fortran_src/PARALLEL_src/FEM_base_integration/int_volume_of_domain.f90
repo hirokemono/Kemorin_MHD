@@ -60,12 +60,12 @@
       use sum_volume_of_domain
 !
 !
-      write(*,*) 'fem_element_volume_pg', max_int_point
+!      write(*,*) 'fem_element_volume_pg', max_int_point
        call fem_element_volume_pg(max_int_point)
 !
 !     ---  lead total volume
 !
-      write(*,*) 'sum_4_volume'
+!      write(*,*) 'sum_4_volume'
       call sum_4_volume(iele_smp_stack, vol_local)
 !
 !      write(*,*) 'MPI_allREDUCE'

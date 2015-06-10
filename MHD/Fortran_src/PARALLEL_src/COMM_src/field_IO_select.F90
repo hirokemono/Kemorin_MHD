@@ -262,6 +262,7 @@
 !
       if(fld_IO%iflag_file_fmt .eq. iflag_single) then
         call write_step_field_file_mpi(file_name, fld_IO)
+!
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_binary_file_fmt) then
         call write_step_field_file_mpi_b(file_name, fld_IO)
@@ -296,7 +297,13 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      if (fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
+      if(fld_IO%iflag_file_fmt .eq. iflag_single) then
+        call read_step_field_file_mpi(file_name, fld_IO)
+!
+      else if(fld_IO%iflag_file_fmt                                    &
+     &       .eq. iflag_single+id_binary_file_fmt) then
+        call read_step_field_file_mpi_b(file_name, fld_IO)
+      else if (fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
         call read_step_field_file_b(file_name, my_rank, fld_IO)
 !
 #ifdef ZLIB_IO
@@ -365,7 +372,14 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      if (fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
+!
+      if(fld_IO%iflag_file_fmt .eq. iflag_single) then
+        call read_alloc_step_fld_head_mpi(file_name, fld_IO)
+!
+      else if(fld_IO%iflag_file_fmt                                    &
+     &       .eq. iflag_single+id_binary_file_fmt) then
+        call read_alloc_stp_fld_head_mpi_b(file_name, fld_IO)
+      else if (fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
         call read_and_allocate_step_head_b(file_name, my_rank, fld_IO)
 !
 #ifdef ZLIB_IO

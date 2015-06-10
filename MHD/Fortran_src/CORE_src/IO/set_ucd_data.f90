@@ -16,7 +16,7 @@
 !!     &          phy_name, d_nod, ucd)
 !!
 !!      subroutine link_numnod_stacks_2_output(nprocs, istack_numnod,   &
-!!     &          istack_internod, istack_numele, m_ucd)
+!!     &          istack_internod, istack_interele, m_ucd)
 !!@endverbatim
 !
       module set_ucd_data
@@ -122,7 +122,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine link_numnod_stacks_2_output(nprocs, istack_numnod,     &
-     &          istack_internod, istack_numele, m_ucd)
+     &          istack_internod, istack_interele, m_ucd)
 !
       integer(kind = kint), intent(in) :: nprocs
       integer(kind = kint_gl), intent(in), target                       &
@@ -130,14 +130,14 @@
       integer(kind = kint_gl), intent(in), target                       &
      &                        :: istack_internod(0:nprocs)
       integer(kind = kint_gl), intent(in), target                       &
-     &                        :: istack_numele(0:nprocs)
+     &                        :: istack_interele(0:nprocs)
 !
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
-      m_ucd%istack_merged_nod  =>   istack_numnod(0:nprocs)
-      m_ucd%istack_merged_intnod => istack_internod(0:nprocs)
-      m_ucd%istack_merged_ele =>    istack_numele(0:nprocs)
+      m_ucd%istack_merged_nod  =>   istack_numnod
+      m_ucd%istack_merged_intnod => istack_internod
+      m_ucd%istack_merged_ele =>    istack_interele
 !
       end subroutine link_numnod_stacks_2_output
 !

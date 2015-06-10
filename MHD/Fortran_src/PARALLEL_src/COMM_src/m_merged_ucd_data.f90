@@ -11,7 +11,6 @@
 !!      subroutine allocate_merged_ucd_data(numnod, ntot_comp)
 !!      subroutine deallocate_merged_ucd_data(m_ucd)
 !!
-!!      subroutine count_merged_ucd(nnod, nele_ucd, m_ucd)
 !!      subroutine set_node_double_address                              &
 !!     &         (NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,          &
 !!     &          STACK_EXPORT, NOD_EXPORT)
@@ -34,9 +33,6 @@
 !>        belonged subdomains ID for each node
       integer(kind = kint), allocatable :: ihome_pe_ucd(:)
 !
-      integer, allocatable :: sta1(:)
-!       status flag for sending
-!
       private :: nnod_ucd_local, ihome_pe_ucd, inod_local_ucd
 !
 ! -----------------------------------------------------------------------
@@ -45,21 +41,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_merged_ucd_status
-!
-!
-      allocate (sta1(MPI_STATUS_SIZE))
-!
-      end subroutine allocate_merged_ucd_status
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_merged_ucd_data(numnod, ntot_comp)
+      subroutine allocate_merged_ucd_data(numnod)
 !
       use m_phys_constants
 !
-      integer(kind = kint), intent(in) :: numnod, ntot_comp
-      integer(kind = kint) :: ncomp
+      integer(kind = kint), intent(in) :: numnod
 !
 !
       nnod_ucd_local = numnod
@@ -69,8 +55,6 @@
         inod_local_ucd = 0
         ihome_pe_ucd =   0
       end if
-!
-      if(my_rank .eq. 0) ncomp = max(ntot_comp,n_vector)
 !
       end subroutine allocate_merged_ucd_data
 !
@@ -83,13 +67,13 @@
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
-      deallocate (sta1)
       deallocate(inod_local_ucd, ihome_pe_ucd)
 !
       call disconnect_merged_ucd_stack(m_ucd)
 !
       end subroutine deallocate_merged_ucd_data
 !
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine set_node_double_address                                &
@@ -131,6 +115,7 @@
       subroutine update_ele_by_double_address(m_ucd, ucd)
 !
       use t_ucd_data
+      use m_geometry_data
 !
       type(merged_ucd_data), intent(in) :: m_ucd
       type(ucd_data), intent(inout) :: ucd
@@ -138,6 +123,10 @@
       integer(kind = kint) :: ip, k1
       integer(kind = kint_gl) :: inod, iele
 !
+      do ip = 1, nprocs
+          if(m_ucd%istack_merged_intnod(ip-1) .ne. istack_internod(ip-1)) &
+     &      write(*,*) 'aho', ip, m_ucd%istack_merged_intnod(ip-1) , istack_internod(ip-1)
+      end do
 !
 !$omp parallel private(iele)
       do k1 = 1, ucd%nnod_4_ele

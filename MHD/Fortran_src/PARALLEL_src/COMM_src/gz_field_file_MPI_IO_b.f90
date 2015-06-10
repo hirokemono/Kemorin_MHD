@@ -21,6 +21,7 @@
       use m_constants
 !
       use calypso_mpi
+      use m_calypso_mpi_IO
       use t_field_data_IO
 !
       implicit none
@@ -52,9 +53,7 @@
 !
       call set_istack_merged_nod(fld_IO%nnod_IO)
 !
-      call MPI_FILE_OPEN                                                &
-     &   (CALYPSO_COMM, file_name, MPI_MODE_WRONLY+MPI_MODE_CREATE,     &
-     &    MPI_INFO_NULL, id_fld, ierr_MPI)
+      call calypso_mpi_write_file_open(file_name, id_fld)
 !
       ioff_gl = 0
       call gz_write_field_data_mpi_b(id_fld, ioff_gl,                   &
@@ -62,7 +61,7 @@
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO,             &
      &    istack_merged_nod)
 !
-      call MPI_FILE_CLOSE(id_fld, ierr_MPI)
+      call calypso_close_mpi_file(id_fld)
       call deallocate_istack_merged_nod
 !
       end subroutine gz_write_step_fld_file_mpi_b
@@ -175,7 +174,6 @@
 !
       use m_phys_constants
       use field_data_IO
-      use vtk_file_MPI_IO
       use gz_field_data_MPI_IO_b
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -278,8 +276,6 @@
       integer(kind = kint) :: ip
 !
 !
-      call allocate_mpi_status_gz_mpi_b
-!
       allocate(nnod_merged(nprocs))
       allocate(istack_merged_nod(0:nprocs))
 !
@@ -299,7 +295,6 @@
 !
       use gz_field_data_MPI_IO_b
 !
-      call deallocate_mpi_status_gz_mpi_b
       deallocate(istack_merged_nod, nnod_merged)
 !
       end subroutine deallocate_istack_merged_nod

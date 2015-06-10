@@ -18,9 +18,9 @@
       use m_constants
 !
       use calypso_mpi
+      use m_calypso_mpi_IO
       use vtk_data_to_buffer
       use t_ucd_data
-      use m_merged_ucd_data
       use ucd_data_to_buffer
 !
       implicit none
@@ -46,9 +46,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call MPI_FILE_OPEN                                                &
-     &   (CALYPSO_COMM, file_name, MPI_MODE_WRONLY+MPI_MODE_CREATE,     &
-     &    MPI_INFO_NULL, id_vtk, ierr_MPI)
+      call calypso_mpi_write_file_open(file_name, id_vtk)
 !
       ioff_gl = 0
       call gz_write_ucd_mesh_mpi(id_vtk, ioff_gl,                       &
@@ -60,7 +58,7 @@
      &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
      &    ucd%phys_name, ucd%d_ucd, m_ucd%istack_merged_intnod)
 !
-      call MPI_FILE_CLOSE(id_vtk, ierr_MPI)
+      call calypso_close_mpi_file(id_vtk)
 !
       end subroutine gz_write_ucd_file_mpi
 !
@@ -77,16 +75,14 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call MPI_FILE_OPEN                                                &
-     &   (CALYPSO_COMM, file_name, MPI_MODE_WRONLY+MPI_MODE_CREATE,     &
-     &    MPI_INFO_NULL, id_vtk, ierr_MPI)
+      call calypso_mpi_write_file_open(file_name, id_vtk)
 !
       ioff_gl = 0
       call gz_write_ucd_data_mpi(id_vtk, ioff_gl,                       &
      &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
      &    ucd%phys_name, ucd%d_ucd, m_ucd%istack_merged_intnod)
 !
-      call MPI_FILE_CLOSE(id_vtk, ierr_MPI)
+      call calypso_close_mpi_file(id_vtk)
 !
       end subroutine gz_write_ucd_phys_mpi
 !
@@ -103,17 +99,15 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call MPI_FILE_OPEN                                                &
-     &   (CALYPSO_COMM, file_name, MPI_MODE_WRONLY+MPI_MODE_CREATE,     &
-     &    MPI_INFO_NULL, id_vtk, ierr_MPI)
-      ioff_gl = 0
+      call calypso_mpi_write_file_open(file_name, id_vtk)
 !
+      ioff_gl = 0
       call gz_write_ucd_mesh_mpi(id_vtk, ioff_gl,                       &
      &    ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%ntot_comp,            &
      &    ucd%xx, ucd%ie,           &
      &    m_ucd%istack_merged_intnod, m_ucd%istack_merged_ele)
 !
-      call MPI_FILE_CLOSE(id_vtk, ierr_MPI)
+      call calypso_close_mpi_file(id_vtk)
 !
       end subroutine gz_write_ucd_grid_mpi
 !
@@ -198,8 +192,8 @@
 !
       integer, intent(in) ::  id_vtk
 !
-      integer(kind = kint) :: ilen_gz, ilen_gzipped
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
       if(my_rank .eq. 0) then
@@ -211,9 +205,8 @@
         ilength = ilen_gzipped
 !
         ioffset = int(ioff_gl)
-        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, gzip_buf(1), ilen_gzipped,          &
-     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
+        call calypso_mpi_seek_write_chara                               &
+     &     (id_vtk, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
       end if
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
@@ -237,9 +230,7 @@
 !
       integer, intent(in) ::  id_vtk
 !
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
-      integer(kind = kint) :: ip, ilen_gz, ilen_gzipped
-      integer(kind = kint) :: ilen_gzipped_list(nprocs)
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
       integer(kind = kint_gl) :: inod, num, inod_gl
       real(kind = kreal)  :: dat_1(ntot_comp)
 !
@@ -281,22 +272,9 @@
         ilen_gzipped = 0
       end if
 !
-      call MPI_Allgather(ilen_gzipped, ione, CALYPSO_INTEGER,           &
-     &    ilen_gzipped_list(1), ione, CALYPSO_INTEGER,                  &
-     &    CALYPSO_COMM, ierr_MPI)
-      ioffset = int(ioff_gl)
-      do ip = 1, my_rank
-        ioffset = ioffset + ilen_gzipped_list(ip)
-      end do
+      call calypso_gz_mpi_seek_write                                    &
+     &         (id_vtk, ioff_gl, ilen_gzipped, gzip_buf(1))
 !
-      if(ilen_gzipped .gt. 0) then
-        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, gzip_buf(1), ilen_gzipped,          &
-     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
-      end if
-      do ip = 1, nprocs
-        ioff_gl = ioff_gl + ilen_gzipped_list(ip)
-      end do
       deallocate(gzip_buf)
 !
       end subroutine gz_write_ucd_vecotr_mpi
@@ -320,9 +298,7 @@
       integer(kind = kint_gl) :: ie0(nnod_ele)
       integer(kind = kint_gl) :: iele, iele_gl
 !
-      integer(kind = MPI_OFFSET_KIND) :: ioffset, ilength
-      integer(kind = kint) :: ip, ilen_gz, ilen_gzipped
-      integer(kind = kint) :: ilen_gzipped_list(nprocs)
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
 !
 !
       iele_gl = 1
@@ -358,23 +334,8 @@
         ilen_gzipped = 0
       end if
 !
-      call MPI_Allgather(ilen_gzipped, ione, CALYPSO_INTEGER,           &
-     &    ilen_gzipped_list(1), ione, CALYPSO_INTEGER,                  &
-     &    CALYPSO_COMM, ierr_MPI)
-      ioffset = int(ioff_gl)
-      do ip = 1, my_rank
-        ioffset = ioffset + ilen_gzipped_list(ip)
-      end do
-!      write(*,*) 'offset: ', my_rank, ioffset, ilen_gzipped_list
-!
-      if(ilen_gzipped .gt. 0) then
-        call MPI_FILE_SEEK(id_vtk, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_WRITE(id_vtk, gzip_buf(1), ilen_gzipped,          &
-     &                      CALYPSO_CHARACTER, sta1, ierr_MPI)
-      end if
-      do ip = 1, nprocs
-        ioff_gl = ioff_gl + ilen_gzipped_list(ip)
-      end do
+      call calypso_gz_mpi_seek_write                                    &
+     &         (id_vtk, ioff_gl, ilen_gzipped, gzip_buf(1))
       deallocate(gzip_buf)
 !
       end subroutine gz_write_ucd_connect_mpi
