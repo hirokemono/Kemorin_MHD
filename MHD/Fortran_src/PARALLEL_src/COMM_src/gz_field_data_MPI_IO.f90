@@ -7,12 +7,11 @@
 !> @brief Output merged VTK file usgin MPI-IO
 !!
 !!@verbatim
+!!      subroutine gz_write_fld_vecotr_mpi(id_fld, nprocs_in, id_rank,  &
+!!     &          ioff_gl, nnod, ndir, vector)
 !!      subroutine gz_write_fld_header_mpi(id_fld, ioff_gl, header_txt)
-!!
-!!      subroutine gz_write_fld_vecotr_mpi(id_fld, ioff_gl,             &
-!!     &          nnod, ndir, vector)
-!!      subroutine read_fld_vecotr_gz_mpi                               &
-!!     &         (nnod, ndir, vector, istack_merged)
+!!      subroutine gz_read_fld_vecotr_mpi                               &
+!!     &         (nprocs_in, id_rank, nnod, ndir, vector, istack_merged)
 !!@endverbatim
 !
       module gz_field_data_MPI_IO
@@ -35,46 +34,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_fld_header_mpi(id_fld, ioff_gl, header_txt)
-!
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-      character(len=*), intent(in) :: header_txt
-!
-      integer, intent(in) ::  id_fld
-!
-      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-!
-!
-!
-      if(my_rank .eq. 0) then
-        ilength = len(header_txt)
-        ilen_gz = int(real(ilength) *1.01) + 24
-        allocate(gzip_buf(ilen_gz))
-        call gzip_defleat_once                                          &
-     &     (ilength, header_txt, ilen_gz, ilen_gzipped, gzip_buf(1))
-        ilength = ilen_gzipped
-!
-        ioffset = int(ioff_gl)
-        call calypso_mpi_seek_write_chara                               &
-     &         (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
-        deallocate(gzip_buf)
-      end if
-      call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
-     &    CALYPSO_COMM, ierr_MPI)
-      ioff_gl = ioff_gl + ilen_gzipped
-!
-      end subroutine gz_write_fld_header_mpi
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine gz_write_fld_vecotr_mpi(id_fld, ioff_gl,               &
-     &          nnod, ndir, vector)
+      subroutine gz_write_fld_vecotr_mpi(id_fld, nprocs_in, id_rank,    &
+     &          ioff_gl, nnod, ndir, vector)
 !
       use field_data_IO
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint), intent(in) :: nprocs_in, id_rank
       integer(kind = kint), intent(in) :: nnod, ndir
       real(kind = kreal), intent(in) :: vector(nnod,ndir)
 !
@@ -113,7 +79,7 @@
       end if
 !
       call calypso_gz_mpi_seek_write                                    &
-     &         (id_fld, ioff_gl, ilen_gzipped, gzip_buf(1))
+     &   (id_fld, ioff_gl, ilen_gzipped, gzip_buf(1))
       deallocate(gzip_buf)
 !
       end subroutine gz_write_fld_vecotr_mpi
@@ -121,31 +87,64 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_fld_vecotr_gz_mpi                                 &
-     &         (nnod, ndir, vector, istack_merged)
+      subroutine gz_write_fld_header_mpi(id_fld, ioff_gl, header_txt)
+!
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      character(len=*), intent(in) :: header_txt
+!
+      integer, intent(in) ::  id_fld
+!
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+!
+!
+!
+      if(my_rank .eq. 0) then
+        ilength = len(header_txt)
+        ilen_gz = int(real(ilength) *1.01) + 24
+        allocate(gzip_buf(ilen_gz))
+        call gzip_defleat_once                                          &
+     &     (ilength, header_txt, ilen_gz, ilen_gzipped, gzip_buf(1))
+        ilength = ilen_gzipped
+!
+        ioffset = int(ioff_gl)
+        call calypso_mpi_seek_write_chara                               &
+     &         (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
+        deallocate(gzip_buf)
+      end if
+      call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
+     &    CALYPSO_COMM, ierr_MPI)
+      ioff_gl = ioff_gl + ilen_gzipped
+!
+      end subroutine gz_write_fld_header_mpi
+!
+! -----------------------------------------------------------------------
+!
+      subroutine gz_read_fld_vecotr_mpi                                 &
+     &         (nprocs_in, id_rank, nnod, ndir, vector, istack_merged)
 !
       use gz_field_data_IO
       use skip_gz_comment
 !
-      integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs)
-      integer(kind = kint), intent(in) :: nnod
-      integer(kind = kint), intent(in) :: ndir
+      integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
+      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer(kind = kint), intent(in) :: nnod, ndir
       real(kind = kreal), intent(inout) :: vector(nnod,ndir)
 !
       integer(kind = kint_gl) :: i
 !
 !
-      do i = 1, istack_merged(my_rank)
+      do i = 1, istack_merged(id_rank)
         call get_one_line_from_gz_f
       end do
 !
       call read_gz_field_vect(nnod, ndir, vector)
 !
-      do i = istack_merged(my_rank+1)+1, istack_merged(nprocs)
+      do i = istack_merged(id_rank+1)+1, istack_merged(nprocs_in)
         call get_one_line_from_gz_f
       end do
 !
-      end subroutine read_fld_vecotr_gz_mpi
+      end subroutine gz_read_fld_vecotr_mpi
 !
 ! -----------------------------------------------------------------------
 !

@@ -9,6 +9,7 @@
       program assemble_2nd_mesh
 !
       use m_precision
+      use calypso_mpi
 !
       use m_constants
       use m_read_mesh_data
@@ -34,6 +35,8 @@
 ! ==============================================                                                                                                            
 ! * get number of  nodes,elements for whole PES
 ! ==============================================
+!
+      call calypso_MPI_init
 !
        write(*,*) ' Dou you prepare folloing data???'
        write(*,*) ' original mesh data:  mesh/in.PE#'
@@ -88,6 +91,8 @@
      &        itype_org_ucd_file, num_pe, istep)
         end do
       end if
+!
+      call calypso_MPI_finalize
 !
       stop ' //// program normally finished //// '
 !

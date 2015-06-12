@@ -6,16 +6,21 @@
 !
 !      subroutine allocate_rst_by_plane_sp(nnod, ndir)
 !      subroutine deallocate_rst_by_plane_sp
+!      subroutine plane_nnod_stack_4_IO
 !      subroutine s_write_restart_by_spectr(ip, nnod)
 !
       module write_restart_by_spectr
 !
       use m_precision
+      use t_field_data_IO
 !
       implicit none
 !
 !
       real(kind = kreal), allocatable :: rst_from_sp(:,:)
+      type(field_IO), save :: pl_fld_IO
+!
+      private :: pl_fld_IO
 !
 !  ---------------------------------------------------------------------
 !
@@ -43,11 +48,29 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine plane_nnod_stack_4_IO
+!
+      use m_geometry_data_4_merge
+!
+      integer(kind=kint) :: ip
+!
+      call alloc_merged_field_stack(num_pe, pl_fld_IO)
+!
+      pl_fld_IO%istack_numnod_IO(0) = 0
+      do ip = 1, num_pe
+        pl_fld_IO%istack_numnod_IO(ip)                                  &
+     &      = pl_fld_IO%istack_numnod_IO(ip-1)                          &
+     &       + subdomain(ip)%node%numnod
+      end do
+!
+      end subroutine plane_nnod_stack_4_IO
+!
+!  ---------------------------------------------------------------------
+!
       subroutine s_write_restart_by_spectr(ip, nnod)
 !
       use m_constants
       use m_geometry_data_4_merge
-      use t_field_data_IO
       use field_IO_select
       use set_list_4_FFT
       use set_field_type_to_restart
@@ -56,7 +79,6 @@
       integer(kind=kint), intent(in) :: ip, nnod
 !
       integer(kind=kint) :: id_rank
-      type(field_IO) :: pl_fld_IO
 !
 !
       id_rank = ip - 1
@@ -74,8 +96,10 @@
      &    pl_fld_IO%ntot_comp_IO, pl_fld_IO%nnod_IO, pl_fld_IO%d_IO)
 !
       pl_fld_IO%file_prefix = rst_head_plane
-      call sel_write_step_FEM_field_file(id_rank, izero, pl_fld_IO)
+      call sel_write_step_FEM_field_file                                &
+     &   (num_pe, id_rank, izero, pl_fld_IO)
 !
+      call dealloc_merged_field_stack(pl_fld_IO)
       call dealloc_phys_name_IO(pl_fld_IO)
       call dealloc_phys_data_IO(pl_fld_IO)
 !

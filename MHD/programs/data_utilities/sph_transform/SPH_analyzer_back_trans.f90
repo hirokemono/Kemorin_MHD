@@ -48,7 +48,8 @@
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_org_rst, org_rst_header, fld_IO)
       write(*,*) 'ifmt_org_rst', ifmt_org_rst
-      call sel_read_alloc_step_SPH_file(my_rank, i_step_init, fld_IO)
+      call sel_read_alloc_step_SPH_file                                 &
+     &   (nprocs, my_rank, i_step_init, fld_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
       call copy_sph_name_rj_to_rtp
@@ -121,7 +122,8 @@
 !
 !   Input spectr data
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
-        call sel_read_step_SPH_field_file(my_rank, i_step, fld_IO)
+      call sel_read_step_SPH_field_file                                 &
+     &     (nprocs, my_rank, i_step, fld_IO)
 !
 !    copy and extend magnetic field to outside
 !

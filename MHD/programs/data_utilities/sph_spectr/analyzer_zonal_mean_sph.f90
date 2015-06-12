@@ -60,7 +60,7 @@
       call set_field_file_fmt_prefix                                    &
      &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IO)
       call sel_read_alloc_step_SPH_file                                 &
-     &   (my_rank, i_step_init, sph_fld_IO)
+     &   (nprocs, my_rank, i_step_init, sph_fld_IO)
 !
 !  -------------------------------
 !
@@ -81,6 +81,7 @@
       use m_sph_spectr_data
       use copy_rj_phys_data_4_IO
       use cal_zonal_mean_sph_spectr
+      use const_global_element_ids
 !
       integer(kind = kint) :: i_step
 !
@@ -92,7 +93,8 @@
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
         call set_field_file_fmt_prefix                                  &
      &     (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IO)
-        call sel_read_step_SPH_field_file(my_rank, i_step, sph_fld_IO)
+      call sel_read_step_SPH_field_file                                 &
+     &     (nprocs, my_rank, i_step, sph_fld_IO)
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO(sph_fld_IO)
@@ -102,11 +104,17 @@
         call zonal_mean_all_sph_spectr
         call copy_rj_all_phys_data_to_IO(sph_fld_IO)
 !
+        call alloc_merged_field_stack(nprocs, sph_fld_IO)
+        call count_number_of_node_stack                                 &
+     &     (sph_fld_IO%nnod_IO, sph_fld_IO%istack_numnod_IO)
+!
 !
         sph_fld_IO%file_prefix = zm_sph_file_head
         if (iflag_debug.gt.0)                                           &
      &    write(*,*) 'sel_write_step_SPH_field_file'
-        call sel_write_step_SPH_field_file(my_rank, i_step, sph_fld_IO)
+        call sel_write_step_SPH_field_file                              &
+     &     (nprocs, my_rank, i_step, sph_fld_IO)
+        call dealloc_merged_field_stack(sph_fld_IO)
       end do
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze_zonal_mean_sph'

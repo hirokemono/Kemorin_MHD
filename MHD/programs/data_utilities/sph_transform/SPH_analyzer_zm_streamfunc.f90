@@ -54,7 +54,8 @@
 !
 !   Input spectr data
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
-        call sel_read_step_SPH_field_file(my_rank, i_step, fld_IO)
+        call sel_read_step_SPH_field_file                               &
+     &     (nprocs, my_rank, i_step, fld_IO)
 !
 !    copy and extend magnetic field to outside
 !

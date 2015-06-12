@@ -8,6 +8,7 @@
 !
 !
       use m_precision
+      use calypso_mpi
 !
       use m_constants
       use m_file_format_switch
@@ -57,6 +58,9 @@
 ! ==============================================
 ! * get number of  nodes,elements for whole PES
 ! ==============================================
+!
+      call calypso_MPI_init
+!
 
       write(*,*) ' Dou you prepare folloing data???'
       write(*,*) ' mesh data for new simulation:  mesh/in.PE#'
@@ -271,6 +275,8 @@
 ! * PES loops 
 ! ========================
 !
+        call plane_nnod_stack_4_IO
+!
         do ip =1, num_pe
 !
 !        write(*,*) 'numnod', merge_tbl%nnod_merged
@@ -295,5 +301,7 @@
 !
        end do
       end do
+!
+      call calypso_MPI_finalize
 !
       end program make_initial_by_spectra

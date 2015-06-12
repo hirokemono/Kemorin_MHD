@@ -10,7 +10,6 @@ TARGET_NEWUDT = assemble_udt
 TARGET_NEWRST = assemble_restart
 
 TARGET_NEWSPH = assemble_sph
-TARGET_NEWSPH_SGL = assemble_sph_single
 
 
 TARGET_UPDATE_RST =   update_restart
@@ -61,9 +60,6 @@ MOD_NEWSPH = \
 main_assemble_sph.o \
 analyzer_assemble_sph.o
 
-MOD_NEWSPH_SGL = \
-assemble_newsph.o
-
 MOD_ADD_TIME_SPH = \
 add_time_data_to_sph.o
 
@@ -82,7 +78,6 @@ target_list:
 	@echo 'TARGET_NEWUDT = $$(BUILDDIR)/$(TARGET_NEWUDT)' >> $(MAKENAME)
 	@echo 'TARGET_NEWRST = $$(BUILDDIR)/$(TARGET_NEWRST)' >> $(MAKENAME)
 	@echo 'TARGET_NEWSPH = $$(BUILDDIR)/$(TARGET_NEWSPH)' >> $(MAKENAME)
-	@echo 'TARGET_NEWSPH_SGL =   $$(BUILDDIR)/$(TARGET_NEWSPH_SGL)'   >> $(MAKENAME)
 	@echo 'TARGET_UPDATE_RST =   $$(BUILDDIR)/$(TARGET_UPDATE_RST)'   >> $(MAKENAME)
 	@echo 'TARGET_ADD_TIME_SPH = $$(BUILDDIR)/$(TARGET_ADD_TIME_SPH)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
@@ -91,8 +86,8 @@ target_task:
 	@echo assembles: \
 	'$$(TARGET_MERGE)        $$(TARGET_M_MESH)'            \
 	'$$(TARGET_NEWUDT)       $$(TARGET_NEWRST)'            \
-	'$$(TARGET_NEWSPH)       $$(TARGET_NEWSPH_SGL)'        \
-	'$$(TARGET_ADD_TIME_SPH) $$(TARGET_UPDATE_RST)'    >> $(MAKENAME)
+	'$$(TARGET_NEWSPH)       $$(TARGET_UPDATE_RST)'        \
+	'$$(TARGET_ADD_TIME_SPH)'    >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MERGE)': '$$(MOD_MERGE_UCD) $$(LIB_FILES_PARA_MERGE)' \
 	>> $(MAKENAME)
@@ -125,13 +120,6 @@ target_task:
 	@echo '$$(TARGET_UPDATE_RST)': '$$(MOD_UPDATE_RST) $$(LIB_FILES_PARA_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_UPDATE_RST)' '$$(MOD_UPDATE_RST)' \
-	'-L. $$(LIBS_PARA_MERGE)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	
-	@echo '$$(TARGET_NEWSPH_SGL)': '$$(MOD_NEWSPH_SGL) $$(LIB_FILES_PARA_MERGE)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWSPH_SGL)' '$$(MOD_NEWSPH_SGL)' \
 	'-L. $$(LIBS_PARA_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -178,8 +166,6 @@ mod_list:
 	@echo  $(MOD_UPDATE_RST)     >> $(MAKENAME)
 	@echo  MOD_NEWSPH=  \\       >> $(MAKENAME)
 	@echo  $(MOD_NEWSPH)         >> $(MAKENAME)
-	@echo  MOD_NEWSPH_SGL=  \\   >> $(MAKENAME)
-	@echo  $(MOD_NEWSPH_SGL)     >> $(MAKENAME)
 	@echo  MOD_ADD_TIME_SPH=  \\ >> $(MAKENAME)
 	@echo  $(MOD_ADD_TIME_SPH)   >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)

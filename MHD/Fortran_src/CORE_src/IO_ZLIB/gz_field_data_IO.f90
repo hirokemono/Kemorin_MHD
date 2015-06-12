@@ -5,8 +5,8 @@
 !
 !       zlib and kemo_zlib_io_c are required
 !
-!      subroutine write_gz_step_data(my_rank)
-!      subroutine read_gz_step_data
+!      subroutine write_gz_step_data(id_rank)
+!      subroutine read_gz_step_data(id_rank)
 !
 !!      subroutine read_gz_field_data(nnod, num_field, ntot_comp,       &
 !!     &          ncomp_field, field_name, field_data)
@@ -28,16 +28,16 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_gz_step_data(my_rank)
+      subroutine write_gz_step_data(id_rank)
 !
       use m_time_data_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
 !
       write(textbuf,'(a,a1)'   )   '!  domain ID', char(0)
       call gz_write_textbuf_w_lf
-      write(textbuf,'(i16,a1)') my_rank, char(0)
+      write(textbuf,'(i16,a1)') id_rank, char(0)
       call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)'   )   '!  time step number', char(0)
       call gz_write_textbuf_w_lf
@@ -52,15 +52,15 @@
 !
 !-------------------------------------------------------------------
 !
-      subroutine read_gz_step_data
+      subroutine read_gz_step_data(id_rank)
 !
       use m_time_data_IO
 !
+      integer(kind = kint), intent(inout) :: id_rank
       character(len = kchara) :: tmpchara
-      integer(kind = kint) :: itmp
 !
 !
-      call skip_gz_comment_int(itmp)
+      call skip_gz_comment_int(id_rank)
       call skip_gz_comment_int(i_time_step_IO)
       call skip_gz_comment_chara(tmpchara)
       read(tmpchara,*,err=99, end=99) time_IO, delta_t_IO

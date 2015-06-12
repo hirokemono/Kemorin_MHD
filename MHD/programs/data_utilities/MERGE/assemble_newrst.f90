@@ -8,6 +8,7 @@
 !
 !
       use m_precision
+      use calypso_mpi
 !
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
@@ -27,7 +28,9 @@
 ! ==============================================
 ! * get number of  nodes,elements for whole PES
 ! ==============================================
-
+!
+      call calypso_MPI_init
+!
       write(*,*) ' Dou you prepare folloing data???'
       write(*,*) ' original mesh data:  mesh/in.PE#'
       write(*,*) ' new mesh data:  mesh_target/in.PE#'
@@ -74,6 +77,7 @@
         end do
       end if
 !
+      call calypso_MPI_finalize
 !
       stop ' //// program normally finished //// '
 !

@@ -95,7 +95,7 @@
       call choose_para_file_format                                      &
      &   (restart_file_fmt_ctl, ifmt_org_sph_fst)
       call choose_para_file_format                                      &
-     &   (restart_file_fmt_ctl, ifmt_new_sph_fst)
+     &   (new_rst_files_fmt_ctl, ifmt_new_sph_fst)
 !
       if(del_org_data_ctl%iflag .gt. 0) then
         if(yes_flag(del_org_data_ctl%charavalue)) then

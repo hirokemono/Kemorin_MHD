@@ -32,7 +32,6 @@
       use t_ucd_data
 !
       use set_ucd_file_names
-      use delete_data_files
 !
       implicit none
 !
@@ -57,7 +56,6 @@
      &      iflag_ucd_gz, istep, gzip_name)
 !
       if(my_rank .eq. 0) then
-        call delete_file_if_exist(gzip_name)
         write(*,*) 'gzipped single UCD data: ', trim(gzip_name)
       end if
 !
@@ -81,7 +79,6 @@
      &      iflag_udt_gz, istep, gzip_name)
 !
       if(my_rank .eq. 0) then
-        call delete_file_if_exist(gzip_name)
         write(*,*) 'gzipped single UCD field data: ', trim(gzip_name)
       end if
 !
@@ -105,7 +102,6 @@
      &      gzip_name)
 !
       if(my_rank .eq. 0) then
-        call delete_file_if_exist(gzip_name)
         write(*,*) 'gzipped single UCD grid data: ', trim(gzip_name)
       end if
 !
@@ -131,7 +127,6 @@
      &    istep, gzip_name)
 !
      if(my_rank .eq. 0) then
-        call delete_file_if_exist(gzip_name)
         write(*,*) 'gzipped single VTK data: ', trim(gzip_name)
       end if
       call calypso_mpi_barrier
@@ -157,7 +152,6 @@
      &      istep, gzip_name)
 !
      if(my_rank .eq. 0) then
-        call delete_file_if_exist(gzip_name)
         write(*,*) 'gzipped single VTK field data: ', trim(gzip_name)
       end if
       call calypso_mpi_barrier
@@ -182,7 +176,6 @@
      &    gzip_name)
 !
      if(my_rank .eq. 0) then
-        call delete_file_if_exist(gzip_name)
         write(*,*) 'gzipped single VTK grid data: ', trim(gzip_name)
       end if
       call calypso_mpi_barrier

@@ -76,7 +76,7 @@
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: gzip_name
-      integer(kind = kint) :: nnod4
+      integer(kind = kint) :: nnod4, id_rank
 !
 !
       call set_parallel_ucd_file_name(ucd%file_prefix, iflag_fld_gz,    &
@@ -87,7 +87,7 @@
 !
       call open_rd_gzfile(gzip_name)
 !
-      call read_gz_step_data
+      call read_gz_step_data(id_rank)
       call skip_gz_comment_int2(nnod4, ucd%num_field)
       call read_gz_multi_int(ucd%num_field, ucd%num_comp)
 !
@@ -108,7 +108,7 @@
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: gzip_name
-      integer(kind = kint) :: nnod4
+      integer(kind = kint) :: nnod4, id_rank
 !
 !
       call set_parallel_ucd_file_name(ucd%file_prefix, iflag_fld_gz,    &
@@ -119,7 +119,7 @@
 !
       call open_rd_gzfile(gzip_name)
 !
-      call read_gz_step_data
+      call read_gz_step_data(id_rank)
       call skip_gz_comment_int2(nnod4, ucd%num_field)
       ucd%nnod = nnod4
 !

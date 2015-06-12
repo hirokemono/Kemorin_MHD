@@ -75,7 +75,8 @@
 !
       call set_field_file_fmt_prefix                                    &
      &   (izero, org_rst_f_header, plane_fst_IO)
-      call sel_read_alloc_FEM_fld_head(izero, istep, plane_fst_IO)
+      call sel_read_alloc_FEM_fld_head                                  &
+     &   (num_pe, izero, istep, plane_fst_IO)
 !
       num_rst_org = plane_fst_IO%num_field_IO
 !
@@ -98,6 +99,14 @@
 !    construct new data
 !
       merged%node%numnod = numnod
+!      
+      call alloc_merged_field_stack(nprocs, plane_fst_IO)
+      plane_fst_IO%istack_numnod_IO(0) = 0
+      do ip = 1, num_pe
+        plane_fst_IO%istack_numnod_IO(ip)                               &
+     &      = plane_fst_IO%istack_numnod_IO(ip-1) + merged%node%numnod
+      end do
+!
       do ip = 1, num_pe
         id_rank = ip-1
 !
@@ -118,14 +127,15 @@
 !
 !     read original restart data
 !
-        plane_fst_IO%nnod_IO =   merged%node%numnod
+        plane_fst_IO%nnod_IO = merged%node%numnod
 !
         plane_fst_IO%num_field_IO =  num_rst_org
         plane_fst_IO%ntot_comp_IO = ntot_rst_org
 !
         call set_field_file_fmt_prefix                                  &
      &     (izero, org_rst_f_header, plane_fst_IO)
-        call sel_read_step_FEM_field_file(id_rank, istep, plane_fst_IO)
+        call sel_read_step_FEM_field_file                               &
+     &     (num_pe, id_rank, istep, plane_fst_IO)
 !
         do np = 1, ntot_rst_org
           merged_fld%d_fld(1:merged%node%numnod,np)                     &
@@ -164,7 +174,8 @@
      &     (merged%node, merged_fld, plane_fst_IO)
 !
         plane_fst_IO%file_prefix = new_rst_file_header
-        call sel_write_step_FEM_field_file(id_rank, izero, plane_fst_IO)
+        call sel_write_step_FEM_field_file                              &
+     &     (num_pe, id_rank, izero, plane_fst_IO)
 !
         call dealloc_phys_name_IO(plane_fst_IO)
         call dealloc_phys_data_IO(plane_fst_IO)

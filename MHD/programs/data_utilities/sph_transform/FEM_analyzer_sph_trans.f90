@@ -112,6 +112,7 @@
       if (iflag_debug.gt.0) write(*,*) 'copy_rj_all_phys_name_to_IO'
       call copy_rj_all_phys_name_to_IO(fld_IO)
       call alloc_phys_data_IO(fld_IO)
+      call alloc_merged_field_stack(nprocs, fld_IO)
 !
       end subroutine SPH_to_FEM_bridge_sph_trans
 !

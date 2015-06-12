@@ -30,7 +30,6 @@
       use t_ucd_data
 !
       use set_ucd_file_names
-      use delete_data_files
 !
       implicit none
 !
@@ -110,7 +109,6 @@
      &      istep, file_name)
 !
      if(my_rank .eq. 0) then
-        call delete_file_if_exist(file_name)
         write(*,*) 'single UCD data: ', trim(file_name)
       end if
       call calypso_mpi_barrier
@@ -136,7 +134,6 @@
      &      istep, file_name)
 !
      if(my_rank .eq. 0) then
-        call delete_file_if_exist(file_name)
         write(*,*) 'single UCD field data: ', trim(file_name)
       end if
       call calypso_mpi_barrier
@@ -161,7 +158,6 @@
      &    file_name)
 !
      if(my_rank .eq. 0) then
-        call delete_file_if_exist(file_name)
         write(*,*) 'single UCD grid data: ', trim(file_name)
       end if
       call calypso_mpi_barrier
@@ -188,7 +184,6 @@
      &      istep, file_name)
 !
      if(my_rank .eq. 0) then
-        call delete_file_if_exist(file_name)
         write(*,*) 'single VTK data: ', trim(file_name)
       end if
       call calypso_mpi_barrier
@@ -214,7 +209,6 @@
      &      istep, file_name)
 !
      if(my_rank .eq. 0) then
-        call delete_file_if_exist(file_name)
         write(*,*) 'single VTK field data: ', trim(file_name)
       end if
       call calypso_mpi_barrier
@@ -239,7 +233,6 @@
      &    file_name)
 !
      if(my_rank .eq. 0) then
-        call delete_file_if_exist(file_name)
         write(*,*) 'single VTK grid data: ', trim(file_name)
       end if
       call calypso_mpi_barrier

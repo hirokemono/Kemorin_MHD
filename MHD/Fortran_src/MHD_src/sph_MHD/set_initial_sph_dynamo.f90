@@ -18,6 +18,7 @@
       use m_precision
 !
       use m_constants
+      use m_machine_parameter
       use m_sph_phys_address
 !
       implicit none
@@ -48,6 +49,7 @@
 !
       iflag_initial_step = 0
       if (iflag_restart .eq. i_rst_by_file) then
+        if(iflag_debug .gt. 0) write(*,*) 'read_alloc_sph_restart_data'
         call read_alloc_sph_restart_data
 !
 !   for dynamo benchmark
@@ -89,9 +91,11 @@
         call set_all_part_temp_sph
       end if
 !
+      if(iflag_debug .gt. 0) write(*,*) 'init_output_sph_restart_file'
       call init_output_sph_restart_file
 !
       if (iflag_restart.ne.i_rst_by_file .and. i_step_init.eq.0) then
+        if(iflag_debug .gt. 0) write(*,*) 'output_sph_restart_control'
         call output_sph_restart_control
       end if
 !

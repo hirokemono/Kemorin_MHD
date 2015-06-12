@@ -48,7 +48,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call calypso_mpi_write_file_open(file_name, id_vtk)
+      call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
 !
       ioff_gl = 0
       call gz_write_vtk_mesh_mpi(id_vtk, ioff_gl,                       &
@@ -76,7 +76,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call calypso_mpi_write_file_open(file_name, id_vtk)
+      call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
 !
       ioff_gl = 0
       call gz_write_vtk_data_mpi(id_vtk, ioff_gl,                       &
@@ -100,7 +100,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call calypso_mpi_write_file_open(file_name, id_vtk)
+      call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
 !
       call gz_write_vtk_mesh_mpi(id_vtk, ioff_gl,                       &
      &    ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie,           &
@@ -248,7 +248,6 @@
         allocate(gzip_buf(ilen_gz))
         call gzip_defleat_once                                          &
      &     (ilength, header_txt, ilen_gz, ilen_gzipped, gzip_buf(1))
-        ilength = ilen_gzipped
 !
         ioffset = int(ioff_gl)
         call calypso_mpi_seek_write_chara                               &
@@ -303,7 +302,7 @@
       end if
 !
       call calypso_gz_mpi_seek_write                                    &
-     &         (id_vtk, ioff_gl, ilen_gzipped, gzip_buf)
+     &   (id_vtk, ioff_gl, ilen_gzipped, gzip_buf(1))
       deallocate(gzip_buf)
 !
       end subroutine gz_write_vtk_scalar_mpi
@@ -353,7 +352,7 @@
       end if
 !
       call calypso_gz_mpi_seek_write                                    &
-     &         (id_vtk, ioff_gl, ilen_gzipped, gzip_buf)
+     &   (id_vtk, ioff_gl, ilen_gzipped, gzip_buf(1))
       deallocate(gzip_buf)
 !
       end subroutine gz_write_vtk_vecotr_mpi
@@ -499,7 +498,7 @@
       end if
 !
       call calypso_gz_mpi_seek_write                                    &
-     &         (id_vtk, ioff_gl, ilen_gzipped, gzip_buf)
+     &   (id_vtk, ioff_gl, ilen_gzipped, gzip_buf(1))
       deallocate(gzip_buf)
 !
       end subroutine gz_write_vtk_connect_mpi
@@ -543,7 +542,7 @@
       end if
 !
       call calypso_gz_mpi_seek_write                                    &
-     &         (id_vtk, ioff_gl, ilen_gzipped, gzip_buf)
+     &   (id_vtk, ioff_gl, ilen_gzipped, gzip_buf(1))
       deallocate(gzip_buf)
 !
       end subroutine gz_write_vtk_celltype_mpi

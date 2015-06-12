@@ -97,7 +97,7 @@
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_org_rst_file, org_rst_file_head, itp_fld_IO)
       call sel_read_alloc_step_FEM_file                                 &
-     &   (izero, istep_rst_start, itp_fld_IO)
+     &   (ndomain_org, izero, istep_rst_start, itp_fld_IO)
       if (iflag_debug.eq.1) write(*,*) 'init_field_name_by_restart'
       call init_field_name_by_restart(itp_fld_IO)
       call dealloc_phys_data_IO(itp_fld_IO)
@@ -131,6 +131,7 @@
       use set_field_to_restart
       use set_field_type_to_restart
       use interpolate_nod_field_2_type
+      use const_global_element_ids
 !
       integer(kind = kint) :: i_step
 !
@@ -146,7 +147,7 @@
           call set_field_file_fmt_prefix                                &
      &       (ifmt_org_rst_file, org_rst_file_head, itp_fld_IO)
           call sel_read_step_FEM_field_file                             &
-     &       (my_rank, i_step, itp_fld_IO)
+     &       (nprocs, my_rank, i_step, itp_fld_IO)
 !
           call copy_field_data_from_restart(itp_fld_IO)
           call dealloc_phys_data_IO(itp_fld_IO)
@@ -166,17 +167,24 @@
      &      new_femmesh%mesh%node, new_phys)
 !
         if (my_rank .lt. ndomain_dest) then
+          call copy_time_steps_to_restart
+!
           itp_fld_IO%nnod_IO = new_femmesh%mesh%node%numnod
           call alloc_phys_data_IO(itp_fld_IO)
           call copy_field_type_to_rst                                   &
      &       (new_femmesh%mesh%node, new_phys, itp_fld_IO)
-          call copy_time_steps_to_restart
+!
+          call alloc_merged_field_stack(nprocs, itp_fld_IO)
+          call count_number_of_node_stack                               &
+     &       (itp_fld_IO%nnod_IO, itp_fld_IO%istack_numnod_IO)
 !
           call set_field_file_fmt_prefix                                &
      &       (ifmt_itp_rst_file, itp_rst_file_head, itp_fld_IO)
           call sel_write_step_FEM_field_file                            &
-     &       (my_rank, i_step, itp_fld_IO)
+     &       (nprocs, my_rank, i_step, itp_fld_IO)
+!
           call dealloc_phys_data_IO(itp_fld_IO)
+          call dealloc_merged_field_stack(itp_fld_IO)
         end if
       end do
 !

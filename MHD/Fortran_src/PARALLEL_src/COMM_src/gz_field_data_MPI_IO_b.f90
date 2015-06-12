@@ -28,7 +28,7 @@
 !!      subroutine gz_read_fld_mul_charhead_mpi_b(num, chara_dat)
 !!
 !!      subroutine gz_read_fld_realarray2_mpi_b                         &
-!!     &         (n1, n2, real_dat, istack_merged)
+!!     &         (nprocs_in, id_rank, n1, n2, real_dat, istack_merged)
 !!@endverbatim
 !
       module gz_field_data_MPI_IO_b
@@ -264,8 +264,6 @@
       else
         call gzseek_go_fwd_f(kint, ierr)
       end if
-      call MPI_BCAST(int_dat, ione, CALYPSO_INTEGER, izero,             &
-     &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine gz_read_fld_inthead_mpi_b
 !
@@ -282,8 +280,6 @@
       else
         call gzseek_go_fwd_f(kreal, ierr)
       end if
-      call MPI_BCAST(real_dat, ione, CALYPSO_REAL, izero,               &
-     &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine gz_read_fld_realhead_mpi_b
 !
@@ -300,12 +296,10 @@
 !
       ilength = num * kint_gl
       if(my_rank .eq. 0) then
-        ierr = gzread_f(ilength, int_gl_dat)
+        ierr = gzread_f(ilength, int_gl_dat(1))
       else
         call gzseek_go_fwd_f(ilength, ierr)
       end if
-      call MPI_BCAST(int_gl_dat, num, CALYPSO_GLOBAL_INT, izero,        &
-     &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine gz_read_fld_mul_i8head_mpi_b
 !
@@ -321,12 +315,10 @@
 !
       ilength = num * kint
       if(my_rank .eq. 0) then
-        ierr = gzread_f(ilength, int_dat)
+        ierr = gzread_f(ilength, int_dat(1))
       else
         call gzseek_go_fwd_f(ilength, ierr)
       end if
-      call MPI_BCAST(int_dat, num, CALYPSO_INTEGER, izero,              &
-     &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine gz_read_fld_mul_inthead_mpi_b
 !
@@ -342,36 +334,37 @@
 !
       ilength = num * kchara
       if(my_rank .eq. 0) then
-        ierr = gzread_f(ilength, chara_dat)
+        ierr = gzread_f(ilength, chara_dat(1))
       else
         call gzseek_go_fwd_f(ilength, ierr)
       end if
-      call MPI_BCAST(chara_dat, ilength, CALYPSO_CHARACTER, izero,      &
-     &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine gz_read_fld_mul_charhead_mpi_b
 !
 ! -----------------------------------------------------------------------
 !
       subroutine gz_read_fld_realarray2_mpi_b                           &
-     &         (n1, n2, real_dat, istack_merged)
+     &         (nprocs_in, id_rank, n1, n2, real_dat, istack_merged)
 !
-      integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs)
+      integer(kind=kint), intent(in) :: id_rank, nprocs_in
+      integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
       integer(kind = kint), intent(in) :: n1, n2
       real(kind = kreal), intent(inout) :: real_dat(n1,n2)
 !
       integer(kind = kint) :: ilength, ierr
 !
 !
-      ilength =  int(istack_merged(my_rank)) * n2 * kreal
+      ilength =  int(istack_merged(id_rank)) * n2 * kreal
+      write(*,*) 'gzseek_go_fwd_f', id_rank, ilength
       call gzseek_go_fwd_f(ilength, ierr)
 !
       ilength =  n1 * n2 * kreal
+      write(*,*) 'gzread_f', id_rank, ilength
       ierr = gzread_f(ilength, real_dat)
 !
-      ilength = int(istack_merged(nprocs) - istack_merged(my_rank+1))   &
-     &          * n2 * kreal
-      call gzseek_go_fwd_f(ilength, ierr)
+!      ilength = int(istack_merged(nprocs_in)                           &
+!     &            - istack_merged(id_rank+1))  * n2 * kreal
+!      call gzseek_go_fwd_f(ilength, ierr)
 !
       end subroutine gz_read_fld_realarray2_mpi_b
 !

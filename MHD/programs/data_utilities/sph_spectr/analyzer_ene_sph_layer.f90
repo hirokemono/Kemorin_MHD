@@ -73,7 +73,7 @@
       call set_field_file_fmt_prefix                                    &
      &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IO)
       call sel_read_alloc_step_SPH_file                                 &
-     &   (my_rank, i_step_init, sph_fld_IO)
+     &   (nprocs, my_rank, i_step_init, sph_fld_IO)
 !
 !  -------------------------------
 !
@@ -117,7 +117,8 @@
 !
         call set_field_file_fmt_prefix                                  &
      &     (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IO)
-        call sel_read_step_SPH_field_file(my_rank, i_step, sph_fld_IO)
+        call sel_read_step_SPH_field_file                               &
+     &     (nprocs, my_rank, i_step, sph_fld_IO)
 !
         call set_rj_phys_data_from_IO(sph_fld_IO)
 !

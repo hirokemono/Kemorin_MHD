@@ -43,7 +43,8 @@
 !
       call set_field_file_fmt_prefix                                    &
      &   (iorg_rst_file_fmt, org_rst_head, merged_IO)
-      call sel_read_alloc_FEM_fld_head(izero, istep_start, merged_IO)
+      call sel_read_alloc_FEM_fld_head                                  &
+     &   (num_pe, izero, istep_start, merged_IO)
 !
       call init_fld_name_type_by_rst(merged_IO, merged_fld)
       call alloc_phys_data_type(merged%node%numnod, merged_fld)
@@ -72,7 +73,8 @@
 !
         merged_IO%nnod_IO = subdomain(ip)%node%numnod
         call alloc_phys_data_IO(merged_IO)
-        call sel_read_step_FEM_field_file(id_rank, istep, merged_IO)
+        call sel_read_step_FEM_field_file                               &
+     &     (num_pe, id_rank, istep, merged_IO)
         call set_restart_data_2_merge(ip, merged_IO)
 !
         call dealloc_phys_data_IO(merged_IO)
@@ -84,6 +86,15 @@
 !
 !   output new restart data
 !
+      call alloc_merged_field_stack(num_pe2, merged_IO)
+!
+      merged_IO%istack_numnod_IO(0) = 0
+      do ip = 1, num_pe2
+        merged_IO%istack_numnod_IO(ip)                                  &
+     &      = merged_IO%istack_numnod_IO(ip-1)                          &
+     &       + subdomains_2(ip)%node%numnod
+      end do
+!
       call set_field_file_fmt_prefix                                    &
      &   (inew_rst_file_fmt, new_rst_head, merged_IO)
       do ip = 1, num_pe2
@@ -93,9 +104,11 @@
         call alloc_phys_data_IO(merged_IO)
         call set_new_restart_data(ip, merged_IO)
 !
-        call sel_write_step_FEM_field_file(id_rank, istep, merged_IO)
+        call sel_write_step_FEM_field_file                              &
+     &     (num_pe2, id_rank, istep, merged_IO)
         call dealloc_phys_data_IO(merged_IO)
       end do
+      call dealloc_merged_field_stack(merged_IO)
 !
       end subroutine generate_new_restart_snap
 !
@@ -161,6 +174,15 @@
 !
 !   output new restart data
 !
+      call alloc_merged_field_stack(num_pe2, merged_IO)
+!
+      merged_IO%istack_numnod_IO(0) = 0
+      do ip = 1, num_pe2
+        merged_IO%istack_numnod_IO(ip)                                  &
+     &      = merged_IO%istack_numnod_IO(ip-1)                          &
+     &       + subdomains_2(ip)%node%numnod
+      end do
+!
       call set_field_file_fmt_prefix                                    &
      &   (inew_rst_file_fmt, new_rst_head, merged_IO)
 !
@@ -172,9 +194,11 @@
 !
         call set_new_restart_data(ip, merged_IO)
 !
-        call sel_write_step_FEM_field_file(id_rank, istep, merged_IO)
+        call sel_write_step_FEM_field_file                              &
+     &     (num_pe2, id_rank, istep, merged_IO)
         call dealloc_phys_data_IO(merged_IO)
       end do
+      call dealloc_merged_field_stack(merged_IO)
 !
       end subroutine update_restart_file
 !

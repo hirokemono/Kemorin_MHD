@@ -13,6 +13,7 @@
 !!      subroutine alloc_phys_data_IO(fld_IO)
 !!      subroutine alloc_merged_field_stack(nprocs, fld_IO)
 !!
+!!      subroutine dealloc_phys_IO(fld_IO)
 !!      subroutine dealloc_phys_name_IO(fld_IO)
 !!      subroutine dealloc_phys_data_IO(fld_IO)
 !!      subroutine dealloc_merged_field_stack(fld_IO)
@@ -58,9 +59,7 @@
         real(kind = kreal), pointer :: d_IO(:,:)
 !
 !>        end point for number of node for each subdomain
-        integer(kind = kint_gl), pointer :: istack_merged_nod_IO(:)
-!>        number of node for each subdomain
-        integer(kind = kint_gl), pointer :: nnod_merged_IO(:)
+        integer(kind = kint_gl), pointer :: istack_numnod_IO(:)
       end type field_IO
 !
 ! -------------------------------------------------------------------
@@ -115,14 +114,25 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      allocate(fld_IO%istack_merged_nod_IO(0:nprocs))
-      allocate(fld_IO%nnod_merged_IO(nprocs))
-      fld_IO%istack_merged_nod_IO = 0
-      fld_IO%nnod_merged_IO =       0
+      allocate(fld_IO%istack_numnod_IO(0:nprocs))
+      fld_IO%istack_numnod_IO = 0
 !
       end subroutine alloc_merged_field_stack
 !
 ! -----------------------------------------------------------------------
+! -------------------------------------------------------------------
+!
+      subroutine dealloc_phys_IO(fld_IO)
+!
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      call dealloc_merged_field_stack(fld_IO)
+      call dealloc_phys_data_IO(fld_IO)
+      call dealloc_phys_name_IO(fld_IO)
+!
+      end subroutine dealloc_phys_IO
+!
 ! -------------------------------------------------------------------
 !
       subroutine dealloc_phys_name_IO(fld_IO)
@@ -154,8 +164,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      deallocate(fld_IO%istack_merged_nod_IO)
-      deallocate(fld_IO%nnod_merged_IO)
+      deallocate(fld_IO%istack_numnod_IO)
 !
       end subroutine dealloc_merged_field_stack
 !

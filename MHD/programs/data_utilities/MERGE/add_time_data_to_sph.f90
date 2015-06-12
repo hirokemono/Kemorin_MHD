@@ -15,6 +15,9 @@
 !
       use m_precision
       use m_constants
+      use calypso_mpi
+!
+      use t_field_data_IO
 !
       use m_machine_parameter
       use m_control_param_newsph
@@ -42,14 +45,23 @@
       type(sph_mesh_data), allocatable, save :: new_sph_mesh(:)
       type(phys_data), allocatable, save ::     new_sph_phys(:)
 !
+      type(field_IO), save :: new_fst_IO
+!
       type(sph_radial_itp_data), save :: r_itp
       type(rj_assemble_tbl), allocatable, save :: j_table_s(:,:)
+!
+      integer(kind = kint_gl), allocatable, target                      &
+     &                        :: istsack_nnod_list(:)
+!
       integer(kind = kint) :: nlayer_ICB_org, nlayer_CMB_org
       integer(kind = kint) :: nlayer_ICB_new, nlayer_CMB_new
 !
       integer(kind = kint) :: istep
       integer(kind = kint) :: jp, ip, irank_org, irank_new
 !
+!
+!
+      call calypso_MPI_init
 !
       write(*,*) 'Simulation start: PE. '
 !
@@ -96,6 +108,16 @@
         end do
       end do
 !
+      allocate(istsack_nnod_list(0:np_sph_new))
+      istsack_nnod_list(0) = 0
+      do jp = 1, np_sph_new
+        istsack_nnod_list(jp) = istsack_nnod_list(jp-1)                 &
+     &                       + new_sph_mesh(jp)%sph_mesh%sph_rj%nnod_rj
+      end do
+      new_fst_IO%istack_numnod_IO => istsack_nnod_list
+!
+!     Share number of nodes for new mesh
+!
 !     construct interpolation table
       call sph_radial_interpolation_coef                                &
      &     (org_sph_mesh(1)%sph_mesh%sph_rj%nidx_rj(1),                 &
@@ -129,7 +151,7 @@
 !      do jp = 1, np_sph_new
 !        do ip = 1, np_sph_org
 !          do j = 1, org_sph_mesh(1)%sph_mesh%sph_rj%nidx_rj(2)
-!            if(j_table_s(jp,ip)%j_org_to_new(j).gt. 0)               &
+!            if(j_table_s(jp,ip)%j_org_to_new(j).gt. 0)                 &
 !     &        write(50+my_rank,*) ip, j,                               &
 !     &        j_table_s(jp,ip)%j_org_to_new(j)
 !          end do
@@ -177,8 +199,8 @@
           irank_new = jp - 1
           call const_assembled_sph_data                                 &
      &       (new_sph_fst_head, ifmt_new_sph_fst, irank_new, istep,     &
-     &        b_sph_ratio, new_sph_mesh(jp)%sph_mesh, r_itp,            &
-     &        new_sph_phys(jp))
+     &        b_sph_ratio, np_sph_new, new_sph_mesh(jp)%sph_mesh,       &
+     &        r_itp, new_sph_phys(jp), new_fst_IO)
         end do
 !
         write(*,*) 'step', istep, 'finish '
@@ -193,5 +215,7 @@
 !
       deallocate(org_sph_mesh, org_sph_phys)
       deallocate(new_sph_mesh, new_sph_phys)
+!
+      call calypso_MPI_finalize
 !
       end program add_time_step_to_sph

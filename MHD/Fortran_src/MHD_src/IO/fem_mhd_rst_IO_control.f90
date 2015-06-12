@@ -57,6 +57,7 @@
       subroutine init_MHD_restart_output
 !
       use set_field_to_restart
+      use const_global_element_ids
 !
 !
       call count_field_num_to_restart(fem_fst_IO)
@@ -65,6 +66,10 @@
       call copy_field_name_to_restart(fem_fst_IO)
       call alloc_phys_data_IO(fem_fst_IO)
 !
+      call alloc_merged_field_stack(nprocs, fem_fst_IO)
+      call count_number_of_node_stack                                   &
+     &       (fem_fst_IO%nnod_IO, fem_fst_IO%istack_numnod_IO)
+!
       end subroutine init_MHD_restart_output
 !
 ! -----------------------------------------------------------------------
@@ -72,6 +77,7 @@
       subroutine init_restart_4_snapshot
 !
       use m_geometry_parameter
+      use const_global_element_ids
 !
       use field_IO_select
       use set_field_to_restart
@@ -80,10 +86,15 @@
 !
 !
       index_rst = i_step_init / i_step_output_rst
-      call sel_read_alloc_FEM_fld_head(my_rank, index_rst, fem_fst_IO)
+      call sel_read_alloc_FEM_fld_head                                  &
+     &   (nprocs, my_rank, index_rst, fem_fst_IO)
 !
       fem_fst_IO%nnod_IO = numnod
       call alloc_phys_data_IO(fem_fst_IO)
+!
+      call alloc_merged_field_stack(nprocs, fem_fst_IO)
+      call count_number_of_node_stack                                   &
+     &       (fem_fst_IO%nnod_IO, fem_fst_IO%istack_numnod_IO)
 !
       end subroutine init_restart_4_snapshot
 !
@@ -151,7 +162,7 @@
       call copy_field_data_to_restart(fem_fst_IO)
 !
       call sel_write_step_FEM_field_file                                &
-     &   (my_rank, index_rst, fem_fst_IO)
+     &   (nprocs, my_rank, index_rst, fem_fst_IO)
 !
       end subroutine output_restart_files
 !
@@ -175,7 +186,7 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr,'No restart file.')
 !
       call sel_read_alloc_step_FEM_file                                 &
-     &   (my_rank, istep_rst_start, fem_fst_IO)
+     &   (nprocs, my_rank, istep_rst_start, fem_fst_IO)
 !
       call copy_field_data_from_restart(fem_fst_IO)
       call dealloc_phys_data_IO(fem_fst_IO)
@@ -206,7 +217,8 @@
       if ( mod(istep_max_dt,i_step_output_rst) .ne. 0) return
 !
       index_rst = istep_max_dt / i_step_output_rst
-      call sel_read_step_FEM_field_file(my_rank, index_rst, fem_fst_IO)
+      call sel_read_step_FEM_field_file                                 &
+     &    (nprocs, my_rank, index_rst, fem_fst_IO)
 !
       call copy_field_data_from_restart(fem_fst_IO)
       time =       time_init

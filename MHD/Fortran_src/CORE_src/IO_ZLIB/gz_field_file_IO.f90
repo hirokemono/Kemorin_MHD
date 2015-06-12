@@ -98,6 +98,8 @@
       character(len=kchara), intent(in) :: gzip_name
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer(kind = kint) :: id_rank
+!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read gzipped field file: ', trim(gzip_name)
@@ -105,7 +107,7 @@
 !
       call open_rd_gzfile(gzip_name)
 !
-      call read_gz_step_data
+      call read_gz_step_data(id_rank)
       call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
       call read_gz_multi_int(fld_IO%num_field_IO, fld_IO%num_comp_IO)
       call read_gz_field_data                                           &
@@ -125,6 +127,8 @@
       character(len=kchara), intent(in) :: gzip_name
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer(kind = kint) :: id_rank
+!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read gzipped field file: ', trim(gzip_name)
@@ -132,7 +136,7 @@
 !
       call open_rd_gzfile(gzip_name)
 !
-      call read_gz_step_data
+      call read_gz_step_data(id_rank)
       call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
       call alloc_phys_name_IO(fld_IO)
 !
@@ -158,6 +162,8 @@
       character(len=kchara), intent(in) :: gzip_name
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer(kind = kint) :: id_rank
+!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read gzipped field file: ', trim(gzip_name)
@@ -165,7 +171,7 @@
 !
       call open_rd_gzfile(gzip_name)
 !
-      call read_gz_step_data
+      call read_gz_step_data(id_rank)
       call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
 !
       call alloc_phys_name_IO(fld_IO)

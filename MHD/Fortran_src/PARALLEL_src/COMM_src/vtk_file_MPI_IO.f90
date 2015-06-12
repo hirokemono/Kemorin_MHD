@@ -43,7 +43,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call calypso_mpi_write_file_open(file_name, id_vtk)
+      call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
 !
       ioff_gl = 0
       call write_vtk_mesh_mpi(id_vtk, ioff_gl,                          &
@@ -71,7 +71,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call calypso_mpi_write_file_open(file_name, id_vtk)
+      call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
 !
       ioff_gl = 0
       call write_vtk_data_mpi(id_vtk, ioff_gl,                          &
@@ -95,7 +95,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call calypso_mpi_write_file_open(file_name, id_vtk)
+      call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
 !
       ioff_gl = 0
       call write_vtk_mesh_mpi(id_vtk, ioff_gl,                          &

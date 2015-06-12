@@ -36,6 +36,8 @@
       subroutine set_sph_restart_num_to_IO(fld_IO)
 !
       use m_spheric_parameter
+      use calypso_mpi
+      use const_global_element_ids
 !
       type(field_IO), intent(inout) :: fld_IO
 !
@@ -47,6 +49,10 @@
 !
       call set_sph_restart_comp_to_IO(fld_IO)
       call alloc_phys_data_IO(fld_IO)
+!
+      call alloc_merged_field_stack(nprocs, fld_IO)
+      call count_number_of_node_stack                                   &
+     &   (fld_IO%nnod_IO, fld_IO%istack_numnod_IO)
 !
       end subroutine set_sph_restart_num_to_IO
 !

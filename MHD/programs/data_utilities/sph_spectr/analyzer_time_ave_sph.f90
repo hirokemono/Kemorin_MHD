@@ -58,7 +58,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_SPH_file'
       call sel_read_alloc_step_SPH_file                                 &
-     &   (my_rank, i_step_init, sph_fld_IO)
+     &   (nprocs, my_rank, i_step_init, sph_fld_IO)
 !
 !  -------------------------------
 !
@@ -82,6 +82,7 @@
       use copy_rj_phys_data_4_IO
       use set_parallel_file_name
       use cal_t_ave_sph_spectr_data
+      use const_global_element_ids
 !
       integer(kind = kint) :: i_step
 !
@@ -95,7 +96,8 @@
       call set_field_file_fmt_prefix                                    &
      &   (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IO)
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
-        call sel_read_step_SPH_field_file(my_rank, i_step, sph_fld_IO)
+      call sel_read_step_SPH_field_file                                 &
+     &     (nprocs, my_rank, i_step, sph_fld_IO)
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO(sph_fld_IO)
@@ -104,6 +106,7 @@
 !
         call sum_sph_spectr_data
       end do
+
       call dealloc_phys_data_IO(sph_fld_IO)
       call dealloc_phys_name_IO(sph_fld_IO)
 !
@@ -113,16 +116,21 @@
       call alloc_phys_data_IO(sph_fld_IO)
       call copy_rj_all_phys_data_to_IO(sph_fld_IO)
 !
+      call alloc_merged_field_stack(nprocs, sph_fld_IO)
+      call count_number_of_node_stack                                 &
+     &     (sph_fld_IO%nnod_IO, sph_fld_IO%istack_numnod_IO)
+!
+!
       call add_int_suffix(i_step_init,                                  &
      &    org_sph_file_head, sph_fld_IO%file_prefix)
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_write_step_SPH_field_file'
       call sel_write_step_SPH_field_file                                &
-     &   (my_rank, i_step_number, sph_fld_IO)
+     &   (nprocs, my_rank, i_step_number, sph_fld_IO)
 !
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
-        end subroutine evolution
+      end subroutine evolution
 !
 ! ----------------------------------------------------------------------
 !

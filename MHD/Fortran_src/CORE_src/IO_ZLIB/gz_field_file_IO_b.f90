@@ -217,9 +217,6 @@
       call gz_read_fld_realhead_b(time_IO)
       call gz_read_fld_realhead_b(delta_t_IO)
 !
-        write(*,*) my_rank, id_rank, 'i_time_step_IO', i_time_step_IO,  &
-     &          time_IO, delta_t_IO
-!
       end subroutine read_step_data_mpi_b
 !
 ! -----------------------------------------------------------------------

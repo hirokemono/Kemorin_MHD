@@ -99,7 +99,7 @@
 !
       call set_sph_restart_data_to_IO(sph_fst_IO)
       call sel_write_step_SPH_field_file                                &
-     &   (my_rank, istep_fld, sph_fst_IO)
+     &   (nprocs, my_rank, istep_fld, sph_fst_IO)
 !
       end subroutine output_sph_restart_control
 !
@@ -113,7 +113,8 @@
 !
 !
       call set_sph_restart_data_to_IO(sph_fst_IO)
-      call sel_write_step_SPH_field_file(my_rank, negaone, sph_fst_IO)
+      call sel_write_step_SPH_field_file                                &
+     &   (nprocs, my_rank, negaone, sph_fst_IO)
 !
       end subroutine output_sph_rst_by_elaps
 !
@@ -129,11 +130,11 @@
 !
       if (i_step_init .eq. -1) then
         call sel_read_alloc_step_SPH_file                               &
-     &     (my_rank, i_step_init, sph_fst_IO)
+     &     (nprocs, my_rank, i_step_init, sph_fst_IO)
       else
         istep_fld = i_step_init / i_step_output_rst
         call sel_read_alloc_step_SPH_file                               &
-     &     (my_rank, istep_fld, sph_fst_IO)
+     &     (nprocs, my_rank, istep_fld, sph_fst_IO)
       end if
 !
       call set_sph_restart_from_IO(sph_fst_IO)
@@ -176,7 +177,8 @@
 !
 !
       istep_fld = i_step / i_step_output_rst
-      call sel_read_alloc_step_SPH_file(my_rank, istep_fld, sph_fst_IO)
+      call sel_read_alloc_step_SPH_file                                 &
+     &   (nprocs, my_rank, istep_fld, sph_fst_IO)
 !
       if(iflag_org_sph_rj_head .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_sph_restart_from_IO'
@@ -217,7 +219,7 @@
 !
       call set_spectr_prefix_fmt_2_fld_IO(sph_fst_IO)
       call sel_write_step_SPH_field_file                                &
-     &   (my_rank, istep_fld, sph_fst_IO)
+     &   (nprocs, my_rank, istep_fld, sph_fst_IO)
 !
       call dealloc_phys_data_IO(sph_fst_IO)
       call dealloc_phys_name_IO(sph_fst_IO)
