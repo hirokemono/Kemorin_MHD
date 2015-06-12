@@ -136,7 +136,7 @@
       call deallocate_mat_num_weight
       call deallocate_sk_filter
 !
-      call deallocate_jacobians_on_node
+      call dealloc_dxdxi_diff_type(filter_dxi1%dxi_nod)
 !
       call deallocate_wk_exp_ele_nod_each
 !

@@ -16,6 +16,7 @@
 !
 !   minimum and maximum of element position
 !
+      private :: s_int_element_length
       private :: fem_element_length_linear, fem_element_length_quad
       private :: fem_element_length_lag, cal_element_length_by_jacobi
 !
@@ -25,35 +26,93 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_int_element_length
+      subroutine int_element_length_1st
+!
+      use m_filter_elength
+      use m_filter_dxdxi
+!
+      call s_int_element_length(nele_filter_mom,                        &
+     &    filter_dxi1%dxi_ele%dx%df_dxi,                                &
+     &    filter_dxi1%dxi_ele%dx%df_dei,                                &
+     &    filter_dxi1%dxi_ele%dx%df_dzi,                                &
+     &    filter_dxi1%dxi_ele%dy%df_dxi,                                &
+     &    filter_dxi1%dxi_ele%dy%df_dei,                                &
+     &    filter_dxi1%dxi_ele%dy%df_dzi,                                &
+     &    filter_dxi1%dxi_ele%dz%df_dxi,                                &
+     &    filter_dxi1%dxi_ele%dz%df_dei,                                &
+     &    filter_dxi1%dxi_ele%dz%df_dzi)
+!
+      end subroutine int_element_length_1st
+!
+!-----------------------------------------------------------------------
+!
+      subroutine s_int_element_length(nele_filter,                      &
+     &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
+     &          dydxi_ele, dydei_ele, dydzi_ele,                        &
+     &          dzdxi_ele, dzdei_ele, dzdzi_ele)
 !
       use m_geometry_constants
       use m_geometry_parameter
-      use m_filter_elength
       use m_fem_gauss_int_coefs
+!
+      integer(kind = kint), intent(in) :: nele_filter
+      real(kind=kreal), intent(inout) :: dxdxi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dxdei_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dxdzi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dydxi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dydei_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dydzi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dzdxi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dzdei_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dzdzi_ele(nele_filter)
 !
 !
       if      (nnod_4_ele .eq. num_t_linear) then
-        call fem_element_length_linear(max_int_point)
+        call fem_element_length_linear(max_int_point, nele_filter,      &
+     &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
+     &          dydxi_ele, dydei_ele, dydzi_ele,                        &
+     &          dzdxi_ele, dzdei_ele, dzdzi_ele)
       else if (nnod_4_ele .eq. num_t_quad) then
-        call fem_element_length_quad(max_int_point)
+        call fem_element_length_quad(max_int_point, nele_filter,        &
+     &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
+     &          dydxi_ele, dydei_ele, dydzi_ele,                        &
+     &          dzdxi_ele, dzdei_ele, dzdzi_ele)
       else if (nnod_4_ele .eq. num_t_lag) then
-        call fem_element_length_lag(max_int_point)
+        call fem_element_length_lag(max_int_point, nele_filter,         &
+     &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
+     &          dydxi_ele, dydei_ele, dydzi_ele,                        &
+     &          dzdxi_ele, dzdei_ele, dzdzi_ele)
       end if
 !
-      call cal_element_length_by_jacobi
+      call cal_element_length_by_jacobi(nele_filter,                    &
+     &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
+     &          dydxi_ele, dydei_ele, dydzi_ele,                        &
+     &          dzdxi_ele, dzdei_ele, dzdzi_ele)
 !
       end subroutine s_int_element_length
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_element_length_by_jacobi
+      subroutine cal_element_length_by_jacobi(nele_filter,              &
+     &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
+     &          dydxi_ele, dydei_ele, dydzi_ele,                        &
+     &          dzdxi_ele, dzdei_ele, dzdzi_ele)
 !
       use m_geometry_parameter
       use m_machine_parameter
-      use m_filter_elength
-      use m_filter_dxdxi
       use m_shape_functions
+      use m_filter_elength
+!
+      integer(kind = kint), intent(in) :: nele_filter
+      real(kind=kreal), intent(inout) :: dxdxi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dxdei_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dxdzi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dydxi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dydei_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dydzi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dzdxi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dzdei_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dzdzi_ele(nele_filter)
 !
       integer(kind = kint) :: iproc, iele
       integer(kind = kint) :: ist, ied
@@ -61,7 +120,6 @@
 !
 !$omp parallel do private(iele,ist,ied)
       do iproc = 1, np_smp
-!
         ist = iele_smp_stack(iproc-1)+1
         ied = iele_smp_stack(iproc)
         do iele = ist, ied
@@ -106,16 +164,29 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_element_length_linear(n_int)
+      subroutine fem_element_length_linear(n_int, nele_filter,          &
+     &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
+     &          dydxi_ele, dydei_ele, dydzi_ele,                        &
+     &          dzdxi_ele, dzdei_ele, dzdzi_ele)
 !
       use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
-      use m_filter_dxdxi
       use m_shape_functions
 !
       integer(kind = kint), intent(in) :: n_int
+      integer(kind = kint), intent(in) :: nele_filter
+      real(kind=kreal), intent(inout) :: dxdxi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dxdei_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dxdzi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dydxi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dydei_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dydzi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dzdxi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dzdei_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dzdzi_ele(nele_filter)
+!
       integer(kind = kint) :: iproc, iele
       integer(kind = kint) :: ii, ix, ist, ied
       integer(kind = kint) :: inod1,  inod2,  inod3,  inod4,  inod5
@@ -262,16 +333,29 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_element_length_quad(n_int)
+      subroutine fem_element_length_quad(n_int, nele_filter,            &
+     &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
+     &          dydxi_ele, dydei_ele, dydzi_ele,                        &
+     &          dzdxi_ele, dzdei_ele, dzdzi_ele)
 !
       use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
-      use m_filter_dxdxi
       use m_shape_functions
 !
       integer(kind = kint), intent(in) :: n_int
+      integer(kind = kint), intent(in) :: nele_filter
+      real(kind=kreal), intent(inout) :: dxdxi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dxdei_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dxdzi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dydxi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dydei_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dydzi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dzdxi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dzdei_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dzdzi_ele(nele_filter)
+!
       integer(kind = kint) :: iproc, iele
       integer(kind = kint) :: ii, ix, ist, ied
       integer(kind = kint) :: inod1,  inod2,  inod3,  inod4,  inod5
@@ -542,16 +626,29 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_element_length_lag(n_int)
+      subroutine fem_element_length_lag(n_int, nele_filter,             &
+     &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
+     &          dydxi_ele, dydei_ele, dydzi_ele,                        &
+     &          dzdxi_ele, dzdei_ele, dzdzi_ele)
 !
       use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
-      use m_filter_dxdxi
       use m_shape_functions
 !
       integer(kind = kint), intent(in) :: n_int
+      integer(kind = kint), intent(in) :: nele_filter
+      real(kind=kreal), intent(inout) :: dxdxi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dxdei_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dxdzi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dydxi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dydei_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dydzi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dzdxi_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dzdei_ele(nele_filter)
+      real(kind=kreal), intent(inout) :: dzdzi_ele(nele_filter)
+!
       integer(kind = kint) :: iproc, iele
       integer(kind = kint) :: ii, ix, ist, ied
       integer(kind = kint) :: inod1,  inod2,  inod3,  inod4,  inod5

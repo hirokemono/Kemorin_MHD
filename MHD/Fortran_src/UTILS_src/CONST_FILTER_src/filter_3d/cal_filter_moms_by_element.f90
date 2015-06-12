@@ -45,9 +45,15 @@
 !     & write(*,*) 's_set_seeds_moments', nele_filter_mom, num_order_3d
       do iele = 1, nele_filter_mom
         call s_set_seeds_moments                                        &
-     &      (dxdxi_ele(iele), dxdei_ele(iele), dxdzi_ele(iele),         &
-     &       dydxi_ele(iele), dydei_ele(iele), dydzi_ele(iele),         &
-     &       dzdxi_ele(iele), dzdei_ele(iele), dzdzi_ele(iele) )
+     &      (filter_dxi1%dxi_ele%dx%df_dxi(iele),                       &
+     &       filter_dxi1%dxi_ele%dx%df_dei(iele),                       &
+     &       filter_dxi1%dxi_ele%dx%df_dzi(iele),                       &
+     &       filter_dxi1%dxi_ele%dy%df_dxi(iele),                       &
+     &       filter_dxi1%dxi_ele%dy%df_dei(iele),                       &
+     &       filter_dxi1%dxi_ele%dy%df_dzi(iele),                       &
+     &       filter_dxi1%dxi_ele%dz%df_dxi(iele),                       &
+     &       filter_dxi1%dxi_ele%dz%df_dei(iele),                       &
+     &       filter_dxi1%dxi_ele%dz%df_dzi(iele))
 !
         seed_moments_ele(iele,1:num_order_3d)                           &
      &      = seed_moments(1:num_order_3d)

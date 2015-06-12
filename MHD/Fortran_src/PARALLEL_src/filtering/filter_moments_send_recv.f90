@@ -31,17 +31,17 @@
       use m_filter_dxdxi
 !
 !
-      call nod_scalar_send_recv(dxdxi_nod(1))
-      call nod_scalar_send_recv(dxdei_nod(1))
-      call nod_scalar_send_recv(dxdzi_nod(1))
+      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dx%df_dxi)
+      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dx%df_dei)
+      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dx%df_dzi)
 !
-      call nod_scalar_send_recv(dydxi_nod(1))
-      call nod_scalar_send_recv(dydei_nod(1))
-      call nod_scalar_send_recv(dydzi_nod(1))
+      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dy%df_dxi)
+      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dy%df_dei)
+      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dy%df_dzi)
 !
-      call nod_scalar_send_recv(dzdxi_nod(1))
-      call nod_scalar_send_recv(dzdei_nod(1))
-      call nod_scalar_send_recv(dzdzi_nod(1))
+      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dz%df_dxi)
+      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dz%df_dei)
+      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dz%df_dzi)
 !
       end subroutine jacobi_nod_send_recv
 !

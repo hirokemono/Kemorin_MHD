@@ -108,14 +108,14 @@
       call s_int_whole_volume_only
       if (my_rank.eq.0) write(*,*)  'Volume of Domain: ', volume
 !
-      if (iflag_debug.eq.1)  write(*,*)  's_int_element_length'
+      if (iflag_debug.eq.1)  write(*,*)  'int_element_length_1st'
       nnod_filter_mom = numnod
       nele_filter_mom = numele
       num_filter_moms = 2
-      call allocate_jacobians_for_ele
+      call alloc_dxdxi_diff_type(nele_filter_mom, filter_dxi1%dxi_ele)
       call allocate_ele_length
 !
-      call s_int_element_length
+      call int_element_length_1st
 !
        end subroutine init_analyzer
 !

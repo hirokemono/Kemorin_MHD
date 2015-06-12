@@ -43,17 +43,6 @@
       real(kind=kreal),   allocatable :: elen_dzdx_nod(:)
 !          ratio of element size at each node (node ID, direction)
 !
-      real(kind=kreal),   allocatable :: dxdxi_nod(:)
-      real(kind=kreal),   allocatable :: dxdei_nod(:)
-      real(kind=kreal),   allocatable :: dxdzi_nod(:)
-      real(kind=kreal),   allocatable :: dydxi_nod(:)
-      real(kind=kreal),   allocatable :: dydei_nod(:)
-      real(kind=kreal),   allocatable :: dydzi_nod(:)
-      real(kind=kreal),   allocatable :: dzdxi_nod(:)
-      real(kind=kreal),   allocatable :: dzdei_nod(:)
-      real(kind=kreal),   allocatable :: dzdzi_nod(:)
-!          1st difference of elen_nod
-!              (node ID, direction of diffrence)
       real(kind=kreal),   allocatable :: elen_dx2_nod_dx(:,:)
       real(kind=kreal),   allocatable :: elen_dy2_nod_dx(:,:)
       real(kind=kreal),   allocatable :: elen_dz2_nod_dx(:,:)
