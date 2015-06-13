@@ -16,22 +16,18 @@ TARGET_UPDATE_RST =   update_restart
 TARGET_ADD_TIME_SPH = add_time_4_fld
 
 LIBS_MERGE = \
-'$$(LIB_UTILS)' \
-'$$(LIB_MESH)'
 
 LIB_FILES_MERGE = \
 '$$(LIB_UTILS_FILE)' \
+'$$(LIB_PARA_FILE)'     \
+'$$(LIB_SOLVER_FILE)'   \
 '$$(LIB_MESH_FILE)'
 
-LIBS_PARA_MERGE = \
+LIBS_MERGE = \
 '$$(LIB_SOLVER)'    \
 '$$(LIB_PARA)'      \
-'$$(LIBS_MERGE)'
-
-LIB_FILES_PARA_MERGE = \
-'$$(LIB_SOLVER_FILE)'   \
-'$$(LIB_PARA_FILE)'     \
-'$$(LIB_FILES_MERGE)'
+'$$(LIB_UTILS)'     \
+'$$(LIB_MESH)'
 
 ifdef FORTRAN_C_CONNECT
   LIBS_MERGE+=        '$$(LIB_KEMO_C)'
@@ -89,68 +85,64 @@ target_task:
 	'$$(TARGET_NEWSPH)       $$(TARGET_UPDATE_RST)'        \
 	'$$(TARGET_ADD_TIME_SPH)'    >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_MERGE)': '$$(MOD_MERGE_UCD) $$(LIB_FILES_PARA_MERGE)' \
+	@echo '$$(TARGET_MERGE)': '$$(MOD_MERGE_UCD) $$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MERGE)' '$$(MOD_MERGE_UCD)' \
-	'-L. $$(LIBS_PARA_MERGE)' \
+	'-L. $$(LIBS_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
-	@echo '$$(TARGET_M_MESH)': '$$(MOD_MERGE_MESH) $$(LIB_FILES_PARA_MERGE)' \
+	@echo '$$(TARGET_M_MESH)': '$$(MOD_MERGE_MESH) $$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_M_MESH)' '$$(MOD_MERGE_MESH)' \
-	'-L. $$(LIBS_PARA_MERGE)' \
+	'-L. $$(LIBS_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
-	@echo '$$(TARGET_NEWUDT)': '$$(MOD_NEWUDT) $$(LIB_FILES_PARA_MERGE)' \
+	@echo '$$(TARGET_NEWUDT)': '$$(MOD_NEWUDT) $$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWUDT)' '$$(MOD_NEWUDT)' \
-	'-L. $$(LIBS_PARA_MERGE)' \
+	'-L. $$(LIBS_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
-	@echo '$$(TARGET_NEWRST)': '$$(MOD_NEWRST) $$(LIB_FILES_PARA_MERGE)' \
+	@echo '$$(TARGET_NEWRST)': '$$(MOD_NEWRST) $$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWRST)' '$$(MOD_NEWRST)' \
-	'-L. $$(LIBS_PARA_MERGE)' \
+	'-L. $$(LIBS_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
-	@echo '$$(TARGET_UPDATE_RST)': '$$(MOD_UPDATE_RST) $$(LIB_FILES_PARA_MERGE)' \
+	@echo '$$(TARGET_UPDATE_RST)': '$$(MOD_UPDATE_RST) $$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_UPDATE_RST)' '$$(MOD_UPDATE_RST)' \
-	'-L. $$(LIBS_PARA_MERGE)' \
+	'-L. $$(LIBS_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
 	@echo '$$(TARGET_ADD_TIME_SPH)': '$$(MOD_ADD_TIME_SPH)' \
-	'$$(LIB_FILES_PARA_MERGE)' \
+	'$$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ADD_TIME_SPH)' '$$(MOD_ADD_TIME_SPH)' \
-	'-L. $$(LIBS_PARA_MERGE)' \
+	'-L. $$(LIBS_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
 	@echo '$$(TARGET_NEWSPH)': '$$(MOD_NEWSPH)' \
-	'$$(LIB_FILES_PARA_MERGE)' \
+	'$$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWSPH)' '$$(MOD_NEWSPH)' \
-	'-L. $$(LIBS_PARA_MERGE)' \
+	'-L. $$(LIBS_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 
 
 lib_name:
-	@echo  LIBS_MERGE=  \\          >> $(MAKENAME)
-	@echo  $(LIBS_MERGE)            >> $(MAKENAME)
-	@echo  LIBS_PARA_MERGE=  \\     >> $(MAKENAME)
-	@echo  $(LIBS_PARA_MERGE)       >> $(MAKENAME)
+	@echo  LIBS_MERGE=  \\     >> $(MAKENAME)
+	@echo  $(LIBS_MERGE)       >> $(MAKENAME)
 	@echo  LIB_FILES_MERGE=  \\     >> $(MAKENAME)
 	@echo  $(LIB_FILES_MERGE)       >> $(MAKENAME)
-	@echo  LIB_FILES_PARA_MERGE=  \\ >> $(MAKENAME)
-	@echo  $(LIB_FILES_PARA_MERGE)   >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 mod_list:

@@ -7,11 +7,14 @@
 !> @brief Output merged VTK file usgin MPI-IO
 !!
 !!@verbatim
-!!      subroutine gz_write_fld_vecotr_mpi(id_fld, nprocs_in, id_rank,  &
-!!     &          ioff_gl, nnod, ndir, vector)
+!!      subroutine gz_write_fld_vecotr_mpi                              &
+!!     &         (id_fld, ioff_gl, nnod, ndir, vector)
 !!      subroutine gz_write_fld_header_mpi(id_fld, ioff_gl, header_txt)
 !!      subroutine gz_read_fld_vecotr_mpi                               &
 !!     &         (nprocs_in, id_rank, nnod, ndir, vector, istack_merged)
+!!
+!!      integer(kind = kint) function  gz_defleat_vector_txt            &
+!!     &                   (nnod, ndir, vector, ilen_gz, buffer)
 !!@endverbatim
 !
       module gz_field_data_MPI_IO
@@ -34,13 +37,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_fld_vecotr_mpi(id_fld, nprocs_in, id_rank,    &
-     &          ioff_gl, nnod, ndir, vector)
+      subroutine gz_write_fld_vecotr_mpi                                &
+     &         (id_fld, ioff_gl, nnod, ndir, vector)
 !
       use field_data_IO
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
       integer(kind = kint), intent(in) :: nnod, ndir
       real(kind = kreal), intent(in) :: vector(nnod,ndir)
 !
@@ -48,35 +50,14 @@
 !
       real(kind = kreal) :: v1(ndir)
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
-      integer(kind = kint_gl) :: inod
 !
 !
       v1(1:ndir) = 0.0d0
       ilength = len(each_field_data_buffer(ndir, v1))
       ilen_gz = int(real(nnod*ilength) * 1.01) + 24
       allocate(gzip_buf(ilen_gz))
-      if(nnod .eq. 1) then
-        v1(1:ndir) = vector(1,1:ndir)
-        call gzip_defleat_once(ilength,                                 &
-     &      each_field_data_buffer(ndir, v1),                           &
-     &      ilen_gz, ilen_gzipped, gzip_buf(1))
-!
-      else if(nnod .gt. 1) then
-        v1(1:ndir) = vector(1,1:ndir)
-        call gzip_defleat_begin(ilength,                                &
-     &      each_field_data_buffer(ndir, v1),                           &
-     &      ilen_gz, ilen_gzipped, gzip_buf(1))
-        do inod = 2, nnod-1
-          v1(1:ndir) = vector(inod,1:ndir)
-          call gzip_defleat_cont(ilength,                               &
-     &      each_field_data_buffer(ndir, v1), ilen_gz, ilen_gzipped)
-        end do
-        v1(1:ndir) = vector(nnod,1:ndir)
-        call gzip_defleat_last(ilength,                                 &
-     &      each_field_data_buffer(ndir, v1), ilen_gz, ilen_gzipped)
-      else
-        ilen_gzipped = 0
-      end if
+      ilen_gzipped = gz_defleat_vector_txt(nnod, ndir, vector, ilength, &
+     &                                     ilen_gz, gzip_buf(1))
 !
       call calypso_gz_mpi_seek_write                                    &
      &   (id_fld, ioff_gl, ilen_gzipped, gzip_buf(1))
@@ -145,6 +126,51 @@
       end do
 !
       end subroutine gz_read_fld_vecotr_mpi
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      integer(kind = kint) function  gz_defleat_vector_txt              &
+     &                   (nnod, ndir, vector, ilength, ilen_gz, buffer)
+!
+      use field_data_IO
+!
+      integer(kind = kint), intent(in) :: nnod, ndir
+      real(kind = kreal), intent(in) :: vector(nnod,ndir)
+!
+      integer(kind = kint), intent(in) :: ilength, ilen_gz
+      character(len=1), intent(inout) :: buffer(ilen_gz)
+!
+      real(kind = kreal) :: v1(ndir)
+      integer(kind = kint) :: ilen_gzipped
+      integer(kind = kint_gl) :: inod
+!
+!
+      if(nnod .eq. 1) then
+        v1(1:ndir) = vector(1,1:ndir)
+        call gzip_defleat_once(ilength,                                 &
+     &      each_field_data_buffer(ndir, v1),                           &
+     &      ilen_gz, ilen_gzipped, buffer(1))
+!
+      else if(nnod .gt. 1) then
+        v1(1:ndir) = vector(1,1:ndir)
+        call gzip_defleat_begin(ilength,                                &
+     &      each_field_data_buffer(ndir, v1),                           &
+     &      ilen_gz, ilen_gzipped, buffer(1))
+        do inod = 2, nnod-1
+          v1(1:ndir) = vector(inod,1:ndir)
+          call gzip_defleat_cont(ilength,                               &
+     &      each_field_data_buffer(ndir, v1), ilen_gz, ilen_gzipped)
+        end do
+        v1(1:ndir) = vector(nnod,1:ndir)
+        call gzip_defleat_last(ilength,                                 &
+     &      each_field_data_buffer(ndir, v1), ilen_gz, ilen_gzipped)
+      else
+        ilen_gzipped = 0
+      end if
+      gz_defleat_vector_txt = ilen_gzipped
+!
+      end function gz_defleat_vector_txt
 !
 ! -----------------------------------------------------------------------
 !

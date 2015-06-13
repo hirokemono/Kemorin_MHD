@@ -195,12 +195,19 @@
           call dealloc_phys_data_type(org_sph_phys(ip))
         end do
 !
+        call copy_rst_prefix_and_fmt                                    &
+     &     (new_sph_fst_head, ifmt_new_sph_fst, new_fst_IO)
         do jp = 1, np_sph_new
           irank_new = jp - 1
           call const_assembled_sph_data                                 &
-     &       (new_sph_fst_head, ifmt_new_sph_fst, irank_new, istep,     &
-     &        b_sph_ratio, np_sph_new, new_sph_mesh(jp)%sph_mesh,       &
+     &       (b_sph_ratio, new_sph_mesh(jp)%sph_mesh,                   &
      &        r_itp, new_sph_phys(jp), new_fst_IO)
+!
+          call sel_write_step_SPH_field_file                            &
+     &       (np_sph_new, irank_new, istep, new_fst_IO)
+!
+          call dealloc_phys_data_IO(new_fst_IO)
+          call dealloc_phys_name_IO(new_fst_IO)
         end do
 !
         write(*,*) 'step', istep, 'finish '

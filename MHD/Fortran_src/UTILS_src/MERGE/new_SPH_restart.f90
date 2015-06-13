@@ -25,8 +25,7 @@
 !!      subroutine load_org_fld_data(org_sph_fst_head, ifmt_org_sph_fst,&
 !!     &          ip, istep, org_sph, org_phys)
 !!      subroutine const_assembled_sph_data                             &
-!!     &         (new_sph_fst_head, ifmt_new_sph_fst, irank_new, istep, &
-!!     &          b_ratio, np_sph_new, new_sph, r_itp, new_phys)
+!!     &         (b_ratio, new_sph, r_itp, new_phys, new_fst_IO)
 !!@endverbatim
 !
       module new_SPH_restart
@@ -261,9 +260,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_assembled_sph_data                               &
-     &         (new_sph_fst_head, ifmt_new_sph_fst, irank_new, istep,   &
-     &          b_ratio, np_sph_new, new_sph, r_itp,                    &
-     &          new_phys, new_fst_IO)
+     &         (b_ratio, new_sph, r_itp, new_phys, new_fst_IO)
 !
       use calypso_mpi
       use m_phys_labels
@@ -275,19 +272,14 @@
       use copy_rj_phys_type_4_IO
       use field_IO_select
 !
-      character(len=kchara), intent(in) :: new_sph_fst_head
-      integer(kind=kint ), intent(in) :: ifmt_new_sph_fst
-      integer(kind=kint ), intent(in) :: np_sph_new
       real(kind=kreal ), intent(in) :: b_ratio
 !
-      integer(kind = kint), intent(in) :: irank_new, istep
       type(sph_grids), intent(in) :: new_sph
       type(sph_radial_itp_data), intent(in) :: r_itp
       type(phys_data), intent(inout) :: new_phys
       type(field_IO), intent(inout) :: new_fst_IO
 !
 !
-      if(irank_new .lt. np_sph_new) then
         if(r_itp%iflag_same_rgrid .eq. 0) then
 !        write(*,*) 'extend_potential_magne'
           call extend_potential_magne(new_sph, r_itp, new_phys)
@@ -316,17 +308,6 @@
 !
         call copy_rj_all_phys_type_to_IO                                &
      &     (new_sph%sph_rj%nnod_rj, new_phys, new_fst_IO)
-      end if
-!
-      call copy_rst_prefix_and_fmt                                      &
-     &     (new_sph_fst_head, ifmt_new_sph_fst, new_fst_IO)
-      call sel_write_step_SPH_field_file                                &
-     &   (np_sph_new, irank_new, istep, new_fst_IO)
-!
-      if(irank_new .lt. np_sph_new) then
-        call dealloc_phys_data_IO(new_fst_IO)
-        call dealloc_phys_name_IO(new_fst_IO)
-      end if
 !
       end subroutine const_assembled_sph_data
 !

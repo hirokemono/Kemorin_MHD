@@ -10,6 +10,9 @@
 !!      subroutine write_gz_step_field_file_mpi                         &
 !!     &         (file_name, nprocs_in, id_rank, fld_IO)
 !!
+!!      subroutine write_field_head_gz_mpi(id_fld, nprocs_in,           &
+!!     &          ioff_gl, num_field, ncomp_field, istack_merged)
+!!
 !!      subroutine read_step_field_file_gz_mpi                          &
 !!     &         (file_name, nprocs_in, id_rank, fld_IO)
 !!      subroutine read_alloc_stp_fld_file_gz_mpi                       &
@@ -56,11 +59,13 @@
 !
       if(id_rank .lt. nprocs_in) then
         ioff_gl = 0
-        call write_field_data_gz_mpi                                    &
-     &     (id_fld, nprocs_in, id_rank, ioff_gl,                        &
+        call write_field_head_gz_mpi                                    &
+     &     (id_fld, nprocs_in, ioff_gl, fld_IO%num_field_IO,            &
+     &      fld_IO%num_comp_IO,  fld_IO%istack_numnod_IO)
+!
+        call write_field_data_gz_mpi(id_fld, ioff_gl,                   &
      &      fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,   &
-     &      fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO,           &
-     &      fld_IO%istack_numnod_IO)
+     &      fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
       end if
 !
       call calypso_close_mpi_file(id_fld)
@@ -210,9 +215,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_field_data_gz_mpi(id_fld, nprocs_in, id_rank,    &
-     &           ioff_gl, nnod, num_field, ntot_comp, ncomp_field,      &
-     &          field_name, d_nod, istack_merged)
+      subroutine write_field_head_gz_mpi(id_fld, nprocs_in,             &
+     &          ioff_gl, num_field, ncomp_field, istack_merged)
 !
       use m_phys_constants
       use field_data_IO
@@ -220,16 +224,11 @@
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
-      integer(kind=kint), intent(in) :: nnod
-      integer(kind=kint), intent(in) :: num_field, ntot_comp
+      integer(kind = kint), intent(in) :: nprocs_in
+      integer(kind=kint), intent(in) :: num_field
       integer(kind=kint), intent(in) :: ncomp_field(num_field)
-      character(len=kchara), intent(in) :: field_name(num_field)
-      real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
       integer, intent(in) ::  id_fld
-!
-      integer(kind = kint) :: j, icou
 !
 !
       call gz_write_fld_header_mpi                                      &
@@ -241,12 +240,36 @@
       call gz_write_fld_header_mpi                                      &
      &   (id_fld, ioff_gl, field_comp_buffer(num_field, ncomp_field))
 !
+      end subroutine write_field_head_gz_mpi
+!
+! -----------------------------------------------------------------------
+!
+      subroutine write_field_data_gz_mpi(id_fld, ioff_gl,               &
+     &           nnod, num_field, ntot_comp, ncomp_field,               &
+     &           field_name, d_nod)
+!
+      use m_phys_constants
+      use field_data_IO
+      use gz_field_data_MPI_IO
+!
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind=kint), intent(in) :: nnod
+      integer(kind=kint), intent(in) :: num_field, ntot_comp
+      integer(kind=kint), intent(in) :: ncomp_field(num_field)
+      character(len=kchara), intent(in) :: field_name(num_field)
+      real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
+!
+      integer, intent(in) ::  id_fld
+!
+      integer(kind = kint) :: j, icou
+!
+!
       icou = 1
       do j = 1, num_field
         call gz_write_fld_header_mpi                                    &
      &     (id_fld, ioff_gl, each_field_name_buffer(field_name(j)))
-        call gz_write_fld_vecotr_mpi(id_fld, nprocs_in, id_rank,        &
-     &      ioff_gl, nnod, ncomp_field(j), d_nod(1,icou))
+        call gz_write_fld_vecotr_mpi(id_fld, ioff_gl,                   &
+     &      nnod, ncomp_field(j), d_nod(1,icou))
         icou = icou + ncomp_field(j)
       end do
 !

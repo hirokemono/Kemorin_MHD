@@ -10,6 +10,10 @@
 !!      subroutine gz_write_step_fld_file_mpi_b                         &
 !!     &         (file_name, nprocs_in, fld_IO)
 !!
+!!      subroutine gz_write_field_head_mpi_b(id_fld, ioff_gl, nprocs_in,&
+!!     &          num_field, ncomp_field, istack_merged)
+!!      subroutine gz_write_field_data_mpi_b(id_fld, ioff_gl,           &
+!!     &          nnod, num_field, ntot_comp, field_name, d_nod)
 !!      subroutine gz_read_step_field_file_mpi_b                        &
 !!     &         (file_name, nprocs_in, id_rank, fld_IO)
 !!      subroutine gz_rd_alloc_st_fld_file_mpi_b                        &
@@ -30,7 +34,7 @@
 !
       implicit none
 !
-      private :: gz_write_step_data_mpi_b, gz_write_field_data_mpi_b
+      private :: gz_write_field_data_mpi_b
       private :: gz_read_field_data_mpi_b, gz_read_field_names_mpi_b
 !
 !  ---------------------------------------------------------------------
@@ -60,10 +64,12 @@
       call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
 !
       ioff_gl = 0
+      call gz_write_field_head_mpi_b(id_fld, nprocs, ioff_gl,           &
+     &      fld_IO%num_field_IO, fld_IO%num_comp_IO,                    &
+     &      fld_IO%istack_numnod_IO)
       call gz_write_field_data_mpi_b(id_fld, ioff_gl,                   &
      &      fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,   &
-     &      fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO,           &
-     &      fld_IO%istack_numnod_IO)
+     &      fld_IO%fld_name, fld_IO%d_IO)
 !
       call calypso_close_mpi_file(id_fld)
 !
@@ -213,32 +219,55 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
+      subroutine gz_write_field_head_mpi_b(id_fld, nprocs_in, ioff_gl,  &
+     &          num_field, ncomp_field, istack_merged)
+!
+      use m_phys_constants
+      use m_time_data_IO
+      use field_data_IO
+      use gz_field_data_MPI_IO_b
+!
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs)
+      integer(kind=kint), intent(in) :: nprocs_in
+      integer(kind=kint), intent(in) :: num_field
+      integer(kind=kint), intent(in) :: ncomp_field(num_field)
+!
+      integer, intent(in) ::  id_fld
+!
+!
+      call gz_write_fld_inthead_mpi_b(id_fld, ioff_gl, nprocs_in-1)
+      call gz_write_fld_inthead_mpi_b(id_fld, ioff_gl, i_time_step_IO)
+!
+      call gz_write_fld_realhead_mpi_b(id_fld, ioff_gl, time_IO)
+      call gz_write_fld_realhead_mpi_b(id_fld, ioff_gl, delta_t_IO)
+!
+!
+      call gz_write_fld_mul_i8head_mpi_b                                &
+     &         (id_fld, ioff_gl, nprocs_in, istack_merged(1))
+      call gz_write_fld_inthead_mpi_b(id_fld, ioff_gl, num_field)
+      call gz_write_fld_mul_inthead_mpi_b                               &
+     &         (id_fld, ioff_gl, num_field, ncomp_field)
+!
+      end subroutine gz_write_field_head_mpi_b
+!
+! -----------------------------------------------------------------------
+!
       subroutine gz_write_field_data_mpi_b(id_fld, ioff_gl,             &
-     &          nnod, num_field, ntot_comp, ncomp_field,                &
-     &          field_name, d_nod, istack_merged)
+     &          nnod, num_field, ntot_comp, field_name, d_nod)
 !
       use m_phys_constants
       use field_data_IO
       use gz_field_data_MPI_IO_b
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs)
       integer(kind=kint), intent(in) :: nnod
       integer(kind=kint), intent(in) :: num_field, ntot_comp
-      integer(kind=kint), intent(in) :: ncomp_field(num_field)
       character(len=kchara), intent(in) :: field_name(num_field)
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
       integer, intent(in) ::  id_fld
 !
-!
-      call gz_write_step_data_mpi_b(id_fld, ioff_gl)
-!
-      call gz_write_fld_mul_i8head_mpi_b                                &
-     &         (id_fld, ioff_gl, nprocs, istack_merged(1))
-      call gz_write_fld_inthead_mpi_b(id_fld, ioff_gl, num_field)
-      call gz_write_fld_mul_inthead_mpi_b                               &
-     &         (id_fld, ioff_gl, num_field, ncomp_field)
 !
       call gz_write_fld_mul_charhead_mpi_b                              &
      &   (id_fld, ioff_gl, num_field, field_name)
@@ -246,27 +275,6 @@
      &   (id_fld, ioff_gl, nnod, ntot_comp, d_nod)
 !
       end subroutine gz_write_field_data_mpi_b
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine gz_write_step_data_mpi_b(id_fld, ioff_gl)
-!
-      use m_time_data_IO
-      use gz_field_data_MPI_IO_b
-!
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-!
-      integer, intent(in) ::  id_fld
-!
-!
-      call gz_write_fld_inthead_mpi_b(id_fld, ioff_gl, nprocs-1)
-      call gz_write_fld_inthead_mpi_b(id_fld, ioff_gl, i_time_step_IO)
-!
-      call gz_write_fld_realhead_mpi_b(id_fld, ioff_gl, time_IO)
-      call gz_write_fld_realhead_mpi_b(id_fld, ioff_gl, delta_t_IO)
-!
-      end subroutine gz_write_step_data_mpi_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

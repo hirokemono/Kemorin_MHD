@@ -2,7 +2,7 @@
 !!       module m_calypso_mpi_IO
 !!
 !!@author H. Matsui
-!!@date   Programmed in Ma, 2015
+!!@date   Programmed in May, 2015
 !
 !> @brief Base routines for MPI-IO
 !!
